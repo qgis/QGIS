@@ -23,6 +23,12 @@ QgsLabelingResults::QgsLabelingResults()
 
 QgsLabelingResults::~QgsLabelingResults() = default;
 
+
+QList<QgsLabelPosition> QgsLabelingResults::allLabels() const
+{
+  return mLabelSearchTree ? mLabelSearchTree->allLabels() : QList<QgsLabelPosition>();
+}
+
 QList<QgsLabelPosition> QgsLabelingResults::labelsAtPosition( const QgsPointXY &p ) const
 {
   QList<QgsLabelPosition> positions;

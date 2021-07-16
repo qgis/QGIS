@@ -105,6 +105,8 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
 
 
 
+
+
     QgsPoint vertexAt( int atVertex ) const /HoldGIL/;
 %Docstring
 Returns coordinates of a vertex.

@@ -53,6 +53,8 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
      */
     QgsTemporalNavigationObject *temporalController();
 
+    bool applySizeConstraintsToStack() const override;
+
 #ifndef SIP_RUN
 
   signals:

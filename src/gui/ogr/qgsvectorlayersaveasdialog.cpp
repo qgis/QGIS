@@ -16,11 +16,9 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslogger.h"
-#include "qgsdataitem.h"
 #include "qgsvectorlayersaveasdialog.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsvectordataprovider.h"
-#include "qgsogrdataitems.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgseditorwidgetfactory.h"
 #include "qgseditorwidgetregistry.h"
@@ -28,6 +26,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsgui.h"
 #include "qgsapplication.h"
+#include "qgsogrdataitems.h"
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QTextCodec>
@@ -35,6 +34,7 @@
 #include <QRegularExpression>
 #include "gdal.h"
 #include "qgsdatums.h"
+#include "qgsiconutils.h"
 
 static const int COLUMN_IDX_NAME = 0;
 static const int COLUMN_IDX_TYPE = 1;
@@ -141,7 +141,7 @@ void QgsVectorLayerSaveAsDialog::setup()
 
   const auto addGeomItem = [this]( QgsWkbTypes::Type type )
   {
-    mGeometryTypeComboBox->addItem( QgsLayerItem::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), type );
+    mGeometryTypeComboBox->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), type );
   };
 
   //add geometry types to combobox

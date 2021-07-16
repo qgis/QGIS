@@ -15,11 +15,13 @@
 #ifndef QGSWMSDATAITEMS_H
 #define QGSWMSDATAITEMS_H
 
-#include "qgsdataitem.h"
+#include "qgsdatacollectionitem.h"
+#include "qgslayeritem.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdatasourceuri.h"
 #include "qgswmsprovider.h"
 #include "qgsgeonodeconnection.h"
+#include "qgsconnectionsitem.h"
 
 class QgsWmsCapabilitiesDownload;
 

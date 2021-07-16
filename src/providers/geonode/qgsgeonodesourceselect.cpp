@@ -30,6 +30,7 @@
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QRegularExpression>
 
 enum
 {
@@ -351,10 +352,8 @@ void QgsGeoNodeSourceSelect::loadGeonodeConnection()
 
 void QgsGeoNodeSourceSelect::filterChanged( const QString &text )
 {
-  QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::RegExp );
-  Qt::CaseSensitivity myCaseSensitivity = Qt::CaseInsensitive;
-  QRegExp myRegExp( text, myCaseSensitivity, mySyntax );
-  mModelProxy->setFilterRegExp( myRegExp );
+  QRegularExpression regExp( text, QRegularExpression::CaseInsensitiveOption );
+  mModelProxy->setFilterRegularExpression( regExp );
   mModelProxy->sort( mModelProxy->sortColumn(), mModelProxy->sortOrder() );
 }
 

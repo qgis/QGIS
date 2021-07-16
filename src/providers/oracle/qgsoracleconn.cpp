@@ -1015,6 +1015,10 @@ QString QgsOracleConn::getSpatialIndexName( const QString &ownerName, const QStr
         isValid = true;
       }
     }
+    else
+    {
+      isValid = false;
+    }
   }
   else
   {

@@ -254,7 +254,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -270,9 +270,6 @@
            <property name="bottomMargin">
             <number>0</number>
            </property>
-           <item>
-            <widget class="QgsWebView" name="mMetadataViewer" native="true"/>
-           </item>
           </layout>
          </widget>
          <widget class="QWidget" name="mOptsPage_Source">
@@ -302,8 +299,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>643</width>
-                <height>679</height>
+                <width>650</width>
+                <height>673</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -445,8 +442,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>619</width>
-                <height>383</height>
+                <width>643</width>
+                <height>679</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -634,6 +631,13 @@ border-radius: 2px;</string>
                    <widget class="Line" name="line">
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0" colspan="3">
+                   <widget class="QCheckBox" name="mInvertColorsCheck">
+                    <property name="text">
+                     <string>Invert colors</string>
                     </property>
                    </widget>
                   </item>
@@ -981,8 +985,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>343</width>
-                <height>474</height>
+                <width>643</width>
+                <height>679</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1011,6 +1015,13 @@ border-radius: 2px;</string>
                    <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
                     <property name="focusPolicy">
                      <enum>Qt::StrongFocus</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QgsPropertyOverrideButton" name="mOpacityDDBtn">
+                    <property name="text">
+                     <string>…</string>
                     </property>
                    </widget>
                   </item>
@@ -1098,70 +1109,6 @@ border-radius: 2px;</string>
                   <string notr="true">rastertransp</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_3">
-                  <item row="2" column="0">
-                   <widget class="QTableWidget" name="tableTransparency">
-                    <property name="verticalScrollBarPolicy">
-                     <enum>Qt::ScrollBarAsNeeded</enum>
-                    </property>
-                    <property name="alternatingRowColors">
-                     <bool>true</bool>
-                    </property>
-                    <property name="selectionMode">
-                     <enum>QAbstractItemView::SingleSelection</enum>
-                    </property>
-                    <property name="selectionBehavior">
-                     <enum>QAbstractItemView::SelectRows</enum>
-                    </property>
-                    <property name="showGrid">
-                     <bool>false</bool>
-                    </property>
-                    <property name="rowCount">
-                     <number>0</number>
-                    </property>
-                    <property name="columnCount">
-                     <number>0</number>
-                    </property>
-                    <attribute name="horizontalHeaderStretchLastSection">
-                     <bool>true</bool>
-                    </attribute>
-                   </widget>
-                  </item>
-                  <item row="0" column="0">
-                   <layout class="QHBoxLayout" name="horizontalLayout_7">
-                    <item>
-                     <widget class="QLabel" name="lblTransparent">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>Transparency band</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QgsRasterBandComboBox" name="cboxTransparencyBand">
-                      <property name="enabled">
-                       <bool>true</bool>
-                      </property>
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="minimumSize">
-                       <size>
-                        <width>150</width>
-                        <height>0</height>
-                       </size>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
                   <item row="2" column="1">
                    <layout class="QVBoxLayout" name="_2">
                     <property name="leftMargin">
@@ -1278,6 +1225,70 @@ border-radius: 2px;</string>
                     </item>
                    </layout>
                   </item>
+                  <item row="0" column="0">
+                   <layout class="QHBoxLayout" name="horizontalLayout_7">
+                    <item>
+                     <widget class="QLabel" name="lblTransparent">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="text">
+                       <string>Transparency band</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QgsRasterBandComboBox" name="cboxTransparencyBand" native="true">
+                      <property name="enabled">
+                       <bool>true</bool>
+                      </property>
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>150</width>
+                        <height>0</height>
+                       </size>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QTableWidget" name="tableTransparency">
+                    <property name="verticalScrollBarPolicy">
+                     <enum>Qt::ScrollBarAsNeeded</enum>
+                    </property>
+                    <property name="alternatingRowColors">
+                     <bool>true</bool>
+                    </property>
+                    <property name="selectionMode">
+                     <enum>QAbstractItemView::SingleSelection</enum>
+                    </property>
+                    <property name="selectionBehavior">
+                     <enum>QAbstractItemView::SelectRows</enum>
+                    </property>
+                    <property name="showGrid">
+                     <bool>false</bool>
+                    </property>
+                    <property name="rowCount">
+                     <number>0</number>
+                    </property>
+                    <property name="columnCount">
+                     <number>0</number>
+                    </property>
+                    <attribute name="horizontalHeaderStretchLastSection">
+                     <bool>true</bool>
+                    </attribute>
+                   </widget>
+                  </item>
                   <item row="1" column="0">
                    <widget class="QLabel" name="label_6">
                     <property name="text">
@@ -1334,8 +1345,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>86</width>
-                <height>41</height>
+                <width>643</width>
+                <height>679</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -1552,8 +1563,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>577</width>
-                <height>190</height>
+                <width>650</width>
+                <height>673</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1622,8 +1633,8 @@ border-radius: 2px;</string>
                        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Fira Sans'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Cantarell';&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Noto Sans'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Cantarell'; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
@@ -1728,21 +1739,15 @@ p, li { white-space: pre-wrap; }
           </layout>
          </widget>
          <widget class="QWidget" name="mOptsPage_Legend">
-          <layout class="QVBoxLayout" name="verticalLayout_18">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <item>
+          <layout class="QGridLayout" name="gridLayout_15">
+           <item row="2" column="0">
             <widget class="QGroupBox" name="groupBox">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="title">
               <string>Embedded Widgets in Legend</string>
              </property>
@@ -1751,6 +1756,16 @@ p, li { white-space: pre-wrap; }
                <widget class="QgsLayerTreeEmbeddedConfigWidget" name="mLegendConfigEmbeddedWidget" native="true"/>
               </item>
              </layout>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QgsImageSourceLineEdit" name="mLegendPlaceholderWidget" native="true"/>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="mLegendPlaceholderLabel">
+             <property name="text">
+              <string>Legend placeholder image</string>
+             </property>
             </widget>
            </item>
           </layout>
@@ -1782,8 +1797,8 @@ p, li { white-space: pre-wrap; }
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>343</width>
-                <height>684</height>
+                <width>629</width>
+                <height>793</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_12">
@@ -2234,15 +2249,37 @@ p, li { white-space: pre-wrap; }
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsRasterBandComboBox</class>
+   <extends>QWidget</extends>
+   <header>qgsrasterbandcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsSpinBox</class>
@@ -2258,12 +2295,6 @@ p, li { white-space: pre-wrap; }
    <class>QgsProjectionSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsWebView</class>
-   <extends>QWidget</extends>
-   <header>qgswebview.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2284,12 +2315,6 @@ p, li { white-space: pre-wrap; }
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsBlendModeComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsblendmodecombobox.h</header>
@@ -2304,6 +2329,12 @@ p, li { white-space: pre-wrap; }
    <class>QgsRasterBandComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsrasterbandcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsImageSourceLineEdit</class>
+   <extends>QWidget</extends>
+   <header>qgsfilecontentsourcelineedit.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -2337,9 +2368,9 @@ p, li { white-space: pre-wrap; }
   <tabstop>mCbEarlyResampling</tabstop>
   <tabstop>scrollArea_2</tabstop>
   <tabstop>mOpacityWidget</tabstop>
+  <tabstop>mOpacityDDBtn</tabstop>
   <tabstop>mSrcNoDataValueCheckBox</tabstop>
   <tabstop>leNoDataValue</tabstop>
-  <tabstop>cboxTransparencyBand</tabstop>
   <tabstop>tableTransparency</tabstop>
   <tabstop>pbnAddValuesManually</tabstop>
   <tabstop>pbnAddValuesFromDisplay</tabstop>
@@ -2374,8 +2405,10 @@ p, li { white-space: pre-wrap; }
   <tabstop>mWMSPrintLayerLineEdit</tabstop>
   <tabstop>mPublishDataSourceUrlCheckBox</tabstop>
   <tabstop>mBackgroundLayerCheckBox</tabstop>
+  <tabstop>mInvertColorsCheck</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

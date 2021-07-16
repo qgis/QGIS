@@ -35,10 +35,20 @@ QgsLandingPageHandler::QgsLandingPageHandler( const QgsServerSettings *settings 
 
 void QgsLandingPageHandler::handleRequest( const QgsServerApiContext &context ) const
 {
-  if ( context.request()->url().path( ) == '/' || context.request()->url().path( ).isEmpty() )
+  const QString requestPrefix { prefix( context.serverInterface()->serverSettings() ) };
+  auto urlPath { context.request()->url().path( ) };
+
+  while ( urlPath.endsWith( '/' ) )
+  {
+    urlPath.chop( 1 );
+  }
+
+  if ( urlPath == requestPrefix )
   {
     QUrl url { context.request()->url() };
-    url.setPath( QStringLiteral( "/index.%1" ).arg( QgsServerOgcApi::contentTypeToExtension( contentTypeFromRequest( context.request() ) ) ) );
+    url.setPath( QStringLiteral( "%1/index.%2" )
+                 .arg( requestPrefix,
+                       QgsServerOgcApi::contentTypeToExtension( contentTypeFromRequest( context.request() ) ) ) );
     context.response()->setStatusCode( 302 );
     context.response()->setHeader( QStringLiteral( "Location" ), url.toString() );
   }
@@ -60,6 +70,22 @@ const QString QgsLandingPageHandler::templatePath( const QgsServerApiContext &co
   QString path { context.serverInterface()->serverSettings()->apiResourcesDirectory() };
   path += QLatin1String( "/ogc/static/landingpage/index.html" );
   return path;
+}
+
+QString QgsLandingPageHandler::prefix( const QgsServerSettings *settings )
+{
+  QString prefix { settings->landingPageBaseUrlPrefix() };
+
+  while ( prefix.endsWith( '/' ) )
+  {
+    prefix.chop( 1 );
+  }
+
+  if ( ! prefix.isEmpty() && ! prefix.startsWith( '/' ) )
+  {
+    prefix.prepend( '/' );
+  }
+  return prefix;
 }
 
 json QgsLandingPageHandler::projectsData( const QgsServerRequest &request ) const
@@ -100,3 +126,13 @@ void QgsLandingPageMapHandler::handleRequest( const QgsServerApiContext &context
   write( data, context, {{ "pageTitle", linkTitle() }, { "navigation", json::array() }} );
 }
 
+QRegularExpression QgsLandingPageMapHandler::path() const
+{
+  return QRegularExpression( QStringLiteral( R"re(^%1/map/([a-f0-9]{32}).*$)re" ).arg( QgsLandingPageHandler::prefix( mSettings ) ) );
+}
+
+
+QRegularExpression QgsLandingPageHandler::path() const
+{
+  return QRegularExpression( QStringLiteral( R"re(^%1(/index.html|/index.json|/)?$)re" ).arg( prefix( mSettings ) ) );
+}

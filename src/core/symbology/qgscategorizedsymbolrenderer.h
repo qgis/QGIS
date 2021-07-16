@@ -59,6 +59,7 @@ class CORE_EXPORT QgsRendererCategory
      */
     QgsRendererCategory( const QgsRendererCategory &cat );
     QgsRendererCategory &operator=( QgsRendererCategory cat );
+    ~QgsRendererCategory();
 
     /**
      * Returns the value corresponding to this category.
@@ -424,7 +425,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
      *
      * \since QGIS 3.4
      */
-    int matchToSymbols( QgsStyle *style, QgsSymbol::SymbolType type,
+    int matchToSymbols( QgsStyle *style, Qgis::SymbolType type,
                         QVariantList &unmatchedCategories SIP_OUT, QStringList &unmatchedSymbols SIP_OUT, bool caseSensitive = true, bool useTolerantMatch = false );
 
 

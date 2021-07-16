@@ -36,6 +36,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsreadwritelocker.h"
+#include "qgssymbol.h"
 
 #include <QFile>
 #include <QFileInfo>
@@ -56,29 +57,6 @@
 #include <cpl_conv.h>
 #include <cpl_string.h>
 #include <gdal.h>
-
-// Thin wrapper around OGROpen() to workaround a bug in GDAL < 2.3.1
-// where a existing BNA file is wrongly reported to be openable in update mode
-// but attempting to add features in it crashes the BNA driver.
-static OGRDataSourceH myOGROpen( const char *pszName, int bUpdate, OGRSFDriverH *phDriver )
-{
-  OGRSFDriverH hDriver = nullptr;
-  OGRDataSourceH hDS = OGROpen( pszName, bUpdate, &hDriver );
-  if ( hDS && bUpdate )
-  {
-    QString drvName = OGR_Dr_GetName( hDriver );
-    if ( drvName == QLatin1String( "BNA" ) )
-    {
-      OGR_DS_Destroy( hDS );
-      if ( phDriver )
-        *phDriver = nullptr;
-      return nullptr;
-    }
-  }
-  if ( phDriver )
-    *phDriver = hDriver;
-  return hDS;
-}
 
 QgsField QgsVectorFileWriter::FieldValueConverter::fieldDefinition( const QgsField &field )
 {
@@ -243,7 +221,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   {
     for ( const QString &layerOption : layerOptions )
     {
-      if ( layerOption.startsWith( QStringLiteral( "FID=" ) ) )
+      if ( layerOption.startsWith( QLatin1String( "FID=" ) ) )
       {
         fidFieldName = layerOption.mid( 4 );
         break;
@@ -368,7 +346,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   if ( action == CreateOrOverwriteFile )
     mDS.reset( OGR_Dr_CreateDataSource( poDriver, vectorFileName.toUtf8().constData(), options ) );
   else
-    mDS.reset( myOGROpen( vectorFileName.toUtf8().constData(), TRUE, nullptr ) );
+    mDS.reset( OGROpen( vectorFileName.toUtf8().constData(), TRUE, nullptr ) );
 
   if ( options )
   {
@@ -457,12 +435,10 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     QString srsWkt = srs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL );
     QgsDebugMsgLevel( "WKT to save as is " + srsWkt, 2 );
     mOgrRef = OSRNewSpatialReference( srsWkt.toLocal8Bit().constData() );
-#if GDAL_VERSION_MAJOR >= 3
     if ( mOgrRef )
     {
       OSRSetAxisMappingStrategy( mOgrRef, OAMS_TRADITIONAL_GIS_ORDER );
     }
-#endif
   }
 
   // datasource created, now create the output layer
@@ -953,6 +929,10 @@ class QgsVectorFileWriterMetadataContainer
                              )
                            );
 
+
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,3,0)
+      // Support for Atlas BNA was removed in GDAL 3.3
+
       // Atlas BNA
       datasetOptions.clear();
       layerOptions.clear();
@@ -1017,6 +997,7 @@ class QgsVectorFileWriterMetadataContainer
                                layerOptions
                              )
                            );
+#endif
 
       // Comma Separated Value
       datasetOptions.clear();
@@ -3165,7 +3146,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormatV2( Pre
   QgsWkbTypes::Type destWkbType = details.destWkbType;
 
   int lastProgressReport = 0;
-  long total = details.featureCount;
+  long long total = details.featureCount;
 
   // Special rules for OGR layers
   if ( details.providerType == QLatin1String( "ogr" ) && !details.dataSourceUri.isEmpty() )
@@ -3769,10 +3750,11 @@ QString QgsVectorFileWriter::convertCodecNameForEncodingOption( const QString &c
   if ( codecName == QLatin1String( "System" ) )
     return QStringLiteral( "LDID/0" );
 
-  QRegExp re = QRegExp( QString( "(CP|windows-|ISO[ -])(.+)" ), Qt::CaseInsensitive );
-  if ( re.exactMatch( codecName ) )
+  const QRegularExpression re( QRegularExpression::anchoredPattern( QString( "(CP|windows-|ISO[ -])(.+)" ) ), QRegularExpression::CaseInsensitiveOption );
+  const QRegularExpressionMatch match = re.match( codecName );
+  if ( match.hasMatch() )
   {
-    QString c = re.cap( 2 ).remove( '-' );
+    QString c = match.captured( 2 ).remove( '-' );
     bool isNumber;
     ( void ) c.toInt( &isNumber );
     if ( isNumber )
@@ -4103,7 +4085,7 @@ QStringList QgsVectorFileWriter::concatenateOptions( const QMap<QString, QgsVect
 QgsVectorFileWriter::EditionCapabilities QgsVectorFileWriter::editionCapabilities( const QString &datasetName )
 {
   OGRSFDriverH hDriver = nullptr;
-  gdal::ogr_datasource_unique_ptr hDS( myOGROpen( datasetName.toUtf8().constData(), TRUE, &hDriver ) );
+  gdal::ogr_datasource_unique_ptr hDS( OGROpen( datasetName.toUtf8().constData(), TRUE, &hDriver ) );
   if ( !hDS )
     return QgsVectorFileWriter::EditionCapabilities();
   QString drvName = OGR_Dr_GetName( hDriver );
@@ -4143,7 +4125,7 @@ bool QgsVectorFileWriter::targetLayerExists( const QString &datasetName,
     const QString &layerNameIn )
 {
   OGRSFDriverH hDriver = nullptr;
-  gdal::ogr_datasource_unique_ptr hDS( myOGROpen( datasetName.toUtf8().constData(), TRUE, &hDriver ) );
+  gdal::ogr_datasource_unique_ptr hDS( OGROpen( datasetName.toUtf8().constData(), TRUE, &hDriver ) );
   if ( !hDS )
     return false;
 
@@ -4161,7 +4143,7 @@ bool QgsVectorFileWriter::areThereNewFieldsToCreate( const QString &datasetName,
     const QgsAttributeList &attributes )
 {
   OGRSFDriverH hDriver = nullptr;
-  gdal::ogr_datasource_unique_ptr hDS( myOGROpen( datasetName.toUtf8().constData(), TRUE, &hDriver ) );
+  gdal::ogr_datasource_unique_ptr hDS( OGROpen( datasetName.toUtf8().constData(), TRUE, &hDriver ) );
   if ( !hDS )
     return false;
   OGRLayerH hLayer = OGR_DS_GetLayerByName( hDS.get(), layerName.toUtf8().constData() );

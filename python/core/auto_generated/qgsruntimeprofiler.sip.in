@@ -146,6 +146,7 @@ This class automatically takes care of registering an operation in the :py:func:
 registry upon construction, and recording of the elapsed runtime upon destruction.
 
 Python scripts should not use :py:class:`QgsScopedRuntimeProfile` directly. Instead, use :py:func:`QgsRuntimeProfiler.profile()`
+
 .. code-block:: python
 
        with QgsRuntimeProfiler.profile('My operation'):

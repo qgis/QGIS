@@ -105,12 +105,14 @@ void QgsBufferedLine3DSymbolHandler::processFeature( const QgsFeature &f, const 
   LineData &out = mSelectedIds.contains( f.id() ) ? outSelected : outNormal;
 
   QgsGeometry geom = f.geometry();
+  const QgsAbstractGeometry *g = geom.constGet()->simplifiedTypeRef();
 
   // segmentize curved geometries if necessary
-  if ( QgsWkbTypes::isCurvedType( geom.constGet()->wkbType() ) )
-    geom = QgsGeometry( geom.constGet()->segmentize() );
-
-  const QgsAbstractGeometry *g = geom.constGet();
+  if ( QgsWkbTypes::isCurvedType( g->wkbType() ) )
+  {
+    geom = QgsGeometry( g->segmentize() );
+    g = geom.constGet()->simplifiedTypeRef();
+  }
 
   // TODO: configurable
   const int nSegments = 4;
@@ -375,7 +377,15 @@ void QgsThickLine3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs
   QgsLineVertexData &out = mSelectedIds.contains( f.id() ) ? outSelected : outNormal;
 
   QgsGeometry geom = f.geometry();
-  const QgsAbstractGeometry *g = geom.constGet();
+  const QgsAbstractGeometry *g = geom.constGet()->simplifiedTypeRef();
+
+  // segmentize curved geometries if necessary
+  if ( QgsWkbTypes::isCurvedType( g->wkbType() ) )
+  {
+    geom = QgsGeometry( g->segmentize() );
+    g = geom.constGet()->simplifiedTypeRef();
+  }
+
   if ( const QgsLineString *ls = qgsgeometry_cast<const QgsLineString *>( g ) )
   {
     out.addLineString( *ls );

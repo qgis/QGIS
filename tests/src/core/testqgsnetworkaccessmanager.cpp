@@ -22,6 +22,7 @@
 #include <QObject>
 #include "qgstest.h"
 #include "qgssettings.h"
+#include <QNetworkCookieJar>
 #include <QNetworkReply>
 #include <QAuthenticator>
 #include <QThread>
@@ -149,6 +150,7 @@ class TestQgsNetworkAccessManager : public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
+    void testRequestPreprocessor();
     void testProxyExcludeList();
     void fetchEmptyUrl(); //test fetching blank url
     void fetchBadUrl(); //test fetching bad url
@@ -158,6 +160,7 @@ class TestQgsNetworkAccessManager : public QObject
     void testSslErrorHandler();
     void testAuthRequestHandler();
     void fetchTimeout();
+    void testCookieManagement();
 
   private:
 
@@ -1069,6 +1072,73 @@ void TestQgsNetworkAccessManager::fetchTimeout()
   blockingThread->wait();
   blockingThread->deleteLater();
 }
+
+class FunctionThread : public QThread
+{
+  public:
+    FunctionThread( const std::function<bool()> &f ) : m_f( f ), m_result( false ) {}
+    bool getResult() const
+    {
+      return m_result;
+    }
+  private:
+    std::function<bool()> m_f;
+    bool m_result;
+
+    void run()
+    {
+      m_result = m_f();
+    }
+};
+
+void TestQgsNetworkAccessManager::testCookieManagement()
+{
+  QUrl url( "http://example.com" );
+  // Set cookie in a thread and verify that it also set in main thread
+  QEventLoop evLoop;
+  FunctionThread thread1( [ = ]
+  {
+    QgsNetworkAccessManager::instance()->cookieJar()->setCookiesFromUrl(
+      QList<QNetworkCookie>() << QNetworkCookie( "foo=bar" ), url );
+    return true;
+  } );
+  QObject::connect( &thread1, &QThread::finished, &evLoop, &QEventLoop::quit );
+  thread1.start();
+  evLoop.exec();
+
+  QList<QNetworkCookie> cookies = QgsNetworkAccessManager::instance()->cookieJar()->cookiesForUrl( url );
+
+  QCOMPARE( cookies.size(), 1 );
+  QCOMPARE( cookies[0].toRawForm(), "foo=bar=; domain=example.com; path=/" );
+
+  QVERIFY( QgsNetworkAccessManager::instance()->cookieJar()->deleteCookie( cookies[0] ) );
+
+  // Set cookie in main thread and verify that it is also set in other thread
+  QCOMPARE( QgsNetworkAccessManager::instance()->cookieJar()->cookiesForUrl( url ).size(), 0 );
+  QgsNetworkAccessManager::instance()->cookieJar()->setCookiesFromUrl(
+    QList<QNetworkCookie>() << QNetworkCookie( "baz=yadda" ), url
+  );
+
+  FunctionThread thread2( [ = ]
+  {
+    QList<QNetworkCookie> cookies = QgsNetworkAccessManager::instance()->cookieJar()->cookiesForUrl( url );
+    return cookies.size() == 1 && cookies[0].toRawForm() == "baz=yadda=; domain=example.com; path=/";
+  } );
+  QObject::connect( &thread2, &QThread::finished, &evLoop, &QEventLoop::quit );
+  thread2.start();
+  evLoop.exec();
+  QVERIFY( thread2.getResult() );
+};
+
+void TestQgsNetworkAccessManager::testRequestPreprocessor()
+{
+  QString processorId = QgsNetworkAccessManager::instance()->setRequestPreprocessor( []( QNetworkRequest * request ) { request->setHeader( QNetworkRequest::UserAgentHeader, QStringLiteral( "QGIS" ) );} );
+  QNetworkRequest request;
+  QgsNetworkAccessManager::instance()->preprocessRequest( &request );
+  QString userAgent = request.header( QNetworkRequest::UserAgentHeader ).toString();
+  QCOMPARE( userAgent, "QGIS" );
+  QgsNetworkAccessManager::instance()->removeRequestPreprocessor( processorId );
+};
 
 QGSTEST_MAIN( TestQgsNetworkAccessManager )
 #include "testqgsnetworkaccessmanager.moc"

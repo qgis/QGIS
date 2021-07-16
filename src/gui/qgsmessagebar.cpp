@@ -194,22 +194,22 @@ bool QgsMessageBar::clearWidgets()
 
 void QgsMessageBar::pushSuccess( const QString &title, const QString &message )
 {
-  pushMessage( title, message, Qgis::Success );
+  pushMessage( title, message, Qgis::MessageLevel::Success );
 }
 
 void QgsMessageBar::pushInfo( const QString &title, const QString &message )
 {
-  pushMessage( title, message, Qgis::Info );
+  pushMessage( title, message, Qgis::MessageLevel::Info );
 }
 
 void QgsMessageBar::pushWarning( const QString &title, const QString &message )
 {
-  pushMessage( title, message, Qgis::Warning );
+  pushMessage( title, message, Qgis::MessageLevel::Warning );
 }
 
 void QgsMessageBar::pushCritical( const QString &title, const QString &message )
 {
-  pushMessage( title, message, Qgis::Critical );
+  pushMessage( title, message, Qgis::MessageLevel::Critical );
 }
 
 int QgsMessageBar::defaultMessageTimeout( Qgis::MessageLevel level )
@@ -217,16 +217,16 @@ int QgsMessageBar::defaultMessageTimeout( Qgis::MessageLevel level )
   // critical/warning messages don't auto dismiss by default
   switch ( level )
   {
-    case Qgis::Success:
-    case Qgis::Info:
-    case Qgis::None:
+    case Qgis::MessageLevel::Success:
+    case Qgis::MessageLevel::Info:
+    case Qgis::MessageLevel::NoLevel:
     {
       QgsSettings settings;
       return settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
     }
 
-    case Qgis::Warning:
-    case Qgis::Critical:
+    case Qgis::MessageLevel::Warning:
+    case Qgis::MessageLevel::Critical:
       return 0;
   }
   return 0;
@@ -278,7 +278,7 @@ void QgsMessageBar::showItem( QgsMessageBarItem *item )
 
 void QgsMessageBar::removeLowestPriorityOldestItem()
 {
-  for ( Qgis::MessageLevel level : { Qgis::Success, Qgis::Info, Qgis::Warning, Qgis::Critical } )
+  for ( Qgis::MessageLevel level : { Qgis::MessageLevel::Success, Qgis::MessageLevel::Info, Qgis::MessageLevel::Warning, Qgis::MessageLevel::Critical } )
   {
     for ( int i = mItems.size() - 1; i >= 0; --i )
     {
@@ -388,18 +388,18 @@ QList<QgsMessageBarItem *> QgsMessageBar::items()
 
 QgsMessageBarItem *QgsMessageBar::createMessage( const QString &text, QWidget *parent )
 {
-  QgsMessageBarItem *item = new QgsMessageBarItem( text, Qgis::Info, 0, parent );
+  QgsMessageBarItem *item = new QgsMessageBarItem( text, Qgis::MessageLevel::Info, 0, parent );
   return item;
 }
 
 QgsMessageBarItem *QgsMessageBar::createMessage( const QString &title, const QString &text, QWidget *parent )
 {
-  return new QgsMessageBarItem( title, text, Qgis::Info, 0, parent );
+  return new QgsMessageBarItem( title, text, Qgis::MessageLevel::Info, 0, parent );
 }
 
 QgsMessageBarItem *QgsMessageBar::createMessage( QWidget *widget, QWidget *parent )
 {
-  return new QgsMessageBarItem( widget, Qgis::Info, 0, parent );
+  return new QgsMessageBarItem( widget, Qgis::MessageLevel::Info, 0, parent );
 }
 
 void QgsMessageBar::pushMessage( const QString &text, Qgis::MessageLevel level, int duration )

@@ -100,6 +100,17 @@ class CORE_EXPORT QgsMeshSpatialIndex
      */
     QgsMesh::ElementType elementType() const;
 
+    /**
+     * Adds a face with \a faceIndex from the \a mesh in the spatial index
+     */
+    void addFace( int faceIndex, const QgsMesh &mesh );
+
+    /**
+     * Removes a face with \a faceIndex from the \a mesh in the spatial index
+     */
+    void removeFace( int faceIndex, const QgsMesh &mesh );
+
+
   private:
     QgsMesh::ElementType mElementType = QgsMesh::ElementType::Face;
     QSharedDataPointer<QgsMeshSpatialIndexData> d;

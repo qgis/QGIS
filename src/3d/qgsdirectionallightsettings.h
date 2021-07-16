@@ -55,6 +55,7 @@ class _3D_EXPORT QgsDirectionalLightSettings
     //! Reads configuration from a DOM element previously written using writeXml()
     void readXml( const QDomElement &elem );
 
+    // TODO c++20 - replace with = default
     bool operator==( const QgsDirectionalLightSettings &other );
 
   private:

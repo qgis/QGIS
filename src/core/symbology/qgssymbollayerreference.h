@@ -58,14 +58,14 @@ class CORE_EXPORT QgsSymbolLayerId
     /**
      * QgsSymbolLayerId constructor with a symbol key and a unique symbol layer index
      */
-    QgsSymbolLayerId( QString key, int index )
+    QgsSymbolLayerId( const QString &key, int index )
       : mSymbolKey( key ), mIndexPath( { index } )
     {}
 
     /**
      * QgsSymbolLayerId constructor with a symbol key and an index path
      */
-    QgsSymbolLayerId( QString key, const QVector<int> &indexPath )
+    QgsSymbolLayerId( const QString &key, const QVector<int> &indexPath )
       : mSymbolKey( key ), mIndexPath( { indexPath } )
     {}
 
@@ -85,6 +85,8 @@ class CORE_EXPORT QgsSymbolLayerId
      */
     QVector<int> symbolLayerIndexPath() const { return mIndexPath; }
 
+    // TODO c++20 - replace with = default
+
     //! Equality operator
     bool operator==( const QgsSymbolLayerId &other ) const
     {
@@ -98,6 +100,20 @@ class CORE_EXPORT QgsSymbolLayerId
              mIndexPath < other.mIndexPath
              : mSymbolKey < other.mSymbolKey;
     }
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+
+    QStringList pathString;
+    for ( int path : sipCpp->symbolLayerIndexPath() )
+    {
+      pathString.append( QString::number( path ) );
+    }
+    QString str = QStringLiteral( "<QgsSymbolLayerId: %1 (%2)>" ).arg( sipCpp->symbolKey(), pathString.join( ',' ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
   private:
     //! Symbol unique identifier (legend key)
@@ -141,6 +157,20 @@ class CORE_EXPORT QgsSymbolLayerReference
       return mLayerId == other.mLayerId &&
              mSymbolLayerId == other.mSymbolLayerId;
     }
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+
+    QStringList pathString;
+    for ( int path : sipCpp->symbolLayerId().symbolLayerIndexPath() )
+    {
+      pathString.append( QString::number( path ) );
+    }
+    QString str = QStringLiteral( "<QgsSymbolLayerReference: %1 - %2 (%3)>" ).arg( sipCpp->layerId(), sipCpp->symbolLayerId().symbolKey(), pathString.join( ',' ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
   private:
     QString mLayerId;

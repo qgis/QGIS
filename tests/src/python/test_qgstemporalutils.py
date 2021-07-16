@@ -120,11 +120,29 @@ class TestQgsTemporalUtils(unittest.TestCase):
                      }
 
         for unit in list(expected2.keys()):
-
             f = QgsTemporalUtils.calculateFrameTime(QDateTime(QDate(2021, 1, 1), QTime(12, 0, 0, 0), Qt.UTC),
                                                     1,
                                                     QgsInterval(10.5, unit))
             self.assertEqual(f, expected2[unit])
+
+        # frame number > 1
+        expected2a = {QgsUnitTypes.TemporalMilliseconds: QDateTime(QDate(2021, 1, 1), QTime(12, 0, 0, 31), Qt.UTC),
+                      QgsUnitTypes.TemporalSeconds: QDateTime(QDate(2021, 1, 1), QTime(12, 0, 31, 500), Qt.UTC),
+                      QgsUnitTypes.TemporalMinutes: QDateTime(QDate(2021, 1, 1), QTime(12, 31, 30, 0), Qt.UTC),
+                      QgsUnitTypes.TemporalHours: QDateTime(QDate(2021, 1, 2), QTime(19, 30, 0, 0), Qt.UTC),
+                      QgsUnitTypes.TemporalDays: QDateTime(QDate(2021, 2, 2), QTime(0, 0, 0), Qt.UTC),
+                      QgsUnitTypes.TemporalWeeks: QDateTime(QDate(2021, 8, 10), QTime(0, 0, 0), Qt.UTC),
+                      QgsUnitTypes.TemporalMonths: QDateTime(QDate(2023, 8, 4), QTime(12, 0, 0, 0), Qt.UTC),
+                      QgsUnitTypes.TemporalYears: QDateTime(QDate(2052, 7, 2), QTime(21, 0, 0, 0), Qt.UTC),
+                      QgsUnitTypes.TemporalDecades: QDateTime(QDate(2336, 1, 5), QTime(6, 0, 0, 0), Qt.UTC),
+                      QgsUnitTypes.TemporalCenturies: QDateTime(QDate(5171, 1, 26), QTime(0, 0, 0, 0), Qt.UTC)
+                      }
+
+        for unit in list(expected2.keys()):
+            f = QgsTemporalUtils.calculateFrameTime(QDateTime(QDate(2021, 1, 1), QTime(12, 0, 0, 0), Qt.UTC),
+                                                    3,
+                                                    QgsInterval(10.5, unit))
+            self.assertEqual(f, expected2a[unit])
 
         expected3 = {QgsUnitTypes.TemporalMilliseconds: QDateTime(QDate(2021, 1, 1), QTime(12, 0, 0, 0), Qt.UTC),
                      QgsUnitTypes.TemporalSeconds: QDateTime(QDate(2021, 1, 1), QTime(12, 0, 0, 200), Qt.UTC),
@@ -143,6 +161,24 @@ class TestQgsTemporalUtils(unittest.TestCase):
                                                     1,
                                                     QgsInterval(0.2, unit))
             self.assertEqual(f, expected3[unit])
+
+        expected3a = {QgsUnitTypes.TemporalMilliseconds: QDateTime(QDate(2021, 1, 1), QTime(12, 0, 0, 0), Qt.UTC),
+                      QgsUnitTypes.TemporalSeconds: QDateTime(QDate(2021, 1, 1), QTime(12, 0, 0, 600), Qt.UTC),
+                      QgsUnitTypes.TemporalMinutes: QDateTime(QDate(2021, 1, 1), QTime(12, 0, 36, 0), Qt.UTC),
+                      QgsUnitTypes.TemporalHours: QDateTime(QDate(2021, 1, 1), QTime(12, 36, 0, 0), Qt.UTC),
+                      QgsUnitTypes.TemporalDays: QDateTime(QDate(2021, 1, 2), QTime(2, 24, 0), Qt.UTC),
+                      QgsUnitTypes.TemporalWeeks: QDateTime(QDate(2021, 1, 5), QTime(16, 48, 0), Qt.UTC),
+                      QgsUnitTypes.TemporalMonths: QDateTime(QDate(2021, 1, 19), QTime(12, 0, 0, 0), Qt.UTC),
+                      QgsUnitTypes.TemporalYears: QDateTime(QDate(2021, 8, 8), QTime(15, 36, 0, 0), Qt.UTC),
+                      QgsUnitTypes.TemporalDecades: QDateTime(QDate(2027, 1, 2), QTime(0, 0, 0, 0), Qt.UTC),
+                      QgsUnitTypes.TemporalCenturies: QDateTime(QDate(2081, 1, 1), QTime(12, 0, 0, 0), Qt.UTC)
+                      }
+
+        for unit in list(expected3.keys()):
+            f = QgsTemporalUtils.calculateFrameTime(QDateTime(QDate(2021, 1, 1), QTime(12, 0, 0, 0), Qt.UTC),
+                                                    3,
+                                                    QgsInterval(0.2, unit))
+            self.assertEqual(f, expected3a[unit])
 
     def testCalculateDateTimesUsingDuration(self):
         # invalid duration string

@@ -33,6 +33,7 @@
 #include "qgslayoutitemmap.h"
 #include "qgsmaplayerlistutils.h"
 #include "qgsprojoperation.h"
+#include "qgsmarkersymbol.h"
 
 QgsExpressionContextScope *QgsExpressionContextUtils::globalScope()
 {

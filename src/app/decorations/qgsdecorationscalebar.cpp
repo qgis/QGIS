@@ -36,6 +36,8 @@ email                : sbr00pwb@users.sourceforge.net
 #include "qgssettings.h"
 #include "qgssymbollayerutils.h"
 #include "qgsfillsymbollayer.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
 
 #include "qgsdoubleboxscalebarrenderer.h"
 #include "qgsnumericscalebarrenderer.h"

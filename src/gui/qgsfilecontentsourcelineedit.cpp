@@ -238,7 +238,7 @@ void QgsAbstractFileContentSourceLineEdit::extractFile()
   {
     mMessageBar->pushMessage( extractFileTitle(),
                               tr( "Successfully extracted file to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( file ).toString(), QDir::toNativeSeparators( file ) ),
-                              Qgis::Success, 0 );
+                              Qgis::MessageLevel::Success, 0 );
   }
 }
 
@@ -304,7 +304,7 @@ QString QgsPictureSourceLineEditBase::fileFilter() const
       {
         formatsFilter.append( QString( QStringLiteral( "*.%1" ) ).arg( QString( format ) ) );
       }
-      return QString( "%1 (%2);;%3 (*.*)" ).arg( tr( "Images" ), formatsFilter.join( QStringLiteral( " " ) ), tr( "All files" ) );
+      return QString( "%1 (%2);;%3 (*.*)" ).arg( tr( "Images" ), formatsFilter.join( QLatin1Char( ' ' ) ), tr( "All files" ) );
     }
     DEFAULT_BUILTIN_UNREACHABLE
   }

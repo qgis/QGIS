@@ -40,7 +40,7 @@ QgsCircle QgsCircle::from2Points( const QgsPoint &pt1, const QgsPoint &pt2 )
   double azimuth = QgsGeometryUtils::lineAngle( pt1.x(), pt1.y(), pt2.x(), pt2.y() ) * 180.0 / M_PI;
   double radius = pt1.distance( pt2 ) / 2.0;
 
-  QgsGeometryUtils::transferFirstZValueToPoint( QgsPointSequence() << pt1 << pt2, center );
+  QgsGeometryUtils::transferFirstZOrMValueToPoint( QgsPointSequence() << pt1 << pt2, center );
 
   return QgsCircle( center, radius, azimuth );
 }
@@ -141,7 +141,7 @@ QgsCircle QgsCircle::from3Points( const QgsPoint &pt1, const QgsPoint &pt2, cons
   double bSlope = yDelta_b / xDelta_b;
 
   // set z coordinate for center
-  QgsGeometryUtils::transferFirstZValueToPoint( QgsPointSequence() << p1 << p2 << p3, center );
+  QgsGeometryUtils::transferFirstZOrMValueToPoint( QgsPointSequence() << p1 << p2 << p3, center );
 
   if ( ( std::fabs( xDelta_a ) <= epsilon ) && ( std::fabs( yDelta_b ) <= epsilon ) )
   {
@@ -183,7 +183,7 @@ QgsCircle QgsCircle::fromCenterPoint( const QgsPoint &center, const QgsPoint &pt
   double azimuth = QgsGeometryUtils::lineAngle( center.x(), center.y(), pt1.x(), pt1.y() ) * 180.0 / M_PI;
 
   QgsPoint centerPt( center );
-  QgsGeometryUtils::transferFirstZValueToPoint( QgsPointSequence() << center << pt1, centerPt );
+  QgsGeometryUtils::transferFirstZOrMValueToPoint( QgsPointSequence() << center << pt1, centerPt );
 
   return QgsCircle( centerPt, centerPt.distance( pt1 ), azimuth );
 }
@@ -388,7 +388,7 @@ QgsCircle QgsCircle::fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 )
   }
 
   QgsPoint center = QgsGeometryUtils::midpoint( pt1, pt2 );
-  QgsGeometryUtils::transferFirstZValueToPoint( QgsPointSequence() << pt1 << pt2, center );
+  QgsGeometryUtils::transferFirstZOrMValueToPoint( QgsPointSequence() << pt1 << pt2, center );
 
   return QgsCircle( center, delta_x / 2.0, 0 );
 }

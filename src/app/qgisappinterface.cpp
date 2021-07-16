@@ -150,7 +150,7 @@ QgsRasterLayer *QgisAppInterface::addRasterLayer( const QString &rasterLayerPath
     QFileInfo fi( rasterLayerPath );
     nonNullBaseName = fi.completeBaseName();
   }
-  return qgis->addRasterLayer( rasterLayerPath, nonNullBaseName );
+  return qgis->addRasterLayer( rasterLayerPath, nonNullBaseName, QString() );
 }
 
 QgsRasterLayer *QgisAppInterface::addRasterLayer( const QString &url, const QString &baseName, const QString &providerKey )
@@ -507,7 +507,7 @@ void QgisAppInterface::showLayerProperties( QgsMapLayer *l, const QString &page 
 
 QDialog *QgisAppInterface::showAttributeTable( QgsVectorLayer *l, const QString &filterExpression )
 {
-  if ( l )
+  if ( l && l->dataProvider() )
   {
     QgsAttributeTableDialog *dialog = new QgsAttributeTableDialog( l, QgsAttributeTableFilterModel::ShowFilteredList );
     dialog->setFilterExpression( filterExpression );

@@ -17,9 +17,11 @@
 #define QGSOGRCONNPOOL_H
 
 #include "qgsconnectionpool.h"
-#include "qgsogrprovider.h"
+#include "qgsogrprovidermetadata.h"
+#include "qgsogrproviderutils.h"
 #include <gdal.h>
 #include "qgis_sip.h"
+#include <cpl_string.h>
 
 ///@cond PRIVATE
 #define SIP_NO_FILE

@@ -42,6 +42,8 @@ QgsEllipseSymbolLayer::QgsEllipseSymbolLayer()
   mAngle = 0;
 }
 
+QgsEllipseSymbolLayer::~QgsEllipseSymbolLayer() = default;
+
 QgsSymbolLayer *QgsEllipseSymbolLayer::create( const QVariantMap &properties )
 {
   QgsEllipseSymbolLayer *layer = new QgsEllipseSymbolLayer();
@@ -187,7 +189,7 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
   {
     context.setOriginalValueVariable( mStrokeWidth );
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext() );
-    if ( exprVal.isValid() )
+    if ( !exprVal.isNull() )
     {
       double width = exprVal.toDouble( &ok );
       if ( ok )
@@ -203,7 +205,7 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenStyle( mStrokeStyle ) );
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyStrokeStyle, context.renderContext().expressionContext() );
-    if ( exprVal.isValid() )
+    if ( !exprVal.isNull() )
     {
       mPen.setStyle( QgsSymbolLayerUtils::decodePenStyle( exprVal.toString() ) );
       mSelPen.setStyle( mPen.style() );
@@ -214,7 +216,7 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle ) );
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyJoinStyle, context.renderContext().expressionContext() );
-    if ( exprVal.isValid() )
+    if ( !exprVal.isNull() )
     {
       mPen.setJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( exprVal.toString() ) );
       mSelPen.setJoinStyle( mPen.joinStyle() );
@@ -253,7 +255,7 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
   {
     context.setOriginalValueVariable( encodeShape( shape ) );
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyName, context.renderContext().expressionContext() );
-    if ( exprVal.isValid() )
+    if ( !exprVal.isNull() )
     {
       shape = decodeShape( exprVal.toString() );
     }
@@ -316,7 +318,7 @@ void QgsEllipseSymbolLayer::calculateOffsetAndRotation( QgsSymbolRenderContext &
     usingDataDefinedRotation = ok;
   }
 
-  hasDataDefinedRotation = context.renderHints() & QgsSymbol::DynamicRotation || usingDataDefinedRotation;
+  hasDataDefinedRotation = context.renderHints() & Qgis::SymbolRenderHint::DynamicRotation || usingDataDefinedRotation;
   if ( hasDataDefinedRotation )
   {
     // For non-point markers, "dataDefinedRotation" means following the
@@ -787,7 +789,7 @@ QRectF QgsEllipseSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &con
     context.setOriginalValueVariable( mStrokeWidth );
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext() );
 
-    if ( exprVal.isValid() )
+    if ( !exprVal.isNull() )
     {
       bool ok;
       double strokeWidth = exprVal.toDouble( &ok );
@@ -803,7 +805,7 @@ QRectF QgsEllipseSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &con
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenStyle( mStrokeStyle ) );
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyStrokeStyle, context.renderContext().expressionContext() );
-    if ( exprVal.isValid() && exprVal.toString() == QLatin1String( "no" ) )
+    if ( !exprVal.isNull() && exprVal.toString() == QLatin1String( "no" ) )
     {
       penWidth = 0.0;
     }

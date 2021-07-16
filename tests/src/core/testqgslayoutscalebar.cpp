@@ -34,6 +34,8 @@
 #include "qgsprintlayout.h"
 #include "qgsfillsymbollayer.h"
 #include "qgshollowscalebarrenderer.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
 #include <QLocale>
 #include <QObject>
 #include "qgstest.h"

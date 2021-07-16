@@ -451,8 +451,15 @@ void QgsOWSSourceSelect::populateCrs()
 
     if ( it == mSelectedLayersCRSs.constEnd() )
     {
-      // not found
-      mSelectedCRS = defaultCRS;
+      if ( mSelectedLayersCRSs.constFind( QgsProject::instance()->crs().authid() ) != mSelectedLayersCRSs.constEnd() )
+      {
+        mSelectedCRS = QgsProject::instance()->crs().authid();
+      }
+      else
+      {
+        // not found
+        mSelectedCRS = defaultCRS;
+      }
     }
     mSelectedCRSLabel->setText( descriptionForAuthId( mSelectedCRS ) );
     mChangeCRSButton->setEnabled( true );

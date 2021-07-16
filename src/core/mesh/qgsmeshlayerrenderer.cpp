@@ -47,6 +47,7 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer(
   QgsMeshLayer *layer,
   QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
+  , mIsEditable( layer->isEditable() )
   , mFeedback( new QgsMeshLayerRendererFeedback )
   , mRendererSettings( layer->rendererSettings() )
   , mLayerOpacity( layer->opacity() )
@@ -193,7 +194,6 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
                                  method
                                );
       }
-
     }
 
     const QgsMeshDatasetMetadata datasetMetadata = layer->datasetMetadata( datasetIndex );
@@ -315,7 +315,7 @@ bool QgsMeshLayerRenderer::forceRasterRender() const
 
 void QgsMeshLayerRenderer::renderMesh()
 {
-  if ( !mRendererSettings.nativeMeshSettings().isEnabled() &&
+  if ( !mRendererSettings.nativeMeshSettings().isEnabled() && !mIsEditable &&
        !mRendererSettings.edgeMeshSettings().isEnabled() &&
        !mRendererSettings.triangularMeshSettings().isEnabled() )
     return;
@@ -331,7 +331,8 @@ void QgsMeshLayerRenderer::renderMesh()
   }
 
   // native mesh
-  if ( mRendererSettings.nativeMeshSettings().isEnabled() && mTriangularMesh.levelOfDetail() == 0 )
+  if ( ( mRendererSettings.nativeMeshSettings().isEnabled() || mIsEditable ) &&
+       mTriangularMesh.levelOfDetail() == 0 )
   {
     const QSet<int> nativeFacesInExtent = QgsMeshUtils::nativeFacesFromTriangles( trianglesInExtent,
                                           mTriangularMesh.trianglesToNativeFaces() );
@@ -411,7 +412,7 @@ void QgsMeshLayerRenderer::renderFaceMesh(
   const QVector<QgsMeshFace> &faces,
   const QList<int> &facesInExtent )
 {
-  Q_ASSERT( settings.isEnabled() );
+  Q_ASSERT( settings.isEnabled() || mIsEditable );
 
   if ( !mTriangularMesh.contains( QgsMesh::ElementType::Face ) )
     return;

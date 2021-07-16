@@ -153,6 +153,10 @@ class CORE_EXPORT QgsMeshMemoryDataProvider final: public QgsMeshDataProvider
                                       int datasetGroupIndex
                                     ) override;
 
+    bool saveMeshFrame( const QgsMesh & ) override {return false;}
+
+    void close() override;
+
     //! Returns the memory provider key
     static QString providerKey();
     //! Returns the memory provider description

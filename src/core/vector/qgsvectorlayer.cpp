@@ -21,28 +21,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <limits>
-
-#include <QDir>
-#include <QFile>
-#include <QImage>
-#include <QPainter>
-#include <QPainterPath>
-#include <QPolygonF>
-#include <QProgressDialog>
-#include <QString>
-#include <QDomNode>
-#include <QVector>
-#include <QStringBuilder>
-#include <QUrl>
-#include <QUndoCommand>
-#include <QUrlQuery>
-#include <QUuid>
-
+#include "qgis.h" //for globals
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsactionmanager.h"
-#include "qgis.h" //for globals
 #include "qgsapplication.h"
 #include "qgsclipper.h"
 #include "qgsconditionalstyle.h"
@@ -107,6 +89,25 @@
 #include "qgsvectorlayerutils.h"
 
 #include "diagram/qgsdiagram.h"
+
+#include <QDir>
+#include <QFile>
+#include <QImage>
+#include <QPainter>
+#include <QPainterPath>
+#include <QPolygonF>
+#include <QProgressDialog>
+#include <QString>
+#include <QDomNode>
+#include <QVector>
+#include <QStringBuilder>
+#include <QUrl>
+#include <QUndoCommand>
+#include <QUrlQuery>
+#include <QUuid>
+#include <QRegularExpression>
+
+#include <limits>
 
 #ifdef TESTPROVIDERLIB
 #include <dlfcn.h>
@@ -188,7 +189,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
     {
       providerFlags |= QgsDataProvider::FlagLoadDefaultStyle;
     }
-    setDataSourcePrivate( vectorLayerPath, baseName, providerKey, providerOptions, providerFlags );
+    setDataSource( vectorLayerPath, baseName, providerKey, providerOptions, providerFlags );
   }
 
   for ( const QgsField &field : std::as_const( mFields ) )
@@ -284,7 +285,8 @@ QgsVectorLayer *QgsVectorLayer::clone() const
       layer->addJoin( join );
   }
 
-  layer->setProviderEncoding( dataProvider()->encoding() );
+  if ( mDataProvider )
+    layer->setProviderEncoding( mDataProvider->encoding() );
   layer->setDisplayExpression( displayExpression() );
   layer->setMapTipTemplate( mapTipTemplate() );
   layer->setReadOnly( isReadOnly() );
@@ -762,7 +764,7 @@ bool QgsVectorLayer::diagramsEnabled() const
   return false;
 }
 
-long QgsVectorLayer::featureCount( const QString &legendKey ) const
+long long QgsVectorLayer::featureCount( const QString &legendKey ) const
 {
   if ( !mSymbolFeatureCounted )
     return -1;
@@ -1611,9 +1613,13 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
 
   // read extent
+  if ( mReadFlags & QgsMapLayer::FlagReadExtentFromXml )
+  {
+    mReadExtentFromXml = true;
+  }
   if ( mReadExtentFromXml )
   {
-    QDomNode extentNode = layer_node.namedItem( QStringLiteral( "extent" ) );
+    const QDomNode extentNode = layer_node.namedItem( QStringLiteral( "extent" ) );
     if ( !extentNode.isNull() )
     {
       mXmlExtent = QgsXmlUtils::readRectangle( extentNode.toElement() );
@@ -1634,6 +1640,7 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   return isValid();               // should be true if read successfully
 
 } // void QgsVectorLayer::readXml
+
 
 void QgsVectorLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
     const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
@@ -1666,6 +1673,10 @@ void QgsVectorLayer::setDataSourcePrivate( const QString &dataSource, const QStr
       profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Load layer style" ), QStringLiteral( "projectload" ) );
 
     bool defaultLoadedFlag = false;
+
+    // defer style changed signal until we've set the renderer, labeling, everything.
+    // we don't want multiple signals!
+    ScopedIntIncrementor styleChangedSignalBlocker( &mBlockStyleChangedSignal );
 
     if ( loadDefaultStyleFlag && isSpatial() && mDataProvider->capabilities() & QgsVectorDataProvider::CreateRenderer )
     {
@@ -1708,6 +1719,9 @@ void QgsVectorLayer::setDataSourcePrivate( const QString &dataSource, const QStr
         setLabelsEnabled( true );
       }
     }
+
+    styleChangedSignalBlocker.release();
+    emitStyleChanged();
   }
 }
 
@@ -1822,10 +1836,11 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
     QgsDebugMsgLevel( QStringLiteral( "Beautifying layer name %1" ).arg( name() ), 3 );
 
     // adjust the display name for postgres layers
-    QRegExp reg( R"lit("[^"]+"\."([^"] + )"( \([^)]+\))?)lit" );
-    if ( reg.indexIn( name() ) >= 0 )
+    const QRegularExpression reg( R"lit("[^"]+"\."([^"] + )"( \([^)]+\))?)lit" );
+    const QRegularExpressionMatch match = reg.match( name() );
+    if ( match.hasMatch() )
     {
-      QStringList stuff = reg.capturedTexts();
+      QStringList stuff = match.capturedTexts();
       QString lName = stuff[1];
 
       const QMap<QString, QgsMapLayer *> &layers = QgsProject::instance()->mapLayers();
@@ -2144,8 +2159,6 @@ void QgsVectorLayer::resolveReferences( QgsProject *project )
 bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMessage,
                                     QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
-  QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Symbology" ) );
-
   if ( categories.testFlag( Fields ) )
   {
     if ( !mExpressionFieldBuffer )
@@ -2157,6 +2170,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
 
   if ( categories.testFlag( Relations ) )
   {
+    QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Relations" ) );
 
     const QgsPathResolver resolver { QgsProject::instance()->pathResolver() };
 
@@ -2339,6 +2353,8 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
   // load field configuration
   if ( categories.testFlag( Fields ) || categories.testFlag( Forms ) )
   {
+    QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Forms" ) );
+
     QDomElement widgetsElem = layerNode.namedItem( QStringLiteral( "fieldConfiguration" ) ).toElement();
     QDomNodeList fieldConfigurationElementList = widgetsElem.elementsByTagName( QStringLiteral( "field" ) );
     for ( int i = 0; i < fieldConfigurationElementList.size(); ++i )
@@ -2420,6 +2436,8 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
 
   if ( categories.testFlag( Legend ) )
   {
+    QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Legend" ) );
+
     const QDomElement legendElem = layerNode.firstChildElement( QStringLiteral( "legend" ) );
     if ( !legendElem.isNull() )
     {
@@ -2444,9 +2462,15 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
   // with broken sources
   if ( isSpatial() || mWkbType == QgsWkbTypes::Unknown )
   {
+    // defer style changed signal until we've set the renderer, labeling, everything.
+    // we don't want multiple signals!
+    ScopedIntIncrementor styleChangedSignalBlocker( &mBlockStyleChangedSignal );
+
     // try renderer v2 first
     if ( categories.testFlag( Symbology ) )
     {
+      QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Symbology" ) );
+
       QDomElement rendererElement = node.firstChildElement( RENDERER_TAG_NAME );
       if ( !rendererElement.isNull() )
       {
@@ -2470,6 +2494,8 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
     // read labeling definition
     if ( categories.testFlag( Labeling ) )
     {
+      QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Labeling" ) );
+
       QDomElement labelingElement = node.firstChildElement( QStringLiteral( "labeling" ) );
       QgsAbstractVectorLayerLabeling *labeling = nullptr;
       if ( labelingElement.isNull() ||
@@ -2543,10 +2569,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
       {
         setMinimumScale( minScale );
       }
-    }
 
-    if ( categories.testFlag( Rendering ) )
-    {
       QDomElement e = node.toElement();
 
       // get the simplification drawing settings
@@ -2555,11 +2578,16 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
       mSimplifyMethod.setThreshold( e.attribute( QStringLiteral( "simplifyDrawingTol" ), QStringLiteral( "1" ) ).toFloat() );
       mSimplifyMethod.setForceLocalOptimization( e.attribute( QStringLiteral( "simplifyLocal" ), QStringLiteral( "1" ) ).toInt() );
       mSimplifyMethod.setMaximumScale( e.attribute( QStringLiteral( "simplifyMaxScale" ), QStringLiteral( "1" ) ).toFloat() );
+
+      if ( mRenderer )
+        mRenderer->setReferenceScale( e.attribute( QStringLiteral( "symbologyReferenceScale" ), QStringLiteral( "-1" ) ).toDouble() );
     }
 
     //diagram renderer and diagram layer settings
     if ( categories.testFlag( Diagrams ) )
     {
+      QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Diagrams" ) );
+
       delete mDiagramRenderer;
       mDiagramRenderer = nullptr;
       QDomElement singleCatDiagramElem = node.firstChildElement( QStringLiteral( "SingleCategoryDiagramRenderer" ) );
@@ -2631,6 +2659,9 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
       }
     }
     // end diagram
+
+    styleChangedSignalBlocker.release();
+    emitStyleChanged();
   }
   return result;
 }
@@ -2897,6 +2928,8 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
       mapLayerNode.setAttribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ), hasScaleBasedVisibility() ? 1 : 0 );
       mapLayerNode.setAttribute( QStringLiteral( "maxScale" ), maximumScale() );
       mapLayerNode.setAttribute( QStringLiteral( "minScale" ), minimumScale() );
+
+      mapLayerNode.setAttribute( QStringLiteral( "symbologyReferenceScale" ), mRenderer ? mRenderer->referenceScale() : -1 );
     }
 
     if ( categories.testFlag( Diagrams ) && mDiagramRenderer )
@@ -2924,10 +2957,17 @@ bool QgsVectorLayer::readSld( const QDomNode &node, QString &errorMessage )
     if ( !r )
       return false;
 
+    // defer style changed signal until we've set the renderer, labeling, everything.
+    // we don't want multiple signals!
+    ScopedIntIncrementor styleChangedSignalBlocker( &mBlockStyleChangedSignal );
+
     setRenderer( r );
 
     // labeling
     readSldLabeling( node );
+
+    styleChangedSignalBlocker.release();
+    emitStyleChanged();
   }
   return true;
 }
@@ -3381,7 +3421,7 @@ QgsAttributeList QgsVectorLayer::primaryKeyAttributes() const
   return pkAttributesList;
 }
 
-long QgsVectorLayer::featureCount() const
+long long QgsVectorLayer::featureCount() const
 {
   if ( ! mDataProvider )
     return -1;
@@ -3665,7 +3705,7 @@ bool QgsVectorLayer::setReadOnly( bool readonly )
   return true;
 }
 
-bool QgsVectorLayer::supportsEditing()
+bool QgsVectorLayer::supportsEditing() const
 {
   if ( ! mDataProvider )
     return false;
@@ -3715,13 +3755,16 @@ void QgsVectorLayer::setRenderer( QgsFeatureRenderer *r )
     mSymbolFeatureIdMap.clear();
 
     emit rendererChanged();
-    emit styleChanged();
+    emitStyleChanged();
   }
 }
 
 void QgsVectorLayer::addFeatureRendererGenerator( QgsFeatureRendererGenerator *generator )
 {
-  mRendererGenerators << generator;
+  if ( generator )
+  {
+    mRendererGenerators << generator;
+  }
 }
 
 void QgsVectorLayer::removeFeatureRendererGenerator( const QString &id )
@@ -4389,7 +4432,7 @@ void QgsVectorLayer::minimumOrMaximumValue( int index, QVariant *minimum, QVaria
 
 QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate, const QString &fieldOrExpression,
                                     const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context,
-                                    bool *ok, QgsFeatureIds *fids ) const
+                                    bool *ok, QgsFeatureIds *fids, QgsFeedback *feedback ) const
 {
   if ( ok )
     *ok = false;
@@ -4425,7 +4468,7 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   if ( fids )
     c.setFidsFilter( *fids );
   c.setParameters( parameters );
-  return c.calculate( aggregate, fieldOrExpression, context, ok );
+  return c.calculate( aggregate, fieldOrExpression, context, ok, feedback );
 }
 
 void QgsVectorLayer::setFeatureBlendMode( QPainter::CompositionMode featureBlendMode )
@@ -4435,7 +4478,7 @@ void QgsVectorLayer::setFeatureBlendMode( QPainter::CompositionMode featureBlend
 
   mFeatureBlendMode = featureBlendMode;
   emit featureBlendModeChanged( featureBlendMode );
-  emit styleChanged();
+  emitStyleChanged();
 }
 
 QPainter::CompositionMode QgsVectorLayer::featureBlendMode() const

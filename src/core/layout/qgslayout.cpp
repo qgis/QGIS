@@ -872,6 +872,7 @@ void QgsLayout::addLayoutItemPrivate( QgsLayoutItem *item )
   updateBounds();
   mItemsModel->rebuildZList();
   connect( item, &QgsLayoutItem::backgroundTaskCountChanged, this, &QgsLayout::itemBackgroundTaskCountChanged );
+  emit itemAdded( item );
 }
 
 void QgsLayout::removeLayoutItemPrivate( QgsLayoutItem *item )

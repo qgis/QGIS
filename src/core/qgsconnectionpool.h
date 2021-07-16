@@ -20,6 +20,8 @@
 
 #include "qgis.h"
 #include "qgsapplication.h"
+#include "qgsfeedback.h"
+
 #include <QCoreApplication>
 #include <QMap>
 #include <QMutex>
@@ -28,7 +30,7 @@
 #include <QTime>
 #include <QTimer>
 #include <QThread>
-
+#include <QElapsedTimer>
 
 #define CONN_POOL_EXPIRATION_TIME           60    // in seconds
 #define CONN_POOL_SPARE_CONNECTIONS          2    // number of spare connections in case all the base connections are used but we have a nested request with the risk of a deadlock
@@ -288,9 +290,12 @@ class QgsConnectionPool
      * If \a timeout is a negative value the calling thread will be blocked
      * until a connection becomes available. This is the default behavior.
      *
+     * The optional \a feedback argument can be used to cancel the request
+     * before the connection is acquired.
+     *
      * \returns initialized connection or NULLPTR if unsuccessful
      */
-    T acquireConnection( const QString &connInfo, int timeout = -1, bool requestMayBeNested = false )
+    T acquireConnection( const QString &connInfo, int timeout = -1, bool requestMayBeNested = false, QgsFeedback *feedback = nullptr )
     {
       mMutex.lock();
       typename T_Groups::iterator it = mGroups.find( connInfo );
@@ -301,7 +306,25 @@ class QgsConnectionPool
       T_Group *group = *it;
       mMutex.unlock();
 
-      return group->acquire( timeout, requestMayBeNested );
+      if ( feedback )
+      {
+        QElapsedTimer timer;
+        timer.start();
+
+        while ( !feedback->isCanceled() )
+        {
+          if ( T conn = group->acquire( 300, requestMayBeNested ) )
+            return conn;
+
+          if ( timeout > 0 && timer.elapsed() >= timeout )
+            return nullptr;
+        }
+        return nullptr;
+      }
+      else
+      {
+        return group->acquire( timeout, requestMayBeNested );
+      }
     }
 
     //! Release an existing connection so it will get back into the pool and can be reused

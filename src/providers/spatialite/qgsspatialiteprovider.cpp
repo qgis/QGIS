@@ -131,8 +131,7 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
 }
 
 
-QgsVectorLayerExporter::ExportError
-QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
+Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
     const QgsFields &fields,
     QgsWkbTypes::Type wkbType,
     const QgsCoordinateReferenceSystem &srs,
@@ -171,7 +170,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
       QgsDebugMsg( QStringLiteral( "Connection to database failed. Import of layer aborted." ) );
       if ( errorMessage )
         *errorMessage = QObject::tr( "Connection to database failed" );
-      return QgsVectorLayerExporter::ErrConnectionFailed;
+      return Qgis::VectorExportResult::ErrorConnectionFailed;
     }
 
     sqlite3 *sqliteHandle = handle->handle();
@@ -369,7 +368,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
       }
 
       QgsSqliteHandle::closeDb( handle );
-      return QgsVectorLayerExporter::ErrCreateLayer;
+      return Qgis::VectorExportResult::ErrorCreatingLayer;
     }
 
     QgsSqliteHandle::closeDb( handle );
@@ -389,7 +388,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
                       .arg( tableName );
 
     delete provider;
-    return QgsVectorLayerExporter::ErrInvalidLayer;
+    return Qgis::VectorExportResult::ErrorInvalidLayer;
   }
 
   QgsDebugMsg( QStringLiteral( "layer loaded" ) );
@@ -424,7 +423,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
                           .arg( fld.name() );
 
         delete provider;
-        return QgsVectorLayerExporter::ErrAttributeTypeUnsupported;
+        return Qgis::VectorExportResult::ErrorAttributeTypeUnsupported;
       }
 
       QgsDebugMsg( "creating field #" + QString::number( fldIdx ) +
@@ -449,12 +448,12 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
         *errorMessage = QObject::tr( "creation of fields failed" );
 
       delete provider;
-      return QgsVectorLayerExporter::ErrAttributeCreationFailed;
+      return Qgis::VectorExportResult::ErrorAttributeCreationFailed;
     }
 
     QgsDebugMsg( QStringLiteral( "Done creating fields" ) );
   }
-  return QgsVectorLayerExporter::NoError;
+  return Qgis::VectorExportResult::Success;
 }
 
 
@@ -3763,7 +3762,7 @@ QgsWkbTypes::Type QgsSpatiaLiteProvider::wkbType() const
 /**
  * Returns the feature type
  */
-long QgsSpatiaLiteProvider::featureCount() const
+long long QgsSpatiaLiteProvider::featureCount() const
 {
   return mNumberFeatures;
 }
@@ -5832,7 +5831,7 @@ bool QgsSpatiaLiteProvider::getTableSummary()
     for ( i = 1; i <= rows; i++ )
     {
       QString count = results[( i * columns ) + 0];
-      mNumberFeatures = count.toLong();
+      mNumberFeatures = count.toLongLong();
 
       if ( mGeometryColumn.isEmpty() )
       {
@@ -5910,7 +5909,7 @@ QgsProviderMetadata::ProviderCapabilities QgsSpatiaLiteProviderMetadata::provide
 }
 
 
-QgsVectorLayerExporter::ExportError QgsSpatiaLiteProviderMetadata::createEmptyLayer(
+Qgis::VectorExportResult QgsSpatiaLiteProviderMetadata::createEmptyLayer(
   const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type wkbType,
@@ -6445,7 +6444,7 @@ QgsTransaction *QgsSpatiaLiteProviderMetadata::createTransaction( const QString 
   if ( !ds )
   {
     QgsMessageLog::logMessage( QObject::tr( "Cannot open transaction on %1, since it is is not currently opened" ).arg( connString ),
-                               QObject::tr( "spatialite" ), Qgis::Critical );
+                               QObject::tr( "spatialite" ), Qgis::MessageLevel::Critical );
     return nullptr;
   }
   return new QgsSpatiaLiteTransaction( connString, ds );

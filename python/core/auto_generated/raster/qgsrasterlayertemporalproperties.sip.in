@@ -39,6 +39,7 @@ The ``enabled`` argument specifies whether the temporal properties are initially
     {
       ModeFixedTemporalRange,
       ModeTemporalRangeFromDataProvider,
+      ModeRedrawLayerOnly,
     };
 
     TemporalMode mode() const;

@@ -24,6 +24,8 @@
 #include <QVector>
 
 class QgsExpression;
+class QgsMarkerSymbol;
+class QgsLineSymbol;
 
 #define DEFAULT_SIMPLELINE_COLOR     QColor(35,35,35)
 #define DEFAULT_SIMPLELINE_WIDTH     DEFAULT_LINE_WIDTH
@@ -48,6 +50,8 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
     QgsSimpleLineSymbolLayer( const QColor &color = DEFAULT_SIMPLELINE_COLOR,
                               double width = DEFAULT_SIMPLELINE_WIDTH,
                               Qt::PenStyle penStyle = DEFAULT_SIMPLELINE_PENSTYLE );
+
+    ~QgsSimpleLineSymbolLayer() override;
 
     // static stuff
 
@@ -571,6 +575,8 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     QgsTemplatedLineSymbolLayerBase( bool rotateSymbol = true,
                                      double interval = 3 );
 
+    ~QgsTemplatedLineSymbolLayerBase() override;
+
     /**
      * Returns TRUE if the repeating symbols be rotated to match their line segment orientation.
      * \see setRotateSymbols()
@@ -871,6 +877,8 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
     QgsMarkerLineSymbolLayer( bool rotateMarker = DEFAULT_MARKERLINE_ROTATE,
                               double interval = DEFAULT_MARKERLINE_INTERVAL );
 
+    ~QgsMarkerLineSymbolLayer() override;
+
     // static stuff
 
     /**
@@ -962,6 +970,8 @@ class CORE_EXPORT QgsHashedLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
      */
     QgsHashedLineSymbolLayer( bool rotateSymbol = true,
                               double interval = 3 );
+
+    ~QgsHashedLineSymbolLayer() override;
 
     /**
      * Creates a new QgsHashedLineSymbolLayer, using the settings

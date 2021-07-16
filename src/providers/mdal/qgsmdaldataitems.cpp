@@ -23,10 +23,10 @@
 
 QgsMdalLayerItem::QgsMdalLayerItem( QgsDataItem *parent,
                                     const QString &name, const QString &path, const QString &uri )
-  : QgsLayerItem( parent, name, path, uri, QgsLayerItem::Mesh, QStringLiteral( "mdal" ) )
+  : QgsLayerItem( parent, name, path, uri, Qgis::BrowserLayerType::Mesh, QStringLiteral( "mdal" ) )
 {
   mToolTip = uri;
-  setState( Populated );
+  setState( Qgis::BrowserItemState::Populated );
 }
 
 QString QgsMdalLayerItem::layerName() const

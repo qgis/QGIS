@@ -16,6 +16,7 @@
 #include "qgsarcgisvectortileconnectiondialog.h"
 #include "qgsvectortileconnection.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 
 #include <QMessageBox>
 #include <QPushButton>
@@ -34,6 +35,10 @@ QgsArcgisVectorTileConnectionDialog::QgsArcgisVectorTileConnectionDialog( QWidge
   mSpinZMax->setClearValue( 14 );
 
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this,  [ = ]
+  {
+    QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#using-vector-tiles-services" ) );
+  } );
   connect( mEditName, &QLineEdit::textChanged, this, &QgsArcgisVectorTileConnectionDialog::updateOkButtonState );
   connect( mEditUrl, &QLineEdit::textChanged, this, &QgsArcgisVectorTileConnectionDialog::updateOkButtonState );
 }

@@ -37,6 +37,8 @@
 #include "qgscoordinateformatter.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgstextrenderer.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
 
 #include <QVector2D>
 #include <math.h>
@@ -209,6 +211,8 @@ QgsLayoutItemMapGrid::QgsLayoutItemMapGrid( const QString &name, QgsLayoutItemMa
       emit crsChanged();
   } );
 }
+
+QgsLayoutItemMapGrid::~QgsLayoutItemMapGrid() = default;
 
 void QgsLayoutItemMapGrid::createDefaultGridLineSymbol()
 {

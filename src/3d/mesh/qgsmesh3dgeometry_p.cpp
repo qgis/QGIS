@@ -128,13 +128,22 @@ static QByteArray createIndexData( const QgsTriangularMesh &mesh )
   const int faces = mesh.triangles().count();
   const quint32 indices = static_cast<quint32>( 3 * faces );
   Q_ASSERT( indices < std::numeric_limits<quint32>::max() );
+
+  // count non void faces
+  int nonVoidFaces = 0;
+  for ( int i = 0; i < faces; ++i )
+    if ( !mesh.triangles().at( i ).isEmpty() )
+      nonVoidFaces++;
+
   QByteArray indexBytes;
-  indexBytes.resize( int( indices * sizeof( quint32 ) ) );
+  indexBytes.resize( int( nonVoidFaces * 3 * sizeof( quint32 ) ) );
   quint32 *indexPtr = reinterpret_cast<quint32 *>( indexBytes.data() );
 
   for ( int i = 0; i < faces; ++i )
   {
     const QgsMeshFace &face = mesh.triangles().at( i );
+    if ( face.isEmpty() )
+      continue;
     for ( int i = 0; i < 3; ++i )
       *indexPtr++ = quint32( face.at( i ) );
   }
@@ -277,8 +286,12 @@ void QgsMeshDataset3dGeometry::prepareData()
   datacount = scalarDataOnVertices ? nativeMesh.vertices.count() : nativeMesh.faces.count();
   data.scalarData = QgsMeshLayerUtils::datasetValues( layer, scalarDatasetIndex, 0, datacount );
 
-  if ( data.verticalData.count() != mTriangulaMesh.vertices().count()  ||
-       data.verticalData.count() != mTriangulaMesh.vertices().count() )
+  if ( ( verticalDataOnVertices && ( data.verticalData.count() != mTriangulaMesh.vertices().count() ) )  ||
+       ( scalarDataOnVertices && ( data.scalarData.count() != mTriangulaMesh.vertices().count() ) ) )
+    return;
+
+  if ( ( !verticalDataOnVertices && ( data.verticalData.count() != nativeMesh.faces.count() ) )  ||
+       ( !scalarDataOnVertices && ( data.scalarData.count() != nativeMesh.faces.count() ) ) )
     return;
 
   data.activeFaceFlagValues = layer->areFacesActive( scalarDatasetIndex, 0, nativeMesh.faces.count() );
@@ -314,12 +327,15 @@ void QgsMesh3dGeometry::getData()
 {
   const uint nVerts = uint( mTriangulaMesh.vertices().count() );
 
+  const QByteArray indexData = mBuilder->indexData();
+  const uint effectiveIndexCount = indexData.size() / sizeof( qint32 );
+
   mPositionAttribute->setCount( nVerts );
   mNormalAttribute->setCount( nVerts );
-  mIndexAttribute->setCount( mTriangulaMesh.triangles().size() * 3 );
+  mIndexAttribute->setCount( effectiveIndexCount );
 
   mVertexBuffer->setData( mBuilder->vertexData() );
-  mIndexBuffer->setData( mBuilder->indexData() );
+  mIndexBuffer->setData( indexData );
 }
 
 void QgsMesh3dGeometry::prepareVerticesPositionAttribute( Qt3DRender::QBuffer *buffer, int stride, int offset )

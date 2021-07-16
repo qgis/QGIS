@@ -37,6 +37,7 @@ set(QGIS_3D_SRCS
   qgspreviewquad.cpp
   qgsshadowsettings.cpp
   qgscolorramptexture.cpp
+  qgsrubberband3d.cpp
 
   qgspointcloudlayer3drenderer.cpp
   qgspointcloudlayerchunkloader_p.cpp

@@ -165,7 +165,7 @@
   <action name="mActionShowAllFilter">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFilter.svg</normaloff>:/images/themes/default/mActionFilter.svg</iconset>
+     <normaloff>:/images/themes/default/mActionOpenTable.svg</normaloff>:/images/themes/default/mActionOpenTable.svg</iconset>
    </property>
    <property name="text">
     <string>Show All Features</string>
@@ -186,7 +186,7 @@
   <action name="mActionSelectedFilter">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFilter.svg</normaloff>:/images/themes/default/mActionFilter.svg</iconset>
+     <normaloff>:/images/themes/default/mActionOpenTableSelected.svg</normaloff>:/images/themes/default/mActionOpenTableSelected.svg</iconset>
    </property>
    <property name="text">
     <string>Show Selected Features</string>
@@ -195,7 +195,7 @@
   <action name="mActionVisibleFilter">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFilter.svg</normaloff>:/images/themes/default/mActionFilter.svg</iconset>
+     <normaloff>:/images/themes/default/mActionOpenTableVisible.svg</normaloff>:/images/themes/default/mActionOpenTableVisible.svg</iconset>
    </property>
    <property name="text">
     <string>Show Features Visible On Map</string>
@@ -204,7 +204,7 @@
   <action name="mActionEditedFilter">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFilter.svg</normaloff>:/images/themes/default/mActionFilter.svg</iconset>
+     <normaloff>:/images/themes/default/mActionOpenTableEdited.svg</normaloff>:/images/themes/default/mActionOpenTableEdited.svg</iconset>
    </property>
    <property name="text">
     <string>Show Edited and New Features</string>

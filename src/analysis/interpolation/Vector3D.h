@@ -48,6 +48,7 @@ class ANALYSIS_EXPORT Vector3D
     //! Default constructor
     Vector3D() = default;
 
+    // TODO c++20 - replace with = default
     bool operator==( const Vector3D &v ) const;
     bool operator!=( const Vector3D &v ) const;
     //! Returns the x-component of the vector

@@ -26,6 +26,7 @@
 
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
+#include "qgsauthmethodmetadata.h"
 #include "qgsauthconfig.h"
 #include "qgssettings.h"
 
@@ -323,6 +324,21 @@ void TestQgsAuthManager::testAuthConfigs()
     QVERIFY( authm->storeAuthenticationConfig( config ) );
     idcfgmap.insert( config.id(), config );
   }
+
+  QCOMPARE( authm->availableAuthMethodConfigs().size(), 3 );
+
+  // Password-less export / import
+  QVERIFY( authm->exportAuthenticationConfigsToXml( mTempDir + QStringLiteral( "/configs.xml" ), idcfgmap.keys() ) );
+  QVERIFY( authm->removeAllAuthenticationConfigs() );
+  QVERIFY( authm->importAuthenticationConfigsFromXml( mTempDir + QStringLiteral( "/configs.xml" ) ) );
+
+  QCOMPARE( authm->availableAuthMethodConfigs().size(), 3 );
+
+  // Password-protected export / import
+  QVERIFY( authm->exportAuthenticationConfigsToXml( mTempDir + QStringLiteral( "/configs.xml" ), idcfgmap.keys(), QStringLiteral( "1234" ) ) );
+  QVERIFY( authm->removeAllAuthenticationConfigs() );
+  QVERIFY( authm->importAuthenticationConfigsFromXml( mTempDir + QStringLiteral( "/configs.xml" ), QStringLiteral( "1234" ) ) );
+
   QgsAuthMethodConfigsMap authmap( authm->availableAuthMethodConfigs() );
   QCOMPARE( authmap.size(), 3 );
 
@@ -361,11 +377,10 @@ void TestQgsAuthManager::testAuthMethods()
     QString configid( config.id() );
 
     // correct method, loaded from core auth method plugin registry, should be returned
-    QgsAuthMethod *authmethod = authm->configAuthMethod( configid );
-    QVERIFY( authmethod );
-    QCOMPARE( authmethod->key(), config.method() );
-
-
+    const QString key = authm->configAuthMethodKey( configid );
+    const QgsAuthMethodMetadata *meta = authm->authMethodMetadata( key );
+    QVERIFY( meta );
+    QCOMPARE( meta->key(), config.method() );
   }
   QVERIFY( authm->removeAllAuthenticationConfigs() );
 }

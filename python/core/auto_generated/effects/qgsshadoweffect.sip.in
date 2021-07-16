@@ -9,6 +9,7 @@
 
 
 
+
 class QgsShadowEffect : QgsPaintEffect /NoDefaultCtors/
 {
 %Docstring(signature="appended")

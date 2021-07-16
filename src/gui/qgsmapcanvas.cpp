@@ -90,6 +90,8 @@ email                : sherman at mrcc.com
 #include "qgsmaplayerelevationproperties.h"
 #include "qgscoordinatereferencesystemregistry.h"
 #include "qgslabelingresults.h"
+#include "qgsmaplayerutils.h"
+#include "qgssettingsregistrygui.h"
 
 /**
  * \ingroup gui
@@ -204,18 +206,11 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
 
   QSize s = viewport()->size();
   mSettings.setOutputSize( s );
-  mSettings.setDevicePixelRatio( devicePixelRatio() );
+
   setSceneRect( 0, 0, s.width(), s.height() );
   mScene->setSceneRect( QRectF( 0, 0, s.width(), s.height() ) );
 
   moveCanvasContents( true );
-
-  // keep device pixel ratio up to date on screen or resolution change
-  if ( window()->windowHandle() )
-  {
-    connect( window()->windowHandle(), &QWindow::screenChanged, this, [ = ]( QScreen * ) {mSettings.setDevicePixelRatio( devicePixelRatio() );} );
-    connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, this, [ = ]( qreal ) {mSettings.setDevicePixelRatio( devicePixelRatio() );} );
-  }
 
   connect( &mMapUpdateTimer, &QTimer::timeout, this, &QgsMapCanvas::mapUpdateTimeout );
   mMapUpdateTimer.setInterval( 250 );
@@ -244,7 +239,6 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   setCanvasColor( mSettings.backgroundColor() );
 
   setTemporalRange( mSettings.temporalRange() );
-
   refresh();
 }
 
@@ -537,12 +531,28 @@ QgsMapLayer *QgsMapCanvas::currentLayer()
   return mCurrentLayer;
 }
 
-QgsExpressionContextScope *QgsMapCanvas::defaultExpressionContextScope()
+QgsExpressionContextScope *QgsMapCanvas::defaultExpressionContextScope() const
 {
   QgsExpressionContextScope *s = new QgsExpressionContextScope( QObject::tr( "Map Canvas" ) );
   s->setVariable( QStringLiteral( "canvas_cursor_point" ), QgsGeometry::fromPointXY( cursorPoint() ), true );
-
   return s;
+}
+
+QgsExpressionContext QgsMapCanvas::createExpressionContext() const
+{
+  //build the expression context
+  QgsExpressionContext expressionContext;
+  expressionContext << QgsExpressionContextUtils::globalScope()
+                    << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+                    << QgsExpressionContextUtils::atlasScope( nullptr )
+                    << QgsExpressionContextUtils::mapSettingsScope( mSettings );
+  if ( QgsExpressionContextScopeGenerator *generator = dynamic_cast< QgsExpressionContextScopeGenerator * >( mController ) )
+  {
+    expressionContext << generator->createExpressionContextScope();
+  }
+  expressionContext << defaultExpressionContextScope()
+                    << new QgsExpressionContextScope( mExpressionContextScope );
+  return expressionContext;
 }
 
 void QgsMapCanvas::refresh()
@@ -584,20 +594,7 @@ void QgsMapCanvas::refreshMap()
   stopRendering(); // if any...
   stopPreviewJobs();
 
-  //build the expression context
-  QgsExpressionContext expressionContext;
-  expressionContext << QgsExpressionContextUtils::globalScope()
-                    << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-                    << QgsExpressionContextUtils::atlasScope( nullptr )
-                    << QgsExpressionContextUtils::mapSettingsScope( mSettings );
-  if ( QgsExpressionContextScopeGenerator *generator = dynamic_cast< QgsExpressionContextScopeGenerator * >( mController ) )
-  {
-    expressionContext << generator->createExpressionContextScope();
-  }
-  expressionContext << defaultExpressionContextScope()
-                    << new QgsExpressionContextScope( mExpressionContextScope );
-
-  mSettings.setExpressionContext( expressionContext );
+  mSettings.setExpressionContext( createExpressionContext() );
   mSettings.setPathResolver( QgsProject::instance()->pathResolver() );
 
   if ( !mTheme.isEmpty() )
@@ -964,6 +961,22 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
   menu.exec( event->globalPos() );
 }
 
+void QgsMapCanvas::updateDevicePixelFromScreen()
+{
+  mSettings.setDevicePixelRatio( devicePixelRatio() );
+  // TODO: QGIS 4 -> always respect screen dpi
+  if ( QgsSettingsRegistryGui::settingsRespectScreenDPI.value() )
+  {
+    if ( window()->windowHandle() )
+      mSettings.setOutputDpi( window()->windowHandle()->screen()->physicalDotsPerInch() );
+  }
+  else
+  {
+    // Fallback: compatibility with QGIS <= 3.20; always assume low dpi screens
+    mSettings.setOutputDpi( window()->windowHandle()->screen()->logicalDotsPerInch() );
+  }
+}
+
 void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
   if ( temporalRange() == dateTimeRange )
@@ -1105,8 +1118,13 @@ QgsRectangle QgsMapCanvas::extent() const
 
 QgsRectangle QgsMapCanvas::fullExtent() const
 {
-  const QgsReferencedRectangle extent = QgsProject::instance()->viewSettings()->fullExtent();
-  QgsCoordinateTransform ct( extent.crs(), mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
+  return QgsMapLayerUtils::combinedExtent( mSettings.layers(), mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
+}
+
+QgsRectangle QgsMapCanvas::projectExtent() const
+{
+  const QgsReferencedRectangle extent = mProject ? mProject->viewSettings()->fullExtent() : QgsProject::instance()->viewSettings()->fullExtent();
+  QgsCoordinateTransform ct( extent.crs(), mapSettings().destinationCrs(), mProject ? mProject->transformContext() : QgsProject::instance()->transformContext() );
   ct.setBallparkTransformsAreAppropriate( true );
   QgsRectangle rect;
   try
@@ -1253,7 +1271,6 @@ void QgsMapCanvas::updateScale()
   emit scaleChanged( mapSettings().scale() );
 }
 
-
 void QgsMapCanvas::zoomToFullExtent()
 {
   QgsRectangle extent = fullExtent();
@@ -1265,9 +1282,21 @@ void QgsMapCanvas::zoomToFullExtent()
     setExtent( extent );
   }
   refresh();
+}
 
-} // zoomToFullExtent
+void QgsMapCanvas::zoomToProjectExtent()
+{
+  QgsRectangle extent = projectExtent();
 
+  // If the full extent is an empty set, don't do the zoom
+  if ( !extent.isEmpty() )
+  {
+    // Add a 5% margin around the full extent
+    extent.scale( 1.05 );
+    setExtent( extent );
+  }
+  refresh();
+}
 
 void QgsMapCanvas::zoomToPreviousExtent()
 {
@@ -1361,7 +1390,7 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
   if ( rect.isNull() )
   {
     cursorOverride.release();
-    emit messageEmitted( tr( "Cannot zoom to selected feature(s)" ), tr( "No extent could be determined." ), Qgis::Warning );
+    emit messageEmitted( tr( "Cannot zoom to selected feature(s)" ), tr( "No extent could be determined." ), Qgis::MessageLevel::Warning );
     return;
   }
 
@@ -1405,7 +1434,7 @@ void QgsMapCanvas::zoomToSelected( const QList<QgsMapLayer *> &layers )
 
   if ( selectionExtent.isNull() )
   {
-    emit messageEmitted( tr( "Cannot zoom to selected feature(s)" ), tr( "No extent could be determined." ), Qgis::Warning );
+    emit messageEmitted( tr( "Cannot zoom to selected feature(s)" ), tr( "No extent could be determined." ), Qgis::MessageLevel::Warning );
     return;
   }
 
@@ -1477,7 +1506,7 @@ void QgsMapCanvas::zoomToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds 
   }
   else
   {
-    emit messageEmitted( tr( "Zoom to feature id failed" ), errorMsg, Qgis::Warning );
+    emit messageEmitted( tr( "Zoom to feature id failed" ), errorMsg, Qgis::MessageLevel::Warning );
   }
 
 }
@@ -1499,7 +1528,7 @@ void QgsMapCanvas::panToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &
   }
   else
   {
-    emit messageEmitted( tr( "Pan to feature id failed" ), errorMsg, Qgis::Warning );
+    emit messageEmitted( tr( "Pan to feature id failed" ), errorMsg, Qgis::MessageLevel::Warning );
   }
 }
 
@@ -1554,7 +1583,7 @@ void QgsMapCanvas::panToSelected( QgsVectorLayer *layer )
   QgsRectangle rect = layer->boundingBoxOfSelected();
   if ( rect.isNull() )
   {
-    emit messageEmitted( tr( "Cannot pan to selected feature(s)" ), tr( "No extent could be determined." ), Qgis::Warning );
+    emit messageEmitted( tr( "Cannot pan to selected feature(s)" ), tr( "No extent could be determined." ), Qgis::MessageLevel::Warning );
     return;
   }
 
@@ -1592,7 +1621,7 @@ void QgsMapCanvas::panToSelected( const QList<QgsMapLayer *> &layers )
 
   if ( selectionExtent.isNull() )
   {
-    emit messageEmitted( tr( "Cannot pan to selected feature(s)" ), tr( "No extent could be determined." ), Qgis::Warning );
+    emit messageEmitted( tr( "Cannot pan to selected feature(s)" ), tr( "No extent could be determined." ), Qgis::MessageLevel::Warning );
     return;
   }
 
@@ -2549,6 +2578,24 @@ void QgsMapCanvas::dropEvent( QDropEvent *event )
   }
 }
 
+void QgsMapCanvas::showEvent( QShowEvent *event )
+{
+  Q_UNUSED( event )
+  updateDevicePixelFromScreen();
+  // keep device pixel ratio up to date on screen or resolution change
+  if ( window()->windowHandle() )
+  {
+    connect( window()->windowHandle(), &QWindow::screenChanged, this, [ = ]( QScreen * )
+    {
+      disconnect( mScreenDpiChangedConnection );
+      mScreenDpiChangedConnection = connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsMapCanvas::updateDevicePixelFromScreen );
+      updateDevicePixelFromScreen();
+    } );
+
+    mScreenDpiChangedConnection = connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsMapCanvas::updateDevicePixelFromScreen );
+  }
+}
+
 QPoint QgsMapCanvas::mouseLastXY()
 {
   return mCanvasProperties->mouseLastXY;
@@ -2774,6 +2821,15 @@ void QgsMapCanvas::dragEnterEvent( QDragEnterEvent *event )
   {
     event->ignore();
   }
+}
+
+bool QgsMapCanvas::viewportEvent( QEvent *event )
+{
+  if ( event->type() == QEvent::ToolTip && mMapTool && mMapTool->canvasToolTipEvent( qgis::down_cast<QHelpEvent *>( event ) ) )
+  {
+    return true;
+  }
+  return QGraphicsView::viewportEvent( event );
 }
 
 void QgsMapCanvas::mapToolDestroyed()

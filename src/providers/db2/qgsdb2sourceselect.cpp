@@ -27,7 +27,7 @@
 #include "qgsapplication.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsquerybuilder.h"
-#include "qgsdataitem.h"
+#include "qgsiconutils.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
@@ -66,7 +66,7 @@ QWidget *QgsDb2SourceSelectDelegate::createEditor( QWidget *parent, const QStyle
             QgsWkbTypes::NoGeometry
           } )
     {
-      cb->addItem( QgsLayerItem::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), type );
+      cb->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), type );
     }
     cb->setCurrentIndex( cb->findData( index.data( Qt::UserRole + 2 ).toInt() ) );
     return cb;
@@ -105,7 +105,7 @@ void QgsDb2SourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMod
     {
       const QgsWkbTypes::Type type = static_cast< QgsWkbTypes::Type >( cb->currentData().toInt() );
 
-      model->setData( index, QgsLayerItem::iconForWkbType( type ), Qt::DecorationRole );
+      model->setData( index, QgsIconUtils::iconForWkbType( type ), Qt::DecorationRole );
       model->setData( index, type != QgsWkbTypes::Unknown ? QgsWkbTypes::translatedDisplayString( type ) : tr( "Select…" ) );
       model->setData( index, type, Qt::UserRole + 2 );
     }

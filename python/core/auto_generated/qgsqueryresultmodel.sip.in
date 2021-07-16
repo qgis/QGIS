@@ -44,16 +44,56 @@ Constructs a QgsQueryResultModel from a ``queryResult`` with optional ``parent``
     virtual QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
 
 
+    virtual void fetchMore( const QModelIndex &parent );
+
+    virtual bool canFetchMore( const QModelIndex &parent ) const;
+
+
+    QStringList columns() const;
+%Docstring
+Returns the column names
+%End
+
+    QgsAbstractDatabaseProviderConnection::QueryResult queryResult() const;
+%Docstring
+Returns the query result
+
+.. versionadded:: 3.22
+%End
+
   public slots:
 
     void rowsReady( const QList<QList<QVariant> > &rows );
 %Docstring
-Triggered when ``newRows`` have been fetched and can be added to the model
+Triggered when ``newRows`` have been fetched and can be added to the model.
 %End
 
     void cancel();
 %Docstring
 Cancels the row fetching.
+%End
+
+
+  signals:
+
+    void fetchingComplete();
+%Docstring
+Emitted when rows have been fetched (all of them or a batch if `maxRows` was passed to :py:func:`~QgsQueryResultModel.fetchMoreRows` )
+or when the fetching has been stopped (canceled).
+
+.. seealso:: :py:func:`fetchMoreRows`
+%End
+
+    void fetchMoreRows( qlonglong maxRows );
+%Docstring
+Emitted when more rows are requested.
+
+:param maxRows: the number of rows that will be fetched.
+%End
+
+    void fetchingStarted();
+%Docstring
+Emitted when fetching of rows has started
 %End
 
 };

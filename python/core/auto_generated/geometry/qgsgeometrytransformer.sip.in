@@ -41,6 +41,7 @@ Example
 
 A transformer which multiples the x coordinate by 3 and adds 10 to the y coordinate:
 
+
 .. code-block:: python
 
        class MyTransformer(QgsAbstractGeometryTransformer):

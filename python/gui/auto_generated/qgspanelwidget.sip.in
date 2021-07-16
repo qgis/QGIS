@@ -68,6 +68,16 @@ widgets and not open dialogs
 :param dockMode: ``True`` to enable dock mode.
 %End
 
+    virtual bool applySizeConstraintsToStack() const;
+%Docstring
+Returns ``True`` if the size constraints and hints for the panel widget should be
+applied to the parent :py:class:`QgsPanelWidgetStack` which this panel is shown in.
+
+The default behavior is to return ``False``.
+
+.. versionadded:: 3.20
+%End
+
     bool dockMode();
 %Docstring
 Returns the dock mode state.

@@ -543,19 +543,19 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry &geom )
     return 1;
   }
 
-  int returnVal = 0;
+  bool pointsAdded = false;
 
   QgsAbstractGeometry::vertex_iterator it = geom.vertices_begin();
   while ( it != geom.vertices_end() )
   {
-    if ( addTopologicalPoints( *it ) != 0 )
+    if ( addTopologicalPoints( *it ) == 0 )
     {
-      returnVal = 2;
+      pointsAdded = true;
     }
     ++it;
   }
 
-  return returnVal;
+  return pointsAdded ? 0 : 2;
 }
 
 int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPoint &p )

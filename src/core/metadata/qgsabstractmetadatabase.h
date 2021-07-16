@@ -127,6 +127,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
        */
       QString country;
 
+      // TODO c++20 - replace with = default
       bool operator==( const QgsAbstractMetadataBase::Address &other ) const;
     };
 
@@ -188,6 +189,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
        */
       QString role;
 
+      // TODO c++20 - replace with = default
       bool operator==( const QgsAbstractMetadataBase::Contact &other ) const;
     };
 
@@ -252,6 +254,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
        */
       QString size;
 
+      // TODO c++20 - replace with = default
       bool operator==( const QgsAbstractMetadataBase::Link &other ) const;
     };
 

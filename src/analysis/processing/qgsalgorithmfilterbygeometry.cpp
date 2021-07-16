@@ -36,12 +36,12 @@ QStringList QgsFilterByGeometryAlgorithm::tags() const
 
 QString QgsFilterByGeometryAlgorithm::group() const
 {
-  return QObject::tr( "Vector selection" );
+  return QObject::tr( "Modeler tools" );
 }
 
 QString QgsFilterByGeometryAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorselection" );
+  return QStringLiteral( "modelertools" );
 }
 
 QgsProcessingAlgorithm::Flags QgsFilterByGeometryAlgorithm::flags() const
@@ -242,12 +242,12 @@ QStringList QgsFilterByLayerTypeAlgorithm::tags() const
 
 QString QgsFilterByLayerTypeAlgorithm::group() const
 {
-  return QObject::tr( "Layer tools" );
+  return QObject::tr( "Modeler tools" );
 }
 
 QString QgsFilterByLayerTypeAlgorithm::groupId() const
 {
-  return QStringLiteral( "layertools" );
+  return QStringLiteral( "modelertools" );
 }
 
 QgsProcessingAlgorithm::Flags QgsFilterByLayerTypeAlgorithm::flags() const

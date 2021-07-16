@@ -139,7 +139,7 @@ class TestQgsPostgresConn: public QObject
       QVariantList list;
       list << 1 << -5;
       const QString actual = QgsPostgresConn::quotedValue( list );
-      QCOMPARE( actual, QString( "E'{\"1\",\"-5\"}'" ) );
+      QCOMPARE( actual, QString( "E'{1,-5}'" ) );
     }
 
     void quotedValue2DimArray()

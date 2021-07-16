@@ -252,10 +252,8 @@ bool QgsGeometryUtils::lineIntersection( const QgsPoint &p1, QgsVector v1, const
 
   intersection = QgsPoint( p1.x() + v1.x() * k, p1.y() + v1.y() * k );
 
-  // z support for intersection point
-  QgsGeometryUtils::transferFirstZValueToPoint( QgsPointSequence() << p1 << p2, intersection );
-  // m support for intersection point
-  QgsGeometryUtils::transferFirstMValueToPoint( QgsPointSequence() << p1 << p2, intersection );
+  // z and m support for intersection point
+  QgsGeometryUtils::transferFirstZOrMValueToPoint( QgsPointSequence() << p1 << p2, intersection );
 
   return true;
 }
@@ -854,10 +852,8 @@ bool QgsGeometryUtils::segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, 
 
   result = possibleMidPoints.at( minDistIndex );
 
-  // add z support if necessary
-  QgsGeometryUtils::transferFirstZValueToPoint( QgsPointSequence() << p1 << p2, result );
-  // add m support if necessary
-  QgsGeometryUtils::transferFirstMValueToPoint( QgsPointSequence() << p1 << p2, result );
+  // add z and m support if necessary
+  QgsGeometryUtils::transferFirstZOrMValueToPoint( QgsPointSequence() << p1 << p2, result );
 
   return true;
 }

@@ -32,6 +32,12 @@ A node unary operator is modifying the value of ``operand`` by negating it with 
 %End
     ~QgsExpressionNodeUnaryOperator();
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsExpressionNodeUnaryOperator: %1>" ).arg( sipCpp->text() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
     QgsExpressionNodeUnaryOperator::UnaryOperator op() const;
 %Docstring
 Returns the unary operator.
@@ -121,6 +127,12 @@ A binary expression operator, which operates on two values.
 Binary combination of the left and the right with op.
 %End
     ~QgsExpressionNodeBinaryOperator();
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsExpressionNodeBinaryOperator: %1>" ).arg( sipCpp->text() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
 
     QgsExpressionNodeBinaryOperator::BinaryOperator op() const;
 %Docstring
@@ -311,6 +323,22 @@ a list of arguments that will be passed to it.
 
     ~QgsExpressionNodeFunction();
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString function;
+    if ( QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[sipCpp->fnIndex()] )
+    {
+      function = fd->name();
+    }
+    else
+    {
+      function = QString::number( sipCpp->fnIndex() );
+    }
+
+    QString str = QStringLiteral( "<QgsExpressionNodeFunction: %1>" ).arg( function );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
     int fnIndex() const;
 %Docstring
 Returns the index of the node's function.
@@ -365,6 +393,12 @@ An expression node for literal values.
 Constructor for QgsExpressionNodeLiteral, with the specified literal ``value``.
 %End
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsExpressionNodeLiteral: %1>" ).arg( sipCpp->valueAsString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
     QVariant value() const;
 %Docstring
 The value of the literal.
@@ -391,6 +425,13 @@ The value of the literal.
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
 
 
+    QString valueAsString() const;
+%Docstring
+Returns a string representation of the node's literal value.
+
+.. versionadded:: 3.20
+%End
+
 };
 
 class QgsExpressionNodeColumnRef : QgsExpressionNode
@@ -408,6 +449,12 @@ An expression node which takes it value from a feature's field.
 %Docstring
 Constructor for QgsExpressionNodeColumnRef, referencing the column
 with the specified ``name``.
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsExpressionNodeColumnRef: \"%1\">" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
     QString name() const;

@@ -20,6 +20,8 @@
 #include "qgsmapsettings.h"
 #include "qgslayout.h"
 #include "qgslayoututils.h"
+#include "qgsmarkersymbol.h"
+
 #include <limits>
 #include <cmath>
 #include <QStyleOptionGraphicsItem>

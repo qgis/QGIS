@@ -310,7 +310,7 @@ custom configuration widget.
    :py:func:`~QgsLocatorFilter.hasConfigWidget` must return ``True`` to indicate that the filter supports configuration.
 %End
 
-    void logMessage( const QString &message, Qgis::MessageLevel level = Qgis::Info );
+    void logMessage( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
 %Docstring
 Logs a ``message`` to the log panel
 

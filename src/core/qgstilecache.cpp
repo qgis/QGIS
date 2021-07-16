@@ -33,16 +33,21 @@ void QgsTileCache::insertTile( const QUrl &url, const QImage &image )
 
 bool QgsTileCache::tile( const QUrl &url, QImage &image )
 {
+  QNetworkRequest req( url );
+  //Preprocessing might alter the url, so we need to make sure we store/retrieve the url after preprocessing
+  QgsNetworkAccessManager::instance()->preprocessRequest( &req );
+  QUrl adjUrl = req.url();
+
   QMutexLocker locker( &sTileCacheMutex );
   bool success = false;
-  if ( QImage *i = sTileCache.object( url ) )
+  if ( QImage *i = sTileCache.object( adjUrl ) )
   {
     image = *i;
     success = true;
   }
-  else if ( QgsNetworkAccessManager::instance()->cache()->metaData( url ).isValid() )
+  else if ( QgsNetworkAccessManager::instance()->cache()->metaData( adjUrl ).isValid() )
   {
-    if ( QIODevice *data = QgsNetworkAccessManager::instance()->cache()->data( url ) )
+    if ( QIODevice *data = QgsNetworkAccessManager::instance()->cache()->data( adjUrl ) )
     {
       QByteArray imageData = data->readAll();
       delete data;
@@ -53,7 +58,7 @@ bool QgsTileCache::tile( const QUrl &url, QImage &image )
       // Check for null because it could be a redirect (see: https://github.com/qgis/QGIS/issues/24336 )
       if ( ! image.isNull( ) )
       {
-        sTileCache.insert( url, new QImage( image ) );
+        sTileCache.insert( adjUrl, new QImage( image ) );
         success = true;
       }
     }

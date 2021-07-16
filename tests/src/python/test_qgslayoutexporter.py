@@ -41,7 +41,12 @@ from qgis.core import (QgsMultiRenderChecker,
                        QgsPrintLayout,
                        QgsSingleSymbolRenderer,
                        QgsRenderContext,
-                       QgsReport)
+                       QgsReport,
+                       QgsPalLayerSettings,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsPointXY,
+                       QgsVectorLayerSimpleLabeling)
 from qgis.PyQt.QtCore import QSize, QSizeF, QDir, QRectF, Qt, QDateTime, QDate, QTime, QTimeZone
 from qgis.PyQt.QtGui import QImage, QPainter
 from qgis.PyQt.QtPrintSupport import QPrinter
@@ -1153,6 +1158,64 @@ class TestQgsLayoutExporter(unittest.TestCase):
         # but if the item is NOT visible, it won't affect the output in any way..
         label.setVisibility(False)
         self.assertFalse(QgsLayoutExporter.containsAdvancedEffects(l))
+
+    def testLabelingResults(self):
+        """
+        Test QgsLayoutExporter.labelingResults()
+        """
+        settings = QgsPalLayerSettings()
+        settings.fieldName = "\"id\""
+        settings.isExpression = True
+        settings.placement = QgsPalLayerSettings.OverPoint
+        settings.priority = 10
+        settings.displayAll = True
+
+        vl = QgsVectorLayer("Point?crs=epsg:4326&field=id:integer", "vl", "memory")
+        f = QgsFeature()
+        f.setAttributes([1])
+        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(-6.250851540391068, 53.335006994584944)))
+        self.assertTrue(vl.dataProvider().addFeature(f))
+        f.setAttributes([8888])
+        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(-21.950014487179544, 64.150023619739216)))
+        self.assertTrue(vl.dataProvider().addFeature(f))
+        f.setAttributes([33333])
+        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(-0.118667702475932, 51.5019405883275)))
+        self.assertTrue(vl.dataProvider().addFeature(f))
+        vl.updateExtents()
+
+        p = QgsProject()
+        p.addMapLayer(vl)
+
+        vl.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+        vl.setLabelsEnabled(True)
+
+        l = QgsLayout(p)
+        l.initializeDefaults()
+
+        map = QgsLayoutItemMap(l)
+        map.attemptSetSceneRect(QRectF(20, 20, 200, 100))
+        map.setFrameEnabled(False)
+        map.setBackgroundEnabled(False)
+        map.setCrs(vl.crs())
+        map.zoomToExtent(vl.extent())
+        map.setLayers([vl])
+        l.addLayoutItem(map)
+
+        exporter = QgsLayoutExporter(l)
+        self.assertEqual(exporter.labelingResults(), {})
+        # setup settings
+        settings = QgsLayoutExporter.ImageExportSettings()
+        settings.dpi = 80
+
+        rendered_file_path = os.path.join(self.basetestpath, 'test_exportlabelresults.png')
+        self.assertEqual(exporter.exportToImage(rendered_file_path, settings), QgsLayoutExporter.Success)
+
+        results = exporter.labelingResults()
+        self.assertEqual(len(results), 1)
+
+        labels = results[map.uuid()].allLabels()
+        self.assertEqual(len(labels), 3)
+        self.assertCountEqual([l.labelText for l in labels], ['1', '33333', '8888'])
 
 
 if __name__ == '__main__':

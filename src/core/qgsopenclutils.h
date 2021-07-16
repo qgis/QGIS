@@ -31,7 +31,13 @@
 #define CL_TARGET_OPENCL_VERSION 200
 #endif
 
+#include "qgsconfig.h"
+
+#ifdef OPENCL_USE_NEW_HEADER
+#include <CL/opencl.hpp>
+#else
 #include <CL/cl2.hpp>
+#endif
 
 #include "qgis_core.h"
 #include "qgis.h"

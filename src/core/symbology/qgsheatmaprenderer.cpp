@@ -335,23 +335,14 @@ QDomElement QgsHeatmapRenderer::save( QDomDocument &doc, const QgsReadWriteConte
   rendererElem.setAttribute( QStringLiteral( "max_value" ), QString::number( mExplicitMax ) );
   rendererElem.setAttribute( QStringLiteral( "quality" ), QString::number( mRenderQuality ) );
   rendererElem.setAttribute( QStringLiteral( "weight_expression" ), mWeightExpressionString );
+
   if ( mGradientRamp )
   {
     QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( QStringLiteral( "[source]" ), mGradientRamp, doc );
     rendererElem.appendChild( colorRampElem );
   }
-  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 
-  if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
-    mPaintEffect->saveProperties( doc, rendererElem );
-
-  if ( !mOrderBy.isEmpty() )
-  {
-    QDomElement orderBy = doc.createElement( QStringLiteral( "orderby" ) );
-    mOrderBy.save( orderBy );
-    rendererElem.appendChild( orderBy );
-  }
-  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
+  saveRendererData( doc, rendererElem, context );
 
   return rendererElem;
 }
@@ -392,7 +383,9 @@ QgsHeatmapRenderer *QgsHeatmapRenderer::convertFromRenderer( const QgsFeatureRen
   }
   else
   {
-    return new QgsHeatmapRenderer();
+    std::unique_ptr< QgsHeatmapRenderer > res = std::make_unique< QgsHeatmapRenderer >();
+    renderer->copyRendererData( res.get() );
+    return res.release();
   }
 }
 

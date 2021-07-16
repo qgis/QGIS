@@ -95,20 +95,20 @@ bool QgsPostgresProjectStorage::readProject( const QString &uri, QIODevice *devi
   QgsPostgresProjectUri projectUri = decodeUri( uri );
   if ( !projectUri.valid )
   {
-    context.pushMessage( QObject::tr( "Invalid URI for PostgreSQL provider: " ) + uri, Qgis::Critical );
+    context.pushMessage( QObject::tr( "Invalid URI for PostgreSQL provider: " ) + uri, Qgis::MessageLevel::Critical );
     return false;
   }
 
   QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( projectUri.connInfo.connectionInfo( false ) );
   if ( !conn )
   {
-    context.pushMessage( QObject::tr( "Could not connect to the database: " ) + projectUri.connInfo.connectionInfo( false ), Qgis::Critical );
+    context.pushMessage( QObject::tr( "Could not connect to the database: " ) + projectUri.connInfo.connectionInfo( false ), Qgis::MessageLevel::Critical );
     return false;
   }
 
   if ( !_projectsTableExists( *conn, projectUri.schemaName ) )
   {
-    context.pushMessage( QObject::tr( "Table qgis_projects does not exist or it is not accessible." ), Qgis::Critical );
+    context.pushMessage( QObject::tr( "Table qgis_projects does not exist or it is not accessible." ), Qgis::MessageLevel::Critical );
     QgsPostgresConnPool::instance()->releaseConnection( conn );
     return false;
   }
@@ -129,7 +129,7 @@ bool QgsPostgresProjectStorage::readProject( const QString &uri, QIODevice *devi
     }
     else
     {
-      context.pushMessage( QObject::tr( "The project '%1' does not exist in schema '%2'." ).arg( projectUri.projectName, projectUri.schemaName ), Qgis::Critical );
+      context.pushMessage( QObject::tr( "The project '%1' does not exist in schema '%2'." ).arg( projectUri.projectName, projectUri.schemaName ), Qgis::MessageLevel::Critical );
     }
   }
 
@@ -144,14 +144,14 @@ bool QgsPostgresProjectStorage::writeProject( const QString &uri, QIODevice *dev
   QgsPostgresProjectUri projectUri = decodeUri( uri );
   if ( !projectUri.valid )
   {
-    context.pushMessage( QObject::tr( "Invalid URI for PostgreSQL provider: " ) + uri, Qgis::Critical );
+    context.pushMessage( QObject::tr( "Invalid URI for PostgreSQL provider: " ) + uri, Qgis::MessageLevel::Critical );
     return false;
   }
 
   QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( projectUri.connInfo.connectionInfo( false ) );
   if ( !conn )
   {
-    context.pushMessage( QObject::tr( "Could not connect to the database: " ) + projectUri.connInfo.connectionInfo( false ), Qgis::Critical );
+    context.pushMessage( QObject::tr( "Could not connect to the database: " ) + projectUri.connInfo.connectionInfo( false ), Qgis::MessageLevel::Critical );
     return false;
   }
 
@@ -163,7 +163,7 @@ bool QgsPostgresProjectStorage::writeProject( const QString &uri, QIODevice *dev
     if ( res.PQresultStatus() != PGRES_COMMAND_OK )
     {
       QString errCause = QObject::tr( "Unable to save project. It's not possible to create the destination table on the database. Maybe this is due to database permissions (user=%1). Please contact your database admin." ).arg( projectUri.connInfo.username() );
-      context.pushMessage( errCause, Qgis::Critical );
+      context.pushMessage( errCause, Qgis::MessageLevel::Critical );
       QgsPostgresConnPool::instance()->releaseConnection( conn );
       return false;
     }
@@ -191,7 +191,7 @@ bool QgsPostgresProjectStorage::writeProject( const QString &uri, QIODevice *dev
   if ( res.PQresultStatus() != PGRES_COMMAND_OK )
   {
     QString errCause = QObject::tr( "Unable to insert or update project (project=%1) in the destination table on the database. Maybe this is due to table permissions (user=%2). Please contact your database admin." ).arg( projectUri.projectName, projectUri.connInfo.username() );
-    context.pushMessage( errCause, Qgis::Critical );
+    context.pushMessage( errCause, Qgis::MessageLevel::Critical );
     QgsPostgresConnPool::instance()->releaseConnection( conn );
     return false;
   }

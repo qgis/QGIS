@@ -88,6 +88,11 @@ QgsLayoutLabelWidget::QgsLayoutLabelWidget( QgsLayoutItemLabel *label )
     }
   } );
 
+  QMenu *expressionMenu = new QMenu( this );
+  QAction *convertToStaticAction = new QAction( tr( "Convert to Static Text" ), this );
+  expressionMenu->addAction( convertToStaticAction );
+  connect( convertToStaticAction, &QAction::triggered, mLabel, &QgsLayoutItemLabel::convertToStaticText );
+  mInsertExpressionButton->setMenu( expressionMenu );
 }
 
 void QgsLayoutLabelWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )

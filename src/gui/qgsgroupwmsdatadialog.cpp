@@ -16,14 +16,14 @@
 #include "qgsapplication.h"
 #include "qgsgroupwmsdatadialog.h"
 
-#include <QRegExpValidator>
+#include <QRegularExpressionValidator>
 
 QgsGroupWmsDataDialog::QgsGroupWmsDataDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
 {
   setupUi( this );
   // WMS Name validator
-  QValidator *shortNameValidator = new QRegExpValidator( QgsApplication::shortNameRegExp(), this );
+  QValidator *shortNameValidator = new QRegularExpressionValidator( QgsApplication::shortNameRegularExpression(), this );
   mShortNameLineEdit->setValidator( shortNameValidator );
 }
 

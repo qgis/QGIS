@@ -181,8 +181,13 @@ Set parameters for use in transforming coordinates
 :param heightPixels: Output height, in pixels
 :param rotation: clockwise rotation in degrees
 
+.. note::
+
+   if the specified parameters result in an invalid transform then no changes will be applied to the object
+
 .. versionadded:: 2.8
 %End
+
 
     QString showParameters() const;
 %Docstring

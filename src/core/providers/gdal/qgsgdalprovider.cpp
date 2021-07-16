@@ -28,7 +28,6 @@
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgscoordinatetransform.h"
-#include "qgsdataitem.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdatasourceuri.h"
 #include "qgsgdaldataitems.h"
@@ -44,11 +43,13 @@
 #include "qgssettings.h"
 #include "qgsogrutils.h"
 #include "qgsruntimeprofiler.h"
+#include "qgszipitem.h"
+#include "qgsprovidersublayerdetails.h"
+#include "qgsproviderutils.h"
 
 #include <QImage>
 #include <QColor>
 #include <QProcess>
-#include <QMessageBox>
 #include <QDir>
 #include <QFileInfo>
 #include <QFile>
@@ -184,16 +185,6 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, const ProviderOptions &opt
     // and confusing values shown to users, force Float64
     CPLSetConfigOption( "AAIGRID_DATATYPE", "Float64" );
   }
-
-#if !(GDAL_VERSION_MAJOR > 2 || (GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR >= 3))
-  if ( !CPLGetConfigOption( "VRT_SHARED_SOURCE", nullptr ) )
-  {
-    // GDAL < 2.3 has issues with use of VRT in multi-threaded
-    // scenarios. See https://github.com/qgis/QGIS/issues/24413 /
-    // https://trac.osgeo.org/gdal/ticket/6939
-    CPLSetConfigOption( "VRT_SHARED_SOURCE", "NO" );
-  }
-#endif
 
   // To get buildSupportedRasterFileFilter the provider is called with empty uri
   if ( uri.isEmpty() )
@@ -1261,7 +1252,6 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
         if ( values.at( 0 ) == QLatin1String( "NETCDF_DIM_EXTRA" ) || values.at( 0 ) == QLatin1String( "GTIFF_DIM_EXTRA" ) )
         {
           dimExtraValues = val.replace( '{', QString() ).replace( '}', QString() ).split( ',' );
-          //http://qt-project.org/doc/qt-4.8/qregexp.html#capturedTexts
         }
         else
         {
@@ -1395,7 +1385,7 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, QgsR
     }
     else
     {
-      if ( sourceDataType( i ) == Qgis::Float32 )
+      if ( sourceDataType( i ) == Qgis::DataType::Float32 )
       {
         // Insert a float QVariant so that QgsMapToolIdentify::identifyRasterLayer()
         // can print a string without an excessive precision
@@ -1511,25 +1501,25 @@ Qgis::DataType QgsGdalProvider::sourceDataType( int bandNo ) const
     // if the band has scale or offset to apply change dataType
     switch ( myDataType )
     {
-      case Qgis::UnknownDataType:
-      case Qgis::ARGB32:
-      case Qgis::ARGB32_Premultiplied:
+      case Qgis::DataType::UnknownDataType:
+      case Qgis::DataType::ARGB32:
+      case Qgis::DataType::ARGB32_Premultiplied:
         return myDataType;
-      case Qgis::Byte:
-      case Qgis::UInt16:
-      case Qgis::Int16:
-      case Qgis::UInt32:
-      case Qgis::Int32:
-      case Qgis::Float32:
-      case Qgis::CInt16:
-        myDataType = Qgis::Float32;
+      case Qgis::DataType::Byte:
+      case Qgis::DataType::UInt16:
+      case Qgis::DataType::Int16:
+      case Qgis::DataType::UInt32:
+      case Qgis::DataType::Int32:
+      case Qgis::DataType::Float32:
+      case Qgis::DataType::CInt16:
+        myDataType = Qgis::DataType::Float32;
         break;
-      case Qgis::Float64:
-      case Qgis::CInt32:
-      case Qgis::CFloat32:
-        myDataType = Qgis::Float64;
+      case Qgis::DataType::Float64:
+      case Qgis::DataType::CInt32:
+      case Qgis::DataType::CFloat32:
+        myDataType = Qgis::DataType::Float64;
         break;
-      case Qgis::CFloat64:
+      case Qgis::DataType::CFloat64:
         return myDataType;
     }
   }
@@ -1541,7 +1531,7 @@ Qgis::DataType QgsGdalProvider::dataType( int bandNo ) const
   if ( mMaskBandExposedAsAlpha && bandNo == mBandCount )
     return dataTypeFromGdal( GDT_Byte );
 
-  if ( bandNo <= 0 || bandNo > mGdalDataType.count() ) return Qgis::UnknownDataType;
+  if ( bandNo <= 0 || bandNo > mGdalDataType.count() ) return Qgis::DataType::UnknownDataType;
 
   return dataTypeFromGdal( mGdalDataType[bandNo - 1] );
 }
@@ -1640,18 +1630,20 @@ QgsRasterDataProvider::ProviderCapabilities QgsGdalProvider::providerCapabilitie
          ProviderCapability::ReloadData;
 }
 
-// This is used also by global isValidRasterFileName
-QStringList QgsGdalProvider::subLayers( GDALDatasetH dataset )
+QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH dataset, const QString &baseUri )
 {
-  QStringList subLayers;
-
   if ( !dataset )
   {
     QgsDebugMsg( QStringLiteral( "dataset is nullptr" ) );
-    return subLayers;
+    return {};
   }
 
+  QList<QgsProviderSublayerDetails> res;
+
   char **metadata = GDALGetMetadata( dataset, "SUBDATASETS" );
+
+  QVariantMap uriParts = decodeGdalUri( baseUri );
+  const QString datasetPath = uriParts.value( QStringLiteral( "path" ) ).toString();
 
   if ( metadata )
   {
@@ -1662,24 +1654,48 @@ QStringList QgsGdalProvider::subLayers( GDALDatasetH dataset )
       const char *desc = CSLFetchNameValue( metadata, CPLSPrintf( "SUBDATASET_%d_DESC", i ) );
       if ( name && desc )
       {
+        QString layerName = QString::fromUtf8( name );
+        QString uri = layerName;
+        QString layerDesc = QString::fromUtf8( desc );
+
         // For GeoPackage, desc is often "table - identifier" where table=identifier
         // In that case, just keep one.
-        const char *sepPtr = strstr( desc, " - " );
-        if ( sepPtr && strncmp( desc, sepPtr + 3, strlen( sepPtr + 3 ) ) == 0 )
+        int sepIdx = layerDesc.indexOf( QLatin1String( " - " ) );
+        if ( sepIdx > 0 )
         {
-          desc = sepPtr + 3;
+          layerName = layerDesc.left( sepIdx );
+          layerDesc = layerDesc.mid( sepIdx + 3 );
         }
-        subLayers << QString::fromUtf8( name ) + QgsDataProvider::sublayerSeparator() + QString::fromUtf8( desc );
+        else
+        {
+          // try to extract layer name from a path like 'NETCDF:"/baseUri":cell_node'
+          sepIdx = layerName.indexOf( datasetPath + "\":" );
+          if ( sepIdx >= 0 )
+          {
+            layerName = layerName.mid( layerName.indexOf( datasetPath + "\":" ) + datasetPath.length() + 2 );
+          }
+        }
+
+        QgsProviderSublayerDetails details;
+        details.setProviderKey( PROVIDER_KEY );
+        details.setType( QgsMapLayerType::RasterLayer );
+        details.setName( layerName );
+        details.setDescription( layerDesc );
+        details.setLayerNumber( i );
+
+        const QVariantMap layerUriParts = decodeGdalUri( uri );
+        // update original uri parts with this layername and path -- this ensures that other uri components
+        // like open options are preserved for the sublayer uris
+        uriParts.insert( QStringLiteral( "layerName" ), layerUriParts.value( QStringLiteral( "layerName" ) ) );
+        uriParts.insert( QStringLiteral( "path" ), layerUriParts.value( QStringLiteral( "path" ) ) );
+        details.setUri( encodeGdalUri( uriParts ) );
+
+        res << details;
       }
     }
   }
 
-  if ( !subLayers.isEmpty() )
-  {
-    QgsDebugMsgLevel( "sublayers:\n  " + subLayers.join( "\n  " ), 3 );
-  }
-
-  return subLayers;
+  return res;
 }
 
 bool QgsGdalProvider::hasHistogram( int bandNo,
@@ -2320,7 +2336,11 @@ QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList( const QList<int> &lis
 
 QStringList QgsGdalProvider::subLayers() const
 {
-  return mSubLayers;
+  QStringList res;
+  res.reserve( mSubLayers.size() );
+  for ( const QgsProviderSublayerDetails &layer : mSubLayers )
+    res << layer.uri() + QgsDataProvider::sublayerSeparator() + layer.description();
+  return res;
 }
 
 QVariantMap QgsGdalProviderMetadata::decodeUri( const QString &uri ) const
@@ -2434,7 +2454,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
     QString myGdalDriverLongName = GDALGetMetadataItem( myGdalDriver, GDAL_DMD_LONGNAME, "" );
     // remove any superfluous (.*) strings at the end as
     // they'll confuse QFileDialog::getOpenFileNames()
-    myGdalDriverLongName.remove( QRegExp( "\\(.*\\)$" ) );
+    myGdalDriverLongName.remove( QRegularExpression( "\\(.*\\)$" ) );
 
     // if we have both the file name extension and the long name,
     // then we've all the information we need for the current
@@ -2501,20 +2521,6 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
         fileFiltersString += createFileFilter_( myGdalDriverLongName, QStringLiteral( "hdr.adf" ) );
         wildcards << QStringLiteral( "hdr.adf" );
       }
-#if !(GDAL_VERSION_MAJOR > 2 || (GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR >= 3))
-      else if ( myGdalDriverDescription.startsWith( QLatin1String( "EHdr" ) ) )
-      {
-        // Fixed in GDAL 2.3
-        fileFiltersString += createFileFilter_( myGdalDriverLongName, QStringLiteral( "*.bil" ) );
-        extensions << QStringLiteral( "bil" );
-      }
-      else if ( myGdalDriverDescription == QLatin1String( "ERS" ) )
-      {
-        // Fixed in GDAL 2.3
-        fileFiltersString += createFileFilter_( myGdalDriverLongName, QStringLiteral( "*.ers" ) );
-        extensions << QStringLiteral( "ers" );
-      }
-#endif
       else
       {
         catchallFilter << QString( GDALGetDescription( myGdalDriver ) );
@@ -2588,8 +2594,7 @@ bool QgsGdalProvider::isValidRasterFileName( QString const &fileNameQString, QSt
   }
   else if ( GDALGetRasterCount( myDataset.get() ) == 0 )
   {
-    QStringList layers = QgsGdalProvider::subLayers( myDataset.get() );
-    if ( layers.isEmpty() )
+    if ( QgsGdalProvider::sublayerDetails( myDataset.get(), fileName ).isEmpty() )
     {
       retErrMsg = QObject::tr( "This raster file has no bands and is invalid as a raster layer." );
       return false;
@@ -2670,15 +2675,6 @@ bool QgsGdalProvider::hasStatistics( int bandNo,
   if ( !( stats & QgsRasterBandStats::Max ) ) pdfMax = nullptr;
   if ( !( stats & QgsRasterBandStats::Mean ) ) pdfMean = nullptr;
   if ( !( stats & QgsRasterBandStats::StdDev ) ) pdfStdDev = nullptr;
-
-  // try to fetch the cached stats (bForce=FALSE)
-  // Unfortunately GDALGetRasterStatistics() does not work as expected according to
-  // API doc, if bApproxOK=false and bForce=false/true and exact statistics
-  // (from all raster pixels) are not available/cached, it should return CE_Warning.
-  // Instead, it is giving estimated (from sample) cached statistics and it returns CE_None.
-  // see above and https://trac.osgeo.org/gdal/ticket/4857
-  // -> Cannot used cached GDAL stats for exact
-  if ( !bApproxOK ) return false;
 
   CPLErr myerval = GDALGetRasterStatistics( myGdalBand, bApproxOK, true, pdfMin, pdfMax, pdfMean, pdfStdDev );
 
@@ -2970,7 +2966,7 @@ void QgsGdalProvider::initBaseDataset()
   }
 
   // get sublayers
-  mSubLayers = QgsGdalProvider::subLayers( mGdalDataset );
+  mSubLayers = QgsGdalProvider::sublayerDetails( mGdalDataset,  dataSourceUri() );
 
   // check if this file has bands or subdatasets
   CPLErrorReset();
@@ -3120,23 +3116,23 @@ void QgsGdalProvider::initBaseDataset()
     double myInternalNoDataValue = 123;
     switch ( srcDataType( i ) )
     {
-      case Qgis::Byte:
+      case Qgis::DataType::Byte:
         myInternalNoDataValue = -32768.0;
         myInternalGdalDataType = GDT_Int16;
         break;
-      case Qgis::Int16:
+      case Qgis::DataType::Int16:
         myInternalNoDataValue = -2147483648.0;
         myInternalGdalDataType = GDT_Int32;
         break;
-      case Qgis::UInt16:
+      case Qgis::DataType::UInt16:
         myInternalNoDataValue = -2147483648.0;
         myInternalGdalDataType = GDT_Int32;
         break;
-      case Qgis::Int32:
+      case Qgis::DataType::Int32:
         // We believe that such values is no used in real data
         myInternalNoDataValue = -2147483648.0;
         break;
-      case Qgis::UInt32:
+      case Qgis::DataType::UInt32:
         // We believe that such values is no used in real data
         myInternalNoDataValue = 4294967295.0;
         break;
@@ -3531,9 +3527,158 @@ QList<QPair<QString, QString> > QgsGdalProviderMetadata::pyramidResamplingMethod
   return methods;
 }
 
+QgsProviderMetadata::ProviderMetadataCapabilities QgsGdalProviderMetadata::capabilities() const
+{
+  return QuerySublayers;
+}
+
 QgsProviderMetadata::ProviderCapabilities QgsGdalProviderMetadata::providerCapabilities() const
 {
   return FileBasedUris;
+}
+
+QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags, QgsFeedback *feedback ) const
+{
+  gdal::dataset_unique_ptr dataset;
+
+  QgsGdalProviderBase::registerGdalDrivers();
+
+  CPLErrorReset();
+
+  QString gdalUri = uri;
+
+  QVariantMap uriParts = decodeUri( gdalUri );
+
+  // Try to open using VSIFileHandler
+  QString vsiPrefix = QgsZipItem::vsiPrefix( gdalUri );
+  if ( !vsiPrefix.isEmpty() )
+  {
+    if ( !gdalUri.startsWith( vsiPrefix ) )
+    {
+      gdalUri = vsiPrefix + gdalUri;
+      uriParts = decodeUri( gdalUri );
+    }
+  }
+
+  if ( flags & Qgis::SublayerQueryFlag::FastScan )
+  {
+    // filter based on extension
+    const QVariantMap uriParts = decodeUri( gdalUri );
+    const QString path = uriParts.value( QStringLiteral( "path" ) ).toString();
+    QFileInfo info( path );
+    if ( info.isFile() )
+    {
+      const QString suffix = info.suffix().toLower();
+
+      static QString sFilterString;
+      static QStringList sExtensions;
+      static QStringList sWildcards;
+
+      // get supported extensions
+      static std::once_flag initialized;
+      std::call_once( initialized, [ = ]
+      {
+        buildSupportedRasterFileFilterAndExtensions( sFilterString, sExtensions, sWildcards );
+        QgsDebugMsgLevel( QStringLiteral( "extensions: " ) + sExtensions.join( ' ' ), 2 );
+        QgsDebugMsgLevel( QStringLiteral( "wildcards: " ) + sWildcards.join( ' ' ), 2 );
+      } );
+
+      if ( !sExtensions.contains( suffix ) )
+      {
+        bool matches = false;
+        for ( const QString &wildcard : std::as_const( sWildcards ) )
+        {
+          const thread_local QRegularExpression rx( QRegularExpression::anchoredPattern(
+                QRegularExpression::wildcardToRegularExpression( wildcard )
+              ), QRegularExpression::CaseInsensitiveOption );
+          const QRegularExpressionMatch match = rx.match( info.fileName() );
+          if ( match.hasMatch() )
+          {
+            matches = true;
+            break;
+          }
+        }
+        if ( !matches )
+          return {};
+      }
+    }
+  }
+
+  if ( !uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString().isEmpty()
+       && uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty() )
+  {
+    // get list of files inside archive file
+    QgsDebugMsgLevel( QStringLiteral( "Open file %1 with gdal vsi" ).arg( vsiPrefix + uriParts.value( QStringLiteral( "path" ) ).toString() ), 3 );
+    char **papszSiblingFiles = VSIReadDirRecursive( QString( vsiPrefix + uriParts.value( QStringLiteral( "path" ) ).toString() ).toLocal8Bit().constData() );
+    if ( papszSiblingFiles )
+    {
+      QList<QgsProviderSublayerDetails> res;
+
+      QStringList files;
+      for ( int i = 0; papszSiblingFiles[i]; i++ )
+      {
+        files << papszSiblingFiles[i];
+      }
+
+      for ( const QString &file : std::as_const( files ) )
+      {
+        if ( feedback && feedback->isCanceled() )
+          break;
+
+        // skip directories (files ending with /)
+        if ( file.right( 1 ) != QLatin1String( "/" ) )
+        {
+          uriParts.insert( QStringLiteral( "vsiSuffix" ), QStringLiteral( "/%1" ).arg( file ) );
+          res << querySublayers( encodeUri( uriParts ), flags, feedback );
+        }
+      }
+      CSLDestroy( papszSiblingFiles );
+      return res;
+    }
+  }
+
+  dataset.reset( QgsGdalProviderBase::gdalOpen( gdalUri, GDAL_OF_READONLY ) );
+  if ( !dataset )
+  {
+    return {};
+  }
+
+  const QList< QgsProviderSublayerDetails > res = QgsGdalProvider::sublayerDetails( dataset.get(), uri );
+  if ( res.empty() )
+  {
+    // may not have multiple sublayers, but may still be a single-raster layer dataset
+    if ( GDALGetRasterCount( dataset.get() ) != 0 )
+    {
+      QgsProviderSublayerDetails details;
+      details.setProviderKey( PROVIDER_KEY );
+      details.setType( QgsMapLayerType::RasterLayer );
+      details.setUri( uri );
+      details.setLayerNumber( 1 );
+
+      QString name;
+      const QVariantMap parts = decodeUri( uri );
+      if ( !parts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty() )
+      {
+        name = parts.value( QStringLiteral( "vsiSuffix" ) ).toString();
+        if ( name.startsWith( '/' ) )
+          name = name.mid( 1 );
+      }
+      else if ( parts.contains( QStringLiteral( "path" ) ) )
+      {
+        name = QgsProviderUtils::suggestLayerNameFromFilePath( parts.value( QStringLiteral( "path" ) ).toString() );
+      }
+      details.setName( name.isEmpty() ? uri : name );
+      return {details};
+    }
+    else
+    {
+      return {};
+    }
+  }
+  else
+  {
+    return res;
+  }
 }
 
 QList<QgsDataItemProvider *> QgsGdalProviderMetadata::dataItemProviders() const

@@ -294,7 +294,7 @@ void QgsMapOverviewCanvas::updateFullExtent()
     if ( mSettings.hasValidSettings() )
       rect = mSettings.fullExtent();
     else
-      rect = mMapCanvas->fullExtent();
+      rect = mMapCanvas->projectExtent();
   }
 
   // expand a bit to keep features on margin

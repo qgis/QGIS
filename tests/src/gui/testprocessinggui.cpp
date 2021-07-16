@@ -3054,6 +3054,7 @@ void TestProcessingGui::testFieldWrapper()
   std::unique_ptr< QgsProcessingParameterDefinitionWidget > widget = std::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "field" ), context, widgetContext );
   std::unique_ptr< QgsProcessingParameterDefinition > def( widget->createParameter( QStringLiteral( "param_name" ) ) );
   QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QVERIFY( !def->defaultValue().isValid() );
   QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) ); // should default to mandatory
   QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
 
@@ -9419,7 +9420,7 @@ void TestProcessingGui::testMeshDatasetWrapperLayerInProject()
   QVariantMap timeValueMap = timeValue.toMap();
   QCOMPARE( timeValueMap[QStringLiteral( "type" )].toString(), QStringLiteral( "dataset-time-step" ) );
   pythonString = timeDefinition.valueAsPythonString( timeWrapper.widgetValue(), context );
-  QCOMPARE( pythonString, QStringLiteral( "{'type': 'dataset-time-step','value': QgsMeshDatasetIndex(1,0)}" ) );
+  QCOMPARE( pythonString, QStringLiteral( "{'type': 'dataset-time-step','value': [1,0]}" ) );
   QVERIFY( timeDefinition.checkValueIsAcceptable( timeValue ) );
   QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( timeValue ), QStringLiteral( "dataset-time-step" ) );
   QVERIFY( QgsProcessingParameterMeshDatasetTime::timeValueAsDatasetIndex( timeValue ) == QgsMeshDatasetIndex( 1, 0 ) );
@@ -9472,6 +9473,22 @@ void TestProcessingGui::testMeshDatasetWrapperLayerInProject()
   QCOMPARE( pythonString, QStringLiteral( "{'type': 'static'}" ) );
   QVERIFY( timeDefinition.checkValueIsAcceptable( timeWrapper.widgetValue() ) );
   QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( timeWrapper.widgetValue() ), QStringLiteral( "static" ) );
+
+  groupsWrapper.setWidgetValue( 3, context );
+  QCOMPARE( datasetGroupWidget->value(), QVariantList( {3} ) );
+  groupsWrapper.setWidgetValue( QVariantList( {1, 2, 3} ), context );
+  QCOMPARE( datasetGroupWidget->value().toList(), QVariantList( {1, 2, 3} ) );
+  groupsWrapper.setWidgetValue( QVariantList( {"1", "2", "3"} ), context );
+  QCOMPARE( datasetGroupWidget->value().toList(), QVariantList( {1, 2, 3} ) );
+  groupsWrapper.setWidgetValue( QgsProperty::fromExpression( QStringLiteral( "1+3" ) ), context );
+  QCOMPARE( datasetGroupWidget->value().toList(), QVariantList( {4} ) );
+
+  timeWrapper.setWidgetValue( QDateTime( QDate( 2020, 01, 02 ), QTime( 1, 2, 3 ) ), context );
+  pythonString = timeDefinition.valueAsPythonString( timeWrapper.widgetValue(), context );
+  QCOMPARE( pythonString, QStringLiteral( "{'type': 'defined-date-time','value': QDateTime(QDate(2020, 1, 2), QTime(1, 2, 3))}" ) );
+  timeWrapper.setWidgetValue( QVariant::fromValue( QDateTime( QDate( 2020, 02, 01 ), QTime( 3, 2, 1 ) ) ).toString(), context );
+  pythonString = timeDefinition.valueAsPythonString( timeWrapper.widgetValue(), context );
+  QCOMPARE( pythonString, QStringLiteral( "{'type': 'defined-date-time','value': QDateTime(QDate(2020, 2, 1), QTime(3, 2, 1))}" ) );
 }
 
 void TestProcessingGui::testMeshDatasetWrapperLayerOutsideProject()

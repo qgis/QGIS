@@ -38,6 +38,7 @@ Returns the layer cache
 :return: the layer cache used as backend
 %End
 
+
     virtual void setModel( QgsFeatureListModel *featureListModel );
 %Docstring
 Set the :py:class:`QgsFeatureListModel` which is used to retrieve information

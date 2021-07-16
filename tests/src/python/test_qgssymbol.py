@@ -55,7 +55,10 @@ from qgis.core import (QgsGeometry,
                        QgsSymbolLayerUtils,
                        QgsMarkerLineSymbolLayer,
                        QgsArrowSymbolLayer,
-                       QgsSymbol
+                       QgsSymbol,
+                       Qgis,
+                       QgsSymbolLayer,
+                       QgsProperty
                        )
 
 from qgis.testing import unittest, start_app
@@ -167,6 +170,27 @@ class TestQgsSymbol(unittest.TestCase):
         self.assertEqual(QgsSymbol.symbolTypeForGeometryType(QgsWkbTypes.PolygonGeometry), QgsSymbol.Fill)
         self.assertEqual(QgsSymbol.symbolTypeForGeometryType(QgsWkbTypes.NullGeometry), QgsSymbol.Hybrid)
         self.assertEqual(QgsSymbol.symbolTypeForGeometryType(QgsWkbTypes.UnknownGeometry), QgsSymbol.Hybrid)
+
+    def testFlags(self):
+        """
+        Test symbol flags
+        """
+        s = QgsLineSymbol.createSimple({})
+        self.assertEqual(s.flags(), Qgis.SymbolFlags())
+
+        s.setFlags(Qgis.SymbolFlag.RendererShouldUseSymbolLevels)
+        self.assertEqual(s.flags(), Qgis.SymbolFlag.RendererShouldUseSymbolLevels)
+
+        s2 = s.clone()
+        self.assertEqual(s2.flags(), Qgis.SymbolFlag.RendererShouldUseSymbolLevels)
+
+        # test that flags are saved/restored via XML
+        doc = QDomDocument()
+        context = QgsReadWriteContext()
+        element = QgsSymbolLayerUtils.saveSymbol('test', s, doc, context)
+
+        s2 = QgsSymbolLayerUtils.loadSymbol(element, context)
+        self.assertEqual(s2.flags(), Qgis.SymbolFlag.RendererShouldUseSymbolLevels)
 
     def testCanCauseArtifactsBetweenAdjacentTiles(self):
         """
@@ -853,6 +877,79 @@ class TestQgsMarkerSymbol(unittest.TestCase):
         self.assertEqual(markerSymbol.symbolLayer(0).sizeMapUnitScale(), QgsMapUnitScale(3000, 4000))
         self.assertEqual(markerSymbol.symbolLayer(1).sizeMapUnitScale(), QgsMapUnitScale(3000, 4000))
         self.assertEqual(markerSymbol.symbolLayer(2).sizeMapUnitScale(), QgsMapUnitScale(3000, 4000))
+
+    def testBoundDisabledSymbolLayer(self):
+        # test calculating symbol bounds with a disabled symbol layer
+        s = QgsMarkerSymbol()
+        s.deleteSymbolLayer(0)
+        s.appendSymbolLayer(
+            QgsSimpleMarkerSymbolLayer(size=10, color=QColor(255, 255, 0)))
+        s[0].setStrokeStyle(Qt.NoPen)
+
+        # larger layer, but disabled. Should not be considered in the bounds
+        s.appendSymbolLayer(
+            QgsSimpleMarkerSymbolLayer(size=20, color=QColor(255, 255, 0)))
+        s[1].setStrokeStyle(Qt.NoPen)
+        s[1].setEnabled(False)
+
+        g = QgsGeometry.fromWkt('Point(1 1)')
+        rendered_image = self.renderGeometry(s, g, QgsMapSettings.DrawSymbolBounds)
+        self.assertTrue(self.imageCheck('marker_bounds_layer_disabled', 'marker_bounds_layer_disabled', rendered_image))
+
+        # with data defined visibility
+        s[1].setEnabled(True)
+        s[1].setDataDefinedProperty(QgsSymbolLayer.PropertyLayerEnabled, QgsProperty.fromExpression('false'))
+        rendered_image = self.renderGeometry(s, g, QgsMapSettings.DrawSymbolBounds)
+        self.assertTrue(self.imageCheck('marker_bounds_layer_disabled', 'marker_bounds_layer_disabled', rendered_image))
+
+    def renderGeometry(self, symbol, geom, flags=QgsMapSettings.Flags()):
+        f = QgsFeature()
+        f.setGeometry(geom)
+
+        image = QImage(200, 200, QImage.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        if flags:
+            ms.setFlags(flags)
+        extent = geom.get().boundingBox()
+        # buffer extent by 10%
+        if extent.width() > 0:
+            extent = extent.buffered((extent.height() + extent.width()) / 20.0)
+        else:
+            extent = extent.buffered(10)
+
+        ms.setExtent(extent)
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+
+        painter.begin(image)
+        try:
+            image.fill(QColor(0, 0, 0))
+            symbol.startRender(context)
+            symbol.renderFeature(f, context)
+            symbol.stopRender(context)
+        finally:
+            painter.end()
+
+        return image
+
+    def imageCheck(self, name, reference_image, image):
+        self.report += "<h2>Render {}</h2>\n".format(name)
+        temp_dir = QDir.tempPath() + '/'
+        file_name = temp_dir + 'symbol_' + name + ".png"
+        image.save(file_name, "PNG")
+        checker = QgsRenderChecker()
+        checker.setControlPathPrefix("symbol")
+        checker.setControlName("expected_" + reference_image)
+        checker.setRenderedImage(file_name)
+        checker.setColorTolerance(2)
+        result = checker.compareImages(name, 20)
+        self.report += checker.report()
+        print((self.report))
+        return result
 
 
 class TestQgsLineSymbol(unittest.TestCase):

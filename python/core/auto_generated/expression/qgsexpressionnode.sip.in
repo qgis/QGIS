@@ -280,7 +280,31 @@ Returns the node's static cached value. Only valid if :py:func:`~QgsExpressionNo
 .. versionadded:: 3.18
 %End
 
+    const QgsExpressionNode *effectiveNode() const;
+%Docstring
+Returns a reference to the simplest node which represents this node,
+after any compilation optimizations have been applied.
+
+Eg. a node like "CASE WHEN true THEN "some_field" WHEN other condition THEN ... END" can effectively
+be replaced entirely by a :py:class:`QgsExpressionNodeColumnRef` referencing the "some_field" field, as the
+CASE WHEN ... will ALWAYS evaluate to "some_field".
+
+Returns a reference to the current object if no optimizations were applied.
+
+.. versionadded:: 3.20
+%End
+
   protected:
+
+    QgsExpressionNode();
+%Docstring
+Constructor.
+%End
+
+    QgsExpressionNode( const QgsExpressionNode &other );
+%Docstring
+Copy constructor
+%End
 
 
 

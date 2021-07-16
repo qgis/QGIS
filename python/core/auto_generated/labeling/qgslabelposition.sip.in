@@ -48,6 +48,13 @@ Constructor for QgsLabelPosition.
 Constructor for QgsLabelPosition
 %End
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    const QString text = sipCpp->labelText;
+    QString str = QStringLiteral( "<QgsLabelPosition: \"%1\"%2>" ).arg( text, sipCpp->isUnplaced ? QStringLiteral( " (unplaced)" ) : QString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
     QgsFeatureId featureId;
 
     double rotation;

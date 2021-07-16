@@ -9,6 +9,7 @@
 
 
 
+
 class QgsLayoutItemPolygon: QgsLayoutNodesItem
 {
 %Docstring(signature="appended")
@@ -32,6 +33,8 @@ Constructor for QgsLayoutItemPolygon for the specified ``layout``.
 Constructor for QgsLayoutItemPolygon for the specified ``polygon``
 and ``layout``.
 %End
+
+    ~QgsLayoutItemPolygon();
 
     static QgsLayoutItemPolygon *create( QgsLayout *layout ) /Factory/;
 %Docstring

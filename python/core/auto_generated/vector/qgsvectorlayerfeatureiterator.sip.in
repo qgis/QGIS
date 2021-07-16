@@ -109,14 +109,14 @@ end of iterating: free the resources / lock
       const QgsVectorLayerJoinInfo *joinInfo;//!< Canonical source of information about the join
       QgsAttributeList attributes;      //!< Attributes to fetch
       int indexOffset;                  //!< At what position the joined fields start
-      QgsVectorLayer *joinLayer;        //!< Resolved pointer to the joined layer
+
+
       int targetField;                  //!< Index of field (of this layer) that drives the join
       int joinField;                    //!< Index of field (of the joined layer) must have equal value
 
       void addJoinedAttributesCached( QgsFeature &f, const QVariant &joinValue ) const;
       void addJoinedAttributesDirect( QgsFeature &f, const QVariant &joinValue ) const;
     };
-
 
     virtual bool isValid() const;
 
@@ -192,7 +192,7 @@ the QgsVectorLayerSelectedFeatureSource will not be reflected.
 
     virtual QgsWkbTypes::Type wkbType() const;
 
-    virtual long featureCount() const;
+    virtual long long featureCount() const;
 
     virtual QString sourceName() const;
 

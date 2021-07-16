@@ -184,7 +184,7 @@ void QgsTextBufferSettings::updateDataDefinedProperties( QgsRenderContext &conte
   }
 
   QVariant exprVal = properties.value( QgsPalLayerSettings::BufferUnit, context.expressionContext() );
-  if ( exprVal.isValid() )
+  if ( !exprVal.isNull() )
   {
     QString units = exprVal.toString();
     if ( !units.isEmpty() )
@@ -199,7 +199,11 @@ void QgsTextBufferSettings::updateDataDefinedProperties( QgsRenderContext &conte
   if ( properties.isActive( QgsPalLayerSettings::BufferOpacity ) )
   {
     context.expressionContext().setOriginalValueVariable( d->opacity * 100 );
-    d->opacity = properties.value( QgsPalLayerSettings::BufferOpacity, context.expressionContext(), d->opacity * 100 ).toDouble() / 100.0;
+    const QVariant val = properties.value( QgsPalLayerSettings::BufferOpacity, context.expressionContext(), d->opacity * 100 );
+    if ( !val.isNull() )
+    {
+      d->opacity = val.toDouble() / 100.0;
+    }
   }
 
   if ( properties.isActive( QgsPalLayerSettings::BufferColor ) )

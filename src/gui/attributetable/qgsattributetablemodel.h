@@ -27,13 +27,13 @@
 
 #include "qgsconditionalstyle.h"
 #include "qgsattributeeditorcontext.h"
-#include "qgsvectorlayercache.h"
 #include "qgis_gui.h"
 
 class QgsMapCanvas;
 class QgsMapLayerAction;
 class QgsEditorWidgetFactory;
 class QgsFieldFormatter;
+class QgsVectorLayerCache;
 
 /**
  * \ingroup gui
@@ -165,7 +165,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     /**
      * Returns the layer this model uses as backend. Retrieved from the layer cache.
      */
-    inline QgsVectorLayer *layer() const { return mLayerCache ? mLayerCache->layer() : nullptr; }
+    inline QgsVectorLayer *layer() const { return mLayer; }
 
     /**
      * Returns the layer cache this model uses as backend.
@@ -329,6 +329,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     virtual void fieldFormatterRemoved( QgsFieldFormatter *fieldFormatter );
 
   private:
+    QgsVectorLayer *mLayer = nullptr;
     QgsVectorLayerCache *mLayerCache = nullptr;
     int mFieldCount = 0;
 
@@ -342,7 +343,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     QHash<QgsFeatureId, int> mIdRowMap;
     QHash<int, QgsFeatureId> mRowIdMap;
-    mutable QHash<int, QList<QgsConditionalStyle> > mRowStylesMap;
+    mutable QHash<QgsFeatureId, QList<QgsConditionalStyle> > mRowStylesMap;
 
     mutable QgsExpressionContext mExpressionContext;
 

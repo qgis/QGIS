@@ -165,7 +165,7 @@ QgsRasterBlock *QgsPalettedRasterRenderer::block( int, QgsRectangle  const &exte
     alphaBlock = inputBlock;
   }
 
-  if ( !outputBlock->reset( Qgis::ARGB32_Premultiplied, width, height ) )
+  if ( !outputBlock->reset( Qgis::DataType::ARGB32_Premultiplied, width, height ) )
   {
     return outputBlock.release();
   }

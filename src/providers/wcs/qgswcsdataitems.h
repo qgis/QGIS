@@ -15,10 +15,12 @@
 #ifndef QGSWCSDATAITEMS_H
 #define QGSWCSDATAITEMS_H
 
-#include "qgsdataitem.h"
+#include "qgsdatacollectionitem.h"
+#include "qgslayeritem.h"
 #include "qgsdatasourceuri.h"
 #include "qgswcscapabilities.h"
 #include "qgsdataitemprovider.h"
+#include "qgsconnectionsitem.h"
 
 class QgsWCSConnectionItem : public QgsDataCollectionItem
 {

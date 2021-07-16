@@ -108,7 +108,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  *
  * This will produce the following output:
  *
- * \code
+ * \code{.unparsed}
  * CRS Description: OSGB 1936 / British National Grid
  * CRS PROJ text: +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 [output trimmed]
  * \endcode
@@ -137,7 +137,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  *   format: `+param1=value1 +param2=value2 [...]`. This is the format natively used by the
  *   underlying proj library. For example, the definition of WGS84 looks like this:
  *
- *   \code
+ *   \code{.unparsed}
  *   +proj=longlat +datum=WGS84 +no_defs
  *   \endcode
  *
@@ -147,7 +147,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  * - Well-known text (WKT): Defined by Open Geospatial Consortium (OGC), this is another common
  *   format to define CRS. For WGS84 the OGC WKT definition is the following:
  *
- *   \code
+ *   \code{.unparsed}
  *       GEOGCS["WGS 84",
  *              DATUM["WGS_1984",
  *                SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],
@@ -783,6 +783,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * \param epoch Coordinate epoch as decimal year (e.g. 2021.3)
      *
+     * \warning The QgsCoordinateTransform class can perform time-dependent transformations
+     * between a static and dynamic CRS based on either the source or destination CRS coordinate epoch,
+     * however dynamic CRS to dynamic CRS transformations are not currently supported.
+     *
      * \see coordinateEpoch()
      *
      * \since QGIS 3.20
@@ -801,6 +805,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * observation, and not to the CRS, however it is often more practical to
      * bind it to the CRS. The coordinate epoch should be specified for dynamic
      * CRS (see isDynamic()).
+     *
+     * \warning The QgsCoordinateTransform class can perform time-dependent transformations
+     * between a static and dynamic CRS based on either the source or destination CRS coordinate epoch,
+     * however dynamic CRS to dynamic CRS transformations are not currently supported.
      *
      * \returns Coordinate epoch as decimal year (e.g. 2021.3), or NaN if not set, or relevant.
      *
@@ -1083,7 +1091,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     static const QHash< long, QgsCoordinateReferenceSystem > &srIdCache();
 
     friend class TestQgsCoordinateReferenceSystem;
-    friend class QgsPostgresProvider;
     friend class QgsCoordinateReferenceSystemRegistry;
     friend bool CORE_EXPORT operator> ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 );
     friend bool CORE_EXPORT operator< ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 );

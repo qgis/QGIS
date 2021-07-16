@@ -55,7 +55,6 @@ class TestQgsServerWMSGetFeatureInfoPG(TestQgsServerWMSTestBase):
         conn.executeSql('DROP TABLE IF EXISTS "qgis_test"."someDataLong" CASCADE')
         conn.executeSql('SELECT * INTO "qgis_test"."someDataLong" FROM "qgis_test"."someData"')
         conn.executeSql('ALTER TABLE "qgis_test"."someDataLong" ALTER COLUMN "pk" TYPE bigint')
-        conn.executeSql('ALTER TABLE "qgis_test"."someDataLong" ALTER COLUMN "pk" TYPE bigint')
         conn.executeSql('ALTER TABLE "qgis_test"."someDataLong" ALTER COLUMN "pk" SET NOT NULL')
         conn.executeSql('CREATE UNIQUE INDEX  someDataLongIdx ON "qgis_test"."someDataLong" ("pk")')
 

@@ -22,13 +22,14 @@
 #include "qgis.h"
 #include "qgspointxy.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgssymbol.h"
 #include "qgsmargins.h"
 #include "qgsmaplayer.h"
 
 #include <QPointer>
 
 class QgsRenderContext;
+class QgsMarkerSymbol;
+class QgsFillSymbol;
 
 /**
  * \ingroup core
@@ -77,6 +78,8 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * Constructor for QgsAnnotation.
      */
     QgsAnnotation( QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    ~QgsAnnotation() override;
 
     /**
      * Clones the annotation, returning a new copy of the annotation
@@ -243,7 +246,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * Returns the symbol that is used for rendering the annotation frame.
      * \see setFillSymbol()
      */
-    QgsFillSymbol *fillSymbol() const { return mFillSymbol.get(); }
+    QgsFillSymbol *fillSymbol() const;
 
     /**
      * Renders the annotation to a target render context.

@@ -33,6 +33,9 @@
 #include <QPolygonF>
 #include <QFont>
 
+class QgsFillSymbol;
+class QgsPathResolver;
+
 /**
  * \ingroup core
  * \class QgsSimpleMarkerSymbolLayerBase
@@ -99,7 +102,9 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
     QgsSimpleMarkerSymbolLayerBase( QgsSimpleMarkerSymbolLayerBase::Shape shape = Circle,
                                     double size = DEFAULT_SIMPLEMARKER_SIZE,
                                     double angle = DEFAULT_SIMPLEMARKER_ANGLE,
-                                    QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+                                    Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+
+    ~QgsSimpleMarkerSymbolLayerBase() override;
 
     /**
      * Returns the shape for the rendered marker symbol.
@@ -219,10 +224,12 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     QgsSimpleMarkerSymbolLayer( QgsSimpleMarkerSymbolLayerBase::Shape shape = Circle,
                                 double size = DEFAULT_SIMPLEMARKER_SIZE,
                                 double angle = DEFAULT_SIMPLEMARKER_ANGLE,
-                                QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD,
+                                Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD,
                                 const QColor &color = DEFAULT_SIMPLEMARKER_COLOR,
                                 const QColor &strokeColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR,
                                 Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEMARKER_JOINSTYLE );
+
+    ~QgsSimpleMarkerSymbolLayer() override;
 
     // static methods
 
@@ -473,7 +480,9 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     QgsFilledMarkerSymbolLayer( QgsSimpleMarkerSymbolLayerBase::Shape shape = Circle,
                                 double size = DEFAULT_SIMPLEMARKER_SIZE,
                                 double angle = DEFAULT_SIMPLEMARKER_ANGLE,
-                                QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+                                Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+
+    ~QgsFilledMarkerSymbolLayer() override;
 
     /**
      * Creates a new QgsFilledMarkerSymbolLayer.
@@ -524,7 +533,9 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
     QgsSvgMarkerSymbolLayer( const QString &path,
                              double size = DEFAULT_SVGMARKER_SIZE,
                              double angle = DEFAULT_SVGMARKER_ANGLE,
-                             QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+                             Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+
+    ~QgsSvgMarkerSymbolLayer() override;
 
     // static stuff
 
@@ -713,7 +724,9 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
     QgsRasterMarkerSymbolLayer( const QString &path = QString(),
                                 double size = DEFAULT_SVGMARKER_SIZE,
                                 double angle = DEFAULT_SVGMARKER_ANGLE,
-                                QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+                                Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+
+    ~QgsRasterMarkerSymbolLayer() override;
 
     // static stuff
 
@@ -868,6 +881,8 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
                               const QColor &color = DEFAULT_FONTMARKER_COLOR,
                               double angle = DEFAULT_FONTMARKER_ANGLE );
 
+    ~QgsFontMarkerSymbolLayer() override;
+
     // static stuff
 
     /**
@@ -879,6 +894,14 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
      * Creates a new QgsFontMarkerSymbolLayer from an SLD XML \a element.
      */
     static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
+
+    /**
+     * Resolves fonts from a \a properties map, raising warnings in the specified \a context if the
+     * required fonts are not available on the system.
+     *
+     * \since QGIS 3.20
+     */
+    static void resolveFonts( const QVariantMap &properties, const QgsReadWriteContext &context );
 
     // implemented from base classes
 
@@ -1042,6 +1065,8 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     double mChrWidth = 0;
     QPointF mChrOffset;
+    //! Scaling for font sizes, used if font size grows too large
+    double mFontSizeScale = 1.0;
     double mOrigSize;
 
     QColor mStrokeColor;

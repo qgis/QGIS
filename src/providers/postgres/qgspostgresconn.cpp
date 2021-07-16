@@ -1203,7 +1203,7 @@ static QString quotedList( const QVariantList &list )
     }
 
     QString inner = i->toString();
-    if ( inner.startsWith( '{' ) )
+    if ( inner.startsWith( '{' ) || i->type() == QVariant::Int || i->type() == QVariant::LongLong )
     {
       ret.append( inner );
     }
@@ -1869,6 +1869,9 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
   QString table;
   QString query;
 
+  // Limit table row scan if useEstimatedMetadata
+  const QString tableScanLimit { useEstimatedMetadata ? QStringLiteral( " LIMIT %1" ).arg( GEOM_TYPE_SELECT_LIMIT ) : QString() };
+
   int i = 0;
   for ( auto *layerPropertyPtr : layerProperties )
   {
@@ -1900,7 +1903,7 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
       // SRID is already known
       if ( srid != std::numeric_limits<int>::min() )
       {
-        sql += QStringLiteral( "SELECT %1, array_agg( '%2:RASTER'::text )" )
+        sql += QStringLiteral( "SELECT %1, array_agg( '%2:RASTER:-1'::text )" )
                .arg( i - 1 )
                .arg( srid );
       }
@@ -1909,7 +1912,7 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
         if ( useEstimatedMetadata )
         {
           sql = QStringLiteral( "SELECT %1, "
-                                "array_agg( srid || ':RASTER') "
+                                "array_agg(srid || ':RASTER:-1') "
                                 "FROM raster_columns "
                                 "WHERE r_raster_column = %2 AND r_table_schema = %3 AND r_table_name = %4" )
                 .arg( i - 1 )
@@ -1920,16 +1923,16 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
         else
         {
           sql = QStringLiteral( "SELECT %1, "
-                                "array_agg( DISTINCT ST_SRID( %2 ) || ':RASTER' ) "
+                                "array_agg(DISTINCT st_srid(%2) || ':RASTER:-1') "
                                 "FROM %3 "
                                 "%2 IS NOT NULL "
-                                "%4 "   // SQL clause
-                                "LIMIT %5" )
+                                "%4"   // SQL clause
+                                "%5" )
                 .arg( i - 1 )
                 .arg( quotedIdentifier( layerProperty.geometryColName ) )
                 .arg( table )
                 .arg( layerProperty.sql.isEmpty() ? QString() : QStringLiteral( " AND %1" ).arg( layerProperty.sql ) )
-                .arg( GEOM_TYPE_SELECT_LIMIT );
+                .arg( tableScanLimit );
         }
       }
 
@@ -1941,11 +1944,11 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
       // our estimation ignores that a where clause might restrict the feature type or srid
       if ( useEstimatedMetadata )
       {
-        table = QStringLiteral( "(SELECT %1 FROM %2 WHERE %3%1 IS NOT NULL LIMIT %4) AS t" )
+        table = QStringLiteral( "(SELECT %1 FROM %2 WHERE %3%1 IS NOT NULL%4) AS t" )
                 .arg( quotedIdentifier( layerProperty.geometryColName ),
                       table,
                       layerProperty.sql.isEmpty() ? QString() : QStringLiteral( " (%1) AND " ).arg( layerProperty.sql ) )
-                .arg( GEOM_TYPE_SELECT_LIMIT );
+                .arg( tableScanLimit );
       }
       else if ( !layerProperty.sql.isEmpty() )
       {
@@ -1983,13 +1986,13 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
         // full table. However SQL does not allow that.
         // So we have to do a subselect on the table to add the LIMIT,
         // see comment in the following code.
-        sql += QStringLiteral( "UPPER(geometrytype(%1%2))" )
+        sql += QStringLiteral( "UPPER(geometrytype(%1%2))  || ':' || ST_Zmflag(%1%2)" )
                .arg( quotedIdentifier( layerProperty.geometryColName ),
                      castToGeometry ?  "::geometry" : "" );
       }
       else
       {
-        sql += QStringLiteral( "%1::text" )
+        sql += QStringLiteral( "%1::text  || ':-1'" )
                .arg( quotedValue( QgsPostgresConn::postgisWkbTypeName( type ) ) );
       }
 
@@ -1999,10 +2002,10 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
       if ( type == QgsWkbTypes::Unknown )
       {
         // Subselect to limit the "array_agg(DISTINCT", see previous comment.
-        sql += QStringLiteral( " FROM (SELECT %1 from %2 LIMIT %3) as _unused" )
+        sql += QStringLiteral( " FROM (SELECT %1 FROM %2%3) AS _unused" )
                .arg( quotedIdentifier( layerProperty.geometryColName ) )
                .arg( table )
-               .arg( GEOM_TYPE_SELECT_LIMIT );
+               .arg( tableScanLimit );
       }
       else
       {
@@ -2061,9 +2064,28 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
       if ( sridAndTypeString == "NULL" )
         continue;
 
-      QStringList sridAndType = sridAndTypeString.split( ':' );
-      int srid = sridAndType[0].toInt();
+      const QStringList sridAndType = sridAndTypeString.split( ':' );
+      Q_ASSERT( sridAndType.size() == 3 );
+      const int srid = sridAndType[0].toInt();
       QString typeString = sridAndType[1];
+      const int zmFlags = sridAndType[2].toInt();
+
+      switch ( zmFlags )
+      {
+        case 1:
+          typeString.append( 'M' );
+          break;
+        case 2:
+          typeString.append( 'Z' );
+          break;
+        case 3:
+          typeString.append( QStringLiteral( "ZM" ) );
+          break;
+        default:
+        case 0:
+        case -1:
+          break;
+      }
 
       auto type = QgsPostgresConn::wkbTypeFromPostgis( typeString );
       auto flatType = QgsWkbTypes::flatType( type );
@@ -2332,9 +2354,33 @@ QgsWkbTypes::Type QgsPostgresConn::wkbTypeFromPostgis( const QString &type )
   {
     return QgsWkbTypes::MultiPolygon;
   }
+  else if ( ( type == QLatin1String( "POLYHEDRALSURFACEZ" ) ) || ( type == QLatin1String( "TINZ" ) ) )
+  {
+    return QgsWkbTypes::MultiPolygonZ;
+  }
+  else if ( ( type == QLatin1String( "POLYHEDRALSURFACEM" ) ) || ( type == QLatin1String( "TINM" ) ) )
+  {
+    return QgsWkbTypes::MultiPolygonM;
+  }
+  else if ( ( type == QLatin1String( "POLYHEDRALSURFACEZM" ) ) || ( type == QLatin1String( "TINZM" ) ) )
+  {
+    return QgsWkbTypes::MultiPolygonZM;
+  }
   else if ( type == QLatin1String( "TRIANGLE" ) )
   {
     return QgsWkbTypes::Polygon;
+  }
+  else if ( type == QLatin1String( "TRIANGLEZ" ) )
+  {
+    return QgsWkbTypes::PolygonZ;
+  }
+  else if ( type == QLatin1String( "TRIANGLEM" ) )
+  {
+    return QgsWkbTypes::PolygonM;
+  }
+  else if ( type == QLatin1String( "TRIANGLEZM" ) )
+  {
+    return QgsWkbTypes::PolygonZM;
   }
   return QgsWkbTypes::parseType( type );
 }

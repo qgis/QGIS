@@ -15,13 +15,10 @@ PyQgsAuthManagerOgrPostgresTest
 PyQgsDbManagerPostgis
 
 # Needs an OpenCL device, the library is not enough
-qgis_openclutilstest
+test_core_openclutils
 
 # Relies on a broken/unreliable 3rd party service
-qgis_layerdefinition
+test_core_layerdefinition
 
 # MSSQL requires the MSSQL docker
 PyQgsProviderConnectionMssql
-
-
-

@@ -44,6 +44,7 @@
 #include "qgsrasterlayer.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsrasterlayertemporalproperties.h"
+#include "qgslinesymbol.h"
 
 //qgs unit test utility class
 #include "qgsmultirenderchecker.h"

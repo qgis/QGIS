@@ -14,7 +14,8 @@
  ***************************************************************************/
 
 #include "qgsmaplayerlegend.h"
-
+#include "qgsiconutils.h"
+#include "qgsimagecache.h"
 #include "qgssettings.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodellegendnode.h"
@@ -29,6 +30,8 @@
 #include "qgspointcloudrenderer.h"
 #include "qgsrasterrenderer.h"
 #include "qgscolorramplegendnode.h"
+#include "qgsvectorlayerlabeling.h"
+#include "qgsrulebasedlabeling.h"
 
 QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent )
   : QObject( parent )
@@ -357,6 +360,18 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultVectorLayerLegend::createLayerTre
 {
   QList<QgsLayerTreeModelLegendNode *> nodes;
 
+  if ( mLayer )
+  {
+    QString placeholderImage = mLayer->legendPlaceholderImage();
+    if ( !placeholderImage.isEmpty() )
+    {
+      bool fitsInCache;
+      QImage img = QgsApplication::imageCache()->pathAsImage( placeholderImage, QSize(), false, 1.0, fitsInCache );
+      nodes << new QgsImageLegendNode( nodeLayer, img );
+      return nodes;
+    }
+  }
+
   QgsFeatureRenderer *r = mLayer->renderer();
   if ( !r )
     return nodes;
@@ -400,6 +415,32 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultVectorLayerLegend::createLayerTre
     }
   }
 
+  if ( mLayer->labelsEnabled() && mShowLabelLegend )
+  {
+    const QgsAbstractVectorLayerLabeling *labeling = mLayer->labeling();
+    if ( labeling )
+    {
+      QStringList pList = labeling->subProviders();
+      for ( int i = 0; i < pList.size(); ++i )
+      {
+        const QgsPalLayerSettings s = labeling->settings( pList.at( i ) );
+        QString description;
+        const QgsRuleBasedLabeling *ruleBasedLabeling = dynamic_cast<const QgsRuleBasedLabeling *>( labeling );
+        if ( ruleBasedLabeling && ruleBasedLabeling->rootRule() )
+        {
+          const QgsRuleBasedLabeling::Rule *rule = ruleBasedLabeling->rootRule()->findRuleByKey( pList.at( i ) );
+          if ( rule )
+          {
+            description = rule->description();
+          }
+        }
+        QgsVectorLabelLegendNode *node = new QgsVectorLabelLegendNode( nodeLayer, s );
+        node->setUserLabel( description );
+        nodes.append( node );
+      }
+    }
+  }
+
 
   return nodes;
 }
@@ -409,6 +450,8 @@ void QgsDefaultVectorLayerLegend::readXml( const QDomElement &elem, const QgsRea
   mTextOnSymbolEnabled = false;
   mTextOnSymbolTextFormat = QgsTextFormat();
   mTextOnSymbolContent.clear();
+
+  mShowLabelLegend = elem.attribute( QStringLiteral( "showLabelLegend" ), QStringLiteral( "0" ) ).compare( QStringLiteral( "1" ), Qt::CaseInsensitive ) == 0;
 
   QDomElement tosElem = elem.firstChildElement( QStringLiteral( "text-on-symbol" ) );
   if ( !tosElem.isNull() )
@@ -430,6 +473,7 @@ QDomElement QgsDefaultVectorLayerLegend::writeXml( QDomDocument &doc, const QgsR
 {
   QDomElement elem = doc.createElement( QStringLiteral( "legend" ) );
   elem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "default-vector" ) );
+  elem.setAttribute( QStringLiteral( "showLabelLegend" ), mShowLabelLegend );
 
   if ( mTextOnSymbolEnabled )
   {
@@ -471,7 +515,14 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultRasterLayerLegend::createLayerTre
     nodes << new QgsWmsLegendNode( nodeLayer );
   }
 
-  if ( mLayer->renderer() )
+  QString placeholderImage = mLayer->legendPlaceholderImage();
+  if ( !placeholderImage.isEmpty() )
+  {
+    bool fitsInCache;
+    QImage img = QgsApplication::imageCache()->pathAsImage( placeholderImage, QSize(), false, 1.0, fitsInCache );
+    nodes << new QgsImageLegendNode( nodeLayer, img );
+  }
+  else if ( mLayer->renderer() )
     nodes.append( mLayer->renderer()->createLegendNodes( nodeLayer ) );
   return nodes;
 }
@@ -488,10 +539,6 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
 {
   QList<QgsLayerTreeModelLegendNode *> nodes;
 
-  QgsMeshDataProvider *provider = mLayer->dataProvider();
-  if ( !provider )
-    return nodes;
-
   QgsMeshRendererSettings rendererSettings = mLayer->rendererSettings();
 
   int indexScalar = rendererSettings.activeScalarDatasetGroup();
@@ -499,11 +546,11 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
 
   QString name;
   if ( indexScalar > -1 && indexVector > -1 && indexScalar != indexVector )
-    name = QString( "%1 / %2" ).arg( provider->datasetGroupMetadata( indexScalar ).name(), provider->datasetGroupMetadata( indexVector ).name() );
+    name = QString( "%1 / %2" ).arg( mLayer->datasetGroupMetadata( indexScalar ).name(), mLayer->datasetGroupMetadata( indexVector ).name() );
   else if ( indexScalar > -1 )
-    name = provider->datasetGroupMetadata( indexScalar ).name();
+    name = mLayer->datasetGroupMetadata( indexScalar ).name();
   else if ( indexVector > -1 )
-    name = provider->datasetGroupMetadata( indexVector ).name();
+    name = mLayer->datasetGroupMetadata( indexVector ).name();
   else
   {
     // neither contours nor vectors get rendered - no legend needed

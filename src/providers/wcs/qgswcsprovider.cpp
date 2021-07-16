@@ -286,23 +286,23 @@ QgsWcsProvider::QgsWcsProvider( const QString &uri, const ProviderOptions &optio
     double myInternalNoDataValue;
     switch ( srcDataType( i ) )
     {
-      case Qgis::Byte:
+      case Qgis::DataType::Byte:
         myInternalNoDataValue = -32768.0;
         myInternalGdalDataType = GDT_Int16;
         break;
-      case Qgis::Int16:
+      case Qgis::DataType::Int16:
         myInternalNoDataValue = -2147483648.0;
         myInternalGdalDataType = GDT_Int32;
         break;
-      case Qgis::UInt16:
+      case Qgis::DataType::UInt16:
         myInternalNoDataValue = -2147483648.0;
         myInternalGdalDataType = GDT_Int32;
         break;
-      case Qgis::Int32:
+      case Qgis::DataType::Int32:
         // We believe that such values is no used in real data
         myInternalNoDataValue = -2147483648.0;
         break;
-      case Qgis::UInt32:
+      case Qgis::DataType::UInt32:
         // We believe that such values is no used in real data
         myInternalNoDataValue = 4294967295.0;
         break;
@@ -883,7 +883,7 @@ Qgis::DataType QgsWcsProvider::sourceDataType( int bandNo ) const
 {
   if ( bandNo <= 0 || bandNo > mSrcGdalDataType.size() )
   {
-    return Qgis::UnknownDataType;
+    return Qgis::DataType::UnknownDataType;
   }
 
   return dataTypeFromGdal( mSrcGdalDataType[bandNo - 1] );
@@ -893,7 +893,7 @@ Qgis::DataType QgsWcsProvider::dataType( int bandNo ) const
 {
   if ( bandNo <= 0 || bandNo > mGdalDataType.size() )
   {
-    return Qgis::UnknownDataType;
+    return Qgis::DataType::UnknownDataType;
   }
 
   return dataTypeFromGdal( mGdalDataType[bandNo - 1] );

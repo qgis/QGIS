@@ -172,6 +172,9 @@ class TestQgsGeometry : public QObject
     void normalize_data();
     void normalize();
 
+    void simplifiedTypeRef_data();
+    void simplifiedTypeRef();
+
     // MK, Disabled 14.11.2014
     // Too unclear what exactly should be tested and which variations are allowed for the line
 #if 0
@@ -1802,11 +1805,13 @@ void TestQgsGeometry::circularString()
 
   //isClosed
   QgsCircularString l11;
+  QVERIFY( !l11.isClosed2D() );
   QVERIFY( !l11.isClosed() );
   l11.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
                  << QgsPoint( 11, 2 )
                  << QgsPoint( 11, 22 )
                  << QgsPoint( 1, 22 ) );
+  QVERIFY( !l11.isClosed2D() );
   QVERIFY( !l11.isClosed() );
   QCOMPARE( l11.numPoints(), 4 );
   QCOMPARE( l11.area(), 0.0 );
@@ -1817,7 +1822,18 @@ void TestQgsGeometry::circularString()
                  << QgsPoint( QgsWkbTypes::PointM, 11, 2, 0, 4 )
                  << QgsPoint( QgsWkbTypes::PointM, 11, 22, 0, 5 )
                  << QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 6 ) );
+  QVERIFY( l11.isClosed2D() );
   QVERIFY( l11.isClosed() );
+
+  // test with z
+  l11.addZValue( 123.0 );
+  QVERIFY( l11.isClosed2D() );
+  QVERIFY( l11.isClosed() );
+  QgsPoint pEnd = l11.endPoint();
+  pEnd.setZ( 234.0 );
+  l11.moveVertex( QgsVertexId( 0, 0, l11.numPoints() - 1 ), pEnd );
+  QVERIFY( l11.isClosed2D() );
+  QVERIFY( !l11.isClosed() );
 
   //polygonf
   QgsCircularString l13;
@@ -2573,7 +2589,7 @@ void TestQgsGeometry::circularString()
 
   //centroid
   QgsCircularString l34;
-  QCOMPARE( l34.centroid(), QgsPoint( 0, 0 ) );
+  QCOMPARE( l34.centroid(), QgsPoint() );
   l34.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) );
   QCOMPARE( l34.centroid(), QgsPoint( 5, 10 ) );
   l34.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 20, 10 ) << QgsPoint( 2, 9 ) );
@@ -11979,7 +11995,7 @@ void TestQgsGeometry::compoundCurve()
   //centroid
   QgsCircularString l34;
   QgsCompoundCurve c34;
-  QCOMPARE( c34.centroid(), QgsPoint( 0, 0 ) );
+  QCOMPARE( c34.centroid(), QgsPoint() );
   l34.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) );
   c34.addCurve( l34.clone() );
   QCOMPARE( c34.centroid(), QgsPoint( 5, 10 ) );
@@ -15813,6 +15829,10 @@ void TestQgsGeometry::multiPolygon()
   QVERIFY( dn1.removeDuplicateNodes( 0.001, false ) );
   QVERIFY( !dn1.removeDuplicateNodes( 0.001, false ) );
   QCOMPARE( dn1.asWkt(), QStringLiteral( "MultiPolygonZ (((0 0 0, 10 10 0, 11 9 0, 9 8 0, 1 -1 0, 0 0 0)),((7 -1 0, 12 7 0, 13 6 0, 8 -3 0, 7 -1 0)))" ) );
+
+  // test centroid of empty multipolygon
+  QgsMultiPolygon empty;
+  QCOMPARE( empty.centroid().asWkt(), QStringLiteral( "Point EMPTY" ) );
 }
 
 void TestQgsGeometry::geometryCollection()
@@ -17876,6 +17896,36 @@ void TestQgsGeometry::normalize()
   geom.normalize();
 
   QCOMPARE( geom.asWkt( 1 ), expected );
+}
+
+
+void TestQgsGeometry::simplifiedTypeRef_data()
+{
+  QTest::addColumn<QString>( "wkt" );
+  QTest::addColumn<QString>( "expected" );
+
+  QTest::newRow( "point empty" ) << QStringLiteral( "POINT EMPTY" )  << QStringLiteral( "Point EMPTY" );
+  QTest::newRow( "point" ) << QStringLiteral( "POINT (1 2)" )  << QStringLiteral( "Point (1 2)" );
+  QTest::newRow( "line empty" ) << QStringLiteral( "LINESTRING EMPTY" )  << QStringLiteral( "LineString EMPTY" );
+  QTest::newRow( "line" ) << QStringLiteral( "LINESTRING (1 1, 1 2, 1 3)" )  << QStringLiteral( "LineString (1 1, 1 2, 1 3)" );
+  QTest::newRow( "circular string" ) << QStringLiteral( "CIRCULARSTRINGZM (1 1 11 21, 1 0 12 22, 0 0 13 23, 0 1 14 24, 1 1 11 21)" )  << QStringLiteral( "CircularStringZM (1 1 11 21, 1 0 12 22, 0 0 13 23, 0 1 14 24, 1 1 11 21)" );
+  QTest::newRow( "compound curve empty" ) << QStringLiteral( "COMPOUNDCURVE EMPTY" )  << QStringLiteral( "CompoundCurve EMPTY" );
+  QTest::newRow( "compound curve one curve" ) << QStringLiteral( "COMPOUNDCURVE ((1 1, 1 2, 2 3))" )  << QStringLiteral( "LineString (1 1, 1 2, 2 3)" );
+  QTest::newRow( "compound curve two curves" ) << QStringLiteral( "COMPOUNDCURVE ((1 1, 1 2, 2 3),(2 3, 4 4))" )  << QStringLiteral( "CompoundCurve ((1 1, 1 2, 2 3),(2 3, 4 4))" );
+  QTest::newRow( "polygon empty" ) << QStringLiteral( "POLYGON EMPTY" )  << QStringLiteral( "Polygon EMPTY" );
+  QTest::newRow( "polygon exterior" ) << QStringLiteral( "POLYGON ((1 1, 0 1, 0 0, 1 0, 1 1))" )  << QStringLiteral( "Polygon ((1 1, 0 1, 0 0, 1 0, 1 1))" );
+  QTest::newRow( "collection empty" ) << QStringLiteral( "GEOMETRYCOLLECTION EMPTY" )  << QStringLiteral( "GeometryCollection EMPTY" );
+  QTest::newRow( "multipoint one point" ) << QStringLiteral( "MULTIPOINT(1 1)" )  << QStringLiteral( "Point (1 1)" );
+  QTest::newRow( "multipoint" ) << QStringLiteral( "MULTIPOINT(1 1, 3 4, 1 3, 2 2)" )  << QStringLiteral( "MultiPoint ((1 1),(3 4),(1 3),(2 2))" );
+}
+
+void TestQgsGeometry::simplifiedTypeRef()
+{
+  QFETCH( QString, wkt );
+  QFETCH( QString, expected );
+
+  QgsGeometry geom = QgsGeometry::fromWkt( wkt );
+  QCOMPARE( geom.constGet()->simplifiedTypeRef()->asWkt( 1 ), expected );
 }
 
 // MK, Disabled 14.11.2014

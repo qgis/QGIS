@@ -12,11 +12,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+#include "qgsmessagelog.h"
 #include "qgsvertextool.h"
 
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgscurve.h"
+#include "qgslinestring.h"
+#include "qgscircularstring.h"
 #include "qgscurvepolygon.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeometryvalidator.h"
@@ -566,6 +568,7 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       }
 
       QgsRenderContext context = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
+      context.setExpressionContext( mCanvas->createExpressionContext() );
       context.expressionContext() << QgsExpressionContextUtils::layerScope( vlayer );
       std::unique_ptr< QgsFeatureRenderer > r;
       if ( vlayer->renderer() )
@@ -585,6 +588,7 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         request.setSubsetOfAttributes( r->usedAttributes( context ), vlayer->fields() );
       else
         request.setNoAttributes();
+      request.setExpressionContext( context.expressionContext() );
 
       QgsFeature f;
       QgsFeatureIterator fi = vlayer->getFeatures( request );
@@ -632,7 +636,7 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       QgisApp::instance()->messageBar()->pushMessage(
         tr( "Invisible vertices were not selected" ),
         tr( "Vertices belonging to features that are not displayed on the map canvas were not selected." ),
-        Qgis::Warning );
+        Qgis::MessageLevel::Warning );
     }
 
     // here's where we give precedence to vertices of selected features in case there's no bound (locked) feature
@@ -1369,6 +1373,15 @@ void QgsVertexTool::keyPressEvent( QKeyEvent *e )
       {
         e->ignore();  // Override default shortcut management
         deleteVertex();
+      }
+      break;
+    }
+    case Qt::Key_O:
+    {
+      if ( mDraggingVertex || ( !mDraggingEdge && !mSelectedVertices.isEmpty() ) )
+      {
+        e->ignore();  // Override default shortcut management
+        toggleVertexCurve();
       }
       break;
     }
@@ -2174,7 +2187,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
 
   applyEditsToLayers( edits );
 
-  if ( QgsProject::instance()->topologicalEditing() && ( mapPointMatch->hasEdge() || mapPointMatch->hasMiddleSegment() ) && mapPointMatch->layer() )
+  if ( QgsProject::instance()->topologicalEditing() )
   {
     // topo editing: add vertex to existing segments when moving/adding a vertex to such segment.
     // this requires that the snapping match is to a segment and the segment layer's CRS
@@ -2182,12 +2195,27 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
     const auto editKeys = edits.keys();
     for ( QgsVectorLayer *layer : editKeys )
     {
-      if ( layer->crs() == mapPointMatch->layer()->crs() )
+      const auto editGeom = edits[layer].values();
+      for ( QgsGeometry g : editGeom )
       {
-        if ( !layerPoint.is3D() )
-          layerPoint.addZValue( defaultZValue() );
-        layer->addTopologicalPoints( layerPoint );
-        mapPointMatch->layer()->addTopologicalPoints( layerPoint );
+        QgsGeometry p = QgsGeometry::fromPointXY( QgsPointXY( layerPoint.x(), layerPoint.y() ) );
+        if ( ( mapPointMatch->hasEdge() || mapPointMatch->hasMiddleSegment() ) && mapPointMatch->layer() && ( layer->crs() == mapPointMatch->layer()->crs() ) )
+        {
+          if ( g.convertToType( QgsWkbTypes::PointGeometry, true ).contains( p ) )
+          {
+            if ( !layerPoint.is3D() )
+              layerPoint.addZValue( defaultZValue() );
+            layer->addTopologicalPoints( layerPoint );
+            mapPointMatch->layer()->addTopologicalPoints( layerPoint );
+          }
+        }
+        if ( QgsProject::instance()->avoidIntersectionsMode() != QgsProject::AvoidIntersectionsMode::AllowIntersections )
+        {
+          for ( QgsAbstractGeometry::vertex_iterator it = g.vertices_begin() ; it != g.vertices_end() ; it++ )
+          {
+            layer->addTopologicalPoints( *it );
+          }
+        }
       }
     }
   }
@@ -2295,7 +2323,60 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
     QHash<QgsFeatureId, QgsGeometry>::iterator it2 = layerEdits.begin();
     for ( ; it2 != layerEdits.end(); ++it2 )
     {
-      layer->changeGeometry( it2.key(), it2.value() );
+      QgsGeometry featGeom = it2.value();
+      layer->changeGeometry( it2.key(), featGeom );
+      edits[layer][it2.key()] = featGeom;
+    }
+
+    if ( mVertexEditor )
+      mVertexEditor->updateEditor( mLockedFeature.get() );
+  }
+
+
+
+  for ( it = edits.begin() ; it != edits.end(); ++it )
+  {
+    QgsVectorLayer *layer = it.key();
+    QHash<QgsFeatureId, QgsGeometry> &layerEdits = it.value();
+    QHash<QgsFeatureId, QgsGeometry>::iterator it2 = layerEdits.begin();
+    for ( ; it2 != layerEdits.end(); ++it2 )
+    {
+      QList<QgsVectorLayer *>  avoidIntersectionsLayers;
+      switch ( QgsProject::instance()->avoidIntersectionsMode() )
+      {
+        case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
+          avoidIntersectionsLayers.append( layer );
+          break;
+        case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers:
+          avoidIntersectionsLayers = QgsProject::instance()->avoidIntersectionsLayers();
+          break;
+        case QgsProject::AvoidIntersectionsMode::AllowIntersections:
+          break;
+      }
+      QgsGeometry featGeom = it2.value();
+      layer->changeGeometry( it2.key(), featGeom );
+      if ( avoidIntersectionsLayers.size() > 0 )
+      {
+        QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures;
+        QSet<QgsFeatureId> id;
+        id.insert( it2.key() );
+        ignoreFeatures.insert( layer, id );
+        int avoidIntersectionsReturn = featGeom.avoidIntersections( avoidIntersectionsLayers, ignoreFeatures );
+        switch ( avoidIntersectionsReturn )
+        {
+          case 2:
+            emit messageEmitted( tr( "The operation would change the geometry type." ), Qgis::MessageLevel::Warning );
+            break;
+
+          case 3:
+            emit messageEmitted( tr( "At least one geometry intersected is invalid. These geometries must be manually repaired." ), Qgis::MessageLevel::Warning );
+            break;
+          default:
+            break;
+        }
+      }
+      layer->changeGeometry( it2.key(), featGeom );
+      edits[layer][it2.key()] = featGeom;
     }
     layer->endEditCommand();
     layer->triggerRepaint();
@@ -2303,6 +2384,7 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
     if ( mVertexEditor )
       mVertexEditor->updateEditor( mLockedFeature.get() );
   }
+
 }
 
 
@@ -2428,6 +2510,7 @@ void QgsVertexTool::deleteVertex()
       std::sort( vertexIds.begin(), vertexIds.end(), std::greater<int>() );
       for ( int vertexId : vertexIds )
       {
+        QgsMessageLog::logMessage( "DELETE : fid:" + QString::number( fid ) + " ; vertexId:" + QString::number( vertexId ), "DEBUG" );
         if ( res != QgsVectorLayer::EmptyGeometry )
           res = layer->deleteVertex( fid, vertexId );
         if ( res != QgsVectorLayer::EmptyGeometry && res != QgsVectorLayer::Success )
@@ -2472,6 +2555,78 @@ void QgsVertexTool::deleteVertex()
       vertices_new << Vertex( vertex.layer, vertex.fid, vertexId );
       setHighlightedVertices( vertices_new );
     }
+  }
+
+  if ( mVertexEditor && mLockedFeature )
+    mVertexEditor->updateEditor( mLockedFeature.get() );
+}
+
+
+void QgsVertexTool::toggleVertexCurve()
+{
+
+  Vertex toConvert = Vertex( nullptr, -1, -1 );
+  if ( mSelectedVertices.size() == 1 )
+  {
+    toConvert = mSelectedVertices.first();
+  }
+  else if ( mDraggingVertexType == AddingVertex || mDraggingVertexType == MovingVertex )
+  {
+    toConvert = *mDraggingVertex;
+  }
+  else
+  {
+    // TODO support more than just 1 vertex
+    QgisApp::instance()->messageBar()->pushMessage(
+      tr( "Could not convert vertex" ),
+      tr( "Conversion can only be done on exactly one vertex." ),
+      Qgis::Info );
+    return;
+  }
+
+  if ( mDraggingVertex )
+  {
+    if ( mDraggingVertexType == AddingVertex || mDraggingVertexType == AddingEndpoint )
+    {
+      QgisApp::instance()->messageBar()->pushMessage(
+        tr( "Could not convert vertex" ),
+        tr( "Cannot convert vertex before it is added." ),
+        Qgis::Warning );
+      return;
+    }
+    stopDragging();
+  }
+
+  QgsVectorLayer *layer = toConvert.layer;
+
+  if ( ! QgsWkbTypes::isCurvedType( layer->wkbType() ) )
+  {
+    QgisApp::instance()->messageBar()->pushMessage(
+      tr( "Could not convert vertex" ),
+      tr( "Layer of type %1 does not support curved geometries." ).arg( QgsWkbTypes::displayString( layer->wkbType() ) ),
+      Qgis::Warning );
+    return;
+  }
+
+  layer->beginEditCommand( tr( "Toggled vertex to/from curve" ) );
+
+  QgsGeometry geom = layer->getFeature( toConvert.fid ).geometry();
+
+  bool success = geom.toggleCircularAtVertex( toConvert.vertexId );
+
+  if ( success )
+  {
+    layer->changeGeometry( toConvert.fid, geom );
+    layer->endEditCommand();
+    layer->triggerRepaint();
+  }
+  else
+  {
+    layer->destroyEditCommand();
+    QgisApp::instance()->messageBar()->pushMessage(
+      tr( "Could not convert vertex" ),
+      tr( "Start/end of vertices of features and arcs can not be converted." ),
+      Qgis::Warning );
   }
 
   if ( mVertexEditor && mLockedFeature )

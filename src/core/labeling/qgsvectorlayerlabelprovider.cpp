@@ -35,6 +35,8 @@
 #include "feature.h"
 #include "labelposition.h"
 #include "callouts/qgscallout.h"
+#include "qgssymbol.h"
+#include "qgsmarkersymbol.h"
 
 #include "pal/layer.h"
 
@@ -188,13 +190,16 @@ QList<QgsLabelFeature *> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCo
   return mLabels;
 }
 
-void QgsVectorLayerLabelProvider::registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry, const QgsSymbol *symbol )
+QList< QgsLabelFeature * > QgsVectorLayerLabelProvider::registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry, const QgsSymbol *symbol )
 {
-  QgsLabelFeature *label = nullptr;
-
-  mSettings.registerFeature( feature, context, &label, obstacleGeometry, symbol );
+  std::unique_ptr< QgsLabelFeature > label = mSettings.registerFeatureWithDetails( feature, context, obstacleGeometry, symbol );
+  QList< QgsLabelFeature * > res;
   if ( label )
-    mLabels << label;
+  {
+    res << label.get();
+    mLabels << label.release();
+  }
+  return res;
 }
 
 QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &fet, QgsRenderContext &context, const QgsSymbolList &symbols )
@@ -234,7 +239,7 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
     const auto constSymbols = symbols;
     for ( QgsSymbol *symbol : constSymbols )
     {
-      if ( symbol->type() == QgsSymbol::Marker )
+      if ( symbol->type() == Qgis::SymbolType::Marker )
       {
         if ( bounds.isValid() )
           bounds = bounds.united( static_cast< QgsMarkerSymbol * >( symbol )->bounds( pt, context, fet ) );
@@ -464,20 +469,23 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
 
 void QgsVectorLayerLabelProvider::drawUnplacedLabel( QgsRenderContext &context, LabelPosition *label ) const
 {
-  if ( !mSettings.drawLabels )
-    return;
-
   QgsTextLabelFeature *lf = dynamic_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );
 
-  QgsPalLayerSettings tmpLyr( mSettings );
-  QgsTextFormat format = tmpLyr.format();
-  format.setColor( mEngine->engineSettings().unplacedLabelColor() );
-  tmpLyr.setFormat( format );
-  drawLabelPrivate( label, context, tmpLyr, QgsTextRenderer::Text );
+  QgsTextFormat format = mSettings.format();
+  if ( mSettings.drawLabels
+       && mSettings.unplacedVisibility() != Qgis::UnplacedLabelVisibility::NeverShow
+       && mEngine->engineSettings().flags() & QgsLabelingEngineSettings::DrawUnplacedLabels )
+  {
+    QgsPalLayerSettings tmpLyr( mSettings );
+    format = tmpLyr.format();
+    format.setColor( mEngine->engineSettings().unplacedLabelColor() );
+    tmpLyr.setFormat( format );
+    drawLabelPrivate( label, context, tmpLyr, QgsTextRenderer::Text );
+  }
 
   // add to the results
   QString labeltext = label->getFeaturePart()->feature()->labelText();
-  mEngine->results()->mLabelSearchTree->insertLabel( label, label->getFeaturePart()->featureId(), mLayerId, labeltext, tmpLyr.format().font(), false, lf->hasFixedPosition(), mProviderId, true );
+  mEngine->results()->mLabelSearchTree->insertLabel( label, label->getFeaturePart()->featureId(), mLayerId, labeltext, format.font(), false, lf->hasFixedPosition(), mProviderId, true );
 }
 
 void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, QgsRenderContext &context, QgsPalLayerSettings &tmpLyr, QgsTextRenderer::TextPart drawType, double dpiRatio ) const
@@ -551,11 +559,17 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
 
     component.center = centerPt;
 
-    // convert label size to render units
-    double labelWidthPx = context.convertToPainterUnits( label->getWidth(), QgsUnitTypes::RenderMapUnits, QgsMapUnitScale() );
-    double labelHeightPx = context.convertToPainterUnits( label->getHeight(), QgsUnitTypes::RenderMapUnits, QgsMapUnitScale() );
+    {
+      // label size has already been calculated using any symbology reference scale factor -- we need
+      // to temporarily remove the reference scale here or we'll be applying the scaling twice
+      QgsScopedRenderContextReferenceScaleOverride referenceScaleOverride( context, -1.0 );
 
-    component.size = QSizeF( labelWidthPx, labelHeightPx );
+      // convert label size to render units
+      double labelWidthPx = context.convertToPainterUnits( label->getWidth(), QgsUnitTypes::RenderMapUnits, QgsMapUnitScale() );
+      double labelHeightPx = context.convertToPainterUnits( label->getHeight(), QgsUnitTypes::RenderMapUnits, QgsMapUnitScale() );
+
+      component.size = QSizeF( labelWidthPx, labelHeightPx );
+    }
 
     QgsTextRenderer::drawBackground( context, component, tmpLyr.format(), QgsTextDocument(), QgsTextRenderer::Label );
   }

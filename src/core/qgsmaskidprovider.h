@@ -16,9 +16,10 @@
 #ifndef QGSMASKIDPROVIDER_H
 #define QGSMASKIDPROVIDER_H
 
+#include "qgis_core.h"
+#include "qgssymbollayerreference.h"
 #include <QList>
 #include <QSet>
-#include "qgssymbollayerreference.h"
 
 /**
  * \ingroup core

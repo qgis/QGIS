@@ -20,7 +20,6 @@
 #include <QSet>
 #include <QString>
 #include <QIcon>
-#include <QAction>
 #include <QUuid>
 
 #include "qgsexpressioncontext.h"
@@ -255,7 +254,6 @@ class CORE_EXPORT QgsAction
     bool mCaptureOutput = false;
     QSet<QString> mActionScopes;
     QString mNotificationMessage;
-    mutable std::shared_ptr<QAction> mAction;
     QUuid mId;
     QgsExpressionContextScope mExpressionContextScope;
     bool mIsEnabledOnlyWhenEditable = false;

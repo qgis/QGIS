@@ -415,6 +415,34 @@ Activates a standard layout designer ``tool``.
 .. versionadded:: 3.6
 %End
 
+    class ExportResults
+{
+%Docstring(signature="appended")
+Encapsulates the results of an export operation performed in the designer.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgslayoutdesignerinterface.h"
+%End
+      public:
+
+        QgsLayoutExporter::ExportResult result;
+
+        QMap< QString, QgsLabelingResults * > labelingResults;
+
+    };
+
+    virtual QgsLayoutDesignerInterface::ExportResults *lastExportResults() const = 0 /Factory/;
+%Docstring
+Returns the results of the last export operation performed in the designer.
+
+May be ``None`` if no export has been performed in the designer.
+
+.. versionadded:: 3.20
+%End
+
   public slots:
 
     virtual void close() = 0;
@@ -429,6 +457,24 @@ Toggles whether or not the rulers should be ``visible`` in the designer.
 .. versionadded:: 3.4
 %End
 
+  signals:
+
+    void layoutExported();
+%Docstring
+Emitted whenever a layout is exported from the layout designer.
+
+The results of the export can be retrieved by calling :py:func:`~QgsLayoutDesignerInterface.lastExportResults`.
+
+.. versionadded:: 3.20
+%End
+
+
+    void mapPreviewRefreshed( QgsLayoutItemMap *map );
+%Docstring
+Emitted when a ``map`` item's preview has been refreshed.
+
+.. versionadded:: 3.20
+%End
 
 };
 

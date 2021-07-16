@@ -1,0 +1,67 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/qgsprovidersublayertask.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsProviderSublayerTask : QgsTask
+{
+%Docstring(signature="appended")
+
+A :py:class:`QgsTask` which retrieves sublayer details for a URI.
+
+This task executes a call to :py:func:`QgsProviderRegistry.querySublayers()` in a background
+thread. Depending on the URI queried it can be expensive to calculate the sublayers
+(e.g. in the case where a full table scan is required to resolve mixed geometry
+type layers), so it is beneficial to perform these queries in the background wherever
+possible.
+
+While :py:func:`QgsProviderRegistry.querySublayers()` offers various flags to control
+how in-depth the querying will be, these flags are not exposed through :py:class:`QgsProviderSublayerTask`.
+Rather :py:class:`QgsProviderSublayerTask` will always execute the most thorough query
+possible, regardless of how expensive this may be.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsprovidersublayertask.h"
+%End
+  public:
+
+    QgsProviderSublayerTask( const QString &uri );
+%Docstring
+Constructor for QgsProviderSublayerTask, which retrieves sublayer details for the
+specified ``uri``.
+%End
+
+    ~QgsProviderSublayerTask();
+
+    QList<QgsProviderSublayerDetails> results() const;
+%Docstring
+Returns the sublayer details as calculated by the task.
+%End
+
+    virtual void cancel();
+
+
+  protected:
+
+    virtual bool run();
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/qgsprovidersublayertask.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

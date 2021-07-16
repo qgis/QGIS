@@ -20,7 +20,7 @@
 #include "qgserror.h"
 #include "qgslogger.h"
 
-#include <QRegExp>
+#include <QRegularExpression>
 
 QgsErrorMessage::QgsErrorMessage( const QString &message, const QString &tag, const QString &file, const QString &function, int line )
   : mMessage( message )
@@ -61,7 +61,7 @@ QString QgsError::message( QgsErrorMessage::Format format ) const
   QString remote = QStringLiteral( QGS_GIT_REMOTE_URL );
   if ( !hash.isEmpty() && !remote.isEmpty() && remote.contains( QLatin1String( "github.com" ) ) )
   {
-    QString path = remote.remove( QRegExp( ".*github.com[:/]" ) ).remove( QStringLiteral( ".git" ) );
+    QString path = remote.remove( QRegularExpression( ".*github.com[:/]" ) ).remove( QStringLiteral( ".git" ) );
     srcUrl = "https://github.com/" + path + "/blob/" + hash;
   }
 #endif

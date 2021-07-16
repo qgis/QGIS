@@ -151,7 +151,9 @@ void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefi
     QStringList elements;
     elements << QString::number( item.layerId ) << item.layerName;
     if ( mShowCount )
-      elements << ( item.count == -1 ? tr( "Unknown" ) : QString::number( item.count ) );
+      elements << ( item.count == static_cast< int >( Qgis::FeatureCountState::Uncounted ) ||
+                    item.count == static_cast< int >( Qgis::FeatureCountState::UnknownCount )
+                    ? tr( "Unknown" ) : QString::number( item.count ) );
     if ( mShowType )
       elements << item.type;
     if ( mShowDescription )
@@ -181,7 +183,7 @@ void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefi
 int QgsSublayersDialog::exec()
 {
   QgsSettings settings;
-  PromptMode promptLayers = settings.enumValue( QStringLiteral( "qgis/promptForSublayers" ), PromptAlways );
+  const Qgis::SublayerPromptMode promptLayers = settings.enumValue( QStringLiteral( "qgis/promptForSublayers" ), Qgis::SublayerPromptMode::AlwaysAsk );
 
   // make sure three are sublayers to choose
   if ( layersTable->topLevelItemCount() == 0 )
@@ -190,9 +192,9 @@ int QgsSublayersDialog::exec()
   layersTable->selectAll();
 
   // check promptForSublayers settings - perhaps this should be in QgsDataSource instead?
-  if ( promptLayers == PromptNever )
+  if ( promptLayers == Qgis::SublayerPromptMode::NeverAskSkip )
     return QDialog::Rejected;
-  else if ( promptLayers == PromptLoadAll )
+  else if ( promptLayers == Qgis::SublayerPromptMode::NeverAskLoadAll )
     return QDialog::Accepted;
 
   // if there is only 1 sublayer (probably the main layer), just select that one and return

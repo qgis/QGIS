@@ -100,19 +100,21 @@ bool QgsVectorLayerJoinBuffer::addJoin( const QgsVectorLayerJoinInfo &joinInfo )
 
 bool QgsVectorLayerJoinBuffer::removeJoin( const QString &joinLayerId )
 {
-  QMutexLocker locker( &mMutex );
   bool res = false;
-  for ( int i = 0; i < mVectorJoins.size(); ++i )
   {
-    if ( mVectorJoins.at( i ).joinLayerId() == joinLayerId )
+    QMutexLocker locker( &mMutex );
+    for ( int i = 0; i < mVectorJoins.size(); ++i )
     {
-      if ( QgsVectorLayer *vl = mVectorJoins.at( i ).joinLayer() )
+      if ( mVectorJoins.at( i ).joinLayerId() == joinLayerId )
       {
-        disconnect( vl, &QgsVectorLayer::updatedFields, this, &QgsVectorLayerJoinBuffer::joinedLayerUpdatedFields );
-      }
+        if ( QgsVectorLayer *vl = mVectorJoins.at( i ).joinLayer() )
+        {
+          disconnect( vl, &QgsVectorLayer::updatedFields, this, &QgsVectorLayerJoinBuffer::joinedLayerUpdatedFields );
+        }
 
-      mVectorJoins.removeAt( i );
-      res = true;
+        mVectorJoins.removeAt( i );
+        res = true;
+      }
     }
   }
 
@@ -182,12 +184,16 @@ void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorLayerJoinInfo &joinInfo 
 
 QVector<int> QgsVectorLayerJoinBuffer::joinSubsetIndices( QgsVectorLayer *joinLayer, const QStringList &joinFieldsSubset )
 {
+  return joinSubsetIndices( joinLayer->fields(), joinFieldsSubset );
+}
+
+QVector<int> QgsVectorLayerJoinBuffer::joinSubsetIndices( const QgsFields &joinLayerFields, const QStringList &joinFieldsSubset )
+{
   QVector<int> subsetIndices;
-  const QgsFields &fields = joinLayer->fields();
   for ( int i = 0; i < joinFieldsSubset.count(); ++i )
   {
     QString joinedFieldName = joinFieldsSubset.at( i );
-    int index = fields.lookupField( joinedFieldName );
+    int index = joinLayerFields.lookupField( joinedFieldName );
     if ( index != -1 )
     {
       subsetIndices.append( index );

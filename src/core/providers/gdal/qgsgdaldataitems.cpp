@@ -23,16 +23,18 @@
 #include "qgsogrutils.h"
 #include "qgsproject.h"
 #include "qgsgdalutils.h"
+#include "qgszipitem.h"
 #include "qgsvectortiledataitems.h"
 #include "qgsproviderregistry.h"
 #include "symbology/qgsstyle.h"
+#include "qgsprovidersublayerdetails.h"
 
 #include <QFileInfo>
-#include <QAction>
-#include <mutex>
-#include <QMessageBox>
+#include <QRegularExpression>
 #include <QUrlQuery>
 #include <QUrl>
+
+#include <mutex>
 
 // defined in qgsgdalprovider.cpp
 void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QStringList &extensions, QStringList &wildcards );
@@ -40,21 +42,21 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
 
 QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem *parent,
                                     const QString &name, const QString &path, const QString &uri,
-                                    QStringList *sublayers )
-  : QgsLayerItem( parent, name, path, uri, QgsLayerItem::Raster, QStringLiteral( "gdal" ) )
+                                    const QList<QgsProviderSublayerDetails> &sublayers )
+  : QgsLayerItem( parent, name, path, uri, Qgis::BrowserLayerType::Raster, QStringLiteral( "gdal" ) )
 {
   mToolTip = uri;
   // save sublayers for subsequent access
   // if there are sublayers, set populated=false so item can be populated on demand
-  if ( sublayers && !sublayers->isEmpty() )
+  if ( !sublayers.isEmpty() )
   {
-    mSublayers = *sublayers;
+    mSublayers = sublayers;
     // We have sublayers: we are able to create children!
-    mCapabilities |= Fertile;
-    setState( NotPopulated );
+    mCapabilities |= Qgis::BrowserItemCapability::Fertile;
+    setState( Qgis::BrowserItemState::NotPopulated );
   }
   else
-    setState( Populated );
+    setState( Qgis::BrowserItemState::Populated );
 }
 
 
@@ -82,18 +84,12 @@ QVector<QgsDataItem *> QgsGdalLayerItem::createChildren()
   // get children from sublayers
   if ( !mSublayers.isEmpty() )
   {
-    QgsDataItem *childItem = nullptr;
     QgsDebugMsgLevel( QStringLiteral( "got %1 sublayers" ).arg( mSublayers.count() ), 3 );
-    for ( int i = 0; i < mSublayers.count(); i++ )
+    for ( const QgsProviderSublayerDetails &layer : std::as_const( mSublayers ) )
     {
-      const QStringList parts = mSublayers[i].split( QgsDataProvider::sublayerSeparator() );
-      const QString path = parts[0];
-      const QString desc = parts[1];
-      childItem = new QgsGdalLayerItem( this, desc, path, path );
-      if ( childItem )
-      {
-        children.append( childItem );
-      }
+      const QString path = layer.name();
+      const QString desc = layer.description();
+      children.append( new QgsGdalLayerItem( this, desc, path, path, {} ) );
     }
   }
 
@@ -231,8 +227,8 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
     const auto constSWildcards = sWildcards;
     for ( const QString &wildcard : constSWildcards )
     {
-      QRegExp rx( wildcard, Qt::CaseInsensitive, QRegExp::Wildcard );
-      if ( rx.exactMatch( info.fileName() ) )
+      const QRegularExpression rx( QRegularExpression::wildcardToRegularExpression( wildcard ), QRegularExpression::CaseInsensitiveOption );
+      if ( rx.match( info.fileName() ).hasMatch() )
       {
         matches = true;
         break;
@@ -280,8 +276,8 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
         uq.addQueryItem( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
         uq.addQueryItem( QStringLiteral( "url" ), QUrl::fromLocalFile( path ).toString() );
         QString encodedUri = uq.toString();
-        QgsLayerItem *item = new QgsLayerItem( parentItem, name, path, encodedUri, QgsLayerItem::Raster, QStringLiteral( "wms" ) );
-        item->setState( QgsDataItem::Populated );
+        QgsLayerItem *item = new QgsLayerItem( parentItem, name, path, encodedUri, Qgis::BrowserLayerType::Raster, QStringLiteral( "wms" ) );
+        item->setState( Qgis::BrowserItemState::Populated );
         return item;
       }
     }
@@ -320,20 +316,17 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
       // do not print errors, but write to debug
       CPLPushErrorHandler( CPLQuietErrorHandler );
       CPLErrorReset();
-      GDALDriverH hDriver = GDALIdentifyDriver( path.toUtf8().constData(), nullptr );
+      GDALDriverH hDriver = GDALIdentifyDriverEx( path.toUtf8().constData(), GDAL_OF_RASTER, nullptr, nullptr );
       CPLPopErrorHandler();
-      if ( !hDriver || GDALGetDriverShortName( hDriver ) == QLatin1String( "OGR_VRT" ) )
+      if ( !hDriver )
       {
         QgsDebugMsgLevel( QStringLiteral( "Skipping VRT file because root is not a GDAL VRT" ), 2 );
         return nullptr;
       }
     }
     // add the item
-    QStringList sublayers;
     QgsDebugMsgLevel( QStringLiteral( "adding item name=%1 path=%2" ).arg( name, path ), 2 );
-    QgsLayerItem *item = new QgsGdalLayerItem( parentItem, name, path, path, &sublayers );
-    if ( item )
-      return item;
+    return new QgsGdalLayerItem( parentItem, name, path, path, {} );
   }
 
   // test that file is valid with GDAL
@@ -359,15 +352,12 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
     return nullptr;
   }
 
-  QStringList sublayers = QgsGdalProvider::subLayers( hDS.get() );
+  const QList< QgsProviderSublayerDetails > sublayers = QgsGdalProvider::sublayerDetails( hDS.get(), path );
   hDS.reset();
 
   QgsDebugMsgLevel( "GdalDataset opened " + path, 2 );
 
-  QgsLayerItem *item = new QgsGdalLayerItem( parentItem, name, path, path,
-      &sublayers );
-
-  return item;
+  return new QgsGdalLayerItem( parentItem, name, path, path, sublayers );
 }
 
 ///@endcond

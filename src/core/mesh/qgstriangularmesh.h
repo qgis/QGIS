@@ -30,6 +30,7 @@
 #include "qgsmeshdataprovider.h"
 #include "qgsgeometry.h"
 #include "qgsmeshspatialindex.h"
+#include "qgstopologicalmesh.h"
 
 class QgsRenderContext;
 class QgsCoordinateTransform;
@@ -103,6 +104,16 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
     const QVector<int> &edgesToNativeEdges() const ;
 
     /**
+     * Transforms a point from layer coordinates system to triangular Mesh coordinates system.
+     *
+     * \param point point in layer coordinate system
+     * \returns point in triangular mesh coordinate
+     *
+     * \since QGIS 3.22
+     */
+    QgsPointXY transformFromLayerToTrianglesCoordinates( const QgsPointXY &point ) const;
+
+    /**
      * Finds index of triangle at given point
      * It uses spatial indexing
      *
@@ -123,6 +134,28 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
      * \since QGIS 3.12
      */
     int faceIndexForPoint_v2( const QgsPointXY &point ) const;
+
+    /**
+     * Finds index of native face at given point
+     * It uses spatial indexing
+     *
+     * \param point point in map coordinate system
+     * \returns native face index that contains the given point, -1 if no such faces exists
+     *
+     * \since QGIS 3.22
+     */
+    int nativeFaceIndexForPoint( const QgsPointXY &point ) const ;
+
+    /**
+     * Finds indexes of native faces which bounding boxes intersect given bounding box
+     * It uses spatial indexing
+     *
+     * \param rectangle bounding box in map coordinate system
+     * \returns native face indexes that have bounding box that intersect the rectangle
+     *
+     * \since QGIS 3.22
+     */
+    QList<int> nativeFaceIndexForRectangle( const QgsRectangle &rectangle ) const ;
 
     /**
      * Finds indexes of triangles intersecting given bounding box
@@ -206,6 +239,87 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
      */
     bool contains( const QgsMesh::ElementType &type ) const;
 
+    /**
+     * \ingroup core
+     *
+     * \brief The Changes class is used to make changes of the triangular and to keep traces of this changes
+     *        If a Changes instance is applied (see QgsTriangularMesh::applyChanges()),
+     *        these changes can be reversed (see QgsTriangularMesh::reverseChanges()) as long as other changes are not applied
+     *
+     * \since QGIS 3.22
+     */
+    class Changes
+    {
+      public:
+
+        //! Default constructor, no changes
+        Changes() = default;
+
+        /**
+         * Constructor of the triangular changes from \a topological changes and with the native mesh \a nativeMesh
+         */
+        Changes( const QgsTopologicalMesh::Changes &topologicalChanges, const QgsMesh &nativeMesh );
+
+      private:
+        // triangular mesh elements that can be changed if the triangular mesh is updated, are not stored and have to be retrieve
+        QVector<QgsMeshVertex> mAddedVertices;
+        QList<int> mChangedVerticesCoordinates;
+        mutable QList<double> mOldZValue;
+        QList<double> mNewZValue;
+        QList<QgsPointXY> mOldXYValue;
+        QList<QgsPointXY> mNewXYValue;
+
+        QVector<QgsMeshFace> mNativeFacesToAdd;
+        QList<int> mNativeFaceIndexesToRemove;
+        QVector<QgsMeshFace> mNativeFacesToRemove;
+        QList<int> mNativeFaceIndexesGeometryChanged;
+        QVector<QgsMeshFace> mNativeFacesGeometryChanged;
+        mutable QList<int> mTriangleIndexesGeometryChanged;
+
+        mutable int mTrianglesAddedStartIndex = 0;  // defined each time the changes are apply
+        mutable QList<int> mRemovedTriangleIndexes; // defined when changes are apply the first time
+
+        friend class QgsTriangularMesh;
+    };
+
+    /**
+     * Applies the changes on the triangular mesh (see Changes)
+     *
+     * \since QGIS 3.22
+     */
+    void applyChanges( const Changes &changes );
+
+    /**
+     * Reverses the changes on the triangular mesh (see Changes)
+     *
+     * \since QGIS 3.22
+     */
+    void reverseChanges( const Changes &changes );
+
+    /**
+     * Transforms the \a vertex from native coordinates system to triangular mesh coordinates system.
+     * Returns empty vertex if the transform fails.
+     *
+     * \since QGIS 3.22
+     */
+    QgsMeshVertex nativeToTriangularCoordinates( const QgsMeshVertex &vertex ) const;
+
+    /**
+     * Transforms the \a vertex from triangular mesh coordinates system to native coordinates system.
+     * Returns empty vertex if the transform fails.
+     *
+     * \since QGIS 3.22
+     */
+    QgsMeshVertex triangularToNativeCoordinates( const QgsMeshVertex &vertex ) const;
+
+    /**
+     *
+     * Returns the extent of the mesh in the native mesh coordinates system, returns empty extent if the transformation fails
+     *
+     * \since QGIS 3.22
+     */
+    QgsRectangle nativeExtent();
+
   private:
 
     /**
@@ -219,6 +333,13 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
      * with the given algorithm (e.g. only 2 vertices, polygon with holes)
      */
     void triangulate( const QgsMeshFace &face, int nativeIndex );
+
+    void addVertex( const QgsMeshVertex &vertex );
+
+    QgsMeshVertex transformVertex( const QgsMeshVertex &vertex, QgsCoordinateTransform::TransformDirection direction ) const;
+
+    // calculate the centroid of the native mesh, mNativeMeshCentroids container must have the emplacment for the corresponding centroid before calling this method
+    QgsMeshVertex calculateCentroid( const QgsMeshFace &nativeFace );
 
     // check clock wise and calculate average size of triangles
     void finalizeTriangles();

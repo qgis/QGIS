@@ -707,6 +707,26 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual bool convertTo( QgsWkbTypes::Type type );
 
     /**
+     * Returns a reference to the simplest lossless representation of this geometry,
+     * e.g. if the geometry is a multipart geometry type with a single member geometry,
+     * a reference to that part will be returned.
+     *
+     * This method employs the following logic:
+     *
+     * - For multipart geometries containing a single part only a direct reference to that part will be returned.
+     * - For compound curve geometries containing a single curve only a direct reference to that curve will be returned.
+     *
+     * This method returns a reference only, and does not involve any geometry cloning.
+     *
+     * \note Ownership of the returned geometry is NOT transferred, and remains with the original
+     * geometry object. Callers must take care to ensure that the original geometry object
+     * exists for the lifespan of the returned object.
+     *
+     * \since QGIS 3.20
+     */
+    virtual const QgsAbstractGeometry *simplifiedTypeRef() const SIP_HOLDGIL;
+
+    /**
      * Checks validity of the geometry, and returns TRUE if the geometry is valid.
      *
      * \param error will be set to the validity error message

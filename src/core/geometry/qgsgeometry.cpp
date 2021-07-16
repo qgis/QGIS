@@ -538,6 +538,90 @@ bool QgsGeometry::deleteVertex( int atVertex )
   return d->geometry->deleteVertex( id );
 }
 
+bool QgsGeometry::toggleCircularAtVertex( int atVertex )
+{
+
+  if ( !d->geometry )
+    return false;
+
+  QgsVertexId id;
+  if ( !vertexIdFromVertexNr( atVertex, id ) )
+    return false;
+
+  detach();
+
+  QgsAbstractGeometry *geom = d->geometry.get();
+
+  // If the geom is a collection, we get the concerned part, otherwise, the part is just the whole geom
+  QgsAbstractGeometry *part = nullptr;
+  QgsGeometryCollection *owningCollection = qgsgeometry_cast<QgsGeometryCollection *>( geom );
+  if ( owningCollection != nullptr )
+    part = owningCollection->geometryN( id.part );
+  else
+    part = geom;
+
+  // If the part is a polygon, we get the concerned ring, otherwise, the ring is just the whole part
+  QgsAbstractGeometry *ring = nullptr;
+  QgsCurvePolygon *owningPolygon = qgsgeometry_cast<QgsCurvePolygon *>( part );
+  if ( owningPolygon != nullptr )
+    ring = ( id.ring == 0 ) ? owningPolygon->exteriorRing() : owningPolygon->interiorRing( id.ring - 1 );
+  else
+    ring = part;
+
+  // If the ring is not a curve, we're probably on a point geometry
+  QgsCurve *curve = qgsgeometry_cast<QgsCurve *>( ring );
+  if ( curve == nullptr )
+    return false;
+
+  bool success = false;
+  QgsCompoundCurve *cpdCurve  = qgsgeometry_cast<QgsCompoundCurve *>( curve );
+  if ( cpdCurve != nullptr )
+  {
+    // If the geom is a already compound curve, we convert inplace, and we're done
+    success = cpdCurve->toggleCircularAtVertex( id );
+  }
+  else
+  {
+    // TODO : move this block before the above, so we call toggleCircularAtVertex only in one place
+    // If the geom is a linestring or cirularstring, we create a compound curve
+    std::unique_ptr<QgsCompoundCurve> cpdCurve = std::make_unique<QgsCompoundCurve>();
+    cpdCurve->addCurve( curve->clone() );
+    success = cpdCurve->toggleCircularAtVertex( QgsVertexId( -1, -1, id.vertex ) );
+
+    // In that case, we must also reassign the instances
+    if ( success )
+    {
+
+      if ( owningPolygon == nullptr && owningCollection == nullptr )
+      {
+        // Standalone linestring
+        reset( std::make_unique<QgsCompoundCurve>( *cpdCurve ) ); // <- REVIEW PLZ
+      }
+      else if ( owningPolygon != nullptr )
+      {
+        // Replace the ring in the owning polygon
+        if ( id.ring == 0 )
+        {
+          owningPolygon->setExteriorRing( cpdCurve.release() );
+        }
+        else
+        {
+          owningPolygon->removeInteriorRing( id.ring - 1 );
+          owningPolygon->addInteriorRing( cpdCurve.release() );
+        }
+      }
+      else if ( owningCollection != nullptr )
+      {
+        // Replace the curve in the owning collection
+        owningCollection->removeGeometry( id.part );
+        owningCollection->insertGeometry( cpdCurve.release(), id.part );
+      }
+    }
+  }
+
+  return success;
+}
+
 bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
 {
   if ( !d->geometry )

@@ -77,6 +77,9 @@ class QgsMdalProvider : public QgsMeshDataProvider
     bool isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const override;
     QgsMeshDataBlock areFacesActive( QgsMeshDatasetIndex index, int faceIndex, int count ) const override;
     QgsRectangle extent() const override;
+    int maximumVerticesCountPerFace() const override;
+
+    QgsMeshDriverMetadata driverMetadata() const override;
 
     bool persistDatasetGroup( const QString &outputFilePath,
                               const QString &outputDriver,
@@ -91,6 +94,10 @@ class QgsMdalProvider : public QgsMeshDataProvider
                               QgsMeshDatasetSourceInterface *source,
                               int datasetGroupIndex
                             ) override;
+
+    bool saveMeshFrame( const QgsMesh &mesh ) override;
+
+    void close() override;
 
     /**
      * Returns file filters for meshes and datasets to be used in Open File Dialogs
@@ -124,6 +131,7 @@ class QgsMdalProvider : public QgsMeshDataProvider
     QStringList mExtraDatasetUris;
     QgsCoordinateReferenceSystem mCrs;
     QStringList mSubLayersUris;
+    QString mDriverName;
 
     /**
      * Closes and reloads dataset
@@ -146,6 +154,8 @@ class QgsMdalProviderMetadata: public QgsProviderMetadata
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     ProviderCapabilities providerCapabilities() const override;
+    QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
+    QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
 };
 
 #endif //QGSMDALPROVIDER_H

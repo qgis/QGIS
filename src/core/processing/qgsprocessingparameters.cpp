@@ -280,9 +280,8 @@ QList< int > QgsProcessingParameters::parameterAsInts( const QgsProcessingParame
     }
   }
 
-  if ( ( resultList.isEmpty() || resultList.at( 0 ) == 0 ) )
+  if ( resultList.isEmpty() )
   {
-    resultList.clear();
     // check default
     if ( definition->defaultValue().isValid() )
     {
@@ -3272,7 +3271,7 @@ QString QgsProcessingParameterGeometry::asPythonString( const QgsProcessing::Pyt
 
       if ( ! mAllowMultipart )
       {
-        code += QStringLiteral( ", allowMultipart=False" );
+        code += QLatin1String( ", allowMultipart=False" );
       }
 
       QgsProcessingContext c;

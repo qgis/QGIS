@@ -70,7 +70,7 @@ void QgsServerSettings::initSettings()
                               QStringLiteral( "Log level" ),
                               QString(),
                               QVariant::Int,
-                              QVariant( Qgis::None ),
+                              QVariant::fromValue( Qgis::MessageLevel::NoLevel ),
                               QVariant()
                             };
   mSettings[ sLogLevel.envVar ] = sLogLevel;
@@ -254,6 +254,18 @@ void QgsServerSettings::initSettings()
                                          };
 
   mSettings[ sProjectsPgConnections.envVar ] = sProjectsPgConnections;
+
+  // landing page base URL prefix
+  const Setting sLandingPageBaseUrlPrefix = { QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PREFIX,
+                                              QgsServerSettingsEnv::DEFAULT_VALUE,
+                                              QStringLiteral( "Landing page base URL path prefix" ),
+                                              QStringLiteral( "/qgis/server_landing_page_base_url_prefix" ),
+                                              QVariant::String,
+                                              QVariant( "" ),
+                                              QVariant()
+                                            };
+
+  mSettings[ sLandingPageBaseUrlPrefix.envVar ] = sLandingPageBaseUrlPrefix;
 
   // log profile
   const Setting sLogProfile = { QgsServerSettingsEnv::QGIS_SERVER_LOG_PROFILE,
@@ -448,20 +460,20 @@ void QgsServerSettings::logSummary() const
 {
   const QMetaEnum metaEnumSrc( QMetaEnum::fromType<QgsServerSettingsEnv::Source>() );
 
-  QgsMessageLog::logMessage( "QGIS Server Settings: ", "Server", Qgis::Info );
+  QgsMessageLog::logMessage( "QGIS Server Settings: ", "Server", Qgis::MessageLevel::Info );
   for ( const Setting &s : std::as_const( mSettings ) )
   {
     const QString src = metaEnumSrc.valueToKey( s.src );
     const QString var = name( s.envVar );
 
     const QString msg = "  - " + var + " / '" + s.iniKey + "' (" + s.descr + "): '" + value( s.envVar ).toString() + "' (read from " + src + ")";
-    QgsMessageLog::logMessage( msg, "Server", Qgis::Info );
+    QgsMessageLog::logMessage( msg, "Server", Qgis::MessageLevel::Info );
   }
 
   if ( ! iniFile().isEmpty() )
   {
     const QString msg = "Ini file used to initialize settings: " + iniFile();
-    QgsMessageLog::logMessage( msg, "Server", Qgis::Info );
+    QgsMessageLog::logMessage( msg, "Server", Qgis::MessageLevel::Info );
   }
 }
 
@@ -541,6 +553,11 @@ QString QgsServerSettings::landingPageProjectsPgConnections() const
   return value( QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS, true ).toString();
 }
 
+QString QgsServerSettings::landingPageBaseUrlPrefix() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PREFIX, true ).toString();
+}
+
 QString QgsServerSettings::apiResourcesDirectory() const
 {
   return value( QgsServerSettingsEnv::QGIS_SERVER_API_RESOURCES_DIRECTORY ).toString();
@@ -574,19 +591,19 @@ bool QgsServerSettings::logProfile()
 QString QgsServerSettings::serviceUrl( const QString &service ) const
 {
   QString result;
-  if ( service.compare( QStringLiteral( "WMS" ) ) )
+  if ( service.compare( QLatin1String( "WMS" ) ) )
   {
     result = value( QgsServerSettingsEnv::QGIS_SERVER_WMS_SERVICE_URL ).toString();
   }
-  else if ( service.compare( QStringLiteral( "WFS" ) ) )
+  else if ( service.compare( QLatin1String( "WFS" ) ) )
   {
     result = value( QgsServerSettingsEnv::QGIS_SERVER_WFS_SERVICE_URL ).toString();
   }
-  else if ( service.compare( QStringLiteral( "WCS" ) ) )
+  else if ( service.compare( QLatin1String( "WCS" ) ) )
   {
     result = value( QgsServerSettingsEnv::QGIS_SERVER_WCS_SERVICE_URL ).toString();
   }
-  else if ( service.compare( QStringLiteral( "WMTS" ) ) )
+  else if ( service.compare( QLatin1String( "WMTS" ) ) )
   {
     result = value( QgsServerSettingsEnv::QGIS_SERVER_WMTS_SERVICE_URL ).toString();
   }

@@ -16,6 +16,7 @@
 #include "qgsprocessingmeshdatasetwidget.h"
 #include "qgsdatetimeedit.h"
 #include "qgsprocessingmultipleselectiondialog.h"
+#include "qgsprocessingoutputs.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerutils.h"
 #include "qgsmeshlayertemporalproperties.h"
@@ -118,7 +119,7 @@ void QgsProcessingMeshDatasetGroupsWidget::showDialog()
   if ( mMeshLayer )
   {
     datasetGroupsIndexes = mMeshLayer->datasetGroupsIndexes();
-    for ( int i : datasetGroupsIndexes )
+    for ( int i : std::as_const( datasetGroupsIndexes ) )
     {
       QgsMeshDatasetGroupMetadata meta = mMeshLayer->datasetGroupMetadata( i );
       if ( mParam->isDataTypeSupported( meta.dataType() ) )
@@ -265,6 +266,19 @@ void QgsProcessingMeshDatasetGroupsWidgetWrapper::setMeshLayerWrapperValue( cons
     mWidget->setMeshLayer( meshLayer, layerFromProject );
 }
 
+QStringList QgsProcessingMeshDatasetGroupsWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList() << QgsProcessingParameterMeshDatasetGroups::typeName()
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterNumber::typeName();
+}
+
+QStringList QgsProcessingMeshDatasetGroupsWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList() << QgsProcessingOutputString::typeName()
+         << QgsProcessingOutputNumber::typeName();
+}
+
 QWidget *QgsProcessingMeshDatasetGroupsWidgetWrapper::createWidget() SIP_FACTORY
 {
   mWidget = new QgsProcessingMeshDatasetGroupsWidget( nullptr, static_cast<const QgsProcessingParameterMeshDatasetGroups *>( parameterDefinition() ) );
@@ -278,9 +292,23 @@ QWidget *QgsProcessingMeshDatasetGroupsWidgetWrapper::createWidget() SIP_FACTORY
 
 void QgsProcessingMeshDatasetGroupsWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
 {
-  Q_UNUSED( context );
-  if ( mWidget )
-    mWidget->setValue( value );
+  if ( !mWidget )
+    return;
+
+  QList<int> datasetGroupIndexes;
+  if ( value.type() == QVariant::List )
+  {
+    //here we can't use  QgsProcessingParameters::parameterAsInts() because this method return empry list when first value is 0...
+    datasetGroupIndexes = QgsProcessingParameters::parameterAsInts( parameterDefinition(), value, context );
+  }
+  else
+    datasetGroupIndexes.append( QgsProcessingParameters::parameterAsInt( parameterDefinition(), value, context ) );
+
+  QVariantList varList;
+  for ( const int index : std::as_const( datasetGroupIndexes ) )
+    varList.append( index );
+
+  mWidget->setValue( varList );
 }
 
 QVariant QgsProcessingMeshDatasetGroupsWidgetWrapper::widgetValue() const
@@ -350,7 +378,7 @@ void QgsProcessingMeshDatasetTimeWidgetWrapper::postInitialize( const QList<QgsA
 
 void QgsProcessingMeshDatasetTimeWidgetWrapper::setMeshLayerWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *wrapper )
 {
-  if ( !mWidget )
+  if ( !mWidget || !wrapper )
     return;
 
   // evaluate value to layer
@@ -377,7 +405,7 @@ void QgsProcessingMeshDatasetTimeWidgetWrapper::setMeshLayerWrapperValue( const 
 
 void QgsProcessingMeshDatasetTimeWidgetWrapper::setDatasetGroupIndexesWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *wrapper )
 {
-  if ( !mWidget )
+  if ( !mWidget || !wrapper )
     return;
 
   QVariant datasetGroupsVariant = wrapper->parameterValue();
@@ -393,6 +421,20 @@ void QgsProcessingMeshDatasetTimeWidgetWrapper::setDatasetGroupIndexesWrapperVal
 
   mWidget->setDatasetGroupIndexes( datasetGroupsIndexes );
 
+}
+
+QStringList QgsProcessingMeshDatasetTimeWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterMeshDatasetTime::typeName()
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterDateTime::typeName();
+}
+
+QStringList QgsProcessingMeshDatasetTimeWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName();
 }
 
 QWidget *QgsProcessingMeshDatasetTimeWidgetWrapper::createWidget()
@@ -434,6 +476,8 @@ QgsProcessingMeshDatasetTimeWidget::QgsProcessingMeshDatasetTimeWidget( QWidget 
 {
   setupUi( this );
 
+  mValue.insert( QStringLiteral( "type" ), QStringLiteral( "static" ) );
+
   dateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
 
   mCanvas = context.mapCanvas();
@@ -453,6 +497,8 @@ void QgsProcessingMeshDatasetTimeWidget::setMeshLayer( QgsMeshLayer *layer, bool
   if ( mMeshLayer == layer )
     return;
 
+  mReferenceTime = QDateTime();
+
   if ( layerFromProject )
   {
     mMeshLayer = layer;
@@ -461,7 +507,8 @@ void QgsProcessingMeshDatasetTimeWidget::setMeshLayer( QgsMeshLayer *layer, bool
   else
   {
     mMeshLayer = nullptr;
-    mReferenceTime = layer->dataProvider()->temporalCapabilities()->referenceTime();
+    if ( layer )
+      mReferenceTime = layer->dataProvider()->temporalCapabilities()->referenceTime();
     storeTimeStepsFromLayer( layer );
   }
 
@@ -482,10 +529,19 @@ void QgsProcessingMeshDatasetTimeWidget::setDatasetGroupIndexes( const QList<int
 
 void QgsProcessingMeshDatasetTimeWidget::setValue( const QVariant &value )
 {
-  if ( !value.isValid() || value.type() != QVariant::Map )
+  if ( !value.isValid() || ( value.type() != QVariant::Map && !value.toDateTime().isValid() ) )
     return;
 
-  mValue = value.toMap();
+  mValue.clear();
+  if ( value.toDateTime().isValid() )
+  {
+    QDateTime dateTime = value.toDateTime();
+    dateTime.setTimeSpec( Qt::UTC );
+    mValue.insert( QStringLiteral( "type" ), QStringLiteral( "defined-date-time" ) );
+    mValue.insert( QStringLiteral( "value" ), dateTime );
+  }
+  else
+    mValue = value.toMap();
 
   if ( !mValue.contains( QStringLiteral( "type" ) ) || !mValue.contains( QStringLiteral( "value" ) ) )
     return;
@@ -499,13 +555,14 @@ void QgsProcessingMeshDatasetTimeWidget::setValue( const QVariant &value )
   }
   else if ( type == QLatin1String( "dataset-time-step" ) )
   {
+    QVariantList dataset = mValue.value( QStringLiteral( "value" ) ).toList();
+    whileBlocking( comboBoxDatasetTimeStep )->setCurrentIndex( comboBoxDatasetTimeStep->findData( dataset ) );
     whileBlocking( radioButtonDatasetGroupTimeStep )->setChecked( true );
-    whileBlocking( comboBoxDatasetTimeStep )->setCurrentIndex( comboBoxDatasetTimeStep->findData( mValue.value( QStringLiteral( "value" ) ) ) );
   }
-  else if ( type == QLatin1String( "dataset-time-step" ) )
+  else if ( type == QLatin1String( "defined-date-time" ) )
   {
-    radioButtonDefinedDateTime->setChecked( true );
-    whileBlocking( dateTimeEdit )->setDate( mValue.value( QStringLiteral( "value" ) ).toDate() );
+    whileBlocking( dateTimeEdit )->setDateTime( mValue.value( QStringLiteral( "value" ) ).toDateTime() );
+    whileBlocking( radioButtonDefinedDateTime )->setChecked( true );
   }
   else if ( type == QLatin1String( "current-context-time" ) )
   {
@@ -604,7 +661,7 @@ void QgsProcessingMeshDatasetTimeWidget::populateTimeStepsFromLayer()
     return;
 
   QMap<quint64, QgsMeshDatasetIndex> timeStep;
-  for ( int groupIndex : mDatasetGroupIndexes )
+  for ( int groupIndex : std::as_const( mDatasetGroupIndexes ) )
   {
     QgsMeshDatasetGroupMetadata meta = mMeshLayer->datasetGroupMetadata( groupIndex );
     if ( !meta.isTemporal() )

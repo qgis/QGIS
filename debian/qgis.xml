@@ -200,4 +200,25 @@
     <glob weight="51" pattern="*.mif"/>
   </mime-type>
 
+  <mime-type type="application/vnd.google-earth.kml+xml">
+    <comment>Keyhole Markup Language data</comment>
+    <sub-class-of type="application/xml"/>
+    <icon name="qgis-mime"/>
+    <glob pattern="*.kml"/>
+  </mime-type>
+
+  <mime-type type="application/vnd.google-earth.kmz">
+    <comment>Zipped Keyhole Markup Language data</comment>
+    <sub-class-of type="application/zip"/>
+    <icon name="qgis-mime"/>
+    <glob pattern="*.kmz"/>
+  </mime-type>
+
+  <mime-type type="application/geopackage+sqlite3">
+    <comment>GeoPackage data</comment>
+    <sub-class-of type="application/vnd.sqlite3"/>
+    <icon name="qgis-mime"/>
+    <glob pattern="*.gpkg"/>
+  </mime-type>
+
 </mime-info>

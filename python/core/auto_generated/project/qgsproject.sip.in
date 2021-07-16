@@ -15,6 +15,7 @@
 
 
 
+
 class QgsProject : QObject, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsProjectTranslator
 {
 %Docstring(signature="appended")
@@ -262,6 +263,24 @@ Returns empty string when the project is stored in a project storage (there is n
 Returns the base name of the project file without the path and without extension - derived from :py:func:`~QgsProject.fileName`.
 
 .. versionadded:: 3.2
+%End
+
+    Qgis::FilePathType filePathStorage() const;
+%Docstring
+Returns the type of paths used when storing file paths in a QGS/QGZ project file.
+
+.. seealso:: :py:func:`setFilePathStorage`
+
+.. versionadded:: 3.22
+%End
+
+    void setFilePathStorage( Qgis::FilePathType type );
+%Docstring
+Sets the ``type`` of paths used when storing file paths in a QGS/QGZ project file.
+
+.. seealso:: :py:func:`filePathStorage`
+
+.. versionadded:: 3.22
 %End
 
     QgsCoordinateReferenceSystem crs() const;
@@ -1246,7 +1265,38 @@ Returns the current auxiliary storage.
 .. versionadded:: 3.0
 %End
 
+    QString createAttachedFile( const QString &nameTemplate );
+%Docstring
+Attaches a file to the project
 
+:param nameTemplate: Any filename template, used as a basename for attachment file, i.e. "myfile.ext"
+
+:return: The path to the file where the contents can be written to.
+
+.. versionadded:: 3.22
+%End
+
+    QStringList attachedFiles() const;
+%Docstring
+Returns a map of all attached files with identifier and real paths.
+
+.. seealso:: :py:func:`createAttachedFile`
+
+.. versionadded:: 3.22
+%End
+
+    bool removeAttachedFile( const QString &path );
+%Docstring
+Removes the attached file
+
+:param path: Path to the attached file
+
+:return: Whether removal succeeded.
+
+.. seealso:: :py:func:`createAttachedFile`
+
+.. versionadded:: 3.22
+%End
 
     const QgsProjectMetadata &metadata() const;
 %Docstring
@@ -1799,6 +1849,17 @@ Emitted when the project dirty status changes.
 .. versionadded:: 3.2
 %End
 
+    void dirtySet();
+%Docstring
+Emitted when setDirty(true) is called.
+
+.. note::
+
+   As opposed to :py:func:`~QgsProject.isDirtyChanged`, this signal is invoked every time setDirty(true)
+   is called, regardless of whether the project was already dirty.
+
+.. versionadded:: 3.20
+%End
 
  void mapScalesChanged() /Deprecated/;
 %Docstring
@@ -1901,6 +1962,7 @@ Note that :py:class:`QgsProjectDirtyBlocker` only blocks calls which set the pro
 which set the project as clean are not blocked.
 
 Python scripts should not use :py:class:`QgsProjectDirtyBlocker` directly. Instead, use :py:func:`QgsProject.blockDirtying()`
+
 .. code-block:: python
 
        project = QgsProject.instance()

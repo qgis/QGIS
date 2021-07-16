@@ -84,8 +84,7 @@ QgsMeshRendererScalarSettings QgsMeshRendererScalarSettingsWidget::settings() co
   settings.setOpacity( mOpacityWidget->opacity() );
   settings.setDataResamplingMethod( dataIntepolationMethod() );
 
-  bool hasEdges = ( mMeshLayer->dataProvider() &&
-                    mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) );
+  bool hasEdges = ( mMeshLayer->contains( QgsMesh::ElementType::Edge ) );
   if ( hasEdges )
   {
 
@@ -121,10 +120,8 @@ void QgsMeshRendererScalarSettingsWidget::syncToLayer( )
   int index = mScalarInterpolationTypeComboBox->findData( settings.dataResamplingMethod() );
   whileBlocking( mScalarInterpolationTypeComboBox )->setCurrentIndex( index );
 
-  bool hasEdges = ( mMeshLayer->dataProvider() &&
-                    mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) );
-  bool hasFaces = ( mMeshLayer->dataProvider() &&
-                    mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Face ) );
+  bool hasEdges = ( mMeshLayer->contains( QgsMesh::ElementType::Edge ) );
+  bool hasFaces = ( mMeshLayer->contains( QgsMesh::ElementType::Face ) );
 
   mScalarResamplingWidget->setVisible( hasFaces );
 

@@ -30,6 +30,8 @@
 #include "qgsprojectviewsettings.h"
 #include "qgstextformatwidget.h"
 #include "qgsguiutils.h"
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
 
 QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, QgsLayoutItemMap *map )
   : QgsLayoutItemBaseWidget( nullptr, mapGrid )
@@ -166,8 +168,8 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   mGridFrameFill2ColorButton->setNoColorString( tr( "Transparent Fill" ) );
   mGridFrameFill2ColorButton->setShowNoColor( true );
 
-  mGridLineStyleButton->setSymbolType( QgsSymbol::Line );
-  mGridMarkerStyleButton->setSymbolType( QgsSymbol::Marker );
+  mGridLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
+  mGridMarkerStyleButton->setSymbolType( Qgis::SymbolType::Marker );
 
   //set initial state of frame style controls
   toggleFrameControls( false, false, false, false );

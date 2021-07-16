@@ -99,6 +99,7 @@ mkdir -p "$BUILDDIR"
     -DQGIS_SERVER_MODULE_SUBDIR=lib/qgis/server \
     -DQGIS_QML_SUBDIR=lib/qt5/qml \
     -DBINDINGS_GLOBAL_INSTALL=ON \
+    -DSIP_GLOBAL_INSTALL=ON \
     -DWITH_SERVER=OFF \
     -DZSTD_INCLUDE_DIR="$MINGWROOT/include/zstd" \
     -DZSTD_LIBRARY="$MINGWROOT/lib/libzstd.dll.a" \
@@ -169,6 +170,7 @@ function linkDep {
     local name="$(basename $1)"
     test -e "$destdir/$name" && return 0
     test -e "$destdir/qgisplugins/$name" && return 0
+    [[ "$1" == *api-ms-win* ]] && return 0
     echo "${indent}${1}"
     [ ! -e "$MINGWROOT/$1" ] && echo "Error: missing $MINGWROOT/$1" && return 1
     mkdir -p "$destdir" || return 1

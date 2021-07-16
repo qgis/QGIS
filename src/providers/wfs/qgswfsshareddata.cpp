@@ -231,7 +231,7 @@ QgsRectangle QgsWFSSharedData::getExtentFromSingleFeatureRequest() const
   return request.getExtent();
 }
 
-int QgsWFSSharedData::getFeatureCountFromServer() const
+long long QgsWFSSharedData::getFeatureCountFromServer() const
 {
   QgsWFSFeatureHitsRequest request( mURI );
   return request.getFeatureCount( mWFSVersion, mWFSFilter, mCaps );
@@ -245,7 +245,7 @@ QgsWFSFeatureHitsRequest::QgsWFSFeatureHitsRequest( const QgsWFSDataSourceURI &u
 {
 }
 
-int QgsWFSFeatureHitsRequest::getFeatureCount( const QString &WFSVersion,
+long long QgsWFSFeatureHitsRequest::getFeatureCount( const QString &WFSVersion,
     const QString &filter, const QgsWfsCapabilities::Capabilities &caps )
 {
   QString typeName = mUri.typeName();
@@ -305,7 +305,7 @@ int QgsWFSFeatureHitsRequest::getFeatureCount( const QString &WFSVersion,
   if ( !numberOfFeatures.isEmpty() )
   {
     bool isValid;
-    int ret = numberOfFeatures.toInt( &isValid );
+    long long ret = numberOfFeatures.toLongLong( &isValid );
     if ( !isValid )
       return -1;
     return ret;

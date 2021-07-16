@@ -140,6 +140,9 @@ Opens the dialog for refining a rule using ranges
 %End
     void refineRuleScalesGui( const QModelIndexList &index );
 
+    virtual void setSymbolLevels( const QList< QgsLegendSymbolItem > &levels, bool enabled );
+
+
     QgsRuleBasedRenderer::Rule *currentRule();
 
     virtual QList<QgsSymbol *> selectedSymbols();

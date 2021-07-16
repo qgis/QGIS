@@ -61,6 +61,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         self.assertTrue(layer.startEditing())
 
         self.assertEqual(layer.editBuffer().addedFeatures(), {})
+        self.assertEqual(layer.editBuffer().allAddedOrEditedFeatures(), [])
         self.assertFalse(layer.editBuffer().isFeatureAdded(1))
         self.assertFalse(layer.editBuffer().isFeatureAdded(3))
 
@@ -86,6 +87,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
 
         self.assertTrue(layer.editBuffer().isFeatureAdded(new_feature_ids[0]))
         self.assertTrue(layer.editBuffer().isFeatureAdded(new_feature_ids[1]))
+        self.assertCountEqual(layer.editBuffer().allAddedOrEditedFeatures(), [new_feature_ids[0], new_feature_ids[1]])
 
         # check if error in case adding not adaptable geometry
         # eg. a Multiline in a Line
@@ -95,6 +97,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         self.assertEqual(layer.editBuffer().addedFeatures(), {})
         self.assertFalse(layer.editBuffer().isFeatureAdded(1))
         self.assertFalse(layer.editBuffer().isFeatureAdded(3))
+        self.assertEqual(layer.editBuffer().allAddedOrEditedFeatures(), [])
 
         # add a features with a multi line geometry of not touched lines =>
         # cannot be forced to be linestring
@@ -114,6 +117,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         self.assertTrue(layer.startEditing())
 
         self.assertEqual(layer.editBuffer().addedFeatures(), {})
+        self.assertEqual(layer.editBuffer().allAddedOrEditedFeatures(), [])
         self.assertFalse(layer.editBuffer().isFeatureAdded(1))
         self.assertFalse(layer.editBuffer().isFeatureAdded(3))
 
@@ -137,6 +141,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
 
         self.assertTrue(layer.editBuffer().isFeatureAdded(new_feature_ids[0]))
         self.assertTrue(layer.editBuffer().isFeatureAdded(new_feature_ids[1]))
+        self.assertCountEqual(layer.editBuffer().allAddedOrEditedFeatures(), [new_feature_ids[0], new_feature_ids[1]])
 
     def testDeleteFeatures(self):
         # test deleting features from an edit buffer
@@ -218,6 +223,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         # make a layer with two features
         layer = createEmptyLayer()
         self.assertTrue(layer.startEditing())
+        self.assertEqual(layer.editBuffer().allAddedOrEditedFeatures(), [])
 
         # add two features
         f1 = QgsFeature(layer.fields(), 1)
@@ -236,6 +242,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         self.assertEqual(layer.editBuffer().changedAttributeValues(), {})
         self.assertFalse(layer.editBuffer().isFeatureAttributesChanged(1))
         self.assertFalse(layer.editBuffer().isFeatureAttributesChanged(2))
+        self.assertEqual(layer.editBuffer().allAddedOrEditedFeatures(), [])
 
         # change attribute values
         layer.changeAttributeValue(1, 0, 'a')
@@ -245,6 +252,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         self.assertEqual(layer.editBuffer().changedAttributeValues()[1], {0: 'a'})
         self.assertTrue(layer.editBuffer().isFeatureAttributesChanged(1))
         self.assertFalse(layer.editBuffer().isFeatureAttributesChanged(2))
+        self.assertEqual(layer.editBuffer().allAddedOrEditedFeatures(), [1])
 
         layer.changeAttributeValue(2, 1, 5)
 
@@ -254,6 +262,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         self.assertEqual(layer.editBuffer().changedAttributeValues()[2], {1: 5})
         self.assertTrue(layer.editBuffer().isFeatureAttributesChanged(1))
         self.assertTrue(layer.editBuffer().isFeatureAttributesChanged(2))
+        self.assertCountEqual(layer.editBuffer().allAddedOrEditedFeatures(), [1, 2])
 
     def testChangeGeometry(self):
         # test changing geometries values from an edit buffer
@@ -261,6 +270,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         # make a layer with two features
         layer = createEmptyLayer()
         self.assertTrue(layer.startEditing())
+        self.assertEqual(layer.editBuffer().allAddedOrEditedFeatures(), [])
 
         # add two features
         f1 = QgsFeature(layer.fields(), 1)
@@ -279,6 +289,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         self.assertEqual(layer.editBuffer().changedGeometries(), {})
         self.assertFalse(layer.editBuffer().isFeatureGeometryChanged(1))
         self.assertFalse(layer.editBuffer().isFeatureGeometryChanged(2))
+        self.assertEqual(layer.editBuffer().allAddedOrEditedFeatures(), [])
 
         # change geometry
         layer.changeGeometry(1, QgsGeometry.fromPointXY(QgsPointXY(10, 20)))
@@ -289,6 +300,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         self.assertTrue(layer.editBuffer().isFeatureGeometryChanged(1))
         self.assertFalse(layer.editBuffer().isFeatureGeometryChanged(2))
         self.assertEqual(layer.undoStack().count(), 1)
+        self.assertEqual(layer.editBuffer().allAddedOrEditedFeatures(), [1])
 
         self.assertEqual(layer.getFeature(1).geometry().constGet().x(), 10)
         self.assertEqual(layer.getFeature(2).geometry().constGet().x(), 2)
@@ -304,6 +316,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         self.assertTrue(layer.editBuffer().isFeatureGeometryChanged(1))
         self.assertFalse(layer.editBuffer().isFeatureGeometryChanged(2))
         self.assertEqual(layer.undoStack().count(), 2)
+        self.assertCountEqual(layer.editBuffer().allAddedOrEditedFeatures(), [1])
 
         self.assertEqual(layer.getFeature(1).geometry().constGet().x(), 100)
         self.assertEqual(layer.getFeature(2).geometry().constGet().x(), 2)
@@ -317,6 +330,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         self.assertTrue(layer.editBuffer().isFeatureGeometryChanged(1))
         self.assertTrue(layer.editBuffer().isFeatureGeometryChanged(2))
         self.assertEqual(layer.undoStack().count(), 3)
+        self.assertCountEqual(layer.editBuffer().allAddedOrEditedFeatures(), [1, 2])
 
         self.assertEqual(layer.getFeature(1).geometry().constGet().x(), 100)
         self.assertEqual(layer.getFeature(2).geometry().constGet().x(), 20)
@@ -327,6 +341,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         self.assertEqual(layer.editBuffer().changedGeometries()[1].constGet().x(), 100)
         self.assertTrue(layer.editBuffer().isFeatureGeometryChanged(1))
         self.assertFalse(layer.editBuffer().isFeatureGeometryChanged(2))
+        self.assertEqual(layer.editBuffer().allAddedOrEditedFeatures(), [1])
 
         self.assertEqual(layer.getFeature(1).geometry().constGet().x(), 100)
         self.assertEqual(layer.getFeature(2).geometry().constGet().x(), 2)
@@ -335,6 +350,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         self.assertEqual(list(layer.editBuffer().changedGeometries().keys()), [1])
         self.assertTrue(layer.editBuffer().isFeatureGeometryChanged(1))
         self.assertFalse(layer.editBuffer().isFeatureGeometryChanged(2))
+        self.assertEqual(layer.editBuffer().allAddedOrEditedFeatures(), [1])
 
         self.assertEqual(layer.getFeature(1).geometry().constGet().x(), 10)
         self.assertEqual(layer.getFeature(2).geometry().constGet().x(), 2)
@@ -343,6 +359,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         self.assertEqual(list(layer.editBuffer().changedGeometries().keys()), [])
         self.assertFalse(layer.editBuffer().isFeatureGeometryChanged(1))
         self.assertFalse(layer.editBuffer().isFeatureGeometryChanged(2))
+        self.assertEqual(layer.editBuffer().allAddedOrEditedFeatures(), [])
 
         self.assertEqual(layer.getFeature(1).geometry().constGet().x(), 1)
         self.assertEqual(layer.getFeature(2).geometry().constGet().x(), 2)

@@ -26,6 +26,9 @@
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgssymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
+#include "qgsfillsymbol.h"
 
 #include "qgsgrasseditrenderer.h"
 #include "qgsgrassprovider.h"

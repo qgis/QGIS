@@ -18,7 +18,6 @@
 #include "qgsnewmemorylayerdialog.h"
 #include "qgsapplication.h"
 #include "qgis.h"
-#include "qgsdataitem.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectordataprovider.h"
@@ -28,6 +27,7 @@
 #include "qgssettings.h"
 #include "qgsmemoryproviderutils.h"
 #include "qgsgui.h"
+#include "qgsiconutils.h"
 
 #include <QPushButton>
 #include <QComboBox>
@@ -74,7 +74,7 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
   };
 
   for ( const auto type : geomTypes )
-    mGeometryTypeBox->addItem( QgsLayerItem::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), type );
+    mGeometryTypeBox->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), type );
   mGeometryTypeBox->setCurrentIndex( -1 );
 
   mGeometryWithZCheckBox->setEnabled( false );

@@ -76,6 +76,10 @@ QPoint QgsMapTool::toCanvasCoordinates( const QgsPointXY &point ) const
   return QPoint( std::round( x ), std::round( y ) );
 }
 
+void QgsMapTool::setToolName( const QString &name )
+{
+  mToolName = name;
+}
 
 void QgsMapTool::activate()
 {
@@ -190,6 +194,12 @@ bool QgsMapTool::gestureEvent( QGestureEvent *e )
 {
   Q_UNUSED( e )
   return true;
+}
+
+bool QgsMapTool::canvasToolTipEvent( QHelpEvent *e )
+{
+  Q_UNUSED( e )
+  return false;
 }
 
 QgsMapCanvas *QgsMapTool::canvas() const

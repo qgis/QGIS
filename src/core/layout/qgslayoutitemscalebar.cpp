@@ -35,6 +35,8 @@
 #include "qgsnumericformatregistry.h"
 #include "qgslinesymbollayer.h"
 #include "qgsfillsymbollayer.h"
+#include "qgslinesymbol.h"
+#include "qgsfillsymbol.h"
 
 #include <QDomDocument>
 #include <QDomElement>

@@ -1218,41 +1218,41 @@ Qgis::DataType QgsGrassGisLib::qgisRasterType( RASTER_MAP_TYPE grassType )
   switch ( grassType )
   {
     case CELL_TYPE:
-      return Qgis::Int32;
+      return Qgis::DataType::Int32;
       break;
     case FCELL_TYPE:
-      return Qgis::Float32;
+      return Qgis::DataType::Float32;
       break;
     case DCELL_TYPE:
-      return Qgis::Float64;
+      return Qgis::DataType::Float64;
       break;
     default:
       break;
   }
-  return Qgis::UnknownDataType;
+  return Qgis::DataType::UnknownDataType;
 }
 
 RASTER_MAP_TYPE QgsGrassGisLib::grassRasterType( Qgis::DataType qgisType )
 {
   switch ( qgisType )
   {
-    case Qgis::Byte:
-    case Qgis::UInt16:
-    case Qgis::Int16:
-    case Qgis::UInt32:
-    case Qgis::Int32:
+    case Qgis::DataType::Byte:
+    case Qgis::DataType::UInt16:
+    case Qgis::DataType::Int16:
+    case Qgis::DataType::UInt32:
+    case Qgis::DataType::Int32:
       return CELL_TYPE;
-    case Qgis::Float32:
+    case Qgis::DataType::Float32:
       return FCELL_TYPE;
-    case Qgis::Float64:
+    case Qgis::DataType::Float64:
       return DCELL_TYPE;
     // Not supported types:
-    case Qgis::CInt16:
-    case Qgis::CInt32:
-    case Qgis::CFloat32:
-    case Qgis::CFloat64:
-    case Qgis::ARGB32:
-    case Qgis::ARGB32_Premultiplied:
+    case Qgis::DataType::CInt16:
+    case Qgis::DataType::CInt32:
+    case Qgis::DataType::CFloat32:
+    case Qgis::DataType::CFloat64:
+    case Qgis::DataType::ARGB32:
+    case Qgis::DataType::ARGB32_Premultiplied:
     default:
       return -1;
   }

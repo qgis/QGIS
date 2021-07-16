@@ -16,23 +16,6 @@
  ***************************************************************************/
 
 
-#include <QDir>
-#include <QDomDocument>
-#include <QDomElement>
-#include <QDomImplementation>
-#include <QDomNode>
-#include <QFile>
-#include <QFileInfo>
-#include <QTextStream>
-#include <QUrl>
-#include <QTimer>
-#include <QStandardPaths>
-#include <QUuid>
-
-#include <sqlite3.h>
-
-#include "qgssqliteutils.h"
-
 #include "qgssqliteutils.h"
 #include "qgs3drendererregistry.h"
 #include "qgsabstract3drenderer.h"
@@ -63,6 +46,22 @@
 #include "qgslayernotesutils.h"
 #include "qgsdatums.h"
 #include "qgsprojoperation.h"
+
+#include <QDir>
+#include <QDomDocument>
+#include <QDomElement>
+#include <QDomImplementation>
+#include <QDomNode>
+#include <QFile>
+#include <QFileInfo>
+#include <QTextStream>
+#include <QUrl>
+#include <QTimer>
+#include <QStandardPaths>
+#include <QUuid>
+#include <QRegularExpression>
+
+#include <sqlite3.h>
 
 QString QgsMapLayer::extensionPropertyType( QgsMapLayer::PropertyType type )
 {
@@ -217,7 +216,7 @@ void QgsMapLayer::setBlendMode( const QPainter::CompositionMode blendMode )
 
   mBlendMode = blendMode;
   emit blendModeChanged( blendMode );
-  emit styleChanged();
+  emitStyleChanged();
 }
 
 QPainter::CompositionMode QgsMapLayer::blendMode() const
@@ -231,7 +230,7 @@ void QgsMapLayer::setOpacity( double opacity )
     return;
   mLayerOpacity = opacity;
   emit opacityChanged( opacity );
-  emit styleChanged();
+  emitStyleChanged();
 }
 
 double QgsMapLayer::opacity() const
@@ -256,11 +255,11 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   // set data source
   mnl = layerElement.namedItem( QStringLiteral( "datasource" ) );
   mne = mnl.toElement();
-  mDataSource = mne.text();
+  mDataSource = context.pathResolver().readPath( mne.text() );
 
   // if the layer needs authentication, ensure the master password is set
-  QRegExp rx( "authcfg=([a-z]|[A-Z]|[0-9]){7}" );
-  if ( ( rx.indexIn( mDataSource ) != -1 )
+  const thread_local QRegularExpression rx( "authcfg=([a-z]|[A-Z]|[0-9]){7}" );
+  if ( rx.match( mDataSource ).hasMatch()
        && !QgsApplication::authManager()->setMasterPassword( true ) )
   {
     return false;
@@ -406,6 +405,8 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
       mWgs84Extent = QgsXmlUtils::readRectangle( wgs84ExtentNode.toElement() );
   }
 
+  mLegendPlaceholderImage = layerElement.attribute( QStringLiteral( "legendPlaceholderImage" ) );
+
   return ! layerError;
 } // bool QgsMapLayer::readLayerXML
 
@@ -415,6 +416,16 @@ bool QgsMapLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &cont
   Q_UNUSED( layer_node )
   Q_UNUSED( context )
   // NOP by default; children will over-ride with behavior specific to them
+
+  // read Extent
+  if ( mReadFlags & QgsMapLayer::FlagReadExtentFromXml )
+  {
+    const QDomNode extentNode = layer_node.namedItem( QStringLiteral( "extent" ) );
+    if ( !extentNode.isNull() )
+    {
+      mExtent = QgsXmlUtils::readRectangle( extentNode.toElement() );
+    }
+  }
 
   return true;
 } // void QgsMapLayer::readXml
@@ -443,7 +454,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
 
   // data source
   QDomElement dataSource = document.createElement( QStringLiteral( "datasource" ) );
-  QString src = encodedSource( source(), context );
+  QString src = context.pathResolver().writePath( encodedSource( source(), context ) );
   QDomText dataSourceText = document.createTextNode( src );
   dataSource.appendChild( dataSourceText );
   layerElement.appendChild( dataSource );
@@ -565,6 +576,8 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   QDomElement myMetadataElem = document.createElement( QStringLiteral( "resourceMetadata" ) );
   mMetadata.writeMetadataXml( myMetadataElem, document );
   layerElement.appendChild( myMetadataElem );
+
+  layerElement.setAttribute( QStringLiteral( "legendPlaceholderImage" ), mLegendPlaceholderImage );
 
   // now append layer node to map layer node
   return writeXml( layerElement, document, context );
@@ -806,6 +819,11 @@ void QgsMapLayer::setSubLayerVisibility( const QString &name, bool vis )
   Q_UNUSED( name )
   Q_UNUSED( vis )
   // NOOP
+}
+
+bool QgsMapLayer::supportsEditing() const
+{
+  return false;
 }
 
 QgsCoordinateReferenceSystem QgsMapLayer::crs() const
@@ -1743,6 +1761,8 @@ void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsRea
 {
   if ( categories.testFlag( Symbology3D ) )
   {
+    QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "3D Symbology" ) );
+
     QgsAbstract3DRenderer *r3D = nullptr;
     QDomElement renderer3DElem = layerElement.firstChildElement( QStringLiteral( "renderer-3d" ) );
     if ( !renderer3DElem.isNull() )
@@ -1803,12 +1823,16 @@ void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsRea
 
   if ( categories.testFlag( Temporal ) )
   {
+    QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Temporal" ) );
+
     if ( QgsMapLayerTemporalProperties *properties = temporalProperties() )
       properties->readXml( layerElement.toElement(), context );
   }
 
   if ( categories.testFlag( Elevation ) )
   {
+    QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Elevation" ) );
+
     if ( QgsMapLayerElevationProperties *properties = elevationProperties() )
       properties->readXml( layerElement.toElement(), context );
   }
@@ -1881,6 +1905,11 @@ QgsError QgsMapLayer::error() const
 
 
 bool QgsMapLayer::isEditable() const
+{
+  return false;
+}
+
+bool QgsMapLayer::isModified() const
 {
   return false;
 }
@@ -2001,7 +2030,8 @@ QDateTime QgsMapLayer::timestamp() const
 
 void QgsMapLayer::emitStyleChanged()
 {
-  emit styleChanged();
+  if ( !mBlockStyleChangedSignal )
+    emit styleChanged();
 }
 
 void QgsMapLayer::setExtent( const QgsRectangle &extent )
@@ -2036,7 +2066,7 @@ QString QgsMapLayer::generateId( const QString &layerName )
   // underscore) with an underscore.
   // Note that the first backslash in the regular expression is
   // there for the compiler, so the pattern is actually \W
-  id.replace( QRegExp( "[\\W]" ), QStringLiteral( "_" ) );
+  id.replace( QRegularExpression( "[\\W]" ), QStringLiteral( "_" ) );
   return id;
 }
 
@@ -2158,7 +2188,7 @@ void QgsMapLayer::invalidateWgs84Extent()
 QString QgsMapLayer::crsHtmlMetadata() const
 {
   QString metadata = QStringLiteral( "<h1>" ) + tr( "Coordinate Reference System (CRS)" ) + QStringLiteral( "</h1>\n<hr>\n" );
-  metadata += QStringLiteral( "<table class=\"list-view\">\n" );
+  metadata += QLatin1String( "<table class=\"list-view\">\n" );
 
   // Identifier
   const QgsCoordinateReferenceSystem c = crs();

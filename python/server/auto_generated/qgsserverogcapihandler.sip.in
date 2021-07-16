@@ -67,6 +67,10 @@ Optionally, override:
        def parameters(self, context):
            return [QgsServerQueryStringParameter("value1", True, QgsServerQueryStringParameter.Type.Double, "a double value")]
 
+
+
+
+
 .. versionadded:: 3.10
 %End
 
@@ -145,7 +149,7 @@ Handles the request within its ``context``
 Subclasses must implement this methods, and call :py:func:`~QgsServerOgcApiHandler.validate` to
 extract validated parameters from the request.
 
-:raises :: py:class:`QgsServerApiBadRequestError` if the method encounters any error
+:raises QgsServerApiBadRequestError: if the method encounters any error
 %End
 
     virtual QVariantMap values( const QgsServerApiContext &context ) const throw( QgsServerApiBadRequestException );
@@ -168,7 +172,7 @@ the parameters map.
 
 .. seealso:: :py:func:`parameters`
 
-:raises :: py:class:`QgsServerApiBadRequestError` if validation fails
+:raises QgsServerApiBadRequestError: if validation fails
 %End
 
     QString contentTypeForAccept( const QString &accept ) const;
@@ -246,7 +250,7 @@ Returns a link to the parent page up to ``levels`` in the HTML hierarchy from th
 %Docstring
 Returns a vector layer from the ``collectionId`` in the given ``context``.
 
-:raises :: py:class:`QgsServerApiNotFoundError` if the layer could not be found.
+:raises QgsServerApiNotFoundError: if the layer could not be found.
 %End
 
 

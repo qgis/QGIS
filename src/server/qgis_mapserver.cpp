@@ -30,6 +30,7 @@ while QGIS server internal logging is printed to stderr.
 #include <condition_variable>
 
 //for CMAKE_INSTALL_PREFIX
+#include "qgscommandlineutils.h"
 #include "qgsconfig.h"
 #include "qgsserver.h"
 #include "qgsbufferserverrequest.h"
@@ -243,7 +244,7 @@ class TcpServerWorker: public QObject
               }
 
               const QString protocol { firstLinePieces.at( 2 )};
-              if ( protocol != QStringLiteral( "HTTP/1.0" ) && protocol != QStringLiteral( "HTTP/1.1" ) )
+              if ( protocol != QLatin1String( "HTTP/1.0" ) && protocol != QLatin1String( "HTTP/1.1" ) )
               {
                 throw HttpException( QStringLiteral( "HTTP error unsupported protocol: %1" ).arg( protocol ) );
               }
@@ -527,7 +528,7 @@ int main( int argc, char *argv[] )
   if ( ! withDisplay )
   {
     QgsMessageLog::logMessage( "DISPLAY environment variable is not set, running in offscreen mode, all printing capabilities will not be available.\n"
-                               "Consider installing an X server like 'xvfb' and export DISPLAY to the actual display value.", "Server", Qgis::Warning );
+                               "Consider installing an X server like 'xvfb' and export DISPLAY to the actual display value.", "Server", Qgis::MessageLevel::Warning );
   }
 
 #ifdef Q_OS_WIN
@@ -554,7 +555,10 @@ int main( int argc, char *argv[] )
   QCommandLineParser parser;
   parser.setApplicationDescription( QObject::tr( "QGIS Development Server %1" ).arg( VERSION ) );
   parser.addHelpOption();
-  parser.addVersionOption();
+
+  QCommandLineOption versionOption( QStringList() << "v" << "version", QObject::tr( "Version of QGIS and libraries" ) );
+  parser.addOption( versionOption );
+
   parser.addPositionalArgument( QStringLiteral( "addressAndPort" ),
                                 QObject::tr( "Address and port (default: \"localhost:8000\")\n"
                                     "address and port can also be specified with the environment\n"
@@ -571,6 +575,13 @@ int main( int argc, char *argv[] )
   parser.addOption( projectOption );
 
   parser.process( app );
+
+  if ( parser.isSet( versionOption ) )
+  {
+    std::cout << QgsCommandLineUtils::allVersions().toStdString();
+    return 0;
+  }
+
   const QStringList args = parser.positionalArguments();
 
   if ( args.size() == 1 )
@@ -588,11 +599,13 @@ int main( int argc, char *argv[] )
   qputenv( "QGIS_SERVER_LOG_LEVEL", logLevel.toUtf8() );
   qputenv( "QGIS_SERVER_LOG_STDERR", "1" );
 
+  QgsServer server;
+
   if ( ! parser.value( projectOption ).isEmpty( ) )
   {
     // Check it!
     const QString projectFilePath { parser.value( projectOption ) };
-    if ( ! QFile::exists( projectFilePath ) )
+    if ( ! QgsProject::instance()->read( projectFilePath, QgsProject::ReadFlag::FlagDontResolveLayers | QgsProject::ReadFlag::FlagDontLoadLayouts  | QgsProject::ReadFlag::FlagDontStoreOriginalStyles ) )
     {
       std::cout << QObject::tr( "Project file not found, the option will be ignored." ).toStdString() << std::endl;
     }
@@ -605,8 +618,6 @@ int main( int argc, char *argv[] )
   // Disable parallel rendering because if its internal loop
   //qputenv( "QGIS_SERVER_PARALLEL_RENDERING", "0" );
 
-
-  QgsServer server;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   server.initPython();

@@ -43,7 +43,7 @@ the PostgreSQL connection saved as "my_connection".
 
 Ownership is transferred to the caller.
 
-:raises :: py:class:`QgsProviderConnectionException`
+:raises QgsProviderConnectionException: 
 %End
 
   private:

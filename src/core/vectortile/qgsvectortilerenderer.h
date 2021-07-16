@@ -38,7 +38,9 @@ class CORE_EXPORT QgsVectorTileRendererData
 {
   public:
     //! Constructs the object
-    explicit QgsVectorTileRendererData( QgsTileXYZ id ): mId( id ) {}
+    explicit QgsVectorTileRendererData( QgsTileXYZ id )
+      : mId( id )
+    {}
 
     //! Returns coordinates of the tile
     QgsTileXYZ id() const { return mId; }

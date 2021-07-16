@@ -69,7 +69,9 @@ Returns the number of geometries within the collection.
 %Docstring
 Returns a geometry from within the collection.
 
-:param n: index of geometry to return. An IndexError will be raised if no geometry with the specified index exists.
+:param n: index of geometry to return.
+
+:raises IndexError: if no geometry with the specified index exists.
 %End
 %MethodCode
     if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
@@ -133,9 +135,9 @@ Inserts a geometry before a specified index and takes ownership. Returns ``True`
 %Docstring
 Removes a geometry from the collection by index.
 
-An IndexError will be raised if no geometry with the specified index exists.
-
 :return: ``True`` if removal was successful.
+
+:raises IndexError: if no geometry with the specified index exists.
 %End
 %MethodCode
     const int count = sipCpp->numGeometries();
@@ -245,6 +247,8 @@ Returns a geometry without curves. Caller takes ownership
 
     virtual QgsGeometryCollection *toCurveType() const /Factory/;
 
+    virtual const QgsAbstractGeometry *simplifiedTypeRef() const /HoldGIL/;
+
 
     virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );
 
@@ -254,10 +258,12 @@ Returns a geometry without curves. Caller takes ownership
 
     SIP_PYOBJECT __getitem__( int index ) /TypeHint="QgsAbstractGeometry"/;
 %Docstring
-Returns the geometry at the specified ``index``. An IndexError will be raised if no geometry with the specified ``index`` exists.
+Returns the geometry at the specified ``index``.
 
 Indexes can be less than 0, in which case they correspond to geometries from the end of the collect. E.g. an index of -1
 corresponds to the last geometry in the collection.
+
+:raises IndexError: if no geometry with the specified ``index`` exists.
 
 .. versionadded:: 3.6
 %End
@@ -280,10 +286,12 @@ corresponds to the last geometry in the collection.
 
     void __delitem__( int index );
 %Docstring
-Deletes the geometry at the specified ``index``. A geometry at the ``index`` must already exist or an IndexError will be raised.
+Deletes the geometry at the specified ``index``.
 
 Indexes can be less than 0, in which case they correspond to geometries from the end of the collection. E.g. an index of -1
 corresponds to the last geometry in the collection.
+
+:raises IndexError: if no geometry at the ``index`` exists
 
 .. versionadded:: 3.6
 %End

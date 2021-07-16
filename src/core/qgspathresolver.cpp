@@ -18,6 +18,7 @@
 
 #include "qgis.h"
 #include "qgsapplication.h"
+#include <QDir>
 #include <QFileInfo>
 #include <QUrl>
 #include <QUuid>
@@ -25,9 +26,10 @@
 
 typedef std::vector< std::pair< QString, std::function< QString( const QString & ) > > > CustomResolvers;
 Q_GLOBAL_STATIC( CustomResolvers, sCustomResolvers )
+Q_GLOBAL_STATIC( CustomResolvers, sCustomWriters )
 
-QgsPathResolver::QgsPathResolver( const QString &baseFileName )
-  : mBaseFileName( baseFileName )
+QgsPathResolver::QgsPathResolver( const QString &baseFileName, const QString &attachmentDir )
+  : mBaseFileName( baseFileName ), mAttachmentDir( attachmentDir )
 {
 }
 
@@ -52,8 +54,22 @@ QString QgsPathResolver::readPath( const QString &f ) const
 
   if ( src.startsWith( QLatin1String( "localized:" ) ) )
   {
+    QStringList parts = src.split( "|" );
     // strip away "localized:" prefix, replace with actual  inbuilt data folder path
-    return QgsApplication::localizedDataPathRegistry()->globalPath( src.mid( 10 ) ) ;
+    parts[0] = QgsApplication::localizedDataPathRegistry()->globalPath( parts[0].mid( 10 ) ) ;
+    if ( !parts[0].isEmpty() )
+    {
+      return parts.join( "|" );
+    }
+    else
+    {
+      return QString();
+    }
+  }
+  if ( src.startsWith( QLatin1String( "attachment:" ) ) )
+  {
+    // resolve attachment w.r.t. temporary path where project archive is extracted
+    return QDir( mAttachmentDir ).absoluteFilePath( src.mid( 11 ) );
   }
 
   if ( mBaseFileName.isNull() )
@@ -189,8 +205,26 @@ bool QgsPathResolver::removePathPreprocessor( const QString &id )
   return prevCount != sCustomResolvers()->size();
 }
 
-QString QgsPathResolver::writePath( const QString &src ) const
+QString QgsPathResolver::setPathWriter( const std::function<QString( const QString & )> &writer )
 {
+  QString id = QUuid::createUuid().toString();
+  sCustomWriters()->emplace_back( std::make_pair( id, writer ) );
+  return id;
+}
+
+bool QgsPathResolver::removePathWriter( const QString &id )
+{
+  const size_t prevCount = sCustomWriters->size();
+  sCustomWriters()->erase( std::remove_if( sCustomWriters->begin(), sCustomWriters->end(), [id]( std::pair< QString, std::function< QString( const QString & ) > > &a )
+  {
+    return a.first == id;
+  } ), sCustomWriters->end() );
+  return prevCount != sCustomWriters->size();
+}
+
+QString QgsPathResolver::writePath( const QString &s ) const
+{
+  QString src = s;
   if ( src.isEmpty() )
   {
     return src;
@@ -200,10 +234,20 @@ QString QgsPathResolver::writePath( const QString &src ) const
   if ( !localizedPath.isEmpty() )
     return QStringLiteral( "localized:" ) + localizedPath;
 
+  const CustomResolvers customWriters = *sCustomWriters();
+  for ( const auto &writer :  customWriters )
+    src = writer.second( src );
+
   if ( src.startsWith( QgsApplication::pkgDataPath() + QStringLiteral( "/resources" ) ) )
   {
     // replace inbuilt data folder path with "inbuilt:" prefix
     return QStringLiteral( "inbuilt:" ) + src.mid( QgsApplication::pkgDataPath().length() + 10 );
+  }
+
+  if ( !mAttachmentDir.isEmpty() && src.startsWith( mAttachmentDir ) )
+  {
+    // Replace attachment dir with "attachment:" prefix
+    return QStringLiteral( "attachment:" ) + QFileInfo( src ).fileName();
   }
 
   if ( mBaseFileName.isEmpty() )

@@ -26,6 +26,8 @@
 #include "qgsunittypes.h"
 #include "qgsproperty.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
 
 #include <algorithm>
 #include <QPainter>
@@ -41,6 +43,8 @@ QgsSimpleLineSymbolLayer::QgsSimpleLineSymbolLayer( const QColor &color, double 
   mWidth = width;
   mCustomDashVector << 5 << 2;
 }
+
+QgsSimpleLineSymbolLayer::~QgsSimpleLineSymbolLayer() = default;
 
 void QgsSimpleLineSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
@@ -678,7 +682,7 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   {
     QVector<qreal> dashVector;
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyCustomDash, context.renderContext().expressionContext() );
-    if ( exprVal.isValid() )
+    if ( !exprVal.isNull() )
     {
       QStringList dashList = exprVal.toString().split( ';' );
       QStringList::const_iterator dashIt = dashList.constBegin();
@@ -716,7 +720,7 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenStyle( mPenStyle ) );
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyStrokeStyle, context.renderContext().expressionContext() );
-    if ( exprVal.isValid() )
+    if ( !exprVal.isNull() )
       pen.setStyle( QgsSymbolLayerUtils::decodePenStyle( exprVal.toString() ) );
   }
 
@@ -725,7 +729,7 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle ) );
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyJoinStyle, context.renderContext().expressionContext() );
-    if ( exprVal.isValid() )
+    if ( !exprVal.isNull() )
       pen.setJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( exprVal.toString() ) );
   }
 
@@ -734,7 +738,7 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle ) );
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyCapStyle, context.renderContext().expressionContext() );
-    if ( exprVal.isValid() )
+    if ( !exprVal.isNull() )
       pen.setCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( exprVal.toString() ) );
   }
 }
@@ -1204,6 +1208,8 @@ QgsTemplatedLineSymbolLayerBase::QgsTemplatedLineSymbolLayerBase( bool rotateSym
 
 }
 
+QgsTemplatedLineSymbolLayerBase::~QgsTemplatedLineSymbolLayerBase() = default;
+
 void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
 {
   double offset = mOffset;
@@ -1219,7 +1225,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, Q
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyPlacement ) )
   {
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyPlacement, context.renderContext().expressionContext() );
-    if ( exprVal.isValid() )
+    if ( !exprVal.isNull() )
     {
       QString placementString = exprVal.toString();
       if ( placementString.compare( QLatin1String( "interval" ), Qt::CaseInsensitive ) == 0 )
@@ -2213,7 +2219,7 @@ QgsSymbol *QgsMarkerLineSymbolLayer::subSymbol()
 
 bool QgsMarkerLineSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
-  if ( !symbol || symbol->type() != QgsSymbol::Marker )
+  if ( !symbol || symbol->type() != Qgis::SymbolType::Marker )
   {
     delete symbol;
     return false;
@@ -2235,6 +2241,8 @@ QgsMarkerLineSymbolLayer::QgsMarkerLineSymbolLayer( bool rotateMarker, double in
 {
   setSubSymbol( new QgsMarkerSymbol() );
 }
+
+QgsMarkerLineSymbolLayer::~QgsMarkerLineSymbolLayer() = default;
 
 QgsSymbolLayer *QgsMarkerLineSymbolLayer::create( const QVariantMap &props )
 {
@@ -2270,9 +2278,9 @@ QColor QgsMarkerLineSymbolLayer::color() const
 void QgsMarkerLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   // if being rotated, it gets initialized with every line segment
-  QgsSymbol::RenderHints hints = QgsSymbol::RenderHints();
+  Qgis::SymbolRenderHints hints = Qgis::SymbolRenderHints();
   if ( rotateSymbols() )
-    hints |= QgsSymbol::DynamicRotation;
+    hints |= Qgis::SymbolRenderHint::DynamicRotation;
   mMarker->setRenderHints( hints );
 
   mMarker->startRender( context.renderContext(), context.fields() );
@@ -2558,6 +2566,8 @@ QgsHashedLineSymbolLayer::QgsHashedLineSymbolLayer( bool rotateSymbol, double in
   setSubSymbol( new QgsLineSymbol() );
 }
 
+QgsHashedLineSymbolLayer::~QgsHashedLineSymbolLayer() = default;
+
 QgsSymbolLayer *QgsHashedLineSymbolLayer::create( const QVariantMap &props )
 {
   bool rotate = DEFAULT_MARKERLINE_ROTATE;
@@ -2595,9 +2605,9 @@ QString QgsHashedLineSymbolLayer::layerType() const
 void QgsHashedLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   // if being rotated, it gets initialized with every line segment
-  QgsSymbol::RenderHints hints = QgsSymbol::RenderHints();
+  Qgis::SymbolRenderHints hints = Qgis::SymbolRenderHints();
   if ( rotateSymbols() )
-    hints |= QgsSymbol::DynamicRotation;
+    hints |= Qgis::SymbolRenderHint::DynamicRotation;
   mHashSymbol->setRenderHints( hints );
 
   mHashSymbol->startRender( context.renderContext(), context.fields() );
@@ -2649,7 +2659,7 @@ QgsSymbol *QgsHashedLineSymbolLayer::subSymbol()
 
 bool QgsHashedLineSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
-  if ( !symbol || symbol->type() != QgsSymbol::Line )
+  if ( !symbol || symbol->type() != Qgis::SymbolType::Line )
   {
     delete symbol;
     return false;

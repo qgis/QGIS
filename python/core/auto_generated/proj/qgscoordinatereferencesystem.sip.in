@@ -57,10 +57,12 @@ For example, the following code will create and inspect "British national grid" 
 
 This will produce the following output:
 
-.. code-block::
+
+.. code-block:: raw
 
      CRS Description: OSGB 1936 / British National Grid
      CRS PROJ text: +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 [output trimmed]
+
 
 CRS Definition Formats
 ----------------------
@@ -89,7 +91,8 @@ on different machines or user profiles.
   format: `+param1=value1 +param2=value2 [...]`. This is the format natively used by the
   underlying proj library. For example, the definition of WGS84 looks like this:
 
-.. code-block::
+
+.. code-block:: raw
 
        +proj=longlat +datum=WGS84 +no_defs
 
@@ -102,7 +105,8 @@ on different machines or user profiles.
 - Well-known text (WKT): Defined by Open Geospatial Consortium (OGC), this is another common
   format to define CRS. For WGS84 the OGC WKT definition is the following:
 
-.. code-block::
+
+.. code-block:: raw
 
            GEOGCS["WGS 84",
                   DATUM["WGS_1984",
@@ -814,7 +818,7 @@ be returned.
 
    This method requires PROJ 8.0 or later
 
-:raises :: py:class:`QgsNotSupportedException` on QGIS builds based on PROJ 7 or earlier.
+:raises QgsNotSupportedException: on QGIS builds based on PROJ 7 or earlier.
 
 
 .. versionadded:: 3.20
@@ -828,7 +832,7 @@ Attempts to retrieve the name of the celestial body associated with the CRS (e.g
 
    This method requires PROJ 8.1 or later
 
-:raises :: py:class:`QgsNotSupportedException` on QGIS builds based on PROJ 8.0 or earlier.
+:raises QgsNotSupportedException: on QGIS builds based on PROJ 8.0 or earlier.
 
 
 .. versionadded:: 3.20
@@ -850,6 +854,13 @@ CRS (see :py:func:`~QgsCoordinateReferenceSystem.isDynamic`).
 
 :param epoch: Coordinate epoch as decimal year (e.g. 2021.3)
 
+.. warning::
+
+   The :py:class:`QgsCoordinateTransform` class can perform time-dependent transformations
+   between a static and dynamic CRS based on either the source or destination CRS coordinate epoch,
+   however dynamic CRS to dynamic CRS transformations are not currently supported.
+
+
 .. seealso:: :py:func:`coordinateEpoch`
 
 
@@ -870,7 +881,14 @@ observation, and not to the CRS, however it is often more practical to
 bind it to the CRS. The coordinate epoch should be specified for dynamic
 CRS (see :py:func:`~QgsCoordinateReferenceSystem.isDynamic`).
 
+.. warning::
+
+   The :py:class:`QgsCoordinateTransform` class can perform time-dependent transformations
+   between a static and dynamic CRS based on either the source or destination CRS coordinate epoch,
+   however dynamic CRS to dynamic CRS transformations are not currently supported.
+
 :return: Coordinate epoch as decimal year (e.g. 2021.3), or NaN if not set, or relevant.
+
 
 .. seealso:: :py:func:`setCoordinateEpoch`
 

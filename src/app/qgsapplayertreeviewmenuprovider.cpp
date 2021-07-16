@@ -689,7 +689,10 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
                                       tr( "Remove Layer Notes" ),
                                       tr( "Are you sure you want to remove all notes for the layer “%1”?" ).arg( layer->name() ),
                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
+          {
             QgsLayerNotesUtils::removeNotes( layer );
+            QgsProject::instance()->setDirty( true );
+          }
         } );
         menu->addAction( notes );
       }
@@ -1179,24 +1182,7 @@ void QgsAppLayerTreeViewMenuProvider::toggleLabels( bool enabled )
     if ( enabled && !vlayer->labeling() )
     {
       // no labeling setup - create default labeling for layer
-      QgsPalLayerSettings settings;
-      settings.fieldName = vlayer->displayField();
-      switch ( vlayer->geometryType() )
-      {
-        case QgsWkbTypes::PointGeometry:
-        case QgsWkbTypes::PolygonGeometry:
-          settings.placement = QgsPalLayerSettings::AroundPoint;
-          break;
-
-        case QgsWkbTypes::LineGeometry:
-          settings.placement = QgsPalLayerSettings::Line;
-          break;
-
-        case QgsWkbTypes::UnknownGeometry:
-        case QgsWkbTypes::NullGeometry:
-          break;
-      }
-
+      QgsPalLayerSettings settings = QgsAbstractVectorLayerLabeling::defaultSettingsForLayer( vlayer );
       vlayer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
       vlayer->setLabelsEnabled( true );
     }

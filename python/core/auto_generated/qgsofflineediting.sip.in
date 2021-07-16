@@ -73,7 +73,7 @@ comparing the index of the current ``layer`` to the total amount
 ``numLayers``.
 %End
 
-    void progressModeSet( QgsOfflineEditing::ProgressMode mode, int maximum );
+    void progressModeSet( QgsOfflineEditing::ProgressMode mode, long long maximum );
 %Docstring
 Emitted when the mode for the progress of the current operation is
 set.
@@ -82,7 +82,7 @@ set.
 :param maximum: total number of entities to process in the current operation
 %End
 
-    void progressUpdated( int progress );
+    void progressUpdated( long long progress );
 %Docstring
 Emitted with the progress of the current mode
 

@@ -15,14 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <algorithm>
-#include <cmath>
-#include <limits>
-#include <QString>
-#include <QTextStream>
-#include <QTransform>
-#include <QRegExp>
-
 #include "qgsgeometry.h"
 #include "qgspointxy.h"
 #include "qgsrectangle.h"
@@ -30,6 +22,14 @@
 #include "qgsbox3d.h"
 #include "qgspolygon.h"
 #include "qgslinestring.h"
+
+#include <QString>
+#include <QTextStream>
+#include <QTransform>
+
+#include <algorithm>
+#include <cmath>
+#include <limits>
 
 QgsRectangle QgsRectangle::fromWkt( const QString &wkt )
 {

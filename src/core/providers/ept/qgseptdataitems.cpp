@@ -29,10 +29,10 @@
 
 QgsEptLayerItem::QgsEptLayerItem( QgsDataItem *parent,
                                   const QString &name, const QString &path, const QString &uri )
-  : QgsLayerItem( parent, name, path, uri, QgsLayerItem::PointCloud, QStringLiteral( "ept" ) )
+  : QgsLayerItem( parent, name, path, uri, Qgis::BrowserLayerType::PointCloud, QStringLiteral( "ept" ) )
 {
   mToolTip = uri;
-  setState( Populated );
+  setState( Qgis::BrowserItemState::Populated );
 }
 
 QString QgsEptLayerItem::layerName() const

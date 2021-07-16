@@ -27,7 +27,18 @@ Widget to control a layers transparency and related options
 Widget to control a layers transparency and related options
 %End
 
+    void setContext( const QgsSymbolWidgetContext &context );
+%Docstring
+Sets the ``context`` in which the dialog is shown, e.g., the associated map canvas and expression contexts.
+
+.. versionadded:: 3.22
+%End
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
+
   public slots:
+
 
     void syncToLayer();
 %Docstring
@@ -39,6 +50,9 @@ Sync the widget state to the layer set for the widget.
 %Docstring
 Apply any changes on the widget to the set layer.
 %End
+
+  protected:
+
 
 };
 /************************************************************************

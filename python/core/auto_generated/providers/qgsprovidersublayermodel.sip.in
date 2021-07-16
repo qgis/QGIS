@@ -1,0 +1,254 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/qgsprovidersublayermodel.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsProviderSublayerModel: QAbstractItemModel
+{
+%Docstring(signature="appended")
+
+A model for representing the sublayers present in a URI.
+
+:py:class:`QgsProviderSublayerModel` is designed to present a tree view of the sublayers
+available for a URI, including any vector, raster or mesh sublayers present.
+
+Additionally, :py:class:`QgsProviderSublayerModel` can include some non-sublayer items,
+e.g. in order to represent other content available for a URI, such as
+embedded project items. The non-sublayer items can be added by calling
+:py:func:`~addNonLayerItem`.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsprovidersublayermodel.h"
+%End
+  public:
+
+    enum class Role
+    {
+      ProviderKey,
+      LayerType,
+      Uri,
+      Name,
+      Description,
+      Path,
+      FeatureCount,
+      WkbType,
+      GeometryColumnName,
+      LayerNumber,
+      IsNonLayerItem,
+      NonLayerItemType,
+    };
+
+    enum class Column
+    {
+      Name,
+      Description,
+    };
+
+    class NonLayerItem
+{
+%Docstring(signature="appended")
+
+Contains details for a non-sublayer item to include in a QgsProviderSublayerModel.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsprovidersublayermodel.h"
+%End
+      public:
+
+        QString type() const;
+%Docstring
+Returns the item's type.
+
+.. seealso:: :py:func:`setType`
+%End
+
+        void setType( const QString &type );
+%Docstring
+Sets the item's ``type``.
+
+.. seealso:: :py:func:`type`
+%End
+
+        QString name() const;
+%Docstring
+Returns the item's name.
+
+.. seealso:: :py:func:`setName`
+%End
+
+        void setName( const QString &name );
+%Docstring
+Sets the item's ``name``.
+
+.. seealso:: :py:func:`setName`
+%End
+
+        QString description() const;
+%Docstring
+Returns the item's description.
+
+.. seealso:: :py:func:`setDescription`
+%End
+
+        void setDescription( const QString &description );
+%Docstring
+Sets the item's ``description``.
+
+.. seealso:: :py:func:`setDescription`
+%End
+
+        QString uri() const;
+%Docstring
+Returns the item's URI.
+
+.. seealso:: :py:func:`setUri`
+%End
+
+        void setUri( const QString &uri );
+%Docstring
+Set the item's ``uri``.
+
+.. seealso:: :py:func:`setUri`
+%End
+
+        QIcon icon() const;
+%Docstring
+Returns the item's icon.
+
+.. seealso:: :py:func:`setIcon`
+%End
+
+        void setIcon( const QIcon &icon );
+%Docstring
+Sets the item's ``icon``.
+
+.. seealso:: :py:func:`setIcon`
+%End
+
+        bool operator==( const QgsProviderSublayerModel::NonLayerItem &other ) const;
+        bool operator!=( const QgsProviderSublayerModel::NonLayerItem &other ) const;
+
+        SIP_PYOBJECT __repr__();
+%MethodCode
+        QString str = QStringLiteral( "<QgsProviderSublayerModel.NonLayerItem: %1 - %2>" ).arg( sipCpp->type(), sipCpp->name() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    };
+
+    QgsProviderSublayerModel( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProviderSublayerModel, with the specified ``parent`` object.
+%End
+
+    void setSublayerDetails( const QList< QgsProviderSublayerDetails > &details );
+%Docstring
+Sets the sublayer ``details`` to show in the model.
+
+.. seealso:: :py:func:`sublayerDetails`
+%End
+
+    QList< QgsProviderSublayerDetails > sublayerDetails() const;
+%Docstring
+Returns the sublayer details shown in the model.
+
+.. seealso:: :py:func:`setSublayerDetails`
+%End
+
+    QgsProviderSublayerDetails indexToSublayer( const QModelIndex &index ) const;
+%Docstring
+Returns the sublayer corresponding to the given ``index``.
+%End
+
+    QgsProviderSublayerModel::NonLayerItem indexToNonLayerItem( const QModelIndex &index ) const;
+%Docstring
+Returns the non layer item corresponding to the given ``index``.
+%End
+
+    void addNonLayerItem( const QgsProviderSublayerModel::NonLayerItem &item );
+%Docstring
+Adds a non-layer item (e.g. an embedded QGIS project item) to the model.
+%End
+
+    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual QModelIndex parent( const QModelIndex &index ) const;
+
+    virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual int rowCount( const QModelIndex &parent ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role ) const;
+
+    virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+
+
+  protected:
+
+
+
+};
+
+
+class QgsProviderSublayerProxyModel: QSortFilterProxyModel
+{
+%Docstring(signature="appended")
+
+A QSortFilterProxyModel for filtering and sorting a QgsProviderSublayerModel.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsprovidersublayermodel.h"
+%End
+  public:
+
+    QgsProviderSublayerProxyModel( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProviderSublayerProxyModel, with the specified ``parent`` object.
+%End
+
+    QString filterString() const;
+%Docstring
+Returns the filter string used for filtering items in the model.
+
+.. seealso:: :py:func:`setFilterString`
+%End
+
+    void setFilterString( const QString &filter );
+%Docstring
+Sets the ``filter`` string used for filtering items in the model.
+
+.. seealso:: :py:func:`filterString`
+%End
+
+  protected:
+    virtual bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
+
+    virtual bool lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const;
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/qgsprovidersublayermodel.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

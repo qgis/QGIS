@@ -50,13 +50,13 @@ and putting it in a stack.
 The message bar will take ownership of ``item``.
 %End
 
-    QgsMessageBarItem *pushWidget( QWidget *widget /Transfer/, Qgis::MessageLevel level = Qgis::Info, int duration = 0 );
+    QgsMessageBarItem *pushWidget( QWidget *widget /Transfer/, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 0 );
 %Docstring
 Display a ``widget`` as a message on the bar, after hiding the currently visible one
 and putting it in a stack.
 
 :param widget: message widget to display
-:param level: is Qgis.Info, Warning, Critical or Success
+:param level: is Qgis.MessageLevel.Info, Warning, Critical or Success
 :param duration: timeout duration of message in seconds, 0 value indicates no timeout (i.e.
                  the message must be manually cleared by the user).
 %End
@@ -107,7 +107,7 @@ The caller takes ownership of the returned item.
    instead.
 %End
 
-    void pushMessage( const QString &text, Qgis::MessageLevel level = Qgis::Info, int duration = -1 );
+    void pushMessage( const QString &text, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = -1 );
 %Docstring
 A convenience method for pushing a message with the specified ``text`` to the bar.
 
@@ -119,7 +119,7 @@ is set to 0, then the message must be manually dismissed by the user. Since QGIS
 the default timeout for the message ``level`` should be used.
 %End
 
-    void pushMessage( const QString &title, const QString &text, Qgis::MessageLevel level = Qgis::Info, int duration = -1 );
+    void pushMessage( const QString &title, const QString &text, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = -1 );
 %Docstring
 A convenience method for pushing a message with the specified ``title`` and ``text`` to the bar.
 
@@ -131,7 +131,7 @@ is set to 0, then the message must be manually dismissed by the user. Since QGIS
 the default timeout for the message ``level`` should be used.
 %End
 
-    void pushMessage( const QString &title, const QString &text, const QString &showMore, Qgis::MessageLevel level = Qgis::Info, int duration = -1 );
+    void pushMessage( const QString &title, const QString &text, const QString &showMore, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = -1 );
 %Docstring
 A convenience method for pushing a message with the specified ``title`` and ``text`` to the bar. Additional
 message content specified via ``showMore`` will be shown when the user presses a "more" button.
@@ -156,7 +156,7 @@ Returns a list of all items currently visible or queued for the bar.
 .. versionadded:: 3.14
 %End
 
-    static int defaultMessageTimeout( Qgis::MessageLevel level = Qgis::None );
+    static int defaultMessageTimeout( Qgis::MessageLevel level = Qgis::MessageLevel::NoLevel );
 %Docstring
 Returns the default timeout in seconds for timed messages of the specified ``level``.
 

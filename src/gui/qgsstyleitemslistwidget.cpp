@@ -224,7 +224,7 @@ void QgsStyleItemsListWidget::setEntityTypes( const QList<QgsStyle::StyleEntity>
   }
 }
 
-void QgsStyleItemsListWidget::setSymbolType( QgsSymbol::SymbolType type )
+void QgsStyleItemsListWidget::setSymbolType( Qgis::SymbolType type )
 {
   mModel->setSymbolTypeFilterEnabled( true );
   mModel->setSymbolType( type );

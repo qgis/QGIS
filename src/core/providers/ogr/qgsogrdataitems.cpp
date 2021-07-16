@@ -25,15 +25,18 @@
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsgeopackagedataitems.h"
+#include "qgsgeopackageproviderconnection.h"
 #include "qgsogrutils.h"
 #include "qgsproviderregistry.h"
 #include "qgssqliteutils.h"
 #include "symbology/qgsstyle.h"
+#include "qgsfieldsitem.h"
+#include "qgszipitem.h"
+#include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsogrprovidermetadata.h"
 
 #include <QFileInfo>
 #include <QTextStream>
-#include <QAction>
-#include <QMessageBox>
 #include <QInputDialog>
 #include <QFileDialog>
 #include <QRegularExpression>
@@ -47,7 +50,7 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem *parent,
                                   const QString &name,
                                   const QString &path,
                                   const QString &uri,
-                                  LayerType layerType,
+                                  Qgis::BrowserLayerType layerType,
                                   const QString &driverName,
                                   bool isSubLayer )
   : QgsLayerItem( parent, name, path, uri, layerType, QStringLiteral( "ogr" ) )
@@ -57,7 +60,7 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem *parent,
   mIsSubLayer = isSubLayer;
   mToolTip = uri;
   const bool isIndex { QRegularExpression( R"(=idx_[^_]+_[^_]+.*$)" ).match( uri ).hasMatch() };
-  setState( ( driverName ==  QStringLiteral( "SQLite" ) && ! isIndex ) ? NotPopulated : Populated ); // children are accepted except for sqlite
+  setState( ( driverName ==  QStringLiteral( "SQLite" ) && ! isIndex ) ? Qgis::BrowserItemState::NotPopulated : Qgis::BrowserItemState::Populated ); // children are accepted except for sqlite
 }
 
 
@@ -77,45 +80,45 @@ QVector<QgsDataItem *> QgsOgrLayerItem::createChildren()
 }
 
 
-QgsLayerItem::LayerType QgsOgrLayerItem::layerTypeFromDb( const QString &geometryType )
+Qgis::BrowserLayerType QgsOgrLayerItem::layerTypeFromDb( const QString &geometryType )
 {
   if ( geometryType.contains( QStringLiteral( "Point" ), Qt::CaseInsensitive ) )
   {
-    return QgsLayerItem::LayerType::Point;
+    return Qgis::BrowserLayerType::Point;
   }
   else if ( geometryType.contains( QStringLiteral( "Polygon" ), Qt::CaseInsensitive ) )
   {
-    return QgsLayerItem::LayerType::Polygon;
+    return Qgis::BrowserLayerType::Polygon;
   }
   else if ( geometryType.contains( QStringLiteral( "LineString" ), Qt::CaseInsensitive ) )
   {
-    return QgsLayerItem::LayerType::Line;
+    return Qgis::BrowserLayerType::Line;
   }
   else if ( geometryType.contains( QStringLiteral( "Collection" ), Qt::CaseInsensitive ) )
   {
-    return QgsLayerItem::LayerType::Vector;
+    return Qgis::BrowserLayerType::Vector;
   }
   // To be moved in a parent class that would also work for gdal and rasters
   else if ( geometryType.contains( QStringLiteral( "Raster" ), Qt::CaseInsensitive ) )
   {
-    return QgsLayerItem::LayerType::Raster;
+    return Qgis::BrowserLayerType::Raster;
   }
 
   // fallback - try parsing as a WKT type string
   switch ( QgsWkbTypes::geometryType( QgsWkbTypes::parseType( geometryType ) ) )
   {
     case QgsWkbTypes::PointGeometry:
-      return QgsLayerItem::LayerType::Point;
+      return Qgis::BrowserLayerType::Point;
     case QgsWkbTypes::LineGeometry:
-      return QgsLayerItem::LayerType::Line;
+      return Qgis::BrowserLayerType::Line;
     case QgsWkbTypes::PolygonGeometry:
-      return QgsLayerItem::LayerType::Polygon;
+      return Qgis::BrowserLayerType::Polygon;
     case QgsWkbTypes::UnknownGeometry:
     case QgsWkbTypes::NullGeometry:
       break;
   }
 
-  return QgsLayerItem::LayerType::TableLayer;
+  return Qgis::BrowserLayerType::TableLayer;
 }
 
 bool QgsOgrLayerItem::isSubLayer() const
@@ -174,12 +177,12 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
         // QString featuresCount = pieces[2]; // Not used
         QString geometryType = pieces[3];
         QString geometryColumn = pieces[4];
-        QgsLayerItem::LayerType layerType;
+        Qgis::BrowserLayerType layerType;
         layerType = QgsOgrLayerItem::layerTypeFromDb( geometryType );
         // example URI for mixed-geoms geoms:    '/path/gdal_sample_v1.2_no_extensions.gpkg|layerid=7|geometrytype=Point'
         // example URI for mixed-geoms attr table:    '/path/gdal_sample_v1.2_no_extensions.gpkg|layername=MyLayer|layerid=7'
         // example URI for single geoms:    '/path/gdal_sample_v1.2_no_extensions.gpkg|layerid=6'
-        if ( layerType != QgsLayerItem::LayerType::NoType )
+        if ( layerType != Qgis::BrowserLayerType::NoType )
         {
           if ( geometryType.contains( QStringLiteral( "Collection" ), Qt::CaseInsensitive ) )
           {
@@ -208,7 +211,7 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
           parts.insert( QStringLiteral( "layerId" ), layerId );
           parts.insert( QStringLiteral( "layerName" ), name );
           QString uri = QgsOgrProviderMetadata().encodeUri( parts );
-          children.append( new QgsOgrDbLayerInfo( path, uri, name, geometryColumn, geometryType, QgsLayerItem::LayerType::TableLayer, driver ) );
+          children.append( new QgsOgrDbLayerInfo( path, uri, name, geometryColumn, geometryType, Qgis::BrowserLayerType::TableLayer, driver ) );
         }
       }
     }
@@ -227,7 +230,7 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
       const QString uri = parts[0];
       const QString desc = parts[1];
       QgsDebugMsgLevel( QStringLiteral( "Adding GeoPackage Raster item %1 %2" ).arg( desc, uri ), 3 );
-      children.append( new QgsOgrDbLayerInfo( path, uri, desc, QString(), QStringLiteral( "Raster" ), QgsLayerItem::LayerType::Raster, driver ) );
+      children.append( new QgsOgrDbLayerInfo( path, uri, desc, QString(), QStringLiteral( "Raster" ), Qgis::BrowserLayerType::Raster, driver ) );
     }
   }
   else if ( rlayer.isValid( ) )
@@ -261,7 +264,7 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
       }
 
       QgsDebugMsgLevel( QStringLiteral( "Adding %1 Raster item %2 %3" ).arg( driver, name, path ), 3 );
-      children.append( new QgsOgrDbLayerInfo( path, uri, name, QString(), QStringLiteral( "Raster" ), QgsLayerItem::LayerType::Raster, driver ) );
+      children.append( new QgsOgrDbLayerInfo( path, uri, name, QString(), QStringLiteral( "Raster" ), Qgis::BrowserLayerType::Raster, driver ) );
     }
   }
 
@@ -304,7 +307,7 @@ static QgsOgrLayerItem *dataItemForLayer( QgsDataItem *parentItem, QString name,
   OGRLayerH hLayer = GDALDatasetGetLayer( hDataSource, layerId );
   OGRFeatureDefnH hDef = OGR_L_GetLayerDefn( hLayer );
 
-  QgsLayerItem::LayerType layerType = QgsLayerItem::Vector;
+  Qgis::BrowserLayerType layerType = Qgis::BrowserLayerType::Vector;
   GDALDriverH hDriver = GDALGetDatasetDriver( hDataSource );
   QString driverName = QString::fromUtf8( GDALGetDriverShortName( hDriver ) );
   OGRwkbGeometryType ogrType = QgsOgrProvider::getOgrGeomType( driverName, hLayer );
@@ -314,20 +317,20 @@ static QgsOgrLayerItem *dataItemForLayer( QgsDataItem *parentItem, QString name,
     case QgsWkbTypes::UnknownGeometry:
       break;
     case QgsWkbTypes::NullGeometry:
-      layerType = QgsLayerItem::TableLayer;
+      layerType = Qgis::BrowserLayerType::TableLayer;
       break;
     case QgsWkbTypes::PointGeometry:
-      layerType = QgsLayerItem::Point;
+      layerType = Qgis::BrowserLayerType::Point;
       break;
     case QgsWkbTypes::LineGeometry:
-      layerType = QgsLayerItem::Line;
+      layerType = Qgis::BrowserLayerType::Line;
       break;
     case QgsWkbTypes::PolygonGeometry:
-      layerType = QgsLayerItem::Polygon;
+      layerType = Qgis::BrowserLayerType::Polygon;
       break;
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "ogrType = %1 layertype = %2" ).arg( ogrType ).arg( layerType ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "ogrType = %1 layertype = %2" ).arg( ogrType ).arg( qgsEnumValueToKey( layerType ) ), 2 );
 
   QString layerUri = path;
 
@@ -432,9 +435,9 @@ bool QgsOgrDataCollectionItem::saveConnection( const QString &path, const QStrin
     }
     if ( ok && ! connName.isEmpty() )
     {
-      QgsOgrDbConnection connection( connName, ogrDriverName );
-      connection.setPath( path );
-      connection.save();
+      QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
+      QgsGeoPackageProviderConnection *providerConnection =  static_cast<QgsGeoPackageProviderConnection *>( providerMetadata->createConnection( connName ) );
+      providerMetadata->saveConnection( providerConnection, connName );
       return true;
     }
   }
@@ -586,7 +589,7 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
 
   // GDAL 3.1 Shapefile driver directly handles .shp.zip files
   if ( path.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) &&
-       GDALIdentifyDriver( path.toUtf8().constData(), nullptr ) )
+       GDALIdentifyDriverEx( path.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr ) )
   {
     suffix = QStringLiteral( "shp.zip" );
   }
@@ -627,8 +630,8 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
     const auto constWildcards = QgsOgrProviderUtils::wildcards();
     for ( const QString &wildcard : constWildcards )
     {
-      QRegExp rx( wildcard, Qt::CaseInsensitive, QRegExp::Wildcard );
-      if ( rx.exactMatch( info.fileName() ) )
+      const QRegularExpression rx( QRegularExpression::wildcardToRegularExpression( wildcard ), QRegularExpression::CaseInsensitiveOption );
+      if ( rx.match( info.fileName() ).hasMatch() )
       {
         matches = true;
         break;
@@ -712,9 +715,9 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
     {
       CPLPushErrorHandler( CPLQuietErrorHandler );
       CPLErrorReset();
-      GDALDriverH hDriver = GDALIdentifyDriver( path.toUtf8().constData(), nullptr );
+      GDALDriverH hDriver = GDALIdentifyDriverEx( path.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr );
       CPLPopErrorHandler();
-      if ( !hDriver || GDALGetDriverShortName( hDriver ) == QLatin1String( "VRT" ) )
+      if ( !hDriver )
       {
         QgsDebugMsgLevel( QStringLiteral( "Skipping VRT file because root is not a OGR VRT" ), 2 );
         return nullptr;
@@ -725,7 +728,7 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
     QgsDataItem *item = nullptr;
     if ( ! sOgrSupportedDbLayersExtensions.contains( suffix ) )
     {
-      item = new QgsOgrLayerItem( parentItem, name, path, path, QgsLayerItem::Vector );
+      item = new QgsOgrLayerItem( parentItem, name, path, path, Qgis::BrowserLayerType::Vector );
     }
     else if ( suffix.compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0 )
     {

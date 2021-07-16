@@ -150,14 +150,32 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
       QgsAttributeList attributes;      //!< Attributes to fetch
       QMap<int, int> attributesSourceToDestLayerMap SIP_SKIP; //!< Mapping from original attribute index to the joined layer index
       int indexOffset;                  //!< At what position the joined fields start
-      QgsVectorLayer *joinLayer;        //!< Resolved pointer to the joined layer
+
+#ifndef SIP_RUN
+
+      /**
+       * Feature source for join
+       *
+       * \note Not available in Python bindings
+       * \since QGIS 3.20
+       */
+      std::shared_ptr< QgsVectorLayerFeatureSource > joinSource;
+
+      /**
+       * Fields from joined layer.
+       *
+       * \note Not available in Python bindings
+       * \since QGIS 3.20
+       */
+      QgsFields joinLayerFields;
+#endif
+
       int targetField;                  //!< Index of field (of this layer) that drives the join
       int joinField;                    //!< Index of field (of the joined layer) must have equal value
 
       void addJoinedAttributesCached( QgsFeature &f, const QVariant &joinValue ) const;
       void addJoinedAttributesDirect( QgsFeature &f, const QVariant &joinValue ) const;
     };
-
 
     bool isValid() const override;
 
@@ -330,7 +348,7 @@ class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource,
     QgsCoordinateReferenceSystem sourceCrs() const override;
     QgsFields fields() const override;
     QgsWkbTypes::Type wkbType() const override;
-    long featureCount() const override;
+    long long featureCount() const override;
     QString sourceName() const override;
     QgsExpressionContextScope *createExpressionContextScope() const override;
     SpatialIndexPresence hasSpatialIndex() const override;

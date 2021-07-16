@@ -81,6 +81,7 @@
 #include <QDesktopServices>
 #include <QAbstractListModel>
 #include <QList>
+#include <QRegularExpressionValidator>
 
 const char *QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );
 
@@ -326,7 +327,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   int dp = QgsProject::instance()->readNumEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ) );
   spinBoxDP->setValue( dp );
 
-  cbxAbsolutePath->setCurrentIndex( QgsProject::instance()->readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), true ) ? 0 : 1 );
+  cbxAbsolutePath->addItem( tr( "Absolute" ), static_cast< int >( Qgis::FilePathType::Absolute ) );
+  cbxAbsolutePath->addItem( tr( "Relative" ), static_cast< int >( Qgis::FilePathType::Relative ) );
+  cbxAbsolutePath->setCurrentIndex( cbxAbsolutePath->findData( static_cast< int >( QgsProject::instance()->filePathStorage() ) ) );
 
   // populate combo box with ellipsoids
   // selection of the ellipsoid from settings is deferred to a later point, because it would
@@ -465,7 +468,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mWMSOnlineResourceExpressionButton->setToProperty( QgsProject::instance()->dataDefinedServerProperties().property( QgsProject::DataDefinedServerProperty::WMSOnlineResource ) );
 
   // WMS Name validator
-  QValidator *shortNameValidator = new QRegExpValidator( QgsApplication::shortNameRegExp(), this );
+  QValidator *shortNameValidator = new QRegularExpressionValidator( QgsApplication::shortNameRegularExpression(), this );
   mWMSName->setValidator( shortNameValidator );
 
   // WMS Contact Position
@@ -821,7 +824,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     currentLayer = it.value();
     if ( currentLayer->type() == QgsMapLayerType::VectorLayer )
     {
-
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
+      QgsVectorDataProvider *provider = vlayer->dataProvider();
+      if ( !provider )
+        continue;
       QTableWidgetItem *twi = new QTableWidgetItem( QString::number( j ) );
       twWFSLayers->setVerticalHeaderItem( j, twi );
 
@@ -839,8 +845,6 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
       psb->setValue( QgsProject::instance()->readNumEntry( QStringLiteral( "WFSLayersPrecision" ), "/" + currentLayer->id(), 8 ) );
       twWFSLayers->setCellWidget( j, 2, psb );
 
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
-      QgsVectorDataProvider *provider = vlayer->dataProvider();
       if ( ( provider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) && ( provider->capabilities() & QgsVectorDataProvider::ChangeGeometries ) )
       {
         QCheckBox *cbu = new QCheckBox();
@@ -1071,9 +1075,6 @@ void QgsProjectProperties::apply()
     {
       QgsDebugMsgLevel( QStringLiteral( "CRS set to no projection!" ), 4 );
     }
-
-    // mark selected projection for push to front
-    projectionSelector->pushProjectionToFront();
   }
 
   mMetadataWidget->acceptMetadata();
@@ -1126,7 +1127,7 @@ void QgsProjectProperties::apply()
   QgsUnitTypes::AreaUnit areaUnits = static_cast< QgsUnitTypes::AreaUnit >( mAreaUnitsCombo->currentData().toInt() );
   QgsProject::instance()->setAreaUnits( areaUnits );
 
-  QgsProject::instance()->writeEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), cbxAbsolutePath->currentIndex() == 0 );
+  QgsProject::instance()->setFilePathStorage( static_cast< Qgis::FilePathType >( cbxAbsolutePath->currentData().toInt() ) );
 
   if ( mEllipsoidList.at( mEllipsoidIndex ).acronym.startsWith( QLatin1String( "PARAMETER" ) ) )
   {
@@ -1601,7 +1602,7 @@ void QgsProjectProperties::apply()
   //refresh canvases to reflect new properties, eg background color and scale bar after changing display units.
   for ( QgsMapCanvas *canvas : constMapCanvases )
   {
-    canvas->refresh();
+    canvas->redrawAllLayers();
   }
 }
 
@@ -2128,16 +2129,16 @@ void QgsProjectProperties::populateStyles()
     QComboBox *cbo = nullptr;
     switch ( symbol->type() )
     {
-      case QgsSymbol::Marker :
+      case Qgis::SymbolType::Marker :
         cbo = cboStyleMarker;
         break;
-      case QgsSymbol::Line :
+      case Qgis::SymbolType::Line :
         cbo = cboStyleLine;
         break;
-      case QgsSymbol::Fill :
+      case Qgis::SymbolType::Fill :
         cbo = cboStyleFill;
         break;
-      case QgsSymbol::Hybrid:
+      case Qgis::SymbolType::Hybrid:
         // Shouldn't get here
         break;
     }

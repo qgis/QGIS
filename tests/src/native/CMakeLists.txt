@@ -40,37 +40,11 @@ if (APPLE)
 #  set (CMAKE_INSTALL_NAME_DIR @executable_path/../../../src/core)
 endif()
 
-#note for tests we should not include the moc of our
-#qtests in the executable file list as the moc is
-#directly included in the sources
-#and should not be compiled twice. Trying to include
-#them in will cause an error at build time
-
-#No relinking and full RPATH for the install tree
-#See: http://www.cmake.org/Wiki/CMake_RPATH_handling#No_relinking_and_full_RPATH_for_the_install_tree
-
-macro (ADD_QGIS_TEST testname testsrc)
-  set(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
-  set(qgis_${testname}_MOC_CPPS ${testsrc})
-  add_executable(qgis_${testname} ${qgis_${testname}_SRCS})
-  target_compile_features(qgis_${testname} PRIVATE cxx_std_17)
-  target_link_libraries(qgis_${testname}
-    ${Qt5Core_LIBRARIES}
-    ${Qt5Test_LIBRARIES}
-    qgis_core
-    qgis_native
-  )
-  add_test(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)
-  #set_target_properties(qgis_${testname} PROPERTIES
-  #  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
-  #  INSTALL_RPATH_USE_LINK_PATH true )
-endmacro (ADD_QGIS_TEST)
-
 
 
 #############################################################
 # Tests:
 
 if (APPLE)
-  ADD_QGIS_TEST(macnativetest testqgsmacnative.cpp)
+  add_qgis_test(testqgsmacnative.cpp MODULE native LINKEDLIBRARIES qgis_core qgis_native)
 endif()

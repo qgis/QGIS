@@ -22,6 +22,7 @@
 #include "qgslayoutundostack.h"
 #include "qgsvectorlayer.h"
 #include "qgslayoutitemmap.h"
+#include "qgsmarkersymbol.h"
 
 QgsLayoutMarkerWidget::QgsLayoutMarkerWidget( QgsLayoutItemMarker *marker )
   : QgsLayoutItemBaseWidget( nullptr, marker )
@@ -39,7 +40,7 @@ QgsLayoutMarkerWidget::QgsLayoutMarkerWidget( QgsLayoutItemMarker *marker )
 
   blockAllSignals( true );
 
-  mShapeStyleButton->setSymbolType( QgsSymbol::Marker );
+  mShapeStyleButton->setSymbolType( Qgis::SymbolType::Marker );
 
   blockAllSignals( false );
 

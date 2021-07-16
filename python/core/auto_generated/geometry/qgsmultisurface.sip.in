@@ -33,7 +33,7 @@ Constructor for an empty multisurface geometry.
 %Docstring
 Returns the surface with the specified ``index``.
 
-An IndexError will be raised if no surface with the specified index exists.
+:raises IndexError: if no surface with the specified index exists.
 
 .. versionadded:: 3.16
 %End

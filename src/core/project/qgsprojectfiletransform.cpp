@@ -23,18 +23,20 @@
 #include "qgsreadwritecontext.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include <QTextStream>
-#include <QDomDocument>
-#ifndef QT_NO_PRINTER
-#include <QPrinter> //to find out screen resolution
-#endif
-#include <cstdlib>
 #include "qgspathresolver.h"
 #include "qgsproject.h"
 #include "qgsprojectproperty.h"
 #include "qgsrasterbandstats.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsxmlutils.h"
+
+#include <QTextStream>
+#include <QDomDocument>
+#include <QRegularExpression>
+#ifndef QT_NO_PRINTER
+#include <QPrinter> //to find out screen resolution
+#endif
+#include <cstdlib>
 
 typedef QgsProjectVersion PFV;
 
@@ -1120,11 +1122,11 @@ int rasterBandNumber( const QDomElement &rasterPropertiesElem, const QString &ba
   QDomElement rasterBandElem = rasterPropertiesElem.firstChildElement( bandName );
   if ( !rasterBandElem.isNull() )
   {
-    QRegExp re( "(\\d+)" );
-
-    if ( re.indexIn( rasterBandElem.text() ) >= 0 )
+    const thread_local QRegularExpression re( "(\\d+)" );
+    const QRegularExpressionMatch match = re.match( rasterBandElem.text() );
+    if ( match.hasMatch() )
     {
-      return re.cap( 1 ).toInt();
+      return match.captured( 1 ).toInt();
     }
   }
   return band;

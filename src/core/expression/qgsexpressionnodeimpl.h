@@ -47,6 +47,14 @@ class CORE_EXPORT QgsExpressionNodeUnaryOperator : public QgsExpressionNode
     {}
     ~QgsExpressionNodeUnaryOperator() override { delete mOperand; }
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsExpressionNodeUnaryOperator: %1>" ).arg( sipCpp->text() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
     /**
      * Returns the unary operator.
      */
@@ -139,6 +147,14 @@ class CORE_EXPORT QgsExpressionNodeBinaryOperator : public QgsExpressionNode
       , mOpRight( opRight )
     {}
     ~QgsExpressionNodeBinaryOperator() override { delete mOpLeft; delete mOpRight; }
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsExpressionNodeBinaryOperator: %1>" ).arg( sipCpp->text() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
     /**
      * Returns the binary operator.
@@ -325,6 +341,24 @@ class CORE_EXPORT QgsExpressionNodeFunction : public QgsExpressionNode
 
     ~QgsExpressionNodeFunction() override;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString function;
+    if ( QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[sipCpp->fnIndex()] )
+    {
+      function = fd->name();
+    }
+    else
+    {
+      function = QString::number( sipCpp->fnIndex() );
+    }
+
+    QString str = QStringLiteral( "<QgsExpressionNodeFunction: %1>" ).arg( function );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
     /**
      * Returns the index of the node's function.
      */
@@ -372,6 +406,14 @@ class CORE_EXPORT QgsExpressionNodeLiteral : public QgsExpressionNode
       : mValue( value )
     {}
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsExpressionNodeLiteral: %1>" ).arg( sipCpp->valueAsString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
     //! The value of the literal.
     inline QVariant value() const { return mValue; }
 
@@ -388,6 +430,13 @@ class CORE_EXPORT QgsExpressionNodeLiteral : public QgsExpressionNode
     bool needsGeometry() const override;
     QgsExpressionNode *clone() const override SIP_FACTORY;
     bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
+
+    /**
+     * Returns a string representation of the node's literal value.
+     *
+     * \since QGIS 3.20
+     */
+    QString valueAsString() const;
 
   private:
     QVariant mValue;
@@ -409,6 +458,14 @@ class CORE_EXPORT QgsExpressionNodeColumnRef : public QgsExpressionNode
       : mName( name )
       , mIndex( -1 )
     {}
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsExpressionNodeColumnRef: \"%1\">" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
     //! The name of the column.
     QString name() const { return mName; }

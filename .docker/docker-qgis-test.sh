@@ -188,3 +188,6 @@ echo "Print disk space"
 df -h
 
 python3 /root/QGIS/.ci/ctest2ci.py xvfb-run ctest -V $CTEST_OPTIONS -E "${EXCLUDE_TESTS}" -S /root/QGIS/.ci/config_test.ctest --output-on-failure
+
+echo "Print disk space"
+df -h

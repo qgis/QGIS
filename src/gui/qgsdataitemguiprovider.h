@@ -187,7 +187,7 @@ class GUI_EXPORT QgsDataItemGuiProvider
      *
      * \since QGIS 3.16
      */
-    static void notify( const QString &title, const QString &message, QgsDataItemGuiContext context, Qgis::MessageLevel level = Qgis::Info, int duration = -1, QWidget *parent = nullptr );
+    static void notify( const QString &title, const QString &message, QgsDataItemGuiContext context, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = -1, QWidget *parent = nullptr );
 };
 
 #endif // QGSDATAITEMGUIPROVIDER_H

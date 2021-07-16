@@ -31,6 +31,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerselectionmanager.h"
+#include "qgsvectorlayercache.h"
 
 QgsFeatureListView::QgsFeatureListView( QWidget *parent )
   : QListView( parent )
@@ -175,6 +176,10 @@ void QgsFeatureListView::editSelectionChanged( const QItemSelection &deselected,
       emit currentEditSelectionChanged( feat );
       emit currentEditSelectionProgressChanged( mModel->mapFromMaster( indexList.first() ).row(), mModel->rowCount() );
     }
+  }
+  else if ( mModel->rowCount() == 0 )
+  {
+    emit currentEditSelectionProgressChanged( 0, 0 );
   }
 }
 

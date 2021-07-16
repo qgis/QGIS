@@ -135,6 +135,19 @@ class TestQgsAnnotation(unittest.TestCase):
         im = self.renderAnnotation(clone, QPointF(20, 30))
         self.assertTrue(self.imageCheck('html_annotation', 'html_annotation', im))
 
+    def testHtmlAnnotationSetHtmlSource(self):
+        """ test rendering html annotation where the html is set directly (not from file)"""
+        a = QgsHtmlAnnotation()
+        a.fillSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
+        a.markerSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
+        a.setFrameSizeMm(QSizeF(400 / 3.7795275, 250 / 3.7795275))
+        a.setFrameOffsetFromReferencePointMm(QPointF(70 / 3.7795275, 90 / 3.7795275))
+        htmlFile = open(TEST_DATA_DIR + "/test_html.html")
+        htmlText = htmlFile.read()
+        a.setHtmlSource(htmlText)
+        im = self.renderAnnotation(a, QPointF(20, 30))
+        self.assertTrue(self.imageCheck('html_annotation_html_source', 'html_annotation', im))
+
     def testHtmlAnnotationInLayout(self):
         """ test rendering a svg annotation"""
         a = QgsHtmlAnnotation()

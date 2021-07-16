@@ -28,8 +28,8 @@
 #include "qgssettings.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsfeaturelistmodel.h"
-
-#include "qgstest.h"
+#include "qgsclipboard.h"
+#include "qgsvectorlayercache.h"
 
 /**
  * \ingroup UnitTests
@@ -51,11 +51,14 @@ class TestQgsAttributeTable : public QObject
     void testFieldCalculationArea();
     void testNoGeom();
     void testSelected();
+    void testEdited();
     void testSelectedOnTop();
     void testSortByDisplayExpression();
     void testOrderColumn();
     void testFilteredFeatures();
     void testVisibleTemporal();
+    void testCopySelectedRows();
+
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -283,6 +286,45 @@ void TestQgsAttributeTable::testSelected()
   QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );
   // remove selection
   tempLayer->removeSelection();
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QVERIFY( dlg->mMainView->masterModel()->request().filterFids().isEmpty() );
+}
+
+void TestQgsAttributeTable::testEdited()
+{
+  // test attribute table opening in edited features mode
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QVERIFY( tempLayer->isValid() );
+
+  QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
+  QgsFeature f2( tempLayer->dataProvider()->fields(), 2 );
+  QgsFeature f3( tempLayer->dataProvider()->fields(), 3 );
+  QVERIFY( tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 ) );
+
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowEdited ) );
+
+  QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
+  //should be nothing - because no edited features!
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QVERIFY( dlg->mMainView->masterModel()->request().filterFids().isEmpty() );
+
+  // make some edits
+  tempLayer->startEditing();
+  QVERIFY( tempLayer->changeAttributeValue( 1, 1, 5.5 ) );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 );
+  QgsGeometry geom = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 0, 1 1)" ) );
+  QVERIFY( tempLayer->changeGeometry( 3, geom ) );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );
+
+  // another test - start with edited features when dialog created
+  dlg.reset( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowEdited ) );
+  QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );
+  // remove edits
+  tempLayer->rollBack();
   QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
   QVERIFY( dlg->mMainView->masterModel()->request().filterFids().isEmpty() );
 }
@@ -530,6 +572,44 @@ void TestQgsAttributeTable::testFilteredFeatures()
   // smaller 11 (three of four features)
   dlg->mFeatureFilterWidget->setFilterExpression( QStringLiteral( "col1<11" ), QgsAttributeForm::ReplaceFilter, true );
   QCOMPARE( dlg->mMainView->filteredFeatureCount(), 3 );
+}
+
+void TestQgsAttributeTable::testCopySelectedRows()
+{
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:int&field=col2:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QVERIFY( tempLayer->isValid() );
+
+  QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
+  f1.setAttribute( 0, 1 );
+  f1.setAttribute( 1, 2 );
+
+  QgsFeature f2( tempLayer->dataProvider()->fields(), 2 );
+  f2.setAttribute( 0, 2 );
+  f2.setAttribute( 1, 4 );
+
+  QVERIFY( tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 ) );
+
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowAll ) );
+
+  tempLayer->selectByIds( QgsFeatureIds() << 1 << 2 );
+
+  dlg->mActionCopySelectedRows_triggered();
+
+  QgsClipboard *clipboard = QgisApp::instance()->clipboard();
+  QVERIFY( clipboard );
+  QVERIFY( !clipboard->isEmpty() );
+  QCOMPARE( clipboard->fields().names(), QStringList() << "pk" << "col1" << "col2" );
+
+  QgsFeatureList features = clipboard->copyOf();
+  QCOMPARE( features.count(), 2 );
+  QCOMPARE( features.at( 0 ).attribute( 0 ), 1 );
+  QCOMPARE( features.at( 0 ).attribute( "col1" ), 2 );
+  QCOMPARE( features.at( 0 ).attribute( "col2" ), QVariant() );
+  QCOMPARE( features.at( 1 ).attribute( "pk" ), 2 );
+  QCOMPARE( features.at( 1 ).attribute( "col1" ), 4 );
+  QCOMPARE( features.at( 1 ).attribute( 2 ), QVariant() );
+
+  QCOMPARE( clipboard->crs().authid(), "EPSG:3111" );
 }
 
 QGSTEST_MAIN( TestQgsAttributeTable )

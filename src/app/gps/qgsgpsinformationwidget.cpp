@@ -47,6 +47,7 @@
 #include "qgsprojectdisplaysettings.h"
 #include "qgsbearingnumericformat.h"
 #include "qgspolygon.h"
+#include "qgslinesymbol.h"
 
 // QWT Charting widget
 
@@ -229,7 +230,7 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   mBtnTrackColor->setAllowOpacity( true );
   mBtnTrackColor->setColorDialogTitle( tr( "Track Color" ) );
 
-  mBearingLineStyleButton->setSymbolType( QgsSymbol::Line );
+  mBearingLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
 
   QgsSettings mySettings;
 
@@ -286,14 +287,11 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   {
     mRadGpsd->setChecked( true );
   }
-  //hide the internal port method if build is without QtLocation
-#ifndef HAVE_QT_MOBILITY_LOCATION
   if ( mRadInternal->isChecked() )
   {
     mRadAutodetect->setChecked( true );
   }
   mRadInternal->hide();
-#endif
 
   //auto digitizing behavior
   mCbxAutoAddVertices->setChecked( mySettings.value( QStringLiteral( "gps/autoAddVertices" ), "false" ).toBool() );

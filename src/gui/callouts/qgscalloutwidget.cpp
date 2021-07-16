@@ -21,6 +21,8 @@
 #include "qgsnewauxiliaryfielddialog.h"
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsauxiliarystorage.h"
+#include "qgslinesymbol.h"
+#include "qgsfillsymbol.h"
 
 QgsExpressionContext QgsCalloutWidget::createExpressionContext() const
 {
@@ -132,7 +134,7 @@ QgsSimpleLineCalloutWidget::QgsSimpleLineCalloutWidget( QgsVectorLayer *vl, QWid
   setupUi( this );
 
   // Callout options - to move to custom widgets when multiple callout styles exist
-  mCalloutLineStyleButton->setSymbolType( QgsSymbol::Line );
+  mCalloutLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
   mCalloutLineStyleButton->setDialogTitle( tr( "Callout Symbol" ) );
   mCalloutLineStyleButton->registerExpressionContextGenerator( this );
 
@@ -335,7 +337,7 @@ QgsCurvedLineCalloutWidget::QgsCurvedLineCalloutWidget( QgsVectorLayer *vl, QWid
   setupUi( this );
 
   // Callout options - to move to custom widgets when multiple callout styles exist
-  mCalloutLineStyleButton->setSymbolType( QgsSymbol::Line );
+  mCalloutLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
   mCalloutLineStyleButton->setDialogTitle( tr( "Callout Symbol" ) );
   mCalloutLineStyleButton->registerExpressionContextGenerator( this );
 
@@ -551,7 +553,7 @@ QgsBalloonCalloutWidget::QgsBalloonCalloutWidget( QgsVectorLayer *vl, QWidget *p
   setupUi( this );
 
   // Callout options - to move to custom widgets when multiple callout styles exist
-  mCalloutFillStyleButton->setSymbolType( QgsSymbol::Fill );
+  mCalloutFillStyleButton->setSymbolType( Qgis::SymbolType::Fill );
   mCalloutFillStyleButton->setDialogTitle( tr( "Balloon Symbol" ) );
   mCalloutFillStyleButton->registerExpressionContextGenerator( this );
 

@@ -106,7 +106,7 @@ bool QgsTinMeshCreationAlgorithm::prepareAlgorithm( const QVariantMap &parameter
       continue;
 
     const QgsCoordinateTransform transform( featureSource->sourceCrs(), destinationCrs, context.transformContext() );
-    int featureCount = featureSource->featureCount();
+    long long featureCount = featureSource->featureCount();
     switch ( type )
     {
       case QgsProcessingParameterTinInputLayers::Vertices:

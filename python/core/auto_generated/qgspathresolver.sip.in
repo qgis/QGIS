@@ -21,7 +21,7 @@ Resolves relative paths into absolute paths and vice versa. Used for writing
 #include "qgspathresolver.h"
 %End
   public:
-    explicit QgsPathResolver( const QString &baseFileName = QString() );
+    explicit QgsPathResolver( const QString &baseFileName = QString(), const QString &attachmentDir = QString() );
 %Docstring
 Initialize path resolver with a base filename. Null filename means no conversion between relative/absolute path
 %End
@@ -49,9 +49,8 @@ or data source), and return a processed version of this path.
 
 The path pre-processor function is called before any bad layer handler.
 
-.. note::
-
-   Setting a new ``processor`` replaces any existing processor.
+If multiple preprocessors are set, they will be called in sequence based on the order in which
+they were originally set.
 
 Example - replace an outdated folder path with a new one:
 
@@ -64,6 +63,7 @@ Example - replace an outdated folder path with a new one:
 
 Example - replace a stored database host with a new one:
 
+
 .. code-block:: python
 
        def my_processor(path):
@@ -73,6 +73,7 @@ Example - replace a stored database host with a new one:
 
 
 Example - replace stored database credentials with new ones:
+
 
 .. code-block:: python
 
@@ -119,7 +120,8 @@ Example - replace stored database credentials with new ones:
 Removes the custom pre-processor function with matching ``id``.
 
 The ``id`` must correspond to a pre-processor previously added via a call to :py:func:`~QgsPathResolver.setPathPreprocessor`.
-An KeyError will be raised if no processor with the specified ``id`` exists.
+
+:raises KeyError: if no processor with the specified ``id`` exists.
 
 .. seealso:: :py:func:`setPathPreprocessor`
 
@@ -129,6 +131,79 @@ An KeyError will be raised if no processor with the specified ``id`` exists.
     if ( !QgsPathResolver::removePathPreprocessor( *a0 ) )
     {
       PyErr_SetString( PyExc_KeyError, QStringLiteral( "No processor with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+%End
+
+
+
+
+    static QString setPathWriter( SIP_PYCALLABLE / AllowNone / );
+%Docstring
+Sets a path writer function, which allows for manipulation of paths and data sources prior
+to writing them to the project file.
+
+The ``writer`` function must accept a single string argument (representing the original file path
+or data source), and return a processed version of this path.
+
+The path writer function is called before any bad layer handler.
+
+If multiple writers are set, they will be called in sequence based on the order in which
+they were originally set.
+
+Example - replace path with a variable:
+
+.. code-block:: python
+
+       def my_processor(path):
+          return path.replace('c:/Users/ClintBarton/Documents/Projects', '$projectdir$')
+
+       QgsPathResolver.setPathWriter(my_processor)
+
+.. versionadded:: 3.22
+%End
+%MethodCode
+    PyObject *s = 0;
+    Py_BEGIN_ALLOW_THREADS
+    Py_XINCREF( a0 );
+    QString id = QgsPathResolver::setPathWriter( [a0]( const QString &arg )->QString
+    {
+      QString res;
+      SIP_BLOCK_THREADS
+      PyObject *s = sipCallMethod( NULL, a0, "D", &arg, sipType_QString, NULL );
+      int state;
+      int sipIsError = 0;
+      QString *t1 = reinterpret_cast<QString *>( sipConvertToType( s, sipType_QString, 0, SIP_NOT_NONE, &state, &sipIsError ) );
+      if ( sipIsError == 0 )
+      {
+        res = QString( *t1 );
+      }
+      sipReleaseType( t1, sipType_QString, state );
+      SIP_UNBLOCK_THREADS
+      return res;
+    } );
+
+    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
+    Py_END_ALLOW_THREADS
+    return s;
+%End
+
+
+    static void removePathWriter( const QString &id );
+%Docstring
+Removes the custom writer function with matching ``id``.
+
+The ``id`` must correspond to a writer previously added via a call to :py:func:`~QgsPathResolver.setPathWriter`.
+An KeyError will be raised if no processor with the specified ``id`` exists.
+
+.. seealso:: :py:func:`setPathWriter`
+
+.. versionadded:: 3.22
+%End
+%MethodCode
+    if ( !QgsPathResolver::removePathWriter( *a0 ) )
+    {
+      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No writer with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;
     }
 %End

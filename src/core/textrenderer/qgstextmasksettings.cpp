@@ -159,7 +159,7 @@ void QgsTextMaskSettings::updateDataDefinedProperties( QgsRenderContext &context
   if ( properties.isActive( QgsPalLayerSettings::MaskBufferUnit ) )
   {
     QVariant exprVal = properties.value( QgsPalLayerSettings::MaskBufferUnit, context.expressionContext() );
-    if ( exprVal.isValid() )
+    if ( !exprVal.isNull() )
     {
       QString units = exprVal.toString();
       if ( !units.isEmpty() )
@@ -175,7 +175,11 @@ void QgsTextMaskSettings::updateDataDefinedProperties( QgsRenderContext &context
   if ( properties.isActive( QgsPalLayerSettings::MaskOpacity ) )
   {
     context.expressionContext().setOriginalValueVariable( d->opacity * 100 );
-    d->opacity = properties.value( QgsPalLayerSettings::MaskOpacity, context.expressionContext(), d->opacity * 100 ).toDouble() / 100.0;
+    const QVariant val = properties.value( QgsPalLayerSettings::MaskOpacity, context.expressionContext(), d->opacity * 100 );
+    if ( !val.isNull() )
+    {
+      d->opacity = val.toDouble() / 100.0;
+    }
   }
 
   if ( properties.isActive( QgsPalLayerSettings::MaskJoinStyle ) )
@@ -228,12 +232,12 @@ QDomElement QgsTextMaskSettings::writeXml( QDomDocument &doc ) const
   return textMaskElem;
 }
 
-QgsSymbolLayerReferenceList QgsTextMaskSettings::maskedSymbolLayers() const
+QList<QgsSymbolLayerReference> QgsTextMaskSettings::maskedSymbolLayers() const
 {
   return d->maskedSymbolLayers;
 }
 
-void QgsTextMaskSettings::setMaskedSymbolLayers( QgsSymbolLayerReferenceList maskedSymbols )
+void QgsTextMaskSettings::setMaskedSymbolLayers( const QList<QgsSymbolLayerReference> &maskedSymbols )
 {
   d->maskedSymbolLayers = maskedSymbols;
 }

@@ -248,6 +248,8 @@ void Qgs3DSceneExporter::parseTerrain( QgsTerrainEntity *terrain, const  QString
   QgsChunkNode *node = terrain->rootNode();
 
   QgsTerrainGenerator *generator = settings.terrainGenerator();
+  if ( !generator )
+    return;
   QgsTerrainTileEntity *terrainTile = nullptr;
   QgsTerrainTextureGenerator *textureGenerator = terrain->textureGenerator();
   textureGenerator->waitForFinished();

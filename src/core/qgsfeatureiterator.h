@@ -177,7 +177,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     friend class QgsFeatureIterator;
 
     //! Number of features already fetched by iterator
-    long mFetchedCount = 0;
+    long long mFetchedCount = 0;
 
     //! Status of compilation of filter expression
     CompileStatus mCompileStatus = NoCompilation;

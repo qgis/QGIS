@@ -25,7 +25,7 @@ The class is used as a container of context for various read/write operations on
 
     struct ReadWriteMessage
     {
-        ReadWriteMessage( const QString &message, Qgis::MessageLevel level = Qgis::Warning, const QStringList &categories = QStringList() );
+        ReadWriteMessage( const QString &message = QString(), Qgis::MessageLevel level = Qgis::MessageLevel::Warning, const QStringList &categories = QStringList() );
 %Docstring
 Construct a container for QgsReadWriteContext error or warning messages
 %End
@@ -43,6 +43,17 @@ Returns the message level
         QStringList categories() const;
 %Docstring
 Returns the stack of categories of the message
+%End
+
+
+        bool operator==( const QgsReadWriteContext::ReadWriteMessage &other ) const;
+
+        bool operator!=( const QgsReadWriteContext::ReadWriteMessage &other ) const;
+
+        SIP_PYOBJECT __repr__();
+%MethodCode
+        QString str = QStringLiteral( "<QgsReadWriteContext.ReadWriteMessage: %1>" ).arg( sipCpp->message() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
     };
@@ -64,14 +75,14 @@ Returns path resolver for conversion between relative and absolute paths
 Sets up path resolver for conversion between relative and absolute paths
 %End
 
-    void pushMessage( const QString &message, Qgis::MessageLevel level = Qgis::Warning );
+    void pushMessage( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Warning ) const;
 %Docstring
 Append a message to the context
 
 .. versionadded:: 3.2
 %End
 
-QgsReadWriteContextCategoryPopper enterCategory( const QString &category, const QString &details = QString() ) /PyName=_enterCategory/;
+QgsReadWriteContextCategoryPopper enterCategory( const QString &category, const QString &details = QString() ) const /PyName=_enterCategory/;
 %Docstring
 Push a category to the stack
 
@@ -82,6 +93,7 @@ Push a category to the stack
 .. note::
 
    It is not aimed at being used in Python. Instead use the context manager.
+
 .. code-block:: python
 
        context = QgsReadWriteContext()
@@ -148,7 +160,7 @@ This would happen when it gets out of scope.
 #include "qgsreadwritecontext.h"
 %End
   public:
-    QgsReadWriteContextCategoryPopper( QgsReadWriteContext &context );
+    QgsReadWriteContextCategoryPopper( const QgsReadWriteContext &context );
 %Docstring
 Creates a popper
 %End

@@ -42,6 +42,7 @@ class ANALYSIS_EXPORT QgsLeastSquares
 
     /**
      * Transforms the point at \a origin in-place, using a helmert transformation calculated from the list of source and destination Ground Control Points (GCPs).
+     * \throws QgsNotSupportedException on QGIS built without GSL.
      */
     static void helmert( const QVector<QgsPointXY> &sourceCoordinates,
                          const QVector<QgsPointXY> &destinationCoordinates,
@@ -55,6 +56,7 @@ class ANALYSIS_EXPORT QgsLeastSquares
 
     /**
      * Calculates projective parameters from the list of source and destination Ground Control Points (GCPs).
+     * \throws QgsNotSupportedException on QGIS built without GSL.
      */
     static void projective( const QVector<QgsPointXY> &sourceCoordinates,
                             const QVector<QgsPointXY> &destinationCoordinates,

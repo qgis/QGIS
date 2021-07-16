@@ -80,12 +80,19 @@ void QgsMapToolMeasureAngle::canvasMoveEvent( QgsMapMouseEvent *e )
       }
     }
 
-    mResultDisplay->setValueInRadians( resultAngle );
+    mResultDisplay->setAngleInRadians( resultAngle );
   }
 }
 
 void QgsMapToolMeasureAngle::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
+  // if we clicked the right button we cancel the operation, unless it's the "final" click
+  if ( e->button() == Qt::RightButton && mAnglePoints.size() != 2 )
+  {
+    stopMeasuring();
+    return;
+  }
+
   //add points until we have three
   if ( mAnglePoints.size() == 3 )
   {
@@ -109,6 +116,34 @@ void QgsMapToolMeasureAngle::canvasReleaseEvent( QgsMapMouseEvent *e )
     QgsPointXY newPoint = e->snapPoint();
     mAnglePoints.push_back( newPoint );
     mRubberBand->addPoint( newPoint );
+  }
+}
+
+void QgsMapToolMeasureAngle::keyPressEvent( QKeyEvent *e )
+{
+  if ( e->key() == Qt::Key_Escape )
+  {
+    stopMeasuring();
+  }
+  else if ( ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete ) )
+  {
+    if ( !mAnglePoints.empty() && mRubberBand )
+    {
+      if ( mAnglePoints.size() == 1 )
+      {
+        //removing first point, so restart everything
+        stopMeasuring();
+      }
+      else
+      {
+        //remove second last point from line band, and last point from points band
+        mRubberBand->removePoint( -2, true );
+        mAnglePoints.removeLast();
+      }
+    }
+
+    // Override default shortcut management in MapCanvas
+    e->ignore();
   }
 }
 
@@ -175,7 +210,7 @@ void QgsMapToolMeasureAngle::updateSettings()
     }
   }
 
-  mResultDisplay->setValueInRadians( resultAngle );
+  mResultDisplay->setAngleInRadians( resultAngle );
 }
 
 void QgsMapToolMeasureAngle::configureDistanceArea()

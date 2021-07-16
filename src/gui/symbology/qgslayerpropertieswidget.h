@@ -28,8 +28,6 @@ class QgsVectorLayer;
 class QgsMapCanvas;
 class QgsPanelWidget;
 
-class SymbolLayerItem;
-
 #include <QMap>
 #include <QStandardItemModel>
 #include "qgis_gui.h"

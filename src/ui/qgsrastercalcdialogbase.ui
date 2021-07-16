@@ -263,84 +263,84 @@
           <item row="2" column="11">
            <widget class="QPushButton" name="mOrButton">
             <property name="text">
-             <string>OR</string>
+             <string notr="true">OR</string>
             </property>
            </widget>
           </item>
           <item row="1" column="10">
            <widget class="QPushButton" name="mLnButton">
             <property name="text">
-             <string>ln</string>
+             <string notr="true">ln</string>
             </property>
            </widget>
           </item>
           <item row="2" column="6">
            <widget class="QPushButton" name="mLesserEqualButton">
             <property name="text">
-             <string>&lt;=</string>
+             <string notr="true">&lt;=</string>
             </property>
            </widget>
           </item>
           <item row="2" column="10">
            <widget class="QPushButton" name="mAndButton">
             <property name="text">
-             <string>AND</string>
+             <string notr="true">AND</string>
             </property>
            </widget>
           </item>
           <item row="0" column="10">
            <widget class="QPushButton" name="mLogButton">
             <property name="text">
-             <string>log10</string>
+             <string notr="true">log10</string>
             </property>
            </widget>
           </item>
           <item row="2" column="0">
            <widget class="QPushButton" name="mLessButton">
             <property name="text">
-             <string>&lt;</string>
+             <string notr="true">&lt;</string>
             </property>
            </widget>
           </item>
           <item row="2" column="8">
            <widget class="QPushButton" name="mGreaterEqualButton">
             <property name="text">
-             <string>&gt;=</string>
+             <string notr="true">&gt;=</string>
             </property>
            </widget>
           </item>
           <item row="0" column="8">
            <widget class="QPushButton" name="mTanButton">
             <property name="text">
-             <string>tan</string>
+             <string notr="true">tan</string>
             </property>
            </widget>
           </item>
           <item row="0" column="0">
            <widget class="QPushButton" name="mPlusPushButton">
             <property name="text">
-             <string>+</string>
+             <string notr="true">+</string>
             </property>
            </widget>
           </item>
           <item row="0" column="1">
            <widget class="QPushButton" name="mMultiplyPushButton">
             <property name="text">
-             <string>*</string>
+             <string notr="true">*</string>
             </property>
            </widget>
           </item>
           <item row="0" column="4">
            <widget class="QPushButton" name="mCosButton">
             <property name="text">
-             <string>cos</string>
+             <string notr="true">cos</string>
             </property>
            </widget>
           </item>
           <item row="2" column="1">
            <widget class="QPushButton" name="mGreaterButton">
             <property name="text">
-             <string>&gt;</string>
+             <string notr="true">&gt;</string>
             </property>
            </widget>
           </item>
@@ -360,105 +360,105 @@
           <item row="1" column="8">
            <widget class="QPushButton" name="mATanButton">
             <property name="text">
-             <string>atan</string>
+             <string notr="true">atan</string>
             </property>
            </widget>
           </item>
           <item row="1" column="4">
            <widget class="QPushButton" name="mACosButton">
             <property name="text">
-             <string>acos</string>
+             <string notr="true">acos</string>
             </property>
            </widget>
           </item>
           <item row="1" column="6">
            <widget class="QPushButton" name="mASinButton">
             <property name="text">
-             <string>asin</string>
+             <string notr="true">asin</string>
             </property>
            </widget>
           </item>
           <item row="2" column="4">
            <widget class="QPushButton" name="mNotEqualButton">
             <property name="text">
-             <string>!=</string>
+             <string notr="true">!=</string>
             </property>
            </widget>
           </item>
           <item row="1" column="11">
            <widget class="QPushButton" name="mCloseBracketPushButton">
             <property name="text">
-             <string>)</string>
+             <string notr="true">)</string>
             </property>
            </widget>
           </item>
           <item row="2" column="2">
            <widget class="QPushButton" name="mEqualButton">
             <property name="text">
-             <string>=</string>
+             <string notr="true">=</string>
             </property>
            </widget>
           </item>
           <item row="1" column="0">
            <widget class="QPushButton" name="mMinusPushButton">
             <property name="text">
-             <string>-</string>
+             <string notr="true">-</string>
             </property>
            </widget>
           </item>
           <item row="0" column="11">
            <widget class="QPushButton" name="mOpenBracketPushButton">
             <property name="text">
-             <string>(</string>
+             <string notr="true">(</string>
             </property>
            </widget>
           </item>
           <item row="1" column="1">
            <widget class="QPushButton" name="mDividePushButton">
             <property name="text">
-             <string>/</string>
+             <string notr="true">/</string>
             </property>
            </widget>
           </item>
           <item row="1" column="2">
            <widget class="QPushButton" name="mExpButton">
             <property name="text">
-             <string>^</string>
+             <string notr="true">^</string>
             </property>
            </widget>
           </item>
           <item row="0" column="6">
            <widget class="QPushButton" name="mSinButton">
             <property name="text">
-             <string>sin</string>
+             <string notr="true">sin</string>
             </property>
            </widget>
           </item>
           <item row="0" column="2">
            <widget class="QPushButton" name="mSqrtButton">
             <property name="text">
-             <string>sqrt</string>
+             <string notr="true">sqrt</string>
             </property>
            </widget>
           </item>
           <item row="3" column="0">
            <widget class="QPushButton" name="mAbsButton">
             <property name="text">
-             <string>abs</string>
+             <string notr="true">abs</string>
             </property>
            </widget>
           </item>
           <item row="3" column="1">
            <widget class="QPushButton" name="mMinButton">
             <property name="text">
-             <string>min</string>
+             <string notr="true">min</string>
             </property>
            </widget>
           </item>
           <item row="3" column="2">
            <widget class="QPushButton" name="mMaxButton">
             <property name="text">
-             <string>max</string>
+             <string notr="true">max</string>
             </property>
            </widget>
           </item>

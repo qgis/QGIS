@@ -31,38 +31,38 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 {
   if ( QgsPGRootItem *rootItem = qobject_cast< QgsPGRootItem * >( item ) )
   {
-    QAction *actionNew = new QAction( tr( "New Connection…" ), this );
+    QAction *actionNew = new QAction( tr( "New Connection…" ), menu );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
     menu->addAction( actionNew );
 
-    QAction *actionSaveServers = new QAction( tr( "Save Connections…" ), this );
+    QAction *actionSaveServers = new QAction( tr( "Save Connections…" ), menu );
     connect( actionSaveServers, &QAction::triggered, this, [] { saveConnections(); } );
     menu->addAction( actionSaveServers );
 
-    QAction *actionLoadServers = new QAction( tr( "Load Connections…" ), this );
+    QAction *actionLoadServers = new QAction( tr( "Load Connections…" ), menu );
     connect( actionLoadServers, &QAction::triggered, this, [rootItem] { loadConnections( rootItem ); } );
     menu->addAction( actionLoadServers );
   }
 
   if ( QgsPGConnectionItem *connItem = qobject_cast< QgsPGConnectionItem * >( item ) )
   {
-    QAction *actionRefresh = new QAction( tr( "Refresh" ), this );
+    QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
     connect( actionRefresh, &QAction::triggered, this, [connItem] { refreshConnection( connItem ); } );
     menu->addAction( actionRefresh );
 
     menu->addSeparator();
 
-    QAction *actionEdit = new QAction( tr( "Edit Connection…" ), this );
+    QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
     connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
     menu->addAction( actionEdit );
 
-    QAction *actionDelete = new QAction( tr( "Delete Connection" ), this );
+    QAction *actionDelete = new QAction( tr( "Delete Connection" ), menu );
     connect( actionDelete, &QAction::triggered, this, [connItem] { deleteConnection( connItem ); } );
     menu->addAction( actionDelete );
 
     menu->addSeparator();
 
-    QAction *actionCreateSchema = new QAction( tr( "New Schema…" ), this );
+    QAction *actionCreateSchema = new QAction( tr( "New Schema…" ), menu );
     connect( actionCreateSchema, &QAction::triggered, this, [connItem, context] { createSchema( connItem, context ); } );
     menu->addAction( actionCreateSchema );
 
@@ -70,7 +70,7 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
   if ( QgsPGSchemaItem *schemaItem = qobject_cast< QgsPGSchemaItem * >( item ) )
   {
-    QAction *actionRefresh = new QAction( tr( "Refresh" ), this );
+    QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
     connect( actionRefresh, &QAction::triggered, this, [schemaItem] { schemaItem->refresh(); } );
     menu->addAction( actionRefresh );
 
@@ -78,11 +78,11 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
     QMenu *maintainMenu = new QMenu( tr( "Schema Operations" ), menu );
 
-    QAction *actionRename = new QAction( tr( "Rename Schema…" ), this );
+    QAction *actionRename = new QAction( tr( "Rename Schema…" ), menu );
     connect( actionRename, &QAction::triggered, this, [schemaItem, context] { renameSchema( schemaItem, context ); } );
     maintainMenu->addAction( actionRename );
 
-    QAction *actionDelete = new QAction( tr( "Delete Schema…" ), this );
+    QAction *actionDelete = new QAction( tr( "Delete Schema…" ), menu );
     connect( actionDelete, &QAction::triggered, this, [schemaItem, context] { deleteSchema( schemaItem, context ); } );
     maintainMenu->addAction( actionDelete );
 
@@ -96,20 +96,20 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
     QMenu *maintainMenu = new QMenu( tr( "%1 Operations" ).arg( typeName ), menu );
 
-    QAction *actionRenameLayer = new QAction( tr( "Rename %1…" ).arg( typeName ), this );
+    QAction *actionRenameLayer = new QAction( tr( "Rename %1…" ).arg( typeName ), menu );
     connect( actionRenameLayer, &QAction::triggered, this, [layerItem, context] { renameLayer( layerItem, context ); } );
     maintainMenu->addAction( actionRenameLayer );
 
     if ( !layerInfo.isView )
     {
-      QAction *actionTruncateLayer = new QAction( tr( "Truncate %1…" ).arg( typeName ), this );
+      QAction *actionTruncateLayer = new QAction( tr( "Truncate %1…" ).arg( typeName ), menu );
       connect( actionTruncateLayer, &QAction::triggered, this, [layerItem, context] { truncateTable( layerItem, context ); } );
       maintainMenu->addAction( actionTruncateLayer );
     }
 
     if ( layerInfo.isMaterializedView )
     {
-      QAction *actionRefreshMaterializedView = new QAction( tr( "Refresh Materialized View…" ), this );
+      QAction *actionRefreshMaterializedView = new QAction( tr( "Refresh Materialized View…" ), menu );
       connect( actionRefreshMaterializedView, &QAction::triggered, this, [layerItem, context] { refreshMaterializedView( layerItem, context ); } );
       maintainMenu->addAction( actionRefreshMaterializedView );
     }
@@ -219,7 +219,9 @@ void QgsPostgresDataItemGuiProvider::deleteConnection( QgsDataItem *item )
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 
-  QgsPostgresConn::deleteConnection( item->name() );
+  QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) );
+  md->deleteConnection( item->name() );
+
   // the parent should be updated
   if ( item->parent() )
     item->parent()->refreshConnections();

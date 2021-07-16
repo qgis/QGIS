@@ -16,6 +16,12 @@
  ***************************************************************************/
 
 #include "qgsmaplayerfactory.h"
+#include "qgsvectorlayer.h"
+#include "qgsrasterlayer.h"
+#include "qgsmeshlayer.h"
+#include "qgspointcloudlayer.h"
+#include "qgsvectortilelayer.h"
+#include "qgsannotationlayer.h"
 
 QgsMapLayerType QgsMapLayerFactory::typeFromString( const QString &string, bool &ok )
 {
@@ -59,4 +65,54 @@ QString QgsMapLayerFactory::typeToString( QgsMapLayerType type )
       return QStringLiteral( "point-cloud" );
   }
   return QString();
+}
+
+QgsMapLayer *QgsMapLayerFactory::createLayer( const QString &uri, const QString &name, QgsMapLayerType type, const LayerOptions &options, const QString &provider )
+{
+  switch ( type )
+  {
+    case QgsMapLayerType::VectorLayer:
+    {
+      QgsVectorLayer::LayerOptions vectorOptions;
+      vectorOptions.transformContext = options.transformContext;
+      vectorOptions.loadDefaultStyle = options.loadDefaultStyle;
+      return new QgsVectorLayer( uri, name, provider, vectorOptions );
+    }
+
+    case QgsMapLayerType::RasterLayer:
+    {
+      QgsRasterLayer::LayerOptions rasterOptions;
+      rasterOptions.transformContext = options.transformContext;
+      rasterOptions.loadDefaultStyle = options.loadDefaultStyle;
+      return new QgsRasterLayer( uri, name, provider, rasterOptions );
+    }
+
+    case QgsMapLayerType::MeshLayer:
+    {
+      QgsMeshLayer::LayerOptions meshOptions;
+      meshOptions.transformContext = options.transformContext;
+      return new QgsMeshLayer( uri, name, provider, meshOptions );
+    }
+
+    case QgsMapLayerType::VectorTileLayer:
+      return new QgsVectorTileLayer( uri, name );
+
+    case QgsMapLayerType::AnnotationLayer:
+    {
+      QgsAnnotationLayer::LayerOptions annotationOptions( options.transformContext );
+      return new QgsAnnotationLayer( name, annotationOptions );
+    }
+
+    case QgsMapLayerType::PointCloudLayer:
+    {
+      QgsPointCloudLayer::LayerOptions pointCloudOptions;
+      pointCloudOptions.loadDefaultStyle = options.loadDefaultStyle;
+      pointCloudOptions.transformContext = options.transformContext;
+      return new QgsPointCloudLayer( uri, name, provider, pointCloudOptions );
+    }
+
+    case QgsMapLayerType::PluginLayer:
+      break;
+  }
+  return nullptr;
 }

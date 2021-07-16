@@ -22,6 +22,9 @@
 #include "qgsgeometryutils.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsshapegenerator.h"
+#include "qgssymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgsfillsymbol.h"
 
 #include <QPen>
 #include <QPainter>
@@ -41,6 +44,8 @@ QgsAnnotation::QgsAnnotation( QObject *parent )
   props.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
   mFillSymbol.reset( QgsFillSymbol::createSimple( props ) );
 }
+
+QgsAnnotation::~QgsAnnotation() = default;
 
 void QgsAnnotation::setVisible( bool visible )
 {
@@ -126,6 +131,11 @@ void QgsAnnotation::setFillSymbol( QgsFillSymbol *symbol )
 {
   mFillSymbol.reset( symbol );
   emit appearanceChanged();
+}
+
+QgsFillSymbol *QgsAnnotation::fillSymbol() const
+{
+  return mFillSymbol.get();
 }
 
 void QgsAnnotation::render( QgsRenderContext &context ) const

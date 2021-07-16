@@ -24,12 +24,15 @@
 #include "qgscurve.h"
 #include "qgslinesymbollayer.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgsfillsymbol.h"
 
 QgsPointCloudExtentRenderer::QgsPointCloudExtentRenderer( QgsFillSymbol *symbol )
   : mFillSymbol( symbol ? symbol : defaultFillSymbol() )
 {
 
 }
+
+QgsPointCloudExtentRenderer::~QgsPointCloudExtentRenderer() = default;
 
 QString QgsPointCloudExtentRenderer::type() const
 {
@@ -169,4 +172,3 @@ QList<QgsLayerTreeModelLegendNode *> QgsPointCloudExtentRenderer::createLegendNo
 
   return nodes;
 }
-

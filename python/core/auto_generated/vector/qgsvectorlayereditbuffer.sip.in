@@ -118,6 +118,14 @@ Returns a map of new features which are not committed.
 .. seealso:: :py:func:`isFeatureAdded`
 %End
 
+    QgsFeatureIds allAddedOrEditedFeatures() const;
+%Docstring
+Returns a list of the features IDs for all newly added or edited features
+in the buffer.
+
+.. versionadded:: 3.20
+%End
+
     bool isFeatureAdded( QgsFeatureId id ) const;
 %Docstring
 Returns ``True`` if the specified feature ID has been added but not committed.

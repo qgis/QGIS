@@ -86,7 +86,7 @@ class GUI_EXPORT QgsStyleItemsListWidget : public QWidget, private Ui::QgsStyleI
      *
      * \see setEntityType()
      */
-    void setSymbolType( QgsSymbol::SymbolType type );
+    void setSymbolType( Qgis::SymbolType type );
 
     /**
      * Sets the layer \a type to show in the widget. Set \a type to QgsWkbTypes::UnknownGeometry if no

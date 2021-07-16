@@ -1007,7 +1007,7 @@ The ``datasourceOptions`` and ``layerOptions`` arguments is used to pass on GDAL
 
 This function creates a new object and the caller takes responsibility for deleting the returned object.
 
-:raises :: py:class:`QgsProcessingException`
+:raises QgsProcessingException: 
 
 .. versionadded:: 3.4
 %End

@@ -92,6 +92,7 @@ typedef QtClass<QVariant> QtClassQVariantBase;
       RecursiveSuccess,
       SuccessCombination,
       PythonName /PyName=DifferentName/,
+      MonkeyName,
     };
     typedef QFlags<QgsSipifyHeader::MyEnum> Flags;
 
@@ -133,6 +134,7 @@ A constructor with some special character types
 %End
 
     Constructor();
+
     virtual ~Destructor();
 
     Constructor( const QString &name,

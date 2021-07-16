@@ -22,7 +22,7 @@ QgsProcessingParameterMeshDatasetGroups::QgsProcessingParameterMeshDatasetGroups
     const QString &meshLayerParameterName,
     const QSet<int> supportedDataType,
     bool optional ):
-  QgsProcessingParameterDefinition( name, description, QVariant(), optional, QString() ),
+  QgsProcessingParameterDefinition( name, description, QVariantList(), optional, QString() ),
   mMeshLayerParameterName( meshLayerParameterName ),
   mSupportedDataType( supportedDataType )
 {
@@ -48,9 +48,9 @@ QString QgsProcessingParameterMeshDatasetGroups::valueAsPythonString( const QVar
 {
   Q_UNUSED( context );
   QStringList parts;
-  const QVariantList variantDatasetGroupIndexes = value.toList();
-  for ( const QVariant &variantIndex : variantDatasetGroupIndexes )
-    parts.append( QString::number( variantIndex.toInt() ) );
+  const QList<int> groups = valueAsDatasetGroup( value );
+  for ( const int g : groups )
+    parts.append( QString::number( g ) );
 
   return parts.join( ',' ).prepend( '[' ).append( ']' );
 }
@@ -113,10 +113,28 @@ QList<int> QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( const Q
 {
   if ( !valueIsAcceptable( value, true ) )
     return QList<int>();
-  QVariantList list = value.toList();
+
   QList<int> ret;
-  for ( const QVariant &v : list )
-    ret.append( v.toInt() );
+
+  // if invalid or empty, return only the group 0
+  if ( !value.isValid() )
+    ret << 0;
+  else
+  {
+    if ( value.type() == QVariant::List )
+    {
+      const QVariantList varList = value.toList();
+      if ( varList.isEmpty() )
+        ret << 0;
+      else
+        for ( const QVariant &v : varList )
+          ret << v.toInt();
+    }
+    else
+    {
+      ret << value.toInt();
+    }
+  }
 
   return ret;
 }
@@ -127,15 +145,23 @@ bool QgsProcessingParameterMeshDatasetGroups::valueIsAcceptable( const QVariant 
     return allowEmpty;
 
   if ( input.type() != QVariant::List )
-    return false;
+  {
+    bool ok = false;
+    input.toInt( &ok );
+    return ok;
+  }
   const QVariantList list = input.toList();
 
   if ( !allowEmpty && list.isEmpty() )
     return false;
 
   for ( const QVariant &var : list )
-    if ( var.type() != QVariant::Int )
+  {
+    bool ok = false;
+    var.toInt( &ok );
+    if ( !ok )
       return false;
+  }
 
   return true;
 }
@@ -171,17 +197,27 @@ QString QgsProcessingParameterMeshDatasetTime::valueAsPythonString( const QVaria
 {
   Q_UNUSED( context );
   QStringList parts;
-  const QVariantMap variantTimeDataset = value.toMap();
-  parts << QStringLiteral( "'type': " ) +  QgsProcessingUtils::variantToPythonLiteral( variantTimeDataset.value( QStringLiteral( "type" ) ).toString() );
+  QString type = QgsProcessingUtils::variantToPythonLiteral( valueAsTimeType( value ) );
+  parts << QStringLiteral( "'type': " ) +  type;
 
-  if ( variantTimeDataset.value( QStringLiteral( "type" ) ) == QLatin1String( "dataset-time-step" ) )
+  if ( value.toDateTime().isValid() )
   {
-    QVariantList datasetIndex = variantTimeDataset.value( QStringLiteral( "value" ) ).toList();
-    parts << QStringLiteral( "'value': " ) + QString( "QgsMeshDatasetIndex(%1,%2)" ).arg( datasetIndex.at( 0 ).toString() ).arg( datasetIndex.at( 1 ).toString() );
+    QDateTime dateTime = value.toDateTime();
+    dateTime.setTimeSpec( Qt::UTC );
+    parts << QStringLiteral( "'value': " ) + QgsProcessingUtils::variantToPythonLiteral( dateTime );
   }
-  else if ( variantTimeDataset.value( QStringLiteral( "type" ) ) == QLatin1String( "defined-date-time" ) )
+  else
   {
-    parts << QStringLiteral( "'value': " ) + QgsProcessingUtils::variantToPythonLiteral( variantTimeDataset.value( QStringLiteral( "value" ) ) );
+    const QVariantMap variantTimeDataset = value.toMap();
+    if ( variantTimeDataset.value( QStringLiteral( "type" ) ) == QLatin1String( "dataset-time-step" ) )
+    {
+      QVariantList datasetIndex = variantTimeDataset.value( QStringLiteral( "value" ) ).toList();
+      parts << QStringLiteral( "'value': " ) + QString( "[%1,%2]" ).arg( datasetIndex.at( 0 ).toString(), datasetIndex.at( 1 ).toString() );
+    }
+    else if ( variantTimeDataset.value( QStringLiteral( "type" ) ) == QLatin1String( "defined-date-time" ) )
+    {
+      parts << QStringLiteral( "'value': " ) + QgsProcessingUtils::variantToPythonLiteral( variantTimeDataset.value( QStringLiteral( "value" ) ) );
+    }
   }
 
   return parts.join( ',' ).prepend( '{' ).append( '}' );
@@ -237,6 +273,9 @@ QString QgsProcessingParameterMeshDatasetTime::valueAsTimeType( const QVariant &
   if ( !valueIsAcceptable( value, false ) )
     return QString();
 
+  if ( value.toDateTime().isValid() )
+    return QStringLiteral( "defined-date-time" );
+
   return value.toMap().value( QStringLiteral( "type" ) ).toString();
 }
 
@@ -251,6 +290,13 @@ QgsMeshDatasetIndex QgsProcessingParameterMeshDatasetTime::timeValueAsDatasetInd
 
 QDateTime QgsProcessingParameterMeshDatasetTime::timeValueAsDefinedDateTime( const QVariant &value )
 {
+  if ( value.toDateTime().isValid() )
+  {
+    QDateTime dateTime = value.toDateTime();
+    dateTime.setTimeSpec( Qt::UTC );
+    return dateTime;
+  }
+
   if ( !valueIsAcceptable( value, false ) && valueAsTimeType( value ) != QLatin1String( "defined-date-time" ) )
     return QDateTime();
 
@@ -262,9 +308,19 @@ bool QgsProcessingParameterMeshDatasetTime::valueIsAcceptable( const QVariant &i
   if ( !input.isValid() )
     return allowEmpty;
 
+  QDateTime timeDate = input.toDateTime();
+
+  if ( input.toDateTime().isValid() )
+    return true;
+
   if ( input.type() != QVariant::Map )
     return false;
+
   const QVariantMap map = input.toMap();
+
+  if ( map.isEmpty() )
+    return allowEmpty;
+
   if ( ! map.contains( QStringLiteral( "type" ) ) )
     return false;
 

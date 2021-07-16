@@ -16,13 +16,14 @@
 
 #include "qgssettings.h"
 #include "qgsvectortileconnection.h"
+#include "qgsdataprovider.h"
 
 ///@cond PRIVATE
 
 QgsVectorTileRootItem::QgsVectorTileRootItem( QgsDataItem *parent, QString name, QString path )
   : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "vectortile" ) )
 {
-  mCapabilities |= Fast;
+  mCapabilities |= Qgis::BrowserItemCapability::Fast;
   mIconName = QStringLiteral( "mIconVectorTileLayer.svg" );
   populate();
 }
@@ -45,9 +46,9 @@ QVector<QgsDataItem *> QgsVectorTileRootItem::createChildren()
 
 
 QgsVectorTileLayerItem::QgsVectorTileLayerItem( QgsDataItem *parent, QString name, QString path, const QString &encodedUri )
-  : QgsLayerItem( parent, name, path, encodedUri, QgsLayerItem::VectorTile, QString() )
+  : QgsLayerItem( parent, name, path, encodedUri, Qgis::BrowserLayerType::VectorTile, QString() )
 {
-  setState( Populated );
+  setState( Qgis::BrowserItemState::Populated );
   mIconName = QStringLiteral( "mIconVectorTileLayer.svg" );
 }
 

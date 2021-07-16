@@ -11,6 +11,7 @@
 
 
 
+
 class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
 {
 
@@ -25,6 +26,8 @@ class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
                               double strokeWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH,
                               Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEFILL_JOINSTYLE
                             );
+
+    ~QgsSimpleFillSymbolLayer();
 
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
@@ -763,10 +766,13 @@ Base class for polygon renderers generating texture images
   public:
 
     QgsImageFillSymbolLayer();
+    ~QgsImageFillSymbolLayer();
+
     virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
 
     virtual QgsSymbol *subSymbol();
+
     virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
 
 
@@ -873,6 +879,8 @@ A class for filling symbols with a repeated raster image.
 Constructor for QgsRasterFillSymbolLayer, using a raster fill from the
 specified ``imageFilePath``.
 %End
+
+    ~QgsRasterFillSymbolLayer();
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
@@ -1151,6 +1159,8 @@ Constructor for QgsSVGFillSymbolLayer, using the SVG picture at the specified ab
 %Docstring
 Constructor for QgsSVGFillSymbolLayer, using the specified SVG picture data.
 %End
+
+    ~QgsSVGFillSymbolLayer();
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
@@ -1802,6 +1812,7 @@ Returns the vertical offset values for points in the pattern.
 
     virtual QgsSymbol *subSymbol();
 
+
     void setDistanceXUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
 Sets the units for the horizontal distance between points in the pattern.
@@ -2048,6 +2059,8 @@ Optionally a specific random number ``seed`` can be used when generating points.
 a truly random sequence will be used on every rendering, causing points to appear in different locations with every map refresh.
 %End
 
+    ~QgsRandomMarkerFillSymbolLayer();
+
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates a new QgsRandomMarkerFillSymbolLayer using the specified ``properties`` map containing symbol properties (see :py:func:`~QgsRandomMarkerFillSymbolLayer.properties`).
@@ -2232,6 +2245,7 @@ class QgsCentroidFillSymbolLayer : QgsFillSymbolLayer
 %End
   public:
     QgsCentroidFillSymbolLayer();
+    ~QgsCentroidFillSymbolLayer();
 
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;

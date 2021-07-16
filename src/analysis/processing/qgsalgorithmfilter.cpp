@@ -37,12 +37,12 @@ QStringList QgsFilterAlgorithm::tags() const
 
 QString QgsFilterAlgorithm::group() const
 {
-  return QObject::tr( "Vector table" );
+  return QObject::tr( "Modeler tools" );
 }
 
 QString QgsFilterAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectortable" );
+  return QStringLiteral( "modelertools" );
 }
 
 QgsProcessingAlgorithm::Flags QgsFilterAlgorithm::flags() const

@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsQueryResultWidgetBase</class>
+ <widget class="QWidget" name="QgsQueryResultWidgetBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>662</width>
+    <height>471</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string notr="true">Dialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QgsMessageBar" name="mMessageBar" native="true"/>
+   </item>
+   <item>
+    <widget class="QgsCodeEditorSQL" name="mSqlEditor" native="true"/>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,1,0,0">
+     <item>
+      <widget class="QPushButton" name="mClearButton">
+       <property name="text">
+        <string>Clear</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="mStatusLabel">
+       <property name="text">
+        <string>Status and errors goes here.</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QProgressBar" name="mProgressBar">
+       <property name="value">
+        <number>24</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mExecuteButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Execute</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mStopButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Stop</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QTableView" name="mQueryResultsTableView"/>
+   </item>
+   <item>
+    <widget class="QgsCodeEditorSQL" name="mSqlErrorText" native="true"/>
+   </item>
+   <item>
+    <widget class="QgsCollapsibleGroupBox" name="mLoadAsNewLayerGroupBox">
+     <property name="title">
+      <string>Load as new layer</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="mPkColumnsCheckBox">
+        <property name="toolTip">
+         <string>Column(s) that can be used as an index to uniquely identify features, they are usually part of a primary key.</string>
+        </property>
+        <property name="text">
+         <string>Column(s) with unique values</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QgsCheckableComboBox" name="mPkColumnsComboBox"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QCheckBox" name="mGeometryColumnCheckBox">
+        <property name="toolTip">
+         <string>Column that contains the geometry.</string>
+        </property>
+        <property name="text">
+         <string>Geometry column</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="mGeometryColumnComboBox"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="mFilterLabel">
+        <property name="toolTip">
+         <string>SQL filter to restrict the features available in the layer</string>
+        </property>
+        <property name="text">
+         <string>Subset filter</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <widget class="QLineEdit" name="mFilterLineEdit">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="placeholderText">
+           <string>Enter the optional SQL filter or click on the button to open the query builder tool</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="mFilterToolButton">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="4" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLineEdit" name="mLayerNameLineEdit">
+          <property name="text">
+           <string>QueryLayer</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="6" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="mLoadLayerPushButton">
+          <property name="text">
+           <string>Load layer</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="mAvoidSelectingAsFeatureIdCheckBox">
+        <property name="toolTip">
+         <string>Disable 'Fast Access to Features at ID' capability to force keeping the attribute table in memory (e.g. in case of expensive views)</string>
+        </property>
+        <property name="text">
+         <string>Avoid selecting by feature ID</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="mLayerNameLabel">
+        <property name="text">
+         <string>Layer name</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCodeEditorSQL</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditorsql.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMessageBar</class>
+   <extends>QWidget</extends>
+   <header>qgsmessagebar.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCheckableComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgscheckablecombobox.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

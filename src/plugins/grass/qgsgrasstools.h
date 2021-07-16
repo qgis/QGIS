@@ -46,7 +46,7 @@ class QgsGrassTools: public QgsDockWidget, public Ui::QgsGrassToolsBase
   public:
     //! Constructor
     QgsGrassTools( QgisInterface *iface,
-                   QWidget *parent = nullptr, const char *name = nullptr, Qt::WindowFlags f = nullptr );
+                   QWidget *parent = nullptr, const char *name = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
 
 
     //! Append item to model or parent

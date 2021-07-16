@@ -31,6 +31,7 @@
 #include "qgsrelationmanager.h"
 #include "qgsreadwritecontext.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsexpressionutils.h"
 #include "qgslayoutmanager.h"
 #include "qgsprintlayout.h"
 #include "qgslayoutatlas.h"
@@ -55,6 +56,7 @@ class TestQgsLayoutTable : public QObject
 
     void attributeTableHeadings(); //test retrieving attribute table headers
     void attributeTableRows(); //test retrieving attribute table rows
+    void attributeTableRowsLocalized(); //test retrieving attribute table rows with locale
     void attributeTableFilterFeatures(); //test filtering attribute table rows
     void attributeTableSetAttributes(); //test subset of attributes in table
     void attributeTableVisibleOnly(); //test displaying only visible attributes
@@ -193,7 +195,7 @@ void TestQgsLayoutTable::compareTable( QgsLayoutItemAttributeTable *table, const
     QgsLayoutTableRow::const_iterator cellIt = ( *resultIt ).constBegin();
     for ( ; cellIt != ( *resultIt ).constEnd(); ++cellIt )
     {
-      QCOMPARE( ( *cellIt ).toString(), expectedRows.at( rowNumber ).at( colNumber ) );
+      QCOMPARE( QgsExpressionUtils::toLocalizedString( *cellIt ), expectedRows.at( rowNumber ).at( colNumber ) );
       colNumber++;
     }
     //also check that number of columns matches expected
@@ -227,6 +229,42 @@ void TestQgsLayoutTable::attributeTableRows()
   table->setMaximumNumberOfFeatures( 3 );
   compareTable( table, expectedRows );
 }
+void TestQgsLayoutTable::attributeTableRowsLocalized()
+{
+  //test retrieving attribute table rows
+
+  QgsVectorLayer vl { QStringLiteral( "Point?field=int:int&field=double:double&" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) };
+  QgsFeature f { vl.fields( ) };
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "point(9 45)" ) ) );
+  f.setAttribute( QStringLiteral( "int" ), 12346 );
+  f.setAttribute( QStringLiteral( "double" ), 123456.801 );
+  vl.dataProvider()->addFeatures( QgsFeatureList() << f );
+
+  QVector<QStringList> expectedRows;
+  QStringList row;
+  row <<  QStringLiteral( "12,346" ) << QStringLiteral( "123,456.801" );
+  expectedRows.append( row );
+
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemAttributeTable *table = new QgsLayoutItemAttributeTable( &l );
+  table->setVectorLayer( &vl );
+
+  //retrieve rows and check
+  QLocale().setDefault( QLocale::English );
+  compareTable( table, expectedRows );
+
+  expectedRows.clear();
+  row.clear();
+  row <<  QStringLiteral( "12.346" ) << QStringLiteral( "123.456,801" );
+  expectedRows.append( row );
+  QLocale().setDefault( QLocale::Italian );
+  compareTable( table, expectedRows );
+
+  QLocale().setDefault( QLocale::English );
+
+}
+
 
 void TestQgsLayoutTable::attributeTableFilterFeatures()
 {

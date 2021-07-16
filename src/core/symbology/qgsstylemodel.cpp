@@ -386,11 +386,11 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
         case QgsStyle::SymbolEntity:
         {
           const QgsSymbol *symbol = mStyle->symbolRef( name );
-          return symbol ? symbol->type() : QVariant();
+          return symbol ? static_cast< int >( symbol->type() ) : QVariant();
         }
 
         case QgsStyle::LegendPatchShapeEntity:
-          return mStyle->legendPatchShapeSymbolType( name );
+          return static_cast< int >( mStyle->legendPatchShapeSymbolType( name ) );
 
         case QgsStyle::TagEntity:
         case QgsStyle::ColorrampEntity:
@@ -808,7 +808,7 @@ bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
   if ( mEntityFilterEnabled && ( mEntityFilters.empty() || !mEntityFilters.contains( styleEntityType ) ) )
     return false;
 
-  QgsSymbol::SymbolType symbolType = static_cast< QgsSymbol::SymbolType >( sourceModel()->data( index, QgsStyleModel::SymbolTypeRole ).toInt() );
+  Qgis::SymbolType symbolType = static_cast< Qgis::SymbolType >( sourceModel()->data( index, QgsStyleModel::SymbolTypeRole ).toInt() );
   if ( mSymbolTypeFilterEnabled && symbolType != mSymbolType )
     return false;
 
@@ -909,9 +909,9 @@ bool QgsStyleProxyModel::symbolTypeFilterEnabled() const
   return mSymbolTypeFilterEnabled;
 }
 
-void QgsStyleProxyModel::setSymbolTypeFilterEnabled( bool symbolTypeFilterEnabled )
+void QgsStyleProxyModel::setSymbolTypeFilterEnabled( bool enabled )
 {
-  mSymbolTypeFilterEnabled = symbolTypeFilterEnabled;
+  mSymbolTypeFilterEnabled = enabled;
   invalidateFilter();
 }
 
@@ -963,12 +963,12 @@ int QgsStyleProxyModel::smartGroupId() const
   return mSmartGroupId;
 }
 
-QgsSymbol::SymbolType QgsStyleProxyModel::symbolType() const
+Qgis::SymbolType QgsStyleProxyModel::symbolType() const
 {
   return mSymbolType;
 }
 
-void QgsStyleProxyModel::setSymbolType( const QgsSymbol::SymbolType symbolType )
+void QgsStyleProxyModel::setSymbolType( const Qgis::SymbolType symbolType )
 {
   mSymbolType = symbolType;
   invalidateFilter();

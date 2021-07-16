@@ -363,7 +363,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>12</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -440,7 +440,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>653</width>
-                <height>681</height>
+                <height>679</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -757,7 +757,7 @@ border-radius: 2px;</string>
                 <x>0</x>
                 <y>0</y>
                 <width>653</width>
-                <height>681</height>
+                <height>679</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -974,7 +974,7 @@ border-radius: 2px;</string>
                 <x>0</x>
                 <y>0</y>
                 <width>653</width>
-                <height>681</height>
+                <height>679</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -1369,7 +1369,7 @@ border-radius: 2px;</string>
                 <x>0</x>
                 <y>0</y>
                 <width>653</width>
-                <height>681</height>
+                <height>679</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -1570,8 +1570,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>695</width>
-                <height>667</height>
+                <width>689</width>
+                <height>665</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -1717,6 +1717,58 @@ border-radius: 2px;</string>
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QgsCollapsibleGroupBox" name="mUseReferenceScaleGroupBox">
+                 <property name="focusPolicy">
+                  <enum>Qt::StrongFocus</enum>
+                 </property>
+                 <property name="title">
+                  <string>Fixed Reference Scale</string>
+                 </property>
+                 <property name="checkable">
+                  <bool>true</bool>
+                 </property>
+                 <property name="syncGroup" stdset="0">
+                  <string notr="true">vectorgeneral</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout">
+                  <item row="3" column="0">
+                   <widget class="Line" name="line_4">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label">
+                    <property name="text">
+                     <string>Reference scale</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QgsScaleWidget" name="mReferenceScaleWidget" native="true">
+                    <property name="focusPolicy">
+                     <enum>Qt::StrongFocus</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0" colspan="2">
+                   <widget class="QLabel" name="label_8">
+                    <property name="text">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If set, the reference scale indicates the map scale at which symbology and labeling sizes which uses paper-based units (such as millimeters or points) relate to. The sizes will be scaled accordingly whenever the map is viewed at a different scale.&lt;/p&gt;&lt;p&gt;For instance, a line layer using a 2mm wide line with a 1:2000 reference scale set will be rendered using 4mm wide lines when the map is viewed at 1:1000.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
+                    <property name="textFormat">
+                     <enum>Qt::RichText</enum>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
                     </property>
                    </widget>
                   </item>
@@ -2062,8 +2114,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>639</width>
-                <height>769</height>
+                <width>343</width>
+                <height>800</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2603,7 +2655,7 @@ border-radius: 2px;</string>
   <customwidget>
    <class>QgsVariableEditorWidget</class>
    <extends>QWidget</extends>
-   <header location="global">qgsvariableeditorwidget.h</header>
+   <header>qgsvariableeditorwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2637,6 +2689,12 @@ border-radius: 2px;</string>
    <class>QgsVectorLayerLegendWidget</class>
    <extends>QWidget</extends>
    <header>qgsvectorlayerlegendwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScaleWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalewidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -2679,6 +2737,8 @@ border-radius: 2px;</string>
   <tabstop>mSimplifyAlgorithmComboBox</tabstop>
   <tabstop>mSimplifyDrawingAtProvider</tabstop>
   <tabstop>mSimplifyMaximumScaleComboBox</tabstop>
+  <tabstop>mUseReferenceScaleGroupBox</tabstop>
+  <tabstop>mReferenceScaleWidget</tabstop>
   <tabstop>mForceRasterCheckBox</tabstop>
   <tabstop>mRefreshLayerCheckBox</tabstop>
   <tabstop>mRefreshLayerIntervalSpinBox</tabstop>
@@ -2706,6 +2766,7 @@ border-radius: 2px;</string>
   <tabstop>mButtonRemoveWmsDimension</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

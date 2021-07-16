@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/geometrychecker">
-        <file>icons/geometrychecker.png</file>
+        <file>icons/geometrychecker.svg</file>
         <file>icons/tooltip.png</file>
     </qresource>
 </RCC>

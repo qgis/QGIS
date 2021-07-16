@@ -46,7 +46,8 @@
 #include "qgsapplication.h"
 #include "qgsclassificationmethodregistry.h"
 #include "qgsclassificationcustom.h"
-
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
 
 QgsGraduatedSymbolRenderer::QgsGraduatedSymbolRenderer( const QString &attrName, const QgsRangeList &ranges )
   : QgsFeatureRenderer( QStringLiteral( "graduatedSymbol" ) )
@@ -316,7 +317,6 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::clone() const
   {
     r->setSourceColorRamp( mSourceColorRamp->clone() );
   }
-  r->setUsingSymbolLevels( usingSymbolLevels() );
   r->setDataDefinedSizeLegend( mDataDefinedSizeLegend ? new QgsDataDefinedSizeLegend( *mDataDefinedSizeLegend ) : nullptr );
   r->setGraduatedMethod( graduatedMethod() );
   copyRendererData( r );
@@ -606,7 +606,7 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
                               QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( QStringLiteral( "scalemethod" ) ) ),
                               sizeScaleElem.attribute( QStringLiteral( "field" ) ) );
     }
-    if ( r->mSourceSymbol && r->mSourceSymbol->type() == QgsSymbol::Marker )
+    if ( r->mSourceSymbol && r->mSourceSymbol->type() == Qgis::SymbolType::Marker )
     {
       convertSymbolSizeScale( r->mSourceSymbol.get(),
                               QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( QStringLiteral( "scalemethod" ) ) ),
@@ -627,8 +627,6 @@ QDomElement QgsGraduatedSymbolRenderer::save( QDomDocument &doc, const QgsReadWr
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "graduatedSymbol" ) );
-  rendererElem.setAttribute( QStringLiteral( "symbollevels" ), ( mUsingSymbolLevels ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
-  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
   rendererElem.setAttribute( QStringLiteral( "attr" ), mAttrName );
   rendererElem.setAttribute( QStringLiteral( "graduatedMethod" ), graduatedMethodStr( mGraduatedMethod ) );
 
@@ -685,23 +683,14 @@ QDomElement QgsGraduatedSymbolRenderer::save( QDomDocument &doc, const QgsReadWr
   QDomElement sizeScaleElem = doc.createElement( QStringLiteral( "sizescale" ) );
   rendererElem.appendChild( sizeScaleElem );
 
-  if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
-    mPaintEffect->saveProperties( doc, rendererElem );
-
-  if ( !mOrderBy.isEmpty() )
-  {
-    QDomElement orderBy = doc.createElement( QStringLiteral( "orderby" ) );
-    mOrderBy.save( orderBy );
-    rendererElem.appendChild( orderBy );
-  }
-  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
-
   if ( mDataDefinedSizeLegend )
   {
     QDomElement ddsLegendElem = doc.createElement( QStringLiteral( "data-defined-size-legend" ) );
     mDataDefinedSizeLegend->writeXml( ddsLegendElem, context );
     rendererElem.appendChild( ddsLegendElem );
   }
+
+  saveRendererData( doc, rendererElem, context );
 
   return rendererElem;
 }
@@ -758,7 +747,7 @@ Q_NOWARN_DEPRECATED_POP
 
 QgsLegendSymbolList QgsGraduatedSymbolRenderer::legendSymbolItems() const
 {
-  if ( mDataDefinedSizeLegend && mSourceSymbol && mSourceSymbol->type() == QgsSymbol::Marker )
+  if ( mDataDefinedSizeLegend && mSourceSymbol && mSourceSymbol->type() == Qgis::SymbolType::Marker )
   {
     // check that all symbols that have the same size expression
     QgsProperty ddSize;
@@ -851,9 +840,9 @@ double QgsGraduatedSymbolRenderer::minSymbolSize() const
   for ( int i = 0; i < mRanges.count(); i++ )
   {
     double sz = 0;
-    if ( mRanges[i].symbol()->type() == QgsSymbol::Marker )
+    if ( mRanges[i].symbol()->type() == Qgis::SymbolType::Marker )
       sz = static_cast< QgsMarkerSymbol * >( mRanges[i].symbol() )->size();
-    else if ( mRanges[i].symbol()->type() == QgsSymbol::Line )
+    else if ( mRanges[i].symbol()->type() == Qgis::SymbolType::Line )
       sz = static_cast< QgsLineSymbol * >( mRanges[i].symbol() )->width();
     min = std::min( sz, min );
   }
@@ -866,9 +855,9 @@ double QgsGraduatedSymbolRenderer::maxSymbolSize() const
   for ( int i = 0; i < mRanges.count(); i++ )
   {
     double sz = 0;
-    if ( mRanges[i].symbol()->type() == QgsSymbol::Marker )
+    if ( mRanges[i].symbol()->type() == Qgis::SymbolType::Marker )
       sz = static_cast< QgsMarkerSymbol * >( mRanges[i].symbol() )->size();
-    else if ( mRanges[i].symbol()->type() == QgsSymbol::Line )
+    else if ( mRanges[i].symbol()->type() == Qgis::SymbolType::Line )
       sz = static_cast< QgsLineSymbol * >( mRanges[i].symbol() )->width();
     max = std::max( sz, max );
   }
@@ -883,9 +872,9 @@ void QgsGraduatedSymbolRenderer::setSymbolSizes( double minSize, double maxSize 
     const double size = mRanges.count() > 1
                         ? minSize + i * ( maxSize - minSize ) / ( mRanges.count() - 1 )
                         : .5 * ( maxSize + minSize );
-    if ( symbol->type() == QgsSymbol::Marker )
+    if ( symbol->type() == Qgis::SymbolType::Marker )
       static_cast< QgsMarkerSymbol * >( symbol.get() )->setSize( size );
-    if ( symbol->type() == QgsSymbol::Line )
+    if ( symbol->type() == Qgis::SymbolType::Line )
       static_cast< QgsLineSymbol * >( symbol.get() )->setWidth( size );
     updateRangeSymbol( i, symbol.release() );
   }
@@ -932,10 +921,10 @@ void QgsGraduatedSymbolRenderer::updateSymbols( QgsSymbol *sym )
     }
     else if ( mGraduatedMethod == GraduatedSize )
     {
-      if ( symbol->type() == QgsSymbol::Marker )
+      if ( symbol->type() == Qgis::SymbolType::Marker )
         static_cast<QgsMarkerSymbol *>( symbol.get() )->setSize(
           static_cast<QgsMarkerSymbol *>( range.symbol() )->size() );
-      else if ( symbol->type() == QgsSymbol::Line )
+      else if ( symbol->type() == Qgis::SymbolType::Line )
         static_cast<QgsLineSymbol *>( symbol.get() )->setWidth(
           static_cast<QgsLineSymbol *>( range.symbol() )->width() );
     }
@@ -1289,8 +1278,7 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::convertFromRenderer( con
     }
   }
 
-  r->setOrderBy( renderer->orderBy() );
-  r->setOrderByEnabled( renderer->orderByEnabled() );
+  renderer->copyRendererData( r.get() );
 
   return r.release();
 }

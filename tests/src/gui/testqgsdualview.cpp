@@ -19,6 +19,7 @@
 #include <editorwidgets/core/qgseditorwidgetregistry.h>
 #include <attributetable/qgsattributetableview.h>
 #include <attributetable/qgsdualview.h>
+#include <editform/qgsattributeeditorhtmlelement.h>
 #include "qgsattributeform.h"
 #include <qgsapplication.h>
 #include "qgsfeatureiterator.h"
@@ -27,7 +28,7 @@
 #include <qgsmapcanvas.h>
 #include <qgsfeature.h>
 #include "qgsgui.h"
-
+#include "qgsvectorlayercache.h"
 #include "qgstest.h"
 
 class TestQgsDualView : public QObject
@@ -56,6 +57,9 @@ class TestQgsDualView : public QObject
 
     void testAttributeFormSharedValueScanning();
     void testNoGeom();
+
+    void testHtmlWidget_data();
+    void testHtmlWidget();
 
   private:
     QgsMapCanvas *mCanvas = nullptr;
@@ -338,6 +342,50 @@ void TestQgsDualView::testNoGeom()
   model = dv->masterModel();
   QVERIFY( !model->layerCache()->cacheGeometry() );
   QVERIFY( ( model->request().flags() & QgsFeatureRequest::NoGeometry ) );
+}
+
+void TestQgsDualView::testHtmlWidget_data()
+{
+  QTest::addColumn<QString>( "expression" );
+  QTest::addColumn<bool>( "expectedCacheGeometry" );
+
+  QTest::newRow( "with-geometry" ) << "geom_to_wkt($geometry)" << true;
+  QTest::newRow( "without-geometry" ) << "2+pk" << false;
+}
+
+void TestQgsDualView::testHtmlWidget()
+{
+  // check that HTML widget set cache geometry when needed
+
+  QFETCH( QString, expression );
+  QFETCH( bool, expectedCacheGeometry );
+
+  QgsVectorLayer layer( QStringLiteral( "Point?crs=epsg:4326&field=pk:int" ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( &layer, false, false );
+  QgsFeature f( layer.fields() );
+  f.setAttribute( QStringLiteral( "pk" ), 1 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POINT(0.5 0.5)" ) ) );
+  QVERIFY( f.isValid() );
+  QVERIFY( f.geometry().isGeosValid() );
+  QVERIFY( layer.dataProvider()->addFeature( f ) );
+
+  QgsEditFormConfig editFormConfig = layer.editFormConfig();
+  editFormConfig.clearTabs();
+  QgsAttributeEditorHtmlElement *htmlElement = new QgsAttributeEditorHtmlElement( "HtmlWidget", nullptr );
+  htmlElement->setHtmlCode( QStringLiteral( "The text is '<script>document.write(expression.evaluate(\"%1\"));</script>'" ).arg( expression ) );
+  editFormConfig.addTab( htmlElement );
+  editFormConfig.setLayout( QgsEditFormConfig::TabLayout );
+  layer.setEditFormConfig( editFormConfig );
+
+  QgsFeatureRequest request;
+  request.setFlags( QgsFeatureRequest::NoGeometry );
+
+  QgsDualView dualView;
+  dualView.setView( QgsDualView::AttributeEditor );
+  dualView.init( &layer, mCanvas, request );
+  QCOMPARE( dualView.mLayerCache->cacheGeometry(), expectedCacheGeometry );
+
+  QgsProject::instance()->removeMapLayer( &layer );
 }
 
 QGSTEST_MAIN( TestQgsDualView )

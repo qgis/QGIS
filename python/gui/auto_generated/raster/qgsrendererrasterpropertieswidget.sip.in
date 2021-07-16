@@ -55,6 +55,8 @@ called when user changes renderer type
 Apply the changes from the dialog to the layer.
 %End
 
+
+
     void syncToLayer( QgsRasterLayer *layer );
 %Docstring
 Sync the widget to the given layer.

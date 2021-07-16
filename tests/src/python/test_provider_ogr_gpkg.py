@@ -999,8 +999,8 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         count = count_opened_filedescriptors(tmpfile)
         if count > 0:
             # We should have just 1 but for obscure reasons
-            # uniqueFields() leaves one behind
-            self.assertEqual(count, 2)
+            # uniqueFields() (sometimes?) leaves one behind
+            self.assertIn(count, (1, 2))
 
         for i in range(70):
             got = [feat for feat in vl.getFeatures()]
@@ -1062,11 +1062,13 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
         f = QgsFeature()
         f.setAttributes([1234567890123, None])
+        f2 = QgsFeature()
+        f2.setAttributes([1234567890124, None])
         self.assertTrue(vl.startEditing())
-        self.assertTrue(vl.dataProvider().addFeatures([f]))
+        self.assertTrue(vl.dataProvider().addFeatures([f, f2]))
         self.assertTrue(vl.commitChanges())
 
-        got = [feat for feat in vl.getFeatures()][0]
+        got = [feat for feat in vl.getFeatures(QgsFeatureRequest(1234567890123))][0]
         self.assertEqual(got['fid'], 1234567890123)
 
         self.assertTrue(vl.startEditing())
@@ -1074,10 +1076,35 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertTrue(vl.changeAttributeValue(1234567890123, 1, 'foo'))
         self.assertTrue(vl.commitChanges())
 
-        got = [feat for feat in vl.getFeatures()][0]
+        got = [feat for feat in vl.getFeatures(QgsFeatureRequest(1234567890123))][0]
         self.assertEqual(got['str_field'], 'foo')
         got_geom = got.geometry()
         self.assertIsNotNone(got_geom)
+
+        # We don't change the FID, so OK
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.dataProvider().changeAttributeValues({1234567890123: {0: 1234567890123, 1: 'bar'},
+                                                                 1234567890124: {0: 1234567890124, 1: 'bar2'}}))
+        self.assertTrue(vl.commitChanges())
+
+        got = [feat for feat in vl.getFeatures(QgsFeatureRequest(1234567890123))][0]
+        self.assertEqual(got['str_field'], 'bar')
+
+        got = [feat for feat in vl.getFeatures(QgsFeatureRequest(1234567890124))][0]
+        self.assertEqual(got['str_field'], 'bar2')
+
+        # We try to change the FID, not allowed
+        # also check that all changes where reverted
+        self.assertTrue(vl.startEditing())
+        self.assertFalse(vl.dataProvider().changeAttributeValues({1234567890123: {0: 1, 1: 'baz'},
+                                                                  1234567890124: {1: 'baz2'}}))
+        self.assertTrue(vl.commitChanges())
+
+        got = [feat for feat in vl.getFeatures(QgsFeatureRequest(1234567890123))][0]
+        self.assertEqual(got['str_field'], 'bar')
+
+        got = [feat for feat in vl.getFeatures(QgsFeatureRequest(1234567890124))][0]
+        self.assertEqual(got['str_field'], 'bar2')
 
         self.assertTrue(vl.startEditing())
         self.assertTrue(vl.deleteFeature(1234567890123))
@@ -1125,6 +1152,69 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertTrue(layer.isValid())
         self.assertTrue(layer.isSpatial())
         self.assertEqual([f for f in layer.getFeatures()][0].geometry().asWkt(), 'Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))')
+        layer.startEditing()
+        self.assertEqual(layer.splitFeatures([QgsPointXY(0.5, 0), QgsPointXY(0.5, 1)], 0), 0)
+        self.assertTrue(layer.commitChanges())
+        self.assertEqual(layer.featureCount(), 2)
+
+        layer = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        self.assertEqual(layer.featureCount(), 2)
+        g, g2 = [f.geometry() for f in layer.getFeatures()]
+        g.normalize()
+        g2.normalize()
+        self.assertCountEqual([geom.asWkt() for geom in [g, g2]], ['Polygon ((0 0, 0 1, 0.5 1, 0.5 0, 0 0))',
+                                                                   'Polygon ((0.5 0, 0.5 1, 1 1, 1 0, 0.5 0))'])
+
+    def test_SplitFeatureErrorIncompatibleGeometryType(self):
+        """Test we behave correctly when split feature is not possible due to incompatible geometry type"""
+        tmpfile = os.path.join(self.basetestpath, 'test_SplitFeatureErrorIncompatibleGeometryType.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        # For the purpose of this test, we insert a Polygon in a Point layer
+        # which is normally not allowed
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POLYGON ((0 0,0 1,1 1,1 0,0 0))'))
+        gdal.PushErrorHandler('CPLQuietErrorHandler')
+        self.assertEqual(lyr.CreateFeature(f), ogr.OGRERR_NONE)
+        gdal.PopErrorHandler()
+        f = None
+        ds = None
+
+        # Split features
+        layer = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        self.assertTrue(layer.isValid())
+        self.assertTrue(layer.isSpatial())
+        self.assertEqual([f for f in layer.getFeatures()][0].geometry().asWkt(), 'Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))')
+        layer.startEditing()
+        self.assertEqual(layer.splitFeatures([QgsPointXY(0.5, 0), QgsPointXY(0.5, 1)], 0), 0)
+        self.assertFalse(layer.commitChanges())
+
+        layer = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        self.assertEqual(layer.featureCount(), 1)
+        g = [f.geometry() for f in layer.getFeatures()][0]
+        self.assertEqual(g.asWkt(), 'Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))')
+
+    def test_SplitFeatureErrorIncompatibleGeometryType2(self):
+        """Test we behave correctly when split a single-part multipolygon of a polygon layer (https://github.com/qgis/QGIS/issues/41283)"""
+        # This is really a non-nominal case. Failing properly would also be understandable.
+        tmpfile = os.path.join(self.basetestpath, 'test_SplitFeatureErrorIncompatibleGeometryType2.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPolygon)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        # For the purpose of this test, we insert a MultiPolygon in a Polygon layer
+        # which is normally not allowed
+        f.SetGeometry(ogr.CreateGeometryFromWkt('MULTIPOLYGON (((0 0,0 1,1 1,1 0,0 0)))'))
+        gdal.PushErrorHandler('CPLQuietErrorHandler')
+        self.assertEqual(lyr.CreateFeature(f), ogr.OGRERR_NONE)
+        gdal.PopErrorHandler()
+        f = None
+        ds = None
+
+        # Split features
+        layer = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        self.assertTrue(layer.isValid())
+        self.assertTrue(layer.isSpatial())
+        self.assertEqual([f for f in layer.getFeatures()][0].geometry().asWkt(), 'MultiPolygon (((0 0, 0 1, 1 1, 1 0, 0 0)))')
         layer.startEditing()
         self.assertEqual(layer.splitFeatures([QgsPointXY(0.5, 0), QgsPointXY(0.5, 1)], 0), 0)
         self.assertTrue(layer.commitChanges())
@@ -1817,6 +1907,31 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         fids = set([f['fid'] for f in vl.getFeatures()])
         self.assertEqual(len(fids), 1)
 
+    def testForeignKeyViolationAfterOpening(self):
+        """Test that foreign keys are enforced"""
+
+        tmpfile = os.path.join(self.basetestpath, 'testForeignKeyViolationAfterOpening.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(0 1)'))
+        lyr.CreateFeature(f)
+        ds.ExecuteSQL(
+            "CREATE TABLE bar(fid INTEGER PRIMARY KEY, fkey INTEGER, CONSTRAINT fkey_constraint FOREIGN KEY (fkey) REFERENCES test(fid))")
+        ds = None
+        vl = QgsVectorLayer('{}'.format(tmpfile) + "|layername=bar", 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+
+        # OK
+        f = QgsFeature()
+        f.setAttributes([None, 1])
+        self.assertTrue(vl.dataProvider().addFeature(f))
+
+        # violates foreign key
+        f = QgsFeature()
+        f.setAttributes([None, 10])
+        self.assertFalse(vl.dataProvider().addFeature(f))
+
     def testExportMultiFromShp(self):
         """Test if a Point is imported as single geom and MultiPoint as multi"""
 
@@ -2154,6 +2269,73 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(len(features), 2)
         self.assertEqual(features[0].attributes(), [1, -1, 123])
         self.assertEqual(features[1].attributes(), [2, -4, 125])
+
+    def testFixWrongMetadataReferenceColumnNameUpdate(self):
+        """ Test that we (or GDAL) fixes wrong gpkg_metadata_reference_column_name_update trigger """
+        tmpfile = os.path.join(self.basetestpath, 'testFixWrongMetadataReferenceColumnNameUpdate.gpkg')
+
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+        ds.SetMetadata('FOO', 'BAR')
+        ds = None
+
+        ds = ogr.Open(tmpfile, update=1)
+        gdal.PushErrorHandler()
+        ds.ExecuteSQL('DROP TRIGGER gpkg_metadata_reference_column_name_update')
+        gdal.PopErrorHandler()
+        # inject wrong trigger on purpose
+        wrong_trigger = "CREATE TRIGGER 'gpkg_metadata_reference_column_name_update' " + \
+                        "BEFORE UPDATE OF column_name ON 'gpkg_metadata_reference' " + \
+                        "FOR EACH ROW BEGIN " + \
+                        "SELECT RAISE(ABORT, 'update on table gpkg_metadata_reference " + \
+                        "violates constraint: column name must be NULL when reference_scope " + \
+                        "is \"geopackage\", \"table\" or \"row\"') " + \
+                        "WHERE (NEW.reference_scope IN ('geopackage','table','row') " + \
+                        "AND NEW.column_nameIS NOT NULL); END;"
+        ds.ExecuteSQL(wrong_trigger)
+        ds = None
+
+        vl = QgsVectorLayer(u'{}'.format(tmpfile), 'test', u'ogr')
+        self.assertTrue(vl.isValid())
+        del vl
+
+        # Check trigger afterwards
+        ds = ogr.Open(tmpfile)
+        sql_lyr = ds.ExecuteSQL(
+            "SELECT sql FROM sqlite_master WHERE type = 'trigger' " +
+            "AND name = 'gpkg_metadata_reference_column_name_update'")
+        f = sql_lyr.GetNextFeature()
+        sql = f['sql']
+        ds.ReleaseResultSet(sql_lyr)
+        ds = None
+
+        gdal.Unlink(tmpfile)
+        self.assertNotIn('column_nameIS', sql)
+
+    def testRejectedGeometryUpdate(self):
+        """Test that we correctly behave when a geometry update fails"""
+        tmpfile = os.path.join(self.basetestpath, 'testRejectedGeometryUpdate.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbUnknown)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POLYGON ((0 0,0 1,1 1,1 0,0 0))'))
+        lyr.CreateFeature(f)
+        ds.ExecuteSQL("CREATE TRIGGER rejectGeometryUpdate BEFORE UPDATE OF geom ON test FOR EACH ROW BEGIN SELECT RAISE(ABORT, 'update forbidden'); END;")
+        f = None
+        ds = None
+
+        vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        self.assertTrue(vl.isValid())
+
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.changeGeometry(1, QgsGeometry.fromWkt('Point (0 0)')))
+        self.assertFalse(vl.commitChanges())
+
+        vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        self.assertTrue(vl.isValid())
+
+        g = [f.geometry() for f in vl.getFeatures()][0]
+        self.assertEqual(g.asWkt(), 'Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))')
 
 
 if __name__ == '__main__':

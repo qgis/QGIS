@@ -36,6 +36,41 @@
 #include "qgsgdalutils.h"
 #endif
 
+
+//
+// global callback function
+//
+int CPL_STDCALL GdalProgressCallback( double dfComplete,
+                                      const char *pszMessage,
+                                      void *pProgressArg )
+{
+  Q_UNUSED( pszMessage )
+
+  static double sDfLastComplete = -1.0;
+
+  QgsFeedback *feedback = static_cast<QgsFeedback *>( pProgressArg );
+
+  if ( sDfLastComplete > dfComplete )
+  {
+    if ( sDfLastComplete >= 1.0 )
+      sDfLastComplete = -1.0;
+    else
+      sDfLastComplete = dfComplete;
+  }
+
+  if ( std::floor( sDfLastComplete * 10 ) != std::floor( dfComplete * 10 ) )
+  {
+    if ( feedback )
+      feedback->setProgress( dfComplete * 100 );
+  }
+  sDfLastComplete = dfComplete;
+
+  if ( feedback && feedback->isCanceled() )
+    return false;
+
+  return true;
+}
+
 QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat, const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries, const QgsCoordinateTransformContext &transformContext )
   : mFormulaString( formulaString )
   , mOutputFile( outputFile )
@@ -131,7 +166,6 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
 
 #ifdef HAVE_OPENCL
   // Check for matrix nodes, GPU implementation does not support them
-  QList<const QgsRasterCalcNode *> nodeList;
   if ( QgsOpenClUtils::enabled() && QgsOpenClUtils::available() && ! requiresMatrix )
   {
     return processCalculationGPU( std::move( calcNode ), feedback );
@@ -354,6 +388,9 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
     gdal::fast_delete_and_close( outputDataset, outputDriver, mOutputFile );
     return Canceled;
   }
+
+  GDALComputeRasterStatistics( outputRasterBand, true, nullptr, nullptr, nullptr, nullptr, GdalProgressCallback, feedback );
+
   return Success;
 }
 
@@ -399,7 +436,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     LayerRef entry;
     entry.name = r;
     entry.band = parts[1].toInt( &ok );
-    for ( const auto &ref : mRasterEntries )
+    for ( const auto &ref : std::as_const( mRasterEntries ) )
     {
       if ( ref.ref == entry.name )
         entry.layer = ref.raster;
@@ -459,8 +496,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     {
       cExpression.replace( QStringLiteral( "\"%1\"" ).arg( ref.name ), QStringLiteral( "%1[i]" ).arg( ref.varName ) );
       inputArgs.append( QStringLiteral( "__global %1 *%2" )
-                        .arg( ref.typeName )
-                        .arg( ref.varName ) );
+                        .arg( ref.typeName, ref.varName ) );
       inputBuffers.push_back( cl::Buffer( ctx, CL_MEM_READ_ONLY, ref.bufferSize, nullptr, nullptr ) );
     }
 
@@ -490,10 +526,10 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     QStringList inputNoDataCheck;
     for ( const auto &ref : inputRefs )
     {
-      inputDesc.append( QStringLiteral( "  // %1 = %2" ).arg( ref.varName ).arg( ref.name ) );
+      inputDesc.append( QStringLiteral( "  // %1 = %2" ).arg( ref.varName, ref.name ) );
       if ( ref.layer->dataProvider()->sourceHasNoDataValue( ref.band ) )
       {
-        inputNoDataCheck.append( QStringLiteral( "(float) %1[i] == (float) %2" ).arg( ref.varName ).arg( ref.layer->dataProvider()->sourceNoDataValue( ref.band ) ) );
+        inputNoDataCheck.append( QStringLiteral( "(float) %1[i] == (float) %2" ).arg( ref.varName, QString::number( ref.layer->dataProvider()->sourceNoDataValue( ref.band ), 'g', 10 ) ) );
       }
     }
 
@@ -503,7 +539,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     programTemplate = programTemplate.replace( QLatin1String( "##EXPRESSION##" ), cExpression );
     programTemplate = programTemplate.replace( QLatin1String( "##EXPRESSION_ORIGINAL##" ), calcNode->toString( ) );
 
-    // qDebug() << programTemplate;
+    //qDebug() << programTemplate;
 
     // Create a program from the kernel source
     cl::Program program( QgsOpenClUtils::buildProgram( programTemplate, QgsOpenClUtils::ExceptionBehavior::Throw ) );
@@ -628,6 +664,8 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
 
     inputBuffers.clear();
 
+    GDALComputeRasterStatistics( outputRasterBand, true, nullptr, nullptr, nullptr, nullptr, GdalProgressCallback, feedback );
+
   }
   catch ( cl::Error &e )
   {
@@ -735,7 +773,7 @@ QVector<QgsRasterCalculatorEntry> QgsRasterCalculatorEntry::rasterEntries()
   for ( ; layerIt != layers.constEnd(); ++layerIt )
   {
     QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layerIt.value() );
-    if ( rlayer && rlayer->dataProvider() && rlayer->providerType() == QLatin1String( "gdal" ) )
+    if ( rlayer && rlayer->dataProvider() && ( rlayer->dataProvider()->capabilities() & QgsRasterDataProvider::Size ) )
     {
       //get number of bands
       for ( int i = 0; i < rlayer->bandCount(); ++i )

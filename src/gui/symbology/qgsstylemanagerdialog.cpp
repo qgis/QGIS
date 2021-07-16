@@ -16,7 +16,6 @@
 #include "qgsstylemanagerdialog.h"
 #include "qgsstylesavedialog.h"
 
-#include "qgsdataitem.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
@@ -38,6 +37,11 @@
 #include "qgsabstract3dsymbol.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgs3dsymbolwidget.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgsiconutils.h"
+
 #include <QAction>
 #include <QFile>
 #include <QFileDialog>
@@ -334,14 +338,14 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
     mMenuBtnAddItemLegendPatchShape = new QMenu( this );
     mMenuBtnAddItemSymbol3D = new QMenu( this );
 
-    QAction *item = new QAction( QgsLayerItem::iconPoint(), tr( "Marker…" ), this );
-    connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( QgsSymbol::Marker ); } );
+    QAction *item = new QAction( QgsIconUtils::iconPoint(), tr( "Marker…" ), this );
+    connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( static_cast< int >( Qgis::SymbolType::Marker ) ); } );
     mMenuBtnAddItemAll->addAction( item );
-    item = new QAction( QgsLayerItem::iconLine(), tr( "Line…" ), this );
-    connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( QgsSymbol::Line ); } );
+    item = new QAction( QgsIconUtils::iconLine(), tr( "Line…" ), this );
+    connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( static_cast< int >( Qgis::SymbolType::Line ) ); } );
     mMenuBtnAddItemAll->addAction( item );
-    item = new QAction( QgsLayerItem::iconPolygon(), tr( "Fill…" ), this );
-    connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( QgsSymbol::Fill ); } );
+    item = new QAction( QgsIconUtils::iconPolygon(), tr( "Fill…" ), this );
+    connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( static_cast< int >( Qgis::SymbolType::Fill ) ); } );
     mMenuBtnAddItemAll->addAction( item );
     mMenuBtnAddItemAll->addSeparator();
 
@@ -373,15 +377,15 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
 
     mMenuBtnAddItemAll->addSeparator();
     item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "legend.svg" ) ), tr( "Marker Legend Patch Shape…" ), this );
-    connect( item, &QAction::triggered, this, [ = ]( bool ) { addLegendPatchShape( QgsSymbol::Marker ); } );
+    connect( item, &QAction::triggered, this, [ = ]( bool ) { addLegendPatchShape( Qgis::SymbolType::Marker ); } );
     mMenuBtnAddItemAll->addAction( item );
     mMenuBtnAddItemLegendPatchShape->addAction( item );
     item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "legend.svg" ) ), tr( "Line Legend Patch Shape…" ), this );
-    connect( item, &QAction::triggered, this, [ = ]( bool ) {  addLegendPatchShape( QgsSymbol::Line ); } );
+    connect( item, &QAction::triggered, this, [ = ]( bool ) {  addLegendPatchShape( Qgis::SymbolType::Line ); } );
     mMenuBtnAddItemAll->addAction( item );
     mMenuBtnAddItemLegendPatchShape->addAction( item );
     item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "legend.svg" ) ), tr( "Fill Legend Patch Shape…" ), this );
-    connect( item, &QAction::triggered, this, [ = ]( bool ) {  addLegendPatchShape( QgsSymbol::Fill ); } );
+    connect( item, &QAction::triggered, this, [ = ]( bool ) {  addLegendPatchShape( Qgis::SymbolType::Fill ); } );
     mMenuBtnAddItemAll->addAction( item );
     mMenuBtnAddItemLegendPatchShape->addAction( item );
 
@@ -563,7 +567,7 @@ void QgsStyleManagerDialog::tabItemType_currentChanged( int )
   mModel->setEntityFilterEnabled( !allTypesSelected() );
   mModel->setSymbolTypeFilterEnabled( isSymbol && !allTypesSelected() );
   if ( isSymbol && !allTypesSelected() )
-    mModel->setSymbolType( static_cast< QgsSymbol::SymbolType >( currentItemType() ) );
+    mModel->setSymbolType( static_cast< Qgis::SymbolType >( currentItemType() ) );
 
   populateList();
 }
@@ -750,7 +754,7 @@ QList< QgsStyleManagerDialog::ItemDetails > QgsStyleManagerDialog::selectedItems
     ItemDetails details;
     details.entityType = static_cast< QgsStyle::StyleEntity >( mModel->data( index, QgsStyleModel::TypeRole ).toInt() );
     if ( details.entityType == QgsStyle::SymbolEntity )
-      details.symbolType = static_cast< QgsSymbol::SymbolType >( mModel->data( index, QgsStyleModel::SymbolTypeRole ).toInt() );
+      details.symbolType = static_cast< Qgis::SymbolType >( mModel->data( index, QgsStyleModel::SymbolTypeRole ).toInt() );
     details.name = mModel->data( mModel->index( index.row(), QgsStyleModel::Name, index.parent() ), Qt::DisplayRole ).toString();
 
     res << details;
@@ -1188,11 +1192,11 @@ int QgsStyleManagerDialog::currentItemType()
   switch ( tabItemType->currentIndex() )
   {
     case 1:
-      return QgsSymbol::Marker;
+      return static_cast< int >( Qgis::SymbolType::Marker );
     case 2:
-      return QgsSymbol::Line;
+      return static_cast< int >( Qgis::SymbolType::Line );
     case 3:
-      return QgsSymbol::Fill;
+      return static_cast< int >( Qgis::SymbolType::Fill );
     case 4:
       return 3;
     case 5:
@@ -1265,15 +1269,15 @@ bool QgsStyleManagerDialog::addSymbol( int symbolType )
   QString name = tr( "new symbol" );
   switch ( symbolType == -1 ? currentItemType() : symbolType )
   {
-    case QgsSymbol::Marker:
+    case static_cast< int >( Qgis::SymbolType::Marker ):
       symbol = new QgsMarkerSymbol();
       name = tr( "new marker" );
       break;
-    case QgsSymbol::Line:
+    case static_cast< int>( Qgis::SymbolType::Line ):
       symbol = new QgsLineSymbol();
       name = tr( "new line" );
       break;
-    case QgsSymbol::Fill:
+    case static_cast< int >( Qgis::SymbolType::Fill ):
       symbol = new QgsFillSymbol();
       name = tr( "new fill symbol" );
       break;
@@ -1797,7 +1801,7 @@ bool QgsStyleManagerDialog::editLabelSettings()
   return true;
 }
 
-bool QgsStyleManagerDialog::addLegendPatchShape( QgsSymbol::SymbolType type )
+bool QgsStyleManagerDialog::addLegendPatchShape( Qgis::SymbolType type )
 {
   QgsLegendPatchShape shape = mStyle->defaultPatch( type, QSizeF( 10, 5 ) );
   QgsLegendPatchShapeDialog dialog( shape, this );

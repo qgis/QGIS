@@ -225,7 +225,7 @@ void QgsStyleExportImportDialog::moveStyles( QModelIndexList *selection, QgsStyl
     QgsStyleManagerDialog::ItemDetails details;
     details.entityType = static_cast< QgsStyle::StyleEntity >( mModel->data( index, QgsStyleModel::TypeRole ).toInt() );
     if ( details.entityType == QgsStyle::SymbolEntity )
-      details.symbolType = static_cast< QgsSymbol::SymbolType >( mModel->data( index, QgsStyleModel::SymbolTypeRole ).toInt() );
+      details.symbolType = static_cast< Qgis::SymbolType >( mModel->data( index, QgsStyleModel::SymbolTypeRole ).toInt() );
     details.name = mModel->data( mModel->index( index.row(), QgsStyleModel::Name, index.parent() ), Qt::DisplayRole ).toString();
 
     items << details;

@@ -1,0 +1,230 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/qgsprovidersublayerdetails.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsProviderSublayerDetails
+{
+%Docstring(signature="appended")
+
+Contains details about a sub layer available from a dataset.
+
+This class encapsulates the properties of a single sublayer available from a dataset,
+according to a specific data provider.
+
+.. note::
+
+   It is possible that multiple data providers may be able to utilize the same underlying
+   sub layer in a single dataset, yet will interpret this layer differently. For instance, a layer
+   in a GeoPDF document can be interpreted as either a vector layer by the OGR data provider or a raster
+   layer by the GDAL provider. The :py:func:`~providerKey` property can be used to determine the data provider
+   associated with a :py:class:`QgsProviderSubLayerDetails` instance.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsprovidersublayerdetails.h"
+%End
+  public:
+
+    QString providerKey() const;
+%Docstring
+Returns the associated data provider key.
+
+.. seealso:: :py:func:`setProviderKey`
+%End
+
+    void setProviderKey( const QString &key );
+%Docstring
+Sets the associated data provider key.
+
+.. seealso:: :py:func:`providerKey`
+%End
+
+    QgsMapLayerType type() const;
+%Docstring
+Returns the layer type.
+
+.. seealso:: :py:func:`setType`
+%End
+
+    void setType( QgsMapLayerType type );
+%Docstring
+Sets the layer ``type``.
+
+.. seealso:: :py:func:`type`
+%End
+
+    QString uri() const;
+%Docstring
+Returns the layer's URI.
+
+.. seealso:: :py:func:`setUri`
+%End
+
+    void setUri( const QString &uri );
+%Docstring
+Sets the layer's ``uri``.
+
+.. seealso:: :py:func:`uri`
+%End
+
+    struct LayerOptions
+    {
+
+      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext );
+%Docstring
+Constructor for LayerOptions with ``transformContext``.
+%End
+
+      QgsCoordinateTransformContext transformContext;
+
+      bool loadDefaultStyle;
+    };
+
+    QgsMapLayer *toLayer( const LayerOptions &options ) const /Factory/;
+%Docstring
+Creates a new :py:class:`QgsMapLayer` object associated with the sublayer.
+
+Caller takes ownership of the returned layer.
+%End
+
+    QString name() const;
+%Docstring
+Returns the layer's name.
+
+.. seealso:: :py:func:`setName`
+%End
+
+    void setName( const QString &name );
+%Docstring
+Sets the layer's ``name``.
+
+.. seealso:: :py:func:`name`
+%End
+
+    QString description() const;
+%Docstring
+Returns the layer's description.
+
+.. seealso:: :py:func:`setDescription`
+%End
+
+    void setDescription( const QString &description );
+%Docstring
+Sets the layer's ``description``.
+
+.. seealso:: :py:func:`description`
+%End
+
+    QStringList path() const;
+%Docstring
+Returns the path to the sublayer.
+
+This is an internal path, relative to the dataset itself. It can be used to encapsulate
+the hierarchy of a dataset which organises layers in schemas or in an internal folder structure.
+
+.. seealso:: :py:func:`setPath`
+%End
+
+    void setPath( const QStringList &path );
+%Docstring
+Sets the ``path`` to the sublayer.
+
+This is an internal path, relative to the dataset itself. It can be used to encapsulate
+the hierarchy of a dataset which organises layers in schemas or in an internal folder structure.
+
+.. seealso:: :py:func:`path`
+%End
+
+    long long featureCount() const;
+%Docstring
+Returns the layer's feature count.
+
+Will return Qgis.FeatureCountState.UnknownCount or Qgis.FeatureCountState.Uncounted if no feature count is applicable or available.
+
+.. seealso:: :py:func:`setFeatureCount`
+%End
+
+    void setFeatureCount( long long count );
+%Docstring
+Sets the layer's feature ``count``.
+
+Set to Qgis.FeatureCountState.UnknownCount or Qgis.FeatureCountState.Uncounted if no feature count is applicable or available.
+
+.. seealso:: :py:func:`featureCount`
+%End
+
+    QgsWkbTypes::Type wkbType() const;
+%Docstring
+Returns the layer's WKB type, or :py:class:`QgsWkbTypes`.Unknown if the WKB type is not application or unknown.
+
+.. seealso:: :py:func:`setWkbType`
+%End
+
+    void setWkbType( QgsWkbTypes::Type type );
+%Docstring
+Set the layer's WKB ``type``.
+
+Set to :py:class:`QgsWkbTypes`.Unknown if the WKB type is not application or unknown.
+
+.. seealso:: :py:func:`wkbType`
+%End
+
+    QString geometryColumnName() const;
+%Docstring
+Returns the layer's geometry column name, or an empty string if not applicable.
+
+.. seealso:: :py:func:`setGeometryColumnName`
+%End
+
+    void setGeometryColumnName( const QString &name );
+%Docstring
+Sets the layer's geometry column ``name``.
+
+Set to an empty string if not applicable.
+
+.. seealso:: :py:func:`geometryColumnName`
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsProviderSublayerDetails: %1 - %2>" ).arg( sipCpp->providerKey(), sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    int layerNumber() const;
+%Docstring
+Returns the associated layer number, for providers which order sublayers.
+
+.. seealso:: :py:func:`setLayerNumber`
+%End
+
+    void setLayerNumber( int number );
+%Docstring
+Sets the associated layer ``number``, for providers which order sublayers.
+
+.. seealso:: :py:func:`layerNumber`
+%End
+
+    bool operator==( const QgsProviderSublayerDetails &other ) const;
+    bool operator!=( const QgsProviderSublayerDetails &other ) const;
+
+};
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/qgsprovidersublayerdetails.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -49,7 +49,10 @@ while ($LINE_IDX < $LINE_COUNT){
     my $new_line = $INPUT_LINES[$LINE_IDX];
     my $is_blank_line = ( $new_line =~ m/^\s*$/ ) ? 1 : 0;
 
-    if ( $new_line =~ m/^(\s*)\/\/!\s*(.*?)$/ ){
+    if ( $new_line =~ m/^(\s*)(?:#ifdef|#ifndef|#else|#endif)/ ){
+      print $out_handle $new_line."\n";
+    }
+    elsif ( $new_line =~ m/^(\s*)\/\/!\s*(.*?)$/ ){
        #found a //! comment
        my $indentation = $1;
        my $comment = $2;
@@ -134,7 +137,7 @@ while ($LINE_IDX < $LINE_COUNT){
           $BUFFERED_LINE = "";
         }
 
-        if ($new_line !~ m/^\s*\*/ && $new_line =~ m/^(\s*?)(\s?)(.+?)$/ )
+        if ($new_line !~ m/^\s*[#\*]/ && $new_line =~ m/^(\s*?)(\s?)(.+?)$/ )
         {
           $new_line = "$1* $3";
         }

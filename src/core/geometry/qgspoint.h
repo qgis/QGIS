@@ -32,6 +32,17 @@
 /**
  * \ingroup core
  * \brief Point geometry type, with support for z-dimension and m-values.
+ *
+ * A QgsPoint represents a 2, 3 or 4-dimensional position, with X and Y and optional
+ * Z or M coordinates. Since it supports these additional dimensions, QgsPoint is
+ * used as the low-level storage of geometry coordinates throughout QGIS.
+ *
+ * In some scenarios it is preferable to use the QgsPointXY class instead, which is
+ * lighter and has smaller memory requirements compared to QgsPoint. See the QgsPointXY
+ * documentation for examples of situations where it is appropriate to use QgsPointXY
+ * instead of QgsPoint.
+ *
+ * \see QgsPointXY
  * \since QGIS 3.0, (previously QgsPointV2 since QGIS 2.10)
  */
 class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
@@ -74,7 +85,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 #ifndef SIP_RUN
     QgsPoint( double x = std::numeric_limits<double>::quiet_NaN(), double y = std::numeric_limits<double>::quiet_NaN(), double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN(), QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown );
 #else
-    QgsPoint( SIP_PYOBJECT x = Py_None, SIP_PYOBJECT y = Py_None, SIP_PYOBJECT z = Py_None, SIP_PYOBJECT m = Py_None, SIP_PYOBJECT wkbType = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown )];
+    QgsPoint( SIP_PYOBJECT x SIP_TYPEHINT( Optional[Union[QgsPoint, QPointF, float]] ) = Py_None, SIP_PYOBJECT y SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT z SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT m SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT wkbType SIP_TYPEHINT( Optional[int] ) = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown )];
     % MethodCode
     if ( sipCanConvertToType( a0, sipType_QgsPointXY, SIP_NOT_NONE ) && a1 == Py_None && a2 == Py_None && a3 == Py_None && a4 == Py_None )
     {
@@ -338,6 +349,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * Returns the Cartesian 2D distance between this point and another point. In certain
      * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
      * when comparing distances.
+     * \see distanceSquared()
      * \since QGIS 3.0
     */
     double distance( const QgsPoint &other ) const SIP_HOLDGIL
@@ -371,35 +383,36 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 
     /**
      * Returns the Cartesian 3D distance between this point and a specified x, y, z coordinate. In certain
-     * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
+     * cases it may be more appropriate to call the faster distanceSquared3D() method, e.g.,
      * when comparing distances.
-     * \see distanceSquared()
+     * \see distanceSquared3D()
      * \since QGIS 3.0
     */
     double distance3D( double x, double y, double z ) const SIP_HOLDGIL;
 
     /**
      * Returns the Cartesian 3D distance between this point and another point. In certain
-     * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
+     * cases it may be more appropriate to call the faster distanceSquared3D() method, e.g.,
      * when comparing distances.
+     * \see distanceSquared3D()
      * \since QGIS 3.0
     */
     double distance3D( const QgsPoint &other ) const SIP_HOLDGIL;
 
     /**
      * Returns the Cartesian 3D squared distance between this point and a specified x, y, z coordinate. Calling
-     * this is faster than calling distance(), and may be useful in use cases such as comparing
-     * distances where the extra expense of calling distance() is not required.
-     * \see distance()
+     * this is faster than calling distance3D(), and may be useful in use cases such as comparing
+     * distances where the extra expense of calling distance3D() is not required.
+     * \see distance3D()
      * \since QGIS 3.0
     */
     double distanceSquared3D( double x, double y, double z ) const SIP_HOLDGIL;
 
     /**
      * Returns the Cartesian 3D squared distance between this point and another point. Calling
-     * this is faster than calling distance(), and may be useful in use cases such as comparing
-     * distances where the extra expense of calling distance() is not required.
-     * \see distance()
+     * this is faster than calling distance3D(), and may be useful in use cases such as comparing
+     * distances where the extra expense of calling distance3D() is not required.
+     * \see distance3D()
      * \since QGIS 3.0
     */
     double distanceSquared3D( const QgsPoint &other ) const SIP_HOLDGIL;

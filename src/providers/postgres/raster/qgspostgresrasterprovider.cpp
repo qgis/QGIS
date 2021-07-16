@@ -113,7 +113,7 @@ QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QString &uri, const 
     QgsMessageLog::logMessage( tr( "Requested SRID (%1) and detected SRID (%2) differ" )
                                .arg( mRequestedSrid )
                                .arg( mDetectedSrid ),
-                               QStringLiteral( "PostGIS" ), Qgis::Warning );
+                               QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Warning );
   }
 
   mLayerMetadata.setType( QStringLiteral( "dataset" ) );
@@ -224,14 +224,14 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
 {
   if ( bandNo > mBandCount )
   {
-    QgsMessageLog::logMessage( tr( "Invalid band number '%1" ).arg( bandNo ), QStringLiteral( "PostGIS" ), Qgis::Critical );
+    QgsMessageLog::logMessage( tr( "Invalid band number '%1" ).arg( bandNo ), QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Critical );
     return false;
   }
 
   const QgsRectangle rasterExtent = viewExtent.intersect( mExtent );
   if ( rasterExtent.isEmpty() )
   {
-    QgsMessageLog::logMessage( tr( "Requested extent is not valid" ), QStringLiteral( "PostGIS" ), Qgis::Critical );
+    QgsMessageLog::logMessage( tr( "Requested extent is not valid" ), QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Critical );
     return false;
   }
 
@@ -278,7 +278,7 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
         const unsigned short byte { val.toUShort( &ok ) };
         if ( ! ok )
         {
-          QgsMessageLog::logMessage( tr( "Cannot convert identified value to byte" ), QStringLiteral( "PostGIS" ), Qgis::Warning );
+          QgsMessageLog::logMessage( tr( "Cannot convert identified value to byte" ), QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Warning );
           return false;
         }
         std::memcpy( data, &byte, sizeof( unsigned short ) );
@@ -289,7 +289,7 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
         const unsigned int uint { val.toUInt( &ok ) };
         if ( ! ok )
         {
-          QgsMessageLog::logMessage( tr( "Cannot convert identified value to unsigned int" ), QStringLiteral( "PostGIS" ), Qgis::Warning );
+          QgsMessageLog::logMessage( tr( "Cannot convert identified value to unsigned int" ), QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Warning );
           return false;
         }
         std::memcpy( data, &uint, sizeof( unsigned int ) );
@@ -300,7 +300,7 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
         const unsigned long ulong { val.toULong( &ok ) };
         if ( ! ok )
         {
-          QgsMessageLog::logMessage( tr( "Cannot convert identified value to unsigned long" ), QStringLiteral( "PostGIS" ), Qgis::Warning );
+          QgsMessageLog::logMessage( tr( "Cannot convert identified value to unsigned long" ), QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Warning );
           return false;
         }
         std::memcpy( data, &ulong, sizeof( unsigned long ) );
@@ -311,7 +311,7 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
         const int intVal { val.toInt( &ok ) };
         if ( ! ok )
         {
-          QgsMessageLog::logMessage( tr( "Cannot convert identified value to int" ), QStringLiteral( "PostGIS" ), Qgis::Warning );
+          QgsMessageLog::logMessage( tr( "Cannot convert identified value to int" ), QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Warning );
           return false;
         }
         std::memcpy( data, &intVal, sizeof( int ) );
@@ -322,7 +322,7 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
         const long longVal { val.toLong( &ok ) };
         if ( ! ok )
         {
-          QgsMessageLog::logMessage( tr( "Cannot convert identified value to long" ), QStringLiteral( "PostGIS" ), Qgis::Warning );
+          QgsMessageLog::logMessage( tr( "Cannot convert identified value to long" ), QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Warning );
           return false;
         }
         std::memcpy( data, &longVal, sizeof( long ) );
@@ -333,7 +333,7 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
         const float floatVal { val.toFloat( &ok ) };
         if ( ! ok )
         {
-          QgsMessageLog::logMessage( tr( "Cannot convert identified value to float" ), QStringLiteral( "PostGIS" ), Qgis::Warning );
+          QgsMessageLog::logMessage( tr( "Cannot convert identified value to float" ), QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Warning );
           return false;
         }
         std::memcpy( data, &floatVal, sizeof( float ) );
@@ -344,7 +344,7 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
         const double doubleVal { val.toDouble( &ok ) };
         if ( ! ok )
         {
-          QgsMessageLog::logMessage( tr( "Cannot convert identified value to double" ), QStringLiteral( "PostGIS" ), Qgis::Warning );
+          QgsMessageLog::logMessage( tr( "Cannot convert identified value to double" ), QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Warning );
           return false;
         }
         std::memcpy( data, &doubleVal, sizeof( double ) );
@@ -352,7 +352,7 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
       }
       default:
       {
-        QgsMessageLog::logMessage( tr( "Unknown identified data type" ), QStringLiteral( "PostGIS" ), Qgis::Warning );
+        QgsMessageLog::logMessage( tr( "Unknown identified data type" ), QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Warning );
         return false;
       }
     }
@@ -412,7 +412,7 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
     if ( tileResponse.tiles.isEmpty() )
     {
       QgsMessageLog::logMessage( tr( "No tiles available in table %1 for the requested extent: %2" )
-                                 .arg( tableToQuery, rasterExtent.toString( ) ), tr( "PostGIS" ), Qgis::Critical );
+                                 .arg( tableToQuery, rasterExtent.toString( ) ), tr( "PostGIS" ), Qgis::MessageLevel::Critical );
       return false;
     }
 
@@ -436,7 +436,7 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
     {
       {
         QgsMessageLog::logMessage( tr( "Unable to create temporary raster for tiles from %1" )
-                                   .arg( tableToQuery ), tr( "PostGIS" ), Qgis::Critical );
+                                   .arg( tableToQuery ), tr( "PostGIS" ), Qgis::MessageLevel::Critical );
         return false;
       }
     }
@@ -467,7 +467,7 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
       {
         const QString lastError = QString::fromUtf8( CPLGetLastErrorMsg() ) ;
         QgsMessageLog::logMessage( tr( "Unable to write tile to temporary raster from %1: %2" )
-                                   .arg( tableToQuery, lastError ), tr( "PostGIS" ), Qgis::Critical );
+                                   .arg( tableToQuery, lastError ), tr( "PostGIS" ), Qgis::MessageLevel::Critical );
         return false;
       }
     }
@@ -489,7 +489,7 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
     {
       const QString lastError = QString::fromUtf8( CPLGetLastErrorMsg() ) ;
       QgsMessageLog::logMessage( tr( "Unable to create destination raster for tiles from %1: %2" )
-                                 .arg( tableToQuery, lastError ), tr( "PostGIS" ), Qgis::Critical );
+                                 .arg( tableToQuery, lastError ), tr( "PostGIS" ), Qgis::MessageLevel::Critical );
       return false;
     }
 
@@ -498,7 +498,7 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
     {
       const QString lastError = QString::fromUtf8( CPLGetLastErrorMsg() ) ;
       QgsMessageLog::logMessage( tr( "Unable to resample and transform destination raster for tiles from %1: %2" )
-                                 .arg( tableToQuery, lastError ), tr( "PostGIS" ), Qgis::Critical );
+                                 .arg( tableToQuery, lastError ), tr( "PostGIS" ), Qgis::MessageLevel::Critical );
       return false;
     }
 
@@ -520,7 +520,7 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
     {
       const QString lastError = QString::fromUtf8( CPLGetLastErrorMsg() ) ;
       QgsMessageLog::logMessage( tr( "Unable to write raster to block from %1: %2" )
-                                 .arg( mQuery, lastError ), tr( "PostGIS" ), Qgis::Critical );
+                                 .arg( mQuery, lastError ), tr( "PostGIS" ), Qgis::MessageLevel::Critical );
       return false;
     }
 
@@ -690,7 +690,7 @@ Qgis::DataType QgsPostgresRasterProvider::dataType( int bandNo ) const
                                .arg( bandNo )
                                .arg( mBandCount )
                                .arg( mDataSizes.size() ),
-                               QStringLiteral( "PostGIS" ), Qgis::Warning );
+                               QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Warning );
     return Qgis::DataType::UnknownDataType;
   }
   // Band is 1-based
@@ -1076,7 +1076,7 @@ bool QgsPostgresRasterProvider::init()
             {
               QgsMessageLog::logMessage( tr( "Cannot convert nodata value '%1' to double" )
                                          .arg( noDataValues.at( i ) ),
-                                         QStringLiteral( "PostGIS" ), Qgis::Info );
+                                         QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Info );
             }
             mSrcHasNoDataValue.append( false );
             mUseSrcNoDataValue.append( false );
@@ -1163,7 +1163,7 @@ bool QgsPostgresRasterProvider::init()
                                    .arg( mQuery )
                                    .arg( result.PQresultErrorMessage() )
                                    .arg( sql ),
-                                   QStringLiteral( "PostGIS" ), Qgis::Warning );
+                                   QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Warning );
       }
     }
     catch ( QgsPostgresRasterProviderException &ex )
@@ -1172,7 +1172,7 @@ bool QgsPostgresRasterProvider::init()
                                      "Please consider adding raster constraints with PostGIS function AddRasterConstraints." )
                                  .arg( mQuery )
                                  .arg( ex.message ),
-                                 QStringLiteral( "PostGIS" ), Qgis::Warning );
+                                 QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Warning );
     }
   }
 
@@ -1194,7 +1194,7 @@ bool QgsPostgresRasterProvider::init()
       if ( result.PQntuples() > 1 )
       {
         QgsMessageLog::logMessage( tr( "Multiple raster column detected, using the first one" ),
-                                   QStringLiteral( "PostGIS" ), Qgis::Warning );
+                                   QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Warning );
 
       }
       mRasterColumn = result.PQgetvalue( 0, 0 );
@@ -1202,7 +1202,7 @@ bool QgsPostgresRasterProvider::init()
     else
     {
       QgsMessageLog::logMessage( tr( "An error occurred while fetching raster column" ),
-                                 QStringLiteral( "PostGIS" ), Qgis::Critical );
+                                 QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Critical );
       return false;
     }
   }
@@ -1262,14 +1262,14 @@ bool QgsPostgresRasterProvider::init()
       if ( ! p.fromWkb( ptr ) )
       {
         QgsMessageLog::logMessage( tr( "Cannot get extent from raster" ),
-                                   QStringLiteral( "PostGIS" ), Qgis::Critical );
+                                   QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Critical );
         return false;
       }
     }
     catch ( ... )
     {
       QgsMessageLog::logMessage( tr( "Cannot get metadata from raster" ),
-                                 QStringLiteral( "PostGIS" ), Qgis::Critical );
+                                 QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Critical );
       return false;
     }
 
@@ -1281,7 +1281,7 @@ bool QgsPostgresRasterProvider::init()
     if ( ! ok )
     {
       QgsMessageLog::logMessage( tr( "Cannot convert width '%1' to int" ).arg( result.PQgetvalue( 0, 3 ) ),
-                                 QStringLiteral( "PostGIS" ), Qgis::Critical );
+                                 QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Critical );
       return false;
     }
 
@@ -1290,7 +1290,7 @@ bool QgsPostgresRasterProvider::init()
     if ( ! ok )
     {
       QgsMessageLog::logMessage( tr( "Cannot convert height '%1' to int" ).arg( result.PQgetvalue( 0, 4 ) ),
-                                 QStringLiteral( "PostGIS" ), Qgis::Critical );
+                                 QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Critical );
       return false;
     }
 
@@ -1299,7 +1299,7 @@ bool QgsPostgresRasterProvider::init()
     if ( ! ok )
     {
       QgsMessageLog::logMessage( tr( "Cannot convert scale X '%1' to double" ).arg( result.PQgetvalue( 0, 5 ) ),
-                                 QStringLiteral( "PostGIS" ), Qgis::Critical );
+                                 QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Critical );
       return false;
     }
 
@@ -1308,7 +1308,7 @@ bool QgsPostgresRasterProvider::init()
     if ( ! ok )
     {
       QgsMessageLog::logMessage( tr( "Cannot convert scale Y '%1' to double" ).arg( result.PQgetvalue( 0, 6 ) ),
-                                 QStringLiteral( "PostGIS" ), Qgis::Critical );
+                                 QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Critical );
       return false;
     }
 
@@ -1330,7 +1330,7 @@ bool QgsPostgresRasterProvider::init()
     if ( ! ok )
     {
       QgsMessageLog::logMessage( tr( "Cannot create CRS from EPSG: '%1'" ).arg( result.PQgetvalue( 0, 9 ) ),
-                                 QStringLiteral( "PostGIS" ), Qgis::Critical );
+                                 QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Critical );
       return false;
     }
 
@@ -1344,7 +1344,7 @@ bool QgsPostgresRasterProvider::init()
       if ( type == Qgis::DataType::UnknownDataType )
       {
         QgsMessageLog::logMessage( tr( "Unsupported data type: '%1'" ).arg( result.PQgetvalue( rowNumber, 11 ) ),
-                                   QStringLiteral( "PostGIS" ), Qgis::Critical );
+                                   QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Critical );
         return false;
       }
 
@@ -1356,7 +1356,7 @@ bool QgsPostgresRasterProvider::init()
       {
         QgsMessageLog::logMessage( tr( "Cannot convert nodata value '%1' to double, default to: %2" )
                                    .arg( result.PQgetvalue( rowNumber, 2 ) )
-                                   .arg( std::numeric_limits<double>::min() ), QStringLiteral( "PostGIS" ), Qgis::Info );
+                                   .arg( std::numeric_limits<double>::min() ), QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Info );
         nodataValue = std::numeric_limits<double>::min();
       }
 
@@ -1369,7 +1369,7 @@ bool QgsPostgresRasterProvider::init()
   else
   {
     QgsMessageLog::logMessage( tr( "An error occurred while fetching raster metadata" ),
-                               QStringLiteral( "PostGIS" ), Qgis::Critical );
+                               QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Critical );
     return false;
   }
 
@@ -1382,7 +1382,7 @@ bool QgsPostgresRasterProvider::initFieldsAndTemporal( )
   if ( ! loadFields() )
   {
     QgsMessageLog::logMessage( tr( "An error occurred while fetching raster fields information" ),
-                               QStringLiteral( "PostGIS" ), Qgis::Critical );
+                               QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Critical );
     return false;
   }
 
@@ -1431,7 +1431,7 @@ bool QgsPostgresRasterProvider::initFieldsAndTemporal( )
             else
             {
               QgsMessageLog::logMessage( tr( "Invalid default date in raster temporal capabilities for field %1: %2" ).arg( temporalFieldName, mUri.param( QStringLiteral( "temporalDefaultTime" ) ) ),
-                                         QStringLiteral( "PostGIS" ), Qgis::Warning );
+                                         QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Warning );
             }
           }
 
@@ -1455,19 +1455,19 @@ bool QgsPostgresRasterProvider::initFieldsAndTemporal( )
           else
           {
             QgsMessageLog::logMessage( tr( "No temporal ranges detected in raster temporal capabilities for field %1: %2" ).arg( temporalFieldName, mUri.param( QStringLiteral( "temporalDefaultTime" ) ) ),
-                                       QStringLiteral( "PostGIS" ), Qgis::Info );
+                                       QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Info );
           }
         }
         else
         {
           QgsMessageLog::logMessage( tr( "Invalid temporal range in raster temporal capabilities for field %1: %2 - %3" ).arg( temporalFieldName, minTime.toString(), maxTime.toString() ),
-                                     QStringLiteral( "PostGIS" ), Qgis::Warning );
+                                     QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Warning );
         }
       }
       else
       {
         QgsMessageLog::logMessage( tr( "An error occurred while fetching raster temporal capabilities for field: %1" ).arg( temporalFieldName ),
-                                   QStringLiteral( "PostGIS" ), Qgis::Warning );
+                                   QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Warning );
 
       }
     }
@@ -1475,7 +1475,7 @@ bool QgsPostgresRasterProvider::initFieldsAndTemporal( )
     {
       QgsMessageLog::logMessage( tr( "Invalid field index for raster temporal capabilities: %1" )
                                  .arg( QString::number( temporalFieldIndex ) ),
-                                 QStringLiteral( "PostGIS" ), Qgis::Warning );
+                                 QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Warning );
     }
   }
   return true;
@@ -2240,14 +2240,14 @@ void QgsPostgresRasterProvider::findOverviews()
       const unsigned int overViewFactor { static_cast< unsigned int>( result.PQgetvalue( i, 0 ).toInt( & ok ) ) };
       if ( ! ok )
       {
-        QgsMessageLog::logMessage( tr( "Cannot convert overview factor '%1' to int" ).arg( result.PQgetvalue( i, 0 ) ), QStringLiteral( "PostGIS" ), Qgis::Warning );
+        QgsMessageLog::logMessage( tr( "Cannot convert overview factor '%1' to int" ).arg( result.PQgetvalue( i, 0 ) ), QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Warning );
         return;
       }
       const QString schema { result.PQgetvalue( i, 1 ) };
       const QString table { result.PQgetvalue( i, 2 ) };
       if ( table.isEmpty() || schema.isEmpty() )
       {
-        QgsMessageLog::logMessage( tr( "Table or schema is empty" ), QStringLiteral( "PostGIS" ), Qgis::Warning );
+        QgsMessageLog::logMessage( tr( "Table or schema is empty" ), QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Warning );
         return;
       }
       mOverViews[ overViewFactor ] = QStringLiteral( "%1.%2" ).arg( quotedIdentifier( schema ) ).arg( quotedIdentifier( table ) );
@@ -2255,11 +2255,11 @@ void QgsPostgresRasterProvider::findOverviews()
   }
   else
   {
-    QgsMessageLog::logMessage( tr( "Error fetching overviews information: %1" ).arg( result.PQresultErrorMessage() ), QStringLiteral( "PostGIS" ), Qgis::Warning );
+    QgsMessageLog::logMessage( tr( "Error fetching overviews information: %1" ).arg( result.PQresultErrorMessage() ), QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Warning );
   }
   if ( mOverViews.isEmpty() )
   {
-    QgsMessageLog::logMessage( tr( "No overviews found, performances may be affected for %1" ).arg( mQuery ), QStringLiteral( "PostGIS" ), Qgis::Info );
+    QgsMessageLog::logMessage( tr( "No overviews found, performances may be affected for %1" ).arg( mQuery ), QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Info );
   }
 }
 
@@ -2281,7 +2281,7 @@ Qgis::DataType QgsPostgresRasterProvider::sourceDataType( int bandNo ) const
   }
   else
   {
-    QgsMessageLog::logMessage( tr( "Data type is unknown" ), QStringLiteral( "PostGIS" ), Qgis::Warning );
+    QgsMessageLog::logMessage( tr( "Data type is unknown" ), QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Warning );
     return Qgis::DataType::UnknownDataType;
   }
 }
@@ -2385,7 +2385,7 @@ QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, int st
                                .arg( mQuery )
                                .arg( result.PQresultErrorMessage() )
                                .arg( sql ),
-                               QStringLiteral( "PostGIS" ), Qgis::Warning );
+                               QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Warning );
   }
 
   QgsDebugMsgLevel( QStringLiteral( "************ STATS **************" ), 4 );

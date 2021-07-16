@@ -16,17 +16,16 @@
 #ifndef QGSQUICKMAPCANVASMAP_H
 #define QGSQUICKMAPCANVASMAP_H
 
-#include <memory>
-
-#include <QtQuick/QQuickItem>
-#include <QFutureSynchronizer>
-#include <QTimer>
-
-#include "qgsmapsettings.h"
-#include "qgspoint.h"
-
 #include "qgis_quick.h"
 #include "qgsquickmapsettings.h"
+
+#include <QFutureSynchronizer>
+#include <QTimer>
+#include <QtQuick/QQuickItem>
+#include <qgsmapsettings.h>
+#include <qgspoint.h>
+
+#include <memory>
 
 class QgsMapRendererParallelJob;
 class QgsMapRendererCache;
@@ -34,6 +33,7 @@ class QgsLabelingResults;
 
 /**
  * \ingroup quick
+ *
  * \brief This class implements a visual Qt Quick Item that does map rendering
  * according to the current map settings. Client code is expected to use
  * MapCanvas item rather than using this class directly.
@@ -90,8 +90,8 @@ class QUICK_EXPORT QgsQuickMapCanvasMap : public QQuickItem
 
   public:
     //! Create map canvas map
-    QgsQuickMapCanvasMap( QQuickItem *parent = nullptr );
-    ~QgsQuickMapCanvasMap() = default;
+    explicit QgsQuickMapCanvasMap( QQuickItem *parent = nullptr );
+    ~QgsQuickMapCanvasMap();
 
     QSGNode *updatePaintNode( QSGNode *oldNode, QQuickItem::UpdatePaintNodeData * ) override;
 
@@ -122,12 +122,12 @@ class QUICK_EXPORT QgsQuickMapCanvasMap : public QQuickItem
   signals:
 
     /**
-     * Emitted when a rendering is starting.
+     * Signal is emitted when a rendering is starting
      */
     void renderStarting();
 
     /**
-     * Emitted when the canvas is refreshed.
+     * Signal is emitted when a canvas is refreshed
      */
     void mapCanvasRefreshed();
 
@@ -189,17 +189,18 @@ class QUICK_EXPORT QgsQuickMapCanvasMap : public QQuickItem
     bool mPinching = false;
     QPoint mPinchStartPoint;
     QgsMapRendererParallelJob *mJob = nullptr;
-    QgsMapRendererCache *mCache = nullptr;
+    std::unique_ptr<QgsMapRendererCache> mCache;
     QgsLabelingResults *mLabelingResults = nullptr;
     QImage mImage;
     QgsMapSettings mImageMapSettings;
     QTimer mRefreshTimer;
     bool mDirty = false;
     bool mFreeze = false;
-    bool mNeedsRefresh = false;  //!< Whether refresh is needed after unfreezing
     QList<QMetaObject::Connection> mLayerConnections;
     QTimer mMapUpdateTimer;
     bool mIncrementalRendering = false;
+
+    QQuickWindow *mWindow = nullptr;
 };
 
 #endif // QGSQUICKMAPCANVASMAP_H

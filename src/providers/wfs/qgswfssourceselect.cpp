@@ -42,6 +42,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QPainter>
+#include <QRegularExpression>
 
 enum
 {
@@ -751,10 +752,8 @@ void QgsWFSSourceSelect::buildQueryButtonClicked()
 void QgsWFSSourceSelect::filterChanged( const QString &text )
 {
   QgsDebugMsgLevel( "WFS FeatureType filter changed to :" + text, 2 );
-  QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::RegExp );
-  Qt::CaseSensitivity myCaseSensitivity = Qt::CaseInsensitive;
-  QRegExp myRegExp( text, myCaseSensitivity, mySyntax );
-  mModelProxy->setFilterRegExp( myRegExp );
+  QRegularExpression regExp( text, QRegularExpression::CaseInsensitiveOption );
+  mModelProxy->setFilterRegularExpression( regExp );
   mModelProxy->sort( mModelProxy->sortColumn(), mModelProxy->sortOrder() );
 }
 

@@ -31,6 +31,16 @@ QgsOgrTransaction::QgsOgrTransaction( const QString &connString, QgsOgrDatasetSh
 
 bool QgsOgrTransaction::beginTransaction( QString &error, int /* statementTimeout */ )
 {
+  GDALDriverH hDriver = GDALGetDatasetDriver( mSharedDS.get()->mDs->hDS );
+  const QString driverName = GDALGetDriverShortName( hDriver );
+  if ( driverName == QLatin1String( "GPKG" ) || driverName == QLatin1String( "SQLite" ) )
+  {
+    QString fkDeferError;
+    if ( ! executeSql( QStringLiteral( "PRAGMA defer_foreign_keys = ON" ), fkDeferError ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Error setting PRAGMA defer_foreign_keys = ON: %1" ).arg( fkDeferError ) );
+    }
+  }
   return executeSql( QStringLiteral( "BEGIN" ), error );
 }
 

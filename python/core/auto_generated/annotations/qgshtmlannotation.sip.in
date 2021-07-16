@@ -50,6 +50,18 @@ Returns the file path for the source HTML file.
 .. seealso:: :py:func:`setSourceFile`
 %End
 
+    void setHtmlSource( const QString &htmlSource );
+%Docstring
+Sets the html source directly (not coming from a file)
+
+:param htmlSource:
+%End
+
+    QString htmlSource() const;
+%Docstring
+Returns html source text
+%End
+
     virtual void writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     virtual void readXml( const QDomElement &itemElem, const QgsReadWriteContext &context );

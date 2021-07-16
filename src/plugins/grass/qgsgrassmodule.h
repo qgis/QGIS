@@ -49,7 +49,7 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
 
     //! Constructor
     QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisInterface *iface,
-                    bool direct, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+                    bool direct, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
 
 
     ~QgsGrassModule() override;

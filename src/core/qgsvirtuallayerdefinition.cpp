@@ -14,15 +14,16 @@ email                : hugo dot mercier at oslandia dot com
  *                                                                         *
  ***************************************************************************/
 
-#include <QUrl>
-#include <QRegExp>
-#include <QStringList>
-#include <QUrlQuery>
-#include <QtEndian>
-
 #include "qgsvirtuallayerdefinition.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
+#include "fromencodedcomponenthelper.h"
+
+#include <QUrl>
+#include <QRegularExpression>
+#include <QStringList>
+#include <QUrlQuery>
+
 
 QgsVirtualLayerDefinition::QgsVirtualLayerDefinition( const QString &filePath )
   : mFilePath( filePath )
@@ -55,12 +56,12 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
       QString layerId, vlayerName;
       if ( pos == -1 )
       {
-        layerId = value;
+        layerId = QUrl::fromPercentEncoding( value.toUtf8() );
         vlayerName = QStringLiteral( "vtab%1" ).arg( layerIdx );
       }
       else
       {
-        layerId = value.left( pos );
+        layerId = QUrl::fromPercentEncoding( value.left( pos ).toUtf8() );
         vlayerName = QUrl::fromPercentEncoding( value.mid( pos + 1 ).toUtf8() );
       }
       // add the layer to the list
@@ -106,21 +107,21 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
     {
       // geometry field definition, optional
       // geometry_column(:wkb_type:srid)?
-      QRegExp reGeom( "(" + columnNameRx + ")(?::([a-zA-Z0-9]+):(\\d+))?" );
-      int pos = reGeom.indexIn( value );
-      if ( pos >= 0 )
+      QRegularExpression reGeom( "(" + columnNameRx + ")(?::([a-zA-Z0-9]+):(\\d+))?" );
+      QRegularExpressionMatch match = reGeom.match( value );
+      if ( match.hasMatch() )
       {
-        def.setGeometryField( reGeom.cap( 1 ) );
-        if ( reGeom.captureCount() > 1 )
+        def.setGeometryField( match.captured( 1 ) );
+        if ( match.capturedTexts().size() > 2 )
         {
           // not used by the spatialite provider for now ...
-          QgsWkbTypes::Type wkbType = QgsWkbTypes::parseType( reGeom.cap( 2 ) );
+          QgsWkbTypes::Type wkbType = QgsWkbTypes::parseType( match.captured( 2 ) );
           if ( wkbType == QgsWkbTypes::Unknown )
           {
-            wkbType = static_cast<QgsWkbTypes::Type>( reGeom.cap( 2 ).toLong() );
+            wkbType = static_cast<QgsWkbTypes::Type>( match.captured( 2 ).toLong() );
           }
           def.setGeometryWkbType( wkbType );
-          def.setGeometrySrid( reGeom.cap( 3 ).toLong() );
+          def.setGeometrySrid( match.captured( 3 ).toLong() );
         }
       }
     }
@@ -140,12 +141,12 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
     else if ( key == QLatin1String( "field" ) )
     {
       // field_name:type (int, real, text)
-      QRegExp reField( "(" + columnNameRx + "):(int|real|text)" );
-      int pos = reField.indexIn( value );
-      if ( pos >= 0 )
+      const QRegularExpression reField( "(" + columnNameRx + "):(int|real|text)" );
+      QRegularExpressionMatch match = reField.match( value );
+      if ( match.hasMatch() )
       {
-        QString fieldName( reField.cap( 1 ) );
-        QString fieldType( reField.cap( 2 ) );
+        QString fieldName( match.captured( 1 ) );
+        QString fieldType( match.captured( 2 ) );
         if ( fieldType == QLatin1String( "int" ) )
         {
           fields.append( QgsField( fieldName, QVariant::LongLong, fieldType ) );
@@ -172,82 +173,6 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
   def.setFields( fields );
 
   return def;
-}
-
-// Mega ewwww. all this is taken from Qt's QUrl::addEncodedQueryItem compatibility helper.
-// (I can't see any way to port the below code to NOT require this without breaking
-// existing projects.)
-
-inline char toHexUpper( uint value ) noexcept
-{
-  return "0123456789ABCDEF"[value & 0xF];
-}
-
-static inline ushort encodeNibble( ushort c )
-{
-  return ushort( toHexUpper( c ) );
-}
-
-static bool qt_is_ascii( const char *&ptr, const char *end ) noexcept
-{
-  while ( ptr + 4 <= end )
-  {
-    quint32 data = qFromUnaligned<quint32>( ptr );
-    if ( data &= 0x80808080U )
-    {
-#if Q_BYTE_ORDER == Q_BIG_ENDIAN
-      uint idx = qCountLeadingZeroBits( data );
-#else
-      uint idx = qCountTrailingZeroBits( data );
-#endif
-      ptr += idx / 8;
-      return false;
-    }
-    ptr += 4;
-  }
-  while ( ptr != end )
-  {
-    if ( quint8( *ptr ) & 0x80 )
-      return false;
-    ++ptr;
-  }
-  return true;
-}
-
-QString fromEncodedComponent_helper( const QByteArray &ba )
-{
-  if ( ba.isNull() )
-    return QString();
-  // scan ba for anything above or equal to 0x80
-  // control points below 0x20 are fine in QString
-  const char *in = ba.constData();
-  const char *const end = ba.constEnd();
-  if ( qt_is_ascii( in, end ) )
-  {
-    // no non-ASCII found, we're safe to convert to QString
-    return QString::fromLatin1( ba, ba.size() );
-  }
-  // we found something that we need to encode
-  QByteArray intermediate = ba;
-  intermediate.resize( ba.size() * 3 - ( in - ba.constData() ) );
-  uchar *out = reinterpret_cast<uchar *>( intermediate.data() + ( in - ba.constData() ) );
-  for ( ; in < end; ++in )
-  {
-    if ( *in & 0x80 )
-    {
-      // encode
-      *out++ = '%';
-      *out++ = encodeNibble( uchar( *in ) >> 4 );
-      *out++ = encodeNibble( uchar( *in ) & 0xf );
-    }
-    else
-    {
-      // keep
-      *out++ = uchar( *in );
-    }
-  }
-  // now it's safe to call fromLatin1
-  return QString::fromLatin1( intermediate, out - reinterpret_cast<uchar *>( intermediate.data() ) );
 }
 
 QUrl QgsVirtualLayerDefinition::toUrl() const

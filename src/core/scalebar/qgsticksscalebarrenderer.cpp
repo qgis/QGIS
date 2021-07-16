@@ -18,6 +18,7 @@
 #include "qgsscalebarsettings.h"
 #include "qgslayoututils.h"
 #include "qgssymbol.h"
+#include "qgslinesymbol.h"
 #include "qgstextrenderer.h"
 #include <QPainter>
 

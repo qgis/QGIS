@@ -59,7 +59,7 @@ Qgis::DataType QgsRasterProjector::dataType( int bandNo ) const
 {
   if ( mInput ) return mInput->dataType( bandNo );
 
-  return Qgis::UnknownDataType;
+  return Qgis::DataType::UnknownDataType;
 }
 
 
