@@ -2,8 +2,8 @@
 
 set -e
 
-mkdir /usr/src/qgis/build
-cd /usr/src/qgis/build || exit 1
+mkdir -p /usr/src/qgis/build-qt6
+cd /usr/src/qgis/build-qt6 || exit 1
 
 CLANG_WARNINGS="-Wrange-loop-construct"
 
@@ -20,6 +20,7 @@ cmake -GNinja \
  -DWITH_QTWEBKIT=OFF \
  -DWITH_QT5SERIALPORT=OFF \
  -DSUPPRESS_QT_WARNINGS=ON \
+ -DENABLE_TESTS=OFF \
  -DENABLE_MODELTEST=ON \
  -DENABLE_PGTEST=OFF \
  -DENABLE_SAGA_TESTS=OFF \
@@ -33,6 +34,7 @@ cmake -GNinja \
  -DWITH_BINDINGS=OFF \
  -DWITH_SERVER=OFF \
  -DWITH_ORACLE=OFF \
+ -DWITH_OAUTH2_PLUGIN=OFF \
  -DDISABLE_DEPRECATED=ON \
  -DCXX_EXTRA_FLAGS="${CLANG_WARNINGS}" \
  -DCMAKE_C_COMPILER=/bin/clang \
