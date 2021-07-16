@@ -667,6 +667,12 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
@@ -681,12 +687,6 @@
    <class>QgsColorRampShaderWidget</class>
    <extends>QWidget</extends>
    <header>raster/qgscolorrampshaderwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -706,18 +706,28 @@
   <tabstop>mLineWidthSpinBox</tabstop>
   <tabstop>mColoringMethodComboBox</tabstop>
   <tabstop>mColorWidget</tabstop>
+  <tabstop>mColorRampShaderMinimumSpinBox</tabstop>
+  <tabstop>mColorRampShaderMaximumSpinBox</tabstop>
   <tabstop>mColorRampShaderLoadButton</tabstop>
+  <tabstop>mMinMagSpinBox</tabstop>
+  <tabstop>mMaxMagSpinBox</tabstop>
   <tabstop>mDisplayVectorsOnGridGroupBox</tabstop>
   <tabstop>mXSpacingSpinBox</tabstop>
   <tabstop>mYSpacingSpinBox</tabstop>
+  <tabstop>mHeadWidthSpinBox</tabstop>
+  <tabstop>mHeadLengthSpinBox</tabstop>
   <tabstop>mShaftLengthComboBox</tabstop>
+  <tabstop>mMinimumShaftSpinBox</tabstop>
+  <tabstop>mMaximumShaftSpinBox</tabstop>
   <tabstop>mStreamlinesSeedingMethodComboBox</tabstop>
   <tabstop>mStreamlinesDensitySpinBox</tabstop>
   <tabstop>mTracesParticlesCountSpinBox</tabstop>
   <tabstop>mTracesMaxLengthSpinBox</tabstop>
-  <tabstop>mTracesTailLengthMapUnitWidget</tabstop>
+  <tabstop>mScaleShaftByFactorOfSpinBox</tabstop>
+  <tabstop>mShaftLengthSpinBox</tabstop>
  </tabstops>
  <resources>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>
