@@ -958,7 +958,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
                             QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
 
     /**
-     * Write the style for the layer into the docment provided.
+     * Write the style for the layer into the document provided.
      *  \param node the node that will have the style element added to it.
      *  \param doc the document that will have the QDomNode added.
      *  \param errorMessage reference to string that will be updated with any error messages

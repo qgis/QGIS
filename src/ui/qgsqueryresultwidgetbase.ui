@@ -229,6 +229,21 @@
    <header>qgscheckablecombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mClearButton</tabstop>
+  <tabstop>mExecuteButton</tabstop>
+  <tabstop>mStopButton</tabstop>
+  <tabstop>mQueryResultsTableView</tabstop>
+  <tabstop>mPkColumnsCheckBox</tabstop>
+  <tabstop>mPkColumnsComboBox</tabstop>
+  <tabstop>mGeometryColumnCheckBox</tabstop>
+  <tabstop>mGeometryColumnComboBox</tabstop>
+  <tabstop>mFilterLineEdit</tabstop>
+  <tabstop>mFilterToolButton</tabstop>
+  <tabstop>mAvoidSelectingAsFeatureIdCheckBox</tabstop>
+  <tabstop>mLayerNameLineEdit</tabstop>
+  <tabstop>mLoadLayerPushButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

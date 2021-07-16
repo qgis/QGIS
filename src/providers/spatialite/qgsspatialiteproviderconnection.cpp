@@ -48,9 +48,10 @@ QgsSpatiaLiteProviderConnection::QgsSpatiaLiteProviderConnection( const QString 
   QgsAbstractDatabaseProviderConnection( uri, configuration )
 {
   mProviderKey = QStringLiteral( "spatialite" );
-  const QRegularExpression removePartsRe { R"raw(\s*sql=\s*|\s*table=""\s*|\([^\)]+\))raw" };
-  // Cleanup the URI in case it contains other information other than the file path
-  setUri( QString( uri ).replace( removePartsRe, QString() ) );
+  QgsDataSourceUri dsUri { uri };
+  QgsDataSourceUri dsUriCleaned;
+  dsUriCleaned.setDatabase( dsUri.database() );
+  setUri( dsUriCleaned.uri() );
   setDefaultCapabilities();
 }
 
@@ -111,6 +112,20 @@ void QgsSpatiaLiteProviderConnection::createVectorTable( const QString &schema,
   {
     throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
   }
+}
+
+
+QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsSpatiaLiteProviderConnection::sqlOptions( const QString &layerSource )
+{
+  SqlVectorLayerOptions options;
+  const QgsDataSourceUri tUri( layerSource );
+  options.primaryKeyColumns = tUri.keyColumn().split( ',' );
+  options.disableSelectAtId = tUri.selectAtIdDisabled();
+  options.geometryColumn = tUri.geometryColumn();
+  options.filter = tUri.sql();
+  const QString trimmedTable { tUri.table().trimmed() };
+  options.sql = trimmedTable.startsWith( '(' ) ? trimmedTable.mid( 1 ).chopped( 1 ) : QStringLiteral( "SELECT * FROM %1" ).arg( tUri.quotedTablename() );
+  return options;
 }
 
 QgsVectorLayer *QgsSpatiaLiteProviderConnection::createSqlVectorLayer( const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options ) const

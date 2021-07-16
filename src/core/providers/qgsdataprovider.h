@@ -236,7 +236,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     virtual bool isValid() const = 0;
 
-
     /**
      * Update the extents of the layer. Not implemented by default.
      */
