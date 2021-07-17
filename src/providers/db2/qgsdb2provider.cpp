@@ -1138,8 +1138,8 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList &flist, Flags flags )
       query.bindValue( bindIdx,  bytea, QSql::In | QSql::Binary );
     }
 
-// Show bound values
 #if 0
+    // Show bound values
     QList<QVariant> list = query.boundValues().values();
 
     for ( int i = 0; i < list.size(); ++i )
@@ -1576,13 +1576,15 @@ Qgis::VectorExportResult QgsDb2Provider::createEmptyLayer( const QString &uri,
         }
       }
 
+#if 0
+      // Show bound values
       QList<QVariant> list = query.boundValues().values();
       for ( int i = 0; i < list.size(); ++i )
       {
         QgsDebugMsg( QStringLiteral( "i: %1; value: %2; type: %3" )
                      .arg( i ).arg( list.at( i ).toString().toLatin1().data(), list.at( i ).typeName() ) );
       }
-
+#endif
     }
     // clear any resources hold by the query
     q.clear();
