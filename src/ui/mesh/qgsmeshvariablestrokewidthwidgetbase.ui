@@ -163,6 +163,8 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mValueMinimumSpinBox</tabstop>
+  <tabstop>mValueMaximumSpinBox</tabstop>
   <tabstop>mDefaultMinMaxButton</tabstop>
   <tabstop>mIgnoreOutOfRangecheckBox</tabstop>
   <tabstop>mUseAbsoluteValueCheckBox</tabstop>

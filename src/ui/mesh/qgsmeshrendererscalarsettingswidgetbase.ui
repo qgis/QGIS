@@ -247,6 +247,9 @@
   <tabstop>mScalarEdgeStrokeWidthVariableRadioButton</tabstop>
   <tabstop>mScalarEdgeStrokeWidthSpinBox</tabstop>
   <tabstop>mScalarEdgeStrokeWidthVariablePushButton</tabstop>
+  <tabstop>mScalarEdgeStrokeWidthUnitSelectionWidget</tabstop>
+  <tabstop>mScalarMinSpinBox</tabstop>
+  <tabstop>mScalarMaxSpinBox</tabstop>
   <tabstop>mScalarRecalculateMinMaxButton</tabstop>
   <tabstop>mScalarInterpolationTypeComboBox</tabstop>
  </tabstops>
