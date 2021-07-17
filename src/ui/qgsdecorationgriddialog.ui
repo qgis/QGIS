@@ -397,6 +397,10 @@
   <tabstop>mGridTypeComboBox</tabstop>
   <tabstop>mLineSymbolButton</tabstop>
   <tabstop>mMarkerSymbolButton</tabstop>
+  <tabstop>mIntervalXEdit</tabstop>
+  <tabstop>mIntervalYEdit</tabstop>
+  <tabstop>mOffsetXEdit</tabstop>
+  <tabstop>mOffsetYEdit</tabstop>
   <tabstop>mPbtnUpdateFromExtents</tabstop>
   <tabstop>mPbtnUpdateFromLayer</tabstop>
   <tabstop>mDrawAnnotationCheckBox</tabstop>
