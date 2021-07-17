@@ -158,8 +158,12 @@
      </item>
      <item>
       <widget class="QPushButton" name="mScalarRecalculateMinMaxButton">
-       <property name="text">
+       <property name="toolTip">
         <string>Load</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
        </property>
       </widget>
      </item>
@@ -246,6 +250,8 @@
   <tabstop>mScalarRecalculateMinMaxButton</tabstop>
   <tabstop>mScalarInterpolationTypeComboBox</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>
