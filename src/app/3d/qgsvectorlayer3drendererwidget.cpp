@@ -25,6 +25,7 @@
 #include "qgsapplication.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgsabstractmaterialsettings.h"
+#include "qgsvscrollarea.h"
 
 #include <QBoxLayout>
 #include <QCheckBox>
@@ -40,9 +41,18 @@ QgsSingleSymbol3DRendererWidget::QgsSingleSymbol3DRendererWidget( QgsVectorLayer
 {
   widgetSymbol = new QgsSymbol3DWidget( mLayer, this );
 
+  QgsVScrollArea *scrollArea = new QgsVScrollArea( this );
+  scrollArea->setFrameShape( QFrame::NoFrame );
+  scrollArea->setFrameShadow( QFrame::Plain );
+  scrollArea->setWidgetResizable( true );
+  QVBoxLayout *scrollLayout = new QVBoxLayout( this );
+  scrollLayout->setContentsMargins( 0, 0, 0, 0 );
+  scrollLayout->addWidget( scrollArea );
+
   QVBoxLayout *layout = new QVBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
-  layout->addWidget( widgetSymbol );
+  widgetSymbol->setLayout( layout );
+  scrollArea->setWidget( widgetSymbol );
 
   connect( widgetSymbol, &QgsSymbol3DWidget::widgetChanged, this, &QgsSingleSymbol3DRendererWidget::widgetChanged );
 }
