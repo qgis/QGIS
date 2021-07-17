@@ -33,6 +33,7 @@
 QgsDelimitedTextFile::QgsDelimitedTextFile( const QString &url )
   : mFileName( QString() )
   , mEncoding( QStringLiteral( "UTF-8" ) )
+  , mFirstEOLChar( QChar( 0 ) )
   , mDefaultFieldName( QStringLiteral( "field_%1" ) )
   , mDefaultFieldRegexp( QStringLiteral( "^(?:field_)(\\d+)$" ) )
 {
@@ -778,7 +779,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QString &buffer,
   QString field;        // String in which to accumulate next field
   bool escaped = false; // Next char is escaped
   bool quoted = false;  // In quotes
-  QChar quoteChar = 0;  // Actual quote character used to open quotes
+  QChar quoteChar( 0 );  // Actual quote character used to open quotes
   bool started = false; // Non-blank chars in field or quotes started
   bool ended = false;   // Quoted field ended
   int cp = 0;          // Pointer to the next character in the buffer
