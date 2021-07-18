@@ -51,7 +51,7 @@ QgsNewMeshLayerDialog::QgsNewMeshLayerDialog( QWidget *parent, Qt::WindowFlags f
       QString suffix = driverMeta.writeMeshFrameOnFileSuffix();
       mFormatComboBox->addItem( description, driverName );
       mDriverSuffixes.insert( driverMeta.name(), suffix );
-      mDriverFileFilters.insert( driverMeta.name(), tr( "%1 files" ).arg( description ) + QStringLiteral( " (*." ) + suffix + ')' );
+      mDriverFileFilters.insert( driverMeta.name(), tr( "%1" ).arg( description ) + QStringLiteral( " (*." ) + suffix + ')' );
     }
 
   QStringList filters = mDriverFileFilters.values();
