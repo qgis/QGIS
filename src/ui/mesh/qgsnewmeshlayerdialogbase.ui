@@ -85,7 +85,7 @@
       <item row="1" column="0">
        <widget class="QRadioButton" name="mMeshProjectRadioButton">
         <property name="text">
-         <string>From a mesh of the current project</string>
+         <string>Mesh of the current project</string>
         </property>
        </widget>
       </item>
@@ -142,6 +142,15 @@
    <header location="global">qgsmaplayercombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mLayerNameLineEdit</tabstop>
+  <tabstop>mFormatComboBox</tabstop>
+  <tabstop>mEmptyMeshRadioButton</tabstop>
+  <tabstop>mMeshProjectRadioButton</tabstop>
+  <tabstop>mMeshProjectComboBox</tabstop>
+  <tabstop>mMeshFileRadioButton</tabstop>
+  <tabstop>mInformationTextBrowser</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
