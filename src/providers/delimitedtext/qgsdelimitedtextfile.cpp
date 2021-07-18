@@ -22,7 +22,6 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QDataStream>
-#include <QTextStream>
 #include <QFileSystemWatcher>
 #include <QTextCodec>
 #include <QStringList>
@@ -33,6 +32,7 @@
 QgsDelimitedTextFile::QgsDelimitedTextFile( const QString &url )
   : mFileName( QString() )
   , mEncoding( QStringLiteral( "UTF-8" ) )
+  , mFirstEOLChar( QChar( 0 ) )
   , mDefaultFieldName( QStringLiteral( "field_%1" ) )
   , mDefaultFieldRegexp( QStringLiteral( "^(?:field_)(\\d+)$" ) )
 {
@@ -54,10 +54,9 @@ QgsDelimitedTextFile::~QgsDelimitedTextFile()
 
 void QgsDelimitedTextFile::close()
 {
-  if ( mStream )
+  if ( mCodec )
   {
-    delete mStream;
-    mStream = nullptr;
+    mCodec = nullptr;
   }
   if ( mFile )
   {
@@ -90,12 +89,7 @@ bool QgsDelimitedTextFile::open()
     }
     if ( mFile )
     {
-      mStream = new QTextStream( mFile );
-      if ( ! mEncoding.isEmpty() )
-      {
-        QTextCodec *codec = QTextCodec::codecForName( mEncoding.toLatin1() );
-        mStream->setCodec( codec );
-      }
+      mCodec = QTextCodec::codecForName( !mEncoding.isEmpty() ? mEncoding.toLatin1() : "UTF-8" );
       if ( mUseWatcher )
       {
         mWatcher = new QFileSystemWatcher();
@@ -544,7 +538,7 @@ QgsDelimitedTextFile::Status  QgsDelimitedTextFile::reset()
   if ( ! isValid() || ! open() ) return InvalidDefinition;
 
   // Reset the file pointer
-  mStream->seek( 0 );
+  mFile->seek( 0 );
   mLineNumber = 0;
   mRecordNumber = -1;
   mRecordLineNumber = -1;
@@ -571,7 +565,7 @@ QgsDelimitedTextFile::Status  QgsDelimitedTextFile::reset()
 
 QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextLine( QString &buffer, bool skipBlank )
 {
-  if ( ! mStream )
+  if ( ! mFile )
   {
     Status status = reset();
     if ( status != RecordOk ) return status;
@@ -579,13 +573,13 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextLine( QString &buffer, bo
   if ( mLineNumber == 0 )
   {
     mPosInBuffer = 0;
-    mBuffer = mStream->read( mMaxBufferSize );
+    mBuffer = mCodec->toUnicode( mFile->read( mMaxBufferSize ) );
   }
 
   while ( !mBuffer.isEmpty() )
   {
     // Identify position of \r , \n or \r\n
-    // We should rather use mStream->readLine(), but it fails to detect \r
+    // We should rather use mFile->readLine(), but it fails to detect \r
     // line endings.
     int eolPos = -1;
     {
@@ -628,7 +622,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextLine( QString &buffer, bo
         {
           // If we are just at the end of the buffer, read an extra character
           // from the stream
-          QString newChar = mStream->read( 1 );
+          QString newChar = mCodec->toUnicode( mFile->read( 1 ) );
           mBuffer += newChar;
           if ( newChar == '\n' )
           {
@@ -659,7 +653,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextLine( QString &buffer, bo
         // Read more bytes from file to have up to mMaxBufferSize characters
         // in our buffer (after having subset it from mPosInBuffer)
         mBuffer = mBuffer.mid( mPosInBuffer );
-        mBuffer += mStream->read( mMaxBufferSize - mBuffer.size() );
+        mBuffer += mCodec->toUnicode( mFile->read( mMaxBufferSize - mBuffer.size() ) );
         mPosInBuffer = 0;
         continue;
       }
@@ -675,11 +669,11 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextLine( QString &buffer, bo
 
 bool QgsDelimitedTextFile::setNextLineNumber( long nextLineNumber )
 {
-  if ( ! mStream ) return false;
+  if ( ! mFile ) return false;
   if ( mLineNumber > nextLineNumber - 1 )
   {
     mRecordNumber = -1;
-    mStream->seek( 0 );
+    mFile->seek( 0 );
     mLineNumber = 0;
   }
   QString buffer;
@@ -778,7 +772,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QString &buffer,
   QString field;        // String in which to accumulate next field
   bool escaped = false; // Next char is escaped
   bool quoted = false;  // In quotes
-  QChar quoteChar = 0;  // Actual quote character used to open quotes
+  QChar quoteChar( 0 );  // Actual quote character used to open quotes
   bool started = false; // Non-blank chars in field or quotes started
   bool ended = false;   // Quoted field ended
   int cp = 0;          // Pointer to the next character in the buffer
