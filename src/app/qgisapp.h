@@ -1279,6 +1279,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsAttributeEditorContext createAttributeEditorContext();
 
   protected:
+    void showEvent( QShowEvent *event ) override;
 
     //! Handle state changes (WindowTitleChange)
     void changeEvent( QEvent *event ) override;

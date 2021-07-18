@@ -5142,11 +5142,15 @@ void QgisApp::restoreWindowState()
 {
   // restore the toolbar and dock widgets positions using Qt4 settings API
   QgsSettings settings;
-
+#if 0
+  // because of Qt regression: https://bugreports.qt.io/browse/QTBUG-89034
+  // we have to wait till dialog is first shown to try to restore dock geometry or it's not correctly restored
+  // so this code was moved to showEvent for now...
   if ( !restoreState( settings.value( QStringLiteral( "UI/state" ), QByteArray::fromRawData( reinterpret_cast< const char * >( defaultUIstate ), sizeof defaultUIstate ) ).toByteArray() ) )
   {
     QgsDebugMsg( QStringLiteral( "restore of UI state failed" ) );
   }
+#endif
 
   if ( settings.value( QStringLiteral( "UI/hidebrowser" ), false ).toBool() )
   {
@@ -17348,4 +17352,20 @@ QgsAttributeEditorContext QgisApp::createAttributeEditorContext()
   context.setCadDockWidget( cadDockWidget() );
   context.setMainMessageBar( messageBar() );
   return context;
+}
+
+void QgisApp::showEvent( QShowEvent *event )
+{
+  QMainWindow::showEvent( event );
+  // because of Qt regression: https://bugreports.qt.io/browse/QTBUG-89034
+  // we have to wait till dialog is first shown to try to restore dock geometry or it's not correctly restored
+  static std::once_flag firstShow;
+  std::call_once( firstShow, [this]
+  {
+    QgsSettings settings;
+    if ( !restoreState( settings.value( QStringLiteral( "UI/state" ), QByteArray::fromRawData( reinterpret_cast< const char * >( defaultUIstate ), sizeof defaultUIstate ) ).toByteArray() ) )
+    {
+      QgsDebugMsg( QStringLiteral( "restore of UI state failed" ) );
+    }
+  } );
 }
