@@ -24,6 +24,7 @@
 #include "qgsproject.h"
 #include "qgsmeshlayer.h"
 #include "qgsapplication.h"
+#include "qgsgui.h"
 
 
 QgsNewMeshLayerDialog::QgsNewMeshLayerDialog( QWidget *parent, Qt::WindowFlags fl ) : QDialog( parent, fl )
@@ -38,6 +39,7 @@ QgsNewMeshLayerDialog::QgsNewMeshLayerDialog( QWidget *parent, Qt::WindowFlags f
   }
 
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
   const QList<QgsMeshDriverMetadata> driverList = meta->meshDriversMetadata();
 
   for ( const QgsMeshDriverMetadata &driverMeta : driverList )
