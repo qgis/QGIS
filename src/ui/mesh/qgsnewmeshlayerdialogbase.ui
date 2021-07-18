@@ -85,7 +85,7 @@
       <item row="1" column="0">
        <widget class="QRadioButton" name="mMeshProjectRadioButton">
         <property name="text">
-         <string>Mesh of the current project</string>
+         <string>Mesh from the current project</string>
         </property>
        </widget>
       </item>
