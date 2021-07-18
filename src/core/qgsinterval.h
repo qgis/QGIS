@@ -380,7 +380,7 @@ QgsInterval CORE_EXPORT operator-( QTime time1, QTime time2 );
 QDateTime CORE_EXPORT operator+( const QDateTime &start, const QgsInterval &interval );
 
 //! Debug string representation of interval
-QDebug operator<<( QDebug dbg, const QgsInterval &interval );
+QDebug CORE_EXPORT operator<<( QDebug dbg, const QgsInterval &interval );
 \
 #endif
 
