@@ -130,12 +130,22 @@ void QgsQueryResultWidget::setSqlVectorLayerOptions( const QgsAbstractDatabasePr
   mLayerNameLineEdit->setText( options.layerName );
 }
 
-void QgsQueryResultWidget::setUpdateSqlLayerMode( bool updateMode )
+void QgsQueryResultWidget::setWidgetMode( QueryWidgetMode widgetMode )
 {
-  mUpdateSqlLayerMode = updateMode;
-  mLoadAsNewLayerGroupBox->setTitle( updateMode ? tr( "Update query layer" ) : tr( "Load as new layer" ) );
-  mLoadLayerPushButton->setText( updateMode ? tr( "Update layer" ) : tr( "Load layer" ) );
-  mLoadAsNewLayerGroupBox->setCollapsed( false );
+  mQueryWidgetMode = widgetMode;
+  switch ( widgetMode )
+  {
+    case QueryWidgetMode::SqlQueryMode:
+      mLoadAsNewLayerGroupBox->setTitle( tr( "Load as New Layer" ) );
+      mLoadLayerPushButton->setText( tr( "Load Layer" ) );
+      mLoadAsNewLayerGroupBox->setCollapsed( true );
+      break;
+    case QueryWidgetMode::QueryLayerUpdateMode:
+      mLoadAsNewLayerGroupBox->setTitle( tr( "Update Query Layer" ) );
+      mLoadLayerPushButton->setText( tr( "Update Layer" ) );
+      mLoadAsNewLayerGroupBox->setCollapsed( false );
+      break;
+  }
 }
 
 void QgsQueryResultWidget::executeQuery()

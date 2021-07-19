@@ -45,7 +45,7 @@ class CORE_EXPORT QgsMapLayerUtils
     static QgsRectangle combinedExtent( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext );
 
     /**
-     * Creates and returns the (possibly NULL) database connection for a \a layer.
+     * Creates and returns the (possibly NULLPTR) database connection for a \a layer.
      * Ownership is transferred to the caller.
      * \since QGIS 3.22
      */
