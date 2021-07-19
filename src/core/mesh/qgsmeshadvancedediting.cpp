@@ -15,6 +15,7 @@
  ***************************************************************************/
 #include "qgsmeshadvancedediting.h"
 
+#include "qgis.h"
 #include "qgsmesheditor.h"
 #include "poly2tri.h"
 
@@ -63,7 +64,7 @@ QgsMeshEditRefineFaces::QgsMeshEditRefineFaces() = default;
 
 QgsTopologicalMesh::Changes QgsMeshEditRefineFaces::apply( QgsMeshEditor *meshEditor )
 {
-  QSet<int> facesToRefine = mInputFaces.toSet();
+  QSet<int> facesToRefine = qgis::listToSet( mInputFaces );
   QHash<int, FaceRefinement> facesRefinement;
   QHash<int, BorderFace> borderFaces;
 

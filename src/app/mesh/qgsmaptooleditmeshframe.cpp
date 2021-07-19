@@ -15,6 +15,7 @@
  ***************************************************************************/
 #include "qgsmaptooleditmeshframe.h"
 
+#include "qgis.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
 
@@ -1272,7 +1273,7 @@ void QgsMapToolEditMeshFrame::selectInGeometry( const QgsGeometry &geometry, Qt:
       std::unique_ptr<QgsPolygon> faceGeom( new QgsPolygon( new QgsLineString( nativeFaceGeometry( faceIndex ) ) ) );
       if ( engine->intersects( faceGeom.get() ) )
       {
-        QSet<int> faceToAdd = face.toList().toSet();
+        QSet<int> faceToAdd = qgis::listToSet( face.toList() );
         selectedVertices.unite( faceToAdd );
       }
     }
