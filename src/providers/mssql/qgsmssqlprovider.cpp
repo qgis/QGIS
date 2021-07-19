@@ -2659,7 +2659,6 @@ int QgsMssqlProviderMetadata::listStyles( const QString &uri,
     QgsDebugMsg( query.lastError().text() );
     return -1;
   }
-  QgsDebugMsgLevel( query.isActive() && query.size(), 2 );
   while ( query.next() )
   {
     ids.append( query.value( 0 ).toString() );
