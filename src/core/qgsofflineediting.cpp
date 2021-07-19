@@ -1128,7 +1128,7 @@ void QgsOfflineEditing::applyAttributeValueChanges( QgsVectorLayer *offlineLayer
   for ( int i = 0; i < values.size(); i++ )
   {
     QgsFeatureId fid = remoteFid( db, layerId, values.at( i ).fid );
-    QgsDebugMsgLevel( QStringLiteral( "Offline changeAttributeValue %1 = %2" ).arg( QString( attrLookup[ values.at( i ).attr ] ), values.at( i ).value ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "Offline changeAttributeValue %1 = %2" ).arg( attrLookup[ values.at( i ).attr ] ).arg( values.at( i ).value ), 4 );
 
     int remoteAttributeIndex = attrLookup[ values.at( i ).attr ];
     QVariant attr = values.at( i ).value;
