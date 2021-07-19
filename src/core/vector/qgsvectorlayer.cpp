@@ -406,19 +406,24 @@ QgsMapLayerRenderer *QgsVectorLayer::createMapRenderer( QgsRenderContext &render
 }
 
 
-void QgsVectorLayer::drawVertexMarker( double x, double y, QPainter &p, QgsVectorLayer::VertexMarkerType type, int m )
+void QgsVectorLayer::drawVertexMarker( double x, double y, QPainter &p, Qgis::VertexMarkerType type, int m )
 {
-  if ( type == QgsVectorLayer::SemiTransparentCircle )
+  switch ( type )
   {
-    p.setPen( QColor( 50, 100, 120, 200 ) );
-    p.setBrush( QColor( 200, 200, 210, 120 ) );
-    p.drawEllipse( x - m, y - m, m * 2 + 1, m * 2 + 1 );
-  }
-  else if ( type == QgsVectorLayer::Cross )
-  {
-    p.setPen( QColor( 255, 0, 0 ) );
-    p.drawLine( x - m, y + m, x + m, y - m );
-    p.drawLine( x - m, y - m, x + m, y + m );
+    case Qgis::VertexMarkerType::SemiTransparentCircle:
+      p.setPen( QColor( 50, 100, 120, 200 ) );
+      p.setBrush( QColor( 200, 200, 210, 120 ) );
+      p.drawEllipse( x - m, y - m, m * 2 + 1, m * 2 + 1 );
+      break;
+
+    case Qgis::VertexMarkerType::Cross:
+      p.setPen( QColor( 255, 0, 0 ) );
+      p.drawLine( x - m, y + m, x + m, y - m );
+      p.drawLine( x - m, y - m, x + m, y + m );
+      break;
+
+    case Qgis::VertexMarkerType::NoMarker:
+      break;
   }
 }
 
@@ -454,7 +459,7 @@ void QgsVectorLayer::deselect( const QgsFeatureIds &featureIds )
   emit selectionChanged( QgsFeatureIds(), featureIds, false );
 }
 
-void QgsVectorLayer::selectByRect( QgsRectangle &rect, QgsVectorLayer::SelectBehavior behavior )
+void QgsVectorLayer::selectByRect( QgsRectangle &rect, Qgis::SelectBehavior behavior )
 {
   // normalize the rectangle
   rect.normalize();
@@ -476,13 +481,13 @@ void QgsVectorLayer::selectByRect( QgsRectangle &rect, QgsVectorLayer::SelectBeh
   selectByIds( newSelection, behavior );
 }
 
-void QgsVectorLayer::selectByExpression( const QString &expression, QgsVectorLayer::SelectBehavior behavior )
+void QgsVectorLayer::selectByExpression( const QString &expression, Qgis::SelectBehavior behavior )
 {
   QgsFeatureIds newSelection;
 
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
 
-  if ( behavior == SetSelection || behavior == AddToSelection )
+  if ( behavior == Qgis::SelectBehavior::SetSelection || behavior == Qgis::SelectBehavior::AddToSelection )
   {
     QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( expression )
                                 .setExpressionContext( context )
@@ -491,7 +496,7 @@ void QgsVectorLayer::selectByExpression( const QString &expression, QgsVectorLay
 
     QgsFeatureIterator features = getFeatures( request );
 
-    if ( behavior == AddToSelection )
+    if ( behavior == Qgis::SelectBehavior::AddToSelection )
     {
       newSelection = selectedFeatureIds();
     }
@@ -502,7 +507,7 @@ void QgsVectorLayer::selectByExpression( const QString &expression, QgsVectorLay
     }
     features.close();
   }
-  else if ( behavior == IntersectSelection || behavior == RemoveFromSelection )
+  else if ( behavior == Qgis::SelectBehavior::IntersectSelection || behavior == Qgis::SelectBehavior::RemoveFromSelection )
   {
     QgsExpression exp( expression );
     exp.prepare( &context );
@@ -522,11 +527,11 @@ void QgsVectorLayer::selectByExpression( const QString &expression, QgsVectorLay
       context.setFeature( feat );
       bool matches = exp.evaluate( &context ).toBool();
 
-      if ( matches && behavior == IntersectSelection )
+      if ( matches && behavior == Qgis::SelectBehavior::IntersectSelection )
       {
         newSelection << feat.id();
       }
-      else if ( !matches && behavior == RemoveFromSelection )
+      else if ( !matches && behavior == Qgis::SelectBehavior::RemoveFromSelection )
       {
         newSelection << feat.id();
       }
@@ -536,25 +541,25 @@ void QgsVectorLayer::selectByExpression( const QString &expression, QgsVectorLay
   selectByIds( newSelection );
 }
 
-void QgsVectorLayer::selectByIds( const QgsFeatureIds &ids, QgsVectorLayer::SelectBehavior behavior )
+void QgsVectorLayer::selectByIds( const QgsFeatureIds &ids, Qgis::SelectBehavior behavior )
 {
   QgsFeatureIds newSelection;
 
   switch ( behavior )
   {
-    case SetSelection:
+    case Qgis::SelectBehavior::SetSelection:
       newSelection = ids;
       break;
 
-    case AddToSelection:
+    case Qgis::SelectBehavior::AddToSelection:
       newSelection = mSelectedFeatureIds + ids;
       break;
 
-    case RemoveFromSelection:
+    case Qgis::SelectBehavior::RemoveFromSelection:
       newSelection = mSelectedFeatureIds - ids;
       break;
 
-    case IntersectSelection:
+    case Qgis::SelectBehavior::IntersectSelection:
       newSelection = mSelectedFeatureIds.intersect( ids );
       break;
   }
@@ -1158,15 +1163,15 @@ bool QgsVectorLayer::moveVertex( const QgsPoint &p, QgsFeatureId atFeatureId, in
   return result;
 }
 
-QgsVectorLayer::EditResult QgsVectorLayer::deleteVertex( QgsFeatureId featureId, int vertex )
+Qgis::VectorEditResult QgsVectorLayer::deleteVertex( QgsFeatureId featureId, int vertex )
 {
   if ( !isValid() || !mEditBuffer || !mDataProvider )
-    return QgsVectorLayer::InvalidLayer;
+    return Qgis::VectorEditResult::InvalidLayer;
 
   QgsVectorLayerEditUtils utils( this );
-  EditResult result = utils.deleteVertex( featureId, vertex );
+  Qgis::VectorEditResult result = utils.deleteVertex( featureId, vertex );
 
-  if ( result == Success )
+  if ( result == Qgis::VectorEditResult::Success )
     updateExtents();
   return result;
 }

@@ -399,12 +399,8 @@ bool QgsGeoPackageCollectionItem::hasDragEnabled() const
 
 QgsMimeDataUtils::UriList QgsGeoPackageCollectionItem::mimeUris() const
 {
-  QgsMimeDataUtils::Uri vectorUri;
-  vectorUri.providerKey = QStringLiteral( "ogr" );
-  vectorUri.uri = path().replace( QLatin1String( "gpkg:/" ), QString() );
-  vectorUri.layerType = QStringLiteral( "vector" );
-  QgsMimeDataUtils::Uri rasterUri { vectorUri };
-  rasterUri.layerType = QStringLiteral( "raster" );
-  rasterUri.providerKey = QStringLiteral( "gdal" );
-  return { vectorUri, rasterUri };
+  QgsMimeDataUtils::Uri collectionUri;
+  collectionUri.uri = path().replace( QLatin1String( "gpkg:/" ), QString() );
+  collectionUri.layerType = QStringLiteral( "collection" );
+  return { collectionUri };
 }

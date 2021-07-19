@@ -849,8 +849,10 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     QgsLabelingEngineSettings mLabelingEngineSettings;
 
     // derived properties
-    bool mValid = false; //!< Whether the actual settings are valid (set in updateDerived())
-    QgsRectangle mVisibleExtent; //!< Extent with some additional white space that matches the output aspect ratio
+    //! Whether the actual settings are valid (set in updateDerived())
+    bool mValid = false;
+    //! Extent with some additional white space that matches the output aspect ratio
+    QgsRectangle mVisibleExtent;
     double mMapUnitsPerPixel = 1;
     double mScale = 1;
 

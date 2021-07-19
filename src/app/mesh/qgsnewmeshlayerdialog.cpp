@@ -24,6 +24,8 @@
 #include "qgsproject.h"
 #include "qgsmeshlayer.h"
 #include "qgsapplication.h"
+#include "qgshelp.h"
+#include "qgsgui.h"
 
 
 QgsNewMeshLayerDialog::QgsNewMeshLayerDialog( QWidget *parent, Qt::WindowFlags fl ) : QDialog( parent, fl )
@@ -38,6 +40,7 @@ QgsNewMeshLayerDialog::QgsNewMeshLayerDialog( QWidget *parent, Qt::WindowFlags f
   }
 
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
   const QList<QgsMeshDriverMetadata> driverList = meta->meshDriversMetadata();
 
   for ( const QgsMeshDriverMetadata &driverMeta : driverList )
@@ -48,7 +51,7 @@ QgsNewMeshLayerDialog::QgsNewMeshLayerDialog( QWidget *parent, Qt::WindowFlags f
       QString suffix = driverMeta.writeMeshFrameOnFileSuffix();
       mFormatComboBox->addItem( description, driverName );
       mDriverSuffixes.insert( driverMeta.name(), suffix );
-      mDriverFileFilters.insert( driverMeta.name(), tr( "%1 files" ).arg( description ) + QStringLiteral( " (*." ) + suffix + ')' );
+      mDriverFileFilters.insert( driverMeta.name(), tr( "%1" ).arg( description ) + QStringLiteral( " (*." ) + suffix + ')' );
     }
 
   QStringList filters = mDriverFileFilters.values();
@@ -64,6 +67,11 @@ QgsNewMeshLayerDialog::QgsNewMeshLayerDialog( QWidget *parent, Qt::WindowFlags f
   connect( mMeshFileRadioButton, &QRadioButton::toggled, this, &QgsNewMeshLayerDialog::updateDialog );
   connect( mMeshFromFileWidget, &QgsFileWidget::fileChanged, this, &QgsNewMeshLayerDialog::updateDialog );
   connect( mMeshProjectComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsNewMeshLayerDialog::updateDialog );
+
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [ = ]
+  {
+    QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-a-new-mesh-layer" ) );
+  } );
 
   updateDialog();
 }

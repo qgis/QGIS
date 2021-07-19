@@ -2012,7 +2012,11 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
 
     QString uri = crsAndFormatAdjustedLayerUri( u.uri, u.supportedCrs, u.supportedFormats );
 
-    if ( u.layerType == QLatin1String( "vector" ) )
+    if ( u.layerType == QLatin1String( "collection" ) )
+    {
+      openLayer( uri, true );
+    }
+    else if ( u.layerType == QLatin1String( "vector" ) )
     {
       addVectorLayer( uri, u.name, u.providerKey );
     }
@@ -16829,11 +16833,11 @@ QgsFeature QgisApp::duplicateFeatures( QgsMapLayer *mlayer, const QgsFeature &fe
     const auto duplicatedFeatureContextLayers = duplicateFeatureContext.layers();
     for ( QgsVectorLayer *chl : duplicatedFeatureContextLayers )
     {
-      childrenInfo += ( tr( "%1 children on layer %2 duplicated" ).arg( QString::number( duplicateFeatureContext.duplicatedFeatures( chl ).size() ), chl->name() ) );
+      childrenInfo += ( tr( "%1 children on layer %2 duplicated" ).arg( QLocale().toString( duplicateFeatureContext.duplicatedFeatures( chl ).size() ), chl->name() ) );
     }
   }
 
-  visibleMessageBar()->pushMessage( tr( "%1 features on layer %2 duplicated\n%3" ).arg( QString::number( featureCount ), layer->name(), childrenInfo ), Qgis::MessageLevel::Success );
+  visibleMessageBar()->pushMessage( tr( "%1 features on layer %2 duplicated\n%3" ).arg( QLocale().toString( featureCount ), layer->name(), childrenInfo ), Qgis::MessageLevel::Success );
 
   return QgsFeature();
 }

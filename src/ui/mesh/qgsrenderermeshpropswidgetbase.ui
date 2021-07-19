@@ -41,7 +41,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <property name="iconSize">
       <size>
@@ -65,6 +65,9 @@
       </attribute>
       <attribute name="title">
        <string/>
+      </attribute>
+      <attribute name="toolTip">
+       <string>Datasets</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_11">
        <property name="leftMargin">
@@ -138,6 +141,9 @@
       <attribute name="title">
        <string/>
       </attribute>
+      <attribute name="toolTip">
+       <string>Contours</string>
+      </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_10">
        <property name="leftMargin">
         <number>0</number>
@@ -201,6 +207,9 @@
       <attribute name="title">
        <string/>
       </attribute>
+      <attribute name="toolTip">
+       <string>Vectors</string>
+      </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="leftMargin">
         <number>0</number>
@@ -258,6 +267,9 @@
       </attribute>
       <attribute name="title">
        <string/>
+      </attribute>
+      <attribute name="toolTip">
+       <string>Rendering</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_12">
        <property name="leftMargin">

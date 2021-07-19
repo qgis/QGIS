@@ -235,12 +235,18 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      */
     struct CORE_EXPORT SqlVectorLayerOptions
     {
-      QString sql; //!< The SQL expression that defines the SQL (query) layer
-      QString filter; //!< Additional subset string (provider-side filter), not all data providers support this feature: check support with SqlLayerDefinitionCapability::Filters capability
-      QString layerName; //!< Optional name for the new layer
-      QStringList primaryKeyColumns; //!< List of primary key column names
-      QString geometryColumn; //!< Name of the geometry column
-      bool disableSelectAtId = false; //!< If SelectAtId is disabled (default is false), not all data providers support this feature: check support with SqlLayerDefinitionCapability::SelectAtId capability
+      //! The SQL expression that defines the SQL (query) layer
+      QString sql;
+      //! Additional subset string (provider-side filter), not all data providers support this feature: check support with SqlLayerDefinitionCapability::Filters capability
+      QString filter;
+      //! Optional name for the new layer
+      QString layerName;
+      //! List of primary key column names
+      QStringList primaryKeyColumns;
+      //! Name of the geometry column
+      QString geometryColumn;
+      //! If SelectAtId is disabled (default is false), not all data providers support this feature: check support with SqlLayerDefinitionCapability::SelectAtId capability
+      bool disableSelectAtId = false;
     };
 
     /**

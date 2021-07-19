@@ -31,6 +31,11 @@ QgsMeshRendererScalarSettingsWidget::QgsMeshRendererScalarSettingsWidget( QWidge
 {
   setupUi( this );
 
+  mScalarMinSpinBox->setClearValueMode( QgsDoubleSpinBox::ClearValueMode::MinimumValue );
+  mScalarMinSpinBox->setSpecialValueText( QString( ) );
+  mScalarMaxSpinBox->setClearValueMode( QgsDoubleSpinBox::ClearValueMode::MinimumValue );
+  mScalarMaxSpinBox->setSpecialValueText( QString( ) );
+
   // add items to data interpolation combo box
   mScalarInterpolationTypeComboBox->addItem( tr( "None" ), QgsMeshRendererScalarSettings::None );
   mScalarInterpolationTypeComboBox->addItem( tr( "Neighbour Average" ), QgsMeshRendererScalarSettings::NeighbourAverage );
@@ -44,10 +49,8 @@ QgsMeshRendererScalarSettingsWidget::QgsMeshRendererScalarSettingsWidget( QWidge
 
   // connect
   connect( mScalarRecalculateMinMaxButton, &QPushButton::clicked, this, &QgsMeshRendererScalarSettingsWidget::recalculateMinMaxButtonClicked );
-  connect( mScalarMinLineEdit, &QLineEdit::textChanged, this, &QgsMeshRendererScalarSettingsWidget::minMaxChanged );
-  connect( mScalarMaxLineEdit, &QLineEdit::textChanged, this, &QgsMeshRendererScalarSettingsWidget::minMaxChanged );
-  connect( mScalarMinLineEdit, &QLineEdit::textEdited, this, &QgsMeshRendererScalarSettingsWidget::minMaxEdited );
-  connect( mScalarMaxLineEdit, &QLineEdit::textEdited, this, &QgsMeshRendererScalarSettingsWidget::minMaxEdited );
+  connect( mScalarMinSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double ) { minMaxChanged(); } );
+  connect( mScalarMaxSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double ) { minMaxChanged(); } );
   connect( mScalarEdgeStrokeWidthVariableRadioButton, &QRadioButton::toggled, this, &QgsMeshRendererScalarSettingsWidget::onEdgeStrokeWidthMethodChanged );
 
   connect( mScalarColorRampShaderWidget, &QgsColorRampShaderWidget::widgetChanged, this, &QgsMeshRendererScalarSettingsWidget::widgetChanged );
@@ -80,7 +83,7 @@ QgsMeshRendererScalarSettings QgsMeshRendererScalarSettingsWidget::settings() co
 {
   QgsMeshRendererScalarSettings settings;
   settings.setColorRampShader( mScalarColorRampShaderWidget->shader() );
-  settings.setClassificationMinimumMaximum( lineEditValue( mScalarMinLineEdit ), lineEditValue( mScalarMaxLineEdit ) );
+  settings.setClassificationMinimumMaximum( spinBoxValue( mScalarMinSpinBox ), spinBoxValue( mScalarMaxSpinBox ) );
   settings.setOpacity( mOpacityWidget->opacity() );
   settings.setDataResamplingMethod( dataIntepolationMethod() );
 
@@ -112,8 +115,8 @@ void QgsMeshRendererScalarSettingsWidget::syncToLayer( )
   const double min = settings.classificationMinimum();
   const double max = settings.classificationMaximum();
 
-  whileBlocking( mScalarMinLineEdit )->setText( QString::number( min ) );
-  whileBlocking( mScalarMaxLineEdit )->setText( QString::number( max ) );
+  whileBlocking( mScalarMinSpinBox )->setValue( min );
+  whileBlocking( mScalarMaxSpinBox )->setValue( max );
   whileBlocking( mScalarColorRampShaderWidget )->setFromShader( shader );
   whileBlocking( mScalarColorRampShaderWidget )->setMinimumMaximum( min, max );
   whileBlocking( mOpacityWidget )->setOpacity( settings.opacity() );
@@ -146,27 +149,20 @@ void QgsMeshRendererScalarSettingsWidget::syncToLayer( )
   onEdgeStrokeWidthMethodChanged();
 }
 
-double QgsMeshRendererScalarSettingsWidget::lineEditValue( const QLineEdit *lineEdit ) const
+double QgsMeshRendererScalarSettingsWidget::spinBoxValue( const QgsDoubleSpinBox *spinBox ) const
 {
-  if ( lineEdit->text().isEmpty() )
+  if ( spinBox->value() == spinBox->clearValue() )
   {
     return std::numeric_limits<double>::quiet_NaN();
   }
 
-  return lineEdit->text().toDouble();
+  return spinBox->value();
 }
 
 void QgsMeshRendererScalarSettingsWidget::minMaxChanged()
 {
-  double min = lineEditValue( mScalarMinLineEdit );
-  double max = lineEditValue( mScalarMaxLineEdit );
-  mScalarColorRampShaderWidget->setMinimumMaximum( min, max );
-}
-
-void QgsMeshRendererScalarSettingsWidget::minMaxEdited()
-{
-  double min = lineEditValue( mScalarMinLineEdit );
-  double max = lineEditValue( mScalarMaxLineEdit );
+  const double min = spinBoxValue( mScalarMinSpinBox );
+  const double max = spinBoxValue( mScalarMaxSpinBox );
   mScalarColorRampShaderWidget->setMinimumMaximumAndClassify( min, max );
 }
 
@@ -175,8 +171,8 @@ void QgsMeshRendererScalarSettingsWidget::recalculateMinMaxButtonClicked()
   const QgsMeshDatasetGroupMetadata metadata = mMeshLayer->datasetGroupMetadata( mActiveDatasetGroup );
   double min = metadata.minimum();
   double max = metadata.maximum();
-  whileBlocking( mScalarMinLineEdit )->setText( QString::number( min ) );
-  whileBlocking( mScalarMaxLineEdit )->setText( QString::number( max ) );
+  whileBlocking( mScalarMinSpinBox )->setValue( min );
+  whileBlocking( mScalarMaxSpinBox )->setValue( max );
   mScalarColorRampShaderWidget->setMinimumMaximumAndClassify( min, max );
 }
 

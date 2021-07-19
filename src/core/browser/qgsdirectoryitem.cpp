@@ -533,11 +533,11 @@ QgsDirectoryParamWidget::QgsDirectoryParamWidget( const QString &path, QWidget *
     QString size;
     if ( fi.size() > 1024 )
     {
-      size = QStringLiteral( "%1 KiB" ).arg( QString::number( fi.size() / 1024.0, 'f', 1 ) );
+      size = QStringLiteral( "%1 KiB" ).arg( QLocale().toString( fi.size() / 1024.0, 'f', 1 ) );
     }
     else if ( fi.size() > 1.048576e6 )
     {
-      size = QStringLiteral( "%1 MiB" ).arg( QString::number( fi.size() / 1.048576e6, 'f', 1 ) );
+      size = QStringLiteral( "%1 MiB" ).arg( QLocale().toString( fi.size() / 1.048576e6, 'f', 1 ) );
     }
     else
     {

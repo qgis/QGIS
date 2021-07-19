@@ -315,6 +315,17 @@ class CORE_EXPORT QgsStringUtils
      */
     static QString qRegExpEscape( const QString &string );
 
+    /**
+     * Truncates a \a string to the specified maximum character length.
+     *
+     * If the \a string exceeds the maximum character length, then the string
+     * will be truncated by removing characters from the middle of the string
+     * and replacing them with a horizontal ellipsis character.
+     *
+     * \since QGIS 3.22
+     */
+    static QString truncateMiddleOfString( const QString &string, int maxLength );
+
 };
 
 #endif //QGSSTRINGUTILS_H

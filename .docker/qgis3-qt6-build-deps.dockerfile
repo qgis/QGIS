@@ -6,6 +6,7 @@ RUN dnf -y install \
     clang \
     clazy \
     exiv2-devel \
+    expat-devel \
     fcgi-devel \
     flex \
     gdal-devel \
@@ -19,6 +20,7 @@ RUN dnf -y install \
     proj-devel \
     protobuf-devel \
     protobuf-lite-devel \
+    python3-devel \
     qt6-qt3d-devel \
     qt6-qtbase-devel \
     qt6-qttools-static \
@@ -30,10 +32,10 @@ RUN dnf -y install \
 
 
 RUN dnf -y install wget openssl-devel && cd /usr/src \
-  && wget https://github.com/KDE/qca/archive/refs/heads/qt6.zip \
-  && unzip qt6.zip \
-  && cd qca-qt6 \
-  && cmake -DCMAKE_INSTALL_PREFIX=/usr -GNinja \
+  && wget https://github.com/KDE/qca/archive/refs/tags/v2.3.3.zip \
+  && unzip v2.3.3.zip \
+  && cd qca-2.3.3 \
+  && cmake -DCMAKE_INSTALL_PREFIX=/usr -DQT6=ON -GNinja \
   && ninja install
 
 RUN dnf -y install libsecret-devel && cd /usr/src \

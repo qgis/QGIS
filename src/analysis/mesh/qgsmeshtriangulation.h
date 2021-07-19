@@ -19,6 +19,7 @@
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmeshdataprovider.h"
+#include "qgsmeshadvancedediting.h"
 
 #include "qgis_analysis.h"
 
@@ -71,6 +72,13 @@ class ANALYSIS_EXPORT QgsMeshTriangulation : public QObject
      * \warning if the feature iterator contains only point geometries, the vertices will be added only without treating them as breaklines
      */
     bool addBreakLines( QgsFeatureIterator &lineFeatureIterator, int valueAttribute, const QgsCoordinateTransform &transformContext, QgsFeedback *feedback = nullptr, long featureCount = 1 );
+
+    /**
+     * Adds a new vertex in the triangulation and returns the index of the new vertex
+     *
+     * \since QGIS 3.22
+     */
+    int addVertex( const QgsPoint &vertex );
 
     //! Returns the triangulated mesh
     QgsMesh triangulatedMesh( QgsFeedback *feedback = nullptr ) const;
@@ -154,6 +162,27 @@ class ANALYSIS_EXPORT QgsMeshZValueDatasetGroup: public QgsMeshDatasetGroup
     QgsMeshZValueDatasetGroup( const QgsMeshZValueDatasetGroup &rhs );
 #endif
     std::unique_ptr<QgsMeshZValueDataset> mDataset;
+};
+
+
+/**
+ * \ingroup analysis
+ * \class QgsMeshEditingDelaunayTriangulation
+ *
+ * \brief Class that can be used with QgsMeshEditor::advancedEdit() to add triangle faces to a mesh created by
+ * a Delaunay triangulation on provided existing vertex.
+ *
+ * \since QGIS 3.22
+ */
+class ANALYSIS_EXPORT QgsMeshEditingDelaunayTriangulation : public QgsMeshAdvancedEditing
+{
+  public:
+
+    //! Constructor
+    QgsMeshEditingDelaunayTriangulation();
+
+  private:
+    QgsTopologicalMesh::Changes apply( QgsMeshEditor *meshEditor ) override;
 };
 
 #endif // QGSMESHTRIANGULATION_H

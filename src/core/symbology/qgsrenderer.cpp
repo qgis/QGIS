@@ -66,7 +66,6 @@ void QgsFeatureRenderer::copyRendererData( QgsFeatureRenderer *destRenderer ) co
 
 QgsFeatureRenderer::QgsFeatureRenderer( const QString &type )
   : mType( type )
-  , mCurrentVertexMarkerType( QgsVectorLayer::Cross )
 {
   mPaintEffect = QgsPaintEffectRegistry::defaultStack();
   mPaintEffect->setEnabled( false );
@@ -374,7 +373,7 @@ QgsLegendSymbolList QgsFeatureRenderer::legendSymbolItems() const
   return QgsLegendSymbolList();
 }
 
-void QgsFeatureRenderer::setVertexMarkerAppearance( int type, double size )
+void QgsFeatureRenderer::setVertexMarkerAppearance( Qgis::VertexMarkerType type, double size )
 {
   mCurrentVertexMarkerType = type;
   mCurrentVertexMarkerSize = size;
@@ -389,7 +388,7 @@ void QgsFeatureRenderer::renderVertexMarker( QPointF pt, QgsRenderContext &conte
 {
   int markerSize = context.convertToPainterUnits( mCurrentVertexMarkerSize, QgsUnitTypes::RenderMillimeters );
   QgsSymbolLayerUtils::drawVertexMarker( pt.x(), pt.y(), *context.painter(),
-                                         static_cast< QgsSymbolLayerUtils::VertexMarkerType >( mCurrentVertexMarkerType ),
+                                         mCurrentVertexMarkerType,
                                          markerSize );
 }
 

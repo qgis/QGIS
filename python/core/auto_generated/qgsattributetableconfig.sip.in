@@ -39,8 +39,11 @@ Constructor for ColumnConfig
 
 
       QgsAttributeTableConfig::Type type;
-      QString name; //!< The name of the attribute if this column represents a field
+
+      QString name;
+
       bool hidden;
+
       int width;
     };
 

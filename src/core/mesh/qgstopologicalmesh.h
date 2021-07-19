@@ -49,6 +49,8 @@ class CORE_EXPORT QgsTopologicalMesh
      *
      * \brief Class that contains independent faces an topological information about this faces
      *
+     * This class supports unique shared vertex between faces
+     *
      * \since QGIS 3.22
      */
     class TopologicalFaces
@@ -58,13 +60,16 @@ class CORE_EXPORT QgsTopologicalMesh
         //! Returns faces
         QVector<QgsMeshFace>  meshFaces() const {return mFaces;}
 
-        //! Clear all data contained in the instance.
+        //! Clears all data contained in the instance.
         void clear();
+
+        //! Returns the face neighborhood of the faces, indexing is local
+        QVector<FaceNeighbors> facesNeighborhood() const;
 
       private:
         QVector<QgsMeshFace> mFaces; // the faces containing the vertices indexes in the mesh
         QVector<FaceNeighbors> mFacesNeighborhood; // neighborhood of the faces, face indexes are local
-        QHash<int, int> mVerticesToFace; // map of vertices to incident face, face indexes are local
+        QMultiHash<int, int> mVerticesToFace; // map of vertices to incident face, face indexes are local
         QList<int> mBoundaries; // list of boundary vertices indexes in the mesh
 
         friend class QgsTopologicalMesh;
@@ -110,7 +115,7 @@ class CORE_EXPORT QgsTopologicalMesh
         //! Returns a list of the native face indexes that have a geometry changed
         QList<int> nativeFacesIndexesGeometryChanged() const;
 
-      private:
+      protected:
         int mAddedFacesFirstIndex = 0;
         QList<int> mFaceIndexesToRemove; // the removed faces indexes in the mesh
         QVector<QgsMeshFace> mFacesToAdd;
@@ -133,6 +138,10 @@ class CORE_EXPORT QgsTopologicalMesh
         QList<QgsPointXY> mOldXYValues;
         QList<int> mNativeFacesIndexesGeometryChanged;
 
+        //! Clears all changes
+        void clearChanges();
+
+      private:
         int addedFaceIndexInMesh( int internalIndex ) const;
         int removedFaceIndexInmesh( int internalIndex ) const;
 
@@ -146,18 +155,21 @@ class CORE_EXPORT QgsTopologicalMesh
     static QgsTopologicalMesh createTopologicalMesh( QgsMesh *mesh, int maxVerticesPerFace, QgsMeshEditingError &error );
 
     //! Creates new topological faces that are not yet included in the mesh
-    TopologicalFaces  createNewTopologicalFaces( const QVector<QgsMeshFace> &faces, QgsMeshEditingError &error );
+    static TopologicalFaces  createNewTopologicalFaces( const QVector<QgsMeshFace> &faces, bool uniqueSharedVertexAllowed, QgsMeshEditingError &error );
 
     //----------- access element methods
 
     //! Returns the indexes of neighbor faces of the face with index \a faceIndex
-    QList<int> neighborsOfFace( int faceIndex ) const;
+    QVector<int> neighborsOfFace( int faceIndex ) const;
 
     //! Returns the indexes of faces that are around the vertex with index \a vertexIndex
     QList<int> facesAroundVertex( int vertexIndex ) const;
 
     //! Returns a pointer to the wrapped mesh
     QgsMesh *mesh() const;
+
+    //! Returns the index of the first face linked, returns -1 if it is a free vertex or out of range index
+    int firstFaceLinked( int vertexIndex ) const;
 
     //! Returns whether the vertex is on a boundary
     bool isVertexOnBoundary( int vertexIndex ) const;
@@ -280,16 +292,16 @@ class CORE_EXPORT QgsTopologicalMesh
     void reindex();
 
     //! Checks the consistency of the topological mesh and return FALSE if there is a consistency issue
-    bool checkConsistency() const;
+    QgsMeshEditingError checkConsistency() const;
 
   private:
 
     //! Creates topological faces from mesh faces
-    TopologicalFaces  createTopologicalFaces(
+    static TopologicalFaces  createTopologicalFaces(
       const QVector<QgsMeshFace> &faces,
+      QVector<int> *globalVertexToFace,
       QgsMeshEditingError &error,
-      bool allowUniqueSharedVertex,
-      bool writeInVertices );
+      bool allowUniqueSharedVertex );
 
 
     //! Returns whether the two faces can be joined sharing the index \a commonIndex
@@ -343,10 +355,18 @@ class CORE_EXPORT QgsMeshVertexCirculator
     //! Constructor with \a topologicalMesh and \a vertexIndex
     QgsMeshVertexCirculator( const QgsTopologicalMesh &topologicalMesh, int vertexIndex );
 
-    //! Constructor with \a topologicFaces, \a vertexIndex and the index \a faceIndex of the face containing the vertex
+    /**
+     * Constructor with \a topologicFaces, \a vertexIndex and the index \a faceIndex of the face containing the vertex
+     * \note This circulator only concerns faces that are in the same bloc of the face \a faceIndex. Other faces that could be share only
+     * the vertex \a vertexIndex can't be accessible with this circulator
+     */
     QgsMeshVertexCirculator( const QgsTopologicalMesh::TopologicalFaces &topologicalFaces, int faceIndex, int vertexIndex );
 
-    //! Constructor with \a topologicFaces, \a vertexIndex and the index \a faceIndex of the face containing the vertex
+    /**
+     * Constructor with \a topologicFaces, \a vertexIndex
+     * \note This circulator only concerns faces that are in the same bloc of the first face linked to the vertex \a vertexIndex.
+     * Other faces that could be share only the vertex \a vertexIndex can't be accessible with this circulator
+     */
     QgsMeshVertexCirculator( const QgsTopologicalMesh::TopologicalFaces &topologicalFaces, int vertexIndex );
 
     //! Turns counter clockwise around the vertex and returns the new current face, -1 if the circulator pass a boundary or circulator is invalid
@@ -375,6 +395,9 @@ class CORE_EXPORT QgsMeshVertexCirculator
 
     //! Returns  whether the vertex circulator is valid
     bool isValid() const;
+
+    //! Returns all the faces indexes around the vertex
+    QList<int> facesAround() const;
 
   private:
     const QVector<QgsMeshFace> mFaces;

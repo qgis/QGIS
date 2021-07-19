@@ -3554,7 +3554,7 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
      <normaloff>:/images/themes/default/mActionNewMeshLayer.svg</normaloff>:/images/themes/default/mActionNewMeshLayer.svg</iconset>
    </property>
    <property name="text">
-    <string>New Mesh Layer</string>
+    <string>New Mesh Layer…</string>
    </property>
    <property name="toolTip">
     <string>New Mesh Layer</string>

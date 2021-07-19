@@ -303,6 +303,7 @@ The development version
       FlatFace,
       UniqueSharedVertex,
       InvalidVertex,
+      ManifoldFace,
     };
 
     enum class FilePathType
@@ -317,6 +318,30 @@ The development version
       AskExcludingRasterBands,
       NeverAskSkip,
       NeverAskLoadAll,
+    };
+
+    enum class SelectBehavior
+      {
+      SetSelection,
+      AddToSelection,
+      IntersectSelection,
+      RemoveFromSelection,
+    };
+
+    enum class VectorEditResult
+      {
+      Success,
+      EmptyGeometry,
+      EditFailed,
+      FetchFeatureFailed,
+      InvalidLayer,
+    };
+
+    enum class VertexMarkerType
+      {
+      SemiTransparentCircle,
+      Cross,
+      NoMarker,
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;

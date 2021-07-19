@@ -137,7 +137,7 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     bool mDrawVertexMarkers;
     bool mVertexMarkerOnlyForSelection;
-    int mVertexMarkerStyle = 0;
+    Qgis::VertexMarkerType mVertexMarkerStyle = Qgis::VertexMarkerType::SemiTransparentCircle;
     double mVertexMarkerSize = 2.0;
 
     QgsWkbTypes::GeometryType mGeometryType;

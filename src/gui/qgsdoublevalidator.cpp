@@ -75,6 +75,12 @@ QgsDoubleValidator::QgsDoubleValidator( int decimal, QObject *parent )
   setRegularExpression( reg );
 }
 
+void QgsDoubleValidator::setMaxDecimals( int maxDecimals )
+{
+  QRegularExpression reg( PERMISSIVE_DOUBLE.arg( locale().decimalPoint() ).arg( QString::number( maxDecimals ) ) );
+  setRegularExpression( reg );
+}
+
 QValidator::State QgsDoubleValidator::validate( QString &input, int & ) const
 {
   if ( input.isEmpty() )

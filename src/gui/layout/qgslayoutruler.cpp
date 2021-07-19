@@ -137,7 +137,7 @@ void QgsLayoutRuler::paintEvent( QPaintEvent *event )
 
         //draw large division and text
         p.drawLine( pixelCoord, 0, pixelCoord, mRulerMinSize );
-        p.drawText( QPointF( pixelCoord + mPixelsBetweenLineAndText, mTextBaseline ), QString::number( markerPos ) );
+        p.drawText( QPointF( pixelCoord + mPixelsBetweenLineAndText, mTextBaseline ), QLocale().toString( markerPos ) );
 
         //draw small divisions
         drawSmallDivisions( &p, markerPos, numSmallDivisions, mmDisplay, endX );
@@ -186,7 +186,7 @@ void QgsLayoutRuler::paintEvent( QPaintEvent *event )
           double pixelCoord = mTransform.map( QPointF( 0, beforePageCoord ) ).y();
           p.drawLine( 0, pixelCoord, mRulerMinSize, pixelCoord );
           //calc size of label
-          QString label = QString::number( beforePageCoord );
+          QString label = QLocale().toString( beforePageCoord );
           int labelSize = mRulerFontMetrics->boundingRect( label ).width();
 
           //draw label only if it fits in before start of next page
@@ -234,7 +234,7 @@ void QgsLayoutRuler::paintEvent( QPaintEvent *event )
           double pixelCoord = mTransform.map( QPointF( 0, totalCoord ) ).y();
           p.drawLine( 0, pixelCoord, mRulerMinSize, pixelCoord );
           //calc size of label
-          QString label = QString::number( pageCoord );
+          QString label = QLocale().toString( pageCoord );
           int labelSize = mRulerFontMetrics->boundingRect( label ).width();
 
           //draw label only if it fits in before start of next page

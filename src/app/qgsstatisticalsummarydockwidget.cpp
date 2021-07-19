@@ -280,7 +280,7 @@ void QgsStatisticalSummaryDockWidget::updateNumericStatistics()
   {
     double val = stats.statistic( stat );
     addRow( row, QgsStatisticalSummary::displayName( stat ),
-            std::isnan( val ) ? QString() : QString::number( val ),
+            std::isnan( val ) ? QString() : QLocale().toString( val ),
             stats.count() != 0 );
     row++;
   }
@@ -288,7 +288,7 @@ void QgsStatisticalSummaryDockWidget::updateNumericStatistics()
   if ( mStatsActions.value( MISSING_VALUES )->isChecked() )
   {
     addRow( row, tr( "Missing (null) values" ),
-            QString::number( missingValues ),
+            QLocale().toString( missingValues ),
             stats.count() != 0 || missingValues != 0 );
     row++;
   }

@@ -681,6 +681,7 @@ set(QGIS_CORE_SRCS
   mesh/qgsmeshcalcutils.cpp
   mesh/qgsmeshvirtualdatasetgroup.cpp
   mesh/qgstopologicalmesh.cpp
+  mesh/qgsmeshadvancedediting.cpp
 
   pointcloud/qgspointcloudattribute.cpp
   pointcloud/qgspointcloudattributebyramprenderer.cpp
@@ -1406,6 +1407,7 @@ set(QGIS_CORE_HDRS
   mesh/qgsmeshcalcutils.h
   mesh/qgsmeshvirtualdatasetgroup.h
   mesh/qgstopologicalmesh.h
+  mesh/qgsmeshadvancedediting.h
 
   pal/costcalculator.h
   pal/feature.h

@@ -44,10 +44,14 @@ class QgsSublayersDialog : QDialog
     struct LayerDefinition
     {
       int layerId;
-      QString layerName;  //!< Name of the layer (not necessarily unique)
+
+      QString layerName;
+
       int count;
-      QString type;       //!< Extra type depending on the use (e.g. geometry type for vector sublayers)
-      QString description;  //!< Description. Added in QGIS 3.10
+
+      QString type;
+
+      QString description;
     };
 
     typedef QList<QgsSublayersDialog::LayerDefinition> LayerDefinitionList;
@@ -120,6 +124,7 @@ Returns column with count or -1
 
 
   protected:
+
 
 
 };

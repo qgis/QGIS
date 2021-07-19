@@ -721,6 +721,18 @@ QString QgsStringUtils::qRegExpEscape( const QString &string )
   return escaped;
 }
 
+QString QgsStringUtils::truncateMiddleOfString( const QString &string, int maxLength )
+{
+  const int charactersToTruncate = string.length() - maxLength;
+  if ( charactersToTruncate <= 0 )
+    return string;
+
+  // note we actually truncate an extra character, as we'll be replacing it with the ... character
+  const int truncateFrom = string.length() / 2 - ( charactersToTruncate + 1 ) / 2;
+
+  return string.leftRef( truncateFrom ) + QString( QChar( 0x2026 ) ) + string.midRef( truncateFrom + charactersToTruncate + 1 );
+}
+
 QgsStringReplacement::QgsStringReplacement( const QString &match, const QString &replacement, bool caseSensitive, bool wholeWordOnly )
   : mMatch( match )
   , mReplacement( replacement )

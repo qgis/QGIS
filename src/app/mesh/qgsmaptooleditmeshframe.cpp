@@ -15,6 +15,7 @@
  ***************************************************************************/
 #include "qgsmaptooleditmeshframe.h"
 
+#include "qgis.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
 
@@ -33,6 +34,7 @@
 #include "qgssnapindicator.h"
 #include "qgsvertexmarker.h"
 #include "qgsguiutils.h"
+#include "qgsmeshtriangulation.h"
 
 
 QgsZValueWidget::QgsZValueWidget( const QString &label, QWidget *parent ): QWidget( parent )
@@ -92,6 +94,8 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   mActionDigitizing->setCheckable( true );
 
   mActionRemoveVerticesFillingHole = new QAction( this );
+  mActionDelaunayTriangulation = new QAction( tr( "Delaunay triangulation with selected vertices" ), this );
+  mActionFacesRefinement = new QAction( tr( "Refine current face" ), this );
   mActionRemoveVerticesWithoutFillingHole = new QAction( this );
   mActionRemoveFaces = new QAction( tr( "Remove current face" ), this );
   mActionSplitFaces = new QAction( tr( "Split current face" ), this );
@@ -105,6 +109,34 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   {
     if ( checked )
       activateWithState( Digitizing );
+  } );
+
+  connect( mActionDelaunayTriangulation, &QAction::triggered, this, [this]
+  {
+    if ( mCurrentEditor && mSelectedVertices.count() > 3 )
+    {
+      QgsMeshEditingDelaunayTriangulation triangulation;
+      triangulation.setInputVertices( mSelectedVertices.keys() );
+      mCurrentEditor->advancedEdit( &triangulation );
+
+      if ( !triangulation.message().isEmpty() )
+        QgisApp::instance()->messageBar()->pushInfo( tr( "Delaunay triangulation" ), triangulation.message() );
+    }
+  } );
+
+  connect( mActionFacesRefinement, &QAction::triggered, this, [this]
+  {
+    QgsMeshEditRefineFaces refinement;
+    if ( mCurrentEditor && mSelectedFaces.count() > 0 )
+    {
+      refinement.setInputFaces( mSelectedFaces.values() );
+      mCurrentEditor->advancedEdit( &refinement );
+    }
+    else if ( mCurrentFaceIndex != -1 )
+    {
+      refinement.setInputFaces( {mCurrentFaceIndex} );
+      mCurrentEditor->advancedEdit( &refinement );
+    }
   } );
 
   setAutoSnapEnabled( true );
@@ -327,13 +359,21 @@ bool QgsMapToolEditMeshFrame::populateContextMenuWithEvent( QMenu *menu, QgsMapM
     {
       QList<QAction * >  newActions;
 
+      QList<QAction * >  lastActions;
+
       if ( !mSelectedVertices.isEmpty() )
       {
+        if ( mSelectedVertices.count() >= 3 )
+          lastActions << mActionDelaunayTriangulation;
+
         newActions << mActionRemoveVerticesFillingHole << mActionRemoveVerticesWithoutFillingHole;
       }
 
       if ( !mSelectedFaces.isEmpty() || mCurrentFaceIndex != -1 )
+      {
         newActions << mActionRemoveFaces;
+        lastActions << mActionFacesRefinement;
+      }
 
       if ( mSplittableFaceCount > 0 ||
            ( mCurrentFaceIndex != -1 && mCurrentEditor->faceCanBeSplit( mCurrentFaceIndex ) ) )
@@ -343,10 +383,19 @@ bool QgsMapToolEditMeshFrame::populateContextMenuWithEvent( QMenu *menu, QgsMapM
       if ( !newActions.isEmpty() )
       {
         if ( existingActions.isEmpty() )
+        {
           menu->addActions( newActions );
+          if ( !lastActions.empty() )
+          {
+            menu->addSeparator();
+            menu->addActions( lastActions );
+          }
+        }
         else
         {
           menu->insertActions( existingActions.first(), newActions );
+          menu->insertSeparator( existingActions.first() );
+          menu->insertActions( existingActions.first(), lastActions );
           menu->insertSeparator( existingActions.first() );
         }
         return true;
@@ -1224,7 +1273,7 @@ void QgsMapToolEditMeshFrame::selectInGeometry( const QgsGeometry &geometry, Qt:
       std::unique_ptr<QgsPolygon> faceGeom( new QgsPolygon( new QgsLineString( nativeFaceGeometry( faceIndex ) ) ) );
       if ( engine->intersects( faceGeom.get() ) )
       {
-        QSet<int> faceToAdd = face.toList().toSet();
+        QSet<int> faceToAdd = qgis::listToSet( face.toList() );
         selectedVertices.unite( faceToAdd );
       }
     }
@@ -1370,11 +1419,20 @@ void QgsMapToolEditMeshFrame::prepareSelection()
   }
 
   if ( mSelectedFaces.count() == 1 )
+  {
     mActionRemoveFaces->setText( tr( "Remove selected face" ) );
+    mActionFacesRefinement->setText( tr( "Refine selected face" ) );
+  }
   else if ( mSelectedFaces.count() > 1 )
+  {
     mActionRemoveFaces->setText( tr( "Remove %1 selected faces" ).arg( mSelectedFaces.count() ) );
+    mActionFacesRefinement->setText( tr( "Refine %1 selected faces" ).arg( mSelectedFaces.count() ) );
+  }
   else
+  {
     mActionRemoveFaces->setText( tr( "Remove current face" ) );
+    mActionFacesRefinement->setText( tr( "Refine current face" ) );
+  }
 
   mSplittableFaceCount = 0;
   for ( const int faceIndex : std::as_const( mSelectedFaces ) )

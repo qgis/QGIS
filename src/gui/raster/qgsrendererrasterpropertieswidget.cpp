@@ -356,20 +356,20 @@ void QgsRendererRasterPropertiesWidget::refreshAfterStyleChanged()
       const QgsContrastEnhancement *redCe = mbcr->redContrastEnhancement();
       if ( redCe )
       {
-        mRendererWidget->setMin( QString::number( redCe->minimumValue() ), 0 );
-        mRendererWidget->setMax( QString::number( redCe->maximumValue() ), 0 );
+        mRendererWidget->setMin( QLocale().toString( redCe->minimumValue() ), 0 );
+        mRendererWidget->setMax( QLocale().toString( redCe->maximumValue() ), 0 );
       }
       const QgsContrastEnhancement *greenCe = mbcr->greenContrastEnhancement();
       if ( greenCe )
       {
-        mRendererWidget->setMin( QString::number( greenCe->minimumValue() ), 1 );
-        mRendererWidget->setMax( QString::number( greenCe->maximumValue() ), 1 );
+        mRendererWidget->setMin( QLocale().toString( greenCe->minimumValue() ), 1 );
+        mRendererWidget->setMax( QLocale().toString( greenCe->maximumValue() ), 1 );
       }
       const QgsContrastEnhancement *blueCe = mbcr->blueContrastEnhancement();
       if ( blueCe )
       {
-        mRendererWidget->setMin( QString::number( blueCe->minimumValue() ), 2 );
-        mRendererWidget->setMax( QString::number( blueCe->maximumValue() ), 2 );
+        mRendererWidget->setMin( QLocale().toString( blueCe->minimumValue() ), 2 );
+        mRendererWidget->setMax( QLocale().toString( blueCe->maximumValue() ), 2 );
       }
     }
     else if ( QgsSingleBandGrayRenderer *sbgr = dynamic_cast<QgsSingleBandGrayRenderer *>( renderer ) )
@@ -377,8 +377,8 @@ void QgsRendererRasterPropertiesWidget::refreshAfterStyleChanged()
       const QgsContrastEnhancement *ce = sbgr->contrastEnhancement();
       if ( ce )
       {
-        mRendererWidget->setMin( QString::number( ce->minimumValue() ) );
-        mRendererWidget->setMax( QString::number( ce->maximumValue() ) );
+        mRendererWidget->setMin( QLocale().toString( ce->minimumValue() ) );
+        mRendererWidget->setMax( QLocale().toString( ce->maximumValue() ) );
       }
     }
   }

@@ -360,7 +360,7 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-536</y>
+                <y>0</y>
                 <width>856</width>
                 <height>1223</height>
                </rect>
@@ -6348,6 +6348,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>mLayerDeleteConfirmationChkBx</tabstop>
   <tabstop>chbWarnOldProjectVersion</tabstop>
   <tabstop>mEnableMacrosComboBox</tabstop>
+  <tabstop>mDefaultPathsComboBox</tabstop>
   <tabstop>mFileFormatQgzButton</tabstop>
   <tabstop>mFileFormatQgsButton</tabstop>
   <tabstop>mOptionsScrollArea_03</tabstop>
@@ -6378,6 +6379,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>radPromptForProjection</tabstop>
   <tabstop>radUseProjectProjection</tabstop>
   <tabstop>radUseGlobalProjection</tabstop>
+  <tabstop>mCrsAccuracySpin</tabstop>
+  <tabstop>mCrsAccuracyIndicatorCheck</tabstop>
   <tabstop>mPlanimetricMeasurementsComboBox</tabstop>
   <tabstop>scrollArea_2</tabstop>
   <tabstop>mShowDatumTransformDialogCheckBox</tabstop>
@@ -6421,6 +6424,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>mZoomedInResamplingComboBox</tabstop>
   <tabstop>mZoomedOutResamplingComboBox</tabstop>
   <tabstop>spnOversampling</tabstop>
+  <tabstop>mCbEarlyResampling</tabstop>
   <tabstop>cboxContrastEnhancementAlgorithmSingleBand</tabstop>
   <tabstop>cboxContrastEnhancementLimitsSingleBand</tabstop>
   <tabstop>cboxContrastEnhancementAlgorithmMultiBandSingleByte</tabstop>
@@ -6437,7 +6441,10 @@ p, li { white-space: pre-wrap; }
   <tabstop>cmbLegendDoubleClickAction</tabstop>
   <tabstop>cbxLegendClassifiers</tabstop>
   <tabstop>mLegendGraphicResolutionSpinBox</tabstop>
+  <tabstop>mLegendSymbolMinimumSizeSpinBox</tabstop>
+  <tabstop>mLegendSymbolMaximumSizeSpinBox</tabstop>
   <tabstop>mMapTipsDelaySpinBox</tabstop>
+  <tabstop>mRespectScreenDpiCheckBox</tabstop>
   <tabstop>mOptionsScrollArea_05</tabstop>
   <tabstop>spinBoxIdentifyValue</tabstop>
   <tabstop>mIdentifyHighlightColorButton</tabstop>
@@ -6472,6 +6479,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>chkReuseLastValues</tabstop>
   <tabstop>mValidateGeometries</tabstop>
   <tabstop>mDefaultZValueSpinBox</tabstop>
+  <tabstop>mDefaultMValueSpinBox</tabstop>
   <tabstop>mLineWidthSpinBox</tabstop>
   <tabstop>mLineColorToolButton</tabstop>
   <tabstop>mFillColorToolButton</tabstop>
@@ -6537,12 +6545,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>mGPUEnableCheckBox</tabstop>
   <tabstop>mOpenClDevicesCombo</tabstop>
   <tabstop>mGPUInfoTextBrowser</tabstop>
-  <tabstop>mCbEarlyResampling</tabstop>
-  <tabstop>mCrsAccuracySpin</tabstop>
-  <tabstop>mCrsAccuracyIndicatorCheck</tabstop>
-  <tabstop>mLegendSymbolMinimumSizeSpinBox</tabstop>
-  <tabstop>mLegendSymbolMaximumSizeSpinBox</tabstop>
-  <tabstop>mDefaultMValueSpinBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

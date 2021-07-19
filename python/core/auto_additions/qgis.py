@@ -406,7 +406,8 @@ Qgis.MeshEditingErrorType.TooManyVerticesInFace.__doc__ = "A face has more verti
 Qgis.MeshEditingErrorType.FlatFace.__doc__ = "A flat face is present"
 Qgis.MeshEditingErrorType.UniqueSharedVertex.__doc__ = "A least two faces share only one vertices"
 Qgis.MeshEditingErrorType.InvalidVertex.__doc__ = "An error occurs due to an invalid vertex (for example, vertex index is out of range the available vertex)"
-Qgis.MeshEditingErrorType.__doc__ = 'Type of error that can occur during mesh frame editing.\n\n.. versionadded:: 3.22\n\n' + '* ``NoError``: ' + Qgis.MeshEditingErrorType.NoError.__doc__ + '\n' + '* ``InvalidFace``: ' + Qgis.MeshEditingErrorType.InvalidFace.__doc__ + '\n' + '* ``TooManyVerticesInFace``: ' + Qgis.MeshEditingErrorType.TooManyVerticesInFace.__doc__ + '\n' + '* ``FlatFace``: ' + Qgis.MeshEditingErrorType.FlatFace.__doc__ + '\n' + '* ``UniqueSharedVertex``: ' + Qgis.MeshEditingErrorType.UniqueSharedVertex.__doc__ + '\n' + '* ``InvalidVertex``: ' + Qgis.MeshEditingErrorType.InvalidVertex.__doc__
+Qgis.MeshEditingErrorType.ManifoldFace.__doc__ = "ManifoldFace"
+Qgis.MeshEditingErrorType.__doc__ = 'Type of error that can occur during mesh frame editing.\n\n.. versionadded:: 3.22\n\n' + '* ``NoError``: ' + Qgis.MeshEditingErrorType.NoError.__doc__ + '\n' + '* ``InvalidFace``: ' + Qgis.MeshEditingErrorType.InvalidFace.__doc__ + '\n' + '* ``TooManyVerticesInFace``: ' + Qgis.MeshEditingErrorType.TooManyVerticesInFace.__doc__ + '\n' + '* ``FlatFace``: ' + Qgis.MeshEditingErrorType.FlatFace.__doc__ + '\n' + '* ``UniqueSharedVertex``: ' + Qgis.MeshEditingErrorType.UniqueSharedVertex.__doc__ + '\n' + '* ``InvalidVertex``: ' + Qgis.MeshEditingErrorType.InvalidVertex.__doc__ + '\n' + '* ``ManifoldFace``: ' + Qgis.MeshEditingErrorType.ManifoldFace.__doc__
 # --
 Qgis.MeshEditingErrorType.baseClass = Qgis
 # monkey patching scoped based enum
@@ -423,3 +424,54 @@ Qgis.SublayerPromptMode.NeverAskLoadAll.__doc__ = "Never ask users to select sub
 Qgis.SublayerPromptMode.__doc__ = 'Specifies how to handle layer sources with multiple sublayers.\n\n.. versionadded:: 3.22\n\n' + '* ``AlwaysAsk``: ' + Qgis.SublayerPromptMode.AlwaysAsk.__doc__ + '\n' + '* ``AskExcludingRasterBands``: ' + Qgis.SublayerPromptMode.AskExcludingRasterBands.__doc__ + '\n' + '* ``NeverAskSkip``: ' + Qgis.SublayerPromptMode.NeverAskSkip.__doc__ + '\n' + '* ``NeverAskLoadAll``: ' + Qgis.SublayerPromptMode.NeverAskLoadAll.__doc__
 # --
 Qgis.SublayerPromptMode.baseClass = Qgis
+QgsVectorLayer.SelectBehavior = Qgis.SelectBehavior
+# monkey patching scoped based enum
+QgsVectorLayer.SetSelection = Qgis.SelectBehavior.SetSelection
+QgsVectorLayer.SetSelection.is_monkey_patched = True
+QgsVectorLayer.SetSelection.__doc__ = "Set selection, removing any existing selection"
+QgsVectorLayer.AddToSelection = Qgis.SelectBehavior.AddToSelection
+QgsVectorLayer.AddToSelection.is_monkey_patched = True
+QgsVectorLayer.AddToSelection.__doc__ = "Add selection to current selection"
+QgsVectorLayer.IntersectSelection = Qgis.SelectBehavior.IntersectSelection
+QgsVectorLayer.IntersectSelection.is_monkey_patched = True
+QgsVectorLayer.IntersectSelection.__doc__ = "Modify current selection to include only select features which match"
+QgsVectorLayer.RemoveFromSelection = Qgis.SelectBehavior.RemoveFromSelection
+QgsVectorLayer.RemoveFromSelection.is_monkey_patched = True
+QgsVectorLayer.RemoveFromSelection.__doc__ = "Remove from current selection"
+Qgis.SelectBehavior.__doc__ = 'Specifies how a selection should be applied.\n\n.. versionadded:: 3.22\n\n' + '* ``SetSelection``: ' + Qgis.SelectBehavior.SetSelection.__doc__ + '\n' + '* ``AddToSelection``: ' + Qgis.SelectBehavior.AddToSelection.__doc__ + '\n' + '* ``IntersectSelection``: ' + Qgis.SelectBehavior.IntersectSelection.__doc__ + '\n' + '* ``RemoveFromSelection``: ' + Qgis.SelectBehavior.RemoveFromSelection.__doc__
+# --
+Qgis.SelectBehavior.baseClass = Qgis
+QgsVectorLayer.EditResult = Qgis.VectorEditResult
+# monkey patching scoped based enum
+QgsVectorLayer.Success = Qgis.VectorEditResult.Success
+QgsVectorLayer.Success.is_monkey_patched = True
+QgsVectorLayer.Success.__doc__ = "Edit operation was successful"
+QgsVectorLayer.EmptyGeometry = Qgis.VectorEditResult.EmptyGeometry
+QgsVectorLayer.EmptyGeometry.is_monkey_patched = True
+QgsVectorLayer.EmptyGeometry.__doc__ = "Edit operation resulted in an empty geometry"
+QgsVectorLayer.EditFailed = Qgis.VectorEditResult.EditFailed
+QgsVectorLayer.EditFailed.is_monkey_patched = True
+QgsVectorLayer.EditFailed.__doc__ = "Edit operation failed"
+QgsVectorLayer.FetchFeatureFailed = Qgis.VectorEditResult.FetchFeatureFailed
+QgsVectorLayer.FetchFeatureFailed.is_monkey_patched = True
+QgsVectorLayer.FetchFeatureFailed.__doc__ = "Unable to fetch requested feature"
+QgsVectorLayer.InvalidLayer = Qgis.VectorEditResult.InvalidLayer
+QgsVectorLayer.InvalidLayer.is_monkey_patched = True
+QgsVectorLayer.InvalidLayer.__doc__ = "Edit failed due to invalid layer"
+Qgis.VectorEditResult.__doc__ = 'Specifies the result of a vector layer edit operation\n\n.. versionadded:: 3.22\n\n' + '* ``Success``: ' + Qgis.VectorEditResult.Success.__doc__ + '\n' + '* ``EmptyGeometry``: ' + Qgis.VectorEditResult.EmptyGeometry.__doc__ + '\n' + '* ``EditFailed``: ' + Qgis.VectorEditResult.EditFailed.__doc__ + '\n' + '* ``FetchFeatureFailed``: ' + Qgis.VectorEditResult.FetchFeatureFailed.__doc__ + '\n' + '* ``InvalidLayer``: ' + Qgis.VectorEditResult.InvalidLayer.__doc__
+# --
+Qgis.VectorEditResult.baseClass = Qgis
+QgsSymbolLayerUtils.VertexMarkerType = Qgis.VertexMarkerType
+# monkey patching scoped based enum
+QgsSymbolLayerUtils.SemiTransparentCircle = Qgis.VertexMarkerType.SemiTransparentCircle
+QgsSymbolLayerUtils.SemiTransparentCircle.is_monkey_patched = True
+QgsSymbolLayerUtils.SemiTransparentCircle.__doc__ = "Semi-transparent circle marker"
+QgsSymbolLayerUtils.Cross = Qgis.VertexMarkerType.Cross
+QgsSymbolLayerUtils.Cross.is_monkey_patched = True
+QgsSymbolLayerUtils.Cross.__doc__ = "Cross marker"
+QgsSymbolLayerUtils.NoMarker = Qgis.VertexMarkerType.NoMarker
+QgsSymbolLayerUtils.NoMarker.is_monkey_patched = True
+QgsSymbolLayerUtils.NoMarker.__doc__ = "No marker"
+Qgis.VertexMarkerType.__doc__ = 'Editing vertex markers, used for showing vertices during a edit operation.\n\n.. versionadded:: 3.22\n\n' + '* ``SemiTransparentCircle``: ' + Qgis.VertexMarkerType.SemiTransparentCircle.__doc__ + '\n' + '* ``Cross``: ' + Qgis.VertexMarkerType.Cross.__doc__ + '\n' + '* ``NoMarker``: ' + Qgis.VertexMarkerType.NoMarker.__doc__
+# --
+Qgis.VertexMarkerType.baseClass = Qgis

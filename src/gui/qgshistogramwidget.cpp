@@ -254,7 +254,7 @@ void QgsHistogramWidget::drawHistogram()
     rangeMarker->attach( mpPlot );
     rangeMarker->setLineStyle( QwtPlotMarker::VLine );
     rangeMarker->setXValue( range.upperValue() );
-    rangeMarker->setLabel( QString::number( range.upperValue() ) );
+    rangeMarker->setLabel( QLocale().toString( range.upperValue() ) );
     rangeMarker->setLabelOrientation( Qt::Vertical );
     rangeMarker->setLabelAlignment( Qt::AlignLeft | Qt::AlignTop );
     rangeMarker->show();

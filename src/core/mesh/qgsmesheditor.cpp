@@ -22,6 +22,7 @@
 #include "qgsmeshlayerutils.h"
 #include "qgslogger.h"
 #include "qgsgeometryengine.h"
+#include "qgsmeshadvancedediting.h"
 
 #include <poly2tri.h>
 
@@ -60,38 +61,19 @@ QgsMeshEditingError QgsMeshEditor::initialize()
 }
 
 
-bool QgsMeshEditor::faceCanBeAdded( const QgsMeshFace &face )
+bool QgsMeshEditor::isFaceGeometricallyCompatible( const QgsMeshFace &face )
 {
-  QgsMeshEditingError error;
-
-  // Prepare and check the face
-  QVector<QgsMeshFace> facesToAdd = prepareFaces( {face}, error );
-
-  if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
-    return false;
-
-  // Check if there is toological error with the mesh
-  QgsTopologicalMesh::TopologicalFaces topologicalFaces = mTopologicalMesh.createNewTopologicalFaces( facesToAdd, error );
-  error = mTopologicalMesh.canFacesBeAdded( topologicalFaces );
-
-  if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
-    return false;
-
-  // Check geometry compatibility
-  // With the topological check, we know that the new face is not included in an existing one
-  // But maybe, the new face includes or intersects existing faces or free vertices, we need to check
-  // First search for faces intersecting the bounding box of the new face.
-
   const QgsGeometry newFaceGeom = QgsMeshUtils::toGeometry( face, mTriangularMesh->vertices() );
   std::unique_ptr<QgsGeometryEngine> geomEngine( QgsGeometry::createGeometryEngine( newFaceGeom.constGet() ) );
   geomEngine->prepareGeometry();
 
   QgsRectangle boundingBox = newFaceGeom.boundingBox();
   QList<int> newFaceVerticesIndexes( face.toList() );
+  int newFaceSize = face.count();
   QList<int> concernedFaceIndex = mTriangularMesh->nativeFaceIndexForRectangle( boundingBox );
   if ( !concernedFaceIndex.isEmpty() )
   {
-    //for each concerned face, we take edges and, if no common vertex with the new face,
+    // for each concerned face, we take edges and, if no common vertex with the new face,
     // check is the edge intersects or is contained in the new face
     for ( const int faceIndex : concernedFaceIndex )
     {
@@ -106,20 +88,39 @@ bool QgsMeshEditor::faceCanBeAdded( const QgsMeshFace &face )
           break;
         }
       }
+
       if ( shareVertex )
       {
-        //only test the edge that not contain a shared vertex
         for ( int i = 0; i < existingFaceSize; ++i )
         {
           int index1 = existingFace.at( i );
           int index2 = existingFace.at( ( i + 1 ) % existingFaceSize );
+          const QgsMeshVertex &v1 = mTriangularMesh->vertices().at( index1 );
+          const QgsMeshVertex &v2 = mTriangularMesh->vertices().at( index2 );
+          QgsGeometry edgeGeom = QgsGeometry( new QgsLineString( v1, v2 ) );
+
           if ( ! newFaceVerticesIndexes.contains( index1 )  && !newFaceVerticesIndexes.contains( index2 ) )
           {
-            const QgsMeshVertex &v1 = mTriangularMesh->vertices().at( index1 );
-            const QgsMeshVertex &v2 = mTriangularMesh->vertices().at( index2 );
-            QgsGeometry edgeGeom = QgsGeometry( new QgsLineString( v1, v2 ) );
+            // test if the edge that not contains a shared vertex intersect the entire new face
             if ( geomEngine->intersects( edgeGeom.constGet() ) )
               return false;
+          }
+          else
+          {
+            for ( int vi = 0; vi < newFaceVerticesIndexes.count(); ++vi )
+            {
+              int vertInNewFace1 = newFaceVerticesIndexes.at( vi );
+              int vertInNewFace2 = newFaceVerticesIndexes.at( ( vi + 1 ) % newFaceSize );
+              if ( vertInNewFace1 != index1 && vertInNewFace2 != index2 && vertInNewFace1 != index2 && vertInNewFace2 != index1 )
+              {
+                const QgsMeshVertex &nv1 = mTriangularMesh->vertices().at( vertInNewFace1 );
+                const QgsMeshVertex &nv2 = mTriangularMesh->vertices().at( vertInNewFace2 );
+                QgsGeometry newEdgeGeom = QgsGeometry( new QgsLineString( nv1, nv2 ) );
+
+                if ( newEdgeGeom.intersects( edgeGeom ) )
+                  return false;
+              }
+            }
           }
         }
       }
@@ -132,8 +133,7 @@ bool QgsMeshEditor::faceCanBeAdded( const QgsMeshFace &face )
     }
   }
 
-// Then search for free vertices included in the new face
-
+  // Then search for free vertices included in the new face
   const QList<int> &freeVertices = freeVerticesIndexes();
 
   for ( const int freeVertexIndex : freeVertices )
@@ -147,6 +147,32 @@ bool QgsMeshEditor::faceCanBeAdded( const QgsMeshFace &face )
   }
 
   return true;
+}
+
+
+bool QgsMeshEditor::faceCanBeAdded( const QgsMeshFace &face )
+{
+  QgsMeshEditingError error;
+
+  // Prepare and check the face
+  QVector<QgsMeshFace> facesToAdd = prepareFaces( {face}, error );
+
+  if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
+    return false;
+
+  // Check if there is topological error with the mesh
+  QgsTopologicalMesh::TopologicalFaces topologicalFaces = mTopologicalMesh.createNewTopologicalFaces( facesToAdd, true, error );
+  error = mTopologicalMesh.canFacesBeAdded( topologicalFaces );
+
+  if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
+    return false;
+
+  // Check geometry compatibility
+  // With the topological check, we know that the new face is not included in an existing one
+  // But maybe, the new face includes or intersects existing faces or free vertices, we need to check
+  // First search for faces intersecting the bounding box of the new face.
+
+  return isFaceGeometricallyCompatible( face );
 }
 
 void QgsMeshEditor::applyEdit( QgsMeshEditor::Edit &edit )
@@ -228,10 +254,27 @@ void QgsMeshEditor::applyEditOnTriangularMesh( QgsMeshEditor::Edit &edit, const 
   edit.triangularMeshChanges = triangularChanges;
 }
 
+void QgsMeshEditor::applyAdvancedEdit( QgsMeshEditor::Edit &edit, QgsMeshAdvancedEditing *editing )
+{
+  applyEditOnTriangularMesh( edit, editing->apply( this ) );
+
+  emit meshEdited();
+}
+
 bool QgsMeshEditor::checkConsistency() const
 {
-  if ( !mTopologicalMesh.checkConsistency() )
-    return false;
+  switch ( mTopologicalMesh.checkConsistency().errorType )
+  {
+    case Qgis::MeshEditingErrorType::NoError:
+      break;
+    case Qgis::MeshEditingErrorType::InvalidFace:
+    case Qgis::MeshEditingErrorType::TooManyVerticesInFace:
+    case Qgis::MeshEditingErrorType::FlatFace:
+    case Qgis::MeshEditingErrorType::UniqueSharedVertex:
+    case Qgis::MeshEditingErrorType::InvalidVertex:
+    case Qgis::MeshEditingErrorType::ManifoldFace:
+      return false;
+  }
 
   if ( mTriangularMesh->vertices().count() != mMesh->vertexCount() )
     return false;
@@ -331,7 +374,7 @@ QgsMeshEditingError QgsMeshEditor::addFaces( const QVector<QVector<int> > &faces
   if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
     return error;
 
-  QgsTopologicalMesh::TopologicalFaces topologicalFaces = mTopologicalMesh.createNewTopologicalFaces( facesToAdd, error );
+  QgsTopologicalMesh::TopologicalFaces topologicalFaces = mTopologicalMesh.createNewTopologicalFaces( facesToAdd, true, error );
 
   error = mTopologicalMesh.canFacesBeAdded( topologicalFaces );
 
@@ -427,13 +470,16 @@ void QgsMeshEditor::changeXYValues( const QList<int> &verticesIndexes, const QLi
   mUndoStack->push( new QgsMeshLayerUndoCommandChangeXYValue( this, verticesIndexes, newValues ) );
 }
 
+void QgsMeshEditor::advancedEdit( QgsMeshAdvancedEditing *editing )
+{
+  mUndoStack->push( new QgsMeshLayerUndoCommandAdvancedEditing( this, editing ) );
+}
+
 void QgsMeshEditor::stopEditing()
 {
   mTopologicalMesh.reindex();
   mUndoStack->clear();
 }
-
-
 
 QgsMeshLayerUndoCommandMeshEdit::QgsMeshLayerUndoCommandMeshEdit( QgsMeshEditor *meshEditor )
   : mMeshEditor( meshEditor )
@@ -600,6 +646,11 @@ QgsMeshVertexCirculator QgsMeshEditor::vertexCirculator( int vertexIndex ) const
   return mTopologicalMesh.vertexCirculator( vertexIndex );
 }
 
+QgsTopologicalMesh &QgsMeshEditor::topologicalMesh()
+{
+  return mTopologicalMesh;
+}
+
 QgsMeshLayerUndoCommandChangeZValue::QgsMeshLayerUndoCommandChangeZValue( QgsMeshEditor *meshEditor, const QList<int> &verticesIndexes, const QList<double> &newValues )
   : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
   , mVerticesIndexes( verticesIndexes )
@@ -709,6 +760,27 @@ void QgsMeshLayerUndoCommandSplitFaces::redo()
       mEdits.append( edit );
     }
     mFaceIndexes.clear();
+  }
+  else
+  {
+    for ( QgsMeshEditor::Edit &edit : mEdits )
+      mMeshEditor->applyEdit( edit );
+  }
+}
+
+QgsMeshLayerUndoCommandAdvancedEditing::QgsMeshLayerUndoCommandAdvancedEditing( QgsMeshEditor *meshEditor, QgsMeshAdvancedEditing *advancdEdit )
+  : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
+  , mAdvancedEditing( advancdEdit )
+{}
+
+void QgsMeshLayerUndoCommandAdvancedEditing::redo()
+{
+  if ( mAdvancedEditing )
+  {
+    QgsMeshEditor::Edit edit;
+    mMeshEditor->applyAdvancedEdit( edit, mAdvancedEditing );
+    mEdits.append( edit );
+    mAdvancedEditing = nullptr;
   }
   else
   {
