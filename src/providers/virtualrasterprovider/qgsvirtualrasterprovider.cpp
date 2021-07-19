@@ -1,5 +1,5 @@
 /***************************************************************************
-   qgsvitualrasterprovider.cpp - QgsRasterDataProvider
+   qgsvirtualrasterprovider.cpp - QgsRasterDataProvider
      --------------------------------------
     Date                 : June 10, 2021
     Copyright            : (C) 2021 by Francesco Bursi
