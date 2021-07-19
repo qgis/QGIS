@@ -16,9 +16,7 @@
 #define QGSVIRTUALRASTERPROVIDER_H
 
 #include <QObject>
-
 #include "qgsrasterdataprovider.h"
-#include "qgscoordinatereferencesystem.h"
 #include "qgsprovidermetadata.h"
 #include "qgsrastercalculator.h"
 

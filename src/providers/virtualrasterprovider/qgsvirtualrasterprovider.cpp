@@ -13,19 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsvirtualrasterprovider.h"
-
-#include "qgsrastercalculator.h"
-#include "qgsrastercalcnode.h"
 #include "qgsrastermatrix.h"
 #include "qgsrasterlayer.h"
-
-#include "qgsmessagelog.h"
-#include "qgslogger.h"
-
 #include "qgsrasterprojector.h"
 
-#include <QUrl>
-#include <QUrlQuery>
 #define PROVIDER_KEY QStringLiteral( "virtualrasterprovider" )
 #define PROVIDER_DESCRIPTION QStringLiteral( "Virtual Raster data provider" )
 
