@@ -58,14 +58,6 @@ class CORE_EXPORT QgsSymbolLayerUtils
 {
   public:
 
-    //! Editing vertex markers
-    enum VertexMarkerType
-    {
-      SemiTransparentCircle,
-      Cross,
-      NoMarker
-    };
-
     static QString encodeColor( const QColor &color );
     static QColor decodeColor( const QString &str );
 
@@ -303,7 +295,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * Draws a vertex symbol at (painter) coordinates x, y. (Useful to assist vertex editing.)
      * \since QGIS 3.4.5
      */
-    static void drawVertexMarker( double x, double y, QPainter &p, QgsSymbolLayerUtils::VertexMarkerType type, int markerSize );
+    static void drawVertexMarker( double x, double y, QPainter &p, Qgis::VertexMarkerType type, int markerSize );
 
     //! Returns the maximum estimated bleed for the symbol
     static double estimateMaxSymbolBleed( QgsSymbol *symbol, const QgsRenderContext &context );

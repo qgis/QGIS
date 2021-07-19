@@ -479,6 +479,48 @@ class CORE_EXPORT Qgis
     Q_ENUM( SublayerPromptMode )
 
     /**
+     * Specifies how a selection should be applied.
+     *
+     * \since QGIS 3.22
+     */
+    enum class SelectBehavior SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVectorLayer, SelectBehavior ) : int
+      {
+      SetSelection, //!< Set selection, removing any existing selection
+      AddToSelection, //!< Add selection to current selection
+      IntersectSelection, //!< Modify current selection to include only select features which match
+      RemoveFromSelection, //!< Remove from current selection
+    };
+    Q_ENUM( SelectBehavior )
+
+    /**
+     * Specifies the result of a vector layer edit operation
+     *
+     * \since QGIS 3.22
+     */
+    enum class VectorEditResult SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVectorLayer, EditResult ) : int
+      {
+      Success = 0, //!< Edit operation was successful
+      EmptyGeometry = 1, //!< Edit operation resulted in an empty geometry
+      EditFailed = 2, //!< Edit operation failed
+      FetchFeatureFailed = 3, //!< Unable to fetch requested feature
+      InvalidLayer = 4, //!< Edit failed due to invalid layer
+    };
+    Q_ENUM( VectorEditResult )
+
+    /**
+     * Editing vertex markers, used for showing vertices during a edit operation.
+     *
+     * \since QGIS 3.22
+     */
+    enum class VertexMarkerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSymbolLayerUtils, VertexMarkerType ) : int
+      {
+      SemiTransparentCircle, //!< Semi-transparent circle marker
+      Cross, //!< Cross marker
+      NoMarker, //!< No marker
+    };
+    Q_ENUM( VertexMarkerType )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

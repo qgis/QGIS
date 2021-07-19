@@ -319,6 +319,30 @@ The development version
       NeverAskLoadAll,
     };
 
+    enum class SelectBehavior
+      {
+      SetSelection,
+      AddToSelection,
+      IntersectSelection,
+      RemoveFromSelection,
+    };
+
+    enum class VectorEditResult
+      {
+      Success,
+      EmptyGeometry,
+      EditFailed,
+      FetchFeatureFailed,
+      InvalidLayer,
+    };
+
+    enum class VertexMarkerType
+      {
+      SemiTransparentCircle,
+      Cross,
+      NoMarker,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

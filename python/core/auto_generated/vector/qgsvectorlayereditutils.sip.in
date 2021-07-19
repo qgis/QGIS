@@ -50,7 +50,7 @@ to the given coordinates
    available in Python bindings as moveVertexV2
 %End
 
-    QgsVectorLayer::EditResult deleteVertex( QgsFeatureId featureId, int vertex );
+    Qgis::VectorEditResult deleteVertex( QgsFeatureId featureId, int vertex );
 %Docstring
 Deletes a vertex from a feature.
 

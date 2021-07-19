@@ -602,7 +602,7 @@ and returns ``True`` if any of the layers returned ``True``.
    Will be removed in QGIS 4.0
 %End
 
-    void renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false, int currentVertexMarkerType = 0, double currentVertexMarkerSize = 0.0 ) throw( QgsCsException );
+    void renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false, Qgis::VertexMarkerType currentVertexMarkerType = Qgis::VertexMarkerType::SemiTransparentCircle, double currentVertexMarkerSize = 0.0 ) throw( QgsCsException );
 %Docstring
 Render a feature. Before calling this the :py:func:`~QgsSymbol.startRender` method should be called to initialize
 the rendering process. After rendering all features :py:func:`~QgsSymbol.stopRender` must be called.
@@ -688,7 +688,7 @@ This is required for layers that generate their own geometry from other
 information in the rendering context.
 %End
 
-    void renderVertexMarker( QPointF pt, QgsRenderContext &context, int currentVertexMarkerType, double currentVertexMarkerSize );
+    void renderVertexMarker( QPointF pt, QgsRenderContext &context, Qgis::VertexMarkerType currentVertexMarkerType, double currentVertexMarkerSize );
 %Docstring
 Render editing vertex marker at specified point
 

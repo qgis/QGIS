@@ -402,27 +402,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
   public:
 
-    //! Result of an edit operation
-    enum EditResult
-    {
-      Success = 0, //!< Edit operation was successful
-      EmptyGeometry = 1, //!< Edit operation resulted in an empty geometry
-      EditFailed = 2, //!< Edit operation failed
-      FetchFeatureFailed = 3, //!< Unable to fetch requested feature
-      InvalidLayer = 4, //!< Edit failed due to invalid layer
-    };
-    Q_ENUM( EditResult )
-
-    //! Selection behavior
-    enum SelectBehavior
-    {
-      SetSelection, //!< Set selection, removing any existing selection
-      AddToSelection, //!< Add selection to current selection
-      IntersectSelection, //!< Modify current selection to include only select features which match
-      RemoveFromSelection, //!< Remove from current selection
-    };
-    Q_ENUM( SelectBehavior )
-
     /**
      * Setting options for loading vector layers.
      * \since QGIS 3.0
@@ -772,7 +751,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see selectByExpression()
      * \see selectByIds()
      */
-    Q_INVOKABLE void selectByRect( QgsRectangle &rect, QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection );
+    Q_INVOKABLE void selectByRect( QgsRectangle &rect, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection );
 
     /**
      * Selects matching features using an expression.
@@ -783,7 +762,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see selectByIds()
      * \since QGIS 2.16
      */
-    Q_INVOKABLE void selectByExpression( const QString &expression, QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection );
+    Q_INVOKABLE void selectByExpression( const QString &expression, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection );
 
     /**
      * Selects matching features using a list of feature IDs. Will emit the
@@ -795,7 +774,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see selectByExpression()
      * \since QGIS 2.16
      */
-    Q_INVOKABLE void selectByIds( const QgsFeatureIds &ids, QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection );
+    Q_INVOKABLE void selectByIds( const QgsFeatureIds &ids, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection );
 
     /**
      * Modifies the current selection on this layer
@@ -1301,7 +1280,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * changes can be discarded by calling rollBack().
      * \since QGIS 2.14
      */
-    EditResult deleteVertex( QgsFeatureId featureId, int vertex );
+    Qgis::VectorEditResult deleteVertex( QgsFeatureId featureId, int vertex );
 
     /**
      * Deletes the selected features
@@ -2030,19 +2009,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Destroy active command and reverts all changes in it
     void destroyEditCommand();
 
-    //! Editing vertex markers
-    enum VertexMarkerType
-    {
-      SemiTransparentCircle,
-      Cross,
-      NoMarker
-    };
-
     /**
      * Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex editing.)
      * \deprecated Use the equivalent QgsSymbolLayerUtils::drawVertexMarker function instead
      */
-    Q_DECL_DEPRECATED static void drawVertexMarker( double x, double y, QPainter &p, QgsVectorLayer::VertexMarkerType type, int vertexSize );
+    Q_DECL_DEPRECATED static void drawVertexMarker( double x, double y, QPainter &p, Qgis::VertexMarkerType type, int vertexSize );
 
     /**
      * Will regenerate the `fields` property of this layer by obtaining all fields

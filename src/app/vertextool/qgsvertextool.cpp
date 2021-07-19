@@ -2506,21 +2506,21 @@ void QgsVertexTool::deleteVertex()
       QgsFeatureId fid = it2.key();
       QList<int> &vertexIds = it2.value();
 
-      bool res = QgsVectorLayer::Success;
+      Qgis::VectorEditResult res = Qgis::VectorEditResult::Success;
       std::sort( vertexIds.begin(), vertexIds.end(), std::greater<int>() );
       for ( int vertexId : vertexIds )
       {
         QgsMessageLog::logMessage( "DELETE : fid:" + QString::number( fid ) + " ; vertexId:" + QString::number( vertexId ), "DEBUG" );
-        if ( res != QgsVectorLayer::EmptyGeometry )
+        if ( res != Qgis::VectorEditResult::EmptyGeometry )
           res = layer->deleteVertex( fid, vertexId );
-        if ( res != QgsVectorLayer::EmptyGeometry && res != QgsVectorLayer::Success )
+        if ( res != Qgis::VectorEditResult::EmptyGeometry && res != Qgis::VectorEditResult::Success )
         {
           QgsDebugMsg( QStringLiteral( "failed to delete vertex %1 %2 %3!" ).arg( layer->name() ).arg( fid ).arg( vertexId ) );
           success = false;
         }
       }
 
-      if ( res == QgsVectorLayer::EmptyGeometry )
+      if ( res == Qgis::VectorEditResult::EmptyGeometry )
       {
         emit messageEmitted( tr( "Geometry has been cleared. Use the add part tool to set geometry for this feature." ) );
       }

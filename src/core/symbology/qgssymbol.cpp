@@ -900,7 +900,7 @@ class GeometryRestorer
 };
 ///@endcond PRIVATE
 
-void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker, int currentVertexMarkerType, double currentVertexMarkerSize )
+void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker, Qgis::VertexMarkerType currentVertexMarkerType, double currentVertexMarkerSize )
 {
   if ( context.renderingStopped() )
     return;
@@ -1435,10 +1435,10 @@ QgsSymbolRenderContext *QgsSymbol::symbolRenderContext()
   return mSymbolRenderContext.get();
 }
 
-void QgsSymbol::renderVertexMarker( QPointF pt, QgsRenderContext &context, int currentVertexMarkerType, double currentVertexMarkerSize )
+void QgsSymbol::renderVertexMarker( QPointF pt, QgsRenderContext &context, Qgis::VertexMarkerType currentVertexMarkerType, double currentVertexMarkerSize )
 {
   int markerSize = context.convertToPainterUnits( currentVertexMarkerSize, QgsUnitTypes::RenderMillimeters );
-  QgsSymbolLayerUtils::drawVertexMarker( pt.x(), pt.y(), *context.painter(), static_cast< QgsSymbolLayerUtils::VertexMarkerType >( currentVertexMarkerType ), markerSize );
+  QgsSymbolLayerUtils::drawVertexMarker( pt.x(), pt.y(), *context.painter(), currentVertexMarkerType, markerSize );
 }
 
 void QgsSymbol::initPropertyDefinitions()

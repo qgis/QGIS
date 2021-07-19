@@ -73,6 +73,17 @@ QgsMarkerLineSymbolLayer.FirstVertex = QgsTemplatedLineSymbolLayerBase.FirstVert
 QgsMarkerLineSymbolLayer.CentralPoint = QgsTemplatedLineSymbolLayerBase.CentralPoint
 QgsMarkerLineSymbolLayer.CurvePoint = QgsTemplatedLineSymbolLayerBase.CurvePoint
 
+QgsVectorLayer.VertexMarkerType = Qgis.VertexMarkerType
+QgsVectorLayer.SemiTransparentCircle = Qgis.VertexMarkerType.SemiTransparentCircle
+QgsVectorLayer.SemiTransparentCircle.is_monkey_patched = True
+QgsVectorLayer.SemiTransparentCircle.__doc__ = "Semi-transparent circle marker"
+QgsVectorLayer.Cross = Qgis.VertexMarkerType.Cross
+QgsVectorLayer.Cross.is_monkey_patched = True
+QgsVectorLayer.Cross.__doc__ = "Cross marker"
+QgsVectorLayer.NoMarker = Qgis.VertexMarkerType.NoMarker
+QgsVectorLayer.NoMarker.is_monkey_patched = True
+QgsVectorLayer.NoMarker.__doc__ = "No marker"
+
 # Monkey patch static const "QgsDataProvider.SUBLAYER_SEPARATOR" which was removed for QGIS 3.12
 QgsDataProvider.SUBLAYER_SEPARATOR = QgsDataProvider.sublayerSeparator()
 

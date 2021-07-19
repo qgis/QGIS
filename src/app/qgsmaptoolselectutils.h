@@ -66,7 +66,7 @@ namespace QgsMapToolSelectUtils
   */
   void setSelectedFeatures( QgsMapCanvas *canvas,
                             const QgsGeometry &selectGeometry,
-                            QgsVectorLayer::SelectBehavior selectBehavior = QgsVectorLayer::SetSelection,
+                            Qgis::SelectBehavior selectBehavior = Qgis::SelectBehavior::SetSelection,
                             bool doContains = true,
                             bool singleSelect = false );
 
@@ -138,7 +138,7 @@ namespace QgsMapToolSelectUtils
       */
       QgsMapToolSelectMenuActions( QgsMapCanvas *canvas,
                                    QgsVectorLayer *vectorLayer,
-                                   QgsVectorLayer::SelectBehavior behavior,
+                                   Qgis::SelectBehavior behavior,
                                    const QgsGeometry &selectionGeometry,
                                    QObject *parent = nullptr );
 
@@ -161,7 +161,7 @@ namespace QgsMapToolSelectUtils
     private:
       QgsMapCanvas *mCanvas = nullptr;
       QgsVectorLayer *mVectorLayer = nullptr;
-      QgsVectorLayer::SelectBehavior mBehavior = QgsVectorLayer::SetSelection;
+      Qgis::SelectBehavior mBehavior = Qgis::SelectBehavior::SetSelection;
       QgsGeometry mSelectGeometry;
       QAction *mActionChooseAll = nullptr;
       QMenu *mMenuChooseOne = nullptr;
@@ -179,7 +179,7 @@ namespace QgsMapToolSelectUtils
 
       static QgsFeatureIds filterIds( const QgsFeatureIds &ids,
                                       const QgsFeatureIds &existingSelection,
-                                      QgsVectorLayer::SelectBehavior behavior );
+                                      Qgis::SelectBehavior behavior );
 
       struct DataForSearchingJob
       {
@@ -190,7 +190,7 @@ namespace QgsMapToolSelectUtils
         QgsRenderContext context;
         std::unique_ptr<QgsFeatureRenderer> featureRenderer;
         QString filterString;
-        QgsVectorLayer::SelectBehavior selectBehavior;
+        Qgis::SelectBehavior selectBehavior;
         QgsFeatureIds existingSelection;
       };
 
