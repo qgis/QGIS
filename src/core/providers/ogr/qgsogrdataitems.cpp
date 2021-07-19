@@ -457,14 +457,10 @@ bool QgsOgrDataCollectionItem::hasDragEnabled() const
 
 QgsMimeDataUtils::UriList QgsOgrDataCollectionItem::mimeUris() const
 {
-  QgsMimeDataUtils::Uri vectorUri;
-  vectorUri.providerKey = QStringLiteral( "ogr" );
-  vectorUri.uri = path();
-  vectorUri.layerType = QStringLiteral( "vector" );
-  QgsMimeDataUtils::Uri rasterUri { vectorUri };
-  rasterUri.layerType = QStringLiteral( "raster" );
-  rasterUri.providerKey = QStringLiteral( "gdal" );
-  return { vectorUri, rasterUri };
+  QgsMimeDataUtils::Uri collectionUri;
+  collectionUri.uri = path();
+  collectionUri.layerType = QStringLiteral( "collection" );
+  return { collectionUri };
 }
 
 QgsAbstractDatabaseProviderConnection *QgsOgrDataCollectionItem::databaseConnection() const

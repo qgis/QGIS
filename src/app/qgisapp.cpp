@@ -2012,7 +2012,11 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
 
     QString uri = crsAndFormatAdjustedLayerUri( u.uri, u.supportedCrs, u.supportedFormats );
 
-    if ( u.layerType == QLatin1String( "vector" ) )
+    if ( u.layerType == QLatin1String( "collection" ) )
+    {
+      openLayer( uri, true );
+    }
+    else if ( u.layerType == QLatin1String( "vector" ) )
     {
       addVectorLayer( uri, u.name, u.providerKey );
     }
