@@ -146,10 +146,14 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      */
     struct CORE_EXPORT FetchJoinInfo
     {
-      const QgsVectorLayerJoinInfo *joinInfo;//!< Canonical source of information about the join
-      QgsAttributeList attributes;      //!< Attributes to fetch
-      QMap<int, int> attributesSourceToDestLayerMap SIP_SKIP; //!< Mapping from original attribute index to the joined layer index
-      int indexOffset;                  //!< At what position the joined fields start
+      //! Canonical source of information about the join
+      const QgsVectorLayerJoinInfo *joinInfo;
+      //! Attributes to fetch
+      QgsAttributeList attributes;
+      //! Mapping from original attribute index to the joined layer index
+      QMap<int, int> attributesSourceToDestLayerMap SIP_SKIP;
+      //! At what position the joined fields start
+      int indexOffset;
 
 #ifndef SIP_RUN
 
@@ -170,8 +174,11 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
       QgsFields joinLayerFields;
 #endif
 
-      int targetField;                  //!< Index of field (of this layer) that drives the join
-      int joinField;                    //!< Index of field (of the joined layer) must have equal value
+      //! Index of field (of this layer) that drives the join
+      int targetField;
+
+      //!< Index of field (of the joined layer) must have equal value
+      int joinField;
 
       void addJoinedAttributesCached( QgsFeature &f, const QVariant &joinValue ) const;
       void addJoinedAttributesDirect( QgsFeature &f, const QVariant &joinValue ) const;

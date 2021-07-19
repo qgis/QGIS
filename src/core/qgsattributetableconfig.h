@@ -57,10 +57,17 @@ class CORE_EXPORT QgsAttributeTableConfig
       // TODO c++20 - replace with = default
       bool operator== ( const QgsAttributeTableConfig::ColumnConfig &other ) const SIP_SKIP;
 
-      QgsAttributeTableConfig::Type type = Field;    //!< The type of this column.
-      QString name; //!< The name of the attribute if this column represents a field
-      bool hidden = false;  //!< Flag that controls if the column is hidden
-      int width = -1; //!< Width of column, or -1 for default width
+      //! The type of this column.
+      QgsAttributeTableConfig::Type type = Field;
+
+      //! The name of the attribute if this column represents a field
+      QString name;
+
+      //! Flag that controls if the column is hidden
+      bool hidden = false;
+
+      //! Width of column, or -1 for default width
+      int width = -1;
     };
 
     /**

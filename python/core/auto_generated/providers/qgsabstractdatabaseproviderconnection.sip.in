@@ -140,11 +140,11 @@ Sets the query execution time to ``queryExecutionTime`` milliseconds.
 
     struct SqlVectorLayerOptions
     {
-      QString sql; //!< The SQL expression that defines the SQL (query) layer
-      QString filter; //!< Additional subset string (provider-side filter), not all data providers support this feature: check support with SqlLayerDefinitionCapability::Filters capability
-      QString layerName; //!< Optional name for the new layer
-      QStringList primaryKeyColumns; //!< List of primary key column names
-      QString geometryColumn; //!< Name of the geometry column
+      QString sql;
+      QString filter;
+      QString layerName;
+      QStringList primaryKeyColumns;
+      QString geometryColumn;
       bool disableSelectAtId;
     };
 
