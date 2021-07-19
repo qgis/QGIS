@@ -73,7 +73,11 @@ target_link_libraries (provider_postgres_a
 )
 
 if (WITH_GUI)
-  QT5_WRAP_UI(PG_UIS_H ${PG_UIS})
+  if (WITH_QT6)
+    QT6_WRAP_UI(PG_UIS_H ${PG_UIS})
+  else()
+    QT5_WRAP_UI(PG_UIS_H ${PG_UIS})
+  endif()
 
   add_library(provider_postgres_gui_a STATIC ${PG_GUI_SRCS} ${PG_UIS_H})
 
@@ -108,14 +112,14 @@ target_compile_features(provider_postgresraster_a PRIVATE cxx_std_17)
 target_link_libraries (provider_postgresraster_a
     qgis_core
     ${POSTGRES_LIBRARY}
-    ${Qt5Xml_LIBRARIES}
-    ${Qt5Core_LIBRARIES}
-    ${Qt5Svg_LIBRARIES}
-    ${Qt5Network_LIBRARIES}
-    ${Qt5Sql_LIBRARIES}
-    ${Qt5Concurrent_LIBRARIES}
-    ${Qt5Gui_LIBRARIES}
-    ${Qt5Widgets_LIBRARIES}
+    ${${QT_VERSION_BASE}Xml_LIBRARIES}
+    ${${QT_VERSION_BASE}Core_LIBRARIES}
+    ${${QT_VERSION_BASE}Svg_LIBRARIES}
+    ${${QT_VERSION_BASE}Network_LIBRARIES}
+    ${${QT_VERSION_BASE}Sql_LIBRARIES}
+    ${${QT_VERSION_BASE}Concurrent_LIBRARIES}
+    ${${QT_VERSION_BASE}Gui_LIBRARIES}
+    ${${QT_VERSION_BASE}Widgets_LIBRARIES}
 )
 
 if (WITH_GUI)

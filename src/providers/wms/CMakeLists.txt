@@ -37,7 +37,11 @@ if (WITH_GUI)
     ${CMAKE_CURRENT_BINARY_DIR}
   )
 
-  QT5_WRAP_UI(WMS_UIS_H ${WMS_UIS})
+  if (WITH_QT6)
+    QT6_WRAP_UI(WMS_UIS_H ${WMS_UIS})
+  else()
+    QT5_WRAP_UI(WMS_UIS_H ${WMS_UIS})
+  endif()
 
   add_library(provider_wms_gui_a STATIC ${WMS_GUI_SRCS} ${WMS_UIS_H})
 
@@ -50,12 +54,12 @@ endif()
 
 target_link_libraries(provider_wms_a
   qgis_core
-  ${Qt5Xml_LIBRARIES}
-  ${Qt5Core_LIBRARIES}
-  ${Qt5Svg_LIBRARIES}
-  ${Qt5Network_LIBRARIES}
-  ${Qt5Sql_LIBRARIES}
-  ${Qt5Concurrent_LIBRARIES}
+  ${${QT_VERSION_BASE}Xml_LIBRARIES}
+  ${${QT_VERSION_BASE}Core_LIBRARIES}
+  ${${QT_VERSION_BASE}Svg_LIBRARIES}
+  ${${QT_VERSION_BASE}Network_LIBRARIES}
+  ${${QT_VERSION_BASE}Sql_LIBRARIES}
+  ${${QT_VERSION_BASE}Concurrent_LIBRARIES}
 )
 target_compile_definitions(provider_wms_a PRIVATE "-DQT_NO_FOREACH")
 
@@ -63,14 +67,14 @@ if (WITH_GUI)
   target_link_libraries(provider_wms_gui_a
     qgis_gui
     provider_wms_a
-    ${Qt5Xml_LIBRARIES}
-    ${Qt5Core_LIBRARIES}
-    ${Qt5Svg_LIBRARIES}
-    ${Qt5Network_LIBRARIES}
-    ${Qt5Sql_LIBRARIES}
-    ${Qt5Concurrent_LIBRARIES}
-    ${Qt5Gui_LIBRARIES}
-    ${Qt5Widgets_LIBRARIES}
+    ${${QT_VERSION_BASE}Xml_LIBRARIES}
+    ${${QT_VERSION_BASE}Core_LIBRARIES}
+    ${${QT_VERSION_BASE}Svg_LIBRARIES}
+    ${${QT_VERSION_BASE}Network_LIBRARIES}
+    ${${QT_VERSION_BASE}Sql_LIBRARIES}
+    ${${QT_VERSION_BASE}Concurrent_LIBRARIES}
+    ${${QT_VERSION_BASE}Gui_LIBRARIES}
+    ${${QT_VERSION_BASE}Widgets_LIBRARIES}
   )
   target_compile_definitions(provider_wms_gui_a PRIVATE "-DQT_NO_FOREACH")
 endif()
