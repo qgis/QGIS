@@ -548,7 +548,7 @@ bool QgsRelief::exportFrequencyDistributionToCsv( const QString &file )
 #endif
   for ( int i = 0; i < 252; ++i )
   {
-    outstream << QString::number( i ) + ',' + QString::number( frequency[i] ) << endl;
+    outstream << QString::number( i ) + ',' + QString::number( frequency[i] ) << Qt::endl;
   }
   outFile.close();
   return true;

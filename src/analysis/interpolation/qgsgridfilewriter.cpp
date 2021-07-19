@@ -73,7 +73,7 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
       }
       currentXValue += mCellSizeX;
     }
-    outStream << endl;
+    outStream << Qt::endl;
     currentYValue -= mCellSizeY;
 
     if ( feedback )
@@ -101,7 +101,7 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
   }
   QTextStream prjStream( &prjFile );
   prjStream << crs;
-  prjStream << endl;
+  prjStream << Qt::endl;
   prjFile.close();
 
   return 0;
@@ -109,20 +109,20 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
 
 int QgsGridFileWriter::writeHeader( QTextStream &outStream )
 {
-  outStream << "NCOLS " << mNumColumns << endl;
-  outStream << "NROWS " << mNumRows << endl;
-  outStream << "XLLCORNER " << mInterpolationExtent.xMinimum() << endl;
-  outStream << "YLLCORNER " <<  mInterpolationExtent.yMinimum() << endl;
+  outStream << "NCOLS " << mNumColumns << Qt::endl;
+  outStream << "NROWS " << mNumRows << Qt::endl;
+  outStream << "XLLCORNER " << mInterpolationExtent.xMinimum() << Qt::endl;
+  outStream << "YLLCORNER " <<  mInterpolationExtent.yMinimum() << Qt::endl;
   if ( mCellSizeX == mCellSizeY ) //standard way
   {
-    outStream << "CELLSIZE " << mCellSizeX << endl;
+    outStream << "CELLSIZE " << mCellSizeX << Qt::endl;
   }
   else //this is supported by GDAL but probably not by other products
   {
-    outStream << "DX " << mCellSizeX << endl;
-    outStream << "DY " << mCellSizeY << endl;
+    outStream << "DX " << mCellSizeX << Qt::endl;
+    outStream << "DY " << mCellSizeY << Qt::endl;
   }
-  outStream << "NODATA_VALUE -9999" << endl;
+  outStream << "NODATA_VALUE -9999" << Qt::endl;
 
   return 0;
 }
