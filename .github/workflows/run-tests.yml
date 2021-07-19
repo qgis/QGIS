@@ -37,9 +37,14 @@ jobs:
       matrix:
         # tests run on 20.04 (Qt 5.12), compile test on 20.10 (Qt 5.14) and 21.04 (Qt 5.15)
         include:
-          - ubuntu-base: '20.04'
+          - distro-version: '20.04'
+            qt-version: 5
             run-tests: true
-          - ubuntu-base: '21.04'
+          - distro-version: '21.04'
+            qt-version: 5
+            run-tests: false
+          - distro-version: 'rawhide'
+            qt-version: 6
             run-tests: false
       fail-fast: false
 
@@ -58,7 +63,7 @@ jobs:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_REF: ${{ github.ref }}
           GITHUB_PR_NUMBER: ${{github.event.number}}
-          UBUNTU_BASE: ${{ matrix.ubuntu-base }}
+          UBUNTU_BASE: ${{ matrix.distro-version }}
         run: |
           # Be aware that these instructions are duplicated in run-tests job
           DOCKER_TAG=$(echo $( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo ${GITHUB_BASE_REF} || echo ${GITHUB_REF##*/} ) | sed 's/^master$/latest/')$( [[ ${UBUNTU_BASE} != ${DEFAULT_UBUNTU_BASE} ]] && echo "_${UBUNTU_BASE}" || echo "" )
@@ -78,18 +83,30 @@ jobs:
           echo PATCH_QT_3D: ${PATCH_QT_3D}
           echo WITH_3D: ${WITH_3D}
 
-      - name: Build deps
-        env:
-          UBUNTU_BASE: ${{ matrix.ubuntu-base }}
-        run: |
-          pushd .docker
-          docker pull qgis/qgis3-build-deps:${DOCKER_TAG} || true
-          docker build --build-arg UBUNTU_BASE=${UBUNTU_BASE} --cache-from qgis/qgis3-build-deps:${DOCKER_TAG} -t qgis/qgis3-build-deps:${DOCKER_TAG} -f qgis3-build-deps.dockerfile .
-          popd
+      - name: Build Docker Container with Build Environment
+        id: docker-build
+        uses: whoan/docker-build-with-cache-action@v5
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          image_name: qgis3-qt6-build-deps
+          dockerfile: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
+          build_extra_args: "--build-arg=DISTRO_VERSION=${{ matrix.distro-version }}"
+          push_git_tag: true
+          push_image_and_stages: on:push
+          pull_image_and_stages: ${{ github.event_name != 'workflow_dispatch' }}
 
-      - name: Push deps image
-        if: ${{ github.repository_owner == 'qgis' && github.event_name != 'pull_request' }}
+      - name: Tag image
         run: |
+          docker tag ${DOCKER_IMAGE} qgis3-build-deps
+      env:
+        DOCKER_IMAGE: ${{ steps.docker-build.outputs.FULL_IMAGE_NAME }}
+
+      - name: Push Qt5 deps image to Docker hub
+        if: ${{ github.repository_owner == 'qgis' && github.event_name != 'pull_request' && matrix.qt-version == '5' }}
+        run: |
+          docker tag qgis3-build-deps qgis/qgis3-build-deps:${DOCKER_TAG}
           docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
           docker push "qgis/qgis3-build-deps:${DOCKER_TAG}"
 
@@ -98,13 +115,13 @@ jobs:
         if: github.event_name == 'pull_request'
         with:
           path: /home/runner/QGIS/.ccache
-          key: build-ccache-${{ matrix.ubuntu-base }}-${{ github.actor }}-${{ github.head_ref }}-${{ github.sha }}
+          key: build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-${{ github.actor }}-${{ github.head_ref }}-${{ github.sha }}
           # The head_ref or source branch of the pull request in a workflow run.
           # The base_ref or target branch of the pull request in a workflow run.
           restore-keys: |
-            build-ccache-${{ matrix.ubuntu-base }}-${{ github.actor }}-${{ github.head_ref }}-
-            build-ccache-${{ matrix.ubuntu-base }}-refs/heads/${{ github.base_ref }}-
-            build-ccache-${{ matrix.ubuntu-base }}-refs/heads/master-
+            build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-${{ github.actor }}-${{ github.head_ref }}-
+            build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-refs/heads/${{ github.base_ref }}-
+            build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-refs/heads/master-
 
       - name: Prepare build cache for branch/tag
         # use a fork of actions/cache@v2 to upload cache even when the build or test failed
@@ -113,10 +130,10 @@ jobs:
         with:
           path: /home/runner/QGIS/.ccache
           # The branch or tag ref that triggered the workflow run. For branches this in the format refs/heads/<branch_name>, and for tags it is refs/tags/<tag_name>
-          key: build-ccache-${{ matrix.ubuntu-base }}-${{ github.ref }}-${{ github.sha }}
+          key: build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-${{ github.ref }}-${{ github.sha }}
           restore-keys: |
-            build-ccache-${{ matrix.ubuntu-base }}-${{ github.ref }}-
-            build-ccache-${{ matrix.ubuntu-base }}-refs/heads/master-
+            build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-${{ github.ref }}-
+            build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-refs/heads/master-
 
       - name: Compile QGIS
         id: compile
@@ -127,8 +144,8 @@ jobs:
                      --env-file .docker/docker-variables.env \
                      --env PUSH_TO_CDASH=true \
                      --env WITH_3D=${WITH_3D} \
-                     qgis/qgis3-build-deps:${DOCKER_TAG} \
-                     /root/QGIS/.docker/docker-qgis-build.sh
+                     qgis3-build-deps \
+                     /root/QGIS/.docker/docker-qgis-build-${{ matrix.qt-version }}.sh
 
       - name: Push artifact
         id: push_artifact
@@ -144,7 +161,7 @@ jobs:
 
 #      - name: Test QGIS runners
 #        id: runners
-#        if: ${{ matrix.ubuntu-base == env.DEFAULT_UBUNTU_BASE }}
+#        if: ${{ matrix.distro-version == env.DEFAULT_UBUNTU_BASE }}
 #        run: |
 #          docker run -d --name qgis-testing-environment \
 #                     -v $(pwd):/root/QGIS \
@@ -248,10 +265,10 @@ jobs:
     strategy:
       matrix:
         # tests run on 20.04 (Qt 5.12), compile test on 20.10 (Qt 5.14)
-        ubuntu-base: [20.04]
+        distro-version: [20.04]
         test-batch: [ALL_BUT_PROVIDERS, POSTGRES, ORACLE, HANA]
       fail-fast: false
-      
+
     services:
       # Run httpbin container for QgsNetwor* tests
       httpbin:
@@ -276,7 +293,7 @@ jobs:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_REF: ${{ github.ref }}
           GITHUB_PR_NUMBER: ${{github.event.number}}
-          UBUNTU_BASE: ${{ matrix.ubuntu-base }}
+          UBUNTU_BASE: ${{ matrix.distro-version }}
           TEST_BATCH: ${{ matrix.test-batch }}
         run: |
           # Be aware that these instructions are duplicated in build job
@@ -297,7 +314,7 @@ jobs:
 
       - name: Build deps
         env:
-          UBUNTU_BASE: ${{ matrix.ubuntu-base }}
+          UBUNTU_BASE: ${{ matrix.distro-version }}
         run: |
           pushd .docker
           TARGET=$( ( [[ ${TEST_BATCH} == "ORACLE"   ]] && echo "binary-for-oracle" ) \
