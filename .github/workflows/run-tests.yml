@@ -45,6 +45,7 @@ jobs:
             with-3d: ON
             with-quick: ON
             patch-qt-3d: true
+            LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
 
           - distro-version: '21.04'
             qt-version: 5
@@ -55,6 +56,7 @@ jobs:
             with-3d: OFF
             with-quick: ON
             patch-qt-3d: false
+            LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
 
           - distro-version: 'rawhide'
             qt-version: 6
@@ -65,6 +67,7 @@ jobs:
             with-3d: OFF
             with-quick: OFF
             patch-qt-3d: false
+            LD_PRELOAD: ''
 
 
       fail-fast: false
@@ -161,8 +164,8 @@ jobs:
                      --env WITH_QT6=${{ matrix.with-qt6 }} \
                      --env WITH_QUICK=${{ matrix.with-quick }} \
                      --env WITH_3D=${{ matrix.with-3d }} \
-                     --env WITH_BINDINGS=${{ matrix.with-bindings }} \
                      --env PATCH_QT_3D=${{ matrix.patch-qt-3d }} \
+                     --env LD_PRELOAD=${{ matrix.LD_PRELOAD }} \
                      qgis3-build-deps \
                      /root/QGIS/.docker/docker-qgis-build.sh
 
