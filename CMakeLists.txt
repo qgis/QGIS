@@ -466,7 +466,7 @@ if(WITH_CORE)
   set (QT_PLUGINS_DIR ${DEFAULT_QT_PLUGINS_DIR} CACHE STRING "Path to installation directory for Qt Plugins. Defaults to Qt native plugin directory")
 
   if (WITH_QT6)
-    message(STATUS "Found Qt version: ${Qt6Core_VERSION_STRING}")
+    message(STATUS "Found Qt version: ${Qt6Core_VERSION}")
   else()
     message(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
   endif()
