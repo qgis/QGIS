@@ -55,8 +55,9 @@ Copy constructor
     {
       SizeClass( double size, const QString &label );
 
-      double size;    //!< Marker size in units used by the symbol (usually millimeters). May be further scaled before rendering if size scale transformer is enabled.
-      QString label;  //!< Label to be shown with the particular symbol size
+      double size;
+
+      QString label;
     };
 
     void setLegendType( LegendType type );

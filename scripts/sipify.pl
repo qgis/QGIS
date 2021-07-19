@@ -794,7 +794,7 @@ while ($LINE_IDX < $LINE_COUNT){
         next;
     }
 
-    # insert metaoject for Q_GADGET
+    # insert metaobject for Q_GADGET
     if ($LINE =~ m/^\s*Q_GADGET\b.*?$/){
         if ($LINE !~ m/SIP_SKIP/){
             dbg_info('Q_GADGET');
@@ -990,7 +990,7 @@ while ($LINE_IDX < $LINE_COUNT){
                 pop(@CLASSNAME);
                 if ($#ACCESS == 0){
                     dbg_info("reached top level");
-                    # top level should stasy public
+                    # top level should stay public
                     $ACCESS[$#ACCESS] = PUBLIC;
                 }
                 $COMMENT = '';
@@ -1149,6 +1149,10 @@ while ($LINE_IDX < $LINE_COUNT){
             $COMMENT = '';
             next;
         }
+    }
+
+    if( $LINE =~ /.*\/\/\!\</ ) {
+      exit_with_error("\"\\\\!<\" doxygen command must only be used for enum documentation")
     }
 
     $IS_OVERRIDE = 1 if ( $LINE =~ m/\boverride\b/);

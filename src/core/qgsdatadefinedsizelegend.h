@@ -73,8 +73,11 @@ class CORE_EXPORT QgsDataDefinedSizeLegend
     {
       SizeClass( double size, const QString &label ): size( size ), label( label ) {}
 
-      double size;    //!< Marker size in units used by the symbol (usually millimeters). May be further scaled before rendering if size scale transformer is enabled.
-      QString label;  //!< Label to be shown with the particular symbol size
+      //! Marker size in units used by the symbol (usually millimeters). May be further scaled before rendering if size scale transformer is enabled.
+      double size;
+
+      //! Label to be shown with the particular symbol size
+      QString label;
     };
 
     //! Sets how the legend should be rendered
