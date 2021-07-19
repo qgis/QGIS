@@ -20,6 +20,7 @@
 #include "qgshananewconnection.h"
 #include "qgshanaprovider.h"
 #include "qgshanaproviderconnection.h"
+#include "qgshanasourceselect.h"
 #include "qgshanautils.h"
 #include "qgsnewnamedialog.h"
 
@@ -162,6 +163,16 @@ bool QgsHanaDataItemGuiProvider::handleDrop(
     return connItem->handleDrop( data, schemaItem->name() );
   }
   return false;
+}
+
+QWidget *QgsHanaDataItemGuiProvider::createParamWidget( QgsDataItem *root, QgsDataItemGuiContext )
+{
+  QgsHanaRootItem *rootItem = qobject_cast<QgsHanaRootItem *>( root );
+  if ( rootItem == nullptr )
+    return nullptr;
+  QgsHanaSourceSelect *select = new QgsHanaSourceSelect( nullptr, QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode::Manager );
+  connect( select, &QgsHanaSourceSelect::connectionsChanged, rootItem, &QgsHanaRootItem::onConnectionsChanged );
+  return select;
 }
 
 void QgsHanaDataItemGuiProvider::newConnection( QgsDataItem *item )
