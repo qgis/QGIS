@@ -156,7 +156,7 @@ void TestQgsGeoNodeConnection::testStyleAPI()
   QVERIFY( geoNodeStyle.body.toString().contains( QStringLiteral( "</qgis>" ) ) );
 
   QList<QgsGeoNodeStyle> geoNodeStyles = geonodeRequest.fetchStylesBlocking( QStringLiteral( "airports" ) );
-  QgsDebugMsg( geoNodeStyles.count() );
+  QgsDebugMsg( QString::number( geoNodeStyles.count() ) );
   QVERIFY( geoNodeStyles.count() == 2 );
 
 }
