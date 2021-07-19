@@ -536,8 +536,9 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     static QList<QPair<QString, QString> > pyramidResamplingMethods( const QString &providerKey );
 
     /**
-     * Decodes the URI returning a struct with all the parameters.
-     * \note used by Virtual Raster Provider only
+     * Struct used to store informations of the raster used in QgsVirtualRasterProvider for the calculations,
+     * this strucct is itslef stored in the DecodedUriParameters
+     * \note used by QgsVirtualRasterProvider only
      */
     struct InputLayers
     {
@@ -546,6 +547,11 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       QString provider;
     };
 
+    /**
+     * Struct that stores the informations about the parameters that should be given to the
+     * QgsVirtualRasterProvider through the QgsRasterDataProvider::DecodedUriParameters
+     * \note used by QgsVirtualRasterProvider only
+     */
     struct DecodedUriParameters
     {
       QgsCoordinateReferenceSystem crs;
@@ -557,8 +563,11 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     };
 
+    /**
+     * Decodes the URI returning a struct with all the parameters for QgsVirtualRasterProvider class
+     * \note used by Virtual Raster Provider only
+     */
     static QgsRasterDataProvider::DecodedUriParameters decodeVirtualRasterProviderUri( const QString &uri, bool *ok = nullptr );
-    //static DecodedUriParameters decodeVirtualRasterProviderUri( const QString &uri);
 
     /**
      * Encodes the URI starting from the struct .

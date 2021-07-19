@@ -493,6 +493,13 @@ for given provider
     };
 
     static QgsRasterDataProvider::DecodedUriParameters decodeVirtualRasterProviderUri( const QString &uri, bool *ok = 0 );
+%Docstring
+Decodes the URI returning a struct with all the parameters for :py:class:`QgsVirtualRasterProvider` class
+
+.. note::
+
+   used by Virtual Raster Provider only
+%End
 
     static QString encodeVirtualRasterProviderUri( const QgsRasterDataProvider::DecodedUriParameters &parts );
 %Docstring
