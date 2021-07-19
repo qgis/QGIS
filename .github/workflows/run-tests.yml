@@ -40,16 +40,33 @@ jobs:
             qt-version: 5
             run-tests: true
             docker-tag-suffix: ''
+            with-qt6: OFF
+            with-qt5: ON
+            with-3d: ON
+            with-quick: ON
+            patch-qt-3d: true
 
           - distro-version: '21.04'
             qt-version: 5
             run-tests: false
-            docker-tag-suffix: '_21.04'
+            docker-tag-suffix: _21.04
+            with-qt6: OFF
+            with-qt5: ON
+            with-3d: OFF
+            with-quick: ON
+            patch-qt-3d: false
 
           - distro-version: 'rawhide'
             qt-version: 6
             run-tests: false
             docker-tag-suffix: ''
+            with-qt6: ON
+            with-qt5: OFF
+            with-3d: OFF
+            with-quick: OFF
+            patch-qt-3d: false
+
+
       fail-fast: false
 
     outputs:
@@ -72,20 +89,13 @@ jobs:
           # Be aware that these instructions are duplicated in run-tests job
           DOCKER_TAG=$(echo $( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo ${GITHUB_BASE_REF} || echo ${GITHUB_REF##*/} ) | sed 's/^master$/latest/')${{ matrix.docker-tag-suffix }}
           CTEST_BUILD_NAME=$( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo "PR${GITHUB_PR_NUMBER}" || echo ${GITHUB_REF##*/} )"_${GITHUB_SHA}"
-          [[ ${UBUNTU_BASE} == "20.04" ]] && PATCH_QT_3D=true || PATCH_QT_3D=false
-          # build w/o 3D for Qt 5.15 (many deprecation warnings)
-          [[ ${UBUNTU_BASE} == "21.04" ]] && WITH_3D=FALSE || WITH_3D=TRUE
           echo "DOCKER_TAG=${DOCKER_TAG}" >> $GITHUB_ENV
           echo "CTEST_BUILD_NAME=${CTEST_BUILD_NAME}" >> $GITHUB_ENV
-          echo "PATCH_QT_3D=${PATCH_QT_3D}" >> $GITHUB_ENV
-          echo "WITH_3D=${WITH_3D}" >> $GITHUB_ENV
 
       - name: Print vars
         run: |
           echo DOCKER_TAG: ${DOCKER_TAG}
           echo CTEST_BUILD_NAME: ${CTEST_BUILD_NAME}
-          echo PATCH_QT_3D: ${PATCH_QT_3D}
-          echo WITH_3D: ${WITH_3D}
 
       - name: Build Docker Container with Build Environment
         id: docker-build
@@ -147,9 +157,14 @@ jobs:
                      -v /home/runner/QGIS/.ccache:/root/.ccache \
                      --env-file .docker/docker-variables.env \
                      --env PUSH_TO_CDASH=true \
-                     --env WITH_3D=${WITH_3D} \
+                     --env WITH_DESKTOP=${ matrix.with-desktop} \
+                     --env WITH_QT6=${ matrix.with-qt6} \
+                     --env WITH_QUICK=${ matrix.with-quick} \
+                     --env WITH_3D=${ matrix.with-3d} \
+                     --env WITH_BINDINGS=${ matrix.with-bindings} \
+                     --env PATCH_QT_3D=${ matrix.patch-qt-3d} \
                      qgis3-build-deps \
-                     /root/QGIS/.docker/docker-qgis-build-qt${{ matrix.qt-version }}.sh
+                     /root/QGIS/.docker/docker-qgis-build.sh
 
       - name: Push artifact
         id: push_artifact
@@ -302,18 +317,14 @@ jobs:
           # Be aware that these instructions are duplicated in build job
           DOCKER_TAG=$(echo $( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo ${GITHUB_BASE_REF} || echo ${GITHUB_REF##*/} ) | sed 's/^master$/latest/')${{ matrix.docker-tag-suffix }}
           CTEST_BUILD_NAME=$( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo "PR${GITHUB_PR_NUMBER}" || echo ${GITHUB_REF##*/} )"_${GITHUB_SHA}_${TEST_BATCH}"
-          [[ ${UBUNTU_BASE} == "20.04" ]] && PATCH_QT_3D=true || PATCH_QT_3D=false
           echo "DOCKER_TAG=${DOCKER_TAG}" >> $GITHUB_ENV
           echo "CTEST_BUILD_NAME=${CTEST_BUILD_NAME}" >> $GITHUB_ENV
-          echo "PATCH_QT_3D=${PATCH_QT_3D}" >> $GITHUB_ENV
-          echo "TEST_BATCH=${TEST_BATCH}" >> $GITHUB_ENV
+
 
       - name: Print vars
         run: |
           echo DOCKER_TAG: ${DOCKER_TAG}
           echo CTEST_BUILD_NAME: ${CTEST_BUILD_NAME}
-          echo PATCH_QT_3D: ${PATCH_QT_3D}
-          echo TEST_BATCH: ${TEST_BATCH}
 
       - name: Build deps
         env:
