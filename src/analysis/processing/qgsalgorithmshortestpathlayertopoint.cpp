@@ -87,7 +87,7 @@ QVariantMap QgsShortestPathLayerToPointAlgorithm::processAlgorithm( const QVaria
   mDirector->makeGraph( mBuilder.get(), points, snappedPoints, feedback );
 
   feedback->pushInfo( QObject::tr( "Calculating shortest paths…" ) );
-  QgsGraph *graph = mBuilder->graph();
+  std::unique_ptr< QgsGraph > graph( mBuilder->takeGraph() );
   int idxEnd = graph->findVertex( snappedPoints[0] );
   int idxStart;
   int currentIdx;
@@ -102,7 +102,7 @@ QVariantMap QgsShortestPathLayerToPointAlgorithm::processAlgorithm( const QVaria
   feat.setFields( fields );
   QgsAttributes attributes;
 
-  int step =  points.size() > 0 ? 100.0 / points.size() : 1;
+  const double step = points.size() > 0 ? 100.0 / points.size() : 1;
   for ( int i = 1; i < points.size(); i++ )
   {
     if ( feedback->isCanceled() )
@@ -111,7 +111,7 @@ QVariantMap QgsShortestPathLayerToPointAlgorithm::processAlgorithm( const QVaria
     }
 
     idxStart = graph->findVertex( snappedPoints[i] );
-    QgsGraphAnalyzer::dijkstra( graph, idxStart, 0, &tree, &costs );
+    QgsGraphAnalyzer::dijkstra( graph.get(), idxStart, 0, &tree, &costs );
 
     if ( tree.at( idxEnd ) == -1 )
     {
