@@ -68,7 +68,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * \param vertex index of vertex to delete
      * \since QGIS 2.14
      */
-    QgsVectorLayer::EditResult deleteVertex( QgsFeatureId featureId, int vertex );
+    Qgis::VectorEditResult deleteVertex( QgsFeatureId featureId, int vertex );
 
     /**
      * Adds a ring to polygon/multipolygon features

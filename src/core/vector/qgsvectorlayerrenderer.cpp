@@ -120,15 +120,15 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   QString markerTypeString = QgsSettingsRegistryCore::settingsDigitizingMarkerStyle.value();
   if ( markerTypeString == QLatin1String( "Cross" ) )
   {
-    mVertexMarkerStyle = QgsSymbolLayerUtils::Cross;
+    mVertexMarkerStyle = Qgis::VertexMarkerType::Cross;
   }
   else if ( markerTypeString == QLatin1String( "SemiTransparentCircle" ) )
   {
-    mVertexMarkerStyle = QgsSymbolLayerUtils::SemiTransparentCircle;
+    mVertexMarkerStyle = Qgis::VertexMarkerType::SemiTransparentCircle;
   }
   else
   {
-    mVertexMarkerStyle = QgsSymbolLayerUtils::NoMarker;
+    mVertexMarkerStyle = Qgis::VertexMarkerType::NoMarker;
   }
 
   mVertexMarkerSize = QgsSettingsRegistryCore::settingsDigitizingMarkerSizeMm.value();

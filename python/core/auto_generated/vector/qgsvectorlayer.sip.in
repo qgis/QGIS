@@ -341,23 +341,6 @@ Provider to display vector data in a GRASS GIS layer.
 %End
   public:
 
-    enum EditResult
-    {
-      Success,
-      EmptyGeometry,
-      EditFailed,
-      FetchFeatureFailed,
-      InvalidLayer,
-    };
-
-    enum SelectBehavior
-    {
-      SetSelection,
-      AddToSelection,
-      IntersectSelection,
-      RemoveFromSelection,
-    };
-
     struct LayerOptions
     {
 
@@ -647,7 +630,7 @@ Returns the number of features that are selected in this layer.
 .. seealso:: :py:func:`selectedFeatureIds`
 %End
 
-    void selectByRect( QgsRectangle &rect, QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection );
+    void selectByRect( QgsRectangle &rect, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection );
 %Docstring
 Selects features found within the search rectangle (in layer's coordinates)
 
@@ -662,7 +645,7 @@ Selects features found within the search rectangle (in layer's coordinates)
 .. seealso:: :py:func:`selectByIds`
 %End
 
-    void selectByExpression( const QString &expression, QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection );
+    void selectByExpression( const QString &expression, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection );
 %Docstring
 Selects matching features using an expression.
 
@@ -677,7 +660,7 @@ Selects matching features using an expression.
 .. versionadded:: 2.16
 %End
 
-    void selectByIds( const QgsFeatureIds &ids, QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection );
+    void selectByIds( const QgsFeatureIds &ids, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection );
 %Docstring
 Selects matching features using a list of feature IDs. Will emit the
 :py:func:`~QgsVectorLayer.selectionChanged` signal with the clearAndSelect flag set.
@@ -1262,7 +1245,7 @@ to the given coordinates.
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 %End
 
-    EditResult deleteVertex( QgsFeatureId featureId, int vertex );
+    Qgis::VectorEditResult deleteVertex( QgsFeatureId featureId, int vertex );
 %Docstring
 Deletes a vertex from a feature.
 
@@ -2186,14 +2169,7 @@ Finish edit command and add it to undo/redo stack
 Destroy active command and reverts all changes in it
 %End
 
-    enum VertexMarkerType
-    {
-      SemiTransparentCircle,
-      Cross,
-      NoMarker
-    };
-
- static void drawVertexMarker( double x, double y, QPainter &p, QgsVectorLayer::VertexMarkerType type, int vertexSize );
+ static void drawVertexMarker( double x, double y, QPainter &p, Qgis::VertexMarkerType type, int vertexSize );
 %Docstring
 Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex editing.)
 

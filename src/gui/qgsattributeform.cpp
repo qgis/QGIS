@@ -639,7 +639,7 @@ void QgsAttributeForm::displayWarning( const QString &message )
                             Qgis::MessageLevel::Warning );
 }
 
-void QgsAttributeForm::runSearchSelect( QgsVectorLayer::SelectBehavior behavior )
+void QgsAttributeForm::runSearchSelect( Qgis::SelectBehavior behavior )
 {
   QString filter = createFilterExpression();
   if ( filter.isEmpty() )
@@ -653,22 +653,22 @@ void QgsAttributeForm::runSearchSelect( QgsVectorLayer::SelectBehavior behavior 
 
 void QgsAttributeForm::searchSetSelection()
 {
-  runSearchSelect( QgsVectorLayer::SetSelection );
+  runSearchSelect( Qgis::SelectBehavior::SetSelection );
 }
 
 void QgsAttributeForm::searchAddToSelection()
 {
-  runSearchSelect( QgsVectorLayer::AddToSelection );
+  runSearchSelect( Qgis::SelectBehavior::AddToSelection );
 }
 
 void QgsAttributeForm::searchRemoveFromSelection()
 {
-  runSearchSelect( QgsVectorLayer::RemoveFromSelection );
+  runSearchSelect( Qgis::SelectBehavior::RemoveFromSelection );
 }
 
 void QgsAttributeForm::searchIntersectSelection()
 {
-  runSearchSelect( QgsVectorLayer::IntersectSelection );
+  runSearchSelect( Qgis::SelectBehavior::IntersectSelection );
 }
 
 bool QgsAttributeForm::saveMultiEdits()

@@ -158,13 +158,13 @@ bool QgsMapToolSelect::populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEve
     modifiers = event->modifiers();
     mapPoint = event->mapPoint();
   }
-  QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection;
+  Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection;
   if ( modifiers & Qt::ShiftModifier && modifiers & Qt::ControlModifier )
-    behavior = QgsVectorLayer::IntersectSelection;
+    behavior = Qgis::SelectBehavior::IntersectSelection;
   else if ( modifiers & Qt::ShiftModifier )
-    behavior = QgsVectorLayer::AddToSelection;
+    behavior = Qgis::SelectBehavior::AddToSelection;
   else if ( modifiers & Qt::ControlModifier )
-    behavior = QgsVectorLayer::RemoveFromSelection;
+    behavior = Qgis::SelectBehavior::RemoveFromSelection;
 
   QgsRectangle r = QgsMapToolSelectUtils::expandSelectRectangle( mapPoint, mCanvas, vlayer );
 
