@@ -788,7 +788,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     *
     * \since QGIS 3.22
     */
-    virtual QMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary();
+    virtual QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary();
 
   protected:
 

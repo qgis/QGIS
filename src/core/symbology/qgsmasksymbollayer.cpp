@@ -29,6 +29,11 @@ QgsMaskMarkerSymbolLayer::QgsMaskMarkerSymbolLayer()
 
 QgsMaskMarkerSymbolLayer::~QgsMaskMarkerSymbolLayer() = default;
 
+bool QgsMaskMarkerSymbolLayer::enabled() const
+{
+  return !mMaskedSymbolLayers.isEmpty();
+}
+
 bool QgsMaskMarkerSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
   if ( symbol && symbol->type() == Qgis::SymbolType::Marker )

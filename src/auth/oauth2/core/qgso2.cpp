@@ -30,6 +30,9 @@
 #include <QUrl>
 #include <QUrlQuery>
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+#include <QRandomGenerator>
+#endif
 
 QString QgsO2::O2_OAUTH2_STATE = QStringLiteral( "state" );
 
@@ -250,8 +253,12 @@ void QgsO2::link()
 
 void QgsO2::setState( const QString & )
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   qsrand( QTime::currentTime().msec() );
   state_ = QString::number( qrand() );
+#else
+  state_ = QString::number( QRandomGenerator::system()->generate() );
+#endif
   Q_EMIT stateChanged();
 }
 

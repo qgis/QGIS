@@ -13,6 +13,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#include "qgis.h"
 #include "qgstopologicalmesh.h"
 #include "qgsmesheditor.h"
 #include "qgsmessagelog.h"
@@ -475,7 +477,7 @@ QSet<int> QgsTopologicalMesh::concernedFacesBy( const QList<int> faceIndexes ) c
   {
     const QgsMeshFace &face = mMesh->face( faceIndex );
     for ( int i = 0; i < face.count(); ++i )
-      faces.unite( facesAroundVertex( face.at( i ) ).toSet() );
+      faces.unite( qgis::listToSet( facesAroundVertex( face.at( i ) ) ) );
   }
   return faces;
 }
@@ -983,7 +985,7 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::removeVertices( const QList<int>
   QSet<int> facesIndex;
   //Search for associated faces
   for ( int vertexIndex : vertices )
-    facesIndex.unite( facesAroundVertex( vertexIndex ).toSet() );
+    facesIndex.unite( qgis::listToSet( facesAroundVertex( vertexIndex ) ) );
 
   // remove the faces
   Changes changes = removeFaces( facesIndex.values() );
@@ -1252,7 +1254,7 @@ QList<int> QgsTopologicalMesh::facesAroundVertex( int vertexIndex ) const
 
 QgsMeshEditingError QgsTopologicalMesh::canFacesBeRemoved( const QList<int> facesIndexes )
 {
-  QSet<int> removedFaces = facesIndexes.toSet();
+  QSet<int> removedFaces = qgis::listToSet( facesIndexes );
   QSet<int> concernedFaces = concernedFacesBy( facesIndexes );
 
   for ( const int f : std::as_const( removedFaces ) )
@@ -1276,7 +1278,7 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::removeFaces( const QList<int> fa
   changes.mFacesToRemove.resize( facesIndexesToRemove.count() );
   changes.mFacesNeighborhoodToRemove.resize( facesIndexesToRemove.count() );
 
-  QSet<int> indexSet = facesIndexesToRemove.toSet();
+  QSet<int> indexSet = qgis::listToSet( facesIndexesToRemove );
   QSet<int> threatedVertex;
 
   for ( int i = 0; i < facesIndexesToRemove.count(); ++i )
@@ -1821,7 +1823,7 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::changeXYValue( const QList<int> 
     changes.mChangeCoordinateVerticesIndexes.append( verticesIndexes.at( i ) );
     changes.mOldXYValues.append( mMesh->vertices.at( verticesIndexes.at( i ) ) );
     changes.mNewXYValues.append( newValues.at( i ) );
-    concernedFace.unite( facesAroundVertex( verticesIndexes.at( i ) ).toSet() );
+    concernedFace.unite( qgis::listToSet( facesAroundVertex( verticesIndexes.at( i ) ) ) );
   }
 
   changes.mNativeFacesIndexesGeometryChanged = concernedFace.values();

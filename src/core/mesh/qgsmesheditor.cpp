@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgis.h"
 #include "qgsmesheditor.h"
 #include "qgsmeshdataprovider.h"
 #include "qgstriangularmesh.h"
@@ -403,7 +404,7 @@ QgsMeshEditingError QgsMeshEditor::removeVertices( const QList<int> &verticesToR
   {
     QSet<int> concernedNativeFaces;
     for ( const int vi : std::as_const( verticesIndexes ) )
-      concernedNativeFaces.unite( mTopologicalMesh.facesAroundVertex( vi ).toSet() );
+      concernedNativeFaces.unite( qgis::listToSet( mTopologicalMesh.facesAroundVertex( vi ) ) );
 
     error = mTopologicalMesh.canFacesBeRemoved( concernedNativeFaces.values() );
     if ( error.errorType != Qgis::MeshEditingErrorType::NoError )

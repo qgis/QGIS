@@ -20,6 +20,10 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
+#include "qgsfields.h"
+#include "qgspropertycollection.h"
+#include "qgssymbolrendercontext.h"
+
 #include <QColor>
 #include <QMap>
 #include <QPointF>
@@ -27,10 +31,6 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPainterPath>
-
-#include "qgsfields.h"
-#include "qgspropertycollection.h"
-#include "qgssymbolrendercontext.h"
 
 class QPainter;
 class QSize;

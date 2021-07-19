@@ -349,7 +349,9 @@ void QgsGpsData::removeTracks( const QgsFeatureIds &ids )
 
 void QgsGpsData::writeXml( QTextStream &stream )
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   stream.setCodec( QTextCodec::codecForName( "UTF8" ) );
+#endif
   stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
          << "<gpx version=\"1.0\" creator=\"QGIS\">\n";
   for ( WaypointIterator wIter = waypoints.begin();
@@ -360,7 +362,7 @@ void QgsGpsData::writeXml( QTextStream &stream )
   for ( TrackIterator tIter = tracks.begin(); tIter != tracks.end(); ++tIter )
     tIter->writeXml( stream );
   stream << "</gpx>\n";
-  stream << flush;
+  stream.flush();
 }
 
 
@@ -409,7 +411,7 @@ QgsGpsData *QgsGpsData::getData( const QString &fileName )
 
     data->setNoDataExtent();
 
-    dataObjects[fileName] = qMakePair<QgsGpsData *, unsigned>( data, 0 );
+    dataObjects[fileName] = qMakePair( data, 0 );
   }
   else
   {

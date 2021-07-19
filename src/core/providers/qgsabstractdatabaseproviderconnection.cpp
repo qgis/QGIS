@@ -74,7 +74,7 @@ QString QgsAbstractDatabaseProviderConnection::providerKey() const
 ///@endcond
 
 
-QMap<Qgis::SqlKeywordCategory, QStringList> QgsAbstractDatabaseProviderConnection::sqlDictionary()
+QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsAbstractDatabaseProviderConnection::sqlDictionary()
 {
   return
   {

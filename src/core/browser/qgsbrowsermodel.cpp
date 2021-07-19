@@ -18,6 +18,8 @@
 #include <QtConcurrentMap>
 #include <QUrl>
 #include <QStorageInfo>
+#include <QFuture>
+#include <QFutureWatcher>
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -38,11 +40,27 @@
 #define PROJECT_HOME_PREFIX "project:"
 #define HOME_PREFIX "home:"
 
-QgsBrowserWatcher::QgsBrowserWatcher( QgsDataItem *item )
-  : QFutureWatcher( nullptr )
-  , mItem( item )
+/// @cond PRIVATE
+class QgsBrowserWatcher : public QFutureWatcher<QVector <QgsDataItem *> >
 {
-}
+    Q_OBJECT
+
+  public:
+    QgsBrowserWatcher( QgsDataItem *item )
+      : QFutureWatcher( nullptr )
+      , mItem( item )
+    {
+    }
+
+    QgsDataItem *item() const { return mItem; }
+
+  signals:
+    void finished( QgsDataItem *item, const QVector <QgsDataItem *> &items );
+
+  private:
+    QgsDataItem *mItem = nullptr;
+};
+///@endcond
 
 // sort function for QList<QgsDataItem*>, e.g. sorted/grouped provider listings
 static bool cmpByDataItemName_( QgsDataItem *a, QgsDataItem *b )
@@ -799,3 +817,6 @@ QgsDataItem *QgsBrowserModel::addProviderRootItem( QgsDataItemProvider *pr )
   }
   return item;
 }
+
+// For QgsBrowserWatcher
+#include "qgsbrowsermodel.moc"
