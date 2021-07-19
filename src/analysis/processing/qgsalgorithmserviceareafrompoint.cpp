@@ -103,12 +103,12 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
   mDirector->makeGraph( mBuilder.get(), QVector< QgsPointXY >() << startPoint, snappedPoints, feedback );
 
   feedback->pushInfo( QObject::tr( "Calculating service area…" ) );
-  QgsGraph *graph = mBuilder->graph();
+  std::unique_ptr< QgsGraph> graph( mBuilder->takeGraph() );
   int idxStart = graph->findVertex( snappedPoints[0] );
 
   QVector< int > tree;
   QVector< double > costs;
-  QgsGraphAnalyzer::dijkstra( graph, idxStart, 0, &tree, &costs );
+  QgsGraphAnalyzer::dijkstra( graph.get(), idxStart, 0, &tree, &costs );
 
   QgsMultiPointXY points;
   QgsMultiPolylineXY lines;
@@ -214,6 +214,8 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
         }
       } // costs
 
+      upperBoundary.reserve( nodes.size() );
+      lowerBoundary.reserve( nodes.size() );
       for ( int i : nodes )
       {
         upperBoundary.push_back( graph->vertex( graph->edge( tree.at( i ) ).toVertex() ).point() );

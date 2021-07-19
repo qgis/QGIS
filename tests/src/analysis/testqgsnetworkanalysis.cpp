@@ -159,7 +159,7 @@ void TestQgsNetworkAnalysis::testBuild()
   QVector<QgsPointXY > snapped;
   director->makeGraph( builder.get(), QVector<QgsPointXY>() << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 10 ), snapped );
   QCOMPARE( snapped, QVector<QgsPointXY>() << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 10 ) );
-  std::unique_ptr< QgsGraph > graph( builder->graph() );
+  std::unique_ptr< QgsGraph > graph( builder->takeGraph() );
   QCOMPARE( graph->vertexCount(), 3 );
   QCOMPARE( graph->edgeCount(), 4 );
   QCOMPARE( graph->vertex( 0 ).point(), QgsPointXY( 0, 0 ) );
@@ -191,7 +191,7 @@ void TestQgsNetworkAnalysis::testBuild()
   builder = std::make_unique< QgsGraphBuilder > ( network->sourceCrs(), true, 0 );
   director->makeGraph( builder.get(), QVector<QgsPointXY>() << QgsPointXY( 0.2, 0.1 ) << QgsPointXY( 10.1, 9 ), snapped );
   QCOMPARE( snapped, QVector<QgsPointXY>() << QgsPointXY( 0.2, 0.0 ) << QgsPointXY( 10.0, 9 ) );
-  graph.reset( builder->graph() );
+  graph.reset( builder->takeGraph() );
   QCOMPARE( graph->vertexCount(), 5 );
   QCOMPARE( graph->edgeCount(), 8 );
 
@@ -218,7 +218,7 @@ void TestQgsNetworkAnalysis::testBuildTolerance()
 
   QVector<QgsPointXY > snapped;
   director->makeGraph( builder.get(), QVector<QgsPointXY>(), snapped );
-  std::unique_ptr< QgsGraph > graph( builder->graph() );
+  std::unique_ptr< QgsGraph > graph( builder->takeGraph() );
   QCOMPARE( graph->vertexCount(), 5 );
   QCOMPARE( graph->edgeCount(), 6 );
   QCOMPARE( graph->vertex( 0 ).point(), QgsPointXY( 0, 0 ) );
@@ -252,7 +252,7 @@ void TestQgsNetworkAnalysis::testBuildTolerance()
 
   builder = std::make_unique< QgsGraphBuilder > ( network->sourceCrs(), true, tolerance );
   director->makeGraph( builder.get(), QVector<QgsPointXY>(), snapped );
-  graph.reset( builder->graph() );
+  graph.reset( builder->takeGraph() );
   QCOMPARE( graph->vertexCount(), 4 );
   QCOMPARE( graph->edgeCount(), 6 );
   QCOMPARE( graph->vertex( 0 ).point(), QgsPointXY( 0, 0 ) );
@@ -332,7 +332,7 @@ void TestQgsNetworkAnalysis::dijkkjkjkskkjsktra()
 
   QVector<QgsPointXY > snapped;
   director->makeGraph( builder.get(), QVector<QgsPointXY>(), snapped );
-  std::unique_ptr< QgsGraph > graph( builder->graph() );
+  std::unique_ptr< QgsGraph > graph( builder->takeGraph() );
 
   int startVertexIdx = graph->findVertex( QgsPointXY( 20, -10 ) );
   QVERIFY( startVertexIdx != -1 );
@@ -384,7 +384,7 @@ void TestQgsNetworkAnalysis::dijkkjkjkskkjsktra()
   director->addStrategy( strategy.release() );
   builder = std::make_unique< QgsGraphBuilder > ( network->sourceCrs(), true, 0 );
   director->makeGraph( builder.get(), QVector<QgsPointXY>(), snapped );
-  graph.reset( builder->graph() );
+  graph.reset( builder->takeGraph() );
   startVertexIdx = graph->findVertex( QgsPointXY( 0, 0 ) );
   QVERIFY( startVertexIdx != -1 );
   resultTree.clear();
@@ -427,7 +427,7 @@ void TestQgsNetworkAnalysis::dijkkjkjkskkjsktra()
   director->addStrategy( strategy.release() );
   builder = std::make_unique< QgsGraphBuilder > ( network->sourceCrs(), true, 0 );
   director->makeGraph( builder.get(), QVector<QgsPointXY>(), snapped );
-  graph.reset( builder->graph() );
+  graph.reset( builder->takeGraph() );
   startVertexIdx = graph->findVertex( QgsPointXY( 10, 10 ) );
   QVERIFY( startVertexIdx != -1 );
   resultTree.clear();
@@ -494,7 +494,7 @@ void TestQgsNetworkAnalysis::testRouteFail()
 
   QVector<QgsPointXY > snapped;
   director->makeGraph( builder.get(), QVector<QgsPointXY>() << start << end, snapped );
-  std::unique_ptr< QgsGraph > graph( builder->graph() );
+  std::unique_ptr< QgsGraph > graph( builder->takeGraph() );
 
   QgsPointXY snappedStart = snapped.at( 0 );
   QGSCOMPARENEAR( snappedStart.x(), 302131.3, 0.1 );
@@ -551,7 +551,7 @@ void TestQgsNetworkAnalysis::testRouteFail2()
 
   QVector<QgsPointXY > snapped;
   director->makeGraph( builder.get(), QVector<QgsPointXY>() << start << end, snapped );
-  std::unique_ptr< QgsGraph > graph( builder->graph() );
+  std::unique_ptr< QgsGraph > graph( builder->takeGraph() );
 
   QgsPointXY snappedStart = snapped.at( 0 );
   QGSCOMPARENEAR( snappedStart.x(), 11.250450, 0.000001 );
