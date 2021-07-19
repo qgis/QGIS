@@ -392,7 +392,7 @@ set(QGIS_ANALYSIS_HDRS
   vector/qgszonalstatistics.h
 )
 
-if(TARGET Qt5::PrintSupport)
+if (${QT_VERSION_BASE}PrintSupport_FOUND)
   set(QGIS_ANALYSIS_SRCS ${QGIS_ANALYSIS_SRCS}
 
     processing/qgsalgorithmlayoutatlastoimage.cpp
