@@ -30,7 +30,11 @@ if (WITH_GUI)
 endif()
 
 if (WITH_GUI)
-  QT5_WRAP_UI(vlayer_provider_UI_H qgsvirtuallayersourceselectbase.ui qgsembeddedlayerselect.ui)
+  if (WITH_QT6)
+    QT6_WRAP_UI(vlayer_provider_UI_H qgsvirtuallayersourceselectbase.ui qgsembeddedlayerselect.ui)
+  else()
+    QT5_WRAP_UI(vlayer_provider_UI_H qgsvirtuallayersourceselectbase.ui qgsembeddedlayerselect.ui)
+  endif()
 endif()
 
 include_directories(
@@ -56,9 +60,9 @@ target_compile_features(provider_virtuallayer PRIVATE cxx_std_17)
 
 target_link_libraries(provider_virtuallayer
   qgis_core
-  ${Qt5Core_LIBRARIES}
-  ${Qt5Gui_LIBRARIES}
-  ${Qt5Widgets_LIBRARIES}
+  ${${QT_VERSION_BASE}Core_LIBRARIES}
+  ${${QT_VERSION_BASE}Gui_LIBRARIES}
+  ${${QT_VERSION_BASE}Widgets_LIBRARIES}
   ${SQLITE3_LIBRARY}
   ${SPATIALITE_LIBRARY}
 )
