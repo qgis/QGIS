@@ -354,6 +354,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     void closeEvent( QCloseEvent * ) override;
     void dropEvent( QDropEvent *event ) override;
     void dragEnterEvent( QDragEnterEvent *event ) override;
+    void showEvent( QShowEvent *event ) override;
 
   private slots:
 
@@ -417,6 +418,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     void backgroundTaskCountChanged( int total );
     void onMapPreviewRefreshed();
     void onItemAdded( QgsLayoutItem *item );
+    void updateDevicePixelFromScreen();
 
   private:
 
@@ -515,6 +517,9 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     void storeExportResults( QgsLayoutExporter::ExportResult result, QgsLayoutExporter *exporter = nullptr );
     std::unique_ptr< QgsLayoutDesignerInterface::ExportResults> mLastExportResults;
     QMap< QString, QgsLabelingResults *> mLastExportLabelingResults;
+
+    double mScreenDpi = 96.0;
+    QMetaObject::Connection mScreenDpiChangedConnection;
 
     //! Save window state
     void saveWindowState();
