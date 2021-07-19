@@ -23,7 +23,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgisapp.h"
-
+#include "qgsstringutils.h"
 
 QgsLayerTreeViewFilterIndicatorProvider::QgsLayerTreeViewFilterIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )
@@ -63,7 +63,7 @@ QString QgsLayerTreeViewFilterIndicatorProvider::tooltipText( QgsMapLayer *layer
 
   if ( filter.size() > 1024 )
   {
-    filter = filter.left( 1023 ) + QString( QChar( 0x2026 ) );
+    filter = QgsStringUtils::truncateMiddleOfString( filter, 1024 );
   }
 
   return QStringLiteral( "<b>%1:</b><br>%2" ).arg( tr( "Filter" ), filter.toHtmlEscaped() );
