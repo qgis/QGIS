@@ -644,7 +644,7 @@ QString QgsStringUtils::wordWrap( const QString &string, const int length, const
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
         newstr.append( lines.at( i ).midRef( strCurrent, strHit - strCurrent ) );
 #else
-        newstr.append( QStringView {lines.at( i )}.mid( strCurrent, strHit - strCurrent ) );
+        newstr.append( QStringView {lines.at( i )} .mid( strCurrent, strHit - strCurrent ) );
 #endif
         newstr.append( '\n' );
         strCurrent = strHit + delimiterLength;
@@ -730,7 +730,11 @@ QString QgsStringUtils::truncateMiddleOfString( const QString &string, int maxLe
   // note we actually truncate an extra character, as we'll be replacing it with the ... character
   const int truncateFrom = string.length() / 2 - ( charactersToTruncate + 1 ) / 2;
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   return string.leftRef( truncateFrom ) + QString( QChar( 0x2026 ) ) + string.midRef( truncateFrom + charactersToTruncate + 1 );
+#else
+  return QStringView( string ).first( truncateFrom ) + QString( QChar( 0x2026 ) ) + QStringView( string ).sliced( truncateFrom + charactersToTruncate + 1 );
+#endif
 }
 
 QgsStringReplacement::QgsStringReplacement( const QString &match, const QString &replacement, bool caseSensitive, bool wholeWordOnly )
