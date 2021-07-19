@@ -157,12 +157,12 @@ jobs:
                      -v /home/runner/QGIS/.ccache:/root/.ccache \
                      --env-file .docker/docker-variables.env \
                      --env PUSH_TO_CDASH=true \
-                     --env WITH_QT5=${ matrix.with-qt5 } \
-                     --env WITH_QT6=${ matrix.with-qt6 } \
-                     --env WITH_QUICK=${ matrix.with-quick } \
-                     --env WITH_3D=${ matrix.with-3d } \
-                     --env WITH_BINDINGS=${ matrix.with-bindings } \
-                     --env PATCH_QT_3D=${ matrix.patch-qt-3d } \
+                     --env WITH_QT5=${{ matrix.with-qt5 }} \
+                     --env WITH_QT6=${{ matrix.with-qt6 }} \
+                     --env WITH_QUICK=${{ matrix.with-quick }} \
+                     --env WITH_3D=${{ matrix.with-3d }} \
+                     --env WITH_BINDINGS=${{ matrix.with-bindings }} \
+                     --env PATCH_QT_3D=${{ matrix.patch-qt-3d }} \
                      qgis3-build-deps \
                      /root/QGIS/.docker/docker-qgis-build.sh
 
