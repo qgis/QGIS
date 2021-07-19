@@ -38,6 +38,10 @@ else
   export CXX=/usr/lib/ccache/clang++
 fi
 
+if [[ ${WITH_QT6} = "ON" ]]; then
+  CLANG_WARNINGS="-Wrange-loop-construct"
+fi
+
 CMAKE_EXTRA_ARGS=()
 if [[ ${PATCH_QT_3D} == "true" ]]; then
   CMAKE_EXTRA_ARGS+=(
