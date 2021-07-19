@@ -1189,7 +1189,7 @@ QgsMeshEditingError QgsTopologicalMesh::canFacesBeAdded( const QgsTopologicalMes
     return QgsMeshEditingError( Qgis::MeshEditingErrorType::UniqueSharedVertex, uniqueSharedVertexBoundary.first() );
 
   // Check if internal vertices of new faces block are free in the mesh
-  QSet<int> boundaryVertices = topologicFaces.mBoundaries.toSet();
+  QSet<int> boundaryVertices = qgis::listToSet( topologicFaces.mBoundaries );
   for ( const QgsMeshFace &newFace : std::as_const( topologicFaces.mFaces ) )
   {
     for ( const int vertexIndex : newFace )
