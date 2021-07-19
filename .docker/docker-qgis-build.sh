@@ -30,8 +30,13 @@ pushd build > /dev/null
 echo "${bold}Running cmake...${endbold}"
 echo "::group::cmake"
 
-export CC=/usr/lib/ccache/clang
-export CXX=/usr/lib/ccache/clang++
+if [[ -f "/usr/lib64/ccache/clang" ]]; then
+  export CC=/usr/lib64/ccache/clang
+  export CXX=/usr/lib64/ccache/clang++
+else
+  export CC=/usr/lib/ccache/clang
+  export CXX=/usr/lib/ccache/clang++
+fi
 
 CMAKE_EXTRA_ARGS=()
 if [[ ${PATCH_QT_3D} == "true" ]]; then
