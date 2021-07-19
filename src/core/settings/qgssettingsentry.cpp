@@ -301,9 +301,9 @@ bool QgsSettingsEntryString::setValue( const QString &value, const QStringList &
   if ( value.length() < mMinLength )
   {
     QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. String length '%2' is shorter than minimum length '%3'." )
-                 .arg( QgsSettingsEntryBase::key( dynamicKeyPartList ),
-                       value.length(),
-                       mMinLength ) );
+                 .arg( QgsSettingsEntryBase::key( dynamicKeyPartList ) )
+                 .arg( value.length() )
+                 .arg( mMinLength ) );
     return false;
   }
 
@@ -311,9 +311,9 @@ bool QgsSettingsEntryString::setValue( const QString &value, const QStringList &
        && value.length() > mMaxLength )
   {
     QgsDebugMsg( QObject::tr( "Can't set value for settings with key '%1'. String length '%2' is longer than maximum length '%3'." )
-                 .arg( QgsSettingsEntryBase::key( dynamicKeyPartList ),
-                       value.length(),
-                       mMinLength ) );
+                 .arg( QgsSettingsEntryBase::key( dynamicKeyPartList ) )
+                 .arg( value.length() )
+                 .arg( mMinLength ) );
     return false;
   }
 
