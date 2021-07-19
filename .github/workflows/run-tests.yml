@@ -28,7 +28,6 @@ jobs:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       GH_WORKSPACE: ${{ github.workspace }} # used in docker compose
-      DEFAULT_UBUNTU_BASE: '20.04'
       RUN_FLAKY_TESTS: ${{ contains( github.event.pull_request.labels.*.name, 'run flaky tests') }}
 
     runs-on: ubuntu-latest
@@ -40,12 +39,17 @@ jobs:
           - distro-version: '20.04'
             qt-version: 5
             run-tests: true
+            docker-tag-suffix: ''
+
           - distro-version: '21.04'
             qt-version: 5
             run-tests: false
+            docker-tag-suffix: '_21.04'
+
           - distro-version: 'rawhide'
             qt-version: 6
             run-tests: false
+            docker-tag-suffix: ''
       fail-fast: false
 
     outputs:
@@ -66,7 +70,7 @@ jobs:
           UBUNTU_BASE: ${{ matrix.distro-version }}
         run: |
           # Be aware that these instructions are duplicated in run-tests job
-          DOCKER_TAG=$(echo $( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo ${GITHUB_BASE_REF} || echo ${GITHUB_REF##*/} ) | sed 's/^master$/latest/')$( [[ ${UBUNTU_BASE} != ${DEFAULT_UBUNTU_BASE} ]] && echo "_${UBUNTU_BASE}" || echo "" )
+          DOCKER_TAG=$(echo $( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo ${GITHUB_BASE_REF} || echo ${GITHUB_REF##*/} ) | sed 's/^master$/latest/')${{ matrix.docker-tag-suffix }}
           CTEST_BUILD_NAME=$( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo "PR${GITHUB_PR_NUMBER}" || echo ${GITHUB_REF##*/} )"_${GITHUB_SHA}"
           [[ ${UBUNTU_BASE} == "20.04" ]] && PATCH_QT_3D=true || PATCH_QT_3D=false
           # build w/o 3D for Qt 5.15 (many deprecation warnings)
@@ -258,7 +262,6 @@ jobs:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       GH_WORKSPACE: ${{ github.workspace }} # used in docker compose
-      DEFAULT_UBUNTU_BASE: '20.04'
 
     runs-on: ubuntu-latest
 
@@ -297,7 +300,7 @@ jobs:
           TEST_BATCH: ${{ matrix.test-batch }}
         run: |
           # Be aware that these instructions are duplicated in build job
-          DOCKER_TAG=$(echo $( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo ${GITHUB_BASE_REF} || echo ${GITHUB_REF##*/} ) | sed 's/^master$/latest/')$( [[ ${UBUNTU_BASE} != ${DEFAULT_UBUNTU_BASE} ]] && echo "_${UBUNTU_BASE}" || echo "" )
+          DOCKER_TAG=$(echo $( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo ${GITHUB_BASE_REF} || echo ${GITHUB_REF##*/} ) | sed 's/^master$/latest/')${{ matrix.docker-tag-suffix }}
           CTEST_BUILD_NAME=$( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo "PR${GITHUB_PR_NUMBER}" || echo ${GITHUB_REF##*/} )"_${GITHUB_SHA}_${TEST_BATCH}"
           [[ ${UBUNTU_BASE} == "20.04" ]] && PATCH_QT_3D=true || PATCH_QT_3D=false
           echo "DOCKER_TAG=${DOCKER_TAG}" >> $GITHUB_ENV
