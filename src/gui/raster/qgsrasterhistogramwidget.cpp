@@ -1065,7 +1065,7 @@ QString findClosestTickVal( double target, const QwtScaleDiv *scale, int div = 1
   }
 
   // QgsDebugMsg( QStringLiteral( "target=%1 div=%2 closest=%3" ).arg( target ).arg( div ).arg( closest ) );
-  return QString::number( closest );
+  return QLocale().toString( closest );
 }
 
 void QgsRasterHistogramWidget::histoPickerSelected( QPointF pos )
@@ -1224,9 +1224,9 @@ QPair< QString, QString > QgsRasterHistogramWidget::rendererMinMax( int bandNo )
 
   // if we get an empty result, fill with default value (histo min/max)
   if ( myMinMax.first.isEmpty() )
-    myMinMax.first = QString::number( mHistoMin );
+    myMinMax.first = QLocale().toString( mHistoMin );
   if ( myMinMax.second.isEmpty() )
-    myMinMax.second = QString::number( mHistoMax );
+    myMinMax.second = QLocale().toString( mHistoMax );
 
   QgsDebugMsg( QStringLiteral( "bandNo %1 got min/max [%2] [%3]" ).arg( bandNo ).arg( myMinMax.first, myMinMax.second ) );
 

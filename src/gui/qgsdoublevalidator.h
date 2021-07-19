@@ -86,6 +86,14 @@ class GUI_EXPORT QgsDoubleValidator : public QRegularExpressionValidator
      */
     QgsDoubleValidator( int decimal, QObject *parent );
 
+    /**
+     * Sets the number of decimals accepted by the validator to \a maxDecimals.
+     * \warning setting decimals overrides any custom regular expression that was previously set
+     * \since QGIS 3.22
+     */
+    void setMaxDecimals( int maxDecimals );
+
+
     QValidator::State validate( QString &input, int & ) const override SIP_SKIP;
 
     /**

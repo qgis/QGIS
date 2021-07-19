@@ -121,7 +121,7 @@ QString QgsClassificationStandardDeviation::labelForRange( const double lowerVal
 QString QgsClassificationStandardDeviation::valueToLabel( const double value ) const
 {
   double normalized = ( value - mEffectiveSymmetryPoint ) / mStdDev;
-  return QObject::tr( " %1 Std Dev" ).arg( QString::number( normalized, 'f', 2 ) );
+  return QObject::tr( " %1 Std Dev" ).arg( QLocale().toString( normalized, 'f', 2 ) );
 }
 
 
