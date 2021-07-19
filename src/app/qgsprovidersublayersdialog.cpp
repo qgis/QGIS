@@ -99,14 +99,14 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   QgsGui::enableAutoGeometryRestore( this );
 
   const QFileInfo fileInfo( filePath );
-  mFilePath = fileInfo.isFile() && fileInfo.exists() ? filePath : QString();
-  mFileName = !mFilePath.isEmpty() ? fileInfo.fileName() : QString();
+  mFilePath = ( fileInfo.isFile() || fileInfo.isDir() ) && fileInfo.exists() ? filePath : QString();
+  const QString fileName = !mFilePath.isEmpty() ? QgsProviderUtils::suggestLayerNameFromFilePath( mFilePath ) : QString();
 
-  setWindowTitle( mFileName.isEmpty() ? tr( "Select Items to Add" ) : QStringLiteral( "%1 | %2" ).arg( tr( "Select Items to Add" ), mFileName ) );
+  setWindowTitle( fileName.isEmpty() ? tr( "Select Items to Add" ) : QStringLiteral( "%1 | %2" ).arg( tr( "Select Items to Add" ), fileName ) );
 
   mLblFilePath->setText( QStringLiteral( "<a href=\"%1\">%2</a>" )
                          .arg( QUrl::fromLocalFile( mFilePath ).toString(), QDir::toNativeSeparators( QFileInfo( mFilePath ).canonicalFilePath() ) ) );
-  mLblFilePath->setVisible( !mFileName.isEmpty() );
+  mLblFilePath->setVisible( !mFilePath.isEmpty() );
   mLblFilePath->setWordWrap( true );
   mLblFilePath->setTextInteractionFlags( Qt::TextBrowserInteraction );
   connect( mLblFilePath, &QLabel::linkActivated, this, [ = ]( const QString & link )

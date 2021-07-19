@@ -78,7 +78,6 @@ class QgsProviderSublayersDialog : public QDialog, private Ui::QgsProviderSublay
     QgsProviderSublayerProxyModel *mProxyModel = nullptr;
     QPointer< QgsProviderSublayerTask > mTask;
     QString mFilePath;
-    QString mFileName;
     bool mBlockSelectionChanges = false;
 
 };
