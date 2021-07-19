@@ -102,7 +102,7 @@ void TestQgsFontUtils::xmlMethods()
 #endif
 
   //test numeric weight
-  f1.setWeight( 5 );
+  f1.setWeight( QFont::ExtraLight );
   fontElem = QgsFontUtils::toXmlElement( f1, doc, QStringLiteral( "test" ) );
   QVERIFY( f2.weight() != f1.weight() );
   QVERIFY( QgsFontUtils::setFromXmlElement( f2, fontElem ) );
