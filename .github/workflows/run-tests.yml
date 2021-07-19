@@ -149,7 +149,7 @@ jobs:
                      --env PUSH_TO_CDASH=true \
                      --env WITH_3D=${WITH_3D} \
                      qgis3-build-deps \
-                     /root/QGIS/.docker/docker-qgis-build-${{ matrix.qt-version }}.sh
+                     /root/QGIS/.docker/docker-qgis-build-qt${{ matrix.qt-version }}.sh
 
       - name: Push artifact
         id: push_artifact
