@@ -303,6 +303,7 @@ The development version
       FlatFace,
       UniqueSharedVertex,
       InvalidVertex,
+      ManifoldFace,
     };
 
     enum class FilePathType

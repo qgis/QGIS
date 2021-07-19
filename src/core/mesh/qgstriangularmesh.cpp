@@ -81,7 +81,6 @@ static void ENP_centroid( const QPolygonF &pX, double &cx, double &cy )
   cy = cy + pt0.y();
 }
 
-
 static void triangulateFaces( const QgsMeshFace &face,
                               int nativeIndex,
                               QVector<QgsMeshFace> &destinationFaces,
@@ -144,17 +143,7 @@ QgsMeshVertex QgsTriangularMesh::transformVertex( const QgsMeshVertex &vertex, Q
 
 QgsMeshVertex QgsTriangularMesh::calculateCentroid( const QgsMeshFace &nativeFace )
 {
-  QVector<QPointF> points( nativeFace.size() );
-  for ( int j = 0; j < nativeFace.size(); ++j )
-  {
-    int index = nativeFace.at( j );
-    const QgsMeshVertex &vertex = mTriangularMesh.vertices.at( index ); // we need vertices in map coordinate
-    points[j] = vertex.toQPointF();
-  }
-  QPolygonF poly( points );
-  double cx, cy;
-  ENP_centroid( poly, cx, cy );
-  return QgsMeshVertex( cx, cy );
+  return QgsMeshUtils::centroid( nativeFace, mTriangularMesh.vertices );
 }
 
 double QgsTriangularMesh::averageTriangleSize() const
@@ -280,18 +269,7 @@ void QgsTriangularMesh::finalizeTriangles()
 
     mAverageTriangleSize += std::fmax( bbox.width(), bbox.height() );
 
-    //To have consistent clock wise orientation of triangles which is necessary for 3D rendering
-    //Check the clock wise, and if it is not counter clock wise, swap indexes to make the oientation counter clock wise
-    double ux = v1.x() - v0.x();
-    double uy = v1.y() - v0.y();
-    double vx = v2.x() - v0.x();
-    double vy = v2.y() - v0.y();
-
-    double crossProduct = ux * vy - uy * vx;
-    if ( crossProduct < 0 ) //CW -->change the orientation
-    {
-      std::swap( face[1], face[2] );
-    }
+    QgsMeshUtils::setCounterClockwise( face, v0, v1, v2 );
   }
   mAverageTriangleSize /= mTriangularMesh.faceCount();
 }
@@ -940,4 +918,35 @@ QgsTriangularMesh::Changes::Changes( const QgsTopologicalMesh::Changes &topologi
   mNativeFacesGeometryChanged.resize( mNativeFaceIndexesGeometryChanged.count() );
   for ( int i = 0; i < mNativeFaceIndexesGeometryChanged.count(); ++i )
     mNativeFacesGeometryChanged[i] = nativeMesh.face( mNativeFaceIndexesGeometryChanged.at( i ) );
+}
+
+QgsMeshVertex QgsMeshUtils::centroid( const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices )
+{
+  QVector<QPointF> points( face.size() );
+  for ( int j = 0; j < face.size(); ++j )
+  {
+    int index = face.at( j );
+    const QgsMeshVertex &vertex = vertices.at( index ); // we need vertices in map coordinate
+    points[j] = vertex.toQPointF();
+  }
+  QPolygonF poly( points );
+  double cx, cy;
+  ENP_centroid( poly, cx, cy );
+  return QgsMeshVertex( cx, cy );
+}
+
+void QgsMeshUtils::setCounterClockwise( QgsMeshFace &triangle, const QgsMeshVertex &v0, const QgsMeshVertex &v1, const QgsMeshVertex &v2 )
+{
+  //To have consistent clock wise orientation of triangles which is necessary for 3D rendering
+  //Check the clock wise, and if it is not counter clock wise, swap indexes to make the oientation counter clock wise
+  double ux = v1.x() - v0.x();
+  double uy = v1.y() - v0.y();
+  double vx = v2.x() - v0.x();
+  double vy = v2.y() - v0.y();
+
+  double crossProduct = ux * vy - uy * vx;
+  if ( crossProduct < 0 ) //CW -->change the orientation
+  {
+    std::swap( triangle[1], triangle[2] );
+  }
 }

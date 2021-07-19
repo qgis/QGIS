@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsMeshEditingError
 {
 %Docstring(signature="appended")
@@ -68,6 +70,12 @@ Initialize the mesh editor and return errors if the internal native mesh have to
     bool faceCanBeAdded( const QgsMeshFace &face );
 %Docstring
 Returns ``True`` if a ``face`` can be added to the mesh
+%End
+
+    bool isFaceGeometricallyCompatible( const QgsMeshFace &face );
+%Docstring
+Returns ``True`` if the face does not intersect or contains any other elements (faces or vertices)
+The topological compatibility is not checked
 %End
 
     QgsMeshEditingError addFace( const QVector<int> &vertexIndexes );
@@ -142,6 +150,11 @@ Changes the (X,Y) coordinates values of the vertices with indexes in ``vertices`
 The caller has the responsibility to check if changing the vertices coordinates does not lead to topological errors
 %End
 
+    void advancedEdit( QgsMeshAdvancedEditing *editing );
+%Docstring
+Applies an advance editing on the edited mesh, see :py:class:`QgsMeshAdvancedEditing`
+%End
+
     void stopEditing();
 %Docstring
 Stops editing
@@ -171,6 +184,11 @@ Returns whether the vertex with index ``vertexIndex`` is on a boundary
     bool isVertexFree( int vertexIndex ) const;
 %Docstring
 Returns whether the vertex with index ``vertexIndex`` is a free vertex
+%End
+
+    bool checkConsistency() const;
+%Docstring
+Return ``True`` if the edited mesh is consistent
 %End
 
   signals:

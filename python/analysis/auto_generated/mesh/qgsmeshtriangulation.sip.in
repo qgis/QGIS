@@ -58,6 +58,13 @@ Adds break lines from a vector layer, return ``True`` if successful.
    if the feature iterator contains only point geometries, the vertices will be added only without treating them as breaklines
 %End
 
+    int addVertex( const QgsPoint &vertex );
+%Docstring
+Adds a new vertex in the triangulation and returns the index of the new vertex
+
+.. versionadded:: 3.22
+%End
+
     QgsMesh triangulatedMesh( QgsFeedback *feedback = 0 ) const;
 %Docstring
 Returns the triangulated mesh
@@ -109,6 +116,29 @@ Constructor
 
   private:
     QgsMeshZValueDatasetGroup( const QgsMeshZValueDatasetGroup &rhs );
+};
+
+
+class QgsMeshEditingDelaunayTriangulation : QgsMeshAdvancedEditing
+{
+%Docstring(signature="appended")
+
+Class that can be used with :py:func:`QgsMeshEditor.advancedEdit()` to add triangle faces to a mesh created by
+a Delaunay triangulation on provided existing vertex.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsmeshtriangulation.h"
+%End
+  public:
+
+    QgsMeshEditingDelaunayTriangulation();
+%Docstring
+Constructor
+%End
+
 };
 
 /************************************************************************

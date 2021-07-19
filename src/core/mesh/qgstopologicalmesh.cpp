@@ -87,8 +87,8 @@ QgsMeshVertexCirculator::QgsMeshVertexCirculator( const QgsTopologicalMesh::Topo
   , mFacesNeighborhood( topologicalFaces.mFacesNeighborhood )
   , mVertexIndex( vertexIndex )
 {
-
-  mCurrentFace = topologicalFaces.mVerticesToFace.value( vertexIndex, -1 );
+  if ( topologicalFaces.mVerticesToFace.contains( vertexIndex ) )
+    mCurrentFace = topologicalFaces.mVerticesToFace.values( vertexIndex ).first();
   mLastValidFace = mCurrentFace;
   mIsValid = mCurrentFace != -1;
 }
@@ -219,6 +219,33 @@ bool QgsMeshVertexCirculator::isValid() const
   return mIsValid;
 }
 
+QList<int> QgsMeshVertexCirculator::facesAround() const
+{
+  QList<int> ret;
+  if ( !isValid() )
+    return ret;
+
+  if ( mCurrentFace != -1 )
+    ret.append( mCurrentFace );
+  while ( turnCounterClockwise() != ret.first() && currentFaceIndex() != -1 )
+    ret.append( currentFaceIndex() );
+
+
+  if ( currentFaceIndex() == -1 )  //we encounter a boundary, restart with other direction
+  {
+    ret.clear();
+    if ( turnClockwise() == -1 )
+      return ret;
+    ret.append( currentFaceIndex() );
+    while ( turnClockwise() != -1 )
+    {
+      ret.append( currentFaceIndex() );
+    }
+  }
+
+  return ret;
+}
+
 int QgsMeshVertexCirculator::positionInCurrentFace() const
 {
   if ( mCurrentFace < 0 || mCurrentFace > mFaces.count() )
@@ -239,44 +266,46 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::addFaces( const QgsTopologicalMe
 
   for ( int boundary : topologicalFaces.mBoundaries )
   {
-    //if the boundary id a free vertex in the destination mesh, no need to check
+    //if the boundary is a free vertex in the destination mesh, no need to check
     if ( mVertexToFace.at( boundary ) == -1 )
       continue;
 
-    int indexOfStartinFace = topologicalFaces.mVerticesToFace.value( boundary );
-
-    QgsMeshVertexCirculator newFacesCirculator( topologicalFaces, indexOfStartinFace, boundary );
-    //search for face boundary on clockwise side of new faces
-    newFacesCirculator.goBoundaryClockwise();
-    int oppositeVertexForNewFace = newFacesCirculator.oppositeVertexClockwise();
-    if ( mVertexToFace.at( oppositeVertexForNewFace ) == -1 )
-      continue;
-
-    QgsMeshVertexCirculator meshCirculator = vertexCirculator( boundary );
-    meshCirculator.goBoundaryCounterClockwise();
-    int oppositeVertexForMeshFace = meshCirculator.oppositeVertexCounterClockwise();
-
-    const QgsMeshFace &newFaceBoundary = newFacesCirculator.currentFace();
-    int boundaryPositionInNewFace = vertexPositionInFace( boundary, newFaceBoundary );
-
-    if ( oppositeVertexForMeshFace != oppositeVertexForNewFace )
+    const QList<int> &linkedFaces = topologicalFaces.mVerticesToFace.values( boundary );
+    for ( int linkedFace : linkedFaces )
     {
-      changes.mFacesNeighborhoodToAdd[newFacesCirculator.currentFaceIndex()][boundaryPositionInNewFace] = -1 ;
-    }
-    else
-    {
-      const QgsMeshFace &meshFaceBoundary = meshCirculator.currentFace();
-      int boundaryPositionInMeshFace = vertexPositionInFace( meshCirculator.oppositeVertexCounterClockwise(), meshFaceBoundary );
+      QgsMeshVertexCirculator newFacesCirculator( topologicalFaces, linkedFace, boundary );
+      //search for face boundary on clockwise side of new faces
+      newFacesCirculator.goBoundaryClockwise();
+      int oppositeVertexForNewFace = newFacesCirculator.oppositeVertexClockwise();
+      if ( mVertexToFace.at( oppositeVertexForNewFace ) == -1 )
+        continue;
 
-      changes.mNeighborhoodChanges.append( std::array<int, 4>(
+      QgsMeshVertexCirculator meshCirculator = vertexCirculator( boundary );
+      meshCirculator.goBoundaryCounterClockwise();
+      int oppositeVertexForMeshFace = meshCirculator.oppositeVertexCounterClockwise();
+
+      const QgsMeshFace &newFaceBoundary = newFacesCirculator.currentFace();
+      int boundaryPositionInNewFace = vertexPositionInFace( boundary, newFaceBoundary );
+
+      if ( oppositeVertexForMeshFace != oppositeVertexForNewFace )
       {
-        meshCirculator.currentFaceIndex(),
-        boundaryPositionInMeshFace,
-        -1,
-        changes.addedFaceIndexInMesh( newFacesCirculator.currentFaceIndex() )
-      } ) );
+        changes.mFacesNeighborhoodToAdd[newFacesCirculator.currentFaceIndex()][boundaryPositionInNewFace] = -1 ;
+      }
+      else
+      {
+        const QgsMeshFace &meshFaceBoundary = meshCirculator.currentFace();
+        int boundaryPositionInMeshFace = vertexPositionInFace( meshCirculator.oppositeVertexCounterClockwise(), meshFaceBoundary );
 
-      changes.mFacesNeighborhoodToAdd[newFacesCirculator.currentFaceIndex()][boundaryPositionInNewFace] = meshCirculator.currentFaceIndex();
+        changes.mNeighborhoodChanges.append( std::array<int, 4>(
+        {
+          meshCirculator.currentFaceIndex(),
+          boundaryPositionInMeshFace,
+          -1,
+          changes.addedFaceIndexInMesh( newFacesCirculator.currentFaceIndex() )
+        } ) );
+
+        changes.mFacesNeighborhoodToAdd[newFacesCirculator.currentFaceIndex()][boundaryPositionInNewFace] = meshCirculator.currentFaceIndex();
+      }
     }
   }
 
@@ -290,7 +319,7 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::addFaces( const QgsTopologicalMe
     if ( mVertexToFace.at( vtc ) == -1 )
       changes.mVerticesToFaceChanges.append( {vtc,
                                               mVertexToFace.at( vtc ),
-                                              changes.addedFaceIndexInMesh( topologicalFaces.mVerticesToFace.value( vtc ) ) } );
+                                              changes.addedFaceIndexInMesh( topologicalFaces.mVerticesToFace.values( vtc ).first() ) } );
 
   applyChanges( changes );
 
@@ -466,7 +495,6 @@ bool QgsTopologicalMesh::facesCanBeJoinedWithCommonIndex( const QgsMeshFace &fac
   bool canBejoined = ( face1.at( ( commonVertexPosition1 + 1 ) % face1.size() ) == face2.at( ( commonVertexPosition2 - 1 + face2.size() ) % face2.size() ) ) ||
                      ( face1.at( ( commonVertexPosition1 - 1 + face1.size() ) % face1.size() ) == face2.at( ( commonVertexPosition2 + 1 ) % face2.size() ) );
 
-
   return canBejoined;
 }
 
@@ -494,22 +522,48 @@ void QgsTopologicalMesh::referenceAsFreeVertex( int vertexIndex )
   mFreeVertices.insert( vertexIndex );
 }
 
-bool QgsTopologicalMesh::checkConsistency() const
+QgsMeshEditingError QgsTopologicalMesh::checkConsistency() const
 {
   for ( int faceIndex = 0 ; faceIndex < mMesh->faces.count( ); ++faceIndex )
   {
     const QgsMeshFace &face = mMesh->faces.at( faceIndex );
+    const FaceNeighbors &neighborhood = mFacesNeighborhood.at( faceIndex );
+    if ( face.count() != neighborhood.count() )
+      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidFace, faceIndex );
     for ( int i = 0; i < face.count(); ++i )
-      if ( mVertexToFace.at( face.at( i ) ) == -1 )
-        return false;
+    {
+      int vertexIndex = face.at( i );
+      // check if each vertices is linked to a face (not free vertex)
+      if ( mVertexToFace.at( vertexIndex ) == -1 )
+        return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, vertexIndex );
+
+      int neighborIndex = neighborhood.at( i );
+      if ( neighborIndex != -1 )
+      {
+        const QgsMeshFace &neighborFace = mMesh->faces.at( neighborIndex );
+        int neighborSize = neighborFace.size();
+        const FaceNeighbors &neighborhoodOfNeighbor = mFacesNeighborhood.at( neighborIndex );
+        int posInNeighbor = vertexPositionInFace( *mMesh, vertexIndex, neighborIndex );
+        if ( neighborhoodOfNeighbor.isEmpty() || neighborhoodOfNeighbor.at( ( posInNeighbor + neighborSize - 1 ) % neighborSize ) != faceIndex )
+          return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidFace, faceIndex );
+      }
+    }
+
   }
 
-  return true;
+  return QgsMeshEditingError();
 }
 
 QgsMesh *QgsTopologicalMesh::mesh() const
 {
   return mMesh;
+}
+
+int QgsTopologicalMesh::firstFaceLinked( int vertexIndex ) const
+{
+  if ( vertexIndex < 0 || vertexIndex >= mMesh->vertexCount() )
+    return -1;
+  return mVertexToFace.at( vertexIndex );
 }
 
 bool QgsTopologicalMesh::isVertexOnBoundary( int vertexIndex ) const
@@ -712,6 +766,31 @@ int QgsTopologicalMesh::Changes::removedFaceIndexInmesh( int internalIndex ) con
   return mFaceIndexesToRemove.at( internalIndex );
 }
 
+void QgsTopologicalMesh::Changes::clearChanges()
+{
+  mAddedFacesFirstIndex = 0;
+  mFaceIndexesToRemove.clear();
+  mFacesToAdd.clear();
+  mFacesNeighborhoodToAdd.clear();
+  mFacesToRemove.clear();
+  mFacesNeighborhoodToRemove.clear();
+  mNeighborhoodChanges.clear();
+
+  mVerticesToAdd.clear();
+  mVertexToFaceToAdd.clear();
+  mVerticesToRemoveIndexes.clear();
+  mRemovedVertices.clear();
+  mVerticesToFaceRemoved.clear();
+  mVerticesToFaceChanges.clear();
+
+  mChangeCoordinateVerticesIndexes.clear();
+  mNewZValues.clear();
+  mOldZValues.clear();
+  mNewXYValues.clear();
+  mOldXYValues.clear();
+  mNativeFacesIndexesGeometryChanged.clear();
+}
+
 QgsTopologicalMesh::Changes QgsTopologicalMesh::addFreeVertex( const QgsMeshVertex &vertex )
 {
   Changes changes;
@@ -873,7 +952,7 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::removeVertexFillHole( int vertex
       }
 
       QgsMeshEditingError error;
-      QgsTopologicalMesh::TopologicalFaces topologicalFaces = createNewTopologicalFaces( newFaces, error );
+      QgsTopologicalMesh::TopologicalFaces topologicalFaces = createNewTopologicalFaces( newFaces, false, error );
       if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
         throw std::exception();
       int newFaceIndexStartIndex = mMesh->faceCount();
@@ -888,7 +967,7 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::removeVertexFillHole( int vertex
         if ( mVertexToFace.at( vtc ) == -1 )
           addChanges.mVerticesToFaceChanges.append( {vtc,
               mVertexToFace.at( vtc ),
-              addChanges.addedFaceIndexInMesh( topologicalFaces.mVerticesToFace.value( vtc ) ) } );
+              addChanges.addedFaceIndexInMesh( topologicalFaces.mVerticesToFace.values( vtc ).first() ) } );
 
 
       // reindex neighborhood for new faces
@@ -907,7 +986,6 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::removeVertexFillHole( int vertex
       for ( int i = 0 ; i < holeVertices.count(); ++i )
       {
         int vertexHoleIndex = holeVertices.at( i );
-
         int meshFaceBoundaryIndex = associateMeshFacesToHole.at( i );
 
         QgsMeshVertexCirculator circulator = QgsMeshVertexCirculator( topologicalFaces, vertexHoleIndex );
@@ -1009,73 +1087,118 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::removeVertices( const QList<int>
 
 QgsMeshEditingError QgsTopologicalMesh::canFacesBeAdded( const QgsTopologicalMesh::TopologicalFaces &topologicFaces ) const
 {
-  QList<int> boundaryToCheck = topologicFaces.mBoundaries;
+  QList<int> boundariesToCheckClockwiseInNewFaces = topologicFaces.mBoundaries;
+  QList<std::array<int, 2>> boundariesToCheckCounterClockwiseInNewFaces; //couple boundary / associate face in topologicFaces.mVerticesToFace
+  QList<int> uniqueSharedVertexBoundary;
 
-  // go through the boundary to check if there is a unique shared vertex
-  while ( !boundaryToCheck.isEmpty() )
+
+  // Go through the boundary and search for opposite boundary vertex clockwise in new faces and compare
+  // with boundary opposite vertices on the mesh
+  // If, in the mesh, the opposite vertex counter clockwise is not the same , another check will be done
+  // later with counter clockwise in new faces
+  // If, in the mesh, the opposite vertex clockwise is the same, this is an error
+  while ( !boundariesToCheckClockwiseInNewFaces.isEmpty() )
   {
-    int boundary = boundaryToCheck.takeLast();
+    int boundary = boundariesToCheckClockwiseInNewFaces.takeLast();
 
-    //if the boundary id a free vertex in the destination mesh, no need to check
-    if ( mVertexToFace.at( boundary ) == -1 )
-      continue;
+    const QList<int> &linkedFaces = topologicFaces.mVerticesToFace.values( boundary );
 
-    int faceIndex = topologicFaces.mVerticesToFace.value( boundary );
+    for ( int const linkedFace : linkedFaces )
+    {
 
-    QgsMeshVertexCirculator newFacescirculator( topologicFaces, faceIndex, boundary );
+      //if the boundary is a free vertex in the destination mesh, no need to check
+      if ( mVertexToFace.at( boundary ) == -1 )
+        continue;
+
+      QgsMeshVertexCirculator newFacescirculator( topologicFaces, linkedFace, boundary );
+      QgsMeshVertexCirculator meshCirculator = vertexCirculator( boundary );
+
+      if ( !newFacescirculator.isValid() )
+        return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, boundary );
+
+      //Get the opposite vertex on the clockwise side with new faces block
+      if ( !newFacescirculator.goBoundaryClockwise() )
+        return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, boundary );
+
+      int oppositeVertexInNewFaces = newFacescirculator.oppositeVertexClockwise();
+
+      if ( !meshCirculator.goBoundaryCounterClockwise() )
+        return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, boundary );
+
+      int oppositeVertexCCWInMesh = meshCirculator.oppositeVertexCounterClockwise();
+
+      if ( oppositeVertexCCWInMesh == oppositeVertexInNewFaces ) //this boundary is OK, continue wit next one
+        continue;
+      else
+      {
+        //to avoid manifold face that could pass through the check, compare not only the boundary edges but also with the opposite internal edge in new face
+        const QgsMeshFace &newFaceOnBoundary = newFacescirculator.currentFace();
+        int faceSize = newFaceOnBoundary.size();
+        int posInNewFace = vertexPositionInFace( boundary, newFaceOnBoundary );
+        int previousVertexIndex = ( posInNewFace + faceSize - 1 ) % faceSize;
+        if ( newFaceOnBoundary.at( previousVertexIndex ) == oppositeVertexCCWInMesh )
+          return QgsMeshEditingError( Qgis::MeshEditingErrorType::ManifoldFace, newFacescirculator.currentFaceIndex() );
+      }
+
+      meshCirculator.goBoundaryClockwise();
+
+      int oppositeVertexCWInMesh = meshCirculator.oppositeVertexClockwise();
+
+      if ( oppositeVertexCWInMesh == oppositeVertexInNewFaces )
+        return QgsMeshEditingError( Qgis::MeshEditingErrorType::ManifoldFace, newFacescirculator.currentFaceIndex() );
+
+      //if we are here we need more checks
+      boundariesToCheckCounterClockwiseInNewFaces.append( {boundary, linkedFace} );
+    }
+  }
+
+  // Check now with opposite boundary vertex counter clockwise in new faces
+  while ( !boundariesToCheckCounterClockwiseInNewFaces.isEmpty() )
+  {
+    std::array<int, 2> boundaryLinkedface = boundariesToCheckCounterClockwiseInNewFaces.takeLast();
+    int boundary = boundaryLinkedface.at( 0 );
+    int linkedFace = boundaryLinkedface.at( 1 );
+
+    QgsMeshVertexCirculator newFacescirculator( topologicFaces, linkedFace, boundary );
     QgsMeshVertexCirculator meshCirculator = vertexCirculator( boundary );
 
-    if ( !newFacescirculator.isValid() )
-      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidFace, faceIndex );
-
-    //search for face boundary on clockwise side of new faces
-    if ( !newFacescirculator.goBoundaryClockwise() )
-      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidFace, faceIndex );
-    const QgsMeshFace &newFaceBoundaryCW = newFacescirculator.currentFace();
-    if ( newFaceBoundaryCW.isEmpty() )
-      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidFace, faceIndex );
-
-    //search for face boundary on COUNTER clockwise side of existing faces
-    if ( !meshCirculator.goBoundaryCounterClockwise() )
-      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, boundary );
-    const QgsMeshFace &existingFaceBoundaryCCW = meshCirculator.currentFace();
-    if ( existingFaceBoundaryCCW.isEmpty() )
-      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, boundary );
-
-    if ( facesCanBeJoinedWithCommonIndex( newFaceBoundaryCW, existingFaceBoundaryCCW, boundary ) )
-    {
-      // Face can be joined
-      // Remove other common vertex before continuing
-      boundaryToCheck.removeOne( newFacescirculator.oppositeVertexClockwise() );
-      continue;
-    }
-
-    // Now check with other direction
-
-    //search for face boundary on COUNTER clockwise side of new faces
     if ( !newFacescirculator.goBoundaryCounterClockwise() )
-      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidFace, faceIndex );
-    const QgsMeshFace &newFaceBoundaryCCW = newFacescirculator.currentFace();
-    if ( newFaceBoundaryCCW.isEmpty() )
-      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidFace, faceIndex );
+      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, boundary );
 
-    //search for face boundary on clockwise side of existing faces
+    int oppositeVertexInNewFaces = newFacescirculator.oppositeVertexCounterClockwise();
+
     if ( !meshCirculator.goBoundaryClockwise() )
       return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, boundary );
-    const QgsMeshFace &existingFaceBoundaryCW = meshCirculator.currentFace();
-    if ( existingFaceBoundaryCW.isEmpty() )
-      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, boundary );
 
-    if ( facesCanBeJoinedWithCommonIndex( newFaceBoundaryCCW, existingFaceBoundaryCW, boundary ) )
-    {
-      // Face can be joined
-      // Remove other common vertex before continuing
-      boundaryToCheck.removeOne( newFacescirculator.oppositeVertexCounterClockwise() );
+    int oppositeVertexCWInMesh = meshCirculator.oppositeVertexClockwise();
+
+    if ( oppositeVertexCWInMesh == oppositeVertexInNewFaces ) //this boundary is OK, continue with next one
       continue;
-    }
 
-    //if we are here, face share only one vertices
-    return QgsMeshEditingError( Qgis::MeshEditingErrorType::UniqueSharedVertex, boundary );
+    meshCirculator.goBoundaryCounterClockwise();
+
+    int oppositeVertexCCWInMesh = meshCirculator.oppositeVertexCounterClockwise();
+
+    if ( oppositeVertexCCWInMesh == oppositeVertexInNewFaces )
+      return QgsMeshEditingError( Qgis::MeshEditingErrorType::ManifoldFace, newFacescirculator.currentFaceIndex() );
+
+    uniqueSharedVertexBoundary.append( boundary );
+  }
+
+  if ( !uniqueSharedVertexBoundary.isEmpty() )
+    return QgsMeshEditingError( Qgis::MeshEditingErrorType::UniqueSharedVertex, uniqueSharedVertexBoundary.first() );
+
+  // Check if internal vertices of new faces block are free in the mesh
+  QSet<int> boundaryVertices = topologicFaces.mBoundaries.toSet();
+  for ( const QgsMeshFace &newFace : std::as_const( topologicFaces.mFaces ) )
+  {
+    for ( const int vertexIndex : newFace )
+    {
+      if ( boundaryVertices.contains( vertexIndex ) )
+        continue;
+      if ( mVertexToFace.at( vertexIndex ) != -1 )
+        return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, vertexIndex );
+    }
   }
 
   return QgsMeshEditingError();
@@ -1087,6 +1210,11 @@ void QgsTopologicalMesh::TopologicalFaces::clear()
   mFacesNeighborhood.clear();
   mVerticesToFace.clear();
   mBoundaries.clear();
+}
+
+QVector<QgsTopologicalMesh::FaceNeighbors> QgsTopologicalMesh::TopologicalFaces::facesNeighborhood() const
+{
+  return mFacesNeighborhood;
 }
 
 QgsTopologicalMesh QgsTopologicalMesh::createTopologicalMesh( QgsMesh *mesh, int maxVerticesPerFace, QgsMeshEditingError &error )
@@ -1116,7 +1244,7 @@ QgsTopologicalMesh QgsTopologicalMesh::createTopologicalMesh( QgsMesh *mesh, int
 
   if ( error.errorType == Qgis::MeshEditingErrorType::NoError )
   {
-    TopologicalFaces subMesh = topologicMesh.createTopologicalFaces( mesh->faces, error, false, true );
+    TopologicalFaces subMesh = createTopologicalFaces( mesh->faces, &topologicMesh.mVertexToFace, error, false );
     topologicMesh.mFacesNeighborhood = subMesh.mFacesNeighborhood;
 
     for ( int i = 0; i < topologicMesh.mMesh->vertexCount(); ++i )
@@ -1129,24 +1257,27 @@ QgsTopologicalMesh QgsTopologicalMesh::createTopologicalMesh( QgsMesh *mesh, int
   return topologicMesh;
 }
 
-QgsTopologicalMesh::TopologicalFaces QgsTopologicalMesh::createNewTopologicalFaces( const QVector<QgsMeshFace> &faces, QgsMeshEditingError &error )
+QgsTopologicalMesh::TopologicalFaces QgsTopologicalMesh::createNewTopologicalFaces( const QVector<QgsMeshFace> &faces,  bool uniqueSharedVertexAllowed, QgsMeshEditingError &error )
 {
-  return createTopologicalFaces( faces, error, true, false );
+  return createTopologicalFaces( faces, nullptr, error, uniqueSharedVertexAllowed );
 }
 
 
 QgsTopologicalMesh::TopologicalFaces QgsTopologicalMesh::createTopologicalFaces(
   const QVector<QgsMeshFace> &faces,
+  QVector<int> *globalVertexToFace,
   QgsMeshEditingError &error,
-  bool allowUniqueSharedVertex,
-  bool writeInVertices )
+  bool allowUniqueSharedVertex )
 {
   int facesCount = faces.count();
   QVector<FaceNeighbors> faceTopologies;
-  QHash<int, int> verticesToFace;
+  QMultiHash<int, int> verticesToFace;
+
+  error = QgsMeshEditingError();
+  TopologicalFaces ret;
 
   // Contains for each vertex a map (opposite vertex # edge) --> face index
-  // when turning counter clockwise if, v1 first vertex and v2 second one, [v1][v2]--> neighbor face
+  // when turning counter clockwise, if v1 first vertex and v2 second one, [v1][v2]--> neighbor face
   QMap<int, QMap<int, int>> verticesToNeighbor;
 
   for ( int faceIndex = 0; faceIndex < facesCount; ++faceIndex )
@@ -1158,14 +1289,19 @@ QgsTopologicalMesh::TopologicalFaces QgsTopologicalMesh::createTopologicalFaces(
     {
       int v1 = face[i % faceSize];
       int v2 = face[( i + 1 ) % faceSize];
-      verticesToNeighbor[v2].insert( v1, faceIndex );
+      if ( verticesToNeighbor[v2].contains( v1 ) )
+      {
+        error = QgsMeshEditingError( Qgis::MeshEditingErrorType::ManifoldFace, faceIndex );
+        return ret;
+      }
+      else
+        verticesToNeighbor[v2].insert( v1, faceIndex );
     }
   }
 
   faceTopologies = QVector<FaceNeighbors>( faces.count() );
 
   QSet<int> boundaryVertices;
-  TopologicalFaces ret;
 
   for ( int faceIndex = 0; faceIndex < facesCount; ++faceIndex )
   {
@@ -1179,15 +1315,15 @@ QgsTopologicalMesh::TopologicalFaces QgsTopologicalMesh::createTopologicalFaces(
       int v1 = face.at( i );
       int v2 = face.at( ( i + 1 ) % faceSize );
 
-      if ( writeInVertices )
+      if ( globalVertexToFace )
       {
-        if ( mVertexToFace[v1] == -1 )
-          mVertexToFace[v1] = faceIndex ;
+        if ( ( *globalVertexToFace )[v1] == -1 )
+          ( *globalVertexToFace )[v1] = faceIndex ;
       }
       else
       {
-        if ( !verticesToFace.contains( v1 ) )
-          verticesToFace[v1] = faceIndex ;
+        if ( allowUniqueSharedVertex || !verticesToFace.contains( v1 ) )
+          verticesToFace.insert( v1, faceIndex ) ;
       }
 
       QMap<int, int> &edges = verticesToNeighbor[v1];
@@ -1217,39 +1353,16 @@ QgsTopologicalMesh::TopologicalFaces QgsTopologicalMesh::createTopologicalFaces(
   return ret;
 }
 
-QList<int> QgsTopologicalMesh::neighborsOfFace( int faceIndex ) const
+QVector<int> QgsTopologicalMesh::neighborsOfFace( int faceIndex ) const
 {
-  return mFacesNeighborhood.at( faceIndex ).toList();
+  return mFacesNeighborhood.at( faceIndex );
 }
 
 QList<int> QgsTopologicalMesh::facesAroundVertex( int vertexIndex ) const
 {
   QgsMeshVertexCirculator circ = vertexCirculator( vertexIndex );
 
-  QList<int> ret;
-  if ( !circ.isValid() || circ.currentFaceIndex() == -1 )
-    return ret;
-
-  // try ccw first
-  ret.append( circ.currentFaceIndex() );
-  while ( circ.turnCounterClockwise() != ret.first() && circ.currentFaceIndex() != -1 )
-  {
-    ret.append( circ.currentFaceIndex() );
-  }
-
-  if ( circ.currentFaceIndex() == -1 )  //we encounter a boundary, restart with other direction
-  {
-    ret.clear();
-    if ( circ.turnClockwise() == -1 )
-      return ret;
-    ret.append( circ.currentFaceIndex() );
-    while ( circ.turnClockwise() != -1 )
-    {
-      ret.append( circ.currentFaceIndex() );
-    }
-  }
-
-  return ret;
+  return circ.facesAround();
 }
 
 QgsMeshEditingError QgsTopologicalMesh::canFacesBeRemoved( const QList<int> facesIndexes )
@@ -1266,7 +1379,7 @@ QgsMeshEditingError QgsTopologicalMesh::canFacesBeRemoved( const QList<int> face
     remainingFaces.append( mMesh->face( f ) );
 
   QgsMeshEditingError error;
-  createTopologicalFaces( remainingFaces, error, false, false );
+  createTopologicalFaces( remainingFaces, nullptr, error, false );
 
   return error;
 }

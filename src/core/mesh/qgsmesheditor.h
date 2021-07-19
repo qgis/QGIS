@@ -26,6 +26,9 @@
 #include "qgstriangularmesh.h"
 #include "qgstopologicalmesh.h"
 
+
+class QgsMeshAdvancedEditing;
+
 /**
  * \ingroup core
  *
@@ -75,6 +78,12 @@ class CORE_EXPORT QgsMeshEditor : public QObject
 
     //! Returns TRUE if a \a face can be added to the mesh
     bool faceCanBeAdded( const QgsMeshFace &face );
+
+    /**
+     * Returns TRUE if the face does not intersect or contains any other elements (faces or vertices)
+     * The topological compatibility is not checked
+     */
+    bool isFaceGeometricallyCompatible( const QgsMeshFace &face );
 
     //! Adds faces \a faces to the mesh, returns topological errors if this operation fails (operation is not realized)
     QgsMeshEditingError addFaces( const QVector<QgsMeshFace> &faces ); SIP_SKIP
@@ -149,6 +158,11 @@ class CORE_EXPORT QgsMeshEditor : public QObject
      */
     void changeXYValues( const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues );
 
+    /**
+     * Applies an advance editing on the edited mesh, see QgsMeshAdvancedEditing
+     */
+    void advancedEdit( QgsMeshAdvancedEditing *editing );
+
     //! Stops editing
     void stopEditing();
 
@@ -177,6 +191,12 @@ class CORE_EXPORT QgsMeshEditor : public QObject
      *  Calling initialize() allows creation of new circulator after stopEditing() is called.
      */
     QgsMeshVertexCirculator vertexCirculator( int vertexIndex ) const; SIP_SKIP
+
+    //! Returns a reference to the topological mesh
+    QgsTopologicalMesh &topologicalMesh(); SIP_SKIP
+
+    //! Return TRUE if the edited mesh is consistent
+    bool checkConsistency() const;
 
   signals:
     //! Emitted when the mesh is edited
@@ -211,11 +231,9 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     void applyFlipEdge( Edit &edit, int vertexIndex1, int vertexIndex2 );
     void applyMerge( Edit &edit, int vertexIndex1, int vertexIndex2 );
     void applySplit( QgsMeshEditor::Edit &edit, int faceIndex );
+    void applyAdvancedEdit( Edit &edit, QgsMeshAdvancedEditing *editing );
 
     void applyEditOnTriangularMesh( Edit &edit, const QgsTopologicalMesh::Changes &topologicChanges );
-
-    //! method used for test and debug
-    bool checkConsistency() const;
 
     friend class TestQgsMeshEditor;
     friend class QgsMeshLayerUndoCommandMeshEdit;
@@ -229,6 +247,8 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     friend class QgsMeshLayerUndoCommandFlipEdge;
     friend class QgsMeshLayerUndoCommandMerge;
     friend class QgsMeshLayerUndoCommandSplitFaces;
+
+    friend class QgsMeshLayerUndoCommandAdvancedEditing;
 };
 
 #ifndef SIP_RUN
@@ -442,6 +462,28 @@ class QgsMeshLayerUndoCommandSplitFaces : public QgsMeshLayerUndoCommandMeshEdit
   private:
     QList<int> mFaceIndexes;
 };
+
+
+/**
+ * \ingroup core
+ *
+ * \brief  Class for undo/redo command for applying advanced editing
+ * \since QGIS 3.22
+ */
+class QgsMeshLayerUndoCommandAdvancedEditing : public QgsMeshLayerUndoCommandMeshEdit
+{
+  public:
+
+    //! Constructor with the associated \a meshEditor
+    QgsMeshLayerUndoCommandAdvancedEditing( QgsMeshEditor *meshEditor, QgsMeshAdvancedEditing *advancdEdit );
+    void redo() override;
+
+  private:
+    QgsMeshAdvancedEditing *mAdvancedEditing = nullptr;
+};
+
+
+
 
 #endif //SIP_RUN
 
