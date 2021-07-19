@@ -684,7 +684,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \throws QgsProviderConnectionException if any errors are encountered or if SQL layer creation is not supported.
      * \since QGIS 3.22
      */
-    virtual SqlVectorLayerOptions sqlOptions( const QString &layerSource );
+    virtual SqlVectorLayerOptions sqlOptions( const QString &layerSource ) SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Executes raw \a sql and returns the (possibly empty) query results, optionally \a feedback can be provided.

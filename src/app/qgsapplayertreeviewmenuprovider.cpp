@@ -236,7 +236,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
             QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions options { conn2->sqlOptions( layer->source() ) };
             options.layerName = layer->name();
             QgsQueryResultWidget *queryResultWidget { new QgsQueryResultWidget( &dialog, conn2.release() ) };
-            queryResultWidget->setUpdateSqlLayerMode( true );
+            queryResultWidget->setWidgetMode( QgsQueryResultWidget::QueryWidgetMode::QueryLayerUpdateMode );
             queryResultWidget->setSqlVectorLayerOptions( options );
             queryResultWidget->executeQuery();
             queryResultWidget->layout()->setMargin( 0 );
@@ -252,15 +252,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
                   std::unique_ptr<QgsMapLayer> sqlLayer { conn3->createSqlVectorLayer( options ) };
                   if ( sqlLayer->isValid() )
                   {
-                    // Store layer settings
-                    QgsReadWriteContext context;
-                    context.setPathResolver( QgsProject::instance()->pathResolver() );
-                    context.setProjectTranslator( QgsProject::instance() );
-                    QString errorMsg;
-                    QDomDocument doc;
-                    layer->exportNamedStyle( doc, errorMsg, context );
                     layer->setDataSource( sqlLayer->source(), sqlLayer->name(), sqlLayer->dataProvider()->name(), QgsDataProvider::ProviderOptions() );
-                    layer->importNamedStyle( doc, errorMsg );
                     queryResultWidget->notify( QObject::tr( "Layer Update Success" ), QObject::tr( "The SQL layer was updated successfully" ), Qgis::MessageLevel::Success );
                   }
                   else

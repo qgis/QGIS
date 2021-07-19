@@ -555,7 +555,7 @@ Creates and returns a (possibly invalid) vector layer based on the ``sql`` state
 .. versionadded:: 3.22
 %End
 
-    virtual SqlVectorLayerOptions sqlOptions( const QString &layerSource );
+    virtual SqlVectorLayerOptions sqlOptions( const QString &layerSource ) throw( QgsProviderConnectionException );
 %Docstring
 Returns the SQL layer options from a ``layerSource``.
 

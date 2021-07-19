@@ -95,9 +95,8 @@ class GUI_EXPORT QgsConnectionsApiFetcher: public QObject
  * Query results are displayed in a table view.
  * Query execution and result fetching can be interrupted by pressing the "Stop" push button.
  *
- * The widget supports an optional SQL layer update mode where the GUI is optimized for the update of
- * an existing SQL (query) layer (i.e. buttons are labeled differently and the group box for
- * query layers is expanded).
+ * The widget supports a few QueryWidgetMode modes that pre-configure the widget appearance to
+ * be used in different contexts like when updating the SQL of an existing query layer.
  *
  * \note the ownership of the connection is transferred to the widget.
  *
@@ -108,6 +107,17 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
     Q_OBJECT
 
   public:
+
+
+    /**
+     * \brief The QueryWidgetMode enum represents various modes for the widget appearance.
+     */
+    enum class QueryWidgetMode : int
+    {
+      SqlQueryMode = 1 << 0, //!< Defaults widget mode for SQL execution and SQL query layer creation.
+      QueryLayerUpdateMode = 1 << 1, //!< SQL query layer update mode: the create SQL layer button is renamed to 'Update' and the SQL layer creation group box is expanded.
+    };
+    Q_ENUM( QueryWidgetMode )
 
     /**
      * Creates a QgsQueryResultWidget with the given \a connection, ownership is transferred to the widget.
@@ -122,11 +132,9 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
     void setSqlVectorLayerOptions( const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options );
 
     /**
-     * Sets the update SQL layer mode flag to \a updateMode (default is FALSE).
-     * When the widget is in update mode the create SQL layer button is renamed to "update" and the
-     * SQL layer creation group box is expanded.
+     * Sets the widget mode to \a widgetMode, default is SqlQueryMode.
      */
-    void setUpdateSqlLayerMode( bool updateMode );
+    void setWidgetMode( QueryWidgetMode widgetMode );
 
     /**
      * Sets the connection to \a connection, ownership is transferred to the widget.
@@ -199,7 +207,7 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
     QString mSqlErrorMessage;
     long long mActualRowCount = -1;
     long long mFetchedRowsBatchCount = 0;
-    bool mUpdateSqlLayerMode = false;
+    QueryWidgetMode mQueryWidgetMode = QueryWidgetMode::SqlQueryMode;
 
     /**
      * Updates SQL layer columns.

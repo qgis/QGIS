@@ -31,7 +31,7 @@ The ``crs`` argument specifies the desired coordinate reference system for the c
 
     static QgsAbstractDatabaseProviderConnection *databaseConnection( const QgsMapLayer *layer ) /Factory/;
 %Docstring
-Creates and returns the (possibly NULL) database connection for a ``layer``.
+Creates and returns the (possibly ``None``) database connection for a ``layer``.
 Ownership is transferred to the caller.
 
 .. versionadded:: 3.22

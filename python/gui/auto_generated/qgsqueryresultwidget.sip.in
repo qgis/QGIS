@@ -20,9 +20,8 @@ DB connection (an instance of :py:class:`QgsAbstractDatabaseProviderConnection`)
 Query results are displayed in a table view.
 Query execution and result fetching can be interrupted by pressing the "Stop" push button.
 
-The widget supports an optional SQL layer update mode where the GUI is optimized for the update of
-an existing SQL (query) layer (i.e. buttons are labeled differently and the group box for
-query layers is expanded).
+The widget supports a few QueryWidgetMode modes that pre-configure the widget appearance to
+be used in different contexts like when updating the SQL of an existing query layer.
 
 .. note::
 
@@ -36,6 +35,13 @@ query layers is expanded).
 %End
   public:
 
+
+    enum class QueryWidgetMode
+    {
+      SqlQueryMode,
+      QueryLayerUpdateMode,
+    };
+
     QgsQueryResultWidget( QWidget *parent = 0, QgsAbstractDatabaseProviderConnection *connection /Transfer/ = 0 );
 %Docstring
 Creates a QgsQueryResultWidget with the given ``connection``, ownership is transferred to the widget.
@@ -48,11 +54,9 @@ Creates a QgsQueryResultWidget with the given ``connection``, ownership is trans
 Initializes the widget from ``options``.
 %End
 
-    void setUpdateSqlLayerMode( bool updateMode );
+    void setWidgetMode( QueryWidgetMode widgetMode );
 %Docstring
-Sets the update SQL layer mode flag to ``updateMode`` (default is ``False``).
-When the widget is in update mode the create SQL layer button is renamed to "update" and the
-SQL layer creation group box is expanded.
+Sets the widget mode to ``widgetMode``, default is SqlQueryMode.
 %End
 
     void setConnection( QgsAbstractDatabaseProviderConnection *connection /Transfer/ );
