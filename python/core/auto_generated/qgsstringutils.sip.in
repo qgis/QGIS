@@ -328,6 +328,17 @@ Returns an escaped string matching the behavior of QRegExp.escape.
 .. versionadded:: 3.22
 %End
 
+    static QString truncateMiddleOfString( const QString &string, int maxLength );
+%Docstring
+Truncates a ``string`` to the specified maximum character length.
+
+If the ``string`` exceeds the maximum character length, then the string
+will be truncated by removing characters from the middle of the string
+and replacing them with a horizontal ellipsis character.
+
+.. versionadded:: 3.22
+%End
+
 };
 
 /************************************************************************
