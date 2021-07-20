@@ -111,7 +111,7 @@ void CharacterWidget::setColumns( int columns )
 
 void CharacterWidget::setCharacter( QChar character )
 {
-  const bool changed = character != mLastKey;
+  const bool changed = character.unicode() != mLastKey;
   mLastKey = character.isNull() ? -1 : character.unicode();
   QWidget *widget = parentWidget();
   if ( widget )
