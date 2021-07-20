@@ -108,7 +108,11 @@ void QgsDateTimeEdit::mousePressEvent( QMouseEvent *event )
     if ( calendarPopup() )
     {
       QStyleOptionComboBox optCombo;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
       optCombo.init( this );
+#else
+      optCombo.initFrom( this );
+#endif
       optCombo.editable = true;
       optCombo.subControls = QStyle::SC_All;
       control = style()->hitTestComplexControl( QStyle::CC_ComboBox, &optCombo, event->pos(), this );
@@ -184,7 +188,9 @@ void QgsDateTimeEdit::wheelEvent( QWheelEvent *event )
   // dateTime might have been set to minimum in calendar mode
   if ( mAllowNull && mIsNull )
   {
-    resetBeforeChange( -event->delta() );
+    // convert angleDelta to approximate wheel "steps" -- angleDelta is in 1/8 degrees, and according
+    // to Qt docs most mice step in 15 degree increments
+    resetBeforeChange( -event->angleDelta().y() / ( 15 * 8 ) );
   }
   QDateTimeEdit::wheelEvent( event );
 }

@@ -1252,7 +1252,11 @@ void QgsLayoutView::wheelZoom( QWheelEvent *event )
   QgsRectangle visibleRect = QgsRectangle( mapToScene( viewportRect ).boundingRect() );
 
   //transform the mouse pos to scene coordinates
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   QPointF scenePoint = mapToScene( event->pos() );
+#else
+  QPointF scenePoint = mapToScene( event->position().x(), event->position().y() );
+#endif
 
   //adjust view center
   QgsPointXY oldCenter( visibleRect.center() );
