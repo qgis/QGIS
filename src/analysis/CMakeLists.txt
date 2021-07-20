@@ -16,6 +16,7 @@ set(QGIS_ANALYSIS_SRCS
   georeferencing/qgsgcptransformer.cpp
   georeferencing/qgsleastsquares.cpp
 
+  interpolation/qgsaidwinterpolation.cpp
   interpolation/qgsgridfilewriter.cpp
   interpolation/qgsidwinterpolator.cpp
   interpolation/qgsinterpolator.cpp
@@ -299,6 +300,7 @@ set(QGIS_ANALYSIS_HDRS
   georeferencing/qgsgcpgeometrytransformer.h
   georeferencing/qgsgcptransformer.h
 
+  interpolation/qgsaidwinterpolation.h
   interpolation/Bezier3D.h
   interpolation/CloughTocherInterpolator.h
   interpolation/qgsdualedgetriangulation.h

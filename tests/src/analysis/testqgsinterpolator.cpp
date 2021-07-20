@@ -47,6 +47,12 @@ void  TestQgsInterpolator::initTestCase()
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
+
+#ifdef HAVE_OPENCL
+  // Setup the default OpenCL programs source path
+  QgsOpenClUtils::setSourcePath( QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( QStringLiteral( "resources/opencl_programs" ) ) );
+#endif
+
 }
 
 void TestQgsInterpolator::cleanupTestCase()

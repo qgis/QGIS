@@ -258,6 +258,8 @@ QString QgsOpenClUtils::deviceInfo( const Info infoType, cl::Device device )
         QMetaEnum metaEnum = QMetaEnum::fromType<QgsOpenClUtils::HardwareType>();
         return metaEnum.valueToKey( mappedType );
       }
+      case Info::Extensions:
+        return QString::fromStdString( device.getInfo<CL_DEVICE_EXTENSIONS>() );
       case Info::Name:
         return QString::fromStdString( device.getInfo<CL_DEVICE_NAME>() );
     }

@@ -118,7 +118,8 @@ class CORE_EXPORT QgsOpenClUtils
       Image2dMaxWidth = CL_DEVICE_IMAGE2D_MAX_WIDTH,
       Image2dMaxHeight = CL_DEVICE_IMAGE2D_MAX_HEIGHT,
       MaxMemAllocSize = CL_DEVICE_MAX_MEM_ALLOC_SIZE,
-      Type = CL_DEVICE_TYPE // CPU/GPU etc.
+      Type = CL_DEVICE_TYPE, // CPU/GPU etc.
+      Extensions = CL_DEVICE_EXTENSIONS
     };
 
     /**
