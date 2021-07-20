@@ -20,5 +20,8 @@ services:
       - postgres
     env_file:
       - docker-variables.env
+    environment:
+      - LANG=C.UTF-8
+      - LC_ALL=en_US.UTF-8
     cap_add:
       - NET_ADMIN
