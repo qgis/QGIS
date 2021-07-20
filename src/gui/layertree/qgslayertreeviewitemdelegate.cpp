@@ -204,7 +204,12 @@ void QgsLayerTreeViewItemDelegate::onClicked( const QModelIndex &index )
   if ( indicators.isEmpty() )
     return;
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   QStyleOptionViewItem opt( mLayerTreeView->viewOptions() );
+#else
+  QStyleOptionViewItem opt;
+  mLayerTreeView->initViewItemOption( &opt );
+#endif
   opt.rect = mLayerTreeView->visualRect( index );
   initStyleOption( &opt, index );
   _fixStyleOption( opt );
