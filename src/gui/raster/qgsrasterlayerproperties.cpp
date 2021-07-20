@@ -1246,7 +1246,6 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
   QIcon myPyramidPixmap( QgsApplication::getThemeIcon( "/mIconPyramid.svg" ) );
   QIcon myNoPyramidPixmap( QgsApplication::getThemeIcon( "/mIconNoPyramid.svg" ) );
 
-  QList< QgsRasterPyramid >::iterator myRasterPyramidIterator;
   for ( const QgsRasterPyramid &pyramid : std::as_const( myPyramidList ) )
   {
     if ( pyramid.getExists() )
