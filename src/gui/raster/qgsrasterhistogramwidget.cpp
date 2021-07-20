@@ -45,6 +45,7 @@
 #include <qwt_plot_layout.h>
 #include <qwt_plot_renderer.h>
 #include <qwt_plot_histogram.h>
+#include <qwt_scale_div.h>
 
 #ifdef Q_OS_WIN
 #include <time.h>
