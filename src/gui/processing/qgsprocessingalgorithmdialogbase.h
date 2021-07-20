@@ -399,6 +399,8 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
 
     bool mHelpCollapsed = false;
 
+    int mMessageLoggedCount = 0;
+
     QString formatHelp( QgsProcessingAlgorithm *algorithm );
     void scrollToBottomOfLog();
     void processEvents();
