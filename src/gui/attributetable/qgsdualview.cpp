@@ -897,7 +897,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &maste
   }
 
   menu->addSeparator();
-  QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open Form" ), this, QString(), rowSourceIndex );
+  QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open Form" ), this, QUuid(), rowSourceIndex );
   menu->addAction( tr( "Open Form…" ), a, &QgsAttributeTableAction::featureForm );
 }
 
