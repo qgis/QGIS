@@ -25,10 +25,10 @@ macro (ADD_QGIS_GRASS_TEST grass_build_version testname testsrc)
     COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX${grass_build_version}}\\\" \"-DGRASS_BUILD_VERSION=${grass_build_version}\""
   )
   target_link_libraries(qgis_${testname}${grass_build_version}
-    ${Qt5Xml_LIBRARIES}
-    ${Qt5Core_LIBRARIES}
-    ${Qt5Svg_LIBRARIES}
-    ${Qt5Test_LIBRARIES}
+    ${${QT_VERSION_BASE}Xml_LIBRARIES}
+    ${${QT_VERSION_BASE}Core_LIBRARIES}
+    ${${QT_VERSION_BASE}Svg_LIBRARIES}
+    ${${QT_VERSION_BASE}Test_LIBRARIES}
     ${PROJ_LIBRARY}
     ${GEOS_LIBRARY}
     ${GDAL_LIBRARY}

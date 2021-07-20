@@ -71,10 +71,10 @@ if(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
   )
 
   target_link_libraries(test_provider_wcs
-    ${Qt5Core_LIBRARIES}
-    ${Qt5Network_LIBRARIES}
-    ${Qt5Svg_LIBRARIES}
-    ${Qt5Xml_LIBRARIES}
+    ${${QT_VERSION_BASE}Core_LIBRARIES}
+    ${${QT_VERSION_BASE}Network_LIBRARIES}
+    ${${QT_VERSION_BASE}Svg_LIBRARIES}
+    ${${QT_VERSION_BASE}Xml_LIBRARIES}
     ${OPTIONAL_QTWEBKIT}
     qgis_core
   )
