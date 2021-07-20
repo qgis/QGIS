@@ -677,9 +677,17 @@ QString QgsProcessingAlgorithmDialogBase::formatStringForLog( const QString &str
 
 void QgsProcessingAlgorithmDialogBase::setInfo( const QString &message, bool isError, bool escapeHtml, bool isWarning )
 {
+  constexpr int MESSAGE_COUNT_LIMIT = 10000;
+  // Avoid logging too many messages, which might blow memory.
+  if ( mMessageLoggedCount == MESSAGE_COUNT_LIMIT )
+    return;
+  ++mMessageLoggedCount;
+
   // note -- we have to wrap the message in a span block, or QTextEdit::append sometimes gets confused
   // and varies between treating it as a HTML string or a plain text string! (see https://github.com/qgis/QGIS/issues/37934)
-  if ( isError || isWarning )
+  if ( mMessageLoggedCount == MESSAGE_COUNT_LIMIT )
+    txtLog->append( QStringLiteral( "<span style=\"color:red\">%1</span>" ).arg( tr( "Message log truncated" ) ) );
+  else if ( isError || isWarning )
     txtLog->append( QStringLiteral( "<span style=\"color:%1\">%2</span>" ).arg( isError ? QStringLiteral( "red" ) : QStringLiteral( "#b85a20" ), escapeHtml ? formatStringForLog( message.toHtmlEscaped() ) : formatStringForLog( message ) ) );
   else if ( escapeHtml )
     txtLog->append( QStringLiteral( "<span>%1</span" ).arg( formatStringForLog( message.toHtmlEscaped() ) ) );

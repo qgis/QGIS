@@ -415,6 +415,8 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
 
     bool mHelpCollapsed = false;
 
+    int mMessageLoggedCount = 0;
+
     QgsProcessingContext::LogLevel mLogLevel = QgsProcessingContext::DefaultLevel;
 
     QString formatHelp( QgsProcessingAlgorithm *algorithm );
