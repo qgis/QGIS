@@ -1267,27 +1267,26 @@ set(QGIS_GUI_PRIVATE_HDRS
 )
 
 if (WITH_QT6)
-  # No QML for now
+  find_package(Qt6 COMPONENTS Qml QuickWidgets REQUIRED)
 else()
   find_package(Qt5 COMPONENTS Qml QuickWidgets REQUIRED)
+endif()
 
-  if(Qt5Qml_FOUND)
+if(${QT_VERSION_BASE}Qml_FOUND)
   add_definitions(-DWITH_QML)
   set(QGIS_GUI_HDRS
     ${QGIS_GUI_HDRS}
     editorwidgets/qgsqmlwidgetwrapper.h
   )
-  endif()
+endif()
 
-  # for installing headers
+# for installing headers
 
-  if(Qt5Qml_FOUND)
-
+if(${QT_VERSION_BASE}Qml_FOUND)
   set(QGIS_GUI_SRCS
     ${QGIS_GUI_SRCS}
     editorwidgets/qgsqmlwidgetwrapper.cpp
   )
-  endif()
 endif()
 
 set_property(GLOBAL PROPERTY QGIS_GUI_HDRS ${QGIS_GUI_HDRS})
