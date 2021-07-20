@@ -24,6 +24,7 @@
 #include "qgsrasterrenderer.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterminmaxorigin.h"
+#include "qgsdoublespinbox.h"
 
 const int IDX_WHOLE_RASTER = 0;
 const int IDX_CURRENT_CANVAS = 1;
@@ -37,6 +38,10 @@ QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer *layer, QWidget *pa
 {
   QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
   setupUi( this );
+
+  // use maximum value as a clear value for the upper border of the cumulative cut
+  mCumulativeCutUpperDoubleSpinBox->setClearValueMode( QgsDoubleSpinBox::MaximumValue );
+
   connect( mUserDefinedRadioButton, &QRadioButton::toggled, this, &QgsRasterMinMaxWidget::mUserDefinedRadioButton_toggled );
   connect( mMinMaxRadioButton, &QRadioButton::toggled, this, &QgsRasterMinMaxWidget::mMinMaxRadioButton_toggled );
   connect( mStdDevRadioButton, &QRadioButton::toggled, this, &QgsRasterMinMaxWidget::mStdDevRadioButton_toggled );
