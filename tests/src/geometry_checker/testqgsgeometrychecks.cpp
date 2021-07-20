@@ -1369,7 +1369,7 @@ void TestQgsGeometryChecks::listErrors( const QList<QgsGeometryCheckError *> &ch
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     QTextStream( stdout ) << " - Check messages:" << endl << "   * " << messages.join( "\n   * " ) << endl;
 #else
-    QTextStream( stdout ) << " - Check messages:" << endl << "   * " << messages.join( "\n   * " ) << Qt::endl;
+    QTextStream( stdout ) << " - Check messages:" << Qt::endl << "   * " << messages.join( "\n   * " ) << Qt::endl;
 #endif
   }
 }
