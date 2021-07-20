@@ -223,7 +223,7 @@ QString QgsOgrProviderMetadata::encodeUri( const QVariantMap &parts ) const
 QList<QgsDataItemProvider *> QgsOgrProviderMetadata::dataItemProviders() const
 {
   QList< QgsDataItemProvider * > providers;
-  providers << new QgsOgrDataItemProvider;
+// providers << new QgsOgrDataItemProvider;
   providers << new QgsGeoPackageDataItemProvider;
   return providers;
 }

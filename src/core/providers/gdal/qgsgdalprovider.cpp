@@ -3706,7 +3706,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
 QList<QgsDataItemProvider *> QgsGdalProviderMetadata::dataItemProviders() const
 {
   QList< QgsDataItemProvider * > providers;
-  providers << new QgsGdalDataItemProvider;
+  //providers << new QgsGdalDataItemProvider;
   return providers;
 }
 
