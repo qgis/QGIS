@@ -65,6 +65,7 @@
 #include <QMessageBox>
 #include <QToolButton>
 #include <QMenu>
+#include <QSvgWidget>
 
 int QgsAttributeForm::sFormCounter = 0;
 

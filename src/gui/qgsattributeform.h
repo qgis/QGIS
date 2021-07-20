@@ -22,7 +22,6 @@
 #include "qgseditorwidgetwrapper.h"
 
 #include <QWidget>
-#include <QSvgWidget>
 #include <QLabel>
 #include <QDialogButtonBox>
 #include "qgis_gui.h"
@@ -36,6 +35,7 @@ class QgsWidgetWrapper;
 class QgsTabWidget;
 class QgsAttributeFormWidget;
 class QgsRelationWidgetWrapper;
+class QSvgWidget;
 
 /**
  * \ingroup gui
