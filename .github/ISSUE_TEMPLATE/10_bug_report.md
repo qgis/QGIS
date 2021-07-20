@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 <!--
-Bug fixing and feature development is a community responsibility, and not the responsibility of the QGIS project alone.
+Bug fixing and feature development is a community responsibility, and not the responsibility of the QGIS developers alone.
 If this bug report or feature request is high-priority for you, we suggest engaging a QGIS developer or support organisation and financially sponsoring a fix
 
 Checklist before submitting

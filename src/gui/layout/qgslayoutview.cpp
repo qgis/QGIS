@@ -42,6 +42,8 @@
 #include <QMenu>
 #include <QClipboard>
 #include <QMimeData>
+#include <QWindow>
+#include <QScreen>
 
 #define MIN_VIEW_SCALE 0.05
 #define MAX_VIEW_SCALE 1000.0
@@ -207,7 +209,7 @@ void QgsLayoutView::setZoomLevel( double level )
   }
   else
   {
-    double dpi = QgsApplication::desktop()->logicalDpiX();
+    double dpi = mScreenDpi;
     //monitor dpi is not always correct - so make sure the value is sane
     if ( ( dpi < 60 ) || ( dpi > 1200 ) )
       dpi = 72;
@@ -1154,6 +1156,25 @@ void QgsLayoutView::paintEvent( QPaintEvent *event )
   }
 }
 
+void QgsLayoutView::showEvent( QShowEvent *event )
+{
+  QGraphicsView::showEvent( event );
+
+  updateDevicePixelFromScreen();
+  // keep device pixel ratio up to date on screen or resolution change
+  if ( window()->windowHandle() )
+  {
+    connect( window()->windowHandle(), &QWindow::screenChanged, this, [ = ]( QScreen * )
+    {
+      disconnect( mScreenDpiChangedConnection );
+      mScreenDpiChangedConnection = connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsLayoutView::updateDevicePixelFromScreen );
+      updateDevicePixelFromScreen();
+    } );
+
+    mScreenDpiChangedConnection = connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsLayoutView::updateDevicePixelFromScreen );
+  }
+}
+
 void QgsLayoutView::invalidateCachedRenders()
 {
   if ( !currentLayout() )
@@ -1167,6 +1188,12 @@ void QgsLayoutView::invalidateCachedRenders()
   {
     item->invalidateCache();
   }
+}
+
+void QgsLayoutView::updateDevicePixelFromScreen()
+{
+  if ( window()->windowHandle() )
+    mScreenDpi = window()->windowHandle()->screen()->physicalDotsPerInch();
 }
 
 void QgsLayoutView::viewChanged()

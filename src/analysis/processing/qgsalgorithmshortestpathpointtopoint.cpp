@@ -80,13 +80,13 @@ QVariantMap QgsShortestPathPointToPointAlgorithm::processAlgorithm( const QVaria
   mDirector->makeGraph( mBuilder.get(), points, snappedPoints, feedback );
 
   feedback->pushInfo( QObject::tr( "Calculating shortest path…" ) );
-  QgsGraph *graph = mBuilder->graph();
+  std::unique_ptr< QgsGraph > graph( mBuilder->takeGraph() );
   int idxStart = graph->findVertex( snappedPoints[0] );
   int idxEnd = graph->findVertex( snappedPoints[1] );
 
   QVector< int > tree;
   QVector< double > costs;
-  QgsGraphAnalyzer::dijkstra( graph, idxStart, 0, &tree, &costs );
+  QgsGraphAnalyzer::dijkstra( graph.get(), idxStart, 0, &tree, &costs );
 
   if ( tree.at( idxEnd ) == -1 )
   {

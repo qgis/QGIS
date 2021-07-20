@@ -579,6 +579,8 @@ but is still in a perfectly valid state.
 
     virtual void paintEvent( QPaintEvent *event );
 
+    virtual void showEvent( QShowEvent *event );
+
 
 };
 

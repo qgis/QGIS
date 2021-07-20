@@ -109,7 +109,7 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
   mDirector->makeGraph( mBuilder.get(), points, snappedPoints, feedback );
 
   feedback->pushInfo( QObject::tr( "Calculating service areas…" ) );
-  QgsGraph *graph = mBuilder->graph();
+  std::unique_ptr< QgsGraph > graph( mBuilder->takeGraph() );
 
   QgsFields fields = startPoints->fields();
   fields.append( QgsField( QStringLiteral( "type" ), QVariant::String ) );
@@ -136,7 +136,7 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
   QgsFeature feat;
   QgsAttributes attributes;
 
-  int step =  snappedPoints.size() > 0 ? 100.0 / snappedPoints.size() : 1;
+  const double step = snappedPoints.size() > 0 ? 100.0 / snappedPoints.size() : 1;
   for ( int i = 0; i < snappedPoints.size(); i++ )
   {
     if ( feedback->isCanceled() )
@@ -147,7 +147,7 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
     idxStart = graph->findVertex( snappedPoints.at( i ) );
     origPoint = points.at( i ).toString();
 
-    QgsGraphAnalyzer::dijkstra( graph, idxStart, 0, &tree, &costs );
+    QgsGraphAnalyzer::dijkstra( graph.get(), idxStart, 0, &tree, &costs );
 
     QgsMultiPointXY areaPoints;
     QgsMultiPolylineXY lines;
@@ -235,6 +235,8 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
           }
         } // costs
 
+        upperBoundary.reserve( nodes.size() );
+        lowerBoundary.reserve( nodes.size() );
         for ( int n : std::as_const( nodes ) )
         {
           upperBoundary.push_back( graph->vertex( graph->edge( tree.at( n ) ).toVertex() ).point() );

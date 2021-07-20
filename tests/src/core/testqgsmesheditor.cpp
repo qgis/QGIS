@@ -17,6 +17,7 @@
 #include "qgstest.h"
 #include <QObject>
 
+#include "qgis.h"
 #include "qgstriangularmesh.h"
 #include "qgsmeshlayer.h"
 #include "qgsmesheditor.h"
@@ -1581,7 +1582,7 @@ void TestQgsMeshEditor::refineMesh()
     QHash<int, QgsMeshEditRefineFaces::FaceRefinement > facesRefinement;
     QHash<int, QgsMeshEditRefineFaces::BorderFace> borderFaces;
     QSet<int> facesToRefine;
-    facesToRefine = facesList.toSet();
+    facesToRefine = qgis::listToSet( facesList );
 
     refineEditing.createNewVerticesAndRefinedFaces( &meshEditor, facesToRefine, facesRefinement );
     refineEditing.createNewBorderFaces( &meshEditor, facesToRefine, facesRefinement, borderFaces );
@@ -1649,7 +1650,7 @@ void TestQgsMeshEditor::refineMesh()
     QHash<int, QgsMeshEditRefineFaces::FaceRefinement> facesRefinement;
     QHash<int, QgsMeshEditRefineFaces::BorderFace> borderFaces;
 
-    facesToRefine = facesList.toSet();
+    facesToRefine = qgis::listToSet( facesList );
 
     refineEditing.createNewVerticesAndRefinedFaces( &meshEditor, facesToRefine, facesRefinement );
     refineEditing.createNewBorderFaces( &meshEditor, facesToRefine, facesRefinement, borderFaces );
