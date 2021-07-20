@@ -187,14 +187,14 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mPlacePointBtnGrp->addButton( radAroundPoint );
   mPlacePointBtnGrp->addButton( radOverPoint );
   mPlacePointBtnGrp->setExclusive( true );
-  connect( mPlacePointBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsDiagramProperties::updatePlacementWidgets );
+  connect( mPlacePointBtnGrp, qOverload< QAbstractButton * >( &QButtonGroup::buttonClicked ), this, &QgsDiagramProperties::updatePlacementWidgets );
 
   // setup line placement button group
   mPlaceLineBtnGrp = new QButtonGroup( this );
   mPlaceLineBtnGrp->addButton( radAroundLine );
   mPlaceLineBtnGrp->addButton( radOverLine );
   mPlaceLineBtnGrp->setExclusive( true );
-  connect( mPlaceLineBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsDiagramProperties::updatePlacementWidgets );
+  connect( mPlaceLineBtnGrp, qOverload< QAbstractButton * >( &QButtonGroup::buttonClicked ), this, &QgsDiagramProperties::updatePlacementWidgets );
 
   // setup polygon placement button group
   mPlacePolygonBtnGrp = new QButtonGroup( this );
@@ -203,8 +203,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mPlacePolygonBtnGrp->addButton( radPolygonPerimeter );
   mPlacePolygonBtnGrp->addButton( radInsidePolygon );
   mPlacePolygonBtnGrp->setExclusive( true );
-  connect( mPlacePolygonBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsDiagramProperties::updatePlacementWidgets );
-
+  connect( mPlacePolygonBtnGrp, qOverload< QAbstractButton * >( &QButtonGroup::buttonClicked ), this, &QgsDiagramProperties::updatePlacementWidgets );
 
   mLabelPlacementComboBox->addItem( tr( "Height" ), QgsDiagramSettings::Height );
   mLabelPlacementComboBox->addItem( tr( "x-height" ), QgsDiagramSettings::XHeight );
