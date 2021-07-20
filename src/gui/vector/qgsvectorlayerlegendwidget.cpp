@@ -289,7 +289,7 @@ void QgsVectorLayerLegendWidget::applyLabelLegend()
 
   QgsAbstractVectorLayerLabeling *labeling = layerLabeling->clone();
   QStringList ids = labeling->subProviders();
-  int nIterations = std::min( ids.size(), mLabelLegendTreeWidget->topLevelItemCount() );
+  int nIterations = std::min< int >( ids.size(), mLabelLegendTreeWidget->topLevelItemCount() );
 
   for ( int i = 0; i < nIterations; ++i )
   {
