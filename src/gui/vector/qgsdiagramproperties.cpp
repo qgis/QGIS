@@ -50,7 +50,7 @@
 #include <QList>
 #include <QMessageBox>
 #include <QStyledItemDelegate>
-
+#include <QRandomGenerator>
 
 class EditBlockerDelegate: public QStyledItemDelegate
 {
@@ -669,9 +669,10 @@ void QgsDiagramProperties::addAttribute( QTreeWidgetItem *item )
   newItem->setFlags( ( newItem->flags() | Qt::ItemIsEditable ) & ~Qt::ItemIsDropEnabled );
 
   //set initial color for diagram category
-  int red = 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) );
-  int green = 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) );
-  int blue = 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) );
+  QRandomGenerator colorGenerator;
+  const int red = colorGenerator.bounded( 1, 256 );
+  const int green = colorGenerator.bounded( 1, 256 );
+  const int blue = colorGenerator.bounded( 1, 256 );
   QColor randomColor( red, green, blue );
   newItem->setData( ColumnColor, Qt::EditRole, randomColor );
   mDiagramAttributesTreeWidget->addTopLevelItem( newItem );
@@ -1020,9 +1021,11 @@ void QgsDiagramProperties::showAddAttributeExpressionDialog()
     newItem->setFlags( ( newItem->flags() | Qt::ItemIsEditable ) & ~Qt::ItemIsDropEnabled );
 
     //set initial color for diagram category
-    int red = 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) );
-    int green = 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) );
-    int blue = 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) );
+    QRandomGenerator colorGenerator;
+    const int red = colorGenerator.bounded( 1, 256 );
+    const int green = colorGenerator.bounded( 1, 256 );
+    const int blue = colorGenerator.bounded( 1, 256 );
+
     QColor randomColor( red, green, blue );
     newItem->setData( ColumnColor, Qt::EditRole, randomColor );
     mDiagramAttributesTreeWidget->addTopLevelItem( newItem );
