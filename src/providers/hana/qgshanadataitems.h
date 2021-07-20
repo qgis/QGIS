@@ -40,8 +40,6 @@ class QgsHanaRootItem : public QgsConnectionsRootItem
 
     QVariant sortKey() const override { return 3; }
 
-    QWidget *paramWidget() override;
-
   public slots:
     void onConnectionsChanged();
 };
