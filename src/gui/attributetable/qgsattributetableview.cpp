@@ -456,7 +456,7 @@ void QgsAttributeTableView::actionTriggered()
 
   if ( action->data().toString() == QLatin1String( "user_action" ) )
   {
-    mFilterModel->layer()->actions()->doAction( action->property( "action_id" ).toString(), f );
+    mFilterModel->layer()->actions()->doAction( action->property( "action_id" ).toUuid(), f );
   }
   else if ( action->data().toString() == QLatin1String( "map_layer_action" ) )
   {
