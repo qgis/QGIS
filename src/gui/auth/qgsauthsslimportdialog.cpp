@@ -186,8 +186,12 @@ void QgsAuthSslImportDialog::secureConnect()
              this, &QgsAuthSslImportDialog::socketDisconnected );
     connect( mSocket, &QSslSocket::encrypted,
              this, &QgsAuthSslImportDialog::socketEncrypted );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     connect( mSocket, static_cast<void ( QAbstractSocket::* )( QAbstractSocket::SocketError )>( &QAbstractSocket::error ),
              this, &QgsAuthSslImportDialog::socketError );
+#else
+    connect( mSocket, &QAbstractSocket::errorOccurred, this, &QgsAuthSslImportDialog::socketError );
+#endif
     connect( mSocket, static_cast<void ( QSslSocket::* )( const QList<QSslError> & )>( &QSslSocket::sslErrors ),
              this, &QgsAuthSslImportDialog::sslErrors );
     connect( mSocket, &QIODevice::readyRead,
