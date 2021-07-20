@@ -29,14 +29,23 @@
 
 
 QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   : QgsDateTimeEdit( QDateTime(), QVariant::DateTime, parent )
+#else
+  : QgsDateTimeEdit( QDateTime(), QMetaType::QDateTime, parent )
+#endif
 {
 
 }
 
 ///@cond PRIVATE
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 QgsDateTimeEdit::QgsDateTimeEdit( const QVariant &var, QVariant::Type parserType, QWidget *parent )
   : QDateTimeEdit( var, parserType, parent )
+#else
+QgsDateTimeEdit::QgsDateTimeEdit( const QVariant & var, QMetaType::Type parserType, QWidget * parent )
+  : QDateTimeEdit( var, parserType, parent )
+#endif
   , mNullRepresentation( QgsApplication::nullRepresentation() )
 {
   QIcon clearIcon = QgsApplication::getThemeIcon( "/mIconClearText.svg" );
@@ -369,7 +378,11 @@ QDate QgsDateTimeEdit::date() const
 //
 
 QgsTimeEdit::QgsTimeEdit( QWidget *parent )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   : QgsDateTimeEdit( QTime(), QVariant::Time, parent )
+#else
+  : QgsDateTimeEdit( QTime(), QMetaType::QTime, parent )
+#endif
 {
 
 }
@@ -406,7 +419,11 @@ void QgsTimeEdit::emitValueChanged( const QVariant &value )
 //
 
 QgsDateEdit::QgsDateEdit( QWidget *parent )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   : QgsDateTimeEdit( QDate(), QVariant::Date, parent )
+#else
+  : QgsDateTimeEdit( QDate(), QMetaType::QDate, parent )
+#endif
 {
 
 }
