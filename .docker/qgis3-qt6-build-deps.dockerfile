@@ -51,6 +51,6 @@ RUN cd /usr/src \
   && unzip download \
   && cd qwt-6.2.0 \
   && qmake6 qwt.pro \
-  && make -j4
+  && make -j4 \
   && make install
 
