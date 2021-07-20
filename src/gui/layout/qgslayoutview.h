@@ -22,6 +22,7 @@
 #include "qgis_gui.h"
 #include "qgslayoutitempage.h"
 #include "qgslayoutaligner.h"
+#include "qgslayoutviewtool.h"
 #include <QPointer>
 #include <QGraphicsView>
 #include <QGraphicsRectItem>
@@ -29,7 +30,6 @@
 
 class QMenu;
 class QgsLayout;
-class QgsLayoutViewTool;
 class QgsLayoutViewToolTemporaryKeyPan;
 class QgsLayoutViewToolTemporaryKeyZoom;
 class QgsLayoutViewToolTemporaryMousePan;
