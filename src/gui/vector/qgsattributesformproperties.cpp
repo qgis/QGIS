@@ -1092,7 +1092,11 @@ QStringList QgsAttributesDnDTree::mimeTypes() const
   return QStringList() << QStringLiteral( "application/x-qgsattributetabledesignerelement" );
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 QMimeData *QgsAttributesDnDTree::mimeData( const QList<QTreeWidgetItem *> items ) const
+#else
+QMimeData *QgsAttributesDnDTree::mimeData( const QList<QTreeWidgetItem *> &items ) const
+#endif
 {
   if ( items.count() <= 0 )
     return nullptr;
