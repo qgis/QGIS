@@ -21,7 +21,7 @@
 #define QGSDOUBLEVALIDATOR_H
 
 #include <limits>
-#include <QRegExpValidator>
+#include <QRegularExpressionValidator>
 #include <QLocale>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
