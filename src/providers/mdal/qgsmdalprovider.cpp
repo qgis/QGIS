@@ -965,7 +965,7 @@ QgsMdalProvider *QgsMdalProviderMetadata::createProvider( const QString &uri, co
 QList<QgsDataItemProvider *> QgsMdalProviderMetadata::dataItemProviders() const
 {
   QList<QgsDataItemProvider *> providers;
-  providers << new QgsMdalDataItemProvider;
+// providers << new QgsMdalDataItemProvider;
   return providers;
 }
 

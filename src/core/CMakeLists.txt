@@ -502,6 +502,7 @@ set(QGIS_CORE_SRCS
   browser/qgsdirectoryitem.cpp
   browser/qgsfavoritesitem.cpp
   browser/qgsfieldsitem.cpp
+  browser/qgsfilebaseddataitemprovider.cpp
   browser/qgslayeritem.cpp
   browser/qgsprojectitem.cpp
   browser/qgszipitem.cpp
@@ -1168,6 +1169,7 @@ set(QGIS_CORE_HDRS
   browser/qgsdirectoryitem.h
   browser/qgsfavoritesitem.h
   browser/qgsfieldsitem.h
+  browser/qgsfilebaseddataitemprovider.h
   browser/qgslayeritem.h
   browser/qgsprojectitem.h
   browser/qgszipitem.h
