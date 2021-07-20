@@ -5501,6 +5501,9 @@ static QVariant fcnArrayMajority( const QVariantList &values, const QgsExpressio
     ++hash[item];
   }
   const QList< int > occurrences = hash.values();
+  if ( occurrences.empty() )
+    return QVariantList();
+
   const int maxValue = *std::max_element( occurrences.constBegin(), occurrences.constEnd() );
 
   const QString option = values.at( 1 ).toString();
@@ -5542,6 +5545,9 @@ static QVariant fcnArrayMinority( const QVariantList &values, const QgsExpressio
     ++hash[item];
   }
   const QList< int > occurrences = hash.values();
+  if ( occurrences.empty() )
+    return QVariantList();
+
   const int minValue = *std::min_element( occurrences.constBegin(), occurrences.constEnd() );
 
   const QString option = values.at( 1 ).toString();
