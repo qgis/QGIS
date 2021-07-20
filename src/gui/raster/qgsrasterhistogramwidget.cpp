@@ -29,6 +29,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QPainter>
+#include <QActionGroup>
 
 // QWT Charting widget
 #include <qwt_global.h>
