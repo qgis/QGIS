@@ -2031,9 +2031,9 @@ OGRwkbGeometryType QgsOgrProviderUtils::resolveGeometryTypeForFeature( OGRFeatur
   {
     OGRwkbGeometryType gType = OGR_G_GetGeometryType( geom );
 
-    // Shapefile MultiPatch can be reported as GeometryCollectionZ of TINZ
+    // ESRI MultiPatch can be reported as GeometryCollectionZ of TINZ
     if ( wkbFlatten( gType ) == wkbGeometryCollection &&
-         driverName == QLatin1String( "ESRI Shapefile" )  &&
+         ( driverName == QLatin1String( "ESRI Shapefile" ) || driverName == QLatin1String( "OpenFileGDB" ) || driverName == QLatin1String( "FileGDB" ) ) &&
          OGR_G_GetGeometryCount( geom ) >= 1 &&
          wkbFlatten( OGR_G_GetGeometryType( OGR_G_GetGeometryRef( geom, 0 ) ) ) == wkbTIN )
     {
