@@ -45,3 +45,12 @@ RUN dnf -y install libsecret-devel && cd /usr/src \
   && cd qtkeychain-master \
   && cmake -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_WITH_QT6=ON -GNinja \
   && ninja install
+
+RUN cd /usr/src \
+  && wget https://sourceforge.net/projects/qwt/files/qwt/6.2.0/qwt-6.2.0.zip/download \
+  && unzip download \
+  && cd qwt-6.2.0 \
+  && qmake6 qwt.pro \
+  && make -j4
+  && make install
+
