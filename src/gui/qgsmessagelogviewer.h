@@ -64,6 +64,7 @@ class GUI_EXPORT QgsMessageLogViewer: public QDialog, private Ui::QgsMessageLogV
 
     QString mClickedAnchor;
     QMenu *mTabBarContextMenu = nullptr;
+    int mMessageLoggedCount = 0;
 };
 
 #endif
