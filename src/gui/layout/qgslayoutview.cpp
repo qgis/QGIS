@@ -38,7 +38,6 @@
 #include "qgslayoutreportsectionlabel.h"
 #include "qgsreadwritecontext.h"
 #include <memory>
-#include <QDesktopWidget>
 #include <QMenu>
 #include <QClipboard>
 #include <QMimeData>
