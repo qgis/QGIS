@@ -370,7 +370,11 @@ void QgsExpressionBuilderWidget::saveFunctionFile( QString fileName )
   if ( myFile.open( QIODevice::WriteOnly | QFile::Truncate ) )
   {
     QTextStream myFileStream( &myFile );
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     myFileStream << txtPython->text() << endl;
+#else
+    myFileStream << txtPython->text() << Qt::endl;
+#endif
     myFile.close();
   }
 }
