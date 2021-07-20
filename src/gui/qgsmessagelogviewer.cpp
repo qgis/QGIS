@@ -109,6 +109,12 @@ void QgsMessageLogViewer::reject()
 
 void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level )
 {
+  constexpr int MESSAGE_COUNT_LIMIT = 10000;
+  // Avoid logging too many messages, which might blow memory.
+  if ( mMessageLoggedCount == MESSAGE_COUNT_LIMIT )
+    return;
+  ++mMessageLoggedCount;
+
   QString cleanedTag = tag;
   if ( cleanedTag.isNull() )
     cleanedTag = tr( "General" );
@@ -164,6 +170,9 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
   QString prefix = QStringLiteral( "<font color=\"%1\">%2 &nbsp;&nbsp;&nbsp; %3 &nbsp;&nbsp;&nbsp;</font>" )
                    .arg( color.name(), QDateTime::currentDateTime().toString( Qt::ISODate ), levelString );
   QString cleanedMessage = message;
+  if ( mMessageLoggedCount == MESSAGE_COUNT_LIMIT )
+    cleanedMessage = tr( "Message log truncated" );
+
   cleanedMessage = cleanedMessage.prepend( prefix ).replace( '\n', QLatin1String( "<br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;" ) );
   w->appendHtml( cleanedMessage );
   w->verticalScrollBar()->setValue( w->verticalScrollBar()->maximum() );
