@@ -57,6 +57,13 @@
    </item>
    <item row="1" column="1">
     <widget class="QComboBox" name="mFormatJsonComboBox">
+     <property name="toolTip">
+      <string>&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Indented&lt;/strong&gt;: Display data in a human readable form with newlines and four space characters for indentation.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Compact&lt;/strong&gt;: Display data in a one-line size optimized string whiteout newlines or spaces.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Disabled&lt;/strong&gt;: Display data as it comes from the provider.&lt;/li&gt;
+&lt;/ul&gt;</string>
+     </property>
      <item>
       <property name="text">
        <string>Indented</string>
