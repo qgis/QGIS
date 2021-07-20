@@ -636,6 +636,9 @@ class CORE_EXPORT QgsPalLayerSettings
     //! True if label rotation should be preserved during label pin/unpin operations.
     bool preserveRotation = true;
 
+    //! Unit for rotation of labels.
+    QgsUnitTypes::AngleUnit rotationUnit = QgsUnitTypes::AngleDegrees;
+
     /**
      * Maximum angle between inside curved label characters (valid range 20.0 to 60.0).
      * \see maxCurvedCharAngleOut

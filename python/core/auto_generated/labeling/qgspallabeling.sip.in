@@ -395,6 +395,8 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
 
     bool preserveRotation;
 
+    QgsUnitTypes::AngleUnit rotationUnit;
+
     double maxCurvedCharAngleIn;
 
     double maxCurvedCharAngleOut;

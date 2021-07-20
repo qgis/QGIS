@@ -348,6 +348,7 @@ void QgsTextFormatWidget::initWidget()
           << mBufferOpacityWidget
           << mCentroidInsideCheckBox
           << mChkNoObstacle
+          << mCoordRotationUnitComboBox
           << mDirectSymbChkBx
           << mDirectSymbLeftLineEdit
           << mDirectSymbRevChkBx

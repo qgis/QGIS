@@ -332,6 +332,7 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   distMapUnitScale = s.distMapUnitScale;
   angleOffset = s.angleOffset;
   preserveRotation = s.preserveRotation;
+  rotationUnit = s.rotationUnit;
   maxCurvedCharAngleIn = s.maxCurvedCharAngleIn;
   maxCurvedCharAngleOut = s.maxCurvedCharAngleOut;
   priority = s.priority;
@@ -797,6 +798,7 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   }
 
   preserveRotation = layer->customProperty( QStringLiteral( "labeling/preserveRotation" ), QVariant( true ) ).toBool();
+  rotationUnit = static_cast<QgsUnitTypes::AngleUnit>( layer->customProperty( QStringLiteral( "labeling/rotationUnit" ), QVariant( static_cast< unsigned int >( QgsUnitTypes::AngleDegrees ) ) ).toInt() );
   maxCurvedCharAngleIn = layer->customProperty( QStringLiteral( "labeling/maxCurvedCharAngleIn" ), QVariant( 25.0 ) ).toDouble();
   maxCurvedCharAngleOut = layer->customProperty( QStringLiteral( "labeling/maxCurvedCharAngleOut" ), QVariant( -25.0 ) ).toDouble();
   priority = layer->customProperty( QStringLiteral( "labeling/priority" ) ).toInt();
@@ -1024,6 +1026,7 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   }
 
   preserveRotation = placementElem.attribute( QStringLiteral( "preserveRotation" ), QStringLiteral( "1" ) ).toInt();
+  rotationUnit = static_cast<QgsUnitTypes::AngleUnit>( placementElem.attribute( QStringLiteral( "rotationUnit" ), 0 ).toInt() );
   maxCurvedCharAngleIn = placementElem.attribute( QStringLiteral( "maxCurvedCharAngleIn" ), QStringLiteral( "25" ) ).toDouble();
   maxCurvedCharAngleOut = placementElem.attribute( QStringLiteral( "maxCurvedCharAngleOut" ), QStringLiteral( "-25" ) ).toDouble();
   priority = placementElem.attribute( QStringLiteral( "priority" ) ).toInt();
@@ -1213,6 +1216,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   placementElem.setAttribute( QStringLiteral( "labelOffsetMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( labelOffsetMapUnitScale ) );
   placementElem.setAttribute( QStringLiteral( "rotationAngle" ), angleOffset );
   placementElem.setAttribute( QStringLiteral( "preserveRotation" ), preserveRotation );
+  placementElem.setAttribute( QStringLiteral( "rotationUnit" ), static_cast< unsigned int >( rotationUnit ) );
   placementElem.setAttribute( QStringLiteral( "maxCurvedCharAngleIn" ), maxCurvedCharAngleIn );
   placementElem.setAttribute( QStringLiteral( "maxCurvedCharAngleOut" ), maxCurvedCharAngleOut );
   placementElem.setAttribute( QStringLiteral( "priority" ), priority );
@@ -2333,14 +2337,18 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     if ( !exprVal.isNull() )
     {
       bool ok;
-      double rotD = exprVal.toDouble( &ok );
+      const double rotation = exprVal.toDouble( &ok );
       if ( ok )
       {
         dataDefinedRotation = true;
+
+        double rotationDegrees = rotation * QgsUnitTypes::fromUnitToUnitFactor( rotationUnit,
+                                 QgsUnitTypes::AngleDegrees );
+
         // TODO: add setting to disable having data defined rotation follow
         //       map rotation ?
-        rotD += m2p.mapRotation();
-        angle = ( 360 - rotD ) * M_PI / 180.0;
+        rotationDegrees += m2p.mapRotation();
+        angle = ( 360 - rotationDegrees ) * M_PI / 180.0;
       }
     }
   }
