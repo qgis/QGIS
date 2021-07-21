@@ -40,7 +40,7 @@ unsigned int QgsJsonEditWidgetFactory::fieldScore( const QgsVectorLayer *vl, int
   switch ( type )
   {
     case QVariant::Map:
-      return 15;
+      return 20;
       break;
     case QVariant::List:
       return 10;
