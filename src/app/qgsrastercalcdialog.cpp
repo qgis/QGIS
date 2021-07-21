@@ -149,6 +149,11 @@ bool QgsRasterCalcDialog::addLayerToProject() const
   return mAddResultToProjectCheckBox->isChecked();
 }
 
+bool QgsRasterCalcDialog::useVirtualProvider() const
+{
+    return mUseVirtualProviderCheckBox->isChecked();
+}
+
 QVector<QgsRasterCalculatorEntry> QgsRasterCalcDialog::rasterEntries() const
 {
   QVector<QgsRasterCalculatorEntry> entries;
@@ -328,6 +333,21 @@ void QgsRasterCalcDialog::setAcceptButtonState()
   {
     mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
   }
+}
+
+void QgsRasterCalcDialog::setOutputToVirtual()
+{
+    if ( useVirtualProvider() )
+    {
+        mOutputFormatComboBox->setEnabled( false);
+        mOutputLayer->setEnabled( false);
+         //mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
+    }
+    else
+    {
+        mOutputFormatComboBox->setEnabled( true);
+        mOutputLayer->setEnabled( true);
+    }
 }
 
 bool QgsRasterCalcDialog::expressionValid() const
