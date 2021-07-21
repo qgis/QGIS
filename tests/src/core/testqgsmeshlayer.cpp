@@ -96,6 +96,7 @@ class TestQgsMeshLayer : public QObject
     void test_setDataSource();
 
     void testMdalProviderQuerySublayers();
+    void testMdalProviderQuerySublayersFastScan();
 };
 
 QString TestQgsMeshLayer::readFile( const QString &fname ) const
@@ -1644,6 +1645,40 @@ void TestQgsMeshLayer::testMdalProviderQuerySublayers()
   QCOMPARE( res.at( 1 ).type(), QgsMapLayerType::MeshLayer );
   ml.reset( qgis::down_cast< QgsMeshLayer * >( res.at( 1 ).toLayer( options ) ) );
   QVERIFY( ml->isValid() );
+}
+
+void TestQgsMeshLayer::testMdalProviderQuerySublayersFastScan()
+{
+  // test querying sub layers for a mesh layer, using the fast scan flag
+  QgsProviderMetadata *mdalMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "mdal" ) );
+
+  // invalid uri
+  QList< QgsProviderSublayerDetails >res = mdalMetadata->querySublayers( QString(), Qgis::SublayerQueryFlag::FastScan );
+  QVERIFY( res.empty() );
+
+  // not a mesh
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/lines.shp", Qgis::SublayerQueryFlag::FastScan );
+  QVERIFY( res.empty() );
+
+  // single layer mesh
+  res = mdalMetadata->querySublayers( mDataDir + "/quad_and_triangle.2dm", Qgis::SublayerQueryFlag::FastScan );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 0 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "quad_and_triangle" ) );
+  QCOMPARE( res.at( 0 ).uri(), mDataDir + "/quad_and_triangle.2dm" );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
+  QVERIFY( res.at( 0 ).skippedContainerScan() );
+
+  // mesh with two layers
+  res = mdalMetadata->querySublayers( mDataDir + "/manzese_1d2d_small_map.nc", Qgis::SublayerQueryFlag::FastScan );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 0 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "manzese_1d2d_small_map" ) );
+  QCOMPARE( res.at( 0 ).uri(), mDataDir + "/manzese_1d2d_small_map.nc" );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
+  QVERIFY( res.at( 0 ).skippedContainerScan() );
 }
 
 void TestQgsMeshLayer::test_temporal()
