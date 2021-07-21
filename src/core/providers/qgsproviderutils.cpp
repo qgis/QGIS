@@ -29,7 +29,8 @@ bool QgsProviderUtils::sublayerDetailsAreIncomplete( const QList<QgsProviderSubl
     switch ( sublayer.type() )
     {
       case QgsMapLayerType::VectorLayer:
-        if ( ( !ignoreUnknownGeometryTypes && sublayer.wkbType() == QgsWkbTypes::Unknown )
+        if ( sublayer.skippedContainerScan()
+             || ( !ignoreUnknownGeometryTypes && sublayer.wkbType() == QgsWkbTypes::Unknown )
              || ( !ignoreUnknownFeatureCount &&
                   ( sublayer.featureCount() == static_cast< long long >( Qgis::FeatureCountState::Uncounted )
                     || sublayer.featureCount() == static_cast< long long >( Qgis::FeatureCountState::UnknownCount ) ) ) )

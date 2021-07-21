@@ -14,7 +14,9 @@ from qgis.core import (
     Qgis,
     QgsWkbTypes,
     QgsProviderRegistry,
-    QgsProviderUtils
+    QgsProviderUtils,
+    QgsProviderSublayerDetails,
+    QgsMapLayerType
 )
 from qgis.testing import (
     unittest,
@@ -111,6 +113,26 @@ class TestQgsProviderUtils(unittest.TestCase):
         self.assertEqual(sublayers[2].featureCount(), 0)
         self.assertEqual(sublayers[3].name(), 'lines')
         self.assertEqual(sublayers[3].featureCount(), 6)
+
+        # test with sublayer with skippedContainerScan flag
+        sl1 = QgsProviderSublayerDetails()
+        sl1.setProviderKey('ogr')
+        sl1.setType(QgsMapLayerType.VectorLayer)
+        sl1.setWkbType(QgsWkbTypes.Point)
+        sl1.setFeatureCount(1)
+        sl1.setSkippedContainerScan(False)
+        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete([sl1], True))
+        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete([sl1], False))
+        sl2 = QgsProviderSublayerDetails()
+        sl2.setProviderKey('ogr')
+        sl2.setType(QgsMapLayerType.VectorLayer)
+        sl2.setWkbType(QgsWkbTypes.Point)
+        sl2.setFeatureCount(1)
+        sl2.setSkippedContainerScan(True)
+        self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete([sl2], True))
+        self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete([sl2], False))
+        self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete([sl1, sl2], True))
+        self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete([sl1, sl2], False))
 
     def test_suggestLayerNameFromFilePath(self):
         """
