@@ -45,15 +45,15 @@ const QStringList QgsGdalUtils::SUPPORTED_DB_LAYERS_EXTENSIONS
   QStringLiteral( "gpx" ),
   QStringLiteral( "pdf" ),
   QStringLiteral( "pbf" ),
-  QStringLiteral( "nc" ) };
+  QStringLiteral( "nc" ),
+  QStringLiteral( "shp.zip" ) };
 
 const QStringList QgsGdalUtils::INEXPENSIVE_TO_SCAN_EXTENSIONS
 {
   QStringLiteral( "xlsx" ),
   QStringLiteral( "ods" ),
   QStringLiteral( "csv" ),
-  QStringLiteral( "nc" ),
-  QStringLiteral( "shp.zip" ) };
+  QStringLiteral( "nc" ) };
 
 bool QgsGdalUtils::supportsRasterCreate( GDALDriverH driver )
 {
