@@ -148,6 +148,9 @@ class QgsAppMapTools
     QHash< Tool, QPointer< QgsMapTool > > mTools;
     QgsStreamDigitizingSettingsAction *mStreamDigitizingSettingsAction = nullptr;
 
+    // Disable copying as we have pointer members.
+    QgsAppMapTools( const QgsAppMapTools & ) = delete;
+    QgsAppMapTools &operator= ( const QgsAppMapTools & ) = delete;
 };
 
 #endif // QGSAPPMAPTOOLS_H
