@@ -3602,17 +3602,9 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
     }
 
     // if this is a VRT file make sure it is raster VRT
-    if ( suffix == QLatin1String( "vrt" ) )
+    if ( suffix == QLatin1String( "vrt" ) && !QgsGdalUtils::vrtMatchesLayerType( path, QgsMapLayerType::RasterLayer ) )
     {
-      CPLPushErrorHandler( CPLQuietErrorHandler );
-      CPLErrorReset();
-      GDALDriverH hDriver = GDALIdentifyDriverEx( path.toUtf8().constData(), GDAL_OF_RASTER, nullptr, nullptr );
-      CPLPopErrorHandler();
-      if ( !hDriver )
-      {
-        // vrt is not a raster vrt, skip it
-        return {};
-      }
+      return {};
     }
 
     QgsProviderSublayerDetails details;

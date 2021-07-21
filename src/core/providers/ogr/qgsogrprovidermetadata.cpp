@@ -1138,17 +1138,9 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
     if ( !QgsGdalUtils::INEXPENSIVE_TO_SCAN_EXTENSIONS.contains( suffix ) )
     {
       // if this is a VRT file make sure it is vector VRT
-      if ( suffix == QLatin1String( "vrt" ) )
+      if ( suffix == QLatin1String( "vrt" ) && !QgsGdalUtils::vrtMatchesLayerType( path, QgsMapLayerType::VectorLayer ) )
       {
-        CPLPushErrorHandler( CPLQuietErrorHandler );
-        CPLErrorReset();
-        GDALDriverH hDriver = GDALIdentifyDriverEx( path.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr );
-        CPLPopErrorHandler();
-        if ( !hDriver )
-        {
-          // vrt is not a vector vrt, skip it
-          return {};
-        }
+        return {};
       }
 
       QgsProviderSublayerDetails details;
