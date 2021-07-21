@@ -1909,6 +1909,109 @@ class PyQgsOGRProvider(unittest.TestCase):
                                 'driverName': 'SQLite',
                                 'geomColName': ''}])
 
+    def test_provider_sublayer_details_fast_scan(self):
+        """
+        Test retrieving sublayer details from data provider metadata, using fast scan
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+
+        # invalid uri
+        res = metadata.querySublayers('', Qgis.SublayerQueryFlag.FastScan)
+        self.assertFalse(res)
+
+        # not a vector
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, 'landsat.tif'), Qgis.SublayerQueryFlag.FastScan)
+        self.assertFalse(res)
+
+        # single layer vector
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, 'lines.shp'), Qgis.SublayerQueryFlag.FastScan)
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "lines")
+        self.assertEqual(res[0].description(), '')
+        self.assertEqual(res[0].uri(), TEST_DATA_DIR + "/lines.shp")
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertFalse(res[0].skippedContainerScan())
+
+        # geometry collection sublayers -- requires a scan to resolve geometry type
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, 'multipatch.shp'), Qgis.SublayerQueryFlag.FastScan)
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "multipatch")
+        self.assertEqual(res[0].description(), '')
+        self.assertEqual(res[0].uri(), TEST_DATA_DIR + "/multipatch.shp")
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertEqual(res[0].wkbType(), QgsWkbTypes.Unknown)
+        self.assertEqual(res[0].geometryColumnName(), '')
+        self.assertFalse(res[0].skippedContainerScan())
+
+        # single layer geopackage -- sublayers MUST have the layerName set on the uri,
+        # in case more layers are added in future to the gpkg
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, 'curved_polys.gpkg'), Qgis.SublayerQueryFlag.FastScan)
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "curved_polys")
+        self.assertEqual(res[0].description(), '')
+        self.assertEqual(res[0].uri(), TEST_DATA_DIR + "/curved_polys.gpkg")
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertTrue(res[0].skippedContainerScan())
+
+        # geopackage with two vector layers
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, "mixed_layers.gpkg"), Qgis.SublayerQueryFlag.FastScan)
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "mixed_layers")
+        self.assertEqual(res[0].description(), "")
+        self.assertEqual(res[0].uri(), "{}/mixed_layers.gpkg".format(TEST_DATA_DIR))
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertTrue(res[0].skippedContainerScan())
+
+        # layer with mixed geometry types - without resolving geometry types
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, "mixed_types.TAB"), Qgis.SublayerQueryFlag.FastScan)
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "mixed_types")
+        self.assertEqual(res[0].description(), "")
+        self.assertEqual(res[0].uri(), "{}/mixed_types.TAB".format(TEST_DATA_DIR))
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertFalse(res[0].skippedContainerScan())
+
+        # spatialite
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, "provider/spatialite.db"), Qgis.SublayerQueryFlag.FastScan)
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "spatialite")
+        self.assertEqual(res[0].description(), "")
+        self.assertEqual(res[0].uri(), "{}/provider/spatialite.db".format(TEST_DATA_DIR))
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertTrue(res[0].skippedContainerScan())
+
+        # fast scan, but for trivial type -- fast scan flag will be ignored
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, "spreadsheet.ods"), Qgis.SublayerQueryFlag.FastScan)
+        self.assertEqual(len(res), 2)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "Sheet1")
+        self.assertEqual(res[0].description(), "")
+        self.assertEqual(res[0].uri(), "{}/spreadsheet.ods|layername=Sheet1".format(TEST_DATA_DIR))
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].driverName(), "ODS")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertFalse(res[0].skippedContainerScan())
+        self.assertEqual(res[1].layerNumber(), 1)
+        self.assertEqual(res[1].name(), "Sheet2")
+        self.assertEqual(res[1].description(), "")
+        self.assertEqual(res[1].uri(), "{}/spreadsheet.ods|layername=Sheet2".format(TEST_DATA_DIR))
+        self.assertEqual(res[1].providerKey(), "ogr")
+        self.assertEqual(res[1].driverName(), "ODS")
+        self.assertEqual(res[1].type(), QgsMapLayerType.VectorLayer)
+        self.assertFalse(res[1].skippedContainerScan())
+
 
 if __name__ == '__main__':
     unittest.main()
