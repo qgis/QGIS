@@ -250,6 +250,22 @@ class CORE_EXPORT QgsProviderSublayerDetails
      */
     void setLayerNumber( int number ) { mLayerNumber = number; }
 
+    /**
+     * Set to TRUE if the layer is a potential dataset container and an in-depth scan
+     * of its contents was skipped.
+     *
+     * \see skippedContainerScan();
+     */
+    void setSkippedContainerScan( bool skipped ) { mSkippedContainerScan = skipped; }
+
+    /**
+     * Returns TRUE if the layer is a potential dataset container and an in-depth scan
+     * of its contents was skipped.
+     *
+     * \see setSkippedContainerScan();
+     */
+    bool skippedContainerScan() const { return mSkippedContainerScan; }
+
     // TODO c++20 - replace with = default
     bool operator==( const QgsProviderSublayerDetails &other ) const;
     bool operator!=( const QgsProviderSublayerDetails &other ) const;
@@ -267,6 +283,7 @@ class CORE_EXPORT QgsProviderSublayerDetails
     QStringList mPath;
     QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
     QString mDriverName;
+    bool mSkippedContainerScan = false;
 
 };
 

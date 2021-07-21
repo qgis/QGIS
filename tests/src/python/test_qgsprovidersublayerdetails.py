@@ -72,6 +72,11 @@ class TestQgsProviderSublayerDetails(unittest.TestCase):
         d.setDriverName('drv')
         self.assertEqual(d.driverName(), 'drv')
 
+        d.setSkippedContainerScan(True)
+        self.assertTrue(d.skippedContainerScan())
+        d.setSkippedContainerScan(False)
+        self.assertFalse(d.skippedContainerScan())
+
     def test_equality(self):
         """
         Test equality operator
@@ -131,6 +136,11 @@ class TestQgsProviderSublayerDetails(unittest.TestCase):
         d.setDriverName('drv')
         self.assertNotEqual(d, d2)
         d2.setDriverName('drv')
+        self.assertEqual(d, d2)
+
+        d.setSkippedContainerScan(True)
+        self.assertNotEqual(d, d2)
+        d2.setSkippedContainerScan(True)
         self.assertEqual(d, d2)
 
     def test_to_layer(self):

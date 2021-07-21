@@ -229,6 +229,22 @@ Sets the associated layer ``number``, for providers which order sublayers.
 .. seealso:: :py:func:`layerNumber`
 %End
 
+    void setSkippedContainerScan( bool skipped );
+%Docstring
+Set to ``True`` if the layer is a potential dataset container and an in-depth scan
+of its contents was skipped.
+
+.. seealso:: :py:func:`skippedContainerScan`
+%End
+
+    bool skippedContainerScan() const;
+%Docstring
+Returns ``True`` if the layer is a potential dataset container and an in-depth scan
+of its contents was skipped.
+
+.. seealso:: :py:func:`setSkippedContainerScan`
+%End
+
     bool operator==( const QgsProviderSublayerDetails &other ) const;
     bool operator!=( const QgsProviderSublayerDetails &other ) const;
 

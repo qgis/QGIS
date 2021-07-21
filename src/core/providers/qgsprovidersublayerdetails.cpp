@@ -38,6 +38,7 @@ bool QgsProviderSublayerDetails::operator==( const QgsProviderSublayerDetails &o
          && mGeometryColumnName == other.mGeometryColumnName
          && mPath == other.mPath
          && mWkbType == other.mWkbType
+         && mSkippedContainerScan == other.mSkippedContainerScan
          && mDriverName == other.mDriverName;
 }
 
