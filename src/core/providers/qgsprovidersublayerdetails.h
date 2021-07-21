@@ -143,6 +143,22 @@ class CORE_EXPORT QgsProviderSublayerDetails
     void setDescription( const QString &description ) { mDescription = description; }
 
     /**
+     * Returns the layer's driver name.
+     *
+     * This is supported only for providers which handle multiple drivers.
+     *
+     * \see setDriverName()
+     */
+    QString driverName() const { return mDriverName; }
+
+    /**
+     * Sets the layer's \a driver name.
+     *
+     * \see driverName()
+     */
+    void setDriverName( const QString &driver ) { mDriverName = driver; }
+
+    /**
      * Returns the path to the sublayer.
      *
      * This is an internal path, relative to the dataset itself. It can be used to encapsulate
@@ -250,6 +266,7 @@ class CORE_EXPORT QgsProviderSublayerDetails
     QString mGeometryColumnName;
     QStringList mPath;
     QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
+    QString mDriverName;
 
 };
 
