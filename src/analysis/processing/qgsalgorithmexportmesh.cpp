@@ -367,7 +367,8 @@ QVariantMap QgsExportMeshOnElement::processAlgorithm( const QVariantMap &paramet
     catch ( QgsCsException & )
     {
       geom = meshElement( i );
-      feedback->reportError( QObject::tr( "Could not transform point to destination CRS" ) );
+      if ( feedback )
+        feedback->reportError( QObject::tr( "Could not transform point to destination CRS" ) );
     }
     feat.setGeometry( geom );
     feat.setAttributes( attributes );
