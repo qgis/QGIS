@@ -69,6 +69,9 @@ class TestQgsProviderSublayerDetails(unittest.TestCase):
         d.setLayerNumber(13)
         self.assertEqual(d.layerNumber(), 13)
 
+        d.setDriverName('drv')
+        self.assertEqual(d.driverName(), 'drv')
+
     def test_equality(self):
         """
         Test equality operator
@@ -116,10 +119,19 @@ class TestQgsProviderSublayerDetails(unittest.TestCase):
         self.assertEqual(d, d2)
 
         d.setGeometryColumnName('geom_col')
-        self.assertEqual(d.geometryColumnName(), 'geom_col')
+        self.assertNotEqual(d, d2)
+        d2.setGeometryColumnName('geom_col')
+        self.assertEqual(d, d2)
 
         d.setLayerNumber(13)
-        self.assertEqual(d.layerNumber(), 13)
+        self.assertNotEqual(d, d2)
+        d2.setLayerNumber(13)
+        self.assertEqual(d, d2)
+
+        d.setDriverName('drv')
+        self.assertNotEqual(d, d2)
+        d2.setDriverName('drv')
+        self.assertEqual(d, d2)
 
     def test_to_layer(self):
         """
