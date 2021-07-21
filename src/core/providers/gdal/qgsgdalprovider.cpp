@@ -3543,8 +3543,6 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
 
   QgsGdalProviderBase::registerGdalDrivers();
 
-  CPLErrorReset();
-
   QString gdalUri = uri;
 
   QVariantMap uriParts = decodeUri( gdalUri );
@@ -3637,7 +3635,11 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
     }
   }
 
+  CPLPushErrorHandler( CPLQuietErrorHandler );
+  CPLErrorReset();
   dataset.reset( QgsGdalProviderBase::gdalOpen( gdalUri, GDAL_OF_READONLY ) );
+  CPLPopErrorHandler();
+
   if ( !dataset )
   {
     return {};

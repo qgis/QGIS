@@ -1114,7 +1114,11 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
     firstLayerUriParts.insert( QStringLiteral( "vsiSuffix" ), uriParts.value( QStringLiteral( "vsiSuffix" ) ) );
   firstLayerUriParts.insert( QStringLiteral( "path" ), uriParts.value( QStringLiteral( "path" ) ) );
 
+  CPLPushErrorHandler( CPLQuietErrorHandler );
+  CPLErrorReset();
   QgsOgrLayerUniquePtr firstLayer = QgsOgrProviderUtils::getLayer( encodeUri( firstLayerUriParts ), false, options, layerId, errCause, true );
+  CPLPopErrorHandler();
+
   if ( !firstLayer )
     return {};
 
