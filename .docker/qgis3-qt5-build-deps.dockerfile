@@ -1,9 +1,9 @@
 
-ARG UBUNTU_BASE=20.04
+ARG DISTRO_VERSION=20.04
 
 # Oracle Docker image is too large, so we add as less dependencies as possible
 # so there is enough space on GitHub runner
-FROM      ubuntu:${UBUNTU_BASE} as binary-for-oracle
+FROM      ubuntu:${DISTRO_VERSION} as binary-for-oracle
 MAINTAINER Denis Rouzaud <denis@opengis.ch>
 
 LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Version="1.0"

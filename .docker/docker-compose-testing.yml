@@ -17,3 +17,7 @@ services:
     #  - mssql
     env_file:
       - docker-variables.env
+    environment:
+      - LANG=C.UTF-8
+      - LC_ALL=en_US.UTF-8
+
