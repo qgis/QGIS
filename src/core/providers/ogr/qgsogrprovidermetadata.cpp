@@ -29,6 +29,7 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsogrdbconnection.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgszipitem.h"
+#include "qgsproviderutils.h"
 
 #include <QFileInfo>
 #include <QFile>
@@ -1095,6 +1096,93 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
       }
       CSLDestroy( papszSiblingFiles );
       return res;
+    }
+  }
+
+  const QString path = uriParts.value( QStringLiteral( "path" ) ).toString();
+  const QFileInfo pathInfo( path );
+  if ( flags & Qgis::SublayerQueryFlag::FastScan && ( pathInfo.isFile() || pathInfo.isDir() ) )
+  {
+    // fast scan, so we don't actually try to open the dataset and instead just check the extension alone
+    const QStringList fileExtensions = QgsOgrProviderUtils::fileExtensions();
+    const QStringList dirExtensions = QgsOgrProviderUtils::directoryExtensions();
+
+    const QString suffix = pathInfo.suffix().toLower();
+
+    // allow only normal files or supported directories to continue
+    const bool isOgrSupportedDirectory = pathInfo.isDir() && dirExtensions.contains( suffix );
+    if ( !isOgrSupportedDirectory && !pathInfo.isFile() )
+      return {};
+
+    if ( !fileExtensions.contains( suffix ) && !dirExtensions.contains( suffix ) )
+    {
+      bool matches = false;
+      const QStringList wildcards = QgsOgrProviderUtils::wildcards();
+      for ( const QString &wildcard : wildcards )
+      {
+        const QRegularExpression rx( QRegularExpression::wildcardToRegularExpression( wildcard ), QRegularExpression::CaseInsensitiveOption );
+        if ( rx.match( pathInfo.fileName() ).hasMatch() )
+        {
+          matches = true;
+          break;
+        }
+      }
+      if ( !matches )
+        return {};
+    }
+
+    // these extensions are trivial to read, so there's no need to rely on
+    // the extension only scan here -- avoiding it always gives us the correct data type
+    // and sublayer visibility
+    static QStringList sSkipFastTrackExtensions { QStringLiteral( "xlsx" ),
+        QStringLiteral( "ods" ),
+        QStringLiteral( "csv" ),
+        QStringLiteral( "nc" ),
+        QStringLiteral( "shp.zip" ) };
+
+    if ( !sSkipFastTrackExtensions.contains( suffix ) )
+    {
+      // Filters out the OGR/GDAL supported formats that can contain multiple layers
+      // and should be treated as a potential layer container
+      static QStringList sOgrSupportedDbLayersExtensions { QStringLiteral( "gpkg" ),
+          QStringLiteral( "sqlite" ),
+          QStringLiteral( "db" ),
+          QStringLiteral( "gdb" ),
+          QStringLiteral( "kml" ),
+          QStringLiteral( "osm" ),
+          QStringLiteral( "mdb" ),
+          QStringLiteral( "accdb" ),
+          QStringLiteral( "xls" ),
+          QStringLiteral( "xlsx" ),
+          QStringLiteral( "gpx" ),
+          QStringLiteral( "pdf" ),
+          QStringLiteral( "pbf" ) };
+
+      // if this is a VRT file make sure it is vector VRT
+      if ( suffix == QLatin1String( "vrt" ) )
+      {
+        CPLPushErrorHandler( CPLQuietErrorHandler );
+        CPLErrorReset();
+        GDALDriverH hDriver = GDALIdentifyDriverEx( path.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr );
+        CPLPopErrorHandler();
+        if ( !hDriver )
+        {
+          // vrt is not a vector vrt, skip it
+          return {};
+        }
+      }
+
+      QgsProviderSublayerDetails details;
+      details.setType( QgsMapLayerType::VectorLayer );
+      details.setProviderKey( QStringLiteral( "ogr" ) );
+      details.setUri( uri );
+      details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( path ) );
+      if ( sOgrSupportedDbLayersExtensions.contains( suffix ) )
+      {
+        // uri may contain sublayers, but query flags prevent us from examining them
+        details.setSkippedContainerScan( true );
+      }
+      return {details};
     }
   }
 
