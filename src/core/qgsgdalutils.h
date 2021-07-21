@@ -156,6 +156,14 @@ class CORE_EXPORT QgsGdalUtils
      */
     static const QStringList SUPPORTED_DB_LAYERS_EXTENSIONS;
 
+    /**
+     * Returns TRUE if the VRT file at the specified path is a VRT matching
+     * the given layer \a type.
+     *
+     * \since QGIS 3.22
+     */
+    static bool vrtMatchesLayerType( const QString &vrtPath, QgsMapLayerType type );
+
     friend class TestQgsGdalUtils;
 };
 

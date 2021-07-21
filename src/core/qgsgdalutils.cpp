@@ -568,4 +568,32 @@ bool QgsGdalUtils::pathIsCheapToOpen( const QString &path, int smallFileSizeLimi
   // TODO -- flag formats which only require a quick header parse as cheap
   return false;
 }
+
+bool QgsGdalUtils::vrtMatchesLayerType( const QString &vrtPath, QgsMapLayerType type )
+{
+  CPLPushErrorHandler( CPLQuietErrorHandler );
+  CPLErrorReset();
+  GDALDriverH hDriver = nullptr;
+
+  switch ( type )
+  {
+    case QgsMapLayerType::VectorLayer:
+      hDriver = GDALIdentifyDriverEx( vrtPath.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr );
+      break;
+
+    case QgsMapLayerType::RasterLayer:
+      hDriver = GDALIdentifyDriverEx( vrtPath.toUtf8().constData(), GDAL_OF_RASTER, nullptr, nullptr );
+      break;
+
+    case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::MeshLayer:
+    case QgsMapLayerType::VectorTileLayer:
+    case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::PointCloudLayer:
+      break;
+  }
+
+  CPLPopErrorHandler();
+  return static_cast< bool >( hDriver );
+}
 #endif

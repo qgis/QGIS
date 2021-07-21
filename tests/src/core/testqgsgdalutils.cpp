@@ -42,6 +42,7 @@ class TestQgsGdalUtils: public QObject
     void testImageToDataset();
     void testResampleImageToImage();
     void testPathIsCheapToOpen();
+    void testVrtMatchesLayerType();
 
   private:
 
@@ -282,6 +283,15 @@ void TestQgsGdalUtils::testPathIsCheapToOpen()
 
   // ... unless it's larger than the specified file size limit (500 bytes)
   QVERIFY( !QgsGdalUtils::pathIsCheapToOpen( QStringLiteral( TEST_DATA_DIR ) + "/delimitedtext/testdms.csv", 500 ) );
+}
+
+void TestQgsGdalUtils::testVrtMatchesLayerType()
+{
+  QVERIFY( QgsGdalUtils::vrtMatchesLayerType( QStringLiteral( TEST_DATA_DIR ) + "/raster/hub13263.vrt", QgsMapLayerType::RasterLayer ) );
+  QVERIFY( !QgsGdalUtils::vrtMatchesLayerType( QStringLiteral( TEST_DATA_DIR ) + "/raster/hub13263.vrt", QgsMapLayerType::VectorLayer ) );
+
+  QVERIFY( !QgsGdalUtils::vrtMatchesLayerType( QStringLiteral( TEST_DATA_DIR ) + "/vector_vrt.vrt", QgsMapLayerType::RasterLayer ) );
+  QVERIFY( QgsGdalUtils::vrtMatchesLayerType( QStringLiteral( TEST_DATA_DIR ) + "/vector_vrt.vrt", QgsMapLayerType::VectorLayer ) );
 }
 
 double TestQgsGdalUtils::identify( GDALDatasetH dataset, int band, int px, int py )
