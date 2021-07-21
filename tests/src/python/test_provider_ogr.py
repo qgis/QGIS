@@ -2012,6 +2012,21 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[1].type(), QgsMapLayerType.VectorLayer)
         self.assertFalse(res[1].skippedContainerScan())
 
+        # vector vrt
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, "vector_vrt.vrt"), Qgis.SublayerQueryFlag.FastScan)
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "vector_vrt")
+        self.assertEqual(res[0].description(), "")
+        self.assertEqual(res[0].uri(), os.path.join(TEST_DATA_DIR, "vector_vrt.vrt"))
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertFalse(res[0].skippedContainerScan())
+
+        # raster vrt
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, "/raster/hub13263.vrt"), Qgis.SublayerQueryFlag.FastScan)
+        self.assertEqual(len(res), 0)
+
 
 if __name__ == '__main__':
     unittest.main()
