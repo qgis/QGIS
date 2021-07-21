@@ -148,6 +148,14 @@ class CORE_EXPORT QgsGdalUtils
      */
     static bool pathIsCheapToOpen( const QString &path, int smallFileSizeLimit = 50000 );
 
+
+    /**
+     * File extensions for formats supported by GDAL which may contain multiple layers
+     * and should be treated as a potential layer container.
+     * \since QGIS 3.22
+     */
+    static const QStringList SUPPORTED_DB_LAYERS_EXTENSIONS;
+
     friend class TestQgsGdalUtils;
 };
 

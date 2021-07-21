@@ -30,6 +30,7 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsprovidersublayerdetails.h"
 #include "qgszipitem.h"
 #include "qgsproviderutils.h"
+#include "qgsgdalutils.h"
 
 #include <QFileInfo>
 #include <QFile>
@@ -1134,30 +1135,8 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
     // these extensions are trivial to read, so there's no need to rely on
     // the extension only scan here -- avoiding it always gives us the correct data type
     // and sublayer visibility
-    static QStringList sSkipFastTrackExtensions { QStringLiteral( "xlsx" ),
-        QStringLiteral( "ods" ),
-        QStringLiteral( "csv" ),
-        QStringLiteral( "nc" ),
-        QStringLiteral( "shp.zip" ) };
-
-    if ( !sSkipFastTrackExtensions.contains( suffix ) )
+    if ( !QgsGdalUtils::INEXPENSIVE_TO_SCAN_EXTENSIONS.contains( suffix ) )
     {
-      // Filters out the OGR/GDAL supported formats that can contain multiple layers
-      // and should be treated as a potential layer container
-      static QStringList sOgrSupportedDbLayersExtensions { QStringLiteral( "gpkg" ),
-          QStringLiteral( "sqlite" ),
-          QStringLiteral( "db" ),
-          QStringLiteral( "gdb" ),
-          QStringLiteral( "kml" ),
-          QStringLiteral( "osm" ),
-          QStringLiteral( "mdb" ),
-          QStringLiteral( "accdb" ),
-          QStringLiteral( "xls" ),
-          QStringLiteral( "xlsx" ),
-          QStringLiteral( "gpx" ),
-          QStringLiteral( "pdf" ),
-          QStringLiteral( "pbf" ) };
-
       // if this is a VRT file make sure it is vector VRT
       if ( suffix == QLatin1String( "vrt" ) )
       {
@@ -1177,7 +1156,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
       details.setProviderKey( QStringLiteral( "ogr" ) );
       details.setUri( uri );
       details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( path ) );
-      if ( sOgrSupportedDbLayersExtensions.contains( suffix ) )
+      if ( QgsGdalUtils::SUPPORTED_DB_LAYERS_EXTENSIONS.contains( suffix ) )
       {
         // uri may contain sublayers, but query flags prevent us from examining them
         details.setSkippedContainerScan( true );
