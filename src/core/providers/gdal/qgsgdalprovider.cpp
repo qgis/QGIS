@@ -3562,48 +3562,70 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
     }
   }
 
-  if ( flags & Qgis::SublayerQueryFlag::FastScan )
+  const QString path = uriParts.value( QStringLiteral( "path" ) ).toString();
+  const QFileInfo pathInfo( path );
+  if ( flags & Qgis::SublayerQueryFlag::FastScan  && ( pathInfo.isFile() || pathInfo.isDir() ) )
   {
-    // filter based on extension
-    const QVariantMap uriParts = decodeUri( gdalUri );
-    const QString path = uriParts.value( QStringLiteral( "path" ) ).toString();
-    QFileInfo info( path );
-    if ( info.isFile() )
+    // fast scan, so we don't actually try to open the dataset and instead just check the extension alone
+    static QString sFilterString;
+    static QStringList sExtensions;
+    static QStringList sWildcards;
+
+    // get supported extensions
+    static std::once_flag initialized;
+    std::call_once( initialized, [ = ]
     {
-      const QString suffix = info.suffix().toLower();
+      buildSupportedRasterFileFilterAndExtensions( sFilterString, sExtensions, sWildcards );
+      QgsDebugMsgLevel( QStringLiteral( "extensions: " ) + sExtensions.join( ' ' ), 2 );
+      QgsDebugMsgLevel( QStringLiteral( "wildcards: " ) + sWildcards.join( ' ' ), 2 );
+    } );
 
-      static QString sFilterString;
-      static QStringList sExtensions;
-      static QStringList sWildcards;
+    const QString suffix = pathInfo.suffix().toLower();
 
-      // get supported extensions
-      static std::once_flag initialized;
-      std::call_once( initialized, [ = ]
+    if ( !sExtensions.contains( suffix ) )
+    {
+      bool matches = false;
+      for ( const QString &wildcard : std::as_const( sWildcards ) )
       {
-        buildSupportedRasterFileFilterAndExtensions( sFilterString, sExtensions, sWildcards );
-        QgsDebugMsgLevel( QStringLiteral( "extensions: " ) + sExtensions.join( ' ' ), 2 );
-        QgsDebugMsgLevel( QStringLiteral( "wildcards: " ) + sWildcards.join( ' ' ), 2 );
-      } );
-
-      if ( !sExtensions.contains( suffix ) )
-      {
-        bool matches = false;
-        for ( const QString &wildcard : std::as_const( sWildcards ) )
+        const thread_local QRegularExpression rx( QRegularExpression::anchoredPattern(
+              QRegularExpression::wildcardToRegularExpression( wildcard )
+            ), QRegularExpression::CaseInsensitiveOption );
+        const QRegularExpressionMatch match = rx.match( pathInfo.fileName() );
+        if ( match.hasMatch() )
         {
-          const thread_local QRegularExpression rx( QRegularExpression::anchoredPattern(
-                QRegularExpression::wildcardToRegularExpression( wildcard )
-              ), QRegularExpression::CaseInsensitiveOption );
-          const QRegularExpressionMatch match = rx.match( info.fileName() );
-          if ( match.hasMatch() )
-          {
-            matches = true;
-            break;
-          }
+          matches = true;
+          break;
         }
-        if ( !matches )
-          return {};
+      }
+      if ( !matches )
+        return {};
+    }
+
+    // if this is a VRT file make sure it is raster VRT
+    if ( suffix == QLatin1String( "vrt" ) )
+    {
+      CPLPushErrorHandler( CPLQuietErrorHandler );
+      CPLErrorReset();
+      GDALDriverH hDriver = GDALIdentifyDriverEx( path.toUtf8().constData(), GDAL_OF_RASTER, nullptr, nullptr );
+      CPLPopErrorHandler();
+      if ( !hDriver )
+      {
+        // vrt is not a raster vrt, skip it
+        return {};
       }
     }
+
+    QgsProviderSublayerDetails details;
+    details.setType( QgsMapLayerType::RasterLayer );
+    details.setProviderKey( QStringLiteral( "gdal" ) );
+    details.setUri( uri );
+    details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( path ) );
+    if ( QgsGdalUtils::SUPPORTED_DB_LAYERS_EXTENSIONS.contains( suffix ) )
+    {
+      // uri may contain sublayers, but query flags prevent us from examining them
+      details.setSkippedContainerScan( true );
+    }
+    return {details};
   }
 
   if ( !uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString().isEmpty()

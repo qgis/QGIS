@@ -28,6 +28,33 @@
 #include <QImage>
 #include <QFileInfo>
 
+// File extensions for formats supported by GDAL which may contain multiple layers
+// and should be treated as a potential layer container
+const QStringList QgsGdalUtils::SUPPORTED_DB_LAYERS_EXTENSIONS
+{
+  QStringLiteral( "gpkg" ),
+  QStringLiteral( "sqlite" ),
+  QStringLiteral( "db" ),
+  QStringLiteral( "gdb" ),
+  QStringLiteral( "kml" ),
+  QStringLiteral( "osm" ),
+  QStringLiteral( "mdb" ),
+  QStringLiteral( "accdb" ),
+  QStringLiteral( "xls" ),
+  QStringLiteral( "xlsx" ),
+  QStringLiteral( "gpx" ),
+  QStringLiteral( "pdf" ),
+  QStringLiteral( "pbf" ),
+  QStringLiteral( "nc" ) };
+
+const QStringList QgsGdalUtils::INEXPENSIVE_TO_SCAN_EXTENSIONS
+{
+  QStringLiteral( "xlsx" ),
+  QStringLiteral( "ods" ),
+  QStringLiteral( "csv" ),
+  QStringLiteral( "nc" ),
+  QStringLiteral( "shp.zip" ) };
+
 bool QgsGdalUtils::supportsRasterCreate( GDALDriverH driver )
 {
   QString driverShortName = GDALGetDriverShortName( driver );
