@@ -101,6 +101,8 @@ void QgsLayerTreeOpacityWidget::sliderValueChanged( int value )
 
 void QgsLayerTreeOpacityWidget::updateOpacityFromSlider()
 {
+  if ( !mLayer )
+    return;
   int value = mSlider->value();
 
   switch ( mLayer->type() )
@@ -128,6 +130,8 @@ void QgsLayerTreeOpacityWidget::updateOpacityFromSlider()
 
 void QgsLayerTreeOpacityWidget::layerTrChanged()
 {
+  if ( !mLayer )
+    return;
   mSlider->blockSignals( true );
   mSlider->setValue( qobject_cast<QgsVectorLayer *>( mLayer )->opacity() * 1000.0 );
   mSlider->blockSignals( false );
