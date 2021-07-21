@@ -1027,6 +1027,19 @@ should correspond to the invalid source parameter name.
 .. versionadded:: 3.2
 %End
 
+    static QString writeFeatureError( QgsFeatureSink *sink, const QVariantMap &parameters, const QString &name );
+%Docstring
+Returns a user-friendly string to use as an error when a feature cannot be
+written into a sink.
+
+The ``sink`` argument is the sink into which the feature cannot be written.
+
+The ``parameters`` argument should give the algorithms parameter map, and the ``name``
+should correspond to the sink parameter name.
+
+.. versionadded:: 3.22
+%End
+
     virtual bool supportInPlaceEdit( const QgsMapLayer *layer ) const;
 %Docstring
 Checks whether this algorithm supports in-place editing on the given ``layer``

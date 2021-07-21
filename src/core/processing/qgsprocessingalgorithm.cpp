@@ -876,6 +876,16 @@ QString QgsProcessingAlgorithm::invalidSinkError( const QVariantMap &parameters,
   }
 }
 
+QString QgsProcessingAlgorithm::writeFeatureError( QgsFeatureSink *sink, const QVariantMap &parameters, const QString &name )
+{
+  Q_UNUSED( sink );
+  Q_UNUSED( parameters );
+  if ( !name.isEmpty() )
+    return QObject::tr( "Could not write feature into %1" ).arg( name );
+  else
+    return QObject::tr( "Could not write feature" );
+}
+
 bool QgsProcessingAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
 {
   Q_UNUSED( layer )
