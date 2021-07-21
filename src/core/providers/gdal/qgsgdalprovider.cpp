@@ -1638,6 +1638,9 @@ QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH
     return {};
   }
 
+  GDALDriverH hDriver = GDALGetDatasetDriver( dataset );
+  const QString gdalDriverName = GDALGetDriverShortName( hDriver );
+
   QList<QgsProviderSublayerDetails> res;
 
   char **metadata = GDALGetMetadata( dataset, "SUBDATASETS" );
@@ -1682,6 +1685,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH
         details.setName( layerName );
         details.setDescription( layerDesc );
         details.setLayerNumber( i );
+        details.setDriverName( gdalDriverName );
 
         const QVariantMap layerUriParts = decodeGdalUri( uri );
         // update original uri parts with this layername and path -- this ensures that other uri components
@@ -3656,6 +3660,8 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
       details.setType( QgsMapLayerType::RasterLayer );
       details.setUri( uri );
       details.setLayerNumber( 1 );
+      GDALDriverH hDriver = GDALGetDatasetDriver( dataset.get() );
+      details.setDriverName( GDALGetDriverShortName( hDriver ) );
 
       QString name;
       const QVariantMap parts = decodeUri( uri );
