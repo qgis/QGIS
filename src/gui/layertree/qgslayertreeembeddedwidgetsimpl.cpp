@@ -71,6 +71,8 @@ void QgsLayerTreeOpacityWidget::sliderValueChanged( int value )
 
 void QgsLayerTreeOpacityWidget::updateOpacityFromSlider()
 {
+  if ( !mLayer )
+    return;
   int value = mSlider->value();
   mLayer->setOpacity( value / 1000.0 );
   mLayer->triggerRepaint();
@@ -78,6 +80,8 @@ void QgsLayerTreeOpacityWidget::updateOpacityFromSlider()
 
 void QgsLayerTreeOpacityWidget::layerTrChanged()
 {
+  if ( !mLayer )
+    return;
   mSlider->blockSignals( true );
   mSlider->setValue( mLayer->opacity() * 1000.0 );
   mSlider->blockSignals( false );
