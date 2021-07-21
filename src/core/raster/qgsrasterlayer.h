@@ -556,7 +556,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     QgsRasterViewPort mLastViewPort;
 
-    LayerType mRasterType;
+    LayerType mRasterType = GrayOrUndefined;
 
     std::unique_ptr< QgsRasterPipe > mPipe;
 
