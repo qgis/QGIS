@@ -1112,6 +1112,9 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
   int layerIndex = 0;
   for ( const QString &layerUri : meshNames )
   {
+    if ( layerUri.isEmpty() )
+      continue;
+
     QgsProviderSublayerDetails details;
     details.setUri( layerUri );
     details.setProviderKey( QStringLiteral( "mdal" ) );
