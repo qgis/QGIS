@@ -303,10 +303,6 @@ class CORE_EXPORT QgsTopologicalMesh
       QgsMeshEditingError &error,
       bool allowUniqueSharedVertex );
 
-
-    //! Returns whether the two faces can be joined sharing the index \a commonIndex
-    static bool facesCanBeJoinedWithCommonIndex( const QgsMeshFace &face1, const QgsMeshFace &face2, int commonIndex );
-
     //! Returns all faces indexes that are concerned by the face with index in \a faceIndex, that is sharing a least one vertex or one edge
     QSet<int> concernedFacesBy( const QList<int> faceIndexes ) const;
 
