@@ -1060,7 +1060,7 @@ QgsProviderMetadata::ProviderMetadataCapabilities QgsMdalProviderMetadata::capab
   return QuerySublayers;
 }
 
-QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags, QgsFeedback * ) const
+QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags, QgsFeedback * ) const
 {
   if ( uri.isEmpty() )
     return {};
@@ -1088,6 +1088,21 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
     // Filter files by extension
     if ( !sExtensions.contains( suffix ) )
       return {};
+  }
+
+  if ( flags & Qgis::SublayerQueryFlag::FastScan )
+  {
+    if ( !info.isFile() )
+      return {};
+
+    QgsProviderSublayerDetails details;
+    details.setType( QgsMapLayerType::MeshLayer );
+    details.setProviderKey( QStringLiteral( "mdal" ) );
+    details.setUri( uri );
+    details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( uri ) );
+    // treat all mesh files as potentially being containers (is this correct?)
+    details.setSkippedContainerScan( true );
+    return {details};
   }
 
   const QStringList meshNames = QString( MDAL_MeshNames( uri.toUtf8() ) ).split( QStringLiteral( ";;" ) );
