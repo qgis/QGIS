@@ -1529,6 +1529,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(res[0].wkbType(), QgsWkbTypes.LineString)
         self.assertEqual(res[0].geometryColumnName(), '')
+        self.assertEqual(res[0].driverName(), 'ESRI Shapefile')
 
         # zip file layer vector
         res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, 'zip', 'points2.zip'))
@@ -1541,6 +1542,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(res[0].wkbType(), QgsWkbTypes.Point)
         self.assertEqual(res[0].geometryColumnName(), '')
+        self.assertEqual(res[0].driverName(), 'ESRI Shapefile')
         options = QgsProviderSublayerDetails.LayerOptions(QgsCoordinateTransformContext())
         vl = res[0].toLayer(options)
         self.assertTrue(vl.isValid())
@@ -1557,6 +1559,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(res[0].wkbType(), QgsWkbTypes.Point)
         self.assertEqual(res[0].geometryColumnName(), '')
+        self.assertEqual(res[0].driverName(), 'GeoJSON')
         options = QgsProviderSublayerDetails.LayerOptions(QgsCoordinateTransformContext())
         vl = res[0].toLayer(options)
         self.assertTrue(vl.isValid())
@@ -1569,6 +1572,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[1].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(res[1].wkbType(), QgsWkbTypes.Point)
         self.assertEqual(res[1].geometryColumnName(), '')
+        self.assertEqual(res[1].driverName(), 'ESRI Shapefile')
         options = QgsProviderSublayerDetails.LayerOptions(QgsCoordinateTransformContext())
         vl = res[1].toLayer(options)
         self.assertTrue(vl.isValid())
@@ -1585,6 +1589,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(res[0].wkbType(), QgsWkbTypes.Point)
         self.assertEqual(res[0].geometryColumnName(), '')
+        self.assertEqual(res[0].driverName(), 'GeoJSON')
         options = QgsProviderSublayerDetails.LayerOptions(QgsCoordinateTransformContext())
         vl = res[0].toLayer(options)
         self.assertTrue(vl.isValid())
@@ -1601,6 +1606,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(res[0].wkbType(), QgsWkbTypes.Point)
         self.assertEqual(res[0].geometryColumnName(), '')
+        self.assertEqual(res[0].driverName(), 'ESRI Shapefile')
         options = QgsProviderSublayerDetails.LayerOptions(QgsCoordinateTransformContext())
         vl = res[0].toLayer(options)
         self.assertTrue(vl.isValid())
@@ -1618,6 +1624,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(res[0].wkbType(), QgsWkbTypes.Point)
         self.assertEqual(res[0].geometryColumnName(), '')
+        self.assertEqual(res[0].driverName(), 'ESRI Shapefile')
         options = QgsProviderSublayerDetails.LayerOptions(QgsCoordinateTransformContext())
         vl = res[0].toLayer(options)
         self.assertTrue(vl.isValid())
@@ -1635,6 +1642,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(res[0].wkbType(), QgsWkbTypes.Unknown)
         self.assertEqual(res[0].geometryColumnName(), '')
+        self.assertEqual(res[0].driverName(), 'ESRI Shapefile')
 
         # retry with retrieving geometry types
         res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, 'multipatch.shp'), Qgis.SublayerQueryFlag.ResolveGeometryType)
@@ -1647,6 +1655,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(res[0].wkbType(), QgsWkbTypes.Polygon)
         self.assertEqual(res[0].geometryColumnName(), '')
+        self.assertEqual(res[0].driverName(), 'ESRI Shapefile')
 
         # single layer geopackage -- sublayers MUST have the layerName set on the uri,
         # in case more layers are added in future to the gpkg
@@ -1660,6 +1669,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(res[0].wkbType(), QgsWkbTypes.CurvePolygon)
         self.assertEqual(res[0].geometryColumnName(), 'geometry')
+        self.assertEqual(res[0].driverName(), 'GPKG')
 
         # make sure result is valid to load layer from
         vl = res[0].toLayer(options)
@@ -1677,6 +1687,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].featureCount(), Qgis.FeatureCountState.Uncounted)
         self.assertEqual(res[0].wkbType(), QgsWkbTypes.Point)
         self.assertEqual(res[0].geometryColumnName(), 'geometry')
+        self.assertEqual(res[0].driverName(), 'GPKG')
         vl = res[0].toLayer(options)
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
@@ -1690,6 +1701,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[1].featureCount(), Qgis.FeatureCountState.Uncounted)
         self.assertEqual(res[1].wkbType(), QgsWkbTypes.MultiLineString)
         self.assertEqual(res[1].geometryColumnName(), 'geom')
+        self.assertEqual(res[1].driverName(), 'GPKG')
         vl = res[1].toLayer(options)
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.MultiLineString)
@@ -1703,6 +1715,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[1].name(), "lines")
         self.assertEqual(res[1].featureCount(), 6)
         self.assertEqual(res[1].geometryColumnName(), 'geom')
+        self.assertEqual(res[1].driverName(), 'GPKG')
 
         # geopackage with two layers, but specific layer is requested in uri
         res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, "mixed_layers.gpkg") + '|layerid=0')
@@ -1716,6 +1729,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].featureCount(), Qgis.FeatureCountState.Uncounted)
         self.assertEqual(res[0].wkbType(), QgsWkbTypes.Point)
         self.assertEqual(res[0].geometryColumnName(), 'geometry')
+        self.assertEqual(res[0].driverName(), 'GPKG')
         vl = res[0].toLayer(options)
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
@@ -1731,6 +1745,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].featureCount(), Qgis.FeatureCountState.Uncounted)
         self.assertEqual(res[0].wkbType(), QgsWkbTypes.MultiLineString)
         self.assertEqual(res[0].geometryColumnName(), 'geom')
+        self.assertEqual(res[0].driverName(), 'GPKG')
         vl = res[0].toLayer(options)
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.MultiLineString)
@@ -1746,6 +1761,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].featureCount(), Qgis.FeatureCountState.Uncounted)
         self.assertEqual(res[0].wkbType(), QgsWkbTypes.Point)
         self.assertEqual(res[0].geometryColumnName(), 'geometry')
+        self.assertEqual(res[0].driverName(), 'GPKG')
         vl = res[0].toLayer(options)
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
@@ -1761,6 +1777,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].featureCount(), Qgis.FeatureCountState.Uncounted)
         self.assertEqual(res[0].wkbType(), QgsWkbTypes.MultiLineString)
         self.assertEqual(res[0].geometryColumnName(), 'geom')
+        self.assertEqual(res[0].driverName(), 'GPKG')
         vl = res[0].toLayer(options)
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.MultiLineString)
@@ -1777,6 +1794,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].featureCount(), Qgis.FeatureCountState.Uncounted)
         self.assertEqual(res[0].wkbType(), QgsWkbTypes.Unknown)
         self.assertEqual(res[0].geometryColumnName(), '')
+        self.assertEqual(res[0].driverName(), 'MapInfo File')
         vl = res[0].toLayer(options)
         self.assertTrue(vl.isValid())
 
@@ -1792,6 +1810,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].featureCount(), 13)
         self.assertEqual(res[0].wkbType(), QgsWkbTypes.Unknown)
         self.assertEqual(res[0].geometryColumnName(), '')
+        self.assertEqual(res[0].driverName(), 'MapInfo File')
 
         # layer with mixed geometry types - resolve geometry type (for OGR provider this implies also that we count features!)
         res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, "mixed_types.TAB"), Qgis.SublayerQueryFlag.ResolveGeometryType)
@@ -1805,6 +1824,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].featureCount(), 4)
         self.assertEqual(res[0].wkbType(), QgsWkbTypes.Point)
         self.assertEqual(res[0].geometryColumnName(), '')
+        self.assertEqual(res[0].driverName(), 'MapInfo File')
         vl = res[0].toLayer(options)
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
@@ -1818,6 +1838,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[1].featureCount(), 4)
         self.assertEqual(res[1].wkbType(), QgsWkbTypes.LineString)
         self.assertEqual(res[1].geometryColumnName(), '')
+        self.assertEqual(res[1].driverName(), 'MapInfo File')
         vl = res[1].toLayer(options)
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.LineString)
@@ -1831,6 +1852,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[2].featureCount(), 3)
         self.assertEqual(res[2].wkbType(), QgsWkbTypes.Polygon)
         self.assertEqual(res[2].geometryColumnName(), '')
+        self.assertEqual(res[2].driverName(), 'MapInfo File')
         vl = res[2].toLayer(options)
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Polygon)
@@ -1842,42 +1864,49 @@ class PyQgsOGRProvider(unittest.TestCase):
                                 'uri': r.uri(),
                                 'providerKey': r.providerKey(),
                                 'wkbType': r.wkbType(),
+                                'driverName': r.driverName(),
                                 'geomColName': r.geometryColumnName()} for r in res],
                               [{'name': 'somedata',
                                 'description': '',
                                 'uri': '{}/provider/spatialite.db|layername=somedata'.format(TEST_DATA_DIR),
                                 'providerKey': 'ogr',
                                 'wkbType': 1,
+                                'driverName': 'SQLite',
                                 'geomColName': 'geom'},
                                {'name': 'somepolydata',
                                 'description': '',
                                 'uri': '{}/provider/spatialite.db|layername=somepolydata'.format(TEST_DATA_DIR),
                                 'providerKey': 'ogr',
                                 'wkbType': 6,
+                                'driverName': 'SQLite',
                                 'geomColName': 'geom'},
                                {'name': 'some data',
                                 'description': '',
                                 'uri': '{}/provider/spatialite.db|layername=some data'.format(TEST_DATA_DIR),
                                 'providerKey': 'ogr',
                                 'wkbType': 1,
+                                'driverName': 'SQLite',
                                 'geomColName': 'geom'},
                                {'name': 'validator_project_test',
                                 'description': '',
                                 'uri': '{}/provider/spatialite.db|layername=validator_project_test'.format(TEST_DATA_DIR),
                                 'providerKey': 'ogr',
                                 'wkbType': 1,
+                                'driverName': 'SQLite',
                                 'geomColName': 'geom'},
                                {'name': 'data_licenses',
                                 'description': '',
                                 'uri': '{}/provider/spatialite.db|layername=data_licenses'.format(TEST_DATA_DIR),
                                 'providerKey': 'ogr',
                                 'wkbType': 100,
+                                'driverName': 'SQLite',
                                 'geomColName': ''},
                                {'name': 'some view',
                                 'description': '',
                                 'uri': '{}/provider/spatialite.db|layername=some view'.format(TEST_DATA_DIR),
                                 'providerKey': 'ogr',
                                 'wkbType': 100,
+                                'driverName': 'SQLite',
                                 'geomColName': ''}])
 
 
