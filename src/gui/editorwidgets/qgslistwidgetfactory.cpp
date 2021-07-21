@@ -41,12 +41,5 @@ QgsEditorConfigWidget *QgsListWidgetFactory::configWidget( QgsVectorLayer *vl, i
 unsigned int QgsListWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
   const QgsField field = vl->fields().field( fieldIdx );
-
-  if ( ( field.type() == QVariant::List || field.type() == QVariant::StringList ) && field.subType() != QVariant::Invalid )
-    return 20;
-
-  if ( ( field.type() == QVariant::Map ) && field.subType() != QVariant::Invalid )
-    return 15;
-
-  return 0;
+  return ( field.type() == QVariant::List || field.type() == QVariant::StringList || field.type() == QVariant::Map ) && field.subType() != QVariant::Invalid ? 20 : 0;
 }
