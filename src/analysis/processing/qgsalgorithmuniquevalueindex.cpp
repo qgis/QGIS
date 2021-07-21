@@ -130,7 +130,8 @@ QVariantMap QgsAddUniqueValueIndexAlgorithm::processAlgorithm( const QVariantMap
     {
       attributes.append( thisValue );
       feature.setAttributes( attributes );
-      sink->addFeature( feature, QgsFeatureSink::FastInsert );
+      if ( !sink->addFeature( feature, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
     }
 
     feedback->setProgress( current * step );
@@ -150,7 +151,8 @@ QVariantMap QgsAddUniqueValueIndexAlgorithm::processAlgorithm( const QVariantMap
     {
       QgsFeature f;
       f.setAttributes( QgsAttributes() << sortedIt.key() << sortedIt.value() );
-      summarySink->addFeature( f, QgsFeatureSink::FastInsert );
+      if ( !summarySink->addFeature( f, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( summarySink.get(), parameters, QStringLiteral( "SUMMARY_OUTPUT" ) ) );
     }
   }
 

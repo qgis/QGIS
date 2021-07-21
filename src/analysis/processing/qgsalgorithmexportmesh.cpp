@@ -372,7 +372,8 @@ QVariantMap QgsExportMeshOnElement::processAlgorithm( const QVariantMap &paramet
     feat.setGeometry( geom );
     feat.setAttributes( attributes );
 
-    sink->addFeature( feat );
+    if ( !sink->addFeature( feat ) )
+      throw QgsProcessingException( writeFeatureError( sink, parameters, QStringLiteral( "OUTPUT" ) ) );
 
     if ( feedback )
     {

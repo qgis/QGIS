@@ -164,21 +164,24 @@ QVariantMap QgsFilterByGeometryAlgorithm::processAlgorithm( const QVariantMap &p
         case QgsWkbTypes::PointGeometry:
           if ( pointSink )
           {
-            pointSink->addFeature( f, QgsFeatureSink::FastInsert );
+            if ( !pointSink->addFeature( f, QgsFeatureSink::FastInsert ) )
+              throw QgsProcessingException( writeFeatureError( pointSink.get(), parameters, QStringLiteral( "POINTS" ) ) );
           }
           pointCount++;
           break;
         case QgsWkbTypes::LineGeometry:
           if ( lineSink )
           {
-            lineSink->addFeature( f, QgsFeatureSink::FastInsert );
+            if ( !lineSink->addFeature( f, QgsFeatureSink::FastInsert ) )
+              throw QgsProcessingException( writeFeatureError( lineSink.get(), parameters, QStringLiteral( "LINES" ) ) );
           }
           lineCount++;
           break;
         case QgsWkbTypes::PolygonGeometry:
           if ( polygonSink )
           {
-            polygonSink->addFeature( f, QgsFeatureSink::FastInsert );
+            if ( !polygonSink->addFeature( f, QgsFeatureSink::FastInsert ) )
+              throw QgsProcessingException( writeFeatureError( polygonSink.get(), parameters, QStringLiteral( "POLYGONS" ) ) );
           }
           polygonCount++;
           break;
@@ -191,7 +194,8 @@ QVariantMap QgsFilterByGeometryAlgorithm::processAlgorithm( const QVariantMap &p
     {
       if ( noGeomSink )
       {
-        noGeomSink->addFeature( f, QgsFeatureSink::FastInsert );
+        if ( !noGeomSink->addFeature( f, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( noGeomSink.get(), parameters, QStringLiteral( "NO_GEOMETRY" ) ) );
       }
       nullCount++;
     }

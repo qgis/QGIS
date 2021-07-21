@@ -143,14 +143,18 @@ QVariantMap QgsRemoveDuplicatesByAttributeAlgorithm::processAlgorithm( const QVa
       // duplicate
       discardedCount++;
       if ( dupesSink )
-        dupesSink->addFeature( f, QgsFeatureSink::FastInsert );
+      {
+        if ( !dupesSink->addFeature( f, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( dupesSink.get(), parameters, QStringLiteral( "DUPLICATES" ) ) );
+      }
     }
     else
     {
       // not duplicate
       keptCount++;
       matched.insert( dupeKey );
-      noDupeSink->addFeature( f, QgsFeatureSink::FastInsert );
+      if ( !noDupeSink->addFeature( f, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( noDupeSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
     }
 
     feedback->setProgress( current * step );

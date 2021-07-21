@@ -187,7 +187,8 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
         outFeat.setAttributes( attrs );
         double angleAtVertex = line->vertexAngle( vertexId );
         outFeat.setGeometry( calcTransect( *it, angleAtVertex, evaluatedLength, orientation, evaluatedAngle ) );
-        sink->addFeature( outFeat, QgsFeatureSink::FastInsert );
+        if ( !sink->addFeature( outFeat, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
         number++;
         it++;
       }

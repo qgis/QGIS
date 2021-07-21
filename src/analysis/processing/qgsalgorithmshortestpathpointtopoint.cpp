@@ -110,7 +110,8 @@ QVariantMap QgsShortestPathPointToPointAlgorithm::processAlgorithm( const QVaria
   attributes << startPoint.toString() << endPoint.toString() << cost / mMultiplier;
   feat.setGeometry( geom );
   feat.setAttributes( attributes );
-  sink->addFeature( feat, QgsFeatureSink::FastInsert );
+  if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+    throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );

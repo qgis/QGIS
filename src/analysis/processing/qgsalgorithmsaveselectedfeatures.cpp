@@ -98,7 +98,8 @@ QVariantMap QgsSaveSelectedFeatures::processAlgorithm( const QVariantMap &parame
       break;
     }
 
-    sink->addFeature( feat, QgsFeatureSink::FastInsert );
+    if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
     feedback->setProgress( current++ * step );
   }

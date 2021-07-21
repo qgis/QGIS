@@ -284,7 +284,8 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
         f.setAttributes( pAttrs );
         QgsGeometry newGeom = QgsGeometry::fromPointXY( pt );
         f.setGeometry( newGeom );
-        sink->addFeature( f, QgsFeatureSink::FastInsert );
+        if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
         totNPoints++;
         pointsAddedForThisFeature++;
         pointProgress += pointProgressIncrement * ( maxAttemptsForThisFeature );
@@ -332,12 +333,14 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
 
         if ( minDistanceForThisFeature != 0 )
         {
-          localIndex.addFeature( f );
+          if ( !localIndex.addFeature( f ) )
+            throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QString() ) );
           localIndexPoints++;
         }
         if ( mMinDistanceGlobal != 0.0 )
         {
-          globalIndex.addFeature( f );
+          if ( !globalIndex.addFeature( f ) )
+            throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QString() ) );
           indexPoints++;
         }
         return true;
@@ -357,7 +360,8 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
         f.setAttributes( pAttrs );
         QgsGeometry newGeom = QgsGeometry::fromPointXY( pt );
         f.setGeometry( newGeom );
-        sink->addFeature( f, QgsFeatureSink::FastInsert );
+        if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
         totNPoints++;
         pointsAddedForThisFeature++;
         pointProgress += pointProgressIncrement * ( maxAttemptsForThisFeature );

@@ -135,7 +135,8 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
     const int count = idsCount.value( f.id() );
     for ( int i = 0; i < count; ++i )
     {
-      sink->addFeature( f, QgsFeatureSink::FastInsert );
+      if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
     }
   }
 

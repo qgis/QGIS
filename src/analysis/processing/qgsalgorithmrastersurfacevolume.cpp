@@ -238,7 +238,8 @@ QVariantMap QgsRasterSurfaceVolumeAlgorithm::processAlgorithm( const QVariantMap
   {
     QgsFeature f;
     f.setAttributes( QgsAttributes() << volume << area << count );
-    sink->addFeature( f, QgsFeatureSink::FastInsert );
+    if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT_TABLE" ) ) );
     outputs.insert( QStringLiteral( "OUTPUT_TABLE" ), tableDest );
   }
   outputs.insert( QStringLiteral( "VOLUME" ), volume );

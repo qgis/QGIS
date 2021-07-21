@@ -172,7 +172,8 @@ QVariantMap QgsDbscanClusteringAlgorithm::processAlgorithm( const QVariantMap &p
       attr << QVariant() << QVariant();
     }
     feat.setAttributes( attr );
-    sink->addFeature( feat, QgsFeatureSink::FastInsert );
+    if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
   }
 
   QVariantMap outputs;

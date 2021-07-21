@@ -280,7 +280,8 @@ QVariantMap QgsRasterLayerZonalStatsAlgorithm::processAlgorithm( const QVariantM
     it->s.finalize();
     f.setAttributes( QgsAttributes() << it.key() << it->s.count() * pixelArea << it->s.sum() << it->s.count() <<
                      it->s.min() << it->s.max() << it->s.mean() );
-    sink->addFeature( f, QgsFeatureSink::FastInsert );
+    if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT_TABLE" ) ) );
   }
   outputs.insert( QStringLiteral( "OUTPUT_TABLE" ), tableDest );
 

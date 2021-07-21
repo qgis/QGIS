@@ -252,7 +252,8 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
       {
         QgsFeature f;
         f.setAttributes( QgsAttributes() << cat.toString() );
-        nonMatchingCategoriesSink->addFeature( f, QgsFeatureSink::FastInsert );
+        if ( !nonMatchingCategoriesSink->addFeature( f, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( nonMatchingCategoriesSink.get(), parameters, QStringLiteral( "NON_MATCHING_CATEGORIES" ) ) );
       }
     }
   }
@@ -268,7 +269,8 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
       {
         QgsFeature f;
         f.setAttributes( QgsAttributes() << name );
-        nonMatchingSymbolsSink->addFeature( f, QgsFeatureSink::FastInsert );
+        if ( !nonMatchingSymbolsSink->addFeature( f, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( nonMatchingSymbolsSink.get(), parameters, QStringLiteral( "NON_MATCHING_SYMBOLS" ) ) );
       }
     }
   }

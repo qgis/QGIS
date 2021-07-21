@@ -84,7 +84,8 @@ QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &paramet
     }
 
     outputFeature.setGeometry( collector( geomQueue ) );
-    sink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
+    if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
   }
   else
   {
@@ -146,7 +147,8 @@ QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &paramet
         outputFeature.setGeometry( geom );
       }
       outputFeature.setAttributes( attrIt.value() );
-      sink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
+      if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
       feedback->setProgress( current * 100.0 / numberFeatures );
       current++;

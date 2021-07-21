@@ -236,7 +236,8 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
           QgsAttributes newAttrs = attrs;
           newAttrs.append( *attrsIt );
           feat.setAttributes( newAttrs );
-          sink->addFeature( feat, QgsFeatureSink::FastInsert );
+          if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+            throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
         }
       }
     }
@@ -245,11 +246,13 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
       // no matching for input feature
       if ( sink && !discardNonMatching )
       {
-        sink->addFeature( feat, QgsFeatureSink::FastInsert );
+        if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
       }
       if ( sinkNonMatching1 )
       {
-        sinkNonMatching1->addFeature( feat, QgsFeatureSink::FastInsert );
+        if ( !sinkNonMatching1->addFeature( feat, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( sinkNonMatching1.get(), parameters, QStringLiteral( "NON_MATCHING" ) ) );
       }
       unjoinedCount++;
     }

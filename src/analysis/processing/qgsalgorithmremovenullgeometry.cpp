@@ -103,11 +103,13 @@ QVariantMap QgsRemoveNullGeometryAlgorithm::processAlgorithm( const QVariantMap 
 
     if ( ( ( !removeEmpty && f.hasGeometry() ) || ( removeEmpty && !f.geometry().isEmpty() ) ) && nonNullSink )
     {
-      nonNullSink->addFeature( f, QgsFeatureSink::FastInsert );
+      if ( !nonNullSink->addFeature( f, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( nonNullSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
     }
     else if ( ( ( !removeEmpty && !f.hasGeometry() ) || ( removeEmpty && f.geometry().isEmpty() ) ) && nullSink )
     {
-      nullSink->addFeature( f, QgsFeatureSink::FastInsert );
+      if ( !nullSink->addFeature( f, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( nullSink.get(), parameters, QStringLiteral( "NULL_OUTPUT" ) ) );
     }
 
     feedback->setProgress( current * step );
