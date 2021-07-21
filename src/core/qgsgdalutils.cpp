@@ -52,8 +52,7 @@ const QStringList QgsGdalUtils::INEXPENSIVE_TO_SCAN_EXTENSIONS
 {
   QStringLiteral( "xlsx" ),
   QStringLiteral( "ods" ),
-  QStringLiteral( "csv" ),
-  QStringLiteral( "nc" ) };
+  QStringLiteral( "csv" ) };
 
 bool QgsGdalUtils::supportsRasterCreate( GDALDriverH driver )
 {
