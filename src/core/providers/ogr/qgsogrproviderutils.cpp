@@ -2394,6 +2394,7 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
     details.setGeometryColumnName( geometryColumnName );
     details.setDescription( longDescription );
     details.setProviderKey( QStringLiteral( "ogr" ) );
+    details.setDriverName( driverName );
 
     const QString uri = QgsOgrProviderMetadata().encodeUri( parts );
     details.setUri( uri );
@@ -2483,6 +2484,7 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
       details.setGeometryColumnName( geometryColumnName );
       details.setDescription( longDescription );
       details.setProviderKey( QStringLiteral( "ogr" ) );
+      details.setDriverName( driverName );
 
       if ( fCount.size() > 1 )
         parts.insert( QStringLiteral( "geometryType" ), ogrWkbGeometryTypeName( countIt.key() ) );
