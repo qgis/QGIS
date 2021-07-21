@@ -130,7 +130,8 @@ QVariantMap QgsSplitVectorLayerAlgorithm::processAlgorithm( const QVariantMap &p
       if ( feedback->isCanceled() )
         break;
 
-      sink->addFeature( feat, QgsFeatureSink::FastInsert );
+      if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
       count += 1;
     }
 

@@ -194,7 +194,8 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
     QgsGeometry geomPoints = QgsGeometry::fromMultiPointXY( points );
     feat.setGeometry( geomPoints );
     feat.setAttributes( QgsAttributes() << QStringLiteral( "within" ) << startPoint.toString() );
-    pointsSink->addFeature( feat, QgsFeatureSink::FastInsert );
+    if ( !pointsSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
     if ( includeBounds )
     {
@@ -227,11 +228,13 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
 
       feat.setGeometry( geomUpper );
       feat.setAttributes( QgsAttributes() << QStringLiteral( "upper" ) << startPoint.toString() );
-      pointsSink->addFeature( feat, QgsFeatureSink::FastInsert );
+      if ( !pointsSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
       feat.setGeometry( geomLower );
       feat.setAttributes( QgsAttributes() << QStringLiteral( "lower" ) << startPoint.toString() );
-      pointsSink->addFeature( feat, QgsFeatureSink::FastInsert );
+      if ( !pointsSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
     } // includeBounds
   }
 
@@ -245,7 +248,8 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
     QgsGeometry geomLines = QgsGeometry::fromMultiPolylineXY( lines );
     feat.setGeometry( geomLines );
     feat.setAttributes( QgsAttributes() << QStringLiteral( "lines" ) << startPoint.toString() );
-    linesSink->addFeature( feat, QgsFeatureSink::FastInsert );
+    if ( !linesSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( linesSink.get(), parameters, QStringLiteral( "OUTPUT_LINES" ) ) );
   }
 
   return outputs;

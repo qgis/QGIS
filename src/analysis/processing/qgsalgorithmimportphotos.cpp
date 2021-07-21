@@ -359,14 +359,15 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
     }
   }
 
-  auto saveInvalidFile = [&invalidSink]( QgsAttributes & attributes, bool readable )
+  auto saveInvalidFile = [&invalidSink, &parameters]( QgsAttributes & attributes, bool readable )
   {
     if ( invalidSink )
     {
       QgsFeature f;
       attributes.append( readable );
       f.setAttributes( attributes );
-      invalidSink->addFeature( f, QgsFeatureSink::FastInsert );
+      if ( !invalidSink->addFeature( f, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( invalidSink.get(), parameters, QStringLiteral( "INVALID" ) ) );
     }
   };
 
@@ -425,7 +426,8 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
           << tag.y()
           << extractTimestampFromMetadata( metadata );
       f.setAttributes( attributes );
-      outputSink->addFeature( f, QgsFeatureSink::FastInsert );
+      if ( !outputSink->addFeature( f, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( outputSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
     }
     else
     {

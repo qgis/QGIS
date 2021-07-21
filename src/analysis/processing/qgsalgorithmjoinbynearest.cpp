@@ -247,14 +247,16 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
       unjoinedCount++;
       if ( sinkNonMatching1 )
       {
-        sinkNonMatching1->addFeature( f, QgsFeatureSink::FastInsert );
+        if ( !sinkNonMatching1->addFeature( f, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( sinkNonMatching1.get(), parameters, QStringLiteral( "NON_MATCHING" ) ) );
       }
       if ( sink && !discardNonMatching )
       {
         QgsAttributes attr = f.attributes();
         attr.append( nullMatch );
         f.setAttributes( attr );
-        sink->addFeature( f, QgsFeatureSink::FastInsert );
+        if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
       }
     }
     else
@@ -302,7 +304,8 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
             attr.append( QVariant() ); //end y
           }
           out.setAttributes( attr );
-          sink->addFeature( out, QgsFeatureSink::FastInsert );
+          if ( !sink->addFeature( out, QgsFeatureSink::FastInsert ) )
+            throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
         }
       }
       if ( j > 0 )
@@ -311,14 +314,16 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
       {
         if ( sinkNonMatching1 )
         {
-          sinkNonMatching1->addFeature( f, QgsFeatureSink::FastInsert );
+          if ( !sinkNonMatching1->addFeature( f, QgsFeatureSink::FastInsert ) )
+            throw QgsProcessingException( writeFeatureError( sinkNonMatching1.get(), parameters, QStringLiteral( "NON_MATCHING" ) ) );
         }
         if ( !discardNonMatching && sink )
         {
           QgsAttributes attr = f.attributes();
           attr.append( nullMatch );
           f.setAttributes( attr );
-          sink->addFeature( f, QgsFeatureSink::FastInsert );
+          if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+            throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
         }
         unjoinedCount++;
       }

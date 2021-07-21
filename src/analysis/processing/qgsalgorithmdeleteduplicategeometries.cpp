@@ -181,7 +181,8 @@ QVariantMap QgsDeleteDuplicateGeometriesAlgorithm::processAlgorithm( const QVari
     {
       f.setGeometry( uniqueFeatures.value( f.id() ) );
     }
-    sink->addFeature( f, QgsFeatureSink::FastInsert );
+    if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
     current++;
     feedback->setProgress( 0.10 * current * step + 90 ); // takes about 10% of time

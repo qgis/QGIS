@@ -82,6 +82,11 @@ static bool sanitizeDifferenceResult( QgsGeometry &geom, QgsWkbTypes::GeometryTy
 }
 
 
+static QString writeFeatureError()
+{
+  return QObject::tr( "Could not write feature" );
+}
+
 void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, long &count, long totalCount, QgsOverlayUtils::DifferenceOutput outputAttrs )
 {
   QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::geometryType( QgsWkbTypes::multiType( sourceA.wkbType() ) );
@@ -180,12 +185,14 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
       QgsFeature outFeat;
       outFeat.setGeometry( geom );
       outFeat.setAttributes( attrs );
-      sink.addFeature( outFeat, QgsFeatureSink::FastInsert );
+      if ( !sink.addFeature( outFeat, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError() );
     }
     else
     {
       // TODO: should we write out features that do not have geometry?
-      sink.addFeature( featA, QgsFeatureSink::FastInsert );
+      if ( !sink.addFeature( featA, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError() );
     }
 
     ++count;
@@ -263,7 +270,8 @@ void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFe
 
       outFeat.setGeometry( intGeom );
       outFeat.setAttributes( outAttributes );
-      sink.addFeature( outFeat, QgsFeatureSink::FastInsert );
+      if ( !sink.addFeature( outFeat, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError() );
     }
 
     ++count;
@@ -456,13 +464,15 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
       for ( QgsFeatureId id : ids )
       {
         outFeature.setAttributes( attributesHash.value( id ) );
-        sink.addFeature( outFeature, QgsFeatureSink::FastInsert );
+        if ( !sink.addFeature( outFeature, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError() );
       }
     }
     else
     {
       outFeature.setAttributes( attributesHash.value( i.key() ) );
-      sink.addFeature( outFeature, QgsFeatureSink::FastInsert );
+      if ( !sink.addFeature( outFeature, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError() );
     }
   }
 }

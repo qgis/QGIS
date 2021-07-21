@@ -214,7 +214,8 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
       QgsFeature outputFeature;
       outputFeature.setGeometry( newGeometry );
       outputFeature.setAttributes( inputFeature.attributes() );
-      sink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
+      if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
 
       if ( singleClipFeature )

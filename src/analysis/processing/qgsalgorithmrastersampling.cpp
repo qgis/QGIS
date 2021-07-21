@@ -141,7 +141,8 @@ QVariantMap QgsRasterSamplingAlgorithm::processAlgorithm( const QVariantMap &par
     {
       attributes += emptySampleAttributes;
       outputFeature.setAttributes( attributes );
-      sink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
+      if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
       feedback->reportError( QObject::tr( "Impossible to sample data of multipart feature %1." ).arg( feature.id() ) );
       continue;
     }
@@ -155,7 +156,8 @@ QVariantMap QgsRasterSamplingAlgorithm::processAlgorithm( const QVariantMap &par
     {
       attributes += emptySampleAttributes;
       outputFeature.setAttributes( attributes );
-      sink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
+      if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
       feedback->reportError( QObject::tr( "Could not reproject feature %1 to raster CRS." ).arg( feature.id() ) );
       continue;
     }
@@ -167,7 +169,8 @@ QVariantMap QgsRasterSamplingAlgorithm::processAlgorithm( const QVariantMap &par
       attributes += ok ? value : QVariant();
     }
     outputFeature.setAttributes( attributes );
-    sink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
+    if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
   }
 
   QVariantMap outputs;

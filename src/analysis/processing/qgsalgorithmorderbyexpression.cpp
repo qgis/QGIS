@@ -98,7 +98,8 @@ QVariantMap QgsOrderByExpressionAlgorithm::processAlgorithm( const QVariantMap &
     {
       break;
     }
-    sink->addFeature( inFeature );
+    if ( !sink->addFeature( inFeature ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
     feedback->setProgress( current * step );
     current++;
   }

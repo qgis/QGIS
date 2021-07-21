@@ -122,7 +122,8 @@ QVariantMap QgsFilterAlgorithm::processAlgorithm( const QVariantMap &parameters,
     {
       if ( output->expression.evaluate( &expressionContext ).toBool() )
       {
-        output->sink->addFeature( f, QgsFeatureSink::FastInsert );
+        if ( !output->sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( output->sink.get(), parameters, output->name ) );
       }
     }
 

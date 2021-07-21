@@ -127,7 +127,8 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
 
     if ( !inFeatureA.hasGeometry() )
     {
-      sink->addFeature( inFeatureA, QgsFeatureSink::FastInsert );
+      if ( !sink->addFeature( inFeatureA, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
       continue;
     }
 
@@ -270,7 +271,8 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
     for ( const QgsGeometry &g : parts )
     {
       outFeat.setGeometry( g );
-      sink->addFeature( outFeat, QgsFeatureSink::FastInsert );
+      if ( !sink->addFeature( outFeat, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
     }
 
     feedback->setProgress( i * step );

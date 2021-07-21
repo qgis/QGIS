@@ -163,7 +163,8 @@ QVariantMap QgsExportLayersInformationAlgorithm::processAlgorithm( const QVarian
       }
       feature.setGeometry( QgsGeometry::fromRect( rect ) );
     }
-    outputSink->addFeature( feature, QgsFeatureSink::FastInsert );
+    if ( !outputSink->addFeature( feature, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( outputSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
   }
 
   QVariantMap outputs;

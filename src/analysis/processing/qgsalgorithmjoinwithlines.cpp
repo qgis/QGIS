@@ -342,7 +342,8 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
       outAttributes.append( spokeAttributes );
       outFeature.setAttributes( outAttributes );
       outFeature.setGeometry( line );
-      sink->addFeature( outFeature, QgsFeatureSink::FastInsert );
+      if ( !sink->addFeature( outFeature, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
     }
   }
 

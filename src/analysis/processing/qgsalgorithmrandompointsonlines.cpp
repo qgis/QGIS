@@ -335,13 +335,16 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
 
           if ( mMinDistanceGlobal != 0 )
           {
-            index.addFeature( f );
+            if ( !index.addFeature( f ) )
+              throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QString() ) );
           }
           if ( minDistanceForThisFeature != 0 )
           {
-            localIndex.addFeature( f );
+            if ( !localIndex.addFeature( f ) )
+              throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QString() ) );
           }
-          sink->addFeature( f, QgsFeatureSink::FastInsert );
+          if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+            throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
           totNPoints++;
           pointsAddedForThisFeature++;
           pointProgress += pointProgressIncrement * ( maxAttemptsForThisFeature - distCheckIterations );

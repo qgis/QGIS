@@ -106,7 +106,8 @@ QVariantMap QgsExtractByExtentAlgorithm::processAlgorithm( const QVariantMap &pa
       f.setGeometry( g );
     }
 
-    sink->addFeature( f, QgsFeatureSink::FastInsert );
+    if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
     feedback->setProgress( i * step );
   }
 

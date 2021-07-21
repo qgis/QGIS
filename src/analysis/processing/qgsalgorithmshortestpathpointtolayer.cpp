@@ -121,7 +121,8 @@ QVariantMap QgsShortestPathPointToLayerAlgorithm::processAlgorithm( const QVaria
       attributes.append( QVariant() );
       attributes.append( points[i].toString() );
       feat.setAttributes( attributes );
-      sink->addFeature( feat, QgsFeatureSink::FastInsert );
+      if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
       continue;
     }
 
@@ -143,7 +144,8 @@ QVariantMap QgsShortestPathPointToLayerAlgorithm::processAlgorithm( const QVaria
     attributes.append( cost / mMultiplier );
     feat.setAttributes( attributes );
     feat.setGeometry( geom );
-    sink->addFeature( feat, QgsFeatureSink::FastInsert );
+    if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
     feedback->setProgress( i * step );
   }

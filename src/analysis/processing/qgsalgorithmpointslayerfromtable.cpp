@@ -145,7 +145,8 @@ QVariantMap QgsPointsLayerFromTableAlgorithm::processAlgorithm( const QVariantMa
       f.setGeometry( QgsGeometry( point.clone() ) );
     }
 
-    sink->addFeature( f );
+    if ( !sink->addFeature( f ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
     feedback->setProgress( current * step );
     current++;
   }

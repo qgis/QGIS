@@ -144,7 +144,8 @@ QVariantMap QgsFlattenRelationshipsAlgorithm::processAlgorithm( const QVariantMa
       attrs.append( relatedFeature.attributes() );
       QgsFeature outFeat = feat;
       outFeat.setAttributes( attrs );
-      sink->addFeature( outFeat, QgsFeatureSink::FastInsert );
+      if ( !sink->addFeature( outFeat, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
     }
   }
 

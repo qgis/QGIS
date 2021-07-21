@@ -323,7 +323,8 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
     attrs.append( hit.value().last().first );
     outputFeature.setGeometry( QgsGeometry::fromPolyline( pathPoints ) );
     outputFeature.setAttributes( attrs );
-    sink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
+    if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
     if ( ! textDir.isEmpty() )
     {
