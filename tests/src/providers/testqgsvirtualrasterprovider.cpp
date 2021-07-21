@@ -135,7 +135,6 @@ void TestQgsVirtualRasterProvider::testUriProviderDecoding()
   QCOMPARE( decodedParams.rInputLayers.at( 1 ).provider, QStringLiteral( "gdal" ) );
   QCOMPARE( decodedParams.rInputLayers.at( 0 ).provider, QStringLiteral( "gdal" ) );
 
-  qDebug() << endl;
   qDebug() << QStringLiteral( "Raster layer: name, uri, provider" );
   for ( int i = 0; i < decodedParams.rInputLayers.size() ; ++i )
   {
@@ -143,7 +142,6 @@ void TestQgsVirtualRasterProvider::testUriProviderDecoding()
              decodedParams.rInputLayers.at( i ).uri  << ", " <<
              decodedParams.rInputLayers.at( i ).provider;
   }
-  qDebug() << endl;
 
 }
 
@@ -151,7 +149,7 @@ void TestQgsVirtualRasterProvider::testUriEncoding()
 {
 
   QgsRasterDataProvider::DecodedUriParameters decodedParams = QgsVirtualRasterProvider::decodeVirtualRasterProviderUri( QStringLiteral( "?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif&dem:provider=gdal&rband:uri=/home/franc/dev/cpp/QGIS/tests/testdata/raster/band1_byte_ct_epsg4326.tif&rband:provider=gdal" ) );
-  qDebug() << QgsVirtualRasterProvider::encodeVirtualRasterProviderUri( decodedParams ) << endl;
+  qDebug() << QgsVirtualRasterProvider::encodeVirtualRasterProviderUri( decodedParams );
 
 }
 
