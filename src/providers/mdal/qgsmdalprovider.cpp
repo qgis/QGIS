@@ -1067,25 +1067,28 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
 
   // get suffix, removing .gz if present
   const QFileInfo info( uri );
-  // allow only normal files
-  if ( !info.isFile() )
+
+  if ( info.isDir() )
     return {};
 
-  const QString suffix = info.suffix().toLower();
-
-  static QStringList sExtensions;
-  static std::once_flag initialized;
-  std::call_once( initialized, [ = ]( )
+  if ( info.isFile() )
   {
-    QStringList meshExtensions;
-    QStringList datasetsExtensions;
-    QgsMdalProvider::fileMeshExtensions( sExtensions, datasetsExtensions );
-    Q_UNUSED( datasetsExtensions )
-  } );
+    const QString suffix = info.suffix().toLower();
 
-  // Filter files by extension
-  if ( !sExtensions.contains( suffix ) )
-    return {};
+    static QStringList sExtensions;
+    static std::once_flag initialized;
+    std::call_once( initialized, [ = ]( )
+    {
+      QStringList meshExtensions;
+      QStringList datasetsExtensions;
+      QgsMdalProvider::fileMeshExtensions( sExtensions, datasetsExtensions );
+      Q_UNUSED( datasetsExtensions )
+    } );
+
+    // Filter files by extension
+    if ( !sExtensions.contains( suffix ) )
+      return {};
+  }
 
   const QStringList meshNames = QString( MDAL_MeshNames( uri.toUtf8() ) ).split( QStringLiteral( ";;" ) );
 
