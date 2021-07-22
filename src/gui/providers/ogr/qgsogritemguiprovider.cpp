@@ -69,7 +69,7 @@ void QgsOgrItemGuiProvider::onDeleteLayer( QgsDataItemGuiContext context )
 {
   QAction *s = qobject_cast<QAction *>( sender() );
   QVariantMap data = s->data().toMap();
-  bool isSubLayer = data[QStringLiteral( "isSublayer" )].toBool();
+  bool isSubLayer = data[QStringLiteral( "isSubLayer" )].toBool();
   const QString uri = data[QStringLiteral( "uri" )].toString();
   const QString name = data[QStringLiteral( "name" )].toString();
   QPointer< QgsDataItem > parent = data[QStringLiteral( "parent" )].value<QPointer< QgsDataItem >>();
