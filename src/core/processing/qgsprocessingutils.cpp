@@ -31,6 +31,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsproviderregistry.h"
 #include "qgsmeshlayer.h"
+#include "qgspluginlayer.h"
 #include "qgsreferencedgeometry.h"
 #include "qgsrasterfilewriter.h"
 #include "qgsvectortilelayer.h"
@@ -107,6 +108,29 @@ QList<QgsMeshLayer *> QgsProcessingUtils::compatibleMeshLayers( QgsProject *proj
   return layers;
 }
 
+QList<QgsPluginLayer *> QgsProcessingUtils::compatiblePluginLayers( QgsProject *project, bool sort )
+{
+  if ( !project )
+    return QList<QgsPluginLayer *>();
+
+  QList<QgsPluginLayer *> layers;
+  const auto pluginLayers = project->layers<QgsPluginLayer *>();
+  for ( QgsPluginLayer *l : pluginLayers )
+  {
+    if ( canUseLayer( l ) )
+      layers << l;
+  }
+
+  if ( sort )
+  {
+    std::sort( layers.begin(), layers.end(), []( const QgsPluginLayer * a, const QgsPluginLayer * b ) -> bool
+    {
+      return QString::localeAwareCompare( a->name(), b->name() ) < 0;
+    } );
+  }
+  return layers;
+}
+
 QList<QgsMapLayer *> QgsProcessingUtils::compatibleLayers( QgsProject *project, bool sort )
 {
   if ( !project )
@@ -125,6 +149,10 @@ QList<QgsMapLayer *> QgsProcessingUtils::compatibleLayers( QgsProject *project, 
   const auto meshLayers = compatibleMeshLayers( project, false );
   for ( QgsMeshLayer *vl : meshLayers )
     layers << vl;
+
+  const auto pluginLayers = compatiblePluginLayers( project, false );
+  for ( QgsPluginLayer *pl : pluginLayers )
+    layers << pl;
 
   if ( sort )
   {
@@ -491,6 +519,11 @@ QgsCoordinateReferenceSystem QgsProcessingUtils::variantToCrs( const QVariant &v
 bool QgsProcessingUtils::canUseLayer( const QgsMeshLayer *layer )
 {
   return layer && layer->dataProvider();
+}
+
+bool QgsProcessingUtils::canUseLayer( const QgsPluginLayer *layer )
+{
+  return layer && layer->isValid();
 }
 
 bool QgsProcessingUtils::canUseLayer( const QgsVectorTileLayer *layer )

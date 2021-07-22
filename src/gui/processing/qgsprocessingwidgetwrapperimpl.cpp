@@ -5757,6 +5757,7 @@ QgsProcessingMapLayerParameterDefinitionWidget::QgsProcessingMapLayerParameterDe
   mLayerTypeComboBox->addItem( tr( "Vector (Any Geometry Type)" ), QgsProcessing::TypeVectorAnyGeometry );
   mLayerTypeComboBox->addItem( tr( "Raster" ), QgsProcessing::TypeRaster );
   mLayerTypeComboBox->addItem( tr( "Mesh" ), QgsProcessing::TypeMesh );
+  mLayerTypeComboBox->addItem( tr( "Plugin" ), QgsProcessing::TypePlugin );
 
   if ( const QgsProcessingParameterMapLayer *layerParam = dynamic_cast<const QgsProcessingParameterMapLayer *>( definition ) )
   {
@@ -6736,6 +6737,17 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
       break;
     }
 
+    case QgsProcessing::TypePlugin:
+    {
+      mModelSources = model->availableSourcesForChild( modelChildAlgorithmID, QStringList() << QgsProcessingParameterMapLayer::typeName()
+                      << QgsProcessingParameterMultipleLayers::typeName()
+                      << QgsProcessingParameterFile::typeName(),
+                      QStringList() << QgsProcessingOutputFile::typeName()
+                      << QgsProcessingOutputMapLayer::typeName()
+                      << QgsProcessingOutputMultipleLayers::typeName() );
+      break;
+    }
+
     case QgsProcessing::TypeVector:
     {
       mModelSources = model->availableSourcesForChild( modelChildAlgorithmID, QStringList() << QgsProcessingParameterFeatureSource::typeName()
@@ -6877,6 +6889,7 @@ QgsProcessingMultipleLayerParameterDefinitionWidget::QgsProcessingMultipleLayerP
   mLayerTypeComboBox->addItem( tr( "Raster" ), QgsProcessing::TypeRaster );
   mLayerTypeComboBox->addItem( tr( "File" ), QgsProcessing::TypeFile );
   mLayerTypeComboBox->addItem( tr( "Mesh" ), QgsProcessing::TypeMesh );
+  mLayerTypeComboBox->addItem( tr( "Plugin" ), QgsProcessing::TypePlugin );
   if ( const QgsProcessingParameterMultipleLayers *layersParam = dynamic_cast<const QgsProcessingParameterMultipleLayers *>( definition ) )
     mLayerTypeComboBox->setCurrentIndex( mLayerTypeComboBox->findData( layersParam->layerType() ) );
 
