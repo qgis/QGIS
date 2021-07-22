@@ -6,8 +6,6 @@
 *.diff
 *.gpkg-shm
 *.gpkg-wal
-*.install
-*.lintian-overrides
 *.log*
 *.orig
 *.out
