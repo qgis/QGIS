@@ -142,7 +142,7 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
     mLayersTree->setColumnWidth( 1, mLayersTree->columnWidth( 1 ) + 10 );
   }
 
-  if ( QgsProviderUtils::sublayerDetailsAreIncomplete( initialDetails, false ) )
+  if ( QgsProviderUtils::sublayerDetailsAreIncomplete( initialDetails ) )
   {
     // initial details are incomplete, so fire up a task in the background to fully populate the model...
     mTask = new QgsProviderSublayerTask( uri );

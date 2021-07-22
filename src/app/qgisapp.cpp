@@ -5521,7 +5521,7 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layers, const QString &
     {
       userAskedToAddLayers = true;
 
-      const bool detailsAreIncomplete = QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers, true );
+      const bool detailsAreIncomplete = QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers, QgsProviderUtils::SublayerCompletenessFlag::IgnoreUnknownFeatureCount );
       const bool singleSublayerOnly = sublayers.size() == 1;
       QString groupName;
 
@@ -5901,7 +5901,7 @@ bool QgisApp::askUserForZipItemLayers( const QString &path, const QList< QgsMapL
   if ( sublayers.empty() )
     return false;
 
-  const bool detailsAreIncomplete = QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers, true );
+  const bool detailsAreIncomplete = QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers, QgsProviderUtils::SublayerCompletenessFlag::IgnoreUnknownFeatureCount );
   const bool singleSublayerOnly = sublayers.size() == 1;
   QString groupName;
 
@@ -7382,7 +7382,7 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
 
   if ( !sublayers.empty() || !nonLayerItems.empty() )
   {
-    const bool detailsAreIncomplete = QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers, true );
+    const bool detailsAreIncomplete = QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers, QgsProviderUtils::SublayerCompletenessFlag::IgnoreUnknownFeatureCount );
     const bool singleSublayerOnly = sublayers.size() == 1;
     QString groupName;
 
@@ -13153,7 +13153,7 @@ T *QgisApp::addLayerPrivate( QgsMapLayerType type, const QString &uri, const QSt
       // since the layer is bad, stomp on it
       return nullptr;
     }
-    else if ( sublayers.size() > 1 || QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers, true ) )
+    else if ( sublayers.size() > 1 || QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers, QgsProviderUtils::SublayerCompletenessFlag::IgnoreUnknownFeatureCount ) )
     {
       // ask user for sublayers (unless user settings dictate otherwise!)
       switch ( shouldAskUserForSublayers( sublayers ) )
