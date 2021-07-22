@@ -404,6 +404,17 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
       break;
     }
 
+    case QgsProcessing::TypePlugin:
+    {
+      const QList<QgsPluginLayer *> options = QgsProcessingUtils::compatiblePluginLayers( project, false );
+      for ( const QgsPluginsLayer *layer : options )
+      {
+        addLayer( layer );
+      }
+
+      break;
+    }
+
     case QgsProcessing::TypeVector:
     case QgsProcessing::TypeVectorAnyGeometry:
     {
