@@ -6502,16 +6502,6 @@ void QgisApp::showRasterCalculator()
   QgsRasterCalcDialog d( qobject_cast<QgsRasterLayer *>( activeLayer() ), this );
   if ( d.exec() == QDialog::Accepted )
   {
-    //invoke analysis library
-    QgsRasterCalculator rc( d.formulaString(),
-                            d.outputFile(),
-                            d.outputFormat(),
-                            d.outputRectangle(),
-                            d.outputCrs(),
-                            d.numberOfColumns(),
-                            d.numberOfRows(),
-                            QgsRasterCalculatorEntry::rasterEntries(),
-                            QgsProject::instance()->transformContext() );
 
     if ( d.useVirtualProvider() )
     {
@@ -6521,7 +6511,6 @@ void QgisApp::showRasterCalculator()
       virtualCalcParams.width = d.numberOfColumns();
       virtualCalcParams.height = d.numberOfRows();
       virtualCalcParams.formula = d.formulaString();
-
 
       for ( const auto &r : QgsRasterCalculatorEntry::rasterEntries() )
       {
@@ -6534,70 +6523,91 @@ void QgisApp::showRasterCalculator()
         virtualCalcParams.rInputLayers.append( projectRLayer );
       }
       qDebug() << QgsRasterDataProvider::encodeVirtualRasterProviderUri( virtualCalcParams );
-    }
 
-    QProgressDialog p( tr( "Calculating raster expression…" ), tr( "Abort" ), 0, 0 );
-    p.setWindowTitle( tr( "Raster calculator" ) );
-    p.setWindowModality( Qt::WindowModal );
-    p.setMaximum( 100.0 );
-    QgsFeedback feedback;
-    connect( &feedback, &QgsFeedback::progressChanged, &p, &QProgressDialog::setValue );
-    connect( &p, &QProgressDialog::canceled, &feedback, &QgsFeedback::cancel );
-    p.show();
-    QgsRasterCalculator::Result res = rc.processCalculation( &feedback );
-    switch ( res )
+      addRasterLayer( QgsRasterDataProvider::encodeVirtualRasterProviderUri( virtualCalcParams ),
+                      //QFileInfo( d.outputFile() ).completeBaseName(),
+                      QStringLiteral( "virtuallayer" ),
+                      QStringLiteral( "virtualrasterprovider" ) );
+    }
+    else
     {
-      case QgsRasterCalculator::Success:
-        if ( d.addLayerToProject() )
-        {
-          //addRasterLayer( d.outputFile(), QFileInfo( d.outputFile() ).completeBaseName(), QString() );
-          addRasterLayer( d.outputFile(), QFileInfo( d.outputFile() ).completeBaseName(), QStringLiteral( "gdal" ) );
-        }
-        visibleMessageBar()->pushMessage( tr( "Raster calculator" ),
-                                          tr( "Calculation complete." ),
-                                          Qgis::MessageLevel::Success );
-        break;
+      //invoke analysis library
+      QgsRasterCalculator rc( d.formulaString(),
+                              d.outputFile(),
+                              d.outputFormat(),
+                              d.outputRectangle(),
+                              d.outputCrs(),
+                              d.numberOfColumns(),
+                              d.numberOfRows(),
+                              QgsRasterCalculatorEntry::rasterEntries(),
+                              QgsProject::instance()->transformContext() );
 
-      case QgsRasterCalculator::CreateOutputError:
-        visibleMessageBar()->pushMessage( tr( "Raster calculator" ),
-                                          tr( "Could not create destination file." ),
-                                          Qgis::MessageLevel::Critical );
-        break;
+      QProgressDialog p( tr( "Calculating raster expression…" ), tr( "Abort" ), 0, 0 );
+      p.setWindowTitle( tr( "Raster calculator" ) );
+      p.setWindowModality( Qt::WindowModal );
+      p.setMaximum( 100.0 );
+      QgsFeedback feedback;
+      connect( &feedback, &QgsFeedback::progressChanged, &p, &QProgressDialog::setValue );
+      connect( &p, &QProgressDialog::canceled, &feedback, &QgsFeedback::cancel );
+      p.show();
+      QgsRasterCalculator::Result res = rc.processCalculation( &feedback );
+      switch ( res )
+      {
+        case QgsRasterCalculator::Success:
+          if ( d.addLayerToProject() )
+          {
+            //addRasterLayer( d.outputFile(), QFileInfo( d.outputFile() ).completeBaseName(), QString() );
+            addRasterLayer( d.outputFile(), QFileInfo( d.outputFile() ).completeBaseName(), QStringLiteral( "gdal" ) );
+          }
+          visibleMessageBar()->pushMessage( tr( "Raster calculator" ),
+                                            tr( "Calculation complete." ),
+                                            Qgis::MessageLevel::Success );
+          break;
 
-      case QgsRasterCalculator::InputLayerError:
-        visibleMessageBar()->pushMessage( tr( "Raster calculator" ),
-                                          tr( "Could not read input layer." ),
-                                          Qgis::MessageLevel::Critical );
-        break;
+        case QgsRasterCalculator::CreateOutputError:
+          visibleMessageBar()->pushMessage( tr( "Raster calculator" ),
+                                            tr( "Could not create destination file." ),
+                                            Qgis::MessageLevel::Critical );
+          break;
 
-      case QgsRasterCalculator::Canceled:
-        break;
+        case QgsRasterCalculator::InputLayerError:
+          visibleMessageBar()->pushMessage( tr( "Raster calculator" ),
+                                            tr( "Could not read input layer." ),
+                                            Qgis::MessageLevel::Critical );
+          break;
 
-      case QgsRasterCalculator::ParserError:
-        visibleMessageBar()->pushMessage( tr( "Raster calculator" ),
-                                          tr( "Could not parse raster formula." ),
-                                          Qgis::MessageLevel::Critical );
-        break;
+        case QgsRasterCalculator::Canceled:
+          break;
 
-      case QgsRasterCalculator::MemoryError:
-        visibleMessageBar()->pushMessage( tr( "Raster calculator" ),
-                                          tr( "Insufficient memory available for operation." ),
-                                          Qgis::MessageLevel::Critical );
-        break;
+        case QgsRasterCalculator::ParserError:
+          visibleMessageBar()->pushMessage( tr( "Raster calculator" ),
+                                            tr( "Could not parse raster formula." ),
+                                            Qgis::MessageLevel::Critical );
+          break;
 
-      case QgsRasterCalculator::BandError:
-        visibleMessageBar()->pushMessage( tr( "Raster calculator" ),
-                                          tr( "Invalid band number for input layer." ),
-                                          Qgis::MessageLevel::Critical );
-        break;
+        case QgsRasterCalculator::MemoryError:
+          visibleMessageBar()->pushMessage( tr( "Raster calculator" ),
+                                            tr( "Insufficient memory available for operation." ),
+                                            Qgis::MessageLevel::Critical );
+          break;
 
-      case QgsRasterCalculator::CalculationError:
-        visibleMessageBar()->pushMessage( tr( "Raster calculator" ),
-                                          tr( "An error occurred while performing the calculation." ),
-                                          Qgis::MessageLevel::Critical );
-        break;
+        case QgsRasterCalculator::BandError:
+          visibleMessageBar()->pushMessage( tr( "Raster calculator" ),
+                                            tr( "Invalid band number for input layer." ),
+                                            Qgis::MessageLevel::Critical );
+          break;
+
+        case QgsRasterCalculator::CalculationError:
+          visibleMessageBar()->pushMessage( tr( "Raster calculator" ),
+                                            tr( "An error occurred while performing the calculation." ),
+                                            Qgis::MessageLevel::Critical );
+          break;
+      }
+
+
+      p.hide();
+
     }
-    p.hide();
   }
 }
 

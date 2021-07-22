@@ -313,7 +313,7 @@ void QgsRasterCalcDialog::mExpressionTextEdit_textChanged()
   if ( expressionValid() )
   {
     mExpressionValidLabel->setText( tr( "Expression valid" ) );
-    if ( filePathValid() )
+    if ( filePathValid() || useVirtualProvider() )
     {
       mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
       return;
@@ -353,6 +353,7 @@ void QgsRasterCalcDialog::setOutputToVirtual()
     mOutputFormatComboBox->setEnabled( true );
     mOutputLayer->setEnabled( true );
     mAddResultToProjectCheckBox->setEnabled( true );
+    setAcceptButtonState();
   }
 }
 
@@ -381,6 +382,9 @@ bool QgsRasterCalcDialog::filePathValid() const
 void QgsRasterCalcDialog::mRasterBandsListWidget_itemDoubleClicked( QListWidgetItem *item )
 {
   mExpressionTextEdit->insertPlainText( quoteBandEntry( item->text() ) );
+  //to enable the "ok" button if someone checks the virtual provider checkbox befor adding a valid expression,
+  //otherways some bugging clicking is involved
+  if ( expressionValid() && useVirtualProvider() ) setAcceptButtonState();
 }
 
 void QgsRasterCalcDialog::mPlusPushButton_clicked()
