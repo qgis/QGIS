@@ -298,6 +298,7 @@ jobs:
           - distro-version: rawhide
             qt-version: 6
             test-batch: ALL_BUT_PROVIDERS
+            docker-target: single
 
       fail-fast: false
 
@@ -330,11 +331,9 @@ jobs:
           CTEST_BUILD_NAME=$( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo "PR${GITHUB_PR_NUMBER}" || echo ${GITHUB_REF##*/} )"_${GITHUB_SHA}_${{ matrix.test-batch }}"
           echo "CTEST_BUILD_NAME=${CTEST_BUILD_NAME}" >> $GITHUB_ENV
 
-
       - name: Print vars
         run: |
           echo CTEST_BUILD_NAME: ${CTEST_BUILD_NAME}
-
 
       - name: Build Docker Container with Testing Environment
         id: docker-build

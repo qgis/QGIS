@@ -1,4 +1,4 @@
-FROM fedora:rawhide
+FROM fedora:rawhide as single
 MAINTAINER Matthias Kuhn <matthias@opengis.ch>
 
 RUN dnf -y install \
@@ -54,4 +54,3 @@ RUN cd /usr/src \
   && qmake6 qwt.pro \
   && make -j4 \
   && make install
-
