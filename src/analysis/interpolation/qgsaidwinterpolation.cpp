@@ -87,8 +87,8 @@ void QgsAidwInterpolation::interpolate( QgsFeedback *feedback )
   QgsFeatureRequest req;
   if ( mInterpolatedLayer->crs() != mDataLayer->crs( ) )
   {
-    const QgsCoordinateTransform tranformer { mInterpolatedLayer->crs(), mDataLayer->crs( ), mInterpolatedLayer->transformContext() };
-    requestedExtent = tranformer.transform( requestedExtent );
+    const QgsCoordinateTransform transformer { mInterpolatedLayer->crs(), mDataLayer->crs( ), mInterpolatedLayer->transformContext() };
+    requestedExtent = transformer.transform( requestedExtent );
     req.setDestinationCrs( mInterpolatedLayer->crs(), mInterpolatedLayer->transformContext() );
   }
   req.setFilterRect( requestedExtent );
@@ -160,15 +160,6 @@ void QgsAidwInterpolation::interpolate( QgsFeedback *feedback )
     // Start calculation for a row: nd range is column count
     queue.enqueueNDRangeKernel( kernel, 0, columnCount );
     queue.enqueueReadBuffer( resultBuffer, CL_TRUE, 0, resultRowSize, resultBlock.get() );
-
-    // TODO: convert to destination raster data type if different than double
-
-    /* Debug
-    for ( int i = 0; i < columnCount; i++ )
-    {
-      qDebug() << "Value" << i << resultBlock.get()[i];
-    }
-    //*/
 
     // Write result to destination raster
     const bool writeOperationResult { mInterpolatedLayer->dataProvider()->write( static_cast<void *>( resultBlock.get() ),
