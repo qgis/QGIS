@@ -22,6 +22,9 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsvectorfilewriter.h"
 #include "qgsauthmanager.h"
 #include "qgsprovidersublayerdetails.h"
+#include "qgsproviderregistry.h"
+#include "qgsgeopackageproviderconnection.h"
+#include "qgsogrdbconnection.h"
 
 #include <ogr_srs_api.h>
 #include <cpl_port.h>
@@ -31,6 +34,8 @@ email                : nyall dot dawson at gmail dot com
 #include <QTextCodec>
 #include <QStorageInfo>
 #include <QRegularExpression>
+#include <QFileDialog>
+#include <QInputDialog>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -2490,6 +2495,37 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
     }
     return res;
   }
+}
+
+bool QgsOgrProviderUtils::createConnection( const QString &name, const QString &extensions, const QString &ogrDriverName )
+{
+  QString path = QFileDialog::getOpenFileName( nullptr, QObject::tr( "Open %1" ).arg( name ), QString(), extensions );
+  return saveConnection( path, ogrDriverName );
+}
+
+bool QgsOgrProviderUtils::saveConnection( const QString &path, const QString &ogrDriverName )
+{
+  QFileInfo fileInfo( path );
+  QString connName = fileInfo.fileName();
+  if ( ! path.isEmpty() )
+  {
+    bool ok = true;
+    while ( ok && ! QgsOgrDbConnection( connName, ogrDriverName ).path( ).isEmpty( ) )
+    {
+
+      connName = QInputDialog::getText( nullptr, QObject::tr( "Add Connection" ),
+                                        QObject::tr( "A connection with the same name already exists,\nplease provide a new name:" ), QLineEdit::Normal,
+                                        QString(), &ok );
+    }
+    if ( ok && ! connName.isEmpty() )
+    {
+      QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
+      QgsGeoPackageProviderConnection *providerConnection =  static_cast<QgsGeoPackageProviderConnection *>( providerMetadata->createConnection( connName ) );
+      providerMetadata->saveConnection( providerConnection, connName );
+      return true;
+    }
+  }
+  return false;
 }
 
 QgsOgrDatasetSharedPtr QgsOgrDataset::create( const QgsOgrProviderUtils::DatasetIdentification &ident,
