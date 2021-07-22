@@ -20,8 +20,6 @@
 
 #include "qgsinterpolator.h"
 #include "qgis_analysis.h"
-#include "qgsconfig.h"
-#include "qgsopenclutils.h"
 
 /**
  * \ingroup analysis
@@ -67,17 +65,6 @@ class ANALYSIS_EXPORT QgsIDWInterpolator: public QgsInterpolator
     QgsIDWInterpolator() = delete;
 
     double mDistanceCoefficient = 2.0;
-
-#ifdef HAVE_OPENCL
-    bool mUseOpenCl = false;
-
-    cl::Context mCtx;
-    cl::CommandQueue mQueue;
-    cl::Buffer mDataBuffer;
-    std::shared_ptr<cl::KernelFunctor<cl::Buffer &, cl::Buffer &, cl::Buffer &>> mKernel;
-
-#endif
-
 };
 
 #endif

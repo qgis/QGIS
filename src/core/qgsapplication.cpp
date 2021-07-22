@@ -75,13 +75,15 @@
 #include "qgsfeaturestore.h"
 #include "qgslocator.h"
 #include "qgsreadwritelocker.h"
-
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
 #include "processing/models/qgsprocessingmodelchildparametersource.h"
 #include "processing/models/qgsprocessingmodelchilddependency.h"
-
 #include "layout/qgspagesizeregistry.h"
+
+#ifdef HAVE_OPENCL
+#include "qgsopenclutils.h"
+#endif
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #include <QDesktopWidget>
@@ -429,6 +431,12 @@ void QgsApplication::init( QString profileFolder )
 
   if ( !members()->mStyleModel )
     members()->mStyleModel = new QgsStyleModel( QgsStyle::defaultStyle() );
+
+
+#ifdef HAVE_OPENCL
+  // Setup the default OpenCL programs source path, this my be overridden later by main.cpp startup
+  QgsOpenClUtils::setSourcePath( QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( QStringLiteral( "resources/opencl_programs" ) ) );
+#endif
 
   ABISYM( mInitialized ) = true;
 }
