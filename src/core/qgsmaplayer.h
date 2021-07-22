@@ -712,7 +712,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
       }
 
       // if failed, try to read as int (old behavior)
-      // this code shall be removed later (probably after QGIS 3.4 LTR for 3.6)
+      // this code shall be removed later
       // then the method could be marked as const
       v = static_cast<T>( customProperty( key, static_cast<int>( defaultValue ) ).toInt( &ok ) );
       if ( metaEnum.isValid() )
@@ -789,7 +789,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
       if ( !ok )
       {
         // if failed, try to read as int (old behavior)
-        // this code shall be removed later (probably after QGIS 3.4 LTR for 3.6)
+        // this code shall be removed later
         // then the method could be marked as const
         v = T( customProperty( key, static_cast<int>( defaultValue ) ).toInt( &ok ) );
         if ( metaEnum.isValid() )

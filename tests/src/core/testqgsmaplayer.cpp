@@ -426,7 +426,8 @@ void TestQgsMapLayer::customEnumFlagProperties()
   QgsMapLayerProxyModel::Filters pointAndLine = QgsMapLayerProxyModel::Filters( QgsMapLayerProxyModel::PointLayer | QgsMapLayerProxyModel::LineLayer );
   QgsMapLayerProxyModel::Filters pointAndPolygon = QgsMapLayerProxyModel::Filters( QgsMapLayerProxyModel::PointLayer | QgsMapLayerProxyModel::PolygonLayer );
   ml->setCustomProperty( QStringLiteral( "my_property_for_a_flag" ), 1e8 ); // invalid
-  QgsMapLayerProxyModel::Filters v4 = ml->customFlagProperty( QStringLiteral( "my_property_for_a_flag" ), pointAndLine );
+  // this should be switched to customFlagProperty (see https://stackoverflow.com/questions/68485843/how-to-test-if-a-value-is-valid-for-a-qflags)
+  QgsMapLayerProxyModel::Filters v4 = ml->customEnumProperty( QStringLiteral( "my_property_for_a_flag" ), pointAndLine );
   QCOMPARE( v4, pointAndLine );
 
   ml->setCustomProperty( QStringLiteral( "my_property_for_a_flag" ), static_cast<int>( pointAndPolygon ) );
