@@ -40,6 +40,7 @@
 #include "qgsreadwritecontext.h"
 #include "qgsdataprovider.h"
 #include "qgis.h"
+#include "qgslogger.h"
 
 class QgsAbstract3DRenderer;
 class QgsDataProvider;
