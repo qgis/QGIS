@@ -95,6 +95,9 @@ QgsRasterCalcDialog::QgsRasterCalcDialog( QgsRasterLayer *rasterLayer, QWidget *
   mOutputLayer->setDialogTitle( tr( "Enter result file" ) );
   mOutputLayer->setDefaultRoot( settings.value( QStringLiteral( "/RasterCalculator/lastOutputDir" ), QDir::homePath() ).toString() );
   connect( mOutputLayer, &QgsFileWidget::fileChanged, this, [ = ]() { setAcceptButtonState(); } );
+
+  connect( mUseVirtualProviderCheckBox, &QCheckBox::clicked, this, &QgsRasterCalcDialog::setOutputToVirtual );
+  //connect( mUseVirtualProviderCheckBox, &QCheckBox::clicked, this, [ = ]() { setAcceptButtonState(); } );
 }
 
 QString QgsRasterCalcDialog::formulaString() const
@@ -325,7 +328,7 @@ void QgsRasterCalcDialog::mExpressionTextEdit_textChanged()
 
 void QgsRasterCalcDialog::setAcceptButtonState()
 {
-  if ( expressionValid() && filePathValid() )
+  if ( ( expressionValid() && filePathValid() ) || ( expressionValid() && useVirtualProvider() ) )
   {
     mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
   }
@@ -341,12 +344,15 @@ void QgsRasterCalcDialog::setOutputToVirtual()
   {
     mOutputFormatComboBox->setEnabled( false );
     mOutputLayer->setEnabled( false );
-    //mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
+    mAddResultToProjectCheckBox->isChecked();
+    mAddResultToProjectCheckBox->setEnabled( false );
+    setAcceptButtonState();
   }
   else
   {
     mOutputFormatComboBox->setEnabled( true );
     mOutputLayer->setEnabled( true );
+    mAddResultToProjectCheckBox->setEnabled( true );
   }
 }
 

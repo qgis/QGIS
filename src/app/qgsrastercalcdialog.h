@@ -42,6 +42,7 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     QString outputFormat() const;
     QgsCoordinateReferenceSystem outputCrs() const;
     bool addLayerToProject() const;
+    //true if Virtual is checked
     bool useVirtualProvider() const;
 
     //! Bounding box for output raster
