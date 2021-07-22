@@ -345,7 +345,7 @@ jobs:
           registry: docker.pkg.github.com
           image_name: qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only
           dockerfile: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
-          build_extra_args: "--target ${{ matrix.docker-target } --build-arg=DISTRO_VERSION=${{ matrix.distro-version }}"
+          build_extra_args: "--target ${{ matrix.docker-target }} --build-arg=DISTRO_VERSION=${{ matrix.distro-version }}"
           push_git_tag: true
           push_image_and_stages: on:push
           pull_image_and_stages: ${{ github.event_name != 'workflow_dispatch' }}
