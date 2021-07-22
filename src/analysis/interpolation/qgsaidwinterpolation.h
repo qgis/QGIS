@@ -39,7 +39,7 @@ class ANALYSIS_EXPORT QgsAidwInterpolation
      * Constructs a QgsAidwInterpolation object.
      * \param dataLayer the input points layer.
      * \param dataAttributeName name of the input layer attribute that contains the values for the interpolation, it must be a numeric field.
-     * \param interpolatedLayer the destination layer for the interpolation.
+     * \param interpolatedLayer the destination layer for the interpolation, data type must be Float64 (double precision).
      * \param coefficient coefficient for distance weighting, default to 2.0.
      */
     QgsAidwInterpolation( QgsVectorLayer *dataLayer, QString &dataAttributeName, QgsRasterLayer *interpolatedLayer, double coefficient = 2.0 );

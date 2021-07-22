@@ -193,7 +193,16 @@ void QgsAidwInterpolation::interpolate( QgsFeedback *feedback )
 
 void QgsAidwInterpolation::process( QgsFeedback *feedback )
 {
-  // TODO: check that data layer is a point layer
+  // check that data layer is a point layer
+  if ( mDataLayer->geometryType() != QgsWkbTypes::GeometryType::PointGeometry )
+  {
+    throw QgsProcessingException( QObject::tr( "Input layer '%1' geometry type is not point" ).arg( mDataLayer->name() ) );
+  }
+
+  if ( mInterpolatedLayer->dataProvider()->dataType( 1 ) != Qgis::DataType::Float64 )
+  {
+    throw QgsProcessingException( QObject::tr( "Destination layer '%1' type is not Float64 (double precision)" ).arg( mInterpolatedLayer->name() ) );
+  }
 
   const int attrId { mDataLayer->fields().lookupField( mDataAttributeName ) };
   if ( attrId < 0 )
