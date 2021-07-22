@@ -725,7 +725,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
         {
           // found property as an integer
           // convert the property to the new form (string)
-          setCustomProperty( key, v );
+          setCustomEnumProperty( key, v );
         }
       }
 
