@@ -87,7 +87,6 @@ jobs:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_REF: ${{ github.ref }}
           GITHUB_PR_NUMBER: ${{github.event.number}}
-          DISTRO_VERSION: ${{ matrix.distro-version }}
         run: |
           # Be aware that these instructions are duplicated in run-tests job
           DOCKER_TAG=$(echo $( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo ${GITHUB_BASE_REF} || echo ${GITHUB_REF##*/} ) | sed 's/^master$/latest/')${{ matrix.docker-tag-suffix }}
@@ -285,9 +284,21 @@ jobs:
 
     strategy:
       matrix:
-        # tests run on 20.04 (Qt 5.12), compile test on 20.10 (Qt 5.14)
-        distro-version: [20.04]
-        test-batch: [ALL_BUT_PROVIDERS, POSTGRES, ORACLE, HANA]
+        distro-version: 20.04
+        qt-version: 5
+        test-batch: [ALL_BUT_PROVIDERS, POSTGRES, HANA]
+        docker-target: binary-only
+
+        include:
+          - distro-version: 20.04
+            qt-version: 5
+            test-batch: ORACLE
+            docker-target: binary-for-oracle
+
+          - distro-version: rawhide
+            qt-version: 6
+            test-batch: ALL_BUT_PROVIDERS
+
       fail-fast: false
 
     services:
@@ -314,30 +325,36 @@ jobs:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_REF: ${{ github.ref }}
           GITHUB_PR_NUMBER: ${{github.event.number}}
-          DISTRO_VERSION: ${{ matrix.distro-version }}
-          TEST_BATCH: ${{ matrix.test-batch }}
         run: |
           # Be aware that these instructions are duplicated in build job
-          DOCKER_TAG=$(echo $( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo ${GITHUB_BASE_REF} || echo ${GITHUB_REF##*/} ) | sed 's/^master$/latest/')${{ matrix.docker-tag-suffix }}
-          CTEST_BUILD_NAME=$( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo "PR${GITHUB_PR_NUMBER}" || echo ${GITHUB_REF##*/} )"_${GITHUB_SHA}_${TEST_BATCH}"
-          echo "DOCKER_TAG=${DOCKER_TAG}" >> $GITHUB_ENV
+          CTEST_BUILD_NAME=$( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo "PR${GITHUB_PR_NUMBER}" || echo ${GITHUB_REF##*/} )"_${GITHUB_SHA}_${{ matrix.test-batch }}"
           echo "CTEST_BUILD_NAME=${CTEST_BUILD_NAME}" >> $GITHUB_ENV
 
 
       - name: Print vars
         run: |
-          echo DOCKER_TAG: ${DOCKER_TAG}
           echo CTEST_BUILD_NAME: ${CTEST_BUILD_NAME}
 
-      - name: Build deps
-        env:
-          DISTRO_VERSION: ${{ matrix.distro-version }}
+
+      - name: Build Docker Container with Testing Environment
+        id: docker-build
+        uses: whoan/docker-build-with-cache-action@v5
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          image_name: qgis3-qt${{ qt-version }}-build-deps-bin-only
+          dockerfile: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
+          build_extra_args: "--target ${{ matrix.docker-target } --build-arg=DISTRO_VERSION=${{ matrix.distro-version }}"
+          push_git_tag: true
+          push_image_and_stages: on:push
+          pull_image_and_stages: ${{ github.event_name != 'workflow_dispatch' }}
+
+      - name: Tag image
         run: |
-          pushd .docker
-          TARGET=$( ( [[ ${TEST_BATCH} == "ORACLE"   ]] && echo "binary-for-oracle" ) \
-                 || echo "binary-only" )
-          docker build --target $TARGET --build-arg DISTRO_VERSION=${DISTRO_VERSION} --cache-from qgis/qgis3-build-deps:${DOCKER_TAG} -t qgis/qgis3-build-deps-bin-only:${DOCKER_TAG} -f qgis3-qt5-build-deps.dockerfile .
-          popd
+          docker tag ${DOCKER_IMAGE} qgis3-build-deps-binary-image
+        env:
+          DOCKER_IMAGE: ${{ steps.docker-build.outputs.FULL_IMAGE_NAME }}
 
       - name: Print disk space
         run: |
@@ -368,10 +385,10 @@ jobs:
           TEST_BATCH: ${{matrix.test-batch}}
           QGIS_HTTPBIN_HOST: "localhost:8082"
         run: |
-          DOCKERFILE=$( ( [[ ${TEST_BATCH} == "ORACLE"   ]] && echo "docker-compose-testing-oracle.yml" ) \
-                     || ( [[ ${TEST_BATCH} == "POSTGRES" ]] && echo "docker-compose-testing-postgres.yml" ) \
+          DOCKERFILE=$( ( [[ ${{ matrix.test-batch }} == "ORACLE"   ]] && echo "docker-compose-testing-oracle.yml" ) \
+                     || ( [[ ${{ matrix.test-batch }} == "POSTGRES" ]] && echo "docker-compose-testing-postgres.yml" ) \
                      || echo "docker-compose-testing.yml" )
-          [[ ${TEST_BATCH} == "ORACLE" ]] && sudo rm -rf /usr/share/dotnet/sdk
+          [[ ${{ matrix.test-batch }} == "ORACLE" ]] && sudo rm -rf /usr/share/dotnet/sdk
           echo "TEST_BATCH=$TEST_BATCH"
           echo "DOCKERFILE=$DOCKERFILE"
           docker-compose -f .docker/$DOCKERFILE run qgis-deps /root/QGIS/.docker/docker-qgis-test.sh $TEST_BATCH
