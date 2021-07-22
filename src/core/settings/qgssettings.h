@@ -1,4 +1,4 @@
-/***************************************************************************
+1/***************************************************************************
   qgssettings.h
   --------------------------------------
   Date                 : January 2017
@@ -372,7 +372,7 @@ class CORE_EXPORT QgsSettings : public QObject
     }
 
     /**
-     * Set the value of a setting based on a flaf.
+     * Set the value of a setting based on a flag.
      * The setting will be saved as string.
      * \note The flag needs to be declared with Q_FLAG (not Q_FLAGS).
      * \see flagValue
