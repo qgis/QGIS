@@ -2,6 +2,7 @@
 %Include auto_generated/qgsanalysis.sip
 %Include auto_generated/georeferencing/qgsgcpgeometrytransformer.sip
 %Include auto_generated/georeferencing/qgsgcptransformer.sip
+%Include auto_generated/interpolation/qgsaidwinterpolation.sip
 %Include auto_generated/interpolation/qgsgridfilewriter.sip
 %Include auto_generated/interpolation/qgsidwinterpolator.sip
 %Include auto_generated/interpolation/qgsinterpolator.sip

@@ -19,7 +19,7 @@ endif()
 # Tests:
 set(TESTS
  testqgsgeometrysnapper.cpp
- testqgsinterpolator.cpp
+ testqgsinterpolator.cpp 
  testqgsprocessingalgs.cpp
  testqgszonalstatistics.cpp
  testqgsrastercalculator.cpp
@@ -34,6 +34,7 @@ set(TESTS
 if(HAVE_GSL)
   set(TESTS ${TESTS} testqgsgcptransformer.cpp)
 endif()
+
 
 foreach(TESTSRC ${TESTS})
     add_qgis_test(${TESTSRC} MODULE analysis LINKEDLIBRARIES qgis_analysis)

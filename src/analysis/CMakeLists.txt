@@ -16,7 +16,6 @@ set(QGIS_ANALYSIS_SRCS
   georeferencing/qgsgcptransformer.cpp
   georeferencing/qgsleastsquares.cpp
 
-  interpolation/qgsaidwinterpolation.cpp
   interpolation/qgsgridfilewriter.cpp
   interpolation/qgsidwinterpolator.cpp
   interpolation/qgsinterpolator.cpp
@@ -300,7 +299,6 @@ set(QGIS_ANALYSIS_HDRS
   georeferencing/qgsgcpgeometrytransformer.h
   georeferencing/qgsgcptransformer.h
 
-  interpolation/qgsaidwinterpolation.h
   interpolation/Bezier3D.h
   interpolation/CloughTocherInterpolator.h
   interpolation/qgsdualedgetriangulation.h
@@ -445,6 +443,12 @@ endif()
 
 if(HAVE_OPENCL)
     include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
+    set(QGIS_ANALYSIS_SRCS ${QGIS_ANALYSIS_SRCS}
+        interpolation/qgsaidwinterpolation.cpp
+    )
+    set(QGIS_ANALYSIS_HDRS ${QGIS_ANALYSIS_HDRS}
+        interpolation/qgsaidwinterpolation.h
+    )
 endif()
 
 

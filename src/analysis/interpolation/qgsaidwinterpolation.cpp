@@ -26,10 +26,11 @@
 
 #include <QObject>
 
-QgsAidwInterpolation::QgsAidwInterpolation( QgsVectorLayer *dataLayer, QString &dataAttributeName, QgsRasterLayer *interpolatedLayer )
+QgsAidwInterpolation::QgsAidwInterpolation( QgsVectorLayer *dataLayer, QString &dataAttributeName, QgsRasterLayer *interpolatedLayer, double coefficient )
   : mDataLayer( dataLayer )
   , mInterpolatedLayer( interpolatedLayer )
   , mDataAttributeName( dataAttributeName )
+  , mCoefficient( coefficient )
 {
 
 }
@@ -40,61 +41,154 @@ void QgsAidwInterpolation::interpolate( QgsFeedback *feedback )
   const int attrId { mDataLayer->fields().lookupField( mDataAttributeName ) };
   Q_ASSERT( attrId >= 0 );
 
-  int tileWidth;
-  int tileHeight;
-  int tileXOffset = 0;
-  int tileYOffset = 0;
+  long long featureCount { mDataLayer->featureCount() };
 
-  // TODO: Calculate tile size
-  tileWidth = mInterpolatedLayer->width();
-  tileHeight = mInterpolatedLayer->height();
-  unsigned long tileSize = tileWidth * tileHeight;
-  std::size_t resultBlockSize( sizeof( float ) * tileSize );
-  // TODO: This must be dynamically calculated given the available GPU memory
-  const unsigned long maxGpuMemory { 1000000 };
-  std::size_t dataSize { std::min<unsigned long>( mDataLayer->featureCount() * sizeof( float ) * 3, maxGpuMemory )};
+  if ( featureCount <= 0 )
+  {
+    throw QgsProcessingException( QObject::tr( "Feature count for data layer '%1' is not known or the layer is empty" ).arg( mDataLayer->name() ) );
+  }
+
+  if ( ! mInterpolatedLayer->dataProvider()->isEditable() && ! mInterpolatedLayer->dataProvider()->setEditable( true ) )
+  {
+    throw QgsProcessingException( QObject::tr( "Could not edit layer '%1': dataset is read only" ).arg( mInterpolatedLayer->name() ) );
+  }
+
+  Q_ASSERT( mInterpolatedLayer->dataProvider()->isEditable() );
+
+  const int columnCount { mInterpolatedLayer->width() };
+  const int rowCount = { mInterpolatedLayer->height() };
+
+  if ( rowCount <= 0 || columnCount <= 0 )
+  {
+    throw QgsProcessingException( QObject::tr( "Could not write on an empty (%1x%2) layer '%3'" )
+                                  .arg( columnCount )
+                                  .arg( rowCount )
+                                  .arg( mInterpolatedLayer->name() ) );
+  }
+  // Size of a reult row
+  const std::size_t resultRowSize( sizeof( cl_double ) * columnCount );
+
+  QgsRectangle requestedExtent { mInterpolatedLayer->extent( ) };
+
+  // Output step size
+  cl_double xStep { static_cast<cl_double>( requestedExtent.width() / mInterpolatedLayer->width() ) };
+  cl_double yStep { static_cast<cl_double>( requestedExtent.height() / mInterpolatedLayer->height() ) };
+
+  const cl_double xMin { static_cast<cl_double>( mInterpolatedLayer->extent( ).xMinimum() + xStep / 2 ) }; // Center x of first cell
+  cl_double yMin { static_cast<cl_double>( mInterpolatedLayer->extent( ).yMinimum() + yStep / 2 ) }; // Center y of first cell, will be incremented on each row iteration
 
   // Prepare context and queue
   cl::Context ctx = QgsOpenClUtils::context();
   cl::CommandQueue queue = QgsOpenClUtils::commandQueue();
 
-  QgsOpenClUtils::CPLAllocator<float> resultBlock( resultBlockSize );
-  QgsOpenClUtils::CPLAllocator<float> data( dataSize );
+  QgsOpenClUtils::CPLAllocator<cl_double> resultBlock( resultRowSize );
 
   // Fill up the data array
   QgsFeatureRequest req;
+  if ( mInterpolatedLayer->crs() != mDataLayer->crs( ) )
+  {
+    const QgsCoordinateTransform tranformer { mInterpolatedLayer->crs(), mDataLayer->crs( ), mInterpolatedLayer->transformContext() };
+    requestedExtent = tranformer.transform( requestedExtent );
+    req.setDestinationCrs( mInterpolatedLayer->crs(), mInterpolatedLayer->transformContext() );
+  }
+  req.setFilterRect( requestedExtent );
   req.setSubsetOfAttributes( QgsAttributeList() << attrId );
 
+  struct VectorData
+  {
+    cl_double x;
+    cl_double y;
+    cl_double z;  //!< This is the interpolation value
+  };
+
+  std::vector<VectorData> vectorData;
+  vectorData.reserve( featureCount );
+
+  QgsFeature f;
+  QgsFeatureIterator featureIterator { mDataLayer->getFeatures( req )};
+  long long featureIdx { 0 };
+  while ( featureIterator.nextFeature( f ) )
+  {
+    featureIdx++;
+    if ( feedback )
+    {
+      if ( feedback->isCanceled() )
+        return;
+      feedback->setProgress( 100.0 * featureIdx / featureCount );
+    }
+    const QgsPointXY point { f.geometry().asPoint() };
+    vectorData.push_back( VectorData{ static_cast<cl_double>( point.x() ), static_cast<cl_double>( point.y() ), static_cast<cl_double>( f.attribute( attrId ).toDouble() ) } );
+  }
+
+
   // Create I/O buffers
-  cl::Buffer resultBuffer( ctx, CL_MEM_WRITE_ONLY, resultBlockSize, nullptr, nullptr );
-  cl::Buffer dataBuffer( ctx, CL_MEM_READ_ONLY, dataSize, nullptr, nullptr );
+  cl::Buffer resultBuffer( ctx, CL_MEM_WRITE_ONLY, resultRowSize );
+  // Create and fill
+  cl::Buffer dataBuffer( queue, vectorData.begin(), vectorData.end(), true, false );
 
   // Create a program from the kernel source
   const QString source( QgsOpenClUtils::sourceFromBaseName( QStringLiteral( "aidw" ) ) );
   cl::Program program( QgsOpenClUtils::buildProgram( source, QgsOpenClUtils::ExceptionBehavior::Throw ) );
 
   // Create the OpenCL kernel
-  auto kernel = cl::KernelFunctor <
-                cl::Buffer &,
-                cl::Buffer &
-                > ( program, "aidw" );
+  cl::Kernel kernel { cl::Kernel( program, "idw" ) };
+  kernel.setArg( 0, sizeof( xStep ), &xStep );  // private
+  kernel.setArg( 1, sizeof( yStep ), &yStep );  // private
+  kernel.setArg( 2, sizeof( xMin ), &xMin );  // private
+  //     setArg  3 yMin vary on each iteration
+  kernel.setArg( 4, sizeof( columnCount ), &columnCount );  // private
+  // Pass an unsigned long or NVidia compiler crashes :/
+  const cl_ulong ulFeatureCount { static_cast<cl_ulong>( featureCount ) };
+  kernel.setArg( 5, sizeof( ulFeatureCount ), &ulFeatureCount );  // private
+  cl_double coefficient { static_cast<cl_double>( mCoefficient )};
+  kernel.setArg( 6, sizeof( coefficient ), &coefficient );  // private
+  kernel.setArg( 7, sizeof( dataBuffer ), &dataBuffer ); // global
+  kernel.setArg( 8, sizeof( resultRowSize ), &resultBuffer ); // global
 
-  // Calculate
-  queue.enqueueWriteBuffer( dataBuffer, CL_TRUE, 0, dataSize, data.get() );
+  // Process one row at a time
+  for ( int row = 0; row < rowCount; ++row )
+  {
+    if ( feedback )
+    {
+      if ( feedback->isCanceled() )
+        return;
+      feedback->setProgress( 100.0 * row / rowCount );
+    }
 
-  kernel( cl::EnqueueArgs(
-            queue,
-            cl::NDRange( tileSize )
-          ),
-          dataBuffer,
-          resultBuffer
-        );
+    kernel.setArg( 3, sizeof( yMin ), &yMin );  // private
 
-  queue.enqueueReadBuffer( resultBuffer, CL_TRUE, 0, resultBlockSize, resultBlock.get() );
+    // Start calculation for a row: nd range is column count
+    queue.enqueueNDRangeKernel( kernel, 0, columnCount );
+    queue.enqueueReadBuffer( resultBuffer, CL_TRUE, 0, resultRowSize, resultBlock.get() );
 
-  // TODO: reproject if needed
+    // TODO: convert to destination raster data type if different than double
 
-  mInterpolatedLayer->dataProvider()->write( static_cast<void *>( data.get() ), 0, tileWidth, tileHeight, tileXOffset, tileYOffset );
+    /* Debug
+    for ( int i = 0; i < columnCount; i++ )
+    {
+      qDebug() << "Value" << i << resultBlock.get()[i];
+    }
+    //*/
+
+    // Write result to destination raster
+    const bool writeOperationResult { mInterpolatedLayer->dataProvider()->write( static_cast<void *>( resultBlock.get() ),
+                                      1 /* band */,
+                                      columnCount /* width */,
+                                      1 /* height */,
+                                      0 /* xoffset */,
+                                      rowCount - row - 1 /* y offset */ ) };
+
+    if ( ! writeOperationResult )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write interpolated data to destination raster '%1'" ).arg( mInterpolatedLayer->name() ) );
+    }
+
+    // Increment for the next row
+    yMin += yStep;
+  }
+
+  mInterpolatedLayer->dataProvider()->reloadData();
+
 }
 
 void QgsAidwInterpolation::process( QgsFeedback *feedback )

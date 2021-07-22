@@ -28,14 +28,25 @@ class QgsFeedback;
 
 /**
  * \ingroup analysis
- * @brief The QgsAidwInterpolation class
+ * The QgsAidwInterpolation class implements OpenCL accelerated IDW interpolation.
+ * \since QGIS 3.22
  */
 class ANALYSIS_EXPORT QgsAidwInterpolation
 {
   public:
 
-    QgsAidwInterpolation( QgsVectorLayer *dataLayer, QString &dataAttributeName, QgsRasterLayer *interpolatedLayer );
+    /**
+     * Constructs a QgsAidwInterpolation object.
+     * \param dataLayer the input points layer.
+     * \param dataAttributeName name of the input layer attribute that contains the values for the interpolation, it must be a numeric field.
+     * \param interpolatedLayer the destination layer for the interpolation.
+     * \param coefficient coefficient for distance weighting, default to 2.0.
+     */
+    QgsAidwInterpolation( QgsVectorLayer *dataLayer, QString &dataAttributeName, QgsRasterLayer *interpolatedLayer, double coefficient = 2.0 );
 
+    /**
+     * Executes the interpolation using the GPU and an optional \a feedback.
+     */
     void process( QgsFeedback *feedback = nullptr ) SIP_THROW( QgsProcessingException );
 
   private:
@@ -44,6 +55,7 @@ class ANALYSIS_EXPORT QgsAidwInterpolation
     QgsRasterLayer *mInterpolatedLayer = nullptr;
     QString mDataAttributeName;
     QString mErrorMessage;
+    double mCoefficient;
 
     void interpolate( QgsFeedback *feedback = nullptr );
 

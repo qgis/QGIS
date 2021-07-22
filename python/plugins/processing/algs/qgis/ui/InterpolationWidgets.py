@@ -260,19 +260,20 @@ class PixelSizeWidget(BASE, WIDGET):
     def setLayers(self, layersData):
         self.extent = QgsRectangle()
         self.layers = []
-        for row in layersData.split(';'):
-            v = row.split('::~::')
-            # need to keep a reference until interpolation is complete
-            layer = QgsProcessingUtils.variantToSource(v[0], self.context)
-            if layer:
-                self.layers.append(layer)
-                bbox = layer.sourceExtent()
-                if self.extent.isEmpty():
-                    self.extent = bbox
-                else:
-                    self.extent.combineExtentWith(bbox)
+        if layersData is not None:
+            for row in layersData.split(';'):
+                v = row.split('::~::')
+                # need to keep a reference until interpolation is complete
+                layer = QgsProcessingUtils.variantToSource(v[0], self.context)
+                if layer:
+                    self.layers.append(layer)
+                    bbox = layer.sourceExtent()
+                    if self.extent.isEmpty():
+                        self.extent = bbox
+                    else:
+                        self.extent.combineExtentWith(bbox)
 
-        self.pixelSizeChanged()
+            self.pixelSizeChanged()
 
     def setExtent(self, extent):
         if extent is not None:
