@@ -116,21 +116,6 @@ class CORE_EXPORT QgsOgrDataCollectionItem final: public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
-    /**
-     * Utility function to store DB connections
-     * \param path to the DB
-     * \param ogrDriverName the OGR/GDAL driver name (e.g. "GPKG")
-     */
-    static bool saveConnection( const QString &path, const QString &ogrDriverName );
-
-    /**
-     * Utility function to create and store a new DB connection
-     * \param name is the translatable name of the managed layers (e.g. "GeoPackage")
-     * \param extensions is a string with file extensions (e.g. "GeoPackage Database (*.gpkg *.GPKG)")
-     * \param ogrDriverName the OGR/GDAL driver name (e.g. "GPKG")
-     */
-    static bool createConnection( const QString &name, const QString &extensions, const QString &ogrDriverName );
-
     bool hasDragEnabled() const override;
     QgsMimeDataUtils::UriList mimeUris() const override;
 

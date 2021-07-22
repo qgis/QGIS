@@ -93,7 +93,7 @@ void QgsGeoPackageRootItem::onConnectionsChanged()
 
 void QgsGeoPackageRootItem::newConnection()
 {
-  if ( QgsOgrDataCollectionItem::createConnection( QStringLiteral( "GeoPackage" ),  QStringLiteral( "GeoPackage Database (*.gpkg)" ),  QStringLiteral( "GPKG" ) ) )
+  if ( QgsOgrProviderUtils::createConnection( QStringLiteral( "GeoPackage" ),  QStringLiteral( "GeoPackage Database (*.gpkg)" ),  QStringLiteral( "GPKG" ) ) )
   {
     refreshConnections();
   }

@@ -386,7 +386,7 @@ void QgsGeoPackageItemGuiProvider::createDatabase( QPointer< QgsGeoPackageRootIt
     if ( dialog.exec() == QDialog::Accepted )
     {
       // Call QFileInfo to normalize paths, see: https://github.com/qgis/QGIS/issues/36832
-      if ( QgsOgrDataCollectionItem::saveConnection( QFileInfo( dialog.databasePath() ).filePath(), QStringLiteral( "GPKG" ) ) )
+      if ( QgsOgrProviderUtils::saveConnection( QFileInfo( dialog.databasePath() ).filePath(), QStringLiteral( "GPKG" ) ) )
       {
         item->refreshConnections();
       }

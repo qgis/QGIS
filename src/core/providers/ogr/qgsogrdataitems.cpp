@@ -419,37 +419,6 @@ QVector<QgsDataItem *> QgsOgrDataCollectionItem::createChildren()
   return children;
 }
 
-bool QgsOgrDataCollectionItem::saveConnection( const QString &path, const QString &ogrDriverName )
-{
-  QFileInfo fileInfo( path );
-  QString connName = fileInfo.fileName();
-  if ( ! path.isEmpty() )
-  {
-    bool ok = true;
-    while ( ok && ! QgsOgrDbConnection( connName, ogrDriverName ).path( ).isEmpty( ) )
-    {
-
-      connName = QInputDialog::getText( nullptr, tr( "Add Connection" ),
-                                        tr( "A connection with the same name already exists,\nplease provide a new name:" ), QLineEdit::Normal,
-                                        QString(), &ok );
-    }
-    if ( ok && ! connName.isEmpty() )
-    {
-      QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
-      QgsGeoPackageProviderConnection *providerConnection =  static_cast<QgsGeoPackageProviderConnection *>( providerMetadata->createConnection( connName ) );
-      providerMetadata->saveConnection( providerConnection, connName );
-      return true;
-    }
-  }
-  return false;
-}
-
-bool QgsOgrDataCollectionItem::createConnection( const QString &name, const QString &extensions, const QString &ogrDriverName )
-{
-  QString path = QFileDialog::getOpenFileName( nullptr, tr( "Open %1" ).arg( name ), QString(), extensions );
-  return saveConnection( path, ogrDriverName );
-}
-
 bool QgsOgrDataCollectionItem::hasDragEnabled() const
 {
   return true;

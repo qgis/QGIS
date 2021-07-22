@@ -214,7 +214,7 @@ void QgsOgrDbSourceSelect::populateConnectionList()
 
 void QgsOgrDbSourceSelect::btnNew_clicked()
 {
-  if ( QgsOgrDataCollectionItem::createConnection( name(), extension(), ogrDriverName() ) )
+  if ( QgsOgrProviderUtils::createConnection( name(), extension(), ogrDriverName() ) )
   {
     emit connectionsChanged();
   }
