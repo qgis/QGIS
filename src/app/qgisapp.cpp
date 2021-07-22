@@ -13151,7 +13151,7 @@ T *QgisApp::addLayerPrivate( QgsMapLayerType type, const QString &uri, const QSt
       // since the layer is bad, stomp on it
       return nullptr;
     }
-    else if ( sublayers.size() > 1 )
+    else if ( sublayers.size() > 1 || QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers, true ) )
     {
       // ask user for sublayers (unless user settings dictate otherwise!)
       switch ( shouldAskUserForSublayers( sublayers ) )
