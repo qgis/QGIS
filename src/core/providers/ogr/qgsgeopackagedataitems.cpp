@@ -38,6 +38,7 @@
 #include "qgsgeopackageproviderconnection.h"
 #include "qgsprovidermetadata.h"
 #include "qgsprovidersublayerdetails.h"
+#include "qgsogrdataitems.h"
 
 QString QgsGeoPackageDataItemProvider::name()
 {
