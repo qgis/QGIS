@@ -87,7 +87,7 @@ jobs:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_REF: ${{ github.ref }}
           GITHUB_PR_NUMBER: ${{github.event.number}}
-          UBUNTU_BASE: ${{ matrix.distro-version }}
+          DISTRO_VERSION: ${{ matrix.distro-version }}
         run: |
           # Be aware that these instructions are duplicated in run-tests job
           DOCKER_TAG=$(echo $( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo ${GITHUB_BASE_REF} || echo ${GITHUB_REF##*/} ) | sed 's/^master$/latest/')${{ matrix.docker-tag-suffix }}
@@ -183,7 +183,7 @@ jobs:
 
 #      - name: Test QGIS runners
 #        id: runners
-#        if: ${{ matrix.distro-version == env.DEFAULT_UBUNTU_BASE }}
+#        if: ${{ matrix.distro-version == env.DEFAULT_DISTRO_VERSION }}
 #        run: |
 #          docker run -d --name qgis-testing-environment \
 #                     -v $(pwd):/root/QGIS \
@@ -314,7 +314,7 @@ jobs:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_REF: ${{ github.ref }}
           GITHUB_PR_NUMBER: ${{github.event.number}}
-          UBUNTU_BASE: ${{ matrix.distro-version }}
+          DISTRO_VERSION: ${{ matrix.distro-version }}
           TEST_BATCH: ${{ matrix.test-batch }}
         run: |
           # Be aware that these instructions are duplicated in build job
@@ -331,12 +331,12 @@ jobs:
 
       - name: Build deps
         env:
-          UBUNTU_BASE: ${{ matrix.distro-version }}
+          DISTRO_VERSION: ${{ matrix.distro-version }}
         run: |
           pushd .docker
           TARGET=$( ( [[ ${TEST_BATCH} == "ORACLE"   ]] && echo "binary-for-oracle" ) \
                  || echo "binary-only" )
-          docker build --target $TARGET --build-arg UBUNTU_BASE=${UBUNTU_BASE} --cache-from qgis/qgis3-build-deps:${DOCKER_TAG} -t qgis/qgis3-build-deps-bin-only:${DOCKER_TAG} -f qgis3-qt5-build-deps.dockerfile .
+          docker build --target $TARGET --build-arg DISTRO_VERSION=${DISTRO_VERSION} --cache-from qgis/qgis3-build-deps:${DOCKER_TAG} -t qgis/qgis3-build-deps-bin-only:${DOCKER_TAG} -f qgis3-qt5-build-deps.dockerfile .
           popd
 
       - name: Print disk space
