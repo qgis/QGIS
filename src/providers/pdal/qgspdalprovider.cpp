@@ -17,7 +17,6 @@
 
 #include "qgis.h"
 #include "qgspdalprovider.h"
-#include "qgspdaldataitems.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -288,13 +287,6 @@ QgsProviderMetadata::ProviderMetadataCapabilities QgsPdalProviderMetadata::capab
   return ProviderMetadataCapability::LayerTypesForUri
          | ProviderMetadataCapability::PriorityForUri
          | ProviderMetadataCapability::QuerySublayers;
-}
-
-QList<QgsDataItemProvider *> QgsPdalProviderMetadata::dataItemProviders() const
-{
-  QList< QgsDataItemProvider * > providers;
-  providers << new QgsPdalDataItemProvider;
-  return providers;
 }
 
 QVariantMap QgsPdalProviderMetadata::decodeUri( const QString &uri ) const

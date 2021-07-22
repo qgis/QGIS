@@ -35,11 +35,11 @@
 #include "qgsproviderregistry.h"
 #include "qgsproject.h"
 #include "gdal.h"
-#include "qgsogrdataitems.h"
 #include "qgsogrdbconnection.h"
 #include "qgsgeopackageproviderconnection.h"
 #include "qgsmessagebar.h"
 #include "qgsprovidermetadata.h"
+#include "qgsogrproviderutils.h"
 
 void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu,
     const QList<QgsDataItem *> &,

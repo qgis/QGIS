@@ -9,14 +9,12 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
 set(PDAL_SRCS
-  qgspdaldataitems.cpp
   qgspdalprovider.cpp
   qgspdaleptgenerationtask.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/api/QgisUntwine.cpp
 )
 
 set(PDAL_HDRS
-  qgspdaldataitems.h
   qgspdalprovider.h
   qgspdaleptgenerationtask.h
   ${CMAKE_SOURCE_DIR}/external/untwine/api/QgisUntwine.hpp
@@ -25,12 +23,10 @@ set(PDAL_HDRS
 if (WITH_GUI)
   set(PDAL_GUI_SRCS
     qgspdalprovidergui.cpp
-    qgspdaldataitemguiprovider.cpp
   )
 
   set(PDAL_GUI_HDRS
     qgspdalprovidergui.h
-    qgspdaldataitemguiprovider.h
   )
 endif()
 

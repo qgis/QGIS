@@ -1362,11 +1362,9 @@ endif()
 
 if (WITH_EPT)
   set(QGIS_GUI_SRCS ${QGIS_GUI_SRCS}
-    providers/ept/qgseptdataitemguiprovider.cpp
     providers/ept/qgseptproviderguimetadata.cpp
   )
   set(QGIS_GUI_HDRS ${QGIS_GUI_HDRS}
-    providers/ept/qgseptdataitemguiprovider.h
     providers/ept/qgseptproviderguimetadata.h
   )
 endif()

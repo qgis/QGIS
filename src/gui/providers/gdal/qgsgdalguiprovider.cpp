@@ -31,10 +31,10 @@
 #include "qgsapplication.h"
 #include "qgsprovidermetadata.h"
 #include "qgsdataitemguiprovider.h"
-#include "qgsgdaldataitems.h"
 #include "qgsmaplayer.h"
 #include "qgsgdalfilesourcewidget.h"
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgslayeritem.h"
 
 static QString PROVIDER_KEY = QStringLiteral( "gdal" );
 
@@ -161,23 +161,26 @@ void QgsGdalItemGuiProvider::onDeleteLayer( QgsDataItemGuiContext context )
 
 void QgsGdalItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context )
 {
-  Q_UNUSED( selectedItems );
+  Q_UNUSED( selectedItems )
 
-  if ( QgsGdalLayerItem *layerItem = qobject_cast< QgsGdalLayerItem * >( item ) )
+  if ( QgsLayerItem *layerItem = qobject_cast< QgsLayerItem * >( item ) )
   {
-    // Messages are different for files and tables
-    bool isPostgresRaster { layerItem->uri().startsWith( QLatin1String( "PG:" ) ) };
-    const QString message = isPostgresRaster  ?
-                            QObject::tr( "Delete Table “%1”…" ).arg( layerItem->name() ) :
-                            QObject::tr( "Delete File “%1”…" ).arg( layerItem->name() );
-    QAction *actionDeleteLayer = new QAction( message, menu );
-    QVariantMap data;
-    data.insert( QStringLiteral( "uri" ), layerItem->uri() );
-    data.insert( QStringLiteral( "path" ), isPostgresRaster ? layerItem->name() : layerItem->path() );
-    data.insert( QStringLiteral( "parentItem" ), QVariant::fromValue( QPointer< QgsDataItem >( layerItem->parent() ) ) );
-    actionDeleteLayer->setData( data );
-    connect( actionDeleteLayer, &QAction::triggered, this, [ = ] { onDeleteLayer( context ); } );
-    menu->addAction( actionDeleteLayer );
+    if ( layerItem->providerKey() == QLatin1String( "gdal" ) )
+    {
+      // Messages are different for files and tables
+      bool isPostgresRaster { layerItem->uri().startsWith( QLatin1String( "PG:" ) ) };
+      const QString message = isPostgresRaster  ?
+                              QObject::tr( "Delete Table “%1”…" ).arg( layerItem->name() ) :
+                              QObject::tr( "Delete File “%1”…" ).arg( layerItem->name() );
+      QAction *actionDeleteLayer = new QAction( message, menu );
+      QVariantMap data;
+      data.insert( QStringLiteral( "uri" ), layerItem->uri() );
+      data.insert( QStringLiteral( "path" ), isPostgresRaster ? layerItem->name() : layerItem->path() );
+      data.insert( QStringLiteral( "parentItem" ), QVariant::fromValue( QPointer< QgsDataItem >( layerItem->parent() ) ) );
+      actionDeleteLayer->setData( data );
+      connect( actionDeleteLayer, &QAction::triggered, this, [ = ] { onDeleteLayer( context ); } );
+      menu->addAction( actionDeleteLayer );
+    }
   }
 }
 

@@ -16,7 +16,6 @@ email                : nyall dot dawson at gmail dot com
 
 #include "qgsogrprovidermetadata.h"
 #include "qgsogrprovider.h"
-#include "qgsogrdataitems.h"
 #include "qgsgeopackagedataitems.h"
 #include "qgssettings.h"
 #include "qgsmessagelog.h"
@@ -223,7 +222,6 @@ QString QgsOgrProviderMetadata::encodeUri( const QVariantMap &parts ) const
 QList<QgsDataItemProvider *> QgsOgrProviderMetadata::dataItemProviders() const
 {
   QList< QgsDataItemProvider * > providers;
-// providers << new QgsOgrDataItemProvider;
   providers << new QgsGeoPackageDataItemProvider;
   return providers;
 }
