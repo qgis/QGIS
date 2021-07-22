@@ -65,7 +65,11 @@ if (WITH_GUI)
 
   add_library(provider_postgres_gui_a STATIC ${PG_GUI_SRCS} ${PG_UIS_H})
 
-  target_include_directories(provider_postgres_a PUBLIC
+  target_include_directories(provider_postgres_gui_a SYSTEM PRIVATE
+    ${POSTGRES_INCLUDE_DIR}
+  )
+
+  target_include_directories(provider_postgres_gui_a PUBLIC
     ${CMAKE_BINARY_DIR}/src/providers/postgres
   )
 
