@@ -94,10 +94,10 @@ set(PGRASTER_SRCS
 # static library
 add_library (provider_postgresraster_a STATIC ${PGRASTER_SRCS} ${PG_HDRS})
 
-target_include_directories(provider_postgres_a SYSTEM PRIVATE
+target_include_directories(provider_postgresraster_a SYSTEM PRIVATE
   ${POSTGRES_INCLUDE_DIR}
 )
-target_include_directories(provider_postgres_a PUBLIC
+target_include_directories(provider_postgresraster_a PUBLIC
   ${CMAKE_SOURCE_DIR}/src/providers/postgres/raster
 )
 
