@@ -131,8 +131,12 @@ QVariant QgsDatabaseTableModel::data( const QModelIndex &index, int role ) const
           {
             return QgsIconUtils::iconLine();
           }
-          default:
-            break;
+          case QgsWkbTypes::UnknownGeometry:
+          {
+            return QgsIconUtils::iconGeometryCollection();
+          }
+          case QgsWkbTypes::NullGeometry:
+            return QgsIconUtils::iconTable();
         }
 
         return QgsIconUtils::iconTable();

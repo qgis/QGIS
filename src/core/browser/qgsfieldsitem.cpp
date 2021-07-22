@@ -190,6 +190,7 @@ QIcon QgsFieldItem::icon()
       case QgsWkbTypes::GeometryType::PolygonGeometry:
         return QgsIconUtils::iconPolygon();
       case QgsWkbTypes::GeometryType::UnknownGeometry:
+        return QgsIconUtils::iconGeometryCollection();
       case QgsWkbTypes::GeometryType::NullGeometry:
         return QgsIconUtils::iconDefaultLayer();
     }

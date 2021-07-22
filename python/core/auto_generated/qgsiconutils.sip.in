@@ -42,6 +42,13 @@ Returns an icon representing line geometries.
 Returns an icon representing polygon geometries.
 %End
 
+    static QIcon iconGeometryCollection();
+%Docstring
+Returns an icon representing geometry collections.
+
+.. versionadded:: 3.22
+%End
+
     static QIcon iconTable();
 %Docstring
 Returns an icon representing non-spatial layers (tables).
