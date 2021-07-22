@@ -19,14 +19,17 @@
 
 #include <QFileInfo>
 
-bool QgsProviderUtils::sublayerDetailsAreIncomplete( const QList<QgsProviderSublayerDetails> &details, bool ignoreUnknownFeatureCount )
+bool QgsProviderUtils::sublayerDetailsAreIncomplete( const QList<QgsProviderSublayerDetails> &details, SublayerCompletenessFlags flags )
 {
+  const bool ignoreUnknownGeometryTypes = flags & SublayerCompletenessFlag::IgnoreUnknownGeometryType;
+  const bool ignoreUnknownFeatureCount = flags & SublayerCompletenessFlag::IgnoreUnknownFeatureCount;
+
   for ( const QgsProviderSublayerDetails &sublayer : details )
   {
     switch ( sublayer.type() )
     {
       case QgsMapLayerType::VectorLayer:
-        if ( sublayer.wkbType() == QgsWkbTypes::Unknown
+        if ( ( !ignoreUnknownGeometryTypes && sublayer.wkbType() == QgsWkbTypes::Unknown )
              || ( !ignoreUnknownFeatureCount &&
                   ( sublayer.featureCount() == static_cast< long long >( Qgis::FeatureCountState::Uncounted )
                     || sublayer.featureCount() == static_cast< long long >( Qgis::FeatureCountState::UnknownCount ) ) ) )

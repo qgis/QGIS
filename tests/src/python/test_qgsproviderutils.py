@@ -16,11 +16,11 @@ from qgis.core import (
     QgsProviderRegistry,
     QgsProviderUtils
 )
-
 from qgis.testing import (
     unittest,
     start_app
 )
+
 from utilities import unitTestDataPath
 
 app = start_app()
@@ -40,15 +40,36 @@ class TestQgsProviderUtils(unittest.TestCase):
         self.assertEqual(sublayers[0].wkbType(), QgsWkbTypes.Unknown)
 
         # need to resolve geometry types for complete details about this uri!
-        self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers, False))
-        self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers, True))
+        self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers))
+        self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers,
+                                                                      QgsProviderUtils.SublayerCompletenessFlags(
+                                                                          QgsProviderUtils.SublayerCompletenessFlag.IgnoreUnknownFeatureCount)))
+        self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers,
+                                                                      QgsProviderUtils.SublayerCompletenessFlags(
+                                                                          QgsProviderUtils.SublayerCompletenessFlag.IgnoreUnknownGeometryType)))
+        # ...unless we are ignoring both unknown feature count and unknown geometry types
+        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers,
+                                                                       QgsProviderUtils.SublayerCompletenessFlags(
+                                                                           QgsProviderUtils.SublayerCompletenessFlag.IgnoreUnknownFeatureCount |
+                                                                           QgsProviderUtils.SublayerCompletenessFlag.IgnoreUnknownGeometryType)))
+
+        # fake feature count, now we have complete details if we ignore unknown geometry type
+        sublayers[0].setFeatureCount(5)
+        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers,
+                                                                       QgsProviderUtils.SublayerCompletenessFlags(
+                                                                           QgsProviderUtils.SublayerCompletenessFlag.IgnoreUnknownGeometryType)))
 
         # retry with retrieving geometry types
         sublayers = QgsProviderRegistry.instance().querySublayers(uri, Qgis.SublayerQueryFlag.ResolveGeometryType)
         # now we have all the details
         self.assertEqual(len(sublayers), 3)
-        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers, False))
-        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers, True))
+        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers))
+        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers,
+                                                                       QgsProviderUtils.SublayerCompletenessFlags(
+                                                                           QgsProviderUtils.SublayerCompletenessFlag.IgnoreUnknownFeatureCount)))
+        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers,
+                                                                       QgsProviderUtils.SublayerCompletenessFlags(
+                                                                           QgsProviderUtils.SublayerCompletenessFlag.IgnoreUnknownGeometryType)))
 
         # this geopackage file requires manually requesting feature counts
         uri = unitTestDataPath() + '/mixed_layers.gpkg'
@@ -64,16 +85,26 @@ class TestQgsProviderUtils(unittest.TestCase):
         self.assertEqual(sublayers[3].featureCount(), Qgis.FeatureCountState.Uncounted)
 
         # need to count features for complete details about this uri!
-        self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers, False))
+        self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers))
+        self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers,
+                                                                      QgsProviderUtils.SublayerCompletenessFlags(
+                                                                          QgsProviderUtils.SublayerCompletenessFlag.IgnoreUnknownGeometryType)))
         # ...unless we are ignoring unknown feature counts, that is...
-        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers, True))
+        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers,
+                                                                       QgsProviderUtils.SublayerCompletenessFlags(
+                                                                           QgsProviderUtils.SublayerCompletenessFlag.IgnoreUnknownFeatureCount)))
 
         # retry with retrieving feature count
         sublayers = QgsProviderRegistry.instance().querySublayers(uri, Qgis.SublayerQueryFlag.CountFeatures)
         # now we have all the details
         self.assertEqual(len(sublayers), 4)
-        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers, True))
-        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers, False))
+        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers,
+                                                                       QgsProviderUtils.SublayerCompletenessFlags(
+                                                                           QgsProviderUtils.SublayerCompletenessFlag.IgnoreUnknownFeatureCount)))
+        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers,
+                                                                       QgsProviderUtils.SublayerCompletenessFlags(
+                                                                           QgsProviderUtils.SublayerCompletenessFlag.IgnoreUnknownGeometryType)))
+        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers))
         self.assertEqual(sublayers[0].name(), 'band1')
         self.assertEqual(sublayers[1].name(), 'band2')
         self.assertEqual(sublayers[2].name(), 'points')
