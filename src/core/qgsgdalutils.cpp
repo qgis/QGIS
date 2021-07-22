@@ -26,6 +26,7 @@
 #include <QNetworkProxy>
 #include <QString>
 #include <QImage>
+#include <QFileInfo>
 
 bool QgsGdalUtils::supportsRasterCreate( GDALDriverH driver )
 {
@@ -513,5 +514,32 @@ void QgsGdalUtils::setupProxy()
       }
     }
   }
+}
+
+bool QgsGdalUtils::pathIsCheapToOpen( const QString &path, int smallFileSizeLimit )
+{
+  const QFileInfo info( path );
+  const long long size = info.size();
+
+  // if size could not be determined, safest to flag path as expensive
+  if ( size == 0 )
+    return false;
+
+  const QString suffix = info.suffix().toLower();
+  static QStringList sFileSizeDependentExtensions
+  {
+    QStringLiteral( "xlsx" ),
+    QStringLiteral( "ods" ),
+    QStringLiteral( "csv" )
+  };
+  if ( sFileSizeDependentExtensions.contains( suffix ) )
+  {
+    // path corresponds to a file type which is only cheap to open for small files
+    return size < smallFileSizeLimit;
+  }
+
+  // treat all other formats as expensive.
+  // TODO -- flag formats which only require a quick header parse as cheap
+  return false;
 }
 #endif

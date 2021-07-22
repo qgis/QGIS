@@ -41,6 +41,7 @@ class TestQgsGdalUtils: public QObject
     void testResampleSingleBandRaster();
     void testImageToDataset();
     void testResampleImageToImage();
+    void testPathIsCheapToOpen();
 
   private:
 
@@ -266,6 +267,21 @@ void TestQgsGdalUtils::testResampleImageToImage()
   QCOMPARE( qGreen( res.pixel( 40, 40 ) ), 0 );
   QCOMPARE( qBlue( res.pixel( 40, 40 ) ), 255 );
   QCOMPARE( qAlpha( res.pixel( 40, 40 ) ), 255 );
+}
+
+void TestQgsGdalUtils::testPathIsCheapToOpen()
+{
+  // should be safe and report false paths which don't exist
+  QVERIFY( !QgsGdalUtils::pathIsCheapToOpen( "/not/a/file" ) );
+
+  // for now, tiff aren't marked as cheap to open
+  QVERIFY( !QgsGdalUtils::pathIsCheapToOpen( QStringLiteral( TEST_DATA_DIR ) + "/big_raster.tif" ) );
+
+  // a csv is considered cheap to open
+  QVERIFY( QgsGdalUtils::pathIsCheapToOpen( QStringLiteral( TEST_DATA_DIR ) + "/delimitedtext/test.csv" ) );
+
+  // ... unless it's larger than the specified file size limit (500 bytes)
+  QVERIFY( !QgsGdalUtils::pathIsCheapToOpen( QStringLiteral( TEST_DATA_DIR ) + "/delimitedtext/testdms.csv", 500 ) );
 }
 
 double TestQgsGdalUtils::identify( GDALDatasetH dataset, int band, int px, int py )
