@@ -530,9 +530,9 @@ bool QgsVectorLayerFeatureIterator::isValid() const
 
 bool QgsVectorLayerFeatureIterator::fetchNextAddedFeature( QgsFeature &f )
 {
-  while ( mFetchAddedFeaturesIt != mSource->mAddedFeatures.constBegin() &&
-          mFetchAddedFeaturesIt-- != mSource->mAddedFeatures.constBegin() )
+  while ( mFetchAddedFeaturesIt != mSource->mAddedFeatures.constBegin() )
   {
+    --mFetchAddedFeaturesIt;
     QgsFeatureId fid = mFetchAddedFeaturesIt->id();
 
     if ( mFetchConsidered.contains( fid ) )
