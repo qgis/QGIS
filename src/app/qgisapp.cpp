@@ -6513,6 +6513,29 @@ void QgisApp::showRasterCalculator()
                             QgsRasterCalculatorEntry::rasterEntries(),
                             QgsProject::instance()->transformContext() );
 
+    if ( d.useVirtualProvider() )
+    {
+      QgsRasterDataProvider::DecodedUriParameters virtualCalcParams;
+      virtualCalcParams.crs = d.outputCrs();
+      virtualCalcParams.extent = d.outputRectangle();
+      virtualCalcParams.width = d.numberOfColumns();
+      virtualCalcParams.height = d.numberOfRows();
+      virtualCalcParams.formula = d.formulaString();
+
+
+      for ( const auto &r : QgsRasterCalculatorEntry::rasterEntries() )
+      {
+        qDebug() << r.ref;
+        QgsRasterDataProvider::InputLayers projectRLayer;
+        projectRLayer.name = r.raster->name();
+        projectRLayer.provider = r.raster->dataProvider()->name();
+        projectRLayer.uri = r.raster->publicSource();
+
+        virtualCalcParams.rInputLayers.append( projectRLayer );
+      }
+      qDebug() << QgsRasterDataProvider::encodeVirtualRasterProviderUri( virtualCalcParams );
+    }
+
     QProgressDialog p( tr( "Calculating raster expression…" ), tr( "Abort" ), 0, 0 );
     p.setWindowTitle( tr( "Raster calculator" ) );
     p.setWindowModality( Qt::WindowModal );

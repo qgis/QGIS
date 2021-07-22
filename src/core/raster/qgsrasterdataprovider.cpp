@@ -788,13 +788,6 @@ QString QgsRasterDataProvider::encodeVirtualRasterProviderUri( const DecodedUriP
 
   if ( ! parts.rInputLayers.isEmpty() )
   {
-    /*
-    for (int i = 0; i < parts.rInputLayers.size() ; ++i )
-    {
-        query.addQueryItem( parts.rInputLayers.at(i).name % QStringLiteral(":uri") , parts.rInputLayers.at(i).uri );
-        query.addQueryItem( parts.rInputLayers.at(i).name % QStringLiteral(":provider") , parts.rInputLayers.at(i).provider );
-    }
-    */
 
     for ( const auto &it : parts.rInputLayers )
     {
