@@ -21,7 +21,6 @@
 #include "qgseptprovider.h"
 #include "qgseptpointcloudindex.h"
 #include "qgsremoteeptpointcloudindex.h"
-#include "qgseptdataitems.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
 #include "qgsprovidersublayerdetails.h"
@@ -135,13 +134,6 @@ QgsEptProviderMetadata::QgsEptProviderMetadata():
 QgsEptProvider *QgsEptProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
   return new QgsEptProvider( uri, options, flags );
-}
-
-QList<QgsDataItemProvider *> QgsEptProviderMetadata::dataItemProviders() const
-{
-  QList< QgsDataItemProvider * > providers;
-  providers << new QgsEptDataItemProvider;
-  return providers;
 }
 
 QList<QgsProviderSublayerDetails> QgsEptProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags, QgsFeedback * ) const

@@ -243,7 +243,6 @@ set(QGIS_CORE_SRCS
 
   providers/gdal/qgsgdalproviderbase.cpp
   providers/gdal/qgsgdalprovider.cpp
-  providers/gdal/qgsgdaldataitems.cpp
 
   providers/memory/qgsmemoryfeatureiterator.cpp
   providers/memory/qgsmemoryprovider.cpp
@@ -254,7 +253,6 @@ set(QGIS_CORE_SRCS
   providers/ogr/qgsogrprovider.cpp
   providers/ogr/qgsogrprovidermetadata.cpp
   providers/ogr/qgsogrproviderutils.cpp
-  providers/ogr/qgsogrdataitems.cpp
   providers/ogr/qgsogrfeatureiterator.cpp
   providers/ogr/qgsogrconnpool.cpp
   providers/ogr/qgsogrexpressioncompiler.cpp
@@ -1540,7 +1538,6 @@ set(QGIS_CORE_HDRS
   providers/arcgis/qgsarcgisrestquery.h
   providers/arcgis/qgsarcgisrestutils.h
 
-  providers/gdal/qgsgdaldataitems.h
   providers/gdal/qgsgdalprovider.h
 
   providers/memory/qgsmemoryfeatureiterator.h
@@ -1554,7 +1551,6 @@ set(QGIS_CORE_HDRS
   providers/ogr/qgsgeopackageproviderconnection.h
   providers/ogr/qgsgeopackagerasterwritertask.h
   providers/ogr/qgsogrconnpool.h
-  providers/ogr/qgsogrdataitems.h
   providers/ogr/qgsogrdbconnection.h
   providers/ogr/qgsogrprovider.h
   providers/ogr/qgsogrprovidermetadata.h
@@ -1822,14 +1818,12 @@ if (WITH_EPT)
   endif()
 
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
-      providers/ept/qgseptdataitems.cpp
       providers/ept/qgseptprovider.cpp
       pointcloud/qgseptdecoder.cpp
       pointcloud/qgseptpointcloudindex.cpp
       pointcloud/qgsremoteeptpointcloudindex.cpp
   )
   set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
-      providers/ept/qgseptdataitems.h
       providers/ept/qgseptprovider.h
       pointcloud/qgseptdecoder.h
       pointcloud/qgseptpointcloudindex.h

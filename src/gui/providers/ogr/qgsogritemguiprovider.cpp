@@ -24,9 +24,13 @@
 #include <QMessageBox>
 
 #include "qgsproject.h"
-#include "qgsogrdataitems.h"
 #include "qgsogrutils.h"
 #include "qgsproviderregistry.h"
+#include "qgslayeritem.h"
+#include "qgsdatacollectionitem.h"
+#include "qgsogrproviderutils.h"
+#include "qgsgeopackagedataitems.h"
+#include "qgsfilebaseddataitemprovider.h"
 
 void QgsOgrItemGuiProvider::populateContextMenu(
   QgsDataItem *item,
@@ -34,34 +38,42 @@ void QgsOgrItemGuiProvider::populateContextMenu(
   const QList<QgsDataItem *> &,
   QgsDataItemGuiContext context )
 {
-  if ( QgsOgrLayerItem *layerItem = qobject_cast< QgsOgrLayerItem * >( item ) )
+  if ( QgsLayerItem *layerItem = qobject_cast< QgsLayerItem * >( item ) )
   {
-    // Messages are different for files and tables
-    QString message = layerItem->isSubLayer() ? QObject::tr( "Delete Layer “%1”…" ).arg( layerItem->name() ) : QObject::tr( "Delete File “%1”…" ).arg( layerItem->name() );
-    QAction *actionDeleteLayer = new QAction( message, menu );
-    QVariantMap data;
-    data.insert( QStringLiteral( "isSubLayer" ), layerItem->isSubLayer() );
-    data.insert( QStringLiteral( "uri" ), layerItem->uri() );
-    data.insert( QStringLiteral( "name" ), layerItem->name() );
-    data.insert( QStringLiteral( "parent" ), QVariant::fromValue( QPointer< QgsDataItem >( layerItem->parent() ) ) );
-    actionDeleteLayer->setData( data );
-    connect( actionDeleteLayer, &QAction::triggered, this, [ = ] { onDeleteLayer( context ); } );
-    menu->addAction( actionDeleteLayer );
+    if ( layerItem->providerKey() == QLatin1String( "ogr" ) && !qobject_cast< QgsGeoPackageAbstractLayerItem * >( item ) )
+    {
+      // Messages are different for files and tables
+      QgsProviderSublayerItem *sublayerItem = qobject_cast< QgsProviderSublayerItem * >( layerItem );
+
+      QString message = sublayerItem && !sublayerItem->isFile() ? QObject::tr( "Delete Layer “%1”…" ).arg( layerItem->name() ) : QObject::tr( "Delete File “%1”…" ).arg( layerItem->name() );
+      QAction *actionDeleteLayer = new QAction( message, menu );
+      QVariantMap data;
+      data.insert( QStringLiteral( "isSubLayer" ), sublayerItem && !sublayerItem->isFile() );
+      data.insert( QStringLiteral( "uri" ), layerItem->uri() );
+      data.insert( QStringLiteral( "name" ), layerItem->name() );
+      data.insert( QStringLiteral( "parent" ), QVariant::fromValue( QPointer< QgsDataItem >( layerItem->parent() ) ) );
+      actionDeleteLayer->setData( data );
+      connect( actionDeleteLayer, &QAction::triggered, this, [ = ] { onDeleteLayer( context ); } );
+      menu->addAction( actionDeleteLayer );
+    }
   }
 
-  if ( QgsOgrDataCollectionItem *collectionItem = qobject_cast< QgsOgrDataCollectionItem * >( item ) )
+  if ( QgsDataCollectionItem *collectionItem = qobject_cast< QgsDataCollectionItem * >( item ) )
   {
-    const bool isFolder = QFileInfo( collectionItem->path() ).isDir();
-    // Messages are different for files and tables
-    QString message = QObject::tr( "Delete %1 “%2”…" ).arg( isFolder ? tr( "Folder" ) : tr( "File" ), collectionItem->name() );
-    QAction *actionDeleteCollection = new QAction( message, menu );
+    if ( collectionItem->providerKey() == QLatin1String( "ogr" ) && !qobject_cast< QgsGeoPackageCollectionItem *>( item ) )
+    {
+      const bool isFolder = QFileInfo( collectionItem->path() ).isDir();
+      // Messages are different for files and tables
+      QString message = QObject::tr( "Delete %1 “%2”…" ).arg( isFolder ? tr( "Folder" ) : tr( "File" ), collectionItem->name() );
+      QAction *actionDeleteCollection = new QAction( message, menu );
 
-    QVariantMap data;
-    data.insert( QStringLiteral( "path" ), collectionItem->path() );
-    data.insert( QStringLiteral( "parent" ), QVariant::fromValue( QPointer< QgsDataItem >( collectionItem->parent() ) ) );
-    actionDeleteCollection->setData( data );
-    connect( actionDeleteCollection, &QAction::triggered, this, [ = ] { deleteCollection( context ); } );
-    menu->addAction( actionDeleteCollection );
+      QVariantMap data;
+      data.insert( QStringLiteral( "path" ), collectionItem->path() );
+      data.insert( QStringLiteral( "parent" ), QVariant::fromValue( QPointer< QgsDataItem >( collectionItem->parent() ) ) );
+      actionDeleteCollection->setData( data );
+      connect( actionDeleteCollection, &QAction::triggered, this, [ = ] { deleteCollection( context ); } );
+      menu->addAction( actionDeleteCollection );
+    }
   }
 }
 

@@ -21,7 +21,6 @@
 #include "qgstriangularmesh.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
-#include "qgsmdaldataitems.h"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
@@ -960,13 +959,6 @@ QgsMeshDataBlock QgsMdalProvider::areFacesActive( QgsMeshDatasetIndex index, int
 QgsMdalProvider *QgsMdalProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
   return new QgsMdalProvider( uri, options, flags );
-}
-
-QList<QgsDataItemProvider *> QgsMdalProviderMetadata::dataItemProviders() const
-{
-  QList<QgsDataItemProvider *> providers;
-// providers << new QgsMdalDataItemProvider;
-  return providers;
 }
 
 bool QgsMdalProviderMetadata::createMeshData( const QgsMesh &mesh, const QString uri, const QString &driverName, const QgsCoordinateReferenceSystem &crs ) const
