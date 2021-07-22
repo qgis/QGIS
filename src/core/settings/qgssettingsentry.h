@@ -126,7 +126,7 @@ class CORE_EXPORT QgsSettingsEntryBase
     /**
      * Returns TRUE if the provided key match the settings entry.
      *
-     * This is useful for settings with dynamic keys. For example this permits to check that
+     * This is useful for settings with dynamic keys. For example this permits one to check that
      * the settings key "NewsFeed/httpsfeedqgisorg/27/content" is valid for the settings entry
      * defined with the key "NewsFeed/%1/%2/content"
      *
