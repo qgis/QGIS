@@ -20,4 +20,3 @@ services:
     environment:
       - LANG=C.UTF-8
       - LC_ALL=en_US.UTF-8
-
