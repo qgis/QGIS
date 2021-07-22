@@ -1,4 +1,4 @@
-FROM fedora:rawhide
+FROM fedora:rawhide as single
 MAINTAINER Matthias Kuhn <matthias@opengis.ch>
 
 RUN dnf -y install \
@@ -22,6 +22,7 @@ RUN dnf -y install \
     protobuf-devel \
     protobuf-lite-devel \
     python3-devel \
+    python3-termcolor \
     qt6-qt3d-devel \
     qt6-qtbase-devel \
     qt6-qtdeclarative-devel \
@@ -30,8 +31,9 @@ RUN dnf -y install \
     qt6-qt5compat-devel \
     spatialindex-devel \
     sqlite-devel \
-    unzip
-
+    unzip \
+    xorg-x11-server-Xvfb \
+    util-linux 
 
 RUN dnf -y install wget openssl-devel && cd /usr/src \
   && wget https://github.com/KDE/qca/archive/refs/tags/v2.3.3.zip \
@@ -54,4 +56,3 @@ RUN cd /usr/src \
   && qmake6 qwt.pro \
   && make -j4 \
   && make install
-
