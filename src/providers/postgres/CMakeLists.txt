@@ -75,6 +75,7 @@ if (WITH_GUI)
   target_link_libraries(provider_postgres_gui_a
     qgis_gui
     provider_postgres_a
+    ${POSTGRES_LIBRARY}
   )
   add_dependencies(provider_postgres_gui_a ui)
 endif()
@@ -157,7 +158,6 @@ else()
   if (WITH_GUI)
     target_link_libraries (provider_postgres
       qgis_gui
-      ${POSTGRES_LIBRARY}
     )
     add_dependencies(provider_postgres ui)
   endif()
