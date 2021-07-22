@@ -28,7 +28,7 @@ class QgsFeedback;
 
 /**
  * \ingroup analysis
- * The QgsAidwInterpolation class implements OpenCL accelerated IDW interpolation.
+ * \brief The QgsAidwInterpolation class implements OpenCL accelerated IDW interpolation.
  * \since QGIS 3.22
  */
 class ANALYSIS_EXPORT QgsAidwInterpolation
