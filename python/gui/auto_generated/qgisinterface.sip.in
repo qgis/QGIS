@@ -124,7 +124,9 @@ Returns a pointer to the map canvas
 
     virtual QList<QgsMapDecoration *> activeDecorations() = 0;
 %Docstring
-Returns a list of the active decorations
+Returns a list of the active decorations.
+
+.. versionadded:: 3.22
 %End
 
     virtual QgsLayerTreeMapCanvasBridge *layerTreeCanvasBridge() = 0;
