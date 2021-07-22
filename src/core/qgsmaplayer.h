@@ -735,8 +735,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Set the value of a property based on an enum.
      * The property will be saved as string.
      * \note The enum needs to be declared with Q_ENUM, and flags with Q_FLAG (not Q_FLAGS).
-     * \see enumValue
-     * \see setFlagValue
+     * \see customEnumProperty
+     * \see setCustomFlagProperty
      * \since QGIS 3.22
      */
     template <class T>
