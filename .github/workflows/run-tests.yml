@@ -284,7 +284,7 @@ jobs:
 
     strategy:
       matrix:
-        distro-version: 20.04
+        distro-version: [20.04]
         qt-version: 5
         test-batch: [ALL_BUT_PROVIDERS, POSTGRES, HANA]
         docker-target: binary-only
