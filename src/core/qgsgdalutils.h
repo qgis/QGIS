@@ -132,6 +132,22 @@ class CORE_EXPORT QgsGdalUtils
     static void setupProxy();
 #endif
 
+    /**
+     * Returns TRUE if the dataset at the specified \a path is considered "cheap" to open.
+     *
+     * Datasets which are considered cheap to open may correspond to very small file sizes, or data types
+     * which only require some inexpensive header parsing to open.
+     *
+     * One use case for this method is to test whether a remote dataset can be safely opened
+     * to resolve the geometry types and other metadata without causing undue network traffic.
+     *
+     * The \a smallFileSizeLimit argument specifies the maximum file size (in bytes) which will
+     * be considered as small.
+     *
+     * \since QGIS 3.22
+     */
+    static bool pathIsCheapToOpen( const QString &path, int smallFileSizeLimit = 50000 );
+
     friend class TestQgsGdalUtils;
 };
 
