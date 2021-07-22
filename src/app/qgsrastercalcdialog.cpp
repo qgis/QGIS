@@ -382,8 +382,7 @@ bool QgsRasterCalcDialog::filePathValid() const
 void QgsRasterCalcDialog::mRasterBandsListWidget_itemDoubleClicked( QListWidgetItem *item )
 {
   mExpressionTextEdit->insertPlainText( quoteBandEntry( item->text() ) );
-  //to enable the "ok" button if someone checks the virtual provider checkbox befor adding a valid expression,
-  //otherways some bugging clicking is involved
+  //to enable the "ok" button if someone checks the virtual provider checkbox before adding a valid expression,
   if ( expressionValid() && useVirtualProvider() ) setAcceptButtonState();
 }
 
