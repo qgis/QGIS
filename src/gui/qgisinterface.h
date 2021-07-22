@@ -53,6 +53,7 @@ class QgsMapCanvas;
 class QgsMapLayer;
 enum class QgsMapLayerType;
 class QgsMapLayerConfigWidgetFactory;
+class QgsMapDecoration;
 class QgsMessageBar;
 class QgsPluginManagerInterface;
 class QgsRasterLayer;
@@ -164,6 +165,9 @@ class GUI_EXPORT QgisInterface : public QObject
 
     //! Returns a pointer to the map canvas
     virtual QgsMapCanvas *mapCanvas() = 0;
+
+    //! Returns a list of the active decorations
+    virtual QList<QgsMapDecoration *> activeDecorations() = 0;
 
     /**
      * Returns a pointer to the layer tree canvas bridge

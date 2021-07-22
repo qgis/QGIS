@@ -321,6 +321,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgsBrowserGuiModel *browserModel() override;
     QgsLayerTreeRegistryBridge::InsertionPoint layerTreeInsertionPoint() override;
     void setGpsPanelConnection( QgsGpsConnection *connection ) override;
+    QList<QgsMapDecoration *> activeDecorations() override;
 
   private slots:
 
