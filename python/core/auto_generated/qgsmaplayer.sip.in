@@ -696,6 +696,8 @@ Read all custom properties from layer. Properties are stored in a map and saved 
 .. versionadded:: 3.14
 %End
 
+
+
     void removeCustomProperty( const QString &key );
 %Docstring
 Remove a custom property from layer. Properties are stored in a map and saved in project file.
