@@ -726,8 +726,8 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
     {
       QgsJsonEditWidget *jsonEditWidget = new QgsJsonEditWidget();
       jsonEditWidget->setJsonText( value );
-      jsonEditWidget->setView( QgsJsonEditWidget::View::Tree );
-      jsonEditWidget->setFormatJsonMode( QgsJsonEditWidget::FormatJson::Indented );
+      jsonEditWidget->setView( static_cast<QgsJsonEditWidget::View>( setup.config().value( QStringLiteral( "DefaultView" ) ).toInt() ) );
+      jsonEditWidget->setFormatJsonMode( static_cast<QgsJsonEditWidget::FormatJson>( setup.config().value( QStringLiteral( "FormatJson" ) ).toInt() ) );
       jsonEditWidget->setControlsVisible( false );
       attrItem->setData( 1, Qt::DisplayRole, QString() );
       QTreeWidget *treeWidget = attrItem->treeWidget();
