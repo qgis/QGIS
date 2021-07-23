@@ -22,6 +22,7 @@ RUN dnf -y install \
     protobuf-devel \
     protobuf-lite-devel \
     python3-devel \
+    python3-termcolor \
     qt6-qt3d-devel \
     qt6-qtbase-devel \
     qt6-qtdeclarative-devel \
