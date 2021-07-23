@@ -15,7 +15,9 @@
  ***************************************************************************/
 
 #include "qgsaidwinterpolation.h"
+#ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
+#endif
 #include "qgsfeedback.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
@@ -26,15 +28,23 @@
 
 #include <QObject>
 
+#ifndef HAVE_OPENCL
+QgsAidwInterpolation::QgsAidwInterpolation( QgsVectorLayer *, QString &, QgsRasterLayer *, double )
+{
+}
+
+#else
 QgsAidwInterpolation::QgsAidwInterpolation( QgsVectorLayer *dataLayer, QString &dataAttributeName, QgsRasterLayer *interpolatedLayer, double coefficient )
   : mDataLayer( dataLayer )
   , mInterpolatedLayer( interpolatedLayer )
   , mDataAttributeName( dataAttributeName )
   , mCoefficient( coefficient )
 {
-
 }
+#endif
 
+
+#ifdef HAVE_OPENCL
 void QgsAidwInterpolation::interpolate( QgsFeedback *feedback )
 {
 
@@ -178,12 +188,25 @@ void QgsAidwInterpolation::interpolate( QgsFeedback *feedback )
     yMin += yStep;
   }
 
+  QgsRasterBlockFeedback rasterFeedback;
+  if ( feedback )
+  {
+    rasterFeedback.connect( &rasterFeedback, &QgsRasterBlockFeedback::progressChanged, feedback, &QgsFeedback::progressChanged );
+    feedback->connect( feedback, &QgsFeedback::canceled, &rasterFeedback, &QgsRasterBlockFeedback::cancel );
+  }
+  mInterpolatedLayer->dataProvider()->bandStatistics( 1, QgsRasterBandStats::Max | QgsRasterBandStats::Min, requestedExtent, 0, &rasterFeedback );
   mInterpolatedLayer->dataProvider()->reloadData();
 
 }
+#endif
 
 void QgsAidwInterpolation::process( QgsFeedback *feedback )
 {
+
+#ifndef HAVE_OPENCL
+  Q_UNUSED( feedback )
+  throw QgsProcessingException( QObject::tr( "QGIS was built without OpenCL support: this algorithm is not available." ) );
+#else
   // check that data layer is a point layer
   if ( mDataLayer->geometryType() != QgsWkbTypes::GeometryType::PointGeometry )
   {
@@ -228,4 +251,5 @@ void QgsAidwInterpolation::process( QgsFeedback *feedback )
                                QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::MessageLevel::Critical );
     throw QgsProcessingException( err );
   }
+#endif
 }

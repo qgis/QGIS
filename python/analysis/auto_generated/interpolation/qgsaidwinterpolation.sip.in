@@ -13,6 +13,8 @@ class QgsAidwInterpolation
 {
 %Docstring(signature="appended")
 The :py:class:`QgsAidwInterpolation` class implements OpenCL accelerated IDW interpolation.
+This implementation requires OpenCL, if QGIS is build without OpenCL support the algorithm
+throws an exception.
 
 .. versionadded:: 3.22
 %End

@@ -48,11 +48,7 @@ from .HubDistanceLines import HubDistanceLines
 from .HubDistancePoints import HubDistancePoints
 from .HypsometricCurves import HypsometricCurves
 from .IdwInterpolation import IdwInterpolation
-# Requires OpenCL
-try:
-    from .AidwInterpolation import AidwInterpolation
-except ImportError:
-    pass
+from .AidwInterpolation import AidwInterpolation
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
 from .KeepNBiggestParts import KeepNBiggestParts
@@ -120,6 +116,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 HubDistanceLines(),
                 HubDistancePoints(),
                 HypsometricCurves(),
+                AidwInterpolation(),
                 IdwInterpolation(),
                 ImportIntoPostGIS(),
                 ImportIntoSpatialite(),
@@ -162,11 +159,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 VectorLayerScatterplot3D(),
                 VoronoiPolygons(),
                 ]
-
-        try:
-            algs.append(AidwInterpolation())
-        except NameError:
-            pass
 
         return algs
 

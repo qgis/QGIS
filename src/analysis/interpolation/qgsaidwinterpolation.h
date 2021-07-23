@@ -18,6 +18,7 @@
 
 #include "qgis_analysis.h"
 #include "qgsexception.h"
+#include "qgsconfig.h"
 #include "qgis_sip.h"
 
 #include <QString>
@@ -29,6 +30,8 @@ class QgsFeedback;
 /**
  * \ingroup analysis
  * \brief The QgsAidwInterpolation class implements OpenCL accelerated IDW interpolation.
+ * This implementation requires OpenCL, if QGIS is build without OpenCL support the algorithm
+ * throws an exception.
  * \since QGIS 3.22
  */
 class ANALYSIS_EXPORT QgsAidwInterpolation
@@ -49,6 +52,7 @@ class ANALYSIS_EXPORT QgsAidwInterpolation
      */
     void process( QgsFeedback *feedback = nullptr ) SIP_THROW( QgsProcessingException );
 
+#ifdef HAVE_OPENCL
   private:
 
     QgsVectorLayer *mDataLayer = nullptr;
@@ -58,6 +62,7 @@ class ANALYSIS_EXPORT QgsAidwInterpolation
     double mCoefficient;
 
     void interpolate( QgsFeedback *feedback = nullptr );
+#endif
 
 };
 
