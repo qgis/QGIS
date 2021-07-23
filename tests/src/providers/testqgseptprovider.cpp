@@ -31,6 +31,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudindex.h"
 #include "qgspointcloudlayerelevationproperties.h"
+#include "qgsprovidersublayerdetails.h"
 
 /**
  * \ingroup UnitTests
@@ -52,6 +53,7 @@ class TestQgsEptProvider : public QObject
     void preferredUri();
     void layerTypesForUri();
     void uriIsBlocklisted();
+    void querySublayers();
     void brokenPath();
     void validLayer();
     void validLayerWithEptHierarchy();
@@ -153,6 +155,33 @@ void TestQgsEptProvider::uriIsBlocklisted()
 {
   QVERIFY( !QgsProviderRegistry::instance()->uriIsBlocklisted( QStringLiteral( "/home/nyall/ept.json" ) ) );
   QVERIFY( QgsProviderRegistry::instance()->uriIsBlocklisted( QStringLiteral( "/home/nyall/ept-build.json" ) ) );
+}
+
+void TestQgsEptProvider::querySublayers()
+{
+  // test querying sub layers for a ept layer
+  QgsProviderMetadata *eptMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ept" ) );
+
+  // invalid uri
+  QList< QgsProviderSublayerDetails >res = eptMetadata->querySublayers( QString() );
+  QVERIFY( res.empty() );
+
+  // not a ept layer
+  res = eptMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/lines.shp" );
+  QVERIFY( res.empty() );
+
+  // valid ept layer
+  res = eptMetadata->querySublayers( mTestDataDir + "/point_clouds/ept/sunshine-coast/ept.json" );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "sunshine-coast" ) );
+  QCOMPARE( res.at( 0 ).uri(), mTestDataDir + "/point_clouds/ept/sunshine-coast/ept.json" );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "ept" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::PointCloudLayer );
+
+  // make sure result is valid to load layer from
+  QgsProviderSublayerDetails::LayerOptions options{ QgsCoordinateTransformContext() };
+  std::unique_ptr< QgsPointCloudLayer > ml( qgis::down_cast< QgsPointCloudLayer * >( res.at( 0 ).toLayer( options ) ) );
+  QVERIFY( ml->isValid() );
 }
 
 void TestQgsEptProvider::brokenPath()
