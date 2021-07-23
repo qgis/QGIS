@@ -392,7 +392,7 @@ void TestQgsMapLayer::notify()
 
 void TestQgsMapLayer::customEnumFlagProperties()
 {
-  QgsVectorLayer *ml = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "name" ), QStringLiteral( "memory" ) );
+  std::unique_ptr<QgsVectorLayer> ml = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point" ), QStringLiteral( "name" ), QStringLiteral( "memory" ) );
 
   // assign to inexisting property
   ml->setCustomProperty( QStringLiteral( "my_property_for_units" ), -1 );
