@@ -953,7 +953,7 @@ void TestQgsMeshEditor::particularCases()
     QgsTriangularMesh triangularMesh;
     QgsMeshEditor meshEditor( &mesh, &triangularMesh );
 
-    int sideSize = 100;
+    int sideSize = 40;
 
     for ( int i = 0; i < sideSize; ++i )
       for ( int j = 0; j < sideSize; ++j )
@@ -1001,8 +1001,6 @@ void TestQgsMeshEditor::particularCases()
         QVERIFY( meshEditor.isVertexOnBoundary( i ) );
     }
 
-    QVERIFY( meshEditor.checkConsistency() );
-
     QList<int> verticesToRemove;
     for ( int i = 0; i < sideSize; ++i )
       for ( int j = 0; j < sideSize; ++j )
@@ -1012,8 +1010,6 @@ void TestQgsMeshEditor::particularCases()
     QVERIFY( meshEditor.removeVertices( verticesToRemove, false ) == QgsMeshEditingError() );
     QVERIFY( meshEditor.checkConsistency() );
     meshEditor.mUndoStack->undo();
-    QVERIFY( meshEditor.checkConsistency() );
-    QVERIFY( meshEditor.removeVertices( verticesToRemove, true ) == QgsMeshEditingError() );
     QVERIFY( meshEditor.checkConsistency() );
   }
 }
