@@ -906,6 +906,10 @@ QList<QgsProviderSublayerDetails> QgsProviderRegistry::querySublayers( const QSt
   QList<QgsProviderSublayerDetails> res;
   for ( auto it = mProviders.begin(); it != mProviders.end(); ++it )
   {
+    // if we should defer this uri for other providers, do so
+    if ( shouldDeferUriForOtherProviders( uri, it->first ) )
+      continue;
+
     res.append( it->second->querySublayers( uri, flags, feedback ) );
     if ( feedback && feedback->isCanceled() )
       break;

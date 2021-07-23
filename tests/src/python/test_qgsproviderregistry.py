@@ -131,6 +131,29 @@ class TestQgsProviderRegistry(unittest.TestCase):
         self.assertIn('LAZ', details.warning)
 
     def testSublayerDetails(self):
+        ept_provider_metadata = QgsProviderRegistry.instance().providerMetadata('ept')
+        ogr_provider_metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+
+        if ept_provider_metadata is not None:
+            # test querying a uri which should be blocklisted
+            self.assertFalse(QgsProviderRegistry.instance().querySublayers(unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept-build.json'))
+
+        if ept_provider_metadata is not None and ogr_provider_metadata is not None:
+            # test querying a uri which is technically capable of being opened by two providers, but which one provider is preferred
+            # in this case we are testing a ept.json file, which should ALWAYS be treated as a ept point cloud layer even though
+            # the OGR provider CAN technically open json files
+
+            # when we directly query ogr provider metadata it should report sublayers for the json file...
+            self.assertEqual([l.providerKey() for l in ogr_provider_metadata.querySublayers(
+                unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept.json', Qgis.SublayerQueryFlags(Qgis.SublayerQueryFlag.FastScan))], ['ogr'])
+
+            # ...and when we query ept provider metadata directly it should also report sublayers for ept.json files...
+            self.assertEqual([l.providerKey() for l in ept_provider_metadata.querySublayers(
+                unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept.json', Qgis.SublayerQueryFlags(Qgis.SublayerQueryFlag.FastScan))], ['ept'])
+
+            # ... but when we query the provider registry itself, it should ONLY report the ept provider sublayers
+            self.assertEqual([l.providerKey() for l in QgsProviderRegistry.instance().querySublayers(unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept.json', Qgis.SublayerQueryFlags(Qgis.SublayerQueryFlag.FastScan))], ['ept'])
+
         provider1 = TestProviderMetadata('p1')
         provider2 = TestProviderMetadata('p2')
 
@@ -141,10 +164,6 @@ class TestQgsProviderRegistry(unittest.TestCase):
 
         self.assertCountEqual([p.providerKey() for p in QgsProviderRegistry.instance().querySublayers('test_uri')],
                               ['p1', 'p2'])
-
-        if QgsProviderRegistry.instance().providerMetadata('ept'):
-            # test querying a uri which should be blocklisted
-            self.assertFalse(QgsProviderRegistry.instance().querySublayers(unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept-build.json'))
 
 
 if __name__ == '__main__':
