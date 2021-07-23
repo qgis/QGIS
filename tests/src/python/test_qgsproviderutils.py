@@ -147,6 +147,8 @@ class TestQgsProviderUtils(unittest.TestCase):
         self.assertEqual(QgsProviderUtils.suggestLayerNameFromFilePath('/home/me/data/rivers.shp'), 'rivers')
         # adf files should return parent dir name
         self.assertEqual(QgsProviderUtils.suggestLayerNameFromFilePath('/home/me/data/rivers/hdr.adf'), 'rivers')
+        # ept.json files should return parent dir name
+        self.assertEqual(QgsProviderUtils.suggestLayerNameFromFilePath('/home/me/data/rivers/ept.json'), 'rivers')
 
 
 if __name__ == '__main__':
