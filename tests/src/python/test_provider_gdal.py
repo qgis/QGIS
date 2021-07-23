@@ -36,11 +36,6 @@ class PyQgsGdalProvider(unittest.TestCase):
             res.extend([block.value(r, c) for c in range(block.width())])
         self.assertEqual(res, expected)
 
-    def testCapabilities(self):
-        self.assertTrue(QgsProviderRegistry.instance().providerCapabilities("gdal") & QgsDataProvider.File)
-        self.assertTrue(QgsProviderRegistry.instance().providerCapabilities("gdal") & QgsDataProvider.Dir)
-        self.assertTrue(QgsProviderRegistry.instance().providerCapabilities("gdal") & QgsDataProvider.Net)
-
     def testRasterBlock(self):
         """Test raster block with extent"""
 
