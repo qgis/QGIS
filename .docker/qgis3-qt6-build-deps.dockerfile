@@ -32,8 +32,8 @@ RUN dnf -y install \
     spatialindex-devel \
     sqlite-devel \
     unzip \
-    xorg-x11-server-Xvfb
-
+    xorg-x11-server-Xvfb \
+    util-linux 
 
 RUN dnf -y install wget openssl-devel && cd /usr/src \
   && wget https://github.com/KDE/qca/archive/refs/tags/v2.3.3.zip \
