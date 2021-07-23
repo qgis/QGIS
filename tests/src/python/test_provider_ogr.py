@@ -45,7 +45,8 @@ from qgis.core import (
     QgsNotSupportedException,
     QgsMapLayerType,
     QgsProviderSublayerDetails,
-    Qgis
+    Qgis,
+    QgsDirectoryItem
 )
 from qgis.testing import start_app, unittest
 from qgis.utils import spatialite_connect
@@ -451,16 +452,15 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(len(vl.fields()), 2)
 
     def testDataItems(self):
-
-        registry = QgsApplication.dataItemProviderRegistry()
-        ogrprovider = next(provider for provider in registry.providers() if provider.name() == 'OGR')
+        dataitem = QgsDirectoryItem(None, 'name', unitTestDataPath())
+        children = dataitem.createChildren()
 
         # Single layer
-        item = ogrprovider.createDataItem(os.path.join(TEST_DATA_DIR, 'lines.shp'), None)
+        item = [i for i in children if i.path().endswith('lines.shp')][0]
         self.assertTrue(item.uri().endswith('lines.shp'))
 
         # Multiple layer
-        item = ogrprovider.createDataItem(os.path.join(TEST_DATA_DIR, 'multilayer.kml'), None)
+        item = [i for i in children if i.path().endswith('multilayer.kml')][0]
         children = item.createChildren()
         self.assertEqual(len(children), 2)
         self.assertIn('multilayer.kml|layername=Layer1', children[0].uri())
@@ -472,24 +472,27 @@ class PyQgsOGRProvider(unittest.TestCase):
         lyr = ds.CreateLayer('Layer1', geom_type=ogr.wkbPoint)
         lyr = ds.CreateLayer('Layer2', geom_type=ogr.wkbPoint)
         ds = None
-        item = ogrprovider.createDataItem(tmpfile, None)
+
+        dataitem = QgsDirectoryItem(None, 'name', self.basetestpath)
+        children = dataitem.createChildren()
+        item = [i for i in children if i.path().endswith('testDataItems.gpkg')][0]
+
         children = item.createChildren()
         self.assertEqual(len(children), 2)
         self.assertIn('testDataItems.gpkg|layername=Layer1', children[0].uri())
         self.assertIn('testDataItems.gpkg|layername=Layer2', children[1].uri())
 
     def testDataItemsRaster(self):
-
-        registry = QgsApplication.dataItemProviderRegistry()
-        ogrprovider = next(provider for provider in registry.providers() if provider.name() == 'OGR')
+        dataitem = QgsDirectoryItem(None, 'name', unitTestDataPath())
+        dir_children = dataitem.createChildren()
 
         # Multiple layer (geopackage)
-        path = os.path.join(unitTestDataPath(), 'two_raster_layers.gpkg')
-        item = ogrprovider.createDataItem(path, None)
+        item = [i for i in dir_children if i.path().endswith('two_raster_layers.gpkg')][0]
         children = item.createChildren()
+
         self.assertEqual(len(children), 2)
-        self.assertIn('GPKG:' + path + ':layer01', children[0].uri())
-        self.assertIn('GPKG:' + path + ':layer02', children[1].uri())
+        self.assertIn('GPKG:' + unitTestDataPath() + '/two_raster_layers.gpkg:layer01', children[0].uri())
+        self.assertIn('GPKG:' + unitTestDataPath() + '/two_raster_layers.gpkg:layer02', children[1].uri())
 
     def testOSM(self):
         """ Test that opening several layers of the same OSM datasource works properly """
