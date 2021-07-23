@@ -99,10 +99,6 @@ class PyQgsOGRProvider(unittest.TestCase):
         for dirname in cls.dirs_to_cleanup:
             shutil.rmtree(dirname, True)
 
-    def testCapabilities(self):
-        self.assertTrue(QgsProviderRegistry.instance().providerCapabilities("ogr") & QgsDataProvider.File)
-        self.assertTrue(QgsProviderRegistry.instance().providerCapabilities("ogr") & QgsDataProvider.Dir)
-
     def testUpdateMode(self):
 
         vl = QgsVectorLayer('{}|layerid=0'.format(self.datasource), 'test', 'ogr')
