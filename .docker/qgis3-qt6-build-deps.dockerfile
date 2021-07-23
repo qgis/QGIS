@@ -31,7 +31,8 @@ RUN dnf -y install \
     qt6-qt5compat-devel \
     spatialindex-devel \
     sqlite-devel \
-    unzip
+    unzip \
+    xorg-x11-server-Xvfb
 
 
 RUN dnf -y install wget openssl-devel && cd /usr/src \
