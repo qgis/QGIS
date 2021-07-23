@@ -121,18 +121,21 @@ class TestQgsProviderUtils(unittest.TestCase):
         sl1.setWkbType(QgsWkbTypes.Point)
         sl1.setFeatureCount(1)
         sl1.setSkippedContainerScan(False)
-        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete([sl1], True))
-        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete([sl1], False))
+        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete([sl1], QgsProviderUtils.SublayerCompletenessFlags(
+                                                                           QgsProviderUtils.SublayerCompletenessFlag.IgnoreUnknownFeatureCount)))
+        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete([sl1]))
         sl2 = QgsProviderSublayerDetails()
         sl2.setProviderKey('ogr')
         sl2.setType(QgsMapLayerType.VectorLayer)
         sl2.setWkbType(QgsWkbTypes.Point)
         sl2.setFeatureCount(1)
         sl2.setSkippedContainerScan(True)
-        self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete([sl2], True))
-        self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete([sl2], False))
-        self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete([sl1, sl2], True))
-        self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete([sl1, sl2], False))
+        self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete([sl2], QgsProviderUtils.SublayerCompletenessFlags(
+                                                                           QgsProviderUtils.SublayerCompletenessFlag.IgnoreUnknownFeatureCount)))
+        self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete([sl2]))
+        self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete([sl1, sl2], QgsProviderUtils.SublayerCompletenessFlags(
+                                                                           QgsProviderUtils.SublayerCompletenessFlag.IgnoreUnknownFeatureCount)))
+        self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete([sl1, sl2]))
 
     def test_suggestLayerNameFromFilePath(self):
         """
