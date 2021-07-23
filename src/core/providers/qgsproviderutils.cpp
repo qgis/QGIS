@@ -62,5 +62,12 @@ QString QgsProviderUtils::suggestLayerNameFromFilePath( const QString &path )
     const QString dirName = info.path();
     name = QFileInfo( dirName ).completeBaseName();
   }
+  // special handling for ept.json files -- use directory as base name
+  else if ( info.fileName().compare( QLatin1String( "ept.json" ), Qt::CaseInsensitive ) == 0 )
+  {
+    const QString dirName = info.path();
+    name = QFileInfo( dirName ).completeBaseName();
+  }
+
   return name;
 }
