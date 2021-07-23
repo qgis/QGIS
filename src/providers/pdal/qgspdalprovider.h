@@ -80,6 +80,7 @@ class QgsPdalProviderMetadata : public QgsProviderMetadata
     QVariantMap decodeUri( const QString &uri ) const override;
     int priorityForUri( const QString &uri ) const override;
     QList< QgsMapLayerType > validLayerTypesForUri( const QString &uri ) const override;
+    QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
     QString filters( FilterType type ) override;
     ProviderCapabilities providerCapabilities() const override;
 };
