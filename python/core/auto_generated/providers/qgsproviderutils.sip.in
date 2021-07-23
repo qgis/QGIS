@@ -54,6 +54,9 @@ a path of "c:/my data/water/rivers/hdr.adf").
 
 };
 
+QFlags<QgsProviderUtils::SublayerCompletenessFlag> operator|(QgsProviderUtils::SublayerCompletenessFlag f1, QFlags<QgsProviderUtils::SublayerCompletenessFlag> f2);
+
+
 
 
 
