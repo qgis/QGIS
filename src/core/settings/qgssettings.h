@@ -349,21 +349,33 @@ class CORE_EXPORT QgsSettings : public QObject
       }
       if ( !ok )
       {
-        // if failed, try to read as int (old behavior)
-        // this code shall be removed later (probably after QGIS 3.4 LTR for 3.6)
-        // then the method could be marked as const
-        v = T( value( key, static_cast<int>( defaultValue ), section ).toInt( &ok ) );
+        // if failed, try to read as int
+        int intValue = value( key, static_cast<int>( defaultValue ), section ).toInt( &ok );
         if ( metaEnum.isValid() )
         {
-          if ( !ok || metaEnum.valueToKeys( static_cast<int>( v ) ).isEmpty() )
+          if ( ok )
           {
-            v = defaultValue;
+            // check that the int value does correspond to a flag
+            // see https://stackoverflow.com/a/68495949/1548052
+            QByteArray keys = metaEnum.valueToKeys( intValue );
+            int intValueCheck = metaEnum.keysToValue( keys );
+            if ( intValue != intValueCheck )
+            {
+              v = defaultValue;
+            }
+            else
+            {
+              // found property as an integer
+              v = T( intValue );
+              // convert the property to the new form (string)
+              // this code could be removed
+              // then the method could be marked as const
+              setFlagValue( key, v );
+            }
           }
           else
           {
-            // found setting as an integer
-            // convert the setting to the new form (string)
-            setFlagValue( key, v, section );
+            v = defaultValue;
           }
         }
       }
