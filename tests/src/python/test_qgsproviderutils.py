@@ -121,8 +121,9 @@ class TestQgsProviderUtils(unittest.TestCase):
         sl1.setWkbType(QgsWkbTypes.Point)
         sl1.setFeatureCount(1)
         sl1.setSkippedContainerScan(False)
-        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete([sl1], QgsProviderUtils.SublayerCompletenessFlags(
-                                                                           QgsProviderUtils.SublayerCompletenessFlag.IgnoreUnknownFeatureCount)))
+        self.assertFalse(
+            QgsProviderUtils.sublayerDetailsAreIncomplete([sl1], QgsProviderUtils.SublayerCompletenessFlags(
+                QgsProviderUtils.SublayerCompletenessFlag.IgnoreUnknownFeatureCount)))
         self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete([sl1]))
         sl2 = QgsProviderSublayerDetails()
         sl2.setProviderKey('ogr')
@@ -131,10 +132,11 @@ class TestQgsProviderUtils(unittest.TestCase):
         sl2.setFeatureCount(1)
         sl2.setSkippedContainerScan(True)
         self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete([sl2], QgsProviderUtils.SublayerCompletenessFlags(
-                                                                           QgsProviderUtils.SublayerCompletenessFlag.IgnoreUnknownFeatureCount)))
+            QgsProviderUtils.SublayerCompletenessFlag.IgnoreUnknownFeatureCount)))
         self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete([sl2]))
-        self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete([sl1, sl2], QgsProviderUtils.SublayerCompletenessFlags(
-                                                                           QgsProviderUtils.SublayerCompletenessFlag.IgnoreUnknownFeatureCount)))
+        self.assertTrue(
+            QgsProviderUtils.sublayerDetailsAreIncomplete([sl1, sl2], QgsProviderUtils.SublayerCompletenessFlags(
+                QgsProviderUtils.SublayerCompletenessFlag.IgnoreUnknownFeatureCount)))
         self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete([sl1, sl2]))
 
     def test_suggestLayerNameFromFilePath(self):
