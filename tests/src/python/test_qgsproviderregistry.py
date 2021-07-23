@@ -17,9 +17,11 @@ from qgis.core import (
     QgsMapLayerType,
     QgsProviderMetadata,
     QgsProviderSublayerDetails,
-    Qgis
+    Qgis,
+    QgsProviderUtils
 )
 from qgis.testing import start_app, unittest
+from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
 # to find the srs.db
@@ -37,6 +39,8 @@ class TestProviderMetadata(QgsProviderMetadata):
     def querySublayers(self, uri: str, flags=Qgis.SublayerQueryFlags(), feedback=None):
         res = QgsProviderSublayerDetails()
         res.setProviderKey(self.key())
+        res.setUri(uri)
+        res.setName(QgsProviderUtils.suggestLayerNameFromFilePath(uri))
         return [res]
 
 
@@ -137,6 +141,10 @@ class TestQgsProviderRegistry(unittest.TestCase):
 
         self.assertCountEqual([p.providerKey() for p in QgsProviderRegistry.instance().querySublayers('test_uri')],
                               ['p1', 'p2'])
+
+        if QgsProviderRegistry.instance().providerMetadata('ept'):
+            # test querying a uri which should be blocklisted
+            self.assertFalse(QgsProviderRegistry.instance().querySublayers(unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept-build.json'))
 
 
 if __name__ == '__main__':

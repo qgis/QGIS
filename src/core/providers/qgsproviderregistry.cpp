@@ -899,6 +899,10 @@ bool QgsProviderRegistry::uriIsBlocklisted( const QString &uri ) const
 
 QList<QgsProviderSublayerDetails> QgsProviderRegistry::querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags, QgsFeedback *feedback ) const
 {
+  // never query sublayers for blocklisted uris
+  if ( uriIsBlocklisted( uri ) )
+    return {};
+
   QList<QgsProviderSublayerDetails> res;
   for ( auto it = mProviders.begin(); it != mProviders.end(); ++it )
   {
