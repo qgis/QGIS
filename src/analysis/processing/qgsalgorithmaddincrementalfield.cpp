@@ -36,6 +36,7 @@ QString QgsAddIncrementalFieldAlgorithm::shortHelpString() const
                       "This field can be used as a unique ID for features in the layer. The new attribute "
                       "is not added to the input layer but a new layer is generated instead.\n\n"
                       "The initial starting value for the incremental series can be specified.\n\n"
+                      "The modulus value restart the count at START when the value is reached.\n\n"
                       "Optionally, grouping fields can be specified. If group fields are present, then the field value will "
                       "be reset for each combination of these group field values.\n\n"
                       "The sort order for features may be specified, if so, then the incremental field will respect "
