@@ -1132,10 +1132,10 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
         return {};
     }
 
-    // these extensions are trivial to read, so there's no need to rely on
+    // if file is trivial to read then there's no need to rely on
     // the extension only scan here -- avoiding it always gives us the correct data type
     // and sublayer visibility
-    if ( !QgsGdalUtils::INEXPENSIVE_TO_SCAN_EXTENSIONS.contains( suffix ) )
+    if ( !QgsGdalUtils::pathIsCheapToOpen( path ) )
     {
       // if this is a VRT file make sure it is vector VRT
       if ( suffix == QLatin1String( "vrt" ) && !QgsGdalUtils::vrtMatchesLayerType( path, QgsMapLayerType::VectorLayer ) )
