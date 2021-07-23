@@ -24,6 +24,8 @@
 #include "qgseptdataitems.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
+#include "qgsprovidersublayerdetails.h"
+#include "qgsproviderutils.h"
 
 #include <QFileInfo>
 
@@ -142,6 +144,25 @@ QList<QgsDataItemProvider *> QgsEptProviderMetadata::dataItemProviders() const
   return providers;
 }
 
+QList<QgsProviderSublayerDetails> QgsEptProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags, QgsFeedback * ) const
+{
+  const QVariantMap parts = decodeUri( uri );
+  const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
+  if ( fi.fileName().compare( QLatin1String( "ept.json" ), Qt::CaseInsensitive ) == 0 )
+  {
+    QgsProviderSublayerDetails details;
+    details.setUri( uri );
+    details.setProviderKey( QStringLiteral( "ept" ) );
+    details.setType( QgsMapLayerType::PointCloudLayer );
+    details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( uri ) );
+    return {details};
+  }
+  else
+  {
+    return {};
+  }
+}
+
 int QgsEptProviderMetadata::priorityForUri( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
@@ -215,7 +236,8 @@ QString QgsEptProviderMetadata::encodeUri( const QVariantMap &parts ) const
 QgsProviderMetadata::ProviderMetadataCapabilities QgsEptProviderMetadata::capabilities() const
 {
   return ProviderMetadataCapability::LayerTypesForUri
-         | ProviderMetadataCapability::PriorityForUri;
+         | ProviderMetadataCapability::PriorityForUri
+         | ProviderMetadataCapability::QuerySublayers;
 }
 ///@endcond
 
