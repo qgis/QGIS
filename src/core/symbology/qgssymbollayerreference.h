@@ -179,12 +179,14 @@ class CORE_EXPORT QgsSymbolLayerReference
 
 inline uint qHash( const QgsSymbolLayerId &id )
 {
-  return qHash( id.symbolKey() ) ^ qHash( id.symbolLayerIndexPath() );
+  // FIXME qt6 uses size_t not uint
+  return static_cast<uint>( qHash( id.symbolKey() ) ^ qHash( id.symbolLayerIndexPath() ) );
 }
 
 inline uint qHash( const QgsSymbolLayerReference &r )
 {
-  return qHash( r.layerId() ) ^ qHash( r.symbolLayerId() );
+  // FIXME qt6 uses size_t not uint
+  return static_cast<uint>( qHash( r.layerId() ) ^ qHash( r.symbolLayerId() ) );
 }
 
 typedef QList<QgsSymbolLayerReference> QgsSymbolLayerReferenceList;

@@ -167,7 +167,7 @@ class CORE_EXPORT QgsGradientColorRamp : public QgsColorRamp
     //! Creates a new QgsColorRamp from a map of properties
     static QgsColorRamp *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
 
-    int count() const override { return mStops.count() + 2; }
+    int count() const override { return static_cast<int>( mStops.count() ) + 2; }
     double value( int index ) const override;
     QColor color( double value ) const override;
 

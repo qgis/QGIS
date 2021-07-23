@@ -412,7 +412,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * Returns how many geometries are cached in the index
      * \since QGIS 2.14
      */
-    int cachedGeometryCount() const { return mGeoms.count(); }
+    int cachedGeometryCount() const { return static_cast<int>( mGeoms.count() ); }
 
     /**
      * Returns TRUE if the point locator is currently indexing the data.

@@ -262,7 +262,7 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
      * Returns the number of frames associated with this multiframe.
      * \see frames()
      */
-    int frameCount() const { return mFrameItems.size(); }
+    int frameCount() const { return static_cast<int>( mFrameItems.size() ); }
 
     /**
      * Returns the child frame at a specified \a index from the multiframe.

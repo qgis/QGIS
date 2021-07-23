@@ -720,7 +720,7 @@ inline QString qgsDoubleToString( double a, int precision = 17 )
     if ( str.contains( QLatin1Char( '.' ) ) )
     {
       // remove ending 0s
-      int idx = str.length() - 1;
+      QString::size_type idx = str.length() - 1;
       while ( str.at( idx ) == '0' && idx > 1 )
       {
         idx--;

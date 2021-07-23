@@ -269,7 +269,7 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
     /**
      * Returns the number of sub-keys contained by this property.
      */
-    int count() const { return mProperties.count(); }
+    int count() const { return static_cast<int>( mProperties.count() ); }
 
     /**
      * Returns TRUE if this property contains no sub-keys.

@@ -130,11 +130,11 @@ QTextCodec *QgsNetworkContentFetcher::codecForHtml( QByteArray &array ) const
 
   //check for meta charset tag
   QByteArray header = array.left( 1024 ).toLower();
-  int pos = header.indexOf( "meta charset=" );
+  int pos = static_cast<int>( header.indexOf( "meta charset=" ) );
   if ( pos != -1 )
   {
     pos += int( strlen( "meta charset=" ) ) + 1;
-    int pos2 = header.indexOf( '\"', pos );
+    int pos2 = static_cast<int>( header.indexOf( '\"', pos ) );
     QByteArray cs = header.mid( pos, pos2 - pos );
     codec = QTextCodec::codecForName( cs );
     if ( codec )

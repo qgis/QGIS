@@ -130,7 +130,7 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
         /**
          * Returns the number of nodes in the list.
          */
-        int count() const { return mList.count(); }
+        int count() const { return static_cast<int>( mList.count() ); }
 
         /**
          * Returns TRUE if list contains any named nodes

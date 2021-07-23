@@ -46,7 +46,7 @@ class CORE_EXPORT QgsWkbPtr
     unsigned char *mStart;
     unsigned char *mEnd;
 
-    void verifyBound( int size ) const;
+    void verifyBound( size_t size ) const;
 
     template<typename T> void read( T &v ) const
     {
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsWkbPtr
     inline QgsWkbPtr &operator<<( int v ) { write( v ); return *this; } SIP_SKIP
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     //! Writes a size as int to the pointer
-    inline QgsWkbPtr &operator<<( qsizetype r ) { int v = r; write( v ); return *this; } SIP_SKIP
+    inline QgsWkbPtr &operator<<( qsizetype r ) { int v = static_cast<int>( r ); write( v ); return *this; } SIP_SKIP
 #endif
     //! Writes an unsigned int to the pointer
     inline QgsWkbPtr &operator<<( unsigned int v ) { write( v ); return *this; } SIP_SKIP

@@ -190,7 +190,7 @@ class CORE_EXPORT QgsExpressionFunction
     QString name() const { return mName; }
 
     //! The number of parameters this function takes.
-    int params() const { return mParameterList.isEmpty() ? mParams : mParameterList.count(); }
+    int params() const { return mParameterList.isEmpty() ? mParams : static_cast<int>( mParameterList.count() ); }
 
     //! The minimum number of parameters this function takes.
     int minParams() const

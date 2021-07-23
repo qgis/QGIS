@@ -238,7 +238,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * This is only calculated if Statistic::Variety has been specified in the constructor
      * or via setStatistics.
      */
-    int variety() const { return mValueCount.count(); }
+    int variety() const { return static_cast<int>( mValueCount.count() ); }
 
     /**
      * Returns minority of values. The minority is the value with least occurrences in the list.

@@ -58,7 +58,7 @@ class CORE_EXPORT QgsNetworkReplyParser : public QObject
      * Gets number of parts
      * \returns number of parts
     */
-    int parts() const { return mHeaders.size(); }
+    int parts() const { return static_cast<int>( mHeaders.size() ); }
 
     /**
      * Gets part header

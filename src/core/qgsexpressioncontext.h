@@ -256,7 +256,7 @@ class CORE_EXPORT QgsExpressionContextScope
     /**
      * Returns the count of variables contained within the scope.
      */
-    int variableCount() const { return mVariables.count(); }
+    int variableCount() const { return static_cast<int>( mVariables.count() ); }
 
     /**
      * Tests whether a function with the specified name exists in the scope.

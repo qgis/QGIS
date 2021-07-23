@@ -157,7 +157,7 @@ class CORE_EXPORT QgsSymbol
      * \see symbolLayer
      * \since QGIS 2.7
      */
-    int symbolLayerCount() const { return mLayers.count(); }
+    int symbolLayerCount() const { return static_cast<int>( mLayers.count() ); }
 
 #ifdef SIP_RUN
 

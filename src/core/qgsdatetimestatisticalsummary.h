@@ -130,7 +130,7 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
     /**
      * Returns the number of distinct datetime values.
      */
-    int countDistinct() const { return mValues.count(); }
+    int countDistinct() const { return static_cast<int>( mValues.count() ); }
 
     /**
      * Returns the set of distinct datetime values.

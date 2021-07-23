@@ -63,10 +63,10 @@ QList<double> QgsClassificationLogarithmic::calculateBreaks( double &minimum, do
     Q_ASSERT( values.count() );
     if ( maximum > 0 )
     {
-      for ( int i = 0; i < values.count(); i++ )
+      for ( double v : values )
       {
-        if ( values.at( i ) > 0 )
-          positiveMinimum = std::min( positiveMinimum, values.at( i ) );
+        if ( v > 0 )
+          positiveMinimum = std::min( positiveMinimum, v );
       }
     }
     if ( positiveMinimum == std::numeric_limits<double>::max() )

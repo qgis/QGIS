@@ -225,7 +225,7 @@ class QgsConnectionPoolGroup
       }
 
       // delete expired connections
-      for ( int j = toDelete.count() - 1; j >= 0; --j )
+      for ( int j = static_cast<int>( toDelete.count() ) - 1; j >= 0; --j )
       {
         int index = toDelete[j];
         qgsConnectionPool_ConnectionDestroy( conns[index].c );

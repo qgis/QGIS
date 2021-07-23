@@ -95,7 +95,8 @@ class CORE_EXPORT QgsMapLayerDependency
  */
 inline uint qHash( const QgsMapLayerDependency &dep )
 {
-  return qHash( dep.layerId() ) + dep.origin() + dep.type();
+  // FIXME qt6 uses size_t not uint
+  return static_cast<uint>( qHash( dep.layerId() ) + dep.origin() + dep.type() );
 }
 #endif
 

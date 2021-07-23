@@ -68,21 +68,20 @@ QList<double> QgsClassificationStandardDeviation::calculateBreaks( double &minim
 
   double mean = 0.0;
   mStdDev = 0.0;
-  int n = values.count();
 
-  for ( int i = 0; i < n; i++ )
+  for ( double v : values )
   {
-    mean += values[i];
+    mean += v;
   }
-  mean = mean / static_cast< double >( n );
+  mean = mean / static_cast< double >( values.size() );
 
   double sd = 0.0;
-  for ( int i = 0; i < n; i++ )
+  for ( double v : values )
   {
-    sd = values[i] - mean;
+    sd = v - mean;
     mStdDev += sd * sd;
   }
-  mStdDev = std::sqrt( mStdDev / n );
+  mStdDev = std::sqrt( mStdDev / static_cast< double >( values.size() ) );
 
   // if not symmetric, the symmetry point is the mean
   mEffectiveSymmetryPoint = symmetricModeEnabled() ? symmetryPoint() : mean;
@@ -90,8 +89,8 @@ QList<double> QgsClassificationStandardDeviation::calculateBreaks( double &minim
   QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( ( minimum - mEffectiveSymmetryPoint ) / mStdDev, ( maximum - mEffectiveSymmetryPoint ) / mStdDev, nclasses );
   makeBreaksSymmetric( breaks, 0.0, symmetryAstride() ); //0.0 because breaks where computed on a centered distribution
 
-  for ( int i = 0; i < breaks.count(); i++ )
-    breaks[i] = ( breaks[i] * mStdDev ) + mEffectiveSymmetryPoint;
+  for ( double &lBreak : breaks )
+    lBreak = ( lBreak * mStdDev ) + mEffectiveSymmetryPoint;
 
   return breaks;
 }

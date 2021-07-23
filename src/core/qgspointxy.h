@@ -427,11 +427,12 @@ inline std::ostream &operator << ( std::ostream &os, const QgsPointXY &p ) SIP_S
   return os;
 }
 
+// FIXME qt6 uses size_t not uint
 inline uint qHash( const QgsPointXY &p ) SIP_SKIP
 {
   uint hash;
-  uint h1 = qHash( static_cast< quint64 >( p.mX ) );
-  uint h2 = qHash( static_cast< quint64 >( p.mY ) );
+  uint h1 = static_cast<uint>( qHash( static_cast< quint64 >( p.mX ) ) );
+  uint h2 = static_cast<uint>( qHash( static_cast< quint64 >( p.mY ) ) );
   hash = h1 ^ ( h2 << 1 );
   return hash;
 }

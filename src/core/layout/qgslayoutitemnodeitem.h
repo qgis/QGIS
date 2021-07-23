@@ -90,7 +90,7 @@ class CORE_EXPORT QgsLayoutNodesItem: public QgsLayoutItem
     bool removeNode( int index );
 
     //! Returns the number of nodes in the shape.
-    int nodesSize() const { return mPolygon.size(); }
+    int nodesSize() const { return static_cast<int>( mPolygon.size() ); }
 
     /**
      * Selects a node by \a index.

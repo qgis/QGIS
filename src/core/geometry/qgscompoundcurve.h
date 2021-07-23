@@ -79,7 +79,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     /**
      * Returns the number of curves in the geometry.
      */
-    int nCurves() const SIP_HOLDGIL { return mCurves.size(); }
+    int nCurves() const SIP_HOLDGIL { return static_cast<int>( mCurves.size() ); }
 
     /**
      * Returns the curve at the specified index.

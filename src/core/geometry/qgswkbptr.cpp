@@ -29,7 +29,7 @@ QgsWkbPtr::QgsWkbPtr( unsigned char *p, int size )
   mEnd = mP + size;
 }
 
-void QgsWkbPtr::verifyBound( int size ) const
+void QgsWkbPtr::verifyBound( size_t size ) const
 {
   if ( !mP || mP + size > mEnd )
     throw QgsWkbException( QStringLiteral( "wkb access out of bounds" ) );

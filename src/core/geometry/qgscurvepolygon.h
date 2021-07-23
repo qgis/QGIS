@@ -78,7 +78,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      */
     int numInteriorRings() const SIP_HOLDGIL
     {
-      return mInteriorRings.size();
+      return static_cast<int>( mInteriorRings.size() );
     }
 
     /**

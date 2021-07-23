@@ -117,7 +117,7 @@ QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &
     sample = values.toVector();
   }
 
-  int n = sample.size();
+  const int n = static_cast<int>( sample.size() );
 
   // sort the sample values
   std::sort( sample.begin(), sample.end() );

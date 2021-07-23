@@ -233,7 +233,7 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
      * sections form the body of the report section.
      * \see children()
      */
-    int childCount() const { return mChildren.count(); }
+    int childCount() const { return static_cast<int>( mChildren.count() ); }
 
     /**
      * Returns the row number of the section within it's parent section.

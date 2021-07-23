@@ -141,7 +141,7 @@ class CORE_EXPORT QgsPointCloudAttributeCollection
     /**
      * Returns the number of attributes present in the collection.
      */
-    int count() const { return mAttributes.size(); }
+    int count() const { return static_cast<int>( mAttributes.size() ); }
 
     /**
      * Returns the attribute at the specified \a index.

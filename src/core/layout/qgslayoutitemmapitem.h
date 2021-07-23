@@ -242,7 +242,7 @@ class CORE_EXPORT QgsLayoutItemMapItemStack
     /**
      * Returns the number of items in the stack.
      */
-    int size() const { return mItems.size(); }
+    int size() const { return static_cast<int>( mItems.size() ); }
 
     /**
      * Stores the state of the item stack in a DOM node, where \a element is the DOM element corresponding to a 'LayoutMap' tag.
