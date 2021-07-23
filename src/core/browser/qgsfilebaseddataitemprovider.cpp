@@ -172,7 +172,7 @@ QgsAbstractDatabaseProviderConnection *QgsFileDataCollectionItem::databaseConnec
 {
   // sqlite gets special handling because of the spatialite provider which supports the api required database connections
   const QFileInfo fi( mPath );
-  if ( fi.suffix().toLower() != QLatin1String( "sqlite" ) )
+  if ( fi.suffix().toLower() != QLatin1String( "sqlite" )  && fi.suffix().toLower() != QLatin1String( "db" ) )
   {
     return nullptr;
   }
