@@ -98,6 +98,8 @@ Returns a list of nodes of a specific ``type``
 
     static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) /Factory/;
 
+    static QMultiHash<QString, QString> referencedLayerNames( const QString &str );
+
   private:
     QgsRasterCalcNode( const QgsRasterCalcNode &rh );
 };

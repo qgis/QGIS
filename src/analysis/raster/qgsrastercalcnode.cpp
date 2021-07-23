@@ -382,3 +382,23 @@ QgsRasterCalcNode *QgsRasterCalcNode::parseRasterCalcString( const QString &str,
   return localParseRasterCalcString( str, parserErrorMsg );
 }
 
+QMultiHash<QString, QString> QgsRasterCalcNode::referencedLayerNames( const QString &str )
+{
+  QMultiHash<QString, QString> referencedRasters;
+
+  QString errorString;
+  QgsRasterCalcNode *testNode = QgsRasterCalcNode::parseRasterCalcString( str, errorString );
+
+  const QList<const QgsRasterCalcNode *> rasterRefNodes = testNode->findNodes( QgsRasterCalcNode::Type::tRasterRef );
+  for ( const QgsRasterCalcNode *r : rasterRefNodes )
+  {
+    QString layerRef( r->toString().remove( 0, 1 ) );
+    layerRef.chop( 1 );
+    QString layerRefName = layerRef.mid( 0, layerRef.lastIndexOf( "@" ) );
+
+    referencedRasters.insert( layerRefName, layerRef );
+  }
+
+  return referencedRasters;
+}
+

@@ -125,6 +125,9 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
 
     static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) SIP_FACTORY;
 
+    //static QVector<QStringList> referencedLayerNames (const QString &str );
+    static QMultiHash<QString, QString> referencedLayerNames( const QString &str );
+
   private:
 #ifdef SIP_RUN
     QgsRasterCalcNode( const QgsRasterCalcNode &rh );
