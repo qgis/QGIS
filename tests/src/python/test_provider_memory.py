@@ -841,10 +841,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
                           QgsField("short", QVariant.Int, "int2"),
                           QgsField("lessshort", QVariant.Int, "int4"),
                           QgsField("numericfield", QVariant.Double, "numeric"),
-                          QgsField("decimalfield", QVariant.Double, "decimal"),
-                          QgsField("stringlistfield", QVariant.StringList, "stringlist"),
-                          QgsField("integerlistfield", QVariant.List, "integerlist"),
-                          QgsField("doublelistfield", QVariant.List, "doublelist")])
+                          QgsField("decimalfield", QVariant.Double, "decimal")])
 
         self.assertEqual(pr.fields()[0].typeName(), "string")
         self.assertEqual(pr.fields()[1].typeName(), "integer")
@@ -855,9 +852,6 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(pr.fields()[6].typeName(), "int4")
         self.assertEqual(pr.fields()[7].typeName(), "numeric")
         self.assertEqual(pr.fields()[8].typeName(), "decimal")
-        self.assertEqual(pr.fields()[9].typeName(), "stringlist")
-        self.assertEqual(pr.fields()[10].typeName(), "integerlist")
-        self.assertEqual(pr.fields()[11].typeName(), "doublelist")
 
         vl2 = vl.clone()
 
@@ -870,9 +864,6 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(pr.fields()[6].name(), vl2.fields()[6].name())
         self.assertEqual(pr.fields()[7].name(), vl2.fields()[7].name())
         self.assertEqual(pr.fields()[8].name(), vl2.fields()[8].name())
-        self.assertEqual(pr.fields()[9].name(), vl2.fields()[9].name())
-        self.assertEqual(pr.fields()[10].name(), vl2.fields()[10].name())
-        self.assertEqual(pr.fields()[11].name(), vl2.fields()[11].name())
 
         self.assertEqual(pr.fields()[0].typeName(), vl2.fields()[0].typeName())
         self.assertEqual(pr.fields()[1].typeName(), vl2.fields()[1].typeName())
@@ -883,9 +874,6 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(pr.fields()[6].typeName(), vl2.fields()[6].typeName())
         self.assertEqual(pr.fields()[7].typeName(), vl2.fields()[7].typeName())
         self.assertEqual(pr.fields()[8].typeName(), vl2.fields()[8].typeName())
-        self.assertEqual(pr.fields()[9].typeName(), vl2.fields()[9].typeName())
-        self.assertEqual(pr.fields()[10].typeName(), vl2.fields()[10].typeName())
-        self.assertEqual(pr.fields()[11].typeName(), vl2.fields()[11].typeName())
 
 
 class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):

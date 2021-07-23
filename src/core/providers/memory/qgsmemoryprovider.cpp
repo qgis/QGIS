@@ -527,7 +527,7 @@ bool QgsMemoryProvider::deleteFeatures( const QgsFeatureIds &id )
 
 bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
 {
-  for ( QList<QgsField>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
+  for ( QgsField field : attributes )
   {
     if ( !supportedType( field ) )
       continue;
@@ -538,6 +538,12 @@ bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
     const QList<QgsVectorDataProvider::NativeType> nativeTypesList( nativeTypes() );
     for ( const NativeType &nativeType : nativeTypesList )
     {
+      if ( nativeType.mTypeName.toLower() == field.typeName().toLower() )
+      {
+        isNativeTypeName = true;
+        break;
+      }
+
       if ( nativeType.mType == field.type()
            && nativeTypeCandidate.mType == QVariant::Invalid )
         nativeTypeCandidate = nativeType;
@@ -555,7 +561,7 @@ bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
     }
 
     // add new field as a last one
-    mFields.append( *it );
+    mFields.append( field );
 
     for ( QgsFeatureMap::iterator fit = mFeatures.begin(); fit != mFeatures.end(); ++fit )
     {
