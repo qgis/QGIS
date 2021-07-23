@@ -300,7 +300,7 @@ void QgsQueryResultWidget::startFetching()
       connect( mModel.get(), &QgsQueryResultModel::fetchMoreRows, this, [ = ]( long long maxRows )
       {
         mFetchedRowsBatchCount = 0;
-        mProgressBar->setRange( 0, maxRows );
+        mProgressBar->setRange( 0, static_cast<int>( maxRows ) );
         mProgressBar->show();
       } );
 
@@ -321,7 +321,7 @@ void QgsQueryResultWidget::startFetching()
                                      mWasCanceled ? tr( "(stopped)" ) : QString(),
                                      QLocale().toString( mQueryResultWatcher.result().queryExecutionTime() ) ) );
         mFetchedRowsBatchCount += last - first + 1;
-        mProgressBar->setValue( mFetchedRowsBatchCount );
+        mProgressBar->setValue( static_cast<int>( mFetchedRowsBatchCount ) );
       } );
 
       mQueryResultsTableView->setModel( mModel.get() );

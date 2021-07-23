@@ -32,7 +32,7 @@ QgsQueryResultModel::QgsQueryResultModel( const QgsAbstractDatabaseProviderConne
   mWorkerThread.start();
   if ( mQueryResult.rowCount() > 0 )
   {
-    mRows.reserve( mQueryResult.rowCount() );
+    mRows.reserve( static_cast<int>( mQueryResult.rowCount() ) );
   }
 }
 

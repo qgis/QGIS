@@ -510,7 +510,7 @@ QgsRasterHistogram QgsRasterInterface::histogram( int bandNo,
 
 #ifdef QGISDEBUG
   QString hist;
-  for ( std::size_t i = 0; i < std::min< std::size_t >( myHistogram.histogramVector.size(), 500 ); i++ )
+  for ( QgsRasterHistogram::HistogramVector::size_type i = 0; i < std::min< QgsRasterHistogram::HistogramVector::size_type >( myHistogram.histogramVector.size(), 500 ); i++ )
   {
     hist += QString::number( myHistogram.histogramVector.value( i ) ) + ' ';
   }

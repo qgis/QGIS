@@ -423,8 +423,8 @@ bool QgsMeshEditRefineFaces::createNewBorderFaces( QgsMeshEditor *meshEditor,
       std::unique_ptr<p2t::CDT> cdt( new p2t::CDT( points ) );
       cdt->Triangulate();
       std::vector<p2t::Triangle *> triangles = cdt->GetTriangles();
-      QVector<QgsMeshFace> faces( triangles.size() );
-      for ( size_t i = 0; i < triangles.size(); ++i )
+      QVector<QgsMeshFace> faces( static_cast<QVector<QgsMeshFace>::size_type>( triangles.size() ) );
+      for ( QVector<QgsMeshFace>::size_type i = 0; i < faces.size(); ++i )
       {
         QgsMeshFace &triangle = faces[i];
         triangle.resize( 3 );
