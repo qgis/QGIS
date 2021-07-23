@@ -45,6 +45,14 @@ class CORE_EXPORT QgsProviderSublayerItem final: public QgsLayerItem
 {
     Q_OBJECT
   public:
+
+    /**
+     * Constructor for QgsProviderSublayerItem.
+     * \param name data item name (this should match either the layer's name or the filename of a single-layer file)
+     * \param details sublayer details
+     * \param isFile set to TRUE if the item represents a single-layer file, or FALSE if the item is a sublayer from a
+     * collection item.
+     */
     QgsProviderSublayerItem( QgsDataItem *parent, const QString &name, const QgsProviderSublayerDetails &details, bool isFile );
     QString layerName() const override;
     QVector<QgsDataItem *> createChildren() override;
