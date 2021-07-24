@@ -284,7 +284,7 @@ QgsDataItem *QgsFileBasedDataItemProvider::createDataItem( const QString &pathIn
         QUrlQuery uq;
         uq.addQueryItem( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
         uq.addQueryItem( QStringLiteral( "url" ), path );
-        QString encodedUri = uq.toString();
+        const QString encodedUri = uq.toString();
         return new QgsVectorTileLayerItem( parentItem, name, path, encodedUri );
       }
       else
@@ -293,7 +293,7 @@ QgsDataItem *QgsFileBasedDataItemProvider::createDataItem( const QString &pathIn
         QUrlQuery uq;
         uq.addQueryItem( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
         uq.addQueryItem( QStringLiteral( "url" ), QUrl::fromLocalFile( path ).toString() );
-        QString encodedUri = uq.toString();
+        const QString encodedUri = uq.toString();
         QgsLayerItem *item = new QgsLayerItem( parentItem, name, path, encodedUri, Qgis::BrowserLayerType::Raster, QStringLiteral( "wms" ) );
         item->setState( Qgis::BrowserItemState::Populated );
         return item;
