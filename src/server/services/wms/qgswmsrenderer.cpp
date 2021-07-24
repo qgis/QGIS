@@ -3070,7 +3070,8 @@ namespace QgsWms
   {
     QStringList expList;
     // WMS Dimension filters
-    const QList<QgsVectorLayerServerProperties::WmsDimensionInfo> wmsDims = layer->serverProperties()->wmsDimensions();
+    QgsVectorLayerServerProperties *serverProperties = static_cast<QgsVectorLayerServerProperties *>( layer->serverProperties() );
+    const QList<QgsVectorLayerServerProperties::WmsDimensionInfo> wmsDims = serverProperties->wmsDimensions();
     if ( wmsDims.isEmpty() )
     {
       return expList;

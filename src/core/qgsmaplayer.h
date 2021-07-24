@@ -403,7 +403,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Returns QGIS Server Properties for the map layer
      * \since QGIS 3.22
      */
-    QgsMapLayerServerProperties *serverProperties() { return mMapLayerServerProperties.get(); }
+    virtual QgsMapLayerServerProperties *serverProperties() { return mServerProperties; }
 
     /**
      * Returns QGIS Server Properties const for the map layer
@@ -416,7 +416,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.22
      */
     // void *setServerProperties(QgsMapLayerServerProperties &mProperties) { mMapLayerServerProperties = mProperties }
-    void setServerProperties( QgsMapLayerServerProperties *properties SIP_TRANSFER = nullptr );
+    //void setServerProperties( QgsMapLayerServerProperties *properties SIP_TRANSFER = nullptr );
 
     /**
      * Sets the metadata URL of the layer
@@ -2047,7 +2047,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     bool mScaleBasedVisibility = false;
 
     //! Stores information about server properties
-    std::unique_ptr< QgsMapLayerServerProperties > mMapLayerServerProperties;
+    QgsMapLayerServerProperties *mServerProperties = nullptr;
     //QgsMapLayerServerProperties *mMapLayerServerProperties = nullptr;
     //QgsMapLayerServerProperties *mMapLayerServerProperties = nullptr;
 

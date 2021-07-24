@@ -360,7 +360,7 @@ Attribution indicates the provider of a layer or collection of layers.
 
 
 
-    QgsMapLayerServerProperties *serverProperties();
+    virtual QgsMapLayerServerProperties *serverProperties();
 %Docstring
 Returns QGIS Server Properties for the map layer
 
@@ -368,7 +368,6 @@ Returns QGIS Server Properties for the map layer
 %End
 
 
-    void setServerProperties( QgsMapLayerServerProperties *properties /Transfer/ = 0 );
 
     void setMetadataUrl( const QString &metaUrl );
 %Docstring

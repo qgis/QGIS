@@ -1213,7 +1213,8 @@ namespace QgsWms
           if ( l->type() == QgsMapLayerType::VectorLayer )
           {
             QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l );
-            const QList<QgsVectorLayerServerProperties::WmsDimensionInfo> wmsDims = vl->serverProperties()->wmsDimensions();
+            QgsVectorLayerServerProperties *serverProperties = static_cast<QgsVectorLayerServerProperties *>( vl->serverProperties() );
+            const QList<QgsVectorLayerServerProperties::WmsDimensionInfo> wmsDims = serverProperties->wmsDimensions();
             for ( const  QgsVectorLayerServerProperties::WmsDimensionInfo &dim : wmsDims )
             {
               int fieldIndex = vl->fields().indexOf( dim.fieldName );
