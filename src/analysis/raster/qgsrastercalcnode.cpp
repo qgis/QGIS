@@ -389,7 +389,7 @@ QMultiHash<QString, QString> QgsRasterCalcNode::referencedLayerNames( const QStr
   QString errorString;
   QgsRasterCalcNode *testNode = QgsRasterCalcNode::parseRasterCalcString( str, errorString );
 
-  const QList<const QgsRasterCalcNode *> rasterRefNodes = testNode->findNodes( QgsRasterCalcNode::Type::tRasterRef );
+  const QList<const QgsRasterCalcNode *> rasterRefNodes =  testNode->findNodes( QgsRasterCalcNode::Type::tRasterRef );
   for ( const QgsRasterCalcNode *r : rasterRefNodes )
   {
     QString layerRef( r->toString().remove( 0, 1 ) );

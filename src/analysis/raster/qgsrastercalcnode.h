@@ -125,8 +125,11 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
 
     static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) SIP_FACTORY;
 
-    //static QVector<QStringList> referencedLayerNames (const QString &str );
-    static QMultiHash<QString, QString> referencedLayerNames( const QString &str );
+    /**
+     * Return a dictionary that has the raster name as keys and the raster references as values
+     * (one key can have different value as one raster layer has different bands
+     */
+    static QMultiHash<QString, QString> referencedLayerNames( const QString &str ) SIP_FACTORY;
 
   private:
 #ifdef SIP_RUN
