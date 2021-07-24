@@ -187,7 +187,7 @@ QgsAbstractDatabaseProviderConnection *QgsFileDataCollectionItem::databaseConnec
   // do not print errors, but write to debug
   CPLPushErrorHandler( CPLQuietErrorHandler );
   CPLErrorReset();
-  gdal::dataset_unique_ptr hDS( GDALOpenEx( path().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+  gdal::dataset_unique_ptr hDS( GDALOpenEx( path().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_READONLY, nullptr, nullptr, nullptr ) );
   CPLPopErrorHandler();
 
   if ( ! hDS )
