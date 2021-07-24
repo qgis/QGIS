@@ -100,8 +100,12 @@ Returns a list of nodes of a specific ``type``
 
     static QMultiHash<QString, QString> referencedLayerNames( const QString &str ) /Factory/;
 %Docstring
-Return a dictionary that has the raster name as keys and the raster references as values
-(one key can have different values, as one raster layer has different bands
+Returns a dictionary that has the raster name as keys and the raster references as values
+(one key can have different value as one raster layer has different bands)
+
+.. note::
+
+   since QGIS 3.22
 %End
 
   private:

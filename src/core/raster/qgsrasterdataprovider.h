@@ -566,12 +566,14 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /**
      * Decodes the URI returning a struct with all the parameters for QgsVirtualRasterProvider class
      * \note used by Virtual Raster Provider only
+     * \note since QGIS 3.22
      */
     static QgsRasterDataProvider::DecodedUriParameters decodeVirtualRasterProviderUri( const QString &uri, bool *ok = nullptr );
 
     /**
      * Encodes the URI starting from the struct .
      * \note used by Virtual Raster Provider only
+     * \note since QGIS 3.22
      */
     static QString encodeVirtualRasterProviderUri( const QgsRasterDataProvider::DecodedUriParameters &parts );
 

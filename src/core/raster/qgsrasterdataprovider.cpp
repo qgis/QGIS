@@ -661,60 +661,72 @@ QgsRasterDataProvider::DecodedUriParameters QgsRasterDataProvider::decodeVirtual
   if ( ! query.hasQueryItem( QStringLiteral( "crs" ) ) )
   {
     QgsDebugMsg( "crs is missing" );
-    *ok = false;
+    if ( ok ) *ok = false;
     return components;
   }
-  components.crs.createFromString( query.queryItemValue( QStringLiteral( "crs" ) ) );
+  if ( ! components.crs.createFromString( query.queryItemValue( QStringLiteral( "crs" ) ) ) )
+  {
+    QgsDebugMsg( "failed to create crs" );
+    if ( ok ) *ok = false;
+    return components;
+  }
+
 
   if ( ! query.hasQueryItem( QStringLiteral( "extent" ) ) )
   {
     QgsDebugMsg( "extent is missing" );
-    *ok = false;
+    if ( ok ) *ok = false;
     return components;
   }
   QStringList pointValuesList = query.queryItemValue( QStringLiteral( "extent" ) ).split( ',' );
+  if ( pointValuesList.size() != 4 )
+  {
+    QgsDebugMsg( "the extent is not correct" );
+    if ( ok ) *ok = false;
+    return components;
+  }
   components.extent = QgsRectangle( pointValuesList.at( 0 ).toDouble(), pointValuesList.at( 1 ).toDouble(),
                                     pointValuesList.at( 2 ).toDouble(), pointValuesList.at( 3 ).toDouble() );
 
   if ( ! query.hasQueryItem( QStringLiteral( "width" ) ) )
   {
     QgsDebugMsg( "width is missing" );
-    *ok = false;
+    if ( ok ) *ok = false;
     return components;
   }
   bool flagW;
   components.width = query.queryItemValue( QStringLiteral( "width" ) ).toInt( & flagW );
-  if ( !flagW ||  components.width < 0 || components.width > std::numeric_limits<int>::max() )
+  if ( !flagW ||  components.width < 0 )
   {
     QgsDebugMsg( "invalid or negative width input" );
-    *ok = false;
+    if ( ok ) *ok = false;
     return components;
   }
 
   if ( ! query.hasQueryItem( QStringLiteral( "height" ) ) )
   {
     QgsDebugMsg( "height is missing" );
-    *ok = false;
+    if ( ok ) *ok = false;
     return components;
   }
   bool flagH;
   components.height = query.queryItemValue( QStringLiteral( "height" ) ).toInt( & flagH );
-  if ( !flagH ||  components.height < 0 || components.height > std::numeric_limits<int>::max() )
+  if ( !flagH ||  components.height < 0 )
   {
     QgsDebugMsg( "invalid or negative width input" );
-    *ok = false;
+    if ( ok ) *ok = false;
     return components;
   }
 
   if ( ! query.hasQueryItem( QStringLiteral( "formula" ) ) )
   {
     QgsDebugMsg( "formula is missing" );
-    *ok = false;
+    if ( ok ) *ok = false;
     return components;
   }
   components.formula = query.queryItemValue( QStringLiteral( "formula" ) );
 
-  QSet<QString> rLayerName;
+  QSet<QString> layerNames;
   for ( const auto &item : query.queryItems() )
   {
     if ( item.first.indexOf( ':' ) == -1 )
@@ -723,32 +735,28 @@ QgsRasterDataProvider::DecodedUriParameters QgsRasterDataProvider::decodeVirtual
     }
     else
     {
-      rLayerName.insert( item.first.mid( 0, item.first.indexOf( ':' ) ) );
+      layerNames.insert( item.first.mid( 0, item.first.indexOf( ':' ) ) );
     }
   }
 
-  if ( rLayerName.isEmpty() )
-  {
-    return components;
-  }
   QSet<QString>::iterator i;
-  for ( i = rLayerName.begin(); i != rLayerName.end(); ++i )
+  for ( i = layerNames.begin(); i != layerNames.end(); ++i )
   {
     InputLayers rLayer;
 
     rLayer.name = ( *i );
-    rLayer.uri = query.queryItemValue( ( *i ) % QStringLiteral( ":uri" ) );
-    rLayer.provider = query.queryItemValue( ( *i ) % QStringLiteral( ":provider" ) );
+    rLayer.uri = query.queryItemValue( rLayer.name + QStringLiteral( ":uri" ) );
+    rLayer.provider = query.queryItemValue( rLayer.name + QStringLiteral( ":provider" ) );
     components.rInputLayers.append( rLayer ) ;
 
     if ( rLayer.uri.isNull() || rLayer.provider.isNull() )
     {
       QgsDebugMsg( "One or more raster information are missing" );
-      *ok = false;
+      if ( ok ) *ok = false;
       return components;
     }
   }
-
+  if ( ok ) *ok = true;
   return components;
 }
 

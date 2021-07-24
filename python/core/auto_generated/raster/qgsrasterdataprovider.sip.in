@@ -499,6 +499,10 @@ Decodes the URI returning a struct with all the parameters for :py:class:`QgsVir
 .. note::
 
    used by Virtual Raster Provider only
+
+.. note::
+
+   since QGIS 3.22
 %End
 
     static QString encodeVirtualRasterProviderUri( const QgsRasterDataProvider::DecodedUriParameters &parts );
@@ -508,6 +512,10 @@ Encodes the URI starting from the struct .
 .. note::
 
    used by Virtual Raster Provider only
+
+.. note::
+
+   since QGIS 3.22
 %End
 
     virtual QString validateCreationOptions( const QStringList &createOptions, const QString &format );

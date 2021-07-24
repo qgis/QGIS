@@ -20,6 +20,7 @@
 #define QGSRASTERCALCNODE_H
 
 #include <QMap>
+#include <QMultiHash>
 #include "qgis_sip.h"
 #include "qgis.h"
 #include <QString>
@@ -126,8 +127,9 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) SIP_FACTORY;
 
     /**
-     * Return a dictionary that has the raster name as keys and the raster references as values
-     * (one key can have different value as one raster layer has different bands
+     * Returns a dictionary that has the raster name as keys and the raster references as values
+     * (one key can have different value as one raster layer has different bands)
+     * \note since QGIS 3.22
      */
     static QMultiHash<QString, QString> referencedLayerNames( const QString &str ) SIP_FACTORY;
 

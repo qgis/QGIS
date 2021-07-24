@@ -23,7 +23,7 @@
 QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions )
   : QgsRasterDataProvider( uri, providerOptions )
 {
-  bool  ok = true;
+  bool  ok;
   QgsRasterDataProvider::DecodedUriParameters decodedUriParams = QgsRasterDataProvider::decodeVirtualRasterProviderUri( uri, & ok );
 
   if ( ok == false )
