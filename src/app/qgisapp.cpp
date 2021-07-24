@@ -777,6 +777,11 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
       // \note this class is not a descendent of QWidget so we can't pass
       // it in the ctor of the layer projection selector
 
+      static bool opening = false;
+      if ( opening )
+        break;
+      opening = true;
+
       QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog();
       const QString validationHint = srs.validationHint();
       if ( !validationHint.isEmpty() )
@@ -803,6 +808,7 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
       }
 
       delete mySelector;
+      opening = false;
       break;
     }
 
