@@ -34,7 +34,6 @@
 
 #include <QSortFilterProxyModel>
 
-#include "ui_qgsbrowserdockwidgetbase.h"
 #include "ui_qgsbrowserlayerpropertiesbase.h"
 #include "ui_qgsbrowserdirectorypropertiesbase.h"
 #include "ui_qgsbrowserpropertiesdialogbase.h"

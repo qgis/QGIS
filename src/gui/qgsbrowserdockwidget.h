@@ -207,8 +207,6 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget
      */
     Q_DECL_DEPRECATED void toggleFastScan() SIP_DEPRECATED;
 
-    // TODO QGIS 4.0: make these private
-
     /**
      * Selection has changed.
      *
