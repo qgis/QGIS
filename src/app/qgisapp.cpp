@@ -103,6 +103,7 @@
 #include "qgsproviderutils.h"
 #include "qgsprovidersublayersdialog.h"
 #include "qgsmaplayerfactory.h"
+#include "qgsbrowserwidget.h"
 
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
@@ -15891,7 +15892,7 @@ void QgisApp::showBookmarks()
 {
   mBrowserWidget->setUserVisible( true );
   QModelIndex index = browserModel()->findPath( QStringLiteral( "bookmarks:" ) );
-  mBrowserWidget->setActiveIndex( index );
+  mBrowserWidget->browserWidget()->setActiveIndex( index );
 }
 
 void QgisApp::showBookmarkManager( bool show )
