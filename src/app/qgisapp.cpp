@@ -6506,7 +6506,7 @@ void QgisApp::showRasterCalculator()
   }
   if ( d.useVirtualProvider() )
   {
-    QgsRasterDataProvider::DecodedUriParameters virtualCalcParams;
+    QgsRasterDataProvider::VirtualRasterParameters virtualCalcParams;
     virtualCalcParams.crs = d.outputCrs();
     virtualCalcParams.extent = d.outputRectangle();
     virtualCalcParams.width = d.numberOfColumns();

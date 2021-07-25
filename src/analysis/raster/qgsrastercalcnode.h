@@ -128,7 +128,7 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
 
     /**
      * Returns a dictionary that has the raster name as keys and the raster references as values
-     * (one key can have different value as one raster layer has different bands)
+     * (it's possibile to have different value as one raster layer has different bands)
      * \note since QGIS 3.22
      */
     static QMultiHash<QString, QString> referencedLayerNames( const QString &str ) SIP_FACTORY;

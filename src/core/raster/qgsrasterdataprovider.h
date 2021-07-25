@@ -552,7 +552,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * QgsVirtualRasterProvider through the QgsRasterDataProvider::DecodedUriParameters
      * \note used by QgsVirtualRasterProvider only
      */
-    struct DecodedUriParameters
+    struct VirtualRasterParameters
     {
       QgsCoordinateReferenceSystem crs;
       QgsRectangle extent;
@@ -568,14 +568,14 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \note used by Virtual Raster Provider only
      * \note since QGIS 3.22
      */
-    static QgsRasterDataProvider::DecodedUriParameters decodeVirtualRasterProviderUri( const QString &uri, bool *ok = nullptr );
+    static QgsRasterDataProvider::VirtualRasterParameters decodeVirtualRasterProviderUri( const QString &uri, bool *ok = nullptr );
 
     /**
      * Encodes the URI starting from the struct .
      * \note used by Virtual Raster Provider only
      * \note since QGIS 3.22
      */
-    static QString encodeVirtualRasterProviderUri( const QgsRasterDataProvider::DecodedUriParameters &parts );
+    static QString encodeVirtualRasterProviderUri( const VirtualRasterParameters &parts );
 
     /**
      * Validates creation options for a specific dataset and destination format.

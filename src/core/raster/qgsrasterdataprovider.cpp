@@ -652,11 +652,11 @@ QString QgsRasterDataProvider::colorInterpretationName( int bandNo ) const
   return colorName( colorInterpretation( bandNo ) );
 }
 
-QgsRasterDataProvider::DecodedUriParameters QgsRasterDataProvider::decodeVirtualRasterProviderUri( const QString &uri, bool *ok )
+QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirtualRasterProviderUri( const QString &uri, bool *ok )
 {
   QUrl url = QUrl::fromEncoded( uri.toLatin1() );
   const QUrlQuery query( url.query() );
-  DecodedUriParameters components;
+  VirtualRasterParameters components;
 
   if ( ! query.hasQueryItem( QStringLiteral( "crs" ) ) )
   {
@@ -726,28 +726,23 @@ QgsRasterDataProvider::DecodedUriParameters QgsRasterDataProvider::decodeVirtual
   }
   components.formula = query.queryItemValue( QStringLiteral( "formula" ) );
 
-  QSet<QString> layerNames;
   for ( const auto &item : query.queryItems() )
   {
     if ( item.first.indexOf( ':' ) == -1 )
     {
       continue;
     }
-    else
+
+    if ( !( item.first.mid( item.first.indexOf( ':' ), -1 ) == QStringLiteral( ":uri" ) ) )
     {
-      layerNames.insert( item.first.mid( 0, item.first.indexOf( ':' ) ) );
+      continue;
     }
-  }
 
-  QSet<QString>::iterator i;
-  for ( i = layerNames.begin(); i != layerNames.end(); ++i )
-  {
+
     InputLayers rLayer;
-
-    rLayer.name = ( *i );
-    rLayer.uri = query.queryItemValue( rLayer.name + QStringLiteral( ":uri" ) );
-    rLayer.provider = query.queryItemValue( rLayer.name + QStringLiteral( ":provider" ) );
-    components.rInputLayers.append( rLayer ) ;
+    rLayer.name = item.first.mid( 0, item.first.indexOf( ':' ) );
+    rLayer.uri = query.queryItemValue( item.first );
+    rLayer.provider = query.queryItemValue( item.first.mid( 0, item.first.indexOf( ':' ) ) + QStringLiteral( ":provider" ) );
 
     if ( rLayer.uri.isNull() || rLayer.provider.isNull() )
     {
@@ -755,12 +750,16 @@ QgsRasterDataProvider::DecodedUriParameters QgsRasterDataProvider::decodeVirtual
       if ( ok ) *ok = false;
       return components;
     }
+
+    components.rInputLayers.append( rLayer ) ;
+
   }
+
   if ( ok ) *ok = true;
   return components;
 }
 
-QString QgsRasterDataProvider::encodeVirtualRasterProviderUri( const DecodedUriParameters &parts )
+QString QgsRasterDataProvider::encodeVirtualRasterProviderUri( const VirtualRasterParameters &parts )
 {
   QUrl uri;
   QUrlQuery query;
@@ -778,29 +777,19 @@ QString QgsRasterDataProvider::encodeVirtualRasterProviderUri( const DecodedUriP
     query.addQueryItem( QStringLiteral( "extent" ), rect );
   }
 
-  if ( parts.width )
-  {
-    query.addQueryItem( QStringLiteral( "width" ), QString::number( parts.width ) );
-  }
+  query.addQueryItem( QStringLiteral( "width" ), QString::number( parts.width ) );
 
-  if ( parts.height )
-  {
-    query.addQueryItem( QStringLiteral( "height" ), QString::number( parts.height ) );
-  }
+  query.addQueryItem( QStringLiteral( "height" ), QString::number( parts.height ) );
 
-  if ( ! parts.formula.isNull() )
-  {
-    query.addQueryItem( QStringLiteral( "formula" ), parts.formula );
-  }
-
+  query.addQueryItem( QStringLiteral( "formula" ), parts.formula );
 
   if ( ! parts.rInputLayers.isEmpty() )
   {
 
     for ( const auto &it : parts.rInputLayers )
     {
-      query.addQueryItem( it.name % QStringLiteral( ":uri" ), it.uri );
-      query.addQueryItem( it.name % QStringLiteral( ":provider" ), it.provider );
+      query.addQueryItem( it.name + QStringLiteral( ":uri" ), it.uri );
+      query.addQueryItem( it.name + QStringLiteral( ":provider" ), it.provider );
     }
 
 

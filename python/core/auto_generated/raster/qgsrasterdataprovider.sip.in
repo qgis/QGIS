@@ -481,7 +481,7 @@ for given provider
       QString provider;
     };
 
-    struct DecodedUriParameters
+    struct VirtualRasterParameters
     {
       QgsCoordinateReferenceSystem crs;
       QgsRectangle extent;
@@ -492,7 +492,7 @@ for given provider
 
     };
 
-    static QgsRasterDataProvider::DecodedUriParameters decodeVirtualRasterProviderUri( const QString &uri, bool *ok = 0 );
+    static QgsRasterDataProvider::VirtualRasterParameters decodeVirtualRasterProviderUri( const QString &uri, bool *ok = 0 );
 %Docstring
 Decodes the URI returning a struct with all the parameters for :py:class:`QgsVirtualRasterProvider` class
 
@@ -505,7 +505,7 @@ Decodes the URI returning a struct with all the parameters for :py:class:`QgsVir
    since QGIS 3.22
 %End
 
-    static QString encodeVirtualRasterProviderUri( const QgsRasterDataProvider::DecodedUriParameters &parts );
+    static QString encodeVirtualRasterProviderUri( const VirtualRasterParameters &parts );
 %Docstring
 Encodes the URI starting from the struct .
 

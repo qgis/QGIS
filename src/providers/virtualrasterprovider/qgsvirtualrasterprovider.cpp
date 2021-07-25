@@ -24,7 +24,7 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
   : QgsRasterDataProvider( uri, providerOptions )
 {
   bool  ok;
-  QgsRasterDataProvider::DecodedUriParameters decodedUriParams = QgsRasterDataProvider::decodeVirtualRasterProviderUri( uri, & ok );
+  QgsRasterDataProvider::VirtualRasterParameters decodedUriParams = QgsRasterDataProvider::decodeVirtualRasterProviderUri( uri, & ok );
 
   if ( ok == false )
   {
@@ -98,7 +98,7 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
 
     for ( int j = 0; j < rProvidedLayer->bandCount(); ++j )
     {
-      if ( ! rLayerDict.values().contains( rProvidedLayer->name() % QStringLiteral( "@" ) % QString::number( j + 1 ) ) )
+      if ( ! rLayerDict.values().contains( rProvidedLayer->name() + QStringLiteral( "@" ) + QString::number( j + 1 ) ) )
       {
         continue;
       }
@@ -106,7 +106,7 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
       QgsRasterCalculatorEntry entry;
       entry.raster = rProvidedLayer;
       entry.bandNumber = j + 1;
-      entry.ref = rProvidedLayer->name() % QStringLiteral( "@" ) % QString::number( j + 1 );
+      entry.ref = rProvidedLayer->name() % QStringLiteral( "@" ) + QString::number( j + 1 );
       mRasterEntries.push_back( entry );
     }
   }
@@ -135,7 +135,7 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QgsVirtualRasterProvid
       QgsRasterCalculatorEntry entry;
       entry.raster = rcProvidedLayer;
       entry.bandNumber = j + 1;
-      entry.ref = rcProvidedLayer->name() % QStringLiteral( "@" ) % QString::number( j + 1 );
+      entry.ref = rcProvidedLayer->name() % QStringLiteral( "@" ) + QString::number( j + 1 );
       mRasterEntries.push_back( entry );
     }
   }
