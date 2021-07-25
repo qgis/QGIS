@@ -218,7 +218,6 @@ Toggle fast scan
    will be removed in QGIS 4.0
 %End
 
-
  void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected ) /Deprecated/;
 %Docstring
 Selection has changed.
