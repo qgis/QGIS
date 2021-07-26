@@ -2088,7 +2088,7 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
   // Zoom the map canvas in response to a mouse wheel event. Moving the
   // wheel forward (away) from the user zooms in
 
-  QgsDebugMsgLevel( "Wheel event delta " + QString::number( e->delta() ), 2 );
+  QgsDebugMsgLevel( "Wheel event delta " + QString::number( e->angleDelta().y() ), 2 );
 
   if ( mMapTool )
   {
@@ -2097,7 +2097,7 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
       return;
   }
 
-  if ( e->delta() == 0 )
+  if ( e->angleDelta().y() == 0 )
   {
     e->accept();
     return;

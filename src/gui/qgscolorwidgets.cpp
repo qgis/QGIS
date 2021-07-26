@@ -1169,7 +1169,7 @@ void QgsColorRampWidget::wheelEvent( QWheelEvent *event )
 {
   int oldValue = componentValue();
 
-  if ( event->delta() > 0 )
+  if ( event->angleDelta().y() > 0 )
   {
     setComponentValue( componentValue() + 1 );
   }
