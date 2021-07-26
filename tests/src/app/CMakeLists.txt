@@ -28,6 +28,7 @@ set(TESTS
   testqgsmaptooleditmesh.cpp
   testqgsmaptoolmovefeature.cpp
   testqgsmaptoolellipse.cpp
+  testqgsmaptoolcircle.cpp
   testqgsmaptoolrectangle.cpp
   testqgsmaptoolregularpolygon.cpp
   testqgsmaptoolsplitparts.cpp
