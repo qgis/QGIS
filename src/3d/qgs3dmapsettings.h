@@ -163,11 +163,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      *
      * This setting dictates which layers are to be rendered using their 3D rendering configuration, if available.
      *
-     * \note Layers which are rendered as part of the map terrain are specified via \a setTerrainLayers().
-     *
      * \see layers()
      * \see layersChanged()
-     * \see setTerrainLayers()
      */
     void setLayers( const QList<QgsMapLayer *> &layers );
 
@@ -176,45 +173,14 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      *
      * This setting dictates which layers are to be rendered using their 3D rendering configuration, if available.
      *
-     * \note Layers which are rendered as part of the map terrain are retrieved via \a terrainLayers().
-     *
      * \see setLayers()
      * \see layersChanged()
-     * \see terrainLayers()
      */
     QList<QgsMapLayer *> layers() const;
 
     //
     // terrain related config
     //
-
-    /**
-     * Sets the list of 2d map \a layers to be rendered in the terrain.
-     *
-     * \note Layers which are rendered as 3D layers as part of the scene are specified via \a setLayers().
-     *
-     * \note If terrainMapTheme() is set, it has a priority over the list of layers specified here.
-     *
-     * \see terrainLayers()
-     * \see terrainLayersChanged()
-     * \see setLayers()
-     * \since QGIS 3.16
-     */
-    void setTerrainLayers( const QList<QgsMapLayer *> &layers );
-
-    /**
-     * Returns the list of map layers to be rendered as a texture of the terrain.
-     *
-     * \note Layers which are rendered as 3D layers as part of the scene are retrieved via \a layers().
-     *
-     * \note If terrainMapTheme() is set, it has a priority over the list of layers returned here.
-     *
-     * \see setTerrainLayers()
-     * \see terrainLayersChanged()
-     * \see layers()
-     * \since QGIS 3.16
-     */
-    QList<QgsMapLayer *> terrainLayers() const;
 
     /**
      * Sets vertical scale (exaggeration) of terrain
@@ -601,20 +567,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      *
      * \see setLayers()
      * \see layers()
-     * \see terrainLayersChanged()
      */
     void layersChanged();
-
-    /**
-     * Emitted when the list of map layers for terrain texture has changed.
-     *
-     * \see terrainLayers()
-     * \see setTerrainLayers()
-     * \see layersChanged()
-     *
-     * \since QGIS 3.16
-     */
-    void terrainLayersChanged();
 
     //! Emitted when the terrain generator has changed
     void terrainGeneratorChanged();
@@ -787,7 +741,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QgsCameraController::NavigationMode mCameraNavigationMode = QgsCameraController::NavigationMode::TerrainBasedNavigation;
     double mCameraMovementSpeed = 5.0;
     QList<QgsMapLayerRef> mLayers;   //!< Layers to be rendered
-    QList<QgsMapLayerRef> mTerrainLayers;   //!< Terrain layers to be rendered
     QList<QgsAbstract3DRenderer *> mRenderers;  //!< Extra stuff to render as 3D object
     //! Coordinate transform context
     QgsCoordinateTransformContext mTransformContext;

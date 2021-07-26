@@ -47,7 +47,6 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
   map->setCrs( QgsProject::instance()->crs() );
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
   map->setLayers( visibleLayers );
-  map->setTerrainLayers( visibleLayers );
 
   map->setTransformContext( QgsProject::instance()->transformContext() );
   map->setPathResolver( QgsProject::instance()->pathResolver() );

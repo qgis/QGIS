@@ -164,7 +164,7 @@ QgsMapSettings QgsTerrainTextureGenerator::baseMapSettings()
   QString mapThemeName = mMap.terrainMapTheme();
   if ( mapThemeName.isEmpty() || !mapThemes || !mapThemes->hasMapTheme( mapThemeName ) )
   {
-    mapSettings.setLayers( mMap.terrainLayers() );
+    mapSettings.setLayers( mMap.layers() );
   }
   else
   {
