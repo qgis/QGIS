@@ -31,6 +31,7 @@
 
 #include <QAction>
 #include <QMenu>
+#include <QRegularExpression>
 
 QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   : QgsPanelWidget( parent )
@@ -603,8 +604,8 @@ void QgsTemporalControllerWidget::setTimeStep( const QgsInterval &timeStep )
       QgsUnitTypes::TemporalUnit unit = static_cast<QgsUnitTypes::TemporalUnit>( mTimeStepsComboBox->itemData( i ).toInt() );
       double value = timeStep.seconds() * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalSeconds, unit );
       QString string = QString::number( value, 'f', precision );
-      string.remove( QRegExp( "0+$" ) ); //remove trailing zero
-      string.remove( QRegExp( "[.]+$" ) ); //remove last point if present
+      string.remove( QRegularExpression( "0+$" ) ); //remove trailing zero
+      string.remove( QRegularExpression( "[.]+$" ) ); //remove last point if present
 
       if ( value >= 1
            && string.size() <= stringSize // less significant digit than currently selected
