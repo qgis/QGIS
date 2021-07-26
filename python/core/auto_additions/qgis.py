@@ -513,3 +513,9 @@ Qgis.ContentStatus.Canceled.__doc__ = "Content fetching/storing has been cancele
 Qgis.ContentStatus.__doc__ = 'Status for fetched or stored content\n\n.. versionadded:: 3.22\n\n' + '* ``NotStarted``: ' + Qgis.ContentStatus.NotStarted.__doc__ + '\n' + '* ``OnGoing``: ' + Qgis.ContentStatus.OnGoing.__doc__ + '\n' + '* ``Finished``: ' + Qgis.ContentStatus.Finished.__doc__ + '\n' + '* ``Failed``: ' + Qgis.ContentStatus.Failed.__doc__ + '\n' + '* ``Canceled``: ' + Qgis.ContentStatus.Canceled.__doc__
 # --
 Qgis.ContentStatus.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ExternalStorageContentMode.StartLater.__doc__ = "Do not start immediately to fetch/store to properly connect the fetched/stored signal"
+Qgis.ExternalStorageContentMode.StartImmediately.__doc__ = "Fetching/Storing will start immediately, not need to run fetch/store method"
+Qgis.ExternalStorageContentMode.__doc__ = 'Status for fetched or stored content\n\n.. versionadded:: 3.22\n\n' + '* ``StartLater``: ' + Qgis.ExternalStorageContentMode.StartLater.__doc__ + '\n' + '* ``StartImmediately``: ' + Qgis.ExternalStorageContentMode.StartImmediately.__doc__
+# --
+Qgis.ExternalStorageContentMode.baseClass = Qgis

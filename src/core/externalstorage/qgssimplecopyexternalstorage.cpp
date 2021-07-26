@@ -42,9 +42,11 @@ QgsSimpleCopyExternalStorageStoredContent::QgsSimpleCopyExternalStorageStoredCon
   {
     emit progressChanged( progress );
   } );
+}
 
+void QgsSimpleCopyExternalStorageStoredContent::store()
+{
   mStatus = Qgis::ContentStatus::OnGoing;
-
   QgsApplication::instance()->taskManager()->addTask( mCopyTask );
 }
 
@@ -69,22 +71,28 @@ QString QgsSimpleCopyExternalStorageStoredContent::url() const
 }
 
 QgsSimpleCopyExternalStorageFetchedContent::QgsSimpleCopyExternalStorageFetchedContent( const QString &filePath )
+  : mFilePath( filePath )
+{
+}
+
+void QgsSimpleCopyExternalStorageFetchedContent::fetch()
 {
   // no fetching process, we read directly from its location
-  if ( !QFileInfo::exists( filePath ) )
+  if ( !QFileInfo::exists( mFilePath ) )
   {
-    reportError( tr( "File '%1' does not exist" ).arg( filePath ) );
+    reportError( tr( "File '%1' does not exist" ).arg( mFilePath ) );
   }
   else
   {
     mStatus = Qgis::ContentStatus::Finished;
-    mFilePath = filePath;
+    mResultFilePath = mFilePath;
+    emit fetched();
   }
 }
 
 QString QgsSimpleCopyExternalStorageFetchedContent::filePath() const
 {
-  return mFilePath;
+  return mResultFilePath;
 }
 
 QString QgsSimpleCopyExternalStorage::type() const
@@ -92,12 +100,12 @@ QString QgsSimpleCopyExternalStorage::type() const
   return QStringLiteral( "SimpleCopy" );
 };
 
-QgsExternalStorageStoredContent *QgsSimpleCopyExternalStorage::store( const QString &filePath, const QString &url, const QString &authcfg ) const
+QgsExternalStorageStoredContent *QgsSimpleCopyExternalStorage::doStore( const QString &filePath, const QString &url, const QString &authcfg ) const
 {
   return new QgsSimpleCopyExternalStorageStoredContent( filePath, url, authcfg );
 };
 
-QgsExternalStorageFetchedContent *QgsSimpleCopyExternalStorage::fetch( const QString &url, const QString &authConfig ) const
+QgsExternalStorageFetchedContent *QgsSimpleCopyExternalStorage::doFetch( const QString &url, const QString &authConfig ) const
 {
   Q_UNUSED( authConfig );
 

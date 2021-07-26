@@ -20,7 +20,7 @@ import time
 
 from utilities import unitTestDataPath, waitServer
 
-from qgis.PyQt.QtCore import QCoreApplication, QEventLoop, QUrl
+from qgis.PyQt.QtCore import QCoreApplication, QEventLoop, QUrl, QTimer
 from qgis.PyQt.QtTest import QSignalSpy
 
 from qgis.core import (
@@ -92,9 +92,9 @@ class TestPyQgsExternalStorageBase():
         self.assertTrue(f.read(), b"New content")
         f.close()
 
-    def testStoreFetchFile(self):
+    def testStoreFetchFileLater(self):
         """
-        Test file storing and fetching
+        Test file storing and fetching (Later mode)
         """
 
         f = self.getNewFile(b"New content")
@@ -102,6 +102,93 @@ class TestPyQgsExternalStorageBase():
         # store
         url = self.url + "/" + os.path.basename(f.name)
         storedContent = self.storage.store(f.name, url, self.auth_config.id())
+        self.assertTrue(storedContent)
+        self.assertEqual(storedContent.status(), Qgis.ContentStatus.NotStarted)
+
+        spyErrorOccurred = QSignalSpy(storedContent.errorOccurred)
+        spyProgressChanged = QSignalSpy(storedContent.progressChanged)
+
+        loop = QEventLoop()
+        storedContent.stored.connect(loop.quit)
+        storedContent.errorOccurred.connect(loop.quit)
+        QTimer.singleShot(1, lambda: storedContent.store())
+        loop.exec()
+
+        self.assertEqual(len(spyErrorOccurred), 0)
+        self.assertEqual(storedContent.url(), url)
+        self.assertFalse(storedContent.errorString())
+        self.assertEqual(storedContent.status(), Qgis.ContentStatus.Finished)
+        self.assertTrue(len(spyProgressChanged) > 0)
+        self.assertEqual(spyProgressChanged[-1][0], 100)
+
+        # fetch
+        fetchedContent = self.storage.fetch(self.url + "/" + os.path.basename(f.name), self.auth_config.id())
+        self.assertTrue(fetchedContent)
+        self.assertEqual(fetchedContent.status(), Qgis.ContentStatus.NotStarted)
+
+        spyErrorOccurred = QSignalSpy(fetchedContent.errorOccurred)
+
+        loop = QEventLoop()
+        fetchedContent.fetched.connect(loop.quit)
+        fetchedContent.errorOccurred.connect(loop.quit)
+        QTimer.singleShot(1, lambda: fetchedContent.fetch())
+        loop.exec()
+
+        self.assertEqual(len(spyErrorOccurred), 0)
+        self.assertEqual(fetchedContent.status(), Qgis.ContentStatus.Finished)
+        self.assertFalse(fetchedContent.errorString())
+        self.assertTrue(fetchedContent.filePath())
+        self.checkContent(fetchedContent.filePath(), b"New content")
+        self.assertEqual(os.path.splitext(fetchedContent.filePath())[1], '.txt')
+
+        # fetch again, should be cached
+        fetchedContent = self.storage.fetch(self.url + "/" + os.path.basename(f.name), self.auth_config.id())
+        self.assertTrue(fetchedContent)
+        self.assertEqual(fetchedContent.status(), Qgis.ContentStatus.NotStarted)
+
+        spyErrorOccurred = QSignalSpy(fetchedContent.errorOccurred)
+
+        loop = QEventLoop()
+        fetchedContent.fetched.connect(loop.quit)
+        fetchedContent.errorOccurred.connect(loop.quit)
+        QTimer.singleShot(1, lambda: fetchedContent.fetch())
+        loop.exec()
+
+        self.assertEqual(len(spyErrorOccurred), 0)
+        self.assertEqual(fetchedContent.status(), Qgis.ContentStatus.Finished)
+        self.assertTrue(not fetchedContent.errorString())
+        self.assertTrue(fetchedContent.filePath())
+        self.checkContent(fetchedContent.filePath(), b"New content")
+        self.assertEqual(os.path.splitext(fetchedContent.filePath())[1], '.txt')
+
+        # fetch bad url
+        fetchedContent = self.storage.fetch(self.url + "/error", self.auth_config.id())
+        self.assertTrue(fetchedContent)
+        self.assertEqual(fetchedContent.status(), Qgis.ContentStatus.NotStarted)
+
+        spyErrorOccurred = QSignalSpy(fetchedContent.errorOccurred)
+
+        loop = QEventLoop()
+        fetchedContent.fetched.connect(loop.quit)
+        fetchedContent.errorOccurred.connect(loop.quit)
+        QTimer.singleShot(1, lambda: fetchedContent.fetch())
+        loop.exec()
+
+        self.assertEqual(len(spyErrorOccurred), 1)
+        self.assertEqual(fetchedContent.status(), Qgis.ContentStatus.Failed)
+        self.assertTrue(fetchedContent.errorString())
+        self.assertFalse(fetchedContent.filePath())
+
+    def testStoreFetchFileImmediately(self):
+        """
+        Test file storing and fetching (Immediately mode)
+        """
+
+        f = self.getNewFile(b"New content")
+
+        # store
+        url = self.url + "/" + os.path.basename(f.name)
+        storedContent = self.storage.store(f.name, url, self.auth_config.id(), Qgis.ExternalStorageContentMode.StartImmediately)
         self.assertTrue(storedContent)
         self.assertEqual(storedContent.status(), Qgis.ContentStatus.OnGoing)
 
@@ -121,7 +208,7 @@ class TestPyQgsExternalStorageBase():
         self.assertEqual(spyProgressChanged[-1][0], 100)
 
         # fetch
-        fetchedContent = self.storage.fetch(self.url + "/" + os.path.basename(f.name), self.auth_config.id())
+        fetchedContent = self.storage.fetch(self.url + "/" + os.path.basename(f.name), self.auth_config.id(), Qgis.ExternalStorageContentMode.StartImmediately)
         self.assertTrue(fetchedContent)
 
         # Some external storage (SimpleCopy) doesn't actually need to retrieve the resource
@@ -146,7 +233,7 @@ class TestPyQgsExternalStorageBase():
         self.assertEqual(os.path.splitext(fetchedContent.filePath())[1], '.txt')
 
         # fetch again, should be cached
-        fetchedContent = self.storage.fetch(self.url + "/" + os.path.basename(f.name), self.auth_config.id())
+        fetchedContent = self.storage.fetch(self.url + "/" + os.path.basename(f.name), self.auth_config.id(), Qgis.ExternalStorageContentMode.StartImmediately)
         self.assertTrue(fetchedContent)
         self.assertEqual(fetchedContent.status(), Qgis.ContentStatus.Finished)
 
@@ -156,7 +243,7 @@ class TestPyQgsExternalStorageBase():
         self.assertEqual(os.path.splitext(fetchedContent.filePath())[1], '.txt')
 
         # fetch bad url
-        fetchedContent = self.storage.fetch(self.url + "/error", self.auth_config.id())
+        fetchedContent = self.storage.fetch(self.url + "/error", self.auth_config.id(), Qgis.ExternalStorageContentMode.StartImmediately)
         self.assertTrue(fetchedContent)
 
         # Some external storage (SimpleCopy) doesn't actually need to retrieve the resource
@@ -185,12 +272,14 @@ class TestPyQgsExternalStorageBase():
 
         storedContent = self.storage.store(f.name, self.badUrl + os.path.basename(f.name), self.auth_config.id())
         self.assertTrue(storedContent)
+        self.assertEqual(storedContent.status(), Qgis.ContentStatus.NotStarted)
 
         spyStored = QSignalSpy(storedContent.stored)
         spyCanceled = QSignalSpy(storedContent.canceled)
 
         loop = QEventLoop()
         storedContent.errorOccurred.connect(loop.quit)
+        QTimer.singleShot(1, lambda: storedContent.store())
         loop.exec()
 
         self.assertEqual(storedContent.status(), Qgis.ContentStatus.Failed)
@@ -210,12 +299,14 @@ class TestPyQgsExternalStorageBase():
         f = self.getNewFile(b"New content")
         storedContent = self.storage.store(f.name, self.url + "/" + os.path.basename(f.name))
         self.assertTrue(storedContent)
+        self.assertEqual(storedContent.status(), Qgis.ContentStatus.NotStarted)
 
         spyStored = QSignalSpy(storedContent.stored)
         spyCanceled = QSignalSpy(storedContent.canceled)
 
         loop = QEventLoop()
         storedContent.errorOccurred.connect(loop.quit)
+        QTimer.singleShot(1, lambda: storedContent.store())
         loop.exec()
 
         self.assertEqual(storedContent.status(), Qgis.ContentStatus.Failed)
@@ -237,7 +328,7 @@ class TestPyQgsExternalStorageBase():
         # store
         storedContent = self.storage.store(f.name, self.url + "/", self.auth_config.id())
         self.assertTrue(storedContent)
-        self.assertEqual(storedContent.status(), Qgis.ContentStatus.OnGoing)
+        self.assertEqual(storedContent.status(), Qgis.ContentStatus.NotStarted)
 
         spyErrorOccurred = QSignalSpy(storedContent.errorOccurred)
         spyProgressChanged = QSignalSpy(storedContent.progressChanged)
@@ -245,6 +336,7 @@ class TestPyQgsExternalStorageBase():
         loop = QEventLoop()
         storedContent.stored.connect(loop.quit)
         storedContent.errorOccurred.connect(loop.quit)
+        QTimer.singleShot(1, lambda: storedContent.store())
         loop.exec()
 
         self.assertEqual(len(spyErrorOccurred), 0)
@@ -257,22 +349,17 @@ class TestPyQgsExternalStorageBase():
         # fetch
         fetchedContent = self.storage.fetch(self.url + "/" + os.path.basename(f.name), self.auth_config.id())
         self.assertTrue(fetchedContent)
+        self.assertEqual(fetchedContent.status(), Qgis.ContentStatus.NotStarted)
 
-        # Some external storage (SimpleCopy) doesn't actually need to retrieve the resource
-        self.assertTrue(fetchedContent.status() == Qgis.ContentStatus.Finished or
-                        fetchedContent.status() == Qgis.ContentStatus.OnGoing)
+        spyErrorOccurred = QSignalSpy(fetchedContent.errorOccurred)
 
-        if (fetchedContent.status() == Qgis.ContentStatus.OnGoing):
+        loop = QEventLoop()
+        fetchedContent.fetched.connect(loop.quit)
+        fetchedContent.errorOccurred.connect(loop.quit)
+        QTimer.singleShot(1, lambda: fetchedContent.fetch())
+        loop.exec()
 
-            spyErrorOccurred = QSignalSpy(fetchedContent.errorOccurred)
-
-            loop = QEventLoop()
-            fetchedContent.fetched.connect(loop.quit)
-            fetchedContent.errorOccurred.connect(loop.quit)
-            loop.exec()
-
-            self.assertEqual(len(spyErrorOccurred), 0)
-
+        self.assertEqual(len(spyErrorOccurred), 0)
         self.assertEqual(fetchedContent.status(), Qgis.ContentStatus.Finished)
         self.assertFalse(fetchedContent.errorString())
         self.assertTrue(fetchedContent.filePath())

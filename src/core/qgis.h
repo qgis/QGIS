@@ -547,6 +547,17 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( ContentStatus )
 
+    /*
+     * Status for fetched or stored content
+     * \since QGIS 3.22
+     */
+    enum class ExternalStorageContentMode : int
+    {
+      StartLater, //!< Do not start immediately to fetch/store to properly connect the fetched/stored signal
+      StartImmediately, //!< Fetching/Storing will start immediately, not need to run fetch/store method
+    };
+    Q_ENUM( ExternalStorageContentMode )
+
     /**
      * Babel GPS format capabilities.
      *

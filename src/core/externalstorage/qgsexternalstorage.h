@@ -52,30 +52,48 @@ class CORE_EXPORT QgsExternalStorage
      * Storing process is run in background.
      * Returns a QgsExternalStorageStoredContent to follow the status of the stored resource.
      *
-     * After using this method, user should check if the returned content is not already finished
-     * (storing could be instantaneous, if file has already been stored for instance) and then wait
-     * for QgsExternalStorageStoredContent::stored(), QgsExternalStorageStoredContent::errorOccurred() or
-     * QgsExternalStorageStoredContent::canceled() signals.
+     * \a storingMode defines if the download will start immediately or shall be manually triggered
+     * calling QgsExternalStorageStoredContent::store(). User should use
+     * Qgis::ExternalStorageContentMode::StartLater if he needs to connect the stored() signal.
      *
-     * It's possible to give \a authcfg authentication configuration id in case its needed.
+     * After using this method, user wait for QgsExternalStorageStoredContent::stored(),
+     * QgsExternalStorageStoredContent::errorOccurred() or QgsExternalStorageStoredContent::canceled() signals.
+     *
+     * It's possible to give \a authCfg authentication configuration id in case its needed.
      *
      * Caller takes ownership of the returned symbol.
      */
-    virtual QgsExternalStorageStoredContent *store( const QString &filePath, const QString &url, const QString &authcfg = QString() ) const = 0 SIP_FACTORY;
+    QgsExternalStorageStoredContent *store( const QString &filePath, const QString &url, const QString &authCfg = QString(), Qgis::ExternalStorageContentMode storingMode = Qgis::ExternalStorageContentMode::StartLater ) const SIP_FACTORY;
 
     /**
      * Fetches file from \a url for this project external storage.
      * Fetching process is run in background.
      * Returns a QgsExternalStorageFetchedContent to follow the status of the fetched resource.
      *
-     * After using this method, user should check if the returned content is not already finished
-     * (fetching could be instantaneous, if file has already been fetched and cached for instance)
-     * and then wait for QgsExternalStorageStoredContent::fetched(), QgsExternalStorageStoredContent::errorOccurred() or
-     * QgsExternalStorageStoredContent::canceled() signals.
+     * \a fetchingMode defines if the download will start immediately or shall be manually triggered
+     * calling QgsExternalStorageFetchedContent::fetch(). User should use
+     * Qgis::ExternalStorageContentMode::StartLater if he needs to connect the fetched() signal.
      *
-     * It's possible to give \a authcfg authentication configuration id in case its needed.
+     * After using this method, user should wait for QgsExternalStorageStoredContent::fetched(),
+     * QgsExternalStorageStoredContent::errorOccurred() or QgsExternalStorageStoredContent::canceled() signals.
+     *
+     * It's possible to give \a authCfg authentication configuration id in case its needed.
      */
-    virtual QgsExternalStorageFetchedContent *fetch( const QString &url, const QString &authcfg = QString() ) const = 0 SIP_FACTORY;
+    QgsExternalStorageFetchedContent *fetch( const QString &url, const QString &authCfg = QString(), Qgis::ExternalStorageContentMode fetchingMode = Qgis::ExternalStorageContentMode::StartLater ) const SIP_FACTORY;
+
+  protected:
+
+    /**
+     * Stores file \a filePath to the \a url using \a authCfg authentication for this project external storage.
+     * \see QgsExternalStorage::store()
+     */
+    virtual QgsExternalStorageStoredContent *doStore( const QString &filePath, const QString &url, const QString &authCfg = QString() ) const = 0 SIP_FACTORY;
+
+    /**
+     * Fetches file from \a url using \a authCfg for this project external storage.
+     * \see QgsExternalStorage::fetch()
+     */
+    virtual QgsExternalStorageFetchedContent *doFetch( const QString &url, const QString &authCfg = QString() ) const = 0 SIP_FACTORY;
 };
 
 /**
@@ -154,6 +172,11 @@ class CORE_EXPORT QgsExternalStorageFetchedContent : public QgsExternalStorageCo
      */
     virtual QString filePath() const = 0;
 
+    /**
+     * Starts fetching
+     */
+    virtual void fetch() = 0;
+
   signals:
 
     /**
@@ -178,6 +201,11 @@ class CORE_EXPORT QgsExternalStorageStoredContent : public QgsExternalStorageCon
      * Returns stored resource URL
      */
     virtual QString url() const = 0;
+
+    /**
+     * Starts storing
+     */
+    virtual void store() = 0;
 
   signals:
 
