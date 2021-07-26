@@ -268,6 +268,7 @@ class CORE_EXPORT Qgis
       Collapse = 1 << 3, //!< The collapse/expand status for this items children should be ignored in order to avoid undesired network connections (wms etc.)
       Rename = 1 << 4, //!< Item can be renamed
       Delete = 1 << 5, //!< Item can be deleted
+      ItemRepresentsFile = 1 << 6, //!< Item's path() directly represents a file on disk (since QGIS 3.22)
     };
     Q_ENUM( BrowserItemCapability )
     Q_DECLARE_FLAGS( BrowserItemCapabilities, BrowserItemCapability )

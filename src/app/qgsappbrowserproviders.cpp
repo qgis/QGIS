@@ -87,6 +87,7 @@ QgsQlrDataItem::QgsQlrDataItem( QgsDataItem *parent, const QString &name, const 
   setState( Qgis::BrowserItemState::Populated ); // no children
   setIconName( QStringLiteral( ":/images/icons/qgis-icon-16x16.png" ) );
   setToolTip( QDir::toNativeSeparators( path ) );
+  mCapabilities |= Qgis::BrowserItemCapability::ItemRepresentsFile;
 }
 
 bool QgsQlrDataItem::hasDragEnabled() const
@@ -206,6 +207,7 @@ QgsQptDataItem::QgsQptDataItem( QgsDataItem *parent, const QString &name, const 
   setState( Qgis::BrowserItemState::Populated ); // no children
   setIconName( QStringLiteral( "/mIconQptFile.svg" ) );
   setToolTip( QDir::toNativeSeparators( path ) );
+  mCapabilities |= Qgis::BrowserItemCapability::ItemRepresentsFile;
 }
 
 bool QgsQptDataItem::hasDragEnabled() const
@@ -249,6 +251,7 @@ QgsPyDataItem::QgsPyDataItem( QgsDataItem *parent, const QString &name, const QS
   setState( Qgis::BrowserItemState::Populated ); // no children
   setIconName( QStringLiteral( "/mIconPythonFile.svg" ) );
   setToolTip( QDir::toNativeSeparators( path ) );
+  mCapabilities |= Qgis::BrowserItemCapability::ItemRepresentsFile;
 }
 
 bool QgsPyDataItem::hasDragEnabled() const
@@ -351,6 +354,7 @@ QgsStyleXmlDataItem::QgsStyleXmlDataItem( QgsDataItem *parent, const QString &na
   setState( Qgis::BrowserItemState::Populated ); // no children
   setIconName( QStringLiteral( "/mActionStyleManager.svg" ) );
   setToolTip( QStringLiteral( "<b>%1</b><br>%2" ).arg( tr( "QGIS style library" ), QDir::toNativeSeparators( path ) ) );
+  mCapabilities |= Qgis::BrowserItemCapability::ItemRepresentsFile;
 }
 
 bool QgsStyleXmlDataItem::hasDragEnabled() const
@@ -470,6 +474,7 @@ QgsProjectRootDataItem::QgsProjectRootDataItem( QgsDataItem *parent, const QStri
   : QgsProjectItem( parent, QFileInfo( path ).completeBaseName(), path )
 {
   mCapabilities = Qgis::BrowserItemCapability::Collapse | Qgis::BrowserItemCapability::Fertile; // collapse by default to avoid costly population on startup
+  mCapabilities |= Qgis::BrowserItemCapability::ItemRepresentsFile;
   setState( Qgis::BrowserItemState::NotPopulated );
 }
 
@@ -1282,6 +1287,7 @@ QgsHtmlDataItem::QgsHtmlDataItem( QgsDataItem *parent, const QString &name, cons
   setState( Qgis::BrowserItemState::Populated ); // no children
   setIconName( QStringLiteral( "/mIconHtml.svg" ) );
   setToolTip( QDir::toNativeSeparators( path ) );
+  mCapabilities |= Qgis::BrowserItemCapability::ItemRepresentsFile;
 }
 
 bool QgsHtmlDataItem::handleDoubleClick()
