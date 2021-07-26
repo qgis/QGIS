@@ -142,9 +142,13 @@ void QgsExternalResourceWidget::updateDocumentViewer()
 
   if ( mDocumentViewerContent == Image )
   {
-    const QPixmap *pm = mPixmapLabel->pixmap();
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    const QPixmap pm = mPixmapLabel->pixmap() ? *mPixmapLabel->pixmap() : QPixmap();
+#else
+    const QPixmap pm = mPixmapLabel->pixmap();
+#endif
 
-    if ( !pm || pm->isNull() )
+    if ( !pm || pm.isNull() )
     {
       mPixmapLabel->setMinimumSize( QSize( 0, 0 ) );
     }
@@ -153,11 +157,11 @@ void QgsExternalResourceWidget::updateDocumentViewer()
       QSize size( mDocumentViewerWidth, mDocumentViewerHeight );
       if ( size.width() == 0 && size.height() > 0 )
       {
-        size.setWidth( size.height() * pm->size().width() / pm->size().height() );
+        size.setWidth( size.height() * pm.size().width() / pm.size().height() );
       }
       else if ( size.width() > 0 && size.height() == 0 )
       {
-        size.setHeight( size.width() * pm->size().height() / pm->size().width() );
+        size.setHeight( size.width() * pm.size().height() / pm.size().width() );
       }
 
       if ( size.width() != 0 || size.height() != 0 )
