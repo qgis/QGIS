@@ -179,7 +179,7 @@ namespace QgsGuiUtils
       outputFileName += '.' + ext;
     }
 
-    return qMakePair<QString, QString>( outputFileName, ext );
+    return qMakePair( outputFileName, ext );
   }
 
   QString createFileFilter_( QString const &longName, QString const &glob )
