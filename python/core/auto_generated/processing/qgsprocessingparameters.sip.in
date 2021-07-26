@@ -255,6 +255,8 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterNumber;
     else if ( sipCpp->type() == QgsProcessingParameterDistance::typeName() )
       sipType = sipType_QgsProcessingParameterDistance;
+    else if ( sipCpp->type() == QgsProcessingParameterDuration::typeName() )
+      sipType = sipType_QgsProcessingParameterDuration;
     else if ( sipCpp->type() == QgsProcessingParameterScale::typeName() )
       sipType = sipType_QgsProcessingParameterScale;
     else if ( sipCpp->type() == QgsProcessingParameterRange::typeName() )
@@ -2256,6 +2258,63 @@ Sets the default distance ``unit`` for the parameter.
 .. seealso:: :py:func:`defaultUnit`
 
 .. versionadded:: 3.4.3
+%End
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+
+};
+
+class QgsProcessingParameterDuration : QgsProcessingParameterNumber
+{
+%Docstring(signature="appended")
+A double numeric parameter for duration values. The returned
+value will always be in milliseconds.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    explicit QgsProcessingParameterDuration( const QString &name, const QString &description = QString(),
+        const QVariant &defaultValue = QVariant(),
+        bool optional = false,
+        double minValue = -DBL_MAX + 1,
+        double maxValue = DBL_MAX );
+%Docstring
+Constructor for QgsProcessingParameterDuration.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+
+    virtual QgsProcessingParameterDuration *clone() const /Factory/;
+
+
+    virtual QString type() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+
+    QgsUnitTypes::TemporalUnit defaultUnit() const;
+%Docstring
+Returns the default duration unit for the parameter.
+
+.. seealso:: :py:func:`setDefaultUnit`
+%End
+
+    void setDefaultUnit( QgsUnitTypes::TemporalUnit unit );
+%Docstring
+Sets the default duration ``unit`` for the parameter.
+
+.. seealso:: :py:func:`defaultUnit`
 %End
 
     virtual QVariantMap toVariantMap() const;

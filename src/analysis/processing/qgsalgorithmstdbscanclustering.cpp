@@ -36,7 +36,7 @@ QString QgsStDbscanClusteringAlgorithm::shortDescription() const
 
 QStringList QgsStDbscanClusteringAlgorithm::tags() const
 {
-  return QObject::tr( "clustering,clusters,density,based,points,temporal,time,interval,distance" ).split( ',' );
+  return QObject::tr( "clustering,clusters,density,based,points,temporal,time,interval,duration,distance" ).split( ',' );
 }
 
 QString QgsStDbscanClusteringAlgorithm::group() const
@@ -61,8 +61,10 @@ void QgsStDbscanClusteringAlgorithm::initAlgorithm( const QVariantMap & )
                 QgsProcessingParameterNumber::Integer, 5, false, 1 ) );
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "EPS" ),
                 QObject::tr( "Maximum distance between clustered points" ), 1, QStringLiteral( "INPUT" ), false, 0 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "EPS2" ),
-                QObject::tr( "Maximum date/time interval (in days unit) between clustered points" ), QgsProcessingParameterNumber::Double, 1, false, 0 ) );
+  QgsProcessingParameterDuration *durationParameter = new QgsProcessingParameterDuration( QStringLiteral( "EPS2" ),
+      QObject::tr( "Maximum time duration between clustered points" ), 0, false, 0 );
+  durationParameter->setDefaultUnit( QgsUnitTypes::TemporalDays );
+  addParameter( durationParameter );
 
   auto dbscanStarParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "DBSCAN*" ),
                          QObject::tr( "Treat border points as noise (DBSCAN*)" ), false, true );

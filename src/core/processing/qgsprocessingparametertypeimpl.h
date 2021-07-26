@@ -1398,6 +1398,59 @@ class CORE_EXPORT QgsProcessingParameterTypeDistance : public QgsProcessingParam
 
 
 /**
+ * \brief A duration parameter for processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('duration')
+ * \since QGIS 3.22
+ */
+class CORE_EXPORT QgsProcessingParameterTypeDuration : public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterDuration( name );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A numeric parameter representing a duration measure." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Duration" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "duration" );
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterDuration" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterDuration" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "int" )
+             << QStringLiteral( "float" )
+             << QStringLiteral( "QgsProperty" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "A numeric value (unit type set by algorithms)" );
+    }
+};
+
+
+/**
  * \brief A scale parameter for processing algorithms.
  *
  * \ingroup core

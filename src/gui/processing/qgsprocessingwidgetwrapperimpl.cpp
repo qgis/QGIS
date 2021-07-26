@@ -201,6 +201,7 @@ QStringList QgsProcessingBooleanWidgetWrapper::compatibleParameterTypes() const
          << QgsProcessingParameterString::typeName()
          << QgsProcessingParameterNumber::typeName()
          << QgsProcessingParameterDistance::typeName()
+         << QgsProcessingParameterDuration::typeName()
          << QgsProcessingParameterScale::typeName()
          << QgsProcessingParameterFile::typeName()
          << QgsProcessingParameterField::typeName()
@@ -514,6 +515,7 @@ QStringList QgsProcessingStringWidgetWrapper::compatibleParameterTypes() const
          << QgsProcessingParameterAuthConfig::typeName()
          << QgsProcessingParameterNumber::typeName()
          << QgsProcessingParameterDistance::typeName()
+         << QgsProcessingParameterDuration::typeName()
          << QgsProcessingParameterScale::typeName()
          << QgsProcessingParameterFile::typeName()
          << QgsProcessingParameterField::typeName()
@@ -870,6 +872,7 @@ QStringList QgsProcessingNumericWidgetWrapper::compatibleParameterTypes() const
          << QgsProcessingParameterString::typeName()
          << QgsProcessingParameterNumber::typeName()
          << QgsProcessingParameterDistance::typeName()
+         << QgsProcessingParameterDuration::typeName()
          << QgsProcessingParameterScale::typeName();
 }
 
@@ -1184,6 +1187,165 @@ QVariant QgsProcessingDistanceWidgetWrapper::widgetValue() const
 QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingDistanceWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
 {
   return new QgsProcessingDistanceParameterDefinitionWidget( context, widgetContext, definition, algorithm );
+}
+
+
+//
+// QgsProcessingDurationWidgetWrapper
+//
+
+QgsProcessingDurationParameterDefinitionWidget::QgsProcessingDurationParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Minimum value" ) ) );
+  mMinLineEdit = new QLineEdit();
+  vlayout->addWidget( mMinLineEdit );
+
+  vlayout->addWidget( new QLabel( tr( "Maximum value" ) ) );
+  mMaxLineEdit = new QLineEdit();
+  vlayout->addWidget( mMaxLineEdit );
+
+  vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
+  mDefaultLineEdit = new QLineEdit();
+  vlayout->addWidget( mDefaultLineEdit );
+
+  vlayout->addWidget( new QLabel( tr( "Default unit type" ) ) );
+
+  mUnitsCombo = new QComboBox();
+  mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalMilliseconds ), QgsUnitTypes::TemporalMilliseconds );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalSeconds ), QgsUnitTypes::TemporalSeconds );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalMinutes ), QgsUnitTypes::TemporalMinutes );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalHours ), QgsUnitTypes::TemporalHours );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalDays ), QgsUnitTypes::TemporalDays );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalWeeks ), QgsUnitTypes::TemporalWeeks );
+  vlayout->addWidget( mUnitsCombo );
+
+  if ( const QgsProcessingParameterDuration *durationParam = dynamic_cast<const QgsProcessingParameterDuration *>( definition ) )
+  {
+    mMinLineEdit->setText( QLocale().toString( durationParam->minimum() ) );
+    mMaxLineEdit->setText( QLocale().toString( durationParam->maximum() ) );
+    mDefaultLineEdit->setText( durationParam->defaultValueForGui().toString() );
+    mUnitsCombo->setCurrentIndex( durationParam->defaultUnit() );
+  }
+
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingDurationParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  bool ok;
+  double val = QgsDoubleValidator::toDouble( mDefaultLineEdit->text(), &ok );
+
+  auto param = std::make_unique< QgsProcessingParameterDuration >( name, description, ok ? val : QVariant() );
+
+  val = QgsDoubleValidator::toDouble( mMinLineEdit->text(), &ok );
+  if ( ok )
+  {
+    param->setMinimum( val );
+  }
+
+  val = QgsDoubleValidator::toDouble( mMaxLineEdit->text(), &ok );
+  if ( ok )
+  {
+    param->setMaximum( val );
+  }
+
+  param->setDefaultUnit( static_cast<QgsUnitTypes::TemporalUnit >( mUnitsCombo->currentData().toInt() ) );
+
+  param->setFlags( flags );
+  return param.release();
+}
+
+QgsProcessingDurationWidgetWrapper::QgsProcessingDurationWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsProcessingNumericWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QString QgsProcessingDurationWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterDuration::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingDurationWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingDurationWidgetWrapper( parameter, type );
+}
+
+QWidget *QgsProcessingDurationWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterDuration *durationDef = static_cast< const QgsProcessingParameterDuration * >( parameterDefinition() );
+  mBaseUnit = durationDef->defaultUnit();
+
+  QWidget *spin = QgsProcessingNumericWidgetWrapper::createWidget();
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    {
+      mUnitsCombo = new QComboBox();
+
+      mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalMilliseconds ), QgsUnitTypes::TemporalMilliseconds );
+      mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalSeconds ), QgsUnitTypes::TemporalSeconds );
+      mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalMinutes ), QgsUnitTypes::TemporalMinutes );
+      mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalHours ), QgsUnitTypes::TemporalHours );
+      mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalDays ), QgsUnitTypes::TemporalDays );
+      mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalWeeks ), QgsUnitTypes::TemporalWeeks );
+
+      QHBoxLayout *layout = new QHBoxLayout();
+      layout->addWidget( spin, 1 );
+      layout->insertWidget( 1, mUnitsCombo );
+
+      QWidget *w = new QWidget();
+      layout->setContentsMargins( 0, 0, 0, 0 );
+      w->setLayout( layout );
+
+      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( mBaseUnit ) );
+      mUnitsCombo->show();
+
+      return w;
+    }
+
+    case QgsProcessingGui::Batch:
+    case QgsProcessingGui::Modeler:
+      return spin;
+
+  }
+  return nullptr;
+}
+
+QLabel *QgsProcessingDurationWidgetWrapper::createLabel()
+{
+  QLabel *label = QgsAbstractProcessingParameterWidgetWrapper::createLabel();
+
+  if ( type() == QgsProcessingGui::Modeler )
+  {
+    const QgsProcessingParameterDuration *durationDef = static_cast< const QgsProcessingParameterDuration * >( parameterDefinition() );
+    label->setText( QStringLiteral( "%1 [%2]" ).arg( label->text(), QgsUnitTypes::toString( durationDef->defaultUnit() ) ) );
+  }
+
+  return label;
+}
+
+QVariant QgsProcessingDurationWidgetWrapper::widgetValue() const
+{
+  const QVariant val = QgsProcessingNumericWidgetWrapper::widgetValue();
+  if ( val.type() == QVariant::Double && mUnitsCombo )
+  {
+    QgsUnitTypes::TemporalUnit displayUnit = static_cast<QgsUnitTypes::TemporalUnit >( mUnitsCombo->currentData().toInt() );
+    return val.toDouble() * QgsUnitTypes::fromUnitToUnitFactor( displayUnit, mBaseUnit );
+  }
+  else
+  {
+    return val;
+  }
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingDurationWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingDurationParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
 
 //

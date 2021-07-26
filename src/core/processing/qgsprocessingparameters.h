@@ -364,6 +364,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterNumber;
     else if ( sipCpp->type() == QgsProcessingParameterDistance::typeName() )
       sipType = sipType_QgsProcessingParameterDistance;
+    else if ( sipCpp->type() == QgsProcessingParameterDuration::typeName() )
+      sipType = sipType_QgsProcessingParameterDuration;
     else if ( sipCpp->type() == QgsProcessingParameterScale::typeName() )
       sipType = sipType_QgsProcessingParameterScale;
     else if ( sipCpp->type() == QgsProcessingParameterRange::typeName() )
@@ -2232,6 +2234,59 @@ class CORE_EXPORT QgsProcessingParameterDistance : public QgsProcessingParameter
 
     QString mParentParameterName;
     QgsUnitTypes::DistanceUnit mDefaultUnit = QgsUnitTypes::DistanceUnknownUnit;
+
+};
+
+/**
+ * \class QgsProcessingParameterDuration
+ * \ingroup core
+ * \brief A double numeric parameter for duration values. The returned
+ * value will always be in milliseconds.
+ * \since QGIS 3.22
+ */
+class CORE_EXPORT QgsProcessingParameterDuration : public QgsProcessingParameterNumber
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterDuration.
+     */
+    explicit QgsProcessingParameterDuration( const QString &name, const QString &description = QString(),
+        const QVariant &defaultValue = QVariant(),
+        bool optional = false,
+        double minValue = std::numeric_limits<double>::lowest() + 1,
+        double maxValue = std::numeric_limits<double>::max() );
+
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "duration" ); }
+
+    QgsProcessingParameterDuration *clone() const override SIP_FACTORY;
+
+    QString type() const override;
+    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
+
+    /**
+     * Returns the default duration unit for the parameter.
+     *
+     * \see setDefaultUnit()
+     */
+    QgsUnitTypes::TemporalUnit defaultUnit() const { return mDefaultUnit; }
+
+    /**
+     * Sets the default duration \a unit for the parameter.
+     *
+     * \see defaultUnit()
+     */
+    void setDefaultUnit( QgsUnitTypes::TemporalUnit unit ) { mDefaultUnit = unit; }
+
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+  private:
+
+    QgsUnitTypes::TemporalUnit mDefaultUnit = QgsUnitTypes::TemporalMilliseconds;
 
 };
 
