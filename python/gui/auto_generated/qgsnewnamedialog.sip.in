@@ -38,8 +38,11 @@ New dialog constructor.
 :param parent: parent widget
 :param flags: window flags
 
+.. note::
+
+   Earlier versions had a similar constructor but with extra arguments for ``regexp`` which were removed in QGIS 3.22 as they relied on the deprecated QRegExp class. Use :py:func:`~QgsNewNameDialog.setRegularExpression` instead.
+
 .. versionadded:: 3.22.
-which were removed in QGIS 3.22 as they relied on the deprecated QRegExp class. Use :py:func:`~QgsNewNameDialog.setRegularExpression` instead.
 %End
 
     void setHintString( const QString &hintString );
