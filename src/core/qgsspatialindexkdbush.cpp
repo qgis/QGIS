@@ -32,10 +32,12 @@ QgsSpatialIndexKDBush::QgsSpatialIndexKDBush( const QgsFeatureSource &source, Qg
 {
 }
 
+///@cond PRIVATE (avoid doxygen error)
 QgsSpatialIndexKDBush::QgsSpatialIndexKDBush( QgsFeatureIterator &fi, const std::function<bool ( const QgsFeature & )> &callback, QgsFeedback *feedback )
   : d( new QgsSpatialIndexKDBushPrivate( fi, callback, feedback ) )
 {
 }
+///@endcond
 
 QgsSpatialIndexKDBush::QgsSpatialIndexKDBush( const QgsSpatialIndexKDBush &other ): d( other.d )
 {
