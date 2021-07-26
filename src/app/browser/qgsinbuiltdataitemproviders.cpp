@@ -439,8 +439,14 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
       if ( !menu->isEmpty() )
         menu->addSeparator();
 
-      QAction *action = menu->addAction( tr( "File Properties…" ) );
-      connect( action, &QAction::triggered, this, [ = ]
+      QAction *showInFilesAction = menu->addAction( tr( "Show in Files" ) );
+      connect( showInFilesAction, &QAction::triggered, this, [ = ]
+      {
+        QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( item->path() );
+      } );
+
+      QAction *filePropertiesAction = menu->addAction( tr( "File Properties…" ) );
+      connect( filePropertiesAction, &QAction::triggered, this, [ = ]
       {
         QgsGui::nativePlatformInterface()->showFileProperties( item->path() );
       } );
