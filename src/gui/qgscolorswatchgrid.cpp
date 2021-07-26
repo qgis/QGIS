@@ -208,11 +208,11 @@ void QgsColorSwatchGrid::keyPressEvent( QKeyEvent *event )
   //handle keyboard navigation
   if ( event->key() == Qt::Key_Right )
   {
-    mCurrentFocusBox = std::min( mCurrentFocusBox + 1, mColors.length() - 1 );
+    mCurrentFocusBox = std::min< int >( mCurrentFocusBox + 1, mColors.length() - 1 );
   }
   else if ( event->key() == Qt::Key_Left )
   {
-    mCurrentFocusBox = std::max( mCurrentFocusBox - 1, 0 );
+    mCurrentFocusBox = std::max< int >( mCurrentFocusBox - 1, 0 );
   }
   else if ( event->key() == Qt::Key_Up )
   {
