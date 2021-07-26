@@ -206,6 +206,7 @@ class TestProcessingGui : public QObject
     void testNumericWrapperDouble();
     void testNumericWrapperInt();
     void testDistanceWrapper();
+    void testDurationWrapper();
     void testScaleWrapper();
     void testRangeWrapper();
     void testMatrixDialog();
@@ -2121,6 +2122,142 @@ void TestProcessingGui::testDistanceWrapper()
   QCOMPARE( static_cast< QgsProcessingParameterDistance * >( def.get() )->minimum(), 10.0 );
   QCOMPARE( static_cast< QgsProcessingParameterDistance * >( def.get() )->maximum(), 12.0 );
   QVERIFY( static_cast< QgsProcessingParameterDistance * >( def.get() )->parentParameterName().isEmpty() );
+}
+
+void TestProcessingGui::testDurationWrapper()
+{
+  QgsProcessingParameterDuration param( QStringLiteral( "duration" ), QStringLiteral( "duration" ) );
+
+  // standard wrapper
+  QgsProcessingDurationWidgetWrapper wrapper( &param );
+
+  QgsProcessingContext context;
+  QWidget *w = wrapper.createWrappedWidget( context );
+
+  QSignalSpy spy( &wrapper, &QgsProcessingDurationWidgetWrapper::widgetValueHasChanged );
+  wrapper.setWidgetValue( 55.5, context );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( wrapper.widgetValue().toDouble(), 55.5 );
+  QCOMPARE( wrapper.mDoubleSpinBox->value(), 55.5 );
+  wrapper.setWidgetValue( -34.0, context );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( wrapper.widgetValue().toDouble(), -34.0 );
+  QCOMPARE( wrapper.mDoubleSpinBox->value(), -34.0 );
+
+  QLabel *l = wrapper.createWrappedLabel();
+  QVERIFY( l );
+  QCOMPARE( l->text(), QStringLiteral( "duration" ) );
+  QCOMPARE( l->toolTip(), param.toolTip() );
+  delete l;
+
+  // check signal
+  wrapper.mDoubleSpinBox->setValue( 43.0 );
+  QCOMPARE( spy.count(), 3 );
+
+  // with default unit
+  QgsProcessingParameterDuration paramDefaultUnit( QStringLiteral( "dur" ), QStringLiteral( "dur" ) );
+  paramDefaultUnit.setDefaultUnit( QgsUnitTypes::TemporalDays );
+  QgsProcessingDurationWidgetWrapper wrapperDefaultUnit( &paramDefaultUnit, QgsProcessingGui::Standard );
+  w = wrapperDefaultUnit.createWrappedWidget( context );
+  w->show();
+  QCOMPARE( wrapperDefaultUnit.mUnitsCombo->currentText(), QgsUnitTypes::toString( QgsUnitTypes::TemporalDays ) );
+  delete w;
+
+  // with decimals
+  QgsProcessingParameterDuration paramDecimals( QStringLiteral( "num" ), QStringLiteral( "num" ), QVariant(), true, 1, 1.02 );
+  QVariantMap metadata;
+  QVariantMap wrapperMetadata;
+  wrapperMetadata.insert( QStringLiteral( "decimals" ), 2 );
+  metadata.insert( QStringLiteral( "widget_wrapper" ), wrapperMetadata );
+  paramDecimals.setMetadata( metadata );
+  QgsProcessingDurationWidgetWrapper wrapperDecimals( &paramDecimals, QgsProcessingGui::Standard );
+  w = wrapperDecimals.createWrappedWidget( context );
+  QCOMPARE( wrapperDecimals.mDoubleSpinBox->decimals(), 2 );
+  QCOMPARE( wrapperDecimals.mDoubleSpinBox->singleStep(), 0.01 ); // single step should never be less than set number of decimals
+  delete w;
+
+  // batch wrapper
+  QgsProcessingDurationWidgetWrapper wrapperB( &param, QgsProcessingGui::Batch );
+
+  w = wrapperB.createWrappedWidget( context );
+  QSignalSpy spy2( &wrapperB, &QgsProcessingDurationWidgetWrapper::widgetValueHasChanged );
+  wrapperB.setWidgetValue( 34, context );
+  QCOMPARE( spy2.count(), 1 );
+  QCOMPARE( wrapperB.widgetValue().toDouble(), 34.0 );
+  QCOMPARE( wrapperB.mDoubleSpinBox->value(), 34.0 );
+  wrapperB.setWidgetValue( -57, context );
+  QCOMPARE( spy2.count(), 2 );
+  QCOMPARE( wrapperB.widgetValue().toDouble(), -57.0 );
+  QCOMPARE( wrapperB.mDoubleSpinBox->value(), -57.0 );
+
+  // check signal
+  static_cast< QgsDoubleSpinBox * >( w )->setValue( 29 );
+  QCOMPARE( spy2.count(), 3 );
+
+  // should be no label in batch mode
+  QVERIFY( !wrapperB.createWrappedLabel() );
+  delete w;
+
+  // modeler wrapper
+  QgsProcessingDurationWidgetWrapper wrapperM( &param, QgsProcessingGui::Modeler );
+
+  w = wrapperM.createWrappedWidget( context );
+  QSignalSpy spy3( &wrapperM, &QgsProcessingDurationWidgetWrapper::widgetValueHasChanged );
+  wrapperM.setWidgetValue( 29, context );
+  QCOMPARE( wrapperM.widgetValue().toDouble(), 29.0 );
+  QCOMPARE( spy3.count(), 1 );
+  QCOMPARE( wrapperM.mDoubleSpinBox->value(), 29.0 );
+  wrapperM.setWidgetValue( -29, context );
+  QCOMPARE( wrapperM.widgetValue().toDouble(), -29.0 );
+  QCOMPARE( spy3.count(), 2 );
+  QCOMPARE( wrapperM.mDoubleSpinBox->value(), -29.0 );
+
+  // check signal
+  wrapperM.mDoubleSpinBox->setValue( 33 );
+  QCOMPARE( spy3.count(), 3 );
+
+  // should be a label in modeler mode which includes a unit type string
+  l = wrapperM.createWrappedLabel();
+  QVERIFY( l );
+  QCOMPARE( l->text(), QStringLiteral( "duration [milliseconds]" ) );
+  QCOMPARE( l->toolTip(), param.toolTip() );
+  delete w;
+  delete l;
+
+  // config widget
+  QgsProcessingParameterWidgetContext widgetContext;
+  std::unique_ptr< QgsProcessingParameterDefinitionWidget > widget = std::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "duration" ), context, widgetContext );
+  std::unique_ptr< QgsProcessingParameterDefinition > def( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) ); // should default to mandatory
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+
+  // using a parameter definition as initial values
+  QgsProcessingParameterDuration durParam( QStringLiteral( "n" ), QStringLiteral( "test desc" ), 1 );
+  durParam.setMinimum( 1 );
+  durParam.setMaximum( 100 );
+  widget = std::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "duration" ), context, widgetContext, &durParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QCOMPARE( static_cast< QgsProcessingParameterDuration * >( def.get() )->defaultValue().toDouble(), 1.0 );
+  QCOMPARE( static_cast< QgsProcessingParameterDuration * >( def.get() )->minimum(), 1.0 );
+  QCOMPARE( static_cast< QgsProcessingParameterDuration * >( def.get() )->maximum(), 100.0 );
+  durParam.setFlags( QgsProcessingParameterDefinition::FlagAdvanced | QgsProcessingParameterDefinition::FlagOptional );
+  durParam.setMinimum( 10 );
+  durParam.setMaximum( 12 );
+  durParam.setDefaultValue( 11.5 );
+  widget = std::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "duration" ), context, widgetContext, &durParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagOptional );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
+  QCOMPARE( static_cast< QgsProcessingParameterDuration * >( def.get() )->defaultValue().toDouble(), 11.5 );
+  QCOMPARE( static_cast< QgsProcessingParameterDuration * >( def.get() )->minimum(), 10.0 );
+  QCOMPARE( static_cast< QgsProcessingParameterDuration * >( def.get() )->maximum(), 12.0 );
 }
 
 void TestProcessingGui::testScaleWrapper()
