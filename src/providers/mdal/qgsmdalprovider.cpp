@@ -1030,16 +1030,36 @@ bool QgsMdalProviderMetadata::createMeshData( const QgsMesh &mesh, const QString
 
 QVariantMap QgsMdalProviderMetadata::decodeUri( const QString &uri ) const
 {
-  const QString path = uri;
   QVariantMap uriComponents;
-  uriComponents.insert( QStringLiteral( "path" ), path );
+
+  const QRegularExpression layerRegex( QStringLiteral( "^([a-zA-Z0-9]+?):\"(.*)\":([a-zA-Z0-9]+?)$" ) );
+  const QRegularExpressionMatch layerNameMatch = layerRegex.match( uri );
+  if ( layerNameMatch.hasMatch() )
+  {
+    uriComponents.insert( QStringLiteral( "driver" ), layerNameMatch.captured( 1 ) );
+    uriComponents.insert( QStringLiteral( "path" ), layerNameMatch.captured( 2 ) );
+    uriComponents.insert( QStringLiteral( "layerName" ), layerNameMatch.captured( 3 ) );
+  }
+  else
+  {
+    uriComponents.insert( QStringLiteral( "path" ), uri );
+  }
+
   return uriComponents;
 }
 
 QString QgsMdalProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
-  const QString path = parts.value( QStringLiteral( "path" ) ).toString();
-  return path;
+  if ( !parts.value( QStringLiteral( "layerName" ) ).toString().isEmpty() )
+  {
+    return QStringLiteral( "%1:\"%2\":%3" ).arg( parts.value( QStringLiteral( "driver" ) ).toString(),
+           parts.value( QStringLiteral( "path" ) ).toString(),
+           parts.value( QStringLiteral( "layerName" ) ).toString() );
+  }
+  else
+  {
+    return parts.value( QStringLiteral( "path" ) ).toString();
+  }
 }
 
 QgsProviderMetadata::ProviderCapabilities QgsMdalProviderMetadata::providerCapabilities() const

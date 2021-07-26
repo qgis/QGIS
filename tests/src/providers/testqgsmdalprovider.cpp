@@ -45,6 +45,7 @@ class TestQgsMdalProvider : public QObject
 
     void load();
     void filters();
+    void encodeDecodeUri();
 
   private:
     QString mTestDataDir;
@@ -85,6 +86,24 @@ void TestQgsMdalProvider::filters()
   QVERIFY( datasetFilters.contains( "*.dat" ) );
 }
 
+void TestQgsMdalProvider::encodeDecodeUri()
+{
+  QgsProviderMetadata *mdalMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "mdal" ) );
+
+  // simple file uri
+  QVariantMap parts = mdalMetadata->decodeUri( QStringLiteral( "/home/data/test.nc" ) );
+  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QStringLiteral( "/home/data/test.nc" ) );
+  QCOMPARE( parts.value( QStringLiteral( "driver" ) ).toString(), QString() );
+  QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString() );
+  QCOMPARE( mdalMetadata->encodeUri( parts ), QStringLiteral( "/home/data/test.nc" ) );
+
+  // uri with layer name
+  parts = mdalMetadata->decodeUri( QStringLiteral( "netcdf:\"/home/data/test.nc\":layer3" ) );
+  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QStringLiteral( "/home/data/test.nc" ) );
+  QCOMPARE( parts.value( QStringLiteral( "driver" ) ).toString(), QStringLiteral( "netcdf" ) );
+  QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QStringLiteral( "layer3" ) );
+  QCOMPARE( mdalMetadata->encodeUri( parts ), QStringLiteral( "netcdf:\"/home/data/test.nc\":layer3" ) );
+}
 
 void TestQgsMdalProvider::load()
 {
