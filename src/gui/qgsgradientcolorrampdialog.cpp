@@ -41,6 +41,8 @@
 #include <qwt_plot_layout.h>
 #include <qwt_symbol.h>
 #include <qwt_legend.h>
+#include <qwt_scale_div.h>
+#include <qwt_scale_map.h>
 
 QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRamp &ramp, QWidget *parent )
   : QDialog( parent )
