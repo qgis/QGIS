@@ -695,7 +695,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         vl.dataProvider().createSpatialIndex()
         self.assertEqual(vl.hasSpatialIndex(), QgsFeatureSource.SpatialIndexPresent)
 
-    def testClone(self):
+    def testCloneId(self):
         """Test that a cloned layer has a single new id and
         the same fields as the source layer"""
 
@@ -709,7 +709,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
                                           QgsField("size", QVariant.Double)]))
         vl2 = vl.clone()
         self.assertTrue(
-            'memory?geometry=Point&crs=EPSG:4326&field=name:(0,0)&field=age:(0,0)&field=size:(0,0)' in vl2.publicSource())
+            'memory?geometry=Point&crs=EPSG:4326&field=name:string(0,0)&field=age:integer(0,0)&field=size:double(0,0)' in vl2.publicSource())
         self.assertEqual(len(parse_qs(vl.publicSource())['uid']), 1)
         self.assertEqual(len(parse_qs(vl2.publicSource())['uid']), 1)
         self.assertNotEqual(parse_qs(vl2.publicSource())['uid'][0], parse_qs(vl.publicSource())['uid'][0])
