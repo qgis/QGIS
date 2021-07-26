@@ -84,7 +84,7 @@ void QgsAddIncrementalFieldAlgorithm::initParameters( const QVariantMap & )
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "START" ), QObject::tr( "Start values at" ),
                 QgsProcessingParameterNumber::Integer, 0, true ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MODULUS" ), QObject::tr( "Modulus value" ),
-                QgsProcessingParameterNumber::Integer, 0, true ) );
+                QgsProcessingParameterNumber::Integer, QVariant( 0 ), true ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "GROUP_FIELDS" ), QObject::tr( "Group values by" ), QVariant(),
                 QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, true, true ) );
 
