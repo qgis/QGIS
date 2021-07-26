@@ -1077,8 +1077,11 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
   if ( uri.isEmpty() )
     return {};
 
-  // get suffix, removing .gz if present
-  const QFileInfo info( uri );
+  const QVariantMap uriParts = decodeUri( uri );
+  const QString path = uriParts.value( QStringLiteral( "path" ), uri ).toString();
+  const QString layerName = uriParts.value( QStringLiteral( "layerName" ) ).toString();
+
+  const QFileInfo info( path );
 
   if ( info.isDir() )
     return {};
@@ -1111,13 +1114,13 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
     details.setType( QgsMapLayerType::MeshLayer );
     details.setProviderKey( QStringLiteral( "mdal" ) );
     details.setUri( uri );
-    details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( uri ) );
+    details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( path ) );
     // treat all mesh files as potentially being containers (is this correct?)
     details.setSkippedContainerScan( true );
     return {details};
   }
 
-  const QStringList meshNames = QString( MDAL_MeshNames( uri.toUtf8() ) ).split( QStringLiteral( ";;" ) );
+  const QStringList meshNames = QString( MDAL_MeshNames( path.toUtf8() ) ).split( QStringLiteral( ";;" ) );
 
   QList<QgsProviderSublayerDetails> res;
   res.reserve( meshNames.size() );
@@ -1127,18 +1130,24 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
     if ( layerUri.isEmpty() )
       continue;
 
+    const QVariantMap layerUriParts = decodeUri( layerUri );
+    //if an explicit layer name was included in the original uri, we only keep that layer in the results
+    if ( !layerName.isEmpty() && layerUriParts.value( QStringLiteral( "layerName" ) ).toString() != layerName )
+      continue;
+
     QgsProviderSublayerDetails details;
     details.setUri( layerUri );
     details.setProviderKey( QStringLiteral( "mdal" ) );
     details.setType( QgsMapLayerType::MeshLayer );
     details.setLayerNumber( layerIndex );
+    details.setDriverName( layerUriParts.value( QStringLiteral( "driver" ) ).toString() );
 
     // strip the driver name and path from the MDAL uri to get the layer name
-    details.setName( layerUri.mid( layerUri.indexOf( uri ) + uri.length() + 2 ) );
+    details.setName( layerUriParts.value( QStringLiteral( "layerName" ) ).toString() );
     if ( details.name().isEmpty() )
     {
       // use file name as layer name if no layer name available from mdal
-      details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( uri ) );
+      details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( path ) );
     }
 
     res << details;
