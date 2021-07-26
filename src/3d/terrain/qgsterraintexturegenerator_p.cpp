@@ -39,6 +39,15 @@ int QgsTerrainTextureGenerator::render( const QgsRectangle &extent, QgsChunkNode
   QgsMapSettings mapSettings( baseMapSettings() );
   mapSettings.setExtent( extent );
 
+  QList<QgsMapLayer *> layers = mMap.layers();
+  QList<QgsMapLayer *> toBeRenderedLayers;
+  for ( QgsMapLayer *l : layers )
+  {
+    if ( l->renderLayerTo3dTerrain() )
+      toBeRenderedLayers.push_back( l );
+  }
+  mapSettings.setLayers( toBeRenderedLayers );
+
   QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, QStringLiteral( "3D" ), QStringLiteral( "Texture" ), tileId.text() );
 
   QgsMapRendererSequentialJob *job = new QgsMapRendererSequentialJob( mapSettings );

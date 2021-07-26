@@ -40,10 +40,13 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
     double maximumScreenError() const;
 
     void setShowBoundingBoxes( bool showBoundingBoxes );
-    double showBoundingBoxes() const;
+    bool showBoundingBoxes() const;
 
     void setPointBudget( double budget );
     double pointBudget() const;
+
+    void setRenderLayerTo3dTerrain( bool renderTo3dTerrain );
+    bool renderLayerTo3dTerrain() const;
 
     void setPointCloudSize( int size );
 

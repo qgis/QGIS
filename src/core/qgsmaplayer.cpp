@@ -397,6 +397,8 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   setRefreshOnNofifyMessage( layerElement.attribute( QStringLiteral( "refreshOnNotifyMessage" ), QString() ) );
   setRefreshOnNotifyEnabled( layerElement.attribute( QStringLiteral( "refreshOnNotifyEnabled" ), QStringLiteral( "0" ) ).toInt() );
 
+  setRenderLayerTo3dTerrain( layerElement.attribute( QStringLiteral( "renderLayerTo3dTerrain" ), QStringLiteral( "1" ) ).toInt() );
+
   // geographic extent is read only if necessary
   if ( mReadFlags & QgsMapLayer::ReadFlag::FlagTrustLayerMetadata )
   {
@@ -444,6 +446,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   layerElement.setAttribute( QStringLiteral( "refreshOnNotifyEnabled" ),  mIsRefreshOnNofifyEnabled ? 1 : 0 );
   layerElement.setAttribute( QStringLiteral( "refreshOnNotifyMessage" ),  mRefreshOnNofifyMessage );
 
+  layerElement.setAttribute( QStringLiteral( "renderLayerTo3dTerrain" ),  mRenderTo3dTerrain );
 
   // ID
   QDomElement layerId = document.createElement( QStringLiteral( "id" ) );
@@ -2000,7 +2003,6 @@ void QgsMapLayer::triggerRepaint( bool deferredUpdate )
 {
   if ( mRepaintRequestedFired )
     return;
-
   mRepaintRequestedFired = true;
   emit repaintRequested( deferredUpdate );
   mRepaintRequestedFired = false;
@@ -2273,4 +2275,12 @@ QString QgsMapLayer::crsHtmlMetadata() const
 
   metadata += QLatin1String( "</table>\n<br><br>\n" );
   return metadata;
+}
+
+void QgsMapLayer::setRenderLayerTo3dTerrain( bool renderTo3dTerrain )
+{
+  if ( mRenderTo3dTerrain == renderTo3dTerrain )
+    return;
+  mRenderTo3dTerrain = renderTo3dTerrain;
+  emit repaintRequested();
 }

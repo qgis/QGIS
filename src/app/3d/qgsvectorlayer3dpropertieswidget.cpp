@@ -27,6 +27,7 @@ QgsVectorLayer3DPropertiesWidget::QgsVectorLayer3DPropertiesWidget( QWidget *par
 
   connect( chkShowBoundingBoxes, &QCheckBox::clicked, this, &QgsVectorLayer3DPropertiesWidget::changed );
   connect( spinZoomLevelsCount, qOverload<int>( &QSpinBox::valueChanged ), this, &QgsVectorLayer3DPropertiesWidget::changed );
+  connect( mRenderTo3dTerrainCheckBox, &QCheckBox::clicked, this, &QgsVectorLayer3DPropertiesWidget::changed );
 }
 
 void QgsVectorLayer3DPropertiesWidget::load( QgsAbstractVectorLayer3DRenderer *renderer )
@@ -41,4 +42,14 @@ void QgsVectorLayer3DPropertiesWidget::apply( QgsAbstractVectorLayer3DRenderer *
   tilingSettings.setZoomLevelsCount( spinZoomLevelsCount->value() );
   tilingSettings.setShowBoundingBoxes( chkShowBoundingBoxes->isChecked() );
   renderer->setTilingSettings( tilingSettings );
+}
+
+bool QgsVectorLayer3DPropertiesWidget::renderLayerTo3dTerrain() const
+{
+  return mRenderTo3dTerrainCheckBox->isChecked();
+}
+
+void QgsVectorLayer3DPropertiesWidget::setRenderLayerTo3dTerrain( bool renderTo3dTerrain )
+{
+  mRenderTo3dTerrainCheckBox->setChecked( renderTo3dTerrain );
 }
