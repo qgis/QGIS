@@ -100,6 +100,19 @@ and contains accessors for useful objects like the application message bar.
 The base class method has no effect.
 %End
 
+    virtual int precedenceWhenPopulatingMenus() const;
+%Docstring
+Returns the provider's precedence to use when populating context menus via calls to :py:func:`~QgsDataItemGuiProvider.populateContextMenu`.
+
+Providers which return larger values will be called AFTER other providers when the menu is being populated.
+This allows them to nicely insert their corresponding menu items in the desired location with respect to
+existing items added by other providers.
+
+The default implementation returns 0.
+
+.. versionadded:: 3.22
+%End
+
     virtual bool rename( QgsDataItem *item, const QString &name, QgsDataItemGuiContext context );
 %Docstring
 Sets a new ``name`` for the item, and returns ``True`` if the item was successfully renamed.

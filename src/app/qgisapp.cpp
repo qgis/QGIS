@@ -1222,6 +1222,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mTemporalControllerWidget->setMapCanvas( mMapCanvas );
 
   QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsAppDirectoryItemGuiProvider() );
+  QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsAppFileItemGuiProvider() );
   QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsProjectHomeItemGuiProvider() );
   QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsProjectItemGuiProvider() );
   QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsFavoritesItemGuiProvider() );

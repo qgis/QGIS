@@ -43,6 +43,11 @@ void QgsDataItemGuiProvider::populateContextMenu( QgsDataItem *, QMenu *, const 
 
 }
 
+int QgsDataItemGuiProvider::precedenceWhenPopulatingMenus() const
+{
+  return 0;
+}
+
 bool QgsDataItemGuiProvider::rename( QgsDataItem *, const QString &, QgsDataItemGuiContext )
 {
   return false;
