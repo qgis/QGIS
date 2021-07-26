@@ -26,6 +26,7 @@
 #include "qgsproviderutils.h"
 
 #include <QFileInfo>
+#include <QRegularExpression>
 #include <mutex>
 
 const QString QgsMdalProvider::MDAL_PROVIDER_KEY = QStringLiteral( "mdal" );
