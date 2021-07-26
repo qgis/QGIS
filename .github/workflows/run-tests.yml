@@ -282,6 +282,9 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    needs: build
+    if: always()
+
     strategy:
       matrix:
         distro-version: [20.04]
@@ -308,8 +311,6 @@ jobs:
         image: kennethreitz/httpbin:latest
         ports:
           - 8082:80
-
-    needs: build
 
     steps:
 
