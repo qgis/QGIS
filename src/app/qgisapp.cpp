@@ -6531,8 +6531,8 @@ void QgisApp::showRasterCalculator()
     }
 
     addRasterLayer( QgsRasterDataProvider::encodeVirtualRasterProviderUri( virtualCalcParams ),
-                    //QFileInfo( d.outputFile() ).completeBaseName(),
-                    QStringLiteral( "virtuallayer" ),
+                    //QStringLiteral( "virtuallayer" ),
+                    d.virtualLayerName() == QStringLiteral( "" ) ? d.formulaString() : d.virtualLayerName(),
                     QStringLiteral( "virtualrasterprovider" ) );
   }
   else

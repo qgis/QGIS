@@ -44,6 +44,8 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     bool addLayerToProject() const;
     //true if Virtual is checked
     bool useVirtualProvider() const;
+    //return the name written in the qlineedit
+    QString virtualLayerName() const;
 
     //! Bounding box for output raster
     QgsRectangle outputRectangle() const;
