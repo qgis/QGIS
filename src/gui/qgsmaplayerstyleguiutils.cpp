@@ -18,6 +18,7 @@
 #include <QAction>
 #include <QInputDialog>
 #include <QMenu>
+#include <QActionGroup>
 
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
