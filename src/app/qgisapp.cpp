@@ -6513,13 +6513,13 @@ void QgisApp::showRasterCalculator()
     virtualCalcParams.height = d.numberOfRows();
     virtualCalcParams.formula = d.formulaString();
 
-    QMultiHash<QString, QString> rLayerDictionary = QgsRasterCalcNode::referencedLayerNames( d.formulaString() );
+    QStringList rLayerDictionary = QgsRasterCalcNode::referencedLayerNames( d.formulaString() );
     QSet<QString> uniqueRasterUriTmp;
 
     for ( const auto &r : QgsRasterCalculatorEntry::rasterEntries() )
     {
 
-      if ( ( ! rLayerDictionary.keys().contains( r.raster->name() ) ) || uniqueRasterUriTmp.contains( r.raster->publicSource() ) ) continue;
+      if ( ( ! rLayerDictionary.contains( r.raster->name() ) ) || uniqueRasterUriTmp.contains( r.raster->publicSource() ) ) continue;
       uniqueRasterUriTmp.insert( r.raster->publicSource() );
 
       QgsRasterDataProvider::InputLayers projectRLayer;

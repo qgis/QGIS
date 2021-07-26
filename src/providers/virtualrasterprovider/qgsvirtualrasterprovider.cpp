@@ -68,13 +68,23 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
     return;
   }
 
-  QMultiHash<QString, QString> rLayerDict = QgsRasterCalcNode::referencedLayerNames( mFormulaString );
+  QStringList rLayerDict = QgsRasterCalcNode::referencedLayerNames( mFormulaString );
+
+  QStringList rasterRefs;
+  const QList<const QgsRasterCalcNode *> rasterRefNodes = mCalcNode->findNodes( QgsRasterCalcNode::Type::tRasterRef );
+  for ( const QgsRasterCalcNode *r : rasterRefNodes )
+  {
+    QString layerRef( r->toString().remove( 0, 1 ) );
+
+    layerRef.chop( 1 );
+    rasterRefs << layerRef;
+  }
 
   QList<InputLayers>::iterator it;
   for ( it = decodedUriParams.rInputLayers.begin(); it != decodedUriParams.rInputLayers.end(); ++it )
   {
 
-    if ( ! rLayerDict.keys().contains( it->name ) )
+    if ( ! rLayerDict.contains( it->name ) )
     {
       mValid = false;
       return;
@@ -98,7 +108,7 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
 
     for ( int j = 0; j < rProvidedLayer->bandCount(); ++j )
     {
-      if ( ! rLayerDict.values().contains( rProvidedLayer->name() + QStringLiteral( "@" ) + QString::number( j + 1 ) ) )
+      if ( ! rasterRefs.contains( rProvidedLayer->name() % QStringLiteral( "@" ) % QString::number( j + 1 ) ) )
       {
         continue;
       }
