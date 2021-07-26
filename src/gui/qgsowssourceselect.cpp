@@ -53,6 +53,7 @@
 #include <QValidator>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QRegularExpression>
 
 QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
@@ -178,7 +179,7 @@ void QgsOWSSourceSelect::populateFormats()
   {
     QString format = layersFormats.value( i );
     QgsDebugMsg( "server format = " + format );
-    QString simpleFormat = format.toLower().remove( QStringLiteral( "image/" ) ).remove( QRegExp( "_.*" ) );
+    QString simpleFormat = format.toLower().remove( QStringLiteral( "image/" ) ).remove( QRegularExpression( "_.*" ) );
     QgsDebugMsg( "server simpleFormat = " + simpleFormat );
     QString mimeFormat = "image/" + formatsMap.value( simpleFormat );
     QgsDebugMsg( "server mimeFormat = " + mimeFormat );

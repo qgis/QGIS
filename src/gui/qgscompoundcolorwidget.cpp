@@ -31,6 +31,7 @@
 #include <QScreen>
 #include <QInputDialog>
 #include <QVBoxLayout>
+#include <QRegularExpression>
 
 QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &color, Layout widgetLayout )
   : QgsPanelWidget( parent )
@@ -444,9 +445,9 @@ QgsUserColorScheme *QgsCompoundColorWidget::createNewUserPalette( QWidget *paren
     return nullptr;
   }
 
-//generate file name for new palette
+  //generate file name for new palette
   QDir palettePath( gplFilePath() );
-  QRegExp badChars( "[,^@={}\\[\\]~!?:&*\"|#%<>$\"'();`' /\\\\]" );
+  const thread_local QRegularExpression badChars( "[,^@={}\\[\\]~!?:&*\"|#%<>$\"'();`' /\\\\]" );
   QString filename = name.simplified().toLower().replace( badChars, QStringLiteral( "_" ) );
   if ( filename.isEmpty() )
   {
