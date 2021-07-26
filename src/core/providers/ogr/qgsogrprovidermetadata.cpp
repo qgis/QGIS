@@ -1162,6 +1162,17 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
   if ( originalUriLayerIdWasSpecified )
     layerId = uriLayerId;
 
+  QgsWkbTypes::Type originalGeometryTypeFilter = QgsWkbTypes::Unknown;
+  bool originalUriGeometryTypeWasSpecified = false;
+  const QString originalGeometryTypeString = uriParts.value( QStringLiteral( "geometryType" ) ).toString();
+  if ( !originalGeometryTypeString.isEmpty() )
+  {
+    originalGeometryTypeFilter = QgsOgrUtils::ogrGeometryTypeToQgsWkbType(
+                                   QgsOgrProviderUtils::ogrWkbGeometryTypeFromName( originalGeometryTypeString )
+                                 );
+    originalUriGeometryTypeWasSpecified = true;
+  }
+
   QString errCause;
 
   QVariantMap firstLayerUriParts;
@@ -1226,6 +1237,13 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
   for ( int i = 0; i < res.count(); ++i )
   {
     QVariantMap parts = decodeUri( res.at( i ).uri() );
+    if ( originalUriGeometryTypeWasSpecified && res.at( i ).wkbType() == QgsWkbTypes::Unknown )
+    {
+      res[ i ].setWkbType( originalGeometryTypeFilter );
+      parts.insert( QStringLiteral( "geometryType" ), originalGeometryTypeString );
+      res[i].setUri( encodeUri( parts ) );
+    }
+
     if ( !parts.value( QStringLiteral( "layerName" ) ).toString().isEmpty() ||
          !parts.value( QStringLiteral( "layerId" ) ).toString().isEmpty() )
       continue;
@@ -1260,10 +1278,19 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
 
   if ( originalUriLayerIdWasSpecified )
   {
-    // remove non-matching, unwanted layers
+    // remove non-matching, unwanted layers by layer id
     res.erase( std::remove_if( res.begin(), res.end(), [ = ]( const QgsProviderSublayerDetails & sublayer )
     {
       return sublayer.layerNumber() != uriLayerId;
+    } ), res.end() );
+  }
+
+  if ( originalUriGeometryTypeWasSpecified )
+  {
+    // remove non-matching, unwanted layers by geometry type
+    res.erase( std::remove_if( res.begin(), res.end(), [ = ]( const QgsProviderSublayerDetails & sublayer )
+    {
+      return sublayer.wkbType() != originalGeometryTypeFilter;
     } ), res.end() );
   }
 
