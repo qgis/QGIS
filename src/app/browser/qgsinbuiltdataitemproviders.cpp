@@ -418,6 +418,43 @@ void QgsAppDirectoryItemGuiProvider::showProperties( QgsDirectoryItem *item, Qgs
 
 
 //
+// QgsAppFileItemGuiProvider
+//
+
+QString QgsAppFileItemGuiProvider::name()
+{
+  return QStringLiteral( "file_items" );
+}
+
+void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
+{
+  if ( !( item->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile ) )
+    return;
+
+
+  if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeFilePropertiesDialog )
+  {
+    if ( QFileInfo::exists( item->path() ) )
+    {
+      if ( !menu->isEmpty() )
+        menu->addSeparator();
+
+      QAction *action = menu->addAction( tr( "File Properties…" ) );
+      connect( action, &QAction::triggered, this, [ = ]
+      {
+        QgsGui::nativePlatformInterface()->showFileProperties( item->path() );
+      } );
+    }
+  }
+}
+
+int QgsAppFileItemGuiProvider::precedenceWhenPopulatingMenus() const
+{
+  // we want this provider to be called last -- file items should naturally always appear at the bottom of the menu.
+  return std::numeric_limits< int >::max();
+}
+
+//
 // QgsProjectHomeItemGuiProvider
 //
 
@@ -626,18 +663,6 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
     showPropertiesForItem( layerItem, context );
   } );
   menu->addAction( propertiesAction );
-
-  if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeFilePropertiesDialog )
-  {
-    if ( QFileInfo::exists( item->path() ) )
-    {
-      QAction *action = menu->addAction( tr( "File Properties…" ) );
-      connect( action, &QAction::triggered, this, [ = ]
-      {
-        QgsGui::nativePlatformInterface()->showFileProperties( item->path() );
-      } );
-    }
-  }
 }
 
 bool QgsLayerItemGuiProvider::handleDoubleClick( QgsDataItem *item, QgsDataItemGuiContext )
@@ -788,15 +813,6 @@ void QgsProjectItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
       }
     } );
     menu->addAction( extractAction );
-
-    if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeFilePropertiesDialog )
-    {
-      QAction *action = menu->addAction( tr( "File Properties…" ) );
-      connect( action, &QAction::triggered, this, [projectPath]
-      {
-        QgsGui::nativePlatformInterface()->showFileProperties( projectPath );
-      } );
-    }
   }
 }
 

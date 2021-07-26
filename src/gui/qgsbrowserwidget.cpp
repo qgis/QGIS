@@ -258,8 +258,12 @@ void QgsBrowserWidget::showContextMenu( QPoint pt )
 
   QgsDataItemGuiContext context = createContext();
 
-  const QList< QgsDataItemGuiProvider * > providers = QgsGui::instance()->dataItemGuiProviderRegistry()->providers();
-  for ( QgsDataItemGuiProvider *provider : providers )
+  QList< QgsDataItemGuiProvider * > providers = QgsGui::instance()->dataItemGuiProviderRegistry()->providers();
+  std::sort( providers.begin(), providers.end(), []( QgsDataItemGuiProvider * a, QgsDataItemGuiProvider * b )
+  {
+    return a->precedenceWhenPopulatingMenus() < b->precedenceWhenPopulatingMenus();
+  } );
+  for ( QgsDataItemGuiProvider *provider : std::as_const( providers ) )
   {
     provider->populateContextMenu( item, menu, selectedItems, context );
   }
