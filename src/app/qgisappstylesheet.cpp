@@ -163,7 +163,7 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
                              "    color: white;"
                              "    padding: %1px;"
                              "}"
-                             "QTreeView#mOptionsTreeView::item::selected {"
+                             "QTreeView#mOptionsTreeView::item::selected, QTreeView#mOptionsTreeView::branch::selected {"
                              "    color: black;"
                              "    background-color:palette(Window);"
                              "    padding-right: 0px;"
