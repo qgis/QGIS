@@ -100,7 +100,8 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
       //! Constructor for TabInformation
       TabInformation() = default;
 
-      bool operator ==( const TabInformation &other );
+      bool operator ==( const TabInformation &other ) const;
+      bool operator !=( const TabInformation &other ) const;
 
       int sourceIndex = -1;
       QWidget *widget = nullptr;
