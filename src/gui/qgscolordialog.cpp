@@ -27,7 +27,6 @@
 #include <QToolButton>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QDesktopWidget>
 #include <QMouseEvent>
 #include <QInputDialog>
 
