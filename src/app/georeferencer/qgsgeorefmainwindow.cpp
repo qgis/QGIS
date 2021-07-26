@@ -450,11 +450,11 @@ void QgsGeoreferencerMainWindow::doGeoreference()
       {
         if ( mModifiedFileName.isEmpty() )
         {
-          QgisApp::instance()->addRasterLayer( mFileName, QFileInfo( mFileName ).completeBaseName() );
+          QgisApp::instance()->addRasterLayer( mFileName, QFileInfo( mFileName ).completeBaseName(), QStringLiteral( "gdal" ) );
         }
         else
         {
-          QgisApp::instance()->addRasterLayer( mModifiedFileName, QFileInfo( mModifiedFileName ).completeBaseName() );
+          QgisApp::instance()->addRasterLayer( mModifiedFileName, QFileInfo( mModifiedFileName ).completeBaseName(), QStringLiteral( "gdal" ) );
         }
       }
       else if ( mDataType == QgsMapLayerType::VectorLayer )
