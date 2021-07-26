@@ -130,29 +130,36 @@ QVariantMap QgsDbscanClusteringAlgorithm::processAlgorithm( const QVariantMap &p
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  // build spatial index
-  feedback->pushInfo( QObject::tr( "Building spatial index" ) );
-  QgsSpatialIndexKDBush index( *source, feedback );
-  if ( feedback->isCanceled() )
-    return QVariantMap();
+  QgsFeatureRequest indexRequest;
 
   std::unordered_map< QgsFeatureId, QDateTime> idToDateTime;
   const QString dateTimeFieldName = parameterAsString( parameters, QStringLiteral( "DATETIME_FIELD" ), context );
+  int dateTimefieldIndex = -1;
   if ( !dateTimeFieldName.isEmpty() )
   {
-    const int dateTimefieldIndex = source->fields().lookupField( dateTimeFieldName );
+    dateTimefieldIndex = source->fields().lookupField( dateTimeFieldName );
     if ( dateTimefieldIndex == -1 )
       throw QgsProcessingException( QObject::tr( "Datetime field missing" ) );
 
-    // fetch temporal values
-    feedback->pushInfo( QObject::tr( "Fetching temporal values" ) );
-    QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() << dateTimefieldIndex ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
-    QgsFeature feature;
-    while ( features.nextFeature( feature ) )
-    {
-      idToDateTime[ feature.id() ] = feature.attributes().at( dateTimefieldIndex ).toDateTime();
-    }
+    indexRequest.setSubsetOfAttributes( QgsAttributeList() << dateTimefieldIndex );
   }
+  else
+  {
+    indexRequest.setNoAttributes();
+  }
+
+  // build spatial index, also collecting feature datetimes if required
+  feedback->pushInfo( QObject::tr( "Building spatial index" ) );
+  QgsFeatureIterator indexIterator = source->getFeatures( indexRequest );
+  QgsSpatialIndexKDBush index( indexIterator, [&idToDateTime, dateTimefieldIndex]( const QgsFeature & feature )->bool
+  {
+    if ( dateTimefieldIndex >= 0 )
+      idToDateTime[ feature.id() ] = feature.attributes().at( dateTimefieldIndex ).toDateTime();
+    return true;
+  }, feedback );
+
+  if ( feedback->isCanceled() )
+    return QVariantMap();
 
   // stdbscan!
   feedback->pushInfo( QObject::tr( "Analysing clusters" ) );
