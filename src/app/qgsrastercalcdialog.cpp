@@ -98,7 +98,12 @@ QgsRasterCalcDialog::QgsRasterCalcDialog( QgsRasterLayer *rasterLayer, QWidget *
 
   connect( mUseVirtualProviderCheckBox, &QCheckBox::clicked, this, &QgsRasterCalcDialog::setOutputToVirtual );
 
-  if ( ! useVirtualProvider() ) mVirtualLayerName->setEnabled( false );
+  //if ( ! useVirtualProvider() ) mVirtualLayerName->setEnabled( false );
+  if ( ! useVirtualProvider() )
+  {
+    mVirtualLayerLabel->hide();
+    mVirtualLayerName->hide();
+  }
 
 }
 
@@ -353,8 +358,9 @@ void QgsRasterCalcDialog::setOutputToVirtual()
     mOutputLayer->setEnabled( false );
     mAddResultToProjectCheckBox->isChecked();
     mAddResultToProjectCheckBox->setEnabled( false );
-    mVirtualLayerName->setEnabled( true );
-    mVirtualLayerName->setEnabled( true );
+    //mVirtualLayerName->setEnabled( true );
+    mVirtualLayerLabel->show();
+    mVirtualLayerName->show();
     setAcceptButtonState();
   }
   else
@@ -362,8 +368,9 @@ void QgsRasterCalcDialog::setOutputToVirtual()
     mOutputFormatComboBox->setEnabled( true );
     mOutputLayer->setEnabled( true );
     mAddResultToProjectCheckBox->setEnabled( true );
-    mVirtualLayerName->setEnabled( false );
-    mVirtualLayerName->setEnabled( false );
+    //mVirtualLayerName->setEnabled( false );
+    mVirtualLayerLabel->hide();
+    mVirtualLayerName->hide();
     setAcceptButtonState();
   }
 }

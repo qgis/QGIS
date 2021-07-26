@@ -256,7 +256,7 @@
         <item row="1" column="0">
          <widget class="QLabel" name="mVirtualLayerLabel">
           <property name="text">
-           <string>On the fly layer name</string>
+           <string>Layer name</string>
           </property>
          </widget>
         </item>
