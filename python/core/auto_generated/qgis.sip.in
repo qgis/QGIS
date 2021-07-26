@@ -182,6 +182,7 @@ The development version
       Collapse,
       Rename,
       Delete,
+      ItemRepresentsFile,
     };
     typedef QFlags<Qgis::BrowserItemCapability> BrowserItemCapabilities;
 

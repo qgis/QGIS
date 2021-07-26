@@ -253,9 +253,8 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
 
   const QList<QgsDataItemProvider *> providers = QgsApplication::dataItemProviderRegistry()->providers();
 
-  QStringList entries = dir.entryList( QDir::AllDirs | QDir::NoDotAndDotDot, QDir::Name | QDir::IgnoreCase );
-  const auto constEntries = entries;
-  for ( const QString &subdir : constEntries )
+  const QStringList entries = dir.entryList( QDir::AllDirs | QDir::NoDotAndDotDot, QDir::Name | QDir::IgnoreCase );
+  for ( const QString &subdir : entries )
   {
     if ( mRefreshLater )
     {
@@ -263,11 +262,11 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
       return children;
     }
 
-    QString subdirPath = dir.absoluteFilePath( subdir );
+    const QString subdirPath = dir.absoluteFilePath( subdir );
 
     QgsDebugMsgLevel( QStringLiteral( "creating subdir: %1" ).arg( subdirPath ), 2 );
 
-    QString path = mPath + '/' + subdir; // may differ from subdirPath
+    const QString path = mPath + '/' + subdir; // may differ from subdirPath
     if ( QgsDirectoryItem::hiddenPath( path ) )
       continue;
 
@@ -293,9 +292,8 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
     children.append( item );
   }
 
-  QStringList fileEntries = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot | QDir::Files, QDir::Name );
-  const auto constFileEntries = fileEntries;
-  for ( const QString &name : constFileEntries )
+  const QStringList fileEntries = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot | QDir::Files, QDir::Name );
+  for ( const QString &name : fileEntries )
   {
     if ( mRefreshLater )
     {
@@ -331,6 +329,11 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
       QgsDataItem *item = provider->createDataItem( path, this );
       if ( item )
       {
+        // 3rd party providers may not correctly set the ItemRepresentsFile capability, so force it here if we
+        // see that the item's path does match the original file path
+        if ( item->path() == path )
+          item->setCapabilities( item->capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile );
+
         children.append( item );
         createdItem = true;
       }
@@ -344,6 +347,7 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
            fileInfo.suffix().compare( QLatin1String( "qgz" ), Qt::CaseInsensitive ) == 0 )
       {
         QgsDataItem *item = new QgsProjectItem( this, fileInfo.completeBaseName(), path );
+        item->setCapabilities( item->capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile );
         children.append( item );
         continue;
       }
@@ -523,9 +527,8 @@ QgsDirectoryParamWidget::QgsDirectoryParamWidget( const QString &path, QWidget *
   QList<QTreeWidgetItem *> items;
 
   QDir dir( path );
-  QStringList entries = dir.entryList( QDir::AllEntries | QDir::NoDotAndDotDot, QDir::Name | QDir::IgnoreCase );
-  const auto constEntries = entries;
-  for ( const QString &name : constEntries )
+  const QStringList entries = dir.entryList( QDir::AllEntries | QDir::NoDotAndDotDot, QDir::Name | QDir::IgnoreCase );
+  for ( const QString &name : entries )
   {
     QFileInfo fi( dir.absoluteFilePath( name ) );
     QStringList texts;
@@ -595,9 +598,8 @@ QgsDirectoryParamWidget::QgsDirectoryParamWidget( const QString &path, QWidget *
 
   // hide columns that are not requested
   QgsSettings settings;
-  QList<QVariant> lst = settings.value( QStringLiteral( "dataitem/directoryHiddenColumns" ) ).toList();
-  const auto constLst = lst;
-  for ( const QVariant &colVariant : constLst )
+  const QList<QVariant> lst = settings.value( QStringLiteral( "dataitem/directoryHiddenColumns" ) ).toList();
+  for ( const QVariant &colVariant : lst )
   {
     setColumnHidden( colVariant.toInt(), true );
   }

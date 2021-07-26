@@ -226,9 +226,8 @@ int QgsFileBasedDataItemProvider::capabilities() const
   return QgsDataProvider::File | QgsDataProvider::Dir;
 }
 
-QgsDataItem *QgsFileBasedDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
+QgsDataItem *QgsFileBasedDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
-  QString path( pathIn );
   if ( path.isEmpty() )
     return nullptr;
 
@@ -240,7 +239,9 @@ QgsDataItem *QgsFileBasedDataItemProvider::createDataItem( const QString &pathIn
   if ( suffix.compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0 )
   {
     // Geopackage is special -- it gets a dedicated collection item type
-    return new QgsGeoPackageCollectionItem( parentItem, name, path );
+    QgsGeoPackageCollectionItem *item = new QgsGeoPackageCollectionItem( parentItem, name, path );
+    item->setCapabilities( item->capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile );
+    return item;
   }
   else if ( suffix == QLatin1String( "txt" ) )
   {
@@ -285,7 +286,9 @@ QgsDataItem *QgsFileBasedDataItemProvider::createDataItem( const QString &pathIn
         uq.addQueryItem( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
         uq.addQueryItem( QStringLiteral( "url" ), path );
         const QString encodedUri = uq.toString();
-        return new QgsVectorTileLayerItem( parentItem, name, path, encodedUri );
+        QgsVectorTileLayerItem *item = new QgsVectorTileLayerItem( parentItem, name, path, encodedUri );
+        item->setCapabilities( item->capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile );
+        return item;
       }
       else
       {
@@ -296,6 +299,7 @@ QgsDataItem *QgsFileBasedDataItemProvider::createDataItem( const QString &pathIn
         const QString encodedUri = uq.toString();
         QgsLayerItem *item = new QgsLayerItem( parentItem, name, path, encodedUri, Qgis::BrowserLayerType::Raster, QStringLiteral( "wms" ) );
         item->setState( Qgis::BrowserItemState::Populated );
+        item->setCapabilities( item->capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile );
         return item;
       }
     }
@@ -331,11 +335,16 @@ QgsDataItem *QgsFileBasedDataItemProvider::createDataItem( const QString &pathIn
             || ( !( queryFlags & Qgis::SublayerQueryFlag::FastScan ) && !QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers, QgsProviderUtils::SublayerCompletenessFlag::IgnoreUnknownFeatureCount ) ) )
      )
   {
-    return new QgsProviderSublayerItem( parentItem, name, sublayers.at( 0 ), false );
+    QgsProviderSublayerItem *item = new QgsProviderSublayerItem( parentItem, name, sublayers.at( 0 ), false );
+    if ( item->path() == path )
+      item->setCapabilities( item->capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile );
+    return item;
   }
   else if ( !sublayers.empty() )
   {
-    return new QgsFileDataCollectionItem( parentItem, name, path, sublayers );
+    QgsFileDataCollectionItem *item = new QgsFileDataCollectionItem( parentItem, name, path, sublayers );
+    item->setCapabilities( item->capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile );
+    return item;
   }
   else
   {
