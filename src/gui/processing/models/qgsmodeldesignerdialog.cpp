@@ -48,6 +48,7 @@
 #include <QPushButton>
 #include <QUrl>
 #include <QTextStream>
+#include <QActionGroup>
 
 ///@cond NOT_STABLE
 

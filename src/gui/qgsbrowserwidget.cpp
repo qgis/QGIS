@@ -22,6 +22,7 @@
 #include <QFileDialog>
 #include <QPlainTextDocumentLayout>
 #include <QSortFilterProxyModel>
+#include <QActionGroup>
 
 #include "qgsbrowserguimodel.h"
 #include "qgsbrowsertreeview.h"
