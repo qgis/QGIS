@@ -458,7 +458,6 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
       const QString name = it.second;
       if ( fi.suffix().compare( ext, Qt::CaseInsensitive ) == 0 )
       {
-        // pdf file
         QAction *viewAction = new QAction( tr( "Open %1 Externally…" ).arg( name ), menu );
         connect( viewAction, &QAction::triggered, this, [ = ]
         {
