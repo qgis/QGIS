@@ -94,7 +94,12 @@ void QgsLayoutViewToolMoveItemContent::wheelEvent( QWheelEvent *event )
 {
   event->accept();
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
+  QPointF scenePoint = view()->mapToScene( event->pos().x(), event->pos().y() );
+#else
   QPointF scenePoint = view()->mapToScene( event->position().x(), event->position().y() );
+#endif
+
   //select topmost item at position of event
   QgsLayoutItem *item = layout()->layoutItemAt( scenePoint, true );
   if ( !item || !item->isSelected() )
