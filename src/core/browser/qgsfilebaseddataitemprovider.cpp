@@ -133,14 +133,25 @@ QgsFileDataCollectionItem::QgsFileDataCollectionItem( QgsDataItem *parent, const
 
 QVector<QgsDataItem *> QgsFileDataCollectionItem::createChildren()
 {
-  if ( QgsProviderUtils::sublayerDetailsAreIncomplete( mSublayers, QgsProviderUtils::SublayerCompletenessFlag::IgnoreUnknownFeatureCount ) )
+  QList< QgsProviderSublayerDetails> sublayers;
+  if ( QgsProviderUtils::sublayerDetailsAreIncomplete( mSublayers, QgsProviderUtils::SublayerCompletenessFlag::IgnoreUnknownFeatureCount )
+       || mSublayers.empty() )
   {
-    mSublayers = QgsProviderRegistry::instance()->querySublayers( path(), Qgis::SublayerQueryFlag::ResolveGeometryType );
+    sublayers = QgsProviderRegistry::instance()->querySublayers( path(), Qgis::SublayerQueryFlag::ResolveGeometryType );
   }
+  else
+  {
+    sublayers = mSublayers;
+  }
+  // only ever use the initial sublayers for first population -- after that we requery when asked to create children,
+  // or the item won't "refresh" and update its sublayers when the actual file changes
+  mSublayers.clear();
+  // remove the fast flag -- after the first population we need to requery the dataset
+  setCapabilities( capabilities2() & ~static_cast< int >( Qgis::BrowserItemCapability::Fast ) );
 
   QVector<QgsDataItem *> children;
-  children.reserve( mSublayers.size() );
-  for ( const QgsProviderSublayerDetails &sublayer : std::as_const( mSublayers ) )
+  children.reserve( sublayers.size() );
+  for ( const QgsProviderSublayerDetails &sublayer : std::as_const( sublayers ) )
   {
     QgsProviderSublayerItem *item = new QgsProviderSublayerItem( this, sublayer.name(), sublayer );
     children.append( item );
