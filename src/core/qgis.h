@@ -381,6 +381,17 @@ class CORE_EXPORT Qgis
     Q_ENUM( DriveType )
 
     /**
+     * Enum to determine when a fetching operation would begin
+     * \since QGIS 3.22
+     */
+    enum class FetchingMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsNetworkContentFetcherRegistry, FetchingMode ) : int
+      {
+      FetchLater SIP_MONKEYPATCH_COMPAT_NAME( DownloadLater ), //!< Do not start immediately the fetching
+      FetchImmediately SIP_MONKEYPATCH_COMPAT_NAME( DownloadImmediately ), //!< The fetching will start immediately
+    };
+    Q_ENUM( FetchingMode )
+
+    /**
      * Unplaced label visibility.
      *
      * \since QGIS 3.20
