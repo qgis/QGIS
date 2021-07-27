@@ -20,7 +20,11 @@ set (GPS_RCCS  qgsgps_plugin.qrc)
 ########################################################
 # Build
 
-QT5_WRAP_UI (GPS_UIS_H  ${GPS_UIS})
+if (WITH_QT6)
+  QT6_WRAP_UI (GPS_UIS_H  ${GPS_UIS})
+else()
+  QT5_WRAP_UI (GPS_UIS_H  ${GPS_UIS})
+endif()
 
 add_library (gpsimporterplugin MODULE ${GPS_SRCS} ${GPS_RCCS} ${GPS_UIS_H})
 

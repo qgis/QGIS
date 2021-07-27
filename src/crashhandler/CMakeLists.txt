@@ -2,8 +2,13 @@ include_directories(SYSTEM
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-QT5_WRAP_UI(CRASH_UIS_H qgscrashdialog.ui)
-QT5_WRAP_CPP(CRASH_HDR_MOC qgscrashdialog.h)
+if (WITH_QT6)
+  QT6_WRAP_UI(CRASH_UIS_H qgscrashdialog.ui)
+  QT6_WRAP_CPP(CRASH_HDR_MOC qgscrashdialog.h)
+else()
+  QT5_WRAP_UI(CRASH_UIS_H qgscrashdialog.ui)
+  QT5_WRAP_CPP(CRASH_HDR_MOC qgscrashdialog.h)
+endif()
 
 set(IMAGE_RCCS ../../images/images.qrc)
 
@@ -24,9 +29,9 @@ add_executable(qgiscrashhandler WIN32
 target_compile_features(qgiscrashhandler PRIVATE cxx_std_17)
 
 target_link_libraries(qgiscrashhandler
-  ${Qt5Core_LIBRARIES}
-  ${Qt5Gui_LIBRARIES}
-  ${Qt5Widgets_LIBRARIES}
+  ${${QT_VERSION_BASE}Core_LIBRARIES}
+  ${${QT_VERSION_BASE}Gui_LIBRARIES}
+  ${${QT_VERSION_BASE}Widgets_LIBRARIES}
   dbghelp
 )
 
