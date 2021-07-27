@@ -739,7 +739,7 @@ QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirt
     }
 
 
-    InputLayers rLayer;
+    VirtualRasterInputLayers rLayer;
     rLayer.name = item.first.mid( 0, item.first.indexOf( ':' ) );
     rLayer.uri = query.queryItemValue( item.first );
     rLayer.provider = query.queryItemValue( item.first.mid( 0, item.first.indexOf( ':' ) ) + QStringLiteral( ":provider" ) );

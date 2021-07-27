@@ -540,7 +540,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * this struct is  stored in the DecodedUriParameters
      * \note used by QgsVirtualRasterProvider only
      */
-    struct InputLayers
+    struct VirtualRasterInputLayers
     {
       QString name;
       QString uri;
@@ -559,7 +559,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       int width;
       int height;
       QString formula;
-      QList <QgsRasterDataProvider::InputLayers> rInputLayers;
+      QList <QgsRasterDataProvider::VirtualRasterInputLayers> rInputLayers;
 
     };
 

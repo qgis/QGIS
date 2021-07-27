@@ -6522,7 +6522,7 @@ void QgisApp::showRasterCalculator()
       if ( ( ! rLayerDictionary.contains( r.raster->name() ) ) || uniqueRasterUriTmp.contains( r.raster->publicSource() ) ) continue;
       uniqueRasterUriTmp.insert( r.raster->publicSource() );
 
-      QgsRasterDataProvider::InputLayers projectRLayer;
+      QgsRasterDataProvider::VirtualRasterInputLayers projectRLayer;
       projectRLayer.name = r.raster->name();
       projectRLayer.provider = r.raster->dataProvider()->name();
       projectRLayer.uri = r.raster->publicSource();

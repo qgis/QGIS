@@ -17,7 +17,7 @@ if (NOT FORCE_STATIC_LIBS)
   add_subdirectory(gpx)
   add_subdirectory(db2)
   add_subdirectory(mdal)
-  add_subdirectory(virtualrasterprovider)
+  add_subdirectory(virtualraster)
 
   if (WITH_SPATIALITE)
     add_subdirectory(spatialite)

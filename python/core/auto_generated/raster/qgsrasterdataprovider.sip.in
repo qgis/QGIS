@@ -474,7 +474,7 @@ Returns a list of pyramid resampling method name and label pairs
 for given provider
 %End
 
-    struct InputLayers
+    struct VirtualRasterInputLayers
     {
       QString name;
       QString uri;
@@ -488,7 +488,7 @@ for given provider
       int width;
       int height;
       QString formula;
-      QList <QgsRasterDataProvider::InputLayers> rInputLayers;
+      QList <QgsRasterDataProvider::VirtualRasterInputLayers> rInputLayers;
 
     };
 
