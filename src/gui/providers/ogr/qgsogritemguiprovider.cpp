@@ -45,6 +45,8 @@ void QgsOgrItemGuiProvider::populateContextMenu(
       {
         // item is a layer which sits inside a collection.
 
+        QMenu *manageLayerMenu = new QMenu( tr( "Manage" ), menu );
+
         // test if GDAL supports deleting this layer
         const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( layerItem->providerKey(), layerItem->uri() );
         const QString path = parts.value( QStringLiteral( "path" ) ).toString();
@@ -64,7 +66,9 @@ void QgsOgrItemGuiProvider::populateContextMenu(
         actionDeleteLayer->setData( data );
         connect( actionDeleteLayer, &QAction::triggered, this, [ = ] { onDeleteLayer( context ); } );
         actionDeleteLayer->setEnabled( canDeleteLayers );
-        menu->addAction( actionDeleteLayer );
+        manageLayerMenu->addAction( actionDeleteLayer );
+
+        menu->addMenu( manageLayerMenu );
       }
     }
   }
