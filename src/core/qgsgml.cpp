@@ -31,6 +31,8 @@
 #include <QSet>
 #include <QSettings>
 #include <QUrl>
+#include <QTextCodec>
+#include <QRegularExpression>
 
 #include "ogr_api.h"
 
@@ -321,10 +323,7 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QString &typeName,
     mTypeNameUTF8Len = strlen( mTypeNamePtr );
   }
 
-  mParser = XML_ParserCreateNS( nullptr, NS_SEPARATOR );
-  XML_SetUserData( mParser, this );
-  XML_SetElementHandler( mParser, QgsGmlStreamingParser::start, QgsGmlStreamingParser::end );
-  XML_SetCharacterDataHandler( mParser, QgsGmlStreamingParser::chars );
+  createParser();
 }
 
 static QString stripNS( const QString &string )
@@ -412,10 +411,7 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QList<LayerProperties> &laye
 
   mEndian = QgsApplication::endian();
 
-  mParser = XML_ParserCreateNS( nullptr, NS_SEPARATOR );
-  XML_SetUserData( mParser, this );
-  XML_SetElementHandler( mParser, QgsGmlStreamingParser::start, QgsGmlStreamingParser::end );
-  XML_SetCharacterDataHandler( mParser, QgsGmlStreamingParser::chars );
+  createParser();
 }
 
 
@@ -444,11 +440,40 @@ bool QgsGmlStreamingParser::processData( const QByteArray &data, bool atEnd )
   return true;
 }
 
-bool QgsGmlStreamingParser::processData( const QByteArray &data, bool atEnd, QString &errorMsg )
+bool QgsGmlStreamingParser::processData( const QByteArray &pdata, bool atEnd, QString &errorMsg )
 {
-  if ( XML_Parse( mParser, data.data(), data.size(), atEnd ) == 0 )
+  QByteArray data = pdata;
+
+  if ( mCodec )
+  {
+    // convert data to UTF-8
+    QString strData = mCodec->toUnicode( pdata );
+    data = strData.toUtf8();
+  }
+
+  if ( XML_Parse( mParser, data, data.size(), atEnd ) == XML_STATUS_ERROR )
   {
     const XML_Error errorCode = XML_GetErrorCode( mParser );
+    if ( !mCodec && errorCode == XML_ERROR_UNKNOWN_ENCODING )
+    {
+      // Specified encoding is unknown, Expat only accepts UTF-8, UTF-16, ISO-8859-1
+      // Try to get encoding string and convert data to utf-8
+      QRegularExpression reEncoding( QStringLiteral( "<?xml.*encoding=['\"]([^'\"]*)['\"].*?>" ),
+                                     QRegularExpression::CaseInsensitiveOption );
+      QRegularExpressionMatch match = reEncoding.match( pdata );
+      const QString encoding = match.hasMatch() ? match.captured( 1 ) : QString();
+      mCodec = !encoding.isEmpty() ? QTextCodec::codecForName( encoding.toLatin1() ) : nullptr;
+      if ( mCodec )
+      {
+        // recreate parser with UTF-8 encoding
+        XML_ParserFree( mParser );
+        mParser = nullptr;
+        createParser( QByteArrayLiteral( "UTF-8" ) );
+
+        return processData( data, atEnd, errorMsg );
+      }
+    }
+
     errorMsg = QObject::tr( "Error: %1 on line %2, column %3" )
                .arg( XML_ErrorString( errorCode ) )
                .arg( XML_GetCurrentLineNumber( mParser ) )
@@ -1560,4 +1585,14 @@ int QgsGmlStreamingParser::totalWKBFragmentSize() const
     }
   }
   return result;
+}
+
+void QgsGmlStreamingParser::createParser( const QByteArray &encoding )
+{
+  Q_ASSERT( !mParser );
+
+  mParser = XML_ParserCreateNS( encoding.isEmpty() ? nullptr : encoding.data(), NS_SEPARATOR );
+  XML_SetUserData( mParser, this );
+  XML_SetElementHandler( mParser, QgsGmlStreamingParser::start, QgsGmlStreamingParser::end );
+  XML_SetCharacterDataHandler( mParser, QgsGmlStreamingParser::chars );
 }
