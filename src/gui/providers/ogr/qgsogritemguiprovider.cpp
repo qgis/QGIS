@@ -41,17 +41,32 @@ void QgsOgrItemGuiProvider::populateContextMenu(
   {
     if ( layerItem->providerKey() == QLatin1String( "ogr" ) && !qobject_cast< QgsGeoPackageAbstractLayerItem * >( item ) )
     {
-      // Messages are different for files and tables
-      QString message = !( layerItem->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile ) ? QObject::tr( "Delete Layer “%1”…" ).arg( layerItem->name() ) : QObject::tr( "Delete File “%1”…" ).arg( layerItem->name() );
-      QAction *actionDeleteLayer = new QAction( message, menu );
-      QVariantMap data;
-      data.insert( QStringLiteral( "isSubLayer" ), !( layerItem->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile ) );
-      data.insert( QStringLiteral( "uri" ), layerItem->uri() );
-      data.insert( QStringLiteral( "name" ), layerItem->name() );
-      data.insert( QStringLiteral( "parent" ), QVariant::fromValue( QPointer< QgsDataItem >( layerItem->parent() ) ) );
-      actionDeleteLayer->setData( data );
-      connect( actionDeleteLayer, &QAction::triggered, this, [ = ] { onDeleteLayer( context ); } );
-      menu->addAction( actionDeleteLayer );
+      if ( !( layerItem->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile ) )
+      {
+        // item is a layer which sits inside a collection.
+
+        // test if GDAL supports deleting this layer
+        const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( layerItem->providerKey(), layerItem->uri() );
+        const QString path = parts.value( QStringLiteral( "path" ) ).toString();
+        bool canDeleteLayers = false;
+        if ( !path.isEmpty() )
+        {
+          OGRSFDriverH hDriver = nullptr;
+          gdal::ogr_datasource_unique_ptr hDS( OGROpen( path.toUtf8().constData(), TRUE, &hDriver ) );
+          canDeleteLayers = hDS && OGR_DS_TestCapability( hDS.get(), ODsCDeleteLayer );
+        }
+
+        QAction *actionDeleteLayer = new QAction( QObject::tr( "Delete Layer “%1”…" ).arg( layerItem->name() ), menu );
+        QVariantMap data;
+        data.insert( QStringLiteral( "isSubLayer" ), true );
+        data.insert( QStringLiteral( "uri" ), layerItem->uri() );
+        data.insert( QStringLiteral( "name" ), layerItem->name() );
+        data.insert( QStringLiteral( "parent" ), QVariant::fromValue( QPointer< QgsDataItem >( layerItem->parent() ) ) );
+        actionDeleteLayer->setData( data );
+        connect( actionDeleteLayer, &QAction::triggered, this, [ = ] { onDeleteLayer( context ); } );
+        actionDeleteLayer->setEnabled( canDeleteLayers );
+        menu->addAction( actionDeleteLayer );
+      }
     }
   }
 
