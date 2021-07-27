@@ -89,7 +89,8 @@ QStringList QgsFileWidget::splitFilePaths( const QString &path )
 #endif
 
   const thread_local QRegularExpression cleanRe( QStringLiteral( "(^\\s*\")|(\"\\s*)" ) );
-  for ( const auto &pathsPart : pathParts )
+  paths.reserve( pathParts.size() );
+  for ( const QString &pathsPart : pathParts )
   {
     QString cleaned = pathsPart;
     cleaned.remove( cleanRe );
@@ -98,7 +99,7 @@ QStringList QgsFileWidget::splitFilePaths( const QString &path )
   return paths;
 }
 
-void QgsFileWidget::setFilePath( QString path )
+void QgsFileWidget::setFilePath( const QString &path )
 {
   //will trigger textEdited slot
   mLineEdit->setValue( path );
