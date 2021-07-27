@@ -38,13 +38,13 @@ RUN dnf -y install \
     openssl-devel \
     libsecret-devel
 
-RUN cd ~ \
-  && wget https://github.com/KDE/qca/archive/refs/tags/v2.3.3.zip \
-  && unzip v2.3.3.zip \
-  && mkdir build-qt6 \
-  && cd build-qt6 \
-  && cmake -DCMAKE_INSTALL_PREFIX=/usr -DQT6=ON -GNinja ../qca-2.3.3\
-  && ninja install
+# RUN cd /usr/src \
+#   && wget https://github.com/KDE/qca/archive/refs/tags/v2.3.3.zip \
+#   && unzip v2.3.3.zip \
+#   && mkdir build-qt6 \
+#   && cd build-qt6 \
+#   && cmake -DCMAKE_INSTALL_PREFIX=/usr -DQT6=ON -GNinja ../qca-2.3.3\
+#   && ninja install
 
 RUN cd /usr/src \
   && wget https://github.com/frankosterfeld/qtkeychain/archive/refs/heads/master.zip \
