@@ -604,8 +604,14 @@ void QgsTemporalControllerWidget::setTimeStep( const QgsInterval &timeStep )
       QgsUnitTypes::TemporalUnit unit = static_cast<QgsUnitTypes::TemporalUnit>( mTimeStepsComboBox->itemData( i ).toInt() );
       double value = timeStep.seconds() * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalSeconds, unit );
       QString string = QString::number( value, 'f', precision );
-      string.remove( QRegularExpression( "0+$" ) ); //remove trailing zero
-      string.remove( QRegularExpression( "[.]+$" ) ); //remove last point if present
+
+      const thread_local QRegularExpression trailingZeroRegEx = QRegularExpression( QStringLiteral( "0+$" ) );
+      //remove trailing zero
+      string.remove( trailingZeroRegEx );
+
+      const thread_local QRegularExpression trailingPointRegEx = QRegularExpression( QStringLiteral( "[.]+$" ) );
+      //remove last point if present
+      string.remove( trailingPointRegEx );
 
       if ( value >= 1
            && string.size() <= stringSize // less significant digit than currently selected
