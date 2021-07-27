@@ -50,8 +50,9 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
     // Check capabilities
     if ( layerItem->capabilities2() & Qgis::BrowserItemCapability::Rename )
     {
-      QAction *actionRenameLayer = new QAction( tr( "Rename Layer '%1'…" ).arg( layerItem->name() ), menu );
-      QVariantMap data;
+      QMenu *manageLayerMenu = new QMenu( tr( "Manage" ), menu );
+
+      QAction *actionRenameLayer = new QAction( tr( "Rename Layer “%1”…" ).arg( layerItem->name() ), menu );
       const QString uri = layerItem->uri();
       const QString providerKey = layerItem->providerKey();
       const QStringList tableNames = layerItem->tableNames();
@@ -60,7 +61,9 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
       {
         renameVectorLayer( uri, providerKey, tableNames, itemPointer, context );
       } );
-      menu->addAction( actionRenameLayer );
+      manageLayerMenu->addAction( actionRenameLayer );
+
+      menu->addMenu( manageLayerMenu );
     }
   }
 
