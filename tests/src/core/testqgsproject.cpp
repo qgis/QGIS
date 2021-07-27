@@ -58,6 +58,7 @@ class TestQgsProject : public QObject
     void testDefaultRelativePaths();
     void testAttachmentsQgs();
     void testAttachmentsQgz();
+    void testAttachmentIdentifier();
 };
 
 void TestQgsProject::init()
@@ -882,6 +883,25 @@ void TestQgsProject::testAttachmentsQgz()
     QVERIFY( p2.mapLayer( p2.mapLayers().firstKey() )->source() == p2.attachedFiles().first() );
   }
 
+}
+
+void TestQgsProject::testAttachmentIdentifier()
+{
+  // Verify attachment identifiers
+  {
+    QTemporaryFile projFile( QDir::temp().absoluteFilePath( "XXXXXX_test.qgz" ) );
+    projFile.open();
+
+    QgsProject p;
+    QString attachmentFileName = p.createAttachedFile( "test.jpg" );
+    QString attachmentId = p.attachmentIdentifier( attachmentFileName );
+    QCOMPARE( p.resolveAttachmentIdentifier( attachmentId ), attachmentFileName );
+    p.write( projFile.fileName() );
+
+    QgsProject p2;
+    p2.read( projFile.fileName() );
+    QVERIFY( QFile( p2.resolveAttachmentIdentifier( attachmentId ) ).exists() );
+  }
 }
 
 
