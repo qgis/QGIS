@@ -36,10 +36,9 @@
 //
 
 QgsProviderSublayerItem::QgsProviderSublayerItem( QgsDataItem *parent, const QString &name,
-    const QgsProviderSublayerDetails &details, bool isFile )
+    const QgsProviderSublayerDetails &details )
   : QgsLayerItem( parent, name, details.uri(), details.uri(), layerTypeFromSublayer( details ), details.providerKey() )
   , mDetails( details )
-  , mIsFile( isFile )
 {
   mToolTip = details.uri();
 
@@ -64,11 +63,6 @@ QVector<QgsDataItem *> QgsProviderSublayerItem::createChildren()
     }
   }
   return children;
-}
-
-bool QgsProviderSublayerItem::isFile() const
-{
-  return mIsFile;
 }
 
 Qgis::BrowserLayerType QgsProviderSublayerItem::layerTypeFromSublayer( const QgsProviderSublayerDetails &sublayer )
@@ -148,7 +142,7 @@ QVector<QgsDataItem *> QgsFileDataCollectionItem::createChildren()
   children.reserve( mSublayers.size() );
   for ( const QgsProviderSublayerDetails &sublayer : std::as_const( mSublayers ) )
   {
-    QgsProviderSublayerItem *item = new QgsProviderSublayerItem( this, sublayer.name(), sublayer, true );
+    QgsProviderSublayerItem *item = new QgsProviderSublayerItem( this, sublayer.name(), sublayer );
     children.append( item );
   }
 
@@ -335,7 +329,7 @@ QgsDataItem *QgsFileBasedDataItemProvider::createDataItem( const QString &path, 
             || ( !( queryFlags & Qgis::SublayerQueryFlag::FastScan ) && !QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers, QgsProviderUtils::SublayerCompletenessFlag::IgnoreUnknownFeatureCount ) ) )
      )
   {
-    QgsProviderSublayerItem *item = new QgsProviderSublayerItem( parentItem, name, sublayers.at( 0 ), false );
+    QgsProviderSublayerItem *item = new QgsProviderSublayerItem( parentItem, name, sublayers.at( 0 ) );
     if ( item->path() == path )
       item->setCapabilities( item->capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile );
     return item;
