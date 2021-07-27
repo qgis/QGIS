@@ -663,6 +663,43 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
     } );
   }
 
+  if ( item->capabilities2() & Qgis::BrowserItemCapability::Delete )
+  {
+    QStringList selectedDeletableItemPaths;
+    for ( QgsDataItem *selectedItem : selectedItems )
+    {
+      if ( qobject_cast<QgsLayerItem *>( selectedItem ) && ( selectedItem->capabilities2() & Qgis::BrowserItemCapability::Delete ) )
+        selectedDeletableItemPaths.append( qobject_cast<QgsLayerItem *>( selectedItem )->uri() );
+    }
+
+    const QString deleteText = selectedDeletableItemPaths.count() == 1 ? tr( "Delete Layer “%1”…" ).arg( layerItem->name() )
+                               : tr( "Delete Selected Layers…" );
+    QAction *deleteAction = new QAction( deleteText, menu );
+    connect( deleteAction, &QAction::triggered, this, [ = ]
+    {
+      deleteLayers( selectedDeletableItemPaths, context );
+    } );
+
+    // this action should sit in the Manage menu. If one does not exist, create it now
+    bool foundExistingManageMenu = false;
+    QList<QAction *> actions = menu->actions();
+    for ( QAction *action : std::as_const( actions ) )
+    {
+      if ( action->text() == tr( "Manage" ) )
+      {
+        action->menu()->addAction( deleteAction );
+        foundExistingManageMenu = true;
+        break;
+      }
+    }
+    if ( !foundExistingManageMenu )
+    {
+      QMenu *manageLayerMenu = new QMenu( tr( "Manage" ), menu );
+      manageLayerMenu->addAction( deleteAction );
+      menu->addMenu( manageLayerMenu );
+    }
+  }
+
   if ( !menu->isEmpty() )
     menu->addSeparator();
 
@@ -674,25 +711,6 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
     addLayersFromItems( selectedItems );
   } );
   menu->addAction( addAction );
-
-  if ( item->capabilities2() & Qgis::BrowserItemCapability::Delete )
-  {
-    QStringList selectedDeletableItemPaths;
-    for ( QgsDataItem *selectedItem : selectedItems )
-    {
-      if ( qobject_cast<QgsLayerItem *>( selectedItem ) && ( selectedItem->capabilities2() & Qgis::BrowserItemCapability::Delete ) )
-        selectedDeletableItemPaths.append( qobject_cast<QgsLayerItem *>( selectedItem )->uri() );
-    }
-
-    const QString deleteText = selectedDeletableItemPaths.count() == 1 ? tr( "Delete Layer…" )
-                               : tr( "Delete Selected Layers…" );
-    QAction *deleteAction = new QAction( deleteText, menu );
-    connect( deleteAction, &QAction::triggered, this, [ = ]
-    {
-      deleteLayers( selectedDeletableItemPaths, context );
-    } );
-    menu->addAction( deleteAction );
-  }
 
   QAction *propertiesAction = new QAction( tr( "Layer Properties…" ), menu );
   connect( propertiesAction, &QAction::triggered, this, [ = ]
