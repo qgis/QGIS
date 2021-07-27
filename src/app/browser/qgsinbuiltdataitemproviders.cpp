@@ -431,6 +431,23 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
   if ( !( item->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile ) )
     return;
 
+  if ( qobject_cast< QgsDataCollectionItem * >( item ) )
+  {
+    QAction *actionRefresh = new QAction( QObject::tr( "Refresh" ), menu );
+    connect( actionRefresh, &QAction::triggered, item, [item] { item->refresh(); } );
+    QAction *separatorAction = new QAction( menu );
+    separatorAction->setSeparator( true );
+    if ( !menu->actions().empty() )
+    {
+      menu->insertAction( menu->actions().constFirst(), separatorAction );
+      menu->insertAction( menu->actions().constFirst(), actionRefresh );
+    }
+    else
+    {
+      menu->addAction( actionRefresh );
+      menu->addAction( separatorAction );
+    }
+  }
 
   if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeFilePropertiesDialog )
   {
