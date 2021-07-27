@@ -208,6 +208,15 @@ void TestQgsVirtualRasterProvider::testConstructor()
   double sampledValueCalc_2 = layer_2->dataProvider()->sample( QgsPointXY( 790688, 3349113 ), 1 );
   //qDebug() << layer_2->dataProvider()->sample( QgsPointXY( 790688, 3349113 ), 1 );
   QCOMPARE( sampledValueCalc_2, 267. );
+
+  //use wrong formula
+  QString str3 = QStringLiteral( "?crs=EPSG:32633&extent=781662.375,3339523.125,793062.375,3350923.125&width=200&height=200&formula=\"landsat@1\" xxxxxx+ \"landsat@2\"&landsat:provider=gdal" );
+  QString uri3 = QString( "%1&%2" ).arg( str3, QStringLiteral( "landsat:uri=" ) % mTestDataDir % QStringLiteral( "landsat.tif" ) );
+  std::unique_ptr< QgsRasterLayer > layer_3 = std::make_unique< QgsRasterLayer >( uri3,
+      QStringLiteral( "layer_3" ),
+      QStringLiteral( "virtualrasterprovider" ) );
+  QVERIFY( ! layer_3->isValid() );
+
 }
 
 void TestQgsVirtualRasterProvider::testProviderProperties()

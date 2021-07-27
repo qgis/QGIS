@@ -8,22 +8,6 @@ set(VRP_HDRS
     qgsvirtualrasterprovider.h
 )
 
-#[[
-if (WITH_GUI)
-  set(DB2_SRCS ${DB2_SRCS}
-    qgsdb2providergui.cpp
-    qgsdb2dataitemguiprovider.cpp
-    qgsdb2newconnection.cpp
-    qgsdb2sourceselect.cpp
-  )
-  set(DB2_HDRS ${DB2_HDRS}
-    qgsdb2dataitemguiprovider.h
-    qgsdb2newconnection.h
-    qgsdb2sourceselect.h
-  )
-endif()
-#]]
-
 ########################################################
 # Build
 
@@ -40,15 +24,6 @@ target_link_libraries (virtualraster
   qgis_core
   qgis_analysis
 )
-
-#[[
-if (WITH_GUI)
-  target_link_libraries (db2provider
-    qgis_gui
-  )
-  add_dependencies(db2provider ui)
-endif()
-]]
 
 target_compile_definitions(virtualraster PRIVATE "-DQT_NO_FOREACH")
 

@@ -51,12 +51,6 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
   mWidth = decodedUriParams.width;
   mHeight = decodedUriParams.height;
 
-  if ( decodedUriParams.formula.isNull() )
-  {
-    QgsDebugMsg( "formula string provided is null" );
-    mValid = false;
-    return;
-  }
   mFormulaString = decodedUriParams.formula;
 
   mLastError.clear();
