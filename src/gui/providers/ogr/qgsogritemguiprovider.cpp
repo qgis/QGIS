@@ -30,7 +30,6 @@
 #include "qgsdatacollectionitem.h"
 #include "qgsogrproviderutils.h"
 #include "qgsgeopackagedataitems.h"
-#include "qgsfilebaseddataitemprovider.h"
 
 void QgsOgrItemGuiProvider::populateContextMenu(
   QgsDataItem *item,
@@ -43,12 +42,10 @@ void QgsOgrItemGuiProvider::populateContextMenu(
     if ( layerItem->providerKey() == QLatin1String( "ogr" ) && !qobject_cast< QgsGeoPackageAbstractLayerItem * >( item ) )
     {
       // Messages are different for files and tables
-      QgsProviderSublayerItem *sublayerItem = qobject_cast< QgsProviderSublayerItem * >( layerItem );
-
-      QString message = sublayerItem && !sublayerItem->isFile() ? QObject::tr( "Delete Layer “%1”…" ).arg( layerItem->name() ) : QObject::tr( "Delete File “%1”…" ).arg( layerItem->name() );
+      QString message = !( layerItem->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile ) ? QObject::tr( "Delete Layer “%1”…" ).arg( layerItem->name() ) : QObject::tr( "Delete File “%1”…" ).arg( layerItem->name() );
       QAction *actionDeleteLayer = new QAction( message, menu );
       QVariantMap data;
-      data.insert( QStringLiteral( "isSubLayer" ), sublayerItem && !sublayerItem->isFile() );
+      data.insert( QStringLiteral( "isSubLayer" ), !( layerItem->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile ) );
       data.insert( QStringLiteral( "uri" ), layerItem->uri() );
       data.insert( QStringLiteral( "name" ), layerItem->name() );
       data.insert( QStringLiteral( "parent" ), QVariant::fromValue( QPointer< QgsDataItem >( layerItem->parent() ) ) );
