@@ -170,8 +170,13 @@ macro(ADD_GRASSPLUGIN GRASS_BUILD_VERSION)
     set(GRASS_MAJOR_VERSION ${GRASS_MAJOR_VERSION${GRASS_BUILD_VERSION}})
     set(GRASS_MINOR_VERSION ${GRASS_MINOR_VERSION${GRASS_BUILD_VERSION}})
 
-    QT5_WRAP_UI (GRASS_PLUGIN_UIS_H ${GRASS_PLUGIN_UIS})
-    QT5_WRAP_CPP (GRASS_PLUGIN_MOC_SRCS ${GRASS_PLUGIN_MOC_HDRS})
+    if (WITH_QT6)
+      QT6_WRAP_UI (GRASS_PLUGIN_UIS_H ${GRASS_PLUGIN_UIS})
+      QT6_WRAP_CPP (GRASS_PLUGIN_MOC_SRCS ${GRASS_PLUGIN_MOC_HDRS})
+    else()
+      QT5_WRAP_UI (GRASS_PLUGIN_UIS_H ${GRASS_PLUGIN_UIS})
+      QT5_WRAP_CPP (GRASS_PLUGIN_MOC_SRCS ${GRASS_PLUGIN_MOC_HDRS})
+    endif()
 
     include_directories(
       ${CMAKE_BINARY_DIR}/src/providers/grass/${GRASS_BUILD_VERSION}
@@ -202,7 +207,7 @@ macro(ADD_GRASSPLUGIN GRASS_BUILD_VERSION)
     if (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
       target_link_libraries(grassplugin${GRASS_BUILD_VERSION} ulog)
     endif()
-
+.
     # override default path where built files are put to allow running qgis without installing
     # the binary goes under libexec subdir
     set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIBEXEC_SUBDIR}/grass/bin)
@@ -215,9 +220,9 @@ macro(ADD_GRASSPLUGIN GRASS_BUILD_VERSION)
     )
 
     target_link_libraries (qgis.g.browser${GRASS_BUILD_VERSION}
-      ${Qt5Gui_LIBRARIES}
-      ${Qt5Widgets_LIBRARIES}
-      ${Qt5Core_LIBRARIES}
+      ${${QT_VERSION_BASE}Gui_LIBRARIES}
+      ${${QT_VERSION_BASE}Widgets_LIBRARIES}
+      ${${QT_VERSION_BASE}Core_LIBRARIES}
     )
 
     ########################################################
