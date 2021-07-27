@@ -36,7 +36,7 @@ RUN dnf -y install \
     util-linux \
     wget \
     openssl-devel \
-    libsecret-devel
+    libsecret-devel \
     make \
     automake \
     gcc \
