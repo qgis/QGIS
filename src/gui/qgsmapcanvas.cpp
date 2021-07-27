@@ -2118,7 +2118,11 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
 
   // zoom map to mouse cursor by scaling
   QgsPointXY oldCenter = center();
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+  QgsPointXY mousePos( getCoordinateTransform()->toMapCoordinates( e->pos().x(), e->pos().y() ) );
+#else
   QgsPointXY mousePos( getCoordinateTransform()->toMapCoordinates( e->position().x(), e->position().y() ) );
+#endif
   QgsPointXY newCenter( mousePos.x() + ( ( oldCenter.x() - mousePos.x() ) * signedWheelFactor ),
                         mousePos.y() + ( ( oldCenter.y() - mousePos.y() ) * signedWheelFactor ) );
 

@@ -161,9 +161,13 @@ void QgsMapOverviewCanvas::wheelEvent( QWheelEvent *e )
   double signedWheelFactor = e->angleDelta().y() > 0 ? 1 / zoomFactor : zoomFactor;
 
   const QgsMapToPixel &cXf = mSettings.mapToPixel();
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+  QgsPointXY center = cXf.toMapCoordinates( e->pos().x(), e->pos().y() );
+  updatePanningWidget( QPoint( e->pos().x(), e->pos().y() ) );
+#else
   QgsPointXY center = cXf.toMapCoordinates( e->position().x(), e->position().y() );
-
   updatePanningWidget( QPoint( e->position().x(), e->position().y() ) );
+#endif
   mMapCanvas->zoomByFactor( signedWheelFactor, &center );
 }
 
