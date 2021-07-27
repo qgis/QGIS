@@ -124,13 +124,6 @@ class CORE_EXPORT QgsNetworkContentFetcherRegistry : public QObject
 {
     Q_OBJECT
   public:
-    //! Enum to determine when the download should start
-    enum FetchingMode
-    {
-      DownloadLater,       //!< Do not start immediately the download to properly connect the fetched signal
-      DownloadImmediately, //!< The download will start immediately, not need to run QgsFecthedContent::download()
-    };
-    Q_ENUM( FetchingMode )
 
     //! Create the registry for temporary downloaded files
     explicit QgsNetworkContentFetcherRegistry() = default;
@@ -143,7 +136,7 @@ class CORE_EXPORT QgsNetworkContentFetcherRegistry : public QObject
      * \param fetchingMode defines if the download will start immediately or shall be manually triggered
      * \note If the download starts immediately, it will not redownload any already fetched or currently fetching file.
      */
-    const QgsFetchedContent *fetch( const QString &url, FetchingMode fetchingMode = DownloadLater );
+    const QgsFetchedContent *fetch( const QString &url, Qgis::FetchingMode fetchingMode = Qgis::FetchingMode::FetchLater );
 
 #ifndef SIP_RUN
 

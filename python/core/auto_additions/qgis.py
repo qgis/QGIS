@@ -349,6 +349,17 @@ Qgis.DriveType.RamDisk.__doc__ = "RAM disk"
 Qgis.DriveType.__doc__ = 'Drive types\n\n.. versionadded:: 3.20\n\n' + '* ``Unknown``: ' + Qgis.DriveType.Unknown.__doc__ + '\n' + '* ``Invalid``: ' + Qgis.DriveType.Invalid.__doc__ + '\n' + '* ``Removable``: ' + Qgis.DriveType.Removable.__doc__ + '\n' + '* ``Fixed``: ' + Qgis.DriveType.Fixed.__doc__ + '\n' + '* ``Remote``: ' + Qgis.DriveType.Remote.__doc__ + '\n' + '* ``CdRom``: ' + Qgis.DriveType.CdRom.__doc__ + '\n' + '* ``RamDisk``: ' + Qgis.DriveType.RamDisk.__doc__
 # --
 Qgis.DriveType.baseClass = Qgis
+QgsNetworkContentFetcherRegistry.FetchingMode = Qgis.FetchingMode
+# monkey patching scoped based enum
+QgsNetworkContentFetcherRegistry.DownloadLater = Qgis.FetchingMode.FetchLater
+QgsNetworkContentFetcherRegistry.DownloadLater.is_monkey_patched = True
+QgsNetworkContentFetcherRegistry.DownloadLater.__doc__ = "Do not start immediately the fetching"
+QgsNetworkContentFetcherRegistry.DownloadImmediately = Qgis.FetchingMode.FetchImmediately
+QgsNetworkContentFetcherRegistry.DownloadImmediately.is_monkey_patched = True
+QgsNetworkContentFetcherRegistry.DownloadImmediately.__doc__ = "The fetching will start immediately"
+Qgis.FetchingMode.__doc__ = 'Enum to determine when a fetching operation would begin\n\n.. versionadded:: 3.22\n\n' + '* ``DownloadLater``: ' + Qgis.FetchingMode.FetchLater.__doc__ + '\n' + '* ``DownloadImmediately``: ' + Qgis.FetchingMode.FetchImmediately.__doc__
+# --
+Qgis.FetchingMode.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.UnplacedLabelVisibility.FollowEngineSetting.__doc__ = "Respect the label engine setting"
 Qgis.UnplacedLabelVisibility.NeverShow.__doc__ = "Never show unplaced labels, regardless of the engine setting"
