@@ -176,7 +176,7 @@ jobs:
       - uses: actions/upload-artifact@v2.2.4
         if: ${{ matrix.run-tests }}
         with:
-          name: build.tgz
+          name: build-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}.tgz
           path: ./build.tgz
           retention-days: 1
 
@@ -298,10 +298,10 @@ jobs:
             test-batch: ORACLE
             docker-target: binary-for-oracle
 
-          # - distro-version: rawhide
-          #   qt-version: 6
-          #   test-batch: ALL_BUT_PROVIDERS
-          #   docker-target: single
+          - distro-version: rawhide
+            qt-version: 6
+            test-batch: ALL_BUT_PROVIDERS
+            docker-target: single
 
       fail-fast: false
 
@@ -366,7 +366,7 @@ jobs:
       - name: Download build artifact
         uses: actions/download-artifact@v2
         with:
-          name: build.tgz
+          name: build-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}.tgz
           path: .
 
       - name: Extract build artifact
