@@ -614,7 +614,23 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
                       layerItem->mapLayerType() == QgsMapLayerType::RasterLayer ) )
   {
     QMenu *exportMenu = new QMenu( tr( "Export Layer" ), menu );
-    menu->addMenu( exportMenu );
+
+    // if there's a "Manage" menu, we want this to come just before it
+    QAction *beforeAction = nullptr;
+    QList<QAction *> actions = menu->actions();
+    for ( QAction *action : std::as_const( actions ) )
+    {
+      if ( action->text() == tr( "Manage" ) )
+      {
+        beforeAction = action;
+        break;
+      }
+    }
+    if ( beforeAction )
+      menu->insertMenu( beforeAction, exportMenu );
+    else
+      menu->addMenu( exportMenu );
+
     QAction *toFileAction = new QAction( tr( "To File…" ), exportMenu );
     exportMenu->addAction( toFileAction );
     connect( toFileAction, &QAction::triggered, layerItem, [ layerItem ]
@@ -652,6 +668,9 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
     } );
   }
 
+  if ( !menu->isEmpty() )
+    menu->addSeparator();
+
   const QString addText = selectedItems.count() == 1 ? tr( "Add Layer to Project" )
                           : tr( "Add Selected Layers to Project" );
   QAction *addAction = new QAction( addText, menu );
@@ -686,6 +705,12 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
     showPropertiesForItem( layerItem, context );
   } );
   menu->addAction( propertiesAction );
+}
+
+int QgsLayerItemGuiProvider::precedenceWhenPopulatingMenus() const
+{
+  // we want this provider to be called second last (last place is reserved for QgsAppFileItemGuiProvider)
+  return std::numeric_limits< int >::max() - 1;
 }
 
 bool QgsLayerItemGuiProvider::handleDoubleClick( QgsDataItem *item, QgsDataItemGuiContext )
