@@ -1974,7 +1974,7 @@ GENERATE_EXPORT_HEADER(
 set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_core.h)
 
 if(ENABLE_MODELTEST)
-  target_link_libraries(qgis_core ${${QT_VERSION_BASE}Test_LIBRARIES})
+  target_link_libraries(qgis_core ${QT_VERSION_BASE}::Test)
 endif()
 
 if (NOT WITH_INTERNAL_POLY2TRI)
@@ -2042,15 +2042,15 @@ if (ADD_CLAZY_CHECKS)
 endif()
 
 target_link_libraries(qgis_core
-  ${${QT_VERSION_BASE}Core_LIBRARIES}
-  ${${QT_VERSION_BASE}Gui_LIBRARIES}
-  ${${QT_VERSION_BASE}Xml_LIBRARIES}
-  ${${QT_VERSION_BASE}Widgets_LIBRARIES}
-  ${${QT_VERSION_BASE}Svg_LIBRARIES}
-  ${${QT_VERSION_BASE}PrintSupport_LIBRARIES}
-  ${${QT_VERSION_BASE}Network_LIBRARIES}
-  ${${QT_VERSION_BASE}Sql_LIBRARIES}
-  ${${QT_VERSION_BASE}Concurrent_LIBRARIES}
+  ${QT_VERSION_BASE}::Core
+  ${QT_VERSION_BASE}::Gui
+  ${QT_VERSION_BASE}::Xml
+  ${QT_VERSION_BASE}::Widgets
+  ${QT_VERSION_BASE}::Svg
+  ${QT_VERSION_BASE}::PrintSupport
+  ${QT_VERSION_BASE}::Network
+  ${QT_VERSION_BASE}::Sql
+  ${QT_VERSION_BASE}::Concurrent
   ${OPTIONAL_QTWEBKIT}
   ${QCA_LIBRARY}
   ${QTKEYCHAIN_LIBRARY}

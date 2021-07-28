@@ -126,12 +126,12 @@ target_link_libraries (provider_pdal
 if (WITH_GUI)
   target_link_libraries (provider_pdal
     ${PDAL_LIBRARIES}
-    ${${QT_VERSION_BASE}Xml_LIBRARIES}
-    ${${QT_VERSION_BASE}Core_LIBRARIES}
-    ${${QT_VERSION_BASE}Svg_LIBRARIES}
-    ${${QT_VERSION_BASE}Network_LIBRARIES}
-    ${${QT_VERSION_BASE}Sql_LIBRARIES}
-    ${${QT_VERSION_BASE}Concurrent_LIBRARIES}
+    ${QT_VERSION_BASE}::Xml
+    ${QT_VERSION_BASE}::Core
+    ${QT_VERSION_BASE}::Svg
+    ${QT_VERSION_BASE}::Network
+    ${QT_VERSION_BASE}::Sql
+    ${QT_VERSION_BASE}::Concurrent
     qgis_gui
   )
   add_dependencies(provider_pdal ui)
@@ -145,12 +145,12 @@ target_compile_features(provider_pdal_a PRIVATE cxx_std_17)
 
 target_link_libraries (provider_pdal_a
   ${PDAL_LIBRARIES}
-  ${${QT_VERSION_BASE}Xml_LIBRARIES}
-  ${${QT_VERSION_BASE}Core_LIBRARIES}
-  ${${QT_VERSION_BASE}Svg_LIBRARIES}
-  ${${QT_VERSION_BASE}Network_LIBRARIES}
-  ${${QT_VERSION_BASE}Sql_LIBRARIES}
-  ${${QT_VERSION_BASE}Concurrent_LIBRARIES}
+  ${QT_VERSION_BASE}::Xml
+  ${QT_VERSION_BASE}::Core
+  ${QT_VERSION_BASE}::Svg
+  ${QT_VERSION_BASE}::Network
+  ${QT_VERSION_BASE}::Sql
+  ${QT_VERSION_BASE}::Concurrent
   qgis_core
 )
 
@@ -162,12 +162,12 @@ if (WITH_GUI)
 
   target_link_libraries (provider_pdal_gui_a
     ${PDAL_LIBRARIES}
-    ${${QT_VERSION_BASE}Xml_LIBRARIES}
-    ${${QT_VERSION_BASE}Core_LIBRARIES}
-    ${${QT_VERSION_BASE}Svg_LIBRARIES}
-    ${${QT_VERSION_BASE}Network_LIBRARIES}
-    ${${QT_VERSION_BASE}Sql_LIBRARIES}
-    ${${QT_VERSION_BASE}Concurrent_LIBRARIES}
+    ${QT_VERSION_BASE}::Xml
+    ${QT_VERSION_BASE}::Core
+    ${QT_VERSION_BASE}::Svg
+    ${QT_VERSION_BASE}::Network
+    ${QT_VERSION_BASE}::Sql
+    ${QT_VERSION_BASE}::Concurrent
     qgis_gui
   )
   add_dependencies(provider_pdal_gui_a ui)

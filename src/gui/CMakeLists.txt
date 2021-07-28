@@ -1500,10 +1500,10 @@ add_dependencies(qgis_gui ui)
 target_link_libraries(qgis_gui
   qgis_core
   qgis_native
-  ${${QT_VERSION_BASE}UiTools_LIBRARIES}
+  ${QT_VERSION_BASE}::UiTools
   ${QWT_LIBRARY}
   ${QSCINTILLA_LIBRARY}
-  ${${QT_VERSION_BASE}QuickWidgets_LIBRARIES}
+  ${QT_VERSION_BASE}::QuickWidgets
 )
 
 if (FORCE_STATIC_LIBS)
@@ -1514,7 +1514,7 @@ if (FORCE_STATIC_LIBS)
 endif()
 
 if(ENABLE_MODELTEST)
-  target_link_libraries(qgis_gui ${${QT_VERSION_BASE}Test_LIBRARIES})
+  target_link_libraries(qgis_gui ${QT_VERSION_BASE}::Test)
 endif()
 
 target_compile_definitions(qgis_gui PRIVATE "-DQT_NO_FOREACH")
