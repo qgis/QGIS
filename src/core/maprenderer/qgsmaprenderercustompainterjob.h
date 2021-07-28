@@ -75,7 +75,7 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererAbstract
     QgsLabelingResults *takeLabelingResults() SIP_TRANSFER override;
 
     //! \note not available in Python bindings
-    const LayerRenderJobs &jobs() const { return mLayerJobs; } SIP_SKIP
+    const std::vector< LayerRenderJob > &jobs() const { return mLayerJobs; } SIP_SKIP
 
     /**
      * Wait for the job to be finished - and keep the thread's event loop running while waiting.
@@ -145,13 +145,13 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererAbstract
     std::unique_ptr< QgsLabelingEngine > mLabelingEngineV2;
 
     bool mActive;
-    LayerRenderJobs mLayerJobs;
+    std::vector< LayerRenderJob > mLayerJobs;
     LabelRenderJob mLabelJob;
     bool mRenderSynchronously = false;
     bool mPrepared = false;
     bool mPrepareOnly = false;
 
-    LayerRenderJobs mSecondPassLayerJobs;
+    std::vector< LayerRenderJob > mSecondPassLayerJobs;
 };
 
 

@@ -119,9 +119,9 @@ class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractC
 
     std::unique_ptr< QgsLabelingEngine > mLabelingEngineV2;
 
-    LayerRenderJobs mLayerJobs;
+    std::vector< LayerRenderJob > mLayerJobs;
     LabelRenderJob mLabelJob;
-    LayerRenderJobs::iterator mJobIt;
+    std::vector< LayerRenderJob >::iterator mJobIt;
 
     bool mNextIsLabel = false;
     bool mExportedLabels = false;

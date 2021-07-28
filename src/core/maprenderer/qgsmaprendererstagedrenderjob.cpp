@@ -104,7 +104,7 @@ bool QgsMapRendererStagedRenderJob::renderCurrentPart( QPainter *painter )
     LayerRenderJob &job = *mJobIt;
     job.renderer->renderContext()->setPainter( painter );
 
-    if ( job.context.useAdvancedEffects() )
+    if ( job.context()->useAdvancedEffects() )
     {
       // Set the QPainter composition mode so that this layer is rendered using
       // the desired blending mode
@@ -126,7 +126,7 @@ bool QgsMapRendererStagedRenderJob::renderCurrentPart( QPainter *painter )
       painter->drawImage( 0, 0, *job.img );
       painter->setOpacity( 1.0 );
     }
-    job.context.setPainter( nullptr );
+    job.context()->setPainter( nullptr );
   }
   else
   {

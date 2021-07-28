@@ -45,96 +45,129 @@ class QgsFeatureFilterProvider;
  * \ingroup core
  * \brief Structure keeping low-level rendering job information.
  */
-struct LayerRenderJob
+class LayerRenderJob
 {
-  QgsRenderContext context;
+  public:
 
-  /**
-   * Pointer to destination image.
-   *
-   * May be NULLPTR if it is not necessary to draw to separate image (e.g. sequential rendering).
-   */
-  QImage *img;
-  //! TRUE when img has been initialized (filled with transparent pixels)
-  bool imageInitialized = false;
+    LayerRenderJob() = default;
 
-  bool imageCanBeComposed() const;
+    //! LayerRenderJob cannot be copied
+    LayerRenderJob( const LayerRenderJob & ) = delete;
 
-  QgsMapLayerRenderer *renderer; // must be deleted
+    //! LayerRenderJob cannot be copied
+    LayerRenderJob &operator=( const LayerRenderJob & ) = delete;
 
-  QPainter::CompositionMode blendMode;
-  double opacity;
-  //! If TRUE, img already contains cached image from previous rendering
-  bool cached;
-  QgsWeakMapLayerPointer layer;
+    LayerRenderJob( LayerRenderJob && );
+    LayerRenderJob &operator=( LayerRenderJob && );
 
-  /**
-   * TRUE if the render job was successfully completed in its entirety (i.e. it was
-   * not canceled or aborted early).
-   *
-   * \since QGIS 3.18
-   */
-  bool completed = false;
+    /**
+     * Sets the render \a context for the job.
+     *
+     * \warning This should only be set once, and must be set before any map layer renderers
+     * are created for the job.
+     */
+    void setContext( std::unique_ptr< QgsRenderContext > context ) { mContext = std::move( context ); }
 
-  int renderingTime; //!< Time it took to render the layer in ms (it is -1 if not rendered or still rendering)
+    /**
+     * Returns the render context associated with the job.
+     *
+     * \see setContext()
+     */
+    QgsRenderContext *context() { return mContext.get(); }
 
-  /**
-   * Estimated time for the layer to render, in ms.
-   *
-   * This can be used to specifies hints at the expected render times for the layer, so that
-   * the corresponding layer renderer can apply heuristics and determine appropriate update
-   * intervals during the render operation.
-   *
-   * \since QGIS 3.18
-   */
-  int estimatedRenderingTime = 0;
+    /**
+     * Pointer to destination image.
+     *
+     * May be NULLPTR if it is not necessary to draw to separate image (e.g. sequential rendering).
+     */
+    QImage *img = nullptr;
 
-  QStringList errors; //!< Rendering errors
+    //! TRUE when img has been initialized (filled with transparent pixels)
+    bool imageInitialized = false;
 
-  /**
-   * Identifies the associated layer by ID.
-   *
-   * \warning This should NEVER be used to retrieve map layers during a render job, and instead
-   * is intended for use as a string identifier only.
-   *
-   * \since QGIS 3.10
-   */
-  QString layerId;
+    bool imageCanBeComposed() const;
 
-  /**
-   * Selective masking handling.
-   *
-   * A layer can be involved in selective masking in two ways:
-   *
-   * - One of its symbol layer masks a symbol layer of another layer.
-   *   In this case we need to compute a mask image during the regular
-   *   rendering pass that will be stored here;
-   * - Some of its symbol layers are masked by a symbol layer of another layer (or by a label mask)
-   *   In this case we need to render the layer once again in a second pass, but with some symbol
-   *   layers disabled.
-   *   This second rendering will be composed with mask images that have been computed in the first
-   *   pass by another job. We then need to know which first pass image and which masks correspond.
-   */
+    QgsMapLayerRenderer *renderer = nullptr; // must be deleted
 
-  //! Mask image, needed during the first pass if a mask is defined
-  QImage *maskImage = nullptr;
+    QPainter::CompositionMode blendMode = QPainter::CompositionMode_SourceOver;
 
-  /**
-   * Pointer to the first pass job, needed during the second pass
-   * to access first pass painter and image.
-   */
-  LayerRenderJob *firstPassJob = nullptr;
+    double opacity = 1.0;
 
-  /**
-   * Pointer to first pass jobs that carry a mask image, needed during the second pass.
-   * This can be either a LayerRenderJob, in which case the second element of the QPair is ignored.
-   * Or this can be a LabelRenderJob if the first element is nullptr.
-   * In this latter case, the second element of the QPair gives the label mask id.
-   */
-  QList<QPair<LayerRenderJob *, int>> maskJobs;
+    //! If TRUE, img already contains cached image from previous rendering
+    bool cached = false;
+
+    QgsWeakMapLayerPointer layer;
+
+    /**
+     * TRUE if the render job was successfully completed in its entirety (i.e. it was
+     * not canceled or aborted early).
+     *
+     * \since QGIS 3.18
+     */
+    bool completed = false;
+
+    //! Time it took to render the layer in ms (it is -1 if not rendered or still rendering)
+    int renderingTime = -1;
+
+    /**
+     * Estimated time for the layer to render, in ms.
+     *
+     * This can be used to specifies hints at the expected render times for the layer, so that
+     * the corresponding layer renderer can apply heuristics and determine appropriate update
+     * intervals during the render operation.
+     *
+     * \since QGIS 3.18
+     */
+    int estimatedRenderingTime = 0;
+
+    QStringList errors; //!< Rendering errors
+
+    /**
+     * Identifies the associated layer by ID.
+     *
+     * \warning This should NEVER be used to retrieve map layers during a render job, and instead
+     * is intended for use as a string identifier only.
+     *
+     * \since QGIS 3.10
+     */
+    QString layerId;
+
+    /**
+     * Selective masking handling.
+     *
+     * A layer can be involved in selective masking in two ways:
+     *
+     * - One of its symbol layer masks a symbol layer of another layer.
+     *   In this case we need to compute a mask image during the regular
+     *   rendering pass that will be stored here;
+     * - Some of its symbol layers are masked by a symbol layer of another layer (or by a label mask)
+     *   In this case we need to render the layer once again in a second pass, but with some symbol
+     *   layers disabled.
+     *   This second rendering will be composed with mask images that have been computed in the first
+     *   pass by another job. We then need to know which first pass image and which masks correspond.
+     */
+
+    //! Mask image, needed during the first pass if a mask is defined
+    QImage *maskImage = nullptr;
+
+    /**
+     * Pointer to the first pass job, needed during the second pass
+     * to access first pass painter and image.
+     */
+    LayerRenderJob *firstPassJob = nullptr;
+
+    /**
+     * Pointer to first pass jobs that carry a mask image, needed during the second pass.
+     * This can be either a LayerRenderJob, in which case the second element of the QPair is ignored.
+     * Or this can be a LabelRenderJob if the first element is nullptr.
+     * In this latter case, the second element of the QPair gives the label mask id.
+     */
+    QList<QPair<LayerRenderJob *, int>> maskJobs;
+
+  private:
+    std::unique_ptr< QgsRenderContext > mContext;
+
 };
-
-typedef QList<LayerRenderJob> LayerRenderJobs;
 
 /**
  * \ingroup core
@@ -406,7 +439,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
      *
      * \note not available in Python bindings
      */
-    LayerRenderJobs prepareJobs( QPainter *painter, QgsLabelingEngine *labelingEngine2, bool deferredPainterSet = false ) SIP_SKIP;
+    std::vector< LayerRenderJob > prepareJobs( QPainter *painter, QgsLabelingEngine *labelingEngine2, bool deferredPainterSet = false ) SIP_SKIP;
 
     /**
      * Prepares a labeling job.
@@ -423,11 +456,11 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
      * \note not available in Python bindings
      * \since QGIS 3.12
      */
-    LayerRenderJobs prepareSecondPassJobs( LayerRenderJobs &firstPassJobs, LabelRenderJob &labelJob ) SIP_SKIP;
+    std::vector< LayerRenderJob > prepareSecondPassJobs( std::vector< LayerRenderJob > &firstPassJobs, LabelRenderJob &labelJob ) SIP_SKIP;
 
     //! \note not available in Python bindings
     static QImage composeImage( const QgsMapSettings &settings,
-                                const LayerRenderJobs &jobs,
+                                const std::vector< LayerRenderJob > &jobs,
                                 const LabelRenderJob &labelJob,
                                 const QgsMapRendererCache *cache = nullptr ) SIP_SKIP;
 
@@ -440,16 +473,16 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
      * \note not available in Python bindings
      * \since QGIS 3.12
      */
-    static void composeSecondPass( LayerRenderJobs &secondPassJobs, LabelRenderJob &labelJob ) SIP_SKIP;
+    static void composeSecondPass( std::vector< LayerRenderJob > &secondPassJobs, LabelRenderJob &labelJob ) SIP_SKIP;
 
     //! \note not available in Python bindings
-    void logRenderingTime( const LayerRenderJobs &jobs, const LayerRenderJobs &secondPassJobs, const LabelRenderJob &labelJob ) SIP_SKIP;
+    void logRenderingTime( const std::vector< LayerRenderJob > &jobs, const std::vector< LayerRenderJob > &secondPassJobs, const LabelRenderJob &labelJob ) SIP_SKIP;
 
     //! \note not available in Python bindings
-    void cleanupJobs( LayerRenderJobs &jobs ) SIP_SKIP;
+    void cleanupJobs( std::vector< LayerRenderJob > &jobs ) SIP_SKIP;
 
     //! \note not available in Python bindings
-    void cleanupSecondPassJobs( LayerRenderJobs &jobs ) SIP_SKIP;
+    void cleanupSecondPassJobs( std::vector< LayerRenderJob > &jobs ) SIP_SKIP;
 
     /**
      * Handles clean up tasks for a label job, including deletion of images and storing cached
