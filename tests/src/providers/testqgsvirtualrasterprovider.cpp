@@ -100,7 +100,7 @@ void TestQgsVirtualRasterProvider::validLayer()
   std::unique_ptr< QgsRasterLayer > layer = std::make_unique< QgsRasterLayer >(
         mTestDataDir + QStringLiteral( "raster/dem.tif" ),
         QStringLiteral( "layer" ),
-        QStringLiteral( "virtualrasterprovider" ),
+        QStringLiteral( "virtualraster" ),
         options
       );
 
@@ -161,7 +161,7 @@ void TestQgsVirtualRasterProvider::testConstructorWrong()
                 QStringLiteral( "landsat:uri=" ) % mTestDataDir % QStringLiteral( "landsat.tif" ) );
   std::unique_ptr< QgsRasterLayer > layer = std::make_unique< QgsRasterLayer >( uri,
       QStringLiteral( "layer" ),
-      QStringLiteral( "virtualrasterprovider" ) );
+      QStringLiteral( "virtualraster" ) );
 
   if ( layer->dataProvider()->isValid() )
   {
@@ -184,7 +184,7 @@ void TestQgsVirtualRasterProvider::testConstructor()
   QString uri1 = QString( "%1&%2" ).arg( str1, QStringLiteral( "dem:uri=" ) % mTestDataDir % QStringLiteral( "raster/dem.tif" ) );
   std::unique_ptr< QgsRasterLayer > layer_1 = std::make_unique< QgsRasterLayer >( uri1,
       QStringLiteral( "layer_1" ),
-      QStringLiteral( "virtualrasterprovider" ) );
+      QStringLiteral( "virtualraster" ) );
 
   QVERIFY( layer_1->dataProvider()->isValid() );
   QVERIFY( layer_1->isValid() );
@@ -200,7 +200,7 @@ void TestQgsVirtualRasterProvider::testConstructor()
   QString uri2 = QString( "%1&%2" ).arg( str2, QStringLiteral( "landsat:uri=" ) % mTestDataDir % QStringLiteral( "landsat.tif" ) );
   std::unique_ptr< QgsRasterLayer > layer_2 = std::make_unique< QgsRasterLayer >( uri2,
       QStringLiteral( "layer_2" ),
-      QStringLiteral( "virtualrasterprovider" ) );
+      QStringLiteral( "virtualraster" ) );
 
   QVERIFY( layer_2->isValid() );
   QVERIFY( layer_2->dataProvider()->isValid() );
@@ -214,7 +214,7 @@ void TestQgsVirtualRasterProvider::testConstructor()
   QString uri3 = QString( "%1&%2" ).arg( str3, QStringLiteral( "landsat:uri=" ) % mTestDataDir % QStringLiteral( "landsat.tif" ) );
   std::unique_ptr< QgsRasterLayer > layer_3 = std::make_unique< QgsRasterLayer >( uri3,
       QStringLiteral( "layer_3" ),
-      QStringLiteral( "virtualrasterprovider" ) );
+      QStringLiteral( "virtualraster" ) );
   QVERIFY( ! layer_3->isValid() );
 
 }

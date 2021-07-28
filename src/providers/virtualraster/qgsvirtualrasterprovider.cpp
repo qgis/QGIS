@@ -17,7 +17,8 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterprojector.h"
 
-#define PROVIDER_KEY QStringLiteral( "virtualrasterprovider" )
+//#define PROVIDER_KEY QStringLiteral( "virtualrasterprovider" )
+#define PROVIDER_KEY QStringLiteral( "virtualraster" )
 #define PROVIDER_DESCRIPTION QStringLiteral( "Virtual Raster data provider" )
 
 QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions )

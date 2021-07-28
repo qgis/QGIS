@@ -6533,7 +6533,7 @@ void QgisApp::showRasterCalculator()
     addRasterLayer( QgsRasterDataProvider::encodeVirtualRasterProviderUri( virtualCalcParams ),
                     //QStringLiteral( "virtuallayer" ),
                     d.virtualLayerName() == QString( "" ) ? d.formulaString() : d.virtualLayerName(),
-                    QStringLiteral( "virtualrasterprovider" ) );
+                    QStringLiteral( "virtualraster" ) );
   }
   else
   {
