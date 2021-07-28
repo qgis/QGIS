@@ -246,8 +246,9 @@ class SERVER_EXPORT QgsServerParameters
     /**
      * Loads new parameters.
      * \param query url query
+     * \param storeQUery store the url query as it is done in the constructor
      */
-    void load( const QUrlQuery &query );
+    void load( const QUrlQuery &query, const bool storeQuery = false );
 
     /**
      * Removes all parameters.

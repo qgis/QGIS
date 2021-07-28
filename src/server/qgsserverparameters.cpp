@@ -560,8 +560,12 @@ QVariant QgsServerParameters::value( QgsServerParameter::Name name ) const
   return mParameters[name].mValue;
 }
 
-void QgsServerParameters::load( const QUrlQuery &query )
+void QgsServerParameters::load( const QUrlQuery &query, const bool storeQuery )
 {
+  if ( storeQuery )
+  {
+    mUrlQuery = query;
+  }
   // clean query string first
   QUrlQuery cleanQuery( query );
   cleanQuery.setQuery( query.query().replace( '+', QLatin1String( "%20" ) ) );
