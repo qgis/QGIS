@@ -44,10 +44,6 @@ QString QgsPostgresExpressionCompiler::quotedValue( const QVariant &value, bool 
     case QVariant::Double:
       return value.toString();
 
-    //most likely a geometry
-    case QVariant::UserType:
-      ok = false;
-
     default:
       break;
   }

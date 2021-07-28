@@ -1239,6 +1239,13 @@ QString QgsPostgresConn::quotedValue( const QVariant &value )
     case QVariant::List:
       return quotedList( value.toList() );
 
+    case QVariant::UserType:
+      if ( value.canConvert<QgsGeometry>() )
+      {
+        QgsGeometry geom = value.value<QgsGeometry>();
+        return QString( "ST_GeomFromText('%1')" ).arg( geom.asWkt() );
+      }
+
     case QVariant::Double:
     case QVariant::String:
     default:
