@@ -80,9 +80,9 @@ void QgsMapRendererParallelJob::cancel()
   QgsDebugMsgLevel( QStringLiteral( "PARALLEL cancel at status %1" ).arg( mStatus ), 2 );
 
   mLabelJob.context.setRenderingStopped( true );
-  for ( LayerRenderJobs::iterator it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
+  for ( auto it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
   {
-    it->context.setRenderingStopped( true );
+    it->context()->setRenderingStopped( true );
     if ( it->renderer && it->renderer->feedback() )
       it->renderer->feedback()->cancel();
   }
@@ -125,9 +125,9 @@ void QgsMapRendererParallelJob::cancelWithoutBlocking()
   QgsDebugMsgLevel( QStringLiteral( "PARALLEL cancel at status %1" ).arg( mStatus ), 2 );
 
   mLabelJob.context.setRenderingStopped( true );
-  for ( LayerRenderJobs::iterator it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
+  for ( auto it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
   {
-    it->context.setRenderingStopped( true );
+    it->context()->setRenderingStopped( true );
     if ( it->renderer && it->renderer->feedback() )
       it->renderer->feedback()->cancel();
   }
@@ -224,8 +224,7 @@ void QgsMapRendererParallelJob::renderLayersFinished()
 {
   Q_ASSERT( mStatus == RenderingLayers );
 
-  LayerRenderJobs::const_iterator it = mLayerJobs.constBegin();
-  for ( ; it != mLayerJobs.constEnd(); ++it )
+  for ( auto it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
   {
     if ( !it->errors.isEmpty() )
     {
@@ -234,7 +233,7 @@ void QgsMapRendererParallelJob::renderLayersFinished()
   }
 
   // compose final image for labeling
-  if ( mSecondPassLayerJobs.isEmpty() )
+  if ( mSecondPassLayerJobs.empty() )
   {
     mFinalImage = composeImage( mSettings, mLayerJobs, mLabelJob, mCache );
   }
@@ -285,7 +284,7 @@ void QgsMapRendererParallelJob::renderingFinished()
     mLabelJob.maskImage->save( QString( "/tmp/labels_mask.png" ) );
   }
 #endif
-  if ( ! mSecondPassLayerJobs.isEmpty() )
+  if ( ! mSecondPassLayerJobs.empty() )
   {
     mStatus = RenderingSecondPass;
     // We have a second pass to do.
@@ -344,7 +343,7 @@ void QgsMapRendererParallelJob::renderLayersSecondPassFinished()
 
 void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob &job )
 {
-  if ( job.context.renderingStopped() )
+  if ( job.context()->renderingStopped() )
     return;
 
   if ( job.cached )

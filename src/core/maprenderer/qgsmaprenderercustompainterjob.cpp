@@ -161,9 +161,9 @@ void QgsMapRendererCustomPainterJob::cancelWithoutBlocking()
   }
 
   mLabelJob.context.setRenderingStopped( true );
-  for ( LayerRenderJobs::iterator it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
+  for ( auto it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
   {
-    it->context.setRenderingStopped( true );
+    it->context()->setRenderingStopped( true );
     if ( it->renderer && it->renderer->feedback() )
       it->renderer->feedback()->cancel();
   }
@@ -284,19 +284,19 @@ void QgsMapRendererCustomPainterJob::staticRender( QgsMapRendererCustomPainterJo
 
 void QgsMapRendererCustomPainterJob::doRender()
 {
-  bool hasSecondPass = ! mSecondPassLayerJobs.isEmpty();
+  bool hasSecondPass = ! mSecondPassLayerJobs.empty();
   QgsDebugMsgLevel( QStringLiteral( "Starting to render layer stack." ), 5 );
   QElapsedTimer renderTime;
   renderTime.start();
 
-  for ( LayerRenderJobs::iterator it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
+  for ( auto it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
   {
     LayerRenderJob &job = *it;
 
-    if ( job.context.renderingStopped() )
+    if ( job.context()->renderingStopped() )
       break;
 
-    if ( ! hasSecondPass && job.context.useAdvancedEffects() )
+    if ( ! hasSecondPass && job.context()->useAdvancedEffects() )
     {
       // Set the QPainter composition mode so that this layer is rendered using
       // the desired blending mode
@@ -371,7 +371,7 @@ void QgsMapRendererCustomPainterJob::doRender()
   {
     for ( LayerRenderJob &job : mSecondPassLayerJobs )
     {
-      if ( job.context.renderingStopped() )
+      if ( job.context()->renderingStopped() )
         break;
 
       if ( !job.cached )
