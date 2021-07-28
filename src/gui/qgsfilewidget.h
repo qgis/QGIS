@@ -272,7 +272,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     QgsFileWidget::RelativeStorage relativeStorage() const;
 
     /**
-     * Sets wheter the relative path is with respect to the project path or the default path.
+     * Sets whether the relative path is with respect to the project path or the default path.
      *
      * \see relativeStorage()
      */

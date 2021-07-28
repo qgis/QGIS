@@ -239,7 +239,7 @@ Returns if the relative path is with respect to the project path or the default 
 
     void setRelativeStorage( QgsFileWidget::RelativeStorage relativeStorage );
 %Docstring
-Sets wheter the relative path is with respect to the project path or the default path.
+Sets whether the relative path is with respect to the project path or the default path.
 
 .. seealso:: :py:func:`relativeStorage`
 %End
