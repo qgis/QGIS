@@ -207,7 +207,7 @@ macro(ADD_GRASSPLUGIN GRASS_BUILD_VERSION)
     if (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
       target_link_libraries(grassplugin${GRASS_BUILD_VERSION} ulog)
     endif()
-.
+
     # override default path where built files are put to allow running qgis without installing
     # the binary goes under libexec subdir
     set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIBEXEC_SUBDIR}/grass/bin)
