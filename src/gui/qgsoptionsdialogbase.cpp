@@ -99,6 +99,7 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString &title
     mTreeProxyModel = new QgsOptionsProxyModel( this );
     mTreeProxyModel->setSourceModel( mOptTreeModel );
     mOptTreeView->setModel( mTreeProxyModel );
+    mOptTreeView->expandAll();
   }
 
   QFrame *optionsFrame = findChild<QFrame *>( QStringLiteral( "mOptionsFrame" ) );
