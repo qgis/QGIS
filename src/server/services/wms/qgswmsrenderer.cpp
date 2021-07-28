@@ -3188,10 +3188,35 @@ namespace QgsWms
       }
       else
       {
+        QgsMessageLog::logMessage( QStringLiteral( "WMS Dimension: %1" ).arg( mContext.parameters().urlQuery().toString() ) );
         // Get field to convert value provided in parameters
         QgsField dimField = layer->fields().at( fieldIndex );
         // Value provided in parameters
         QString dimParamValue = dimParamValues[dim.name.toUpper()];
+        QgsMessageLog::logMessage( QStringLiteral( "WMS Dimension value: %1 %2" ).arg( dim.name, dimParamValue ) );
+        // Get un decode value to check , for list of values and / for range value
+        if ( dimParamValue.contains( ',' ) || dimParamValue.contains( '/' ) )
+        {
+            QgsMessageLog::logMessage( QStringLiteral( "WMS Dimension contains , or /" ) );
+            QUrlQuery query = mContext.parameters().urlQuery();
+            const auto constQueryItems( query.queryItems( QUrl::DecodeReserved ) );
+            for ( const auto &item : constQueryItems )
+            {
+              const QString itemName( item.first.toUpper() );
+              if ( !itemName.startsWith( QStringLiteral( "DIM_" ) ) )
+              {
+                continue;
+              }
+              QgsMessageLog::logMessage( QStringLiteral( "WMS Dimension: %1 %2" ).arg( dim.name.toUpper(), itemName.right( itemName.length() - 4 ) ) );
+              if ( itemName.right( itemName.length() - 4 ) == dim.name.toUpper() )
+              {
+                dimParamValue = item.second;
+                QgsMessageLog::logMessage( QStringLiteral( "WMS Dimension: %1 %2" ).arg( dim.name, item.first ) );
+                break;
+              }
+            }
+            QgsMessageLog::logMessage( QStringLiteral( "WMS Dimension value: %1 %2" ).arg( dim.name, dimParamValue ) );
+        }
         // The expression list for this dimension
         QStringList dimExplist;
         // Multiple values are separated by ,
@@ -3205,7 +3230,7 @@ namespace QgsWms
             dimValue = dimValue.trimmed();
           }
           // Range value is separated by / for example 0/1
-          if ( dimValue.count( '/' ) == 1 )
+          if ( dimValue.contains( '/' ) )
           {
             QStringList rangeValues = dimValue.split( '/' );
             // Check range value size
@@ -3253,6 +3278,8 @@ namespace QgsWms
           }
           else
           {
+            dimValue = dimValue.replace( QLatin1String( "%2F" ), QLatin1String( "/" ) ).replace( QLatin1String( "%2C" ), QLatin1String( "," ) );
+            QgsMessageLog::logMessage( QStringLiteral( "WMS Dimension value: %1 %2" ).arg( dim.name, dimValue ) );
             QVariant dimVariant = QVariant( dimValue );
             if ( !dimField.convertCompatible( dimVariant ) )
             {
@@ -3262,6 +3289,7 @@ namespace QgsWms
             if ( endFieldIndex == -1 )
             {
               // Field is equal to
+              QgsMessageLog::logMessage( QStringLiteral( "WMS Dimension exp: %1" ).arg( QgsExpression::createFieldEqualityExpression( dim.fieldName, dimVariant ) ) );
               dimExplist << QgsExpression::createFieldEqualityExpression( dim.fieldName, dimVariant );
             }
             else

@@ -66,7 +66,7 @@ class TestQgsServerWMSDimension(TestQgsServerWMSTestBase):
             "SERVICE": "WMS",
             "VERSION": "1.3.0",
             "REQUEST": "GetMap",
-            "LAYERS": "dem,Slopes,Contours,Datetime_dim",
+            "LAYERS": "dem,Slopes,Contours,Datetime_dim,Towns",
             "STYLES": "",
             "FORMAT": "image/png",
             "BBOX": "-1219081,4281848,172260,5673189",
@@ -151,6 +151,61 @@ class TestQgsServerWMSDimension(TestQgsServerWMSTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Dimension_Date_Value")
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "LAYERS": "dem,Towns",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-1219081,4281848,172260,5673189",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "DIM_LOCALITY": "Benidorm"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Dimension_Locality_Value_Benidorm")
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "LAYERS": "dem,Towns",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-1219081,4281848,172260,5673189",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "DIM_LOCALITY": "A Coruña"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Dimension_Locality_Value_A_Coruna")
+
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "LAYERS": "dem,Towns",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-1219081,4281848,172260,5673189",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "DIM_LOCALITY": "Beyrie s%252F Joyeuse"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Dimension_Locality_Value_Beyrie_sur_Joyeuse")
 
         # multi dimension with value
         qs = "?" + "&".join(["%s=%s" % i for i in list({

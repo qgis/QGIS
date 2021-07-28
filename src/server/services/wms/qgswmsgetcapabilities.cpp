@@ -1268,7 +1268,7 @@ namespace QgsWms
               QStringList strValues;
               for ( const QVariant &v : values )
               {
-                strValues << v.toString();
+                strValues << v.toString().replace( '/', QLatin1String( "%2F" ) ).replace( ',', QLatin1String( "%2C" ) );
               }
               QDomText dimValuesText = doc.createTextNode( strValues.join( QLatin1String( ", " ) ) );
               dimElem.appendChild( dimValuesText );
