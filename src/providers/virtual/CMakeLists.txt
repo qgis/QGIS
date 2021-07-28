@@ -60,9 +60,9 @@ target_compile_features(provider_virtuallayer PRIVATE cxx_std_17)
 
 target_link_libraries(provider_virtuallayer
   qgis_core
-  ${${QT_VERSION_BASE}Core_LIBRARIES}
-  ${${QT_VERSION_BASE}Gui_LIBRARIES}
-  ${${QT_VERSION_BASE}Widgets_LIBRARIES}
+  ${QT_VERSION_BASE}::Core
+  ${QT_VERSION_BASE}::Gui
+  ${QT_VERSION_BASE}::Widgets
   ${SQLITE3_LIBRARY}
   ${SPATIALITE_LIBRARY}
 )

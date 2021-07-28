@@ -26,12 +26,12 @@ include_directories(SYSTEM
 target_link_libraries(qgis_bench
   qgis_core
   ${SQLITE3_LIBRARY}
-  ${${QT_VERSION_BASE}Core_LIBRARIES}
-  ${${QT_VERSION_BASE}Network_LIBRARIES}
-  ${${QT_VERSION_BASE}Svg_LIBRARIES}
-  ${${QT_VERSION_BASE}Xml_LIBRARIES}
+  ${QT_VERSION_BASE}::Core
+  ${QT_VERSION_BASE}::Network
+  ${QT_VERSION_BASE}::Svg
+  ${QT_VERSION_BASE}::Xml
   ${OPTIONAL_QTWEBKIT}
-  ${${QT_VERSION_BASE}Test_LIBRARIES}
+  ${QT_VERSION_BASE}::Test
 )
 
 if(APPLE)

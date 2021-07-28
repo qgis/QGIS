@@ -39,7 +39,7 @@ target_compile_features(provider_mssql PRIVATE cxx_std_17)
 
 target_link_libraries(provider_mssql
   qgis_core
-  ${${QT_VERSION_BASE}Sql_LIBRARIES}
+  ${QT_VERSION_BASE}::Sql
 )
 
 if (WITH_GUI)

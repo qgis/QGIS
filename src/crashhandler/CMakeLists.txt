@@ -29,9 +29,9 @@ add_executable(qgiscrashhandler WIN32
 target_compile_features(qgiscrashhandler PRIVATE cxx_std_17)
 
 target_link_libraries(qgiscrashhandler
-  ${${QT_VERSION_BASE}Core_LIBRARIES}
-  ${${QT_VERSION_BASE}Gui_LIBRARIES}
-  ${${QT_VERSION_BASE}Widgets_LIBRARIES}
+  ${QT_VERSION_BASE}::Core
+  ${QT_VERSION_BASE}::Gui
+  ${QT_VERSION_BASE}::Widgets
   dbghelp
 )
 

@@ -32,11 +32,11 @@ target_compile_features(qgis_3d_sandbox PRIVATE cxx_std_17)
 
 set_target_properties(qgis_3d_sandbox PROPERTIES AUTORCC TRUE)
 target_link_libraries(qgis_3d_sandbox
-  ${${QT_VERSION_BASE}Xml_LIBRARIES}
-  ${${QT_VERSION_BASE}Core_LIBRARIES}
-  ${${QT_VERSION_BASE}Svg_LIBRARIES}
-  ${${QT_VERSION_BASE}Network_LIBRARIES}
-  ${${QT_VERSION_BASE}Test_LIBRARIES}
+  ${QT_VERSION_BASE}::Xml
+  ${QT_VERSION_BASE}::Core
+  ${QT_VERSION_BASE}::Svg
+  ${QT_VERSION_BASE}::Network
+  ${QT_VERSION_BASE}::Test
   ${PROJ_LIBRARY}
   ${GEOS_LIBRARY}
   ${GDAL_LIBRARY}

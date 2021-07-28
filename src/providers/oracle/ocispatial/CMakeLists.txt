@@ -18,8 +18,8 @@ set(QSQLOCISPATIAL_SRC qsql_ocispatial.cpp main.cpp qsql_ocispatial.h main.h)
 add_library(qsqlocispatial SHARED ${QSQLOCISPATIAL_SRC})
 
 target_link_libraries(qsqlocispatial
-  ${${QT_VERSION_BASE}Core_LIBRARIES}
-  ${${QT_VERSION_BASE}Sql_LIBRARIES}
+  ${QT_VERSION_BASE}::Core
+  ${QT_VERSION_BASE}::Sql
   ${OCI_LIBRARY}
 )
 
