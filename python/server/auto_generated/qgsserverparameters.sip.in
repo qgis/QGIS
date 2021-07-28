@@ -263,11 +263,12 @@ Constructor.
 
     virtual ~QgsServerParameters();
 
-    void load( const QUrlQuery &query );
+    void load( const QUrlQuery &query, const bool storeQuery = false );
 %Docstring
 Loads new parameters.
 
 :param query: url query
+:param storeQuery: store the url query as it is done in the constructor
 %End
 
     void clear();
