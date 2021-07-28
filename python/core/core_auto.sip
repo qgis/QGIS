@@ -509,6 +509,7 @@
 %Include auto_generated/project/qgsprojectstorageregistry.sip
 %Include auto_generated/project/qgsprojecttimesettings.sip
 %Include auto_generated/project/qgsprojecttranslator.sip
+%Include auto_generated/project/qgsprojectutils.sip
 %Include auto_generated/project/qgsprojectversion.sip
 %Include auto_generated/project/qgsprojectviewsettings.sip
 %Include auto_generated/providers/qgsabstractdatabaseproviderconnection.sip
