@@ -796,9 +796,8 @@ LabelRenderJob QgsMapRendererJob::prepareLabelingJob( QPainter *painter, QgsLabe
 
 void QgsMapRendererJob::cleanupJobs( std::vector<LayerRenderJob> &jobs )
 {
-  for ( auto it = jobs.begin(); it != jobs.end(); ++it )
+  for ( LayerRenderJob &job : jobs )
   {
-    LayerRenderJob &job = *it;
     if ( job.img )
     {
       delete job.context()->painter();
@@ -842,7 +841,7 @@ void QgsMapRendererJob::cleanupJobs( std::vector<LayerRenderJob> &jobs )
 
 void QgsMapRendererJob::cleanupSecondPassJobs( std::vector< LayerRenderJob > &jobs )
 {
-  for ( auto &job : jobs )
+  for ( LayerRenderJob &job : jobs )
   {
     if ( job.img )
     {
@@ -909,10 +908,8 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings,
 #if DEBUG_RENDERING
   int i = 0;
 #endif
-  for ( auto it = jobs.begin(); it != jobs.end(); ++it )
+  for ( const LayerRenderJob &job : jobs )
   {
-    const LayerRenderJob &job = *it;
-
     if ( job.layer && job.layer->customProperty( QStringLiteral( "rendering/renderAboveLabels" ) ).toBool() )
       continue; // skip layer for now, it will be rendered after labels
 
@@ -952,10 +949,8 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings,
   }
 
   // render any layers with the renderAboveLabels flag now
-  for ( auto it = jobs.begin(); it != jobs.end(); ++it )
+  for ( const LayerRenderJob &job : jobs )
   {
-    const LayerRenderJob &job = *it;
-
     if ( !job.layer || !job.layer->customProperty( QStringLiteral( "rendering/renderAboveLabels" ) ).toBool() )
       continue;
 

@@ -80,11 +80,11 @@ void QgsMapRendererParallelJob::cancel()
   QgsDebugMsgLevel( QStringLiteral( "PARALLEL cancel at status %1" ).arg( mStatus ), 2 );
 
   mLabelJob.context.setRenderingStopped( true );
-  for ( auto it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
+  for ( LayerRenderJob &job : mLayerJobs )
   {
-    it->context()->setRenderingStopped( true );
-    if ( it->renderer && it->renderer->feedback() )
-      it->renderer->feedback()->cancel();
+    job.context()->setRenderingStopped( true );
+    if ( job.renderer && job.renderer->feedback() )
+      job.renderer->feedback()->cancel();
   }
 
   if ( mStatus == RenderingLayers )
@@ -125,11 +125,11 @@ void QgsMapRendererParallelJob::cancelWithoutBlocking()
   QgsDebugMsgLevel( QStringLiteral( "PARALLEL cancel at status %1" ).arg( mStatus ), 2 );
 
   mLabelJob.context.setRenderingStopped( true );
-  for ( auto it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
+  for ( LayerRenderJob &job : mLayerJobs )
   {
-    it->context()->setRenderingStopped( true );
-    if ( it->renderer && it->renderer->feedback() )
-      it->renderer->feedback()->cancel();
+    job.context()->setRenderingStopped( true );
+    if ( job.renderer && job.renderer->feedback() )
+      job.renderer->feedback()->cancel();
   }
 
   if ( mStatus == RenderingLayers )
@@ -224,11 +224,11 @@ void QgsMapRendererParallelJob::renderLayersFinished()
 {
   Q_ASSERT( mStatus == RenderingLayers );
 
-  for ( auto it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
+  for ( const LayerRenderJob &job : mLayerJobs )
   {
-    if ( !it->errors.isEmpty() )
+    if ( !job.errors.isEmpty() )
     {
-      mErrors.append( Error( it->layer->id(), it->errors.join( ',' ) ) );
+      mErrors.append( Error( job.layerId, job.errors.join( ',' ) ) );
     }
   }
 

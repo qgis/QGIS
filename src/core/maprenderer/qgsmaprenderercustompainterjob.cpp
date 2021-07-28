@@ -161,11 +161,11 @@ void QgsMapRendererCustomPainterJob::cancelWithoutBlocking()
   }
 
   mLabelJob.context.setRenderingStopped( true );
-  for ( auto it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
+  for ( LayerRenderJob &job : mLayerJobs )
   {
-    it->context()->setRenderingStopped( true );
-    if ( it->renderer && it->renderer->feedback() )
-      it->renderer->feedback()->cancel();
+    job.context()->setRenderingStopped( true );
+    if ( job.renderer && job.renderer->feedback() )
+      job.renderer->feedback()->cancel();
   }
 }
 
@@ -289,10 +289,8 @@ void QgsMapRendererCustomPainterJob::doRender()
   QElapsedTimer renderTime;
   renderTime.start();
 
-  for ( auto it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
+  for ( LayerRenderJob &job : mLayerJobs )
   {
-    LayerRenderJob &job = *it;
-
     if ( job.context()->renderingStopped() )
       break;
 
