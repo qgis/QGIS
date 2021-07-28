@@ -3576,7 +3576,7 @@ static QVariant fcnSinuosity( const QVariantList &values, const QgsExpressionCon
 {
   QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( geom.constGet() );
-  if ( ( geom.type() != QgsWkbTypes::LineGeometry ) || !curve )
+  if ( !curve )
   {
     parent->setEvalErrorString( QObject::tr( "Function `sinuosity` requires a line geometry." ) );
     return QVariant();
