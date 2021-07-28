@@ -112,3 +112,12 @@ QgsAbstractDatabaseProviderConnection *QgsMapLayerUtils::databaseConnection( con
     return nullptr;
   }
 }
+
+bool QgsMapLayerUtils::layerSourceMatchesPath( const QgsMapLayer *layer, const QString &path )
+{
+  if ( !layer || path.isEmpty() )
+    return false;
+
+  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->source() );
+  return parts.value( QStringLiteral( "path" ) ).toString() == path;
+}
