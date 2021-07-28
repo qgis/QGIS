@@ -562,11 +562,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
   // which refers to layers which we aren't rendering as part of this map render
   for ( LayerRenderJob &job : firstPassJobs )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( job.layer );
-    if ( ! vl )
-      continue;
-
-    layerJobMapping[job.layer->id()] = &job;
+    layerJobMapping[job.layerId] = &job;
   }
 
   // next, collate a master list of masked layers, skipping over any which refer to layers
@@ -657,16 +653,14 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
   // for them in the first pass job
   for ( LayerRenderJob &job : firstPassJobs )
   {
-    QgsMapLayer *ml = job.layer;
-
     if ( job.img == nullptr )
     {
-      job.context()->setPainter( allocateImageAndPainter( ml->id(), job.img ) );
+      job.context()->setPainter( allocateImageAndPainter( job.layerId, job.img ) );
     }
-    if ( layerHasMask.contains( ml->id() ) )
+    if ( layerHasMask.contains( job.layerId ) )
     {
       // Note: we only need an alpha channel here, rather than a full RGBA image
-      job.context()->setMaskPainter( allocateImageAndPainter( ml->id(), job.maskImage ) );
+      job.context()->setMaskPainter( allocateImageAndPainter( job.layerId, job.maskImage ) );
       job.maskImage->fill( 0 );
     }
   }
@@ -699,35 +693,23 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     QList<MaskSource> &sourceList = it->second;
     const QSet<QgsSymbolLayerId> &symbolList = it->first;
 
-    // copy the initial job ...
     secondPassJobs.emplace_back( LayerRenderJob() );
     LayerRenderJob &job2 = secondPassJobs.back();
 
-    // copy safe(?) things from first pass job
-    // TODO -- this list should be refined, there's a lot of pointer copies here
-    // which are likely unsafe
+    // copy the context from the initial job
     job2.setContext( std::make_unique< QgsRenderContext >( *job.context() ) );
-    job2.imageInitialized = job.imageInitialized;
-    job2.renderer = job.renderer;
-    job2.img = job.img;
-    job2.blendMode = job.blendMode;
-    job2.opacity = job.opacity;
+    // also assign layer to match initial job
     job2.layer = job.layer;
-    job2.completed = job.completed;
-    job2.renderingTime = job.renderingTime;
-    job2.estimatedRenderingTime = job.estimatedRenderingTime ;
-    job2.errors = job.errors;
     job2.layerId = job.layerId;
-    job2.maskImage = job.maskImage;
-    job.maskJobs = job.maskJobs;
-    job2.cached = false;
+    // associate first pass job with second pass job
     job2.firstPassJob = &job;
 
     QgsVectorLayer *vl1 = qobject_cast<QgsVectorLayer *>( job.layer );
 
-    // ... but clear the image
+    // create a new destination image for the second pass job, and update
+    // second pass job context accordingly
     job2.context()->setMaskPainter( nullptr );
-    job2.context()->setPainter( allocateImageAndPainter( vl1->id(), job2.img ) );
+    job2.context()->setPainter( allocateImageAndPainter( job.layerId, job2.img ) );
     if ( ! job2.img )
     {
       secondPassJobs.pop_back();
