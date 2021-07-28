@@ -118,7 +118,7 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     bool createOfflineDb( const QString &offlineDbPath, ContainerType containerType = SpatiaLite );
     void createLoggingTables( sqlite3 *db );
 
-    QgsVectorLayer *copyVectorLayer( QgsVectorLayer *layer, sqlite3 *db, const QString &offlineDbPath, bool onlySelected, ContainerType containerType = SpatiaLite, const QString &layerNameSuffix = QStringLiteral( " (offline)" ) );
+    void convertToOfflineLayer( QgsVectorLayer *layer, sqlite3 *db, const QString &offlineDbPath, bool onlySelected, ContainerType containerType = SpatiaLite, const QString &layerNameSuffix = QStringLiteral( " (offline)" ) );
 
     void applyAttributesAdded( QgsVectorLayer *remoteLayer, sqlite3 *db, int layerId, int commitNo );
     void applyFeaturesAdded( QgsVectorLayer *offlineLayer, QgsVectorLayer *remoteLayer, sqlite3 *db, int layerId );
@@ -126,22 +126,6 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     void applyAttributeValueChanges( QgsVectorLayer *offlineLayer, QgsVectorLayer *remoteLayer, sqlite3 *db, int layerId, int commitNo );
     void applyGeometryChanges( QgsVectorLayer *remoteLayer, sqlite3 *db, int layerId, int commitNo );
     void updateFidLookup( QgsVectorLayer *remoteLayer, sqlite3 *db, int layerId );
-    void copySymbology( QgsVectorLayer *sourceLayer, QgsVectorLayer *targetLayer );
-
-    /**
-     * Updates all relations that reference or are referenced by the source layer to the targetLayer.
-     */
-    void updateRelations( QgsVectorLayer *sourceLayer, QgsVectorLayer *targetLayer );
-
-    /**
-     * Update all map themes that affect the source layer.
-     */
-    void updateMapThemes( QgsVectorLayer *sourceLayer, QgsVectorLayer *targetLayer );
-
-    /**
-     * Preserve the layer order
-     */
-    void updateLayerOrder( QgsVectorLayer *sourceLayer, QgsVectorLayer *targetLayer );
 
     QMap<int, int> attributeLookup( QgsVectorLayer *offlineLayer, QgsVectorLayer *remoteLayer );
 
@@ -181,7 +165,7 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     GeometryChanges sqlQueryGeometryChanges( sqlite3 *db, const QString &sql );
 
   private slots:
-    void layerAdded( QgsMapLayer *layer );
+    void setupLayer( QgsMapLayer *layer );
     void committedAttributesAdded( const QString &qgisLayerId, const QList<QgsField> &addedAttributes );
     void committedFeaturesAdded( const QString &qgisLayerId, const QgsFeatureList &addedFeatures );
     void committedFeaturesRemoved( const QString &qgisLayerId, const QgsFeatureIds &deletedFeatureIds );
