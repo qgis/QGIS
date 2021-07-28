@@ -54,7 +54,7 @@ void TestQgsPostgresExpressionCompiler::testGeometryFromWkt()
   QgsSqlExpressionCompiler::Result r = compiler.compile( &exp );
   QCOMPARE( r, QgsSqlExpressionCompiler::Complete );
   QString sql = compiler.result();
-  QCOMPARE( sql, QStringLiteral( "ST_Intersects(\"geom\",ST_GeomFromText('Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))'))" ) );
+  QCOMPARE( sql, QStringLiteral( "ST_Intersects(\"geom\",ST_GeomFromText('Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))',4326))" ) );
 }
 
 QGSTEST_MAIN( TestQgsPostgresExpressionCompiler )
