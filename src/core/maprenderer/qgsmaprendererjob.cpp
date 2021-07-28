@@ -703,13 +703,26 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     secondPassJobs.emplace_back( LayerRenderJob() );
     LayerRenderJob &job2 = secondPassJobs.back();
 
-#if 0
-    job2 = job;
-
-#endif
-
+    // copy safe(?) things from first pass job
+    // TODO -- this list should be refined, there's a lot of pointer copies here
+    // which are likely unsafe
+    job2.setContext( std::make_unique< QgsRenderContext >( *job.context() ) );
+    job2.imageInitialized = job.imageInitialized;
+    job2.renderer = job.renderer;
+    job2.img = job.img;
+    job2.blendMode = job.blendMode;
+    job2.opacity = job.opacity;
+    job2.layer = job.layer;
+    job2.completed = job.completed;
+    job2.renderingTime = job.renderingTime;
+    job2.estimatedRenderingTime = job.estimatedRenderingTime ;
+    job2.errors = job.errors;
+    job2.layerId = job.layerId;
+    job2.maskImage = job.maskImage;
+    job.maskJobs = job.maskJobs;
     job2.cached = false;
     job2.firstPassJob = &job;
+
     QgsVectorLayer *vl1 = qobject_cast<QgsVectorLayer *>( job.layer );
 
     // ... but clear the image
