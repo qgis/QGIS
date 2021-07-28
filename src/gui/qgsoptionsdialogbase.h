@@ -26,6 +26,7 @@
 #include <QDialog>
 #include <QPointer>
 #include <QStyledItemDelegate>
+#include <QSortFilterProxyModel>
 
 class QDialogButtonBox;
 class QListWidget;
@@ -41,6 +42,27 @@ class QStandardItemModel;
 
 class QgsFilterLineEdit;
 class QgsOptionsDialogHighlightWidget;
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+class QgsOptionsProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+  public:
+
+    QgsOptionsProxyModel( QObject *parent );
+
+    void setPageHidden( int page, bool hidden );
+    QModelIndex pageNumberToSourceIndex( int page ) const;
+    int sourceIndexToPageNumber( const QModelIndex &index ) const;
+    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+
+  private:
+    QMap< int, bool > mHiddenPages;
+};
+///@endcond
+#endif
+
 
 /**
  * \ingroup gui
@@ -193,6 +215,8 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     QListWidget *mOptListWidget = nullptr;
     QTreeView *mOptTreeView = nullptr;
     QStandardItemModel *mOptTreeModel = nullptr;
+    QgsOptionsProxyModel *mTreeProxyModel = nullptr;
+
     QStackedWidget *mOptStackedWidget = nullptr;
     QSplitter *mOptSplitter = nullptr;
     QDialogButtonBox *mOptButtonBox = nullptr;
@@ -207,8 +231,7 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
   private:
 
     void setListToItemAtIndex( int index );
-    QModelIndex pageNumberToTreeViewIndex( int page );
-    int viewIndexToPageNumber( const QModelIndex &index );
+
 };
 
 #endif // QGSOPTIONSDIALOGBASE_H

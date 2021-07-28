@@ -115,14 +115,16 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   crsGroup->appendRow( createItem( tr( "Transformations" ), tr( "Coordinate transformations and operations" ), QStringLiteral( "transformation.svg" ) ) );
   mTreeModel->appendRow( crsGroup );
 
-  mTreeModel->appendRow( createItem( tr( "Data Sources" ), tr( "Data sources" ), QStringLiteral( "propertyicons/attributes.svg" ) ) );
+  QStandardItem *dataSources = createItem( tr( "Data Sources" ), tr( "Data sources" ), QStringLiteral( "propertyicons/attributes.svg" ) );
+  mTreeModel->appendRow( dataSources );
+  dataSources->appendRow( createItem( tr( "GDAL" ), tr( "GDAL" ), QStringLiteral( "propertyicons/gdal.svg" ) ) );
+
   mTreeModel->appendRow( createItem( tr( "Rendering" ), tr( "Rendering" ), QStringLiteral( "propertyicons/rendering.svg" ) ) );
   mTreeModel->appendRow( createItem( tr( "Canvas & Legend" ), tr( "Canvas and legend" ), QStringLiteral( "propertyicons/overlay.svg" ) ) );
   mTreeModel->appendRow( createItem( tr( "Map Tools" ), tr( "Map tools" ), QStringLiteral( "propertyicons/map_tools.svg" ) ) );
   mTreeModel->appendRow( createItem( tr( "Colors" ), tr( "Colors" ), QStringLiteral( "propertyicons/colors.svg" ) ) );
   mTreeModel->appendRow( createItem( tr( "Digitizing" ), tr( "Digitizing" ), QStringLiteral( "propertyicons/digitizing.svg" ) ) );
   mTreeModel->appendRow( createItem( tr( "Layouts" ), tr( "Print layouts" ), QStringLiteral( "mIconLayout.svg" ) ) );
-  mTreeModel->appendRow( createItem( tr( "GDAL" ), tr( "GDAL" ), QStringLiteral( "propertyicons/gdal.svg" ) ) );
   mTreeModel->appendRow( createItem( tr( "Variables" ), tr( "Variables" ), QStringLiteral( "mIconExpression.svg" ) ) );
   mTreeModel->appendRow( createItem( tr( "Authentication" ), tr( "Authentication" ), QStringLiteral( "locked.svg" ) ) );
   mTreeModel->appendRow( createItem( tr( "Network" ), tr( "Network" ), QStringLiteral( "propertyicons/network_and_proxy.svg" ) ) );
