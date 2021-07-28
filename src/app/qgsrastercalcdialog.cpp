@@ -354,21 +354,23 @@ void QgsRasterCalcDialog::setOutputToVirtual()
 {
   if ( useVirtualProvider() )
   {
-    mOutputFormatComboBox->setEnabled( false );
-    mOutputLayer->setEnabled( false );
+    mOutputFormatComboBox->hide();
+    mOutputLayer->hide();
+    mOutputLayerLabel->hide();
+    mOutputFormatLabel->hide();
     mAddResultToProjectCheckBox->isChecked();
     mAddResultToProjectCheckBox->setEnabled( false );
-    //mVirtualLayerName->setEnabled( true );
     mVirtualLayerLabel->show();
     mVirtualLayerName->show();
     setAcceptButtonState();
   }
   else
   {
-    mOutputFormatComboBox->setEnabled( true );
-    mOutputLayer->setEnabled( true );
+    mOutputFormatComboBox->show();
+    mOutputLayer->show();
+    mOutputLayerLabel->show();
+    mOutputFormatLabel->show();
     mAddResultToProjectCheckBox->setEnabled( true );
-    //mVirtualLayerName->setEnabled( false );
     mVirtualLayerLabel->hide();
     mVirtualLayerName->hide();
     setAcceptButtonState();
