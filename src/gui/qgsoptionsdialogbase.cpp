@@ -96,6 +96,9 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString &title
   if ( mOptTreeView )
   {
     mOptTreeModel = qobject_cast< QStandardItemModel * >( mOptTreeView->model() );
+    mTreeProxyModel = new QgsOptionsProxyModel( this );
+    mTreeProxyModel->setSourceModel( mOptTreeModel );
+    mOptTreeView->setModel( mTreeProxyModel );
   }
 
   QFrame *optionsFrame = findChild<QFrame *>( QStringLiteral( "mOptionsFrame" ) );
@@ -163,12 +166,12 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString &title
       if ( selected.isEmpty() )
         return;
 
-      const QModelIndex index = selected.at( 0 );
+      const QModelIndex index = mTreeProxyModel->mapToSource( selected.at( 0 ) );
 
       if ( !mOptTreeModel || !mOptTreeModel->itemFromIndex( index )->isSelectable() )
         return;
 
-      mOptStackedWidget->setCurrentIndex( viewIndexToPageNumber( index ) );
+      mOptStackedWidget->setCurrentIndex( mTreeProxyModel->sourceIndexToPageNumber( index ) );
     } );
   }
 
@@ -273,69 +276,8 @@ void QgsOptionsDialogBase::setListToItemAtIndex( int index )
   }
   else if ( mOptTreeView && mOptTreeModel )
   {
-    mOptTreeView->setCurrentIndex( pageNumberToTreeViewIndex( index ) );
+    mOptTreeView->setCurrentIndex( mTreeProxyModel->mapFromSource( mTreeProxyModel->pageNumberToSourceIndex( index ) ) );
   }
-}
-
-QModelIndex QgsOptionsDialogBase::pageNumberToTreeViewIndex( int page )
-{
-  if ( !mOptTreeModel )
-    return QModelIndex();
-
-  int pagesRemaining = page;
-  std::function<QModelIndex( const QModelIndex & )> traversePages;
-
-  // traverse through the model, counting all selectable items until we hit the desired page number
-  traversePages = [&]( const QModelIndex & parent ) -> QModelIndex
-  {
-    for ( int row = 0; row < mOptTreeModel->rowCount( parent ); ++row )
-    {
-      const QModelIndex currentIndex = mOptTreeModel->index( row, 0, parent );
-      if ( mOptTreeModel->itemFromIndex( currentIndex )->isSelectable() && pagesRemaining == 0 )
-        return currentIndex;
-
-      const QModelIndex res = traversePages( currentIndex );
-      if ( res.isValid() )
-        return res;
-
-      if ( mOptTreeModel->itemFromIndex( currentIndex )->isSelectable() )
-        pagesRemaining--;
-    }
-    return QModelIndex();
-  };
-
-  return traversePages( QModelIndex() );
-}
-
-int QgsOptionsDialogBase::viewIndexToPageNumber( const QModelIndex &index )
-{
-  if ( !mOptTreeModel )
-    return 0;
-
-  int page = 0;
-
-  std::function<int( const QModelIndex & )> traverseModel;
-
-  // traverse through the model, counting all which correspond to pages till we hit the desired index
-  traverseModel = [&]( const QModelIndex & parent ) -> int
-  {
-    for ( int row = 0; row < mOptTreeModel->rowCount( parent ); ++row )
-    {
-      const QModelIndex currentIndex = mOptTreeModel->index( row, 0, parent );
-      if ( currentIndex == index )
-        return page;
-
-      const int res = traverseModel( currentIndex );
-      if ( res >= 0 )
-        return res;
-
-      if ( mOptTreeModel->itemFromIndex( currentIndex )->isSelectable() )
-        page++;
-    }
-    return -1;
-  };
-
-  return traverseModel( QModelIndex() );
 }
 
 void QgsOptionsDialogBase::resizeAlltabs( int index )
@@ -419,9 +361,13 @@ void QgsOptionsDialogBase::insertPage( const QString &title, const QString &tool
       }
       else if ( mOptTreeModel )
       {
+        QModelIndex sourceIndexBefore = mTreeProxyModel->pageNumberToSourceIndex( idx );
+        while ( sourceIndexBefore.parent().isValid() )
+          sourceIndexBefore = sourceIndexBefore.parent();
+
         QStandardItem *item = new QStandardItem( icon, title );
         item->setToolTip( tooltip );
-        mOptTreeModel->insertRow( idx, item );
+        mOptTreeModel->insertRow( sourceIndexBefore.row(), item );
       }
 
       mOptStackedWidget->insertWidget( idx, widget );
@@ -447,26 +393,49 @@ void QgsOptionsDialogBase::searchText( const QString &text )
   if ( mOptButtonBox && mOptButtonBox->isHidden() )
     mOptButtonBox->show();
 
-  // hide all page if text has to be search, show them all otherwise
+  // hide all pages if text has to be search, show them all otherwise
   if ( mOptListWidget )
   {
-    for ( int r = 0; r < mOptListWidget->count(); ++r )
+    for ( int r = 0; r < mOptStackedWidget->count(); ++r )
     {
       mOptListWidget->setRowHidden( r, text.length() >= minimumTextLength );
     }
-  }
 
-  for ( const QPair< QgsOptionsDialogHighlightWidget *, int > &rsw : std::as_const( mRegisteredSearchWidgets ) )
-  {
-    if ( rsw.first->searchHighlight( text.length() >= minimumTextLength ? text : QString() ) )
+    for ( const QPair< QgsOptionsDialogHighlightWidget *, int > &rsw : std::as_const( mRegisteredSearchWidgets ) )
     {
-      if ( mOptListWidget )
+      if ( rsw.first->searchHighlight( text.length() >= minimumTextLength ? text : QString() ) )
       {
         mOptListWidget->setRowHidden( rsw.second, false );
       }
     }
   }
+  else if ( mTreeProxyModel )
+  {
+    QMap< int, bool > hiddenPages;
+    for ( int r = 0; r < mOptStackedWidget->count(); ++r )
+    {
+      hiddenPages.insert( r, text.length() >= minimumTextLength );
+    }
 
+    for ( const QPair< QgsOptionsDialogHighlightWidget *, int > &rsw : std::as_const( mRegisteredSearchWidgets ) )
+    {
+      if ( rsw.first->searchHighlight( text.length() >= minimumTextLength ? text : QString() ) )
+      {
+        hiddenPages.insert( rsw.second, false );
+      }
+    }
+    for ( auto it = hiddenPages.constBegin(); it != hiddenPages.constEnd(); ++it )
+    {
+      mTreeProxyModel->setPageHidden( it.key(), it.value() );
+    }
+  }
+  if ( mOptTreeView && text.length() >= minimumTextLength )
+  {
+    // auto expand out any group with children matching the search term
+    mOptTreeView->expandAll();
+  }
+
+  // if current item is hidden, move to first available...
   if ( mOptListWidget && mOptListWidget->isRowHidden( mOptStackedWidget->currentIndex() ) )
   {
     for ( int r = 0; r < mOptListWidget->count(); ++r )
@@ -482,6 +451,52 @@ void QgsOptionsDialogBase::searchText( const QString &text )
     mOptStackedWidget->hide();
     if ( mOptButtonBox )
       mOptButtonBox->hide();
+  }
+  else if ( mOptTreeView )
+  {
+    const QModelIndex currentSourceIndex = mTreeProxyModel->pageNumberToSourceIndex( mOptStackedWidget->currentIndex() );
+    if ( !mTreeProxyModel->filterAcceptsRow( currentSourceIndex.row(), currentSourceIndex.parent() ) )
+    {
+      std::function<QModelIndex( const QModelIndex & )> traverseModel;
+      traverseModel = [&]( const QModelIndex & parent ) -> QModelIndex
+      {
+        for ( int row = 0; row < mTreeProxyModel->rowCount(); ++row )
+        {
+          const QModelIndex proxyIndex = mTreeProxyModel->index( row, 0, parent );
+          const QModelIndex sourceIndex = mTreeProxyModel->mapToSource( proxyIndex );
+          if ( mOptTreeModel->itemFromIndex( sourceIndex )->isSelectable() )
+          {
+            return sourceIndex;
+          }
+          else
+          {
+            QModelIndex res = traverseModel( proxyIndex );
+            if ( res.isValid() )
+              return res;
+          }
+        }
+        return QModelIndex();
+      };
+
+      const QModelIndex firstVisibleSourceIndex = traverseModel( QModelIndex() );
+
+      if ( firstVisibleSourceIndex.isValid() )
+      {
+        mOptTreeView->setCurrentIndex( mTreeProxyModel->mapFromSource( firstVisibleSourceIndex ) );
+      }
+      else
+      {
+        // if no page can be shown, hide stack widget
+        mOptStackedWidget->hide();
+        if ( mOptButtonBox )
+          mOptButtonBox->hide();
+      }
+    }
+    else
+    {
+      // make sure item stays current
+      mOptTreeView->setCurrentIndex( mTreeProxyModel->mapFromSource( currentSourceIndex ) );
+    }
   }
 }
 
@@ -544,7 +559,7 @@ void QgsOptionsDialogBase::showEvent( QShowEvent *e )
     }
     else if ( mOptTreeView )
     {
-      optionsStackedWidget_CurrentChanged( viewIndexToPageNumber( mOptTreeView->currentIndex() ) );
+      optionsStackedWidget_CurrentChanged( mTreeProxyModel->sourceIndexToPageNumber( mTreeProxyModel->mapToSource( mOptTreeView->currentIndex() ) ) );
     }
   }
   else
@@ -639,7 +654,7 @@ void QgsOptionsDialogBase::optionsStackedWidget_CurrentChanged( int index )
   else if ( mOptTreeView )
   {
     mOptTreeView->blockSignals( true );
-    mOptTreeView->setCurrentIndex( pageNumberToTreeViewIndex( index ) );
+    mOptTreeView->setCurrentIndex( mTreeProxyModel->mapFromSource( mTreeProxyModel->pageNumberToSourceIndex( index ) ) );
     mOptTreeView->blockSignals( false );
   }
 
@@ -678,3 +693,106 @@ void QgsOptionsDialogBase::warnAboutMissingObjects()
                         QMessageBox::Ok );
 }
 
+
+///@cond PRIVATE
+QgsOptionsProxyModel::QgsOptionsProxyModel( QObject *parent )
+  : QSortFilterProxyModel( parent )
+{
+  setDynamicSortFilter( true );
+}
+
+void QgsOptionsProxyModel::setPageHidden( int page, bool hidden )
+{
+  mHiddenPages[ page ] = hidden;
+  invalidateFilter();
+}
+
+QModelIndex QgsOptionsProxyModel::pageNumberToSourceIndex( int page ) const
+{
+  QStandardItemModel *itemModel = qobject_cast< QStandardItemModel * >( sourceModel() );
+  if ( !itemModel )
+    return QModelIndex();
+
+  int pagesRemaining = page;
+  std::function<QModelIndex( const QModelIndex & )> traversePages;
+
+  // traverse through the model, counting all selectable items until we hit the desired page number
+  traversePages = [&]( const QModelIndex & parent ) -> QModelIndex
+  {
+    for ( int row = 0; row < itemModel->rowCount( parent ); ++row )
+    {
+      const QModelIndex currentIndex = itemModel->index( row, 0, parent );
+      if ( itemModel->itemFromIndex( currentIndex )->isSelectable() )
+      {
+        if ( pagesRemaining == 0 )
+          return currentIndex;
+
+        else pagesRemaining--;
+      }
+
+      const QModelIndex res = traversePages( currentIndex );
+      if ( res.isValid() )
+        return res;
+    }
+    return QModelIndex();
+  };
+
+  return traversePages( QModelIndex() );
+}
+
+int QgsOptionsProxyModel::sourceIndexToPageNumber( const QModelIndex &index ) const
+{
+  QStandardItemModel *itemModel = qobject_cast< QStandardItemModel * >( sourceModel() );
+  if ( !itemModel )
+    return 0;
+
+  int page = 0;
+
+  std::function<int( const QModelIndex & )> traverseModel;
+
+  // traverse through the model, counting all which correspond to pages till we hit the desired index
+  traverseModel = [&]( const QModelIndex & parent ) -> int
+  {
+    for ( int row = 0; row < itemModel->rowCount( parent ); ++row )
+    {
+      const QModelIndex currentIndex = itemModel->index( row, 0, parent );
+      if ( currentIndex == index )
+        return page;
+
+      if ( itemModel->itemFromIndex( currentIndex )->isSelectable() )
+        page++;
+
+      const int res = traverseModel( currentIndex );
+      if ( res >= 0 )
+        return res;
+    }
+    return -1;
+  };
+
+  return traverseModel( QModelIndex() );
+}
+
+bool QgsOptionsProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
+{
+  QStandardItemModel *itemModel = qobject_cast< QStandardItemModel * >( sourceModel() );
+  if ( !itemModel )
+    return true;
+
+  const QModelIndex sourceIndex = sourceModel()->index( source_row, 0, source_parent );
+
+  const int pageNumber = sourceIndexToPageNumber( sourceIndex );
+  if ( !mHiddenPages.value( pageNumber, false ) )
+    return true;
+
+  if ( sourceModel()->hasChildren( sourceIndex ) )
+  {
+    // this is a group -- show if any children are visible
+    for ( int row = 0; row < sourceModel()->rowCount( sourceIndex ); ++row )
+    {
+      if ( filterAcceptsRow( row, sourceIndex ) )
+        return true;
+    }
+  }
+  return false;
+}
+///@endcond
