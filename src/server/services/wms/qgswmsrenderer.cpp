@@ -3197,25 +3197,25 @@ namespace QgsWms
         // Get un decode value to check , for list of values and / for range value
         if ( dimParamValue.contains( ',' ) || dimParamValue.contains( '/' ) )
         {
-            QgsMessageLog::logMessage( QStringLiteral( "WMS Dimension contains , or /" ) );
-            QUrlQuery query = mContext.parameters().urlQuery();
-            const auto constQueryItems( query.queryItems( QUrl::DecodeReserved ) );
-            for ( const auto &item : constQueryItems )
+          QgsMessageLog::logMessage( QStringLiteral( "WMS Dimension contains , or /" ) );
+          QUrlQuery query = mContext.parameters().urlQuery();
+          const auto constQueryItems( query.queryItems( QUrl::DecodeReserved ) );
+          for ( const auto &item : constQueryItems )
+          {
+            const QString itemName( item.first.toUpper() );
+            if ( !itemName.startsWith( QStringLiteral( "DIM_" ) ) )
             {
-              const QString itemName( item.first.toUpper() );
-              if ( !itemName.startsWith( QStringLiteral( "DIM_" ) ) )
-              {
-                continue;
-              }
-              QgsMessageLog::logMessage( QStringLiteral( "WMS Dimension: %1 %2" ).arg( dim.name.toUpper(), itemName.right( itemName.length() - 4 ) ) );
-              if ( itemName.right( itemName.length() - 4 ) == dim.name.toUpper() )
-              {
-                dimParamValue = item.second;
-                QgsMessageLog::logMessage( QStringLiteral( "WMS Dimension: %1 %2" ).arg( dim.name, item.first ) );
-                break;
-              }
+              continue;
             }
-            QgsMessageLog::logMessage( QStringLiteral( "WMS Dimension value: %1 %2" ).arg( dim.name, dimParamValue ) );
+            QgsMessageLog::logMessage( QStringLiteral( "WMS Dimension: %1 %2" ).arg( dim.name.toUpper(), itemName.right( itemName.length() - 4 ) ) );
+            if ( itemName.right( itemName.length() - 4 ) == dim.name.toUpper() )
+            {
+              dimParamValue = item.second;
+              QgsMessageLog::logMessage( QStringLiteral( "WMS Dimension: %1 %2" ).arg( dim.name, item.first ) );
+              break;
+            }
+          }
+          QgsMessageLog::logMessage( QStringLiteral( "WMS Dimension value: %1 %2" ).arg( dim.name, dimParamValue ) );
         }
         // The expression list for this dimension
         QStringList dimExplist;

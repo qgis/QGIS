@@ -188,7 +188,6 @@ class TestQgsServerWMSDimension(TestQgsServerWMSTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Dimension_Locality_Value_A_Coruna")
 
-
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
