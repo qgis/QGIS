@@ -23,6 +23,7 @@
 #include <QTreeWidget>
 #include <QAbstractItemModel>
 #include <QTableView>
+#include <QTextDocumentFragment>
 
 #include "qgsoptionsdialoghighlightwidget.h"
 #include "qgsmessagebaritem.h"
@@ -57,7 +58,8 @@ bool QgsOptionsDialogHighlightLabel::searchText( const QString &text )
   if ( !mLabel )
     return false;
 
-  return mLabel->text().contains( text, Qt::CaseInsensitive );
+  const QString labelText = QTextDocumentFragment::fromHtml( mLabel->text() ).toPlainText();
+  return labelText.contains( text, Qt::CaseInsensitive );
 }
 
 bool QgsOptionsDialogHighlightLabel::highlightText( const QString &text )
