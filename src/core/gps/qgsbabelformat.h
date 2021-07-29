@@ -21,16 +21,12 @@
 #include "qgis.h"
 #include <QStringList>
 
-#define SIP_NO_FILE
-
 class QString;
 
 /**
  * \ingroup core
  * \class QgsAbstractBabelFormat
  * \brief Abstract base class for babel GPS formats.
- *
- * \note Not available in Python bindings
  *
  * \since QGIS 3.22
 */
@@ -103,8 +99,6 @@ class CORE_EXPORT QgsAbstractBabelFormat
  * \ingroup core
  * \class QgsBabelSimpleImportFormat
  * \brief A babel format capable of converting input files to GPX files.
- *
- * \note Not available in Python bindings
  *
  * \since QGIS 3.22
 */

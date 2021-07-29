@@ -1,0 +1,118 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/gps/qgsbabelformat.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsAbstractBabelFormat
+{
+%Docstring(signature="appended")
+Abstract base class for babel GPS formats.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsbabelformat.h"
+%End
+  public:
+
+    virtual ~QgsAbstractBabelFormat();
+
+    QString name() const;
+%Docstring
+Returns the format's name.
+%End
+
+    Qgis::BabelFormatCapabilities capabilities() const;
+%Docstring
+Returns the format's capabilities.
+%End
+
+    virtual QStringList importCommand( const QString &babel,
+                                       Qgis::GpsFeatureType featureType,
+                                       const QString &input,
+                                       const QString &output ) const;
+%Docstring
+Generates a command for importing data into a GPS format using babel.
+
+:param babel: babel path to the babel executable
+:param featureType: type of GPS feature to import
+:param input: input data path
+:param output: output path
+
+Returns an empty list if the format does not support imports (see :py:func:`~QgsAbstractBabelFormat.capabilities`).
+%End
+
+    virtual QStringList exportCommand( const QString &babel,
+                                       Qgis::GpsFeatureType featureType,
+                                       const QString &input,
+                                       const QString &output ) const;
+%Docstring
+Generates a command for exporting GPS data into a different format using babel.
+
+:param babel: path to the babel executable
+:param featureType: type of GPS feature to export
+:param input: input data path
+:param output: output path
+
+Returns an empty list if the format does not support exports (see :py:func:`~QgsAbstractBabelFormat.capabilities`).
+%End
+
+  protected:
+
+    explicit QgsAbstractBabelFormat( const QString &name = QString() );
+%Docstring
+Constructor for QgsAbstractBabelFormat, with the specified ``name``.
+%End
+
+    static QString featureTypeToArgument( Qgis::GpsFeatureType type );
+%Docstring
+Converts a GPS feature type to the equivalent babel argument.
+%End
+
+
+};
+
+
+class QgsBabelSimpleImportFormat : QgsAbstractBabelFormat
+{
+%Docstring(signature="appended")
+A babel format capable of converting input files to GPX files.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsbabelformat.h"
+%End
+  public:
+
+    QgsBabelSimpleImportFormat( const QString &format, Qgis::BabelFormatCapabilities capabilities );
+%Docstring
+Constructor for QgsBabelSimpleImportFormat.
+
+The ``format`` argument specifies a babel identifier for the input format.
+
+The ``capabilities`` argument must reflect whether the format is capable of handling
+waypoints, routes and/or tracks.
+%End
+
+     virtual QStringList importCommand( const QString &babel,
+                               Qgis::GpsFeatureType featureType,
+                               const QString &input,
+                               const QString &output ) const;
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/gps/qgsbabelformat.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
