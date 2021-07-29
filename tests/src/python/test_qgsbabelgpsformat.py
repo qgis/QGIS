@@ -84,7 +84,7 @@ class TestQgsBabelGpsFormat(unittest.TestCase):
         )
         # TODO -- I suspect that the waypoint/track/route capability should be automatically set/removed
         # depending on whether the corresponding commands are empty!
-        #self.assertEqual(f.capabilities(), Qgis.BabelFormatCapabilities(
+        # self.assertEqual(f.capabilities(), Qgis.BabelFormatCapabilities(
         #    Qgis.BabelFormatCapability.Waypoints | Qgis.BabelFormatCapability.Import))
 
         # TODO -- babel command should possibly be quoted (or NOT in QgsBabelSimpleImportFormat)
