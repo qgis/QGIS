@@ -45,7 +45,7 @@ class QgsOptionsDialogHighlightWidget;
 
 #ifndef SIP_RUN
 ///@cond PRIVATE
-class QgsOptionsProxyModel : public QSortFilterProxyModel
+class GUI_EXPORT QgsOptionsProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
   public:
