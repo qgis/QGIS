@@ -57,6 +57,7 @@ Represents a node in a raster calculator.
       opMAX,
       opMIN,
       opNONE,
+      opFUNCT
     };
 
     QgsRasterCalcNode();

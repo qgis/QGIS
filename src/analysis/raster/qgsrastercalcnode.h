@@ -140,9 +140,9 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     QString mRasterName;
     QgsRasterMatrix *mMatrix = nullptr;
     Operator mOperator = opNONE;
-    //added by me
+    //added for the conditional stat
     QString mFunctionName;
-    QVector <QgsRasterCalcNode*> mFunctionArgs;
+    QVector <QgsRasterCalcNode *> mFunctionArgs;
 
 };
 
