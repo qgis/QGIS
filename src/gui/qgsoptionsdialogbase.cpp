@@ -514,7 +514,14 @@ void QgsOptionsDialogBase::searchText( const QString &text )
   {
     for ( int r = 0; r < mOptStackedWidget->count(); ++r )
     {
-      mOptListWidget->setRowHidden( r, text.length() >= minimumTextLength );
+      if ( mOptListWidget->item( r )->text().contains( text, Qt::CaseInsensitive ) )
+      {
+        mOptListWidget->setRowHidden( r, false );
+      }
+      else
+      {
+        mOptListWidget->setRowHidden( r, text.length() >= minimumTextLength );
+      }
     }
 
     for ( const QPair< QgsOptionsDialogHighlightWidget *, int > &rsw : std::as_const( mRegisteredSearchWidgets ) )
@@ -532,6 +539,22 @@ void QgsOptionsDialogBase::searchText( const QString &text )
     {
       hiddenPages.insert( r, text.length() >= minimumTextLength );
     }
+
+    std::function<void( const QModelIndex & )> traverseModel;
+    // traverse through the model, showing pages which match by page name
+    traverseModel = [&]( const QModelIndex & parent )
+    {
+      for ( int row = 0; row < mOptTreeModel->rowCount( parent ); ++row )
+      {
+        const QModelIndex currentIndex = mOptTreeModel->index( row, 0, parent );
+        if ( currentIndex.data().toString().contains( text, Qt::CaseInsensitive ) )
+        {
+          hiddenPages.insert( mTreeProxyModel->sourceIndexToPageNumber( currentIndex ), false );
+        }
+        traverseModel( currentIndex );
+      }
+    };
+    traverseModel( QModelIndex() );
 
     for ( const QPair< QgsOptionsDialogHighlightWidget *, int > &rsw : std::as_const( mRegisteredSearchWidgets ) )
     {
