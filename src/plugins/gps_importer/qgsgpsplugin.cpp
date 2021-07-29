@@ -522,22 +522,7 @@ void QgsGpsPlugin::setCurrentTheme( const QString &themeName )
   QString myQrcPath = QStringLiteral( ":/" );
   if ( mQActionPointer )
   {
-    if ( QFile::exists( myCurThemePath ) )
-    {
-      mQActionPointer->setIcon( QIcon( myCurThemePath + "import_gpx.svg" ) );
-    }
-    else if ( QFile::exists( myDefThemePath ) )
-    {
-      mQActionPointer->setIcon( QIcon( myDefThemePath + "import_gpx.svg" ) );
-    }
-    else if ( QFile::exists( myQrcPath ) )
-    {
-      mQActionPointer->setIcon( QIcon( myQrcPath + "import_gpx.svg" ) );
-    }
-    else
-    {
-      mQActionPointer->setIcon( QIcon() );
-    }
+    mQActionPointer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconGps.svg" ) ) );
   }
 }
 
