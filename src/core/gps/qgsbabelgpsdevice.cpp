@@ -24,17 +24,17 @@ QgsBabelGpsDeviceFormat::QgsBabelGpsDeviceFormat( const QString &waypointDownloa
   const thread_local QRegularExpression whiteSpaceRx( QStringLiteral( "\\s" ) );
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  if ( !wptDlCmd.isEmpty() )
+  if ( !waypointDownloadCommand.isEmpty() )
     mWaypointDownloadCommand = waypointDownloadCommand.split( whiteSpaceRx, QString::SkipEmptyParts );
-  if ( !wptUlCmd.isEmpty() )
+  if ( !waypointUploadCommand.isEmpty() )
     mWaypointUploadCommand = waypointUploadCommand.split( whiteSpaceRx, QString::SkipEmptyParts );
-  if ( !rteDlCmd.isEmpty() )
+  if ( !routeDownloadCommand.isEmpty() )
     mRouteDownloadCommand = routeDownloadCommand.split( whiteSpaceRx, QString::SkipEmptyParts );
-  if ( !rteUlCmd.isEmpty() )
+  if ( !routeUploadCommand.isEmpty() )
     mRouteUploadCommand = routeUploadCommand.split( whiteSpaceRx, QString::SkipEmptyParts );
-  if ( !trkDlCmd.isEmpty() )
+  if ( !trackDownloadCommand.isEmpty() )
     mTrackDownloadCommand = trackDownloadCommand.split( whiteSpaceRx, QString::SkipEmptyParts );
-  if ( !trkUlCmd.isEmpty() )
+  if ( !trackUploadCommand.isEmpty() )
     mTrackUploadCommand = trackUploadCommand.split( whiteSpaceRx, QString::SkipEmptyParts );
 #else
 
