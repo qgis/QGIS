@@ -24,6 +24,8 @@
 #include "qgis.h"
 #include <QString>
 #include "qgis_analysis.h"
+//by me
+#include <QVector>
 
 class QgsRasterBlock;
 class QgsRasterMatrix;
@@ -75,6 +77,7 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
       opMAX,
       opMIN,
       opNONE,
+      opFUNCT
     };
 
     /**
@@ -137,6 +140,9 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     QString mRasterName;
     QgsRasterMatrix *mMatrix = nullptr;
     Operator mOperator = opNONE;
+    //added by me
+    QString mFunctionName;
+    QVector <QgsRasterCalcNode*> mFunctionArgs;
 
 };
 
