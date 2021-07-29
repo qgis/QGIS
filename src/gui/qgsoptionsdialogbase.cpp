@@ -320,12 +320,14 @@ void QgsOptionsDialogBase::setCurrentPage( const QString &page )
   }
 }
 
-void QgsOptionsDialogBase::addPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget )
+void QgsOptionsDialogBase::addPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget, const QStringList &path )
 {
   QListWidgetItem *item = new QListWidgetItem();
   item->setIcon( icon );
   item->setText( title );
   item->setToolTip( tooltip );
+
+  int newPage = -1;
 
   if ( mOptListWidget )
   {
@@ -335,18 +337,70 @@ void QgsOptionsDialogBase::addPage( const QString &title, const QString &tooltip
   {
     QStandardItem *item = new QStandardItem( icon, title );
     item->setToolTip( tooltip );
-    mOptTreeModel->appendRow( item );
+
+    QModelIndex parent;
+    QStandardItem *parentItem = nullptr;
+    if ( !path.empty() )
+    {
+      QStringList parents = path;
+      while ( !parents.empty() )
+      {
+        const QString parentPath = parents.takeFirst();
+
+        QModelIndex thisParent;
+        for ( int row = 0; row < mOptTreeModel->rowCount( parent ); ++row )
+        {
+          const QModelIndex index = mOptTreeModel->index( row, 0, parent );
+          if ( index.data().toString().compare( parentPath, Qt::CaseInsensitive ) == 0
+               || index.data( Qt::UserRole + 1 ).toString().compare( parentPath, Qt::CaseInsensitive ) == 0 )
+          {
+            thisParent = index;
+            break;
+          }
+        }
+
+        // add new child if required
+        if ( !thisParent.isValid() )
+        {
+          QStandardItem *newParentItem = new QStandardItem( parentPath );
+          newParentItem->setToolTip( parentPath );
+          newParentItem->setSelectable( false );
+          if ( parentItem )
+            parentItem->appendRow( newParentItem );
+          else
+            mOptTreeModel->appendRow( newParentItem );
+          parentItem = newParentItem;
+        }
+        else
+        {
+          parentItem = mOptTreeModel->itemFromIndex( thisParent );
+        }
+        parent = mOptTreeModel->indexFromItem( parentItem );
+      }
+    }
+
+    if ( parentItem )
+    {
+      parentItem->appendRow( item );
+      const QModelIndex newIndex = mOptTreeModel->indexFromItem( item );
+      newPage = mTreeProxyModel->sourceIndexToPageNumber( newIndex );
+    }
+    else
+      mOptTreeModel->appendRow( item );
   }
 
-  mOptStackedWidget->addWidget( widget );
+  if ( newPage < 0 )
+    mOptStackedWidget->addWidget( widget );
+  else
+    mOptStackedWidget->insertWidget( newPage, widget );
 }
 
-void QgsOptionsDialogBase::insertPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget, const QString &before )
+void QgsOptionsDialogBase::insertPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget, const QString &before, const QStringList &path )
 {
   //find the page with a matching widget name
-  for ( int idx = 0; idx < mOptStackedWidget->count(); ++idx )
+  for ( int page = 0; page < mOptStackedWidget->count(); ++page )
   {
-    QWidget *currentPage = mOptStackedWidget->widget( idx );
+    QWidget *currentPage = mOptStackedWidget->widget( page );
     if ( currentPage->objectName() == before )
     {
       //found the "before" page
@@ -358,26 +412,83 @@ void QgsOptionsDialogBase::insertPage( const QString &title, const QString &tool
 
       if ( mOptListWidget )
       {
-        mOptListWidget->insertItem( idx, item );
+        mOptListWidget->insertItem( page, item );
       }
       else if ( mOptTreeModel )
       {
-        QModelIndex sourceIndexBefore = mTreeProxyModel->pageNumberToSourceIndex( idx );
+        QModelIndex sourceIndexBefore = mTreeProxyModel->pageNumberToSourceIndex( page );
+        QList< QModelIndex > sourceBeforeIndices;
         while ( sourceIndexBefore.parent().isValid() )
+        {
+          sourceBeforeIndices.insert( 0, sourceIndexBefore );
           sourceIndexBefore = sourceIndexBefore.parent();
+        }
+        sourceBeforeIndices.insert( 0, sourceIndexBefore );
+
+        QStringList parentPaths = path;
+
+        QModelIndex parentIndex;
+        QStandardItem *parentItem = nullptr;
+        while ( !parentPaths.empty() )
+        {
+          QString thisPath = parentPaths.takeFirst();
+          QModelIndex sourceIndex = !sourceBeforeIndices.isEmpty() ? sourceBeforeIndices.takeFirst() : QModelIndex();
+
+          if ( sourceIndex.data().toString().compare( thisPath, Qt::CaseInsensitive ) == 0
+               || sourceIndex.data( Qt::UserRole + 1 ).toString().compare( thisPath, Qt::CaseInsensitive ) == 0 )
+          {
+            parentIndex = sourceIndex;
+            parentItem = mOptTreeModel->itemFromIndex( parentIndex );
+          }
+          else
+          {
+            QStandardItem *newParentItem = new QStandardItem( thisPath );
+            newParentItem->setToolTip( thisPath );
+            newParentItem->setSelectable( false );
+            if ( sourceIndex.isValid() )
+            {
+              // insert in model before sourceIndex
+              if ( parentItem )
+                parentItem->insertRow( sourceIndex.row(), newParentItem );
+              else
+                mOptTreeModel->insertRow( sourceIndex.row(), newParentItem );
+            }
+            else
+            {
+              // append to end
+              if ( parentItem )
+                parentItem->appendRow( newParentItem );
+              else
+                mOptTreeModel->appendRow( newParentItem );
+            }
+            parentItem = newParentItem;
+          }
+        }
 
         QStandardItem *item = new QStandardItem( icon, title );
         item->setToolTip( tooltip );
-        mOptTreeModel->insertRow( sourceIndexBefore.row(), item );
+        if ( parentItem )
+        {
+          if ( sourceBeforeIndices.empty() )
+            parentItem->appendRow( item );
+          else
+          {
+            parentItem->insertRow( sourceBeforeIndices.at( 0 ).row(), item );
+          }
+        }
+        else
+        {
+          mOptTreeModel->insertRow( sourceIndexBefore.row(), item );
+        }
       }
 
-      mOptStackedWidget->insertWidget( idx, widget );
+      mOptStackedWidget->insertWidget( page, widget );
       return;
     }
   }
 
   // no matching pages, so just add the page
-  addPage( title, tooltip, icon, widget );
+  addPage( title, tooltip, icon, widget, path );
 }
 
 void QgsOptionsDialogBase::searchText( const QString &text )

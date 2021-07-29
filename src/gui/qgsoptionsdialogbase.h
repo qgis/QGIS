@@ -149,10 +149,13 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      *
      * The page content is specified via the \a widget argument. Ownership of \a widget is transferred to the dialog.
      *
+     * Since QGIS 3.22, the optional \a path argument can be used to set the path of the item's entry in the tree view
+     * (for dialogs which show a tree view of options pages only).
+     *
      * \see insertPage()
      * \since QGIS 3.14
      */
-    void addPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget SIP_TRANSFER );
+    void addPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget SIP_TRANSFER, const QStringList &path = QStringList() );
 
     /**
      * Inserts a new page into the dialog pages.
@@ -164,10 +167,13 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      * The \a before argument specifies the object name of an existing page. The new page will be inserted directly
      * before the matching page.
      *
+     * Since QGIS 3.22, the optional \a path argument can be used to set the path of the item's entry in the tree view
+     * (for dialogs which show a tree view of options pages only).
+     *
      * \see addPage()
      * \since QGIS 3.14
      */
-    void insertPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget SIP_TRANSFER, const QString &before );
+    void insertPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget SIP_TRANSFER, const QString &before, const QStringList &path = QStringList() );
 
   public slots:
 
