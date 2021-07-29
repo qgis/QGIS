@@ -1363,22 +1363,38 @@ void QgsOptions::checkPageWidgetNameMap()
 {
   const QMap< QString, int > pageNames = QgisApp::instance()->optionsPagesMap();
 
-#if 0
-  Q_ASSERT_X( pageNames.count() == mOptionsListWidget->count(), "QgsOptions::checkPageWidgetNameMap()", "QgisApp::optionsPagesMap() is outdated, contains too many entries" );
+  int pageCount = 0;
+  std::function<void( const QModelIndex & )> traverseModel;
 
-
-  for ( int idx = 0; idx < mOptionsListWidget->count(); ++idx )
+  // traverse through the model, counting all which correspond to pages till we hit the desired index
+  traverseModel = [&]( const QModelIndex & parent )
   {
-    QWidget *currentPage = mOptionsStackedWidget->widget( idx );
-    QListWidgetItem *item = mOptionsListWidget->item( idx );
+    for ( int row = 0; row < mTreeModel->rowCount( parent ); ++row )
+    {
+      const QModelIndex currentIndex = mTreeModel->index( row, 0, parent );
+
+      if ( mTreeModel->itemFromIndex( currentIndex )->isSelectable() )
+        pageCount++;
+
+      traverseModel( currentIndex );
+    }
+  };
+  traverseModel( QModelIndex() );
+  Q_ASSERT_X( pageNames.count() == pageCount, "QgsOptions::checkPageWidgetNameMap()", "QgisApp::optionsPagesMap() is outdated, contains too many entries" );
+
+  for ( int page = 0; page < pageCount; ++page )
+  {
+    QWidget *currentPage = mOptionsStackedWidget->widget( page );
+    const QModelIndex sourceIndex = mTreeProxyModel->pageNumberToSourceIndex( page );
+
+    QStandardItem *item = mTreeModel->itemFromIndex( sourceIndex );
     if ( currentPage && item )
     {
       const QString title = item->text();
       Q_ASSERT_X( pageNames.contains( title ), "QgsOptions::checkPageWidgetNameMap()", QStringLiteral( "QgisApp::optionsPagesMap() is outdated, please update. Missing %1" ).arg( title ).toLocal8Bit().constData() );
-      Q_ASSERT_X( pageNames.value( title ) == idx, "QgsOptions::checkPageWidgetNameMap()", QStringLiteral( "QgisApp::optionsPagesMap() is outdated, please update. %1 should be %2 not %3" ).arg( title ).arg( idx ).arg( pageNames.value( title ) ).toLocal8Bit().constData() );
+      Q_ASSERT_X( pageNames.value( title ) == page, "QgsOptions::checkPageWidgetNameMap()", QStringLiteral( "QgisApp::optionsPagesMap() is outdated, please update. %1 should be %2 not %3" ).arg( title ).arg( page ).arg( pageNames.value( title ) ).toLocal8Bit().constData() );
     }
   }
-#endif
 }
 
 void QgsOptions::setCurrentPage( const QString &pageWidgetName )
