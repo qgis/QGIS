@@ -507,10 +507,10 @@ void QgsOptionsDialogBase::registerTextSearchWidgets()
 
   for ( int i = 0; i < mOptStackedWidget->count(); i++ )
   {
-    const auto constWidget = mOptStackedWidget->widget( i )->findChildren<QWidget *>();
-    for ( QWidget *w : constWidget )
-    {
 
+    const QList< QWidget * > widgets = mOptStackedWidget->widget( i )->findChildren<QWidget *>();
+    for ( QWidget *w : widgets )
+    {
       // get custom highlight widget in user added pages
       QHash<QWidget *, QgsOptionsDialogHighlightWidget *> customHighlightWidgets;
       QgsOptionsPageWidget *opw = qobject_cast<QgsOptionsPageWidget *>( mOptStackedWidget->widget( i ) );
