@@ -19,7 +19,7 @@
 #ifndef QGSGPSPLUGIN_H
 #define QGSGPSPLUGIN_H
 #include "qgsbabelformat.h"
-#include "qgsgpsdevice.h"
+#include "qgsbabelgpsdevice.h"
 #include "qgisplugin.h"
 
 #include <QObject>
@@ -63,13 +63,11 @@ class QgsGpsPlugin: public QObject, public QgisPlugin
     //! load a GPX file
     void loadGPXFile( const QString &fileName, bool loadWaypoints, bool loadRoutes,
                       bool loadTracks );
-    void importGPSFile( const QString &inputFileName, QgsBabelFormat *importer,
-                        bool importWaypoints, bool importRoutes,
-                        bool importTracks, const QString &outputFileName,
+    void importGPSFile( const QString &inputFileName, QgsAbstractBabelFormat *importer,
+                        Qgis::GpsFeatureType type, const QString &outputFileName,
                         const QString &layerName );
     void downloadFromGPS( const QString &device, const QString &port,
-                          bool downloadWaypoints, bool downloadRoutes,
-                          bool downloadTracks, const QString &outputFileName,
+                          Qgis::GpsFeatureType type, const QString &outputFileName,
                           const QString &layerName );
     void uploadToGPS( QgsVectorLayer *gpxLayer, const QString &device,
                       const QString &port );
@@ -90,9 +88,9 @@ class QgsGpsPlugin: public QObject, public QgisPlugin
     //! The path to the GPSBabel program
     QString mBabelPath;
     //! Importers for external GPS data file formats
-    std::map<QString, QgsBabelFormat *> mImporters;
+    std::map<QString, QgsAbstractBabelFormat *> mImporters;
     //! Upload/downloaders for GPS devices
-    std::map<QString, QgsGpsDevice *> mDevices;
+    std::map<QString, QgsBabelGpsDeviceFormat *> mDevices;
 };
 
 #endif

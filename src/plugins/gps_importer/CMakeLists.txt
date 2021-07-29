@@ -3,8 +3,6 @@
 
 set (GPS_SRCS
      qgsgpsplugin.cpp
-     qgsbabelformat.cpp
-     qgsgpsdevice.cpp
      qgsgpsplugingui.cpp
      qgsgpsdevicedialog.cpp
 )

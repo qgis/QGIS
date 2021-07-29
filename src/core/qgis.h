@@ -534,6 +534,35 @@ class CORE_EXPORT Qgis
     Q_ENUM( VertexMarkerType )
 
     /**
+     * Babel GPS format capabilities.
+     *
+     * \since QGIS 3.22
+     */
+    enum class BabelFormatCapability : int
+    {
+      Import = 1 << 0, //!< Format supports importing
+      Export = 1 << 1, //!< Format supports exporting
+      Waypoints = 1 << 2, //!< Format supports waypoints
+      Routes = 1 << 3, //!< Format supports routes
+      Tracks = 1 << 4, //!< Format supports tracks
+    };
+    Q_DECLARE_FLAGS( BabelFormatCapabilities, BabelFormatCapability )
+    Q_ENUM( BabelFormatCapability )
+
+    /**
+     * GPS feature types.
+     *
+     * \since QGIS 3.22
+     */
+    enum class GpsFeatureType : int
+    {
+      Waypoint, //!< Waypoint
+      Route, //!< Route
+      Track, //!< Track
+    };
+    Q_ENUM( GpsFeatureType )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */
@@ -652,6 +681,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolPreviewFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BrowserItemCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerQueryFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SqlLayerDefinitionCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelFormatCapabilities )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

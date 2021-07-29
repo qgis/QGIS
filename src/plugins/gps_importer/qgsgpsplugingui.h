@@ -19,7 +19,7 @@
 
 #include "ui_qgsgpspluginguibase.h"
 #include "qgsbabelformat.h"
-#include "qgsgpsdevice.h"
+#include "qgsbabelgpsdevice.h"
 #include "qgshelp.h"
 
 #include <vector>
@@ -36,8 +36,8 @@ class QgsGpsPluginGui : public QDialog, private Ui::QgsGpsPluginGuiBase
     Q_OBJECT
 
   public:
-    QgsGpsPluginGui( const BabelMap &importers,
-                     std::map<QString, QgsGpsDevice *> &devices,
+    QgsGpsPluginGui( const std::map<QString, QgsAbstractBabelFormat *> &importers,
+                     std::map<QString, QgsBabelGpsDeviceFormat *> &devices,
                      const std::vector<QgsVectorLayer *> &gpxMapLayers,
                      QWidget *parent, Qt::WindowFlags );
     ~QgsGpsPluginGui() override;
@@ -83,20 +83,18 @@ class QgsGpsPluginGui : public QDialog, private Ui::QgsGpsPluginGuiBase
     void drawVectorLayer( const QString &, const QString &, const QString & );
     void loadGPXFile( const QString &fileName, bool showWaypoints, bool showRoutes,
                       bool showTracks );
-    void importGPSFile( const QString &inputFileName, QgsBabelFormat *importer,
-                        bool importWaypoints, bool importRoutes,
-                        bool importTracks, const QString &outputFileName,
+    void importGPSFile( const QString &inputFileName, QgsAbstractBabelFormat *importer,
+                        Qgis::GpsFeatureType type, const QString &outputFileName,
                         const QString &layerName );
-    void downloadFromGPS( const QString &device, const QString &port, bool downloadWaypoints,
-                          bool downloadRoutes, bool downloadTracks,
+     void downloadFromGPS( const QString &device, const QString &port, Qgis::GpsFeatureType type,
                           const QString &outputFileName, const QString &layerName );
     void uploadToGPS( QgsVectorLayer *gpxLayer, const QString &device, const QString &port );
 
   private:
 
     std::vector<QgsVectorLayer *> mGPXLayers;
-    const BabelMap &mImporters;
-    std::map<QString, QgsGpsDevice *> &mDevices;
+    const std::map<QString, QgsAbstractBabelFormat *> &mImporters;
+    std::map<QString, QgsBabelGpsDeviceFormat *> &mDevices;
     QString mBabelFilter;
     QString mImpFormat;
     QAbstractButton *pbnOK = nullptr;

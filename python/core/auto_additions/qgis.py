@@ -489,3 +489,19 @@ QgsSymbolLayerUtils.NoMarker.__doc__ = "No marker"
 Qgis.VertexMarkerType.__doc__ = 'Editing vertex markers, used for showing vertices during a edit operation.\n\n.. versionadded:: 3.22\n\n' + '* ``SemiTransparentCircle``: ' + Qgis.VertexMarkerType.SemiTransparentCircle.__doc__ + '\n' + '* ``Cross``: ' + Qgis.VertexMarkerType.Cross.__doc__ + '\n' + '* ``NoMarker``: ' + Qgis.VertexMarkerType.NoMarker.__doc__
 # --
 Qgis.VertexMarkerType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.BabelFormatCapability.Import.__doc__ = "Format supports importing"
+Qgis.BabelFormatCapability.Export.__doc__ = "Format supports exporting"
+Qgis.BabelFormatCapability.Waypoints.__doc__ = "Format supports waypoints"
+Qgis.BabelFormatCapability.Routes.__doc__ = "Format supports routes"
+Qgis.BabelFormatCapability.Tracks.__doc__ = "Format supports tracks"
+Qgis.BabelFormatCapability.__doc__ = 'Babel GPS format capabilities.\n\n.. versionadded:: 3.22\n\n' + '* ``Import``: ' + Qgis.BabelFormatCapability.Import.__doc__ + '\n' + '* ``Export``: ' + Qgis.BabelFormatCapability.Export.__doc__ + '\n' + '* ``Waypoints``: ' + Qgis.BabelFormatCapability.Waypoints.__doc__ + '\n' + '* ``Routes``: ' + Qgis.BabelFormatCapability.Routes.__doc__ + '\n' + '* ``Tracks``: ' + Qgis.BabelFormatCapability.Tracks.__doc__
+# --
+Qgis.BabelFormatCapability.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.GpsFeatureType.Waypoint.__doc__ = "Waypoint"
+Qgis.GpsFeatureType.Route.__doc__ = "Route"
+Qgis.GpsFeatureType.Track.__doc__ = "Track"
+Qgis.GpsFeatureType.__doc__ = 'GPS feature types.\n\n.. versionadded:: 3.22\n\n' + '* ``Waypoint``: ' + Qgis.GpsFeatureType.Waypoint.__doc__ + '\n' + '* ``Route``: ' + Qgis.GpsFeatureType.Route.__doc__ + '\n' + '* ``Track``: ' + Qgis.GpsFeatureType.Track.__doc__
+# --
+Qgis.GpsFeatureType.baseClass = Qgis
