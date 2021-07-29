@@ -25,14 +25,10 @@
 
 #include "qgsbabelformat.h"
 
-#define SIP_NO_FILE
-
 /**
  * \ingroup core
  * \class QgsBabelGpsDeviceFormat
  * \brief A babel format capable of interacting directly with a GPS device.
- *
- * \note Not available in Python bindings
  *
  * \since QGIS 3.22
 */
