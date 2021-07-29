@@ -173,6 +173,52 @@ QgsDwgImporter::~QgsDwgImporter()
   }
 }
 
+QString drwVersionToString( DRW::Version version )
+{
+  switch ( version )
+  {
+    case DRW::UNKNOWNV:
+      return QObject::tr( "Unknown version" );
+    case DRW::MC00:
+      return QObject::tr( "AutoCAD Release 1.1" );
+    case DRW::AC12:
+      return QObject::tr( "AutoCAD Release 1.2" );
+    case DRW::AC14:
+      return QObject::tr( "AutoCAD Release 1.4" );
+    case DRW::AC150:
+      return QObject::tr( "AutoCAD Release 2.0" );
+    case DRW::AC210:
+      return QObject::tr( "AutoCAD Release 2.10" );
+    case DRW::AC1002:
+      return QObject::tr( "AutoCAD Release 2.5" );
+    case DRW::AC1003:
+      return QObject::tr( "AutoCAD Release 2.6" );
+    case DRW::AC1004:
+      return QObject::tr( "AutoCAD Release 9" );
+    case DRW::AC1006:
+      return QObject::tr( "AutoCAD Release 10" );
+    case DRW::AC1009:
+      return QObject::tr( "AutoCAD Release 11/12 (LT R1/R2)" );
+    case DRW::AC1012:
+      return QObject::tr( "AutoCAD Release 13 (LT95)" );
+    case DRW::AC1014:
+      return QObject::tr( "AutoCAD Release 14/14.01 (LT97/LT98)" );
+    case DRW::AC1015:
+      return QObject::tr( "AutoCAD 2000/2000i/2002" );
+    case DRW::AC1018:
+      return QObject::tr( "AutoCAD 2004/2005/2006" );
+    case DRW::AC1021:
+      return QObject::tr( "AutoCAD 2007/2008/2009" );
+    case DRW::AC1024:
+      return QObject::tr( "AutoCAD 2010/2011/2012" );
+    case DRW::AC1027:
+      return QObject::tr( "AutoCAD 2013/2014/2015/2016/2017" );
+    case DRW::AC1032:
+      return QObject::tr( "AutoCAD 2018/2019/2020" );
+  }
+  return QString();
+}
+
 bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpandInserts, bool useCurves, QLabel *label )
 {
   QgsDebugCall;
@@ -601,6 +647,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
   LOG( tr( "Updating database from %1 [%2]." ).arg( drawing, fi.lastModified().toString() ) );
 
   DRW::error result( DRW::BAD_NONE );
+  DRW::Version version = DRW::Version::UNKNOWNV;
 
   mTime.start();
   mEntities = 0;
@@ -622,6 +669,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
     {
       result = dwg->getError();
     }
+    version = dwg->getVersion();
   }
   else
   {
@@ -641,7 +689,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
       error = tr( "error opening file." );
       break;
     case DRW::BAD_VERSION:
-      error = tr( "unsupported version." );
+      error = tr( "unsupported version. Cannot read %1 documents." ).arg( drwVersionToString( version ) );
       break;
     case DRW::BAD_READ_METADATA:
       error = tr( "error reading metadata." );
