@@ -75,10 +75,10 @@ namespace DRW
     AC1009,       //!< DWG Release 11/12 (LT R1/R2)
     AC1012,       //!< DWG Release 13 (LT95)
     AC1014,       //!< DWG Release 14/14.01 (LT97/LT98)
-    AC1015,       //!< AutoCAD 2000/200i0/2002
+    AC1015,       //!< AutoCAD 2000/2000i/2002
     AC1018,       //!< AutoCAD 2004/2005/2006
     AC1021,       //!< AutoCAD 2007/2008/2009
-    AC1024,       //!< AutoCAD 2010/2011/2021
+    AC1024,       //!< AutoCAD 2010/2011/2012
     AC1027,       //!< AutoCAD 2013/2014/2015/2016/2017
     AC1032,       //!< AutoCAD 2018/2019/2020
   };
