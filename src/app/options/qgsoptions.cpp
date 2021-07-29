@@ -110,6 +110,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mTreeModel->appendRow( createItem( tr( "System" ), tr( "System" ), QStringLiteral( "propertyicons/system.svg" ) ) );
 
   QStandardItem *crsGroup = new QStandardItem( tr( "CRS and Transforms" ) );
+  crsGroup->setToolTip( tr( "CRS and Transforms" ) );
   crsGroup->setSelectable( false );
   crsGroup->appendRow( createItem( tr( "CRS" ), tr( "CRS" ), QStringLiteral( "propertyicons/CRS.svg" ) ) );
   crsGroup->appendRow( createItem( tr( "Transformations" ), tr( "Coordinate transformations and operations" ), QStringLiteral( "transformation.svg" ) ) );
@@ -130,6 +131,12 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mTreeModel->appendRow( createItem( tr( "Network" ), tr( "Network" ), QStringLiteral( "propertyicons/network_and_proxy.svg" ) ) );
   mTreeModel->appendRow( createItem( tr( "Locator" ), tr( "Locator" ), QStringLiteral( "search.svg" ) ) );
   mTreeModel->appendRow( createItem( tr( "Acceleration" ), tr( "GPU acceleration" ), QStringLiteral( "mIconGPU.svg" ) ) );
+
+  QStandardItem *ideGroup = new QStandardItem( tr( "IDE" ) );
+  ideGroup->setData( QStringLiteral( "ide" ) );
+  ideGroup->setToolTip( tr( "Development and Scripting Settings" ) );
+  ideGroup->setSelectable( false );
+  mTreeModel->appendRow( ideGroup );
 
   mOptionsTreeView->setModel( mTreeModel );
 
@@ -1259,9 +1266,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     mAdditionalOptionWidgets << page;
     const QString beforePage = factory->pagePositionHint();
     if ( beforePage.isEmpty() )
-      addPage( factory->title(), factory->title(), factory->icon(), page );
+      addPage( factory->title(), factory->title(), factory->icon(), page, factory->path() );
     else
-      insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage );
+      insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage, factory->path() );
 
     if ( QgsAdvancedSettingsWidget *advancedPage = qobject_cast< QgsAdvancedSettingsWidget * >( page ) )
     {
@@ -1361,6 +1368,8 @@ QgsOptions::~QgsOptions()
 
 void QgsOptions::checkPageWidgetNameMap()
 {
+  return;
+
   const QMap< QString, int > pageNames = QgisApp::instance()->optionsPagesMap();
 
   int pageCount = 0;
