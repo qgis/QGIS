@@ -26,8 +26,8 @@
 #include <cassert>
 #include <cstdlib>
 
-QgsGpsPluginGui::QgsGpsPluginGui( const BabelMap &importers,
-                                  std::map<QString, QgsGpsDevice *> &devices,
+QgsGpsPluginGui::QgsGpsPluginGui( const std::map<QString, QgsAbstractBabelFormat *> &importers,
+                                  std::map<QString, QgsBabelGpsDeviceFormat *> &devices,
                                   const std::vector<QgsVectorLayer *> &gpxMapLayers,
                                   QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -103,9 +103,8 @@ void QgsGpsPluginGui::buttonBox_accepted()
       const QString &typeString( cmbIMPFeature->currentText() );
       emit importGPSFile( leIMPInput->text(),
                           mImporters.find( mImpFormat )->second,
-                          typeString == tr( "Waypoints" ),
-                          typeString == tr( "Routes" ),
-                          typeString == tr( "Tracks" ),
+                          typeString == tr( "Waypoints" ) ? Qgis::GpsFeatureType::Waypoint
+                          : typeString == tr( "Routes" ) ? Qgis::GpsFeatureType::Route : Qgis::GpsFeatureType::Track,
                           leIMPOutput->text(),
                           leIMPLayer->text() );
       break;
@@ -124,7 +123,8 @@ void QgsGpsPluginGui::buttonBox_accepted()
 
       emit downloadFromGPS( cmbDLDevice->currentText(),
                             cmbDLPort->currentData().toString(),
-                            featureType == 0, featureType == 1, featureType == 2,
+                            featureType == 0 ? Qgis::GpsFeatureType::Waypoint
+                            : featureType == 1 ? Qgis::GpsFeatureType::Route : Qgis::GpsFeatureType::Track,
                             fileName, leDLBasename->text() );
       break;
     }
@@ -250,7 +250,7 @@ void QgsGpsPluginGui::pbnIMPInput_clicked()
     settings.setValue( QStringLiteral( "Plugin-GPS/lastImportFilter" ), myFileType );
 
     mImpFormat = myFileType.left( myFileType.length() - 6 );
-    std::map<QString, QgsBabelFormat *>::const_iterator iter;
+    std::map<QString, QgsAbstractBabelFormat *>::const_iterator iter;
     iter = mImporters.find( mImpFormat );
     if ( iter == mImporters.end() )
     {
@@ -262,11 +262,11 @@ void QgsGpsPluginGui::pbnIMPInput_clicked()
       QgsLogger::debug( iter->first + " selected" );
       leIMPInput->setText( myFileName );
       cmbIMPFeature->clear();
-      if ( iter->second->supportsWaypoints() )
+      if ( iter->second->capabilities() & Qgis::BabelFormatCapability::Waypoints )
         cmbIMPFeature->addItem( tr( "Waypoints" ) );
-      if ( iter->second->supportsRoutes() )
+      if ( iter->second->capabilities() & Qgis::BabelFormatCapability::Routes )
         cmbIMPFeature->addItem( tr( "Routes" ) );
-      if ( iter->second->supportsTracks() )
+      if ( iter->second->capabilities() & Qgis::BabelFormatCapability::Tracks )
         cmbIMPFeature->addItem( tr( "Tracks" ) );
     }
   }
@@ -334,12 +334,11 @@ void QgsGpsPluginGui::populateIMPBabelFormats()
   QgsSettings settings;
   QString lastDLDevice = settings.value( QStringLiteral( "Plugin-GPS/lastdldevice" ), "" ).toString();
   QString lastULDevice = settings.value( QStringLiteral( "Plugin-GPS/lastuldevice" ), "" ).toString();
-  BabelMap::const_iterator iter;
-  for ( iter = mImporters.begin(); iter != mImporters.end(); ++iter )
+  for ( auto iter = mImporters.begin(); iter != mImporters.end(); ++iter )
     mBabelFilter.append( iter->first ).append( " (*.*);;" );
   mBabelFilter.chop( 2 ); // Remove the trailing ;;, which otherwise leads to an empty filetype
   int u = -1, d = -1;
-  std::map<QString, QgsGpsDevice *>::const_iterator iter2;
+  std::map<QString, QgsBabelGpsDeviceFormat *>::const_iterator iter2;
   for ( iter2 = mDevices.begin(); iter2 != mDevices.end(); ++iter2 )
   {
     cmbULDevice->addItem( iter2->first );

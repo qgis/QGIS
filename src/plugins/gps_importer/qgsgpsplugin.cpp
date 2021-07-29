@@ -65,10 +65,9 @@ QgsGpsPlugin::QgsGpsPlugin( QgisInterface *qgisInterFace )
 QgsGpsPlugin::~QgsGpsPlugin()
 {
   // delete all our babel formats
-  BabelMap::iterator iter;
-  for ( iter = mImporters.begin(); iter != mImporters.end(); ++iter )
+  for ( auto iter = mImporters.begin(); iter != mImporters.end(); ++iter )
     delete iter->second;
-  std::map<QString, QgsGpsDevice *>::iterator iter2;
+  std::map<QString, QgsBabelGpsDeviceFormat *>::iterator iter2;
   for ( iter2 = mDevices.begin(); iter2 != mDevices.end(); ++iter2 )
     delete iter2->second;
 }
@@ -184,24 +183,12 @@ void QgsGpsPlugin::loadGPXFile( const QString &fileName, bool loadWaypoints, boo
   emit closeGui();
 }
 
-void QgsGpsPlugin::importGPSFile( const QString &inputFileName, QgsBabelFormat *importer,
-                                  bool importWaypoints, bool importRoutes,
-                                  bool importTracks, const QString &outputFileName,
+void QgsGpsPlugin::importGPSFile( const QString &inputFileName, QgsAbstractBabelFormat *importer,
+                                  Qgis::GpsFeatureType type, const QString &outputFileName,
                                   const QString &layerName )
 {
-  // what features does the user want to import?
-  QString typeArg;
-  if ( importWaypoints )
-    typeArg = QStringLiteral( "-w" );
-  else if ( importRoutes )
-    typeArg = QStringLiteral( "-r" );
-  else if ( importTracks )
-    typeArg = QStringLiteral( "-t" );
-
   // try to start the gpsbabel process
-  QStringList babelArgs =
-    importer->importCommand( mBabelPath, typeArg,
-                             inputFileName, outputFileName );
+  QStringList babelArgs = importer->importCommand( mBabelPath, type, inputFileName, outputFileName );
 
   QgsDebugMsg( QStringLiteral( "Import command: " ) + babelArgs.join( "|" ) );
 
@@ -238,46 +225,46 @@ void QgsGpsPlugin::importGPSFile( const QString &inputFileName, QgsBabelFormat *
   }
 
   // add the layer
-  if ( importTracks )
-    drawVectorLayer( outputFileName + "?type=track",
-                     layerName, QStringLiteral( "gpx" ) );
-  if ( importRoutes )
-    drawVectorLayer( outputFileName + "?type=route",
-                     layerName, QStringLiteral( "gpx" ) );
-  if ( importWaypoints )
-    drawVectorLayer( outputFileName + "?type=waypoint",
-                     layerName, QStringLiteral( "gpx" ) );
+  switch ( type )
+  {
+    case Qgis::GpsFeatureType::Waypoint:
+      drawVectorLayer( outputFileName + "?type=waypoint",
+                       layerName, QStringLiteral( "gpx" ) );
+      break;
+    case Qgis::GpsFeatureType::Route:
+      drawVectorLayer( outputFileName + "?type=route",
+                       layerName, QStringLiteral( "gpx" ) );
+      break;
+    case Qgis::GpsFeatureType::Track:
+      drawVectorLayer( outputFileName + "?type=track",
+                       layerName, QStringLiteral( "gpx" ) );
+      break;
+  }
 
   emit closeGui();
 }
 
 void QgsGpsPlugin::downloadFromGPS( const QString &device, const QString &port,
-                                    bool downloadWaypoints, bool downloadRoutes,
-                                    bool downloadTracks, const QString &outputFileName,
+                                    Qgis::GpsFeatureType type, const QString &outputFileName,
                                     const QString &layerName )
 {
   // what does the user want to download?
-  QString typeArg, features;
-  if ( downloadWaypoints )
+  QString features;
+  switch ( type )
   {
-    typeArg = QStringLiteral( "-w" );
-    features = QStringLiteral( "waypoints" );
-  }
-  else if ( downloadRoutes )
-  {
-    typeArg = QStringLiteral( "-r" );
-    features = QStringLiteral( "routes" );
-  }
-  else if ( downloadTracks )
-  {
-    typeArg = QStringLiteral( "-t" );
-    features = QStringLiteral( "tracks" );
+    case Qgis::GpsFeatureType::Waypoint:
+      features = QStringLiteral( "waypoints" );
+      break;
+    case Qgis::GpsFeatureType::Route:
+      features = QStringLiteral( "routes" );
+      break;
+    case Qgis::GpsFeatureType::Track:
+      features = QStringLiteral( "tracks" );
+      break;
   }
 
   // try to start the gpsbabel process
-  QStringList babelArgs =
-    mDevices[device]->importCommand( mBabelPath, typeArg,
-                                     port, outputFileName );
+  QStringList babelArgs = mDevices[device]->importCommand( mBabelPath, type, port, outputFileName );
   if ( babelArgs.isEmpty() )
   {
     QMessageBox::warning( nullptr, tr( "Download from GPS" ),
@@ -318,15 +305,18 @@ void QgsGpsPlugin::downloadFromGPS( const QString &device, const QString &port,
   }
 
   // add the layer
-  if ( downloadWaypoints )
-    drawVectorLayer( outputFileName + "?type=waypoint",
-                     layerName, QStringLiteral( "gpx" ) );
-  if ( downloadRoutes )
-    drawVectorLayer( outputFileName + "?type=route",
-                     layerName, QStringLiteral( "gpx" ) );
-  if ( downloadTracks )
-    drawVectorLayer( outputFileName + "?type=track",
-                     layerName, QStringLiteral( "gpx" ) );
+  switch ( type )
+  {
+    case Qgis::GpsFeatureType::Waypoint:
+      drawVectorLayer( outputFileName + "?type=waypoint", layerName, QStringLiteral( "gpx" ) );
+      break;
+    case Qgis::GpsFeatureType::Route:
+      drawVectorLayer( outputFileName + "?type=route", layerName, QStringLiteral( "gpx" ) );
+      break;
+    case Qgis::GpsFeatureType::Track:
+      drawVectorLayer( outputFileName + "?type=track", layerName, QStringLiteral( "gpx" ) );
+      break;
+  }
 
   // everything was OK, remember the device and port for next time
   QgsSettings settings;
@@ -342,20 +332,21 @@ void QgsGpsPlugin::uploadToGPS( QgsVectorLayer *gpxLayer, const QString &device,
   const QString &source( gpxLayer->dataProvider()->dataSourceUri() );
 
   // what kind of data does the user want to upload?
-  QString typeArg, features;
+  QString features;
+  Qgis::GpsFeatureType type = Qgis::GpsFeatureType::Waypoint;
   if ( source.right( 8 ) == QLatin1String( "waypoint" ) )
   {
-    typeArg = QStringLiteral( "-w" );
+    type = Qgis::GpsFeatureType::Waypoint;
     features = QStringLiteral( "waypoints" );
   }
   else if ( source.right( 5 ) == QLatin1String( "route" ) )
   {
-    typeArg = QStringLiteral( "-r" );
+    type = Qgis::GpsFeatureType::Route;
     features = QStringLiteral( "routes" );
   }
   else if ( source.right( 5 ) == QLatin1String( "track" ) )
   {
-    typeArg = QStringLiteral( "-t" );
+    type = Qgis::GpsFeatureType::Track;
     features = QStringLiteral( "tracks" );
   }
   else
@@ -365,9 +356,7 @@ void QgsGpsPlugin::uploadToGPS( QgsVectorLayer *gpxLayer, const QString &device,
   }
 
   // try to start the gpsbabel process
-  QStringList babelArgs =
-    mDevices[device]->exportCommand( mBabelPath, typeArg,
-                                     source.left( source.lastIndexOf( '?' ) ), port );
+  QStringList babelArgs = mDevices[device]->exportCommand( mBabelPath, type, source.left( source.lastIndexOf( '?' ) ), port );
   if ( babelArgs.isEmpty() )
   {
     QMessageBox::warning( nullptr, tr( "Upload to GPS" ),
@@ -422,76 +411,77 @@ void QgsGpsPlugin::setupBabel()
   mBabelPath = settings.value( QStringLiteral( "Plugin-GPS/gpsbabelpath" ), QString() ).toString();
   if ( mBabelPath.isEmpty() )
     mBabelPath = QStringLiteral( "gpsbabel" );
+
   // the importable formats
   mImporters[QStringLiteral( "Shapefile" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "shape" ), true, true, true );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "shape" ), Qgis::BabelFormatCapability::Waypoints | Qgis::BabelFormatCapability::Routes | Qgis::BabelFormatCapability::Tracks );
   mImporters[QStringLiteral( "Geocaching.com .loc" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "geo" ), true, false, false );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "geo" ), Qgis::BabelFormatCapability::Waypoints );
   mImporters[QStringLiteral( "Magellan Mapsend" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "mapsend" ), true, true, true );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "mapsend" ), Qgis::BabelFormatCapability::Waypoints | Qgis::BabelFormatCapability::Routes | Qgis::BabelFormatCapability::Tracks );
   mImporters[QStringLiteral( "Garmin PCX5" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "pcx" ), true, false, true );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "pcx" ), Qgis::BabelFormatCapability::Waypoints | Qgis::BabelFormatCapability::Tracks );
   mImporters[QStringLiteral( "Garmin Mapsource" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "mapsource" ), true, true, true );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "mapsource" ), Qgis::BabelFormatCapability::Waypoints | Qgis::BabelFormatCapability::Routes | Qgis::BabelFormatCapability::Tracks );
   mImporters[QStringLiteral( "GPSUtil" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "gpsutil" ), true, false, false );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "gpsutil" ), Qgis::BabelFormatCapability::Waypoints );
   mImporters[QStringLiteral( "PocketStreets 2002/2003 Pushpin" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "psp" ), true, false, false );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "psp" ), Qgis::BabelFormatCapability::Waypoints );
   mImporters[QStringLiteral( "CoPilot Flight Planner" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "copilot" ), true, false, false );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "copilot" ), Qgis::BabelFormatCapability::Waypoints );
   mImporters[QStringLiteral( "Magellan Navigator Companion" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "magnav" ), true, false, false );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "magnav" ), Qgis::BabelFormatCapability::Waypoints );
   mImporters[QStringLiteral( "Holux" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "holux" ), true, false, false );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "holux" ), Qgis::BabelFormatCapability::Waypoints );
   mImporters[QStringLiteral( "Topo by National Geographic" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "tpg" ), true, false, false );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "tpg" ), Qgis::BabelFormatCapability::Waypoints );
   mImporters[QStringLiteral( "TopoMapPro" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "tmpro" ), true, false, false );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "tmpro" ), Qgis::BabelFormatCapability::Waypoints );
   mImporters[QStringLiteral( "GeocachingDB" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "gcdb" ), true, false, false );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "gcdb" ), Qgis::BabelFormatCapability::Waypoints );
   mImporters[QStringLiteral( "Tiger" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "tiger" ), true, false, false );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "tiger" ), Qgis::BabelFormatCapability::Waypoints );
   mImporters[QStringLiteral( "EasyGPS Binary Format" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "easygps" ), true, false, false );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "easygps" ), Qgis::BabelFormatCapability::Waypoints );
   mImporters[QStringLiteral( "Delorme Routes" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "saroute" ), false, false, true );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "saroute" ), Qgis::BabelFormatCapability::Tracks );
   mImporters[QStringLiteral( "Navicache" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "navicache" ), true, false, false );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "navicache" ), Qgis::BabelFormatCapability::Waypoints );
   mImporters[QStringLiteral( "PSITrex" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "psitrex" ), true, true, true );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "psitrex" ), Qgis::BabelFormatCapability::Waypoints | Qgis::BabelFormatCapability::Routes | Qgis::BabelFormatCapability::Tracks );
   mImporters[QStringLiteral( "Delorme GPS Log" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "gpl" ), false, false, true );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "gpl" ), Qgis::BabelFormatCapability::Tracks );
   mImporters[QStringLiteral( "OziExplorer" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "ozi" ), true, false, false );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "ozi" ), Qgis::BabelFormatCapability::Waypoints );
   mImporters[QStringLiteral( "NMEA Sentences" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "nmea" ), true, false, true );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "nmea" ), Qgis::BabelFormatCapability::Waypoints | Qgis::BabelFormatCapability::Tracks );
   mImporters[QStringLiteral( "Delorme Street Atlas 2004 Plus" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "saplus" ), true, false, false );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "saplus" ), Qgis::BabelFormatCapability::Waypoints );
   mImporters[QStringLiteral( "Microsoft Streets and Trips" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "s_and_t" ), true, false, false );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "s_and_t" ), Qgis::BabelFormatCapability::Waypoints );
   mImporters[QStringLiteral( "NIMA/GNIS Geographic Names" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "nima" ), true, false, false );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "nima" ), Qgis::BabelFormatCapability::Waypoints );
   mImporters[QStringLiteral( "Maptech" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "mxf" ), true, false, false );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "mxf" ), Qgis::BabelFormatCapability::Waypoints );
   mImporters[QStringLiteral( "Mapopolis.com Mapconverter Application" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "mapconverter" ), true, false, false );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "mapconverter" ), Qgis::BabelFormatCapability::Waypoints );
   mImporters[QStringLiteral( "GPSman" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "gpsman" ), true, false, false );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "gpsman" ), Qgis::BabelFormatCapability::Waypoints );
   mImporters[QStringLiteral( "GPSDrive" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "gpsdrive" ), true, false, false );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "gpsdrive" ), Qgis::BabelFormatCapability::Waypoints );
   mImporters[QStringLiteral( "Fugawi" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "fugawi" ), true, false, false );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "fugawi" ), Qgis::BabelFormatCapability::Waypoints );
   mImporters[QStringLiteral( "DNA" )] =
-    new QgsSimpleBabelFormat( QStringLiteral( "dna" ), true, false, false );
+    new QgsBabelSimpleImportFormat( QStringLiteral( "dna" ), Qgis::BabelFormatCapability::Waypoints );
 
   // and the GPS devices
   mDevices[QStringLiteral( "Garmin serial" )] =
-    new QgsGpsDevice( QStringLiteral( "%babel -w -i garmin -o gpx %in %out" ),
-                      QStringLiteral( "%babel -w -i gpx -o garmin %in %out" ),
-                      QStringLiteral( "%babel -r -i garmin -o gpx %in %out" ),
-                      QStringLiteral( "%babel -r -i gpx -o garmin %in %out" ),
-                      QStringLiteral( "%babel -t -i garmin -o gpx %in %out" ),
-                      QStringLiteral( "%babel -t -i gpx -o garmin %in %out" ) );
+    new QgsBabelGpsDeviceFormat( QStringLiteral( "%babel -w -i garmin -o gpx %in %out" ),
+                                 QStringLiteral( "%babel -w -i gpx -o garmin %in %out" ),
+                                 QStringLiteral( "%babel -r -i garmin -o gpx %in %out" ),
+                                 QStringLiteral( "%babel -r -i gpx -o garmin %in %out" ),
+                                 QStringLiteral( "%babel -t -i garmin -o gpx %in %out" ),
+                                 QStringLiteral( "%babel -t -i gpx -o garmin %in %out" ) );
   QStringList deviceNames = settings.value( QStringLiteral( "Plugin-GPS/devicelist" ) ).
                             toStringList();
 
@@ -517,9 +507,9 @@ void QgsGpsPlugin::setupBabel()
     QString trkUpload = settings.
                         value( QStringLiteral( "/Plugin-GPS/devices/%1/trkupload" ).arg( *iter ), "" ).
                         toString();
-    mDevices[*iter] = new QgsGpsDevice( wptDownload, wptUpload,
-                                        rteDownload, rteUpload,
-                                        trkDownload, trkUpload );
+    mDevices[*iter] = new QgsBabelGpsDeviceFormat( wptDownload, wptUpload,
+        rteDownload, rteUpload,
+        trkDownload, trkUpload );
   }
 }
 

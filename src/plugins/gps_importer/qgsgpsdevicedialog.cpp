@@ -18,7 +18,7 @@
 
 
 QgsGpsDeviceDialog::QgsGpsDeviceDialog( std::map < QString,
-                                        QgsGpsDevice * > &devices )
+                                        QgsBabelGpsDeviceFormat * > &devices )
   : QDialog( nullptr, QgsGuiUtils::ModalDialogFlags )
   , mDevices( devices )
 {
@@ -38,13 +38,13 @@ QgsGpsDeviceDialog::QgsGpsDeviceDialog( std::map < QString,
 
 void QgsGpsDeviceDialog::pbnNewDevice_clicked()
 {
-  std::map<QString, QgsGpsDevice *>::const_iterator iter = mDevices.begin();
+  std::map<QString, QgsBabelGpsDeviceFormat *>::const_iterator iter = mDevices.begin();
   QString deviceName = tr( "New device %1" );
   int i = 1;
   for ( ; iter != mDevices.end(); ++i )
     iter = mDevices.find( deviceName.arg( i ) );
   deviceName = deviceName.arg( i - 1 );
-  mDevices[deviceName] = new QgsGpsDevice;
+  mDevices[deviceName] = new QgsBabelGpsDeviceFormat;
   writeDeviceSettings();
   slotUpdateDeviceList( deviceName );
   emit devicesChanged();
@@ -58,7 +58,7 @@ void QgsGpsDeviceDialog::pbnDeleteDevice_clicked()
                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
   {
 
-    std::map<QString, QgsGpsDevice *>::iterator iter =
+    std::map<QString, QgsBabelGpsDeviceFormat *>::iterator iter =
       mDevices.find( lbDeviceList->currentItem()->text() );
     if ( iter != mDevices.end() )
     {
@@ -76,16 +76,16 @@ void QgsGpsDeviceDialog::pbnUpdateDevice_clicked()
 {
   if ( lbDeviceList->count() > 0 )
   {
-    std::map<QString, QgsGpsDevice *>::iterator iter =
+    std::map<QString, QgsBabelGpsDeviceFormat *>::iterator iter =
       mDevices.find( lbDeviceList->currentItem()->text() );
     if ( iter != mDevices.end() )
     {
       delete iter->second;
       mDevices.erase( iter );
       mDevices[leDeviceName->text()] =
-        new QgsGpsDevice( leWptDown->text(), leWptUp->text(),
-                          leRteDown->text(), leRteUp->text(),
-                          leTrkDown->text(), leTrkUp->text() );
+        new QgsBabelGpsDeviceFormat( leWptDown->text(), leWptUp->text(),
+                                     leRteDown->text(), leRteUp->text(),
+                                     leTrkDown->text(), leTrkUp->text() );
       writeDeviceSettings();
       slotUpdateDeviceList( leDeviceName->text() );
       emit devicesChanged();
@@ -112,7 +112,7 @@ void QgsGpsDeviceDialog::slotUpdateDeviceList( const QString &selection )
                        this, &QgsGpsDeviceDialog::slotSelectionChanged );
 
   lbDeviceList->clear();
-  std::map<QString, QgsGpsDevice *>::const_iterator iter;
+  std::map<QString, QgsBabelGpsDeviceFormat *>::const_iterator iter;
   for ( iter = mDevices.begin(); iter != mDevices.end(); ++iter )
   {
     QListWidgetItem *item = new QListWidgetItem( iter->first, lbDeviceList );
@@ -138,19 +138,19 @@ void QgsGpsDeviceDialog::slotSelectionChanged( QListWidgetItem *current )
   {
     QString devName = current->text();
     leDeviceName->setText( devName );
-    QgsGpsDevice *device = mDevices[devName];
+    QgsBabelGpsDeviceFormat *device = mDevices[devName];
     leWptDown->setText( device->
-                        importCommand( QStringLiteral( "%babel" ), QStringLiteral( "-w" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) ) );
+                        importCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Waypoint, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) ) );
     leWptUp->setText( device->
-                      exportCommand( QStringLiteral( "%babel" ), QStringLiteral( "-w" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) ) );
+                      exportCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Waypoint, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) ) );
     leRteDown->setText( device->
-                        importCommand( QStringLiteral( "%babel" ), QStringLiteral( "-r" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) ) );
+                        importCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Route, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) ) );
     leRteUp->setText( device->
-                      exportCommand( QStringLiteral( "%babel" ), QStringLiteral( "-r" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) ) );
+                      exportCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Route, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) ) );
     leTrkDown->setText( device->
-                        importCommand( QStringLiteral( "%babel" ), QStringLiteral( "-t" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) ) );
+                        importCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Track, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) ) );
     leTrkUp->setText( device->
-                      exportCommand( QStringLiteral( "%babel" ), QStringLiteral( "-t" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) ) );
+                      exportCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Track, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) ) );
   }
 }
 
@@ -162,22 +162,22 @@ void QgsGpsDeviceDialog::writeDeviceSettings()
   QString devPath = QStringLiteral( "/Plugin-GPS/devices/%1" );
   settings.remove( QStringLiteral( "/Plugin-GPS/devices" ) );
 
-  std::map<QString, QgsGpsDevice *>::const_iterator iter;
+  std::map<QString, QgsBabelGpsDeviceFormat *>::const_iterator iter;
   for ( iter = mDevices.begin(); iter != mDevices.end(); ++iter )
   {
     deviceNames.append( iter->first );
     QString wptDownload =
-      iter->second->importCommand( QStringLiteral( "%babel" ), QStringLiteral( "-w" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
+      iter->second->importCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Waypoint, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
     QString wptUpload =
-      iter->second->exportCommand( QStringLiteral( "%babel" ), QStringLiteral( "-w" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
+      iter->second->exportCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Waypoint, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
     QString rteDownload =
-      iter->second->importCommand( QStringLiteral( "%babel" ), QStringLiteral( "-r" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
+      iter->second->importCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Route, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
     QString rteUpload =
-      iter->second->exportCommand( QStringLiteral( "%babel" ), QStringLiteral( "-r" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
+      iter->second->exportCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Route, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
     QString trkDownload =
-      iter->second->importCommand( QStringLiteral( "%babel" ), QStringLiteral( "-t" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
+      iter->second->importCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Track, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
     QString trkUpload =
-      iter->second->exportCommand( QStringLiteral( "%babel" ), QStringLiteral( "-t" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
+      iter->second->exportCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Track, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
     settings.setValue( devPath.arg( iter->first ) + "/wptdownload",
                        wptDownload );
     settings.setValue( devPath.arg( iter->first ) + "/wptupload", wptUpload );
