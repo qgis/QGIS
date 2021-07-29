@@ -1,6 +1,5 @@
 <RCC>
-    <qresource prefix="/">
+    <qresource prefix="/" >
         <file>gps_importer.svg</file>
-        <file>import_gpx.svg</file>
     </qresource>
 </RCC>
