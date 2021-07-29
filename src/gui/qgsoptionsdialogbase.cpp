@@ -180,6 +180,10 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString &title
   {
     mSearchLineEdit->setShowSearchIcon( true );
     connect( mSearchLineEdit, &QgsFilterLineEdit::textChanged, this, &QgsOptionsDialogBase::searchText );
+    if ( mOptTreeView )
+    {
+      connect( mSearchLineEdit, &QgsFilterLineEdit::cleared, mOptTreeView, &QTreeView::expandAll );
+    }
   }
 
   mInit = true;
