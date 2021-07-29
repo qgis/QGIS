@@ -32,19 +32,19 @@ const QString &QgsExternalStorageContent::errorString() const
   return mErrorString;
 };
 
-QgsExternalStorageStoredContent *QgsExternalStorage::store( const QString &filePath, const QString &url, const QString &authCfg, Qgis::ExternalStorageContentMode storingMode ) const
+QgsExternalStorageStoredContent *QgsExternalStorage::store( const QString &filePath, const QString &url, const QString &authCfg, Qgis::ActionStart storingMode ) const
 {
   QgsExternalStorageStoredContent *content = doStore( filePath, url, authCfg );
-  if ( storingMode == Qgis::ExternalStorageContentMode::StartImmediately )
+  if ( storingMode == Qgis::ActionStart::Immediate )
     content->store();
 
   return content;
 }
 
-QgsExternalStorageFetchedContent *QgsExternalStorage::fetch( const QString &url, const QString &authCfg, Qgis::ExternalStorageContentMode fetchingMode ) const
+QgsExternalStorageFetchedContent *QgsExternalStorage::fetch( const QString &url, const QString &authCfg, Qgis::ActionStart fetchingMode ) const
 {
   QgsExternalStorageFetchedContent *content = doFetch( url, authCfg );
-  if ( fetchingMode == Qgis::ExternalStorageContentMode::StartImmediately )
+  if ( fetchingMode == Qgis::ActionStart::Immediate )
     content->fetch();
 
   return content;

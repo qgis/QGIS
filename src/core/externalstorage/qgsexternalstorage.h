@@ -54,7 +54,7 @@ class CORE_EXPORT QgsExternalStorage
      *
      * \a storingMode defines if the download will start immediately or shall be manually triggered
      * calling QgsExternalStorageStoredContent::store(). User should use
-     * Qgis::ExternalStorageContentMode::StartLater if he needs to connect the stored() signal.
+     * Qgis::ActionStart::Deferred if he needs to connect the stored() signal.
      *
      * After using this method, user wait for QgsExternalStorageStoredContent::stored(),
      * QgsExternalStorageStoredContent::errorOccurred() or QgsExternalStorageStoredContent::canceled() signals.
@@ -63,7 +63,7 @@ class CORE_EXPORT QgsExternalStorage
      *
      * Caller takes ownership of the returned symbol.
      */
-    QgsExternalStorageStoredContent *store( const QString &filePath, const QString &url, const QString &authCfg = QString(), Qgis::ExternalStorageContentMode storingMode = Qgis::ExternalStorageContentMode::StartLater ) const SIP_FACTORY;
+    QgsExternalStorageStoredContent *store( const QString &filePath, const QString &url, const QString &authCfg = QString(), Qgis::ActionStart storingMode = Qgis::ActionStart::Deferred ) const SIP_FACTORY;
 
     /**
      * Fetches file from \a url for this project external storage.
@@ -72,14 +72,14 @@ class CORE_EXPORT QgsExternalStorage
      *
      * \a fetchingMode defines if the download will start immediately or shall be manually triggered
      * calling QgsExternalStorageFetchedContent::fetch(). User should use
-     * Qgis::ExternalStorageContentMode::StartLater if he needs to connect the fetched() signal.
+     * Qgis::ActionStart::Deferred if he needs to connect the fetched() signal.
      *
      * After using this method, user should wait for QgsExternalStorageStoredContent::fetched(),
      * QgsExternalStorageStoredContent::errorOccurred() or QgsExternalStorageStoredContent::canceled() signals.
      *
      * It's possible to give \a authCfg authentication configuration id in case its needed.
      */
-    QgsExternalStorageFetchedContent *fetch( const QString &url, const QString &authCfg = QString(), Qgis::ExternalStorageContentMode fetchingMode = Qgis::ExternalStorageContentMode::StartLater ) const SIP_FACTORY;
+    QgsExternalStorageFetchedContent *fetch( const QString &url, const QString &authCfg = QString(), Qgis::ActionStart fetchingMode = Qgis::ActionStart::Deferred ) const SIP_FACTORY;
 
   protected:
 

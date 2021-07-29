@@ -381,15 +381,15 @@ class CORE_EXPORT Qgis
     Q_ENUM( DriveType )
 
     /**
-     * Enum to determine when a fetching operation would begin
+     * Enum to determine when an operation would begin
      * \since QGIS 3.22
      */
-    enum class FetchingMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsNetworkContentFetcherRegistry, FetchingMode ) : int
+    enum class ActionStart SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsNetworkContentFetcherRegistry, FetchingMode ) : int
       {
-      FetchLater SIP_MONKEYPATCH_COMPAT_NAME( DownloadLater ), //!< Do not start immediately the fetching
-      FetchImmediately SIP_MONKEYPATCH_COMPAT_NAME( DownloadImmediately ), //!< The fetching will start immediately
+      Deferred SIP_MONKEYPATCH_COMPAT_NAME( DownloadLater ), //!< Do not start immediately the action
+      Immediate SIP_MONKEYPATCH_COMPAT_NAME( DownloadImmediately ), //!< Action will start immediately
     };
-    Q_ENUM( FetchingMode )
+    Q_ENUM( ActionStart )
 
     /**
      * Unplaced label visibility.
@@ -546,17 +546,6 @@ class CORE_EXPORT Qgis
       Canceled, //!< Content fetching/storing has been canceled
     };
     Q_ENUM( ContentStatus )
-
-    /*
-     * Status for fetched or stored content
-     * \since QGIS 3.22
-     */
-    enum class ExternalStorageContentMode : int
-    {
-      StartLater, //!< Do not start immediately to fetch/store to properly connect the fetched/stored signal
-      StartImmediately, //!< Fetching/Storing will start immediately, not need to run fetch/store method
-    };
-    Q_ENUM( ExternalStorageContentMode )
 
     /**
      * Babel GPS format capabilities.

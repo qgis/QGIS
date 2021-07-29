@@ -188,7 +188,7 @@ class TestPyQgsExternalStorageBase():
 
         # store
         url = self.url + "/" + os.path.basename(f.name)
-        storedContent = self.storage.store(f.name, url, self.auth_config.id(), Qgis.ExternalStorageContentMode.StartImmediately)
+        storedContent = self.storage.store(f.name, url, self.auth_config.id(), Qgis.ActionStart.Immediate)
         self.assertTrue(storedContent)
         self.assertEqual(storedContent.status(), Qgis.ContentStatus.OnGoing)
 
@@ -208,7 +208,7 @@ class TestPyQgsExternalStorageBase():
         self.assertEqual(spyProgressChanged[-1][0], 100)
 
         # fetch
-        fetchedContent = self.storage.fetch(self.url + "/" + os.path.basename(f.name), self.auth_config.id(), Qgis.ExternalStorageContentMode.StartImmediately)
+        fetchedContent = self.storage.fetch(self.url + "/" + os.path.basename(f.name), self.auth_config.id(), Qgis.ActionStart.Immediate)
         self.assertTrue(fetchedContent)
 
         # Some external storage (SimpleCopy) doesn't actually need to retrieve the resource
@@ -233,7 +233,7 @@ class TestPyQgsExternalStorageBase():
         self.assertEqual(os.path.splitext(fetchedContent.filePath())[1], '.txt')
 
         # fetch again, should be cached
-        fetchedContent = self.storage.fetch(self.url + "/" + os.path.basename(f.name), self.auth_config.id(), Qgis.ExternalStorageContentMode.StartImmediately)
+        fetchedContent = self.storage.fetch(self.url + "/" + os.path.basename(f.name), self.auth_config.id(), Qgis.ActionStart.Immediate)
         self.assertTrue(fetchedContent)
         self.assertEqual(fetchedContent.status(), Qgis.ContentStatus.Finished)
 
@@ -243,7 +243,7 @@ class TestPyQgsExternalStorageBase():
         self.assertEqual(os.path.splitext(fetchedContent.filePath())[1], '.txt')
 
         # fetch bad url
-        fetchedContent = self.storage.fetch(self.url + "/error", self.auth_config.id(), Qgis.ExternalStorageContentMode.StartImmediately)
+        fetchedContent = self.storage.fetch(self.url + "/error", self.auth_config.id(), Qgis.ActionStart.Immediate)
         self.assertTrue(fetchedContent)
 
         # Some external storage (SimpleCopy) doesn't actually need to retrieve the resource

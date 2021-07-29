@@ -261,10 +261,10 @@ The development version
       RamDisk,
     };
 
-    enum class FetchingMode
+    enum class ActionStart
       {
-      FetchLater,
-      FetchImmediately,
+      Deferred,
+      Immediate,
     };
 
     enum class UnplacedLabelVisibility
@@ -376,12 +376,6 @@ The development version
       Finished,
       Failed,
       Canceled,
-    };
-
-    enum class ExternalStorageContentMode
-    {
-      StartLater,
-      StartImmediately,
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;

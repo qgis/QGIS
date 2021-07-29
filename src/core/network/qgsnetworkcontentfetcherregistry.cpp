@@ -31,7 +31,7 @@ QgsNetworkContentFetcherRegistry::~QgsNetworkContentFetcherRegistry()
   mFileRegistry.clear();
 }
 
-const QgsFetchedContent *QgsNetworkContentFetcherRegistry::fetch( const QString &url, const Qgis::FetchingMode fetchingMode )
+const QgsFetchedContent *QgsNetworkContentFetcherRegistry::fetch( const QString &url, const Qgis::ActionStart fetchingMode )
 {
 
   if ( mFileRegistry.contains( url ) )
@@ -43,7 +43,7 @@ const QgsFetchedContent *QgsNetworkContentFetcherRegistry::fetch( const QString 
 
   mFileRegistry.insert( url, content );
 
-  if ( fetchingMode == Qgis::FetchingMode::FetchImmediately )
+  if ( fetchingMode == Qgis::ActionStart::Immediate )
     content->download();
 
 

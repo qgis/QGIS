@@ -31,7 +31,7 @@ and registered in :py:class:`QgsExternalStorageRegistry`.
 Unique identifier of the external storage type.
 %End
 
-    QgsExternalStorageStoredContent *store( const QString &filePath, const QString &url, const QString &authCfg = QString(), Qgis::ExternalStorageContentMode storingMode = Qgis::ExternalStorageContentMode::StartLater ) const /Factory/;
+    QgsExternalStorageStoredContent *store( const QString &filePath, const QString &url, const QString &authCfg = QString(), Qgis::ActionStart storingMode = Qgis::ActionStart::Deferred ) const /Factory/;
 %Docstring
 Stores file ``filePath`` to the ``url`` for this project external storage.
 Storing process is run in background.
@@ -39,7 +39,7 @@ Returns a :py:class:`QgsExternalStorageStoredContent` to follow the status of th
 
 ``storingMode`` defines if the download will start immediately or shall be manually triggered
 calling :py:func:`QgsExternalStorageStoredContent.store()`. User should use
-Qgis.ExternalStorageContentMode.StartLater if he needs to connect the :py:func:`~QgsExternalStorage.stored` signal.
+Qgis.ActionStart.Deferred if he needs to connect the :py:func:`~QgsExternalStorage.stored` signal.
 
 After using this method, user wait for :py:func:`QgsExternalStorageStoredContent.stored()`,
 :py:func:`QgsExternalStorageStoredContent.errorOccurred()` or :py:func:`QgsExternalStorageStoredContent.canceled()` signals.
@@ -49,7 +49,7 @@ It's possible to give ``authCfg`` authentication configuration id in case its ne
 Caller takes ownership of the returned symbol.
 %End
 
-    QgsExternalStorageFetchedContent *fetch( const QString &url, const QString &authCfg = QString(), Qgis::ExternalStorageContentMode fetchingMode = Qgis::ExternalStorageContentMode::StartLater ) const /Factory/;
+    QgsExternalStorageFetchedContent *fetch( const QString &url, const QString &authCfg = QString(), Qgis::ActionStart fetchingMode = Qgis::ActionStart::Deferred ) const /Factory/;
 %Docstring
 Fetches file from ``url`` for this project external storage.
 Fetching process is run in background.
@@ -57,7 +57,7 @@ Returns a :py:class:`QgsExternalStorageFetchedContent` to follow the status of t
 
 ``fetchingMode`` defines if the download will start immediately or shall be manually triggered
 calling :py:func:`QgsExternalStorageFetchedContent.fetch()`. User should use
-Qgis.ExternalStorageContentMode.StartLater if he needs to connect the :py:func:`~QgsExternalStorage.fetched` signal.
+Qgis.ActionStart.Deferred if he needs to connect the :py:func:`~QgsExternalStorage.fetched` signal.
 
 After using this method, user should wait for :py:func:`QgsExternalStorageStoredContent.fetched()`,
 :py:func:`QgsExternalStorageStoredContent.errorOccurred()` or :py:func:`QgsExternalStorageStoredContent.canceled()` signals.

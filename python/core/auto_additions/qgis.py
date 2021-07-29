@@ -349,17 +349,17 @@ Qgis.DriveType.RamDisk.__doc__ = "RAM disk"
 Qgis.DriveType.__doc__ = 'Drive types\n\n.. versionadded:: 3.20\n\n' + '* ``Unknown``: ' + Qgis.DriveType.Unknown.__doc__ + '\n' + '* ``Invalid``: ' + Qgis.DriveType.Invalid.__doc__ + '\n' + '* ``Removable``: ' + Qgis.DriveType.Removable.__doc__ + '\n' + '* ``Fixed``: ' + Qgis.DriveType.Fixed.__doc__ + '\n' + '* ``Remote``: ' + Qgis.DriveType.Remote.__doc__ + '\n' + '* ``CdRom``: ' + Qgis.DriveType.CdRom.__doc__ + '\n' + '* ``RamDisk``: ' + Qgis.DriveType.RamDisk.__doc__
 # --
 Qgis.DriveType.baseClass = Qgis
-QgsNetworkContentFetcherRegistry.FetchingMode = Qgis.FetchingMode
+QgsNetworkContentFetcherRegistry.FetchingMode = Qgis.ActionStart
 # monkey patching scoped based enum
-QgsNetworkContentFetcherRegistry.DownloadLater = Qgis.FetchingMode.FetchLater
+QgsNetworkContentFetcherRegistry.DownloadLater = Qgis.ActionStart.Deferred
 QgsNetworkContentFetcherRegistry.DownloadLater.is_monkey_patched = True
-QgsNetworkContentFetcherRegistry.DownloadLater.__doc__ = "Do not start immediately the fetching"
-QgsNetworkContentFetcherRegistry.DownloadImmediately = Qgis.FetchingMode.FetchImmediately
+QgsNetworkContentFetcherRegistry.DownloadLater.__doc__ = "Do not start immediately the action"
+QgsNetworkContentFetcherRegistry.DownloadImmediately = Qgis.ActionStart.Immediate
 QgsNetworkContentFetcherRegistry.DownloadImmediately.is_monkey_patched = True
-QgsNetworkContentFetcherRegistry.DownloadImmediately.__doc__ = "The fetching will start immediately"
-Qgis.FetchingMode.__doc__ = 'Enum to determine when a fetching operation would begin\n\n.. versionadded:: 3.22\n\n' + '* ``DownloadLater``: ' + Qgis.FetchingMode.FetchLater.__doc__ + '\n' + '* ``DownloadImmediately``: ' + Qgis.FetchingMode.FetchImmediately.__doc__
+QgsNetworkContentFetcherRegistry.DownloadImmediately.__doc__ = "Action will start immediately"
+Qgis.ActionStart.__doc__ = 'Enum to determine when an operation would begin\n\n.. versionadded:: 3.22\n\n' + '* ``DownloadLater``: ' + Qgis.ActionStart.Deferred.__doc__ + '\n' + '* ``DownloadImmediately``: ' + Qgis.ActionStart.Immediate.__doc__
 # --
-Qgis.FetchingMode.baseClass = Qgis
+Qgis.ActionStart.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.UnplacedLabelVisibility.FollowEngineSetting.__doc__ = "Respect the label engine setting"
 Qgis.UnplacedLabelVisibility.NeverShow.__doc__ = "Never show unplaced labels, regardless of the engine setting"
@@ -513,9 +513,3 @@ Qgis.ContentStatus.Canceled.__doc__ = "Content fetching/storing has been cancele
 Qgis.ContentStatus.__doc__ = 'Status for fetched or stored content\n\n.. versionadded:: 3.22\n\n' + '* ``NotStarted``: ' + Qgis.ContentStatus.NotStarted.__doc__ + '\n' + '* ``OnGoing``: ' + Qgis.ContentStatus.OnGoing.__doc__ + '\n' + '* ``Finished``: ' + Qgis.ContentStatus.Finished.__doc__ + '\n' + '* ``Failed``: ' + Qgis.ContentStatus.Failed.__doc__ + '\n' + '* ``Canceled``: ' + Qgis.ContentStatus.Canceled.__doc__
 # --
 Qgis.ContentStatus.baseClass = Qgis
-# monkey patching scoped based enum
-Qgis.ExternalStorageContentMode.StartLater.__doc__ = "Do not start immediately to fetch/store to properly connect the fetched/stored signal"
-Qgis.ExternalStorageContentMode.StartImmediately.__doc__ = "Fetching/Storing will start immediately, not need to run fetch/store method"
-Qgis.ExternalStorageContentMode.__doc__ = 'Status for fetched or stored content\n\n.. versionadded:: 3.22\n\n' + '* ``StartLater``: ' + Qgis.ExternalStorageContentMode.StartLater.__doc__ + '\n' + '* ``StartImmediately``: ' + Qgis.ExternalStorageContentMode.StartImmediately.__doc__
-# --
-Qgis.ExternalStorageContentMode.baseClass = Qgis
