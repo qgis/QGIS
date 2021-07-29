@@ -540,7 +540,7 @@ class CORE_EXPORT Qgis
     enum class ContentStatus : int
     {
       NotStarted, //!< Content fetching/storing has not started yet
-      OnGoing, //!< Content fetching/storing is in progress
+      Running, //!< Content fetching/storing is in progress
       Finished, //!< Content fetching/storing is finished and successful
       Failed, //!< Content fetching/storing has failed
       Canceled, //!< Content fetching/storing has been canceled

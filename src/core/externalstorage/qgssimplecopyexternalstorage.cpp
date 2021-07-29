@@ -46,7 +46,7 @@ QgsSimpleCopyExternalStorageStoredContent::QgsSimpleCopyExternalStorageStoredCon
 
 void QgsSimpleCopyExternalStorageStoredContent::store()
 {
-  mStatus = Qgis::ContentStatus::OnGoing;
+  mStatus = Qgis::ContentStatus::Running;
   QgsApplication::instance()->taskManager()->addTask( mCopyTask );
 }
 

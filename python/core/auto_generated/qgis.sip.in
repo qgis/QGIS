@@ -372,7 +372,7 @@ The development version
     enum class ContentStatus
     {
       NotStarted,
-      OnGoing,
+      Running,
       Finished,
       Failed,
       Canceled,
