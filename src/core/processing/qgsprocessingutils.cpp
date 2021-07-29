@@ -40,26 +40,7 @@
 
 QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *project, bool sort )
 {
-  if ( !project )
-    return QList<QgsRasterLayer *>();
-
-  QList<QgsRasterLayer *> layers;
-
-  const auto rasterLayers = project->layers<QgsRasterLayer *>();
-  for ( QgsRasterLayer *l : rasterLayers )
-  {
-    if ( canUseLayer( l ) )
-      layers << l;
-  }
-
-  if ( sort )
-  {
-    std::sort( layers.begin(), layers.end(), []( const QgsRasterLayer * a, const QgsRasterLayer * b ) -> bool
-    {
-      return QString::localeAwareCompare( a->name(), b->name() ) < 0;
-    } );
-  }
-  return layers;
+  return compatibleMapLayers< QgsRasterLayer >( project, sort );
 }
 
 QList<QgsVectorLayer *> QgsProcessingUtils::compatibleVectorLayers( QgsProject *project, const QList<int> &geometryTypes, bool sort )
@@ -87,35 +68,22 @@ QList<QgsVectorLayer *> QgsProcessingUtils::compatibleVectorLayers( QgsProject *
 
 QList<QgsMeshLayer *> QgsProcessingUtils::compatibleMeshLayers( QgsProject *project, bool sort )
 {
-  if ( !project )
-    return QList<QgsMeshLayer *>();
-
-  QList<QgsMeshLayer *> layers;
-  const auto meshLayers = project->layers<QgsMeshLayer *>();
-  for ( QgsMeshLayer *l : meshLayers )
-  {
-    if ( canUseLayer( l ) )
-      layers << l;
-  }
-
-  if ( sort )
-  {
-    std::sort( layers.begin(), layers.end(), []( const QgsMeshLayer * a, const QgsMeshLayer * b ) -> bool
-    {
-      return QString::localeAwareCompare( a->name(), b->name() ) < 0;
-    } );
-  }
-  return layers;
+  return compatibleMapLayers< QgsMeshLayer >( project, sort );
 }
 
 QList<QgsPluginLayer *> QgsProcessingUtils::compatiblePluginLayers( QgsProject *project, bool sort )
 {
-  if ( !project )
-    return QList<QgsPluginLayer *>();
+  return compatibleMapLayers< QgsPluginLayer >( project, sort );
+}
 
-  QList<QgsPluginLayer *> layers;
-  const auto pluginLayers = project->layers<QgsPluginLayer *>();
-  for ( QgsPluginLayer *l : pluginLayers )
+template<typename T> QList<T *> QgsProcessingUtils::compatibleMapLayers( QgsProject *project, bool sort )
+{
+  if ( !project )
+    return QList<T *>();
+
+  QList<T *> layers;
+  const auto projectLayers = project->layers<T *>();
+  for ( T *l : projectLayers )
   {
     if ( canUseLayer( l ) )
       layers << l;
@@ -123,7 +91,7 @@ QList<QgsPluginLayer *> QgsProcessingUtils::compatiblePluginLayers( QgsProject *
 
   if ( sort )
   {
-    std::sort( layers.begin(), layers.end(), []( const QgsPluginLayer * a, const QgsPluginLayer * b ) -> bool
+    std::sort( layers.begin(), layers.end(), []( const T * a, const T * b ) -> bool
     {
       return QString::localeAwareCompare( a->name(), b->name() ) < 0;
     } );
@@ -138,7 +106,8 @@ QList<QgsMapLayer *> QgsProcessingUtils::compatibleLayers( QgsProject *project, 
 
   QList<QgsMapLayer *> layers;
 
-  const auto rasterLayers = compatibleRasterLayers( project, false );
+  //~ const auto rasterLayers = compatibleRasterLayers( project, false );
+  const auto rasterLayers = compatibleMapLayers< QgsRasterLayer >( project, false );
   for ( QgsRasterLayer *rl : rasterLayers )
     layers << rl;
 
@@ -146,11 +115,13 @@ QList<QgsMapLayer *> QgsProcessingUtils::compatibleLayers( QgsProject *project, 
   for ( QgsVectorLayer *vl : vectorLayers )
     layers << vl;
 
-  const auto meshLayers = compatibleMeshLayers( project, false );
+  //~ const auto meshLayers = compatibleMeshLayers( project, false );
+  const auto meshLayers = compatibleMapLayers< QgsMeshLayer >( project, false );
   for ( QgsMeshLayer *vl : meshLayers )
     layers << vl;
 
-  const auto pluginLayers = compatiblePluginLayers( project, false );
+  //~ const auto pluginLayers = compatiblePluginLayers( project, false );
+  const auto pluginLayers = compatibleMapLayers< QgsPluginLayer >( project, false );
   for ( QgsPluginLayer *pl : pluginLayers )
     layers << pl;
 

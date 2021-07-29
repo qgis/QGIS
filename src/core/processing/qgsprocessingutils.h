@@ -441,6 +441,20 @@ class CORE_EXPORT QgsProcessingUtils
                              const QList< int > &sourceTypes = QList< int >() );
 
     /**
+     * Returns a list of map layers with the given layer type from a \a project which are compatible
+     * with the processing framework.
+     *
+     * If the \a sort argument is TRUE then the layers will be sorted by their QgsMapLayer::name()
+     * value.
+     * \see compatibleRasterLayers()
+     * \see compatibleVectorLayers()
+     * \see compatibleMeshLayers()
+     * \see compatiblePluginLayers()
+     * \since QGIS 3.22
+     */
+    template< typename T> static QList< T * > compatibleMapLayers( QgsProject *project, bool sort = true );
+
+    /**
      * Interprets a \a string as a map layer from a store.
      *
      * This method attempts to match a string to a store map layer, using
