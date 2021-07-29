@@ -754,6 +754,12 @@ gray = no data
                   <property name="enabled">
                    <bool>false</bool>
                   </property>
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="toolTip">
                    <string>Refresh serial device list</string>
                   </property>
@@ -761,8 +767,8 @@ gray = no data
                    <string>…</string>
                   </property>
                   <property name="icon">
-                   <iconset>
-                    <normaloff>:/images/themes/default/mActionRotatePointSymbols.png</normaloff>:/images/themes/default/mActionRotatePointSymbols.png</iconset>
+                   <iconset resource="../../images/images.qrc">
+                    <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
                   </property>
                  </widget>
                 </item>
