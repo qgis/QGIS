@@ -32,6 +32,7 @@
 #include "qgstest.h"
 #include "qgsrasterlayer.h"
 #include "qgsmeshlayer.h"
+#include "qgspluginlayer.h"
 #include "qgsproject.h"
 #include "qgspoint.h"
 #include "qgsgeometry.h"
@@ -533,6 +534,53 @@ class DummyParameterType : public QgsProcessingParameterType
     }
 };
 
+class DummyPluginLayer: public QgsPluginLayer
+{
+  public:
+
+    DummyPluginLayer( const QString &layerType, const QString &layerName ): QgsPluginLayer( layerType, layerName )
+    {
+      mValid = true;
+    };
+
+    DummyPluginLayer *clone() const override { return new DummyPluginLayer( "dummylayer", "test" ); };
+
+    QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override
+    {
+      Q_UNUSED( rendererContext );
+      return nullptr;
+    };
+
+    bool writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const override
+    {
+      Q_UNUSED( layerNode );
+      Q_UNUSED( doc );
+      Q_UNUSED( context );
+      return true;
+    };
+    bool readSymbology( const QDomNode &node, QString &errorMessage,
+                        QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) override
+    {
+      Q_UNUSED( node );
+      Q_UNUSED( errorMessage );
+      Q_UNUSED( context );
+      Q_UNUSED( categories );
+      return true;
+    };
+    bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
+                         StyleCategories categories = AllStyleCategories ) const override
+    {
+      Q_UNUSED( node );
+      Q_UNUSED( doc );
+      Q_UNUSED( errorMessage );
+      Q_UNUSED( context );
+      Q_UNUSED( categories );
+      return true;
+    };
+
+    void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override { Q_UNUSED( transformContext ); };
+};
+
 class TestQgsProcessing: public QObject
 {
     Q_OBJECT
@@ -806,7 +854,11 @@ void TestQgsProcessing::compatibleLayers()
   QVERIFY( m1->isValid() );
   QgsMeshLayer *m2 = new QgsMeshLayer( fm.filePath(), "mA", "mdal" );
   QVERIFY( m2->isValid() );
-  p.addMapLayers( QList<QgsMapLayer *>() << r1 << r2 << r3 << v1 << v2 << v3 << v4 << m1 << m2 );
+
+  DummyPluginLayer *pl1 = new DummyPluginLayer( "dummylayer", "PX" );
+  DummyPluginLayer *pl2 = new DummyPluginLayer( "dummylayer", "pA" );
+
+  p.addMapLayers( QList<QgsMapLayer *>() << r1 << r2 << r3 << v1 << v2 << v3 << v4 << m1 << m2 << pl1 << pl2 );
 
   // compatibleRasterLayers
   QVERIFY( QgsProcessingUtils::compatibleRasterLayers( nullptr ).isEmpty() );
@@ -854,6 +906,21 @@ void TestQgsProcessing::compatibleLayers()
     lIds << vl->name();
   QCOMPARE( lIds, QStringList() << "V4" << "v1" << "v3" << "vvvv4" );
 
+  // compatiblePluginLayers
+  QVERIFY( QgsProcessingUtils::compatiblePluginLayers( nullptr ).isEmpty() );
+
+  // sorted
+  lIds.clear();
+  for ( QgsPluginLayer *pl : QgsProcessingUtils::compatiblePluginLayers( &p ) )
+    lIds << pl->name();
+  QCOMPARE( lIds, QStringList() << "pA" << "PX" );
+
+  // unsorted
+  lIds.clear();
+  for ( QgsPluginLayer *pl : QgsProcessingUtils::compatiblePluginLayers( &p, false ) )
+    lIds << pl->name();
+  QCOMPARE( lIds, QStringList() << "PX" << "pA" );
+
   // point only
   lIds.clear();
   for ( QgsVectorLayer *vl : QgsProcessingUtils::compatibleVectorLayers( &p, QList<int>() << QgsProcessing::TypeVectorPoint ) )
@@ -897,13 +964,13 @@ void TestQgsProcessing::compatibleLayers()
   lIds.clear();
   for ( QgsMapLayer *l : QgsProcessingUtils::compatibleLayers( &p ) )
     lIds << l->name();
-  QCOMPARE( lIds, QStringList() << "ar2" << "mA" << "MX" << "R1" << "v1" << "v3" << "V4" << "vvvv4" <<  "zz" );
+  QCOMPARE( lIds, QStringList() << "ar2" << "mA" << "MX" << "pA" << "PX" << "R1" << "v1" << "v3" << "V4" << "vvvv4" <<  "zz" );
 
   // unsorted
   lIds.clear();
   for ( QgsMapLayer *l : QgsProcessingUtils::compatibleLayers( &p, false ) )
     lIds << l->name();
-  QCOMPARE( lIds, QStringList() << "R1" << "ar2" << "zz"  << "V4" << "v1" << "v3" << "vvvv4" << "MX" << "mA" );
+  QCOMPARE( lIds, QStringList() << "R1" << "ar2" << "zz"  << "V4" << "v1" << "v3" << "vvvv4" << "MX" << "mA" << "PX" << "pA" );
 }
 
 void TestQgsProcessing::encodeDecodeUriProvider()

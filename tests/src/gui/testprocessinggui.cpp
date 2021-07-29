@@ -95,6 +95,7 @@
 #include "qgsprocessingdxflayerswidgetwrapper.h"
 #include "qgsprocessingmeshdatasetwidget.h"
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgspluginlayer.h"
 
 
 class TestParamType : public QgsProcessingParameterDefinition
@@ -178,6 +179,52 @@ class TestWidgetFactory : public QgsProcessingParameterWidgetFactoryInterface
 
 };
 
+class DummyPluginLayer: public QgsPluginLayer
+{
+  public:
+
+    DummyPluginLayer( const QString &layerType, const QString &layerName ): QgsPluginLayer( layerType, layerName )
+    {
+      mValid = true;
+    };
+
+    DummyPluginLayer *clone() const override { return new DummyPluginLayer( "dummylayer", "test" ); };
+
+    QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override
+    {
+      Q_UNUSED( rendererContext );
+      return nullptr;
+    };
+
+    bool writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const override
+    {
+      Q_UNUSED( layerNode );
+      Q_UNUSED( doc );
+      Q_UNUSED( context );
+      return true;
+    };
+    bool readSymbology( const QDomNode &node, QString &errorMessage,
+                        QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) override
+    {
+      Q_UNUSED( node );
+      Q_UNUSED( errorMessage );
+      Q_UNUSED( context );
+      Q_UNUSED( categories );
+      return true;
+    };
+    bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
+                         StyleCategories categories = AllStyleCategories ) const override
+    {
+      Q_UNUSED( node );
+      Q_UNUSED( doc );
+      Q_UNUSED( errorMessage );
+      Q_UNUSED( context );
+      Q_UNUSED( categories );
+      return true;
+    };
+
+    void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override { Q_UNUSED( transformContext ); };
+};
 
 class TestProcessingGui : public QObject
 {
@@ -3359,6 +3406,8 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QgsProject::instance()->addMapLayer( mesh );
   QgsRasterLayer *raster = new QgsRasterLayer( QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif", QStringLiteral( "raster" ) );
   QgsProject::instance()->addMapLayer( raster );
+  DummyPluginLayer *plugin = new DummyPluginLayer( "dummylayer", "plugin" );
+  QgsProject::instance()->addMapLayer( plugin );
 
   dlg->setProject( QgsProject::instance() );
   // should be filtered to raster layers only
@@ -3412,6 +3461,14 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "mesh" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), mesh->id() );
 
+  // plugin
+  param = std::make_unique< QgsProcessingParameterMultipleLayers >( QString(), QString(), QgsProcessing::TypePlugin );
+  dlg = std::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource >() );
+  dlg->setProject( QgsProject::instance() );
+  QCOMPARE( dlg->mModel->rowCount(), 1 );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "plugin" ) );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), plugin->id() );
+
   // vector points
   param = std::make_unique< QgsProcessingParameterMultipleLayers >( QString(), QString(), QgsProcessing::TypeVectorPoint );
   dlg = std::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource >() );
@@ -3450,12 +3507,12 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   param = std::make_unique< QgsProcessingParameterMultipleLayers >( QString(), QString(), QgsProcessing::TypeMapLayer );
   dlg = std::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource >() );
   dlg->setProject( QgsProject::instance() );
-  QCOMPARE( dlg->mModel->rowCount(), 6 );
+  QCOMPARE( dlg->mModel->rowCount(), 7 );
   titles.clear();
   for ( int i = 0; i < dlg->mModel->rowCount(); ++i )
     titles << dlg->mModel->data( dlg->mModel->index( i, 0 ) ).toString();
   QCOMPARE( titles, QSet<QString>() << QStringLiteral( "polygon [EPSG:4326]" ) << QStringLiteral( "point [EPSG:4326]" ) << QStringLiteral( "line [EPSG:4326]" )
-            << QStringLiteral( "nogeom" ) << QStringLiteral( "raster [EPSG:4326]" ) << QStringLiteral( "mesh" ) );
+            << QStringLiteral( "nogeom" ) << QStringLiteral( "raster [EPSG:4326]" ) << QStringLiteral( "mesh" ) << QStringLiteral( "plugin" ) );
 
   // files
   param = std::make_unique< QgsProcessingParameterMultipleLayers >( QString(), QString(), QgsProcessing::TypeFile );
