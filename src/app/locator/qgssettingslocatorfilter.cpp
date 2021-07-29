@@ -32,11 +32,11 @@ void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLoc
 {
   QMap<QString, QMap<QString, QString>> matchingSettingsPagesMap;
 
-  QMap<QString, int > optionsPagesMap = QgisApp::instance()->optionsPagesMap();
+  QMap<QString, QString > optionsPagesMap = QgisApp::instance()->optionsPagesMap();
   for ( auto optionsPagesIterator = optionsPagesMap.constBegin(); optionsPagesIterator != optionsPagesMap.constEnd(); ++optionsPagesIterator )
   {
     QString title = optionsPagesIterator.key();
-    matchingSettingsPagesMap.insert( title + " (" + tr( "Options" ) + ")", settingsPage( QStringLiteral( "optionpage" ), QString::number( optionsPagesIterator.value() ) ) );
+    matchingSettingsPagesMap.insert( title + " (" + tr( "Options" ) + ")", settingsPage( QStringLiteral( "optionpage" ), optionsPagesIterator.value() ) );
   }
 
   QMap<QString, QString> projectPropertyPagesMap = QgisApp::instance()->projectPropertiesPagesMap();
@@ -92,8 +92,7 @@ void QgsSettingsLocatorFilter::triggerResult( const QgsLocatorResult &result )
 
   if ( type == QLatin1String( "optionpage" ) )
   {
-    const int pageNumber = page.toInt();
-    QgisApp::instance()->showOptionsDialog( QgisApp::instance(), QString(), pageNumber );
+    QgisApp::instance()->showOptionsDialog( QgisApp::instance(), page );
   }
   else if ( type == QLatin1String( "projectpropertypage" ) )
   {

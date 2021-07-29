@@ -1202,7 +1202,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Settings pages section
      */
     //! Gets map of option pages
-    QMap<QString, int> optionsPagesMap();
+    QMap<QString, QString> optionsPagesMap();
     //! Gets map of project property pages
     QMap< QString, QString > projectPropertiesPagesMap();
     //! Gets map of setting pages
