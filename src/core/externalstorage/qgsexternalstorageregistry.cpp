@@ -28,7 +28,7 @@ QgsExternalStorageRegistry::~QgsExternalStorageRegistry()
   qDeleteAll( mBackends );
 }
 
-QgsExternalStorage *QgsExternalStorageRegistry::externalStorageFromType( const QString &type )
+QgsExternalStorage *QgsExternalStorageRegistry::externalStorageFromType( const QString &type ) const
 {
   return mBackends.value( type );
 }

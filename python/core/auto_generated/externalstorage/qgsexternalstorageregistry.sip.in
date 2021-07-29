@@ -33,7 +33,7 @@ Constructor - creates a registry of external storage backends
 
     ~QgsExternalStorageRegistry();
 
-    QgsExternalStorage *externalStorageFromType( const QString &type );
+    QgsExternalStorage *externalStorageFromType( const QString &type ) const;
 %Docstring
 Returns external storage implementation if the storage ``type`` matches one.
 Returns None otherwise
