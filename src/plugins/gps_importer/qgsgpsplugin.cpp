@@ -137,8 +137,6 @@ void QgsGpsPlugin::run()
            this, &QgsGpsPlugin::loadGPXFile );
   connect( myPluginGui, &QgsGpsPluginGui::importGPSFile,
            this, &QgsGpsPlugin::importGPSFile );
-  connect( myPluginGui, &QgsGpsPluginGui::convertGPSFile,
-           this, &QgsGpsPlugin::convertGPSFile );
   connect( myPluginGui, &QgsGpsPluginGui::downloadFromGPS,
            this, &QgsGpsPlugin::downloadFromGPS );
   connect( myPluginGui, &QgsGpsPluginGui::uploadToGPS,
@@ -296,93 +294,6 @@ void QgsGpsPlugin::importGPSFile( const QString &inputFileName, QgsBabelFormat *
   if ( importWaypoints )
     drawVectorLayer( outputFileName + "?type=waypoint",
                      layerName, QStringLiteral( "gpx" ) );
-
-  emit closeGui();
-}
-
-void QgsGpsPlugin::convertGPSFile( const QString &inputFileName,
-                                   int convertType,
-                                   const QString &outputFileName,
-                                   const QString &layerName )
-{
-  // what features does the user want to import?
-  QStringList convertStrings;
-
-  switch ( convertType )
-  {
-    case 0:
-      convertStrings << QStringLiteral( "-x" ) << QStringLiteral( "transform,wpt=rte,del" );
-      break;
-    case 1:
-      convertStrings << QStringLiteral( "-x" ) << QStringLiteral( "transform,rte=wpt,del" );
-      break;
-    case 2:
-      convertStrings << QStringLiteral( "-x" ) << QStringLiteral( "transform,trk=wpt,del" );
-      break;
-    case 3:
-      convertStrings << QStringLiteral( "-x" ) << QStringLiteral( "transform,wpt=trk,del" );
-      break;
-    default:
-      QgsDebugMsg( QStringLiteral( "Illegal conversion index!" ) );
-      return;
-  }
-
-  // try to start the gpsbabel process
-  QStringList babelArgs;
-  babelArgs << mBabelPath << QStringLiteral( "-i" ) << QStringLiteral( "gpx" ) << QStringLiteral( "-f" ) << QStringLiteral( "\"%1\"" ).arg( inputFileName )
-            << convertStrings << QStringLiteral( "-o" ) << QStringLiteral( "gpx" ) << QStringLiteral( "-F" ) << QStringLiteral( "\"%1\"" ).arg( outputFileName );
-  QgsDebugMsg( QStringLiteral( "Conversion command: " ) + babelArgs.join( "|" ) );
-
-  QProcess babelProcess;
-  babelProcess.start( babelArgs.value( 0 ), babelArgs.mid( 1 ) );
-  if ( !babelProcess.waitForStarted() )
-  {
-    QMessageBox::warning( nullptr, tr( "Convert GPS File" ),
-                          tr( "Could not start GPSBabel!" ) );
-    return;
-  }
-
-  // wait for gpsbabel to finish (or the user to cancel)
-  QProgressDialog progressDialog( tr( "Importing data…" ), tr( "Cancel" ), 0, 0 );
-  progressDialog.setWindowModality( Qt::WindowModal );
-  for ( int i = 0; babelProcess.state() == QProcess::Running; ++i )
-  {
-    progressDialog.setValue( i / 64 );
-    if ( progressDialog.wasCanceled() )
-      return;
-  }
-
-  // did we get any data?
-  if ( babelProcess.exitStatus() != 0 )
-  {
-    QString babelError( babelProcess.readAllStandardError() );
-    QString errorMsg( tr( "Could not convert data from %1!\n\n" )
-                      .arg( inputFileName ) );
-    errorMsg += babelError;
-    QMessageBox::warning( nullptr, tr( "Convert GPS File" ), errorMsg );
-    return;
-  }
-
-  // add the layer
-  switch ( convertType )
-  {
-    case 0:
-    case 3:
-      drawVectorLayer( outputFileName + "?type=waypoint",
-                       layerName, QStringLiteral( "gpx" ) );
-      break;
-    case 1:
-      drawVectorLayer( outputFileName + "?type=route",
-                       layerName, QStringLiteral( "gpx" ) );
-      break;
-    case 2:
-      drawVectorLayer( outputFileName + "?type=track",
-                       layerName, QStringLiteral( "gpx" ) );
-      break;
-    default:
-      QgsDebugMsg( QStringLiteral( "Illegal conversion index!" ) );
-      return;
-  }
 
   emit closeGui();
 }

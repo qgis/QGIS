@@ -21,7 +21,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tab1">
       <attribute name="title">
@@ -517,116 +517,6 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab5">
-      <attribute name="title">
-       <string>GPX Conversions</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_6">
-       <item row="0" column="0">
-        <widget class="QLabel" name="textLabel5_4">
-         <property name="text">
-          <string>GPX input file</string>
-         </property>
-         <property name="buddy">
-          <cstring>pbnCONVInput</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLineEdit" name="leCONVInput">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QPushButton" name="pbnCONVInput">
-         <property name="text">
-          <string>Browse…</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="textLabel5_3">
-         <property name="text">
-          <string>Conversion</string>
-         </property>
-         <property name="buddy">
-          <cstring>cmbCONVType</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QComboBox" name="cmbCONVType">
-         <property name="minimumSize">
-          <size>
-           <width>10</width>
-           <height>0</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="textLabel5_2">
-         <property name="text">
-          <string>GPX output file</string>
-         </property>
-         <property name="buddy">
-          <cstring>leCONVOutput</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLineEdit" name="leCONVOutput"/>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="textLabel5_1">
-         <property name="text">
-          <string>Layer name</string>
-         </property>
-         <property name="buddy">
-          <cstring>leCONVLayer</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QLineEdit" name="leCONVLayer"/>
-       </item>
-       <item row="4" column="1">
-        <spacer name="horizontalSpacer_4">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="5" column="1">
-        <spacer name="verticalSpacer_5">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="2" column="2">
-        <widget class="QPushButton" name="pbnCONVOutput">
-         <property name="text">
-          <string>Save As…</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
     </widget>
    </item>
    <item>
@@ -673,12 +563,6 @@
   <tabstop>cmbULDevice</tabstop>
   <tabstop>pbULEditDevices</tabstop>
   <tabstop>cmbULPort</tabstop>
-  <tabstop>leCONVInput</tabstop>
-  <tabstop>pbnCONVInput</tabstop>
-  <tabstop>cmbCONVType</tabstop>
-  <tabstop>leCONVOutput</tabstop>
-  <tabstop>pbnCONVOutput</tabstop>
-  <tabstop>leCONVLayer</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
