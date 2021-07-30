@@ -297,7 +297,7 @@ int QgsLayoutAtlas::updateFeatures()
 
   QgsFeatureIterator fit = mCoverageLayer->getFeatures( req );
 
-   std::unique_ptr<QgsExpression> nameExpression;
+  std::unique_ptr<QgsExpression> nameExpression;
   if ( !mPageNameExpression.isEmpty() )
   {
     nameExpression = qgis::make_unique< QgsExpression >( mPageNameExpression );
@@ -397,17 +397,17 @@ bool QgsLayoutAtlas::endRender()
 
 void QgsLayoutAtlas::filterCoverageLayer()
 {
-    if ( mFilterFeatures && !mFilterExpression.isEmpty() )
-    {
-        mOriginalFilterExpression = mCoverageLayer->subsetString();
-        mCoverageLayer->setSubsetString( mFilterExpression );
-    }
+  if ( mFilterFeatures && !mFilterExpression.isEmpty() )
+  {
+    mOriginalFilterExpression = mCoverageLayer->subsetString();
+    mCoverageLayer->setSubsetString( mFilterExpression );
+  }
 }
 
 void QgsLayoutAtlas::unFilterCoverageLayer()
 {
-    if ( mCoverageLayer && mFilterFeatures && !mFilterExpression.isEmpty() )
-        mCoverageLayer->setSubsetString( mOriginalFilterExpression );
+  if ( mCoverageLayer && mFilterFeatures && !mFilterExpression.isEmpty() )
+    mCoverageLayer->setSubsetString( mOriginalFilterExpression );
 }
 
 int QgsLayoutAtlas::count() const

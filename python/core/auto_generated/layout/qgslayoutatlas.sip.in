@@ -237,7 +237,7 @@ Sets whether features should be ``filtered`` in the coverage layer.
 Filters the coverage layer according to the current atlas filter expression.
 Only filters when the coverage layer features are set to be filtered by the atlas.
 
-.. seealso:: :py:func:`unfilterCoverageLayer`
+.. seealso:: :py:func:`unFilterCoverageLayer`
 
 .. versionadded:: 3.22
 %End
