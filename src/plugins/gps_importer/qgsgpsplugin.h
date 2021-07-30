@@ -87,10 +87,6 @@ class QgsGpsPlugin: public QObject, public QgisPlugin
     QAction *mQActionPointer = nullptr;
     //! The path to the GPSBabel program
     QString mBabelPath;
-    //! Importers for external GPS data file formats
-    std::map<QString, QgsAbstractBabelFormat *> mImporters;
-    //! Upload/downloaders for GPS devices
-    std::map<QString, QgsBabelGpsDeviceFormat *> mDevices;
 };
 
 #endif

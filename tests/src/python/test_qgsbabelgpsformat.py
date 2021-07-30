@@ -12,17 +12,28 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 
 import qgis  # NOQA
 
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
-    Qgis,
+    Qgis, QgsSettings,
     QgsBabelSimpleImportFormat,
-    QgsBabelGpsDeviceFormat
+    QgsBabelGpsDeviceFormat,
+    QgsApplication,
+    QgsBabelFormatRegistry
 )
 from qgis.testing import start_app, unittest
 
-start_app()
-
 
 class TestQgsBabelGpsFormat(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+
+        QCoreApplication.setOrganizationName("QGIS_Test")
+        QCoreApplication.setOrganizationDomain("TestPyQgsAFSProvider.com")
+        QCoreApplication.setApplicationName("TestPyQgsAFSProvider")
+        QgsSettings().clear()
+        start_app()
 
     def test_simple_format(self):
         """
@@ -149,6 +160,26 @@ class TestQgsBabelGpsFormat(unittest.TestCase):
              'garmin',
              '"c:/test/test.shp"',
              '"c:/test/test.gpx"'])
+
+    def test_registry(self):
+        """
+        Test QgsBabelFormatRegistry
+        """
+        self.assertIsNotNone(QgsApplication.gpsBabelFormatRegistry())
+
+        registry = QgsBabelFormatRegistry()
+        self.assertIn('Garmin Mapsource', registry.importFormatNames())
+        self.assertIn('DNA', registry.importFormatNames())
+
+        self.assertIsNone(registry.importFormat('aaaaaa'))
+        self.assertIsNotNone(registry.importFormat('CoPilot Flight Planner'))
+        self.assertEqual(registry.importFormat('CoPilot Flight Planner').capabilities(), Qgis.BabelFormatCapabilities(Qgis.BabelFormatCapability.Waypoints | Qgis.BabelFormatCapability.Import))
+
+        # should have only one device by default
+        self.assertEqual(registry.deviceNames(), ['Garmin serial'])
+        self.assertIsNotNone(registry.deviceFormat('Garmin serial'))
+        self.assertEqual(registry.deviceFormat('Garmin serial').importCommand('bb', Qgis.GpsFeatureType.Waypoint, 'in_file.shp', 'out_file.gpx'),
+                         ['bb', '-w', '-i', 'garmin', '-o', 'gpx', '"in_file.shp"', '"out_file.gpx"'])
 
 
 if __name__ == '__main__':

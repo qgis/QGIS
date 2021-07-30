@@ -76,6 +76,7 @@
 #include "qgsfeaturestore.h"
 #include "qgslocator.h"
 #include "qgsreadwritelocker.h"
+#include "qgsbabelformatregistry.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -2348,6 +2349,11 @@ QgsGpsConnectionRegistry *QgsApplication::gpsConnectionRegistry()
   return members()->mGpsConnectionRegistry;
 }
 
+QgsBabelFormatRegistry *QgsApplication::gpsBabelFormatRegistry()
+{
+  return members()->mGpsBabelFormatRegistry;
+}
+
 QgsPluginLayerRegistry *QgsApplication::pluginLayerRegistry()
 {
   return members()->mPluginLayerRegistry;
@@ -2533,6 +2539,11 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     profiler->end();
   }
   {
+    profiler->start( tr( "Setup GPSBabel format registry" ) );
+    mGpsBabelFormatRegistry = new QgsBabelFormatRegistry();
+    profiler->end();
+  }
+  {
     profiler->start( tr( "Setup plugin layer registry" ) );
     mPluginLayerRegistry = new QgsPluginLayerRegistry();
     profiler->end();
@@ -2625,6 +2636,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mColorSchemeRegistry;
   delete mFieldFormatterRegistry;
   delete mGpsConnectionRegistry;
+  delete mGpsBabelFormatRegistry;
   delete mMessageLog;
   delete mPaintEffectRegistry;
   delete mPluginLayerRegistry;
