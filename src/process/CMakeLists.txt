@@ -64,9 +64,6 @@ if (WITH_3D)
   )
 endif()
 
-if (WITH_BINDINGS)
-  target_link_libraries(qgis_process qgispython)
-endif()
 
 target_link_libraries(qgis_process
   qgis_core
@@ -81,6 +78,11 @@ if (WITH_3D)
   target_link_libraries(qgis_process
     qgis_3d
   )
+endif()
+
+if (WITH_BINDINGS)
+  target_link_libraries(qgis_process qgispython)
+  add_definitions(-DWITH_BINDINGS)
 endif()
 
 # install
