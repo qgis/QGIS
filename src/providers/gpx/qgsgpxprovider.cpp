@@ -158,6 +158,9 @@ QgsWkbTypes::Type QgsGPXProvider::wkbType() const
  */
 long long QgsGPXProvider::featureCount() const
 {
+  if ( !data )
+    return static_cast< long long >( Qgis::FeatureCountState::UnknownCount );
+
   if ( mFeatureType == WaypointType )
     return data->getNumberOfWaypoints();
   if ( mFeatureType == RouteType )

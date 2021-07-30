@@ -3428,8 +3428,8 @@ QgsAttributeList QgsVectorLayer::primaryKeyAttributes() const
 
 long long QgsVectorLayer::featureCount() const
 {
-  if ( ! mDataProvider )
-    return -1;
+  if ( !mDataProvider )
+    return static_cast< long long >( Qgis::FeatureCountState::UnknownCount );
   return mDataProvider->featureCount() +
          ( mEditBuffer && ! mDataProvider->transaction() ? mEditBuffer->addedFeatures().size() - mEditBuffer->deletedFeatureIds().size() : 0 );
 }
