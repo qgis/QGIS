@@ -176,7 +176,7 @@ void ConsoleFeedback::showTerminalProgress( double progress )
     fflush( stdout );
 }
 
-
+#ifdef WITH_BINDINGS
 //! load Python support if possible
 std::unique_ptr< QgsPythonUtils > QgsProcessingExec::loadPythonSupport()
 {
@@ -220,6 +220,7 @@ std::unique_ptr< QgsPythonUtils > QgsProcessingExec::loadPythonSupport()
 
   return pythonUtils;
 }
+#endif
 
 QgsProcessingExec::QgsProcessingExec()
 {
@@ -258,6 +259,8 @@ int QgsProcessingExec::run( const QStringList &constArgs )
 #ifdef HAVE_3D
   QgsApplication::processingRegistry()->addProvider( new Qgs3DAlgorithms( QgsApplication::processingRegistry() ) );
 #endif
+
+#ifdef WITH_BINDINGS
 
   // give Python plugins a chance to load providers
   mPythonUtils = loadPythonSupport();
@@ -431,6 +434,7 @@ int QgsProcessingExec::run( const QStringList &constArgs )
   {
     std::cerr << QStringLiteral( "Command %1 not known!\n" ).arg( command ).toLocal8Bit().constData();
   }
+#endif
   return 1;
 }
 
@@ -456,6 +460,7 @@ void QgsProcessingExec::showUsage( const QString &appName )
   std::cout << msg.join( QString() ).toLocal8Bit().constData();
 }
 
+#ifdef WITH_BINDINGS
 void QgsProcessingExec::loadPlugins()
 {
   QgsSettings settings;
@@ -476,6 +481,7 @@ void QgsProcessingExec::loadPlugins()
     }
   }
 }
+#endif
 
 void QgsProcessingExec::listAlgorithms( bool useJson )
 {
@@ -559,6 +565,7 @@ void QgsProcessingExec::listPlugins( bool useJson, bool showLoaded )
     addVersionInformation( json );
   }
 
+#ifdef WITH_BINDINGS
   QVariantMap jsonPlugins;
   const QStringList plugins = mPythonUtils->pluginList();
   for ( const QString &plugin : plugins )
@@ -587,6 +594,7 @@ void QgsProcessingExec::listPlugins( bool useJson, bool showLoaded )
     json.insert( QStringLiteral( "plugins" ), jsonPlugins );
     std::cout << QgsJsonUtils::jsonFromVariant( json ).dump( 2 );
   }
+#endif
 }
 
 int QgsProcessingExec::enablePlugin( const QString &name, bool enabled )
@@ -596,6 +604,7 @@ int QgsProcessingExec::enablePlugin( const QString &name, bool enabled )
   else
     std::cout << QStringLiteral( "Disabling plugin: \"%1\"\n" ).arg( name ).toLocal8Bit().constData();
 
+#ifdef WITH_BINDINGS
   const QStringList plugins = mPythonUtils->pluginList();
   if ( !plugins.contains( name ) )
   {
@@ -645,6 +654,10 @@ int QgsProcessingExec::enablePlugin( const QString &name, bool enabled )
   listPlugins( false, false );
 
   return 0;
+#else
+  std::cerr << "No Python support\n";
+  return 1;
+#endif
 }
 
 int QgsProcessingExec::showAlgorithmHelp( const QString &id, bool useJson )
