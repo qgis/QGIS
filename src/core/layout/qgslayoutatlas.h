@@ -218,7 +218,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * Filters the coverage layer according to the current atlas filter expression.
      * Only filters when the coverage layer features are set to be filtered by the atlas.
      *
-     * \see unfilterCoverageLayer()
+     * \see unFilterCoverageLayer()
      * \since QGIS 3.22
      */
     void filterCoverageLayer();
