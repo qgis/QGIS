@@ -30,8 +30,8 @@ class TestQgsBabelGpsFormat(unittest.TestCase):
         """Run before all tests"""
 
         QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("TestPyQgsAFSProvider.com")
-        QCoreApplication.setApplicationName("TestPyQgsAFSProvider")
+        QCoreApplication.setOrganizationDomain("TestPyQgsBabelGpsFormat.com")
+        QCoreApplication.setApplicationName("TestPyQgsBabelGpsFormat")
         QgsSettings().clear()
         start_app()
 
