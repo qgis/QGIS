@@ -671,17 +671,17 @@ void QgsGpsPlugin::setCurrentTheme( const QString &themeName )
     if ( QFile::exists( myCurThemePath ) )
     {
       mQActionPointer->setIcon( QIcon( myCurThemePath + "import_gpx.svg" ) );
-      mCreateGPXAction->setIcon( QIcon( myCurThemePath + "create_gpx.svg" ) );
+      mCreateGPXAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionNewGpx.svg" ) ) );
     }
     else if ( QFile::exists( myDefThemePath ) )
     {
       mQActionPointer->setIcon( QIcon( myDefThemePath + "import_gpx.svg" ) );
-      mCreateGPXAction->setIcon( QIcon( myDefThemePath + "create_gpx.svg" ) );
+      mCreateGPXAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionNewGpx.svg" ) ) );
     }
     else if ( QFile::exists( myQrcPath ) )
     {
       mQActionPointer->setIcon( QIcon( myQrcPath + "import_gpx.svg" ) );
-      mCreateGPXAction->setIcon( QIcon( myQrcPath + "create_gpx.svg" ) );
+      mCreateGPXAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionNewGpx.svg" ) ) );
     }
     else
     {
