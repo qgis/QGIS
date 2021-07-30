@@ -12,6 +12,8 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 
 from qgis.core import (
     QgsVectorLayer,
+    QgsFeature,
+    QgsPoint
 )
 from qgis.testing import (
     start_app,
@@ -164,6 +166,16 @@ class TestPyQgsGpxProvider(unittest.TestCase, ProviderTestCase):
         vl = QgsVectorLayer('not a gpx?type=waypoint', 'test', 'gpx')
         self.assertFalse(vl.isValid())
         self.assertEqual(vl.featureCount(), -1)
+        self.assertTrue(vl.extent().isNull())
+
+        f = QgsFeature()
+        f.setGeometry(QgsPoint(1, 2))
+        self.assertFalse(vl.dataProvider().addFeature(f))
+        self.assertFalse(vl.dataProvider().addFeatures([f])[0])
+
+        self.assertFalse(vl.dataProvider().deleteFeatures([1, 2]))
+
+        self.assertFalse(vl.dataProvider().changeAttributeValues({1: {1: 'a'}}))
 
 
 if __name__ == '__main__':
