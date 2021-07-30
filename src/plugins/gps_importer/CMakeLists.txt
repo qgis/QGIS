@@ -4,7 +4,6 @@
 set (GPS_SRCS
      qgsgpsplugin.cpp
      qgsgpsplugingui.cpp
-     qgsgpsdevicedialog.cpp
 )
 
 set (GPS_UIS
