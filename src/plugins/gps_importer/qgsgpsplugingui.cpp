@@ -10,7 +10,6 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 #include "qgsgpsplugingui.h"
-#include "qgsgpsdevicedialog.h"
 #include "qgsmaplayer.h"
 #include "qgsdataprovider.h"
 #include "qgslogger.h"
