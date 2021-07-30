@@ -51,8 +51,6 @@ class QgsGpsPlugin: public QObject, public QgisPlugin
     void initGui() override;
     //! Show the dialog box
     void run();
-    //! Create a new GPX layer
-    void createGPX();
     //! Add a vector layer given vectorLayerPath, baseName, providerKey
     void drawVectorLayer( const QString &, const QString &, const QString & );
     //! unload the plugin
@@ -93,8 +91,6 @@ class QgsGpsPlugin: public QObject, public QgisPlugin
     QgisInterface *mQGisInterface = nullptr;
     //! Pointer to the QAction object used in the menu and toolbar
     QAction *mQActionPointer = nullptr;
-    //! Pointer to the QAction used for creating a new GPX layer
-    QAction *mCreateGPXAction = nullptr;
     //! The path to the GPSBabel program
     QString mBabelPath;
     //! Importers for external GPS data file formats

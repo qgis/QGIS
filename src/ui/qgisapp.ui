@@ -176,6 +176,7 @@
      <addaction name="mActionNewSpatiaLiteLayer"/>
      <addaction name="mActionNewMemoryLayer"/>
      <addaction name="mActionNewMeshLayer"/>
+     <addaction name="mActionNewGpxLayer"/>
      <addaction name="separator"/>
      <addaction name="mActionNewVirtualLayer"/>
     </widget>
@@ -3558,6 +3559,18 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="toolTip">
     <string>New Mesh Layer</string>
+   </property>
+  </action>
+  <action name="mActionNewGpxLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionNewGpx.svg</normaloff>:/images/themes/default/mActionNewGpx.svg</iconset>
+   </property>
+   <property name="text">
+    <string>New GPX Layer…</string>
+   </property>
+   <property name="toolTip">
+    <string>New GPX Layer</string>
    </property>
   </action>
  </widget>

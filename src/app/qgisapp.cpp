@@ -2692,6 +2692,7 @@ void QgisApp::createActions()
   connect( mActionNewGeoPackageLayer, &QAction::triggered, this, &QgisApp::newGeoPackageLayer );
   connect( mActionNewMemoryLayer, &QAction::triggered, this, &QgisApp::newMemoryLayer );
   connect( mActionNewMeshLayer, &QAction::triggered, this, &QgisApp::newMeshLayer );
+  connect( mActionNewGpxLayer, &QAction::triggered, this, &QgisApp::newGpxLayer );
   connect( mActionNewVirtualLayer, &QAction::triggered, this, &QgisApp::addVirtualLayer );
   connect( mActionShowRasterCalculator, &QAction::triggered, this, &QgisApp::showRasterCalculator );
   connect( mActionShowMeshCalculator, &QAction::triggered, this, &QgisApp::showMeshCalculator );
@@ -6505,6 +6506,55 @@ void QgisApp::newMeshLayer()
   QgsNewMeshLayerDialog dialog( this );
   dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
   dialog.exec();
+}
+
+void QgisApp::newGpxLayer()
+{
+  QgsSettings settings;
+  const QString dir = settings.value( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
+  QString fileName =
+    QFileDialog::getSaveFileName( this,
+                                  tr( "New GPX File" ),
+                                  dir,
+                                  tr( "GPS eXchange file" ) + " (*.gpx)" );
+  if ( !fileName.isEmpty() )
+  {
+    fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, { QStringLiteral( "gpx" )} );
+    const QFileInfo fileInfo( fileName );
+    settings.setValue( QStringLiteral( "Plugin-GPS/gpxdirectory" ), fileInfo.absolutePath() );
+
+    QFile outputFile( fileName );
+    if ( !outputFile.open( QFile::WriteOnly | QIODevice::Truncate ) )
+    {
+      QMessageBox::warning( nullptr, tr( "New GPX File" ),
+                            tr( "Unable to create a GPX file with the given name. "
+                                "Try again with another name or in another "
+                                "directory." ) );
+      return;
+    }
+
+    QTextStream outStream( &outputFile );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    outStream.setCodec( "UTF-8" );
+#endif
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    outStream << "<gpx></gpx>" << endl;
+#else
+    outStream << "<gpx></gpx>" << Qt::endl;
+#endif
+    outputFile.close();
+
+    if ( QgsVectorLayer *trackLayer = addVectorLayer( fileName + "?type=track",
+                                      fileInfo.baseName() + ", tracks", QStringLiteral( "gpx" ) ) )
+      trackLayer->startEditing();
+    if ( QgsVectorLayer *routeLayer = addVectorLayer( fileName + "?type=route",
+                                      fileInfo.baseName() + ", routes", QStringLiteral( "gpx" ) ) )
+      routeLayer->startEditing();
+    if ( QgsVectorLayer *waypointLayer = addVectorLayer( fileName + "?type=waypoint",
+                                         fileInfo.baseName() + ", waypoints", QStringLiteral( "gpx" ) ) )
+      waypointLayer->startEditing();
+  }
 }
 
 void QgisApp::showRasterCalculator()
