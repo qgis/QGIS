@@ -1577,6 +1577,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Create a new empty mesh layer
     void newMeshLayer();
 
+    //! Create a new empty GPX layer
+    void newGpxLayer();
+
     //! Create a new print layout
     void newPrintLayout();
 

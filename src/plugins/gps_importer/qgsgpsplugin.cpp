@@ -79,22 +79,15 @@ QgsGpsPlugin::~QgsGpsPlugin()
 void QgsGpsPlugin::initGui()
 {
   delete mQActionPointer;
-  delete mCreateGPXAction;
 
   // add an action to the toolbar
   mQActionPointer = new QAction( QIcon(), tr( "&GPS Tools" ), this );
   mQActionPointer->setObjectName( QStringLiteral( "mQActionPointer" ) );
-  mCreateGPXAction = new QAction( QIcon(), tr( "&Create new GPX layer" ), this );
-  mCreateGPXAction->setObjectName( QStringLiteral( "mCreateGPXAction" ) );
   setCurrentTheme( QString() );
 
   mQActionPointer->setWhatsThis( tr( "Creates a new GPX layer and displays it on the map canvas" ) );
-  mCreateGPXAction->setWhatsThis( tr( "Creates a new GPX layer and displays it on the map canvas" ) );
   connect( mQActionPointer, &QAction::triggered, this, &QgsGpsPlugin::run );
-  connect( mCreateGPXAction, &QAction::triggered, this, &QgsGpsPlugin::createGPX );
 
-  mQGisInterface->layerToolBar()->insertAction( nullptr, mCreateGPXAction );
-  mQGisInterface->newLayerMenu()->addAction( mCreateGPXAction );
   mQGisInterface->addPluginToVectorMenu( QString(), mQActionPointer );
   mQGisInterface->addVectorToolBarIcon( mQActionPointer );
 
@@ -148,44 +141,6 @@ void QgsGpsPlugin::run()
   myPluginGui->show();
 }
 
-void QgsGpsPlugin::createGPX()
-{
-  QgsSettings settings;
-  QString dir = settings.value( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
-  QString fileName =
-    QFileDialog::getSaveFileName( mQGisInterface->mainWindow(),
-                                  tr( "Save New GPX File As" ),
-                                  dir,
-                                  tr( "GPS eXchange file" ) + " (*.gpx)" );
-  if ( !fileName.isEmpty() )
-  {
-    if ( !fileName.endsWith( QLatin1String( ".gpx" ), Qt::CaseInsensitive ) )
-    {
-      fileName += QLatin1String( ".gpx" );
-    }
-    QFileInfo fileInfo( fileName );
-    std::ofstream ofs( fileName.toUtf8() );
-    if ( !ofs )
-    {
-      QMessageBox::warning( nullptr, tr( "Save New GPX File" ),
-                            tr( "Unable to create a GPX file with the given name. "
-                                "Try again with another name or in another "
-                                "directory." ) );
-      return;
-    }
-    settings.setValue( QStringLiteral( "Plugin-GPS/gpxdirectory" ), fileInfo.absolutePath() );
-
-    ofs << "<gpx></gpx>" << std::endl;
-
-    drawVectorLayer( fileName + "?type=track",
-                     fileInfo.baseName() + ", tracks", QStringLiteral( "gpx" ) );
-    drawVectorLayer( fileName + "?type=route",
-                     fileInfo.baseName() + ", routes", QStringLiteral( "gpx" ) );
-    drawVectorLayer( fileName + "?type=waypoint",
-                     fileInfo.baseName() + ", waypoints", QStringLiteral( "gpx" ) );
-  }
-}
-
 void QgsGpsPlugin::drawVectorLayer( const QString &pathNameQString,
                                     const QString &baseNameQString,
                                     const QString &providerQString )
@@ -198,8 +153,6 @@ void QgsGpsPlugin::drawVectorLayer( const QString &pathNameQString,
 void QgsGpsPlugin::unload()
 {
   // remove the GUI
-  mQGisInterface->layerToolBar()->removeAction( mCreateGPXAction );
-  mQGisInterface->newLayerMenu()->removeAction( mCreateGPXAction );
   mQGisInterface->vectorMenu()->removeAction( mQActionPointer );
   mQGisInterface->removeVectorToolBarIcon( mQActionPointer );
   delete mQActionPointer;
@@ -671,22 +624,18 @@ void QgsGpsPlugin::setCurrentTheme( const QString &themeName )
     if ( QFile::exists( myCurThemePath ) )
     {
       mQActionPointer->setIcon( QIcon( myCurThemePath + "import_gpx.svg" ) );
-      mCreateGPXAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionNewGpx.svg" ) ) );
     }
     else if ( QFile::exists( myDefThemePath ) )
     {
       mQActionPointer->setIcon( QIcon( myDefThemePath + "import_gpx.svg" ) );
-      mCreateGPXAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionNewGpx.svg" ) ) );
     }
     else if ( QFile::exists( myQrcPath ) )
     {
       mQActionPointer->setIcon( QIcon( myQrcPath + "import_gpx.svg" ) );
-      mCreateGPXAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionNewGpx.svg" ) ) );
     }
     else
     {
       mQActionPointer->setIcon( QIcon() );
-      mCreateGPXAction->setIcon( QIcon() );
     }
   }
 }
