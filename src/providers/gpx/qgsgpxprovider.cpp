@@ -129,18 +129,13 @@ QgsVectorDataProvider::Capabilities QgsGPXProvider::capabilities() const
          QgsVectorDataProvider::ChangeAttributeValues;
 }
 
-
-
-// Return the extent of the layer
 QgsRectangle QgsGPXProvider::extent() const
 {
-  return data->getExtent();
+  if ( data )
+    return data->getExtent();
+  return QgsRectangle();
 }
 
-
-/**
- * Returns the feature type
- */
 QgsWkbTypes::Type QgsGPXProvider::wkbType() const
 {
   if ( mFeatureType == WaypointType )
@@ -152,10 +147,6 @@ QgsWkbTypes::Type QgsGPXProvider::wkbType() const
   return QgsWkbTypes::Unknown;
 }
 
-
-/**
- * Returns the feature type
- */
 long long QgsGPXProvider::featureCount() const
 {
   if ( !data )
@@ -170,13 +161,10 @@ long long QgsGPXProvider::featureCount() const
   return 0;
 }
 
-
 QgsFields QgsGPXProvider::fields() const
 {
   return attributeFields;
 }
-
-
 
 bool QgsGPXProvider::isValid() const
 {
@@ -192,6 +180,8 @@ QgsFeatureIterator QgsGPXProvider::getFeatures( const QgsFeatureRequest &request
 
 bool QgsGPXProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
+  if ( !data )
+    return false;
 
   // add all the features
   for ( QgsFeatureList::iterator iter = flist.begin();
@@ -210,9 +200,11 @@ bool QgsGPXProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   return true;
 }
 
-
 bool QgsGPXProvider::addFeature( QgsFeature &f, Flags )
 {
+  if ( !data )
+    return false;
+
   QByteArray wkb( f.geometry().asWkb() );
   const char *geo = wkb.constData();
   QgsWkbTypes::Type wkbType = f.geometry().wkbType();
@@ -382,6 +374,9 @@ bool QgsGPXProvider::addFeature( QgsFeature &f, Flags )
 
 bool QgsGPXProvider::deleteFeatures( const QgsFeatureIds &id )
 {
+  if ( !data )
+    return false;
+
   if ( mFeatureType == WaypointType )
     data->removeWaypoints( id );
   else if ( mFeatureType == RouteType )
@@ -401,6 +396,9 @@ bool QgsGPXProvider::deleteFeatures( const QgsFeatureIds &id )
 
 bool QgsGPXProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
+  if ( !data )
+    return false;
+
   QgsChangedAttributesMap::const_iterator aIter = attr_map.begin();
   if ( mFeatureType == WaypointType )
   {
