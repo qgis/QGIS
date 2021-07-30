@@ -109,6 +109,7 @@
 #include "qgsgeometrycheckregistry.h"
 
 #include "options/qgscodeeditoroptions.h"
+#include "options/qgsgpsdeviceoptions.h"
 
 #ifdef HAVE_3D
 #include "qgs3d.h"
@@ -1697,6 +1698,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   } );
 
   mCodeEditorWidgetFactory.reset( std::make_unique< QgsCodeEditorOptionsFactory >() );
+  mBabelGpsDevicesWidgetFactory.reset( std::make_unique< QgsGpsDeviceOptionsFactory >() );
 
 #ifdef HAVE_3D
   m3DOptionsWidgetFactory.reset( std::make_unique< Qgs3DOptionsFactory >() );
