@@ -351,6 +351,15 @@ The development version
       NoMarker,
     };
 
+    enum class ContentStatus
+    {
+      NotStarted,
+      Running,
+      Finished,
+      Failed,
+      Canceled,
+    };
+
     enum class BabelFormatCapability
     {
       Import,
@@ -367,15 +376,6 @@ The development version
       Waypoint,
       Route,
       Track,
-    };
-
-    enum class ContentStatus
-    {
-      NotStarted,
-      Running,
-      Finished,
-      Failed,
-      Canceled,
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;

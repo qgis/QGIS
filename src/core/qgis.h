@@ -533,7 +533,7 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( VertexMarkerType )
 
-    /*
+    /**
      * Status for fetched or stored content
      * \since QGIS 3.22
      */

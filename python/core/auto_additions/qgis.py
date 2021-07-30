@@ -490,6 +490,15 @@ Qgis.VertexMarkerType.__doc__ = 'Editing vertex markers, used for showing vertic
 # --
 Qgis.VertexMarkerType.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.ContentStatus.NotStarted.__doc__ = "Content fetching/storing has not started yet"
+Qgis.ContentStatus.Running.__doc__ = "Content fetching/storing is in progress"
+Qgis.ContentStatus.Finished.__doc__ = "Content fetching/storing is finished and successful"
+Qgis.ContentStatus.Failed.__doc__ = "Content fetching/storing has failed"
+Qgis.ContentStatus.Canceled.__doc__ = "Content fetching/storing has been canceled"
+Qgis.ContentStatus.__doc__ = 'Status for fetched or stored content\n\n.. versionadded:: 3.22\n\n' + '* ``NotStarted``: ' + Qgis.ContentStatus.NotStarted.__doc__ + '\n' + '* ``Running``: ' + Qgis.ContentStatus.Running.__doc__ + '\n' + '* ``Finished``: ' + Qgis.ContentStatus.Finished.__doc__ + '\n' + '* ``Failed``: ' + Qgis.ContentStatus.Failed.__doc__ + '\n' + '* ``Canceled``: ' + Qgis.ContentStatus.Canceled.__doc__
+# --
+Qgis.ContentStatus.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.BabelFormatCapability.Import.__doc__ = "Format supports importing"
 Qgis.BabelFormatCapability.Export.__doc__ = "Format supports exporting"
 Qgis.BabelFormatCapability.Waypoints.__doc__ = "Format supports waypoints"
@@ -505,11 +514,3 @@ Qgis.GpsFeatureType.Track.__doc__ = "Track"
 Qgis.GpsFeatureType.__doc__ = 'GPS feature types.\n\n.. versionadded:: 3.22\n\n' + '* ``Waypoint``: ' + Qgis.GpsFeatureType.Waypoint.__doc__ + '\n' + '* ``Route``: ' + Qgis.GpsFeatureType.Route.__doc__ + '\n' + '* ``Track``: ' + Qgis.GpsFeatureType.Track.__doc__
 # --
 Qgis.GpsFeatureType.baseClass = Qgis
-Qgis.ContentStatus.NotStarted.__doc__ = "Content fetching/storing has not started yet"
-Qgis.ContentStatus.Running.__doc__ = "Content fetching/storing is in progress"
-Qgis.ContentStatus.Finished.__doc__ = "Content fetching/storing is finished and successful"
-Qgis.ContentStatus.Failed.__doc__ = "Content fetching/storing has failed"
-Qgis.ContentStatus.Canceled.__doc__ = "Content fetching/storing has been canceled"
-Qgis.ContentStatus.__doc__ = 'Status for fetched or stored content\n\n.. versionadded:: 3.22\n\n' + '* ``NotStarted``: ' + Qgis.ContentStatus.NotStarted.__doc__ + '\n' + '* ``Running``: ' + Qgis.ContentStatus.Running.__doc__ + '\n' + '* ``Finished``: ' + Qgis.ContentStatus.Finished.__doc__ + '\n' + '* ``Failed``: ' + Qgis.ContentStatus.Failed.__doc__ + '\n' + '* ``Canceled``: ' + Qgis.ContentStatus.Canceled.__doc__
-# --
-Qgis.ContentStatus.baseClass = Qgis
