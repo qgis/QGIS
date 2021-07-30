@@ -157,6 +157,14 @@ class TestPyQgsGpxProvider(unittest.TestCase, ProviderTestCase):
     def testUniqueValues(self):
         pass
 
+    def test_invalid_source(self):
+        """
+        Test various methods with an invalid source
+        """
+        vl = QgsVectorLayer('not a gpx?type=waypoint', 'test', 'gpx')
+        self.assertFalse(vl.isValid())
+        self.assertEqual(vl.featureCount(), -1)
+
 
 if __name__ == '__main__':
     unittest.main()
