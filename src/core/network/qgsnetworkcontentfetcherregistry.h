@@ -136,7 +136,7 @@ class CORE_EXPORT QgsNetworkContentFetcherRegistry : public QObject
      * \param fetchingMode defines if the download will start immediately or shall be manually triggered
      * \note If the download starts immediately, it will not redownload any already fetched or currently fetching file.
      */
-    const QgsFetchedContent *fetch( const QString &url, Qgis::FetchingMode fetchingMode = Qgis::FetchingMode::FetchLater );
+    const QgsFetchedContent *fetch( const QString &url, Qgis::ActionStart fetchingMode = Qgis::ActionStart::Deferred );
 
 #ifndef SIP_RUN
 

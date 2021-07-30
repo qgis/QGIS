@@ -103,7 +103,7 @@ Create the registry for temporary downloaded files
 
     ~QgsNetworkContentFetcherRegistry();
 
-    const QgsFetchedContent *fetch( const QString &url, Qgis::FetchingMode fetchingMode = Qgis::FetchingMode::FetchLater );
+    const QgsFetchedContent *fetch( const QString &url, Qgis::ActionStart fetchingMode = Qgis::ActionStart::Deferred );
 %Docstring
 Initialize a download for the given URL
 

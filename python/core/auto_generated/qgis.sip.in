@@ -261,10 +261,10 @@ The development version
       RamDisk,
     };
 
-    enum class FetchingMode
+    enum class ActionStart
       {
-      FetchLater,
-      FetchImmediately,
+      Deferred,
+      Immediate,
     };
 
     enum class UnplacedLabelVisibility
@@ -349,6 +349,15 @@ The development version
       SemiTransparentCircle,
       Cross,
       NoMarker,
+    };
+
+    enum class ContentStatus
+    {
+      NotStarted,
+      Running,
+      Finished,
+      Failed,
+      Canceled,
     };
 
     enum class BabelFormatCapability
