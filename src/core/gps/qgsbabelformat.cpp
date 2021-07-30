@@ -17,10 +17,7 @@
  ***************************************************************************/
 
 #include "qgsbabelformat.h"
-
-#include <QRegExp>
 #include <QString>
-
 
 QgsAbstractBabelFormat::QgsAbstractBabelFormat( const QString &name )
   : mName( name )
