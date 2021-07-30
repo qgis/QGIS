@@ -67,10 +67,6 @@ class QgsGpsPlugin: public QObject, public QgisPlugin
                         bool importWaypoints, bool importRoutes,
                         bool importTracks, const QString &outputFileName,
                         const QString &layerName );
-    void convertGPSFile( const QString &inputFileName,
-                         int convertType,
-                         const QString &outputFileName,
-                         const QString &layerName );
     void downloadFromGPS( const QString &device, const QString &port,
                           bool downloadWaypoints, bool downloadRoutes,
                           bool downloadTracks, const QString &outputFileName,

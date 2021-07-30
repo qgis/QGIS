@@ -53,9 +53,6 @@ class QgsGpsPluginGui : public QDialog, private Ui::QgsGpsPluginGuiBase
     void pbnIMPInput_clicked();
     void pbnIMPOutput_clicked();
 
-    void pbnCONVInput_clicked();
-    void pbnCONVOutput_clicked();
-
     void pbnDLOutput_clicked();
 
   private:
@@ -63,7 +60,6 @@ class QgsGpsPluginGui : public QDialog, private Ui::QgsGpsPluginGuiBase
     void populateULLayerComboBox();
     void populateIMPBabelFormats();
     void populatePortComboBoxes();
-    void populateCONVDialog();
 
     void saveState();
     void restoreState();
@@ -91,10 +87,6 @@ class QgsGpsPluginGui : public QDialog, private Ui::QgsGpsPluginGuiBase
                         bool importWaypoints, bool importRoutes,
                         bool importTracks, const QString &outputFileName,
                         const QString &layerName );
-    void convertGPSFile( const QString &inputFileName,
-                         int convertType,
-                         const QString &outputFileName,
-                         const QString &layerName );
     void downloadFromGPS( const QString &device, const QString &port, bool downloadWaypoints,
                           bool downloadRoutes, bool downloadTracks,
                           const QString &outputFileName, const QString &layerName );
