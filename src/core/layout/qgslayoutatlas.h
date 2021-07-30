@@ -215,6 +215,24 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
     void setFilterFeatures( bool filtered );
 
     /**
+     * Filters the coverage layer according to the current atlas filter expression.
+     * Only filters when the coverage layer features are set to be filtered by the atlas.
+     *
+     * \see unfilterCoverageLayer()
+     * \since QGIS 3.22
+     */
+    void filterCoverageLayer();
+
+    /**
+     * Removes the filters that the atlas applied on the coverage layer, by applying the original
+     * coverage layer subset string.
+     *
+     * \see filterCoverageLayer()
+     * \since QGIS 3.22
+     */
+    void unFilterCoverageLayer();
+
+    /**
      * Returns the expression used for filtering features in the coverage layer.
      *
      * This property has no effect is filterFeatures() is FALSE.
@@ -369,6 +387,8 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
 
     QgsExpression mFilenameExpression;
     QgsVectorLayerRef mCoverageLayer;
+    // The original value of the coverage layer subset string before filtering the layer.
+    QString mOriginalFilterExpression;
 
     QString mCurrentFilename;
     bool mSortFeatures = false;
