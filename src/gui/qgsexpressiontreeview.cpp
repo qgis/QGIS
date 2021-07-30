@@ -195,7 +195,9 @@ void QgsExpressionTreeView::setProject( QgsProject *project )
 
 void QgsExpressionTreeView::setSearchText( const QString &text )
 {
-  mProxyModel->setFilterWildcard( text );
+  const QRegularExpression regularExpression = QRegularExpression( text );
+  if ( regularExpression.isValid() )
+    mProxyModel->setFilterRegularExpression( regularExpression );
   if ( text.isEmpty() )
   {
     collapseAll();
