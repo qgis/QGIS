@@ -18,7 +18,8 @@
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsgui.h"
-
+#include "qgsbabelformatregistry.h"
+#include "qgsapplication.h"
 //qt includes
 #include <QFileDialog>
 
@@ -26,14 +27,10 @@
 #include <cassert>
 #include <cstdlib>
 
-QgsGpsPluginGui::QgsGpsPluginGui( const std::map<QString, QgsAbstractBabelFormat *> &importers,
-                                  std::map<QString, QgsBabelGpsDeviceFormat *> &devices,
-                                  const std::vector<QgsVectorLayer *> &gpxMapLayers,
+QgsGpsPluginGui::QgsGpsPluginGui( const std::vector<QgsVectorLayer *> &gpxMapLayers,
                                   QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mGPXLayers( gpxMapLayers )
-  , mImporters( importers )
-  , mDevices( devices )
 {
   setupUi( this );
   QgsGui::instance()->enableAutoGeometryRestore( this );
@@ -51,9 +48,6 @@ QgsGpsPluginGui::QgsGpsPluginGui( const std::map<QString, QgsAbstractBabelFormat
   populatePortComboBoxes();
   populateULLayerComboBox();
   populateIMPBabelFormats();
-
-  connect( pbULEditDevices, &QAbstractButton::clicked, this, &QgsGpsPluginGui::openDeviceEditor );
-  connect( pbDLEditDevices, &QAbstractButton::clicked, this, &QgsGpsPluginGui::openDeviceEditor );
 
   // make sure that the OK button is enabled only when it makes sense to
   // click it
@@ -102,7 +96,7 @@ void QgsGpsPluginGui::buttonBox_accepted()
       // or import other file?
       const QString &typeString( cmbIMPFeature->currentText() );
       emit importGPSFile( leIMPInput->text(),
-                          mImporters.find( mImpFormat )->second,
+                          QgsApplication::gpsBabelFormatRegistry()->importFormat( mImpFormat ),
                           typeString == tr( "Waypoints" ) ? Qgis::GpsFeatureType::Waypoint
                           : typeString == tr( "Routes" ) ? Qgis::GpsFeatureType::Route : Qgis::GpsFeatureType::Track,
                           leIMPOutput->text(),
@@ -250,23 +244,22 @@ void QgsGpsPluginGui::pbnIMPInput_clicked()
     settings.setValue( QStringLiteral( "Plugin-GPS/lastImportFilter" ), myFileType );
 
     mImpFormat = myFileType.left( myFileType.length() - 6 );
-    std::map<QString, QgsAbstractBabelFormat *>::const_iterator iter;
-    iter = mImporters.find( mImpFormat );
-    if ( iter == mImporters.end() )
+
+    const QgsAbstractBabelFormat *format = QgsApplication::gpsBabelFormatRegistry()->importFormat( mImpFormat );
+    if ( !format )
     {
       QgsLogger::warning( "Unknown file format selected: " +
                           myFileType.left( myFileType.length() - 6 ) );
     }
     else
     {
-      QgsLogger::debug( iter->first + " selected" );
       leIMPInput->setText( myFileName );
       cmbIMPFeature->clear();
-      if ( iter->second->capabilities() & Qgis::BabelFormatCapability::Waypoints )
+      if ( format->capabilities() & Qgis::BabelFormatCapability::Waypoints )
         cmbIMPFeature->addItem( tr( "Waypoints" ) );
-      if ( iter->second->capabilities() & Qgis::BabelFormatCapability::Routes )
+      if ( format->capabilities() & Qgis::BabelFormatCapability::Routes )
         cmbIMPFeature->addItem( tr( "Routes" ) );
-      if ( iter->second->capabilities() & Qgis::BabelFormatCapability::Tracks )
+      if ( format->capabilities() & Qgis::BabelFormatCapability::Tracks )
         cmbIMPFeature->addItem( tr( "Tracks" ) );
     }
   }
@@ -334,32 +327,26 @@ void QgsGpsPluginGui::populateIMPBabelFormats()
   QgsSettings settings;
   QString lastDLDevice = settings.value( QStringLiteral( "Plugin-GPS/lastdldevice" ), "" ).toString();
   QString lastULDevice = settings.value( QStringLiteral( "Plugin-GPS/lastuldevice" ), "" ).toString();
-  for ( auto iter = mImporters.begin(); iter != mImporters.end(); ++iter )
-    mBabelFilter.append( iter->first ).append( " (*.*);;" );
+
+  const QStringList importers = QgsApplication::gpsBabelFormatRegistry()->importFormatNames();
+  for ( const QString &format : importers )
+    mBabelFilter.append( format ).append( " (*.*);;" );
   mBabelFilter.chop( 2 ); // Remove the trailing ;;, which otherwise leads to an empty filetype
   int u = -1, d = -1;
-  std::map<QString, QgsBabelGpsDeviceFormat *>::const_iterator iter2;
-  for ( iter2 = mDevices.begin(); iter2 != mDevices.end(); ++iter2 )
+  const QStringList devices = QgsApplication::gpsBabelFormatRegistry()->deviceNames();
+  for ( const QString &device : devices )
   {
-    cmbULDevice->addItem( iter2->first );
-    if ( iter2->first == lastULDevice )
+    cmbULDevice->addItem( device );
+    if ( device == lastULDevice )
       u = cmbULDevice->count() - 1;
-    cmbDLDevice->addItem( iter2->first );
-    if ( iter2->first == lastDLDevice )
+    cmbDLDevice->addItem( device );
+    if ( device == lastDLDevice )
       d = cmbDLDevice->count() - 1;
   }
   if ( u != -1 )
     cmbULDevice->setCurrentIndex( u );
   if ( d != -1 )
     cmbDLDevice->setCurrentIndex( d );
-}
-
-
-void QgsGpsPluginGui::openDeviceEditor()
-{
-  QgsGpsDeviceDialog *dlg = new QgsGpsDeviceDialog( mDevices );
-  dlg->show();
-  connect( dlg, &QgsGpsDeviceDialog::devicesChanged, this, &QgsGpsPluginGui::devicesUpdated );
 }
 
 void QgsGpsPluginGui::devicesUpdated()

@@ -46,6 +46,7 @@ class QgsSourceCache;
 class QgsSymbolLayerRegistry;
 class QgsRasterRendererRegistry;
 class QgsGpsConnectionRegistry;
+class QgsBabelFormatRegistry;
 class QgsDataItemProviderRegistry;
 class QgsPluginLayerRegistry;
 class QgsClassificationMethodRegistry;
@@ -746,6 +747,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsGpsConnectionRegistry *gpsConnectionRegistry() SIP_KEEPREFERENCE;
 
     /**
+     * Returns the application's GPSBabel format registry, used for managing GPSBabel formats.
+     * \since QGIS 3.22
+     */
+    static QgsBabelFormatRegistry *gpsBabelFormatRegistry() SIP_KEEPREFERENCE;
+
+    /**
      * Returns the application's plugin layer registry, used for managing plugin layer types.
      * \since QGIS 3.0
      */
@@ -1048,6 +1055,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsNumericFormatRegistry *mNumericFormatRegistry = nullptr;
       QgsFieldFormatterRegistry *mFieldFormatterRegistry = nullptr;
       QgsGpsConnectionRegistry *mGpsConnectionRegistry = nullptr;
+      QgsBabelFormatRegistry *mGpsBabelFormatRegistry = nullptr;
       QgsNetworkContentFetcherRegistry *mNetworkContentFetcherRegistry = nullptr;
       QgsScaleBarRendererRegistry *mScaleBarRendererRegistry = nullptr;
       QgsValidityCheckRegistry *mValidityCheckRegistry = nullptr;

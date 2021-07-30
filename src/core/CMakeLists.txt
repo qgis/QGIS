@@ -52,6 +52,7 @@ set(QGIS_CORE_SRCS
   geocoding/qgsgooglemapsgeocoder.cpp
 
   gps/qgsbabelformat.cpp
+  gps/qgsbabelformatregistry.cpp
   gps/qgsbabelgpsdevice.cpp
   gps/qgsgpsconnection.cpp
   gps/qgsgpsconnectionregistry.cpp
@@ -1286,6 +1287,7 @@ set(QGIS_CORE_HDRS
   geometry/qgsray3d.h
 
   gps/qgsbabelformat.h
+  gps/qgsbabelformatregistry.h
   gps/qgsbabelgpsdevice.h
   gps/qgsgpsconnection.h
   gps/qgsgpsdconnection.h
