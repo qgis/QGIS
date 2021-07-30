@@ -50,20 +50,26 @@ QgsGpsDeviceOptionsWidget::QgsGpsDeviceOptionsWidget( QWidget *parent )
     if ( !it.value() )
       continue;
 
-    const QString wptDownload =
+    const QString waypointDownloadCommand =
       it.value()->importCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Waypoint, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
-    const QString wptUpload =
+    const QString waypointUploadCommand =
       it.value()->exportCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Waypoint, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
-    const QString rteDownload =
+    const QString routeDownloadCommand =
       it.value()->importCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Route, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
-    const QString rteUpload =
+    const QString routeUploadCommand =
       it.value()->exportCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Route, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
-    const QString trkDownload =
+    const QString trackDownloadCommand =
       it.value()->importCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Track, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
-    const QString trkUpload =
+    const QString trackUploadCommand =
       it.value()->exportCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Track, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
 
-    mDevices.insert( it.key(), {wptDownload, wptUpload, rteDownload, rteUpload, trkDownload, trkUpload } );
+    mDevices.insert( it.key(), {waypointDownloadCommand,
+                                waypointUploadCommand,
+                                routeDownloadCommand,
+                                routeUploadCommand,
+                                trackDownloadCommand,
+                                trackUploadCommand
+                               } );
   }
 
   updateDeviceList();
