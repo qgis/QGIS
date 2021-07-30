@@ -129,6 +129,13 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mTreeModel->appendRow( createItem( tr( "Variables" ), tr( "Variables" ), QStringLiteral( "mIconExpression.svg" ) ) );
   mTreeModel->appendRow( createItem( tr( "Authentication" ), tr( "Authentication" ), QStringLiteral( "locked.svg" ) ) );
   mTreeModel->appendRow( createItem( tr( "Network" ), tr( "Network" ), QStringLiteral( "propertyicons/network_and_proxy.svg" ) ) );
+
+  QStandardItem *gpsGroup = new QStandardItem( tr( "GPS" ) );
+  gpsGroup->setData( QStringLiteral( "gps" ) );
+  gpsGroup->setToolTip( tr( "GPS" ) );
+  gpsGroup->setSelectable( false );
+  mTreeModel->appendRow( gpsGroup );
+
   mTreeModel->appendRow( createItem( tr( "Locator" ), tr( "Locator" ), QStringLiteral( "search.svg" ) ) );
   mTreeModel->appendRow( createItem( tr( "Acceleration" ), tr( "GPU acceleration" ), QStringLiteral( "mIconGPU.svg" ) ) );
 

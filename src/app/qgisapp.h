@@ -2673,6 +2673,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsScopedDevToolWidgetFactory mStartupProfilerWidgetFactory;
 
     QgsScopedOptionsWidgetFactory mCodeEditorWidgetFactory;
+    QgsScopedOptionsWidgetFactory mBabelGpsDevicesWidgetFactory;
     QgsScopedOptionsWidgetFactory m3DOptionsWidgetFactory;
 
     class QgsCanvasRefreshBlocker

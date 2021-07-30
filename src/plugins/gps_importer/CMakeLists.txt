@@ -9,7 +9,6 @@ set (GPS_SRCS
 
 set (GPS_UIS
      qgsgpspluginguibase.ui
-     qgsgpsdevicedialogbase.ui
 )
 
 set (GPS_RCCS  qgsgps_plugin.qrc)
