@@ -83,15 +83,11 @@ QgsOfflineEditing::QgsOfflineEditing()
  *
  * Workflow:
  *
- * - copy layers to SpatiaLite
- * - create SpatiaLite db at offlineDataPath
- * - create table for each layer
- * - add new SpatiaLite layer
- * - copy features
- * - save as offline project
- * - mark offline layers
- * - remove remote layers
- * - mark as offline project
+ * - create a sqlite database at offlineDataPath
+ * - copy layers to Geopackage or SpatiaLite offline layers in the above-created database
+ * - replace remote layers' data source with offline layers from the database
+ * - mark those layers as offline
+ * - mark project as offline
  */
 bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected, ContainerType containerType, const QString &layerNameSuffix )
 {
@@ -115,39 +111,6 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
       createLoggingTables( database.get() );
 
       emit progressStarted();
-
-      QMap<QString, QgsVectorJoinList > joinInfoBuffer;
-      QMap<QString, QgsVectorLayer *> layerIdMapping;
-
-      for ( const QString &layerId : layerIds )
-      {
-        QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerId );
-        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
-        if ( !vl || !vl->isValid() )
-        {
-          QgsDebugMsgLevel( QStringLiteral( "Layer %1 is invalid" ).arg( layerId ), 4 );
-          continue;
-        }
-        QgsVectorJoinList joins = vl->vectorJoins();
-
-        // Layer names will be appended an _offline suffix
-        // Join fields are prefixed with the layer name and we do not want the
-        // field name to change so we stabilize the field name by defining a
-        // custom prefix with the layername without _offline suffix.
-        QgsVectorJoinList::iterator joinIt = joins.begin();
-        while ( joinIt != joins.end() )
-        {
-          if ( joinIt->prefix().isNull() )
-          {
-            QgsVectorLayer *vl = joinIt->joinLayer();
-
-            if ( vl && vl->isValid() )
-              joinIt->setPrefix( vl->name() + '_' );
-          }
-          ++joinIt;
-        }
-        joinInfoBuffer.insert( vl->id(), joins );
-      }
 
       // copy selected vector layers to offline layer
       for ( int i = 0; i < layerIds.count(); i++ )
@@ -311,13 +274,15 @@ void QgsOfflineEditing::synchronize()
         // remove offline layer properties
         layer->removeCustomProperty( CUSTOM_PROPERTY_IS_OFFLINE_EDITABLE );
 
-        // store original layer source and information
+        // remove original layer source and information
         layer->removeCustomProperty( CUSTOM_PROPERTY_REMOTE_SOURCE );
         layer->removeCustomProperty( CUSTOM_PROPERTY_REMOTE_PROVIDER );
         layer->removeCustomProperty( CUSTOM_PROPERTY_ORIGINAL_LAYERID );
         layer->removeCustomProperty( CUSTOM_PROPERTY_LAYERNAME_SUFFIX );
 
-        setupLayer( offlineLayer );
+        // remove connected signals
+        disconnect( layer, &QgsVectorLayer::editingStarted, this, &QgsOfflineEditing::startListenFeatureChanges );
+        disconnect( layer, &QgsVectorLayer::editingStopped, this, &QgsOfflineEditing::stopListenFeatureChanges );
 
         //add constrainst of fields that use defaultValueClauses from provider on original
         const auto fields = remoteLayer->fields();
@@ -1639,19 +1604,13 @@ void QgsOfflineEditing::setupLayer( QgsMapLayer *layer )
 {
   Q_ASSERT( layer );
 
-  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( vLayer )
+  if ( QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layer ) )
   {
     // detect offline layer
     if ( vLayer->customProperty( CUSTOM_PROPERTY_IS_OFFLINE_EDITABLE, false ).toBool() )
     {
       connect( vLayer, &QgsVectorLayer::editingStarted, this, &QgsOfflineEditing::startListenFeatureChanges );
       connect( vLayer, &QgsVectorLayer::editingStopped, this, &QgsOfflineEditing::stopListenFeatureChanges );
-    }
-    else
-    {
-      disconnect( vLayer, &QgsVectorLayer::editingStarted, this, &QgsOfflineEditing::startListenFeatureChanges );
-      disconnect( vLayer, &QgsVectorLayer::editingStopped, this, &QgsOfflineEditing::stopListenFeatureChanges );
     }
   }
 }
