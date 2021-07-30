@@ -102,6 +102,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmforcerhr.cpp
   processing/qgsalgorithmfuzzifyraster.cpp
   processing/qgsalgorithmgeometrybyexpression.cpp
+  processing/qgsalgorithmgpsbabeltools.cpp
   processing/qgsalgorithmgrid.cpp
   processing/qgsalgorithmhillshade.cpp
   processing/qgsalgorithmimportphotos.cpp
