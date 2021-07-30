@@ -88,6 +88,9 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     QgsRasterCalcNode( double number );
     QgsRasterCalcNode( QgsRasterMatrix *matrix );
     QgsRasterCalcNode( Operator op, QgsRasterCalcNode *left, QgsRasterCalcNode *right );
+    //general for condition statement
+    //QgsRasterCalcNode( Operator op, QVector <QgsRasterCalcNode *> functionArgs )
+    QgsRasterCalcNode( QVector <QgsRasterCalcNode *> functionArgs );
     QgsRasterCalcNode( const QString &rasterName );
     ~QgsRasterCalcNode();
 
@@ -128,6 +131,9 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
 
     static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) SIP_FACTORY;
 
+    //some tests for conditional stat
+    void evaluation( const QVector<QgsRasterMatrix> &matrixVector );
+
   private:
 #ifdef SIP_RUN
     QgsRasterCalcNode( const QgsRasterCalcNode &rh );
@@ -143,6 +149,7 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     //added for the conditional stat
     QString mFunctionName;
     QVector <QgsRasterCalcNode *> mFunctionArgs;
+
 
 };
 

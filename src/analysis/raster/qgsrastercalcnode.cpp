@@ -36,6 +36,17 @@ QgsRasterCalcNode::QgsRasterCalcNode( Operator op, QgsRasterCalcNode *left, QgsR
 {
 }
 
+//for conditional statement and possibily other functions
+//QgsRasterCalcNode::QgsRasterCalcNode( Operator op, QVector <QgsRasterCalcNode *> functionArgs )
+QgsRasterCalcNode::QgsRasterCalcNode( QVector <QgsRasterCalcNode *> functionArgs )
+  : mType( tOperator )
+  , mOperator( opFUNCT )
+  , mFunctionArgs( functionArgs )
+    //mFunctionName( functionName)
+{
+
+}
+
 QgsRasterCalcNode::QgsRasterCalcNode( const QString &rasterName )
   : mType( tRasterRef )
   , mRasterName( rasterName )
@@ -90,6 +101,17 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData,
   {
     QgsRasterMatrix leftMatrix( result.nColumns(), result.nRows(), nullptr, result.nodataValue() );
     QgsRasterMatrix rightMatrix( result.nColumns(), result.nRows(), nullptr, result.nodataValue() );
+
+    /*
+    //for loop to assign initialitize the raster matrix (right now they are left and right but
+    //with conditional statement they can be 3 (e.g left, right, condition) and I should leave the door
+    //open for more options and  functions
+    QVector <QgsRasterMatrix> matrixContainer;
+    for (int i = 0; i < mFunctionArgs.size(); ++i)
+    {
+        matrixContainer.append( QgsRasterMatrix( result.nColumns(), result.nRows(), nullptr, result.nodataValue() ) );
+    }
+    */
 
     if ( !mLeft || !mLeft->calculate( rasterData, leftMatrix, row ) )
     {
@@ -179,6 +201,11 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData,
         break;
       case opABS:
         leftMatrix.absoluteValue();
+        break;
+      case opFUNCT:
+        QgsDebugMsg( "ciao" );
+
+        //evaluate (matrixContainer);
         break;
       default:
         return false;
@@ -380,5 +407,14 @@ QgsRasterCalcNode *QgsRasterCalcNode::parseRasterCalcString( const QString &str,
 {
   extern QgsRasterCalcNode *localParseRasterCalcString( const QString & str, QString & parserErrorMsg );
   return localParseRasterCalcString( str, parserErrorMsg );
+}
+
+void QgsRasterCalcNode::evaluation( const QVector<QgsRasterMatrix> &matrixVector )
+{
+  if ( mFunctionName == "if" )
+  {
+    //matrixVector.at(0).isTrue() ? matrixVector.at(1) : matrixVector.at(2);
+    //for the if functon, the first part is the condition
+  }
 }
 

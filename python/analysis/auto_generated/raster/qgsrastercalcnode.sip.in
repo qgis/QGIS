@@ -68,6 +68,7 @@ Constructor for QgsRasterCalcNode.
     QgsRasterCalcNode( double number );
     QgsRasterCalcNode( QgsRasterMatrix *matrix );
     QgsRasterCalcNode( Operator op, QgsRasterCalcNode *left, QgsRasterCalcNode *right );
+    QgsRasterCalcNode( QVector <QgsRasterCalcNode *> functionArgs );
     QgsRasterCalcNode( const QString &rasterName );
     ~QgsRasterCalcNode();
 
@@ -98,6 +99,8 @@ Returns a list of nodes of a specific ``type``
 %End
 
     static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) /Factory/;
+
+    void evaluation( const QVector<QgsRasterMatrix> &matrixVector );
 
   private:
     QgsRasterCalcNode( const QgsRasterCalcNode &rh );
