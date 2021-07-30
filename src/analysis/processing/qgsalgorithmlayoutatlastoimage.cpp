@@ -226,6 +226,7 @@ QVariantMap QgsLayoutAtlasToImageAlgorithm::processAlgorithm( const QVariantMap 
   if ( atlas->updateFeatures() )
   {
     feedback->pushInfo( QObject::tr( "Exporting %n atlas feature(s)", "", atlas->count() ) );
+    atlas->filterCoverageLayer();
     switch ( exporter.exportToImage( atlas, fileName, extension, settings, error, feedback ) )
     {
       case QgsLayoutExporter::Success:
@@ -251,6 +252,7 @@ QVariantMap QgsLayoutAtlasToImageAlgorithm::processAlgorithm( const QVariantMap 
         // no meaning for imageexports, will not be encountered
         break;
     }
+    atlas->unFilterCoverageLayer();
   }
   else
   {

@@ -384,20 +384,30 @@ bool QgsLayoutAtlas::beginRender()
     //no matching features found
     return false;
   }
-  if ( !mFilterExpression.isEmpty() )
-      mCoverageLayer->setSubsetString( mFilterExpression );
 
   return true;
 }
 
 bool QgsLayoutAtlas::endRender()
 {
-  if ( mCoverageLayer && !mFilterExpression.isEmpty() )
-      mCoverageLayer->setSubsetString( QString() );
-
   emit featureChanged( QgsFeature() );
   emit renderEnded();
   return true;
+}
+
+void QgsLayoutAtlas::filterCoverageLayer()
+{
+    if ( mFilterFeatures && !mFilterExpression.isEmpty() )
+    {
+        mOriginalFilterExpression = mCoverageLayer->subsetString();
+        mCoverageLayer->setSubsetString( mFilterExpression );
+    }
+}
+
+void QgsLayoutAtlas::unFilterCoverageLayer()
+{
+    if ( mCoverageLayer && mFilterFeatures && !mFilterExpression.isEmpty() )
+        mCoverageLayer->setSubsetString( mOriginalFilterExpression );
 }
 
 int QgsLayoutAtlas::count() const
