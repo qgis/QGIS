@@ -97,12 +97,12 @@ class QgsGPXProvider final: public QgsVectorDataProvider
 
   private:
 
-    QgsGpsData *data = nullptr;
+    QgsGpsData *mData = nullptr;
 
     //! Fields
-    QgsFields attributeFields;
+    QgsFields mAttributeFields;
     //! map from field index to attribute
-    QVector<int> indexToAttr;
+    QVector<int> mIndexToAttr;
 
     QString mFileName;
 
