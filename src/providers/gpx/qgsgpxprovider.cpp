@@ -45,22 +45,20 @@
 #include "qgsgpxprovider.h"
 #include "gpsdata.h"
 
-const char *QgsGPXProvider::ATTR[] = { "name", "elevation", "symbol", "number",
-                                       "comment", "description", "source",
-                                       "url", "url name"
-                                     };
-QVariant::Type QgsGPXProvider::attrType[] = { QVariant::String, QVariant::Double, QVariant::String, QVariant::Int,
-                                              QVariant::String, QVariant::String, QVariant::String,
-                                              QVariant::String, QVariant::String
-                                            };
-QgsGPXProvider::DataType QgsGPXProvider::attrUsed[] =
+const QStringList QgsGPXProvider::sAttributeNames = { "name", "elevation", "symbol", "number",
+                                                      "comment", "description", "source",
+                                                      "url", "url name"
+                                                    };
+const QList< QVariant::Type > QgsGPXProvider::sAttributeTypes = { QVariant::String, QVariant::Double, QVariant::String, QVariant::Int,
+                                                                  QVariant::String, QVariant::String, QVariant::String,
+                                                                  QVariant::String, QVariant::String
+                                                                };
+const QList< QgsGPXProvider::DataType > QgsGPXProvider::sAttributedUsedForLayerType =
 {
   QgsGPXProvider::AllType, QgsGPXProvider::WaypointType, QgsGPXProvider::TrkRteType, QgsGPXProvider::TrkRteType,
   QgsGPXProvider::AllType, QgsGPXProvider::AllType, QgsGPXProvider::AllType, QgsGPXProvider::AllType,
   QgsGPXProvider::AllType, QgsGPXProvider::AllType
 };
-
-const int QgsGPXProvider::ATTR_COUNT = sizeof( QgsGPXProvider::ATTR ) / sizeof( const char * );
 
 const QString GPX_KEY = QStringLiteral( "gpx" );
 
@@ -90,12 +88,12 @@ QgsGPXProvider::QgsGPXProvider( const QString &uri, const ProviderOptions &optio
   mFileName = uriParts.value( QStringLiteral( "path" ) ).toString();
 
   // set up the attributes and the geometry type depending on the feature type
-  for ( int i = 0; i < ATTR_COUNT; ++i )
+  for ( int i = 0; i < sAttributeNames.size(); ++i )
   {
-    if ( attrUsed[i] & mFeatureType )
+    if ( sAttributedUsedForLayerType[i] & mFeatureType )
     {
-      QString attrTypeName = ( attrType[i] == QVariant::Int ? "int" : ( attrType[i] == QVariant::Double ? "double" : "text" ) );
-      mAttributeFields.append( QgsField( ATTR[i], attrType[i], attrTypeName ) );
+      QString attrTypeName = ( sAttributeTypes[i] == QVariant::Int ? "int" : ( sAttributeTypes[i] == QVariant::Double ? "double" : "text" ) );
+      mAttributeFields.append( QgsField( sAttributeNames[i], sAttributeTypes[i], attrTypeName ) );
       mIndexToAttr.append( i );
     }
   }
