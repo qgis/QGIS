@@ -23,66 +23,36 @@
 
 QgsBabelFormatRegistry::QgsBabelFormatRegistry()
 {
-  mImporters[QStringLiteral( "Shapefile" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "shape" ), Qgis::BabelFormatCapability::Waypoints | Qgis::BabelFormatCapability::Routes | Qgis::BabelFormatCapability::Tracks );
-  mImporters[QStringLiteral( "Geocaching.com .loc" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "geo" ), Qgis::BabelFormatCapability::Waypoints );
-  mImporters[QStringLiteral( "Magellan Mapsend" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "mapsend" ), Qgis::BabelFormatCapability::Waypoints | Qgis::BabelFormatCapability::Routes | Qgis::BabelFormatCapability::Tracks );
-  mImporters[QStringLiteral( "Garmin PCX5" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "pcx" ), Qgis::BabelFormatCapability::Waypoints | Qgis::BabelFormatCapability::Tracks );
-  mImporters[QStringLiteral( "Garmin Mapsource" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "mapsource" ), Qgis::BabelFormatCapability::Waypoints | Qgis::BabelFormatCapability::Routes | Qgis::BabelFormatCapability::Tracks );
-  mImporters[QStringLiteral( "GPSUtil" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "gpsutil" ), Qgis::BabelFormatCapability::Waypoints );
-  mImporters[QStringLiteral( "PocketStreets 2002/2003 Pushpin" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "psp" ), Qgis::BabelFormatCapability::Waypoints );
-  mImporters[QStringLiteral( "CoPilot Flight Planner" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "copilot" ), Qgis::BabelFormatCapability::Waypoints );
-  mImporters[QStringLiteral( "Magellan Navigator Companion" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "magnav" ), Qgis::BabelFormatCapability::Waypoints );
-  mImporters[QStringLiteral( "Holux" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "holux" ), Qgis::BabelFormatCapability::Waypoints );
-  mImporters[QStringLiteral( "Topo by National Geographic" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "tpg" ), Qgis::BabelFormatCapability::Waypoints );
-  mImporters[QStringLiteral( "TopoMapPro" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "tmpro" ), Qgis::BabelFormatCapability::Waypoints );
-  mImporters[QStringLiteral( "GeocachingDB" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "gcdb" ), Qgis::BabelFormatCapability::Waypoints );
-  mImporters[QStringLiteral( "Tiger" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "tiger" ), Qgis::BabelFormatCapability::Waypoints );
-  mImporters[QStringLiteral( "EasyGPS Binary Format" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "easygps" ), Qgis::BabelFormatCapability::Waypoints );
-  mImporters[QStringLiteral( "Delorme Routes" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "saroute" ), Qgis::BabelFormatCapability::Tracks );
-  mImporters[QStringLiteral( "Navicache" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "navicache" ), Qgis::BabelFormatCapability::Waypoints );
-  mImporters[QStringLiteral( "PSITrex" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "psitrex" ), Qgis::BabelFormatCapability::Waypoints | Qgis::BabelFormatCapability::Routes | Qgis::BabelFormatCapability::Tracks );
-  mImporters[QStringLiteral( "Delorme GPS Log" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "gpl" ), Qgis::BabelFormatCapability::Tracks );
-  mImporters[QStringLiteral( "OziExplorer" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "ozi" ), Qgis::BabelFormatCapability::Waypoints );
-  mImporters[QStringLiteral( "NMEA Sentences" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "nmea" ), Qgis::BabelFormatCapability::Waypoints | Qgis::BabelFormatCapability::Tracks );
-  mImporters[QStringLiteral( "Delorme Street Atlas 2004 Plus" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "saplus" ), Qgis::BabelFormatCapability::Waypoints );
-  mImporters[QStringLiteral( "Microsoft Streets and Trips" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "s_and_t" ), Qgis::BabelFormatCapability::Waypoints );
-  mImporters[QStringLiteral( "NIMA/GNIS Geographic Names" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "nima" ), Qgis::BabelFormatCapability::Waypoints );
-  mImporters[QStringLiteral( "Maptech" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "mxf" ), Qgis::BabelFormatCapability::Waypoints );
-  mImporters[QStringLiteral( "Mapopolis.com Mapconverter Application" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "mapconverter" ), Qgis::BabelFormatCapability::Waypoints );
-  mImporters[QStringLiteral( "GPSman" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "gpsman" ), Qgis::BabelFormatCapability::Waypoints );
-  mImporters[QStringLiteral( "GPSDrive" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "gpsdrive" ), Qgis::BabelFormatCapability::Waypoints );
-  mImporters[QStringLiteral( "Fugawi" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "fugawi" ), Qgis::BabelFormatCapability::Waypoints );
-  mImporters[QStringLiteral( "DNA" )] =
-    new QgsBabelSimpleImportFormat( QStringLiteral( "dna" ), Qgis::BabelFormatCapability::Waypoints );
+  mImporters[QStringLiteral( "CoPilot Flight Planner" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "copilot" ), Qgis::BabelFormatCapability::Waypoints );
+  mImporters[QStringLiteral( "Delorme GPS Log" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "gpl" ), Qgis::BabelFormatCapability::Tracks );
+  mImporters[QStringLiteral( "Delorme Routes" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "saroute" ), Qgis::BabelFormatCapability::Tracks );
+  mImporters[QStringLiteral( "Delorme Street Atlas 2004 Plus" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "saplus" ), Qgis::BabelFormatCapability::Waypoints );
+  mImporters[QStringLiteral( "DNA" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "dna" ), Qgis::BabelFormatCapability::Waypoints );
+  mImporters[QStringLiteral( "EasyGPS Binary Format" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "easygps" ), Qgis::BabelFormatCapability::Waypoints );
+  mImporters[QStringLiteral( "Fugawi" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "fugawi" ), Qgis::BabelFormatCapability::Waypoints );
+  mImporters[QStringLiteral( "Garmin Mapsource" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "mapsource" ), Qgis::BabelFormatCapability::Waypoints | Qgis::BabelFormatCapability::Routes | Qgis::BabelFormatCapability::Tracks );
+  mImporters[QStringLiteral( "Garmin PCX5" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "pcx" ), Qgis::BabelFormatCapability::Waypoints | Qgis::BabelFormatCapability::Tracks );
+  mImporters[QStringLiteral( "Geocaching.com .loc" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "geo" ), Qgis::BabelFormatCapability::Waypoints );
+  mImporters[QStringLiteral( "GeocachingDB" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "gcdb" ), Qgis::BabelFormatCapability::Waypoints );
+  mImporters[QStringLiteral( "GPSDrive" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "gpsdrive" ), Qgis::BabelFormatCapability::Waypoints );
+  mImporters[QStringLiteral( "GPSman" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "gpsman" ), Qgis::BabelFormatCapability::Waypoints );
+  mImporters[QStringLiteral( "GPSUtil" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "gpsutil" ), Qgis::BabelFormatCapability::Waypoints );
+  mImporters[QStringLiteral( "Holux" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "holux" ), Qgis::BabelFormatCapability::Waypoints );
+  mImporters[QStringLiteral( "Magellan Mapsend" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "mapsend" ), Qgis::BabelFormatCapability::Waypoints | Qgis::BabelFormatCapability::Routes | Qgis::BabelFormatCapability::Tracks );
+  mImporters[QStringLiteral( "Magellan Navigator Companion" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "magnav" ), Qgis::BabelFormatCapability::Waypoints );
+  mImporters[QStringLiteral( "Mapopolis.com Mapconverter Application" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "mapconverter" ), Qgis::BabelFormatCapability::Waypoints );
+  mImporters[QStringLiteral( "Maptech" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "mxf" ), Qgis::BabelFormatCapability::Waypoints );
+  mImporters[QStringLiteral( "Microsoft Streets and Trips" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "s_and_t" ), Qgis::BabelFormatCapability::Waypoints );
+  mImporters[QStringLiteral( "Navicache" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "navicache" ), Qgis::BabelFormatCapability::Waypoints );
+  mImporters[QStringLiteral( "NIMA/GNIS Geographic Names" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "nima" ), Qgis::BabelFormatCapability::Waypoints );
+  mImporters[QStringLiteral( "NMEA Sentences" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "nmea" ), Qgis::BabelFormatCapability::Waypoints | Qgis::BabelFormatCapability::Tracks );
+  mImporters[QStringLiteral( "OziExplorer" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "ozi" ), Qgis::BabelFormatCapability::Waypoints );
+  mImporters[QStringLiteral( "PocketStreets 2002/2003 Pushpin" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "psp" ), Qgis::BabelFormatCapability::Waypoints );
+  mImporters[QStringLiteral( "PSITrex" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "psitrex" ), Qgis::BabelFormatCapability::Waypoints | Qgis::BabelFormatCapability::Routes | Qgis::BabelFormatCapability::Tracks );
+  mImporters[QStringLiteral( "Shapefile" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "shape" ), Qgis::BabelFormatCapability::Waypoints | Qgis::BabelFormatCapability::Routes | Qgis::BabelFormatCapability::Tracks );
+  mImporters[QStringLiteral( "Tiger" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "tiger" ), Qgis::BabelFormatCapability::Waypoints );
+  mImporters[QStringLiteral( "Topo by National Geographic" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "tpg" ), Qgis::BabelFormatCapability::Waypoints );
+  mImporters[QStringLiteral( "TopoMapPro" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "tmpro" ), Qgis::BabelFormatCapability::Waypoints );
 
   reloadFromSettings();
 }
