@@ -50,6 +50,7 @@ QString QgsPostgresExpressionCompiler::quotedValue( const QVariant &value, bool 
         QgsGeometry geom = value.value<QgsGeometry>();
         return QString( "ST_GeomFromText('%1',%2)" ).arg( geom.asWkt() ).arg( mRequestedSrid.isEmpty() ? mDetectedSrid : mRequestedSrid );
       }
+      break;
 
     default:
       break;
