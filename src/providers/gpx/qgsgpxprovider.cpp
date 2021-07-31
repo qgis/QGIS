@@ -73,16 +73,21 @@ QgsGPXProvider::QgsGPXProvider( const QString &uri, const ProviderOptions &optio
   // we always use UTF-8
   setEncoding( QStringLiteral( "utf8" ) );
 
-  // get the file name and the type parameter from the URI
-  int fileNameEnd = uri.indexOf( '?' );
-  if ( fileNameEnd == -1 || uri.mid( fileNameEnd + 1, 5 ) != QLatin1String( "type=" ) )
+  const QVariantMap uriParts = decodeUri( uri );
+  const QString typeStr = uriParts.value( QStringLiteral( "layerName" ) ).toString();
+  if ( typeStr.isEmpty() )
   {
     QgsLogger::warning( tr( "Bad URI - you need to specify the feature type." ) );
     return;
   }
-  QString typeStr = uri.mid( fileNameEnd + 6 );
-  mFeatureType = ( typeStr == QLatin1String( "waypoint" ) ? WaypointType :
-                   ( typeStr == QLatin1String( "route" ) ? RouteType : TrackType ) );
+  if ( typeStr.compare( QLatin1String( "waypoint" ), Qt::CaseInsensitive ) == 0 )
+    mFeatureType = WaypointType;
+  else if ( typeStr.compare( QLatin1String( "route" ), Qt::CaseInsensitive ) == 0 )
+    mFeatureType = RouteType;
+  else
+    mFeatureType = TrackType;
+
+  mFileName = uriParts.value( QStringLiteral( "path" ) ).toString();
 
   // set up the attributes and the geometry type depending on the feature type
   for ( int i = 0; i < ATTR_COUNT; ++i )
@@ -95,8 +100,6 @@ QgsGPXProvider::QgsGPXProvider( const QString &uri, const ProviderOptions &optio
     }
   }
 
-  mFileName = uri.left( fileNameEnd );
-
   // parse the file
   data = QgsGpsData::getData( mFileName );
   if ( !data )
@@ -104,7 +107,6 @@ QgsGPXProvider::QgsGPXProvider( const QString &uri, const ProviderOptions &optio
 
   mValid = true;
 }
-
 
 QgsGPXProvider::~QgsGPXProvider()
 {
@@ -115,7 +117,6 @@ QgsAbstractFeatureSource *QgsGPXProvider::featureSource() const
 {
   return new QgsGPXFeatureSource( this );
 }
-
 
 QString QgsGPXProvider::storageType() const
 {
@@ -171,12 +172,10 @@ bool QgsGPXProvider::isValid() const
   return mValid;
 }
 
-
 QgsFeatureIterator QgsGPXProvider::getFeatures( const QgsFeatureRequest &request ) const
 {
   return QgsFeatureIterator( new QgsGPXFeatureIterator( new QgsGPXFeatureSource( this ), true, request ) );
 }
-
 
 bool QgsGPXProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
@@ -371,7 +370,6 @@ bool QgsGPXProvider::addFeature( QgsFeature &f, Flags )
   return success;
 }
 
-
 bool QgsGPXProvider::deleteFeatures( const QgsFeatureIds &id )
 {
   if ( !data )
@@ -392,7 +390,6 @@ bool QgsGPXProvider::deleteFeatures( const QgsFeatureIds &id )
   data->writeXml( ostr );
   return true;
 }
-
 
 bool QgsGPXProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
@@ -445,7 +442,6 @@ bool QgsGPXProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   data->writeXml( ostr );
   return true;
 }
-
 
 void QgsGPXProvider::changeAttributeValues( QgsGpsObject &obj, const QgsAttributeMap &attrs )
 {
@@ -512,7 +508,6 @@ void QgsGPXProvider::changeAttributeValues( QgsGpsObject &obj, const QgsAttribut
 
 }
 
-
 QVariant QgsGPXProvider::defaultValue( int fieldId ) const
 {
   if ( fieldId == SrcAttr )
@@ -520,29 +515,45 @@ QVariant QgsGPXProvider::defaultValue( int fieldId ) const
   return QVariant();
 }
 
-
 QString QgsGPXProvider::name() const
 {
   return GPX_KEY;
-} // QgsGPXProvider::name()
-
-
+}
 
 QString QgsGPXProvider::description() const
 {
   return GPX_DESCRIPTION;
-} // QgsGPXProvider::description()
+}
 
 QgsCoordinateReferenceSystem QgsGPXProvider::crs() const
 {
   return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
 }
 
-QgsDataProvider *QgsGpxProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+QString QgsGPXProvider::encodeUri( const QVariantMap &parts )
 {
-  return new QgsGPXProvider( uri, options, flags );
+  if ( parts.value( QStringLiteral( "layerName" ) ).toString().isEmpty() )
+    return parts.value( QStringLiteral( "path" ) ).toString();
+  else
+    return QStringLiteral( "%1?type=%2" ).arg( parts.value( QStringLiteral( "path" ) ).toString(),
+           parts.value( QStringLiteral( "layerName" ) ).toString() );
 }
 
+QVariantMap QgsGPXProvider::decodeUri( const QString &uri )
+{
+  QVariantMap res;
+  const int fileNameEnd = uri.indexOf( '?' );
+  if ( fileNameEnd != -1 && uri.mid( fileNameEnd + 1, 5 ) == QLatin1String( "type=" ) )
+  {
+    res.insert( QStringLiteral( "layerName" ), uri.mid( fileNameEnd + 6 ) );
+    res.insert( QStringLiteral( "path" ), uri.left( fileNameEnd ) );
+  }
+  else
+  {
+    res.insert( QStringLiteral( "path" ), uri );
+  }
+  return res;
+}
 
 QgsGpxProviderMetadata::QgsGpxProviderMetadata():
   QgsProviderMetadata( GPX_KEY, GPX_DESCRIPTION )
@@ -552,4 +563,24 @@ QgsGpxProviderMetadata::QgsGpxProviderMetadata():
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsGpxProviderMetadata();
+}
+
+QgsDataProvider *QgsGpxProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+{
+  return new QgsGPXProvider( uri, options, flags );
+}
+
+QgsProviderMetadata::ProviderCapabilities QgsGpxProviderMetadata::providerCapabilities() const
+{
+  return QgsProviderMetadata::ProviderCapability::FileBasedUris;
+}
+
+QString QgsGpxProviderMetadata::encodeUri( const QVariantMap &parts ) const
+{
+  return QgsGPXProvider::encodeUri( parts );
+}
+
+QVariantMap QgsGpxProviderMetadata::decodeUri( const QString &uri ) const
+{
+  return QgsGPXProvider::decodeUri( uri );
 }
