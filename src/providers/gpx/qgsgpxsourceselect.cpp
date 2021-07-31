@@ -46,7 +46,7 @@ void QgsGpxSourceSelect::addButtonClicked()
   if ( mGpxPath.isEmpty() )
   {
     QMessageBox::information( this,
-                              tr( "Add mesh layer" ),
+                              tr( "Add GPX Layer" ),
                               tr( "No layers selected." ) );
     return;
   }
@@ -54,9 +54,9 @@ void QgsGpxSourceSelect::addButtonClicked()
   const QFileInfo fileInfo( mGpxPath );
   if ( !fileInfo.isReadable() )
   {
-    QMessageBox::warning( nullptr, tr( "GPX Loader" ),
+    QMessageBox::warning( nullptr, tr( "Add GPX Layer" ),
                           tr( "Unable to read the selected file.\n"
-                              "Please reselect a valid file." ) );
+                              "Please select a valid file." ) );
     return;
   }
 
