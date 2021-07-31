@@ -39,9 +39,10 @@ class TestQgsBabelGpsFormat(unittest.TestCase):
         """
         Test QgsBabelSimpleImportFormat
         """
-        f = QgsBabelSimpleImportFormat('shapefile', 'ESRI Shapefile', Qgis.BabelFormatCapability.Waypoints)
+        f = QgsBabelSimpleImportFormat('shapefile', 'ESRI Shapefile', Qgis.BabelFormatCapability.Waypoints, ['shp', 'shx'])
         self.assertEqual(f.name(), 'shapefile')
         self.assertEqual(f.description(), 'ESRI Shapefile')
+        self.assertEqual(f.extensions(), ['shp', 'shx'])
         self.assertEqual(f.capabilities(), Qgis.BabelFormatCapabilities(
             Qgis.BabelFormatCapability.Waypoints | Qgis.BabelFormatCapability.Import))
         f = QgsBabelSimpleImportFormat('shapefile', 'ESRI Shapefile', Qgis.BabelFormatCapabilities(
@@ -177,6 +178,7 @@ class TestQgsBabelGpsFormat(unittest.TestCase):
         self.assertIsNotNone(registry.importFormat('dna'))
         self.assertEqual(registry.importFormat('dna').name(), 'dna')
         self.assertEqual(registry.importFormat('dna').description(), 'Navitrak DNA marker format')
+        self.assertEqual(registry.importFormat('dna').extensions(), ['dna'])
 
         self.assertIsNone(registry.importFormatByDescription('aaaaaa'))
         self.assertEqual(registry.importFormatByDescription('Navitrak DNA marker format').name(), 'dna')

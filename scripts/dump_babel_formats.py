@@ -81,8 +81,11 @@ def process_lines(lines):
                 capabilities.append('Qgis::BabelFormatCapability::Routes')
             if read_tracks:
                 capabilities.append('Qgis::BabelFormatCapability::Tracks')
+            capabilities_string = ' | '.join(capabilities)
+
+            extensions_string = '{' + ', '.join([f'QStringLiteral( "{ext.strip()}" )' for ext in extensions if ext.strip()]) + '}'
             format_out[
-                name] = f"""mImporters[QStringLiteral( "{name}" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "{name}" ), QStringLiteral( "{description}" ), {' | '.join(capabilities)} );"""
+                name] = f'mImporters[QStringLiteral( "{name}" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "{name}" ), QStringLiteral( "{description}" ), {capabilities_string}, {extensions_string} );'
 
     for format_name in sorted(format_out.keys(), key=lambda x: x.lower()):
         print(format_out[format_name])

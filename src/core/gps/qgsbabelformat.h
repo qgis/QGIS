@@ -115,13 +115,22 @@ class CORE_EXPORT QgsBabelSimpleImportFormat : public QgsAbstractBabelFormat
      *
      * The \a capabilities argument must reflect whether the format is capable of handling
      * waypoints, routes and/or tracks.
+     *
+     * The optional \a extensions argument can be used to populate a list of known file
+     * extensions for the format (e.g. "csv", "txt").
      */
-    QgsBabelSimpleImportFormat( const QString &format, const QString &description, Qgis::BabelFormatCapabilities capabilities );
+    QgsBabelSimpleImportFormat( const QString &format, const QString &description, Qgis::BabelFormatCapabilities capabilities,
+                                const QStringList extensions = QStringList() );
 
     /**
      * Returns the friendly description for the format.
      */
     QString description() const { return mDescription; }
+
+    /**
+     * Returns the list of known extensions for the format, e.g. "csv", "txt".
+     */
+    QStringList extensions() const { return mExtensions; }
 
     QStringList importCommand( const QString &babel,
                                Qgis::GpsFeatureType featureType,
@@ -129,6 +138,7 @@ class CORE_EXPORT QgsBabelSimpleImportFormat : public QgsAbstractBabelFormat
                                const QString &output ) const override;
   private:
     QString mDescription;
+    QStringList mExtensions;
 };
 
 #endif
