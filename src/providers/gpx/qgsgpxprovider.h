@@ -108,10 +108,9 @@ class QgsGPXProvider final: public QgsVectorDataProvider
 
     DataType mFeatureType = WaypointType;
 
-    static const char *ATTR[];
-    static QVariant::Type attrType[];
-    static DataType attrUsed[];
-    static const int ATTR_COUNT;
+    static const QStringList sAttributeNames;
+    static const QList< QVariant::Type > sAttributeTypes;
+    static const QList< DataType > sAttributedUsedForLayerType;
 
     bool mValid = false;
 
