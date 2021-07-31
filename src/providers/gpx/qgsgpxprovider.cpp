@@ -548,7 +548,7 @@ QVariantMap QgsGPXProvider::decodeUri( const QString &uri )
     res.insert( QStringLiteral( "layerName" ), uri.mid( fileNameEnd + 6 ) );
     res.insert( QStringLiteral( "path" ), uri.left( fileNameEnd ) );
   }
-  else
+  else if ( !uri.isEmpty() )
   {
     res.insert( QStringLiteral( "path" ), uri );
   }

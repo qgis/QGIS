@@ -13,7 +13,8 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 from qgis.core import (
     QgsVectorLayer,
     QgsFeature,
-    QgsPoint
+    QgsPoint,
+    QgsProviderRegistry
 )
 from qgis.testing import (
     start_app,
@@ -176,6 +177,27 @@ class TestPyQgsGpxProvider(unittest.TestCase, ProviderTestCase):
         self.assertFalse(vl.dataProvider().deleteFeatures([1, 2]))
 
         self.assertFalse(vl.dataProvider().changeAttributeValues({1: {1: 'a'}}))
+
+    def test_encode_decode_uri(self):
+        metadata = QgsProviderRegistry.instance().providerMetadata('gpx')
+        self.assertIsNotNone(metadata)
+
+        self.assertEqual(metadata.encodeUri({}), '')
+        self.assertEqual(metadata.decodeUri(''), {})
+        self.assertEqual(metadata.encodeUri({'path': '/home/me/test.gpx'}), '/home/me/test.gpx')
+        self.assertEqual(metadata.decodeUri('/home/me/test.gpx'), {'path': '/home/me/test.gpx'})
+        self.assertEqual(metadata.encodeUri({'path': '/home/me/test.gpx',
+                                             'layerName': 'waypoints'}), '/home/me/test.gpx?type=waypoints')
+        self.assertEqual(metadata.decodeUri('/home/me/test.gpx?type=waypoints'), {'path': '/home/me/test.gpx',
+                                                                                  'layerName': 'waypoints'})
+        self.assertEqual(metadata.encodeUri({'path': '/home/me/test.gpx',
+                                             'layerName': 'tracks'}), '/home/me/test.gpx?type=tracks')
+        self.assertEqual(metadata.decodeUri('/home/me/test.gpx?type=tracks'), {'path': '/home/me/test.gpx',
+                                                                               'layerName': 'tracks'})
+        self.assertEqual(metadata.encodeUri({'path': '/home/me/test.gpx',
+                                             'layerName': 'routes'}), '/home/me/test.gpx?type=routes')
+        self.assertEqual(metadata.decodeUri('/home/me/test.gpx?type=routes'), {'path': '/home/me/test.gpx',
+                                                                               'layerName': 'routes'})
 
 
 if __name__ == '__main__':
