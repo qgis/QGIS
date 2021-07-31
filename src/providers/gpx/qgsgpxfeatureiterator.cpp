@@ -497,8 +497,8 @@ QgsGeometry *QgsGPXFeatureIterator::readTrackGeometry( const QgsTrack &trk )
 QgsGPXFeatureSource::QgsGPXFeatureSource( const QgsGPXProvider *p )
   : mFileName( p->mFileName )
   , mFeatureType( p->mFeatureType )
-  , indexToAttr( p->indexToAttr )
-  , mFields( p->attributeFields )
+  , indexToAttr( p->mIndexToAttr )
+  , mFields( p->mAttributeFields )
   , mCrs( p->crs() )
 {
   data = QgsGpsData::getData( mFileName );
