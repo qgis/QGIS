@@ -109,19 +109,26 @@ class CORE_EXPORT QgsBabelSimpleImportFormat : public QgsAbstractBabelFormat
     /**
      * Constructor for QgsBabelSimpleImportFormat.
      *
-     * The \a format argument specifies a babel identifier for the input format.
+     * The \a format argument specifies the babel identifier for the input format.
+
+     * The \a description argument specified a descriptive name for the format.
      *
      * The \a capabilities argument must reflect whether the format is capable of handling
      * waypoints, routes and/or tracks.
      */
-    QgsBabelSimpleImportFormat( const QString &format, Qgis::BabelFormatCapabilities capabilities );
+    QgsBabelSimpleImportFormat( const QString &format, const QString &description, Qgis::BabelFormatCapabilities capabilities );
+
+    /**
+     * Returns the friendly description for the format.
+     */
+    QString description() const { return mDescription; }
 
     QStringList importCommand( const QString &babel,
                                Qgis::GpsFeatureType featureType,
                                const QString &input,
                                const QString &output ) const override;
   private:
-    QString mFormat;
+    QString mDescription;
 };
 
 #endif

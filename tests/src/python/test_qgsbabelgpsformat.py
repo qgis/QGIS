@@ -39,10 +39,12 @@ class TestQgsBabelGpsFormat(unittest.TestCase):
         """
         Test QgsBabelSimpleImportFormat
         """
-        f = QgsBabelSimpleImportFormat('shapefile', Qgis.BabelFormatCapability.Waypoints)
+        f = QgsBabelSimpleImportFormat('shapefile', 'ESRI Shapefile', Qgis.BabelFormatCapability.Waypoints)
+        self.assertEqual(f.name(), 'shapefile')
+        self.assertEqual(f.description(), 'ESRI Shapefile')
         self.assertEqual(f.capabilities(), Qgis.BabelFormatCapabilities(
             Qgis.BabelFormatCapability.Waypoints | Qgis.BabelFormatCapability.Import))
-        f = QgsBabelSimpleImportFormat('shapefile', Qgis.BabelFormatCapabilities(
+        f = QgsBabelSimpleImportFormat('shapefile', 'ESRI Shapefile', Qgis.BabelFormatCapabilities(
             Qgis.BabelFormatCapability.Waypoints | Qgis.BabelFormatCapability.Tracks))
         self.assertEqual(f.capabilities(), Qgis.BabelFormatCapabilities(
             Qgis.BabelFormatCapability.Waypoints | Qgis.BabelFormatCapability.Tracks | Qgis.BabelFormatCapability.Import))
@@ -168,12 +170,17 @@ class TestQgsBabelGpsFormat(unittest.TestCase):
         self.assertIsNotNone(QgsApplication.gpsBabelFormatRegistry())
 
         registry = QgsBabelFormatRegistry()
-        self.assertIn('Garmin Mapsource', registry.importFormatNames())
-        self.assertIn('DNA', registry.importFormatNames())
+        self.assertIn('garmin_poi', registry.importFormatNames())
+        self.assertIn('dna', registry.importFormatNames())
 
         self.assertIsNone(registry.importFormat('aaaaaa'))
-        self.assertIsNotNone(registry.importFormat('CoPilot Flight Planner'))
-        self.assertEqual(registry.importFormat('CoPilot Flight Planner').capabilities(), Qgis.BabelFormatCapabilities(Qgis.BabelFormatCapability.Waypoints | Qgis.BabelFormatCapability.Import))
+        self.assertIsNotNone(registry.importFormat('dna'))
+        self.assertEqual(registry.importFormat('dna').name(), 'dna')
+        self.assertEqual(registry.importFormat('dna').description(), 'Navitrak DNA marker format')
+
+        self.assertIsNone(registry.importFormatByDescription('aaaaaa'))
+        self.assertEqual(registry.importFormatByDescription('Navitrak DNA marker format').name(), 'dna')
+        self.assertEqual(registry.importFormatByDescription('navitrak dna marker format').name(), 'dna')
 
         # should have only one device by default
         self.assertEqual(registry.deviceNames(), ['Garmin serial'])
