@@ -64,9 +64,10 @@ Qgis::BabelFormatCapabilities QgsAbstractBabelFormat::capabilities() const
 //
 
 QgsBabelSimpleImportFormat::QgsBabelSimpleImportFormat( const QString &format, const QString &description,
-    Qgis::BabelFormatCapabilities capabilities )
+    Qgis::BabelFormatCapabilities capabilities, const QStringList extensions )
   : QgsAbstractBabelFormat( format )
   , mDescription( description )
+  , mExtensions( extensions )
 {
   mCapabilities = capabilities;
   mCapabilities |= Qgis::BabelFormatCapability::Import;
