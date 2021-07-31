@@ -117,10 +117,6 @@ void QgsGpsPlugin::run()
       QgsGuiUtils::ModalDialogFlags );
   myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
   //listen for when the layer has been made so we can draw it
-  connect( myPluginGui, &QgsGpsPluginGui::drawVectorLayer,
-           this, &QgsGpsPlugin::drawVectorLayer );
-  connect( myPluginGui, &QgsGpsPluginGui::loadGPXFile,
-           this, &QgsGpsPlugin::loadGPXFile );
   connect( myPluginGui, &QgsGpsPluginGui::importGPSFile,
            this, &QgsGpsPlugin::importGPSFile );
   connect( myPluginGui, &QgsGpsPluginGui::downloadFromGPS,
@@ -148,33 +144,6 @@ void QgsGpsPlugin::unload()
   mQGisInterface->removeVectorToolBarIcon( mQActionPointer );
   delete mQActionPointer;
   mQActionPointer = nullptr;
-}
-
-void QgsGpsPlugin::loadGPXFile( const QString &fileName, bool loadWaypoints, bool loadRoutes,
-                                bool loadTracks )
-{
-  //check if input file is readable
-  QFileInfo fileInfo( fileName );
-  if ( !fileInfo.isReadable() )
-  {
-    QMessageBox::warning( nullptr, tr( "GPX Loader" ),
-                          tr( "Unable to read the selected file.\n"
-                              "Please reselect a valid file." ) );
-    return;
-  }
-
-  // add the requested layers
-  if ( loadTracks )
-    drawVectorLayer( fileName + "?type=track",
-                     fileInfo.baseName() + ", tracks", QStringLiteral( "gpx" ) );
-  if ( loadRoutes )
-    drawVectorLayer( fileName + "?type=route",
-                     fileInfo.baseName() + ", routes", QStringLiteral( "gpx" ) );
-  if ( loadWaypoints )
-    drawVectorLayer( fileName + "?type=waypoint",
-                     fileInfo.baseName() + ", waypoints", QStringLiteral( "gpx" ) );
-
-  emit closeGui();
 }
 
 void QgsGpsPlugin::importGPSFile( const QString &inputFileName, QgsAbstractBabelFormat *importer,

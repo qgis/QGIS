@@ -52,8 +52,6 @@ QgsGpsPluginGui::QgsGpsPluginGui( const std::vector<QgsVectorLayer *> &gpxMapLay
   // click it
   pbnOK = buttonBox->button( QDialogButtonBox::Ok );
   pbnOK->setEnabled( false );
-  connect( mFileWidget, &QgsFileWidget::fileChanged,
-           this, &QgsGpsPluginGui::enableRelevantControls );
   connect( leIMPInput, &QLineEdit::textChanged,
            this, &QgsGpsPluginGui::enableRelevantControls );
   connect( leIMPOutput, &QLineEdit::textChanged,
@@ -68,9 +66,6 @@ QgsGpsPluginGui::QgsGpsPluginGui( const std::vector<QgsVectorLayer *> &gpxMapLay
            this, &QgsGpsPluginGui::enableRelevantControls );
   connect( tabWidget, &QTabWidget::currentChanged,
            this, &QgsGpsPluginGui::enableRelevantControls );
-
-  // drag and drop filter
-  mFileWidget->setFilter( tr( "GPX files (*.gpx)" ) );
 }
 
 QgsGpsPluginGui::~QgsGpsPluginGui()
@@ -85,12 +80,6 @@ void QgsGpsPluginGui::buttonBox_accepted()
   switch ( tabWidget->currentIndex() )
   {
     case 0:
-      // add a GPX layer?
-      emit loadGPXFile( mFileWidget->filePath(), cbGPXWaypoints->isChecked(),
-                        cbGPXRoutes->isChecked(), cbGPXTracks->isChecked() );
-      break;
-
-    case 1:
     {
       // or import other file?
       const QString &typeString( cmbIMPFeature->currentText() );
@@ -103,7 +92,7 @@ void QgsGpsPluginGui::buttonBox_accepted()
       break;
     }
 
-    case 2:
+    case 1:
     {
       // or download GPS data from a device?
       int featureType = cmbDLFeatureType->currentIndex();
@@ -122,7 +111,7 @@ void QgsGpsPluginGui::buttonBox_accepted()
       break;
     }
 
-    case 3:
+    case 2:
     {
       // or upload GPS data to a device?
       emit uploadToGPS( mGPXLayers[cmbULLayer->currentIndex()],
@@ -159,21 +148,8 @@ void QgsGpsPluginGui::pbnDLOutput_clicked()
 
 void QgsGpsPluginGui::enableRelevantControls()
 {
-  // load GPX
-  if ( tabWidget->currentIndex() == 0 )
-  {
-    bool enabled = !mFileWidget->filePath().isEmpty();
-    pbnOK->setEnabled( enabled );
-    cbGPXWaypoints->setEnabled( enabled );
-    cbGPXRoutes->setEnabled( enabled );
-    cbGPXTracks->setEnabled( enabled );
-    cbGPXWaypoints->setChecked( enabled );
-    cbGPXRoutes->setChecked( enabled );
-    cbGPXTracks->setChecked( enabled );
-  }
-
   // import other file
-  else if ( tabWidget->currentIndex() == 1 )
+  if ( tabWidget->currentIndex() == 0 )
   {
     if ( ( leIMPInput->text().isEmpty() ) || ( leIMPOutput->text().isEmpty() ) ||
          ( leIMPLayer->text().isEmpty() ) )
@@ -183,7 +159,7 @@ void QgsGpsPluginGui::enableRelevantControls()
   }
 
   // download from device
-  else if ( tabWidget->currentIndex() == 2 )
+  else if ( tabWidget->currentIndex() == 1 )
   {
     if ( cmbDLDevice->currentText().isEmpty() || leDLBasename->text().isEmpty() ||
          leDLOutput->text().isEmpty() )
@@ -193,7 +169,7 @@ void QgsGpsPluginGui::enableRelevantControls()
   }
 
   // upload to device
-  else if ( tabWidget->currentIndex() == 3 )
+  else if ( tabWidget->currentIndex() == 2 )
   {
     if ( cmbULDevice->currentText().isEmpty() || cmbULLayer->currentText().isEmpty() )
       pbnOK->setEnabled( false );
@@ -205,23 +181,6 @@ void QgsGpsPluginGui::enableRelevantControls()
 void QgsGpsPluginGui::buttonBox_rejected()
 {
   reject();
-}
-
-void QgsGpsPluginGui::on_pbnGPXSelectFile_clicked()
-{
-  QgsLogger::debug( QStringLiteral( " GPS File Importer::pbnGPXSelectFile_clicked() " ) );
-  QgsSettings settings;
-  QString dir = settings.value( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
-  QString myFileNameQString = QFileDialog::getOpenFileName(
-                                this,
-                                tr( "Select GPX file" ),
-                                dir,
-                                tr( "GPS eXchange format" ) + " (*.gpx)" );
-  if ( !myFileNameQString.isEmpty() )
-  {
-    mFileWidget->setFilePath( myFileNameQString );
-    settings.setValue( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QFileInfo( myFileNameQString ).absolutePath() );
-  }
 }
 
 void QgsGpsPluginGui::pbnIMPInput_clicked()
