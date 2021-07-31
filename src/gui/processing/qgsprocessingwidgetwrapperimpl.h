@@ -233,6 +233,7 @@ class GUI_EXPORT QgsProcessingStringWidgetWrapper : public QgsAbstractProcessing
   private:
 
     QLineEdit *mLineEdit = nullptr;
+    QComboBox *mComboBox = nullptr;
     QPlainTextEdit *mPlainTextEdit = nullptr;
 
     friend class TestProcessingGui;

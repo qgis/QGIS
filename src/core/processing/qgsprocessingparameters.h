@@ -2504,7 +2504,28 @@ class CORE_EXPORT QgsProcessingParameterEnum : public QgsProcessingParameterDefi
  * \class QgsProcessingParameterString
  * \ingroup core
  * \brief A string parameter for processing algorithms.
-  * \since QGIS 3.0
+ *
+ * A parameter type which allows users to enter any string value.
+ *
+ * In some circumstances it is desirable to restrict the values available
+ * when a user is asked to enter a string parameter to a list of predetermined
+ * "valid" values. Since QGIS 3.22 this can be done by setting the widget wrapper metadata
+ * "value_hints" option, as demonstrated below. (While this provides a mechanism
+ * for guiding users to select from valid string values when running a Processing
+ * algorithm through the GUI, it does not place any limits on the string values
+ * accepted via PyQGIS codes or when running the algorithm via other non-gui
+ * means. Algorithms should gracefully handle other values accordingly.)
+ *
+ * \code{.py}
+ *   param = QgsProcessingParameterString( 'PRINTER_NAME', 'Printer name')
+ *   # show only printers which are available on the current system as options
+ *   # for the string input.
+ *   param.setMetadata( {'widget_wrapper':
+ *     { 'value_hints': ['Inkjet printer', 'Laser printer'] }
+ *   })
+ * \endcode
+ *
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingParameterString : public QgsProcessingParameterDefinition
 {
