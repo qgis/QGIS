@@ -1156,6 +1156,109 @@ void TestProcessingGui::testStringWrapper()
   delete l;
 
 
+  //
+  // with value hints
+  //
+  param = QgsProcessingParameterString( QStringLiteral( "string" ), QStringLiteral( "string" ), QVariant() );
+  param.setMetadata( { {
+      QStringLiteral( "widget_wrapper" ),
+      QVariantMap(
+      { {
+          QStringLiteral( "value_hints" ),
+          QStringList() << "value 1" << "value 2" << "value 3"
+        }
+      }
+      )
+    }
+  } );
+
+  QgsProcessingStringWidgetWrapper wrapperHints( &param );
+
+  w = wrapperHints.createWrappedWidget( context );
+
+  QSignalSpy spy7( &wrapperHints, &QgsProcessingStringWidgetWrapper::widgetValueHasChanged );
+  wrapperHints.setWidgetValue( QStringLiteral( "value 2" ), context );
+  QCOMPARE( spy7.count(), 1 );
+  QCOMPARE( wrapperHints.widgetValue().toString(), QStringLiteral( "value 2" ) );
+  QCOMPARE( qgis::down_cast< QComboBox * >( wrapperHints.wrappedWidget() )->currentText(), QStringLiteral( "value 2" ) );
+  wrapperHints.setWidgetValue( QStringLiteral( "value 3" ), context );
+  QCOMPARE( spy7.count(), 2 );
+  QCOMPARE( wrapperHints.widgetValue().toString(), QStringLiteral( "value 3" ) );
+  QCOMPARE( qgis::down_cast< QComboBox * >( wrapperHints.wrappedWidget() )->currentText(), QStringLiteral( "value 3" ) );
+
+  // set to value which is not present -- should fallback to first value
+  wrapperHints.setWidgetValue( QStringLiteral( "value 4" ), context );
+  QCOMPARE( spy7.count(), 3 );
+  QCOMPARE( wrapperHints.widgetValue().toString(), QStringLiteral( "value 1" ) );
+  QCOMPARE( qgis::down_cast< QComboBox * >( wrapperHints.wrappedWidget() )->currentText(), QStringLiteral( "value 1" ) );
+
+  l = wrapperHints.createWrappedLabel();
+  QVERIFY( l );
+  QCOMPARE( l->text(), QStringLiteral( "string" ) );
+  QCOMPARE( l->toolTip(), param.toolTip() );
+  delete l;
+
+  // check signal
+  qgis::down_cast< QComboBox * >( wrapperHints.wrappedWidget() )->setCurrentIndex( 1 );
+  QCOMPARE( spy7.count(), 4 );
+  qgis::down_cast< QComboBox * >( wrapperHints.wrappedWidget() )->setCurrentIndex( 2 );
+  QCOMPARE( spy7.count(), 5 );
+
+  delete w;
+
+  // with value hints, optional param
+  param = QgsProcessingParameterString( QStringLiteral( "string" ), QStringLiteral( "string" ), QVariant(), false, true );
+  param.setMetadata( { {
+      QStringLiteral( "widget_wrapper" ),
+      QVariantMap(
+      { {
+          QStringLiteral( "value_hints" ),
+          QStringList() << "value 1" << "value 2" << "value 3"
+        }
+      }
+      )
+    }
+  } );
+
+  QgsProcessingStringWidgetWrapper wrapperHintsOptional( &param );
+
+  w = wrapperHintsOptional.createWrappedWidget( context );
+
+  QSignalSpy spy8( &wrapperHintsOptional, &QgsProcessingStringWidgetWrapper::widgetValueHasChanged );
+  wrapperHintsOptional.setWidgetValue( QStringLiteral( "value 2" ), context );
+  QCOMPARE( spy8.count(), 1 );
+  QCOMPARE( wrapperHintsOptional.widgetValue().toString(), QStringLiteral( "value 2" ) );
+  QCOMPARE( qgis::down_cast< QComboBox * >( wrapperHintsOptional.wrappedWidget() )->currentText(), QStringLiteral( "value 2" ) );
+  wrapperHintsOptional.setWidgetValue( QVariant(), context );
+  QCOMPARE( spy8.count(), 2 );
+  QVERIFY( !wrapperHintsOptional.widgetValue().isValid() );
+  QCOMPARE( qgis::down_cast< QComboBox * >( wrapperHintsOptional.wrappedWidget() )->currentText(), QString() );
+  wrapperHintsOptional.setWidgetValue( QStringLiteral( "value 3" ), context );
+  QCOMPARE( spy8.count(), 3 );
+  QCOMPARE( wrapperHintsOptional.widgetValue().toString(), QStringLiteral( "value 3" ) );
+  QCOMPARE( qgis::down_cast< QComboBox * >( wrapperHintsOptional.wrappedWidget() )->currentText(), QStringLiteral( "value 3" ) );
+
+  // set to value which is not present -- should fallback to first value ("not set")
+  wrapperHintsOptional.setWidgetValue( QStringLiteral( "value 4" ), context );
+  QCOMPARE( spy8.count(), 4 );
+  QVERIFY( !wrapperHintsOptional.widgetValue().isValid() );
+  QCOMPARE( qgis::down_cast< QComboBox * >( wrapperHintsOptional.wrappedWidget() )->currentText(), QString() );
+
+  l = wrapperHintsOptional.createWrappedLabel();
+  QVERIFY( l );
+  QCOMPARE( l->text(), QStringLiteral( "string [optional]" ) );
+  QCOMPARE( l->toolTip(), param.toolTip() );
+  delete l;
+
+  // check signal
+  qgis::down_cast< QComboBox * >( wrapperHintsOptional.wrappedWidget() )->setCurrentIndex( 1 );
+  QCOMPARE( spy8.count(), 5 );
+  qgis::down_cast< QComboBox * >( wrapperHintsOptional.wrappedWidget() )->setCurrentIndex( 2 );
+  QCOMPARE( spy8.count(), 6 );
+
+  delete w;
+
+
   // config widget
   QgsProcessingParameterWidgetContext widgetContext;
   std::unique_ptr< QgsProcessingParameterDefinitionWidget > widget = std::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "string" ), context, widgetContext );
