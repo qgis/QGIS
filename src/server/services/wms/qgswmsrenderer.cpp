@@ -699,23 +699,22 @@ namespace QgsWms
         QMap<QString, QString> layersStyle;
         if ( map->followVisibilityPreset() )
         {
-          QString presetName = map->followVisibilityPresetName();
+          const QString presetName = map->followVisibilityPresetName();
           if ( layerSet.isEmpty() )
           {
             // Get the layers from the theme
             const QgsExpressionContext ex { map->createExpressionContext() };
             layerSet = map->layersToRender( &ex );
           }
-          // Unable the theme
+          // Disable the theme
           map->setFollowVisibilityPreset( false );
 
-          // Collect the style of each layer in the theme that has been unabled
-          QList<QgsMapThemeCollection::MapThemeLayerRecord> mapThemeRecords = QgsProject::instance()->mapThemeCollection()->mapThemeState( presetName ).layerRecords();
-          for ( auto layerMapThemeRecord : mapThemeRecords )
+          // Collect the style of each layer in the theme that has been disabled
+          const QList<QgsMapThemeCollection::MapThemeLayerRecord> mapThemeRecords = QgsProject::instance()->mapThemeCollection()->mapThemeState( presetName ).layerRecords();
+          for ( const auto &layerMapThemeRecord : std::as_const( mapThemeRecords ) )
           {
             if ( layerSet.contains( layerMapThemeRecord.layer() ) )
             {
-              QString styleName = layerMapThemeRecord.currentStyle;
               layersStyle.insert( layerMapThemeRecord.layer()->id(),
                                   layerMapThemeRecord.layer()->styleManager()->style( layerMapThemeRecord.currentStyle ).xmlData() );
             }
@@ -830,7 +829,7 @@ namespace QgsWms
         QList<QgsMapLayer *> mapLayers;
         if ( map->layers().isEmpty() )
         {
-          // in QGIS desktop, all layers has its legend, including invisible layers
+          // in QGIS desktop, each layer has its legend, including invisible layers
           // and using maptheme, legend items are automatically filtered
           mapLayers = mProject->mapLayers( true ).values();
         }

@@ -71,7 +71,7 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         #   First item  : 600 x , 40 y
         #   Second item : 600 x , 60 y
 
-        # blank template, no theme, specified layer is red
+        # blank template, no theme, no LAYERS, specified map0:LAYERS is red
         response = QgsBufferServerResponse()
         request = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % i for i in params.items()]))
         self.server.handleRequest(request, response, project)
@@ -81,7 +81,7 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self._assertRed(image.pixelColor(600, 40))
         self._assertWhite(image.pixelColor(600, 60))
 
-        # blank template, specified layer is green
+        # blank template, no LAYERS, specified map0:LAYERS is green
         params["map0:LAYERS"] = "green"
         response = QgsBufferServerResponse()
         request = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % i for i in params.items()]))
@@ -103,7 +103,7 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self._assertRed(image.pixelColor(600, 40))
         self._assertGreen(image.pixelColor(600, 60))
 
-        # red template, red theme, specified layer is red
+        # red template, red theme, specified map0:LAYERS is red
         params["TEMPLATE"] = "red"
         params["map0:LAYERS"] = "red"
         response = QgsBufferServerResponse()
@@ -115,7 +115,7 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self._assertRed(image.pixelColor(600, 40))
         self._assertWhite(image.pixelColor(600, 60))
 
-        # red template, red theme, specified layer is green
+        # red template, red theme, specified map0:LAYERS is green
         params["map0:LAYERS"] = "green"
         response = QgsBufferServerResponse()
         request = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % i for i in params.items()]))
@@ -126,7 +126,7 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self._assertGreen(image.pixelColor(600, 40))
         self._assertWhite(image.pixelColor(600, 60))
 
-        # red template, red theme
+        # red template, red theme, no map0:LAYERS
         params["map0:LAYERS"] = ""
         response = QgsBufferServerResponse()
         request = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % i for i in params.items()]))
@@ -137,7 +137,7 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self._assertRed(image.pixelColor(600, 40))
         self._assertWhite(image.pixelColor(600, 60))
 
-        # green template, green theme, specified layer is red
+        # green template, green theme, specified map0:LAYERS is red
         params["TEMPLATE"] = "green"
         params["map0:LAYERS"] = "red"
         response = QgsBufferServerResponse()
@@ -149,7 +149,7 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self._assertRed(image.pixelColor(600, 40))
         self._assertWhite(image.pixelColor(600, 60))
 
-        # green template, green theme, specified layer is green
+        # green template, green theme, specified map0:LAYERS is green
         params["map0:LAYERS"] = "green"
         response = QgsBufferServerResponse()
         request = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % i for i in params.items()]))
@@ -160,7 +160,7 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self._assertGreen(image.pixelColor(600, 40))
         self._assertWhite(image.pixelColor(600, 60))
 
-        # green template, green theme
+        # green template, green theme, no map0:LAYERS
         params["map0:LAYERS"] = ""
         response = QgsBufferServerResponse()
         request = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % i for i in params.items()]))
@@ -171,7 +171,7 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self._assertGreen(image.pixelColor(600, 40))
         self._assertWhite(image.pixelColor(600, 60))
 
-        # full template, full theme, specified layer is red
+        # full template, full theme, specified map0:LAYERS is red
         params["TEMPLATE"] = "full"
         params["map0:LAYERS"] = "red"
         response = QgsBufferServerResponse()
@@ -183,7 +183,7 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self._assertRed(image.pixelColor(600, 40))
         self._assertWhite(image.pixelColor(600, 60))
 
-        # full template, full theme, specified layer is green
+        # full template, full theme, specified map0:LAYERS is green
         params["map0:LAYERS"] = "green"
         response = QgsBufferServerResponse()
         request = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % i for i in params.items()]))
@@ -194,7 +194,7 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self._assertGreen(image.pixelColor(600, 40))
         self._assertWhite(image.pixelColor(600, 60))
 
-        # full template, full theme
+        # full template, full theme, no map0:LAYERS
         params["map0:LAYERS"] = ""
         response = QgsBufferServerResponse()
         request = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % i for i in params.items()]))
@@ -205,7 +205,7 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self._assertRed(image.pixelColor(600, 40))
         self._assertGreen(image.pixelColor(600, 60))
 
-        # falsegreen template, falsegreen theme (green layer is blue), specified layer is red
+        # falsegreen template, falsegreen theme (green layer is blue), specified map0:LAYERS is red
         params["TEMPLATE"] = "falsegreen"
         params["map0:LAYERS"] = "red"
         response = QgsBufferServerResponse()
@@ -217,7 +217,7 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self._assertRed(image.pixelColor(600, 40))
         self._assertWhite(image.pixelColor(600, 60))
 
-        # full template, full theme, specified layer is green
+        # full template, full theme, specified map0:LAYERS is green
         params["map0:LAYERS"] = "green"
         response = QgsBufferServerResponse()
         request = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % i for i in params.items()]))
@@ -228,7 +228,7 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self._assertBlue(image.pixelColor(600, 40))
         self._assertWhite(image.pixelColor(600, 60))
 
-        # full template, full theme
+        # full template, full theme, no map0:LAYERS
         params["map0:LAYERS"] = ""
         response = QgsBufferServerResponse()
         request = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % i for i in params.items()]))
