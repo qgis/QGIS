@@ -19,7 +19,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 
-class QgsAbstractBabelFormat;
+class QgsBabelSimpleImportFormat;
 class QgsBabelGpsDeviceFormat;
 
 /**
@@ -58,9 +58,17 @@ class CORE_EXPORT QgsBabelFormatRegistry
     /**
      * Returns a registered import format by \a name.
      *
-     * \see importFormatNames().
+     * \see importFormatNames()
+     * \see importFormatByDescription()
      */
-    QgsAbstractBabelFormat *importFormat( const QString &name );
+    QgsBabelSimpleImportFormat *importFormat( const QString &name );
+
+    /**
+     * Returns a registered import format by \a description.
+     *
+     * \see importFormat()
+     */
+    QgsBabelSimpleImportFormat *importFormatByDescription( const QString &description );
 
     /**
      * Returns a list of the names of all registered devices.
@@ -93,7 +101,7 @@ class CORE_EXPORT QgsBabelFormatRegistry
 #endif
 
     //! Importers for external GPS data file formats
-    QMap< QString, QgsAbstractBabelFormat *> mImporters;
+    QMap< QString, QgsBabelSimpleImportFormat *> mImporters;
     //! Upload/downloaders for GPS devices
     QMap< QString, QgsBabelGpsDeviceFormat *> mDevices;
 };

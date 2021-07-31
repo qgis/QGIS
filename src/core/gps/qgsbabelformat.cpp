@@ -63,9 +63,10 @@ Qgis::BabelFormatCapabilities QgsAbstractBabelFormat::capabilities() const
 // QgsSimpleBabelFormat
 //
 
-QgsBabelSimpleImportFormat::QgsBabelSimpleImportFormat( const QString &format,
+QgsBabelSimpleImportFormat::QgsBabelSimpleImportFormat( const QString &format, const QString &description,
     Qgis::BabelFormatCapabilities capabilities )
-  : mFormat( format )
+  : QgsAbstractBabelFormat( format )
+  , mDescription( description )
 {
   mCapabilities = capabilities;
   mCapabilities |= Qgis::BabelFormatCapability::Import;
@@ -80,7 +81,7 @@ QStringList QgsBabelSimpleImportFormat::importCommand( const QString &babel,
   return { QStringLiteral( "\"%1\"" ).arg( babel ),
            featureTypeToArgument( featureType ),
            QStringLiteral( "-i" ),
-           mFormat,
+           name(),
            QStringLiteral( "-o" ),
            QStringLiteral( "gpx" ),
            QStringLiteral( "\"%1\"" ).arg( input ),

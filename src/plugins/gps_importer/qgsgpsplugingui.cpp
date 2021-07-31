@@ -203,7 +203,7 @@ void QgsGpsPluginGui::pbnIMPInput_clicked()
 
     mImpFormat = myFileType.left( myFileType.length() - 6 );
 
-    const QgsAbstractBabelFormat *format = QgsApplication::gpsBabelFormatRegistry()->importFormat( mImpFormat );
+    const QgsAbstractBabelFormat *format = QgsApplication::gpsBabelFormatRegistry()->importFormatByDescription( mImpFormat );
     if ( !format )
     {
       QgsLogger::warning( "Unknown file format selected: " +
@@ -288,7 +288,11 @@ void QgsGpsPluginGui::populateIMPBabelFormats()
 
   const QStringList importers = QgsApplication::gpsBabelFormatRegistry()->importFormatNames();
   for ( const QString &format : importers )
-    mBabelFilter.append( format ).append( " (*.*);;" );
+  {
+    const QgsBabelSimpleImportFormat *importFormat = qgis::down_cast< QgsBabelSimpleImportFormat * >( QgsApplication::gpsBabelFormatRegistry()->importFormat( format ) );
+    if ( importFormat )
+      mBabelFilter.append( importFormat->description() ).append( " (*.*);;" );
+  }
   mBabelFilter.chop( 2 ); // Remove the trailing ;;, which otherwise leads to an empty filetype
   int u = -1, d = -1;
   const QStringList devices = QgsApplication::gpsBabelFormatRegistry()->deviceNames();

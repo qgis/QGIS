@@ -93,14 +93,21 @@ A babel format capable of converting input files to GPX files.
 %End
   public:
 
-    QgsBabelSimpleImportFormat( const QString &format, Qgis::BabelFormatCapabilities capabilities );
+    QgsBabelSimpleImportFormat( const QString &format, const QString &description, Qgis::BabelFormatCapabilities capabilities );
 %Docstring
 Constructor for QgsBabelSimpleImportFormat.
 
-The ``format`` argument specifies a babel identifier for the input format.
+The ``format`` argument specifies the babel identifier for the input format.
+
+The ``description`` argument specified a descriptive name for the format.
 
 The ``capabilities`` argument must reflect whether the format is capable of handling
 waypoints, routes and/or tracks.
+%End
+
+    QString description() const;
+%Docstring
+Returns the friendly description for the format.
 %End
 
      virtual QStringList importCommand( const QString &babel,

@@ -82,7 +82,7 @@ def process_lines(lines):
             if read_tracks:
                 capabilities.append('Qgis::BabelFormatCapability::Tracks')
             format_out[
-                description] = f"""mImporters[QStringLiteral( "{description}" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "{name}" ), {' | '.join(capabilities)} );"""
+                name] = f"""mImporters[QStringLiteral( "{name}" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "{name}" ), QStringLiteral( "{description}" ), {' | '.join(capabilities)} );"""
 
     for format_name in sorted(format_out.keys(), key=lambda x: x.lower()):
         print(format_out[format_name])
