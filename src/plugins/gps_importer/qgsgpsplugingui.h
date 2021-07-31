@@ -45,8 +45,6 @@ class QgsGpsPluginGui : public QDialog, private Ui::QgsGpsPluginGuiBase
     void devicesUpdated();
     void enableRelevantControls();
 
-    void on_pbnGPXSelectFile_clicked();
-
     void pbnIMPInput_clicked();
     void pbnIMPOutput_clicked();
 
@@ -76,10 +74,6 @@ class QgsGpsPluginGui : public QDialog, private Ui::QgsGpsPluginGuiBase
     void buttonBox_rejected();
 
   signals:
-    void drawRasterLayer( const QString & );
-    void drawVectorLayer( const QString &, const QString &, const QString & );
-    void loadGPXFile( const QString &fileName, bool showWaypoints, bool showRoutes,
-                      bool showTracks );
     void importGPSFile( const QString &inputFileName, QgsAbstractBabelFormat *importer,
                         Qgis::GpsFeatureType type, const QString &outputFileName,
                         const QString &layerName );

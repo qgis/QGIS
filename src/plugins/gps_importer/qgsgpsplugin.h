@@ -60,9 +60,6 @@ class QgsGpsPlugin: public QObject, public QgisPlugin
     //! update the plugins theme when the app tells us its theme is changed
     void setCurrentTheme( const QString &themeName );
 
-    //! load a GPX file
-    void loadGPXFile( const QString &fileName, bool loadWaypoints, bool loadRoutes,
-                      bool loadTracks );
     void importGPSFile( const QString &inputFileName, QgsAbstractBabelFormat *importer,
                         Qgis::GpsFeatureType type, const QString &outputFileName,
                         const QString &layerName );
