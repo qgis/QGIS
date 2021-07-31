@@ -77,6 +77,8 @@ class QgsGPXProvider final: public QgsVectorDataProvider
 
     bool addFeature( QgsFeature &f, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
 
+    static QString encodeUri( const QVariantMap &parts );
+    static QVariantMap decodeUri( const QString &uri );
 
     enum DataType
     {
@@ -121,6 +123,9 @@ class QgsGpxProviderMetadata final: public QgsProviderMetadata
   public:
     QgsGpxProviderMetadata();
     QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QgsProviderMetadata::ProviderCapabilities providerCapabilities() const override;
+    QString encodeUri( const QVariantMap &parts ) const override;
+    QVariantMap decodeUri( const QString &uri ) const override;
 };
 
 #endif
