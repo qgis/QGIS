@@ -128,6 +128,10 @@ namespace QgsWms
     const qreal dpmm = mContext.dotsPerMm();
     const QSizeF minSize = renderer.minimumSize();
     const QSize size( static_cast<int>( minSize.width() * dpmm ), static_cast<int>( minSize.height() * dpmm ) );
+    if ( !mContext.isValidWidthHeight( size.width(), size.height() ) )
+    {
+      throw ( QgsServerException( QStringLiteral( "Legend image is too large" ) ) );
+    }
     image.reset( createImage( size ) );
 
     // configure painter
@@ -160,6 +164,11 @@ namespace QgsWms
 
     // create image
     const QSize size( mWmsParameters.widthAsInt(), mWmsParameters.heightAsInt() );
+    //test if legend image is larger than max width/height
+    if ( !mContext.isValidWidthHeight( size.width(), size.height() ) )
+    {
+      throw ( QgsServerException( QStringLiteral( "Legend image is too large" ) ) );
+    }
     std::unique_ptr<QImage> image( createImage( size ) );
 
     // configure painter
