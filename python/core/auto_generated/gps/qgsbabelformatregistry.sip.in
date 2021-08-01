@@ -56,6 +56,11 @@ Returns a registered import format by ``description``.
 .. seealso:: :py:func:`importFormat`
 %End
 
+    QString importFileFilter() const;
+%Docstring
+Returns a file filter string representing all registered import formats.
+%End
+
     QStringList deviceNames() const;
 %Docstring
 Returns a list of the names of all registered devices.

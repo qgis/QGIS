@@ -286,14 +286,8 @@ void QgsGpsPluginGui::populateIMPBabelFormats()
   QString lastDLDevice = settings.value( QStringLiteral( "Plugin-GPS/lastdldevice" ), "" ).toString();
   QString lastULDevice = settings.value( QStringLiteral( "Plugin-GPS/lastuldevice" ), "" ).toString();
 
-  const QStringList importers = QgsApplication::gpsBabelFormatRegistry()->importFormatNames();
-  for ( const QString &format : importers )
-  {
-    const QgsBabelSimpleImportFormat *importFormat = qgis::down_cast< QgsBabelSimpleImportFormat * >( QgsApplication::gpsBabelFormatRegistry()->importFormat( format ) );
-    if ( importFormat )
-      mBabelFilter.append( importFormat->description() ).append( " (*.*);;" );
-  }
-  mBabelFilter.chop( 2 ); // Remove the trailing ;;, which otherwise leads to an empty filetype
+  mBabelFilter = QgsApplication::gpsBabelFormatRegistry()->importFileFilter();
+
   int u = -1, d = -1;
   const QStringList devices = QgsApplication::gpsBabelFormatRegistry()->deviceNames();
   for ( const QString &device : devices )

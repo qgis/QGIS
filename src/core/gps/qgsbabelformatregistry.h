@@ -71,6 +71,11 @@ class CORE_EXPORT QgsBabelFormatRegistry
     QgsBabelSimpleImportFormat *importFormatByDescription( const QString &description );
 
     /**
+     * Returns a file filter string representing all registered import formats.
+     */
+    QString importFileFilter() const;
+
+    /**
      * Returns a list of the names of all registered devices.
      */
     QStringList deviceNames() const;
