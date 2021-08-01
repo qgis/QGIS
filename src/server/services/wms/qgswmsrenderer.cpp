@@ -167,7 +167,7 @@ namespace QgsWms
     //test if legend image is larger than max width/height
     if ( !mContext.isValidWidthHeight( size.width(), size.height() ) )
     {
-      throw ( QgsServerException( QStringLiteral( "Legend image is too large" ) ) );
+      throw QgsServerException( QStringLiteral( "Legend image is too large" ) );
     }
     std::unique_ptr<QImage> image( createImage( size ) );
 
