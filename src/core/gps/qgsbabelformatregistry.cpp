@@ -20,6 +20,7 @@
 #include "qgsbabelgpsdevice.h"
 #include "qgssettings.h"
 #include <QString>
+#include <QRegularExpression>
 
 QgsBabelFormatRegistry::QgsBabelFormatRegistry()
 {
@@ -194,8 +195,46 @@ QgsBabelSimpleImportFormat *QgsBabelFormatRegistry::importFormatByDescription( c
   {
     if ( it.value()->description().compare( description, Qt::CaseInsensitive ) == 0 )
       return it.value();
+
+    // also need to test square bracket variant, see logic in importFileFilter()
+    const QString descriptionSquareBrackets = it.value()->description().replace( '(', '[' ).replace( ')', ']' );
+    if ( descriptionSquareBrackets.compare( description, Qt::CaseInsensitive ) == 0 )
+      return it.value();
   }
   return nullptr;
+}
+
+QString QgsBabelFormatRegistry::importFileFilter() const
+{
+  QStringList res;
+  QMap< QString, QString > descriptionToString;
+  for ( auto it = mImporters.constBegin(); it != mImporters.constEnd(); ++it )
+  {
+    const QStringList extensions = it.value()->extensions();
+    QString fileFilter;
+    if ( !extensions.empty() )
+    {
+      fileFilter = '(';
+      for ( const QString &extension : extensions )
+        fileFilter.append( QStringLiteral( "*.%1" ).arg( extension ) );
+      fileFilter.append( ')' );
+    }
+    else
+    {
+      fileFilter = QStringLiteral( "(*.*)" );
+    }
+
+    // we have to replace round brackets from the format description, or they are treated as the filter component!
+    const QString description = it.value()->description().replace( '(', '[' ).replace( ')', ']' );
+
+    descriptionToString.insert( description.toLower(), QStringLiteral( "%1 %2" ).arg( description, fileFilter ) );
+  }
+
+  // build the list in a sorted order of lowercase description
+  for ( auto it = descriptionToString.constBegin(); it != descriptionToString.constEnd(); ++it )
+    res << it.value();
+
+  return res.join( QStringLiteral( ";;" ) );
 }
 
 QStringList QgsBabelFormatRegistry::deviceNames() const

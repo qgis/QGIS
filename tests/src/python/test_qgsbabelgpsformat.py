@@ -183,6 +183,12 @@ class TestQgsBabelGpsFormat(unittest.TestCase):
         self.assertIsNone(registry.importFormatByDescription('aaaaaa'))
         self.assertEqual(registry.importFormatByDescription('Navitrak DNA marker format').name(), 'dna')
         self.assertEqual(registry.importFormatByDescription('navitrak dna marker format').name(), 'dna')
+        self.assertEqual(registry.importFormatByDescription('PocketFMS flightplan (.xml)').name(), 'pocketfms_fp')
+        # see explanation in QgsBabelFormatRegistry::importFileFilter()!
+        self.assertEqual(registry.importFormatByDescription('PocketFMS flightplan [.xml]').name(), 'pocketfms_fp')
+
+        self.assertIn(';;ESRI shapefile (*.shp);;', registry.importFileFilter())
+        self.assertIn(';;PocketFMS flightplan [.xml] (*.xml);;', registry.importFileFilter())
 
         # should have only one device by default
         self.assertEqual(registry.deviceNames(), ['Garmin serial'])
