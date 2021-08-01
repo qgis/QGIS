@@ -278,6 +278,14 @@ class CORE_EXPORT QgsStringUtils
     static QString insertLinks( const QString &string, bool *foundLinks = nullptr );
 
     /**
+     * Returns whether the string is a URL (http,https,ftp,file)
+     * \param string the string to check
+     * \returns whether the string is an URL
+     * \since QGIS 3.22
+     */
+    static bool isUrl( const QString &string );
+
+    /**
      * Automatically wraps a \a string by inserting new line characters at appropriate locations in the string.
      *
      * The \a length argument specifies either the minimum or maximum length of lines desired, depending
