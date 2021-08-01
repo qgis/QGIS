@@ -3352,8 +3352,7 @@ bool QgsProcessingParameterFile::checkValueIsAcceptable( const QVariant &input, 
       }
       else if ( !mFileFilter.isEmpty() )
       {
-        const QString test = QgsFileUtils::addExtensionFromFilter( string, mFileFilter );
-        return test == string;
+        return QgsFileUtils::fileMatchesFilter( string, mFileFilter );
       }
       else
       {
