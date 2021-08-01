@@ -232,26 +232,6 @@ Sets whether features should be ``filtered`` in the coverage layer.
 .. seealso:: :py:func:`setFilterExpression`
 %End
 
-    void filterCoverageLayer();
-%Docstring
-Filters the coverage layer according to the current atlas filter expression.
-Only filters when the coverage layer features are set to be filtered by the atlas.
-
-.. seealso:: :py:func:`unFilterCoverageLayer`
-
-.. versionadded:: 3.22
-%End
-
-    void unFilterCoverageLayer();
-%Docstring
-Removes the filters that the atlas applied on the coverage layer, by applying the original
-coverage layer subset string.
-
-.. seealso:: :py:func:`filterCoverageLayer`
-
-.. versionadded:: 3.22
-%End
-
     QString filterExpression() const;
 %Docstring
 Returns the expression used for filtering features in the coverage layer.
