@@ -45,9 +45,6 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
     void setPointBudget( double budget );
     double pointBudget() const;
 
-    void setRenderLayerTo3dTerrain( bool renderTo3dTerrain );
-    bool renderLayerTo3dTerrain() const;
-
     void setPointCloudSize( int size );
 
     void connectChildPanels( QgsPanelWidget *parent );

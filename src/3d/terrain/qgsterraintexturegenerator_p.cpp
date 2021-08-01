@@ -43,7 +43,7 @@ int QgsTerrainTextureGenerator::render( const QgsRectangle &extent, QgsChunkNode
   QList<QgsMapLayer *> toBeRenderedLayers;
   for ( QgsMapLayer *l : layers )
   {
-    if ( l->renderLayerTo3dTerrain() )
+    if ( l->renderer3D() == nullptr )
       toBeRenderedLayers.push_back( l );
   }
   mapSettings.setLayers( toBeRenderedLayers );

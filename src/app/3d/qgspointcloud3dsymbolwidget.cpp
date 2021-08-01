@@ -116,7 +116,6 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   mClassifiedRenderingLayout->addWidget( mClassifiedRendererWidget );
 
   connect( mClassifiedRendererWidget, &QgsPointCloudClassifiedRendererWidget::widgetChanged, this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
-  connect( mRenderTo3dTerrainCheckBox, &QCheckBox::clicked, this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
 }
 
 void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
@@ -636,14 +635,4 @@ bool QgsPointCloud3DSymbolWidget::showBoundingBoxes() const
 void QgsPointCloud3DSymbolWidget::connectChildPanels( QgsPanelWidget *parent )
 {
   parent->connectChildPanel( mClassifiedRendererWidget );
-}
-
-void QgsPointCloud3DSymbolWidget::setRenderLayerTo3dTerrain( bool renderTo3dTerrain )
-{
-  mRenderTo3dTerrainCheckBox->setChecked( renderTo3dTerrain );
-}
-
-bool QgsPointCloud3DSymbolWidget::renderLayerTo3dTerrain() const
-{
-  return mRenderTo3dTerrainCheckBox->isChecked();
 }

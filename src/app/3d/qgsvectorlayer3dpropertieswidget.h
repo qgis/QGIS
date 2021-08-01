@@ -34,11 +34,6 @@ class QgsVectorLayer3DPropertiesWidget : public QWidget, private Ui::QgsVectorLa
     //! Applies configuration from GUI to the given renderer
     void apply( QgsAbstractVectorLayer3DRenderer *renderer );
 
-    //! Return whether the layer will be rendered to the 3D viewer terrain texture
-    bool renderLayerTo3dTerrain() const;
-
-    //! Sets whether the layer will be rendered to the 3D viewer terrain texture
-    void setRenderLayerTo3dTerrain( bool renderTo3dTerrain );
   signals:
     //! Emitted whenever any parameter gets changed
     void changed();

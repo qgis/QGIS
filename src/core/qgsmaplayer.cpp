@@ -397,8 +397,6 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   setRefreshOnNofifyMessage( layerElement.attribute( QStringLiteral( "refreshOnNotifyMessage" ), QString() ) );
   setRefreshOnNotifyEnabled( layerElement.attribute( QStringLiteral( "refreshOnNotifyEnabled" ), QStringLiteral( "0" ) ).toInt() );
 
-  setRenderLayerTo3dTerrain( layerElement.attribute( QStringLiteral( "renderLayerTo3dTerrain" ), QStringLiteral( "1" ) ).toInt() );
-
   // geographic extent is read only if necessary
   if ( mReadFlags & QgsMapLayer::ReadFlag::FlagTrustLayerMetadata )
   {
@@ -1991,6 +1989,7 @@ void QgsMapLayer::setRenderer3D( QgsAbstract3DRenderer *renderer )
   delete m3DRenderer;
   m3DRenderer = renderer;
   emit renderer3DChanged();
+  emit repaintRequested();
   trigger3DUpdate();
 }
 
@@ -2275,12 +2274,4 @@ QString QgsMapLayer::crsHtmlMetadata() const
 
   metadata += QLatin1String( "</table>\n<br><br>\n" );
   return metadata;
-}
-
-void QgsMapLayer::setRenderLayerTo3dTerrain( bool renderTo3dTerrain )
-{
-  if ( mRenderTo3dTerrain == renderTo3dTerrain )
-    return;
-  mRenderTo3dTerrain = renderTo3dTerrain;
-  emit repaintRequested();
 }

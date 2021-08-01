@@ -148,7 +148,6 @@ void QgsVectorLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
   if ( r && ( r->type() == QLatin1String( "vector" ) || r->type() == QLatin1String( "rulebased" ) ) )
   {
     widgetBaseProperties->load( static_cast<QgsAbstractVectorLayer3DRenderer *>( r ) );
-    widgetBaseProperties->setRenderLayerTo3dTerrain( dynamic_cast<QgsVectorLayer *>( mLayer )->renderLayerTo3dTerrain() );
   }
 }
 
@@ -173,7 +172,6 @@ void QgsVectorLayer3DRendererWidget::apply()
       QgsVectorLayer3DRenderer *r = new QgsVectorLayer3DRenderer( symbol ? symbol.release() : nullptr );
       r->setLayer( qobject_cast<QgsVectorLayer *>( mLayer ) );
       widgetBaseProperties->apply( r );
-      dynamic_cast<QgsVectorLayer *>( mLayer )->setRenderLayerTo3dTerrain( widgetBaseProperties->renderLayerTo3dTerrain() );
       mLayer->setRenderer3D( r );
     }
     break;
@@ -182,7 +180,6 @@ void QgsVectorLayer3DRendererWidget::apply()
       QgsRuleBased3DRenderer *r = new QgsRuleBased3DRenderer( widgetRuleBasedRenderer->rootRule()->clone() );
       r->setLayer( qobject_cast<QgsVectorLayer *>( mLayer ) );
       widgetBaseProperties->apply( r );
-      dynamic_cast<QgsVectorLayer *>( mLayer )->setRenderLayerTo3dTerrain( widgetBaseProperties->renderLayerTo3dTerrain() );
       mLayer->setRenderer3D( r );
     }
     break;

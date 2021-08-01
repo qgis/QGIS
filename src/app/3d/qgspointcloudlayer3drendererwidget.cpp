@@ -74,7 +74,6 @@ void QgsPointCloudLayer3DRendererWidget::apply()
     r->setSymbol( mWidgetPointCloudSymbol->symbol() );
   }
   mLayer->setRenderer3D( r );
-  mLayer->setRenderLayerTo3dTerrain( mWidgetPointCloudSymbol->renderLayerTo3dTerrain() );
 }
 
 void QgsPointCloudLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
@@ -87,7 +86,6 @@ void QgsPointCloudLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
     pointCloudRenderer->setSymbol( mWidgetPointCloudSymbol->symbol() );
   }
   setRenderer( pointCloudRenderer, qobject_cast< QgsPointCloudLayer * >( layer ) );
-  mWidgetPointCloudSymbol->setRenderLayerTo3dTerrain( layer->renderLayerTo3dTerrain() );
   mWidgetPointCloudSymbol->setEnabled( true );
 }
 
