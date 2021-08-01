@@ -3775,8 +3775,8 @@ void TestQgsProcessing::parameterFile()
   QVERIFY( dynamic_cast< QgsProcessingParameterFile *>( def.get() ) );
 
   // with file filter
-  def.reset( new QgsProcessingParameterFile( "non_optional", QString(), QgsProcessingParameterFile::File, QStringLiteral( ".bmp" ), QString( "abc.bmp" ), false, QStringLiteral( "PNG Files (*.png)" ) ) );
-  QCOMPARE( def->fileFilter(), QStringLiteral( "PNG Files (*.png)" ) );
+  def.reset( new QgsProcessingParameterFile( "non_optional", QString(), QgsProcessingParameterFile::File, QStringLiteral( ".bmp" ), QString( "abc.bmp" ), false, QStringLiteral( "PNG Files (*.png *.PNG)" ) ) );
+  QCOMPARE( def->fileFilter(), QStringLiteral( "PNG Files (*.png *.PNG)" ) );
   QVERIFY( def->extension().isEmpty() );
   QVERIFY( def->checkValueIsAcceptable( "bricks.png" ) );
   QVERIFY( def->checkValueIsAcceptable( "bricks.PNG" ) );
@@ -3789,7 +3789,7 @@ void TestQgsProcessing::parameterFile()
   QCOMPARE( def->valueAsPythonString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QStringLiteral( "'c:\\\\test\\\\new data\\\\test.dat'" ) );
 
   pythonCode = def->asPythonString();
-  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterFile('non_optional', '', behavior=QgsProcessingParameterFile.File, fileFilter='PNG Files (*.png)', defaultValue='abc.bmp')" ) );
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterFile('non_optional', '', behavior=QgsProcessingParameterFile.File, fileFilter='PNG Files (*.png *.PNG)', defaultValue='abc.bmp')" ) );
 
   code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##non_optional=file abc.bmp" ) );
@@ -3813,6 +3813,13 @@ void TestQgsProcessing::parameterFile()
   QCOMPARE( fromMap.behavior(), def->behavior() );
   def.reset( dynamic_cast< QgsProcessingParameterFile *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
   QVERIFY( dynamic_cast< QgsProcessingParameterFile *>( def.get() ) );
+
+  // with file filter with wildcards
+  def.reset( new QgsProcessingParameterFile( "non_optional", QString(), QgsProcessingParameterFile::File, QStringLiteral( ".bmp" ), QString( "abc.bmp" ), false, QStringLiteral( "PNG Files (*.png);;Other Files (*.*)" ) ) );
+  QVERIFY( def->checkValueIsAcceptable( "bricks.png" ) );
+  QVERIFY( def->checkValueIsAcceptable( "bricks.PNG" ) );
+  QVERIFY( def->checkValueIsAcceptable( "bricks.pcx" ) );
+  QVERIFY( def->checkValueIsAcceptable( "bricks.PCX" ) );
 
   // optional
   def.reset( new QgsProcessingParameterFile( "optional", QString(), QgsProcessingParameterFile::File, QString(), QString( "gef.bmp" ),  true ) );
