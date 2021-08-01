@@ -117,8 +117,6 @@ void QgsGpsPlugin::run()
       QgsGuiUtils::ModalDialogFlags );
   myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
   //listen for when the layer has been made so we can draw it
-  connect( myPluginGui, &QgsGpsPluginGui::importGPSFile,
-           this, &QgsGpsPlugin::importGPSFile );
   connect( myPluginGui, &QgsGpsPluginGui::downloadFromGPS,
            this, &QgsGpsPlugin::downloadFromGPS );
   connect( myPluginGui, &QgsGpsPluginGui::uploadToGPS,
@@ -144,67 +142,6 @@ void QgsGpsPlugin::unload()
   mQGisInterface->removeVectorToolBarIcon( mQActionPointer );
   delete mQActionPointer;
   mQActionPointer = nullptr;
-}
-
-void QgsGpsPlugin::importGPSFile( const QString &inputFileName, QgsAbstractBabelFormat *importer,
-                                  Qgis::GpsFeatureType type, const QString &outputFileName,
-                                  const QString &layerName )
-{
-  // try to start the gpsbabel process
-  QStringList babelArgs = importer->importCommand( mBabelPath, type, inputFileName, outputFileName );
-
-  QgsDebugMsg( QStringLiteral( "Import command: " ) + babelArgs.join( "|" ) );
-
-  QProcess babelProcess;
-  babelProcess.start( babelArgs.value( 0 ), babelArgs.mid( 1 ) );
-  if ( !babelProcess.waitForStarted() )
-  {
-    QMessageBox::warning( nullptr, tr( "Import GPS File" ),
-                          tr( "Could not start GPSBabel." ) );
-    return;
-  }
-
-  // wait for gpsbabel to finish (or the user to cancel)
-  QProgressDialog progressDialog( tr( "Importing data…" ), tr( "Cancel" ), 0, 0 );
-  progressDialog.setWindowModality( Qt::WindowModal );
-  for ( int i = 0; babelProcess.state() == QProcess::Running; ++i )
-  {
-    progressDialog.setValue( i / 64 );
-    if ( progressDialog.wasCanceled() )
-      return;
-  }
-
-  babelProcess.waitForFinished();
-
-  // did we get any data?
-  if ( babelProcess.exitCode() != 0 )
-  {
-    QString babelError( babelProcess.readAllStandardError() );
-    QString errorMsg( tr( "Could not import data from %1!\n\n" )
-                      .arg( inputFileName ) );
-    errorMsg += babelError;
-    QMessageBox::warning( nullptr, tr( "Import GPS File" ), errorMsg );
-    return;
-  }
-
-  // add the layer
-  switch ( type )
-  {
-    case Qgis::GpsFeatureType::Waypoint:
-      drawVectorLayer( outputFileName + "?type=waypoint",
-                       layerName, QStringLiteral( "gpx" ) );
-      break;
-    case Qgis::GpsFeatureType::Route:
-      drawVectorLayer( outputFileName + "?type=route",
-                       layerName, QStringLiteral( "gpx" ) );
-      break;
-    case Qgis::GpsFeatureType::Track:
-      drawVectorLayer( outputFileName + "?type=track",
-                       layerName, QStringLiteral( "gpx" ) );
-      break;
-  }
-
-  emit closeGui();
 }
 
 void QgsGpsPlugin::downloadFromGPS( const QString &device, const QString &port,

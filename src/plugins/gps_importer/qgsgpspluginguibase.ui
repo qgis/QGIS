@@ -23,110 +23,6 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="tab2">
-      <attribute name="title">
-       <string>Import other file</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0">
-        <widget class="QLabel" name="textLabel1_5">
-         <property name="text">
-          <string>File to import</string>
-         </property>
-         <property name="buddy">
-          <cstring>pbnIMPInput</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLineEdit" name="leIMPInput">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QPushButton" name="pbnIMPInput">
-         <property name="text">
-          <string>Browse…</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="textLabel2_3">
-         <property name="text">
-          <string>Feature type</string>
-         </property>
-         <property name="buddy">
-          <cstring>cmbIMPFeature</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QComboBox" name="cmbIMPFeature">
-         <property name="minimumSize">
-          <size>
-           <width>130</width>
-           <height>0</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="textLabel1_6">
-         <property name="text">
-          <string>Layer name</string>
-         </property>
-         <property name="buddy">
-          <cstring>leIMPLayer</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QLineEdit" name="leIMPLayer"/>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="textLabel3_3">
-         <property name="text">
-          <string>GPX output file</string>
-         </property>
-         <property name="buddy">
-          <cstring>leIMPOutput</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QLineEdit" name="leIMPOutput"/>
-       </item>
-       <item row="4" column="2">
-        <widget class="QPushButton" name="pbnIMPOutput">
-         <property name="text">
-          <string>Save As…</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1">
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLabel" name="textLabel2_6">
-         <property name="text">
-          <string>(Note: Selecting correct file type in browser dialog important!)</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
      <widget class="QWidget" name="tab3">
       <attribute name="title">
        <string>Download from GPS</string>
@@ -414,12 +310,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>tabWidget</tabstop>
-  <tabstop>leIMPInput</tabstop>
-  <tabstop>pbnIMPInput</tabstop>
-  <tabstop>cmbIMPFeature</tabstop>
-  <tabstop>leIMPLayer</tabstop>
-  <tabstop>leIMPOutput</tabstop>
-  <tabstop>pbnIMPOutput</tabstop>
   <tabstop>cmbDLDevice</tabstop>
   <tabstop>cmbDLPort</tabstop>
   <tabstop>pbnRefresh</tabstop>

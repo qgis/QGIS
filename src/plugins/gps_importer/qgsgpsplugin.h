@@ -60,9 +60,6 @@ class QgsGpsPlugin: public QObject, public QgisPlugin
     //! update the plugins theme when the app tells us its theme is changed
     void setCurrentTheme( const QString &themeName );
 
-    void importGPSFile( const QString &inputFileName, QgsAbstractBabelFormat *importer,
-                        Qgis::GpsFeatureType type, const QString &outputFileName,
-                        const QString &layerName );
     void downloadFromGPS( const QString &device, const QString &port,
                           Qgis::GpsFeatureType type, const QString &outputFileName,
                           const QString &layerName );
