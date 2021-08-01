@@ -45,9 +45,6 @@ class QgsGpsPluginGui : public QDialog, private Ui::QgsGpsPluginGuiBase
     void devicesUpdated();
     void enableRelevantControls();
 
-    void pbnIMPInput_clicked();
-    void pbnIMPOutput_clicked();
-
     void pbnDLOutput_clicked();
 
   private:
@@ -74,9 +71,6 @@ class QgsGpsPluginGui : public QDialog, private Ui::QgsGpsPluginGuiBase
     void buttonBox_rejected();
 
   signals:
-    void importGPSFile( const QString &inputFileName, QgsAbstractBabelFormat *importer,
-                        Qgis::GpsFeatureType type, const QString &outputFileName,
-                        const QString &layerName );
     void downloadFromGPS( const QString &device, const QString &port, Qgis::GpsFeatureType type,
                           const QString &outputFileName, const QString &layerName );
     void uploadToGPS( QgsVectorLayer *gpxLayer, const QString &device, const QString &port );
