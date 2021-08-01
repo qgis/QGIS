@@ -1442,24 +1442,6 @@ Returns path to the placeholder image or an empty string if a generated legend i
 .. versionadded:: 3.22
 %End
 
-    bool renderLayerTo3dTerrain() const;
-%Docstring
-Returns whether the layer will be rendered to the 3D view terrain texture.
-
-.. seealso:: :py:func:`setRenderLayerTo3dTerrain`
-
-.. versionadded:: 3.22
-%End
-
-    QString legendPlaceholderImage() const;
-%Docstring
-Returns path to the placeholder image or an empty string if a generated legend is shown
-
-:return: placholder image path
-
-.. versionadded:: 3.22
-%End
-
     void setLegendPlaceholderImage( const QString &imgPath );
 %Docstring
 Set placeholder image for legend. If the string is empty, a generated legend will be shown.

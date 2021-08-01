@@ -444,8 +444,6 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   layerElement.setAttribute( QStringLiteral( "refreshOnNotifyEnabled" ),  mIsRefreshOnNofifyEnabled ? 1 : 0 );
   layerElement.setAttribute( QStringLiteral( "refreshOnNotifyMessage" ),  mRefreshOnNofifyMessage );
 
-  layerElement.setAttribute( QStringLiteral( "renderLayerTo3dTerrain" ),  mRenderTo3dTerrain );
-
   // ID
   QDomElement layerId = document.createElement( QStringLiteral( "id" ) );
   QDomText layerIdText = document.createTextNode( id() );
