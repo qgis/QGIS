@@ -63,6 +63,10 @@ def process_lines(lines):
 
         name = fields[2]
         description = fields[4]
+
+        # remove odd comment from description!
+        description = description.replace(' [ Get Jonathon Johnson to describe', '')
+
         read_waypoints = fields[1][0] == 'r'
         read_tracks = fields[1][2] == 'r'
         read_routes = fields[1][4] == 'r'
