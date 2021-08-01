@@ -47,7 +47,7 @@ QString QgsPostgresExpressionCompiler::quotedValue( const QVariant &value, bool 
     case QVariant::UserType:
       if ( value.canConvert<QgsGeometry>() )
       {
-        QgsGeometry geom = value.value<QgsGeometry>();
+        const QgsGeometry geom = value.value<QgsGeometry>();
         return QString( "ST_GeomFromText('%1',%2)" ).arg( geom.asWkt() ).arg( mRequestedSrid.isEmpty() ? mDetectedSrid : mRequestedSrid );
       }
       break;
