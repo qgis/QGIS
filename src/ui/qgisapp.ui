@@ -782,7 +782,7 @@
   </widget>
   <widget class="QToolBar" name="mMeshToolBar">
    <property name="windowTitle">
-    <string>toolBar</string>
+    <string>Mesh Digitizing Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
