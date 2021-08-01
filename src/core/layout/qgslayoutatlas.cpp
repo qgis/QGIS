@@ -395,21 +395,6 @@ bool QgsLayoutAtlas::endRender()
   return true;
 }
 
-void QgsLayoutAtlas::filterCoverageLayer()
-{
-  if ( mFilterFeatures && !mFilterExpression.isEmpty() )
-  {
-    mOriginalFilterExpression = mCoverageLayer->subsetString();
-    mCoverageLayer->setSubsetString( mFilterExpression );
-  }
-}
-
-void QgsLayoutAtlas::unFilterCoverageLayer()
-{
-  if ( mCoverageLayer && mFilterFeatures && !mFilterExpression.isEmpty() )
-    mCoverageLayer->setSubsetString( mOriginalFilterExpression );
-}
-
 int QgsLayoutAtlas::count() const
 {
   return mFeatureIds.size();

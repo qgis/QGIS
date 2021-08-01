@@ -208,7 +208,6 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithm::processAlgorithm( const QVariantMap &p
   if ( atlas->updateFeatures() )
   {
     feedback->pushInfo( QObject::tr( "Exporting %n atlas feature(s)", "", atlas->count() ) );
-    atlas->filterCoverageLayer();
     switch ( exporter.exportToPdf( atlas, dest, settings, error, feedback ) )
     {
       case QgsLayoutExporter::Success:
@@ -236,7 +235,6 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithm::processAlgorithm( const QVariantMap &p
         // no meaning for imageexports, will not be encountered
         break;
     }
-    atlas->unFilterCoverageLayer();
   }
   else
   {
