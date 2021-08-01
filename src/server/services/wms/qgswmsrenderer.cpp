@@ -130,7 +130,7 @@ namespace QgsWms
     const QSize size( static_cast<int>( minSize.width() * dpmm ), static_cast<int>( minSize.height() * dpmm ) );
     if ( !mContext.isValidWidthHeight( size.width(), size.height() ) )
     {
-      throw ( QgsServerException( QStringLiteral( "Legend image is too large" ) ) );
+      throw QgsServerException( QStringLiteral( "Legend image is too large" ) );
     }
     image.reset( createImage( size ) );
 
