@@ -14435,9 +14435,9 @@ void QgisApp::layersWereAdded( const QList<QgsMapLayer *> &layers )
   const auto constLayers = layers;
   for ( QgsMapLayer *layer : constLayers )
   {
-    connect( layer, &QgsMeshLayer::layerModified, this, &QgisApp::updateLayerModifiedActions );
-    connect( layer, &QgsMeshLayer::editingStarted, this, &QgisApp::layerEditStateChanged );
-    connect( layer, &QgsMeshLayer::editingStopped, this, &QgisApp::layerEditStateChanged );
+    connect( layer, &QgsMapLayer::layerModified, this, &QgisApp::updateLayerModifiedActions );
+    connect( layer, &QgsMapLayer::editingStarted, this, &QgisApp::layerEditStateChanged );
+    connect( layer, &QgsMapLayer::editingStopped, this, &QgisApp::layerEditStateChanged );
 
     if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
     {
