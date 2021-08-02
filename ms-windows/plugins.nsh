@@ -7,7 +7,6 @@
 #           Please don't remove this header.                                   #
 ################################################################################
 
-WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "gpsimporterplugin" "true"
 WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "grassplugin" "true"
 WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "offlineeditingplugin" "true"
 WriteRegStr HKEY_CURRENT_USER "Software\QGIS\QGIS3\Plugins" "topolplugin" "true"
