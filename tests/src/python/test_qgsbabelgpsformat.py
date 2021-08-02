@@ -109,10 +109,11 @@ class TestQgsBabelGpsFormat(unittest.TestCase):
             "%babel -t -i garmin -o gpx %in %out",
             "%babel -t -i gpx -o garmin %in %out"
         )
-        # TODO -- I suspect that the waypoint/track/route capability should be automatically set/removed
-        # depending on whether the corresponding commands are empty!
-        # self.assertEqual(f.capabilities(), Qgis.BabelFormatCapabilities(
-        #    Qgis.BabelFormatCapability.Waypoints | Qgis.BabelFormatCapability.Import))
+        # waypoint/track/route capability should be automatically set/removed
+        # depending on whether the corresponding commands are empty
+        self.assertEqual(f.capabilities(), Qgis.BabelFormatCapabilities(
+            Qgis.BabelFormatCapability.Waypoints | Qgis.BabelFormatCapability.Import
+            | Qgis.BabelFormatCapability.Export | Qgis.BabelFormatCapability.Tracks | Qgis.BabelFormatCapability.Routes))
 
         self.assertEqual(
             f.importCommand('babel.exe', Qgis.GpsFeatureType.Waypoint, 'c:/test/test.shp', 'c:/test/test.gpx'),
@@ -187,6 +188,69 @@ class TestQgsBabelGpsFormat(unittest.TestCase):
              'garmin',
              '"c:/test/test.shp"',
              '"c:/test/test.gpx"'])
+
+        # waypoint/track/route capability should be automatically set/removed
+        # depending on whether the corresponding commands are empty
+        f = QgsBabelGpsDeviceFormat(
+            "%babel -w -i garmin -o gpx %in %out",
+            None,
+            None,
+            None,
+            None,
+            None
+        )
+        self.assertEqual(f.capabilities(), Qgis.BabelFormatCapabilities(
+            Qgis.BabelFormatCapability.Waypoints | Qgis.BabelFormatCapability.Import))
+        f = QgsBabelGpsDeviceFormat(
+            None,
+            "%babel -w -i gpx -o garmin %in %out",
+            None,
+            None,
+            None,
+            None
+        )
+        self.assertEqual(f.capabilities(), Qgis.BabelFormatCapabilities(
+            Qgis.BabelFormatCapability.Waypoints | Qgis.BabelFormatCapability.Export))
+        f = QgsBabelGpsDeviceFormat(
+            None,
+            None,
+            "%babel -r -i garmin -o gpx %in %out",
+            None,
+            None,
+            None
+        )
+        self.assertEqual(f.capabilities(), Qgis.BabelFormatCapabilities(
+            Qgis.BabelFormatCapability.Routes | Qgis.BabelFormatCapability.Import))
+        f = QgsBabelGpsDeviceFormat(
+            None,
+            None,
+            None,
+            "%babel -r -i gpx -o garmin %in %out",
+            None,
+            None
+        )
+        self.assertEqual(f.capabilities(), Qgis.BabelFormatCapabilities(
+            Qgis.BabelFormatCapability.Routes | Qgis.BabelFormatCapability.Export))
+        f = QgsBabelGpsDeviceFormat(
+            None,
+            None,
+            None,
+            None,
+            "%babel -t -i garmin -o gpx %in %out",
+            None
+        )
+        self.assertEqual(f.capabilities(), Qgis.BabelFormatCapabilities(
+            Qgis.BabelFormatCapability.Tracks | Qgis.BabelFormatCapability.Import))
+        f = QgsBabelGpsDeviceFormat(
+            None,
+            None,
+            None,
+            None,
+            None,
+            "%babel -t -i gpx -o garmin %in %out"
+        )
+        self.assertEqual(f.capabilities(), Qgis.BabelFormatCapabilities(
+            Qgis.BabelFormatCapability.Tracks | Qgis.BabelFormatCapability.Export))
 
     def test_registry(self):
         """

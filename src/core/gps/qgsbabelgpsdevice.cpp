@@ -25,31 +25,79 @@ QgsBabelGpsDeviceFormat::QgsBabelGpsDeviceFormat( const QString &waypointDownloa
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   if ( !waypointDownloadCommand.isEmpty() )
+  {
     mWaypointDownloadCommand = waypointDownloadCommand.split( whiteSpaceRx, QString::SkipEmptyParts );
+    mCapabilities |= Qgis::BabelFormatCapability::Waypoints;
+    mCapabilities |= Qgis::BabelFormatCapability::Import;
+  }
   if ( !waypointUploadCommand.isEmpty() )
+  {
     mWaypointUploadCommand = waypointUploadCommand.split( whiteSpaceRx, QString::SkipEmptyParts );
+    mCapabilities |= Qgis::BabelFormatCapability::Waypoints;
+    mCapabilities |= Qgis::BabelFormatCapability::Export;
+  }
   if ( !routeDownloadCommand.isEmpty() )
+  {
     mRouteDownloadCommand = routeDownloadCommand.split( whiteSpaceRx, QString::SkipEmptyParts );
+    mCapabilities |= Qgis::BabelFormatCapability::Routes;
+    mCapabilities |= Qgis::BabelFormatCapability::Import;
+  }
   if ( !routeUploadCommand.isEmpty() )
+  {
     mRouteUploadCommand = routeUploadCommand.split( whiteSpaceRx, QString::SkipEmptyParts );
+    mCapabilities |= Qgis::BabelFormatCapability::Routes;
+    mCapabilities |= Qgis::BabelFormatCapability::Export;
+  }
   if ( !trackDownloadCommand.isEmpty() )
+  {
     mTrackDownloadCommand = trackDownloadCommand.split( whiteSpaceRx, QString::SkipEmptyParts );
+    mCapabilities |= Qgis::BabelFormatCapability::Tracks;
+    mCapabilities |= Qgis::BabelFormatCapability::Import;
+  }
   if ( !trackUploadCommand.isEmpty() )
+  {
     mTrackUploadCommand = trackUploadCommand.split( whiteSpaceRx, QString::SkipEmptyParts );
+    mCapabilities |= Qgis::BabelFormatCapability::Tracks;
+    mCapabilities |= Qgis::BabelFormatCapability::Export;
+  }
 #else
 
   if ( !waypointDownloadCommand.isEmpty() )
+  {
     mWaypointDownloadCommand = waypointDownloadCommand.split( whiteSpaceRx, Qt::SkipEmptyParts );
+    mCapabilities |= Qgis::BabelFormatCapability::Waypoints;
+    mCapabilities |= Qgis::BabelFormatCapability::Import;
+  }
   if ( !waypointUploadCommand.isEmpty() )
+  {
     mWaypointUploadCommand = waypointUploadCommand.split( whiteSpaceRx, Qt::SkipEmptyParts );
+    mCapabilities |= Qgis::BabelFormatCapability::Waypoints;
+    mCapabilities |= Qgis::BabelFormatCapability::Export;
+  }
   if ( !routeDownloadCommand.isEmpty() )
+  {
     mRouteDownloadCommand = routeDownloadCommand.split( whiteSpaceRx, Qt::SkipEmptyParts );
+    mCapabilities |= Qgis::BabelFormatCapability::Routes;
+    mCapabilities |= Qgis::BabelFormatCapability::Import;
+  }
   if ( !routeUploadCommand.isEmpty() )
+  {
     mRouteUploadCommand = routeUploadCommand.split( whiteSpaceRx, Qt::SkipEmptyParts );
+    mCapabilities |= Qgis::BabelFormatCapability::Routes;
+    mCapabilities |= Qgis::BabelFormatCapability::Export;
+  }
   if ( !trackDownloadCommand.isEmpty() )
+  {
     mTrackDownloadCommand = trackDownloadCommand.split( whiteSpaceRx, Qt::SkipEmptyParts );
+    mCapabilities |= Qgis::BabelFormatCapability::Tracks;
+    mCapabilities |= Qgis::BabelFormatCapability::Import;
+  }
   if ( !trackUploadCommand.isEmpty() )
+  {
     mTrackUploadCommand = trackUploadCommand.split( whiteSpaceRx, Qt::SkipEmptyParts );
+    mCapabilities |= Qgis::BabelFormatCapability::Tracks;
+    mCapabilities |= Qgis::BabelFormatCapability::Export;
+  }
 #endif
 }
 
