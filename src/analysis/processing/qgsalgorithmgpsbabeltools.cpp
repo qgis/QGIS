@@ -20,6 +20,7 @@
 #include "qgsrunprocess.h"
 #include "qgsproviderutils.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 
 ///@cond PRIVATE
 
@@ -96,9 +97,7 @@ QVariantMap QgsConvertGpxFeatureTypeAlgorithm::processAlgorithm( const QVariantM
 
   const ConversionType convertType = static_cast< ConversionType >( parameterAsEnum( parameters, QStringLiteral( "CONVERSION" ), context ) );
 
-  // TODO -- fix the settings path when the rest of the GPS tools plugin is migrated
-  QgsSettings settings;
-  QString babelPath = settings.value( QStringLiteral( "Plugin-GPS/gpsbabelpath" ), QString() ).toString();
+  QString babelPath = QgsSettingsRegistryCore::settingsGpsBabelPath.value();
   if ( babelPath.isEmpty() )
     babelPath = QStringLiteral( "gpsbabel" );
 
