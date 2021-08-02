@@ -57,9 +57,15 @@ class GUI_EXPORT QgsExpressionStoreDialog : public QDialog, private Ui::QgsExpre
      */
     QString helpText() const;
 
+    /**
+     * Returns whether the label text was modified
+     */
+    bool isLabelModified() { return mLabel->text() != mOriginalLabel; }
+
   private:
 
     QStringList mExistingLabels;
+    QString mOriginalLabel;
 
 };
 
