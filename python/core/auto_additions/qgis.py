@@ -508,6 +508,11 @@ Qgis.BabelFormatCapability.__doc__ = 'Babel GPS format capabilities.\n\n.. versi
 # --
 Qgis.BabelFormatCapability.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.BabelCommandFlag.QuoteFilePaths.__doc__ = "File paths should be enclosed in quotations and escaped"
+Qgis.BabelCommandFlag.__doc__ = 'Babel command flags, which control how commands and arguments\nare generated for executing GPSBabel processes.\n\n.. versionadded:: 3.22\n\n' + '* ``QuoteFilePaths``: ' + Qgis.BabelCommandFlag.QuoteFilePaths.__doc__
+# --
+Qgis.BabelCommandFlag.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.GpsFeatureType.Waypoint.__doc__ = "Waypoint"
 Qgis.GpsFeatureType.Route.__doc__ = "Route"
 Qgis.GpsFeatureType.Track.__doc__ = "Track"

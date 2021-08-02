@@ -53,13 +53,15 @@ class CORE_EXPORT QgsAbstractBabelFormat
      * \param featureType type of GPS feature to import
      * \param input input data path
      * \param output output path
+     * \param flags optional flags to control how babel command is generated
      *
      * Returns an empty list if the format does not support imports (see capabilities()).
      */
     virtual QStringList importCommand( const QString &babel,
                                        Qgis::GpsFeatureType featureType,
                                        const QString &input,
-                                       const QString &output ) const;
+                                       const QString &output,
+                                       Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const;
 
     /**
      * Generates a command for exporting GPS data into a different format using babel.
@@ -68,13 +70,15 @@ class CORE_EXPORT QgsAbstractBabelFormat
      * \param featureType type of GPS feature to export
      * \param input input data path
      * \param output output path
+     * \param flags optional flags to control how babel command is generated
      *
      * Returns an empty list if the format does not support exports (see capabilities()).
      */
     virtual QStringList exportCommand( const QString &babel,
                                        Qgis::GpsFeatureType featureType,
                                        const QString &input,
-                                       const QString &output ) const;
+                                       const QString &output,
+                                       Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const;
 
   protected:
 
@@ -135,7 +139,8 @@ class CORE_EXPORT QgsBabelSimpleImportFormat : public QgsAbstractBabelFormat
     QStringList importCommand( const QString &babel,
                                Qgis::GpsFeatureType featureType,
                                const QString &input,
-                               const QString &output ) const override;
+                               const QString &output,
+                               Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const override;
   private:
     QString mDescription;
     QStringList mExtensions;

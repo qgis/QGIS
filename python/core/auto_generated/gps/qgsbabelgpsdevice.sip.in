@@ -45,10 +45,10 @@ Constructor for QgsBabelGpsDeviceFormat.
 :param trackUploadCommand: command for uploading tracks to device
 %End
 
-    virtual QStringList importCommand( const QString &babel, Qgis::GpsFeatureType type, const QString &in, const QString &out ) const;
-
-    virtual QStringList exportCommand( const QString &babel, Qgis::GpsFeatureType type, const QString &in, const QString &out ) const;
-
+     virtual QStringList importCommand( const QString &babel, Qgis::GpsFeatureType type, const QString &in, const QString &out,
+                               Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const;
+     virtual QStringList exportCommand( const QString &babel, Qgis::GpsFeatureType type, const QString &in, const QString &out,
+                               Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const;
 
 };
 

@@ -56,8 +56,10 @@ class CORE_EXPORT QgsBabelGpsDeviceFormat : public QgsAbstractBabelFormat
                              const QString &trackDownloadCommand,
                              const QString &trackUploadCommand );
 
-    QStringList importCommand( const QString &babel, Qgis::GpsFeatureType type, const QString &in, const QString &out ) const override;
-    QStringList exportCommand( const QString &babel, Qgis::GpsFeatureType type, const QString &in, const QString &out ) const override;
+    QStringList importCommand( const QString &babel, Qgis::GpsFeatureType type, const QString &in, const QString &out,
+                               Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const override;
+    QStringList exportCommand( const QString &babel, Qgis::GpsFeatureType type, const QString &in, const QString &out,
+                               Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const override;
 
   private:
 
