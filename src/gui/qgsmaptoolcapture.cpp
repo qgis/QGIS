@@ -903,9 +903,9 @@ void QgsMapToolCapture::validateGeometry()
   if ( geom.isNull() )
     return;
 
-  QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal;
+  Qgis::GeometryValidationEngine method = Qgis::GeometryValidationEngine::QgisInternal;
   if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.value() == 2 )
-    method = QgsGeometry::ValidatorGeos;
+    method = Qgis::GeometryValidationEngine::Geos;
   mValidator = new QgsGeometryValidator( geom, nullptr, method );
   connect( mValidator, &QgsGeometryValidator::errorFound, this, &QgsMapToolCapture::addError );
   mValidator->start();

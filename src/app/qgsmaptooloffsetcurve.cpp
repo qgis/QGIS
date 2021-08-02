@@ -619,10 +619,10 @@ void QgsMapToolOffsetCurve::updateGeometryAndRubberBand( double offset )
   }
 
   QgsGeometry offsetGeom;
-  QgsGeometry::JoinStyle joinStyle = QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle.value();
+  Qgis::JoinStyle joinStyle = QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle.value();
   int quadSegments = QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.value();
   double miterLimit = QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit.value();
-  QgsGeometry::EndCapStyle capStyle = QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle.value();
+  Qgis::EndCapStyle capStyle = QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle.value();
 
 
   if ( QgsWkbTypes::geometryType( mOriginalGeometry.wkbType() ) == QgsWkbTypes::LineGeometry )
@@ -663,33 +663,33 @@ QgsOffsetUserWidget::QgsOffsetUserWidget( QWidget *parent )
   mOffsetSpinBox->setClearValue( 0.0 );
 
   // fill comboboxes
-  mJoinStyleComboBox->addItem( tr( "Round" ), QgsGeometry::JoinStyleRound );
-  mJoinStyleComboBox->addItem( tr( "Miter" ), QgsGeometry::JoinStyleMiter );
-  mJoinStyleComboBox->addItem( tr( "Bevel" ), QgsGeometry::JoinStyleBevel );
-  mCapStyleComboBox->addItem( tr( "Round" ), QgsGeometry::CapRound );
-  mCapStyleComboBox->addItem( tr( "Flat" ), QgsGeometry::CapFlat );
-  mCapStyleComboBox->addItem( tr( "Square" ), QgsGeometry::CapSquare );
+  mJoinStyleComboBox->addItem( tr( "Round" ), static_cast< int >( Qgis::JoinStyle::Round ) );
+  mJoinStyleComboBox->addItem( tr( "Miter" ), static_cast< int >( Qgis::JoinStyle::Miter ) );
+  mJoinStyleComboBox->addItem( tr( "Bevel" ), static_cast< int >( Qgis::JoinStyle::Bevel ) );
+  mCapStyleComboBox->addItem( tr( "Round" ), static_cast< int >( Qgis::EndCapStyle::Round ) );
+  mCapStyleComboBox->addItem( tr( "Flat" ), static_cast< int >( Qgis::EndCapStyle::Flat ) );
+  mCapStyleComboBox->addItem( tr( "Square" ), static_cast< int >( Qgis::EndCapStyle::Square ) );
 
-  QgsGeometry::JoinStyle joinStyle = QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle.value();
+  Qgis::JoinStyle joinStyle = QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle.value();
   int quadSegments = QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.value();
   double miterLimit = QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit.value();
-  QgsGeometry::EndCapStyle capStyle = QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle.value();
+  Qgis::EndCapStyle capStyle = QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle.value();
 
-  mJoinStyleComboBox->setCurrentIndex( mJoinStyleComboBox->findData( joinStyle ) );
+  mJoinStyleComboBox->setCurrentIndex( mJoinStyleComboBox->findData( static_cast< int >( joinStyle ) ) );
   mQuadrantSpinBox->setValue( quadSegments );
   mQuadrantSpinBox->setClearValue( 8 );
   mMiterLimitSpinBox->setValue( miterLimit );
   mMiterLimitSpinBox->setClearValue( 5.0 );
-  mCapStyleComboBox->setCurrentIndex( mCapStyleComboBox->findData( capStyle ) );
+  mCapStyleComboBox->setCurrentIndex( mCapStyleComboBox->findData( static_cast< int >( capStyle ) ) );
 
   // connect signals
   mOffsetSpinBox->installEventFilter( this );
   connect( mOffsetSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsOffsetUserWidget::offsetChanged );
 
-  connect( mJoinStyleComboBox, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::currentIndexChanged ), this, [ = ] { QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle.setValue( static_cast< QgsGeometry::JoinStyle >( mJoinStyleComboBox->currentData().toInt() ) ); emit offsetConfigChanged(); } );
+  connect( mJoinStyleComboBox, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::currentIndexChanged ), this, [ = ] { QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle.setValue( static_cast< Qgis::JoinStyle >( mJoinStyleComboBox->currentData().toInt() ) ); emit offsetConfigChanged(); } );
   connect( mQuadrantSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, [ = ]( const int quadSegments ) { QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.setValue( quadSegments ); emit offsetConfigChanged(); } );
   connect( mMiterLimitSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, [ = ]( double miterLimit ) { QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit.setValue( miterLimit ); emit offsetConfigChanged(); } );
-  connect( mCapStyleComboBox, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::currentIndexChanged ), this, [ = ] { QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle.setValue( static_cast< QgsGeometry::EndCapStyle >( mCapStyleComboBox->currentData().toInt() ) ); emit offsetConfigChanged(); } );
+  connect( mCapStyleComboBox, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::currentIndexChanged ), this, [ = ] { QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle.setValue( static_cast< Qgis::EndCapStyle >( mCapStyleComboBox->currentData().toInt() ) ); emit offsetConfigChanged(); } );
 
   bool showAdvanced = QgsSettingsRegistryCore::settingsDigitizingOffsetShowAdvanced.value();
   mShowAdvancedButton->setChecked( showAdvanced );

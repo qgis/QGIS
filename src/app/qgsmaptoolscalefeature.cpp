@@ -374,7 +374,7 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
       continue;
 
     QgsGeometry geom = feat.geometry();
-    if ( !( geom.transform( t ) == QgsGeometry::Success ) )
+    if ( !( geom.transform( t ) == Qgis::GeometryOperationResult::Success ) )
       continue;
 
     const QgsFeatureId id = feat.id();

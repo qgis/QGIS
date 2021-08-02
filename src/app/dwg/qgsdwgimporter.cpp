@@ -2883,7 +2883,7 @@ bool QgsDwgImporter::expandInserts( QString &error, int block, QTransform base )
           continue;
         }
 
-        if ( g.transform( t ) != 0 )
+        if ( g.transform( t ) != Qgis::GeometryOperationResult::Success )
         {
           QgsDebugMsg( QStringLiteral( "%1/%2: could not transform geometry" ).arg( name ).arg( fid ) );
           continue;

@@ -105,30 +105,30 @@ void QgsMapToolSplitParts::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     //bring up dialog if a split was not possible (polygon) or only done once (line)
     bool topologicalEditing = QgsProject::instance()->topologicalEditing();
     vlayer->beginEditCommand( tr( "Parts split" ) );
-    QgsGeometry::OperationResult returnCode = vlayer->splitParts( pointsZM(), topologicalEditing );
+    Qgis::GeometryOperationResult returnCode = vlayer->splitParts( pointsZM(), topologicalEditing );
     vlayer->endEditCommand();
-    if ( returnCode == QgsGeometry::OperationResult::NothingHappened )
+    if ( returnCode == Qgis::GeometryOperationResult::NothingHappened )
     {
       QgisApp::instance()->messageBar()->pushMessage(
         tr( "No parts were split" ),
         tr( "If there are selected parts, the split tool only applies to those. If you would like to split all parts under the split line, clear the selection." ),
         Qgis::MessageLevel::Warning );
     }
-    else if ( returnCode == QgsGeometry::OperationResult::GeometryEngineError )
+    else if ( returnCode == Qgis::GeometryOperationResult::GeometryEngineError )
     {
       QgisApp::instance()->messageBar()->pushMessage(
         tr( "No part split done" ),
         tr( "Cut edges detected. Make sure the line splits parts into multiple parts." ),
         Qgis::MessageLevel::Warning );
     }
-    else if ( returnCode == QgsGeometry::OperationResult::InvalidBaseGeometry )
+    else if ( returnCode == Qgis::GeometryOperationResult::InvalidBaseGeometry )
     {
       QgisApp::instance()->messageBar()->pushMessage(
         tr( "No part split done" ),
         tr( "The geometry is invalid. Please repair before trying to split it." ),
         Qgis::MessageLevel::Warning );
     }
-    else if ( returnCode != QgsGeometry::OperationResult::Success )
+    else if ( returnCode != Qgis::GeometryOperationResult::Success )
     {
       //several intersections but only one split (most likely line)
       QgisApp::instance()->messageBar()->pushMessage(

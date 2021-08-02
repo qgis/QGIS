@@ -21,7 +21,7 @@ email                : jef at norbit dot de
 #include "qgsgeometrycollection.h"
 #include "qgspolygon.h"
 
-QgsGeometryValidator::QgsGeometryValidator( const QgsGeometry &geometry, QVector<QgsGeometry::Error> *errors, QgsGeometry::ValidationMethod method )
+QgsGeometryValidator::QgsGeometryValidator( const QgsGeometry &geometry, QVector<QgsGeometry::Error> *errors, Qgis::GeometryValidationEngine method )
   : mGeometry( geometry )
   , mErrors( errors )
   , mStop( false )
@@ -265,7 +265,7 @@ void QgsGeometryValidator::run()
 
   switch ( mMethod )
   {
-    case QgsGeometry::ValidatorGeos:
+    case Qgis::GeometryValidationEngine::Geos:
     {
       // avoid calling geos for trivial point geometries
       if ( QgsWkbTypes::geometryType( mGeometry.wkbType() ) == QgsWkbTypes::PointGeometry )
@@ -294,7 +294,7 @@ void QgsGeometryValidator::run()
       break;
     }
 
-    case QgsGeometry::ValidatorQgisInternal:
+    case Qgis::GeometryValidationEngine::QgisInternal:
     {
       switch ( QgsWkbTypes::flatType( mGeometry.constGet()->wkbType() ) )
       {
@@ -396,7 +396,7 @@ void QgsGeometryValidator::addError( const QgsGeometry::Error &e )
     *mErrors << e;
 }
 
-void QgsGeometryValidator::validateGeometry( const QgsGeometry &geometry, QVector<QgsGeometry::Error> &errors, QgsGeometry::ValidationMethod method )
+void QgsGeometryValidator::validateGeometry( const QgsGeometry &geometry, QVector<QgsGeometry::Error> &errors, Qgis::GeometryValidationEngine method )
 {
   QgsGeometryValidator *gv = new QgsGeometryValidator( geometry, &errors, method );
   connect( gv, &QgsGeometryValidator::errorFound, gv, &QgsGeometryValidator::addError );

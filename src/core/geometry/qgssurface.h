@@ -49,7 +49,7 @@ class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
       return mBoundingBox;
     }
 
-    bool isValid( QString &error SIP_OUT, int flags = 0 ) const override;
+    bool isValid( QString &error SIP_OUT, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const override;
 
 
 #ifndef SIP_RUN

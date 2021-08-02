@@ -147,9 +147,9 @@ void QgsLockedFeature::validateGeometry( QgsGeometry *g )
     delete vm;
   }
 
-  QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal;
+  Qgis::GeometryValidationEngine method = Qgis::GeometryValidationEngine::QgisInternal;
   if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.value() == 2 )
-    method = QgsGeometry::ValidatorGeos;
+    method = Qgis::GeometryValidationEngine::Geos;
   mValidator = new QgsGeometryValidator( *g, nullptr, method );
   connect( mValidator, &QgsGeometryValidator::errorFound, this, &QgsLockedFeature::addError );
   connect( mValidator, &QThread::finished, this, &QgsLockedFeature::validationFinished );

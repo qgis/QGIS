@@ -229,7 +229,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     int ringCount( int part = 0 ) const override;
     int partCount() const override;
     QgsPoint vertexAt( QgsVertexId id ) const override;
-    bool isValid( QString &error SIP_OUT, int flags = 0 ) const override;
+    bool isValid( QString &error SIP_OUT, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const override;
 
     bool addZValue( double zValue = 0 ) override;
     bool addMValue( double mValue = 0 ) override;

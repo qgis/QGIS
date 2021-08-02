@@ -18709,25 +18709,25 @@ void TestQgsGeometry::reshapeGeometryLineMerge()
 
   // append with 2D line
   QgsGeometry g2D_1 = g2D;
-  res = g2D_1.reshapeGeometry( line2D_1 );
+  res = static_cast< int >( g2D_1.reshapeGeometry( line2D_1 ) );
   QCOMPARE( res, 0 );
   QCOMPARE( g2D_1.asWkt(), QString( "LineString (10 10, 20 20, 30 30)" ) );
 
   // prepend with 2D line
   QgsGeometry g2D_2 = g2D;
-  res = g2D_2.reshapeGeometry( line2D_2 );
+  res = static_cast< int >( g2D_2.reshapeGeometry( line2D_2 ) );
   QCOMPARE( res, 0 );
   QCOMPARE( g2D_2.asWkt(), QString( "LineString (-10 -10, 10 10, 20 20)" ) );
 
   // append with 3D line
   QgsGeometry g3D_1 = g3D;
-  res = g3D_1.reshapeGeometry( line3D_1 );
+  res = static_cast< int >( g3D_1.reshapeGeometry( line3D_1 ) );
   QCOMPARE( res, 0 );
   QCOMPARE( g3D_1.asWkt(), QString( "LineStringZ (10 10 1, 20 20 2, 30 30 3)" ) );
 
   // prepend with 3D line
   QgsGeometry g3D_2 = g3D;
-  res = g3D_2.reshapeGeometry( line3D_2 );
+  res = static_cast< int >( g3D_2.reshapeGeometry( line3D_2 ) );
   QCOMPARE( res, 0 );
   QCOMPARE( g3D_2.asWkt(), QString( "LineStringZ (-10 -10 -1, 10 10 1, 20 20 2)" ) );
 }
@@ -18867,12 +18867,12 @@ void TestQgsGeometry::splitGeometry()
   if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 9 )
   {
     QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 493825.46541286131832749, 7082214.02779923938214779 ) << QgsPoint( 492955.04876351181883365, 7082338.06309300474822521 ),
-                                newGeoms, false, testPoints ), QgsGeometry::NothingHappened );
+                                newGeoms, false, testPoints ), Qgis::GeometryOperationResult::NothingHappened );
   }
   else
   {
     QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 493825.46541286131832749, 7082214.02779923938214779 ) << QgsPoint( 492955.04876351181883365, 7082338.06309300474822521 ),
-                                newGeoms, false, testPoints ), QgsGeometry::InvalidBaseGeometry );
+                                newGeoms, false, testPoints ), Qgis::GeometryOperationResult::InvalidBaseGeometry );
   }
   QVERIFY( newGeoms.isEmpty() );
 
@@ -18880,7 +18880,7 @@ void TestQgsGeometry::splitGeometry()
   QgsGeometry g2 = QgsGeometry::fromWkt( "CompoundCurveZ ((2749546.2003820720128715 1262904.45356595050543547 100, 2749557.82053794478997588 1262920.05570670193992555 200))" );
   testPoints.clear();
   newGeoms.clear();
-  QCOMPARE( g2.splitGeometry( QgsPointSequence() << QgsPoint( 2749544.19, 1262914.79, 0 ) << QgsPoint( 2749557.64, 1262897.30, 0 ), newGeoms, false, testPoints ), QgsGeometry::Success );
+  QCOMPARE( g2.splitGeometry( QgsPointSequence() << QgsPoint( 2749544.19, 1262914.79, 0 ) << QgsPoint( 2749557.64, 1262897.30, 0 ), newGeoms, false, testPoints ), Qgis::GeometryOperationResult::Success );
   QVERIFY( newGeoms.count() == 1 );
   QCOMPARE( newGeoms[0].asWkt( 2 ), QStringLiteral( "LineStringZ (2749549.12 1262908.38 125.14, 2749557.82 1262920.06 200)" ) );
 
@@ -18889,7 +18889,7 @@ void TestQgsGeometry::splitGeometry()
   testPoints.clear();
   newGeoms.clear();
   g1 = QgsGeometry::fromWkt( QStringLiteral( "Polygon ((1.0 1.0, 1.0 100.0, 100.0 100.0, 100.0 1.0, 1.0 1.0))" ) );
-  QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 0.0, 42.0 ) << QgsPoint( 101.0, 42.0 ), newGeoms, true, testPoints ), QgsGeometry::Success );
+  QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 0.0, 42.0 ) << QgsPoint( 101.0, 42.0 ), newGeoms, true, testPoints ), Qgis::GeometryOperationResult::Success );
   QCOMPARE( newGeoms.count(), 1 );
   QCOMPARE( testPoints.count(), 2 );
   QgsGeometry::convertPointList( testPoints, testPointsXY );
@@ -18900,7 +18900,7 @@ void TestQgsGeometry::splitGeometry()
   testPoints.clear();
   newGeoms.clear();
   g1 = QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 1.0, 1.0 100.0, 100.0 100.0, 100.0 1.0, 1.0 1.0)" ) );
-  QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 0.0, 42.0 ) << QgsPoint( 101.0, 42.0 ), newGeoms, true, testPoints ), QgsGeometry::Success );
+  QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 0.0, 42.0 ) << QgsPoint( 101.0, 42.0 ), newGeoms, true, testPoints ), Qgis::GeometryOperationResult::Success );
   QCOMPARE( newGeoms.count(), 2 );
   QCOMPARE( testPoints.count(), 2 );
   QgsGeometry::convertPointList( testPoints, testPointsXY );
@@ -18912,7 +18912,7 @@ void TestQgsGeometry::splitGeometry()
   testPoints.clear();
   newGeoms.clear();
   g1 = QgsGeometry::fromWkt( QStringLiteral( "Polygon ((1.0 1.0, 1.0 100.0, 100.0 100.0, 100.0 1.0, 1.0 1.0))" ) );
-  QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 0.0, 42.0 ) << QgsPoint( 101.0, 42.0 ), newGeoms, true, testPoints, false ), QgsGeometry::Success );
+  QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 0.0, 42.0 ) << QgsPoint( 101.0, 42.0 ), newGeoms, true, testPoints, false ), Qgis::GeometryOperationResult::Success );
   QCOMPARE( newGeoms.count(), 2 );
   QCOMPARE( testPoints.count(), 2 );
   QgsGeometry::convertPointList( testPoints, testPointsXY );
@@ -18923,7 +18923,7 @@ void TestQgsGeometry::splitGeometry()
   testPoints.clear();
   newGeoms.clear();
   g1 = QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 1.0, 1.0 100.0, 100.0 100.0, 100.0 1.0, 1.0 1.0)" ) );
-  QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 0.0, 42.0 ) << QgsPoint( 101.0, 42.0 ), newGeoms, true, testPoints, false ), QgsGeometry::Success );
+  QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 0.0, 42.0 ) << QgsPoint( 101.0, 42.0 ), newGeoms, true, testPoints, false ), Qgis::GeometryOperationResult::Success );
   QCOMPARE( newGeoms.count(), 3 );
   QCOMPARE( testPoints.count(), 2 );
   QgsGeometry::convertPointList( testPoints, testPointsXY );
@@ -18936,7 +18936,7 @@ void TestQgsGeometry::splitGeometry()
   testPointsXY.clear();
   newGeoms.clear();
   g1 = QgsGeometry::fromWkt( QStringLiteral( "Polygon ((1.0 1.0, 1.0 100.0, 100.0 100.0, 100.0 1.0, 1.0 1.0))" ) );
-  QCOMPARE( g1.splitGeometry( QgsPolylineXY() << QgsPointXY( 0.0, 42.0 ) << QgsPointXY( 101.0, 42.0 ), newGeoms, true, testPointsXY ), QgsGeometry::Success );
+  QCOMPARE( g1.splitGeometry( QgsPolylineXY() << QgsPointXY( 0.0, 42.0 ) << QgsPointXY( 101.0, 42.0 ), newGeoms, true, testPointsXY ), Qgis::GeometryOperationResult::Success );
   QCOMPARE( newGeoms.count(), 1 );
   QCOMPARE( testPointsXY.count(), 2 );
   QVERIFY( QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 42.0, 100.0 42.0)" ) ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 0 ) ) ) );
@@ -18945,7 +18945,7 @@ void TestQgsGeometry::splitGeometry()
   testPointsXY.clear();
   newGeoms.clear();
   g1 = QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 1.0, 1.0 100.0, 100.0 100.0, 100.0 1.0, 1.0 1.0)" ) );
-  QCOMPARE( g1.splitGeometry( QgsPolylineXY() << QgsPointXY( 0.0, 42.0 ) << QgsPointXY( 101.0, 42.0 ), newGeoms, true, testPointsXY ), QgsGeometry::Success );
+  QCOMPARE( g1.splitGeometry( QgsPolylineXY() << QgsPointXY( 0.0, 42.0 ) << QgsPointXY( 101.0, 42.0 ), newGeoms, true, testPointsXY ), Qgis::GeometryOperationResult::Success );
   QCOMPARE( newGeoms.count(), 2 );
   QCOMPARE( testPointsXY.count(), 2 );
   QVERIFY( QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 42.0, 100.0 42.0)" ) ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 0 ) ) ) );
@@ -18955,7 +18955,7 @@ void TestQgsGeometry::splitGeometry()
   testPointsXY.clear();
   newGeoms.clear();
   g1 = QgsGeometry::fromWkt( QStringLiteral( "Polygon ((1.0 1.0, 1.0 100.0, 100.0 100.0, 100.0 1.0, 1.0 1.0))" ) );
-  QCOMPARE( g1.splitGeometry( QgsPolylineXY() << QgsPointXY( 0.0, 42.0 ) << QgsPointXY( 101.0, 42.0 ), newGeoms, true, testPointsXY, false ), QgsGeometry::Success );
+  QCOMPARE( g1.splitGeometry( QgsPolylineXY() << QgsPointXY( 0.0, 42.0 ) << QgsPointXY( 101.0, 42.0 ), newGeoms, true, testPointsXY, false ), Qgis::GeometryOperationResult::Success );
   QCOMPARE( newGeoms.count(), 2 );
   QCOMPARE( testPointsXY.count(), 2 );
   QVERIFY( QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 42.0, 100.0 42.0)" ) ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 0 ) ) ) );
@@ -18964,7 +18964,7 @@ void TestQgsGeometry::splitGeometry()
   testPointsXY.clear();
   newGeoms.clear();
   g1 = QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 1.0, 1.0 100.0, 100.0 100.0, 100.0 1.0, 1.0 1.0)" ) );
-  QCOMPARE( g1.splitGeometry( QgsPolylineXY() << QgsPointXY( 0.0, 42.0 ) << QgsPointXY( 101.0, 42.0 ), newGeoms, true, testPointsXY, false ), QgsGeometry::Success );
+  QCOMPARE( g1.splitGeometry( QgsPolylineXY() << QgsPointXY( 0.0, 42.0 ) << QgsPointXY( 101.0, 42.0 ), newGeoms, true, testPointsXY, false ), Qgis::GeometryOperationResult::Success );
   QCOMPARE( newGeoms.count(), 3 );
   QCOMPARE( testPointsXY.count(), 2 );
   QVERIFY( QgsGeometry::fromWkt( QStringLiteral( "Linestring (1.0 42.0, 100.0 42.0)" ) ).touches( QgsGeometry::fromPointXY( testPointsXY.at( 0 ) ) ) );

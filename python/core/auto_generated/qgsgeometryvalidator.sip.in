@@ -8,6 +8,7 @@
 
 
 
+
 class QgsGeometryValidator : QThread
 {
 
@@ -16,7 +17,7 @@ class QgsGeometryValidator : QThread
 %End
   public:
 
-    QgsGeometryValidator( const QgsGeometry &geometry, QVector<QgsGeometry::Error> *errors = 0, QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal );
+    QgsGeometryValidator( const QgsGeometry &geometry, QVector<QgsGeometry::Error> *errors = 0, Qgis::GeometryValidationEngine method = Qgis::GeometryValidationEngine::QgisInternal );
 %Docstring
 Constructor for QgsGeometryValidator.
 %End
@@ -26,7 +27,7 @@ Constructor for QgsGeometryValidator.
 
     void stop();
 
-    static void validateGeometry( const QgsGeometry &geometry, QVector<QgsGeometry::Error> &errors /Out/, QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal );
+    static void validateGeometry( const QgsGeometry &geometry, QVector<QgsGeometry::Error> &errors /Out/, Qgis::GeometryValidationEngine method = Qgis::GeometryValidationEngine::QgisInternal );
 %Docstring
 Validate geometry and produce a list of geometry errors.
 This method blocks the thread until the validation is finished.

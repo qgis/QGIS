@@ -174,12 +174,12 @@ void QgsMapToolCircle2TangentsPoint::getPossibleCenter( )
 
     /* use magic default values (8, QgsGeometry::JoinStyleBevel, 5), is useless for segments */
     QgsGeometry line1 = QgsGeometry( l1.release() );
-    QgsGeometry line1m = line1.offsetCurve( - mRadius, 8, QgsGeometry::JoinStyleBevel, 5 );
-    QgsGeometry line1p = line1.offsetCurve( + mRadius, 8, QgsGeometry::JoinStyleBevel, 5 );
+    QgsGeometry line1m = line1.offsetCurve( - mRadius, 8, Qgis::JoinStyle::Bevel, 5 );
+    QgsGeometry line1p = line1.offsetCurve( + mRadius, 8, Qgis::JoinStyle::Bevel, 5 );
 
     QgsGeometry line2 = QgsGeometry( l2.release() );
-    QgsGeometry line2m = line2.offsetCurve( - mRadius, 8, QgsGeometry::JoinStyleBevel, 5 );
-    QgsGeometry line2p = line2.offsetCurve( + mRadius, 8, QgsGeometry::JoinStyleBevel, 5 );
+    QgsGeometry line2m = line2.offsetCurve( - mRadius, 8, Qgis::JoinStyle::Bevel, 5 );
+    QgsGeometry line2p = line2.offsetCurve( + mRadius, 8, Qgis::JoinStyle::Bevel, 5 );
 
     bool isIntersect = false;
     QgsPoint inter;

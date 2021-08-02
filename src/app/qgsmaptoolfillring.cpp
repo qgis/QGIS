@@ -106,30 +106,30 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
     QgsPointSequence pointList = pointsZM();
 
-    QgsGeometry::OperationResult addRingReturnCode = vlayer->addRing( pointList, &fid );
+    Qgis::GeometryOperationResult addRingReturnCode = vlayer->addRing( pointList, &fid );
 
     // AP: this is all dead code:
     //todo: open message box to communicate errors
-    if ( addRingReturnCode != QgsGeometry::OperationResult::Success )
+    if ( addRingReturnCode != Qgis::GeometryOperationResult::Success )
     {
       QString errorMessage;
-      if ( addRingReturnCode == QgsGeometry::OperationResult::InvalidInputGeometryType )
+      if ( addRingReturnCode == Qgis::GeometryOperationResult::InvalidInputGeometryType )
       {
         errorMessage = tr( "a problem with geometry type occurred" );
       }
-      else if ( addRingReturnCode == QgsGeometry::OperationResult::AddRingNotClosed )
+      else if ( addRingReturnCode == Qgis::GeometryOperationResult::AddRingNotClosed )
       {
         errorMessage = tr( "the inserted Ring is not closed" );
       }
-      else if ( addRingReturnCode ==  QgsGeometry::OperationResult::AddRingNotValid )
+      else if ( addRingReturnCode ==  Qgis::GeometryOperationResult::AddRingNotValid )
       {
         errorMessage = tr( "the inserted Ring is not a valid geometry" );
       }
-      else if ( addRingReturnCode == QgsGeometry::OperationResult::AddRingCrossesExistingRings )
+      else if ( addRingReturnCode == Qgis::GeometryOperationResult::AddRingCrossesExistingRings )
       {
         errorMessage = tr( "the inserted Ring crosses existing rings" );
       }
-      else if ( addRingReturnCode == QgsGeometry::OperationResult::AddRingNotInExistingFeature )
+      else if ( addRingReturnCode == Qgis::GeometryOperationResult::AddRingNotInExistingFeature )
       {
         errorMessage = tr( "the inserted Ring is not contained in a feature" );
       }
@@ -137,7 +137,7 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       {
         errorMessage = tr( "an unknown error occurred" );
       }
-      emit messageEmitted( tr( "could not add ring since %1." ).arg( errorMessage ), Qgis::MessageLevel::Critical );
+      emit messageEmitted( tr( "could not add ring: %1." ).arg( errorMessage ), Qgis::MessageLevel::Critical );
       vlayer->destroyEditCommand();
 
       return;

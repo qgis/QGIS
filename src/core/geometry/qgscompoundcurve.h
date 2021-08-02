@@ -60,7 +60,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     void points( QgsPointSequence &pts SIP_OUT ) const override;
     int numPoints() const override SIP_HOLDGIL;
     bool isEmpty() const override SIP_HOLDGIL;
-    bool isValid( QString &error SIP_OUT, int flags = 0 ) const override;
+    bool isValid( QString &error SIP_OUT, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const override;
     int indexOf( const QgsPoint &point ) const final;
 
     /**

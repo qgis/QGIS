@@ -128,33 +128,6 @@ class CORE_EXPORT QgsGeometry
 
   public:
 
-    /**
-     * Success or failure of a geometry operation.
-     * This gives details about cause of failure.
-     */
-    enum OperationResult
-    {
-      Success = 0, //!< Operation succeeded
-      NothingHappened = 1000, //!< Nothing happened, without any error
-      InvalidBaseGeometry, //!< The base geometry on which the operation is done is invalid or empty
-      InvalidInputGeometryType, //!< The input geometry (ring, part, split line, etc.) has not the correct geometry type
-      SelectionIsEmpty, //!< No features were selected
-      SelectionIsGreaterThanOne, //!< More than one features were selected
-      GeometryEngineError, //!< Geometry engine misses a method implemented or an error occurred in the geometry engine
-      LayerNotEditable, //!< Cannot edit layer
-      /* Add part issues */
-      AddPartSelectedGeometryNotFound, //!< The selected geometry cannot be found
-      AddPartNotMultiGeometry, //!< The source geometry is not multi
-      /* Add ring issues*/
-      AddRingNotClosed, //!< The input ring is not closed
-      AddRingNotValid, //!< The input ring is not valid
-      AddRingCrossesExistingRings, //!< The input ring crosses existing rings (it is not disjoint)
-      AddRingNotInExistingFeature, //!< The input ring doesn't have any existing ring to fit into
-      /* Split features */
-      SplitCannotSplitPoint, //!< Cannot split points
-    };
-    Q_ENUM( OperationResult )
-
     //! Constructor
     QgsGeometry() SIP_HOLDGIL;
 
@@ -363,13 +336,6 @@ class CORE_EXPORT QgsGeometry
      */
     bool isGeosEqual( const QgsGeometry & ) const;
 
-    //! Validity check flags
-    enum ValidityFlag
-    {
-      FlagAllowSelfTouchingHoles = 1 << 0, //!< Indicates that self-touching holes are permitted. OGC validity states that self-touching holes are NOT permitted, whilst other vendor validity checks (e.g. ESRI) permit self-touching holes.
-    };
-    Q_DECLARE_FLAGS( ValidityFlags, ValidityFlag )
-
     /**
      * Checks validity of the geometry using GEOS.
      *
@@ -377,7 +343,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \since QGIS 1.5
      */
-    bool isGeosValid( QgsGeometry::ValidityFlags flags = QgsGeometry::ValidityFlags() ) const;
+    bool isGeosValid( Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
 
     /**
      * Determines whether the geometry is simple (according to OGC definition),
@@ -853,14 +819,14 @@ class CORE_EXPORT QgsGeometry
      * \param ring The ring to be added
      * \returns OperationResult a result code: success or reason of failure
      */
-    OperationResult addRing( const QVector<QgsPointXY> &ring );
+    Qgis::GeometryOperationResult addRing( const QVector<QgsPointXY> &ring );
 
     /**
      * Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
      * \param ring The ring to be added
      * \returns OperationResult a result code: success or reason of failure
      */
-    OperationResult addRing( QgsCurve *ring SIP_TRANSFER );
+    Qgis::GeometryOperationResult addRing( QgsCurve *ring SIP_TRANSFER );
 
     /**
      * Adds a new part to a the geometry.
@@ -868,7 +834,7 @@ class CORE_EXPORT QgsGeometry
      * \param geomType default geometry type to create if no existing geometry
      * \returns OperationResult a result code: success or reason of failure
      */
-    OperationResult addPart( const QVector<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) SIP_PYNAME( addPointsXY );
+    Qgis::GeometryOperationResult addPart( const QVector<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) SIP_PYNAME( addPointsXY );
 
     /**
      * Adds a new part to a the geometry.
@@ -876,7 +842,7 @@ class CORE_EXPORT QgsGeometry
      * \param geomType default geometry type to create if no existing geometry
      * \returns OperationResult a result code: success or reason of failure
      */
-    OperationResult addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) SIP_PYNAME( addPoints );
+    Qgis::GeometryOperationResult addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) SIP_PYNAME( addPoints );
 
     /**
      * Adds a new part to this geometry.
@@ -884,14 +850,14 @@ class CORE_EXPORT QgsGeometry
      * \param geomType default geometry type to create if no existing geometry
      * \returns OperationResult a result code: success or reason of failure
      */
-    OperationResult addPart( QgsAbstractGeometry *part SIP_TRANSFER, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
+    Qgis::GeometryOperationResult addPart( QgsAbstractGeometry *part SIP_TRANSFER, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 
     /**
      * Adds a new island polygon to a multipolygon feature
      * \returns OperationResult a result code: success or reason of failure
      * \note available in python bindings as addPartGeometry
      */
-    OperationResult addPart( const QgsGeometry &newPart ) SIP_PYNAME( addPartGeometry );
+    Qgis::GeometryOperationResult addPart( const QgsGeometry &newPart ) SIP_PYNAME( addPartGeometry );
 
     /**
      * Removes the interior rings from a (multi)polygon geometry. If the minimumAllowedArea
@@ -905,7 +871,7 @@ class CORE_EXPORT QgsGeometry
      * Translates this geometry by dx, dy, dz and dm.
      * \returns OperationResult a result code: success or reason of failure
      */
-    OperationResult translate( double dx, double dy, double dz = 0.0, double dm = 0.0 );
+    Qgis::GeometryOperationResult translate( double dx, double dy, double dz = 0.0, double dm = 0.0 );
 
     /**
      * Transforms this geometry as described by the coordinate transform \a ct.
@@ -921,7 +887,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \returns OperationResult a result code: success or reason of failure
      */
-    OperationResult transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) SIP_THROW( QgsCsException );
+    Qgis::GeometryOperationResult transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) SIP_THROW( QgsCsException );
 
     /**
      * Transforms the x and y components of the geometry using a QTransform object \a t.
@@ -931,7 +897,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \returns OperationResult a result code: success or reason of failure
      */
-    OperationResult transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
+    Qgis::GeometryOperationResult transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
 
     /**
      * Rotate this geometry around the Z axis
@@ -939,7 +905,7 @@ class CORE_EXPORT QgsGeometry
      * \param center rotation center
      * \returns OperationResult a result code: success or reason of failure
      */
-    OperationResult rotate( double rotation, const QgsPointXY &center );
+    Qgis::GeometryOperationResult rotate( double rotation, const QgsPointXY &center );
 
     /**
      * Splits this geometry according to a given line.
@@ -951,7 +917,7 @@ class CORE_EXPORT QgsGeometry
      * \returns OperationResult a result code: success or reason of failure
      * \deprecated since QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
-    Q_DECL_DEPRECATED OperationResult splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries SIP_OUT, bool topological, QVector<QgsPointXY> &topologyTestPoints SIP_OUT, bool splitFeature = true ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED Qgis::GeometryOperationResult splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries SIP_OUT, bool topological, QVector<QgsPointXY> &topologyTestPoints SIP_OUT, bool splitFeature = true ) SIP_DEPRECATED;
 
     /**
      * Splits this geometry according to a given line.
@@ -975,7 +941,7 @@ class CORE_EXPORT QgsGeometry
      *  > LineStringZ (2749549.12 1262908.38 125.14, 2749557.82 1262920.06 200)
      * \endcode
      */
-    OperationResult splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries SIP_OUT, bool topological, QgsPointSequence &topologyTestPoints SIP_OUT, bool splitFeature = true, bool skipIntersectionTest SIP_PYARGREMOVE = false );
+    Qgis::GeometryOperationResult splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries SIP_OUT, bool topological, QgsPointSequence &topologyTestPoints SIP_OUT, bool splitFeature = true, bool skipIntersectionTest SIP_PYARGREMOVE = false );
 
     /**
      * Splits this geometry according to a given curve.
@@ -988,13 +954,13 @@ class CORE_EXPORT QgsGeometry
      * \returns OperationResult a result code: success or reason of failure
      * \since QGIS 3.16
      */
-    OperationResult splitGeometry( const QgsCurve *curve,  QVector<QgsGeometry> &newGeometries SIP_OUT, bool preserveCircular, bool topological, QgsPointSequence &topologyTestPoints SIP_OUT, bool splitFeature = true );
+    Qgis::GeometryOperationResult splitGeometry( const QgsCurve *curve,  QVector<QgsGeometry> &newGeometries SIP_OUT, bool preserveCircular, bool topological, QgsPointSequence &topologyTestPoints SIP_OUT, bool splitFeature = true );
 
     /**
      * Replaces a part of this geometry with another line
      * \returns OperationResult a result code: success or reason of failure
      */
-    OperationResult reshapeGeometry( const QgsLineString &reshapeLineString );
+    Qgis::GeometryOperationResult reshapeGeometry( const QgsLineString &reshapeLineString );
 
     /**
      * Changes this geometry such that it does not intersect the other geometry
@@ -1231,32 +1197,6 @@ class CORE_EXPORT QgsGeometry
      */
     bool crosses( const QgsGeometry &geometry ) const;
 
-    //! Side of line to buffer
-    enum BufferSide
-    {
-      SideLeft = 0, //!< Buffer to left of line
-      SideRight, //!< Buffer to right of line
-    };
-    Q_ENUM( BufferSide )
-
-    //! End cap styles for buffers
-    enum EndCapStyle
-    {
-      CapRound = 1, //!< Round cap
-      CapFlat, //!< Flat cap (in line with start/end of line)
-      CapSquare, //!< Square cap (extends past start/end of line by buffer distance)
-    };
-    Q_ENUM( EndCapStyle )
-
-    //! Join styles for buffers
-    enum JoinStyle
-    {
-      JoinStyleRound = 1, //!< Use rounded joins
-      JoinStyleMiter, //!< Use mitered joins
-      JoinStyleBevel, //!< Use beveled joins
-    };
-    Q_ENUM( JoinStyle )
-
     /**
      * Returns a buffer region around this geometry having the given width and with a specified number
      * of segments used to approximate curves
@@ -1278,7 +1218,7 @@ class CORE_EXPORT QgsGeometry
      * \see taperedBuffer()
      * \since QGIS 2.4
      */
-    QgsGeometry buffer( double distance, int segments, EndCapStyle endCapStyle, JoinStyle joinStyle, double miterLimit ) const;
+    QgsGeometry buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit ) const;
 
     /**
      * Returns an offset line at a given distance and side from an input line.
@@ -1288,7 +1228,7 @@ class CORE_EXPORT QgsGeometry
      * \param miterLimit  limit on the miter ratio used for very sharp corners (JoinStyleMiter only)
      * \since QGIS 2.4
      */
-    QgsGeometry offsetCurve( double distance, int segments, JoinStyle joinStyle, double miterLimit ) const;
+    QgsGeometry offsetCurve( double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit ) const;
 
     /**
      * Returns a single sided buffer for a (multi)line geometry. The buffer is only
@@ -1305,8 +1245,8 @@ class CORE_EXPORT QgsGeometry
      * \see taperedBuffer()
      * \since QGIS 3.0
      */
-    QgsGeometry singleSidedBuffer( double distance, int segments, BufferSide side,
-                                   JoinStyle joinStyle = JoinStyleRound,
+    QgsGeometry singleSidedBuffer( double distance, int segments, Qgis::BufferSide side,
+                                   Qgis::JoinStyle joinStyle = Qgis::JoinStyle::Round,
                                    double miterLimit = 2.0 ) const;
 
     /**
@@ -2325,16 +2265,6 @@ class CORE_EXPORT QgsGeometry
     };
 
     /**
-     * Available methods for validating geometries.
-     * \since QGIS 3.0
-     */
-    enum ValidationMethod
-    {
-      ValidatorQgisInternal, //!< Use internal QgsGeometryValidator method
-      ValidatorGeos, //!< Use GEOS validation methods
-    };
-
-    /**
      * Validates geometry and produces a list of geometry errors.
      * The \a method argument dictates which validator to utilize.
      *
@@ -2342,7 +2272,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \since QGIS 1.5
      */
-    void validateGeometry( QVector<QgsGeometry::Error> &errors SIP_OUT, ValidationMethod method = ValidatorQgisInternal, QgsGeometry::ValidityFlags flags = QgsGeometry::ValidityFlags() ) const;
+    void validateGeometry( QVector<QgsGeometry::Error> &errors SIP_OUT, Qgis::GeometryValidationEngine method = Qgis::GeometryValidationEngine::QgisInternal, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
 
     /**
      * Reorganizes the geometry into a normalized form (or "canonical" form).
@@ -2796,7 +2726,6 @@ class CORE_EXPORT QgsGeometry
 }; // class QgsGeometry
 
 Q_DECLARE_METATYPE( QgsGeometry )
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsGeometry::ValidityFlags )
 
 //! Writes the geometry to stream out. QGIS version compatibility is not guaranteed.
 CORE_EXPORT QDataStream &operator<<( QDataStream &out, const QgsGeometry &geometry );

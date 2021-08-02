@@ -156,7 +156,7 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
   QgsFeatureIterator fit = vlayer->getFeatures( req );
 
   QgsFeature f;
-  int reshapeReturn;
+  Qgis::GeometryOperationResult reshapeReturn = Qgis::GeometryOperationResult::Success;
   bool reshapeDone = false;
   bool isBinding = isBindingLine( vlayer, bbox );
 
@@ -175,7 +175,7 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
         continue;
 
       reshapeReturn = geom.reshapeGeometry( reshapeLineString );
-      if ( reshapeReturn == 0 )
+      if ( reshapeReturn == Qgis::GeometryOperationResult::Success )
       {
         //avoid intersections on polygon layers
         if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
