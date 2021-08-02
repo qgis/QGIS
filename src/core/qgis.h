@@ -564,6 +564,19 @@ class CORE_EXPORT Qgis
     Q_ENUM( BabelFormatCapability )
 
     /**
+     * Babel command flags, which control how commands and arguments
+     * are generated for executing GPSBabel processes.
+     *
+     * \since QGIS 3.22
+     */
+    enum class BabelCommandFlag : int
+    {
+      QuoteFilePaths = 1 << 0, //!< File paths should be enclosed in quotations and escaped
+    };
+    Q_DECLARE_FLAGS( BabelCommandFlags, BabelCommandFlag )
+    Q_ENUM( BabelCommandFlag )
+
+    /**
      * GPS feature types.
      *
      * \since QGIS 3.22
@@ -696,6 +709,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BrowserItemCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerQueryFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SqlLayerDefinitionCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelFormatCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelCommandFlags )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.
