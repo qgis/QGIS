@@ -75,7 +75,8 @@ class CORE_EXPORT QgsSettings : public QObject
       App,
       Providers,
       Expressions,
-      Misc
+      Misc,
+      Gps, //!< GPS section, since QGIS 3.22
     };
 
     /**

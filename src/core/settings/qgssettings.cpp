@@ -215,32 +215,35 @@ QString QgsSettings::prefixedKey( const QString &key, const Section section ) co
   QString prefix;
   switch ( section )
   {
-    case Section::Core :
+    case Section::Core:
       prefix = QStringLiteral( "core" );
       break;
-    case Section::Server :
+    case Section::Server:
       prefix = QStringLiteral( "server" );
       break;
-    case Section::Gui :
+    case Section::Gui:
       prefix = QStringLiteral( "gui" );
       break;
-    case Section::Plugins :
+    case Section::Plugins:
       prefix = QStringLiteral( "plugins" );
       break;
-    case Section::Misc :
+    case Section::Misc:
       prefix = QStringLiteral( "misc" );
       break;
-    case Section::Auth :
+    case Section::Auth:
       prefix = QStringLiteral( "auth" );
       break;
-    case Section::App :
+    case Section::App:
       prefix = QStringLiteral( "app" );
       break;
-    case Section::Providers :
+    case Section::Providers:
       prefix = QStringLiteral( "providers" );
       break;
-    case Section::Expressions :
+    case Section::Expressions:
       prefix = QStringLiteral( "expressions" );
+      break;
+    case Section::Gps:
+      prefix = QStringLiteral( "gps" );
       break;
     case Section::NoSection:
       return sanitizeKey( key );
