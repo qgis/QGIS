@@ -18,6 +18,7 @@
 #include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsbabelformatregistry.h"
+#include "qgssettingsregistrycore.h"
 
 #include <QMessageBox>
 
@@ -83,6 +84,10 @@ QgsGpsDeviceOptionsWidget::QgsGpsDeviceOptionsWidget( QWidget *parent )
   connect( leTrkDown, &QLineEdit::textEdited, this, &QgsGpsDeviceOptionsWidget::updateCurrentDevice );
   connect( leTrkUp, &QLineEdit::textEdited, this, &QgsGpsDeviceOptionsWidget::updateCurrentDevice );
   connect( leDeviceName, &QLineEdit::textEdited, this, &QgsGpsDeviceOptionsWidget::renameCurrentDevice );
+
+  mGpsBabelFileWidget->setStorageMode( QgsFileWidget::GetFile );
+  mGpsBabelFileWidget->setDialogTitle( tr( "Select GPSBabel Executable" ) );
+  mGpsBabelFileWidget->setFilePath( QgsSettingsRegistryCore::settingsGpsBabelPath.value() );
 }
 
 void QgsGpsDeviceOptionsWidget::apply()
@@ -105,6 +110,8 @@ void QgsGpsDeviceOptionsWidget::apply()
     settings.setValue( devPath.arg( name ) + "/trkupload", commands.value( 5 ) );
   }
   settings.setValue( QStringLiteral( "/Plugin-GPS/devicelist" ), deviceNames );
+
+  QgsSettingsRegistryCore::settingsGpsBabelPath.setValue( mGpsBabelFileWidget->filePath() );
 
   QgsApplication::gpsBabelFormatRegistry()->reloadFromSettings();
 }
