@@ -6877,7 +6877,7 @@ void TestQgsProcessingAlgs::downloadGpsData()
   results = alg->run( parameters, *context, &feedback, &ok );
   // invalid port
   QVERIFY( !ok );
-  QVERIFY( feedback.errors.value( 0 ).startsWith( QStringLiteral( "Unknown port \u201Cnot a port\u201D. Valid devices are:" ) ) );
+  QVERIFY( feedback.errors.value( 0 ).startsWith( QStringLiteral( "Unknown port \u201Cnot a port\u201D. Valid ports are:" ) ) );
   feedback.errors.clear();
 }
 
@@ -6911,7 +6911,7 @@ void TestQgsProcessingAlgs::uploadGpsData()
   results = alg->run( parameters, *context, &feedback, &ok );
   // invalid port
   QVERIFY( !ok );
-  QVERIFY( feedback.errors.value( 0 ).startsWith( QStringLiteral( "Unknown port \u201Cnot a port\u201D. Valid devices are:" ) ) );
+  QVERIFY( feedback.errors.value( 0 ).startsWith( QStringLiteral( "Unknown port \u201Cnot a port\u201D. Valid ports are:" ) ) );
   feedback.errors.clear();
 }
 
