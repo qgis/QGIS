@@ -337,6 +337,8 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsGeometryByExpressionAlgorithm() );
   addAlgorithm( new QgsConvertGpxFeatureTypeAlgorithm() );
   addAlgorithm( new QgsConvertGpsDataAlgorithm() );
+  addAlgorithm( new QgsDownloadGpsDataAlgorithm() );
+  addAlgorithm( new QgsUploadGpsDataAlgorithm() );
   addAlgorithm( new QgsGridAlgorithm() );
   addAlgorithm( new QgsHillshadeAlgorithm() );
   addAlgorithm( new QgsImportPhotosAlgorithm() );

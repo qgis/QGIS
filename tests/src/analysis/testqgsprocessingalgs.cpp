@@ -187,6 +187,8 @@ class TestQgsProcessingAlgs: public QObject
 
     void convertGpxFeatureType();
     void convertGpsData();
+    void downloadGpsData();
+    void uploadGpsData();
 
   private:
 
@@ -6843,6 +6845,74 @@ void TestQgsProcessingAlgs::convertGpsData()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( !ok );
   QVERIFY( feedback.errors.value( 0 ).startsWith( QStringLiteral( "Unknown GPSBabel format \u201Cnot a format\u201D." ) ) );
+}
+
+void TestQgsProcessingAlgs::downloadGpsData()
+{
+  TestProcessingFeedback feedback;
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:downloadgpsdata" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "DEVICE" ), QStringLiteral( "xxx" ) );
+  parameters.insert( QStringLiteral( "PORT" ), QStringLiteral( "usb:" ) );
+  parameters.insert( QStringLiteral( "FEATURE_TYPE" ), 0 ); // waypoints
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  // invalid device
+  QVERIFY( !ok );
+
+  QVERIFY( feedback.errors.value( 0 ).startsWith( QStringLiteral( "Unknown GPSBabel device \u201Cxxx\u201D. Valid devices are:" ) ) );
+  feedback.errors.clear();
+
+  parameters.insert( QStringLiteral( "DEVICE" ), QStringLiteral( "Garmin serial" ) );
+  parameters.insert( QStringLiteral( "PORT" ), QStringLiteral( "not a port" ) );
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  // invalid port
+  QVERIFY( !ok );
+  QVERIFY( feedback.errors.value( 0 ).startsWith( QStringLiteral( "Unknown port \u201Cnot a port\u201D. Valid devices are:" ) ) );
+  feedback.errors.clear();
+}
+
+void TestQgsProcessingAlgs::uploadGpsData()
+{
+  TestProcessingFeedback feedback;
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:downloadgpsdata" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "DEVICE" ), QStringLiteral( "xxx" ) );
+  parameters.insert( QStringLiteral( "PORT" ), QStringLiteral( "usb:" ) );
+  parameters.insert( QStringLiteral( "FEATURE_TYPE" ), 0 ); // waypoints
+  parameters.insert( QStringLiteral( "INPUT" ), QStringLiteral( "%1/layers.gpx" ).arg( TEST_DATA_DIR ) );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  // invalid device
+  QVERIFY( !ok );
+
+  QVERIFY( feedback.errors.value( 0 ).startsWith( QStringLiteral( "Unknown GPSBabel device \u201Cxxx\u201D. Valid devices are:" ) ) );
+  feedback.errors.clear();
+
+  parameters.insert( QStringLiteral( "DEVICE" ), QStringLiteral( "Garmin serial" ) );
+  parameters.insert( QStringLiteral( "PORT" ), QStringLiteral( "not a port" ) );
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  // invalid port
+  QVERIFY( !ok );
+  QVERIFY( feedback.errors.value( 0 ).startsWith( QStringLiteral( "Unknown port \u201Cnot a port\u201D. Valid devices are:" ) ) );
+  feedback.errors.clear();
 }
 
 void TestQgsProcessingAlgs::exportMeshTimeSeries()
