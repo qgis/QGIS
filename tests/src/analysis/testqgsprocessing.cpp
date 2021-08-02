@@ -3663,6 +3663,22 @@ void TestQgsProcessing::parameterFile()
   params.insert( "non_optional", QString( "def.bmp" ) );
   QCOMPARE( QgsProcessingParameters::parameterAsFile( def.get(), params, context ), QString( "def.bmp" ) );
 
+  // no extension
+  def.reset( new QgsProcessingParameterFile( "non_optional", QString(), QgsProcessingParameterFile::File, QString(), QVariant(), false ) );
+  QVERIFY( def->checkValueIsAcceptable( "bricks.bmp" ) );
+  QVERIFY( def->checkValueIsAcceptable( "bricks.BMP" ) );
+  QVERIFY( def->checkValueIsAcceptable( "bricks.pcx" ) );
+  QVERIFY( def->checkValueIsAcceptable( "bricks.PCX" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( !def->checkValueIsAcceptable( QString( "" ) ) );
+  def.reset( new QgsProcessingParameterFile( "non_optional", QString(), QgsProcessingParameterFile::File, QString(), QVariant(), true ) );
+  QVERIFY( def->checkValueIsAcceptable( "bricks.bmp" ) );
+  QVERIFY( def->checkValueIsAcceptable( "bricks.BMP" ) );
+  QVERIFY( def->checkValueIsAcceptable( "bricks.pcx" ) );
+  QVERIFY( def->checkValueIsAcceptable( "bricks.PCX" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( def->checkValueIsAcceptable( QString( "" ) ) );
+
   // with extension
   def.reset( new QgsProcessingParameterFile( "non_optional", QString(), QgsProcessingParameterFile::File, QStringLiteral( ".bmp" ), QString( "abc.bmp" ), false ) );
   QVERIFY( def->checkValueIsAcceptable( "bricks.bmp" ) );
