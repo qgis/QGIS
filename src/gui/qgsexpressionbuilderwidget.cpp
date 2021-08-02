@@ -912,7 +912,7 @@ void QgsExpressionBuilderWidget::storeCurrentUserExpression()
   QgsExpressionStoreDialog dlg { expression, expression, QString( ), mExpressionTreeView->userExpressionLabels() };
   if ( dlg.exec() == QDialog::DialogCode::Accepted )
   {
-    mExpressionTreeView->saveToUserExpressions( dlg.label(), dlg.expression(), dlg.helpText() );
+    mExpressionTreeView->saveToUserExpressions( dlg.label().simplified(), dlg.expression(), dlg.helpText() );
   }
 }
 
@@ -931,17 +931,17 @@ void QgsExpressionBuilderWidget::editSelectedUserExpression()
 
   QgsSettings settings;
   QString helpText = settings.value( QStringLiteral( "user/%1/helpText" ).arg( item->text() ), "", QgsSettings::Section::Expressions ).toString();
-  QgsExpressionStoreDialog dlg { item->text(), item->getExpressionText(), helpText };
+  QgsExpressionStoreDialog dlg { item->text(), item->getExpressionText(), helpText, mExpressionTreeView->userExpressionLabels() };
 
   if ( dlg.exec() == QDialog::DialogCode::Accepted )
   {
     // label has changed removed the old one before adding the new one
-    if ( dlg.label() != item->text() )
+    if ( dlg.isLabelModified() )
     {
       mExpressionTreeView->removeFromUserExpressions( item->text() );
     }
 
-    mExpressionTreeView->saveToUserExpressions( dlg.label(), dlg.expression(), dlg.helpText() );
+    mExpressionTreeView->saveToUserExpressions( dlg.label().simplified(), dlg.expression(), dlg.helpText() );
   }
 }
 
