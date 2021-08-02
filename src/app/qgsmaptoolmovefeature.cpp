@@ -201,7 +201,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
             continue;
 
           QgsGeometry geom = f.geometry();
-          if ( !( geom.translate( dx, dy ) == QgsGeometry::Success ) )
+          if ( geom.translate( dx, dy ) != Qgis::GeometryOperationResult::Success )
             continue;
 
           QgsFeatureId id = f.id();

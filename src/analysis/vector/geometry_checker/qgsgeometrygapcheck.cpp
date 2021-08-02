@@ -28,8 +28,6 @@
 #include "qgscurve.h"
 #include "qgssnappingutils.h"
 
-#include "geos_c.h"
-
 QgsGeometryGapCheck::QgsGeometryGapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
   : QgsGeometryCheck( context, configuration )
   ,  mGapThresholdMapUnits( configuration.value( QStringLiteral( "gapThreshold" ) ).toDouble() )
@@ -130,7 +128,7 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
   // Buffer envelope
   geomEngine = QgsGeometryCheckerUtils::createGeomEngine( envelope.get(), mContext->tolerance );
   geomEngine->prepareGeometry();
-  QgsAbstractGeometry *bufEnvelope = geomEngine->buffer( 2, 0, GEOSBUF_CAP_SQUARE, GEOSBUF_JOIN_MITRE, 4. );  //#spellok  //#spellok
+  QgsAbstractGeometry *bufEnvelope = geomEngine->buffer( 2, 0, Qgis::EndCapStyle::Square, Qgis::JoinStyle::Miter, 4. );  //#spellok  //#spellok
   envelope.reset( bufEnvelope );
 
   // Compute difference between envelope and union to obtain gap polygons

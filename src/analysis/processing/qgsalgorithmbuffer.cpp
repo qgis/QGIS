@@ -94,8 +94,8 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
   // fixed parameters
   bool dissolve = parameterAsBoolean( parameters, QStringLiteral( "DISSOLVE" ), context );
   int segments = parameterAsInt( parameters, QStringLiteral( "SEGMENTS" ), context );
-  QgsGeometry::EndCapStyle endCapStyle = static_cast< QgsGeometry::EndCapStyle >( 1 + parameterAsInt( parameters, QStringLiteral( "END_CAP_STYLE" ), context ) );
-  QgsGeometry::JoinStyle joinStyle = static_cast< QgsGeometry::JoinStyle>( 1 + parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );
+  Qgis::EndCapStyle endCapStyle = static_cast< Qgis::EndCapStyle >( 1 + parameterAsInt( parameters, QStringLiteral( "END_CAP_STYLE" ), context ) );
+  Qgis::JoinStyle joinStyle = static_cast< Qgis::JoinStyle>( 1 + parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );
   double miterLimit = parameterAsDouble( parameters, QStringLiteral( "MITER_LIMIT" ), context );
   double bufferDistance = parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context );
   bool dynamicBuffer = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DISTANCE" ) );

@@ -116,8 +116,8 @@ void QgsBufferedLine3DSymbolHandler::processFeature( const QgsFeature &f, const 
 
   // TODO: configurable
   const int nSegments = 4;
-  const QgsGeometry::EndCapStyle endCapStyle = QgsGeometry::CapRound;
-  const QgsGeometry::JoinStyle joinStyle = QgsGeometry::JoinStyleRound;
+  const Qgis::EndCapStyle endCapStyle = Qgis::EndCapStyle::Round;
+  const Qgis::JoinStyle joinStyle = Qgis::JoinStyle::Round;
   const double mitreLimit = 0;
 
   QgsGeos engine( g );

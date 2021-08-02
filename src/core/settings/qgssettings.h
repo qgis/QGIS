@@ -344,7 +344,7 @@ class CORE_EXPORT QgsSettings : public QObject
       if ( metaEnum.isValid() )
       {
         // read as string
-        QByteArray ba = value( key, metaEnum.valueToKeys( defaultValue ) ).toString().toUtf8();
+        QByteArray ba = value( key, metaEnum.valueToKeys( static_cast< int >( defaultValue ) ) ).toString().toUtf8();
         const char *vs = ba.data();
         v = static_cast<T>( metaEnum.keysToValue( vs, &ok ) );
       }
@@ -399,7 +399,7 @@ class CORE_EXPORT QgsSettings : public QObject
       Q_ASSERT( metaEnum.isValid() );
       if ( metaEnum.isValid() )
       {
-        setValue( key, metaEnum.valueToKeys( value ), section );
+        setValue( key, metaEnum.valueToKeys( static_cast< int >( value ) ), section );
       }
       else
       {

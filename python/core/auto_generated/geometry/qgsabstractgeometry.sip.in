@@ -743,12 +743,12 @@ This method returns a reference only, and does not involve any geometry cloning.
 .. versionadded:: 3.20
 %End
 
-    virtual bool isValid( QString &error /Out/, int flags = 0 ) const = 0;
+    virtual bool isValid( QString &error /Out/, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const = 0;
 %Docstring
 Checks validity of the geometry, and returns ``True`` if the geometry is valid.
 
 :param flags: indicates optional flags which control the type of validity checking performed
-              (corresponding to :py:class:`QgsGeometry`.ValidityFlags).
+              (corresponding to Qgis.GeometryValidityFlags).
 
 :return: - ``True`` if geometry is valid
          - error: will be set to the validity error message

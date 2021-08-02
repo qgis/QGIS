@@ -519,3 +519,111 @@ Qgis.GpsFeatureType.Track.__doc__ = "Track"
 Qgis.GpsFeatureType.__doc__ = 'GPS feature types.\n\n.. versionadded:: 3.22\n\n' + '* ``Waypoint``: ' + Qgis.GpsFeatureType.Waypoint.__doc__ + '\n' + '* ``Route``: ' + Qgis.GpsFeatureType.Route.__doc__ + '\n' + '* ``Track``: ' + Qgis.GpsFeatureType.Track.__doc__
 # --
 Qgis.GpsFeatureType.baseClass = Qgis
+QgsGeometry.OperationResult = Qgis.GeometryOperationResult
+# monkey patching scoped based enum
+QgsGeometry.Success = Qgis.GeometryOperationResult.Success
+QgsGeometry.Success.is_monkey_patched = True
+QgsGeometry.Success.__doc__ = "Operation succeeded"
+QgsGeometry.NothingHappened = Qgis.GeometryOperationResult.NothingHappened
+QgsGeometry.NothingHappened.is_monkey_patched = True
+QgsGeometry.NothingHappened.__doc__ = "Nothing happened, without any error"
+QgsGeometry.InvalidBaseGeometry = Qgis.GeometryOperationResult.InvalidBaseGeometry
+QgsGeometry.InvalidBaseGeometry.is_monkey_patched = True
+QgsGeometry.InvalidBaseGeometry.__doc__ = "The base geometry on which the operation is done is invalid or empty"
+QgsGeometry.InvalidInputGeometryType = Qgis.GeometryOperationResult.InvalidInputGeometryType
+QgsGeometry.InvalidInputGeometryType.is_monkey_patched = True
+QgsGeometry.InvalidInputGeometryType.__doc__ = "The input geometry (ring, part, split line, etc.) has not the correct geometry type"
+QgsGeometry.SelectionIsEmpty = Qgis.GeometryOperationResult.SelectionIsEmpty
+QgsGeometry.SelectionIsEmpty.is_monkey_patched = True
+QgsGeometry.SelectionIsEmpty.__doc__ = "No features were selected"
+QgsGeometry.SelectionIsGreaterThanOne = Qgis.GeometryOperationResult.SelectionIsGreaterThanOne
+QgsGeometry.SelectionIsGreaterThanOne.is_monkey_patched = True
+QgsGeometry.SelectionIsGreaterThanOne.__doc__ = "More than one features were selected"
+QgsGeometry.GeometryEngineError = Qgis.GeometryOperationResult.GeometryEngineError
+QgsGeometry.GeometryEngineError.is_monkey_patched = True
+QgsGeometry.GeometryEngineError.__doc__ = "Geometry engine misses a method implemented or an error occurred in the geometry engine"
+QgsGeometry.LayerNotEditable = Qgis.GeometryOperationResult.LayerNotEditable
+QgsGeometry.LayerNotEditable.is_monkey_patched = True
+QgsGeometry.LayerNotEditable.__doc__ = "Cannot edit layer"
+QgsGeometry.AddPartSelectedGeometryNotFound = Qgis.GeometryOperationResult.AddPartSelectedGeometryNotFound
+QgsGeometry.AddPartSelectedGeometryNotFound.is_monkey_patched = True
+QgsGeometry.AddPartSelectedGeometryNotFound.__doc__ = "The selected geometry cannot be found"
+QgsGeometry.AddPartNotMultiGeometry = Qgis.GeometryOperationResult.AddPartNotMultiGeometry
+QgsGeometry.AddPartNotMultiGeometry.is_monkey_patched = True
+QgsGeometry.AddPartNotMultiGeometry.__doc__ = "The source geometry is not multi"
+QgsGeometry.AddRingNotClosed = Qgis.GeometryOperationResult.AddRingNotClosed
+QgsGeometry.AddRingNotClosed.is_monkey_patched = True
+QgsGeometry.AddRingNotClosed.__doc__ = "The input ring is not closed"
+QgsGeometry.AddRingNotValid = Qgis.GeometryOperationResult.AddRingNotValid
+QgsGeometry.AddRingNotValid.is_monkey_patched = True
+QgsGeometry.AddRingNotValid.__doc__ = "The input ring is not valid"
+QgsGeometry.AddRingCrossesExistingRings = Qgis.GeometryOperationResult.AddRingCrossesExistingRings
+QgsGeometry.AddRingCrossesExistingRings.is_monkey_patched = True
+QgsGeometry.AddRingCrossesExistingRings.__doc__ = "The input ring crosses existing rings (it is not disjoint)"
+QgsGeometry.AddRingNotInExistingFeature = Qgis.GeometryOperationResult.AddRingNotInExistingFeature
+QgsGeometry.AddRingNotInExistingFeature.is_monkey_patched = True
+QgsGeometry.AddRingNotInExistingFeature.__doc__ = "The input ring doesn't have any existing ring to fit into"
+QgsGeometry.SplitCannotSplitPoint = Qgis.GeometryOperationResult.SplitCannotSplitPoint
+QgsGeometry.SplitCannotSplitPoint.is_monkey_patched = True
+QgsGeometry.SplitCannotSplitPoint.__doc__ = "Cannot split points"
+Qgis.GeometryOperationResult.__doc__ = 'Split features */\n\n' + '* ``Success``: ' + Qgis.GeometryOperationResult.Success.__doc__ + '\n' + '* ``NothingHappened``: ' + Qgis.GeometryOperationResult.NothingHappened.__doc__ + '\n' + '* ``InvalidBaseGeometry``: ' + Qgis.GeometryOperationResult.InvalidBaseGeometry.__doc__ + '\n' + '* ``InvalidInputGeometryType``: ' + Qgis.GeometryOperationResult.InvalidInputGeometryType.__doc__ + '\n' + '* ``SelectionIsEmpty``: ' + Qgis.GeometryOperationResult.SelectionIsEmpty.__doc__ + '\n' + '* ``SelectionIsGreaterThanOne``: ' + Qgis.GeometryOperationResult.SelectionIsGreaterThanOne.__doc__ + '\n' + '* ``GeometryEngineError``: ' + Qgis.GeometryOperationResult.GeometryEngineError.__doc__ + '\n' + '* ``LayerNotEditable``: ' + Qgis.GeometryOperationResult.LayerNotEditable.__doc__ + '\n' + '* ``AddPartSelectedGeometryNotFound``: ' + Qgis.GeometryOperationResult.AddPartSelectedGeometryNotFound.__doc__ + '\n' + '* ``AddPartNotMultiGeometry``: ' + Qgis.GeometryOperationResult.AddPartNotMultiGeometry.__doc__ + '\n' + '* ``AddRingNotClosed``: ' + Qgis.GeometryOperationResult.AddRingNotClosed.__doc__ + '\n' + '* ``AddRingNotValid``: ' + Qgis.GeometryOperationResult.AddRingNotValid.__doc__ + '\n' + '* ``AddRingCrossesExistingRings``: ' + Qgis.GeometryOperationResult.AddRingCrossesExistingRings.__doc__ + '\n' + '* ``AddRingNotInExistingFeature``: ' + Qgis.GeometryOperationResult.AddRingNotInExistingFeature.__doc__ + '\n' + '* ``SplitCannotSplitPoint``: ' + Qgis.GeometryOperationResult.SplitCannotSplitPoint.__doc__
+# --
+Qgis.GeometryOperationResult.baseClass = Qgis
+QgsGeometry.ValidityFlag = Qgis.GeometryValidityFlag
+# monkey patching scoped based enum
+QgsGeometry.FlagAllowSelfTouchingHoles = Qgis.GeometryValidityFlag.AllowSelfTouchingHoles
+QgsGeometry.FlagAllowSelfTouchingHoles.is_monkey_patched = True
+QgsGeometry.FlagAllowSelfTouchingHoles.__doc__ = "Indicates that self-touching holes are permitted. OGC validity states that self-touching holes are NOT permitted, whilst other vendor validity checks (e.g. ESRI) permit self-touching holes."
+Qgis.GeometryValidityFlag.__doc__ = 'Geometry validity check flags.\n\n.. versionadded:: 3.22\n\n' + '* ``FlagAllowSelfTouchingHoles``: ' + Qgis.GeometryValidityFlag.AllowSelfTouchingHoles.__doc__
+# --
+Qgis.GeometryValidityFlag.baseClass = Qgis
+QgsGeometry.ValidationMethod = Qgis.GeometryValidationEngine
+# monkey patching scoped based enum
+QgsGeometry.ValidatorQgisInternal = Qgis.GeometryValidationEngine.QgisInternal
+QgsGeometry.ValidatorQgisInternal.is_monkey_patched = True
+QgsGeometry.ValidatorQgisInternal.__doc__ = "Use internal QgsGeometryValidator method"
+QgsGeometry.ValidatorGeos = Qgis.GeometryValidationEngine.Geos
+QgsGeometry.ValidatorGeos.is_monkey_patched = True
+QgsGeometry.ValidatorGeos.__doc__ = "Use GEOS validation methods"
+Qgis.GeometryValidationEngine.__doc__ = 'Available engines for validating geometries.\n\n.. versionadded:: 3.22\n\n' + '* ``ValidatorQgisInternal``: ' + Qgis.GeometryValidationEngine.QgisInternal.__doc__ + '\n' + '* ``ValidatorGeos``: ' + Qgis.GeometryValidationEngine.Geos.__doc__
+# --
+Qgis.GeometryValidationEngine.baseClass = Qgis
+QgsGeometry.BufferSide = Qgis.BufferSide
+# monkey patching scoped based enum
+QgsGeometry.SideLeft = Qgis.BufferSide.Left
+QgsGeometry.SideLeft.is_monkey_patched = True
+QgsGeometry.SideLeft.__doc__ = "Buffer to left of line"
+QgsGeometry.SideRight = Qgis.BufferSide.Right
+QgsGeometry.SideRight.is_monkey_patched = True
+QgsGeometry.SideRight.__doc__ = "Buffer to right of line"
+Qgis.BufferSide.__doc__ = 'Side of line to buffer.\n\n.. versionadded:: 3.22\n\n' + '* ``SideLeft``: ' + Qgis.BufferSide.Left.__doc__ + '\n' + '* ``SideRight``: ' + Qgis.BufferSide.Right.__doc__
+# --
+Qgis.BufferSide.baseClass = Qgis
+QgsGeometry.EndCapStyle = Qgis.EndCapStyle
+# monkey patching scoped based enum
+QgsGeometry.CapRound = Qgis.EndCapStyle.Round
+QgsGeometry.CapRound.is_monkey_patched = True
+QgsGeometry.CapRound.__doc__ = "Round cap"
+QgsGeometry.CapFlat = Qgis.EndCapStyle.Flat
+QgsGeometry.CapFlat.is_monkey_patched = True
+QgsGeometry.CapFlat.__doc__ = "Flat cap (in line with start/end of line)"
+QgsGeometry.CapSquare = Qgis.EndCapStyle.Square
+QgsGeometry.CapSquare.is_monkey_patched = True
+QgsGeometry.CapSquare.__doc__ = "Square cap (extends past start/end of line by buffer distance)"
+Qgis.EndCapStyle.__doc__ = 'End cap styles for buffers.\n\n.. versionadded:: 3.22\n\n' + '* ``CapRound``: ' + Qgis.EndCapStyle.Round.__doc__ + '\n' + '* ``CapFlat``: ' + Qgis.EndCapStyle.Flat.__doc__ + '\n' + '* ``CapSquare``: ' + Qgis.EndCapStyle.Square.__doc__
+# --
+Qgis.EndCapStyle.baseClass = Qgis
+QgsGeometry.JoinStyle = Qgis.JoinStyle
+# monkey patching scoped based enum
+QgsGeometry.JoinStyleRound = Qgis.JoinStyle.Round
+QgsGeometry.JoinStyleRound.is_monkey_patched = True
+QgsGeometry.JoinStyleRound.__doc__ = "Use rounded joins"
+QgsGeometry.JoinStyleMiter = Qgis.JoinStyle.Miter
+QgsGeometry.JoinStyleMiter.is_monkey_patched = True
+QgsGeometry.JoinStyleMiter.__doc__ = "Use mitered joins"
+QgsGeometry.JoinStyleBevel = Qgis.JoinStyle.Bevel
+QgsGeometry.JoinStyleBevel.is_monkey_patched = True
+QgsGeometry.JoinStyleBevel.__doc__ = "Use beveled joins"
+Qgis.JoinStyle.__doc__ = 'Join styles for buffers.\n\n.. versionadded:: 3.22\n\n' + '* ``JoinStyleRound``: ' + Qgis.JoinStyle.Round.__doc__ + '\n' + '* ``JoinStyleMiter``: ' + Qgis.JoinStyle.Miter.__doc__ + '\n' + '* ``JoinStyleBevel``: ' + Qgis.JoinStyle.Bevel.__doc__
+# --
+Qgis.JoinStyle.baseClass = Qgis

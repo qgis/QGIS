@@ -107,7 +107,7 @@ bool QgsOffsetLinesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Q
     mOffsetProperty = parameters.value( QStringLiteral( "DISTANCE" ) ).value< QgsProperty >();
 
   mSegments = parameterAsInt( parameters, QStringLiteral( "SEGMENTS" ), context );
-  mJoinStyle = static_cast< QgsGeometry::JoinStyle>( 1 + parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );
+  mJoinStyle = static_cast< Qgis::JoinStyle>( 1 + parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );
   mMiterLimit = parameterAsDouble( parameters, QStringLiteral( "MITER_LIMIT" ), context );
 
   return true;

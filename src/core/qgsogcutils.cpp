@@ -168,10 +168,10 @@ QgsGeometry QgsOgcUtils::geometryFromGML( const QDomNode &geometryNode, const Co
         const QgsCoordinateTransform transformer { geomSrs, context.layer->crs(), context.transformContext };
         try
         {
-          const QgsGeometry::OperationResult result = geometry.transform( transformer );
-          if ( result != QgsGeometry::OperationResult::Success )
+          const Qgis::GeometryOperationResult result = geometry.transform( transformer );
+          if ( result != Qgis::GeometryOperationResult::Success )
           {
-            QgsDebugMsgLevel( QStringLiteral( "Error transforming geometry: %1" ).arg( result ), 2 );
+            QgsDebugMsgLevel( QStringLiteral( "Error transforming geometry: %1" ).arg( qgsEnumValueToKey( result ) ), 2 );
           }
         }
         catch ( QgsCsException & )

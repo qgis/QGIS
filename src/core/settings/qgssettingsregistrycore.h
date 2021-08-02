@@ -147,7 +147,7 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     static const inline QgsSettingsEntryInteger settingsDigitizingValidateGeometries = QgsSettingsEntryInteger( QStringLiteral( "/qgis/digitizing/validate_geometries" ), QgsSettings::NoSection, 1 );
 
     //! Settings entry digitizing offset join style
-    static const inline QgsSettingsEntryEnumFlag<QgsGeometry::JoinStyle> settingsDigitizingOffsetJoinStyle = QgsSettingsEntryEnumFlag<QgsGeometry::JoinStyle>( QStringLiteral( "/qgis/digitizing/offset_join_style" ), QgsSettings::NoSection, QgsGeometry::JoinStyleRound );
+    static const inline QgsSettingsEntryEnumFlag<Qgis::JoinStyle> settingsDigitizingOffsetJoinStyle = QgsSettingsEntryEnumFlag<Qgis::JoinStyle>( QStringLiteral( "/qgis/digitizing/offset_join_style" ), QgsSettings::NoSection, Qgis::JoinStyle::Round );
 
     //! Settings entry digitizing offset quad seg
     static const inline QgsSettingsEntryInteger settingsDigitizingOffsetQuadSeg = QgsSettingsEntryInteger( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), QgsSettings::NoSection, 8 );
@@ -165,7 +165,7 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     static const inline QgsSettingsEntryDouble settingsDigitizingConvertToCurveDistanceTolerance = QgsSettingsEntryDouble( QStringLiteral( "/qgis/digitizing/convert_to_curve_distance_tolerance" ), QgsSettings::NoSection, 1e-6 );
 
     //! Settings entry digitizing offset cap style
-    static const inline QgsSettingsEntryEnumFlag<QgsGeometry::EndCapStyle> settingsDigitizingOffsetCapStyle = QgsSettingsEntryEnumFlag<QgsGeometry::EndCapStyle>( QStringLiteral( "/qgis/digitizing/offset_cap_style" ), QgsSettings::NoSection,  QgsGeometry::CapRound );
+    static const inline QgsSettingsEntryEnumFlag<Qgis::EndCapStyle> settingsDigitizingOffsetCapStyle = QgsSettingsEntryEnumFlag<Qgis::EndCapStyle>( QStringLiteral( "/qgis/digitizing/offset_cap_style" ), QgsSettings::NoSection,  Qgis::EndCapStyle::Round );
 
     //! Settings entry digitizing offset show advanced
     static const inline QgsSettingsEntryBool settingsDigitizingOffsetShowAdvanced = QgsSettingsEntryBool( QStringLiteral( "/qgis/digitizing/offset_show_advanced" ), QgsSettings::NoSection, false );

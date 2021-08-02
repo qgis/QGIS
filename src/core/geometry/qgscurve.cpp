@@ -243,7 +243,7 @@ QgsRectangle QgsCurve::boundingBox() const
   return mBoundingBox;
 }
 
-bool QgsCurve::isValid( QString &error, int flags ) const
+bool QgsCurve::isValid( QString &error, Qgis::GeometryValidityFlags flags ) const
 {
   if ( flags == 0 && mHasCachedValidity )
   {
@@ -253,7 +253,7 @@ bool QgsCurve::isValid( QString &error, int flags ) const
   }
 
   QgsGeos geos( this );
-  bool res = geos.isValid( &error, flags & QgsGeometry::FlagAllowSelfTouchingHoles, nullptr );
+  bool res = geos.isValid( &error, flags & Qgis::GeometryValidityFlag::AllowSelfTouchingHoles, nullptr );
   if ( flags == 0 )
   {
     mValidityFailureReason = !res ? error : QString();

@@ -104,9 +104,9 @@ bool QgsSingleSidedBufferAlgorithm::prepareAlgorithm( const QVariantMap &paramet
   if ( mDynamicDistance )
     mDistanceProperty = parameters.value( QStringLiteral( "DISTANCE" ) ).value< QgsProperty >();
 
-  mSide = static_cast< QgsGeometry::BufferSide>( parameterAsInt( parameters, QStringLiteral( "SIDE" ), context ) );
+  mSide = static_cast< Qgis::BufferSide>( parameterAsInt( parameters, QStringLiteral( "SIDE" ), context ) );
   mSegments = parameterAsInt( parameters, QStringLiteral( "SEGMENTS" ), context );
-  mJoinStyle = static_cast< QgsGeometry::JoinStyle>( 1 + parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );
+  mJoinStyle = static_cast< Qgis::JoinStyle>( 1 + parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );
   mMiterLimit = parameterAsDouble( parameters, QStringLiteral( "MITER_LIMIT" ), context );
 
   return true;

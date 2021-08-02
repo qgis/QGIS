@@ -106,8 +106,8 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     bool topologicalEditing = QgsProject::instance()->topologicalEditing();
     QgsPointSequence topologyTestPoints;
     vlayer->beginEditCommand( tr( "Features split" ) );
-    QgsGeometry::OperationResult returnCode = vlayer->splitFeatures( captureCurve(), topologyTestPoints, true, topologicalEditing );
-    if ( returnCode == QgsGeometry::OperationResult::Success )
+    Qgis::GeometryOperationResult returnCode = vlayer->splitFeatures( captureCurve(), topologyTestPoints, true, topologicalEditing );
+    if ( returnCode == Qgis::GeometryOperationResult::Success )
     {
       vlayer->endEditCommand();
     }
@@ -118,7 +118,7 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
     switch ( returnCode )
     {
-      case QgsGeometry::OperationResult::Success:
+      case Qgis::GeometryOperationResult::Success:
         if ( topologicalEditing == true &&
              ! topologyTestPoints.isEmpty() )
         {
@@ -150,19 +150,19 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           }
         }
         break;
-      case QgsGeometry::OperationResult::NothingHappened:
+      case Qgis::GeometryOperationResult::NothingHappened:
         QgisApp::instance()->messageBar()->pushMessage(
           tr( "No features were split" ),
           tr( "If there are selected features, the split tool only applies to those. If you would like to split all features under the split line, clear the selection." ),
           Qgis::MessageLevel::Warning );
         break;
-      case QgsGeometry::OperationResult::GeometryEngineError:
+      case Qgis::GeometryOperationResult::GeometryEngineError:
         QgisApp::instance()->messageBar()->pushMessage(
           tr( "No feature split done" ),
           tr( "Cut edges detected. Make sure the line splits features into multiple parts." ),
           Qgis::MessageLevel::Warning );
         break;
-      case QgsGeometry::OperationResult::InvalidBaseGeometry:
+      case Qgis::GeometryOperationResult::InvalidBaseGeometry:
         QgisApp::instance()->messageBar()->pushMessage(
           tr( "No feature split done" ),
           tr( "The geometry is invalid. Please repair before trying to split it." ),

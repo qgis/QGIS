@@ -32,9 +32,9 @@ QList<QgsSingleGeometryCheckError *> QgsGeometryIsValidCheck::processGeometry( c
 {
   QVector<QgsGeometry::Error> errors;
 
-  QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal;
+  Qgis::GeometryValidationEngine method = Qgis::GeometryValidationEngine::QgisInternal;
   if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.value() == 2 )
-    method = QgsGeometry::ValidatorGeos;
+    method = Qgis::GeometryValidationEngine::Geos;
 
   QgsGeometryValidator validator( geometry, &errors, method );
 

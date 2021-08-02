@@ -137,7 +137,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param newPart part to add. Ownership is NOT transferred.
      * \returns OperationResult a result code: success or reason of failure
      */
-    static QgsGeometry::OperationResult addPart( QgsGeometry &geometry, GEOSGeometry *newPart );
+    static Qgis::GeometryOperationResult addPart( QgsGeometry &geometry, GEOSGeometry *newPart );
 
     void geometryChanged() override;
     void prepareGeometry() override;
@@ -172,7 +172,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     QgsAbstractGeometry *combine( const QVector< QgsGeometry > &, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = nullptr ) const override;
-    QgsAbstractGeometry *buffer( double distance, int segments, int endCapStyle, int joinStyle, double miterLimit, QString *errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *simplify( double tolerance, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *interpolate( double distance, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *envelope( QString *errorMsg = nullptr ) const override;
@@ -276,7 +276,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
                                          QgsPointSequence &topologyTestPoints,
                                          QString *errorMsg = nullptr, bool skipIntersectionCheck = false ) const override;
 
-    QgsAbstractGeometry *offsetCurve( double distance, int segments, int joinStyle, double miterLimit, QString *errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *offsetCurve( double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = nullptr ) const override;
 
     /**
      * Returns a single sided buffer for a geometry. The buffer is only
@@ -291,8 +291,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * calculated
      * \since QGIS 3.0
      */
-    std::unique_ptr< QgsAbstractGeometry > singleSidedBuffer( double distance, int segments, int side,
-        int joinStyle, double miterLimit,
+    std::unique_ptr< QgsAbstractGeometry > singleSidedBuffer( double distance, int segments, Qgis::BufferSide side,
+        Qgis::JoinStyle joinStyle, double miterLimit,
         QString *errorMsg = nullptr ) const;
 
     /**

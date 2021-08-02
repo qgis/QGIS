@@ -753,7 +753,7 @@ namespace QgsWfs
             transform.setDestinationCrs( destinationCrs );
             try
             {
-              if ( extentGeom.transform( transform ) == 0 )
+              if ( extentGeom.transform( transform ) == Qgis::GeometryOperationResult::Success )
               {
                 extent = QgsRectangle( extentGeom.boundingBox() );
               }
@@ -1109,7 +1109,7 @@ namespace QgsWfs
           transform.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
           try
           {
-            if ( exportGeom.transform( transform ) == 0 )
+            if ( exportGeom.transform( transform ) == Qgis::GeometryOperationResult::Success )
             {
               transformedRect.reset( new QgsRectangle( exportGeom.boundingBox() ) );
               rect = transformedRect.get();
@@ -1328,7 +1328,7 @@ namespace QgsWfs
         try
         {
           QgsGeometry transformed = geom;
-          if ( transformed.transform( mTransform ) == 0 )
+          if ( transformed.transform( mTransform ) == Qgis::GeometryOperationResult::Success )
           {
             geom = transformed;
             crs = params.outputCrs;
@@ -1430,7 +1430,7 @@ namespace QgsWfs
         try
         {
           QgsGeometry transformed = geom;
-          if ( transformed.transform( mTransform ) == 0 )
+          if ( transformed.transform( mTransform ) == Qgis::GeometryOperationResult::Success )
           {
             geom = transformed;
             crs = params.outputCrs;

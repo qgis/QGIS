@@ -421,7 +421,7 @@ QgsAbstractGeometry *QgsPoint::boundary() const
   return nullptr;
 }
 
-bool QgsPoint::isValid( QString &, int ) const
+bool QgsPoint::isValid( QString &, Qgis::GeometryValidityFlags ) const
 {
   return true;
 }

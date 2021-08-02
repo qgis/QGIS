@@ -3849,9 +3849,11 @@ static QVariant fcnOffsetCurve( const QVariantList &values, const QgsExpressionC
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   double dist = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
   int segments = QgsExpressionUtils::getNativeIntValue( values.at( 2 ), parent );
-  QgsGeometry::JoinStyle join = static_cast< QgsGeometry::JoinStyle >( QgsExpressionUtils::getIntValue( values.at( 3 ), parent ) );
-  if ( join < QgsGeometry::JoinStyleRound || join > QgsGeometry::JoinStyleBevel )
+  const int joinInt = QgsExpressionUtils::getIntValue( values.at( 3 ), parent );
+  if ( joinInt < 1 || joinInt > 3 )
     return QVariant();
+  const Qgis::JoinStyle join = static_cast< Qgis::JoinStyle >( joinInt );
+
   double miterLimit = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
 
   QgsGeometry geom = fGeom.offsetCurve( dist, segments, join, miterLimit );
@@ -3864,12 +3866,15 @@ static QVariant fcnSingleSidedBuffer( const QVariantList &values, const QgsExpre
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   double dist = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
   int segments = QgsExpressionUtils::getNativeIntValue( values.at( 2 ), parent );
-  QgsGeometry::JoinStyle join = static_cast< QgsGeometry::JoinStyle >( QgsExpressionUtils::getIntValue( values.at( 3 ), parent ) );
-  if ( join < QgsGeometry::JoinStyleRound || join > QgsGeometry::JoinStyleBevel )
+
+  const int joinInt = QgsExpressionUtils::getIntValue( values.at( 3 ), parent );
+  if ( joinInt < 1 || joinInt > 3 )
     return QVariant();
+  const Qgis::JoinStyle join = static_cast< Qgis::JoinStyle >( joinInt );
+
   double miterLimit = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
 
-  QgsGeometry geom = fGeom.singleSidedBuffer( dist, segments, QgsGeometry::SideLeft, join, miterLimit );
+  QgsGeometry geom = fGeom.singleSidedBuffer( dist, segments, Qgis::BufferSide::Left, join, miterLimit );
   QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
@@ -4995,7 +5000,7 @@ static QVariant fcnTransformGeometry( const QVariantList &values, const QgsExpre
   QgsCoordinateTransform t( s, d, tContext );
   try
   {
-    if ( fGeom.transform( t ) == 0 )
+    if ( fGeom.transform( t ) == Qgis::GeometryOperationResult::Success )
       return QVariant::fromValue( fGeom );
   }
   catch ( QgsCsException &cse )
@@ -6918,13 +6923,13 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "offset_curve" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8.0 )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "join" ), true, QgsGeometry::JoinStyleRound )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "join" ), true, static_cast< int >( Qgis::JoinStyle::Round ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "miter_limit" ), true, 2.0 ),
                                             fcnOffsetCurve, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "single_sided_buffer" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8.0 )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "join" ), true, QgsGeometry::JoinStyleRound )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "join" ), true, static_cast< int >( Qgis::JoinStyle::Round ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "miter_limit" ), true, 2.0 ),
                                             fcnSingleSidedBuffer, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "extend" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )

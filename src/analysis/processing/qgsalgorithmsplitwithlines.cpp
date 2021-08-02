@@ -206,11 +206,11 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
 
               QVector< QgsGeometry > newGeometries;
               QgsPointSequence topologyTestPoints;
-              QgsGeometry::OperationResult result = inGeom.splitGeometry( splitterPList, newGeometries, false, topologyTestPoints, true );
+              Qgis::GeometryOperationResult result = inGeom.splitGeometry( splitterPList, newGeometries, false, topologyTestPoints, true );
 
               // splitGeometry: If there are several intersections
               // between geometry and splitLine, only the first one is considered.
-              if ( result == QgsGeometry::Success )
+              if ( result == Qgis::GeometryOperationResult::Success )
               {
                 // sometimes the resultant geometry has changed from the input, but only because of numerical precision issues.
                 // and is effectively indistinguishable from the input. By testing the Hausdorff distance is less than this threshold
