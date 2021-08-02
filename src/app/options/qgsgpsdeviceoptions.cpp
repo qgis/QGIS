@@ -35,14 +35,16 @@ QgsGpsDeviceOptionsWidget::QgsGpsDeviceOptionsWidget( QWidget *parent )
   connect( mListDevices, &QListWidget::currentItemChanged, this, &QgsGpsDeviceOptionsWidget::selectedDeviceChanged );
 
   mDescriptionBrowser->setHtml( QStringLiteral( "<p>%1</p><ul>"
-                                "<li>%babel - %2</li>"
-                                "<li>%in - %3</li>"
-                                "<li>%out - %4</li>"
+                                "<li><code>%babel</code> - %2</li>"
+                                "<li><code>%in</code> - %3</li>"
+                                "<li><code>%out</code> - %4</li>"
+                                "<li><code>%type</code> - %5</li>"
                                 "</ul>" ).arg( tr( "In the download and upload commands there can be special words that will be replaced by "
                                     "QGIS when the commands are used. These words are:" ),
                                     tr( "the path to GPSBabel" ),
                                     tr( "the GPX filename when uploading or the port when downloading" ),
-                                    tr( "the port when uploading or the GPX filename when downloading" ) ) );
+                                    tr( "the port when uploading or the GPX filename when downloading" ),
+                                    tr( "GPSBabel feature type argument matching selected feature type (e.g. '-w' for waypoints, '-t' for tracks, and '-r' for routes)" ) ) );
 
   const QMap< QString, QgsBabelGpsDeviceFormat * > registeredDevices = QgsApplication::gpsBabelFormatRegistry()->devices();
   for ( auto it = registeredDevices.constBegin(); it != registeredDevices.constEnd(); ++it )
