@@ -172,6 +172,9 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
 
     //! Settings entry digitizing tracing max feature count
     static const inline QgsSettingsEntryInteger settingsDigitizingTracingMaxFeatureCount = QgsSettingsEntryInteger( QStringLiteral( "/qgis/digitizing/tracing_max_feature_count" ), QgsSettings::NoSection, 10000 );
+
+    //! Settings entry path to GPSBabel executable.
+    static const inline QgsSettingsEntryString settingsGpsBabelPath = QgsSettingsEntryString( QStringLiteral( "gpsbabelPath" ), QgsSettings::Gps, QStringLiteral( "gpsbabel" ) );
 #endif
 
 };
