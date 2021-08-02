@@ -60,10 +60,10 @@ bool QgsCopyFileTask::run()
   const int chunkSize = std::clamp( size / 100, 1024, 1024 * 1024 );
 
   int bytesRead = 0;
-  char data[chunkSize];
+  std::vector<char> data( chunkSize );
   while ( true )
   {
-    const int len = fileSource.read( data, chunkSize );
+    const int len = fileSource.read( data.data(), chunkSize );
     if ( len == -1 )
     {
       mErrorString = tr( "Fail reading from '%1'" ).arg( mSource );
@@ -74,7 +74,7 @@ bool QgsCopyFileTask::run()
     if ( !len )
       break;
 
-    if ( fileDestination.write( data, len ) != len )
+    if ( fileDestination.write( data.data(), len ) != len )
     {
       mErrorString = tr( "Fail writing to '%1'" ).arg( mDestination );
       return false;
