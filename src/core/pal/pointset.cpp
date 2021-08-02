@@ -558,6 +558,8 @@ void PointSet::offsetCurveByDistance( double distance )
   try
   {
     newGeos = GEOSOffsetCurve_r( geosctxt, mGeos, distance, 0, GEOSBUF_JOIN_MITRE, 2 );
+    if ( !newGeos )
+      return;
 
     // happens sometime, if the offset curve self-intersects
     if ( GEOSGeomTypeId_r( geosctxt, newGeos ) == GEOS_MULTILINESTRING )
