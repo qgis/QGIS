@@ -8525,8 +8525,8 @@ void TestQgsProcessing::parameterMeshDatasetTime()
 
   QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( QDateTime( QDate( 2020, 01, 01 ), QTime( 10, 0, 0 ) ) ),
             QStringLiteral( "defined-date-time" ) );
-  QCOMPARE( QDateTime( QDate( 2020, 01, 01 ), QTime( 10, 0, 0 ) ),
-            QgsProcessingParameterMeshDatasetTime::timeValueAsDefinedDateTime( QDateTime( QDate( 2020, 01, 01 ), QTime( 10, 0, 0 ) ) ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::timeValueAsDefinedDateTime( QDateTime( QDate( 2020, 01, 01 ), QTime( 10, 0, 0 ) ) ),
+            QDateTime( QDate( 2020, 01, 01 ), QTime( 10, 0, 0 ), Qt::UTC ) );
   QCOMPARE( def->valueAsPythonString( QDateTime( QDate( 2020, 01, 01 ), QTime( 10, 0, 0 ) ), context ),
             QStringLiteral( "{'type': 'defined-date-time','value': QDateTime(QDate(2020, 1, 1), QTime(10, 0, 0))}" ) );
 
