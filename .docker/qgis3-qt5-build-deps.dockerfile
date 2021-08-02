@@ -22,6 +22,7 @@ RUN  apt-get update \
     curl \
     dh-python \
     gdal-bin \
+    gpsbabel \
     graphviz \
     libaio1 \
     libexiv2-27 \
