@@ -39,20 +39,19 @@ QgsSingleSymbol3DRendererWidget::QgsSingleSymbol3DRendererWidget( QgsVectorLayer
   : QWidget( parent )
   , mLayer( layer )
 {
-  widgetSymbol = new QgsSymbol3DWidget( mLayer, this );
+  QVBoxLayout *scrollLayout = new QVBoxLayout();
+  scrollLayout->setContentsMargins( 0, 0, 0, 0 );
 
   QgsVScrollArea *scrollArea = new QgsVScrollArea( this );
   scrollArea->setFrameShape( QFrame::NoFrame );
   scrollArea->setFrameShadow( QFrame::Plain );
   scrollArea->setWidgetResizable( true );
-  QVBoxLayout *scrollLayout = new QVBoxLayout( this );
-  scrollLayout->setContentsMargins( 0, 0, 0, 0 );
   scrollLayout->addWidget( scrollArea );
 
-  QVBoxLayout *layout = new QVBoxLayout( this );
-  layout->setContentsMargins( 0, 0, 0, 0 );
-  widgetSymbol->setLayout( layout );
+  widgetSymbol = new QgsSymbol3DWidget( mLayer, this );
   scrollArea->setWidget( widgetSymbol );
+
+  setLayout( scrollLayout );
 
   connect( widgetSymbol, &QgsSymbol3DWidget::widgetChanged, this, &QgsSingleSymbol3DRendererWidget::widgetChanged );
 }

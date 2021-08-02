@@ -26,6 +26,7 @@
 #include <QClipboard>
 #include <QKeyEvent>
 #include <QMimeData>
+#include <QRegularExpression>
 
 QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )
@@ -315,10 +316,8 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
   QTextStream s( &f );
   s.setAutoDetectUnicode( true );
 
-  QRegExp re0( "^([^;]*);(.*)$" );
-  re0.setMinimal( true );
-  QRegExp re1( "^([^,]*),(.*)$" );
-  re1.setMinimal( true );
+  const thread_local QRegularExpression re0( "^([^;]*?);(.*?)$" );
+  const thread_local QRegularExpression re1( "^([^,]*?),(.*?)$" );
 
   QList<QPair<QString, QVariant>> map;
 
@@ -329,18 +328,25 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
     QString key;
     QString val;
 
-    if ( re0.indexIn( l ) >= 0 && re0.captureCount() == 2 )
+    const QRegularExpressionMatch re0match = re0.match( l );
+    if ( re0match.hasMatch() )
     {
-      key = re0.cap( 1 ).trimmed();
-      val = re0.cap( 2 ).trimmed();
-    }
-    else if ( re1.indexIn( l ) >= 0 && re1.captureCount() == 2 )
-    {
-      key = re1.cap( 1 ).trimmed();
-      val = re1.cap( 2 ).trimmed();
+      key = re0match.captured( 1 ).trimmed();
+      val = re0match.captured( 2 ).trimmed();
     }
     else
-      continue;
+    {
+      const QRegularExpressionMatch re1match = re1.match( l );
+      if ( re1match.hasMatch() )
+      {
+        key = re1match.captured( 1 ).trimmed();
+        val = re1match.captured( 2 ).trimmed();
+      }
+      else
+      {
+        continue;
+      }
+    }
 
     if ( ( key.startsWith( '\"' ) && key.endsWith( '\"' ) ) ||
          ( key.startsWith( '\'' ) && key.endsWith( '\'' ) ) )

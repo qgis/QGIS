@@ -19,7 +19,7 @@
 #ifndef QGSGPSPLUGIN_H
 #define QGSGPSPLUGIN_H
 #include "qgsbabelformat.h"
-#include "qgsgpsdevice.h"
+#include "qgsbabelgpsdevice.h"
 #include "qgisplugin.h"
 
 #include <QObject>
@@ -51,8 +51,6 @@ class QgsGpsPlugin: public QObject, public QgisPlugin
     void initGui() override;
     //! Show the dialog box
     void run();
-    //! Create a new GPX layer
-    void createGPX();
     //! Add a vector layer given vectorLayerPath, baseName, providerKey
     void drawVectorLayer( const QString &, const QString &, const QString & );
     //! unload the plugin
@@ -62,20 +60,11 @@ class QgsGpsPlugin: public QObject, public QgisPlugin
     //! update the plugins theme when the app tells us its theme is changed
     void setCurrentTheme( const QString &themeName );
 
-    //! load a GPX file
-    void loadGPXFile( const QString &fileName, bool loadWaypoints, bool loadRoutes,
-                      bool loadTracks );
-    void importGPSFile( const QString &inputFileName, QgsBabelFormat *importer,
-                        bool importWaypoints, bool importRoutes,
-                        bool importTracks, const QString &outputFileName,
+    void importGPSFile( const QString &inputFileName, QgsAbstractBabelFormat *importer,
+                        Qgis::GpsFeatureType type, const QString &outputFileName,
                         const QString &layerName );
-    void convertGPSFile( const QString &inputFileName,
-                         int convertType,
-                         const QString &outputFileName,
-                         const QString &layerName );
     void downloadFromGPS( const QString &device, const QString &port,
-                          bool downloadWaypoints, bool downloadRoutes,
-                          bool downloadTracks, const QString &outputFileName,
+                          Qgis::GpsFeatureType type, const QString &outputFileName,
                           const QString &layerName );
     void uploadToGPS( QgsVectorLayer *gpxLayer, const QString &device,
                       const QString &port );
@@ -93,14 +82,8 @@ class QgsGpsPlugin: public QObject, public QgisPlugin
     QgisInterface *mQGisInterface = nullptr;
     //! Pointer to the QAction object used in the menu and toolbar
     QAction *mQActionPointer = nullptr;
-    //! Pointer to the QAction used for creating a new GPX layer
-    QAction *mCreateGPXAction = nullptr;
     //! The path to the GPSBabel program
     QString mBabelPath;
-    //! Importers for external GPS data file formats
-    std::map<QString, QgsBabelFormat *> mImporters;
-    //! Upload/downloaders for GPS devices
-    std::map<QString, QgsGpsDevice *> mDevices;
 };
 
 #endif

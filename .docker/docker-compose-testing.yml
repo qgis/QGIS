@@ -10,7 +10,7 @@ services:
 
   qgis-deps:
     tty: true
-    image: qgis/qgis3-build-deps-bin-only:${DOCKER_TAG}
+    image: qgis3-build-deps-binary-image
     volumes:
       - ${GH_WORKSPACE}:/root/QGIS
     # links:
@@ -20,4 +20,3 @@ services:
     environment:
       - LANG=C.UTF-8
       - LC_ALL=en_US.UTF-8
-

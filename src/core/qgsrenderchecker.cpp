@@ -106,7 +106,7 @@ bool QgsRenderChecker::isKnownAnomaly( const QString &diffImageFile )
                                   QDir::Files | QDir::NoSymLinks );
   //remove the control file from the list as the anomalies are
   //all files except the control file
-  myList.removeAt( myList.indexOf( QFileInfo( mExpectedImageFile ).fileName() ) );
+  myList.removeAll( QFileInfo( mExpectedImageFile ).fileName() );
 
   QString myImageHash = imageToHash( diffImageFile );
 

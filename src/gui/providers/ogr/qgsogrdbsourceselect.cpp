@@ -27,7 +27,6 @@
 #include "qgsogrproviderutils.h"
 #include "qgsprovidermetadata.h"
 #include "qgsprovidersublayerdetails.h"
-#include "qgsogrdataitems.h"
 
 #include <QMessageBox>
 

@@ -396,7 +396,7 @@ void QgsQueryResultWidget::setConnection( QgsAbstractDatabaseProviderConnection 
   {
 
     // Add provider specific APIs
-    const QMap<Qgis::SqlKeywordCategory, QStringList> keywordsDict { connection->sqlDictionary() };
+    const QMultiMap<Qgis::SqlKeywordCategory, QStringList> keywordsDict { connection->sqlDictionary() };
     QStringList keywords;
     for ( auto it = keywordsDict.constBegin(); it != keywordsDict.constEnd(); it++ )
     {

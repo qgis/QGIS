@@ -223,8 +223,42 @@ bool dwgR::openFile( std::ifstream *filestr )
 
   QgsDebugMsg( QString( "line version:%1" ).arg( line ) );
 
-  if ( strcmp( line, "AC1006" ) == 0 )
+  if ( strcmp( line, "MC0.0" ) == 0 )
+  {
+    version = DRW::MC00;
+  }
+  else if ( strcmp( line, "AC1.2" ) == 0 )
+  {
+    version = DRW::AC12;
+  }
+  else if ( strcmp( line, "AC1.4" ) == 0 )
+  {
+    version = DRW::AC14;
+  }
+  else if ( strcmp( line, "AC1.50" ) == 0 )
+  {
+    version = DRW::AC150;
+  }
+  else if ( strcmp( line, "AC2.10" ) == 0 )
+  {
+    version = DRW::AC210;
+  }
+  else if ( strcmp( line, "AC1002" ) == 0 )
+  {
+    version = DRW::AC1002;
+  }
+  else if ( strcmp( line, "AC1003" ) == 0 )
+  {
+    version = DRW::AC1003;
+  }
+  else if ( strcmp( line, "AC1004" ) == 0 )
+  {
+    version = DRW::AC1004;
+  }
+  else if ( strcmp( line, "AC1006" ) == 0 )
+  {
     version = DRW::AC1006;
+  }
   else if ( strcmp( line, "AC1009" ) == 0 )
   {
     version = DRW::AC1009;
@@ -264,6 +298,10 @@ bool dwgR::openFile( std::ifstream *filestr )
   {
     version = DRW::AC1027;
     reader = new dwgReader27( filestr, this );
+  }
+  else if ( strcmp( line, "AC1032" ) == 0 )
+  {
+    version = DRW::AC1032;
   }
   else
     version = DRW::UNKNOWNV;

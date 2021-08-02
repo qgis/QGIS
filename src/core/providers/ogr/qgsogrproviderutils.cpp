@@ -3007,16 +3007,16 @@ bool QgsOgrProviderUtils::deleteLayer( const QString &uri, QString &errCause )
                                  openOptions );
 
 
-  GDALDatasetH hDS = GDALOpenEx( filePath.toUtf8().constData(), GDAL_OF_RASTER | GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr );
+  gdal::dataset_unique_ptr hDS( GDALOpenEx( filePath.toUtf8().constData(), GDAL_OF_RASTER | GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
   if ( hDS  && ( ! layerName.isEmpty() || layerIndex != -1 ) )
   {
     // If we have got a name we convert it into an index
     if ( ! layerName.isEmpty() )
     {
       layerIndex = -1;
-      for ( int i = 0; i < GDALDatasetGetLayerCount( hDS ); i++ )
+      for ( int i = 0; i < GDALDatasetGetLayerCount( hDS.get() ); i++ )
       {
-        OGRLayerH hL = GDALDatasetGetLayer( hDS, i );
+        OGRLayerH hL = GDALDatasetGetLayer( hDS.get(), i );
         if ( layerName == QString::fromUtf8( OGR_L_GetName( hL ) ) )
         {
           layerIndex = i;
@@ -3027,7 +3027,7 @@ bool QgsOgrProviderUtils::deleteLayer( const QString &uri, QString &errCause )
     // Do delete!
     if ( layerIndex != -1 )
     {
-      OGRErr error = GDALDatasetDeleteLayer( hDS, layerIndex );
+      OGRErr error = GDALDatasetDeleteLayer( hDS.get(), layerIndex );
       switch ( error )
       {
         case OGRERR_NOT_ENOUGH_DATA:
@@ -3057,10 +3057,12 @@ bool QgsOgrProviderUtils::deleteLayer( const QString &uri, QString &errCause )
         case OGRERR_NON_EXISTING_FEATURE:
           errCause = QObject::tr( "Non existing feature" );
           break;
-        default:
+
         case OGRERR_NONE:
+        {
           errCause = QObject::tr( "Success" );
           break;
+        }
       }
       errCause = QObject::tr( "GDAL result code: %1" ).arg( errCause );
       return error == OGRERR_NONE;

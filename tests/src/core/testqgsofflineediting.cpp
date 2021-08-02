@@ -287,7 +287,6 @@ void TestQgsOfflineEditing::removeConstraintsOnDefaultValues()
 {
   offlineDbFile = "TestQgsOfflineEditing.gpkg";
   QCOMPARE( gpkgLayer->name(), QStringLiteral( "points_gpkg" ) );
-  QString name = gpkgLayer->name();
 
   //check constraints (not null and unique)
   QgsFieldConstraints constraintsOfFidField = gpkgLayer->fields().at( gpkgLayer->fields().indexOf( QLatin1String( "fid" ) ) ).constraints();
@@ -297,11 +296,9 @@ void TestQgsOfflineEditing::removeConstraintsOnDefaultValues()
   //convert
   mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::GPKG );
 
-  gpkgLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayersByName( QStringLiteral( "points_gpkg (offline)" ) ).first() );
   QCOMPARE( gpkgLayer->name(), QStringLiteral( "points_gpkg (offline)" ) );
 
-  name = gpkgLayer->name();
-  //check constraints (unique but not not null)
+  //check constraints (not not null)
   constraintsOfFidField = gpkgLayer->fields().at( gpkgLayer->fields().indexOf( QLatin1String( "fid" ) ) ).constraints();
   QVERIFY( !( constraintsOfFidField.constraints() & QgsFieldConstraints::ConstraintNotNull ) );
   QVERIFY( constraintsOfFidField.constraints() & QgsFieldConstraints::ConstraintUnique );
@@ -309,9 +306,6 @@ void TestQgsOfflineEditing::removeConstraintsOnDefaultValues()
   //synchronize back
   mOfflineEditing->synchronize();
 
-  gpkgLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayersByName( QStringLiteral( "points_gpkg" ) ).first() );
-
-  name = gpkgLayer->name();
   //check constraints (not null and unique)
   constraintsOfFidField = gpkgLayer->fields().at( gpkgLayer->fields().indexOf( QLatin1String( "fid" ) ) ).constraints();
   QVERIFY( constraintsOfFidField.constraints() & QgsFieldConstraints::ConstraintNotNull );

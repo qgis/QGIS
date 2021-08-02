@@ -21,7 +21,12 @@
 #include "qgsguiutils.h"
 
 #include <QResizeEvent>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QStyleOptionFrameV3>
+#else
+#include <QStyleOptionFrame>
+#endif
 #include <QPainter>
 #include <QHBoxLayout>
 #include <QSpinBox>
@@ -1164,7 +1169,7 @@ void QgsColorRampWidget::wheelEvent( QWheelEvent *event )
 {
   int oldValue = componentValue();
 
-  if ( event->delta() > 0 )
+  if ( event->angleDelta().y() > 0 )
   {
     setComponentValue( componentValue() + 1 );
   }

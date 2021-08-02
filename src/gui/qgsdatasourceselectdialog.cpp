@@ -30,6 +30,7 @@
 #include <QDialogButtonBox>
 #include <QFileInfo>
 #include <QUrl>
+#include <QActionGroup>
 
 QgsDataSourceSelectWidget::QgsDataSourceSelectWidget(
   QgsBrowserGuiModel *browserModel,

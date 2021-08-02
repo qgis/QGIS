@@ -306,20 +306,21 @@ void QgsAppScreenShots::takeGlobalOptions()
   dlg->setMinimumHeight( 600 );
   dlg->show();
   QCoreApplication::processEvents();
-  for ( int row = 0; row < dlg->mOptionsListWidget->count(); ++row )
+
+  for ( int page = 0; page < dlg->mOptionsStackedWidget->count(); ++page )
   {
-    dlg->mOptionsListWidget->setCurrentRow( row );
+    dlg->mOptionsStackedWidget->setCurrentIndex( page );
     dlg->adjustSize();
     QCoreApplication::processEvents();
-    QString name = dlg->mOptionsListWidget->item( row )[0].text().toLower();
+    QString name = dlg->mOptTreeView->currentIndex().data( Qt::DisplayRole ).toString().toLower();
     name.replace( QLatin1String( " " ), QLatin1String( "_" ) ).replace( QLatin1String( "&" ), QLatin1String( "and" ) );
     takeScreenshot( name, folder, dlg );
   }
   // -----------------
   // advanced settings
-  dlg->mOptionsListWidget->setCurrentRow( dlg->mOptionsListWidget->count() - 1 );
+  dlg->mOptionsStackedWidget->setCurrentIndex( dlg->mOptionsStackedWidget->count() - 1 );
   QCoreApplication::processEvents();
-  Q_ASSERT( dlg->mOptionsListWidget->currentItem()->icon().pixmap( 24, 24 ).toImage()
+  Q_ASSERT( dlg->mOptTreeView->currentIndex().data( Qt::DecorationRole ).value< QIcon >().pixmap( 24, 24 ).toImage()
             == QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) ).pixmap( 24, 24 ).toImage() );
   QWidget *editor = dlg->findChild< QWidget * >( QStringLiteral( "mAdvancedSettingsEditor" ) );
   if ( editor )

@@ -30,7 +30,6 @@
 #include "qgscoordinatetransform.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdatasourceuri.h"
-#include "qgsgdaldataitems.h"
 #include "qgshtmlutils.h"
 #include "qgsmessagelog.h"
 #include "qgsrectangle.h"
@@ -3701,13 +3700,6 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
   {
     return res;
   }
-}
-
-QList<QgsDataItemProvider *> QgsGdalProviderMetadata::dataItemProviders() const
-{
-  QList< QgsDataItemProvider * > providers;
-  providers << new QgsGdalDataItemProvider;
-  return providers;
 }
 
 QgsGdalProviderMetadata::QgsGdalProviderMetadata():

@@ -103,11 +103,13 @@
 #include "qgsproviderutils.h"
 #include "qgsprovidersublayersdialog.h"
 #include "qgsmaplayerfactory.h"
+#include "qgsbrowserwidget.h"
 
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
 
 #include "options/qgscodeeditoroptions.h"
+#include "options/qgsgpsdeviceoptions.h"
 
 #ifdef HAVE_3D
 #include "qgs3d.h"
@@ -777,6 +779,11 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
       // \note this class is not a descendent of QWidget so we can't pass
       // it in the ctor of the layer projection selector
 
+      static bool opening = false;
+      if ( opening )
+        break;
+      opening = true;
+
       QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog();
       const QString validationHint = srs.validationHint();
       if ( !validationHint.isEmpty() )
@@ -803,6 +810,7 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
       }
 
       delete mySelector;
+      opening = false;
       break;
     }
 
@@ -1215,6 +1223,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mTemporalControllerWidget->setMapCanvas( mMapCanvas );
 
   QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsAppDirectoryItemGuiProvider() );
+  QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsAppFileItemGuiProvider() );
   QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsProjectHomeItemGuiProvider() );
   QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsProjectItemGuiProvider() );
   QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsFavoritesItemGuiProvider() );
@@ -1682,6 +1691,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   } );
 
   mCodeEditorWidgetFactory.reset( std::make_unique< QgsCodeEditorOptionsFactory >() );
+  mBabelGpsDevicesWidgetFactory.reset( std::make_unique< QgsGpsDeviceOptionsFactory >() );
 
 #ifdef HAVE_3D
   m3DOptionsWidgetFactory.reset( std::make_unique< Qgs3DOptionsFactory >() );
@@ -2677,6 +2687,7 @@ void QgisApp::createActions()
   connect( mActionNewGeoPackageLayer, &QAction::triggered, this, &QgisApp::newGeoPackageLayer );
   connect( mActionNewMemoryLayer, &QAction::triggered, this, &QgisApp::newMemoryLayer );
   connect( mActionNewMeshLayer, &QAction::triggered, this, &QgisApp::newMeshLayer );
+  connect( mActionNewGpxLayer, &QAction::triggered, this, &QgisApp::newGpxLayer );
   connect( mActionNewVirtualLayer, &QAction::triggered, this, &QgisApp::addVirtualLayer );
   connect( mActionShowRasterCalculator, &QAction::triggered, this, &QgisApp::showRasterCalculator );
   connect( mActionShowMeshCalculator, &QAction::triggered, this, &QgisApp::showMeshCalculator );
@@ -6492,6 +6503,55 @@ void QgisApp::newMeshLayer()
   dialog.exec();
 }
 
+void QgisApp::newGpxLayer()
+{
+  QgsSettings settings;
+  const QString dir = settings.value( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
+  QString fileName =
+    QFileDialog::getSaveFileName( this,
+                                  tr( "New GPX File" ),
+                                  dir,
+                                  tr( "GPS eXchange file" ) + " (*.gpx)" );
+  if ( !fileName.isEmpty() )
+  {
+    fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, { QStringLiteral( "gpx" )} );
+    const QFileInfo fileInfo( fileName );
+    settings.setValue( QStringLiteral( "Plugin-GPS/gpxdirectory" ), fileInfo.absolutePath() );
+
+    QFile outputFile( fileName );
+    if ( !outputFile.open( QFile::WriteOnly | QIODevice::Truncate ) )
+    {
+      QMessageBox::warning( nullptr, tr( "New GPX File" ),
+                            tr( "Unable to create a GPX file with the given name. "
+                                "Try again with another name or in another "
+                                "directory." ) );
+      return;
+    }
+
+    QTextStream outStream( &outputFile );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    outStream.setCodec( "UTF-8" );
+#endif
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    outStream << "<gpx></gpx>" << endl;
+#else
+    outStream << "<gpx></gpx>" << Qt::endl;
+#endif
+    outputFile.close();
+
+    if ( QgsVectorLayer *trackLayer = addVectorLayer( fileName + "?type=track",
+                                      fileInfo.baseName() + ", tracks", QStringLiteral( "gpx" ) ) )
+      trackLayer->startEditing();
+    if ( QgsVectorLayer *routeLayer = addVectorLayer( fileName + "?type=route",
+                                      fileInfo.baseName() + ", routes", QStringLiteral( "gpx" ) ) )
+      routeLayer->startEditing();
+    if ( QgsVectorLayer *waypointLayer = addVectorLayer( fileName + "?type=waypoint",
+                                         fileInfo.baseName() + ", waypoints", QStringLiteral( "gpx" ) ) )
+      waypointLayer->startEditing();
+  }
+}
+
 void QgisApp::showRasterCalculator()
 {
   QgsRasterCalcDialog d( qobject_cast<QgsRasterLayer *>( activeLayer() ), this );
@@ -9358,7 +9418,7 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
   while ( !titleValid )
   {
 
-    QgsNewNameDialog dlg( typeString, newTitle, QStringList(), layoutNames, QRegExp(), Qt::CaseSensitive, parent );
+    QgsNewNameDialog dlg( typeString, newTitle, QStringList(), layoutNames, Qt::CaseSensitive, parent );
     dlg.setWindowTitle( windowTitle );
     dlg.setHintString( titleMsg );
     dlg.setOverwriteEnabled( false );
@@ -12477,7 +12537,6 @@ QMap< QString, QString > QgisApp::projectPropertiesPagesMap()
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Temporal" ), QStringLiteral( "mTemporalOptions" ) );
   } );
 
-  int idx = sProjectPropertiesPagesMap.count();
   for ( const QPointer< QgsOptionsWidgetFactory > &f : std::as_const( mProjectPropertiesWidgetFactories ) )
   {
     // remove any deleted factories
@@ -12485,7 +12544,6 @@ QMap< QString, QString > QgisApp::projectPropertiesPagesMap()
     {
       sProjectPropertiesPagesMap.insert( f->title(), f->title() );
     }
-    idx++;
   }
 
   return sProjectPropertiesPagesMap;
@@ -12531,70 +12589,42 @@ void QgisApp::showSettings( const QString &page )
   }
 }
 
-QMap< QString, int > QgisApp::optionsPagesMap()
+QMap<QString, QString> QgisApp::optionsPagesMap()
 {
-  static QList< std::pair< QString, QString > > sOptionsPagesList;
+  static QMap< QString, QString > sOptionsPagesMap;
   static std::once_flag initialized;
   std::call_once( initialized, []
   {
-    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "General" ), QStringLiteral( "mOptionsPageGeneral" ) } );
-    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "System" ), QStringLiteral( "mOptionsPageSystem" ) } );
-    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "CRS" ), QStringLiteral( "mOptionsPageCRS" ) } );
-    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "Transformations" ), QStringLiteral( "mOptionsPageTransformations" ) } );
-    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "Data Sources" ), QStringLiteral( "mOptionsPageDataSources" ) } );
-    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "Rendering" ), QStringLiteral( "mOptionsPageRendering" ) } );
-    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "Canvas & Legend" ), QStringLiteral( "mOptionsPageMapCanvas" ) } );
-    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "Map Tools" ), QStringLiteral( "mOptionsPageMapTools" ) } );
-    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "Colors" ), QStringLiteral( "mOptionsPageColors" ) } );
-    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "Digitizing" ), QStringLiteral( "mOptionsPageDigitizing" ) } );
-    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "Layouts" ), QStringLiteral( "mOptionsPageComposer" ) } );
-    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "GDAL" ), QStringLiteral( "mOptionsPageGDAL" ) } );
-    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "Variables" ), QStringLiteral( "mOptionsPageVariables" ) } );
-    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "Authentication" ), QStringLiteral( "mOptionsPageAuth" ) } );
-    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "Network" ), QStringLiteral( "mOptionsPageNetwork" ) } );
-    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "Locator" ),  QStringLiteral( "mOptionsLocatorSettings" ) } );
-    sOptionsPagesList.push_back( { QCoreApplication::translate( "QgsOptionsBase", "Acceleration" ),  QStringLiteral( "mOptionsPageAcceleration" ) } );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "General" ), QStringLiteral( "mOptionsPageGeneral" ) );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "System" ), QStringLiteral( "mOptionsPageSystem" ) );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "CRS" ), QStringLiteral( "mOptionsPageCRS" ) );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Transformations" ), QStringLiteral( "mOptionsPageTransformations" ) );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Data Sources" ), QStringLiteral( "mOptionsPageDataSources" ) );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "GDAL" ), QStringLiteral( "mOptionsPageGDAL" ) );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Rendering" ), QStringLiteral( "mOptionsPageRendering" ) );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Canvas & Legend" ), QStringLiteral( "mOptionsPageMapCanvas" ) );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Map Tools" ), QStringLiteral( "mOptionsPageMapTools" ) );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Colors" ), QStringLiteral( "mOptionsPageColors" ) );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Digitizing" ), QStringLiteral( "mOptionsPageDigitizing" ) );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Layouts" ), QStringLiteral( "mOptionsPageComposer" ) );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Variables" ), QStringLiteral( "mOptionsPageVariables" ) );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Authentication" ), QStringLiteral( "mOptionsPageAuth" ) );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Network" ), QStringLiteral( "mOptionsPageNetwork" ) );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Locator" ), QStringLiteral( "mOptionsLocatorSettings" ) );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Acceleration" ), QStringLiteral( "mOptionsPageAcceleration" ) );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Advanced" ), QCoreApplication::translate( "QgsOptionsBase", "Advanced" ) );
   } );
 
-  QList< std::pair< QString, QString > > pages = sOptionsPagesList;
+  QMap< QString, QString > pages = sOptionsPagesMap;
   for ( const QPointer< QgsOptionsWidgetFactory > &f : std::as_const( mOptionsWidgetFactories ) )
   {
     // remove any deleted factories
     if ( f )
     {
-      const QString positionHint = f->pagePositionHint();
-      if ( positionHint.isEmpty() )
-      {
-        pages.push_back( { f->title(), QString() } );
-      }
-      else
-      {
-        bool found = false;
-        for ( int idx = 0; idx < pages.size(); ++idx )
-        {
-          if ( pages.at( idx ).second == positionHint )
-          {
-            pages.insert( idx, { f->title(), QString() } );
-            found = true;
-            break;
-          }
-        }
-        if ( !found )
-          pages.push_back( { f->title(), QString() } );
-      }
+      pages.insert( f->title(), f->title() );
     }
   }
-
-  QMap< QString, int > map;
-  int idx = 0;
-  for ( auto it = pages.constBegin(); it != pages.constEnd(); ++it )
-  {
-    map.insert( it->first, idx );
-    idx++;
-  }
-
-  map.insert( QCoreApplication::translate( "QgsOptionsBase", "Advanced" ), idx );
-  return map;
+  return pages;
 }
 
 QgsOptions *QgisApp::createOptionsDialog( QWidget *parent )
@@ -14398,9 +14428,9 @@ void QgisApp::layersWereAdded( const QList<QgsMapLayer *> &layers )
   const auto constLayers = layers;
   for ( QgsMapLayer *layer : constLayers )
   {
-    connect( layer, &QgsMeshLayer::layerModified, this, &QgisApp::updateLayerModifiedActions );
-    connect( layer, &QgsMeshLayer::editingStarted, this, &QgisApp::layerEditStateChanged );
-    connect( layer, &QgsMeshLayer::editingStopped, this, &QgisApp::layerEditStateChanged );
+    connect( layer, &QgsMapLayer::layerModified, this, &QgisApp::updateLayerModifiedActions );
+    connect( layer, &QgsMapLayer::editingStarted, this, &QgisApp::layerEditStateChanged );
+    connect( layer, &QgsMapLayer::editingStopped, this, &QgisApp::layerEditStateChanged );
 
     if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
     {
@@ -15592,7 +15622,7 @@ void QgisApp::renameView()
 
   QString currentName = view->mapCanvas()->objectName();
 
-  QgsNewNameDialog renameDlg( currentName, currentName, QStringList(), names, QRegExp(), Qt::CaseSensitive, this );
+  QgsNewNameDialog renameDlg( currentName, currentName, QStringList(), names, Qt::CaseSensitive, this );
   renameDlg.setWindowTitle( tr( "Map Views" ) );
   //renameDlg.setHintString( tr( "Name of the new view" ) );
   renameDlg.setOverwriteEnabled( false );
@@ -15878,7 +15908,7 @@ void QgisApp::showBookmarks()
 {
   mBrowserWidget->setUserVisible( true );
   QModelIndex index = browserModel()->findPath( QStringLiteral( "bookmarks:" ) );
-  mBrowserWidget->setActiveIndex( index );
+  mBrowserWidget->browserWidget()->setActiveIndex( index );
 }
 
 void QgisApp::showBookmarkManager( bool show )

@@ -60,6 +60,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
+#include "qgsalgorithmgpsbabeltools.h"
 
 class TestQgsProcessingAlgs: public QObject
 {
@@ -183,6 +184,8 @@ class TestQgsProcessingAlgs: public QObject
     void fileDownloader();
 
     void rasterize();
+
+    void convertGpxFeatureType();
 
   private:
 
@@ -6631,6 +6634,150 @@ void TestQgsProcessingAlgs::rasterize()
   checker.setControlName( "expected_rasterize" );
   checker.setRenderedImage( outputTif );
   QVERIFY( checker.compareImages( "rasterize", 500 ) );
+}
+
+void TestQgsProcessingAlgs::convertGpxFeatureType()
+{
+  // test generation of babel argument lists
+  QStringList processArgs;
+  QStringList logArgs;
+
+  QgsConvertGpxFeatureTypeAlgorithm::createArgumentLists( QStringLiteral( "/home/me/my input file.gpx" ),
+      QStringLiteral( "/home/me/my output file.gpx" ),
+      QgsConvertGpxFeatureTypeAlgorithm::WaypointsFromRoute,
+      processArgs, logArgs );
+  QCOMPARE( processArgs, QStringList(
+  {
+    QStringLiteral( "-i" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-f" ),
+    QStringLiteral( "/home/me/my input file.gpx" ),
+    QStringLiteral( "-x" ),
+    QStringLiteral( "transform,wpt=rte,del" ),
+    QStringLiteral( "-o" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-F" ),
+    QStringLiteral( "/home/me/my output file.gpx" )
+  } ) );
+  // when showing the babel command, filenames should be wrapped in "", which is what QProcess does internally (hence the processArgs don't have these)
+  QCOMPARE( logArgs, QStringList(
+  {
+    QStringLiteral( "-i" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-f" ),
+    QStringLiteral( "\"/home/me/my input file.gpx\"" ),
+    QStringLiteral( "-x" ),
+    QStringLiteral( "transform,wpt=rte,del" ),
+    QStringLiteral( "-o" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-F" ),
+    QStringLiteral( "\"/home/me/my output file.gpx\"" )
+  } ) );
+
+  logArgs.clear();
+  processArgs.clear();
+  QgsConvertGpxFeatureTypeAlgorithm::createArgumentLists( QStringLiteral( "/home/me/my input file.gpx" ),
+      QStringLiteral( "/home/me/my output file.gpx" ),
+      QgsConvertGpxFeatureTypeAlgorithm::WaypointsFromTrack,
+      processArgs, logArgs );
+  QCOMPARE( processArgs, QStringList(
+  {
+    QStringLiteral( "-i" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-f" ),
+    QStringLiteral( "/home/me/my input file.gpx" ),
+    QStringLiteral( "-x" ),
+    QStringLiteral( "transform,wpt=trk,del" ),
+    QStringLiteral( "-o" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-F" ),
+    QStringLiteral( "/home/me/my output file.gpx" )
+  } ) );
+  // when showing the babel command, filenames should be wrapped in "", which is what QProcess does internally (hence the processArgs don't have these)
+  QCOMPARE( logArgs, QStringList(
+  {
+    QStringLiteral( "-i" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-f" ),
+    QStringLiteral( "\"/home/me/my input file.gpx\"" ),
+    QStringLiteral( "-x" ),
+    QStringLiteral( "transform,wpt=trk,del" ),
+    QStringLiteral( "-o" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-F" ),
+    QStringLiteral( "\"/home/me/my output file.gpx\"" )
+  } ) );
+
+  logArgs.clear();
+  processArgs.clear();
+
+  QgsConvertGpxFeatureTypeAlgorithm::createArgumentLists( QStringLiteral( "/home/me/my input file.gpx" ),
+      QStringLiteral( "/home/me/my output file.gpx" ),
+      QgsConvertGpxFeatureTypeAlgorithm::RouteFromWaypoints,
+      processArgs, logArgs );
+  QCOMPARE( processArgs, QStringList(
+  {
+    QStringLiteral( "-i" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-f" ),
+    QStringLiteral( "/home/me/my input file.gpx" ),
+    QStringLiteral( "-x" ),
+    QStringLiteral( "transform,rte=wpt,del" ),
+    QStringLiteral( "-o" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-F" ),
+    QStringLiteral( "/home/me/my output file.gpx" )
+  } ) );
+  // when showing the babel command, filenames should be wrapped in "", which is what QProcess does internally (hence the processArgs don't have these)
+  QCOMPARE( logArgs, QStringList(
+  {
+    QStringLiteral( "-i" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-f" ),
+    QStringLiteral( "\"/home/me/my input file.gpx\"" ),
+    QStringLiteral( "-x" ),
+    QStringLiteral( "transform,rte=wpt,del" ),
+    QStringLiteral( "-o" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-F" ),
+    QStringLiteral( "\"/home/me/my output file.gpx\"" )
+  } ) );
+
+
+  logArgs.clear();
+  processArgs.clear();
+
+  QgsConvertGpxFeatureTypeAlgorithm::createArgumentLists( QStringLiteral( "/home/me/my input file.gpx" ),
+      QStringLiteral( "/home/me/my output file.gpx" ),
+      QgsConvertGpxFeatureTypeAlgorithm::TrackFromWaypoints,
+      processArgs, logArgs );
+  QCOMPARE( processArgs, QStringList(
+  {
+    QStringLiteral( "-i" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-f" ),
+    QStringLiteral( "/home/me/my input file.gpx" ),
+    QStringLiteral( "-x" ),
+    QStringLiteral( "transform,trk=wpt,del" ),
+    QStringLiteral( "-o" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-F" ),
+    QStringLiteral( "/home/me/my output file.gpx" )
+  } ) );
+  // when showing the babel command, filenames should be wrapped in "", which is what QProcess does internally (hence the processArgs don't have these)
+  QCOMPARE( logArgs, QStringList(
+  {
+    QStringLiteral( "-i" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-f" ),
+    QStringLiteral( "\"/home/me/my input file.gpx\"" ),
+    QStringLiteral( "-x" ),
+    QStringLiteral( "transform,trk=wpt,del" ),
+    QStringLiteral( "-o" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-F" ),
+    QStringLiteral( "\"/home/me/my output file.gpx\"" )
+  } ) );
 }
 
 void TestQgsProcessingAlgs::exportMeshTimeSeries()

@@ -14,7 +14,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 include_directories(SYSTEM
   ${QT_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
-  ${QT5_3DEXTRA_INCLUDE_DIR}
+  ${${QT_VERSION_BASE}_3DEXTRA_INCLUDE_DIR}
 )
 
 

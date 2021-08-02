@@ -61,7 +61,7 @@
         <widget class="QgsFilterLineEdit" name="mSearchLineEdit"/>
        </item>
        <item>
-        <widget class="QListWidget" name="mOptionsListWidget">
+        <widget class="QTreeView" name="mOptionsTreeView">
          <property name="minimumSize">
           <size>
            <width>58</width>
@@ -89,216 +89,6 @@
          <property name="textElideMode">
           <enum>Qt::ElideNone</enum>
          </property>
-         <property name="resizeMode">
-          <enum>QListView::Adjust</enum>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-         <item>
-          <property name="text">
-           <string>General</string>
-          </property>
-          <property name="toolTip">
-           <string>General</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/general.svg</normaloff>:/images/themes/default/propertyicons/general.svg</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>System</string>
-          </property>
-          <property name="toolTip">
-           <string>System</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/system.svg</normaloff>:/images/themes/default/propertyicons/system.svg</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>CRS</string>
-          </property>
-          <property name="toolTip">
-           <string>CRS</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/CRS.svg</normaloff>:/images/themes/default/propertyicons/CRS.svg</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Transformations</string>
-          </property>
-          <property name="toolTip">
-           <string>Coordinate transformations and operations</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/transformation.svg</normaloff>:/images/themes/default/transformation.svg</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Data Sources</string>
-          </property>
-          <property name="toolTip">
-           <string>Data sources</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/attributes.svg</normaloff>:/images/themes/default/propertyicons/attributes.svg</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Rendering</string>
-          </property>
-          <property name="toolTip">
-           <string>Rendering</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/rendering.svg</normaloff>:/images/themes/default/propertyicons/rendering.svg</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Canvas &amp; Legend</string>
-          </property>
-          <property name="toolTip">
-           <string>Canvas and legend</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/overlay.svg</normaloff>:/images/themes/default/propertyicons/overlay.svg</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Map Tools</string>
-          </property>
-          <property name="toolTip">
-           <string>Map tools</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/map_tools.svg</normaloff>:/images/themes/default/propertyicons/map_tools.svg</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Colors</string>
-          </property>
-          <property name="toolTip">
-           <string>Colors</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/colors.svg</normaloff>:/images/themes/default/propertyicons/colors.svg</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Digitizing</string>
-          </property>
-          <property name="toolTip">
-           <string>Digitizing</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/digitizing.svg</normaloff>:/images/themes/default/propertyicons/digitizing.svg</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Layouts</string>
-          </property>
-          <property name="toolTip">
-           <string>Print layouts</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/mIconLayout.svg</normaloff>:/images/themes/default/mIconLayout.svg</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>GDAL</string>
-          </property>
-          <property name="toolTip">
-           <string>GDAL</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/gdal.svg</normaloff>:/images/themes/default/propertyicons/gdal.svg</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Variables</string>
-          </property>
-          <property name="toolTip">
-           <string>Variables</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Authentication</string>
-          </property>
-          <property name="toolTip">
-           <string>Authentication</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/locked.svg</normaloff>:/images/themes/default/locked.svg</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Network</string>
-          </property>
-          <property name="toolTip">
-           <string>Network</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/network_and_proxy.svg</normaloff>:/images/themes/default/propertyicons/network_and_proxy.svg</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Locator</string>
-          </property>
-          <property name="toolTip">
-           <string>Locator</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/search.svg</normaloff>:/images/themes/default/search.svg</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Acceleration</string>
-          </property>
-          <property name="toolTip">
-           <string>Configure GPU for processing algorithms</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/mIconGPU.svg</normaloff>:/images/themes/default/mIconGPU.svg</iconset>
-          </property>
-         </item>
         </widget>
        </item>
       </layout>
@@ -2391,6 +2181,227 @@
                   </size>
                  </property>
                 </spacer>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="mOptionsPageGDAL">
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QgsScrollArea" name="mOptionsScrollArea_02">
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="mOptionsScrollAreaContents_02">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>447</width>
+                <height>431</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_6">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QTabWidget" name="tabWidget">
+                 <property name="currentIndex">
+                  <number>0</number>
+                 </property>
+                 <widget class="QWidget" name="tab_3">
+                  <attribute name="title">
+                   <string>Raster Drivers</string>
+                  </attribute>
+                  <layout class="QVBoxLayout" name="verticalLayout_24">
+                   <item>
+                    <widget class="QGroupBox" name="groupBox_16">
+                     <property name="title">
+                      <string>Raster Driver Options</string>
+                     </property>
+                     <layout class="QGridLayout" name="gridLayout_29">
+                      <item row="0" column="1">
+                       <widget class="QComboBox" name="cmbEditCreateOptions"/>
+                      </item>
+                      <item row="0" column="3">
+                       <spacer name="horizontalSpacer_15">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item row="0" column="4">
+                       <widget class="QPushButton" name="pbnEditPyramidsOptions">
+                        <property name="text">
+                         <string>Edit Pyramids Options</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="5">
+                       <spacer name="horizontalSpacer_16">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item row="0" column="2">
+                       <widget class="QPushButton" name="pbnEditCreateOptions">
+                        <property name="text">
+                         <string>Edit Create Options</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QGroupBox" name="groupBox_13">
+                     <property name="title">
+                      <string>Raster Drivers</string>
+                     </property>
+                     <layout class="QGridLayout" name="gridLayout_24">
+                      <item row="0" column="0">
+                       <widget class="QLabel" name="label_17">
+                        <property name="text">
+                         <string>In some cases more than one GDAL driver can be used to load the same raster format. Use the list below to specify which to use.</string>
+                        </property>
+                        <property name="wordWrap">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="1" column="0">
+                       <widget class="QTreeWidget" name="lstRasterDrivers">
+                        <property name="minimumSize">
+                         <size>
+                          <width>0</width>
+                          <height>141</height>
+                         </size>
+                        </property>
+                        <column>
+                         <property name="text">
+                          <string>Name</string>
+                         </property>
+                        </column>
+                        <column>
+                         <property name="text">
+                          <string>Extension</string>
+                         </property>
+                        </column>
+                        <column>
+                         <property name="text">
+                          <string>Flags</string>
+                         </property>
+                        </column>
+                        <column>
+                         <property name="text">
+                          <string>Description</string>
+                         </property>
+                        </column>
+                       </widget>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                 <widget class="QWidget" name="tab_4">
+                  <attribute name="title">
+                   <string>Vector Drivers</string>
+                  </attribute>
+                  <layout class="QVBoxLayout" name="verticalLayout_29">
+                   <item>
+                    <widget class="QGroupBox" name="groupBox_31">
+                     <property name="title">
+                      <string>Vector Drivers</string>
+                     </property>
+                     <layout class="QGridLayout" name="gridLayout_36">
+                      <item row="0" column="0">
+                       <widget class="QLabel" name="label_68">
+                        <property name="text">
+                         <string>In some cases more than one GDAL driver can be used to load the same vector format. Use the list below to specify which to use.</string>
+                        </property>
+                        <property name="wordWrap">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="1" column="0">
+                       <widget class="QTreeWidget" name="lstVectorDrivers">
+                        <property name="minimumSize">
+                         <size>
+                          <width>0</width>
+                          <height>141</height>
+                         </size>
+                        </property>
+                        <column>
+                         <property name="text">
+                          <string>Name</string>
+                         </property>
+                        </column>
+                        <column>
+                         <property name="text">
+                          <string>Extension</string>
+                         </property>
+                        </column>
+                        <column>
+                         <property name="text">
+                          <string>Flags</string>
+                         </property>
+                        </column>
+                        <column>
+                         <property name="text">
+                          <string>Description</string>
+                         </property>
+                        </column>
+                       </widget>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </widget>
                </item>
               </layout>
              </widget>
@@ -5348,227 +5359,6 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptionsPageGDAL">
-          <layout class="QVBoxLayout" name="verticalLayout_4">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QgsScrollArea" name="mOptionsScrollArea_02">
-             <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
-             </property>
-             <property name="widgetResizable">
-              <bool>true</bool>
-             </property>
-             <widget class="QWidget" name="mOptionsScrollAreaContents_02">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>498</width>
-                <height>455</height>
-               </rect>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_6">
-               <property name="leftMargin">
-                <number>0</number>
-               </property>
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="rightMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <widget class="QTabWidget" name="tabWidget">
-                 <property name="currentIndex">
-                  <number>0</number>
-                 </property>
-                 <widget class="QWidget" name="tab_3">
-                  <attribute name="title">
-                   <string>Raster Drivers</string>
-                  </attribute>
-                  <layout class="QVBoxLayout" name="verticalLayout_24">
-                   <item>
-                    <widget class="QGroupBox" name="groupBox_16">
-                     <property name="title">
-                      <string>Raster Driver Options</string>
-                     </property>
-                     <layout class="QGridLayout" name="gridLayout_29">
-                      <item row="0" column="1">
-                       <widget class="QComboBox" name="cmbEditCreateOptions"/>
-                      </item>
-                      <item row="0" column="3">
-                       <spacer name="horizontalSpacer_15">
-                        <property name="orientation">
-                         <enum>Qt::Horizontal</enum>
-                        </property>
-                        <property name="sizeHint" stdset="0">
-                         <size>
-                          <width>40</width>
-                          <height>20</height>
-                         </size>
-                        </property>
-                       </spacer>
-                      </item>
-                      <item row="0" column="4">
-                       <widget class="QPushButton" name="pbnEditPyramidsOptions">
-                        <property name="text">
-                         <string>Edit Pyramids Options</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="0" column="5">
-                       <spacer name="horizontalSpacer_16">
-                        <property name="orientation">
-                         <enum>Qt::Horizontal</enum>
-                        </property>
-                        <property name="sizeHint" stdset="0">
-                         <size>
-                          <width>40</width>
-                          <height>20</height>
-                         </size>
-                        </property>
-                       </spacer>
-                      </item>
-                      <item row="0" column="2">
-                       <widget class="QPushButton" name="pbnEditCreateOptions">
-                        <property name="text">
-                         <string>Edit Create Options</string>
-                        </property>
-                       </widget>
-                      </item>
-                     </layout>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QGroupBox" name="groupBox_13">
-                     <property name="title">
-                      <string>Raster Drivers</string>
-                     </property>
-                     <layout class="QGridLayout" name="gridLayout_24">
-                      <item row="0" column="0">
-                       <widget class="QLabel" name="label_17">
-                        <property name="text">
-                         <string>In some cases more than one GDAL driver can be used to load the same raster format. Use the list below to specify which to use.</string>
-                        </property>
-                        <property name="wordWrap">
-                         <bool>true</bool>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="1" column="0">
-                       <widget class="QTreeWidget" name="lstRasterDrivers">
-                        <property name="minimumSize">
-                         <size>
-                          <width>0</width>
-                          <height>141</height>
-                         </size>
-                        </property>
-                        <column>
-                         <property name="text">
-                          <string>Name</string>
-                         </property>
-                        </column>
-                        <column>
-                         <property name="text">
-                          <string>Extension</string>
-                         </property>
-                        </column>
-                        <column>
-                         <property name="text">
-                          <string>Flags</string>
-                         </property>
-                        </column>
-                        <column>
-                         <property name="text">
-                          <string>Description</string>
-                         </property>
-                        </column>
-                       </widget>
-                      </item>
-                     </layout>
-                    </widget>
-                   </item>
-                  </layout>
-                 </widget>
-                 <widget class="QWidget" name="tab_4">
-                  <attribute name="title">
-                   <string>Vector Drivers</string>
-                  </attribute>
-                  <layout class="QVBoxLayout" name="verticalLayout_29">
-                   <item>
-                    <widget class="QGroupBox" name="groupBox_31">
-                     <property name="title">
-                      <string>Vector Drivers</string>
-                     </property>
-                     <layout class="QGridLayout" name="gridLayout_36">
-                      <item row="0" column="0">
-                       <widget class="QLabel" name="label_68">
-                        <property name="text">
-                         <string>In some cases more than one GDAL driver can be used to load the same vector format. Use the list below to specify which to use.</string>
-                        </property>
-                        <property name="wordWrap">
-                         <bool>true</bool>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="1" column="0">
-                       <widget class="QTreeWidget" name="lstVectorDrivers">
-                        <property name="minimumSize">
-                         <size>
-                          <width>0</width>
-                          <height>141</height>
-                         </size>
-                        </property>
-                        <column>
-                         <property name="text">
-                          <string>Name</string>
-                         </property>
-                        </column>
-                        <column>
-                         <property name="text">
-                          <string>Extension</string>
-                         </property>
-                        </column>
-                        <column>
-                         <property name="text">
-                          <string>Flags</string>
-                         </property>
-                        </column>
-                        <column>
-                         <property name="text">
-                          <string>Description</string>
-                         </property>
-                        </column>
-                       </widget>
-                      </item>
-                     </layout>
-                    </widget>
-                   </item>
-                  </layout>
-                 </widget>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-            </widget>
-           </item>
-          </layout>
-         </widget>
          <widget class="QWidget" name="mOptionsPageVariables">
           <layout class="QVBoxLayout" name="verticalLayout_40">
            <property name="leftMargin">
@@ -6316,7 +6106,7 @@ p, li { white-space: pre-wrap; }
  </customwidgets>
  <tabstops>
   <tabstop>mSearchLineEdit</tabstop>
-  <tabstop>mOptionsListWidget</tabstop>
+  <tabstop>mOptionsTreeView</tabstop>
   <tabstop>mOptionsScrollArea_01</tabstop>
   <tabstop>grpLocale</tabstop>
   <tabstop>cboTranslation</tabstop>
@@ -6550,22 +6340,6 @@ p, li { white-space: pre-wrap; }
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>
-  <connection>
-   <sender>mOptionsListWidget</sender>
-   <signal>currentRowChanged(int)</signal>
-   <receiver>mOptionsStackedWidget</receiver>
-   <slot>setCurrentIndex(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>144</x>
-     <y>196</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>790</x>
-     <y>43</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>chkMaxThreads</sender>
    <signal>toggled(bool)</signal>

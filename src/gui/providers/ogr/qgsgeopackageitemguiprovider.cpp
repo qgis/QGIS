@@ -35,11 +35,11 @@
 #include "qgsproviderregistry.h"
 #include "qgsproject.h"
 #include "gdal.h"
-#include "qgsogrdataitems.h"
 #include "qgsogrdbconnection.h"
 #include "qgsgeopackageproviderconnection.h"
 #include "qgsmessagebar.h"
 #include "qgsprovidermetadata.h"
+#include "qgsogrproviderutils.h"
 
 void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu,
     const QList<QgsDataItem *> &,
@@ -50,8 +50,9 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
     // Check capabilities
     if ( layerItem->capabilities2() & Qgis::BrowserItemCapability::Rename )
     {
-      QAction *actionRenameLayer = new QAction( tr( "Rename Layer '%1'…" ).arg( layerItem->name() ), menu );
-      QVariantMap data;
+      QMenu *manageLayerMenu = new QMenu( tr( "Manage" ), menu );
+
+      QAction *actionRenameLayer = new QAction( tr( "Rename Layer “%1”…" ).arg( layerItem->name() ), menu );
       const QString uri = layerItem->uri();
       const QString providerKey = layerItem->providerKey();
       const QStringList tableNames = layerItem->tableNames();
@@ -60,7 +61,9 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
       {
         renameVectorLayer( uri, providerKey, tableNames, itemPointer, context );
       } );
-      menu->addAction( actionRenameLayer );
+      manageLayerMenu->addAction( actionRenameLayer );
+
+      menu->addMenu( manageLayerMenu );
     }
   }
 
@@ -81,9 +84,6 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
 
   if ( QgsGeoPackageCollectionItem *collectionItem = qobject_cast< QgsGeoPackageCollectionItem * >( item ) )
   {
-    QAction *actionRefresh = new QAction( QObject::tr( "Refresh" ), menu );
-    connect( actionRefresh, &QAction::triggered, collectionItem, [collectionItem] { collectionItem->refresh(); } );
-    menu->addAction( actionRefresh );
     menu->addSeparator();
 
     if ( QgsOgrDbConnection::connectionList( QStringLiteral( "GPKG" ) ).contains( collectionItem->name() ) )
@@ -279,11 +279,13 @@ void QgsGeoPackageItemGuiProvider::renameVectorLayer( const QString &uri, const 
   QVariantMap pieces( QgsProviderRegistry::instance()->decodeUri( key, uri ) );
   QString layerName = pieces[QStringLiteral( "layerName" )].toString();
 
+  QgsNewNameDialog dlg( uri, layerName, QStringList(), tableNames );
+
   // Allow any character, except |, which could create confusion, due to it being
   // the URI componenent separator. And ideally we should remove that restriction
   // by using proper escaping of |
-  const QRegExp checkRe( QStringLiteral( R"re([^|]+)re" ) );
-  QgsNewNameDialog dlg( uri, layerName, QStringList(), tableNames, checkRe );
+  dlg.setRegularExpression( QStringLiteral( R"re([^|]+)re" ) );
+
   dlg.setOverwriteEnabled( false );
 
   if ( dlg.exec() != dlg.Accepted || dlg.name().isEmpty() || dlg.name() == layerName )

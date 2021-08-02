@@ -15,7 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 #include <QMessageBox>
-#include <QRegExpValidator>
+#include <QRegularExpressionValidator>
+#include <QRegularExpression>
 
 #include "qgsnewogrconnection.h"
 #include "qgslogger.h"
@@ -83,7 +84,7 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString &connTy
     txtName->setEnabled( false );
     cmbDatabaseTypes->setEnabled( false );
   }
-  txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
+  txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( "[^\\/]+" ), txtName ) );
   mAuthSettingsDatabase->setDataprovider( QStringLiteral( "ogr" ) );
   mAuthSettingsDatabase->showStoreCheckboxes( true );
 }

@@ -255,6 +255,8 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterNumber;
     else if ( sipCpp->type() == QgsProcessingParameterDistance::typeName() )
       sipType = sipType_QgsProcessingParameterDistance;
+    else if ( sipCpp->type() == QgsProcessingParameterDuration::typeName() )
+      sipType = sipType_QgsProcessingParameterDuration;
     else if ( sipCpp->type() == QgsProcessingParameterScale::typeName() )
       sipType = sipType_QgsProcessingParameterScale;
     else if ( sipCpp->type() == QgsProcessingParameterRange::typeName() )
@@ -2265,6 +2267,63 @@ Sets the default distance ``unit`` for the parameter.
 
 };
 
+class QgsProcessingParameterDuration : QgsProcessingParameterNumber
+{
+%Docstring(signature="appended")
+A double numeric parameter for duration values. The returned
+value will always be in milliseconds.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    explicit QgsProcessingParameterDuration( const QString &name, const QString &description = QString(),
+        const QVariant &defaultValue = QVariant(),
+        bool optional = false,
+        double minValue = -DBL_MAX + 1,
+        double maxValue = DBL_MAX );
+%Docstring
+Constructor for QgsProcessingParameterDuration.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+
+    virtual QgsProcessingParameterDuration *clone() const /Factory/;
+
+
+    virtual QString type() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+
+    QgsUnitTypes::TemporalUnit defaultUnit() const;
+%Docstring
+Returns the default duration unit for the parameter.
+
+.. seealso:: :py:func:`setDefaultUnit`
+%End
+
+    void setDefaultUnit( QgsUnitTypes::TemporalUnit unit );
+%Docstring
+Sets the default duration ``unit`` for the parameter.
+
+.. seealso:: :py:func:`defaultUnit`
+%End
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+
+};
+
 class QgsProcessingParameterScale : QgsProcessingParameterNumber
 {
 %Docstring(signature="appended")
@@ -2513,6 +2572,26 @@ class QgsProcessingParameterString : QgsProcessingParameterDefinition
 {
 %Docstring(signature="appended")
 A string parameter for processing algorithms.
+
+A parameter type which allows users to enter any string value.
+
+In some circumstances it is desirable to restrict the values available
+when a user is asked to enter a string parameter to a list of predetermined
+"valid" values. Since QGIS 3.22 this can be done by setting the widget wrapper metadata
+"value_hints" option, as demonstrated below. (While this provides a mechanism
+for guiding users to select from valid string values when running a Processing
+algorithm through the GUI, it does not place any limits on the string values
+accepted via PyQGIS codes or when running the algorithm via other non-gui
+means. Algorithms should gracefully handle other values accordingly.)
+
+.. code-block:: python
+
+       param = QgsProcessingParameterString( 'PRINTER_NAME', 'Printer name')
+       # show only printers which are available on the current system as options
+       # for the string input.
+       param.setMetadata( {'widget_wrapper':
+         { 'value_hints': ['Inkjet printer', 'Laser printer'] }
+       })
 
 .. versionadded:: 3.0
 %End

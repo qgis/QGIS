@@ -622,6 +622,11 @@ int QgsWmsRenderContext::mapHeight() const
 
 bool QgsWmsRenderContext::isValidWidthHeight() const
 {
+  return isValidWidthHeight( mapWidth(), mapHeight() );
+}
+
+bool QgsWmsRenderContext::isValidWidthHeight( int width, int height ) const
+{
   //test if maxWidth / maxHeight are set in the project or as an env variable
   //and WIDTH / HEIGHT parameter is in the range allowed range
   //WIDTH
@@ -639,7 +644,7 @@ bool QgsWmsRenderContext::isValidWidthHeight() const
     wmsMaxWidth = std::max( wmsMaxWidthProj, wmsMaxWidthEnv );
   }
 
-  if ( wmsMaxWidth != -1 && mapWidth() > wmsMaxWidth )
+  if ( wmsMaxWidth != -1 && width > wmsMaxWidth )
   {
     return false;
   }
@@ -659,7 +664,7 @@ bool QgsWmsRenderContext::isValidWidthHeight() const
     wmsMaxHeight = std::max( wmsMaxHeightProj, wmsMaxHeightEnv );
   }
 
-  if ( wmsMaxHeight != -1 && mapHeight() > wmsMaxHeight )
+  if ( wmsMaxHeight != -1 && height > wmsMaxHeight )
   {
     return false;
   }
@@ -680,13 +685,13 @@ bool QgsWmsRenderContext::isValidWidthHeight() const
       depth = 32;
   }
 
-  const int bytes_per_line = ( ( mapWidth() * depth + 31 ) >> 5 ) << 2; // bytes per scanline (must be multiple of 4)
+  const int bytes_per_line = ( ( width * depth + 31 ) >> 5 ) << 2; // bytes per scanline (must be multiple of 4)
 
-  if ( std::numeric_limits<int>::max() / depth < static_cast<uint>( mapWidth() )
+  if ( std::numeric_limits<int>::max() / depth < static_cast<uint>( width )
        || bytes_per_line <= 0
-       || mapHeight() <= 0
-       || std::numeric_limits<int>::max() / static_cast<uint>( bytes_per_line ) < static_cast<uint>( mapHeight() )
-       || std::numeric_limits<int>::max() / sizeof( uchar * ) < static_cast<uint>( mapHeight() ) )
+       || height <= 0
+       || std::numeric_limits<int>::max() / static_cast<uint>( bytes_per_line ) < static_cast<uint>( height )
+       || std::numeric_limits<int>::max() / sizeof( uchar * ) < static_cast<uint>( height ) )
   {
     return false;
   }

@@ -42,6 +42,7 @@
 #include <QProgressBar>
 #include <QScrollBar>
 #include <QTextEdit>
+#include <QRegularExpression>
 
 //----------------------- QgsGrassItemActions ------------------------------
 #ifdef HAVE_GUI
@@ -132,9 +133,9 @@ void QgsGrassItemActions::newMapset()
 
   QStringList existingNames = QgsGrass::mapsets( mGrassObject.gisdbase(), mGrassObject.mapsetPath() );
   QgsDebugMsg( QStringLiteral( "existingNames = " ) + existingNames.join( ',' ) );
-  QRegExp regExp = QgsGrassObject::newNameRegExp( QgsGrassObject::Mapset );
   Qt::CaseSensitivity caseSensitivity = QgsGrass::caseSensitivity();
-  QgsNewNameDialog dialog( QString(), QString(), QStringList(), existingNames, regExp, caseSensitivity );
+  QgsNewNameDialog dialog( QString(), QString(), QStringList(), existingNames, caseSensitivity );
+  dialog.setRegularExpression( QgsGrassObject::newNameRegExp( QgsGrassObject::Mapset ) );
 
   if ( dialog.exec() != QDialog::Accepted )
   {
@@ -190,9 +191,9 @@ void QgsGrassItemActions::renameGrassObject()
   // remove current name to avoid warning that exists
   existingNames.removeOne( mGrassObject.name() );
   QgsDebugMsg( QStringLiteral( "existingNames = " ) + existingNames.join( ',' ) );
-  QRegExp regExp = QgsGrassObject::newNameRegExp( mGrassObject.type() );
   Qt::CaseSensitivity caseSensitivity = QgsGrass::caseSensitivity();
-  QgsNewNameDialog dialog( mGrassObject.name(), mGrassObject.name(), QStringList(), existingNames, regExp, caseSensitivity );
+  QgsNewNameDialog dialog( mGrassObject.name(), mGrassObject.name(), QStringList(), existingNames, caseSensitivity );
+  dialog.setRegularExpression( QgsGrassObject::newNameRegExp( mGrassObject.type() ) );
 
   if ( dialog.exec() != QDialog::Accepted || dialog.name() == mGrassObject.name() )
   {
@@ -244,9 +245,9 @@ QString QgsGrassItemActions::newVectorMap()
 
   QStringList existingNames = QgsGrass::grassObjects( mGrassObject, QgsGrassObject::Vector );
   QgsDebugMsg( QStringLiteral( "existingNames = " ) + existingNames.join( ',' ) );
-  QRegExp regExp = QgsGrassObject::newNameRegExp( QgsGrassObject::Vector );
   Qt::CaseSensitivity caseSensitivity = QgsGrass::caseSensitivity();
-  QgsNewNameDialog dialog( QString(), QString(), QStringList(), existingNames, regExp, caseSensitivity );
+  QgsNewNameDialog dialog( QString(), QString(), QStringList(), existingNames, caseSensitivity );
+  dialog.setRegularExpression( QgsGrassObject::newNameRegExp( QgsGrassObject::Vector ) );
 
   if ( dialog.exec() != QDialog::Accepted )
   {
@@ -717,7 +718,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
     QgsDataProvider *provider = nullptr;
     QStringList extensions;
     QStringList existingNames;
-    QRegExp regExp;
+    QString regExp;
     QgsGrassObject srcObject;
     QString srcName;
 
@@ -784,10 +785,15 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
     QString destName = srcName.replace( QLatin1String( " " ), QLatin1String( "_" ) );
 #ifdef HAVE_GUI
     Qt::CaseSensitivity caseSensitivity = QgsGrass::caseSensitivity();
+
+    const QRegularExpression destNameRegExp( QRegularExpression::anchoredPattern( regExp ) );
+    const QRegularExpressionMatch destNameRegExpMatch = destNameRegExp.match( destName );
+
     if ( QgsNewNameDialog::exists( destName, extensions, existingNames, caseSensitivity )
-         || !regExp.exactMatch( destName ) )
+         || !destNameRegExpMatch.hasMatch() )
     {
-      QgsNewNameDialog dialog( srcName, destName, extensions, existingNames, regExp, caseSensitivity );
+      QgsNewNameDialog dialog( srcName, destName, extensions, existingNames, caseSensitivity );
+      dialog.setRegularExpression( regExp );
       if ( dialog.exec() != QDialog::Accepted )
       {
         delete provider;

@@ -38,6 +38,8 @@
 #include "qgsmapmouseevent.h"
 #include "qgsmessagelog.h"
 
+#include <QActionGroup>
+
 
 QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent )
   : QgsDockWidget( parent )

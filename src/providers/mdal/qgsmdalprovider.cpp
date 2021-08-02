@@ -21,12 +21,12 @@
 #include "qgstriangularmesh.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
-#include "qgsmdaldataitems.h"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
 
 #include <QFileInfo>
+#include <QRegularExpression>
 #include <mutex>
 
 const QString QgsMdalProvider::MDAL_PROVIDER_KEY = QStringLiteral( "mdal" );
@@ -962,13 +962,6 @@ QgsMdalProvider *QgsMdalProviderMetadata::createProvider( const QString &uri, co
   return new QgsMdalProvider( uri, options, flags );
 }
 
-QList<QgsDataItemProvider *> QgsMdalProviderMetadata::dataItemProviders() const
-{
-  QList<QgsDataItemProvider *> providers;
-  providers << new QgsMdalDataItemProvider;
-  return providers;
-}
-
 bool QgsMdalProviderMetadata::createMeshData( const QgsMesh &mesh, const QString uri, const QString &driverName, const QgsCoordinateReferenceSystem &crs ) const
 {
   MDAL_DriverH driver = MDAL_driverFromName( driverName.toStdString().c_str() );
@@ -1038,16 +1031,36 @@ bool QgsMdalProviderMetadata::createMeshData( const QgsMesh &mesh, const QString
 
 QVariantMap QgsMdalProviderMetadata::decodeUri( const QString &uri ) const
 {
-  const QString path = uri;
   QVariantMap uriComponents;
-  uriComponents.insert( QStringLiteral( "path" ), path );
+
+  const QRegularExpression layerRegex( QStringLiteral( "^([a-zA-Z0-9]+?):\"(.*)\":([a-zA-Z0-9]+?)$" ) );
+  const QRegularExpressionMatch layerNameMatch = layerRegex.match( uri );
+  if ( layerNameMatch.hasMatch() )
+  {
+    uriComponents.insert( QStringLiteral( "driver" ), layerNameMatch.captured( 1 ) );
+    uriComponents.insert( QStringLiteral( "path" ), layerNameMatch.captured( 2 ) );
+    uriComponents.insert( QStringLiteral( "layerName" ), layerNameMatch.captured( 3 ) );
+  }
+  else
+  {
+    uriComponents.insert( QStringLiteral( "path" ), uri );
+  }
+
   return uriComponents;
 }
 
 QString QgsMdalProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
-  const QString path = parts.value( QStringLiteral( "path" ) ).toString();
-  return path;
+  if ( !parts.value( QStringLiteral( "layerName" ) ).toString().isEmpty() )
+  {
+    return QStringLiteral( "%1:\"%2\":%3" ).arg( parts.value( QStringLiteral( "driver" ) ).toString(),
+           parts.value( QStringLiteral( "path" ) ).toString(),
+           parts.value( QStringLiteral( "layerName" ) ).toString() );
+  }
+  else
+  {
+    return parts.value( QStringLiteral( "path" ) ).toString();
+  }
 }
 
 QgsProviderMetadata::ProviderCapabilities QgsMdalProviderMetadata::providerCapabilities() const
@@ -1065,8 +1078,11 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
   if ( uri.isEmpty() )
     return {};
 
-  // get suffix, removing .gz if present
-  const QFileInfo info( uri );
+  const QVariantMap uriParts = decodeUri( uri );
+  const QString path = uriParts.value( QStringLiteral( "path" ), uri ).toString();
+  const QString layerName = uriParts.value( QStringLiteral( "layerName" ) ).toString();
+
+  const QFileInfo info( path );
 
   if ( info.isDir() )
     return {};
@@ -1099,13 +1115,13 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
     details.setType( QgsMapLayerType::MeshLayer );
     details.setProviderKey( QStringLiteral( "mdal" ) );
     details.setUri( uri );
-    details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( uri ) );
+    details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( path ) );
     // treat all mesh files as potentially being containers (is this correct?)
     details.setSkippedContainerScan( true );
     return {details};
   }
 
-  const QStringList meshNames = QString( MDAL_MeshNames( uri.toUtf8() ) ).split( QStringLiteral( ";;" ) );
+  const QStringList meshNames = QString( MDAL_MeshNames( path.toUtf8() ) ).split( QStringLiteral( ";;" ) );
 
   QList<QgsProviderSublayerDetails> res;
   res.reserve( meshNames.size() );
@@ -1115,18 +1131,24 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
     if ( layerUri.isEmpty() )
       continue;
 
+    const QVariantMap layerUriParts = decodeUri( layerUri );
+    //if an explicit layer name was included in the original uri, we only keep that layer in the results
+    if ( !layerName.isEmpty() && layerUriParts.value( QStringLiteral( "layerName" ) ).toString() != layerName )
+      continue;
+
     QgsProviderSublayerDetails details;
     details.setUri( layerUri );
     details.setProviderKey( QStringLiteral( "mdal" ) );
     details.setType( QgsMapLayerType::MeshLayer );
     details.setLayerNumber( layerIndex );
+    details.setDriverName( layerUriParts.value( QStringLiteral( "driver" ) ).toString() );
 
     // strip the driver name and path from the MDAL uri to get the layer name
-    details.setName( layerUri.mid( layerUri.indexOf( uri ) + uri.length() + 2 ) );
+    details.setName( layerUriParts.value( QStringLiteral( "layerName" ) ).toString() );
     if ( details.name().isEmpty() )
     {
       // use file name as layer name if no layer name available from mdal
-      details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( uri ) );
+      details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( path ) );
     }
 
     res << details;

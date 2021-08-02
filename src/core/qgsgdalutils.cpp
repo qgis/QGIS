@@ -37,6 +37,7 @@ const QStringList QgsGdalUtils::SUPPORTED_DB_LAYERS_EXTENSIONS
   QStringLiteral( "db" ),
   QStringLiteral( "gdb" ),
   QStringLiteral( "kml" ),
+  QStringLiteral( "kmz" ),
   QStringLiteral( "osm" ),
   QStringLiteral( "mdb" ),
   QStringLiteral( "accdb" ),

@@ -68,6 +68,8 @@ class CORE_EXPORT QgsProviderUtils
 
 };
 
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProviderUtils::SublayerCompletenessFlags )
+
 #endif //QGSPROVIDERUTILS_H
 
 
