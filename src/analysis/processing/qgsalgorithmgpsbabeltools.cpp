@@ -563,7 +563,7 @@ QVariantMap QgsDownloadGpsDataAlgorithm::processAlgorithm( const QVariantMap &pa
   }
   if ( inputPort.isEmpty() )
   {
-    throw QgsProcessingException( QObject::tr( "Unknown port “%1”. Valid devices are: %2" )
+    throw QgsProcessingException( QObject::tr( "Unknown port “%1”. Valid ports are: %2" )
                                   .arg( portName,
                                         validPorts.join( QStringLiteral( ", " ) ) ) );
   }
@@ -798,7 +798,7 @@ QVariantMap QgsUploadGpsDataAlgorithm::processAlgorithm( const QVariantMap &para
   }
   if ( outputPort.isEmpty() )
   {
-    throw QgsProcessingException( QObject::tr( "Unknown port “%1”. Valid devices are: %2" )
+    throw QgsProcessingException( QObject::tr( "Unknown port “%1”. Valid ports are: %2" )
                                   .arg( portName,
                                         validPorts.join( QStringLiteral( ", " ) ) ) );
   }
