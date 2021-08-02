@@ -6513,7 +6513,7 @@ void QgisApp::newMeshLayer()
 void QgisApp::newGpxLayer()
 {
   QgsSettings settings;
-  const QString dir = settings.value( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
+  const QString dir = settings.value( QStringLiteral( "gps/gpxdirectory" ), QDir::homePath(), QgsSettings::App ).toString();
   QString fileName =
     QFileDialog::getSaveFileName( this,
                                   tr( "New GPX File" ),
@@ -6523,7 +6523,7 @@ void QgisApp::newGpxLayer()
   {
     fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, { QStringLiteral( "gpx" )} );
     const QFileInfo fileInfo( fileName );
-    settings.setValue( QStringLiteral( "Plugin-GPS/gpxdirectory" ), fileInfo.absolutePath() );
+    settings.setValue( QStringLiteral( "gps/gpxdirectory" ), fileInfo.absolutePath(), QgsSettings::App );
 
     QFile outputFile( fileName );
     if ( !outputFile.open( QFile::WriteOnly | QIODevice::Truncate ) )
