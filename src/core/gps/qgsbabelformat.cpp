@@ -80,13 +80,13 @@ QStringList QgsBabelSimpleImportFormat::importCommand( const QString &babel,
     const QString &output,
     Qgis::BabelCommandFlags flags ) const
 {
-  return { flags &Qgis::BabelCommandFlag::QuoteFilePaths ? QStringLiteral( "\"%1\"" ).arg( babel ) : babel,
+  return { ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? QStringLiteral( "\"%1\"" ).arg( babel ) : babel,
            featureTypeToArgument( featureType ),
            QStringLiteral( "-i" ),
            name(),
            QStringLiteral( "-o" ),
            QStringLiteral( "gpx" ),
-           flags &Qgis::BabelCommandFlag::QuoteFilePaths ? QStringLiteral( "\"%1\"" ).arg( input ) : input,
-           flags &Qgis::BabelCommandFlag::QuoteFilePaths ? QStringLiteral( "\"%1\"" ).arg( output ) : output
+           ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? QStringLiteral( "\"%1\"" ).arg( input ) : input,
+           ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? QStringLiteral( "\"%1\"" ).arg( output ) : output
          };
 }

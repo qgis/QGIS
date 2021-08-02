@@ -78,13 +78,13 @@ QStringList QgsBabelGpsDeviceFormat::importCommand( const QString &babel,
   for ( const QString &iter : std::as_const( original ) )
   {
     if ( iter == QLatin1String( "%babel" ) )
-      copy.append( flags & Qgis::BabelCommandFlag::QuoteFilePaths ? QStringLiteral( "\"%1\"" ).arg( babel ) : babel );
+      copy.append( ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? QStringLiteral( "\"%1\"" ).arg( babel ) : babel );
     else if ( iter == QLatin1String( "%type" ) )
       copy.append( featureTypeToArgument( type ) );
     else if ( iter == QLatin1String( "%in" ) )
-      copy.append( flags & Qgis::BabelCommandFlag::QuoteFilePaths ? QStringLiteral( "\"%1\"" ).arg( in ) : in );
+      copy.append( ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? QStringLiteral( "\"%1\"" ).arg( in ) : in );
     else if ( iter == QLatin1String( "%out" ) )
-      copy.append( flags & Qgis::BabelCommandFlag::QuoteFilePaths ? QStringLiteral( "\"%1\"" ).arg( out ) : out );
+      copy.append( ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? QStringLiteral( "\"%1\"" ).arg( out ) : out );
     else
       copy.append( iter );
   }
@@ -115,13 +115,13 @@ QStringList QgsBabelGpsDeviceFormat::exportCommand( const QString &babel,
   for ( const QString &iter : std::as_const( original ) )
   {
     if ( iter == QLatin1String( "%babel" ) )
-      copy.append( flags & Qgis::BabelCommandFlag::QuoteFilePaths ? QStringLiteral( "\"%1\"" ).arg( babel ) : babel );
+      copy.append( ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? QStringLiteral( "\"%1\"" ).arg( babel ) : babel );
     else if ( iter == QLatin1String( "%type" ) )
       copy.append( featureTypeToArgument( type ) );
     else if ( iter == QLatin1String( "%in" ) )
-      copy.append( flags & Qgis::BabelCommandFlag::QuoteFilePaths ? QStringLiteral( "\"%1\"" ).arg( in ) : in );
+      copy.append( ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? QStringLiteral( "\"%1\"" ).arg( in ) : in );
     else if ( iter == QLatin1String( "%out" ) )
-      copy.append( flags & Qgis::BabelCommandFlag::QuoteFilePaths ? QStringLiteral( "\"%1\"" ).arg( out ) : out );
+      copy.append( ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? QStringLiteral( "\"%1\"" ).arg( out ) : out );
     else
       copy.append( iter );
   }
