@@ -33,6 +33,29 @@
     <number>0</number>
    </property>
    <item>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>GPSBabel Options</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,1">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Path to GPSBabel</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QgsFileWidget" name="mGpsBabelFileWidget" native="true">
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="groupBox_3">
      <property name="title">
       <string>Devices</string>
@@ -299,7 +322,16 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
+  <tabstop>mGpsBabelFileWidget</tabstop>
   <tabstop>mListDevices</tabstop>
   <tabstop>mButtonAddDevice</tabstop>
   <tabstop>mButtonRemoveDevice</tabstop>
