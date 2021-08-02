@@ -98,7 +98,6 @@ QgsRasterCalcDialog::QgsRasterCalcDialog( QgsRasterLayer *rasterLayer, QWidget *
 
   connect( mUseVirtualProviderCheckBox, &QCheckBox::clicked, this, &QgsRasterCalcDialog::setOutputToVirtual );
 
-  //if ( ! useVirtualProvider() ) mVirtualLayerName->setEnabled( false );
   if ( ! useVirtualProvider() )
   {
     mVirtualLayerLabel->hide();

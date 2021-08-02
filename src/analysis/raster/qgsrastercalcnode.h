@@ -20,7 +20,6 @@
 #define QGSRASTERCALCNODE_H
 
 #include <QMap>
-#include <QMultiHash>
 #include "qgis_sip.h"
 #include "qgis.h"
 #include <QString>
@@ -131,7 +130,7 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
      * (it's possible to have different value as one raster layer has different bands)
      * \note since QGIS 3.22
      */
-    static QStringList referencedLayerNames( const QString &str ) SIP_FACTORY;
+    static QStringList referencedLayerNames( const QString &str );
 
   private:
 #ifdef SIP_RUN

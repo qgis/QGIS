@@ -6531,8 +6531,7 @@ void QgisApp::showRasterCalculator()
     }
 
     addRasterLayer( QgsRasterDataProvider::encodeVirtualRasterProviderUri( virtualCalcParams ),
-                    //QStringLiteral( "virtuallayer" ),
-                    d.virtualLayerName() == QString( "" ) ? d.formulaString() : d.virtualLayerName(),
+                    d.virtualLayerName().isEmpty() ? d.formulaString() : d.virtualLayerName(),
                     QStringLiteral( "virtualraster" ) );
   }
   else
@@ -6562,7 +6561,6 @@ void QgisApp::showRasterCalculator()
       case QgsRasterCalculator::Success:
         if ( d.addLayerToProject() )
         {
-          //addRasterLayer( d.outputFile(), QFileInfo( d.outputFile() ).completeBaseName(), QString() );
           addRasterLayer( d.outputFile(), QFileInfo( d.outputFile() ).completeBaseName(), QStringLiteral( "gdal" ) );
         }
         visibleMessageBar()->pushMessage( tr( "Raster calculator" ),

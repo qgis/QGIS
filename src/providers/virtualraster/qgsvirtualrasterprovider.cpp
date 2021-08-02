@@ -17,7 +17,6 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterprojector.h"
 
-//#define PROVIDER_KEY QStringLiteral( "virtualrasterprovider" )
 #define PROVIDER_KEY QStringLiteral( "virtualraster" )
 #define PROVIDER_DESCRIPTION QStringLiteral( "Virtual Raster data provider" )
 
@@ -103,7 +102,7 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
 
     for ( int j = 0; j < rProvidedLayer->bandCount(); ++j )
     {
-      if ( ! rasterRefs.contains( rProvidedLayer->name() % QStringLiteral( "@" ) % QString::number( j + 1 ) ) )
+      if ( ! rasterRefs.contains( rProvidedLayer->name() + QStringLiteral( "@" ) + QString::number( j + 1 ) ) )
       {
         continue;
       }
@@ -111,7 +110,7 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
       QgsRasterCalculatorEntry entry;
       entry.raster = rProvidedLayer;
       entry.bandNumber = j + 1;
-      entry.ref = rProvidedLayer->name() % QStringLiteral( "@" ) + QString::number( j + 1 );
+      entry.ref = rProvidedLayer->name() + QStringLiteral( "@" ) + QString::number( j + 1 );
       mRasterEntries.push_back( entry );
     }
   }

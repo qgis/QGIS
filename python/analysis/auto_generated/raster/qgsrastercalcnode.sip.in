@@ -98,7 +98,7 @@ Returns a list of nodes of a specific ``type``
 
     static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) /Factory/;
 
-    static QStringList referencedLayerNames( const QString &str ) /Factory/;
+    static QStringList referencedLayerNames( const QString &str );
 %Docstring
 Returns a dictionary that has the raster name as keys and the raster references as values
 (it's possible to have different value as one raster layer has different bands)
