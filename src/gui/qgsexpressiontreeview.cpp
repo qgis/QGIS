@@ -197,7 +197,10 @@ void QgsExpressionTreeView::setSearchText( const QString &text )
 {
   const QRegularExpression regularExpression = QRegularExpression( text );
   if ( regularExpression.isValid() )
+  {
     mProxyModel->setFilterRegularExpression( regularExpression );
+    mProxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
+  }
   if ( text.isEmpty() )
   {
     collapseAll();
