@@ -272,17 +272,17 @@ void QgsOfflineEditing::synchronize()
 
 
         // remove offline layer properties
-        layer->removeCustomProperty( CUSTOM_PROPERTY_IS_OFFLINE_EDITABLE );
+        offlineLayer->removeCustomProperty( CUSTOM_PROPERTY_IS_OFFLINE_EDITABLE );
 
         // remove original layer source and information
-        layer->removeCustomProperty( CUSTOM_PROPERTY_REMOTE_SOURCE );
-        layer->removeCustomProperty( CUSTOM_PROPERTY_REMOTE_PROVIDER );
-        layer->removeCustomProperty( CUSTOM_PROPERTY_ORIGINAL_LAYERID );
-        layer->removeCustomProperty( CUSTOM_PROPERTY_LAYERNAME_SUFFIX );
+        offlineLayer->removeCustomProperty( CUSTOM_PROPERTY_REMOTE_SOURCE );
+        offlineLayer->removeCustomProperty( CUSTOM_PROPERTY_REMOTE_PROVIDER );
+        offlineLayer->removeCustomProperty( CUSTOM_PROPERTY_ORIGINAL_LAYERID );
+        offlineLayer->removeCustomProperty( CUSTOM_PROPERTY_LAYERNAME_SUFFIX );
 
         // remove connected signals
-        disconnect( layer, &QgsVectorLayer::editingStarted, this, &QgsOfflineEditing::startListenFeatureChanges );
-        disconnect( layer, &QgsVectorLayer::editingStopped, this, &QgsOfflineEditing::stopListenFeatureChanges );
+        disconnect( offlineLayer, &QgsVectorLayer::editingStarted, this, &QgsOfflineEditing::startListenFeatureChanges );
+        disconnect( offlineLayer, &QgsVectorLayer::editingStopped, this, &QgsOfflineEditing::stopListenFeatureChanges );
 
         //add constrainst of fields that use defaultValueClauses from provider on original
         const auto fields = remoteLayer->fields();
