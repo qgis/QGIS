@@ -41,7 +41,6 @@ void QgsAppSslErrorHandler::handleSslErrors( QNetworkReply *reply, const QList<Q
     QgsDebugMsg( QStringLiteral( "Ignored SSL errors cached item found, ignoring errors if they match for %1" ).arg( hostport ) );
     const QSet<QSslError::SslError> &errenums( errscache.value( dgsthostport ) );
     bool ignore = !errenums.isEmpty();
-    int errmatched = 0;
     if ( ignore )
     {
       for ( const QSslError &error : errors )
@@ -51,11 +50,10 @@ void QgsAppSslErrorHandler::handleSslErrors( QNetworkReply *reply, const QList<Q
 
         bool errmatch = errenums.contains( error.error() );
         ignore = ignore && errmatch;
-        errmatched += errmatch ? 1 : 0;
       }
     }
 
-    if ( ignore && errenums.size() == errmatched )
+    if ( ignore )
     {
       QgsDebugMsg( QStringLiteral( "Errors matched cached item's, ignoring all for %1" ).arg( hostport ) );
       reply->ignoreSslErrors();
