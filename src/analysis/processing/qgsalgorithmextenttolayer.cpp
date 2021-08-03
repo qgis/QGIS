@@ -58,7 +58,8 @@ QVariantMap QgsExtentToLayerAlgorithm::processAlgorithm( const QVariantMap &para
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
   f.setGeometry( geom );
-  sink->addFeature( f, QgsFeatureSink::FastInsert );
+  if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+    throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
   feedback->setProgress( 100 );
 

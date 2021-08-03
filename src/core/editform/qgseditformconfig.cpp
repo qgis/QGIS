@@ -217,7 +217,7 @@ void QgsEditFormConfig::setUiForm( const QString &ui )
   if ( !ui.isEmpty() && !QUrl::fromUserInput( ui ).isLocalFile() )
   {
     // any existing download will not be restarted!
-    QgsApplication::instance()->networkContentFetcherRegistry()->fetch( ui, QgsNetworkContentFetcherRegistry::DownloadImmediately );
+    QgsApplication::instance()->networkContentFetcherRegistry()->fetch( ui, Qgis::ActionStart::Immediate );
   }
 
   if ( ui.isEmpty() )
@@ -323,7 +323,7 @@ void QgsEditFormConfig::setInitFilePath( const QString &filePath )
   if ( !filePath.isEmpty() && !QUrl::fromUserInput( filePath ).isLocalFile() )
   {
     // any existing download will not be restarted!
-    QgsApplication::instance()->networkContentFetcherRegistry()->fetch( filePath, QgsNetworkContentFetcherRegistry::DownloadImmediately );
+    QgsApplication::instance()->networkContentFetcherRegistry()->fetch( filePath, Qgis::ActionStart::Immediate );
   }
 }
 

@@ -41,7 +41,7 @@ void QgsPointCloudClassifiedRendererModel::setRendererCategories( const QgsPoint
 {
   if ( !mCategories.empty() )
   {
-    beginRemoveRows( QModelIndex(), 0, std::max( mCategories.size() - 1, 0 ) );
+    beginRemoveRows( QModelIndex(), 0, std::max< int >( mCategories.size() - 1, 0 ) );
     mCategories.clear();
     endRemoveRows();
   }

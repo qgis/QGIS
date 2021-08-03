@@ -67,11 +67,6 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
     }
   } );
 
-  // Sync all SQL layer options
-  connect( mSqlEditor, &QgsCodeEditorSQL::textChanged, this, &QgsQueryResultWidget::syncSqlOptions );
-  connect( mFilterLineEdit, &QLineEdit::textChanged, this, &QgsQueryResultWidget::syncSqlOptions );
-  connect( mPkColumnsComboBox, &QgsCheckableComboBox::checkedItemsChanged, this, [ = ]( const QStringList & ) { syncSqlOptions(); } );
-  connect( mGeometryColumnComboBox, &QComboBox::currentTextChanged, this, [ = ]( const QString & ) { syncSqlOptions(); } );
 
   mStatusLabel->hide();
   mSqlErrorText->hide();
@@ -109,6 +104,48 @@ QgsQueryResultWidget::~QgsQueryResultWidget()
 {
   cancelApiFetcher();
   cancelRunningQuery();
+}
+
+void QgsQueryResultWidget::setSqlVectorLayerOptions( const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options )
+{
+  mSqlVectorLayerOptions = options;
+  if ( ! options.sql.isEmpty() )
+  {
+    setQuery( options.sql );
+  }
+  mAvoidSelectingAsFeatureIdCheckBox->setChecked( options.disableSelectAtId );
+  mPkColumnsCheckBox->setChecked( ! options.primaryKeyColumns.isEmpty() );
+  mPkColumnsComboBox->setCheckedItems( {} );
+  if ( ! options.primaryKeyColumns.isEmpty() )
+  {
+    mPkColumnsComboBox->setCheckedItems( options.primaryKeyColumns );
+  }
+  mGeometryColumnCheckBox->setChecked( ! options.geometryColumn.isEmpty() );
+  mGeometryColumnComboBox->clear();
+  if ( ! options.geometryColumn.isEmpty() )
+  {
+    mGeometryColumnComboBox->setCurrentText( options.geometryColumn );
+  }
+  mFilterLineEdit->setText( options.filter );
+  mLayerNameLineEdit->setText( options.layerName );
+}
+
+void QgsQueryResultWidget::setWidgetMode( QueryWidgetMode widgetMode )
+{
+  mQueryWidgetMode = widgetMode;
+  switch ( widgetMode )
+  {
+    case QueryWidgetMode::SqlQueryMode:
+      mLoadAsNewLayerGroupBox->setTitle( tr( "Load as New Layer" ) );
+      mLoadLayerPushButton->setText( tr( "Load Layer" ) );
+      mLoadAsNewLayerGroupBox->setCollapsed( true );
+      break;
+    case QueryWidgetMode::QueryLayerUpdateMode:
+      mLoadAsNewLayerGroupBox->setTitle( tr( "Update Query Layer" ) );
+      mLoadLayerPushButton->setText( tr( "Update Layer" ) );
+      mLoadAsNewLayerGroupBox->setCollapsed( false );
+      break;
+  }
 }
 
 void QgsQueryResultWidget::executeQuery()
@@ -327,7 +364,8 @@ void QgsQueryResultWidget::tokensReady( const QStringList &tokens )
   mSqlErrorText->setExtraKeywords( mSqlErrorText->extraKeywords() + tokens );
 }
 
-void QgsQueryResultWidget::syncSqlOptions()
+
+QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsQueryResultWidget::sqlVectorLayerOptions() const
 {
   mSqlVectorLayerOptions.sql = mSqlEditor->text();
   mSqlVectorLayerOptions.filter = mFilterLineEdit->text();
@@ -335,10 +373,6 @@ void QgsQueryResultWidget::syncSqlOptions()
   mSqlVectorLayerOptions.geometryColumn = mGeometryColumnComboBox->currentText();
   mSqlVectorLayerOptions.layerName = mLayerNameLineEdit->text();
   mSqlVectorLayerOptions.disableSelectAtId = mAvoidSelectingAsFeatureIdCheckBox->isChecked();
-}
-
-QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsQueryResultWidget::sqlVectorLayerOptions() const
-{
   QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions options { mSqlVectorLayerOptions };
   // Override if not used
   if ( ! mPkColumnsCheckBox->isChecked() )
@@ -362,7 +396,7 @@ void QgsQueryResultWidget::setConnection( QgsAbstractDatabaseProviderConnection 
   {
 
     // Add provider specific APIs
-    const QMap<Qgis::SqlKeywordCategory, QStringList> keywordsDict { connection->sqlDictionary() };
+    const QMultiMap<Qgis::SqlKeywordCategory, QStringList> keywordsDict { connection->sqlDictionary() };
     QStringList keywords;
     for ( auto it = keywordsDict.constBegin(); it != keywordsDict.constEnd(); it++ )
     {
@@ -393,6 +427,11 @@ void QgsQueryResultWidget::setConnection( QgsAbstractDatabaseProviderConnection 
 void QgsQueryResultWidget::setQuery( const QString &sql )
 {
   mSqlEditor->setText( sql );
+}
+
+void QgsQueryResultWidget::notify( const QString &title, const QString &text, Qgis::MessageLevel level )
+{
+  mMessageBar->pushMessage( title, text, level );
 }
 
 

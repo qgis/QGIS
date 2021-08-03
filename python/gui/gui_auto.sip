@@ -19,6 +19,7 @@
 %Include auto_generated/qgsattributetypeloaddialog.sip
 %Include auto_generated/qgsblendmodecombobox.sip
 %Include auto_generated/qgsbrowserdockwidget.sip
+%Include auto_generated/qgsbrowserwidget.sip
 %Include auto_generated/qgsbrowserguimodel.sip
 %Include auto_generated/qgsbrowsertreeview.sip
 %Include auto_generated/qgsbusyindicatordialog.sip

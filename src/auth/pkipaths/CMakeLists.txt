@@ -16,7 +16,11 @@ if (WITH_GUI)
     gui/qgsauthpkipathsedit.h
   )
   set(AUTH_PKIPATHS_UIS gui/qgsauthpkipathsedit.ui)
-  QT5_WRAP_UI(AUTH_PKIPATHS_UIS_H ${AUTH_PKIPATHS_UIS})
+  if (WITH_QT6)
+    QT6_WRAP_UI(AUTH_PKIPATHS_UIS_H ${AUTH_PKIPATHS_UIS})
+  else()
+    QT5_WRAP_UI(AUTH_PKIPATHS_UIS_H ${AUTH_PKIPATHS_UIS})
+  endif()
 endif()
 
 # static library

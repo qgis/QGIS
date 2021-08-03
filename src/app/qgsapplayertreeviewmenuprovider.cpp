@@ -13,42 +13,44 @@
  *                                                                         *
  ***************************************************************************/
 #include <QClipboard>
-
-#include "qgsapplayertreeviewmenuprovider.h"
+#include <QMessageBox>
 
 #include "qgisapp.h"
+#include "qgsapplayertreeviewmenuprovider.h"
 #include "qgsapplication.h"
 #include "qgsclipboard.h"
-#include "qgscolorwidgets.h"
 #include "qgscolorschemeregistry.h"
 #include "qgscolorswatchgrid.h"
+#include "qgscolorwidgets.h"
+#include "qgsdialog.h"
 #include "qgsgui.h"
+#include "qgslayernotesmanager.h"
+#include "qgslayernotesutils.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgslayertreeregistrybridge.h"
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayerstyleguiutils.h"
-#include "qgsproject.h"
-#include "qgsrasterlayer.h"
-#include "qgsrenderer.h"
-#include "qgssymbol.h"
-#include "qgsstyle.h"
-#include "qgsvectordataprovider.h"
-#include "qgsvectorlayer.h"
-#include "qgslayertreeregistrybridge.h"
-#include "qgssymbolselectordialog.h"
-#include "qgssinglesymbolrenderer.h"
 #include "qgsmaplayerstylecategoriesmodel.h"
-#include "qgssymbollayerutils.h"
-#include "qgsxmlutils.h"
+#include "qgsmaplayerstyleguiutils.h"
+#include "qgsmaplayerutils.h"
 #include "qgsmessagebar.h"
 #include "qgspointcloudlayer.h"
+#include "qgsproject.h"
+#include "qgsqueryresultwidget.h"
+#include "qgsrasterlayer.h"
+#include "qgsrenderer.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgsstyle.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
+#include "qgssymbolselectordialog.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
-#include "qgslayernotesmanager.h"
-#include "qgslayernotesutils.h"
+#include "qgsxmlutils.h"
 
-#include <QMessageBox>
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
   : mView( view )
@@ -215,6 +217,66 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           QAction *stretch = menu->addAction( tr( "&Stretch Using Current Extent" ), QgisApp::instance(), &QgisApp::legendLayerStretchUsingCurrentExtent );
           stretch->setEnabled( rlayer->isValid() );
         }
+      }
+
+      // No raster support in createSqlVectorLayer (yet)
+      if ( vlayer )
+      {
+        std::unique_ptr< QgsAbstractDatabaseProviderConnection> conn { QgsMapLayerUtils::databaseConnection( layer ) };
+        if ( conn )
+          menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/dbmanager.svg" ) ), tr( "Update SQL Layer…" ), menu, [ layer ]
+        {
+          std::unique_ptr< QgsAbstractDatabaseProviderConnection> conn2 { QgsMapLayerUtils::databaseConnection( layer ) };
+          if ( conn2 )
+          {
+            QgsDialog dialog;
+            dialog.setObjectName( QStringLiteral( "SqlUpdateDialog" ) );
+            dialog.setWindowTitle( tr( "%1 — Update SQL" ).arg( layer->name() ) );
+            QgsGui::enableAutoGeometryRestore( &dialog );
+            QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions options { conn2->sqlOptions( layer->source() ) };
+            options.layerName = layer->name();
+            QgsQueryResultWidget *queryResultWidget { new QgsQueryResultWidget( &dialog, conn2.release() ) };
+            queryResultWidget->setWidgetMode( QgsQueryResultWidget::QueryWidgetMode::QueryLayerUpdateMode );
+            queryResultWidget->setSqlVectorLayerOptions( options );
+            queryResultWidget->executeQuery();
+            queryResultWidget->layout()->setMargin( 0 );
+            dialog.layout()->addWidget( queryResultWidget );
+
+            connect( queryResultWidget, &QgsQueryResultWidget::createSqlVectorLayer, queryResultWidget, [queryResultWidget, layer ]( const QString &, const QString &, const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions & options )
+            {
+              std::unique_ptr< QgsAbstractDatabaseProviderConnection> conn3 { QgsMapLayerUtils::databaseConnection( layer ) };
+              if ( conn3 )
+              {
+                try
+                {
+                  std::unique_ptr<QgsMapLayer> sqlLayer { conn3->createSqlVectorLayer( options ) };
+                  if ( sqlLayer->isValid() )
+                  {
+                    layer->setDataSource( sqlLayer->source(), sqlLayer->name(), sqlLayer->dataProvider()->name(), QgsDataProvider::ProviderOptions() );
+                    queryResultWidget->notify( QObject::tr( "Layer Update Success" ), QObject::tr( "The SQL layer was updated successfully" ), Qgis::MessageLevel::Success );
+                  }
+                  else
+                  {
+                    QString error { sqlLayer->dataProvider()->error().message( QgsErrorMessage::Format::Text ) };
+                    if ( error.isEmpty() )
+                    {
+                      error = QObject::tr( "layer is not valid, check the log messages for more information" );
+                    }
+                    queryResultWidget->notify( QObject::tr( "Layer Update Error" ), QObject::tr( "Error updating the SQL layer: %1" ).arg( error ), Qgis::MessageLevel::Critical );
+                  }
+                }
+                catch ( QgsProviderConnectionException &ex )
+                {
+                  queryResultWidget->notify( QObject::tr( "Layer Update Error" ), QObject::tr( "Error updating the SQL layer: %1" ).arg( ex.what() ), Qgis::MessageLevel::Critical );
+                }
+              }
+
+            } );
+
+            dialog.exec();
+
+          }
+        } );
       }
 
       addCustomLayerActions( menu, layer );

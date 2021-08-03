@@ -30,6 +30,7 @@
 #include "qgsremappingproxyfeaturesink.h"
 
 class QgsMeshLayer;
+class QgsPluginLayer;
 class QgsProject;
 class QgsProcessingContext;
 class QgsMapLayerStore;
@@ -59,6 +60,7 @@ class CORE_EXPORT QgsProcessingUtils
      * value.
      * \see compatibleVectorLayers()
      * \see compatibleMeshLayers()
+     * \see compatiblePluginLayers()
      * \see compatibleLayers()
      */
     static QList< QgsRasterLayer * > compatibleRasterLayers( QgsProject *project, bool sort = true );
@@ -76,6 +78,7 @@ class CORE_EXPORT QgsProcessingUtils
      * value.
      * \see compatibleRasterLayers()
      * \see compatibleMeshLayers()
+     * \see compatiblePluginLayers()
      * \see compatibleLayers()
      */
     static QList< QgsVectorLayer * > compatibleVectorLayers( QgsProject *project,
@@ -91,11 +94,28 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * \see compatibleRasterLayers()
      * \see compatibleVectorLayers()
+     * \see compatiblePluginLayers()
      * \see compatibleLayers()
      *
      * \since QGIS 3.6
      */
     static QList<QgsMeshLayer *> compatibleMeshLayers( QgsProject *project, bool sort = true );
+
+    /**
+     * Returns a list of plugin layers from a \a project which are compatible with the processing
+     * framework.
+     *
+     * If the \a sort argument is TRUE then the layers will be sorted by their QgsMapLayer::name()
+     * value.
+     *
+     * \see compatibleRasterLayers()
+     * \see compatibleVectorLayers()
+     * \see compatibleMeshLayers()
+     * \see compatibleLayers()
+     *
+     * \since QGIS 3.22
+     */
+    static QList<QgsPluginLayer *> compatiblePluginLayers( QgsProject *project, bool sort = true );
 
     /**
      * Returns a list of map layers from a \a project which are compatible with the processing
@@ -415,9 +435,24 @@ class CORE_EXPORT QgsProcessingUtils
   private:
     static bool canUseLayer( const QgsRasterLayer *layer );
     static bool canUseLayer( const QgsMeshLayer *layer );
+    static bool canUseLayer( const QgsPluginLayer *layer );
     static bool canUseLayer( const QgsVectorTileLayer *layer );
     static bool canUseLayer( const QgsVectorLayer *layer,
                              const QList< int > &sourceTypes = QList< int >() );
+
+    /**
+     * Returns a list of map layers with the given layer type from a \a project which are compatible
+     * with the processing framework.
+     *
+     * If the \a sort argument is TRUE then the layers will be sorted by their QgsMapLayer::name()
+     * value.
+     * \see compatibleRasterLayers()
+     * \see compatibleVectorLayers()
+     * \see compatibleMeshLayers()
+     * \see compatiblePluginLayers()
+     * \since QGIS 3.22
+     */
+    template< typename T> static QList< T * > compatibleMapLayers( QgsProject *project, bool sort = true );
 
     /**
      * Interprets a \a string as a map layer from a store.

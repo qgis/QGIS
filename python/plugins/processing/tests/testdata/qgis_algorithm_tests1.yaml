@@ -543,6 +543,93 @@ tests:
         name: expected/autoincrement_sort.gml
         type: vector
 
+  - algorithm: native:addautoincrementalfield
+    name: Add incremental field (with modulus)
+    params:
+      FIELD_NAME: AUTO
+      GROUP_FIELDS:
+      - id2
+      INPUT:
+        name: points.gml|layername=points
+        type: vector
+      MODULUS: 3
+      SORT_ASCENDING: true
+      SORT_NULLS_FIRST: false
+      START: 0
+    results:
+      OUTPUT:
+        name: expected/autoincrement_grouped_modulus.gml
+        type: vector
+
+  - algorithm: native:addautoincrementalfield
+    name: Add incremental field (with modulus)
+    params:
+      FIELD_NAME: AUTO
+      INPUT:
+        name: points.gml|layername=points
+        type: vector
+      MODULUS: 3
+      SORT_ASCENDING: true
+      SORT_NULLS_FIRST: false
+      START: 0
+    results:
+      OUTPUT:
+        name: expected/autoincrement_modulus.gml
+        type: vector
+
+  - algorithm: native:addautoincrementalfield
+    name: Add incremental field (with modulus, start)
+    params:
+      FIELD_NAME: AUTO
+      INPUT:
+        name: points.gml|layername=points
+        type: vector
+      MODULUS: 4
+      SORT_ASCENDING: true
+      SORT_NULLS_FIRST: false
+      START: 1
+    results:
+      OUTPUT:
+        name: expected/autoincrement_field_start_modulus.gml
+        type: vector
+
+  - algorithm: native:addautoincrementalfield
+    name: Add incremental field (with modulus, grouped, start)
+    params:
+      FIELD_NAME: AUTO
+      GROUP_FIELDS:
+      - id2
+      INPUT:
+        name: points.gml|layername=points
+        type: vector
+      MODULUS: 4
+      SORT_ASCENDING: true
+      SORT_NULLS_FIRST: false
+      START: 1
+    results:
+      OUTPUT:
+        name: expected/autoincrement_field_start_grouped_modulus.gml
+        type: vector
+
+  - algorithm: native:addautoincrementalfield
+    name: Add incremental field (with modulus, grouped, sorted, start)
+    params:
+      FIELD_NAME: AUTO
+      GROUP_FIELDS:
+      - id2
+      INPUT:
+        name: points.gml|layername=points
+        type: vector
+      MODULUS: 4
+      SORT_ASCENDING: true
+      SORT_EXPRESSION: fid
+      SORT_NULLS_FIRST: false
+      START: 1
+    results:
+      OUTPUT:
+        name: expected/autoincrement_field_start_grouped_sorted_modulus.gml
+        type: vector
+
   - algorithm: native:dissolve
     name: Dissolve using field
     params:

@@ -26,6 +26,28 @@
 #include <QNetworkProxy>
 #include <QString>
 #include <QImage>
+#include <QFileInfo>
+
+// File extensions for formats supported by GDAL which may contain multiple layers
+// and should be treated as a potential layer container
+const QStringList QgsGdalUtils::SUPPORTED_DB_LAYERS_EXTENSIONS
+{
+  QStringLiteral( "gpkg" ),
+  QStringLiteral( "sqlite" ),
+  QStringLiteral( "db" ),
+  QStringLiteral( "gdb" ),
+  QStringLiteral( "kml" ),
+  QStringLiteral( "kmz" ),
+  QStringLiteral( "osm" ),
+  QStringLiteral( "mdb" ),
+  QStringLiteral( "accdb" ),
+  QStringLiteral( "xls" ),
+  QStringLiteral( "xlsx" ),
+  QStringLiteral( "gpx" ),
+  QStringLiteral( "pdf" ),
+  QStringLiteral( "pbf" ),
+  QStringLiteral( "nc" ),
+  QStringLiteral( "shp.zip" ) };
 
 bool QgsGdalUtils::supportsRasterCreate( GDALDriverH driver )
 {
@@ -513,5 +535,60 @@ void QgsGdalUtils::setupProxy()
       }
     }
   }
+}
+
+bool QgsGdalUtils::pathIsCheapToOpen( const QString &path, int smallFileSizeLimit )
+{
+  const QFileInfo info( path );
+  const long long size = info.size();
+
+  // if size could not be determined, safest to flag path as expensive
+  if ( size == 0 )
+    return false;
+
+  const QString suffix = info.suffix().toLower();
+  static QStringList sFileSizeDependentExtensions
+  {
+    QStringLiteral( "xlsx" ),
+    QStringLiteral( "ods" ),
+    QStringLiteral( "csv" )
+  };
+  if ( sFileSizeDependentExtensions.contains( suffix ) )
+  {
+    // path corresponds to a file type which is only cheap to open for small files
+    return size < smallFileSizeLimit;
+  }
+
+  // treat all other formats as expensive.
+  // TODO -- flag formats which only require a quick header parse as cheap
+  return false;
+}
+
+bool QgsGdalUtils::vrtMatchesLayerType( const QString &vrtPath, QgsMapLayerType type )
+{
+  CPLPushErrorHandler( CPLQuietErrorHandler );
+  CPLErrorReset();
+  GDALDriverH hDriver = nullptr;
+
+  switch ( type )
+  {
+    case QgsMapLayerType::VectorLayer:
+      hDriver = GDALIdentifyDriverEx( vrtPath.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr );
+      break;
+
+    case QgsMapLayerType::RasterLayer:
+      hDriver = GDALIdentifyDriverEx( vrtPath.toUtf8().constData(), GDAL_OF_RASTER, nullptr, nullptr );
+      break;
+
+    case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::MeshLayer:
+    case QgsMapLayerType::VectorTileLayer:
+    case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::PointCloudLayer:
+      break;
+  }
+
+  CPLPopErrorHandler();
+  return static_cast< bool >( hDriver );
 }
 #endif

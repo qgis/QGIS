@@ -268,6 +268,7 @@ class CORE_EXPORT Qgis
       Collapse = 1 << 3, //!< The collapse/expand status for this items children should be ignored in order to avoid undesired network connections (wms etc.)
       Rename = 1 << 4, //!< Item can be renamed
       Delete = 1 << 5, //!< Item can be deleted
+      ItemRepresentsFile = 1 << 6, //!< Item's path() directly represents a file on disk (since QGIS 3.22)
     };
     Q_ENUM( BrowserItemCapability )
     Q_DECLARE_FLAGS( BrowserItemCapabilities, BrowserItemCapability )
@@ -378,6 +379,17 @@ class CORE_EXPORT Qgis
       RamDisk, //!< RAM disk
     };
     Q_ENUM( DriveType )
+
+    /**
+     * Enum to determine when an operation would begin
+     * \since QGIS 3.22
+     */
+    enum class ActionStart SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsNetworkContentFetcherRegistry, FetchingMode ) : int
+      {
+      Deferred SIP_MONKEYPATCH_COMPAT_NAME( DownloadLater ), //!< Do not start immediately the action
+      Immediate SIP_MONKEYPATCH_COMPAT_NAME( DownloadImmediately ), //!< Action will start immediately
+    };
+    Q_ENUM( ActionStart )
 
     /**
      * Unplaced label visibility.
@@ -522,6 +534,62 @@ class CORE_EXPORT Qgis
     Q_ENUM( VertexMarkerType )
 
     /**
+     * Status for fetched or stored content
+     * \since QGIS 3.22
+     */
+    enum class ContentStatus : int
+    {
+      NotStarted, //!< Content fetching/storing has not started yet
+      Running, //!< Content fetching/storing is in progress
+      Finished, //!< Content fetching/storing is finished and successful
+      Failed, //!< Content fetching/storing has failed
+      Canceled, //!< Content fetching/storing has been canceled
+    };
+    Q_ENUM( ContentStatus )
+
+    /**
+     * Babel GPS format capabilities.
+     *
+     * \since QGIS 3.22
+     */
+    enum class BabelFormatCapability : int
+    {
+      Import = 1 << 0, //!< Format supports importing
+      Export = 1 << 1, //!< Format supports exporting
+      Waypoints = 1 << 2, //!< Format supports waypoints
+      Routes = 1 << 3, //!< Format supports routes
+      Tracks = 1 << 4, //!< Format supports tracks
+    };
+    Q_DECLARE_FLAGS( BabelFormatCapabilities, BabelFormatCapability )
+    Q_ENUM( BabelFormatCapability )
+
+    /**
+     * Babel command flags, which control how commands and arguments
+     * are generated for executing GPSBabel processes.
+     *
+     * \since QGIS 3.22
+     */
+    enum class BabelCommandFlag : int
+    {
+      QuoteFilePaths = 1 << 0, //!< File paths should be enclosed in quotations and escaped
+    };
+    Q_DECLARE_FLAGS( BabelCommandFlags, BabelCommandFlag )
+    Q_ENUM( BabelCommandFlag )
+
+    /**
+     * GPS feature types.
+     *
+     * \since QGIS 3.22
+     */
+    enum class GpsFeatureType : int
+    {
+      Waypoint, //!< Waypoint
+      Route, //!< Route
+      Track, //!< Track
+    };
+    Q_ENUM( GpsFeatureType )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */
@@ -640,6 +708,8 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolPreviewFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BrowserItemCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerQueryFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SqlLayerDefinitionCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelFormatCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelCommandFlags )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.
@@ -1252,10 +1322,6 @@ typedef unsigned long long qgssize;
 #ifndef QGISEXTERN
 #ifdef Q_OS_WIN
 #  define QGISEXTERN extern "C" __declspec( dllexport )
-#  ifdef _MSC_VER
-// do not warn about C bindings returning QString
-#    pragma warning(disable:4190)
-#  endif
 #else
 #  if defined(__GNUC__) || defined(__clang__)
 #    define QGISEXTERN extern "C" __attribute__ ((visibility ("default")))

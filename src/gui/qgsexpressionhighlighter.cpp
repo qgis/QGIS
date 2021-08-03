@@ -29,18 +29,18 @@ QgsExpressionHighlighter::QgsExpressionHighlighter( QTextDocument *parent )
   const auto constKeywordPatterns = keywordPatterns;
   for ( const QString &pattern : constKeywordPatterns )
   {
-    rule.pattern = QRegExp( pattern, Qt::CaseInsensitive );
+    rule.pattern = QRegularExpression( pattern, QRegularExpression::CaseInsensitiveOption );
     rule.format = keywordFormat;
     highlightingRules.append( rule );
   }
 
   quotationFormat.setForeground( Qt::darkGreen );
-  rule.pattern = QRegExp( "\'[^\'\r\n]*\'" );
+  rule.pattern = QRegularExpression( "\'[^\'\r\n]*\'" );
   rule.format = quotationFormat;
   highlightingRules.append( rule );
 
   columnNameFormat.setForeground( Qt::darkRed );
-  rule.pattern = QRegExp( "\"[^\"\r\n]*\"" );
+  rule.pattern = QRegularExpression( "\"[^\"\r\n]*\"" );
   rule.format = columnNameFormat;
   highlightingRules.append( rule );
 }
@@ -54,7 +54,7 @@ void QgsExpressionHighlighter::addFields( const QStringList &fieldList )
   {
     if ( field.isEmpty() ) // this really happened :)
       continue;
-    rule.pattern = QRegExp( "\\b" + field + "\\b" );
+    rule.pattern = QRegularExpression( "\\b" + field + "\\b" );
     rule.format = columnNameFormat;
     highlightingRules.append( rule );
   }
@@ -65,15 +65,16 @@ void QgsExpressionHighlighter::highlightBlock( const QString &text )
   const auto constHighlightingRules = highlightingRules;
   for ( const HighlightingRule &rule : constHighlightingRules )
   {
-    QRegExp expression( rule.pattern );
-    int index = expression.indexIn( text );
-    while ( index >= 0 )
+    QRegularExpression expression( rule.pattern );
+    QRegularExpressionMatch match = expression.match( text );
+    while ( match.hasMatch() )
     {
-      int length = expression.matchedLength();
+      int index = match.capturedStart();
+      int length = match.capturedLength();
       if ( length == 0 )
         break; // avoid infinite loops
       setFormat( index, length, rule.format );
-      index = expression.indexIn( text, index + length );
+      match = expression.match( text, index + length );
     }
   }
 }

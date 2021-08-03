@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QDesktopServices>
 #include <QKeyEvent>
 #include <QHeaderView>
 #include <QMenu>
@@ -34,6 +35,7 @@
 #include "qgsfeatureselectionmodel.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgsfeatureiterator.h"
+#include "qgsstringutils.h"
 #include "qgsgui.h"
 
 QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
@@ -304,6 +306,19 @@ void QgsAttributeTableView::mouseReleaseEvent( QMouseEvent *event )
   setSelectionMode( QAbstractItemView::NoSelection );
   QTableView::mouseReleaseEvent( event );
   setSelectionMode( QAbstractItemView::ExtendedSelection );
+  if ( event->modifiers() == Qt::ControlModifier )
+  {
+    QModelIndex index = indexAt( event->pos() );
+    QVariant data = model()->data( index, Qt::DisplayRole );
+    if ( data.type() == QVariant::String )
+    {
+      QString textVal = data.toString();
+      if ( QgsStringUtils::isUrl( textVal ) )
+      {
+        QDesktopServices::openUrl( QUrl( textVal ) );
+      }
+    }
+  }
 }
 
 void QgsAttributeTableView::mouseMoveEvent( QMouseEvent *event )
@@ -456,7 +471,7 @@ void QgsAttributeTableView::actionTriggered()
 
   if ( action->data().toString() == QLatin1String( "user_action" ) )
   {
-    mFilterModel->layer()->actions()->doAction( action->property( "action_id" ).toString(), f );
+    mFilterModel->layer()->actions()->doAction( action->property( "action_id" ).toUuid(), f );
   }
   else if ( action->data().toString() == QLatin1String( "map_layer_action" ) )
   {

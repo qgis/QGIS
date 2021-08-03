@@ -30,8 +30,17 @@ pushd build > /dev/null
 echo "${bold}Running cmake...${endbold}"
 echo "::group::cmake"
 
-export CC=/usr/lib/ccache/clang
-export CXX=/usr/lib/ccache/clang++
+if [[ -f "/usr/lib64/ccache/clang" ]]; then
+  export CC=/usr/lib64/ccache/clang
+  export CXX=/usr/lib64/ccache/clang++
+else
+  export CC=/usr/lib/ccache/clang
+  export CXX=/usr/lib/ccache/clang++
+fi
+
+if [[ ${WITH_QT6} = "ON" ]]; then
+  CLANG_WARNINGS="-Wrange-loop-construct"
+fi
 
 CMAKE_EXTRA_ARGS=()
 if [[ ${PATCH_QT_3D} == "true" ]]; then
@@ -46,29 +55,36 @@ fi
 cmake \
  -GNinja \
  -DUSE_CCACHE=OFF \
- -DWITH_QUICK=ON \
+ -DWITH_QT6=${WITH_QT6} \
+ -DWITH_DESKTOP=${WITH_QT5} \
+ -DWITH_ANALYSIS=ON \
+ -DWITH_GUI=${WITH_QT5} \
+ -DWITH_QUICK=${WITH_QUICK} \
  -DWITH_3D=${WITH_3D} \
  -DWITH_STAGED_PLUGINS=ON \
  -DWITH_GRASS=OFF \
  -DSUPPRESS_QT_WARNINGS=ON \
  -DENABLE_TESTS=ON \
- -DENABLE_MODELTEST=ON \
- -DENABLE_PGTEST=ON \
- -DENABLE_SAGA_TESTS=ON \
- -DENABLE_MSSQLTEST=ON \
+ -DENABLE_MODELTEST=${WITH_QT5} \
+ -DENABLE_PGTEST=${WITH_QT5} \
+ -DENABLE_SAGA_TESTS=${WITH_QT5} \
+ -DENABLE_MSSQLTEST=${WITH_QT5} \
  -DENABLE_HANATEST=${HANA_TESTS_ENABLED} \
- -DENABLE_ORACLETEST=ON \
+ -DENABLE_ORACLETEST=${WITH_QT5} \
  -DPUSH_TO_CDASH=${PUSH_TO_CDASH} \
- -DWITH_HANA=ON \
- -DWITH_QSPATIALITE=ON \
+ -DWITH_HANA=${WITH_QT5} \
+ -DWITH_QGIS_PROCESS=ON \
+ -DWITH_QSPATIALITE=${WITH_QT5} \
  -DWITH_QWTPOLAR=OFF \
  -DWITH_APIDOC=OFF \
  -DWITH_ASTYLE=OFF \
- -DWITH_DESKTOP=ON \
- -DWITH_BINDINGS=ON \
- -DWITH_SERVER=ON \
- -DWITH_ORACLE=ON \
- -DWITH_PDAL=ON \
+ -DWITH_BINDINGS=${WITH_QT5} \
+ -DWITH_SERVER=${WITH_QT5} \
+ -DWITH_ORACLE=${WITH_QT5} \
+ -DWITH_PDAL=${WITH_QT5} \
+ -DWITH_QT5SERIALPORT=${WITH_QT5} \
+ -DWITH_QTWEBKIT=${WITH_QT5} \
+ -DWITH_OAUTH2_PLUGIN=${WITH_QT5} \
  -DORACLE_INCLUDEDIR=/instantclient_19_9/sdk/include/ \
  -DORACLE_LIBDIR=/instantclient_19_9/ \
  -DDISABLE_DEPRECATED=ON \

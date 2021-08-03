@@ -20,6 +20,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsmeshlayer.h"
 #include "qgsrasterlayer.h"
+#include "qgspluginlayer.h"
 #include "qgsproject.h"
 #include "processing/models/qgsprocessingmodelchildparametersource.h"
 #include <QStandardItemModel>
@@ -404,6 +405,17 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
       break;
     }
 
+    case QgsProcessing::TypePlugin:
+    {
+      const QList<QgsPluginLayer *> options = QgsProcessingUtils::compatiblePluginLayers( project, false );
+      for ( const QgsPluginLayer *layer : options )
+      {
+        addLayer( layer );
+      }
+
+      break;
+    }
+
     case QgsProcessing::TypeVector:
     case QgsProcessing::TypeVectorAnyGeometry:
     {
@@ -430,6 +442,11 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
       }
       const QList<QgsMeshLayer *> meshes = QgsProcessingUtils::compatibleMeshLayers( project );
       for ( const QgsMeshLayer *layer : meshes )
+      {
+        addLayer( layer );
+      }
+      const QList<QgsPluginLayer *> plugins = QgsProcessingUtils::compatiblePluginLayers( project );
+      for ( const QgsPluginLayer *layer : plugins )
       {
         addLayer( layer );
       }

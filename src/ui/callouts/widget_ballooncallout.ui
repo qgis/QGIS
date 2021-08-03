@@ -27,38 +27,38 @@
     <number>0</number>
    </property>
    <item>
-    <layout class="QGridLayout" name="gridLayout_45" columnstretch="0,0,0,0,0">
+    <layout class="QGridLayout" name="gridLayout_45" columnstretch="0,0,0,0">
      <property name="leftMargin">
       <number>0</number>
      </property>
      <property name="topMargin">
       <number>0</number>
      </property>
-     <item row="5" column="3">
-     <widget class="QgsPropertyOverrideButton" name="mCalloutBlendModeDDBtn">
+     <item row="6" column="3">
+      <widget class="QgsPropertyOverrideButton" name="mCalloutBlendModeDDBtn">
        <property name="text">
-       <string>…</string>
+        <string>…</string>
        </property>
-     </widget>
+      </widget>
      </item>
-     <item row="5" column="1" colspan="2">
-     <widget class="QgsBlendModeComboBox" name="mCalloutBlendComboBox"/>
+     <item row="6" column="1" colspan="2">
+      <widget class="QgsBlendModeComboBox" name="mCalloutBlendComboBox" native="true"/>
      </item>
-     <item row="5" column="0">
-     <widget class="QLabel" name="label_18">
+     <item row="6" column="0">
+      <widget class="QLabel" name="mCalloutBlendModeLbl">
        <property name="text">
-       <string>Blend mode</string>
+        <string>Blend mode</string>
        </property>
-     </widget>
+      </widget>
      </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_47">
+     <item row="2" column="0">
+      <widget class="QLabel" name="mWedgeWidthLbl">
        <property name="text">
         <string>Wedge width</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="1" colspan="3">
+     <item row="0" column="1" colspan="2">
       <widget class="QgsSymbolButton" name="mCalloutFillStyleButton">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -71,7 +71,7 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="2" colspan="2">
+     <item row="2" column="2">
       <widget class="QgsUnitSelectionWidget" name="mWedgeWidthUnitWidget" native="true">
        <property name="minimumSize">
         <size>
@@ -85,20 +85,20 @@
       </widget>
      </item>
      <item row="0" column="0">
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="mCalloutFillStyleLbl">
        <property name="text">
         <string>Fill style</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_46">
+     <item row="4" column="0">
+      <widget class="QLabel" name="mOffsetFromAnchorLbl">
        <property name="text">
         <string>Offset from feature</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
+     <item row="4" column="1">
       <widget class="QgsDoubleSpinBox" name="mOffsetFromAnchorSpin">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -123,14 +123,14 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="4">
+     <item row="4" column="3">
       <widget class="QgsPropertyOverrideButton" name="mOffsetFromAnchorDDBtn">
        <property name="text">
         <string>…</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="2" colspan="2">
+     <item row="4" column="2">
       <widget class="QgsUnitSelectionWidget" name="mOffsetFromAnchorUnitWidget" native="true">
        <property name="minimumSize">
         <size>
@@ -143,24 +143,24 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="1" colspan="3">
+     <item row="5" column="1" colspan="2">
       <widget class="QComboBox" name="mAnchorPointComboBox"/>
      </item>
-     <item row="2" column="4">
+     <item row="5" column="3">
       <widget class="QgsPropertyOverrideButton" name="mAnchorPointDDBtn">
        <property name="text">
         <string>…</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="0">
+     <item row="5" column="0">
       <widget class="QLabel" name="mAnchorPointLbl">
        <property name="text">
-        <string>Anchor point</string>
+        <string>Feature anchor point</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
+     <item row="2" column="1">
       <widget class="QgsDoubleSpinBox" name="mWedgeWidthSpin">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -185,21 +185,21 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="4">
+     <item row="2" column="3">
       <widget class="QgsPropertyOverrideButton" name="mWedgeWidthDDBtn">
        <property name="text">
         <string>…</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_48">
+     <item row="1" column="0">
+      <widget class="QLabel" name="mCornerRadiusLbl">
        <property name="text">
         <string>Corner radius</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
+     <item row="1" column="1">
       <widget class="QgsDoubleSpinBox" name="mCornerRadiusSpin">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -224,7 +224,7 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="2" colspan="2">
+     <item row="1" column="2">
       <widget class="QgsUnitSelectionWidget" name="mCornerRadiusUnitWidget" native="true">
        <property name="minimumSize">
         <size>
@@ -237,214 +237,214 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="4">
+     <item row="1" column="3">
       <widget class="QgsPropertyOverrideButton" name="mCornerRadiusDDBtn">
        <property name="text">
         <string>…</string>
        </property>
       </widget>
      </item>
-    </layout>
-   </item>
-   <item>
-    <widget class="QgsCollapsibleGroupBox" name="mMarginsGroupBox">
-     <property name="title">
-      <string> Margins</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_2">
-      <item row="4" column="1">
-       <widget class="QgsUnitSelectionWidget" name="mMarginUnitWidget" native="true">
-        <property name="minimumSize">
-         <size>
-          <width>10</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="focusPolicy">
-         <enum>Qt::StrongFocus</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="label_6">
-        <property name="text">
-         <string>Units</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="label_7">
-        <property name="text">
-         <string>Data defined</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>Bottom</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QgsDoubleSpinBox" name="mSpinBottomMargin">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>1</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="suffix">
-         <string/>
-        </property>
-        <property name="decimals">
-         <number>6</number>
-        </property>
-        <property name="minimum">
-         <double>-10000000.000000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>10000000.000000000000000</double>
-        </property>
-        <property name="singleStep">
-         <double>0.200000000000000</double>
-        </property>
-        <property name="value">
-         <double>1.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Left</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Top</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QgsDoubleSpinBox" name="mSpinRightMargin">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>1</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="suffix">
-         <string/>
-        </property>
-        <property name="decimals">
-         <number>6</number>
-        </property>
-        <property name="minimum">
-         <double>-10000000.000000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>10000000.000000000000000</double>
-        </property>
-        <property name="singleStep">
-         <double>0.200000000000000</double>
-        </property>
-        <property name="value">
-         <double>1.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QgsDoubleSpinBox" name="mSpinLeftMargin">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>1</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="suffix">
-         <string/>
-        </property>
-        <property name="decimals">
-         <number>6</number>
-        </property>
-        <property name="minimum">
-         <double>-10000000.000000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>10000000.000000000000000</double>
-        </property>
-        <property name="singleStep">
-         <double>0.200000000000000</double>
-        </property>
-        <property name="value">
-         <double>1.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_5">
-        <property name="text">
-         <string>Right</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QgsDoubleSpinBox" name="mSpinTopMargin">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>1</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="suffix">
-         <string/>
-        </property>
-        <property name="decimals">
-         <number>6</number>
-        </property>
-        <property name="minimum">
-         <double>-10000000.000000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>10000000.000000000000000</double>
-        </property>
-        <property name="singleStep">
-         <double>0.200000000000000</double>
-        </property>
-        <property name="value">
-         <double>1.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QgsPropertyOverrideButton" name="mMarginsDDBtn">
-          <property name="text">
-           <string>…</string>
+     <item row="3" column="0" colspan="4">
+      <widget class="QgsCollapsibleGroupBox" name="mMarginsGroupBox">
+       <property name="title">
+        <string> Margins</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="4" column="1">
+         <widget class="QgsUnitSelectionWidget" name="mMarginUnitWidget" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>10</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
           </property>
          </widget>
         </item>
-        <item>
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>Units</string>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>Data defined</string>
           </property>
-         </spacer>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>Bottom</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QgsDoubleSpinBox" name="mSpinBottomMargin">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>1</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="suffix">
+           <string/>
+          </property>
+          <property name="decimals">
+           <number>6</number>
+          </property>
+          <property name="minimum">
+           <double>-10000000.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>10000000.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.200000000000000</double>
+          </property>
+          <property name="value">
+           <double>1.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Left</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Top</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QgsDoubleSpinBox" name="mSpinRightMargin">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>1</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="suffix">
+           <string/>
+          </property>
+          <property name="decimals">
+           <number>6</number>
+          </property>
+          <property name="minimum">
+           <double>-10000000.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>10000000.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.200000000000000</double>
+          </property>
+          <property name="value">
+           <double>1.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QgsDoubleSpinBox" name="mSpinLeftMargin">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>1</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="suffix">
+           <string/>
+          </property>
+          <property name="decimals">
+           <number>6</number>
+          </property>
+          <property name="minimum">
+           <double>-10000000.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>10000000.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.200000000000000</double>
+          </property>
+          <property name="value">
+           <double>1.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>Right</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QgsDoubleSpinBox" name="mSpinTopMargin">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>1</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="suffix">
+           <string/>
+          </property>
+          <property name="decimals">
+           <number>6</number>
+          </property>
+          <property name="minimum">
+           <double>-10000000.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>10000000.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.200000000000000</double>
+          </property>
+          <property name="value">
+           <double>1.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QgsPropertyOverrideButton" name="mMarginsDDBtn">
+            <property name="text">
+             <string>…</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </item>
        </layout>
-      </item>
-     </layout>
-    </widget>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QGroupBox" name="mPlacementDDGroupBox">
@@ -592,16 +592,14 @@
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsBlendModeComboBox</class>
+   <extends>QWidget</extends>
+   <header>qgsblendmodecombobox.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mCalloutFillStyleButton</tabstop>
-  <tabstop>mOffsetFromAnchorSpin</tabstop>
-  <tabstop>mOffsetFromAnchorUnitWidget</tabstop>
-  <tabstop>mOffsetFromAnchorDDBtn</tabstop>
-  <tabstop>mAnchorPointComboBox</tabstop>
-  <tabstop>mAnchorPointDDBtn</tabstop>
-  <tabstop>mCalloutBlendComboBox</tabstop>
-  <tabstop>mCalloutBlendModeDDBtn</tabstop>
   <tabstop>mCornerRadiusSpin</tabstop>
   <tabstop>mCornerRadiusUnitWidget</tabstop>
   <tabstop>mCornerRadiusDDBtn</tabstop>
@@ -614,6 +612,13 @@
   <tabstop>mSpinBottomMargin</tabstop>
   <tabstop>mMarginUnitWidget</tabstop>
   <tabstop>mMarginsDDBtn</tabstop>
+  <tabstop>mOffsetFromAnchorSpin</tabstop>
+  <tabstop>mOffsetFromAnchorUnitWidget</tabstop>
+  <tabstop>mOffsetFromAnchorDDBtn</tabstop>
+  <tabstop>mAnchorPointComboBox</tabstop>
+  <tabstop>mAnchorPointDDBtn</tabstop>
+  <tabstop>mCalloutBlendComboBox</tabstop>
+  <tabstop>mCalloutBlendModeDDBtn</tabstop>
   <tabstop>mDestXDDBtn</tabstop>
   <tabstop>mDestYDDBtn</tabstop>
  </tabstops>

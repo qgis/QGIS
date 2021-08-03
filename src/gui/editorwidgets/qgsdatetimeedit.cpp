@@ -29,14 +29,23 @@
 
 
 QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   : QgsDateTimeEdit( QDateTime(), QVariant::DateTime, parent )
+#else
+  : QgsDateTimeEdit( QDateTime(), QMetaType::QDateTime, parent )
+#endif
 {
 
 }
 
 ///@cond PRIVATE
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 QgsDateTimeEdit::QgsDateTimeEdit( const QVariant &var, QVariant::Type parserType, QWidget *parent )
   : QDateTimeEdit( var, parserType, parent )
+#else
+QgsDateTimeEdit::QgsDateTimeEdit( const QVariant & var, QMetaType::Type parserType, QWidget * parent )
+  : QDateTimeEdit( var, parserType, parent )
+#endif
   , mNullRepresentation( QgsApplication::nullRepresentation() )
 {
   QIcon clearIcon = QgsApplication::getThemeIcon( "/mIconClearText.svg" );
@@ -108,7 +117,11 @@ void QgsDateTimeEdit::mousePressEvent( QMouseEvent *event )
     if ( calendarPopup() )
     {
       QStyleOptionComboBox optCombo;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
       optCombo.init( this );
+#else
+      optCombo.initFrom( this );
+#endif
       optCombo.editable = true;
       optCombo.subControls = QStyle::SC_All;
       control = style()->hitTestComplexControl( QStyle::CC_ComboBox, &optCombo, event->pos(), this );
@@ -184,7 +197,9 @@ void QgsDateTimeEdit::wheelEvent( QWheelEvent *event )
   // dateTime might have been set to minimum in calendar mode
   if ( mAllowNull && mIsNull )
   {
-    resetBeforeChange( -event->delta() );
+    // convert angleDelta to approximate wheel "steps" -- angleDelta is in 1/8 degrees, and according
+    // to Qt docs most mice step in 15 degree increments
+    resetBeforeChange( -event->angleDelta().y() / ( 15 * 8 ) );
   }
   QDateTimeEdit::wheelEvent( event );
 }
@@ -363,7 +378,11 @@ QDate QgsDateTimeEdit::date() const
 //
 
 QgsTimeEdit::QgsTimeEdit( QWidget *parent )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   : QgsDateTimeEdit( QTime(), QVariant::Time, parent )
+#else
+  : QgsDateTimeEdit( QTime(), QMetaType::QTime, parent )
+#endif
 {
 
 }
@@ -400,7 +419,11 @@ void QgsTimeEdit::emitValueChanged( const QVariant &value )
 //
 
 QgsDateEdit::QgsDateEdit( QWidget *parent )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   : QgsDateTimeEdit( QDate(), QVariant::Date, parent )
+#else
+  : QgsDateTimeEdit( QDate(), QMetaType::QDate, parent )
+#endif
 {
 
 }

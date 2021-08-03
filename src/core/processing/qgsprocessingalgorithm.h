@@ -1023,6 +1023,19 @@ class CORE_EXPORT QgsProcessingAlgorithm
     static QString invalidSinkError( const QVariantMap &parameters, const QString &name );
 
     /**
+     * Returns a user-friendly string to use as an error when a feature cannot be
+     * written into a sink.
+     *
+     * The \a sink argument is the sink into which the feature cannot be written.
+     *
+     * The \a parameters argument should give the algorithms parameter map, and the \a name
+     * should correspond to the sink parameter name.
+     *
+     * \since QGIS 3.22
+     */
+    static QString writeFeatureError( QgsFeatureSink *sink, const QVariantMap &parameters, const QString &name );
+
+    /**
      * Checks whether this algorithm supports in-place editing on the given \a layer
      * Default implementation returns FALSE.
      *

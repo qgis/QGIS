@@ -104,6 +104,49 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
 {
   setupUi( this );
+
+  mTreeModel = new QStandardItemModel( this );
+  mTreeModel->appendRow( createItem( tr( "General" ), tr( "General" ), QStringLiteral( "propertyicons/general.svg" ) ) );
+  mTreeModel->appendRow( createItem( tr( "System" ), tr( "System" ), QStringLiteral( "propertyicons/system.svg" ) ) );
+
+  QStandardItem *crsGroup = new QStandardItem( tr( "CRS and Transforms" ) );
+  crsGroup->setToolTip( tr( "CRS and Transforms" ) );
+  crsGroup->setSelectable( false );
+  crsGroup->appendRow( createItem( tr( "CRS" ), tr( "CRS" ), QStringLiteral( "propertyicons/CRS.svg" ) ) );
+  crsGroup->appendRow( createItem( tr( "Transformations" ), tr( "Coordinate transformations and operations" ), QStringLiteral( "transformation.svg" ) ) );
+  mTreeModel->appendRow( crsGroup );
+
+  QStandardItem *dataSources = createItem( tr( "Data Sources" ), tr( "Data sources" ), QStringLiteral( "propertyicons/attributes.svg" ) );
+  mTreeModel->appendRow( dataSources );
+  dataSources->appendRow( createItem( tr( "GDAL" ), tr( "GDAL" ), QStringLiteral( "propertyicons/gdal.svg" ) ) );
+
+  mTreeModel->appendRow( createItem( tr( "Rendering" ), tr( "Rendering" ), QStringLiteral( "propertyicons/rendering.svg" ) ) );
+  mTreeModel->appendRow( createItem( tr( "Canvas & Legend" ), tr( "Canvas and legend" ), QStringLiteral( "propertyicons/overlay.svg" ) ) );
+  mTreeModel->appendRow( createItem( tr( "Map Tools" ), tr( "Map tools" ), QStringLiteral( "propertyicons/map_tools.svg" ) ) );
+  mTreeModel->appendRow( createItem( tr( "Colors" ), tr( "Colors" ), QStringLiteral( "propertyicons/colors.svg" ) ) );
+  mTreeModel->appendRow( createItem( tr( "Digitizing" ), tr( "Digitizing" ), QStringLiteral( "propertyicons/digitizing.svg" ) ) );
+  mTreeModel->appendRow( createItem( tr( "Layouts" ), tr( "Print layouts" ), QStringLiteral( "mIconLayout.svg" ) ) );
+  mTreeModel->appendRow( createItem( tr( "Variables" ), tr( "Variables" ), QStringLiteral( "mIconExpression.svg" ) ) );
+  mTreeModel->appendRow( createItem( tr( "Authentication" ), tr( "Authentication" ), QStringLiteral( "locked.svg" ) ) );
+  mTreeModel->appendRow( createItem( tr( "Network" ), tr( "Network" ), QStringLiteral( "propertyicons/network_and_proxy.svg" ) ) );
+
+  QStandardItem *gpsGroup = new QStandardItem( tr( "GPS" ) );
+  gpsGroup->setData( QStringLiteral( "gps" ) );
+  gpsGroup->setToolTip( tr( "GPS" ) );
+  gpsGroup->setSelectable( false );
+  mTreeModel->appendRow( gpsGroup );
+
+  mTreeModel->appendRow( createItem( tr( "Locator" ), tr( "Locator" ), QStringLiteral( "search.svg" ) ) );
+  mTreeModel->appendRow( createItem( tr( "Acceleration" ), tr( "GPU acceleration" ), QStringLiteral( "mIconGPU.svg" ) ) );
+
+  QStandardItem *ideGroup = new QStandardItem( tr( "IDE" ) );
+  ideGroup->setData( QStringLiteral( "ide" ) );
+  ideGroup->setToolTip( tr( "Development and Scripting Settings" ) );
+  ideGroup->setSelectable( false );
+  mTreeModel->appendRow( ideGroup );
+
+  mOptionsTreeView->setModel( mTreeModel );
+
   connect( cbxProjectDefaultNew, &QCheckBox::toggled, this, &QgsOptions::cbxProjectDefaultNew_toggled );
   connect( leLayerGlobalCrs, &QgsProjectionSelectionWidget::crsChanged, this, &QgsOptions::leLayerGlobalCrs_crsChanged );
   connect( lstRasterDrivers, &QTreeWidget::itemDoubleClicked, this, &QgsOptions::lstRasterDrivers_itemDoubleClicked );
@@ -1230,9 +1273,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     mAdditionalOptionWidgets << page;
     const QString beforePage = factory->pagePositionHint();
     if ( beforePage.isEmpty() )
-      addPage( factory->title(), factory->title(), factory->icon(), page );
+      addPage( factory->title(), factory->title(), factory->icon(), page, factory->path() );
     else
-      insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage );
+      insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage, factory->path() );
 
     if ( QgsAdvancedSettingsWidget *advancedPage = qobject_cast< QgsAdvancedSettingsWidget * >( page ) )
     {
@@ -1332,33 +1375,58 @@ QgsOptions::~QgsOptions()
 
 void QgsOptions::checkPageWidgetNameMap()
 {
-  const QMap< QString, int > pageNames = QgisApp::instance()->optionsPagesMap();
+  const QMap< QString, QString > pageNames = QgisApp::instance()->optionsPagesMap();
 
-  Q_ASSERT_X( pageNames.count() == mOptionsListWidget->count(), "QgsOptions::checkPageWidgetNameMap()", "QgisApp::optionsPagesMap() is outdated, contains too many entries" );
-  for ( int idx = 0; idx < mOptionsListWidget->count(); ++idx )
+  std::function<void( const QModelIndex & )> traverseModel;
+
+  // traverse through the model, collecting all entries which correspond to pages
+  QStringList pageTitles;
+  traverseModel = [&]( const QModelIndex & parent )
   {
-    QWidget *currentPage = mOptionsStackedWidget->widget( idx );
-    QListWidgetItem *item = mOptionsListWidget->item( idx );
-    if ( currentPage && item )
+    for ( int row = 0; row < mTreeModel->rowCount( parent ); ++row )
     {
-      const QString title = item->text();
-      Q_ASSERT_X( pageNames.contains( title ), "QgsOptions::checkPageWidgetNameMap()", QStringLiteral( "QgisApp::optionsPagesMap() is outdated, please update. Missing %1" ).arg( title ).toLocal8Bit().constData() );
-      Q_ASSERT_X( pageNames.value( title ) == idx, "QgsOptions::checkPageWidgetNameMap()", QStringLiteral( "QgisApp::optionsPagesMap() is outdated, please update. %1 should be %2 not %3" ).arg( title ).arg( idx ).arg( pageNames.value( title ) ).toLocal8Bit().constData() );
+      const QModelIndex currentIndex = mTreeModel->index( row, 0, parent );
+
+      if ( mTreeModel->itemFromIndex( currentIndex )->isSelectable() )
+        pageTitles << currentIndex.data().toString();
+
+      traverseModel( currentIndex );
     }
+  };
+  traverseModel( QModelIndex() );
+  Q_ASSERT_X( pageNames.count() == pageTitles.count(), "QgsOptions::checkPageWidgetNameMap()", "QgisApp::optionsPagesMap() is outdated, contains too many entries" );
+
+  int page = 0;
+  for ( const QString &pageTitle : std::as_const( pageTitles ) )
+  {
+    QWidget *currentPage = mOptionsStackedWidget->widget( page );
+    Q_ASSERT_X( pageNames.contains( pageTitle ), "QgsOptions::checkPageWidgetNameMap()", QStringLiteral( "QgisApp::optionsPagesMap() is outdated, please update. Missing %1" ).arg( pageTitle ).toLocal8Bit().constData() );
+    Q_ASSERT_X( pageNames.value( pageTitle ) == currentPage->objectName() || pageNames.value( pageTitle ) == pageTitle, "QgsOptions::checkPageWidgetNameMap()", QStringLiteral( "QgisApp::optionsPagesMap() is outdated, please update. %1 should be %2 or %1 not %3" ).arg( pageTitle ).arg( currentPage->objectName() ).arg( pageNames.value( pageTitle ) ).toLocal8Bit().constData() );
+
+    page++;
   }
 }
 
 void QgsOptions::setCurrentPage( const QString &pageWidgetName )
 {
   //find the page with a matching widget name
-  for ( int idx = 0; idx < mOptionsStackedWidget->count(); ++idx )
+  for ( int page = 0; page < mOptionsStackedWidget->count(); ++page )
   {
-    QWidget *currentPage = mOptionsStackedWidget->widget( idx );
+    QWidget *currentPage = mOptionsStackedWidget->widget( page );
     if ( currentPage->objectName() == pageWidgetName )
     {
       //found the page, set it as current
-      mOptionsStackedWidget->setCurrentIndex( idx );
+      mOptionsStackedWidget->setCurrentIndex( page );
       return;
+    }
+    else if ( mTreeProxyModel )
+    {
+      const QModelIndex sourceIndex = mTreeProxyModel->pageNumberToSourceIndex( page );
+      if ( sourceIndex.data().toString() == pageWidgetName || sourceIndex.data( Qt::UserRole + 1 ).toString() == pageWidgetName )
+      {
+        mOptionsStackedWidget->setCurrentIndex( page );
+        return;
+      }
     }
   }
 }

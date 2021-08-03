@@ -17,7 +17,6 @@
 
 #include "qgis.h"
 #include "qgspdalprovider.h"
-#include "qgspdaldataitems.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -26,6 +25,8 @@
 #include "qgspdaleptgenerationtask.h"
 #include "qgseptpointcloudindex.h"
 #include "qgstaskmanager.h"
+#include "qgsprovidersublayerdetails.h"
+#include "qgsproviderutils.h"
 
 #include <pdal/io/LasReader.hpp>
 #include <pdal/io/LasHeader.hpp>
@@ -284,14 +285,8 @@ QgsPdalProvider *QgsPdalProviderMetadata::createProvider( const QString &uri, co
 QgsProviderMetadata::ProviderMetadataCapabilities QgsPdalProviderMetadata::capabilities() const
 {
   return ProviderMetadataCapability::LayerTypesForUri
-         | ProviderMetadataCapability::PriorityForUri;
-}
-
-QList<QgsDataItemProvider *> QgsPdalProviderMetadata::dataItemProviders() const
-{
-  QList< QgsDataItemProvider * > providers;
-  providers << new QgsPdalDataItemProvider;
-  return providers;
+         | ProviderMetadataCapability::PriorityForUri
+         | ProviderMetadataCapability::QuerySublayers;
 }
 
 QVariantMap QgsPdalProviderMetadata::decodeUri( const QString &uri ) const
@@ -320,6 +315,25 @@ QList<QgsMapLayerType> QgsPdalProviderMetadata::validLayerTypesForUri( const QSt
     return QList<QgsMapLayerType>() << QgsMapLayerType::PointCloudLayer;
 
   return QList<QgsMapLayerType>();
+}
+
+QList<QgsProviderSublayerDetails> QgsPdalProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags, QgsFeedback * ) const
+{
+  const QVariantMap parts = decodeUri( uri );
+  const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
+  if ( fi.suffix().compare( QLatin1String( "las" ), Qt::CaseInsensitive ) == 0 || fi.suffix().compare( QLatin1String( "laz" ), Qt::CaseInsensitive ) == 0 )
+  {
+    QgsProviderSublayerDetails details;
+    details.setUri( uri );
+    details.setProviderKey( QStringLiteral( "pdal" ) );
+    details.setType( QgsMapLayerType::PointCloudLayer );
+    details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( uri ) );
+    return {details};
+  }
+  else
+  {
+    return {};
+  }
 }
 
 QString QgsPdalProviderMetadata::filters( QgsProviderMetadata::FilterType type )

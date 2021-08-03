@@ -19,6 +19,9 @@
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
 #include "qgsreferencedgeometry.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
@@ -83,4 +86,38 @@ QgsRectangle QgsMapLayerUtils::combinedExtent( const QList<QgsMapLayer *> &layer
 
   QgsDebugMsgLevel( "Full extent: " + fullExtent.toString(), 5 );
   return fullExtent;
+}
+
+QgsAbstractDatabaseProviderConnection *QgsMapLayerUtils::databaseConnection( const QgsMapLayer *layer )
+{
+  if ( ! layer || ! layer->dataProvider() )
+  {
+    return nullptr;
+  }
+
+  try
+  {
+    QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( layer->dataProvider()->name() );
+    if ( ! providerMetadata )
+    {
+      return nullptr;
+    }
+
+    std::unique_ptr< QgsAbstractDatabaseProviderConnection > conn { static_cast<QgsAbstractDatabaseProviderConnection *>( providerMetadata->createConnection( layer->source(), {} ) ) };
+    return conn.release();
+  }
+  catch ( const QgsProviderConnectionException &ex )
+  {
+    QgsDebugMsg( QStringLiteral( "Error retrieving database connection for layer %1: %2" ).arg( layer->name(), ex.what() ) );
+    return nullptr;
+  }
+}
+
+bool QgsMapLayerUtils::layerSourceMatchesPath( const QgsMapLayer *layer, const QString &path )
+{
+  if ( !layer || path.isEmpty() )
+    return false;
+
+  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->source() );
+  return parts.value( QStringLiteral( "path" ) ).toString() == path;
 }

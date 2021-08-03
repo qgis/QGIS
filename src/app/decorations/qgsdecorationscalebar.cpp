@@ -212,7 +212,9 @@ void QgsDecorationScaleBar::setupScaleBar()
 
 double QgsDecorationScaleBar::mapWidth( const QgsMapSettings &settings ) const
 {
-  const QgsRectangle mapExtent = settings.visibleExtent();
+  QgsMapSettings ms = settings;
+  ms.setRotation( 0 );
+  const QgsRectangle mapExtent = ms.visibleExtent();
   if ( mSettings.units() == QgsUnitTypes::DistanceUnknownUnit )
   {
     return mapExtent.width();

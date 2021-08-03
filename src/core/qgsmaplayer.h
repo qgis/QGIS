@@ -40,6 +40,7 @@
 #include "qgsreadwritecontext.h"
 #include "qgsdataprovider.h"
 #include "qgis.h"
+#include "qgslogger.h"
 
 class QgsAbstract3DRenderer;
 class QgsDataProvider;
@@ -675,6 +676,177 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     const QgsObjectCustomProperties &customProperties() const;
 
+#ifndef SIP_RUN
+
+    /**
+     * Returns the property value for a property based on an enum.
+     * This forces the output to be a valid and existing entry of the enum.
+     * Hence if the property value is incorrect, the given default value is returned.
+     * This tries first with property as a string (as the enum) and then as an integer value.
+     * \note The enum needs to be declared with Q_ENUM, and flags with Q_FLAG (not Q_FLAGS).
+     * \see setCustomEnumProperty
+     * \see customFlagProperty
+     * \since QGIS 3.22
+     */
+    template <class T>
+    T customEnumProperty( const QString &key, const T &defaultValue )
+    {
+      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      Q_ASSERT( metaEnum.isValid() );
+      if ( !metaEnum.isValid() )
+      {
+        QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+      }
+
+      T v;
+      bool ok = false;
+
+      if ( metaEnum.isValid() )
+      {
+        // read as string
+        QByteArray ba = customProperty( key, metaEnum.valueToKey( static_cast<int>( defaultValue ) ) ).toString().toUtf8();
+        const char *vs = ba.data();
+        v = static_cast<T>( metaEnum.keyToValue( vs, &ok ) );
+        if ( ok )
+          return v;
+      }
+
+      // if failed, try to read as int (old behavior)
+      // this code shall be removed later
+      // then the method could be marked as const
+      v = static_cast<T>( customProperty( key, static_cast<int>( defaultValue ) ).toInt( &ok ) );
+      if ( metaEnum.isValid() )
+      {
+        if ( !ok || !metaEnum.valueToKey( static_cast<int>( v ) ) )
+        {
+          v = defaultValue;
+        }
+        else
+        {
+          // found property as an integer
+          // convert the property to the new form (string)
+          setCustomEnumProperty( key, v );
+        }
+      }
+
+      return v;
+    }
+
+    /**
+     * Set the value of a property based on an enum.
+     * The property will be saved as string.
+     * \note The enum needs to be declared with Q_ENUM, and flags with Q_FLAG (not Q_FLAGS).
+     * \see customEnumProperty
+     * \see setCustomFlagProperty
+     * \since QGIS 3.22
+     */
+    template <class T>
+    void setCustomEnumProperty( const QString &key, const T &value )
+    {
+      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      Q_ASSERT( metaEnum.isValid() );
+      if ( metaEnum.isValid() )
+      {
+        setCustomProperty( key, metaEnum.valueToKey( static_cast<int>( value ) ) );
+      }
+      else
+      {
+        QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+      }
+    }
+
+    /**
+     * Returns the property value for a property based on a flag.
+     * This forces the output to be a valid and existing entry of the flag.
+     * Hence if the property value is incorrect, the given default value is returned.
+     * This tries first with property as a string (using a byte array) and then as an integer value.
+     * \note The flag needs to be declared with Q_FLAG (not Q_FLAGS).
+     * \note for Python bindings, a custom implementation is achieved in Python directly.
+     * \see setCustomFlagProperty
+     * \see customEnumProperty
+     * \since QGIS 3.22
+     */
+    template <class T>
+    T customFlagProperty( const QString &key, const T &defaultValue )
+    {
+      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      Q_ASSERT( metaEnum.isValid() );
+      if ( !metaEnum.isValid() )
+      {
+        QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+      }
+
+      T v = defaultValue;
+      bool ok = false;
+
+      if ( metaEnum.isValid() )
+      {
+        // read as string
+        QByteArray ba = customProperty( key, metaEnum.valueToKeys( defaultValue ) ).toString().toUtf8();
+        const char *vs = ba.data();
+        v = static_cast<T>( metaEnum.keysToValue( vs, &ok ) );
+      }
+      if ( !ok )
+      {
+        // if failed, try to read as int
+        int intValue = customProperty( key, static_cast<int>( defaultValue ) ).toInt( &ok );
+        if ( metaEnum.isValid() )
+        {
+          if ( ok )
+          {
+            // check that the int value does correspond to a flag
+            // see https://stackoverflow.com/a/68495949/1548052
+            QByteArray keys = metaEnum.valueToKeys( intValue );
+            int intValueCheck = metaEnum.keysToValue( keys );
+            if ( intValue != intValueCheck )
+            {
+              v = defaultValue;
+            }
+            else
+            {
+              // found property as an integer
+              v = T( intValue );
+              // convert the property to the new form (string)
+              // this code could be removed
+              // then the method could be marked as const
+              setCustomFlagProperty( key, v );
+            }
+          }
+          else
+          {
+            v = defaultValue;
+          }
+        }
+      }
+
+      return v;
+    }
+
+    /**
+     * Set the value of a property based on a flag.
+     * The property will be saved as string.
+     * \note The flag needs to be declared with Q_FLAG (not Q_FLAGS).
+     * \see customFlagProperty
+     * \see customEnumProperty
+     * \since QGIS 3.22
+     */
+    template <class T>
+    void setCustomFlagProperty( const QString &key, const T &value )
+    {
+      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      Q_ASSERT( metaEnum.isValid() );
+      if ( metaEnum.isValid() )
+      {
+        setCustomProperty( key, metaEnum.valueToKeys( value ) );
+      }
+      else
+      {
+        QgsDebugMsg( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+      }
+    }
+#endif
+
+
     /**
      * Remove a custom property from layer. Properties are stored in a map and saved in project file.
      * \see setCustomProperty()
@@ -958,7 +1130,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
                             QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
 
     /**
-     * Write the style for the layer into the docment provided.
+     * Write the style for the layer into the document provided.
      *  \param node the node that will have the style element added to it.
      *  \param doc the document that will have the QDomNode added.
      *  \param errorMessage reference to string that will be updated with any error messages

@@ -40,8 +40,13 @@ unsigned int QgsJsonEditWidgetFactory::fieldScore( const QgsVectorLayer *vl, int
   switch ( type )
   {
     case QVariant::Map:
+    {
+      const QString typeName = vl->fields().field( fieldIdx ).typeName();
+      if ( typeName == QLatin1String( "json" ) || typeName == QLatin1String( "jsonb" ) )
+        return 21;
       return 15;
-      break;
+    }
+    break;
     case QVariant::List:
       return 10;
       break;

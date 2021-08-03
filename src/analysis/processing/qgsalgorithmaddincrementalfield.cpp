@@ -36,6 +36,7 @@ QString QgsAddIncrementalFieldAlgorithm::shortHelpString() const
                       "This field can be used as a unique ID for features in the layer. The new attribute "
                       "is not added to the input layer but a new layer is generated instead.\n\n"
                       "The initial starting value for the incremental series can be specified.\n\n"
+                      "Specifying an optional modulus value will restart the count to START whenever the field value reaches the modulus value.\n\n"
                       "Optionally, grouping fields can be specified. If group fields are present, then the field value will "
                       "be reset for each combination of these group field values.\n\n"
                       "The sort order for features may be specified, if so, then the incremental field will respect "
@@ -82,6 +83,8 @@ void QgsAddIncrementalFieldAlgorithm::initParameters( const QVariantMap & )
   addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Field name" ), QStringLiteral( "AUTO" ) ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "START" ), QObject::tr( "Start values at" ),
                 QgsProcessingParameterNumber::Integer, 0, true ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MODULUS" ), QObject::tr( "Modulus value" ),
+                QgsProcessingParameterNumber::Integer, QVariant( 0 ), true ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "GROUP_FIELDS" ), QObject::tr( "Group values by" ), QVariant(),
                 QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, true, true ) );
 
@@ -109,6 +112,7 @@ bool QgsAddIncrementalFieldAlgorithm::prepareAlgorithm( const QVariantMap &param
 {
   mStartValue = parameterAsInt( parameters, QStringLiteral( "START" ), context );
   mValue = mStartValue;
+  mModulusValue = parameterAsInt( parameters, QStringLiteral( "MODULUS" ), context );
   mFieldName = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
   mGroupedFieldNames = parameterAsFields( parameters, QStringLiteral( "GROUP_FIELDS" ), context );
 
@@ -145,6 +149,8 @@ QgsFeatureList QgsAddIncrementalFieldAlgorithm::processFeature( const QgsFeature
   {
     attributes.append( mValue );
     mValue++;
+    if ( mModulusValue != 0 && ( mValue % mModulusValue ) == 0 )
+      mValue = mStartValue;
   }
   else
   {
@@ -157,6 +163,8 @@ QgsFeatureList QgsAddIncrementalFieldAlgorithm::processFeature( const QgsFeature
     long long value = mGroupedValues.value( groupAttributes, mStartValue );
     attributes.append( value );
     value++;
+    if ( mModulusValue != 0 && ( value % mModulusValue ) == 0 )
+      value = mStartValue;
     mGroupedValues[ groupAttributes ] = value;
   }
   f.setAttributes( attributes );

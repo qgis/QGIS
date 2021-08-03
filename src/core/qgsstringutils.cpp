@@ -563,6 +563,12 @@ QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
   return converted;
 }
 
+bool QgsStringUtils::isUrl( const QString &string )
+{
+  const thread_local QRegularExpression rxUrl( "^(http|https|ftp|file)://\\S+$" );
+  return rxUrl.match( string ).hasMatch();
+}
+
 QString QgsStringUtils::htmlToMarkdown( const QString &html )
 {
   // Any changes in this function must be copied to qgscrashreport.cpp too

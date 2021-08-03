@@ -209,7 +209,8 @@ QVariantMap QgsMeanCoordinatesAlgorithm::processAlgorithm( const QVariantMap &pa
       attributes.append( it.key() );
 
     outFeat.setAttributes( attributes );
-    sink->addFeature( outFeat, QgsFeatureSink::FastInsert );
+    if ( !sink->addFeature( outFeat, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
   }
 
   QVariantMap outputs;

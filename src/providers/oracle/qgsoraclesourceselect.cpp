@@ -27,7 +27,7 @@ email                : jef at norbit dot de
 #include "qgsquerybuilder.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
-#include "qgsoraclecolumntypethread.h"
+#include "qgsoraclecolumntypetask.h"
 #include "qgssettings.h"
 #include "qgsproxyprogresstask.h"
 #include "qgsgui.h"
@@ -422,9 +422,9 @@ void QgsOracleSourceSelect::setLayerType( const QgsOracleLayerProperty &layerPro
 
 QgsOracleSourceSelect::~QgsOracleSourceSelect()
 {
-  if ( mColumnTypeThread )
+  if ( mColumnTypeTask )
   {
-    mColumnTypeThread->stop();
+    mColumnTypeTask->cancel();
     finishList();
   }
 
@@ -490,9 +490,9 @@ void QgsOracleSourceSelect::on_btnConnect_clicked()
 {
   cbxAllowGeometrylessTables->setEnabled( true );
 
-  if ( mColumnTypeThread )
+  if ( mColumnTypeTask )
   {
-    mColumnTypeThread->stop();
+    mColumnTypeTask->cancel();
     return;
   }
 
@@ -506,27 +506,23 @@ void QgsOracleSourceSelect::on_btnConnect_clicked()
   mIsConnected = true;
   mTablesTreeDelegate->setConnectionInfo( uri );
 
-  mColumnTypeThread = new QgsOracleColumnTypeThread( cmbConnections->currentText(),
+  mColumnTypeTask = new QgsOracleColumnTypeTask( cmbConnections->currentText(),
       QgsOracleConn::restrictToSchema( cmbConnections->currentText() ),
       uri.useEstimatedMetadata(),
       cbxAllowGeometrylessTables->isChecked() );
-  mColumnTypeTask = new QgsProxyProgressTask( tr( "Scanning tables for %1" ).arg( cmbConnections->currentText() ) );
-  QgsApplication::taskManager()->addTask( mColumnTypeTask );
 
-  connect( mColumnTypeThread, &QgsOracleColumnTypeThread::setLayerType,
+  connect( mColumnTypeTask, &QgsOracleColumnTypeTask::setLayerType,
            this, &QgsOracleSourceSelect::setLayerType );
-  connect( mColumnTypeThread, &QThread::finished,
-           this, &QgsOracleSourceSelect::columnThreadFinished );
-  connect( mColumnTypeThread, &QgsOracleColumnTypeThread::progress,
-           mColumnTypeTask, [ = ]( int i, int n )
-  {
-    mColumnTypeTask->setProxyProgress( 100.0 * static_cast< double >( i ) / n );
-  } );
-  connect( mColumnTypeThread, &QgsOracleColumnTypeThread::progressMessage,
+  connect( mColumnTypeTask, &QgsTask::taskCompleted,
+           this, &QgsOracleSourceSelect::columnTaskFinished );
+  connect( mColumnTypeTask, &QgsTask::taskTerminated,
+           this, &QgsOracleSourceSelect::columnTaskFinished );
+  connect( mColumnTypeTask, &QgsOracleColumnTypeTask::progressMessage,
            this, &QgsAbstractDataSourceWidget::progressMessage );
 
   btnConnect->setText( tr( "Stop" ) );
-  mColumnTypeThread->start();
+
+  QgsApplication::taskManager()->addTask( mColumnTypeTask );
 }
 
 void QgsOracleSourceSelect::finishList()
@@ -553,19 +549,16 @@ static QgsOracleTableCache::CacheFlags _currentFlags( const QString &connName, b
   return flags;
 }
 
-void QgsOracleSourceSelect::columnThreadFinished()
+void QgsOracleSourceSelect::columnTaskFinished()
 {
-  if ( !mColumnTypeThread->isStopped() )
+  if ( mColumnTypeTask->status() == QgsTask::Complete )
   {
-    QString connName = mColumnTypeThread->connectionName();
-    QgsOracleTableCache::CacheFlags flags = _currentFlags( connName, mColumnTypeThread->useEstimatedMetadata(), mColumnTypeThread->allowGeometrylessTables() );
-    QgsOracleTableCache::saveToCache( connName, flags, mColumnTypeThread->layerProperties() );
+    QString connName = mColumnTypeTask->connectionName();
+    QgsOracleTableCache::CacheFlags flags = _currentFlags( connName, mColumnTypeTask->useEstimatedMetadata(), mColumnTypeTask->allowGeometrylessTables() );
+    QgsOracleTableCache::saveToCache( connName, flags, mColumnTypeTask->layerProperties() );
   }
 
-  delete mColumnTypeThread;
-  mColumnTypeThread = nullptr;
-
-  mColumnTypeTask->finalize( true );
+  // don't delete the task, taskManager takes ownership of it
   mColumnTypeTask = nullptr;
 
   btnConnect->setText( tr( "Connect" ) );

@@ -84,18 +84,22 @@ QStringList QgsFileWidget::splitFilePaths( const QString &path )
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   const QStringList pathParts = path.split( QRegExp( "\"\\s+\"" ), QString::SkipEmptyParts );
 #else
-  const QStringList pathParts = path.split( QRegExp( "\"\\s+\"" ), Qt::SkipEmptyParts );
+  const thread_local QRegularExpression partsRegex = QRegularExpression( QStringLiteral( "\"\\s+\"" ) );
+  const QStringList pathParts = path.split( partsRegex, Qt::SkipEmptyParts );
 #endif
-  for ( const auto &pathsPart : pathParts )
+
+  const thread_local QRegularExpression cleanRe( QStringLiteral( "(^\\s*\")|(\"\\s*)" ) );
+  paths.reserve( pathParts.size() );
+  for ( const QString &pathsPart : pathParts )
   {
     QString cleaned = pathsPart;
-    cleaned.remove( QRegExp( "(^\\s*\")|(\"\\s*)" ) );
+    cleaned.remove( cleanRe );
     paths.append( cleaned );
   }
   return paths;
 }
 
-void QgsFileWidget::setFilePath( QString path )
+void QgsFileWidget::setFilePath( const QString &path )
 {
   //will trigger textEdited slot
   mLineEdit->setValue( path );

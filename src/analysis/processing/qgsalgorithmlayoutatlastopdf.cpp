@@ -143,6 +143,7 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithm::processAlgorithm( const QVariantMap &p
 
     expression = parameterAsString( parameters, QStringLiteral( "FILTER_EXPRESSION" ), context );
     atlas->setFilterExpression( expression, error );
+    atlas->setFilterFeatures( !expression.isEmpty() && error.isEmpty() );
     if ( !expression.isEmpty() && !error.isEmpty() )
     {
       throw QgsProcessingException( QObject::tr( "Error setting atlas filter expression" ) );

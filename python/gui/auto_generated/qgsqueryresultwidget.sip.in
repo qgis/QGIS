@@ -20,6 +20,9 @@ DB connection (an instance of :py:class:`QgsAbstractDatabaseProviderConnection`)
 Query results are displayed in a table view.
 Query execution and result fetching can be interrupted by pressing the "Stop" push button.
 
+The widget supports a few QueryWidgetMode modes that pre-configure the widget appearance to
+be used in different contexts like when updating the SQL of an existing query layer.
+
 .. note::
 
    the ownership of the connection is transferred to the widget.
@@ -32,12 +35,29 @@ Query execution and result fetching can be interrupted by pressing the "Stop" pu
 %End
   public:
 
+
+    enum class QueryWidgetMode
+    {
+      SqlQueryMode,
+      QueryLayerUpdateMode,
+    };
+
     QgsQueryResultWidget( QWidget *parent = 0, QgsAbstractDatabaseProviderConnection *connection /Transfer/ = 0 );
 %Docstring
 Creates a QgsQueryResultWidget with the given ``connection``, ownership is transferred to the widget.
 %End
 
     virtual ~QgsQueryResultWidget();
+
+    void setSqlVectorLayerOptions( const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options );
+%Docstring
+Initializes the widget from ``options``.
+%End
+
+    void setWidgetMode( QueryWidgetMode widgetMode );
+%Docstring
+Sets the widget mode to ``widgetMode``, default is SqlQueryMode.
+%End
 
     void setConnection( QgsAbstractDatabaseProviderConnection *connection /Transfer/ );
 %Docstring
@@ -51,6 +71,11 @@ Convenience method to set the SQL editor text to ``sql``.
 
 
   public slots:
+
+    void notify( const QString &title, const QString &text, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
+%Docstring
+Displays a message with ``text`` ``title`` and ``level`` in the widget's message bar.
+%End
 
     void executeQuery();
 %Docstring

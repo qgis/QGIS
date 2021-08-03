@@ -31,6 +31,7 @@ class QAbstractButton;
 class QGroupBox;
 class QTreeView;
 class QTreeWidgetItem;
+class QTableView;
 
 
 /**
@@ -140,5 +141,25 @@ class GUI_EXPORT QgsOptionsDialogHighlightTree : public QgsOptionsDialogHighligh
     // a map to save the tree state (backouground, font, expanded) before highlighting items
     QMap<QTreeWidgetItem *, bool> mTreeInitialExpand = QMap<QTreeWidgetItem *, bool>();
     QMap<QTreeWidgetItem *, bool> mTreeInitialVisible = QMap<QTreeWidgetItem *, bool>();
+};
+
+/**
+ * \ingroup gui
+ * \class QgsOptionsDialogHighlightTable
+ * \brief A highlight widget for table widgets.
+ * This is used to search and highlight text in QgsOptionsDialogBase implementations.
+ * \since QGIS 3.22
+ */
+class GUI_EXPORT QgsOptionsDialogHighlightTable : public QgsOptionsDialogHighlightWidget
+{
+    Q_OBJECT
+  public:
+    //! constructs a highlight widget for a table view or widget.
+    QgsOptionsDialogHighlightTable( QTableView *tableView );
+  protected:
+    bool searchText( const QString &text ) override;
+    bool highlightText( const QString &text ) override;
+    void reset() override;
+    QPointer<QTableView> mTableView;
 };
 #endif // QGSOPTIONSDIALOGHIGHLIGHTWIDGETSIMPL_H

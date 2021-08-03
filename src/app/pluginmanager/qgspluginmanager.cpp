@@ -441,7 +441,7 @@ void QgsPluginManager::getCppPluginsMetadata()
       // show the values (or lack of) for each function
       if ( pName )
       {
-        QgsDebugMsgLevel( "Plugin name: " + pName(), 2 );
+        QgsDebugMsgLevel( "Plugin name: " + *pName(), 2 );
       }
       else
       {
@@ -449,7 +449,7 @@ void QgsPluginManager::getCppPluginsMetadata()
       }
       if ( pDesc )
       {
-        QgsDebugMsgLevel( "Plugin description: " + pDesc(), 2 );
+        QgsDebugMsgLevel( "Plugin description: " + *pDesc(), 2 );
       }
       else
       {
@@ -457,7 +457,7 @@ void QgsPluginManager::getCppPluginsMetadata()
       }
       if ( pCat )
       {
-        QgsDebugMsgLevel( "Plugin category: " + pCat(), 2 );
+        QgsDebugMsgLevel( "Plugin category: " + *pCat(), 2 );
       }
       else
       {
@@ -465,7 +465,7 @@ void QgsPluginManager::getCppPluginsMetadata()
       }
       if ( pVersion )
       {
-        QgsDebugMsgLevel( "Plugin version: " + pVersion(), 2 );
+        QgsDebugMsgLevel( "Plugin version: " + *pVersion(), 2 );
       }
       else
       {
@@ -473,7 +473,7 @@ void QgsPluginManager::getCppPluginsMetadata()
       }
       if ( pIcon )
       {
-        QgsDebugMsgLevel( "Plugin icon: " + pIcon(), 2 );
+        QgsDebugMsgLevel( "Plugin icon: " + *pIcon(), 2 );
       }
       else
       {
@@ -481,7 +481,7 @@ void QgsPluginManager::getCppPluginsMetadata()
       }
       if ( pCreateDate )
       {
-        QgsDebugMsgLevel( "Plugin create date: " + pCreateDate(), 2 );
+        QgsDebugMsgLevel( "Plugin create date: " + *pCreateDate(), 2 );
       }
       else
       {
@@ -489,7 +489,7 @@ void QgsPluginManager::getCppPluginsMetadata()
       }
       if ( pUpdateDate )
       {
-        QgsDebugMsgLevel( "Plugin update date: " + pUpdateDate(), 2 );
+        QgsDebugMsgLevel( "Plugin update date: " + *pUpdateDate(), 2 );
       }
       else
       {
@@ -508,19 +508,19 @@ void QgsPluginManager::getCppPluginsMetadata()
 
       QMap<QString, QString> metadata;
       metadata[QStringLiteral( "id" )] = baseName;
-      metadata[QStringLiteral( "name" )] = pName();
-      metadata[QStringLiteral( "description" )] = pDesc();
-      metadata[QStringLiteral( "category" )] = ( pCat ? pCat() : tr( "Plugins" ) );
-      metadata[QStringLiteral( "version_installed" )] = pVersion();
-      metadata[QStringLiteral( "icon" )] = ( pIcon ? pIcon() : QString() );
+      metadata[QStringLiteral( "name" )] = *pName();
+      metadata[QStringLiteral( "description" )] = *pDesc();
+      metadata[QStringLiteral( "category" )] = ( pCat ? *pCat() : tr( "Plugins" ) );
+      metadata[QStringLiteral( "version_installed" )] = *pVersion();
+      metadata[QStringLiteral( "icon" )] = ( pIcon ? *pIcon() : QString() );
       metadata[QStringLiteral( "library" )] = myLib->fileName();
       metadata[QStringLiteral( "pythonic" )] = QStringLiteral( "false" );
       metadata[QStringLiteral( "installed" )] = QStringLiteral( "true" );
       metadata[QStringLiteral( "readonly" )] = QStringLiteral( "true" );
       metadata[QStringLiteral( "status" )] = QStringLiteral( "orphan" );
-      metadata[QStringLiteral( "experimental" )] = ( pExperimental ? pExperimental() : QString() );
-      metadata[QStringLiteral( "create_date" )] = ( pCreateDate ? pCreateDate() : QString() );
-      metadata[QStringLiteral( "update_date" )] = ( pUpdateDate ? pUpdateDate() : QString() );
+      metadata[QStringLiteral( "experimental" )] = ( pExperimental ? *pExperimental() : QString() );
+      metadata[QStringLiteral( "create_date" )] = ( pCreateDate ? *pCreateDate() : QString() );
+      metadata[QStringLiteral( "update_date" )] = ( pUpdateDate ? *pUpdateDate() : QString() );
       mPlugins.insert( baseName, metadata );
 
       delete myLib;

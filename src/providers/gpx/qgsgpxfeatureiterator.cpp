@@ -64,11 +64,11 @@ bool QgsGPXFeatureIterator::rewind()
   else
   {
     if ( mSource->mFeatureType == QgsGPXProvider::WaypointType )
-      mWptIter = mSource->data->waypointsBegin();
+      mWptIter = mSource->mData->waypointsBegin();
     else if ( mSource->mFeatureType == QgsGPXProvider::RouteType )
-      mRteIter = mSource->data->routesBegin();
+      mRteIter = mSource->mData->routesBegin();
     else if ( mSource->mFeatureType == QgsGPXProvider::TrackType )
-      mTrkIter = mSource->data->tracksBegin();
+      mTrkIter = mSource->mData->tracksBegin();
   }
 
   return true;
@@ -105,7 +105,7 @@ bool QgsGPXFeatureIterator::fetchFeature( QgsFeature &feature )
   {
     // go through the list of waypoints and return the first one that is in
     // the bounds rectangle
-    for ( ; mWptIter != mSource->data->waypointsEnd(); ++mWptIter )
+    for ( ; mWptIter != mSource->mData->waypointsEnd(); ++mWptIter )
     {
       if ( readWaypoint( *mWptIter, feature ) )
       {
@@ -119,7 +119,7 @@ bool QgsGPXFeatureIterator::fetchFeature( QgsFeature &feature )
   {
     // go through the routes and return the first one that is in the bounds
     // rectangle
-    for ( ; mRteIter != mSource->data->routesEnd(); ++mRteIter )
+    for ( ; mRteIter != mSource->mData->routesEnd(); ++mRteIter )
     {
       if ( readRoute( *mRteIter, feature ) )
       {
@@ -133,7 +133,7 @@ bool QgsGPXFeatureIterator::fetchFeature( QgsFeature &feature )
   {
     // go through the tracks and return the first one that is in the bounds
     // rectangle
-    for ( ; mTrkIter != mSource->data->tracksEnd(); ++mTrkIter )
+    for ( ; mTrkIter != mSource->mData->tracksEnd(); ++mTrkIter )
     {
       if ( readTrack( *mTrkIter, feature ) )
       {
@@ -159,7 +159,7 @@ bool QgsGPXFeatureIterator::readFid( QgsFeature &feature )
 
   if ( mSource->mFeatureType == QgsGPXProvider::WaypointType )
   {
-    for ( QgsGpsData::WaypointIterator it = mSource->data->waypointsBegin() ; it != mSource->data->waypointsEnd(); ++it )
+    for ( QgsGpsData::WaypointIterator it = mSource->mData->waypointsBegin() ; it != mSource->mData->waypointsEnd(); ++it )
     {
       if ( it->id == fid )
       {
@@ -170,7 +170,7 @@ bool QgsGPXFeatureIterator::readFid( QgsFeature &feature )
   }
   else if ( mSource->mFeatureType == QgsGPXProvider::RouteType )
   {
-    for ( QgsGpsData::RouteIterator it = mSource->data->routesBegin() ; it != mSource->data->routesEnd(); ++it )
+    for ( QgsGpsData::RouteIterator it = mSource->mData->routesBegin() ; it != mSource->mData->routesEnd(); ++it )
     {
       if ( it->id == fid )
       {
@@ -181,7 +181,7 @@ bool QgsGPXFeatureIterator::readFid( QgsFeature &feature )
   }
   else if ( mSource->mFeatureType == QgsGPXProvider::TrackType )
   {
-    for ( QgsGpsData::TrackIterator it = mSource->data->tracksBegin() ; it != mSource->data->tracksEnd(); ++it )
+    for ( QgsGpsData::TrackIterator it = mSource->mData->tracksBegin() ; it != mSource->mData->tracksEnd(); ++it )
     {
       if ( it->id == fid )
       {
@@ -311,7 +311,7 @@ void QgsGPXFeatureIterator::readAttributes( QgsFeature &feature, const QgsWaypoi
   // add attributes if they are wanted
   for ( int i = 0; i < mSource->mFields.count(); ++i )
   {
-    switch ( mSource->indexToAttr.at( i ) )
+    switch ( mSource->mIndexToAttr.at( i ) )
     {
       case QgsGPXProvider::NameAttr:
         feature.setAttribute( i, QVariant( wpt.name ) );
@@ -347,7 +347,7 @@ void QgsGPXFeatureIterator::readAttributes( QgsFeature &feature, const QgsRoute 
   // add attributes if they are wanted
   for ( int i = 0; i < mSource->mFields.count(); ++i )
   {
-    switch ( mSource->indexToAttr.at( i ) )
+    switch ( mSource->mIndexToAttr.at( i ) )
     {
       case QgsGPXProvider::NameAttr:
         feature.setAttribute( i, QVariant( rte.name ) );
@@ -381,7 +381,7 @@ void QgsGPXFeatureIterator::readAttributes( QgsFeature &feature, const QgsTrack 
   // add attributes if they are wanted
   for ( int i = 0; i < mSource->mFields.count(); ++i )
   {
-    switch ( mSource->indexToAttr.at( i ) )
+    switch ( mSource->mIndexToAttr.at( i ) )
     {
       case QgsGPXProvider::NameAttr:
         feature.setAttribute( i, QVariant( trk.name ) );
@@ -497,11 +497,11 @@ QgsGeometry *QgsGPXFeatureIterator::readTrackGeometry( const QgsTrack &trk )
 QgsGPXFeatureSource::QgsGPXFeatureSource( const QgsGPXProvider *p )
   : mFileName( p->mFileName )
   , mFeatureType( p->mFeatureType )
-  , indexToAttr( p->indexToAttr )
-  , mFields( p->attributeFields )
+  , mIndexToAttr( p->mIndexToAttr )
+  , mFields( p->mAttributeFields )
   , mCrs( p->crs() )
 {
-  data = QgsGpsData::getData( mFileName );
+  mData = QgsGpsData::getData( mFileName );
 }
 
 QgsGPXFeatureSource::~QgsGPXFeatureSource()

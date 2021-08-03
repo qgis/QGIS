@@ -116,7 +116,8 @@ QVariantMap QgsExtractByExpressionAlgorithm::processAlgorithm( const QVariantMap
         break;
       }
 
-      matchingSink->addFeature( f, QgsFeatureSink::FastInsert );
+      if ( !matchingSink->addFeature( f, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( matchingSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
       feedback->setProgress( current * step );
       current++;
@@ -140,11 +141,13 @@ QVariantMap QgsExtractByExpressionAlgorithm::processAlgorithm( const QVariantMap
       expressionContext.setFeature( f );
       if ( expression.evaluate( &expressionContext ).toBool() )
       {
-        matchingSink->addFeature( f, QgsFeatureSink::FastInsert );
+        if ( !matchingSink->addFeature( f, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( matchingSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
       }
       else
       {
-        nonMatchingSink->addFeature( f, QgsFeatureSink::FastInsert );
+        if ( !nonMatchingSink->addFeature( f, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( nonMatchingSink.get(), parameters, QStringLiteral( "FAIL_OUTPUT" ) ) );
       }
 
       feedback->setProgress( current * step );

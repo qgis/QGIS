@@ -35,6 +35,7 @@ add_qgis_test(testqgswmscapabilities.cpp MODULE provider LINKEDLIBRARIES provide
 add_qgis_test(testqgswmsccapabilities.cpp MODULE provider LINKEDLIBRARIES provider_wms_a qgis_core)
 add_qgis_test(testqgswmsprovider.cpp MODULE provider LINKEDLIBRARIES provider_wms_a qgis_core)
 
+add_qgis_test(testqgspostgresexpressioncompiler.cpp MODULE provider LINKEDLIBRARIES provider_postgres_a qgis_core)
 add_qgis_test(testqgspostgresprovider.cpp MODULE provider LINKEDLIBRARIES provider_postgres_a qgis_core)
 add_qgis_test(testqgspostgresconn.cpp MODULE provider LINKEDLIBRARIES provider_postgres_a qgis_core LABELS "POSTGRES")
 
@@ -73,10 +74,10 @@ if(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
   )
 
   target_link_libraries(test_provider_wcs
-    ${Qt5Core_LIBRARIES}
-    ${Qt5Network_LIBRARIES}
-    ${Qt5Svg_LIBRARIES}
-    ${Qt5Xml_LIBRARIES}
+    ${QT_VERSION_BASE}::Core
+    ${QT_VERSION_BASE}::Network
+    ${QT_VERSION_BASE}::Svg
+    ${QT_VERSION_BASE}::Xml
     ${OPTIONAL_QTWEBKIT}
     qgis_core
   )

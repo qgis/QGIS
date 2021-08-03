@@ -458,7 +458,7 @@ void QgsTextFormatWidget::initWidget()
 
   connectValueChanged( widgets, SLOT( updatePreview() ) );
 
-  connect( mQuadrantBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePreview );
+  connect( mQuadrantBtnGrp, qOverload< QAbstractButton * >( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePreview );
 
   connect( mBufferDrawDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::updateBufferFrameStatus );
   connect( mBufferDrawChkBx, &QCheckBox::stateChanged, this, [ = ]( int )

@@ -123,7 +123,8 @@ QVariantMap QgsRandomPointsExtentAlgorithm::processAlgorithm( const QVariantMap 
 
       f.setGeometry( QgsGeometry( new QgsPoint( rx, ry ) ) );
       f.setAttributes( QgsAttributes() << i );
-      sink->addFeature( f, QgsFeatureSink::FastInsert );
+      if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
       i++;
       feedback->setProgress( static_cast<int>( static_cast<double>( i ) / static_cast<double>( mNumPoints ) * 100 ) );
     }
@@ -150,8 +151,9 @@ QVariantMap QgsRandomPointsExtentAlgorithm::processAlgorithm( const QVariantMap 
         f.setAttributes( QgsAttributes() << i );
         QgsGeometry randomPointGeom = QgsGeometry( new QgsPoint( rx, ry ) );
         f.setGeometry( randomPointGeom );
-        index.addFeature( f );
-        sink->addFeature( f, QgsFeatureSink::FastInsert );
+        if ( !index.addFeature( f ) ||
+             !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
         i++;
         distCheckIterations = 0; //reset distCheckIterations if a point is added
         feedback->setProgress( static_cast<int>( static_cast<double>( i ) / static_cast<double>( mNumPoints ) * 100 ) );

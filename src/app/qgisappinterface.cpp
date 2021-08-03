@@ -902,3 +902,8 @@ void QgisAppInterface::setGpsPanelConnection( QgsGpsConnection *connection )
 {
   qgis->setGpsPanelConnection( connection );
 }
+
+QList<QgsMapDecoration *> QgisAppInterface::activeDecorations()
+{
+  return qgis->activeDecorations();
+}

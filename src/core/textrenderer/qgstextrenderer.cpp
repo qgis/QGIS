@@ -1427,12 +1427,6 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
   if ( mode == Rect && vAlignment != AlignTop )
   {
     std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
-    if ( mode == Label )
-    {
-      // label size has already been calculated using any symbology reference scale factor -- we need
-      // to temporarily remove the reference scale here or we'll be applying the scaling twice
-      referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
-    }
 
     const double overallHeight = textHeight( context, format, textLines, Rect );
     switch ( vAlignment )

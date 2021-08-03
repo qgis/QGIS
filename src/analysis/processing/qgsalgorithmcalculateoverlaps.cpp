@@ -198,7 +198,8 @@ QVariantMap QgsCalculateVectorOverlapsAlgorithm::processAlgorithm( const QVarian
     }
 
     feature.setAttributes( outAttributes );
-    sink->addFeature( feature, QgsFeatureSink::FastInsert );
+    if ( !sink->addFeature( feature, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
     i++;
     feedback->setProgress( i * step );

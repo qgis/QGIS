@@ -878,6 +878,23 @@ tests:
         name: expected/dbscan_multiple_clusters.gml
         type: vector
 
+  - algorithm: native:stdbscanclustering
+    name: ST-DBScan multiple clusters
+    params:
+      DATETIME_FIELD: date
+      DBSCAN*: false
+      EPS: 5.0
+      EPS2: 1000.0
+      FIELD_NAME: CLUSTER_ID
+      INPUT:
+        name: custom/points_with_date.shp
+        type: vector
+      MIN_SIZE: 1
+    results:
+      OUTPUT:
+        name: expected/stdbscan_multiple_clusters.gml
+        type: vector
+
   - algorithm: qgis:rastersampling
     name: Single band raster
     params:

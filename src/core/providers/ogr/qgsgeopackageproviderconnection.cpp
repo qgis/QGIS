@@ -389,8 +389,6 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
   mSqlLayerDefinitionCapabilities =
   {
     Qgis::SqlLayerDefinitionCapability::SubsetStringFilter,
-    Qgis::SqlLayerDefinitionCapability::PrimaryKeys,
-    Qgis::SqlLayerDefinitionCapability::GeometryColumn,
   };
 }
 
@@ -1168,6 +1166,23 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsGeoPackageProviderConnection
       }
     }
   } );
+}
+
+QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsGeoPackageProviderConnection::sqlOptions( const QString &layerSource )
+{
+  SqlVectorLayerOptions options;
+  QgsProviderMetadata *providerMetadata { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
+  Q_ASSERT( providerMetadata );
+  QMap<QString, QVariant> decoded = providerMetadata->decodeUri( layerSource );
+  if ( decoded.contains( QStringLiteral( "subset" ) ) )
+  {
+    options.sql = decoded[ QStringLiteral( "subset" ) ].toString();
+  }
+  else if ( decoded.contains( QStringLiteral( "layerName" ) ) )
+  {
+    options.sql = QStringLiteral( "SELECT * FROM %1" ).arg( QgsSqliteUtils::quotedIdentifier( decoded[ QStringLiteral( "layerName" ) ].toString() ) );
+  }
+  return options;
 }
 
 QgsGeoPackageProviderResultIterator::QgsGeoPackageProviderResultIterator( gdal::ogr_datasource_unique_ptr hDS, OGRLayerH ogrLayer )

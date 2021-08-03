@@ -146,6 +146,7 @@ Sets the query execution time to ``queryExecutionTime`` milliseconds.
       QStringList primaryKeyColumns;
       QString geometryColumn;
       bool disableSelectAtId;
+
     };
 
     struct TableProperty
@@ -548,6 +549,19 @@ Executes raw ``sql`` and returns the (possibly empty) list of results in a multi
     virtual QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const throw( QgsProviderConnectionException ) /Factory/;
 %Docstring
 Creates and returns a (possibly invalid) vector layer based on the ``sql`` statement and optional ``options``.
+
+:raises QgsProviderConnectionException: if any errors are encountered or if SQL layer creation is not supported.
+
+.. versionadded:: 3.22
+%End
+
+    virtual SqlVectorLayerOptions sqlOptions( const QString &layerSource ) throw( QgsProviderConnectionException );
+%Docstring
+Returns the SQL layer options from a ``layerSource``.
+
+.. note::
+
+   the default implementation returns a default constructed option object.
 
 :raises QgsProviderConnectionException: if any errors are encountered or if SQL layer creation is not supported.
 

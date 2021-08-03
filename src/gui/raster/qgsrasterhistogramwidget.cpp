@@ -29,6 +29,8 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QPainter>
+#include <QActionGroup>
+#include <QRandomGenerator>
 
 // QWT Charting widget
 #include <qwt_global.h>
@@ -44,6 +46,7 @@
 #include <qwt_plot_layout.h>
 #include <qwt_plot_renderer.h>
 #include <qwt_plot_histogram.h>
+#include <qwt_scale_div.h>
 
 #ifdef Q_OS_WIN
 #include <time.h>
@@ -415,16 +418,16 @@ void QgsRasterHistogramWidget::refreshHistogram()
   mHistoColors << Qt::black; // first element, not used
   QVector<QColor> myColors;
   myColors << Qt::red << Qt::green << Qt::blue << Qt::magenta << Qt::darkYellow << Qt::cyan;
-  qsrand( myBandCountInt * 100 ); // make sure colors are always the same for a given band count
+
+  // make sure colors are always the same for a given band count
+  QRandomGenerator colorGenerator( myBandCountInt * 100 );
   while ( myColors.size() <= myBandCountInt )
   {
     myColors <<
-             QColor( 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) ),
-                     1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) ),
-                     1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) ) );
+             QColor( colorGenerator.bounded( 1, 256 ),
+                     colorGenerator.bounded( 1, 256 ),
+                     colorGenerator.bounded( 1, 256 ) );
   }
-  //randomise seed again
-  qsrand( time( nullptr ) );
 
   // assign colors to each band, depending on the current RGB/gray band selection
   // grayscale

@@ -312,7 +312,7 @@ void QgsJsonEditWidget::refreshTreeViewItem( QTreeWidgetItem *treeWidgetItem, co
         mTreeWidget->setItemWidget( treeWidgetItem, static_cast<int>( TreeWidgetColumn::Value ), label );
 
         mClickableLinkList.append( jsonValueString );
-        mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_SETINDICATORVALUE, mClickableLinkList.size() );
+        mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_SETINDICATORVALUE, static_cast< int >( mClickableLinkList.size() ) );
         mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_INDICATORFILLRANGE,
                                         mCodeEditorJson->text().indexOf( jsonValueString ),
                                         jsonValueString.size() );

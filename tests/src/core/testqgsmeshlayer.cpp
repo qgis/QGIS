@@ -96,6 +96,7 @@ class TestQgsMeshLayer : public QObject
     void test_setDataSource();
 
     void testMdalProviderQuerySublayers();
+    void testMdalProviderQuerySublayersFastScan();
 };
 
 QString TestQgsMeshLayer::readFile( const QString &fname ) const
@@ -1609,11 +1610,24 @@ void TestQgsMeshLayer::testMdalProviderQuerySublayers()
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "quad_and_triangle" ) );
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "2DM:\"%1/quad_and_triangle.2dm\"" ).arg( mDataDir ) );
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
+  QCOMPARE( res.at( 0 ).driverName(), QString() );
   QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
 
   // make sure result is valid to load layer from
   QgsProviderSublayerDetails::LayerOptions options{ QgsCoordinateTransformContext() };
   std::unique_ptr< QgsMeshLayer > ml( qgis::down_cast< QgsMeshLayer * >( res.at( 0 ).toLayer( options ) ) );
+  QVERIFY( ml->isValid() );
+
+  // directly query MDAL uri
+  res = mdalMetadata->querySublayers( QStringLiteral( "2DM:\"%1/quad_and_triangle.2dm\"" ).arg( mDataDir ) );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 0 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "quad_and_triangle" ) );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "2DM:\"%1/quad_and_triangle.2dm\"" ).arg( mDataDir ) );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
+  QCOMPARE( res.at( 0 ).driverName(), QString() );
+  ml.reset( qgis::down_cast< QgsMeshLayer * >( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( ml->isValid() );
 
   // mesh with two layers
@@ -1624,6 +1638,7 @@ void TestQgsMeshLayer::testMdalProviderQuerySublayers()
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "Ugrid:\"%1/manzese_1d2d_small_map.nc\":mesh1d" ).arg( mDataDir ) );
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
   QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
+  QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "Ugrid" ) );
   ml.reset( qgis::down_cast< QgsMeshLayer * >( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( ml->isValid() );
   QCOMPARE( res.at( 1 ).layerNumber(), 1 );
@@ -1631,9 +1646,65 @@ void TestQgsMeshLayer::testMdalProviderQuerySublayers()
   QCOMPARE( res.at( 1 ).uri(), QStringLiteral( "Ugrid:\"%1/manzese_1d2d_small_map.nc\":mesh2d" ).arg( mDataDir ) );
   QCOMPARE( res.at( 1 ).providerKey(), QStringLiteral( "mdal" ) );
   QCOMPARE( res.at( 1 ).type(), QgsMapLayerType::MeshLayer );
+  QCOMPARE( res.at( 1 ).driverName(), QStringLiteral( "Ugrid" ) );
   ml.reset( qgis::down_cast< QgsMeshLayer * >( res.at( 1 ).toLayer( options ) ) );
   QVERIFY( ml->isValid() );
 
+  // mesh with two layers, but uri is for one of these layers only
+  res = mdalMetadata->querySublayers( QStringLiteral( "Ugrid:\"%1/manzese_1d2d_small_map.nc\":mesh1d" ).arg( mDataDir ) );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 0 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "mesh1d" ) );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "Ugrid:\"%1/manzese_1d2d_small_map.nc\":mesh1d" ).arg( mDataDir ) );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
+  QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "Ugrid" ) );
+  ml.reset( qgis::down_cast< QgsMeshLayer * >( res.at( 0 ).toLayer( options ) ) );
+  QVERIFY( ml->isValid() );
+  res = mdalMetadata->querySublayers( QStringLiteral( "Ugrid:\"%1/manzese_1d2d_small_map.nc\":mesh2d" ).arg( mDataDir ) );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 0 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "mesh2d" ) );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "Ugrid:\"%1/manzese_1d2d_small_map.nc\":mesh2d" ).arg( mDataDir ) );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
+  QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "Ugrid" ) );
+  ml.reset( qgis::down_cast< QgsMeshLayer * >( res.at( 0 ).toLayer( options ) ) );
+  QVERIFY( ml->isValid() );
+}
+
+void TestQgsMeshLayer::testMdalProviderQuerySublayersFastScan()
+{
+  // test querying sub layers for a mesh layer, using the fast scan flag
+  QgsProviderMetadata *mdalMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "mdal" ) );
+
+  // invalid uri
+  QList< QgsProviderSublayerDetails >res = mdalMetadata->querySublayers( QString(), Qgis::SublayerQueryFlag::FastScan );
+  QVERIFY( res.empty() );
+
+  // not a mesh
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/lines.shp", Qgis::SublayerQueryFlag::FastScan );
+  QVERIFY( res.empty() );
+
+  // single layer mesh
+  res = mdalMetadata->querySublayers( mDataDir + "/quad_and_triangle.2dm", Qgis::SublayerQueryFlag::FastScan );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 0 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "quad_and_triangle" ) );
+  QCOMPARE( res.at( 0 ).uri(), mDataDir + "/quad_and_triangle.2dm" );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
+  QVERIFY( res.at( 0 ).skippedContainerScan() );
+
+  // mesh with two layers
+  res = mdalMetadata->querySublayers( mDataDir + "/manzese_1d2d_small_map.nc", Qgis::SublayerQueryFlag::FastScan );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 0 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "manzese_1d2d_small_map" ) );
+  QCOMPARE( res.at( 0 ).uri(), mDataDir + "/manzese_1d2d_small_map.nc" );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
+  QVERIFY( res.at( 0 ).skippedContainerScan() );
 }
 
 void TestQgsMeshLayer::test_temporal()

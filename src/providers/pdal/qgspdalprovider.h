@@ -75,11 +75,11 @@ class QgsPdalProviderMetadata : public QgsProviderMetadata
     QgsPdalProviderMetadata();
     QgsPdalProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
-    QList< QgsDataItemProvider * > dataItemProviders() const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QVariantMap decodeUri( const QString &uri ) const override;
     int priorityForUri( const QString &uri ) const override;
     QList< QgsMapLayerType > validLayerTypesForUri( const QString &uri ) const override;
+    QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
     QString filters( FilterType type ) override;
     ProviderCapabilities providerCapabilities() const override;
 };

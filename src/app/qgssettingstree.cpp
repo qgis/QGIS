@@ -65,6 +65,8 @@ QgsSettingsTree::QgsSettingsTree( QWidget *parent )
   header()->resizeSection( ColumnType, 100 );
   header()->resizeSection( ColumnValue, 250 );
 
+  setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+
   mRefreshTimer.setInterval( 2000 );
 
   mGroupIcon = QgsApplication::getThemeIcon( QStringLiteral( "mIconFolderOpen.svg" ) );

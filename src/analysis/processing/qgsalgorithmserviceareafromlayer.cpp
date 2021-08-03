@@ -214,7 +214,8 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
       attributes = sourceAttributes.value( i + 1 );
       attributes << QStringLiteral( "within" ) << origPoint;
       feat.setAttributes( attributes );
-      pointsSink->addFeature( feat, QgsFeatureSink::FastInsert );
+      if ( !pointsSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
       if ( includeBounds )
       {
@@ -250,13 +251,15 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
         attributes = sourceAttributes.value( i + 1 );
         attributes << QStringLiteral( "upper" ) << origPoint;
         feat.setAttributes( attributes );
-        pointsSink->addFeature( feat, QgsFeatureSink::FastInsert );
+        if ( !pointsSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
         feat.setGeometry( geomLower );
         attributes = sourceAttributes.value( i + 1 );
         attributes << QStringLiteral( "lower" ) << origPoint;
         feat.setAttributes( attributes );
-        pointsSink->addFeature( feat, QgsFeatureSink::FastInsert );
+        if ( !pointsSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
       } // includeBounds
     }
 
@@ -267,7 +270,8 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
       attributes = sourceAttributes.value( i + 1 );
       attributes << QStringLiteral( "lines" ) << origPoint;
       feat.setAttributes( attributes );
-      linesSink->addFeature( feat, QgsFeatureSink::FastInsert );
+      if ( !linesSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( linesSink.get(), parameters, QStringLiteral( "OUTPUT_LINES" ) ) );
     }
 
     feedback->setProgress( i * step );

@@ -407,6 +407,7 @@ set(QGIS_GUI_SRCS
   qgsbrowsertreeview.cpp
   qgsbrowserguimodel.cpp
   qgsbrowserdockwidget.cpp
+  qgsbrowserwidget.cpp
   qgsbusyindicatordialog.cpp
   qgscharacterselectordialog.cpp
   qgscheckablecombobox.cpp
@@ -651,6 +652,7 @@ set(QGIS_GUI_HDRS
   qgsattributetypeloaddialog.h
   qgsblendmodecombobox.h
   qgsbrowserdockwidget.h
+  qgsbrowserwidget.h
   qgsbrowserguimodel.h
   qgsbrowsertreeview.h
   qgsbusyindicatordialog.h
@@ -1266,24 +1268,27 @@ set(QGIS_GUI_PRIVATE_HDRS
   attributetable/qgsfeaturefilterwidget_p.h
 )
 
-find_package(Qt5 COMPONENTS Qml QuickWidgets REQUIRED)
+if (WITH_QT6)
+  find_package(Qt6 COMPONENTS Qml QuickWidgets REQUIRED)
+else()
+  find_package(Qt5 COMPONENTS Qml QuickWidgets REQUIRED)
+endif()
 
-if(Qt5Qml_FOUND)
-add_definitions(-DWITH_QML)
-set(QGIS_GUI_HDRS
-  ${QGIS_GUI_HDRS}
-  editorwidgets/qgsqmlwidgetwrapper.h
-)
+if(${QT_VERSION_BASE}Qml_FOUND)
+  add_definitions(-DWITH_QML)
+  set(QGIS_GUI_HDRS
+    ${QGIS_GUI_HDRS}
+    editorwidgets/qgsqmlwidgetwrapper.h
+  )
 endif()
 
 # for installing headers
 
-if(Qt5Qml_FOUND)
-
-set(QGIS_GUI_SRCS
-  ${QGIS_GUI_SRCS}
-  editorwidgets/qgsqmlwidgetwrapper.cpp
-)
+if(${QT_VERSION_BASE}Qml_FOUND)
+  set(QGIS_GUI_SRCS
+    ${QGIS_GUI_SRCS}
+    editorwidgets/qgsqmlwidgetwrapper.cpp
+  )
 endif()
 
 set_property(GLOBAL PROPERTY QGIS_GUI_HDRS ${QGIS_GUI_HDRS})
@@ -1349,6 +1354,7 @@ set(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmeshstaticdatasetwidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgstemporalcontrollerwidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprocessingtinmeshdatawidgetbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionpreviewbase.h
 )
 
 if(ENABLE_MODELTEST)
@@ -1357,11 +1363,9 @@ endif()
 
 if (WITH_EPT)
   set(QGIS_GUI_SRCS ${QGIS_GUI_SRCS}
-    providers/ept/qgseptdataitemguiprovider.cpp
     providers/ept/qgseptproviderguimetadata.cpp
   )
   set(QGIS_GUI_HDRS ${QGIS_GUI_HDRS}
-    providers/ept/qgseptdataitemguiprovider.h
     providers/ept/qgseptproviderguimetadata.h
   )
 endif()
@@ -1497,18 +1501,13 @@ add_dependencies(qgis_gui ui)
 target_link_libraries(qgis_gui
   qgis_core
   qgis_native
-  ${Qt5UiTools_LIBRARIES}
+  ${QT_VERSION_BASE}::UiTools
   ${QWT_LIBRARY}
   ${QSCINTILLA_LIBRARY}
-  ${Qt5QuickWidgets_LIBRARIES}
+  ${QT_VERSION_BASE}::QuickWidgets
 )
 
 if (FORCE_STATIC_LIBS)
-  include_directories(
-    ${CMAKE_SOURCE_DIR}/src/providers/wms
-    ${CMAKE_SOURCE_DIR}/src/providers/postgres
-  )
-
   target_link_libraries(qgis_gui
     provider_wms_gui_a
     provider_postgres_gui_a
@@ -1516,7 +1515,7 @@ if (FORCE_STATIC_LIBS)
 endif()
 
 if(ENABLE_MODELTEST)
-  target_link_libraries(qgis_gui ${Qt5Test_LIBRARIES})
+  target_link_libraries(qgis_gui ${QT_VERSION_BASE}::Test)
 endif()
 
 target_compile_definitions(qgis_gui PRIVATE "-DQT_NO_FOREACH")

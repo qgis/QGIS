@@ -487,17 +487,6 @@ QgsMeshVertexCirculator QgsTopologicalMesh::vertexCirculator( int vertexIndex ) 
   return QgsMeshVertexCirculator( *this, vertexIndex );
 }
 
-bool QgsTopologicalMesh::facesCanBeJoinedWithCommonIndex( const QgsMeshFace &face1, const QgsMeshFace &face2, int commonIndex )
-{
-  int commonVertexPosition1 = vertexPositionInFace( commonIndex, face1 );
-  int commonVertexPosition2 = vertexPositionInFace( commonIndex, face2 );
-
-  bool canBejoined = ( face1.at( ( commonVertexPosition1 + 1 ) % face1.size() ) == face2.at( ( commonVertexPosition2 - 1 + face2.size() ) % face2.size() ) ) ||
-                     ( face1.at( ( commonVertexPosition1 - 1 + face1.size() ) % face1.size() ) == face2.at( ( commonVertexPosition2 + 1 ) % face2.size() ) );
-
-  return canBejoined;
-}
-
 QSet<int> QgsTopologicalMesh::concernedFacesBy( const QList<int> faceIndexes ) const
 {
   QSet<int> faces;

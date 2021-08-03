@@ -182,6 +182,7 @@ The development version
       Collapse,
       Rename,
       Delete,
+      ItemRepresentsFile,
     };
     typedef QFlags<Qgis::BrowserItemCapability> BrowserItemCapabilities;
 
@@ -258,6 +259,12 @@ The development version
       Remote,
       CdRom,
       RamDisk,
+    };
+
+    enum class ActionStart
+      {
+      Deferred,
+      Immediate,
     };
 
     enum class UnplacedLabelVisibility
@@ -344,6 +351,40 @@ The development version
       NoMarker,
     };
 
+    enum class ContentStatus
+    {
+      NotStarted,
+      Running,
+      Finished,
+      Failed,
+      Canceled,
+    };
+
+    enum class BabelFormatCapability
+    {
+      Import,
+      Export,
+      Waypoints,
+      Routes,
+      Tracks,
+    };
+    typedef QFlags<Qgis::BabelFormatCapability> BabelFormatCapabilities;
+
+
+    enum class BabelCommandFlag
+    {
+      QuoteFilePaths,
+    };
+    typedef QFlags<Qgis::BabelCommandFlag> BabelCommandFlags;
+
+
+    enum class GpsFeatureType
+    {
+      Waypoint,
+      Route,
+      Track,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -420,6 +461,10 @@ QFlags<Qgis::BrowserItemCapability> operator|(Qgis::BrowserItemCapability f1, QF
 QFlags<Qgis::SublayerQueryFlag> operator|(Qgis::SublayerQueryFlag f1, QFlags<Qgis::SublayerQueryFlag> f2);
 
 QFlags<Qgis::SqlLayerDefinitionCapability> operator|(Qgis::SqlLayerDefinitionCapability f1, QFlags<Qgis::SqlLayerDefinitionCapability> f2);
+
+QFlags<Qgis::BabelFormatCapability> operator|(Qgis::BabelFormatCapability f1, QFlags<Qgis::BabelFormatCapability> f2);
+
+QFlags<Qgis::BabelCommandFlag> operator|(Qgis::BabelCommandFlag f1, QFlags<Qgis::BabelCommandFlag> f2);
 
 
 

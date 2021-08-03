@@ -195,9 +195,15 @@ add_library(qgis_3d SHARED ${QGIS_3D_SRCS} ${QGIS_3D_HDRS} ${QGIS_3D_RCCS} ${QGI
 # require c++17
 target_compile_features(qgis_3d PRIVATE cxx_std_17)
 
-target_include_directories(qgis_3d SYSTEM PUBLIC
-  ${QT5_3DEXTRA_INCLUDE_DIR}
-)
+if (WITH_QT6)
+  target_include_directories(qgis_3d SYSTEM PUBLIC
+    ${QT6_3DEXTRA_INCLUDE_DIR}
+  )
+else()
+  target_include_directories(qgis_3d SYSTEM PUBLIC
+    ${QT5_3DEXTRA_INCLUDE_DIR}
+  )
+endif()
 
 target_include_directories(qgis_3d PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}
@@ -212,7 +218,11 @@ target_include_directories(qgis_3d PUBLIC
   ${CMAKE_BINARY_DIR}/src/3d
 )
 
-target_link_libraries(qgis_3d Qt5::3DCore Qt5::3DRender Qt5::3DInput Qt5::3DLogic Qt5::3DExtras)
+if (WITH_QT6)
+  target_link_libraries(qgis_3d Qt6::3DCore Qt6::3DRender Qt6::3DInput Qt6::3DLogic Qt6::3DExtras)
+else()
+  target_link_libraries(qgis_3d Qt5::3DCore Qt5::3DRender Qt5::3DInput Qt5::3DLogic Qt5::3DExtras)
+endif()
 
 GENERATE_EXPORT_HEADER(
    qgis_3d

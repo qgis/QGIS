@@ -16,7 +16,11 @@ if (WITH_GUI)
     gui/qgsauthidentcertedit.h
   )
   set(AUTH_IDENTCERT_UIS gui/qgsauthidentcertedit.ui)
-  QT5_WRAP_UI(AUTH_IDENTCERT_UIS_H ${AUTH_IDENTCERT_UIS})
+  if (WITH_QT6)
+    QT6_WRAP_UI(AUTH_IDENTCERT_UIS_H ${AUTH_IDENTCERT_UIS})
+  else()
+    QT5_WRAP_UI(AUTH_IDENTCERT_UIS_H ${AUTH_IDENTCERT_UIS})
+  endif()
 endif()
 
 

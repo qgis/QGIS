@@ -173,7 +173,8 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
                                               mSource->wkbType(),
                                               mSource->sourceCrs() ) );
 
-      sink->addFeature( feature, QgsFeatureSink::FastInsert );
+      if ( !sink->addFeature( feature, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QString() ) );
 
       QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( id, context );
 
@@ -189,7 +190,8 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
     }
     else
     {
-      groupIt->sink->addFeature( feature, QgsFeatureSink::FastInsert );
+      if ( !groupIt->sink->addFeature( feature, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( groupIt->sink, parameters, QString() ) );
       groupIt->lastFeature = feature;
     }
 
@@ -266,7 +268,8 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
     QgsFeature outFeat;
     outFeat.setGeometry( geometry );
     outFeat.setAttributes( attributes );
-    sink->addFeature( outFeat, QgsFeatureSink::FastInsert );
+    if ( !sink->addFeature( outFeat, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
     current++;
     feedback->setProgress( 50 + current * progressStep );

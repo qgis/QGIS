@@ -64,6 +64,33 @@ class TestQgsMapLayerUtils(unittest.TestCase):
                                                  QgsCoordinateTransformContext())
         self.assertEqual(extent.toString(0), '-13234651,2607875 : 2008833,5921203')
 
+    def test_layerSourceMatchesPath(self):
+        """
+        Test QgsMapLayerUtils.layerSourceMatchesPath()
+        """
+        self.assertFalse(QgsMapLayerUtils.layerSourceMatchesPath(None, ''))
+        self.assertFalse(QgsMapLayerUtils.layerSourceMatchesPath(None, 'aaaaa'))
+
+        # shapefile
+        layer1 = QgsVectorLayer(unitTestDataPath() + '/points.shp', 'l1')
+        self.assertFalse(QgsMapLayerUtils.layerSourceMatchesPath(layer1, ''))
+        self.assertFalse(QgsMapLayerUtils.layerSourceMatchesPath(layer1, 'aaaaa'))
+        self.assertTrue(QgsMapLayerUtils.layerSourceMatchesPath(layer1, unitTestDataPath() + '/points.shp'))
+
+        # geopackage with layers
+        layer1 = QgsVectorLayer(unitTestDataPath() + '/mixed_layers.gpkg|layername=lines', 'l1')
+        self.assertFalse(QgsMapLayerUtils.layerSourceMatchesPath(layer1, ''))
+        self.assertFalse(QgsMapLayerUtils.layerSourceMatchesPath(layer1, 'aaaaa'))
+        self.assertTrue(QgsMapLayerUtils.layerSourceMatchesPath(layer1, unitTestDataPath() + '/mixed_layers.gpkg'))
+        layer2 = QgsVectorLayer(unitTestDataPath() + '/mixed_layers.gpkg|layername=points', 'l1')
+        self.assertTrue(QgsMapLayerUtils.layerSourceMatchesPath(layer2, unitTestDataPath() + '/mixed_layers.gpkg'))
+
+        # raster layer from gpkg
+        rl = QgsRasterLayer(f'GPKG:{unitTestDataPath()}/mixed_layers.gpkg:band1')
+        self.assertFalse(QgsMapLayerUtils.layerSourceMatchesPath(rl, ''))
+        self.assertFalse(QgsMapLayerUtils.layerSourceMatchesPath(rl, 'aaaaa'))
+        self.assertTrue(QgsMapLayerUtils.layerSourceMatchesPath(rl, unitTestDataPath() + '/mixed_layers.gpkg'))
+
 
 if __name__ == '__main__':
     unittest.main()

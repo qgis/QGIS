@@ -40,6 +40,7 @@
 #include "qgsfieldmodel.h"
 #include "qgstexteditwidgetfactory.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsstringutils.h"
 #include "qgsvectorlayerutils.h"
 #include "qgsvectorlayercache.h"
 
@@ -702,13 +703,24 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   switch ( role )
   {
     case Qt::DisplayRole:
-    case Qt::ToolTipRole:
       return mFieldFormatters.at( index.column() )->representValue( mLayer,
              fieldId,
              mWidgetConfigs.at( index.column() ),
              mAttributeWidgetCaches.at( index.column() ),
              val );
-
+    case Qt::ToolTipRole:
+    {
+      QString tooltip = mFieldFormatters.at( index.column() )->representValue( mLayer,
+                        fieldId,
+                        mWidgetConfigs.at( index.column() ),
+                        mAttributeWidgetCaches.at( index.column() ),
+                        val );
+      if ( val.type() == QVariant::String && QgsStringUtils::isUrl( val.toString() ) )
+      {
+        tooltip = tr( "%1 (Ctrl+click to open)" ).arg( tooltip );
+      }
+      return tooltip;
+    }
     case Qt::EditRole:
       return val;
 
@@ -746,13 +758,26 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
 #if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
         if ( role == Qt::TextColorRole && style.validTextColor() )
 #else
-        if ( role == Qt::ForegroundRole && style.validTextColor() )
+        if ( role == Qt::ForegroundRole )
 #endif
           return style.textColor();
         if ( role == Qt::DecorationRole )
           return style.icon();
         if ( role == Qt::FontRole )
           return style.font();
+      }
+      else if ( val.type() == QVariant::String && QgsStringUtils::isUrl( val.toString() ) )
+      {
+        if ( role == Qt::ForegroundRole )
+        {
+          return QColor( Qt::blue );
+        }
+        else if ( role == Qt::FontRole )
+        {
+          QFont font;
+          font.setUnderline( true );
+          return font;
+        }
       }
 
       return QVariant();

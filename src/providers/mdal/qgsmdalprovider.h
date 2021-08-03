@@ -146,7 +146,6 @@ class QgsMdalProviderMetadata: public QgsProviderMetadata
     QString filters( FilterType type ) override;
     QList<QgsMeshDriverMetadata> meshDriversMetadata() override;
     QgsMdalProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
-    QList<QgsDataItemProvider *> dataItemProviders() const override;
     bool createMeshData( const QgsMesh &mesh,
                          const QString uri,
                          const QString &driverName,

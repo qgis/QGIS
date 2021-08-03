@@ -27,12 +27,14 @@
 #include "qgsgeometry.h"
 #include "qgsmaplayerproxymodel.h"
 
+#ifdef _MSC_VER
 template class CORE_EXPORT QgsSettingsEntryEnumFlag<QgsSnappingConfig::SnappingTypes> SIP_SKIP;
 template class CORE_EXPORT QgsSettingsEntryEnumFlag<QgsTolerance::UnitType> SIP_SKIP;
 template class CORE_EXPORT QgsSettingsEntryEnumFlag<QgsGeometry::JoinStyle> SIP_SKIP;
 template class CORE_EXPORT QgsSettingsEntryEnumFlag<QgsGeometry::EndCapStyle> SIP_SKIP;
 template class CORE_EXPORT QgsSettingsEntryEnumFlag<QgsUnitTypes::LayoutUnit> SIP_SKIP;
 template class CORE_EXPORT QgsSettingsEntryEnumFlag< class QFlags<enum QgsMapLayerProxyModel::Filter> > SIP_SKIP;
+#endif
 
 /**
  * \ingroup core
@@ -170,6 +172,9 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
 
     //! Settings entry digitizing tracing max feature count
     static const inline QgsSettingsEntryInteger settingsDigitizingTracingMaxFeatureCount = QgsSettingsEntryInteger( QStringLiteral( "/qgis/digitizing/tracing_max_feature_count" ), QgsSettings::NoSection, 10000 );
+
+    //! Settings entry path to GPSBabel executable.
+    static const inline QgsSettingsEntryString settingsGpsBabelPath = QgsSettingsEntryString( QStringLiteral( "gpsbabelPath" ), QgsSettings::Gps, QStringLiteral( "gpsbabel" ) );
 #endif
 
 };

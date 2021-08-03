@@ -29,6 +29,7 @@
 #include "qgsmessagebar.h"
 #include "qgsgui.h"
 #include "qgsbrowserguimodel.h"
+#include "qgsbrowserwidget.h"
 
 QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *browserModel, QWidget *parent, QgsMapCanvas *canvas, Qt::WindowFlags fl )
   : QgsOptionsDialogBase( QStringLiteral( "Data Source Manager" ), parent, fl )
@@ -62,7 +63,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
   connect( mBrowserWidget, &QgsBrowserDockWidget::handleDropUriList, this, &QgsDataSourceManagerDialog::handleDropUriList );
   connect( mBrowserWidget, &QgsBrowserDockWidget::openFile, this, &QgsDataSourceManagerDialog::openFile );
   connect( mBrowserWidget, &QgsBrowserDockWidget::connectionsChanged, this, &QgsDataSourceManagerDialog::connectionsChanged );
-  connect( this, &QgsDataSourceManagerDialog::updateProjectHome, mBrowserWidget, &QgsBrowserDockWidget::updateProjectHome );
+  connect( this, &QgsDataSourceManagerDialog::updateProjectHome, mBrowserWidget->browserWidget(), &QgsBrowserWidget::updateProjectHome );
 
   // Add provider dialogs
   const QList<QgsSourceSelectProvider *> sourceSelectProviders = QgsGui::sourceSelectProviderRegistry()->providers( );
@@ -115,7 +116,7 @@ void QgsDataSourceManagerDialog::setPreviousPage()
 
 void QgsDataSourceManagerDialog::refresh()
 {
-  mBrowserWidget->refresh();
+  mBrowserWidget->browserWidget()->refresh();
   emit providerDialogsRefreshRequested();
 }
 

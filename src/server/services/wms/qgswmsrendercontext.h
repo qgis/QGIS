@@ -247,6 +247,14 @@ namespace QgsWms
       bool isValidWidthHeight() const;
 
       /**
+       * Returns true if width and height are valid according to the maximum image width/height
+       * \param width the image width in pixels
+       * \param height the image height in pixels
+       * \since QGIS 3.22
+       */
+      bool isValidWidthHeight( int width, int height ) const;
+
+      /**
        * Returns WIDTH or SRCWIDTH according to \a UseSrcWidthHeight flag.
        */
       int mapWidth() const;

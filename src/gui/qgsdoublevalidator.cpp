@@ -18,7 +18,7 @@
  ***************************************************************************/
 
 #include <limits>
-#include <QRegExpValidator>
+#include <QRegularExpressionValidator>
 #include <QRegularExpression>
 #include <QLocale>
 #include "qgis_gui.h"

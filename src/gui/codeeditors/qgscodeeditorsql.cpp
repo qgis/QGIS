@@ -116,7 +116,7 @@ QStringList QgsCodeEditorSQL::extraKeywords() const
 
 void QgsCodeEditorSQL::setExtraKeywords( const QStringList &extraKeywords )
 {
-  mExtraKeywords = extraKeywords.toSet();
+  mExtraKeywords = qgis::listToSet( extraKeywords );
   updateApis();
 }
 
@@ -127,7 +127,7 @@ QStringList QgsCodeEditorSQL::fieldNames() const
 
 void QgsCodeEditorSQL::setFieldNames( const QStringList &fieldNames )
 {
-  mFieldNames = fieldNames.toSet();
+  mFieldNames = qgis::listToSet( fieldNames );
   updateApis();
 }
 

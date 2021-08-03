@@ -88,6 +88,7 @@
 #include <QMenu>
 #include <QScreen>
 #include <QRegularExpressionValidator>
+#include <QRegularExpression>
 
 QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags fl )
   : QgsOptionsDialogBase( QStringLiteral( "RasterLayerProperties" ), parent, fl )
@@ -1245,7 +1246,6 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
   QIcon myPyramidPixmap( QgsApplication::getThemeIcon( "/mIconPyramid.svg" ) );
   QIcon myNoPyramidPixmap( QgsApplication::getThemeIcon( "/mIconNoPyramid.svg" ) );
 
-  QList< QgsRasterPyramid >::iterator myRasterPyramidIterator;
   for ( const QgsRasterPyramid &pyramid : std::as_const( myPyramidList ) )
   {
     if ( pyramid.getExists() )
@@ -1674,7 +1674,7 @@ void QgsRasterLayerProperties::pbnImportTransparentPixelValues_clicked()
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
             QStringList myTokens = myInputLine.split( QRegExp( "\\s+" ), QString::SkipEmptyParts );
 #else
-            QStringList myTokens = myInputLine.split( QRegExp( "\\s+" ), Qt::SkipEmptyParts );
+            QStringList myTokens = myInputLine.split( QRegularExpression( "\\s+" ), Qt::SkipEmptyParts );
 #endif
             if ( myTokens.count() != 4 )
             {
@@ -1711,7 +1711,7 @@ void QgsRasterLayerProperties::pbnImportTransparentPixelValues_clicked()
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
             QStringList myTokens = myInputLine.split( QRegExp( "\\s+" ), QString::SkipEmptyParts );
 #else
-            QStringList myTokens = myInputLine.split( QRegExp( "\\s+" ), Qt::SkipEmptyParts );
+            QStringList myTokens = myInputLine.split( QRegularExpression( "\\s+" ), Qt::SkipEmptyParts );
 #endif
             if ( myTokens.count() != 3 && myTokens.count() != 2 ) // 2 for QGIS < 1.9 compatibility
             {

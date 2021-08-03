@@ -18,6 +18,7 @@
 #include "qgssettings.h"
 
 #include <QShortcut>
+#include <QRegularExpression>
 
 QgsShortcutsManager::QgsShortcutsManager( QObject *parent, const QString &settingsRoot )
   : QObject( parent )
@@ -324,7 +325,7 @@ void QgsShortcutsManager::updateActionToolTip( QAction *action, const QString &s
 {
   QString current = action->toolTip();
   // Remove the old shortcut.
-  QRegExp rx( "\\(.*\\)" );
+  const QRegularExpression rx( QStringLiteral( "\\(.*\\)" ) );
   current.replace( rx, QString() );
 
   if ( !sequence.isEmpty() )

@@ -75,7 +75,7 @@ QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer *vl, 
   connect( mUseLink, &QGroupBox::toggled, this, &QgsEditorConfigWidget::changed );
   connect( mFullUrl, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
   connect( mRootPath, &QLineEdit::textChanged, this, &QgsEditorConfigWidget::changed );
-  connect( mStorageButtonGroup, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsEditorConfigWidget::changed );
+  connect( mStorageButtonGroup, qOverload<QAbstractButton *>( &QButtonGroup::buttonClicked ), this, &QgsEditorConfigWidget::changed );
   connect( mRelativeGroupBox, &QGroupBox::toggled, this, &QgsEditorConfigWidget::changed );
   connect( mDocumentViewerGroupBox, &QGroupBox::toggled, this, &QgsEditorConfigWidget::changed );
   connect( mDocumentViewerContentComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),  this, [ = ]( int idx )

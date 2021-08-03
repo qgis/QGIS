@@ -145,11 +145,13 @@ QVariantMap QgsSnapGeometriesAlgorithm::processAlgorithm( const QVariantMap &par
       {
         QgsFeature outFeature( f );
         outFeature.setGeometry( snapper.snapGeometry( f.geometry(), tolerance, mode ) );
-        sink->addFeature( outFeature, QgsFeatureSink::FastInsert );
+        if ( !sink->addFeature( outFeature, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
       }
       else
       {
-        sink->addFeature( f );
+        if ( !sink->addFeature( f ) )
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
       }
       processed += 1;
       feedback->setProgress( processed * step );
@@ -176,11 +178,13 @@ QVariantMap QgsSnapGeometriesAlgorithm::processAlgorithm( const QVariantMap &par
       {
         QgsFeature outFeature( f );
         outFeature.setGeometry( snapper.snapFeature( f ) );
-        sink->addFeature( outFeature, QgsFeatureSink::FastInsert );
+        if ( !sink->addFeature( outFeature, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
       }
       else
       {
-        sink->addFeature( f );
+        if ( !sink->addFeature( f ) )
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
       }
       processed += 1;
       feedback->setProgress( processed * step );

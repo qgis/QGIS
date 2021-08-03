@@ -219,7 +219,10 @@ QgsDataItem.Rename.__doc__ = "Item can be renamed"
 QgsDataItem.Delete = Qgis.BrowserItemCapability.Delete
 QgsDataItem.Delete.is_monkey_patched = True
 QgsDataItem.Delete.__doc__ = "Item can be deleted"
-Qgis.BrowserItemCapability.__doc__ = 'Browser item capabilities.\n\n.. versionadded:: 3.20\n\n' + '* ``NoCapabilities``: ' + Qgis.BrowserItemCapability.NoCapabilities.__doc__ + '\n' + '* ``SetCrs``: ' + Qgis.BrowserItemCapability.SetCrs.__doc__ + '\n' + '* ``Fertile``: ' + Qgis.BrowserItemCapability.Fertile.__doc__ + '\n' + '* ``Fast``: ' + Qgis.BrowserItemCapability.Fast.__doc__ + '\n' + '* ``Collapse``: ' + Qgis.BrowserItemCapability.Collapse.__doc__ + '\n' + '* ``Rename``: ' + Qgis.BrowserItemCapability.Rename.__doc__ + '\n' + '* ``Delete``: ' + Qgis.BrowserItemCapability.Delete.__doc__
+QgsDataItem.ItemRepresentsFile = Qgis.BrowserItemCapability.ItemRepresentsFile
+QgsDataItem.ItemRepresentsFile.is_monkey_patched = True
+QgsDataItem.ItemRepresentsFile.__doc__ = "Item's path() directly represents a file on disk (since QGIS 3.22)"
+Qgis.BrowserItemCapability.__doc__ = 'Browser item capabilities.\n\n.. versionadded:: 3.20\n\n' + '* ``NoCapabilities``: ' + Qgis.BrowserItemCapability.NoCapabilities.__doc__ + '\n' + '* ``SetCrs``: ' + Qgis.BrowserItemCapability.SetCrs.__doc__ + '\n' + '* ``Fertile``: ' + Qgis.BrowserItemCapability.Fertile.__doc__ + '\n' + '* ``Fast``: ' + Qgis.BrowserItemCapability.Fast.__doc__ + '\n' + '* ``Collapse``: ' + Qgis.BrowserItemCapability.Collapse.__doc__ + '\n' + '* ``Rename``: ' + Qgis.BrowserItemCapability.Rename.__doc__ + '\n' + '* ``Delete``: ' + Qgis.BrowserItemCapability.Delete.__doc__ + '\n' + '* ``ItemRepresentsFile``: ' + Qgis.BrowserItemCapability.ItemRepresentsFile.__doc__
 # --
 Qgis.BrowserItemCapability.baseClass = Qgis
 QgsLayerItem.LayerType = Qgis.BrowserLayerType
@@ -346,6 +349,17 @@ Qgis.DriveType.RamDisk.__doc__ = "RAM disk"
 Qgis.DriveType.__doc__ = 'Drive types\n\n.. versionadded:: 3.20\n\n' + '* ``Unknown``: ' + Qgis.DriveType.Unknown.__doc__ + '\n' + '* ``Invalid``: ' + Qgis.DriveType.Invalid.__doc__ + '\n' + '* ``Removable``: ' + Qgis.DriveType.Removable.__doc__ + '\n' + '* ``Fixed``: ' + Qgis.DriveType.Fixed.__doc__ + '\n' + '* ``Remote``: ' + Qgis.DriveType.Remote.__doc__ + '\n' + '* ``CdRom``: ' + Qgis.DriveType.CdRom.__doc__ + '\n' + '* ``RamDisk``: ' + Qgis.DriveType.RamDisk.__doc__
 # --
 Qgis.DriveType.baseClass = Qgis
+QgsNetworkContentFetcherRegistry.FetchingMode = Qgis.ActionStart
+# monkey patching scoped based enum
+QgsNetworkContentFetcherRegistry.DownloadLater = Qgis.ActionStart.Deferred
+QgsNetworkContentFetcherRegistry.DownloadLater.is_monkey_patched = True
+QgsNetworkContentFetcherRegistry.DownloadLater.__doc__ = "Do not start immediately the action"
+QgsNetworkContentFetcherRegistry.DownloadImmediately = Qgis.ActionStart.Immediate
+QgsNetworkContentFetcherRegistry.DownloadImmediately.is_monkey_patched = True
+QgsNetworkContentFetcherRegistry.DownloadImmediately.__doc__ = "Action will start immediately"
+Qgis.ActionStart.__doc__ = 'Enum to determine when an operation would begin\n\n.. versionadded:: 3.22\n\n' + '* ``DownloadLater``: ' + Qgis.ActionStart.Deferred.__doc__ + '\n' + '* ``DownloadImmediately``: ' + Qgis.ActionStart.Immediate.__doc__
+# --
+Qgis.ActionStart.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.UnplacedLabelVisibility.FollowEngineSetting.__doc__ = "Respect the label engine setting"
 Qgis.UnplacedLabelVisibility.NeverShow.__doc__ = "Never show unplaced labels, regardless of the engine setting"
@@ -475,3 +489,33 @@ QgsSymbolLayerUtils.NoMarker.__doc__ = "No marker"
 Qgis.VertexMarkerType.__doc__ = 'Editing vertex markers, used for showing vertices during a edit operation.\n\n.. versionadded:: 3.22\n\n' + '* ``SemiTransparentCircle``: ' + Qgis.VertexMarkerType.SemiTransparentCircle.__doc__ + '\n' + '* ``Cross``: ' + Qgis.VertexMarkerType.Cross.__doc__ + '\n' + '* ``NoMarker``: ' + Qgis.VertexMarkerType.NoMarker.__doc__
 # --
 Qgis.VertexMarkerType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ContentStatus.NotStarted.__doc__ = "Content fetching/storing has not started yet"
+Qgis.ContentStatus.Running.__doc__ = "Content fetching/storing is in progress"
+Qgis.ContentStatus.Finished.__doc__ = "Content fetching/storing is finished and successful"
+Qgis.ContentStatus.Failed.__doc__ = "Content fetching/storing has failed"
+Qgis.ContentStatus.Canceled.__doc__ = "Content fetching/storing has been canceled"
+Qgis.ContentStatus.__doc__ = 'Status for fetched or stored content\n\n.. versionadded:: 3.22\n\n' + '* ``NotStarted``: ' + Qgis.ContentStatus.NotStarted.__doc__ + '\n' + '* ``Running``: ' + Qgis.ContentStatus.Running.__doc__ + '\n' + '* ``Finished``: ' + Qgis.ContentStatus.Finished.__doc__ + '\n' + '* ``Failed``: ' + Qgis.ContentStatus.Failed.__doc__ + '\n' + '* ``Canceled``: ' + Qgis.ContentStatus.Canceled.__doc__
+# --
+Qgis.ContentStatus.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.BabelFormatCapability.Import.__doc__ = "Format supports importing"
+Qgis.BabelFormatCapability.Export.__doc__ = "Format supports exporting"
+Qgis.BabelFormatCapability.Waypoints.__doc__ = "Format supports waypoints"
+Qgis.BabelFormatCapability.Routes.__doc__ = "Format supports routes"
+Qgis.BabelFormatCapability.Tracks.__doc__ = "Format supports tracks"
+Qgis.BabelFormatCapability.__doc__ = 'Babel GPS format capabilities.\n\n.. versionadded:: 3.22\n\n' + '* ``Import``: ' + Qgis.BabelFormatCapability.Import.__doc__ + '\n' + '* ``Export``: ' + Qgis.BabelFormatCapability.Export.__doc__ + '\n' + '* ``Waypoints``: ' + Qgis.BabelFormatCapability.Waypoints.__doc__ + '\n' + '* ``Routes``: ' + Qgis.BabelFormatCapability.Routes.__doc__ + '\n' + '* ``Tracks``: ' + Qgis.BabelFormatCapability.Tracks.__doc__
+# --
+Qgis.BabelFormatCapability.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.BabelCommandFlag.QuoteFilePaths.__doc__ = "File paths should be enclosed in quotations and escaped"
+Qgis.BabelCommandFlag.__doc__ = 'Babel command flags, which control how commands and arguments\nare generated for executing GPSBabel processes.\n\n.. versionadded:: 3.22\n\n' + '* ``QuoteFilePaths``: ' + Qgis.BabelCommandFlag.QuoteFilePaths.__doc__
+# --
+Qgis.BabelCommandFlag.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.GpsFeatureType.Waypoint.__doc__ = "Waypoint"
+Qgis.GpsFeatureType.Route.__doc__ = "Route"
+Qgis.GpsFeatureType.Track.__doc__ = "Track"
+Qgis.GpsFeatureType.__doc__ = 'GPS feature types.\n\n.. versionadded:: 3.22\n\n' + '* ``Waypoint``: ' + Qgis.GpsFeatureType.Waypoint.__doc__ + '\n' + '* ``Route``: ' + Qgis.GpsFeatureType.Route.__doc__ + '\n' + '* ``Track``: ' + Qgis.GpsFeatureType.Track.__doc__
+# --
+Qgis.GpsFeatureType.baseClass = Qgis

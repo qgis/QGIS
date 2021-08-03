@@ -22,7 +22,7 @@
 #include <Qt3DRender/QCamera>
 
 //
-// QgsCodeEditorOptionsWidget
+// Qgs3DOptionsWidget
 //
 
 Qgs3DOptionsWidget::Qgs3DOptionsWidget( QWidget *parent )

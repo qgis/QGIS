@@ -27,6 +27,8 @@
 #include <QMouseEvent>
 #include <QMenu>
 #include <QCheckBox>
+#include <QRegularExpressionValidator>
+#include <QRegularExpression>
 
 QgsRasterPyramidsOptionsWidget::QgsRasterPyramidsOptionsWidget( QWidget *parent, const QString &provider )
   : QWidget( parent )
@@ -71,7 +73,7 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
 
   // validate string, only space-separated positive integers are allowed
   lePyramidsLevels->setEnabled( cbxPyramidsLevelsCustom->isChecked() );
-  lePyramidsLevels->setValidator( new QRegExpValidator( QRegExp( "(\\d*)(\\s\\d*)*" ), lePyramidsLevels ) );
+  lePyramidsLevels->setValidator( new QRegularExpressionValidator( QRegularExpression( "(\\d*)(\\s\\d*)*" ), lePyramidsLevels ) );
   connect( lePyramidsLevels, &QLineEdit::textEdited,
            this, &QgsRasterPyramidsOptionsWidget::setOverviewList );
 

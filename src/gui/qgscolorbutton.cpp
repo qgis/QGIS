@@ -31,7 +31,6 @@
 #include <QMenu>
 #include <QClipboard>
 #include <QDrag>
-#include <QDesktopWidget>
 #include <QStyle>
 #include <QStyleOptionToolButton>
 #include <QWidgetAction>

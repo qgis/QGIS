@@ -97,9 +97,16 @@ bool QgsImportPhotosAlgorithm::extractGeoTagFromMetadata( const QVariantMap &met
     if ( !ok )
       return false;
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     if ( metadata.value( QStringLiteral( "EXIF_GPSLongitudeRef" ) ).toString().rightRef( 1 ).compare( QLatin1String( "W" ), Qt::CaseInsensitive ) == 0
          || metadata.value( QStringLiteral( "EXIF_GPSLongitudeRef" ) ).toDouble() < 0 )
+#else
+    if ( QStringView { metadata.value( QStringLiteral( "EXIF_GPSLongitudeRef" ) ).toString() }.right( 1 ).compare( QLatin1String( "W" ), Qt::CaseInsensitive ) == 0
+         || metadata.value( QStringLiteral( "EXIF_GPSLongitudeRef" ) ).toDouble() < 0 )
+#endif
+    {
       x = -x;
+    }
   }
   else
   {
@@ -114,9 +121,16 @@ bool QgsImportPhotosAlgorithm::extractGeoTagFromMetadata( const QVariantMap &met
     if ( !ok )
       return false;
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     if ( metadata.value( QStringLiteral( "EXIF_GPSLatitudeRef" ) ).toString().rightRef( 1 ).compare( QLatin1String( "S" ), Qt::CaseInsensitive ) == 0
          || metadata.value( QStringLiteral( "EXIF_GPSLatitudeRef" ) ).toDouble() < 0 )
+#else
+    if ( QStringView { metadata.value( QStringLiteral( "EXIF_GPSLatitudeRef" ) ).toString() }.right( 1 ).compare( QLatin1String( "S" ), Qt::CaseInsensitive ) == 0
+         || metadata.value( QStringLiteral( "EXIF_GPSLatitudeRef" ) ).toDouble() < 0 )
+#endif
+    {
       y = -y;
+    }
   }
   else
   {
@@ -345,14 +359,15 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
     }
   }
 
-  auto saveInvalidFile = [&invalidSink]( QgsAttributes & attributes, bool readable )
+  auto saveInvalidFile = [&invalidSink, &parameters]( QgsAttributes & attributes, bool readable )
   {
     if ( invalidSink )
     {
       QgsFeature f;
       attributes.append( readable );
       f.setAttributes( attributes );
-      invalidSink->addFeature( f, QgsFeatureSink::FastInsert );
+      if ( !invalidSink->addFeature( f, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( invalidSink.get(), parameters, QStringLiteral( "INVALID" ) ) );
     }
   };
 
@@ -411,7 +426,8 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
           << tag.y()
           << extractTimestampFromMetadata( metadata );
       f.setAttributes( attributes );
-      outputSink->addFeature( f, QgsFeatureSink::FastInsert );
+      if ( !outputSink->addFeature( f, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( outputSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
     }
     else
     {

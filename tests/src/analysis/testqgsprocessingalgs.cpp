@@ -60,6 +60,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
+#include "qgsalgorithmgpsbabeltools.h"
 
 class TestQgsProcessingAlgs: public QObject
 {
@@ -183,6 +184,11 @@ class TestQgsProcessingAlgs: public QObject
     void fileDownloader();
 
     void rasterize();
+
+    void convertGpxFeatureType();
+    void convertGpsData();
+    void downloadGpsData();
+    void uploadGpsData();
 
   private:
 
@@ -6631,6 +6637,282 @@ void TestQgsProcessingAlgs::rasterize()
   checker.setControlName( "expected_rasterize" );
   checker.setRenderedImage( outputTif );
   QVERIFY( checker.compareImages( "rasterize", 500 ) );
+}
+
+void TestQgsProcessingAlgs::convertGpxFeatureType()
+{
+  // test generation of babel argument lists
+  QStringList processArgs;
+  QStringList logArgs;
+
+  QgsConvertGpxFeatureTypeAlgorithm::createArgumentLists( QStringLiteral( "/home/me/my input file.gpx" ),
+      QStringLiteral( "/home/me/my output file.gpx" ),
+      QgsConvertGpxFeatureTypeAlgorithm::WaypointsFromRoute,
+      processArgs, logArgs );
+  QCOMPARE( processArgs, QStringList(
+  {
+    QStringLiteral( "-i" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-f" ),
+    QStringLiteral( "/home/me/my input file.gpx" ),
+    QStringLiteral( "-x" ),
+    QStringLiteral( "transform,wpt=rte,del" ),
+    QStringLiteral( "-o" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-F" ),
+    QStringLiteral( "/home/me/my output file.gpx" )
+  } ) );
+  // when showing the babel command, filenames should be wrapped in "", which is what QProcess does internally (hence the processArgs don't have these)
+  QCOMPARE( logArgs, QStringList(
+  {
+    QStringLiteral( "-i" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-f" ),
+    QStringLiteral( "\"/home/me/my input file.gpx\"" ),
+    QStringLiteral( "-x" ),
+    QStringLiteral( "transform,wpt=rte,del" ),
+    QStringLiteral( "-o" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-F" ),
+    QStringLiteral( "\"/home/me/my output file.gpx\"" )
+  } ) );
+
+  logArgs.clear();
+  processArgs.clear();
+  QgsConvertGpxFeatureTypeAlgorithm::createArgumentLists( QStringLiteral( "/home/me/my input file.gpx" ),
+      QStringLiteral( "/home/me/my output file.gpx" ),
+      QgsConvertGpxFeatureTypeAlgorithm::WaypointsFromTrack,
+      processArgs, logArgs );
+  QCOMPARE( processArgs, QStringList(
+  {
+    QStringLiteral( "-i" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-f" ),
+    QStringLiteral( "/home/me/my input file.gpx" ),
+    QStringLiteral( "-x" ),
+    QStringLiteral( "transform,wpt=trk,del" ),
+    QStringLiteral( "-o" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-F" ),
+    QStringLiteral( "/home/me/my output file.gpx" )
+  } ) );
+  // when showing the babel command, filenames should be wrapped in "", which is what QProcess does internally (hence the processArgs don't have these)
+  QCOMPARE( logArgs, QStringList(
+  {
+    QStringLiteral( "-i" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-f" ),
+    QStringLiteral( "\"/home/me/my input file.gpx\"" ),
+    QStringLiteral( "-x" ),
+    QStringLiteral( "transform,wpt=trk,del" ),
+    QStringLiteral( "-o" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-F" ),
+    QStringLiteral( "\"/home/me/my output file.gpx\"" )
+  } ) );
+
+  logArgs.clear();
+  processArgs.clear();
+
+  QgsConvertGpxFeatureTypeAlgorithm::createArgumentLists( QStringLiteral( "/home/me/my input file.gpx" ),
+      QStringLiteral( "/home/me/my output file.gpx" ),
+      QgsConvertGpxFeatureTypeAlgorithm::RouteFromWaypoints,
+      processArgs, logArgs );
+  QCOMPARE( processArgs, QStringList(
+  {
+    QStringLiteral( "-i" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-f" ),
+    QStringLiteral( "/home/me/my input file.gpx" ),
+    QStringLiteral( "-x" ),
+    QStringLiteral( "transform,rte=wpt,del" ),
+    QStringLiteral( "-o" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-F" ),
+    QStringLiteral( "/home/me/my output file.gpx" )
+  } ) );
+  // when showing the babel command, filenames should be wrapped in "", which is what QProcess does internally (hence the processArgs don't have these)
+  QCOMPARE( logArgs, QStringList(
+  {
+    QStringLiteral( "-i" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-f" ),
+    QStringLiteral( "\"/home/me/my input file.gpx\"" ),
+    QStringLiteral( "-x" ),
+    QStringLiteral( "transform,rte=wpt,del" ),
+    QStringLiteral( "-o" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-F" ),
+    QStringLiteral( "\"/home/me/my output file.gpx\"" )
+  } ) );
+
+
+  logArgs.clear();
+  processArgs.clear();
+
+  QgsConvertGpxFeatureTypeAlgorithm::createArgumentLists( QStringLiteral( "/home/me/my input file.gpx" ),
+      QStringLiteral( "/home/me/my output file.gpx" ),
+      QgsConvertGpxFeatureTypeAlgorithm::TrackFromWaypoints,
+      processArgs, logArgs );
+  QCOMPARE( processArgs, QStringList(
+  {
+    QStringLiteral( "-i" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-f" ),
+    QStringLiteral( "/home/me/my input file.gpx" ),
+    QStringLiteral( "-x" ),
+    QStringLiteral( "transform,trk=wpt,del" ),
+    QStringLiteral( "-o" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-F" ),
+    QStringLiteral( "/home/me/my output file.gpx" )
+  } ) );
+  // when showing the babel command, filenames should be wrapped in "", which is what QProcess does internally (hence the processArgs don't have these)
+  QCOMPARE( logArgs, QStringList(
+  {
+    QStringLiteral( "-i" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-f" ),
+    QStringLiteral( "\"/home/me/my input file.gpx\"" ),
+    QStringLiteral( "-x" ),
+    QStringLiteral( "transform,trk=wpt,del" ),
+    QStringLiteral( "-o" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "-F" ),
+    QStringLiteral( "\"/home/me/my output file.gpx\"" )
+  } ) );
+}
+
+void TestQgsProcessingAlgs::convertGpsData()
+{
+  TestProcessingFeedback feedback;
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:convertgpsdata" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QStringLiteral( "%1/GARMIN_ATRK.NVM" ).arg( TEST_DATA_DIR ) );
+  parameters.insert( QStringLiteral( "FORMAT" ), QStringLiteral( "garmin_xt" ) );
+  parameters.insert( QStringLiteral( "FEATURE_TYPE" ), 0 ); // waypoints
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  // garmin_xt format does not support waypoints, exception should have been raised
+  QVERIFY( !ok );
+
+  QCOMPARE( feedback.errors, QStringList() << QStringLiteral( "The GPSBabel format \u201Cgarmin_xt\u201D does not support converting waypoints." ) );
+  feedback.errors.clear();
+
+  parameters.insert( QStringLiteral( "FEATURE_TYPE" ), 1 ); // routes
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  // garmin_xt format does not support routes, exception should have been raised
+  QVERIFY( !ok );
+  QCOMPARE( feedback.errors, QStringList() << QStringLiteral( "The GPSBabel format \u201Cgarmin_xt\u201D does not support converting routes." ) );
+  feedback.errors.clear();
+
+  parameters.insert( QStringLiteral( "FEATURE_TYPE" ), 2 ); // tracks
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  // garmin_xt format does support tracks!
+  QVERIFY( ok );
+
+  QgsVectorLayer *resultLayer = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT_LAYER" ) ).toString() ) );
+  QVERIFY( resultLayer );
+  QCOMPARE( resultLayer->providerType(), QStringLiteral( "gpx" ) );
+  QCOMPARE( resultLayer->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( resultLayer->featureCount(), 1LL );
+
+  // algorithm should also run when given the description for a format, not the format name
+  parameters.insert( QStringLiteral( "FORMAT" ), QStringLiteral( "Mobile Garmin XT Track files" ) );
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  resultLayer = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT_LAYER" ) ).toString() ) );
+  QVERIFY( resultLayer );
+  QCOMPARE( resultLayer->providerType(), QStringLiteral( "gpx" ) );
+  QCOMPARE( resultLayer->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( resultLayer->featureCount(), 1LL );
+
+  // try with a format which doesn't exist
+  feedback.errors.clear();
+  parameters.insert( QStringLiteral( "FORMAT" ), QStringLiteral( "not a format" ) );
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+  QVERIFY( feedback.errors.value( 0 ).startsWith( QStringLiteral( "Unknown GPSBabel format \u201Cnot a format\u201D." ) ) );
+}
+
+void TestQgsProcessingAlgs::downloadGpsData()
+{
+  TestProcessingFeedback feedback;
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:downloadgpsdata" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "DEVICE" ), QStringLiteral( "xxx" ) );
+  parameters.insert( QStringLiteral( "PORT" ), QStringLiteral( "usb:" ) );
+  parameters.insert( QStringLiteral( "FEATURE_TYPE" ), 0 ); // waypoints
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  // invalid device
+  QVERIFY( !ok );
+
+  QVERIFY( feedback.errors.value( 0 ).startsWith( QStringLiteral( "Unknown GPSBabel device \u201Cxxx\u201D. Valid devices are:" ) ) );
+  feedback.errors.clear();
+
+  parameters.insert( QStringLiteral( "DEVICE" ), QStringLiteral( "Garmin serial" ) );
+  parameters.insert( QStringLiteral( "PORT" ), QStringLiteral( "not a port" ) );
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  // invalid port
+  QVERIFY( !ok );
+  QVERIFY( feedback.errors.value( 0 ).startsWith( QStringLiteral( "Unknown port \u201Cnot a port\u201D. Valid ports are:" ) ) );
+  feedback.errors.clear();
+}
+
+void TestQgsProcessingAlgs::uploadGpsData()
+{
+  TestProcessingFeedback feedback;
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:downloadgpsdata" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "DEVICE" ), QStringLiteral( "xxx" ) );
+  parameters.insert( QStringLiteral( "PORT" ), QStringLiteral( "usb:" ) );
+  parameters.insert( QStringLiteral( "FEATURE_TYPE" ), 0 ); // waypoints
+  parameters.insert( QStringLiteral( "INPUT" ), QStringLiteral( "%1/layers.gpx" ).arg( TEST_DATA_DIR ) );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  // invalid device
+  QVERIFY( !ok );
+
+  QVERIFY( feedback.errors.value( 0 ).startsWith( QStringLiteral( "Unknown GPSBabel device \u201Cxxx\u201D. Valid devices are:" ) ) );
+  feedback.errors.clear();
+
+  parameters.insert( QStringLiteral( "DEVICE" ), QStringLiteral( "Garmin serial" ) );
+  parameters.insert( QStringLiteral( "PORT" ), QStringLiteral( "not a port" ) );
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  // invalid port
+  QVERIFY( !ok );
+  QVERIFY( feedback.errors.value( 0 ).startsWith( QStringLiteral( "Unknown port \u201Cnot a port\u201D. Valid ports are:" ) ) );
+  feedback.errors.clear();
 }
 
 void TestQgsProcessingAlgs::exportMeshTimeSeries()
