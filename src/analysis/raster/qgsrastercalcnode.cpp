@@ -386,26 +386,6 @@ QStringList QgsRasterCalcNode::referencedLayerNames( const QString &str )
 {
   QStringList referencedRasters;
 
-  /*
-  QString errorString;
-  QgsRasterCalcNode *testNode = QgsRasterCalcNode::parseRasterCalcString( str, errorString );
-
-  const QList<const QgsRasterCalcNode *> rasterRefNodes =  testNode->findNodes( QgsRasterCalcNode::Type::tRasterRef );
-  for ( const QgsRasterCalcNode *r : rasterRefNodes )
-  {
-
-    QString layerRef( r->toString() );
-    if ( layerRef.at( 0 ) == QStringLiteral( "\"" ) && layerRef.at( layerRef.size() - 1 ) == QStringLiteral( "\"" ) )
-    {
-      layerRef.remove( 0, 1 );
-      layerRef.chop( 1 );
-    }
-
-    //QString layerRef( r->toString().remove( 0, 1 ) );
-    //layerRef.chop( 1 );
-    referencedRasters << layerRef.mid( 0, layerRef.lastIndexOf( "@" ) );
-  }
-  */
   QStringList rasterRef = QgsRasterCalcNode::cleanRasterReferences( str );
   for ( const auto &i : rasterRef )
   {

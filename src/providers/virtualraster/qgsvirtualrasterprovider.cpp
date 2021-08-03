@@ -65,16 +65,6 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
   QStringList rLayerDict = QgsRasterCalcNode::referencedLayerNames( mFormulaString );
 
   QStringList rasterRefs = QgsRasterCalcNode::cleanRasterReferences( mFormulaString );
-  /*
-  const QList<const QgsRasterCalcNode *> rasterRefNodes = mCalcNode->findNodes( QgsRasterCalcNode::Type::tRasterRef );
-  for ( const QgsRasterCalcNode *r : rasterRefNodes )
-  {
-    QString layerRef( r->toString().remove( 0, 1 ) );
-
-    layerRef.chop( 1 );
-    rasterRefs << layerRef;
-  }
-  */
 
   QList<VirtualRasterInputLayers>::iterator it;
   for ( it = decodedUriParams.rInputLayers.begin(); it != decodedUriParams.rInputLayers.end(); ++it )
