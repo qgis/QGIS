@@ -29,7 +29,6 @@ class QgsVirtualRasterProvider : public QgsRasterDataProvider
     virtual ~QgsVirtualRasterProvider() override;
 
     QgsVirtualRasterProvider &operator =( QgsVirtualRasterProvider other ) = delete;
-    QString dataSourceUri( bool expandAuthConfig = false ) const override;
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
     bool readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override

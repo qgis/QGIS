@@ -221,7 +221,11 @@ void TestQgsVirtualRasterProvider::testConstructor()
 
 void TestQgsVirtualRasterProvider::testProviderProperties()
 {
-
+  QString formula( "\"landsat@1\" + \"landsat@2\"-\"landsat@3\"" );
+  QStringList rLayers = QgsRasterCalcNode::referencedLayerNames( formula );
+  QStringList raserRef = QgsRasterCalcNode::cleanRasterReferences( formula );
+  qDebug() << rLayers;
+  qDebug() << raserRef;
 
 }
 QGSTEST_MAIN( TestQgsVirtualRasterProvider )

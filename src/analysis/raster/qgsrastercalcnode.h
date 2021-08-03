@@ -126,11 +126,17 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) SIP_FACTORY;
 
     /**
-     * Returns a dictionary that has the raster name as keys and the raster references as values
-     * (it's possible to have different value as one raster layer has different bands)
+     * Returns a List of Strings with raster name
      * \note since QGIS 3.22
      */
     static QStringList referencedLayerNames( const QString &str );
+
+    /**
+     * Returns a List of Strings with a clean version of the raster references
+     * (without the double quotes)
+     * \note since QGIS 3.22
+     */
+    static QStringList cleanRasterReferences( const QString &str );
 
   private:
 #ifdef SIP_RUN

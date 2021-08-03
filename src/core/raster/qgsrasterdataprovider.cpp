@@ -785,14 +785,11 @@ QString QgsRasterDataProvider::encodeVirtualRasterProviderUri( const VirtualRast
 
   if ( ! parts.rInputLayers.isEmpty() )
   {
-
     for ( const auto &it : parts.rInputLayers )
     {
       query.addQueryItem( it.name + QStringLiteral( ":uri" ), it.uri );
       query.addQueryItem( it.name + QStringLiteral( ":provider" ), it.provider );
     }
-
-
   }
   uri.setQuery( query );
   return QString( uri.toEncoded() );

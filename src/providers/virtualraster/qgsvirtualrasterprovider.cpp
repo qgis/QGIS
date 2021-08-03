@@ -64,7 +64,8 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
 
   QStringList rLayerDict = QgsRasterCalcNode::referencedLayerNames( mFormulaString );
 
-  QStringList rasterRefs;
+  QStringList rasterRefs = QgsRasterCalcNode::cleanRasterReferences( mFormulaString );
+  /*
   const QList<const QgsRasterCalcNode *> rasterRefNodes = mCalcNode->findNodes( QgsRasterCalcNode::Type::tRasterRef );
   for ( const QgsRasterCalcNode *r : rasterRefNodes )
   {
@@ -73,6 +74,7 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
     layerRef.chop( 1 );
     rasterRefs << layerRef;
   }
+  */
 
   QList<VirtualRasterInputLayers>::iterator it;
   for ( it = decodedUriParams.rInputLayers.begin(); it != decodedUriParams.rInputLayers.end(); ++it )
@@ -149,16 +151,7 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QgsVirtualRasterProvid
 
 QgsVirtualRasterProvider::~QgsVirtualRasterProvider()
 {
-  for ( int i = 0; i < mRasterLayers.size(); ++i )
-  {
-    delete mRasterLayers[i];
-  }
-}
-
-QString QgsVirtualRasterProvider::dataSourceUri( bool expandAuthConfig ) const
-{
-  Q_UNUSED( expandAuthConfig )
-  return QgsDataProvider::dataSourceUri();
+  qDeleteAll( mRasterLayers );
 }
 
 QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
