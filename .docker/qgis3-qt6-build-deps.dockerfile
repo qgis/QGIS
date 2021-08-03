@@ -17,6 +17,7 @@ RUN dnf -y install \
     libspatialite-devel \
     libzip-devel \
     libzstd-devel \
+    ninja-build \
     proj-devel \
     protobuf-devel \
     protobuf-lite-devel \
@@ -35,31 +36,23 @@ RUN dnf -y install \
     util-linux \
     wget \
     openssl-devel \
-    libsecret-devel \
-    make \
-    automake \
-    gcc \
-    gcc-c++ \
-    kernel-devel
+    libsecret-devel
 
-RUN cd /usr/src \
+RUN cd /tmp \
   && wget https://github.com/KDE/qca/archive/refs/tags/v2.3.3.zip \
   && unzip v2.3.3.zip \
-  && mkdir build-qt6 \
-  && cd build-qt6 \
-  && cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DQT6=ON ../qca-2.3.3 \
-  && make -j4 \
-  && make install
+  && cd qca-2.3.3 \
+  && cmake -DCMAKE_INSTALL_PREFIX=/usr -DQT6=ON -GNinja . \
+  && ninja install
 
-RUN cd /usr/src \
+RUN cd /tmp \
   && wget https://github.com/frankosterfeld/qtkeychain/archive/refs/heads/master.zip \
   && unzip master.zip \
   && cd qtkeychain-master \
-  && cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_WITH_QT6=ON \
-  && make -j4 \
-  && make install
+  && cmake -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_WITH_QT6=ON -GNinja . \
+  && ninja install
 
-RUN cd /usr/src \
+RUN cd /tmp \
   && wget https://sourceforge.net/projects/qwt/files/qwt/6.2.0/qwt-6.2.0.zip/download \
   && unzip download \
   && cd qwt-6.2.0 \
