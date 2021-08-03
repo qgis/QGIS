@@ -147,7 +147,7 @@ null QString if there is no storage defined, only file selection.
 
     QString storageType() const;
 %Docstring
-Get storage type unique identifier as defined in :py:class:`QgsExternalStorageRegistry`.
+Returns storage type unique identifier as defined in :py:class:`QgsExternalStorageRegistry`.
 Returns null QString if there is no storage defined, only file selection.
 
 .. seealso:: :py:func:`setStorageType`

@@ -587,7 +587,7 @@ void TestQgsFileWidget::testStoringSeveralFilesError_data()
 
 void TestQgsFileWidget::testStoringSeveralFilesError()
 {
-  // test widget when storing several files with an external storage and an error occured
+  // test widget when storing several files with an external storage and an error occurred
   QEventLoop loop;
   QFETCH( bool, useLink );
 

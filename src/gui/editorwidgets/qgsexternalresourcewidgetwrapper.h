@@ -66,7 +66,9 @@ class GUI_EXPORT QgsExternalResourceWidgetWrapper : public QgsEditorWidgetWrappe
     void initWidget( QWidget *editor ) override;
     bool valid() const override;
 
-    // update file widget current expression context according to layer, feature, and parent feature
+    /**
+     * Update file widget current expression context according to layer, feature, and parent feature
+     */
     void updateFileWidgetExpressionContext();
 
   public slots:
