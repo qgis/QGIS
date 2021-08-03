@@ -3585,6 +3585,21 @@ static QVariant fcnSinuosity( const QVariantList &values, const QgsExpressionCon
   return QVariant( curve->sinuosity() );
 }
 
+static QVariant fcnStraightDistance2d( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( geom.constGet() );
+  if ( !curve )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `straight_distance_2d` requires a line geometry." ) );
+    return QVariant();
+  }
+
+  return QVariant( curve->straightDistance2d() );
+}
+
+
+
 static QVariant fcnFlipCoordinates( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -7019,7 +7034,9 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "m_min" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
                                             fcnMMin, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "sinuosity" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
-                                            fcnSinuosity, QStringLiteral( "GeometryGroup" ) );
+                                            fcnSinuosity, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "straight_distance_2d" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+                                            fcnStraightDistance2d, QStringLiteral( "GeometryGroup" ) );
 
 
     QgsStaticExpressionFunction *orderPartsFunc = new QgsStaticExpressionFunction( QStringLiteral( "order_parts" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
