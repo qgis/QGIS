@@ -48,7 +48,7 @@ RUN cd /usr/src \
   && mkdir build-qt6 \
   && cd build-qt6 \
   && cmake -DCMAKE_INSTALL_PREFIX=/usr -DQT6=ON ../qca-2.3.3 \
-  && make -j4
+  && make -j4 \
   && make install
 
 RUN cd /usr/src \
@@ -56,7 +56,7 @@ RUN cd /usr/src \
   && unzip master.zip \
   && cd qtkeychain-master \
   && cmake -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_WITH_QT6=ON \
-  && make -j4
+  && make -j4 \
   && make install
 
 RUN cd /usr/src \
