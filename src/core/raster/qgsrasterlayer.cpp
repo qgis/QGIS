@@ -2406,9 +2406,10 @@ QString QgsRasterLayer::encodedSource( const QString &source, const QgsReadWrite
   }
   else if ( providerType() == "virtualraster" )
   {
-    //Idk which one is better, so for the moment I keep both of the or cycle
+
     QgsRasterDataProvider::VirtualRasterParameters decodedVirtualParams = QgsRasterDataProvider::decodeVirtualRasterProviderUri( src );
 
+    /*
     QUrl url = QUrl::fromEncoded( src.toLatin1() );
     QUrlQuery query( url.query() );
 
@@ -2418,7 +2419,7 @@ QString QgsRasterLayer::encodedSource( const QString &source, const QgsReadWrite
       query.addQueryItem( it.name + QStringLiteral( ":uri" ), context.pathResolver().writePath( it.uri ) );
     }
 
-    /*
+
            for ( const auto &item : query.queryItems() )
            {
              if ( item.first.indexOf( ':' ) == -1 )
@@ -2435,12 +2436,21 @@ QString QgsRasterLayer::encodedSource( const QString &source, const QgsReadWrite
              query.addQueryItem( item.first, context.pathResolver().writePath( item.second ) );
 
            }
-    */
+
     url.setQuery( query );
 
     src = url.toEncoded();
     handled = true;
     QgsDebugMsg( src );
+    */
+
+    for ( auto &it : decodedVirtualParams.rInputLayers )
+    {
+      it.uri = context.pathResolver().writePath( it.uri );
+    }
+    src = QgsRasterDataProvider::encodeVirtualRasterProviderUri( decodedVirtualParams ) ;
+    QgsDebugMsg( src );
+
   }
 
   if ( !handled )
@@ -2623,19 +2633,28 @@ QString QgsRasterLayer::decodedSource( const QString &source, const QString &pro
     if ( provider == QLatin1String( "virtualraster" ) )
     {
       QgsRasterDataProvider::VirtualRasterParameters decodedVirtualParams = QgsRasterDataProvider::decodeVirtualRasterProviderUri( src );
+      /*
+            QUrl url = QUrl::fromEncoded( src.toLatin1() );
+            QUrlQuery query( url.query() );
 
-      QUrl url = QUrl::fromEncoded( src.toLatin1() );
-      QUrlQuery query( url.query() );
+            for ( const auto &it : decodedVirtualParams.rInputLayers )
+            {
+              query.removeQueryItem( it.name + QStringLiteral( ":uri" ) );
+              query.addQueryItem( it.name + QStringLiteral( ":uri" ), context.pathResolver().readPath( it.uri ) );
+            }
 
-      for ( const auto &it : decodedVirtualParams.rInputLayers )
+            url.setQuery( query );
+
+            src = url.toEncoded();
+            handled = true;
+            QgsDebugMsg( src );
+      */
+
+      for ( auto &it : decodedVirtualParams.rInputLayers )
       {
-        query.removeQueryItem( it.name + QStringLiteral( ":uri" ) );
-        query.addQueryItem( it.name + QStringLiteral( ":uri" ), context.pathResolver().readPath( it.uri ) );
+        it.uri = context.pathResolver().readPath( it.uri );
       }
-
-      url.setQuery( query );
-
-      src = url.toEncoded();
+      src = QgsRasterDataProvider::encodeVirtualRasterProviderUri( decodedVirtualParams ) ;
       handled = true;
       QgsDebugMsg( src );
     }
