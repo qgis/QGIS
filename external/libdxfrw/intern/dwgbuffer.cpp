@@ -507,6 +507,7 @@ duint64 dwgBuffer::getRawLong64()
   return ret;
 }
 
+
 //! Reads modular unsigner int, char based, compressed form, little-endian order, returns a unsigned int (U-MC)
 duint32 dwgBuffer::getUModularChar()
 {
@@ -701,10 +702,7 @@ std::string dwgBuffer::getCP8Text()
 
 //TU unicode 16 bit (UCS) text converted to utf8
 
-/**
- * Reads 2-bytes char (UCS2, nullptr terminated) and convert to std::string (only for Latin-1)
-   ts= total input size in bytes.
-**/
+//! Reads 2-bytes char (UCS2, nullptr terminated) and convert to std::string (only for Latin-1) ts= total input size in bytes. **/
 std::string dwgBuffer::getUCSStr( duint16 ts )
 {
   std::string strData;
