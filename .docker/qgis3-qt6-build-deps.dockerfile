@@ -25,7 +25,6 @@ RUN dnf -y install \
     python3-termcolor \
     qt6-qt3d-devel \
     qt6-qtbase-devel \
-    qt6-qtdeclarative-devel \
     qt6-qttools-static \
     qt6-qtsvg-devel \
     qt6-qt5compat-devel \
@@ -37,6 +36,8 @@ RUN dnf -y install \
     wget \
     openssl-devel \
     libsecret-devel
+
+RUN du
 
 RUN cd /tmp \
   && wget https://github.com/KDE/qca/archive/refs/tags/v2.3.3.zip \
