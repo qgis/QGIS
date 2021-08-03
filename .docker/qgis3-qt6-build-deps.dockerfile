@@ -47,7 +47,7 @@ RUN cd /usr/src \
   && unzip v2.3.3.zip \
   && mkdir build-qt6 \
   && cd build-qt6 \
-  && cmake -DCMAKE_INSTALL_PREFIX=/usr -DQT6=ON ../qca-2.3.3 \
+  && cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DQT6=ON ../qca-2.3.3 \
   && make -j4 \
   && make install
 
@@ -55,7 +55,7 @@ RUN cd /usr/src \
   && wget https://github.com/frankosterfeld/qtkeychain/archive/refs/heads/master.zip \
   && unzip master.zip \
   && cd qtkeychain-master \
-  && cmake -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_WITH_QT6=ON \
+  && cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_WITH_QT6=ON \
   && make -j4 \
   && make install
 
