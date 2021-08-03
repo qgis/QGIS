@@ -1325,6 +1325,14 @@ class TestQgsExpression: public QObject
       QTest::newRow( "sinuosity closed linestring" ) << "sinuosity(geom_from_wkt('LINESTRING( 3 1, 5 1, 2 2, 3 1)'))" << false << QVariant( std::numeric_limits<double>::quiet_NaN() );
       QTest::newRow( "sinuosity circularstring" ) << "round(sinuosity(geom_from_wkt('CircularString (20 30, 50 30, 50 90)')), 3)" << false << QVariant( 1.571 );
       QTest::newRow( "sinuosity closed circularstring" ) << "sinuosity(geom_from_wkt('CircularString (20 30, 50 30, 20 30)'))" << false << QVariant( std::numeric_limits<double>::quiet_NaN() );
+      QTest::newRow( "straight_distance_2d not geom" ) << "straight_distance_2d('g')" << true << QVariant();
+      QTest::newRow( "straight_distance_2d null" ) << "straight_distance_2d(NULL)" << false << QVariant();
+      QTest::newRow( "straight_distance_2d point" ) << "straight_distance_2d(geom_from_wkt('POINT(1 2)'))" << true << QVariant();
+      QTest::newRow( "straight_distance_2d multi linestring" ) << "straight_distance_2d(geom_from_wkt('MULTILINESTRING( (0 0, 1 1), (2 2, 3 3) )'))" << true << QVariant();
+      QTest::newRow( "straight_distance_2d linestring" ) << "straight_distance_2d(geom_from_wkt('LINESTRING(1 0, 4 4)'))" << false << QVariant( 5.0 );
+      QTest::newRow( "straight_distance_2d linestring" ) << "round(straight_distance_2d(geom_from_wkt('LINESTRING(1 4, 3 5, 5 0)')), 3)" << false << QVariant( 5.657 );
+      QTest::newRow( "straight_distance_2d closed linestring" ) << "straight_distance_2d(geom_from_wkt('LINESTRING(2 2, 3 6, 2 2)'))" << false << QVariant( 0.0 );
+      QTest::newRow( "straight_distance_2d circularstring" ) << "round(straight_distance_2d(geom_from_wkt('CircularString (20 30, 50 30, 10 50)')), 3)" << false << QVariant( 22.361 );
 
       // string functions
       QTest::newRow( "format_number" ) << "format_number(1999.567,2)" << false << QVariant( "1,999.57" );
