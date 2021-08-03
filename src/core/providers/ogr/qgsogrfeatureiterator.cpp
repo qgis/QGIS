@@ -513,9 +513,9 @@ bool QgsOgrFeatureIterator::readFeature( const gdal::ogr_feature_unique_ptr &fet
   feature.initAttributes( mSource->mFields.count() );
   feature.setFields( mSource->mFields ); // allow name-based attribute lookups
 
-  bool useIntersect = !mRequest.filterRect().isNull();
+  bool useIntersect = mRequest.spatialFilterType() == Qgis::SpatialFilterType::BoundingBox;
   bool geometryTypeFilter = mSource->mOgrGeometryTypeFilter != wkbUnknown;
-  if ( mFetchGeometry || useIntersect || geometryTypeFilter )
+  if ( mFetchGeometry || mRequest.spatialFilterType() != Qgis::SpatialFilterType::NoFilter || geometryTypeFilter )
   {
     OGRGeometryH geom = OGR_F_GetGeometryRef( fet.get() );
 

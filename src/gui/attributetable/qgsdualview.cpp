@@ -134,7 +134,7 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   QgsAttributeForm emptyForm( mLayer, QgsFeature(), mEditorContext );
 
   const bool needsGeometry = !( request.flags() & QgsFeatureRequest::NoGeometry )
-                             || !request.filterRect().isNull()
+                             || ( request.spatialFilterType() != Qgis::SpatialFilterType::NoFilter )
                              || emptyForm.needsGeometry();
 
   initLayerCache( needsGeometry );
@@ -328,7 +328,7 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
   QgsFeatureRequest r = mMasterModel->request();
   bool needsGeometry = filterMode == QgsAttributeTableFilterModel::ShowVisible;
 
-  bool requiresTableReload = ( r.filterType() != QgsFeatureRequest::FilterNone || !r.filterRect().isNull() ) // previous request was subset
+  bool requiresTableReload = ( r.filterType() != QgsFeatureRequest::FilterNone || r.spatialFilterType() != Qgis::SpatialFilterType::NoFilter ) // previous request was subset
                              || ( needsGeometry && r.flags() & QgsFeatureRequest::NoGeometry ) // no geometry for last request
                              || ( mMasterModel->rowCount() == 0 ); // no features
 
@@ -1190,7 +1190,7 @@ void QgsDualView::onSortColumnChanged()
 void QgsDualView::updateSelectedFeatures()
 {
   QgsFeatureRequest r = mMasterModel->request();
-  if ( r.filterType() == QgsFeatureRequest::FilterNone && r.filterRect().isNull() )
+  if ( r.filterType() == QgsFeatureRequest::FilterNone && r.spatialFilterType() == Qgis::SpatialFilterType::NoFilter )
     return; // already requested all features
 
   r.setFilterFids( masterModel()->layer()->selectedFeatureIds() );
@@ -1202,7 +1202,7 @@ void QgsDualView::updateSelectedFeatures()
 void QgsDualView::updateEditedAddedFeatures()
 {
   QgsFeatureRequest r = mMasterModel->request();
-  if ( r.filterType() == QgsFeatureRequest::FilterNone && r.filterRect().isNull() )
+  if ( r.filterType() == QgsFeatureRequest::FilterNone && r.spatialFilterType() == Qgis::SpatialFilterType::NoFilter )
     return; // already requested all features
 
   r.setFilterFids( masterModel()->layer()->editBuffer() ? masterModel()->layer()->editBuffer()->allAddedOrEditedFeatures() : QgsFeatureIds() );

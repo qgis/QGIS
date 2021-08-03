@@ -681,6 +681,19 @@ class CORE_EXPORT Qgis
     Q_ENUM( JoinStyle )
 
     /**
+     * Feature request spatial filter types.
+     *
+     * \since QGIS 3.22
+     */
+    enum class SpatialFilterType : int
+    {
+      NoFilter, //!< No spatial filtering of features
+      BoundingBox, //!< Filter using a bounding box
+      DistanceWithin, //!< Filter by distance to reference geometry
+    };
+    Q_ENUM( SpatialFilterType )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

@@ -277,7 +277,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
         providerLimit += mSource->mChangedAttributeValues.size();
       }
 
-      if ( mProviderRequest.filterType() == QgsFeatureRequest::FilterExpression || !mProviderRequest.filterRect().isNull() )
+      if ( mProviderRequest.filterType() == QgsFeatureRequest::FilterExpression || mProviderRequest.spatialFilterType() != Qgis::SpatialFilterType::NoFilter )
       {
         // geometry changes may mean some features no longer match expression or rect, so increase limit sent to provider
         providerLimit += mSource->mChangedGeometries.size();
