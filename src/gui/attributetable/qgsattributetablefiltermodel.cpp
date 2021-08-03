@@ -614,7 +614,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   renderer->startRender( renderContext, layer()->fields() );
 
   QgsFeatureRequest r( masterModel()->request() );
-  if ( !r.filterRect().isNull() )
+  if ( r.spatialFilterType() == Qgis::SpatialFilterType::BoundingBox )
   {
     r.setFilterRect( r.filterRect().intersect( rect ) );
   }

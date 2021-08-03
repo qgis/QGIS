@@ -16,6 +16,7 @@
 
 #include "qgsfields.h"
 #include "qgsgeometry.h"
+#include "qgsgeometryengine.h"
 
 #include <QStringList>
 
@@ -25,6 +26,8 @@ const QString QgsFeatureRequest::ALL_ATTRIBUTES = QStringLiteral( "#!allattribut
 QgsFeatureRequest::QgsFeatureRequest()
 {
 }
+
+QgsFeatureRequest::~QgsFeatureRequest() = default;
 
 QgsFeatureRequest::QgsFeatureRequest( QgsFeatureId fid )
   : mFilter( FilterFid )
@@ -40,7 +43,8 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureIds &fids )
 }
 
 QgsFeatureRequest::QgsFeatureRequest( const QgsRectangle &rect )
-  : mFilterRect( rect )
+  : mSpatialFilter( !rect.isNull() ? Qgis::SpatialFilterType::BoundingBox : Qgis::SpatialFilterType::NoFilter )
+  , mFilterRect( rect )
 {
 }
 
@@ -63,7 +67,15 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
 
   mFlags = rh.mFlags;
   mFilter = rh.mFilter;
+  mSpatialFilter = rh.mSpatialFilter;
   mFilterRect = rh.mFilterRect;
+  mReferenceGeometry = rh.mReferenceGeometry;
+  if ( !mReferenceGeometry.isEmpty() )
+  {
+    mReferenceGeometryEngine.reset( QgsGeometry::createGeometryEngine( mReferenceGeometry.constGet() ) );
+    mReferenceGeometryEngine->prepareGeometry();
+  }
+  mDistanceWithin = rh.mDistanceWithin;
   mFilterFid = rh.mFilterFid;
   mFilterFids = rh.mFilterFids;
   if ( rh.mFilterExpression )
@@ -93,6 +105,40 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
 QgsFeatureRequest &QgsFeatureRequest::setFilterRect( const QgsRectangle &rect )
 {
   mFilterRect = rect;
+  mReferenceGeometry = QgsGeometry();
+  mDistanceWithin = 0;
+  if ( mFilterRect.isNull() )
+  {
+    mSpatialFilter = Qgis::SpatialFilterType::NoFilter;
+  }
+  else
+  {
+    mSpatialFilter = Qgis::SpatialFilterType::BoundingBox;
+  }
+  return *this;
+}
+
+QgsRectangle QgsFeatureRequest::filterRect() const
+{
+  return mFilterRect;
+}
+
+QgsFeatureRequest &QgsFeatureRequest::setDistanceWithin( const QgsGeometry &geometry, double distance )
+{
+  mReferenceGeometry = geometry;
+  if ( !mReferenceGeometry.isEmpty() )
+  {
+    mReferenceGeometryEngine.reset( QgsGeometry::createGeometryEngine( mReferenceGeometry.constGet() ) );
+    mReferenceGeometryEngine->prepareGeometry();
+  }
+  else
+  {
+    mReferenceGeometryEngine.reset();
+  }
+  mDistanceWithin = distance;
+  mSpatialFilter = Qgis::SpatialFilterType::DistanceWithin;
+  mFilterRect = mReferenceGeometry.boundingBox().buffered( mDistanceWithin );
+
   return *this;
 }
 
@@ -271,32 +317,54 @@ QgsFeatureRequest &QgsFeatureRequest::setTransformErrorCallback( const std::func
 
 bool QgsFeatureRequest::acceptFeature( const QgsFeature &feature )
 {
-  if ( !mFilterRect.isNull() )
-  {
-    if ( !feature.hasGeometry() ||
-         (
-           ( mFlags & ExactIntersect && !feature.geometry().intersects( mFilterRect ) )
-           ||
-           ( !( mFlags & ExactIntersect ) && !feature.geometry().boundingBoxIntersects( mFilterRect ) )
-         )
-       )
-      return false;
-  }
-
+  // check the attribute/id filter first, it's more likely to be faster than
+  // the spatial filter
   switch ( mFilter )
   {
     case QgsFeatureRequest::FilterNone:
-      return true;
+      break;
 
     case QgsFeatureRequest::FilterFid:
-      return ( feature.id() == mFilterFid );
+      if ( feature.id() != mFilterFid )
+        return false;
+      break;
 
     case QgsFeatureRequest::FilterExpression:
       mExpressionContext.setFeature( feature );
-      return ( mFilterExpression->evaluate( &mExpressionContext ).toBool() );
+      if ( !mFilterExpression->evaluate( &mExpressionContext ).toBool() )
+        return false;
+      break;
 
     case QgsFeatureRequest::FilterFids:
-      return ( mFilterFids.contains( feature.id() ) );
+      if ( !mFilterFids.contains( feature.id() ) )
+        return false;
+      break;
+  }
+
+  switch ( mSpatialFilter )
+  {
+    case Qgis::SpatialFilterType::NoFilter:
+      break;
+
+    case Qgis::SpatialFilterType::BoundingBox:
+      if ( !feature.hasGeometry() ||
+           (
+             ( mFlags & ExactIntersect && !feature.geometry().intersects( mFilterRect ) )
+             ||
+             ( !( mFlags & ExactIntersect ) && !feature.geometry().boundingBoxIntersects( mFilterRect ) )
+           )
+         )
+        return false;
+      break;
+
+    case Qgis::SpatialFilterType::DistanceWithin:
+      if ( !feature.hasGeometry()
+           || !mReferenceGeometryEngine
+           || !feature.geometry().boundingBoxIntersects( mFilterRect )
+           || mReferenceGeometryEngine->distance( feature.geometry().constGet() ) > mDistanceWithin
+         )
+        return false;
+      break;
   }
 
   return true;

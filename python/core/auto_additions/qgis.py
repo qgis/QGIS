@@ -627,3 +627,10 @@ QgsGeometry.JoinStyleBevel.__doc__ = "Use beveled joins"
 Qgis.JoinStyle.__doc__ = 'Join styles for buffers.\n\n.. versionadded:: 3.22\n\n' + '* ``JoinStyleRound``: ' + Qgis.JoinStyle.Round.__doc__ + '\n' + '* ``JoinStyleMiter``: ' + Qgis.JoinStyle.Miter.__doc__ + '\n' + '* ``JoinStyleBevel``: ' + Qgis.JoinStyle.Bevel.__doc__
 # --
 Qgis.JoinStyle.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SpatialFilterType.NoFilter.__doc__ = "No spatial filtering of features"
+Qgis.SpatialFilterType.BoundingBox.__doc__ = "Filter using a bounding box"
+Qgis.SpatialFilterType.DistanceWithin.__doc__ = "Filter by distance to reference geometry"
+Qgis.SpatialFilterType.__doc__ = 'Feature request spatial filter types.\n\n.. versionadded:: 3.22\n\n' + '* ``NoFilter``: ' + Qgis.SpatialFilterType.NoFilter.__doc__ + '\n' + '* ``BoundingBox``: ' + Qgis.SpatialFilterType.BoundingBox.__doc__ + '\n' + '* ``DistanceWithin``: ' + Qgis.SpatialFilterType.DistanceWithin.__doc__
+# --
+Qgis.SpatialFilterType.baseClass = Qgis

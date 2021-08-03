@@ -224,7 +224,7 @@ void QgsVectorLayerCache::requestCompleted( const QgsFeatureRequest &featureRequ
       idx->requestCompleted( featureRequest, fids );
     }
     if ( featureRequest.filterType() == QgsFeatureRequest::FilterNone &&
-         ( featureRequest.filterRect().isNull() || featureRequest.filterRect().contains( mLayer->extent() ) ) )
+         ( featureRequest.spatialFilterType() == Qgis::SpatialFilterType::NoFilter || featureRequest.filterRect().contains( mLayer->extent() ) ) )
     {
       mFullCache = true;
     }
