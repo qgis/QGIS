@@ -37,8 +37,6 @@ RUN dnf -y install \
     openssl-devel \
     libsecret-devel
 
-RUN du
-
 RUN cd /tmp \
   && wget https://github.com/KDE/qca/archive/refs/tags/v2.3.3.zip \
   && unzip v2.3.3.zip \
