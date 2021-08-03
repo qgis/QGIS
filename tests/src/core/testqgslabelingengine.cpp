@@ -77,6 +77,7 @@ class TestQgsLabelingEngine : public QObject
     void testLabelBoundary();
     void testLabelBlockingRegion();
     void testLabelRotationWithReprojection();
+    void testLabelRotationUnit();
     void drawUnplaced();
     void labelingResults();
     void labelingResultsWithCallouts();
@@ -1852,6 +1853,49 @@ void TestQgsLabelingEngine::testLabelRotationWithReprojection()
 
   QImage img = job.renderedImage();
   QVERIFY( imageCheck( QStringLiteral( "label_rotate_with_reproject" ), img, 20 ) );
+}
+
+void TestQgsLabelingEngine::testLabelRotationUnit()
+{
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl );
+  mapSettings.setOutputDpi( 96 );
+
+  // first render the map and labeling separately
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+
+  QPainter p( &img );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.setPainter( &p );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "Class" );
+  setDefaultLabelParams( settings );
+
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromExpression( QString::number( 3.14 / 2.0 ) ) );
+  settings.setRotationUnit( QgsUnitTypes::AngleRadians );
+
+  vl->setLabelsEnabled( true );
+
+  QgsDefaultLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
+  engine.run( context );
+
+  p.end();
+
+  QVERIFY( imageCheck( "label_rotate_unit", img, 20 ) );
+
+  vl->setLabeling( nullptr );
 }
 
 void TestQgsLabelingEngine::drawUnplaced()

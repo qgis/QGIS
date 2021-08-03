@@ -435,8 +435,8 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   chkPreserveRotation->setChecked( mSettings.preserveRotation );
 
   mCoordRotationUnitComboBox->setCurrentIndex( 0 );
-  if ( mCoordRotationUnitComboBox->findData( static_cast< unsigned int >( mSettings.rotationUnit ) ) >= 0 )
-    mCoordRotationUnitComboBox->setCurrentIndex( mCoordRotationUnitComboBox->findData( static_cast< unsigned int >( mSettings.rotationUnit ) ) );
+  if ( mCoordRotationUnitComboBox->findData( static_cast< unsigned int >( mSettings.rotationUnit() ) ) >= 0 )
+    mCoordRotationUnitComboBox->setCurrentIndex( mCoordRotationUnitComboBox->findData( static_cast< unsigned int >( mSettings.rotationUnit() ) ) );
 
   mScaleBasedVisibilityChkBx->setChecked( mSettings.scaleVisibility );
   mMinScaleWidget->setScale( mSettings.minimumScale );
@@ -620,7 +620,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.useMaxLineLengthForAutoWrap = mAutoWrapTypeComboBox->currentIndex() == 0;
   lyr.multilineAlign = static_cast< QgsPalLayerSettings::MultiLineAlign >( mFontMultiLineAlignComboBox->currentData().toInt() );
   lyr.preserveRotation = chkPreserveRotation->isChecked();
-  lyr.rotationUnit = static_cast< QgsUnitTypes::AngleUnit >( mCoordRotationUnitComboBox->currentData().toInt() );
+  lyr.setRotationUnit( static_cast< QgsUnitTypes::AngleUnit >( mCoordRotationUnitComboBox->currentData().toInt() ) );
   lyr.geometryGenerator = mGeometryGenerator->text();
   lyr.geometryGeneratorType = mGeometryGeneratorType->currentData().value<QgsWkbTypes::GeometryType>();
   lyr.geometryGeneratorEnabled = mGeometryGeneratorGroupBox->isChecked();

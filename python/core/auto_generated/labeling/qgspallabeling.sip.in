@@ -11,7 +11,6 @@
 
 
 
-
 class QgsPalLayerSettings
 {
 %Docstring(signature="appended")
@@ -395,7 +394,15 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
 
     bool preserveRotation;
 
-    QgsUnitTypes::AngleUnit rotationUnit;
+    QgsUnitTypes::AngleUnit rotationUnit() const;
+%Docstring
+Unit for rotation of labels.
+%End
+
+    void setRotationUnit( QgsUnitTypes::AngleUnit angleUnit );
+%Docstring
+Set unit for rotation of labels.
+%End
 
     double maxCurvedCharAngleIn;
 
