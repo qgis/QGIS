@@ -652,6 +652,8 @@ void QgsLayoutScaleBarWidget::mUnitsComboBox_currentIndexChanged( int index )
   mScalebar->applyDefaultSize( static_cast<  QgsUnitTypes::DistanceUnit >( unitData.toInt() ) );
   mScalebar->update();
 
+  mNumberOfSegmentsSpinBox->setValue( mScalebar->numberOfSegments() );
+  mSegmentsLeftSpinBox->setValue( mScalebar->numberOfSegmentsLeft() );
   mUnitLabelLineEdit->setText( mScalebar->unitLabel() );
   mSegmentSizeSpinBox->setValue( mScalebar->unitsPerSegment() );
   mMapUnitsPerBarUnitSpinBox->setValue( mScalebar->mapUnitsPerScaleBarUnit() );
