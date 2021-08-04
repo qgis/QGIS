@@ -20,6 +20,7 @@
 class QWebView;
 class QgsPixmapLabel;
 class QgsMessageBar;
+class QgsExternalStorageFileWidget;
 
 #include <QWidget>
 #include <QVariant>
@@ -86,8 +87,10 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     QVariant documentPath( QVariant::Type type = QVariant::String ) const;
     void setDocumentPath( const QVariant &documentPath );
 
-    //! access the file widget to allow its configuration
-    QgsFileWidget *fileWidget();
+    /**
+     * Returns file widget to allow its configuration
+     */
+    QgsExternalStorageFileWidget *fileWidget();
 
     //! returns if the file widget is visible in the widget
     bool fileWidgetVisible() const;
@@ -216,7 +219,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     QString mDefaultRoot; // configured default root path for QgsFileWidget::RelativeStorage::RelativeDefaultPath
 
     //! UI objects
-    QgsFileWidget *mFileWidget = nullptr;
+    QgsExternalStorageFileWidget *mFileWidget = nullptr;
     QgsPixmapLabel *mPixmapLabel = nullptr;
 #ifdef WITH_QTWEBKIT
     //! This webview is used as a container to display the picture

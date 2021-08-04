@@ -25,6 +25,7 @@
 #include "qgsexternalstorage.h"
 #include "qgsexternalstorageregistry.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsexternalstoragefilewidget.h"
 
 #include <QFileDialog>
 #include <QComboBox>
@@ -282,7 +283,7 @@ QgsExpressionContext QgsExternalResourceConfigDlg::createExpressionContext() con
   context << QgsExpressionContextUtils::formScope( );
   context << QgsExpressionContextUtils::parentFormScope( );
 
-  QgsExpressionContextScope *fileWidgetScope = QgsFileWidget::createFileWidgetScope();
+  QgsExpressionContextScope *fileWidgetScope = QgsExternalStorageFileWidget::createFileWidgetScope();
   context << fileWidgetScope;
 
   context.setHighlightedVariables( fileWidgetScope->variableNames() );

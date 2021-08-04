@@ -22,6 +22,7 @@
 #include "qgstaskmanager.h"
 #include "qgsexternalstorage.h"
 #include "qgsmessagebar.h"
+#include "qgsexternalstoragefilewidget.h"
 
 #include <QDir>
 #include <QGridLayout>
@@ -45,7 +46,7 @@ QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
   QGridLayout *layout = new QGridLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
 
-  mFileWidget = new QgsFileWidget( this );
+  mFileWidget = new QgsExternalStorageFileWidget( this );
   layout->addWidget( mFileWidget, 0, 0 );
   mFileWidget->setVisible( mFileWidgetVisible );
 
@@ -93,7 +94,7 @@ void QgsExternalResourceWidget::setDocumentPath( const QVariant &path )
   mFileWidget->setFilePath( path.toString() );
 }
 
-QgsFileWidget *QgsExternalResourceWidget::fileWidget()
+QgsExternalStorageFileWidget *QgsExternalResourceWidget::fileWidget()
 {
   return mFileWidget;
 }

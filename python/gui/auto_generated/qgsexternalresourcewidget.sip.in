@@ -59,9 +59,9 @@ documentPath returns the path of the current document in the widget
 %End
     void setDocumentPath( const QVariant &documentPath );
 
-    QgsFileWidget *fileWidget();
+    QgsExternalStorageFileWidget *fileWidget();
 %Docstring
-access the file widget to allow its configuration
+Returns file widget to allow its configuration
 %End
 
     bool fileWidgetVisible() const;

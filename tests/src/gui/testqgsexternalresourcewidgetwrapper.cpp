@@ -23,6 +23,7 @@
 #include "qgsexternalstorageregistry.h"
 #include "qgspixmaplabel.h"
 #include "qgsmessagebar.h"
+#include "qgsexternalstoragefilewidget.h"
 
 #include <QWebFrame>
 #include <QLineEdit>
@@ -628,7 +629,7 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocument()
   ww.initWidget( widget );
   QVERIFY( ww.mQgsWidget );
 
-  QgsFileWidget *fileWidget = ww.mQgsWidget->fileWidget();
+  QgsExternalStorageFileWidget *fileWidget = ww.mQgsWidget->fileWidget();
   QVERIFY( fileWidget );
   QCOMPARE( fileWidget->storageType(), QStringLiteral( "test" ) );
 
@@ -721,7 +722,7 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocumentError()
   ww.initWidget( widget );
   QVERIFY( ww.mQgsWidget );
 
-  QgsFileWidget *fileWidget = ww.mQgsWidget->fileWidget();
+  QgsExternalStorageFileWidget *fileWidget = ww.mQgsWidget->fileWidget();
   QVERIFY( fileWidget );
   QCOMPARE( fileWidget->storageType(), QStringLiteral( "test" ) );
 
@@ -832,7 +833,7 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocumentCancel()
   ww.initWidget( widget );
   QVERIFY( ww.mQgsWidget );
 
-  QgsFileWidget *fileWidget = ww.mQgsWidget->fileWidget();
+  QgsExternalStorageFileWidget *fileWidget = ww.mQgsWidget->fileWidget();
   QVERIFY( fileWidget );
   QCOMPARE( fileWidget->storageType(), QStringLiteral( "test" ) );
 
@@ -943,7 +944,7 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocumentNoExpression
   ww.initWidget( widget );
   QVERIFY( ww.mQgsWidget );
 
-  QgsFileWidget *fileWidget = ww.mQgsWidget->fileWidget();
+  QgsExternalStorageFileWidget *fileWidget = ww.mQgsWidget->fileWidget();
   QVERIFY( fileWidget );
   QCOMPARE( fileWidget->storageType(), QStringLiteral( "test" ) );
 
