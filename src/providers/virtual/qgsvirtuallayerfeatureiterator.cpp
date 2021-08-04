@@ -58,6 +58,23 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
     return;
   }
 
+  // prepare spatial filter geometries for optimal speed
+  switch ( mRequest.spatialFilterType() )
+  {
+    case Qgis::SpatialFilterType::NoFilter:
+    case Qgis::SpatialFilterType::BoundingBox:
+      break;
+
+    case Qgis::SpatialFilterType::DistanceWithin:
+      if ( !mRequest.referenceGeometry().isEmpty() )
+      {
+        mDistanceWithinGeom = mRequest.referenceGeometry();
+        mDistanceWithinEngine.reset( QgsGeometry::createGeometryEngine( mDistanceWithinGeom.constGet() ) );
+        mDistanceWithinEngine->prepareGeometry();
+      }
+      break;
+  }
+
   try
   {
     QString tableName = mSource->mTableName;
@@ -118,8 +135,8 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
         else // never return a feature if the id is negative
           offset = QStringLiteral( " LIMIT 0" );
       }
-      if ( !mFilterRect.isNull() &&
-           mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+      if ( !mFilterRect.isNull() && mRequest.spatialFilterType() == Qgis::SpatialFilterType::BoundingBox
+           && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
       {
         // if an exact intersection is requested, prepare the geometry to intersect
         QgsGeometry rectGeom = QgsGeometry::fromRect( mFilterRect );
@@ -264,7 +281,6 @@ bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature &feature )
     return false;
   }
 
-
   bool skipFeature = false;
   do
   {
@@ -272,6 +288,7 @@ bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature &feature )
     {
       return false;
     }
+    skipFeature = false;
 
     feature.setFields( mSource->mFields, /* init */ true );
 
@@ -305,7 +322,7 @@ bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature &feature )
         default:
           feature.setAttribute( idx, mQuery->columnText( i + 1 ) );
           break;
-      };
+      }
       i++;
     }
     if ( n > mAttributes.size() + 1 )
@@ -327,18 +344,27 @@ bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature &feature )
 
     // if the FilterRect has not been applied on the query
     // apply it here by skipping features until they intersect
-    if ( mSource->mDefinition.uid().isNull() && feature.hasGeometry() && mSource->mDefinition.hasDefinedGeometry() && !mFilterRect.isNull() )
+    if ( mSource->mDefinition.uid().isNull() && feature.hasGeometry() && mSource->mDefinition.hasDefinedGeometry() )
     {
-      if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+      if ( !mFilterRect.isNull() )
       {
-        // using exact test when checking for intersection
-        skipFeature = !mRectEngine->intersects( feature.geometry().constGet() );
+        if ( mRequest.spatialFilterType() == Qgis::SpatialFilterType::BoundingBox && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+        {
+          // using exact test when checking for intersection
+          skipFeature = !mRectEngine->intersects( feature.geometry().constGet() );
+        }
+        else
+        {
+          // check just bounding box against rect when not using intersection
+          skipFeature = !feature.geometry().boundingBox().intersects( mFilterRect );
+        }
       }
-      else
-      {
-        // check just bounding box against rect when not using intersection
-        skipFeature = !feature.geometry().boundingBox().intersects( mFilterRect );
-      }
+    }
+
+    if ( !skipFeature && mDistanceWithinEngine )
+    {
+      if ( mDistanceWithinEngine->distance( feature.geometry().constGet() ) > mRequest.distanceWithin() )
+        skipFeature = true;
     }
   }
   while ( skipFeature );
