@@ -49,10 +49,6 @@ Returns the label text
 Returns the help text
 %End
 
-    bool isLabelModified();
-%Docstring
-Returns whether the label text was modified
-%End
 
 };
 
