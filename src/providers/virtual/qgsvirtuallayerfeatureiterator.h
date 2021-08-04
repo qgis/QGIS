@@ -74,7 +74,8 @@ class QgsVirtualLayerFeatureIterator final: public QgsAbstractFeatureIteratorFro
     QgsFeatureId mFid = 0;
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;
-
+    QgsGeometry mDistanceWithinGeom;
+    std::unique_ptr< QgsGeometryEngine > mDistanceWithinEngine;
     std::unique_ptr< QgsGeometryEngine > mRectEngine;
 };
 
