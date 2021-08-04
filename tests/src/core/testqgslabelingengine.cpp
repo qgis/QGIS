@@ -1884,6 +1884,7 @@ void TestQgsLabelingEngine::testLabelRotationUnit()
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromExpression( QString::number( 3.14 / 2.0 ) ) );
   settings.setRotationUnit( QgsUnitTypes::AngleRadians );
 
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
