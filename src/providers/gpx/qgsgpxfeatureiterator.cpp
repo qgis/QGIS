@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsexception.h"
+#include "qgsgeometryengine.h"
 
 #include <limits>
 #include <cstring>
@@ -42,6 +43,23 @@ QgsGPXFeatureIterator::QgsGPXFeatureIterator( QgsGPXFeatureSource *source, bool 
     // can't reproject mFilterRect
     close();
     return;
+  }
+
+  // prepare spatial filter geometries for optimal speed
+  switch ( mRequest.spatialFilterType() )
+  {
+    case Qgis::SpatialFilterType::NoFilter:
+    case Qgis::SpatialFilterType::BoundingBox:
+      break;
+
+    case Qgis::SpatialFilterType::DistanceWithin:
+      if ( !mRequest.referenceGeometry().isEmpty() )
+      {
+        mDistanceWithinGeom = mRequest.referenceGeometry();
+        mDistanceWithinEngine.reset( QgsGeometry::createGeometryEngine( mDistanceWithinGeom.constGet() ) );
+        mDistanceWithinEngine->prepareGeometry();
+      }
+      break;
   }
 
   rewind();
@@ -98,6 +116,13 @@ bool QgsGPXFeatureIterator::fetchFeature( QgsFeature &feature )
     close();
     if ( res )
       geometryToDestinationCrs( feature, mTransform );
+
+    if ( res && mDistanceWithinEngine && mDistanceWithinEngine->distance( feature.geometry().constGet() ) > mRequest.distanceWithin() )
+    {
+      res = false;
+      feature.setValid( false );
+    }
+
     return res;
   }
 
@@ -111,6 +136,16 @@ bool QgsGPXFeatureIterator::fetchFeature( QgsFeature &feature )
       {
         ++mWptIter;
         geometryToDestinationCrs( feature, mTransform );
+
+        bool res = true;
+        if ( res && mDistanceWithinEngine && mDistanceWithinEngine->distance( feature.geometry().constGet() ) > mRequest.distanceWithin() )
+        {
+          res = false;
+        }
+
+        if ( !res )
+          continue;
+
         return true;
       }
     }
@@ -125,6 +160,16 @@ bool QgsGPXFeatureIterator::fetchFeature( QgsFeature &feature )
       {
         ++mRteIter;
         geometryToDestinationCrs( feature, mTransform );
+
+        bool res = true;
+        if ( res && mDistanceWithinEngine && mDistanceWithinEngine->distance( feature.geometry().constGet() ) > mRequest.distanceWithin() )
+        {
+          res = false;
+        }
+
+        if ( !res )
+          continue;
+
         return true;
       }
     }
@@ -139,6 +184,16 @@ bool QgsGPXFeatureIterator::fetchFeature( QgsFeature &feature )
       {
         ++mTrkIter;
         geometryToDestinationCrs( feature, mTransform );
+
+        bool res = true;
+        if ( res && mDistanceWithinEngine && mDistanceWithinEngine->distance( feature.geometry().constGet() ) > mRequest.distanceWithin() )
+        {
+          res = false;
+        }
+
+        if ( !res )
+          continue;
+
         return true;
       }
     }
