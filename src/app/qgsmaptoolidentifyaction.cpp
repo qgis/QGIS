@@ -42,6 +42,7 @@
 #include "qgssettings.h"
 #include "qgsmapmouseevent.h"
 #include "qgspointcloudlayer.h"
+#include "qgslayertreeview.h"
 
 #include <QCursor>
 #include <QPixmap>
@@ -130,11 +131,17 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
   identifyMenu()->setExecWithSingleResult( extendedMenu );
   identifyMenu()->setShowFeatureActions( extendedMenu );
   IdentifyMode mode = extendedMenu ? LayerSelection : DefaultQgsSetting;
-
+  if ( mode == DefaultQgsSetting )
+    mode = QgsSettings().enumValue( QStringLiteral( "Map/identifyMode" ), ActiveLayer );
+  QList<QgsMapLayer *> layerList;
+  if ( mode == ActiveLayer )
+  {
+    layerList = QgisApp::instance()->layerTreeView()->selectedLayersRecursive();
+  }
   QgsIdentifyContext identifyContext;
   if ( mCanvas->mapSettings().isTemporal() )
     identifyContext.setTemporalRange( mCanvas->temporalRange() );
-  QList<IdentifyResult> results = QgsMapToolIdentify::identify( geometry, mode, AllLayers, identifyContext );
+  QList<IdentifyResult> results = QgsMapToolIdentify::identify( geometry, mode, layerList, AllLayers, identifyContext );
 
   disconnect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
 
