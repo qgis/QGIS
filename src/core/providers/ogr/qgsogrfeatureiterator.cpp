@@ -29,6 +29,7 @@
 #include "qgswkbtypes.h"
 #include "qgsogrtransaction.h"
 #include "qgssymbol.h"
+#include "qgsgeometryengine.h"
 
 #include <QTextCodec>
 #include <QFile>
@@ -203,6 +204,23 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
     }
   }
 
+  // prepare spatial filter geometries for optimal speed
+  switch ( mRequest.spatialFilterType() )
+  {
+    case Qgis::SpatialFilterType::NoFilter:
+    case Qgis::SpatialFilterType::BoundingBox:
+      break;
+
+    case Qgis::SpatialFilterType::DistanceWithin:
+      if ( !mRequest.referenceGeometry().isEmpty() )
+      {
+        mDistanceWithinGeom = mRequest.referenceGeometry();
+        mDistanceWithinEngine.reset( QgsGeometry::createGeometryEngine( mDistanceWithinGeom.constGet() ) );
+        mDistanceWithinEngine->prepareGeometry();
+      }
+      break;
+  }
+
   if ( request.filterType() == QgsFeatureRequest::FilterExpression )
   {
     QgsSqlExpressionCompiler *compiler = nullptr;
@@ -337,9 +355,13 @@ bool QgsOgrFeatureIterator::checkFeature( gdal::ogr_feature_unique_ptr &fet, Qgs
   if ( !mFilterRect.isNull() && ( !feature.hasGeometry() || feature.geometry().isEmpty() ) )
     return false;
 
+  geometryToDestinationCrs( feature, mTransform );
+
+  if ( mDistanceWithinEngine && mDistanceWithinEngine->distance( feature.geometry().constGet() ) > mRequest.distanceWithin() )
+    return false;
+
   // we have a feature, end this cycle
   feature.setValid( true );
-  geometryToDestinationCrs( feature, mTransform );
   return true;
 }
 
@@ -364,6 +386,13 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
   {
     bool result = fetchFeatureWithId( mRequest.filterFid(), feature );
     close(); // the feature has been read or was not found: we have finished here
+
+    if ( result && mDistanceWithinEngine )
+    {
+      result = mDistanceWithinEngine->distance( feature.geometry().constGet() ) <= mRequest.distanceWithin();
+      feature.setValid( result );
+    }
+
     return result;
   }
   else if ( mRequest.filterType() == QgsFeatureRequest::FilterFids )
@@ -374,7 +403,17 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
       ++mFilterFidsIt;
 
       if ( fetchFeatureWithId( nextId, feature ) )
-        return true;
+      {
+        bool result = true;
+        if ( mDistanceWithinEngine )
+        {
+          result = mDistanceWithinEngine->distance( feature.geometry().constGet() ) <= mRequest.distanceWithin();
+          feature.setValid( result );
+        }
+
+        if ( result )
+          return true;
+      }
     }
     close();
     return false;
