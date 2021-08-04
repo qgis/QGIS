@@ -301,16 +301,24 @@ class GUI_EXPORT QgsFileWidget : public QWidget
 
   protected:
 
-    // update buttons visibility
+    /**
+     * Update buttons visibility
+     */
     virtual void updateLayout();
 
-    // called whenever user select file names from dialog
+    /**
+     * Called whenever user select \a fileNames from dialog
+     */
     virtual void setSelectedFileNames( QStringList fileNames );
 
-    // Returns true if \a path is a multifiles
+    /**
+     * Returns true if \a path is a multifiles
+     */
     static bool isMultiFiles( const QString &path );
 
-    // Update filePath according to a file path list
+    /**
+     * Update filePath according to \a filePaths list
+     */
     void setFilePaths( const QStringList &filePaths );
 
     QString mFilePath;

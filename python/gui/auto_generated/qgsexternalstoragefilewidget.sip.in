@@ -164,11 +164,9 @@ It defines the variable containing the user selected file name
 
 
     void addFileWidgetScope();
-
-    void storeExternalFiles( QStringList fileNames, QStringList storedUrls = QStringList() );
-
-
-
+%Docstring
+Add file widget specific scope to expression context
+%End
 
 };
 

@@ -34,7 +34,7 @@ class QgsMessageBar;
  * \ingroup gui
  * \brief The QgsExternalStorageFileWidget class creates a widget for selecting a file or a folder
  * and stores it to a given external storage backend if defined
- * \since 3.22
+ * \since QGIS 3.22
  */
 class GUI_EXPORT QgsExternalStorageFileWidget : public QgsFileWidget
 {
@@ -165,8 +165,12 @@ class GUI_EXPORT QgsExternalStorageFileWidget : public QgsFileWidget
 
     void setSelectedFileNames( QStringList fileNames ) override;
 
-    // add file widget specific scope to expression context
+    /**
+     *  Add file widget specific scope to expression context
+     */
     void addFileWidgetScope();
+
+  private:
 
     // stores \a fileNames files using current external storage.
     // This is a recursive method, \a storedUrls contains urls for previously stored
