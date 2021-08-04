@@ -77,19 +77,19 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   setupUi( this );
 
   connect( btnRun, &QToolButton::pressed, this, &QgsExpressionBuilderWidget::btnRun_pressed );
-  connect( btnNewFile, &QPushButton::pressed, this, &QgsExpressionBuilderWidget::btnNewFile_pressed );
-  connect( btnRemoveFile, &QPushButton::pressed, this, &QgsExpressionBuilderWidget::btnRemoveFile_pressed );
+  connect( btnNewFile, &QPushButton::clicked, this, &QgsExpressionBuilderWidget::btnNewFile_pressed );
+  connect( btnRemoveFile, &QPushButton::clicked, this, &QgsExpressionBuilderWidget::btnRemoveFile_pressed );
   connect( cmbFileNames, &QListWidget::currentItemChanged, this, &QgsExpressionBuilderWidget::cmbFileNames_currentItemChanged );
   connect( txtExpressionString, &QgsCodeEditorExpression::textChanged, this, &QgsExpressionBuilderWidget::txtExpressionString_textChanged );
   connect( txtPython, &QgsCodeEditorPython::textChanged, this, &QgsExpressionBuilderWidget::txtPython_textChanged );
   connect( txtSearchEditValues, &QgsFilterLineEdit::textChanged, this, &QgsExpressionBuilderWidget::txtSearchEditValues_textChanged );
   connect( mValuesListView, &QListView::doubleClicked, this, &QgsExpressionBuilderWidget::mValuesListView_doubleClicked );
-  connect( btnSaveExpression, &QPushButton::pressed, this, &QgsExpressionBuilderWidget::storeCurrentUserExpression );
-  connect( btnEditExpression, &QPushButton::pressed, this, &QgsExpressionBuilderWidget::editSelectedUserExpression );
-  connect( btnRemoveExpression, &QPushButton::pressed, this, &QgsExpressionBuilderWidget::removeSelectedUserExpression );
-  connect( btnImportExpressions, &QPushButton::pressed, this, &QgsExpressionBuilderWidget::importUserExpressions_pressed );
-  connect( btnExportExpressions, &QPushButton::pressed, this, &QgsExpressionBuilderWidget::exportUserExpressions_pressed );
-  connect( btnClearEditor, &QPushButton::pressed, txtExpressionString, &QgsCodeEditorExpression::clear );
+  connect( btnSaveExpression, &QToolButton::clicked, this, &QgsExpressionBuilderWidget::storeCurrentUserExpression );
+  connect( btnEditExpression, &QToolButton::clicked, this, &QgsExpressionBuilderWidget::editSelectedUserExpression );
+  connect( btnRemoveExpression, &QToolButton::clicked, this, &QgsExpressionBuilderWidget::removeSelectedUserExpression );
+  connect( btnImportExpressions, &QToolButton::clicked, this, &QgsExpressionBuilderWidget::importUserExpressions_pressed );
+  connect( btnExportExpressions, &QToolButton::clicked, this, &QgsExpressionBuilderWidget::exportUserExpressions_pressed );
+  connect( btnClearEditor, &QToolButton::clicked, txtExpressionString, &QgsCodeEditorExpression::clear );
   connect( txtSearchEdit, &QgsFilterLineEdit::textChanged, mExpressionTreeView, &QgsExpressionTreeView::setSearchText );
 
   connect( mExpressionPreviewWidget, &QgsExpressionPreviewWidget::toolTipChanged, txtExpressionString, &QgsCodeEditorExpression::setToolTip );
@@ -120,13 +120,13 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   btnImportExpressions->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionSharingImport.svg" ) ) );
   btnClearEditor->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileNew.svg" ) ) );
 
-  connect( btnLoadAll, &QAbstractButton::pressed, this, &QgsExpressionBuilderWidget::loadAllValues );
-  connect( btnLoadSample, &QAbstractButton::pressed, this, &QgsExpressionBuilderWidget::loadSampleValues );
+  connect( btnLoadAll, &QAbstractButton::clicked, this, &QgsExpressionBuilderWidget::loadAllValues );
+  connect( btnLoadSample, &QAbstractButton::clicked, this, &QgsExpressionBuilderWidget::loadSampleValues );
 
   const auto pushButtons { mOperatorsGroupBox->findChildren<QPushButton *>() };
   for ( QPushButton *button : pushButtons )
   {
-    connect( button, &QAbstractButton::pressed, this, &QgsExpressionBuilderWidget::operatorButtonClicked );
+    connect( button, &QAbstractButton::clicked, this, &QgsExpressionBuilderWidget::operatorButtonClicked );
   }
 
   txtSearchEdit->setShowSearchIcon( true );
