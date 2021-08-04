@@ -163,7 +163,7 @@ defined)
 .. versionadded:: 3.22
 %End
 
-    const QString &storageAuthConfigId() const;
+    QString storageAuthConfigId() const;
 %Docstring
 Returns the authentication configuration ID used for the current external storage (if defined)
 

@@ -174,7 +174,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
      * Returns the authentication configuration ID used for the current external storage (if defined)
      * \since QGIS 3.22
      */
-    const QString &storageAuthConfigId() const;
+    QString storageAuthConfigId() const;
 
     /**
      * Set \a messageBar to report messages

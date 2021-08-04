@@ -37,7 +37,7 @@ QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer *vl, 
 {
   setupUi( this );
 
-  mStorageType->addItem( tr( "Select existing file" ), QString() );
+  mStorageType->addItem( tr( "Select Existing file" ), QString() );
   for ( QgsExternalStorage *storage : QgsApplication::externalStorageRegistry()->externalStorages() )
   {
     mStorageType->addItem( tr( "Store with %1" ).arg( storage->type() ), storage->type() );

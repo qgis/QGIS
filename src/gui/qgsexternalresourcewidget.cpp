@@ -249,7 +249,7 @@ void QgsExternalResourceWidget::setStorageAuthConfigId( const QString &authCfg )
   mFileWidget->setStorageAuthConfigId( authCfg );
 }
 
-const QString &QgsExternalResourceWidget::storageAuthConfigId() const
+QString QgsExternalResourceWidget::storageAuthConfigId() const
 {
   return mFileWidget->storageAuthConfigId();
 }
