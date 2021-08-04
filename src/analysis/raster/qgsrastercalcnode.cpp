@@ -29,7 +29,7 @@ QgsRasterCalcNode::QgsRasterCalcNode( QgsRasterMatrix *matrix )
 }
 
 QgsRasterCalcNode::QgsRasterCalcNode( Operator op, QgsRasterCalcNode *left, QgsRasterCalcNode *right )
-  : mType( tOperator )
+  : mType( tFunct )
   , mLeft( left )
   , mRight( right )
   , mOperator( op )
@@ -37,14 +37,11 @@ QgsRasterCalcNode::QgsRasterCalcNode( Operator op, QgsRasterCalcNode *left, QgsR
 }
 
 //for conditional statement and possibily other functions
-//QgsRasterCalcNode::QgsRasterCalcNode( Operator op, QVector <QgsRasterCalcNode *> functionArgs )
-QgsRasterCalcNode::QgsRasterCalcNode( QVector <QgsRasterCalcNode *> functionArgs )
+QgsRasterCalcNode::QgsRasterCalcNode( QString functionName, QVector <QgsRasterCalcNode *> functionArgs )
   : mType( tOperator )
-  , mOperator( opFUNCT )
   , mFunctionArgs( functionArgs )
-    //mFunctionName( functionName)
+  , mFunctionName( functionName )
 {
-
 }
 
 QgsRasterCalcNode::QgsRasterCalcNode( const QString &rasterName )
@@ -101,17 +98,6 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData,
   {
     QgsRasterMatrix leftMatrix( result.nColumns(), result.nRows(), nullptr, result.nodataValue() );
     QgsRasterMatrix rightMatrix( result.nColumns(), result.nRows(), nullptr, result.nodataValue() );
-
-    /*
-    //for loop to assign initialitize the raster matrix (right now they are left and right but
-    //with conditional statement they can be 3 (e.g left, right, condition) and I should leave the door
-    //open for more options and  functions
-    QVector <QgsRasterMatrix> matrixContainer;
-    for (int i = 0; i < mFunctionArgs.size(); ++i)
-    {
-        matrixContainer.append( QgsRasterMatrix( result.nColumns(), result.nRows(), nullptr, result.nodataValue() ) );
-    }
-    */
 
     if ( !mLeft || !mLeft->calculate( rasterData, leftMatrix, row ) )
     {
@@ -202,11 +188,6 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData,
       case opABS:
         leftMatrix.absoluteValue();
         break;
-      case opFUNCT:
-        QgsDebugMsg( "ciao" );
-
-        //evaluate (matrixContainer);
-        break;
       default:
         return false;
     }
@@ -233,6 +214,25 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData,
       data[i] = mMatrix->data()[i] == mMatrix->nodataValue() ? result.nodataValue() : mMatrix->data()[i];
     }
     result.setData( mMatrix->nColumns(), mMatrix->nRows(), data, result.nodataValue() );
+    return true;
+  }
+  else if ( mType == tFunct )
+  {
+    //for loop to assign initialitize the raster matrix (right now they are left and right but
+    //with conditional statement they can be 3 (e.g left, right, condition) and I should leave the door
+    //open for more options and  functions
+
+    QVector <QgsRasterMatrix *> matrixContainer;
+
+    for ( int i = 0; i < mFunctionArgs.size(); ++i )
+    {
+      QgsRasterMatrix *singleMatrix = new QgsRasterMatrix( result.nColumns(), result.nRows(), nullptr, result.nodataValue() ) ;
+      matrixContainer.append( singleMatrix );
+    }
+
+
+    evaluation( matrixContainer, result );
+
     return true;
   }
   return false;
@@ -409,12 +409,32 @@ QgsRasterCalcNode *QgsRasterCalcNode::parseRasterCalcString( const QString &str,
   return localParseRasterCalcString( str, parserErrorMsg );
 }
 
-void QgsRasterCalcNode::evaluation( const QVector<QgsRasterMatrix> &matrixVector )
+QgsRasterMatrix QgsRasterCalcNode::evaluation( const QVector<QgsRasterMatrix *> &matrixVector, QgsRasterMatrix &result ) const
 {
+
   if ( mFunctionName == "if" )
   {
-    //matrixVector.at(0).isTrue() ? matrixVector.at(1) : matrixVector.at(2);
-    //for the if functon, the first part is the condition
+    int nCols = matrixVector.at( 0 )->nColumns();
+    int nRows = matrixVector.at( 0 )->nRows();
+    int nEntries = nCols * nRows;
+    double *data = new double[nEntries];
+
+    //QgsRasterMatrix* condition = matrixVector.at(0)->data();
+    //QgsRasterMatrix* firstOption = matrixVector.at(1)->data();
+    //QgsRasterMatrix* secondOption = matrixVector.at(2)->data();
+    double *condition = matrixVector.at( 0 )->data();
+    double *firstOption = matrixVector.at( 1 )->data();
+    double *secondOption = matrixVector.at( 2 )->data();
+
+
+    for ( int i = 0; i < nEntries; ++i )
+    {
+      data[i] = condition[i] == 0 ? firstOption[i] : secondOption[i] ;
+    }
+    result.setData( nCols, nRows, data, result.nodataValue() );
   }
+
+  return result;
+
 }
 

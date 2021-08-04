@@ -44,7 +44,8 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
       tOperator = 1,
       tNumber,
       tRasterRef,
-      tMatrix
+      tMatrix,
+      tFunct
     };
 
     //! possible operators
@@ -76,8 +77,7 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
       opABS,
       opMAX,
       opMIN,
-      opNONE,
-      opFUNCT
+      opNONE
     };
 
     /**
@@ -88,9 +88,8 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     QgsRasterCalcNode( double number );
     QgsRasterCalcNode( QgsRasterMatrix *matrix );
     QgsRasterCalcNode( Operator op, QgsRasterCalcNode *left, QgsRasterCalcNode *right );
-    //general for condition statement
-    //QgsRasterCalcNode( Operator op, QVector <QgsRasterCalcNode *> functionArgs )
-    QgsRasterCalcNode( QVector <QgsRasterCalcNode *> functionArgs );
+    //!Constructor for the tFunct type
+    QgsRasterCalcNode( QString functionName, QVector <QgsRasterCalcNode *> functionArgs );
     QgsRasterCalcNode( const QString &rasterName );
     ~QgsRasterCalcNode();
 
@@ -131,8 +130,13 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
 
     static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) SIP_FACTORY;
 
-    //some tests for conditional stat
-    void evaluation( const QVector<QgsRasterMatrix> &matrixVector );
+    /**
+     *
+     * \since QGIS 3.22
+     */
+    //void evaluation( const QVector<QgsRasterMatrix *> &matrixVector, QgsRasterMatrix &result ) const;
+    QgsRasterMatrix evaluation( const QVector<QgsRasterMatrix *> &matrixVector, QgsRasterMatrix &result ) const;
+
 
   private:
 #ifdef SIP_RUN
