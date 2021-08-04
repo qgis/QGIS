@@ -50,11 +50,29 @@ QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource *sour
     mSubsetExpression->prepare( mSource->expressionContext() );
   }
 
-  if ( !mFilterRect.isNull() && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+  // prepare spatial filter geometries for optimal speed
+  switch ( mRequest.spatialFilterType() )
   {
-    mSelectRectGeom = QgsGeometry::fromRect( mFilterRect );
-    mSelectRectEngine.reset( QgsGeometry::createGeometryEngine( mSelectRectGeom.constGet() ) );
-    mSelectRectEngine->prepareGeometry();
+    case Qgis::SpatialFilterType::NoFilter:
+      break;
+
+    case Qgis::SpatialFilterType::BoundingBox:
+      if ( !mFilterRect.isNull() && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+      {
+        mSelectRectGeom = QgsGeometry::fromRect( mFilterRect );
+        mSelectRectEngine.reset( QgsGeometry::createGeometryEngine( mSelectRectGeom.constGet() ) );
+        mSelectRectEngine->prepareGeometry();
+      }
+      break;
+
+    case Qgis::SpatialFilterType::DistanceWithin:
+      if ( !mRequest.referenceGeometry().isEmpty() )
+      {
+        mDistanceWithinGeom = mRequest.referenceGeometry();
+        mDistanceWithinEngine.reset( QgsGeometry::createGeometryEngine( mDistanceWithinGeom.constGet() ) );
+        mDistanceWithinEngine->prepareGeometry();
+      }
+      break;
   }
 
   // if there's spatial index, use it!
@@ -115,7 +133,7 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature &feature )
     candidate = mSource->mFeatures.value( *mFeatureIdListIterator );
     if ( !mFilterRect.isNull() )
     {
-      if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+      if ( mRequest.spatialFilterType() == Qgis::SpatialFilterType::BoundingBox && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
       {
         // do exact check in case we're doing intersection
         if ( candidate.hasGeometry() && mSelectRectEngine->intersects( candidate.geometry().constGet() ) )
@@ -131,6 +149,20 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature &feature )
         // do bounding box check if we aren't using a spatial index
         if ( candidate.hasGeometry() && candidate.geometry().boundingBoxIntersects( mFilterRect ) )
           hasFeature = true;
+      }
+
+      if ( mRequest.spatialFilterType() == Qgis::SpatialFilterType::DistanceWithin && hasFeature )
+      {
+        if ( !mTransform.isShortCircuited() )
+        {
+          QgsFeature transformedCandidate( candidate );
+          geometryToDestinationCrs( transformedCandidate, mTransform );
+          hasFeature = transformedCandidate.hasGeometry() && mDistanceWithinEngine->distance( transformedCandidate.geometry().constGet() ) <= mRequest.distanceWithin();
+        }
+        else
+        {
+          hasFeature = mDistanceWithinEngine->distance( candidate.geometry().constGet() ) <= mRequest.distanceWithin();
+        }
       }
     }
     else
@@ -182,7 +214,7 @@ bool QgsMemoryFeatureIterator::nextFeatureTraverseAll( QgsFeature &feature )
     }
     else
     {
-      if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+      if ( mRequest.spatialFilterType() == Qgis::SpatialFilterType::BoundingBox && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
       {
         // using exact test when checking for intersection
         if ( mSelectIterator->hasGeometry() && mSelectRectEngine->intersects( mSelectIterator->geometry().constGet() ) )
@@ -193,6 +225,19 @@ bool QgsMemoryFeatureIterator::nextFeatureTraverseAll( QgsFeature &feature )
         // check just bounding box against rect when not using intersection
         if ( mSelectIterator->hasGeometry() && mSelectIterator->geometry().boundingBox().intersects( mFilterRect ) )
           hasFeature = true;
+      }
+      if ( mRequest.spatialFilterType() == Qgis::SpatialFilterType::DistanceWithin && hasFeature )
+      {
+        if ( !mTransform.isShortCircuited() )
+        {
+          QgsFeature transformedCandidate( *mSelectIterator );
+          geometryToDestinationCrs( transformedCandidate, mTransform );
+          hasFeature = transformedCandidate.hasGeometry() && mDistanceWithinEngine->distance( transformedCandidate.geometry().constGet() ) <= mRequest.distanceWithin();
+        }
+        else
+        {
+          hasFeature = mDistanceWithinEngine->distance( mSelectIterator->geometry().constGet() ) <= mRequest.distanceWithin();
+        }
       }
     }
 
