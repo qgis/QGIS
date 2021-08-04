@@ -36,6 +36,8 @@ class QgsExternalStorageFileWidget;
 // doesn't add this include to the file where the code from
 // ConvertToSubClassCode goes.
 #include <qgsexternalresourcewidget.h>
+
+#include <qgsexternalstoragefilewidget.h>
 % End
 #endif
 
