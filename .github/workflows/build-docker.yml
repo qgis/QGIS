@@ -43,7 +43,7 @@ jobs:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
       CC: /usr/lib/ccache/gcc
       CXX: /usr/lib/ccache/g++ # Building SIP binding freezes with Clang in Docker, maybe a SIP issue, maybe not
-      DOCKER_BUILD_DEPS_FILE: qgis3-build-deps.dockerfile
+      DOCKER_BUILD_DEPS_FILE: qgis3-qt5-build-deps.dockerfile
 
     strategy:
       matrix: ${{ fromJSON( needs.define-strategy.outputs.matrix ) }}
