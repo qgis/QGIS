@@ -35,6 +35,7 @@
 #include "qgsreferencedgeometry.h"
 #include "qgsrasterfilewriter.h"
 #include "qgsvectortilelayer.h"
+#include "qgspointcloudlayer.h"
 #include <QRegularExpression>
 #include <QUuid>
 
@@ -178,7 +179,7 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
       case QgsMapLayerType::AnnotationLayer:
         return true;
       case QgsMapLayerType::PointCloudLayer:
-        return true;
+        return !canUseLayer( qobject_cast< QgsPointCloudLayer * >( layer ) );
     }
     return true;
   } ), layers.end() );
@@ -198,6 +199,9 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
 
       case LayerHint::Mesh:
         return l->type() == QgsMapLayerType::MeshLayer;
+
+      case LayerHint::PointCloud:
+        return l->type() == QgsMapLayerType::PointCloudLayer;
     }
     return true;
   };
@@ -230,7 +234,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
 
   QString name;
   // for disk based sources, we use the filename to determine a layer name
-  if ( !useProvider || ( provider == QLatin1String( "ogr" ) || provider == QLatin1String( "gdal" ) || provider == QLatin1String( "mdal" ) ) )
+  if ( !useProvider || ( provider == QLatin1String( "ogr" ) || provider == QLatin1String( "gdal" ) || provider == QLatin1String( "mdal" ) || provider == QLatin1String( "pdal" ) ) )
   {
     QStringList components = uri.split( '|' );
     if ( components.isEmpty() )
@@ -311,6 +315,25 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
     if ( meshLayer->isValid() )
     {
       return meshLayer.release();
+    }
+  }
+  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::PointCloud )
+  {
+    QgsPointCloudLayer::LayerOptions pointCloudOptions;
+    pointCloudOptions.skipCrsValidation = true;
+
+    std::unique_ptr< QgsPointCloudLayer > pointCloudLayer;
+    if ( useProvider )
+    {
+      pointCloudLayer = std::make_unique< QgsPointCloudLayer >( uri, name, provider, pointCloudOptions );
+    }
+    else
+    {
+      pointCloudLayer = std::make_unique< QgsPointCloudLayer >( uri, name, QStringLiteral( "pointcloud" ), pointCloudOptions );
+    }
+    if ( pointCloudLayer->isValid() )
+    {
+      return pointCloudLayer.release();
     }
   }
   return nullptr;
@@ -503,6 +526,11 @@ bool QgsProcessingUtils::canUseLayer( const QgsVectorTileLayer *layer )
 }
 
 bool QgsProcessingUtils::canUseLayer( const QgsRasterLayer *layer )
+{
+  return layer && layer->isValid();
+}
+
+bool QgsProcessingUtils::canUseLayer( const QgsPointCloudLayer *layer )
 {
   return layer && layer->isValid();
 }

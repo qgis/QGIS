@@ -145,6 +145,7 @@ Decodes a provider key and layer ``uri`` from an encoded string, for use with
       Vector,
       Raster,
       Mesh,
+      PointCloud,
     };
 
     static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType );

@@ -38,6 +38,7 @@ class QgsProcessingFeedback;
 class QgsProcessingFeatureSource;
 class QgsProcessingAlgorithm;
 class QgsVectorTileLayer;
+class QgsPointCloudLayer;
 
 #include <QString>
 #include <QVariant>
@@ -159,6 +160,7 @@ class CORE_EXPORT QgsProcessingUtils
       Vector, //!< Vector layer type
       Raster, //!< Raster layer type
       Mesh, //!< Mesh layer type, since QGIS 3.6
+      PointCloud, //!< Point cloud layer type, since QGIS 3.22
     };
 
     /**
@@ -437,6 +439,7 @@ class CORE_EXPORT QgsProcessingUtils
     static bool canUseLayer( const QgsMeshLayer *layer );
     static bool canUseLayer( const QgsPluginLayer *layer );
     static bool canUseLayer( const QgsVectorTileLayer *layer );
+    static bool canUseLayer( const QgsPointCloudLayer *layer );
     static bool canUseLayer( const QgsVectorLayer *layer,
                              const QList< int > &sourceTypes = QList< int >() );
 
