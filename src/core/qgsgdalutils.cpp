@@ -43,6 +43,7 @@ const QStringList QgsGdalUtils::SUPPORTED_DB_LAYERS_EXTENSIONS
   QStringLiteral( "accdb" ),
   QStringLiteral( "xls" ),
   QStringLiteral( "xlsx" ),
+  QStringLiteral( "ods" ),
   QStringLiteral( "gpx" ),
   QStringLiteral( "pdf" ),
   QStringLiteral( "pbf" ),
