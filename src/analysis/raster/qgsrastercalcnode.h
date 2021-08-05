@@ -134,7 +134,6 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
 
     /**
      * Returns a list of raster layer references that are addressed in the formula, without quotation marks.
-     * The raster references are usally rastername@1 where 1 is the band number
      * \note since QGIS 3.22
      */
     static QStringList cleanRasterReferences( const QString &str );
