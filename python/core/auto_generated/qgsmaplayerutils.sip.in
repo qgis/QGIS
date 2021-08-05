@@ -48,7 +48,7 @@ This method can be used to test whether a layer is associated with a file path.
 
     static bool updateLayerSourcePath( QgsMapLayer *layer, const QString &newPath );
 %Docstring
-Updates a ``layer``'s data source, replacing its data source with a path refering to ``newPath``.
+Updates a ``layer``'s data source, replacing its data source with a path referring to ``newPath``.
 
 Returns ``True`` if the layer was updated, or ``False`` if the layer was not updated (e.g. it
 uses a data provider which does not specify paths in a layer URI.
