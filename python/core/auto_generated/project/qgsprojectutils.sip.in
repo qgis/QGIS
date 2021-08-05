@@ -30,6 +30,14 @@ Returns a list of all layers in the specified ``project`` which match the given 
 This method can be used to retrieve a list of layers in a project associated with a file path.
 %End
 
+    static bool updateLayerPath( QgsProject *project, const QString &oldPath, const QString &newPath );
+%Docstring
+Updates a ``project``, replacing the data source for all layers which match the given ``oldPath``
+with sources which point to ``newPath``.
+
+Returns ``True`` if any layers were updated as a result.
+%End
+
 };
 
 
