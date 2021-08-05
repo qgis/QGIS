@@ -73,27 +73,6 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
 
   bool limitAtProvider = ( mRequest.limit() >= 0 );
 
-  // prepare spatial filter geometries for optimal speed
-  // TODO -- if mTransform is short circuited (i.e. requesting features in same CRS as database layer),
-  // then we should avoid the local distance check and instead add a ST_DWithin(...) clause to the
-  // SQL query
-  switch ( mRequest.spatialFilterType() )
-  {
-    case Qgis::SpatialFilterType::NoFilter:
-    case Qgis::SpatialFilterType::BoundingBox:
-      break;
-
-    case Qgis::SpatialFilterType::DistanceWithin:
-      if ( !mRequest.referenceGeometry().isEmpty() )
-      {
-        mDistanceWithinGeom = mRequest.referenceGeometry();
-        mDistanceWithinEngine.reset( QgsGeometry::createGeometryEngine( mDistanceWithinGeom.constGet() ) );
-        mDistanceWithinEngine->prepareGeometry();
-        limitAtProvider = false;
-      }
-      break;
-  }
-
   mCursorName = mConn->uniqueCursorName();
   QString whereClause;
 
@@ -103,6 +82,38 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
   if ( !mFilterRect.isNull() && !mSource->mGeometryColumn.isNull() )
   {
     whereClause = whereClauseRect();
+  }
+
+  // prepare spatial filter geometries for optimal speed
+  switch ( mRequest.spatialFilterType() )
+  {
+    case Qgis::SpatialFilterType::NoFilter:
+    case Qgis::SpatialFilterType::BoundingBox:
+      break;
+
+    case Qgis::SpatialFilterType::DistanceWithin:
+      // we only need to test the distance locally if we are transforming features on QGIS side, otherwise
+      // we use ST_DWithin on the postgres backend instead
+      if ( !mRequest.referenceGeometry().isEmpty() )
+      {
+        if ( !mTransform.isShortCircuited() || mSource->mSpatialColType != SctGeometry )
+        {
+          mDistanceWithinGeom = mRequest.referenceGeometry();
+          mDistanceWithinEngine.reset( QgsGeometry::createGeometryEngine( mDistanceWithinGeom.constGet() ) );
+          mDistanceWithinEngine->prepareGeometry();
+          limitAtProvider = false;
+        }
+        else
+        {
+          // we can safely hand this off to the backend to evaluate, so that it will nicely handle it within the query planner!
+          whereClause = QgsPostgresUtils::andWhereClauses( whereClause, QStringLiteral( "ST_DWithin(%1,ST_GeomFromText('%2',%3),%4)" ).arg(
+                          QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn ),
+                          mRequest.referenceGeometry().asWkt(),
+                          mSource->mRequestedSrid.isEmpty() ? mSource->mDetectedSrid : mSource->mRequestedSrid )
+                        .arg( mRequest.distanceWithin() ) );
+        }
+      }
+      break;
   }
 
   if ( !mSource->mSqlWhereClause.isEmpty() )
@@ -596,7 +607,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString &whereClause, long
 {
   mFetchGeometry = ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry )
                      || mFilterRequiresGeometry
-                     || mRequest.spatialFilterType() == Qgis::SpatialFilterType::DistanceWithin )
+                     || ( mRequest.spatialFilterType() == Qgis::SpatialFilterType::DistanceWithin && !mTransform.isShortCircuited() ) )
                    && !mSource->mGeometryColumn.isNull();
 #if 0
   // TODO: check that all field indexes exist
