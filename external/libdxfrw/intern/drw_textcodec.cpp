@@ -57,8 +57,7 @@ void DRW_TextCodec::setCodePage(std::string *c, bool dxfFormat){
         if (cp == "ANSI_874")
             conv.reset( new DRW_ConvTable(DRW_Table874, CPLENGTHCOMMON) );
         else if (cp == "ANSI_932")
-            conv.reset( new DRW_Conv932Table(DRW_Table932, DRW_LeadTable932,
-                                         DRW_DoubleTable932, CPLENGTH932) );
+            conv.reset( new DRW_Conv932Table() );
         else if (cp == "ANSI_936")
             conv.reset( new DRW_ConvDBCSTable(DRW_Table936, DRW_LeadTable936,
                                          DRW_DoubleTable936, CPLENGTH936) );
@@ -345,6 +344,10 @@ std::string DRW_ConvDBCSTable::toUtf8(std::string *s) {
     return res;
 }
 
+DRW_Conv932Table::DRW_Conv932Table()
+    :DRW_Converter(DRW_Table932, CPLENGTH932)
+{}
+
 std::string DRW_Conv932Table::fromUtf8(std::string *s) {
     std::string result;
     bool notFound;
@@ -369,8 +372,8 @@ std::string DRW_Conv932Table::fromUtf8(std::string *s) {
             if (notFound && ( code<0xF8 || (code>0x390 && code<0x542) ||
                     (code>0x200F && code<0x9FA1) || code>0xF928 )) {
                 for (int k=0; k<cpLength; k++){
-                    if(doubleTable[k][1] == code) {
-                        int data = doubleTable[k][0];
+                    if(DRW_DoubleTable932[k][1] == code) {
+                        int data = DRW_DoubleTable932[k][0];
                         char d[3];
                         d[0] = data >> 8;
                         d[1] = data & 0xFF;
