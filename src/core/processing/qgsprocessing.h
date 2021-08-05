@@ -44,7 +44,7 @@ class CORE_EXPORT QgsProcessing
     //! Data source types enum
     enum SourceType
     {
-      TypeMapLayer = -2, //!< Any map layer type (raster or vector or mesh)
+      TypeMapLayer = -2, //!< Any map layer type (raster, vector, mesh, point cloud or plugin layer)
       TypeVectorAnyGeometry = -1, //!< Any vector layer with geometry
       TypeVectorPoint = 0, //!< Vector point layers
       TypeVectorLine = 1, //!< Vector line layers
