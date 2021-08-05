@@ -178,10 +178,11 @@ QVariantMap QgsExternalResourceConfigDlg::config()
     cfg.insert( QStringLiteral( "DefaultRoot" ), mRootPath->text() );
 
   // Save Storage Mode
-  cfg.insert( QStringLiteral( "StorageMode" ), mStorageButtonGroup->checkedId() );
+  cfg.insert( QStringLiteral( "StorageMode" ), mStorageModeGroupBox->isVisible() ?
+              mStorageButtonGroup->checkedId() : QgsFileWidget::GetFile );
 
   // Save Relative Paths option
-  if ( mRelativeGroupBox->isChecked() )
+  if ( mRelativeGroupBox->isVisible() && mRelativeGroupBox->isChecked() )
   {
     cfg.insert( QStringLiteral( "RelativeStorage" ), mRelativeButtonGroup->checkedId() );
   }
@@ -294,5 +295,12 @@ void QgsExternalResourceConfigDlg::changeStorageType( int storageType )
 {
   // first one in combo box is not an external storage
   mExternalStorageGroupBox->setVisible( storageType );
+
+  // for now, we store only files in external storage
+  mStorageModeGroupBox->setVisible( !storageType );
+
+  // Absolute path are mandatory when using external storage
+  mRelativeGroupBox->setVisible( !storageType );
+
   emit changed();
 }
