@@ -58,16 +58,16 @@ jobs:
             patch-qt-3d: false
             LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
 
-          # - distro-version: 'rawhide'
-          #   qt-version: 6
-          #   run-tests: false
-          #   docker-tag-suffix: ''
-          #   with-qt6: ON
-          #   with-qt5: OFF
-          #   with-3d: OFF
-          #   with-quick: OFF
-          #   patch-qt-3d: false
-          #   LD_PRELOAD: ''
+          - distro-version: '34'
+            qt-version: 6
+            run-tests: false
+            docker-tag-suffix: ''
+            with-qt6: ON
+            with-qt5: OFF
+            with-3d: OFF
+            with-quick: OFF
+            patch-qt-3d: false
+            LD_PRELOAD: ''
 
 
       fail-fast: false
@@ -298,7 +298,7 @@ jobs:
             test-batch: ORACLE
             docker-target: binary-for-oracle
 
-          # - distro-version: rawhide
+          # - distro-version: '34'
           #   qt-version: 6
           #   test-batch: ALL_BUT_PROVIDERS
           #   docker-target: single

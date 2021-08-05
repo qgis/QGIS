@@ -1,4 +1,4 @@
-FROM fedora:rawhide as single
+FROM fedora:34 as single
 MAINTAINER Matthias Kuhn <matthias@opengis.ch>
 
 RUN dnf -y install \
@@ -45,18 +45,20 @@ RUN dnf -y install \
     ninja-build
 
 RUN cd /usr/src \
-  && wget https://github.com/KDE/qca/archive/refs/tags/v2.3.3.zip \
-  && unzip v2.3.3.zip \
-  && mkdir build-qt6 \
-  && cd build-qt6 \
-  && cmake -DCMAKE_INSTALL_PREFIX=/usr -DQT6=ON -GNinja ../qca-2.3.3 \
+  && wget https://github.com/KDE/qca/archive/refs/heads/master.zip \
+  && unzip master.zip \
+  && rm master.zip \
+  && mkdir build \
+  && cd build \
+  && cmake -DQT6=ON -GNinja ../qca-master \
   && ninja install
 
 RUN cd /usr/src \
   && wget https://github.com/frankosterfeld/qtkeychain/archive/refs/heads/master.zip \
   && unzip master.zip \
+  && rm master.zip \
   && cd qtkeychain-master \
-  && cmake -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_WITH_QT6=ON -GNinja \
+  && cmake -DBUILD_WITH_QT6=ON -GNinja \
   && ninja install
 
 RUN cd /usr/src \
@@ -66,3 +68,4 @@ RUN cd /usr/src \
   && qmake6 qwt.pro \
   && make -j4 \
   && make install
+  
