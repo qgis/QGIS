@@ -100,8 +100,7 @@ QgsRasterCalcDialog::QgsRasterCalcDialog( QgsRasterLayer *rasterLayer, QWidget *
 
   if ( ! useVirtualProvider() )
   {
-    mVirtualLayerLabel->hide();
-    mVirtualLayerName->hide();
+    setOutputToVirtual();
   }
 
 }

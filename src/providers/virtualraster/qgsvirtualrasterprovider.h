@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : June 10, 2021
     Copyright            : (C) 2021 by Francesco Bursi
-    email                : francesco.bursi
+    email                : ffrancesco dot bursi at hotmail dot it
 ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -19,6 +19,11 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsprovidermetadata.h"
 #include "qgsrastercalculator.h"
+
+/**
+ * The QgsVirtualRasterProvider class implements a raster data provider that enable the use of the raster calculator
+ * without the need of save on the disk a derived file.
+ */
 
 class QgsVirtualRasterProvider : public QgsRasterDataProvider
 {
@@ -69,8 +74,8 @@ class QgsVirtualRasterProvider : public QgsRasterDataProvider
     bool mValid = false;
     QgsCoordinateReferenceSystem mCrs;
     QgsRectangle mExtent;
-    int mWidth;
-    int mHeight;
+    int mWidth = 0;
+    int mHeight = 0;
     int mBandCount = 1;
     int mXBlockSize = 0;
     int mYBlockSize = 0;

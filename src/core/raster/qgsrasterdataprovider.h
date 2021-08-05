@@ -536,7 +536,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     static QList<QPair<QString, QString> > pyramidResamplingMethods( const QString &providerKey );
 
     /**
-     * Struct used to store information of the raster used in QgsVirtualRasterProvider for the calculations,
+     * Struct that stores information of the raster used in QgsVirtualRasterProvider for the calculations,
      * this struct is  stored in the DecodedUriParameters
      * \note used by QgsVirtualRasterProvider only
      */

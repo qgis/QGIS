@@ -68,7 +68,7 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     void mExpressionTextEdit_textChanged();
     //! Enables OK button if calculator expression is valid and output file path exists
     void setAcceptButtonState();
-    //! Disable some options that are not required if using Virtual Provider
+    //! Disables some options that are not required if using Virtual Provider
     void setOutputToVirtual();
     void showHelp();
 

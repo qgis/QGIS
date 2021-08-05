@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : June 10, 2021
     Copyright            : (C) 2021 by Francesco Bursi
-    email                : francesco.bursi
+    email                : francesco dot bursi at hotmail dot it
 ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -26,7 +26,7 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
   bool  ok;
   QgsRasterDataProvider::VirtualRasterParameters decodedUriParams = QgsRasterDataProvider::decodeVirtualRasterProviderUri( uri, & ok );
 
-  if ( ok == false )
+  if ( ! ok )
   {
     mValid = false;
     return;
@@ -150,7 +150,6 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
   std::unique_ptr< QgsRasterBlock > tblock = std::make_unique< QgsRasterBlock >( Qgis::DataType::Float64, width, height );
   double *outputData = ( double * )( tblock->bits() );
 
-  //else  // Original code (memory inefficient route)
   QMap< QString, QgsRasterBlock * > inputBlocks;
   QVector<QgsRasterCalculatorEntry>::const_iterator it = mRasterEntries.constBegin();
 

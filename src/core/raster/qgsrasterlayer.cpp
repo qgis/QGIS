@@ -2409,41 +2409,6 @@ QString QgsRasterLayer::encodedSource( const QString &source, const QgsReadWrite
 
     QgsRasterDataProvider::VirtualRasterParameters decodedVirtualParams = QgsRasterDataProvider::decodeVirtualRasterProviderUri( src );
 
-    /*
-    QUrl url = QUrl::fromEncoded( src.toLatin1() );
-    QUrlQuery query( url.query() );
-
-    for ( const auto &it : decodedVirtualParams.rInputLayers )
-    {
-      query.removeQueryItem( it.name + QStringLiteral( ":uri" ) );
-      query.addQueryItem( it.name + QStringLiteral( ":uri" ), context.pathResolver().writePath( it.uri ) );
-    }
-
-
-           for ( const auto &item : query.queryItems() )
-           {
-             if ( item.first.indexOf( ':' ) == -1 )
-             {
-               continue;
-             }
-
-             if ( !( item.first.mid( item.first.indexOf( ':' ), -1 ) == QStringLiteral( ":uri" ) ) )
-             {
-               continue;
-             }
-
-             query.removeQueryItem( item.first );
-             query.addQueryItem( item.first, context.pathResolver().writePath( item.second ) );
-
-           }
-
-    url.setQuery( query );
-
-    src = url.toEncoded();
-    handled = true;
-    QgsDebugMsg( src );
-    */
-
     for ( auto &it : decodedVirtualParams.rInputLayers )
     {
       it.uri = context.pathResolver().writePath( it.uri );
@@ -2633,22 +2598,6 @@ QString QgsRasterLayer::decodedSource( const QString &source, const QString &pro
     if ( provider == QLatin1String( "virtualraster" ) )
     {
       QgsRasterDataProvider::VirtualRasterParameters decodedVirtualParams = QgsRasterDataProvider::decodeVirtualRasterProviderUri( src );
-      /*
-            QUrl url = QUrl::fromEncoded( src.toLatin1() );
-            QUrlQuery query( url.query() );
-
-            for ( const auto &it : decodedVirtualParams.rInputLayers )
-            {
-              query.removeQueryItem( it.name + QStringLiteral( ":uri" ) );
-              query.addQueryItem( it.name + QStringLiteral( ":uri" ), context.pathResolver().readPath( it.uri ) );
-            }
-
-            url.setQuery( query );
-
-            src = url.toEncoded();
-            handled = true;
-            QgsDebugMsg( src );
-      */
 
       for ( auto &it : decodedVirtualParams.rInputLayers )
       {

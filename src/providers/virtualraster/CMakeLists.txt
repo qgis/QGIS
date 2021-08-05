@@ -11,10 +11,6 @@ set(VRP_HDRS
 ########################################################
 # Build
 
-include_directories(
-  SYSTEM
-)
-
 add_library (virtualraster MODULE ${VRP_SRCS} ${VRP_HDRS})
 
 # require c++17
