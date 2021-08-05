@@ -290,6 +290,7 @@ class TestProcessingGui : public QObject
     void testProviderConnectionWrapper();
     void testDatabaseSchemaWrapper();
     void testDatabaseTableWrapper();
+    void testPointCloudLayerWrapper();
     void testFieldMapWidget();
     void testFieldMapWrapper();
     void testAggregateWidget();
@@ -9897,6 +9898,149 @@ void TestProcessingGui::testMeshDatasetWrapperLayerOutsideProject()
   mapCanvas->setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2021, 1, 1 ), QTime( 0, 3, 0 ), Qt::UTC ), QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 5, 0 ), Qt::UTC ) ) );
   QVERIFY( datasetTimeWidget->radioButtonCurrentCanvasTime->isEnabled() );
 
+}
+
+void TestProcessingGui::testPointCloudLayerWrapper()
+{
+  // setup a project with a range of layer types
+  QgsProject::instance()->removeAllMapLayers();
+  QgsPointCloudLayer *cloud1 = new QgsPointCloudLayer( QStringLiteral( TEST_DATA_DIR ) + "/point_clouds/las/cloud.las", QStringLiteral( "cloud1" ), QStringLiteral( "pdal" ) );
+  QVERIFY( cloud1->isValid() );
+  QgsProject::instance()->addMapLayer( cloud1 );
+  QgsPointCloudLayer *cloud2 = new QgsPointCloudLayer( QStringLiteral( TEST_DATA_DIR ) + "/point_clouds/las/cloud.las", QStringLiteral( "cloud2" ), QStringLiteral( "pdal" ) );
+  QVERIFY( cloud2->isValid() );
+  QgsProject::instance()->addMapLayer( cloud2 );
+
+  auto testWrapper = [ = ]( QgsProcessingGui::WidgetType type )
+  {
+    // non optional
+    QgsProcessingParameterPointCloudLayer param( QStringLiteral( "cloud" ), QStringLiteral( "cloud" ), false );
+
+    QgsProcessingPointCloudLayerWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingPointCloudLayerWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( QStringLiteral( "bb" ), context );
+
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+      case QgsProcessingGui::Modeler:
+        QCOMPARE( spy.count(), 1 );
+        QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "bb" ) );
+        QCOMPARE( static_cast< QgsProcessingMapLayerComboBox * >( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "bb" ) );
+        wrapper.setWidgetValue( QStringLiteral( "aa" ), context );
+        QCOMPARE( spy.count(), 2 );
+        QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "aa" ) );
+        QCOMPARE( static_cast< QgsProcessingMapLayerComboBox * >( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "aa" ) );
+        break;
+    }
+
+    delete w;
+
+    // with project
+    QgsProcessingParameterWidgetContext widgetContext;
+    widgetContext.setProject( QgsProject::instance() );
+    context.setProject( QgsProject::instance() );
+
+    QgsProcessingMapLayerWidgetWrapper wrapper2( &param, type );
+    wrapper2.setWidgetContext( widgetContext );
+    w = wrapper2.createWrappedWidget( context );
+
+    QSignalSpy spy2( &wrapper2, &QgsProcessingPointCloudLayerWidgetWrapper::widgetValueHasChanged );
+    wrapper2.setWidgetValue( QStringLiteral( "bb" ), context );
+    QCOMPARE( spy2.count(), 1 );
+    QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "bb" ) );
+    QCOMPARE( static_cast< QgsProcessingMapLayerComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "bb" ) );
+    wrapper2.setWidgetValue( QStringLiteral( "cloud2" ), context );
+    QCOMPARE( spy2.count(), 2 );
+    QCOMPARE( wrapper2.widgetValue().toString(), cloud2->id() );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( static_cast< QgsProcessingMapLayerComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "cloud2 [EPSG:28356]" ) );
+        break;
+      case QgsProcessingGui::Modeler:
+        QCOMPARE( static_cast< QgsProcessingMapLayerComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "cloud2" ) );
+        break;
+    }
+
+    QCOMPARE( static_cast< QgsProcessingMapLayerComboBox * >( wrapper2.wrappedWidget() )->currentLayer()->name(), QStringLiteral( "cloud2" ) );
+
+    // check signal
+    static_cast< QgsProcessingMapLayerComboBox * >( wrapper2.wrappedWidget() )->setLayer( cloud1 );
+    QCOMPARE( spy2.count(), 3 );
+    QCOMPARE( wrapper2.widgetValue().toString(), cloud1->id() );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( static_cast< QgsProcessingMapLayerComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "cloud1 [EPSG:28356]" ) );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        QCOMPARE( static_cast< QgsProcessingMapLayerComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "cloud1" ) );
+        break;
+    }
+    QCOMPARE( static_cast< QgsProcessingMapLayerComboBox * >( wrapper2.wrappedWidget() )->currentLayer()->name(), QStringLiteral( "cloud1" ) );
+
+    delete w;
+
+    // optional
+    QgsProcessingParameterPoint param2( QStringLiteral( "cloud" ), QStringLiteral( "cloud" ), QVariant(), true );
+    QgsProcessingPointCloudLayerWidgetWrapper wrapper3( &param2, type );
+    wrapper3.setWidgetContext( widgetContext );
+    w = wrapper3.createWrappedWidget( context );
+
+    QSignalSpy spy3( &wrapper3, &QgsProcessingPointCloudLayerWidgetWrapper::widgetValueHasChanged );
+    wrapper3.setWidgetValue( QStringLiteral( "bb" ), context );
+    QCOMPARE( spy3.count(), 1 );
+    QCOMPARE( wrapper3.widgetValue().toString(), QStringLiteral( "bb" ) );
+    QCOMPARE( static_cast< QgsProcessingMapLayerComboBox * >( wrapper3.wrappedWidget() )->currentText(), QStringLiteral( "bb" ) );
+    wrapper3.setWidgetValue( QStringLiteral( "cloud2" ), context );
+    QCOMPARE( spy3.count(), 2 );
+    QCOMPARE( wrapper3.widgetValue().toString(), cloud2->id() );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( static_cast< QgsProcessingMapLayerComboBox * >( wrapper3.wrappedWidget() )->currentText(), QStringLiteral( "cloud2 [EPSG:28356]" ) );
+        break;
+      case QgsProcessingGui::Modeler:
+        QCOMPARE( static_cast< QgsProcessingMapLayerComboBox * >( wrapper3.wrappedWidget() )->currentText(), QStringLiteral( "cloud2" ) );
+        break;
+    }
+    wrapper3.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy3.count(), 3 );
+    QVERIFY( !wrapper3.widgetValue().isValid() );
+    delete w;
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "cloud" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
 }
 
 void TestProcessingGui::testModelGraphicsView()
