@@ -58,7 +58,11 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
-           <widget class="QComboBox" name="mStorageType"/>
+           <widget class="QComboBox" name="mStorageType">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;Way of dealing with attachment file&lt;p&gt;&quot;Select existing file&quot; allows you to pick an existing file from the file system or set an existing URL external resource.&lt;/p&gt;&lt;p&gt;Other items allows you to pick a local resource and store it on an external storage system. You cannot use relative path in this mode and you can only pick file and not directory.&lt;/p&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -79,10 +83,18 @@
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="mStorageUrl"/>
+             <widget class="QLineEdit" name="mStorageUrl">
+              <property name="toolTip">
+               <string>Url used to store file selected from the attachment widget.</string>
+              </property>
+             </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="mStorageUrlExpression"/>
+             <widget class="QLineEdit" name="mStorageUrlExpression">
+              <property name="toolTip">
+               <string>Url used to store file selected from the attachment widget.</string>
+              </property>
+             </widget>
             </item>
             <item>
              <widget class="QgsPropertyOverrideButton" name="mStorageUrlPropertyOverrideButton">
@@ -128,7 +140,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox">
+        <widget class="QGroupBox" name="mPathGroupBox">
          <property name="title">
           <string>Path</string>
          </property>
@@ -602,7 +614,7 @@
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="mRelativeButtonGroup"/>
   <buttongroup name="mStorageButtonGroup"/>
+  <buttongroup name="mRelativeButtonGroup"/>
  </buttongroups>
 </ui>
