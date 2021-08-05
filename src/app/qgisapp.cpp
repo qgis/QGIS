@@ -10911,12 +10911,13 @@ void QgisApp::toggleEditing()
   const QList<QgsMapLayer *> layerList = layerTreeView()->selectedLayers();
   if ( !layerList.isEmpty() )
   {
-    // if there are selected layers, try to toggle those
-    const bool shouldStartEditing = !mActionToggleEditing->isChecked();
+    // if there are selected layers, try to toggle those.
+    // mActionToggleEditing has already been triggered at this point so its checked status has changed
+    const bool shouldStartEditing = mActionToggleEditing->isChecked();
     for ( const auto layer : layerList )
     {
       if ( layer->supportsEditing() &&
-           shouldStartEditing == layer->isEditable() )
+           shouldStartEditing != layer->isEditable() )
       {
         toggleEditing( layer, true );
       }
