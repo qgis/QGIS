@@ -60,6 +60,17 @@ class CORE_EXPORT QgsMapLayerUtils
      */
     static bool layerSourceMatchesPath( const QgsMapLayer *layer, const QString &path );
 
+    /**
+     * Updates a \a layer's data source, replacing its data source with a path refering to \a newPath.
+     *
+     * Returns TRUE if the layer was updated, or FALSE if the layer was not updated (e.g. it
+     * uses a data provider which does not specify paths in a layer URI.
+     *
+     * \since QGIS 3.22
+     */
+    static bool updateLayerSourcePath( QgsMapLayer *layer, const QString &newPath );
+
+
 };
 
 #endif // QGSMAPLAYERUTILS_H

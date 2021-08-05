@@ -121,3 +121,18 @@ bool QgsMapLayerUtils::layerSourceMatchesPath( const QgsMapLayer *layer, const Q
   const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->source() );
   return parts.value( QStringLiteral( "path" ) ).toString() == path;
 }
+
+bool QgsMapLayerUtils::updateLayerSourcePath( QgsMapLayer *layer, const QString &newPath )
+{
+  if ( !layer || newPath.isEmpty() )
+    return false;
+
+  QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->source() );
+  if ( !parts.contains( QStringLiteral( "path" ) ) )
+    return false;
+
+  parts.insert( QStringLiteral( "path" ), newPath );
+  const QString newUri = QgsProviderRegistry::instance()->encodeUri( layer->providerType(), parts );
+  layer->setDataSource( newUri, layer->name(), layer->providerType() );
+  return true;
+}
