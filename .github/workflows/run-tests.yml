@@ -105,7 +105,7 @@ jobs:
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          registry: docker.pkg.github.com
+          registry: ghcr.io
           image_name: qgis3-dv${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-build-deps
           dockerfile: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
           build_extra_args: "--build-arg=DISTRO_VERSION=${{ matrix.distro-version }}"
@@ -342,7 +342,7 @@ jobs:
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          registry: docker.pkg.github.com
+          registry: ghcr.io
           image_name: qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only
           dockerfile: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
           build_extra_args: "--target ${{ matrix.docker-target }} --build-arg=DISTRO_VERSION=${{ matrix.distro-version }}"
