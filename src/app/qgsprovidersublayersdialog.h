@@ -71,6 +71,7 @@ class QgsProviderSublayersDialog : public QDialog, private Ui::QgsProviderSublay
 
   private slots:
     void treeSelectionChanged( const QItemSelection &, const QItemSelection & );
+    void selectAll();
 
   private:
 

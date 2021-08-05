@@ -156,24 +156,12 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
 
       mModel->setSublayerDetails( res );
       mTask = nullptr;
+      selectAll();
     } );
     QgsApplication::taskManager()->addTask( mTask.data() );
   }
 
-  connect( mBtnSelectAll, &QAbstractButton::pressed, this, [ = ]
-  {
-    mLayersTree->selectionModel()->clear();
-    for ( int row = 0; row < mProxyModel->rowCount(); ++row )
-    {
-      const QModelIndex index = mProxyModel->index( row, 0 );
-      if ( !mProxyModel->data( index, static_cast< int >( QgsProviderSublayerModel::Role::IsNonLayerItem ) ).toBool() )
-      {
-        mLayersTree->selectionModel()->select( QItemSelection( mLayersTree->model()->index( index.row(), 0, index.parent() ),
-                                               mLayersTree->model()->index( index.row(), mLayersTree->model()->columnCount() - 1, index.parent() ) ),
-                                               QItemSelectionModel::Select );
-      }
-    }
-  } );
+  connect( mBtnSelectAll, &QAbstractButton::pressed, this, &QgsProviderSublayersDialog::selectAll );
   connect( mBtnDeselectAll, &QAbstractButton::pressed, this, [ = ] { mLayersTree->selectionModel()->clear(); } );
   connect( mLayersTree->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsProviderSublayersDialog::treeSelectionChanged );
   connect( mSearchLineEdit, &QgsFilterLineEdit::textChanged, mProxyModel, &QgsProviderSublayerProxyModel::setFilterString );
@@ -194,6 +182,7 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
   mButtonBox->button( QDialogButtonBox::Ok )->setText( tr( "Add Layers" ) );
 
+  selectAll();
 }
 
 void QgsProviderSublayersDialog::setNonLayerItems( const QList<QgsProviderSublayerModel::NonLayerItem> &items )
@@ -324,4 +313,19 @@ void QgsProviderSublayersDialog::treeSelectionChanged( const QItemSelection &sel
 
   mCbxAddToGroup->setEnabled( !selectedANonLayerItem );
   mButtonBox->button( QDialogButtonBox::Ok )->setText( selectedANonLayerItem ? tr( "Open" ) : tr( "Add Layers" ) );
+}
+
+void QgsProviderSublayersDialog::selectAll()
+{
+  mLayersTree->selectionModel()->clear();
+  for ( int row = 0; row < mProxyModel->rowCount(); ++row )
+  {
+    const QModelIndex index = mProxyModel->index( row, 0 );
+    if ( !mProxyModel->data( index, static_cast< int >( QgsProviderSublayerModel::Role::IsNonLayerItem ) ).toBool() )
+    {
+      mLayersTree->selectionModel()->select( QItemSelection( mLayersTree->model()->index( index.row(), 0, index.parent() ),
+                                             mLayersTree->model()->index( index.row(), mLayersTree->model()->columnCount() - 1, index.parent() ) ),
+                                             QItemSelectionModel::Select );
+    }
+  }
 }
