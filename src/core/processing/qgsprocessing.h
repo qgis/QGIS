@@ -53,7 +53,8 @@ class CORE_EXPORT QgsProcessing
       TypeFile = 4, //!< Files (i.e. non map layer sources, such as text files)
       TypeVector = 5, //!< Tables (i.e. vector layers with or without geometry). When used for a sink this indicates the sink has no geometry.
       TypeMesh = 6, //!< Mesh layers \since QGIS 3.6
-      TypePlugin = 7 //!< Plugin layers \since QGIS 3.22
+      TypePlugin = 7, //!< Plugin layers \since QGIS 3.22
+      TypePointCloud = 8 //!< Point cloud layers \since QGIS 3.22
     };
 
     //! Available Python output types
@@ -91,6 +92,8 @@ class CORE_EXPORT QgsProcessing
           return QStringLiteral( "TypeMesh" );
         case QgsProcessing::TypePlugin:
           return QStringLiteral( "TypePlugin" );
+        case QgsProcessing::TypePointCloud:
+          return QStringLiteral( "TypePointCloud" );
       }
       return QString();
     }

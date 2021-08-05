@@ -2691,6 +2691,12 @@ QString createAllMapLayerFileFilter()
     if ( !vectors.contains( mesh ) )
       vectors << mesh;
   }
+  QStringList pointCloudFilters = QgsProviderRegistry::instance()->filePointCloudFilters().split( QStringLiteral( ";;" ) );
+  for ( const QString &pointCloud : pointCloudFilters )
+  {
+    if ( !vectors.contains( pointCloud ) )
+      vectors << pointCloud;
+  }
   vectors.removeAll( QObject::tr( "All files (*.*)" ) );
   std::sort( vectors.begin(), vectors.end() );
 
@@ -2739,6 +2745,10 @@ QString QgsProcessingParameterMapLayer::asScriptCode() const
 
       case QgsProcessing::TypePlugin:
         code += QLatin1String( "plugin " );
+        break;
+
+      case QgsProcessing::TypePointCloud:
+        code += QLatin1String( "pointcloud " );
         break;
     }
   }
@@ -2793,6 +2803,12 @@ QgsProcessingParameterMapLayer *QgsProcessingParameterMapLayer::fromScriptCode( 
     {
       types << QgsProcessing::TypePlugin;
       def = def.mid( 7 );
+      continue;
+    }
+    else if ( def.startsWith( QLatin1String( "pointcloud" ), Qt::CaseInsensitive ) )
+    {
+      types << QgsProcessing::TypePointCloud;
+      def = def.mid( 11 );
       continue;
     }
     break;
@@ -3871,6 +3887,9 @@ QString QgsProcessingParameterMultipleLayers::createFileFilter() const
 
     case QgsProcessing::TypeMesh:
       return QgsProviderRegistry::instance()->fileMeshFilters() + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" );
+
+    case QgsProcessing::TypePointCloud:
+      return QgsProviderRegistry::instance()->filePointCloudFilters() + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" );
 
     case QgsProcessing::TypeMapLayer:
     case QgsProcessing::TypePlugin:
@@ -5865,6 +5884,7 @@ bool QgsProcessingParameterFeatureSink::hasGeometry() const
     case QgsProcessing::TypeVector:
     case QgsProcessing::TypeMesh:
     case QgsProcessing::TypePlugin:
+    case QgsProcessing::TypePointCloud:
       return false;
   }
   return true;
@@ -6561,6 +6581,7 @@ bool QgsProcessingParameterVectorDestination::hasGeometry() const
     case QgsProcessing::TypeVector:
     case QgsProcessing::TypeMesh:
     case QgsProcessing::TypePlugin:
+    case QgsProcessing::TypePointCloud:
       return false;
   }
   return true;

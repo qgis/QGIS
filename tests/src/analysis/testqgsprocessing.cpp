@@ -860,10 +860,16 @@ void TestQgsProcessing::compatibleLayers()
   QgsMeshLayer *m2 = new QgsMeshLayer( fm.filePath(), "mA", "mdal" );
   QVERIFY( m2->isValid() );
 
+  QFileInfo fpc( testDataDir + "/point_clouds/las/cloud.las" );
+  QgsPointCloudLayer *pc1 = new QgsPointCloudLayer( fpc.filePath(), "PCX", "pdal" );
+  QVERIFY( m1->isValid() );
+  QgsPointCloudLayer *pc2 = new QgsPointCloudLayer( fpc.filePath(), "pcA", "pdal" );
+  QVERIFY( m2->isValid() );
+
   DummyPluginLayer *pl1 = new DummyPluginLayer( "dummylayer", "PX" );
   DummyPluginLayer *pl2 = new DummyPluginLayer( "dummylayer", "pA" );
 
-  p.addMapLayers( QList<QgsMapLayer *>() << r1 << r2 << r3 << v1 << v2 << v3 << v4 << m1 << m2 << pl1 << pl2 );
+  p.addMapLayers( QList<QgsMapLayer *>() << r1 << r2 << r3 << v1 << v2 << v3 << v4 << m1 << m2 << pl1 << pl2 << pc1 << pc2 );
 
   // compatibleRasterLayers
   QVERIFY( QgsProcessingUtils::compatibleRasterLayers( nullptr ).isEmpty() );
@@ -926,6 +932,21 @@ void TestQgsProcessing::compatibleLayers()
     lIds << pl->name();
   QCOMPARE( lIds, QStringList() << "PX" << "pA" );
 
+  // compatiblePointCloudLayers
+  QVERIFY( QgsProcessingUtils::compatiblePointCloudLayers( nullptr ).isEmpty() );
+
+  // sorted
+  lIds.clear();
+  for ( QgsPointCloudLayer *pcl : QgsProcessingUtils::compatiblePointCloudLayers( &p ) )
+    lIds << pcl->name();
+  QCOMPARE( lIds, QStringList() << "pcA" << "PCX" );
+
+  // unsorted
+  lIds.clear();
+  for ( QgsPointCloudLayer *pcl : QgsProcessingUtils::compatiblePointCloudLayers( &p, false ) )
+    lIds << pcl->name();
+  QCOMPARE( lIds, QStringList() << "PCX" << "pcA" );
+
   // point only
   lIds.clear();
   for ( QgsVectorLayer *vl : QgsProcessingUtils::compatibleVectorLayers( &p, QList<int>() << QgsProcessing::TypeVectorPoint ) )
@@ -969,13 +990,13 @@ void TestQgsProcessing::compatibleLayers()
   lIds.clear();
   for ( QgsMapLayer *l : QgsProcessingUtils::compatibleLayers( &p ) )
     lIds << l->name();
-  QCOMPARE( lIds, QStringList() << "ar2" << "mA" << "MX" << "pA" << "PX" << "R1" << "v1" << "v3" << "V4" << "vvvv4" <<  "zz" );
+  QCOMPARE( lIds, QStringList() << "ar2" << "mA" << "MX" << "pA" << "pcA" << "PCX" << "PX" << "R1" << "v1" << "v3" << "V4" << "vvvv4" <<  "zz" );
 
   // unsorted
   lIds.clear();
   for ( QgsMapLayer *l : QgsProcessingUtils::compatibleLayers( &p, false ) )
     lIds << l->name();
-  QCOMPARE( lIds, QStringList() << "R1" << "ar2" << "zz"  << "V4" << "v1" << "v3" << "vvvv4" << "MX" << "mA" << "PX" << "pA" );
+  QCOMPARE( lIds, QStringList() << "R1" << "ar2" << "zz"  << "V4" << "v1" << "v3" << "vvvv4" << "MX" << "mA" << "PCX" << "pcA" << "PX" << "pA" );
 }
 
 void TestQgsProcessing::encodeDecodeUriProvider()
@@ -2971,6 +2992,11 @@ void TestQgsProcessing::parameterMapLayer()
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMapLayer('non_optional', '', defaultValue='', types=[QgsProcessing.TypePlugin])" ) );
   code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##non_optional=layer plugin" ) );
+  def->setDataTypes( QList< int >() << QgsProcessing::TypePointCloud );
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMapLayer('non_optional', '', defaultValue='', types=[QgsProcessing.TypePointCloud])" ) );
+  code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##non_optional=layer pointcloud" ) );
 
   // optional
   def.reset( new QgsProcessingParameterMapLayer( "optional", QString(), v1->id(), true ) );

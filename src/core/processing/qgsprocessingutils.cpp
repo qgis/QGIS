@@ -77,6 +77,11 @@ QList<QgsPluginLayer *> QgsProcessingUtils::compatiblePluginLayers( QgsProject *
   return compatibleMapLayers< QgsPluginLayer >( project, sort );
 }
 
+QList<QgsPointCloudLayer *> QgsProcessingUtils::compatiblePointCloudLayers( QgsProject *project, bool sort )
+{
+  return compatibleMapLayers< QgsPointCloudLayer >( project, sort );
+}
+
 template<typename T> QList<T *> QgsProcessingUtils::compatibleMapLayers( QgsProject *project, bool sort )
 {
   if ( !project )
@@ -107,7 +112,6 @@ QList<QgsMapLayer *> QgsProcessingUtils::compatibleLayers( QgsProject *project, 
 
   QList<QgsMapLayer *> layers;
 
-  //~ const auto rasterLayers = compatibleRasterLayers( project, false );
   const auto rasterLayers = compatibleMapLayers< QgsRasterLayer >( project, false );
   for ( QgsRasterLayer *rl : rasterLayers )
     layers << rl;
@@ -116,12 +120,14 @@ QList<QgsMapLayer *> QgsProcessingUtils::compatibleLayers( QgsProject *project, 
   for ( QgsVectorLayer *vl : vectorLayers )
     layers << vl;
 
-  //~ const auto meshLayers = compatibleMeshLayers( project, false );
   const auto meshLayers = compatibleMapLayers< QgsMeshLayer >( project, false );
-  for ( QgsMeshLayer *vl : meshLayers )
-    layers << vl;
+  for ( QgsMeshLayer *ml : meshLayers )
+    layers << ml;
 
-  //~ const auto pluginLayers = compatiblePluginLayers( project, false );
+  const auto pointCloudLayers = compatibleMapLayers< QgsPointCloudLayer >( project, false );
+  for ( QgsPointCloudLayer *pcl : pointCloudLayers )
+    layers << pcl;
+
   const auto pluginLayers = compatibleMapLayers< QgsPluginLayer >( project, false );
   for ( QgsPluginLayer *pl : pluginLayers )
     layers << pl;

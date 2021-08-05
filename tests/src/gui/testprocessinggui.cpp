@@ -96,6 +96,7 @@
 #include "qgsprocessingmeshdatasetwidget.h"
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgspluginlayer.h"
+#include "qgspointcloudlayer.h"
 
 
 class TestParamType : public QgsProcessingParameterDefinition
@@ -358,11 +359,9 @@ void TestProcessingGui::initTestCase()
     passfile.close();
     qputenv( "QGIS_AUTH_PASSWORD_FILE", passfilepath.toLatin1() );
   }
-  // qDebug( "QGIS_AUTH_PASSWORD_FILE=%s", qgetenv( "QGIS_AUTH_PASSWORD_FILE" ).constData() );
 
   // re-init app and auth manager
   QgsApplication::quit();
-  // QTest::qSleep( 3000 );
   QgsApplication::init();
   QgsApplication::initQgis();
   QVERIFY2( !QgsApplication::authManager()->isDisabled(),
@@ -3511,6 +3510,8 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QgsProject::instance()->addMapLayer( raster );
   DummyPluginLayer *plugin = new DummyPluginLayer( "dummylayer", "plugin" );
   QgsProject::instance()->addMapLayer( plugin );
+  QgsPointCloudLayer *pointCloud = new QgsPointCloudLayer( QStringLiteral( TEST_DATA_DIR ) + "/point_clouds/las/cloud.las", QStringLiteral( "pointcloud" ), QStringLiteral( "pdal" ) );
+  QgsProject::instance()->addMapLayer( pointCloud );
 
   dlg->setProject( QgsProject::instance() );
   // should be filtered to raster layers only
@@ -3572,6 +3573,14 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "plugin" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), plugin->id() );
 
+  // point cloud
+  param = std::make_unique< QgsProcessingParameterMultipleLayers >( QString(), QString(), QgsProcessing::TypePointCloud );
+  dlg = std::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource >() );
+  dlg->setProject( QgsProject::instance() );
+  QCOMPARE( dlg->mModel->rowCount(), 1 );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "pointcloud [EPSG:28356]" ) );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), pointCloud->id() );
+
   // vector points
   param = std::make_unique< QgsProcessingParameterMultipleLayers >( QString(), QString(), QgsProcessing::TypeVectorPoint );
   dlg = std::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource >() );
@@ -3610,12 +3619,13 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   param = std::make_unique< QgsProcessingParameterMultipleLayers >( QString(), QString(), QgsProcessing::TypeMapLayer );
   dlg = std::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource >() );
   dlg->setProject( QgsProject::instance() );
-  QCOMPARE( dlg->mModel->rowCount(), 7 );
+  QCOMPARE( dlg->mModel->rowCount(), 8 );
   titles.clear();
   for ( int i = 0; i < dlg->mModel->rowCount(); ++i )
     titles << dlg->mModel->data( dlg->mModel->index( i, 0 ) ).toString();
   QCOMPARE( titles, QSet<QString>() << QStringLiteral( "polygon [EPSG:4326]" ) << QStringLiteral( "point [EPSG:4326]" ) << QStringLiteral( "line [EPSG:4326]" )
-            << QStringLiteral( "nogeom" ) << QStringLiteral( "raster [EPSG:4326]" ) << QStringLiteral( "mesh" ) << QStringLiteral( "plugin" ) );
+            << QStringLiteral( "nogeom" ) << QStringLiteral( "raster [EPSG:4326]" ) << QStringLiteral( "mesh" ) << QStringLiteral( "plugin" )
+            << QStringLiteral( "pointcloud [EPSG:28356]" ) );
 
   // files
   param = std::make_unique< QgsProcessingParameterMultipleLayers >( QString(), QString(), QgsProcessing::TypeFile );

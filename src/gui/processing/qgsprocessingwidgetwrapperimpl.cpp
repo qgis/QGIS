@@ -5802,6 +5802,7 @@ QgsProcessingMapLayerParameterDefinitionWidget::QgsProcessingMapLayerParameterDe
   mLayerTypeComboBox->addItem( tr( "Raster" ), QgsProcessing::TypeRaster );
   mLayerTypeComboBox->addItem( tr( "Mesh" ), QgsProcessing::TypeMesh );
   mLayerTypeComboBox->addItem( tr( "Plugin" ), QgsProcessing::TypePlugin );
+  mLayerTypeComboBox->addItem( tr( "Point Cloud" ), QgsProcessing::TypePointCloud );
 
   if ( const QgsProcessingParameterMapLayer *layerParam = dynamic_cast<const QgsProcessingParameterMapLayer *>( definition ) )
   {
@@ -6792,6 +6793,17 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
       break;
     }
 
+    case QgsProcessing::TypePointCloud:
+    {
+      mModelSources = model->availableSourcesForChild( modelChildAlgorithmID, QStringList() << QgsProcessingParameterPointCloudLayer::typeName()
+                      << QgsProcessingParameterMultipleLayers::typeName()
+                      << QgsProcessingParameterFile::typeName(),
+                      QStringList() << QgsProcessingOutputFile::typeName()
+                      << QgsProcessingOutputMapLayer::typeName()
+                      << QgsProcessingOutputMultipleLayers::typeName() );
+      break;
+    }
+
     case QgsProcessing::TypeVector:
     {
       mModelSources = model->availableSourcesForChild( modelChildAlgorithmID, QStringList() << QgsProcessingParameterFeatureSource::typeName()
@@ -6934,6 +6946,7 @@ QgsProcessingMultipleLayerParameterDefinitionWidget::QgsProcessingMultipleLayerP
   mLayerTypeComboBox->addItem( tr( "File" ), QgsProcessing::TypeFile );
   mLayerTypeComboBox->addItem( tr( "Mesh" ), QgsProcessing::TypeMesh );
   mLayerTypeComboBox->addItem( tr( "Plugin" ), QgsProcessing::TypePlugin );
+  mLayerTypeComboBox->addItem( tr( "Point Cloud" ), QgsProcessing::TypePointCloud );
   if ( const QgsProcessingParameterMultipleLayers *layersParam = dynamic_cast<const QgsProcessingParameterMultipleLayers *>( definition ) )
     mLayerTypeComboBox->setCurrentIndex( mLayerTypeComboBox->findData( layersParam->layerType() ) );
 
