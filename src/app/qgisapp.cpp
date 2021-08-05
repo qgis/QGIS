@@ -10960,19 +10960,37 @@ void QgisApp::toggleMapTips( bool enabled )
 
 void QgisApp::toggleEditing()
 {
-  QgsMapLayer *currentLayer =  activeLayer();
-  if ( currentLayer && currentLayer->supportsEditing() )
+  const QList<QgsMapLayer *> layerList = layerTreeView()->selectedLayers();
+  if ( !layerList.isEmpty() )
   {
-    toggleEditing( currentLayer, true );
+    // if there are selected layers, try to toggle those
+    const bool shouldStartEditing = !mActionToggleEditing->isChecked();
+    for ( const auto layer : layerList )
+    {
+      if ( layer->supportsEditing() &&
+           shouldStartEditing == layer->isEditable() )
+      {
+        toggleEditing( layer, true );
+      }
+    }
   }
   else
   {
-    // active although there's no layer active!?
-    mActionToggleEditing->setChecked( false );
-    mActionToggleEditing->setEnabled( false );
-    visibleMessageBar()->pushMessage( tr( "Start editing failed" ),
-                                      tr( "Layer cannot be edited" ),
-                                      Qgis::MessageLevel::Warning );
+    // if there are no selected layers, try to toggle the current layer
+    QgsMapLayer *currentLayer =  activeLayer();
+    if ( currentLayer && currentLayer->supportsEditing() )
+    {
+      toggleEditing( currentLayer, true );
+    }
+    else
+    {
+      // active although there's no layer active!?
+      mActionToggleEditing->setChecked( false );
+      mActionToggleEditing->setEnabled( false );
+      visibleMessageBar()->pushMessage( tr( "Start editing failed" ),
+                                        tr( "Layer cannot be edited" ),
+                                        Qgis::MessageLevel::Warning );
+    }
   }
 }
 
