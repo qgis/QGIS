@@ -114,7 +114,7 @@ class CORE_EXPORT QgsExternalStorageContent : public QObject
     Qgis::ContentStatus status() const;
 
     /**
-     * Returns error textual description if an error occured and status() returns Failed
+     * Returns error textual description if an error occurred and status() returns Failed
      */
     const QString &errorString() const;
 

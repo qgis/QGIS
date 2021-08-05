@@ -102,7 +102,7 @@ Returns content status
 
     const QString &errorString() const;
 %Docstring
-Returns error textual description if an error occured and :py:func:`~QgsExternalStorageContent.status` returns Failed
+Returns error textual description if an error occurred and :py:func:`~QgsExternalStorageContent.status` returns Failed
 %End
 
   public slots:
