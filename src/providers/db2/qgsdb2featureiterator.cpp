@@ -23,6 +23,7 @@
 #include "qgslogger.h"
 #include "qgsgeometry.h"
 #include "qgsexception.h"
+#include "qgsgeometryengine.h"
 
 #include <QObject>
 #include <QTextStream>
@@ -49,6 +50,23 @@ QgsDb2FeatureIterator::QgsDb2FeatureIterator( QgsDb2FeatureSource *source, bool 
     return;
   }
 
+  // prepare spatial filter geometries for optimal speed
+  switch ( mRequest.spatialFilterType() )
+  {
+    case Qgis::SpatialFilterType::NoFilter:
+    case Qgis::SpatialFilterType::BoundingBox:
+      break;
+
+    case Qgis::SpatialFilterType::DistanceWithin:
+      if ( !mRequest.referenceGeometry().isEmpty() )
+      {
+        mDistanceWithinGeom = mRequest.referenceGeometry();
+        mDistanceWithinEngine.reset( QgsGeometry::createGeometryEngine( mDistanceWithinGeom.constGet() ) );
+        mDistanceWithinEngine->prepareGeometry();
+      }
+      break;
+  }
+
   BuildStatement( request );
 
   // WARNING - we can't obtain the database connection now, as this method should be
@@ -67,7 +85,7 @@ QgsDb2FeatureIterator::~QgsDb2FeatureIterator()
 
 void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
 {
-  bool limitAtProvider = ( mRequest.limit() >= 0 );
+  bool limitAtProvider = ( mRequest.limit() >= 0 ) && mRequest.spatialFilterType() != Qgis::SpatialFilterType::DistanceWithin;
   QString delim;
 
   // build sql statement
@@ -108,6 +126,7 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   // get geometry col if requested and table has spatial column
   if ( (
          !( request.flags() & QgsFeatureRequest::NoGeometry )
+         || ( request.spatialFilterType() == Qgis::SpatialFilterType::DistanceWithin )
          || ( request.filterType() == QgsFeatureRequest::FilterExpression && request.filterExpression()->needsGeometry() )
        )
        && mSource->isSpatial() )
@@ -122,7 +141,7 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   // set spatial filter
   if ( !mFilterRect.isNull() && mSource->isSpatial() && !mFilterRect.isEmpty() )
   {
-    if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+    if ( request.spatialFilterType() == Qgis::SpatialFilterType::BoundingBox && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
     {
       QString rectangleWkt = mFilterRect.asWktPolygon();
       QgsDebugMsg( "filter polygon: " + rectangleWkt );
@@ -328,7 +347,7 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature &feature )
     return false;
   }
 
-  if ( mQuery->next() )
+  while ( mQuery->next() )
   {
     feature.initAttributes( mSource->mFields.count() );
     feature.setFields( mSource->mFields ); // allow name-based attribute lookups
@@ -388,9 +407,15 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature &feature )
     {
       feature.clearGeometry();
     }
+    geometryToDestinationCrs( feature, mTransform );
+
+    if ( mDistanceWithinEngine && mDistanceWithinEngine->distance( feature.geometry().constGet() ) > mRequest.distanceWithin() )
+    {
+      continue;
+    }
+
     feature.setValid( true );
     mFetchCount++;
-    geometryToDestinationCrs( feature, mTransform );
     if ( mFetchCount % 100 == 0 )
     {
       QgsDebugMsg( QStringLiteral( "Fetch count: %1" ).arg( mFetchCount ) );
