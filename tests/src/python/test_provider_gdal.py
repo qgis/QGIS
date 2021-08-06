@@ -115,6 +115,28 @@ class PyQgsGdalProvider(unittest.TestCase):
         encodedUri = QgsProviderRegistry.instance().encodeUri('gdal', parts)
         self.assertEqual(encodedUri, uri)
 
+    def test_provider_sidecar_files_for_uri(self):
+        """
+        Test retrieving sidecar files for uris
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata('gdal')
+
+        self.assertEqual(metadata.sidecarFilesForUri(''), [])
+        self.assertEqual(metadata.sidecarFilesForUri('/home/me/some_file.asc'), ['/home/me/some_file.aux.xml', '/home/me/some_file.ovr', '/home/me/some_file.wld'])
+        self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.jpg'), ['/home/me/special.jpw', '/home/me/special.jgw', '/home/me/special.jpgw', '/home/me/special.jpegw', '/home/me/special.aux.xml', '/home/me/special.ovr', '/home/me/special.wld'])
+        self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.img'),
+                         ['/home/me/special.ige', '/home/me/special.aux.xml', '/home/me/special.ovr',
+                          '/home/me/special.wld'])
+        self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.sid'),
+                         ['/home/me/special.j2w', '/home/me/special.aux.xml', '/home/me/special.ovr', '/home/me/special.wld'])
+        self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.tif'), ['/home/me/special.tifw', '/home/me/special.tfw', '/home/me/special.aux.xml', '/home/me/special.ovr', '/home/me/special.wld'])
+        self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.bil'),
+                         ['/home/me/special.bilw', '/home/me/special.blw', '/home/me/special.aux.xml', '/home/me/special.ovr', '/home/me/special.wld'])
+        self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.raster'),
+                         ['/home/me/special.rasterw', '/home/me/special.aux.xml', '/home/me/special.ovr', '/home/me/special.wld'])
+        self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.bt'),
+                         ['/home/me/special.btw', '/home/me/special.aux.xml', '/home/me/special.ovr', '/home/me/special.wld'])
+
 
 if __name__ == '__main__':
     unittest.main()
