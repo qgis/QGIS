@@ -188,7 +188,7 @@ class _3D_EXPORT Qgs3DUtils
     static QVector3D mouseToWorldPos( const QVector3D &mousePos, const QRect &viewPort, Qt3DRender::QCamera *camera );
 
     /**
-     * This Fuction calculates the 3D world coordinates that is under the clicked mouse position and on the plane situated
+     * This function calculates the 3D world coordinates that is under the clicked mouse position and on the plane situated
      * distance d from the camera position
      *
      *  ____________o____     o : clicked world position
