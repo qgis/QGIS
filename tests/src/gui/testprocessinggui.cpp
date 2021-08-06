@@ -3511,8 +3511,11 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QgsProject::instance()->addMapLayer( raster );
   DummyPluginLayer *plugin = new DummyPluginLayer( "dummylayer", "plugin" );
   QgsProject::instance()->addMapLayer( plugin );
-  QgsPointCloudLayer *pointCloud = new QgsPointCloudLayer( QStringLiteral( TEST_DATA_DIR ) + "/point_clouds/las/cloud.las", QStringLiteral( "pointcloud" ), QStringLiteral( "pdal" ) );
+
+#ifdef WITH_EPT
+  QgsPointCloudLayer *pointCloud = new QgsPointCloudLayer( QStringLiteral( TEST_DATA_DIR ) + "/point_clouds/ept/sunshine-coast/ept.json", QStringLiteral( "pointcloud" ), QStringLiteral( "ept" ) );
   QgsProject::instance()->addMapLayer( pointCloud );
+#endif
 
   dlg->setProject( QgsProject::instance() );
   // should be filtered to raster layers only
@@ -3574,6 +3577,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "plugin" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), plugin->id() );
 
+#ifdef WITH_EPT
   // point cloud
   param = std::make_unique< QgsProcessingParameterMultipleLayers >( QString(), QString(), QgsProcessing::TypePointCloud );
   dlg = std::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource >() );
@@ -3581,6 +3585,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->mModel->rowCount(), 1 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "pointcloud [EPSG:28356]" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), pointCloud->id() );
+#endif
 
   // vector points
   param = std::make_unique< QgsProcessingParameterMultipleLayers >( QString(), QString(), QgsProcessing::TypeVectorPoint );
@@ -3620,13 +3625,23 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   param = std::make_unique< QgsProcessingParameterMultipleLayers >( QString(), QString(), QgsProcessing::TypeMapLayer );
   dlg = std::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource >() );
   dlg->setProject( QgsProject::instance() );
+#ifdef WITH_EPT
   QCOMPARE( dlg->mModel->rowCount(), 8 );
+#else
+  QCOMPARE( dlg->mModel->rowCount(), 7 );
+#endif
+
   titles.clear();
   for ( int i = 0; i < dlg->mModel->rowCount(); ++i )
     titles << dlg->mModel->data( dlg->mModel->index( i, 0 ) ).toString();
+#ifdef WITH_EPT
   QCOMPARE( titles, QSet<QString>() << QStringLiteral( "polygon [EPSG:4326]" ) << QStringLiteral( "point [EPSG:4326]" ) << QStringLiteral( "line [EPSG:4326]" )
             << QStringLiteral( "nogeom" ) << QStringLiteral( "raster [EPSG:4326]" ) << QStringLiteral( "mesh" ) << QStringLiteral( "plugin" )
             << QStringLiteral( "pointcloud [EPSG:28356]" ) );
+#else
+  QCOMPARE( titles, QSet<QString>() << QStringLiteral( "polygon [EPSG:4326]" ) << QStringLiteral( "point [EPSG:4326]" ) << QStringLiteral( "line [EPSG:4326]" )
+            << QStringLiteral( "nogeom" ) << QStringLiteral( "raster [EPSG:4326]" ) << QStringLiteral( "mesh" ) << QStringLiteral( "plugin" ) );
+#endif
 
   // files
   param = std::make_unique< QgsProcessingParameterMultipleLayers >( QString(), QString(), QgsProcessing::TypeFile );
@@ -9904,10 +9919,10 @@ void TestProcessingGui::testPointCloudLayerWrapper()
 {
   // setup a project with a range of layer types
   QgsProject::instance()->removeAllMapLayers();
-  QgsPointCloudLayer *cloud1 = new QgsPointCloudLayer( QStringLiteral( TEST_DATA_DIR ) + "/point_clouds/las/cloud.las", QStringLiteral( "cloud1" ), QStringLiteral( "pdal" ) );
+  QgsPointCloudLayer *cloud1 = new QgsPointCloudLayer( QStringLiteral( TEST_DATA_DIR ) + "/point_clouds/ept/sunshine-coast/ept.json", QStringLiteral( "cloud1" ), QStringLiteral( "ept" ) );
   QVERIFY( cloud1->isValid() );
   QgsProject::instance()->addMapLayer( cloud1 );
-  QgsPointCloudLayer *cloud2 = new QgsPointCloudLayer( QStringLiteral( TEST_DATA_DIR ) + "/point_clouds/las/cloud.las", QStringLiteral( "cloud2" ), QStringLiteral( "pdal" ) );
+  QgsPointCloudLayer *cloud2 = new QgsPointCloudLayer( QStringLiteral( TEST_DATA_DIR ) + "/point_clouds/ept/sunshine-coast/ept.json", QStringLiteral( "cloud2" ), QStringLiteral( "ept" ) );
   QVERIFY( cloud2->isValid() );
   QgsProject::instance()->addMapLayer( cloud2 );
 

@@ -662,7 +662,9 @@ class TestQgsProcessing: public QObject
     void parameterMeshDatasetGroups();
     void parameterMeshDatasetTime();
     void parameterDxfLayers();
+#ifdef WITH_EPT
     void parameterPointCloudLayer();
+#endif
     void checkParamValues();
     void combineLayerExtent();
     void processingFeatureSource();
@@ -860,16 +862,20 @@ void TestQgsProcessing::compatibleLayers()
   QgsMeshLayer *m2 = new QgsMeshLayer( fm.filePath(), "mA", "mdal" );
   QVERIFY( m2->isValid() );
 
-  QFileInfo fpc( testDataDir + "/point_clouds/las/cloud.las" );
-  QgsPointCloudLayer *pc1 = new QgsPointCloudLayer( fpc.filePath(), "PCX", "pdal" );
-  QVERIFY( m1->isValid() );
-  QgsPointCloudLayer *pc2 = new QgsPointCloudLayer( fpc.filePath(), "pcA", "pdal" );
-  QVERIFY( m2->isValid() );
+#ifdef WITH_EPT
+  QFileInfo fpc( testDataDir + "/point_clouds/ept/sunshine-coast/ept.json" );
+  QgsPointCloudLayer *pc1 = new QgsPointCloudLayer( fpc.filePath(), "PCX", "ept" );
+  QgsPointCloudLayer *pc2 = new QgsPointCloudLayer( fpc.filePath(), "pcA", "ept" );
+#endif
 
   DummyPluginLayer *pl1 = new DummyPluginLayer( "dummylayer", "PX" );
   DummyPluginLayer *pl2 = new DummyPluginLayer( "dummylayer", "pA" );
 
+#ifdef WITH_EPT
   p.addMapLayers( QList<QgsMapLayer *>() << r1 << r2 << r3 << v1 << v2 << v3 << v4 << m1 << m2 << pl1 << pl2 << pc1 << pc2 );
+#else
+  p.addMapLayers( QList<QgsMapLayer *>() << r1 << r2 << r3 << v1 << v2 << v3 << v4 << m1 << m2 << pl1 << pl2 );
+#endif
 
   // compatibleRasterLayers
   QVERIFY( QgsProcessingUtils::compatibleRasterLayers( nullptr ).isEmpty() );
@@ -932,6 +938,7 @@ void TestQgsProcessing::compatibleLayers()
     lIds << pl->name();
   QCOMPARE( lIds, QStringList() << "PX" << "pA" );
 
+#ifdef WITH_EPT
   // compatiblePointCloudLayers
   QVERIFY( QgsProcessingUtils::compatiblePointCloudLayers( nullptr ).isEmpty() );
 
@@ -946,6 +953,7 @@ void TestQgsProcessing::compatibleLayers()
   for ( QgsPointCloudLayer *pcl : QgsProcessingUtils::compatiblePointCloudLayers( &p, false ) )
     lIds << pcl->name();
   QCOMPARE( lIds, QStringList() << "PCX" << "pcA" );
+#endif
 
   // point only
   lIds.clear();
@@ -990,13 +998,21 @@ void TestQgsProcessing::compatibleLayers()
   lIds.clear();
   for ( QgsMapLayer *l : QgsProcessingUtils::compatibleLayers( &p ) )
     lIds << l->name();
+#ifdef WITH_EPT
   QCOMPARE( lIds, QStringList() << "ar2" << "mA" << "MX" << "pA" << "pcA" << "PCX" << "PX" << "R1" << "v1" << "v3" << "V4" << "vvvv4" <<  "zz" );
+#else
+  QCOMPARE( lIds, QStringList() << "ar2" << "mA" << "MX" << "pA" << "PX" << "R1" << "v1" << "v3" << "V4" << "vvvv4" <<  "zz" );
+#endif
 
   // unsorted
   lIds.clear();
   for ( QgsMapLayer *l : QgsProcessingUtils::compatibleLayers( &p, false ) )
     lIds << l->name();
+#ifdef WITH_EPT
   QCOMPARE( lIds, QStringList() << "R1" << "ar2" << "zz"  << "V4" << "v1" << "v3" << "vvvv4" << "MX" << "mA" << "PCX" << "pcA" << "PX" << "pA" );
+#else
+  QCOMPARE( lIds, QStringList() << "R1" << "ar2" << "zz"  << "V4" << "v1" << "v3" << "vvvv4" << "MX" << "mA" << "PX" << "pA" );
+#endif
 }
 
 void TestQgsProcessing::encodeDecodeUriProvider()
@@ -9026,6 +9042,7 @@ void TestQgsProcessing::parameterDxfLayers()
   QCOMPARE( dxfList.at( 0 ).layerOutputAttributeIndex(), dxfLayer.layerOutputAttributeIndex() );
 }
 
+#ifdef WITH_EPT
 void TestQgsProcessing::parameterPointCloudLayer()
 {
   // setup a context
@@ -9034,13 +9051,13 @@ void TestQgsProcessing::parameterPointCloudLayer()
   QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
   QString vector1 = testDataDir + "multipoint.shp";
   QString raster = testDataDir + "landsat.tif";
-  QString pointCloud = testDataDir + "point_clouds/las/cloud.las";
+  QString pointCloud = testDataDir + "point_clouds/ept/sunshine-coast/ept.json";
   QFileInfo fi1( raster );
   QFileInfo fi2( vector1 );
   QFileInfo fi3( pointCloud );
   QgsRasterLayer *r1 = new QgsRasterLayer( fi1.filePath(), "R1" );
   QgsVectorLayer *v1 = new QgsVectorLayer( fi2.filePath(), "V4", "ogr" );
-  QgsPointCloudLayer *pc1 = new QgsPointCloudLayer( fi3.filePath(), "PC1", "pdal" );
+  QgsPointCloudLayer *pc1 = new QgsPointCloudLayer( fi3.filePath(), "PC1", "ept" );
   Q_ASSERT( pc1 );
   p.addMapLayers( QList<QgsMapLayer *>() << v1 << r1 << pc1 );
   QgsProcessingContext context;
@@ -9097,9 +9114,9 @@ void TestQgsProcessing::parameterPointCloudLayer()
   QVERIFY( !QgsProcessingParameters::parameterAsPointCloudLayer( def.get(), params, context ) );
 
   QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
-  QCOMPARE( def->valueAsPythonString( pointCloud, context ), QString( QString( "'" ) + testDataDir + QStringLiteral( "point_clouds/las/cloud.las'" ) ) );
-  QCOMPARE( def->valueAsPythonString( pc1->id(), context ), QString( QString( "'" ) + testDataDir + QStringLiteral( "point_clouds/las/cloud.las'" ) ) );
-  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( pc1 ), context ), QString( QString( "'" ) + testDataDir + QStringLiteral( "point_clouds/las/cloud.las'" ) ) );
+  QCOMPARE( def->valueAsPythonString( pointCloud, context ), QString( QString( "'" ) + testDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json'" ) ) );
+  QCOMPARE( def->valueAsPythonString( pc1->id(), context ), QString( QString( "'" ) + testDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json'" ) ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( pc1 ), context ), QString( QString( "'" ) + testDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json'" ) ) );
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
   QCOMPARE( def->valueAsPythonString( QStringLiteral( "c:\\test\\new data\\test.las" ), context ), QStringLiteral( "'c:\\\\test\\\\new data\\\\test.las'" ) );
 
@@ -9154,6 +9171,7 @@ void TestQgsProcessing::parameterPointCloudLayer()
   def.reset( new QgsProcessingParameterPointCloudLayer( "optional", QString(), QVariant::fromValue( pc1 ), true ) );
   QCOMPARE( QgsProcessingParameters::parameterAsPointCloudLayer( def.get(), params,  context )->id(), pc1->id() );
 }
+#endif
 
 void TestQgsProcessing::checkParamValues()
 {
