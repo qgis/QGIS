@@ -170,6 +170,11 @@ QgsDwgImporter::~QgsDwgImporter()
   {
     commitTransaction();
   }
+  if ( mCrsH )
+  {
+    OSRRelease( mCrsH );
+    mCrsH = nullptr;
+  }
 }
 
 QString drwVersionToString( DRW::Version version )
