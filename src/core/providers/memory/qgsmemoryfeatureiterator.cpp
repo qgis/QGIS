@@ -127,16 +127,15 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature &feature )
   bool hasFeature = false;
 
   // option 1: we have a list of features to traverse
-  QgsFeature candidate;
   while ( mFeatureIdListIterator != mFeatureIdList.constEnd() )
   {
-    candidate = mSource->mFeatures.value( *mFeatureIdListIterator );
+    feature = mSource->mFeatures.value( *mFeatureIdListIterator );
     if ( !mFilterRect.isNull() )
     {
       if ( mRequest.spatialFilterType() == Qgis::SpatialFilterType::BoundingBox && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
       {
         // do exact check in case we're doing intersection
-        if ( candidate.hasGeometry() && mSelectRectEngine->intersects( candidate.geometry().constGet() ) )
+        if ( feature.hasGeometry() && mSelectRectEngine->intersects( feature.geometry().constGet() ) )
           hasFeature = true;
       }
       else if ( mSource->mSpatialIndex )
@@ -147,53 +146,43 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature &feature )
       else
       {
         // do bounding box check if we aren't using a spatial index
-        if ( candidate.hasGeometry() && candidate.geometry().boundingBoxIntersects( mFilterRect ) )
+        if ( feature.hasGeometry() && feature.geometry().boundingBoxIntersects( mFilterRect ) )
           hasFeature = true;
-      }
-
-      if ( mRequest.spatialFilterType() == Qgis::SpatialFilterType::DistanceWithin && hasFeature )
-      {
-        if ( !mTransform.isShortCircuited() )
-        {
-          QgsFeature transformedCandidate( candidate );
-          geometryToDestinationCrs( transformedCandidate, mTransform );
-          hasFeature = transformedCandidate.hasGeometry() && mDistanceWithinEngine->distance( transformedCandidate.geometry().constGet() ) <= mRequest.distanceWithin();
-        }
-        else
-        {
-          hasFeature = mDistanceWithinEngine->distance( candidate.geometry().constGet() ) <= mRequest.distanceWithin();
-        }
       }
     }
     else
       hasFeature = true;
 
+    if ( hasFeature )
+      feature.setFields( mSource->mFields ); // allow name-based attribute lookups
+
     if ( hasFeature && mSubsetExpression )
     {
-      mSource->expressionContext()->setFeature( candidate );
+      mSource->expressionContext()->setFeature( feature );
       if ( !mSubsetExpression->evaluate( mSource->expressionContext() ).toBool() )
         hasFeature = false;
     }
 
     if ( hasFeature )
+    {
+      // geometry must be in destination crs before we can perform distance within check
+      geometryToDestinationCrs( feature, mTransform );
+    }
+
+    if ( hasFeature && mRequest.spatialFilterType() == Qgis::SpatialFilterType::DistanceWithin )
+    {
+      hasFeature = mDistanceWithinEngine->distance( feature.geometry().constGet() ) <= mRequest.distanceWithin();
+    }
+
+    ++mFeatureIdListIterator;
+    if ( hasFeature )
       break;
-
-    ++mFeatureIdListIterator;
   }
 
-  // copy feature
-  if ( hasFeature )
+  feature.setValid( hasFeature );
+  if ( !hasFeature )
   {
-    feature = candidate;
-    ++mFeatureIdListIterator;
-  }
-  else
     close();
-
-  if ( hasFeature )
-  {
-    feature.setFields( mSource->mFields ); // allow name-based attribute lookups
-    geometryToDestinationCrs( feature, mTransform );
   }
 
   return hasFeature;
@@ -207,6 +196,8 @@ bool QgsMemoryFeatureIterator::nextFeatureTraverseAll( QgsFeature &feature )
   // option 2: traversing the whole layer
   while ( mSelectIterator != mSource->mFeatures.constEnd() )
   {
+    hasFeature = false;
+    feature = *mSelectIterator;
     if ( mFilterRect.isNull() )
     {
       // selection rect empty => using all features
@@ -217,54 +208,51 @@ bool QgsMemoryFeatureIterator::nextFeatureTraverseAll( QgsFeature &feature )
       if ( mRequest.spatialFilterType() == Qgis::SpatialFilterType::BoundingBox && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
       {
         // using exact test when checking for intersection
-        if ( mSelectIterator->hasGeometry() && mSelectRectEngine->intersects( mSelectIterator->geometry().constGet() ) )
+        if ( feature.hasGeometry() && mSelectRectEngine->intersects( feature.geometry().constGet() ) )
           hasFeature = true;
       }
       else
       {
         // check just bounding box against rect when not using intersection
-        if ( mSelectIterator->hasGeometry() && mSelectIterator->geometry().boundingBox().intersects( mFilterRect ) )
+        if ( feature.hasGeometry() && feature.geometry().boundingBox().intersects( mFilterRect ) )
           hasFeature = true;
-      }
-      if ( mRequest.spatialFilterType() == Qgis::SpatialFilterType::DistanceWithin && hasFeature )
-      {
-        if ( !mTransform.isShortCircuited() )
-        {
-          QgsFeature transformedCandidate( *mSelectIterator );
-          geometryToDestinationCrs( transformedCandidate, mTransform );
-          hasFeature = transformedCandidate.hasGeometry() && mDistanceWithinEngine->distance( transformedCandidate.geometry().constGet() ) <= mRequest.distanceWithin();
-        }
-        else
-        {
-          hasFeature = mDistanceWithinEngine->distance( mSelectIterator->geometry().constGet() ) <= mRequest.distanceWithin();
-        }
       }
     }
 
-    if ( mSubsetExpression )
+    if ( hasFeature && mSubsetExpression )
     {
-      mSource->expressionContext()->setFeature( *mSelectIterator );
+      mSource->expressionContext()->setFeature( feature );
       if ( !mSubsetExpression->evaluate( mSource->expressionContext() ).toBool() )
         hasFeature = false;
     }
 
     if ( hasFeature )
-      break;
+    {
+      // geometry must be in destination crs before we can perform distance within check
+      geometryToDestinationCrs( feature, mTransform );
+    }
+
+    if ( hasFeature && mRequest.spatialFilterType() == Qgis::SpatialFilterType::DistanceWithin )
+    {
+      hasFeature = mDistanceWithinEngine->distance( feature.geometry().constGet() ) <= mRequest.distanceWithin();
+    }
 
     ++mSelectIterator;
+    if ( hasFeature )
+      break;
   }
 
   // copy feature
   if ( hasFeature )
   {
-    feature = mSelectIterator.value();
-    ++mSelectIterator;
     feature.setValid( true );
     feature.setFields( mSource->mFields ); // allow name-based attribute lookups
-    geometryToDestinationCrs( feature, mTransform );
   }
   else
+  {
+    feature.setValid( false );
     close();
+  }
 
   return hasFeature;
 }
