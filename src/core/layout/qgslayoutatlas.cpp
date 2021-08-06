@@ -34,6 +34,9 @@ QgsLayoutAtlas::QgsLayoutAtlas( QgsLayout *layout )
 
   //listen out for layer removal
   connect( mLayout->project(), static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsLayoutAtlas::removeLayers );
+
+  if ( mLayout->customProperty( QStringLiteral( "singleFile" ) ).isNull() )
+    mLayout->setCustomProperty( QStringLiteral( "singleFile" ), true );
 }
 
 QString QgsLayoutAtlas::stringType() const
