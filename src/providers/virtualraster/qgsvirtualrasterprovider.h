@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : June 10, 2021
     Copyright            : (C) 2021 by Francesco Bursi
-    email                : ffrancesco dot bursi at hotmail dot it
+    email                : francesco dot bursi at hotmail dot it
 ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
