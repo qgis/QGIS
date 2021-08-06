@@ -3755,6 +3755,16 @@ QStringList QgsGdalProviderMetadata::sidecarFilesForUri( const QString &uri ) co
       QStringLiteral( "bt" ), {
         QStringLiteral( "btw" ),
       }
+    },
+    {
+      QStringLiteral( "rst" ), {
+        QStringLiteral( "rdc" ),
+        QStringLiteral( "smp" ),
+        QStringLiteral( "ref" ),
+        QStringLiteral( "vct" ),
+        QStringLiteral( "vdc" ),
+        QStringLiteral( "avl" ),
+      }
     }
   };
 
