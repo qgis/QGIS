@@ -552,8 +552,8 @@ bool QgsOgrFeatureIterator::readFeature( const gdal::ogr_feature_unique_ptr &fet
   feature.initAttributes( mSource->mFields.count() );
   feature.setFields( mSource->mFields ); // allow name-based attribute lookups
 
-  bool useIntersect = mRequest.spatialFilterType() == Qgis::SpatialFilterType::BoundingBox;
-  bool geometryTypeFilter = mSource->mOgrGeometryTypeFilter != wkbUnknown;
+  const bool useExactIntersect = mRequest.spatialFilterType() == Qgis::SpatialFilterType::BoundingBox && ( mRequest.flags() & QgsFeatureRequest::ExactIntersect );
+  const bool geometryTypeFilter = mSource->mOgrGeometryTypeFilter != wkbUnknown;
   if ( mFetchGeometry || mRequest.spatialFilterType() != Qgis::SpatialFilterType::NoFilter || geometryTypeFilter )
   {
     OGRGeometryH geom = OGR_F_GetGeometryRef( fet.get() );
@@ -579,10 +579,11 @@ bool QgsOgrFeatureIterator::readFeature( const gdal::ogr_feature_unique_ptr &fet
       // OK
     }
     else if ( ( geometryTypeFilter && ( !feature.hasGeometry() || QgsOgrProviderUtils::ogrWkbSingleFlatten( ( OGRwkbGeometryType )feature.geometry().wkbType() ) != mSource->mOgrGeometryTypeFilter ) )
-              || ( useIntersect && ( !feature.hasGeometry()
-                                     || ( mRequest.flags() & QgsFeatureRequest::ExactIntersect && !feature.geometry().intersects( mFilterRect ) )
-                                     || ( !( mRequest.flags() & QgsFeatureRequest::ExactIntersect ) && !feature.geometry().boundingBoxIntersects( mFilterRect ) )
-                                   )
+              || ( !mFilterRect.isNull() &&
+                   ( !feature.hasGeometry()
+                     || ( useExactIntersect && !feature.geometry().intersects( mFilterRect ) )
+                     || ( !useExactIntersect && !feature.geometry().boundingBoxIntersects( mFilterRect ) )
+                   )
                  ) )
     {
       return false;
