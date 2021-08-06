@@ -18,6 +18,7 @@
 #include "qgsterrainentity_p.h"
 #include "qgsvector3d.h"
 #include "qgssettings.h"
+#include "qgs3dutils.h"
 
 #include "qgis.h"
 
@@ -446,8 +447,20 @@ void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
       float scaling = ( ( wheel->modifiers() & Qt::ControlModifier ) ? 0.1f : 1.0f ) / 1000.f;
       float dist = mCameraPose.distanceFromCenterPoint();
       dist -= dist * scaling * wheel->angleDelta().y();
+
+      QVector3D lookAtPos = Qgs3DUtils::mouseToWorldLookAtPoint( mMousePos.x(), mMousePos.y(), mCameraPose.distanceFromCenterPoint(), mViewport, mCamera );
+      mCameraPose.setCenterPoint( lookAtPos );
       mCameraPose.setDistanceFromCenterPoint( dist );
-      updateCameraFromPose();
+      mCameraPose.updateCamera( mCamera );
+
+      lookAtPos = Qgs3DUtils::mouseToWorldLookAtPoint(
+                    ( -double( mMousePos.x() ) / mViewport.width() + 1.0 ) * mViewport.width(),
+                    ( -double( mMousePos.y() ) / mViewport.height() + 1.0 ) * mViewport.height(),
+                    mCameraPose.distanceFromCenterPoint(), mViewport, mCamera );
+
+      mCameraPose.setCenterPoint( lookAtPos );
+
+      updateCameraFromPose( true );
       break;
     }
   }

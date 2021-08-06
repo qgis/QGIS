@@ -161,6 +161,11 @@ class CORE_EXPORT QgsVector3D
       return str;
     }
 
+    /**
+     * Converts the current object to QVector3D
+     */
+    QVector3D toVector3D() const { return QVector3D( mX, mY, mZ ); }
+
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode

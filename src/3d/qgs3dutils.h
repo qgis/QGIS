@@ -180,6 +180,30 @@ class _3D_EXPORT Qgs3DUtils
 
     //! Convert from clicked point on the screen to a ray in world coordinates
     static QgsRay3D rayFromScreenPoint( const QPoint &point, const QSize &windowSize, Qt3DRender::QCamera *camera );
+
+    /**
+     * Converts the clicked mouse position to the corresponding 3D world coordinates
+     * \since QGIS 3.22
+     */
+    static QVector3D mouseToWorldPos( const QVector3D &mousePos, const QRect &viewPort, Qt3DRender::QCamera *camera );
+
+    /**
+     * This Fuction calculates the 3D world coordinates that is under the clicked mouse position and on the plane situated
+     * distance d from the camera position
+     *
+     *  ____________o____     o : clicked world position
+     *  \       |       /
+     *   \      |      /
+     *    \     |d    /       d : the distance of the looking at point from the camera position
+     *     \    |    /
+     *      \___|_x_/         x : the clicked mouse position
+     *       \  |  /
+     *        \ | /
+     *         \|/
+     *        camera
+     * \since QGIS 3.22
+     */
+    static QVector3D mouseToWorldLookAtPoint( double mouseX, double mouseY, double d, const QRect &viewPort, Qt3DRender::QCamera *camera );
 };
 
 #endif // QGS3DUTILS_H
