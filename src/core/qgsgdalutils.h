@@ -148,13 +148,13 @@ class CORE_EXPORT QgsGdalUtils
      */
     static bool pathIsCheapToOpen( const QString &path, int smallFileSizeLimit = 50000 );
 
-
     /**
-     * File extensions for formats supported by GDAL which may contain multiple layers
-     * and should be treated as a potential layer container.
+     * Returns a list of file extensions which potentially contain multiple layers representing
+     * GDAL raster or vector layers.
+     *
      * \since QGIS 3.22
      */
-    static const QStringList SUPPORTED_DB_LAYERS_EXTENSIONS;
+    static QStringList multiLayerFileExtensions();
 
     /**
      * Returns TRUE if the VRT file at the specified path is a VRT matching
