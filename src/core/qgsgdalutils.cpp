@@ -22,32 +22,13 @@
 #include "gdal.h"
 #include "gdalwarper.h"
 #include "cpl_string.h"
+#include "qgsapplication.h"
 
 #include <QNetworkProxy>
 #include <QString>
 #include <QImage>
 #include <QFileInfo>
-
-// File extensions for formats supported by GDAL which may contain multiple layers
-// and should be treated as a potential layer container
-const QStringList QgsGdalUtils::SUPPORTED_DB_LAYERS_EXTENSIONS
-{
-  QStringLiteral( "gpkg" ),
-  QStringLiteral( "sqlite" ),
-  QStringLiteral( "db" ),
-  QStringLiteral( "gdb" ),
-  QStringLiteral( "kml" ),
-  QStringLiteral( "kmz" ),
-  QStringLiteral( "osm" ),
-  QStringLiteral( "mdb" ),
-  QStringLiteral( "accdb" ),
-  QStringLiteral( "xls" ),
-  QStringLiteral( "xlsx" ),
-  QStringLiteral( "gpx" ),
-  QStringLiteral( "pdf" ),
-  QStringLiteral( "pbf" ),
-  QStringLiteral( "nc" ),
-  QStringLiteral( "shp.zip" ) };
+#include <mutex>
 
 bool QgsGdalUtils::supportsRasterCreate( GDALDriverH driver )
 {
@@ -562,6 +543,90 @@ bool QgsGdalUtils::pathIsCheapToOpen( const QString &path, int smallFileSizeLimi
   // treat all other formats as expensive.
   // TODO -- flag formats which only require a quick header parse as cheap
   return false;
+}
+
+QStringList QgsGdalUtils::multiLayerFileExtensions()
+{
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
+  // get supported extensions
+  static std::once_flag initialized;
+  static QStringList SUPPORTED_DB_LAYERS_EXTENSIONS;
+  std::call_once( initialized, [ = ]
+  {
+    // iterate through all of the supported drivers, adding the corresponding file extensions for
+    // types which advertise multilayer support
+    GDALDriverH driver = nullptr;
+
+    QSet< QString > extensions;
+
+    for ( int i = 0; i < GDALGetDriverCount(); ++i )
+    {
+      driver = GDALGetDriver( i );
+      if ( !driver )
+      {
+        QgsLogger::warning( "unable to get driver " + QString::number( i ) );
+        continue;
+      }
+
+      bool isMultiLayer = false;
+      if ( QString( GDALGetMetadataItem( driver, GDAL_DCAP_RASTER, nullptr ) ) == QLatin1String( "YES" ) )
+      {
+        if ( GDALGetMetadataItem( driver, GDAL_DMD_SUBDATASETS, nullptr ) != nullptr )
+        {
+          isMultiLayer = true;
+        }
+      }
+      if ( !isMultiLayer && QString( GDALGetMetadataItem( driver, GDAL_DCAP_VECTOR, nullptr ) ) == QLatin1String( "YES" ) )
+      {
+        if ( GDALGetMetadataItem( driver, GDAL_DCAP_MULTIPLE_VECTOR_LAYERS, nullptr ) != nullptr )
+        {
+          isMultiLayer = true;
+        }
+      }
+
+      if ( !isMultiLayer )
+        continue;
+
+      const QString driverExtensions = GDALGetMetadataItem( driver, GDAL_DMD_EXTENSIONS, "" );
+      if ( driverExtensions.isEmpty() )
+        continue;
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+      const QStringList splitExtensions = driverExtensions.split( ' ', QString::SkipEmptyParts );
+#else
+      const QStringList splitExtensions = driverExtensions.split( ' ', Qt::SkipEmptyParts );
+#endif
+
+      for ( const QString &ext : splitExtensions )
+        extensions.insert( ext );
+    }
+
+    SUPPORTED_DB_LAYERS_EXTENSIONS = qgis::setToList( extensions );
+  } );
+  return SUPPORTED_DB_LAYERS_EXTENSIONS;
+
+#else
+  static const QStringList SUPPORTED_DB_LAYERS_EXTENSIONS
+  {
+    QStringLiteral( "gpkg" ),
+    QStringLiteral( "sqlite" ),
+    QStringLiteral( "db" ),
+    QStringLiteral( "gdb" ),
+    QStringLiteral( "kml" ),
+    QStringLiteral( "kmz" ),
+    QStringLiteral( "osm" ),
+    QStringLiteral( "mdb" ),
+    QStringLiteral( "accdb" ),
+    QStringLiteral( "xls" ),
+    QStringLiteral( "xlsx" ),
+    QStringLiteral( "ods" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "pdf" ),
+    QStringLiteral( "pbf" ),
+    QStringLiteral( "nc" ),
+    QStringLiteral( "shp.zip" ) };
+  return SUPPORTED_DB_LAYERS_EXTENSIONS;
+#endif
 }
 
 bool QgsGdalUtils::vrtMatchesLayerType( const QString &vrtPath, QgsMapLayerType type )

@@ -43,6 +43,7 @@ class TestQgsGdalUtils: public QObject
     void testResampleImageToImage();
     void testPathIsCheapToOpen();
     void testVrtMatchesLayerType();
+    void testMultilayerExtensions();
 
   private:
 
@@ -292,6 +293,24 @@ void TestQgsGdalUtils::testVrtMatchesLayerType()
 
   QVERIFY( !QgsGdalUtils::vrtMatchesLayerType( QStringLiteral( TEST_DATA_DIR ) + "/vector_vrt.vrt", QgsMapLayerType::RasterLayer ) );
   QVERIFY( QgsGdalUtils::vrtMatchesLayerType( QStringLiteral( TEST_DATA_DIR ) + "/vector_vrt.vrt", QgsMapLayerType::VectorLayer ) );
+}
+
+void TestQgsGdalUtils::testMultilayerExtensions()
+{
+  const QStringList extensions = QgsGdalUtils::multiLayerFileExtensions();
+  QVERIFY( extensions.contains( QStringLiteral( "gpkg" ) ) );
+  QVERIFY( extensions.contains( QStringLiteral( "sqlite" ) ) );
+  QVERIFY( extensions.contains( QStringLiteral( "db" ) ) );
+  QVERIFY( extensions.contains( QStringLiteral( "kml" ) ) );
+  QVERIFY( extensions.contains( QStringLiteral( "ods" ) ) );
+  QVERIFY( extensions.contains( QStringLiteral( "osm" ) ) );
+  QVERIFY( extensions.contains( QStringLiteral( "mdb" ) ) );
+  QVERIFY( extensions.contains( QStringLiteral( "xls" ) ) );
+  QVERIFY( extensions.contains( QStringLiteral( "xlsx" ) ) );
+  QVERIFY( extensions.contains( QStringLiteral( "gpx" ) ) );
+  QVERIFY( extensions.contains( QStringLiteral( "pdf" ) ) );
+  QVERIFY( extensions.contains( QStringLiteral( "nc" ) ) );
+  QVERIFY( extensions.contains( QStringLiteral( "gdb" ) ) );
 }
 
 double TestQgsGdalUtils::identify( GDALDatasetH dataset, int band, int px, int py )
