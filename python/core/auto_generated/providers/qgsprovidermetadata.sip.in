@@ -295,6 +295,20 @@ The default method returns ``False`` for all URIs.
 .. versionadded:: 3.18
 %End
 
+    virtual QStringList sidecarFilesForUri( const QString &uri ) const;
+%Docstring
+Given a ``uri``, returns any sidecar files which are associated with the URI and this
+provider.
+
+For instance, the OGR provider would return the corresponding .dbf, .idx, etc files for a
+uri pointing at a .shp file.
+
+Implementations should files any files which MAY exist for the URI, and it is up to the caller
+to filter these to only existing files if required.
+
+.. versionadded:: 3.22
+%End
+
     virtual QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = 0 ) const;
 %Docstring
 Queries the specified ``uri`` and returns a list of any valid sublayers found in the dataset which can be handled by this provider.

@@ -355,6 +355,20 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     virtual bool uriIsBlocklisted( const QString &uri ) const;
 
     /**
+     * Given a \a uri, returns any sidecar files which are associated with the URI and this
+     * provider.
+     *
+     * For instance, the OGR provider would return the corresponding .dbf, .idx, etc files for a
+     * uri pointing at a .shp file.
+     *
+     * Implementations should files any files which MAY exist for the URI, and it is up to the caller
+     * to filter these to only existing files if required.
+     *
+     * \since QGIS 3.22
+     */
+    virtual QStringList sidecarFilesForUri( const QString &uri ) const;
+
+    /**
      * Queries the specified \a uri and returns a list of any valid sublayers found in the dataset which can be handled by this provider.
      *
      * The optional \a flags argument can be used to control the behavior of the query.
