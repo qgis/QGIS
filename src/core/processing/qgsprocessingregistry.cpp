@@ -73,6 +73,7 @@ QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   addParameterType( new QgsProcessingParameterTypeDxfLayers() );
   addParameterType( new QgsProcessingParameterTypeMeshDatasetGroups() );
   addParameterType( new QgsProcessingParameterTypeMeshDatasetTime() );
+  addParameterType( new QgsProcessingParameterTypePointCloudLayer() );
 }
 
 QgsProcessingRegistry::~QgsProcessingRegistry()

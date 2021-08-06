@@ -35,6 +35,7 @@
 #include "qgsreferencedgeometry.h"
 #include "qgsrasterfilewriter.h"
 #include "qgsvectortilelayer.h"
+#include "qgspointcloudlayer.h"
 #include <QRegularExpression>
 #include <QUuid>
 
@@ -76,6 +77,11 @@ QList<QgsPluginLayer *> QgsProcessingUtils::compatiblePluginLayers( QgsProject *
   return compatibleMapLayers< QgsPluginLayer >( project, sort );
 }
 
+QList<QgsPointCloudLayer *> QgsProcessingUtils::compatiblePointCloudLayers( QgsProject *project, bool sort )
+{
+  return compatibleMapLayers< QgsPointCloudLayer >( project, sort );
+}
+
 template<typename T> QList<T *> QgsProcessingUtils::compatibleMapLayers( QgsProject *project, bool sort )
 {
   if ( !project )
@@ -106,7 +112,6 @@ QList<QgsMapLayer *> QgsProcessingUtils::compatibleLayers( QgsProject *project, 
 
   QList<QgsMapLayer *> layers;
 
-  //~ const auto rasterLayers = compatibleRasterLayers( project, false );
   const auto rasterLayers = compatibleMapLayers< QgsRasterLayer >( project, false );
   for ( QgsRasterLayer *rl : rasterLayers )
     layers << rl;
@@ -115,12 +120,14 @@ QList<QgsMapLayer *> QgsProcessingUtils::compatibleLayers( QgsProject *project, 
   for ( QgsVectorLayer *vl : vectorLayers )
     layers << vl;
 
-  //~ const auto meshLayers = compatibleMeshLayers( project, false );
   const auto meshLayers = compatibleMapLayers< QgsMeshLayer >( project, false );
-  for ( QgsMeshLayer *vl : meshLayers )
-    layers << vl;
+  for ( QgsMeshLayer *ml : meshLayers )
+    layers << ml;
 
-  //~ const auto pluginLayers = compatiblePluginLayers( project, false );
+  const auto pointCloudLayers = compatibleMapLayers< QgsPointCloudLayer >( project, false );
+  for ( QgsPointCloudLayer *pcl : pointCloudLayers )
+    layers << pcl;
+
   const auto pluginLayers = compatibleMapLayers< QgsPluginLayer >( project, false );
   for ( QgsPluginLayer *pl : pluginLayers )
     layers << pl;
@@ -178,7 +185,7 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
       case QgsMapLayerType::AnnotationLayer:
         return true;
       case QgsMapLayerType::PointCloudLayer:
-        return true;
+        return !canUseLayer( qobject_cast< QgsPointCloudLayer * >( layer ) );
     }
     return true;
   } ), layers.end() );
@@ -198,6 +205,9 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
 
       case LayerHint::Mesh:
         return l->type() == QgsMapLayerType::MeshLayer;
+
+      case LayerHint::PointCloud:
+        return l->type() == QgsMapLayerType::PointCloudLayer;
     }
     return true;
   };
@@ -230,7 +240,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
 
   QString name;
   // for disk based sources, we use the filename to determine a layer name
-  if ( !useProvider || ( provider == QLatin1String( "ogr" ) || provider == QLatin1String( "gdal" ) || provider == QLatin1String( "mdal" ) ) )
+  if ( !useProvider || ( provider == QLatin1String( "ogr" ) || provider == QLatin1String( "gdal" ) || provider == QLatin1String( "mdal" ) || provider == QLatin1String( "pdal" ) || provider == QLatin1String( "ept" ) ) )
   {
     QStringList components = uri.split( '|' );
     if ( components.isEmpty() )
@@ -311,6 +321,25 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
     if ( meshLayer->isValid() )
     {
       return meshLayer.release();
+    }
+  }
+  if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::PointCloud )
+  {
+    QgsPointCloudLayer::LayerOptions pointCloudOptions;
+    pointCloudOptions.skipCrsValidation = true;
+
+    std::unique_ptr< QgsPointCloudLayer > pointCloudLayer;
+    if ( useProvider )
+    {
+      pointCloudLayer = std::make_unique< QgsPointCloudLayer >( uri, name, provider, pointCloudOptions );
+    }
+    else
+    {
+      pointCloudLayer = std::make_unique< QgsPointCloudLayer >( uri, name, QStringLiteral( "pointcloud" ), pointCloudOptions );
+    }
+    if ( pointCloudLayer->isValid() )
+    {
+      return pointCloudLayer.release();
     }
   }
   return nullptr;
@@ -503,6 +532,11 @@ bool QgsProcessingUtils::canUseLayer( const QgsVectorTileLayer *layer )
 }
 
 bool QgsProcessingUtils::canUseLayer( const QgsRasterLayer *layer )
+{
+  return layer && layer->isValid();
+}
+
+bool QgsProcessingUtils::canUseLayer( const QgsPointCloudLayer *layer )
 {
   return layer && layer->isValid();
 }
