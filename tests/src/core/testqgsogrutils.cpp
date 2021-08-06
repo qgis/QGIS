@@ -21,6 +21,8 @@
 #include <ogr_api.h>
 #include "cpl_conv.h"
 #include "cpl_string.h"
+#include <ogr_srs_api.h>
+#include <gdal.h>
 
 #include "qgsfield.h"
 #include "qgsgeometry.h"
@@ -57,6 +59,7 @@ class TestQgsOgrUtils: public QObject
     void parseStyleString_data();
     void parseStyleString();
     void convertStyleString();
+    void ogrCrsConversion();
 
   private:
 
@@ -714,6 +717,36 @@ void TestQgsOgrUtils::convertStyleString()
   QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->angle(), 0.0 );
   QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->sizeUnit(), QgsUnitTypes::RenderPoints );
   QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->strokeStyle(), Qt::NoPen );
+}
+
+void TestQgsOgrUtils::ogrCrsConversion()
+{
+  // test conversion utilities for OGR srs objects
+
+  QgsCoordinateReferenceSystem crs1( QStringLiteral( "EPSG:3111" ) );
+  OGRSpatialReferenceH srs = QgsOgrUtils::crsToOGRSpatialReference( crs1 );
+  QVERIFY( srs );
+  QgsCoordinateReferenceSystem crs2( QgsOgrUtils::OGRSpatialReferenceToCrs( srs ) );
+  // round trip should be lossless
+  QCOMPARE( crs1, crs2 );
+  OSRRelease( srs );
+  srs = nullptr;
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
+  QVERIFY( std::isnan( crs2.coordinateEpoch() ) );
+
+  // test conversion with a coordinate epoch, should work on GDAL 3.4+
+  crs1 = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+  crs1.setCoordinateEpoch( 2020.7 );
+  srs = QgsOgrUtils::crsToOGRSpatialReference( crs1 );
+  QVERIFY( srs );
+  crs2 = QgsCoordinateReferenceSystem( QgsOgrUtils::OGRSpatialReferenceToCrs( srs ) );
+  // round trip should be lossless
+  QCOMPARE( crs1, crs2 );
+  QCOMPARE( crs2.coordinateEpoch(), 2020.7 );
+  OSRRelease( srs );
+  srs = nullptr;
+#endif
 }
 
 QGSTEST_MAIN( TestQgsOgrUtils )
