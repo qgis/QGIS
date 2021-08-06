@@ -1297,6 +1297,75 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
   return res;
 }
 
+QStringList QgsOgrProviderMetadata::sidecarFilesForUri( const QString &uri ) const
+{
+  const QVariantMap uriParts = decodeUri( uri );
+  const QString path = uriParts.value( QStringLiteral( "path" ) ).toString();
+
+  if ( path.isEmpty() )
+    return {};
+
+  const QFileInfo fileInfo( path );
+  const QString suffix = fileInfo.suffix();
+
+  static QMap< QString, QStringList > sExtensions
+  {
+    {
+      QStringLiteral( "shp" ), {
+        QStringLiteral( "shx" ),
+        QStringLiteral( "dbf" ),
+        QStringLiteral( "sbn" ),
+        QStringLiteral( "sbx" ),
+        QStringLiteral( "prj" ),
+        QStringLiteral( "idm" ),
+        QStringLiteral( "ind" ),
+        QStringLiteral( "qix" ),
+        QStringLiteral( "cpg" ),
+        QStringLiteral( "qpj" ),
+        QStringLiteral( "shp.xml" ),
+      }
+    },
+    {
+      QStringLiteral( "tab" ), {
+        QStringLiteral( "dat" ),
+        QStringLiteral( "id" ),
+        QStringLiteral( "map" ),
+        QStringLiteral( "ind" ),
+        QStringLiteral( "tda" ),
+        QStringLiteral( "tin" ),
+        QStringLiteral( "tma" ),
+        QStringLiteral( "lda" ),
+        QStringLiteral( "lin" ),
+        QStringLiteral( "lma" ),
+      }
+    },
+    {
+      QStringLiteral( "gml" ), {
+        QStringLiteral( "gfs" ),
+        QStringLiteral( "xsd" ),
+      }
+    },
+    {
+      QStringLiteral( "csv" ), {
+        QStringLiteral( "csvt" ),
+      }
+    },
+  };
+
+  QStringList res;
+  for ( auto it = sExtensions.constBegin(); it != sExtensions.constEnd(); ++it )
+  {
+    if ( suffix.compare( it.key(), Qt::CaseInsensitive ) == 0 )
+    {
+      for ( const QString &ext : it.value() )
+      {
+        res.append( fileInfo.dir().filePath( fileInfo.completeBaseName() + '.' + ext ) );
+      }
+    }
+  }
+  return res;
+}
+
 QMap<QString, QgsAbstractProviderConnection *> QgsOgrProviderMetadata::connections( bool cached )
 {
   return connectionsProtected<QgsGeoPackageProviderConnection, QgsOgrDbConnection>( cached );
