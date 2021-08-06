@@ -3702,6 +3702,89 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
   }
 }
 
+QStringList QgsGdalProviderMetadata::sidecarFilesForUri( const QString &uri ) const
+{
+  const QVariantMap uriParts = decodeUri( uri );
+  const QString path = uriParts.value( QStringLiteral( "path" ) ).toString();
+
+  if ( path.isEmpty() )
+    return {};
+
+  // all gdal uris may have a .aux.xml sidecar
+  const QFileInfo fileInfo( path );
+  const QString suffix = fileInfo.suffix();
+
+  static QMap< QString, QStringList > sExtensions
+  {
+    {
+      QStringLiteral( "jpg" ), {
+        QStringLiteral( "jpw" ),
+        QStringLiteral( "jgw" ),
+        QStringLiteral( "jpgw" ),
+        QStringLiteral( "jpegw" ),
+      }
+    },
+    {
+      QStringLiteral( "img" ), {
+        QStringLiteral( "ige" ),
+      }
+    },
+    {
+      QStringLiteral( "sid" ), {
+        QStringLiteral( "j2w" ),
+      }
+    },
+    {
+      QStringLiteral( "tif" ), {
+        QStringLiteral( "tifw" ),
+        QStringLiteral( "tfw" ),
+      }
+    },
+    {
+      QStringLiteral( "bil" ), {
+        QStringLiteral( "bilw" ),
+        QStringLiteral( "blw" ),
+      }
+    },
+    {
+      QStringLiteral( "raster" ), {
+        QStringLiteral( "rasterw" ),
+      }
+    },
+    {
+      QStringLiteral( "bt" ), {
+        QStringLiteral( "btw" ),
+      }
+    }
+  };
+
+
+  QStringList res;
+  // format specific sidecars
+  for ( auto it = sExtensions.constBegin(); it != sExtensions.constEnd(); ++it )
+  {
+    if ( suffix.compare( it.key(), Qt::CaseInsensitive ) == 0 )
+    {
+      for ( const QString &ext : it.value() )
+      {
+        res.append( fileInfo.dir().filePath( fileInfo.completeBaseName() + '.' + ext ) );
+      }
+    }
+  }
+
+  // sidecars which could be present for any file
+  for ( const QString &ext :
+        {
+          QStringLiteral( "aux.xml" ),
+          QStringLiteral( "ovr" ),
+          QStringLiteral( "wld" )
+        } )
+  {
+    res.append( fileInfo.dir().filePath( fileInfo.completeBaseName() + '.' + ext ) );
+  }
+  return res;
+}
+
 QgsGdalProviderMetadata::QgsGdalProviderMetadata():
   QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
 {
