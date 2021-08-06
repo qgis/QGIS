@@ -71,14 +71,13 @@ QgsDwgImporter::QgsDwgImporter( const QString &database, const QgsCoordinateRefe
   , mSplineSegs( 8 )
   , mBlockHandle( -1 )
   , mCrs( crs.srsid() )
-  , mCrsH( nullptr )
   , mUseCurves( true )
   , mEntities( 0 )
 {
   QgsDebugCall;
 
   QString crswkt( crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ) );
-  mCrsH = OSRNewSpatialReference( crswkt.toLocal8Bit().constData() );
+  mCrsH = QgsOgrUtils::crsToOGRSpatialReference( crs );
   QgsDebugMsg( QStringLiteral( "CRS %1[%2]: %3" ).arg( mCrs ).arg( ( qint64 ) mCrsH, 0, 16 ).arg( crswkt ) );
 }
 

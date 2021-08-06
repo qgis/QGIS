@@ -412,8 +412,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
   QgsCoordinateReferenceSystem srs = mCrsSelector->crs();
   if ( wkbType != wkbNone && srs.isValid() )
   {
-    QString srsWkt = srs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL );
-    hSRS = OSRNewSpatialReference( srsWkt.toLocal8Bit().data() );
+    hSRS = QgsOgrUtils::crsToOGRSpatialReference( srs );
   }
 
   // Set options

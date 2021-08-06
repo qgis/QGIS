@@ -794,7 +794,6 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
   }
 
   //consider spatial reference system
-  OGRSpatialReferenceH reference = nullptr;
 
   QgsCoordinateReferenceSystem mySpatialRefSys;
   if ( srs.isValid() )
@@ -806,12 +805,7 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
     mySpatialRefSys.validate();
   }
 
-  QString myWkt = mySpatialRefSys.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL );
-
-  if ( !myWkt.isNull()  &&  myWkt.length() != 0 )
-  {
-    reference = OSRNewSpatialReference( myWkt.toLocal8Bit().data() );
-  }
+  OGRSpatialReferenceH reference = QgsOgrUtils::crsToOGRSpatialReference( mySpatialRefSys );
 
   // Map the qgis geometry type to the OGR geometry type
   OGRwkbGeometryType OGRvectortype = wkbUnknown;
