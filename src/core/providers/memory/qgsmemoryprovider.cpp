@@ -108,12 +108,6 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
                   // blob
                   << QgsVectorDataProvider::NativeType( tr( "Binary object (BLOB)" ), QStringLiteral( "binary" ), QVariant::ByteArray )
 
-                  // list types
-                  << QgsVectorDataProvider::NativeType( tr( "String list" ), QStringLiteral( "stringlist" ), QVariant::StringList, 0, 0, 0, 0, QVariant::String )
-                  << QgsVectorDataProvider::NativeType( tr( "Integer list" ), QStringLiteral( "integerlist" ), QVariant::List, 0, 0, 0, 0, QVariant::Int )
-                  << QgsVectorDataProvider::NativeType( tr( "Decimal (real) list" ), QStringLiteral( "doublelist" ), QVariant::List, 0, 0, 0, 0, QVariant::Double )
-                  << QgsVectorDataProvider::NativeType( tr( "Integer (64bit) list" ), QStringLiteral( "doublelist" ), QVariant::List, 0, 0, 0, 0, QVariant::Double )
-
                 );
 
   if ( query.hasQueryItem( QStringLiteral( "field" ) ) )
@@ -564,8 +558,24 @@ bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
 {
   for ( QgsField field : attributes )
   {
-    if ( !supportedType( field ) )
-      continue;
+    switch ( field.type() )
+    {
+      case QVariant::Int:
+      case QVariant::Double:
+      case QVariant::String:
+      case QVariant::Date:
+      case QVariant::Time:
+      case QVariant::DateTime:
+      case QVariant::LongLong:
+      case QVariant::StringList:
+      case QVariant::List:
+      case QVariant::Bool:
+      case QVariant::ByteArray:
+        break;
+      default:
+        QgsDebugMsg( "Field type not supported: " + field.typeName() );
+        continue;
+    }
 
     // Make sure added attributes typeName correspond to a native type name
     bool isNativeTypeName = false;
@@ -585,13 +595,10 @@ bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
     }
     if ( !isNativeTypeName )
     {
-      if ( nativeTypeCandidate.mType == QVariant::Invalid )
+      if ( nativeTypeCandidate.mType != QVariant::Invalid )
       {
-        QgsLogger::warning( "Field type not supported: " + field.typeName() );
-        continue;
+        field.setTypeName( nativeTypeCandidate.mTypeName );
       }
-
-      field.setTypeName( nativeTypeCandidate.mTypeName );
     }
 
     // add new field as a last one
