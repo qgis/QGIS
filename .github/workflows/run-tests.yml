@@ -120,7 +120,7 @@ jobs:
           DOCKER_IMAGE: ${{ steps.docker-build.outputs.FULL_IMAGE_NAME }}
 
       - name: Push Qt5 deps image to Docker hub
-        if: ${{ github.repository_owner == 'qgis' && github.event_name != 'pull_request' && matrix.qt-version == '5' }}
+        if: ${{ github.repository_owner == 'qgis' && github.event_name != 'pull_request' && matrix.qt-version == '5' && matrix.distro-version == '20.04' }}
         run: |
           docker tag qgis3-build-deps qgis/qgis3-build-deps:${DOCKER_TAG}
           docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
