@@ -107,6 +107,11 @@ bool QgsProviderMetadata::uriIsBlocklisted( const QString & ) const
   return false;
 }
 
+QStringList QgsProviderMetadata::sidecarFilesForUri( const QString & ) const
+{
+  return QStringList();
+}
+
 QList<QgsProviderSublayerDetails> QgsProviderMetadata::querySublayers( const QString &, Qgis::SublayerQueryFlags, QgsFeedback * ) const
 {
   return QList<QgsProviderSublayerDetails>();
