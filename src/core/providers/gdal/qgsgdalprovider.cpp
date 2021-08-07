@@ -3765,6 +3765,13 @@ QStringList QgsGdalProviderMetadata::sidecarFilesForUri( const QString &uri ) co
         QStringLiteral( "vdc" ),
         QStringLiteral( "avl" ),
       }
+    },
+    {
+      QStringLiteral( "sdat" ), {
+        QStringLiteral( "sgrd" ),
+        QStringLiteral( "mgrd" ),
+        QStringLiteral( "prj" ),
+      }
     }
   };
 
@@ -3786,8 +3793,9 @@ QStringList QgsGdalProviderMetadata::sidecarFilesForUri( const QString &uri ) co
   for ( const QString &ext :
         {
           QStringLiteral( "aux.xml" ),
+          QStringLiteral( "vat.dbf" ),
           QStringLiteral( "ovr" ),
-          QStringLiteral( "wld" )
+          QStringLiteral( "wld" ),
         } )
   {
     res.append( fileInfo.dir().filePath( fileInfo.completeBaseName() + '.' + ext ) );
@@ -3801,3 +3809,4 @@ QgsGdalProviderMetadata::QgsGdalProviderMetadata():
 }
 
 ///@endcond
+

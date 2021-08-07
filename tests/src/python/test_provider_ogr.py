@@ -2144,6 +2144,8 @@ class PyQgsOGRProvider(unittest.TestCase):
                          ['/home/me/special.dat', '/home/me/special.id', '/home/me/special.map', '/home/me/special.ind',
                           '/home/me/special.tda', '/home/me/special.tin', '/home/me/special.tma',
                           '/home/me/special.lda', '/home/me/special.lin', '/home/me/special.lma'])
+        self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.mif'),
+                         ['/home/me/special.mid'])
         self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.gml'),
                          ['/home/me/special.gfs', '/home/me/special.xsd'])
         self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.csv'), ['/home/me/special.csvt'])

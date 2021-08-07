@@ -1340,6 +1340,11 @@ QStringList QgsOgrProviderMetadata::sidecarFilesForUri( const QString &uri ) con
       }
     },
     {
+      QStringLiteral( "mif" ), {
+        QStringLiteral( "mid" ),
+      }
+    },
+    {
       QStringLiteral( "gml" ), {
         QStringLiteral( "gfs" ),
         QStringLiteral( "xsd" ),

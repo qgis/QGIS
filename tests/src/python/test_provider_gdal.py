@@ -14,13 +14,10 @@ import os
 
 from qgis.core import (
     QgsProviderRegistry,
-    QgsDataProvider,
     QgsRasterLayer,
     QgsRectangle,
 )
 from qgis.testing import start_app, unittest
-
-from qgis.PyQt.QtGui import qRed
 
 from utilities import unitTestDataPath
 
@@ -124,33 +121,46 @@ class PyQgsGdalProvider(unittest.TestCase):
 
         self.assertEqual(metadata.sidecarFilesForUri(''), [])
         self.assertEqual(metadata.sidecarFilesForUri('/home/me/some_file.asc'),
-                         ['/home/me/some_file.aux.xml', '/home/me/some_file.ovr', '/home/me/some_file.wld'])
+                         ['/home/me/some_file.aux.xml', '/home/me/some_file.vat.dbf', '/home/me/some_file.ovr',
+                          '/home/me/some_file.wld'])
         self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.jpg'),
                          ['/home/me/special.jpw', '/home/me/special.jgw', '/home/me/special.jpgw',
-                          '/home/me/special.jpegw', '/home/me/special.aux.xml', '/home/me/special.ovr',
+                          '/home/me/special.jpegw', '/home/me/special.aux.xml', '/home/me/special.vat.dbf',
+                          '/home/me/special.ovr',
                           '/home/me/special.wld'])
         self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.img'),
-                         ['/home/me/special.ige', '/home/me/special.aux.xml', '/home/me/special.ovr',
+                         ['/home/me/special.ige', '/home/me/special.aux.xml', '/home/me/special.vat.dbf',
+                          '/home/me/special.ovr',
                           '/home/me/special.wld'])
         self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.sid'),
-                         ['/home/me/special.j2w', '/home/me/special.aux.xml', '/home/me/special.ovr',
+                         ['/home/me/special.j2w', '/home/me/special.aux.xml', '/home/me/special.vat.dbf',
+                          '/home/me/special.ovr',
                           '/home/me/special.wld'])
         self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.tif'),
                          ['/home/me/special.tifw', '/home/me/special.tfw', '/home/me/special.aux.xml',
+                          '/home/me/special.vat.dbf',
                           '/home/me/special.ovr', '/home/me/special.wld'])
         self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.bil'),
                          ['/home/me/special.bilw', '/home/me/special.blw', '/home/me/special.aux.xml',
+                          '/home/me/special.vat.dbf',
                           '/home/me/special.ovr', '/home/me/special.wld'])
         self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.raster'),
-                         ['/home/me/special.rasterw', '/home/me/special.aux.xml', '/home/me/special.ovr',
+                         ['/home/me/special.rasterw', '/home/me/special.aux.xml', '/home/me/special.vat.dbf',
+                          '/home/me/special.ovr',
                           '/home/me/special.wld'])
         self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.bt'),
-                         ['/home/me/special.btw', '/home/me/special.aux.xml', '/home/me/special.ovr',
+                         ['/home/me/special.btw', '/home/me/special.aux.xml', '/home/me/special.vat.dbf',
+                          '/home/me/special.ovr',
                           '/home/me/special.wld'])
         self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.rst'),
                          ['/home/me/special.rdc', '/home/me/special.smp', '/home/me/special.ref',
                           '/home/me/special.vct', '/home/me/special.vdc', '/home/me/special.avl',
-                          '/home/me/special.aux.xml', '/home/me/special.ovr', '/home/me/special.wld'])
+                          '/home/me/special.aux.xml', '/home/me/special.vat.dbf', '/home/me/special.ovr',
+                          '/home/me/special.wld'])
+        self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.sdat'),
+                         ['/home/me/special.sgrd', '/home/me/special.mgrd', '/home/me/special.prj',
+                          '/home/me/special.aux.xml', '/home/me/special.vat.dbf', '/home/me/special.ovr',
+                          '/home/me/special.wld'])
 
 
 if __name__ == '__main__':
