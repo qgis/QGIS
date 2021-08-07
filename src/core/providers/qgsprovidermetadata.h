@@ -358,11 +358,20 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * Given a \a uri, returns any sidecar files which are associated with the URI and this
      * provider.
      *
+     * In this context a sidecar file is defined as a file which shares the same base filename
+     * as a dataset, but which differs in file extension. It defines the list of additional
+     * files which must be renamed or deleted alongside the main file associated with the
+     * dataset in order to completely rename/delete the dataset.
+     *
      * For instance, the OGR provider would return the corresponding .dbf, .idx, etc files for a
      * uri pointing at a .shp file.
      *
      * Implementations should files any files which MAY exist for the URI, and it is up to the caller
      * to filter these to only existing files if required.
+     *
+     * \note Some file formats consist of a set of static file names, such as ESRI aigrid datasets
+     * which consist of a folder with files with the names "hdr.adf", "prj.adf", etc. These statically
+     * named files are NOT considered as sidecar files.
      *
      * \since QGIS 3.22
      */
