@@ -2263,6 +2263,8 @@ class TestQgsExpression: public QObject
 
       // check again - make sure value was correctly cached
       res = exp.evaluate( &context );
+      // if first evaluation has an eval error, so should any subsequent evaluations!
+      QCOMPARE( exp.hasEvalError(), evalError );
       QCOMPARE( res, result );
     }
 
