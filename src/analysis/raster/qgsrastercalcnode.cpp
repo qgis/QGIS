@@ -413,8 +413,9 @@ QStringList QgsRasterCalcNode::cleanRasterReferences( const QString &str )
     {
       layerRef.remove( 0, 1 );
       layerRef.chop( 1 );
-    }
 
+    }
+    layerRef.remove( QChar( '\\' ), Qt::CaseInsensitive );
     rasterReferences << layerRef;
   }
 
