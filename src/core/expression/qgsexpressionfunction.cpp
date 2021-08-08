@@ -687,7 +687,13 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     subContext.appendScope( subScope );
     result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok );
 
-    context->setCachedValue( cacheKey, result );
+    if ( ok )
+    {
+      // important -- we should only store cached values when the expression is successfully calculated. Otherwise subsequent
+      // use of the expression context will happily grab the invalid QVariant cached value without realising that there was actually an error
+      // associated with it's calculation!
+      context->setCachedValue( cacheKey, result );
+    }
   }
   else
   {
