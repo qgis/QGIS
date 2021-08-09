@@ -3710,7 +3710,6 @@ QStringList QgsGdalProviderMetadata::sidecarFilesForUri( const QString &uri ) co
   if ( path.isEmpty() )
     return {};
 
-  // all gdal uris may have a .aux.xml sidecar
   const QFileInfo fileInfo( path );
   const QString suffix = fileInfo.suffix();
 
@@ -3799,6 +3798,7 @@ QStringList QgsGdalProviderMetadata::sidecarFilesForUri( const QString &uri ) co
         } )
   {
     res.append( fileInfo.dir().filePath( fileInfo.completeBaseName() + '.' + ext ) );
+    res.append( path + '.' + ext );
   }
   return res;
 }
