@@ -638,6 +638,7 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     }
   }
 
+  QString aggregateError;
   QVariant result;
   if ( context )
   {
@@ -686,7 +687,7 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     QgsExpressionContextScope *subScope = new QgsExpressionContextScope();
     subScope->setVariable( QStringLiteral( "parent" ), context->feature() );
     subContext.appendScope( subScope );
-    result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok, nullptr, context->feedback() );
+    result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok, nullptr, context->feedback(), &aggregateError );
 
     if ( ok )
     {
@@ -698,11 +699,14 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
   }
   else
   {
-    result = vl->aggregate( aggregate, subExpression, parameters, nullptr, &ok );
+    result = vl->aggregate( aggregate, subExpression, parameters, nullptr, &ok, nullptr, nullptr, &aggregateError );
   }
   if ( !ok )
   {
-    parent->setEvalErrorString( QObject::tr( "Could not calculate aggregate for: %1" ).arg( subExpression ) );
+    if ( !aggregateError.isEmpty() )
+      parent->setEvalErrorString( QObject::tr( "Could not calculate aggregate for: %1 (%2)" ).arg( subExpression, aggregateError ) );
+    else
+      parent->setEvalErrorString( QObject::tr( "Could not calculate aggregate for: %1" ).arg( subExpression ) );
     return QVariant();
   }
 

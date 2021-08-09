@@ -2256,6 +2256,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param ok if specified, will be set to TRUE if aggregate calculation was successful
      * \param fids list of fids to filter, otherwise will use all fids
      * \param feedback optional feedback argument for early cancellation (since QGIS 3.22)
+     * \param error optional storage for error messages (not available in Python bindings)
      * \returns calculated aggregate value
      * \since QGIS 2.16
      */
@@ -2265,7 +2266,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
                         QgsExpressionContext *context = nullptr,
                         bool *ok = nullptr,
                         QgsFeatureIds *fids = nullptr,
-                        QgsFeedback *feedback = nullptr ) const;
+                        QgsFeedback *feedback = nullptr,
+                        QString *error SIP_PYARGREMOVE = nullptr ) const;
 
     //! Sets the blending mode used for rendering each feature
     void setFeatureBlendMode( QPainter::CompositionMode blendMode );
