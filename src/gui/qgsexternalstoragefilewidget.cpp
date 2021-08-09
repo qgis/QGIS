@@ -203,8 +203,9 @@ void QgsExternalStorageFileWidget::storeExternalFiles( QStringList fileNames, QS
 {
   const QString filePath = fileNames.takeFirst();
 
-  mProgressLabel->setText( tr( "Storing file %1 ..." ).arg( QFileInfo( filePath ).baseName() ) );
+  mProgressLabel->setText( tr( "Storing file %1 ..." ).arg( QFileInfo( filePath ).fileName() ) );
   mStoreInProgress = true;
+  mProgressBar->setValue( 0 );
   updateLayout();
 
   Q_ASSERT( mScope );
