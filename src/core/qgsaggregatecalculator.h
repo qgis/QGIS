@@ -123,6 +123,13 @@ class CORE_EXPORT QgsAggregateCalculator
     QgsAggregateCalculator( const QgsVectorLayer *layer );
 
     /**
+     * Returns the last error encountered during the aggregate calculation.
+     *
+     * \since QGIS 3.22
+     */
+    QString lastError() const { return mLastError; }
+
+    /**
      * Returns the associated vector layer.
      */
     const QgsVectorLayer *layer() const;
@@ -173,7 +180,7 @@ class CORE_EXPORT QgsAggregateCalculator
      * \param fieldOrExpression source field or expression to use as basis for aggregated values.
      * If an expression is used, then the context parameter must be set.
      * \param context expression context for evaluating expressions
-     * \param ok if specified, will be set to TRUE if aggregate calculation was successful
+     * \param ok if specified, will be set to TRUE if aggregate calculation was successful. If \ok is FALSE then lastError() can be used to retrieve a descriptive error message.
      * \param feedback optional feedback argument for early cancellation (since QGIS 3.22). If set, this will take precedence over any feedback object
      * set on the expression \a context.
      * \returns calculated aggregate value
@@ -215,6 +222,8 @@ class CORE_EXPORT QgsAggregateCalculator
 
     //trigger variable
     bool mFidsSet = false;
+
+    mutable QString mLastError;
 
     static QgsStatisticalSummary::Statistic numericStatFromAggregate( Aggregate aggregate, bool *ok = nullptr );
     static QgsStringStatisticalSummary::Statistic stringStatFromAggregate( Aggregate aggregate, bool *ok = nullptr );

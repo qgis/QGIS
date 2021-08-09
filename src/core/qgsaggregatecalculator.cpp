@@ -51,6 +51,7 @@ void QgsAggregateCalculator::setFidsFilter( const QgsFeatureIds &fids )
 QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate aggregate,
     const QString &fieldOrExpression, QgsExpressionContext *context, bool *ok, QgsFeedback *feedback ) const
 {
+  mLastError.clear();
   if ( ok )
     *ok = false;
 
@@ -74,7 +75,10 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
     expression.reset( new QgsExpression( fieldOrExpression ) );
 
     if ( expression->hasParserError() || !expression->prepare( context ) )
+    {
+      mLastError = !expression->parserErrorString().isEmpty() ? expression->parserErrorString() : expression->evalErrorString();
       return QVariant();
+    }
   }
 
   QSet<QString> lst;
