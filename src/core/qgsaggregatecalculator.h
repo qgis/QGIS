@@ -180,7 +180,7 @@ class CORE_EXPORT QgsAggregateCalculator
      * \param fieldOrExpression source field or expression to use as basis for aggregated values.
      * If an expression is used, then the context parameter must be set.
      * \param context expression context for evaluating expressions
-     * \param ok if specified, will be set to TRUE if aggregate calculation was successful. If \ok is FALSE then lastError() can be used to retrieve a descriptive error message.
+     * \param ok if specified, will be set to TRUE if aggregate calculation was successful. If \a ok is FALSE then lastError() can be used to retrieve a descriptive error message.
      * \param feedback optional feedback argument for early cancellation (since QGIS 3.22). If set, this will take precedence over any feedback object
      * set on the expression \a context.
      * \returns calculated aggregate value
