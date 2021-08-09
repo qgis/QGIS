@@ -20,15 +20,13 @@
 #include "dwgbuffer.h"
 #include "../libdwgr.h"
 
-class objHandle
-{
-  public:
-    objHandle() { handle = type = loc = 0; }
-    objHandle( duint32 t, duint32 h, duint32 l )
-    {
-      type = t;
-      handle = h;
-      loc = l;
+class objHandle{
+public:
+    objHandle(){ handle = type = loc = 0; }
+    objHandle(duint32 t, duint32 h, duint32 l){
+        type = t;
+        handle = h;
+        loc = l;
     }
     duint32 type;
     duint32 handle;
@@ -55,21 +53,13 @@ class objHandle
  *       uSize, uncompressed size of data
  *       address, address in file stream
  * */
-class dwgPageInfo
-{
-  public:
-    dwgPageInfo() {}
-    dwgPageInfo( duint64 i, duint64 ad, duint32 sz )
-      : Id( i )
-      , address( ad )
-      , size( sz )
-      , dataSize( 0 )
-      , startOffset( 0 )
-      , cSize( 0 )
-      , uSize( 0 )
-    {
+class dwgPageInfo {
+public:
+    dwgPageInfo(){}
+    dwgPageInfo(duint64 i, duint64 ad, duint32 sz){
+        Id=i; address=ad; size=sz;
     }
-
+    ~dwgPageInfo(){}
     duint64 Id;
     duint64 address; //in file stream, for rd18, rd21
     duint64 size; //in file stream, for rd18, rd21
@@ -90,18 +80,15 @@ class dwgPageInfo
  *        name, read & stored but not used
  * 2007: same as 2004+ except encoding, saved in compressed field
  * */
-class dwgSectionInfo
-{
-  public:
-    dwgSectionInfo()
-      : Id( -1 )
-      , compressed( 1 ) //1=no, 2=yes
-      , encrypted( 0 ) //???
-      , pageCount( 0 )
-      , address( 0 )
-    {
+class dwgSectionInfo {
+public:
+    dwgSectionInfo(){
+        compressed = 1;//1=no, 2=yes
+        encrypted = 0;//???
+        pageCount = 0;
+        Id=-1;
     }
-
+    ~dwgSectionInfo(){}
     dint32 Id; //section Id, 2000-   rd15 rd18
     std::string name; //section name rd18
     duint32 compressed;//is compressed? 1=no, 2=yes rd18, rd21(encoding)
@@ -119,87 +106,80 @@ class dwgSectionInfo
 *  Class to handle dwg obj control entries
 *  @author Rallaz
 */
-class DRW_ObjControl : public DRW_TableEntry
-{
-  public:
+class DRW_ObjControl : public DRW_TableEntry {
+public:
     DRW_ObjControl() { reset();}
 
-    void reset()
-    {
+    void reset(){
     }
-    bool parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs = 0 );
-    std::list<duint32> handlesList;
+    bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
+    std::list<duint32>handlesList;
 };
 
 
-class dwgReader
-{
+class dwgReader {
     friend class dwgR;
-  public:
-    dwgReader( std::ifstream *stream, dwgR *p )
-      : maintenanceVersion( 0 )
-      , fileBuf( new dwgBuffer( stream ) )
-      , parent( p )
-      , nextEntLink( 0 )
-      , prevEntLink( 0 )
-    {
-      decoder.setVersion( DRW::AC1021, false );//default 2007 in utf8(no convert)
-      decoder.setCodePage( "UTF-16", false );
-#if 0
-      blockCtrl = 0; //RLZ: temporary
-      blockCtrl = layerCtrl = styleCtrl = linetypeCtrl = viewCtrl = 0;
-      ucsCtrl = vportCtrl = appidCtrl = dimstyleCtrl = vpEntHeaderCtrl = 0;
-#endif
+public:
+    dwgReader(std::ifstream *stream, dwgR *p){
+        fileBuf = new dwgBuffer(stream);
+        parent = p;
+        decoder.setVersion(DRW::AC1021, false);//default 2007 in utf8(no convert)
+        decoder.setCodePage("UTF-16", false);
+//        blockCtrl=0; //RLZ: temporary
+//        blockCtrl=layerCtrl=styleCtrl=linetypeCtrl=viewCtrl=0;
+//        ucsCtrl=vportCtrl=appidCtrl=dimstyleCtrl=vpEntHeaderCtrl=0;
+        nextEntLink = prevEntLink = 0;
+        maintenanceVersion=0;
     }
     virtual ~dwgReader();
 
-  protected:
+protected:
     virtual bool readMetaData() = 0;
-    virtual bool readPreview() {return false;}
+    virtual bool readPreview(){return false;}
     virtual bool readFileHeader() = 0;
-    virtual bool readDwgHeader( DRW_Header &hdr ) = 0;
+    virtual bool readDwgHeader(DRW_Header& hdr)=0;
     virtual bool readDwgClasses() = 0;
     virtual bool readDwgHandles() = 0;
-    virtual bool readDwgTables( DRW_Header &hdr ) = 0;
-    virtual bool readDwgBlocks( DRW_Interface &intfa ) = 0;
-    virtual bool readDwgEntities( DRW_Interface &intfa ) = 0;
-    virtual bool readDwgObjects( DRW_Interface &intfa ) = 0;
+    virtual bool readDwgTables(DRW_Header& hdr)=0;
+    virtual bool readDwgBlocks(DRW_Interface& intfa) = 0;
+    virtual bool readDwgEntities(DRW_Interface& intfa) = 0;
+    virtual bool readDwgObjects(DRW_Interface& intfa) = 0;
 
-    virtual bool readDwgEntity( dwgBuffer *dbuf, objHandle &obj, DRW_Interface &intfa );
-    bool readDwgObject( dwgBuffer *dbuf, objHandle &obj, DRW_Interface &intfa );
-    void parseAttribs( DRW_Entity *e );
-    std::string findTableName( DRW::TTYPE table, dint32 handle );
+    virtual bool readDwgEntity(dwgBuffer *dbuf, objHandle& obj, DRW_Interface& intfa);
+    bool readDwgObject(dwgBuffer *dbuf, objHandle& obj, DRW_Interface& intfa);
+    void parseAttribs(DRW_Entity* e);
+    std::string findTableName(DRW::TTYPE table, dint32 handle);
 
-    void setCodePage( std::string *c ) {decoder.setCodePage( c, false );}
-    std::string getCodePage() { return decoder.getCodePage();}
-    bool readDwgHeader( DRW_Header &hdr, dwgBuffer *buf, dwgBuffer *hBuf );
-    bool readDwgHandles( dwgBuffer *dbuf, duint32 offset, duint32 size );
-    bool readDwgTables( DRW_Header &hdr, dwgBuffer *dbuf );
-    bool checkSentinel( dwgBuffer *buf, enum secEnum::DWGSection, bool start );
+    void setCodePage(std::string *c){decoder.setCodePage(c, false);}
+    std::string getCodePage(){ return decoder.getCodePage();}
+    bool readDwgHeader(DRW_Header& hdr, dwgBuffer *buf, dwgBuffer *hBuf);
+    bool readDwgHandles(dwgBuffer *dbuf, duint32 offset, duint32 size);
+    bool readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf);
+    bool checkSentinel(dwgBuffer *buf, enum secEnum::DWGSection, bool start);
 
-    bool readDwgBlocks( DRW_Interface &intfa, dwgBuffer *dbuf );
-    bool readDwgEntities( DRW_Interface &intfa, dwgBuffer *dbuf );
-    bool readDwgObjects( DRW_Interface &intfa, dwgBuffer *dbuf );
-    bool readPlineVertex( DRW_Polyline &pline, dwgBuffer *dbuf );
+    bool readDwgBlocks(DRW_Interface& intfa, dwgBuffer *dbuf);
+    bool readDwgEntities(DRW_Interface& intfa, dwgBuffer *dbuf);
+    bool readDwgObjects(DRW_Interface& intfa, dwgBuffer *dbuf);
+    bool readPlineVertex(DRW_Polyline& pline, dwgBuffer *dbuf);
 
-  public:
+public:
     std::map<duint32, objHandle>ObjectMap;
     std::map<duint32, objHandle>objObjectMap; //stores the objects & entities not read in readDwgEntities
-    std::map<duint32, objHandle>remainingMap; //stores the objects & entities not read in all processes, for debug only
-    std::map<duint32, DRW_LType *> ltypemap;
-    std::map<duint32, DRW_Layer *> layermap;
-    std::map<duint32, DRW_Block *> blockmap;
-    std::map<duint32, DRW_Textstyle *> stylemap;
-    std::map<duint32, DRW_Dimstyle *> dimstylemap;
-    std::map<duint32, DRW_Vport *> vportmap;
-    std::map<duint32, DRW_Block_Record *> blockRecordmap;
-    std::map<duint32, DRW_AppId *> appIdmap;
+    std::map<duint32, objHandle>remainingMap; //stores the objects & entities not read in all proces, for debug only
+    std::map<duint32, DRW_LType*> ltypemap;
+    std::map<duint32, DRW_Layer*> layermap;
+    std::map<duint32, DRW_Block*> blockmap;
+    std::map<duint32, DRW_Textstyle*> stylemap;
+    std::map<duint32, DRW_Dimstyle*> dimstylemap;
+    std::map<duint32, DRW_Vport*> vportmap;
+    std::map<duint32, DRW_Block_Record*> blockRecordmap;
+    std::map<duint32, DRW_AppId*> appIdmap;
 //    duint32 currBlock;
     duint8 maintenanceVersion;
 
-  protected:
-    dwgBuffer *fileBuf = nullptr;
-    dwgR *parent = nullptr;
+protected:
+    dwgBuffer *fileBuf;
+    dwgR *parent;
     DRW::Version version;
 
 //seeker (position) for the beginning sentinel of the image data (R13 to R15)
@@ -207,12 +187,12 @@ class dwgReader
 
 //sections map
     std::map<enum secEnum::DWGSection, dwgSectionInfo >sections;
-    std::map<duint32, DRW_Class *> classesmap;
+    std::map<duint32, DRW_Class*> classesmap;
 
-  protected:
+protected:
     DRW_TextCodec decoder;
 
-  protected:
+protected:
 //    duint32 blockCtrl;
     duint32 nextEntLink;
     duint32 prevEntLink;
