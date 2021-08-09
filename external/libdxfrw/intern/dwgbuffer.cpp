@@ -422,8 +422,8 @@ DRW_Coord dwgBuffer::get3BitDouble()
 //! Reads raw char 8 bits returns a unsigned char (RC)
 duint8 dwgBuffer::getRawChar8()
 {
-  duint8 ret;
-  duint8 buffer;
+  duint8 ret = 0;
+  duint8 buffer = 0;
   filestr->read( &buffer, 1 );
   if ( bitPos == 0 )
     return buffer;
@@ -439,8 +439,8 @@ duint8 dwgBuffer::getRawChar8()
 //! Reads raw short 16 bits little-endian order, returns a unsigned short (RS)
 duint16 dwgBuffer::getRawShort16()
 {
-  duint8 buffer[2];
-  duint16 ret;
+  duint8 buffer[2] = {0, 0};
+  duint16 ret = 0;
 
   filestr->read( buffer, 2 );
   if ( bitPos == 0 )
@@ -465,6 +465,7 @@ duint16 dwgBuffer::getRawShort16()
 double dwgBuffer::getRawDouble()
 {
   duint8 buffer[8];
+  memset( buffer, 0, sizeof( buffer ) );
   if ( bitPos == 0 )
     filestr->read( buffer, 8 );
   else
@@ -505,6 +506,7 @@ duint64 dwgBuffer::getRawLong64()
 
   return ret;
 }
+
 
 //! Reads modular unsigner int, char based, compressed form, little-endian order, returns a unsigned int (U-MC)
 duint32 dwgBuffer::getUModularChar()
@@ -700,10 +702,7 @@ std::string dwgBuffer::getCP8Text()
 
 //TU unicode 16 bit (UCS) text converted to utf8
 
-/**
- * Reads 2-bytes char (UCS2, nullptr terminated) and convert to std::string (only for Latin-1)
-   ts= total input size in bytes.
-**/
+//! Reads 2-bytes char (UCS2, nullptr terminated) and convert to std::string (only for Latin-1) ts= total input size in bytes. **/
 std::string dwgBuffer::getUCSStr( duint16 ts )
 {
   std::string strData;
