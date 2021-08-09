@@ -1013,18 +1013,18 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   }
   else if ( value.type() == QVariant::Date )
   {
-    QDate dt = value.toDate();
+    const QDate dt = value.toDate();
     return startToken + tr( "date: %1" ).arg( dt.toString( QStringLiteral( "yyyy-MM-dd" ) ) ) + endToken;
   }
   else if ( value.type() == QVariant::Time )
   {
-    QTime tm = value.toTime();
+    const QTime tm = value.toTime();
     return startToken + tr( "time: %1" ).arg( tm.toString( QStringLiteral( "hh:mm:ss" ) ) ) + endToken;
   }
   else if ( value.type() == QVariant::DateTime )
   {
-    QDateTime dt = value.toDateTime();
-    return startToken + tr( "datetime: %1" ).arg( dt.toString( QStringLiteral( "yyyy-MM-dd hh:mm:ss" ) ) ) + endToken;
+    const QDateTime dt = value.toDateTime();
+    return startToken + tr( "datetime: %1 (%2)" ).arg( dt.toString( QStringLiteral( "yyyy-MM-dd hh:mm:ss" ) ), dt.timeZoneAbbreviation() ) + endToken;
   }
   else if ( value.type() == QVariant::String )
   {

@@ -3965,6 +3965,8 @@ class TestQgsExpression: public QObject
     {
       QCOMPARE( QgsExpression::formatPreviewString( QVariant( "hello" ) ), QStringLiteral( "'hello'" ) );
       QCOMPARE( QgsExpression::formatPreviewString( QVariant( QVariantMap() ) ), QStringLiteral( "{}" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant( QDateTime( QDate( 2020, 3, 4 ), QTime( 12, 13, 14 ), Qt::UTC ) ) ), QStringLiteral( "<i>&lt;datetime: 2020-03-04 12:13:14 (UTC)&gt;</i>" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant( QDateTime( QDate( 2020, 3, 4 ), QTime( 12, 13, 14 ), Qt::OffsetFromUTC, 3600 ) ) ), QStringLiteral( "<i>&lt;datetime: 2020-03-04 12:13:14 (UTC+01:00)&gt;</i>" ) );
 
       QVariantMap map;
       map[QStringLiteral( "1" )] = "One";
