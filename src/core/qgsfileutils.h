@@ -137,6 +137,24 @@ class CORE_EXPORT QgsFileUtils
      */
     static bool pathIsSlowDevice( const QString &path );
 
+    /**
+     * Returns a list of the sidecar files which exist for the dataset a the specified \a path.
+     *
+     * In this context a sidecar file is defined as a file which shares the same base filename
+     * as a dataset, but which differs in file extension. It defines the list of additional
+     * files which must be renamed or deleted alongside the main file associated with the
+     * dataset in order to completely rename/delete the dataset.
+     *
+     * For instance, if \a path specified a .shp file then the corresponding .dbf, .idx
+     * and .prj files would be returned (amongst others).
+     *
+     * \note QGIS metadata files (.qmd) and map layer styling files (.qml) are NOT included
+     * in the returned list.
+     *
+     * \since QGIS 3.22
+     */
+    static QSet< QString > sidecarFilesForPath( const QString &path );
+
 };
 
 #endif // QGSFILEUTILS_H

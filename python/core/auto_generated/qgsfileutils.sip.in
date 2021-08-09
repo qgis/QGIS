@@ -135,6 +135,26 @@ network drive or other non-fixed device.
 .. versionadded:: 3.20
 %End
 
+    static QSet< QString > sidecarFilesForPath( const QString &path );
+%Docstring
+Returns a list of the sidecar files which exist for the dataset a the specified ``path``.
+
+In this context a sidecar file is defined as a file which shares the same base filename
+as a dataset, but which differs in file extension. It defines the list of additional
+files which must be renamed or deleted alongside the main file associated with the
+dataset in order to completely rename/delete the dataset.
+
+For instance, if ``path`` specified a .shp file then the corresponding .dbf, .idx
+and .prj files would be returned (amongst others).
+
+.. note::
+
+   QGIS metadata files (.qmd) and map layer styling files (.qml) are NOT included
+   in the returned list.
+
+.. versionadded:: 3.22
+%End
+
 };
 
 /************************************************************************
