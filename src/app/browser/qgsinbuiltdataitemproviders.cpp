@@ -504,51 +504,55 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
   QMenu *manageFileMenu = new QMenu( tr( "Manage" ), menu );
 
   QStringList selectedDeletableFiles;
-  QStringList selectedDeletableOgrLayers;
   QList< QPointer< QgsDataItem > > selectedParents;
   for ( QgsDataItem *selectedItem : selectedItems )
   {
     if ( selectedItem->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile )
     {
-      if ( qobject_cast< QgsLayerItem * >( selectedItem ) && selectedItem->providerKey() == QLatin1String( "ogr" ) )
-      {
-        selectedDeletableOgrLayers.append( selectedItem->path() );
-      }
-      else
-      {
-        selectedDeletableFiles.append( selectedItem->path() );
-      }
+      selectedDeletableFiles.append( selectedItem->path() );
       selectedParents << selectedItem->parent();
     }
   }
-  const QString deleteText = selectedDeletableFiles.count() + selectedDeletableOgrLayers.count() == 1 ? tr( "Delete “%1”…" ).arg( fi.fileName() )
+  const QString deleteText = selectedDeletableFiles.count() == 1 ? tr( "Delete “%1”…" ).arg( fi.fileName() )
                              : tr( "Delete Selected Files…" );
   QAction *deleteAction = new QAction( deleteText, menu );
   connect( deleteAction, &QAction::triggered, this, [ = ]
   {
     // Check if the files correspond to paths in the project
-    const QStringList allFiles = selectedDeletableFiles + selectedDeletableOgrLayers;
     QList<QgsMapLayer *> layersList;
-    for ( const QString &path : allFiles )
+    for ( const QString &path : std::as_const( selectedDeletableFiles ) )
     {
       layersList << QgsProjectUtils::layersMatchingPath( QgsProject::instance(), path );
     }
+
+    // now expand out the list of files to include all sidecar files (e.g. .aux.xml files)
+    QSet< QString > allFilesWithSidecars;
+    for ( const QString &file : std::as_const( selectedDeletableFiles ) )
+    {
+      allFilesWithSidecars.insert( file );
+      allFilesWithSidecars.unite( QgsFileUtils::sidecarFilesForPath( file ) );
+    }
+    QStringList sortedAllFilesWithSidecars( qgis::setToList( allFilesWithSidecars ) );
+    std::sort( sortedAllFilesWithSidecars.begin(), sortedAllFilesWithSidecars.end(), []( const QString & a, const QString & b )
+    {
+      return a.compare( b, Qt::CaseInsensitive ) < 0;
+    } );
 
     bool removeLayers = false;
     if ( layersList.empty() )
     {
       // generic warning
-      QMessageBox message( QMessageBox::Warning, allFiles.size() > 1 ? tr( "Delete Files" ) : tr( "Delete %1" ).arg( QFileInfo( allFiles.at( 0 ) ).fileName() ),
-                           allFiles.size() > 1 ? tr( "Permanently delete %1 files?" ).arg( allFiles.size() )
-                           : tr( "Permanently delete “%1”?" ).arg( QFileInfo( allFiles.at( 0 ) ).fileName() ),
+      QMessageBox message( QMessageBox::Warning, sortedAllFilesWithSidecars.size() > 1 ? tr( "Delete Files" ) : tr( "Delete %1" ).arg( QFileInfo( selectedDeletableFiles.at( 0 ) ).fileName() ),
+                           sortedAllFilesWithSidecars.size() > 1 ? tr( "Permanently delete %1 files?" ).arg( sortedAllFilesWithSidecars.size() )
+                           : tr( "Permanently delete “%1”?" ).arg( QFileInfo( selectedDeletableFiles.at( 0 ) ).fileName() ),
                            QMessageBox::Yes | QMessageBox::No );
       message.setDefaultButton( QMessageBox::No );
 
-      if ( allFiles.size() > 1 )
+      if ( sortedAllFilesWithSidecars.size() > 1 )
       {
         QStringList fileNames;
-        fileNames.reserve( allFiles.size() );
-        for ( const QString &file : std::as_const( allFiles ) )
+        fileNames.reserve( sortedAllFilesWithSidecars.size() );
+        for ( const QString &file : std::as_const( sortedAllFilesWithSidecars ) )
         {
           fileNames << QFileInfo( file ).fileName();
         }
@@ -561,9 +565,9 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     }
     else
     {
-      QMessageBox message( QMessageBox::Warning, allFiles.size() > 1 ? tr( "Delete Files" ) : tr( "Delete %1" ).arg( QFileInfo( allFiles.at( 0 ) ).fileName() ),
-                           allFiles.size() > 1 ? tr( "One or more selected files exist in the current project. Are you sure you want to delete these files?" )
-                           : tr( "The file %1 exists in the current project. Are you sure you want to delete it?" ).arg( QFileInfo( allFiles.at( 0 ) ).fileName() ),
+      QMessageBox message( QMessageBox::Warning, sortedAllFilesWithSidecars.size() > 1 ? tr( "Delete Files" ) : tr( "Delete %1" ).arg( QFileInfo( selectedDeletableFiles.at( 0 ) ).fileName() ),
+                           sortedAllFilesWithSidecars.size() > 1 ? tr( "One or more selected files exist in the current project. Are you sure you want to delete these files?" )
+                           : tr( "The file %1 exists in the current project. Are you sure you want to delete it?" ).arg( QFileInfo( selectedDeletableFiles.at( 0 ) ).fileName() ),
                            QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
       message.setDefaultButton( QMessageBox::Cancel );
       message.setButtonText( QMessageBox::Yes, tr( "Delete and Remove Layers" ) );
@@ -575,7 +579,20 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
       {
         layerNames << layer->name();
       }
-      message.setDetailedText( tr( "The following layers will be affected:" ) + QStringLiteral( "\n\n• %1" ).arg( layerNames.join( QStringLiteral( "\n• " ) ) ) );
+      QString detailedText = tr( "The following layers will be affected:" ) + QStringLiteral( "\n\n• %1" ).arg( layerNames.join( QStringLiteral( "\n• " ) ) );
+
+      if ( sortedAllFilesWithSidecars.size() > 1 )
+      {
+        QStringList fileNames;
+        fileNames.reserve( sortedAllFilesWithSidecars.size() );
+        for ( const QString &file : std::as_const( sortedAllFilesWithSidecars ) )
+        {
+          fileNames << QFileInfo( file ).fileName();
+        }
+        detailedText += QStringLiteral( "\n\n" ) + tr( "The following files will be deleted:" ) + QStringLiteral( "\n\n• %1" ).arg( fileNames.join( QStringLiteral( "\n• " ) ) );
+      }
+      message.setDetailedText( detailedText );
+
       int res = message.exec();
       if ( res == QMessageBox::Cancel )
         return;
@@ -585,22 +602,8 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     }
 
     QStringList errors;
-    // delete files directly, UNLESS they are an OGR layer item, in which case we delegate to OGR to delete so that all
-    // the sidecar files get removed too
-    QStringList filesToDelete = selectedDeletableFiles;
-    filesToDelete.reserve( selectedDeletableFiles.size() + selectedDeletableOgrLayers.size() );
-    errors.reserve( selectedDeletableFiles.size() + selectedDeletableOgrLayers.size() );
-
-    for ( const QString &path : selectedDeletableOgrLayers )
-    {
-      // ogr delete... but sometimes this isn't supported, and we should delete directly!
-      QString errCause;
-      if ( !QgsOgrProviderUtils::deleteLayer( path, errCause ) )
-      {
-        filesToDelete << path;
-      }
-    }
-    for ( const QString &path : std::as_const( filesToDelete ) )
+    errors.reserve( allFilesWithSidecars.size() );
+    for ( const QString &path : std::as_const( allFilesWithSidecars ) )
     {
       // delete file
       const QFileInfo fi( path );
