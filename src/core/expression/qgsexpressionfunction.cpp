@@ -3934,6 +3934,40 @@ static QVariant fcnRotate( const QVariantList &values, const QgsExpressionContex
   return QVariant::fromValue( fGeom );
 }
 
+static QVariant fcnAffineTransform( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+
+  double deltaX = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
+  double deltaY = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
+
+  double rotationZ = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
+
+  double scaleX = QgsExpressionUtils::getDoubleValue( values.at( 4 ), parent );
+  double scaleY = QgsExpressionUtils::getDoubleValue( values.at( 5 ), parent );
+
+  double deltaZ = QgsExpressionUtils::getDoubleValue( values.at( 6 ), parent );
+  double deltaM = QgsExpressionUtils::getDoubleValue( values.at( 7 ), parent );
+  double scaleZ = QgsExpressionUtils::getDoubleValue( values.at( 8 ), parent );
+  double scaleM = QgsExpressionUtils::getDoubleValue( values.at( 9 ), parent );
+
+  if ( deltaZ != 0.0 && !fGeom.constGet()->is3D() ) {
+    fGeom.get()->addZValue( 0 );
+  }
+  if ( deltaM != 0.0 && !fGeom.constGet()->isMeasure() ) {
+    fGeom.get()->addMValue( 0 );
+  }
+
+  QTransform transform;
+  transform.translate( deltaX, deltaY );
+  transform.rotate( rotationZ );
+  transform.scale( scaleX, scaleY );
+  fGeom.transform( transform, deltaZ, scaleZ, deltaM, scaleM );
+
+  return !fGeom.isNull() ? QVariant::fromValue( fGeom ) : QVariant();
+}
+
+
 static QVariant fcnCentroid( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -6896,6 +6930,17 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "rotation" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "center" ), true ),
                                             fcnRotate, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "affine_transform" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "deltaX" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "deltaY" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "rotationZ" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "scaleX" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "scaleY" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "deltaZ" ), true, 0 )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "deltaM" ), true, 0 )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "scaleZ" ), true, 1 )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "scaleM" ), true, 1 ),
+                                            fcnAffineTransform, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "buffer" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "segments" ), true, 8 ),
