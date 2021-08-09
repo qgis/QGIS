@@ -132,24 +132,34 @@ void TestQgsVirtualRasterProvider::testUriProviderDecoding()
   QCOMPARE( decodedParams.crs, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
   QCOMPARE( decodedParams.formula, QStringLiteral( "\"dem@1\" + 200" ) );
 
-  QCOMPARE( decodedParams.rInputLayers.at( 1 ).provider, QStringLiteral( "gdal" ) );
+  QCOMPARE( decodedParams.rInputLayers.at( 0 ).name, QStringLiteral( "dem" ) );
+  QCOMPARE( decodedParams.rInputLayers.at( 1 ).name, QStringLiteral( "landsat" ) );
+  QCOMPARE( decodedParams.rInputLayers.at( 0 ).uri, QStringLiteral( "path/to/file" ) );
+  QCOMPARE( decodedParams.rInputLayers.at( 1 ).uri, QStringLiteral( "path/to/landsat" ) );
   QCOMPARE( decodedParams.rInputLayers.at( 0 ).provider, QStringLiteral( "gdal" ) );
-
-  qDebug() << QStringLiteral( "Raster layer: name, uri, provider" );
-  for ( int i = 0; i < decodedParams.rInputLayers.size() ; ++i )
-  {
-    qDebug() << decodedParams.rInputLayers.at( i ).name << ", " <<
-             decodedParams.rInputLayers.at( i ).uri  << ", " <<
-             decodedParams.rInputLayers.at( i ).provider;
-  }
+  QCOMPARE( decodedParams.rInputLayers.at( 1 ).provider, QStringLiteral( "gdal" ) );
 
 }
 
 void TestQgsVirtualRasterProvider::testUriEncoding()
 {
+  QgsRasterDataProvider::VirtualRasterParameters params;
 
-  QgsRasterDataProvider::VirtualRasterParameters decodedParams = QgsVirtualRasterProvider::decodeVirtualRasterProviderUri( QStringLiteral( "?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif&dem:provider=gdal&rband:uri=/home/franc/dev/cpp/QGIS/tests/testdata/raster/band1_byte_ct_epsg4326.tif&rband:provider=gdal" ) );
-  qDebug() << QgsVirtualRasterProvider::encodeVirtualRasterProviderUri( decodedParams );
+  params.crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+  params.extent = QgsRectangle( 18.5, 45.5, 19.5, 45.5 );
+  params.width = 1000;
+  params.height = 1500;
+  params.formula = QString( "\"test_raster@1\"" );
+
+  QgsRasterDataProvider::VirtualRasterInputLayers rasterParams;
+  rasterParams.name = QString( "test_raster" );
+  rasterParams.uri = QString( "path/to/file" );
+  rasterParams.provider = QString( "test_provider" );
+  params.rInputLayers.append( rasterParams );
+
+  QString expecetedEncodedUri( QStringLiteral( "?crs=EPSG:4326&extent=18.5,45.5,19.5,45.5&width=1000&height=1500&formula=%22test_raster@1%22&test_raster:uri=path/to/file&test_raster:provider=test_provider" ) );
+  QCOMPARE( QgsVirtualRasterProvider::encodeVirtualRasterProviderUri( params ), expecetedEncodedUri );
+
 
 }
 
@@ -163,19 +173,7 @@ void TestQgsVirtualRasterProvider::testConstructorWrong()
       QStringLiteral( "layer" ),
       QStringLiteral( "virtualraster" ) );
 
-  if ( layer->dataProvider()->isValid() )
-  {
-    QVERIFY( layer->dataProvider()->isValid() );
-    QVERIFY( layer->isValid() );
-
-  }
-  else
-  {
-    QVERIFY( ! layer->dataProvider()->isValid() );
-    QVERIFY( ! layer->isValid() );
-    qDebug() << QStringLiteral( "The dataprovider is not valid" );
-  }
-
+  QVERIFY( ! layer->isValid() );
 }
 
 void TestQgsVirtualRasterProvider::testConstructor()
@@ -222,11 +220,19 @@ void TestQgsVirtualRasterProvider::testConstructor()
 void TestQgsVirtualRasterProvider::testProviderProperties()
 {
   QString formula( "\"landsat@1\" + \"landsat@2\"-\"landsat@3\"" );
-  QStringList rLayers = QgsRasterCalcNode::referencedLayerNames( formula );
-  QStringList raserRef = QgsRasterCalcNode::cleanRasterReferences( formula );
-  qDebug() << rLayers;
-  qDebug() << raserRef;
 
+  QStringList rLayers = QgsRasterCalcNode::referencedLayerNames( formula );
+  QStringList rasterRef = QgsRasterCalcNode::cleanRasterReferences( formula );
+
+  QCOMPARE( rLayers, QStringList( "landsat" ) );
+
+  QString bandOne = QString( "landsat@1" );
+  QString bandTwo = QString( "landsat@2" );
+  QString bandThree = QString( "landsat@3" );
+  QStringList rasterRefExpected;
+  rasterRefExpected << bandOne << bandTwo << bandThree;
+
+  QCOMPARE( rasterRef, rasterRefExpected );
 }
 QGSTEST_MAIN( TestQgsVirtualRasterProvider )
 #include "testqgsvirtualrasterprovider.moc"

@@ -2605,7 +2605,6 @@ QString QgsRasterLayer::decodedSource( const QString &source, const QString &pro
       }
       src = QgsRasterDataProvider::encodeVirtualRasterProviderUri( decodedVirtualParams ) ;
       handled = true;
-      QgsDebugMsg( src );
     }
 
     if ( !handled )
