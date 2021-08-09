@@ -121,46 +121,51 @@ class PyQgsGdalProvider(unittest.TestCase):
 
         self.assertEqual(metadata.sidecarFilesForUri(''), [])
         self.assertEqual(metadata.sidecarFilesForUri('/home/me/some_file.asc'),
-                         ['/home/me/some_file.aux.xml', '/home/me/some_file.vat.dbf', '/home/me/some_file.ovr',
-                          '/home/me/some_file.wld'])
+                         ['/home/me/some_file.aux.xml', '/home/me/some_file.asc.aux.xml', '/home/me/some_file.vat.dbf',
+                          '/home/me/some_file.asc.vat.dbf', '/home/me/some_file.ovr', '/home/me/some_file.asc.ovr',
+                          '/home/me/some_file.wld', '/home/me/some_file.asc.wld'])
         self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.jpg'),
                          ['/home/me/special.jpw', '/home/me/special.jgw', '/home/me/special.jpgw',
-                          '/home/me/special.jpegw', '/home/me/special.aux.xml', '/home/me/special.vat.dbf',
-                          '/home/me/special.ovr',
-                          '/home/me/special.wld'])
+                          '/home/me/special.jpegw', '/home/me/special.aux.xml', '/home/me/special.jpg.aux.xml',
+                          '/home/me/special.vat.dbf', '/home/me/special.jpg.vat.dbf', '/home/me/special.ovr',
+                          '/home/me/special.jpg.ovr', '/home/me/special.wld', '/home/me/special.jpg.wld'])
         self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.img'),
-                         ['/home/me/special.ige', '/home/me/special.aux.xml', '/home/me/special.vat.dbf',
-                          '/home/me/special.ovr',
-                          '/home/me/special.wld'])
+                         ['/home/me/special.ige', '/home/me/special.aux.xml', '/home/me/special.img.aux.xml',
+                          '/home/me/special.vat.dbf', '/home/me/special.img.vat.dbf', '/home/me/special.ovr',
+                          '/home/me/special.img.ovr', '/home/me/special.wld', '/home/me/special.img.wld'])
         self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.sid'),
-                         ['/home/me/special.j2w', '/home/me/special.aux.xml', '/home/me/special.vat.dbf',
-                          '/home/me/special.ovr',
-                          '/home/me/special.wld'])
+                         ['/home/me/special.j2w', '/home/me/special.aux.xml', '/home/me/special.sid.aux.xml',
+                          '/home/me/special.vat.dbf', '/home/me/special.sid.vat.dbf', '/home/me/special.ovr',
+                          '/home/me/special.sid.ovr', '/home/me/special.wld', '/home/me/special.sid.wld'])
         self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.tif'),
                          ['/home/me/special.tifw', '/home/me/special.tfw', '/home/me/special.aux.xml',
-                          '/home/me/special.vat.dbf',
-                          '/home/me/special.ovr', '/home/me/special.wld'])
+                          '/home/me/special.tif.aux.xml', '/home/me/special.vat.dbf', '/home/me/special.tif.vat.dbf',
+                          '/home/me/special.ovr', '/home/me/special.tif.ovr', '/home/me/special.wld',
+                          '/home/me/special.tif.wld'])
         self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.bil'),
                          ['/home/me/special.bilw', '/home/me/special.blw', '/home/me/special.aux.xml',
-                          '/home/me/special.vat.dbf',
-                          '/home/me/special.ovr', '/home/me/special.wld'])
+                          '/home/me/special.bil.aux.xml', '/home/me/special.vat.dbf', '/home/me/special.bil.vat.dbf',
+                          '/home/me/special.ovr', '/home/me/special.bil.ovr', '/home/me/special.wld',
+                          '/home/me/special.bil.wld'])
         self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.raster'),
-                         ['/home/me/special.rasterw', '/home/me/special.aux.xml', '/home/me/special.vat.dbf',
-                          '/home/me/special.ovr',
-                          '/home/me/special.wld'])
+                         ['/home/me/special.rasterw', '/home/me/special.aux.xml', '/home/me/special.raster.aux.xml',
+                          '/home/me/special.vat.dbf', '/home/me/special.raster.vat.dbf', '/home/me/special.ovr',
+                          '/home/me/special.raster.ovr', '/home/me/special.wld', '/home/me/special.raster.wld'])
         self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.bt'),
-                         ['/home/me/special.btw', '/home/me/special.aux.xml', '/home/me/special.vat.dbf',
-                          '/home/me/special.ovr',
-                          '/home/me/special.wld'])
+                         ['/home/me/special.btw', '/home/me/special.aux.xml', '/home/me/special.bt.aux.xml',
+                          '/home/me/special.vat.dbf', '/home/me/special.bt.vat.dbf', '/home/me/special.ovr',
+                          '/home/me/special.bt.ovr', '/home/me/special.wld', '/home/me/special.bt.wld'])
         self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.rst'),
                          ['/home/me/special.rdc', '/home/me/special.smp', '/home/me/special.ref',
                           '/home/me/special.vct', '/home/me/special.vdc', '/home/me/special.avl',
-                          '/home/me/special.aux.xml', '/home/me/special.vat.dbf', '/home/me/special.ovr',
-                          '/home/me/special.wld'])
+                          '/home/me/special.aux.xml', '/home/me/special.rst.aux.xml', '/home/me/special.vat.dbf',
+                          '/home/me/special.rst.vat.dbf', '/home/me/special.ovr', '/home/me/special.rst.ovr',
+                          '/home/me/special.wld', '/home/me/special.rst.wld'])
         self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.sdat'),
                          ['/home/me/special.sgrd', '/home/me/special.mgrd', '/home/me/special.prj',
-                          '/home/me/special.aux.xml', '/home/me/special.vat.dbf', '/home/me/special.ovr',
-                          '/home/me/special.wld'])
+                          '/home/me/special.aux.xml', '/home/me/special.sdat.aux.xml', '/home/me/special.vat.dbf',
+                          '/home/me/special.sdat.vat.dbf', '/home/me/special.ovr', '/home/me/special.sdat.ovr',
+                          '/home/me/special.wld', '/home/me/special.sdat.wld'])
 
 
 if __name__ == '__main__':
