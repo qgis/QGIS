@@ -16,6 +16,7 @@ import tempfile
 import os
 from qgis.core import QgsFileUtils
 from qgis.testing import unittest
+from utilities import unitTestDataPath
 
 
 class TestQgsFileUtils(unittest.TestCase):
@@ -182,6 +183,40 @@ class TestQgsFileUtils(unittest.TestCase):
         # invalid path, too deep
         files = QgsFileUtils.findFile(filename, os.path.join(nest, 'nest2'), 2, 4)
         self.assertEqual(files[0], os.path.join(nest, filename).replace(os.sep, '/'))
+
+    def test_sidecar_files_for_path(self):
+        """
+        Test QgsFileUtils.sidecarFilesForPath
+        """
+        # file which doesn't exist
+        self.assertFalse(QgsFileUtils.sidecarFilesForPath('/not a valid path'))
+        # a directory
+        self.assertFalse(QgsFileUtils.sidecarFilesForPath(unitTestDataPath()))
+        # not a spatial data file
+        self.assertFalse(QgsFileUtils.sidecarFilesForPath(f'{unitTestDataPath()}/kbs.qgs'))
+
+        # shapefile
+        self.assertEqual(QgsFileUtils.sidecarFilesForPath(f'{unitTestDataPath()}/lines.shp'),
+                         {f'{unitTestDataPath()}/lines.shx', f'{unitTestDataPath()}/lines.dbf',
+                          f'{unitTestDataPath()}/lines.prj'})
+        # gpkg
+        self.assertFalse(QgsFileUtils.sidecarFilesForPath(f'{unitTestDataPath()}/mixed_layers.gpkg'))
+
+        # MapInfo TAB file
+        self.assertEqual(QgsFileUtils.sidecarFilesForPath(f'{unitTestDataPath()}/ogr_types.tab'),
+                         {f'{unitTestDataPath()}/ogr_types.dat', f'{unitTestDataPath()}/ogr_types.id',
+                          f'{unitTestDataPath()}/ogr_types.map'})
+
+        # GML
+        self.assertEqual(QgsFileUtils.sidecarFilesForPath(f'{unitTestDataPath()}/invalidgeometries.gml'),
+                         {f'{unitTestDataPath()}/invalidgeometries.gfs'})
+
+        # netcdf
+        self.assertEqual(QgsFileUtils.sidecarFilesForPath(f'{unitTestDataPath()}/landsat2.nc'),
+                         {f'{unitTestDataPath()}/landsat2.nc.aux.xml'})
+        # tif
+        self.assertEqual(QgsFileUtils.sidecarFilesForPath(f'{unitTestDataPath()}/ALLINGES_RGF93_CC46_1_1.tif'),
+                         {f'{unitTestDataPath()}/ALLINGES_RGF93_CC46_1_1.tfw'})
 
 
 if __name__ == '__main__':

@@ -16,6 +16,9 @@
 #include "qgis.h"
 #include "qgsexception.h"
 #include "qgsconfig.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidermetadata.h"
+
 #include <QObject>
 #include <QRegularExpression>
 #include <QFileInfo>
@@ -365,4 +368,24 @@ bool QgsFileUtils::pathIsSlowDevice( const QString &path )
 
   }
   return false;
+}
+
+QSet<QString> QgsFileUtils::sidecarFilesForPath( const QString &path )
+{
+  QSet< QString > res;
+  const QStringList providers = QgsProviderRegistry::instance()->providerList();
+  for ( const QString &provider : providers )
+  {
+    const QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( provider );
+    if ( metadata->providerCapabilities() & QgsProviderMetadata::FileBasedUris )
+    {
+      const QStringList possibleSidecars = metadata->sidecarFilesForUri( path );
+      for ( const QString &possibleSidecar : possibleSidecars )
+      {
+        if ( QFile::exists( possibleSidecar ) )
+          res.insert( possibleSidecar );
+      }
+    }
+  }
+  return res;
 }
