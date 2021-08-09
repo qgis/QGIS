@@ -27,6 +27,11 @@ bool QgsAttributeTableConfig::isEmpty() const
   return mColumns.isEmpty();
 }
 
+int QgsAttributeTableConfig::size() const
+{
+  return mColumns.size();
+}
+
 int QgsAttributeTableConfig::mapVisibleColumnToIndex( int visibleColumn ) const
 {
   for ( int i = 0; i < mColumns.size(); ++i )
