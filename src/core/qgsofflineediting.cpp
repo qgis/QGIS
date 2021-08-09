@@ -469,7 +469,7 @@ void QgsOfflineEditing::createLoggingTables( sqlite3 *db )
   sqlExec( db, sql );
 
   // offline fid <-> remote fid
-  sql = QStringLiteral( "CREATE TABLE 'log_fids' ('layer_id' INTEGER, 'offline_fid' INTEGER, 'remote_fid' INTEGER)" );
+  sql = QStringLiteral( "CREATE TABLE 'log_fids' ('layer_id' INTEGER, 'offline_fid' INTEGER, 'remote_fid' INTEGER, 'remote_pk' TEXT)" );
   sqlExec( db, sql );
 
   // added attributes
@@ -780,11 +780,14 @@ void QgsOfflineEditing::convertToOfflineLayer( QgsVectorLayer *layer, sqlite3 *d
       emit progressModeSet( QgsOfflineEditing::CopyFeatures, layer->dataProvider()->featureCount() );
     }
     long long featureCount = 1;
+    const int remotePkIdx = getLayerPkIdx( layer );
 
     QList<QgsFeatureId> remoteFeatureIds;
+    QStringList remoteFeaturePks;
     while ( fit.nextFeature( f ) )
     {
       remoteFeatureIds << f.id();
+      remoteFeaturePks << ( remotePkIdx >= 0 ? f.attribute( remotePkIdx ).toString() : QString() );
 
       // NOTE: SpatiaLite provider ignores position of geometry column
       // fill gap in QgsAttributeMap if geometry column is not last (WORKAROUND)
@@ -830,7 +833,7 @@ void QgsOfflineEditing::convertToOfflineLayer( QgsVectorLayer *layer, sqlite3 *d
         // Check if the online feature has been fetched (WFS download aborted for some reason)
         if ( i < offlineFeatureIds.count() )
         {
-          addFidLookup( db, layerId, offlineFeatureIds.at( i ), remoteFeatureIds.at( i ) );
+          addFidLookup( db, layerId, offlineFeatureIds.at( i ), remoteFeatureIds.at( i ), remoteFeaturePks.at( i ) );
         }
         else
         {
@@ -1015,7 +1018,7 @@ void QgsOfflineEditing::applyFeaturesRemoved( QgsVectorLayer *remoteLayer, sqlit
   int i = 1;
   for ( QgsFeatureIds::const_iterator it = values.constBegin(); it != values.constEnd(); ++it )
   {
-    const QgsFeatureId fid = remoteFid( db, layerId, *it );
+    const QgsFeatureId fid = remoteFid( db, layerId, *it, remoteLayer );
     remoteLayer->deleteFeature( fid );
 
     emit progressUpdated( i++ );
@@ -1036,7 +1039,7 @@ void QgsOfflineEditing::applyAttributeValueChanges( QgsVectorLayer *offlineLayer
 
   for ( int i = 0; i < values.size(); i++ )
   {
-    const QgsFeatureId fid = remoteFid( db, layerId, values.at( i ).fid );
+    const QgsFeatureId fid = remoteFid( db, layerId, values.at( i ).fid, remoteLayer );
     QgsDebugMsgLevel( QStringLiteral( "Offline changeAttributeValue %1 = %2" ).arg( attrLookup[ values.at( i ).attr ] ).arg( values.at( i ).value ), 4 );
 
     const int remoteAttributeIndex = attrLookup[ values.at( i ).attr ];
@@ -1067,7 +1070,7 @@ void QgsOfflineEditing::applyGeometryChanges( QgsVectorLayer *remoteLayer, sqlit
 
   for ( int i = 0; i < values.size(); i++ )
   {
-    const QgsFeatureId fid = remoteFid( db, layerId, values.at( i ).fid );
+    const QgsFeatureId fid = remoteFid( db, layerId, values.at( i ).fid, remoteLayer );
     QgsGeometry newGeom = QgsGeometry::fromWkt( values.at( i ).geom_wkt );
     remoteLayer->changeGeometry( fid, newGeom );
 
@@ -1083,19 +1086,21 @@ void QgsOfflineEditing::updateFidLookup( QgsVectorLayer *remoteLayer, sqlite3 *d
 
   // get remote added fids
   // NOTE: use QMap for sorted fids
-  QMap < QgsFeatureId, bool /*dummy*/ > newRemoteFids;
+  QMap < QgsFeatureId, QString > newRemoteFids;
   QgsFeature f;
 
   QgsFeatureIterator fit = remoteLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setNoAttributes() );
 
   emit progressModeSet( QgsOfflineEditing::ProcessFeatures, remoteLayer->featureCount() );
 
+  const int remotePkIdx = getLayerPkIdx( remoteLayer );
+
   int i = 1;
   while ( fit.nextFeature( f ) )
   {
     if ( offlineFid( db, layerId, f.id() ) == -1 )
     {
-      newRemoteFids[ f.id()] = true;
+      newRemoteFids[ f.id()] = remotePkIdx >= 0 ? f.attribute( remotePkIdx ).toString() : QString();
     }
 
     emit progressUpdated( i++ );
@@ -1115,9 +1120,9 @@ void QgsOfflineEditing::updateFidLookup( QgsVectorLayer *remoteLayer, sqlite3 *d
     // add new fid lookups
     i = 0;
     sqlExec( db, QStringLiteral( "BEGIN" ) );
-    for ( QMap<QgsFeatureId, bool>::const_iterator it = newRemoteFids.constBegin(); it != newRemoteFids.constEnd(); ++it )
+    for ( QMap<QgsFeatureId, QString>::const_iterator it = newRemoteFids.constBegin(); it != newRemoteFids.constEnd(); ++it )
     {
-      addFidLookup( db, layerId, newOfflineFids.at( i++ ), it.key() );
+      addFidLookup( db, layerId, newOfflineFids.at( i++ ), it.key(), it.value() );
     }
     sqlExec( db, QStringLiteral( "COMMIT" ) );
   }
@@ -1206,16 +1211,38 @@ void QgsOfflineEditing::increaseCommitNo( sqlite3 *db )
   sqlExec( db, sql );
 }
 
-void QgsOfflineEditing::addFidLookup( sqlite3 *db, int layerId, QgsFeatureId offlineFid, QgsFeatureId remoteFid )
+void QgsOfflineEditing::addFidLookup( sqlite3 *db, int layerId, QgsFeatureId offlineFid, QgsFeatureId remoteFid, QString remotePk )
 {
-  const QString sql = QStringLiteral( "INSERT INTO 'log_fids' VALUES ( %1, %2, %3 )" ).arg( layerId ).arg( offlineFid ).arg( remoteFid );
+  const QString sql = QStringLiteral( "INSERT INTO 'log_fids' VALUES ( %1, %2, %3, %4 )" ).arg( layerId ).arg( offlineFid ).arg( remoteFid ).arg( sqlEscape( remotePk ) );
   sqlExec( db, sql );
 }
 
-QgsFeatureId QgsOfflineEditing::remoteFid( sqlite3 *db, int layerId, QgsFeatureId offlineFid )
+QgsFeatureId QgsOfflineEditing::remoteFid( sqlite3 *db, int layerId, QgsFeatureId offlineFid, QgsVectorLayer *remoteLayer )
 {
-  const QString sql = QStringLiteral( "SELECT \"remote_fid\" FROM 'log_fids' WHERE \"layer_id\" = %1 AND \"offline_fid\" = %2" ).arg( layerId ).arg( offlineFid );
-  return sqlQueryInt( db, sql, -1 );
+  const int pkIdx = getLayerPkIdx( remoteLayer );
+
+  if ( pkIdx == -1 )
+  {
+    const QString sql = QStringLiteral( "SELECT \"remote_fid\" FROM 'log_fids' WHERE \"layer_id\" = %1 AND \"offline_fid\" = %2" ).arg( layerId ).arg( offlineFid );
+    return sqlQueryInt( db, sql, -1 );
+  }
+
+  const QString sql = QStringLiteral( "SELECT \"remote_pk\" FROM 'log_fids' WHERE \"layer_id\" = %1 AND \"offline_fid\" = %2" ).arg( layerId ).arg( offlineFid );
+  QString defaultValue;
+  const QString pkValue = sqlQueryStr( db, sql, defaultValue );
+
+  if ( pkValue.isNull() )
+  {
+    return -1;
+  }
+
+  const QString pkFieldName = remoteLayer->fields().at( pkIdx ).name();
+  QgsFeatureIterator fit = remoteLayer->getFeatures( QStringLiteral( " %1 = %2 " ).arg( pkFieldName ).arg( sqlEscape( pkValue ) ) );
+  QgsFeature f;
+  while ( fit.nextFeature( f ) )
+    return f.id();
+
+  return -1;
 }
 
 QgsFeatureId QgsOfflineEditing::offlineFid( sqlite3 *db, int layerId, QgsFeatureId remoteFid )
@@ -1239,6 +1266,26 @@ int QgsOfflineEditing::sqlExec( sqlite3 *db, const QString &sql )
     showWarning( errmsg );
   }
   return rc;
+}
+
+QString QgsOfflineEditing::sqlQueryStr( sqlite3 *db, const QString &sql, QString &defaultValue )
+{
+  sqlite3_stmt *stmt = nullptr;
+  if ( sqlite3_prepare_v2( db, sql.toUtf8().constData(), -1, &stmt, nullptr ) != SQLITE_OK )
+  {
+    showWarning( sqlite3_errmsg( db ) );
+    return defaultValue;
+  }
+
+  QString value = defaultValue;
+  const int ret = sqlite3_step( stmt );
+  if ( ret == SQLITE_ROW )
+  {
+    value = QString( reinterpret_cast< const char * >( sqlite3_column_text( stmt, 0 ) ) );
+  }
+  sqlite3_finalize( stmt );
+
+  return value;
 }
 
 int QgsOfflineEditing::sqlQueryInt( sqlite3 *db, const QString &sql, int defaultValue )
@@ -1615,3 +1662,29 @@ void QgsOfflineEditing::setupLayer( QgsMapLayer *layer )
   }
 }
 
+int QgsOfflineEditing::getLayerPkIdx( const QgsVectorLayer *layer ) const
+{
+  const QList<int> pkAttrs = layer->primaryKeyAttributes();
+  if ( pkAttrs.length() == 1 )
+  {
+    const QgsField pkField = layer->fields().at( pkAttrs[0] );
+    const QVariant::Type pkType = pkField.type();
+
+    if ( pkType == QVariant::String )
+    {
+      return pkAttrs[0];
+    }
+  }
+
+  return -1;
+}
+
+QString QgsOfflineEditing::sqlEscape( QString value ) const
+{
+  if ( value.isNull() )
+    return QString( "NULL" );
+
+  value.replace( "'", "''" );
+
+  return QStringLiteral( "'%1'" ).arg( value );
+}

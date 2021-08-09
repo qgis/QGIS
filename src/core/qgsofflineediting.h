@@ -127,6 +127,11 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     void applyGeometryChanges( QgsVectorLayer *remoteLayer, sqlite3 *db, int layerId, int commitNo );
     void updateFidLookup( QgsVectorLayer *remoteLayer, sqlite3 *db, int layerId );
 
+    /**
+     * Returns the layer pk attribute index. If the pk is composite, return -1.
+     */
+    int getLayerPkIdx( const QgsVectorLayer *layer ) const;
+
     QMap<int, int> attributeLookup( QgsVectorLayer *offlineLayer, QgsVectorLayer *remoteLayer );
 
     void showWarning( const QString &message );
@@ -135,14 +140,16 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     int getOrCreateLayerId( sqlite3 *db, const QString &qgisLayerId );
     int getCommitNo( sqlite3 *db );
     void increaseCommitNo( sqlite3 *db );
-    void addFidLookup( sqlite3 *db, int layerId, QgsFeatureId offlineFid, QgsFeatureId remoteFid );
-    QgsFeatureId remoteFid( sqlite3 *db, int layerId, QgsFeatureId offlineFid );
+    void addFidLookup( sqlite3 *db, int layerId, QgsFeatureId offlineFid, QgsFeatureId remoteFid, QString remotePk );
+    QgsFeatureId remoteFid( sqlite3 *db, int layerId, QgsFeatureId offlineFid, QgsVectorLayer *remoteLayer );
     QgsFeatureId offlineFid( sqlite3 *db, int layerId, QgsFeatureId remoteFid );
     bool isAddedFeature( sqlite3 *db, int layerId, QgsFeatureId fid );
 
     int sqlExec( sqlite3 *db, const QString &sql );
     int sqlQueryInt( sqlite3 *db, const QString &sql, int defaultValue );
+    QString sqlQueryStr( sqlite3 *db, const QString &sql, QString &defaultValue );
     QList<int> sqlQueryInts( sqlite3 *db, const QString &sql );
+    QString sqlEscape( QString value ) const;
 
     QList<QgsField> sqlQueryAttributesAdded( sqlite3 *db, const QString &sql );
     QgsFeatureIds sqlQueryFeaturesRemoved( sqlite3 *db, const QString &sql );
