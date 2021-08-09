@@ -19,28 +19,26 @@
 #include "dwgbuffer.h"
 #include "dwgreader.h"
 
-class dwgReader15 : public dwgReader
-{
-  public:
-    dwgReader15( std::ifstream *stream, dwgR *p ): dwgReader( stream, p ) { }
+class dwgReader15 : public dwgReader {
+public:
+    dwgReader15(std::ifstream *stream, dwgR *p):dwgReader(stream, p){ }
+    virtual ~dwgReader15() {}
     bool readMetaData();
     bool readFileHeader();
-    bool readDwgHeader( DRW_Header &hdr );
+    bool readDwgHeader(DRW_Header& hdr);
     bool readDwgClasses();
     bool readDwgHandles();
-    bool readDwgTables( DRW_Header &hdr );
-    bool readDwgBlocks( DRW_Interface &intfa );
-    bool readDwgEntities( DRW_Interface &intfa )
-    {
-      bool ret = true;
-      ret = dwgReader::readDwgEntities( intfa, fileBuf );
-      return ret;
+    bool readDwgTables(DRW_Header& hdr);
+    bool readDwgBlocks(DRW_Interface& intfa);
+    bool readDwgEntities(DRW_Interface& intfa){
+        bool ret = true;
+        ret = dwgReader::readDwgEntities(intfa, fileBuf);
+        return ret;
     }
-    bool readDwgObjects( DRW_Interface &intfa )
-    {
-      bool ret = true;
-      ret = dwgReader::readDwgObjects( intfa, fileBuf );
-      return ret;
+    bool readDwgObjects(DRW_Interface& intfa){
+        bool ret = true;
+        ret = dwgReader::readDwgObjects(intfa, fileBuf);
+        return ret;
     }
 //    bool readDwgEntity(objHandle& obj, DRW_Interface& intfa);
 };
