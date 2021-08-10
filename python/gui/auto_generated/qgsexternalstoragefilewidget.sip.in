@@ -155,6 +155,9 @@ It defines the variable containing the user selected file name
 .. versionadded:: 3.22
 %End
 
+    virtual void setReadOnly( bool readOnly );
+
+
   protected:
 
     virtual void updateLayout();
@@ -167,6 +170,12 @@ It defines the variable containing the user selected file name
 %Docstring
 Add file widget specific scope to expression context
 %End
+
+    virtual void dragEnterEvent( QDragEnterEvent *event );
+
+
+    virtual void dropEvent( QDropEvent *event );
+
 
 };
 

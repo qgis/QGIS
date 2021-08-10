@@ -496,7 +496,7 @@ void QgsFileDropEdit::setFilters( const QString &filters )
   }
 }
 
-QString QgsFileDropEdit::acceptableFilePath( QDropEvent *event ) const
+QStringList QgsFileDropEdit::acceptableFilePaths( QDropEvent *event ) const
 {
   QStringList rawPaths;
   QStringList paths;
@@ -553,6 +553,12 @@ QString QgsFileDropEdit::acceptableFilePath( QDropEvent *event ) const
     }
   }
 
+  return paths;
+}
+
+QString QgsFileDropEdit::acceptableFilePath( QDropEvent *event ) const
+{
+  const QStringList paths = acceptableFilePaths( event );
   if ( paths.size() > 1 )
   {
     return QStringLiteral( "\"%1\"" ).arg( paths.join( QLatin1String( "\" \"" ) ) );
