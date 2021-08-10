@@ -347,7 +347,27 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
         else if ( field.type() == QVariant::Time )
           value = QTime( hour, minute, second );
         else
-          value = QDateTime( QDate( year, month, day ), QTime( hour, minute, second ) );
+        {
+          const QDate date( year, month, day );
+          const QTime time( hour, minute, second );
+
+          if ( ( tzf == 0 ) // unknown, treat as local time
+               || ( tzf == 1 ) // local time
+             )
+          {
+            value = QDateTime( date, time );
+          }
+          else if ( tzf == 100 ) // UTC
+          {
+            value = QDateTime( date, time, Qt::UTC );
+          }
+          else
+          {
+            // from GDAL docs: 101=GMT+15minute, 99=GMT-15minute
+            const int offsetInSeconds = ( tzf - 100 ) * 900;
+            value = QDateTime( date, time, Qt::OffsetFromUTC, offsetInSeconds );
+          }
+        }
       }
       break;
 

@@ -3216,14 +3216,6 @@ QVariant QgsOgrProvider::minimumValue( int index ) const
   if ( res.type() != originalField.type() )
     res = convertValue( originalField.type(), res.toString() );
 
-  if ( originalField.type() == QVariant::DateTime )
-  {
-    // ensure that we treat times as local time, to match behavior when iterating features
-    QDateTime temp = res.toDateTime();
-    temp.setTimeSpec( Qt::LocalTime );
-    res = temp;
-  }
-
   return res;
 }
 
@@ -3275,14 +3267,6 @@ QVariant QgsOgrProvider::maximumValue( int index ) const
 
   if ( res.type() != originalField.type() )
     res = convertValue( originalField.type(), res.toString() );
-
-  if ( originalField.type() == QVariant::DateTime )
-  {
-    // ensure that we treat times as local time, to match behavior when iterating features
-    QDateTime temp = res.toDateTime();
-    temp.setTimeSpec( Qt::LocalTime );
-    res = temp;
-  }
 
   return res;
 }

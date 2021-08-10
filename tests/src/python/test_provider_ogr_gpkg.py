@@ -138,6 +138,9 @@ class TestPyQgsOGRProviderGpkgConformance(unittest.TestCase, ProviderTestCase):
     def treat_time_as_string(self):
         return True
 
+    def datetime_timespec(self):
+        return Qt.UTC
+
     def uncompiledFilters(self):
         return set(['cnt = 10 ^ 2',
                     '"name" ~ \'[OP]ra[gne]+\'',
