@@ -521,9 +521,6 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     connect( renameAction, &QAction::triggered, this, [ = ]
     {
       const QString oldPath = selectedFiles.value( 0 );
-      // Check if the file corresponds to paths in the project
-      const QList<QgsMapLayer *> layersList = QgsProjectUtils::layersMatchingPath( QgsProject::instance(), oldPath );
-
       const QStringList existingNames = QFileInfo( oldPath ).dir().entryList();
 
       QgsNewNameDialog dlg( tr( "file" ), QFileInfo( oldPath ).fileName(), QStringList(), existingNames, Qt::CaseInsensitive, menu );
@@ -538,65 +535,7 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
       if ( QFileInfo( newName ).suffix().isEmpty() )
         newName = newName + '.' + QFileInfo( oldPath ).suffix();
 
-      const QString newPath = QFileInfo( oldPath ).dir().filePath( newName );
-
-      bool updateLayers = false;
-      if ( !layersList.empty() )
-      {
-        QMessageBox message( QMessageBox::Warning, tr( "Rename %1" ).arg( QFileInfo( oldPath ).fileName() ),
-                             tr( "The file %1 exists in the current project. Are you sure you want to rename it?" ).arg( QFileInfo( oldPath ).fileName() ),
-                             QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
-        message.setDefaultButton( QMessageBox::Cancel );
-        message.setButtonText( QMessageBox::Yes, tr( "Rename and Update Layer Paths" ) );
-        message.setButtonText( QMessageBox::No, tr( "Rename but Leave Layer Paths" ) );
-
-        QStringList layerNames;
-        layerNames.reserve( layersList.size() );
-        for ( const QgsMapLayer *layer : std::as_const( layersList ) )
-        {
-          layerNames << layer->name();
-        }
-        const QString detailedText = tr( "The following layers will be affected:" ) + QStringLiteral( "\n\n• %1" ).arg( layerNames.join( QStringLiteral( "\n• " ) ) );
-        message.setDetailedText( detailedText );
-
-        int res = message.exec();
-        if ( res == QMessageBox::Cancel )
-          return;
-
-        if ( res == QMessageBox::Yes )
-          updateLayers = true;
-      }
-
-      QString error;
-      const bool result = QgsFileUtils::renameDataset( oldPath, newPath, error );
-
-      for ( const QPointer< QgsDataItem > &parent : selectedParents )
-      {
-        if ( parent )
-          parent->refresh();
-      }
-
-      if ( !layersList.empty() )
-      {
-        if ( updateLayers )
-        {
-          QgsProjectUtils::updateLayerPath( QgsProject::instance(), oldPath, newPath );
-          QgsProject::instance()->setDirty( true );
-        }
-        else
-        {
-          // we just update the layer source to get it to recognize that it's now broken in the UI
-          for ( QgsMapLayer *layer : std::as_const( layersList ) )
-          {
-            layer->setDataSource( layer->source(), layer->name(), layer->providerType() );
-          }
-        }
-      }
-
-      if ( !result )
-      {
-        notify( QString(), error, context, Qgis::MessageLevel::Critical );
-      }
+      rename( oldPath, newName, context, selectedParents );
     } );
     manageFileMenu->addAction( renameAction );
   }
@@ -769,6 +708,95 @@ int QgsAppFileItemGuiProvider::precedenceWhenPopulatingMenus() const
 {
   // we want this provider to be called last -- file items should naturally always appear at the bottom of the menu.
   return std::numeric_limits< int >::max();
+}
+
+bool QgsAppFileItemGuiProvider::rename( QgsDataItem *item, const QString &name, QgsDataItemGuiContext context )
+{
+  if ( !( item->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile ) )
+    return false;
+
+  const QString oldPath = item->path();
+
+  QString newName = name;
+  if ( QFileInfo( newName ).suffix().isEmpty() )
+    newName = newName + '.' + QFileInfo( oldPath ).suffix();
+
+  const QStringList existingNames = QFileInfo( oldPath ).dir().entryList();
+  if ( existingNames.contains( newName ) )
+  {
+    notify( QString(), tr( "Cannot rename to “%1”: A file with this name already exists" ).arg( newName ), context, Qgis::MessageLevel::Warning );
+    return false;
+  }
+
+  return rename( oldPath, newName, context, { item->parent() } );
+}
+
+bool QgsAppFileItemGuiProvider::rename( const QString &oldPath, const QString &newName, QgsDataItemGuiContext context, const QList<QPointer<QgsDataItem> > &parentItems )
+{
+  // Check if the file corresponds to paths in the project
+  const QList<QgsMapLayer *> layersList = QgsProjectUtils::layersMatchingPath( QgsProject::instance(), oldPath );
+
+  const QString newPath = QFileInfo( oldPath ).dir().filePath( newName );
+
+  bool updateLayers = false;
+  if ( !layersList.empty() )
+  {
+    QMessageBox message( QMessageBox::Warning, tr( "Rename %1" ).arg( QFileInfo( oldPath ).fileName() ),
+                         tr( "The file %1 exists in the current project. Are you sure you want to rename it?" ).arg( QFileInfo( oldPath ).fileName() ),
+                         QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
+    message.setDefaultButton( QMessageBox::Cancel );
+    message.setButtonText( QMessageBox::Yes, tr( "Rename and Update Layer Paths" ) );
+    message.setButtonText( QMessageBox::No, tr( "Rename but Leave Layer Paths" ) );
+
+    QStringList layerNames;
+    layerNames.reserve( layersList.size() );
+    for ( const QgsMapLayer *layer : std::as_const( layersList ) )
+    {
+      layerNames << layer->name();
+    }
+    const QString detailedText = tr( "The following layers will be affected:" ) + QStringLiteral( "\n\n• %1" ).arg( layerNames.join( QStringLiteral( "\n• " ) ) );
+    message.setDetailedText( detailedText );
+
+    int res = message.exec();
+    if ( res == QMessageBox::Cancel )
+      return false;
+
+    if ( res == QMessageBox::Yes )
+      updateLayers = true;
+  }
+
+  QString error;
+  const bool result = QgsFileUtils::renameDataset( oldPath, newPath, error );
+
+  for ( const QPointer< QgsDataItem > &parentItem : parentItems )
+  {
+    if ( parentItem )
+      parentItem->refresh();
+  }
+
+  if ( !layersList.empty() )
+  {
+    if ( updateLayers )
+    {
+      QgsProjectUtils::updateLayerPath( QgsProject::instance(), oldPath, newPath );
+      QgsProject::instance()->setDirty( true );
+    }
+    else
+    {
+      // we just update the layer source to get it to recognize that it's now broken in the UI
+      for ( QgsMapLayer *layer : std::as_const( layersList ) )
+      {
+        layer->setDataSource( layer->source(), layer->name(), layer->providerType() );
+      }
+    }
+  }
+
+  if ( !result )
+  {
+    notify( QString(), error, context, Qgis::MessageLevel::Critical );
+  }
+
+  return true;
 }
 
 //
