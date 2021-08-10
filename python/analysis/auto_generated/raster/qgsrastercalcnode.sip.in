@@ -104,6 +104,11 @@ Returns a list of nodes of a specific ``type``
     static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) /Factory/;
 
     QgsRasterMatrix evaluation( const QVector<QgsRasterMatrix *> &matrixVector, QgsRasterMatrix &result ) const;
+%Docstring
+
+
+.. versionadded:: 3.22
+%End
 
 
   private:

@@ -218,20 +218,21 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData,
   }
   else if ( mType == tFunct )
   {
-    //for loop to assign initialitize the raster matrix (right now they are left and right but
-    //with conditional statement they can be 3 (e.g left, right, condition) and I should leave the door
-    //open for more options and  functions
 
     QVector <QgsRasterMatrix *> matrixContainer;
 
     for ( int i = 0; i < mFunctionArgs.size(); ++i )
     {
-      QgsRasterMatrix *singleMatrix = new QgsRasterMatrix( result.nColumns(), result.nRows(), nullptr, result.nodataValue() ) ;
-      matrixContainer.append( singleMatrix );
+      //QgsRasterMatrix *singleMatrix = new QgsRasterMatrix( result.nColumns(), result.nRows(), nullptr, result.nodataValue() ) ;
+      std::unique_ptr< QgsRasterMatrix > singleMatrix( new QgsRasterMatrix() );
+      if ( !mFunctionArgs.at( i ) || mFunctionArgs.at( i )->calculate( rasterData, *singleMatrix.get(), row ) )
+      {
+        return false;
+      }
+      matrixContainer.append( singleMatrix.get() );
     }
 
-
-    evaluation( matrixContainer, result );
+    result = evaluation( matrixContainer, result );
 
     return true;
   }
@@ -417,21 +418,19 @@ QgsRasterMatrix QgsRasterCalcNode::evaluation( const QVector<QgsRasterMatrix *> 
     int nCols = matrixVector.at( 0 )->nColumns();
     int nRows = matrixVector.at( 0 )->nRows();
     int nEntries = nCols * nRows;
-    double *data = new double[nEntries];
+    //double *data = new double[nEntries];
+    std::unique_ptr< double > dataResult( new double[nEntries] );
 
-    //QgsRasterMatrix* condition = matrixVector.at(0)->data();
-    //QgsRasterMatrix* firstOption = matrixVector.at(1)->data();
-    //QgsRasterMatrix* secondOption = matrixVector.at(2)->data();
     double *condition = matrixVector.at( 0 )->data();
     double *firstOption = matrixVector.at( 1 )->data();
     double *secondOption = matrixVector.at( 2 )->data();
 
-
     for ( int i = 0; i < nEntries; ++i )
     {
-      data[i] = condition[i] == 0 ? firstOption[i] : secondOption[i] ;
+      dataResult.get()[i] = condition[i] == 0 ? firstOption[i] : secondOption[i] ;
+      //dataResult.get()[i] = 1;
     }
-    result.setData( nCols, nRows, data, result.nodataValue() );
+    result.setData( nCols, nRows, dataResult.get(), result.nodataValue() );
   }
 
   return result;

@@ -134,7 +134,6 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
      *
      * \since QGIS 3.22
      */
-    //void evaluation( const QVector<QgsRasterMatrix *> &matrixVector, QgsRasterMatrix &result ) const;
     QgsRasterMatrix evaluation( const QVector<QgsRasterMatrix *> &matrixVector, QgsRasterMatrix &result ) const;
 
 
