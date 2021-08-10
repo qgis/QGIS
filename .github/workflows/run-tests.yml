@@ -343,7 +343,8 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: docker.pkg.github.com
-          image_name: qgis3-build-deps-${{ matrix.distro-version }}-stages:2
+          image_name: qgis3-build-deps-${{ matrix.distro-version }}-stages
+          image_tag: "2"
           dockerfile: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
           build_extra_args: "--target ${{ matrix.docker-target }} --build-arg=DISTRO_VERSION=${{ matrix.distro-version }}"
           push_git_tag: true
