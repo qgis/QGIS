@@ -55,6 +55,7 @@ QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
 
 #ifdef WITH_QTWEBKIT
   mWebView = new QWebView( this );
+  mWebView->setAcceptDrops( false );
   layout->addWidget( mWebView, 2, 0 );
 #endif
 

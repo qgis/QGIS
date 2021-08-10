@@ -55,6 +55,7 @@ class TestQgsExternalStorageFileWidget: public QObject
     void testStoringChangeFeature();
     void testStoringBadExpression_data();
     void testStoringBadExpression();
+    void testDragAndDrop();
 };
 
 class QgsTestExternalStorageStoredContent : public QgsExternalStorageStoredContent
@@ -799,6 +800,81 @@ void TestQgsExternalStorageFileWidget::testStoringDirectory()
   loop.exec();
   QVERIFY( !QgsTestExternalStorage::sCurrentStoredContent );
 }
+
+void TestQgsExternalStorageFileWidget::testDragAndDrop()
+{
+  // test widget when drag and droping urls with an external storage
+  QEventLoop loop;
+
+  QgsExternalStorageFileWidget w;
+  w.show();
+
+  std::unique_ptr<QMimeData> mime( new QMimeData() );
+  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) ) );
+
+  QIcon editIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) );
+
+  QVERIFY( !w.acceptDrops() );
+
+  w.setReadOnly( true );
+  w.setStorageType( "test" );
+  w.setStorageUrlExpression( "'http://test.url.com/test/' || file_name(@selected_file_path)" );
+  w.setStorageMode( QgsFileWidget::GetFile );
+  QVERIFY( !w.acceptDrops() );
+
+  // start edit mode
+  w.setUseLink( true );
+  w.setReadOnly( false );
+
+  QVERIFY( w.mLinkLabel->isVisible() );
+  QVERIFY( w.mLinkEditButton->isVisible() );
+  QCOMPARE( w.mLinkEditButton->icon(), editIcon );
+  QVERIFY( !w.mLineEdit->isVisible() );
+  QVERIFY( w.mFileWidgetButton->isVisible() );
+  QVERIFY( w.mFileWidgetButton->isEnabled() );
+  QVERIFY( !w.mProgressLabel->isVisible() );
+  QVERIFY( !w.mProgressBar->isVisible() );
+  QVERIFY( !w.mCancelButton->isVisible() );
+  QVERIFY( w.acceptDrops() );
+
+  std::unique_ptr<QDragEnterEvent> dragEvent( new QDragEnterEvent( QPoint( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton,  Qt::NoModifier ) );
+  w.dragEnterEvent( dragEvent.get() );
+  QVERIFY( dragEvent->isAccepted() );
+
+  std::unique_ptr<QDropEvent> dropEvent( new QDropEvent( QPoint( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton,  Qt::NoModifier ) );
+  w.dropEvent( dropEvent.get() );
+  QVERIFY( dropEvent->isAccepted() );
+
+  QVERIFY( QgsTestExternalStorage::sCurrentStoredContent );
+
+  QVERIFY( !w.mLinkLabel->isVisible() );
+  QVERIFY( !w.mLinkEditButton->isVisible() );
+  QVERIFY( !w.mLineEdit->isVisible() );
+  QVERIFY( !w.mFileWidgetButton->isVisible() );
+  QVERIFY( w.mProgressLabel->isVisible() );
+  QVERIFY( w.mProgressBar->isVisible() );
+  QVERIFY( w.mCancelButton->isVisible() );
+  QVERIFY( w.mLinkLabel->text().isEmpty() );
+
+  QgsTestExternalStorage::sCurrentStoredContent->finish();
+
+  QVERIFY( w.mLinkLabel->isVisible() );
+  QVERIFY( w.mLinkEditButton->isVisible() );
+  QCOMPARE( w.mLinkEditButton->icon(), editIcon );
+  QVERIFY( !w.mLineEdit->isVisible() );
+  QVERIFY( w.mFileWidgetButton->isVisible() );
+  QVERIFY( w.mFileWidgetButton->isEnabled() );
+  QVERIFY( !w.mProgressLabel->isVisible() );
+  QVERIFY( !w.mProgressBar->isVisible() );
+  QVERIFY( !w.mCancelButton->isVisible() );
+  QCOMPARE( w.mLinkLabel->text(), QStringLiteral( "<a href=\"http://test.url.com/test/bug5598.shp\">bug5598.shp</a>" ) );
+
+  // wait for file content to be destroyed
+  connect( QgsTestExternalStorage::sCurrentStoredContent, &QObject::destroyed, &loop, &QEventLoop::quit );
+  loop.exec();
+  QVERIFY( !QgsTestExternalStorage::sCurrentStoredContent );
+}
+
 
 QGSTEST_MAIN( TestQgsExternalStorageFileWidget )
 #include "testqgsexternalstoragefilewidget.moc"
