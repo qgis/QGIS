@@ -784,7 +784,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         vl.dataProvider().createSpatialIndex()
         self.assertEqual(vl.hasSpatialIndex(), QgsFeatureSource.SpatialIndexPresent)
 
-    def testClone(self):
+    def testCloneId(self):
         """Test that a cloned layer has a single new id and
         the same fields as the source layer"""
 
@@ -798,7 +798,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
                                           QgsField("size", QVariant.Double)]))
         vl2 = vl.clone()
         self.assertTrue(
-            'memory?geometry=Point&crs=EPSG:4326&field=name:(0,0)&field=age:(0,0)&field=size:(0,0)' in vl2.publicSource())
+            'memory?geometry=Point&crs=EPSG:4326&field=name:string(0,0)&field=age:integer(0,0)&field=size:double(0,0)' in vl2.publicSource())
         self.assertEqual(len(parse_qs(vl.publicSource())['uid']), 1)
         self.assertEqual(len(parse_qs(vl2.publicSource())['uid']), 1)
         self.assertNotEqual(parse_qs(vl2.publicSource())['uid'][0], parse_qs(vl.publicSource())['uid'][0])
@@ -914,6 +914,67 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertFalse(dp.changeAttributeValues({1: {0: 'A string'}}))
         f = vl.getFeature(1)
         self.assertEqual(f.attribute('int'), 123)
+
+    def testAddAttributes(self):
+        """Test that fields with empty/invalid typenames are updated to native type names"""
+
+        vl = QgsVectorLayer("Point", "temporary_points", "memory")
+        pr = vl.dataProvider()
+
+        # add fields
+        pr.addAttributes([QgsField("name", QVariant.String),
+                          QgsField("age", QVariant.Int, "invalidInteger"),
+                          QgsField("size", QVariant.Double),
+                          QgsField("mytext", QVariant.String, "text"),
+                          QgsField("size2", QVariant.Double, "double precision"),
+                          QgsField("short", QVariant.Int, "int2"),
+                          QgsField("lessshort", QVariant.Int, "int4"),
+                          QgsField("numericfield", QVariant.Double, "numeric"),
+                          QgsField("decimalfield", QVariant.Double, "decimal"),
+                          QgsField("stringlistfield", QVariant.StringList, "stringlist"),
+                          QgsField("integerlistfield", QVariant.List, "integerlist"),
+                          QgsField("doublelistfield", QVariant.List, "doublelist")])
+
+        self.assertEqual(pr.fields()[0].typeName(), "string")
+        self.assertEqual(pr.fields()[1].typeName(), "integer")
+        self.assertEqual(pr.fields()[2].typeName(), "double")
+        self.assertEqual(pr.fields()[3].typeName(), "text")
+        self.assertEqual(pr.fields()[4].typeName(), "double precision")
+        self.assertEqual(pr.fields()[5].typeName(), "int2")
+        self.assertEqual(pr.fields()[6].typeName(), "int4")
+        self.assertEqual(pr.fields()[7].typeName(), "numeric")
+        self.assertEqual(pr.fields()[8].typeName(), "decimal")
+        self.assertEqual(pr.fields()[9].typeName(), "stringlist")
+        self.assertEqual(pr.fields()[10].typeName(), "integerlist")
+        self.assertEqual(pr.fields()[11].typeName(), "doublelist")
+
+        vl2 = vl.clone()
+
+        self.assertEqual(pr.fields()[0].name(), vl2.fields()[0].name())
+        self.assertEqual(pr.fields()[1].name(), vl2.fields()[1].name())
+        self.assertEqual(pr.fields()[2].name(), vl2.fields()[2].name())
+        self.assertEqual(pr.fields()[3].name(), vl2.fields()[3].name())
+        self.assertEqual(pr.fields()[4].name(), vl2.fields()[4].name())
+        self.assertEqual(pr.fields()[5].name(), vl2.fields()[5].name())
+        self.assertEqual(pr.fields()[6].name(), vl2.fields()[6].name())
+        self.assertEqual(pr.fields()[7].name(), vl2.fields()[7].name())
+        self.assertEqual(pr.fields()[8].name(), vl2.fields()[8].name())
+        self.assertEqual(pr.fields()[9].name(), vl2.fields()[9].name())
+        self.assertEqual(pr.fields()[10].name(), vl2.fields()[10].name())
+        self.assertEqual(pr.fields()[11].name(), vl2.fields()[11].name())
+
+        self.assertEqual(pr.fields()[0].typeName(), vl2.fields()[0].typeName())
+        self.assertEqual(pr.fields()[1].typeName(), vl2.fields()[1].typeName())
+        self.assertEqual(pr.fields()[2].typeName(), vl2.fields()[2].typeName())
+        self.assertEqual(pr.fields()[3].typeName(), vl2.fields()[3].typeName())
+        self.assertEqual(pr.fields()[4].typeName(), vl2.fields()[4].typeName())
+        self.assertEqual(pr.fields()[5].typeName(), vl2.fields()[5].typeName())
+        self.assertEqual(pr.fields()[6].typeName(), vl2.fields()[6].typeName())
+        self.assertEqual(pr.fields()[7].typeName(), vl2.fields()[7].typeName())
+        self.assertEqual(pr.fields()[8].typeName(), vl2.fields()[8].typeName())
+        self.assertEqual(pr.fields()[9].typeName(), vl2.fields()[9].typeName())
+        self.assertEqual(pr.fields()[10].typeName(), vl2.fields()[10].typeName())
+        self.assertEqual(pr.fields()[11].typeName(), vl2.fields()[11].typeName())
 
 
 class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):

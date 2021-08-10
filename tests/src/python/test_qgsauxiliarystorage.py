@@ -550,7 +550,7 @@ class TestQgsAuxiliaryStorage(unittest.TestCase):
 
         # create auxiliary storage based on the invalid field
         s = QgsAuxiliaryStorage()
-        pkf = vl.fields().field(vl.fields().indexOf('invalid_pk'))
+        pkf = field
         al = s.createAuxiliaryLayer(pkf, vl)
 
         self.assertEqual(al, None)
