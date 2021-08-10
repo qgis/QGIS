@@ -342,13 +342,13 @@ QgsDataItem *QgsFileBasedDataItemProvider::createDataItem( const QString &path, 
   {
     QgsProviderSublayerItem *item = new QgsProviderSublayerItem( parentItem, name, sublayers.at( 0 ) );
     if ( item->path() == path )
-      item->setCapabilities( item->capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile | Qgis::BrowserItemCapability::Rename );
+      item->setCapabilities( item->capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile );
     return item;
   }
   else if ( !sublayers.empty() )
   {
     QgsFileDataCollectionItem *item = new QgsFileDataCollectionItem( parentItem, name, path, sublayers );
-    item->setCapabilities( item->capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile | Qgis::BrowserItemCapability::Rename );
+    item->setCapabilities( item->capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile );
     return item;
   }
   else
