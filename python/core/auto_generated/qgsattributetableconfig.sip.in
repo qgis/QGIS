@@ -150,7 +150,7 @@ Returns the width of a column, or -1 if column should use default width.
 
 :param column: column index
 
-:raises IndexError: if the column is not found
+:raises `IndexError` if the column is not found
 
 .. seealso:: :py:func:`setColumnWidth`
 %End
@@ -176,7 +176,7 @@ Sets the width of a column.
 :param column: column index
 :param width: column width in pixels, or -1 if column should use default width
 
-:raises IndexError: if the column is not found
+:raises `IndexError` if the column is not found
 
 .. seealso:: :py:func:`columnWidth`
 %End
@@ -199,7 +199,7 @@ Returns ``True`` if the specified column is hidden.
 
 :param column: column index
 
-:raises IndexError: if the column is not found
+:raises `IndexError` if the column is not found
 
 .. seealso:: :py:func:`setColumnHidden`
 %End
@@ -225,7 +225,7 @@ Sets whether the specified column should be hidden.
 :param column: column index
 :param hidden: set to ``True`` to hide column
 
-:raises IndexError: if the column is not found
+:raises `IndexError` if the column is not found
 
 .. seealso:: :py:func:`columnHidden`
 %End
