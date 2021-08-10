@@ -42,13 +42,14 @@
 #include "qgsogrproviderutils.h"
 
 void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu,
-    const QList<QgsDataItem *> &,
+    const QList<QgsDataItem *> &selectedItems,
     QgsDataItemGuiContext context )
 {
   if ( QgsGeoPackageVectorLayerItem *layerItem = qobject_cast< QgsGeoPackageVectorLayerItem * >( item ) )
   {
     // Check capabilities
-    if ( layerItem->capabilities2() & Qgis::BrowserItemCapability::Rename )
+    // (We only show the rename action when the user has a single layer selected -- it doesn't work on multi-layers at once)
+    if ( selectedItems.size() == 1 && layerItem->capabilities2() & Qgis::BrowserItemCapability::Rename )
     {
       QMenu *manageLayerMenu = new QMenu( tr( "Manage" ), menu );
 
@@ -127,7 +128,7 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
   }
 }
 
-void QgsGeoPackageItemGuiProvider::deleteGpkg( const QString &itemPath, const QString &name, QPointer< QgsDataItem > parent, const QgsDataItemGuiContext &context )
+void QgsGeoPackageItemGuiProvider::deleteGpkg( const QString &itemPath, const QString &name, QPointer< QgsDataItem > parent, QgsDataItemGuiContext context )
 {
   QString path = itemPath;
   path = path.remove( QStringLiteral( "gpkg:/" ) );
@@ -273,7 +274,7 @@ bool QgsGeoPackageItemGuiProvider::rename( QgsDataItem *item, const QString &new
 }
 
 void QgsGeoPackageItemGuiProvider::renameVectorLayer( const QString &uri, const QString &key, const QStringList &tableNames,
-    QPointer< QgsDataItem > item, const QgsDataItemGuiContext &context )
+    const QPointer< QgsDataItem > &item, QgsDataItemGuiContext context )
 {
   // Get layer name from layer URI
   QVariantMap pieces( QgsProviderRegistry::instance()->decodeUri( key, uri ) );
@@ -357,7 +358,7 @@ bool QgsGeoPackageItemGuiProvider::deleteLayer( QgsLayerItem *layerItem, QgsData
   }
 }
 
-void QgsGeoPackageItemGuiProvider::vacuumGeoPackageDbAction( const QString &path, const QString &name, const QgsDataItemGuiContext &context )
+void QgsGeoPackageItemGuiProvider::vacuumGeoPackageDbAction( const QString &path, const QString &name, QgsDataItemGuiContext context )
 {
   Q_UNUSED( path )
   QString errCause;
@@ -372,14 +373,14 @@ void QgsGeoPackageItemGuiProvider::vacuumGeoPackageDbAction( const QString &path
   }
 }
 
-void QgsGeoPackageItemGuiProvider::vacuum( const QString &itemPath, const QString &name, const QgsDataItemGuiContext &context )
+void QgsGeoPackageItemGuiProvider::vacuum( const QString &itemPath, const QString &name, QgsDataItemGuiContext context )
 {
   QString path = itemPath;
   path = path.remove( QStringLiteral( "gpkg:/" ) );
   vacuumGeoPackageDbAction( path, name, context );
 }
 
-void QgsGeoPackageItemGuiProvider::createDatabase( QPointer< QgsGeoPackageRootItem > item )
+void QgsGeoPackageItemGuiProvider::createDatabase( const QPointer< QgsGeoPackageRootItem > &item )
 {
   if ( item )
   {
@@ -414,7 +415,7 @@ bool QgsGeoPackageItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGui
   return false;
 }
 
-bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollectionItem *item, const QMimeData *data, const QgsDataItemGuiContext &context )
+bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollectionItem *item, const QMimeData *data, QgsDataItemGuiContext context )
 {
   if ( !QgsMimeDataUtils::isUriList( data ) )
     return false;
