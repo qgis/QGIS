@@ -444,6 +444,14 @@ The development version
       DistanceWithin,
     };
 
+    enum class FileOperationFlag
+    {
+      IncludeMetadataFile,
+      IncludeStyleFile,
+    };
+    typedef QFlags<Qgis::FileOperationFlag> FileOperationFlags;
+
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -526,6 +534,8 @@ QFlags<Qgis::BabelFormatCapability> operator|(Qgis::BabelFormatCapability f1, QF
 QFlags<Qgis::BabelCommandFlag> operator|(Qgis::BabelCommandFlag f1, QFlags<Qgis::BabelCommandFlag> f2);
 
 QFlags<Qgis::GeometryValidityFlag> operator|(Qgis::GeometryValidityFlag f1, QFlags<Qgis::GeometryValidityFlag> f2);
+
+QFlags<Qgis::FileOperationFlag> operator|(Qgis::FileOperationFlag f1, QFlags<Qgis::FileOperationFlag> f2);
 
 
 

@@ -155,6 +155,32 @@ and .prj files would be returned (amongst others).
 .. versionadded:: 3.22
 %End
 
+    static bool renameDataset( const QString &oldPath, const QString &newPath, QString &error /Out/, Qgis::FileOperationFlags flags = Qgis::FileOperationFlag::IncludeMetadataFile | Qgis::FileOperationFlag::IncludeStyleFile );
+%Docstring
+Renames the dataset at ``oldPath`` to ``newPath``, renaming both the file at ``oldPath`` and
+all associated sidecar files which exist for it.
+
+For instance, if ``oldPath`` specified a .shp file then the corresponding .dbf, .idx
+and .prj files would be renamed (amongst others).
+
+The destination directory must already exist.
+
+The optional ``flags`` argument can be used to control whether QMD metadata files and
+QML styling files should also be renamed accordingly. By default these will be renamed,
+but manually specifying a different set of flags allows callers to avoid this when
+desired.
+
+:param oldPath: original path to dataset
+:param newPath: new path for dataset
+:param flags: optional flags to control file operation behavior
+
+:return: - ``True`` if the dataset was successfully renamed, or ``False`` if an error occurred
+         - error: will be set to a descriptive error message if the rename operation fails
+
+
+.. versionadded:: 3.22
+%End
+
 };
 
 /************************************************************************
