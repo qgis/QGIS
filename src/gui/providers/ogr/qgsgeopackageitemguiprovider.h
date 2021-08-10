@@ -50,16 +50,16 @@ class QgsGeoPackageItemGuiProvider : public QObject, public QgsDataItemGuiProvid
                      const QMimeData *data,
                      Qt::DropAction action ) override;
   private:
-    bool handleDropGeopackage( QgsGeoPackageCollectionItem *item, const QMimeData *data, const QgsDataItemGuiContext &context );
+    bool handleDropGeopackage( QgsGeoPackageCollectionItem *item, const QMimeData *data, QgsDataItemGuiContext context );
     //! Compacts (VACUUM) a geopackage database
-    void vacuumGeoPackageDbAction( const QString &path, const QString &name, const QgsDataItemGuiContext &context );
-    void createDatabase( QPointer< QgsGeoPackageRootItem > item );
+    void vacuumGeoPackageDbAction( const QString &path, const QString &name, QgsDataItemGuiContext context );
+    void createDatabase( const QPointer< QgsGeoPackageRootItem > &item );
 
   protected slots:
-    void vacuum( const QString &path, const QString &name, const QgsDataItemGuiContext &context );
+    void vacuum( const QString &path, const QString &name, QgsDataItemGuiContext context );
     void renameVectorLayer( const QString &uri, const QString &key, const QStringList &tableNames,
-                            QPointer< QgsDataItem > item, const QgsDataItemGuiContext &context );
-    void deleteGpkg( const QString &itemPath, const QString &name, QPointer<QgsDataItem> parent, const QgsDataItemGuiContext &context );
+                            const QPointer< QgsDataItem > &item, QgsDataItemGuiContext context );
+    void deleteGpkg( const QString &itemPath, const QString &name, QPointer<QgsDataItem> parent, QgsDataItemGuiContext context );
 };
 
 ///@endcond
