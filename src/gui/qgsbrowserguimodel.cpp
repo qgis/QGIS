@@ -113,7 +113,8 @@ bool QgsBrowserGuiModel::setData( const QModelIndex &index, const QVariant &valu
     return false;
   }
 
-  if ( !( item->capabilities2() & Qgis::BrowserItemCapability::Rename ) )
+  if ( !( item->capabilities2() & Qgis::BrowserItemCapability::Rename )
+       && !( item->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile ) )
     return false;
 
   switch ( role )
