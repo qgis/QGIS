@@ -65,6 +65,20 @@ QVector<QgsDataItem *> QgsProviderSublayerItem::createChildren()
   return children;
 }
 
+QgsMimeDataUtils::UriList QgsProviderSublayerItem::mimeUris() const
+{
+  QgsMimeDataUtils::UriList uris = QgsLayerItem::mimeUris();
+  // add file path were appropriate
+  if ( capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile )
+  {
+    for ( int i = 0; i < uris.size(); ++i )
+    {
+      uris[i].filePath = path();
+    }
+  }
+  return uris;
+}
+
 Qgis::BrowserLayerType QgsProviderSublayerItem::layerTypeFromSublayer( const QgsProviderSublayerDetails &sublayer )
 {
   switch ( sublayer.type() )
@@ -170,6 +184,7 @@ QgsMimeDataUtils::UriList QgsFileDataCollectionItem::mimeUris() const
   QgsMimeDataUtils::Uri collectionUri;
   collectionUri.uri = path();
   collectionUri.layerType = QStringLiteral( "collection" );
+  collectionUri.filePath = path();
   return { collectionUri };
 }
 
