@@ -4455,7 +4455,7 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   }
 
   // test if we are calculating based on a field
-  int attrIndex = mFields.lookupField( fieldOrExpression );
+  const int attrIndex = QgsExpression::expressionToLayerFieldIndex( fieldOrExpression, this );
   if ( attrIndex >= 0 )
   {
     // aggregate is based on a field - if it's a provider field, we could possibly hand over the calculation
