@@ -65,8 +65,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
 
   std::unique_ptr<QgsExpression> expression;
 
-  int attrNum = mLayer->fields().lookupField( fieldOrExpression );
-
+  const int attrNum = QgsExpression::expressionToLayerFieldIndex( fieldOrExpression, mLayer );
   if ( attrNum == -1 )
   {
     Q_ASSERT( context );
@@ -83,7 +82,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
 
   QSet<QString> lst;
   if ( !expression )
-    lst.insert( fieldOrExpression );
+    lst.insert( mLayer->fields().at( attrNum ).name() );
   else
     lst = expression->referencedColumns();
 
