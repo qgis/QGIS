@@ -62,7 +62,7 @@ class TestQgsVirtualRasterProvider : public QObject
     void testUriEncoding();
     void testConstructorWrong();
     void testConstructor();
-    void testProviderProperties();
+    void testNewCalcNodeMethods();
 
   private:
     QString mTestDataDir;
@@ -158,9 +158,7 @@ void TestQgsVirtualRasterProvider::testUriEncoding()
   params.rInputLayers.append( rasterParams );
 
   QString expecetedEncodedUri( QStringLiteral( "?crs=EPSG:4326&extent=18.5,45.5,19.5,45.5&width=1000&height=1500&formula=%22test_raster@1%22&test_raster:uri=path/to/file&test_raster:provider=test_provider" ) );
-  QCOMPARE( QgsVirtualRasterProvider::encodeVirtualRasterProviderUri( params ), expecetedEncodedUri );
-
-
+  QCOMPARE( QUrl::fromPercentEncoding( QgsVirtualRasterProvider::encodeVirtualRasterProviderUri( params ).toUtf8() ), expecetedEncodedUri );
 }
 
 void TestQgsVirtualRasterProvider::testConstructorWrong()
@@ -217,12 +215,14 @@ void TestQgsVirtualRasterProvider::testConstructor()
 
 }
 
-void TestQgsVirtualRasterProvider::testProviderProperties()
+void TestQgsVirtualRasterProvider::testNewCalcNodeMethods()
 {
   QString formula( "\"landsat@1\" + \"landsat@2\"-\"landsat@3\"" );
+  QString errorString;
+  std::unique_ptr< QgsRasterCalcNode > calcNodeApp( QgsRasterCalcNode::parseRasterCalcString( formula, errorString ) );
 
-  QStringList rLayers = QgsRasterCalcNode::referencedLayerNames( formula );
-  QStringList rasterRef = QgsRasterCalcNode::cleanRasterReferences( formula );
+  QStringList rLayers = calcNodeApp->referencedLayerNames();
+  QStringList rasterRef = calcNodeApp->cleanRasterReferences();
 
   QCOMPARE( rLayers, QStringList( "landsat" ) );
 

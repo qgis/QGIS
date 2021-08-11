@@ -654,7 +654,7 @@ QString QgsRasterDataProvider::colorInterpretationName( int bandNo ) const
 
 QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirtualRasterProviderUri( const QString &uri, bool *ok )
 {
-  QUrl url = QUrl::fromEncoded( uri.toLatin1() );
+  QUrl url = QUrl::fromPercentEncoding( uri.toUtf8() );
   const QUrlQuery query( url.query() );
   VirtualRasterParameters components;
 
@@ -728,12 +728,10 @@ QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirt
 
   for ( const auto &item : query.queryItems() )
   {
-
     if ( !( item.first.mid( item.first.indexOf( ':' ), -1 ) == QStringLiteral( ":uri" ) ) )
     {
       continue;
     }
-
 
     VirtualRasterInputLayers rLayer;
     rLayer.name = item.first.mid( 0, item.first.indexOf( ':' ) );
@@ -788,5 +786,5 @@ QString QgsRasterDataProvider::encodeVirtualRasterProviderUri( const VirtualRast
     }
   }
   uri.setQuery( query );
-  return QString( uri.toEncoded() );
+  return QString( QUrl::toPercentEncoding( uri.toEncoded() ) );
 }

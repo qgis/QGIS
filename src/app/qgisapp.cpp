@@ -6575,19 +6575,21 @@ void QgisApp::showRasterCalculator()
     virtualCalcParams.height = d.numberOfRows();
     virtualCalcParams.formula = d.formulaString();
 
-    QStringList rLayerDictionary = QgsRasterCalcNode::referencedLayerNames( d.formulaString() );
+    QString errorString;
+    std::unique_ptr< QgsRasterCalcNode > calcNodeApp( QgsRasterCalcNode::parseRasterCalcString( d.formulaString(), errorString ) );
+    QStringList rLayerDictionary = calcNodeApp->referencedLayerNames();
+
     QSet<QString> uniqueRasterUriTmp;
 
     for ( const auto &r : QgsRasterCalculatorEntry::rasterEntries() )
     {
-
-      if ( ( ! rLayerDictionary.contains( r.raster->name() ) ) || uniqueRasterUriTmp.contains( r.raster->publicSource() ) ) continue;
-      uniqueRasterUriTmp.insert( r.raster->publicSource() );
+      if ( ( ! rLayerDictionary.contains( r.raster->name() ) ) || uniqueRasterUriTmp.contains( r.raster->name() ) ) continue;
+      uniqueRasterUriTmp.insert( r.raster->name() );
 
       QgsRasterDataProvider::VirtualRasterInputLayers projectRLayer;
       projectRLayer.name = r.raster->name();
       projectRLayer.provider = r.raster->dataProvider()->name();
-      projectRLayer.uri = r.raster->publicSource();
+      projectRLayer.uri = r.raster->source();
 
       virtualCalcParams.rInputLayers.append( projectRLayer );
     }

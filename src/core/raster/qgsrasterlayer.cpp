@@ -82,8 +82,6 @@ email                : tim at linfiniti.com
 #include <QRegularExpression>
 #include <QSlider>
 #include <QUrl>
-//for virtual raster provider
-#include <QUrlQuery>
 
 #define ERR(message) QGS_ERROR_MESSAGE(message,"Raster layer")
 
@@ -2414,8 +2412,6 @@ QString QgsRasterLayer::encodedSource( const QString &source, const QgsReadWrite
       it.uri = context.pathResolver().writePath( it.uri );
     }
     src = QgsRasterDataProvider::encodeVirtualRasterProviderUri( decodedVirtualParams ) ;
-    QgsDebugMsg( src );
-
   }
 
   if ( !handled )

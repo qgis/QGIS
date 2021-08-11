@@ -382,11 +382,11 @@ QgsRasterCalcNode *QgsRasterCalcNode::parseRasterCalcString( const QString &str,
   return localParseRasterCalcString( str, parserErrorMsg );
 }
 
-QStringList QgsRasterCalcNode::referencedLayerNames( const QString &str )
+QStringList QgsRasterCalcNode::referencedLayerNames()
 {
   QStringList referencedRasters;
 
-  QStringList rasterRef = QgsRasterCalcNode::cleanRasterReferences( str );
+  QStringList rasterRef = this->cleanRasterReferences();
   for ( const auto &i : rasterRef )
   {
     if ( referencedRasters.contains( i.mid( 0, i.lastIndexOf( "@" ) ) ) ) continue;
@@ -396,14 +396,10 @@ QStringList QgsRasterCalcNode::referencedLayerNames( const QString &str )
   return referencedRasters;
 }
 
-QStringList QgsRasterCalcNode::cleanRasterReferences( const QString &str )
+QStringList QgsRasterCalcNode::cleanRasterReferences()
 {
   QStringList rasterReferences;
-
-  QString errorString;
-  QgsRasterCalcNode *testNode = QgsRasterCalcNode::parseRasterCalcString( str, errorString );
-
-  const QList<const QgsRasterCalcNode *> rasterRefNodes =  testNode->findNodes( QgsRasterCalcNode::Type::tRasterRef );
+  const QList<const QgsRasterCalcNode *> rasterRefNodes =  this->findNodes( QgsRasterCalcNode::Type::tRasterRef );
 
   for ( const QgsRasterCalcNode *r : rasterRefNodes )
   {
