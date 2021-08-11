@@ -255,9 +255,6 @@
       </item>
       <item row="0" column="0" colspan="2">
        <widget class="QLabel" name="mGridTypeLabel">
-        <property name="accessibleName">
-         <string extracomment="Hello translotor"/>
-        </property>
         <property name="text">
          <string>Grid type</string>
         </property>
