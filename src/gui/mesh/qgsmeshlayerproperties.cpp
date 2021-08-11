@@ -69,7 +69,6 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   mTemporalProviderTimeUnitComboBox->addItem( tr( "Hours" ), QgsUnitTypes::TemporalHours );
   mTemporalProviderTimeUnitComboBox->addItem( tr( "Days" ), QgsUnitTypes::TemporalDays );
 
-  connect( mLayerOrigNameLineEd, &QLineEdit::textEdited, this, &QgsMeshLayerProperties::updateLayerName );
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsMeshLayerProperties::changeCrs );
   connect( mDatasetGroupTreeWidget, &QgsMeshDatasetGroupTreeWidget::datasetGroupAdded, this, &QgsMeshLayerProperties::syncToLayer );
 
@@ -207,7 +206,6 @@ void QgsMeshLayerProperties::syncToLayer()
    * Source Tab
    */
   mLayerOrigNameLineEd->setText( mMeshLayer->name() );
-  leDisplayName->setText( mMeshLayer->name() );
   whileBlocking( mCrsSelector )->setCrs( mMeshLayer->crs() );
 
   if ( mMeshLayer )
@@ -418,11 +416,6 @@ void QgsMeshLayerProperties::changeCrs( const QgsCoordinateReferenceSystem &crs 
 {
   QgsDatumTransformDialog::run( crs, QgsProject::instance()->crs(), this, mCanvas, tr( "Select Transformation" ) );
   mMeshLayer->setCrs( crs );
-}
-
-void QgsMeshLayerProperties::updateLayerName( const QString &text )
-{
-  leDisplayName->setText( mMeshLayer->formatLayerName( text ) );
 }
 
 void QgsMeshLayerProperties::syncAndRepaint()

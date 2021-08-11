@@ -48,7 +48,6 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsPointCloudLayerProperties::apply );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPointCloudLayerProperties::showHelp );
 
-  connect( mLayerOrigNameLineEdit, &QLineEdit::textEdited, this, &QgsPointCloudLayerProperties::originalNameEdited );
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsPointCloudLayerProperties::crsChanged );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
@@ -172,7 +171,6 @@ void QgsPointCloudLayerProperties::syncToLayer()
 {
   // populate the general information
   mLayerOrigNameLineEdit->setText( mLayer->name() );
-  txtDisplayName->setText( mLayer->name() );
 
   /*
    * Information Tab
@@ -413,11 +411,6 @@ void QgsPointCloudLayerProperties::urlClicked( const QUrl &url )
     QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
   else
     QDesktopServices::openUrl( url );
-}
-
-void QgsPointCloudLayerProperties::originalNameEdited( const QString &text )
-{
-  txtDisplayName->setText( mLayer->formatLayerName( text ) );
 }
 
 void QgsPointCloudLayerProperties::crsChanged( const QgsCoordinateReferenceSystem &crs )

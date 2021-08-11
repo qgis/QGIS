@@ -112,7 +112,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   mMetadataViewer = new QgsWebView( this );
   mOptsPage_Information->layout()->addWidget( mMetadataViewer );
 
-  connect( mLayerOrigNameLineEd, &QLineEdit::textEdited, this, &QgsRasterLayerProperties::mLayerOrigNameLineEd_textEdited );
   connect( buttonBuildPyramids, &QPushButton::clicked, this, &QgsRasterLayerProperties::buttonBuildPyramids_clicked );
   connect( pbnAddValuesFromDisplay, &QToolButton::clicked, this, &QgsRasterLayerProperties::pbnAddValuesFromDisplay_clicked );
   connect( pbnAddValuesManually, &QToolButton::clicked, this, &QgsRasterLayerProperties::pbnAddValuesManually_clicked );
@@ -857,9 +856,7 @@ void QgsRasterLayerProperties::sync()
    * General Tab
    */
 
-  //these properties (layer name and label) are provided by the qgsmaplayer superclass
   mLayerOrigNameLineEd->setText( mRasterLayer->name() );
-  leDisplayName->setText( mRasterLayer->name() );
 
   QgsDebugMsgLevel( QStringLiteral( "populate metadata tab" ), 2 );
   /*
@@ -1155,11 +1152,6 @@ void QgsRasterLayerProperties::apply()
 
   // notify the project we've made a change
   QgsProject::instance()->setDirty( true );
-}
-
-void QgsRasterLayerProperties::mLayerOrigNameLineEd_textEdited( const QString &text )
-{
-  leDisplayName->setText( mRasterLayer->formatLayerName( text ) );
 }
 
 void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
