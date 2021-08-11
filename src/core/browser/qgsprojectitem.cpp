@@ -33,6 +33,12 @@ QgsMimeDataUtils::UriList QgsProjectItem::mimeUris() const
   u.layerType = QStringLiteral( "project" );
   u.name = mName;
   u.uri = mPath;
+
+  if ( capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile )
+  {
+    u.filePath = path();
+  }
+
   return { u };
 }
 

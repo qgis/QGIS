@@ -102,6 +102,7 @@ QgsMimeDataUtils::Uri QgsQlrDataItem::mimeUri() const
   u.providerKey = QStringLiteral( "qlr" );
   u.name = name();
   u.uri = path();
+  u.filePath = path();
   return u;
 }
 
@@ -222,6 +223,7 @@ QgsMimeDataUtils::Uri QgsQptDataItem::mimeUri() const
   u.providerKey = QStringLiteral( "qpt" );
   u.name = name();
   u.uri = path();
+  u.filePath = path();
   return u;
 }
 
@@ -266,6 +268,7 @@ QgsMimeDataUtils::Uri QgsPyDataItem::mimeUri() const
   u.providerKey = QStringLiteral( "py" );
   u.name = name();
   u.uri = path();
+  u.filePath = path();
   return u;
 }
 
@@ -369,6 +372,7 @@ QgsMimeDataUtils::Uri QgsStyleXmlDataItem::mimeUri() const
   u.providerKey = QStringLiteral( "style_xml" );
   u.name = name();
   u.uri = path();
+  u.filePath = path();
   return u;
 }
 

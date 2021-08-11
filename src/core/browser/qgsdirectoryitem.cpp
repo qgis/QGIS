@@ -502,6 +502,7 @@ QgsMimeDataUtils::UriList QgsDirectoryItem::mimeUris() const
   u.layerType = QStringLiteral( "directory" );
   u.name = mName;
   u.uri = mDirPath;
+  u.filePath = path();
   return { u };
 }
 
