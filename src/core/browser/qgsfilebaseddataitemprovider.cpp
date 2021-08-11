@@ -129,6 +129,11 @@ QgsFileDataCollectionItem::QgsFileDataCollectionItem( QgsDataItem *parent, const
     setCapabilities( Qgis::BrowserItemCapability::Fertile );
   else
     setCapabilities( Qgis::BrowserItemCapability::Fast | Qgis::BrowserItemCapability::Fertile );
+
+  if ( !qgsVsiPrefix( path ).isEmpty() )
+  {
+    mIconName = QStringLiteral( "/mIconZip.svg" );
+  }
 }
 
 QVector<QgsDataItem *> QgsFileDataCollectionItem::createChildren()
