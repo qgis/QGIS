@@ -665,8 +665,12 @@ QMimeData *QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
     {
       QgsDataItem *ptr = reinterpret_cast< QgsDataItem * >( index.internalPointer() );
       const QgsMimeDataUtils::UriList uris = ptr->mimeUris();
-      for ( const auto &uri : std::as_const( uris ) )
+      for ( QgsMimeDataUtils::Uri uri : std::as_const( uris ) )
       {
+        if ( ptr->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile )
+        {
+          uri.filePath = ptr->path();
+        }
         lst.append( uri );
       }
     }

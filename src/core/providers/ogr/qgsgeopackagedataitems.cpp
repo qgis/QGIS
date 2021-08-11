@@ -448,5 +448,11 @@ QgsMimeDataUtils::UriList QgsGeoPackageCollectionItem::mimeUris() const
   QgsMimeDataUtils::Uri collectionUri;
   collectionUri.uri = path().replace( QLatin1String( "gpkg:/" ), QString() );
   collectionUri.layerType = QStringLiteral( "collection" );
+
+  if ( capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile )
+  {
+    collectionUri.filePath = path();
+  }
+
   return { collectionUri };
 }

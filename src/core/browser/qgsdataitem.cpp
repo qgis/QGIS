@@ -512,7 +512,20 @@ bool QgsDataItem::handleDoubleClick()
 
 QgsMimeDataUtils::Uri QgsDataItem::mimeUri() const
 {
-  return mimeUris().isEmpty() ? QgsMimeDataUtils::Uri() : mimeUris().first();
+  return mimeUris().isEmpty() ? QgsMimeDataUtils::Uri() : mimeUris().constFirst();
+}
+
+QgsMimeDataUtils::UriList QgsDataItem::mimeUris() const
+{
+  if ( capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile )
+  {
+    QgsMimeDataUtils::Uri uri;
+    uri.uri = path();
+    uri.filePath = path();
+    return { uri };
+  }
+
+  return {};
 }
 
 bool QgsDataItem::setCrs( const QgsCoordinateReferenceSystem &crs )
