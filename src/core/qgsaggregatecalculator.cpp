@@ -111,7 +111,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
     {
       // evaluate first feature, check result type
       QgsFeatureRequest testRequest( request );
-      testRequest.setLimit( 1 );
+      testRequest.setLimit( 10 );
       QgsFeature f;
       QgsFeatureIterator fit = mLayer->getFeatures( testRequest );
       if ( !fit.nextFeature( f ) )
@@ -122,10 +122,70 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
         return defaultValue( aggregate );
       }
 
-      if ( context )
-        context->setFeature( f );
-      QVariant v = expression->evaluate( context );
-      resultType = v.type();
+      bool hasFeature = true;
+      bool foundType = false;
+      while ( hasFeature && !foundType )
+      {
+        if ( context )
+          context->setFeature( f );
+        QVariant v = expression->evaluate( context );
+        if ( !v.isNull() )
+        {
+          resultType = v.type();
+          foundType = true;
+        }
+        else
+        {
+          hasFeature = fit.nextFeature( f );
+        }
+      }
+
+      if ( !foundType )
+      {
+        QVariant v;
+        switch ( aggregate )
+        {
+          // string
+          case StringConcatenate:
+          case StringConcatenateUnique:
+          case StringMinimumLength:
+          case StringMaximumLength:
+            v = QString();
+            break;
+
+          // numerical
+          case Sum:
+          case Mean:
+          case Median:
+          case StDev:
+          case StDevSample:
+          case Range:
+          case FirstQuartile:
+          case ThirdQuartile:
+          case InterQuartileRange:
+          // mixed type, fallback to numerical
+          case Count:
+          case CountDistinct:
+          case CountMissing:
+          case Minority:
+          case Majority:
+          case Min:
+          case Max:
+            v = 0.0;
+            break;
+
+          // geometry
+          case GeometryCollect:
+            v = QgsGeometry();
+            break;
+
+          // list, fallback to string
+          case ArrayAggregate:
+            v = QString();
+            break;
+        }
+        resultType = v.type();
+      }
     }
   }
   else
