@@ -67,15 +67,15 @@ QgsRectangle QgsServerApiUtils::parseBbox( const QString &bbox )
   return QgsRectangle();
 }
 
-QList< QgsVectorLayerServerProperties::WmsDimensionInfo > QgsServerApiUtils::temporalDimensions( const QgsVectorLayer *layer )
+QList< QgsMapLayerServerProperties::WmsDimensionInfo > QgsServerApiUtils::temporalDimensions( const QgsVectorLayer *layer )
 {
 
-  QgsVectorLayerServerProperties *serverProperties = static_cast<QgsVectorLayerServerProperties *>( layer->serverProperties() );
-  QList< QgsVectorLayerServerProperties::WmsDimensionInfo > dimensions { serverProperties->wmsDimensions() };
+  const QgsMapLayerServerProperties *serverProperties = layer->serverProperties();
+  QList< QgsMapLayerServerProperties::WmsDimensionInfo > dimensions { serverProperties->wmsDimensions() };
   // Filter only date and time
   dimensions.erase( std::remove_if( dimensions.begin(),
                                     dimensions.end(),
-                                    [ ]( QgsVectorLayerServerProperties::WmsDimensionInfo & dim )
+                                    [ ]( QgsMapLayerServerProperties::WmsDimensionInfo & dim )
   {
     return dim.name.toLower() != QStringLiteral( "time" )
            && dim.name.toLower() != QStringLiteral( "date" ) ;
@@ -89,7 +89,7 @@ QList< QgsVectorLayerServerProperties::WmsDimensionInfo > QgsServerApiUtils::tem
     {
       if ( f.isDateOrTime() )
       {
-        dimensions.append( QgsVectorLayerServerProperties::WmsDimensionInfo( f.type() == QVariant::DateTime ?
+        dimensions.append( QgsMapLayerServerProperties::WmsDimensionInfo( f.type() == QVariant::DateTime ?
                            QStringLiteral( "time" ) :
                            QStringLiteral( "date" ), f.name() ) );
         break;
@@ -457,7 +457,7 @@ json QgsServerApiUtils::layerExtent( const QgsVectorLayer *layer )
 json QgsServerApiUtils::temporalExtent( const QgsVectorLayer *layer )
 {
   // Helper to get min/max from a dimension
-  auto range = [ & ]( const QgsVectorLayerServerProperties::WmsDimensionInfo & dimInfo ) -> QgsDateTimeRange
+  auto range = [ & ]( const QgsMapLayerServerProperties::WmsDimensionInfo & dimInfo ) -> QgsDateTimeRange
   {
     QgsDateTimeRange result;
     // min
@@ -497,7 +497,7 @@ json QgsServerApiUtils::temporalExtent( const QgsVectorLayer *layer )
     return { min, max };
   };
 
-  const QList<QgsVectorLayerServerProperties::WmsDimensionInfo> dimensions { QgsServerApiUtils::temporalDimensions( layer ) };
+  const QList<QgsMapLayerServerProperties::WmsDimensionInfo> dimensions { QgsServerApiUtils::temporalDimensions( layer ) };
   if ( dimensions.isEmpty() )
   {
     return nullptr;

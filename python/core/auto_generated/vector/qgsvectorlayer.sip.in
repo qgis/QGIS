@@ -616,13 +616,6 @@ which is used by the layer, so any changes are immediately applied.
 %End
 
 
-    QgsMapLayerServerProperties *serverProperties() const;
-%Docstring
-Returns QGIS Server Properties of the vector layer
-
-.. versionadded:: 3.10
-%End
-
     int selectedFeatureCount() const;
 %Docstring
 Returns the number of features that are selected in this layer.

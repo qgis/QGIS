@@ -415,32 +415,23 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /* Layer metadataUrl information */
 
-
     /**
      * Returns QGIS Server Properties for the map layer
      * \since QGIS 3.22
      */
-    virtual QgsMapLayerServerProperties *serverProperties() { return mServerProperties; }
+    QgsMapLayerServerProperties *serverProperties() { return mServerProperties; };
 
     /**
      * Returns QGIS Server Properties const for the map layer
      * \since QGIS 3.22
      */
-    // const QgsMapLayerServerProperties *serverProperties() { return mMapLayerServerProperties.get(); } const SIP_SKIP;
-
-    /**
-     * Set QGIS Server Properties for the map layer
-     * \since QGIS 3.22
-     */
-    // void *setServerProperties(QgsMapLayerServerProperties &mProperties) { mMapLayerServerProperties = mProperties }
-    //void setServerProperties( QgsMapLayerServerProperties *properties SIP_TRANSFER = nullptr );
+    const QgsMapLayerServerProperties *serverProperties() const { return mServerProperties; } SIP_SKIP;
 
     /**
      * Sets the metadata URL of the layer
      *  used by QGIS Server in GetCapabilities request.
      *  MetadataUrl is a a link to the detailed, standardized metadata about the data.
-     *  Since QGIS 3.22, it edits the first metadata URL link. You should use setServerProperties.
-     * \see setServerProperties()
+     *  Since QGIS 3.22, it edits the first metadata URL link.
      * \deprecated since QGIS 3.22
      */
     void setMetadataUrl( const QString &metaUrl );
@@ -449,7 +440,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Returns the metadata URL of the layer
      *  used by QGIS Server in GetCapabilities request.
      *  MetadataUrl is a a link to the detailed, standardized metadata about the data.
-     * Since QGIS 3.22, it returns the first metadata URL link. You should use setServerProperties.
+     * Since QGIS 3.22, it returns the first metadata URL link.
      * \returns the layer metadata URL
      * \see mapLayerServerProperties()
      * \deprecated since QGIS 3.22
@@ -460,7 +451,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Set the metadata type of the layer
      *  used by QGIS Server in GetCapabilities request
      *  MetadataUrlType indicates the standard to which the metadata complies.
-     *  Since QGIS 3.22, it edits the first metadata URL type. You should use setServerProperties.
+     *  Since QGIS 3.22, it edits the first metadata URL type.
      * \returns the layer metadata type
      * \see mapLayerServerProperties()
      * \deprecated since QGIS 3.22
@@ -471,7 +462,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Returns the metadata type of the layer
      *  used by QGIS Server in GetCapabilities request.
      *  MetadataUrlType indicates the standard to which the metadata complies.
-     * Since QGIS 3.22, it returns the first metadata URL type. You should use setServerProperties.
+     * Since QGIS 3.22, it returns the first metadata URL type.
      * \returns the layer metadata type
      * \see mapLayerServerProperties()
      * \deprecated since QGIS 3.22
@@ -482,7 +473,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Sets the metadata format of the layer
      *  used by QGIS Server in GetCapabilities request.
      *  MetadataUrlType indicates how the metadata is structured.
-     *  Since QGIS 3.22, it edits the first metadata URL format. You should use setServerProperties.
+     *  Since QGIS 3.22, it edits the first metadata URL format.
      * \see mapLayerServerProperties()
      * \deprecated since QGIS 3.22
      */
@@ -492,7 +483,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Returns the metadata format of the layer
      *  used by QGIS Server in GetCapabilities request.
      *  MetadataUrlType indicates how the metadata is structured.
-     * Since QGIS 3.22, it returns the first metadata URL format. You should use setServerProperties.
+     * Since QGIS 3.22, it returns the first metadata URL format.
      * \returns the layer metadata format
      * \see mapLayerServerProperties()
      * \deprecated since QGIS 3.22
@@ -2076,10 +2067,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! A flag that tells us whether to use the above vars to restrict layer visibility
     bool mScaleBasedVisibility = false;
 
-    //! Stores information about server properties
+    /**
+     * Stores information about server properties
+     */
     QgsMapLayerServerProperties *mServerProperties = nullptr;
-    //QgsMapLayerServerProperties *mMapLayerServerProperties = nullptr;
-    //QgsMapLayerServerProperties *mMapLayerServerProperties = nullptr;
 
     //! Collection of undoable operations for this layer.
     QUndoStack *mUndoStack = nullptr;

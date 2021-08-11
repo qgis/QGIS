@@ -27,7 +27,7 @@
 #include "qgsserverprojectutils.h"
 #include "qgsserverapicontext.h"
 #include "qgsserverexception.h"
-#include "qgsvectorlayerserverproperties.h"
+#include "qgsmaplayerserverproperties.h"
 #include "qgsrange.h"
 #include "qgsjsonutils.h"
 
@@ -66,7 +66,7 @@ class SERVER_EXPORT QgsServerApiUtils
      * Returns a list of temporal dimensions information for the given \a layer (either configured in wmsDimensions or the first date/datetime field)
      * \since QGIS 3.12
      */
-    static QList< QgsVectorLayerServerProperties::WmsDimensionInfo > temporalDimensions( const QgsVectorLayer *layer );
+    static QList< QgsServerWmsDimensionProperties::WmsDimensionInfo > temporalDimensions( const QgsVectorLayer *layer );
 
     /**
      * Parses a date \a interval and returns a QgsDateRange

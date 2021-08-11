@@ -666,7 +666,6 @@
 %Include auto_generated/vector/qgsvectorlayerfeatureiterator.sip
 %Include auto_generated/vector/qgsvectorlayerjoinbuffer.sip
 %Include auto_generated/vector/qgsvectorlayerjoininfo.sip
-%Include auto_generated/vector/qgsvectorlayerserverproperties.sip
 %Include auto_generated/vector/qgsvectorlayertemporalproperties.sip
 %Include auto_generated/vector/qgsvectorlayertools.sip
 %Include auto_generated/vector/qgsvectorlayerundocommand.sip

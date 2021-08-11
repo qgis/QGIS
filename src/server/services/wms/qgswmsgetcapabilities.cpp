@@ -39,7 +39,7 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
-#include "qgsvectorlayerserverproperties.h"
+#include "qgsmaplayerserverproperties.h"
 
 
 namespace QgsWms
@@ -1213,9 +1213,9 @@ namespace QgsWms
           if ( l->type() == QgsMapLayerType::VectorLayer )
           {
             QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l );
-            QgsVectorLayerServerProperties *serverProperties = static_cast<QgsVectorLayerServerProperties *>( vl->serverProperties() );
-            const QList<QgsVectorLayerServerProperties::WmsDimensionInfo> wmsDims = serverProperties->wmsDimensions();
-            for ( const  QgsVectorLayerServerProperties::WmsDimensionInfo &dim : wmsDims )
+            QgsMapLayerServerProperties *serverProperties = static_cast<QgsMapLayerServerProperties *>( vl->serverProperties() );
+            const QList<QgsMapLayerServerProperties::WmsDimensionInfo> wmsDims = serverProperties->wmsDimensions();
+            for ( const  QgsMapLayerServerProperties::WmsDimensionInfo &dim : wmsDims )
             {
               int fieldIndex = vl->fields().indexOf( dim.fieldName );
               // Check field index
@@ -1251,15 +1251,15 @@ namespace QgsWms
               {
                 dimElem.setAttribute( QStringLiteral( "unitSymbol" ), dim.unitSymbol );
               }
-              if ( dim.defaultDisplayType == QgsVectorLayerServerProperties::WmsDimensionInfo::MinValue )
+              if ( dim.defaultDisplayType == QgsMapLayerServerProperties::WmsDimensionInfo::MinValue )
               {
                 dimElem.setAttribute( QStringLiteral( "default" ), values.first().toString() );
               }
-              else if ( dim.defaultDisplayType == QgsVectorLayerServerProperties::WmsDimensionInfo::MaxValue )
+              else if ( dim.defaultDisplayType == QgsMapLayerServerProperties::WmsDimensionInfo::MaxValue )
               {
                 dimElem.setAttribute( QStringLiteral( "default" ), values.last().toString() );
               }
-              else if ( dim.defaultDisplayType == QgsVectorLayerServerProperties::WmsDimensionInfo::ReferenceValue )
+              else if ( dim.defaultDisplayType == QgsMapLayerServerProperties::WmsDimensionInfo::ReferenceValue )
               {
                 dimElem.setAttribute( QStringLiteral( "default" ), dim.referenceValue.toString() );
               }

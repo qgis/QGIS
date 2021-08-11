@@ -57,7 +57,6 @@
 #include "qgsstyle.h"
 #include "qgsauxiliarystorage.h"
 #include "qgsmaplayerserverproperties.h"
-#include "qgsvectorlayerserverproperties.h"
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsnewauxiliaryfielddialog.h"
 #include "qgslabelinggui.h"
@@ -360,9 +359,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   );
 
   //insert existing dimension info
-  QgsVectorLayerServerProperties *serverProperties = static_cast<QgsVectorLayerServerProperties *>( mLayer->serverProperties() );
-  const QList<QgsVectorLayerServerProperties::WmsDimensionInfo> &wmsDims = serverProperties->wmsDimensions();
-  for ( const QgsVectorLayerServerProperties::WmsDimensionInfo &dim : wmsDims )
+  QgsMapLayerServerProperties *serverProperties = static_cast<QgsMapLayerServerProperties *>( mLayer->serverProperties() );
+  const QList<QgsMapLayerServerProperties::WmsDimensionInfo> &wmsDims = serverProperties->wmsDimensions();
+  for ( const QgsMapLayerServerProperties::WmsDimensionInfo &dim : wmsDims )
   {
     addWmsDimensionInfoToTreeWidget( dim );
   }
@@ -1657,9 +1656,9 @@ void QgsVectorLayerProperties::mButtonAddWmsDimension_clicked()
 
   // get wms dimensions name
   QStringList alreadyDefinedDimensions;
-  QgsVectorLayerServerProperties *serverProperties = static_cast<QgsVectorLayerServerProperties *>( mLayer->serverProperties() );
-  const QList<QgsVectorLayerServerProperties::WmsDimensionInfo> &dims = serverProperties->wmsDimensions();
-  for ( const QgsVectorLayerServerProperties::WmsDimensionInfo &dim : dims )
+  QgsMapLayerServerProperties *serverProperties = static_cast<QgsMapLayerServerProperties *>( mLayer->serverProperties() );
+  const QList<QgsMapLayerServerProperties::WmsDimensionInfo> &dims = serverProperties->wmsDimensions();
+  for ( const QgsMapLayerServerProperties::WmsDimensionInfo &dim : dims )
   {
     alreadyDefinedDimensions << dim.name;
   }
@@ -1667,7 +1666,7 @@ void QgsVectorLayerProperties::mButtonAddWmsDimension_clicked()
   QgsWmsDimensionDialog d( mLayer, alreadyDefinedDimensions );
   if ( d.exec() == QDialog::Accepted )
   {
-    QgsVectorLayerServerProperties::WmsDimensionInfo info = d.info();
+    QgsMapLayerServerProperties::WmsDimensionInfo info = d.info();
     // save dimension
     serverProperties->addWmsDimension( info );
     addWmsDimensionInfoToTreeWidget( info );
@@ -1688,8 +1687,8 @@ void QgsVectorLayerProperties::mWmsDimensionsTreeWidget_itemDoubleClicked( QTree
   }
 
   QString wmsDimName = item->data( 0, Qt::UserRole ).toString();
-  QgsVectorLayerServerProperties *serverProperties = static_cast<QgsVectorLayerServerProperties *>( mLayer->serverProperties() );
-  const QList<QgsVectorLayerServerProperties::WmsDimensionInfo> &dims = serverProperties->wmsDimensions();
+  QgsMapLayerServerProperties *serverProperties = static_cast<QgsMapLayerServerProperties *>( mLayer->serverProperties() );
+  const QList<QgsMapLayerServerProperties::WmsDimensionInfo> &dims = serverProperties->wmsDimensions();
   QStringList alreadyDefinedDimensions;
   int j = -1;
   for ( int i = 0; i < dims.size(); ++i )
@@ -1715,10 +1714,10 @@ void QgsVectorLayerProperties::mWmsDimensionsTreeWidget_itemDoubleClicked( QTree
 
   if ( d.exec() == QDialog::Accepted )
   {
-    QgsVectorLayerServerProperties::WmsDimensionInfo info = d.info();
+    QgsMapLayerServerProperties::WmsDimensionInfo info = d.info();
 
     // remove old
-    QgsVectorLayerServerProperties *serverProperties = static_cast<QgsVectorLayerServerProperties *>( mLayer->serverProperties() );
+    QgsMapLayerServerProperties *serverProperties = static_cast<QgsMapLayerServerProperties *>( mLayer->serverProperties() );
     serverProperties->removeWmsDimension( wmsDimName );
     int idx = mWmsDimensionsTreeWidget->indexOfTopLevelItem( item );
     mWmsDimensionsTreeWidget->takeTopLevelItem( idx );
@@ -1729,7 +1728,7 @@ void QgsVectorLayerProperties::mWmsDimensionsTreeWidget_itemDoubleClicked( QTree
   }
 }
 
-void QgsVectorLayerProperties::addWmsDimensionInfoToTreeWidget( const QgsVectorLayerServerProperties::WmsDimensionInfo &wmsDim, const int insertIndex )
+void QgsVectorLayerProperties::addWmsDimensionInfoToTreeWidget( const QgsMapLayerServerProperties::WmsDimensionInfo &wmsDim, const int insertIndex )
 {
   QTreeWidgetItem *wmsDimensionItem = new QTreeWidgetItem();
   wmsDimensionItem->setFlags( Qt::ItemIsEnabled );
@@ -1770,7 +1769,7 @@ void QgsVectorLayerProperties::addWmsDimensionInfoToTreeWidget( const QgsVectorL
 
   QTreeWidgetItem *childWmsDimensionDefaultValue = new QTreeWidgetItem();
   childWmsDimensionDefaultValue->setText( 0, tr( "Default display" ) );
-  childWmsDimensionDefaultValue->setText( 1, QgsVectorLayerServerProperties::wmsDimensionDefaultDisplayLabels()[wmsDim.defaultDisplayType] );
+  childWmsDimensionDefaultValue->setText( 1, QgsMapLayerServerProperties::wmsDimensionDefaultDisplayLabels()[wmsDim.defaultDisplayType] );
   childWmsDimensionDefaultValue->setFlags( Qt::ItemIsEnabled );
   wmsDimensionItem->addChild( childWmsDimensionDefaultValue );
 
@@ -1797,7 +1796,7 @@ void QgsVectorLayerProperties::mButtonRemoveWmsDimension_clicked()
     return;
   }
 
-  QgsVectorLayerServerProperties *serverProperties = static_cast<QgsVectorLayerServerProperties *>( mLayer->serverProperties() );
+  QgsMapLayerServerProperties *serverProperties = static_cast<QgsMapLayerServerProperties *>( mLayer->serverProperties() );
   serverProperties->removeWmsDimension( currentWmsDimensionItem->data( 0, Qt::UserRole ).toString() );
   mWmsDimensionsTreeWidget->takeTopLevelItem( mWmsDimensionsTreeWidget->indexOfTopLevelItem( currentWmsDimensionItem ) );
 }
