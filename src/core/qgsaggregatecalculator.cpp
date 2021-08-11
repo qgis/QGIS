@@ -509,7 +509,8 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
       if ( !statOk )
       {
         if ( error )
-          *error = QObject::tr( "Cannot calculate %1 on numeric fields" ).arg( displayName( aggregate ) );
+          *error = expression ? QObject::tr( "Cannot calculate %1 on numeric values" ).arg( displayName( aggregate ) )
+                   : QObject::tr( "Cannot calculate %1 on numeric fields" ).arg( displayName( aggregate ) );
         return QVariant();
       }
 
@@ -526,7 +527,8 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
       if ( !statOk )
       {
         if ( error )
-          *error = QObject::tr( "Cannot calculate %1 on date/datetime fields" ).arg( displayName( aggregate ) );
+          *error = ( expression ? QObject::tr( "Cannot calculate %1 on %2 values" ).arg( displayName( aggregate ) ) :
+                     QObject::tr( "Cannot calculate %1 on %2 fields" ).arg( displayName( aggregate ) ) ).arg( resultType == QVariant::Date ? QObject::tr( "date" ) : QObject::tr( "datetime" ) );
         return QVariant();
       }
 
@@ -572,13 +574,16 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
       if ( !statOk )
       {
         QString typeString;
-        if ( resultType == QVariant::UserType )
+        if ( resultType == QVariant::Invalid )
+          typeString = QObject::tr( "null" );
+        else if ( resultType == QVariant::UserType )
           typeString = QMetaType::typeName( userType );
         else
           typeString = resultType == QVariant::String ? QObject::tr( "string" ) : QVariant::typeToName( resultType );
 
         if ( error )
-          *error = QObject::tr( "Cannot calculate %1 on %3 fields" ).arg( displayName( aggregate ), typeString );
+          *error = expression ? QObject::tr( "Cannot calculate %1 on %3 values" ).arg( displayName( aggregate ), typeString )
+                   : QObject::tr( "Cannot calculate %1 on %3 fields" ).arg( displayName( aggregate ), typeString );
         return QVariant();
       }
 
