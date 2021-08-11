@@ -444,7 +444,6 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   layerElement.setAttribute( QStringLiteral( "refreshOnNotifyEnabled" ),  mIsRefreshOnNofifyEnabled ? 1 : 0 );
   layerElement.setAttribute( QStringLiteral( "refreshOnNotifyMessage" ),  mRefreshOnNofifyMessage );
 
-
   // ID
   QDomElement layerId = document.createElement( QStringLiteral( "id" ) );
   QDomText layerIdText = document.createTextNode( id() );
@@ -1988,6 +1987,7 @@ void QgsMapLayer::setRenderer3D( QgsAbstract3DRenderer *renderer )
   delete m3DRenderer;
   m3DRenderer = renderer;
   emit renderer3DChanged();
+  emit repaintRequested();
   trigger3DUpdate();
 }
 
@@ -2000,7 +2000,6 @@ void QgsMapLayer::triggerRepaint( bool deferredUpdate )
 {
   if ( mRepaintRequestedFired )
     return;
-
   mRepaintRequestedFired = true;
   emit repaintRequested( deferredUpdate );
   mRepaintRequestedFired = false;

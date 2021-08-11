@@ -627,7 +627,7 @@ void QgsPointCloud3DSymbolWidget::setPointCloudSize( int size )
   mPointCloudSizeLabel->setText( QStringLiteral( "%1 points" ).arg( size ) );
 }
 
-double QgsPointCloud3DSymbolWidget::showBoundingBoxes() const
+bool QgsPointCloud3DSymbolWidget::showBoundingBoxes() const
 {
   return mShowBoundingBoxesCheckBox->isChecked();
 }
@@ -636,4 +636,3 @@ void QgsPointCloud3DSymbolWidget::connectChildPanels( QgsPanelWidget *parent )
 {
   parent->connectChildPanel( mClassifiedRendererWidget );
 }
-

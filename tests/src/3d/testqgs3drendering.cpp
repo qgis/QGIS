@@ -228,7 +228,7 @@ void TestQgs3DRendering::testFlatTerrain()
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
-  map->setTerrainLayers( QList<QgsMapLayer *>() << mLayerRgb );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerRgb );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs() );
@@ -273,7 +273,7 @@ void TestQgs3DRendering::testDemTerrain()
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
-  map->setTerrainLayers( QList<QgsMapLayer *>() << mLayerRgb );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerRgb );
 
   QgsDemTerrainGenerator *demTerrain = new QgsDemTerrainGenerator;
   demTerrain->setLayer( mLayerDtm );
@@ -379,8 +379,7 @@ void TestQgs3DRendering::testExtrudedPolygons()
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
-  map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings );
-  map->setTerrainLayers( QList<QgsMapLayer *>() << mLayerRgb );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
@@ -432,8 +431,7 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefined()
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
-  map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings );
-  map->setTerrainLayers( QList<QgsMapLayer *>() << mLayerRgb );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
@@ -726,7 +724,7 @@ void TestQgs3DRendering::testMapTheme()
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
-  map->setTerrainLayers( QList<QgsMapLayer *>() << mLayerRgb );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerDtm );
 
   // set theme - this should override what we set in setLayers()
   map->setMapThemeCollection( mProject->mapThemeCollection() );
@@ -761,7 +759,6 @@ void TestQgs3DRendering::testMesh()
   map->setCrs( mProject->crs() );
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
   map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
-  map->setTerrainLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
@@ -803,7 +800,6 @@ void TestQgs3DRendering::testMesh_datasetOnFaces()
   map->setCrs( mProject->crs() );
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
   map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
-  map->setTerrainLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
@@ -974,7 +970,6 @@ void TestQgs3DRendering::testAnimationExport()
   Qgs3DMapSettings map;
   map.setCrs( mProject->crs() );
   map.setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
-  map.setTerrainLayers( QList<QgsMapLayer *>() << mLayerRgb );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map.crs() );
