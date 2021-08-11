@@ -58,6 +58,8 @@ QgsMimeDataUtils::Uri::Uri( const QString &encData )
     pId = decoded.at( 7 );
   if ( decoded.size() > 8 )
     wkbType = QgsWkbTypes::parseType( decoded.at( 8 ) );
+  if ( decoded.size() > 9 )
+    filePath = decoded.at( 9 );
 
   QgsDebugMsgLevel( QStringLiteral( "type:%1 key:%2 name:%3 uri:%4 supportedCRS:%5 supportedFormats:%6" )
                     .arg( layerType, providerKey, name, uri,
@@ -113,7 +115,17 @@ QgsMimeDataUtils::Uri::Uri( QgsMapLayer *layer )
 
 QString QgsMimeDataUtils::Uri::data() const
 {
-  return encode( QStringList() << layerType << providerKey << name << uri << encode( supportedCrs ) << encode( supportedFormats ) << layerId << pId << QgsWkbTypes::displayString( wkbType ) );
+  return encode( { layerType,
+                   providerKey,
+                   name,
+                   uri,
+                   encode( supportedCrs ),
+                   encode( supportedFormats ),
+                   layerId,
+                   pId,
+                   QgsWkbTypes::displayString( wkbType ),
+                   filePath
+                 } );
 }
 
 QgsVectorLayer *QgsMimeDataUtils::Uri::vectorLayer( bool &owner, QString &error ) const
