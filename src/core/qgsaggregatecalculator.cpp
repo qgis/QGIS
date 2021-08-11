@@ -106,6 +106,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
 
   //determine result type
   QVariant::Type resultType = QVariant::Double;
+  int userType = 0;
   if ( attrNum == -1 )
   {
     if ( aggregate == GeometryCollect )
@@ -132,13 +133,14 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
         context->setFeature( f );
       QVariant v = expression->evaluate( context );
       resultType = v.type();
+      userType = v.userType();
     }
   }
   else
     resultType = mLayer->fields().at( attrNum ).type();
 
   QgsFeatureIterator fit = mLayer->getFeatures( request );
-  return calculate( aggregate, fit, resultType, attrNum, expression.get(), mDelimiter, context, ok );
+  return calculate( aggregate, fit, resultType, userType, attrNum, expression.get(), mDelimiter, context, ok, &mLastError );
 }
 
 QgsAggregateCalculator::Aggregate QgsAggregateCalculator::stringToAggregate( const QString &string, bool *ok )
@@ -197,6 +199,58 @@ QgsAggregateCalculator::Aggregate QgsAggregateCalculator::stringToAggregate( con
     *ok = false;
 
   return Count;
+}
+
+QString QgsAggregateCalculator::displayName( Aggregate aggregate )
+{
+  switch ( aggregate )
+  {
+    case QgsAggregateCalculator::Count:
+      return QObject::tr( "count" );
+    case QgsAggregateCalculator::CountDistinct:
+      return QObject::tr( "count distinct" );
+    case QgsAggregateCalculator::CountMissing:
+      return QObject::tr( "count missing" );
+    case QgsAggregateCalculator::Min:
+      return QObject::tr( "minimum" );
+    case QgsAggregateCalculator::Max:
+      return QObject::tr( "maximum" );
+    case QgsAggregateCalculator::Sum:
+      return QObject::tr( "sum" );
+    case QgsAggregateCalculator::Mean:
+      return QObject::tr( "mean" );
+    case QgsAggregateCalculator::Median:
+      return QObject::tr( "median" );
+    case QgsAggregateCalculator::StDev:
+      return QObject::tr( "standard deviation" );
+    case QgsAggregateCalculator::StDevSample:
+      return QObject::tr( "standard deviation (sample)" );
+    case QgsAggregateCalculator::Range:
+      return QObject::tr( "range" );
+    case QgsAggregateCalculator::Minority:
+      return QObject::tr( "minority" );
+    case QgsAggregateCalculator::Majority:
+      return QObject::tr( "majority" );
+    case QgsAggregateCalculator::FirstQuartile:
+      return QObject::tr( "first quartile" );
+    case QgsAggregateCalculator::ThirdQuartile:
+      return QObject::tr( "third quartile" );
+    case QgsAggregateCalculator::InterQuartileRange:
+      return QObject::tr( "inter quartile range" );
+    case QgsAggregateCalculator::StringMinimumLength:
+      return QObject::tr( "minimum length" );
+    case QgsAggregateCalculator::StringMaximumLength:
+      return QObject::tr( "maximum length" );
+    case QgsAggregateCalculator::StringConcatenate:
+      return QObject::tr( "concatenate" );
+    case QgsAggregateCalculator::GeometryCollect:
+      return QObject::tr( "collection" );
+    case QgsAggregateCalculator::ArrayAggregate:
+      return QObject::tr( "array aggregate" );
+    case QgsAggregateCalculator::StringConcatenateUnique:
+      return QObject::tr( "concatenate (unique)" );
+  }
+  return QString();
 }
 
 QList<QgsAggregateCalculator::AggregateInfo> QgsAggregateCalculator::aggregates()
@@ -429,8 +483,8 @@ QList<QgsAggregateCalculator::AggregateInfo> QgsAggregateCalculator::aggregates(
   return aggregates;
 }
 
-QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate aggregate, QgsFeatureIterator &fit, QVariant::Type resultType,
-    int attr, QgsExpression *expression, const QString &delimiter, QgsExpressionContext *context, bool *ok )
+QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate aggregate, QgsFeatureIterator &fit, QVariant::Type resultType, int userType,
+    int attr, QgsExpression *expression, const QString &delimiter, QgsExpressionContext *context, bool *ok, QString *error )
 {
   if ( ok )
     *ok = false;
@@ -453,7 +507,11 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
       bool statOk = false;
       QgsStatisticalSummary::Statistic stat = numericStatFromAggregate( aggregate, &statOk );
       if ( !statOk )
+      {
+        if ( error )
+          *error = QObject::tr( "Cannot calculate %1 on numeric fields" ).arg( displayName( aggregate ) );
         return QVariant();
+      }
 
       if ( ok )
         *ok = true;
@@ -466,7 +524,11 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
       bool statOk = false;
       QgsDateTimeStatisticalSummary::Statistic stat = dateTimeStatFromAggregate( aggregate, &statOk );
       if ( !statOk )
+      {
+        if ( error )
+          *error = QObject::tr( "Cannot calculate %1 on date/datetime fields" ).arg( displayName( aggregate ) );
         return QVariant();
+      }
 
       if ( ok )
         *ok = true;
@@ -508,7 +570,17 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
       bool statOk = false;
       QgsStringStatisticalSummary::Statistic stat = stringStatFromAggregate( aggregate, &statOk );
       if ( !statOk )
+      {
+        QString typeString;
+        if ( resultType == QVariant::UserType )
+          typeString = QMetaType::typeName( userType );
+        else
+          typeString = resultType == QVariant::String ? QObject::tr( "string" ) : QVariant::typeToName( resultType );
+
+        if ( error )
+          *error = QObject::tr( "Cannot calculate %1 on %3 fields" ).arg( displayName( aggregate ), typeString );
         return QVariant();
+      }
 
       if ( ok )
         *ok = true;
