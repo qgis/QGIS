@@ -40,7 +40,7 @@ QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer *vl, 
   mStorageType->addItem( tr( "Select Existing file" ), QString() );
   for ( QgsExternalStorage *storage : QgsApplication::externalStorageRegistry()->externalStorages() )
   {
-    mStorageType->addItem( tr( "Store with %1" ).arg( storage->type() ), storage->type() );
+    mStorageType->addItem( storage->displayName(), storage->type() );
   }
 
   mExternalStorageGroupBox->setVisible( false );

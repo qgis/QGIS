@@ -173,6 +173,8 @@ class QgsTestExternalStorage : public QgsExternalStorage
 
     QString type() const override { return QStringLiteral( "test" ); }
 
+    QString displayName() const override { return QStringLiteral( "Test" ); }
+
     QgsExternalStorageStoredContent *doStore( const QString &filePath, const QString &url, const QString &authcfg = QString() ) const override
     {
       Q_UNUSED( authcfg );

@@ -114,6 +114,8 @@ class QgsTestExternalStorage : public QgsExternalStorage
 
     QString type() const override { return QStringLiteral( "test" ); }
 
+    QString displayName() const override { return QStringLiteral( "Test" ); }
+
     static QPointer<QgsTestExternalStorageStoredContent> sCurrentStoredContent;
 
   protected:
