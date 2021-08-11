@@ -22,7 +22,7 @@
 #include "qgsproject.h"
 
 const QString TEST_ENCODED_DATA( "raster:wms:A Fancy WMS From Ciriè City:crs=EPSG\\:2036&dpiMode=7&format=image/png&layers=lidar&styles=default"
-                                 "&url=https\\://geoegl.msp.gouv.qc.:EPSG\\\\:2036\\:EPSG\\\\:3857:image/tiff\\:image/jpeg:::PointZ" );
+                                 "&url=https\\://geoegl.msp.gouv.qc.:EPSG\\\\:2036\\:EPSG\\\\:3857:image/tiff\\:image/jpeg:::PointZ:/home/me/my data.jpg" );
 
 class TestQgsMimeDataUtils: public QObject
 {
@@ -74,6 +74,7 @@ void TestQgsMimeDataUtils::testEncodeDecode()
   uri.supportedFormats << QStringLiteral( "image/tiff" ) << QStringLiteral( "image/jpeg" );
   uri.uri = QStringLiteral( "crs=EPSG:2036&dpiMode=7&format=image/png&layers=lidar&styles=default&url=https://geoegl.msp.gouv.qc." );
   uri.wkbType = QgsWkbTypes::PointZ;
+  uri.filePath = QStringLiteral( "/home/me/my data.jpg" );
 
   QVERIFY( !uri.mapLayer() );
 
@@ -90,6 +91,7 @@ void TestQgsMimeDataUtils::testEncodeDecode()
   QCOMPARE( uriDecoded.uri, uri.uri );
   QCOMPARE( uriDecoded.supportedCrs, uri.supportedCrs );
   QCOMPARE( uriDecoded.wkbType, QgsWkbTypes::PointZ );
+  QCOMPARE( uriDecoded.filePath, QStringLiteral( "/home/me/my data.jpg" ) );
 
   QgsMimeDataUtils::decodeUriList( mimeData );
 
@@ -99,13 +101,18 @@ void TestQgsMimeDataUtils::testEncodeDecode()
   QCOMPARE( data, TEST_ENCODED_DATA );
 
   QStringList fragments( QgsMimeDataUtils::decode( data ) );
+  QCOMPARE( fragments.size(), 10 );
 
   QCOMPARE( fragments[0], QStringLiteral( "raster" ) );
   QCOMPARE( fragments[1], QStringLiteral( "wms" ) );
   QCOMPARE( fragments[2], QStringLiteral( "A Fancy WMS From Ciriè City" ) );
   QCOMPARE( fragments[3], QStringLiteral( "crs=EPSG:2036&dpiMode=7&format=image/png&layers=lidar&styles=default&url=https://geoegl.msp.gouv.qc." ) );
   QCOMPARE( fragments[4], QStringLiteral( "EPSG\\:2036:EPSG\\:3857" ) );
-
+  QCOMPARE( fragments[5], QStringLiteral( "image/tiff:image/jpeg" ) );
+  QCOMPARE( fragments[6], QString() );
+  QCOMPARE( fragments[7], QString() );
+  QCOMPARE( fragments[8], QStringLiteral( "PointZ" ) );
+  QCOMPARE( fragments[9], QStringLiteral( "/home/me/my data.jpg" ) );
 }
 
 void TestQgsMimeDataUtils::testLayerFromProject()
