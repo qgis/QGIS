@@ -53,7 +53,7 @@ class GUI_EXPORT QgsExternalResourceConfigDlg : public QgsEditorConfigWidget, pr
     void enableRelativeDefault();
 
     //! change storage type according to index from storage type combo box
-    void changeStorageType( int index );
+    void changeStorageType( int storageTypeIndex );
 
 };
 

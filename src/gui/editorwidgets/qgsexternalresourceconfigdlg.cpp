@@ -291,16 +291,16 @@ QgsExpressionContext QgsExternalResourceConfigDlg::createExpressionContext() con
   return context;
 }
 
-void QgsExternalResourceConfigDlg::changeStorageType( int storageType )
+void QgsExternalResourceConfigDlg::changeStorageType( int storageTypeIndex )
 {
   // first one in combo box is not an external storage
-  mExternalStorageGroupBox->setVisible( storageType );
+  mExternalStorageGroupBox->setVisible( storageTypeIndex > 0 );
 
   // for now, we store only files in external storage
-  mStorageModeGroupBox->setVisible( !storageType );
+  mStorageModeGroupBox->setVisible( !storageTypeIndex );
 
   // Absolute path are mandatory when using external storage
-  mRelativeGroupBox->setVisible( !storageType );
+  mRelativeGroupBox->setVisible( !storageTypeIndex );
 
   emit changed();
 }
