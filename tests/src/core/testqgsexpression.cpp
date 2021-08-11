@@ -3806,6 +3806,32 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression( "foo + bar" ).isField(), false );
     }
 
+    void test_expressionToLayerFieldIndex()
+    {
+      std::unique_ptr layer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+      layer->dataProvider()->addAttributes( { QgsField( QStringLiteral( "field1" ), QVariant::String ),
+                                              QgsField( QStringLiteral( "another FIELD" ), QVariant::String ) } );
+      layer->updateFields();
+
+      QCOMPARE( QgsExpression::expressionToLayerFieldIndex( "", layer.get() ), -1 );
+      QCOMPARE( QgsExpression::expressionToLayerFieldIndex( "42", layer.get() ), -1 );
+      QCOMPARE( QgsExpression::expressionToLayerFieldIndex( "foo", layer.get() ), -1 );
+      QCOMPARE( QgsExpression::expressionToLayerFieldIndex( "\"foo bar\"", layer.get() ), -1 );
+      QCOMPARE( QgsExpression::expressionToLayerFieldIndex( "sqrt(foo)", layer.get() ), -1 );
+      QCOMPARE( QgsExpression::expressionToLayerFieldIndex( "foo + bar", layer.get() ), -1 );
+      QCOMPARE( QgsExpression::expressionToLayerFieldIndex( "field1", layer.get() ), 0 );
+      QCOMPARE( QgsExpression::expressionToLayerFieldIndex( "FIELD1", layer.get() ), 0 );
+      QCOMPARE( QgsExpression::expressionToLayerFieldIndex( "\"field1\"", layer.get() ), 0 );
+      QCOMPARE( QgsExpression::expressionToLayerFieldIndex( "\"FIELD1\"", layer.get() ), 0 );
+      QCOMPARE( QgsExpression::expressionToLayerFieldIndex( "  (  \"field1\"   )   ", layer.get() ), 0 );
+      QCOMPARE( QgsExpression::expressionToLayerFieldIndex( "another FIELD", layer.get() ), 1 );
+      QCOMPARE( QgsExpression::expressionToLayerFieldIndex( "ANOTHER field", layer.get() ), 1 );
+      QCOMPARE( QgsExpression::expressionToLayerFieldIndex( "  ANOTHER field  ", layer.get() ), 1 );
+      QCOMPARE( QgsExpression::expressionToLayerFieldIndex( "\"another field\"", layer.get() ), 1 );
+      QCOMPARE( QgsExpression::expressionToLayerFieldIndex( "\"ANOTHER FIELD\"", layer.get() ), 1 );
+      QCOMPARE( QgsExpression::expressionToLayerFieldIndex( "  (  \"ANOTHER FIELD\"   )   ", layer.get() ), 1 );
+    }
+
     void test_implicitSharing()
     {
       QgsExpression *exp = new QgsExpression( QStringLiteral( "Pilots > 2" ) );

@@ -1338,6 +1338,26 @@ bool QgsExpression::isField() const
   return d->mRootNode && d->mRootNode->nodeType() == QgsExpressionNode::ntColumnRef;
 }
 
+int QgsExpression::expressionToLayerFieldIndex( const QString &expression, const QgsVectorLayer *layer )
+{
+  if ( !layer )
+    return -1;
+
+  // easy check first -- lookup field directly.
+  int attrIndex = layer->fields().lookupField( expression.trimmed() );
+  if ( attrIndex >= 0 )
+    return attrIndex;
+
+  // may still be a simple field expression, just one which is enclosed in "" or similar
+  QgsExpression candidate( expression );
+  if ( candidate.isField() )
+  {
+    const QString fieldName =  qgis::down_cast<const QgsExpressionNodeColumnRef *>( candidate.rootNode() )->name();
+    return layer->fields().lookupField( fieldName );
+  }
+  return -1;
+}
+
 QList<const QgsExpressionNode *> QgsExpression::nodes() const
 {
   if ( !d->mRootNode )
