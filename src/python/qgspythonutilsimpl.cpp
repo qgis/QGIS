@@ -74,8 +74,9 @@ bool QgsPythonUtilsImpl::checkSystemImports()
   // use os.path.expanduser to support usernames with special characters (see #2512)
   QStringList pluginpaths;
   const QStringList extraPaths = extraPluginsPaths();
-  for ( const QString p : extraPaths )
+  for ( const QString &path : extraPaths )
   {
+    QString p = path;
     if ( !QDir( p ).exists() )
     {
       QgsMessageOutput *msg = QgsMessageOutput::createMessageOutput();
