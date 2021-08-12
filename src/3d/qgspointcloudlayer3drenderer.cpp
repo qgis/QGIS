@@ -55,7 +55,7 @@ void QgsPointCloud3DRenderContext::setFilteredOutCategories( const QgsPointCloud
 QSet<int> QgsPointCloud3DRenderContext::getFilteredOutValues() const
 {
   QSet<int> filteredOut;
-  for ( const QgsPointCloudCategory category : mFilteredOutCategories )
+  for ( const QgsPointCloudCategory &category : mFilteredOutCategories )
     filteredOut.insert( category.value() );
   return filteredOut;
 }
