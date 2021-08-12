@@ -130,7 +130,7 @@ QString QgsPathResolver::readPath( const QString &f ) const
     }
   }
 
-  const QString srcPath = src;
+  QString srcPath = src;
   QString projPath = mBaseFileName;
 
   if ( projPath.isEmpty() )
