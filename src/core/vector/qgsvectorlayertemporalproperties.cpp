@@ -450,11 +450,11 @@ QString QgsVectorLayerTemporalProperties::createFilterString( QgsVectorLayerTemp
   QgsDateTimeRange filter;
   if ( limitMode() == QgsVectorLayerTemporalProperties::ModeIncludeBeginIncludeEnd )
   {
-      filter = QgsDateTimeRange(filterRange.begin(), filterRange.end(), true, true);
+    filter = QgsDateTimeRange( filterRange.begin(), filterRange.end(), true, true );
   }
   else
   {
-      filter = QgsDateTimeRange(filterRange.begin(), filterRange.end(), true, false);  // default is include begin, exclude end of filter
+    filter = QgsDateTimeRange( filterRange.begin(), filterRange.end(), true, false ); // default is include begin, exclude end of filter
   }
 
   switch ( mMode )

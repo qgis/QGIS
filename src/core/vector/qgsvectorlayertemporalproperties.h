@@ -101,8 +101,8 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
      */
     enum LimitMode
     {
-        ModeIncludeBeginExcludeEnd = 0, //!< Default mode: include the Begin limit, but exclude the End limit
-        ModeIncludeBeginIncludeEnd, //!< Mode to include both limits of the filtering timeframe
+      ModeIncludeBeginExcludeEnd = 0, //!< Default mode: include the Begin limit, but exclude the End limit
+      ModeIncludeBeginIncludeEnd, //!< Mode to include both limits of the filtering timeframe
     };
 
     /**

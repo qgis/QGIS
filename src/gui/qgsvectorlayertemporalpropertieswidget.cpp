@@ -107,7 +107,7 @@ void QgsVectorLayerTemporalPropertiesWidget::saveTemporalProperties()
 
   properties->setIsActive( mTemporalGroupBox->isChecked() );
   properties->setMode( static_cast< QgsVectorLayerTemporalProperties::TemporalMode >( mModeComboBox->currentData().toInt() ) );
-  properties->setLimitMode(static_cast< QgsVectorLayerTemporalProperties::LimitMode >( mLimitsComboBox->currentData().toInt() ));
+  properties->setLimitMode( static_cast< QgsVectorLayerTemporalProperties::LimitMode >( mLimitsComboBox->currentData().toInt() ) );
 
   QgsDateTimeRange normalRange = QgsDateTimeRange( mStartTemporalDateTimeEdit->dateTime(),
                                  mEndTemporalDateTimeEdit->dateTime() );

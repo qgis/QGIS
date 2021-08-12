@@ -74,6 +74,12 @@ The ``enabled`` argument specifies whether the temporal properties are initially
       ModeRedrawLayerOnly,
     };
 
+    enum LimitMode
+    {
+        ModeIncludeBeginExcludeEnd,
+        ModeIncludeBeginIncludeEnd,
+    };
+
     TemporalMode mode() const;
 %Docstring
 Returns the temporal properties mode.
@@ -86,6 +92,20 @@ Returns the temporal properties mode.
 Sets the temporal properties ``mode``.
 
 .. seealso:: :py:func:`mode`
+%End
+
+    LimitMode limitMode() const;
+%Docstring
+Returns the temporal limit mode (to include or exclude begin/end limits).
+
+.. seealso:: :py:func:`setLimitMode`
+%End
+
+    void setLimitMode( LimitMode mode );
+%Docstring
+Sets the temporal ``limit`` mode (to include or exclude begin/end limits).
+
+.. seealso:: :py:func:`limitMode`
 %End
 
     virtual QgsTemporalProperty::Flags flags() const;
