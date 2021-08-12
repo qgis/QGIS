@@ -869,7 +869,7 @@ bool QgsCoordinateTransform::fallbackOperationOccurred() const
 
 const char *finder( const char *name )
 {
-  const QString proj;
+  QString proj;
 #ifdef Q_OS_WIN
   proj = QApplication::applicationDirPath()
          + "/share/proj/" + QString( name );
