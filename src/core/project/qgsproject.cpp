@@ -2471,7 +2471,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
     }
 
     const QFileInfo fi( fileName() );
-    const struct utimbuf tb = { static_cast<time_t>( fi.lastRead().toSecsSinceEpoch() ), static_cast<time_t>( fi.lastModified().toSecsSinceEpoch() ) };
+    struct utimbuf tb = { static_cast<time_t>( fi.lastRead().toSecsSinceEpoch() ), static_cast<time_t>( fi.lastModified().toSecsSinceEpoch() ) };
     utime( backupFile.fileName().toUtf8().constData(), &tb );
   }
 
