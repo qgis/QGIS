@@ -229,7 +229,7 @@
                  <number>12</number>
                 </property>
                 <property name="maximum">
-                 <double>9999999.000000000000000</double>
+                 <double>10000000000000.000000000000000</double>
                 </property>
                 <property name="showClearButton" stdset="0">
                  <bool>true</bool>
@@ -252,7 +252,7 @@
                  <number>12</number>
                 </property>
                 <property name="maximum">
-                 <double>9999999.000000000000000</double>
+                 <double>10000000000000.000000000000000</double>
                 </property>
                </widget>
               </item>
@@ -408,7 +408,7 @@
                <number>12</number>
               </property>
               <property name="maximum">
-               <double>9999999.000000000000000</double>
+               <double>10000000000000.000000000000000</double>
               </property>
              </widget>
             </item>
@@ -421,7 +421,7 @@
                <number>12</number>
               </property>
               <property name="maximum">
-               <double>9999999.000000000000000</double>
+               <double>10000000000000.000000000000000</double>
               </property>
              </widget>
             </item>
