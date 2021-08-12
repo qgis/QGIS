@@ -204,7 +204,7 @@ bool QgsAuthCertInfo::populateCertChain()
 
   // mirror chain to QSslCertificate
   const auto constMACertChain = mACertChain;
-  for ( const QCA::Certificate cert : constMACertChain )
+  for ( const QCA::Certificate &cert : constMACertChain )
   {
     QSslCertificate qcert;
     if ( !cert.isNull() )

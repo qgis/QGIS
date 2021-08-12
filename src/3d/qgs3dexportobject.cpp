@@ -190,7 +190,7 @@ QString Qgs3DExportObject::saveMaterial( QTextStream &mtlOut, const QString &fol
     mTextureImage.save( filePath, "JPG" );
     mtlOut << "\tmap_Kd " << materialName << ".jpg" << "\n";
   }
-  for ( const QString key : mMaterialParameters.keys() )
+  for ( const QString &key : mMaterialParameters.keys() )
   {
     mtlOut << "\t" << key << " " << mMaterialParameters[key] << "\n";
   }

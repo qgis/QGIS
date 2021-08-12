@@ -197,7 +197,7 @@ void QgsPanelWidgetStack::updateBreadcrumb()
 {
   QString breadcrumb;
   const auto constMTitles = mTitles;
-  for ( const QString title : constMTitles )
+  for ( const QString &title : constMTitles )
   {
     breadcrumb += QStringLiteral( " %1 >" ).arg( title );
   }

@@ -134,7 +134,7 @@ void QgsMaskingWidget::populate()
 
     // collect symbol layer masks
     const QList<QPair<QgsSymbolLayerId, QList<QgsSymbolLayerReference>>> slMasks = symbolLayerMasks( vl );
-    for ( const auto p : slMasks )
+    for ( const QPair<QgsSymbolLayerId, QList<QgsSymbolLayerReference>> &p : slMasks )
     {
       const QgsSymbolLayerId &sourceSymbolLayerId = p.first;
       for ( const QgsSymbolLayerReference &ref : p.second )
@@ -230,7 +230,7 @@ void QgsMaskingWidget::apply()
     // Now reset label masks
     if ( ! vl->labeling() )
       continue;
-    for ( const QString labelProvider : vl->labeling()->subProviders() )
+    for ( const QString &labelProvider : vl->labeling()->subProviders() )
     {
       // clear symbol layers
       QgsPalLayerSettings settings = vl->labeling()->settings( labelProvider );
@@ -269,7 +269,7 @@ void QgsMaskingWidget::apply()
   // trigger refresh of the current layer
   mLayer->triggerRepaint();
   // trigger refresh of dependent layers (i.e. mask source layers)
-  for ( const QString layerId : layersToRefresh )
+  for ( const QString &layerId : layersToRefresh )
   {
     QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerId );
     layer->triggerRepaint();

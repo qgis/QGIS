@@ -5188,7 +5188,7 @@ QString QgsProcessingParameterField::valueAsPythonString( const QVariant &value,
   {
     QStringList parts;
     const auto constToStringList = value.toStringList();
-    for ( const QString s : constToStringList )
+    for ( const QString &s : constToStringList )
     {
       parts << QgsProcessingUtils::stringToPythonLiteral( s );
     }

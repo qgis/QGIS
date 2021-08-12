@@ -494,7 +494,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processSceneLoaderGeometries( Q
     sceneScale = entityTransform->scale();
     sceneTranslation = entityTransform->translation();
   }
-  for ( const QString entityName : sceneLoader->entityNames() )
+  for ( const QString &entityName : sceneLoader->entityNames() )
   {
     Qt3DRender::QGeometryRenderer *mesh = qobject_cast<Qt3DRender::QGeometryRenderer *>( sceneLoader->component( entityName, Qt3DRender::QSceneLoader::GeometryRendererComponent ) );
     Qgs3DExportObject *object = processGeometryRenderer( mesh, objectNamePrefix, sceneScale, sceneTranslation );

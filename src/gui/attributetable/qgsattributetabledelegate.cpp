@@ -155,7 +155,7 @@ void QgsAttributeTableDelegate::setEditorData( QWidget *editor, const QModelInde
     {
       const QgsFeature feat = model->feature( index );
       QVariantList additionalFieldValues;
-      for ( const QString fieldName : additionalFields )
+      for ( const QString &fieldName : additionalFields )
       {
         additionalFieldValues << feat.attribute( fieldName );
       }
