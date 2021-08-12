@@ -85,6 +85,7 @@ class TestQgsGML : public QObject
     void testSameTypeameAsGeomName();
     void testUnknownEncoding_data();
     void testUnknownEncoding();
+    void testUnhandledEncoding();
 };
 
 const QString data1( "<myns:FeatureCollection "
@@ -1341,6 +1342,38 @@ void TestQgsGML::testUnknownEncoding()
     QCOMPARE( features[ 0 ].first->attribute( QStringLiteral( "strfield" ) ).toString(), QString( "price: 10€" ) );
     delete features[0].first;
   }
+}
+
+void TestQgsGML::testUnhandledEncoding()
+{
+  QgsWkbTypes::Type wkbType;
+
+  QString data = QStringLiteral(
+                   "<?xml version='1.0' encoding='my-unexisting-encoding'?>"
+                   "<myns:FeatureCollection "
+                   "xmlns:myns='http://myns' "
+                   "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' "
+                   "xmlns:gml='http://www.opengis.net/gml'>"
+                   "<gml:boundedBy><gml:null>unknown</gml:null></gml:boundedBy>"
+                   "<gml:featureMember>"
+                   "<myns:mytypename fid='mytypename.1'>"
+                   "<myns:strfield>price: 10€</myns:strfield>"
+                   "<myns:mygeom>"
+                   "<gml:Point srsName='http://www.opengis.net/gml/srs/epsg.xml#27700'>"
+                   "<gml:coordinates decimal='.' cs=',' ts=' '>10,20</gml:coordinates>"
+                   "</gml:Point>"
+                   "</myns:mygeom>"
+                   "</myns:mytypename>"
+                   "</gml:featureMember>"
+                   "</myns:FeatureCollection>" );
+
+  QgsFields fields;
+  fields.append( QgsField( QStringLiteral( "strfield" ), QVariant::String, QStringLiteral( "string" ) ) );
+
+  QgsGml gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
+  QCOMPARE( gmlParser.getFeatures( data.toUtf8(), &wkbType ), 0 );
+  QMap<QgsFeatureId, QgsFeature * > featureMaps = gmlParser.featuresMap();
+  QCOMPARE( featureMaps.size(), 0 );
 }
 
 QGSTEST_MAIN( TestQgsGML )
