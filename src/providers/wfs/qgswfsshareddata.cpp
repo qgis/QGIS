@@ -200,7 +200,7 @@ QgsGmlStreamingParser *QgsWFSSharedData::createParser() const
   {
     QList< QgsGmlStreamingParser::LayerProperties > layerPropertiesList;
     const auto constMLayerPropertiesList = mLayerPropertiesList;
-    for ( const QgsOgcUtils::LayerProperties layerProperties : constMLayerPropertiesList )
+    for ( const QgsOgcUtils::LayerProperties &layerProperties : constMLayerPropertiesList )
     {
       QgsGmlStreamingParser::LayerProperties layerPropertiesOut;
       layerPropertiesOut.mName = layerProperties.mName;

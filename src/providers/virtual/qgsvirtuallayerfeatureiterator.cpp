@@ -227,7 +227,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
     }
 
     mQuery.reset( new Sqlite::Query( mSource->mSqlite, mSqlQuery ) );
-    for ( const QVariant toBind : binded )
+    for ( const QVariant &toBind : binded )
     {
       mQuery->bind( toBind );
     }
