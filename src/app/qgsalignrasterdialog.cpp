@@ -141,7 +141,7 @@ void QgsAlignRasterDialog::populateLayersView()
   QStandardItemModel *model = new QStandardItemModel();
   int i = 0;
   const auto constRasters = mAlign->rasters();
-  for ( const QgsAlignRaster::Item item : constRasters )
+  for ( const QgsAlignRaster::Item &item : constRasters )
   {
     QString layerName = _rasterLayerName( item.inputFilename );
 

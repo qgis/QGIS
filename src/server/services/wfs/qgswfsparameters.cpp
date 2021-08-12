@@ -204,7 +204,8 @@ namespace QgsWfs
   void QgsWfsParameters::dump() const
   {
     log( "WFS Request parameters:" );
-    for ( const auto parameter : mWfsParameters.toStdMap() )
+    const auto map = mWfsParameters.toStdMap();
+    for ( const auto &parameter : map )
     {
       const QString value = parameter.second.toString();
 

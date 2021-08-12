@@ -162,7 +162,7 @@ void TestQgsZipUtils::genericTest( QString zipName, int expectedEntries, bool in
   QCOMPARE( files.count(), filesFromResultDir.count() );
 
   // Test if specific files are included in the root folder
-  for ( const QString fileName : testFileNames )
+  for ( const QString &fileName : testFileNames )
   {
     QVERIFY( filesFromResultDir.contains( unzipDirPath + fileName ) );
   }
