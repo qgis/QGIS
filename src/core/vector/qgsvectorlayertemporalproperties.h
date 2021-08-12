@@ -97,6 +97,15 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
     };
 
     /**
+     * Mode for the handling of the limits of the filtering timeframe
+     */
+    enum LimitMode
+    {
+        ModeIncludeBeginExcludeEnd = 0, //!< Default mode: include the Begin limit, but exclude the End limit
+        ModeIncludeBeginIncludeEnd, //!< Mode to include both limits of the filtering timeframe
+    };
+
+    /**
      * Returns the temporal properties mode.
      *
      *\see setMode()
@@ -109,6 +118,20 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
      *\see mode()
     */
     void setMode( TemporalMode mode );
+
+    /**
+     * Returns the temporal limit mode (to include or exclude begin/end limits).
+     *
+     *\see setLimitMode()
+    */
+    LimitMode limitMode() const;
+
+    /**
+     * Sets the temporal \a limit mode (to include or exclude begin/end limits).
+     *
+     *\see limitMode()
+    */
+    void setLimitMode( LimitMode mode );
 
     /**
      * Returns flags associated to the temporal property.
@@ -341,6 +364,9 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
 
     //! Temporal layer mode.
     TemporalMode mMode = ModeFixedTemporalRange;
+
+    //! How to handle the limits of the timeframe (include or exclude)
+    LimitMode mLimitMode = ModeIncludeBeginExcludeEnd;
 
     //! Represents fixed temporal range.
     QgsDateTimeRange mFixedRange;

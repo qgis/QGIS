@@ -41,6 +41,9 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
 
   connect( mModeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), mStackedWidget, &QStackedWidget::setCurrentIndex );
 
+  mLimitsComboBox->addItem( tr( "Include Start, Exclude End (default)" ), QgsVectorLayerTemporalProperties::ModeIncludeBeginExcludeEnd );
+  mLimitsComboBox->addItem( tr( "Include Start, Include End" ), QgsVectorLayerTemporalProperties::ModeIncludeBeginIncludeEnd );
+
   mStartTemporalDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
   mEndTemporalDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
 
@@ -104,6 +107,7 @@ void QgsVectorLayerTemporalPropertiesWidget::saveTemporalProperties()
 
   properties->setIsActive( mTemporalGroupBox->isChecked() );
   properties->setMode( static_cast< QgsVectorLayerTemporalProperties::TemporalMode >( mModeComboBox->currentData().toInt() ) );
+  properties->setLimitMode(static_cast< QgsVectorLayerTemporalProperties::LimitMode >( mLimitsComboBox->currentData().toInt() ));
 
   QgsDateTimeRange normalRange = QgsDateTimeRange( mStartTemporalDateTimeEdit->dateTime(),
                                  mEndTemporalDateTimeEdit->dateTime() );
@@ -153,6 +157,8 @@ void QgsVectorLayerTemporalPropertiesWidget::syncToLayer()
 
   mModeComboBox->setCurrentIndex( mModeComboBox->findData( properties->mode() ) );
   mStackedWidget->setCurrentIndex( static_cast< int >( properties->mode() ) );
+
+  mLimitsComboBox->setCurrentIndex( mLimitsComboBox->findData( properties->limitMode() ) );
 
   mStartTemporalDateTimeEdit->setDateTime( properties->fixedTemporalRange().begin() );
   mEndTemporalDateTimeEdit->setDateTime( properties->fixedTemporalRange().end() );
