@@ -269,7 +269,7 @@ bool PointSet::containsPoint( double x, double y ) const
   try
   {
 #if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
-    const geos::unique_ptr point( GEOSGeom_createPointFromXY_r( geosctxt, x, y ) );
+    geos::unique_ptr point( GEOSGeom_createPointFromXY_r( geosctxt, x, y ) );
 #else
     GEOSCoordSequence *seq = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
     GEOSCoordSeq_setX_r( geosctxt, seq, 0, x );
@@ -862,7 +862,7 @@ double PointSet::minDistanceToPoint( double px, double py, double *rx, double *r
   try
   {
 #if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
-    const geos::unique_ptr geosPt( GEOSGeom_createPointFromXY_r( geosctxt, px, py ) );
+    geos::unique_ptr geosPt( GEOSGeom_createPointFromXY_r( geosctxt, px, py ) );
 #else
     GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
     GEOSCoordSeq_setX_r( geosctxt, coord, 0, px );
@@ -940,7 +940,7 @@ void PointSet::getCentroid( double &px, double &py, bool forceInside ) const
   try
   {
     GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
-    const geos::unique_ptr centroidGeom( GEOSGetCentroid_r( geosctxt, mGeos ) );
+    geos::unique_ptr centroidGeom( GEOSGetCentroid_r( geosctxt, mGeos ) );
     if ( centroidGeom )
     {
       const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, centroidGeom.get() );
@@ -959,7 +959,7 @@ void PointSet::getCentroid( double &px, double &py, bool forceInside ) const
     // check if centroid inside in polygon
     if ( forceInside && !containsPoint( px, py ) )
     {
-      const geos::unique_ptr pointGeom( GEOSPointOnSurface_r( geosctxt, mGeos ) );
+      geos::unique_ptr pointGeom( GEOSPointOnSurface_r( geosctxt, mGeos ) );
 
       if ( pointGeom )
       {

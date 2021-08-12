@@ -37,7 +37,7 @@
 
 static bool _canExportToGeos( const QgsGeometry &geom )
 {
-  const geos::unique_ptr geosGeom = QgsGeos::asGeos( geom );
+  geos::unique_ptr geosGeom = QgsGeos::asGeos( geom );
   return static_cast<bool>( geosGeom );
 }
 

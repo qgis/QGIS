@@ -209,7 +209,7 @@ void QgsSnapIndex::addPoint( const CoordIdx *idx, bool isEndPoint )
 
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
 #if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
-  const geos::unique_ptr point( GEOSGeom_createPointFromXY_r( geosctxt, row, col ) );
+  geos::unique_ptr point( GEOSGeom_createPointFromXY_r( geosctxt, row, col ) );
 #else
   GEOSCoordSequence *seq = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
   GEOSCoordSeq_setX_r( geosctxt, seq, 0, row );
@@ -240,7 +240,7 @@ void QgsSnapIndex::addSegment( const CoordIdx *idxFrom, const CoordIdx *idxTo )
   for ( ; rt.isValid(); rt.next() )
   {
 #if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
-    const geos::unique_ptr point( GEOSGeom_createPointFromXY_r( geosctxt, rt.curRow(), rt.curCol() ) );
+    geos::unique_ptr point( GEOSGeom_createPointFromXY_r( geosctxt, rt.curRow(), rt.curCol() ) );
 #else
     GEOSCoordSequence *seq = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
     GEOSCoordSeq_setX_r( geosctxt, seq, 0, rt.curRow() );
@@ -317,7 +317,7 @@ QgsPoint QgsSnapIndex::getClosestSnapToPoint( const QgsPoint &p, const QgsPoint 
   for ( ; rt.isValid(); rt.next() )
   {
 #if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
-    const geos::unique_ptr searchPoint( GEOSGeom_createPointFromXY_r( geosctxt, rt.curRow(), rt.curCol() ) );
+    geos::unique_ptr searchPoint( GEOSGeom_createPointFromXY_r( geosctxt, rt.curRow(), rt.curCol() ) );
 #else
     GEOSCoordSequence *seq = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
     GEOSCoordSeq_setX_r( geosctxt, seq, 0, rt.curRow() );
@@ -369,7 +369,7 @@ QgsSnapIndex::SnapItem *QgsSnapIndex::getSnapItem( const QgsPoint &pos, double t
   GEOSCoordSeq_setY_r( geosctxt, coord, 1, colEnd );
 #endif
 
-  const geos::unique_ptr searchDiagonal( GEOSGeom_createLineString_r( geosctxt, coord ) );
+  geos::unique_ptr searchDiagonal( GEOSGeom_createLineString_r( geosctxt, coord ) );
 
   QList<SnapItem *> items;
   struct _GEOSQueryCallbackData callbackData;

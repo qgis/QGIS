@@ -359,7 +359,7 @@ bool GeomFunction::containsCandidate( const GEOSPreparedGeometry *geom, double x
     GEOSCoordSeq_setY_r( geosctxt, coord, 4, y );
 #endif
 
-    const geos::unique_ptr bboxGeos( GEOSGeom_createLinearRing_r( geosctxt, coord ) );
+    geos::unique_ptr bboxGeos( GEOSGeom_createLinearRing_r( geosctxt, coord ) );
     const bool result = ( GEOSPreparedContainsProperly_r( geosctxt, geom, bboxGeos.get() ) == 1 );
     return result;
   }
