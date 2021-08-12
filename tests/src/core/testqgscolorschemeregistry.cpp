@@ -141,14 +141,14 @@ void TestQgsColorSchemeRegistry::instanceHasDefaultSchemes()
 void TestQgsColorSchemeRegistry::createEmpty()
 {
   //create an empty registry
-  std::shared_ptr<QgsColorSchemeRegistry> registry( new QgsColorSchemeRegistry() );
+  const std::shared_ptr<QgsColorSchemeRegistry> registry( new QgsColorSchemeRegistry() );
   QVERIFY( registry->schemes().length() == 0 );
 }
 
 void TestQgsColorSchemeRegistry::addScheme()
 {
   //create an empty registry
-  std::shared_ptr<QgsColorSchemeRegistry> registry( new QgsColorSchemeRegistry() );
+  const std::shared_ptr<QgsColorSchemeRegistry> registry( new QgsColorSchemeRegistry() );
   QVERIFY( registry->schemes().length() == 0 );
   QgsColorScheme *recentScheme = new QgsRecentColorScheme();
   registry->addColorScheme( recentScheme );
@@ -158,7 +158,7 @@ void TestQgsColorSchemeRegistry::addScheme()
 void TestQgsColorSchemeRegistry::addDefaultSchemes()
 {
   //create an empty registry
-  std::shared_ptr<QgsColorSchemeRegistry> registry( new QgsColorSchemeRegistry() );
+  const std::shared_ptr<QgsColorSchemeRegistry> registry( new QgsColorSchemeRegistry() );
   QVERIFY( registry->schemes().length() == 0 );
   //add default schemes
   registry->addDefaultSchemes();
@@ -168,7 +168,7 @@ void TestQgsColorSchemeRegistry::addDefaultSchemes()
 void TestQgsColorSchemeRegistry::populateFromInstance()
 {
   //create an empty registry
-  std::shared_ptr<QgsColorSchemeRegistry> registry( new QgsColorSchemeRegistry() );
+  const std::shared_ptr<QgsColorSchemeRegistry> registry( new QgsColorSchemeRegistry() );
   QVERIFY( registry->schemes().length() == 0 );
   //add schemes from instance
   registry->populateFromInstance();
@@ -178,7 +178,7 @@ void TestQgsColorSchemeRegistry::populateFromInstance()
 void TestQgsColorSchemeRegistry::removeScheme()
 {
   //create an empty registry
-  std::shared_ptr<QgsColorSchemeRegistry> registry( new QgsColorSchemeRegistry() );
+  const std::shared_ptr<QgsColorSchemeRegistry> registry( new QgsColorSchemeRegistry() );
   QVERIFY( registry->schemes().length() == 0 );
   //add a scheme
   QgsColorScheme *recentScheme = new QgsRecentColorScheme();
@@ -194,7 +194,7 @@ void TestQgsColorSchemeRegistry::removeScheme()
 
 void TestQgsColorSchemeRegistry::matchingSchemes()
 {
-  std::shared_ptr<QgsColorSchemeRegistry> registry( new QgsColorSchemeRegistry() );
+  const std::shared_ptr<QgsColorSchemeRegistry> registry( new QgsColorSchemeRegistry() );
   //add some schemes
   QgsColorScheme *recentScheme = new QgsRecentColorScheme();
   registry->addColorScheme( recentScheme );
@@ -238,7 +238,7 @@ void TestQgsColorSchemeRegistry::fetchRandomStyleColor()
   registry->setRandomStyleColorScheme( dummyScheme2 );
   for ( int i = 0; i < 10; ++i )
   {
-    QString color = registry->fetchRandomStyleColor().name();
+    const QString color = registry->fetchRandomStyleColor().name();
     QVERIFY( color == QLatin1String( "#ff0000" ) || color == QLatin1String( "#00ff00" ) );
   }
 

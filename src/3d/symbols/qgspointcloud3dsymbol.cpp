@@ -124,7 +124,7 @@ void QgsColorRampPointCloud3DSymbol::writeXml( QDomElement &elem, const QgsReadW
   elem.setAttribute( QStringLiteral( "color-ramp-shader-min" ), mColorRampShaderMin );
   elem.setAttribute( QStringLiteral( "color-ramp-shader-max" ), mColorRampShaderMax );
   QDomDocument doc = elem.ownerDocument();
-  QDomElement elemColorRampShader = mColorRampShader.writeXml( doc );
+  const QDomElement elemColorRampShader = mColorRampShader.writeXml( doc );
   elem.appendChild( elemColorRampShader );
 }
 
@@ -186,7 +186,7 @@ void QgsColorRampPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *mat )
   mat->addParameter( colorRampTextureParameter );
   Qt3DRender::QParameter *colorRampCountParameter = new Qt3DRender::QParameter( "u_colorRampCount", mColorRampShader.colorRampItemList().count() );
   mat->addParameter( colorRampCountParameter );
-  int colorRampType = mColorRampShader.colorRampType();
+  const int colorRampType = mColorRampShader.colorRampType();
   Qt3DRender::QParameter *colorRampTypeParameter = new Qt3DRender::QParameter( "u_colorRampType", colorRampType );
   mat->addParameter( colorRampTypeParameter );
 }
@@ -271,7 +271,7 @@ void QgsRgbPointCloud3DSymbol::readXml( const QDomElement &elem, const QgsReadWr
 
   //contrast enhancements
   QgsContrastEnhancement *redContrastEnhancement = nullptr;
-  QDomElement redContrastElem = elem.firstChildElement( QStringLiteral( "redContrastEnhancement" ) );
+  const QDomElement redContrastElem = elem.firstChildElement( QStringLiteral( "redContrastEnhancement" ) );
   if ( !redContrastElem.isNull() )
   {
     redContrastEnhancement = new QgsContrastEnhancement( Qgis::DataType::UnknownDataType );
@@ -280,7 +280,7 @@ void QgsRgbPointCloud3DSymbol::readXml( const QDomElement &elem, const QgsReadWr
   }
 
   QgsContrastEnhancement *greenContrastEnhancement = nullptr;
-  QDomElement greenContrastElem = elem.firstChildElement( QStringLiteral( "greenContrastEnhancement" ) );
+  const QDomElement greenContrastElem = elem.firstChildElement( QStringLiteral( "greenContrastEnhancement" ) );
   if ( !greenContrastElem.isNull() )
   {
     greenContrastEnhancement = new QgsContrastEnhancement( Qgis::DataType::UnknownDataType );
@@ -289,7 +289,7 @@ void QgsRgbPointCloud3DSymbol::readXml( const QDomElement &elem, const QgsReadWr
   }
 
   QgsContrastEnhancement *blueContrastEnhancement = nullptr;
-  QDomElement blueContrastElem = elem.firstChildElement( QStringLiteral( "blueContrastEnhancement" ) );
+  const QDomElement blueContrastElem = elem.firstChildElement( QStringLiteral( "blueContrastEnhancement" ) );
   if ( !blueContrastElem.isNull() )
   {
     blueContrastEnhancement = new QgsContrastEnhancement( Qgis::DataType::UnknownDataType );
@@ -458,7 +458,7 @@ void QgsClassificationPointCloud3DSymbol::setCategoriesList( const QgsPointCloud
 QgsPointCloudCategoryList QgsClassificationPointCloud3DSymbol::getFilteredOutCategories() const
 {
   QgsPointCloudCategoryList filteredOut;
-  for ( QgsPointCloudCategory category : mCategoriesList )
+  for ( const QgsPointCloudCategory category : mCategoriesList )
   {
     if ( !category.renderState() )
       filteredOut.push_back( category );
@@ -474,8 +474,8 @@ QgsColorRampShader QgsClassificationPointCloud3DSymbol::colorRampShader() const
   QList<QgsColorRampShader::ColorRampItem> colorRampItemList;
   for ( const QgsPointCloudCategory &category : mCategoriesList )
   {
-    QColor color = category.color();
-    QgsColorRampShader::ColorRampItem item( category.value(), color, category.label() );
+    const QColor color = category.color();
+    const QgsColorRampShader::ColorRampItem item( category.value(), color, category.label() );
     colorRampItemList.push_back( item );
   }
   colorRampShader.setColorRampItemList( colorRampItemList );
@@ -485,7 +485,7 @@ QgsColorRampShader QgsClassificationPointCloud3DSymbol::colorRampShader() const
 
 void QgsClassificationPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *mat )
 {
-  QgsColorRampShader mColorRampShader = colorRampShader();
+  const QgsColorRampShader mColorRampShader = colorRampShader();
   Qt3DRender::QParameter *renderingStyle = new Qt3DRender::QParameter( "u_renderingStyle", QgsPointCloud3DSymbol::ColorRamp );
   mat->addParameter( renderingStyle );
   Qt3DRender::QParameter *pointSizeParameter = new Qt3DRender::QParameter( "u_pointSize", QVariant::fromValue( mPointSize ) );
@@ -505,7 +505,7 @@ void QgsClassificationPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *m
   mat->addParameter( colorRampTextureParameter );
   Qt3DRender::QParameter *colorRampCountParameter = new Qt3DRender::QParameter( "u_colorRampCount", mColorRampShader.colorRampItemList().count() );
   mat->addParameter( colorRampCountParameter );
-  int colorRampType = mColorRampShader.colorRampType();
+  const int colorRampType = mColorRampShader.colorRampType();
   Qt3DRender::QParameter *colorRampTypeParameter = new Qt3DRender::QParameter( "u_colorRampType", colorRampType );
   mat->addParameter( colorRampTypeParameter );
 }

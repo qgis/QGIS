@@ -105,11 +105,11 @@ void QgsVirtualLayerSourceSelect::layerComboChanged( int idx )
   if ( idx == -1 )
     return;
 
-  QString lid = mLayerNameCombo->itemData( idx ).toString();
+  const QString lid = mLayerNameCombo->itemData( idx ).toString();
   QgsVectorLayer *l = static_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( lid ) );
   if ( !l )
     return;
-  QgsVirtualLayerDefinition def = QgsVirtualLayerDefinition::fromUrl( QUrl::fromEncoded( l->source().toUtf8() ) );
+  const QgsVirtualLayerDefinition def = QgsVirtualLayerDefinition::fromUrl( QUrl::fromEncoded( l->source().toUtf8() ) );
 
   if ( !def.query().isEmpty() )
   {
@@ -131,7 +131,7 @@ void QgsVirtualLayerSourceSelect::layerComboChanged( int idx )
     mGeometryRadio->setChecked( true );
     mSrid = def.geometrySrid();
     Q_NOWARN_DEPRECATED_PUSH
-    QgsCoordinateReferenceSystem crs( def.geometrySrid() );
+    const QgsCoordinateReferenceSystem crs( def.geometrySrid() );
     Q_NOWARN_DEPRECATED_POP
     mCRS->setText( crs.authid() );
     mGeometryType->setCurrentIndex( static_cast<long>( def.geometryWkbType() ) - 1 );
@@ -155,7 +155,7 @@ void QgsVirtualLayerSourceSelect::browseCRS()
 {
   QgsProjectionSelectionDialog crsSelector( this );
   Q_NOWARN_DEPRECATED_PUSH
-  QgsCoordinateReferenceSystem crs( mSrid );
+  const QgsCoordinateReferenceSystem crs( mSrid );
   Q_NOWARN_DEPRECATED_POP
   crsSelector.setCrs( crs );
   if ( !crs.isValid() )
@@ -164,7 +164,7 @@ void QgsVirtualLayerSourceSelect::browseCRS()
   if ( crsSelector.exec() )
   {
     mCRS->setText( crsSelector.crs().authid() );
-    QgsCoordinateReferenceSystem newCrs = crsSelector.crs();
+    const QgsCoordinateReferenceSystem newCrs = crsSelector.crs();
     mSrid = newCrs.postgisSrid();
   }
 }
@@ -187,7 +187,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerSourceSelect::getVirtualLayerDef()
   }
   else if ( mGeometryRadio->isChecked() )
   {
-    QgsWkbTypes::Type t = mGeometryType->currentIndex() > -1 ? static_cast<QgsWkbTypes::Type>( mGeometryType->currentIndex() + 1 ) : QgsWkbTypes::NoGeometry;
+    const QgsWkbTypes::Type t = mGeometryType->currentIndex() > -1 ? static_cast<QgsWkbTypes::Type>( mGeometryType->currentIndex() + 1 ) : QgsWkbTypes::NoGeometry;
     def.setGeometryWkbType( t );
     def.setGeometryField( mGeometryField->text() );
     def.setGeometrySrid( mSrid );
@@ -196,10 +196,10 @@ QgsVirtualLayerDefinition QgsVirtualLayerSourceSelect::getVirtualLayerDef()
   // add embedded layers
   for ( int i = 0; i < mLayersTable->rowCount(); i++ )
   {
-    QString name = mLayersTable->item( i, 0 )->text();
-    QString provider = static_cast<QComboBox *>( mLayersTable->cellWidget( i, 1 ) )->currentText();
-    QString encoding = static_cast<QComboBox *>( mLayersTable->cellWidget( i, 2 ) )->currentText();
-    QString source = mLayersTable->item( i, 3 )->text();
+    const QString name = mLayersTable->item( i, 0 )->text();
+    const QString provider = static_cast<QComboBox *>( mLayersTable->cellWidget( i, 1 ) )->currentText();
+    const QString encoding = static_cast<QComboBox *>( mLayersTable->cellWidget( i, 2 ) )->currentText();
+    const QString source = mLayersTable->item( i, 3 )->text();
     def.addSource( name, source, provider, encoding );
   }
 
@@ -208,13 +208,13 @@ QgsVirtualLayerDefinition QgsVirtualLayerSourceSelect::getVirtualLayerDef()
 
 void QgsVirtualLayerSourceSelect::testQuery()
 {
-  QgsVirtualLayerDefinition def = getVirtualLayerDef();
+  const QgsVirtualLayerDefinition def = getVirtualLayerDef();
   // If the definition is empty just do nothing.
   // TODO: a validation function that can enable/disable the test button
   //       according to the validity of the active layer definition
   if ( ! def.toString().isEmpty() )
   {
-    QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+    const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
     std::unique_ptr<QgsVectorLayer> vl( new QgsVectorLayer( def.toString(), QStringLiteral( "test" ), QStringLiteral( "virtual" ), options ) );
     if ( vl->isValid() )
     {
@@ -251,14 +251,14 @@ void QgsVirtualLayerSourceSelect::addLayer()
 
   QComboBox *encodingCombo = new QComboBox();
   encodingCombo->addItems( QgsVectorDataProvider::availableEncodings() );
-  QString defaultEnc = QgsSettings().value( QStringLiteral( "/UI/encoding" ), "System" ).toString();
+  const QString defaultEnc = QgsSettings().value( QStringLiteral( "/UI/encoding" ), "System" ).toString();
   encodingCombo->setCurrentIndex( encodingCombo->findText( defaultEnc ) );
   mLayersTable->setCellWidget( mLayersTable->rowCount() - 1, 2, encodingCombo );
 }
 
 void QgsVirtualLayerSourceSelect::removeLayer()
 {
-  int currentRow = mLayersTable->selectionModel()->currentIndex().row();
+  const int currentRow = mLayersTable->selectionModel()->currentIndex().row();
   if ( currentRow != -1 )
     mLayersTable->removeRow( currentRow );
 }
@@ -365,7 +365,7 @@ void QgsVirtualLayerSourceSelect::importLayer()
 {
   if ( mEmbeddedSelectionDialog && mEmbeddedSelectionDialog->exec() == QDialog::Accepted )
   {
-    QStringList ids = mEmbeddedSelectionDialog->layers();
+    const QStringList ids = mEmbeddedSelectionDialog->layers();
     const auto constIds = ids;
     for ( const QString &id : constIds )
     {
@@ -380,13 +380,13 @@ void QgsVirtualLayerSourceSelect::addButtonClicked()
   QString layerName = QStringLiteral( "virtual_layer" );
   QString id;
   bool replace = false;
-  int idx = mLayerNameCombo->currentIndex();
+  const int idx = mLayerNameCombo->currentIndex();
   if ( idx != -1 && !mLayerNameCombo->currentText().isEmpty() )
   {
     layerName = mLayerNameCombo->currentText();
   }
 
-  QgsVirtualLayerDefinition def = getVirtualLayerDef();
+  const QgsVirtualLayerDefinition def = getVirtualLayerDef();
 
 
   if ( idx != -1 )
@@ -394,7 +394,7 @@ void QgsVirtualLayerSourceSelect::addButtonClicked()
     id = ( mLayerNameCombo->itemData( idx ).toString() );
     if ( !id.isEmpty() && mLayerNameCombo->currentText() == QgsProject::instance()->mapLayer( id )->name() )
     {
-      int r = QMessageBox::warning( nullptr, tr( "Warning" ), tr( "A virtual layer of this name already exists, would you like to overwrite it?" ), QMessageBox::Yes | QMessageBox::No );
+      const int r = QMessageBox::warning( nullptr, tr( "Warning" ), tr( "A virtual layer of this name already exists, would you like to overwrite it?" ), QMessageBox::Yes | QMessageBox::No );
       if ( r == QMessageBox::Yes )
       {
         replace = true;

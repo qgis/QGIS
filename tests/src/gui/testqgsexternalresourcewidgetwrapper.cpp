@@ -80,7 +80,7 @@ void TestQgsExternalResourceWidgetWrapper::test_setNullValues()
   QVERIFY( ww.mQgsWidget );
   QVERIFY( ww.mLineEdit );
 
-  QSignalSpy spy( &ww, &QgsExternalResourceWidgetWrapper::valuesChanged );
+  const QSignalSpy spy( &ww, &QgsExternalResourceWidgetWrapper::valuesChanged );
 
   ww.updateValues( QStringLiteral( "test" ) );
   QCOMPARE( ww.mLineEdit->text(), QStringLiteral( "test" ) );

@@ -85,7 +85,7 @@ void QgsDistanceWithinAlgorithm::processByIteratingOverTargetSource( const QgsPr
   const bool dynamicDistance = distanceProperty.isActive();
 
   QgsFeatureIterator fIt = targetSource->getFeatures( request );
-  double step = targetSource->featureCount() > 0 ? 100.0 / targetSource->featureCount() : 1;
+  const double step = targetSource->featureCount() > 0 ? 100.0 / targetSource->featureCount() : 1;
   int current = 0;
   QgsFeature f;
   while ( fIt.nextFeature( f ) )
@@ -134,7 +134,7 @@ void QgsDistanceWithinAlgorithm::processByIteratingOverReferenceSource( const Qg
 
   QgsFeatureRequest request = QgsFeatureRequest().setNoAttributes().setDestinationCrs( targetSource->sourceCrs(), context.transformContext() );
   QgsFeatureIterator fIt = referenceSource->getFeatures( request );
-  double step = referenceSource->featureCount() > 0 ? 100.0 / referenceSource->featureCount() : 1;
+  const double step = referenceSource->featureCount() > 0 ? 100.0 / referenceSource->featureCount() : 1;
   int current = 0;
   QgsFeature f;
   while ( fIt.nextFeature( f ) )
@@ -178,10 +178,10 @@ void QgsDistanceWithinAlgorithm::processByIteratingOverReferenceSource( const Qg
 
 void QgsSelectWithinDistanceAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  QStringList methods = QStringList() << QObject::tr( "creating new selection" )
-                        << QObject::tr( "adding to current selection" )
-                        << QObject::tr( "selecting within current selection" )
-                        << QObject::tr( "removing from current selection" );
+  const QStringList methods = QStringList() << QObject::tr( "creating new selection" )
+                              << QObject::tr( "adding to current selection" )
+                              << QObject::tr( "selecting within current selection" )
+                              << QObject::tr( "removing from current selection" );
 
   addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Select features from" ),
                 QList< int >() << QgsProcessing::TypeVectorAnyGeometry ) );
@@ -243,8 +243,8 @@ QVariantMap QgsSelectWithinDistanceAlgorithm::processAlgorithm( const QVariantMa
   if ( !selectLayer )
     throw QgsProcessingException( QObject::tr( "Could not load source layer for INPUT" ) );
 
-  Qgis::SelectBehavior method = static_cast< Qgis::SelectBehavior >( parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context ) );
-  std::unique_ptr< QgsFeatureSource > referenceSource( parameterAsSource( parameters, QStringLiteral( "REFERENCE" ), context ) );
+  const Qgis::SelectBehavior method = static_cast< Qgis::SelectBehavior >( parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context ) );
+  const std::unique_ptr< QgsFeatureSource > referenceSource( parameterAsSource( parameters, QStringLiteral( "REFERENCE" ), context ) );
   if ( !referenceSource )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "REFERENCE" ) ) );
 
@@ -329,7 +329,7 @@ QVariantMap QgsExtractWithinDistanceAlgorithm::processAlgorithm( const QVariantM
   std::unique_ptr< QgsProcessingFeatureSource > input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !input )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
-  std::unique_ptr< QgsFeatureSource > referenceSource( parameterAsSource( parameters, QStringLiteral( "REFERENCE" ), context ) );
+  const std::unique_ptr< QgsFeatureSource > referenceSource( parameterAsSource( parameters, QStringLiteral( "REFERENCE" ), context ) );
   if ( !referenceSource )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "REFERENCE" ) ) );
 

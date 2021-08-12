@@ -74,12 +74,12 @@ QgsRectangle QgsMapLayerUtils::combinedExtent( const QList<QgsMapLayer *> &layer
     else
     {
       const double padFactor = 1e-8;
-      double widthPad = fullExtent.xMinimum() * padFactor;
-      double heightPad = fullExtent.yMinimum() * padFactor;
-      double xmin = fullExtent.xMinimum() - widthPad;
-      double xmax = fullExtent.xMaximum() + widthPad;
-      double ymin = fullExtent.yMinimum() - heightPad;
-      double ymax = fullExtent.yMaximum() + heightPad;
+      const double widthPad = fullExtent.xMinimum() * padFactor;
+      const double heightPad = fullExtent.yMinimum() * padFactor;
+      const double xmin = fullExtent.xMinimum() - widthPad;
+      const double xmax = fullExtent.xMaximum() + widthPad;
+      const double ymin = fullExtent.yMinimum() - heightPad;
+      const double ymax = fullExtent.yMaximum() + heightPad;
       fullExtent.set( xmin, ymin, xmax, ymax );
     }
   }

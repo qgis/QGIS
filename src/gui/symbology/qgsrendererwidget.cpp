@@ -72,7 +72,7 @@ QgsRendererWidget::QgsRendererWidget( QgsVectorLayer *layer, QgsStyle *style )
 
   connect( contextMenu, &QMenu::aboutToShow, this, [ = ]
   {
-    std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
+    const std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
     mPasteSymbolAction->setEnabled( static_cast< bool >( tempSymbol ) );
   } );
 }
@@ -102,7 +102,7 @@ void QgsRendererWidget::changeSymbolColor()
   if ( !firstSymbol )
     return;
 
-  QColor currentColor = firstSymbol->color();
+  const QColor currentColor = firstSymbol->color();
 
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast< QWidget * >( parent() ) );
   if ( panel && panel->dockMode() )
@@ -124,7 +124,7 @@ void QgsRendererWidget::changeSymbolColor()
   else
   {
     // modal dialog version... yuck
-    QColor color = QgsColorDialog::getColor( firstSymbol->color(), this, QStringLiteral( "Change Symbol Color" ), true );
+    const QColor color = QgsColorDialog::getColor( firstSymbol->color(), this, QStringLiteral( "Change Symbol Color" ), true );
     if ( color.isValid() )
     {
       for ( QgsSymbol *symbol : symbolList )
@@ -139,7 +139,7 @@ void QgsRendererWidget::changeSymbolColor()
 
 void QgsRendererWidget::changeSymbolOpacity()
 {
-  QList<QgsSymbol *> symbolList = selectedSymbols();
+  const QList<QgsSymbol *> symbolList = selectedSymbols();
   if ( symbolList.isEmpty() )
   {
     return;
@@ -159,8 +159,8 @@ void QgsRendererWidget::changeSymbolOpacity()
     return;
 
   bool ok;
-  double oldOpacity = firstSymbol->opacity() * 100; // convert to %
-  double opacity = QInputDialog::getDouble( this, tr( "Opacity" ), tr( "Change symbol opacity [%]" ), oldOpacity, 0.0, 100.0, 1, &ok );
+  const double oldOpacity = firstSymbol->opacity() * 100; // convert to %
+  const double opacity = QInputDialog::getDouble( this, tr( "Opacity" ), tr( "Change symbol opacity [%]" ), oldOpacity, 0.0, 100.0, 1, &ok );
   if ( ok )
   {
     const auto constSymbolList = symbolList;
@@ -175,7 +175,7 @@ void QgsRendererWidget::changeSymbolOpacity()
 
 void QgsRendererWidget::changeSymbolUnit()
 {
-  QList<QgsSymbol *> symbolList = selectedSymbols();
+  const QList<QgsSymbol *> symbolList = selectedSymbols();
   if ( symbolList.isEmpty() )
   {
     return;
@@ -195,11 +195,11 @@ void QgsRendererWidget::changeSymbolUnit()
     return;
 
   bool ok;
-  int currentUnit = ( firstSymbol->outputUnit() == QgsUnitTypes::RenderMillimeters ) ? 0 : 1;
-  QString item = QInputDialog::getItem( this, tr( "Symbol unit" ), tr( "Select symbol unit" ), QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), currentUnit, false, &ok );
+  const int currentUnit = ( firstSymbol->outputUnit() == QgsUnitTypes::RenderMillimeters ) ? 0 : 1;
+  const QString item = QInputDialog::getItem( this, tr( "Symbol unit" ), tr( "Select symbol unit" ), QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), currentUnit, false, &ok );
   if ( ok )
   {
-    QgsUnitTypes::RenderUnit unit = ( item.compare( tr( "Millimeter" ) ) == 0 ) ? QgsUnitTypes::RenderMillimeters : QgsUnitTypes::RenderMapUnits;
+    const QgsUnitTypes::RenderUnit unit = ( item.compare( tr( "Millimeter" ) ) == 0 ) ? QgsUnitTypes::RenderMillimeters : QgsUnitTypes::RenderMapUnits;
 
     const auto constSymbolList = symbolList;
     for ( QgsSymbol *symbol : constSymbolList )
@@ -213,7 +213,7 @@ void QgsRendererWidget::changeSymbolUnit()
 
 void QgsRendererWidget::changeSymbolWidth()
 {
-  QList<QgsSymbol *> symbolList = selectedSymbols();
+  const QList<QgsSymbol *> symbolList = selectedSymbols();
   if ( symbolList.isEmpty() )
   {
     return;
@@ -243,7 +243,7 @@ void QgsRendererWidget::changeSymbolWidth()
 
 void QgsRendererWidget::changeSymbolSize()
 {
-  QList<QgsSymbol *> symbolList = selectedSymbols();
+  const QList<QgsSymbol *> symbolList = selectedSymbols();
   if ( symbolList.isEmpty() )
   {
     return;
@@ -272,7 +272,7 @@ void QgsRendererWidget::changeSymbolSize()
 
 void QgsRendererWidget::changeSymbolAngle()
 {
-  QList<QgsSymbol *> symbolList = selectedSymbols();
+  const QList<QgsSymbol *> symbolList = selectedSymbols();
   if ( symbolList.isEmpty() )
   {
     return;
@@ -306,7 +306,7 @@ void QgsRendererWidget::pasteSymbolToSelection()
 
 void QgsRendererWidget::copySymbol()
 {
-  QList<QgsSymbol *> symbolList = selectedSymbols();
+  const QList<QgsSymbol *> symbolList = selectedSymbols();
   if ( symbolList.isEmpty() )
   {
     return;
@@ -372,7 +372,7 @@ void QgsRendererWidget::disableSymbolLevels()
 
 QgsDataDefinedSizeLegendWidget *QgsRendererWidget::createDataDefinedSizeLegendWidget( const QgsMarkerSymbol *symbol, const QgsDataDefinedSizeLegend *ddsLegend )
 {
-  QgsProperty ddSize = symbol->dataDefinedSize();
+  const QgsProperty ddSize = symbol->dataDefinedSize();
   if ( !ddSize || !ddSize.isActive() )
   {
     QMessageBox::warning( this, tr( "Data-defined Size Legend" ), tr( "Data-defined size is not enabled!" ) );
@@ -449,7 +449,7 @@ QgsExpressionContext QgsDataDefinedValueDialog::createExpressionContext() const
 
 void QgsDataDefinedValueDialog::init( int propertyKey )
 {
-  QgsProperty dd( symbolDataDefined() );
+  const QgsProperty dd( symbolDataDefined() );
 
   mDDBtn->init( propertyKey, dd, QgsSymbolLayer::propertyDefinitions(), mLayer );
   mDDBtn->registerExpressionContextGenerator( this );
@@ -473,11 +473,11 @@ QgsProperty QgsDataDefinedValueDialog::symbolDataDefined() const
     return QgsProperty();
 
   // check that all symbols share the same size expression
-  QgsProperty dd = symbolDataDefined( mSymbolList.back() );
+  const QgsProperty dd = symbolDataDefined( mSymbolList.back() );
   const auto constMSymbolList = mSymbolList;
   for ( QgsSymbol *it : constMSymbolList )
   {
-    QgsProperty symbolDD( symbolDataDefined( it ) );
+    const QgsProperty symbolDD( symbolDataDefined( it ) );
     if ( !it || !dd || !symbolDD || symbolDD != dd )
       return QgsProperty();
   }
@@ -486,10 +486,10 @@ QgsProperty QgsDataDefinedValueDialog::symbolDataDefined() const
 
 void QgsDataDefinedValueDialog::dataDefinedChanged()
 {
-  QgsProperty dd( mDDBtn->toProperty() );
+  const QgsProperty dd( mDDBtn->toProperty() );
   mSpinBox->setEnabled( !dd.isActive() );
 
-  QgsProperty symbolDD( symbolDataDefined() );
+  const QgsProperty symbolDD( symbolDataDefined() );
 
   if ( // shall we remove datadefined expressions for layers ?
     ( symbolDD && symbolDD.isActive() && !dd.isActive() )

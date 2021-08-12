@@ -116,7 +116,7 @@ void QgsFilterAlgorithmConfigurationWidget::setConfiguration( const QVariantMap 
 
 void QgsFilterAlgorithmConfigurationWidget::removeSelectedOutputs()
 {
-  QItemSelection selection( mOutputExpressionWidget->selectionModel()->selection() );
+  const QItemSelection selection( mOutputExpressionWidget->selectionModel()->selection() );
 
   QList<int> rows;
   const QModelIndexList indexes = selection.indexes();
@@ -130,7 +130,7 @@ void QgsFilterAlgorithmConfigurationWidget::removeSelectedOutputs()
   int prev = -1;
   for ( int i = rows.count() - 1; i >= 0; i -= 1 )
   {
-    int current = rows[i];
+    const int current = rows[i];
     if ( current != prev )
     {
       mOutputExpressionWidget->removeRow( current );
@@ -141,7 +141,7 @@ void QgsFilterAlgorithmConfigurationWidget::removeSelectedOutputs()
 
 void QgsFilterAlgorithmConfigurationWidget::addOutput()
 {
-  int rowIndex = mOutputExpressionWidget->rowCount();
+  const int rowIndex = mOutputExpressionWidget->rowCount();
   mOutputExpressionWidget->setRowCount( rowIndex + 1 );
   QgsExpressionLineEdit *expressionBuilder = new QgsExpressionLineEdit();
   expressionBuilder->registerExpressionContextGenerator( this );
@@ -246,7 +246,7 @@ void QgsConditionalBranchAlgorithmConfigurationWidget::setConfiguration( const Q
 
 void QgsConditionalBranchAlgorithmConfigurationWidget::removeSelectedConditions()
 {
-  QItemSelection selection( mConditionExpressionWidget->selectionModel()->selection() );
+  const QItemSelection selection( mConditionExpressionWidget->selectionModel()->selection() );
 
   QList<int> rows;
   const QModelIndexList indexes = selection.indexes();
@@ -260,7 +260,7 @@ void QgsConditionalBranchAlgorithmConfigurationWidget::removeSelectedConditions(
   int prev = -1;
   for ( int i = rows.count() - 1; i >= 0; i -= 1 )
   {
-    int current = rows[i];
+    const int current = rows[i];
     if ( current != prev )
     {
       mConditionExpressionWidget->removeRow( current );
@@ -271,7 +271,7 @@ void QgsConditionalBranchAlgorithmConfigurationWidget::removeSelectedConditions(
 
 void QgsConditionalBranchAlgorithmConfigurationWidget::addCondition()
 {
-  int rowIndex = mConditionExpressionWidget->rowCount();
+  const int rowIndex = mConditionExpressionWidget->rowCount();
   mConditionExpressionWidget->setRowCount( rowIndex + 1 );
   QgsExpressionLineEdit *expressionBuilder = new QgsExpressionLineEdit();
   expressionBuilder->registerExpressionContextGenerator( this );

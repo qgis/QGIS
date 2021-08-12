@@ -147,7 +147,7 @@ void QgsTemporalNavigationObject::setTemporalExtents( const QgsDateTimeRange &te
   {
     return;
   }
-  QgsDateTimeRange oldFrame = dateTimeRangeForFrameNumber( currentFrameNumber() );
+  const QgsDateTimeRange oldFrame = dateTimeRangeForFrameNumber( currentFrameNumber() );
   mTemporalExtents = temporalExtents;
   mCurrentFrameNumber = findBestFrameNumberForFrameStart( oldFrame.begin() );
   emit temporalExtentsChanged( mTemporalExtents );
@@ -156,7 +156,7 @@ void QgsTemporalNavigationObject::setTemporalExtents( const QgsDateTimeRange &te
   {
     case Animated:
     {
-      long long currentFrameNumber = mCurrentFrameNumber;
+      const long long currentFrameNumber = mCurrentFrameNumber;
 
       // Force to emit signal if the current frame number doesn't change
       if ( currentFrameNumber == mCurrentFrameNumber && !mBlockUpdateTemporalRangeSignal )
@@ -193,7 +193,7 @@ void QgsTemporalNavigationObject::setCurrentFrameNumber( long long frameNumber )
   if ( mCurrentFrameNumber != frameNumber )
   {
     mCurrentFrameNumber = std::max( 0LL, std::min( frameNumber, totalFrameCount() - 1 ) );
-    QgsDateTimeRange range = dateTimeRangeForFrameNumber( mCurrentFrameNumber );
+    const QgsDateTimeRange range = dateTimeRangeForFrameNumber( mCurrentFrameNumber );
 
     if ( !mBlockUpdateTemporalRangeSignal )
       emit updateTemporalRange( range );
@@ -212,14 +212,14 @@ void QgsTemporalNavigationObject::setFrameDuration( const QgsInterval &frameDura
     return;
   }
 
-  QgsDateTimeRange oldFrame = dateTimeRangeForFrameNumber( currentFrameNumber() );
+  const QgsDateTimeRange oldFrame = dateTimeRangeForFrameNumber( currentFrameNumber() );
   mFrameDuration = frameDuration;
 
   mCurrentFrameNumber = findBestFrameNumberForFrameStart( oldFrame.begin() );
   emit temporalFrameDurationChanged( mFrameDuration );
 
   // forcing an update of our views
-  QgsDateTimeRange range = dateTimeRangeForFrameNumber( mCurrentFrameNumber );
+  const QgsDateTimeRange range = dateTimeRangeForFrameNumber( mCurrentFrameNumber );
 
   if ( !mBlockUpdateTemporalRangeSignal && mNavigationMode == Animated )
     emit updateTemporalRange( range );
@@ -318,7 +318,7 @@ long long QgsTemporalNavigationObject::totalFrameCount() const
   }
   else
   {
-    QgsInterval totalAnimationLength = mTemporalExtents.end() - mTemporalExtents.begin();
+    const QgsInterval totalAnimationLength = mTemporalExtents.end() - mTemporalExtents.begin();
     return static_cast< long long >( std::ceil( totalAnimationLength.seconds() / mFrameDuration.seconds() ) );
   }
 }
@@ -355,7 +355,7 @@ long long QgsTemporalNavigationObject::findBestFrameNumberForFrameStart( const Q
   }
   else
   {
-    QgsDateTimeRange testFrame = QgsDateTimeRange( frameStart, frameStart ); // creating an 'instant' Range
+    const QgsDateTimeRange testFrame = QgsDateTimeRange( frameStart, frameStart ); // creating an 'instant' Range
     // Earlier we looped from frame 0 till totalFrameCount() here, but this loop grew potentially gigantic
     long long roughFrameStart = 0;
     long long roughFrameEnd = totalFrameCount();
@@ -373,7 +373,7 @@ long long QgsTemporalNavigationObject::findBestFrameNumberForFrameStart( const Q
     }
     for ( long long i = roughFrameStart; i < roughFrameEnd; ++i )
     {
-      QgsDateTimeRange range = dateTimeRangeForFrameNumber( i );
+      const QgsDateTimeRange range = dateTimeRangeForFrameNumber( i );
       if ( range.overlaps( testFrame ) )
       {
         bestFrame = i;

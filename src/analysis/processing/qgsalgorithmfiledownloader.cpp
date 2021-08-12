@@ -95,7 +95,7 @@ QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &par
   if ( errors.size() > 0 )
     throw QgsProcessingException( errors.join( '\n' ) );
 
-  bool exists = QFileInfo::exists( outputFile );
+  const bool exists = QFileInfo::exists( outputFile );
   if ( !feedback->isCanceled() && !exists )
     throw QgsProcessingException( tr( "Output file doesn't exist." ) );
 

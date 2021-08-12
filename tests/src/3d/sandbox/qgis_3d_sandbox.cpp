@@ -38,7 +38,7 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
   QgsMapSettings ms;
   ms.setDestinationCrs( QgsProject::instance()->crs() );
   ms.setLayers( visibleLayers );
-  QgsRectangle fullExtent = ms.fullExtent();
+  const QgsRectangle fullExtent = ms.fullExtent();
 
   QgsRectangle extent = fullExtent;
   extent.scale( 1.3 );
@@ -69,7 +69,7 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
 
   canvas->setMap( map );
 
-  float dist = static_cast< float >( std::max( extent.width(), extent.height() ) );
+  const float dist = static_cast< float >( std::max( extent.width(), extent.height() ) );
   canvas->setViewFromTop( extent.center(), dist * 2, 0 );
 
   QObject::connect( canvas->scene(), &Qgs3DMapScene::totalPendingJobsCountChanged, [canvas]
@@ -82,7 +82,7 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
 
 int main( int argc, char *argv[] )
 {
-  QApplication app( argc, argv );
+  const QApplication app( argc, argv );
 
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
@@ -95,8 +95,8 @@ int main( int argc, char *argv[] )
     return 1;
   }
 
-  QString projectFile = argv[1];
-  bool res = QgsProject::instance()->read( projectFile );
+  const QString projectFile = argv[1];
+  const bool res = QgsProject::instance()->read( projectFile );
   if ( !res )
   {
     qDebug() << "can't open project file" << projectFile;

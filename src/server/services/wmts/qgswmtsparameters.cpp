@@ -154,7 +154,7 @@ namespace QgsWmts
   void QgsWmtsParameters::dump() const
   {
     log( "WMTS Request parameters:" );
-    for ( auto parameter : mWmtsParameters.toStdMap() )
+    for ( const auto parameter : mWmtsParameters.toStdMap() )
     {
       const QString value = parameter.second.toString();
 
@@ -181,7 +181,7 @@ namespace QgsWmts
 
   QgsWmtsParameters::Format QgsWmtsParameters::format() const
   {
-    QString fStr = formatAsString();
+    const QString fStr = formatAsString();
 
     if ( fStr.isEmpty() )
       return Format::NONE;
@@ -237,7 +237,7 @@ namespace QgsWmts
 
   QgsWmtsParameters::Format QgsWmtsParameters::infoFormat() const
   {
-    QString fStr = infoFormatAsString();
+    const QString fStr = infoFormatAsString();
 
     Format f = Format::TEXT;
     if ( fStr.isEmpty() )
@@ -262,7 +262,7 @@ namespace QgsWmts
     if ( infoFormat() != Format::GML )
       return -1;
 
-    QString fStr = infoFormatAsString();
+    const QString fStr = infoFormatAsString();
     if ( fStr.startsWith( QLatin1String( "application/vnd.ogc.gml/3" ), Qt::CaseInsensitive ) )
       return 3;
     else
@@ -291,7 +291,7 @@ namespace QgsWmts
 
   QgsProjectVersion QgsWmtsParameters::versionAsNumber() const
   {
-    QString vStr = version();
+    const QString vStr = version();
     QgsProjectVersion version;
 
     if ( vStr.isEmpty() )

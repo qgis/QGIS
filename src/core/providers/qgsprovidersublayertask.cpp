@@ -29,7 +29,7 @@ QgsProviderSublayerTask::QgsProviderSublayerTask( const QString &uri )
 
 QList<QgsProviderSublayerDetails> QgsProviderSublayerTask::results() const
 {
-  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
+  const QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
   return mResults;
 }
 
@@ -41,7 +41,7 @@ bool QgsProviderSublayerTask::run()
 
   const QList<QgsProviderSublayerDetails> res = QgsProviderRegistry::instance()->querySublayers( mUri, Qgis::SublayerQueryFlag::ResolveGeometryType | Qgis::SublayerQueryFlag::CountFeatures, mFeedback.get() );
 
-  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Write );
+  const QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Write );
   mResults = res;
 
   return true;

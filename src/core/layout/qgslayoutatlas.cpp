@@ -97,10 +97,10 @@ bool QgsLayoutAtlas::readXml( const QDomElement &atlasElem, const QDomDocument &
   mEnabled = atlasElem.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
 
   // look for stored layer name
-  QString layerId = atlasElem.attribute( QStringLiteral( "coverageLayer" ) );
-  QString layerName = atlasElem.attribute( QStringLiteral( "coverageLayerName" ) );
-  QString layerSource = atlasElem.attribute( QStringLiteral( "coverageLayerSource" ) );
-  QString layerProvider = atlasElem.attribute( QStringLiteral( "coverageLayerProvider" ) );
+  const QString layerId = atlasElem.attribute( QStringLiteral( "coverageLayer" ) );
+  const QString layerName = atlasElem.attribute( QStringLiteral( "coverageLayerName" ) );
+  const QString layerSource = atlasElem.attribute( QStringLiteral( "coverageLayerSource" ) );
+  const QString layerProvider = atlasElem.attribute( QStringLiteral( "coverageLayerProvider" ) );
 
   mCoverageLayer = QgsVectorLayerRef( layerId, layerName, layerSource, layerProvider );
   mCoverageLayer.resolveWeakly( mLayout->project() );
@@ -224,7 +224,7 @@ bool QgsLayoutAtlas::setFilterExpression( const QString &expression, QString &er
   const bool hasChanged = mFilterExpression != expression;
   mFilterExpression = expression;
 
-  QgsExpression filterExpression( mFilterExpression );
+  const QgsExpression filterExpression( mFilterExpression );
   if ( hasChanged )
     emit changed();
   if ( filterExpression.hasParserError() )
@@ -280,7 +280,7 @@ int QgsLayoutAtlas::updateFeatures()
   mFilterParserError.clear();
   if ( mFilterFeatures && !mFilterExpression.isEmpty() )
   {
-    QgsExpression filterExpression( mFilterExpression );
+    const QgsExpression filterExpression( mFilterExpression );
     if ( filterExpression.hasParserError() )
     {
       mFilterParserError = filterExpression.parserErrorString();
@@ -341,7 +341,7 @@ int QgsLayoutAtlas::updateFeatures()
     QString pageName;
     if ( nameExpression )
     {
-      QVariant result = nameExpression->evaluate( &expressionContext );
+      const QVariant result = nameExpression->evaluate( &expressionContext );
       if ( nameExpression->hasEvalError() )
       {
         QgsMessageLog::logMessage( tr( "Atlas name eval error: %1" ).arg( nameExpression->evalErrorString() ), tr( "Layout" ) );
@@ -353,7 +353,7 @@ int QgsLayoutAtlas::updateFeatures()
 
     if ( sortExpression )
     {
-      QVariant result = sortExpression->evaluate( &expressionContext );
+      const QVariant result = sortExpression->evaluate( &expressionContext );
       if ( sortExpression->hasEvalError() )
       {
         QgsMessageLog::logMessage( tr( "Atlas sort eval error: %1" ).arg( sortExpression->evalErrorString() ), tr( "Layout" ) );
@@ -365,7 +365,7 @@ int QgsLayoutAtlas::updateFeatures()
   // sort features, if asked for
   if ( !mFeatureKeys.isEmpty() )
   {
-    AtlasFeatureSorter sorter( mFeatureKeys, mSortAscending );
+    const AtlasFeatureSorter sorter( mFeatureKeys, mSortAscending );
     std::sort( mFeatureIds.begin(), mFeatureIds.end(), sorter ); // clazy:exclude=detaching-member
   }
 
@@ -405,8 +405,8 @@ int QgsLayoutAtlas::count() const
 
 QString QgsLayoutAtlas::filePath( const QString &baseFilePath, const QString &extension )
 {
-  QFileInfo fi( baseFilePath );
-  QDir dir = fi.dir(); // ignore everything except the directory
+  const QFileInfo fi( baseFilePath );
+  const QDir dir = fi.dir(); // ignore everything except the directory
   QString base = dir.filePath( mCurrentFilename );
   if ( !extension.startsWith( '.' ) )
     base += '.';
@@ -416,7 +416,7 @@ QString QgsLayoutAtlas::filePath( const QString &baseFilePath, const QString &ex
 
 bool QgsLayoutAtlas::next()
 {
-  int newFeatureNo = mCurrentFeatureNo + 1;
+  const int newFeatureNo = mCurrentFeatureNo + 1;
   if ( newFeatureNo >= mFeatureIds.size() )
   {
     return false;
@@ -427,7 +427,7 @@ bool QgsLayoutAtlas::next()
 
 bool QgsLayoutAtlas::previous()
 {
-  int newFeatureNo = mCurrentFeatureNo - 1;
+  const int newFeatureNo = mCurrentFeatureNo - 1;
   if ( newFeatureNo < 0 )
   {
     return false;
@@ -541,7 +541,7 @@ bool QgsLayoutAtlas::updateFilenameExpression( QString &error )
     return false;
   }
 
-  QgsExpressionContext expressionContext = createExpressionContext();
+  const QgsExpressionContext expressionContext = createExpressionContext();
   bool evalResult { true };
 
   if ( !mFilenameExpressionString.isEmpty() )
@@ -581,7 +581,7 @@ bool QgsLayoutAtlas::evalFeatureFilename( const QgsExpressionContext &context )
   {
     QgsExpression filenameExpression( mFilenameExpressionString );
     filenameExpression.prepare( &context );
-    QVariant filenameRes = filenameExpression.evaluate( &context );
+    const QVariant filenameRes = filenameExpression.evaluate( &context );
     if ( filenameExpression.hasEvalError() )
     {
       mFilenameExpressionError = filenameExpression.evalErrorString();
@@ -624,7 +624,7 @@ bool QgsLayoutAtlas::prepareForFeature( const int featureI )
   mLayout->reportContext().setFeature( mCurrentFeature );
 
   // must come after we've set the report context feature, or the expression context will have an outdated atlas feature
-  QgsExpressionContext expressionContext = createExpressionContext();
+  const QgsExpressionContext expressionContext = createExpressionContext();
 
   // generate filename for current feature
   if ( !evalFeatureFilename( expressionContext ) )

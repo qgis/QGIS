@@ -36,7 +36,7 @@ QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer *vl, 
   mUseLink->setChecked( false );
   mFullUrl->setChecked( false );
 
-  QString defpath = QgsProject::instance()->fileName().isEmpty() ? QDir::homePath() : QFileInfo( QgsProject::instance()->absoluteFilePath() ).path();
+  const QString defpath = QgsProject::instance()->fileName().isEmpty() ? QDir::homePath() : QFileInfo( QgsProject::instance()->absoluteFilePath() ).path();
 
   mRootPath->setPlaceholderText( QgsSettings().value( QStringLiteral( "/UI/lastExternalResourceWidgetDefaultPath" ), QDir::toNativeSeparators( QDir::cleanPath( defpath ) ) ).toString() );
 
@@ -97,11 +97,11 @@ void QgsExternalResourceConfigDlg::chooseDefaultPath()
   }
   else
   {
-    QString path = QFileInfo( QgsProject::instance()->absoluteFilePath() ).path();
+    const QString path = QFileInfo( QgsProject::instance()->absoluteFilePath() ).path();
     dir = QgsSettings().value( QStringLiteral( "/UI/lastExternalResourceWidgetDefaultPath" ), QDir::toNativeSeparators( QDir::cleanPath( path ) ) ).toString();
   }
 
-  QString rootName = QFileDialog::getExistingDirectory( this, tr( "Select a directory" ), dir, QFileDialog::ShowDirsOnly );
+  const QString rootName = QFileDialog::getExistingDirectory( this, tr( "Select a directory" ), dir, QFileDialog::ShowDirsOnly );
 
   if ( !rootName.isNull() )
     mRootPath->setText( rootName );
@@ -202,7 +202,7 @@ void QgsExternalResourceConfigDlg::setConfig( const QVariantMap &config )
   // relative storage
   if ( config.contains( QStringLiteral( "RelativeStorage" ) ) )
   {
-    int relative = config.value( QStringLiteral( "RelativeStorage" ) ).toInt();
+    const int relative = config.value( QStringLiteral( "RelativeStorage" ) ).toInt();
     if ( ( QgsFileWidget::RelativeStorage )relative == QgsFileWidget::Absolute )
     {
       mRelativeGroupBox->setChecked( false );
@@ -217,15 +217,15 @@ void QgsExternalResourceConfigDlg::setConfig( const QVariantMap &config )
   // set storage mode
   if ( config.contains( QStringLiteral( "StorageMode" ) ) )
   {
-    int mode = config.value( QStringLiteral( "StorageMode" ) ).toInt();
+    const int mode = config.value( QStringLiteral( "StorageMode" ) ).toInt();
     mStorageButtonGroup->button( mode )->setChecked( true );
   }
 
   // Document viewer
   if ( config.contains( QStringLiteral( "DocumentViewer" ) ) )
   {
-    QgsExternalResourceWidget::DocumentViewerContent content = ( QgsExternalResourceWidget::DocumentViewerContent )config.value( QStringLiteral( "DocumentViewer" ) ).toInt();
-    int idx = mDocumentViewerContentComboBox->findData( content );
+    const QgsExternalResourceWidget::DocumentViewerContent content = ( QgsExternalResourceWidget::DocumentViewerContent )config.value( QStringLiteral( "DocumentViewer" ) ).toInt();
+    const int idx = mDocumentViewerContentComboBox->findData( content );
     if ( idx >= 0 )
     {
       mDocumentViewerContentComboBox->setCurrentIndex( idx );

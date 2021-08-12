@@ -51,7 +51,7 @@ QgsFilteredSelectionManager::QgsFilteredSelectionManager( QgsVectorLayer *layer,
   if ( ! layer )
     return;
 
-  for ( auto fid : layer->selectedFeatureIds() )
+  for ( const auto fid : layer->selectedFeatureIds() )
     if ( mRequest.acceptFeature( layer->getFeature( fid ) ) )
       mSelectedFeatureIds << fid;
 
@@ -79,11 +79,11 @@ void QgsFilteredSelectionManager::onSelectionChanged( const QgsFeatureIds &selec
   }
   else
   {
-    for ( auto fid : deselected )
+    for ( const auto fid : deselected )
       mSelectedFeatureIds.remove( fid );
   }
 
-  for ( auto fid : selected )
+  for ( const auto fid : selected )
     if ( mRequest.acceptFeature( layer()->getFeature( fid ) ) )
       mSelectedFeatureIds << fid;
     else
@@ -282,7 +282,7 @@ void QgsRelationEditorWidget::updateButtons()
   bool editable = false;
   bool linkable = false;
   bool spatial = false;
-  bool selectionNotEmpty = mFeatureSelectionMgr ? mFeatureSelectionMgr->selectedFeatureCount() : false;
+  const bool selectionNotEmpty = mFeatureSelectionMgr ? mFeatureSelectionMgr->selectedFeatureCount() : false;
 
   if ( mRelation.isValid() )
   {
@@ -341,11 +341,11 @@ void QgsRelationEditorWidget::addFeatureGeometry()
 
   if ( auto *lMainMessageBar = mEditorContext.mainMessageBar() )
   {
-    QString displayString = QgsVectorLayerUtils::getFeatureDisplayString( layer, mFeature );
+    const QString displayString = QgsVectorLayerUtils::getFeatureDisplayString( layer, mFeature );
 
-    QString title = tr( "Create child feature for parent %1 \"%2\"" ).arg( mRelation.referencedLayer()->name(), displayString );
-    QString msg = tr( "Digitize the geometry for the new feature on layer %1. Press &lt;ESC&gt; to cancel." )
-                  .arg( layer->name() );
+    const QString title = tr( "Create child feature for parent %1 \"%2\"" ).arg( mRelation.referencedLayer()->name(), displayString );
+    const QString msg = tr( "Digitize the geometry for the new feature on layer %1. Press &lt;ESC&gt; to cancel." )
+                        .arg( layer->name() );
     mMessageBarItem = QgsMessageBar::createMessage( title, msg, this );
     lMainMessageBar->pushItem( mMessageBarItem );
   }
@@ -374,7 +374,7 @@ void QgsRelationEditorWidget::updateUi()
   if ( !isVisible() )
     return;
 
-  QgsFeatureRequest request = mRelation.getRelatedFeaturesRequest( mFeature );
+  const QgsFeatureRequest request = mRelation.getRelatedFeaturesRequest( mFeature );
 
   if ( mNmRelation.isValid() )
   {
@@ -523,7 +523,7 @@ void QgsRelationEditorWidget::afterSetRelationFeature()
 
   updateButtons();
 
-  QgsFeatureRequest myRequest = mRelation.getRelatedFeaturesRequest( mFeature );
+  const QgsFeatureRequest myRequest = mRelation.getRelatedFeaturesRequest( mFeature );
   initDualView( mRelation.referencingLayer(), myRequest );
 }
 
@@ -584,7 +584,7 @@ void QgsRelationEditorWidget::duplicateSelectedFeatures()
 
 void QgsRelationEditorWidget::deleteSelectedFeatures()
 {
-  QgsFeatureIds selectedFids = mFeatureSelectionMgr->selectedFeatureIds();
+  const QgsFeatureIds selectedFids = mFeatureSelectionMgr->selectedFeatureIds();
   deleteFeatures( selectedFids );
 }
 

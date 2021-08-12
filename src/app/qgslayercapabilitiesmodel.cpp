@@ -61,7 +61,7 @@ void QgsLayerCapabilitiesModel::toggleSelectedItems( const QModelIndexList &chec
 {
   for ( const QModelIndex &index : checkedIndexes )
   {
-    bool isChecked = data( index, Qt::CheckStateRole ) == Qt::Checked;
+    const bool isChecked = data( index, Qt::CheckStateRole ) == Qt::Checked;
     if ( setData( index, isChecked ? Qt::Unchecked : Qt::Checked, Qt::CheckStateRole ) )
       emit dataChanged( index, index );
   }
@@ -247,7 +247,7 @@ QModelIndex QgsLayerCapabilitiesModel::parent( const QModelIndex &child ) const
 
 QModelIndex QgsLayerCapabilitiesModel::sibling( int row, int column, const QModelIndex &idx ) const
 {
-  QModelIndex parent = idx.parent();
+  const QModelIndex parent = idx.parent();
   return index( row, column, parent );
 }
 
@@ -268,8 +268,8 @@ QVariant QgsLayerCapabilitiesModel::data( const QModelIndex &idx, int role ) con
 
     if ( role == Qt::CheckStateRole || role == Qt::UserRole )
     {
-      QVariant trueValue = role == Qt::CheckStateRole ? QVariant( Qt::Checked ) : QVariant( true );
-      QVariant falseValue = role == Qt::CheckStateRole ? QVariant( Qt::Unchecked ) : QVariant( false );
+      const QVariant trueValue = role == Qt::CheckStateRole ? QVariant( Qt::Checked ) : QVariant( true );
+      const QVariant falseValue = role == Qt::CheckStateRole ? QVariant( Qt::Unchecked ) : QVariant( false );
       switch ( idx.column() )
       {
         case LayerColumn:
@@ -319,7 +319,7 @@ bool QgsLayerCapabilitiesModel::setData( const QModelIndex &index, const QVarian
         {
           if ( layer->isSpatial() )
           {
-            bool identifiable = value == Qt::Checked;
+            const bool identifiable = value == Qt::Checked;
             if ( identifiable != mIdentifiableLayers.value( layer, true ) )
             {
               mIdentifiableLayers.insert( layer, identifiable );
@@ -333,7 +333,7 @@ bool QgsLayerCapabilitiesModel::setData( const QModelIndex &index, const QVarian
         {
           if ( layer->type() == QgsMapLayerType::VectorLayer )
           {
-            bool readOnly = value == Qt::Checked;
+            const bool readOnly = value == Qt::Checked;
             if ( readOnly != mReadOnlyLayers.value( layer, true ) )
             {
               mReadOnlyLayers.insert( layer, readOnly );
@@ -347,7 +347,7 @@ bool QgsLayerCapabilitiesModel::setData( const QModelIndex &index, const QVarian
         {
           if ( layer->type() == QgsMapLayerType::VectorLayer )
           {
-            bool searchable = value == Qt::Checked;
+            const bool searchable = value == Qt::Checked;
             if ( searchable != mSearchableLayers.value( layer, true ) )
             {
               mSearchableLayers.insert( layer, searchable );
@@ -359,7 +359,7 @@ bool QgsLayerCapabilitiesModel::setData( const QModelIndex &index, const QVarian
         }
         case RequiredColumn:
         {
-          bool removable = value == Qt::Unchecked;
+          const bool removable = value == Qt::Unchecked;
           if ( removable != mRemovableLayers.value( layer, true ) )
           {
             mRemovableLayers.insert( layer, removable );

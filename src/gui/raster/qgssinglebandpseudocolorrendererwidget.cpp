@@ -46,7 +46,7 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   : QgsRasterRendererWidget( layer, extent )
   , mMinMaxOrigin( 0 )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
 
   setupUi( this );
 
@@ -118,7 +118,7 @@ QgsRasterRenderer *QgsSingleBandPseudoColorRendererWidget::renderer()
   QgsColorRampShader *fcn = new QgsColorRampShader( mColorRampShaderWidget->shader() );
   rasterShader->setRasterShaderFunction( fcn );
 
-  int bandNumber = mBandComboBox->currentBand();
+  const int bandNumber = mBandComboBox->currentBand();
   QgsSingleBandPseudoColorRenderer *renderer = new QgsSingleBandPseudoColorRenderer( mRasterLayer->dataProvider(), bandNumber, rasterShader );
   renderer->setClassificationMin( lineEditValue( mMinLineEdit ) );
   renderer->setClassificationMax( lineEditValue( mMaxLineEdit ) );

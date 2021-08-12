@@ -161,13 +161,13 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::create( QDomElement &element, const
   // delete symbols if there are any more
   QgsSymbolLayerUtils::clearSymbolMap( symbolMap );
 
-  QDomElement rotationElem = element.firstChildElement( QStringLiteral( "rotation" ) );
+  const QDomElement rotationElem = element.firstChildElement( QStringLiteral( "rotation" ) );
   if ( !rotationElem.isNull() && !rotationElem.attribute( QStringLiteral( "field" ) ).isEmpty() )
   {
     convertSymbolRotation( r->mSymbol.get(), rotationElem.attribute( QStringLiteral( "field" ) ) );
   }
 
-  QDomElement sizeScaleElem = element.firstChildElement( QStringLiteral( "sizescale" ) );
+  const QDomElement sizeScaleElem = element.firstChildElement( QStringLiteral( "sizescale" ) );
   if ( !sizeScaleElem.isNull() && !sizeScaleElem.attribute( QStringLiteral( "field" ) ).isEmpty() )
   {
     convertSymbolSizeScale( r->mSymbol.get(),
@@ -175,7 +175,7 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::create( QDomElement &element, const
                             sizeScaleElem.attribute( QStringLiteral( "field" ) ) );
   }
 
-  QDomElement ddsLegendSizeElem = element.firstChildElement( QStringLiteral( "data-defined-size-legend" ) );
+  const QDomElement ddsLegendSizeElem = element.firstChildElement( QStringLiteral( "data-defined-size-legend" ) );
   if ( !ddsLegendSizeElem.isNull() )
   {
     r->mDataDefinedSizeLegend.reset( QgsDataDefinedSizeLegend::readXml( ddsLegendSizeElem, context ) );
@@ -190,7 +190,7 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::createFromSld( QDomElement &element
   // XXX this renderer can handle only one Rule!
 
   // get the first Rule element
-  QDomElement ruleElem = element.firstChildElement( QStringLiteral( "Rule" ) );
+  const QDomElement ruleElem = element.firstChildElement( QStringLiteral( "Rule" ) );
   if ( ruleElem.isNull() )
   {
     QgsDebugMsg( QStringLiteral( "no Rule elements found!" ) );
@@ -214,13 +214,13 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::createFromSld( QDomElement &element
     else if ( childElem.localName() == QLatin1String( "Description" ) )
     {
       // <se:Description> can contains a title and an abstract
-      QDomElement titleElem = childElem.firstChildElement( QStringLiteral( "Title" ) );
+      const QDomElement titleElem = childElem.firstChildElement( QStringLiteral( "Title" ) );
       if ( !titleElem.isNull() )
       {
         label = titleElem.firstChild().nodeValue();
       }
 
-      QDomElement abstractElem = childElem.firstChildElement( QStringLiteral( "Abstract" ) );
+      const QDomElement abstractElem = childElem.firstChildElement( QStringLiteral( "Abstract" ) );
       if ( !abstractElem.isNull() )
       {
         description = abstractElem.firstChild().nodeValue();
@@ -280,13 +280,13 @@ QDomElement QgsSingleSymbolRenderer::save( QDomDocument &doc, const QgsReadWrite
 
   QgsSymbolMap symbols;
   symbols[QStringLiteral( "0" )] = mSymbol.get();
-  QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, QStringLiteral( "symbols" ), doc, context );
+  const QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, QStringLiteral( "symbols" ), doc, context );
   rendererElem.appendChild( symbolsElem );
 
-  QDomElement rotationElem = doc.createElement( QStringLiteral( "rotation" ) );
+  const QDomElement rotationElem = doc.createElement( QStringLiteral( "rotation" ) );
   rendererElem.appendChild( rotationElem );
 
-  QDomElement sizeScaleElem = doc.createElement( QStringLiteral( "sizescale" ) );
+  const QDomElement sizeScaleElem = doc.createElement( QStringLiteral( "sizescale" ) );
   rendererElem.appendChild( sizeScaleElem );
 
   if ( mDataDefinedSizeLegend )
@@ -306,7 +306,7 @@ QgsLegendSymbolList QgsSingleSymbolRenderer::legendSymbolItems() const
   if ( mDataDefinedSizeLegend && mSymbol->type() == Qgis::SymbolType::Marker )
   {
     const QgsMarkerSymbol *symbol = static_cast<const QgsMarkerSymbol *>( mSymbol.get() );
-    QgsProperty sizeDD( symbol->dataDefinedSize() );
+    const QgsProperty sizeDD( symbol->dataDefinedSize() );
     if ( sizeDD && sizeDD.isActive() )
     {
       QgsDataDefinedSizeLegend ddSizeLegend( *mDataDefinedSizeLegend );
@@ -356,7 +356,7 @@ QgsSingleSymbolRenderer *QgsSingleSymbolRenderer::convertFromRenderer( const Qgs
   if ( !r )
   {
     QgsRenderContext context;
-    QgsSymbolList symbols = const_cast<QgsFeatureRenderer *>( renderer )->symbols( context );
+    const QgsSymbolList symbols = const_cast<QgsFeatureRenderer *>( renderer )->symbols( context );
     if ( !symbols.isEmpty() )
     {
       r = new QgsSingleSymbolRenderer( symbols.at( 0 )->clone() );

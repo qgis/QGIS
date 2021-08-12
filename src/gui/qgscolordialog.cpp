@@ -80,11 +80,11 @@ void QgsColorDialog::setAllowOpacity( const bool allowOpacity )
 
 QColor QgsColorDialog::getColor( const QColor &initialColor, QWidget *parent, const QString &title, const bool allowOpacity )
 {
-  QString dialogTitle = title.isEmpty() ? tr( "Select Color" ) : title;
+  const QString dialogTitle = title.isEmpty() ? tr( "Select Color" ) : title;
 
-  QgsSettings settings;
+  const QgsSettings settings;
   //using native color dialogs?
-  bool useNative = settings.value( QStringLiteral( "qgis/native_color_dialogs" ), false ).toBool();
+  const bool useNative = settings.value( QStringLiteral( "qgis/native_color_dialogs" ), false ).toBool();
   if ( useNative )
   {
     return QColorDialog::getColor( initialColor, parent, dialogTitle, allowOpacity ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption )0 );

@@ -71,7 +71,7 @@ void TestQgsMapToolEdit::checkDefaultZValue()
   QgsMapToolEdit *tool = new QgsMapToolEdit( mCanvas );
   QCOMPARE( tool->defaultZValue(), Qgis::DEFAULT_Z_COORDINATE );
 
-  double z_value_for_test = Qgis::DEFAULT_Z_COORDINATE + 1;
+  const double z_value_for_test = Qgis::DEFAULT_Z_COORDINATE + 1;
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( z_value_for_test );
 
   QCOMPARE( tool->defaultZValue(), z_value_for_test );
@@ -85,7 +85,7 @@ void TestQgsMapToolEdit::checkDefaultMValue()
   QgsMapToolEdit *tool = new QgsMapToolEdit( mCanvas );
   QCOMPARE( tool->defaultMValue(), Qgis::DEFAULT_M_COORDINATE );
 
-  double m_value_for_test = Qgis::DEFAULT_M_COORDINATE + 1;
+  const double m_value_for_test = Qgis::DEFAULT_M_COORDINATE + 1;
   settings.setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), m_value_for_test );
 
   QCOMPARE( tool->defaultMValue(), m_value_for_test );

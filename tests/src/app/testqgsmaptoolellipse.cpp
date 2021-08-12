@@ -100,13 +100,13 @@ void TestQgsMapToolEllipse::testEllipseFromCenterAndPoint()
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseMove( 1, -1 );
   utils.mouseClick( 1, -1, Qt::RightButton );
-  QgsFeatureId newFid = utils.newFeatureId();
+  const QgsFeatureId newFid = utils.newFeatureId();
 
   QCOMPARE( mLayer->featureCount(), ( long )1 );
-  QgsFeature f = mLayer->getFeature( newFid );
+  const QgsFeature f = mLayer->getFeature( newFid );
 
-  QString wkt = f.geometry().asWkt().replace( "LineStringZ (", "" ).replace( ")", "" );
-  QgsPointSequence pts = QgsGeometryUtils::pointsFromWKT( wkt, true, false );
+  const QString wkt = f.geometry().asWkt().replace( "LineStringZ (", "" ).replace( ")", "" );
+  const QgsPointSequence pts = QgsGeometryUtils::pointsFromWKT( wkt, true, false );
 
   for ( const QgsPoint &pt : pts )
   {
@@ -130,13 +130,13 @@ void TestQgsMapToolEllipse::testEllipseFromCenterAndPointWithDeletedVertex()
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseMove( 1, -1 );
   utils.mouseClick( 1, -1, Qt::RightButton );
-  QgsFeatureId newFid = utils.newFeatureId();
+  const QgsFeatureId newFid = utils.newFeatureId();
 
   QCOMPARE( mLayer->featureCount(), ( long )1 );
-  QgsFeature f = mLayer->getFeature( newFid );
+  const QgsFeature f = mLayer->getFeature( newFid );
 
-  QString wkt = f.geometry().asWkt().replace( "LineStringZ (", "" ).replace( ")", "" );
-  QgsPointSequence pts = QgsGeometryUtils::pointsFromWKT( wkt, true, false );
+  const QString wkt = f.geometry().asWkt().replace( "LineStringZ (", "" ).replace( ")", "" );
+  const QgsPointSequence pts = QgsGeometryUtils::pointsFromWKT( wkt, true, false );
 
   for ( const QgsPoint &pt : pts )
   {
@@ -161,13 +161,13 @@ void TestQgsMapToolEllipse::testEllipseFromCenterAnd2Points()
   utils.mouseClick( 0, 1, Qt::LeftButton );
   utils.mouseMove( 0, -1 );
   utils.mouseClick( 0, -1, Qt::RightButton );
-  QgsFeatureId newFid = utils.newFeatureId();
+  const QgsFeatureId newFid = utils.newFeatureId();
 
   QCOMPARE( mLayer->featureCount(), ( long )1 );
-  QgsFeature f = mLayer->getFeature( newFid );
+  const QgsFeature f = mLayer->getFeature( newFid );
 
-  QString wkt = f.geometry().asWkt().replace( "LineStringZ (", "" ).replace( ")", "" );
-  QgsPointSequence pts = QgsGeometryUtils::pointsFromWKT( wkt, true, false );
+  const QString wkt = f.geometry().asWkt().replace( "LineStringZ (", "" ).replace( ")", "" );
+  const QgsPointSequence pts = QgsGeometryUtils::pointsFromWKT( wkt, true, false );
 
   for ( const QgsPoint &pt : pts )
   {
@@ -193,13 +193,13 @@ void TestQgsMapToolEllipse::testEllipseFromCenterAnd2PointsWithDeletedVertex()
   utils.mouseClick( 0, 1, Qt::LeftButton );
   utils.mouseMove( 0, -1 );
   utils.mouseClick( 0, -1, Qt::RightButton );
-  QgsFeatureId newFid = utils.newFeatureId();
+  const QgsFeatureId newFid = utils.newFeatureId();
 
   QCOMPARE( mLayer->featureCount(), ( long )1 );
-  QgsFeature f = mLayer->getFeature( newFid );
+  const QgsFeature f = mLayer->getFeature( newFid );
 
-  QString wkt = f.geometry().asWkt().replace( "LineStringZ (", "" ).replace( ")", "" );
-  QgsPointSequence pts = QgsGeometryUtils::pointsFromWKT( wkt, true, false );
+  const QString wkt = f.geometry().asWkt().replace( "LineStringZ (", "" ).replace( ")", "" );
+  const QgsPointSequence pts = QgsGeometryUtils::pointsFromWKT( wkt, true, false );
 
   for ( const QgsPoint &pt : pts )
   {
@@ -222,13 +222,13 @@ void TestQgsMapToolEllipse::testEllipseFromExtent()
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseMove( 2, 2 );
   utils.mouseClick( 2, 2, Qt::RightButton );
-  QgsFeatureId newFid = utils.newFeatureId();
+  const QgsFeatureId newFid = utils.newFeatureId();
 
   QCOMPARE( mLayer->featureCount(), ( long )1 );
-  QgsFeature f = mLayer->getFeature( newFid );
+  const QgsFeature f = mLayer->getFeature( newFid );
 
-  QString wkt = f.geometry().asWkt().replace( "LineStringZ (", "" ).replace( ")", "" );
-  QgsPointSequence pts = QgsGeometryUtils::pointsFromWKT( wkt, true, false );
+  const QString wkt = f.geometry().asWkt().replace( "LineStringZ (", "" ).replace( ")", "" );
+  const QgsPointSequence pts = QgsGeometryUtils::pointsFromWKT( wkt, true, false );
 
   for ( const QgsPoint &pt : pts )
   {
@@ -253,13 +253,13 @@ void TestQgsMapToolEllipse::testEllipseFromExtentWithDeletedVertex()
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseMove( 2, 2 );
   utils.mouseClick( 2, 2, Qt::RightButton );
-  QgsFeatureId newFid = utils.newFeatureId();
+  const QgsFeatureId newFid = utils.newFeatureId();
 
   QCOMPARE( mLayer->featureCount(), ( long )1 );
-  QgsFeature f = mLayer->getFeature( newFid );
+  const QgsFeature f = mLayer->getFeature( newFid );
 
-  QString wkt = f.geometry().asWkt().replace( "LineStringZ (", "" ).replace( ")", "" );
-  QgsPointSequence pts = QgsGeometryUtils::pointsFromWKT( wkt, true, false );
+  const QString wkt = f.geometry().asWkt().replace( "LineStringZ (", "" ).replace( ")", "" );
+  const QgsPointSequence pts = QgsGeometryUtils::pointsFromWKT( wkt, true, false );
 
   for ( const QgsPoint &pt : pts )
   {
@@ -283,13 +283,13 @@ void TestQgsMapToolEllipse::testEllipseFromFoci()
   utils.mouseClick( 0, 2, Qt::LeftButton );
   utils.mouseMove( 0, -1 );
   utils.mouseClick( 0, -1, Qt::RightButton );
-  QgsFeatureId newFid = utils.newFeatureId();
+  const QgsFeatureId newFid = utils.newFeatureId();
 
   QCOMPARE( mLayer->featureCount(), ( long )1 );
-  QgsFeature f = mLayer->getFeature( newFid );
+  const QgsFeature f = mLayer->getFeature( newFid );
 
-  QString wkt = f.geometry().asWkt().replace( "LineStringZ (", "" ).replace( ")", "" );
-  QgsPointSequence pts = QgsGeometryUtils::pointsFromWKT( wkt, true, false );
+  const QString wkt = f.geometry().asWkt().replace( "LineStringZ (", "" ).replace( ")", "" );
+  const QgsPointSequence pts = QgsGeometryUtils::pointsFromWKT( wkt, true, false );
 
   for ( const QgsPoint &pt : pts )
   {
@@ -315,13 +315,13 @@ void TestQgsMapToolEllipse::testEllipseFromFociWithDeletedVertex()
   utils.mouseClick( 0, 2, Qt::LeftButton );
   utils.mouseMove( 0, -1 );
   utils.mouseClick( 0, -1, Qt::RightButton );
-  QgsFeatureId newFid = utils.newFeatureId();
+  const QgsFeatureId newFid = utils.newFeatureId();
 
   QCOMPARE( mLayer->featureCount(), ( long )1 );
-  QgsFeature f = mLayer->getFeature( newFid );
+  const QgsFeature f = mLayer->getFeature( newFid );
 
-  QString wkt = f.geometry().asWkt().replace( "LineStringZ (", "" ).replace( ")", "" );
-  QgsPointSequence pts = QgsGeometryUtils::pointsFromWKT( wkt, true, false );
+  const QString wkt = f.geometry().asWkt().replace( "LineStringZ (", "" ).replace( ")", "" );
+  const QgsPointSequence pts = QgsGeometryUtils::pointsFromWKT( wkt, true, false );
 
   for ( const QgsPoint &pt : pts )
   {

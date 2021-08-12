@@ -116,8 +116,8 @@ QByteArray QgsAuthCertUtils::fileData( const QString &path )
     return data;
   }
   // TODO: add checks for locked file, etc., to ensure it can be read
-  QFile::OpenMode openflags( QIODevice::ReadOnly );
-  bool ret = file.open( openflags );
+  const QFile::OpenMode openflags( QIODevice::ReadOnly );
+  const bool ret = file.open( openflags );
   if ( ret )
   {
     data = file.readAll();
@@ -195,10 +195,10 @@ QSslKey QgsAuthCertUtils::keyFromFile( const QString &keypath,
                                        QString *algtype )
 {
   // The approach here is to try all possible encodings and algorithms
-  QByteArray keydata( QgsAuthCertUtils::fileData( keypath ) );
+  const QByteArray keydata( QgsAuthCertUtils::fileData( keypath ) );
   QSslKey clientkey;
 
-  QSsl::EncodingFormat keyEncoding( sniffEncoding( keydata ) );
+  const QSsl::EncodingFormat keyEncoding( sniffEncoding( keydata ) );
 
   const std::vector<QSsl::KeyAlgorithm> algs
   {
@@ -276,7 +276,7 @@ QStringList QgsAuthCertUtils::certKeyBundleToPem( const QString &certpath,
     bool reencrypt )
 {
   QString certpem;
-  QSslCertificate clientcert = QgsAuthCertUtils::certFromFile( certpath );
+  const QSslCertificate clientcert = QgsAuthCertUtils::certFromFile( certpath );
   if ( !clientcert.isNull() )
   {
     certpem = QString( clientcert.toPem() );
@@ -284,7 +284,7 @@ QStringList QgsAuthCertUtils::certKeyBundleToPem( const QString &certpath,
 
   QString keypem;
   QString algtype;
-  QSslKey clientkey = QgsAuthCertUtils::keyFromFile( keypath, keypass, &algtype );
+  const QSslKey clientkey = QgsAuthCertUtils::keyFromFile( keypath, keypass, &algtype );
 
   // reapply passphrase if protection is requested and passphrase exists
   if ( !clientkey.isNull() )
@@ -297,8 +297,8 @@ QStringList QgsAuthCertUtils::certKeyBundleToPem( const QString &certpath,
 
 bool QgsAuthCertUtils::pemIsPkcs8( const QString &keyPemTxt )
 {
-  QString pkcs8Header = QStringLiteral( "-----BEGIN PRIVATE KEY-----" );
-  QString pkcs8Footer = QStringLiteral( "-----END PRIVATE KEY-----" );
+  const QString pkcs8Header = QStringLiteral( "-----BEGIN PRIVATE KEY-----" );
+  const QString pkcs8Footer = QStringLiteral( "-----END PRIVATE KEY-----" );
   return keyPemTxt.contains( pkcs8Header ) && keyPemTxt.contains( pkcs8Footer );
 }
 
@@ -456,7 +456,7 @@ QStringList QgsAuthCertUtils::pkcs12BundleToPem( const QString &bundlepath,
     return empty;
   }
 
-  QCA::KeyBundle bundle( QgsAuthCertUtils::qcaKeyBundle( bundlepath, bundlepass ) );
+  const QCA::KeyBundle bundle( QgsAuthCertUtils::qcaKeyBundle( bundlepath, bundlepass ) );
   if ( bundle.isNull() )
   {
     QgsDebugMsg( QStringLiteral( "FAILED to convert PKCS#12 file to QCA key bundle: %1" ).arg( bundlepath ) );
@@ -546,7 +546,7 @@ QList<QSslCertificate> QgsAuthCertUtils::pkcs12BundleCas( const QString &bundlep
   if ( !QCA::isSupported( "pkcs12" ) )
     return result;
 
-  QCA::KeyBundle bundle( QgsAuthCertUtils::qcaKeyBundle( bundlepath, bundlepass ) );
+  const QCA::KeyBundle bundle( QgsAuthCertUtils::qcaKeyBundle( bundlepath, bundlepass ) );
   if ( bundle.isNull() )
     return result;
 
@@ -583,7 +583,7 @@ QString QgsAuthCertUtils::pemTextToTempFile( const QString &name, const QByteArr
 
   if ( pemFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
-    qint64 bytesWritten = pemFile.write( pemtext );
+    const qint64 bytesWritten = pemFile.write( pemtext );
     if ( bytesWritten == -1 )
     {
       QgsDebugMsg( QStringLiteral( "FAILED to write to temp PEM file: %1" ).arg( pemFilePath ) );
@@ -677,7 +677,7 @@ QString QgsAuthCertUtils::getCertDistinguishedName( const QSslCertificate &qcert
   if ( acert.isNull() )
   {
     QCA::ConvertResult res;
-    QCA::Certificate acert( QCA::Certificate::fromPEM( qcert.toPem(), &res, QStringLiteral( "qca-ossl" ) ) );
+    const QCA::Certificate acert( QCA::Certificate::fromPEM( qcert.toPem(), &res, QStringLiteral( "qca-ossl" ) ) );
     if ( res != QCA::ConvertGood || acert.isNull() )
     {
       QgsDebugMsg( QStringLiteral( "Certificate could not be converted to QCA cert" ) );
@@ -778,7 +778,7 @@ QCA::CertificateCollection QgsAuthCertUtils::qtCertsToQcaCollection( const QList
 
   for ( const auto &cert : certs )
   {
-    QCA::Certificate qcacert( qtCertToQcaCert( cert ) );
+    const QCA::Certificate qcacert( qtCertToQcaCert( cert ) );
     if ( !qcacert.isNull() )
     {
       qcacoll.addCertificate( qcacert );
@@ -794,7 +794,7 @@ QCA::KeyBundle QgsAuthCertUtils::qcaKeyBundle( const QString &path, const QStrin
     passarray = QCA::SecureArray( pass.toUtf8() );
 
   QCA::ConvertResult res;
-  QCA::KeyBundle bundle( QCA::KeyBundle::fromFile( path, passarray, &res, QStringLiteral( "qca-ossl" ) ) );
+  const QCA::KeyBundle bundle( QCA::KeyBundle::fromFile( path, passarray, &res, QStringLiteral( "qca-ossl" ) ) );
 
   return ( res == QCA::ConvertGood ? bundle : QCA::KeyBundle() );
 }
@@ -946,7 +946,7 @@ QList<QgsAuthCertUtils::CertUsageType> QgsAuthCertUtils::certificateUsageTypes( 
     return usages;
 
   QCA::ConvertResult res;
-  QCA::Certificate qcacert( QCA::Certificate::fromPEM( cert.toPem(), &res, QStringLiteral( "qca-ossl" ) ) );
+  const QCA::Certificate qcacert( QCA::Certificate::fromPEM( cert.toPem(), &res, QStringLiteral( "qca-ossl" ) ) );
   if ( res != QCA::ConvertGood || qcacert.isNull() )
   {
     QgsDebugMsg( QStringLiteral( "Certificate could not be converted to QCA cert" ) );
@@ -975,9 +975,9 @@ QList<QgsAuthCertUtils::CertUsageType> QgsAuthCertUtils::certificateUsageTypes( 
   }
 
   // ask QCA what it thinks about potential usages
-  QCA::CertificateCollection trustedCAs(
+  const QCA::CertificateCollection trustedCAs(
     qtCertsToQcaCollection( QgsApplication::authManager()->trustedCaCertsCache() ) );
-  QCA::CertificateCollection untrustedCAs(
+  const QCA::CertificateCollection untrustedCAs(
     qtCertsToQcaCollection( QgsApplication::authManager()->untrustedCaCerts() ) );
 
   QCA::Validity v_any;
@@ -1342,8 +1342,8 @@ QList<QSslError> QgsAuthCertUtils::validateCertChain( const QList<QSslCertificat
   if ( trustRootCa && trustedChain.count() > 1 && trustedChain.last().isSelfSigned() )
   {
     static QMutex sMutex;
-    QMutexLocker lock( &sMutex );
-    QSslConfiguration oldSslConfig( QSslConfiguration::defaultConfiguration() );
+    const QMutexLocker lock( &sMutex );
+    const QSslConfiguration oldSslConfig( QSslConfiguration::defaultConfiguration() );
     QSslConfiguration sslConfig( oldSslConfig );
     sslConfig.setCaCertificates( casMerge( sslConfig.caCertificates(), QList<QSslCertificate>() << trustedChain.last() ) );
     QSslConfiguration::setDefaultConfiguration( sslConfig );
@@ -1390,8 +1390,8 @@ QStringList QgsAuthCertUtils::validatePKIBundle( QgsPkiBundle &bundle, bool useI
     }
   }
   // Now check the key with QCA!
-  QCA::PrivateKey pvtKey( QCA::PrivateKey::fromPEM( bundle.clientKey().toPem() ) );
-  QCA::PublicKey pubKey( QCA::PublicKey::fromPEM( bundle.clientCert().publicKey().toPem( ) ) );
+  const QCA::PrivateKey pvtKey( QCA::PrivateKey::fromPEM( bundle.clientKey().toPem() ) );
+  const QCA::PublicKey pubKey( QCA::PublicKey::fromPEM( bundle.clientCert().publicKey().toPem( ) ) );
   bool keyValid( ! pvtKey.isNull() );
   if ( keyValid && !( pubKey.toRSA().isNull( ) || pvtKey.toRSA().isNull( ) ) )
   {

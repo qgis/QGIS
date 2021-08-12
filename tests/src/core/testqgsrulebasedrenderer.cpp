@@ -60,7 +60,7 @@ class TestQgsRuleBasedRenderer: public QObject
       xml2domElement( QStringLiteral( "rulebasedrenderer_invalid.xml" ), doc );
       QDomElement elem = doc.documentElement();
 
-      std::shared_ptr<QgsRuleBasedRenderer> r( static_cast<QgsRuleBasedRenderer *>( QgsRuleBasedRenderer::create( elem, QgsReadWriteContext() ) ) );
+      const std::shared_ptr<QgsRuleBasedRenderer> r( static_cast<QgsRuleBasedRenderer *>( QgsRuleBasedRenderer::create( elem, QgsReadWriteContext() ) ) );
       QVERIFY( !r );
     }
 
@@ -68,7 +68,7 @@ class TestQgsRuleBasedRenderer: public QObject
     {
       // prepare features
       QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "point?field=fld:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
-      int idx = layer->fields().indexFromName( QStringLiteral( "fld" ) );
+      const int idx = layer->fields().indexFromName( QStringLiteral( "fld" ) );
       QVERIFY( idx != -1 );
       QgsFeature f1;
       f1.initAttributes( 1 );
@@ -104,13 +104,13 @@ class TestQgsRuleBasedRenderer: public QObject
 
       // test symbolsForFeature
       ctx.expressionContext().setFeature( f1 );
-      QgsSymbolList lst1 = r.symbolsForFeature( f1, ctx );
+      const QgsSymbolList lst1 = r.symbolsForFeature( f1, ctx );
       QVERIFY( lst1.count() == 1 );
       ctx.expressionContext().setFeature( f2 );
-      QgsSymbolList lst2 = r.symbolsForFeature( f2, ctx );
+      const QgsSymbolList lst2 = r.symbolsForFeature( f2, ctx );
       QVERIFY( lst2.count() == 2 );
       ctx.expressionContext().setFeature( f3 );
-      QgsSymbolList lst3 = r.symbolsForFeature( f3, ctx );
+      const QgsSymbolList lst3 = r.symbolsForFeature( f3, ctx );
       QVERIFY( lst3.isEmpty() );
 
       r.stopRender( ctx );
@@ -127,7 +127,7 @@ class TestQgsRuleBasedRenderer: public QObject
       rootRule->appendChild( sub1Rule );
       sub1Rule->appendChild( sub2Rule );
       sub2Rule->appendChild( sub3Rule );
-      QgsRuleBasedRenderer r( rootRule );
+      const QgsRuleBasedRenderer r( rootRule );
 
       QgsRuleBasedRenderer *clone = static_cast<QgsRuleBasedRenderer *>( r.clone() );
       RRule *cloneRootRule = clone->rootRule();
@@ -153,7 +153,7 @@ class TestQgsRuleBasedRenderer: public QObject
       QgsRenderContext ctx; // dummy render context
       ctx.expressionContext().setFields( layer->fields() );
 
-      std::function<QString( const int ruleCount )> makeFilter = [ & ]( const int rc ) -> QString
+      const std::function<QString( const int ruleCount )> makeFilter = [ & ]( const int rc ) -> QString
       {
 
         // prepare renderer
@@ -182,14 +182,14 @@ class TestQgsRuleBasedRenderer: public QObject
   private:
     void xml2domElement( const QString &testFile, QDomDocument &doc )
     {
-      QString fileName = QStringLiteral( TEST_DATA_DIR ) + '/' + testFile;
+      const QString fileName = QStringLiteral( TEST_DATA_DIR ) + '/' + testFile;
       QFile f( fileName );
-      bool fileOpen = f.open( QIODevice::ReadOnly );
+      const bool fileOpen = f.open( QIODevice::ReadOnly );
       QVERIFY( fileOpen );
 
       QString msg;
       int line, col;
-      bool parse = doc.setContent( &f, &msg, &line, &col );
+      const bool parse = doc.setContent( &f, &msg, &line, &col );
       QVERIFY( parse );
     }
 

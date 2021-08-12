@@ -40,7 +40,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
 
   // Does the layer have geometry - will revise later to determine if we actually need to
   // load it.
-  bool hasGeometry = mSource->mGeomRep != QgsDelimitedTextProvider::GeomNone;
+  const bool hasGeometry = mSource->mGeomRep != QgsDelimitedTextProvider::GeomNone;
 
   if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
   {
@@ -172,7 +172,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
   // ensure that all attributes required for expression filter are being fetched
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && request.filterType() == QgsFeatureRequest::FilterExpression )
   {
-    QgsAttributeList attrs = request.subsetOfAttributes();
+    const QgsAttributeList attrs = request.subsetOfAttributes();
     //ensure that all fields required for filter expressions are prepared
     QSet<int> attributeIndexes = request.filterExpression()->referencedAttributeIndexes( mSource->mFields );
     attributeIndexes += qgis::listToSet( attrs );
@@ -183,7 +183,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
   {
     QgsAttributeList attrs = request.subsetOfAttributes();
     const auto usedAttributeIndices = mRequest.orderBy().usedAttributeIndices( mSource->mFields );
-    for ( int attrIndex : usedAttributeIndices )
+    for ( const int attrIndex : usedAttributeIndices )
     {
       if ( !attrs.contains( attrIndex ) )
         attrs << attrIndex;
@@ -345,7 +345,7 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature &feature )
   // record, so only need to load that one.
 
   bool first = true;
-  bool scanning = mMode == FileScan;
+  const bool scanning = mMode == FileScan;
 
   while ( scanning || first )
   {
@@ -357,7 +357,7 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature &feature )
 
     feature.setValid( false );
 
-    QgsDelimitedTextFile::Status status = file->nextRecord( tokens );
+    const QgsDelimitedTextFile::Status status = file->nextRecord( tokens );
     if ( status == QgsDelimitedTextFile::RecordEOF )
       break;
     if ( status != QgsDelimitedTextFile::RecordOk )
@@ -368,7 +368,7 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature &feature )
     if ( QgsDelimitedTextProvider::recordIsEmpty( tokens ) )
       continue;
 
-    QgsFeatureId fid = file->recordId();
+    const QgsFeatureId fid = file->recordId();
 
     while ( tokens.size() < mSource->mFieldCount )
       tokens.append( QString() );
@@ -411,10 +411,10 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature &feature )
 
     if ( ! mTestSubset && ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes ) )
     {
-      QgsAttributeList attrs = mRequest.subsetOfAttributes();
+      const QgsAttributeList attrs = mRequest.subsetOfAttributes();
       for ( QgsAttributeList::const_iterator i = attrs.constBegin(); i != attrs.constEnd(); ++i )
       {
-        int fieldIdx = *i;
+        const int fieldIdx = *i;
         fetchAttribute( feature, fieldIdx, tokens );
       }
     }
@@ -429,7 +429,7 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature &feature )
     if ( mTestSubset )
     {
       mSource->mExpressionContext.setFeature( feature );
-      QVariant isOk = mSource->mSubsetExpression->evaluate( &mSource->mExpressionContext );
+      const QVariant isOk = mSource->mSubsetExpression->evaluate( &mSource->mExpressionContext );
       if ( mSource->mSubsetExpression->hasEvalError() )
         continue;
       if ( ! isOk.toBool() )
@@ -485,7 +485,7 @@ QgsGeometry QgsDelimitedTextFeatureIterator::loadGeometryXY( const QStringList &
 
   isNull = false;
   QgsPoint *pt = new QgsPoint();
-  bool ok = QgsDelimitedTextProvider::pointFromXY( sX, sY, *pt, mSource->mDecimalPoint, mSource->mXyDms );
+  const bool ok = QgsDelimitedTextProvider::pointFromXY( sX, sY, *pt, mSource->mDecimalPoint, mSource->mXyDms );
 
   QString sZ, sM;
   if ( mSource->mZFieldIndex > -1 )
@@ -509,7 +509,7 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature &feature, int f
 {
   if ( fieldIdx < 0 || fieldIdx >= mSource->attributeColumns.count() )
     return;
-  int column = mSource->attributeColumns.at( fieldIdx );
+  const int column = mSource->attributeColumns.at( fieldIdx );
   if ( column < 0 || column >= tokens.count() )
     return;
   const QString &value = tokens[column];

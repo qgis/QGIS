@@ -106,7 +106,7 @@ void TestQgsLayoutMultiFrame::cleanupTestCase()
 {
   delete mLayout;
 
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -136,7 +136,7 @@ void TestQgsLayoutMultiFrame::layoutMethods()
   l->addMultiFrame( nullptr );
   QVERIFY( l->multiFrames().empty() );
   TestMultiFrame *mF = new TestMultiFrame( l );
-  QPointer< TestMultiFrame > pMF( mF );
+  const QPointer< TestMultiFrame > pMF( mF );
   QCOMPARE( l->multiFrames().count(), 1 );
   QVERIFY( l->multiFrames().contains( mF ) );
   QVERIFY( !l->multiFrameByUuid( QString() ) );
@@ -151,7 +151,7 @@ void TestQgsLayoutMultiFrame::layoutMethods()
   QVERIFY( l->multiFrames().contains( mF ) );
 
   TestMultiFrame *mF2 = new TestMultiFrame( l );
-  QPointer< TestMultiFrame > pMF2( mF2 );
+  const QPointer< TestMultiFrame > pMF2( mF2 );
   l->addMultiFrame( mF2 );
   QCOMPARE( l->multiFrames().count(), 2 );
   QVERIFY( l->multiFrames().contains( mF ) );
@@ -535,7 +535,7 @@ void TestQgsLayoutMultiFrame::registry()
     props.clear();
   };
 
-  QSignalSpy spyTypeAdded( &registry, &QgsLayoutItemRegistry::multiFrameTypeAdded );
+  const QSignalSpy spyTypeAdded( &registry, &QgsLayoutItemRegistry::multiFrameTypeAdded );
 
   QgsLayoutMultiFrameMetadata *metadata = new QgsLayoutMultiFrameMetadata( QgsLayoutItemRegistry::PluginItem + 1, QStringLiteral( "TestMultiFrame" ), create, resolve );
   QVERIFY( registry.addLayoutMultiFrameType( metadata ) );
@@ -661,7 +661,7 @@ void TestQgsLayoutMultiFrame::variables()
 
   QgsLayoutItemHtml *html = new QgsLayoutItemHtml( &l );
   std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::multiFrameScope( html ) );
-  int before = scope->variableCount();
+  const int before = scope->variableCount();
 
   QgsExpressionContextUtils::setLayoutMultiFrameVariable( html, QStringLiteral( "var" ), 5 );
   scope.reset( QgsExpressionContextUtils::multiFrameScope( html ) );
@@ -676,7 +676,7 @@ void TestQgsLayoutMultiFrame::variables()
   QVERIFY( !scope->hasVariable( QStringLiteral( "var" ) ) );
   QCOMPARE( scope->variable( QStringLiteral( "var2" ) ).toInt(), 7 );
 
-  QgsExpressionContext context = html->createExpressionContext();
+  const QgsExpressionContext context = html->createExpressionContext();
   QCOMPARE( context.variable( QStringLiteral( "var2" ) ).toInt(), 7 );
 }
 

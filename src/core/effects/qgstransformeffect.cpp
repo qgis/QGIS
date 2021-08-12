@@ -36,9 +36,9 @@ void QgsTransformEffect::draw( QgsRenderContext &context )
   QPainter *painter = context.painter();
 
   //apply transformations
-  QgsScopedQPainterState painterState( painter );
+  const QgsScopedQPainterState painterState( painter );
 
-  QTransform t = createTransform( context );
+  const QTransform t = createTransform( context );
   painter->setTransform( t, true );
   drawSource( *painter );
 }
@@ -87,7 +87,7 @@ QgsTransformEffect *QgsTransformEffect::clone() const
 
 QRectF QgsTransformEffect::boundingRect( const QRectF &rect, const QgsRenderContext &context ) const
 {
-  QTransform t = createTransform( context );
+  const QTransform t = createTransform( context );
   return t.mapRect( rect );
 }
 
@@ -98,16 +98,16 @@ QTransform QgsTransformEffect::createTransform( const QgsRenderContext &context 
   if ( !source() )
     return t;
 
-  int width = source()->boundingRect().width();
-  int height = source()->boundingRect().height();
-  int top = source()->boundingRect().top();
-  int left = source()->boundingRect().left();
+  const int width = source()->boundingRect().width();
+  const int height = source()->boundingRect().height();
+  const int top = source()->boundingRect().top();
+  const int left = source()->boundingRect().left();
 
   //remember that the below operations are effectively performed in the opposite order
   //so, first the reflection applies, then scale, shear, rotate and lastly translation
 
-  double translateX = context.convertToPainterUnits( mTranslateX, mTranslateUnit, mTranslateMapUnitScale );
-  double translateY = context.convertToPainterUnits( mTranslateY, mTranslateUnit, mTranslateMapUnitScale );
+  const double translateX = context.convertToPainterUnits( mTranslateX, mTranslateUnit, mTranslateMapUnitScale );
+  const double translateY = context.convertToPainterUnits( mTranslateY, mTranslateUnit, mTranslateMapUnitScale );
 
   t.translate( translateX + left + width / 2.0,
                translateY + top + height / 2.0 );

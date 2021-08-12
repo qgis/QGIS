@@ -268,14 +268,14 @@ bool QgsLayoutObject::readObjectPropertiesFromElement( const QDomElement &parent
     return false;
   }
 
-  QDomNodeList objectNodeList = parentElement.elementsByTagName( QStringLiteral( "LayoutObject" ) );
+  const QDomNodeList objectNodeList = parentElement.elementsByTagName( QStringLiteral( "LayoutObject" ) );
   if ( objectNodeList.size() < 1 )
   {
     return false;
   }
-  QDomElement objectElement = objectNodeList.at( 0 ).toElement();
+  const QDomElement objectElement = objectNodeList.at( 0 ).toElement();
 
-  QDomNode propsNode = objectElement.namedItem( QStringLiteral( "dataDefinedProperties" ) );
+  const QDomNode propsNode = objectElement.namedItem( QStringLiteral( "dataDefinedProperties" ) );
   if ( !propsNode.isNull() )
   {
     mDataDefinedProperties.readXml( propsNode.toElement(), sPropertyDefinitions );

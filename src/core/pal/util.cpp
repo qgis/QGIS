@@ -53,7 +53,7 @@ QLinkedList<const GEOSGeometry *> *pal::Util::unmulti( const GEOSGeometry *the_g
   while ( !queue->isEmpty() )
   {
     geom = queue->takeFirst();
-    int type = GEOSGeomTypeId_r( geosctxt, geom );
+    const int type = GEOSGeomTypeId_r( geosctxt, geom );
     switch ( type )
     {
       case GEOS_MULTIPOINT:

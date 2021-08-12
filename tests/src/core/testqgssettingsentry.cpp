@@ -42,7 +42,7 @@ void TestQgsSettingsEntry::settingsKey()
   QgsSettings settings;
 
   {
-    QString key( QStringLiteral( "/qgis/testing/settingsKey" ) );
+    const QString key( QStringLiteral( "/qgis/testing/settingsKey" ) );
 
     // Be sure that settings does not exist already
     settings.remove( key );
@@ -50,12 +50,12 @@ void TestQgsSettingsEntry::settingsKey()
     // Check that keys are handled same way for QgsSettings and QgsSettingsEntry
     settings.setValue( key, 42 );
 
-    QgsSettingsEntryInteger settingsEntryInteger( key, QgsSettings::NoSection, 0 );
+    const QgsSettingsEntryInteger settingsEntryInteger( key, QgsSettings::NoSection, 0 );
     QCOMPARE( settingsEntryInteger.value(), 42 );
   }
 
   {
-    QString key( QStringLiteral( "qgis/testing/settingsKey" ) );
+    const QString key( QStringLiteral( "qgis/testing/settingsKey" ) );
 
     // Be sure that settings does not exist already
     settings.remove( key );
@@ -63,12 +63,12 @@ void TestQgsSettingsEntry::settingsKey()
     // Check that keys are handled same way for QgsSettings and QgsSettingsEntry
     settings.setValue( key, 43 );
 
-    QgsSettingsEntryInteger settingsEntryInteger( key, QgsSettings::NoSection, 0 );
+    const QgsSettingsEntryInteger settingsEntryInteger( key, QgsSettings::NoSection, 0 );
     QCOMPARE( settingsEntryInteger.value(), 43 );
   }
 
   {
-    QString key( QStringLiteral( "/qgis/testing/settingsKey" ) );
+    const QString key( QStringLiteral( "/qgis/testing/settingsKey" ) );
 
     // Be sure that settings does not exist already
     settings.remove( key, QgsSettings::Core );
@@ -76,12 +76,12 @@ void TestQgsSettingsEntry::settingsKey()
     // Check that keys are handled same way for QgsSettings and QgsSettingsEntry
     settings.setValue( key, 44, QgsSettings::Core );
 
-    QgsSettingsEntryInteger settingsEntryInteger( key, QgsSettings::Core, 0 );
+    const QgsSettingsEntryInteger settingsEntryInteger( key, QgsSettings::Core, 0 );
     QCOMPARE( settingsEntryInteger.value(), 44 );
   }
 
   {
-    QString key( QStringLiteral( "qgis/testing/settingsKey" ) );
+    const QString key( QStringLiteral( "qgis/testing/settingsKey" ) );
 
     // Be sure that settings does not exist already
     settings.remove( key, QgsSettings::Core );
@@ -89,28 +89,28 @@ void TestQgsSettingsEntry::settingsKey()
     // Check that keys are handled same way for QgsSettings and QgsSettingsEntry
     settings.setValue( key, 45, QgsSettings::Core );
 
-    QgsSettingsEntryInteger settingsEntryInteger( key, QgsSettings::Core, 0 );
+    const QgsSettingsEntryInteger settingsEntryInteger( key, QgsSettings::Core, 0 );
     QCOMPARE( settingsEntryInteger.value(), 45 );
   }
 }
 
 void TestQgsSettingsEntry::enumValue()
 {
-  QString settingsKey( QStringLiteral( "qgis/testing/my_enum_value_for_units" ) );
+  const QString settingsKey( QStringLiteral( "qgis/testing/my_enum_value_for_units" ) );
 
   // Make sure the setting is not existing
   QgsSettings().remove( settingsKey, QgsSettings::NoSection );
 
-  QgsSettingsEntryEnumFlag settingsEntryEnum( settingsKey, QgsSettings::NoSection, QgsUnitTypes::LayoutMeters, QStringLiteral( "Layout unit" ) );
+  const QgsSettingsEntryDouble settingsEntryEnum( settingsKey, QgsSettings::NoSection, QgsUnitTypes::LayoutMeters, QStringLiteral( "Layout unit" ) );
 
   // Check default value
   QCOMPARE( settingsEntryEnum.defaultValue(), QgsUnitTypes::LayoutMeters );
 
   // Check set value
   {
-    bool success = settingsEntryEnum.setValue( QgsUnitTypes::LayoutFeet );
+    const bool success = settingsEntryEnum.setValue( QgsUnitTypes::LayoutFeet );
     QCOMPARE( success, true );
-    QgsUnitTypes::LayoutUnit qgsSettingsValue = QgsSettings().enumValue( settingsKey, QgsUnitTypes::LayoutMeters, QgsSettings::NoSection );
+    const QgsUnitTypes::LayoutUnit qgsSettingsValue = QgsSettings().enumValue( settingsKey, QgsUnitTypes::LayoutMeters, QgsSettings::NoSection );
     QCOMPARE( qgsSettingsValue, QgsUnitTypes::LayoutFeet );
   }
 
@@ -123,11 +123,11 @@ void TestQgsSettingsEntry::enumValue()
 
   // assign to inexisting value
   {
-    bool success = settingsEntryEnum.setValue( static_cast<QgsUnitTypes::LayoutUnit>( -1 ) );
+    const bool success = settingsEntryEnum.setValue( static_cast<QgsUnitTypes::LayoutUnit>( -1 ) );
     QCOMPARE( success, false );
 
     // Current value should not have changed
-    QgsUnitTypes::LayoutUnit qgsSettingsValue = QgsSettings().enumValue( settingsKey, QgsUnitTypes::LayoutMeters, QgsSettings::NoSection );
+    const QgsUnitTypes::LayoutUnit qgsSettingsValue = QgsSettings().enumValue( settingsKey, QgsUnitTypes::LayoutMeters, QgsSettings::NoSection );
     QCOMPARE( qgsSettingsValue, QgsUnitTypes::LayoutPicas );
   }
 
@@ -142,24 +142,24 @@ void TestQgsSettingsEntry::enumValue()
 
 void TestQgsSettingsEntry::flagValue()
 {
-  QString settingsKey( QStringLiteral( "qgis/testing/my_flag_value_for_units" ) );
-  QgsMapLayerProxyModel::Filters pointAndLine = QgsMapLayerProxyModel::Filters( QgsMapLayerProxyModel::PointLayer | QgsMapLayerProxyModel::LineLayer );
-  QgsMapLayerProxyModel::Filters pointAndPolygon = QgsMapLayerProxyModel::Filters( QgsMapLayerProxyModel::PointLayer | QgsMapLayerProxyModel::PolygonLayer );
-  QgsMapLayerProxyModel::Filters hasGeometry = QgsMapLayerProxyModel::Filters( QgsMapLayerProxyModel::HasGeometry );
+  const QString settingsKey( QStringLiteral( "qgis/testing/my_flag_value_for_units" ) );
+  const QgsMapLayerProxyModel::Filters pointAndLine = QgsMapLayerProxyModel::Filters( QgsMapLayerProxyModel::PointLayer | QgsMapLayerProxyModel::LineLayer );
+  const QgsMapLayerProxyModel::Filters pointAndPolygon = QgsMapLayerProxyModel::Filters( QgsMapLayerProxyModel::PointLayer | QgsMapLayerProxyModel::PolygonLayer );
+  const QgsMapLayerProxyModel::Filters hasGeometry = QgsMapLayerProxyModel::Filters( QgsMapLayerProxyModel::HasGeometry );
 
   // Make sure the setting is not existing
   QgsSettings().remove( settingsKey, QgsSettings::NoSection );
 
-  QgsSettingsEntryEnumFlag settingsEntryFlag( settingsKey, QgsSettings::NoSection, pointAndLine, QStringLiteral( "Filters" ) );
+  const QgsSettingsEntryDouble settingsEntryFlag( settingsKey, QgsSettings::NoSection, pointAndLine, QStringLiteral( "Filters" ) );
 
   // Check default value
   QCOMPARE( settingsEntryFlag.defaultValue(), pointAndLine );
 
   // Check set value
   {
-    bool success = settingsEntryFlag.setValue( hasGeometry );
+    const bool success = settingsEntryFlag.setValue( hasGeometry );
     QCOMPARE( success, true );
-    QgsMapLayerProxyModel::Filters qgsSettingsValue = QgsSettings().flagValue( settingsKey, pointAndLine, QgsSettings::NoSection );
+    const QgsMapLayerProxyModel::Filters qgsSettingsValue = QgsSettings().flagValue( settingsKey, pointAndLine, QgsSettings::NoSection );
     QCOMPARE( qgsSettingsValue, hasGeometry );
   }
 

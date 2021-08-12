@@ -84,7 +84,7 @@ void TestQgsOgrProviderGui::testGpkgDataItemRename()
   QTemporaryFile f( QStringLiteral( "qgis-XXXXXX.gpkg" ) );
   f.open();
   f.close();
-  QString fileName { f.fileName( ) };
+  const QString fileName { f.fileName( ) };
   f.remove();
   QVERIFY( QFile::copy( QStringLiteral( "%1/provider/bug_21227-rename-styles.gpkg" ).arg( mTestDataDir ),  fileName ) );
 
@@ -124,7 +124,7 @@ void TestQgsOgrProviderGui::testGpkgDataItemRename()
     ;
 
   // Check that the style is still available
-  QgsVectorLayer metadataLayer( QStringLiteral( "/%1|layername=layer_styles" ).arg( fileName ) );
+  const QgsVectorLayer metadataLayer( QStringLiteral( "/%1|layername=layer_styles" ).arg( fileName ) );
   QVERIFY( metadataLayer.isValid() );
   QgsFeature feature;
   QgsFeatureIterator it = metadataLayer.getFeatures( QgsFeatureRequest( QgsExpression( QStringLiteral( "\"f_table_name\" = 'layer 3'" ) ) ) );

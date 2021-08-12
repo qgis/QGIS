@@ -24,7 +24,7 @@
 
 QIcon QgsIconUtils::iconForWkbType( QgsWkbTypes::Type type )
 {
-  QgsWkbTypes::GeometryType geomType = QgsWkbTypes::geometryType( QgsWkbTypes::Type( type ) );
+  const QgsWkbTypes::GeometryType geomType = QgsWkbTypes::geometryType( QgsWkbTypes::Type( type ) );
   switch ( geomType )
   {
     case QgsWkbTypes::NullGeometry:

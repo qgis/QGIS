@@ -81,7 +81,7 @@ QgsGeometry QgsMeshContours::exportPolygons( double min_value, double max_value,
 {
   if ( min_value > max_value )
   {
-    double tmp = max_value;
+    const double tmp = max_value;
     max_value = min_value;
     min_value = tmp;
   }
@@ -98,7 +98,7 @@ QgsGeometry QgsMeshContours::exportPolygons( double min_value, double max_value,
     if ( feedback && feedback->isCanceled() )
       break;
 
-    int nativeIndex = trianglesToNativeFaces.at( i );
+    const int nativeIndex = trianglesToNativeFaces.at( i );
     if ( !mScalarActiveFaceFlagValues.active( nativeIndex ) )
       continue;
 
@@ -259,7 +259,7 @@ QgsGeometry QgsMeshContours::exportPolygons( double min_value, double max_value,
   }
   else
   {
-    QgsGeometry res = QgsGeometry::unaryUnion( multiPolygon );
+    const QgsGeometry res = QgsGeometry::unaryUnion( multiPolygon );
     return res;
   }
 }
@@ -284,7 +284,7 @@ QgsGeometry QgsMeshContours::exportLines( double value, QgsFeedback *feedback )
   QSet<QPair<int, int>> exactEdges;
 
   // STEP 1: Get Data
-  QVector<QgsMeshVertex> vertices = mTriangularMesh.vertices();
+  const QVector<QgsMeshVertex> vertices = mTriangularMesh.vertices();
   const QVector<int> &trianglesToNativeFaces = mTriangularMesh.trianglesToNativeFaces();
 
   // STEP 2: For each triangle get the contour line
@@ -293,7 +293,7 @@ QgsGeometry QgsMeshContours::exportLines( double value, QgsFeedback *feedback )
     if ( feedback && feedback->isCanceled() )
       break;
 
-    int nativeIndex = trianglesToNativeFaces.at( i );
+    const int nativeIndex = trianglesToNativeFaces.at( i );
     if ( !mScalarActiveFaceFlagValues.active( nativeIndex ) )
       continue;
 
@@ -405,15 +405,15 @@ void QgsMeshContours::populateCache( const QgsMeshDatasetIndex &index, QgsMeshRe
 
   if ( mCachedIndex != index )
   {
-    bool scalarDataOnVertices = mMeshLayer->dataProvider()->datasetGroupMetadata( index ).dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
-    int count =  scalarDataOnVertices ? mNativeMesh.vertices.count() : mNativeMesh.faces.count();
+    const bool scalarDataOnVertices = mMeshLayer->dataProvider()->datasetGroupMetadata( index ).dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
+    const int count =  scalarDataOnVertices ? mNativeMesh.vertices.count() : mNativeMesh.faces.count();
 
     // populate scalar values
-    QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues(
-                              mMeshLayer,
-                              index,
-                              0,
-                              count );
+    const QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues(
+                                    mMeshLayer,
+                                    index,
+                                    0,
+                                    count );
     if ( vals.isValid() )
     {
       // vals could be scalar or vectors, for contour rendering we want always magnitude

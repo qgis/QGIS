@@ -42,7 +42,7 @@ void QgsSourceSelectProviderRegistry::addProvider( QgsSourceSelectProvider *prov
 
 bool QgsSourceSelectProviderRegistry::removeProvider( QgsSourceSelectProvider *provider )
 {
-  int index = mProviders.indexOf( provider );
+  const int index = mProviders.indexOf( provider );
   if ( index >= 0 )
   {
     delete mProviders.takeAt( index );

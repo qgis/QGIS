@@ -253,7 +253,7 @@ class CORE_EXPORT QgsSettings : public QObject
     T enumValue( const QString &key, const T &defaultValue,
                  const Section section = NoSection )
     {
-      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( metaEnum.isValid() );
       if ( !metaEnum.isValid() )
       {
@@ -305,7 +305,7 @@ class CORE_EXPORT QgsSettings : public QObject
     void setEnumValue( const QString &key, const T &value,
                        const Section section = NoSection )
     {
-      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( metaEnum.isValid() );
       if ( metaEnum.isValid() )
       {
@@ -331,7 +331,7 @@ class CORE_EXPORT QgsSettings : public QObject
     T flagValue( const QString &key, const T &defaultValue,
                  const Section section = NoSection )
     {
-      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( metaEnum.isValid() );
       if ( !metaEnum.isValid() )
       {
@@ -351,15 +351,15 @@ class CORE_EXPORT QgsSettings : public QObject
       if ( !ok )
       {
         // if failed, try to read as int
-        int intValue = value( key, static_cast<int>( defaultValue ), section ).toInt( &ok );
+        const int intValue = value( key, static_cast<int>( defaultValue ), section ).toInt( &ok );
         if ( metaEnum.isValid() )
         {
           if ( ok )
           {
             // check that the int value does correspond to a flag
             // see https://stackoverflow.com/a/68495949/1548052
-            QByteArray keys = metaEnum.valueToKeys( intValue );
-            int intValueCheck = metaEnum.keysToValue( keys );
+            const QByteArray keys = metaEnum.valueToKeys( intValue );
+            const int intValueCheck = metaEnum.keysToValue( keys );
             if ( intValue != intValueCheck )
             {
               v = defaultValue;
@@ -395,7 +395,7 @@ class CORE_EXPORT QgsSettings : public QObject
     void setFlagValue( const QString &key, const T &value,
                        const Section section = NoSection )
     {
-      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( metaEnum.isValid() );
       if ( metaEnum.isValid() )
       {

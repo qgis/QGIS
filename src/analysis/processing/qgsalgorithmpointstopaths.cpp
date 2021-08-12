@@ -220,7 +220,7 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
   // Store the points in a hash with the group identifier as the key
   QHash< QVariant, QVector< QPair< QVariant, QgsPoint > > > allPoints;
 
-  QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( requiredFields, source->fields() );
+  const QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( requiredFields, source->fields() );
   QgsFeatureIterator fit = source->getFeatures( request, QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
   QgsFeature f;
   const double totalPoints = source->featureCount() > 0 ? 100.0 / source->featureCount() : 0;
@@ -245,16 +245,16 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
       const QgsAbstractGeometry *geom = f.geometry().constGet();
       if ( QgsWkbTypes::isMultiType( geom->wkbType() ) )
       {
-        QgsMultiPoint mp( *qgsgeometry_cast< const QgsMultiPoint * >( geom ) );
+        const QgsMultiPoint mp( *qgsgeometry_cast< const QgsMultiPoint * >( geom ) );
         for ( auto pit = mp.const_parts_begin(); pit != mp.const_parts_end(); ++pit )
         {
-          QgsPoint point( *qgsgeometry_cast< const QgsPoint * >( *pit ) );
+          const QgsPoint point( *qgsgeometry_cast< const QgsPoint * >( *pit ) );
           allPoints[ groupValue ] << qMakePair( orderValue, point );
         }
       }
       else
       {
-        QgsPoint point( *qgsgeometry_cast< const QgsPoint * >( geom ) );
+        const QgsPoint point( *qgsgeometry_cast< const QgsPoint * >( geom ) );
         allPoints[ groupValue ] << qMakePair( orderValue, point );
       }
     }

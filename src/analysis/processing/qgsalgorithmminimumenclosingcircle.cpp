@@ -106,7 +106,7 @@ QgsFeatureList QgsMinimumEnclosingCircleAlgorithm::processFeature( const QgsFeat
   {
     double radius = 0;
     QgsPointXY center;
-    QgsGeometry outputGeometry = f.geometry().minimalEnclosingCircle( center, radius, mSegments );
+    const QgsGeometry outputGeometry = f.geometry().minimalEnclosingCircle( center, radius, mSegments );
     f.setGeometry( outputGeometry );
     QgsAttributes attrs = f.attributes();
     attrs << radius

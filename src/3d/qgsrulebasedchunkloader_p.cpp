@@ -66,16 +66,16 @@ QgsRuleBasedChunkLoader::QgsRuleBasedChunkLoader( const QgsRuleBasedChunkLoaderF
   req.setSubsetOfAttributes( attributeNames, layer->fields() );
 
   // only a subset of data to be queried
-  QgsRectangle rect = Qgs3DUtils::worldToMapExtent( node->bbox(), map.origin() );
+  const QgsRectangle rect = Qgs3DUtils::worldToMapExtent( node->bbox(), map.origin() );
   req.setFilterRect( rect );
 
   //
   // this will be run in a background thread
   //
 
-  QFuture<void> future = QtConcurrent::run( [req, this]
+  const QFuture<void> future = QtConcurrent::run( [req, this]
   {
-    QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "RB chunk load" ) );
+    const QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "RB chunk load" ) );
 
     QgsFeature f;
     QgsFeatureIterator fi = mSource->getFeatures( req );
@@ -153,7 +153,7 @@ QgsRuleBasedChunkLoaderFactory::QgsRuleBasedChunkLoaderFactory( const Qgs3DMapSe
   , mRootRule( rootRule->clone() )
   , mLeafLevel( leafLevel )
 {
-  QgsAABB rootBbox = Qgs3DUtils::layerToWorldExtent( vl->extent(), zMin, zMax, vl->crs(), map.origin(), map.crs(), map.transformContext() );
+  const QgsAABB rootBbox = Qgs3DUtils::layerToWorldExtent( vl->extent(), zMin, zMax, vl->crs(), map.origin(), map.crs(), map.transformContext() );
   setupQuadtree( rootBbox, -1, leafLevel );  // negative root error means that the node does not contain anything
 }
 

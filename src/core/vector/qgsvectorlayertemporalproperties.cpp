@@ -146,8 +146,8 @@ QgsDateTimeRange QgsVectorLayerTemporalProperties::calculateTemporalExtent( QgsM
 
     case QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndEndFromExpressions:
     {
-      bool hasStartExpression = !mStartExpression.isEmpty();
-      bool hasEndExpression = !mEndExpression.isEmpty();
+      const bool hasStartExpression = !mStartExpression.isEmpty();
+      const bool hasEndExpression = !mEndExpression.isEmpty();
       if ( !hasStartExpression && !hasEndExpression )
         return QgsDateTimeRange();
 
@@ -248,7 +248,7 @@ bool QgsVectorLayerTemporalProperties::readXml( const QDomElement &element, cons
 {
   Q_UNUSED( context )
 
-  QDomElement temporalNode = element.firstChildElement( QStringLiteral( "temporal" ) );
+  const QDomElement temporalNode = element.firstChildElement( QStringLiteral( "temporal" ) );
 
   setIsActive( temporalNode.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt() );
 
@@ -263,15 +263,15 @@ bool QgsVectorLayerTemporalProperties::readXml( const QDomElement &element, cons
   mFixedDuration = temporalNode.attribute( QStringLiteral( "fixedDuration" ) ).toDouble();
   mAccumulateFeatures = temporalNode.attribute( QStringLiteral( "accumulate" ), QStringLiteral( "0" ) ).toInt();
 
-  QDomNode rangeElement = temporalNode.namedItem( QStringLiteral( "fixedRange" ) );
+  const QDomNode rangeElement = temporalNode.namedItem( QStringLiteral( "fixedRange" ) );
 
-  QDomNode begin = rangeElement.namedItem( QStringLiteral( "start" ) );
-  QDomNode end = rangeElement.namedItem( QStringLiteral( "end" ) );
+  const QDomNode begin = rangeElement.namedItem( QStringLiteral( "start" ) );
+  const QDomNode end = rangeElement.namedItem( QStringLiteral( "end" ) );
 
-  QDateTime beginDate = QDateTime::fromString( begin.toElement().text(), Qt::ISODate );
-  QDateTime endDate = QDateTime::fromString( end.toElement().text(), Qt::ISODate );
+  const QDateTime beginDate = QDateTime::fromString( begin.toElement().text(), Qt::ISODate );
+  const QDateTime endDate = QDateTime::fromString( end.toElement().text(), Qt::ISODate );
 
-  QgsDateTimeRange range = QgsDateTimeRange( beginDate, endDate );
+  const QgsDateTimeRange range = QgsDateTimeRange( beginDate, endDate );
   setFixedTemporalRange( range );
 
   return true;
@@ -301,8 +301,8 @@ QDomElement QgsVectorLayerTemporalProperties::writeXml( QDomElement &element, QD
   QDomElement startElement = document.createElement( QStringLiteral( "start" ) );
   QDomElement endElement = document.createElement( QStringLiteral( "end" ) );
 
-  QDomText startText = document.createTextNode( mFixedRange.begin().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
-  QDomText endText = document.createTextNode( mFixedRange.end().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
+  const QDomText startText = document.createTextNode( mFixedRange.begin().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
+  const QDomText endText = document.createTextNode( mFixedRange.end().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
   startElement.appendChild( startText );
   endElement.appendChild( endText );
   rangeElement.appendChild( startElement );
@@ -583,15 +583,15 @@ void QgsVectorLayerTemporalProperties::guessDefaultsFromFields( const QgsFields 
   // This candidates list is a prioritized list of candidates ranked by "interestingness"!
   // See discussion at https://github.com/qgis/QGIS/pull/30245 - this list must NOT be translated,
   // but adding hardcoded localized variants of the strings is encouraged.
-  static QStringList sStartCandidates{ QStringLiteral( "start" ),
-                                       QStringLiteral( "begin" ),
-                                       QStringLiteral( "from" )};
+  static const QStringList sStartCandidates{ QStringLiteral( "start" ),
+      QStringLiteral( "begin" ),
+      QStringLiteral( "from" )};
 
-  static QStringList sEndCandidates{ QStringLiteral( "end" ),
-                                     QStringLiteral( "last" ),
-                                     QStringLiteral( "to" )};
+  static const QStringList sEndCandidates{ QStringLiteral( "end" ),
+      QStringLiteral( "last" ),
+      QStringLiteral( "to" )};
 
-  static QStringList sSingleFieldCandidates{ QStringLiteral( "event" ) };
+  static const QStringList sSingleFieldCandidates{ QStringLiteral( "event" ) };
 
 
   bool foundStart = false;
@@ -606,7 +606,7 @@ void QgsVectorLayerTemporalProperties::guessDefaultsFromFields( const QgsFields 
     {
       for ( const QString &candidate : sStartCandidates )
       {
-        QString fldName = field.name();
+        const QString fldName = field.name();
         if ( fldName.indexOf( candidate, 0, Qt::CaseInsensitive ) > -1 )
         {
           mStartFieldName = fldName;
@@ -619,7 +619,7 @@ void QgsVectorLayerTemporalProperties::guessDefaultsFromFields( const QgsFields 
     {
       for ( const QString &candidate : sEndCandidates )
       {
-        QString fldName = field.name();
+        const QString fldName = field.name();
         if ( fldName.indexOf( candidate, 0, Qt::CaseInsensitive ) > -1 )
         {
           mEndFieldName = fldName;
@@ -642,7 +642,7 @@ void QgsVectorLayerTemporalProperties::guessDefaultsFromFields( const QgsFields 
 
       for ( const QString &candidate : sSingleFieldCandidates )
       {
-        QString fldName = field.name();
+        const QString fldName = field.name();
         if ( fldName.indexOf( candidate, 0, Qt::CaseInsensitive ) > -1 )
         {
           mStartFieldName = fldName;

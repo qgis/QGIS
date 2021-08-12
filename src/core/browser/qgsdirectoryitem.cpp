@@ -161,7 +161,7 @@ QIcon QgsDirectoryItem::icon()
     return QgsDataItem::icon();
 
   // symbolic link? use link icon
-  QFileInfo fi( mDirPath );
+  const QFileInfo fi( mDirPath );
   if ( fi.isDir() && fi.isSymLink() )
   {
     return mIconColor.isValid()
@@ -249,7 +249,7 @@ void QgsDirectoryItem::setMonitoring( Qgis::BrowserDirectoryMonitoring monitorin
 QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
 {
   QVector<QgsDataItem *> children;
-  QDir dir( mDirPath );
+  const QDir dir( mDirPath );
 
   const QList<QgsDataItemProvider *> providers = QgsApplication::dataItemProviderRegistry()->providers();
 
@@ -301,8 +301,8 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
       return children;
     }
 
-    QString path = dir.absoluteFilePath( name );
-    QFileInfo fileInfo( path );
+    const QString path = dir.absoluteFilePath( name );
+    const QFileInfo fileInfo( path );
 
     if ( fileInfo.suffix().compare( QLatin1String( "zip" ), Qt::CaseInsensitive ) == 0 ||
          fileInfo.suffix().compare( QLatin1String( "tar" ), Qt::CaseInsensitive ) == 0 )
@@ -318,7 +318,7 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
     bool createdItem = false;
     for ( QgsDataItemProvider *provider : providers )
     {
-      int capabilities = provider->capabilities();
+      const int capabilities = provider->capabilities();
 
       if ( !( ( fileInfo.isFile() && ( capabilities & QgsDataProvider::File ) ) ||
               ( fileInfo.isDir() && ( capabilities & QgsDataProvider::Dir ) ) ) )
@@ -411,16 +411,16 @@ void QgsDirectoryItem::directoryChanged()
 
 bool QgsDirectoryItem::hiddenPath( const QString &path )
 {
-  QgsSettings settings;
-  QStringList hiddenItems = settings.value( QStringLiteral( "browser/hiddenPaths" ),
-                            QStringList() ).toStringList();
-  int idx = hiddenItems.indexOf( path );
+  const QgsSettings settings;
+  const QStringList hiddenItems = settings.value( QStringLiteral( "browser/hiddenPaths" ),
+                                  QStringList() ).toStringList();
+  const int idx = hiddenItems.indexOf( path );
   return ( idx > -1 );
 }
 
 Qgis::BrowserDirectoryMonitoring QgsDirectoryItem::monitoringForPath( const QString &path )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
   if ( settings.value( QStringLiteral( "qgis/disableMonitorItemUris" ), QStringList() ).toStringList().contains( path ) )
     return Qgis::BrowserDirectoryMonitoring::NeverMonitor;
   else if ( settings.value( QStringLiteral( "qgis/alwaysMonitorItemUris" ), QStringList() ).toStringList().contains( path ) )
@@ -520,18 +520,18 @@ QgsDirectoryParamWidget::QgsDirectoryParamWidget( const QString &path, QWidget *
   labels << tr( "Name" ) << tr( "Size" ) << tr( "Date" ) << tr( "Permissions" ) << tr( "Owner" ) << tr( "Group" ) << tr( "Type" );
   setHeaderLabels( labels );
 
-  QIcon iconDirectory = QgsApplication::getThemeIcon( QStringLiteral( "mIconFolder.svg" ) );
-  QIcon iconFile = QgsApplication::getThemeIcon( QStringLiteral( "mIconFile.svg" ) );
-  QIcon iconDirLink = QgsApplication::getThemeIcon( QStringLiteral( "mIconFolderLink.svg" ) );
-  QIcon iconFileLink = QgsApplication::getThemeIcon( QStringLiteral( "mIconFileLink.svg" ) );
+  const QIcon iconDirectory = QgsApplication::getThemeIcon( QStringLiteral( "mIconFolder.svg" ) );
+  const QIcon iconFile = QgsApplication::getThemeIcon( QStringLiteral( "mIconFile.svg" ) );
+  const QIcon iconDirLink = QgsApplication::getThemeIcon( QStringLiteral( "mIconFolderLink.svg" ) );
+  const QIcon iconFileLink = QgsApplication::getThemeIcon( QStringLiteral( "mIconFileLink.svg" ) );
 
   QList<QTreeWidgetItem *> items;
 
-  QDir dir( path );
+  const QDir dir( path );
   const QStringList entries = dir.entryList( QDir::AllEntries | QDir::NoDotAndDotDot, QDir::Name | QDir::IgnoreCase );
   for ( const QString &name : entries )
   {
-    QFileInfo fi( dir.absoluteFilePath( name ) );
+    const QFileInfo fi( dir.absoluteFilePath( name ) );
     QStringList texts;
     texts << name;
     QString size;
@@ -598,7 +598,7 @@ QgsDirectoryParamWidget::QgsDirectoryParamWidget( const QString &path, QWidget *
   addTopLevelItems( items );
 
   // hide columns that are not requested
-  QgsSettings settings;
+  const QgsSettings settings;
   const QList<QVariant> lst = settings.value( QStringLiteral( "dataitem/directoryHiddenColumns" ) ).toList();
   for ( const QVariant &colVariant : lst )
   {
@@ -633,7 +633,7 @@ void QgsDirectoryParamWidget::showHideColumn()
   if ( !action )
     return; // something is wrong
 
-  int columnIndex = action->objectName().toInt();
+  const int columnIndex = action->objectName().toInt();
   setColumnHidden( columnIndex, !isColumnHidden( columnIndex ) );
 
   // save in settings

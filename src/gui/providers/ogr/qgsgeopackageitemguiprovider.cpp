@@ -57,7 +57,7 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
       const QString uri = layerItem->uri();
       const QString providerKey = layerItem->providerKey();
       const QStringList tableNames = layerItem->tableNames();
-      QPointer< QgsDataItem > itemPointer( layerItem );
+      const QPointer< QgsDataItem > itemPointer( layerItem );
       connect( actionRenameLayer, &QAction::triggered, this, [this, uri, providerKey, tableNames, itemPointer, context ]
       {
         renameVectorLayer( uri, providerKey, tableNames, itemPointer, context );
@@ -75,7 +75,7 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
     menu->addAction( actionNew );
 
     QAction *actionCreateDatabase = new QAction( tr( "Create Database…" ), menu );
-    QPointer< QgsGeoPackageRootItem > rootItemPointer( rootItem );
+    const QPointer< QgsGeoPackageRootItem > rootItemPointer( rootItem );
     connect( actionCreateDatabase, &QAction::triggered, this, [this, rootItemPointer ]
     {
       createDatabase( rootItemPointer );
@@ -103,11 +103,11 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
 
     menu->addSeparator();
 
-    QString message = QObject::tr( "Delete %1…" ).arg( collectionItem->name() );
+    const QString message = QObject::tr( "Delete %1…" ).arg( collectionItem->name() );
     QAction *actionDelete = new QAction( message, menu );
-    QString collectionPath = collectionItem->path();
-    QString collectionName = collectionItem->name();
-    QPointer< QgsDataItem > parent( collectionItem->parent() );
+    const QString collectionPath = collectionItem->path();
+    const QString collectionName = collectionItem->name();
+    const QPointer< QgsDataItem > parent( collectionItem->parent() );
     connect( actionDelete, &QAction::triggered, this, [this, collectionPath, collectionName, parent, context ]()
     {
       deleteGpkg( collectionPath, collectionName, parent, context );
@@ -116,7 +116,7 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
 
     // Run VACUUM
     QAction *actionVacuumDb = new QAction( tr( "Compact Database (VACUUM)" ), menu );
-    QVariantMap dataVacuum;
+    const QVariantMap dataVacuum;
     const QString name = collectionItem->name();
     const QString path = collectionItem->path();
     actionVacuumDb->setData( dataVacuum );
@@ -236,7 +236,7 @@ bool QgsGeoPackageItemGuiProvider::rename( QgsDataItem *item, const QString &new
       // Actually rename
       QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
       std::unique_ptr<QgsGeoPackageProviderConnection> conn( static_cast<QgsGeoPackageProviderConnection *>( md->createConnection( layerItem->collection()->path(), QVariantMap() ) ) );
-      QString oldName = parts.value( QStringLiteral( "layerName" ) ).toString();
+      const QString oldName = parts.value( QStringLiteral( "layerName" ) ).toString();
       if ( ! conn->tableExists( QString(), oldName ) )
       {
         errCause = QObject::tr( "There was an error retrieving the connection %1!" ).arg( layerItem->collection()->name() );
@@ -278,7 +278,7 @@ void QgsGeoPackageItemGuiProvider::renameVectorLayer( const QString &uri, const 
 {
   // Get layer name from layer URI
   QVariantMap pieces( QgsProviderRegistry::instance()->decodeUri( key, uri ) );
-  QString layerName = pieces[QStringLiteral( "layerName" )].toString();
+  const QString layerName = pieces[QStringLiteral( "layerName" )].toString();
 
   QgsNewNameDialog dlg( uri, layerName, QStringList(), tableNames );
 
@@ -324,7 +324,7 @@ bool QgsGeoPackageItemGuiProvider::deleteLayer( QgsLayerItem *layerItem, QgsData
     }
 
     QString errCause;
-    bool res = item->executeDeleteLayer( errCause );
+    const bool res = item->executeDeleteLayer( errCause );
     if ( !res )
     {
       notify( tr( "Delete Layer" ), errCause, context, Qgis::MessageLevel::Critical );
@@ -362,7 +362,7 @@ void QgsGeoPackageItemGuiProvider::vacuumGeoPackageDbAction( const QString &path
 {
   Q_UNUSED( path )
   QString errCause;
-  bool result = QgsGeoPackageCollectionItem::vacuumGeoPackageDb( name, path, errCause );
+  const bool result = QgsGeoPackageCollectionItem::vacuumGeoPackageDb( name, path, errCause );
   if ( !result || !errCause.isEmpty() )
   {
     notify( tr( "Database compact (VACUUM)" ), errCause, context, Qgis::MessageLevel::Critical );

@@ -58,12 +58,12 @@ void TestQgsMapToolEditMesh::initTestCase()
 
 void TestQgsMapToolEditMesh::init()
 {
-  QString uri = QString( mDataDir + "/quad_flower.2dm" );
+  const QString uri = QString( mDataDir + "/quad_flower.2dm" );
   meshLayerQuadFlower.reset( new QgsMeshLayer( uri, "Quad Flower", "mdal" ) );
   QVERIFY( meshLayerQuadFlower );
   QCOMPARE( meshLayerQuadFlower->datasetGroupCount(), 1 );
 
-  QgsCoordinateTransform transform;
+  const QgsCoordinateTransform transform;
   meshLayerQuadFlower->startFrameEditing( transform );
 
   canvas->setLayers( QList<QgsMapLayer *>() << meshLayerQuadFlower.get() );
@@ -71,9 +71,9 @@ void TestQgsMapToolEditMesh::init()
 
 void TestQgsMapToolEditMesh::editMesh()
 {
-  double offsetInMapUnits = 15 * canvas->mapSettings().mapUnitsPerPixel();
+  const double offsetInMapUnits = 15 * canvas->mapSettings().mapUnitsPerPixel();
 
-  QgsCoordinateTransform transform;
+  const QgsCoordinateTransform transform;
   QVERIFY( meshLayerQuadFlower->meshEditor() );
 
   TestQgsMapToolAdvancedDigitizingUtils tool( editMeshMapTool );

@@ -44,7 +44,7 @@ void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsM
   }
 
   // last pipe filter has only 1 band
-  int bandNumber = 1;
+  const int bandNumber = 1;
   mIterator->startRasterRead( bandNumber, viewPort->mWidth, viewPort->mHeight, viewPort->mDrawnExtent, feedback );
 
   //number of cols/rows in output pixels
@@ -79,8 +79,8 @@ void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsM
       QgsDebugMsgLevel( QStringLiteral( "PdfFormat" ), 4 );
 
       img = img.convertToFormat( QImage::Format_ARGB32 );
-      QRgb transparentBlack = qRgba( 0, 0, 0, 0 );
-      QRgb transparentWhite = qRgba( 255, 255, 255, 0 );
+      const QRgb transparentBlack = qRgba( 0, 0, 0, 0 );
+      const QRgb transparentWhite = qRgba( 255, 255, 255, 0 );
       for ( int x = 0; x < img.width(); x++ )
       {
         for ( int y = 0; y < img.height(); y++ )
@@ -126,9 +126,9 @@ void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const
 
   const double dpiScaleFactor = mDpiTarget >= 0.0 ? mDpiTarget / p->device()->logicalDpiX() : 1.0;
   //top left position in device coords
-  QPoint tlPoint = QPoint( viewPort->mTopLeftPoint.x() + std::floor( topLeftCol / dpiScaleFactor ), viewPort->mTopLeftPoint.y() + std::floor( topLeftRow / dpiScaleFactor ) );
+  const QPoint tlPoint = QPoint( viewPort->mTopLeftPoint.x() + std::floor( topLeftCol / dpiScaleFactor ), viewPort->mTopLeftPoint.y() + std::floor( topLeftRow / dpiScaleFactor ) );
 
-  QgsScopedQPainterState painterState( p );
+  const QgsScopedQPainterState painterState( p );
   p->setRenderHint( QPainter::Antialiasing, false );
 
   // Blending problem was reported with PDF output if background color has alpha < 255
@@ -143,8 +143,8 @@ void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const
     if ( rotation )
     {
       // both viewPort and image sizes are dependent on scale
-      double cx = w / 2.0;
-      double cy = h / 2.0;
+      const double cx = w / 2.0;
+      const double cy = h / 2.0;
       p->translate( cx, cy );
       p->rotate( rotation );
       p->translate( -cx, -cy );

@@ -145,7 +145,7 @@ void QgsPanelWidgetStack::showPanel( QgsPanelWidget *panel )
   connect( panel, &QgsPanelWidget::panelAccepted, this, &QgsPanelWidgetStack::closePanel );
   connect( panel, &QgsPanelWidget::showPanel, this, &QgsPanelWidgetStack::showPanel );
 
-  int index = mStackedWidget->addWidget( panel );
+  const int index = mStackedWidget->addWidget( panel );
   mStackedWidget->setCurrentIndex( index );
   mBackButton->show();
   mTitleText->show();
@@ -197,7 +197,7 @@ void QgsPanelWidgetStack::updateBreadcrumb()
 {
   QString breadcrumb;
   const auto constMTitles = mTitles;
-  for ( QString title : constMTitles )
+  for ( const QString title : constMTitles )
   {
     breadcrumb += QStringLiteral( " %1 >" ).arg( title );
   }

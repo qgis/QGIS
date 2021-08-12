@@ -263,7 +263,7 @@ class CORE_EXPORT QgsRenderChecker
 inline bool compareWkt( const QString &a, const QString &b, double tolerance = 0.000001 )
 {
   QgsDebugMsg( QStringLiteral( "a:%1 b:%2 tol:%3" ).arg( a, b ).arg( tolerance ) );
-  QRegularExpression re( "-?\\d+(?:\\.\\d+)?(?:[eE]\\d+)?" );
+  const QRegularExpression re( "-?\\d+(?:\\.\\d+)?(?:[eE]\\d+)?" );
 
   QString a0( a ), b0( b );
   a0.replace( re, QStringLiteral( "#" ) );

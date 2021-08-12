@@ -77,8 +77,8 @@ void TestQgsPointXY::cleanup()
 
 void TestQgsPointXY::equality()
 {
-  QgsPointXY point1( 5.0, 9.0 );
-  QgsPointXY point2( 5.0, 9.0 );
+  const QgsPointXY point1( 5.0, 9.0 );
+  const QgsPointXY point2( 5.0, 9.0 );
   QCOMPARE( point1, point2 );
   QgsPointXY point3( 5.0, 6.0 );
   QVERIFY( !( point3 == point1 ) );
@@ -109,27 +109,27 @@ void TestQgsPointXY::gettersSetters()
 
 void TestQgsPointXY::constructors()
 {
-  QgsPointXY point1 = QgsPointXY( 20.0, -20.0 );
+  const QgsPointXY point1 = QgsPointXY( 20.0, -20.0 );
   QCOMPARE( point1.x(), 20.0 );
   QCOMPARE( point1.y(), -20.0 );
-  QgsPointXY point2( point1 );
+  const QgsPointXY point2( point1 );
   QCOMPARE( point2, point1 );
 
-  QPointF sourceQPointF( 20.0, -20.0 );
-  QgsPointXY fromQPointF( sourceQPointF );
+  const QPointF sourceQPointF( 20.0, -20.0 );
+  const QgsPointXY fromQPointF( sourceQPointF );
   QCOMPARE( fromQPointF.x(), 20.0 );
   QCOMPARE( fromQPointF.y(), -20.0 );
 
-  QPointF sourceQPoint( 20, -20 );
-  QgsPointXY fromQPoint( sourceQPoint );
+  const QPointF sourceQPoint( 20, -20 );
+  const QgsPointXY fromQPoint( sourceQPoint );
   QCOMPARE( fromQPoint.x(), 20.0 );
   QCOMPARE( fromQPoint.y(), -20.0 );
 }
 
 void TestQgsPointXY::toQPointF()
 {
-  QgsPointXY point( 20.0, -20.0 );
-  QPointF result = point.toQPointF();
+  const QgsPointXY point( 20.0, -20.0 );
+  const QPointF result = point.toQPointF();
   QCOMPARE( result.x(), 20.0 );
   QCOMPARE( result.y(), -20.0 );
 }
@@ -173,7 +173,7 @@ void TestQgsPointXY::cleanupTestCase()
   //
   // Runs once after all tests are run
   //
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -232,19 +232,19 @@ void TestQgsPointXY::distance()
 
 void TestQgsPointXY::compare()
 {
-  QgsPointXY point1( 5.000000000001, 9.0 );
-  QgsPointXY point2( 5.0, 8.999999999999999 );
+  const QgsPointXY point1( 5.000000000001, 9.0 );
+  const QgsPointXY point2( 5.0, 8.999999999999999 );
   QVERIFY( point1.compare( point2, 0.00000001 ) );
-  QgsPointXY point3( 5.0, 6.0 );
+  const QgsPointXY point3( 5.0, 6.0 );
   QVERIFY( !( point3.compare( point1 ) ) );
-  QgsPointXY point4( 10 / 3.0, 12 / 7.0 );
+  const QgsPointXY point4( 10 / 3.0, 12 / 7.0 );
   QVERIFY( point4.compare( QgsPointXY( 10 / 3.0, 12 / 7.0 ) ) );
 }
 
 void TestQgsPointXY::project()
 {
   // test projecting a point
-  QgsPointXY p( 1, 2 );
+  const QgsPointXY p( 1, 2 );
   QVERIFY( p.project( 1, 0 ).compare( QgsPointXY( 1, 3 ), 0.0000000001 ) );
   QVERIFY( p.project( 1.5, 90 ).compare( QgsPointXY( 2.5, 2 ), 0.0000000001 ) );
   QVERIFY( p.project( 2, 180 ).compare( QgsPointXY( 1, 0 ), 0.0000000001 ) );
@@ -342,15 +342,15 @@ void TestQgsPointXY::vector()
 
 void TestQgsPointXY::asVariant()
 {
-  QgsPointXY p1 = QgsPointXY( 10.0, 20.0 );
+  const QgsPointXY p1 = QgsPointXY( 10.0, 20.0 );
 
   //convert to and from a QVariant
-  QVariant var = QVariant::fromValue( p1 );
+  const QVariant var = QVariant::fromValue( p1 );
   QVERIFY( var.isValid() );
   QVERIFY( var.canConvert< QgsPointXY >() );
   QVERIFY( !var.canConvert< QgsReferencedPointXY >() );
 
-  QgsPointXY p2 = qvariant_cast<QgsPointXY>( var );
+  const QgsPointXY p2 = qvariant_cast<QgsPointXY>( var );
   QCOMPARE( p2.x(), p1.x() );
   QCOMPARE( p2.y(), p1.y() );
 }
@@ -363,7 +363,7 @@ void TestQgsPointXY::referenced()
   QCOMPARE( p1.crs().authid(), QStringLiteral( "EPSG:28356" ) );
 
   //convert to and from a QVariant
-  QVariant var = QVariant::fromValue( p1 );
+  const QVariant var = QVariant::fromValue( p1 );
   QVERIFY( var.isValid() );
 
   // not great - we'd ideally like this to pass, but it doesn't:
@@ -371,7 +371,7 @@ void TestQgsPointXY::referenced()
 
   QVERIFY( var.canConvert< QgsReferencedPointXY >() );
 
-  QgsReferencedPointXY p2 = qvariant_cast<QgsReferencedPointXY>( var );
+  const QgsReferencedPointXY p2 = qvariant_cast<QgsReferencedPointXY>( var );
   QCOMPARE( p2.x(), p1.x() );
   QCOMPARE( p2.y(), p1.y() );
   QCOMPARE( p2.crs().authid(), QStringLiteral( "EPSG:28356" ) );

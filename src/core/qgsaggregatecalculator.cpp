@@ -135,7 +135,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
       {
         if ( context )
           context->setFeature( f );
-        QVariant v = expression->evaluate( context );
+        const QVariant v = expression->evaluate( context );
         if ( !v.isNull() )
         {
           resultType = v.type();
@@ -206,7 +206,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
 
 QgsAggregateCalculator::Aggregate QgsAggregateCalculator::stringToAggregate( const QString &string, bool *ok )
 {
-  QString normalized = string.trimmed().toLower();
+  const QString normalized = string.trimmed().toLower();
 
   if ( ok )
     *ok = true;
@@ -566,7 +566,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
     case QVariant::Double:
     {
       bool statOk = false;
-      QgsStatisticalSummary::Statistic stat = numericStatFromAggregate( aggregate, &statOk );
+      const QgsStatisticalSummary::Statistic stat = numericStatFromAggregate( aggregate, &statOk );
       if ( !statOk )
       {
         if ( error )
@@ -584,7 +584,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
     case QVariant::DateTime:
     {
       bool statOk = false;
-      QgsDateTimeStatisticalSummary::Statistic stat = dateTimeStatFromAggregate( aggregate, &statOk );
+      const QgsDateTimeStatisticalSummary::Statistic stat = dateTimeStatFromAggregate( aggregate, &statOk );
       if ( !statOk )
       {
         if ( error )
@@ -631,7 +631,7 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
       }
 
       bool statOk = false;
-      QgsStringStatisticalSummary::Statistic stat = stringStatFromAggregate( aggregate, &statOk );
+      const QgsStringStatisticalSummary::Statistic stat = stringStatFromAggregate( aggregate, &statOk );
       if ( !statOk )
       {
         QString typeString;
@@ -829,7 +829,7 @@ QVariant QgsAggregateCalculator::calculateNumericAggregate( QgsFeatureIterator &
     {
       Q_ASSERT( context );
       context->setFeature( f );
-      QVariant v = expression->evaluate( context );
+      const QVariant v = expression->evaluate( context );
       s.addVariant( v );
     }
     else
@@ -838,7 +838,7 @@ QVariant QgsAggregateCalculator::calculateNumericAggregate( QgsFeatureIterator &
     }
   }
   s.finalize();
-  double val = s.statistic( stat );
+  const double val = s.statistic( stat );
   return std::isnan( val ) ? QVariant() : val;
 }
 
@@ -856,7 +856,7 @@ QVariant QgsAggregateCalculator::calculateStringAggregate( QgsFeatureIterator &f
     {
       Q_ASSERT( context );
       context->setFeature( f );
-      QVariant v = expression->evaluate( context );
+      const QVariant v = expression->evaluate( context );
       s.addValue( v );
     }
     else
@@ -878,7 +878,7 @@ QVariant QgsAggregateCalculator::calculateGeometryAggregate( QgsFeatureIterator 
   {
     Q_ASSERT( context );
     context->setFeature( f );
-    QVariant v = expression->evaluate( context );
+    const QVariant v = expression->evaluate( context );
     if ( v.canConvert<QgsGeometry>() )
     {
       geometries << v.value<QgsGeometry>();
@@ -902,7 +902,7 @@ QVariant QgsAggregateCalculator::concatenateStrings( QgsFeatureIterator &fit, in
     {
       Q_ASSERT( context );
       context->setFeature( f );
-      QVariant v = expression->evaluate( context );
+      const QVariant v = expression->evaluate( context );
       result = v.toString();
     }
     else
@@ -971,7 +971,7 @@ QVariant QgsAggregateCalculator::calculateDateTimeAggregate( QgsFeatureIterator 
     {
       Q_ASSERT( context );
       context->setFeature( f );
-      QVariant v = expression->evaluate( context );
+      const QVariant v = expression->evaluate( context );
       s.addValue( v );
     }
     else
@@ -998,7 +998,7 @@ QVariant QgsAggregateCalculator::calculateArrayAggregate( QgsFeatureIterator &fi
     {
       Q_ASSERT( context );
       context->setFeature( f );
-      QVariant v = expression->evaluate( context );
+      const QVariant v = expression->evaluate( context );
       array.append( v );
     }
     else

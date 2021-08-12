@@ -39,7 +39,7 @@ QDomElement QgsPointCloudLayerElevationProperties::writeXml( QDomElement &parent
 
 bool QgsPointCloudLayerElevationProperties::readXml( const QDomElement &element, const QgsReadWriteContext & )
 {
-  QDomElement elevationElement = element.firstChildElement( QStringLiteral( "elevation" ) ).toElement();
+  const QDomElement elevationElement = element.firstChildElement( QStringLiteral( "elevation" ) ).toElement();
   mZOffset = elevationElement.attribute( QStringLiteral( "zoffset" ), QStringLiteral( "0" ) ).toDouble();
   mZScale = elevationElement.attribute( QStringLiteral( "zscale" ), QStringLiteral( "1" ) ).toDouble();
   return true;

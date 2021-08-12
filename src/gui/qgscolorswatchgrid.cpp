@@ -97,7 +97,7 @@ void QgsColorSwatchGrid::paintEvent( QPaintEvent *event )
 void QgsColorSwatchGrid::mouseMoveEvent( QMouseEvent *event )
 {
   //calculate box mouse cursor is over
-  int newBox = swatchForPosition( event->pos() );
+  const int newBox = swatchForPosition( event->pos() );
 
   mDrawBoxDepressed = event->buttons() & Qt::LeftButton;
   if ( newBox != mCurrentHoverBox )
@@ -116,15 +116,15 @@ void QgsColorSwatchGrid::updateTooltip( const int colorIdx )
 {
   if ( colorIdx >= 0 && colorIdx < mColors.length() )
   {
-    QColor color = mColors.at( colorIdx ).first;
+    const QColor color = mColors.at( colorIdx ).first;
 
     //if color has an associated name from the color scheme, use that
-    QString colorName = mColors.at( colorIdx ).second;
+    const QString colorName = mColors.at( colorIdx ).second;
 
     // create very large preview swatch, because the grid itself has only tiny preview icons
-    int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 23 );
-    int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
-    int margin = static_cast< int >( height * 0.1 );
+    const int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 23 );
+    const int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
+    const int margin = static_cast< int >( height * 0.1 );
     QImage icon = QImage( width + 2 * margin, height + 2 * margin, QImage::Format_ARGB32 );
     icon.fill( Qt::transparent );
 
@@ -132,7 +132,7 @@ void QgsColorSwatchGrid::updateTooltip( const int colorIdx )
     p.begin( &icon );
 
     //start with checkboard pattern
-    QBrush checkBrush = QBrush( transparentBackground() );
+    const QBrush checkBrush = QBrush( transparentBackground() );
     p.setPen( Qt::NoPen );
     p.setBrush( checkBrush );
     p.drawRect( margin, margin, width, height );
@@ -188,7 +188,7 @@ void QgsColorSwatchGrid::mouseReleaseEvent( QMouseEvent *event )
     return;
   }
 
-  int box = swatchForPosition( event->pos() );
+  const int box = swatchForPosition( event->pos() );
   if ( mDrawBoxDepressed && event->button() == Qt::LeftButton )
   {
     mCurrentHoverBox = box;
@@ -217,7 +217,7 @@ void QgsColorSwatchGrid::keyPressEvent( QKeyEvent *event )
   else if ( event->key() == Qt::Key_Up )
   {
     int currentRow = mCurrentFocusBox / NUMBER_COLORS_PER_ROW;
-    int currentColumn = mCurrentFocusBox % NUMBER_COLORS_PER_ROW;
+    const int currentColumn = mCurrentFocusBox % NUMBER_COLORS_PER_ROW;
     currentRow--;
 
     if ( currentRow >= 0 )
@@ -233,9 +233,9 @@ void QgsColorSwatchGrid::keyPressEvent( QKeyEvent *event )
   else if ( event->key() == Qt::Key_Down )
   {
     int currentRow = mCurrentFocusBox / NUMBER_COLORS_PER_ROW;
-    int currentColumn = mCurrentFocusBox % NUMBER_COLORS_PER_ROW;
+    const int currentColumn = mCurrentFocusBox % NUMBER_COLORS_PER_ROW;
     currentRow++;
-    int box = currentRow * NUMBER_COLORS_PER_ROW + currentColumn;
+    const int box = currentRow * NUMBER_COLORS_PER_ROW + currentColumn;
 
     if ( box < mColors.length() )
     {
@@ -278,16 +278,16 @@ void QgsColorSwatchGrid::focusOutEvent( QFocusEvent *event )
 
 int QgsColorSwatchGrid::calculateHeight() const
 {
-  int numberRows = std::ceil( static_cast<double>( mColors.length() ) / NUMBER_COLORS_PER_ROW );
+  const int numberRows = std::ceil( static_cast<double>( mColors.length() ) / NUMBER_COLORS_PER_ROW );
   return numberRows * ( mSwatchSize ) + ( numberRows - 1 ) * mSwatchSpacing + mSwatchMargin + mLabelHeight + 0.5 * mLabelMargin + mSwatchMargin;
 }
 
 void QgsColorSwatchGrid::draw( QPainter &painter )
 {
-  QPalette pal = QPalette( qApp->palette() );
-  QColor headerBgColor = pal.color( QPalette::Mid );
-  QColor headerTextColor = pal.color( QPalette::BrightText );
-  QColor highlight = pal.color( QPalette::Highlight );
+  const QPalette pal = QPalette( qApp->palette() );
+  const QColor headerBgColor = pal.color( QPalette::Mid );
+  const QColor headerTextColor = pal.color( QPalette::BrightText );
+  const QColor highlight = pal.color( QPalette::Highlight );
 
   //draw header background
   painter.setBrush( headerBgColor );
@@ -304,8 +304,8 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
   int index = 0;
   for ( ; colorIt != mColors.constEnd(); ++colorIt )
   {
-    int row = index / NUMBER_COLORS_PER_ROW;
-    int column = index % NUMBER_COLORS_PER_ROW;
+    const int row = index / NUMBER_COLORS_PER_ROW;
+    const int column = index % NUMBER_COLORS_PER_ROW;
 
     QRect swatchRect = QRect( column * ( mSwatchSize + mSwatchSpacing ) + mSwatchMargin,
                               row * ( mSwatchSize + mSwatchSpacing ) + mSwatchMargin + mLabelHeight + 0.5 * mLabelMargin,
@@ -320,7 +320,7 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
     //start with checkboard pattern for semi-transparent colors
     if ( ( *colorIt ).first.alpha() != 255 )
     {
-      QBrush checkBrush = QBrush( transparentBackground() );
+      const QBrush checkBrush = QBrush( transparentBackground() );
       painter.setPen( Qt::NoPen );
       painter.setBrush( checkBrush );
       painter.drawRect( swatchRect );
@@ -373,10 +373,10 @@ int QgsColorSwatchGrid::swatchForPosition( QPoint position ) const
 {
   //calculate box for position
   int box = -1;
-  int column = ( position.x() - mSwatchMargin ) / ( mSwatchSize + mSwatchSpacing );
-  int xRem = ( position.x() - mSwatchMargin ) % ( mSwatchSize + mSwatchSpacing );
-  int row = ( position.y() - mSwatchMargin - mLabelHeight ) / ( mSwatchSize + mSwatchSpacing );
-  int yRem = ( position.y() - mSwatchMargin - mLabelHeight ) % ( mSwatchSize + mSwatchSpacing );
+  const int column = ( position.x() - mSwatchMargin ) / ( mSwatchSize + mSwatchSpacing );
+  const int xRem = ( position.x() - mSwatchMargin ) % ( mSwatchSize + mSwatchSpacing );
+  const int row = ( position.y() - mSwatchMargin - mLabelHeight ) / ( mSwatchSize + mSwatchSpacing );
+  const int yRem = ( position.y() - mSwatchMargin - mLabelHeight ) % ( mSwatchSize + mSwatchSpacing );
 
   if ( xRem <= mSwatchSize + 1 && yRem <= mSwatchSize + 1 && column < NUMBER_COLORS_PER_ROW )
   {

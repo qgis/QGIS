@@ -31,10 +31,10 @@ class FieldValueConverter : public QgsVectorFileWriter::FieldValueConverter
     FieldValueConverter( QgsVectorLayer *vl )
       : mLayer( vl )
     {
-      QStringList formattersAllowList{ QStringLiteral( "KeyValue" ),
-                                       QStringLiteral( "List" ),
-                                       QStringLiteral( "ValueRelation" ),
-                                       QStringLiteral( "ValueMap" ) };
+      const QStringList formattersAllowList{ QStringLiteral( "KeyValue" ),
+                                             QStringLiteral( "List" ),
+                                             QStringLiteral( "ValueRelation" ),
+                                             QStringLiteral( "ValueMap" ) };
 
       for ( int i = 0; i < mLayer->fields().count(); ++i )
       {
@@ -53,7 +53,7 @@ class FieldValueConverter : public QgsVectorFileWriter::FieldValueConverter
       if ( !mLayer )
         return field;
 
-      int idx = mLayer->fields().indexFromName( field.name() );
+      const int idx = mLayer->fields().indexFromName( field.name() );
       if ( mFormatters.contains( idx ) )
       {
         return QgsField( field.name(), QVariant::String );
@@ -158,7 +158,7 @@ bool QgsExportToSpreadsheetAlgorithm::prepareAlgorithm( const QVariantMap &param
 QVariantMap QgsExportToSpreadsheetAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   const bool overwrite = parameterAsBoolean( parameters, QStringLiteral( "OVERWRITE" ), context );
-  QString outputPath = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString outputPath = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
   if ( outputPath.isEmpty() )
     throw QgsProcessingException( QObject::tr( "No output file specified." ) );
 
@@ -179,7 +179,7 @@ QVariantMap QgsExportToSpreadsheetAlgorithm::processAlgorithm( const QVariantMap
     createNew = false;
   }
 
-  QFileInfo fi( outputPath );
+  const QFileInfo fi( outputPath );
   const QString driverName = QgsVectorFileWriter::driverForExtension( fi.suffix() );
 
   OGRSFDriverH hDriver = OGRGetDriverByName( driverName.toLocal8Bit().constData() );
@@ -191,7 +191,7 @@ QVariantMap QgsExportToSpreadsheetAlgorithm::processAlgorithm( const QVariantMap
       throw QgsProcessingException( QObject::tr( "Microsoft Excel driver not found." ) );
   }
 
-  gdal::ogr_datasource_unique_ptr hDS;
+  const gdal::ogr_datasource_unique_ptr hDS;
 #if 0
   if ( !QFile::exists( outputPath ) )
   {

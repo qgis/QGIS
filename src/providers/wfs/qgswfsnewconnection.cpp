@@ -76,7 +76,7 @@ void QgsWFSNewConnection::capabilitiesReplyFinished()
 
   QApplication::restoreOverrideCursor();
 
-  auto err = mCapabilities->errorCode();
+  const auto err = mCapabilities->errorCode();
   if ( err != QgsBaseNetworkRequest::NoError )
   {
     startOapifLandingPageRequest();

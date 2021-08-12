@@ -357,7 +357,7 @@ void QgsDataItem::refresh( const QVector<QgsDataItem *> &children )
     if ( !child ) // should not happen
       continue;
 
-    int index = findItem( mChildren, child );
+    const int index = findItem( mChildren, child );
     if ( index >= 0 )
     {
       // Refresh recursively (some providers may create more generations of descendants)
@@ -456,7 +456,7 @@ void QgsDataItem::addChildItem( QgsDataItem *child, bool refresh )
 void QgsDataItem::deleteChildItem( QgsDataItem *child )
 {
   QgsDebugMsgLevel( "mName = " + child->mName, 2 );
-  int i = mChildren.indexOf( child );
+  const int i = mChildren.indexOf( child );
   Q_ASSERT( i >= 0 );
   emit beginRemoveItems( this, i, i );
   mChildren.remove( i );
@@ -467,7 +467,7 @@ void QgsDataItem::deleteChildItem( QgsDataItem *child )
 QgsDataItem *QgsDataItem::removeChildItem( QgsDataItem *child )
 {
   QgsDebugMsgLevel( "mName = " + child->mName, 2 );
-  int i = mChildren.indexOf( child );
+  const int i = mChildren.indexOf( child );
   Q_ASSERT( i >= 0 );
   if ( i < 0 )
   {
@@ -555,7 +555,7 @@ void QgsDataItem::setState( Qgis::BrowserItemState state )
   if ( state == mState )
     return;
 
-  Qgis::BrowserItemState oldState = mState;
+  const Qgis::BrowserItemState oldState = mState;
 
   if ( state == Qgis::BrowserItemState::Populating ) // start loading
   {

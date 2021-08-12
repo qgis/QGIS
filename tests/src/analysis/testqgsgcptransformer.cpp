@@ -1540,7 +1540,7 @@ class TestQgsGcpTransformer : public QObject
                                              << QgsPointXY( 322501, 192061 )
                                              << QgsPointXY( 321803, 192198 ) );
 
-      QgsGeometry geom = QgsGeometry::fromWkt( QStringLiteral( "LineString(288 1000, 2352 1150, 2067 2500, 1102 2300)" ) );
+      const QgsGeometry geom = QgsGeometry::fromWkt( QStringLiteral( "LineString(288 1000, 2352 1150, 2067 2500, 1102 2300)" ) );
       bool ok = false;
       QCOMPARE( transformer.transform( geom, ok ).asWkt( 0 ), QStringLiteral( "LineString (321256 123764, 322688 142909, 322495 197069, 321782 198051)" ) );
       QVERIFY( ok );

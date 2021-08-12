@@ -120,7 +120,7 @@ void QgsWmstSettingsWidget::syncToLayer( QgsMapLayer *layer )
     QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata(
                                       mRasterLayer->providerType() );
 
-    QVariantMap uri = metadata->decodeUri( mRasterLayer->dataProvider()->dataSourceUri() );
+    const QVariantMap uri = metadata->decodeUri( mRasterLayer->dataProvider()->dataSourceUri() );
 
     mStartStaticDateTimeEdit->setDisplayFormat( QStringLiteral( "yyyy-MM-dd HH:mm:ss" ) );
     mEndStaticDateTimeEdit->setDisplayFormat( QStringLiteral( "yyyy-MM-dd HH:mm:ss" ) );
@@ -291,8 +291,8 @@ void QgsWmstSettingsWidget::apply()
           range = QgsProject::instance()->timeSettings()->temporalRange();
         if ( range.begin().isValid() && range.end().isValid() )
         {
-          QString time = range.begin().toString( Qt::ISODateWithMs ) + '/' +
-                         range.end().toString( Qt::ISODateWithMs );
+          const QString time = range.begin().toString( Qt::ISODateWithMs ) + '/' +
+                               range.end().toString( Qt::ISODateWithMs );
 
           uri[ QStringLiteral( "time" ) ] = time;
           uri[ QStringLiteral( "temporalSource" ) ] = QLatin1String( "project" );

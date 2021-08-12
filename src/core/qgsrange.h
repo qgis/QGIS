@@ -107,15 +107,15 @@ class QgsRange
      */
     bool contains( const QgsRange<T> &other ) const
     {
-      bool lowerOk = ( mIncludeLower && mLower <= other.mLower )
-                     || ( !mIncludeLower && mLower < other.mLower )
-                     || ( !mIncludeLower && !other.mIncludeLower && mLower <= other.mLower );
+      const bool lowerOk = ( mIncludeLower && mLower <= other.mLower )
+                           || ( !mIncludeLower && mLower < other.mLower )
+                           || ( !mIncludeLower && !other.mIncludeLower && mLower <= other.mLower );
       if ( !lowerOk )
         return false;
 
-      bool upperOk = ( mIncludeUpper && mUpper >= other.mUpper )
-                     || ( !mIncludeUpper && mUpper > other.mUpper )
-                     || ( !mIncludeUpper && !other.mIncludeUpper && mUpper >= other.mUpper );
+      const bool upperOk = ( mIncludeUpper && mUpper >= other.mUpper )
+                           || ( !mIncludeUpper && mUpper > other.mUpper )
+                           || ( !mIncludeUpper && !other.mIncludeUpper && mUpper >= other.mUpper );
       if ( !upperOk )
         return false;
 
@@ -127,13 +127,13 @@ class QgsRange
      */
     bool contains( T element ) const
     {
-      bool lowerOk = ( mIncludeLower && mLower <= element )
-                     || ( !mIncludeLower && mLower < element );
+      const bool lowerOk = ( mIncludeLower && mLower <= element )
+                           || ( !mIncludeLower && mLower < element );
       if ( !lowerOk )
         return false;
 
-      bool upperOk = ( mIncludeUpper && mUpper >= element )
-                     || ( !mIncludeUpper && mUpper > element );
+      const bool upperOk = ( mIncludeUpper && mUpper >= element )
+                           || ( !mIncludeUpper && mUpper > element );
       if ( !upperOk )
         return false;
 
@@ -464,9 +464,9 @@ class QgsTemporalRange
 
       if ( mLower.isValid() )
       {
-        bool lowerOk = ( mIncludeLower && mLower <= other.mLower )
-                       || ( !mIncludeLower && mLower < other.mLower )
-                       || ( !mIncludeLower && !other.mIncludeLower && mLower <= other.mLower );
+        const bool lowerOk = ( mIncludeLower && mLower <= other.mLower )
+                             || ( !mIncludeLower && mLower < other.mLower )
+                             || ( !mIncludeLower && !other.mIncludeLower && mLower <= other.mLower );
         if ( !lowerOk )
           return false;
       }
@@ -476,9 +476,9 @@ class QgsTemporalRange
 
       if ( mUpper.isValid() )
       {
-        bool upperOk = ( mIncludeUpper && mUpper >= other.mUpper )
-                       || ( !mIncludeUpper && mUpper > other.mUpper )
-                       || ( !mIncludeUpper && !other.mIncludeUpper && mUpper >= other.mUpper );
+        const bool upperOk = ( mIncludeUpper && mUpper >= other.mUpper )
+                             || ( !mIncludeUpper && mUpper > other.mUpper )
+                             || ( !mIncludeUpper && !other.mIncludeUpper && mUpper >= other.mUpper );
         if ( !upperOk )
           return false;
       }
@@ -496,16 +496,16 @@ class QgsTemporalRange
 
       if ( mLower.isValid() )
       {
-        bool lowerOk = ( mIncludeLower && mLower <= element )
-                       || ( !mIncludeLower && mLower < element );
+        const bool lowerOk = ( mIncludeLower && mLower <= element )
+                             || ( !mIncludeLower && mLower < element );
         if ( !lowerOk )
           return false;
       }
 
       if ( mUpper.isValid() )
       {
-        bool upperOk = ( mIncludeUpper && mUpper >= element )
-                       || ( !mIncludeUpper && mUpper > element );
+        const bool upperOk = ( mIncludeUpper && mUpper >= element )
+                             || ( !mIncludeUpper && mUpper > element );
         if ( !upperOk )
           return false;
       }

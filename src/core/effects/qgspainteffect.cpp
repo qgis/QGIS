@@ -72,7 +72,7 @@ bool QgsPaintEffect::readProperties( const QDomElement &element )
     return false;
   }
 
-  QVariantMap props = QgsSymbolLayerUtils::parseProperties( element );
+  const QVariantMap props = QgsSymbolLayerUtils::parseProperties( element );
   readProperties( props );
   return true;
 }
@@ -132,7 +132,7 @@ void QgsPaintEffect::drawSource( QPainter &painter )
 {
   if ( requiresQPainterDpiFix )
   {
-    QgsScopedQPainterState painterState( &painter );
+    const QgsScopedQPainterState painterState( &painter );
     fixQPictureDpi( &painter );
     painter.drawPicture( 0, 0, *mPicture );
   }
@@ -155,7 +155,7 @@ QImage *QgsPaintEffect::sourceAsImage( QgsRenderContext &context )
 
   //else create it
   //TODO - test with premultiplied image for speed
-  QRectF bounds = imageBoundingRect( context );
+  const QRectF bounds = imageBoundingRect( context );
   mSourceImage = new QImage( bounds.width(), bounds.height(), QImage::Format_ARGB32 );
   mSourceImage->fill( Qt::transparent );
   QPainter imagePainter( mSourceImage );
@@ -222,7 +222,7 @@ void QgsDrawSourceEffect::draw( QgsRenderContext &context )
     //rasterize source and apply modifications
     QImage image = sourceAsImage( context )->copy();
     QgsImageOperation::multiplyOpacity( image, mOpacity );
-    QgsScopedQPainterState painterState( painter );
+    const QgsScopedQPainterState painterState( painter );
     painter->setCompositionMode( mBlendMode );
     painter->drawImage( imageOffset( context ), image );
   }
@@ -246,14 +246,14 @@ QVariantMap QgsDrawSourceEffect::properties() const
 void QgsDrawSourceEffect::readProperties( const QVariantMap &props )
 {
   bool ok;
-  QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( QStringLiteral( "blend_mode" ) ).toInt( &ok ) );
+  const QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( QStringLiteral( "blend_mode" ) ).toInt( &ok ) );
   if ( ok )
   {
     mBlendMode = mode;
   }
   if ( props.contains( QStringLiteral( "transparency" ) ) )
   {
-    double transparency = props.value( QStringLiteral( "transparency" ) ).toDouble( &ok );
+    const double transparency = props.value( QStringLiteral( "transparency" ) ).toDouble( &ok );
     if ( ok )
     {
       mOpacity = 1.0 - transparency;
@@ -261,7 +261,7 @@ void QgsDrawSourceEffect::readProperties( const QVariantMap &props )
   }
   else
   {
-    double opacity = props.value( QStringLiteral( "opacity" ) ).toDouble( &ok );
+    const double opacity = props.value( QStringLiteral( "opacity" ) ).toDouble( &ok );
     if ( ok )
     {
       mOpacity = opacity;

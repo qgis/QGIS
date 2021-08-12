@@ -430,8 +430,8 @@ inline std::ostream &operator << ( std::ostream &os, const QgsPointXY &p ) SIP_S
 inline uint qHash( const QgsPointXY &p ) SIP_SKIP
 {
   uint hash;
-  uint h1 = qHash( static_cast< quint64 >( p.mX ) );
-  uint h2 = qHash( static_cast< quint64 >( p.mY ) );
+  const uint h1 = qHash( static_cast< quint64 >( p.mX ) );
+  const uint h2 = qHash( static_cast< quint64 >( p.mY ) );
   hash = h1 ^ ( h2 << 1 );
   return hash;
 }

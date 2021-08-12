@@ -52,7 +52,7 @@ QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer *layer, QWidget *pa
   connect( mStdDevSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterMinMaxWidget::mStdDevSpinBox_valueChanged );
   connect( cboAccuracy, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRasterMinMaxWidget::cboAccuracy_currentIndexChanged );
 
-  QgsRasterMinMaxOrigin defaultMinMaxOrigin;
+  const QgsRasterMinMaxOrigin defaultMinMaxOrigin;
   setFromMinMaxOrigin( defaultMinMaxOrigin );
 }
 
@@ -189,10 +189,10 @@ void QgsRasterMinMaxWidget::doComputations()
   if ( !mLayer->dataProvider() )
     return;
 
-  QgsRectangle myExtent = extent(); // empty == full
-  int mySampleSize = sampleSize(); // 0 == exact
+  const QgsRectangle myExtent = extent(); // empty == full
+  const int mySampleSize = sampleSize(); // 0 == exact
 
-  QgsRasterMinMaxOrigin newMinMaxOrigin = minMaxOrigin();
+  const QgsRasterMinMaxOrigin newMinMaxOrigin = minMaxOrigin();
   if ( mLastRectangleValid && mLastRectangle == myExtent &&
        mLastMinMaxOrigin == newMinMaxOrigin &&
        !mBandsChanged )
@@ -207,7 +207,7 @@ void QgsRasterMinMaxWidget::doComputations()
   mBandsChanged = false;
 
   const auto constMBands = mBands;
-  for ( int myBand : constMBands )
+  for ( const int myBand : constMBands )
   {
     QgsDebugMsg( QStringLiteral( "myBand = %1" ).arg( myBand ) );
     if ( myBand < 1 || myBand > mLayer->dataProvider()->bandCount() )
@@ -221,23 +221,23 @@ void QgsRasterMinMaxWidget::doComputations()
     if ( mCumulativeCutRadioButton->isChecked() )
     {
       updateMinMax = true;
-      double myLower = mCumulativeCutLowerDoubleSpinBox->value() / 100.0;
-      double myUpper = mCumulativeCutUpperDoubleSpinBox->value() / 100.0;
+      const double myLower = mCumulativeCutLowerDoubleSpinBox->value() / 100.0;
+      const double myUpper = mCumulativeCutUpperDoubleSpinBox->value() / 100.0;
       mLayer->dataProvider()->cumulativeCut( myBand, myLower, myUpper, myMin, myMax, myExtent, mySampleSize );
     }
     else if ( mMinMaxRadioButton->isChecked() )
     {
       updateMinMax = true;
       // TODO: consider provider minimum/maximumValue() (has to be defined well in povider)
-      QgsRasterBandStats myRasterBandStats = mLayer->dataProvider()->bandStatistics( myBand, QgsRasterBandStats::Min | QgsRasterBandStats::Max, myExtent, mySampleSize );
+      const QgsRasterBandStats myRasterBandStats = mLayer->dataProvider()->bandStatistics( myBand, QgsRasterBandStats::Min | QgsRasterBandStats::Max, myExtent, mySampleSize );
       myMin = myRasterBandStats.minimumValue;
       myMax = myRasterBandStats.maximumValue;
     }
     else if ( mStdDevRadioButton->isChecked() )
     {
       updateMinMax = true;
-      QgsRasterBandStats myRasterBandStats = mLayer->dataProvider()->bandStatistics( myBand, QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev, myExtent, mySampleSize );
-      double myStdDev = mStdDevSpinBox->value();
+      const QgsRasterBandStats myRasterBandStats = mLayer->dataProvider()->bandStatistics( myBand, QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev, myExtent, mySampleSize );
+      const double myStdDev = mStdDevSpinBox->value();
       myMin = myRasterBandStats.mean - ( myStdDev * myRasterBandStats.stdDev );
       myMax = myRasterBandStats.mean + ( myStdDev * myRasterBandStats.stdDev );
     }

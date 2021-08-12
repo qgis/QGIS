@@ -691,7 +691,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     template <class T>
     T customEnumProperty( const QString &key, const T &defaultValue )
     {
-      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( metaEnum.isValid() );
       if ( !metaEnum.isValid() )
       {
@@ -743,7 +743,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     template <class T>
     void setCustomEnumProperty( const QString &key, const T &value )
     {
-      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( metaEnum.isValid() );
       if ( metaEnum.isValid() )
       {
@@ -769,7 +769,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     template <class T>
     T customFlagProperty( const QString &key, const T &defaultValue )
     {
-      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( metaEnum.isValid() );
       if ( !metaEnum.isValid() )
       {
@@ -789,15 +789,15 @@ class CORE_EXPORT QgsMapLayer : public QObject
       if ( !ok )
       {
         // if failed, try to read as int
-        int intValue = customProperty( key, static_cast<int>( defaultValue ) ).toInt( &ok );
+        const int intValue = customProperty( key, static_cast<int>( defaultValue ) ).toInt( &ok );
         if ( metaEnum.isValid() )
         {
           if ( ok )
           {
             // check that the int value does correspond to a flag
             // see https://stackoverflow.com/a/68495949/1548052
-            QByteArray keys = metaEnum.valueToKeys( intValue );
-            int intValueCheck = metaEnum.keysToValue( keys );
+            const QByteArray keys = metaEnum.valueToKeys( intValue );
+            const int intValueCheck = metaEnum.keysToValue( keys );
             if ( intValue != intValueCheck )
             {
               v = defaultValue;
@@ -833,7 +833,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     template <class T>
     void setCustomFlagProperty( const QString &key, const T &value )
     {
-      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( metaEnum.isValid() );
       if ( metaEnum.isValid() )
       {

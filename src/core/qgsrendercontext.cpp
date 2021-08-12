@@ -350,7 +350,7 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
     }
     case QgsUnitTypes::RenderMapUnits:
     {
-      double mup = scale.computeMapUnitsPerPixel( *this );
+      const double mup = scale.computeMapUnitsPerPixel( *this );
       if ( mup > 0 )
       {
         conversionFactor = 1.0 / mup;
@@ -391,7 +391,7 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
 
 double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale ) const
 {
-  double mup = mMapToPixel.mapUnitsPerPixel();
+  const double mup = mMapToPixel.mapUnitsPerPixel();
 
   const double symbologyReferenceScaleFactor = mSymbologyReferenceScale > 0 ? mSymbologyReferenceScale / mRendererScale : 1;
 
@@ -457,7 +457,7 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
 
 double QgsRenderContext::convertFromMapUnits( double sizeInMapUnits, QgsUnitTypes::RenderUnit outputUnit ) const
 {
-  double mup = mMapToPixel.mapUnitsPerPixel();
+  const double mup = mMapToPixel.mapUnitsPerPixel();
   const double symbologyReferenceScaleFactor = mSymbologyReferenceScale > 0 ? mSymbologyReferenceScale / mRendererScale : 1;
 
   switch ( outputUnit )

@@ -31,7 +31,7 @@ QgsLayoutImageDropHandler::QgsLayoutImageDropHandler( QObject *parent )
 
 bool QgsLayoutImageDropHandler::handleFileDrop( QgsLayoutDesignerInterface *iface, QPointF point, const QString &file )
 {
-  QFileInfo fi( file );
+  const QFileInfo fi( file );
   bool matched = false;
   bool svg = false;
   if ( fi.suffix().compare( "svg", Qt::CaseInsensitive ) == 0 )
@@ -60,7 +60,7 @@ bool QgsLayoutImageDropHandler::handleFileDrop( QgsLayoutDesignerInterface *ifac
 
   std::unique_ptr< QgsLayoutItemPicture > item = std::make_unique< QgsLayoutItemPicture >( iface->layout() );
 
-  QgsLayoutPoint layoutPoint = iface->layout()->convertFromLayoutUnits( point, iface->layout()->units() );
+  const QgsLayoutPoint layoutPoint = iface->layout()->convertFromLayoutUnits( point, iface->layout()->units() );
 
   item->setPicturePath( file, svg ? QgsLayoutItemPicture::FormatSVG : QgsLayoutItemPicture::FormatRaster );
 
@@ -91,7 +91,7 @@ bool QgsLayoutImageDropHandler::handlePaste( QgsLayoutDesignerInterface *iface, 
   if ( !data->hasImage() )
     return false;
 
-  QgsLayoutPoint layoutPoint = iface->layout()->convertFromLayoutUnits( pastePoint, iface->layout()->units() );
+  const QgsLayoutPoint layoutPoint = iface->layout()->convertFromLayoutUnits( pastePoint, iface->layout()->units() );
   std::unique_ptr< QgsLayoutItemPicture > item = std::make_unique< QgsLayoutItemPicture >( iface->layout() );
 
   const QByteArray imageData = data->data( QStringLiteral( "application/x-qt-image" ) );

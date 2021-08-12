@@ -226,7 +226,7 @@ QString QgsMapRendererStagedRenderJob::currentLayerId() const
 {
   if ( mJobIt != mLayerJobs.end() )
   {
-    LayerRenderJob &job = *mJobIt;
+    const LayerRenderJob &job = *mJobIt;
     return job.layerId;
   }
   else if ( mFlags & RenderLabelsByMapLayer && mPreparedStagedLabelJob )
@@ -241,7 +241,7 @@ double QgsMapRendererStagedRenderJob::currentLayerOpacity() const
 {
   if ( mJobIt != mLayerJobs.end() )
   {
-    LayerRenderJob &job = *mJobIt;
+    const LayerRenderJob &job = *mJobIt;
     return job.opacity;
   }
   return 1.0;
@@ -251,7 +251,7 @@ QPainter::CompositionMode QgsMapRendererStagedRenderJob::currentLayerComposition
 {
   if ( mJobIt != mLayerJobs.end() )
   {
-    LayerRenderJob &job = *mJobIt;
+    const LayerRenderJob &job = *mJobIt;
     return job.blendMode;
   }
   return QPainter::CompositionMode_SourceOver;

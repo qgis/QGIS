@@ -88,7 +88,7 @@ struct TriangleCoords
 
 bool checkTriangleOutput( const QVector<float> &data, bool withNormals, const QList<TriangleCoords> &expected )
 {
-  int valuesPerTriangle = withNormals ? 18 : 9;
+  const int valuesPerTriangle = withNormals ? 18 : 9;
   if ( data.count() != expected.count() * valuesPerTriangle )
   {
     qDebug() << "expected" << expected.count() << "triangles, got" << data.count() / valuesPerTriangle;
@@ -100,7 +100,7 @@ bool checkTriangleOutput( const QVector<float> &data, bool withNormals, const QL
   for ( int i = 0; i < expected.count(); ++i )
   {
     const TriangleCoords &exp = expected.at( i );
-    TriangleCoords out( dataRaw, withNormals );
+    const TriangleCoords out( dataRaw, withNormals );
     if ( exp != out )
     {
       qDebug() << i;
@@ -169,7 +169,7 @@ void TestQgsTessellator::testBasic()
   tc << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ) );
   tc << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ) );
 
-  QVector3D up( 0, 0, 1 );  // surface normal pointing straight up
+  const QVector3D up( 0, 0, 1 );  // surface normal pointing straight up
   QList<TriangleCoords> tcNormals;
   tcNormals << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ), up, up, up );
   tcNormals << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ), up, up, up );
@@ -200,11 +200,11 @@ void TestQgsTessellator::testWalls()
   QgsPolygon rect;
   rect.fromWkt( "POLYGON((0 0, 3 0, 3 2, 0 2, 0 0))" );
 
-  QVector3D zPos( 0, 0, 1 );
-  QVector3D xPos( 1, 0, 0 );
-  QVector3D yPos( 0, 1, 0 );
-  QVector3D xNeg( -1, 0, 0 );
-  QVector3D yNeg( 0, -1, 0 );
+  const QVector3D zPos( 0, 0, 1 );
+  const QVector3D xPos( 1, 0, 0 );
+  const QVector3D yPos( 0, 1, 0 );
+  const QVector3D xNeg( -1, 0, 0 );
+  const QVector3D yNeg( 0, -1, 0 );
 
   QList<TriangleCoords> tcRect;
   tcRect << TriangleCoords( QVector3D( 0, 2, 1 ), QVector3D( 3, 0, 1 ), QVector3D( 3, 2, 1 ), zPos, zPos, zPos );
@@ -260,8 +260,8 @@ void TestQgsTessellator::testBackEdges()
   QgsPolygon polygon;
   polygon.fromWkt( "POLYGON((1 1, 2 1, 3 2, 1 2, 1 1))" );
 
-  QVector3D up( 0, 0, 1 );  // surface normal pointing straight up
-  QVector3D dn( 0, 0, -1 );  // surface normal pointing straight down for back faces
+  const QVector3D up( 0, 0, 1 );  // surface normal pointing straight up
+  const QVector3D dn( 0, 0, -1 );  // surface normal pointing straight down for back faces
   QList<TriangleCoords> tcNormals;
   tcNormals << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ), up, up, up );
   tcNormals << TriangleCoords( QVector3D( 3, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 1, 2, 0 ), dn, dn, dn );
@@ -325,7 +325,7 @@ void TestQgsTessellator::testIssue17745()
 
   QgsTessellator t( 0, 0, true );
   QgsPolygon p;
-  bool resWktRead = p.fromWkt( "Polygon((0 0, 1 1e-15, 4 0, 4 5, 1 5, 0 5, 0 0))" );
+  const bool resWktRead = p.fromWkt( "Polygon((0 0, 1 1e-15, 4 0, 4 5, 1 5, 0 5, 0 0))" );
   QVERIFY( resWktRead );
 
   t.addPolygon( p, 0 );   // must not crash - that's all we test here
@@ -337,7 +337,7 @@ void TestQgsTessellator::testCrashSelfIntersection()
 
   QgsTessellator t( 0, 0, true );
   QgsPolygon p;
-  bool resWktRead = p.fromWkt( "PolygonZ ((-744809.80499999970197678 -1042371.96730000153183937 260.460968017578125, -744809.80299999937415123 -1042371.92199999839067459 260.460968017578125, -744810.21599999815225601 -1042381.09099999815225601 260.460968017578125, -744810.21499999985098839 -1042381.0689999982714653 260.460968017578125, -744812.96469999849796295 -1042375.32499999925494194 263.734283447265625, -744809.80499999970197678 -1042371.96730000153183937 260.460968017578125))" );
+  const bool resWktRead = p.fromWkt( "PolygonZ ((-744809.80499999970197678 -1042371.96730000153183937 260.460968017578125, -744809.80299999937415123 -1042371.92199999839067459 260.460968017578125, -744810.21599999815225601 -1042381.09099999815225601 260.460968017578125, -744810.21499999985098839 -1042381.0689999982714653 260.460968017578125, -744812.96469999849796295 -1042375.32499999925494194 263.734283447265625, -744809.80499999970197678 -1042371.96730000153183937 260.460968017578125))" );
 
   QVERIFY( resWktRead );
 
@@ -350,7 +350,7 @@ void TestQgsTessellator::testCrashEmptyPolygon()
 
   QgsTessellator t( 0, 0, true );
   QgsPolygon p;
-  bool resWktRead = p.fromWkt( "PolygonZ ((0 0 0, 0 0 0, 0 0 0))" );
+  const bool resWktRead = p.fromWkt( "PolygonZ ((0 0 0, 0 0 0, 0 0 0))" );
   QVERIFY( resWktRead );
 
   t.addPolygon( p, 0 );  // must not crash - that's all we test here

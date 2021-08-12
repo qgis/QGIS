@@ -157,8 +157,8 @@ void QgsCubeFacesSkyboxEntity::reloadTexture()
 
   for ( auto it = mCubeFacesPaths.begin(); it != mCubeFacesPaths.end(); ++it )
   {
-    Qt3DRender::QTextureCubeMap::CubeMapFace face = it.key();
-    QString texturePath = it.value();
+    const Qt3DRender::QTextureCubeMap::CubeMapFace face = it.key();
+    const QString texturePath = it.value();
     Qt3DRender::QTextureImage *image = new Qt3DRender::QTextureImage( this );
     image->setFace( face );
     image->setMirrored( false );

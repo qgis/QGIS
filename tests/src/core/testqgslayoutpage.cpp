@@ -65,7 +65,7 @@ void TestQgsLayoutPage::initTestCase()
 
 void TestQgsLayoutPage::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  const QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -267,7 +267,7 @@ void TestQgsLayoutPage::hiddenPages()
 
   QgsLayoutChecker checker( QStringLiteral( "composerpaper_hidden" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_paper" ) );
-  bool result = checker.testLayout( mReport );
+  const bool result = checker.testLayout( mReport );
   QVERIFY( result );
 
 }
@@ -279,7 +279,7 @@ void TestQgsLayoutPage::pageLayout()
   std::unique_ptr< QgsLayoutItemPage > page1( new QgsLayoutItemPage( &l ) );
   page1->setPageSize( QgsLayoutSize( 297, 210, QgsUnitTypes::LayoutMillimeters ) );
 
-  QPageLayout layout1 = page1->pageLayout();
+  const QPageLayout layout1 = page1->pageLayout();
 
   QCOMPARE( layout1.orientation(), QPageLayout::Landscape );
   QCOMPARE( layout1.units(), QPageLayout::Millimeter );
@@ -289,7 +289,7 @@ void TestQgsLayoutPage::pageLayout()
   std::unique_ptr< QgsLayoutItemPage > page2( new QgsLayoutItemPage( &l ) );
   page2->setPageSize( QgsLayoutSize( 210, 297, QgsUnitTypes::LayoutMillimeters ) );
 
-  QPageLayout layout2 = page2->pageLayout();
+  const QPageLayout layout2 = page2->pageLayout();
 
   QCOMPARE( layout2.orientation(), QPageLayout::Portrait );
   QCOMPARE( layout2.units(), QPageLayout::Millimeter );

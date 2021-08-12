@@ -35,7 +35,7 @@ QgsMapToolRegularPolygonCenterPoint::~QgsMapToolRegularPolygonCenterPoint()
 
 void QgsMapToolRegularPolygonCenterPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint point = mapPoint( *e );
+  const QgsPoint point = mapPoint( *e );
 
   if ( !currentVectorLayer() )
   {
@@ -72,13 +72,13 @@ void QgsMapToolRegularPolygonCenterPoint::cadCanvasReleaseEvent( QgsMapMouseEven
 
 void QgsMapToolRegularPolygonCenterPoint::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint point = mapPoint( *e );
+  const QgsPoint point = mapPoint( *e );
 
   mSnapIndicator->setMatch( e->mapPointMatch() );
 
   if ( mTempRubberBand )
   {
-    QgsRegularPolygon::ConstructionOption option = QgsRegularPolygon::CircumscribedCircle;
+    const QgsRegularPolygon::ConstructionOption option = QgsRegularPolygon::CircumscribedCircle;
     mRegularPolygon = QgsRegularPolygon( mPoints.at( 0 ), point, mNumberSidesSpinBox->value(), option );
     mTempRubberBand->setGeometry( mRegularPolygon.toPolygon() );
   }

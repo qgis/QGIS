@@ -99,7 +99,7 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     delim = QStringLiteral( "," );
   }
 
-  bool subsetOfAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
+  const bool subsetOfAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
   QgsAttributeList attrs = subsetOfAttributes ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList();
 
   // ensure that all attributes required for expression filter are being fetched
@@ -112,9 +112,9 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   }
 
   const auto constAttrs = attrs;
-  for ( int i : constAttrs )
+  for ( const int i : constAttrs )
   {
-    QString fieldname = mSource->mFields.at( i ).name();
+    const QString fieldname = mSource->mFields.at( i ).name();
     if ( mSource->mFidColName == fieldname )
       continue;
     mStatement += delim + fieldname;
@@ -143,7 +143,7 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   {
     if ( request.spatialFilterType() == Qgis::SpatialFilterType::BoundingBox && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
     {
-      QString rectangleWkt = mFilterRect.asWktPolygon();
+      const QString rectangleWkt = mFilterRect.asWktPolygon();
       QgsDebugMsg( "filter polygon: " + rectangleWkt );
       mStatement += QStringLiteral( " WHERE DB2GSE.ST_Intersects(%1, DB2GSE.ST_POLYGON('%2', %3)) = 1" ).arg(
                       mSource->mGeometryColName,
@@ -166,7 +166,7 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   // set fid filter
   if ( request.filterType() == QgsFeatureRequest::FilterFid && !mSource->mFidColName.isEmpty() )
   {
-    QString fidfilter = QStringLiteral( " %1 = %2" ).arg( mSource->mFidColName, QString::number( request.filterFid() ) );
+    const QString fidfilter = QStringLiteral( " %1 = %2" ).arg( mSource->mFidColName, QString::number( request.filterFid() ) );
     // set attribute filter
     if ( !filterAdded )
       mStatement += QLatin1String( " WHERE " );
@@ -182,7 +182,7 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     QString delim;
     QString inClause = QStringLiteral( "%1 IN (" ).arg( mSource->mFidColName );
     const auto constFilterFids = mRequest.filterFids();
-    for ( QgsFeatureId featureId : constFilterFids )
+    for ( const QgsFeatureId featureId : constFilterFids )
     {
       inClause += delim + FID_TO_STRING( featureId );
       delim = ',';
@@ -213,7 +213,7 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     QgsDb2ExpressionCompiler compiler = QgsDb2ExpressionCompiler( mSource, request.flags() & QgsFeatureRequest::IgnoreStaticNodesDuringExpressionCompilation );
     QgsDebugMsg( "expression dump: " + request.filterExpression()->dump() );
     QgsDebugMsg( "expression expression: " + request.filterExpression()->expression() );
-    QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
+    const QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
     QgsDebugMsg( QStringLiteral( "compiler result: %1" ).arg( result ) + "; query: " + compiler.result() );
     if ( result == QgsSqlExpressionCompiler::Complete || result == QgsSqlExpressionCompiler::Partial )
     {
@@ -252,7 +252,7 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
       }
 
       QgsDb2ExpressionCompiler compiler = QgsDb2ExpressionCompiler( mSource, request.flags() & QgsFeatureRequest::IgnoreStaticNodesDuringExpressionCompilation );
-      QgsExpression expression = clause.expression();
+      const QgsExpression expression = clause.expression();
       QgsDebugMsg( "expression: " + expression.dump() );
       if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )
       {
@@ -351,11 +351,11 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature &feature )
   {
     feature.initAttributes( mSource->mFields.count() );
     feature.setFields( mSource->mFields ); // allow name-based attribute lookups
-    QSqlRecord record = mQuery->record();
+    const QSqlRecord record = mQuery->record();
     for ( int i = 0; i < mAttributesToFetch.count(); i++ )
     {
       QVariant v = mQuery->value( i );
-      QString attrName = record.fieldName( i );
+      const QString attrName = record.fieldName( i );
       if ( attrName == mSource->mGeometryColName )
       {
 //        QgsDebugMsg( QStringLiteral( "Geom col: %1" ).arg( attrName ) ); // not sure why we set geometry as a field value
@@ -373,7 +373,7 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature &feature )
         {
           v = QVariant( v.toString() );
         }
-        QgsField fld = mSource->mFields.at( mAttributesToFetch.at( i ) );
+        const QgsField fld = mSource->mFields.at( mAttributesToFetch.at( i ) );
 //        QgsDebugMsg( QStringLiteral( "v.type: %1; fld.type: %2" ).arg( v.type() ).arg( fld.type() ) );
         if ( v.type() != fld.type() )
         {
@@ -388,7 +388,7 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature &feature )
     if ( mSource->isSpatial() )
     {
       QByteArray ar = record.value( mSource->mGeometryColName ).toByteArray();
-      int wkb_size = ar.size();
+      const int wkb_size = ar.size();
       if ( 0 < wkb_size )
       {
         unsigned char *db2data = new unsigned char[wkb_size + 1]; // allocate persistent storage

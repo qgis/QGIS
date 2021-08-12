@@ -34,7 +34,7 @@ int QgsGraph::addEdge( int fromVertexIdx, int toVertexIdx, const QVector< QVaria
   e.mToIdx = toVertexIdx;
   e.mFromIdx  = fromVertexIdx;
   mGraphEdges.push_back( e );
-  int edgeIdx = mGraphEdges.size() - 1;
+  const int edgeIdx = mGraphEdges.size() - 1;
 
   mGraphVertices[ toVertexIdx ].mIncomingEdges.push_back( edgeIdx );
   mGraphVertices[ fromVertexIdx ].mOutgoingEdges.push_back( edgeIdx );

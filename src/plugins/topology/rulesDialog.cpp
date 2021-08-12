@@ -78,7 +78,7 @@ void rulesDialog::readTest( int index, QgsProject *project )
   QString testName;
   QString layer1Id;
   QString layer2Id;
-  QString postfix = QString::number( index );
+  const QString postfix = QString::number( index );
 
   testName = project->readEntry( QStringLiteral( "Topol" ), "/testname_" + postfix, QString() );
   layer1Id = project->readEntry( QStringLiteral( "Topol" ), "/layer1_" + postfix, QString() );
@@ -92,7 +92,7 @@ void rulesDialog::readTest( int index, QgsProject *project )
   if ( !l1 )
     return;
 
-  QString layer1Name = l1->name();
+  const QString layer1Name = l1->name();
   QString layer2Name;
   QgsVectorLayer *l2 = nullptr;
 
@@ -109,7 +109,7 @@ void rulesDialog::readTest( int index, QgsProject *project )
   else
     layer2Name = QStringLiteral( "No layer" );
 
-  int row = index;
+  const int row = index;
   mRulesTable->insertRow( row );
 
   QTableWidgetItem *newItem = nullptr;
@@ -136,7 +136,7 @@ void rulesDialog::projectRead()
 {
   clearRules();
   QgsProject *project = QgsProject::instance();
-  int testCount = QgsProject::instance()->readNumEntry( QStringLiteral( "Topol" ), QStringLiteral( "/testCount" ) );
+  const int testCount = QgsProject::instance()->readNumEntry( QStringLiteral( "Topol" ), QStringLiteral( "/testCount" ) );
   mRulesTable->clearContents();
 
   for ( int i = 0; i < testCount; ++i )
@@ -192,12 +192,12 @@ void rulesDialog::showControls( const QString &testName )
 void rulesDialog::addRule()
 {
   //sanity checks
-  QString test = mRuleBox->currentText();
-  QString layer1 = mLayer1Box->currentText();
+  const QString test = mRuleBox->currentText();
+  const QString layer1 = mLayer1Box->currentText();
   if ( layer1 == tr( "No layer" ) )
     return;
 
-  QString layer2 = mLayer2Box->currentText();
+  const QString layer2 = mLayer2Box->currentText();
   if ( layer2 == tr( "No layer" ) && mTestConfMap[test].useSecondLayer )
     return;
 
@@ -211,7 +211,7 @@ void rulesDialog::addRule()
     }
   }
 
-  int row = mRulesTable->rowCount();
+  const int row = mRulesTable->rowCount();
   mRulesTable->insertRow( row );
 
   QTableWidgetItem *newItem = nullptr;
@@ -244,7 +244,7 @@ void rulesDialog::addRule()
   mRulesTable->setItem( row, 4, newItem );
 
   // save state to the project file.....
-  QString postfix = QString::number( row );
+  const QString postfix = QString::number( row );
   QgsProject *project = QgsProject::instance();
 
   project->writeEntry( QStringLiteral( "Topol" ), QStringLiteral( "/testCount" ), row + 1 );
@@ -260,7 +260,7 @@ void rulesDialog::addRule()
 
 void rulesDialog::deleteTest()
 {
-  int row = mRulesTable->currentRow();
+  const int row = mRulesTable->currentRow();
   if ( 0 <= row && row < mRulesTable->rowCount() )
     mRulesTable->removeRow( row );
 }
@@ -279,7 +279,7 @@ void rulesDialog::updateRuleItems( const QString &layerName )
     return;
   }
 
-  QString layerId = mLayer1Box->currentData().toString();
+  const QString layerId = mLayer1Box->currentData().toString();
 
   QgsVectorLayer *vlayer = ( QgsVectorLayer * )QgsProject::instance()->mapLayer( layerId );
 

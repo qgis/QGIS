@@ -92,7 +92,7 @@ QgsGPXProvider::QgsGPXProvider( const QString &uri, const ProviderOptions &optio
   {
     if ( sAttributedUsedForLayerType[i] & mFeatureType )
     {
-      QString attrTypeName = ( sAttributeTypes[i] == QVariant::Int ? "int" : ( sAttributeTypes[i] == QVariant::Double ? "double" : "text" ) );
+      const QString attrTypeName = ( sAttributeTypes[i] == QVariant::Int ? "int" : ( sAttributeTypes[i] == QVariant::Double ? "double" : "text" ) );
       mAttributeFields.append( QgsField( sAttributeNames[i], sAttributeTypes[i], attrTypeName ) );
       mIndexToAttr.append( i );
     }
@@ -202,12 +202,12 @@ bool QgsGPXProvider::addFeature( QgsFeature &f, Flags )
   if ( !mData )
     return false;
 
-  QByteArray wkb( f.geometry().asWkb() );
+  const QByteArray wkb( f.geometry().asWkb() );
   const char *geo = wkb.constData();
-  QgsWkbTypes::Type wkbType = f.geometry().wkbType();
+  const QgsWkbTypes::Type wkbType = f.geometry().wkbType();
   bool success = false;
   QgsGpsObject *obj = nullptr;
-  QgsAttributes attrs = f.attributes();
+  const QgsAttributes attrs = f.attributes();
 
   // is it a waypoint?
   if ( mFeatureType == WaypointType && geo && wkbType == QgsWkbTypes::Point )
@@ -224,7 +224,7 @@ bool QgsGPXProvider::addFeature( QgsFeature &f, Flags )
       if ( mIndexToAttr.at( i ) == EleAttr )
       {
         bool eleIsOK;
-        double ele = attrs.at( i ).toDouble( &eleIsOK );
+        const double ele = attrs.at( i ).toDouble( &eleIsOK );
         if ( eleIsOK )
           wpt.ele = ele;
       }
@@ -234,7 +234,7 @@ bool QgsGPXProvider::addFeature( QgsFeature &f, Flags )
       }
     }
 
-    QgsGpsData::WaypointIterator iter = mData->addWaypoint( wpt );
+    const QgsGpsData::WaypointIterator iter = mData->addWaypoint( wpt );
     success = true;
     obj = &( *iter );
   }
@@ -275,13 +275,13 @@ bool QgsGPXProvider::addFeature( QgsFeature &f, Flags )
       if ( mIndexToAttr.at( i ) == NumAttr )
       {
         bool numIsOK;
-        long num = attrs.at( i ).toInt( &numIsOK );
+        const long num = attrs.at( i ).toInt( &numIsOK );
         if ( numIsOK )
           rte.number = num;
       }
     }
 
-    QgsGpsData::RouteIterator iter = mData->addRoute( rte );
+    const QgsGpsData::RouteIterator iter = mData->addRoute( rte );
     success = true;
     obj = &( *iter );
   }
@@ -323,14 +323,14 @@ bool QgsGPXProvider::addFeature( QgsFeature &f, Flags )
       if ( mIndexToAttr.at( i ) == NumAttr )
       {
         bool numIsOK;
-        long num = attrs.at( i ).toInt( &numIsOK );
+        const long num = attrs.at( i ).toInt( &numIsOK );
         if ( numIsOK )
           trk.number = num;
       }
     }
 
     trk.segments.push_back( trkseg );
-    QgsGpsData::TrackIterator iter = mData->addTrack( trk );
+    const QgsGpsData::TrackIterator iter = mData->addTrack( trk );
     success = true;
     obj = &( *iter );
   }
@@ -450,8 +450,8 @@ void QgsGPXProvider::changeAttributeValues( QgsGpsObject &obj, const QgsAttribut
   QgsAttributeMap::const_iterator aIter = attrs.begin();
   for ( ; aIter != attrs.end(); ++aIter )
   {
-    int i = aIter.key();
-    QVariant v = aIter.value();
+    const int i = aIter.key();
+    const QVariant v = aIter.value();
 
     // common attributes
     switch ( mIndexToAttr.at( i ) )
@@ -484,7 +484,7 @@ void QgsGPXProvider::changeAttributeValues( QgsGpsObject &obj, const QgsAttribut
       else if ( mIndexToAttr.at( i ) == EleAttr )
       {
         bool eleIsOK;
-        double ele = v.toDouble( &eleIsOK );
+        const double ele = v.toDouble( &eleIsOK );
         if ( eleIsOK )
           wpt->ele = ele;
       }
@@ -496,7 +496,7 @@ void QgsGPXProvider::changeAttributeValues( QgsGpsObject &obj, const QgsAttribut
       if ( mIndexToAttr.at( i ) == NumAttr )
       {
         bool numIsOK;
-        int num = v.toInt( &numIsOK );
+        const int num = v.toInt( &numIsOK );
         if ( numIsOK )
           ext->number = num;
       }

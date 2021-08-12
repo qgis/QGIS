@@ -21,7 +21,7 @@ bool QgsFeatureSink::addFeature( QgsFeature &feature, QgsFeatureSink::Flags flag
 {
   QgsFeatureList features;
   features << feature;
-  bool result = addFeatures( features, flags );
+  const bool result = addFeatures( features, flags );
 
   if ( !( flags & FastInsert ) )
   {

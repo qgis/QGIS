@@ -77,15 +77,15 @@ QVariantMap QgsVectorizeAlgorithmBase::processAlgorithm( const QVariantMap &para
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
 
-  int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
+  const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
+  const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
 
   QgsRasterIterator iter( mInterface.get() );
   iter.startRasterRead( mBand, mNbCellsXProvider, mNbCellsYProvider, mExtent );
 
-  int nbBlocksWidth = static_cast< int >( std::ceil( 1.0 * mNbCellsXProvider / maxWidth ) );
-  int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * mNbCellsYProvider / maxHeight ) );
-  int nbBlocks = nbBlocksWidth * nbBlocksHeight;
+  const int nbBlocksWidth = static_cast< int >( std::ceil( 1.0 * mNbCellsXProvider / maxWidth ) );
+  const int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * mNbCellsYProvider / maxHeight ) );
+  const int nbBlocks = nbBlocksWidth * nbBlocksHeight;
 
   int iterLeft = 0;
   int iterTop = 0;
@@ -115,7 +115,7 @@ QVariantMap QgsVectorizeAlgorithmBase::processAlgorithm( const QVariantMap &para
         const double value = rasterBlock->valueAndNoData( row, column, isNoData );
         if ( !isNoData )
         {
-          QgsGeometry pixelRectGeometry = createGeometryForPixel( currentX, currentY, mRasterUnitsPerPixelX, mRasterUnitsPerPixelY );
+          const QgsGeometry pixelRectGeometry = createGeometryForPixel( currentX, currentY, mRasterUnitsPerPixelX, mRasterUnitsPerPixelY );
 
           QgsFeature f;
           f.setGeometry( pixelRectGeometry );

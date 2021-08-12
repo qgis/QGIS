@@ -99,7 +99,7 @@ QgsMapLayer *QgsMapLayerFactory::createLayer( const QString &uri, const QString 
 
     case QgsMapLayerType::AnnotationLayer:
     {
-      QgsAnnotationLayer::LayerOptions annotationOptions( options.transformContext );
+      const QgsAnnotationLayer::LayerOptions annotationOptions( options.transformContext );
       return new QgsAnnotationLayer( name, annotationOptions );
     }
 

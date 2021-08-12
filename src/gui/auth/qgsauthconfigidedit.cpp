@@ -52,7 +52,7 @@ const QString QgsAuthConfigIdEdit::configId()
 
 bool QgsAuthConfigIdEdit::validate()
 {
-  QString authcfg( leAuthCfg->text() );
+  const QString authcfg( leAuthCfg->text() );
   bool curvalid = ( ( authcfg == mAuthCfgOrig && authcfg.size() == 7 )
                     || ( mAllowEmpty && authcfg.isEmpty() ) );
 

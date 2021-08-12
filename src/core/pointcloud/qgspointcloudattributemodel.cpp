@@ -72,7 +72,7 @@ QModelIndex QgsPointCloudAttributeModel::indexFromName( const QString &name )
 {
   if ( !name.isEmpty() )
   {
-    int idx = mAttributes.indexOf( name );
+    const int idx = mAttributes.indexOf( name );
     if ( idx >= 0 )
     {
       if ( mAllowEmpty )
@@ -266,7 +266,7 @@ QgsPointCloudAttributeProxyModel *QgsPointCloudAttributeProxyModel::setFilters( 
 
 bool QgsPointCloudAttributeProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
-  QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
+  const QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
 
   if ( mFilters.testFlag( AllTypes ) )
     return true;
@@ -301,8 +301,8 @@ bool QgsPointCloudAttributeProxyModel::lessThan( const QModelIndex &left, const 
 
   // order is attribute order
   bool lok, rok;
-  int leftId = sourceModel()->data( left, QgsPointCloudAttributeModel::AttributeIndexRole ).toInt( &lok );
-  int rightId = sourceModel()->data( right, QgsPointCloudAttributeModel::AttributeIndexRole ).toInt( &rok );
+  const int leftId = sourceModel()->data( left, QgsPointCloudAttributeModel::AttributeIndexRole ).toInt( &lok );
+  const int rightId = sourceModel()->data( right, QgsPointCloudAttributeModel::AttributeIndexRole ).toInt( &rok );
 
   if ( !lok )
     return false;

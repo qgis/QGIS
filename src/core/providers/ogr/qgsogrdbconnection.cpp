@@ -30,8 +30,8 @@ QgsOgrDbConnection::QgsOgrDbConnection( const QString &connName, const QString &
   : mConnName( connName )
 {
   mSettingsKey = settingsKey;
-  QgsSettings settings;
-  QString key = QStringLiteral( "%1/%2/path" ).arg( connectionsPath( settingsKey ), mConnName );
+  const QgsSettings settings;
+  const QString key = QStringLiteral( "%1/%2/path" ).arg( connectionsPath( settingsKey ), mConnName );
   mPath = settings.value( key ).toString();
 }
 
@@ -77,7 +77,7 @@ const QStringList QgsOgrDbConnection::connectionList( const QString &driverName 
 
 QString QgsOgrDbConnection::selectedConnection( const QString &settingsKey )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
   return settings.value( QStringLiteral( "%1/selected" ).arg( connectionsPath( settingsKey ) ) ).toString();
 }
 

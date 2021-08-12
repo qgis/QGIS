@@ -158,7 +158,7 @@ QList<QgsProviderSublayerDetails> QgsEptProviderMetadata::querySublayers( const 
 int QgsEptProviderMetadata::priorityForUri( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
-  QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
+  const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
   if ( fi.fileName().compare( QLatin1String( "ept.json" ), Qt::CaseInsensitive ) == 0 )
     return 100;
 
@@ -168,7 +168,7 @@ int QgsEptProviderMetadata::priorityForUri( const QString &uri ) const
 QList<QgsMapLayerType> QgsEptProviderMetadata::validLayerTypesForUri( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
-  QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
+  const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
   if ( fi.fileName().compare( QLatin1String( "ept.json" ), Qt::CaseInsensitive ) == 0 )
     return QList< QgsMapLayerType>() << QgsMapLayerType::PointCloudLayer;
 
@@ -181,7 +181,7 @@ bool QgsEptProviderMetadata::uriIsBlocklisted( const QString &uri ) const
   if ( !parts.contains( QStringLiteral( "path" ) ) )
     return false;
 
-  QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
+  const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
 
   // internal details only
   if ( fi.fileName().compare( QLatin1String( "ept-build.json" ), Qt::CaseInsensitive ) == 0 )

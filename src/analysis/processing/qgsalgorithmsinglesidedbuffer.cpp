@@ -122,7 +122,7 @@ QgsFeatureList QgsSingleSidedBufferAlgorithm::processFeature( const QgsFeature &
     if ( mDynamicDistance )
       distance = mDistanceProperty.valueAsDouble( context.expressionContext(), distance );
 
-    QgsGeometry outputGeometry =  f.geometry().singleSidedBuffer( distance, mSegments, mSide, mJoinStyle, mMiterLimit );
+    const QgsGeometry outputGeometry =  f.geometry().singleSidedBuffer( distance, mSegments, mSide, mJoinStyle, mMiterLimit );
     if ( outputGeometry.isNull() )
       throw QgsProcessingException( QObject::tr( "Error calculating single sided buffer" ) );
 

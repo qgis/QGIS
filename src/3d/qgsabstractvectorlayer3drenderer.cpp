@@ -31,7 +31,7 @@ void QgsVectorLayer3DTilingSettings::writeXml( QDomElement &elem ) const
 
 void QgsVectorLayer3DTilingSettings::readXml( const QDomElement &elem )
 {
-  QDomElement elemTiling = elem.firstChildElement( QStringLiteral( "vector-layer-3d-tiling" ) );
+  const QDomElement elemTiling = elem.firstChildElement( QStringLiteral( "vector-layer-3d-tiling" ) );
   if ( !elemTiling.isNull() )
   {
     mZoomLevelsCount = elemTiling.attribute( QStringLiteral( "zoom-levels-count" ) ).toInt();

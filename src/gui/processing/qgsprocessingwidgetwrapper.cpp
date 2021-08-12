@@ -335,7 +335,7 @@ void QgsAbstractProcessingParameterWidgetWrapper::setDynamicParentLayerParameter
     if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
     {
       // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
-      QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
+      const QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
       val = fromVar.source;
     }
 

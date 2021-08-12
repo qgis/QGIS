@@ -82,7 +82,7 @@ void QgsPoint3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &c
 
   if ( billboardSymbol() )
   {
-    QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "symbol" ), billboardSymbol(), doc, context );
+    const QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "symbol" ), billboardSymbol(), doc, context );
 
     elem.appendChild( symbolElem );
   }
@@ -90,10 +90,10 @@ void QgsPoint3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &c
 
 void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  QDomElement elemDataProperties = elem.firstChildElement( QStringLiteral( "data" ) );
+  const QDomElement elemDataProperties = elem.firstChildElement( QStringLiteral( "data" ) );
   mAltClamping = Qgs3DUtils::altClampingFromString( elemDataProperties.attribute( QStringLiteral( "alt-clamping" ) ) );
 
-  QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
+  const QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
   const QString materialType = elem.attribute( QStringLiteral( "material_type" ), QStringLiteral( "phong" ) );
   mMaterial.reset( Qgs3D::materialRegistry()->createMaterialSettings( materialType ) );
   if ( !mMaterial )
@@ -102,14 +102,14 @@ void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteConte
 
   mShape = shapeFromString( elem.attribute( QStringLiteral( "shape" ) ) );
 
-  QDomElement elemShapeProperties = elem.firstChildElement( QStringLiteral( "shape-properties" ) );
+  const QDomElement elemShapeProperties = elem.firstChildElement( QStringLiteral( "shape-properties" ) );
   mShapeProperties = QgsXmlUtils::readVariant( elemShapeProperties.firstChildElement() ).toMap();
   mShapeProperties[QStringLiteral( "model" )] = QVariant( context.pathResolver().readPath( mShapeProperties[QStringLiteral( "model" )].toString() ) );
 
-  QDomElement elemTransform = elem.firstChildElement( QStringLiteral( "transform" ) );
+  const QDomElement elemTransform = elem.firstChildElement( QStringLiteral( "transform" ) );
   mTransform = Qgs3DUtils::stringToMatrix4x4( elemTransform.attribute( QStringLiteral( "matrix" ) ) );
 
-  QDomElement symbolElem = elem.firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement symbolElem = elem.firstChildElement( QStringLiteral( "symbol" ) );
 
   setBillboardSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElem, context ) );
 }
@@ -186,7 +186,7 @@ bool QgsPoint3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore:
     Qt3DRender::QSceneLoader *sceneLoader = entity->findChild<Qt3DRender::QSceneLoader *>();
     if ( sceneLoader != nullptr )
     {
-      QVector<Qgs3DExportObject *> objects = exporter->processSceneLoaderGeometries( sceneLoader, objectNamePrefix );
+      const QVector<Qgs3DExportObject *> objects = exporter->processSceneLoaderGeometries( sceneLoader, objectNamePrefix );
       for ( Qgs3DExportObject *obj : objects )
       {
         obj->setSmoothEdges( exporter->smoothEdges() );
@@ -196,7 +196,7 @@ bool QgsPoint3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore:
     }
     else
     {
-      QList<Qt3DRender::QMesh *> meshes = entity->findChildren<Qt3DRender::QMesh *>();
+      const QList<Qt3DRender::QMesh *> meshes = entity->findChildren<Qt3DRender::QMesh *>();
       for ( Qt3DRender::QMesh *mesh : meshes )
       {
         Qgs3DExportObject *object = exporter->processGeometryRenderer( mesh, objectNamePrefix );
@@ -216,7 +216,7 @@ bool QgsPoint3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore:
   }
   else
   {
-    QVector<Qgs3DExportObject *> objects = exporter->processInstancedPointGeometry( entity, objectNamePrefix );
+    const QVector<Qgs3DExportObject *> objects = exporter->processInstancedPointGeometry( entity, objectNamePrefix );
     for ( Qgs3DExportObject *obj : objects )
     {
       obj->setupMaterial( material() );

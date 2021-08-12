@@ -173,7 +173,7 @@ void QgsLayerTreeView::contextMenuEvent( QContextMenuEvent *event )
   if ( !mMenuProvider )
     return;
 
-  QModelIndex idx = indexAt( event->pos() );
+  const QModelIndex idx = indexAt( event->pos() );
   if ( !idx.isValid() )
     setCurrentIndex( QModelIndex() );
 
@@ -196,14 +196,14 @@ void QgsLayerTreeView::modelRowsInserted( const QModelIndex &index, int start, i
     QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( parentNode );
     if ( QgsMapLayer *layer = nodeLayer->layer() )
     {
-      int widgetsCount = layer->customProperty( QStringLiteral( "embeddedWidgets/count" ), 0 ).toInt();
+      const int widgetsCount = layer->customProperty( QStringLiteral( "embeddedWidgets/count" ), 0 ).toInt();
       QList<QgsLayerTreeModelLegendNode *> legendNodes = layerTreeModel()->layerLegendNodes( nodeLayer, true );
       for ( int i = 0; i < widgetsCount; ++i )
       {
-        QString providerId = layer->customProperty( QStringLiteral( "embeddedWidgets/%1/id" ).arg( i ) ).toString();
+        const QString providerId = layer->customProperty( QStringLiteral( "embeddedWidgets/%1/id" ).arg( i ) ).toString();
         if ( QgsLayerTreeEmbeddedWidgetProvider *provider = QgsGui::layerTreeEmbeddedWidgetRegistry()->provider( providerId ) )
         {
-          QModelIndex index = legendNode2index( legendNodes[i] );
+          const QModelIndex index = legendNode2index( legendNodes[i] );
           QWidget *wdgt = provider->createWidget( layer, i );
           // Since column is resized to contents, limit the expanded width of embedded
           //  widgets, if they are not already limited, e.g. have the default MAX value.
@@ -231,14 +231,14 @@ void QgsLayerTreeView::modelRowsInserted( const QModelIndex &index, int start, i
   if ( QgsLayerTree::isLayer( parentNode ) )
   {
     // if ShowLegendAsTree flag is enabled in model, we may need to expand some legend nodes
-    QStringList expandedNodeKeys = parentNode->customProperty( QStringLiteral( "expandedLegendNodes" ) ).toStringList();
+    const QStringList expandedNodeKeys = parentNode->customProperty( QStringLiteral( "expandedLegendNodes" ) ).toStringList();
     if ( expandedNodeKeys.isEmpty() )
       return;
 
     const auto constLayerLegendNodes = layerTreeModel()->layerLegendNodes( QgsLayerTree::toLayer( parentNode ), true );
     for ( QgsLayerTreeModelLegendNode *legendNode : constLayerLegendNodes )
     {
-      QString ruleKey = legendNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
+      const QString ruleKey = legendNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
       if ( expandedNodeKeys.contains( ruleKey ) )
         setExpanded( legendNode2index( legendNode ), true );
     }
@@ -269,10 +269,10 @@ void QgsLayerTreeView::updateExpandedStateToNode( const QModelIndex &index )
   }
   else if ( QgsLayerTreeModelLegendNode *node = index2legendNode( index ) )
   {
-    QString ruleKey = node->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
+    const QString ruleKey = node->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
     QStringList lst = node->layerNode()->customProperty( QStringLiteral( "expandedLegendNodes" ) ).toStringList();
-    bool expanded = isExpanded( index );
-    bool isInList = lst.contains( ruleKey );
+    const bool expanded = isExpanded( index );
+    const bool isInList = lst.contains( ruleKey );
     if ( expanded && !isInList )
     {
       lst.append( ruleKey );
@@ -289,7 +289,7 @@ void QgsLayerTreeView::updateExpandedStateToNode( const QModelIndex &index )
 void QgsLayerTreeView::onCurrentChanged()
 {
   QgsMapLayer *layerCurrent = layerForIndex( currentIndex() );
-  QString layerCurrentID = layerCurrent ? layerCurrent->id() : QString();
+  const QString layerCurrentID = layerCurrent ? layerCurrent->id() : QString();
   if ( mCurrentLayerID == layerCurrentID )
     return;
 
@@ -320,7 +320,7 @@ void QgsLayerTreeView::onCurrentChanged()
 
 void QgsLayerTreeView::onExpandedChanged( QgsLayerTreeNode *node, bool expanded )
 {
-  QModelIndex idx = node2index( node );
+  const QModelIndex idx = node2index( node );
   if ( isExpanded( idx ) != expanded )
     setExpanded( idx, expanded );
 }
@@ -330,12 +330,12 @@ void QgsLayerTreeView::onCustomPropertyChanged( QgsLayerTreeNode *node, const QS
   if ( key != QLatin1String( "expandedLegendNodes" ) || !QgsLayerTree::isLayer( node ) )
     return;
 
-  QSet<QString> expandedLegendNodes = qgis::listToSet( node->customProperty( QStringLiteral( "expandedLegendNodes" ) ).toStringList() );
+  const QSet<QString> expandedLegendNodes = qgis::listToSet( node->customProperty( QStringLiteral( "expandedLegendNodes" ) ).toStringList() );
 
   const QList<QgsLayerTreeModelLegendNode *> legendNodes = layerTreeModel()->layerLegendNodes( QgsLayerTree::toLayer( node ), true );
   for ( QgsLayerTreeModelLegendNode *legendNode : legendNodes )
   {
-    QString key = legendNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
+    const QString key = legendNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
     if ( !key.isEmpty() )
       setExpanded( legendNode2index( legendNode ), expandedLegendNodes.contains( key ) );
   }
@@ -349,7 +349,7 @@ void QgsLayerTreeView::onModelReset()
 
 void QgsLayerTreeView::updateExpandedStateFromNode( QgsLayerTreeNode *node )
 {
-  QModelIndex idx = node2index( node );
+  const QModelIndex idx = node2index( node );
   setExpanded( idx, node->isExpanded() );
 
   const auto constChildren = node->children();
@@ -455,7 +455,7 @@ QList<QgsMapLayer *> QgsLayerTreeView::selectedLayersRecursive() const
     mapped << mProxyModel->mapToSource( index );
 
   const QList<QgsLayerTreeNode *> nodes = layerTreeModel()->indexes2nodes( mapped, false );
-  QSet<QgsMapLayer *> layersSet = QgsLayerTreeUtils::collectMapLayersRecursive( nodes );
+  const QSet<QgsMapLayer *> layersSet = QgsLayerTreeUtils::collectMapLayersRecursive( nodes );
   return qgis::setToList( layersSet );
 }
 
@@ -508,7 +508,7 @@ static void _expandAllLegendNodes( QgsLayerTreeLayer *nodeLayer, bool expanded, 
     const auto constLayerLegendNodes = model->layerLegendNodes( nodeLayer, true );
     for ( QgsLayerTreeModelLegendNode *legendNode : constLayerLegendNodes )
     {
-      QString parentKey = legendNode->data( QgsLayerTreeModelLegendNode::ParentRuleKeyRole ).toString();
+      const QString parentKey = legendNode->data( QgsLayerTreeModelLegendNode::ParentRuleKeyRole ).toString();
       if ( !parentKey.isEmpty() && !lst.contains( parentKey ) )
         lst << parentKey;
     }
@@ -596,7 +596,7 @@ void QgsLayerTreeView::keyPressEvent( QKeyEvent *event )
 
     if ( ! constSelectedNodes.isEmpty() )
     {
-      bool isFirstNodeChecked = constSelectedNodes[0]->itemVisibilityChecked();
+      const bool isFirstNodeChecked = constSelectedNodes[0]->itemVisibilityChecked();
       for ( QgsLayerTreeNode *node : constSelectedNodes )
       {
         node->setItemVisibilityChecked( ! isFirstNodeChecked );

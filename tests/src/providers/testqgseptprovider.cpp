@@ -81,7 +81,7 @@ void TestQgsEptProvider::initTestCase()
 void TestQgsEptProvider::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -179,7 +179,7 @@ void TestQgsEptProvider::querySublayers()
   QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::PointCloudLayer );
 
   // make sure result is valid to load layer from
-  QgsProviderSublayerDetails::LayerOptions options{ QgsCoordinateTransformContext() };
+  const QgsProviderSublayerDetails::LayerOptions options{ QgsCoordinateTransformContext() };
   std::unique_ptr< QgsPointCloudLayer > ml( qgis::down_cast< QgsPointCloudLayer * >( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( ml->isValid() );
 }
@@ -299,10 +299,10 @@ void TestQgsEptProvider::testIdentify()
     ring.push_back( QgsPointXY( 498062.50018404237926, 7050996.6248482363299 ) );
     ring.push_back( QgsPointXY( 498062.50018404237926, 7050996.5845294082537 ) );
     polygon.push_back( ring );
-    float maxErrorInMapCoords = 0.0022857920266687870026;
+    const float maxErrorInMapCoords = 0.0022857920266687870026;
     QVector<QMap<QString, QVariant>> points = layer->dataProvider()->identify( maxErrorInMapCoords, QgsGeometry::fromPolygonXY( polygon ) );
     QCOMPARE( points.size(), 1 );
-    QMap<QString, QVariant> identifiedPoint = points[0];
+    const QMap<QString, QVariant> identifiedPoint = points[0];
     QMap<QString, QVariant> expected;
 
     expected[ QStringLiteral( "Blue" ) ] = 0;
@@ -334,8 +334,8 @@ void TestQgsEptProvider::testIdentify()
     polygon.push_back( QPointF( 498066.35857078444678,  7050995.0919103417546 ) );
     polygon.push_back( QPointF( 498066.35857078444678,  7050995.0112726856023 ) );
     polygon.push_back( QPointF( 498066.28873652569018,  7050994.9709538575262 ) );
-    float maxErrorInMapCoords =  0.0091431681066751480103;
-    QVector<QMap<QString, QVariant>> identifiedPoints = layer->dataProvider()->identify( maxErrorInMapCoords, QgsGeometry::fromQPolygonF( polygon ) );
+    const float maxErrorInMapCoords =  0.0091431681066751480103;
+    const QVector<QMap<QString, QVariant>> identifiedPoints = layer->dataProvider()->identify( maxErrorInMapCoords, QgsGeometry::fromQPolygonF( polygon ) );
     QVector<QMap<QString, QVariant>> expected;
     {
       QMap<QString, QVariant> point;
@@ -369,8 +369,8 @@ void TestQgsEptProvider::testIdentify()
     polygon.push_back( QPointF( 498063.24382022250211, 7050996.6360026793554 ) );
     polygon.push_back( QPointF( 498063.24382022250211, 7050996.8638040581718 ) );
 
-    float maxErrorInMapCoords = 0.0022857920266687870026;
-    QVector<QMap<QString, QVariant>> identifiedPoints = layer->dataProvider()->identify( maxErrorInMapCoords, QgsGeometry::fromQPolygonF( polygon ) );
+    const float maxErrorInMapCoords = 0.0022857920266687870026;
+    const QVector<QMap<QString, QVariant>> identifiedPoints = layer->dataProvider()->identify( maxErrorInMapCoords, QgsGeometry::fromQPolygonF( polygon ) );
     QVector<QMap<QString, QVariant>> expected;
     {
       QMap<QString, QVariant> point;

@@ -122,7 +122,7 @@ void TestQgsGeometryUtils::testExtractLinestrings()
   mpg.addGeometry( polygon1 );
   mpg.addGeometry( polygon2 );
 
-  QVector<QgsLineString *> linestrings = QgsGeometryUtils::extractLineStrings( &mpg );
+  const QVector<QgsLineString *> linestrings = QgsGeometryUtils::extractLineStrings( &mpg );
   QCOMPARE( linestrings.count(), 3 );
   qDeleteAll( linestrings );
 }
@@ -233,8 +233,8 @@ void TestQgsGeometryUtils::testSegmentMidPoint()
   QFETCH( double, expectedY );
 
   QgsPoint midPoint;
-  bool ok = QgsGeometryUtils::segmentMidPoint( QgsPoint( pt1x, pt1y ), QgsPoint( pt2x, pt2y ),
-            midPoint, radius, QgsPoint( mouseX, mouseY ) );
+  const bool ok = QgsGeometryUtils::segmentMidPoint( QgsPoint( pt1x, pt1y ), QgsPoint( pt2x, pt2y ),
+                  midPoint, radius, QgsPoint( mouseX, mouseY ) );
 
   QVERIFY( ok );
   QGSCOMPARENEAR( midPoint.x(), expectedX, 4 * std::numeric_limits<double>::epsilon() );
@@ -347,7 +347,7 @@ void TestQgsGeometryUtils::testLineAngle()
   QFETCH( double, y2 );
   QFETCH( double, expected );
 
-  double lineAngle = QgsGeometryUtils::lineAngle( x1, y1, x2, y2 ) * 180 / M_PI;
+  const double lineAngle = QgsGeometryUtils::lineAngle( x1, y1, x2, y2 ) * 180 / M_PI;
   if ( expected > -99999 )
     QGSCOMPARENEAR( lineAngle, expected, 4 * std::numeric_limits<double>::epsilon() );
 }
@@ -379,7 +379,7 @@ void TestQgsGeometryUtils::testLinePerpendicularAngle()
   QFETCH( double, y2 );
   QFETCH( double, expected );
 
-  double pAngle = QgsGeometryUtils::linePerpendicularAngle( x1, y1, x2, y2 ) * 180 / M_PI;
+  const double pAngle = QgsGeometryUtils::linePerpendicularAngle( x1, y1, x2, y2 ) * 180 / M_PI;
   if ( expected > -99999 )
     QGSCOMPARENEAR( pAngle, expected, 0.01 );
 }
@@ -413,7 +413,7 @@ void TestQgsGeometryUtils::testAverageAngle()
   QFETCH( double, angle2 );
   QFETCH( double, expected );
 
-  double averageAngle = QgsGeometryUtils::averageAngle( angle1 * M_PI / 180.0, angle2 * M_PI / 180.0 ) * 180.0 / M_PI;
+  const double averageAngle = QgsGeometryUtils::averageAngle( angle1 * M_PI / 180.0, angle2 * M_PI / 180.0 ) * 180.0 / M_PI;
   QGSCOMPARENEAR( averageAngle, expected, 0.0000000001 );
 }
 
@@ -442,7 +442,7 @@ void TestQgsGeometryUtils::testDistanceToVertex()
   QCOMPARE( QgsGeometryUtils::distanceToVertex( polygon1, QgsVertexId( 0, 1, 1 ) ), -1.0 );
 
   //test with point
-  QgsPoint point( 1, 2 );
+  const QgsPoint point( 1, 2 );
   QCOMPARE( QgsGeometryUtils::distanceToVertex( point, QgsVertexId( 0, 0, 0 ) ), 0.0 );
   QCOMPARE( QgsGeometryUtils::distanceToVertex( point, QgsVertexId( 0, 0, 1 ) ), -1.0 );
 }
@@ -564,7 +564,7 @@ void TestQgsGeometryUtils::testVerticesAtDistance()
   QCOMPARE( next, QgsVertexId( 1, 1, 1 ) );
 
   //test with point
-  QgsPoint point( 1, 2 );
+  const QgsPoint point( 1, 2 );
   QVERIFY( !QgsGeometryUtils::verticesAtDistance( point, .5, previous, next ) );
 }
 
@@ -608,21 +608,21 @@ void TestQgsGeometryUtils::testSqrDistToLine()
 {
 
   // See https://github.com/qgis/QGIS/issues/21967#issuecomment-495853991
-  QgsPointXY qp( 771938, 6.95593e+06 );
-  QgsPointXY p1( 771946, 6.95593e+06 );
-  QgsPointXY p2( 771904, 6.95595e+06 );
+  const QgsPointXY qp( 771938, 6.95593e+06 );
+  const QgsPointXY p1( 771946, 6.95593e+06 );
+  const QgsPointXY p2( 771904, 6.95595e+06 );
   double rx = 0, ry = 0;
-  double epsilon = 1e-18;
-  double sqrDist = QgsGeometryUtils::sqrDistToLine( qp.x(), qp.y(),
-                   p1.x(), p1.y(),
-                   p2.x(), p2.y(),
-                   rx, ry, epsilon );
+  const double epsilon = 1e-18;
+  const double sqrDist = QgsGeometryUtils::sqrDistToLine( qp.x(), qp.y(),
+                         p1.x(), p1.y(),
+                         p2.x(), p2.y(),
+                         rx, ry, epsilon );
   QGSCOMPARENEAR( sqrDist, 11.83, 0.01 );
 }
 
 void TestQgsGeometryUtils::testAngleThreePoints()
 {
-  QgsPointXY p1( 0, 0 );
+  const QgsPointXY p1( 0, 0 );
   QgsPointXY p2( 1, 0 );
   QgsPointXY p3( 1, 1 );
   QGSCOMPARENEAR( QgsGeometryUtils::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y() ), M_PI / 2.0, 0.00000001 );
@@ -641,7 +641,7 @@ void TestQgsGeometryUtils::testAngleThreePoints()
 
 void TestQgsGeometryUtils::testMidPoint()
 {
-  QgsPoint p1( 4, 6 );
+  const QgsPoint p1( 4, 6 );
   QCOMPARE( QgsGeometryUtils::midpoint( p1, QgsPoint( 2, 2 ) ), QgsPoint( 3, 4 ) );
   QCOMPARE( QgsGeometryUtils::midpoint( QgsPoint( 4, 6, 0 ), QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2 ) ), QgsPoint( QgsWkbTypes::PointZ, 3, 4, 1 ) );
   QCOMPARE( QgsGeometryUtils::midpoint( QgsPoint( QgsWkbTypes::PointM, 4, 6, 0, 0 ), QgsPoint( QgsWkbTypes::PointM, 2, 2, 0, 2 ) ), QgsPoint( QgsWkbTypes::PointM, 3, 4, 0, 1 ) );
@@ -731,36 +731,36 @@ void TestQgsGeometryUtils::testPerpendicularSegment()
 
 void TestQgsGeometryUtils::testClosestPoint()
 {
-  QgsLineString linestringZ( QVector<QgsPoint>()
-                             << QgsPoint( 1, 1, 1 )
-                             << QgsPoint( 1, 3, 2 ) );
+  const QgsLineString linestringZ( QVector<QgsPoint>()
+                                   << QgsPoint( 1, 1, 1 )
+                                   << QgsPoint( 1, 3, 2 ) );
 
-  QgsPoint pt1 = QgsGeometryUtils::closestPoint( linestringZ, QgsPoint( 1, 0 ) );
+  const QgsPoint pt1 = QgsGeometryUtils::closestPoint( linestringZ, QgsPoint( 1, 0 ) );
   QGSCOMPARENEAR( pt1.z(), 1, 0.0001 );
   QVERIFY( std::isnan( pt1.m() ) );
 
-  QgsLineString linestringM( QVector<QgsPoint>()
-                             << QgsPoint( 1, 1, std::numeric_limits<double>::quiet_NaN(), 1 )
-                             << QgsPoint( 1, 3, std::numeric_limits<double>::quiet_NaN(), 2 ) );
+  const QgsLineString linestringM( QVector<QgsPoint>()
+                                   << QgsPoint( 1, 1, std::numeric_limits<double>::quiet_NaN(), 1 )
+                                   << QgsPoint( 1, 3, std::numeric_limits<double>::quiet_NaN(), 2 ) );
 
-  QgsPoint pt2 = QgsGeometryUtils::closestPoint( linestringM, QgsPoint( 1, 4 ) );
+  const QgsPoint pt2 = QgsGeometryUtils::closestPoint( linestringM, QgsPoint( 1, 4 ) );
   QVERIFY( std::isnan( pt2.z() ) );
   QGSCOMPARENEAR( pt2.m(), 2, 0.0001 );
 
-  QgsLineString linestringZM( QVector<QgsPoint>()
-                              << QgsPoint( 1, 1, 1, 1 )
-                              << QgsPoint( 1, 3, 2, 2 ) );
+  const QgsLineString linestringZM( QVector<QgsPoint>()
+                                    << QgsPoint( 1, 1, 1, 1 )
+                                    << QgsPoint( 1, 3, 2, 2 ) );
 
-  QgsPoint pt3 = QgsGeometryUtils::closestPoint( linestringZM, QgsPoint( 2, 2 ) );
+  const QgsPoint pt3 = QgsGeometryUtils::closestPoint( linestringZM, QgsPoint( 2, 2 ) );
   QGSCOMPARENEAR( pt3.z(), 1.5, 0.0001 );
   QGSCOMPARENEAR( pt3.m(), 1.5, 0.0001 );
 
-  QgsLineString linestringDuplicatedPoint( QVector<QgsPoint>()
+  const QgsLineString linestringDuplicatedPoint( QVector<QgsPoint>()
       << QgsPoint( 1, 1, 1, 1 )
       << QgsPoint( 1, 1, 1, 1 )
       << QgsPoint( 1, 3, 2, 2 ) );
 
-  QgsPoint pt4 = QgsGeometryUtils::closestPoint( linestringDuplicatedPoint, QgsPoint( 1, 0 ) );
+  const QgsPoint pt4 = QgsGeometryUtils::closestPoint( linestringDuplicatedPoint, QgsPoint( 1, 0 ) );
   QGSCOMPARENEAR( pt4.z(), 1, 0.0001 );
   QGSCOMPARENEAR( pt4.m(), 1, 0.0001 );
 }
@@ -954,8 +954,8 @@ void TestQgsGeometryUtils::testSegmentIntersection()
 
 void TestQgsGeometryUtils::testLineCircleIntersection()
 {
-  QgsPointXY center = QgsPoint( 2, 2 );
-  double radius = 2.0;
+  const QgsPointXY center = QgsPoint( 2, 2 );
+  const double radius = 2.0;
   QgsPointXY linePoint1 = QgsPoint( 0, 2 );
   QgsPointXY linePoint2 = QgsPoint( 2, 2 );
   QgsPointXY intersection = QgsPoint( 3, 3 );
@@ -1075,20 +1075,20 @@ void TestQgsGeometryUtils::testCircleCircleInnerTangents()
 
 void TestQgsGeometryUtils::testGml()
 {
-  QgsPoint point = QgsPoint( 1, 2 );
+  const QgsPoint point = QgsPoint( 1, 2 );
   QDomDocument doc;
   QDomElement elm = QgsGeometryUtils::pointsToGML2( QgsPointSequence( ) << point, doc, 2, QStringLiteral( "gml" ) );
-  QString expectedGML2( QStringLiteral( "<coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,2</coordinates>" ) );
+  const QString expectedGML2( QStringLiteral( "<coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,2</coordinates>" ) );
   QGSCOMPAREGML( elemToString( elm ), expectedGML2 );
   elm = QgsGeometryUtils::pointsToGML2( QgsPointSequence( ) << point, doc, 2, QStringLiteral( "gml" ), QgsAbstractGeometry::AxisOrder::YX );
-  QString expectedGML2_inverted( QStringLiteral( "<coordinates xmlns=\"gml\" cs=\",\" ts=\" \">2,1</coordinates>" ) );
+  const QString expectedGML2_inverted( QStringLiteral( "<coordinates xmlns=\"gml\" cs=\",\" ts=\" \">2,1</coordinates>" ) );
   QGSCOMPAREGML( elemToString( elm ), expectedGML2_inverted );
 
   elm = QgsGeometryUtils::pointsToGML3( QgsPointSequence( ) << point, doc, 2, QStringLiteral( "gml" ), false, QgsAbstractGeometry::AxisOrder::XY );
-  QString expectedGML3( QStringLiteral( "<posList xmlns=\"gml\" srsDimension=\"2\">1 2</posList>" ) );
+  const QString expectedGML3( QStringLiteral( "<posList xmlns=\"gml\" srsDimension=\"2\">1 2</posList>" ) );
   QGSCOMPAREGML( elemToString( elm ), expectedGML3 );
   elm = QgsGeometryUtils::pointsToGML3( QgsPointSequence( ) << point, doc, 2, QStringLiteral( "gml" ), false, QgsAbstractGeometry::AxisOrder::YX );
-  QString expectedGML3_inverted( QStringLiteral( "<posList xmlns=\"gml\" srsDimension=\"2\">2 1</posList>" ) );
+  const QString expectedGML3_inverted( QStringLiteral( "<posList xmlns=\"gml\" srsDimension=\"2\">2 1</posList>" ) );
   QGSCOMPAREGML( elemToString( elm ), expectedGML3_inverted );
 }
 

@@ -31,7 +31,7 @@ QgsLayoutUnitsComboBox::QgsLayoutUnitsComboBox( QWidget *parent )
         << QgsUnitTypes::LayoutPixels;
 
   const auto constUnits = units;
-  for ( QgsUnitTypes::LayoutUnit u : constUnits )
+  for ( const QgsUnitTypes::LayoutUnit u : constUnits )
   {
     addItem( QgsUnitTypes::toAbbreviatedString( u ), u );
     setItemData( count() - 1, QgsUnitTypes::toString( u ), Qt::ToolTipRole );
@@ -56,7 +56,7 @@ void QgsLayoutUnitsComboBox::linkToWidget( QDoubleSpinBox *widget )
 
 void QgsLayoutUnitsComboBox::indexChanged( int )
 {
-  QgsUnitTypes::LayoutUnit newUnit = unit();
+  const QgsUnitTypes::LayoutUnit newUnit = unit();
   if ( mConverter )
   {
     const auto constMLinkedSpinBoxes = mLinkedSpinBoxes;

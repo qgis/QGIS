@@ -31,7 +31,7 @@ double QgsHanaCrsUtils::getAngularUnits( const QgsCoordinateReferenceSystem &crs
   if ( !pjCrs )
     throwUnableToGetAngularUnits();
   PJ_CONTEXT *context = QgsProjContext::get();
-  QgsProjUtils::proj_pj_unique_ptr pjCoordinateSystem( proj_crs_get_coordinate_system( context, pjCrs ) );
+  const QgsProjUtils::proj_pj_unique_ptr pjCoordinateSystem( proj_crs_get_coordinate_system( context, pjCrs ) );
   if ( !pjCoordinateSystem )
     throwUnableToGetAngularUnits();
 
@@ -40,14 +40,14 @@ double QgsHanaCrsUtils::getAngularUnits( const QgsCoordinateReferenceSystem &crs
     throwUnableToGetAngularUnits();
 
   double factor;
-  bool ret = proj_cs_get_axis_info( context, pjCoordinateSystem.get(), 0,
-                                    nullptr,
-                                    nullptr,
-                                    nullptr,
-                                    &factor,
-                                    nullptr,
-                                    nullptr,
-                                    nullptr );
+  const bool ret = proj_cs_get_axis_info( context, pjCoordinateSystem.get(), 0,
+                                          nullptr,
+                                          nullptr,
+                                          nullptr,
+                                          &factor,
+                                          nullptr,
+                                          nullptr,
+                                          nullptr );
   if ( !ret )
     throwUnableToGetAngularUnits();
   return factor;
@@ -68,7 +68,7 @@ bool QgsHanaCrsUtils::identifyCrs( const QgsCoordinateReferenceSystem &crs, QStr
     return false;
 
   bool ok;
-  long id = authCode.toLong( &ok );
+  const long id = authCode.toLong( &ok );
   if ( !ok )
     return false;
 
