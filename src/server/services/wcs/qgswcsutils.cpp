@@ -269,7 +269,8 @@ namespace QgsWcs
       QUrl url = request.originalUrl();
       QUrlQuery q( url );
 
-      for ( const auto param : q.queryItems() )
+      const QList<QPair<QString, QString> > queryItems = q.queryItems();
+      for ( const QPair<QString, QString> &param : queryItems )
       {
         if ( sFilter.contains( param.first.toUpper() ) )
           q.removeAllQueryItems( param.first );

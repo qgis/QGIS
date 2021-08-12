@@ -154,7 +154,8 @@ namespace QgsWmts
   void QgsWmtsParameters::dump() const
   {
     log( "WMTS Request parameters:" );
-    for ( const auto parameter : mWmtsParameters.toStdMap() )
+    const auto map = mWmtsParameters.toStdMap();
+    for ( const auto &parameter : map )
     {
       const QString value = parameter.second.toString();
 
