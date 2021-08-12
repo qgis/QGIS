@@ -141,7 +141,7 @@ void TestQgsProcessingModel::testModel()
 {
   QgsProcessingRegistry registry;
   QgsProcessingRecentAlgorithmLog recentLog;
-  const QgsProcessingToolboxModel model( nullptr, &registry, &recentLog );
+  QgsProcessingToolboxModel model( nullptr, &registry, &recentLog );
 
 #ifdef ENABLE_MODELTEST
   new ModelTest( &model, this ); // for model validity checking
