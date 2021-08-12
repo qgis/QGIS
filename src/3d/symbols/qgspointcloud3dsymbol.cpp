@@ -458,7 +458,7 @@ void QgsClassificationPointCloud3DSymbol::setCategoriesList( const QgsPointCloud
 QgsPointCloudCategoryList QgsClassificationPointCloud3DSymbol::getFilteredOutCategories() const
 {
   QgsPointCloudCategoryList filteredOut;
-  for ( const QgsPointCloudCategory category : mCategoriesList )
+  for ( const QgsPointCloudCategory &category : mCategoriesList )
   {
     if ( !category.renderState() )
       filteredOut.push_back( category );
