@@ -425,7 +425,7 @@ QgsGmlStreamingParser::~QgsGmlStreamingParser()
 
   // Normally a sane user of this class should have consumed everything...
   const auto constMFeatureList = mFeatureList;
-  for ( const QgsGmlFeaturePtrGmlIdPair featPair : constMFeatureList )
+  for ( const QgsGmlFeaturePtrGmlIdPair &featPair : constMFeatureList )
   {
     delete featPair.first;
   }

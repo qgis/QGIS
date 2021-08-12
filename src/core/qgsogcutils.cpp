@@ -2726,7 +2726,7 @@ QString QgsOgcUtilsSQLStatementToFilter::getGeometryColumnSRSName( const QgsSQLS
   if ( !col->tableName().isEmpty() )
   {
     const auto constMLayerProperties = mLayerProperties;
-    for ( const QgsOgcUtils::LayerProperties prop : constMLayerProperties )
+    for ( const QgsOgcUtils::LayerProperties &prop : constMLayerProperties )
     {
       if ( prop.mName.compare( mMapTableAliasToNames[col->tableName()], Qt::CaseInsensitive ) == 0 &&
            prop.mGeometryAttribute.compare( col->name(), Qt::CaseInsensitive ) == 0 )

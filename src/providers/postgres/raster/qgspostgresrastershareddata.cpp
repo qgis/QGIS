@@ -29,7 +29,7 @@
 
 QgsPostgresRasterSharedData::~QgsPostgresRasterSharedData()
 {
-  for ( const auto idx : mSpatialIndexes )
+  for ( const auto &idx : mSpatialIndexes )
   {
     delete idx.second;
   }
