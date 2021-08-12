@@ -26,7 +26,7 @@ QgsMssqlExpressionCompiler::QgsMssqlExpressionCompiler( QgsMssqlFeatureSource *s
 
 QgsSqlExpressionCompiler::Result QgsMssqlExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
 {
-  QgsSqlExpressionCompiler::Result staticRes = replaceNodeByStaticCachedValueIfPossible( node, result );
+  const QgsSqlExpressionCompiler::Result staticRes = replaceNodeByStaticCachedValueIfPossible( node, result );
   if ( staticRes != Fail )
     return staticRes;
 
@@ -50,8 +50,8 @@ QgsSqlExpressionCompiler::Result QgsMssqlExpressionCompiler::compileNode( const 
 
       QString op1, op2;
 
-      Result result1 = compileNode( bin->opLeft(), op1 );
-      Result result2 = compileNode( bin->opRight(), op2 );
+      const Result result1 = compileNode( bin->opLeft(), op1 );
+      const Result result2 = compileNode( bin->opRight(), op2 );
       if ( result1 == Fail || result2 == Fail )
         return Fail;
 

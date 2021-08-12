@@ -32,7 +32,7 @@
 
 bool QgsGdalUtils::supportsRasterCreate( GDALDriverH driver )
 {
-  QString driverShortName = GDALGetDriverShortName( driver );
+  const QString driverShortName = GDALGetDriverShortName( driver );
   if ( driverShortName == QLatin1String( "SQLite" ) )
   {
     // it supports Create() but only for vector side
@@ -58,8 +58,8 @@ gdal::dataset_unique_ptr QgsGdalUtils::createMultiBandMemoryDataset( GDALDataTyp
 
   gdal::dataset_unique_ptr hSrcDS( GDALCreate( hDriverMem, "", width, height, bands, dataType, nullptr ) );
 
-  double cellSizeX = extent.width() / width;
-  double cellSizeY = extent.height() / height;
+  const double cellSizeX = extent.width() / width;
+  const double cellSizeY = extent.height() / height;
   double geoTransform[6];
   geoTransform[0] = extent.xMinimum();
   geoTransform[1] = cellSizeX;
@@ -75,8 +75,8 @@ gdal::dataset_unique_ptr QgsGdalUtils::createMultiBandMemoryDataset( GDALDataTyp
 
 gdal::dataset_unique_ptr QgsGdalUtils::createSingleBandTiffDataset( const QString &filename, GDALDataType dataType, const QgsRectangle &extent, int width, int height, const QgsCoordinateReferenceSystem &crs )
 {
-  double cellSizeX = extent.width() / width;
-  double cellSizeY = extent.height() / height;
+  const double cellSizeX = extent.width() / width;
+  const double cellSizeY = extent.height() / height;
   double geoTransform[6];
   geoTransform[0] = extent.xMinimum();
   geoTransform[1] = cellSizeX;
@@ -187,7 +187,7 @@ bool QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH h
 
 QImage QgsGdalUtils::resampleImage( const QImage &image, QSize outputSize, GDALRIOResampleAlg resampleAlg )
 {
-  gdal::dataset_unique_ptr srcDS = QgsGdalUtils::imageToMemoryDataset( image );
+  const gdal::dataset_unique_ptr srcDS = QgsGdalUtils::imageToMemoryDataset( image );
   if ( !srcDS )
     return QImage();
 
@@ -284,7 +284,7 @@ QString QgsGdalUtils::validateCreationOptionsFormat( const QStringList &createOp
 
   char **papszOptions = papszFromStringList( createOptions );
   // get error string?
-  int ok = GDALValidateCreationOptions( myGdalDriver, papszOptions );
+  const int ok = GDALValidateCreationOptions( myGdalDriver, papszOptions );
   CSLDestroy( papszOptions );
 
   if ( !ok )
@@ -477,7 +477,7 @@ void QgsGdalUtils::setupProxy()
   // given the limited cost of checking them on every provider instantiation
   // we can do it here so that new settings are applied whenever a new layer
   // is created.
-  QgsSettings settings;
+  const QgsSettings settings;
   // Check that proxy is enabled
   if ( settings.value( QStringLiteral( "proxy/proxyEnabled" ), false ).toBool() )
   {
@@ -485,16 +485,16 @@ void QgsGdalUtils::setupProxy()
     QList<QNetworkProxy> proxies( QgsNetworkAccessManager::instance()->proxyFactory()->queryProxy( ) );
     if ( ! proxies.isEmpty() )
     {
-      QNetworkProxy proxy( proxies.first() );
+      const QNetworkProxy proxy( proxies.first() );
       // TODO/FIXME: check excludes (the GDAL config options are global, we need a per-connection config option)
       //QStringList excludes;
       //excludes = settings.value( QStringLiteral( "proxy/proxyExcludedUrls" ), "" ).toStringList();
 
-      QString proxyHost( proxy.hostName() );
-      qint16 proxyPort( proxy.port() );
+      const QString proxyHost( proxy.hostName() );
+      const qint16 proxyPort( proxy.port() );
 
-      QString proxyUser( proxy.user() );
-      QString proxyPassword( proxy.password() );
+      const QString proxyUser( proxy.user() );
+      const QString proxyPassword( proxy.password() );
 
       if ( ! proxyHost.isEmpty() )
       {
@@ -528,7 +528,7 @@ bool QgsGdalUtils::pathIsCheapToOpen( const QString &path, int smallFileSizeLimi
     return false;
 
   const QString suffix = info.suffix().toLower();
-  static QStringList sFileSizeDependentExtensions
+  static const QStringList sFileSizeDependentExtensions
   {
     QStringLiteral( "xlsx" ),
     QStringLiteral( "ods" ),

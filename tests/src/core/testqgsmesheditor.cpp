@@ -106,7 +106,7 @@ void TestQgsMeshEditor::startStopEditing()
   QgsMeshDatasetGroupMetadata meta = meshLayerQuadTriangle->datasetGroupMetadata( datasetGroupIndex );
   QCOMPARE( meta.name(), QStringLiteral( "Bed Elevation" ) );
 
-  QgsCoordinateTransform transform;
+  const QgsCoordinateTransform transform;
 
   QVERIFY( meshLayerQuadTriangle->startFrameEditing( transform ) );
   QVERIFY( !meshLayerQuadTriangle->startFrameEditing( transform ) ); //mesh editing is already started
@@ -123,7 +123,7 @@ void TestQgsMeshEditor::startStopEditing()
   QCOMPARE( meta.maximum(), 50.0 );
   QCOMPARE( meshLayerQuadTriangle->meshVertexCount(), 5 );
   QCOMPARE( meshLayerQuadTriangle->meshFaceCount(), 2 );
-  QgsMesh mesh = *meshLayerQuadTriangle->nativeMesh();
+  const QgsMesh mesh = *meshLayerQuadTriangle->nativeMesh();
   for ( int i = 0; i < mesh.vertexCount(); ++i )
     QCOMPARE( mesh.vertex( i ).z(), meshLayerQuadTriangle->datasetValue( QgsMeshDatasetIndex( 0, 0 ), i ).scalar() );
 
@@ -180,7 +180,7 @@ void TestQgsMeshEditor::startStopEditing()
 
 static bool checkNeighbors( const QgsTopologicalMesh &mesh, int faceIndex, const QList<int> &expectedNeighbors )
 {
-  QVector<int> neighbors = mesh.neighborsOfFace( faceIndex );
+  const QVector<int> neighbors = mesh.neighborsOfFace( faceIndex );
   bool ret = true;
   ret &= neighbors.count() == mesh.mesh()->face( faceIndex ).count();
   for ( const int exn : expectedNeighbors )
@@ -191,7 +191,7 @@ static bool checkNeighbors( const QgsTopologicalMesh &mesh, int faceIndex, const
 
 static bool checkFacesAround( const QgsTopologicalMesh &mesh, int vertexIndex, QList<int> expectedFace )
 {
-  QList<int> facesAround = mesh.facesAroundVertex( vertexIndex );
+  const QList<int> facesAround = mesh.facesAroundVertex( vertexIndex );
   bool ret = true;
   ret &= expectedFace.count() == facesAround.count();
   for ( const int exf : expectedFace )
@@ -205,7 +205,7 @@ void TestQgsMeshEditor::createTopologicMesh()
   // Test of the creation of the topologic mesh from the native mesh, then test access to the elements from other elements
 
   QgsMeshEditingError error;
-  QgsTopologicalMesh topologicMesh = QgsTopologicalMesh::createTopologicalMesh( &nativeMesh, 4, error );
+  const QgsTopologicalMesh topologicMesh = QgsTopologicalMesh::createTopologicalMesh( &nativeMesh, 4, error );
   QVERIFY( error.errorType == Qgis::MeshEditingErrorType::NoError );
 
   // Check if face are counter clock wise
@@ -686,9 +686,9 @@ void TestQgsMeshEditor::badTopologicMesh()
 
 void TestQgsMeshEditor::meshEditorSimpleEdition()
 {
-  QUndoStack undoStack;
+  const QUndoStack undoStack;
 
-  QgsCoordinateTransform transform;
+  const QgsCoordinateTransform transform;
   QVERIFY( meshLayerQuadTriangle->startFrameEditing( transform ) );
 
   QgsMesh mesh;
@@ -698,11 +698,11 @@ void TestQgsMeshEditor::meshEditorSimpleEdition()
   QgsMeshEditor meshEditor( &mesh, &triangularMesh );
   QCOMPARE( meshEditor.initialize(), QgsMeshEditingError() );
 
-  QVector<QgsMeshVertex> vertices( {QgsPoint( 0.0, 0.0, 0.0 ), // 0
-                                    QgsPoint( 0.0, 1.0, 0.0 ), // 1
-                                    QgsPoint( 0.9, 0.9, 0.0 ), // 2
-                                    QgsPoint( 1.0, 0.0, 0.0 ), // 3
-                                    QgsPoint( )} );            // 4
+  const QVector<QgsMeshVertex> vertices( {QgsPoint( 0.0, 0.0, 0.0 ), // 0
+                                          QgsPoint( 0.0, 1.0, 0.0 ), // 1
+                                          QgsPoint( 0.9, 0.9, 0.0 ), // 2
+                                          QgsPoint( 1.0, 0.0, 0.0 ), // 3
+                                          QgsPoint( )} );            // 4
 
   meshEditor.addVertices( vertices, 0.01 );
 
@@ -759,23 +759,23 @@ void TestQgsMeshEditor::meshEditorSimpleEdition()
 
 void TestQgsMeshEditor::faceIntersection()
 {
-  QgsCoordinateTransform transform;
+  const QgsCoordinateTransform transform;
   QVERIFY( meshLayerQuadFlower->startFrameEditing( transform ) );
 
   QgsMeshEditor *editor = meshLayerQuadFlower->meshEditor();
   QVERIFY( editor );
 
   // add some free vertices
-  QVector<QgsMeshVertex> vertices( {QgsPoint( 2500.0, 3500.0, 0.0 ), // 8
-                                    QgsPoint( 1500.0, 4000.0, 0.0 ), // 9
-                                    QgsPoint( 2750.0, 3000.0, 0.0 ), // 10
-                                    QgsPoint( 1750.0, 3750.0, 0.0 ), // 11
-                                    QgsPoint( 500.0, 1500.0, 0.0 ), // 12
-                                    QgsPoint( 0.0, 0.0, 0.0 ), // 13
-                                    QgsPoint( 0.0, 5000.0, 0.0 ), // 14
-                                    QgsPoint( 5000.0, 5000.0, 0.0 ), // 15
-                                    QgsPoint( 5000.0, 0.0, 0.0 ), // 16
-                                   } );
+  const QVector<QgsMeshVertex> vertices( {QgsPoint( 2500.0, 3500.0, 0.0 ), // 8
+                                          QgsPoint( 1500.0, 4000.0, 0.0 ), // 9
+                                          QgsPoint( 2750.0, 3000.0, 0.0 ), // 10
+                                          QgsPoint( 1750.0, 3750.0, 0.0 ), // 11
+                                          QgsPoint( 500.0, 1500.0, 0.0 ), // 12
+                                          QgsPoint( 0.0, 0.0, 0.0 ), // 13
+                                          QgsPoint( 0.0, 5000.0, 0.0 ), // 14
+                                          QgsPoint( 5000.0, 5000.0, 0.0 ), // 15
+                                          QgsPoint( 5000.0, 0.0, 0.0 ), // 16
+                                         } );
   editor->addVertices( vertices, 10 );
 
   QCOMPARE( editor->freeVerticesIndexes().count(), 9 );
@@ -831,7 +831,7 @@ void TestQgsMeshEditor::particularCases()
     mesh.faces.append( {5, 10, 9} );
     mesh.faces.append( {5, 6, 10} );
 
-    QgsCoordinateTransform transform;
+    const QgsCoordinateTransform transform;
     triangularMesh.update( &mesh, transform );
     QVERIFY( meshEditor.initialize() == QgsMeshEditingError() );
     QVERIFY( meshEditor.checkConsistency() );
@@ -871,7 +871,7 @@ void TestQgsMeshEditor::particularCases()
     mesh.faces.append( {1, 5, 3} );
     mesh.faces.append( {1, 4, 5} );
 
-    QgsCoordinateTransform transform;
+    const QgsCoordinateTransform transform;
     triangularMesh.update( &mesh, transform );
     QVERIFY( meshEditor.initialize() == QgsMeshEditingError() );
     QVERIFY( meshEditor.checkConsistency() );
@@ -897,7 +897,7 @@ void TestQgsMeshEditor::particularCases()
     mesh.faces.append( {5, 4, 3} );
 
 
-    QgsCoordinateTransform transform;
+    const QgsCoordinateTransform transform;
     triangularMesh.update( &mesh, transform );
     QVERIFY( meshEditor.initialize() == QgsMeshEditingError() );
     QVERIFY( meshEditor.checkConsistency() );
@@ -905,9 +905,9 @@ void TestQgsMeshEditor::particularCases()
     QVERIFY( meshEditor.isFaceGeometricallyCompatible( {1, 3, 2} ) );
 
     QgsMeshEditingError error;
-    QVector<QgsMeshFace> facesToAdd( {{0, 1, 2}, {0, 2, 6}, {1, 3, 2}, {2, 3, 4}} );
+    const QVector<QgsMeshFace> facesToAdd( {{0, 1, 2}, {0, 2, 6}, {1, 3, 2}, {2, 3, 4}} );
 
-    QgsTopologicalMesh::TopologicalFaces topologicFaces = meshEditor.mTopologicalMesh.createNewTopologicalFaces( facesToAdd, true, error );
+    const QgsTopologicalMesh::TopologicalFaces topologicFaces = meshEditor.mTopologicalMesh.createNewTopologicalFaces( facesToAdd, true, error );
     QVERIFY( error == QgsMeshEditingError() );
     error = meshEditor.mTopologicalMesh.canFacesBeAdded( topologicFaces );
     QVERIFY( error == QgsMeshEditingError( Qgis::MeshEditingErrorType::ManifoldFace, 2 ) );
@@ -931,15 +931,15 @@ void TestQgsMeshEditor::particularCases()
     mesh.faces.append( {5, 3, 2} );
     mesh.faces.append( {5, 4, 3} );
 
-    QgsCoordinateTransform transform;
+    const QgsCoordinateTransform transform;
     triangularMesh.update( &mesh, transform );
     QVERIFY( meshEditor.initialize() == QgsMeshEditingError() );
     QVERIFY( meshEditor.checkConsistency() );
 
     QgsMeshEditingError error;
-    QVector<QgsMeshFace> facesToAdd( {{1, 6, 0}, {1, 2, 6}, {2, 3, 6}, {3, 4, 6 }, {1, 3, 2} } );
+    const QVector<QgsMeshFace> facesToAdd( {{1, 6, 0}, {1, 2, 6}, {2, 3, 6}, {3, 4, 6 }, {1, 3, 2} } );
 
-    QgsTopologicalMesh::TopologicalFaces topologicFaces = meshEditor.mTopologicalMesh.createNewTopologicalFaces( facesToAdd, true, error );
+    const QgsTopologicalMesh::TopologicalFaces topologicFaces = meshEditor.mTopologicalMesh.createNewTopologicalFaces( facesToAdd, true, error );
     QVERIFY( error == QgsMeshEditingError() );
     error = meshEditor.mTopologicalMesh.canFacesBeAdded( topologicFaces );
     QVERIFY( error == QgsMeshEditingError( Qgis::MeshEditingErrorType::ManifoldFace, 4 ) );
@@ -953,7 +953,7 @@ void TestQgsMeshEditor::particularCases()
     QgsTriangularMesh triangularMesh;
     QgsMeshEditor meshEditor( &mesh, &triangularMesh );
 
-    int sideSize = 40;
+    const int sideSize = 40;
 
     for ( int i = 0; i < sideSize; ++i )
       for ( int j = 0; j < sideSize; ++j )
@@ -984,7 +984,7 @@ void TestQgsMeshEditor::particularCases()
         }
       }
 
-    QgsCoordinateTransform transform;
+    const QgsCoordinateTransform transform;
     triangularMesh.update( &mesh, transform );
     QVERIFY( meshEditor.initialize() == QgsMeshEditingError() );
 
@@ -1019,7 +1019,7 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadTriangle()
   QCOMPARE( meshLayerQuadTriangle->meshVertexCount(), 5 );
   QCOMPARE( meshLayerQuadTriangle->meshFaceCount(), 2 );
 
-  QgsCoordinateTransform transform;
+  const QgsCoordinateTransform transform;
   QVERIFY( meshLayerQuadTriangle->startFrameEditing( transform ) );
 
   QgsMeshEditor *editor = meshLayerQuadTriangle->meshEditor();
@@ -1338,7 +1338,7 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadFlower()
   QCOMPARE( meshLayerQuadFlower->meshVertexCount(), 8 );
   QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 5 );
 
-  QgsCoordinateTransform transform;
+  const QgsCoordinateTransform transform;
   QVERIFY( meshLayerQuadFlower->startFrameEditing( transform ) );
 
   QgsMeshEditor *editor = meshLayerQuadFlower->meshEditor();
@@ -1565,7 +1565,7 @@ void TestQgsMeshEditor::refineMesh()
     mesh.faces.append( {10, 11, 12, 8} ); // 6
     mesh.faces.append( {8, 12, 7,} ); // 7
 
-    QgsCoordinateTransform transform;
+    const QgsCoordinateTransform transform;
     triangularMesh.update( &mesh, transform );
     QVERIFY( meshEditor.initialize() == QgsMeshEditingError() );
     QVERIFY( meshEditor.checkConsistency() );
@@ -1600,7 +1600,7 @@ void TestQgsMeshEditor::refineMesh()
     QgsTriangularMesh triangularMesh;
     QgsMeshEditor meshEditor( &mesh, &triangularMesh );
 
-    int sideSize = 20;
+    const int sideSize = 20;
 
     for ( int i = 0; i < sideSize; ++i )
       for ( int j = 0; j < sideSize; ++j )
@@ -1631,7 +1631,7 @@ void TestQgsMeshEditor::refineMesh()
         }
       }
 
-    QgsCoordinateTransform transform;
+    const QgsCoordinateTransform transform;
     triangularMesh.update( &mesh, transform );
     QVERIFY( meshEditor.initialize() == QgsMeshEditingError() );
 

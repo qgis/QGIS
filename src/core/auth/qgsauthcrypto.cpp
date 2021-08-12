@@ -60,8 +60,8 @@ const QString QgsAuthCrypto::decrypt( const QString &pass, const QString &cipher
 
 static QCA::SymmetricKey passwordKey_( const QString &pass, const QCA::InitializationVector &salt )
 {
-  QCA::SecureArray passarray( QByteArray( pass.toUtf8().constData() ) );
-  QCA::SecureArray passhash( QCA::Hash( PASSWORD_HASH_ALGORITHM ).hash( passarray ) );
+  const QCA::SecureArray passarray( QByteArray( pass.toUtf8().constData() ) );
+  const QCA::SecureArray passhash( QCA::Hash( PASSWORD_HASH_ALGORITHM ).hash( passarray ) );
   return QCA::PBKDF2().makeKey( passhash, salt, KEY_GEN_LENGTH, KEY_GEN_ITERATIONS );
 }
 
@@ -70,8 +70,8 @@ void QgsAuthCrypto::passwordKeyHash( const QString &pass, QString *salt, QString
   if ( QgsAuthCrypto::isDisabled() )
     return;
 
-  QCA::InitializationVector saltiv = QCA::InitializationVector( KEY_GEN_IV_LENGTH );
-  QCA::SymmetricKey key = passwordKey_( pass, saltiv );
+  const QCA::InitializationVector saltiv = QCA::InitializationVector( KEY_GEN_IV_LENGTH );
+  const QCA::SymmetricKey key = passwordKey_( pass, saltiv );
 
   if ( !key.isEmpty() )
   {
@@ -97,8 +97,8 @@ bool QgsAuthCrypto::verifyPasswordKeyHash( const QString &pass,
   if ( QgsAuthCrypto::isDisabled() )
     return false;
 
-  QCA::InitializationVector saltiv( QCA::hexToArray( salt ) );
-  QString derived( QCA::arrayToHex( passwordKey_( pass, saltiv ).toByteArray() ) );
+  const QCA::InitializationVector saltiv( QCA::hexToArray( salt ) );
+  const QString derived( QCA::arrayToHex( passwordKey_( pass, saltiv ).toByteArray() ) );
 
   if ( hashderived )
   {
@@ -117,9 +117,9 @@ QString QgsAuthCrypto::encryptdecrypt( const QString &passstr,
   if ( QgsAuthCrypto::isDisabled() )
     return outtxt;
 
-  QCA::InitializationVector iv( QCA::hexToArray( cipheriv ) );
+  const QCA::InitializationVector iv( QCA::hexToArray( cipheriv ) );
 
-  QCA::SymmetricKey key( QCA::SecureArray( QByteArray( passstr.toUtf8().constData() ) ) );
+  const QCA::SymmetricKey key( QCA::SecureArray( QByteArray( passstr.toUtf8().constData() ) ) );
 
   if ( encrypt )
   {
@@ -127,8 +127,8 @@ QString QgsAuthCrypto::encryptdecrypt( const QString &passstr,
                                       QCA::Encode, key, iv,
                                       CIPHER_PROVIDER );
 
-    QCA::SecureArray securedata( textstr.toUtf8() );
-    QCA::SecureArray encrypteddata( cipher.process( securedata ) );
+    const QCA::SecureArray securedata( textstr.toUtf8() );
+    const QCA::SecureArray encrypteddata( cipher.process( securedata ) );
     if ( !cipher.ok() )
     {
       qDebug( "Encryption failed!" );
@@ -143,8 +143,8 @@ QString QgsAuthCrypto::encryptdecrypt( const QString &passstr,
                                       QCA::Decode, key, iv,
                                       CIPHER_PROVIDER );
 
-    QCA::SecureArray ciphertext( QCA::hexToArray( textstr ) );
-    QCA::SecureArray decrypteddata( cipher.process( ciphertext ) );
+    const QCA::SecureArray ciphertext( QCA::hexToArray( textstr ) );
+    const QCA::SecureArray decrypteddata( cipher.process( ciphertext ) );
     if ( !cipher.ok() )
     {
       qDebug( "Decryption failed!" );

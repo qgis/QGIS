@@ -174,7 +174,7 @@ QVariantMap QgsLayoutAtlasToImageAlgorithm::processAlgorithm( const QVariantMap 
   }
 
   const QString directory = parameterAsFileOutput( parameters, QStringLiteral( "FOLDER" ), context );
-  QString fileName = QDir( directory ).filePath( QStringLiteral( "atlas" ) );
+  const QString fileName = QDir( directory ).filePath( QStringLiteral( "atlas" ) );
 
   QStringList imageFormats;
   const QList<QByteArray> supportedImageFormats { QImageWriter::supportedImageFormats() };
@@ -184,10 +184,10 @@ QVariantMap QgsLayoutAtlasToImageAlgorithm::processAlgorithm( const QVariantMap 
       continue;
     imageFormats << QString( format );
   }
-  int idx = parameterAsEnum( parameters, QStringLiteral( "EXTENSION" ), context );
-  QString extension = '.' + imageFormats.at( idx );
+  const int idx = parameterAsEnum( parameters, QStringLiteral( "EXTENSION" ), context );
+  const QString extension = '.' + imageFormats.at( idx );
 
-  QgsLayoutExporter exporter( layout.get() );
+  const QgsLayoutExporter exporter( layout.get() );
   QgsLayoutExporter::ImageExportSettings settings;
 
   if ( parameters.value( QStringLiteral( "DPI" ) ).isValid() )

@@ -275,8 +275,8 @@ class CORE_EXPORT QgsRectangle
      */
     void scale( double scaleFactor, double centerX, double centerY )
     {
-      double newWidth = width() * scaleFactor;
-      double newHeight = height() * scaleFactor;
+      const double newWidth = width() * scaleFactor;
+      const double newHeight = height() * scaleFactor;
       mXmin = centerX - newWidth / 2.0;
       mXmax = centerX + newWidth / 2.0;
       mYmin = centerY - newHeight / 2.0;
@@ -348,12 +348,12 @@ class CORE_EXPORT QgsRectangle
      */
     bool intersects( const QgsRectangle &rect ) const SIP_HOLDGIL
     {
-      double x1 = ( mXmin > rect.mXmin ? mXmin : rect.mXmin );
-      double x2 = ( mXmax < rect.mXmax ? mXmax : rect.mXmax );
+      const double x1 = ( mXmin > rect.mXmin ? mXmin : rect.mXmin );
+      const double x2 = ( mXmax < rect.mXmax ? mXmax : rect.mXmax );
       if ( x1 > x2 )
         return false;
-      double y1 = ( mYmin > rect.mYmin ? mYmin : rect.mYmin );
-      double y2 = ( mYmax < rect.mYmax ? mYmax : rect.mYmax );
+      const double y1 = ( mYmin > rect.mYmin ? mYmin : rect.mYmin );
+      const double y2 = ( mYmax < rect.mYmax ? mYmax : rect.mYmax );
       return y1 <= y2;
     }
 

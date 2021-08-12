@@ -177,7 +177,7 @@ bool QgsMeshDatasetGroupTreeModel::isEnabled( const QModelIndex &index ) const
   if ( !index.isValid() )
     return false;
 
-  QVariant checked = data( index, Qt::CheckStateRole );
+  const QVariant checked = data( index, Qt::CheckStateRole );
 
   return checked != QVariant() && checked.toInt() == Qt::Checked;
 }
@@ -256,7 +256,7 @@ void QgsMeshDatasetGroupProxyModel::setActiveScalarGroup( int group )
   if ( mActiveScalarGroupIndex == group )
     return;
 
-  int oldGroupIndex = mActiveScalarGroupIndex;
+  const int oldGroupIndex = mActiveScalarGroupIndex;
   mActiveScalarGroupIndex = group;
 
   if ( oldGroupIndex > -1  || group > -1 )
@@ -273,7 +273,7 @@ void QgsMeshDatasetGroupProxyModel::setActiveVectorGroup( int group )
   if ( mActiveVectorGroupIndex == group )
     return;
 
-  int oldGroupIndex = mActiveVectorGroupIndex;
+  const int oldGroupIndex = mActiveVectorGroupIndex;
   mActiveVectorGroupIndex = group;
 
   if ( oldGroupIndex > -1  || group > -1 )
@@ -293,7 +293,7 @@ QVariant QgsMeshDatasetGroupProxyModel::data( const QModelIndex &index, int role
   if ( !index.isValid() )
     return QVariant();
 
-  QModelIndex sourceIndex = mapToSource( index );
+  const QModelIndex sourceIndex = mapToSource( index );
   QgsMeshDatasetGroupTreeItem *item = static_cast<QgsMeshDatasetGroupTreeItem *>( sourceIndex.internalPointer() );
 
   switch ( role )
@@ -330,7 +330,7 @@ void QgsMeshDatasetGroupProxyModel::syncToLayer( QgsMeshLayer *layer )
 
 bool QgsMeshDatasetGroupProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
-  QModelIndex sourceIndex = sourceModel()->index( source_row, 0, source_parent );
+  const QModelIndex sourceIndex = sourceModel()->index( source_row, 0, source_parent );
 
   return static_cast<QgsMeshDatasetGroupTreeModel *>( sourceModel() )->isEnabled( sourceIndex );
 }
@@ -353,14 +353,14 @@ void QgsMeshDatasetGroupTreeItemDelagate::paint( QPainter *painter, const QStyle
     return;
 
   QStyledItemDelegate::paint( painter, option, index );
-  bool isVector = index.data( QgsMeshDatasetGroupTreeModel::IsVector ).toBool();
+  const bool isVector = index.data( QgsMeshDatasetGroupTreeModel::IsVector ).toBool();
   if ( isVector )
   {
-    bool isActive = index.data( QgsMeshDatasetGroupTreeModel::IsActiveVectorDatasetGroup ).toBool();
+    const bool isActive = index.data( QgsMeshDatasetGroupTreeModel::IsActiveVectorDatasetGroup ).toBool();
     painter->drawPixmap( iconRect( option.rect, true ), isActive ? mVectorSelectedPixmap : mVectorDeselectedPixmap );
   }
 
-  bool isActive = index.data( QgsMeshDatasetGroupTreeModel::IsActiveScalarDatasetGroup ).toBool();
+  const bool isActive = index.data( QgsMeshDatasetGroupTreeModel::IsActiveScalarDatasetGroup ).toBool();
   painter->drawPixmap( iconRect( option.rect, false ), isActive ? mScalarSelectedPixmap : mScalarDeselectedPixmap );
 }
 
@@ -371,9 +371,9 @@ QRect QgsMeshDatasetGroupTreeItemDelagate::iconRect( const QRect &rect, bool isV
 
 QRect QgsMeshDatasetGroupTreeItemDelagate::iconRect( const QRect &rect, int pos ) const
 {
-  int iw = mScalarSelectedPixmap.width();
-  int ih = mScalarSelectedPixmap.height();
-  int margin = ( rect.height() - ih ) / 2;
+  const int iw = mScalarSelectedPixmap.width();
+  const int ih = mScalarSelectedPixmap.height();
+  const int margin = ( rect.height() - ih ) / 2;
   return QRect( rect.right() - pos * ( iw + margin ), rect.top() + margin, iw, ih );
 }
 
@@ -452,7 +452,7 @@ void QgsMeshActiveDatasetGroupTreeView::mousePressEvent( QMouseEvent *event )
     const QRect vr = visualRect( idx );
     if ( mDelegate.iconRect( vr, true ).contains( event->pos() ) )
     {
-      bool isVector = idx.data( QgsMeshDatasetGroupTreeModel::IsVector ).toBool();
+      const bool isVector = idx.data( QgsMeshDatasetGroupTreeModel::IsVector ).toBool();
       if ( isVector )
       {
         int datasetIndex = idx.data( QgsMeshDatasetGroupTreeModel::DatasetGroupIndex ).toInt();
@@ -554,7 +554,7 @@ void QgsMeshDatasetGroupListModel::setDisplayProviderName( bool displayProviderN
 
 QStringList QgsMeshDatasetGroupListModel::variableNames() const
 {
-  int varCount = rowCount( QModelIndex() );
+  const int varCount = rowCount( QModelIndex() );
   QStringList variableNames;
   for ( int i = 0; i < varCount; ++i )
     variableNames.append( data( createIndex( i, 0 ), Qt::DisplayRole ).toString() );
@@ -597,7 +597,7 @@ void QgsMeshDatasetGroupTreeView::deselectAllGroups()
 
 void QgsMeshDatasetGroupTreeView::contextMenuEvent( QContextMenuEvent *event )
 {
-  QModelIndex idx = indexAt( event->pos() );
+  const QModelIndex idx = indexAt( event->pos() );
   if ( !idx.isValid() )
     setCurrentIndex( QModelIndex() );
 
@@ -612,11 +612,11 @@ void QgsMeshDatasetGroupTreeView::removeCurrentItem()
 
   if ( item )
   {
-    QList<int> dependencies = item->groupIndexDependencies();
+    const QList<int> dependencies = item->groupIndexDependencies();
     if ( !dependencies.isEmpty() )
     {
       QString varList;
-      for ( int dependentGroupIndex : dependencies )
+      for ( const int dependentGroupIndex : dependencies )
       {
         QgsMeshDatasetGroupTreeItem *item = mModel->datasetGroupTreeItem( dependentGroupIndex );
         if ( item )
@@ -649,7 +649,7 @@ QMenu *QgsMeshDatasetGroupTreeView::createContextMenu()
   if ( !index.isValid() )
     return nullptr;
 
-  int groupIndex = mModel->data( index, QgsMeshDatasetGroupTreeModel::DatasetGroupIndex ).toInt();
+  const int groupIndex = mModel->data( index, QgsMeshDatasetGroupTreeModel::DatasetGroupIndex ).toInt();
   QgsMeshDatasetGroupTreeItem *item = mModel->datasetGroupTreeItem( groupIndex );
 
   if ( !item )
@@ -692,7 +692,7 @@ QMenu *QgsMeshDatasetGroupSaveMenu::createSaveMenu( int groupIndex, QMenu *paren
 
   QMenu *menu = new QMenu( parentMenu );
   menu->setTitle( QObject::tr( "Save Datasets Group as..." ) );
-  QgsMeshDatasetGroupMetadata groupMeta = mMeshLayer->datasetGroupMetadata( groupIndex );
+  const QgsMeshDatasetGroupMetadata groupMeta = mMeshLayer->datasetGroupMetadata( groupIndex );
 
   QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( mMeshLayer->dataProvider()->name() );
   if ( providerMetadata )
@@ -700,8 +700,8 @@ QMenu *QgsMeshDatasetGroupSaveMenu::createSaveMenu( int groupIndex, QMenu *paren
     const QList<QgsMeshDriverMetadata> allDrivers = providerMetadata->meshDriversMetadata();
     for ( const QgsMeshDriverMetadata &driver : allDrivers )
     {
-      QString driverName = driver.name();
-      QString suffix = driver.writeDatasetOnFileSuffix();
+      const QString driverName = driver.name();
+      const QString suffix = driver.writeDatasetOnFileSuffix();
       if ( ( driver.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteFaceDatasets )
              && groupMeta.dataType() == QgsMeshDatasetGroupMetadata::DataOnFaces ) ||
            ( driver.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteVertexDatasets )
@@ -743,16 +743,16 @@ void QgsMeshDatasetGroupSaveMenu::saveDatasetGroup( int datasetGroup, const QStr
   QString filter;
   if ( !fileSuffix.isEmpty() )
     filter = QStringLiteral( "%1 (*.%2)" ).arg( driver ).arg( fileSuffix );
-  QString exportFileDir = settings.value( QStringLiteral( "lastMeshDatasetDir" ), QDir::homePath(), QgsSettings::App ).toString();
-  QString saveFileName = QFileDialog::getSaveFileName( nullptr,
-                         QObject::tr( "Save Mesh Datasets" ),
-                         exportFileDir,
-                         filter );
+  const QString exportFileDir = settings.value( QStringLiteral( "lastMeshDatasetDir" ), QDir::homePath(), QgsSettings::App ).toString();
+  const QString saveFileName = QFileDialog::getSaveFileName( nullptr,
+                               QObject::tr( "Save Mesh Datasets" ),
+                               exportFileDir,
+                               filter );
 
   if ( saveFileName.isEmpty() )
     return;
 
-  QFileInfo openFileInfo( saveFileName );
+  const QFileInfo openFileInfo( saveFileName );
   settings.setValue( QStringLiteral( "lastMeshDatasetDir" ), openFileInfo.absolutePath(), QgsSettings::App );
 
 

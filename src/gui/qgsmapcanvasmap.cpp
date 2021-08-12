@@ -52,8 +52,8 @@ void QgsMapCanvasMap::addPreviewImage( const QImage &image, const QgsRectangle &
 
 QRectF QgsMapCanvasMap::boundingRect() const
 {
-  double width = mItemSize.width();
-  double height = mItemSize.height();
+  const double width = mItemSize.width();
+  const double height = mItemSize.height();
 
   return QRectF( -width, -height, 3 * width, 3 * height );
 }
@@ -61,8 +61,8 @@ QRectF QgsMapCanvasMap::boundingRect() const
 void QgsMapCanvasMap::paint( QPainter *painter )
 {
   // setRect() makes the size +2 :-(
-  int w = std::round( mItemSize.width() ) - 2;
-  int h = std::round( mItemSize.height() ) - 2;
+  const int w = std::round( mItemSize.width() ) - 2;
+  const int h = std::round( mItemSize.height() ) - 2;
 
   bool scale = false;
   if ( mImage.size() != QSize( w, h ) * mImage.devicePixelRatioF() )
@@ -78,16 +78,16 @@ void QgsMapCanvasMap::paint( QPainter *painter )
 
   /*Offset between 0/0 and mRect.xMinimum/mRect.yMinimum.
   We need to consider the offset, because mRect is not updated yet and there might be an offset*/
-  QgsPointXY pt = toMapCoordinates( QPoint( 0, 0 ) );
-  double offsetX = pt.x() - mRect.xMinimum();
-  double offsetY = pt.y() - mRect.yMaximum();
+  const QgsPointXY pt = toMapCoordinates( QPoint( 0, 0 ) );
+  const double offsetX = pt.x() - mRect.xMinimum();
+  const double offsetY = pt.y() - mRect.yMaximum();
 
   //draw preview images first
   QList< QPair< QImage, QgsRectangle > >::const_iterator imIt = mPreviewImages.constBegin();
   for ( ; imIt != mPreviewImages.constEnd(); ++imIt )
   {
-    QPointF ul = toCanvasCoordinates( QgsPoint( imIt->second.xMinimum() + offsetX, imIt->second.yMaximum() + offsetY ) );
-    QPointF lr = toCanvasCoordinates( QgsPoint( imIt->second.xMaximum() + offsetX, imIt->second.yMinimum() + offsetY ) );
+    const QPointF ul = toCanvasCoordinates( QgsPoint( imIt->second.xMinimum() + offsetX, imIt->second.yMaximum() + offsetY ) );
+    const QPointF lr = toCanvasCoordinates( QgsPoint( imIt->second.xMaximum() + offsetX, imIt->second.yMinimum() + offsetY ) );
     painter->drawImage( QRectF( ul.x(), ul.y(), lr.x() - ul.x(), lr.y() - ul.y() ), imIt->first, QRect( 0, 0, imIt->first.width(), imIt->first.height() ) );
   }
 

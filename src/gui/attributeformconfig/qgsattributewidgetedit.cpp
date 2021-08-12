@@ -110,7 +110,7 @@ void QgsAttributeWidgetRelationEditWidget::setRelationEditorConfiguration( const
   mRelationCardinalityCombo->clear();
   setCardinalityCombo( tr( "Many to one relation" ) );
 
-  QgsRelation relation = QgsProject::instance()->relationManager()->relation( relationId );
+  const QgsRelation relation = QgsProject::instance()->relationManager()->relation( relationId );
   const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencingRelations( relation.referencingLayer() );
   if ( !relation.fieldPairs().isEmpty() )
   {
@@ -125,7 +125,7 @@ void QgsAttributeWidgetRelationEditWidget::setRelationEditorConfiguration( const
     }
   }
 
-  int widgetTypeIdx = mWidgetTypeComboBox->findData( config.mRelationWidgetType );
+  const int widgetTypeIdx = mWidgetTypeComboBox->findData( config.mRelationWidgetType );
   mWidgetTypeComboBox->setCurrentIndex( widgetTypeIdx >= 0
                                         ? widgetTypeIdx
                                         : mWidgetTypeComboBox->findData( QgsGui::relationWidgetRegistry()->defaultWidgetType() ) );
@@ -176,7 +176,7 @@ void QgsAttributeWidgetRelationEditWidget::relationCardinalityComboCurrentIndexC
   if ( !mConfigWidget )
     return;
 
-  QgsRelation nmRelation = QgsProject::instance()->relationManager()->relation( mRelationCardinalityCombo->currentData().toString() );
+  const QgsRelation nmRelation = QgsProject::instance()->relationManager()->relation( mRelationCardinalityCombo->currentData().toString() );
   mConfigWidget->setNmRelation( nmRelation );
 }
 
@@ -187,7 +187,7 @@ void QgsAttributeWidgetRelationEditWidget::setCardinalityCombo( const QString &c
 
 void QgsAttributeWidgetRelationEditWidget::setNmRelationId( const QVariant &auserData )
 {
-  int idx = mRelationCardinalityCombo->findData( auserData );
+  const int idx = mRelationCardinalityCombo->findData( auserData );
 
   if ( idx != -1 )
     mRelationCardinalityCombo->setCurrentIndex( idx );

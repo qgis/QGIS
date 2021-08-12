@@ -48,7 +48,7 @@ QgsGml::QgsGml(
   , mTypeName( typeName )
   , mFinished( false )
 {
-  int index = mTypeName.indexOf( ':' );
+  const int index = mTypeName.indexOf( ':' );
   if ( index != -1 && index < mTypeName.length() )
   {
     mTypeName = mTypeName.mid( index + 1 );
@@ -101,7 +101,7 @@ int QgsGml::getFeatures( const QString &uri, QgsWkbTypes::Type *wkbType, QgsRect
   //find out if there is a QGIS main window. If yes, display a progress dialog
   QProgressDialog *progressDialog = nullptr;
   QWidget *mainWindow = nullptr;
-  QWidgetList topLevelWidgets = qApp->topLevelWidgets();
+  const QWidgetList topLevelWidgets = qApp->topLevelWidgets();
   for ( QWidgetList::const_iterator it = topLevelWidgets.constBegin(); it != topLevelWidgets.constEnd(); ++it )
   {
     if ( ( *it )->objectName() == QLatin1String( "QgisApp" ) )
@@ -127,7 +127,7 @@ int QgsGml::getFeatures( const QString &uri, QgsWkbTypes::Type *wkbType, QgsRect
     {
       atEnd = 1;
     }
-    QByteArray readData = reply->readAll();
+    const QByteArray readData = reply->readAll();
     if ( !readData.isEmpty() )
     {
       QString errorMsg;
@@ -140,8 +140,8 @@ int QgsGml::getFeatures( const QString &uri, QgsWkbTypes::Type *wkbType, QgsRect
 
   fillMapsFromParser();
 
-  QNetworkReply::NetworkError replyError = reply->error();
-  QString replyErrorString = reply->errorString();
+  const QNetworkReply::NetworkError replyError = reply->error();
+  const QString replyErrorString = reply->errorString();
 
   delete reply;
   delete progressDialog;
@@ -193,7 +193,7 @@ int QgsGml::getFeatures( const QByteArray &data, QgsWkbTypes::Type *wkbType, Qgs
 
 void QgsGml::fillMapsFromParser()
 {
-  QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = mParser.getAndStealReadyFeatures();
+  const QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = mParser.getAndStealReadyFeatures();
   const auto constFeatures = features;
   for ( const QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair &featPair : constFeatures )
   {
@@ -312,7 +312,7 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QString &typeName,
 
   mEndian = QgsApplication::endian();
 
-  int index = mTypeName.indexOf( ':' );
+  const int index = mTypeName.indexOf( ':' );
   if ( index != -1 && index < mTypeName.length() )
   {
     mTypeName = mTypeName.mid( index + 1 );
@@ -329,7 +329,7 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QString &typeName,
 
 static QString stripNS( const QString &string )
 {
-  int index = string.indexOf( ':' );
+  const int index = string.indexOf( ':' );
   if ( index != -1 && index < string.length() )
   {
     return string.mid( index + 1 );
@@ -367,7 +367,7 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QList<LayerProperties> &laye
   mThematicAttributes.clear();
   for ( int i = 0; i < fields.size(); i++ )
   {
-    QMap< QString, QPair<QString, QString> >::const_iterator att_it = mapFieldNameToSrcLayerNameFieldName.constFind( fields.at( i ).name() );
+    const QMap< QString, QPair<QString, QString> >::const_iterator att_it = mapFieldNameToSrcLayerNameFieldName.constFind( fields.at( i ).name() );
     if ( att_it != mapFieldNameToSrcLayerNameFieldName.constEnd() )
     {
       if ( mLayerProperties.size() == 1 )
@@ -400,7 +400,7 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QList<LayerProperties> &laye
     mGeometryAttributeBA = mGeometryAttribute.toUtf8();
     mGeometryAttributePtr = mGeometryAttributeBA.constData();
     mGeometryAttributeUTF8Len = strlen( mGeometryAttributePtr );
-    int index = mTypeName.indexOf( ':' );
+    const int index = mTypeName.indexOf( ':' );
     if ( index != -1 && index < mTypeName.length() )
     {
       mTypeName = mTypeName.mid( index + 1 );
@@ -425,7 +425,7 @@ QgsGmlStreamingParser::~QgsGmlStreamingParser()
 
   // Normally a sane user of this class should have consumed everything...
   const auto constMFeatureList = mFeatureList;
-  for ( QgsGmlFeaturePtrGmlIdPair featPair : constMFeatureList )
+  for ( const QgsGmlFeaturePtrGmlIdPair featPair : constMFeatureList )
   {
     delete featPair.first;
   }
@@ -448,7 +448,7 @@ bool QgsGmlStreamingParser::processData( const QByteArray &data, bool atEnd, QSt
 {
   if ( XML_Parse( mParser, data.data(), data.size(), atEnd ) == 0 )
   {
-    XML_Error errorCode = XML_GetErrorCode( mParser );
+    const XML_Error errorCode = XML_GetErrorCode( mParser );
     errorMsg = QObject::tr( "Error: %1 on line %2, column %3" )
                .arg( XML_ErrorString( errorCode ) )
                .arg( XML_GetCurrentLineNumber( mParser ) )
@@ -477,7 +477,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
   const char *pszLocalName = ( pszSep ) ? pszSep + 1 : el;
   const int nsLen = ( pszSep ) ? ( int )( pszSep - el ) : 0;
   const int localNameLen = ( pszSep ) ? ( int )( elLen - nsLen ) - 1 : elLen;
-  ParseMode parseMode( mParseModeStack.isEmpty() ? None : mParseModeStack.top() );
+  const ParseMode parseMode( mParseModeStack.isEmpty() ? None : mParseModeStack.top() );
   int elDimension = 0;
 
   // Figure out if the GML namespace is GML_NAMESPACE or GML32_NAMESPACE
@@ -559,9 +559,9 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
     mStringCash.clear();
     if ( elDimension == 0 )
     {
-      QString srsDimension = readAttribute( QStringLiteral( "srsDimension" ), attr );
+      const QString srsDimension = readAttribute( QStringLiteral( "srsDimension" ), attr );
       bool ok;
-      int dimension = srsDimension.toInt( &ok );
+      const int dimension = srsDimension.toInt( &ok );
       if ( ok )
       {
         elDimension = dimension;
@@ -614,15 +614,15 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
     Q_ASSERT( !mCurrentFeature );
     mCurrentFeature = new QgsFeature( mFeatureCount );
     mCurrentFeature->setFields( mFields ); // allow name-based attribute lookups
-    QgsAttributes attributes( mThematicAttributes.size() ); //add empty attributes
+    const QgsAttributes attributes( mThematicAttributes.size() ); //add empty attributes
     mCurrentFeature->setAttributes( attributes );
     mParseModeStack.push( QgsGmlStreamingParser::Tuple );
     mCurrentFeatureId.clear();
   }
   else if ( parseMode == Tuple )
   {
-    QString currentTypename( QString::fromUtf8( pszLocalName, localNameLen ) );
-    QMap< QString, LayerProperties >::const_iterator iter = mMapTypeNameToProperties.constFind( currentTypename );
+    const QString currentTypename( QString::fromUtf8( pszLocalName, localNameLen ) );
+    const QMap< QString, LayerProperties >::const_iterator iter = mMapTypeNameToProperties.constFind( currentTypename );
     if ( iter != mMapTypeNameToProperties.constEnd() )
     {
       mFeatureTupleDepth = mParseDepth;
@@ -669,7 +669,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
     Q_ASSERT( !mCurrentFeature );
     mCurrentFeature = new QgsFeature( mFeatureCount );
     mCurrentFeature->setFields( mFields ); // allow name-based attribute lookups
-    QgsAttributes attributes( mThematicAttributes.size() ); //add empty attributes
+    const QgsAttributes attributes( mThematicAttributes.size() ); //add empty attributes
     mCurrentFeature->setAttributes( attributes );
     mParseModeStack.push( QgsGmlStreamingParser::Feature );
     mCurrentFeatureId = readAttribute( QStringLiteral( "fid" ), attr );
@@ -740,7 +740,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
   }
   else if ( parseMode == FeatureTuple )
   {
-    QString localName( QString::fromUtf8( pszLocalName, localNameLen ) );
+    const QString localName( QString::fromUtf8( pszLocalName, localNameLen ) );
     if ( mThematicAttributes.contains( mCurrentTypename + '|' + localName ) )
     {
       mParseModeStack.push( QgsGmlStreamingParser::AttributeTuple );
@@ -750,7 +750,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
   }
   else if ( parseMode == Feature )
   {
-    QString localName( QString::fromUtf8( pszLocalName, localNameLen ) );
+    const QString localName( QString::fromUtf8( pszLocalName, localNameLen ) );
     if ( mThematicAttributes.contains( localName ) )
     {
       mParseModeStack.push( QgsGmlStreamingParser::Attribute );
@@ -763,10 +763,10 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
       // <Attribute value="My description" name="desc"/>
       if ( localName.compare( QLatin1String( "attribute" ), Qt::CaseInsensitive ) == 0 )
       {
-        QString name = readAttribute( QStringLiteral( "name" ), attr );
+        const QString name = readAttribute( QStringLiteral( "name" ), attr );
         if ( mThematicAttributes.contains( name ) )
         {
-          QString value = readAttribute( QStringLiteral( "value" ), attr );
+          const QString value = readAttribute( QStringLiteral( "value" ), attr );
           setAttribute( name, value );
         }
       }
@@ -782,7 +782,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
     if ( !conversionOk )
       mNumberReturned = -1;
 
-    QString numberMatched = readAttribute( QStringLiteral( "numberMatched" ), attr ); // WFS 2.0
+    const QString numberMatched = readAttribute( QStringLiteral( "numberMatched" ), attr ); // WFS 2.0
     mNumberMatched = numberMatched.toInt( &conversionOk );
     if ( !conversionOk ) // likely since numberMatched="unknown" is legal
       mNumberMatched = -1;
@@ -828,9 +828,9 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
   {
     // srsDimension can also be set on the top geometry element
     // e.g. https://data.linz.govt.nz/services;key=XXXXXXXX/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=data.linz.govt.nz:layer-524
-    QString srsDimension = readAttribute( QStringLiteral( "srsDimension" ), attr );
+    const QString srsDimension = readAttribute( QStringLiteral( "srsDimension" ), attr );
     bool ok;
-    int dimension = srsDimension.toInt( &ok );
+    const int dimension = srsDimension.toInt( &ok );
     if ( ok )
     {
       elDimension = dimension;
@@ -870,9 +870,9 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
   const char *pszLocalName = ( pszSep ) ? pszSep + 1 : el;
   const int nsLen = ( pszSep ) ? ( int )( pszSep - el ) : 0;
   const int localNameLen = ( pszSep ) ? ( int )( elLen - nsLen ) - 1 : elLen;
-  ParseMode parseMode( mParseModeStack.isEmpty() ? None : mParseModeStack.top() );
+  const ParseMode parseMode( mParseModeStack.isEmpty() ? None : mParseModeStack.top() );
 
-  int lastDimension = mDimensionStack.isEmpty() ? 0 : mDimensionStack.pop();
+  const int lastDimension = mDimensionStack.isEmpty() ? 0 : mDimensionStack.pop();
 
   const bool isGMLNS = ( nsLen == mGMLNameSpaceURI.size() && mGMLNameSpaceURIPtr && memcmp( el, mGMLNameSpaceURIPtr, nsLen ) == 0 );
 
@@ -906,7 +906,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
     mParseModeStack.pop();
     if ( mFoundUnhandledGeometryElement )
     {
-      gdal::ogr_geometry_unique_ptr hGeom( OGR_G_CreateFromGML( mGeometryString.c_str() ) );
+      const gdal::ogr_geometry_unique_ptr hGeom( OGR_G_CreateFromGML( mGeometryString.c_str() ) );
       //QgsDebugMsg( QStringLiteral("for OGR: %1 -> %2").arg(mGeometryString.c_str()).arg(hGeom != nullptr));
       if ( hGeom )
       {
@@ -1179,7 +1179,7 @@ void QgsGmlStreamingParser::characters( const XML_Char *chars, int len )
     mGeometryString.append( chars, len );
   }
 
-  QgsGmlStreamingParser::ParseMode parseMode = mParseModeStack.top();
+  const QgsGmlStreamingParser::ParseMode parseMode = mParseModeStack.top();
   if ( parseMode == QgsGmlStreamingParser::Attribute ||
        parseMode == QgsGmlStreamingParser::AttributeTuple ||
        parseMode == QgsGmlStreamingParser::Coordinate ||
@@ -1195,7 +1195,7 @@ void QgsGmlStreamingParser::characters( const XML_Char *chars, int len )
 void QgsGmlStreamingParser::setAttribute( const QString &name, const QString &value )
 {
   //find index with attribute name
-  QMap<QString, QPair<int, QgsField> >::const_iterator att_it = mThematicAttributes.constFind( name );
+  const QMap<QString, QPair<int, QgsField> >::const_iterator att_it = mThematicAttributes.constFind( name );
   bool conversionOk = true;
   if ( att_it != mThematicAttributes.constEnd() )
   {
@@ -1234,7 +1234,7 @@ int QgsGmlStreamingParser::readEpsgFromAttribute( int &epsgNr, const XML_Char **
   {
     if ( strcmp( attr[i], "srsName" ) == 0 )
     {
-      QString epsgString( attr[i + 1] );
+      const QString epsgString( attr[i + 1] );
       QString epsgNrString;
       bool bIsUrn = false;
       if ( epsgString.startsWith( QLatin1String( "http://www.opengis.net/gml/srs/" ) ) ) //e.g. geoserver: "http://www.opengis.net/gml/srs/epsg.xml#4326"
@@ -1258,7 +1258,7 @@ int QgsGmlStreamingParser::readEpsgFromAttribute( int &epsgNr, const XML_Char **
         epsgNrString = epsgString.section( ':', 1, 1 );
       }
       bool conversionOk;
-      int eNr = epsgNrString.toInt( &conversionOk );
+      const int eNr = epsgNrString.toInt( &conversionOk );
       if ( !conversionOk )
       {
         return 1;
@@ -1266,7 +1266,7 @@ int QgsGmlStreamingParser::readEpsgFromAttribute( int &epsgNr, const XML_Char **
       epsgNr = eNr;
       mSrsName = epsgString;
 
-      QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:%1" ).arg( epsgNr ) );
+      const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:%1" ).arg( epsgNr ) );
       if ( crs.isValid() )
       {
         if ( ( ( mAxisOrientationLogic == Honour_EPSG_if_urn && bIsUrn ) ||
@@ -1321,7 +1321,7 @@ int QgsGmlStreamingParser::pointsFromCoordinateString( QList<QgsPointXY> &points
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList tuples = coordString.split( mTupleSeparator, QString::SkipEmptyParts );
 #else
-  QStringList tuples = coordString.split( mTupleSeparator, Qt::SkipEmptyParts );
+  const QStringList tuples = coordString.split( mTupleSeparator, Qt::SkipEmptyParts );
 #endif
   QStringList tuples_coordinates;
   double x, y;
@@ -1360,7 +1360,7 @@ int QgsGmlStreamingParser::pointsFromPosListString( QList<QgsPointXY> &points, c
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList coordinates = coordString.split( ' ', QString::SkipEmptyParts );
 #else
-  QStringList coordinates = coordString.split( ' ', Qt::SkipEmptyParts );
+  const QStringList coordinates = coordString.split( ' ', Qt::SkipEmptyParts );
 #endif
 
   if ( coordinates.size() % dimension != 0 )
@@ -1368,16 +1368,16 @@ int QgsGmlStreamingParser::pointsFromPosListString( QList<QgsPointXY> &points, c
     QgsDebugMsg( QStringLiteral( "Wrong number of coordinates" ) );
   }
 
-  int ncoor = coordinates.size() / dimension;
+  const int ncoor = coordinates.size() / dimension;
   for ( int i = 0; i < ncoor; i++ )
   {
     bool conversionSuccess;
-    double x = coordinates.value( i * dimension ).toDouble( &conversionSuccess );
+    const double x = coordinates.value( i * dimension ).toDouble( &conversionSuccess );
     if ( !conversionSuccess )
     {
       continue;
     }
-    double y = coordinates.value( i * dimension + 1 ).toDouble( &conversionSuccess );
+    const double y = coordinates.value( i * dimension + 1 ).toDouble( &conversionSuccess );
     if ( !conversionSuccess )
     {
       continue;
@@ -1402,7 +1402,7 @@ int QgsGmlStreamingParser::pointsFromString( QList<QgsPointXY> &points, const QS
 
 int QgsGmlStreamingParser::getPointWKB( QgsWkbPtr &wkbPtr, const QgsPointXY &point ) const
 {
-  int wkbSize = 1 + sizeof( int ) + 2 * sizeof( double );
+  const int wkbSize = 1 + sizeof( int ) + 2 * sizeof( double );
   wkbPtr = QgsWkbPtr( new unsigned char[wkbSize], wkbSize );
 
   QgsWkbPtr fillPtr( wkbPtr );
@@ -1413,7 +1413,7 @@ int QgsGmlStreamingParser::getPointWKB( QgsWkbPtr &wkbPtr, const QgsPointXY &poi
 
 int QgsGmlStreamingParser::getLineWKB( QgsWkbPtr &wkbPtr, const QList<QgsPointXY> &lineCoordinates ) const
 {
-  int wkbSize = 1 + 2 * sizeof( int ) + lineCoordinates.size() * 2 * sizeof( double );
+  const int wkbSize = 1 + 2 * sizeof( int ) + lineCoordinates.size() * 2 * sizeof( double );
   wkbPtr = QgsWkbPtr( new unsigned char[wkbSize], wkbSize );
 
   QgsWkbPtr fillPtr( wkbPtr );
@@ -1431,7 +1431,7 @@ int QgsGmlStreamingParser::getLineWKB( QgsWkbPtr &wkbPtr, const QList<QgsPointXY
 
 int QgsGmlStreamingParser::getRingWKB( QgsWkbPtr &wkbPtr, const QList<QgsPointXY> &ringCoordinates ) const
 {
-  int wkbSize = sizeof( int ) + ringCoordinates.size() * 2 * sizeof( double );
+  const int wkbSize = sizeof( int ) + ringCoordinates.size() * 2 * sizeof( double );
   wkbPtr = QgsWkbPtr( new unsigned char[wkbSize], wkbSize );
 
   QgsWkbPtr fillPtr( wkbPtr );
@@ -1449,7 +1449,7 @@ int QgsGmlStreamingParser::getRingWKB( QgsWkbPtr &wkbPtr, const QList<QgsPointXY
 
 int QgsGmlStreamingParser::createMultiLineFromFragments()
 {
-  int size = 1 + 2 * sizeof( int ) + totalWKBFragmentSize();
+  const int size = 1 + 2 * sizeof( int ) + totalWKBFragmentSize();
   mCurrentWKB = QgsWkbPtr( new unsigned char[size], size );
 
   QgsWkbPtr wkbPtr( mCurrentWKB );
@@ -1472,7 +1472,7 @@ int QgsGmlStreamingParser::createMultiLineFromFragments()
 
 int QgsGmlStreamingParser::createMultiPointFromFragments()
 {
-  int size = 1 + 2 * sizeof( int ) + totalWKBFragmentSize();
+  const int size = 1 + 2 * sizeof( int ) + totalWKBFragmentSize();
   mCurrentWKB = QgsWkbPtr( new unsigned char[size], size );
 
   QgsWkbPtr wkbPtr( mCurrentWKB );
@@ -1494,7 +1494,7 @@ int QgsGmlStreamingParser::createMultiPointFromFragments()
 
 int QgsGmlStreamingParser::createPolygonFromFragments()
 {
-  int size = 1 + 2 * sizeof( int ) + totalWKBFragmentSize();
+  const int size = 1 + 2 * sizeof( int ) + totalWKBFragmentSize();
   mCurrentWKB = QgsWkbPtr( new unsigned char[size], size );
 
   QgsWkbPtr wkbPtr( mCurrentWKB );

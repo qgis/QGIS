@@ -47,7 +47,7 @@ QgsDistanceArea::QgsDistanceArea()
   mSemiMajor = -1.0;
   mSemiMinor = -1.0;
   mInvFlattening = -1.0;
-  QgsCoordinateTransformContext context; // this is ok - by default we have a source/dest of WGS84, so no reprojection takes place
+  const QgsCoordinateTransformContext context; // this is ok - by default we have a source/dest of WGS84, so no reprojection takes place
   setSourceCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), context ); // WGS 84
   setEllipsoid( geoNone() );
 }
@@ -96,7 +96,7 @@ bool QgsDistanceArea::setEllipsoid( const QString &ellipsoid )
     return true;
   }
 
-  QgsEllipsoidUtils::EllipsoidParameters params = QgsEllipsoidUtils::ellipsoidParameters( ellipsoid );
+  const QgsEllipsoidUtils::EllipsoidParameters params = QgsEllipsoidUtils::ellipsoidParameters( ellipsoid );
   if ( !params.valid )
   {
     mGeod.reset();
@@ -131,7 +131,7 @@ double QgsDistanceArea::measure( const QgsAbstractGeometry *geomV2, MeasureType 
     return 0.0;
   }
 
-  int geomDimension = geomV2->dimension();
+  const int geomDimension = geomV2->dimension();
   if ( geomDimension <= 0 )
   {
     return 0.0;
@@ -178,7 +178,7 @@ double QgsDistanceArea::measure( const QgsAbstractGeometry *geomV2, MeasureType 
       }
 
       QgsLineString *lineString = curve->curveToLine();
-      double length = measureLine( lineString );
+      const double length = measureLine( lineString );
       delete lineString;
       return length;
     }
@@ -271,7 +271,7 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry &geometry ) const
     {
       length += measure( outerRing );
     }
-    int nInnerRings = poly->numInteriorRings();
+    const int nInnerRings = poly->numInteriorRings();
     for ( int i = 0; i < nInnerRings; ++i )
     {
       length += measure( poly->interiorRing( i ) );
@@ -563,7 +563,7 @@ QgsGeometry QgsDistanceArea::splitGeometryAtAntimeridian( const QgsGeometry &geo
       continue;
     }
 
-    std::unique_ptr< QgsLineString > l = std::make_unique< QgsLineString >();
+    const std::unique_ptr< QgsLineString > l = std::make_unique< QgsLineString >();
     try
     {
       double x = 0;
@@ -601,7 +601,7 @@ QgsGeometry QgsDistanceArea::splitGeometryAtAntimeridian( const QgsGeometry &geo
           // when crossing the antimeridian, we need to calculate the latitude
           // at which the geodesic intersects the antimeridian
           double fract = 0;
-          double lat180 = latitudeGeodesicCrossesAntimeridian( QgsPointXY( prevLon, prevLat ), QgsPointXY( lon, lat ), fract );
+          const double lat180 = latitudeGeodesicCrossesAntimeridian( QgsPointXY( prevLon, prevLat ), QgsPointXY( lon, lat ), fract );
           if ( line->is3D() )
           {
             z = prevZ + ( p.z() - prevZ ) * fract;
@@ -726,7 +726,7 @@ QVector< QVector<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &
       // at which the geodesic intersects the antimeridian, and add points to both line segments at this latitude
       // on the antimeridian.
       double fraction;
-      double lat180 = latitudeGeodesicCrossesAntimeridian( QgsPointXY( prevLon, prevLat ), QgsPointXY( lon, lat ), fraction );
+      const double lat180 = latitudeGeodesicCrossesAntimeridian( QgsPointXY( prevLon, prevLat ), QgsPointXY( lon, lat ), fraction );
 
       try
       {
@@ -865,8 +865,8 @@ double QgsDistanceArea::bearing( const QgsPointXY &p1, const QgsPointXY &p2 ) co
   }
   else //compute simple planar azimuth
   {
-    double dx = p2.x() - p1.x();
-    double dy = p2.y() - p1.y();
+    const double dx = p2.x() - p1.x();
+    const double dy = p2.y() - p1.y();
     // Note: the prototype of std::atan2 is (y,x), to return the angle of
     // vector (x,y) from the horizontal axis in counter-clock-wise orientation.
     // But a bearing is expressed in clock-wise order from the vertical axis, so
@@ -978,10 +978,10 @@ QString QgsDistanceArea::formatArea( double area, int decimals, QgsUnitTypes::Ar
 double QgsDistanceArea::convertLengthMeasurement( double length, QgsUnitTypes::DistanceUnit toUnits ) const
 {
   // get the conversion factor between the specified units
-  QgsUnitTypes::DistanceUnit measureUnits = lengthUnits();
-  double factorUnits = QgsUnitTypes::fromUnitToUnitFactor( measureUnits, toUnits );
+  const QgsUnitTypes::DistanceUnit measureUnits = lengthUnits();
+  const double factorUnits = QgsUnitTypes::fromUnitToUnitFactor( measureUnits, toUnits );
 
-  double result = length * factorUnits;
+  const double result = length * factorUnits;
   QgsDebugMsgLevel( QStringLiteral( "Converted length of %1 %2 to %3 %4" ).arg( length )
                     .arg( QgsUnitTypes::toString( measureUnits ) )
                     .arg( result )
@@ -992,10 +992,10 @@ double QgsDistanceArea::convertLengthMeasurement( double length, QgsUnitTypes::D
 double QgsDistanceArea::convertAreaMeasurement( double area, QgsUnitTypes::AreaUnit toUnits ) const
 {
   // get the conversion factor between the specified units
-  QgsUnitTypes::AreaUnit measureUnits = areaUnits();
-  double factorUnits = QgsUnitTypes::fromUnitToUnitFactor( measureUnits, toUnits );
+  const QgsUnitTypes::AreaUnit measureUnits = areaUnits();
+  const double factorUnits = QgsUnitTypes::fromUnitToUnitFactor( measureUnits, toUnits );
 
-  double result = area * factorUnits;
+  const double result = area * factorUnits;
   QgsDebugMsgLevel( QStringLiteral( "Converted area of %1 %2 to %3 %4" ).arg( area )
                     .arg( QgsUnitTypes::toString( measureUnits ) )
                     .arg( result )

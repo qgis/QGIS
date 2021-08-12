@@ -60,7 +60,7 @@ QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
 
 QVariant QgsExternalResourceWidget::documentPath( QVariant::Type type ) const
 {
-  QString path = mFileWidget->filePath();
+  const QString path = mFileWidget->filePath();
   if ( path.isEmpty() || path == QgsApplication::nullRepresentation() )
   {
     return QVariant( type );
@@ -247,7 +247,7 @@ void QgsExternalResourceWidget::loadDocument( const QString &path )
       // use an image reader to ensure image orientation and transforms are correctly handled
       QImageReader ir( resolvedPath );
       ir.setAutoTransform( true );
-      QPixmap pm = QPixmap::fromImage( ir.read() );
+      const QPixmap pm = QPixmap::fromImage( ir.read() );
       if ( !pm.isNull() )
       {
         mPixmapLabel->setPixmap( pm );

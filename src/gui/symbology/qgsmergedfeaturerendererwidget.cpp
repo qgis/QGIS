@@ -35,7 +35,7 @@ QgsMergedFeatureRendererWidget::QgsMergedFeatureRendererWidget( QgsVectorLayer *
     return;
   }
 
-  QgsWkbTypes::GeometryType type = QgsWkbTypes::geometryType( layer->wkbType() );
+  const QgsWkbTypes::GeometryType type = QgsWkbTypes::geometryType( layer->wkbType() );
 
   // the renderer only applies to line or polygon vector layers
   if ( type != QgsWkbTypes::PolygonGeometry && type != QgsWkbTypes::LineGeometry )
@@ -69,7 +69,7 @@ QgsMergedFeatureRendererWidget::QgsMergedFeatureRendererWidget( QgsVectorLayer *
 
   int currentEmbeddedIdx = 0;
   //insert possible renderer types
-  QStringList rendererList = QgsApplication::rendererRegistry()->renderersList( type == QgsWkbTypes::PolygonGeometry ? QgsRendererAbstractMetadata::PolygonLayer :  QgsRendererAbstractMetadata::LineLayer );
+  const QStringList rendererList = QgsApplication::rendererRegistry()->renderersList( type == QgsWkbTypes::PolygonGeometry ? QgsRendererAbstractMetadata::PolygonLayer :  QgsRendererAbstractMetadata::LineLayer );
   QStringList::const_iterator it = rendererList.constBegin();
   int idx = 0;
   mRendererComboBox->blockSignals( true );
@@ -90,7 +90,7 @@ QgsMergedFeatureRendererWidget::QgsMergedFeatureRendererWidget( QgsVectorLayer *
   }
   mRendererComboBox->blockSignals( false );
 
-  int oldIdx = mRendererComboBox->currentIndex();
+  const int oldIdx = mRendererComboBox->currentIndex();
   mRendererComboBox->setCurrentIndex( currentEmbeddedIdx );
   if ( oldIdx == currentEmbeddedIdx )
   {
@@ -130,11 +130,11 @@ void QgsMergedFeatureRendererWidget::setDockMode( bool dockMode )
 
 void QgsMergedFeatureRendererWidget::mRendererComboBox_currentIndexChanged( int index )
 {
-  QString rendererId = mRendererComboBox->itemData( index ).toString();
+  const QString rendererId = mRendererComboBox->itemData( index ).toString();
   QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( rendererId );
   if ( m )
   {
-    std::unique_ptr< QgsFeatureRenderer > oldRenderer( mRenderer->embeddedRenderer()->clone() );
+    const std::unique_ptr< QgsFeatureRenderer > oldRenderer( mRenderer->embeddedRenderer()->clone() );
     mEmbeddedRendererWidget.reset( m->createRendererWidget( mLayer, mStyle, oldRenderer.get() ) );
     connect( mEmbeddedRendererWidget.get(), &QgsRendererWidget::widgetChanged, this, &QgsMergedFeatureRendererWidget::widgetChanged );
     mEmbeddedRendererWidget->setContext( mContext );

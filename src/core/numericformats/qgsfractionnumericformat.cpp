@@ -72,7 +72,7 @@ QString QgsFractionNumericFormat::formatDouble( double value, const QgsNumericFo
   QString res;
 
   const double fixed = std::floor( std::fabs( value ) );
-  bool success = doubleToVulgarFraction( std::fabs( value ) - fixed, num, den, sign );
+  const bool success = doubleToVulgarFraction( std::fabs( value ) - fixed, num, den, sign );
   if ( success )
   {
     if ( mUseDedicatedUnicode && num == 1 && den == 2 )
@@ -237,7 +237,7 @@ QString QgsFractionNumericFormat::toUnicodeSuperscript( const QString &input )
   QString res = input;
   for ( int i = 0; i < input.size(); ++i )
   {
-    QChar c = input.at( i );
+    const QChar c = input.at( i );
     if ( c == '0' )
       res[i] =  QChar( 0x2070 ); //⁰
     else if ( c == '1' )
@@ -267,7 +267,7 @@ QString QgsFractionNumericFormat::toUnicodeSubscript( const QString &input )
   QString res = input;
   for ( int i = 0; i < input.size(); ++i )
   {
-    QChar c = input.at( i );
+    const QChar c = input.at( i );
     if ( c == '0' )
       res[i] =  QChar( 0x2080 ); //₀
     else if ( c == '1' )

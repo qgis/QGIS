@@ -38,7 +38,7 @@ QgsProjectionSelectionDialog::QgsProjectionSelectionDialog( QWidget *parent,
   //apply selected projection upon double-click on item
   connect( projectionSelector, &QgsProjectionSelectionTreeWidget::projectionDoubleClicked, this, &QgsProjectionSelectionDialog::accept );
 
-  QgsSettings settings;
+  const QgsSettings settings;
   mSplitter->restoreState( settings.value( QStringLiteral( "Windows/ProjectionSelectorDialog/splitterState" ) ).toByteArray() );
 }
 

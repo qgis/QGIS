@@ -77,14 +77,14 @@ void TestQgsDualView::initTestCase()
   QgsGui::editorWidgetRegistry()->initEditors();
 
   // Setup a map canvas with a vector layer loaded...
-  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + '/';
 
   //
   // load a vector layer
   //
-  QString myPointsFileName = mTestDataDir + "points.shp";
-  QFileInfo myPointFileInfo( myPointsFileName );
+  const QString myPointsFileName = mTestDataDir + "points.shp";
+  const QFileInfo myPointFileInfo( myPointsFileName );
   mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
                                      myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
@@ -118,7 +118,7 @@ void TestQgsDualView::testColumnHeaders()
 {
   for ( int i = 0; i < mPointsLayer->fields().count(); ++i )
   {
-    QgsField fld = mPointsLayer->fields().at( i );
+    const QgsField fld = mPointsLayer->fields().at( i );
     QCOMPARE( mDualView->tableView()->model()->headerData( i, Qt::Horizontal ).toString(), fld.name() );
   }
 }
@@ -130,9 +130,9 @@ void TestQgsDualView::testData()
 
   for ( int i = 0; i < mPointsLayer->fields().count(); ++i )
   {
-    QgsField fld = mPointsLayer->fields().at( i );
+    const QgsField fld = mPointsLayer->fields().at( i );
 
-    QModelIndex index = mDualView->tableView()->model()->index( 0, i );
+    const QModelIndex index = mDualView->tableView()->model()->index( 0, i );
     QCOMPARE( mDualView->tableView()->model()->data( index ).toString(), fld.displayString( feature.attribute( i ) ) );
   }
 }
@@ -158,12 +158,12 @@ void TestQgsDualView::testFilterSelected()
   mDualView->setFilterMode( QgsAttributeTableFilterModel::ShowSelected );
   QCOMPARE( mDualView->tableView()->model()->rowCount(), 2 );
 
-  int headingIdx = mPointsLayer->fields().lookupField( QStringLiteral( "Heading" ) );
-  QgsField fld = mPointsLayer->fields().at( headingIdx );
+  const int headingIdx = mPointsLayer->fields().lookupField( QStringLiteral( "Heading" ) );
+  const QgsField fld = mPointsLayer->fields().at( headingIdx );
   for ( int i = 0; i < selected.count(); ++i )
   {
     mPointsLayer->getFeatures( QgsFeatureRequest().setFilterFid( selected.at( i ) ) ).nextFeature( feature );
-    QModelIndex index = mDualView->tableView()->model()->index( i, headingIdx );
+    const QModelIndex index = mDualView->tableView()->model()->index( i, headingIdx );
     QCOMPARE( mDualView->tableView()->model()->data( index ).toString(), fld.displayString( feature.attribute( headingIdx ) ) );
   }
 
@@ -216,7 +216,7 @@ void TestQgsDualView::testSort()
 
   for ( int i = 0; i < classes.length(); ++i )
   {
-    QModelIndex index = mDualView->tableView()->model()->index( i, 0 );
+    const QModelIndex index = mDualView->tableView()->model()->index( i, 0 );
     QCOMPARE( mDualView->tableView()->model()->data( index ).toString(), classes.at( i ) );
   }
 
@@ -243,7 +243,7 @@ void TestQgsDualView::testSort()
 
   for ( int i = 0; i < headings.length(); ++i )
   {
-    QModelIndex index = mDualView->tableView()->model()->index( i, 1 );
+    const QModelIndex index = mDualView->tableView()->model()->index( i, 1 );
     QCOMPARE( mDualView->tableView()->model()->data( index ).toString(), headings.at( i ) );
   }
 }
@@ -280,7 +280,7 @@ void TestQgsDualView::testAttributeFormSharedValueScanning()
   f4.setAttribute( QStringLiteral( "col4" ), 2 );
   layer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 << f4 );
 
-  QgsAttributeForm form( layer );
+  const QgsAttributeForm form( layer );
 
   QgsFeatureIterator it = layer->getFeatures();
 

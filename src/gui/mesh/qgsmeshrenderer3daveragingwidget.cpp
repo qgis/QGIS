@@ -32,14 +32,14 @@
 static void _setSvg( QLabel *imageLabel,
                      const QString &imgName )
 {
-  qreal dpi = QgsApplication::instance()->desktop()->logicalDpiX();
-  int desiredWidth = static_cast<int>( 100 * dpi / 25.4 );
+  const qreal dpi = QgsApplication::instance()->desktop()->logicalDpiX();
+  const int desiredWidth = static_cast<int>( 100 * dpi / 25.4 );
 
   QSvgRenderer renderer( QStringLiteral( ":/images/themes/default/mesh/%1" ).arg( imgName ) );
   if ( renderer.isValid() )
   {
     const QSize defaultSvgSize = renderer.defaultSize();
-    int desiredHeight = defaultSvgSize.height() * desiredWidth / defaultSvgSize.width();
+    const int desiredHeight = defaultSvgSize.height() * desiredWidth / defaultSvgSize.width();
 
     QPixmap pixmap( QSize( desiredWidth, desiredHeight ) );
     pixmap.fill( Qt::transparent );

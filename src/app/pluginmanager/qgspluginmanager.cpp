@@ -127,12 +127,12 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
   connect( mModelPlugins, &QStandardItemModel::itemChanged, this, &QgsPluginManager::pluginItemChanged );
 
   // Restiore UI state for widgets not handled by QgsOptionsDialogBase
-  QgsSettings settings;
+  const QgsSettings settings;
   // 1) The second splitter state:
   mPluginsDetailsSplitter->restoreState( settings.value( QStringLiteral( "Windows/PluginManager/secondSplitterState" ) ).toByteArray() );
   // 2) The current mOptionsListWidget index (it will overwrite the "tab" setting of QgsOptionsDialogBase that handles the stackedWidget page
   // instead of the mOptionsListWidget index). Then the signal connected above will update the relevant page as well.
-  int option = settings.value( QStringLiteral( "Windows/PluginManager/option" ), 0 ).toInt();
+  const int option = settings.value( QStringLiteral( "Windows/PluginManager/option" ), 0 ).toInt();
   mOptionsListWidget->setCurrentRow( option );
   if ( option == 0 )
   {
@@ -183,7 +183,7 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
   // get the QgsSettings group from the installer
   QString settingsGroup;
   QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
-  QgsSettings settings;
+  const QgsSettings settings;
 
   // Now enable Python support:
   // Show and preset widgets only suitable when Python support active
@@ -259,8 +259,8 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
     ckbDeprecated->setChecked( true );
   }
 
-  int interval = settings.value( settingsGroup + "/checkOnStartInterval", "" ).toInt();
-  int indx = mCheckingOnStartIntervals.indexOf( interval ); // if none found, just use -1 index.
+  const int interval = settings.value( settingsGroup + "/checkOnStartInterval", "" ).toInt();
+  const int indx = mCheckingOnStartIntervals.indexOf( interval ); // if none found, just use -1 index.
   comboInterval->setCurrentIndex( indx );
 }
 
@@ -363,8 +363,8 @@ void QgsPluginManager::getCppPluginsMetadata()
   QgsProviderRegistry *pr = QgsProviderRegistry::instance();
   QStringList myPathList( pr->libraryDirectory().path() );
 
-  QgsSettings settings;
-  QString myPaths = settings.value( QStringLiteral( "plugins/searchPathsForPlugins" ), "" ).toString();
+  const QgsSettings settings;
+  const QString myPaths = settings.value( QStringLiteral( "plugins/searchPathsForPlugins" ), "" ).toString();
   if ( !myPaths.isEmpty() )
   {
     myPathList.append( myPaths.split( '|' ) );
@@ -372,8 +372,8 @@ void QgsPluginManager::getCppPluginsMetadata()
 
   for ( int j = 0; j < myPathList.size(); ++j )
   {
-    QString myPluginDir = myPathList.at( j );
-    QDir pluginDir( myPluginDir, sharedLibExtension, QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks );
+    const QString myPluginDir = myPathList.at( j );
+    const QDir pluginDir( myPluginDir, sharedLibExtension, QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks );
 
     if ( pluginDir.count() == 0 )
     {
@@ -383,7 +383,7 @@ void QgsPluginManager::getCppPluginsMetadata()
 
     for ( uint i = 0; i < pluginDir.count(); i++ )
     {
-      QString lib = QStringLiteral( "%1/%2" ).arg( myPluginDir, pluginDir[i] );
+      const QString lib = QStringLiteral( "%1/%2" ).arg( myPluginDir, pluginDir[i] );
 
 #ifdef TESTLIB
       // This doesn't work on windows and causes problems with plugins
@@ -412,7 +412,7 @@ void QgsPluginManager::getCppPluginsMetadata()
 
       QgsDebugMsgLevel( "Examining: " + lib, 2 );
       QLibrary *myLib = new QLibrary( lib );
-      bool loaded = myLib->load();
+      const bool loaded = myLib->load();
       if ( !loaded )
       {
         QgsDebugMsgLevel( QStringLiteral( "Failed to load: %1 (%2)" ).arg( myLib->fileName(), myLib->errorString() ), 2 );
@@ -504,7 +504,7 @@ void QgsPluginManager::getCppPluginsMetadata()
       }
 
       // Add "cpp:" prefix in case of two: Python and C++ plugins with the same name
-      QString baseName = "cpp:" + QFileInfo( lib ).baseName();
+      const QString baseName = "cpp:" + QFileInfo( lib ).baseName();
 
       QMap<QString, QString> metadata;
       metadata[QStringLiteral( "id" )] = baseName;
@@ -563,16 +563,16 @@ void QgsPluginManager::reloadModelData()
   {
     if ( ! it->value( QStringLiteral( "id" ) ).isEmpty() )
     {
-      QString baseName = it->value( QStringLiteral( "id" ) );
-      QString pluginName = it->value( QStringLiteral( "name" ) );
-      QString description = it->value( QStringLiteral( "description" ) );
-      QString author = it->value( QStringLiteral( "author_name" ) );
-      QString createDate = it->value( QStringLiteral( "create_date" ) );
-      QString updateDate = it->value( QStringLiteral( "update_date" ) );
-      QString iconPath = it->value( QStringLiteral( "icon" ) );
-      QString status = it->value( QStringLiteral( "status" ) );
-      QString status_exp = it->value( QStringLiteral( "status_exp" ) );
-      QString error = it->value( QStringLiteral( "error" ) );
+      const QString baseName = it->value( QStringLiteral( "id" ) );
+      const QString pluginName = it->value( QStringLiteral( "name" ) );
+      const QString description = it->value( QStringLiteral( "description" ) );
+      const QString author = it->value( QStringLiteral( "author_name" ) );
+      const QString createDate = it->value( QStringLiteral( "create_date" ) );
+      const QString updateDate = it->value( QStringLiteral( "update_date" ) );
+      const QString iconPath = it->value( QStringLiteral( "icon" ) );
+      const QString status = it->value( QStringLiteral( "status" ) );
+      const QString status_exp = it->value( QStringLiteral( "status_exp" ) );
+      const QString error = it->value( QStringLiteral( "error" ) );
 
       QStandardItem *mypDetailItem = new QStandardItem( pluginName );
 
@@ -660,7 +660,7 @@ void QgsPluginManager::reloadModelData()
 
 void QgsPluginManager::pluginItemChanged( QStandardItem *item )
 {
-  QString id = item->data( PLUGIN_BASE_NAME_ROLE ).toString();
+  const QString id = item->data( PLUGIN_BASE_NAME_ROLE ).toString();
 
   if ( item->checkState() )
   {
@@ -905,7 +905,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     html += QStringLiteral( "<img src=\"%1\" style=\"float:right;max-width:64px;max-height:64px;\">" ).arg( iconPath );
   }
 
-  QRegularExpression stripHtml = QRegularExpression( QStringLiteral( "&lt;[^\\s].*?&gt;" ) );
+  const QRegularExpression stripHtml = QRegularExpression( QStringLiteral( "&lt;[^\\s].*?&gt;" ) );
 
   QString name = metadata->value( QStringLiteral( "name" ) );
   name = name.remove( stripHtml );
@@ -1133,13 +1133,13 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
 
   // Enable/disable buttons
 
-  QgsSettings settings;
+  const QgsSettings settings;
   QString settingsGroup;
   QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
-  bool expAllowed = settings.value( settingsGroup + "/allowExperimental", false ).toBool();
+  const bool expAllowed = settings.value( settingsGroup + "/allowExperimental", false ).toBool();
 
-  bool installEnabled = metadata->value( QStringLiteral( "pythonic" ) ).toUpper() == QLatin1String( "TRUE" ) && metadata->value( QStringLiteral( "status" ) ) != QLatin1String( "orphan" ) && metadata->value( QStringLiteral( "status" ) ) != QLatin1String( "none available" );
-  bool installExpEnabled = metadata->value( QStringLiteral( "pythonic" ) ).toUpper() == QLatin1String( "TRUE" ) && metadata->value( QStringLiteral( "status_exp" ) ) != QLatin1String( "orphan" ) && metadata->value( QStringLiteral( "status_exp" ) ) != QLatin1String( "none available" );
+  const bool installEnabled = metadata->value( QStringLiteral( "pythonic" ) ).toUpper() == QLatin1String( "TRUE" ) && metadata->value( QStringLiteral( "status" ) ) != QLatin1String( "orphan" ) && metadata->value( QStringLiteral( "status" ) ) != QLatin1String( "none available" );
+  const bool installExpEnabled = metadata->value( QStringLiteral( "pythonic" ) ).toUpper() == QLatin1String( "TRUE" ) && metadata->value( QStringLiteral( "status_exp" ) ) != QLatin1String( "orphan" ) && metadata->value( QStringLiteral( "status_exp" ) ) != QLatin1String( "none available" );
 
   buttonInstall->setEnabled( installEnabled );
   buttonInstall->setVisible( installEnabled || !installExpEnabled );
@@ -1193,7 +1193,7 @@ void QgsPluginManager::addPluginMetadata( const QString &key, const QMap<QString
 
 const QMap<QString, QString> *QgsPluginManager::pluginMetadata( const QString &key ) const
 {
-  QMap<QString, QMap<QString, QString> >::const_iterator it = mPlugins.find( key );
+  const QMap<QString, QMap<QString, QString> >::const_iterator it = mPlugins.find( key );
   if ( it != mPlugins.end() )
   {
     return &it.value();
@@ -1230,7 +1230,7 @@ void QgsPluginManager::addToRepositoryList( const QMap<QString, QString> &reposi
     connect( actionClearFilter, &QAction::triggered, this, &QgsPluginManager::clearRepositoryFilter );
   }
 
-  QString key = repository.value( QStringLiteral( "name" ) );
+  const QString key = repository.value( QStringLiteral( "name" ) );
   if ( ! key.isEmpty() )
   {
     QTreeWidgetItem *a = new QTreeWidgetItem( treeRepositories );
@@ -1264,7 +1264,7 @@ void QgsPluginManager::addToRepositoryList( const QMap<QString, QString> &reposi
         a->setToolTip( 0, tr( "The repository is blocked due to incompatibility with your QGIS version" ) );
       }
 
-      QBrush grayBrush = QBrush( QColor( Qt::gray ) );
+      const QBrush grayBrush = QBrush( QColor( Qt::gray ) );
       a->setForeground( 0, grayBrush );
       a->setForeground( 1, grayBrush );
       a->setForeground( 2, grayBrush );
@@ -1355,7 +1355,7 @@ void QgsPluginManager::setCurrentTab( int idx )
 
     // load tab description HTML to the detail browser
     QString tabInfoHTML;
-    QMap<QString, QString>::const_iterator it = mTabDescriptions.constFind( tabTitle );
+    const QMap<QString, QString>::const_iterator it = mTabDescriptions.constFind( tabTitle );
     if ( it != mTabDescriptions.constEnd() )
     {
       tabInfoHTML += "<style>"
@@ -1387,7 +1387,7 @@ void QgsPluginManager::currentPluginChanged( const QModelIndex &index )
   {
     // If the model has been filtered, the index row in the proxy won't match the index row in the underlying model
     // so we need to jump through this little hoop to get the correct item
-    QModelIndex realIndex = mModelProxy->mapToSource( index );
+    const QModelIndex realIndex = mModelProxy->mapToSource( index );
     QStandardItem *mypItem = mModelPlugins->itemFromIndex( realIndex );
     showPluginDetails( mypItem );
   }
@@ -1401,7 +1401,7 @@ void QgsPluginManager::vwPlugins_doubleClicked( const QModelIndex &index )
   {
     // If the model has been filtered, the index row in the proxy won't match the index row in the underlying model
     // so we need to jump through this little hoop to get the correct item
-    QModelIndex realIndex = mModelProxy->mapToSource( index );
+    const QModelIndex realIndex = mModelProxy->mapToSource( index );
     QStandardItem *mypItem = mModelPlugins->itemFromIndex( realIndex );
     if ( mypItem->isCheckable() )
     {
@@ -1478,9 +1478,9 @@ void QgsPluginManager::leFilter_textChanged( QString text )
     QgsDebugMsg( "PluginManager filter changed to :" + text );
   }
 
-  QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::RegExp );
-  Qt::CaseSensitivity myCaseSensitivity = Qt::CaseInsensitive;
-  QRegExp myRegExp( text, myCaseSensitivity, mySyntax );
+  const QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::RegExp );
+  const Qt::CaseSensitivity myCaseSensitivity = Qt::CaseInsensitive;
+  const QRegExp myRegExp( text, myCaseSensitivity, mySyntax );
   mModelProxy->setFilterRegExp( myRegExp );
 }
 
@@ -1523,7 +1523,7 @@ void QgsPluginManager::mZipFileWidget_fileChanged( const QString &filePath )
 void QgsPluginManager::buttonInstallFromZip_clicked()
 {
   QgsSettings settings;
-  bool showInstallFromZipWarning = settings.value( QStringLiteral( "UI/showInstallFromZipWarning" ), true ).toBool();
+  const bool showInstallFromZipWarning = settings.value( QStringLiteral( "UI/showInstallFromZipWarning" ), true ).toBool();
 
   QMessageBox msgbox;
   if ( showInstallFromZipWarning )
@@ -1663,7 +1663,7 @@ bool QgsPluginManager::isPluginEnabled( QString key )
     return false;
   }
 
-  QgsSettings mySettings;
+  const QgsSettings mySettings;
   if ( plugin->value( QStringLiteral( "pythonic" ) ) != QLatin1String( "true" ) )
   {
     // Trim "cpp:" prefix from cpp plugin id

@@ -72,7 +72,7 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   {
     // add point to list and to rubber band
 
-    int error = addVertex( e->mapPoint() );
+    const int error = addVertex( e->mapPoint() );
     if ( error == 1 )
     {
       // current layer is not a vector layer
@@ -104,9 +104,9 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
     vlayer->beginEditCommand( tr( "Ring added and filled" ) );
 
-    QgsPointSequence pointList = pointsZM();
+    const QgsPointSequence pointList = pointsZM();
 
-    Qgis::GeometryOperationResult addRingReturnCode = vlayer->addRing( pointList, &fid );
+    const Qgis::GeometryOperationResult addRingReturnCode = vlayer->addRing( pointList, &fid );
 
     // AP: this is all dead code:
     //todo: open message box to communicate errors
@@ -143,7 +143,7 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       return;
     }
 
-    QgsLineString ext( pointList );
+    const QgsLineString ext( pointList );
     std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >( );
     polygon->setExteriorRing( ext.clone() );
     g = QgsGeometry( std::move( polygon ) );
@@ -220,7 +220,7 @@ QgsGeometry QgsMapToolFillRing::ringUnderPoint( const QgsPointXY &p, QgsFeatureI
   QgsFeature f;
   while ( fit.nextFeature( f ) )
   {
-    QgsGeometry g = f.geometry();
+    const QgsGeometry g = f.geometry();
     if ( g.isNull() || QgsWkbTypes::geometryType( g.wkbType() ) != QgsWkbTypes::PolygonGeometry )
       continue;
 
@@ -241,8 +241,8 @@ QgsGeometry QgsMapToolFillRing::ringUnderPoint( const QgsPointXY &p, QgsFeatureI
       {
         for ( int j = 1; j < pol[i].size(); ++j )
         {
-          QgsPolygonXY tempPol = QgsPolygonXY() << pol[i][j];
-          QgsGeometry tempGeom = QgsGeometry::fromPolygonXY( tempPol );
+          const QgsPolygonXY tempPol = QgsPolygonXY() << pol[i][j];
+          const QgsGeometry tempGeom = QgsGeometry::fromPolygonXY( tempPol );
           if ( tempGeom.area() < area && tempGeom.contains( &p ) )
           {
             fid = f.id();

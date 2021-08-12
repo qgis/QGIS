@@ -81,7 +81,7 @@ class CORE_EXPORT QgsThreadingUtils
           semaphoreMainThreadReady.acquire();
           semaphoreWorkerThreadReady.acquire();
 
-          std::function<void()> waitFunc = [&semaphoreMainThreadReady, &semaphoreWorkerThreadReady]()
+          const std::function<void()> waitFunc = [&semaphoreMainThreadReady, &semaphoreWorkerThreadReady]()
           {
             // This function is executed on the main thread. As soon as it's executed
             // it will tell the worker thread that the main thread is blocked by releasing

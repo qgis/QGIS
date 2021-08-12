@@ -226,8 +226,8 @@ bool QgsDatabaseTableComboBoxSortModel::lessThan( const QModelIndex &left, const
     return false;
 
   // default mode is alphabetical order
-  QString leftStr = sourceModel()->data( left ).toString();
-  QString rightStr = sourceModel()->data( right ).toString();
+  const QString leftStr = sourceModel()->data( left ).toString();
+  const QString rightStr = sourceModel()->data( right ).toString();
   return QString::localeAwareCompare( leftStr, rightStr ) < 0;
 }
 

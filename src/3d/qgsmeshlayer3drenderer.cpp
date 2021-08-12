@@ -87,7 +87,7 @@ Qt3DCore::QEntity *QgsMeshLayer3DRenderer::createEntity( const Qgs3DMapSettings 
   Qt3DCore::QEntity *entity = nullptr;
 
 
-  QgsCoordinateTransform coordTrans( meshLayer->crs(), map.crs(), map.transformContext() );
+  const QgsCoordinateTransform coordTrans( meshLayer->crs(), map.crs(), map.transformContext() );
   meshLayer->updateTriangularMesh( coordTrans );
   const QgsTriangularMesh triangularMesh = *meshLayer->triangularMeshByLodIndex( mSymbol->levelOfDetailIndex() );
   QgsMeshDataset3dEntity *meshEntity = new QgsMeshDataset3dEntity( map, triangularMesh, meshLayer, mSymbol.get() );
@@ -116,7 +116,7 @@ void QgsMeshLayer3DRenderer::readXml( const QDomElement &elem, const QgsReadWrit
 {
   mLayerRef = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
 
-  QDomElement elemSymbol = elem.firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement elemSymbol = elem.firstChildElement( QStringLiteral( "symbol" ) );
   QgsMesh3DSymbol *symbol = new QgsMesh3DSymbol;
   symbol->readXml( elemSymbol, context );
   mSymbol.reset( symbol );

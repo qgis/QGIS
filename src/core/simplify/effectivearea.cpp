@@ -75,8 +75,8 @@ static double triarea3d( const QgsPoint &P1, const QgsPoint &P2, const QgsPoint 
  */
 static int cmpfunc( const void *a, const void *b )
 {
-  double v1 = ( *( areanode ** )a )->area;
-  double v2 = ( *( areanode ** )b )->area;
+  const double v1 = ( *( areanode ** )a )->area;
+  const double v2 = ( *( areanode ** )b )->area;
 
   /* qsort gives unpredictable results when comparing identical values.
    * If two values are the same we force returning the last point in the point array.
@@ -95,13 +95,13 @@ static void down( MINHEAP *tree, areanode *arealist, int parent )
 {
   //LWDEBUG( 2, "Entered  down" );
   areanode **treearray = tree->key_array;
-  int left = parent * 2 + 1;
-  int right = left + 1;
+  const int left = parent * 2 + 1;
+  const int right = left + 1;
   areanode *tmp = nullptr;
   int swap = parent;
   double leftarea = 0;
   double rightarea = 0;
-  double parentarea = ( ( areanode * )treearray[parent] )->area;
+  const double parentarea = ( ( areanode * )treearray[parent] )->area;
 
   if ( left < tree->usedSize )
   {
@@ -178,7 +178,7 @@ static areanode *minheap_pop( MINHEAP *tree, areanode *arealist )
 static void minheap_update( MINHEAP *tree, areanode *arealist, int idx )
 {
   areanode **treearray = tree->key_array;
-  int parent = ( idx - 1 ) / 2;
+  const int parent = ( idx - 1 ) / 2;
 
   if ( ( ( areanode * )treearray[idx] )->area < ( ( areanode * )treearray[parent] )->area )
     up( tree, arealist, idx );
@@ -199,7 +199,7 @@ static void tune_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, do
   int go_on = 1;
   double check_order_min_area = 0;
 
-  int npoints = ea->inpts.size();
+  const int npoints = ea->inpts.size();
   int i;
   int current, before_current, after_current;
 
@@ -298,7 +298,7 @@ void ptarray_calc_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, d
 {
   //LWDEBUG( 2, "Entered  ptarray_calc_areas" );
   int i;
-  int npoints = ea->inpts.size();
+  const int npoints = ea->inpts.size();
   double area;
 
   QgsPoint P1;

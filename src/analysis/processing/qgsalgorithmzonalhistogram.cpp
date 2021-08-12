@@ -98,8 +98,8 @@ QVariantMap QgsZonalHistogramAlgorithm::processAlgorithm( const QVariantMap &par
   if ( !zones )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT_VECTOR" ) ) );
 
-  long count = zones->featureCount();
-  double step = count > 0 ? 100.0 / count : 1;
+  const long count = zones->featureCount();
+  const double step = count > 0 ? 100.0 / count : 1;
   long current = 0;
 
   QList< double > uniqueValues;
@@ -128,8 +128,8 @@ QVariantMap QgsZonalHistogramAlgorithm::processAlgorithm( const QVariantMap &par
       continue;
     }
 
-    QgsGeometry featureGeometry = f.geometry();
-    QgsRectangle featureRect = featureGeometry.boundingBox().intersect( mRasterExtent );
+    const QgsGeometry featureGeometry = f.geometry();
+    const QgsRectangle featureRect = featureGeometry.boundingBox().intersect( mRasterExtent );
     if ( featureRect.isEmpty() )
     {
       current++;
@@ -166,13 +166,13 @@ QVariantMap QgsZonalHistogramAlgorithm::processAlgorithm( const QVariantMap &par
 
   std::sort( uniqueValues.begin(), uniqueValues.end() );
 
-  QString fieldPrefix = parameterAsString( parameters, QStringLiteral( "COLUMN_PREFIX" ), context );
+  const QString fieldPrefix = parameterAsString( parameters, QStringLiteral( "COLUMN_PREFIX" ), context );
   QgsFields newFields;
   for ( auto it = uniqueValues.constBegin(); it != uniqueValues.constEnd(); ++it )
   {
     newFields.append( QgsField( QStringLiteral( "%1%2" ).arg( fieldPrefix, mHasNoDataValue && *it == mNodataValue ? QStringLiteral( "NODATA" ) : QString::number( *it ) ), QVariant::LongLong, QString(), -1, 0 ) );
   }
-  QgsFields fields = QgsProcessingUtils::combineFields( zones->fields(), newFields );
+  const QgsFields fields = QgsProcessingUtils::combineFields( zones->fields(), newFields );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields,
@@ -184,7 +184,7 @@ QVariantMap QgsZonalHistogramAlgorithm::processAlgorithm( const QVariantMap &par
   while ( it.nextFeature( f ) )
   {
     QgsAttributes attributes = f.attributes();
-    QHash< double, qgssize > fUniqueValues = featuresUniqueValues.value( f.id() );
+    const QHash< double, qgssize > fUniqueValues = featuresUniqueValues.value( f.id() );
     for ( auto it = uniqueValues.constBegin(); it != uniqueValues.constEnd(); ++it )
     {
       attributes += fUniqueValues.value( *it, 0 );

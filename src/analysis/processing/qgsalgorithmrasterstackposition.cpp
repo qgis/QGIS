@@ -108,7 +108,7 @@ bool QgsRasterStackPositionAlgorithmBase::prepareAlgorithm( const QVariantMap &p
 QVariantMap QgsRasterStackPositionAlgorithmBase::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  QFileInfo fi( outputFile );
+  const QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
 
   std::unique_ptr< QgsRasterFileWriter > writer = std::make_unique< QgsRasterFileWriter >( outputFile );
@@ -121,13 +121,13 @@ QVariantMap QgsRasterStackPositionAlgorithmBase::processAlgorithm( const QVarian
     throw QgsProcessingException( QObject::tr( "Could not create raster output %1: %2" ).arg( outputFile, provider->error().message( QgsErrorMessage::Text ) ) );
 
   provider->setNoDataValue( 1, mNoDataValue );
-  qgssize layerSize = static_cast< qgssize >( mLayerWidth ) * static_cast< qgssize >( mLayerHeight );
+  const qgssize layerSize = static_cast< qgssize >( mLayerWidth ) * static_cast< qgssize >( mLayerHeight );
 
-  int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-  int nbBlocksWidth = static_cast< int>( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
-  int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
-  int nbBlocks = nbBlocksWidth * nbBlocksHeight;
+  const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
+  const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
+  const int nbBlocksWidth = static_cast< int>( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
+  const int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
+  const int nbBlocks = nbBlocksWidth * nbBlocksHeight;
   provider->setEditable( true );
 
   QgsRasterIterator iter( provider.get() );
@@ -146,7 +146,7 @@ QVariantMap QgsRasterStackPositionAlgorithmBase::processAlgorithm( const QVarian
     {
       if ( feedback->isCanceled() )
         break; //in case some slow data sources are loaded
-      for ( int band : i.bands )
+      for ( const int band : i.bands )
       {
         if ( feedback->isCanceled() )
           break; //in case some slow data sources are loaded
@@ -167,7 +167,7 @@ QVariantMap QgsRasterStackPositionAlgorithmBase::processAlgorithm( const QVarian
 
         if ( !inputBlocks.empty() )
         {
-          int position = findPosition( inputBlocks, row, col, noDataInStack );
+          const int position = findPosition( inputBlocks, row, col, noDataInStack );
 
           if ( position == -1 || ( noDataInStack && !mIgnoreNoData ) )
           {
@@ -245,7 +245,7 @@ int QgsRasterStackLowestPositionAlgorithm::findPosition( std::vector< std::uniqu
   int lowestPosition = 0;
 
   //auxiliary variables
-  int inputBlocksCount = inputBlocks.size();
+  const int inputBlocksCount = inputBlocks.size();
   int currentPosition = 0;
   int noDataCount = 0;
   double firstValue = mNoDataValue;
@@ -282,7 +282,7 @@ int QgsRasterStackLowestPositionAlgorithm::findPosition( std::vector< std::uniqu
       std::unique_ptr< QgsRasterBlock > &currentBlock = inputBlocks.at( currentPosition );
 
       bool currentValueIsNoData = false;
-      double currentValue = currentBlock->valueAndNoData( row, col, currentValueIsNoData );
+      const double currentValue = currentBlock->valueAndNoData( row, col, currentValueIsNoData );
 
       if ( !currentBlock->isValid() || currentValueIsNoData )
       {
@@ -348,7 +348,7 @@ int QgsRasterStackHighestPositionAlgorithm::findPosition( std::vector< std::uniq
   int highestPosition = 0;
 
   //auxiliary variables
-  int inputBlocksCount = inputBlocks.size();
+  const int inputBlocksCount = inputBlocks.size();
   int currentPosition = 0;
   int noDataCount = 0;
   double firstValue = mNoDataValue;
@@ -386,7 +386,7 @@ int QgsRasterStackHighestPositionAlgorithm::findPosition( std::vector< std::uniq
       std::unique_ptr< QgsRasterBlock > &currentBlock = inputBlocks.at( currentPosition );
 
       bool currentValueIsNoData = false;
-      double currentValue = currentBlock->valueAndNoData( row, col, currentValueIsNoData );
+      const double currentValue = currentBlock->valueAndNoData( row, col, currentValueIsNoData );
 
       if ( !currentBlock->isValid() || currentValueIsNoData )
       {

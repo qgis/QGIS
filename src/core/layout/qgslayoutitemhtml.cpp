@@ -132,7 +132,7 @@ void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContex
     return;
   }
 
-  QgsExpressionContext scopedContext = createExpressionContext();
+  const QgsExpressionContext scopedContext = createExpressionContext();
   const QgsExpressionContext *evalContext = context ? context : &scopedContext;
 
   QString loadedHtml;
@@ -200,7 +200,7 @@ void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContex
   {
     QByteArray ba;
     ba.append( mUserStylesheet.toUtf8() );
-    QUrl cssFileURL = QUrl( QString( "data:text/css;charset=utf-8;base64," + ba.toBase64() ) );
+    const QUrl cssFileURL = QUrl( QString( "data:text/css;charset=utf-8;base64," + ba.toBase64() ) );
     settings->setUserStyleSheetUrl( cssFileURL );
   }
   else
@@ -249,7 +249,7 @@ void QgsLayoutItemHtml::recalculateFrameSizes()
   QSize contentsSize = mWebPage->mainFrame()->contentsSize();
 
   //find maximum frame width
-  double maxWidth = maxFrameWidth();
+  const double maxWidth = maxFrameWidth();
   //set content width to match maximum frame width
   contentsSize.setWidth( maxWidth * mHtmlUnitsToLayoutUnits );
 
@@ -309,7 +309,7 @@ void QgsLayoutItemHtml::render( QgsLayoutItemRenderContext &context, const QRect
     return;
 
   QPainter *painter = context.renderContext().painter();
-  QgsScopedQPainterState painterState( painter );
+  const QgsScopedQPainterState painterState( painter );
   // painter is scaled to dots, so scale back to layout units
   painter->scale( context.renderContext().scaleFactor() / mHtmlUnitsToLayoutUnits, context.renderContext().scaleFactor() / mHtmlUnitsToLayoutUnits );
   painter->translate( 0.0, -renderExtent.top() * mHtmlUnitsToLayoutUnits );
@@ -346,7 +346,7 @@ double QgsLayoutItemHtml::findNearbyPageBreak( double yPos )
   }
 
   //convert yPos to pixels
-  int idealPos = yPos * htmlUnitsToLayoutUnits();
+  const int idealPos = yPos * htmlUnitsToLayoutUnits();
 
   //if ideal break pos is past end of page, there's nothing we need to do
   if ( idealPos >= mRenderedPage.height() )
@@ -354,7 +354,7 @@ double QgsLayoutItemHtml::findNearbyPageBreak( double yPos )
     return yPos;
   }
 
-  int maxSearchDistance = mMaxBreakDistance * htmlUnitsToLayoutUnits();
+  const int maxSearchDistance = mMaxBreakDistance * htmlUnitsToLayoutUnits();
 
   //loop through all lines just before ideal break location, up to max distance
   //of maxSearchDistance
@@ -364,7 +364,7 @@ double QgsLayoutItemHtml::findNearbyPageBreak( double yPos )
   bool previousPixelTransparent = false;
   QRgb pixelColor;
   QList< QPair<int, int> > candidates;
-  int minRow = std::max( idealPos - maxSearchDistance, 0 );
+  const int minRow = std::max( idealPos - maxSearchDistance, 0 );
   for ( int candidateRow = idealPos; candidateRow >= minRow; --candidateRow )
   {
     changes = 0;
@@ -397,9 +397,9 @@ double QgsLayoutItemHtml::findNearbyPageBreak( double yPos )
   //we do this so that the spacing between text lines is likely to be split in half
   //otherwise the html will be broken immediately above a line of text, which
   //looks a little messy
-  int maxCandidateRow = candidates[0].first;
+  const int maxCandidateRow = candidates[0].first;
   int minCandidateRow = maxCandidateRow + 1;
-  int minCandidateChanges = candidates[0].second;
+  const int minCandidateChanges = candidates[0].second;
 
   QList< QPair<int, int> >::iterator it;
   for ( it = candidates.begin(); it != candidates.end(); ++it )
@@ -486,7 +486,7 @@ bool QgsLayoutItemHtml::readPropertiesFromElement( const QDomElement &itemElem, 
   mEnableUserStylesheet = itemElem.attribute( QStringLiteral( "stylesheetEnabled" ), QStringLiteral( "false" ) ) == QLatin1String( "true" );
 
   //finally load the set url
-  QString urlString = itemElem.attribute( QStringLiteral( "url" ) );
+  const QString urlString = itemElem.attribute( QStringLiteral( "url" ) );
   if ( !urlString.isEmpty() )
   {
     mUrl = urlString;
@@ -550,7 +550,7 @@ void QgsLayoutItemHtml::refreshExpressionContext()
 
 void QgsLayoutItemHtml::refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property )
 {
-  QgsExpressionContext context = createExpressionContext();
+  const QgsExpressionContext context = createExpressionContext();
 
   //updates data defined properties and redraws item to match
   if ( property == QgsLayoutObject::SourceUrl || property == QgsLayoutObject::AllProperties )

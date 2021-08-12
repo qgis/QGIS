@@ -99,7 +99,7 @@ QgsFeatureList QgsOrientedMinimumBoundingBoxAlgorithm::processFeature( const Qgs
     double angle = 0;
     double width = 0;
     double height = 0;
-    QgsGeometry outputGeometry = f.geometry().orientedMinimumBoundingBox( area, angle, width, height );
+    const QgsGeometry outputGeometry = f.geometry().orientedMinimumBoundingBox( area, angle, width, height );
     f.setGeometry( outputGeometry );
     QgsAttributes attrs = f.attributes();
     attrs << width

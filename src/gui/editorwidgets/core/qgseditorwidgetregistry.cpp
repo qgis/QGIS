@@ -77,8 +77,8 @@ QgsEditorWidgetRegistry::~QgsEditorWidgetRegistry()
 
 QgsEditorWidgetSetup QgsEditorWidgetRegistry::findBest( const QgsVectorLayer *vl, const QString &fieldName ) const
 {
-  QgsFields fields = vl->fields();
-  int index = fields.indexOf( fieldName );
+  const QgsFields fields = vl->fields();
+  const int index = fields.indexOf( fieldName );
 
   if ( index > -1 )
   {
@@ -114,7 +114,7 @@ QgsEditorWidgetWrapper *QgsEditorWidgetRegistry::create( const QString &widgetId
       if ( !ww->valid() )
       {
         delete ww;
-        QString wid = findSuitableWrapper( editor, QStringLiteral( "TextEdit" ) );
+        const QString wid = findSuitableWrapper( editor, QStringLiteral( "TextEdit" ) );
         ww = mWidgetFactories[wid]->create( vl, fieldIdx, editor, parent );
         ww->setConfig( config );
         ww->setContext( context );
@@ -193,7 +193,7 @@ bool QgsEditorWidgetRegistry::registerWidget( const QString &widgetId, QgsEditor
     mWidgetFactories.insert( widgetId, widgetFactory );
 
     // Use this factory as default where it provides the highest priority
-    QHash<const char *, int> types = widgetFactory->supportedWidgetTypes();
+    const QHash<const char *, int> types = widgetFactory->supportedWidgetTypes();
     QHash<const char *, int>::ConstIterator it;
     it = types.constBegin();
 

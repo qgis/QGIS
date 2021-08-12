@@ -103,7 +103,7 @@ namespace QgsWms
     if ( cacheManager && !imageSaveFormat.isEmpty() )
     {
       QImage image;
-      QByteArray content = cacheManager->getCachedImage( project, request, accessControl );
+      const QByteArray content = cacheManager->getCachedImage( project, request, accessControl );
       if ( !content.isEmpty() && image.loadFromData( content ) )
       {
         response.setHeader( QStringLiteral( "Content-Type" ), imageContentType );
@@ -116,7 +116,7 @@ namespace QgsWms
 
     // retrieve legend settings and model
     std::unique_ptr<QgsLayerTree> tree( layerTree( context ) );
-    std::unique_ptr<QgsLayerTreeModel> model( legendModel( context, *tree.get() ) );
+    const std::unique_ptr<QgsLayerTreeModel> model( legendModel( context, *tree.get() ) );
 
     // rendering
     if ( format == QgsWmsParameters::Format::JSON )
@@ -133,7 +133,7 @@ namespace QgsWms
       }
       tree->clear();
       response.setHeader( QStringLiteral( "Content-Type" ), parameters.formatAsString() );
-      QJsonDocument doc( result );
+      const QJsonDocument doc( result );
       response.write( doc.toJson( QJsonDocument::Compact ) );
     }
     else
@@ -159,7 +159,7 @@ namespace QgsWms
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
         if ( cacheManager )
         {
-          QByteArray content = response.data();
+          const QByteArray content = response.data();
           if ( !content.isEmpty() )
             cacheManager->setCachedImage( &content, project, request, accessControl );
         }
@@ -204,19 +204,19 @@ namespace QgsWms
     {
       // Calculate ratio from bbox
       QgsRectangle bbox { parameters.bboxAsRectangle() };
-      QString crs = parameters.crs();
+      const QString crs = parameters.crs();
       if ( crs.compare( QStringLiteral( "CRS:84" ), Qt::CaseInsensitive ) == 0 )
       {
         bbox.invert();
       }
-      QgsCoordinateReferenceSystem outputCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
+      const QgsCoordinateReferenceSystem outputCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
       if ( parameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) &&
            outputCrs.hasAxisInverted() )
       {
         bbox.invert();
       }
       const double ratio { bbox.width() / bbox.height() };
-      int defaultHeight { static_cast<int>( 800 / ratio ) };
+      const int defaultHeight { static_cast<int>( 800 / ratio ) };
       if ( parameters.width().isEmpty() && parameters.srcWidth().isEmpty() )
       {
         parameters.set( QgsWmsParameter::SRCWIDTH, 800 );
@@ -247,12 +247,12 @@ namespace QgsWms
       mapSettings->setOutputSize( context.mapSize() );
       // Inverted axis?
       QgsRectangle bbox { parameters.bboxAsRectangle() };
-      QString crs = parameters.crs();
+      const QString crs = parameters.crs();
       if ( crs.compare( QStringLiteral( "CRS:84" ), Qt::CaseInsensitive ) == 0 )
       {
         bbox.invert();
       }
-      QgsCoordinateReferenceSystem outputCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
+      const QgsCoordinateReferenceSystem outputCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
       if ( parameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) &&
            outputCrs.hasAxisInverted() )
       {
@@ -270,8 +270,8 @@ namespace QgsWms
     // if legend is not based on rendering rules
     if ( parameters.rule().isEmpty() )
     {
-      QList<QgsLayerTreeNode *> children = tree.children();
-      QString ruleLabel = parameters.ruleLabel();
+      const QList<QgsLayerTreeNode *> children = tree.children();
+      const QString ruleLabel = parameters.ruleLabel();
       for ( QgsLayerTreeNode *node : children )
       {
         if ( ! QgsLayerTree::isLayer( node ) )

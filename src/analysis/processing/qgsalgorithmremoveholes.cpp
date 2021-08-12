@@ -105,7 +105,7 @@ QgsFeatureList QgsRemoveHolesAlgorithm::processFeature( const QgsFeature &featur
   QgsFeature f = feature;
   if ( f.hasGeometry() )
   {
-    QgsGeometry geometry = f.geometry();
+    const QgsGeometry geometry = f.geometry();
 
     double minArea = mMinArea;
     if ( mDynamicMinArea )

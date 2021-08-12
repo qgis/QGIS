@@ -76,7 +76,7 @@ void TestQgsVectorTileWriter::test_basic()
 {
   QTemporaryDir dir;
   dir.setAutoRemove( false );  // so that we can inspect the results later
-  QString tmpDir = dir.path();
+  const QString tmpDir = dir.path();
 
   QgsDataSourceUri ds;
   ds.setParam( "type", "xyz" );
@@ -96,7 +96,7 @@ void TestQgsVectorTileWriter::test_basic()
   writer.setMaxZoom( 3 );
   writer.setLayers( layers );
 
-  bool res = writer.writeTiles();
+  const bool res = writer.writeTiles();
   QVERIFY( res );
   QVERIFY( writer.errorMessage().isEmpty() );
 
@@ -105,20 +105,20 @@ void TestQgsVectorTileWriter::test_basic()
   delete vlPolys;
 
   // check on the file level
-  QDir dirInfo( tmpDir );
-  QStringList dirFiles = dirInfo.entryList( QStringList( "*.pbf" ) );
+  const QDir dirInfo( tmpDir );
+  const QStringList dirFiles = dirInfo.entryList( QStringList( "*.pbf" ) );
   QCOMPARE( dirFiles.count(), 8 );   // 1 tile at z0, 1 tile at z1, 2 tiles at z2, 4 tiles at z3
   QVERIFY( dirFiles.contains( "0-0-0.pbf" ) );
 
   QgsVectorTileLayer *vtLayer = new QgsVectorTileLayer( ds.encodedUri(), "output" );
 
-  QByteArray tile0 = vtLayer->getRawTile( QgsTileXYZ( 0, 0, 0 ) );
+  const QByteArray tile0 = vtLayer->getRawTile( QgsTileXYZ( 0, 0, 0 ) );
   QgsVectorTileMVTDecoder decoder;
-  bool resDecode0 = decoder.decode( QgsTileXYZ( 0, 0, 0 ), tile0 );
+  const bool resDecode0 = decoder.decode( QgsTileXYZ( 0, 0, 0 ), tile0 );
   QVERIFY( resDecode0 );
-  QStringList layerNames = decoder.layers();
+  const QStringList layerNames = decoder.layers();
   QCOMPARE( layerNames, QStringList() << "points" << "lines" << "polys" );
-  QStringList fieldNamesLines = decoder.layerFieldNames( "lines" );
+  const QStringList fieldNamesLines = decoder.layerFieldNames( "lines" );
   QCOMPARE( fieldNamesLines, QStringList() << "Name" << "Value" );
 
   QgsFields fieldsPolys;
@@ -138,7 +138,7 @@ void TestQgsVectorTileWriter::test_basic()
 
   QgsAttributes attrsPolys0_0 = features0["polys"][0].attributes();
   QCOMPARE( attrsPolys0_0.count(), 1 );
-  QString attrNamePolys0_0 = attrsPolys0_0[0].toString();
+  const QString attrNamePolys0_0 = attrsPolys0_0[0].toString();
   QVERIFY( attrNamePolys0_0 == "Dam" || attrNamePolys0_0 == "Lake" );
 
   delete vtLayer;
@@ -147,7 +147,7 @@ void TestQgsVectorTileWriter::test_basic()
 
 void TestQgsVectorTileWriter::test_mbtiles()
 {
-  QString fileName = QDir::tempPath() + "/test_qgsvectortilewriter.mbtiles";
+  const QString fileName = QDir::tempPath() + "/test_qgsvectortilewriter.mbtiles";
   if ( QFile::exists( fileName ) )
     QFile::remove( fileName );
 
@@ -169,7 +169,7 @@ void TestQgsVectorTileWriter::test_mbtiles()
   writer.setMaxZoom( 3 );
   writer.setLayers( layers );
 
-  bool res = writer.writeTiles();
+  const bool res = writer.writeTiles();
   QVERIFY( res );
   QVERIFY( writer.errorMessage().isEmpty() );
 
@@ -181,13 +181,13 @@ void TestQgsVectorTileWriter::test_mbtiles()
 
   QgsVectorTileLayer *vtLayer = new QgsVectorTileLayer( ds.encodedUri(), "output" );
 
-  QByteArray tile0 = vtLayer->getRawTile( QgsTileXYZ( 0, 0, 0 ) );
+  const QByteArray tile0 = vtLayer->getRawTile( QgsTileXYZ( 0, 0, 0 ) );
   QgsVectorTileMVTDecoder decoder;
-  bool resDecode0 = decoder.decode( QgsTileXYZ( 0, 0, 0 ), tile0 );
+  const bool resDecode0 = decoder.decode( QgsTileXYZ( 0, 0, 0 ), tile0 );
   QVERIFY( resDecode0 );
-  QStringList layerNames = decoder.layers();
+  const QStringList layerNames = decoder.layers();
   QCOMPARE( layerNames, QStringList() << "points" << "lines" << "polys" );
-  QStringList fieldNamesLines = decoder.layerFieldNames( "lines" );
+  const QStringList fieldNamesLines = decoder.layerFieldNames( "lines" );
   QCOMPARE( fieldNamesLines, QStringList() << "Name" << "Value" );
 
   QgsFields fieldsPolys;
@@ -207,7 +207,7 @@ void TestQgsVectorTileWriter::test_mbtiles()
 
   QgsAttributes attrsPolys0_0 = features0["polys"][0].attributes();
   QCOMPARE( attrsPolys0_0.count(), 1 );
-  QString attrNamePolys0_0 = attrsPolys0_0[0].toString();
+  const QString attrNamePolys0_0 = attrsPolys0_0[0].toString();
   QVERIFY( attrNamePolys0_0 == "Dam" || attrNamePolys0_0 == "Lake" );
 
   delete vtLayer;
@@ -217,7 +217,7 @@ void TestQgsVectorTileWriter::test_mbtiles_metadata()
 {
   // here we test that the metadata we pass to the writer get stored properly
 
-  QString fileName = QDir::tempPath() + "/test_qgsvectortilewriter_metadata.mbtiles";
+  const QString fileName = QDir::tempPath() + "/test_qgsvectortilewriter_metadata.mbtiles";
   if ( QFile::exists( fileName ) )
     QFile::remove( fileName );
 
@@ -237,7 +237,7 @@ void TestQgsVectorTileWriter::test_mbtiles_metadata()
   writer.setLayers( QList<QgsVectorTileWriter::Layer>() << QgsVectorTileWriter::Layer( vlPoints ) );
   writer.setMetadata( meta );
 
-  bool res = writer.writeTiles();
+  const bool res = writer.writeTiles();
   QVERIFY( res );
   QVERIFY( writer.errorMessage().isEmpty() );
 
@@ -258,7 +258,7 @@ void TestQgsVectorTileWriter::test_filtering()
 {
   // test filtering of layers by expression and by min/max zoom level
 
-  QString fileName = QDir::tempPath() + "/test_qgsvectortilewriter_filtering.mbtiles";
+  const QString fileName = QDir::tempPath() + "/test_qgsvectortilewriter_filtering.mbtiles";
   if ( QFile::exists( fileName ) )
     QFile::remove( fileName );
 
@@ -285,7 +285,7 @@ void TestQgsVectorTileWriter::test_filtering()
   writer.setMaxZoom( 3 );
   writer.setLayers( layers );
 
-  bool res = writer.writeTiles();
+  const bool res = writer.writeTiles();
   QVERIFY( res );
   QVERIFY( writer.errorMessage().isEmpty() );
 
@@ -297,11 +297,11 @@ void TestQgsVectorTileWriter::test_filtering()
 
   QgsVectorTileLayer *vtLayer = new QgsVectorTileLayer( ds.encodedUri(), "output" );
 
-  QByteArray tile0 = vtLayer->getRawTile( QgsTileXYZ( 0, 0, 0 ) );
+  const QByteArray tile0 = vtLayer->getRawTile( QgsTileXYZ( 0, 0, 0 ) );
   QgsVectorTileMVTDecoder decoder;
-  bool resDecode0 = decoder.decode( QgsTileXYZ( 0, 0, 0 ), tile0 );
+  const bool resDecode0 = decoder.decode( QgsTileXYZ( 0, 0, 0 ), tile0 );
   QVERIFY( resDecode0 );
-  QStringList layerNames = decoder.layers();
+  const QStringList layerNames = decoder.layers();
   QCOMPARE( layerNames, QStringList() << "b52" << "lines" );
 
   QMap<QString, QgsFields> perLayerFields;

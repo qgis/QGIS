@@ -33,7 +33,7 @@ int TriDecorator::addPoint( const QgsPoint &p )
 {
   if ( mTIN )
   {
-    unsigned int number = mTIN->addPoint( p );
+    const unsigned int number = mTIN->addPoint( p );
     return number;
   }
   else
@@ -59,7 +59,7 @@ bool TriDecorator::calcNormal( double x, double y, QgsPoint &result )
 {
   if ( mTIN )
   {
-    bool b = mTIN->calcNormal( x, y, result );
+    const bool b = mTIN->calcNormal( x, y, result );
     return b;
   }
   else
@@ -73,7 +73,7 @@ bool TriDecorator::calcPoint( double x, double y, QgsPoint &result )
 {
   if ( mTIN )
   {
-    bool b = mTIN->calcPoint( x, y, result );
+    const bool b = mTIN->calcPoint( x, y, result );
     return b;
   }
   else
@@ -101,7 +101,7 @@ bool TriDecorator::triangleVertices( double x, double y, QgsPoint &p1, int &n1, 
 {
   if ( mTIN )
   {
-    bool b = mTIN->triangleVertices( x, y, p1, n1, p2, n2, p3, n3 );
+    const bool b = mTIN->triangleVertices( x, y, p1, n1, p2, n2, p3, n3 );
     return b;
   }
   else
@@ -115,7 +115,7 @@ bool TriDecorator::triangleVertices( double x, double y, QgsPoint &p1, QgsPoint 
 {
   if ( mTIN )
   {
-    bool b = mTIN->triangleVertices( x, y, p1, p2, p3 );
+    const bool b = mTIN->triangleVertices( x, y, p1, p2, p3 );
     return b;
   }
   else
@@ -142,7 +142,7 @@ int TriDecorator::oppositePoint( int p1, int p2 )
 {
   if ( mTIN )
   {
-    int i = mTIN->oppositePoint( p1, p2 );
+    const int i = mTIN->oppositePoint( p1, p2 );
     return i;
   }
   else
@@ -168,7 +168,7 @@ double TriDecorator::xMax() const
 {
   if ( mTIN )
   {
-    double d = mTIN->xMax();
+    const double d = mTIN->xMax();
     return d;
   }
   else
@@ -182,7 +182,7 @@ double TriDecorator::xMin() const
 {
   if ( mTIN )
   {
-    double d = mTIN->xMin();
+    const double d = mTIN->xMin();
     return d;
   }
   else
@@ -195,7 +195,7 @@ double TriDecorator::yMax() const
 {
   if ( mTIN )
   {
-    double d = mTIN->yMax();
+    const double d = mTIN->yMax();
     return d;
   }
   else
@@ -209,7 +209,7 @@ double TriDecorator::yMin() const
 {
   if ( mTIN )
   {
-    double d = mTIN->yMin();
+    const double d = mTIN->yMin();
     return d;
   }
   else
@@ -271,7 +271,7 @@ bool TriDecorator::pointInside( double x, double y )
 {
   if ( mTIN )
   {
-    bool b = mTIN->pointInside( x, y );
+    const bool b = mTIN->pointInside( x, y );
     return b;
   }
   else
@@ -285,7 +285,7 @@ bool TriDecorator::swapEdge( double x, double y )
 {
   if ( mTIN )
   {
-    bool b = mTIN->swapEdge( x, y );
+    const bool b = mTIN->swapEdge( x, y );
     return b;
   }
   else

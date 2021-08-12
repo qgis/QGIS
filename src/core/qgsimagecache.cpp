@@ -110,7 +110,7 @@ QImage QgsImageCache::pathAsImage( const QString &f, const QSize size, const boo
   if ( file.isEmpty() )
     return QImage();
 
-  QMutexLocker locker( &mMutex );
+  const QMutexLocker locker( &mMutex );
 
   fitsInCache = true;
 
@@ -162,7 +162,7 @@ QSize QgsImageCache::originalSize( const QString &path, bool blocking ) const
   // direct read if path is a file -- maybe more efficient than going the bytearray route? (untested!)
   if ( !path.startsWith( QLatin1String( "base64:" ) ) && QFile::exists( path ) )
   {
-    QImageReader reader( path );
+    const QImageReader reader( path );
     if ( reader.size().isValid() )
       return reader.size();
     else
@@ -183,7 +183,7 @@ QSize QgsImageCache::originalSize( const QString &path, bool blocking ) const
       const QSize s = reader.size();
       if ( s.isValid() )
         return s;
-      QImage im = reader.read();
+      const QImage im = reader.read();
       return im.isNull() ? QSize() : im.size();
     }
   }
@@ -226,7 +226,7 @@ QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool k
 
       QSizeF s( r.viewBox().size() );
       s.scale( size.width(), size.height(), Qt::KeepAspectRatio );
-      QRectF rect( ( size.width() - s.width() ) / 2, ( size.height() - s.height() ) / 2, s.width(), s.height() );
+      const QRectF rect( ( size.width() - s.width() ) / 2, ( size.height() - s.height() ) / 2, s.width(), s.height() );
       r.render( &p, rect );
     }
     else if ( ba == "fetching" )
@@ -246,7 +246,7 @@ QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool k
 
       QSizeF s( r.viewBox().size() );
       s.scale( size.width(), size.height(), Qt::KeepAspectRatio );
-      QRectF rect( ( size.width() - s.width() ) / 2, ( size.height() - s.height() ) / 2, s.width(), s.height() );
+      const QRectF rect( ( size.width() - s.width() ) / 2, ( size.height() - s.height() ) / 2, s.width(), s.height() );
       r.render( &p, rect );
     }
     else

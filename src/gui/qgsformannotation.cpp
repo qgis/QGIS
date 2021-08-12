@@ -79,18 +79,18 @@ QWidget *QgsFormAnnotation::createDesignerWidget( const QString &filePath )
   }
 
   QUiLoader loader;
-  QFileInfo fi( file );
+  const QFileInfo fi( file );
   loader.setWorkingDirectory( fi.dir() );
   QWidget *widget = loader.load( &file, nullptr );
   file.close();
 
   //get feature and set attribute information
-  QgsAttributeEditorContext context;
+  const QgsAttributeEditorContext context;
   QgsVectorLayer *vectorLayer = qobject_cast< QgsVectorLayer * >( mapLayer() );
   if ( vectorLayer && associatedFeature().isValid() )
   {
-    QgsFields fields = vectorLayer->fields();
-    QgsAttributes attrs = associatedFeature().attributes();
+    const QgsFields fields = vectorLayer->fields();
+    const QgsAttributes attrs = associatedFeature().attributes();
     for ( int i = 0; i < attrs.count(); ++i )
     {
       if ( i < fields.count() )
@@ -105,7 +105,7 @@ QWidget *QgsFormAnnotation::createDesignerWidget( const QString &filePath )
             QVariantList additionalFieldValues;
             for ( const QString &additionalField : additionalFields )
             {
-              int index = vectorLayer->fields().indexFromName( additionalField );
+              const int index = vectorLayer->fields().indexFromName( additionalField );
               additionalFieldValues.insert( index, attrs.at( index ) );
             }
             eww->setValues( attrs.at( i ), additionalFieldValues );
@@ -123,7 +123,7 @@ void QgsFormAnnotation::renderAnnotation( QgsRenderContext &context, QSizeF size
     return;
 
   // scale painter back to 96 dpi, so that forms look good even in layout prints
-  QgsScopedQPainterState painterState( context.painter() );
+  const QgsScopedQPainterState painterState( context.painter() );
   const double scaleFactor = context.painter()->device()->logicalDpiX() / 96.0;
   context.painter()->scale( scaleFactor, scaleFactor );
   size /= scaleFactor;
@@ -138,7 +138,7 @@ QSizeF QgsFormAnnotation::minimumFrameSize() const
 {
   if ( mDesignerWidget )
   {
-    QSizeF widgetMinSize = mMinimumSize;
+    const QSizeF widgetMinSize = mMinimumSize;
     return QSizeF( contentsMargin().left() + contentsMargin().right() + widgetMinSize.width(),
                    contentsMargin().top() + contentsMargin().bottom() + widgetMinSize.height() );
   }
@@ -171,7 +171,7 @@ void QgsFormAnnotation::writeXml( QDomElement &elem, QDomDocument &doc, const Qg
 void QgsFormAnnotation::readXml( const QDomElement &itemElem, const QgsReadWriteContext &context )
 {
   mDesignerForm = itemElem.attribute( QStringLiteral( "designerForm" ), QString() );
-  QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
+  const QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
   if ( !annotationElem.isNull() )
   {
     _readXml( annotationElem, context );

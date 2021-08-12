@@ -295,7 +295,7 @@ const char *QgsColorBrewerPalette::BREWER_STRING =
 QList<QColor> QgsColorBrewerPalette::listSchemeColors( const QString &schemeName, int colors )
 {
   QList<QColor> pal;
-  QString palette( BREWER_STRING );
+  const QString palette( BREWER_STRING );
   const QStringList list = palette.split( QChar( '\n' ) );
   for ( const QString &entry : list )
   {
@@ -315,7 +315,7 @@ QStringList QgsColorBrewerPalette::listSchemes()
 {
   QStringList schemes;
 
-  QString palette( BREWER_STRING );
+  const QString palette( BREWER_STRING );
   const QStringList list = palette.split( QChar( '\n' ) );
   for ( const QString &entry : list )
   {
@@ -332,7 +332,7 @@ QList<int> QgsColorBrewerPalette::listSchemeVariants( const QString &schemeName 
 {
   QList<int> variants;
 
-  QString palette( BREWER_STRING );
+  const QString palette( BREWER_STRING );
   const QStringList list = palette.split( QChar( '\n' ) );
   for ( const QString &entry : list )
   {

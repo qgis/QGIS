@@ -82,13 +82,13 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
 {
   loadCommonParams( parameters, context, feedback );
 
-  QgsPointXY startPoint = parameterAsPoint( parameters, QStringLiteral( "START_POINT" ), context, mNetwork->sourceCrs() );
+  const QgsPointXY startPoint = parameterAsPoint( parameters, QStringLiteral( "START_POINT" ), context, mNetwork->sourceCrs() );
 
   // use older deprecated travel cost style if specified, to maintain old api
   const bool useOldTravelCost = parameters.value( QStringLiteral( "TRAVEL_COST" ) ).isValid();
   double travelCost = parameterAsDouble( parameters, useOldTravelCost ? QStringLiteral( "TRAVEL_COST" ) : QStringLiteral( "TRAVEL_COST2" ), context );
 
-  int strategy = parameterAsInt( parameters, QStringLiteral( "STRATEGY" ), context );
+  const int strategy = parameterAsInt( parameters, QStringLiteral( "STRATEGY" ), context );
   if ( strategy && !useOldTravelCost )
     travelCost *= mMultiplier;
 
@@ -104,7 +104,7 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
 
   feedback->pushInfo( QObject::tr( "Calculating service area…" ) );
   std::unique_ptr< QgsGraph> graph( mBuilder->takeGraph() );
-  int idxStart = graph->findVertex( snappedPoints[0] );
+  const int idxStart = graph->findVertex( snappedPoints[0] );
 
   QVector< int > tree;
   QVector< double > costs;
@@ -140,7 +140,7 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
 
     // find all edges coming from this vertex
     const QList< int > outgoingEdges = graph->vertex( i ).outgoingEdges() ;
-    for ( int edgeId : outgoingEdges )
+    for ( const int edgeId : outgoingEdges )
     {
       edge = graph->edge( edgeId );
       endVertexCost = startVertexCost + edge.cost( 0 ).toDouble();
@@ -154,8 +154,8 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
       else
       {
         // travelCost sits somewhere on this edge, interpolate position
-        QgsPointXY interpolatedEndPoint = QgsGeometryUtils::interpolatePointOnLineByValue( edgeStart.x(), edgeStart.y(), startVertexCost,
-                                          edgeEnd.x(), edgeEnd.y(), endVertexCost, travelCost );
+        const QgsPointXY interpolatedEndPoint = QgsGeometryUtils::interpolatePointOnLineByValue( edgeStart.x(), edgeStart.y(), startVertexCost,
+                                                edgeEnd.x(), edgeEnd.y(), endVertexCost, travelCost );
 
         points.push_back( interpolatedEndPoint );
         lines.push_back( QgsPolylineXY() << edgeStart << interpolatedEndPoint );
@@ -167,7 +167,7 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
   QList< int > verticesList = qgis::setToList( vertices );
   points.reserve( verticesList.size() );
   std::sort( verticesList.begin(), verticesList.end() );
-  for ( int v : verticesList )
+  for ( const int v : verticesList )
   {
     points.push_back( graph->vertex( v ).point() );
   }
@@ -191,7 +191,7 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
   {
     outputs.insert( QStringLiteral( "OUTPUT" ), pointsSinkId );
 
-    QgsGeometry geomPoints = QgsGeometry::fromMultiPointXY( points );
+    const QgsGeometry geomPoints = QgsGeometry::fromMultiPointXY( points );
     feat.setGeometry( geomPoints );
     feat.setAttributes( QgsAttributes() << QStringLiteral( "within" ) << startPoint.toString() );
     if ( !pointsSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
@@ -217,14 +217,14 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
 
       upperBoundary.reserve( nodes.size() );
       lowerBoundary.reserve( nodes.size() );
-      for ( int i : nodes )
+      for ( const int i : nodes )
       {
         upperBoundary.push_back( graph->vertex( graph->edge( tree.at( i ) ).toVertex() ).point() );
         lowerBoundary.push_back( graph->vertex( graph->edge( tree.at( i ) ).fromVertex() ).point() );
       } // nodes
 
-      QgsGeometry geomUpper = QgsGeometry::fromMultiPointXY( upperBoundary );
-      QgsGeometry geomLower = QgsGeometry::fromMultiPointXY( lowerBoundary );
+      const QgsGeometry geomUpper = QgsGeometry::fromMultiPointXY( upperBoundary );
+      const QgsGeometry geomLower = QgsGeometry::fromMultiPointXY( lowerBoundary );
 
       feat.setGeometry( geomUpper );
       feat.setAttributes( QgsAttributes() << QStringLiteral( "upper" ) << startPoint.toString() );
@@ -245,7 +245,7 @@ QVariantMap QgsServiceAreaFromPointAlgorithm::processAlgorithm( const QVariantMa
   if ( linesSink )
   {
     outputs.insert( QStringLiteral( "OUTPUT_LINES" ), linesSinkId );
-    QgsGeometry geomLines = QgsGeometry::fromMultiPolylineXY( lines );
+    const QgsGeometry geomLines = QgsGeometry::fromMultiPolylineXY( lines );
     feat.setGeometry( geomLines );
     feat.setAttributes( QgsAttributes() << QStringLiteral( "lines" ) << startPoint.toString() );
     if ( !linesSink->addFeature( feat, QgsFeatureSink::FastInsert ) )

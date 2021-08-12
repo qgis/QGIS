@@ -199,7 +199,7 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
   QgsAttributes attrs;
   attrs.resize( mFieldsToCompare.size() );
 
-  QgsSpatialIndex index( it, [&]( const QgsFeature & f )->bool
+  const QgsSpatialIndex index( it, [&]( const QgsFeature & f )->bool
   {
     if ( feedback->isCanceled() )
       return false;
@@ -212,7 +212,7 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
     if ( !mFieldsToCompare.empty() )
     {
       int idx = 0;
-      for ( int field : mOriginalFieldsToCompareIndices )
+      for ( const int field : mOriginalFieldsToCompareIndices )
       {
         attrs[idx++] = f.attributes().at( field );
       }
@@ -255,7 +255,7 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
       break;
 
     int idx = 0;
-    for ( int field : mRevisedFieldsToCompareIndices )
+    for ( const int field : mRevisedFieldsToCompareIndices )
     {
       attrs[idx++] = revisedFeature.attributes().at( field );
     }

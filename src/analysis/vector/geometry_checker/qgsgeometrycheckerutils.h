@@ -229,10 +229,10 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
     {
       if ( !geom->isEmpty() )
       {
-        int nVerts = geom->vertexCount( iPart, iRing );
-        QgsPoint front = geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) );
-        QgsPoint back = geom->vertexAt( QgsVertexId( iPart, iRing, nVerts - 1 ) );
-        bool closed = back == front;
+        const int nVerts = geom->vertexCount( iPart, iRing );
+        const QgsPoint front = geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) );
+        const QgsPoint back = geom->vertexAt( QgsVertexId( iPart, iRing, nVerts - 1 ) );
+        const bool closed = back == front;
         if ( isClosed )
           *isClosed = closed;
         return closed ? nVerts - 1 : nVerts;
@@ -266,10 +266,10 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
 
     static inline bool canDeleteVertex( const QgsAbstractGeometry *geom, int iPart, int iRing )
     {
-      int nVerts = geom->vertexCount( iPart, iRing );
-      QgsPoint front = geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) );
-      QgsPoint back = geom->vertexAt( QgsVertexId( iPart, iRing, nVerts - 1 ) );
-      bool closed = back == front;
+      const int nVerts = geom->vertexCount( iPart, iRing );
+      const QgsPoint front = geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) );
+      const QgsPoint back = geom->vertexAt( QgsVertexId( iPart, iRing, nVerts - 1 ) );
+      const bool closed = back == front;
       return closed ? nVerts > 4 : nVerts > 2;
     }
 

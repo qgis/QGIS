@@ -212,7 +212,7 @@ void QgsMapToolSelectionHandler::selectFeaturesMoveEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolSelectionHandler::selectFeaturesReleaseEvent( QgsMapMouseEvent *e )
 {
-  QPoint point = e->pos() - mInitDragPos;
+  const QPoint point = e->pos() - mInitDragPos;
   if ( !mSelectionActive || ( point.manhattanLength() < QApplication::startDragDistance() ) )
   {
     mSelectionActive = false;
@@ -249,11 +249,11 @@ void QgsMapToolSelectionHandler::selectPolygonPressEvent( QgsMapMouseEvent *e )
   if ( !mSelectionRubberBand && ( e->button() == Qt::RightButton ) )
   {
     QList<QgsMapToolIdentify::IdentifyResult> results;
-    QMap< QString, QString > derivedAttributes;
+    const QMap< QString, QString > derivedAttributes;
 
     const QgsPointXY mapPoint = toMapCoordinates( e->pos() );
     double x = mapPoint.x(), y = mapPoint.y();
-    double sr = QgsMapTool::searchRadiusMU( mCanvas );
+    const double sr = QgsMapTool::searchRadiusMU( mCanvas );
 
     const QList<QgsMapLayer *> layers = mCanvas->layers();
     for ( auto layer : layers )
@@ -276,7 +276,7 @@ void QgsMapToolSelectionHandler::selectPolygonPressEvent( QgsMapMouseEvent *e )
       }
     }
 
-    QPoint globalPos = mCanvas->mapToGlobal( QPoint( e->pos().x() + 5, e->pos().y() + 5 ) );
+    const QPoint globalPos = mCanvas->mapToGlobal( QPoint( e->pos().x() + 5, e->pos().y() + 5 ) );
     const QList<QgsMapToolIdentify::IdentifyResult> selectedFeatures = mIdentifyMenu->exec( results, globalPos );
     if ( !selectedFeatures.empty() && selectedFeatures[0].mFeature.hasGeometry() )
       setSelectedGeometry( selectedFeatures[0].mFeature.geometry(), e->modifiers() );
@@ -450,9 +450,9 @@ void QgsMapToolSelectionHandler::updateRadiusRubberband( double radius )
   mSelectionRubberBand->reset( QgsWkbTypes::PolygonGeometry );
   for ( int i = 0; i <= RADIUS_SEGMENTS; ++i )
   {
-    double theta = i * ( 2.0 * M_PI / RADIUS_SEGMENTS );
-    QgsPointXY radiusPoint( mRadiusCenter.x() + radius * std::cos( theta ),
-                            mRadiusCenter.y() + radius * std::sin( theta ) );
+    const double theta = i * ( 2.0 * M_PI / RADIUS_SEGMENTS );
+    const QgsPointXY radiusPoint( mRadiusCenter.x() + radius * std::cos( theta ),
+                                  mRadiusCenter.y() + radius * std::sin( theta ) );
     mSelectionRubberBand->addPoint( radiusPoint, false );
   }
   mSelectionRubberBand->closePoints( true );
@@ -460,7 +460,7 @@ void QgsMapToolSelectionHandler::updateRadiusRubberband( double radius )
 
 void QgsMapToolSelectionHandler::updateRadiusFromEdge( QgsPointXY &radiusEdge )
 {
-  double radius = std::sqrt( mRadiusCenter.sqrDist( radiusEdge ) );
+  const double radius = std::sqrt( mRadiusCenter.sqrDist( radiusEdge ) );
   if ( mDistanceWidget )
   {
     mDistanceWidget->setDistance( radius );

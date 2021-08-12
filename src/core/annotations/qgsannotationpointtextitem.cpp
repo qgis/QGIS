@@ -88,8 +88,8 @@ bool QgsAnnotationPointTextItem::readXml( const QDomElement &element, const QgsR
   const QDomElement textFormatElem = element.firstChildElement( QStringLiteral( "pointTextFormat" ) );
   if ( !textFormatElem.isNull() )
   {
-    QDomNodeList textFormatNodeList = textFormatElem.elementsByTagName( QStringLiteral( "text-style" ) );
-    QDomElement textFormatElem = textFormatNodeList.at( 0 ).toElement();
+    const QDomNodeList textFormatNodeList = textFormatElem.elementsByTagName( QStringLiteral( "text-style" ) );
+    const QDomElement textFormatElem = textFormatNodeList.at( 0 ).toElement();
     mTextFormat.readXml( textFormatElem, context );
   }
 

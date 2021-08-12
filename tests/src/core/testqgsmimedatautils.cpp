@@ -83,7 +83,7 @@ void TestQgsMimeDataUtils::testEncodeDecode()
 
   QMimeData *mimeData =  QgsMimeDataUtils::encodeUriList( uriList );
 
-  QgsMimeDataUtils::Uri uriDecoded( QgsMimeDataUtils::decodeUriList( mimeData ).at( 0 ) );
+  const QgsMimeDataUtils::Uri uriDecoded( QgsMimeDataUtils::decodeUriList( mimeData ).at( 0 ) );
 
   QCOMPARE( uriDecoded.name, uri.name );
   QCOMPARE( uriDecoded.providerKey, uri.providerKey );
@@ -96,7 +96,7 @@ void TestQgsMimeDataUtils::testEncodeDecode()
   QgsMimeDataUtils::decodeUriList( mimeData );
 
   // Encode representation:
-  QString data( uri.data() );
+  const QString data( uri.data() );
 
   QCOMPARE( data, TEST_ENCODED_DATA );
 
@@ -127,7 +127,7 @@ void TestQgsMimeDataUtils::testLayerFromProject()
 
   QMimeData *mimeData = QgsMimeDataUtils::encodeUriList( QgsMimeDataUtils::UriList() << QgsMimeDataUtils::Uri( vl1 ) << QgsMimeDataUtils::Uri( vl2 ) );
 
-  QgsMimeDataUtils::Uri uriDecoded( QgsMimeDataUtils::decodeUriList( mimeData ).at( 0 ) );
+  const QgsMimeDataUtils::Uri uriDecoded( QgsMimeDataUtils::decodeUriList( mimeData ).at( 0 ) );
   QCOMPARE( uriDecoded.mapLayer(), vl1 );
   QCOMPARE( uriDecoded.wkbType, QgsWkbTypes::LineString );
   bool owner = false;
@@ -135,7 +135,7 @@ void TestQgsMimeDataUtils::testLayerFromProject()
   QCOMPARE( uriDecoded.vectorLayer( owner, error ), vl1 );
   QVERIFY( !owner );
   QVERIFY( error.isEmpty() );
-  QgsMimeDataUtils::Uri uriDecoded2( QgsMimeDataUtils::decodeUriList( mimeData ).at( 1 ) );
+  const QgsMimeDataUtils::Uri uriDecoded2( QgsMimeDataUtils::decodeUriList( mimeData ).at( 1 ) );
   QCOMPARE( uriDecoded2.mapLayer(), vl2 );
   QCOMPARE( uriDecoded2.vectorLayer( owner, error ), vl2 );
   QVERIFY( !owner );
@@ -146,7 +146,7 @@ void TestQgsMimeDataUtils::testLayerFromProject()
   QgsMimeDataUtils::Uri uri( vl1 );
   uri.pId = QStringLiteral( "1" );
   mimeData = QgsMimeDataUtils::encodeUriList( QgsMimeDataUtils::UriList() << uri );
-  QgsMimeDataUtils::Uri uriDecoded3( QgsMimeDataUtils::decodeUriList( mimeData ).at( 0 ) );
+  const QgsMimeDataUtils::Uri uriDecoded3( QgsMimeDataUtils::decodeUriList( mimeData ).at( 0 ) );
   QVERIFY( !uriDecoded3.mapLayer() );
   QVERIFY( !uriDecoded3.vectorLayer( owner, error ) );
   QVERIFY( !owner );
@@ -156,7 +156,7 @@ void TestQgsMimeDataUtils::testLayerFromProject()
   QgsMimeDataUtils::Uri uri2( vl1 );
   uri2.layerId = QStringLiteral( "xcxxcv" );
   mimeData = QgsMimeDataUtils::encodeUriList( QgsMimeDataUtils::UriList() << uri2 );
-  QgsMimeDataUtils::Uri uriDecoded4( QgsMimeDataUtils::decodeUriList( mimeData ).at( 0 ) );
+  const QgsMimeDataUtils::Uri uriDecoded4( QgsMimeDataUtils::decodeUriList( mimeData ).at( 0 ) );
   QVERIFY( !uriDecoded4.mapLayer() );
   QVERIFY( !uriDecoded4.vectorLayer( owner, error ) );
   QVERIFY( !owner );
@@ -172,7 +172,7 @@ void TestQgsMimeDataUtils::testLayerFromProject()
   QgsMimeDataUtils::Uri uri3( points );
   uri3.layerId = QStringLiteral( "xcxxcv" );
   mimeData = QgsMimeDataUtils::encodeUriList( QgsMimeDataUtils::UriList() << uri3 );
-  QgsMimeDataUtils::Uri uriDecoded5( QgsMimeDataUtils::decodeUriList( mimeData ).at( 0 ) );
+  const QgsMimeDataUtils::Uri uriDecoded5( QgsMimeDataUtils::decodeUriList( mimeData ).at( 0 ) );
   QVERIFY( !uriDecoded5.mapLayer() );
   QCOMPARE( uriDecoded5.wkbType, QgsWkbTypes::Point );
   QgsVectorLayer *res = uriDecoded5.vectorLayer( owner, error );

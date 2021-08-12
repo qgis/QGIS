@@ -190,7 +190,7 @@ void TestQgsMeshRenderer::initTestCase()
 
   // here we check that datasets automatically get our default color ramp applied ("Plasma")
   QgsMeshDatasetIndex ds( 0, 0 );
-  QgsMeshRendererScalarSettings scalarSettings = mMemoryLayer->rendererSettings().scalarSettings( ds.group() );
+  const QgsMeshRendererScalarSettings scalarSettings = mMemoryLayer->rendererSettings().scalarSettings( ds.group() );
   QgsColorRampShader shader = scalarSettings.colorRampShader();
   QList<QgsColorRampShader::ColorRampItem> lst = shader.colorRampItemList();
   QCOMPARE( lst.count(), 52 );
@@ -198,7 +198,7 @@ void TestQgsMeshRenderer::initTestCase()
   QCOMPARE( lst.at( lst.count() - 1 ).value, 4. );  // max group value
 
   ds = QgsMeshDatasetIndex( 1, 0 );
-  QgsMeshRendererVectorSettings vectorSettings = mMemoryLayer->rendererSettings().vectorSettings( ds.group() );
+  const QgsMeshRendererVectorSettings vectorSettings = mMemoryLayer->rendererSettings().vectorSettings( ds.group() );
   shader = vectorSettings.colorRampShader();
   lst = shader.colorRampItemList();
   QCOMPARE( lst.count(), 52 );
@@ -208,7 +208,7 @@ void TestQgsMeshRenderer::initTestCase()
 
 void TestQgsMeshRenderer::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -242,7 +242,7 @@ bool TestQgsMeshRenderer::imageCheck( const QString &testType, QgsMeshLayer *lay
   myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( *mMapSettings );
   myChecker.setColorTolerance( 15 );
-  bool myResultFlag = myChecker.runTest( testType, 0 );
+  const bool myResultFlag = myChecker.runTest( testType, 0 );
   mReport += myChecker.report();
   return myResultFlag;
 }
@@ -308,7 +308,7 @@ void TestQgsMeshRenderer::test_edge_mesh_rendering()
 
 void TestQgsMeshRenderer::test_1d_vertex_scalar_dataset_rendering()
 {
-  QgsMeshDatasetIndex ds( 0, 0 );
+  const QgsMeshDatasetIndex ds( 0, 0 );
   const QgsMeshDatasetGroupMetadata metadata = mMemory1DLayer->dataProvider()->datasetGroupMetadata( ds );
   QVERIFY( metadata.name() == "VertexScalarDataset" );
 
@@ -329,7 +329,7 @@ void TestQgsMeshRenderer::test_1d_vertex_scalar_dataset_rendering()
 
 void TestQgsMeshRenderer::test_1d_vertex_vector_dataset_rendering()
 {
-  QgsMeshDatasetIndex ds( 1, 0 );
+  const QgsMeshDatasetIndex ds( 1, 0 );
   const QgsMeshDatasetGroupMetadata metadata = mMemory1DLayer->dataProvider()->datasetGroupMetadata( ds );
   QVERIFY( metadata.name() == "VertexVectorDataset" );
 
@@ -348,7 +348,7 @@ void TestQgsMeshRenderer::test_1d_vertex_vector_dataset_rendering()
 
 void TestQgsMeshRenderer::test_1d_edge_scalar_dataset_rendering()
 {
-  QgsMeshDatasetIndex ds( 2, 0 );
+  const QgsMeshDatasetIndex ds( 2, 0 );
   const QgsMeshDatasetGroupMetadata metadata = mMemory1DLayer->dataProvider()->datasetGroupMetadata( ds );
   QVERIFY( metadata.name() == "EdgeScalarDataset" );
 
@@ -369,11 +369,11 @@ void TestQgsMeshRenderer::test_1d_edge_scalar_dataset_rendering()
 
 void TestQgsMeshRenderer::test_1d_edge_vector_dataset_rendering()
 {
-  QgsMeshDatasetIndex ds( 3, 0 );
+  const QgsMeshDatasetIndex ds( 3, 0 );
   const QgsMeshDatasetGroupMetadata metadata = mMemory1DLayer->dataProvider()->datasetGroupMetadata( ds );
   QVERIFY( metadata.name() == "EdgeVectorDataset" );
 
-  QgsMeshRendererSettings rendererSettings = mMemory1DLayer->rendererSettings();
+  const QgsMeshRendererSettings rendererSettings = mMemory1DLayer->rendererSettings();
   mMemory1DLayer->setRendererSettings( rendererSettings );
   mMemory1DLayer->setStaticVectorDatasetIndex( ds );
 
@@ -383,11 +383,11 @@ void TestQgsMeshRenderer::test_1d_edge_vector_dataset_rendering()
 
 void TestQgsMeshRenderer::test_vertex_scalar_dataset_rendering()
 {
-  QgsMeshDatasetIndex ds( 0, 0 );
+  const QgsMeshDatasetIndex ds( 0, 0 );
   const QgsMeshDatasetGroupMetadata metadata = mMemoryLayer->dataProvider()->datasetGroupMetadata( ds );
   QVERIFY( metadata.name() == "VertexScalarDataset" );
 
-  QgsMeshRendererSettings rendererSettings = mMemoryLayer->rendererSettings();
+  const QgsMeshRendererSettings rendererSettings = mMemoryLayer->rendererSettings();
   mMemoryLayer->setRendererSettings( rendererSettings );
   mMemoryLayer->setStaticScalarDatasetIndex( ds );
 
@@ -397,7 +397,7 @@ void TestQgsMeshRenderer::test_vertex_scalar_dataset_rendering()
 
 void TestQgsMeshRenderer::test_vertex_vector_dataset_rendering()
 {
-  QgsMeshDatasetIndex ds( 1, 0 );
+  const QgsMeshDatasetIndex ds( 1, 0 );
   const QgsMeshDatasetGroupMetadata metadata = mMemoryLayer->dataProvider()->datasetGroupMetadata( ds );
   QVERIFY( metadata.name() == "VertexVectorDataset" );
 
@@ -416,7 +416,7 @@ void TestQgsMeshRenderer::test_vertex_vector_dataset_rendering()
 
 void TestQgsMeshRenderer::test_vertex_vector_dataset_colorRamp_rendering()
 {
-  QgsMeshDatasetIndex ds( 1, 0 );
+  const QgsMeshDatasetIndex ds( 1, 0 );
   mMemoryLayer->setStaticVectorDatasetIndex( ds );
   const QgsMeshDatasetGroupMetadata metadata = mMemoryLayer->dataProvider()->datasetGroupMetadata( ds );
   QVERIFY( metadata.name() == "VertexVectorDataset" );
@@ -435,11 +435,11 @@ void TestQgsMeshRenderer::test_vertex_vector_dataset_colorRamp_rendering()
 
 void TestQgsMeshRenderer::test_face_scalar_dataset_rendering()
 {
-  QgsMeshDatasetIndex ds( 2, 0 );
+  const QgsMeshDatasetIndex ds( 2, 0 );
   const QgsMeshDatasetGroupMetadata metadata = mMemoryLayer->dataProvider()->datasetGroupMetadata( ds );
   QVERIFY( metadata.name() == "FaceScalarDataset" );
 
-  QgsMeshRendererSettings rendererSettings = mMemoryLayer->rendererSettings();
+  const QgsMeshRendererSettings rendererSettings = mMemoryLayer->rendererSettings();
   mMemoryLayer->setRendererSettings( rendererSettings );
   mMemoryLayer->setStaticScalarDatasetIndex( ds );
 
@@ -449,7 +449,7 @@ void TestQgsMeshRenderer::test_face_scalar_dataset_rendering()
 
 void TestQgsMeshRenderer::test_face_scalar_dataset_interpolated_neighbour_average_rendering()
 {
-  QgsMeshDatasetIndex ds( 2, 0 );
+  const QgsMeshDatasetIndex ds( 2, 0 );
   const QgsMeshDatasetGroupMetadata metadata = mMemoryLayer->dataProvider()->datasetGroupMetadata( ds );
   QVERIFY( metadata.name() == "FaceScalarDataset" );
 
@@ -466,11 +466,11 @@ void TestQgsMeshRenderer::test_face_scalar_dataset_interpolated_neighbour_averag
 
 void TestQgsMeshRenderer::test_face_vector_dataset_rendering()
 {
-  QgsMeshDatasetIndex ds( 3, 0 );
+  const QgsMeshDatasetIndex ds( 3, 0 );
   const QgsMeshDatasetGroupMetadata metadata = mMemoryLayer->dataProvider()->datasetGroupMetadata( ds );
   QVERIFY( metadata.name() == "FaceVectorDataset" );
 
-  QgsMeshRendererSettings rendererSettings = mMemoryLayer->rendererSettings();
+  const QgsMeshRendererSettings rendererSettings = mMemoryLayer->rendererSettings();
   mMemoryLayer->setRendererSettings( rendererSettings );
   mMemoryLayer->setStaticVectorDatasetIndex( ds );
 
@@ -480,11 +480,11 @@ void TestQgsMeshRenderer::test_face_vector_dataset_rendering()
 
 void TestQgsMeshRenderer::test_vertex_scalar_dataset_with_inactive_face_rendering()
 {
-  QgsMeshDatasetIndex ds( 1, 1 );
+  const QgsMeshDatasetIndex ds( 1, 1 );
   const QgsMeshDatasetGroupMetadata metadata = mMdalLayer->dataProvider()->datasetGroupMetadata( ds );
   QVERIFY( metadata.name() == "VertexScalarDatasetWithInactiveFace1" );
 
-  QgsMeshRendererSettings rendererSettings = mMdalLayer->rendererSettings();
+  const QgsMeshRendererSettings rendererSettings = mMdalLayer->rendererSettings();
   mMdalLayer->setRendererSettings( rendererSettings );
   mMdalLayer->setStaticScalarDatasetIndex( ds );
 
@@ -493,7 +493,7 @@ void TestQgsMeshRenderer::test_vertex_scalar_dataset_with_inactive_face_renderin
 
 void TestQgsMeshRenderer::test_face_vector_on_user_grid()
 {
-  QgsMeshDatasetIndex ds( 3, 0 );
+  const QgsMeshDatasetIndex ds( 3, 0 );
   const QgsMeshDatasetGroupMetadata metadata = mMemoryLayer->dataProvider()->datasetGroupMetadata( ds );
   QVERIFY( metadata.name() == "FaceVectorDataset" );
 
@@ -514,7 +514,7 @@ void TestQgsMeshRenderer::test_face_vector_on_user_grid()
 
 void TestQgsMeshRenderer::test_face_vector_on_user_grid_streamlines()
 {
-  QgsMeshDatasetIndex ds( 3, 0 );
+  const QgsMeshDatasetIndex ds( 3, 0 );
   const QgsMeshDatasetGroupMetadata metadata = mMemoryLayer->dataProvider()->datasetGroupMetadata( ds );
   QVERIFY( metadata.name() == "FaceVectorDataset" );
 
@@ -535,7 +535,7 @@ void TestQgsMeshRenderer::test_face_vector_on_user_grid_streamlines()
 
 void TestQgsMeshRenderer::test_vertex_vector_on_user_grid()
 {
-  QgsMeshDatasetIndex ds( 1, 0 );
+  const QgsMeshDatasetIndex ds( 1, 0 );
   const QgsMeshDatasetGroupMetadata metadata = mMemoryLayer->dataProvider()->datasetGroupMetadata( ds );
   QVERIFY( metadata.name() == "VertexVectorDataset" );
 
@@ -557,7 +557,7 @@ void TestQgsMeshRenderer::test_vertex_vector_on_user_grid()
 
 void TestQgsMeshRenderer::test_vertex_vector_on_user_grid_streamlines()
 {
-  QgsMeshDatasetIndex ds( 1, 0 );
+  const QgsMeshDatasetIndex ds( 1, 0 );
   const QgsMeshDatasetGroupMetadata metadata = mMemoryLayer->dataProvider()->datasetGroupMetadata( ds );
   QVERIFY( metadata.name() == "VertexVectorDataset" );
 
@@ -579,7 +579,7 @@ void TestQgsMeshRenderer::test_vertex_vector_on_user_grid_streamlines()
 
 void TestQgsMeshRenderer::test_vertex_vector_on_user_grid_streamlines_colorRamp()
 {
-  QgsMeshDatasetIndex ds( 1, 0 );
+  const QgsMeshDatasetIndex ds( 1, 0 );
   const QgsMeshDatasetGroupMetadata metadata = mMemoryLayer->dataProvider()->datasetGroupMetadata( ds );
   QVERIFY( metadata.name() == "VertexVectorDataset" );
 
@@ -600,7 +600,7 @@ void TestQgsMeshRenderer::test_vertex_vector_on_user_grid_streamlines_colorRamp(
 
 void TestQgsMeshRenderer::test_vertex_vector_traces()
 {
-  QgsMeshDatasetIndex ds( 1, 0 );
+  const QgsMeshDatasetIndex ds( 1, 0 );
   const QgsMeshDatasetGroupMetadata metadata = mMemoryLayer->dataProvider()->datasetGroupMetadata( ds );
   QVERIFY( metadata.name() == "VertexVectorDataset" );
 
@@ -628,7 +628,7 @@ void TestQgsMeshRenderer::test_vertex_vector_traces()
 
 void TestQgsMeshRenderer::test_vertex_vector_traces_colorRamp()
 {
-  QgsMeshDatasetIndex ds( 1, 0 );
+  const QgsMeshDatasetIndex ds( 1, 0 );
   const QgsMeshDatasetGroupMetadata metadata = mMemoryLayer->dataProvider()->datasetGroupMetadata( ds );
   QVERIFY( metadata.name() == "VertexVectorDataset" );
 
@@ -655,11 +655,11 @@ void TestQgsMeshRenderer::test_vertex_vector_traces_colorRamp()
 
 void TestQgsMeshRenderer::test_signals()
 {
-  QSignalSpy spy1( mMemoryLayer, &QgsMapLayer::rendererChanged );
-  QSignalSpy spy2( mMemoryLayer->legend(), &QgsMapLayerLegend::itemsChanged );
-  QSignalSpy spy3( mMemoryLayer, &QgsMapLayer::legendChanged );
+  const QSignalSpy spy1( mMemoryLayer, &QgsMapLayer::rendererChanged );
+  const QSignalSpy spy2( mMemoryLayer->legend(), &QgsMapLayerLegend::itemsChanged );
+  const QSignalSpy spy3( mMemoryLayer, &QgsMapLayer::legendChanged );
 
-  QgsMeshRendererSettings rendererSettings = mMemoryLayer->rendererSettings();
+  const QgsMeshRendererSettings rendererSettings = mMemoryLayer->rendererSettings();
   mMemoryLayer->setStaticScalarDatasetIndex( QgsMeshDatasetIndex( 1, 0 ) );
   mMemoryLayer->setRendererSettings( rendererSettings );
 
@@ -698,7 +698,7 @@ void TestQgsMeshRenderer::test_stacked_3d_mesh_single_level_averaging()
   // switch off mesh renderings
   rendererSettings.setNativeMeshSettings( QgsMeshRendererMeshSettings() );
   rendererSettings.setTriangularMeshSettings( QgsMeshRendererMeshSettings() );
-  std::unique_ptr<QgsMeshMultiLevelsAveragingMethod> method( new QgsMeshMultiLevelsAveragingMethod( 1, true ) );
+  const std::unique_ptr<QgsMeshMultiLevelsAveragingMethod> method( new QgsMeshMultiLevelsAveragingMethod( 1, true ) );
   rendererSettings.setAveragingMethod( method.get() );
   mMdal3DLayer->setRendererSettings( rendererSettings );
   mMdal3DLayer->setStaticVectorDatasetIndex( ds );

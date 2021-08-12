@@ -24,7 +24,7 @@ QgsMenuHeader::QgsMenuHeader( const QString &text, QWidget *parent )
   : QWidget( parent )
   , mText( text )
 {
-  int textMinWidth = fontMetrics().boundingRect( mText ).width();
+  const int textMinWidth = fontMetrics().boundingRect( mText ).width();
   mTextHeight = fontMetrics().height();
   mLabelMargin = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( '.' );
   mMinWidth = 2 * mLabelMargin + textMinWidth;
@@ -45,9 +45,9 @@ QSize QgsMenuHeader::sizeHint() const
 void QgsMenuHeader::paintEvent( QPaintEvent * )
 {
   QPainter painter( this );
-  QPalette pal = QPalette( qApp->palette() );
-  QColor headerBgColor = pal.color( QPalette::Mid );
-  QColor headerTextColor = pal.color( QPalette::BrightText );
+  const QPalette pal = QPalette( qApp->palette() );
+  const QColor headerBgColor = pal.color( QPalette::Mid );
+  const QColor headerTextColor = pal.color( QPalette::BrightText );
 
   //draw header background
   painter.setBrush( headerBgColor );

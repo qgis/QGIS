@@ -251,7 +251,7 @@ bool QgsNativeAlgorithms::supportsNonFileBasedOutput() const
 
 void QgsNativeAlgorithms::loadAlgorithms()
 {
-  QgsScopedRuntimeProfile profile( QObject::tr( "QGIS native provider" ) );
+  const QgsScopedRuntimeProfile profile( QObject::tr( "QGIS native provider" ) );
   addAlgorithm( new QgsAddIncrementalFieldAlgorithm() );
   addAlgorithm( new QgsAddTableFieldAlgorithm() );
   addAlgorithm( new QgsAddXYFieldsAlgorithm() );

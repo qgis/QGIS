@@ -34,9 +34,9 @@ QgsPreviewQuad::QgsPreviewQuad( Qt3DRender::QAbstractTexture *texture,
   setObjectName( "Preview Quad" );
   Qt3DRender::QGeometry *geom = new Qt3DRender::QGeometry;
   Qt3DRender::QAttribute *positionAttribute = new Qt3DRender::QAttribute;
-  QVector<float> vert = { -1.0f, -1.0f, 1.0f, /**/ 1.0f, -1.0f, 1.0f, /**/ -1.0f,  1.0f, 1.0f, /**/ -1.0f,  1.0f, 1.0f, /**/ 1.0f, -1.0f, 1.0f, /**/ 1.0f,  1.0f, 1.0f };
+  const QVector<float> vert = { -1.0f, -1.0f, 1.0f, /**/ 1.0f, -1.0f, 1.0f, /**/ -1.0f,  1.0f, 1.0f, /**/ -1.0f,  1.0f, 1.0f, /**/ 1.0f, -1.0f, 1.0f, /**/ 1.0f,  1.0f, 1.0f };
 
-  QByteArray vertexArr( ( const char * ) vert.constData(), vert.size() * sizeof( float ) );
+  const QByteArray vertexArr( ( const char * ) vert.constData(), vert.size() * sizeof( float ) );
   Qt3DRender::QBuffer *vertexBuffer = nullptr;
   vertexBuffer = new Qt3DRender::QBuffer( this );
   vertexBuffer->setData( vertexArr );

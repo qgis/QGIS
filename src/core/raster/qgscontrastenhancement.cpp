@@ -78,7 +78,7 @@ int QgsContrastEnhancement::enhanceContrast( double value )
 
   if ( mLookupTable && NoEnhancement != mContrastEnhancementAlgorithm )
   {
-    double shiftedValue = value + mLookupTableOffset;
+    const double shiftedValue = value + mLookupTableOffset;
     if ( shiftedValue >= 0 && shiftedValue < mRasterDataTypeRange + 1 )
       return mLookupTable[static_cast <int>( shiftedValue )];
     return 0;
@@ -227,39 +227,39 @@ void QgsContrastEnhancement::writeXml( QDomDocument &doc, QDomElement &parentEle
 {
   //minimum value
   QDomElement minElem = doc.createElement( QStringLiteral( "minValue" ) );
-  QDomText minText = doc.createTextNode( QgsRasterBlock::printValue( mMinimumValue ) );
+  const QDomText minText = doc.createTextNode( QgsRasterBlock::printValue( mMinimumValue ) );
   minElem.appendChild( minText );
   parentElem.appendChild( minElem );
 
   //maximum value
   QDomElement maxElem = doc.createElement( QStringLiteral( "maxValue" ) );
-  QDomText maxText = doc.createTextNode( QgsRasterBlock::printValue( mMaximumValue ) );
+  const QDomText maxText = doc.createTextNode( QgsRasterBlock::printValue( mMaximumValue ) );
   maxElem.appendChild( maxText );
   parentElem.appendChild( maxElem );
 
   //algorithm
   QDomElement algorithmElem = doc.createElement( QStringLiteral( "algorithm" ) );
-  QDomText algorithmText = doc.createTextNode( contrastEnhancementAlgorithmString( mContrastEnhancementAlgorithm ) );
+  const QDomText algorithmText = doc.createTextNode( contrastEnhancementAlgorithmString( mContrastEnhancementAlgorithm ) );
   algorithmElem.appendChild( algorithmText );
   parentElem.appendChild( algorithmElem );
 }
 
 void QgsContrastEnhancement::readXml( const QDomElement &elem )
 {
-  QDomElement minValueElem = elem.firstChildElement( QStringLiteral( "minValue" ) );
+  const QDomElement minValueElem = elem.firstChildElement( QStringLiteral( "minValue" ) );
   if ( !minValueElem.isNull() )
   {
     mMinimumValue = minValueElem.text().toDouble();
   }
-  QDomElement maxValueElem = elem.firstChildElement( QStringLiteral( "maxValue" ) );
+  const QDomElement maxValueElem = elem.firstChildElement( QStringLiteral( "maxValue" ) );
   if ( !maxValueElem.isNull() )
   {
     mMaximumValue = maxValueElem.text().toDouble();
   }
-  QDomElement algorithmElem = elem.firstChildElement( QStringLiteral( "algorithm" ) );
+  const QDomElement algorithmElem = elem.firstChildElement( QStringLiteral( "algorithm" ) );
   if ( !algorithmElem.isNull() )
   {
-    QString algorithmString = algorithmElem.text();
+    const QString algorithmString = algorithmElem.text();
     ContrastEnhancementAlgorithm algorithm = NoEnhancement;
     // old version ( < 19 Apr 2013) was using enum directly -> for backward compatibility
     if ( algorithmString == QLatin1String( "0" ) )

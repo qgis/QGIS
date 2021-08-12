@@ -71,7 +71,7 @@ void QgsDashSpaceWidget::mRemoveButton_clicked()
 QVector<qreal> QgsDashSpaceWidget::dashDotVector() const
 {
   QVector<qreal> dashVector;
-  int nTopLevelItems = mDashSpaceTreeWidget->topLevelItemCount();
+  const int nTopLevelItems = mDashSpaceTreeWidget->topLevelItemCount();
   for ( int i = 0; i < nTopLevelItems; ++i )
   {
     QTreeWidgetItem *currentItem = mDashSpaceTreeWidget->topLevelItem( i );

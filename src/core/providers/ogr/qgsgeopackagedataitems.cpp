@@ -78,7 +78,7 @@ QVector<QgsDataItem *> QgsGeoPackageRootItem::createChildren()
   const QStringList connList( QgsOgrDbConnection::connectionList( QStringLiteral( "GPKG" ) ) );
   for ( const QString &connName : connList )
   {
-    QgsOgrDbConnection connection( connName, QStringLiteral( "GPKG" ) );
+    const QgsOgrDbConnection connection( connName, QStringLiteral( "GPKG" ) );
     QgsDataItem *conn = new QgsGeoPackageConnectionItem( this, connection.name(), mPath + '/' + connection.path() );
 
     connections.append( conn );
@@ -167,7 +167,7 @@ QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
     const QStringList projectNames = storage->listProjects( mPath );
     for ( const QString &projectName : projectNames )
     {
-      QgsGeoPackageProjectUri projectUri { true, mPath, projectName };
+      const QgsGeoPackageProjectUri projectUri { true, mPath, projectName };
       children.append( new QgsProjectItem( this, projectName, QgsGeoPackageProjectStorage::encodeUri( projectUri ) ) );
     }
   }
@@ -269,7 +269,7 @@ void QgsGeoPackageCollectionItem::deleteConnection()
 
 bool QgsGeoPackageCollectionItem::vacuumGeoPackageDb( const QString &name, const QString &path, QString &errCause )
 {
-  QgsScopedProxyProgressTask task( tr( "Vacuuming %1" ).arg( name ) );
+  const QgsScopedProxyProgressTask task( tr( "Vacuuming %1" ).arg( name ) );
   QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
   std::unique_ptr<QgsGeoPackageProviderConnection> conn( static_cast<QgsGeoPackageProviderConnection *>( md->createConnection( path, QVariantMap() ) ) );
   if ( conn )
@@ -381,7 +381,7 @@ bool QgsGeoPackageRasterLayerItem::executeDeleteLayer( QString &errCause )
 {
   QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
   std::unique_ptr<QgsGeoPackageProviderConnection> conn( static_cast<QgsGeoPackageProviderConnection *>( md->createConnection( collection()->path(), QVariantMap() ) ) );
-  QString tableName = name();
+  const QString tableName = name();
   if ( conn->tableExists( QString(), tableName ) )
   {
     try
@@ -408,7 +408,7 @@ bool QgsGeoPackageVectorLayerItem::executeDeleteLayer( QString &errCause )
 {
   QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
   std::unique_ptr<QgsGeoPackageProviderConnection> conn( static_cast<QgsGeoPackageProviderConnection *>( md->createConnection( collection()->path(), QVariantMap() ) ) );
-  QString tableName = name();
+  const QString tableName = name();
   if ( conn )
   {
     try

@@ -104,7 +104,7 @@ bool QgsCallout::saveProperties( QDomDocument &doc, QDomElement &element, const 
     return false;
   }
 
-  QDomElement calloutPropsElement = QgsXmlUtils::writeVariant( properties( context ), doc );
+  const QDomElement calloutPropsElement = QgsXmlUtils::writeVariant( properties( context ), doc );
 
   QDomElement calloutElement = doc.createElement( QStringLiteral( "callout" ) );
   calloutElement.setAttribute( QStringLiteral( "type" ), type() );
@@ -151,7 +151,7 @@ void QgsCallout::render( QgsRenderContext &context, const QRectF &rect, const do
   if ( context.useAdvancedEffects() )
   {
 
-    QPainter::CompositionMode blendMode = mBlendMode;
+    const QPainter::CompositionMode blendMode = mBlendMode;
     if ( dataDefinedProperties().isActive( QgsCallout::BlendMode ) )
     {
       context.expressionContext().setOriginalValueVariable( QString() );
@@ -203,7 +203,7 @@ QgsCallout::AnchorPoint QgsCallout::decodeAnchorPoint( const QString &name, bool
 {
   if ( ok )
     *ok = true;
-  QString cleaned = name.toLower().trimmed();
+  const QString cleaned = name.toLower().trimmed();
 
   if ( cleaned == QLatin1String( "pole_of_inaccessibility" ) )
     return PoleOfInaccessibility;
@@ -268,7 +268,7 @@ QgsCallout::LabelAnchorPoint QgsCallout::decodeLabelAnchorPoint( const QString &
 {
   if ( ok )
     *ok = true;
-  QString cleaned = name.toLower().trimmed();
+  const QString cleaned = name.toLower().trimmed();
 
   if ( cleaned == QLatin1String( "point_on_exterior" ) )
     return LabelPointOnExterior;
@@ -457,13 +457,13 @@ QgsGeometry QgsCallout::calloutLineToPart( const QgsGeometry &labelGeometry, con
 
   if ( dataDefinedProperties().isActive( QgsCallout::AnchorPointPosition ) )
   {
-    QString encodedAnchor = encodeAnchorPoint( anchor );
+    const QString encodedAnchor = encodeAnchorPoint( anchor );
     context.expressionContext().setOriginalValueVariable( encodedAnchor );
     anchor = decodeAnchorPoint( dataDefinedProperties().valueAsString( QgsCallout::AnchorPointPosition, context.expressionContext(), encodedAnchor ) );
   }
 
   QgsGeometry line;
-  QgsGeos labelGeos( labelGeometry.constGet() );
+  const QgsGeos labelGeos( labelGeometry.constGet() );
 
   switch ( QgsWkbTypes::geometryType( evaluatedPartAnchor->wkbType() ) )
   {
@@ -481,7 +481,7 @@ QgsGeometry QgsCallout::calloutLineToPart( const QgsGeometry &labelGeometry, con
 
       // ideally avoid this unwanted clone in future. For now we need it because poleOfInaccessibility/pointOnSurface are
       // only available to QgsGeometry objects
-      QgsGeometry evaluatedPartAnchorGeom( evaluatedPartAnchor->clone() );
+      const QgsGeometry evaluatedPartAnchorGeom( evaluatedPartAnchor->clone() );
       switch ( anchor )
       {
         case QgsCallout::PoleOfInaccessibility:
@@ -599,7 +599,7 @@ void QgsSimpleLineCallout::readProperties( const QVariantMap &props, const QgsRe
   const QString lineSymbolDef = props.value( QStringLiteral( "lineSymbol" ) ).toString();
   QDomDocument doc( QStringLiteral( "symbol" ) );
   doc.setContent( lineSymbolDef );
-  QDomElement symbolElem = doc.firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement symbolElem = doc.firstChildElement( QStringLiteral( "symbol" ) );
   std::unique_ptr< QgsLineSymbol > lineSymbol( QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( symbolElem, context ) );
   if ( lineSymbol )
     mLineSymbol = std::move( lineSymbol );
@@ -655,7 +655,7 @@ void QgsSimpleLineCallout::draw( QgsRenderContext &context, const QRectF &rect, 
   LabelAnchorPoint labelAnchor = labelAnchorPoint();
   if ( dataDefinedProperties().isActive( QgsCallout::LabelAnchorPointPosition ) )
   {
-    QString encodedAnchor = encodeLabelAnchorPoint( labelAnchor );
+    const QString encodedAnchor = encodeLabelAnchorPoint( labelAnchor );
     context.expressionContext().setOriginalValueVariable( encodedAnchor );
     labelAnchor = decodeLabelAnchorPoint( dataDefinedProperties().valueAsString( QgsCallout::LabelAnchorPointPosition, context.expressionContext(), encodedAnchor ) );
   }
@@ -668,7 +668,7 @@ void QgsSimpleLineCallout::draw( QgsRenderContext &context, const QRectF &rect, 
   auto drawCalloutLine = [this, &context, &calloutContext, &label, &rect, angle, &anchor, originPinned]( const QgsAbstractGeometry * partAnchor )
   {
     bool destinationPinned = false;
-    QgsGeometry line = calloutLineToPart( label, partAnchor, context, calloutContext, destinationPinned );
+    const QgsGeometry line = calloutLineToPart( label, partAnchor, context, calloutContext, destinationPinned );
     if ( line.isEmpty() )
       return;
 
@@ -682,7 +682,7 @@ void QgsSimpleLineCallout::draw( QgsRenderContext &context, const QRectF &rect, 
       context.expressionContext().setOriginalValueVariable( minLength );
       minLength = dataDefinedProperties().valueAsDouble( QgsCallout::MinimumCalloutLength, context.expressionContext(), minLength );
     }
-    double minLengthPixels = context.convertToPainterUnits( minLength, mMinCalloutLengthUnit, mMinCalloutLengthScale );
+    const double minLengthPixels = context.convertToPainterUnits( minLength, mMinCalloutLengthUnit, mMinCalloutLengthScale );
     if ( minLengthPixels > 0 && lineLength < minLengthPixels )
       return; // too small!
 
@@ -779,7 +779,7 @@ QgsManhattanLineCallout *QgsManhattanLineCallout::clone() const
 
 QgsCurve *QgsManhattanLineCallout::createCalloutLine( const QgsPoint &start, const QgsPoint &end, QgsRenderContext &, const QRectF &, const double, const QgsGeometry &, QgsCallout::QgsCalloutContext & ) const
 {
-  QgsPoint mid1 = QgsPoint( start.x(), end.y() );
+  const QgsPoint mid1 = QgsPoint( start.x(), end.y() );
   return new QgsLineString( QVector< QgsPoint >() << start << mid1 << end );
 }
 
@@ -1107,7 +1107,7 @@ void QgsBalloonCallout::readProperties( const QVariantMap &props, const QgsReadW
   const QString fillSymbolDef = props.value( QStringLiteral( "fillSymbol" ) ).toString();
   QDomDocument doc( QStringLiteral( "symbol" ) );
   doc.setContent( fillSymbolDef );
-  QDomElement symbolElem = doc.firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement symbolElem = doc.firstChildElement( QStringLiteral( "symbol" ) );
   std::unique_ptr< QgsFillSymbol > fillSymbol( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( symbolElem, context ) );
   if ( fillSymbol )
     mFillSymbol = std::move( fillSymbol );
@@ -1247,10 +1247,10 @@ QPolygonF QgsBalloonCallout::getPoints( QgsRenderContext &context, QgsPointXY or
           bool rightOk = false;
           bool bottomOk = false;
           bool leftOk = false;
-          double evaluatedTop = list.at( 0 ).toDouble( &topOk );
-          double evaluatedRight = list.at( 1 ).toDouble( &rightOk );
-          double evaluatedBottom = list.at( 2 ).toDouble( &bottomOk );
-          double evaluatedLeft = list.at( 3 ).toDouble( &leftOk );
+          const double evaluatedTop = list.at( 0 ).toDouble( &topOk );
+          const double evaluatedRight = list.at( 1 ).toDouble( &rightOk );
+          const double evaluatedBottom = list.at( 2 ).toDouble( &bottomOk );
+          const double evaluatedLeft = list.at( 3 ).toDouble( &leftOk );
           if ( topOk && rightOk && bottomOk && leftOk )
           {
             left = evaluatedLeft;
@@ -1269,10 +1269,10 @@ QPolygonF QgsBalloonCallout::getPoints( QgsRenderContext &context, QgsPointXY or
           bool rightOk = false;
           bool bottomOk = false;
           bool leftOk = false;
-          double evaluatedTop = list.at( 0 ).toDouble( &topOk );
-          double evaluatedRight = list.at( 1 ).toDouble( &rightOk );
-          double evaluatedBottom = list.at( 2 ).toDouble( &bottomOk );
-          double evaluatedLeft = list.at( 3 ).toDouble( &leftOk );
+          const double evaluatedTop = list.at( 0 ).toDouble( &topOk );
+          const double evaluatedRight = list.at( 1 ).toDouble( &rightOk );
+          const double evaluatedBottom = list.at( 2 ).toDouble( &bottomOk );
+          const double evaluatedLeft = list.at( 3 ).toDouble( &leftOk );
           if ( topOk && rightOk && bottomOk && leftOk )
           {
             left = evaluatedLeft;
@@ -1304,8 +1304,8 @@ QPolygonF QgsBalloonCallout::getPoints( QgsRenderContext &context, QgsPointXY or
     return QPolygonF();
 
   const QPainterPath path = QgsShapeGenerator::createBalloon( origin, expandedRect, segmentPointWidth, cornerRadius );
-  QTransform t = QTransform::fromScale( 100, 100 );
-  QTransform ti = t.inverted();
-  QPolygonF poly = path.toFillPolygon( t );
+  const QTransform t = QTransform::fromScale( 100, 100 );
+  const QTransform ti = t.inverted();
+  const QPolygonF poly = path.toFillPolygon( t );
   return ti.map( poly );
 }

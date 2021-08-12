@@ -103,8 +103,8 @@ QgsJoinByAttributeAlgorithm *QgsJoinByAttributeAlgorithm::createInstance() const
 
 QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  int joinMethod = parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context );
-  bool discardNonMatching = parameterAsBoolean( parameters, QStringLiteral( "DISCARD_NONMATCHING" ), context );
+  const int joinMethod = parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context );
+  const bool discardNonMatching = parameterAsBoolean( parameters, QStringLiteral( "DISCARD_NONMATCHING" ), context );
 
   std::unique_ptr< QgsProcessingFeatureSource > input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !input )
@@ -114,14 +114,14 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
   if ( !input2 )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT_2" ) ) );
 
-  QString prefix = parameterAsString( parameters, QStringLiteral( "PREFIX" ), context );
+  const QString prefix = parameterAsString( parameters, QStringLiteral( "PREFIX" ), context );
 
-  QString field1Name = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
-  QString field2Name = parameterAsString( parameters, QStringLiteral( "FIELD_2" ), context );
+  const QString field1Name = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
+  const QString field2Name = parameterAsString( parameters, QStringLiteral( "FIELD_2" ), context );
   const QStringList fieldsToCopy = parameterAsFields( parameters, QStringLiteral( "FIELDS_TO_COPY" ), context );
 
-  int joinField1Index = input->fields().lookupField( field1Name );
-  int joinField2Index = input2->fields().lookupField( field2Name );
+  const int joinField1Index = input->fields().lookupField( field1Name );
+  const int joinField2Index = input2->fields().lookupField( field2Name );
   if ( joinField1Index < 0 || joinField2Index < 0 )
     throw QgsProcessingException( QObject::tr( "Invalid join fields" ) );
 
@@ -141,7 +141,7 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
     fields2Indices.reserve( fieldsToCopy.count() );
     for ( const QString &field : fieldsToCopy )
     {
-      int index = input2->fields().lookupField( field );
+      const int index = input2->fields().lookupField( field );
       if ( index >= 0 )
       {
         fields2Indices << index;
@@ -161,7 +161,7 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
   QgsAttributeList fields2Fetch = fields2Indices;
   fields2Fetch << joinField2Index;
 
-  QgsFields outFields = QgsProcessingUtils::combineFields( input->fields(), outFields2 );
+  const QgsFields outFields = QgsProcessingUtils::combineFields( input->fields(), outFields2 );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outFields,
@@ -227,7 +227,7 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
       joinedCount++;
       if ( sink )
       {
-        QgsAttributes attrs = feat.attributes();
+        const QgsAttributes attrs = feat.attributes();
 
         QList< QgsAttributes > attributes = input2AttributeCache.values( feat.attribute( joinField1Index ) );
         QList< QgsAttributes >::iterator attrsIt = attributes.begin();

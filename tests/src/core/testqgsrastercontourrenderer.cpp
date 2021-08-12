@@ -87,7 +87,7 @@ bool TestQgsRasterContourRenderer::imageCheck( const QString &testType, QgsRaste
   myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( *mMapSettings );
   myChecker.setColorTolerance( 15 );
-  bool myResultFlag = myChecker.runTest( testType, 0 );
+  const bool myResultFlag = myChecker.runTest( testType, 0 );
   mReport += myChecker.report();
   return myResultFlag;
 }

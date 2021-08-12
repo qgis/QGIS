@@ -97,7 +97,7 @@ void QgsOfflineEditingPlugin::convertProject()
   {
     // convert current project for offline editing
 
-    QStringList selectedLayerIds = myPluginGui->selectedLayerIds();
+    const QStringList selectedLayerIds = myPluginGui->selectedLayerIds();
     if ( selectedLayerIds.isEmpty() )
     {
       return;
@@ -144,8 +144,8 @@ void QgsOfflineEditingPlugin::help()
 
 void QgsOfflineEditingPlugin::updateActions()
 {
-  bool hasLayers = QgsProject::instance()->count() > 0;
-  bool isOfflineProject = mOfflineEditing->isOfflineProject();
+  const bool hasLayers = QgsProject::instance()->count() > 0;
+  const bool isOfflineProject = mOfflineEditing->isOfflineProject();
   mActionConvertProject->setEnabled( hasLayers && !isOfflineProject );
   mActionSynchronize->setEnabled( hasLayers && isOfflineProject );
 }

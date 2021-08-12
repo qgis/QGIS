@@ -75,7 +75,7 @@ QgsPointClusterRendererWidget::QgsPointClusterRendererWidget( QgsVectorLayer *la
   blockAllSignals( true );
 
   //insert possible renderer types
-  QStringList rendererList = QgsApplication::rendererRegistry()->renderersList( QgsRendererAbstractMetadata::PointLayer );
+  const QStringList rendererList = QgsApplication::rendererRegistry()->renderersList( QgsRendererAbstractMetadata::PointLayer );
   QStringList::const_iterator it = rendererList.constBegin();
   for ( ; it != rendererList.constEnd(); ++it )
   {
@@ -96,8 +96,8 @@ QgsPointClusterRendererWidget::QgsPointClusterRendererWidget( QgsVectorLayer *la
   //set the appropriate renderer dialog
   if ( mRenderer->embeddedRenderer() )
   {
-    QString rendererName = mRenderer->embeddedRenderer()->type();
-    int rendererIndex = mRendererComboBox->findData( rendererName );
+    const QString rendererName = mRenderer->embeddedRenderer()->type();
+    const int rendererIndex = mRendererComboBox->findData( rendererName );
     if ( rendererIndex != -1 )
     {
       mRendererComboBox->setCurrentIndex( rendererIndex );
@@ -132,12 +132,12 @@ void QgsPointClusterRendererWidget::setContext( const QgsSymbolWidgetContext &co
 
 void QgsPointClusterRendererWidget::mRendererComboBox_currentIndexChanged( int index )
 {
-  QString rendererId = mRendererComboBox->itemData( index ).toString();
+  const QString rendererId = mRendererComboBox->itemData( index ).toString();
   QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( rendererId );
   if ( m )
   {
     // unfortunately renderer conversion is only available through the creation of a widget...
-    std::unique_ptr< QgsFeatureRenderer > oldRenderer( mRenderer->embeddedRenderer()->clone() );
+    const std::unique_ptr< QgsFeatureRenderer > oldRenderer( mRenderer->embeddedRenderer()->clone() );
     QgsRendererWidget *tempRenderWidget = m->createRendererWidget( mLayer, mStyle, oldRenderer.get() );
     mRenderer->setEmbeddedRenderer( tempRenderWidget->renderer()->clone() );
     delete tempRenderWidget;

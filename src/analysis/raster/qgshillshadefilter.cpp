@@ -34,15 +34,15 @@ float QgsHillshadeFilter::processNineCellWindow( float *x11, float *x21, float *
     float *x13, float *x23, float *x33 )
 {
 
-  float derX = calcFirstDerX( x11, x21, x31, x12, x22, x32, x13, x23, x33 );
-  float derY = calcFirstDerY( x11, x21, x31, x12, x22, x32, x13, x23, x33 );
+  const float derX = calcFirstDerX( x11, x21, x31, x12, x22, x32, x13, x23, x33 );
+  const float derY = calcFirstDerY( x11, x21, x31, x12, x22, x32, x13, x23, x33 );
 
   if ( derX == mOutputNodataValue || derY == mOutputNodataValue )
   {
     return mOutputNodataValue;
   }
 
-  float slope_rad = std::atan( std::sqrt( derX * derX + derY * derY ) );
+  const float slope_rad = std::atan( std::sqrt( derX * derX + derY * derY ) );
   float aspect_rad = 0;
   if ( derX == 0 && derY == 0 ) //aspect undefined, take a neutral value. Better solutions?
   {

@@ -53,7 +53,7 @@ void TestContrastEnhancements::initTestCase()
 //runs after all tests
 void TestContrastEnhancements::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {

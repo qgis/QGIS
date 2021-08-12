@@ -112,7 +112,7 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   connect( mLblFilePath, &QLabel::linkActivated, this, [ = ]( const QString & link )
   {
     const QUrl url( link );
-    QFileInfo file( url.toLocalFile() );
+    const QFileInfo file( url.toLocalFile() );
     if ( file.exists() && !file.isDir() )
       QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
     else
@@ -125,12 +125,12 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   mProxyModel->setSourceModel( mModel );
   mLayersTree->setModel( mProxyModel );
 
-  QgsSettings settings;
+  const QgsSettings settings;
   const bool addToGroup = settings.value( QStringLiteral( "/qgis/openSublayersInGroup" ), false ).toBool();
   mCbxAddToGroup->setChecked( addToGroup );
 
   // resize columns
-  QByteArray ba = settings.value( "/Windows/SubLayers/headerState" ).toByteArray();
+  const QByteArray ba = settings.value( "/Windows/SubLayers/headerState" ).toByteArray();
   if ( !ba.isNull() )
   {
     mLayersTree->header()->restoreState( ba );
@@ -242,7 +242,7 @@ QString QgsProviderSublayersDialog::groupName() const
 
   QString res = QgsProviderUtils::suggestLayerNameFromFilePath( mFilePath );
 
-  QgsSettings settings;
+  const QgsSettings settings;
   if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
   {
     res = QgsMapLayer::formatLayerName( res );

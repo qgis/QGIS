@@ -85,7 +85,7 @@ QString TestQgsMapSettings::toString( const QPolygonF &p, int dec ) const
 {
   QString s;
   const char *sep = "";
-  double r = std::pow( 10.0, dec );
+  const double r = std::pow( 10.0, dec );
   for ( int i = 0; i < p.size(); ++i )
   {
     s += QStringLiteral( "%1%2 %3" ).arg( sep )
@@ -99,7 +99,7 @@ QString TestQgsMapSettings::toString( const QPolygonF &p, int dec ) const
 
 void TestQgsMapSettings::testDefaults()
 {
-  QgsMapSettings ms;
+  const QgsMapSettings ms;
   QCOMPARE( ms.destinationCrs(), QgsCoordinateReferenceSystem() );
 }
 
@@ -222,7 +222,7 @@ void TestQgsMapSettings::testDevicePixelRatio()
   ms.setOutputSize( QSize( 100, 50 ) );
   ms.setExtent( QgsRectangle( 0, 0, 100, 100 ) );
   ms.setDevicePixelRatio( 1 );
-  double scale = ms.scale();
+  const double scale = ms.scale();
   ms.setDevicePixelRatio( 1.5 );
   ms.setExtent( QgsRectangle( 0, 0, 100, 100 ) );
   QCOMPARE( ms.outputSize() * 1.5, ms.deviceOutputSize() );
@@ -397,7 +397,7 @@ void TestQgsMapSettings::testXmlReadWrite()
 {
   //create a test dom element
   QDomImplementation DomImplementation;
-  QDomDocumentType documentType =
+  const QDomDocumentType documentType =
     DomImplementation.createDocumentType(
       QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
@@ -426,9 +426,9 @@ void TestQgsMapSettings::testXmlReadWrite()
 
 void TestQgsMapSettings::testSetLayers()
 {
-  std::unique_ptr<  QgsVectorLayer  > vlA = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point" ), QStringLiteral( "a" ), QStringLiteral( "memory" ) );
-  std::unique_ptr<  QgsVectorLayer  > vlB = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point" ), QStringLiteral( "b" ), QStringLiteral( "memory" ) );
-  std::unique_ptr<  QgsVectorLayer  > nonSpatial = std::make_unique< QgsVectorLayer >( QStringLiteral( "none" ), QStringLiteral( "a" ), QStringLiteral( "memory" ) );
+  const std::unique_ptr<  QgsVectorLayer  > vlA = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point" ), QStringLiteral( "a" ), QStringLiteral( "memory" ) );
+  const std::unique_ptr<  QgsVectorLayer  > vlB = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point" ), QStringLiteral( "b" ), QStringLiteral( "memory" ) );
+  const std::unique_ptr<  QgsVectorLayer  > nonSpatial = std::make_unique< QgsVectorLayer >( QStringLiteral( "none" ), QStringLiteral( "a" ), QStringLiteral( "memory" ) );
 
   QgsMapSettings ms;
   ms.setLayers( QList< QgsMapLayer * >() << vlA.get() );
@@ -565,8 +565,8 @@ void TestQgsMapSettings::testExpressionContext()
 
 void TestQgsMapSettings::testRenderedFeatureHandlers()
 {
-  std::unique_ptr< TestHandler > testHandler = std::make_unique< TestHandler >();
-  std::unique_ptr< TestHandler > testHandler2 = std::make_unique< TestHandler >();
+  const std::unique_ptr< TestHandler > testHandler = std::make_unique< TestHandler >();
+  const std::unique_ptr< TestHandler > testHandler2 = std::make_unique< TestHandler >();
 
   std::unique_ptr< QgsMapSettings> mapSettings = std::make_unique< QgsMapSettings >();
   QVERIFY( mapSettings->renderedFeatureHandlers().isEmpty() );
@@ -600,17 +600,17 @@ void TestQgsMapSettings::testClippingRegions()
   QgsMapSettings settings;
   QVERIFY( settings.clippingRegions().isEmpty() );
 
-  QgsMapClippingRegion region( QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 0 0, 1 0 , 1 1 , 0 1, 0 0 ))" ) ) );
+  const QgsMapClippingRegion region( QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 0 0, 1 0 , 1 1 , 0 1, 0 0 ))" ) ) );
   settings.addClippingRegion( region );
   QCOMPARE( settings.clippingRegions().size(), 1 );
   QCOMPARE( settings.clippingRegions().at( 0 ).geometry().asWkt(), QStringLiteral( "Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))" ) );
-  QgsMapClippingRegion region2( QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 10 0, 11 0 , 11 1 , 10 1, 10 0 ))" ) ) );
+  const QgsMapClippingRegion region2( QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 10 0, 11 0 , 11 1 , 10 1, 10 0 ))" ) ) );
   settings.addClippingRegion( region2 );
   QCOMPARE( settings.clippingRegions().size(), 2 );
   QCOMPARE( settings.clippingRegions().at( 0 ).geometry().asWkt(), QStringLiteral( "Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))" ) );
   QCOMPARE( settings.clippingRegions().at( 1 ).geometry().asWkt(), QStringLiteral( "Polygon ((10 0, 11 0, 11 1, 10 1, 10 0))" ) );
 
-  QgsMapSettings settings2( settings );
+  const QgsMapSettings settings2( settings );
   QCOMPARE( settings2.clippingRegions().size(), 2 );
   QCOMPARE( settings2.clippingRegions().at( 0 ).geometry().asWkt(), QStringLiteral( "Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))" ) );
   QCOMPARE( settings2.clippingRegions().at( 1 ).geometry().asWkt(), QStringLiteral( "Polygon ((10 0, 11 0, 11 1, 10 1, 10 0))" ) );
@@ -634,11 +634,11 @@ void TestQgsMapSettings::testComputeExtentForScale()
 
   settings.setOutputSize( QSize( 1000, 1000 ) );
 
-  QgsRectangle rect = settings.computeExtentForScale( QgsPoint( 0, 0 ), 500 );
+  const QgsRectangle rect = settings.computeExtentForScale( QgsPoint( 0, 0 ), 500 );
 
   //                   [                   output width in inches                   ] * [scale]
-  double widthInches = settings.outputSize().width() / double( settings.outputDpi() ) * 500;
-  double widthMapUnits = widthInches * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceFeet, settings.mapUnits() ) / 12;
+  const double widthInches = settings.outputSize().width() / double( settings.outputDpi() ) * 500;
+  const double widthMapUnits = widthInches * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceFeet, settings.mapUnits() ) / 12;
   QGSCOMPARENEARRECTANGLE( rect, QgsRectangle( - 0.5 * widthMapUnits, - 0.5 * widthMapUnits, 0.5 * widthMapUnits, 0.5 * widthMapUnits ), 0.0001 );
 
 }
@@ -651,10 +651,10 @@ void TestQgsMapSettings::testComputeScaleForExtent()
 
   settings.setOutputSize( QSize( 1000, 1000 ) );
 
-  double scale = settings.computeScaleForExtent( QgsRectangle( -500., -500., 500., 500. ) );
+  const double scale = settings.computeScaleForExtent( QgsRectangle( -500., -500., 500., 500. ) );
 
-  double widthInches = 1000 * QgsUnitTypes::fromUnitToUnitFactor( settings.mapUnits(), QgsUnitTypes::DistanceFeet ) * 12;
-  double testScale = widthInches * settings.outputDpi() / double( settings.outputSize().width() );
+  const double widthInches = 1000 * QgsUnitTypes::fromUnitToUnitFactor( settings.mapUnits(), QgsUnitTypes::DistanceFeet ) * 12;
+  const double testScale = widthInches * settings.outputDpi() / double( settings.outputSize().width() );
   QGSCOMPARENEAR( scale, testScale, 0.001 );
 }
 

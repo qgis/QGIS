@@ -67,7 +67,7 @@ void TestQgsMdalProvider::initTestCase()
 void TestQgsMdalProvider::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -79,10 +79,10 @@ void TestQgsMdalProvider::cleanupTestCase()
 
 void TestQgsMdalProvider::filters()
 {
-  QString meshFilters = QgsProviderRegistry::instance()->fileMeshFilters();
+  const QString meshFilters = QgsProviderRegistry::instance()->fileMeshFilters();
   QVERIFY( meshFilters.contains( "*.2dm" ) );
 
-  QString datasetFilters = QgsProviderRegistry::instance()->fileMeshDatasetFilters();
+  const QString datasetFilters = QgsProviderRegistry::instance()->fileMeshDatasetFilters();
   QVERIFY( datasetFilters.contains( "*.dat" ) );
 }
 
@@ -108,7 +108,7 @@ void TestQgsMdalProvider::encodeDecodeUri()
 void TestQgsMdalProvider::load()
 {
   {
-    QString file = QStringLiteral( TEST_DATA_DIR ) + "/mesh/quad_flower.2dm";
+    const QString file = QStringLiteral( TEST_DATA_DIR ) + "/mesh/quad_flower.2dm";
     QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider(
                                   QStringLiteral( "mdal" ),
                                   file,
@@ -121,7 +121,7 @@ void TestQgsMdalProvider::load()
     delete provider;
   }
   {
-    QString file = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/goodluckwiththisfilename.2dm" );
+    const QString file = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/goodluckwiththisfilename.2dm" );
     QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider(
                                   QStringLiteral( "mdal" ),
                                   file,

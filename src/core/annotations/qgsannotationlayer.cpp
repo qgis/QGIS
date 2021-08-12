@@ -83,7 +83,7 @@ bool QgsAnnotationLayer::isEmpty() const
 
 QgsAnnotationLayer *QgsAnnotationLayer::clone() const
 {
-  QgsAnnotationLayer::LayerOptions options( mTransformContext );
+  const QgsAnnotationLayer::LayerOptions options( mTransformContext );
   std::unique_ptr< QgsAnnotationLayer > layer = std::make_unique< QgsAnnotationLayer >( name(), options );
   QgsMapLayer::clone( layer.get() );
 
@@ -133,14 +133,14 @@ bool QgsAnnotationLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
   qDeleteAll( mItems );
   mItems.clear();
 
-  QDomNodeList itemsElements = layerNode.toElement().elementsByTagName( QStringLiteral( "items" ) );
+  const QDomNodeList itemsElements = layerNode.toElement().elementsByTagName( QStringLiteral( "items" ) );
   if ( itemsElements.size() == 0 )
     return false;
 
-  QDomNodeList items = itemsElements.at( 0 ).childNodes();
+  const QDomNodeList items = itemsElements.at( 0 ).childNodes();
   for ( int i = 0; i < items.size(); ++i )
   {
-    QDomElement itemElement = items.at( i ).toElement();
+    const QDomElement itemElement = items.at( i ).toElement();
     const QString id = itemElement.attribute( QStringLiteral( "id" ) );
     const QString type = itemElement.attribute( QStringLiteral( "type" ) );
     std::unique_ptr< QgsAnnotationItem > item( QgsApplication::annotationItemRegistry()->createItem( type ) );
@@ -194,7 +194,7 @@ bool QgsAnnotationLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
   if ( categories.testFlag( Rendering ) )
   {
     QDomElement layerOpacityElem  = doc.createElement( QStringLiteral( "layerOpacity" ) );
-    QDomText layerOpacityText = doc.createTextNode( QString::number( opacity() ) );
+    const QDomText layerOpacityText = doc.createTextNode( QString::number( opacity() ) );
     layerOpacityElem.appendChild( layerOpacityText );
     node.appendChild( layerOpacityElem );
   }
@@ -203,7 +203,7 @@ bool QgsAnnotationLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
   {
     // add the blend mode field
     QDomElement blendModeElem  = doc.createElement( QStringLiteral( "blendMode" ) );
-    QDomText blendModeText = doc.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
+    const QDomText blendModeText = doc.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
     blendModeElem.appendChild( blendModeText );
     node.appendChild( blendModeElem );
   }
@@ -215,10 +215,10 @@ bool QgsAnnotationLayer::readSymbology( const QDomNode &node, QString &, QgsRead
 {
   if ( categories.testFlag( Rendering ) )
   {
-    QDomNode layerOpacityNode = node.namedItem( QStringLiteral( "layerOpacity" ) );
+    const QDomNode layerOpacityNode = node.namedItem( QStringLiteral( "layerOpacity" ) );
     if ( !layerOpacityNode.isNull() )
     {
-      QDomElement e = layerOpacityNode.toElement();
+      const QDomElement e = layerOpacityNode.toElement();
       setOpacity( e.text().toDouble() );
     }
   }
@@ -226,10 +226,10 @@ bool QgsAnnotationLayer::readSymbology( const QDomNode &node, QString &, QgsRead
   if ( categories.testFlag( Symbology ) )
   {
     // get and set the blend mode if it exists
-    QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
+    const QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
     if ( !blendModeNode.isNull() )
     {
-      QDomElement e = blendModeNode.toElement();
+      const QDomElement e = blendModeNode.toElement();
       setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( e.text().toInt() ) ) );
     }
   }

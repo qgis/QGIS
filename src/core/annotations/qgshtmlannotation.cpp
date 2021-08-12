@@ -94,7 +94,7 @@ void QgsHtmlAnnotation::renderAnnotation( QgsRenderContext &context, QSizeF size
   }
 
   // scale painter back to 96 dpi, so layout prints match screen rendering
-  QgsScopedQPainterState painterState( context.painter() );
+  const QgsScopedQPainterState painterState( context.painter() );
   const double scaleFactor = context.painter()->device()->logicalDpiX() / 96.0;
   context.painter()->scale( scaleFactor, scaleFactor );
   size /= scaleFactor;
@@ -107,7 +107,7 @@ QSizeF QgsHtmlAnnotation::minimumFrameSize() const
 {
   if ( mWebPage )
   {
-    QSizeF widgetMinSize = QSizeF( 0, 0 ); // mWebPage->minimumSize();
+    const QSizeF widgetMinSize = QSizeF( 0, 0 ); // mWebPage->minimumSize();
     return QSizeF( contentsMargin().left() + contentsMargin().right() + widgetMinSize.width(),
                    contentsMargin().top() + contentsMargin().bottom() + widgetMinSize.height() );
   }
@@ -135,7 +135,7 @@ void QgsHtmlAnnotation::writeXml( QDomElement &elem, QDomDocument &doc, const Qg
 
 void QgsHtmlAnnotation::readXml( const QDomElement &itemElem, const QgsReadWriteContext &context )
 {
-  QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
+  const QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
   if ( !annotationElem.isNull() )
   {
     _readXml( annotationElem, context );

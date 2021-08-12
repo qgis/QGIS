@@ -75,7 +75,7 @@ QVariantMap QgsDxfExportAlgorithm::processAlgorithm( const QVariantMap &paramete
 
   QList<QgsVectorLayer *> mapLayers;
 
-  QVariant layersVariant = parameters.value( parameterDefinition( QStringLiteral( "LAYERS" ) )->name() );
+  const QVariant layersVariant = parameters.value( parameterDefinition( QStringLiteral( "LAYERS" ) )->name() );
   const QList<QgsDxfExport::DxfLayer> layers = QgsProcessingParameterDxfLayers::parameterAsLayers( layersVariant, context );
   for ( const QgsDxfExport::DxfLayer &layer : layers )
   {
@@ -85,14 +85,14 @@ QVariantMap QgsDxfExportAlgorithm::processAlgorithm( const QVariantMap &paramete
     mapLayers.push_back( layer.layer() );
   }
 
-  QgsDxfExport::SymbologyExport symbologyMode = static_cast< QgsDxfExport::SymbologyExport >( parameterAsInt( parameters, QStringLiteral( "SYMBOLOGY_MODE" ), context ) );
-  double symbologyScale = parameterAsDouble( parameters, QStringLiteral( "SYMBOLOGY_SCALE" ), context );
-  QString encoding = QgsDxfExport::encodings().at( parameterAsInt( parameters, QStringLiteral( "ENCODING" ), context ) );
-  QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
-  bool useLayerTitle = parameterAsBool( parameters, QStringLiteral( "USE_LAYER_TITLE" ), context );
-  bool useMText = parameterAsBool( parameters, QStringLiteral( "MTEXT" ), context );
-  bool force2D = parameterAsBool( parameters, QStringLiteral( "FORCE_2D" ), context );
-  QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QgsDxfExport::SymbologyExport symbologyMode = static_cast< QgsDxfExport::SymbologyExport >( parameterAsInt( parameters, QStringLiteral( "SYMBOLOGY_MODE" ), context ) );
+  const double symbologyScale = parameterAsDouble( parameters, QStringLiteral( "SYMBOLOGY_SCALE" ), context );
+  const QString encoding = QgsDxfExport::encodings().at( parameterAsInt( parameters, QStringLiteral( "ENCODING" ), context ) );
+  const QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
+  const bool useLayerTitle = parameterAsBool( parameters, QStringLiteral( "USE_LAYER_TITLE" ), context );
+  const bool useMText = parameterAsBool( parameters, QStringLiteral( "MTEXT" ), context );
+  const bool force2D = parameterAsBool( parameters, QStringLiteral( "FORCE_2D" ), context );
+  const QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
 
   QgsDxfExport dxfExport;
 

@@ -48,13 +48,13 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString &connTy
   connect( txtDatabase, &QLineEdit::textChanged, this, &QgsNewOgrConnection::updateOkButtonState );
   connect( txtPort, &QLineEdit::textChanged, this, &QgsNewOgrConnection::updateOkButtonState );
 
-  QgsSettings settings;
+  const QgsSettings settings;
 
   //add database drivers
-  QStringList dbDrivers = QgsProviderRegistry::instance()->databaseDrivers().split( ';' );
+  const QStringList dbDrivers = QgsProviderRegistry::instance()->databaseDrivers().split( ';' );
   for ( int i = 0; i < dbDrivers.count(); i++ )
   {
-    QString dbDrive = dbDrivers.at( i );
+    const QString dbDrive = dbDrivers.at( i );
     cmbDatabaseTypes->addItem( dbDrive.split( ',' ).at( 0 ) );
   }
   txtName->setEnabled( true );
@@ -63,10 +63,10 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString &connTy
   {
     // populate the dialog with the information stored for the connection
     // populate the fields with the stored setting parameters
-    QString key = '/' + connType + "/connections/" + connName;
+    const QString key = '/' + connType + "/connections/" + connName;
     txtHost->setText( settings.value( key + "/host" ).toString() );
     txtDatabase->setText( settings.value( key + "/database" ).toString() );
-    QString port = settings.value( key + "/port" ).toString();
+    const QString port = settings.value( key + "/port" ).toString();
     txtPort->setText( port );
     if ( settings.value( key + "/store_username" ).toString() == QLatin1String( "true" ) )
     {
@@ -124,7 +124,7 @@ void QgsNewOgrConnection::showHelp()
 
 void QgsNewOgrConnection::updateOkButtonState()
 {
-  bool enabled = !txtName->text().isEmpty();
+  const bool enabled = !txtName->text().isEmpty();
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
 }
 

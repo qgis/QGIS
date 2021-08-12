@@ -58,7 +58,7 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
 
 void QgsBrowserDockWidget::addFavorite()
 {
-  QModelIndex index = mWidget->mProxyModel->mapToSource( mWidget->mBrowserView->currentIndex() );
+  const QModelIndex index = mWidget->mProxyModel->mapToSource( mWidget->mBrowserView->currentIndex() );
   QgsDataItem *item = mWidget->mModel->dataItem( index );
   if ( !item )
     return;
@@ -74,7 +74,7 @@ void QgsBrowserDockWidget::addFavorite()
 
 void QgsBrowserDockWidget::addFavoriteDirectory()
 {
-  QString directory = QFileDialog::getExistingDirectory( this, tr( "Add directory to favorites" ) );
+  const QString directory = QFileDialog::getExistingDirectory( this, tr( "Add directory to favorites" ) );
   if ( !directory.isEmpty() )
   {
     Q_NOWARN_DEPRECATED_PUSH
@@ -160,7 +160,7 @@ void QgsBrowserDockWidget::showProperties()
 
 void QgsBrowserDockWidget::toggleFastScan()
 {
-  QModelIndex index = mWidget->mProxyModel->mapToSource( mWidget->mBrowserView->currentIndex() );
+  const QModelIndex index = mWidget->mProxyModel->mapToSource( mWidget->mBrowserView->currentIndex() );
   QgsDataItem *item = mWidget->mModel->dataItem( index );
   if ( ! item )
     return;
@@ -170,7 +170,7 @@ void QgsBrowserDockWidget::toggleFastScan()
     QgsSettings settings;
     QStringList fastScanDirs = settings.value( QStringLiteral( "qgis/scanItemsFastScanUris" ),
                                QStringList() ).toStringList();
-    int idx = fastScanDirs.indexOf( item->path() );
+    const int idx = fastScanDirs.indexOf( item->path() );
     if ( idx != -1 )
     {
       fastScanDirs.removeAt( idx );

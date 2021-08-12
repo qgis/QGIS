@@ -87,7 +87,7 @@ void QgsExternalResourceWidgetWrapper::updateProperties( const QgsFeature &featu
 
     if ( mPropertyCollection.isActive( QgsEditorWidgetWrapper::RootPath ) )
     {
-      QString path = mPropertyCollection.valueAsString( QgsEditorWidgetWrapper::RootPath, expressionContext, QString(), &ok );
+      const QString path = mPropertyCollection.valueAsString( QgsEditorWidgetWrapper::RootPath, expressionContext, QString(), &ok );
       if ( ok )
       {
         mQgsWidget->setDefaultRoot( path );
@@ -95,7 +95,7 @@ void QgsExternalResourceWidgetWrapper::updateProperties( const QgsFeature &featu
     }
     if ( mPropertyCollection.isActive( QgsEditorWidgetWrapper::DocumentViewerContent ) )
     {
-      QString dvcString = mPropertyCollection.valueAsString( QgsEditorWidgetWrapper::DocumentViewerContent, expressionContext, QStringLiteral( "NoContent" ), &ok );
+      const QString dvcString = mPropertyCollection.valueAsString( QgsEditorWidgetWrapper::DocumentViewerContent, expressionContext, QStringLiteral( "NoContent" ), &ok );
       if ( ok )
       {
         QgsExternalResourceWidget::DocumentViewerContent dvc;
@@ -154,7 +154,7 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget *editor )
   {
     mQgsWidget->fileWidget()->setStorageMode( QgsFileWidget::GetFile );
 
-    QVariantMap cfg = config();
+    const QVariantMap cfg = config();
 
     if ( cfg.contains( QStringLiteral( "UseLink" ) ) )
     {
@@ -265,13 +265,13 @@ void QgsExternalResourceWidgetWrapper::widgetValueChanged( const QString &attrib
   Q_UNUSED( newValue );
   if ( attributeChanged )
   {
-    QgsExpression documentViewerContentExp = QgsExpression( mPropertyCollection.property( QgsEditorWidgetWrapper::DocumentViewerContent ).expressionString() );
-    QgsExpression rootPathExp = QgsExpression( mPropertyCollection.property( QgsEditorWidgetWrapper::RootPath ).expressionString() );
+    const QgsExpression documentViewerContentExp = QgsExpression( mPropertyCollection.property( QgsEditorWidgetWrapper::DocumentViewerContent ).expressionString() );
+    const QgsExpression rootPathExp = QgsExpression( mPropertyCollection.property( QgsEditorWidgetWrapper::RootPath ).expressionString() );
 
     if ( documentViewerContentExp.referencedColumns().contains( attribute ) ||
          rootPathExp.referencedColumns().contains( attribute ) )
     {
-      QgsFeature feature = mForm->currentFormFeature();
+      const QgsFeature feature = mForm->currentFormFeature();
       updateProperties( feature );
     }
   }

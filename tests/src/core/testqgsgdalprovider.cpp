@@ -86,7 +86,7 @@ void TestQgsGdalProvider::initTestCase()
 void TestQgsGdalProvider::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -140,7 +140,7 @@ void TestQgsGdalProvider::encodeUri()
 
 void TestQgsGdalProvider::scaleDataType()
 {
-  QString rasterWithOffset = QStringLiteral( TEST_DATA_DIR ) + "/int_raster_with_scale.tif";
+  const QString rasterWithOffset = QStringLiteral( TEST_DATA_DIR ) + "/int_raster_with_scale.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), rasterWithOffset, QgsDataProvider::ProviderOptions() );
   QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
@@ -152,7 +152,7 @@ void TestQgsGdalProvider::scaleDataType()
 
 void TestQgsGdalProvider::warpedVrt()
 {
-  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/requires_warped_vrt.tif";
+  const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/requires_warped_vrt.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
@@ -171,7 +171,7 @@ void TestQgsGdalProvider::warpedVrt()
 
 void TestQgsGdalProvider::noData()
 {
-  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif";
+  const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QVERIFY( provider->isValid() );
   QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
@@ -185,7 +185,7 @@ void TestQgsGdalProvider::noData()
 
 void TestQgsGdalProvider::noDataOutsideExtent()
 {
-  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif";
+  const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QVERIFY( provider->isValid() );
   QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
@@ -209,7 +209,7 @@ void TestQgsGdalProvider::noDataOutsideExtent()
 
 void TestQgsGdalProvider::invalidNoDataInSourceIgnored()
 {
-  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/byte_with_nan_nodata.tif";
+  const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/byte_with_nan_nodata.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QVERIFY( provider->isValid() );
   QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
@@ -281,7 +281,7 @@ void TestQgsGdalProvider::isRepresentableValue()
 
 void TestQgsGdalProvider::mask()
 {
-  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/rgb_with_mask.tif";
+  const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/rgb_with_mask.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QVERIFY( provider->isValid() );
   QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
@@ -294,7 +294,7 @@ void TestQgsGdalProvider::mask()
     QCOMPARE( rp->colorInterpretation( 4 ), static_cast<int>( QgsRaster::AlphaBand ) );
     QCOMPARE( rp->bandScale( 4 ), 1.0 );
     QCOMPARE( rp->bandOffset( 4 ), 0.0 );
-    QgsRectangle rect( 0, 0, 162, 150 );
+    const QgsRectangle rect( 0, 0, 162, 150 );
     QgsRasterBlock *block = rp->block( 4, rect, 162, 150 );
     QVERIFY( block );
     delete block;
@@ -304,7 +304,7 @@ void TestQgsGdalProvider::mask()
 
 void TestQgsGdalProvider::bandName()
 {
-  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/gtiff_tags.tif";
+  const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/gtiff_tags.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
@@ -314,7 +314,7 @@ void TestQgsGdalProvider::bandName()
 
 void TestQgsGdalProvider::bandNameNoDescription()
 {
-  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif";
+  const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
@@ -324,7 +324,7 @@ void TestQgsGdalProvider::bandNameNoDescription()
 
 void TestQgsGdalProvider::bandNameWithDescription()
 {
-  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/gtiff_desc.tif";
+  const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/gtiff_desc.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
@@ -335,8 +335,8 @@ void TestQgsGdalProvider::bandNameWithDescription()
 void TestQgsGdalProvider::interactionBetweenRasterChangeAndCache()
 {
   double geoTransform[6] = { 0, 2, 0, 0, 0, -2};
-  QgsCoordinateReferenceSystem crs;
-  QString filename = QStringLiteral( "/vsimem/temp.tif" );
+  const QgsCoordinateReferenceSystem crs;
+  const QString filename = QStringLiteral( "/vsimem/temp.tif" );
 
   // Create a all-0 dataset
   auto provider = QgsRasterDataProvider::create(
@@ -379,7 +379,7 @@ void TestQgsGdalProvider::interactionBetweenRasterChangeAndCache()
 
 void TestQgsGdalProvider::scale0()
 {
-  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/scale0ingdal23.tif";
+  const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/scale0ingdal23.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
@@ -391,25 +391,25 @@ void TestQgsGdalProvider::scale0()
 void TestQgsGdalProvider::transformCoordinates()
 {
   // Test implementation of QgsRasterDataProvider::transformCoordinates()
-  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/float1-16.tif";
+  const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/float1-16.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
   QVERIFY( rp->isValid() );
 
   // forward transform - image coordinates to georeferenced coordinates
-  QgsPoint pt1Layer = rp->transformCoordinates( QgsPoint( 0, 0 ), QgsRasterDataProvider::TransformImageToLayer ); // bottom-left corner
-  QgsPoint pt2Layer = rp->transformCoordinates( QgsPoint( 4, 0 ), QgsRasterDataProvider::TransformImageToLayer );
-  QgsPoint pt3Layer = rp->transformCoordinates( QgsPoint( 4, 4 ), QgsRasterDataProvider::TransformImageToLayer ); // top-right corner
+  const QgsPoint pt1Layer = rp->transformCoordinates( QgsPoint( 0, 0 ), QgsRasterDataProvider::TransformImageToLayer ); // bottom-left corner
+  const QgsPoint pt2Layer = rp->transformCoordinates( QgsPoint( 4, 0 ), QgsRasterDataProvider::TransformImageToLayer );
+  const QgsPoint pt3Layer = rp->transformCoordinates( QgsPoint( 4, 4 ), QgsRasterDataProvider::TransformImageToLayer ); // top-right corner
 
   QCOMPARE( pt1Layer, QgsPoint( 106.0, -7.0, 0 ) );
   QCOMPARE( pt2Layer, QgsPoint( 106.8, -7.0, 0 ) );
   QCOMPARE( pt3Layer, QgsPoint( 106.8, -6.2, 0 ) );
 
   // inverse transform - georeferenced coordinates to image coordinates
-  QgsPoint pt1Image = rp->transformCoordinates( QgsPoint( 106.0, -7.0 ), QgsRasterDataProvider::TransformLayerToImage ); // bottom-left corner
-  QgsPoint pt2Image = rp->transformCoordinates( QgsPoint( 106.8, -7.0 ), QgsRasterDataProvider::TransformLayerToImage );
-  QgsPoint pt3Image = rp->transformCoordinates( QgsPoint( 106.8, -6.2 ), QgsRasterDataProvider::TransformLayerToImage ); // top-right corner
+  const QgsPoint pt1Image = rp->transformCoordinates( QgsPoint( 106.0, -7.0 ), QgsRasterDataProvider::TransformLayerToImage ); // bottom-left corner
+  const QgsPoint pt2Image = rp->transformCoordinates( QgsPoint( 106.8, -7.0 ), QgsRasterDataProvider::TransformLayerToImage );
+  const QgsPoint pt3Image = rp->transformCoordinates( QgsPoint( 106.8, -6.2 ), QgsRasterDataProvider::TransformLayerToImage ); // top-right corner
 
   QCOMPARE( pt1Image, QgsPoint( 0, 0, 0 ) );
   QCOMPARE( pt2Image, QgsPoint( 4, 0, 0 ) );
@@ -442,7 +442,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "GTiff" ) );
 
   // make sure result is valid to load layer from
-  QgsProviderSublayerDetails::LayerOptions options{ QgsCoordinateTransformContext() };
+  const QgsProviderSublayerDetails::LayerOptions options{ QgsCoordinateTransformContext() };
   std::unique_ptr< QgsRasterLayer > rl( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
 

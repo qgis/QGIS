@@ -26,7 +26,7 @@ QString symbolLayerReferenceListToString( const QgsSymbolLayerReferenceList &lst
     QStringList indexPathStr;
     const QVector<int> indexPath = ref.symbolLayerId().symbolLayerIndexPath();
     indexPathStr.reserve( indexPath.size() );
-    for ( int index : indexPath )
+    for ( const int index : indexPath )
     {
       indexPathStr.append( QString::number( index ) );
     }
@@ -48,7 +48,7 @@ QgsSymbolLayerReferenceList stringToSymbolLayerReferenceList( const QString &str
 
   while ( partsIt.hasNext() )
   {
-    QRegularExpressionMatch partMatch = partsIt.next();
+    const QRegularExpressionMatch partMatch = partsIt.next();
     const QString tuple = partMatch.captured( 1 );
 
     // We should have "layer_id,symbol_key,symbol_layer_index0,symbol_layer_index1,..."

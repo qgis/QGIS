@@ -57,18 +57,18 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData,
   //if type is operator, call the proper matrix operations
   if ( mType == tRasterRef )
   {
-    QMap<QString, QgsRasterBlock *>::iterator it = rasterData.find( mRasterName );
+    const QMap<QString, QgsRasterBlock *>::iterator it = rasterData.find( mRasterName );
     if ( it == rasterData.end() )
     {
       QgsDebugMsg( QStringLiteral( "Error: could not find raster data for \"%1\"" ).arg( mRasterName ) );
       return false;
     }
 
-    int nRows = ( row >= 0 ? 1 : ( *it )->height() );
-    int startRow = ( row >= 0 ? row : 0 );
-    int endRow = startRow + nRows;
-    int nCols = ( *it )->width();
-    int nEntries = nCols * nRows;
+    const int nRows = ( row >= 0 ? 1 : ( *it )->height() );
+    const int startRow = ( row >= 0 ? row : 0 );
+    const int endRow = startRow + nRows;
+    const int nCols = ( *it )->width();
+    const int nEntries = nCols * nRows;
     double *data = new double[nEntries];
 
     //convert input raster values to double, also convert input no data to result no data
@@ -183,14 +183,14 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData,
       default:
         return false;
     }
-    int newNColumns = leftMatrix.nColumns();
-    int newNRows = leftMatrix.nRows();
+    const int newNColumns = leftMatrix.nColumns();
+    const int newNRows = leftMatrix.nRows();
     result.setData( newNColumns, newNRows, leftMatrix.takeData(), leftMatrix.nodataValue() );
     return true;
   }
   else if ( mType == tNumber )
   {
-    size_t nEntries = static_cast<size_t>( result.nColumns() * result.nRows() );
+    const size_t nEntries = static_cast<size_t>( result.nColumns() * result.nRows() );
     double *data = new double[ nEntries ];
     std::fill( data, data + nEntries, mNumber );
     result.setData( result.nColumns(), 1, data, result.nodataValue() );
@@ -199,7 +199,7 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData,
   }
   else if ( mType == tMatrix )
   {
-    int nEntries = mMatrix->nColumns() * mMatrix->nRows();
+    const int nEntries = mMatrix->nColumns() * mMatrix->nRows();
     double *data = new double[nEntries];
     for ( int i = 0; i < nEntries; ++i )
     {

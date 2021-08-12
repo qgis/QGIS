@@ -88,10 +88,10 @@ void QgsAddAttrDialog::mLength_editingFinished()
 
 void QgsAddAttrDialog::setPrecisionMinMax()
 {
-  int idx = mTypeBox->currentIndex();
-  int minPrecType = mTypeBox->itemData( idx, Qt::UserRole + 4 ).toInt();
-  int maxPrecType = mTypeBox->itemData( idx, Qt::UserRole + 5 ).toInt();
-  bool precisionIsEnabled = minPrecType < maxPrecType;
+  const int idx = mTypeBox->currentIndex();
+  const int minPrecType = mTypeBox->itemData( idx, Qt::UserRole + 4 ).toInt();
+  const int maxPrecType = mTypeBox->itemData( idx, Qt::UserRole + 5 ).toInt();
+  const bool precisionIsEnabled = minPrecType < maxPrecType;
   mPrec->setEnabled( precisionIsEnabled );
   mPrec->setVisible( precisionIsEnabled );
   mPrecLabel->setVisible( precisionIsEnabled );

@@ -108,7 +108,7 @@ QVariantMap QgsRemoveDuplicatesByAttributeAlgorithm::processAlgorithm( const QVa
       source->wkbType(), source->sourceCrs() ) );
 
   const long count = source->featureCount();
-  double step = count > 0 ? 100.0 / count : 1;
+  const double step = count > 0 ? 100.0 / count : 1;
   int current = 0;
 
   long long keptCount = 0;
@@ -121,7 +121,7 @@ QVariantMap QgsRemoveDuplicatesByAttributeAlgorithm::processAlgorithm( const QVa
 
   QVariantList dupeKey;
   dupeKey.reserve( attributes.size() );
-  for ( int i : attributes )
+  for ( const int i : attributes )
   {
     ( void )i;
     dupeKey.append( QVariant() );
@@ -135,7 +135,7 @@ QVariantMap QgsRemoveDuplicatesByAttributeAlgorithm::processAlgorithm( const QVa
     }
 
     int i = 0;
-    for ( int attr : attributes )
+    for ( const int attr : attributes )
       dupeKey[i++] = f.attribute( attr );
 
     if ( matched.contains( dupeKey ) )

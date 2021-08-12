@@ -139,7 +139,7 @@ QMap<int, QString> QgsPointCloudDataProvider::translatedLasClassificationCodes()
 
 QMap<int, QString> QgsPointCloudDataProvider::dataFormatIds()
 {
-  static QMap< int, QString > sCodes
+  static const QMap< int, QString > sCodes
   {
     {0, QStringLiteral( "No color or time stored" )},
     {1, QStringLiteral( "Time is stored" )},
@@ -155,7 +155,7 @@ QMap<int, QString> QgsPointCloudDataProvider::dataFormatIds()
 
 QMap<int, QString> QgsPointCloudDataProvider::translatedDataFormatIds()
 {
-  static QMap< int, QString > sCodes
+  static const QMap< int, QString > sCodes
   {
     {0, QObject::tr( "No color or time stored" )},
     {1, QObject::tr( "Time is stored" )},
@@ -202,7 +202,7 @@ struct MapIndexedPointCloudNode
       return acceptedPoints;
 
     const char *ptr = block->data();
-    QgsPointCloudAttributeCollection blockAttributes = block->attributes();
+    const QgsPointCloudAttributeCollection blockAttributes = block->attributes();
     const std::size_t recordSize = blockAttributes.pointRecordSize();
     int xOffset = 0, yOffset = 0, zOffset = 0;
     const QgsPointCloudAttribute::DataType xType = blockAttributes.find( QStringLiteral( "X" ), xOffset )->type();
@@ -249,12 +249,12 @@ QVector<QVariantMap> QgsPointCloudDataProvider::identify(
   QgsPointCloudIndex *index = this->index();
   const IndexedPointCloudNode root = index->root();
 
-  QgsRectangle rootNodeExtent = index->nodeMapExtent( root );
+  const QgsRectangle rootNodeExtent = index->nodeMapExtent( root );
   const double rootError = rootNodeExtent.width() / index->span();
 
-  QVector<IndexedPointCloudNode> nodes = traverseTree( index, root, maxError, rootError, extentGeometry, extentZRange );
+  const QVector<IndexedPointCloudNode> nodes = traverseTree( index, root, maxError, rootError, extentGeometry, extentZRange );
 
-  QgsPointCloudAttributeCollection attributeCollection = index->attributes();
+  const QgsPointCloudAttributeCollection attributeCollection = index->attributes();
   QgsPointCloudRequest request;
   request.setAttributes( attributeCollection );
 
@@ -285,7 +285,7 @@ QVector<IndexedPointCloudNode> QgsPointCloudDataProvider::traverseTree(
 
   nodes.append( n );
 
-  double childrenError = nodeError / 2.0;
+  const double childrenError = nodeError / 2.0;
   if ( childrenError < maxError )
     return nodes;
 

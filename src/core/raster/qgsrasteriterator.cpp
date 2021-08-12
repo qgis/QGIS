@@ -69,7 +69,7 @@ bool QgsRasterIterator::readNextRasterPart( int bandNumber,
 {
   *block = nullptr;
   std::unique_ptr< QgsRasterBlock > nextBlock;
-  bool result = readNextRasterPart( bandNumber, nCols, nRows, nextBlock, topLeftCol, topLeftRow );
+  const bool result = readNextRasterPart( bandNumber, nCols, nRows, nextBlock, topLeftCol, topLeftRow );
   if ( result )
     *block = nextBlock.release();
   return result;
@@ -86,7 +86,7 @@ bool QgsRasterIterator::readNextRasterPartInternal( int bandNumber, int &nCols, 
   if ( block )
     block->reset();
   //get partinfo
-  QMap<int, RasterPartInfo>::iterator partIt = mRasterPartInfos.find( bandNumber );
+  const QMap<int, RasterPartInfo>::iterator partIt = mRasterPartInfos.find( bandNumber );
   if ( partIt == mRasterPartInfos.end() )
   {
     return false;
@@ -114,14 +114,14 @@ bool QgsRasterIterator::readNextRasterPartInternal( int bandNumber, int &nCols, 
   QgsDebugMsgLevel( QStringLiteral( "nCols = %1 nRows = %2" ).arg( nCols ).arg( nRows ), 4 );
 
   //get subrectangle
-  QgsRectangle viewPortExtent = mExtent;
-  double xmin = viewPortExtent.xMinimum() + pInfo.currentCol / static_cast< double >( pInfo.nCols ) * viewPortExtent.width();
-  double xmax = pInfo.currentCol + nCols == pInfo.nCols ? viewPortExtent.xMaximum() :  // avoid extra FP math if not necessary
-                viewPortExtent.xMinimum() + ( pInfo.currentCol + nCols ) / static_cast< double >( pInfo.nCols ) * viewPortExtent.width();
-  double ymin = pInfo.currentRow + nRows == pInfo.nRows ? viewPortExtent.yMinimum() :  // avoid extra FP math if not necessary
-                viewPortExtent.yMaximum() - ( pInfo.currentRow + nRows ) / static_cast< double >( pInfo.nRows ) * viewPortExtent.height();
-  double ymax = viewPortExtent.yMaximum() - pInfo.currentRow / static_cast< double >( pInfo.nRows ) * viewPortExtent.height();
-  QgsRectangle blockRect( xmin, ymin, xmax, ymax );
+  const QgsRectangle viewPortExtent = mExtent;
+  const double xmin = viewPortExtent.xMinimum() + pInfo.currentCol / static_cast< double >( pInfo.nCols ) * viewPortExtent.width();
+  const double xmax = pInfo.currentCol + nCols == pInfo.nCols ? viewPortExtent.xMaximum() :  // avoid extra FP math if not necessary
+                      viewPortExtent.xMinimum() + ( pInfo.currentCol + nCols ) / static_cast< double >( pInfo.nCols ) * viewPortExtent.width();
+  const double ymin = pInfo.currentRow + nRows == pInfo.nRows ? viewPortExtent.yMinimum() :  // avoid extra FP math if not necessary
+                      viewPortExtent.yMaximum() - ( pInfo.currentRow + nRows ) / static_cast< double >( pInfo.nRows ) * viewPortExtent.height();
+  const double ymax = viewPortExtent.yMaximum() - pInfo.currentRow / static_cast< double >( pInfo.nRows ) * viewPortExtent.height();
+  const QgsRectangle blockRect( xmin, ymin, xmax, ymax );
 
   if ( blockExtent )
     *blockExtent = blockRect;
@@ -152,7 +152,7 @@ void QgsRasterIterator::stopRasterRead( int bandNumber )
 
 void QgsRasterIterator::removePartInfo( int bandNumber )
 {
-  auto partIt = mRasterPartInfos.constFind( bandNumber );
+  const auto partIt = mRasterPartInfos.constFind( bandNumber );
   if ( partIt != mRasterPartInfos.constEnd() )
   {
     mRasterPartInfos.remove( bandNumber );

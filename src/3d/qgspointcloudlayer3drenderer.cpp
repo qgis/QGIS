@@ -55,7 +55,7 @@ void QgsPointCloud3DRenderContext::setFilteredOutCategories( const QgsPointCloud
 QSet<int> QgsPointCloud3DRenderContext::getFilteredOutValues() const
 {
   QSet<int> filteredOut;
-  for ( QgsPointCloudCategory category : mFilteredOutCategories )
+  for ( const QgsPointCloudCategory category : mFilteredOutCategories )
     filteredOut.insert( category.value() );
   return filteredOut;
 }
@@ -133,7 +133,7 @@ Qt3DCore::QEntity *QgsPointCloudLayer3DRenderer::createEntity( const Qgs3DMapSet
   if ( !mSymbol )
     return nullptr;
 
-  QgsCoordinateTransform coordinateTransform( pcl->crs(), map.crs(), map.transformContext() );
+  const QgsCoordinateTransform coordinateTransform( pcl->crs(), map.crs(), map.transformContext() );
 
   return new QgsPointCloudLayerChunkedEntity( pcl->dataProvider()->index(), map, coordinateTransform, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), maximumScreenError(), showBoundingBoxes(),
          static_cast< const QgsPointCloudLayerElevationProperties * >( pcl->elevationProperties() )->zScale(),
@@ -169,7 +169,7 @@ void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsRe
 {
   mLayerRef = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
 
-  QDomElement elemSymbol = elem.firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement elemSymbol = elem.firstChildElement( QStringLiteral( "symbol" ) );
 
   const QString symbolType = elemSymbol.attribute( QStringLiteral( "type" ) );
   mShowBoundingBoxes = elem.attribute( QStringLiteral( "show-bounding-boxes" ), QStringLiteral( "0" ) ).toInt();

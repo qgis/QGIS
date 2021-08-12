@@ -285,7 +285,7 @@ QString QgsMimeDataUtils::encode( const QStringList &items )
 {
   QString encoded;
   // Do not escape colon twice
-  QRegularExpression re( QStringLiteral( "(?<!\\\\):" ) );
+  const QRegularExpression re( QStringLiteral( "(?<!\\\\):" ) );
   const auto constItems = items;
   for ( const QString &item : constItems )
   {
@@ -303,7 +303,7 @@ QStringList QgsMimeDataUtils::decode( const QString &encoded )
   QString item;
   bool inEscape = false;
   const auto constEncoded = encoded;
-  for ( QChar c : constEncoded )
+  for ( const QChar c : constEncoded )
   {
     if ( c == '\\' && inEscape )
     {

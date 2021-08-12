@@ -159,7 +159,7 @@ void TestQgsBrowserModel::testModel()
   QCOMPARE( model.rowCount( root1Index ), 2 );
   child1Index = model.index( 0, 0, root1Index );
   QCOMPARE( model.data( child1Index ).toString(), QStringLiteral( "Child1" ) );
-  QModelIndex child2Index = model.index( 1, 0, root1Index );
+  const QModelIndex child2Index = model.index( 1, 0, root1Index );
   QCOMPARE( model.data( child2Index ).toString(), QStringLiteral( "Child2" ) );
   QCOMPARE( model.rowCount( child1Index ), 0 );
   QCOMPARE( model.dataItem( child2Index ), childItem2 );

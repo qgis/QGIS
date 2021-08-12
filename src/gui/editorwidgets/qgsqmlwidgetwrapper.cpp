@@ -88,7 +88,7 @@ void QgsQmlWidgetWrapper::setQmlContext( )
   if ( !mWidget )
     return;
 
-  QgsAttributeEditorContext attributecontext = context();
+  const QgsAttributeEditorContext attributecontext = context();
   QgsExpressionContext expressionContext = layer()->createExpressionContext();
   expressionContext << QgsExpressionContextUtils::formScope( mFeature, attributecontext.attributeFormModeString() );
   expressionContext.setFeature( mFeature );

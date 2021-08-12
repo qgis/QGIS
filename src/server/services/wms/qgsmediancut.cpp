@@ -37,8 +37,8 @@ namespace QgsWms
     void imageColors( QHash<QRgb, int> &colors, const QImage &image )
     {
       colors.clear();
-      int width = image.width();
-      int height = image.height();
+      const int width = image.width();
+      const int height = image.height();
 
       const QRgb *currentScanLine = nullptr;
       QHash<QRgb, int>::iterator colorIt;
@@ -216,7 +216,7 @@ namespace QgsWms
       }
 
       //get median
-      double halfSum = colorBoxMapIt.key() / 2.0;
+      const double halfSum = colorBoxMapIt.key() / 2.0;
       int currentSum = 0;
       int currentListIndex = 0;
 
@@ -242,11 +242,11 @@ namespace QgsWms
       }
 
       //do split: replace old color box, insert new one
-      QgsColorBox newColorBox1 = colorBox.mid( 0, currentListIndex + 1 );
+      const QgsColorBox newColorBox1 = colorBox.mid( 0, currentListIndex + 1 );
       colorBoxMap.insert( currentSum, newColorBox1 );
 
       colorBox.erase( colorBox.begin(), colorBoxIt );
-      QgsColorBox newColorBox2 = colorBox;
+      const QgsColorBox newColorBox2 = colorBox;
       colorBoxMap.erase( colorBoxMapIt );
       colorBoxMap.insert( halfSum * 2.0 - currentSum, newColorBox2 );
     }
