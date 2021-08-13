@@ -317,6 +317,17 @@ qgis:setstyleforrasterlayer: >
 qgis:setstyleforvectorlayer: >
   This algorithm sets the style of a vector layer. The style must be defined in a QML file.
 
+qgis:shortestline: >
+  This algorithm creates a line layer as the shortest line between the source and the destination layer. 
+
+  By default only the first nearest feature of the destination layer is taken into account. The n-nearest neighboring features number can be specified.
+
+  If a maximum distance is specified, then only features which are closer than this distance will be considered.
+
+  The output features will contain all the source layer attributes, all the attributes from the n-nearest feature and the additional field of the distance.
+
+  This algorithm uses purely Cartesian calculations for distance, and does not consider geodetic or ellipsoid properties when determining feature proximity.
+
 qgis:splitwithlines: >
   This algorithm splits the lines or polygons in one layer using the lines in another layer to define the breaking points. Intersection between geometries in both layers are considered as split points.
 
