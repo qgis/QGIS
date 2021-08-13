@@ -2785,4 +2785,19 @@ tests:
         name: expected/lines_within_distance_transform.gml
         type: vector
 
+  - algorithm: qgis:shortestline
+    name: Test (qgis:shortestline)
+    params:
+      DESTINATION:
+        name: custom/snap_lines_3857.shp
+        type: vector
+      NEIGHBORS: 1
+      SOURCE:
+        name: custom/poinst_distance_3857.shp
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/shortest_line_point_to_line.shp
+        type: vector
+
 # See ../README.md for a description of the file format
