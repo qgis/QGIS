@@ -6577,17 +6577,18 @@ void QgisApp::showRasterCalculator()
 
     QString errorString;
     std::unique_ptr< QgsRasterCalcNode > calcNodeApp( QgsRasterCalcNode::parseRasterCalcString( d.formulaString(), errorString ) );
-    QStringList rLayerDictionaryRef = calcNodeApp->cleanRasterReferences();
     if ( !calcNodeApp )
     {
       return;
     }
-    QSet<QString> uniqueRasterUriTmp;
+    QStringList rLayerDictionaryRef = calcNodeApp->cleanRasterReferences();
+    QSet<QPair<QString, QString>> uniqueRasterUriTmp;
 
     for ( const auto &r : QgsRasterCalculatorEntry::rasterEntries() )
     {
-      if ( ( ! rLayerDictionaryRef.contains( r.ref ) ) || uniqueRasterUriTmp.contains( r.raster->source() ) ) continue;
-      uniqueRasterUriTmp.insert( r.raster->source() );
+      if ( ( ! rLayerDictionaryRef.contains( r.ref ) ) ||
+           uniqueRasterUriTmp.contains( QPair( r.raster->source(), r.ref.mid( 0, r.ref.lastIndexOf( "@" ) ) ) ) ) continue;
+      uniqueRasterUriTmp.insert( QPair( r.raster->source(), r.ref.mid( 0, r.ref.lastIndexOf( "@" ) ) ) );
 
       QgsRasterDataProvider::VirtualRasterInputLayers projectRLayer;
       projectRLayer.name = r.ref.mid( 0, r.ref.lastIndexOf( "@" ) );

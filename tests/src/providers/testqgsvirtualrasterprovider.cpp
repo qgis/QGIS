@@ -63,6 +63,7 @@ class TestQgsVirtualRasterProvider : public QObject
     void testConstructorWrong();
     void testConstructor();
     void testNewCalcNodeMethods();
+    void testSecondGenerationVirtualRaster();
 
   private:
     QString mTestDataDir;
@@ -202,7 +203,6 @@ void TestQgsVirtualRasterProvider::testConstructor()
   QVERIFY( layer_2->dataProvider()->isValid() );
   QCOMPARE( layer_2->dataProvider()->crs(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) ) );
   double sampledValueCalc_2 = layer_2->dataProvider()->sample( QgsPointXY( 790688, 3349113 ), 1 );
-  //qDebug() << layer_2->dataProvider()->sample( QgsPointXY( 790688, 3349113 ), 1 );
   QCOMPARE( sampledValueCalc_2, 267. );
 
   //use wrong formula
@@ -233,6 +233,47 @@ void TestQgsVirtualRasterProvider::testNewCalcNodeMethods()
   rasterRefExpected << bandOne << bandTwo << bandThree;
 
   QCOMPARE( rasterRef, rasterRefExpected );
+}
+
+void TestQgsVirtualRasterProvider::testSecondGenerationVirtualRaster()
+{
+
+  // creation of the "first generation" virtual raster, meaning a virtual raster that comes directly from a file
+  QString uri = QStringLiteral( "?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:provider=gdal&dem:uri=/home/franc/dev/clean/QGIS/tests/testdata/raster/dem.tif" );
+  std::unique_ptr< QgsRasterLayer > layerFirst = std::make_unique< QgsRasterLayer >( uri,
+      QStringLiteral( "firstGenerationLayer" ),
+      QStringLiteral( "virtualraster" ) );
+  QVERIFY( layerFirst->dataProvider()->isValid() );
+  QVERIFY( layerFirst->isValid() );
+
+  // creation of the "second generation" virtual raster uri, this raster is derived form the virtual raster called firstGenerationLayer
+  QgsRasterDataProvider::VirtualRasterParameters params;
+
+  params.crs = layerFirst->crs();
+  params.extent = layerFirst->extent();
+  params.width = 373;
+  params.height = 350;
+  params.formula = QString( "\"firstGenerationLayer@1\"" );
+
+  QgsRasterDataProvider::VirtualRasterInputLayers rasterParams;
+  rasterParams.name = layerFirst->name();
+  rasterParams.uri = layerFirst->source();
+  rasterParams.provider = layerFirst->dataProvider()->name();
+  params.rInputLayers.append( rasterParams );
+
+  QString uriSecond = QgsVirtualRasterProvider::encodeVirtualRasterProviderUri( params );
+  std::unique_ptr< QgsRasterLayer > layerSecond = std::make_unique< QgsRasterLayer >( uriSecond,
+      QStringLiteral( "SecondGenerationLayer" ),
+      QStringLiteral( "virtualraster" ) );
+  QVERIFY( layerSecond->dataProvider()->isValid() );
+  QVERIFY( layerSecond->isValid() );
+
+  double sampledValueCalc_1 = layerSecond->dataProvider()->sample( QgsPointXY( 18.67714, 45.79202 ), 1 );
+  double sampledValue = mDemRasterLayer->dataProvider()->sample( QgsPointXY( 18.67714, 45.79202 ), 1 );
+
+  QCOMPARE( sampledValueCalc_1, sampledValue + 200. );
+  QCOMPARE( layerSecond->dataProvider()->crs(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+
 }
 QGSTEST_MAIN( TestQgsVirtualRasterProvider )
 #include "testqgsvirtualrasterprovider.moc"
