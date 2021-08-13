@@ -722,30 +722,33 @@ void TestQgsOgrUtils::convertStyleString()
 void TestQgsOgrUtils::ogrCrsConversion()
 {
   // test conversion utilities for OGR srs objects
-
-  const QgsCoordinateReferenceSystem crs1( QStringLiteral( "EPSG:3111" ) );
-  OGRSpatialReferenceH srs = QgsOgrUtils::crsToOGRSpatialReference( crs1 );
-  QVERIFY( srs );
-  const QgsCoordinateReferenceSystem crs2( QgsOgrUtils::OGRSpatialReferenceToCrs( srs ) );
-  // round trip should be lossless
-  QCOMPARE( crs1, crs2 );
-  OSRRelease( srs );
-  srs = nullptr;
+  {
+    const QgsCoordinateReferenceSystem crs1( QStringLiteral( "EPSG:3111" ) );
+    OGRSpatialReferenceH srs = QgsOgrUtils::crsToOGRSpatialReference( crs1 );
+    QVERIFY( srs );
+    const QgsCoordinateReferenceSystem crs2( QgsOgrUtils::OGRSpatialReferenceToCrs( srs ) );
+    // round trip should be lossless
+    QCOMPARE( crs1, crs2 );
+    OSRRelease( srs );
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
-  QVERIFY( std::isnan( crs2.coordinateEpoch() ) );
+    QVERIFY( std::isnan( crs2.coordinateEpoch() ) );
+#endif
+  }
 
-  // test conversion with a coordinate epoch, should work on GDAL 3.4+
-  crs1 = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
-  crs1.setCoordinateEpoch( 2020.7 );
-  srs = QgsOgrUtils::crsToOGRSpatialReference( crs1 );
-  QVERIFY( srs );
-  crs2 = QgsCoordinateReferenceSystem( QgsOgrUtils::OGRSpatialReferenceToCrs( srs ) );
-  // round trip should be lossless
-  QCOMPARE( crs1, crs2 );
-  QCOMPARE( crs2.coordinateEpoch(), 2020.7 );
-  OSRRelease( srs );
-  srs = nullptr;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
+  {
+    // test conversion with a coordinate epoch, should work on GDAL 3.4+
+    QgsCoordinateReferenceSystem crs1( QStringLiteral( "EPSG:4326" ) );
+    crs1.setCoordinateEpoch( 2020.7 );
+    OGRSpatialReferenceH srs = QgsOgrUtils::crsToOGRSpatialReference( crs1 );
+    QVERIFY( srs );
+    const QgsCoordinateReferenceSystem crs2( QgsOgrUtils::OGRSpatialReferenceToCrs( srs ) );
+    // round trip should be lossless
+    QCOMPARE( crs1, crs2 );
+    QCOMPARE( crs2.coordinateEpoch(), 2020.7 );
+    OSRRelease( srs );
+  }
 #endif
 }
 

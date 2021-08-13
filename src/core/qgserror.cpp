@@ -51,7 +51,7 @@ QString QgsError::message( QgsErrorMessage::Format format ) const
   QString str;
 
 #ifdef QGISDEBUG
-  const QString srcUrl;
+  QString srcUrl;
 #endif
 
 #if defined(QGISDEBUG) && defined(QGS_GIT_REMOTE_URL)
