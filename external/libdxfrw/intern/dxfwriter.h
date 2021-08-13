@@ -28,8 +28,8 @@ public:
     virtual bool writeInt64(int code, unsigned long long int data) = 0;
     virtual bool writeDouble(int code, double data) = 0;
     virtual bool writeBool(int code, bool data) = 0;
-    void setVersion(std::string *v, bool dxfFormat){encoder.setVersion(v, dxfFormat);}
-    void setCodePage(std::string *c){encoder.setCodePage(c, true);}
+    void setVersion(const std::string &v, bool dxfFormat){encoder.setVersion(v, dxfFormat);}
+    void setCodePage(const std::string &c){encoder.setCodePage(c, true);}
     std::string getCodePage(){return encoder.getCodePage();}
 protected:
     std::ofstream *filestr;

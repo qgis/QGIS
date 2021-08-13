@@ -15,6 +15,7 @@
 
 #include <map>
 #include <list>
+#include <memory>
 #include "drw_textcodec.h"
 #include "dwgutil.h"
 #include "dwgbuffer.h"
@@ -22,15 +23,15 @@
 
 class objHandle{
 public:
-    objHandle(){ handle = type = loc = 0; }
-    objHandle(duint32 t, duint32 h, duint32 l){
-        type = t;
-        handle = h;
-        loc = l;
-    }
-    duint32 type;
-    duint32 handle;
-    duint32 loc;
+    objHandle()=default;
+    objHandle(duint32 t, duint32 h, duint32 l)
+        :type{t}
+        ,handle{h}
+        ,loc{l}
+    {}
+    duint32 type{0};
+    duint32 handle{0};
+    duint32 loc{0};
 };
 
 //until 2000 = 2000-
@@ -55,11 +56,10 @@ public:
  * */
 class dwgPageInfo {
 public:
-    dwgPageInfo(){}
+    dwgPageInfo()=default;
     dwgPageInfo(duint64 i, duint64 ad, duint32 sz){
         Id=i; address=ad; size=sz;
     }
-    ~dwgPageInfo(){}
     duint64 Id;
     duint64 address; //in file stream, for rd18, rd21
     duint64 size; //in file stream, for rd18, rd21
@@ -82,20 +82,14 @@ public:
  * */
 class dwgSectionInfo {
 public:
-    dwgSectionInfo(){
-        compressed = 1;//1=no, 2=yes
-        encrypted = 0;//???
-        pageCount = 0;
-        Id=-1;
-    }
-    ~dwgSectionInfo(){}
-    dint32 Id; //section Id, 2000-   rd15 rd18
+    dwgSectionInfo()=default;
+    dint32 Id{-1}; //section Id, 2000-   rd15 rd18
     std::string name; //section name rd18
-    duint32 compressed;//is compressed? 1=no, 2=yes rd18, rd21(encoding)
-    duint32 encrypted;//encrypted (doc: 0=no, 1=yes, 2=unkn) on read: objects 0 and encrypted yes rd18
+    duint32 compressed{1};//is compressed? 1=no, 2=yes rd18, rd21(encoding)
+    duint32 encrypted{0};//encrypted (doc: 0=no, 1=yes, 2=unkn) on read: objects 0 and encrypted yes rd18
     std::map<duint32, dwgPageInfo >pages;//index, size, offset
     duint64 size;//size of section,  2000- rd15, rd18, rd21 (data size)
-    duint64 pageCount; //number of pages (dwgPageInfo) in section rd18, rd21
+    duint64 pageCount{0}; //number of pages (dwgPageInfo) in section rd18, rd21
     duint64 maxSize; //max decompressed size (needed??) rd18 rd21
     duint64 address; //address (seek) , 2000-
 };
@@ -110,9 +104,10 @@ class DRW_ObjControl : public DRW_TableEntry {
 public:
     DRW_ObjControl() { reset();}
 
+    // hmm-- is DRW_TableEntry::reset() intended to be virtual??
     void reset(){
     }
-    bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
+    bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0) override;
     std::list<duint32>handlesList;
 };
 
@@ -120,16 +115,15 @@ public:
 class dwgReader {
     friend class dwgR;
 public:
-    dwgReader(std::ifstream *stream, dwgR *p){
-        fileBuf = new dwgBuffer(stream);
-        parent = p;
+    dwgReader(std::ifstream *stream, dwgR *p)
+       :fileBuf{ new dwgBuffer(stream) }
+       ,parent{p}
+    {
         decoder.setVersion(DRW::AC1021, false);//default 2007 in utf8(no convert)
         decoder.setCodePage("UTF-16", false);
 //        blockCtrl=0; //RLZ: temporary
 //        blockCtrl=layerCtrl=styleCtrl=linetypeCtrl=viewCtrl=0;
 //        ucsCtrl=vportCtrl=appidCtrl=dimstyleCtrl=vpEntHeaderCtrl=0;
-        nextEntLink = prevEntLink = 0;
-        maintenanceVersion=0;
     }
     virtual ~dwgReader();
 
@@ -150,7 +144,7 @@ protected:
     void parseAttribs(DRW_Entity* e);
     std::string findTableName(DRW::TTYPE table, dint32 handle);
 
-    void setCodePage(std::string *c){decoder.setCodePage(c, false);}
+    void setCodePage(const std::string &c){decoder.setCodePage(c, false);}
     std::string getCodePage(){ return decoder.getCodePage();}
     bool readDwgHeader(DRW_Header& hdr, dwgBuffer *buf, dwgBuffer *hBuf);
     bool readDwgHandles(dwgBuffer *dbuf, duint32 offset, duint32 size);
@@ -165,7 +159,7 @@ protected:
 public:
     std::map<duint32, objHandle>ObjectMap;
     std::map<duint32, objHandle>objObjectMap; //stores the objects & entities not read in readDwgEntities
-    std::map<duint32, objHandle>remainingMap; //stores the objects & entities not read in all proces, for debug only
+    std::map<duint32, objHandle>remainingMap; //stores the objects & entities not read in all processes, for debug only
     std::map<duint32, DRW_LType*> ltypemap;
     std::map<duint32, DRW_Layer*> layermap;
     std::map<duint32, DRW_Block*> blockmap;
@@ -175,12 +169,12 @@ public:
     std::map<duint32, DRW_Block_Record*> blockRecordmap;
     std::map<duint32, DRW_AppId*> appIdmap;
 //    duint32 currBlock;
-    duint8 maintenanceVersion;
+    duint8 maintenanceVersion{0};
 
 protected:
-    dwgBuffer *fileBuf;
-    dwgR *parent;
-    DRW::Version version;
+    std::unique_ptr<dwgBuffer> fileBuf;
+    dwgR *parent{nullptr};
+    DRW::Version version{DRW::UNKNOWNV};
 
 //seeker (position) for the beginning sentinel of the image data (R13 to R15)
     duint32 previewImagePos;
@@ -194,8 +188,8 @@ protected:
 
 protected:
 //    duint32 blockCtrl;
-    duint32 nextEntLink;
-    duint32 prevEntLink;
+    duint32 nextEntLink{0};
+    duint32 prevEntLink{0};
 };
 
 

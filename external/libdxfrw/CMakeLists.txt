@@ -4,6 +4,7 @@ include_directories(SYSTEM
 )
 
 add_library(libdxfrw STATIC
+    drw_base.cpp
     drw_classes.cpp
     drw_entities.cpp
     drw_header.cpp

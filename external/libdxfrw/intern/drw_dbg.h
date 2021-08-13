@@ -15,6 +15,9 @@
 
 #include <string>
 #include <iostream>
+#include <memory>
+#include "../drw_base.h"
+//#include <iomanip>
 
 #define DRW_DBGSL(a) DRW_dbg::getInstance()->setLevel(a)
 #define DRW_DBGGL DRW_dbg::getInstance()->getLevel()
@@ -24,37 +27,39 @@
 #define DRW_DBGHL(a, b, c) DRW_dbg::getInstance()->printHL(a, b ,c)
 #define DRW_DBGPT(a, b, c) DRW_dbg::getInstance()->printPT(a, b, c)
 
-
-class print_none;
-
-class DRW_dbg
-{
-  public:
-    enum LEVEL
-    {
-      none,
-      debug
+class DRW_dbg {
+public:
+    enum class Level {
+        None,
+        Debug
     };
-    void setLevel( LEVEL lvl );
-    LEVEL getLevel();
+    void setLevel(Level lvl);
+    /**
+     * Sets a custom debug printer to use when non-silent output
+     * is required.
+     */
+    void setCustomDebugPrinter(std::unique_ptr<DRW::DebugPrinter> printer);
+    Level getLevel();
     static DRW_dbg *getInstance();
-    void print( std::string s );
-    void print( int i );
-    void print( unsigned int i );
-    void print( long long int i );
-    void print( long unsigned int i );
-    void print( long long unsigned int i );
-    void print( double d );
-    void printH( long long int i );
-    void printB( int i );
-    void printHL( int c, int s, int h );
-    void printPT( double x, double y, double z );
+    void print(const std::string& s);
+    void print(int i);
+    void print(unsigned int i);
+    void print(long long int i);
+    void print(long unsigned int i);
+    void print(long long unsigned int i);
+    void print(double d);
+    void printH(long long int i);
+    void printB(int i);
+    void printHL(int c, int s, int h);
+    void printPT(double x, double y, double z);
 
-  private:
+private:
     DRW_dbg();
     static DRW_dbg *instance;
-    LEVEL level;
-    print_none *prClass = nullptr;
+    Level level{Level::None};
+    DRW::DebugPrinter silentDebug;
+    std::unique_ptr< DRW::DebugPrinter > debugPrinter;
+    DRW::DebugPrinter* currentPrinter{nullptr};
 };
 
 

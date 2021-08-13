@@ -22,27 +22,26 @@
 class dwgReader24 : public dwgReader18 {
 public:
     dwgReader24(std::ifstream *stream, dwgR *p):dwgReader18(stream, p){ }
-    virtual ~dwgReader24(){}
-    bool readFileHeader();
-    bool readDwgHeader(DRW_Header& hdr);
-    bool readDwgClasses();
+    bool readFileHeader() override;
+    bool readDwgHeader(DRW_Header& hdr) override;
+    bool readDwgClasses() override;
 //    bool readDwgHandles(){return false;}
 //    bool readDwgTables(){return false;}
-    bool readDwgBlocks(DRW_Interface& intfa){
+    bool readDwgBlocks(DRW_Interface& intfa) override {
         bool ret = true;
-        dwgBuffer dataBuf(objData, uncompSize, &decoder);
+        dwgBuffer dataBuf(objData.get(), uncompSize, &decoder);
         ret = dwgReader::readDwgBlocks(intfa, &dataBuf);
         return ret;
     }
-    virtual bool readDwgEntities(DRW_Interface& intfa){
+    bool readDwgEntities(DRW_Interface& intfa) override {
         bool ret = true;
-        dwgBuffer dataBuf(objData, uncompSize, &decoder);
+        dwgBuffer dataBuf(objData.get(), uncompSize, &decoder);
         ret = dwgReader::readDwgEntities(intfa, &dataBuf);
         return ret;
     }
-    virtual bool readDwgObjects(DRW_Interface& intfa){
+    bool readDwgObjects(DRW_Interface& intfa) override {
         bool ret = true;
-        dwgBuffer dataBuf(objData, uncompSize, &decoder);
+        dwgBuffer dataBuf(objData.get(), uncompSize, &decoder);
         ret = dwgReader::readDwgObjects(intfa, &dataBuf);
         return ret;
     }

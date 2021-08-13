@@ -42,24 +42,22 @@ enum sections
 };
 #endif
 
-dwgR::dwgR( const char *name )
-  : fileName( name )
+dwgR::dwgR(const char* name)
+    : fileName{ name }
 {
-  DRW_DBGSL( DRW_dbg::none );
+    DRW_DBGSL(DRW_dbg::Level::None);
 }
 
 dwgR::~dwgR() = default;
 
-void dwgR::setDebug( DRW::DBG_LEVEL lvl )
-{
-  switch ( lvl )
-  {
-    case DRW::debug:
-      DRW_DBGSL( DRW_dbg::debug );
-      break;
-    default:
-      DRW_DBGSL( DRW_dbg::none );
-  }
+void dwgR::setDebug(DRW::DebugLevel lvl){
+    switch (lvl){
+    case DRW::DebugLevel::Debug:
+        DRW_DBGSL(DRW_dbg::Level::Debug);
+        break;
+    case DRW::DebugLevel::None:
+        DRW_DBGSL(DRW_dbg::Level::None);
+    }
 }
 
 /*reads metadata and loads image preview*/

@@ -77,7 +77,7 @@ void DRW_Header::parseCode( int code, dxfReader *reader )
       curr->addString( code, reader->getUtf8String() );
       if ( name == "$ACADVER" )
       {
-        reader->setVersion( curr->content.s, true );
+        reader->setVersion( *curr->content.s, true );
         version = reader->getVersion();
       }
       break;
@@ -88,7 +88,7 @@ void DRW_Header::parseCode( int code, dxfReader *reader )
       curr->addString( code, reader->getUtf8String() );
       if ( name == "$DWGCODEPAGE" )
       {
-        reader->setCodePage( curr->content.s );
+        reader->setCodePage( *curr->content.s );
         curr->addString( code, reader->getCodePage() );
       }
       break;
@@ -181,7 +181,7 @@ void DRW_Header::write( dxfWriter *writer, DRW::Version ver )
       break;
   }
   writer->writeString( 1, varStr );
-  writer->setVersion( &varStr, true );
+  writer->setVersion( varStr, true );
 
   getStr( "$ACADVER", &varStr );
   getStr( "$ACADMAINTVER", &varStr );
@@ -191,7 +191,7 @@ void DRW_Header::write( dxfWriter *writer, DRW::Version ver )
     varStr = "ANSI_1252";
   }
   writer->writeString( 9, "$DWGCODEPAGE" );
-  writer->setCodePage( &varStr );
+  writer->setCodePage( varStr );
   writer->writeString( 3, writer->getCodePage() );
   writer->writeString( 9, "$INSBASE" );
   if ( getCoord( "$INSBASE", &varCoord ) )

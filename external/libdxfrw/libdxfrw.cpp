@@ -74,7 +74,7 @@ dxfRW::dxfRW( const char *name )
   , elParts( 128 )  //parts number when convert ellipse to polyline
   , currHandle( 0 )
 {
-  DRW_DBGSL( DRW_dbg::none );
+    DRW_DBGSL(DRW_dbg::Level::None);
 }
 
 dxfRW::~dxfRW()
@@ -87,16 +87,14 @@ dxfRW::~dxfRW()
   imageDef.clear();
 }
 
-void dxfRW::setDebug( DRW::DBG_LEVEL lvl )
-{
-  switch ( lvl )
-  {
-    case DRW::debug:
-      DRW_DBGSL( DRW_dbg::debug );
-      break;
-    default:
-      DRW_DBGSL( DRW_dbg::none );
-  }
+void dxfRW::setDebug(DRW::DebugLevel lvl){
+    switch (lvl){
+    case DRW::DebugLevel::Debug:
+        DRW_DBGSL(DRW_dbg::Level::Debug);
+        break;
+    case DRW::DebugLevel::None:
+        DRW_DBGSL(DRW_dbg::Level::None);
+    }
 }
 
 bool dxfRW::read( DRW_Interface *interface_, bool ext )
