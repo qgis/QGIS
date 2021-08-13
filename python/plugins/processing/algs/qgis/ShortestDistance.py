@@ -39,6 +39,7 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingParameterFeatureSink)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
+
 class ShortestLine(QgisAlgorithm):
 
     SOURCE = 'SOURCE'
@@ -129,7 +130,6 @@ class ShortestLine(QgisAlgorithm):
         if destination is None:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.DESTINATION))
 
-
         neighbors = self.parameterAsInt(
             parameters,
             self.NEIGHBORS,
@@ -137,7 +137,7 @@ class ShortestLine(QgisAlgorithm):
         )
         if neighbors > destination.featureCount():
             neighbors = destination.featureCount()
-        
+
         max_distance = self.parameterAsDouble(
             parameters,
             self.DISTANCE,
@@ -147,7 +147,7 @@ class ShortestLine(QgisAlgorithm):
         max_dist = 0
         if max_distance:
             max_dist = max_distance
-        
+
         fields = QgsProcessingUtils.combineFields(source.fields(), destination.fields())
         fields.append(QgsField("distance", QVariant.Double))
 
@@ -162,11 +162,10 @@ class ShortestLine(QgisAlgorithm):
 
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
-        
 
         request = QgsFeatureRequest()
         request.setDestinationCrs(source.sourceCrs(), context.transformContext())
-        
+
         index = QgsSpatialIndex(QgsSpatialIndex.FlagStoreFeatureGeometries)
         for i in destination.getFeatures(request):
             index.addFeature(i, QgsFeatureSink.FastInsert)
@@ -195,7 +194,7 @@ class ShortestLine(QgisAlgorithm):
 
                 shortest_line = igeom.shortestLine(jgeom)
                 shortest_line_length = da.measureLength(shortest_line)
-                
+
                 feature = QgsFeature()
 
                 attrs = in_feature.attributes()
@@ -206,7 +205,7 @@ class ShortestLine(QgisAlgorithm):
                 feature.setGeometry(shortest_line)
 
                 sink.addFeature(feature, QgsFeatureSink.FastInsert)
-            
+
             feedback.setProgress(int(current * total))
 
         return {self.OUTPUT: dest_id}
