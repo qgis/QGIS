@@ -266,7 +266,7 @@ class CORE_EXPORT QgsSettings : public QObject
       if ( metaEnum.isValid() )
       {
         // read as string
-        QByteArray ba = value( key, metaEnum.valueToKey( static_cast<int>( defaultValue ) ), section ).toString().toUtf8();
+        QByteArray ba = value( key, metaEnum.valueToKey( static_cast<const int>( defaultValue ) ), section ).toString().toUtf8();
         const char *vs = ba.data();
         v = static_cast<T>( metaEnum.keyToValue( vs, &ok ) );
         if ( ok )
@@ -276,7 +276,7 @@ class CORE_EXPORT QgsSettings : public QObject
       // if failed, try to read as int (old behavior)
       // this code shall be removed later (probably after QGIS 3.4 LTR for 3.6)
       // then the method could be marked as const
-      v = static_cast<T>( value( key, static_cast<int>( defaultValue ), section ).toInt( &ok ) );
+      v = static_cast<T>( value( key, static_cast<const int>( defaultValue ), section ).toInt( &ok ) );
       if ( metaEnum.isValid() )
       {
         if ( !ok || !metaEnum.valueToKey( static_cast<int>( v ) ) )
@@ -309,7 +309,7 @@ class CORE_EXPORT QgsSettings : public QObject
       Q_ASSERT( metaEnum.isValid() );
       if ( metaEnum.isValid() )
       {
-        setValue( key, metaEnum.valueToKey( static_cast<int>( value ) ), section );
+        setValue( key, metaEnum.valueToKey( static_cast<const int>( value ) ), section );
       }
       else
       {
@@ -344,14 +344,14 @@ class CORE_EXPORT QgsSettings : public QObject
       if ( metaEnum.isValid() )
       {
         // read as string
-        QByteArray ba = value( key, metaEnum.valueToKeys( static_cast< int >( defaultValue ) ) ).toString().toUtf8();
+        QByteArray ba = value( key, metaEnum.valueToKeys( static_cast< const int >( defaultValue ) ) ).toString().toUtf8();
         const char *vs = ba.data();
         v = static_cast<T>( metaEnum.keysToValue( vs, &ok ) );
       }
       if ( !ok )
       {
         // if failed, try to read as int
-        const int intValue = value( key, static_cast<int>( defaultValue ), section ).toInt( &ok );
+        const int intValue = value( key, static_cast<const int>( defaultValue ), section ).toInt( &ok );
         if ( metaEnum.isValid() )
         {
           if ( ok )
@@ -399,7 +399,7 @@ class CORE_EXPORT QgsSettings : public QObject
       Q_ASSERT( metaEnum.isValid() );
       if ( metaEnum.isValid() )
       {
-        setValue( key, metaEnum.valueToKeys( static_cast< int >( value ) ), section );
+        setValue( key, metaEnum.valueToKeys( static_cast< const int >( value ) ), section );
       }
       else
       {
