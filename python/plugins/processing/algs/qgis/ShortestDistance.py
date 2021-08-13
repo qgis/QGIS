@@ -174,8 +174,6 @@ class ShortestLine(QgisAlgorithm):
         da.setSourceCrs(source.sourceCrs(), context.transformContext())
         da.setEllipsoid(context.ellipsoid())
 
-        total = 100.0 / source.featureCount() if source.featureCount() else 0
-
         for current, in_feature in enumerate(source.getFeatures()):
 
             if feedback.isCanceled():
