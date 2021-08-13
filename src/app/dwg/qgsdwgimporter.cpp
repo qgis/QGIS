@@ -69,58 +69,108 @@ class QgsDrwDebugPrinter : public DRW::DebugPrinter
 {
   public:
 
-    QgsDrwDebugPrinter()
+    explicit QgsDrwDebugPrinter( int debugLevel = 4 )
       : mTS( &mBuf )
+      , mLevel( debugLevel )
     { }
+
     ~QgsDrwDebugPrinter() override
     {
-      QgsDebugMsgLevel( mBuf, 4 );
+      QgsDebugMsgLevel( mBuf, mLevel );
     }
 
-    void printS( const std::string &s ) override
+    void printS( const std::string &s, const char *file, const char *function, int line ) override
     {
+      if ( mLevel > QgsLogger::debugLevel() )
+        return;
+
+      mFile = file;
+      mFunction = function;
+      mLine = line;
       mTS << QString::fromStdString( s );
       flush();
     }
 
-    void printI( long long int i ) override
+    void printI( long long int i, const char *file, const char *function, int line ) override
     {
+      if ( mLevel > QgsLogger::debugLevel() )
+        return;
+
+      mFile = file;
+      mFunction = function;
+      mLine = line;
       mTS << i;
       flush();
     }
 
-    void printUI( long long unsigned int i ) override
+    void printUI( long long unsigned int i, const char *file, const char *function, int line ) override
     {
+      if ( mLevel > QgsLogger::debugLevel() )
+        return;
+
+      mFile = file;
+      mFunction = function;
+      mLine = line;
       mTS << i;
       flush();
     }
 
-    void printD( double d ) override
+    void printD( double d, const char *file, const char *function, int line ) override
     {
+      if ( mLevel > QgsLogger::debugLevel() )
+        return;
+
+      mFile = file;
+      mFunction = function;
+      mLine = line;
       mTS << QStringLiteral( "%1 " ).arg( d, 0, 'g' );
       flush();
     }
 
-    void printH( long long int i ) override
+    void printH( long long int i, const char *file, const char *function, int line ) override
     {
+      if ( mLevel > QgsLogger::debugLevel() )
+        return;
+
+      mFile = file;
+      mFunction = function;
+      mLine = line;
       mTS << QStringLiteral( "0x%1" ).arg( i, 0, 16 );
       flush();
     }
 
-    void printB( int i ) override
+    void printB( int i, const char *file, const char *function, int line ) override
     {
+      if ( mLevel > QgsLogger::debugLevel() )
+        return;
+
+      mFile = file;
+      mFunction = function;
+      mLine = line;
       mTS << QStringLiteral( "0%1" ).arg( i, 0, 8 );
       flush();
     }
 
-    void printHL( int c, int s, int h ) override
+    void printHL( int c, int s, int h, const char *file, const char *function, int line ) override
     {
+      if ( mLevel > QgsLogger::debugLevel() )
+        return;
+
+      mFile = file;
+      mFunction = function;
+      mLine = line;
       mTS << QStringLiteral( "%1.%2 0x%3" ).arg( c ).arg( s ).arg( h, 0, 16 );
       flush();
     }
 
-    void printPT( double x, double y, double z ) override
+    void printPT( double x, double y, double z, const char *file, const char *function, int line ) override
     {
+      if ( mLevel > QgsLogger::debugLevel() )
+        return;
+
+      mFile = file;
+      mFunction = function;
+      mLine = line;
       mTS << QStringLiteral( "x:%1 y:%2 z:%3" ).arg( x, 0, 'g' ).arg( y, 0, 'g' ).arg( z, 0, 'g' );
       flush();
     }
@@ -129,12 +179,17 @@ class QgsDrwDebugPrinter : public DRW::DebugPrinter
     std::ios_base::fmtflags flags{std::cerr.flags()};
     QString mBuf;
     QTextStream mTS;
+    QString mFile;
+    QString mFunction;
+    int mLine = 0;
+    int mLevel = 4;
+
     void flush()
     {
-      QStringList lines = mBuf.split( '\n' );
-      for ( int i = 0; i < lines.size() - 1; i++ )
+      const QStringList lines = mBuf.split( '\n' );
+      for ( int i = 0; i < lines.size() - 1; ++i )
       {
-        QgsDebugMsgLevel( lines[i], 4 );
+        QgsLogger::debug( lines.at( i ), mLevel, mFile.toLocal8Bit().constData(), mFunction.toLocal8Bit().constData(), mLine );
       }
       mBuf = lines.last();
     }
@@ -157,7 +212,7 @@ QgsDwgImporter::QgsDwgImporter( const QString &database, const QgsCoordinateRefe
   static std::once_flag initialized;
   std::call_once( initialized, [ = ]( )
   {
-    DRW::setCustomDebugPrinter( new QgsDrwDebugPrinter() );
+    DRW::setCustomDebugPrinter( new QgsDrwDebugPrinter( 4 ) );
   } );
 
   const QString crswkt( crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ) );

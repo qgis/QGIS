@@ -20,14 +20,14 @@ DRW_dbg *DRW_dbg::instance{nullptr};
 
 class print_debug : public DRW::DebugPrinter {
 public:
-    void printS(const std::string& s) override;
-    void printI(long long int i) override;
-    void printUI(long long unsigned int i) override;
-    void printD(double d) override;
-    void printH(long long int i) override;
-    void printB(int i) override;
-    void printHL(int c, int s, int h) override;
-    void printPT(double x, double y, double z) override;
+    void printS(const std::string& s, const char *file, const char *function, int line) override;
+    void printI(long long int i, const char *file, const char *function, int line) override;
+    void printUI(long long unsigned int i, const char *file, const char *function, int line) override;
+    void printD(double d, const char *file, const char *function, int line) override;
+    void printH(long long int i, const char *file, const char *function, int line) override;
+    void printB(int i, const char *file, const char *function, int line) override;
+    void printHL(int c, int s, int h, const char *file, const char *function, int line) override;
+    void printPT(double x, double y, double z, const char *file, const char *function, int line) override;
 private:
     std::ios_base::fmtflags flags{std::cerr.flags()};
 };
@@ -69,84 +69,84 @@ DRW_dbg::Level DRW_dbg::getLevel(){
     return level;
 }
 
-void DRW_dbg::print(const std::string &s){
-    currentPrinter->printS(s);
+void DRW_dbg::print(const std::string &s, const char *file, const char *function, int line){
+    currentPrinter->printS(s,file,function,line);
 }
 
-void DRW_dbg::print(int i){
-    currentPrinter->printI(i);
+void DRW_dbg::print(int i, const char *file, const char *function, int line){
+    currentPrinter->printI(i,file,function,line);
 }
 
-void DRW_dbg::print(unsigned int i){
-    currentPrinter->printUI(i);
+void DRW_dbg::print(unsigned int i, const char *file, const char *function, int line){
+    currentPrinter->printUI(i,file,function,line);
 }
 
-void DRW_dbg::print(long long int i){
-    currentPrinter->printI(i);
+void DRW_dbg::print(long long int i, const char *file, const char *function, int line){
+    currentPrinter->printI(i,file,function,line);
 }
 
-void DRW_dbg::print(long unsigned int i){
-    currentPrinter->printUI(i);
+void DRW_dbg::print(long unsigned int i, const char *file, const char *function, int line){
+    currentPrinter->printUI(i,file,function,line);
 }
 
-void DRW_dbg::print(long long unsigned int i){
-    currentPrinter->printUI(i);
+void DRW_dbg::print(long long unsigned int i, const char *file, const char *function, int line){
+    currentPrinter->printUI(i,file,function,line);
 }
 
-void DRW_dbg::print(double d){
-    currentPrinter->printD(d);
+void DRW_dbg::print(double d, const char *file, const char *function, int line){
+    currentPrinter->printD(d,file,function,line);
 }
 
-void DRW_dbg::printH(long long int i){
-    currentPrinter->printH(i);
+void DRW_dbg::printH(long long int i, const char *file, const char *function, int line){
+    currentPrinter->printH(i,file,function,line);
 }
 
-void DRW_dbg::printB(int i){
-    currentPrinter->printB(i);
+void DRW_dbg::printB(int i, const char *file, const char *function, int line){
+    currentPrinter->printB(i,file,function,line);
 }
-void DRW_dbg::printHL(int c, int s, int h){
-    currentPrinter->printHL(c, s, h);
-}
-
-void DRW_dbg::printPT(double x, double y, double z){
-    currentPrinter->printPT(x, y, z);
+void DRW_dbg::printHL(int c, int s, int h, const char *file, const char *function, int line){
+    currentPrinter->printHL(c, s, h,file,function,line);
 }
 
-void print_debug::printS(const std::string& s){
+void DRW_dbg::printPT(double x, double y, double z, const char *file, const char *function, int line){
+    currentPrinter->printPT(x, y, z,file,function,line);
+}
+
+void print_debug::printS(const std::string& s, const char *, const char *, int ){
     std::cerr << s;
 }
 
-void print_debug::printI(long long int i){
+void print_debug::printI(long long int i, const char *, const char *, int ){
     std::cerr << i;
 }
 
-void print_debug::printUI(long long unsigned int i){
+void print_debug::printUI(long long unsigned int i, const char *, const char *, int ){
     std::cerr << i;
 }
 
-void print_debug::printD(double d){
+void print_debug::printD(double d, const char *, const char *, int ){
     std::cerr << std::fixed << d;
 }
 
-void print_debug::printH(long long  i){
+void print_debug::printH(long long i, const char *, const char *, int ){
     std::cerr << "0x" << std::setw(2) << std::setfill('0');
     std::cerr << std::hex << i;
     std::cerr.flags(flags);
 }
 
-void print_debug::printB(int i){
+void print_debug::printB(int i, const char *, const char *, int ){
     std::cerr << std::setw(8) << std::setfill('0');
     std::cerr << std::setbase(2) << i;
     std::cerr.flags(flags);
 }
 
-void print_debug::printHL(int c, int s, int h){
+void print_debug::printHL(int c, int s, int h, const char *, const char *, int ){
     std::cerr << c << '.' << s << '.';
     std::cerr << "0x" << std::setw(2) << std::setfill('0');
     std::cerr << std::hex << h;
     std::cerr.flags(flags);
 }
 
-void print_debug::printPT(double x, double y, double z){
+void print_debug::printPT(double x, double y, double z, const char *, const char *, int ){
     std::cerr << std::fixed << "x: " << x << ", y: " << y << ", z: "<< z;
 }

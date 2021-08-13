@@ -112,14 +112,14 @@ namespace DRW
    */
   class DebugPrinter {
   public:
-      virtual void printS(const std::string &s){(void)s;}
-      virtual void printI(long long int i){(void)i;}
-      virtual void printUI(long long unsigned int i){(void)i;}
-      virtual void printD(double d){(void)d;}
-      virtual void printH(long long int i){(void)i;}
-      virtual void printB(int i){(void)i;}
-      virtual void printHL(int c, int s, int h){(void)c;(void)s;(void)h;}
-      virtual void printPT(double x, double y, double z){(void)x;(void)y;(void)z;}
+      virtual void printS(const std::string &s, const char *file, const char *function, int line){(void)s;(void)file;(void)function;(void)line;}
+      virtual void printI(long long int i, const char *file, const char *function, int line){(void)i;(void)file;(void)function;(void)line;}
+      virtual void printUI(long long unsigned int i, const char *file, const char *function, int line){(void)i;(void)file;(void)function;(void)line;}
+      virtual void printD(double d, const char *file, const char *function, int line){(void)d;(void)file;(void)function;(void)line;}
+      virtual void printH(long long int i, const char *file, const char *function, int line){(void)i;(void)file;(void)function;(void)line;}
+      virtual void printB(int i, const char *file, const char *function, int line){(void)i;(void)file;(void)function;(void)line;}
+      virtual void printHL(int c, int s, int h, const char *file, const char *function, int line){(void)c;(void)s;(void)h;(void)file;(void)function;(void)line;}
+      virtual void printPT(double x, double y, double z, const char *file, const char *function, int line){(void)x;(void)y;(void)z;(void)file;(void)function;(void)line;}
       DebugPrinter()=default;
       virtual ~DebugPrinter();
   };
