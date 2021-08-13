@@ -21,13 +21,13 @@ void DRW_TextCodec::setVersion(int v, bool dxfFormat){
     if (v == DRW::AC1009 || v == DRW::AC1006) {
         version = DRW::AC1009;
         cp = "ANSI_1252";
-        setCodePage(&cp, dxfFormat);
+        setCodePage(cp, dxfFormat);
     } else if (v == DRW::AC1012 || v == DRW::AC1014
              || v == DRW::AC1015 || v == DRW::AC1018) {
         version = DRW::AC1015;
 //        if (cp.empty()) { //codepage not set, initialize
             cp = "ANSI_1252";
-            setCodePage(&cp, dxfFormat);
+            setCodePage(cp, dxfFormat);
 //        }
     } else {
         version = DRW::AC1021;
@@ -35,12 +35,11 @@ void DRW_TextCodec::setVersion(int v, bool dxfFormat){
             cp = "UTF-8";//RLZ: can be UCS2 or UTF-16 16bits per char
         else
             cp = "UTF-16";//RLZ: can be UCS2 or UTF-16 16bits per char
-        setCodePage(&cp, dxfFormat);
+        setCodePage(cp, dxfFormat);
     }
 }
 
-void DRW_TextCodec::setVersion(std::string *v, bool dxfFormat){
-    std::string versionStr = *v;
+void DRW_TextCodec::setVersion(const std::string &versionStr, bool dxfFormat){
     if (versionStr == "AC1009" || versionStr == "AC1006") {
         setVersion(DRW::AC1009, dxfFormat);
     } else if (versionStr == "AC1012" || versionStr == "AC1014"
@@ -50,8 +49,8 @@ void DRW_TextCodec::setVersion(std::string *v, bool dxfFormat){
     setVersion(DRW::AC1021, dxfFormat);
 }
 
-void DRW_TextCodec::setCodePage(std::string *c, bool dxfFormat){
-    cp = correctCodePage(*c);
+void DRW_TextCodec::setCodePage(const std::string &c, bool dxfFormat){
+    cp = correctCodePage(c);
     conv.reset();
     if (version == DRW::AC1009 || version == DRW::AC1015) {
         if (cp == "ANSI_874")
@@ -96,24 +95,24 @@ void DRW_TextCodec::setCodePage(std::string *c, bool dxfFormat){
     }
 }
 
-std::string DRW_TextCodec::toUtf8(std::string s) {
-    return conv->toUtf8(&s);
+std::string DRW_TextCodec::toUtf8(const std::string &s) {
+    return conv->toUtf8(s);
 }
 
-std::string DRW_TextCodec::fromUtf8(std::string s) {
-    return conv->fromUtf8(&s);
+std::string DRW_TextCodec::fromUtf8(const std::string &s) {
+    return conv->fromUtf8(s);
 }
 
-std::string DRW_Converter::toUtf8(std::string *s) {
+std::string DRW_Converter::toUtf8(const std::string &s) {
     std::string result;
     int j = 0;
     unsigned int i= 0;
-    for (i=0; i < s->length(); i++) {
-        unsigned char c = s->at(i);
+    for (i=0; i < s.length(); i++) {
+        unsigned char c = s.at(i);
         if (c < 0x80) { //ascii check for /U+????
-            if (c == '\\' && i+6 < s->length() && s->at(i+1) == 'U' && s->at(i+2) == '+') {
-                result += s->substr(j,i-j);
-                result += encodeText(s->substr(i,7));
+            if (c == '\\' && i+6 < s.length() && s.at(i+1) == 'U' && s.at(i+2) == '+') {
+                result += s.substr(j,i-j);
+                result += encodeText(s.substr(i,7));
                 i +=6;
                 j = i+1;
             }
@@ -125,22 +124,22 @@ std::string DRW_Converter::toUtf8(std::string *s) {
             i +=3;
         }
     }
-    result += s->substr(j);
+    result += s.substr(j);
 
     return result;
 }
 
-std::string DRW_ConvTable::fromUtf8(std::string *s) {
+std::string DRW_ConvTable::fromUtf8(const std::string &s) {
     std::string result;
     bool notFound;
     int code;
 
     int j = 0;
-    for (unsigned int i=0; i < s->length(); i++) {
-        unsigned char c = s->at(i);
+    for (unsigned int i=0; i < s.length(); i++) {
+        unsigned char c = s.at(i);
         if (c > 0x7F) { //need to decode
-            result += s->substr(j,i-j);
-            std::string part1 = s->substr(i,4);
+            result += s.substr(j,i-j);
+            std::string part1 = s.substr(i,4);
             int l;
             code = decodeNum(part1, &l);
             j = i+l;
@@ -157,20 +156,19 @@ std::string DRW_ConvTable::fromUtf8(std::string *s) {
                 result += decodeText(code);
         }
     }
-    result += s->substr(j);
+    result += s.substr(j);
 
     return result;
 }
 
-std::string DRW_ConvTable::toUtf8(std::string *s) {
+std::string DRW_ConvTable::toUtf8(const std::string &s) {
     std::string res;
-    std::string::iterator it;
-    for ( it=s->begin() ; it < s->end(); ++it ) {
+    for ( auto it=s.begin() ; it < s.end(); ++it ) {
         unsigned char c = *it;
         if (c < 0x80) {
             //check for \U+ encoded text
             if (c == '\\') {
-                if (it+6 < s->end() && *(it+1) == 'U' && *(it+2) == '+')  {
+                if (it+6 < s.end() && *(it+1) == 'U' && *(it+2) == '+')  {
                     res += encodeText(std::string(it, it+7));
                     it +=6;
                 } else {
@@ -186,7 +184,7 @@ std::string DRW_ConvTable::toUtf8(std::string *s) {
     return res;
 }
 
-std::string DRW_Converter::encodeText(std::string stmp){
+std::string DRW_Converter::encodeText(const std::string &stmp){
     int code;
 #if defined(__APPLE__)
     int Succeeded = sscanf (&( stmp.substr(3,4)[0]), "%x", &code );
@@ -236,13 +234,13 @@ std::string DRW_Converter::encodeNum(int c){
         ret[3] = 0x80 | (c & 0x3f);
         ret[4] = 0;
     }
-    return std::string((char*)ret);
+    return std::string(reinterpret_cast<char*>(ret));
 }
 
 /** 's' is a string with at least 4 bytes length
 ** returned 'b' is byte length of encoded char: 2,3 or 4
 **/
-int DRW_Converter::decodeNum(std::string s, int *b){
+int DRW_Converter::decodeNum(const std::string &s, int *b){
     int code= 0;
     unsigned char c = s.at(0);
     if ( (c& 0xE0)  == 0xC0) { //2 bytes
@@ -266,17 +264,17 @@ int DRW_Converter::decodeNum(std::string s, int *b){
 }
 
 
-std::string DRW_ConvDBCSTable::fromUtf8(std::string *s) {
+std::string DRW_ConvDBCSTable::fromUtf8(const std::string &s) {
     std::string result;
     bool notFound;
     int code;
 
     int j = 0;
-    for (unsigned int i=0; i < s->length(); i++) {
-        unsigned char c = s->at(i);
+    for (unsigned int i=0; i < s.length(); i++) {
+        unsigned char c = s.at(i);
         if (c > 0x7F) { //need to decode
-            result += s->substr(j,i-j);
-            std::string part1 = s->substr(i,4);
+            result += s.substr(j,i-j);
+            std::string part1 = s.substr(i,4);
             int l;
             code = decodeNum(part1, &l);
             j = i+l;
@@ -298,22 +296,21 @@ std::string DRW_ConvDBCSTable::fromUtf8(std::string *s) {
                 result += decodeText(code);
         } //direct conversion
     }
-    result += s->substr(j);
+    result += s.substr(j);
 
     return result;
 }
 
-std::string DRW_ConvDBCSTable::toUtf8(std::string *s) {
+std::string DRW_ConvDBCSTable::toUtf8(const std::string &s) {
     std::string res;
-    std::string::iterator it;
-    for ( it=s->begin() ; it < s->end(); ++it ) {
+    for (auto it=s.begin() ; it < s.end(); ++it ) {
         bool notFound = true;
         unsigned char c = *it;
         if (c < 0x80) {
             notFound = false;
             //check for \U+ encoded text
             if (c == '\\') {
-                if (it+6 < s->end() && *(it+1) == 'U' && *(it+2) == '+')  {
+                if (it+6 < s.end() && *(it+1) == 'U' && *(it+2) == '+')  {
                     res += encodeText(std::string(it, it+7));
                     it +=6;
                 } else {
@@ -326,7 +323,7 @@ std::string DRW_ConvDBCSTable::toUtf8(std::string *s) {
             res += encodeNum(0x20AC);//euro sign
         } else {//2 bytes
             ++it;
-            int code = (c << 8) | (unsigned char )(*it);
+            int code = (c << 8) | static_cast<unsigned char >(*it);
             int sta = leadTable[c-0x81];
             int end = leadTable[c-0x80];
             for (int k=sta; k<end; k++){
@@ -348,17 +345,17 @@ DRW_Conv932Table::DRW_Conv932Table()
     :DRW_Converter(DRW_Table932, CPLENGTH932)
 {}
 
-std::string DRW_Conv932Table::fromUtf8(std::string *s) {
+std::string DRW_Conv932Table::fromUtf8(const std::string &s) {
     std::string result;
     bool notFound;
     int code;
 
     int j = 0;
-    for (unsigned int i=0; i < s->length(); i++) {
-        unsigned char c = s->at(i);
+    for (unsigned int i=0; i < s.length(); i++) {
+        unsigned char c = s.at(i);
         if (c > 0x7F) { //need to decode
-            result += s->substr(j,i-j);
-            std::string part1 = s->substr(i,4);
+            result += s.substr(j,i-j);
+            std::string part1 = s.substr(i,4);
             int l;
             code = decodeNum(part1, &l);
             j = i+l;
@@ -388,22 +385,21 @@ std::string DRW_Conv932Table::fromUtf8(std::string *s) {
                 result += decodeText(code);
         } //direct conversion
     }
-    result += s->substr(j);
+    result += s.substr(j);
 
     return result;
 }
 
-std::string DRW_Conv932Table::toUtf8(std::string *s) {
+std::string DRW_Conv932Table::toUtf8(const std::string &s) {
     std::string res;
-    std::string::iterator it;
-    for ( it=s->begin() ; it < s->end(); ++it ) {
+    for (auto it=s.begin() ; it < s.end(); ++it ) {
         bool notFound = true;
         unsigned char c = *it;
         if (c < 0x80) {
             notFound = false;
             //check for \U+ encoded text
             if (c == '\\') {
-                if (it+6 < s->end() && *(it+1) == 'U' && *(it+2) == '+')  {
+                if (it+6 < s.end() && *(it+1) == 'U' && *(it+2) == '+')  {
                     res += encodeText(std::string(it, it+7));
                     it +=6;
                 } else {
@@ -416,8 +412,8 @@ std::string DRW_Conv932Table::toUtf8(std::string *s) {
             res += encodeNum(c + CPOFFSET932); //translate from table
         } else {//2 bytes
             ++it;
-            int code = (c << 8) | (unsigned char )(*it);
-            int sta;
+            int code = (c << 8) | static_cast<unsigned char>(*it);
+            int sta=0;
             int end=0;
             if (c > 0x80 && c < 0xA0) {
                 sta = DRW_LeadTable932[c-0x81];
@@ -443,16 +439,15 @@ std::string DRW_Conv932Table::toUtf8(std::string *s) {
     return res;
 }
 
-std::string DRW_ConvUTF16::fromUtf8(std::string *s){
+std::string DRW_ConvUTF16::fromUtf8(const std::string &s){
     DRW_UNUSED(s);
-    //RLZ: to be writen (only needed for write dwg 2007+)
+    //RLZ: to be written (only needed for write dwg 2007+)
     return std::string();
 }
 
-std::string DRW_ConvUTF16::toUtf8(std::string *s){//RLZ: pending to write
+std::string DRW_ConvUTF16::toUtf8(const std::string &s){//RLZ: pending to write
     std::string res;
-    std::string::iterator it;
-    for ( it=s->begin() ; it < s->end(); ++it ) {
+    for ( auto it=s.begin() ; it < s.end(); ++it ) {
         unsigned char c1 = *it;
         unsigned char c2 = *(++it);
         duint16 ch = (c2 <<8) | c1;

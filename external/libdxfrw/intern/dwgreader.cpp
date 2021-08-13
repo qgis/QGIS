@@ -58,8 +58,6 @@ dwgReader::~dwgReader()
     delete ( it->second );
   for ( std::map<duint32, DRW_AppId *>::iterator it = appIdmap.begin(); it != appIdmap.end(); ++it )
     delete ( it->second );
-
-  delete fileBuf;
 }
 
 void dwgReader::parseAttribs( DRW_Entity *e )

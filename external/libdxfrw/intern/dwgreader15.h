@@ -22,22 +22,21 @@
 class dwgReader15 : public dwgReader {
 public:
     dwgReader15(std::ifstream *stream, dwgR *p):dwgReader(stream, p){ }
-    virtual ~dwgReader15() {}
-    bool readMetaData();
-    bool readFileHeader();
-    bool readDwgHeader(DRW_Header& hdr);
-    bool readDwgClasses();
-    bool readDwgHandles();
-    bool readDwgTables(DRW_Header& hdr);
-    bool readDwgBlocks(DRW_Interface& intfa);
-    bool readDwgEntities(DRW_Interface& intfa){
+    bool readMetaData() override;
+    bool readFileHeader() override;
+    bool readDwgHeader(DRW_Header& hdr) override;
+    bool readDwgClasses() override;
+    bool readDwgHandles() override;
+    bool readDwgTables(DRW_Header& hdr) override;
+    bool readDwgBlocks(DRW_Interface& intfa) override;
+    bool readDwgEntities(DRW_Interface& intfa) override {
         bool ret = true;
-        ret = dwgReader::readDwgEntities(intfa, fileBuf);
+        ret = dwgReader::readDwgEntities(intfa, fileBuf.get());
         return ret;
     }
-    bool readDwgObjects(DRW_Interface& intfa){
+    bool readDwgObjects(DRW_Interface& intfa) override {
         bool ret = true;
-        ret = dwgReader::readDwgObjects(intfa, fileBuf);
+        ret = dwgReader::readDwgObjects(intfa, fileBuf.get());
         return ret;
     }
 //    bool readDwgEntity(objHandle& obj, DRW_Interface& intfa);

@@ -44,34 +44,29 @@ static const int DRW_magicNumEnd18[] = {
 class dwgReader18 : public dwgReader {
 public:
     dwgReader18(std::ifstream *stream, dwgR *p):dwgReader(stream, p){
-        objData = NULL;
     }
-    virtual ~dwgReader18(){
-        if (objData != NULL)
-            delete[] objData;
-    }
-    bool readMetaData();
-    bool readFileHeader();
-    bool readDwgHeader(DRW_Header& hdr);
-    bool readDwgClasses();
-    bool readDwgHandles();
-    bool readDwgTables(DRW_Header& hdr);
-    bool readDwgBlocks(DRW_Interface& intfa){
+    bool readMetaData() override;
+    bool readFileHeader() override;
+    bool readDwgHeader(DRW_Header& hdr) override;
+    bool readDwgClasses() override;
+    bool readDwgHandles() override;
+    bool readDwgTables(DRW_Header& hdr) override;
+    bool readDwgBlocks(DRW_Interface& intfa) override {
         bool ret = true;
-        dwgBuffer dataBuf(objData, uncompSize, &decoder);
+        dwgBuffer dataBuf(objData.get(), uncompSize, &decoder);
         ret = dwgReader::readDwgBlocks(intfa, &dataBuf);
         return ret;
     }
 
-    virtual bool readDwgEntities(DRW_Interface& intfa){
+    bool readDwgEntities(DRW_Interface& intfa) override {
         bool ret = true;
-        dwgBuffer dataBuf(objData, uncompSize, &decoder);
+        dwgBuffer dataBuf(objData.get(), uncompSize, &decoder);
         ret = dwgReader::readDwgEntities(intfa, &dataBuf);
         return ret;
     }
-    virtual bool readDwgObjects(DRW_Interface& intfa){
+    bool readDwgObjects(DRW_Interface& intfa) override {
         bool ret = true;
-        dwgBuffer dataBuf(objData, uncompSize, &decoder);
+        dwgBuffer dataBuf(objData.get(), uncompSize, &decoder);
         ret = dwgReader::readDwgObjects(intfa, &dataBuf);
         return ret;
     }
@@ -82,14 +77,14 @@ public:
 //    }
 
 protected:
-    duint8 *objData;
+    std::unique_ptr<duint8[]> objData;
     duint64 uncompSize;
 
 private:
     void genMagicNumber();
 //    dwgBuffer* bufObj;
     void parseSysPage(duint8 *decompSec, duint32 decompSize); //called: Section page map: 0x41630e3b
-    bool parseDataPage(dwgSectionInfo si/*, duint8 *dData*/); //called ???: Section map: 0x4163003b
+    bool parseDataPage(const dwgSectionInfo &si/*, duint8 *dData*/); //called ???: Section map: 0x4163003b
     duint32 checksum(duint32 seed, duint8* data, duint32 sz);
 
 private:
