@@ -239,7 +239,8 @@ void TestQgsVirtualRasterProvider::testSecondGenerationVirtualRaster()
 {
 
   // creation of the "first generation" virtual raster, meaning a virtual raster that comes directly from a file
-  QString uri = QStringLiteral( "?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:provider=gdal&dem:uri=/home/franc/dev/clean/QGIS/tests/testdata/raster/dem.tif" );
+  QString str = QStringLiteral( "?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:provider=gdal" );
+  QString uri = QString( "%1&%2" ).arg( str, QStringLiteral( "dem:uri=" ) % mTestDataDir % QStringLiteral( "raster/dem.tif" ) );
   std::unique_ptr< QgsRasterLayer > layerFirst = std::make_unique< QgsRasterLayer >( uri,
       QStringLiteral( "firstGenerationLayer" ),
       QStringLiteral( "virtualraster" ) );
