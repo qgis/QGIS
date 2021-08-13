@@ -166,9 +166,7 @@ class ShortestLine(QgisAlgorithm):
         request = QgsFeatureRequest()
         request.setDestinationCrs(source.sourceCrs(), context.transformContext())
 
-        index = QgsSpatialIndex(QgsSpatialIndex.FlagStoreFeatureGeometries)
-        for i in destination.getFeatures(request):
-            index.addFeature(i, QgsFeatureSink.FastInsert)
+        index = QgsSpatialIndex(destination.getFeatures(request), flags=QgsSpatialIndex.FlagStoreFeatureGeometries)
 
         total = 100.0 / source.featureCount() if source.featureCount() else 0
 
