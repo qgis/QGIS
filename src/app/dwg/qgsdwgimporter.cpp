@@ -39,6 +39,7 @@
 #include <QLabel>
 #include <QTextCodec>
 #include <QRegularExpression>
+#include <QTextStream>
 
 #include <typeinfo>
 
