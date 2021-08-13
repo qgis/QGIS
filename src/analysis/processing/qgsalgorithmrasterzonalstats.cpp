@@ -84,7 +84,7 @@ QString QgsRasterLayerZonalStatsAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm calculates statistics for a raster layer's values, categorized by zones defined in another raster layer.\n\n"
                       "If the reference layer parameter is set to \"Input layer\", then zones are determined by sampling the zone raster layer value at the centroid of each pixel from the source raster layer.\n\n"
                       "If the reference layer parameter is set to \"Zones layer\", then the input raster layer will be sampled at the centroid of each pixel from the zones raster layer.\n\n"
-                      "If either the source raster layer or the zone raster layer value is NODATA for a pixel, that pixel's value will be skipped and not including in the calculated statistics." );
+                      "If either the source raster layer or the zone raster layer value is NODATA for a pixel, that pixel's value will be skipped and not included in the calculated statistics." );
 }
 
 QgsRasterLayerZonalStatsAlgorithm *QgsRasterLayerZonalStatsAlgorithm::createInstance() const
