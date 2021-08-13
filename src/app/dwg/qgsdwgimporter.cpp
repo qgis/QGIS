@@ -48,6 +48,7 @@
 #include <gdal.h>
 #include <ogr_srs_api.h>
 #include <memory>
+#include <mutex>
 
 #define LOG( x ) { QgsDebugMsg( x ); QgsMessageLog::logMessage( x, QObject::tr( "DWG/DXF import" ) ); }
 #define ONCE( x ) { static bool show=true; if( show ) LOG( x ); show=false; }
@@ -64,6 +65,82 @@
 #endif
 
 
+class QgsDrwDebugPrinter : public DRW::DebugPrinter
+{
+  public:
+
+    QgsDrwDebugPrinter()
+      : mTS( &mBuf )
+    { }
+    ~QgsDrwDebugPrinter() override
+    {
+      QgsDebugMsgLevel( mBuf, 4 );
+    }
+
+    void printS( const std::string &s ) override
+    {
+      mTS << QString::fromStdString( s );
+      flush();
+    }
+
+    void printI( long long int i ) override
+    {
+      mTS << i;
+      flush();
+    }
+
+    void printUI( long long unsigned int i ) override
+    {
+      mTS << i;
+      flush();
+    }
+
+    void printD( double d ) override
+    {
+      mTS << QStringLiteral( "%1 " ).arg( d, 0, 'g' );
+      flush();
+    }
+
+    void printH( long long int i ) override
+    {
+      mTS << QStringLiteral( "0x%1" ).arg( i, 0, 16 );
+      flush();
+    }
+
+    void printB( int i ) override
+    {
+      mTS << QStringLiteral( "0%1" ).arg( i, 0, 8 );
+      flush();
+    }
+
+    void printHL( int c, int s, int h ) override
+    {
+      mTS << QStringLiteral( "%1.%2 0x%3" ).arg( c ).arg( s ).arg( h, 0, 16 );
+      flush();
+    }
+
+    void printPT( double x, double y, double z ) override
+    {
+      mTS << QStringLiteral( "x:%1 y:%2 z:%3" ).arg( x, 0, 'g' ).arg( y, 0, 'g' ).arg( z, 0, 'g' );
+      flush();
+    }
+
+  private:
+    std::ios_base::fmtflags flags{std::cerr.flags()};
+    QString mBuf;
+    QTextStream mTS;
+    void flush()
+    {
+      QStringList lines = mBuf.split( '\n' );
+      for ( int i = 0; i < lines.size() - 1; i++ )
+      {
+        QgsDebugMsgLevel( lines[i], 4 );
+      }
+      mBuf = lines.last();
+    }
+};
+
+
 QgsDwgImporter::QgsDwgImporter( const QString &database, const QgsCoordinateReferenceSystem &crs )
   : mDs( nullptr )
   , mDatabase( database )
@@ -75,6 +152,13 @@ QgsDwgImporter::QgsDwgImporter( const QString &database, const QgsCoordinateRefe
   , mEntities( 0 )
 {
   QgsDebugCall;
+
+  // setup custom debug printer for libdxfrw
+  static std::once_flag initialized;
+  std::call_once( initialized, [ = ]( )
+  {
+    DRW::setCustomDebugPrinter( new QgsDrwDebugPrinter() );
+  } );
 
   const QString crswkt( crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ) );
   mCrsH = QgsOgrUtils::crsToOGRSpatialReference( crs );
