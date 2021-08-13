@@ -53,7 +53,7 @@ Convert current project for offline editing
 Returns ``True`` if current project is offline
 %End
 
-    void synchronize();
+    void synchronize( bool useTransaction = false );
 %Docstring
 Synchronize to remote layers
 %End

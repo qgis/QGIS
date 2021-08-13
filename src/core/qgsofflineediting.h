@@ -72,7 +72,7 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     bool isOfflineProject() const;
 
     //! Synchronize to remote layers
-    void synchronize();
+    void synchronize( bool useTransaction = false );
 
   signals:
 
