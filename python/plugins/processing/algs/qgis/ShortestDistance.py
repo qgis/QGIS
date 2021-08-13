@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    Gridify.py
+    ShortestDistance.py
     ---------------------
     Date                 : August 2021
     Copyright            : (C) 2021 by Matteo Ghetta
