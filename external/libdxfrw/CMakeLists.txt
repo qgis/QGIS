@@ -27,6 +27,9 @@ target_include_directories(libdxfrw PUBLIC
 
 set_property(TARGET libdxfrw PROPERTY POSITION_INDEPENDENT_CODE ON)
 
+# require c++11
+target_compile_features(libdxfrw PRIVATE cxx_std_11)
+
 if(FALSE)
 if(DOXYGEN_FOUND)
   add_custom_target(doxygen-dxfrw ALL
