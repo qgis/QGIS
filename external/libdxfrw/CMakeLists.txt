@@ -1,8 +1,3 @@
-
-include_directories(SYSTEM
-    ${Qt5Core_INCLUDE_DIRS}
-)
-
 add_library(libdxfrw STATIC
     drw_base.cpp
     drw_classes.cpp
@@ -31,10 +26,6 @@ target_include_directories(libdxfrw PUBLIC
 )
 
 set_property(TARGET libdxfrw PROPERTY POSITION_INDEPENDENT_CODE ON)
-
-target_link_libraries(libdxfrw
-  qgis_core # QgsDebugMsg
-)
 
 if(FALSE)
 if(DOXYGEN_FOUND)

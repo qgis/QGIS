@@ -732,7 +732,7 @@ bool dxfRW::writeCircle( DRW_Circle *ent )
   {
     writer->writeDouble( 30, ent->basePoint.z );
   }
-  writer->writeDouble( 40, ent->mRadius );
+  writer->writeDouble( 40, ent->radius );
   return true;
 }
 
@@ -750,7 +750,7 @@ bool dxfRW::writeArc( DRW_Arc *ent )
   {
     writer->writeDouble( 30, ent->basePoint.z );
   }
-  writer->writeDouble( 40, ent->mRadius );
+  writer->writeDouble( 40, ent->radius );
   if ( version > DRW::AC1009 )
   {
     writer->writeString( 100, "AcDbArc" );
@@ -809,9 +809,9 @@ bool dxfRW::writeTrace( DRW_Trace *ent )
   writer->writeDouble( 12, ent->thirdPoint.x );
   writer->writeDouble( 22, ent->thirdPoint.y );
   writer->writeDouble( 32, ent->thirdPoint.z );
-  writer->writeDouble( 13, ent->fourthPoint.x );
-  writer->writeDouble( 23, ent->fourthPoint.y );
-  writer->writeDouble( 33, ent->fourthPoint.z );
+  writer->writeDouble( 13, ent->forthPoint.x );
+  writer->writeDouble( 23, ent->forthPoint.y );
+  writer->writeDouble( 33, ent->forthPoint.z );
   return true;
 }
 
@@ -832,9 +832,9 @@ bool dxfRW::writeSolid( DRW_Solid *ent )
   writer->writeDouble( 12, ent->thirdPoint.x );
   writer->writeDouble( 22, ent->thirdPoint.y );
   writer->writeDouble( 32, ent->thirdPoint.z );
-  writer->writeDouble( 13, ent->fourthPoint.x );
-  writer->writeDouble( 23, ent->fourthPoint.y );
-  writer->writeDouble( 33, ent->fourthPoint.z );
+  writer->writeDouble( 13, ent->forthPoint.x );
+  writer->writeDouble( 23, ent->forthPoint.y );
+  writer->writeDouble( 33, ent->forthPoint.z );
   return true;
 }
 
@@ -855,9 +855,9 @@ bool dxfRW::write3dface( DRW_3Dface *ent )
   writer->writeDouble( 12, ent->thirdPoint.x );
   writer->writeDouble( 22, ent->thirdPoint.y );
   writer->writeDouble( 32, ent->thirdPoint.z );
-  writer->writeDouble( 13, ent->fourthPoint.x );
-  writer->writeDouble( 23, ent->fourthPoint.y );
-  writer->writeDouble( 33, ent->fourthPoint.z );
+  writer->writeDouble( 13, ent->forthPoint.x );
+  writer->writeDouble( 23, ent->forthPoint.y );
+  writer->writeDouble( 33, ent->forthPoint.z );
   writer->writeInt16( 70, ent->invisibleflag );
   return true;
 }
@@ -873,16 +873,16 @@ bool dxfRW::writeLWPolyline( DRW_LWPolyline *ent )
       writer->writeString( 100, "AcDbPolyline" );
     }
     ent->vertexnum = ent->vertlist.size();
-    writer->writeInt32( 90, static_cast<int>( ent->vertexnum ) );
+    writer->writeInt32( 90, ent->vertexnum );
     writer->writeInt16( 70, ent->flags );
     writer->writeDouble( 43, ent->width );
     if ( ent->elevation != 0 )
       writer->writeDouble( 38, ent->elevation );
     if ( ent->thickness != 0 )
       writer->writeDouble( 39, ent->thickness );
-    for ( std::vector<DRW_Vertex2D *>::size_type i = 0;  i < ent->vertexnum; i++ )
+    for ( int i = 0;  i < ent->vertexnum; i++ )
     {
-      DRW_Vertex2D *v = ent->vertlist.at( i );
+      auto v = ent->vertlist.at( i );
       writer->writeDouble( 10, v->x );
       writer->writeDouble( 20, v->y );
       if ( v->stawidth != 0 )
@@ -1044,7 +1044,7 @@ bool dxfRW::writeSpline( DRW_Spline *ent )
     }
     for ( int i = 0;  i < ent->ncontrol; i++ )
     {
-      DRW_Coord *crd = ent->controllist.at( i );
+      auto crd = ent->controllist.at( i );
       writer->writeDouble( 10, crd->x );
       writer->writeDouble( 20, crd->y );
       writer->writeDouble( 30, crd->z );
@@ -1073,12 +1073,12 @@ bool dxfRW::writeHatch( DRW_Hatch *ent )
     writer->writeString( 2, ent->name );
     writer->writeInt16( 70, ent->solid );
     writer->writeInt16( 71, ent->associative );
-    ent->loopsnum = ent->looplist.size();
-    writer->writeInt16( 91, static_cast<int>( ent->loopsnum ) );
+    ent->loopsnum = static_cast< int >( ent->looplist.size() );
+    writer->writeInt16( 91, ent->loopsnum );
     //write paths data
-    for ( std::vector<DRW_HatchLoop *>::size_type i = 0;  i < ent->loopsnum; i++ )
+    for ( int i = 0;  i < ent->loopsnum; i++ )
     {
-      DRW_HatchLoop *loop = ent->looplist.at( i );
+      auto loop = ent->looplist.at( i );
       writer->writeInt16( 92, loop->type );
       if ( ( loop->type & 2 ) == 2 )
       {
@@ -1096,7 +1096,7 @@ bool dxfRW::writeHatch( DRW_Hatch *ent )
             case DRW::LINE:
             {
               writer->writeInt16( 72, 1 );
-              DRW_Line *l = ( DRW_Line * )loop->objlist.at( j );
+              DRW_Line* l = (DRW_Line*)loop->objlist.at(j).get();
               writer->writeDouble( 10, l->basePoint.x );
               writer->writeDouble( 20, l->basePoint.y );
               writer->writeDouble( 11, l->secPoint.x );
@@ -1106,10 +1106,10 @@ bool dxfRW::writeHatch( DRW_Hatch *ent )
             case DRW::ARC:
             {
               writer->writeInt16( 72, 2 );
-              DRW_Arc *a = ( DRW_Arc * )loop->objlist.at( j );
+              DRW_Arc* a = (DRW_Arc*)loop->objlist.at(j).get();
               writer->writeDouble( 10, a->basePoint.x );
               writer->writeDouble( 20, a->basePoint.y );
-              writer->writeDouble( 40, a->mRadius );
+              writer->writeDouble( 40, a->radius );
               writer->writeDouble( 50, a->staangle * ARAD );
               writer->writeDouble( 51, a->endangle * ARAD );
               writer->writeInt16( 73, a->isccw );
@@ -1118,7 +1118,7 @@ bool dxfRW::writeHatch( DRW_Hatch *ent )
             case DRW::ELLIPSE:
             {
               writer->writeInt16( 72, 3 );
-              DRW_Ellipse *a = ( DRW_Ellipse * )loop->objlist.at( j );
+              DRW_Ellipse* a = (DRW_Ellipse*)loop->objlist.at(j).get();
               a->correctAxis();
               writer->writeDouble( 10, a->basePoint.x );
               writer->writeDouble( 20, a->basePoint.y );
@@ -1184,7 +1184,7 @@ bool dxfRW::writeLeader( DRW_Leader *ent )
     writer->writeDouble( 76, ent->vertexlist.size() );
     for ( unsigned int i = 0; i < ent->vertexlist.size(); i++ )
     {
-      DRW_Coord *vert = ent->vertexlist.at( i );
+      auto vert = ent->vertexlist.at( i );
       writer->writeDouble( 10, vert->x );
       writer->writeDouble( 20, vert->y );
       writer->writeDouble( 30, vert->z );
