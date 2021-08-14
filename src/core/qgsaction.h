@@ -133,6 +133,14 @@ class CORE_EXPORT QgsAction
     QUuid id() const { return mId; }
 
     /**
+     * Set the unique \a id for this action.
+     *
+     * \note not available in Python bindings
+     * \since QGIS 3.22
+     */
+    void setId( const QUuid &id ) SIP_SKIP;
+
+    /**
      * Returns TRUE if this action was a default constructed one.
      *
      * \since QGIS 3.0

@@ -77,6 +77,7 @@ Returns a unique id for this action.
 .. versionadded:: 3.0
 %End
 
+
     bool isValid() const;
 %Docstring
 Returns ``True`` if this action was a default constructed one.
