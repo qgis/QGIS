@@ -1070,7 +1070,7 @@ bool dwgReader::readPlineVertex( DRW_Polyline &pline, dwgBuffer *dbuf )
   }
   else  //2004+
   {
-    for ( std::list<duint32>::iterator it = pline.handleList.begin() ; it != pline.handleList.end(); ++it )
+    for ( std::list<duint32>::iterator it = pline.handlesList.begin() ; it != pline.handlesList.end(); ++it )
     {
       duint32 nextH = *it;
       mit = ObjectMap.find( nextH );

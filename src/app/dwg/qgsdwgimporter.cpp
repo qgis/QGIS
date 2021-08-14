@@ -1579,9 +1579,9 @@ bool QgsDwgImporter::circularStringFromArc( const DRW_Arc &data, QgsCircularStri
   const double a2 = data.isccw ? data.endangle : -data.endangle;
 
   c.setPoints( QgsPointSequence()
-               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x + std::cos( a0 ) * data.mRadius, data.basePoint.y + std::sin( a0 ) * data.mRadius )
-               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x + std::cos( a1 ) * data.mRadius, data.basePoint.y + std::sin( a1 ) * data.mRadius )
-               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x + std::cos( a2 ) * data.mRadius, data.basePoint.y + std::sin( a2 ) * data.mRadius )
+               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x + std::cos( a0 ) * data.radius, data.basePoint.y + std::sin( a0 ) * data.radius )
+               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x + std::cos( a1 ) * data.radius, data.basePoint.y + std::sin( a1 ) * data.radius )
+               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x + std::cos( a2 ) * data.radius, data.basePoint.y + std::sin( a2 ) * data.radius )
              );
 
   return true;
@@ -1635,9 +1635,9 @@ void QgsDwgImporter::addCircle( const DRW_Circle &data )
 
   QgsCircularString c;
   c.setPoints( QgsPointSequence()
-               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x - data.mRadius, data.basePoint.y, data.basePoint.z )
-               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x + data.mRadius, data.basePoint.y, data.basePoint.z )
-               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x - data.mRadius, data.basePoint.y, data.basePoint.z )
+               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x - data.radius, data.basePoint.y, data.basePoint.z )
+               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x + data.radius, data.basePoint.y, data.basePoint.z )
+               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x - data.radius, data.basePoint.y, data.basePoint.z )
              );
 
   if ( !createFeature( layer, f, c ) )
@@ -2457,7 +2457,7 @@ void QgsDwgImporter::addSolid( const DRW_Solid &data )
   QgsPointSequence s;
   s << QgsPoint( QgsWkbTypes::PointZ,   data.basePoint.x,   data.basePoint.y, data.basePoint.z );
   s << QgsPoint( QgsWkbTypes::PointZ,    data.secPoint.x,    data.secPoint.y, data.basePoint.z );
-  s << QgsPoint( QgsWkbTypes::PointZ, data.fourthPoint.x, data.fourthPoint.y, data.basePoint.z );
+  s << QgsPoint( QgsWkbTypes::PointZ, data.forthPoint.x, data.forthPoint.y, data.basePoint.z );
   s << QgsPoint( QgsWkbTypes::PointZ,  data.thirdPoint.x,  data.thirdPoint.y, data.basePoint.z );
   s << s[0];
 
@@ -2650,17 +2650,12 @@ void QgsDwgImporter::addHatch( const DRW_Hatch *pdata )
     for ( std::vector<DRW_Entity *>::size_type j = 0; j < hatchLoop.objlist.size(); j++ )
     {
       Q_ASSERT( hatchLoop.objlist[j] );
-      const DRW_Entity *entity = hatchLoop.objlist[j];
-
-      const DRW_LWPolyline *lwp = dynamic_cast<const DRW_LWPolyline *>( entity );
-      const DRW_Line *l = dynamic_cast<const DRW_Line *>( entity );
-      const DRW_Arc *a = dynamic_cast<const DRW_Arc *>( entity );
-      const DRW_Spline *sp = dynamic_cast<const DRW_Spline *>( entity );
-      if ( lwp )
+      const DRW_Entity *entity = hatchLoop.objlist[j].get();
+      if ( const DRW_LWPolyline *lwp = dynamic_cast<const DRW_LWPolyline *>( entity ) )
       {
         curveFromLWPolyline( *lwp, *cc );
       }
-      else if ( l )
+      else if ( const DRW_Line *l = dynamic_cast<const DRW_Line *>( entity ) )
       {
         QgsLineString *ls = new QgsLineString();
         ls->setPoints( QgsPointSequence()
@@ -2672,7 +2667,7 @@ void QgsDwgImporter::addHatch( const DRW_Hatch *pdata )
 
         cc->addCurve( ls );
       }
-      else if ( a )
+      else if ( const DRW_Arc *a = dynamic_cast<const DRW_Arc *>( entity ) )
       {
         QgsCircularString *cs = new QgsCircularString();
         circularStringFromArc( *a, *cs );
@@ -2682,7 +2677,7 @@ void QgsDwgImporter::addHatch( const DRW_Hatch *pdata )
 
         cc->addCurve( cs );
       }
-      else if ( sp )
+      else if ( const DRW_Spline *sp = dynamic_cast<const DRW_Spline *>( entity ) )
       {
         QgsLineString *ls = new QgsLineString();
         lineFromSpline( *sp, *ls );
