@@ -67,6 +67,8 @@ class TestQgsRasterCalculator : public QObject
 
     void testStatistics();
 
+    void testFunctType(); //test type tFUnct
+
   private:
 
     QgsRasterLayer *mpLandsatRasterLayer = nullptr;
@@ -876,6 +878,57 @@ void TestQgsRasterCalculator::testStatistics()
 
 }
 
+void TestQgsRasterCalculator::testFunctType()
+{
+  //if (raster1 > 5.0, 100.0, 10.0)
+  QVector < QgsRasterCalcNode * > args;
+
+  //raster
+  QgsRasterBlock m1( Qgis::DataType::Float32, 2, 3 );
+  m1.setNoDataValue( -1.0 );
+  m1.setValue( 0, 0, 15.0 );
+  m1.setValue( 0, 1, 1.5 );
+  m1.setValue( 1, 0, 13.0 );
+  m1.setValue( 1, 1, -1.0 ); //nodata
+  m1.setValue( 2, 0, 11.0 );
+  m1.setValue( 2, 1, 1.0 );
+  QMap<QString, QgsRasterBlock *> rasterData;
+  rasterData.insert( QStringLiteral( "raster1" ), &m1 );
+  args.append( new QgsRasterCalcNode( QgsRasterCalcNode::opGT, new QgsRasterCalcNode( QStringLiteral( "raster1" ) ), new QgsRasterCalcNode( 5.0 ) ) );
+
+  /*
+  // Matrix
+  double *d = new double[6];
+  d[0] = 1.0;
+  d[1] = 2.0;
+  d[2] = 3.0;
+  d[3] = 4.0;
+  d[4] = 5.0;
+  d[5] = -1.0;
+  QgsRasterMatrix m( 2, 3, d, -1.0 );
+
+  // append the condition raster1 > 2.0
+  args.append( new QgsRasterCalcNode( QgsRasterCalcNode::opGT, new QgsRasterCalcNode( &m ), new QgsRasterCalcNode( 5.0 ) ) );
+  */
+  // append the two options
+  args.append( new QgsRasterCalcNode( 100.0 ) );
+  args.append( new QgsRasterCalcNode( 10.0 ) );
+
+  //name of the function
+  QString name( "if" );
+
+  QgsRasterCalcNode node( name, args );
+
+  QgsRasterMatrix result( 1, 1, nullptr, -9999 );
+  //QMap<QString, QgsRasterBlock *> rasterData;
+
+  QVERIFY( node.calculate( rasterData, result ) );
+  QCOMPARE( result.data()[0], 100 );
+  //QCOMPARE(result.data()[1],10);
+  //QCOMPARE(result.data()[2],100);
+  qDebug() << result.data()[3];
+  qDebug() << result.data()[4];
+}
 
 QGSTEST_MAIN( TestQgsRasterCalculator )
 #include "testqgsrastercalculator.moc"

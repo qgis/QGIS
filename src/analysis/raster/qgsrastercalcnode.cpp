@@ -29,7 +29,7 @@ QgsRasterCalcNode::QgsRasterCalcNode( QgsRasterMatrix *matrix )
 }
 
 QgsRasterCalcNode::QgsRasterCalcNode( Operator op, QgsRasterCalcNode *left, QgsRasterCalcNode *right )
-  : mType( tFunct )
+  : mType( tOperator )
   , mLeft( left )
   , mRight( right )
   , mOperator( op )
@@ -38,7 +38,7 @@ QgsRasterCalcNode::QgsRasterCalcNode( Operator op, QgsRasterCalcNode *left, QgsR
 
 //for conditional statement and possibily other functions
 QgsRasterCalcNode::QgsRasterCalcNode( QString functionName, QVector <QgsRasterCalcNode *> functionArgs )
-  : mType( tOperator )
+  : mType( tFunct )
   , mFunctionArgs( functionArgs )
   , mFunctionName( functionName )
 {
@@ -218,22 +218,18 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData,
   }
   else if ( mType == tFunct )
   {
-
     QVector <QgsRasterMatrix *> matrixContainer;
-
     for ( int i = 0; i < mFunctionArgs.size(); ++i )
     {
-      //QgsRasterMatrix *singleMatrix = new QgsRasterMatrix( result.nColumns(), result.nRows(), nullptr, result.nodataValue() ) ;
-      std::unique_ptr< QgsRasterMatrix > singleMatrix( new QgsRasterMatrix() );
-      if ( !mFunctionArgs.at( i ) || mFunctionArgs.at( i )->calculate( rasterData, *singleMatrix.get(), row ) )
+      std::unique_ptr< QgsRasterMatrix > singleMatrix( new QgsRasterMatrix( result.nColumns(), result.nRows(), nullptr, result.nodataValue() ) );
+      if ( !mFunctionArgs.at( i ) || !mFunctionArgs.at( i )->calculate( rasterData, *singleMatrix, row ) )
       {
         return false;
       }
-      matrixContainer.append( singleMatrix.get() );
+      matrixContainer.append( singleMatrix.release() );
     }
 
     result = evaluation( matrixContainer, result );
-
     return true;
   }
   return false;
@@ -418,7 +414,6 @@ QgsRasterMatrix QgsRasterCalcNode::evaluation( const QVector<QgsRasterMatrix *> 
     int nCols = matrixVector.at( 0 )->nColumns();
     int nRows = matrixVector.at( 0 )->nRows();
     int nEntries = nCols * nRows;
-    //double *data = new double[nEntries];
     std::unique_ptr< double > dataResult( new double[nEntries] );
 
     double *condition = matrixVector.at( 0 )->data();
@@ -427,10 +422,9 @@ QgsRasterMatrix QgsRasterCalcNode::evaluation( const QVector<QgsRasterMatrix *> 
 
     for ( int i = 0; i < nEntries; ++i )
     {
-      dataResult.get()[i] = condition[i] == 0 ? firstOption[i] : secondOption[i] ;
-      //dataResult.get()[i] = 1;
+      dataResult.get()[i] = condition[i] != 0 ? firstOption[i] : secondOption[i] ;
     }
-    result.setData( nCols, nRows, dataResult.get(), result.nodataValue() );
+    result.setData( nCols, nRows, dataResult.release(), result.nodataValue() );
   }
 
   return result;
