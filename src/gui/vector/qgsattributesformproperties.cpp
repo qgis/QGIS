@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsactionmanager.h"
 #include "qgsaddtaborgroup.h"
 #include "qgsattributesformproperties.h"
 #include "qgsattributetypedialog.h"
@@ -26,6 +27,7 @@
 #include "qgscolorbutton.h"
 #include "qgscodeeditorhtml.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsattributeeditoraction.h"
 #include "qgsattributeeditorfield.h"
 #include "qgsattributeeditorcontainer.h"
 #include "qgsattributeeditorqmlelement.h"
@@ -135,6 +137,25 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
     item->setData( 0, FieldNameRole, relation.id() );
   }
   catitem->setExpanded( true );
+
+  // Form actions
+  catItemData = DnDTreeItemData( DnDTreeItemData::WidgetType, QStringLiteral( "Actions" ), tr( "Layer Actions" ) );
+  catitem = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), catItemData );
+
+  const QgsActionManager *actionManager { mLayer->actions() };
+  // TODO: action type: any or Feature?
+  const QList<QgsAction> actions { actionManager->actions( QStringLiteral( "Feature" ) ) };
+
+  for ( const auto &action : std::as_const( actions ) )
+  {
+    if ( action.isValid() && action.runable() )
+    {
+      const QString actionTitle { action.shortTitle().isEmpty() ? action.shortTitle() : action.name() };
+      DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Action, action.id().toString(), actionTitle );
+      itemData.setShowLabel( true );
+      /* QTreeWidgetItem *item = */ mAvailableWidgetsTree->addItem( catitem, itemData );
+    }
+  }
 
   // QML/HTML widget
   catItemData = DnDTreeItemData( DnDTreeItemData::WidgetType, QStringLiteral( "Other" ), tr( "Other Widgets" ) );
@@ -410,6 +431,15 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       break;
     }
 
+    case QgsAttributeEditorElement::AeTypeAction:
+    {
+      const QgsAttributeEditorAction *actionEditor = static_cast<const QgsAttributeEditorAction *>( widgetDef );
+      DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Action, actionEditor->actionUUID(), actionEditor->actionTitle() );
+      itemData.setShowLabel( widgetDef->showLabel() );
+      newWidget = tree->addItem( parent, itemData );
+      break;
+    }
+
     case QgsAttributeEditorElement::AeTypeRelation:
     {
       const QgsAttributeEditorRelation *relationEditor = static_cast<const QgsAttributeEditorRelation *>( widgetDef );
@@ -548,6 +578,11 @@ void QgsAttributesFormProperties::loadAttributeSpecificEditor( QgsAttributesDnDT
         loadAttributeContainerEdit();
         break;
       }
+      case DnDTreeItemData::Action:
+      {
+        receiver->clearSelection();
+        break;
+      }
       case DnDTreeItemData::QmlWidget:
       case DnDTreeItemData::HtmlWidget:
       {
@@ -659,6 +694,13 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
     {
       const int idx = mLayer->fields().lookupField( itemData.name() );
       widgetDef = new QgsAttributeEditorField( itemData.name(), idx, parent );
+      break;
+    }
+
+    case DnDTreeItemData::Action:
+    {
+      const QgsAction action { mLayer->actions()->action( itemData.name() )};
+      widgetDef = new QgsAttributeEditorAction( action, parent );
       break;
     }
 
@@ -966,6 +1008,7 @@ QTreeWidgetItem *QgsAttributesDnDTree::addItem( QTreeWidgetItem *parent, QgsAttr
 
   switch ( data.type() )
   {
+    case QgsAttributesFormProperties::DnDTreeItemData::Action:
     case QgsAttributesFormProperties::DnDTreeItemData::Field:
     case QgsAttributesFormProperties::DnDTreeItemData::Relation:
     case QgsAttributesFormProperties::DnDTreeItemData::QmlWidget:
@@ -1145,6 +1188,7 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
 
   switch ( itemData.type() )
   {
+    case QgsAttributesFormProperties::DnDTreeItemData::Action:
     case QgsAttributesFormProperties::DnDTreeItemData::Container:
     case QgsAttributesFormProperties::DnDTreeItemData::WidgetType:
     case QgsAttributesFormProperties::DnDTreeItemData::Relation:

@@ -18,6 +18,7 @@
 #include "qgsattributeforminterface.h"
 #include "qgsattributeformlegacyinterface.h"
 #include "qgsattributeformrelationeditorwidget.h"
+#include "qgsattributeeditoraction.h"
 #include "qgsattributeeditorcontainer.h"
 #include "qgsattributeeditorfield.h"
 #include "qgsattributeeditorrelation.h"
@@ -42,6 +43,7 @@
 #include "qgsscrollarea.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsactionwidgetwrapper.h"
 #include "qgsqmlwidgetwrapper.h"
 #include "qgshtmlwidgetwrapper.h"
 #include "qgsapplication.h"
@@ -2005,6 +2007,24 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
   switch ( widgetDef->type() )
   {
+    case QgsAttributeEditorElement::AeTypeAction:
+    {
+      const QgsAttributeEditorAction *elementDef = dynamic_cast<const QgsAttributeEditorAction *>( widgetDef );
+      if ( !elementDef )
+        break;
+
+      QgsActionWidgetWrapper *actionWrapper = new QgsActionWidgetWrapper( mLayer, nullptr, this );
+      actionWrapper->setAction( elementDef->action() );
+      context.setAttributeFormMode( mMode );
+      actionWrapper->setContext( context );
+
+      mWidgets.append( actionWrapper );
+
+      newWidgetInfo.widget = actionWrapper->widget();
+
+      break;
+    }
+
     case QgsAttributeEditorElement::AeTypeField:
     {
       const QgsAttributeEditorField *fieldDef = dynamic_cast<const QgsAttributeEditorField *>( widgetDef );

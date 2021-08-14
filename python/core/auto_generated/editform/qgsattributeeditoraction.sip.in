@@ -1,0 +1,56 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/editform/qgsattributeeditoraction.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsAttributeEditorAction : QgsAttributeEditorElement
+{
+%Docstring(signature="appended")
+This element will load a layer action onto the form.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsattributeeditoraction.h"
+%End
+  public:
+
+    QgsAttributeEditorAction( const QgsAction &action, QgsAttributeEditorElement *parent );
+%Docstring
+Creates a new element which can display a layer action
+
+:param action: The action
+:param parent: The parent (used as container)
+%End
+
+    QgsAttributeEditorAction( const QUuid &uuid, const QString &layerId, QgsAttributeEditorElement *parent );
+%Docstring
+Creates a new element which can display a layer action
+
+:param uuid: The action UUID
+:param layerId: The ID of the layer the action belongs to
+:param parent: The parent (used as container)
+%End
+
+    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
+
+
+    const QgsAction &action() const;
+    void setAction( const QgsAction &newAction );
+    const QString actionUUID() const;
+    const QString actionTitle() const;
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/editform/qgsattributeeditoraction.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -46,6 +46,7 @@ QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( QTreeWidgetItem *item, QWidget *
     break;
 
     case QgsAttributesFormProperties::DnDTreeItemData::Field:
+    case QgsAttributesFormProperties::DnDTreeItemData::Action:
     case QgsAttributesFormProperties::DnDTreeItemData::Container:
     case QgsAttributesFormProperties::DnDTreeItemData::QmlWidget:
     case QgsAttributesFormProperties::DnDTreeItemData::HtmlWidget:
@@ -75,6 +76,7 @@ void QgsAttributeWidgetEdit::updateItemData()
     }
     break;
 
+    case QgsAttributesFormProperties::DnDTreeItemData::Action:
     case QgsAttributesFormProperties::DnDTreeItemData::Field:
     case QgsAttributesFormProperties::DnDTreeItemData::Container:
     case QgsAttributesFormProperties::DnDTreeItemData::QmlWidget:
