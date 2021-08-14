@@ -112,6 +112,7 @@ void QgsAttributeActionDialog::insertRow( int row, const QgsAction &action )
   // Type
   item = new QTableWidgetItem( textForType( action.type() ) );
   item->setData( Qt::UserRole, action.type() );
+  item->setData( Qt::UserRole + 1, action.id() );
   item->setFlags( item->flags() & ~Qt::ItemIsEditable );
   mAttributeActionTable->setItem( row, Type, item );
 
@@ -234,6 +235,11 @@ QgsAction QgsAttributeActionDialog::rowToAction( int row ) const
                     mAttributeActionTable->item( row, NotificationMessage )->text(),
                     mAttributeActionTable->item( row, EnabledOnlyWhenEditable )->checkState() == Qt::Checked
                   );
+  const QUuid id { mAttributeActionTable->item( row, Type )->data( Qt::UserRole + 1 ).toUuid() };
+  if ( !id.isNull() )
+  {
+    action.setId( id );
+  }
   return action;
 }
 
