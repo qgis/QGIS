@@ -2632,7 +2632,7 @@ void QgsDwgImporter::addHatch( const DRW_Hatch *pdata )
 
   QgsCurvePolygon p;
 
-  if ( data.looplist.size() != data.loopsnum )
+  if ( static_cast< int >( data.looplist.size() ) != data.loopsnum )
   {
     LOG( tr( "0x%1: %2 instead of %3 loops found" )
          .arg( data.handle, 0, 16 )
