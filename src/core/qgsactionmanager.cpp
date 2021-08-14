@@ -268,7 +268,7 @@ bool QgsActionManager::readXml( const QDomNode &layer_node )
   return true;
 }
 
-QgsAction QgsActionManager::action( QUuid id )
+QgsAction QgsActionManager::action( QUuid id ) const
 {
   for ( const QgsAction &action : std::as_const( mActions ) )
   {
