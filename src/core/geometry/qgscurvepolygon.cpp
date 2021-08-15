@@ -940,11 +940,11 @@ int QgsCurvePolygon::vertexNumberFromVertexId( QgsVertexId id ) const
   if ( id.part != 0 )
     return -1;
 
-  if ( id.ring < 0 || id.ring >= ringCount() )
+  if ( id.ring < 0 || id.ring >= ringCount() || !mExteriorRing )
     return -1;
 
   int number = 0;
-  if ( id.ring == 0 && mExteriorRing )
+  if ( id.ring == 0 )
   {
     return mExteriorRing->vertexNumberFromVertexId( QgsVertexId( 0, 0, id.vertex ) );
   }
