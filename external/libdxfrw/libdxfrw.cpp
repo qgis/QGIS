@@ -957,7 +957,7 @@ bool dxfRW::writePolyline( DRW_Polyline *ent )
   std::vector<DRW_Vertex2D *>::size_type vertexnum = ent->vertlist.size();
   for ( std::vector<DRW_Vertex2D *>::size_type i = 0;  i < vertexnum; i++ )
   {
-    DRW_Vertex *v = ent->vertlist.at( i );
+    DRW_Vertex *v = ent->vertlist.at( i ).get();
     writer->writeString( 0, "VERTEX" );
     writeEntity( ent );
     if ( version > DRW::AC1009 )
@@ -1089,7 +1089,7 @@ bool dxfRW::writeHatch( DRW_Hatch *ent )
         //boundary path
         loop->update();
         writer->writeInt16( 93, static_cast<int>( loop->numedges ) );
-        for ( std::vector<DRW_Entity *>::size_type j = 0; j < loop->numedges; ++j )
+        for ( int j = 0; j < loop->numedges; ++j )
         {
           switch ( ( loop->objlist.at( j ) )->eType )
           {
@@ -3058,7 +3058,7 @@ bool dxfRW::processVertex( DRW_Polyline *pl )
 {
   DRW_DBG( "dxfRW::processVertex" );
   int code;
-  DRW_Vertex *v = new DRW_Vertex();
+  auto v = std::make_shared<DRW_Vertex>();
   while ( reader->readRec( &code ) )
   {
     DRW_DBG( " code=" ); DRW_DBG( code ); DRW_DBG( "\n" );
@@ -3075,7 +3075,7 @@ bool dxfRW::processVertex( DRW_Polyline *pl )
         }
         else if ( nextentity == "VERTEX" )
         {
-          v = new DRW_Vertex(); //another vertex
+          v = std::make_shared<DRW_Vertex>(); //another vertex
         }
 
         FALLTHROUGH
