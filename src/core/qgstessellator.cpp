@@ -801,18 +801,6 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     mZMax = zMax;
 }
 
-QgsPoint getPointFromData( QVector< float >::const_iterator &it )
-{
-  // tessellator geometry is x, z, -y
-  const double x = *it;
-  ++it;
-  const double z = *it;
-  ++it;
-  const double y = -( *it );
-  ++it;
-  return QgsPoint( x, y, z );
-}
-
 int QgsTessellator::dataVerticesCount() const
 {
   return mData.size() / ( stride() / sizeof( float ) );
@@ -821,13 +809,14 @@ int QgsTessellator::dataVerticesCount() const
 std::unique_ptr<QgsMultiPolygon> QgsTessellator::asMultiPolygon() const
 {
   std::unique_ptr< QgsMultiPolygon > mp = std::make_unique< QgsMultiPolygon >();
-  const QVector<float> data = mData;
-  mp->reserve( mData.size() );
-  for ( auto it = data.constBegin(); it != data.constEnd(); )
+  const auto nVals = mData.size();
+  mp->reserve( nVals / 9 );
+  for ( auto i = decltype( nVals ) {0}; i + 8 < nVals; i += 9 )
   {
-    const QgsPoint p1 = getPointFromData( it );
-    const QgsPoint p2 = getPointFromData( it );
-    const QgsPoint p3 = getPointFromData( it );
+    // tessellator geometry is x, z, -y
+    const QgsPoint p1( mData[i + 0], -mData[i + 2], mData[i + 1] );
+    const QgsPoint p2( mData[i + 3], -mData[i + 5], mData[i + 4] );
+    const QgsPoint p3( mData[i + 6], -mData[i + 8], mData[i + 7] );
     mp->addGeometry( new QgsTriangle( p1, p2, p3 ) );
   }
   return mp;
