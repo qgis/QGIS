@@ -48,7 +48,7 @@ Returns the (possibly lazy loaded) action.
 
     void setAction( const QgsAction &newAction );
 %Docstring
-Set the ``action``.
+Set the action to ``newAction``.
 %End
 
     const QString actionId() const;

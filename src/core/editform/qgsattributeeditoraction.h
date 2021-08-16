@@ -55,7 +55,7 @@ class CORE_EXPORT QgsAttributeEditorAction : public QgsAttributeEditorElement
     const QgsAction &action() const;
 
     /**
-     * Set the \a action.
+     * Set the action to \a newAction.
      */
     void setAction( const QgsAction &newAction );
 
