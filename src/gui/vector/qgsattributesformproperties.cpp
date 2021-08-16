@@ -143,8 +143,8 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
   catitem = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), catItemData );
 
   const QgsActionManager *actionManager { mLayer->actions() };
-  // TODO: action type: any or Feature?
-  const QList<QgsAction> actions { actionManager->actions( QStringLiteral( "Feature" ) ) };
+  QList<QgsAction> actions { actionManager->actions( QStringLiteral( "Feature" ) ) };
+  actions.append( actionManager->actions( QStringLiteral( "Layer" ) ) );
 
   for ( const auto &action : std::as_const( actions ) )
   {
@@ -153,7 +153,7 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
       const QString actionTitle { action.shortTitle().isEmpty() ? action.shortTitle() : action.name() };
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Action, action.id().toString(), actionTitle );
       itemData.setShowLabel( true );
-      /* QTreeWidgetItem *item = */ mAvailableWidgetsTree->addItem( catitem, itemData );
+      mAvailableWidgetsTree->addItem( catitem, itemData );
     }
   }
 
