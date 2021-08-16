@@ -400,9 +400,10 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
     context.setExpressionContext( createExpressionContext() );
     drawBackground( context );
 
+    const double viewScale = QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle, painter );
+
     // scale painter from mm to dots
     painter->scale( 1.0 / context.scaleFactor(), 1.0 / context.scaleFactor() );
-    double viewScale = QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle, painter );
     QgsLayoutItemRenderContext itemRenderContext( context, viewScale );
     draw( itemRenderContext );
 
