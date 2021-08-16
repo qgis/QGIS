@@ -24,11 +24,12 @@
 #include "qgsfilterlineedit.h"
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsexternalstoragefilewidget.h"
 
 
-QgsExternalResourceWidgetWrapper::QgsExternalResourceWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
+QgsExternalResourceWidgetWrapper::QgsExternalResourceWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QgsMessageBar *messageBar, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
-
+  , mMessageBar( messageBar )
 {
 }
 
@@ -121,6 +122,11 @@ void QgsExternalResourceWidgetWrapper::setFeature( const QgsFeature &feature )
 {
   updateProperties( feature );
   QgsEditorWidgetWrapper::setFeature( feature );
+
+  if ( mQgsWidget )
+  {
+    updateFileWidgetExpressionContext();
+  }
 }
 
 QWidget *QgsExternalResourceWidgetWrapper::createWidget( QWidget *parent )
@@ -152,9 +158,21 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget *editor )
 
   if ( mQgsWidget )
   {
+    mQgsWidget->setMessageBar( mMessageBar );
+
     mQgsWidget->fileWidget()->setStorageMode( QgsFileWidget::GetFile );
 
     const QVariantMap cfg = config();
+    mPropertyCollection.loadVariant( cfg.value( QStringLiteral( "PropertyCollection" ) ), propertyDefinitions() );
+
+    mQgsWidget->setStorageType( cfg.value( QStringLiteral( "StorageType" ) ).toString() );
+    mQgsWidget->setStorageAuthConfigId( cfg.value( QStringLiteral( "StorageAuthConfigId" ) ).toString() );
+
+    mQgsWidget->fileWidget()->setStorageUrlExpression( mPropertyCollection.isActive( QgsWidgetWrapper::StorageUrl ) ?
+        mPropertyCollection.property( QgsWidgetWrapper::StorageUrl ).asExpression() :
+        QgsExpression::quotedValue( cfg.value( QStringLiteral( "StorageUrl" ) ).toString() ) );
+
+    updateFileWidgetExpressionContext();
 
     if ( cfg.contains( QStringLiteral( "UseLink" ) ) )
     {
@@ -165,7 +183,6 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget *editor )
       mQgsWidget->fileWidget()->setFullUrl( cfg.value( QStringLiteral( "FullUrl" ) ).toBool() );
     }
 
-    mPropertyCollection.loadVariant( cfg.value( QStringLiteral( "PropertyCollection" ) ), propertyDefinitions() );
     if ( !mPropertyCollection.isActive( QgsWidgetWrapper::RootPath ) )
     {
       mQgsWidget->setDefaultRoot( cfg.value( QStringLiteral( "DefaultRoot" ) ).toString() );
@@ -303,4 +320,20 @@ void QgsExternalResourceWidgetWrapper::updateConstraintWidgetStatus()
       }
     }
   }
+}
+
+void QgsExternalResourceWidgetWrapper::updateFileWidgetExpressionContext()
+{
+  if ( !mQgsWidget || !layer() )
+    return;
+
+  QgsExpressionContext expressionContext( layer()->createExpressionContext() );
+  expressionContext.setFeature( formFeature() );
+  expressionContext.appendScope( QgsExpressionContextUtils::formScope( formFeature() ) );
+  if ( context().parentFormFeature().isValid() )
+  {
+    expressionContext.appendScope( QgsExpressionContextUtils::parentFormScope( context().parentFormFeature() ) );
+  }
+
+  mQgsWidget->fileWidget()->setExpressionContext( expressionContext );
 }

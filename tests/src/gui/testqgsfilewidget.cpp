@@ -37,12 +37,10 @@ class TestQgsFileWidget: public QObject
     void testDroppedFiles();
     void testMultipleFiles();
     void testSplitFilePaths();
-
 };
 
 void TestQgsFileWidget::initTestCase()
 {
-
 }
 
 void TestQgsFileWidget::cleanupTestCase()
@@ -201,7 +199,6 @@ void TestQgsFileWidget::testMultipleFiles()
 }
 
 
-
 void TestQgsFileWidget::testSplitFilePaths()
 {
   const QString path = QString( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) );
@@ -212,9 +209,6 @@ void TestQgsFileWidget::testSplitFilePaths()
   QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\"   \"%1\" " ).arg( path ) ), QStringList() << path << path );
   QCOMPARE( QgsFileWidget::splitFilePaths( path ), QStringList() << path );
 }
-
-
-
 
 QGSTEST_MAIN( TestQgsFileWidget )
 #include "testqgsfilewidget.moc"

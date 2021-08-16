@@ -35,6 +35,7 @@ set(TESTS
   testqgsdockwidget.cpp
   testqgsfieldexpressionwidget.cpp
   testqgsfilewidget.cpp
+  testqgsexternalstoragefilewidget.cpp
   testqgsfocuswatcher.cpp
   testqgshtmlwidgetwrapper.cpp
   testqgsmapcanvas.cpp
