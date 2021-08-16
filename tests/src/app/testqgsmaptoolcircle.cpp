@@ -162,6 +162,11 @@ void TestQgsMapToolCircle::initAttributs()
 
 void TestQgsMapToolCircle::cleanupTestCase()
 {
+
+  for ( QString coordinate : mCoordinateList )
+  {
+    mVectorLayerMap[coordinate].reset();
+  }
   QgsApplication::exitQgis();
 }
 
