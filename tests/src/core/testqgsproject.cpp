@@ -104,9 +104,10 @@ void TestQgsProject::testReadPath()
 {
   QgsProject *prj = new QgsProject;
   // this is a bit hacky as we do not really load such project
-  const QString prefix;
 #if defined(Q_OS_WIN)
-  prefix = "C:";
+  const QString prefix( "C:" );
+#else
+  const QString prefix;
 #endif
   prj->setFileName( prefix + "/home/qgis/a-project-file.qgs" ); // not expected to exist
   // make sure we work with relative paths!
