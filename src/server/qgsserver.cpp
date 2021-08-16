@@ -18,6 +18,8 @@
  *                                                                         *
  ***************************************************************************/
 
+// TRIGGER OGC TESTS
+
 //for CMAKE_INSTALL_PREFIX
 #include "qgsconfig.h"
 #include "qgsserver.h"
