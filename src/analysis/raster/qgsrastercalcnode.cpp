@@ -38,11 +38,11 @@ QgsRasterCalcNode::QgsRasterCalcNode( Operator op, QgsRasterCalcNode *left, QgsR
 {
 }
 
-//for conditional statement and possibily other functions
+//for conditional statement and other functions
 QgsRasterCalcNode::QgsRasterCalcNode( QString functionName, QVector <QgsRasterCalcNode *> functionArgs )
-  : mType( tFunct )
+  : mFunctionName( functionName )
   , mFunctionArgs( functionArgs )
-  , mFunctionName( functionName )
+  , mType( tFunct )
 {
 }
 
@@ -422,65 +422,26 @@ QgsRasterMatrix QgsRasterCalcNode::evaluation( const QVector<QgsRasterMatrix *> 
     double *firstOption = matrixVector.at( 1 )->data();
     double *secondOption = matrixVector.at( 2 )->data();
 
-    if ( !matrixVector.at( 0 )->isNumber() && matrixVector.at( 1 )->isNumber() && matrixVector.at( 2 )->isNumber() )
+    double noDataValueCondition = matrixVector.at( 0 )->nodataValue();
+
+    if ( matrixVector.at( 0 )->isNumber() ) return result;
+    //if ( !matrixVector.at( 0 )->isNumber() && matrixVector.at( 1 )->isNumber() && matrixVector.at( 2 )->isNumber() )
+
+    for ( int i = 0; i < nEntries; ++i )
     {
-
-      for ( int i = 0; i < nEntries; ++i )
+      //dataResult.get()[i] = condition.get()[i] != 0  ? firstOption[0] : secondOption[0] ;
+      if ( condition[i] == noDataValueCondition )
       {
-        //dataResult.get()[i] = condition.get()[i] != 0  ? firstOption[0] : secondOption[0] ;
-        if ( condition[i] == matrixVector.at( 0 )->nodataValue() )
-        {
-          dataResult.get()[i] = result.nodataValue();
-          continue;
-        }
-        else if ( condition[i] != 0 )
-        {
-          dataResult.get()[i] = firstOption[0];
-          continue;
-        }
-
-        dataResult.get()[i] = secondOption[0];
+        dataResult.get()[i] = result.nodataValue();
+        continue;
       }
-    }
-
-    if ( !matrixVector.at( 0 )->isNumber() && !matrixVector.at( 1 )->isNumber() && matrixVector.at( 2 )->isNumber() )
-    {
-
-      for ( int i = 0; i < nEntries; ++i )
+      else if ( condition[i] != 0 )
       {
-        if ( condition[i] == matrixVector.at( 0 )->nodataValue() )
-        {
-          dataResult.get()[i] = result.nodataValue();
-          continue;
-        }
-        else if ( condition[i] != 0 )
-        {
-          dataResult.get()[i] = firstOption[i];
-          continue;
-        }
-
-        dataResult.get()[i] = secondOption[0];
+        //idk if it's better checking at every iteration or make 3 different if statement (faster but more code)
+        dataResult.get()[i] = matrixVector.at( 1 )->isNumber() ? firstOption[0] : firstOption[i];
+        continue;
       }
-    }
-
-    if ( !matrixVector.at( 0 )->isNumber() && !matrixVector.at( 1 )->isNumber() && !matrixVector.at( 2 )->isNumber() )
-    {
-
-      for ( int i = 0; i < nEntries; ++i )
-      {
-        if ( condition[i] == matrixVector.at( 0 )->nodataValue() )
-        {
-          dataResult.get()[i] = result.nodataValue();
-          continue;
-        }
-        else if ( condition[i] != 0 )
-        {
-          dataResult.get()[i] = firstOption[i];
-          continue;
-        }
-
-        dataResult.get()[i] = secondOption[i];
-      }
+      dataResult.get()[i] = matrixVector.at( 2 )->isNumber() ? secondOption[0] : secondOption[i];
     }
 
     result.setData( nCols, nRows, dataResult.release(), result.nodataValue() );
