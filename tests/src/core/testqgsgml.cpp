@@ -17,6 +17,7 @@
 #include "qgstest.h"
 #include <QUrl>
 #include <QTemporaryFile>
+#include <QTextCodec>
 
 //qgis includes...
 #include <qgsgeometry.h>
@@ -82,6 +83,9 @@ class TestQgsGML : public QObject
     void testThroughOGRGeometry_urn_EPSG_4326();
     void testAccents();
     void testSameTypeameAsGeomName();
+    void testUnknownEncoding_data();
+    void testUnknownEncoding();
+    void testUnhandledEncoding();
 };
 
 const QString data1( "<myns:FeatureCollection "
@@ -1271,6 +1275,105 @@ void TestQgsGML::testSameTypeameAsGeomName()
   QCOMPARE( multi[0].size(), 1 );
   QCOMPARE( multi[0][0].size(), 5 );
   delete features[0].first;
+}
+
+void TestQgsGML::testUnknownEncoding_data()
+{
+  QTest::addColumn<QString>( "xmlHeader" );
+  QTest::addColumn<QByteArray>( "encoding" );
+
+  QTest::newRow( "simple quote" ) << QStringLiteral( "<?xml version='1.0' encoding='ISO-8859-15'?>" ) << QByteArrayLiteral( "ISO-8859-15" );
+  QTest::newRow( "double quote" ) << QStringLiteral( "<?xml version='1.0' encoding=\"ISO-8859-15\"?>" ) << QByteArrayLiteral( "ISO-8859-15" );
+  QTest::newRow( "UTF-8" ) << QStringLiteral( "<?xml version='1.0' encoding=\"UTF-8\"?>" ) << QByteArrayLiteral( "UTF-8" );
+  QTest::newRow( "No header" ) << QString() << QByteArrayLiteral( "UTF-8" );
+}
+
+void TestQgsGML::testUnknownEncoding()
+{
+  QFETCH( QString, xmlHeader );
+  QFETCH( QByteArray, encoding );
+
+  QgsWkbTypes::Type wkbType;
+
+  QTextCodec *codec = QTextCodec::codecForName( encoding );
+
+  QByteArray data = codec->fromUnicode(
+                      QStringLiteral(
+                        "%1<myns:FeatureCollection "
+                        "xmlns:myns='http://myns' "
+                        "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' "
+                        "xmlns:gml='http://www.opengis.net/gml'>"
+                        "<gml:boundedBy><gml:null>unknown</gml:null></gml:boundedBy>"
+                        "<gml:featureMember>"
+                        "<myns:mytypename fid='mytypename.1'>"
+                        "<myns:strfield>price: 10€</myns:strfield>"
+                        "<myns:mygeom>"
+                        "<gml:Point srsName='http://www.opengis.net/gml/srs/epsg.xml#27700'>"
+                        "<gml:coordinates decimal='.' cs=',' ts=' '>10,20</gml:coordinates>"
+                        "</gml:Point>"
+                        "</myns:mygeom>"
+                        "</myns:mytypename>"
+                        "</gml:featureMember>"
+                        "</myns:FeatureCollection>" ).arg( xmlHeader ) );
+
+  QgsFields fields;
+  fields.append( QgsField( QStringLiteral( "strfield" ), QVariant::String, QStringLiteral( "string" ) ) );
+
+  {
+    QgsGml gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
+    QCOMPARE( gmlParser.getFeatures( data, &wkbType ), 0 );
+    QMap<QgsFeatureId, QgsFeature * > featureMaps = gmlParser.featuresMap();
+    QCOMPARE( featureMaps.size(), 1 );
+    QVERIFY( featureMaps.constFind( 0 ) != featureMaps.constEnd() );
+    QCOMPARE( featureMaps[ 0 ]->attributes().size(), 1 );
+    QCOMPARE( featureMaps[0]->attribute( QStringLiteral( "strfield" ) ).toString(), QString( "price: 10€" ) );
+    delete featureMaps[ 0 ];
+  }
+
+  {
+    QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
+    QCOMPARE( gmlParser.processData( data.mid( 0, data.size() / 2 ), false ), true );
+    QCOMPARE( gmlParser.getAndStealReadyFeatures().size(), 0 );
+    QCOMPARE( gmlParser.processData( data.mid( data.size() / 2 ), true ), true );
+    QCOMPARE( gmlParser.isException(), false );
+    QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
+    QCOMPARE( features.size(), 1 );
+    QCOMPARE( features[ 0 ].first->attributes().size(), 1 );
+    QCOMPARE( features[ 0 ].first->attribute( QStringLiteral( "strfield" ) ).toString(), QString( "price: 10€" ) );
+    delete features[0].first;
+  }
+}
+
+void TestQgsGML::testUnhandledEncoding()
+{
+  QgsWkbTypes::Type wkbType;
+
+  QString data = QStringLiteral(
+                   "<?xml version='1.0' encoding='my-unexisting-encoding'?>"
+                   "<myns:FeatureCollection "
+                   "xmlns:myns='http://myns' "
+                   "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' "
+                   "xmlns:gml='http://www.opengis.net/gml'>"
+                   "<gml:boundedBy><gml:null>unknown</gml:null></gml:boundedBy>"
+                   "<gml:featureMember>"
+                   "<myns:mytypename fid='mytypename.1'>"
+                   "<myns:strfield>price: 10€</myns:strfield>"
+                   "<myns:mygeom>"
+                   "<gml:Point srsName='http://www.opengis.net/gml/srs/epsg.xml#27700'>"
+                   "<gml:coordinates decimal='.' cs=',' ts=' '>10,20</gml:coordinates>"
+                   "</gml:Point>"
+                   "</myns:mygeom>"
+                   "</myns:mytypename>"
+                   "</gml:featureMember>"
+                   "</myns:FeatureCollection>" );
+
+  QgsFields fields;
+  fields.append( QgsField( QStringLiteral( "strfield" ), QVariant::String, QStringLiteral( "string" ) ) );
+
+  QgsGml gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
+  QCOMPARE( gmlParser.getFeatures( data.toUtf8(), &wkbType ), 0 );
+  QMap<QgsFeatureId, QgsFeature * > featureMaps = gmlParser.featuresMap();
+  QCOMPARE( featureMaps.size(), 0 );
 }
 
 QGSTEST_MAIN( TestQgsGML )
