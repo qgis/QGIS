@@ -228,11 +228,12 @@ QString QgsRasterStackLowestPositionAlgorithm::shortHelpString() const
                       "rasters is relevant for the algorithm. If multiple rasters feature the lowest value, "
                       "the first raster will be used for the position value.\n "
                       "If multiband rasters are used in the data raster stack, the algorithm will always "
-                      "perform the analysis on the first band of the rasters - use GDAL to use other bands in the analysis. "
+                      "perform the analysis on the first band of the rasters - use GDAL to use other bands in the analysis.\n"
+                      "The output raster's extent and resolution are defined by a reference raster. "
+                      "Input raster layers that do not match the cell size of the reference raster layer will be resampled using nearest neighbor resampling. "
                       "Any NoData cells in the raster layer stack will result in a NoData cell "
-                      "in the output raster unless the \"ignore NoData\" parameter is checked. "
-                      "The output NoData value can be set manually. The output rasters extent and resolution "
-                      "is defined by a reference raster layer and is always of int32 type." );
+                      "in the output raster unless the \"Ignore NoData values\" parameter is checked. "
+                      "The output NoData value can be set manually. The output raster is always of int32 type." );
 }
 
 QgsRasterStackLowestPositionAlgorithm *QgsRasterStackLowestPositionAlgorithm::createInstance() const
@@ -331,11 +332,12 @@ QString QgsRasterStackHighestPositionAlgorithm::shortHelpString() const
                       "rasters is relevant for the algorithm. If multiple rasters feature the highest value, "
                       "the first raster will be used for the position value.\n "
                       "If multiband rasters are used in the data raster stack, the algorithm will always "
-                      "perform the analysis on the first band of the rasters - use GDAL to use other bands in the analysis. "
+                      "perform the analysis on the first band of the rasters - use GDAL to use other bands in the analysis.\n"
+                      "The output raster's extent and resolution are defined by a reference raster. "
+                      "Input raster layers that do not match the cell size of the reference raster layer will be resampled using nearest neighbor resampling. "
                       "Any NoData cells in the raster layer stack will result in a NoData cell "
-                      "in the output raster unless the \"ignore NoData\" parameter is checked. "
-                      "The output NoData value can be set manually. The output rasters extent and resolution "
-                      "is defined by a reference raster layer and is always of int32 type." );
+                      "in the output raster unless the \"Ignore NoData values\" parameter is checked. "
+                      "The output NoData value can be set manually. The output raster is always of int32 type." );
 }
 
 QgsRasterStackHighestPositionAlgorithm *QgsRasterStackHighestPositionAlgorithm::createInstance() const
