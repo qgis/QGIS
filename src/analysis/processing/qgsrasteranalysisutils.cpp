@@ -401,7 +401,7 @@ double QgsRasterAnalysisUtils::majorityFromCellValues( std::vector<double> &cell
     int maxCount = 0;
     bool multipleMajorities = false;
     double result = noDataValue;
-    for ( const auto &pair : map )
+    for ( const auto &pair : std::as_const( map ) )
     {
       if ( maxCount < pair.second )
       {
@@ -449,7 +449,7 @@ double QgsRasterAnalysisUtils::minorityFromCellValues( std::vector<double> &cell
     int minCount = stackSize;
     bool multipleMinorities = false;
     double result = noDataValue; //result will stay NoData if no minority value exists
-    for ( const auto &pair : map )
+    for ( const auto &pair : std::as_const( map ) )
     {
       if ( minCount > pair.second )
       {
