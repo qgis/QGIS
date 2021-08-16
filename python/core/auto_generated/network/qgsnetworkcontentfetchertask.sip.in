@@ -95,7 +95,7 @@ without danger of the task being first removed by the :py:class:`QgsTaskManager`
 
     void errorOccurred( QNetworkReply::NetworkError code, const QString &errorMsg );
 %Docstring
-Emitted when an error with ``code`` error occured while processing the request
+Emitted when an error with ``code`` error occurred while processing the request
 ``errorMsg`` is a textual description of the error
 
 .. versionadded:: 3.22

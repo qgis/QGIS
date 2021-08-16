@@ -104,7 +104,7 @@ class CORE_EXPORT QgsNetworkContentFetcherTask : public QgsTask
     void fetched();
 
     /**
-     * Emitted when an error with \a code error occured while processing the request
+     * Emitted when an error with \a code error occurred while processing the request
      * \a errorMsg is a textual description of the error
      * \since QGIS 3.22
      */

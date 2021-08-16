@@ -167,7 +167,7 @@ void QgsFetchedContent::taskCompleted()
     QNetworkReply *reply = mFetchingTask->reply();
     if ( reply->error() == QNetworkReply::NoError )
     {
-      // keep extension, it can be usefull when guessing file content
+      // keep extension, it can be useful when guessing file content
       // (when loading this file in a Qt WebView for instance)
       const QString extension = QFileInfo( reply->request().url().fileName() ).completeSuffix();
 
