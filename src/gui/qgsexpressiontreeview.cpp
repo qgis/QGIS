@@ -195,12 +195,7 @@ void QgsExpressionTreeView::setProject( QgsProject *project )
 
 void QgsExpressionTreeView::setSearchText( const QString &text )
 {
-  const QRegularExpression regularExpression( QRegularExpression::wildcardToRegularExpression( text ) );
-  if ( regularExpression.isValid() )
-  {
-    mProxyModel->setFilterRegularExpression( regularExpression );
-    mProxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
-  }
+  mProxyModel->setFilterString( text );
   if ( text.isEmpty() )
   {
     collapseAll();
@@ -816,40 +811,42 @@ QgsExpressionItemSearchProxy::QgsExpressionItemSearchProxy()
 bool QgsExpressionItemSearchProxy::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
   QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
-  QgsExpressionItem::ItemType itemType = QgsExpressionItem::ItemType( sourceModel()->data( index, QgsExpressionItem::ITEM_TYPE_ROLE ).toInt() );
-
-  int count = sourceModel()->rowCount( index );
-  bool matchchild = false;
-  for ( int i = 0; i < count; ++i )
-  {
-    if ( filterAcceptsRow( i, index ) )
-    {
-      matchchild = true;
-      break;
-    }
-  }
-
-  if ( itemType == QgsExpressionItem::Header && matchchild )
-    return true;
+  const QgsExpressionItem::ItemType itemType = QgsExpressionItem::ItemType( sourceModel()->data( index, QgsExpressionItem::ITEM_TYPE_ROLE ).toInt() );
 
   if ( itemType == QgsExpressionItem::Header )
-    return false;
+  {
+    // show header if any child item matches
+    int count = sourceModel()->rowCount( index );
+    bool matchchild = false;
+    for ( int i = 0; i < count; ++i )
+    {
+      if ( filterAcceptsRow( i, index ) )
+      {
+        matchchild = true;
+        break;
+      }
+    }
+    return matchchild;
+  }
 
   // check match of item label or tags
-  if ( QSortFilterProxyModel::filterAcceptsRow( source_row, source_parent ) )
+  const QString name = sourceModel()->data( index, Qt::DisplayRole ).toString();
+  if ( name.contains( mFilterString, Qt::CaseInsensitive ) )
   {
     return true;
   }
-  else
+
+  const QStringList tags = sourceModel()->data( index, QgsExpressionItem::SEARCH_TAGS_ROLE ).toStringList();
+  return std::any_of( tags.begin(), tags.end(), [this]( const QString & tag )
   {
-    const QStringList tags = sourceModel()->data( index, QgsExpressionItem::SEARCH_TAGS_ROLE ).toStringList();
-    for ( const QString &tag : tags )
-    {
-      if ( tag.contains( filterRegularExpression() ) )
-        return true;
-    }
-  }
-  return false;
+    return tag.contains( mFilterString, Qt::CaseInsensitive );
+  } );
+}
+
+void QgsExpressionItemSearchProxy::setFilterString( const QString &string )
+{
+  mFilterString = string;
+  invalidateFilter();
 }
 
 bool QgsExpressionItemSearchProxy::lessThan( const QModelIndex &left, const QModelIndex &right ) const
