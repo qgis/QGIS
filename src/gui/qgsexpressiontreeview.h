@@ -248,7 +248,7 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
     /**
      * Stores the user \a expression with given \a label and \a helpText.
      */
-    void saveToUserExpressions( const QString &label, const QString expression, const QString &helpText );
+    void saveToUserExpressions( const QString &label, const QString &expression, const QString &helpText );
 
     /**
      * Removes the expression \a label from the user stored expressions.
@@ -322,7 +322,7 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
                        const QString &helpText = QString(),
                        QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
                        bool highlightedItem = false, int sortOrder = 1,
-                       QIcon icon = QIcon(),
+                       const QIcon &icon = QIcon(),
                        const QStringList &tags = QStringList(),
                        const QString &name = QString() );
 
