@@ -121,9 +121,20 @@ class GUI_EXPORT QgsExpressionItemSearchProxy : public QSortFilterProxyModel
 
     bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
 
+    /**
+     * Sets the search filter \a string.
+     *
+     * \since QGIS 3.22
+     */
+    void setFilterString( const QString &string );
+
   protected:
 
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+
+  private:
+
+    QString mFilterString;
 };
 
 /**
