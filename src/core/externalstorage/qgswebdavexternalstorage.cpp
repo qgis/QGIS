@@ -19,6 +19,7 @@
 #include "qgsblockingnetworkrequest.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsapplication.h"
+#include "qgsfeedback.h"
 
 #include <QFile>
 #include <QPointer>
@@ -53,7 +54,7 @@ bool QgsWebDAVExternalStorageStoreTask::run()
     }
   } );
 
-  QgsBlockingNetworkRequest::ErrorCode err = request.put( req, f, mFeedback );
+  QgsBlockingNetworkRequest::ErrorCode err = request.put( req, f, mFeedback.get() );
 
   if ( err != QgsBlockingNetworkRequest::NoError )
   {

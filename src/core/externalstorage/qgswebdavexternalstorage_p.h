@@ -23,6 +23,7 @@
 #include "externalstorage/qgsexternalstorage.h"
 
 #include <QPointer>
+#include <QUrl>
 
 class QgsWebDAVExternalStorageStoreTask;
 class QgsFetchedContent;
@@ -132,7 +133,7 @@ class QgsWebDAVExternalStorageStoreTask : public QgsTask
     const QUrl mUrl;
     const QString mFilePath;
     const QString mAuthCfg;
-    QgsFeedback *mFeedback = nullptr;
+    std::unique_ptr<QgsFeedback> mFeedback;
     QString mErrorString;
 };
 
