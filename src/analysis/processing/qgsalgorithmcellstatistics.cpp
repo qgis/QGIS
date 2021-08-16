@@ -177,8 +177,8 @@ QString QgsCellStatisticsAlgorithm::shortHelpString() const
                       "output raster. At each cell location, "
                       "the output value is defined as a function of all overlaid cell values of the "
                       "input rasters.\n\n"
-                      "The output raster's extent and resolution is defined by a reference "
-                      "raster. The following functions can be applied on the input "
+                      "The output raster's extent and resolution are defined by a reference "
+                      "raster layer. The following functions can be applied on the input "
                       "raster cells per output raster cell location:\n"
                       "<ul> "
                       "   <li>Sum</li>"
@@ -198,7 +198,7 @@ QString QgsCellStatisticsAlgorithm::shortHelpString() const
                       "resampled using nearest neighbor resampling. The output raster data type will be set to "
                       "the most complex data type present in the input datasets except when using the functions "
                       "Mean, Standard deviation and Variance (data type is always Float32/Float64 depending on input float type) or Count and Variety (data type is always Int32).\n"
-                      "<i>Calculation details - general:</i> NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set.\n"
+                      "<i>Calculation details - general:</i> NoData values in any of the input layers will result in a NoData cell output unless the \"Ignore NoData values\" parameter is checked.\n"
                       "<i>Calculation details - Count:</i> Count will always result in the number of cells without NoData values at the current cell location.\n"
                       "<i>Calculation details - Median:</i> If the number of input layers is even, the median will be calculated as the "
                       "arithmetic mean of the two middle values of the ordered cell input values. In this case the output data type is Float32.\n"
@@ -398,11 +398,11 @@ QString QgsCellStatisticsPercentileAlgorithm::shortHelpString() const
                       "   <li>Exclusive linear interpolation (PERCENTILE.EXC)</li>"
                       "</ul> "
                       "While the output value can stay the same for the nearest rank method (obtains the value that is nearest to the "
-                      "specified percentile), the linear interpolation method return unique values for different percentiles. Both interpolation "
+                      "specified percentile), the linear interpolation methods return unique values for different percentiles. Both interpolation "
                       "methods follow their counterpart methods implemented by LibreOffice or Microsoft Excel. \n\n"
-                      "The output raster's extent and resolution is defined by a reference "
-                      "raster. If the input raster layers that do not match the cell size of the reference raster layer will be "
-                      "resampled using nearest neighbor resampling. NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set. "
+                      "The output raster's extent and resolution are defined by a reference raster layer. "
+                      "Input raster layers that do not match the cell size of the reference raster layer will be resampled using nearest neighbor resampling. "
+                      "NoData values in any of the input layers will result in a NoData cell output unless the \"Ignore NoData values\" parameter is checked. "
                       "The output raster data type will be set to the most complex data type present in the input datasets. " );
 }
 
@@ -424,7 +424,7 @@ bool QgsCellStatisticsPercentileAlgorithm::prepareSpecificAlgorithmParameters( c
   mPercentile = parameterAsDouble( parameters, QStringLiteral( "PERCENTILE" ), context );
 
   //default percentile output data type to float32 raster if interpolation method is chosen
-  //otherwise use the most potent data type in the intput raster stack (see prepareAlgorithm() in base class)
+  //otherwise use the most potent data type in the input raster stack (see prepareAlgorithm() in base class)
   if ( mMethod != QgsRasterAnalysisUtils::CellValuePercentileMethods::NearestRankPercentile && static_cast< int >( mDataType ) < 6 )
     mDataType = Qgis::DataType::Float32;
 
@@ -539,11 +539,11 @@ QString QgsCellStatisticsPercentRankFromValueAlgorithm::shortHelpString() const
                       "   <li>Inclusive linearly interpolated percent rank (PERCENTRANK.INC)</li>"
                       "   <li>Exclusive linearly interpolated percent rank (PERCENTRANK.EXC)</li>"
                       "</ul> "
-                      "The linear interpolation method return the unique percent rank for different values. Both interpolation "
+                      "The linear interpolation methods return the unique percent rank for different values. Both interpolation "
                       "methods follow their counterpart methods implemented by LibreOffice or Microsoft Excel. \n\n"
-                      "The output raster's extent and resolution is defined by a reference "
-                      "raster. If the input raster layers that do not match the cell size of the reference raster layer will be "
-                      "resampled using nearest neighbor resampling. NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set. "
+                      "The output raster's extent and resolution are defined by a reference raster layer. "
+                      "Input raster layers that do not match the cell size of the reference raster layer will be resampled using nearest neighbor resampling. "
+                      "NoData values in any of the input layers will result in a NoData cell output unless the \"Ignore NoData values\" parameter is checked. "
                       "The output raster data type will always be Float32." );
 }
 
@@ -669,17 +669,17 @@ QString QgsCellStatisticsPercentRankFromRasterAlgorithm::shortHelpString() const
   return QObject::tr( "The Cell stack percentrank from raster layer algorithm calculates the cell-wise percentrank value of a stack of rasters based on an input value raster "
                       "and writes them to an output raster.\n\n"
                       "At each cell location, the current value of the value raster is used ranked among the respective values in the stack of all overlaid and sorted cell values of the input rasters. "
-                      "For values outside of the the stack value distribution, the algorithm returns NoData because the value cannot be ranked among the cell values.\n\n"
+                      "For values outside of the stack value distribution, the algorithm returns NoData because the value cannot be ranked among the cell values.\n\n"
                       "There are two methods for percentile calculation:"
                       "<ul> "
                       "   <li>Inclusive linearly interpolated percent rank (PERCENTRANK.INC)</li>"
                       "   <li>Exclusive linearly interpolated percent rank (PERCENTRANK.EXC)</li>"
                       "</ul> "
-                      "The linear interpolation method return the unique percent rank for different values. Both interpolation "
+                      "The linear interpolation methods return the unique percent rank for different values. Both interpolation "
                       "methods follow their counterpart methods implemented by LibreOffice or Microsoft Excel. \n\n"
-                      "The output raster's extent and resolution is defined by a reference "
-                      "raster. If the input raster layers that do not match the cell size of the reference raster layer will be "
-                      "resampled using nearest neighbor resampling.  NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set. "
+                      "The output raster's extent and resolution are defined by a reference raster layer. "
+                      "Input raster layers that do not match the cell size of the reference raster layer will be resampled using nearest neighbor resampling. "
+                      "NoData values in any of the input layers will result in a NoData cell output unless the \"Ignore NoData values\" parameter is checked. "
                       "The output raster data type will always be Float32." );
 }
 
