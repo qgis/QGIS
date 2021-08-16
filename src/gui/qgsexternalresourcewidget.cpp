@@ -322,7 +322,9 @@ void QgsExternalResourceWidget::loadDocument( const QString &path )
       {
         if ( content->status() == Qgis::ContentStatus::Failed )
         {
+#ifdef WITH_QTWEBKIT
           mWebView->setVisible( false );
+#endif
           mPixmapLabel->setVisible( false );
           mLoadingLabel->setVisible( false );
           mLoadingMovie->stop();
@@ -346,7 +348,9 @@ void QgsExternalResourceWidget::loadDocument( const QString &path )
         content->deleteLater();
       };
 
+#ifdef WITH_QTWEBKIT
       mWebView->setVisible( false );
+#endif
       mPixmapLabel->setVisible( false );
       mErrorLabel->setVisible( false );
       mLoadingLabel->setVisible( true );
