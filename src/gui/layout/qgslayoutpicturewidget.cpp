@@ -330,6 +330,7 @@ void QgsLayoutPictureWidget::setGuiElementValues()
       mAnchorPointComboBox->setEnabled( false );
     }
 
+    mSvgSelectorWidget->setSvgPath( mPicture->picturePath() );
     mSvgSelectorWidget->setSvgParameters( mPicture->svgDynamicParameters() );
 
     updateSvgParamGui( false );
