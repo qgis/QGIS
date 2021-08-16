@@ -142,15 +142,15 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
   catItemData = DnDTreeItemData( DnDTreeItemData::WidgetType, QStringLiteral( "Actions" ), tr( "Actions" ) );
   catitem = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), catItemData );
 
-  const QgsActionManager *actionManager { mLayer->actions() };
-  QList<QgsAction> actions { actionManager->actions( QStringLiteral( "Feature" ) ) };
-  actions.append( actionManager->actions( QStringLiteral( "Layer" ) ) );
+  const QList<QgsAction> actions { mLayer->actions()->actions( ) };
 
   for ( const auto &action : std::as_const( actions ) )
   {
-    if ( action.isValid() && action.runable() )
+    if ( action.isValid() && action.runable() &&
+         ( action.actionScopes().contains( QStringLiteral( "Feature" ) ) ||
+           action.actionScopes().contains( QStringLiteral( "Layer" ) ) ) )
     {
-      const QString actionTitle { action.shortTitle().isEmpty() ? action.shortTitle() : action.name() };
+      const QString actionTitle { action.shortTitle().isEmpty() ? action.name() : action.shortTitle() };
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Action, action.id().toString(), actionTitle );
       itemData.setShowLabel( true );
       mAvailableWidgetsTree->addItem( catitem, itemData );
