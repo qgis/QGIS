@@ -38,7 +38,7 @@ QString QgsRasterFrequencyByComparisonOperatorBase::groupId() const
 
 void QgsRasterFrequencyByComparisonOperatorBase::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT_VALUE_RASTER" ), QObject::tr( "Input value raster" ) ) );
+  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT_VALUE_RASTER" ), QObject::tr( "Reference value raster" ) ) );
   addParameter( new QgsProcessingParameterBand( QStringLiteral( "INPUT_VALUE_RASTER_BAND" ), QObject::tr( "Value raster band" ), 1, QStringLiteral( "INPUT_VALUE_RASTER" ) ) );
 
 
@@ -246,14 +246,15 @@ QString QgsRasterFrequencyByEqualOperatorAlgorithm::shortHelpString() const
 {
   return QObject::tr( "The Equal to frequency algorithm evaluates on a cell-by-cell basis the frequency "
                       "(number of times) the values of an input stack of rasters are equal "
-                      "to the value of a value raster. \n "
+                      "to the value of a reference raster layer. \n "
                       "If multiband rasters are used in the data raster stack, the algorithm will always "
-                      "perform the analysis on the first band of the rasters - use GDAL to use other bands in the analysis. "
-                      "The input value layer serves as reference layer for the sample layers. "
+                      "perform the analysis on the first band of the rasters - use GDAL to use other bands in the analysis.\n "
+                      "The output raster's extent and resolution are defined by a reference raster layer. "
+                      "Input raster layers that do not match the cell size of the reference raster layer will be "
+                      "resampled using nearest neighbor resampling. "
                       "Any NoData cells in the value raster or the data layer stack will result in a NoData cell "
-                      "in the output raster if the ignore NoData parameter is not checked. "
-                      "The output NoData value can be set manually. The output rasters extent and resolution "
-                      "is defined by the input raster layer and is always of int32 type." );
+                      "in the output raster unless the \"Ignore NoData values\" parameter is checked. "
+                      "The output NoData value can be set manually. The output raster is always of int32 type." );
 }
 
 QgsRasterFrequencyByEqualOperatorAlgorithm *QgsRasterFrequencyByEqualOperatorAlgorithm::createInstance() const
@@ -289,14 +290,15 @@ QString QgsRasterFrequencyByGreaterThanOperatorAlgorithm::shortHelpString() cons
 {
   return QObject::tr( "The Greater than frequency algorithm evaluates on a cell-by-cell basis the frequency "
                       "(number of times) the values of an input stack of rasters are greater than "
-                      "the value of a value raster. \n "
+                      "the value of a reference raster layer. \n "
                       "If multiband rasters are used in the data raster stack, the algorithm will always "
-                      "perform the analysis on the first band of the rasters - use GDAL to use other bands in the analysis. "
-                      "The input value layer serves as reference layer for the sample layers. "
+                      "perform the analysis on the first band of the rasters - use GDAL to use other bands in the analysis.\n "
+                      "The output raster's extent and resolution are defined by a reference raster layer. "
+                      "Input raster layers that do not match the cell size of the reference raster layer will be "
+                      "resampled using nearest neighbor resampling. "
                       "Any NoData cells in the value raster or the data layer stack will result in a NoData cell "
-                      "in the output raster if the ignore NoData parameter is not checked. "
-                      "The output NoData value can be set manually. The output rasters extent and resolution "
-                      "is defined by the input raster layer and is always of int32 type." );
+                      "in the output raster unless the \"Ignore NoData values\" parameter is checked. "
+                      "The output NoData value can be set manually. The output raster is always of int32 type." );
 }
 
 QgsRasterFrequencyByGreaterThanOperatorAlgorithm *QgsRasterFrequencyByGreaterThanOperatorAlgorithm::createInstance() const
@@ -332,14 +334,15 @@ QString QgsRasterFrequencyByLessThanOperatorAlgorithm::shortHelpString() const
 {
   return QObject::tr( "The Less than frequency algorithm evaluates on a cell-by-cell basis the frequency "
                       "(number of times) the values of an input stack of rasters are less than "
-                      "the value of a value raster. \n "
+                      "the value of a reference raster layer. \n "
                       "If multiband rasters are used in the data raster stack, the algorithm will always "
-                      "perform the analysis on the first band of the rasters - use GDAL to use other bands in the analysis. "
-                      "The input value layer serves as reference layer for the sample layers. "
+                      "perform the analysis on the first band of the rasters - use GDAL to use other bands in the analysis.\n "
+                      "The output raster's extent and resolution are defined by a reference raster layer. "
+                      "Input raster layers that do not match the cell size of the reference raster layer will be "
+                      "resampled using nearest neighbor resampling. "
                       "Any NoData cells in the value raster or the data layer stack will result in a NoData cell "
-                      "in the output raster if the ignore NoData parameter is not checked. "
-                      "The output NoData value can be set manually. The output rasters extent and resolution "
-                      "is defined by the input raster layer and is always of int32 type." );
+                      "in the output raster unless the \"Ignore NoData values\" parameter is checked. "
+                      "The output NoData value can be set manually. The output raster is always of int32 type." );
 }
 
 QgsRasterFrequencyByLessThanOperatorAlgorithm *QgsRasterFrequencyByLessThanOperatorAlgorithm::createInstance() const
