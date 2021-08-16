@@ -16,6 +16,8 @@
 #include "qgsrasterblock.h"
 #include "qgsrastermatrix.h"
 
+#include <QDebug>
+
 QgsRasterCalcNode::QgsRasterCalcNode( double number )
   : mNumber( number )
 {
@@ -229,7 +231,8 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData,
       matrixContainer.append( singleMatrix.release() );
     }
 
-    result = evaluation( matrixContainer, result );
+    //result = evaluation( matrixContainer, result );
+    evaluation( matrixContainer, result );
     return true;
   }
   return false;
@@ -415,15 +418,71 @@ QgsRasterMatrix QgsRasterCalcNode::evaluation( const QVector<QgsRasterMatrix *> 
     int nRows = matrixVector.at( 0 )->nRows();
     int nEntries = nCols * nRows;
     std::unique_ptr< double > dataResult( new double[nEntries] );
-
     double *condition = matrixVector.at( 0 )->data();
     double *firstOption = matrixVector.at( 1 )->data();
     double *secondOption = matrixVector.at( 2 )->data();
 
-    for ( int i = 0; i < nEntries; ++i )
+    if ( !matrixVector.at( 0 )->isNumber() && matrixVector.at( 1 )->isNumber() && matrixVector.at( 2 )->isNumber() )
     {
-      dataResult.get()[i] = condition[i] != 0 ? firstOption[i] : secondOption[i] ;
+
+      for ( int i = 0; i < nEntries; ++i )
+      {
+        //dataResult.get()[i] = condition.get()[i] != 0  ? firstOption[0] : secondOption[0] ;
+        if ( condition[i] == matrixVector.at( 0 )->nodataValue() )
+        {
+          dataResult.get()[i] = result.nodataValue();
+          continue;
+        }
+        else if ( condition[i] != 0 )
+        {
+          dataResult.get()[i] = firstOption[0];
+          continue;
+        }
+
+        dataResult.get()[i] = secondOption[0];
+      }
     }
+
+    if ( !matrixVector.at( 0 )->isNumber() && !matrixVector.at( 1 )->isNumber() && matrixVector.at( 2 )->isNumber() )
+    {
+
+      for ( int i = 0; i < nEntries; ++i )
+      {
+        if ( condition[i] == matrixVector.at( 0 )->nodataValue() )
+        {
+          dataResult.get()[i] = result.nodataValue();
+          continue;
+        }
+        else if ( condition[i] != 0 )
+        {
+          dataResult.get()[i] = firstOption[i];
+          continue;
+        }
+
+        dataResult.get()[i] = secondOption[0];
+      }
+    }
+
+    if ( !matrixVector.at( 0 )->isNumber() && !matrixVector.at( 1 )->isNumber() && !matrixVector.at( 2 )->isNumber() )
+    {
+
+      for ( int i = 0; i < nEntries; ++i )
+      {
+        if ( condition[i] == matrixVector.at( 0 )->nodataValue() )
+        {
+          dataResult.get()[i] = result.nodataValue();
+          continue;
+        }
+        else if ( condition[i] != 0 )
+        {
+          dataResult.get()[i] = firstOption[i];
+          continue;
+        }
+
+        dataResult.get()[i] = secondOption[i];
+      }
+    }
+
     result.setData( nCols, nRows, dataResult.release(), result.nodataValue() );
   }
 

@@ -67,7 +67,9 @@ class TestQgsRasterCalculator : public QObject
 
     void testStatistics();
 
-    void testFunctType(); //test type tFUnct
+    void testFunctTypeFirstCase(); //test type tFUnct with use case such as "if (raster1 > 5.0, 100.0, 10.0)"
+    void testFunctTypeSecondCase(); //test type tFUnct with use case such as "if (raster1 > 5.0, raster2, 10.0)"
+    void testFunctTypeThirdCase(); //test type tFUnct with use case such as "if (raster1 > 5.0, raster2, raster3)"
 
   private:
 
@@ -878,8 +880,9 @@ void TestQgsRasterCalculator::testStatistics()
 
 }
 
-void TestQgsRasterCalculator::testFunctType()
+void TestQgsRasterCalculator::testFunctTypeFirstCase()
 {
+  // Test with one raster as condition and numbers as first and second option
   //if (raster1 > 5.0, 100.0, 10.0)
   QVector < QgsRasterCalcNode * > args;
 
@@ -896,20 +899,6 @@ void TestQgsRasterCalculator::testFunctType()
   rasterData.insert( QStringLiteral( "raster1" ), &m1 );
   args.append( new QgsRasterCalcNode( QgsRasterCalcNode::opGT, new QgsRasterCalcNode( QStringLiteral( "raster1" ) ), new QgsRasterCalcNode( 5.0 ) ) );
 
-  /*
-  // Matrix
-  double *d = new double[6];
-  d[0] = 1.0;
-  d[1] = 2.0;
-  d[2] = 3.0;
-  d[3] = 4.0;
-  d[4] = 5.0;
-  d[5] = -1.0;
-  QgsRasterMatrix m( 2, 3, d, -1.0 );
-
-  // append the condition raster1 > 2.0
-  args.append( new QgsRasterCalcNode( QgsRasterCalcNode::opGT, new QgsRasterCalcNode( &m ), new QgsRasterCalcNode( 5.0 ) ) );
-  */
   // append the two options
   args.append( new QgsRasterCalcNode( 100.0 ) );
   args.append( new QgsRasterCalcNode( 10.0 ) );
@@ -920,14 +909,127 @@ void TestQgsRasterCalculator::testFunctType()
   QgsRasterCalcNode node( name, args );
 
   QgsRasterMatrix result( 1, 1, nullptr, -9999 );
-  //QMap<QString, QgsRasterBlock *> rasterData;
 
   QVERIFY( node.calculate( rasterData, result ) );
   QCOMPARE( result.data()[0], 100 );
-  //QCOMPARE(result.data()[1],10);
-  //QCOMPARE(result.data()[2],100);
-  qDebug() << result.data()[3];
-  qDebug() << result.data()[4];
+  QCOMPARE( result.data()[1], 10 );
+  QCOMPARE( result.data()[2], 100 );
+  QCOMPARE( result.data()[3], result.nodataValue() );
+  QCOMPARE( result.data()[4], 100 );
+  QCOMPARE( result.data()[5], 10 );
+
+}
+
+void TestQgsRasterCalculator::testFunctTypeSecondCase()
+{
+  // Test with one raster as condition, one raster first option and number as second option
+  //if (raster1 > 5.0, 100.0, 10.0)
+  QVector < QgsRasterCalcNode * > args;
+
+  // create and append the raster used in the condition
+  QgsRasterBlock m1( Qgis::DataType::Float32, 2, 3 );
+  m1.setNoDataValue( -1.0 );
+  m1.setValue( 0, 0, 15.0 );
+  m1.setValue( 0, 1, 1.5 );
+  m1.setValue( 1, 0, 13.0 );
+  m1.setValue( 1, 1, -1.0 ); //nodata
+  m1.setValue( 2, 0, 11.0 );
+  m1.setValue( 2, 1, 1.0 );
+  QMap<QString, QgsRasterBlock *> rasterData;
+  rasterData.insert( QStringLiteral( "raster1" ), &m1 );
+  args.append( new QgsRasterCalcNode( QgsRasterCalcNode::opGT, new QgsRasterCalcNode( QStringLiteral( "raster1" ) ), new QgsRasterCalcNode( 5.0 ) ) );
+
+  // create and append the raster used as first option
+  QgsRasterBlock m2( Qgis::DataType::Float32, 2, 3 );
+  m2.setNoDataValue( -2.0 );
+  m2.setValue( 0, 0, 150 );
+  m2.setValue( 0, 1, 150 );
+  m2.setValue( 1, 0, 125 );
+  m2.setValue( 1, 1, -2 ); //nodata
+  m2.setValue( 2, 0, 125 );
+  m2.setValue( 2, 1, 125 );
+  rasterData.insert( QStringLiteral( "raster2" ), &m2 );
+  args.append( new QgsRasterCalcNode( QStringLiteral( "raster2" ) ) );
+
+  // append the number used as second option
+  args.append( new QgsRasterCalcNode( 10.0 ) );
+
+  //name of the function
+  QString name( "if" );
+
+  QgsRasterCalcNode node( name, args );
+
+  QgsRasterMatrix result( 1, 1, nullptr, -9999 );
+
+  QVERIFY( node.calculate( rasterData, result ) );
+  QCOMPARE( result.data()[0], 150 );
+  QCOMPARE( result.data()[1], 10 );
+  QCOMPARE( result.data()[2], 125 );
+  QCOMPARE( result.data()[3], result.nodataValue() );
+  QCOMPARE( result.data()[4], 125 );
+  QCOMPARE( result.data()[5], 10 );
+
+}
+
+void TestQgsRasterCalculator::testFunctTypeThirdCase()
+{
+  // Test with one raster as condition, one raster first option and another as second option
+  //if (raster1 > 5.0, 100.0, 10.0)
+  QVector < QgsRasterCalcNode * > args;
+
+  // create and append the raster used in the condition
+  QgsRasterBlock m1( Qgis::DataType::Float32, 2, 3 );
+  m1.setNoDataValue( -1.0 );
+  m1.setValue( 0, 0, 15.0 );
+  m1.setValue( 0, 1, 1.5 );
+  m1.setValue( 1, 0, 13.0 );
+  m1.setValue( 1, 1, -1.0 ); //nodata
+  m1.setValue( 2, 0, 11.0 );
+  m1.setValue( 2, 1, 1.0 );
+  QMap<QString, QgsRasterBlock *> rasterData;
+  rasterData.insert( QStringLiteral( "raster1" ), &m1 );
+  args.append( new QgsRasterCalcNode( QgsRasterCalcNode::opGT, new QgsRasterCalcNode( QStringLiteral( "raster1" ) ), new QgsRasterCalcNode( 5.0 ) ) );
+
+  // create and append the raster used as first option
+  QgsRasterBlock m2( Qgis::DataType::Float32, 2, 3 );
+  m2.setNoDataValue( -2.0 );
+  m2.setValue( 0, 0, 150 );
+  m2.setValue( 0, 1, 150 );
+  m2.setValue( 1, 0, 125 );
+  m2.setValue( 1, 1, -2 ); //nodata
+  m2.setValue( 2, 0, 125 );
+  m2.setValue( 2, 1, 125 );
+  rasterData.insert( QStringLiteral( "raster2" ), &m2 );
+  args.append( new QgsRasterCalcNode( QStringLiteral( "raster2" ) ) );
+
+  // append the number used as second option
+  // create and append the raster used as first option
+  QgsRasterBlock m3( Qgis::DataType::Float32, 2, 3 );
+  m3.setNoDataValue( -3.0 );
+  m3.setValue( 0, 0, -75 );
+  m3.setValue( 0, 1, -75 );
+  m3.setValue( 1, 0, -55 );
+  m3.setValue( 1, 1, -3 ); //nodata
+  m3.setValue( 2, 0, -55 );
+  m3.setValue( 2, 1, -55 );
+  rasterData.insert( QStringLiteral( "raster3" ), &m3 );
+  args.append( new QgsRasterCalcNode( QStringLiteral( "raster3" ) ) );
+
+  //name of the function
+  QString name( "if" );
+
+  QgsRasterCalcNode node( name, args );
+
+  QgsRasterMatrix result( 1, 1, nullptr, -9999 );
+
+  QVERIFY( node.calculate( rasterData, result ) );
+  QCOMPARE( result.data()[0], 150 );
+  QCOMPARE( result.data()[1], -75 );
+  QCOMPARE( result.data()[2], 125 );
+  QCOMPARE( result.data()[3], result.nodataValue() );
+  QCOMPARE( result.data()[4], 125 );
+  QCOMPARE( result.data()[5], -55 );
+
 }
 
 QGSTEST_MAIN( TestQgsRasterCalculator )
