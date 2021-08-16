@@ -58,6 +58,7 @@ class GUI_EXPORT QgsActionWidgetWrapper : public QgsWidgetWrapper
   public slots:
 
     void setFeature( const QgsFeature &feature ) override;
+    void setEnabled( bool enabled ) override;
 
   private:
 

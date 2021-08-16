@@ -1348,8 +1348,8 @@ void QgsAttributeForm::synchronizeState()
 
   for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
-    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
-    if ( eww )
+
+    if ( QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww ); eww )
     {
       QgsAttributeFormEditorWidget *formWidget = mFormEditorWidgets.value( eww->fieldIdx() );
 
@@ -1362,6 +1362,10 @@ void QgsAttributeForm::synchronizeState()
       ww->setEnabled( enabled );
 
       updateIcon( eww );
+    }
+    else  // handle QgsWidgetWrapper different than QgsEditorWidgetWrapper
+    {
+      ww->setEnabled( isEditable );
     }
   }
 

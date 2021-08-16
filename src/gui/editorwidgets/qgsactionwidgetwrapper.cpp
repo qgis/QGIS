@@ -33,6 +33,14 @@ void QgsActionWidgetWrapper::setFeature( const QgsFeature &feature )
   mFeature = feature;
 }
 
+void QgsActionWidgetWrapper::setEnabled( bool enabled )
+{
+  if ( valid() && layer() )
+  {
+    mActionButton->setEnabled( ! mAction.isEnabledOnlyWhenEditable() || enabled );
+  }
+}
+
 bool QgsActionWidgetWrapper::valid() const
 {
   return mAction.isValid() && mAction.runable();

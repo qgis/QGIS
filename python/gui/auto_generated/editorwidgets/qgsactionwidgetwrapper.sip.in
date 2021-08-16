@@ -48,6 +48,8 @@ Sets the ``action``.
 
     virtual void setFeature( const QgsFeature &feature );
 
+    virtual void setEnabled( bool enabled );
+
 
 };
 
