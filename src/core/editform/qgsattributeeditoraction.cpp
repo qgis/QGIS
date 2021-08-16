@@ -3,8 +3,8 @@
 
  ---------------------
  begin                : 14.8.2021
- copyright            : (C) 2021 by ale
- email                : [your-email-here]
+ copyright            : (C) 2021 by Alessandro Pasotti
+ email                : elpaso at itopen dot it
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -21,6 +21,7 @@
 QgsAttributeEditorAction::QgsAttributeEditorAction( const QgsAction &action, QgsAttributeEditorElement *parent )
   : QgsAttributeEditorElement( AeTypeAction, action.id().toString(), parent )
   , mAction( action )
+  , mUuid( action.id() )
 {}
 
 QgsAttributeEditorAction::QgsAttributeEditorAction( const QUuid &uuid, const QString &layerId, QgsAttributeEditorElement *parent )
@@ -43,6 +44,7 @@ const QgsAction &QgsAttributeEditorAction::action() const
   // Lazy loading
   if ( ! mAction.isValid() && ! mUuid.isNull() && ! mLayerId.isEmpty() )
   {
+    // Nested if for clarity
     if ( const QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( mLayerId ) ); layer )
     {
       mAction = layer->actions()->action( mUuid );
@@ -57,12 +59,12 @@ void QgsAttributeEditorAction::setAction( const QgsAction &newAction )
   mAction = newAction;
 }
 
-const QString QgsAttributeEditorAction::actionUUID() const
+const QString QgsAttributeEditorAction::actionId() const
 {
   return action().isValid() ? action().id().toString( ) : QString( );
 }
 
-const QString QgsAttributeEditorAction::actionTitle() const
+const QString QgsAttributeEditorAction::actionDisplayName() const
 {
   if ( action().isValid() )
   {

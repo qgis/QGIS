@@ -225,7 +225,9 @@ void QgsAttributeActionDialog::swapRows( int row1, int row2 )
 
 QgsAction QgsAttributeActionDialog::rowToAction( int row ) const
 {
-  QgsAction action( static_cast<QgsAction::ActionType>( mAttributeActionTable->item( row, Type )->data( Qt::UserRole ).toInt() ),
+  const QUuid id { mAttributeActionTable->item( row, Type )->data( Qt::UserRole + 1 ).toUuid() };
+  QgsAction action( id,
+                    static_cast<QgsAction::ActionType>( mAttributeActionTable->item( row, Type )->data( Qt::UserRole ).toInt() ),
                     mAttributeActionTable->item( row, Description )->text(),
                     mAttributeActionTable->item( row, ActionText )->data( Qt::UserRole ).toString(),
                     mAttributeActionTable->verticalHeaderItem( row )->data( Qt::UserRole ).toString(),
@@ -235,11 +237,6 @@ QgsAction QgsAttributeActionDialog::rowToAction( int row ) const
                     mAttributeActionTable->item( row, NotificationMessage )->text(),
                     mAttributeActionTable->item( row, EnabledOnlyWhenEditable )->checkState() == Qt::Checked
                   );
-  const QUuid id { mAttributeActionTable->item( row, Type )->data( Qt::UserRole + 1 ).toUuid() };
-  if ( !id.isNull() )
-  {
-    action.setId( id );
-  }
   return action;
 }
 

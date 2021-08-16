@@ -27,11 +27,6 @@
 #include "qgslogger.h"
 #include "qgsexpressioncontextutils.h"
 
-void QgsAction::setId( const QUuid &id )
-{
-  mId = id;
-}
-
 bool QgsAction::runable() const
 {
   return mType == Generic ||

@@ -35,7 +35,7 @@ void QgsActionWidgetWrapper::setFeature( const QgsFeature &feature )
 
 bool QgsActionWidgetWrapper::valid() const
 {
-  return true;
+  return mAction.isValid() && mAction.runable();
 }
 
 QWidget *QgsActionWidgetWrapper::createWidget( QWidget *parent )
@@ -51,12 +51,33 @@ void QgsActionWidgetWrapper::initWidget( QWidget *editor )
   if ( !mActionButton )
     return;
 
-  if ( mAction.isValid()
-       && layer() )
+  if ( valid() && layer() )
   {
-    if ( mAction.isValid() && mAction.runable() )
+    const QString shortTitle { mAction.shortTitle() }; // might be empty
+    const QString description { mAction.name() };  // mandatory
+    const QIcon icon { mAction.icon() };  // might be invalid
+
+    // Configure push button
+    if ( ! icon.isNull() )
     {
-      mActionButton->setText( mAction.shortTitle() );
+      mActionButton->setIcon( mAction.icon() );
+      mActionButton->setToolTip( description );
+    }
+    else
+    {
+      mActionButton->setText( shortTitle.isEmpty() ? description : shortTitle );
+      if ( ! shortTitle.isEmpty() )
+      {
+        mActionButton->setToolTip( description );
+      }
+    }
+
+    if ( mAction.isEnabledOnlyWhenEditable() && ! layer()->isEditable() )
+    {
+      mActionButton->setEnabled( false );
+    }
+    else
+    {
       connect( mActionButton, &QPushButton::clicked, this, [ & ]
       {
         const QgsAttributeEditorContext attributecontext = context();

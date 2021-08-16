@@ -119,6 +119,48 @@ class CORE_EXPORT QgsAction
     {}
 #endif
 
+    /**
+     * Create a new QgsAction
+     *
+     * \param id                   The unique identifier of this action
+     * \param type                 The type of this action
+     * \param description          A human readable description string
+     * \param action               The action text. Its interpretation depends on the type
+     * \param icon                 Path to an icon for this action
+     * \param capture              If this is set to TRUE, the output will be captured when an action is run
+     * \param shortTitle           A short string used to label user interface elements like buttons
+     * \param actionScopes         A set of scopes in which this action will be available
+     * \param notificationMessage  A particular message which reception will trigger the action
+     * \param enabledOnlyWhenEditable if TRUE then action is only enable in editmode. Not available in Python bindings.
+     */
+#ifndef SIP_RUN
+    QgsAction( const QUuid &id, ActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>(), const QString &notificationMessage = QString(), bool enabledOnlyWhenEditable = false )
+      : mType( type )
+      , mDescription( description )
+      , mShortTitle( shortTitle )
+      , mIcon( icon )
+      , mCommand( action )
+      , mCaptureOutput( capture )
+      , mActionScopes( actionScopes )
+      , mNotificationMessage( notificationMessage )
+      , mId( id )
+      , mIsEnabledOnlyWhenEditable( enabledOnlyWhenEditable )
+    {}
+#else
+    QgsAction( const QUuid &id, ActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>(), const QString &notificationMessage = QString() )
+      : mType( type )
+      , mDescription( description )
+      , mShortTitle( shortTitle )
+      , mIcon( icon )
+      , mCommand( action )
+      , mCaptureOutput( capture )
+      , mActionScopes( actionScopes )
+      , mNotificationMessage( notificationMessage )
+      , mId( id )
+      , mIsEnabledOnlyWhenEditable( enabledOnlyWhenEditable )
+    {}
+#endif
+
     //! The name of the action. This may be a longer description.
     QString name() const { return mDescription; }
 
@@ -131,14 +173,6 @@ class CORE_EXPORT QgsAction
      * \since QGIS 3.0
      */
     QUuid id() const { return mId; }
-
-    /**
-     * Set the unique \a id for this action.
-     *
-     * \note not available in Python bindings
-     * \since QGIS 3.22
-     */
-    void setId( const QUuid &id ) SIP_SKIP;
 
     /**
      * Returns TRUE if this action was a default constructed one.

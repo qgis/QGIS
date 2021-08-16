@@ -139,7 +139,7 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
   catitem->setExpanded( true );
 
   // Form actions
-  catItemData = DnDTreeItemData( DnDTreeItemData::WidgetType, QStringLiteral( "Actions" ), tr( "Layer Actions" ) );
+  catItemData = DnDTreeItemData( DnDTreeItemData::WidgetType, QStringLiteral( "Actions" ), tr( "Actions" ) );
   catitem = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), catItemData );
 
   const QgsActionManager *actionManager { mLayer->actions() };
@@ -434,7 +434,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
     case QgsAttributeEditorElement::AeTypeAction:
     {
       const QgsAttributeEditorAction *actionEditor = static_cast<const QgsAttributeEditorAction *>( widgetDef );
-      DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Action, actionEditor->actionUUID(), actionEditor->actionTitle() );
+      DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Action, actionEditor->actionId(), actionEditor->actionDisplayName() );
       itemData.setShowLabel( widgetDef->showLabel() );
       newWidget = tree->addItem( parent, itemData );
       break;

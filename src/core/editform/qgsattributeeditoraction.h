@@ -3,8 +3,8 @@
 
  ---------------------
  begin                : 14.8.2021
- copyright            : (C) 2021 by ale
- email                : [your-email-here]
+ copyright            : (C) 2021 by Alessandro Pasotti
+ email                : elpaso at itopen dot it
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -30,7 +30,7 @@ class CORE_EXPORT QgsAttributeEditorAction : public QgsAttributeEditorElement
   public:
 
     /**
-     * Creates a new element which can display a layer action
+     * Creates a new element which can display a layer action.
      *
      * \param action       The action
      * \param parent       The parent (used as container)
@@ -38,20 +38,36 @@ class CORE_EXPORT QgsAttributeEditorAction : public QgsAttributeEditorElement
     QgsAttributeEditorAction( const QgsAction &action, QgsAttributeEditorElement *parent );
 
     /**
-     * Creates a new element which can display a layer action
+     * Creates a new element which can display a layer action, this constructor allows
+     * to create a QgsAttributeEditorAction when actions are not yet loaded.
      *
-     * \param uuid         The action UUID
-     * \param layerId      The ID of the layer the action belongs to
-     * \param parent       The parent (used as container)
+     * \param uuid         The action unique identifier (UUID).
+     * \param layerId      The ID of the layer the action belongs to.
+     * \param parent       The parent (used as container).
     */
     QgsAttributeEditorAction( const QUuid &uuid, const QString &layerId, QgsAttributeEditorElement *parent );
 
     QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;
 
+    /**
+     * Returns the (possibly lazy loaded) action.
+     */
     const QgsAction &action() const;
+
+    /**
+     * Set the \a action.
+     */
     void setAction( const QgsAction &newAction );
-    const QString actionUUID() const;
-    const QString actionTitle() const;
+
+    /**
+     * Returns the action's unique identifier (UUID).
+     */
+    const QString actionId() const;
+
+    /**
+     * Returns the action short title (if defined) or the action name as a fallback for display.
+     */
+    const QString actionDisplayName() const;
 
   private:
 
