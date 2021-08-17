@@ -21,9 +21,7 @@ MDAL::DriverUgrid::DriverUgrid()
       "UGRID Results",
       "*.nc",
       Capability::ReadMesh | Capability::SaveMesh )
-{
-
-}
+{}
 
 MDAL::DriverUgrid *MDAL::DriverUgrid::create()
 {

@@ -168,6 +168,121 @@ namespace MDAL
       std::vector<int> mActive;
   };
 
+  class MemoryDataset3D: public Dataset3D
+  {
+    public:
+
+      MemoryDataset3D(
+        DatasetGroup *grp,
+        size_t volumes,
+        size_t maxVerticalLevelCount,
+        const int *verticalLevelCounts,
+        const double *verticalExtrusions
+      );
+
+      ~MemoryDataset3D() override;
+
+
+      void setScalarValue( size_t index, double value )
+      {
+        assert( mValues.size() > index );
+        assert( group()->isScalar() );
+        mValues[index] = value;
+      }
+
+      void setVectorValue( size_t index, double x, double y )
+      {
+        assert( mValues.size() > 2 * index + 1 );
+        assert( !group()->isScalar() );
+        mValues[2 * index] = x;
+        mValues[2 * index + 1] = y;
+      }
+
+      void setValueX( size_t index, double x )
+      {
+        assert( mValues.size() > 2 * index );
+        assert( !group()->isScalar() );
+
+        mValues[2 * index] = x;
+      }
+
+      void setValueY( size_t index, double x )
+      {
+        assert( mValues.size() > 2 * index + 1 );
+        assert( !group()->isScalar() );
+        mValues[2 * index + 1] = x;
+      }
+
+      double valueX( size_t index ) const
+      {
+        assert( mValues.size() > 2 * index + 1 );
+        assert( !group()->isScalar() );
+        return mValues[2 * index];
+      }
+
+      double valueY( size_t index ) const
+      {
+        assert( mValues.size() > 2 * index + 1 );
+        assert( !group()->isScalar() );
+        return mValues[2 * index + 1];
+      }
+
+      double scalarValue( size_t index ) const
+      {
+        assert( mValues.size() > index );
+        assert( group()->isScalar() );
+        return mValues[index];
+      }
+
+      void updateIndices();
+
+      //! Returns pointer to internal buffer with values
+      //! Never null, already allocated
+      //! for vector datasets in form x1, y1, ..., xN, yN
+      double *values()
+      {
+        return mValues.data();
+      }
+
+      size_t verticalLevelCountData( size_t indexStart, size_t count, int *buffer ) override;
+      size_t verticalLevelData( size_t indexStart, size_t count, double *buffer ) override;
+      size_t faceToVolumeData( size_t indexStart, size_t count, int *buffer ) override;
+      size_t scalarVolumesData( size_t indexStart, size_t count, double *buffer ) override;
+      size_t vectorVolumesData( size_t indexStart, size_t count, double *buffer ) override;
+
+    private:
+      /**
+       * Stores vector2d/scalar data for dataset in form
+       * scalars: x1, x2, x3, ..., xN
+       * vector2D: x1, y1, x2, y2, x3, y3, .... , xN, yN
+       *
+       * all values are initialized to std::numerical_limits<double>::quiet_NaN ( == NODATA )
+       *
+       */
+      std::vector<double> mValues;
+
+      /**
+       * Store The first index of 3D volume for particular mesh’s face in 3D Stacked Meshes
+       *
+       * All values are initialised to actual values
+       */
+      std::vector<int> mFaceToVolume;
+
+      /**
+       * Store Number of vertical level for particular mesh’s face in 3D Stacked Meshes.
+       *
+       * All values are initialised to actual values
+       */
+      std::vector<int> mVerticalLevelCounts;
+
+      /**
+       * Store Vertical level extrusion for particular mesh’s face in 3D Stacked Meshes.
+       *
+       * All values are initialised to actual values
+       */
+      std::vector<double> mVerticalExtrusions;
+  };
+
   class MemoryMesh: public Mesh
   {
     public:
