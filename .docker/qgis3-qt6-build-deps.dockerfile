@@ -43,7 +43,8 @@ RUN dnf -y install \
     gcc-c++ \
     kernel-devel \
     ninja-build \
-    patch
+    patch \
+    dos2unix
 
 RUN cd /usr/src \
   && wget https://github.com/KDE/qca/archive/refs/heads/master.zip \
@@ -66,6 +67,7 @@ RUN cd /usr/src \
   && wget https://sourceforge.net/projects/qwt/files/qwt/6.2.0/qwt-6.2.0.zip/download \
   && unzip download \
   && cd qwt-6.2.0 \
+  && dos2unix qwtconfig.pri
   && printf '140c140\n< QWT_CONFIG     += QwtExamples\n---\n> #QWT_CONFIG     += QwtExamples\n151c151\n< QWT_CONFIG     += QwtPlayground\n---\n> #QWT_CONFIG     += QwtPlayground\n158c158\n< QWT_CONFIG     += QwtTests\n---\n> #QWT_CONFIG     += QwtTests\n' | patch qwtconfig.pri \
   && qmake6 qwt.pro \
   && make -j4 \
