@@ -108,7 +108,8 @@ class CORE_EXPORT QgsMeshDriverMetadata
                            const QString &description,
                            const MeshDriverCapabilities &capabilities,
                            const QString &writeDatasetOnFileSuffix,
-                           const QString &writeMeshFrameOnFileSuffix );
+                           const QString &writeMeshFrameOnFileSuffix,
+                           int maxVerticesPerface );
 
     /**
      * Returns the capabilities for this driver.
@@ -137,12 +138,20 @@ class CORE_EXPORT QgsMeshDriverMetadata
      */
     QString writeMeshFrameOnFileSuffix() const;
 
+    /**
+     * Returns the maximum number of vertices per face supported by the driver
+     *
+     * \since QGIS 3.22
+     */
+    int maximumVerticesCountPerFace() const;
+
   private:
     QString mName;
     QString mDescription;
     MeshDriverCapabilities mCapabilities;
     QString mWriteDatasetOnFileSuffix;
     QString mWriteMeshFrameOnFileSuffix;
+    int mMaxVerticesPerFace = -1;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMeshDriverMetadata::MeshDriverCapabilities )

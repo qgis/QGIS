@@ -359,12 +359,14 @@ QgsMeshDriverMetadata::QgsMeshDriverMetadata( const QString &name,
     const QString &description,
     const MeshDriverCapabilities &capabilities,
     const QString &writeDatasetOnfileSuffix,
-    const QString &writeMeshFrameOnFileSuffix )
+    const QString &writeMeshFrameOnFileSuffix,
+    int maxVerticesPerface )
   : mName( name )
   , mDescription( description )
   , mCapabilities( capabilities )
   , mWriteDatasetOnFileSuffix( writeDatasetOnfileSuffix )
   , mWriteMeshFrameOnFileSuffix( ( writeMeshFrameOnFileSuffix ) )
+  , mMaxVerticesPerFace( maxVerticesPerface )
 {
 }
 
@@ -391,4 +393,9 @@ QString QgsMeshDriverMetadata::writeDatasetOnFileSuffix() const
 QString QgsMeshDriverMetadata::writeMeshFrameOnFileSuffix() const
 {
   return mWriteMeshFrameOnFileSuffix;
+}
+
+int QgsMeshDriverMetadata::maximumVerticesCountPerFace() const
+{
+  return mMaxVerticesPerFace;
 }
