@@ -327,6 +327,9 @@ void TestQgs3DRendering::testTerrainShading()
 
 void TestQgs3DRendering::testMeshTerrain()
 {
+  if ( !QgsTest::runFlakyTests() )
+    QSKIP( "This test is flaky and disabled on CI" );
+
   QgsRectangle fullExtent = mLayerMeshTerrain->extent();
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
