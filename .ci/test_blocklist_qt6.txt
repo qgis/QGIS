@@ -1,4 +1,4 @@
-# Qt6 blacklist
+# Qt6 blocklist
 test_core_authconfig
 test_core_callout
 test_core_compositionconverter
@@ -45,7 +45,7 @@ test_analysis_zonalstatistics
 test_analysis_meshcontours
 test_geometry_checker_geometrychecks
 
-# black list
+# block list
 PyQgsLocalServer
 PyQgsPalLabelingServer
 qgis_composerutils
