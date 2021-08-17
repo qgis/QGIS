@@ -175,7 +175,7 @@ fi
 ###########
 # Run tests
 ###########
-EXCLUDE_TESTS=$(cat /root/QGIS/.ci/test_blocklist.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)
+EXCLUDE_TESTS=$(cat /root/QGIS/.ci/test_blocklist_qt${QT_VERSION}.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)
 if ! [[ ${RUN_FLAKY_TESTS} == true ]]; then
   echo "Flaky tests are skipped!"
   EXCLUDE_TESTS=${EXCLUDE_TESTS}"|"$(cat /root/QGIS/.ci/test_flaky.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)
