@@ -707,6 +707,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( FileOperationFlag )
 
     /**
+     * Generic map layer properties.
+     *
+     * \since QGIS 3.22
+     */
+    enum class MapLayerProperty : int
+    {
+      UsersCannotToggleEditing = 1 << 0, //!< Indicates that users are not allowed to toggle editing for this layer. Note that this does not imply that the layer is non-editable (see isEditable(), supportsEditing() ), rather that the editable status of the layer cannot be changed by users manually. Since QGIS 3.22.
+    };
+    Q_DECLARE_FLAGS( MapLayerProperties, MapLayerProperty )
+    Q_ENUM( MapLayerProperty )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

@@ -81,6 +81,12 @@ bool QgsAnnotationLayer::isEmpty() const
   return mItems.empty();
 }
 
+Qgis::MapLayerProperties QgsAnnotationLayer::properties() const
+{
+  // annotation layers are always editable
+  return Qgis::MapLayerProperty::UsersCannotToggleEditing;
+}
+
 QgsAnnotationLayer *QgsAnnotationLayer::clone() const
 {
   const QgsAnnotationLayer::LayerOptions options( mTransformContext );

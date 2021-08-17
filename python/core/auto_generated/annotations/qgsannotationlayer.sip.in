@@ -93,6 +93,8 @@ This map contains references to items owned by the layer, and ownership of these
 with the layer.
 %End
 
+    virtual Qgis::MapLayerProperties properties() const;
+
     virtual QgsAnnotationLayer *clone() const /Factory/;
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
