@@ -71,7 +71,11 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     //! Returns TRUE if current project is offline
     bool isOfflineProject() const;
 
-    //! Synchronize to remote layers
+
+    /**
+     * Synchronize to remote layers
+     * \param useTransaction enforce the remote layer modifications with the same source to be in a transaction group
+     */
     void synchronize( bool useTransaction = false );
 
   signals:
@@ -140,7 +144,7 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     int getOrCreateLayerId( sqlite3 *db, const QString &qgisLayerId );
     int getCommitNo( sqlite3 *db );
     void increaseCommitNo( sqlite3 *db );
-    void addFidLookup( sqlite3 *db, int layerId, QgsFeatureId offlineFid, QgsFeatureId remoteFid, QString remotePk );
+    void addFidLookup( sqlite3 *db, int layerId, QgsFeatureId offlineFid, QgsFeatureId remoteFid, const QString &remotePk );
     QgsFeatureId remoteFid( sqlite3 *db, int layerId, QgsFeatureId offlineFid, QgsVectorLayer *remoteLayer );
     QgsFeatureId offlineFid( sqlite3 *db, int layerId, QgsFeatureId remoteFid );
     bool isAddedFeature( sqlite3 *db, int layerId, QgsFeatureId fid );

@@ -175,7 +175,7 @@ void QgsOfflineEditing::synchronize( bool useTransaction )
 
     if ( !offlineLayer || !offlineLayer->isValid() )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Skipping offline layer %1 because it is an invalid layer" ).arg( offlineLayer->id() ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "Skipping offline layer %1 because it is an invalid layer" ).arg( layer_it.key() ), 4 );
       continue;
     }
 
@@ -228,14 +228,14 @@ void QgsOfflineEditing::synchronize( bool useTransaction )
   QMap<QPair<QString, QString>, std::shared_ptr<QgsTransactionGroup>> transactionGroups;
   if ( useTransaction )
   {
-    for ( std::shared_ptr<QgsVectorLayer> &remoteLayer : remoteLayersByOfflineId )
+    for ( const std::shared_ptr<QgsVectorLayer> &remoteLayer : std::as_const( remoteLayersByOfflineId ) )
     {
       const QString connectionString = QgsTransaction::connectionString( remoteLayer->source() );
       const QPair pair( remoteLayer->providerType(), connectionString );
       std::shared_ptr<QgsTransactionGroup> transactionGroup = transactionGroups.value( pair );
 
       if ( !transactionGroup.get() )
-        transactionGroup = std::make_shared<QgsTransactionGroup>( this );
+        transactionGroup = std::make_shared<QgsTransactionGroup>();
 
       if ( !transactionGroup->addLayer( remoteLayer.get() ) )
       {
@@ -249,7 +249,8 @@ void QgsOfflineEditing::synchronize( bool useTransaction )
     QgsDebugMsgLevel( QStringLiteral( "Created %1 transaction groups" ).arg( transactionGroups.count() ), 4 );
   }
 
-  for ( int offlineLayerId : remoteLayersByOfflineId.keys() )
+  const QList<int> offlineIds = remoteLayersByOfflineId.keys();
+  for ( int offlineLayerId : offlineIds )
   {
     std::shared_ptr<QgsVectorLayer> remoteLayer = remoteLayersByOfflineId.value( offlineLayerId );
     QgsVectorLayer *offlineLayer = offlineLayersByOfflineId.value( offlineLayerId );
@@ -279,7 +280,7 @@ void QgsOfflineEditing::synchronize( bool useTransaction )
   }
 
 
-  for ( int offlineLayerId : remoteLayersByOfflineId.keys() )
+  for ( int offlineLayerId : offlineIds )
   {
     std::shared_ptr<QgsVectorLayer> remoteLayer = remoteLayersByOfflineId[offlineLayerId];
     QgsVectorLayer *offlineLayer = offlineLayersByOfflineId[offlineLayerId];
@@ -1244,7 +1245,7 @@ void QgsOfflineEditing::increaseCommitNo( sqlite3 *db )
   sqlExec( db, sql );
 }
 
-void QgsOfflineEditing::addFidLookup( sqlite3 *db, int layerId, QgsFeatureId offlineFid, QgsFeatureId remoteFid, QString remotePk )
+void QgsOfflineEditing::addFidLookup( sqlite3 *db, int layerId, QgsFeatureId offlineFid, QgsFeatureId remoteFid, const QString &remotePk )
 {
   const QString sql = QStringLiteral( "INSERT INTO 'log_fids' VALUES ( %1, %2, %3, %4 )" ).arg( layerId ).arg( offlineFid ).arg( remoteFid ).arg( sqlEscape( remotePk ) );
   sqlExec( db, sql );
@@ -1715,7 +1716,7 @@ int QgsOfflineEditing::getLayerPkIdx( const QgsVectorLayer *layer ) const
 QString QgsOfflineEditing::sqlEscape( QString value ) const
 {
   if ( value.isNull() )
-    return QString( "NULL" );
+    return QStringLiteral( "NULL" );
 
   value.replace( "'", "''" );
 
