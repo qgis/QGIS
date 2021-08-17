@@ -155,6 +155,11 @@ void QgsMapLayer::setFlags( QgsMapLayer::LayerFlags flags )
   emit flagsChanged();
 }
 
+Qgis::MapLayerProperties QgsMapLayer::properties() const
+{
+  return Qgis::MapLayerProperties();
+}
+
 QString QgsMapLayer::id() const
 {
   return mID;

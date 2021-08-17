@@ -452,6 +452,13 @@ The development version
     typedef QFlags<Qgis::FileOperationFlag> FileOperationFlags;
 
 
+    enum class MapLayerProperty
+    {
+      UsersCannotToggleEditing,
+    };
+    typedef QFlags<Qgis::MapLayerProperty> MapLayerProperties;
+
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

@@ -117,6 +117,7 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
      */
     QMap<QString, QgsAnnotationItem *> items() const { return mItems; }
 
+    Qgis::MapLayerProperties properties() const override;
     QgsAnnotationLayer *clone() const override SIP_FACTORY;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
     QgsRectangle extent() const override;
