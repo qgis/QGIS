@@ -60,7 +60,7 @@ jobs:
 
           - distro-version: '34'
             qt-version: 6
-            run-tests: false
+            run-tests: true
             docker-tag-suffix: ''
             with-qt6: ON
             with-qt5: OFF
