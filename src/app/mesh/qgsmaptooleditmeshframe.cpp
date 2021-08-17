@@ -299,7 +299,7 @@ void QgsMapToolEditMeshFrame::deactivate()
 {
   clearSelection();
   clearCanvasHelpers();
-  deleteZvalueWidget();
+  mZValueWidget->hide();
   qDeleteAll( mFreeVertexMarker );
   mFreeVertexMarker.clear();
 
@@ -347,6 +347,8 @@ void QgsMapToolEditMeshFrame::clearAll()
 void QgsMapToolEditMeshFrame::activate()
 {
   QgsMapToolAdvancedDigitizing::activate();
+  if ( mZValueWidget )
+    mZValueWidget->show();
 }
 
 bool QgsMapToolEditMeshFrame::populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEvent *event )
@@ -1396,13 +1398,14 @@ void QgsMapToolEditMeshFrame::prepareSelection()
       QString error;
       QgsGeometry allFaces( geomEngine->combine( otherFaces, &error ) );
       mSelectedFacesRubberband->setToGeometry( allFaces );
-      QColor fillColor = canvas()->mapSettings().selectionColor();
-
-      if ( fillColor.alpha() > 100 ) //set alpha to 150 if the transparency is no enough to see the mesh
-        fillColor.setAlpha( 100 );
-
-      mSelectedFacesRubberband->setFillColor( fillColor );
     }
+
+    QColor fillColor = canvas()->mapSettings().selectionColor();
+
+    if ( fillColor.alpha() > 100 ) //set alpha to 150 if the transparency is not enough to see the mesh
+      fillColor.setAlpha( 100 );
+
+    mSelectedFacesRubberband->setFillColor( fillColor );
   }
   else
     mSelectedFacesRubberband->reset( QgsWkbTypes::PolygonGeometry );
