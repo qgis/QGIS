@@ -1,10 +1,12 @@
 /***************************************************************************
      testqgsmaptoolcircle.cpp
      ------------------------
-    Date                 : July 2021
-    Copyright            : (C) 2021 by Loïc Bartoletti
+    Date                 : January 2018
+    Copyright            : (C) 2018 by Paul Blottiere
+                           (C) 2021 by Loïc Bartoletti
                            (C) 2021 by Antoine Facchini
-    Email                : loic dot bartoletti @oslandia dot com
+    Email                : paul.blottiere@oslandia.com
+                           loic dot bartoletti @oslandia dot com
                            antoine dot facchini @oslandia dot com
  ***************************************************************************
  *                                                                         *
