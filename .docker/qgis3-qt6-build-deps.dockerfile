@@ -50,7 +50,7 @@ RUN cd /usr/src \
   && rm master.zip \
   && mkdir build \
   && cd build \
-  && cmake -DQT6=ON -GNinja -DCMAKE_INSTALL_PREFIX=/usr/local ../qca-master \
+  && cmake -DQT6=ON -DBUILD_TESTS=OFF -GNinja -DCMAKE_INSTALL_PREFIX=/usr/local ../qca-master \
   && ninja install
 
 RUN cd /usr/src \
@@ -58,13 +58,14 @@ RUN cd /usr/src \
   && unzip master.zip \
   && rm master.zip \
   && cd qtkeychain-master \
-  && cmake -DBUILD_WITH_QT6=ON -DCMAKE_INSTALL_PREFIX=/usr/local -GNinja \
+  && cmake -DBUILD_WITH_QT6=ON -DBUILD_TRANSLATIONS=OFF -DCMAKE_INSTALL_PREFIX=/usr/local -GNinja \
   && ninja install
 
 RUN cd /usr/src \
   && wget https://sourceforge.net/projects/qwt/files/qwt/6.2.0/qwt-6.2.0.zip/download \
   && unzip download \
   && cd qwt-6.2.0 \
+  && printf '140c140\n< QWT_CONFIG     += QwtExamples\n---\n> #QWT_CONFIG     += QwtExamples\n151c151\n< QWT_CONFIG     += QwtPlayground\n---\n> #QWT_CONFIG     += QwtPlayground\n158c158\n< QWT_CONFIG     += QwtTests\n---\n> #QWT_CONFIG     += QwtTests\n' | patch qwtconfig.pri \
   && qmake6 qwt.pro \
   && make -j4 \
   && make install
