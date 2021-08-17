@@ -358,7 +358,7 @@ void TestQgsExternalResourceWidgetWrapper::testLoadExternalDocument()
   if ( documentType == QgsExternalResourceWidget::Image )
   {
     QVERIFY( ww.mQgsWidget->mPixmapLabel->isVisible() );
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     QVERIFY( !ww.mQgsWidget->mPixmapLabel->pixmap() );
 #else
     QVERIFY( ww.mQgsWidget->mPixmapLabel->pixmap( Qt::ReturnByValue ).isNull() );
@@ -398,7 +398,7 @@ void TestQgsExternalResourceWidgetWrapper::testLoadExternalDocument()
   if ( documentType == QgsExternalResourceWidget::Image )
   {
     QVERIFY( ww.mQgsWidget->mPixmapLabel->isVisible() );
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     QVERIFY( ww.mQgsWidget->mPixmapLabel->pixmap() );
 #else
     QVERIFY( !ww.mQgsWidget->mPixmapLabel->pixmap( Qt::ReturnByValue ).isNull() );
@@ -439,7 +439,7 @@ void TestQgsExternalResourceWidgetWrapper::testLoadExternalDocument()
   if ( documentType == QgsExternalResourceWidget::Image )
   {
     QVERIFY( ww.mQgsWidget->mPixmapLabel->isVisible() );
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     QVERIFY( ww.mQgsWidget->mPixmapLabel->pixmap() );
 #else
     QVERIFY( !ww.mQgsWidget->mPixmapLabel->pixmap( Qt::ReturnByValue ).isNull() );
@@ -542,7 +542,7 @@ void TestQgsExternalResourceWidgetWrapper::testLoadNullExternalDocument()
   if ( documentType == QgsExternalResourceWidget::Image )
   {
     QVERIFY( ww.mQgsWidget->mPixmapLabel->isVisible() );
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     QVERIFY( !ww.mQgsWidget->mPixmapLabel->pixmap() );
 #else
     QVERIFY( ww.mQgsWidget->mPixmapLabel->pixmap( Qt::ReturnByValue ).isNull() );
@@ -570,7 +570,7 @@ void TestQgsExternalResourceWidgetWrapper::testLoadNullExternalDocument()
   if ( documentType == QgsExternalResourceWidget::Image )
   {
     QVERIFY( ww.mQgsWidget->mPixmapLabel->isVisible() );
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     QVERIFY( !ww.mQgsWidget->mPixmapLabel->pixmap() );
 #else
     QVERIFY( ww.mQgsWidget->mPixmapLabel->pixmap( Qt::ReturnByValue ).isNull() );
@@ -641,7 +641,7 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocument()
   if ( documentType == QgsExternalResourceWidget::Image )
   {
     QVERIFY( ww.mQgsWidget->mPixmapLabel->isVisible() );
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     QVERIFY( !ww.mQgsWidget->mPixmapLabel->pixmap() );
 #else
     QVERIFY( ww.mQgsWidget->mPixmapLabel->pixmap( Qt::ReturnByValue ).isNull() );
@@ -734,7 +734,7 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocumentError()
   if ( documentType == QgsExternalResourceWidget::Image )
   {
     QVERIFY( ww.mQgsWidget->mPixmapLabel->isVisible() );
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     QVERIFY( !ww.mQgsWidget->mPixmapLabel->pixmap() );
 #else
     QVERIFY( ww.mQgsWidget->mPixmapLabel->pixmap( Qt::ReturnByValue ).isNull() );
@@ -766,7 +766,7 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocumentError()
   if ( documentType == QgsExternalResourceWidget::Image )
   {
     QVERIFY( ww.mQgsWidget->mPixmapLabel->isVisible() );
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     QVERIFY( !ww.mQgsWidget->mPixmapLabel->pixmap() );
 #else
     QVERIFY( ww.mQgsWidget->mPixmapLabel->pixmap( Qt::ReturnByValue ).isNull() );
@@ -845,7 +845,7 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocumentCancel()
   if ( documentType == QgsExternalResourceWidget::Image )
   {
     QVERIFY( ww.mQgsWidget->mPixmapLabel->isVisible() );
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     QVERIFY( !ww.mQgsWidget->mPixmapLabel->pixmap() );
 #else
     QVERIFY( ww.mQgsWidget->mPixmapLabel->pixmap( Qt::ReturnByValue ).isNull() );
@@ -880,7 +880,7 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocumentCancel()
   if ( documentType == QgsExternalResourceWidget::Image )
   {
     QVERIFY( ww.mQgsWidget->mPixmapLabel->isVisible() );
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     QVERIFY( !ww.mQgsWidget->mPixmapLabel->pixmap() );
 #else
     QVERIFY( ww.mQgsWidget->mPixmapLabel->pixmap( Qt::ReturnByValue ).isNull() );
@@ -956,7 +956,7 @@ void TestQgsExternalResourceWidgetWrapper::testStoreExternalDocumentNoExpression
   if ( documentType == QgsExternalResourceWidget::Image )
   {
     QVERIFY( ww.mQgsWidget->mPixmapLabel->isVisible() );
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     QVERIFY( !ww.mQgsWidget->mPixmapLabel->pixmap() );
 #else
     QVERIFY( ww.mQgsWidget->mPixmapLabel->pixmap( Qt::ReturnByValue ).isNull() );
