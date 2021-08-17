@@ -2094,22 +2094,14 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       {
         myContainer = new QWidget();
 
-        if ( context.formMode() != QgsAttributeEditorContext::Embed )
-        {
-          QgsScrollArea *scrollArea = new QgsScrollArea( parent );
+        QgsScrollArea *scrollArea = new QgsScrollArea( parent );
 
-          scrollArea->setWidget( myContainer );
-          scrollArea->setWidgetResizable( true );
-          scrollArea->setFrameShape( QFrame::NoFrame );
-          widgetName = QStringLiteral( "QScrollArea QWidget" );
+        scrollArea->setWidget( myContainer );
+        scrollArea->setWidgetResizable( true );
+        scrollArea->setFrameShape( QFrame::NoFrame );
+        widgetName = QStringLiteral( "QScrollArea QWidget" );
 
-          newWidgetInfo.widget = scrollArea;
-        }
-        else
-        {
-          newWidgetInfo.widget = myContainer;
-          widgetName = QStringLiteral( "QWidget" );
-        }
+        newWidgetInfo.widget = scrollArea;
       }
 
       if ( container->backgroundColor().isValid() )
