@@ -63,7 +63,7 @@ QgsNewMeshLayerDialog::QgsNewMeshLayerDialog( QWidget *parent, Qt::WindowFlags f
   connect( mFormatComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
            this, &QgsNewMeshLayerDialog::onFormatChanged );
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsNewMeshLayerDialog::onFilePathChanged );
-  connect( mEmptyMeshRadioButton, &QRadioButton::toggled, this, &QgsNewMeshLayerDialog::updateDialog );
+  connect( mInitializeMeshGroupBox, &QGroupBox::toggled, this, &QgsNewMeshLayerDialog::updateDialog );
   connect( mMeshFileRadioButton, &QRadioButton::toggled, this, &QgsNewMeshLayerDialog::updateDialog );
   connect( mMeshFromFileWidget, &QgsFileWidget::fileChanged, this, &QgsNewMeshLayerDialog::updateDialog );
   connect( mMeshProjectComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsNewMeshLayerDialog::updateDialog );
@@ -107,7 +107,7 @@ void QgsNewMeshLayerDialog::updateSourceMeshframe()
 {
   mMeshProjectComboBox->setEnabled( false );
   mMeshFromFileWidget->setEnabled( false );
-  if ( mEmptyMeshRadioButton->isChecked() )
+  if ( !mInitializeMeshGroupBox->isChecked() )
   {
     mSourceMeshFromFile.reset();
     mSourceMeshFrameReady = true;
@@ -222,7 +222,7 @@ bool QgsNewMeshLayerDialog::apply()
 
   QgsMeshLayer *source = nullptr;
 
-  if ( mEmptyMeshRadioButton->isChecked() )
+  if ( !mInitializeMeshGroupBox->isChecked() )
   {
     crs = mProjectionSelectionWidget->crs();
   }
@@ -247,7 +247,17 @@ bool QgsNewMeshLayerDialog::apply()
     result = providerMetadata->createMeshData( mesh, fileName, format, crs );
     if ( result )
     {
-      std::unique_ptr<QgsMeshLayer> newMeshLayer = std::make_unique<QgsMeshLayer>( fileName, mLayerNameLineEdit->text(), QStringLiteral( "mdal" ) );
+      QString layerName = mLayerNameLineEdit->text();
+      if ( layerName.isEmpty() )
+      {
+        layerName = fileName;
+        QFileInfo fileInfo( fileName );
+        layerName = fileInfo.baseName();
+      }
+      std::unique_ptr<QgsMeshLayer> newMeshLayer = std::make_unique<QgsMeshLayer>( fileName, layerName, QStringLiteral( "mdal" ) );
+
+      if ( newMeshLayer->crs() != crs )
+        newMeshLayer->setCrs( crs );
 
       if ( newMeshLayer->isValid() )
         QgsProject::instance()->addMapLayer( newMeshLayer.release(), true, true );
