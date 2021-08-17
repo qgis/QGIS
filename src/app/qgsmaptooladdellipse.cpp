@@ -48,6 +48,13 @@ void QgsMapToolAddEllipse::deactivate()
       ls->addZValue( point.z() );
       break;
     }
+    if ( QgsWkbTypes::hasM( point.wkbType() ) &&
+         point.m() != defaultMValue() )
+    {
+      ls->dropMValue();
+      ls->addMValue( point.m() );
+      break;
+    }
   }
 
   mParentTool->addCurve( ls.release() );
