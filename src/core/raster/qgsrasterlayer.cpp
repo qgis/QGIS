@@ -2402,6 +2402,17 @@ QString QgsRasterLayer::encodedSource( const QString &source, const QgsReadWrite
       handled = true;
     }
   }
+  else if ( providerType() == "virtualraster" )
+  {
+
+    QgsRasterDataProvider::VirtualRasterParameters decodedVirtualParams = QgsRasterDataProvider::decodeVirtualRasterProviderUri( src );
+
+    for ( auto &it : decodedVirtualParams.rInputLayers )
+    {
+      it.uri = context.pathResolver().writePath( it.uri );
+    }
+    src = QgsRasterDataProvider::encodeVirtualRasterProviderUri( decodedVirtualParams ) ;
+  }
 
   if ( !handled )
     src = context.pathResolver().writePath( src );
@@ -2578,6 +2589,18 @@ QString QgsRasterLayer::decodedSource( const QString &source, const QString &pro
           handled = true;
         }
       }
+    }
+
+    if ( provider == QLatin1String( "virtualraster" ) )
+    {
+      QgsRasterDataProvider::VirtualRasterParameters decodedVirtualParams = QgsRasterDataProvider::decodeVirtualRasterProviderUri( src );
+
+      for ( auto &it : decodedVirtualParams.rInputLayers )
+      {
+        it.uri = context.pathResolver().readPath( it.uri );
+      }
+      src = QgsRasterDataProvider::encodeVirtualRasterProviderUri( decodedVirtualParams ) ;
+      handled = true;
     }
 
     if ( !handled )

@@ -6562,7 +6562,47 @@ void QgisApp::newGpxLayer()
 void QgisApp::showRasterCalculator()
 {
   QgsRasterCalcDialog d( qobject_cast<QgsRasterLayer *>( activeLayer() ), this );
-  if ( d.exec() == QDialog::Accepted )
+  if ( d.exec() != QDialog::Accepted )
+  {
+    return;
+  }
+  if ( d.useVirtualProvider() )
+  {
+    QgsRasterDataProvider::VirtualRasterParameters virtualCalcParams;
+    virtualCalcParams.crs = d.outputCrs();
+    virtualCalcParams.extent = d.outputRectangle();
+    virtualCalcParams.width = d.numberOfColumns();
+    virtualCalcParams.height = d.numberOfRows();
+    virtualCalcParams.formula = d.formulaString();
+
+    QString errorString;
+    std::unique_ptr< QgsRasterCalcNode > calcNodeApp( QgsRasterCalcNode::parseRasterCalcString( d.formulaString(), errorString ) );
+    if ( !calcNodeApp )
+    {
+      return;
+    }
+    QStringList rLayerDictionaryRef = calcNodeApp->cleanRasterReferences();
+    QSet<QPair<QString, QString>> uniqueRasterUriTmp;
+
+    for ( const auto &r : QgsRasterCalculatorEntry::rasterEntries() )
+    {
+      if ( ( ! rLayerDictionaryRef.contains( r.ref ) ) ||
+           uniqueRasterUriTmp.contains( QPair( r.raster->source(), r.ref.mid( 0, r.ref.lastIndexOf( "@" ) ) ) ) ) continue;
+      uniqueRasterUriTmp.insert( QPair( r.raster->source(), r.ref.mid( 0, r.ref.lastIndexOf( "@" ) ) ) );
+
+      QgsRasterDataProvider::VirtualRasterInputLayers projectRLayer;
+      projectRLayer.name = r.ref.mid( 0, r.ref.lastIndexOf( "@" ) );
+      projectRLayer.provider = r.raster->dataProvider()->name();
+      projectRLayer.uri = r.raster->source();
+
+      virtualCalcParams.rInputLayers.append( projectRLayer );
+    }
+
+    addRasterLayer( QgsRasterDataProvider::encodeVirtualRasterProviderUri( virtualCalcParams ),
+                    d.virtualLayerName().isEmpty() ? d.formulaString() : d.virtualLayerName(),
+                    QStringLiteral( "virtualraster" ) );
+  }
+  else
   {
     //invoke analysis library
     QgsRasterCalculator rc( d.formulaString(),
@@ -6589,7 +6629,7 @@ void QgisApp::showRasterCalculator()
       case QgsRasterCalculator::Success:
         if ( d.addLayerToProject() )
         {
-          addRasterLayer( d.outputFile(), QFileInfo( d.outputFile() ).completeBaseName(), QString() );
+          addRasterLayer( d.outputFile(), QFileInfo( d.outputFile() ).completeBaseName(), QStringLiteral( "gdal" ) );
         }
         visibleMessageBar()->pushMessage( tr( "Raster calculator" ),
                                           tr( "Calculation complete." ),

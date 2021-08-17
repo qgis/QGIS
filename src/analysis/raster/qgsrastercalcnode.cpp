@@ -382,3 +382,38 @@ QgsRasterCalcNode *QgsRasterCalcNode::parseRasterCalcString( const QString &str,
   return localParseRasterCalcString( str, parserErrorMsg );
 }
 
+QStringList QgsRasterCalcNode::referencedLayerNames()
+{
+  QStringList referencedRasters;
+
+  QStringList rasterRef = this->cleanRasterReferences();
+  for ( const auto &i : rasterRef )
+  {
+    if ( referencedRasters.contains( i.mid( 0, i.lastIndexOf( "@" ) ) ) ) continue;
+    referencedRasters << i.mid( 0, i.lastIndexOf( "@" ) );
+  }
+
+  return referencedRasters;
+}
+
+QStringList QgsRasterCalcNode::cleanRasterReferences()
+{
+  QStringList rasterReferences;
+  const QList<const QgsRasterCalcNode *> rasterRefNodes =  this->findNodes( QgsRasterCalcNode::Type::tRasterRef );
+
+  for ( const QgsRasterCalcNode *r : rasterRefNodes )
+  {
+
+    QString layerRef( r->toString() );
+    if ( layerRef.at( 0 ) == QStringLiteral( "\"" ) && layerRef.at( layerRef.size() - 1 ) == QStringLiteral( "\"" ) )
+    {
+      layerRef.remove( 0, 1 );
+      layerRef.chop( 1 );
+
+    }
+    layerRef.remove( QChar( '\\' ), Qt::CaseInsensitive );
+    rasterReferences << layerRef;
+  }
+
+  return rasterReferences;
+}

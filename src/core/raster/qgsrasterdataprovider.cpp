@@ -30,6 +30,10 @@
 #include <QByteArray>
 #include <QVariant>
 
+#include <QUrl>
+#include <QUrlQuery>
+#include <QSet>
+
 #define ERR(message) QgsError(message, "Raster provider")
 
 void QgsRasterDataProvider::setUseSourceNoDataValue( int bandNo, bool use )
@@ -646,4 +650,141 @@ void QgsRasterDataProvider::writeXml( QDomDocument &doc, QDomElement &parentElem
 QString QgsRasterDataProvider::colorInterpretationName( int bandNo ) const
 {
   return colorName( colorInterpretation( bandNo ) );
+}
+
+QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirtualRasterProviderUri( const QString &uri, bool *ok )
+{
+  QUrl url = QUrl::fromPercentEncoding( uri.toUtf8() );
+  const QUrlQuery query( url.query() );
+  VirtualRasterParameters components;
+
+  if ( ! query.hasQueryItem( QStringLiteral( "crs" ) ) )
+  {
+    QgsDebugMsg( "crs is missing" );
+    if ( ok ) *ok = false;
+    return components;
+  }
+  if ( ! components.crs.createFromString( query.queryItemValue( QStringLiteral( "crs" ) ) ) )
+  {
+    QgsDebugMsg( "failed to create crs" );
+    if ( ok ) *ok = false;
+    return components;
+  }
+
+
+  if ( ! query.hasQueryItem( QStringLiteral( "extent" ) ) )
+  {
+    QgsDebugMsg( "extent is missing" );
+    if ( ok ) *ok = false;
+    return components;
+  }
+  QStringList pointValuesList = query.queryItemValue( QStringLiteral( "extent" ) ).split( ',' );
+  if ( pointValuesList.size() != 4 )
+  {
+    QgsDebugMsg( "the extent is not correct" );
+    if ( ok ) *ok = false;
+    return components;
+  }
+  components.extent = QgsRectangle( pointValuesList.at( 0 ).toDouble(), pointValuesList.at( 1 ).toDouble(),
+                                    pointValuesList.at( 2 ).toDouble(), pointValuesList.at( 3 ).toDouble() );
+
+  if ( ! query.hasQueryItem( QStringLiteral( "width" ) ) )
+  {
+    QgsDebugMsg( "width is missing" );
+    if ( ok ) *ok = false;
+    return components;
+  }
+  bool flagW;
+  components.width = query.queryItemValue( QStringLiteral( "width" ) ).toInt( & flagW );
+  if ( !flagW ||  components.width < 0 )
+  {
+    QgsDebugMsg( "invalid or negative width input" );
+    if ( ok ) *ok = false;
+    return components;
+  }
+
+  if ( ! query.hasQueryItem( QStringLiteral( "height" ) ) )
+  {
+    QgsDebugMsg( "height is missing" );
+    if ( ok ) *ok = false;
+    return components;
+  }
+  bool flagH;
+  components.height = query.queryItemValue( QStringLiteral( "height" ) ).toInt( & flagH );
+  if ( !flagH ||  components.height < 0 )
+  {
+    QgsDebugMsg( "invalid or negative width input" );
+    if ( ok ) *ok = false;
+    return components;
+  }
+
+  if ( ! query.hasQueryItem( QStringLiteral( "formula" ) ) )
+  {
+    QgsDebugMsg( "formula is missing" );
+    if ( ok ) *ok = false;
+    return components;
+  }
+  components.formula = query.queryItemValue( QStringLiteral( "formula" ) );
+
+  for ( const auto &item : query.queryItems() )
+  {
+    if ( !( item.first.mid( item.first.indexOf( ':' ), -1 ) == QStringLiteral( ":uri" ) ) )
+    {
+      continue;
+    }
+
+    VirtualRasterInputLayers rLayer;
+    rLayer.name = item.first.mid( 0, item.first.indexOf( ':' ) );
+    rLayer.uri = query.queryItemValue( item.first );
+    rLayer.provider = query.queryItemValue( item.first.mid( 0, item.first.indexOf( ':' ) ) + QStringLiteral( ":provider" ) );
+
+    if ( rLayer.uri.isNull() || rLayer.provider.isNull() )
+    {
+      QgsDebugMsg( "One or more raster information are missing" );
+      if ( ok ) *ok = false;
+      return components;
+    }
+
+    components.rInputLayers.append( rLayer ) ;
+
+  }
+
+  if ( ok ) *ok = true;
+  return components;
+}
+
+QString QgsRasterDataProvider::encodeVirtualRasterProviderUri( const VirtualRasterParameters &parts )
+{
+  QUrl uri;
+  QUrlQuery query;
+
+  if ( parts.crs.isValid() )
+  {
+    query.addQueryItem( QStringLiteral( "crs" ), parts.crs.authid() );
+  }
+
+  if ( ! parts.extent.isNull() )
+  {
+    QString rect = QString( "%1,%2,%3,%4" ).arg( qgsDoubleToString( parts.extent.xMinimum() ), qgsDoubleToString( parts.extent.yMinimum() ),
+                   qgsDoubleToString( parts.extent.xMaximum() ), qgsDoubleToString( parts.extent.yMaximum() ) );
+
+    query.addQueryItem( QStringLiteral( "extent" ), rect );
+  }
+
+  query.addQueryItem( QStringLiteral( "width" ), QString::number( parts.width ) );
+
+  query.addQueryItem( QStringLiteral( "height" ), QString::number( parts.height ) );
+
+  query.addQueryItem( QStringLiteral( "formula" ), parts.formula );
+
+  if ( ! parts.rInputLayers.isEmpty() )
+  {
+    for ( const auto &it : parts.rInputLayers )
+    {
+      query.addQueryItem( it.name + QStringLiteral( ":uri" ), it.uri );
+      query.addQueryItem( it.name + QStringLiteral( ":provider" ), it.provider );
+    }
+  }
+  uri.setQuery( query );
+  return QString( QUrl::toPercentEncoding( uri.toEncoded() ) );
 }
