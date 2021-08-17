@@ -45,10 +45,14 @@ Convert Qt.CheckState to QString
 Convert QString to Qt.CheckState
 %End
 
-    static bool layersEditable( const QList<QgsLayerTreeLayer *> &layerNodes );
+    static bool layersEditable( const QList<QgsLayerTreeLayer *> &layerNodes, bool ignoreLayersWhichCannotBeToggled = false );
 %Docstring
-Returns ``True`` if any of the layers is editable
+Returns ``True`` if any of the specified layers is editable.
+
+The ``ignoreLayersWhichCannotBeToggled`` argument can be used to control whether layers which cannot have their
+edit states toggled by users should be ignored or not (since QGIS 3.22).
 %End
+
     static bool layersModified( const QList<QgsLayerTreeLayer *> &layerNodes );
 %Docstring
 Returns ``True`` if any of the layers is modified

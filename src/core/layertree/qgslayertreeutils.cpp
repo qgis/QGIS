@@ -261,7 +261,7 @@ static void _readOldLegendLayer( const QDomElement &layerElem, QgsLayerTreeGroup
   parent->addChildNode( layerNode );
 }
 
-bool QgsLayerTreeUtils::layersEditable( const QList<QgsLayerTreeLayer *> &layerNodes )
+bool QgsLayerTreeUtils::layersEditable( const QList<QgsLayerTreeLayer *> &layerNodes, bool ignoreLayersWhichCannotBeToggled )
 {
   const auto constLayerNodes = layerNodes;
   for ( QgsLayerTreeLayer *layerNode : constLayerNodes )
@@ -270,7 +270,7 @@ bool QgsLayerTreeUtils::layersEditable( const QList<QgsLayerTreeLayer *> &layerN
     if ( !layer )
       continue;
 
-    if ( layer->isEditable() )
+    if ( layer->isEditable() && ( !ignoreLayersWhichCannotBeToggled || !( layer->properties() & Qgis::MapLayerProperty::UsersCannotToggleEditing ) ) )
       return true;
   }
   return false;
