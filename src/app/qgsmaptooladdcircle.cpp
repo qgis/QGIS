@@ -50,6 +50,13 @@ void QgsMapToolAddCircle::deactivate()
       lineString->addZValue( point.z() );
       break;
     }
+    if ( QgsWkbTypes::hasM( point.wkbType() ) &&
+         point.z() != defaultMValue() )
+    {
+      lineString->dropMValue();
+      lineString->addMValue( point.m() );
+      break;
+    }
   }
 
   mParentTool->addCurve( lineString.release() );
