@@ -236,3 +236,14 @@ bool QgsAnnotationLayer::readSymbology( const QDomNode &node, QString &, QgsRead
 
   return true;
 }
+
+bool QgsAnnotationLayer::isEditable() const
+{
+  // annotation layers are always editable
+  return true;
+}
+
+bool QgsAnnotationLayer::supportsEditing() const
+{
+  return true;
+}

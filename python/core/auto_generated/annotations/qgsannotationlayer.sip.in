@@ -109,6 +109,10 @@ with the layer.
 
     virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
 
+    virtual bool isEditable() const;
+
+    virtual bool supportsEditing() const;
+
 
 };
 

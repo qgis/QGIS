@@ -125,6 +125,8 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &, StyleCategories categories = AllStyleCategories ) const override;
     bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) override;
+    bool isEditable() const override;
+    bool supportsEditing() const override;
 
   private:
     QMap<QString, QgsAnnotationItem *> mItems;
