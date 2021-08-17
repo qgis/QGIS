@@ -28,37 +28,26 @@ Creates a new element which can display a layer action.
 :param parent: The parent (used as container)
 %End
 
-    QgsAttributeEditorAction( const QUuid &uuid, const QString &layerId, QgsAttributeEditorElement *parent );
+    QgsAttributeEditorAction( const QUuid &uuid, QgsAttributeEditorElement *parent );
 %Docstring
 Creates a new element which can display a layer action, this constructor allows
 to create a QgsAttributeEditorAction when actions are not yet loaded.
 
 :param uuid: The action unique identifier (UUID).
-:param layerId: The ID of the layer the action belongs to.
 :param parent: The parent (used as container).
 %End
 
     virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
 
 
-    const QgsAction &action() const;
+    const QgsAction &action( const QgsVectorLayer *layer ) const;
 %Docstring
-Returns the (possibly lazy loaded) action.
+Returns the (possibly lazy loaded) action for the given ``layer``.
 %End
 
     void setAction( const QgsAction &newAction );
 %Docstring
 Set the action to ``newAction``.
-%End
-
-    const QString actionId() const;
-%Docstring
-Returns the action's unique identifier (UUID).
-%End
-
-    const QString actionDisplayName() const;
-%Docstring
-Returns the action short title (if defined) or the action name as a fallback for display.
 %End
 
 };

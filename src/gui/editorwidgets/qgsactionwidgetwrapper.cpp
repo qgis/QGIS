@@ -17,10 +17,21 @@
 #include "qgsactionmanager.h"
 #include "qgsexpressioncontextutils.h"
 
+#include <QLayout>
+
 QgsActionWidgetWrapper::QgsActionWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( layer, editor, parent )
 {
-
+  connect( this, &QgsWidgetWrapper::contextChanged, [ = ]
+  {
+    const bool actionIsVisible {
+      ( context().attributeFormMode() == QgsAttributeEditorContext::Mode::SingleEditMode ) ||
+      ( context().attributeFormMode() == QgsAttributeEditorContext::Mode::AddFeatureMode ) };
+    if ( mActionButton )
+    {
+      mActionButton->setVisible( actionIsVisible );
+    }
+  } );
 }
 
 void QgsActionWidgetWrapper::setAction( const QgsAction &action )
@@ -84,19 +95,18 @@ void QgsActionWidgetWrapper::initWidget( QWidget *editor )
     {
       mActionButton->setEnabled( false );
     }
-    else
+
+    // Always connect
+    connect( mActionButton, &QPushButton::clicked, this, [ & ]
     {
-      connect( mActionButton, &QPushButton::clicked, this, [ & ]
-      {
-        const QgsAttributeEditorContext attributecontext = context();
-        QgsExpressionContext expressionContext = layer()->createExpressionContext();
-        expressionContext << QgsExpressionContextUtils::formScope( mFeature, attributecontext.attributeFormModeString() );
-        expressionContext.setFeature( mFeature );
-        mAction.run( layer(), mFeature, expressionContext );
-      } );
-    }
+      const QgsAttributeEditorContext attributecontext = context();
+      QgsExpressionContext expressionContext = layer()->createExpressionContext();
+      expressionContext << QgsExpressionContextUtils::formScope( mFeature, attributecontext.attributeFormModeString() );
+      expressionContext.setFeature( mFeature );
+      mAction.run( layer(), mFeature, expressionContext );
+    } );
+
   }
 
 }
-
 

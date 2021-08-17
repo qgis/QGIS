@@ -64,25 +64,13 @@ class TestQgsActionWidgetWrapper(unittest.TestCase):
 
         parent = QgsAttributeEditorContainer('container', None)
         editor_action = QgsAttributeEditorAction(self.action1, parent)
-        self.assertEqual(QUuid(editor_action.actionId()), self.action_id1)
-        self.assertEqual(editor_action.action().id(), self.action1.id())
+        self.assertEqual(QUuid(editor_action.action(self.layer).id()), self.action_id1)
+        self.assertEqual(editor_action.action(self.layer).id(), self.action1.id())
 
         # Lazy load
-        editor_action = QgsAttributeEditorAction(self.action1.id(), self.layer.id(), parent)
-        self.assertEqual(QUuid(editor_action.actionId()), self.action_id1)
-        self.assertEqual(editor_action.action().id(), self.action1.id())
-
-    def testDisplayName(self):
-
-        parent = QgsAttributeEditorContainer('container', None)
-        editor_action = QgsAttributeEditorAction(self.action1, parent)
-        self.assertEqual(editor_action.actionDisplayName(), 'Test Action 1 Short Title')
-
-        editor_action = QgsAttributeEditorAction(self.action2, parent)
-        self.assertEqual(editor_action.actionDisplayName(), 'Test Action 2 Short Title')
-
-        editor_action = QgsAttributeEditorAction(self.action3, parent)
-        self.assertEqual(editor_action.actionDisplayName(), 'Test Action 3 Desc')
+        editor_action = QgsAttributeEditorAction(self.action1.id(), parent)
+        self.assertEqual(QUuid(editor_action.action(self.layer).id()), self.action_id1)
+        self.assertEqual(editor_action.action(self.layer).id(), self.action1.id())
 
     def testSetAction(self):
 
@@ -90,7 +78,7 @@ class TestQgsActionWidgetWrapper(unittest.TestCase):
         editor_action = QgsAttributeEditorAction(self.action1, parent)
 
         editor_action.setAction(self.action2)
-        self.assertEqual(QUuid(editor_action.actionId()), self.action_id2)
+        self.assertEqual(QUuid(editor_action.action(self.layer).id()), self.action_id2)
 
 
 if __name__ == '__main__':

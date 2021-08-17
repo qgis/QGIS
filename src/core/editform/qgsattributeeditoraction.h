@@ -42,39 +42,27 @@ class CORE_EXPORT QgsAttributeEditorAction : public QgsAttributeEditorElement
      * to create a QgsAttributeEditorAction when actions are not yet loaded.
      *
      * \param uuid         The action unique identifier (UUID).
-     * \param layerId      The ID of the layer the action belongs to.
      * \param parent       The parent (used as container).
     */
-    QgsAttributeEditorAction( const QUuid &uuid, const QString &layerId, QgsAttributeEditorElement *parent );
+    QgsAttributeEditorAction( const QUuid &uuid, QgsAttributeEditorElement *parent );
 
     QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;
 
     /**
-     * Returns the (possibly lazy loaded) action.
+     * Returns the (possibly lazy loaded) action for the given \a layer.
      */
-    const QgsAction &action() const;
+    const QgsAction &action( const QgsVectorLayer *layer ) const;
 
     /**
      * Set the action to \a newAction.
      */
     void setAction( const QgsAction &newAction );
 
-    /**
-     * Returns the action's unique identifier (UUID).
-     */
-    const QString actionId() const;
-
-    /**
-     * Returns the action short title (if defined) or the action name as a fallback for display.
-     */
-    const QString actionDisplayName() const;
-
   private:
 
     // Lazy loaded
     mutable QgsAction mAction;
     QUuid mUuid;
-    QString mLayerId;
 
     // QgsAttributeEditorElement interface
     void saveConfiguration( QDomElement &elem, QDomDocument &doc ) const override;

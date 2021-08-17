@@ -444,7 +444,9 @@ void QgsValueRelationWidgetWrapper::showIndeterminateState()
     {
       for ( int i = 0; i < nofColumns; ++i )
       {
-        whileBlocking( mTableWidget )->item( j, i )->setCheckState( Qt::PartiallyChecked );
+        QgsSignalBlocker<QTableWidget> blocker( mTableWidget );
+        if ( mTableWidget->item( j, i ) )
+          mTableWidget->item( j, i )->setCheckState( Qt::PartiallyChecked );
       }
     }
   }

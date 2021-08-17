@@ -24,31 +24,25 @@ QgsAttributeEditorAction::QgsAttributeEditorAction( const QgsAction &action, Qgs
   , mUuid( action.id() )
 {}
 
-QgsAttributeEditorAction::QgsAttributeEditorAction( const QUuid &uuid, const QString &layerId, QgsAttributeEditorElement *parent )
+QgsAttributeEditorAction::QgsAttributeEditorAction( const QUuid &uuid, QgsAttributeEditorElement *parent )
   : QgsAttributeEditorAction( QgsAction(), parent )
 {
   mUuid = uuid;
-  mLayerId = layerId;
 }
 
 QgsAttributeEditorElement *QgsAttributeEditorAction::clone( QgsAttributeEditorElement *parent ) const
 {
   QgsAttributeEditorAction *element = new QgsAttributeEditorAction( mAction, parent );
-  element->mLayerId = mLayerId;
   element->mUuid = mUuid;
   return element;
 }
 
-const QgsAction &QgsAttributeEditorAction::action() const
+const QgsAction &QgsAttributeEditorAction::action( const QgsVectorLayer *layer ) const
 {
   // Lazy loading
-  if ( ! mAction.isValid() && ! mUuid.isNull() && ! mLayerId.isEmpty() )
+  if ( ! mAction.isValid() && ! mUuid.isNull() && layer )
   {
-    // Nested if for clarity
-    if ( const QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( mLayerId ) ); layer )
-    {
-      mAction = layer->actions()->action( mUuid );
-    }
+    mAction = layer->actions()->action( mUuid );
   }
   return mAction;
 }
@@ -59,23 +53,6 @@ void QgsAttributeEditorAction::setAction( const QgsAction &newAction )
   mAction = newAction;
 }
 
-const QString QgsAttributeEditorAction::actionId() const
-{
-  return action().isValid() ? action().id().toString( ) : QString( );
-}
-
-const QString QgsAttributeEditorAction::actionDisplayName() const
-{
-  if ( action().isValid() )
-  {
-    return action().shortTitle().isEmpty() ? action().name() : action().shortTitle();
-  }
-  else
-  {
-    return QString();
-  }
-}
-
 QString QgsAttributeEditorAction::typeIdentifier() const
 {
   return QStringLiteral( "attributeEditorAction" );
@@ -84,13 +61,13 @@ QString QgsAttributeEditorAction::typeIdentifier() const
 void QgsAttributeEditorAction::saveConfiguration( QDomElement &elem, QDomDocument &doc ) const
 {
   Q_UNUSED( doc )
-  elem.setAttribute( QStringLiteral( "ActionUUID" ), mAction.id().toString() );
+  elem.setAttribute( QStringLiteral( "ActionUUID" ), mUuid.toString() );
 }
 
 void QgsAttributeEditorAction::loadConfiguration( const QDomElement &element, const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields )
 {
+  Q_UNUSED( layerId )
   Q_UNUSED( context )
   Q_UNUSED( fields )
   mUuid = element.attribute( QStringLiteral( "ActionUUID" ) );
-  mLayerId = layerId;
 }

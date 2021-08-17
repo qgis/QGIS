@@ -1349,7 +1349,8 @@ void QgsAttributeForm::synchronizeState()
   for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
 
-    if ( QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww ); eww )
+    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+    if ( eww )
     {
       QgsAttributeFormEditorWidget *formWidget = mFormEditorWidgets.value( eww->fieldIdx() );
 
@@ -1367,7 +1368,9 @@ void QgsAttributeForm::synchronizeState()
     {
       ww->setEnabled( isEditable );
     }
+
   }
+
 
   if ( mMode != QgsAttributeEditorContext::SearchMode )
   {
@@ -2018,13 +2021,12 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         break;
 
       QgsActionWidgetWrapper *actionWrapper = new QgsActionWidgetWrapper( mLayer, nullptr, this );
-      actionWrapper->setAction( elementDef->action() );
+      actionWrapper->setAction( elementDef->action( vl ) );
       context.setAttributeFormMode( mMode );
       actionWrapper->setContext( context );
-
       mWidgets.append( actionWrapper );
-
       newWidgetInfo.widget = actionWrapper->widget();
+      newWidgetInfo.showLabel = false;
 
       break;
     }

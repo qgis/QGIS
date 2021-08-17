@@ -434,9 +434,17 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
     case QgsAttributeEditorElement::AeTypeAction:
     {
       const QgsAttributeEditorAction *actionEditor = static_cast<const QgsAttributeEditorAction *>( widgetDef );
-      DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Action, actionEditor->actionId(), actionEditor->actionDisplayName() );
-      itemData.setShowLabel( widgetDef->showLabel() );
-      newWidget = tree->addItem( parent, itemData );
+      const QgsAction action { actionEditor->action( mLayer ) };
+      if ( action.isValid() )
+      {
+        DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Action, action.id().toString(), action.shortTitle().isEmpty() ? action.name() : action.shortTitle() );
+        itemData.setShowLabel( widgetDef->showLabel() );
+        newWidget = tree->addItem( parent, itemData );
+      }
+      else
+      {
+        QgsDebugMsg( QStringLiteral( "Invalid form action" ) );
+      }
       break;
     }
 
