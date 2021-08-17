@@ -50,7 +50,7 @@ RUN cd /usr/src \
   && rm master.zip \
   && mkdir build \
   && cd build \
-  && cmake -DQT6=ON -GNinja ../qca-master \
+  && cmake -DQT6=ON -GNinja -DCMAKE_INSTALL_PREFIX=/usr/local ../qca-master \
   && ninja install
 
 RUN cd /usr/src \
@@ -58,7 +58,7 @@ RUN cd /usr/src \
   && unzip master.zip \
   && rm master.zip \
   && cd qtkeychain-master \
-  && cmake -DBUILD_WITH_QT6=ON -GNinja \
+  && cmake -DBUILD_WITH_QT6=ON -DCMAKE_INSTALL_PREFIX=/usr/local -GNinja \
   && ninja install
 
 RUN cd /usr/src \
@@ -68,4 +68,4 @@ RUN cd /usr/src \
   && qmake6 qwt.pro \
   && make -j4 \
   && make install
-  
+
