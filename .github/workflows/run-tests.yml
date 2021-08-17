@@ -333,6 +333,7 @@ jobs:
           # Be aware that these instructions are duplicated in build job
           CTEST_BUILD_NAME=$( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo "PR${GITHUB_PR_NUMBER}" || echo ${GITHUB_REF##*/} )"_${GITHUB_SHA}_${{ matrix.test-batch }}"
           echo "CTEST_BUILD_NAME=${CTEST_BUILD_NAME}" >> $GITHUB_ENV
+          echo "QT_VERSION=${{ matrix.qt-version }}" >> $GITHUB_ENV
 
       - name: Print vars
         run: |
