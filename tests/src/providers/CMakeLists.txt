@@ -41,7 +41,9 @@ add_qgis_test(testqgspostgresconn.cpp MODULE provider LINKEDLIBRARIES provider_p
 
 if (NOT FORCE_STATIC_PROVIDERS)
   add_qgis_test(testqgsmdalprovider.cpp MODULE provider LINKEDLIBRARIES qgis_core)
-  add_qgis_test(testqgsvirtualrasterprovider.cpp MODULE provider LINKEDLIBRARIES qgis_core qgis_analysis)
+  if (WITH_ANALYSIS)
+    add_qgis_test(testqgsvirtualrasterprovider.cpp MODULE provider LINKEDLIBRARIES qgis_core qgis_analysis)
+  endif()
 endif()
 
 if (WITH_EPT)
