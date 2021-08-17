@@ -11428,7 +11428,7 @@ void QgisApp::saveAllEdits( bool verifyAction )
       return;
   }
 
-  const auto layers = editableLayers( true );
+  const auto layers = editableLayers( true, true );
   for ( QgsMapLayer *layer : layers )
   {
     saveEdits( layer, true, false );
@@ -11456,7 +11456,7 @@ void QgisApp::rollbackAllEdits( bool verifyAction )
       return;
   }
 
-  const auto layers = editableLayers( true );
+  const auto layers = editableLayers( true, true );
   for ( QgsMapLayer *layer : layers )
   {
     cancelEdits( layer, true, false );
@@ -11484,7 +11484,7 @@ void QgisApp::cancelAllEdits( bool verifyAction )
       return;
   }
 
-  const auto layers = editableLayers();
+  const auto layers = editableLayers( false, true );
   for ( QgsMapLayer *layer : layers )
   {
     cancelEdits( layer, false, false );
@@ -11555,16 +11555,16 @@ void QgisApp::updateLayerModifiedActions()
   mActionRollbackEdits->setEnabled( QgsLayerTreeUtils::layersModified( selectedLayerNodes ) );
   mActionCancelEdits->setEnabled( QgsLayerTreeUtils::layersEditable( selectedLayerNodes ) );
 
-  bool hasEditLayers = !editableLayers().isEmpty();
+  bool hasEditLayers = !editableLayers( false, true ).isEmpty();
   mActionAllEdits->setEnabled( hasEditLayers );
   mActionCancelAllEdits->setEnabled( hasEditLayers );
 
-  bool hasModifiedLayers = !editableLayers( true ).isEmpty();
+  bool hasModifiedLayers = !editableLayers( true, true ).isEmpty();
   mActionSaveAllEdits->setEnabled( hasModifiedLayers );
   mActionRollbackAllEdits->setEnabled( hasModifiedLayers );
 }
 
-QList<QgsMapLayer *> QgisApp::editableLayers( bool modified ) const
+QList<QgsMapLayer *> QgisApp::editableLayers( bool modified, bool ignoreLayersWhichCannotBeToggled ) const
 {
   QList<QgsMapLayer *> editLayers;
   // use legend layers (instead of registry) so QList mirrors its order
@@ -11575,7 +11575,7 @@ QList<QgsMapLayer *> QgisApp::editableLayers( bool modified ) const
     if ( !layer )
       continue;
 
-    if ( layer->isEditable() && ( !modified || layer->isModified() ) )
+    if ( layer->isEditable() && ( !modified || layer->isModified() ) && ( !ignoreLayersWhichCannotBeToggled || !( layer->properties() & Qgis::MapLayerProperty::UsersCannotToggleEditing ) ) )
       editLayers << layer;
   }
   return editLayers;
@@ -15683,7 +15683,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       updateUndoActions();
       break;
     }
-
   }
 
   refreshFeatureActions();
