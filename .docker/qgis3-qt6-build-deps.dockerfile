@@ -42,7 +42,8 @@ RUN dnf -y install \
     gcc \
     gcc-c++ \
     kernel-devel \
-    ninja-build
+    ninja-build \
+    patch
 
 RUN cd /usr/src \
   && wget https://github.com/KDE/qca/archive/refs/heads/master.zip \
