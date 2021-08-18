@@ -18,6 +18,7 @@ set(TESTS
   testqgsgeometryutils.cpp
   testqgspoint.cpp
   testqgspointxy.cpp
+  testqgspolygon.cpp
   testqgsmultipoint.cpp
   testqgslinestring.cpp
   testqgsrectangle.cpp
