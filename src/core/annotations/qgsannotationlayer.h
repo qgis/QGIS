@@ -24,7 +24,9 @@
 
 
 class QgsAnnotationItem;
+///@cond PRIVATE
 class QgsAnnotationLayerSpatialIndex;
+///@endcond
 
 /**
  * \ingroup core
