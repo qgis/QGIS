@@ -73,3 +73,13 @@ RUN cd /usr/src \
   && make -j4 \
   && make install
 
+
+RUN cd /usr/src \
+  && wget https://www.riverbankcomputing.com/static/Downloads/QScintilla/2.13.0/QScintilla_src-2.13.0.zip \
+  && unzip QScintilla_src-2.13.0.zip \
+  && rm QScintilla_src-2.13.0.zip \
+  && cd QScintilla_src-2.13.0 \
+  && qmake6 src/qscintilla.pro \
+  && make -j4
+  && make install
+
