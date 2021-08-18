@@ -94,8 +94,8 @@ include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
 )
 include_directories(SYSTEM
-  ${${QT_VERSION_BASE}UiPlugin_INCLUDE_DIRS}
-  ${${QT_VERSION_BASE}Designer_INCLUDE_DIRS}
+  ${QT_VERSION_BASE}::UiPlugin
+  ${QT_VERSION_BASE}::Designer
 )
 
 if (WITH_QT6)
