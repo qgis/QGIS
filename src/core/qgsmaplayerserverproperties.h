@@ -43,7 +43,7 @@ class CORE_EXPORT QgsServerMetadataUrlProperties
 
     /**
      * \brief MetadataUrl structure.
-     * MetadataUrl is a a link to the detailed, standardized metadata about the data.
+     * MetadataUrl is a link to the detailed, standardized metadata about the data.
      * \ingroup core
      */
     struct CORE_EXPORT MetadataUrl

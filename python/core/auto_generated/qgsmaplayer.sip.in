@@ -389,6 +389,8 @@ used by QGIS Server in GetCapabilities request.
 MetadataUrl is a a link to the detailed, standardized metadata about the data.
 Since QGIS 3.22, it edits the first metadata URL link.
 
+.. seealso:: :py:func:`serverProperties`
+
 .. deprecated:: QGIS 3.22
 %End
 
@@ -401,7 +403,7 @@ Since QGIS 3.22, it returns the first metadata URL link.
 
 :return: the layer metadata URL
 
-.. seealso:: :py:func:`mapLayerServerProperties`
+.. seealso:: :py:func:`serverProperties`
 
 .. deprecated:: QGIS 3.22
 %End
@@ -415,7 +417,7 @@ Since QGIS 3.22, it edits the first metadata URL type.
 
 :return: the layer metadata type
 
-.. seealso:: :py:func:`mapLayerServerProperties`
+.. seealso:: :py:func:`serverProperties`
 
 .. deprecated:: QGIS 3.22
 %End
@@ -429,7 +431,7 @@ Since QGIS 3.22, it returns the first metadata URL type.
 
 :return: the layer metadata type
 
-.. seealso:: :py:func:`mapLayerServerProperties`
+.. seealso:: :py:func:`serverProperties`
 
 .. deprecated:: QGIS 3.22
 %End
@@ -441,7 +443,7 @@ used by QGIS Server in GetCapabilities request.
 MetadataUrlType indicates how the metadata is structured.
 Since QGIS 3.22, it edits the first metadata URL format.
 
-.. seealso:: :py:func:`mapLayerServerProperties`
+.. seealso:: :py:func:`serverProperties`
 
 .. deprecated:: QGIS 3.22
 %End
@@ -455,7 +457,7 @@ Since QGIS 3.22, it returns the first metadata URL format.
 
 :return: the layer metadata format
 
-.. seealso:: :py:func:`mapLayerServerProperties`
+.. seealso:: :py:func:`serverProperties`
 
 .. deprecated:: QGIS 3.22
 %End
@@ -1950,7 +1952,6 @@ happens.
 
 .. versionadded:: 3.20
 %End
-
 
 
 

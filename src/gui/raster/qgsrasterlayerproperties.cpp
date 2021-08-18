@@ -797,21 +797,29 @@ void QgsRasterLayerProperties::sync()
     )
   );
 
-  //layer attribution and metadataUrl
+  //layer attribution
   mLayerAttributionLineEdit->setText( mRasterLayer->attribution() );
   mLayerAttributionUrlLineEdit->setText( mRasterLayer->attributionUrl() );
-  mLayerMetadataUrlLineEdit->setText( mRasterLayer->metadataUrl() );
-  mLayerMetadataUrlTypeComboBox->setCurrentIndex(
-    mLayerMetadataUrlTypeComboBox->findText(
-      mRasterLayer->metadataUrlType()
-    )
-  );
-  mLayerMetadataUrlFormatComboBox->setCurrentIndex(
-    mLayerMetadataUrlFormatComboBox->findText(
-      mRasterLayer->metadataUrlFormat()
-    )
-  );
 
+  // layer metadata url
+  QgsMapLayerServerProperties *server = mRasterLayer->serverProperties();
+  if ( ! server->metadataUrls().isEmpty() )
+  {
+    mLayerMetadataUrlLineEdit->setText( server->metadataUrls().at( 0 ).url );
+    mLayerMetadataUrlTypeComboBox->setCurrentIndex(
+      mLayerMetadataUrlTypeComboBox->findText(
+        server->metadataUrls().at( 0 ).type
+      )
+    );
+    mLayerMetadataUrlFormatComboBox->setCurrentIndex(
+      mLayerMetadataUrlFormatComboBox->findText(
+        server->metadataUrls().at( 0 ).format
+      )
+    );
+  }
+  delete server;
+
+  // layer legend url
   mLayerLegendUrlLineEdit->setText( mRasterLayer->legendUrl() );
   mLayerLegendUrlFormatComboBox->setCurrentIndex( mLayerLegendUrlFormatComboBox->findText( mRasterLayer->legendUrlFormat() ) );
 
@@ -1021,7 +1029,7 @@ void QgsRasterLayerProperties::apply()
     mMetadataFilled = false;
   mRasterLayer->setDataUrlFormat( mLayerDataUrlFormatComboBox->currentText() );
 
-  //layer attribution and metadataUrl
+  //layer attribution
   if ( mRasterLayer->attribution() != mLayerAttributionLineEdit->text() )
     mMetadataFilled = false;
   mRasterLayer->setAttribution( mLayerAttributionLineEdit->text() );
@@ -1030,17 +1038,22 @@ void QgsRasterLayerProperties::apply()
     mMetadataFilled = false;
   mRasterLayer->setAttributionUrl( mLayerAttributionUrlLineEdit->text() );
 
-  if ( mRasterLayer->metadataUrl() != mLayerMetadataUrlLineEdit->text() )
+  // Metadata URL
+  QgsMapLayerServerProperties::MetadataUrl url;
+  QList<QgsMapLayerServerProperties::MetadataUrl> currentMetadataUrls = mRasterLayer->serverProperties()->metadataUrls();
+  if ( ! currentMetadataUrls.isEmpty() && currentMetadataUrls.at( 0 ).url != mLayerMetadataUrlLineEdit->text() )
     mMetadataFilled = false;
-  mRasterLayer->setMetadataUrl( mLayerMetadataUrlLineEdit->text() );
+  url.url = mLayerMetadataUrlLineEdit->text();
 
-  if ( mRasterLayer->metadataUrlType() != mLayerMetadataUrlTypeComboBox->currentText() )
+  if ( ! currentMetadataUrls.isEmpty() && currentMetadataUrls.at( 0 ).type != mLayerMetadataUrlTypeComboBox->currentText() )
     mMetadataFilled = false;
-  mRasterLayer->setMetadataUrlType( mLayerMetadataUrlTypeComboBox->currentText() );
+  url.type = mLayerMetadataUrlTypeComboBox->currentText();
 
-  if ( mRasterLayer->metadataUrlFormat() != mLayerMetadataUrlFormatComboBox->currentText() )
+  if ( ! currentMetadataUrls.isEmpty() && currentMetadataUrls.at( 0 ).type != mLayerMetadataUrlFormatComboBox->currentText() )
     mMetadataFilled = false;
-  mRasterLayer->setMetadataUrlFormat( mLayerMetadataUrlFormatComboBox->currentText() );
+  url.format = mLayerMetadataUrlFormatComboBox->currentText();
+
+  mRasterLayer->serverProperties()->setMetadataUrls( QList<QgsServerMetadataUrlProperties::MetadataUrl>() << url );
 
   if ( mRasterLayer->legendUrl() != mLayerLegendUrlLineEdit->text() )
     mMetadataFilled = false;

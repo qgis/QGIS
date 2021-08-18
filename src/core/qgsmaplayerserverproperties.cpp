@@ -42,13 +42,32 @@ void QgsServerMetadataUrlProperties::reset()
 
 void QgsServerMetadataUrlProperties::readXml( const QDomNode &layer_node )
 {
-  Q_UNUSED( layer_node );
+  QDomElement element = layer_node.namedItem( QStringLiteral( "metadataUrls" ) ).toElement();
+  mMetadataUrls.clear();
+  const QDomNodeList el = element.elementsByTagName( QStringLiteral( "link" ) );
+  for ( int i = 0; i < el.size(); i++ )
+  {
+    element = el.at( i ).toElement();
+    QgsMapLayerServerProperties::MetadataUrl oneUrl;
+    oneUrl.type = element.attribute( QStringLiteral( "type" ) );
+    oneUrl.format = element.attribute( QStringLiteral( "format" ) );
+    oneUrl.url = element.text();
+    addMetadataUrl( oneUrl );
+  }
 }
 
 void QgsServerMetadataUrlProperties::writeXml( QDomNode &layer_node, QDomDocument &document ) const
 {
-  Q_UNUSED( layer_node );
-  Q_UNUSED( document );
+  QDomElement urls = document.createElement( QStringLiteral( "metadataUrls" ) );
+  for ( const QgsMapLayerServerProperties::MetadataUrl &url : mMetadataUrls )
+  {
+    QDomElement urlElement = document.createElement( QStringLiteral( "metadataUrl" ) );
+    urlElement.setAttribute( QStringLiteral( "type" ), url.type );
+    urlElement.setAttribute( QStringLiteral( "format" ), url.format );
+    urlElement.appendChild( document.createTextNode( url.url ) );
+    urls.appendChild( urlElement );
+  }
+  layer_node.appendChild( urls );
 }
 
 // QgsServerWmsDimensionProperties

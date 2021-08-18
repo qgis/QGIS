@@ -203,13 +203,11 @@ void QgsMapLayer::setMetadataUrl( const QString &metaUrl )
   QList<QgsMapLayerServerProperties::MetadataUrl> urls = serverProperties()->metadataUrls();
   if ( urls.isEmpty() )
   {
-    QgsMessageLog::logMessage( QObject::tr( "INSERTION VIDE" ), QObject::tr( "DEBUG" ), Qgis::MessageLevel::Warning );
     QgsMapLayerServerProperties::MetadataUrl newItem( metaUrl, QLatin1String(), QLatin1String() );
     urls.insert( 0, newItem );
   }
   else
   {
-    QgsMessageLog::logMessage( QObject::tr( "REMPLACEMENT" ), QObject::tr( "DEBUG" ), Qgis::MessageLevel::Warning );
     QgsMapLayerServerProperties::MetadataUrl old = urls.takeAt( 0 );
     QgsMapLayerServerProperties::MetadataUrl newItem( metaUrl, old.type, old.format );
   }
@@ -224,7 +222,6 @@ QString QgsMapLayer::metadataUrl() const
   }
   else
   {
-    QgsMessageLog::logMessage( QObject::tr( "PAS VIDE" ), QObject::tr( "DEBUG" ), Qgis::MessageLevel::Warning );
     return mServerProperties->metadataUrls().at( 0 ).url;
   }
 }
@@ -449,7 +446,6 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
 
   //dataUrl
   const QDomElement dataUrlElem = layerElement.firstChildElement( QStringLiteral( "dataUrl" ) );
-  QDomElement dataUrlElem = layerElement.firstChildElement( QStringLiteral( "dataUrl" ) );
   if ( !dataUrlElem.isNull() )
   {
     mDataUrl = dataUrlElem.text();
@@ -472,7 +468,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
     mAttributionUrl = attribElem.attribute( QStringLiteral( "href" ), QString() );
   }
 
-  //metadataUrl
+  //metadataUrl, keep for legacy QGIS project < 3.22
   QDomElement metaUrlElem = layerElement.firstChildElement( QStringLiteral( "metadataUrl" ) );
   if ( !metaUrlElem.isNull() )
   {
@@ -482,7 +478,8 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
     QgsMapLayerServerProperties::MetadataUrl newItem( url, type, format );
     serverProperties()->metadataUrls().insert( 0, newItem );
   }
-  // mMapLayerServerProperties->readXml()
+
+  serverProperties()->readXml( layerElement );
 
   // mMetadata.readFromLayer( this );
   const QDomElement metadataElem = layerElement.firstChildElement( QStringLiteral( "resourceMetadata" ) );
@@ -633,18 +630,6 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
     layerAttribution.appendChild( layerAttributionText );
     layerAttribution.setAttribute( QStringLiteral( "href" ), attributionUrl() );
     layerElement.appendChild( layerAttribution );
-  }
-
-  // layer metadataUrl
-  QString aMetadataUrl = metadataUrl();
-  if ( !aMetadataUrl.isEmpty() )
-  {
-    QDomElement layerMetadataUrl = document.createElement( QStringLiteral( "metadataUrl" ) );
-    const QDomText layerMetadataUrlText = document.createTextNode( aMetadataUrl );
-    layerMetadataUrl.appendChild( layerMetadataUrlText );
-    layerMetadataUrl.setAttribute( QStringLiteral( "type" ), metadataUrlType() );
-    layerMetadataUrl.setAttribute( QStringLiteral( "format" ), metadataUrlFormat() );
-    layerElement.appendChild( layerMetadataUrl );
   }
 
   // timestamp if supported
