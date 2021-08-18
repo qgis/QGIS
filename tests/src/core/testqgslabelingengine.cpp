@@ -50,6 +50,7 @@ class TestQgsLabelingEngine : public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void testEngineSettings();
+    void testScaledFont();
     void testBasic();
     void testDiagrams();
     void testRuleBased();
@@ -213,6 +214,36 @@ void TestQgsLabelingEngine::testEngineSettings()
   settings3.readSettingsFromProject( &p2 );
   QCOMPARE( settings3.placementVersion(), QgsLabelingEngineSettings::PlacementEngineVersion1 );
 }
+
+void TestQgsLabelingEngine::testScaledFont()
+{
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 9.9 );
+  format.setSizeUnit( QgsUnitTypes::RenderUnit::RenderPixels );
+
+  bool isNullSize = true;
+
+  QgsRenderContext context;
+  QFont f = format.scaledFont( context, 1.0, &isNullSize );
+  QCOMPARE( f.pixelSize(), 10 );
+  QVERIFY( !isNullSize );
+
+  isNullSize = true;
+  f = format.scaledFont( context, 10.0, &isNullSize );
+  QCOMPARE( f.pixelSize(), 100 );
+  QVERIFY( !isNullSize );
+
+  isNullSize = false;
+  format.setSize( 0 );
+  format.scaledFont( context, 1.0, &isNullSize );
+  QVERIFY( isNullSize );
+
+  isNullSize = false;
+  format.scaledFont( context, 10.0, &isNullSize );
+  QVERIFY( isNullSize );
+};
+
 
 void TestQgsLabelingEngine::setDefaultLabelParams( QgsPalLayerSettings &settings )
 {

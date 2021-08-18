@@ -529,10 +529,14 @@ QVariant QgsSymbolLegendNode::data( int role ) const
           QPainter painter( &pix );
           painter.setRenderHint( QPainter::Antialiasing );
           context->setPainter( &painter );
-          const QFontMetricsF fm( mTextOnSymbolTextFormat.scaledFont( *context ) );
-          const qreal yBaselineVCenter = ( mIconSize.height() + fm.ascent() - fm.descent() ) / 2;
-          QgsTextRenderer::drawText( QPointF( mIconSize.width() / 2, yBaselineVCenter ), 0, QgsTextRenderer::AlignCenter,
-                                     QStringList() << mTextOnSymbolLabel, *context, mTextOnSymbolTextFormat );
+          bool isNullSize = false;
+          const QFontMetricsF fm( mTextOnSymbolTextFormat.scaledFont( *context, 1.0, &isNullSize ) );
+          if ( !isNullSize )
+          {
+            const qreal yBaselineVCenter = ( mIconSize.height() + fm.ascent() - fm.descent() ) / 2;
+            QgsTextRenderer::drawText( QPointF( mIconSize.width() / 2, yBaselineVCenter ), 0, QgsTextRenderer::AlignCenter,
+                                       QStringList() << mTextOnSymbolLabel, *context, mTextOnSymbolTextFormat );
+          }
         }
       }
       else
@@ -732,10 +736,14 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
 
     if ( !mTextOnSymbolLabel.isEmpty() )
     {
-      const QFontMetricsF fm( mTextOnSymbolTextFormat.scaledFont( *context ) );
-      const qreal yBaselineVCenter = ( height * dotsPerMM + fm.ascent() - fm.descent() ) / 2;
-      QgsTextRenderer::drawText( QPointF( width * dotsPerMM / 2, yBaselineVCenter ), 0, QgsTextRenderer::AlignCenter,
-                                 QStringList() << mTextOnSymbolLabel, *context, mTextOnSymbolTextFormat );
+      bool isNullSize = false;
+      const QFontMetricsF fm( mTextOnSymbolTextFormat.scaledFont( *context, 1.0, &isNullSize ) );
+      if ( !isNullSize )
+      {
+        const qreal yBaselineVCenter = ( height * dotsPerMM + fm.ascent() - fm.descent() ) / 2;
+        QgsTextRenderer::drawText( QPointF( width * dotsPerMM / 2, yBaselineVCenter ), 0, QgsTextRenderer::AlignCenter,
+                                   QStringList() << mTextOnSymbolLabel, *context, mTextOnSymbolTextFormat );
+      }
     }
   }
 
