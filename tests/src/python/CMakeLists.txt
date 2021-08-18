@@ -426,7 +426,7 @@ if (ENABLE_MSSQLTEST)
 endif()
 
 if (ENABLE_ORACLETEST)
-  ADD_PYTHON_TEST(PyQgsOracleProvider test_provider_oracle.py)
+  ADD_PYTHON_TEST(PyQgsOracleProvider test_provider_oracle.py TEST_TIMEOUT=300)
   ADD_PYTHON_TEST(PyQgsProviderConnectionOracle test_qgsproviderconnection_oracle.py)
   SET_TESTS_PROPERTIES(PyQgsOracleProvider PyQgsProviderConnectionOracle PROPERTIES LABELS "ORACLE")
 endif()
