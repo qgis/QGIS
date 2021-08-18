@@ -180,8 +180,8 @@ QgsQuadrilateral QgsQuadrilateral::squareFromDiagonal( const QgsPoint &p1, const
   if ( QgsPoint( p1.x(), p1.y() ) == QgsPoint( p2.x(), p2.y() ) )
     return QgsQuadrilateral();
 
-  double z = p1.z();
-  double m = p1.m();
+  const double z = p1.z();
+  const double m = p1.m();
 
   QgsQuadrilateral quad;
   QgsPoint point2, point3 = QgsPoint( p2.x(), p2.y() ), point4;
