@@ -233,12 +233,8 @@ void QgsMapToolEditMeshFrame::initialize()
 
   if ( !mSelectionBand )
     mSelectionBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
-  mSelectionBandPartiallyFillColor = QColor( 0, 215, 120, 63 );
-  mSelectionBandPartiallyStrokeColor = QColor( 0, 204, 102, 100 );
-  mSelectionBandTotalFillColor = QColor( 0, 120, 215, 63 );
-  mSelectionBandTotalStrokeColor = QColor( 0, 102, 204, 100 );
-  mSelectionBand->setFillColor( mSelectionBandTotalFillColor );
-  mSelectionBand->setStrokeColor( mSelectionBandTotalStrokeColor );
+  mSelectionBand->setFillColor( QColor( 254, 178, 76, 63 ) );
+  mSelectionBand->setStrokeColor( QColor( 254, 58, 29, 100 ) );
   mSelectionBand->setZValue( 10 );
 
   if ( !mSelectedFacesRubberband )
@@ -425,6 +421,7 @@ bool QgsMapToolEditMeshFrame::populateContextMenuWithEvent( QMenu *menu, QgsMapM
     case AddingNewFace:
     case Selecting:
     case MovingVertex:
+    case SelectingByPolygon:
       return false;
   }
 
@@ -440,6 +437,7 @@ QgsMapTool::Flags QgsMapToolEditMeshFrame::flags() const
     case AddingNewFace:
     case Selecting:
     case MovingVertex:
+    case SelectingByPolygon:
       return QgsMapTool::Flags();
   }
 
@@ -546,7 +544,6 @@ void QgsMapToolEditMeshFrame::cadCanvasMoveEvent( QgsMapMouseEvent *e )
     case Selecting:
     {
       const QRect &rect = QRect( e->pos(), mStartSelectionPos );
-      setSelectPartiallyContainedFace( e->pos().x() < mStartSelectionPos.x() );
       mSelectionBand->setToCanvasRectangle( rect );
     }
     break;
@@ -774,10 +771,6 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       {
         mSelectionBand->movePoint( mapPoint );
         mSelectionBand->addPoint( mapPoint );
-
-        if ( mSelectionBand->numberOfVertices() == 3 )
-          setSelectPartiallyContainedFace( mapPoint.x() < mSelectionBand->getPoint( 0 )->x() );
-
       }
       else if ( e->button() == Qt::RightButton )
       {
@@ -905,21 +898,6 @@ bool QgsMapToolEditMeshFrame::testBorderMovingFace( const QgsMeshFace &borderMov
   }
 
   return true;
-}
-
-void QgsMapToolEditMeshFrame::setSelectPartiallyContainedFace( bool selectPartiallyContainedFace )
-{
-  mSelectPartiallyContainedFace = selectPartiallyContainedFace;
-  if ( mSelectPartiallyContainedFace )
-  {
-    mSelectionBand->setFillColor( mSelectionBandPartiallyFillColor );
-    mSelectionBand->setColor( mSelectionBandPartiallyStrokeColor );
-  }
-  else
-  {
-    mSelectionBand->setFillColor( mSelectionBandTotalFillColor );
-    mSelectionBand->setColor( mSelectionBandTotalStrokeColor );
-  }
 }
 
 void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
@@ -1327,7 +1305,7 @@ void QgsMapToolEditMeshFrame::selectInGeometry( const QgsGeometry &geometry, Qt:
   for ( const int faceIndex : nativeFaceIndexes )
   {
     const QgsMeshFace &face = nativeFace( faceIndex );
-    if ( mSelectPartiallyContainedFace )
+    if ( !( modifiers & Qt::AltModifier ) )
     {
       std::unique_ptr<QgsPolygon> faceGeom( new QgsPolygon( new QgsLineString( nativeFaceGeometry( faceIndex ) ) ) );
       if ( engine->intersects( faceGeom.get() ) )

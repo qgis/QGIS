@@ -155,7 +155,6 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void applyZValueOnSelectedVertices();
     void prepareSelection();
     void updateSelectecVerticesMarker();
-    void setSelectPartiallyContainedFace( bool selectPartiallyContainedFace );
 
     bool testBorderMovingFace( const QgsMeshFace &borderMovingfaces, const QgsVector &translation ) const;
 
@@ -218,7 +217,6 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QColor mSelectionBandTotalStrokeColor = QColor( 0, 102, 204, 100 );
     QgsRubberBand *mSelectedFacesRubberband = nullptr; //own by map canvas
     QMap< int, QgsVertexMarker * > mSelectedVerticesMarker;
-    bool mSelectPartiallyContainedFace = false;
 
     //! members for moving vertices
     QgsPointXY mStartMovingPoint;
