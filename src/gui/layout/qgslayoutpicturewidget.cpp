@@ -320,15 +320,15 @@ void QgsLayoutPictureWidget::setGuiElementValues()
     }
 
     switch ( mPicture->mode() )
-      {
-        case QgsLayoutItemPicture::FormatSVG:
-        case QgsLayoutItemPicture::FormatUnknown:
-          mRadioSVG->setChecked( true );
-          break;
-        case QgsLayoutItemPicture::FormatRaster:
-          mRadioRaster->setChecked( true );
-          break;
-      }
+    {
+      case QgsLayoutItemPicture::FormatSVG:
+      case QgsLayoutItemPicture::FormatUnknown:
+        mRadioSVG->setChecked( true );
+        break;
+      case QgsLayoutItemPicture::FormatRaster:
+        mRadioRaster->setChecked( true );
+        break;
+    }
 
     mSvgSelectorWidget->setSvgPath( mPicture->picturePath() );
     mSvgSelectorWidget->setSvgParameters( mPicture->svgDynamicParameters() );
