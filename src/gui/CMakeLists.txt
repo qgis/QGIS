@@ -1407,6 +1407,12 @@ target_include_directories(qgis_gui SYSTEM PRIVATE
   ${QT_QTUITOOLS_INCLUDE_DIR}
 )
 
+if (WITH_QT6)
+  target_include_directories(qgis_gui SYSTEM PRIVATE
+    ${${QT_VERSION_BASE}Svg_INCLUDE_DIRS}
+  )
+endif()
+
 target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/attributeformconfig
@@ -1508,6 +1514,13 @@ target_link_libraries(qgis_gui
   ${QSCINTILLA_LIBRARY}
   ${QT_VERSION_BASE}::QuickWidgets
 )
+
+if (WITH_QT6)
+  find_package(Qt6 COMPONENTS SvgWidgets REQUIRED)
+  target_link_libraries(qgis_gui
+    Qt6::SvgWidgets
+  )
+endif()
 
 if (FORCE_STATIC_LIBS)
   target_link_libraries(qgis_gui
