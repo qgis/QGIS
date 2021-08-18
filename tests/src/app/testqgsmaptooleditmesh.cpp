@@ -199,7 +199,7 @@ void TestQgsMapToolEditMesh::editMesh()
   QCOMPARE( editMeshMapTool->mSelectedVertices.count(), 5 );
   QCOMPARE( editMeshMapTool->mSelectedFaces.count(), 1 );
 
-  // from left to right
+  // from right to left
   tool.mouseMove( 2700, 2250 );
   tool.mousePress( 2700, 2250, Qt::LeftButton );
   tool.mouseMove( 1200, 3600 );
@@ -280,9 +280,43 @@ void TestQgsMapToolEditMesh::editMesh()
   tool.mouseClick( 1500, 3324, Qt::LeftButton );
   centroid = meshLayerQuadFlower->snapOnElement( QgsMesh::Face, QgsPointXY( 1100, 3050 ), 10 );
   QVERIFY( centroid.compare( QgsPointXY( 1500, 3100 ), 1e-2 ) );
+
+  tool.keyClick( Qt::Key_Escape );
+
+  QCOMPARE( editMeshMapTool->mSelectedVertices.count(), 0 );
+  QCOMPARE( editMeshMapTool->mSelectedFaces.count(), 0 );
+
+  // Selection by polygon
+  editMeshMapTool->mActionSelectByPolygon->trigger();
+
+  // Start from right to left
+  tool.mouseClick( 3500, 3250, Qt::LeftButton );
+  tool.mouseClick( 2750, 3250, Qt::LeftButton );
+  tool.mouseClick( 1750, 2500, Qt::LeftButton );
+  tool.mouseClick( 2500, 2000, Qt::LeftButton );
+  tool.mouseClick( 3000, 2000, Qt::LeftButton );
+  tool.mouseClick( 3000, 2000, Qt::RightButton );
+
+  QCOMPARE( editMeshMapTool->mSelectedVertices.count(), 5 );
+  QCOMPARE( editMeshMapTool->mSelectedFaces.count(), 3 );
+
+  // Start from left to right
+  tool.mouseClick( 2750, 3250, Qt::LeftButton );
+  tool.mouseClick( 3500, 3250, Qt::LeftButton );
+  tool.mouseClick( 3000, 2000, Qt::LeftButton );
+  tool.mouseClick( 2500, 2000, Qt::LeftButton );
+  tool.mouseClick( 1750, 2500, Qt::LeftButton );
+  tool.mouseClick( 1750, 2500, Qt::RightButton );
+
+  QCOMPARE( editMeshMapTool->mSelectedVertices.count(), 1 );
+  QCOMPARE( editMeshMapTool->mSelectedFaces.count(), 0 );
+
+  tool.keyClick( Qt::Key_Escape );
+  tool.keyClick( Qt::Key_Escape );
+
+  QCOMPARE( editMeshMapTool->mSelectedVertices.count(), 0 );
+  QCOMPARE( editMeshMapTool->mSelectedFaces.count(), 0 );
 }
-
-
 
 QGSTEST_MAIN( TestQgsMapToolEditMesh )
 #include "testqgsmaptooleditmesh.moc"
