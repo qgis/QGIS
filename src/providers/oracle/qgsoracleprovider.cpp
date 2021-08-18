@@ -745,6 +745,9 @@ bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
 
   mEnabledCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::TransactionSupport;
 
+  // supports circular geometries
+  mEnabledCapabilities |= QgsVectorDataProvider::CircularGeometries;
+
   QgsOracleConn *conn = connectionRO();
   QSqlQuery qry( *conn );
   if ( !mIsQuery )
@@ -2070,7 +2073,6 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
           QgsWkbTypes::Type lineType = curveType;
           if ( curveType == QgsWkbTypes::CompoundCurve || curveType == QgsWkbTypes::CompoundCurveZ )
           {
-            g.gtype = SDO_GTYPE( dim, GtMultiLine );
             nLines = *ptr.iPtr++;
 
             // Oracle don't store compound curve with only one line
