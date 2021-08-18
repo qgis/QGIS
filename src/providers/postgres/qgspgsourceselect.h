@@ -32,7 +32,6 @@
 #include <QItemDelegate>
 
 class QPushButton;
-class QStringList;
 class QgsGeomColumnTypeThread;
 class QgisApp;
 class QgsPgSourceSelect;
