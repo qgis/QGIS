@@ -26,7 +26,7 @@
 #include <QUuid>
 #include "RTree.h"
 
-
+///@cond PRIVATE
 class QgsAnnotationLayerSpatialIndex : public RTree<QString, float, 2, float>
 {
   public:
@@ -94,6 +94,7 @@ class QgsAnnotationLayerSpatialIndex : public RTree<QString, float, 2, float>
       };
     }
 };
+///@endcond
 
 QgsAnnotationLayer::QgsAnnotationLayer( const QString &name, const LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::AnnotationLayer, name )
