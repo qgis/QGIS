@@ -21,6 +21,7 @@ set(TESTS
   testqgspointxy.cpp
   testqgscurvepolygon.cpp
   testqgspolygon.cpp
+  testqgstriangle.cpp
   testqgsmultipoint.cpp
   testqgslinestring.cpp
   testqgsrectangle.cpp
