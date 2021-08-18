@@ -588,7 +588,7 @@ void QgsAttributesFormProperties::loadAttributeSpecificEditor( QgsAttributesDnDT
       }
       case DnDTreeItemData::Action:
       {
-        receiver->clearSelection();
+        receiver->selectFirstMatchingItem( itemData );
         break;
       }
       case DnDTreeItemData::QmlWidget:

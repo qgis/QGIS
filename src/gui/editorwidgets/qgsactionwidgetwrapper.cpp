@@ -48,7 +48,7 @@ void QgsActionWidgetWrapper::setEnabled( bool enabled )
 {
   if ( valid() && layer() )
   {
-    mActionButton->setEnabled( ! mAction.isEnabledOnlyWhenEditable() || enabled );
+    mActionButton->setEnabled( !mAction.isEnabledOnlyWhenEditable() || enabled );
   }
 }
 
@@ -79,7 +79,7 @@ void QgsActionWidgetWrapper::initWidget( QWidget *editor )
     // Configure push button
     if ( ! icon.isNull() )
     {
-      mActionButton->setIcon( mAction.icon() );
+      mActionButton->setIcon( icon );
       mActionButton->setToolTip( description );
     }
     else
@@ -91,7 +91,7 @@ void QgsActionWidgetWrapper::initWidget( QWidget *editor )
       }
     }
 
-    if ( mAction.isEnabledOnlyWhenEditable() && ! layer()->isEditable() )
+    if ( mAction.isEnabledOnlyWhenEditable() && !layer()->isEditable() )
     {
       mActionButton->setEnabled( false );
     }

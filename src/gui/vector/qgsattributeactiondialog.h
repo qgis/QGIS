@@ -51,6 +51,13 @@ class GUI_EXPORT QgsAttributeActionDialog: public QWidget, private Ui::QgsAttrib
       EnabledOnlyWhenEditable
     };
 
+    //! UserRole for Type data
+    enum Role
+    {
+      ActionType = Qt::UserRole,
+      ActionId  = Qt::UserRole + 1
+    };
+
   public:
     QgsAttributeActionDialog( const QgsActionManager &actions,
                               QWidget *parent = nullptr );
