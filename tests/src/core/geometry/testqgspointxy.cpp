@@ -1,5 +1,5 @@
 /***************************************************************************
-     test_template.cpp
+     testqgspointxy.cpp
      --------------------------------------
     Date                 : Sun Sep 16 12:22:23 AKDT 2007
     Copyright            : (C) 2007 by Gary E. Sherman
@@ -403,4 +403,4 @@ void TestQgsPointXY::isEmpty()
 }
 
 QGSTEST_MAIN( TestQgsPointXY )
-#include "testqgspoint.moc"
+#include "testqgspointxy.moc"
