@@ -145,6 +145,19 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         self.assertEqual(extent.yMinimum(), 13.0)
         self.assertEqual(extent.yMaximum(), 15.0)
 
+    def testItemsInBounds(self):
+        layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        self.assertTrue(layer.isValid())
+
+        item1uuid = layer.addItem(QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)]))))
+        item2uuid = layer.addItem(QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 150)])))
+        item3uuid = layer.addItem(QgsAnnotationMarkerItem(QgsPoint(120, 13)))
+
+        self.assertFalse(layer.itemsInBounds(QgsRectangle(-10,-10, -9,9)))
+        self.assertCountEqual(layer.itemsInBounds(QgsRectangle(12,13, 14,15)), [item1uuid, item2uuid])
+        self.assertCountEqual(layer.itemsInBounds(QgsRectangle(12, 130, 14, 150)), [item2uuid])
+        self.assertCountEqual(layer.itemsInBounds(QgsRectangle(110, 0, 120, 20)), [item3uuid])
+
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")
 
@@ -286,6 +299,7 @@ class TestQgsAnnotationLayer(unittest.TestCase):
 
         rc = QgsRenderContext.fromMapSettings(settings)
         rc.setCoordinateTransform(QgsCoordinateTransform(layer.crs(), settings.destinationCrs(), QgsProject.instance()))
+        rc.setExtent(rc.coordinateTransform().transformBoundingBox(settings.extent(), QgsCoordinateTransform.ReverseTransform))
         image = QImage(200, 200, QImage.Format_ARGB32)
         image.setDotsPerMeterX(96 / 25.4 * 1000)
         image.setDotsPerMeterY(96 / 25.4 * 1000)

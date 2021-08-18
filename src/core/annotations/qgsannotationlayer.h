@@ -22,8 +22,9 @@
 #include "qgsmaplayer.h"
 #include "qgsmaplayerrenderer.h"
 
-class QgsAnnotationItem;
 
+class QgsAnnotationItem;
+class QgsAnnotationLayerSpatialIndex;
 
 /**
  * \ingroup core
@@ -124,6 +125,15 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
      */
     QgsAnnotationItem *item( const QString &id );
 
+    /**
+     * Returns a list of the IDs of all annotation items within the specified \a bounds.
+     *
+     * The optional \a feedback argument can be used to cancel the search early.
+     *
+     * \since QGIS 3.22
+     */
+    QStringList itemsInBounds( const QgsRectangle &bounds, QgsFeedback *feedback = nullptr ) const;
+
     Qgis::MapLayerProperties properties() const override;
     QgsAnnotationLayer *clone() const override SIP_FACTORY;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
@@ -139,6 +149,9 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
   private:
     QMap<QString, QgsAnnotationItem *> mItems;
     QgsCoordinateTransformContext mTransformContext;
+
+    std::unique_ptr< QgsAnnotationLayerSpatialIndex > mSpatialIndex;
+
 };
 
 #endif // QGSANNOTATIONLAYER_H

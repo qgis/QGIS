@@ -22,11 +22,83 @@
 #include "qgslogger.h"
 #include "qgspainting.h"
 #include "qgsmaplayerfactory.h"
+#include "qgsfeedback.h"
 #include <QUuid>
+#include "RTree.h"
+
+
+class QgsAnnotationLayerSpatialIndex : public RTree<QString, float, 2, float>
+{
+  public:
+
+    void insert( const QString &uuid, const QgsRectangle &bounds )
+    {
+      std::array< float, 4 > scaledBounds = scaleBounds( bounds );
+      this->Insert(
+      {
+        scaledBounds[0], scaledBounds[ 1]
+      },
+      {
+        scaledBounds[2], scaledBounds[3]
+      },
+      uuid );
+    }
+
+    /**
+     * Removes existing \a data from the spatial index, with the specified \a bounds.
+     *
+     * \a data is not deleted, and it is the caller's responsibility to ensure that
+     * it is appropriately cleaned up.
+     */
+    void remove( const QString &uuid, const QgsRectangle &bounds )
+    {
+      std::array< float, 4 > scaledBounds = scaleBounds( bounds );
+      this->Remove(
+      {
+        scaledBounds[0], scaledBounds[ 1]
+      },
+      {
+        scaledBounds[2], scaledBounds[3]
+      },
+      uuid );
+    }
+
+    /**
+     * Performs an intersection check against the index, for data intersecting the specified \a bounds.
+     *
+     * The \a callback function will be called once for each matching data object encountered.
+     */
+    bool intersects( const QgsRectangle &bounds, const std::function< bool( const QString &uuid )> &callback ) const
+    {
+      std::array< float, 4 > scaledBounds = scaleBounds( bounds );
+      this->Search(
+      {
+        scaledBounds[0], scaledBounds[ 1]
+      },
+      {
+        scaledBounds[2], scaledBounds[3]
+      },
+      callback );
+      return true;
+    }
+
+  private:
+    std::array<float, 4> scaleBounds( const QgsRectangle &bounds ) const
+    {
+      return
+      {
+        static_cast< float >( bounds.xMinimum() ),
+        static_cast< float >( bounds.yMinimum() ),
+        static_cast< float >( bounds.xMaximum() ),
+        static_cast< float >( bounds.yMaximum() )
+      };
+    }
+};
 
 QgsAnnotationLayer::QgsAnnotationLayer( const QString &name, const LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::AnnotationLayer, name )
   , mTransformContext( options.transformContext )
+  , mSpatialIndex( std::make_unique< QgsAnnotationLayerSpatialIndex >() )
 {
   mShouldValidateCrs = false;
   mValid = true;
@@ -50,6 +122,7 @@ QString QgsAnnotationLayer::addItem( QgsAnnotationItem *item )
 {
   const QString uuid = QUuid::createUuid().toString();
   mItems.insert( uuid, item );
+  mSpatialIndex->insert( uuid, item->boundingBox() );
 
   triggerRepaint();
 
@@ -61,7 +134,9 @@ bool QgsAnnotationLayer::removeItem( const QString &id )
   if ( !mItems.contains( id ) )
     return false;
 
-  delete mItems.take( id );
+  std::unique_ptr< QgsAnnotationItem> item( mItems.take( id ) );
+  mSpatialIndex->remove( id, item->boundingBox() );
+  item.reset();
 
   triggerRepaint();
 
@@ -72,6 +147,7 @@ void QgsAnnotationLayer::clear()
 {
   qDeleteAll( mItems );
   mItems.clear();
+  mSpatialIndex = std::make_unique< QgsAnnotationLayerSpatialIndex >();
 
   triggerRepaint();
 }
@@ -84,6 +160,18 @@ bool QgsAnnotationLayer::isEmpty() const
 QgsAnnotationItem *QgsAnnotationLayer::item( const QString &id )
 {
   return mItems.value( id );
+}
+
+QStringList QgsAnnotationLayer::itemsInBounds( const QgsRectangle &bounds, QgsFeedback *feedback ) const
+{
+  QStringList res;
+
+  mSpatialIndex->intersects( bounds, [&res, feedback]( const QString & uuid )->bool
+  {
+    res << uuid;
+    return !feedback || !feedback->isCanceled();
+  } );
+  return res;
 }
 
 Qgis::MapLayerProperties QgsAnnotationLayer::properties() const
@@ -101,6 +189,7 @@ QgsAnnotationLayer *QgsAnnotationLayer::clone() const
   for ( auto it = mItems.constBegin(); it != mItems.constEnd(); ++it )
   {
     layer->mItems.insert( it.key(), ( *it )->clone() );
+    layer->mSpatialIndex->insert( it.key(), ( *it )->boundingBox() );
   }
 
   return layer.release();
@@ -143,6 +232,7 @@ bool QgsAnnotationLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
 
   qDeleteAll( mItems );
   mItems.clear();
+  mSpatialIndex = std::make_unique< QgsAnnotationLayerSpatialIndex >();
 
   const QDomNodeList itemsElements = layerNode.toElement().elementsByTagName( QStringLiteral( "items" ) );
   if ( itemsElements.size() == 0 )
@@ -158,6 +248,7 @@ bool QgsAnnotationLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
     if ( item )
     {
       item->readXml( itemElement, context );
+      mSpatialIndex->insert( id, item->boundingBox() );
       mItems.insert( id, item.release() );
     }
   }
@@ -183,10 +274,10 @@ bool QgsAnnotationLayer::writeXml( QDomNode &layer_node, QDomDocument &doc, cons
 
   mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::AnnotationLayer ) );
 
-  QDomElement itemsElement = doc.createElement( "items" );
+  QDomElement itemsElement = doc.createElement( QStringLiteral( "items" ) );
   for ( auto it = mItems.constBegin(); it != mItems.constEnd(); ++it )
   {
-    QDomElement itemElement = doc.createElement( "item" );
+    QDomElement itemElement = doc.createElement( QStringLiteral( "item" ) );
     itemElement.setAttribute( QStringLiteral( "type" ), ( *it )->type() );
     itemElement.setAttribute( QStringLiteral( "id" ), it.key() );
     ( *it )->writeXml( itemElement, doc, context );

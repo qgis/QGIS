@@ -100,6 +100,15 @@ Returns the item with the specified ``id``, or ``None`` if no matching item was 
 .. versionadded:: 3.22
 %End
 
+    QStringList itemsInBounds( const QgsRectangle &bounds, QgsFeedback *feedback = 0 ) const;
+%Docstring
+Returns a list of the IDs of all annotation items within the specified ``bounds``.
+
+The optional ``feedback`` argument can be used to cancel the search early.
+
+.. versionadded:: 3.22
+%End
+
     virtual Qgis::MapLayerProperties properties() const;
 
     virtual QgsAnnotationLayer *clone() const /Factory/;
