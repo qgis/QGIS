@@ -39,7 +39,7 @@ void QgsMapToolAddCircle::deactivate()
 
   mParentTool->clearCurve();
 
-  // keep z value from the first snapped point
+  // keep z and m values from the first snapped point
   std::unique_ptr<QgsCircularString> lineString( mCircle.toCircularString() );
   for ( const QgsPoint &point : std::as_const( mPoints ) )
   {
@@ -51,7 +51,7 @@ void QgsMapToolAddCircle::deactivate()
       break;
     }
     if ( QgsWkbTypes::hasM( point.wkbType() ) &&
-         point.z() != defaultMValue() )
+         point.m() != defaultMValue() )
     {
       lineString->dropMValue();
       lineString->addMValue( point.m() );
