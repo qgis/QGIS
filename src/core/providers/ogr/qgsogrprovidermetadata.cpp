@@ -1210,6 +1210,9 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
       if ( feedback && feedback->isCanceled() )
         break;
 
+      if ( originalUriLayerIdWasSpecified && i != uriLayerId )
+        continue;
+
       QString errCause;
       QgsOgrLayerUniquePtr layer;
 
@@ -1227,7 +1230,15 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
           continue;
       }
 
-      res << QgsOgrProviderUtils::querySubLayerList( i, i == 0 ? firstLayer.get() : layer.get(), driverName, flags, false, uri, false, feedback );
+      QgsOgrLayer *sublayer = i == 0 ? firstLayer.get() : layer.get();
+      if ( !sublayer )
+        continue;
+
+      const QString layerName = QString::fromUtf8( sublayer->name() );
+      if ( !originalUriLayerName.isEmpty() && layerName != originalUriLayerName )
+        continue;
+
+      res << QgsOgrProviderUtils::querySubLayerList( i, sublayer, driverName, flags, false, uri, false, feedback );
     }
   }
 
