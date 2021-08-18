@@ -65,6 +65,8 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         self.assertTrue(layer.isValid())
 
         self.assertTrue(layer.isEmpty())
+        self.assertIsNone(layer.item('xxxx'))
+        self.assertIsNone(layer.item(''))
 
         polygon_item_id = layer.addItem(QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)]))))
         linestring_item_id = layer.addItem(QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)])))
@@ -76,6 +78,12 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         self.assertIsInstance(layer.items()[polygon_item_id], QgsAnnotationPolygonItem)
         self.assertIsInstance(layer.items()[linestring_item_id], QgsAnnotationLineItem)
         self.assertIsInstance(layer.items()[marker_item_id], QgsAnnotationMarkerItem)
+
+        self.assertIsInstance(layer.item(polygon_item_id), QgsAnnotationPolygonItem)
+        self.assertIsInstance(layer.item(linestring_item_id), QgsAnnotationLineItem)
+        self.assertIsInstance(layer.item(marker_item_id), QgsAnnotationMarkerItem)
+        self.assertIsNone(layer.item('xxxx'))
+        self.assertIsNone(layer.item(''))
 
         self.assertFalse(layer.removeItem('xxxx'))
         self.assertEqual(len(layer.items()), 3)

@@ -93,6 +93,13 @@ This map contains references to items owned by the layer, and ownership of these
 with the layer.
 %End
 
+    QgsAnnotationItem *item( const QString &id );
+%Docstring
+Returns the item with the specified ``id``, or ``None`` if no matching item was found.
+
+.. versionadded:: 3.22
+%End
+
     virtual Qgis::MapLayerProperties properties() const;
 
     virtual QgsAnnotationLayer *clone() const /Factory/;

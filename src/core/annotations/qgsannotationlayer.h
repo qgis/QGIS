@@ -117,6 +117,13 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
      */
     QMap<QString, QgsAnnotationItem *> items() const { return mItems; }
 
+    /**
+     * Returns the item with the specified \a id, or NULLPTR if no matching item was found.
+     *
+     * \since QGIS 3.22
+     */
+    QgsAnnotationItem *item( const QString &id );
+
     Qgis::MapLayerProperties properties() const override;
     QgsAnnotationLayer *clone() const override SIP_FACTORY;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
