@@ -1172,11 +1172,11 @@ namespace QgsWms
           }
 
           // layer metadata URL
-          QString metadataUrl = l->metadataUrl();
-          if ( !metadataUrl.isEmpty() )
+          const QList<QgsMapLayerServerProperties::MetadataUrl> urls = l->serverProperties()->metadataUrls();
+          for ( const QgsMapLayerServerProperties::MetadataUrl &url : urls )
           {
             QDomElement metaUrlElem = doc.createElement( QStringLiteral( "MetadataURL" ) );
-            QString metadataUrlType = l->metadataUrlType();
+            QString metadataUrlType = url.type;
             if ( version == QLatin1String( "1.1.1" ) )
             {
               metaUrlElem.setAttribute( QStringLiteral( "type" ), metadataUrlType );
@@ -1193,7 +1193,7 @@ namespace QgsWms
             {
               metaUrlElem.setAttribute( QStringLiteral( "type" ), metadataUrlType );
             }
-            QString metadataUrlFormat = l->metadataUrlFormat();
+            QString metadataUrlFormat = url.format;
             if ( !metadataUrlFormat.isEmpty() )
             {
               QDomElement metaUrlFormatElem = doc.createElement( QStringLiteral( "Format" ) );
@@ -1204,7 +1204,7 @@ namespace QgsWms
             QDomElement metaUrlORElem = doc.createElement( QStringLiteral( "OnlineResource" ) );
             metaUrlORElem.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
             metaUrlORElem.setAttribute( QStringLiteral( "xlink:type" ), QStringLiteral( "simple" ) );
-            metaUrlORElem.setAttribute( QStringLiteral( "xlink:href" ), metadataUrl );
+            metaUrlORElem.setAttribute( QStringLiteral( "xlink:href" ), url.url );
             metaUrlElem.appendChild( metaUrlORElem );
             layerElem.appendChild( metaUrlElem );
           }

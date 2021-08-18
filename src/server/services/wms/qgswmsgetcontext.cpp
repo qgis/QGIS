@@ -412,16 +412,15 @@ namespace QgsWms
           }
 
           // layer metadata URL
-          const QString metadataUrl = l->metadataUrl();
-          if ( !metadataUrl.isEmpty() )
+          const QList<QgsMapLayerServerProperties::MetadataUrl> urls = l->serverProperties()->metadataUrls();
+          for ( const QgsMapLayerServerProperties::MetadataUrl &url : urls )
           {
             QDomElement metaUrlElem = doc.createElement( QStringLiteral( "MetadataURL" ) );
-            const QString metadataUrlFormat = l->metadataUrlFormat();
-            metaUrlElem.setAttribute( QStringLiteral( "format" ), metadataUrlFormat );
+            metaUrlElem.setAttribute( QStringLiteral( "format" ), url.format );
             QDomElement metaUrlORElem = doc.createElement( QStringLiteral( "OnlineResource" ) );
             metaUrlORElem.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
             metaUrlORElem.setAttribute( QStringLiteral( "xlink:type" ), QStringLiteral( "simple" ) );
-            metaUrlORElem.setAttribute( QStringLiteral( "xlink:href" ), metadataUrl );
+            metaUrlORElem.setAttribute( QStringLiteral( "xlink:href" ), url.url );
             metaUrlElem.appendChild( metaUrlORElem );
             layerElem.appendChild( metaUrlElem );
           }

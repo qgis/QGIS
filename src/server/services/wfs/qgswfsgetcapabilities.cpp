@@ -612,15 +612,15 @@ namespace QgsWfs
       layerElem.appendChild( bBoxElement );
 
       // layer metadata URL
-      const QString metadataUrl = layer->metadataUrl();
-      if ( !metadataUrl.isEmpty() )
+      const QList<QgsMapLayerServerProperties::MetadataUrl> urls = layer->serverProperties()->metadataUrls();
+      for ( const QgsMapLayerServerProperties::MetadataUrl &url : urls )
       {
         QDomElement metaUrlElem = doc.createElement( QStringLiteral( "MetadataURL" ) );
-        const QString metadataUrlType = layer->metadataUrlType();
+        const QString metadataUrlType = url.type;
         metaUrlElem.setAttribute( QStringLiteral( "type" ), metadataUrlType );
-        const QString metadataUrlFormat = layer->metadataUrlFormat();
+        const QString metadataUrlFormat = url.format;
         metaUrlElem.setAttribute( QStringLiteral( "format" ), metadataUrlFormat );
-        const QDomText metaUrlText = doc.createTextNode( metadataUrl );
+        const QDomText metaUrlText = doc.createTextNode( url.url );
         metaUrlElem.appendChild( metaUrlText );
         layerElem.appendChild( metaUrlElem );
       }
@@ -632,6 +632,3 @@ namespace QgsWfs
   }
 
 } // namespace QgsWfs
-
-
-
