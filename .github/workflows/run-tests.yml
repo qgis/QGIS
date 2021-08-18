@@ -339,6 +339,7 @@ jobs:
       - name: Build Docker Container with Testing Environment
         run: |
           DOCKER_STAGE=$( ( [[ ${{ matrix.docker-target }} == "binary-for-oracle" ]] && echo "1" ) \
+                       || ( [[ ${{ matrix.docker-target }} == "single" ]] && echo "1" ) \
                        || ( [[ ${{ matrix.docker-target }} == "binary-only" ]] && echo "2" ) \
                        || echo "3" )
           DOCKER_PATH=$(echo ${{ github.repository }} | tr '[A-Z]' '[a-z]')
