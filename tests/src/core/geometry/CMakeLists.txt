@@ -16,6 +16,7 @@ include_directories(
 set(TESTS
   testqgsgeometry.cpp
   testqgsgeometryutils.cpp
+  testqgscircularstring.cpp
   testqgspoint.cpp
   testqgspointxy.cpp
   testqgspolygon.cpp
