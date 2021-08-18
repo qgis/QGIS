@@ -69,5 +69,5 @@ void QgsAttributeEditorAction::loadConfiguration( const QDomElement &element, co
   Q_UNUSED( layerId )
   Q_UNUSED( context )
   Q_UNUSED( fields )
-  mUuid = element.attribute( QStringLiteral( "ActionUUID" ) );
+  mUuid = QUuid( element.attribute( QStringLiteral( "ActionUUID" ) ) );
 }

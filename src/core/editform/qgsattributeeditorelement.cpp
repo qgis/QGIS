@@ -76,7 +76,7 @@ QgsAttributeEditorElement *QgsAttributeEditorElement::create( const QDomElement 
   }
   else if ( element.tagName() == QLatin1String( "attributeEditorAction" ) )
   {
-    newElement = new QgsAttributeEditorAction( element.attribute( QStringLiteral( "name" ) ), parent );
+    newElement = new QgsAttributeEditorAction( QUuid( element.attribute( QStringLiteral( "name" ) ) ), parent );
   }
 
   if ( newElement )
