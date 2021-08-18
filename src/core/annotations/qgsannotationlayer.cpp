@@ -81,6 +81,11 @@ bool QgsAnnotationLayer::isEmpty() const
   return mItems.empty();
 }
 
+QgsAnnotationItem *QgsAnnotationLayer::item( const QString &id )
+{
+  return mItems.value( id );
+}
+
 Qgis::MapLayerProperties QgsAnnotationLayer::properties() const
 {
   // annotation layers are always editable
