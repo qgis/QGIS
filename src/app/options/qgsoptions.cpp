@@ -106,40 +106,40 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   setupUi( this );
 
   mTreeModel = new QStandardItemModel( this );
-  mTreeModel->appendRow( createItem( tr( "General" ), tr( "General" ), QStringLiteral( "propertyicons/general.svg" ) ) );
-  mTreeModel->appendRow( createItem( tr( "System" ), tr( "System" ), QStringLiteral( "propertyicons/system.svg" ) ) );
+  mTreeModel->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "General" ), QCoreApplication::translate( "QgsOptionsBase", "General" ), QStringLiteral( "propertyicons/general.svg" ) ) );
+  mTreeModel->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "System" ), QCoreApplication::translate( "QgsOptionsBase", "System" ), QStringLiteral( "propertyicons/system.svg" ) ) );
 
-  QStandardItem *crsGroup = new QStandardItem( tr( "CRS and Transforms" ) );
+  QStandardItem *crsGroup = new QStandardItem( QCoreApplication::translate( "QgsOptionsBase", "CRS and Transforms" ) );
   crsGroup->setToolTip( tr( "CRS and Transforms" ) );
   crsGroup->setSelectable( false );
-  crsGroup->appendRow( createItem( tr( "CRS" ), tr( "CRS" ), QStringLiteral( "propertyicons/CRS.svg" ) ) );
-  crsGroup->appendRow( createItem( tr( "Transformations" ), tr( "Coordinate transformations and operations" ), QStringLiteral( "transformation.svg" ) ) );
+  crsGroup->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "CRS" ), QCoreApplication::translate( "QgsOptionsBase", "CRS" ), QStringLiteral( "propertyicons/CRS.svg" ) ) );
+  crsGroup->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "Transformations" ), QCoreApplication::translate( "QgsOptionsBase", "Coordinate transformations and operations" ), QStringLiteral( "transformation.svg" ) ) );
   mTreeModel->appendRow( crsGroup );
 
-  QStandardItem *dataSources = createItem( tr( "Data Sources" ), tr( "Data sources" ), QStringLiteral( "propertyicons/attributes.svg" ) );
+  QStandardItem *dataSources = createItem( QCoreApplication::translate( "QgsOptionsBase", "Data Sources" ), QCoreApplication::translate( "QgsOptionsBase", "Data sources" ), QStringLiteral( "propertyicons/attributes.svg" ) );
   mTreeModel->appendRow( dataSources );
-  dataSources->appendRow( createItem( tr( "GDAL" ), tr( "GDAL" ), QStringLiteral( "propertyicons/gdal.svg" ) ) );
+  dataSources->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "GDAL" ), QCoreApplication::translate( "QgsOptionsBase", "GDAL" ), QStringLiteral( "propertyicons/gdal.svg" ) ) );
 
-  mTreeModel->appendRow( createItem( tr( "Rendering" ), tr( "Rendering" ), QStringLiteral( "propertyicons/rendering.svg" ) ) );
-  mTreeModel->appendRow( createItem( tr( "Canvas & Legend" ), tr( "Canvas and legend" ), QStringLiteral( "propertyicons/overlay.svg" ) ) );
-  mTreeModel->appendRow( createItem( tr( "Map Tools" ), tr( "Map tools" ), QStringLiteral( "propertyicons/map_tools.svg" ) ) );
-  mTreeModel->appendRow( createItem( tr( "Colors" ), tr( "Colors" ), QStringLiteral( "propertyicons/colors.svg" ) ) );
-  mTreeModel->appendRow( createItem( tr( "Digitizing" ), tr( "Digitizing" ), QStringLiteral( "propertyicons/digitizing.svg" ) ) );
-  mTreeModel->appendRow( createItem( tr( "Layouts" ), tr( "Print layouts" ), QStringLiteral( "mIconLayout.svg" ) ) );
-  mTreeModel->appendRow( createItem( tr( "Variables" ), tr( "Variables" ), QStringLiteral( "mIconExpression.svg" ) ) );
-  mTreeModel->appendRow( createItem( tr( "Authentication" ), tr( "Authentication" ), QStringLiteral( "locked.svg" ) ) );
-  mTreeModel->appendRow( createItem( tr( "Network" ), tr( "Network" ), QStringLiteral( "propertyicons/network_and_proxy.svg" ) ) );
+  mTreeModel->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "Rendering" ), QCoreApplication::translate( "QgsOptionsBase", "Rendering" ), QStringLiteral( "propertyicons/rendering.svg" ) ) );
+  mTreeModel->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "Canvas & Legend" ), QCoreApplication::translate( "QgsOptionsBase", "Canvas and legend" ), QStringLiteral( "propertyicons/overlay.svg" ) ) );
+  mTreeModel->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "Map Tools" ), QCoreApplication::translate( "QgsOptionsBase", "Map tools" ), QStringLiteral( "propertyicons/map_tools.svg" ) ) );
+  mTreeModel->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "Colors" ), QCoreApplication::translate( "QgsOptionsBase", "Colors" ), QStringLiteral( "propertyicons/colors.svg" ) ) );
+  mTreeModel->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "Digitizing" ), QCoreApplication::translate( "QgsOptionsBase", "Digitizing" ), QStringLiteral( "propertyicons/digitizing.svg" ) ) );
+  mTreeModel->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "Layouts" ), QCoreApplication::translate( "QgsOptionsBase", "Print layouts" ), QStringLiteral( "mIconLayout.svg" ) ) );
+  mTreeModel->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "Variables" ), QCoreApplication::translate( "QgsOptionsBase", "Variables" ), QStringLiteral( "mIconExpression.svg" ) ) );
+  mTreeModel->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "Authentication" ), QCoreApplication::translate( "QgsOptionsBase", "Authentication" ), QStringLiteral( "locked.svg" ) ) );
+  mTreeModel->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "Network" ), QCoreApplication::translate( "QgsOptionsBase", "Network" ), QStringLiteral( "propertyicons/network_and_proxy.svg" ) ) );
 
-  QStandardItem *gpsGroup = new QStandardItem( tr( "GPS" ) );
+  QStandardItem *gpsGroup = new QStandardItem( QCoreApplication::translate( "QgsOptionsBase", "GPS" ) );
   gpsGroup->setData( QStringLiteral( "gps" ) );
   gpsGroup->setToolTip( tr( "GPS" ) );
   gpsGroup->setSelectable( false );
   mTreeModel->appendRow( gpsGroup );
 
-  mTreeModel->appendRow( createItem( tr( "Locator" ), tr( "Locator" ), QStringLiteral( "search.svg" ) ) );
-  mTreeModel->appendRow( createItem( tr( "Acceleration" ), tr( "GPU acceleration" ), QStringLiteral( "mIconGPU.svg" ) ) );
+  mTreeModel->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "Locator" ), tr( "Locator" ), QStringLiteral( "search.svg" ) ) );
+  mTreeModel->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "Acceleration" ), tr( "GPU acceleration" ), QStringLiteral( "mIconGPU.svg" ) ) );
 
-  QStandardItem *ideGroup = new QStandardItem( tr( "IDE" ) );
+  QStandardItem *ideGroup = new QStandardItem( QCoreApplication::translate( "QgsOptionsBase", "IDE" ) );
   ideGroup->setData( QStringLiteral( "ide" ) );
   ideGroup->setToolTip( tr( "Development and Scripting Settings" ) );
   ideGroup->setSelectable( false );
