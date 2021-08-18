@@ -191,7 +191,7 @@ void TestQgsMapToolEditMesh::editMesh()
   QCOMPARE( meshLayerQuadFlower->datasetValue( QgsMeshDatasetIndex( 0, 0 ), QgsPointXY( 2500, 3250 ) ).x(), 1500 );
 
   //Selection
-  // completly included
+  // completely included
   tool.mouseMove( 1200, 3600 );
   tool.mousePress( 1200, 3600, Qt::LeftButton );
   tool.mouseMove( 2700, 2250 );
@@ -300,7 +300,7 @@ void TestQgsMapToolEditMesh::editMesh()
   QCOMPARE( editMeshMapTool->mSelectedVertices.count(), 5 );
   QCOMPARE( editMeshMapTool->mSelectedFaces.count(), 3 );
 
-  // completly included
+  // completely included
   tool.mouseClick( 2750, 3250, Qt::LeftButton );
   tool.mouseClick( 3500, 3250, Qt::LeftButton );
   tool.mouseClick( 3000, 2000, Qt::LeftButton );
