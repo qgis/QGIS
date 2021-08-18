@@ -134,6 +134,10 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //! \brief slot executed when user changes the layer's CRS
     void mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
 
+    // Server properties
+    void addMetadataUrl();
+    void removeSelectedMetadataUrl();
+
     /**
      * updates gamma spinbox on slider changes
      * \since QGIS 3.16
@@ -198,6 +202,8 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     QPushButton *mBtnMetadata = nullptr;
     QAction *mActionLoadMetadata = nullptr;
     QAction *mActionSaveMetadataAs = nullptr;
+
+    QStandardItemModel *mMetadataUrlModel = nullptr;
 
     //! A list of additional pages provided by plugins
     QList<QgsMapLayerConfigWidget *> mLayerPropertiesPages;

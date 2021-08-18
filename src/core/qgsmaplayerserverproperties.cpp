@@ -44,7 +44,7 @@ void QgsServerMetadataUrlProperties::readXml( const QDomNode &layer_node )
 {
   QDomElement element = layer_node.namedItem( QStringLiteral( "metadataUrls" ) ).toElement();
   mMetadataUrls.clear();
-  const QDomNodeList el = element.elementsByTagName( QStringLiteral( "link" ) );
+  const QDomNodeList el = element.elementsByTagName( QStringLiteral( "metadataUrl" ) );
   for ( int i = 0; i < el.size(); i++ )
   {
     element = el.at( i ).toElement();

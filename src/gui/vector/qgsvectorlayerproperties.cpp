@@ -39,6 +39,7 @@
 #include "qgsmaplayerconfigwidgetfactory.h"
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgsmetadatawidget.h"
+#include "qgsmetadataurlitemdelegate.h"
 #include "qgsnative.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
@@ -121,6 +122,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( mWmsDimensionsTreeWidget, &QTreeWidget::itemDoubleClicked, this, &QgsVectorLayerProperties::mWmsDimensionsTreeWidget_itemDoubleClicked );
   connect( mButtonRemoveWmsDimension, &QPushButton::clicked, this, &QgsVectorLayerProperties::mButtonRemoveWmsDimension_clicked );
   connect( mSimplifyDrawingGroupBox, &QGroupBox::toggled, this, &QgsVectorLayerProperties::mSimplifyDrawingGroupBox_toggled );
+  connect( buttonRemoveMetadataUrl, &QPushButton::clicked, this, &QgsVectorLayerProperties::removeSelectedMetadataUrl );
+  connect( buttonAddMetadataUrl, &QPushButton::clicked, this, &QgsVectorLayerProperties::addMetadataUrl );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorLayerProperties::showHelp );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
@@ -341,23 +344,28 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mLayerAttributionLineEdit->setText( mLayer->attribution() );
   mLayerAttributionUrlLineEdit->setText( mLayer->attributionUrl() );
 
-  // layer metadata url
-  QgsMapLayerServerProperties *server = mLayer->serverProperties();
-  if ( ! server->metadataUrls().isEmpty() )
+  // Setup the layer metadata URL
+  tableViewMetadataUrl->setSelectionMode( QAbstractItemView::SingleSelection );
+  tableViewMetadataUrl->setSelectionBehavior( QAbstractItemView::SelectRows );
+  tableViewMetadataUrl->horizontalHeader()->setStretchLastSection( true );
+
+  mMetadataUrlModel = new QStandardItemModel( tableViewMetadataUrl );
+  mMetadataUrlModel->clear();
+  mMetadataUrlModel->setColumnCount( 3 );
+  QStringList metadataUrlHeaders;
+  metadataUrlHeaders << tr( "URL" ) << tr( "Type" ) << tr( "Format" );
+  mMetadataUrlModel->setHorizontalHeaderLabels( metadataUrlHeaders );
+  tableViewMetadataUrl->setModel( mMetadataUrlModel );
+  tableViewMetadataUrl->setItemDelegate( new MetadataUrlItemDelegate( this ) );
+
+  const QList<QgsMapLayerServerProperties::MetadataUrl> &metaUrls = mLayer->serverProperties()->metadataUrls();
+  for ( const QgsMapLayerServerProperties::MetadataUrl &metaUrl : metaUrls )
   {
-    mLayerMetadataUrlLineEdit->setText( server->metadataUrls().at( 0 ).url );
-    mLayerMetadataUrlTypeComboBox->setCurrentIndex(
-      mLayerMetadataUrlTypeComboBox->findText(
-        server->metadataUrls().at( 0 ).type
-      )
-    );
-    mLayerMetadataUrlFormatComboBox->setCurrentIndex(
-      mLayerMetadataUrlFormatComboBox->findText(
-        server->metadataUrls().at( 0 ).format
-      )
-    );
+    int row = mMetadataUrlModel->rowCount();
+    mMetadataUrlModel->setItem( row, 0, new QStandardItem( metaUrl.url ) );
+    mMetadataUrlModel->setItem( row, 1, new QStandardItem( metaUrl.type ) );
+    mMetadataUrlModel->setItem( row, 2, new QStandardItem( metaUrl.format ) );
   }
-  delete server;
 
   // layer legend url
   mLayerLegendUrlLineEdit->setText( mLayer->legendUrl() );
@@ -500,6 +508,22 @@ void QgsVectorLayerProperties::insertFieldOrExpression()
   expression += QLatin1String( " %]" );
 
   mMapTipWidget->insertText( expression );
+}
+
+void QgsVectorLayerProperties::addMetadataUrl()
+{
+  int row = mMetadataUrlModel->rowCount();
+  mMetadataUrlModel->setItem( row, 0, new QStandardItem( QLatin1String() ) );
+  mMetadataUrlModel->setItem( row, 1, new QStandardItem( QLatin1String() ) );
+  mMetadataUrlModel->setItem( row, 2, new QStandardItem( QLatin1String() ) );
+}
+
+void QgsVectorLayerProperties::removeSelectedMetadataUrl()
+{
+  const QModelIndexList selectedRows = tableViewMetadataUrl->selectionModel()->selectedRows();
+  if ( selectedRows.empty() )
+    return;
+  mMetadataUrlModel->removeRow( selectedRows[0].row() );
 }
 
 // in raster props, this method is called sync()
@@ -787,21 +811,17 @@ void QgsVectorLayerProperties::apply()
   mLayer->setAttributionUrl( mLayerAttributionUrlLineEdit->text() );
 
   // Metadata URL
-  QgsMapLayerServerProperties::MetadataUrl url;
-  QList<QgsMapLayerServerProperties::MetadataUrl> currentMetadataUrls = mLayer->serverProperties()->metadataUrls();
-  if ( ! currentMetadataUrls.isEmpty() && currentMetadataUrls.at( 0 ).url != mLayerMetadataUrlLineEdit->text() )
+  QList<QgsMapLayerServerProperties::MetadataUrl> metaUrls;
+  for ( int row = 0; row < mMetadataUrlModel->rowCount() ; row++ )
+  {
+    QgsMapLayerServerProperties::MetadataUrl metaUrl;
+    metaUrl.url = mMetadataUrlModel->item( row, 0 )->text();
+    metaUrl.type = mMetadataUrlModel->item( row, 1 )->text();
+    metaUrl.format = mMetadataUrlModel->item( row, 2 )->text();
+    metaUrls.append( metaUrl );
     mMetadataFilled = false;
-  url.url = mLayerMetadataUrlLineEdit->text();
-
-  if ( ! currentMetadataUrls.isEmpty() && currentMetadataUrls.at( 0 ).type != mLayerMetadataUrlTypeComboBox->currentText() )
-    mMetadataFilled = false;
-  url.type = mLayerMetadataUrlTypeComboBox->currentText();
-
-  if ( ! currentMetadataUrls.isEmpty() && currentMetadataUrls.at( 0 ).type != mLayerMetadataUrlFormatComboBox->currentText() )
-    mMetadataFilled = false;
-  url.format = mLayerMetadataUrlFormatComboBox->currentText();
-
-  mLayer->serverProperties()->setMetadataUrls( QList<QgsServerMetadataUrlProperties::MetadataUrl>() << url );
+  }
+  mLayer->serverProperties()->setMetadataUrls( metaUrls );
 
   // LegendURL
   if ( mLayer->legendUrl() != mLayerLegendUrlLineEdit->text() )
