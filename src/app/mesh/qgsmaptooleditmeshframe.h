@@ -102,7 +102,8 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
       Digitizing, //!< Digitizing action can be start (add/remove vertices, selection, add/remove faces, move vertices)
       AddingNewFace, //!< Adding a face has been start and the user have to choose or digitize vertices
       Selecting, //!< Selection is in process
-      MovingVertex //!< Moving vertex or vertices is processing
+      MovingVertex, //!< Moving vertex or vertices is processing
+      SelectingByPolygon, //!< Selection elements by polygon is in progress
     };
 
     typedef QPair<int, int> Edge; //first face index, second the vertex index corresponding to the end extremity (ccw)
@@ -110,6 +111,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     // methods
     void initialize();
     void activateWithState( State state );
+    void backToDigitizing();
     const QgsMeshVertex mapVertex( int index ) const;
     const QgsPointXY mapVertexXY( int index ) const;
     const QgsMeshFace nativeFace( int index ) const;
@@ -166,7 +168,6 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 
     bool mIsInitialized = false;
     State mCurrentState = Digitizing;
-    State mPreviousState = Digitizing; //used to store a state and restore it after a particular action as selecting
     bool mLeftButtonPressed = false;
     bool mKeepSelectionOnEdit = false;
 
@@ -216,7 +217,6 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QColor mSelectionBandTotalStrokeColor = QColor( 0, 102, 204, 100 );
     QgsRubberBand *mSelectedFacesRubberband = nullptr; //own by map canvas
     QMap< int, QgsVertexMarker * > mSelectedVerticesMarker;
-    bool mSelectPartiallyContainedFace = false;
 
     //! members for moving vertices
     QgsPointXY mStartMovingPoint;
@@ -246,6 +246,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QAction *mActionFacesRefinement = nullptr;
 
     QAction *mActionDigitizing = nullptr;
+    QAction *mActionSelectByPolygon = nullptr;
 
     friend class TestQgsMapToolEditMesh;
 };
