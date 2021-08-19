@@ -3938,18 +3938,18 @@ static QVariant fcnAffineTransform( const QVariantList &values, const QgsExpress
 {
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
 
-  double deltaX = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
-  double deltaY = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
+  const double deltaX = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
+  const double deltaY = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
 
-  double rotationZ = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
+  const double rotationZ = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
 
-  double scaleX = QgsExpressionUtils::getDoubleValue( values.at( 4 ), parent );
-  double scaleY = QgsExpressionUtils::getDoubleValue( values.at( 5 ), parent );
+  const double scaleX = QgsExpressionUtils::getDoubleValue( values.at( 4 ), parent );
+  const double scaleY = QgsExpressionUtils::getDoubleValue( values.at( 5 ), parent );
 
-  double deltaZ = QgsExpressionUtils::getDoubleValue( values.at( 6 ), parent );
-  double deltaM = QgsExpressionUtils::getDoubleValue( values.at( 7 ), parent );
-  double scaleZ = QgsExpressionUtils::getDoubleValue( values.at( 8 ), parent );
-  double scaleM = QgsExpressionUtils::getDoubleValue( values.at( 9 ), parent );
+  const double deltaZ = QgsExpressionUtils::getDoubleValue( values.at( 6 ), parent );
+  const double deltaM = QgsExpressionUtils::getDoubleValue( values.at( 7 ), parent );
+  const double scaleZ = QgsExpressionUtils::getDoubleValue( values.at( 8 ), parent );
+  const double scaleM = QgsExpressionUtils::getDoubleValue( values.at( 9 ), parent );
 
   if ( deltaZ != 0.0 && !fGeom.constGet()->is3D() ) {
     fGeom.get()->addZValue( 0 );
