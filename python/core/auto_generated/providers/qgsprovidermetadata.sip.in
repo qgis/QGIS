@@ -391,7 +391,7 @@ Creates a new instance of the raster data provider.
       const QString &driverName,
       const QgsCoordinateReferenceSystem &crs ) const;
 %Docstring
-Creates mesh data source from a file name \fileName and a driver \driverName, that is the mesh frame stored in file, memory or with other way (depending of the provider)
+Creates mesh data source from a file name ``fileName`` and a driver ``driverName``, that is the mesh frame stored in file, memory or with other way (depending of the provider)
 
 .. versionadded:: 3.16
 %End
