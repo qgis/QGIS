@@ -66,7 +66,8 @@ Constructs driver metadata with selected capabilities
                            const QString &description,
                            const MeshDriverCapabilities &capabilities,
                            const QString &writeDatasetOnFileSuffix,
-                           const QString &writeMeshFrameOnFileSuffix );
+                           const QString &writeMeshFrameOnFileSuffix,
+                           int maxVerticesPerface );
 %Docstring
 Constructs driver metadata with selected capabilities
 
@@ -75,6 +76,7 @@ Constructs driver metadata with selected capabilities
 :param capabilities: driver's capabilities
 :param writeDatasetOnFileSuffix: suffix used to write datasets on file
 :param writeMeshFrameOnFileSuffix: suffix used to write mesh frame on file
+:param maxVerticesPerface: maximum vertices count per face supported by the driver
 
 .. versionadded:: 3.22
 %End
@@ -102,6 +104,13 @@ Returns the suffix used to write datasets on file
     QString writeMeshFrameOnFileSuffix() const;
 %Docstring
 Returns the suffix used to write mesh on file
+
+.. versionadded:: 3.22
+%End
+
+    int maximumVerticesCountPerFace() const;
+%Docstring
+Returns the maximum number of vertices per face supported by the driver
 
 .. versionadded:: 3.22
 %End

@@ -1249,7 +1249,7 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadTriangle()
   centroid = meshLayerQuadTriangle->snapOnElement( QgsMesh::Face, QgsPoint( 2050, 2800, 0 ), 10 );
   QVERIFY( centroid.compare( QgsPointXY( 2166.6666666, 2422.22222222 ), 1e-6 ) ); //same face
 
-  QVERIFY( !editor->canBeMerged( 2, 3 ) ); //leads to 5 vertices per face, limited to 4
+  QVERIFY( editor->canBeMerged( 2, 3 ) );
 
   //split
   QVERIFY( editor->faceCanBeSplit( 8 ) );

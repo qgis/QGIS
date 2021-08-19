@@ -224,10 +224,7 @@ QgsRectangle QgsMdalProvider::extent() const
 
 int QgsMdalProvider::maximumVerticesCountPerFace() const
 {
-  if ( !mMeshH )
-    return 0;
-
-  return MDAL_M_faceVerticesMaximumCount( mMeshH );
+  return driverMetadata().maximumVerticesCountPerFace();
 }
 
 QgsMeshDriverMetadata QgsMdalProvider::driverMetadata() const
@@ -240,6 +237,7 @@ QgsMeshDriverMetadata QgsMdalProvider::driverMetadata() const
   QString longName = MDAL_DR_longName( mdalDriver );
   QString writeDatasetSuffix = MDAL_DR_writeDatasetsSuffix( mdalDriver );
   QString writeMeshFrameSuffix = MDAL_DR_saveMeshSuffix( mdalDriver );
+  int maxVerticesPerFace = MDAL_DR_faceVerticesMaximumCount( mdalDriver );
 
   QgsMeshDriverMetadata::MeshDriverCapabilities capabilities;
   bool hasSaveFaceDatasetsCapability = MDAL_DR_writeDatasetsCapability( mdalDriver, MDAL_DataLocation::DataOnFaces );
@@ -254,7 +252,7 @@ QgsMeshDriverMetadata QgsMdalProvider::driverMetadata() const
   bool hasMeshSaveCapability = MDAL_DR_saveMeshCapability( mdalDriver );
   if ( hasMeshSaveCapability )
     capabilities |= QgsMeshDriverMetadata::CanWriteMeshData;
-  const QgsMeshDriverMetadata meta( name, longName, capabilities, writeDatasetSuffix, writeMeshFrameSuffix );
+  const QgsMeshDriverMetadata meta( name, longName, capabilities, writeDatasetSuffix, writeMeshFrameSuffix, maxVerticesPerFace );
 
   return meta;
 }
@@ -1204,6 +1202,7 @@ QList<QgsMeshDriverMetadata> QgsMdalProviderMetadata::meshDriversMetadata()
     QString longName = MDAL_DR_longName( mdalDriver );
     QString writeDatasetSuffix = MDAL_DR_writeDatasetsSuffix( mdalDriver );
     QString writeMeshFrameSuffix = MDAL_DR_saveMeshSuffix( mdalDriver );
+    int maxVerticesPerFace = MDAL_DR_faceVerticesMaximumCount( mdalDriver );
 
     QgsMeshDriverMetadata::MeshDriverCapabilities capabilities;
     bool hasSaveFaceDatasetsCapability = MDAL_DR_writeDatasetsCapability( mdalDriver, MDAL_DataLocation::DataOnFaces );
@@ -1218,7 +1217,7 @@ QList<QgsMeshDriverMetadata> QgsMdalProviderMetadata::meshDriversMetadata()
     bool hasMeshSaveCapability = MDAL_DR_saveMeshCapability( mdalDriver );
     if ( hasMeshSaveCapability )
       capabilities |= QgsMeshDriverMetadata::CanWriteMeshData;
-    const QgsMeshDriverMetadata meta( name, longName, capabilities, writeDatasetSuffix, writeMeshFrameSuffix );
+    const QgsMeshDriverMetadata meta( name, longName, capabilities, writeDatasetSuffix, writeMeshFrameSuffix, maxVerticesPerFace );
     ret.push_back( meta );
   }
   return ret;
