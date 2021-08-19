@@ -428,8 +428,7 @@ QgsRasterMatrix QgsRasterCalcNode::evaluation( const QVector<QgsRasterMatrix *> 
     bool isSecondCOptionNumber = matrixVector.at( 2 )->isNumber();
     double noDataValueCondition = matrixVector.at( 0 )->nodataValue();
 
-    if ( matrixVector.at( 0 )->isNumber() ) return result;
-    //if ( !matrixVector.at( 0 )->isNumber() && matrixVector.at( 1 )->isNumber() && matrixVector.at( 2 )->isNumber() )
+    //if ( matrixVector.at( 0 )->isNumber() ) return result;
 
     for ( int i = 0; i < nEntries; ++i )
     {

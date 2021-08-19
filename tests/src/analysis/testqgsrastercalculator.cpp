@@ -963,13 +963,13 @@ void TestQgsRasterCalculator::testFunctTypeSecondCase()
   QgsRasterMatrix result( 1, 1, nullptr, -9999 );
 
   QVERIFY( node.calculate( rasterData, result ) );
+
   QCOMPARE( result.data()[0], 150 );
   QCOMPARE( result.data()[1], 10 );
   QCOMPARE( result.data()[2], 125 );
   QCOMPARE( result.data()[3], result.nodataValue() );
   QCOMPARE( result.data()[4], 125 );
   QCOMPARE( result.data()[5], 10 );
-
 }
 
 void TestQgsRasterCalculator::testFunctTypeThirdCase()
