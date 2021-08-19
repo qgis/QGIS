@@ -22,6 +22,7 @@ set(TESTS
   testqgscurvepolygon.cpp
   testqgspolygon.cpp
   testqgstriangle.cpp
+  testqgsellipse.cpp
   testqgsmultipoint.cpp
   testqgslinestring.cpp
   testqgsrectangle.cpp
