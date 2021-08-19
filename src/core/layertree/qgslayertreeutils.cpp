@@ -119,7 +119,7 @@ static QDomElement _writeOldLegendLayer( QDomDocument &doc, QgsLayerTreeLayer *n
   layerElem.setAttribute( QStringLiteral( "showFeatureCount" ), nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ) ).toInt() );
 
   QDomElement fileGroupElem = doc.createElement( QStringLiteral( "filegroup" ) );
-  fileGroupElem.setAttribute( QStringLiteral( "open" ), nodeLayer->isExpanded() ? "true" : "false" );
+  fileGroupElem.setAttribute( QStringLiteral( "open" ), nodeLayer->isExpanded() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   fileGroupElem.setAttribute( QStringLiteral( "hidden" ), QStringLiteral( "false" ) );
 
   QDomElement layerFileElem = doc.createElement( QStringLiteral( "legendlayerfile" ) );
@@ -138,7 +138,7 @@ static void _writeOldLegendGroupChildren( QDomDocument &doc, QDomElement &groupE
 static QDomElement _writeOldLegendGroup( QDomDocument &doc, QgsLayerTreeGroup *nodeGroup, bool hasCustomOrder, const QList<QgsMapLayer *> &order )
 {
   QDomElement groupElem = doc.createElement( QStringLiteral( "legendgroup" ) );
-  groupElem.setAttribute( QStringLiteral( "open" ), nodeGroup->isExpanded() ? "true" : "false" );
+  groupElem.setAttribute( QStringLiteral( "open" ), nodeGroup->isExpanded() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   groupElem.setAttribute( QStringLiteral( "name" ), nodeGroup->name() );
   groupElem.setAttribute( QStringLiteral( "checked" ), QgsLayerTreeUtils::checkStateToXml( nodeGroup->itemVisibilityChecked() ? Qt::Checked : Qt::Unchecked ) );
 
@@ -190,9 +190,9 @@ QString QgsLayerTreeUtils::checkStateToXml( Qt::CheckState state )
     case Qt::PartiallyChecked:
       return QStringLiteral( "Qt::PartiallyChecked" );
     case Qt::Checked:
-    default:
       return QStringLiteral( "Qt::Checked" );
   }
+  return QString();
 }
 
 Qt::CheckState QgsLayerTreeUtils::checkStateFromXml( const QString &txt )
@@ -351,7 +351,8 @@ void QgsLayerTreeUtils::storeOriginalLayersProperties( QgsLayerTreeGroup *group,
     }
   };
 
-  for ( QgsLayerTreeNode *node : group->children() )
+  const QList<QgsLayerTreeNode *> children = group->children();
+  for ( QgsLayerTreeNode *node : children )
   {
     _store( node );
   }
