@@ -23,6 +23,7 @@ set(TESTS
   testqgspolygon.cpp
   testqgstriangle.cpp
   testqgsellipse.cpp
+  testqgscircle.cpp
   testqgsmultipoint.cpp
   testqgslinestring.cpp
   testqgsrectangle.cpp
