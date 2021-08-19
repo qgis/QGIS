@@ -24,6 +24,8 @@
 #include "qgssurface.h"
 #include "qgsmultisurface.h"
 #include "qgscurve.h"
+#include "qgsgeos.h"
+#include "qgslinestring.h"
 
 #include <QtConcurrentMap>
 #include <geos_c.h>
@@ -98,6 +100,13 @@ bool QgsSnapIndex::SegmentSnapItem::getProjection( const QgsPoint &p, QgsPoint &
   }
   pProj = QgsPoint( s1.x() + ( s2.x() - s1.x() ) * t, s1.y() + ( s2.y() - s1.y() ) * t );
   return true;
+}
+
+bool QgsSnapIndex::SegmentSnapItem::withinDistance( const QgsPoint &p, const double tolerance )
+{
+  QgsLineString line( idxFrom->point(), idxTo->point() );
+  QgsGeos geos( &line );
+  return geos.distance( &p ) <= tolerance;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -186,9 +195,7 @@ class Raytracer
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsSnapIndex::QgsSnapIndex( const QgsPoint &origin, double cellSize )
-  : mOrigin( origin )
-  , mCellSize( cellSize )
+QgsSnapIndex::QgsSnapIndex()
 {
   mSTRTree = GEOSSTRtree_create_r( QgsGeos::getGEOSHandler(), ( size_t )10 );
 }
@@ -204,16 +211,14 @@ QgsSnapIndex::~QgsSnapIndex()
 void QgsSnapIndex::addPoint( const CoordIdx *idx, bool isEndPoint )
 {
   const QgsPoint p = idx->point();
-  const int col = std::floor( ( p.x() - mOrigin.x() ) / mCellSize );
-  const int row = std::floor( ( p.y() - mOrigin.y() ) / mCellSize );
 
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
 #if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
-  geos::unique_ptr point( GEOSGeom_createPointFromXY_r( geosctxt, row, col ) );
+  geos::unique_ptr point( GEOSGeom_createPointFromXY_r( geosctxt, p.x(), p.y() ) );
 #else
   GEOSCoordSequence *seq = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
-  GEOSCoordSeq_setX_r( geosctxt, seq, 0, row );
-  GEOSCoordSeq_setY_r( geosctxt, seq, 0, col );
+  GEOSCoordSeq_setX_r( geosctxt, seq, 0, p.x() );
+  GEOSCoordSeq_setY_r( geosctxt, seq, 0, p.y() );
   geos::unique_ptr point( GEOSGeom_createPoint_r( geosctxt, seq ) );
 #endif
 
@@ -227,34 +232,29 @@ void QgsSnapIndex::addPoint( const CoordIdx *idx, bool isEndPoint )
 
 void QgsSnapIndex::addSegment( const CoordIdx *idxFrom, const CoordIdx *idxTo )
 {
-  const QgsPoint pFrom = idxFrom->point();
-  const QgsPoint pTo = idxTo->point();
-  // Raytrace along the grid, get touched cells
-  const float x0 = ( pFrom.x() - mOrigin.x() ) / mCellSize;
-  const float y0 = ( pFrom.y() - mOrigin.y() ) / mCellSize;
-  const float x1 = ( pTo.x() - mOrigin.x() ) / mCellSize;
-  const float y1 = ( pTo.y() - mOrigin.y() ) / mCellSize;
+  const QgsPoint pointFrom = idxFrom->point();
+  const QgsPoint pointTo = idxTo->point();
 
-  Raytracer rt( x0, y0, x1, y1 );
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
-  for ( ; rt.isValid(); rt.next() )
-  {
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
-    geos::unique_ptr point( GEOSGeom_createPointFromXY_r( geosctxt, rt.curRow(), rt.curCol() ) );
-#else
-    GEOSCoordSequence *seq = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
-    GEOSCoordSeq_setX_r( geosctxt, seq, 0, rt.curRow() );
-    GEOSCoordSeq_setY_r( geosctxt, seq, 0, rt.curCol() );
-    geos::unique_ptr point( GEOSGeom_createPoint_r( geosctxt, seq ) );
-#endif
 
-    SegmentSnapItem *item = new SegmentSnapItem( idxFrom, idxTo );
-    GEOSSTRtree_insert_r( geosctxt, mSTRTree, point.get(), item );
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR<9
-    mSTRTreeItems.push_back( std::move( point ) );
+  GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 2, 2 );
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+  GEOSCoordSeq_setXY_r( geosctxt, coord, 0, pointFrom.x(), pointFrom.y() );
+  GEOSCoordSeq_setXY_r( geosctxt, coord, 1, pointTo.x(), pointTo.y() );
+#else
+  GEOSCoordSeq_setX_r( geosctxt, coord, 0, pointFrom.x() );
+  GEOSCoordSeq_setY_r( geosctxt, coord, 0, pointFrom.y() );
+  GEOSCoordSeq_setX_r( geosctxt, coord, 1, pointTo.x() );
+  GEOSCoordSeq_setY_r( geosctxt, coord, 1, pointTo.y() );
 #endif
-    mSnapItems << item;
-  }
+  geos::unique_ptr segment( GEOSGeom_createLineString_r( geosctxt, coord ) );
+
+  SegmentSnapItem *item = new SegmentSnapItem( idxFrom, idxTo );
+  GEOSSTRtree_insert_r( geosctxt, mSTRTree, segment.get(), item );
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR<9
+  mSTRTreeItems.push_back( std::move( segment ) );
+#endif
+  mSnapItems << item;
 }
 
 void QgsSnapIndex::addGeometry( const QgsAbstractGeometry *geom )
@@ -297,76 +297,66 @@ void _GEOSQueryCallback( void *item, void *userdata )
   reinterpret_cast<_GEOSQueryCallbackData *>( userdata )->list->append( static_cast<QgsSnapIndex::SnapItem *>( item ) );
 }
 
-QgsPoint QgsSnapIndex::getClosestSnapToPoint( const QgsPoint &p, const QgsPoint &q )
+QgsPoint QgsSnapIndex::getClosestSnapToPoint( const QgsPoint &startPoint, const QgsPoint &midPoint )
 {
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
 
   // Look for intersections on segment from the target point to the point opposite to the point reference point
   // p2 = p1 + 2 * (q - p1)
-  const QgsPoint p2( 2 * q.x() - p.x(), 2 * q.y() - p.y() );
+  const QgsPoint endPoint( 2 * midPoint.x() - startPoint.x(), 2 * midPoint.y() - startPoint.y() );
 
-  // Raytrace along the grid, get touched cells
-  const float x0 = ( p.x() - mOrigin.x() ) / mCellSize;
-  const float y0 = ( p.y() - mOrigin.y() ) / mCellSize;
-  const float x1 = ( p2.x() - mOrigin.x() ) / mCellSize;
-  const float y1 = ( p2.y() - mOrigin.y() ) / mCellSize;
+  QgsPoint minPoint = startPoint;
+  double minDistance = std::numeric_limits<double>::max();
 
-  Raytracer rt( x0, y0, x1, y1 );
-  double dMin = std::numeric_limits<double>::max();
-  QgsPoint pMin = p;
-  for ( ; rt.isValid(); rt.next() )
-  {
+  GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 2, 2 );
 #if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
-    geos::unique_ptr searchPoint( GEOSGeom_createPointFromXY_r( geosctxt, rt.curRow(), rt.curCol() ) );
+  GEOSCoordSeq_setXY_r( geosctxt, coord, 0, startPoint.x(), startPoint.y() );
+  GEOSCoordSeq_setXY_r( geosctxt, coord, 1, endPoint.x(), endPoint.y() );
 #else
-    GEOSCoordSequence *seq = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
-    GEOSCoordSeq_setX_r( geosctxt, seq, 0, rt.curRow() );
-    GEOSCoordSeq_setY_r( geosctxt, seq, 0, rt.curCol() );
-    geos::unique_ptr searchPoint( GEOSGeom_createPoint_r( geosctxt, seq ) );
+  GEOSCoordSeq_setX_r( geosctxt, coord, 0, startPoint.x() );
+  GEOSCoordSeq_setY_r( geosctxt, coord, 0, startPoint.y() );
+  GEOSCoordSeq_setX_r( geosctxt, coord, 1, endPoint.x() );
+  GEOSCoordSeq_setY_r( geosctxt, coord, 1, endPoint.y() );
 #endif
-    QList<SnapItem *> items;
-    struct _GEOSQueryCallbackData callbackData;
-    callbackData.list = &items;
-    GEOSSTRtree_query_r( geosctxt, mSTRTree, searchPoint.get(), _GEOSQueryCallback, &callbackData );
-    for ( const SnapItem *item : items )
+  geos::unique_ptr searchDiagonal( GEOSGeom_createLineString_r( geosctxt, coord ) );
+
+  QList<SnapItem *> items;
+  struct _GEOSQueryCallbackData callbackData;
+  callbackData.list = &items;
+  GEOSSTRtree_query_r( geosctxt, mSTRTree, searchDiagonal.get(), _GEOSQueryCallback, &callbackData );
+  for ( const SnapItem *item : items )
+  {
+    if ( item->type == SnapSegment )
     {
-      if ( item->type == SnapSegment )
+      QgsPoint inter;
+      if ( static_cast<const SegmentSnapItem *>( item )->getIntersection( startPoint, endPoint, inter ) )
       {
-        QgsPoint inter;
-        if ( static_cast<const SegmentSnapItem *>( item )->getIntersection( p, p2, inter ) )
+        const double dist = QgsGeometryUtils::sqrDistance2D( midPoint, inter );
+        if ( dist < minDistance )
         {
-          const double dist = QgsGeometryUtils::sqrDistance2D( q, inter );
-          if ( dist < dMin )
-          {
-            dMin = dist;
-            pMin = inter;
-          }
+          minDistance = dist;
+          minPoint = inter;
         }
       }
     }
   }
 
-  return pMin;
+  return minPoint;
 }
 
-QgsSnapIndex::SnapItem *QgsSnapIndex::getSnapItem( const QgsPoint &pos, double tol, QgsSnapIndex::PointSnapItem **pSnapPoint, QgsSnapIndex::SegmentSnapItem **pSnapSegment, bool endPointOnly ) const
+QgsSnapIndex::SnapItem *QgsSnapIndex::getSnapItem( const QgsPoint &pos, const double tolerance, QgsSnapIndex::PointSnapItem **pSnapPoint, QgsSnapIndex::SegmentSnapItem **pSnapSegment, bool endPointOnly ) const
 {
-  const int colStart = std::floor( ( pos.x() - tol - mOrigin.x() ) / mCellSize );
-  const int rowStart = std::floor( ( pos.y() - tol - mOrigin.y() ) / mCellSize );
-  const int colEnd = std::floor( ( pos.x() + tol - mOrigin.x() ) / mCellSize );
-  const int rowEnd = std::floor( ( pos.y() + tol - mOrigin.y() ) / mCellSize );
-
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
 
   GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 2, 2 );
 #if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
-  GEOSCoordSeq_setXY_r( geosctxt, coord, 0, rowStart, colStart );
-  GEOSCoordSeq_setXY_r( geosctxt, coord, 1, rowEnd, colEnd );
+  GEOSCoordSeq_setXY_r( geosctxt, coord, 0, pos.x() - tolerance, pos.y() - tolerance );
+  GEOSCoordSeq_setXY_r( geosctxt, coord, 1, pos.x() + tolerance, pos.y() + tolerance );
 #else
-  GEOSCoordSeq_setX_r( geosctxt, coord, 0, rowStart );
-  GEOSCoordSeq_setY_r( geosctxt, coord, 0, colStart );
-  GEOSCoordSeq_setX_r( geosctxt, coord, 1, rowEnd );
-  GEOSCoordSeq_setY_r( geosctxt, coord, 1, colEnd );
+  GEOSCoordSeq_setX_r( geosctxt, coord, 0, pos.x() - tolerance );
+  GEOSCoordSeq_setY_r( geosctxt, coord, 0, pos.y() - tolerance );
+  GEOSCoordSeq_setX_r( geosctxt, coord, 1, pos.x() + tolerance );
+  GEOSCoordSeq_setY_r( geosctxt, coord, 1, pos.y() + tolerance );
 #endif
 
   geos::unique_ptr searchDiagonal( GEOSGeom_createLineString_r( geosctxt, coord ) );
@@ -395,11 +385,13 @@ QgsSnapIndex::SnapItem *QgsSnapIndex::getSnapItem( const QgsPoint &pos, double t
     }
     else if ( item->type == SnapSegment && !endPointOnly )
     {
+      if ( !static_cast<SegmentSnapItem *>( item )->withinDistance( pos, tolerance ) )
+        continue;
+
       QgsPoint pProj;
       if ( !static_cast<SegmentSnapItem *>( item )->getProjection( pos, pProj ) )
-      {
         continue;
-      }
+
       const double dist = QgsGeometryUtils::sqrDistance2D( pProj, pos );
       if ( dist < minDistSegment )
       {
@@ -408,8 +400,8 @@ QgsSnapIndex::SnapItem *QgsSnapIndex::getSnapItem( const QgsPoint &pos, double t
       }
     }
   }
-  snapPoint = minDistPoint < tol * tol ? snapPoint : nullptr;
-  snapSegment = minDistSegment < tol * tol ? snapSegment : nullptr;
+  snapPoint = minDistPoint < tolerance * tolerance ? snapPoint : nullptr;
+  snapSegment = minDistSegment < tolerance * tolerance ? snapSegment : nullptr;
   if ( pSnapPoint ) *pSnapPoint = snapPoint;
   if ( pSnapSegment ) *pSnapSegment = snapSegment;
   return minDistPoint < minDistSegment ? static_cast<QgsSnapIndex::SnapItem *>( snapPoint ) : static_cast<QgsSnapIndex::SnapItem *>( snapSegment );
@@ -497,7 +489,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
   const QgsPoint center = qgsgeometry_cast< const QgsPoint * >( geometry.constGet() ) ? *static_cast< const QgsPoint * >( geometry.constGet() ) :
                           QgsPoint( geometry.constGet()->boundingBox().center() );
 
-  QgsSnapIndex refSnapIndex( center, 10 * snapTolerance );
+  QgsSnapIndex refSnapIndex;
   for ( const QgsGeometry &geom : referenceGeometries )
   {
     refSnapIndex.addGeometry( geom.constGet() );
@@ -595,6 +587,8 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
   //nothing more to do for points
   if ( qgsgeometry_cast< const QgsPoint * >( subjGeom ) )
     return QgsGeometry( subjGeom );
+
+
   //or for end point snapping
   if ( mode == PreferClosestNoExtraVertices || mode == PreferNodesNoExtraVertices || mode == EndPointPreferClosest || mode == EndPointPreferNodes || mode == EndPointToEndPoint )
   {
@@ -604,11 +598,11 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
   }
 
   // SnapIndex for subject feature
-  std::unique_ptr< QgsSnapIndex > subjSnapIndex( new QgsSnapIndex( center, 10 * snapTolerance ) );
+  std::unique_ptr< QgsSnapIndex > subjSnapIndex( new QgsSnapIndex() );
   subjSnapIndex->addGeometry( subjGeom );
 
   std::unique_ptr< QgsAbstractGeometry > origSubjGeom( subjGeom->clone() );
-  std::unique_ptr< QgsSnapIndex > origSubjSnapIndex( new QgsSnapIndex( center, 10 * snapTolerance ) );
+  std::unique_ptr< QgsSnapIndex > origSubjSnapIndex( new QgsSnapIndex() );
   origSubjSnapIndex->addGeometry( origSubjGeom.get() );
 
   // Pass 2: add missing vertices to subject geometry
@@ -620,18 +614,20 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
       {
         for ( int iVert = 0, nVerts = polyLineSize( refGeom.constGet(), iPart, iRing ); iVert < nVerts; ++iVert )
         {
-
           QgsSnapIndex::PointSnapItem *snapPoint = nullptr;
           QgsSnapIndex::SegmentSnapItem *snapSegment = nullptr;
           const QgsPoint point = refGeom.constGet()->vertexAt( QgsVertexId( iPart, iRing, iVert ) );
           if ( subjSnapIndex->getSnapItem( point, snapTolerance, &snapPoint, &snapSegment ) )
           {
             // Snap to segment, unless a subject point was already snapped to the reference point
-            if ( snapPoint && QgsGeometryUtils::sqrDistance2D( snapPoint->getSnapPoint( point ), point ) < 1E-16 )
+            if ( snapPoint )
             {
-              continue;
+              const QgsPoint snappedPoint = snapPoint->getSnapPoint( point );
+              if ( QgsGeometryUtils::sqrDistance2D( snappedPoint, point ) < 1E-16 )
+                continue;
             }
-            else if ( snapSegment )
+
+            if ( snapSegment )
             {
               // Look if there is a closer reference segment, if so, ignore this point
               const QgsPoint pProj = snapSegment->getSnapPoint( point );
@@ -650,7 +646,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
               const QgsSnapIndex::CoordIdx *idx = snapSegment->idxFrom;
               subjGeom->insertVertex( QgsVertexId( idx->vidx.part, idx->vidx.ring, idx->vidx.vertex + 1 ), point );
               subjPointFlags[idx->vidx.part][idx->vidx.ring].insert( idx->vidx.vertex + 1, SnappedToRefNode );
-              subjSnapIndex.reset( new QgsSnapIndex( center, 10 * snapTolerance ) );
+              subjSnapIndex.reset( new QgsSnapIndex() );
               subjSnapIndex->addGeometry( subjGeom );
             }
           }
