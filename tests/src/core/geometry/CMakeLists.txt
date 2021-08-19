@@ -24,6 +24,7 @@ set(TESTS
   testqgstriangle.cpp
   testqgsellipse.cpp
   testqgscircle.cpp
+  testqgsquadrilateral.cpp
   testqgsmultipoint.cpp
   testqgslinestring.cpp
   testqgsrectangle.cpp
