@@ -54,14 +54,14 @@ class TestQgsMapToolAdvancedDigitizingUtils
     QgsFeatureId newFeatureId( QSet<QgsFeatureId> oldFids = QSet<QgsFeatureId>() )
     {
       QSet<QgsFeatureId> newFids = existingFeatureIds();
-      QSet<QgsFeatureId> diffFids = newFids.subtract( oldFids );
+      const QSet<QgsFeatureId> diffFids = newFids.subtract( oldFids );
       Q_ASSERT( diffFids.count() == 1 );
       return *diffFids.constBegin();
     }
 
     QPoint mapToScreen( double mapX, double mapY )
     {
-      QgsPointXY pt = mMapTool->canvas()->mapSettings().mapToPixel().transform( mapX, mapY );
+      const QgsPointXY pt = mMapTool->canvas()->mapSettings().mapToPixel().transform( mapX, mapY );
       return QPoint( std::round( pt.x() ), std::round( pt.y() ) );
     }
 
@@ -96,6 +96,21 @@ class TestQgsMapToolAdvancedDigitizingUtils
       mousePress( mapX, mapY, button, stateKey, snap );
       mouseRelease( mapX, mapY, button, stateKey, snap );
     }
+
+    void mouseDoubleClick( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers(), bool snap = false )
+    {
+      // this is how Qt passes the events: 1. mouse press, 2. mouse release, 3. mouse double-click, 4. mouse release
+
+      mouseClick( mapX, mapY, button, stateKey, snap );
+
+      QgsMapMouseEvent e( mMapTool->canvas(), QEvent::MouseButtonDblClick, mapToScreen( mapX, mapY ), button, button, stateKey );
+      if ( snap )
+        e.snapPoint();
+      mMapTool->canvasDoubleClickEvent( &e );
+
+      mouseRelease( mapX, mapY, button, stateKey );
+    }
+
 
     void keyClick( int key, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers(), bool autoRepeat = false )
     {
@@ -140,14 +155,14 @@ class TestQgsMapToolUtils
     QgsFeatureId newFeatureId( QSet<QgsFeatureId> oldFids = QSet<QgsFeatureId>() )
     {
       QSet<QgsFeatureId> newFids = existingFeatureIds();
-      QSet<QgsFeatureId> diffFids = newFids.subtract( oldFids );
+      const QSet<QgsFeatureId> diffFids = newFids.subtract( oldFids );
       Q_ASSERT( diffFids.count() == 1 );
       return *diffFids.constBegin();
     }
 
     QPoint mapToScreen( double mapX, double mapY )
     {
-      QgsPointXY pt = mMapTool->canvas()->mapSettings().mapToPixel().transform( mapX, mapY );
+      const QgsPointXY pt = mMapTool->canvas()->mapSettings().mapToPixel().transform( mapX, mapY );
       return QPoint( std::round( pt.x() ), std::round( pt.y() ) );
     }
 

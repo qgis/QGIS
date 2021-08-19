@@ -43,7 +43,7 @@ QgsRasterRenderer *QgsSingleBandColorDataRenderer::create( const QDomElement &el
     return nullptr;
   }
 
-  int band = elem.attribute( QStringLiteral( "band" ), QStringLiteral( "-1" ) ).toInt();
+  const int band = elem.attribute( QStringLiteral( "band" ), QStringLiteral( "-1" ) ).toInt();
   QgsRasterRenderer *r = new QgsSingleBandColorDataRenderer( input, band );
   r->readXml( elem );
   return r;
@@ -66,7 +66,7 @@ QgsRasterBlock *QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle 
     return outputBlock.release();
   }
 
-  bool hasTransparency = usesTransparency();
+  const bool hasTransparency = usesTransparency();
   if ( !hasTransparency )
   {
     // Nothing to do, just retype if necessary
@@ -86,7 +86,7 @@ QgsRasterBlock *QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle 
   QRgb *outputBits = ( QRgb * )outputBlock->bits();
   for ( qgssize i = 0; i < ( qgssize )width * height; i++ )
   {
-    QRgb c = inputBits[i];
+    const QRgb c = inputBits[i];
     outputBits[i] = qRgba( mOpacity * qRed( c ), mOpacity * qGreen( c ), mOpacity * qBlue( c ), mOpacity * qAlpha( c ) );
   }
 

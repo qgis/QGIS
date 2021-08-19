@@ -29,6 +29,11 @@ QgsMaskMarkerSymbolLayer::QgsMaskMarkerSymbolLayer()
 
 QgsMaskMarkerSymbolLayer::~QgsMaskMarkerSymbolLayer() = default;
 
+bool QgsMaskMarkerSymbolLayer::enabled() const
+{
+  return !mMaskedSymbolLayers.isEmpty();
+}
+
 bool QgsMaskMarkerSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
   if ( symbol && symbol->type() == Qgis::SymbolType::Marker )
@@ -164,7 +169,7 @@ void QgsMaskMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
 
   {
     // Otherwise switch to the mask painter before rendering
-    QgsPainterSwapper swapper( context.renderContext(), context.renderContext().maskPainter() );
+    const QgsPainterSwapper swapper( context.renderContext(), context.renderContext().maskPainter() );
 
     // Special case when an effect is defined on this mask symbol layer
     // (effects defined on sub symbol's layers do not need special handling)

@@ -174,10 +174,10 @@ void TestQgsTriangulation::meshTriangulation()
       QStringLiteral( "point Z" ),
       QStringLiteral( "memory" ) );
 
-  QString wkt1 = "PointZ (684486.0 1761297.0 1)";
-  QString wkt2 = "PointZ (684276.0 1761309.0 2)";
-  QString wkt3 = "PointZ (684098.0 1761401.0 3)";
-  QString wkt4 = "PointZ (684292.0 1761406.0 4)";
+  const QString wkt1 = "PointZ (684486.0 1761297.0 1)";
+  const QString wkt2 = "PointZ (684276.0 1761309.0 2)";
+  const QString wkt3 = "PointZ (684098.0 1761401.0 3)";
+  const QString wkt4 = "PointZ (684292.0 1761406.0 4)";
 
   QgsFeature f1;
   f1.setGeometry( QgsGeometry::fromWkt( wkt1 ) );
@@ -192,7 +192,7 @@ void TestQgsTriangulation::meshTriangulation()
   flist << f1 << f2 << f3 << f4;
   mLayerPointZ->dataProvider()->addFeatures( flist );
 
-  QgsCoordinateTransformContext transformContext;
+  const QgsCoordinateTransformContext transformContext;
   QgsCoordinateTransform transform( mLayerPointZ->crs(),
                                     QgsCoordinateReferenceSystem( "EPSG:32620" ),
                                     transformContext );
@@ -212,7 +212,7 @@ void TestQgsTriangulation::meshTriangulation()
   QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 3, 1} ) ) );
   QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( {1, 3, 2} ) ) );
 
-  QString wkt5 = "LineStringZ (684098.0 1761401.0 3,684210.24 1761347.92 7,684343.8 1761373.4 8,684486.0 1761297.0 1)";
+  const QString wkt5 = "LineStringZ (684098.0 1761401.0 3,684210.24 1761347.92 7,684343.8 1761373.4 8,684486.0 1761297.0 1)";
 
   QgsVectorLayer *mLayerBreakLine = new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=EPSG:32620" ),
       QStringLiteral( "line" ),
@@ -272,15 +272,15 @@ void TestQgsTriangulation::meshTriangulationWithOnlyBreakLine()
 
   mLayerLineZ->dataProvider()->addFeatures( flist );
 
-  QgsCoordinateTransformContext transformContext;
-  QgsCoordinateTransform transform( mLayerLineZ->crs(),
-                                    QgsCoordinateReferenceSystem(),
-                                    transformContext );
+  const QgsCoordinateTransformContext transformContext;
+  const QgsCoordinateTransform transform( mLayerLineZ->crs(),
+                                          QgsCoordinateReferenceSystem(),
+                                          transformContext );
 
   QgsFeatureIterator fIt = mLayerLineZ->getFeatures();
   meshTri.addBreakLines( fIt, -1, transform );
 
-  QgsMesh mesh = meshTri.triangulatedMesh();
+  const QgsMesh mesh = meshTri.triangulatedMesh();
 
   QCOMPARE( mesh.vertexCount(), 8 );
   QCOMPARE( mesh.faceCount(), 6 );
@@ -311,10 +311,10 @@ void TestQgsTriangulation::meshTriangulationPointAndBreakLineBreakLine()
     }
   }
 
-  QgsCoordinateTransformContext transformContext;
-  QgsCoordinateTransform transform( mLayerPointsZ->crs(),
-                                    QgsCoordinateReferenceSystem(),
-                                    transformContext );
+  const QgsCoordinateTransformContext transformContext;
+  const QgsCoordinateTransform transform( mLayerPointsZ->crs(),
+                                          QgsCoordinateReferenceSystem(),
+                                          transformContext );
 
   QgsFeatureIterator fIt = mLayerPointsZ->getFeatures();
   meshTri.addVertices( fIt, -1, transform );

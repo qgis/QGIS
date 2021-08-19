@@ -3808,7 +3808,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
   if ( !qgsDoubleNear( m2p.mapRotation(), 0 ) )
   {
     QgsPointXY center = context.mapExtent().center();
-    if ( geom.rotate( m2p.mapRotation(), center ) )
+    if ( geom.rotate( m2p.mapRotation(), center ) != Qgis::GeometryOperationResult::Success )
     {
       QgsDebugMsg( QStringLiteral( "Error rotating geometry" ).arg( geom.asWkt() ) );
       return QgsGeometry();

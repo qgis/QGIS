@@ -95,6 +95,10 @@ class _3D_EXPORT QgsRubberBand3D
     Qt3DRender::QAttribute *mPositionAttribute = nullptr;
     Qt3DRender::QAttribute *mIndexAttribute = nullptr;
     QgsLineMaterial *mLineMaterial = nullptr;
+
+    // Disable copying as we have pointer members.
+    QgsRubberBand3D( const QgsRubberBand3D & ) = delete;
+    QgsRubberBand3D &operator= ( const QgsRubberBand3D & ) = delete;
 };
 
 /// @endcond

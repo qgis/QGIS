@@ -68,8 +68,8 @@ void QgsStringConcatenationAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsStringConcatenationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QString input_1 = parameterAsString( parameters, QStringLiteral( "INPUT_1" ), context );
-  QString input_2 = parameterAsString( parameters, QStringLiteral( "INPUT_2" ), context );
+  const QString input_1 = parameterAsString( parameters, QStringLiteral( "INPUT_1" ), context );
+  const QString input_2 = parameterAsString( parameters, QStringLiteral( "INPUT_2" ), context );
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "CONCATENATION" ), QString( input_1 + input_2 ) );

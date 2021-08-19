@@ -154,7 +154,12 @@ QgsTabWidget::TabInformation QgsTabWidget::tabInfo( QWidget *widget )
   return TabInformation();
 }
 
-bool QgsTabWidget::TabInformation::operator ==( const QgsTabWidget::TabInformation &other )
+bool QgsTabWidget::TabInformation::operator ==( const QgsTabWidget::TabInformation &other ) const
 {
   return other.widget == widget && other.sourceIndex == sourceIndex;
+}
+
+bool QgsTabWidget::TabInformation::operator !=( const TabInformation &other ) const
+{
+  return !( *this == other );
 }

@@ -123,7 +123,7 @@ bool QgsGpsConnection::connect()
     return false;
   }
 
-  bool connected = mSource->open( QIODevice::ReadWrite | QIODevice::Unbuffered );
+  const bool connected = mSource->open( QIODevice::ReadWrite | QIODevice::Unbuffered );
   if ( connected )
   {
     mStatus = Connected;

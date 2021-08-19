@@ -57,6 +57,7 @@
 #include "qgisapp.h"
 #include "qgsorganizetablecolumnsdialog.h"
 #include "qgsvectorlayereditbuffer.h"
+#include "qgstransactiongroup.h"
 
 QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {
@@ -230,6 +231,21 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   connect( mLayer, &QgsVectorLayer::editingStopped, this, &QgsAttributeTableDialog::updateTitle );
   connect( mLayer, &QgsVectorLayer::readOnlyChanged, this, &QgsAttributeTableDialog::editingToggled );
   connect( mLayer, &QgsVectorLayer::layerModified, this, &QgsAttributeTableDialog::updateLayerModifiedActions );
+
+  // When transaction group is enabled, collect related layers and connect modified actions to enable save action
+  const auto relations { QgsProject::instance()->relationManager()->referencedRelations( mLayer ) };
+  const auto transactionGroups = QgsProject::instance()->transactionGroups();
+  for ( const auto &relation : std::as_const( relations ) )
+  {
+    for ( auto it = transactionGroups.constBegin(); it != transactionGroups.constEnd(); ++it )
+    {
+      if ( relation.isValid() && it.value()->layers().contains( { mLayer, relation.referencingLayer() } ) )
+      {
+        mReferencingLayers.push_back( relation.referencingLayer() );
+        connect( relation.referencingLayer(), &QgsVectorLayer::layerModified, this, &QgsAttributeTableDialog::updateLayerModifiedActions );
+      }
+    }
+  }
 
   // connect table info to window
   connect( mMainView, &QgsDualView::filterChanged, this, &QgsAttributeTableDialog::updateTitle );
@@ -486,7 +502,7 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
   bool useGeometry = exp.needsGeometry();
 
   QgsFeatureRequest request( mMainView->masterModel()->request() );
-  useGeometry |= !request.filterRect().isNull();
+  useGeometry |= !( request.spatialFilterType() == Qgis::SpatialFilterType::NoFilter );
   request.setFlags( useGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry );
 
   int rownum = 1;
@@ -606,6 +622,13 @@ void QgsAttributeTableDialog::mActionOpenFieldCalculator_triggered()
 void QgsAttributeTableDialog::mActionSaveEdits_triggered()
 {
   QgisApp::instance()->saveEdits( mLayer, true, true );
+  for ( const auto &referencingLayer : std::as_const( mReferencingLayers ) )
+  {
+    if ( referencingLayer )
+    {
+      QgisApp::instance()->saveEdits( referencingLayer, true, true );
+    }
+  }
 }
 
 void QgsAttributeTableDialog::mActionReload_triggered()
@@ -1057,7 +1080,19 @@ void QgsAttributeTableDialog::toggleDockMode( bool docked )
 
 void QgsAttributeTableDialog::updateLayerModifiedActions()
 {
-  mActionSaveEdits->setEnabled( mActionToggleEditing->isEnabled() && mLayer->isEditable() && mLayer->isModified() );
+  bool saveEnabled { mActionToggleEditing->isEnabled() &&mLayer->isEditable() &&mLayer->isModified() };
+  if ( ! saveEnabled && mActionToggleEditing->isEnabled() )
+  {
+    for ( const auto &referencingLayer : std::as_const( mReferencingLayers ) )
+    {
+      if ( referencingLayer && referencingLayer->isEditable() && referencingLayer->isModified() )
+      {
+        saveEnabled = true;
+        break;
+      }
+    }
+  }
+  mActionSaveEdits->setEnabled( saveEnabled );
 }
 
 //

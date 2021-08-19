@@ -47,7 +47,7 @@ QgsAttributeEditorElement *QgsAttributeEditorElement::create( const QDomElement 
 {
   QgsAttributeEditorElement *newElement = nullptr;
 
-  QString name = element.attribute( QStringLiteral( "name" ) );
+  const QString name = element.attribute( QStringLiteral( "name" ) );
 
   if ( element.tagName() == QLatin1String( "attributeEditorContainer" ) )
   {
@@ -56,7 +56,7 @@ QgsAttributeEditorElement *QgsAttributeEditorElement::create( const QDomElement 
   }
   else if ( element.tagName() == QLatin1String( "attributeEditorField" ) )
   {
-    int idx = fields.lookupField( name );
+    const int idx = fields.lookupField( name );
     newElement = new QgsAttributeEditorField( name, idx, parent );
   }
   else if ( element.tagName() == QLatin1String( "attributeEditorRelation" ) )

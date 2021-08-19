@@ -134,7 +134,7 @@ Qt::ItemFlags QgsVectorTileBasicLabelingListModel::flags( const QModelIndex &ind
   if ( !index.isValid() )
     return Qt::ItemIsDropEnabled;
 
-  Qt::ItemFlag checkable = ( index.column() == 0 ? Qt::ItemIsUserCheckable : Qt::NoItemFlags );
+  const Qt::ItemFlag checkable = ( index.column() == 0 ? Qt::ItemIsUserCheckable : Qt::NoItemFlags );
 
   return Qt::ItemIsEnabled | Qt::ItemIsSelectable |
          Qt::ItemIsEditable | checkable |
@@ -237,7 +237,7 @@ QMimeData *QgsVectorTileBasicLabelingListModel::mimeData( const QModelIndexList 
     if ( !index.isValid() || index.column() != 0 )
       continue;
 
-    QgsVectorTileBasicLabelingStyle style = mLabeling->style( index.row() );
+    const QgsVectorTileBasicLabelingStyle style = mLabeling->style( index.row() );
 
     QDomDocument doc;
     QDomElement rootElem = doc.createElement( QStringLiteral( "vector_tile_basic_labeling_style_mime" ) );
@@ -283,7 +283,7 @@ bool QgsVectorTileBasicLabelingListModel::dropMimeData( const QMimeData *data,
     QDomDocument doc;
     if ( !doc.setContent( text ) )
       continue;
-    QDomElement rootElem = doc.documentElement();
+    const QDomElement rootElem = doc.documentElement();
     if ( rootElem.tagName() != QLatin1String( "vector_tile_basic_labeling_style_mime" ) )
       continue;
 
@@ -381,7 +381,7 @@ void QgsVectorTileBasicLabelingWidget::addStyle( QgsWkbTypes::GeometryType geomT
   QgsVectorTileBasicLabelingStyle style;
   style.setGeometryType( geomType );
 
-  int rows = mModel->rowCount();
+  const int rows = mModel->rowCount();
   mModel->insertStyle( rows, style );
   viewStyles->selectionModel()->setCurrentIndex( mProxyModel->mapFromSource( mModel->index( rows, 0 ) ), QItemSelectionModel::ClearAndSelect );
 }
@@ -397,7 +397,7 @@ void QgsVectorTileBasicLabelingWidget::editStyleAtIndex( const QModelIndex &prox
   if ( index.row() < 0 || index.row() >= mLabeling->styles().count() )
     return;
 
-  QgsVectorTileBasicLabelingStyle style = mLabeling->style( index.row() );
+  const QgsVectorTileBasicLabelingStyle style = mLabeling->style( index.row() );
 
   QgsPalLayerSettings labelSettings = style.labelSettings();
   if ( labelSettings.layerType == QgsWkbTypes::UnknownGeometry )
@@ -444,7 +444,7 @@ void QgsVectorTileBasicLabelingWidget::editStyleAtIndex( const QModelIndex &prox
 
 void QgsVectorTileBasicLabelingWidget::updateLabelingFromWidget()
 {
-  int index = mProxyModel->mapToSource( viewStyles->selectionModel()->currentIndex() ).row();
+  const int index = mProxyModel->mapToSource( viewStyles->selectionModel()->currentIndex() ).row();
   if ( index < 0 )
     return;
 

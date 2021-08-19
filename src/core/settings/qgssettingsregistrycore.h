@@ -27,12 +27,14 @@
 #include "qgsgeometry.h"
 #include "qgsmaplayerproxymodel.h"
 
+#ifdef _MSC_VER
 template class CORE_EXPORT QgsSettingsEntryEnumFlag<QgsSnappingConfig::SnappingTypes> SIP_SKIP;
 template class CORE_EXPORT QgsSettingsEntryEnumFlag<QgsTolerance::UnitType> SIP_SKIP;
-template class CORE_EXPORT QgsSettingsEntryEnumFlag<QgsGeometry::JoinStyle> SIP_SKIP;
-template class CORE_EXPORT QgsSettingsEntryEnumFlag<QgsGeometry::EndCapStyle> SIP_SKIP;
+template class CORE_EXPORT QgsSettingsEntryEnumFlag<Qgis::JoinStyle> SIP_SKIP;
+template class CORE_EXPORT QgsSettingsEntryEnumFlag<Qgis::EndCapStyle> SIP_SKIP;
 template class CORE_EXPORT QgsSettingsEntryEnumFlag<QgsUnitTypes::LayoutUnit> SIP_SKIP;
 template class CORE_EXPORT QgsSettingsEntryEnumFlag< class QFlags<enum QgsMapLayerProxyModel::Filter> > SIP_SKIP;
+#endif
 
 /**
  * \ingroup core
@@ -145,7 +147,7 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     static const inline QgsSettingsEntryInteger settingsDigitizingValidateGeometries = QgsSettingsEntryInteger( QStringLiteral( "/qgis/digitizing/validate_geometries" ), QgsSettings::NoSection, 1 );
 
     //! Settings entry digitizing offset join style
-    static const inline QgsSettingsEntryEnumFlag<QgsGeometry::JoinStyle> settingsDigitizingOffsetJoinStyle = QgsSettingsEntryEnumFlag<QgsGeometry::JoinStyle>( QStringLiteral( "/qgis/digitizing/offset_join_style" ), QgsSettings::NoSection, QgsGeometry::JoinStyleRound );
+    static const inline QgsSettingsEntryEnumFlag<Qgis::JoinStyle> settingsDigitizingOffsetJoinStyle = QgsSettingsEntryEnumFlag<Qgis::JoinStyle>( QStringLiteral( "/qgis/digitizing/offset_join_style" ), QgsSettings::NoSection, Qgis::JoinStyle::Round );
 
     //! Settings entry digitizing offset quad seg
     static const inline QgsSettingsEntryInteger settingsDigitizingOffsetQuadSeg = QgsSettingsEntryInteger( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), QgsSettings::NoSection, 8 );
@@ -163,13 +165,16 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     static const inline QgsSettingsEntryDouble settingsDigitizingConvertToCurveDistanceTolerance = QgsSettingsEntryDouble( QStringLiteral( "/qgis/digitizing/convert_to_curve_distance_tolerance" ), QgsSettings::NoSection, 1e-6 );
 
     //! Settings entry digitizing offset cap style
-    static const inline QgsSettingsEntryEnumFlag<QgsGeometry::EndCapStyle> settingsDigitizingOffsetCapStyle = QgsSettingsEntryEnumFlag<QgsGeometry::EndCapStyle>( QStringLiteral( "/qgis/digitizing/offset_cap_style" ), QgsSettings::NoSection,  QgsGeometry::CapRound );
+    static const inline QgsSettingsEntryEnumFlag<Qgis::EndCapStyle> settingsDigitizingOffsetCapStyle = QgsSettingsEntryEnumFlag<Qgis::EndCapStyle>( QStringLiteral( "/qgis/digitizing/offset_cap_style" ), QgsSettings::NoSection,  Qgis::EndCapStyle::Round );
 
     //! Settings entry digitizing offset show advanced
     static const inline QgsSettingsEntryBool settingsDigitizingOffsetShowAdvanced = QgsSettingsEntryBool( QStringLiteral( "/qgis/digitizing/offset_show_advanced" ), QgsSettings::NoSection, false );
 
     //! Settings entry digitizing tracing max feature count
     static const inline QgsSettingsEntryInteger settingsDigitizingTracingMaxFeatureCount = QgsSettingsEntryInteger( QStringLiteral( "/qgis/digitizing/tracing_max_feature_count" ), QgsSettings::NoSection, 10000 );
+
+    //! Settings entry path to GPSBabel executable.
+    static const inline QgsSettingsEntryString settingsGpsBabelPath = QgsSettingsEntryString( QStringLiteral( "gpsbabelPath" ), QgsSettings::Gps, QStringLiteral( "gpsbabel" ) );
 #endif
 
 };

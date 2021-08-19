@@ -116,7 +116,7 @@ int QgsRelationManagerDialog::addPolymorphicRelation( const QgsPolymorphicRelati
   }
 
   mRelationsTree->setSortingEnabled( false );
-  int row = mRelationsTree->topLevelItemCount();
+  const int row = mRelationsTree->topLevelItemCount();
   QTreeWidgetItem *item = new QTreeWidgetItem();
 
   mRelationsTree->insertTopLevelItem( row, item );
@@ -220,7 +220,7 @@ void QgsRelationManagerDialog::mBtnAddRelation_clicked()
       existingNames << rel.id();
     }
 
-    QString tempId = relationId + "_%1";
+    const QString tempId = relationId + "_%1";
     int suffix = 1;
     while ( existingNames.contains( relationId ) )
     {
@@ -255,7 +255,7 @@ void QgsRelationManagerDialog::mActionAddPolymorphicRelation_triggered()
     for ( const auto &reference : references )
       relation.addFieldPair( reference.first, reference.second );
 
-    QString relationId = addDlg.relationId();
+    const QString relationId = addDlg.relationId();
 
     if ( relationId.isEmpty() )
       relation.generateId();
@@ -290,7 +290,7 @@ void QgsRelationManagerDialog::mActionEditPolymorphicRelation_triggered()
     for ( const auto &reference : references )
       relation.addFieldPair( reference.first, reference.second );
 
-    QString relationId = addDlg.relationId();
+    const QString relationId = addDlg.relationId();
 
     if ( relationId.isEmpty() )
       relation.generateId();
@@ -300,7 +300,7 @@ void QgsRelationManagerDialog::mActionEditPolymorphicRelation_triggered()
     for ( int i = 0, l = mRelationsTree->topLevelItemCount(); i < l; i++ )
     {
       mRelationsTree->topLevelItem( i )->data( 0, Qt::UserRole );
-      QgsPolymorphicRelation currentPolyRel = mRelationsTree->topLevelItem( i )->data( 0, Qt::UserRole ).value<QgsPolymorphicRelation>();
+      const QgsPolymorphicRelation currentPolyRel = mRelationsTree->topLevelItem( i )->data( 0, Qt::UserRole ).value<QgsPolymorphicRelation>();
 
       if ( currentPolyRel.id() == polyRel.id() )
       {
@@ -340,7 +340,7 @@ QList< QgsRelation > QgsRelationManagerDialog::relations()
 {
   QList< QgsRelation > relations;
 
-  int rows = mRelationsTree->topLevelItemCount();
+  const int rows = mRelationsTree->topLevelItemCount();
   relations.reserve( rows );
   for ( int i = 0; i < rows; ++i )
   {
@@ -362,7 +362,7 @@ QList< QgsPolymorphicRelation > QgsRelationManagerDialog::polymorphicRelations()
 {
   QList< QgsPolymorphicRelation > relations;
 
-  int rows = mRelationsTree->topLevelItemCount();
+  const int rows = mRelationsTree->topLevelItemCount();
   relations.reserve( rows );
   for ( int i = 0; i < rows; ++i )
   {
@@ -385,9 +385,9 @@ void QgsRelationManagerDialog::onSelectionChanged()
   mBtnRemoveRelation->setEnabled( ! mRelationsTree->selectionModel()->selectedRows().isEmpty() );
 
   const QModelIndexList rows = mRelationsTree->selectionModel()->selectedRows();
-  bool isEditPolymorphicRelationEnabled = (
-      rows.size() == 1
-      && mRelationsTree->topLevelItem( rows[0].row() )->data( 0, Qt::UserRole ).value<QgsPolymorphicRelation>().isValid()
-                                          );
+  const bool isEditPolymorphicRelationEnabled = (
+        rows.size() == 1
+        && mRelationsTree->topLevelItem( rows[0].row() )->data( 0, Qt::UserRole ).value<QgsPolymorphicRelation>().isValid()
+      );
   mActionEditPolymorphicRelation->setEnabled( isEditPolymorphicRelationEnabled );
 }

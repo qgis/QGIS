@@ -63,7 +63,7 @@ void TestQgsFontUtils::xmlMethods()
 {
   //create a test dom element
   QDomImplementation DomImplementation;
-  QDomDocumentType documentType =
+  const QDomDocumentType documentType =
     DomImplementation.createDocumentType(
       QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
@@ -102,14 +102,14 @@ void TestQgsFontUtils::xmlMethods()
 #endif
 
   //test numeric weight
-  f1.setWeight( 5 );
+  f1.setWeight( QFont::ExtraLight );
   fontElem = QgsFontUtils::toXmlElement( f1, doc, QStringLiteral( "test" ) );
   QVERIFY( f2.weight() != f1.weight() );
   QVERIFY( QgsFontUtils::setFromXmlElement( f2, fontElem ) );
   QCOMPARE( f2.weight(), f1.weight() );
 
   //test reading from null element
-  QDomElement badElem;
+  const QDomElement badElem;
   QVERIFY( !QgsFontUtils::setFromXmlElement( f2, badElem ) );
 }
 
@@ -117,14 +117,14 @@ void TestQgsFontUtils::fromChildNode()
 {
   //create a test dom element
   QDomImplementation DomImplementation;
-  QDomDocumentType documentType =
+  const QDomDocumentType documentType =
     DomImplementation.createDocumentType(
       QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
 
   QFont f1 = QgsFontUtils::getStandardTestFont();
   f1.setPointSize( 48 );
-  QDomElement fontElem = QgsFontUtils::toXmlElement( f1, doc, QStringLiteral( "testNode" ) );
+  const QDomElement fontElem = QgsFontUtils::toXmlElement( f1, doc, QStringLiteral( "testNode" ) );
   QDomElement parentElem = doc.createElement( QStringLiteral( "parent" ) );
 
   //first try with no child element

@@ -86,17 +86,17 @@ void QgsMapSettingsUtils::worldFileParameters( const QgsMapSettings &mapSettings
 {
   QgsMapSettings ms = mapSettings;
 
-  double rotation = ms.rotation();
-  double alpha = rotation / 180 * M_PI;
+  const double rotation = ms.rotation();
+  const double alpha = rotation / 180 * M_PI;
 
   // reset rotation to 0 to calculate world file parameters
   ms.setRotation( 0 );
 
-  double xOrigin = ms.visibleExtent().xMinimum() + ( ms.mapUnitsPerPixel() / 2 );
-  double yOrigin = ms.visibleExtent().yMaximum() - ( ms.mapUnitsPerPixel() / 2 );
+  const double xOrigin = ms.visibleExtent().xMinimum() + ( ms.mapUnitsPerPixel() / 2 );
+  const double yOrigin = ms.visibleExtent().yMaximum() - ( ms.mapUnitsPerPixel() / 2 );
 
-  double xCenter = ms.visibleExtent().center().x();
-  double yCenter = ms.visibleExtent().center().y();
+  const double xCenter = ms.visibleExtent().center().x();
+  const double yCenter = ms.visibleExtent().center().y();
 
   // scaling matrix
   double s[6];

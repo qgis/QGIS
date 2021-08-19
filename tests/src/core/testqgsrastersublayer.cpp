@@ -82,7 +82,7 @@ void TestQgsRasterSubLayer::initTestCase()
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
 
   GDALAllRegister();
-  QString format = QStringLiteral( "netCDF" );
+  const QString format = QStringLiteral( "netCDF" );
   GDALDriverH myGdalDriver = GDALGetDriverByName( format.toLocal8Bit().constData() );
   mHasNetCDF = myGdalDriver != nullptr;
 
@@ -93,7 +93,7 @@ void TestQgsRasterSubLayer::initTestCase()
 
   if ( mHasNetCDF )
   {
-    QFileInfo myRasterFileInfo( mFileName );
+    const QFileInfo myRasterFileInfo( mFileName );
     mpRasterLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
                                         myRasterFileInfo.completeBaseName() );
     qDebug() << "raster metadata: " << mpRasterLayer->dataProvider()->htmlMetadata();
@@ -110,7 +110,7 @@ void TestQgsRasterSubLayer::cleanupTestCase()
 {
   delete mpRasterLayer;
   QgsApplication::exitQgis();
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -141,7 +141,7 @@ void TestQgsRasterSubLayer::subLayersList()
   for ( const QString &s : mpRasterLayer->subLayers() )
   {
     qDebug() << "sublayer: " << s;
-    int pos = s.indexOf( QLatin1String( ":Band" ) );
+    const int pos = s.indexOf( QLatin1String( ":Band" ) );
     if ( pos > 0 )
       sublayers << s.mid( pos );
     else
@@ -166,12 +166,12 @@ void TestQgsRasterSubLayer::checkStats()
   sublayerUri = sublayerUri.split( QgsDataProvider::sublayerSeparator() )[0];
   QgsRasterLayer *sublayer = new QgsRasterLayer( sublayerUri, QStringLiteral( "Sublayer 1" ) );
 
-  QgsRasterBandStats myStatistics = sublayer->dataProvider()->bandStatistics( 1,
-                                    QgsRasterBandStats::Min | QgsRasterBandStats::Max );
-  int width = 200;
-  int height = 200;
-  double min = 122;
-  double max = 130;
+  const QgsRasterBandStats myStatistics = sublayer->dataProvider()->bandStatistics( 1,
+                                          QgsRasterBandStats::Min | QgsRasterBandStats::Max );
+  const int width = 200;
+  const int height = 200;
+  const double min = 122;
+  const double max = 130;
   mReport += QStringLiteral( "width = %1 expected = %2<br>\n" ).arg( sublayer->width() ).arg( width );
   mReport += QStringLiteral( "height = %1 expected = %2<br>\n" ).arg( sublayer->height() ).arg( height );
   mReport += QStringLiteral( "min = %1 expected = %2<br>\n" ).arg( myStatistics.minimumValue ).arg( min );

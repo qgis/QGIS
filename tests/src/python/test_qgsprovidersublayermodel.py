@@ -36,10 +36,14 @@ class TestQgsProviderSublayerModel(unittest.TestCase):
         model = QgsProviderSublayerModel()
         self.assertEqual(model.rowCount(QModelIndex()), 0)
         self.assertEqual(model.columnCount(QModelIndex()), 2)
-        self.assertEqual(model.headerData(0, Qt.Horizontal, Qt.DisplayRole), 'Layer')
-        self.assertEqual(model.headerData(0, Qt.Horizontal, Qt.ToolTipRole), 'Layer')
+        self.assertEqual(model.headerData(0, Qt.Horizontal, Qt.DisplayRole), 'Item')
+        self.assertEqual(model.headerData(0, Qt.Horizontal, Qt.ToolTipRole), 'Item')
         self.assertEqual(model.headerData(1, Qt.Horizontal, Qt.DisplayRole), 'Description')
         self.assertEqual(model.headerData(1, Qt.Horizontal, Qt.ToolTipRole), 'Description')
+
+        # no crash, should return invalid results
+        self.assertFalse(model.indexToSublayer(model.index(0, 0, QModelIndex())).name())
+        self.assertFalse(model.indexToNonLayerItem(model.index(0, 0, QModelIndex())).name())
 
         layer1 = QgsProviderSublayerDetails()
         layer1.setType(QgsMapLayerType.RasterLayer)
@@ -57,6 +61,10 @@ class TestQgsProviderSublayerModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(0, 0), QgsProviderSublayerModel.Role.Uri), 'uri 1')
         self.assertEqual(model.data(model.index(0, 0), QgsProviderSublayerModel.Role.Name), 'layer 1')
         self.assertEqual(model.data(model.index(0, 0), QgsProviderSublayerModel.Role.Description), 'description 1')
+
+        self.assertEqual(model.indexToSublayer(model.index(0, 0, QModelIndex())), layer1)
+        self.assertFalse(model.indexToSublayer(model.index(1, 0, QModelIndex())).name())
+        self.assertFalse(model.indexToNonLayerItem(model.index(0, 0, QModelIndex())).name())
 
         layer2 = QgsProviderSublayerDetails()
         layer2.setType(QgsMapLayerType.VectorLayer)
@@ -84,6 +92,11 @@ class TestQgsProviderSublayerModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(1, 0), QgsProviderSublayerModel.Role.Uri), 'uri 2')
         self.assertEqual(model.data(model.index(1, 0), QgsProviderSublayerModel.Role.Name), 'layer 2')
         self.assertEqual(model.data(model.index(1, 0), QgsProviderSublayerModel.Role.Description), 'description 2')
+
+        self.assertEqual(model.indexToSublayer(model.index(0, 0, QModelIndex())), layer1)
+        self.assertEqual(model.indexToSublayer(model.index(1, 0, QModelIndex())), layer2)
+        self.assertFalse(model.indexToSublayer(model.index(2, 0, QModelIndex())).name())
+        self.assertFalse(model.indexToNonLayerItem(model.index(0, 0, QModelIndex())).name())
 
         layer3 = QgsProviderSublayerDetails()
         layer3.setType(QgsMapLayerType.VectorLayer)
@@ -119,6 +132,12 @@ class TestQgsProviderSublayerModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(2, 0), QgsProviderSublayerModel.Role.Name), 'layer 3')
         self.assertEqual(model.data(model.index(2, 0), QgsProviderSublayerModel.Role.Description), None)
 
+        self.assertEqual(model.indexToSublayer(model.index(0, 0, QModelIndex())), layer1)
+        self.assertEqual(model.indexToSublayer(model.index(1, 0, QModelIndex())), layer2)
+        self.assertEqual(model.indexToSublayer(model.index(2, 0, QModelIndex())), layer3)
+        self.assertFalse(model.indexToSublayer(model.index(3, 0, QModelIndex())).name())
+        self.assertFalse(model.indexToNonLayerItem(model.index(0, 0, QModelIndex())).name())
+
         # remove a layer
         model.setSublayerDetails([layer3, layer1])
         self.assertEqual(model.rowCount(QModelIndex()), 2)
@@ -149,12 +168,42 @@ class TestQgsProviderSublayerModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(0, 0), QgsProviderSublayerModel.Role.Name), 'layer 3')
         self.assertEqual(model.data(model.index(0, 0), QgsProviderSublayerModel.Role.Description), None)
 
+    def test_non_layer_item(self):
+        item1 = QgsProviderSublayerModel.NonLayerItem()
+        item1.setUri('item uri 1')
+        item1.setName('item name 1')
+        item1.setType('item type 1')
+        item1.setDescription('item desc 1')
+
+        item2 = QgsProviderSublayerModel.NonLayerItem(item1)
+        self.assertEqual(item1, item2)
+        self.assertFalse(item1 != item2)
+
+        item2.setUri('uu')
+        self.assertNotEqual(item1, item2)
+        self.assertTrue(item1 != item2)
+
+        item2 = QgsProviderSublayerModel.NonLayerItem(item1)
+        item2.setName('item name 2')
+        self.assertNotEqual(item1, item2)
+        self.assertTrue(item1 != item2)
+
+        item2 = QgsProviderSublayerModel.NonLayerItem(item1)
+        item2.setType('item type 2')
+        self.assertNotEqual(item1, item2)
+        self.assertTrue(item1 != item2)
+
+        item2 = QgsProviderSublayerModel.NonLayerItem(item1)
+        item2.setDescription('item description 2')
+        self.assertNotEqual(item1, item2)
+        self.assertTrue(item1 != item2)
+
     def test_model_with_non_layer_items(self):
         model = QgsProviderSublayerModel()
         self.assertEqual(model.rowCount(QModelIndex()), 0)
         self.assertEqual(model.columnCount(QModelIndex()), 2)
-        self.assertEqual(model.headerData(0, Qt.Horizontal, Qt.DisplayRole), 'Layer')
-        self.assertEqual(model.headerData(0, Qt.Horizontal, Qt.ToolTipRole), 'Layer')
+        self.assertEqual(model.headerData(0, Qt.Horizontal, Qt.DisplayRole), 'Item')
+        self.assertEqual(model.headerData(0, Qt.Horizontal, Qt.ToolTipRole), 'Item')
         self.assertEqual(model.headerData(1, Qt.Horizontal, Qt.DisplayRole), 'Description')
         self.assertEqual(model.headerData(1, Qt.Horizontal, Qt.ToolTipRole), 'Description')
 
@@ -175,6 +224,10 @@ class TestQgsProviderSublayerModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(0, 0), QgsProviderSublayerModel.Role.Name), 'layer 1')
         self.assertEqual(model.data(model.index(0, 0), QgsProviderSublayerModel.Role.Description), 'description 1')
         self.assertEqual(model.data(model.index(0, 0), QgsProviderSublayerModel.Role.IsNonLayerItem), False)
+
+        self.assertEqual(model.indexToSublayer(model.index(0, 0, QModelIndex())), layer1)
+        self.assertFalse(model.indexToSublayer(model.index(1, 0, QModelIndex())).name())
+        self.assertFalse(model.indexToNonLayerItem(model.index(0, 0, QModelIndex())).name())
 
         item1 = QgsProviderSublayerModel.NonLayerItem()
         item1.setUri('item uri 1')
@@ -200,6 +253,12 @@ class TestQgsProviderSublayerModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(1, 0), QgsProviderSublayerModel.Role.Description), 'item desc 1')
         self.assertEqual(model.data(model.index(1, 0), QgsProviderSublayerModel.Role.IsNonLayerItem), True)
         self.assertEqual(model.data(model.index(1, 0), QgsProviderSublayerModel.Role.NonLayerItemType), 'item type 1')
+
+        self.assertEqual(model.indexToSublayer(model.index(0, 0, QModelIndex())), layer1)
+        self.assertFalse(model.indexToSublayer(model.index(1, 0, QModelIndex())).name())
+        self.assertFalse(model.indexToNonLayerItem(model.index(0, 0, QModelIndex())).name())
+        self.assertEqual(model.indexToNonLayerItem(model.index(1, 0, QModelIndex())), item1)
+        self.assertFalse(model.indexToNonLayerItem(model.index(2, 0, QModelIndex())).name())
 
         item2 = QgsProviderSublayerModel.NonLayerItem()
         item2.setUri('item uri 2')
@@ -234,6 +293,13 @@ class TestQgsProviderSublayerModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(2, 0), QgsProviderSublayerModel.Role.IsNonLayerItem), True)
         self.assertEqual(model.data(model.index(2, 0), QgsProviderSublayerModel.Role.NonLayerItemType), 'item type 2')
 
+        self.assertEqual(model.indexToSublayer(model.index(0, 0, QModelIndex())), layer1)
+        self.assertFalse(model.indexToSublayer(model.index(1, 0, QModelIndex())).name())
+        self.assertFalse(model.indexToNonLayerItem(model.index(0, 0, QModelIndex())).name())
+        self.assertEqual(model.indexToNonLayerItem(model.index(1, 0, QModelIndex())), item1)
+        self.assertEqual(model.indexToNonLayerItem(model.index(2, 0, QModelIndex())), item2)
+        self.assertFalse(model.indexToNonLayerItem(model.index(3, 0, QModelIndex())).name())
+
     def test_proxy(self):
         """
         Test QgsProviderSublayerProxyModel
@@ -243,8 +309,8 @@ class TestQgsProviderSublayerModel(unittest.TestCase):
         proxy.setSourceModel(model)
         self.assertEqual(model.rowCount(QModelIndex()), 0)
         self.assertEqual(proxy.columnCount(QModelIndex()), 2)
-        self.assertEqual(proxy.headerData(0, Qt.Horizontal, Qt.DisplayRole), 'Layer')
-        self.assertEqual(proxy.headerData(0, Qt.Horizontal, Qt.ToolTipRole), 'Layer')
+        self.assertEqual(proxy.headerData(0, Qt.Horizontal, Qt.DisplayRole), 'Item')
+        self.assertEqual(proxy.headerData(0, Qt.Horizontal, Qt.ToolTipRole), 'Item')
         self.assertEqual(proxy.headerData(1, Qt.Horizontal, Qt.DisplayRole), 'Description')
         self.assertEqual(proxy.headerData(1, Qt.Horizontal, Qt.ToolTipRole), 'Description')
 
@@ -313,6 +379,11 @@ class TestQgsProviderSublayerModel(unittest.TestCase):
         proxy.setFilterString('ITEM')
         self.assertEqual(proxy.rowCount(QModelIndex()), 1)
         self.assertEqual(proxy.data(proxy.index(0, 0), Qt.DisplayRole), 'item name 1')
+
+        # should also allow filtering by vector layer wkb type strings
+        proxy.setFilterString('LineSTRING')
+        self.assertEqual(proxy.rowCount(QModelIndex()), 1)
+        self.assertEqual(proxy.data(proxy.index(0, 0), Qt.DisplayRole), 'another layer 2')
 
         proxy.setFilterString('')
         self.assertEqual(proxy.rowCount(QModelIndex()), 3)

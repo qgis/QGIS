@@ -26,7 +26,6 @@
 #include "qgsmapcanvas.h"
 #include "qgsgui.h"
 #include "qgsapplication.h"
-#include "qgsogrdataitems.h"
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QTextCodec>
@@ -35,6 +34,8 @@
 #include "gdal.h"
 #include "qgsdatums.h"
 #include "qgsiconutils.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidersublayerdetails.h"
 
 static const int COLUMN_IDX_NAME = 0;
 static const int COLUMN_IDX_TYPE = 1;
@@ -387,34 +388,24 @@ void QgsVectorLayerSaveAsDialog::accept()
   }
   else if ( mActionOnExistingFile == QgsVectorFileWriter::CreateOrOverwriteFile && QFile::exists( filename() ) )
   {
-    try
+    const QList<QgsProviderSublayerDetails> sublayers = QgsProviderRegistry::instance()->querySublayers( filename() );
+    QStringList layerList;
+    layerList.reserve( sublayers.size() );
+    for ( const QgsProviderSublayerDetails &sublayer : sublayers )
     {
-      const QList<QgsOgrDbLayerInfo *> subLayers = QgsOgrLayerItem::subLayers( filename(), format() );
-      QStringList layerList;
-      for ( const QgsOgrDbLayerInfo *layer : subLayers )
-      {
-        layerList.append( layer->name() );
-      }
-      qDeleteAll( subLayers );
-      if ( layerList.length() > 1 )
-      {
-        layerList.sort( Qt::CaseInsensitive );
-        QMessageBox msgBox;
-        msgBox.setIcon( QMessageBox::Warning );
-        msgBox.setWindowTitle( tr( "Overwrite File" ) );
-        msgBox.setText( tr( "This file contains %1 layers that will be lost!\n" ).arg( QString::number( layerList.length() ) ) );
-        msgBox.setDetailedText( tr( "The following layers will be permanently lost:\n\n%1" ).arg( layerList.join( "\n" ) ) );
-        msgBox.setStandardButtons( QMessageBox::Ok | QMessageBox::Cancel );
-        if ( msgBox.exec() == QMessageBox::Cancel )
-          return;
-      }
+      layerList.append( sublayer.name() );
     }
-    catch ( QgsOgrLayerNotValidException &ex )
+    if ( layerList.length() > 1 )
     {
-      QMessageBox::critical( this,
-                             tr( "Save Vector Layer As" ),
-                             tr( "Error opening destination file: %1" ).arg( ex.what() ) );
-      return;
+      layerList.sort( Qt::CaseInsensitive );
+      QMessageBox msgBox;
+      msgBox.setIcon( QMessageBox::Warning );
+      msgBox.setWindowTitle( tr( "Overwrite File" ) );
+      msgBox.setText( tr( "This file contains %1 layers that will be lost!\n" ).arg( QLocale().toString( layerList.length() ) ) );
+      msgBox.setDetailedText( tr( "The following layers will be permanently lost:\n\n%1" ).arg( layerList.join( "\n" ) ) );
+      msgBox.setStandardButtons( QMessageBox::Ok | QMessageBox::Cancel );
+      if ( msgBox.exec() == QMessageBox::Cancel )
+        return;
     }
   }
 

@@ -28,6 +28,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsprocessingfeedback.h"
 #include "qgsmeshlayer.h"
+#include "qgspointcloudlayer.h"
 #include "qgsexpressioncontextutils.h"
 
 
@@ -795,6 +796,11 @@ QString QgsProcessingAlgorithm::parameterAsDatabaseTableName( const QVariantMap 
   return QgsProcessingParameters::parameterAsDatabaseTableName( parameterDefinition( name ), parameters, context );
 }
 
+QgsPointCloudLayer *QgsProcessingAlgorithm::parameterAsPointCloudLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
+{
+  return QgsProcessingParameters::parameterAsPointCloudLayer( parameterDefinition( name ), parameters, context );
+}
+
 QString QgsProcessingAlgorithm::invalidSourceError( const QVariantMap &parameters, const QString &name )
 {
   if ( !parameters.contains( name ) )
@@ -874,6 +880,16 @@ QString QgsProcessingAlgorithm::invalidSinkError( const QVariantMap &parameters,
     else
       return QObject::tr( "Could not create destination layer for %1: invalid value" ).arg( name );
   }
+}
+
+QString QgsProcessingAlgorithm::writeFeatureError( QgsFeatureSink *sink, const QVariantMap &parameters, const QString &name )
+{
+  Q_UNUSED( sink );
+  Q_UNUSED( parameters );
+  if ( !name.isEmpty() )
+    return QObject::tr( "Could not write feature into %1" ).arg( name );
+  else
+    return QObject::tr( "Could not write feature" );
 }
 
 bool QgsProcessingAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const

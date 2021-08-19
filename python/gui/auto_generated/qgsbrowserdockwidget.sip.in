@@ -8,11 +8,10 @@
 
 
 
-
 class QgsBrowserDockWidget : QgsDockWidget
 {
 %Docstring(signature="appended")
-The :py:class:`QgsBrowserDockWidget` class
+A dock widget containing a :py:class:`QgsBrowserWidget` for navigating and managing data sources.
 
 .. versionadded:: 3.0
 %End
@@ -31,6 +30,13 @@ Constructor for QgsBrowserDockWidget
 :param parent: parent widget
 %End
     ~QgsBrowserDockWidget();
+
+    QgsBrowserWidget *browserWidget();
+%Docstring
+Returns a pointer to the :py:class:`QgsBrowserWidget` used by the dock widget.
+
+.. versionadded:: 3.22
+%End
 
  void addFavoriteDirectory( const QString &favDir, const QString &name = QString() ) /Deprecated/;
 %Docstring
@@ -87,9 +93,12 @@ Returns ``True`` if the index was successfully intrepreted as a map layer and lo
    will be removed in QGIS 4.0 - retrieve the :py:class:`QgsLayerItem` itself and manually add to project.
 %End
 
-    void showContextMenu( QPoint );
+ void showContextMenu( QPoint ) /Deprecated/;
 %Docstring
-Show context menu
+Show context menu.
+
+.. deprecated::
+   will be removed in QGIS 4.0 -- this method is not intended for public use
 %End
 
  void addFavorite() /Deprecated/;
@@ -118,49 +127,87 @@ Remove from favorite.
 
     void refresh();
 %Docstring
-Refresh browser view model (and view)
+Refresh the browser model and view.
 %End
 
-    void showFilterWidget( bool visible );
+ void showFilterWidget( bool visible ) /Deprecated/;
 %Docstring
-Show/hide filter widget
-%End
-    void enablePropertiesWidget( bool enable );
-%Docstring
-Enable/disable properties widget
-%End
-    void setFilterSyntax( QAction * );
-%Docstring
-Sets filter syntax
-%End
-    void setCaseSensitive( bool caseSensitive );
-%Docstring
-Sets filter case sensitivity
-%End
-    void setFilter();
-%Docstring
-Apply filter to the model
-%End
-    void setActiveIndex( const QModelIndex &index );
-%Docstring
-Sets the selection to ``index`` and expand it
-%End
-    void updateProjectHome();
-%Docstring
-Update project home directory
+Show/hide filter widget.
+
+.. deprecated::
+   will be removed in QGIS 4.0 -- this method is not intended for public use
 %End
 
-    void addSelectedLayers();
+ void enablePropertiesWidget( bool enable ) /Deprecated/;
+%Docstring
+Enable/disable properties widget.
+
+.. deprecated::
+   will be removed in QGIS 4.0 -- this method is not intended for public use
+%End
+
+ void setFilterSyntax( QAction * ) /Deprecated/;
+%Docstring
+Sets filter syntax.
+
+.. deprecated::
+   will be removed in QGIS 4.0 -- this method is not intended for public use
+%End
+
+ void setCaseSensitive( bool caseSensitive ) /Deprecated/;
+%Docstring
+Sets filter case sensitivity.
+
+.. deprecated::
+   will be removed in QGIS 4.0 -- this method is not intended for public use
+%End
+
+ void setFilter() /Deprecated/;
+%Docstring
+Apply filter to the model.
+
+.. deprecated::
+   will be removed in QGIS 4.0 -- this method is not intended for public use
+%End
+
+ void setActiveIndex( const QModelIndex &index ) /Deprecated/;
+%Docstring
+Sets the selection to ``index`` and expand it.
+
+.. deprecated::
+   will be removed in QGIS 4.0 -- this method is not intended for public use
+%End
+
+ void updateProjectHome() /Deprecated/;
+%Docstring
+Update project home directory.
+
+.. deprecated::
+   will be removed in QGIS 4.0 -- this method is not intended for public use
+%End
+
+ void addSelectedLayers() /Deprecated/;
 %Docstring
 Add selected layers to the project
+
+.. deprecated::
+   will be removed in QGIS 4.0 -- this method is not intended for public use
 %End
-    void showProperties();
+
+ void showProperties() /Deprecated/;
 %Docstring
-Show the layer properties
+Show the layer properties.
+
+.. deprecated::
+   will be removed in QGIS 4.0 -- this method is not intended for public use
 %End
-    void hideItem();
+
+ void hideItem() /Deprecated/;
 %Docstring
-Hide current item
+Hide current item.
+
+.. deprecated::
+   will be removed in QGIS 4.0 -- this method is not intended for public use
 %End
 
  void toggleFastScan() /Deprecated/;
@@ -171,14 +218,20 @@ Toggle fast scan
    will be removed in QGIS 4.0
 %End
 
+ void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected ) /Deprecated/;
+%Docstring
+Selection has changed.
 
-    void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
-%Docstring
-Selection has changed
+.. deprecated::
+   will be removed in QGIS 4.0 -- this method is not intended for public use
 %End
-    void splitterMoved();
+
+ void splitterMoved() /Deprecated/;
 %Docstring
-Splitter has been moved
+Splitter has been moved.
+
+.. deprecated::
+   no longer used.
 %End
 
   signals:
@@ -193,13 +246,6 @@ Emitted when drop uri list needs to be handled
     void connectionsChanged();
 %Docstring
 Connections changed in the browser
-%End
-
-  protected:
-    virtual void showEvent( QShowEvent *event );
-
-%Docstring
-Show event override
 %End
 
 };

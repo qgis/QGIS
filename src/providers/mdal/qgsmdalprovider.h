@@ -77,6 +77,7 @@ class QgsMdalProvider : public QgsMeshDataProvider
     bool isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const override;
     QgsMeshDataBlock areFacesActive( QgsMeshDatasetIndex index, int faceIndex, int count ) const override;
     QgsRectangle extent() const override;
+    int maximumVerticesCountPerFace() const override;
 
     QgsMeshDriverMetadata driverMetadata() const override;
 
@@ -145,14 +146,17 @@ class QgsMdalProviderMetadata: public QgsProviderMetadata
     QString filters( FilterType type ) override;
     QList<QgsMeshDriverMetadata> meshDriversMetadata() override;
     QgsMdalProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
-    QList<QgsDataItemProvider *> dataItemProviders() const override;
     bool createMeshData( const QgsMesh &mesh,
-                         const QString uri,
+                         const QString &fileName,
                          const QString &driverName,
+                         const QgsCoordinateReferenceSystem &crs ) const override;
+    bool createMeshData( const QgsMesh &mesh,
+                         const QString &uri,
                          const QgsCoordinateReferenceSystem &crs ) const override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     ProviderCapabilities providerCapabilities() const override;
+    QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
     QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
 };
 

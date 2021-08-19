@@ -26,10 +26,6 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsxmlutils.h"
 #include "qgsvectorlayer.h"
-
-#include <QMessageBox>
-#include <QRegularExpression>
-
 #include "qgsvectorlayerexporter.h"
 #include "qgspostgresprovider.h"
 #include "qgspostgresconn.h"
@@ -43,12 +39,15 @@
 #include "qgslogger.h"
 #include "qgsfeedback.h"
 #include "qgssettings.h"
+#include "qgsstringutils.h"
 #include "qgsjsonutils.h"
 
 #include "qgspostgresprovider.h"
 #include "qgsprovidermetadata.h"
 #include "qgspostgresproviderconnection.h"
 
+#include <QMessageBox>
+#include <QRegularExpression>
 
 const QString QgsPostgresProvider::POSTGRES_KEY = QStringLiteral( "postgres" );
 const QString QgsPostgresProvider::POSTGRES_DESCRIPTION = QStringLiteral( "PostgreSQL/PostGIS data provider" );
@@ -1463,13 +1462,13 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
     // get a new alias for the subquery
     int index = 0;
     QString alias;
-    QRegExp regex;
+    QRegularExpression regex;
     do
     {
       alias = QStringLiteral( "subQuery_%1" ).arg( QString::number( index++ ) );
-      QString pattern = QStringLiteral( "(\\\"?)%1\\1" ).arg( QRegExp::escape( alias ) );
+      QString pattern = QStringLiteral( "(\\\"?)%1\\1" ).arg( QgsStringUtils::qRegExpEscape( alias ) );
       regex.setPattern( pattern );
-      regex.setCaseSensitivity( Qt::CaseInsensitive );
+      regex.setPatternOptions( QRegularExpression::CaseInsensitiveOption );
     }
     while ( mQuery.contains( regex ) );
 
@@ -2057,8 +2056,8 @@ bool QgsPostgresProvider::parseDomainCheckConstraint( QStringList &enumValues, c
       //we assume that the constraint is of the following form:
       //(VALUE = ANY (ARRAY['a'::text, 'b'::text, 'c'::text, 'd'::text]))
       //normally, PostgreSQL creates that if the constraint has been specified as 'VALUE in ('a', 'b', 'c', 'd')
-
-      int anyPos = checkDefinition.indexOf( QRegExp( "VALUE\\s*=\\s*ANY\\s*\\(\\s*ARRAY\\s*\\[" ) );
+      const thread_local QRegularExpression definitionRegExp( "VALUE\\s*=\\s*ANY\\s*\\(\\s*ARRAY\\s*\\[" );
+      int anyPos = checkDefinition.indexOf( definitionRegExp );
       int arrayPosition = checkDefinition.lastIndexOf( QLatin1String( "ARRAY[" ) );
       int closingBracketPos = checkDefinition.indexOf( ']', arrayPosition + 6 );
 
@@ -2673,14 +2672,14 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds &ids )
     conn->begin();
 
     QgsFeatureIds chunkIds;
-    QgsFeatureIds::const_iterator lastId = ids.constEnd();
-    --lastId;
-
+    const int countIds = ids.size();
+    int i = 0;
     for ( QgsFeatureIds::const_iterator it = ids.constBegin(); it != ids.constEnd(); ++it )
     {
       // create chunks of fids to delete, the last chunk may be smaller
       chunkIds.insert( *it );
-      if ( chunkIds.size() < 5000 && it != lastId )
+      i++;
+      if ( chunkIds.size() < 5000 && i < countIds )
         continue;
 
       const QString sql = QStringLiteral( "DELETE FROM %1 WHERE %2" )
@@ -4758,13 +4757,14 @@ QString QgsPostgresProvider::getNextString( const QString &txt, int &i, const QS
   jumpSpace( txt, i );
   if ( i < txt.length() && txt.at( i ) == '"' )
   {
-    QRegExp stringRe( "^\"((?:\\\\.|[^\"\\\\])*)\".*" );
-    if ( !stringRe.exactMatch( txt.mid( i ) ) )
+    const thread_local QRegularExpression stringRe( QRegularExpression::anchoredPattern( "^\"((?:\\\\.|[^\"\\\\])*)\".*" ) );
+    const QRegularExpressionMatch match = stringRe.match( txt.mid( i ) );
+    if ( !match.hasMatch() )
     {
       QgsMessageLog::logMessage( tr( "Cannot find end of double quoted string: %1" ).arg( txt ), tr( "PostGIS" ) );
       return QString();
     }
-    i += stringRe.cap( 1 ).length() + 2;
+    i += match.captured( 1 ).length() + 2;
     jumpSpace( txt, i );
     if ( !QStringView{txt}.mid( i ).startsWith( sep ) && i < txt.length() )
     {
@@ -4772,7 +4772,7 @@ QString QgsPostgresProvider::getNextString( const QString &txt, int &i, const QS
       return QString();
     }
     i += sep.length();
-    return stringRe.cap( 1 ).replace( QLatin1String( "\\\"" ), QLatin1String( "\"" ) ).replace( QLatin1String( "\\\\" ), QLatin1String( "\\" ) );
+    return match.captured( 1 ).replace( QLatin1String( "\\\"" ), QLatin1String( "\"" ) ).replace( QLatin1String( "\\\\" ), QLatin1String( "\\" ) );
   }
   else
   {

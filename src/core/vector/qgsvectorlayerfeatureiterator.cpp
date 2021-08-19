@@ -27,13 +27,14 @@
 #include "qgsmessagelog.h"
 #include "qgsexception.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsgeometryengine.h"
 
 #include <QThreadStorage>
 #include <QStack>
 
 QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *layer )
 {
-  QMutexLocker locker( &layer->mFeatureSourceConstructorMutex );
+  const QMutexLocker locker( &layer->mFeatureSourceConstructorMutex );
   const QgsVectorDataProvider *provider = layer->dataProvider();
   if ( provider )
     mProviderFeatureSource.reset( provider->featureSource() );
@@ -91,7 +92,7 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *
 #endif
   }
 
-  std::unique_ptr< QgsExpressionContextScope > layerScope( QgsExpressionContextUtils::layerScope( layer ) );
+  const std::unique_ptr< QgsExpressionContextScope > layerScope( QgsExpressionContextUtils::layerScope( layer ) );
   mLayerScope = *layerScope;
 }
 
@@ -137,6 +138,26 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     close();
     return;
   }
+
+
+  // prepare spatial filter geometries for optimal speed
+  switch ( mRequest.spatialFilterType() )
+  {
+    case Qgis::SpatialFilterType::NoFilter:
+    case Qgis::SpatialFilterType::BoundingBox:
+      break;
+
+    case Qgis::SpatialFilterType::DistanceWithin:
+      if ( !mRequest.referenceGeometry().isEmpty() )
+      {
+        mDistanceWithinGeom = mRequest.referenceGeometry();
+        mDistanceWithinEngine.reset( QgsGeometry::createGeometryEngine( mDistanceWithinGeom.constGet() ) );
+        mDistanceWithinEngine->prepareGeometry();
+        mDistanceWithin = mRequest.distanceWithin();
+      }
+      break;
+  }
+
   if ( !mFilterRect.isNull() )
   {
     // update request to be the unprojected filter rect
@@ -149,7 +170,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
   {
     QSet<int> attributeIndexes;
     const auto usedAttributeIndices = mRequest.orderBy().usedAttributeIndices( mSource->mFields );
-    for ( int attrIndex : usedAttributeIndices )
+    for ( const int attrIndex : usedAttributeIndices )
     {
       if ( mSource->mFields.fieldOrigin( attrIndex ) != QgsFields::OriginProvider )
         mDelegatedOrderByToProvider = false;
@@ -202,8 +223,8 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     // prepare list of attributes to match provider fields
     QSet<int> providerSubset;
     const QgsAttributeList subset = mProviderRequest.subsetOfAttributes();
-    int nPendingFields = mSource->mFields.count();
-    for ( int attrIndex : subset )
+    const int nPendingFields = mSource->mFields.count();
+    for ( const int attrIndex : subset )
     {
       if ( attrIndex < 0 || attrIndex >= nPendingFields )
         continue;
@@ -219,7 +240,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     if ( !mProviderRequest.orderBy().isEmpty() )
     {
       const auto usedAttributeIndices = mProviderRequest.orderBy().usedAttributeIndices( mSource->mFields );
-      for ( int attrIndex : usedAttributeIndices )
+      for ( const int attrIndex : usedAttributeIndices )
       {
         providerSubset << attrIndex;
       }
@@ -234,7 +255,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     const auto constReferencedColumns = mProviderRequest.filterExpression()->referencedColumns();
     for ( const QString &field : constReferencedColumns )
     {
-      int idx = source->mFields.lookupField( field );
+      const int idx = source->mFields.lookupField( field );
 
       // If there are fields in the expression which are not of origin provider, the provider will not be able to filter based on them.
       // In this case we disable the expression filter.
@@ -277,7 +298,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
         providerLimit += mSource->mChangedAttributeValues.size();
       }
 
-      if ( mProviderRequest.filterType() == QgsFeatureRequest::FilterExpression || !mProviderRequest.filterRect().isNull() )
+      if ( mProviderRequest.filterType() == QgsFeatureRequest::FilterExpression || mProviderRequest.spatialFilterType() != Qgis::SpatialFilterType::NoFilter )
       {
         // geometry changes may mean some features no longer match expression or rect, so increase limit sent to provider
         providerLimit += mSource->mChangedGeometries.size();
@@ -359,7 +380,7 @@ class QgsThreadStackOverflowGuard
       QStringList dumpStack;
       const QStack<QString> &stack = mStorage.localData();
 
-      int dumpSize = std::min( static_cast<int>( stack.size() ), 10 );
+      const int dumpSize = std::min( static_cast<int>( stack.size() ), 10 );
       for ( int i = 0; i < dumpSize; ++i )
       {
         dumpStack += stack.at( i );
@@ -389,7 +410,7 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
 
   static QThreadStorage<QStack<QString>> sStack;
 
-  QgsThreadStackOverflowGuard guard( sStack, mSource->id(), 4 );
+  const QgsThreadStackOverflowGuard guard( sStack, mSource->id(), 4 );
 
   if ( guard.hasStackOverflow() )
   {
@@ -401,7 +422,7 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
   {
     if ( mFetchedFid )
       return false;
-    bool res = nextFeatureFid( f );
+    const bool res = nextFeatureFid( f );
     if ( res && postProcessFeature( f ) )
     {
       mFetchedFid = true;
@@ -536,9 +557,10 @@ bool QgsVectorLayerFeatureIterator::isValid() const
 
 bool QgsVectorLayerFeatureIterator::fetchNextAddedFeature( QgsFeature &f )
 {
-  while ( mFetchAddedFeaturesIt-- != mSource->mAddedFeatures.constBegin() )
+  while ( mFetchAddedFeaturesIt != mSource->mAddedFeatures.constBegin() )
   {
-    QgsFeatureId fid = mFetchAddedFeaturesIt->id();
+    --mFetchAddedFeaturesIt;
+    const QgsFeatureId fid = mFetchAddedFeaturesIt->id();
 
     if ( mFetchConsidered.contains( fid ) )
       // must have changed geometry outside rectangle
@@ -583,7 +605,7 @@ bool QgsVectorLayerFeatureIterator::fetchNextChangedGeomFeature( QgsFeature &f )
   // check if changed geometries are in rectangle
   for ( ; mFetchChangedGeomIt != mSource->mChangedGeometries.constEnd(); mFetchChangedGeomIt++ )
   {
-    QgsFeatureId fid = mFetchChangedGeomIt.key();
+    const QgsFeatureId fid = mFetchChangedGeomIt.key();
 
     if ( mFetchConsidered.contains( fid ) )
       // skip deleted features
@@ -655,7 +677,7 @@ void QgsVectorLayerFeatureIterator::useChangedAttributeFeature( QgsFeatureId fid
     f.setGeometry( geom );
   }
 
-  bool subsetAttrs = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes );
+  const bool subsetAttrs = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes );
   if ( !subsetAttrs || !mRequest.subsetOfAttributes().isEmpty() )
   {
     // retrieve attributes from provider
@@ -735,7 +757,7 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
 {
   static QThreadStorage<QStack<QString>> sStack;
 
-  QgsThreadStackOverflowGuard guard( sStack, mSource->id(), 4 );
+  const QgsThreadStackOverflowGuard guard( sStack, mSource->id(), 4 );
 
   if ( guard.hasStackOverflow() )
   {
@@ -745,7 +767,7 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
 
   const QList<QgsExpressionFieldBuffer::ExpressionField> &exps = mSource->mExpressionFieldBuffer->expressions();
 
-  int oi = mSource->mFields.fieldOriginIndex( fieldIdx );
+  const int oi = mSource->mFields.fieldOriginIndex( fieldIdx );
   std::unique_ptr<QgsExpression> exp = std::make_unique<QgsExpression>( exps[oi].cachedExpression );
 
   QgsDistanceArea da;
@@ -762,7 +784,7 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
 
   QSet<int> requestedAttributes = qgis::listToSet( mRequest.subsetOfAttributes() );
 
-  for ( int dependentFieldIdx : referencedColumns )
+  for ( const int dependentFieldIdx : referencedColumns )
   {
     if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
     {
@@ -801,7 +823,7 @@ void QgsVectorLayerFeatureIterator::prepareFields()
 
   while ( !mFieldsToPrepare.isEmpty() )
   {
-    int fieldIdx = mFieldsToPrepare.takeFirst();
+    const int fieldIdx = mFieldsToPrepare.takeFirst();
     if ( mPreparedFields.contains( fieldIdx ) )
       continue;
 
@@ -839,7 +861,7 @@ void QgsVectorLayerFeatureIterator::createOrderedJoinList()
   //iterate through the joins. If target field is not yet covered, move the entry to the end of the list
 
   //some join combinations might not have a resolution at all
-  int maxIterations = ( mOrderedJoinInfoList.size() + 1 ) * mOrderedJoinInfoList.size() / 2.0;
+  const int maxIterations = ( mOrderedJoinInfoList.size() + 1 ) * mOrderedJoinInfoList.size() / 2.0;
   int currentIteration = 0;
 
   for ( int i = 0; i < mOrderedJoinInfoList.size() - 1; ++i )
@@ -852,10 +874,10 @@ void QgsVectorLayerFeatureIterator::createOrderedJoinList()
     }
     else
     {
-      int offset = mOrderedJoinInfoList.at( i ).indexOffset;
-      int joinField = mOrderedJoinInfoList.at( i ).joinField;
+      const int offset = mOrderedJoinInfoList.at( i ).indexOffset;
+      const int joinField = mOrderedJoinInfoList.at( i ).joinField;
 
-      QgsAttributeList attributes = mOrderedJoinInfoList.at( i ).attributes;
+      const QgsAttributeList attributes = mOrderedJoinInfoList.at( i ).attributes;
       for ( int n = 0; n < attributes.size(); n++ )
       {
         if ( n != joinField )
@@ -878,6 +900,12 @@ bool QgsVectorLayerFeatureIterator::postProcessFeature( QgsFeature &feature )
   bool result = checkGeometryValidity( feature );
   if ( result )
     geometryToDestinationCrs( feature, mTransform );
+
+  if ( result && mDistanceWithinEngine && feature.hasGeometry() )
+  {
+    result = mDistanceWithinEngine->distance( feature.geometry().constGet() ) <= mDistanceWithin;
+  }
+
   return result;
 }
 
@@ -949,7 +977,7 @@ void QgsVectorLayerFeatureIterator::addJoinedAttributes( QgsFeature &f )
   QList< FetchJoinInfo >::const_iterator joinIt = mOrderedJoinInfoList.constBegin();
   for ( ; joinIt != mOrderedJoinInfoList.constEnd(); ++joinIt )
   {
-    QVariant targetFieldValue = f.attribute( joinIt->targetField );
+    const QVariant targetFieldValue = f.attribute( joinIt->targetField );
     if ( !targetFieldValue.isValid() )
       continue;
 
@@ -1036,7 +1064,7 @@ bool QgsVectorLayerFeatureIterator::providerCanSimplify( QgsSimplifyMethod::Meth
 void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesCached( QgsFeature &f, const QVariant &joinValue ) const
 {
   const QHash<QString, QgsAttributes> &memoryCache = joinInfo->cachedAttributes;
-  QHash<QString, QgsAttributes>::const_iterator it = memoryCache.find( joinValue.toString() );
+  const QHash<QString, QgsAttributes>::const_iterator it = memoryCache.find( joinValue.toString() );
   if ( it == memoryCache.constEnd() )
     return; // joined value not found -> leaving the attributes empty (null)
 
@@ -1064,7 +1092,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   // no memory cache, query the joined values by setting substring
   QString subsetString;
 
-  QString joinFieldName = joinInfo->joinFieldName();
+  const QString joinFieldName = joinInfo->joinFieldName();
 
   subsetString.append( QStringLiteral( "\"%1\"" ).arg( joinFieldName ) );
 
@@ -1098,7 +1126,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   if ( joinInfo->hasSubset() )
   {
     const QStringList subsetNames = QgsVectorLayerJoinInfo::joinFieldNamesSubset( *joinInfo );
-    QVector<int> subsetIndices = QgsVectorLayerJoinBuffer::joinSubsetIndices( joinLayerFields, subsetNames );
+    const QVector<int> subsetIndices = QgsVectorLayerJoinBuffer::joinSubsetIndices( joinLayerFields, subsetNames );
     joinedAttributeIndices = qgis::setToList( qgis::listToSet( attributes ).intersect( qgis::listToSet( subsetIndices.toList() ) ) );
   }
   else
@@ -1122,14 +1150,14 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   QgsFeature fet;
   if ( fi.nextFeature( fet ) )
   {
-    QgsAttributes attr = fet.attributes();
+    const QgsAttributes attr = fet.attributes();
 
     for ( const int sourceAttrIndex : sourceAttrIndexes )
     {
       if ( sourceAttrIndex == joinField )
         continue;
 
-      int destAttrIndex = attributesSourceToDestLayerMap.value( sourceAttrIndex );
+      const int destAttrIndex = attributesSourceToDestLayerMap.value( sourceAttrIndex );
 
       f.setAttribute( destAttrIndex, attr.at( sourceAttrIndex ) );
     }
@@ -1145,7 +1173,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
 
 bool QgsVectorLayerFeatureIterator::nextFeatureFid( QgsFeature &f )
 {
-  QgsFeatureId featureId = mRequest.filterFid();
+  const QgsFeatureId featureId = mRequest.filterFid();
 
   // deleted already?
   if ( mSource->mDeletedFeatureIds.contains( featureId ) )

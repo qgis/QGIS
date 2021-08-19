@@ -98,7 +98,7 @@ void QgsStatusBarScaleWidget::updateScales()
     const QVector< double > scales = QgsProject::instance()->viewSettings()->mapScales();
     QStringList textScales;
     textScales.reserve( scales.size() );
-    for ( double scale : scales )
+    for ( const double scale : scales )
       textScales << QStringLiteral( "1:%1" ).arg( QLocale().toString( scale, 'f', 0 ) );
     mScale->updateScales( textScales );
   }

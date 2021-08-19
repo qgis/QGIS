@@ -38,6 +38,7 @@
 #include <qwt_plot_layout.h>
 #include <qwt_plot_renderer.h>
 #include <qwt_plot_histogram.h>
+#include <qwt_scale_map.h>
 
 
 QgsGraduatedHistogramWidget::QgsGraduatedHistogramWidget( QWidget *parent )
@@ -154,7 +155,7 @@ void QgsGraduatedHistogramWidget::findClosestRange( double value, int &closestRa
   const QgsRangeList &ranges = mRenderer->ranges();
 
   double minDistance = std::numeric_limits<double>::max();
-  int pressedPixel = mPlot->canvasMap( QwtPlot::xBottom ).transform( value );
+  const int pressedPixel = mPlot->canvasMap( QwtPlot::xBottom ).transform( value );
   for ( int i = 0; i < ranges.count() - 1; ++i )
   {
     if ( std::fabs( mPressedValue - ranges.at( i ).upperValue() ) < minDistance )

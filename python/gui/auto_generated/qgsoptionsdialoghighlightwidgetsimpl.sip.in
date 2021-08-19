@@ -143,6 +143,32 @@ constructs a highlight widget for a tree view or widget.
     virtual void reset();
 
 };
+
+class QgsOptionsDialogHighlightTable : QgsOptionsDialogHighlightWidget
+{
+%Docstring(signature="appended")
+A highlight widget for table widgets.
+This is used to search and highlight text in :py:class:`QgsOptionsDialogBase` implementations.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsoptionsdialoghighlightwidgetsimpl.h"
+%End
+  public:
+    QgsOptionsDialogHighlightTable( QTableView *tableView );
+%Docstring
+constructs a highlight widget for a table view or widget.
+%End
+  protected:
+    virtual bool searchText( const QString &text );
+
+    virtual bool highlightText( const QString &text );
+
+    virtual void reset();
+
+};
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

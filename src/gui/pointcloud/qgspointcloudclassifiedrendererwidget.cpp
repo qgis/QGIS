@@ -41,7 +41,7 @@ void QgsPointCloudClassifiedRendererModel::setRendererCategories( const QgsPoint
 {
   if ( !mCategories.empty() )
   {
-    beginRemoveRows( QModelIndex(), 0, std::max( mCategories.size() - 1, 0 ) );
+    beginRemoveRows( QModelIndex(), 0, std::max< int >( mCategories.size() - 1, 0 ) );
     mCategories.clear();
     endRemoveRows();
   }
@@ -55,7 +55,7 @@ void QgsPointCloudClassifiedRendererModel::setRendererCategories( const QgsPoint
 
 void QgsPointCloudClassifiedRendererModel::addCategory( const QgsPointCloudCategory &cat )
 {
-  int idx = mCategories.size();
+  const int idx = mCategories.size();
   beginInsertRows( QModelIndex(), idx, idx );
   mCategories.append( cat );
   endInsertRows();
@@ -65,7 +65,7 @@ void QgsPointCloudClassifiedRendererModel::addCategory( const QgsPointCloudCateg
 
 QgsPointCloudCategory QgsPointCloudClassifiedRendererModel::category( const QModelIndex &index )
 {
-  int row = index.row();
+  const int row = index.row();
   if ( row >= mCategories.size() )
   {
     return QgsPointCloudCategory();
@@ -457,7 +457,7 @@ void QgsPointCloudClassifiedRendererWidget::addCategories()
     return;
 
   const QVariantList providerCategories = mLayer->dataProvider()->metadataClasses( mAttributeComboBox->currentAttribute() );
-  QgsPointCloudCategoryList currentCategories = mModel->categories();
+  const QgsPointCloudCategoryList currentCategories = mModel->categories();
 
   for ( const QVariant &providerCategory : providerCategories )
   {
@@ -485,14 +485,14 @@ void QgsPointCloudClassifiedRendererWidget::addCategory()
   if ( !mModel )
     return;
 
-  QgsPointCloudCategory cat( mModel->categories().size(), QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor(), QString(), true );
+  const QgsPointCloudCategory cat( mModel->categories().size(), QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor(), QString(), true );
   mModel->addCategory( cat );
   emit widgetChanged();
 }
 
 void QgsPointCloudClassifiedRendererWidget::deleteCategories()
 {
-  QList<int> categoryIndexes = selectedCategories();
+  const QList<int> categoryIndexes = selectedCategories();
   mModel->deleteRows( categoryIndexes );
   emit widgetChanged();
 }
@@ -553,7 +553,7 @@ void QgsPointCloudClassifiedRendererWidget::changeCategorySymbol()
   if ( row < 0 )
     return;
 
-  QgsPointCloudCategory category = mModel->categories().value( row );
+  const QgsPointCloudCategory category = mModel->categories().value( row );
 
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
@@ -595,7 +595,7 @@ QList<int> QgsPointCloudClassifiedRendererWidget::selectedCategories()
 
 int QgsPointCloudClassifiedRendererWidget::currentCategoryRow()
 {
-  QModelIndex idx = viewCategories->selectionModel()->currentIndex();
+  const QModelIndex idx = viewCategories->selectionModel()->currentIndex();
   if ( !idx.isValid() )
     return -1;
   return idx.row();

@@ -140,6 +140,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     static QIcon iconPointCloud();
     //! \returns the layer name
     virtual QString layerName() const { return name(); }
+    QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
 
 };
 

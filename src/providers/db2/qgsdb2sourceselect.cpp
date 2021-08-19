@@ -55,7 +55,7 @@ QWidget *QgsDb2SourceSelectDelegate::createEditor( QWidget *parent, const QStyle
   if ( index.column() == QgsDb2TableModel::DbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
-    for ( QgsWkbTypes::Type type :
+    for ( const QgsWkbTypes::Type type :
           {
             QgsWkbTypes::Point,
             QgsWkbTypes::LineString,
@@ -74,7 +74,7 @@ QWidget *QgsDb2SourceSelectDelegate::createEditor( QWidget *parent, const QStyle
 
   if ( index.column() == QgsDb2TableModel::DbtmPkCol )
   {
-    QStringList values = index.data( Qt::UserRole + 1 ).toStringList();
+    const QStringList values = index.data( Qt::UserRole + 1 ).toStringList();
 
     if ( values.size() > 0 )
     {
@@ -187,7 +187,7 @@ QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsDb2SourceSelect::treeWidgetSelectionChanged );
 
-  QgsSettings settings;
+  const QgsSettings settings;
   mTablesTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
 
@@ -227,8 +227,8 @@ void QgsDb2SourceSelect::btnNew_clicked()
 
 void QgsDb2SourceSelect::btnDelete_clicked()
 {
-  QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                .arg( cmbConnections->currentText() );
+  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
+                      .arg( cmbConnections->currentText() );
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No ) )
     return;
 
@@ -240,7 +240,7 @@ void QgsDb2SourceSelect::btnDelete_clicked()
 
 void QgsDb2SourceSelect::deleteConnection( const QString &name )
 {
-  QString key = "/Db2/connections/" + name;
+  const QString key = "/Db2/connections/" + name;
   QgsSettings settings;
   settings.remove( key + "/service" );
   settings.remove( key + "/driver" );
@@ -265,8 +265,8 @@ void QgsDb2SourceSelect::btnSave_clicked()
 
 void QgsDb2SourceSelect::btnLoad_clicked()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QStringLiteral( "." ),
-                     tr( "XML files (*.xml *.XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QStringLiteral( "." ),
+                           tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -441,7 +441,7 @@ void QgsDb2SourceSelect::addButtonClicked()
     if ( idx.column() != QgsDb2TableModel::DbtmTable )
       continue;
 
-    QString uri = mTableModel.layerURI( mProxyModel.mapToSource( idx ), mConnInfo, mUseEstimatedMetadata );
+    const QString uri = mTableModel.layerURI( mProxyModel.mapToSource( idx ), mConnInfo, mUseEstimatedMetadata );
     if ( uri.isNull() )
       continue;
 
@@ -472,13 +472,13 @@ void QgsDb2SourceSelect::btnConnect_clicked()
     return;
   }
 
-  QModelIndex rootItemIndex = mTableModel.indexFromItem( mTableModel.invisibleRootItem() );
+  const QModelIndex rootItemIndex = mTableModel.indexFromItem( mTableModel.invisibleRootItem() );
   mTableModel.removeRows( 0, mTableModel.rowCount( rootItemIndex ), rootItemIndex );
 
   // populate the table list
 
   QString errorMsg;
-  bool success = QgsDb2ConnectionItem::ConnInfoFromSettings( cmbConnections->currentText(), mConnInfo, errorMsg );
+  const bool success = QgsDb2ConnectionItem::ConnInfoFromSettings( cmbConnections->currentText(), mConnInfo, errorMsg );
   if ( !success )
   {
     QgsDebugMsg( "settings error: " + errorMsg );
@@ -487,7 +487,7 @@ void QgsDb2SourceSelect::btnConnect_clicked()
     return;
   }
 
-  QSqlDatabase db = QgsDb2Provider::getDatabase( mConnInfo, errorMsg );
+  const QSqlDatabase db = QgsDb2Provider::getDatabase( mConnInfo, errorMsg );
 
   if ( !errorMsg.isEmpty() )
   {
@@ -498,7 +498,7 @@ void QgsDb2SourceSelect::btnConnect_clicked()
   }
 
   QgsDb2GeometryColumns db2GC = QgsDb2GeometryColumns( db );
-  QString sqlcode = db2GC.open();
+  const QString sqlcode = db2GC.open();
   if ( !sqlcode.isEmpty() && QStringLiteral( "0" ) != sqlcode )
   {
     QMessageBox::warning( this, tr( "DB2GSE.ST_GEOMETRY_COLUMNS Not Found" ),
@@ -525,7 +525,7 @@ void QgsDb2SourceSelect::btnConnect_clicked()
       }
 
       //if we have only one schema item, expand it by default
-      int numTopLevelItems = mTableModel.invisibleRootItem()->rowCount();
+      const int numTopLevelItems = mTableModel.invisibleRootItem()->rowCount();
       if ( numTopLevelItems < 2 || mTableModel.tableCount() < 20 )
       {
         //expand all the toplevel items
@@ -587,8 +587,8 @@ void QgsDb2SourceSelect::setSql( const QModelIndex &index )
     return;
   }
 
-  QModelIndex idx = mProxyModel.mapToSource( index );
-  QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsDb2TableModel::DbtmTable ) )->text();
+  const QModelIndex idx = mProxyModel.mapToSource( index );
+  const QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsDb2TableModel::DbtmTable ) )->text();
 
   const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
   std::unique_ptr< QgsVectorLayer > vlayer = std::make_unique< QgsVectorLayer >( mTableModel.layerURI( idx, mConnInfo, mUseEstimatedMetadata ), tableName, QStringLiteral( "DB2" ), options );
@@ -637,8 +637,8 @@ QString QgsDb2SourceSelect::fullDescription( const QString &schema, const QStrin
 void QgsDb2SourceSelect::setConnectionListPosition()
 {
   // If possible, set the item currently displayed database
-  QgsSettings settings;
-  QString toSelect = settings.value( QStringLiteral( "Db2/connections/selected" ) ).toString();
+  const QgsSettings settings;
+  const QString toSelect = settings.value( QStringLiteral( "Db2/connections/selected" ) ).toString();
   cmbConnections->setCurrentIndex( cmbConnections->findText( toSelect ) );
 
   if ( cmbConnections->currentIndex() < 0 )
@@ -695,19 +695,19 @@ void QgsDb2GeomColumnTypeThread::run()
               .arg( layerProperty.schemaName.isEmpty() ? QString() : QStringLiteral( "[%1]." ).arg( layerProperty.schemaName ),
                     layerProperty.tableName );
 
-      QString query = QString( "SELECT %3"
-                               " UPPER([%1].STGeometryType()),"
-                               " [%1].STSrid"
-                               " FROM %2"
-                               " WHERE [%1] IS NOT NULL %4"
-                               " GROUP BY [%1].STGeometryType(), [%1].STSrid" )
-                      .arg( layerProperty.geometryColName,
-                            table,
-                            mUseEstimatedMetadata ? QStringLiteral( "TOP 1" ) : QString(),
-                            layerProperty.sql.isEmpty() ? QString() : QStringLiteral( " AND %1" ).arg( layerProperty.sql ) );
+      const QString query = QString( "SELECT %3"
+                                     " UPPER([%1].STGeometryType()),"
+                                     " [%1].STSrid"
+                                     " FROM %2"
+                                     " WHERE [%1] IS NOT NULL %4"
+                                     " GROUP BY [%1].STGeometryType(), [%1].STSrid" )
+                            .arg( layerProperty.geometryColName,
+                                  table,
+                                  mUseEstimatedMetadata ? QStringLiteral( "TOP 1" ) : QString(),
+                                  layerProperty.sql.isEmpty() ? QString() : QStringLiteral( " AND %1" ).arg( layerProperty.sql ) );
 
       // issue the sql query
-      QSqlDatabase db = QSqlDatabase::database( mConnectionName );
+      const QSqlDatabase db = QSqlDatabase::database( mConnectionName );
       if ( !QgsDb2Provider::openDatabase( db ) )
       {
         QgsDebugMsg( db.lastError().text() );
@@ -731,8 +731,8 @@ void QgsDb2GeomColumnTypeThread::run()
 
         while ( q.next() )
         {
-          QString type = q.value( 0 ).toString().toUpper();
-          QString srid = q.value( 1 ).toString();
+          const QString type = q.value( 0 ).toString().toUpper();
+          const QString srid = q.value( 1 ).toString();
 
           if ( type.isEmpty() )
             continue;

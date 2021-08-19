@@ -148,13 +148,13 @@ void TestQgsPaintEffect::initTestCase()
   QgsPaintEffectRegistry *registry = QgsApplication::paintEffectRegistry();
   registry->addEffectType( new QgsPaintEffectMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy effect" ), DummyPaintEffect::create ) );
 
-  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + '/';
 }
 
 void TestQgsPaintEffect::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -186,7 +186,7 @@ void TestQgsPaintEffect::saveRestore()
   DummyPaintEffect *effect = new DummyPaintEffect( QStringLiteral( "a" ), QStringLiteral( "b" ) );
 
   QDomImplementation DomImplementation;
-  QDomDocumentType documentType =
+  const QDomDocumentType documentType =
     DomImplementation.createDocumentType(
       QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
@@ -202,10 +202,10 @@ void TestQgsPaintEffect::saveRestore()
   QVERIFY( effect->saveProperties( doc, effectParentElem ) );
 
   //check if effect node was written
-  QDomNodeList evalNodeList = effectParentElem.elementsByTagName( QStringLiteral( "effect" ) );
+  const QDomNodeList evalNodeList = effectParentElem.elementsByTagName( QStringLiteral( "effect" ) );
   QCOMPARE( evalNodeList.count(), 1 );
 
-  QDomElement effectElem = evalNodeList.at( 0 ).toElement();
+  const QDomElement effectElem = evalNodeList.at( 0 ).toElement();
   QCOMPARE( effectElem.attribute( "type" ), QString( "Dummy" ) );
 
   //test reading empty node
@@ -243,7 +243,7 @@ void TestQgsPaintEffect::stackSaveRestore()
   stack->setEnabled( false );
 
   QDomImplementation DomImplementation;
-  QDomDocumentType documentType =
+  const QDomDocumentType documentType =
     DomImplementation.createDocumentType(
       QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
@@ -259,13 +259,13 @@ void TestQgsPaintEffect::stackSaveRestore()
   QVERIFY( stack->saveProperties( doc, effectParentElem ) );
 
   //check if stack effect node was written
-  QDomNodeList evalNodeList = effectParentElem.childNodes();
+  const QDomNodeList evalNodeList = effectParentElem.childNodes();
   QCOMPARE( evalNodeList.count(), 1 );
-  QDomElement effectElem = evalNodeList.at( 0 ).toElement();
+  const QDomElement effectElem = evalNodeList.at( 0 ).toElement();
   QCOMPARE( effectElem.attribute( "type" ), stack->type() );
 
   //should be two effect child nodes
-  QDomNodeList childNodeList = effectElem.elementsByTagName( QStringLiteral( "effect" ) );
+  const QDomNodeList childNodeList = effectElem.elementsByTagName( QStringLiteral( "effect" ) );
   QCOMPARE( childNodeList.count(), 2 );
   QCOMPARE( childNodeList.at( 0 ).toElement().attribute( "type" ), blur->type() );
   QCOMPARE( childNodeList.at( 1 ).toElement().attribute( "type" ), shadow->type() );
@@ -320,7 +320,7 @@ void TestQgsPaintEffect::drawSource()
   delete cloneCast;
 
   //read/write
-  QVariantMap props = effect->properties();
+  const QVariantMap props = effect->properties();
   QgsPaintEffect *readEffect = QgsDrawSourceEffect::create( props );
   QgsDrawSourceEffect *readCast = dynamic_cast<QgsDrawSourceEffect * >( readEffect );
   QVERIFY( readCast );
@@ -346,7 +346,7 @@ void TestQgsPaintEffect::drawSource()
   effect->render( *mPicture, context );
   painter.end();
 
-  bool result = imageCheck( QStringLiteral( "painteffect_drawsource" ), image, 0 );
+  const bool result = imageCheck( QStringLiteral( "painteffect_drawsource" ), image, 0 );
 
   delete effect;
   QVERIFY( result );
@@ -394,7 +394,7 @@ void TestQgsPaintEffect::blur()
   delete cloneCast;
 
   //read/write
-  QVariantMap props = effect->properties();
+  const QVariantMap props = effect->properties();
   QgsPaintEffect *readEffect = QgsBlurEffect::create( props );
   QgsBlurEffect *readCast = dynamic_cast<QgsBlurEffect * >( readEffect );
   QVERIFY( readCast );
@@ -420,7 +420,7 @@ void TestQgsPaintEffect::blur()
   effect->render( *mPicture, context );
   painter.end();
 
-  bool result = imageCheck( QStringLiteral( "painteffect_blur" ), image, 0 );
+  const bool result = imageCheck( QStringLiteral( "painteffect_blur" ), image, 0 );
 
   delete effect;
   QVERIFY( result );
@@ -487,7 +487,7 @@ void TestQgsPaintEffect::dropShadow()
   delete cloneCast;
 
   //read/write
-  QVariantMap props = effect->properties();
+  const QVariantMap props = effect->properties();
   QgsPaintEffect *readEffect = QgsDropShadowEffect::create( props );
   QgsDropShadowEffect *readCast = dynamic_cast<QgsDropShadowEffect * >( readEffect );
   QVERIFY( readCast );
@@ -518,7 +518,7 @@ void TestQgsPaintEffect::dropShadow()
   effect->render( *mPicture, context );
   painter.end();
 
-  bool result = imageCheck( QStringLiteral( "painteffect_dropshadow" ), image, 0 );
+  const bool result = imageCheck( QStringLiteral( "painteffect_dropshadow" ), image, 0 );
   delete effect;
   QVERIFY( result );
 }
@@ -589,7 +589,7 @@ void TestQgsPaintEffect::glow()
   delete cloneCast;
 
   //read/write
-  QVariantMap props = effect->properties();
+  const QVariantMap props = effect->properties();
   QgsPaintEffect *readEffect = QgsOuterGlowEffect::create( props );
   QgsOuterGlowEffect *readCast = dynamic_cast<QgsOuterGlowEffect * >( readEffect );
   QVERIFY( readCast );
@@ -624,7 +624,7 @@ void TestQgsPaintEffect::glow()
 
   delete effect;
 
-  bool result = imageCheck( QStringLiteral( "painteffect_outerglow" ), image, 0 );
+  const bool result = imageCheck( QStringLiteral( "painteffect_outerglow" ), image, 0 );
   QVERIFY( result );
 
   //TODO - inner glow
@@ -704,8 +704,8 @@ void TestQgsPaintEffect::transform()
   clone.reset( nullptr );
 
   //read/write
-  QVariantMap props = effect->properties();
-  std::unique_ptr< QgsPaintEffect > readEffect( QgsTransformEffect::create( props ) );
+  const QVariantMap props = effect->properties();
+  const std::unique_ptr< QgsPaintEffect > readEffect( QgsTransformEffect::create( props ) );
   QgsTransformEffect *readCast = dynamic_cast<QgsTransformEffect * >( readEffect.get() );
   QVERIFY( readCast );
   QCOMPARE( readCast->enabled(), false );
@@ -753,7 +753,7 @@ void TestQgsPaintEffect::stack()
   delete effect;
 
   //stack from single effect
-  QgsBlurEffect singleEffect;
+  const QgsBlurEffect singleEffect;
   effect = new QgsEffectStack( singleEffect );
   QVERIFY( effect );
   QCOMPARE( effect->count(), 1 );
@@ -781,7 +781,7 @@ void TestQgsPaintEffect::stack()
   effect->render( *mPicture, context );
   painter.end();
 
-  bool result = imageCheck( QStringLiteral( "painteffect_stack" ), image, 0 );
+  const bool result = imageCheck( QStringLiteral( "painteffect_stack" ), image, 0 );
 
   delete effect;
   QVERIFY( result );
@@ -791,8 +791,8 @@ void TestQgsPaintEffect::layerEffectPolygon()
 {
   // test rendering a polygon symbol layer with a paint effect
 
-  QString polysFileName = mTestDataDir + "polys.shp";
-  QFileInfo polyFileInfo( polysFileName );
+  const QString polysFileName = mTestDataDir + "polys.shp";
+  const QFileInfo polyFileInfo( polysFileName );
   QgsVectorLayer *polysLayer = new QgsVectorLayer( polyFileInfo.filePath(),
       polyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QgsVectorSimplifyMethod simplifyMethod;
@@ -814,7 +814,7 @@ void TestQgsPaintEffect::layerEffectPolygon()
   ms.setExtent( polysLayer->extent() );
 
   mReport += QLatin1String( "<h2>Paint effect symbol layer test (polygon)</h2>\n" );
-  bool result = mapRenderCheck( QStringLiteral( "painteffect_poly" ), ms );
+  const bool result = mapRenderCheck( QStringLiteral( "painteffect_poly" ), ms );
   QVERIFY( result );
   delete polysLayer;
 }
@@ -822,8 +822,8 @@ void TestQgsPaintEffect::layerEffectPolygon()
 void TestQgsPaintEffect::layerEffectLine()
 {
   // test rendering a line symbol layer with a paint effect
-  QString linesFileName = mTestDataDir + "lines.shp";
-  QFileInfo lineFileInfo( linesFileName );
+  const QString linesFileName = mTestDataDir + "lines.shp";
+  const QFileInfo lineFileInfo( linesFileName );
   QgsVectorLayer *lineLayer = new QgsVectorLayer( lineFileInfo.filePath(),
       lineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QgsVectorSimplifyMethod simplifyMethod;
@@ -846,7 +846,7 @@ void TestQgsPaintEffect::layerEffectLine()
   ms.setExtent( lineLayer->extent() );
 
   mReport += QLatin1String( "<h2>Paint effect symbol layer test (line)</h2>\n" );
-  bool result = mapRenderCheck( QStringLiteral( "painteffect_line" ), ms );
+  const bool result = mapRenderCheck( QStringLiteral( "painteffect_line" ), ms );
   QVERIFY( result );
   delete lineLayer;
 }
@@ -854,8 +854,8 @@ void TestQgsPaintEffect::layerEffectLine()
 void TestQgsPaintEffect::layerEffectMarker()
 {
   // test rendering a marker symbol layer with a paint effect
-  QString pointFileName = mTestDataDir + "points.shp";
-  QFileInfo pointFileInfo( pointFileName );
+  const QString pointFileName = mTestDataDir + "points.shp";
+  const QFileInfo pointFileInfo( pointFileName );
   QgsVectorLayer *pointLayer = new QgsVectorLayer( pointFileInfo.filePath(),
       pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
@@ -874,7 +874,7 @@ void TestQgsPaintEffect::layerEffectMarker()
   ms.setExtent( pointLayer->extent() );
 
   mReport += QLatin1String( "<h2>Paint effect symbol layer test (point)</h2>\n" );
-  bool result = mapRenderCheck( QStringLiteral( "painteffect_marker" ), ms );
+  const bool result = mapRenderCheck( QStringLiteral( "painteffect_marker" ), ms );
   QVERIFY( result );
   delete pointLayer;
 }
@@ -882,8 +882,8 @@ void TestQgsPaintEffect::layerEffectMarker()
 void TestQgsPaintEffect::vectorLayerEffect()
 {
   // test rendering a whole vector layer with a layer-wide effect
-  QString polysFileName = mTestDataDir + "polys.shp";
-  QFileInfo polyFileInfo( polysFileName );
+  const QString polysFileName = mTestDataDir + "polys.shp";
+  const QFileInfo polyFileInfo( polysFileName );
   QgsVectorLayer *polysLayer = new QgsVectorLayer( polyFileInfo.filePath(),
       polyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QgsVectorSimplifyMethod simplifyMethod;
@@ -909,7 +909,7 @@ void TestQgsPaintEffect::vectorLayerEffect()
   ms.setExtent( polysLayer->extent() );
 
   mReport += QLatin1String( "<h2>Paint effect layer test</h2>\n" );
-  bool result = mapRenderCheck( QStringLiteral( "painteffect_layer" ), ms );
+  const bool result = mapRenderCheck( QStringLiteral( "painteffect_layer" ), ms );
   QVERIFY( result );
   delete polysLayer;
 }
@@ -917,8 +917,8 @@ void TestQgsPaintEffect::vectorLayerEffect()
 void TestQgsPaintEffect::mapUnits()
 {
   //test rendering an effect which utilizes map units
-  QString linesFileName = mTestDataDir + "lines.shp";
-  QFileInfo lineFileInfo( linesFileName );
+  const QString linesFileName = mTestDataDir + "lines.shp";
+  const QFileInfo lineFileInfo( linesFileName );
   QgsVectorLayer *lineLayer = new QgsVectorLayer( lineFileInfo.filePath(),
       lineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QgsVectorSimplifyMethod simplifyMethod;
@@ -944,7 +944,7 @@ void TestQgsPaintEffect::mapUnits()
   ms.setExtent( lineLayer->extent() );
 
   mReport += QLatin1String( "<h2>Paint effect map units test</h2>\n" );
-  bool result = mapRenderCheck( QStringLiteral( "painteffect_mapunits" ), ms );
+  const bool result = mapRenderCheck( QStringLiteral( "painteffect_mapunits" ), ms );
   QVERIFY( result );
   delete lineLayer;
 }
@@ -953,8 +953,8 @@ void TestQgsPaintEffect::layout()
 {
   //test rendering an effect inside a layout (tests DPI scaling of effects)
 
-  QString linesFileName = mTestDataDir + "lines.shp";
-  QFileInfo lineFileInfo( linesFileName );
+  const QString linesFileName = mTestDataDir + "lines.shp";
+  const QFileInfo lineFileInfo( linesFileName );
   QgsVectorLayer *lineLayer = new QgsVectorLayer( lineFileInfo.filePath(),
       lineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QgsVectorSimplifyMethod simplifyMethod;
@@ -992,11 +992,11 @@ void TestQgsPaintEffect::layout()
   outputImage.setDotsPerMeterY( 300 / 25.4 * 1000 );
   QgsMultiRenderChecker::drawBackground( &outputImage );
   QPainter p( &outputImage );
-  QgsLayoutExporter exporter( &l );
+  const QgsLayoutExporter exporter( &l );
   exporter.renderPage( &p, 0 );
   p.end();
 
-  bool result = imageCheck( QStringLiteral( "painteffect_composer" ), outputImage );
+  const bool result = imageCheck( QStringLiteral( "painteffect_composer" ), outputImage );
   QVERIFY( result );
   delete lineLayer;
 }
@@ -1016,15 +1016,15 @@ bool TestQgsPaintEffect::imageCheck( const QString &testName, QImage &image, int
   painter.end();
 
   mReport += "<h2>" + testName + "</h2>\n";
-  QString tempDir = QDir::tempPath() + '/';
-  QString fileName = tempDir + testName + ".png";
+  const QString tempDir = QDir::tempPath() + '/';
+  const QString fileName = tempDir + testName + ".png";
   imageWithBackground.save( fileName, "PNG" );
   QgsRenderChecker checker;
   checker.setControlPathPrefix( QStringLiteral( "effects" ) );
   checker.setControlName( "expected_" + testName );
   checker.setRenderedImage( fileName );
   checker.setColorTolerance( 2 );
-  bool resultFlag = checker.compareImages( testName, mismatchCount );
+  const bool resultFlag = checker.compareImages( testName, mismatchCount );
   mReport += checker.report();
   return resultFlag;
 }
@@ -1037,7 +1037,7 @@ bool TestQgsPaintEffect::mapRenderCheck( const QString &testName, QgsMapSettings
   checker.setControlName( "expected_" + testName );
   checker.setMapSettings( mapSettings );
   checker.setColorTolerance( 20 );
-  bool result = checker.runTest( testName, mismatchCount );
+  const bool result = checker.runTest( testName, mismatchCount );
   mReport += checker.report();
   return result;
 }

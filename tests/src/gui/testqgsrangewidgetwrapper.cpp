@@ -95,7 +95,7 @@ void TestQgsRangeWidgetWrapper::init()
   dfield.setPrecision( 9 );
   fields.append( dfield );
   // default precision = 0
-  QgsField dfield2( "number_def",  QVariant::Double );
+  const QgsField dfield2( "number_def",  QVariant::Double );
   fields.append( dfield2 );
   // simple int
   fields.append( QgsField( "simplenumber", QVariant::Int ) );
@@ -125,7 +125,7 @@ void TestQgsRangeWidgetWrapper::init()
   vl->dataProvider()->addFeature( feat3 );
   // Verify feat 1 was added
   QCOMPARE( vl->featureCount( ), ( long )3 );
-  QgsFeature _feat1( vl->getFeature( 1 ) );
+  const QgsFeature _feat1( vl->getFeature( 1 ) );
   QCOMPARE( _feat1, feat1 );
   widget0 = std::make_unique<QgsRangeWidgetWrapper>( vl.get(), 0, nullptr, nullptr );
   widget1 = std::make_unique<QgsRangeWidgetWrapper>( vl.get(), 1, nullptr, nullptr );
@@ -151,7 +151,7 @@ void TestQgsRangeWidgetWrapper::test_setDoubleRange()
   QVERIFY( editor2 );
   widget2->initWidget( editor2 );
 
-  QgsFeature feat( vl->getFeature( 1 ) );
+  const QgsFeature feat( vl->getFeature( 1 ) );
   QVERIFY( feat.isValid() );
   QCOMPARE( feat.attribute( 1 ).toDouble(), 123.123456789 );
   widget1->setFeature( vl->getFeature( 1 ) );
@@ -200,7 +200,7 @@ void TestQgsRangeWidgetWrapper::test_setDoubleSmallerRange()
   QVERIFY( editor2 );
   widget2->initWidget( editor2 );
 
-  QgsFeature feat( vl->getFeature( 1 ) );
+  const QgsFeature feat( vl->getFeature( 1 ) );
   QVERIFY( feat.isValid() );
   QCOMPARE( feat.attribute( 1 ).toDouble(), 123.123456789 );
   widget1->setFeature( vl->getFeature( 1 ) );
@@ -259,7 +259,7 @@ void TestQgsRangeWidgetWrapper::test_setDoubleLimits()
   QCOMPARE( editor->maximum( ), std::numeric_limits<double>::max() );
   QCOMPARE( editor2->maximum( ), std::numeric_limits<double>::max() );
 
-  QgsFeature feat( vl->getFeature( 1 ) );
+  const QgsFeature feat( vl->getFeature( 1 ) );
   QVERIFY( feat.isValid() );
   QCOMPARE( feat.attribute( 1 ).toDouble(), 123.123456789 );
   widget1->setFeature( vl->getFeature( 1 ) );

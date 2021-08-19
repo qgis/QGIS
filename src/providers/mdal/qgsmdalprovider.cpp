@@ -21,11 +21,12 @@
 #include "qgstriangularmesh.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
-#include "qgsmdaldataitems.h"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 #include "qgsprovidersublayerdetails.h"
+#include "qgsproviderutils.h"
 
 #include <QFileInfo>
+#include <QRegularExpression>
 #include <mutex>
 
 const QString QgsMdalProvider::MDAL_PROVIDER_KEY = QStringLiteral( "mdal" );
@@ -221,6 +222,11 @@ QgsRectangle QgsMdalProvider::extent() const
   return ret;
 }
 
+int QgsMdalProvider::maximumVerticesCountPerFace() const
+{
+  return driverMetadata().maximumVerticesCountPerFace();
+}
+
 QgsMeshDriverMetadata QgsMdalProvider::driverMetadata() const
 {
   if ( !mMeshH )
@@ -230,6 +236,8 @@ QgsMeshDriverMetadata QgsMdalProvider::driverMetadata() const
   MDAL_DriverH mdalDriver = MDAL_driverFromName( name.toStdString().c_str() );
   QString longName = MDAL_DR_longName( mdalDriver );
   QString writeDatasetSuffix = MDAL_DR_writeDatasetsSuffix( mdalDriver );
+  QString writeMeshFrameSuffix = MDAL_DR_saveMeshSuffix( mdalDriver );
+  int maxVerticesPerFace = MDAL_DR_faceVerticesMaximumCount( mdalDriver );
 
   QgsMeshDriverMetadata::MeshDriverCapabilities capabilities;
   bool hasSaveFaceDatasetsCapability = MDAL_DR_writeDatasetsCapability( mdalDriver, MDAL_DataLocation::DataOnFaces );
@@ -244,7 +252,7 @@ QgsMeshDriverMetadata QgsMdalProvider::driverMetadata() const
   bool hasMeshSaveCapability = MDAL_DR_saveMeshCapability( mdalDriver );
   if ( hasMeshSaveCapability )
     capabilities |= QgsMeshDriverMetadata::CanWriteMeshData;
-  const QgsMeshDriverMetadata meta( name, longName, capabilities, writeDatasetSuffix );
+  const QgsMeshDriverMetadata meta( name, longName, capabilities, writeDatasetSuffix, writeMeshFrameSuffix, maxVerticesPerFace );
 
   return meta;
 }
@@ -451,7 +459,16 @@ bool QgsMdalProvider::persistDatasetGroup( const QString &outputFilePath, const 
 bool QgsMdalProvider::saveMeshFrame( const QgsMesh &mesh )
 {
   QgsMdalProviderMetadata mdalProviderMetaData;
-  return mdalProviderMetaData.createMeshData( mesh, dataSourceUri(), mDriverName, crs() );
+
+  QVariantMap uriComponent = mdalProviderMetaData.decodeUri( dataSourceUri() );
+
+  if ( uriComponent.contains( QStringLiteral( "driver" ) ) )
+    return mdalProviderMetaData.createMeshData( mesh, dataSourceUri(), crs() );
+  else if ( uriComponent.contains( QStringLiteral( "path" ) ) )
+    return mdalProviderMetaData.createMeshData( mesh, uriComponent.value( QStringLiteral( "path" ) ).toString(), mDriverName, crs() );
+
+  return false;
+
 }
 
 void QgsMdalProvider::close()
@@ -952,23 +969,17 @@ QgsMdalProvider *QgsMdalProviderMetadata::createProvider( const QString &uri, co
   return new QgsMdalProvider( uri, options, flags );
 }
 
-QList<QgsDataItemProvider *> QgsMdalProviderMetadata::dataItemProviders() const
-{
-  QList<QgsDataItemProvider *> providers;
-  providers << new QgsMdalDataItemProvider;
-  return providers;
-}
 
-bool QgsMdalProviderMetadata::createMeshData( const QgsMesh &mesh, const QString uri, const QString &driverName, const QgsCoordinateReferenceSystem &crs ) const
+static MDAL_MeshH createMDALMesh( const QgsMesh &mesh, const QString &driverName, const QgsCoordinateReferenceSystem &crs )
 {
   MDAL_DriverH driver = MDAL_driverFromName( driverName.toStdString().c_str() );
   if ( !driver )
-    return false;
+    return nullptr;
 
   MDAL_MeshH mdalMesh = MDAL_CreateMesh( driver );
 
   if ( !mdalMesh )
-    return false;
+    return nullptr;
 
   int bufferSize = 2000;
   int vertexIndex = 0;
@@ -1007,14 +1018,51 @@ bool QgsMdalProviderMetadata::createMeshData( const QgsMesh &mesh, const QString
     if ( MDAL_LastStatus() != MDAL_Status::None )
     {
       MDAL_CloseMesh( mdalMesh );
-      return false;
+      return nullptr;
     }
     faceIndex += faceCount;
   }
 
   MDAL_M_setProjection( mdalMesh, crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ).toStdString().c_str() );
 
-  MDAL_SaveMesh( mdalMesh, uri.toStdString().c_str(), driverName.toStdString().c_str() );
+  return mdalMesh;
+}
+
+
+bool QgsMdalProviderMetadata::createMeshData( const QgsMesh &mesh, const QString &fileName, const QString &driverName, const QgsCoordinateReferenceSystem &crs ) const
+{
+  MDAL_MeshH mdalMesh = createMDALMesh( mesh, driverName, crs );
+
+  if ( !mdalMesh )
+    return false;
+
+  MDAL_SaveMesh( mdalMesh, fileName.toStdString().c_str(), driverName.toStdString().c_str() );
+
+  if ( MDAL_LastStatus() != MDAL_Status::None )
+  {
+    MDAL_CloseMesh( mdalMesh );
+    return false;
+  }
+
+  MDAL_CloseMesh( mdalMesh );
+  return true;
+}
+
+bool QgsMdalProviderMetadata::createMeshData( const QgsMesh &mesh, const QString &uri, const QgsCoordinateReferenceSystem &crs ) const
+{
+  QVariantMap uriComponents = decodeUri( uri );
+
+  if ( !uriComponents.contains( QStringLiteral( "driver" ) ) || !uriComponents.contains( QStringLiteral( "path" ) ) )
+    return false;
+
+  MDAL_MeshH mdalMesh = createMDALMesh( mesh,
+                                        uriComponents.value( QStringLiteral( "driver" ) ).toString()
+                                        , crs );
+
+  if ( !mdalMesh )
+    return false;
+
+  MDAL_SaveMeshWithUri( mdalMesh, uri.toStdString().c_str() );
 
   if ( MDAL_LastStatus() != MDAL_Status::None )
   {
@@ -1028,16 +1076,41 @@ bool QgsMdalProviderMetadata::createMeshData( const QgsMesh &mesh, const QString
 
 QVariantMap QgsMdalProviderMetadata::decodeUri( const QString &uri ) const
 {
-  const QString path = uri;
   QVariantMap uriComponents;
-  uriComponents.insert( QStringLiteral( "path" ), path );
+
+  const QRegularExpression layerRegex( QStringLiteral( "^([a-zA-Z0-9]+?):\"(.*)\"(?::([a-zA-Z0-9]+?$)|($))" ) );
+  const QRegularExpressionMatch layerNameMatch = layerRegex.match( uri );
+  if ( layerNameMatch.hasMatch() )
+  {
+    uriComponents.insert( QStringLiteral( "driver" ), layerNameMatch.captured( 1 ) );
+    uriComponents.insert( QStringLiteral( "path" ), layerNameMatch.captured( 2 ) );
+    uriComponents.insert( QStringLiteral( "layerName" ), layerNameMatch.captured( 3 ) );
+  }
+  else
+  {
+    uriComponents.insert( QStringLiteral( "path" ), uri );
+  }
+
   return uriComponents;
 }
 
 QString QgsMdalProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
-  const QString path = parts.value( QStringLiteral( "path" ) ).toString();
-  return path;
+  if ( !parts.value( QStringLiteral( "layerName" ) ).toString().isEmpty() && !parts.value( QStringLiteral( "driver" ) ).toString().isEmpty() )
+  {
+    return QStringLiteral( "%1:\"%2\":%3" ).arg( parts.value( QStringLiteral( "driver" ) ).toString(),
+           parts.value( QStringLiteral( "path" ) ).toString(),
+           parts.value( QStringLiteral( "layerName" ) ).toString() );
+  }
+  else if ( !parts.value( QStringLiteral( "driver" ) ).toString().isEmpty() )
+  {
+    return QStringLiteral( "%1:\"%2\"" ).arg( parts.value( QStringLiteral( "driver" ) ).toString(),
+           parts.value( QStringLiteral( "path" ) ).toString() );
+  }
+  else
+  {
+    return parts.value( QStringLiteral( "path" ) ).toString();
+  }
 }
 
 QgsProviderMetadata::ProviderCapabilities QgsMdalProviderMetadata::providerCapabilities() const
@@ -1045,48 +1118,88 @@ QgsProviderMetadata::ProviderCapabilities QgsMdalProviderMetadata::providerCapab
   return FileBasedUris;
 }
 
-QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags, QgsFeedback * ) const
+QgsProviderMetadata::ProviderMetadataCapabilities QgsMdalProviderMetadata::capabilities() const
+{
+  return QuerySublayers;
+}
+
+QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags, QgsFeedback * ) const
 {
   if ( uri.isEmpty() )
     return {};
 
-  // get suffix, removing .gz if present
-  const QFileInfo info( uri );
-  // allow only normal files
-  if ( !info.isFile() )
+  const QVariantMap uriParts = decodeUri( uri );
+  const QString path = uriParts.value( QStringLiteral( "path" ), uri ).toString();
+  const QString layerName = uriParts.value( QStringLiteral( "layerName" ) ).toString();
+
+  const QFileInfo info( path );
+
+  if ( info.isDir() )
     return {};
 
-  const QString suffix = info.suffix().toLower();
-
-  static QStringList sExtensions;
-  static std::once_flag initialized;
-  std::call_once( initialized, [ = ]( )
+  if ( info.isFile() )
   {
-    QStringList meshExtensions;
-    QStringList datasetsExtensions;
-    QgsMdalProvider::fileMeshExtensions( sExtensions, datasetsExtensions );
-    Q_UNUSED( datasetsExtensions )
-  } );
+    const QString suffix = info.suffix().toLower();
 
-  // Filter files by extension
-  if ( !sExtensions.contains( suffix ) )
-    return {};
+    static QStringList sExtensions;
+    static std::once_flag initialized;
+    std::call_once( initialized, [ = ]( )
+    {
+      QStringList meshExtensions;
+      QStringList datasetsExtensions;
+      QgsMdalProvider::fileMeshExtensions( sExtensions, datasetsExtensions );
+      Q_UNUSED( datasetsExtensions )
+    } );
 
-  const QStringList meshNames = QString( MDAL_MeshNames( uri.toUtf8() ) ).split( QStringLiteral( ";;" ) );
+    // Filter files by extension
+    if ( !sExtensions.contains( suffix ) )
+      return {};
+  }
+
+  if ( flags & Qgis::SublayerQueryFlag::FastScan )
+  {
+    if ( !info.isFile() )
+      return {};
+
+    QgsProviderSublayerDetails details;
+    details.setType( QgsMapLayerType::MeshLayer );
+    details.setProviderKey( QStringLiteral( "mdal" ) );
+    details.setUri( uri );
+    details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( path ) );
+    // treat all mesh files as potentially being containers (is this correct?)
+    details.setSkippedContainerScan( true );
+    return {details};
+  }
+
+  const QStringList meshNames = QString( MDAL_MeshNames( path.toUtf8() ) ).split( QStringLiteral( ";;" ) );
 
   QList<QgsProviderSublayerDetails> res;
   res.reserve( meshNames.size() );
   int layerIndex = 0;
   for ( const QString &layerUri : meshNames )
   {
+    if ( layerUri.isEmpty() )
+      continue;
+
+    const QVariantMap layerUriParts = decodeUri( layerUri );
+    //if an explicit layer name was included in the original uri, we only keep that layer in the results
+    if ( !layerName.isEmpty() && layerUriParts.value( QStringLiteral( "layerName" ) ).toString() != layerName )
+      continue;
+
     QgsProviderSublayerDetails details;
     details.setUri( layerUri );
     details.setProviderKey( QStringLiteral( "mdal" ) );
     details.setType( QgsMapLayerType::MeshLayer );
     details.setLayerNumber( layerIndex );
+    details.setDriverName( layerUriParts.value( QStringLiteral( "driver" ) ).toString() );
 
     // strip the driver name and path from the MDAL uri to get the layer name
-    details.setName( layerUri.mid( layerUri.indexOf( uri ) + uri.length() + 2 ) );
+    details.setName( layerUriParts.value( QStringLiteral( "layerName" ) ).toString() );
+    if ( details.name().isEmpty() )
+    {
+      // use file name as layer name if no layer name available from mdal
+      details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( path ) );
+    }
 
     res << details;
 
@@ -1140,6 +1253,8 @@ QList<QgsMeshDriverMetadata> QgsMdalProviderMetadata::meshDriversMetadata()
     QString name = MDAL_DR_name( mdalDriver );
     QString longName = MDAL_DR_longName( mdalDriver );
     QString writeDatasetSuffix = MDAL_DR_writeDatasetsSuffix( mdalDriver );
+    QString writeMeshFrameSuffix = MDAL_DR_saveMeshSuffix( mdalDriver );
+    int maxVerticesPerFace = MDAL_DR_faceVerticesMaximumCount( mdalDriver );
 
     QgsMeshDriverMetadata::MeshDriverCapabilities capabilities;
     bool hasSaveFaceDatasetsCapability = MDAL_DR_writeDatasetsCapability( mdalDriver, MDAL_DataLocation::DataOnFaces );
@@ -1154,7 +1269,7 @@ QList<QgsMeshDriverMetadata> QgsMdalProviderMetadata::meshDriversMetadata()
     bool hasMeshSaveCapability = MDAL_DR_saveMeshCapability( mdalDriver );
     if ( hasMeshSaveCapability )
       capabilities |= QgsMeshDriverMetadata::CanWriteMeshData;
-    const QgsMeshDriverMetadata meta( name, longName, capabilities, writeDatasetSuffix );
+    const QgsMeshDriverMetadata meta( name, longName, capabilities, writeDatasetSuffix, writeMeshFrameSuffix, maxVerticesPerFace );
     ret.push_back( meta );
   }
   return ret;

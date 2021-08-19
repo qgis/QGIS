@@ -15,19 +15,24 @@
  ***************************************************************************/
 #include "qgsqueryresultmodel.h"
 
+const int QgsQueryResultModel::FETCH_MORE_ROWS_COUNT = 400;
+
 QgsQueryResultModel::QgsQueryResultModel( const QgsAbstractDatabaseProviderConnection::QueryResult &queryResult, QObject *parent )
   : QAbstractTableModel( parent )
   , mQueryResult( queryResult )
   , mColumns( queryResult.columns() )
 {
   qRegisterMetaType< QList<QList<QVariant>>>( "QList<QList<QVariant>>" );
-  if ( mQueryResult.hasNextRow() )
+  mWorker = std::make_unique<QgsQueryResultFetcher>( &mQueryResult );
+  mWorker->moveToThread( &mWorkerThread );
+  // Forward signals to the model
+  connect( mWorker.get(), &QgsQueryResultFetcher::rowsReady, this, &QgsQueryResultModel::rowsReady );
+  connect( mWorker.get(), &QgsQueryResultFetcher::fetchingComplete, this, &QgsQueryResultModel::fetchingComplete );
+  connect( this, &QgsQueryResultModel::fetchMoreRows, mWorker.get(), &QgsQueryResultFetcher::fetchRows );
+  mWorkerThread.start();
+  if ( mQueryResult.rowCount() > 0 )
   {
-    mWorker = new QgsQueryResultFetcher( &mQueryResult );
-    mWorker->moveToThread( &mWorkerThread );
-    connect( &mWorkerThread, &QThread::started, mWorker, &QgsQueryResultFetcher::fetchRows );
-    connect( mWorker, &QgsQueryResultFetcher::rowsReady, this, &QgsQueryResultModel::rowsReady );
-    mWorkerThread.start();
+    mRows.reserve( mQueryResult.rowCount() );
   }
 }
 
@@ -38,12 +43,40 @@ void QgsQueryResultModel::rowsReady( const QList<QList<QVariant>> &rows )
   endInsertRows();
 }
 
+
+bool QgsQueryResultModel::canFetchMore( const QModelIndex &parent ) const
+{
+  if ( parent.isValid() )
+    return false;
+  return mQueryResult.rowCount() < 0 || mRows.length() < mQueryResult.rowCount();
+}
+
+
+void QgsQueryResultModel::fetchMore( const QModelIndex &parent )
+{
+  if ( ! parent.isValid() )
+  {
+    emit fetchingStarted();
+    emit fetchMoreRows( FETCH_MORE_ROWS_COUNT );
+  }
+}
+
 void QgsQueryResultModel::cancel()
 {
   if ( mWorker )
   {
     mWorker->stopFetching();
   }
+}
+
+QgsAbstractDatabaseProviderConnection::QueryResult QgsQueryResultModel::queryResult() const
+{
+  return mQueryResult;
+}
+
+QStringList QgsQueryResultModel::columns() const
+{
+  return mColumns;
 }
 
 QgsQueryResultModel::~QgsQueryResultModel()
@@ -53,7 +86,10 @@ QgsQueryResultModel::~QgsQueryResultModel()
     mWorker->stopFetching();
     mWorkerThread.quit();
     mWorkerThread.wait();
-    mWorker->deleteLater();
+  }
+  else
+  {
+    emit fetchingComplete();
   }
 }
 
@@ -103,27 +139,30 @@ QVariant QgsQueryResultModel::headerData( int section, Qt::Orientation orientati
 
 ///@cond private
 
-const int QgsQueryResultFetcher::ROWS_TO_FETCH = 200;
+const int QgsQueryResultFetcher::ROWS_BATCH_COUNT = 200;
 
-void QgsQueryResultFetcher::fetchRows()
+void QgsQueryResultFetcher::fetchRows( long long maxRows )
 {
-  qlonglong rowCount { 0 };
+  long long rowCount { 0 };
   QList<QList<QVariant>> newRows;
-  while ( mStopFetching == 0 && mQueryResult->hasNextRow() )
+  newRows.reserve( ROWS_BATCH_COUNT );
+  while ( mStopFetching == 0 && mQueryResult->hasNextRow() && ( maxRows < 0 || rowCount < maxRows ) )
   {
     newRows.append( mQueryResult->nextRow() );
     ++rowCount;
-    if ( rowCount % ROWS_TO_FETCH == 0 && mStopFetching == 0 )
+    if ( rowCount % ROWS_BATCH_COUNT == 0 && mStopFetching == 0 )
     {
       emit rowsReady( newRows );
       newRows.clear();
     }
   }
 
-  if ( rowCount % ROWS_TO_FETCH && mStopFetching == 0 )
+  if ( rowCount % ROWS_BATCH_COUNT && mStopFetching == 0 )
   {
     emit rowsReady( newRows );
   }
+
+  emit fetchingComplete();
 }
 
 void QgsQueryResultFetcher::stopFetching()

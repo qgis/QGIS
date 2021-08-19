@@ -16,6 +16,9 @@
 #include "qgis.h"
 #include "qgsexception.h"
 #include "qgsconfig.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidermetadata.h"
+
 #include <QObject>
 #include <QRegularExpression>
 #include <QFileInfo>
@@ -365,4 +368,96 @@ bool QgsFileUtils::pathIsSlowDevice( const QString &path )
 
   }
   return false;
+}
+
+QSet<QString> QgsFileUtils::sidecarFilesForPath( const QString &path )
+{
+  QSet< QString > res;
+  const QStringList providers = QgsProviderRegistry::instance()->providerList();
+  for ( const QString &provider : providers )
+  {
+    const QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( provider );
+    if ( metadata->providerCapabilities() & QgsProviderMetadata::FileBasedUris )
+    {
+      const QStringList possibleSidecars = metadata->sidecarFilesForUri( path );
+      for ( const QString &possibleSidecar : possibleSidecars )
+      {
+        if ( QFile::exists( possibleSidecar ) )
+          res.insert( possibleSidecar );
+      }
+    }
+  }
+  return res;
+}
+
+bool QgsFileUtils::renameDataset( const QString &oldPath, const QString &newPath, QString &error, Qgis::FileOperationFlags flags )
+{
+  if ( !QFile::exists( oldPath ) )
+  {
+    error = QObject::tr( "File does not exist" );
+    return false;
+  }
+
+  const QFileInfo oldPathInfo( oldPath );
+  QSet< QString > sidecars = sidecarFilesForPath( oldPath );
+  if ( flags & Qgis::FileOperationFlag::IncludeMetadataFile )
+  {
+    const QString qmdPath = oldPathInfo.dir().filePath( oldPathInfo.completeBaseName() + QStringLiteral( ".qmd" ) );
+    if ( QFile::exists( qmdPath ) )
+      sidecars.insert( qmdPath );
+  }
+  if ( flags & Qgis::FileOperationFlag::IncludeStyleFile )
+  {
+    const QString qmlPath = oldPathInfo.dir().filePath( oldPathInfo.completeBaseName() + QStringLiteral( ".qml" ) );
+    if ( QFile::exists( qmlPath ) )
+      sidecars.insert( qmlPath );
+  }
+
+  const QFileInfo newPathInfo( newPath );
+
+  bool res = true;
+  QStringList errors;
+  errors.reserve( sidecars.size() );
+  // first check if all sidecars CAN be renamed -- we don't want to get partly through the rename and then find a clash
+  for ( const QString &sidecar : std::as_const( sidecars ) )
+  {
+    const QFileInfo sidecarInfo( sidecar );
+    const QString newSidecarName = newPathInfo.dir().filePath( newPathInfo.completeBaseName() + '.' + sidecarInfo.suffix() );
+    if ( newSidecarName != sidecar && QFile::exists( newSidecarName ) )
+    {
+      res = false;
+      errors.append( QDir::toNativeSeparators( newSidecarName ) );
+    }
+  }
+  if ( !res )
+  {
+    error = QObject::tr( "Destination files already exist %1" ).arg( errors.join( QStringLiteral( ", " ) ) );
+    return false;
+  }
+
+  if ( !QFile::rename( oldPath, newPath ) )
+  {
+    error = QObject::tr( "Could not rename %1" ).arg( QDir::toNativeSeparators( oldPath ) );
+    return false;
+  }
+
+  for ( const QString &sidecar : std::as_const( sidecars ) )
+  {
+    const QFileInfo sidecarInfo( sidecar );
+    const QString newSidecarName = newPathInfo.dir().filePath( newPathInfo.completeBaseName() + '.' + sidecarInfo.suffix() );
+    if ( newSidecarName == sidecar )
+      continue;
+
+    if ( !QFile::rename( sidecar, newSidecarName ) )
+    {
+      errors.append( QDir::toNativeSeparators( sidecar ) );
+      res = false;
+    }
+  }
+  if ( !res )
+  {
+    error = QObject::tr( "Could not rename %1" ).arg( errors.join( QStringLiteral( ", " ) ) );
+  }
+
+  return res;
 }

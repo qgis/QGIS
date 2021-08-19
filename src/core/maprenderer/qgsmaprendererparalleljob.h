@@ -72,10 +72,10 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
     QFuture<void> mFuture;
     QFutureWatcher<void> mFutureWatcher;
 
-    LayerRenderJobs mLayerJobs;
+    std::vector< LayerRenderJob > mLayerJobs;
     LabelRenderJob mLabelJob;
 
-    LayerRenderJobs mSecondPassLayerJobs;
+    std::vector< LayerRenderJob > mSecondPassLayerJobs;
     QFuture<void> mSecondPassFuture;
     QFutureWatcher<void> mSecondPassFutureWatcher;
 

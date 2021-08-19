@@ -489,7 +489,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertFalse(vl.crs().isValid())
 
         # even if provider has a crs - we don't respect it for non-spatial layers!
-        vl = QgsVectorLayer('None?crs=epsg:3111field=pk:integer', 'test', 'memory')
+        vl = QgsVectorLayer('None?crs=epsg:3111&field=pk:integer', 'test', 'memory')
         self.assertFalse(vl.isSpatial())
         self.assertFalse(vl.crs().isValid())
 

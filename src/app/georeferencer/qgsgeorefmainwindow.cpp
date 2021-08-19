@@ -347,11 +347,11 @@ void QgsGeoreferencerMainWindow::doGeoreference()
     {
       if ( mModifiedRasterFileName.isEmpty() )
       {
-        QgisApp::instance()->addRasterLayer( mRasterFileName, QFileInfo( mRasterFileName ).completeBaseName() );
+        QgisApp::instance()->addRasterLayer( mRasterFileName, QFileInfo( mRasterFileName ).completeBaseName(), QString() );
       }
       else
       {
-        QgisApp::instance()->addRasterLayer( mModifiedRasterFileName, QFileInfo( mModifiedRasterFileName ).completeBaseName() );
+        QgisApp::instance()->addRasterLayer( mModifiedRasterFileName, QFileInfo( mModifiedRasterFileName ).completeBaseName(), QString() );
       }
 
       //      showMessageInLog(tr("Modified raster saved in"), mModifiedRasterFileName);

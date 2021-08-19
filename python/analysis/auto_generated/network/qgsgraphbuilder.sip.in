@@ -38,9 +38,21 @@ MANDATORY BUILDER PROPERTY DECLARATION
     virtual void addEdge( int pt1id, const QgsPointXY &pt1, int pt2id, const QgsPointXY &pt2, const QVector< QVariant > &prop );
 
 
-    QgsGraph *graph() /Factory/;
+    QgsGraph graph() const;
 %Docstring
-Returns generated :py:class:`QgsGraph`
+Returns the generated :py:class:`QgsGraph`.
+
+The builder is left in its current state.
+
+.. seealso:: :py:func:`takeGraph`
+%End
+
+    QgsGraph *takeGraph() /Factory/;
+%Docstring
+Takes the generated graph from the builder, resetting the builder back to its initial
+state ready for additional graph construction.
+
+.. versionadded:: 3.22
 %End
 
 };

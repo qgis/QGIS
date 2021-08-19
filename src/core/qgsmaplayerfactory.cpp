@@ -67,42 +67,48 @@ QString QgsMapLayerFactory::typeToString( QgsMapLayerType type )
   return QString();
 }
 
-QgsMapLayer *QgsMapLayerFactory::createLayer( const QString &uri, const QString &name, QgsMapLayerType type, const QString &provider, const QgsCoordinateTransformContext &transformContext )
+QgsMapLayer *QgsMapLayerFactory::createLayer( const QString &uri, const QString &name, QgsMapLayerType type, const LayerOptions &options, const QString &provider )
 {
   switch ( type )
   {
     case QgsMapLayerType::VectorLayer:
     {
-      QgsVectorLayer::LayerOptions options;
-      options.transformContext = transformContext;
-      return new QgsVectorLayer( uri, name, provider, options );
+      QgsVectorLayer::LayerOptions vectorOptions;
+      vectorOptions.transformContext = options.transformContext;
+      vectorOptions.loadDefaultStyle = options.loadDefaultStyle;
+      return new QgsVectorLayer( uri, name, provider, vectorOptions );
     }
 
     case QgsMapLayerType::RasterLayer:
     {
-      QgsRasterLayer::LayerOptions options;
-      options.transformContext = transformContext;
-      return new QgsRasterLayer( uri, name, provider, options );
+      QgsRasterLayer::LayerOptions rasterOptions;
+      rasterOptions.transformContext = options.transformContext;
+      rasterOptions.loadDefaultStyle = options.loadDefaultStyle;
+      return new QgsRasterLayer( uri, name, provider, rasterOptions );
     }
 
     case QgsMapLayerType::MeshLayer:
     {
-      QgsMeshLayer::LayerOptions options;
-      options.transformContext = transformContext;
-      return new QgsMeshLayer( uri, name, provider, options );
+      QgsMeshLayer::LayerOptions meshOptions;
+      meshOptions.transformContext = options.transformContext;
+      return new QgsMeshLayer( uri, name, provider, meshOptions );
     }
 
     case QgsMapLayerType::VectorTileLayer:
       return new QgsVectorTileLayer( uri, name );
 
     case QgsMapLayerType::AnnotationLayer:
-      return new QgsAnnotationLayer( name, QgsAnnotationLayer::LayerOptions( transformContext ) );
+    {
+      const QgsAnnotationLayer::LayerOptions annotationOptions( options.transformContext );
+      return new QgsAnnotationLayer( name, annotationOptions );
+    }
 
     case QgsMapLayerType::PointCloudLayer:
     {
-      QgsPointCloudLayer::LayerOptions options;
-      options.transformContext = transformContext;
-      return new QgsPointCloudLayer( uri, name, provider, options );
+      QgsPointCloudLayer::LayerOptions pointCloudOptions;
+      pointCloudOptions.loadDefaultStyle = options.loadDefaultStyle;
+      pointCloudOptions.transformContext = options.transformContext;
+      return new QgsPointCloudLayer( uri, name, provider, pointCloudOptions );
     }
 
     case QgsMapLayerType::PluginLayer:

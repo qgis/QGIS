@@ -72,9 +72,9 @@ namespace QgsWfs
 
     QDomDocument doc;
 
-    QgsServerRequest::Parameters parameters = request.parameters();
-    QgsWfsParameters wfsParameters( QUrlQuery( request.url() ) );
-    QgsWfsParameters::Format oFormat = wfsParameters.outputFormat();
+    const QgsServerRequest::Parameters parameters = request.parameters();
+    const QgsWfsParameters wfsParameters( QUrlQuery( request.url() ) );
+    const QgsWfsParameters::Format oFormat = wfsParameters.outputFormat();
 
     // test oFormat
     if ( oFormat == QgsWfsParameters::Format::NONE )
@@ -114,16 +114,16 @@ namespace QgsWfs
     if ( queryDoc.setContent( request.data(), true, &errorMsg ) )
     {
       //read doc
-      QDomElement queryDocElem = queryDoc.documentElement();
-      QDomNodeList docChildNodes = queryDocElem.childNodes();
+      const QDomElement queryDocElem = queryDoc.documentElement();
+      const QDomNodeList docChildNodes = queryDocElem.childNodes();
       if ( docChildNodes.size() )
       {
         for ( int i = 0; i < docChildNodes.size(); i++ )
         {
-          QDomElement docChildElem = docChildNodes.at( i ).toElement();
+          const QDomElement docChildElem = docChildNodes.at( i ).toElement();
           if ( docChildElem.tagName() == QLatin1String( "TypeName" ) )
           {
-            QString typeName = docChildElem.text().trimmed();
+            const QString typeName = docChildElem.text().trimmed();
             if ( typeName.contains( ':' ) )
               typeNameList << typeName.section( ':', 1, 1 );
             else
@@ -137,7 +137,7 @@ namespace QgsWfs
       typeNameList = wfsParameters.typeNames();
     }
 
-    QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
+    const QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
     for ( int i = 0; i < wfsLayerIds.size(); ++i )
     {
       QgsMapLayer *layer = project->mapLayer( wfsLayerIds.at( i ) );
@@ -146,7 +146,7 @@ namespace QgsWfs
         continue;
       }
 
-      QString name = layerTypeName( layer );
+      const QString name = layerTypeName( layer );
 
       if ( !typeNameList.isEmpty() && !typeNameList.contains( name ) )
       {
@@ -184,7 +184,7 @@ namespace QgsWfs
       return;
     }
 
-    QString typeName = layerTypeName( layer );
+    const QString typeName = layerTypeName( layer );
 
     //xsd:element
     QDomElement elementElem = doc.createElement( QStringLiteral( "element" )/*xsd:element*/ );
@@ -217,7 +217,7 @@ namespace QgsWfs
       QDomElement geomElem = doc.createElement( QStringLiteral( "element" )/*xsd:element*/ );
       geomElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "geometry" ) );
 
-      QgsWkbTypes::Type wkbType = layer->wkbType();
+      const QgsWkbTypes::Type wkbType = layer->wkbType();
       switch ( wkbType )
       {
         case QgsWkbTypes::Point25D:
@@ -260,7 +260,7 @@ namespace QgsWfs
     }
 
     //Attributes
-    QgsFields fields = layer->fields();
+    const QgsFields fields = layer->fields();
     //hidden attributes for this layer
     for ( int idx = 0; idx < fields.count(); ++idx )
     {
@@ -275,7 +275,7 @@ namespace QgsWfs
       //xsd:element
       QDomElement attElem = doc.createElement( QStringLiteral( "element" )/*xsd:element*/ );
       attElem.setAttribute( QStringLiteral( "name" ), attributeName.replace( ' ', '_' ).replace( cleanTagNameRegExp, QString() ) );
-      QVariant::Type attributeType = field.type();
+      const QVariant::Type attributeType = field.type();
       if ( attributeType == QVariant::Int )
       {
         attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "int" ) );
@@ -323,7 +323,7 @@ namespace QgsWfs
       const QgsEditorWidgetSetup setup = field.editorWidgetSetup();
       if ( setup.type() ==  QStringLiteral( "DateTime" ) )
       {
-        QgsDateTimeFieldFormatter fieldFormatter;
+        const QgsDateTimeFieldFormatter fieldFormatter;
         const QVariantMap config = setup.config();
         const QString fieldFormat = config.value( QStringLiteral( "field_format" ), fieldFormatter.defaultFormat( field.type() ) ).toString();
         if ( fieldFormat == QLatin1String( "yyyy-MM-dd" ) )
@@ -341,7 +341,7 @@ namespace QgsWfs
           // if precision in range config is not the same as the attributePrec
           // we need to update type
           bool ok;
-          int configPrec( config[ QStringLiteral( "Precision" ) ].toInt( &ok ) );
+          const int configPrec( config[ QStringLiteral( "Precision" ) ].toInt( &ok ) );
           if ( ok && configPrec != field.precision() )
           {
             if ( configPrec == 0 )
@@ -359,7 +359,7 @@ namespace QgsWfs
 
       sequenceElem.appendChild( attElem );
 
-      QString alias = field.alias();
+      const QString alias = field.alias();
       if ( !alias.isEmpty() )
       {
         attElem.setAttribute( QStringLiteral( "alias" ), alias );

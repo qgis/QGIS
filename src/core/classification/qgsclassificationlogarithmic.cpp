@@ -53,9 +53,9 @@ QIcon QgsClassificationLogarithmic::icon() const
 
 QList<double> QgsClassificationLogarithmic::calculateBreaks( double &minimum, double &maximum, const QList<double> &values, int nclasses )
 {
-  QgsProcessingContext context;
+  const QgsProcessingContext context;
   const QgsProcessingParameterDefinition *def = parameterDefinition( QStringLiteral( "ZERO_NEG_VALUES_HANDLE" ) );
-  NegativeValueHandling nvh = static_cast< NegativeValueHandling >( QgsProcessingParameters::parameterAsEnum( def, parameterValues(), context ) );
+  const NegativeValueHandling nvh = static_cast< NegativeValueHandling >( QgsProcessingParameters::parameterAsEnum( def, parameterValues(), context ) );
 
   double positiveMinimum = std::numeric_limits<double>::max();
   if ( nvh != NegativeValueHandling::NoHandling && minimum <= 0 )
@@ -94,8 +94,8 @@ QList<double> QgsClassificationLogarithmic::calculateBreaks( double &minimum, do
   }
 
   // get the min/max in log10 scale
-  double logMin = std::floor( std::log10( positiveMinimum ) );
-  double logMax = std::ceil( std::log10( maximum ) );
+  const double logMin = std::floor( std::log10( positiveMinimum ) );
+  const double logMax = std::ceil( std::log10( maximum ) );
 
   // calculate pretty breaks
   breaks.append( QgsSymbolLayerUtils::prettyBreaks( logMin, logMax, nclasses ) );
@@ -111,7 +111,7 @@ QString QgsClassificationLogarithmic::valueToLabel( double value ) const
 {
   if ( value <= 0 )
   {
-    return QString::number( value );
+    return QLocale().toString( value );
   }
   else
   {
@@ -147,9 +147,9 @@ QString QgsClassificationLogarithmic::labelForRange( double lowerValue, double u
 
 bool QgsClassificationLogarithmic::valuesRequired() const
 {
-  QgsProcessingContext context;
+  const QgsProcessingContext context;
   const QgsProcessingParameterDefinition *def = parameterDefinition( QStringLiteral( "ZERO_NEG_VALUES_HANDLE" ) );
-  NegativeValueHandling nvh = static_cast< NegativeValueHandling >( QgsProcessingParameters::parameterAsEnum( def, parameterValues(), context ) );
+  const NegativeValueHandling nvh = static_cast< NegativeValueHandling >( QgsProcessingParameters::parameterAsEnum( def, parameterValues(), context ) );
 
   return nvh != NegativeValueHandling::NoHandling;
 }

@@ -77,6 +77,8 @@ class QgsGPXProvider final: public QgsVectorDataProvider
 
     bool addFeature( QgsFeature &f, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
 
+    static QString encodeUri( const QVariantMap &parts );
+    static QVariantMap decodeUri( const QString &uri );
 
     enum DataType
     {
@@ -95,21 +97,20 @@ class QgsGPXProvider final: public QgsVectorDataProvider
 
   private:
 
-    QgsGpsData *data = nullptr;
+    QgsGpsData *mData = nullptr;
 
     //! Fields
-    QgsFields attributeFields;
+    QgsFields mAttributeFields;
     //! map from field index to attribute
-    QVector<int> indexToAttr;
+    QVector<int> mIndexToAttr;
 
     QString mFileName;
 
     DataType mFeatureType = WaypointType;
 
-    static const char *ATTR[];
-    static QVariant::Type attrType[];
-    static DataType attrUsed[];
-    static const int ATTR_COUNT;
+    static const QStringList sAttributeNames;
+    static const QList< QVariant::Type > sAttributeTypes;
+    static const QList< DataType > sAttributedUsedForLayerType;
 
     bool mValid = false;
 
@@ -121,6 +122,9 @@ class QgsGpxProviderMetadata final: public QgsProviderMetadata
   public:
     QgsGpxProviderMetadata();
     QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QgsProviderMetadata::ProviderCapabilities providerCapabilities() const override;
+    QString encodeUri( const QVariantMap &parts ) const override;
+    QVariantMap decodeUri( const QString &uri ) const override;
 };
 
 #endif

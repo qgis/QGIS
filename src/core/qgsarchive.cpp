@@ -64,14 +64,14 @@ void QgsArchive::clear()
 
 bool QgsArchive::zip( const QString &filename )
 {
-  QString tempPath = QStandardPaths::standardLocations( QStandardPaths::TempLocation ).at( 0 );
-  QString uuid = QUuid::createUuid().toString();
+  const QString tempPath = QStandardPaths::standardLocations( QStandardPaths::TempLocation ).at( 0 );
+  const QString uuid = QUuid::createUuid().toString();
   QFile tmpFile( tempPath + QDir::separator() + uuid );
 
   // zip content
   if ( ! QgsZipUtils::zip( tmpFile.fileName(), mFiles ) )
   {
-    QString err = QObject::tr( "Unable to zip content" );
+    const QString err = QObject::tr( "Unable to zip content" );
     QgsMessageLog::logMessage( err, QStringLiteral( "QgsArchive" ) );
     return false;
   }
@@ -90,7 +90,7 @@ bool QgsArchive::zip( const QString &filename )
   // save zip archive
   if ( ! tmpFile.rename( filename ) )
   {
-    QString err = QObject::tr( "Unable to save zip file '%1'" ).arg( filename );
+    const QString err = QObject::tr( "Unable to save zip file '%1'" ).arg( filename );
     QgsMessageLog::logMessage( err, QStringLiteral( "QgsArchive" ) );
     return false;
   }
@@ -136,7 +136,7 @@ QString QgsProjectArchive::projectFile() const
   const auto constFiles = files();
   for ( const QString &file : constFiles )
   {
-    QFileInfo fileInfo( file );
+    const QFileInfo fileInfo( file );
     if ( fileInfo.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) == 0 )
       return file;
   }

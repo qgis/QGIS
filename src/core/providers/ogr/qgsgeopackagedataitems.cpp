@@ -26,7 +26,6 @@
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsogrprovider.h"
-#include "qgsogrdataitems.h"
 #include "qgsapplication.h"
 #include "qgsmessageoutput.h"
 #include "qgsvectorlayerexporter.h"
@@ -38,6 +37,7 @@
 #include "qgsgeopackageprojectstorage.h"
 #include "qgsgeopackageproviderconnection.h"
 #include "qgsprovidermetadata.h"
+#include "qgsprovidersublayerdetails.h"
 
 QString QgsGeoPackageDataItemProvider::name()
 {
@@ -78,7 +78,7 @@ QVector<QgsDataItem *> QgsGeoPackageRootItem::createChildren()
   const QStringList connList( QgsOgrDbConnection::connectionList( QStringLiteral( "GPKG" ) ) );
   for ( const QString &connName : connList )
   {
-    QgsOgrDbConnection connection( connName, QStringLiteral( "GPKG" ) );
+    const QgsOgrDbConnection connection( connName, QStringLiteral( "GPKG" ) );
     QgsDataItem *conn = new QgsGeoPackageConnectionItem( this, connection.name(), mPath + '/' + connection.path() );
 
     connections.append( conn );
@@ -93,7 +93,7 @@ void QgsGeoPackageRootItem::onConnectionsChanged()
 
 void QgsGeoPackageRootItem::newConnection()
 {
-  if ( QgsOgrDataCollectionItem::createConnection( QStringLiteral( "GeoPackage" ),  QStringLiteral( "GeoPackage Database (*.gpkg)" ),  QStringLiteral( "GPKG" ) ) )
+  if ( QgsOgrProviderUtils::createConnection( QStringLiteral( "GeoPackage" ),  QStringLiteral( "GeoPackage Database (*.gpkg)" ),  QStringLiteral( "GPKG" ) ) )
   {
     refreshConnections();
   }
@@ -110,36 +110,82 @@ QgsGeoPackageCollectionItem::QgsGeoPackageCollectionItem( QgsDataItem *parent, c
 QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
 {
   QVector<QgsDataItem *> children;
-  try
+
+  const QString path = mPath.remove( QLatin1String( "gpkg:/" ) );
+  const QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->querySublayers( path );
+  for ( const QgsProviderSublayerDetails &sublayer : sublayers )
   {
-    const auto layers = QgsOgrLayerItem::subLayers( mPath.remove( QLatin1String( "gpkg:/" ) ), QStringLiteral( "GPKG" ) );
-    for ( const QgsOgrDbLayerInfo *info : layers )
+    switch ( sublayer.type() )
     {
-      if ( info->layerType() == Qgis::BrowserLayerType::Raster )
+      case QgsMapLayerType::VectorLayer:
       {
-        children.append( new QgsGeoPackageRasterLayerItem( this, info->name(), info->path(), info->uri() ) );
+        Qgis::BrowserLayerType layerType = Qgis::BrowserLayerType::Vector;
+
+        switch ( QgsWkbTypes::geometryType( sublayer.wkbType() ) )
+        {
+          case QgsWkbTypes::PointGeometry:
+            layerType = Qgis::BrowserLayerType::Point;
+            break;
+
+          case QgsWkbTypes::LineGeometry:
+            layerType = Qgis::BrowserLayerType::Line;
+            break;
+
+          case QgsWkbTypes::PolygonGeometry:
+            layerType = Qgis::BrowserLayerType::Polygon;
+            break;
+
+          case QgsWkbTypes::NullGeometry:
+            layerType = Qgis::BrowserLayerType::TableLayer;
+            break;
+
+          case QgsWkbTypes::UnknownGeometry:
+            layerType = Qgis::BrowserLayerType::Vector;
+            break;
+        }
+
+        children.append( new QgsGeoPackageVectorLayerItem( this, sublayer.name(), path, sublayer.uri(), layerType ) );
+        break;
       }
-      else
-      {
-        children.append( new QgsGeoPackageVectorLayerItem( this, info->name(), info->path(), info->uri(), info->layerType( ) ) );
-      }
-    }
-    qDeleteAll( layers );
-    QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( "geopackage" );
-    if ( storage )
-    {
-      const QStringList projectNames = storage->listProjects( mPath );
-      for ( const QString &projectName : projectNames )
-      {
-        QgsGeoPackageProjectUri projectUri { true, mPath, projectName };
-        children.append( new QgsProjectItem( this, projectName, QgsGeoPackageProjectStorage::encodeUri( projectUri ) ) );
-      }
+
+      case QgsMapLayerType::RasterLayer:
+        children.append( new QgsGeoPackageRasterLayerItem( this, sublayer.name(), path, sublayer.uri() ) );
+        break;
+
+      case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::MeshLayer:
+      case QgsMapLayerType::VectorTileLayer:
+      case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::PointCloudLayer:
+        break;
     }
   }
-  catch ( QgsOgrLayerNotValidException &ex )
+
+  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( "geopackage" );
+  if ( storage )
   {
-    children.append( new QgsErrorItem( this, ex.what(), mPath + "/error" ) );
+    const QStringList projectNames = storage->listProjects( mPath );
+    for ( const QString &projectName : projectNames )
+    {
+      const QgsGeoPackageProjectUri projectUri { true, mPath, projectName };
+      children.append( new QgsProjectItem( this, projectName, QgsGeoPackageProjectStorage::encodeUri( projectUri ) ) );
+    }
   }
+
+  if ( children.empty() )
+  {
+    QString errorMessage;
+    if ( QFile::exists( path ) )
+    {
+      errorMessage = tr( "The file does not contain any layer or there was an error opening the file.\nCheck file and directory permissions on\n%1" ).arg( QDir::toNativeSeparators( path ) );
+    }
+    else
+    {
+      errorMessage = tr( "Layer is not valid (%1)" ).arg( path );
+    }
+    children.append( new QgsErrorItem( this, errorMessage, mPath + "/error" ) );
+  }
+
   return children;
 }
 
@@ -223,7 +269,7 @@ void QgsGeoPackageCollectionItem::deleteConnection()
 
 bool QgsGeoPackageCollectionItem::vacuumGeoPackageDb( const QString &name, const QString &path, QString &errCause )
 {
-  QgsScopedProxyProgressTask task( tr( "Vacuuming %1" ).arg( name ) );
+  const QgsScopedProxyProgressTask task( tr( "Vacuuming %1" ).arg( name ) );
   QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
   std::unique_ptr<QgsGeoPackageProviderConnection> conn( static_cast<QgsGeoPackageProviderConnection *>( md->createConnection( path, QVariantMap() ) ) );
   if ( conn )
@@ -335,7 +381,7 @@ bool QgsGeoPackageRasterLayerItem::executeDeleteLayer( QString &errCause )
 {
   QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
   std::unique_ptr<QgsGeoPackageProviderConnection> conn( static_cast<QgsGeoPackageProviderConnection *>( md->createConnection( collection()->path(), QVariantMap() ) ) );
-  QString tableName = name();
+  const QString tableName = name();
   if ( conn->tableExists( QString(), tableName ) )
   {
     try
@@ -362,7 +408,7 @@ bool QgsGeoPackageVectorLayerItem::executeDeleteLayer( QString &errCause )
 {
   QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
   std::unique_ptr<QgsGeoPackageProviderConnection> conn( static_cast<QgsGeoPackageProviderConnection *>( md->createConnection( collection()->path(), QVariantMap() ) ) );
-  QString tableName = name();
+  const QString tableName = name();
   if ( conn )
   {
     try
@@ -399,12 +445,14 @@ bool QgsGeoPackageCollectionItem::hasDragEnabled() const
 
 QgsMimeDataUtils::UriList QgsGeoPackageCollectionItem::mimeUris() const
 {
-  QgsMimeDataUtils::Uri vectorUri;
-  vectorUri.providerKey = QStringLiteral( "ogr" );
-  vectorUri.uri = path().replace( QLatin1String( "gpkg:/" ), QString() );
-  vectorUri.layerType = QStringLiteral( "vector" );
-  QgsMimeDataUtils::Uri rasterUri { vectorUri };
-  rasterUri.layerType = QStringLiteral( "raster" );
-  rasterUri.providerKey = QStringLiteral( "gdal" );
-  return { vectorUri, rasterUri };
+  QgsMimeDataUtils::Uri collectionUri;
+  collectionUri.uri = path().replace( QLatin1String( "gpkg:/" ), QString() );
+  collectionUri.layerType = QStringLiteral( "collection" );
+
+  if ( capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile )
+  {
+    collectionUri.filePath = path();
+  }
+
+  return { collectionUri };
 }

@@ -961,8 +961,8 @@ void QgsSpatiaLiteProvider::fetchConstraints()
         const QChar delimiter { field.at( 0 ) };
         if ( delimiter == '"' || delimiter == '`' )
         {
-          const int start {  field.indexOf( delimiter ) + 1};
-          const int end { field.indexOf( delimiter, start ) };
+          const int start = field.indexOf( delimiter ) + 1;
+          const int end = field.indexOf( delimiter, start );
           fieldName = field.mid( start, end - start );
           definition = field.mid( end + 1 );
         }

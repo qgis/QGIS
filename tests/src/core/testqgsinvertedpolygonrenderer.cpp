@@ -78,14 +78,14 @@ void TestQgsInvertedPolygon::initTestCase()
   QgsApplication::initQgis();
   QgsApplication::showSettings();
 
-  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + '/';
 
   //
   //create a poly layer that will be used in all tests...
   //
-  QString myPolysFileName = mTestDataDir + "polys_overlapping.shp";
-  QFileInfo myPolyFileInfo( myPolysFileName );
+  const QString myPolysFileName = mTestDataDir + "polys_overlapping.shp";
+  const QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
                                      myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QgsVectorSimplifyMethod simplifyMethod;
@@ -98,7 +98,7 @@ void TestQgsInvertedPolygon::initTestCase()
 
 void TestQgsInvertedPolygon::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -129,7 +129,7 @@ void TestQgsInvertedPolygon::graduatedSubRenderer()
 void TestQgsInvertedPolygon::checkSymbolItem()
 {
   QVERIFY( setQml( mpPolysLayer, "inverted_polys_rule.qml" ) );
-  QString firstRuleKey = mpPolysLayer->renderer()->legendSymbolItems().first().ruleKey();
+  const QString firstRuleKey = mpPolysLayer->renderer()->legendSymbolItems().first().ruleKey();
   QVERIFY( mpPolysLayer->renderer()->legendSymbolItemChecked( firstRuleKey ) );
   mpPolysLayer->renderer()->checkLegendSymbolItem( firstRuleKey, false );
   QVERIFY( !mpPolysLayer->renderer()->legendSymbolItemChecked( firstRuleKey ) );
@@ -147,7 +147,7 @@ void TestQgsInvertedPolygon::projectionTest()
 {
   mReport += QLatin1String( "<h2>Inverted polygon renderer, projection test</h2>\n" );
   mMapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:2154" ) ) );
-  QgsRectangle extent( QgsPointXY( -8639421, 8382691 ), QgsPointXY( -3969110, 12570905 ) );
+  const QgsRectangle extent( QgsPointXY( -8639421, 8382691 ), QgsPointXY( -3969110, 12570905 ) );
   QVERIFY( setQml( mpPolysLayer, "inverted_polys_single.qml" ) );
   QVERIFY( imageCheck( "inverted_polys_projection", &extent ) );
   QVERIFY( setQml( mpPolysLayer, "inverted_polys_preprocess.qml" ) );
@@ -157,8 +157,8 @@ void TestQgsInvertedPolygon::projectionTest()
 
 void TestQgsInvertedPolygon::curvedPolygons()
 {
-  QString myCurvedPolysFileName = mTestDataDir + "curved_polys.gpkg";
-  QFileInfo myCurvedPolyFileInfo( myCurvedPolysFileName );
+  const QString myCurvedPolysFileName = mTestDataDir + "curved_polys.gpkg";
+  const QFileInfo myCurvedPolyFileInfo( myCurvedPolysFileName );
   QgsVectorLayer *curvedLayer = new QgsVectorLayer( myCurvedPolyFileInfo.filePath() + "|layername=polys",
       myCurvedPolyFileInfo.completeBaseName(), "ogr" );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << curvedLayer );
@@ -190,8 +190,8 @@ bool TestQgsInvertedPolygon::setQml( QgsVectorLayer *vlayer, const QString &qmlF
   //the style will correspond to the renderer
   //type we are testing
   bool myStyleFlag = false;
-  QString myFileName = mTestDataDir + qmlFile;
-  QString error = vlayer->loadNamedStyle( myFileName, myStyleFlag );
+  const QString myFileName = mTestDataDir + qmlFile;
+  const QString error = vlayer->loadNamedStyle( myFileName, myStyleFlag );
   if ( !myStyleFlag )
   {
     qDebug( "%s", error.toLocal8Bit().constData() );
@@ -218,7 +218,7 @@ bool TestQgsInvertedPolygon::imageCheck( const QString &testType, const QgsRecta
   myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( mMapSettings );
   myChecker.setColorTolerance( 20 );
-  bool myResultFlag = myChecker.runTest( testType, 100 );
+  const bool myResultFlag = myChecker.runTest( testType, 100 );
   mReport += myChecker.report();
   return myResultFlag;
 }

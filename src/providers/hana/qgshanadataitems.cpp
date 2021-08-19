@@ -19,15 +19,12 @@
 #include "qgshanaconnection.h"
 #include "qgshanaconnectionpool.h"
 #include "qgshanaexception.h"
-#include "qgshananewconnection.h"
 #include "qgshanadataitems.h"
 #include "qgshanasettings.h"
-#include "qgshanasourceselect.h"
 #include "qgshanautils.h"
 #include "qgslogger.h"
 #include "qgsmessageoutput.h"
 #include "qgsmimedatautils.h"
-#include "qgsnewnamedialog.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerexporter.h"
 #include "qgsfieldsitem.h"
@@ -414,15 +411,6 @@ QVector<QgsDataItem *> QgsHanaRootItem::createChildren()
     connections << new QgsHanaConnectionItem( this, connName, mPath + '/' + connName );
   }
   return connections;
-}
-
-QWidget *QgsHanaRootItem::paramWidget()
-{
-  QgsHanaSourceSelect *select = new QgsHanaSourceSelect( nullptr, Qt::WindowFlags(),
-      QgsProviderRegistry::WidgetMode::Manager );
-  connect( select, &QgsHanaSourceSelect::connectionsChanged, this,
-           &QgsHanaRootItem::onConnectionsChanged );
-  return select;
 }
 
 void QgsHanaRootItem::onConnectionsChanged()

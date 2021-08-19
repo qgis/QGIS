@@ -58,7 +58,7 @@ QgsLayoutAtlasWidget::QgsLayoutAtlasWidget( QWidget *parent, QgsPrintLayout *lay
 
   mPageNameWidget->registerExpressionContextGenerator( mLayout );
 
-  QList<QByteArray> formats = QImageWriter::supportedImageFormats();
+  const QList<QByteArray> formats = QImageWriter::supportedImageFormats();
   for ( int i = 0; i < formats.size(); ++i )
   {
     mAtlasFileFormat->addItem( QString( formats.at( i ) ) );
@@ -137,13 +137,13 @@ void QgsLayoutAtlasWidget::mAtlasFilenameExpressionButton_clicked()
     return;
   }
 
-  QgsExpressionContext context = mLayout->createExpressionContext();
+  const QgsExpressionContext context = mLayout->createExpressionContext();
   QgsExpressionBuilderDialog exprDlg( mAtlas->coverageLayer(), mAtlasFilenamePatternEdit->text(), this, QStringLiteral( "generic" ), context );
   exprDlg.setWindowTitle( tr( "Expression Based Filename" ) );
 
   if ( exprDlg.exec() == QDialog::Accepted )
   {
-    QString expression = exprDlg.expressionText();
+    const QString expression = exprDlg.expressionText();
     if ( !expression.isEmpty() )
     {
       //set atlas filename expression
@@ -233,7 +233,7 @@ void QgsLayoutAtlasWidget::changesSortFeatureExpression( const QString &expressi
 
 void QgsLayoutAtlasWidget::updateAtlasFeatures()
 {
-  bool updated = mAtlas->updateFeatures();
+  const bool updated = mAtlas->updateFeatures();
   if ( !updated )
   {
     mMessageBar->pushInfo( tr( "Atlas" ),
@@ -272,7 +272,7 @@ void QgsLayoutAtlasWidget::pageNameExpressionChanged( const QString &, bool vali
   if ( !mLayout )
     return;
 
-  QString expression = mPageNameWidget->asExpression();
+  const QString expression = mPageNameWidget->asExpression();
   if ( !valid && !expression.isEmpty() )
   {
     return;
@@ -318,13 +318,13 @@ void QgsLayoutAtlasWidget::mAtlasFeatureFilterButton_clicked()
     return;
   }
 
-  QgsExpressionContext context = mLayout->createExpressionContext();
+  const QgsExpressionContext context = mLayout->createExpressionContext();
   QgsExpressionBuilderDialog exprDlg( vl, mAtlasFeatureFilterEdit->text(), this, QStringLiteral( "generic" ), context );
   exprDlg.setWindowTitle( tr( "Expression Based Filter" ) );
 
   if ( exprDlg.exec() == QDialog::Accepted )
   {
-    QString expression = exprDlg.expressionText();
+    const QString expression = exprDlg.expressionText();
     if ( !expression.isEmpty() )
     {
       mAtlasFeatureFilterEdit->setText( expression );
@@ -392,7 +392,7 @@ void QgsLayoutAtlasWidget::updateGuiElements()
   mAtlasFilenamePatternEdit->setText( mAtlas->filenameExpression() );
   mAtlasHideCoverageCheckBox->setCheckState( mAtlas->hideCoverage() ? Qt::Checked : Qt::Unchecked );
 
-  bool singleFile = mLayout->customProperty( QStringLiteral( "singleFile" ), true ).toBool();
+  const bool singleFile = mLayout->customProperty( QStringLiteral( "singleFile" ) ).toBool();
   mAtlasSingleFileCheckBox->setCheckState( singleFile ? Qt::Checked : Qt::Unchecked );
   mAtlasFilenamePatternEdit->setEnabled( !singleFile );
   mAtlasFilenameExpressionButton->setEnabled( !singleFile );

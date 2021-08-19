@@ -157,7 +157,7 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
     editor->layout()->addWidget( w );
   }
 
-  QgsAttributeEditorContext myContext( QgsAttributeEditorContext( context(), mRelation, QgsAttributeEditorContext::Multiple, QgsAttributeEditorContext::Embed ) );
+  const QgsAttributeEditorContext myContext( QgsAttributeEditorContext( context(), mRelation, QgsAttributeEditorContext::Multiple, QgsAttributeEditorContext::Embed ) );
 
   // read the legacy config of force-suppress-popup to support settings made on autoconfigurated forms
   // it will be overwritten on specific widget configuration

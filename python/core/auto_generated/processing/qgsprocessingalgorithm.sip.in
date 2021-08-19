@@ -795,7 +795,6 @@ need to handle deletion of the returned layer.
 .. versionadded:: 3.6
 %End
 
-
     QString parameterAsOutputLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 %Docstring
 Evaluates the parameter with matching ``name`` to a output layer destination.
@@ -886,8 +885,6 @@ Returns the coordinate reference system associated with a geometry parameter val
 
 .. seealso:: :py:func:`parameterAsGeometry`
 %End
-
-
 
     QString parameterAsFile( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 %Docstring
@@ -981,6 +978,16 @@ Evaluates the parameter with matching ``name`` to a DateTime, or returns an inva
 .. versionadded:: 3.14
 %End
 
+    QgsPointCloudLayer *parameterAsPointCloudLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+%Docstring
+Evaluates the parameter with matching ``name`` to a point cloud layer.
+
+Layers will either be taken from ``context``'s active project, or loaded from external
+sources and stored temporarily in the ``context``. In either case, callers do not
+need to handle deletion of the returned layer.
+
+.. versionadded:: 3.22
+%End
 
     static QString invalidSourceError( const QVariantMap &parameters, const QString &name );
 %Docstring
@@ -1025,6 +1032,19 @@ should correspond to the invalid source parameter name.
 .. seealso:: :py:func:`invalidRasterError`
 
 .. versionadded:: 3.2
+%End
+
+    static QString writeFeatureError( QgsFeatureSink *sink, const QVariantMap &parameters, const QString &name );
+%Docstring
+Returns a user-friendly string to use as an error when a feature cannot be
+written into a sink.
+
+The ``sink`` argument is the sink into which the feature cannot be written.
+
+The ``parameters`` argument should give the algorithms parameter map, and the ``name``
+should correspond to the sink parameter name.
+
+.. versionadded:: 3.22
 %End
 
     virtual bool supportInPlaceEdit( const QgsMapLayer *layer ) const;

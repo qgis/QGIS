@@ -29,7 +29,7 @@ Ownership is transferred to the caller.
 
     virtual QgsRectangle boundingBox() const;
 
-    virtual bool isValid( QString &error /Out/, int flags = 0 ) const;
+    virtual bool isValid( QString &error /Out/, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
 
 
 

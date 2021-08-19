@@ -141,7 +141,7 @@ void QgsFileDownloader::onReadyRead()
   }
   else
   {
-    QByteArray data = mReply->readAll();
+    const QByteArray data = mReply->readAll();
     mFile.write( data );
   }
 }
@@ -166,7 +166,7 @@ void QgsFileDownloader::onFinished()
     }
 
     // get redirection url
-    QVariant redirectionTarget = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
+    const QVariant redirectionTarget = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
     if ( mReply->error() )
     {
       mFile.remove();
@@ -174,7 +174,7 @@ void QgsFileDownloader::onFinished()
     }
     else if ( !redirectionTarget.isNull() )
     {
-      QUrl newUrl = mUrl.resolved( redirectionTarget.toUrl() );
+      const QUrl newUrl = mUrl.resolved( redirectionTarget.toUrl() );
       mUrl = newUrl;
       mReply->deleteLater();
       if ( !mFile.open( QIODevice::WriteOnly ) )

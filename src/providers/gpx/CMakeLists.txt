@@ -1,3 +1,8 @@
+if (WITH_GUI)
+  include_directories(
+    ${CMAKE_BINARY_DIR}/src/ui
+  )
+endif()
 
 ########################################################
 # Files
@@ -7,6 +12,12 @@ set (GPX_SRCS
   qgsgpxfeatureiterator.cpp
   gpsdata.cpp
 )
+if (WITH_GUI)
+  set(GPX_SRCS ${GPX_SRCS}
+    qgsgpxprovidergui.cpp
+    qgsgpxsourceselect.cpp
+  )
+endif()
 
 ########################################################
 # Build
@@ -27,6 +38,12 @@ target_link_libraries(provider_gpx
   qgis_core
 )
 
+if (WITH_GUI)
+  target_link_libraries(provider_gpx
+    qgis_gui
+  )
+  add_dependencies(provider_gpx ui)
+endif()
 
 ########################################################
 # Install

@@ -111,7 +111,7 @@ void QgsLayoutItemsListView::showContextMenu( QPoint point )
 {
   if ( !mModel )
     return;
-  QModelIndex index = indexAt( point );
+  const QModelIndex index = indexAt( point );
   QgsLayoutItem *item = mModel->itemFromIndex( index );
   if ( !item )
     return;

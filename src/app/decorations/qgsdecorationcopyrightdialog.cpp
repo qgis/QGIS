@@ -50,8 +50,8 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   txtCopyrightText->setAcceptRichText( false );
   if ( !mDeco.enabled() && mDeco.mLabelText.isEmpty() )
   {
-    QDate now = QDate::currentDate();
-    QString defaultString = QStringLiteral( "%1 %2 %3" ).arg( QChar( 0x00A9 ), QgsProject::instance()->metadata().author(), now.toString( QStringLiteral( "yyyy" ) ) );
+    const QDate now = QDate::currentDate();
+    const QString defaultString = QStringLiteral( "%1 %2 %3" ).arg( QChar( 0x00A9 ), QgsProject::instance()->metadata().author(), now.toString( QStringLiteral( "yyyy" ) ) );
     txtCopyrightText->setPlainText( defaultString );
   }
   else
@@ -108,7 +108,7 @@ void QgsDecorationCopyrightDialog::mInsertExpressionButton_clicked()
   exprDlg.setWindowTitle( QObject::tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
-    QString expression = exprDlg.expressionText();
+    const QString expression = exprDlg.expressionText();
     if ( !expression.isEmpty() )
     {
       txtCopyrightText->insertPlainText( "[%" + expression + "%]" );

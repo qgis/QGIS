@@ -18,6 +18,8 @@
 #include "qgslayeritem.h"
 #include "qgsdatacollectionitem.h"
 
+#include <QRegularExpression>
+
 QgsBrowserProxyModel::QgsBrowserProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
 {
@@ -86,9 +88,8 @@ void QgsBrowserProxyModel::updateFilter()
       const QStringList filterParts = mFilter.split( '|' );
       for ( const QString &f : filterParts )
       {
-        QRegExp rx( QStringLiteral( "*%1*" ).arg( f.trimmed() ) );
-        rx.setPatternSyntax( QRegExp::Wildcard );
-        rx.setCaseSensitivity( mCaseSensitivity );
+        const QRegularExpression rx( QRegularExpression::wildcardToRegularExpression( QStringLiteral( "*%1*" ).arg( f.trimmed() ) ),
+                                     mCaseSensitivity == Qt::CaseInsensitive ? QRegularExpression::CaseInsensitiveOption : QRegularExpression::NoPatternOption );
         mREList.append( rx );
       }
       break;
@@ -98,18 +99,15 @@ void QgsBrowserProxyModel::updateFilter()
       const QStringList filterParts = mFilter.split( '|' );
       for ( const QString &f : filterParts )
       {
-        QRegExp rx( f.trimmed() );
-        rx.setPatternSyntax( QRegExp::Wildcard );
-        rx.setCaseSensitivity( mCaseSensitivity );
+        const QRegularExpression rx( QRegularExpression::wildcardToRegularExpression( f.trimmed() ),
+                                     mCaseSensitivity == Qt::CaseInsensitive ? QRegularExpression::CaseInsensitiveOption : QRegularExpression::NoPatternOption );
         mREList.append( rx );
       }
       break;
     }
     case RegularExpression:
     {
-      QRegExp rx( mFilter.trimmed() );
-      rx.setPatternSyntax( QRegExp::RegExp );
-      rx.setCaseSensitivity( mCaseSensitivity );
+      const QRegularExpression rx( mFilter.trimmed(), mCaseSensitivity == Qt::CaseInsensitive ? QRegularExpression::CaseInsensitiveOption : QRegularExpression::NoPatternOption );
       mREList.append( rx );
       break;
     }
@@ -119,28 +117,10 @@ void QgsBrowserProxyModel::updateFilter()
 
 bool QgsBrowserProxyModel::filterAcceptsString( const QString &value ) const
 {
-  switch ( mPatternSyntax )
+  for ( const QRegularExpression &rx : mREList )
   {
-    case Normal:
-    case Wildcards:
-    {
-      for ( const QRegExp &rx : mREList )
-      {
-        if ( rx.exactMatch( value ) )
-          return true;
-      }
-      break;
-    }
-
-    case RegularExpression:
-    {
-      for ( const QRegExp &rx : mREList )
-      {
-        if ( rx.indexIn( value ) != -1 )
-          return true;
-      }
-      break;
-    }
+    if ( rx.match( value ).hasMatch() )
+      return true;
   }
 
   return false;
@@ -151,7 +131,7 @@ bool QgsBrowserProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &s
   if ( ( mFilter.isEmpty() && !mFilterByLayerType && mHiddenDataItemsKeys.empty() && mShownDataItemsKeys.empty() ) || !mModel )
     return true;
 
-  QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
+  const QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
   if ( !filterAcceptsProviderKey( sourceIndex ) || !filterRootAcceptsProviderKey( sourceIndex ) )
     return false;
 
@@ -202,7 +182,7 @@ bool QgsBrowserProxyModel::filterAcceptsAncestor( const QModelIndex &sourceIndex
   if ( mFilterByLayerType )
     return false;
 
-  QModelIndex sourceParentIndex = mModel->parent( sourceIndex );
+  const QModelIndex sourceParentIndex = mModel->parent( sourceIndex );
   if ( !sourceParentIndex.isValid() )
     return false;
   if ( filterAcceptsItem( sourceParentIndex ) )
@@ -218,7 +198,7 @@ bool QgsBrowserProxyModel::filterAcceptsDescendant( const QModelIndex &sourceInd
 
   for ( int i = 0; i < mModel->rowCount( sourceIndex ); i++ )
   {
-    QModelIndex sourceChildIndex = mModel->index( i, 0, sourceIndex );
+    const QModelIndex sourceChildIndex = mModel->index( i, 0, sourceIndex );
     if ( filterAcceptsItem( sourceChildIndex ) )
       return true;
     if ( filterAcceptsDescendant( sourceChildIndex ) )
@@ -247,7 +227,7 @@ bool QgsBrowserProxyModel::filterAcceptsItem( const QModelIndex &sourceIndex ) c
   if ( !mFilter.isEmpty() )
   {
     //accept item if either displayed text or comment role matches string
-    QString comment = mModel->data( sourceIndex, QgsBrowserModel::CommentRole ).toString();
+    const QString comment = mModel->data( sourceIndex, QgsBrowserModel::CommentRole ).toString();
     return ( filterAcceptsString( mModel->data( sourceIndex, Qt::DisplayRole ).toString() )
              || ( !comment.isEmpty() && filterAcceptsString( comment ) ) );
   }
@@ -272,7 +252,7 @@ bool QgsBrowserProxyModel::filterRootAcceptsProviderKey( const QModelIndex &sour
   if ( !mModel )
     return true;
 
-  QModelIndex sourceParentIndex = mModel->parent( sourceIndex );
+  const QModelIndex sourceParentIndex = mModel->parent( sourceIndex );
   if ( !sourceParentIndex.isValid() )
   {
     return filterAcceptsProviderKey( sourceIndex );
@@ -296,7 +276,7 @@ void QgsBrowserProxyModel::setShownDataItemProviderKeyFilter( const QStringList 
 
 bool QgsBrowserProxyModel::hasChildren( const QModelIndex &parent ) const
 {
-  bool isFertile { QSortFilterProxyModel::hasChildren( parent ) };
+  const bool isFertile { QSortFilterProxyModel::hasChildren( parent ) };
   if ( isFertile && parent.isValid() )
   {
     QgsDataItem *item = dataItem( parent );

@@ -73,10 +73,7 @@ class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
         self.server.handleRequest(request, response, project)
 
         image = QImage.fromData(response.body(), "PNG")
-        color = image.pixelColor(100, 100)
-        self.assertEqual(color.red(), 255)
-        self.assertEqual(color.green(), 0)
-        self.assertEqual(color.blue(), 0)
+        self._assertRed(image.pixelColor(100, 100))
 
         # blank template, specified layer is green
         params["map0:LAYERS"] = "green"
@@ -85,10 +82,7 @@ class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
         self.server.handleRequest(request, response, project)
 
         image = QImage.fromData(response.body(), "PNG")
-        color = image.pixelColor(100, 100)
-        self.assertEqual(color.red(), 0)
-        self.assertEqual(color.green(), 255)
-        self.assertEqual(color.blue(), 0)
+        self._assertGreen(image.pixelColor(100, 100))
 
         # red template, no specified layers
         params["map0:LAYERS"] = ""
@@ -98,10 +92,7 @@ class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
         self.server.handleRequest(request, response, project)
 
         image = QImage.fromData(response.body(), "PNG")
-        color = image.pixelColor(100, 100)
-        self.assertEqual(color.red(), 255)
-        self.assertEqual(color.green(), 0)
-        self.assertEqual(color.blue(), 0)
+        self._assertRed(image.pixelColor(100, 100))
 
         # green template, no specified layers
         params["map0:LAYERS"] = ""
@@ -111,10 +102,7 @@ class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
         self.server.handleRequest(request, response, project)
 
         image = QImage.fromData(response.body(), "PNG")
-        color = image.pixelColor(100, 100)
-        self.assertEqual(color.red(), 0)
-        self.assertEqual(color.green(), 255)
-        self.assertEqual(color.blue(), 0)
+        self._assertGreen(image.pixelColor(100, 100))
 
         # green template, specified layer is red
         # This is a conflict situation: the green template map is set to follow green theme
@@ -126,10 +114,7 @@ class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
         self.server.handleRequest(request, response, project)
 
         image = QImage.fromData(response.body(), "PNG")
-        color = image.pixelColor(100, 100)
-        self.assertEqual(color.red(), 255)
-        self.assertEqual(color.green(), 0)
-        self.assertEqual(color.blue(), 0)
+        self._assertRed(image.pixelColor(100, 100))
 
         ######################################################
         # Start HIGHLIGHT tests
@@ -144,10 +129,7 @@ class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
         self.server.handleRequest(request, response, project)
 
         image = QImage.fromData(response.body(), "PNG")
-        color = image.pixelColor(100, 100)
-        self.assertEqual(color.red(), 0)
-        self.assertEqual(color.green(), 0)
-        self.assertEqual(color.blue(), 255)
+        self._assertBlue(image.pixelColor(100, 100))
 
         # Test highlight without layers
         params["TEMPLATE"] = "blank"
@@ -158,10 +140,7 @@ class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
         self.server.handleRequest(request, response, project)
 
         image = QImage.fromData(response.body(), "PNG")
-        color = image.pixelColor(100, 100)
-        self.assertEqual(color.red(), 0)
-        self.assertEqual(color.green(), 0)
-        self.assertEqual(color.blue(), 255)
+        self._assertBlue(image.pixelColor(100, 100))
 
         # Test highlight on follow theme (issue GH #34178)
         params["TEMPLATE"] = "red"
@@ -171,10 +150,7 @@ class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
         self.server.handleRequest(request, response, project)
 
         image = QImage.fromData(response.body(), "PNG")
-        color = image.pixelColor(100, 100)
-        self.assertEqual(color.red(), 0)
-        self.assertEqual(color.green(), 0)
-        self.assertEqual(color.blue(), 255)
+        self._assertBlue(image.pixelColor(100, 100))
 
         # Test highlight on follow theme (issue GH #34178)
         params["TEMPLATE"] = "green"
@@ -184,10 +160,7 @@ class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
         self.server.handleRequest(request, response, project)
 
         image = QImage.fromData(response.body(), "PNG")
-        color = image.pixelColor(100, 100)
-        self.assertEqual(color.red(), 0)
-        self.assertEqual(color.green(), 0)
-        self.assertEqual(color.blue(), 255)
+        self._assertBlue(image.pixelColor(100, 100))
 
         # Test highlight on follow theme, but add LAYERS (issue GH #34178)
         params["TEMPLATE"] = "green"
@@ -198,10 +171,7 @@ class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
         self.server.handleRequest(request, response, project)
 
         image = QImage.fromData(response.body(), "PNG")
-        color = image.pixelColor(100, 100)
-        self.assertEqual(color.red(), 0)
-        self.assertEqual(color.green(), 0)
-        self.assertEqual(color.blue(), 255)
+        self._assertBlue(image.pixelColor(100, 100))
 
 
 if __name__ == '__main__':

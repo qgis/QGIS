@@ -78,8 +78,8 @@ QgsImportPhotosAlgorithm *QgsImportPhotosAlgorithm::createInstance() const
 
 QVariant QgsImportPhotosAlgorithm::parseMetadataValue( const QString &value )
 {
-  QRegularExpression numRx( QStringLiteral( "^\\s*\\(\\s*([-\\.\\d]+)\\s*\\)\\s*$" ) );
-  QRegularExpressionMatch numMatch = numRx.match( value );
+  const QRegularExpression numRx( QStringLiteral( "^\\s*\\(\\s*([-\\.\\d]+)\\s*\\)\\s*$" ) );
+  const QRegularExpressionMatch numMatch = numRx.match( value );
   if ( numMatch.hasMatch() )
   {
     return numMatch.captured( 1 ).toDouble();
@@ -97,9 +97,16 @@ bool QgsImportPhotosAlgorithm::extractGeoTagFromMetadata( const QVariantMap &met
     if ( !ok )
       return false;
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     if ( metadata.value( QStringLiteral( "EXIF_GPSLongitudeRef" ) ).toString().rightRef( 1 ).compare( QLatin1String( "W" ), Qt::CaseInsensitive ) == 0
          || metadata.value( QStringLiteral( "EXIF_GPSLongitudeRef" ) ).toDouble() < 0 )
+#else
+    if ( QStringView { metadata.value( QStringLiteral( "EXIF_GPSLongitudeRef" ) ).toString() }.right( 1 ).compare( QLatin1String( "W" ), Qt::CaseInsensitive ) == 0
+         || metadata.value( QStringLiteral( "EXIF_GPSLongitudeRef" ) ).toDouble() < 0 )
+#endif
+    {
       x = -x;
+    }
   }
   else
   {
@@ -114,9 +121,16 @@ bool QgsImportPhotosAlgorithm::extractGeoTagFromMetadata( const QVariantMap &met
     if ( !ok )
       return false;
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     if ( metadata.value( QStringLiteral( "EXIF_GPSLatitudeRef" ) ).toString().rightRef( 1 ).compare( QLatin1String( "S" ), Qt::CaseInsensitive ) == 0
          || metadata.value( QStringLiteral( "EXIF_GPSLatitudeRef" ) ).toDouble() < 0 )
+#else
+    if ( QStringView { metadata.value( QStringLiteral( "EXIF_GPSLatitudeRef" ) ).toString() }.right( 1 ).compare( QLatin1String( "S" ), Qt::CaseInsensitive ) == 0
+         || metadata.value( QStringLiteral( "EXIF_GPSLatitudeRef" ) ).toDouble() < 0 )
+#endif
+    {
       y = -y;
+    }
   }
   else
   {
@@ -207,16 +221,16 @@ QVariant QgsImportPhotosAlgorithm::extractTimestampFromMetadata( const QVariantM
   if ( !ts.isValid() )
     return ts;
 
-  QRegularExpression dsRegEx( QStringLiteral( "(\\d+):(\\d+):(\\d+)\\s+(\\d+):(\\d+):(\\d+)" ) );
-  QRegularExpressionMatch dsMatch = dsRegEx.match( ts.toString() );
+  const QRegularExpression dsRegEx( QStringLiteral( "(\\d+):(\\d+):(\\d+)\\s+(\\d+):(\\d+):(\\d+)" ) );
+  const QRegularExpressionMatch dsMatch = dsRegEx.match( ts.toString() );
   if ( dsMatch.hasMatch() )
   {
-    int year = dsMatch.captured( 1 ).toInt();
-    int month = dsMatch.captured( 2 ).toInt();
-    int day = dsMatch.captured( 3 ).toInt();
-    int hour = dsMatch.captured( 4 ).toInt();
-    int min = dsMatch.captured( 5 ).toInt();
-    int sec = dsMatch.captured( 6 ).toInt();
+    const int year = dsMatch.captured( 1 ).toInt();
+    const int month = dsMatch.captured( 2 ).toInt();
+    const int day = dsMatch.captured( 3 ).toInt();
+    const int hour = dsMatch.captured( 4 ).toInt();
+    const int min = dsMatch.captured( 5 ).toInt();
+    const int sec = dsMatch.captured( 6 ).toInt();
     return QDateTime( QDate( year, month, day ), QTime( hour, min, sec ) );
   }
   else
@@ -227,13 +241,13 @@ QVariant QgsImportPhotosAlgorithm::extractTimestampFromMetadata( const QVariantM
 
 QVariant QgsImportPhotosAlgorithm::parseCoord( const QString &string )
 {
-  QRegularExpression coordRx( QStringLiteral( "^\\s*\\(\\s*([-\\.\\d]+)\\s*\\)\\s*\\(\\s*([-\\.\\d]+)\\s*\\)\\s*\\(\\s*([-\\.\\d]+)\\s*\\)\\s*$" ) );
-  QRegularExpressionMatch coordMatch = coordRx.match( string );
+  const QRegularExpression coordRx( QStringLiteral( "^\\s*\\(\\s*([-\\.\\d]+)\\s*\\)\\s*\\(\\s*([-\\.\\d]+)\\s*\\)\\s*\\(\\s*([-\\.\\d]+)\\s*\\)\\s*$" ) );
+  const QRegularExpressionMatch coordMatch = coordRx.match( string );
   if ( coordMatch.hasMatch() )
   {
-    double hours = coordMatch.captured( 1 ).toDouble();
-    double minutes = coordMatch.captured( 2 ).toDouble();
-    double seconds = coordMatch.captured( 3 ).toDouble();
+    const double hours = coordMatch.captured( 1 ).toDouble();
+    const double minutes = coordMatch.captured( 2 ).toDouble();
+    const double seconds = coordMatch.captured( 3 ).toDouble();
     return hours + minutes / 60.0 + seconds / 3600.0;
   }
   else
@@ -245,14 +259,14 @@ QVariant QgsImportPhotosAlgorithm::parseCoord( const QString &string )
 QVariantMap QgsImportPhotosAlgorithm::parseMetadataList( const QStringList &input )
 {
   QVariantMap results;
-  QRegularExpression splitRx( QStringLiteral( "(.*?)=(.*)" ) );
+  const QRegularExpression splitRx( QStringLiteral( "(.*?)=(.*)" ) );
   for ( const QString &item : input )
   {
-    QRegularExpressionMatch match = splitRx.match( item );
+    const QRegularExpressionMatch match = splitRx.match( item );
     if ( !match.hasMatch() )
       continue;
 
-    QString tag = match.captured( 1 );
+    const QString tag = match.captured( 1 );
     QVariant value = parseMetadataValue( match.captured( 2 ) );
 
     if ( tag == QLatin1String( "EXIF_GPSLatitude" ) || tag == QLatin1String( "EXIF_GPSLongitude" ) )
@@ -292,15 +306,15 @@ class SetEditorWidgetForPhotoAttributePostProcessor : public QgsProcessingLayerP
 
 QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QString folder = parameterAsFile( parameters, QStringLiteral( "FOLDER" ), context );
+  const QString folder = parameterAsFile( parameters, QStringLiteral( "FOLDER" ), context );
 
-  QDir importDir( folder );
+  const QDir importDir( folder );
   if ( !importDir.exists() )
   {
     throw QgsProcessingException( QObject::tr( "Directory %1 does not exist!" ).arg( folder ) );
   }
 
-  bool recurse = parameterAsBoolean( parameters, QStringLiteral( "RECURSIVE" ), context );
+  const bool recurse = parameterAsBoolean( parameters, QStringLiteral( "RECURSIVE" ), context );
 
   QgsFields outFields;
   outFields.append( QgsField( QStringLiteral( "photo" ), QVariant::String ) );
@@ -324,12 +338,12 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
   QString invalidDest;
   std::unique_ptr< QgsFeatureSink > invalidSink( parameterAsSink( parameters, QStringLiteral( "INVALID" ), context, invalidDest, invalidFields ) );
 
-  QStringList nameFilters { "*.jpeg", "*.jpg" };
+  const QStringList nameFilters { "*.jpeg", "*.jpg" };
   QStringList files;
 
   if ( !recurse )
   {
-    QFileInfoList fileInfoList = importDir.entryInfoList( nameFilters, QDir::NoDotAndDotDot | QDir::Files );
+    const QFileInfoList fileInfoList = importDir.entryInfoList( nameFilters, QDir::NoDotAndDotDot | QDir::Files );
     for ( auto infoIt = fileInfoList.constBegin(); infoIt != fileInfoList.constEnd(); ++infoIt )
     {
       files.append( infoIt->absoluteFilePath() );
@@ -345,18 +359,19 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
     }
   }
 
-  auto saveInvalidFile = [&invalidSink]( QgsAttributes & attributes, bool readable )
+  auto saveInvalidFile = [&invalidSink, &parameters]( QgsAttributes & attributes, bool readable )
   {
     if ( invalidSink )
     {
       QgsFeature f;
       attributes.append( readable );
       f.setAttributes( attributes );
-      invalidSink->addFeature( f, QgsFeatureSink::FastInsert );
+      if ( !invalidSink->addFeature( f, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( invalidSink.get(), parameters, QStringLiteral( "INVALID" ) ) );
     }
   };
 
-  double step = files.count() > 0 ? 100.0 / files.count() : 1;
+  const double step = files.count() > 0 ? 100.0 / files.count() : 1;
   int i = 0;
   for ( const QString &file : files )
   {
@@ -368,13 +383,13 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
 
     feedback->setProgress( i * step );
 
-    QFileInfo fi( file );
+    const QFileInfo fi( file );
     QgsAttributes attributes;
     attributes << QDir::toNativeSeparators( file )
                << fi.completeBaseName()
                << QDir::toNativeSeparators( fi.absolutePath() );
 
-    gdal::dataset_unique_ptr hDS( GDALOpen( file.toUtf8().constData(), GA_ReadOnly ) );
+    const gdal::dataset_unique_ptr hDS( GDALOpen( file.toUtf8().constData(), GA_ReadOnly ) );
     if ( !hDS )
     {
       feedback->reportError( QObject::tr( "Could not open %1" ).arg( QDir::toNativeSeparators( file ) ) );
@@ -388,7 +403,7 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
         continue;
 
       QgsFeature f;
-      QVariantMap metadata = parseMetadataList( QgsOgrUtils::cStringListToQStringList( GDALmetadata ) );
+      const QVariantMap metadata = parseMetadataList( QgsOgrUtils::cStringListToQStringList( GDALmetadata ) );
 
       QgsPointXY tag;
       if ( !extractGeoTagFromMetadata( metadata, tag ) )
@@ -399,8 +414,8 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
         continue;
       }
 
-      QVariant altitude = extractAltitudeFromMetadata( metadata );
-      QgsGeometry p = QgsGeometry( new QgsPoint( tag.x(), tag.y(), altitude.toDouble(), 0, QgsWkbTypes::PointZ ) );
+      const QVariant altitude = extractAltitudeFromMetadata( metadata );
+      const QgsGeometry p = QgsGeometry( new QgsPoint( tag.x(), tag.y(), altitude.toDouble(), 0, QgsWkbTypes::PointZ ) );
       f.setGeometry( p );
 
       attributes
@@ -411,7 +426,8 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
           << tag.y()
           << extractTimestampFromMetadata( metadata );
       f.setAttributes( attributes );
-      outputSink->addFeature( f, QgsFeatureSink::FastInsert );
+      if ( !outputSink->addFeature( f, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( outputSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
     }
     else
     {

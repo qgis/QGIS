@@ -87,13 +87,13 @@ class QgsExpressionUtils
       if ( value.canConvert<QgsGeometry>() )
       {
         //geom is false if empty
-        QgsGeometry geom = value.value<QgsGeometry>();
+        const QgsGeometry geom = value.value<QgsGeometry>();
         return geom.isNull() ? False : True;
       }
       else if ( value.canConvert<QgsFeature>() )
       {
         //feat is false if non-valid
-        QgsFeature feat = value.value<QgsFeature>();
+        const QgsFeature feat = value.value<QgsFeature>();
         return feat.isValid() ? True : False;
       }
 
@@ -101,7 +101,7 @@ class QgsExpressionUtils
         return value.toInt() != 0 ? True : False;
 
       bool ok;
-      double x = value.toDouble( &ok );
+      const double x = value.toDouble( &ok );
       if ( !ok )
       {
         parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to boolean" ).arg( value.toString() ) );
@@ -147,7 +147,7 @@ class QgsExpressionUtils
       if ( v.type() == QVariant::String )
       {
         bool ok;
-        double val = v.toString().toDouble( &ok );
+        const double val = v.toString().toDouble( &ok );
         ok = ok && std::isfinite( val ) && !std::isnan( val );
         return ok;
       }
@@ -211,7 +211,7 @@ class QgsExpressionUtils
     static double getDoubleValue( const QVariant &value, QgsExpression *parent )
     {
       bool ok;
-      double x = value.toDouble( &ok );
+      const double x = value.toDouble( &ok );
       if ( !ok || std::isnan( x ) || !std::isfinite( x ) )
       {
         parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to double" ).arg( value.toString() ) );
@@ -223,7 +223,7 @@ class QgsExpressionUtils
     static qlonglong getIntValue( const QVariant &value, QgsExpression *parent )
     {
       bool ok;
-      qlonglong x = value.toLongLong( &ok );
+      const qlonglong x = value.toLongLong( &ok );
       if ( ok )
       {
         return x;
@@ -238,7 +238,7 @@ class QgsExpressionUtils
     static int getNativeIntValue( const QVariant &value, QgsExpression *parent )
     {
       bool ok;
-      qlonglong x = value.toLongLong( &ok );
+      const qlonglong x = value.toLongLong( &ok );
       if ( ok && x >= std::numeric_limits<int>::min() && x <= std::numeric_limits<int>::max() )
       {
         return static_cast<int>( x );
@@ -259,7 +259,7 @@ class QgsExpressionUtils
       }
       else
       {
-        QTime t = value.toTime();
+        const QTime t = value.toTime();
         if ( t.isValid() )
         {
           return QDateTime( QDate( 1, 1, 1 ), t );
@@ -466,10 +466,10 @@ class QgsExpressionUtils
       else if ( value.type() == QVariant::Double || value.type() == static_cast<QVariant::Type>( QMetaType::Float ) )
       {
         bool ok;
-        const QString strVal { value.toString() };
-        const int dotPosition { strVal.indexOf( '.' ) };
-        const int precision { dotPosition > 0 ? strVal.length() - dotPosition - 1 : 0 };
-        const QString res { QLocale().toString( value.toDouble( &ok ), 'f', precision ) };
+        const QString strVal = value.toString();
+        const int dotPosition = strVal.indexOf( '.' );
+        const int precision = dotPosition > 0 ? strVal.length() - dotPosition - 1 : 0;
+        const QString res = QLocale().toString( value.toDouble( &ok ), 'f', precision );
 
         if ( ok )
         {

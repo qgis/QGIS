@@ -51,7 +51,7 @@ bool QgsRelationAggregateSearchWidgetWrapper::valid() const
 QWidget *QgsRelationAggregateSearchWidgetWrapper::createWidget( QWidget *parent )
 {
   QWidget *widget;
-  QgsRelation relation = mWrapper->relation();
+  const QgsRelation relation = mWrapper->relation();
 
   QgsCollapsibleGroupBox *groupBox = new QgsCollapsibleGroupBox( relation.name() );
 
@@ -85,10 +85,10 @@ void QgsRelationAggregateSearchWidgetWrapper::setExpression( const QString &valu
 
 bool QgsRelationAggregateSearchWidgetWrapper::eventFilter( QObject *watched, QEvent *event )
 {
-  bool rv = QgsSearchWidgetWrapper::eventFilter( watched, event );
+  const bool rv = QgsSearchWidgetWrapper::eventFilter( watched, event );
   if ( event->type() == QEvent::Show && !mAttributeForm )
   {
-    QgsAttributeEditorContext subContext = QgsAttributeEditorContext( context(), mWrapper->relation(), QgsAttributeEditorContext::Multiple, QgsAttributeEditorContext::Embed );
+    const QgsAttributeEditorContext subContext = QgsAttributeEditorContext( context(), mWrapper->relation(), QgsAttributeEditorContext::Multiple, QgsAttributeEditorContext::Embed );
     mAttributeForm = new QgsAttributeForm( mWrapper->relation().referencingLayer(), QgsFeature(), subContext, mContainerWidget );
     mAttributeForm->setMode( QgsAttributeEditorContext::AggregateSearchMode );
     QGridLayout *glayout = new QGridLayout();

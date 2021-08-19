@@ -131,7 +131,7 @@ void TestQgsGeometryChecks::testAngleCheck()
   QVariantMap configuration;
   configuration.insert( "minAngle", 15 );
 
-  QgsGeometryAngleCheck check( testContext.first, configuration );
+  const QgsGeometryAngleCheck check( testContext.first, configuration );
   QgsFeedback feedback;
   check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
@@ -187,7 +187,7 @@ void TestQgsGeometryChecks::testAngleCheck()
   QVERIFY( !errs2[0]->handleChanges( change2changes( {errs2[0]->layerId(), errs2[0]->featureId(), QgsGeometryCheck::ChangeNode, QgsGeometryCheck::ChangeChanged, errs2[0]->vidx()} ) ) );
   QVERIFY( errs2[0]->handleChanges( change2changes( {errs2[0]->layerId(), errs2[0]->featureId(), QgsGeometryCheck::ChangeNode, QgsGeometryCheck::ChangeRemoved, QgsVertexId( errs2[0]->vidx().part, errs2[0]->vidx().ring, errs2[0]->vidx().vertex + 1 )} ) ) );
   QVERIFY( errs2[0]->handleChanges( change2changes( {errs2[0]->layerId(), errs2[0]->featureId(), QgsGeometryCheck::ChangeNode, QgsGeometryCheck::ChangeChanged, QgsVertexId( errs2[0]->vidx().part, errs2[0]->vidx().ring, errs2[0]->vidx().vertex + 1 )} ) ) );
-  QgsVertexId oldVidx = errs2[0]->vidx();
+  const QgsVertexId oldVidx = errs2[0]->vidx();
   QVERIFY( errs2[0]->handleChanges( change2changes( {errs2[0]->layerId(), errs2[0]->featureId(), QgsGeometryCheck::ChangeNode, QgsGeometryCheck::ChangeRemoved, QgsVertexId( errs2[0]->vidx().part, errs2[0]->vidx().ring, errs2[0]->vidx().vertex - 1 )} ) ) );
   QVERIFY( errs2[0]->vidx().vertex == oldVidx.vertex - 1 );
 
@@ -210,7 +210,7 @@ void TestQgsGeometryChecks::testAreaCheck()
   QVariantMap configuration;
   configuration.insert( "areaThreshold", 0.04 );
 
-  QgsGeometryAreaCheck check( testContext.first, configuration );
+  const QgsGeometryAreaCheck check( testContext.first, configuration );
   QgsFeedback feedback;
   check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
@@ -244,7 +244,7 @@ void TestQgsGeometryChecks::testAreaCheck()
 
   // Try merging a small geometry by longest edge, largest area and common value
   testContext.second[layers["polygon_layer.shp"]]->getFeature( 15, f );
-  double area15 = f.geometry().area();
+  const double area15 = f.geometry().area();
   QVERIFY( fixCheckError( testContext.second,  errs2[0],
                           QgsGeometryAreaCheck::MergeLargestArea, QgsGeometryCheckError::StatusFixed,
   {
@@ -258,7 +258,7 @@ void TestQgsGeometryChecks::testAreaCheck()
   QVERIFY( !valid );
 
   testContext.second[layers["polygon_layer.shp"]]->getFeature( 18, f );
-  double area18 = f.geometry().area();
+  const double area18 = f.geometry().area();
   QVERIFY( fixCheckError( testContext.second,  errs3[0],
                           QgsGeometryAreaCheck::MergeLongestEdge, QgsGeometryCheckError::StatusFixed,
   {
@@ -272,7 +272,7 @@ void TestQgsGeometryChecks::testAreaCheck()
   QVERIFY( !valid );
 
   testContext.second[layers["polygon_layer.shp"]]->getFeature( 21, f );
-  double area21 = f.geometry().area();
+  const double area21 = f.geometry().area();
   QMap<QString, int> mergeIdx;
   mergeIdx.insert( layers["polygon_layer.shp"], 1 ); // 1: attribute "attr"
   QVERIFY( fixCheckError( testContext.second,  errs4[0],
@@ -303,7 +303,7 @@ void TestQgsGeometryChecks::testContainedCheck()
   QList<QgsGeometryCheckError *> checkErrors;
   QStringList messages;
 
-  QgsGeometryContainedCheck check( testContext.first, QVariantMap() );
+  const QgsGeometryContainedCheck check( testContext.first, QVariantMap() );
   QgsFeedback feedback;
   check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
@@ -322,7 +322,7 @@ void TestQgsGeometryChecks::testContainedCheck()
                           QgsGeometryContainedCheck::Delete, QgsGeometryCheckError::StatusFixed,
   {{errs1[0]->layerId(), errs1[0]->featureId(), QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeRemoved, QgsVertexId()}} ) );
   QgsFeature f;
-  bool valid = testContext.second[errs1[0]->layerId()]->getFeature( errs1[0]->featureId(), f );
+  const bool valid = testContext.second[errs1[0]->layerId()]->getFeature( errs1[0]->featureId(), f );
   QVERIFY( !valid );
 
   cleanupTestContext( testContext );
@@ -335,13 +335,13 @@ void TestQgsGeometryChecks::testDangleCheck()
   layers.insert( "point_layer.shp", "" );
   layers.insert( "line_layer.shp", "" );
   layers.insert( "polygon_layer.shp", "" );
-  auto testContext = createTestContext( dir, layers );
+  const auto testContext = createTestContext( dir, layers );
 
   // Test detection
   QList<QgsGeometryCheckError *> checkErrors;
   QStringList messages;
 
-  QgsGeometryDangleCheck check( testContext.first, QVariantMap() );
+  const QgsGeometryDangleCheck check( testContext.first, QVariantMap() );
   QgsFeedback feedback;
   check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
@@ -359,7 +359,7 @@ void TestQgsGeometryChecks::testDangleCheck()
   QVERIFY( searchCheckErrors( checkErrors, layers["line_layer.shp"], 8, QgsPointXY( -0.9315, 0.3146 ), QgsVertexId( 0, 0, 5 ) ).size() == 1 );
 
   // Test change tracking
-  QgsVertexId oldVidx = errs1[0]->vidx();
+  const QgsVertexId oldVidx = errs1[0]->vidx();
   QVERIFY( errs1[0]->handleChanges( change2changes( {errs1[0]->layerId(), errs1[0]->featureId(), QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeRemoved, QgsVertexId( 0 )} ) ) );
   QVERIFY( errs1[0]->vidx().part == oldVidx.part - 1 );
 
@@ -379,7 +379,7 @@ void TestQgsGeometryChecks::testDegeneratePolygonCheck()
   QList<QgsGeometryCheckError *> checkErrors;
   QStringList messages;
 
-  QgsGeometryDegeneratePolygonCheck check( testContext.first, QVariantMap() );
+  const QgsGeometryDegeneratePolygonCheck check( testContext.first, QVariantMap() );
   QgsFeedback feedback;
   check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
@@ -396,7 +396,7 @@ void TestQgsGeometryChecks::testDegeneratePolygonCheck()
                           QgsGeometryDegeneratePolygonCheck::DeleteRing, QgsGeometryCheckError::StatusFixed,
   {{errs1[0]->layerId(), errs1[0]->featureId(), QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeRemoved, QgsVertexId()}} ) );
   QgsFeature f;
-  bool valid = testContext.second[errs1[0]->layerId()]->getFeature( errs1[0]->featureId(), f );
+  const bool valid = testContext.second[errs1[0]->layerId()]->getFeature( errs1[0]->featureId(), f );
   QVERIFY( !valid );
 
   cleanupTestContext( testContext );
@@ -416,7 +416,7 @@ void TestQgsGeometryChecks::testDuplicateCheck()
   QList<QgsGeometryCheckError *> checkErrors;
   QStringList messages;
 
-  QgsGeometryDuplicateCheck check( testContext.first, QVariantMap() );
+  const QgsGeometryDuplicateCheck check( testContext.first, QVariantMap() );
   QgsFeedback feedback;
   check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
@@ -442,7 +442,7 @@ void TestQgsGeometryChecks::testDuplicateCheck()
                           QgsGeometryDuplicateCheck::RemoveDuplicates, QgsGeometryCheckError::StatusFixed,
   {{dup1LayerId, dup1Fid, QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeRemoved, QgsVertexId()}} ) );
   QgsFeature f;
-  bool valid = testContext.second[dup1LayerId]->getFeature( dup1Fid, f );
+  const bool valid = testContext.second[dup1LayerId]->getFeature( dup1Fid, f );
   QVERIFY( !valid );
 
   cleanupTestContext( testContext );
@@ -461,7 +461,7 @@ void TestQgsGeometryChecks::testDuplicateNodesCheck()
   QList<QgsGeometryCheckError *> checkErrors;
   QStringList messages;
 
-  QgsGeometryDuplicateNodesCheck check( testContext.first, QVariantMap() );
+  const QgsGeometryDuplicateNodesCheck check( testContext.first, QVariantMap() );
   QgsFeedback feedback;
   check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
@@ -479,12 +479,12 @@ void TestQgsGeometryChecks::testDuplicateNodesCheck()
   QgsFeature f;
 
   testContext.second[errs1[0]->layerId()]->getFeature( errs1[0]->featureId(), f );
-  int n1 = f.geometry().constGet()->vertexCount( errs1[0]->vidx().part, errs1[0]->vidx().ring );
+  const int n1 = f.geometry().constGet()->vertexCount( errs1[0]->vidx().part, errs1[0]->vidx().ring );
   QVERIFY( fixCheckError( testContext.second,  errs1[0],
                           QgsGeometryDuplicateNodesCheck::RemoveDuplicates, QgsGeometryCheckError::StatusFixed,
   {{errs1[0]->layerId(), errs1[0]->featureId(), QgsGeometryCheck::ChangeNode, QgsGeometryCheck::ChangeRemoved, errs1[0]->vidx()}} ) );
   testContext.second[errs1[0]->layerId()]->getFeature( errs1[0]->featureId(), f );
-  int n2 = f.geometry().constGet()->vertexCount( errs1[0]->vidx().part, errs1[0]->vidx().ring );
+  const int n2 = f.geometry().constGet()->vertexCount( errs1[0]->vidx().part, errs1[0]->vidx().ring );
   QCOMPARE( n1, n2 + 1 );
 
   cleanupTestContext( testContext );
@@ -527,7 +527,7 @@ void TestQgsGeometryChecks::testGapCheck()
   QVariantMap configuration;
   configuration.insert( "gapThreshold", 0.01 );
 
-  QgsGeometryGapCheck check( testContext.first, configuration );
+  const QgsGeometryGapCheck check( testContext.first, configuration );
   QgsFeedback feedback;
   check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
@@ -552,7 +552,7 @@ void TestQgsGeometryChecks::testGapCheck()
   QgsFeature f;
 
   testContext.second[layers["gap_layer.shp"]]->getFeature( 0, f );
-  double areaOld = f.geometry().area();
+  const double areaOld = f.geometry().area();
   QVERIFY( fixCheckError( testContext.second,  errs1[0],
                           QgsGeometryGapCheck::MergeLongestEdge, QgsGeometryCheckError::StatusFixed,
   {
@@ -570,7 +570,7 @@ void TestQgsGeometryChecks::testAllowedGaps()
   QTemporaryDir dir;
   QMap<QString, QString> layers;
   layers.insert( "gap_layer.shp", "" );
-  auto testContext = createTestContext( dir, layers );
+  const auto testContext = createTestContext( dir, layers );
 
   // Allowed gaps layer
   std::unique_ptr<QgsVectorLayer> allowedGaps = std::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=epsg:4326" ), QStringLiteral( "allowedGaps" ), QStringLiteral( "memory" ) );
@@ -653,7 +653,7 @@ void TestQgsGeometryChecks::testMissingVertexCheck()
   QList<QgsGeometryCheckError *> checkErrors;
   QStringList messages;
 
-  QgsGeometryMissingVertexCheck check( testContext.first, QVariantMap() );
+  const QgsGeometryMissingVertexCheck check( testContext.first, QVariantMap() );
   QgsFeedback feedback;
   check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
@@ -683,7 +683,7 @@ void TestQgsGeometryChecks::testHoleCheck()
   QList<QgsGeometryCheckError *> checkErrors;
   QStringList messages;
 
-  QgsGeometryHoleCheck check( testContext.first, QVariantMap() );
+  const QgsGeometryHoleCheck check( testContext.first, QVariantMap() );
   QgsFeedback feedback;
   check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
@@ -716,13 +716,13 @@ void TestQgsGeometryChecks::testLineIntersectionCheck()
   layers.insert( "point_layer.shp", "" );
   layers.insert( "line_layer.shp", "" );
   layers.insert( "polygon_layer.shp", "" );
-  auto testContext = createTestContext( dir, layers );
+  const auto testContext = createTestContext( dir, layers );
 
   // Test detection
   QList<QgsGeometryCheckError *> checkErrors;
   QStringList messages;
 
-  QgsGeometryLineIntersectionCheck check( testContext.first, QVariantMap() );
+  const QgsGeometryLineIntersectionCheck check( testContext.first, QVariantMap() );
   QgsFeedback feedback;
   check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
@@ -742,7 +742,7 @@ void TestQgsGeometryChecks::testLineLayerIntersectionCheck()
   layers.insert( "point_layer.shp", "" );
   layers.insert( "line_layer.shp", "" );
   layers.insert( "polygon_layer.shp", "" );
-  auto testContext = createTestContext( dir, layers );
+  const auto testContext = createTestContext( dir, layers );
 
   // Test detection
   QList<QgsGeometryCheckError *> checkErrors;
@@ -751,7 +751,7 @@ void TestQgsGeometryChecks::testLineLayerIntersectionCheck()
   QVariantMap configuration;
   configuration.insert( "checkLayer", layers["polygon_layer.shp"] );
 
-  QgsGeometryLineLayerIntersectionCheck check( testContext.first, configuration );
+  const QgsGeometryLineLayerIntersectionCheck check( testContext.first, configuration );
   QgsFeedback feedback;
   check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
@@ -781,7 +781,7 @@ void TestQgsGeometryChecks::testMultipartCheck()
   QList<QgsGeometryCheckError *> checkErrors;
   QStringList messages;
 
-  QgsGeometryMultipartCheck check( testContext.first, QVariantMap() );
+  const QgsGeometryMultipartCheck check( testContext.first, QVariantMap() );
   QgsFeedback feedback;
   check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
@@ -821,7 +821,7 @@ void TestQgsGeometryChecks::testMultipartCheck()
   {
     {errs2[0]->layerId(), errs2[0]->featureId(), QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeRemoved, QgsVertexId( )}
   } ) );
-  bool valid = testContext.second[errs2[0]->layerId()]->getFeature( errs2[0]->featureId(), f );
+  const bool valid = testContext.second[errs2[0]->layerId()]->getFeature( errs2[0]->featureId(), f );
   QVERIFY( !valid );
 
   cleanupTestContext( testContext );
@@ -844,7 +844,7 @@ void TestQgsGeometryChecks::testOverlapCheck()
   QVariantMap configuration;
   configuration.insert( "maxOverlapArea", 0.01 );
 
-  QgsGeometryOverlapCheck check( testContext.first, configuration );
+  const QgsGeometryOverlapCheck check( testContext.first, configuration );
   QgsFeedback feedback;
   check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
@@ -861,7 +861,7 @@ void TestQgsGeometryChecks::testOverlapCheck()
   QgsFeature f;
 
   testContext.second[errs1[0]->layerId()]->getFeature( errs1[0]->featureId(), f );
-  double areaOld = f.geometry().area();
+  const double areaOld = f.geometry().area();
   QVERIFY( fixCheckError( testContext.second,  errs1[0],
                           QgsGeometryOverlapCheck::Subtract, QgsGeometryCheckError::StatusFixed,
   {
@@ -881,7 +881,7 @@ void TestQgsGeometryChecks::testOverlapCheckNoMaxArea()
   layers.insert( QStringLiteral( "line_layer.shp" ), QString() );
   layers.insert( QStringLiteral( "polygon_layer.shp" ), QString() );
 
-  auto testContext = createTestContext( dir, layers );
+  const auto testContext = createTestContext( dir, layers );
 
   // Test detection
   QList<QgsGeometryCheckError *> checkErrors;
@@ -890,7 +890,7 @@ void TestQgsGeometryChecks::testOverlapCheckNoMaxArea()
   QVariantMap configuration;
   configuration.insert( "maxOverlapArea", 0.0 );
 
-  QgsGeometryOverlapCheck check( testContext.first, configuration );
+  const QgsGeometryOverlapCheck check( testContext.first, configuration );
   QgsFeedback feedback;
   check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
@@ -912,13 +912,13 @@ void TestQgsGeometryChecks::testPointCoveredByLineCheck()
   layers.insert( "point_layer.shp", "" );
   layers.insert( "line_layer.shp", "" );
   layers.insert( "polygon_layer.shp", "" );
-  auto testContext = createTestContext( dir, layers );
+  const auto testContext = createTestContext( dir, layers );
 
   // Test detection
   QList<QgsGeometryCheckError *> checkErrors;
   QStringList messages;
 
-  QgsGeometryPointCoveredByLineCheck errs( testContext.first, QVariantMap() );
+  const QgsGeometryPointCoveredByLineCheck errs( testContext.first, QVariantMap() );
   QgsFeedback feedback;
   errs.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
@@ -939,13 +939,13 @@ void TestQgsGeometryChecks::testPointInPolygonCheck()
   layers.insert( "point_layer.shp", "" );
   layers.insert( "line_layer.shp", "" );
   layers.insert( "polygon_layer.shp", "" );
-  auto testContext = createTestContext( dir, layers );
+  const auto testContext = createTestContext( dir, layers );
 
   // Test detection
   QList<QgsGeometryCheckError *> checkErrors;
   QStringList messages;
 
-  QgsGeometryPointInPolygonCheck check( testContext.first, QVariantMap() );
+  const QgsGeometryPointInPolygonCheck check( testContext.first, QVariantMap() );
   QgsFeedback feedback;
   check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
@@ -966,7 +966,7 @@ void TestQgsGeometryChecks::testSegmentLengthCheck()
   layers.insert( "point_layer.shp", "" );
   layers.insert( "line_layer.shp", "" );
   layers.insert( "polygon_layer.shp", "" );
-  auto testContext = createTestContext( dir, layers );
+  const auto testContext = createTestContext( dir, layers );
 
   // Test detection
   QList<QgsGeometryCheckError *> checkErrors;
@@ -975,7 +975,7 @@ void TestQgsGeometryChecks::testSegmentLengthCheck()
   QVariantMap configuration;
   configuration.insert( "minSegmentLength", 0.03 );
 
-  QgsGeometrySegmentLengthCheck check( testContext.first, configuration );
+  const QgsGeometrySegmentLengthCheck check( testContext.first, configuration );
   QgsFeedback feedback;
   check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
@@ -997,13 +997,13 @@ void TestQgsGeometryChecks::testSelfContactCheck()
   layers.insert( "point_layer.shp", "" );
   layers.insert( "line_layer.shp", "" );
   layers.insert( "polygon_layer.shp", "" );
-  auto testContext = createTestContext( dir, layers );
+  const auto testContext = createTestContext( dir, layers );
 
   // Test detection
   QList<QgsGeometryCheckError *> checkErrors;
   QStringList messages;
 
-  QgsGeometrySelfContactCheck check( testContext.first, QVariantMap() );
+  const QgsGeometrySelfContactCheck check( testContext.first, QVariantMap() );
   QgsFeedback feedback;
   check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
@@ -1020,7 +1020,7 @@ void TestQgsGeometryChecks::testSelfContactCheck()
   // https://github.com/qgis/QGIS/issues/28228
   // test with a linestring which collapses to an empty linestring
   QgsGeometryCheckContext context( 1, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsCoordinateTransformContext(), nullptr );
-  QgsGeometrySelfContactCheck check2( &context, QVariantMap() );
+  const QgsGeometrySelfContactCheck check2( &context, QVariantMap() );
   QgsGeometry g = QgsGeometry::fromWkt( QStringLiteral( "MultiLineString ((2988987 10262483, 2988983 10262480, 2988991 10262432, 2988990 10262419, 2988977 10262419, 2988976 10262420, 2988967 10262406, 2988970 10262421, 2988971 10262424),(2995620 10301368))" ) );
   QList<QgsSingleGeometryCheckError *> errors = check2.processGeometry( g );
   QVERIFY( errors.isEmpty() );
@@ -1044,7 +1044,7 @@ void TestQgsGeometryChecks::testSelfIntersectionCheck()
   QList<QgsGeometryCheckError *> checkErrors;
   QStringList messages;
 
-  QgsGeometrySelfIntersectionCheck check( testContext.first, QVariantMap() );
+  const QgsGeometrySelfIntersectionCheck check( testContext.first, QVariantMap() );
   QgsFeedback feedback;
   check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
@@ -1123,7 +1123,7 @@ void TestQgsGeometryChecks::testSelfIntersectionCheck()
 
   // Test change tracking
   QgsGeometryCheckErrorSingle *err = static_cast<QgsGeometryCheckErrorSingle *>( errs4[0] );
-  QgsGeometryUtils::SelfIntersection oldInter = static_cast<QgsGeometrySelfIntersectionCheckError *>( err->singleError() )->intersection();
+  const QgsGeometryUtils::SelfIntersection oldInter = static_cast<QgsGeometrySelfIntersectionCheckError *>( err->singleError() )->intersection();
   QVERIFY( err->handleChanges( change2changes( {err->layerId(), err->featureId(), QgsGeometryCheck::ChangeNode, QgsGeometryCheck::ChangeRemoved, QgsVertexId( err->vidx().part, errs4[0]->vidx().ring, 0 )} ) ) );
   QgsGeometryUtils::SelfIntersection  newInter = static_cast<QgsGeometrySelfIntersectionCheckError *>( err->singleError() )->intersection();
   QVERIFY( oldInter.segment1 == newInter.segment1 + 1 );
@@ -1143,7 +1143,7 @@ void TestQgsGeometryChecks::testSliverPolygonCheck()
   layers.insert( "point_layer.shp", "" );
   layers.insert( "line_layer.shp", "" );
   layers.insert( "polygon_layer.shp", "" );
-  auto testContext = createTestContext( dir, layers );
+  const auto testContext = createTestContext( dir, layers );
 
   // Test detection
   QList<QgsGeometryCheckError *> checkErrors;
@@ -1183,11 +1183,11 @@ void TestQgsGeometryChecks::testGapCheckPointInPoly()
   QList<QgsGeometryCheckError *> checkErrors;
   QStringList messages;
 
-  QVariantMap configuration;
+  const QVariantMap configuration;
 
   QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 2056 ) );
 
-  QgsGeometryGapCheck check( testContext.first, configuration );
+  const QgsGeometryGapCheck check( testContext.first, configuration );
   QgsFeedback feedback;
   check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
@@ -1201,11 +1201,11 @@ void TestQgsGeometryChecks::testGapCheckPointInPoly()
   // Test fixes
   QgsFeature f;
   testContext.second[layers["gap_layer_point_in_poly.shp"]]->getFeature( 1, f );
-  double areaOld = f.geometry().area();
+  const double areaOld = f.geometry().area();
   QCOMPARE( areaOld, 19913.135772452362 );
 
   QgsGeometryCheck::Changes changes;
-  QMap<QString, int> mergeAttrs;
+  const QMap<QString, int> mergeAttrs;
   error->check()->fixError( testContext.second, error, QgsGeometryGapCheck::MergeLongestEdge, mergeAttrs, changes );
 
   // Ensure it worked
@@ -1240,7 +1240,7 @@ void TestQgsGeometryChecks::testOverlapCheckToleranceBug()
 
   QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 2056 ) );
 
-  QgsGeometryOverlapCheck check( testContext.first, configuration );
+  const QgsGeometryOverlapCheck check( testContext.first, configuration );
   QgsFeedback feedback;
   check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
@@ -1252,9 +1252,9 @@ void TestQgsGeometryChecks::testOverlapCheckToleranceBug()
   // Test fixes
   QgsFeature f;
   testContext.second[layers["overlap_layer_tolerance_bug.shp"]]->getFeature( 0, f );
-  double areaOld = f.geometry().area();
-  QgsPoint pointOld_1 = f.geometry().vertexAt( 1 );
-  QgsPoint pointOld_2 = f.geometry().vertexAt( 2 );
+  const double areaOld = f.geometry().area();
+  const QgsPoint pointOld_1 = f.geometry().vertexAt( 1 );
+  const QgsPoint pointOld_2 = f.geometry().vertexAt( 2 );
 
   // Just making sure we've got the right feature/point
   QCOMPARE( areaOld, 10442.710061549426 );
@@ -1262,7 +1262,7 @@ void TestQgsGeometryChecks::testOverlapCheckToleranceBug()
   QGSCOMPARENEARPOINT( pointOld_2, QgsPoint( 2537366.84566075634211302, 1152360.28978145681321621 ), 0.00001 );
 
   QgsGeometryCheck::Changes changes;
-  QMap<QString, int> mergeAttrs;
+  const QMap<QString, int> mergeAttrs;
   error->check()->fixError( testContext.second, error, QgsGeometryOverlapCheck::Subtract, mergeAttrs, changes );
 
   // Ensure it worked
@@ -1296,14 +1296,14 @@ void TestQgsGeometryChecks::testOverlapCheckToleranceBug()
 
 double TestQgsGeometryChecks::layerToMapUnits( const QgsMapLayer *layer, const QgsCoordinateReferenceSystem &mapCrs ) const
 {
-  QgsCoordinateTransform crst = QgsCoordinateTransform( layer->crs(), mapCrs, QgsProject::instance() );
-  QgsRectangle extent = layer->extent();
-  QgsPointXY l1( extent.xMinimum(), extent.yMinimum() );
-  QgsPointXY l2( extent.xMaximum(), extent.yMaximum() );
-  double distLayerUnits = std::sqrt( l1.sqrDist( l2 ) );
-  QgsPointXY m1 = crst.transform( l1 );
-  QgsPointXY m2 = crst.transform( l2 );
-  double distMapUnits = std::sqrt( m1.sqrDist( m2 ) );
+  const QgsCoordinateTransform crst = QgsCoordinateTransform( layer->crs(), mapCrs, QgsProject::instance() );
+  const QgsRectangle extent = layer->extent();
+  const QgsPointXY l1( extent.xMinimum(), extent.yMinimum() );
+  const QgsPointXY l2( extent.xMaximum(), extent.yMaximum() );
+  const double distLayerUnits = std::sqrt( l1.sqrDist( l2 ) );
+  const QgsPointXY m1 = crst.transform( l1 );
+  const QgsPointXY m2 = crst.transform( l2 );
+  const double distMapUnits = std::sqrt( m1.sqrDist( m2 ) );
   return distMapUnits / distLayerUnits;
 }
 
@@ -1314,8 +1314,8 @@ QgsFeaturePool *TestQgsGeometryChecks::createFeaturePool( QgsVectorLayer *layer,
 
 QPair<QgsGeometryCheckContext *, QMap<QString, QgsFeaturePool *> > TestQgsGeometryChecks::createTestContext( QTemporaryDir &tempDir, QMap<QString, QString> &layers, const QgsCoordinateReferenceSystem &mapCrs, double prec ) const
 {
-  QDir testDataDir( QDir( TEST_DATA_DIR ).absoluteFilePath( "geometry_checker" ) );
-  QDir tmpDir( tempDir.path() );
+  const QDir testDataDir( QDir( TEST_DATA_DIR ).absoluteFilePath( "geometry_checker" ) );
+  const QDir tmpDir( tempDir.path() );
 
   QMap<QString, QgsFeaturePool *> featurePools;
   for ( const QString &layerFile : layers.keys() )
@@ -1323,7 +1323,7 @@ QPair<QgsGeometryCheckContext *, QMap<QString, QgsFeaturePool *> > TestQgsGeomet
     QFile( testDataDir.absoluteFilePath( layerFile ) ).copy( tmpDir.absoluteFilePath( layerFile ) );
     if ( layerFile.endsWith( ".shp", Qt::CaseInsensitive ) )
     {
-      QString baseName = QFileInfo( layerFile ).baseName();
+      const QString baseName = QFileInfo( layerFile ).baseName();
       QFile( testDataDir.absoluteFilePath( baseName + ".dbf" ) ).copy( tmpDir.absoluteFilePath( baseName + ".dbf" ) );
       QFile( testDataDir.absoluteFilePath( baseName + ".pri" ) ).copy( tmpDir.absoluteFilePath( baseName + ".pri" ) );
       QFile( testDataDir.absoluteFilePath( baseName + ".qpj" ) ).copy( tmpDir.absoluteFilePath( baseName + ".qpj" ) );
@@ -1351,14 +1351,26 @@ void TestQgsGeometryChecks::cleanupTestContext( QPair<QgsGeometryCheckContext *,
 
 void TestQgsGeometryChecks::listErrors( const QList<QgsGeometryCheckError *> &checkErrors, const QStringList &messages ) const
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
   QTextStream( stdout ) << " - Check result:" << endl;
+#else
+  QTextStream( stdout ) << " - Check result:" << Qt::endl;
+#endif
   for ( const QgsGeometryCheckError *error : checkErrors )
   {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     QTextStream( stdout ) << "   * " << error->layerId() << ":" << error->featureId() << " @[" << error->vidx().part << ", " << error->vidx().ring << ", " << error->vidx().vertex << "](" << error->location().x() << ", " << error->location().y() << ") = " << error->value().toString() << endl;
+#else
+    QTextStream( stdout ) << "   * " << error->layerId() << ":" << error->featureId() << " @[" << error->vidx().part << ", " << error->vidx().ring << ", " << error->vidx().vertex << "](" << error->location().x() << ", " << error->location().y() << ") = " << error->value().toString() << Qt::endl;
+#endif
   }
   if ( !messages.isEmpty() )
   {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     QTextStream( stdout ) << " - Check messages:" << endl << "   * " << messages.join( "\n   * " ) << endl;
+#else
+    QTextStream( stdout ) << " - Check messages:" << Qt::endl << "   * " << messages.join( "\n   * " ) << Qt::endl;
+#endif
   }
 }
 
@@ -1404,16 +1416,24 @@ QList<QgsGeometryCheckError *> TestQgsGeometryChecks::searchCheckErrors( const Q
 
 bool TestQgsGeometryChecks::fixCheckError( QMap<QString, QgsFeaturePool *> featurePools, QgsGeometryCheckError *error, int method, const QgsGeometryCheckError::Status &expectedStatus, const QVector<Change> &expectedChanges, const QMap<QString, int> &mergeAttrs )
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
   QTextStream( stdout ) << " - Fixing " << error->layerId() << ":" << error->featureId() << " @[" << error->vidx().part << ", " << error->vidx().ring << ", " << error->vidx().vertex << "](" << error->location().x() << ", " << error->location().y() << ") = " << error->value().toString() << endl;
+#else
+  QTextStream( stdout ) << " - Fixing " << error->layerId() << ":" << error->featureId() << " @[" << error->vidx().part << ", " << error->vidx().ring << ", " << error->vidx().vertex << "](" << error->location().x() << ", " << error->location().y() << ") = " << error->value().toString() << Qt::endl;
+#endif
   QgsGeometryCheck::Changes changes;
   error->check()->fixError( featurePools, error, method, mergeAttrs, changes );
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
   QTextStream( stdout ) << "   * Fix status: " << error->status() << endl;
+#else
+  QTextStream( stdout ) << "   * Fix status: " << error->status() << Qt::endl;
+#endif
   if ( error->status() != expectedStatus )
   {
     return false;
   }
-  QString strChangeWhat[] = { "ChangeFeature", "ChangePart", "ChangeRing", "ChangeNode" };
-  QString strChangeType[] = { "ChangeAdded", "ChangeRemoved", "ChangeChanged" };
+  const QString strChangeWhat[] = { "ChangeFeature", "ChangePart", "ChangeRing", "ChangeNode" };
+  const QString strChangeType[] = { "ChangeAdded", "ChangeRemoved", "ChangeChanged" };
   int totChanges = 0;
   for ( const QString &layerId : changes.keys() )
   {
@@ -1421,12 +1441,20 @@ bool TestQgsGeometryChecks::fixCheckError( QMap<QString, QgsFeaturePool *> featu
     {
       for ( const QgsGeometryCheck::Change &change : changes[layerId][fid] )
       {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
         QTextStream( stdout ) << "   * Change: " << layerId << ":" << fid << " :: " << strChangeWhat[change.what] << ", " << strChangeType[change.type] << ", " << change.vidx.part << ":" << change.vidx.ring << ":" << change.vidx.vertex << endl;
+#else
+        QTextStream( stdout ) << "   * Change: " << layerId << ":" << fid << " :: " << strChangeWhat[change.what] << ", " << strChangeType[change.type] << ", " << change.vidx.part << ":" << change.vidx.ring << ":" << change.vidx.vertex << Qt::endl;
+#endif
       }
       totChanges += changes[layerId][fid].size();
     }
   }
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
   QTextStream( stdout ) << "   * Num changes: " << totChanges << ", expected num changes: " << expectedChanges.size() << endl;
+#else
+  QTextStream( stdout ) << "   * Num changes: " << totChanges << ", expected num changes: " << expectedChanges.size() << Qt::endl;
+#endif
   if ( expectedChanges.size() != totChanges )
   {
     return false;
@@ -1441,7 +1469,7 @@ bool TestQgsGeometryChecks::fixCheckError( QMap<QString, QgsFeaturePool *> featu
     {
       return false;
     }
-    QgsGeometryCheck::Change change( expectedChange.what, expectedChange.type, expectedChange.vidx );
+    const QgsGeometryCheck::Change change( expectedChange.what, expectedChange.type, expectedChange.vidx );
     if ( !changes[expectedChange.layerId][expectedChange.fid].contains( change ) )
     {
       return false;

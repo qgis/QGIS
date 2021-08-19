@@ -71,15 +71,15 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      *   pt.asWkt() # Point(43.4 5.3)
      *
      *   pt_z = QgsPoint(120, 343, 77)
-     *   pt.asWkt() # PointZ(120 343 77)
+     *   pt_z.asWkt() # PointZ(120 343 77)
      *
      *   pt_m = QgsPoint(33, 88, m=5)
      *   pt_m.m() # 5
-     *   pt_m.wkbType() # QgsWkbTypes.PointM
+     *   pt_m.wkbType() # 2001 (QgsWkbTypes.PointM)
      *
      *   pt = QgsPoint(30, 40, wkbType=QgsWkbTypes.PointZ)
      *   pt.z() # nan
-     *   pt.wkbType() # QgsWkbTypes.PointZ
+     *   pt.wkbType() # 1001 (QgsWkbTypes.PointZ)
      * \endcode
      */
 #ifndef SIP_RUN
@@ -449,8 +449,8 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      *   pr = p.project ( 1, 0, 90 )
      *   # pr is a 2D point: 'Point (1 3)'
      *   pr = p.project (1, 0, 0 )
-     *   # pr is a 3D point: 'PointZ (1 2 1)'
-     *   p = QgsPoint( QgsWkbTypes.PointZ, 1, 2, 2 ) # 3D point
+     *   # pr is a 3D point: 'PointZ (1 2 nan)'
+     *   p = QgsPoint( 1, 2, 2, wkbType=QgsWkbTypes.PointZ ) # 3D point
      *   pr = p.project ( 1, 0 )
      *   # pr is a 3D point: 'PointZ (1 3 2)'
      *   pr = p.project ( 1, 0, 90 )
@@ -519,7 +519,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     int nCoordinates() const override SIP_HOLDGIL;
     int vertexNumberFromVertexId( QgsVertexId id ) const override;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
-    bool isValid( QString &error SIP_OUT, int flags = 0 ) const override SIP_HOLDGIL;
+    bool isValid( QString &error SIP_OUT, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const override SIP_HOLDGIL;
 
     //low-level editing
     bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;

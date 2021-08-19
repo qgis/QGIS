@@ -430,18 +430,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     }
   }
 
-  if ( srs.isValid() )
-  {
-    QString srsWkt = srs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL );
-    QgsDebugMsgLevel( "WKT to save as is " + srsWkt, 2 );
-    mOgrRef = OSRNewSpatialReference( srsWkt.toLocal8Bit().constData() );
-#if GDAL_VERSION_MAJOR >= 3
-    if ( mOgrRef )
-    {
-      OSRSetAxisMappingStrategy( mOgrRef, OAMS_TRADITIONAL_GIS_ORDER );
-    }
-#endif
-  }
+  mOgrRef = QgsOgrUtils::crsToOGRSpatialReference( srs );
 
   // datasource created, now create the output layer
   OGRwkbGeometryType wkbType = ogrTypeFromWkbType( geometryType );
@@ -2897,7 +2886,7 @@ QgsVectorFileWriter::~QgsVectorFileWriter()
 
   if ( mOgrRef )
   {
-    OSRDestroySpatialReference( mOgrRef );
+    OSRRelease( mOgrRef );
   }
 }
 
@@ -3752,10 +3741,11 @@ QString QgsVectorFileWriter::convertCodecNameForEncodingOption( const QString &c
   if ( codecName == QLatin1String( "System" ) )
     return QStringLiteral( "LDID/0" );
 
-  QRegExp re = QRegExp( QString( "(CP|windows-|ISO[ -])(.+)" ), Qt::CaseInsensitive );
-  if ( re.exactMatch( codecName ) )
+  const QRegularExpression re( QRegularExpression::anchoredPattern( QString( "(CP|windows-|ISO[ -])(.+)" ) ), QRegularExpression::CaseInsensitiveOption );
+  const QRegularExpressionMatch match = re.match( codecName );
+  if ( match.hasMatch() )
   {
-    QString c = re.cap( 2 ).remove( '-' );
+    QString c = match.captured( 2 ).remove( '-' );
     bool isNumber;
     ( void ) c.toInt( &isNumber );
     if ( isNumber )

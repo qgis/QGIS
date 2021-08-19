@@ -20,6 +20,7 @@
 #include <QString>
 #include <QDir>
 #include <QLibrary>
+#include <QRegularExpression>
 
 #include "qgslogger.h"
 #include "qgsgdalguiprovider.h"
@@ -49,7 +50,7 @@ static
 QgsProviderGuiMetadata *findMetadata_( QgsProviderGuiRegistry::GuiProviders const &metaData,
                                        QString const &providerKey )
 {
-  QgsProviderGuiRegistry::GuiProviders::const_iterator i = metaData.find( providerKey );
+  const QgsProviderGuiRegistry::GuiProviders::const_iterator i = metaData.find( providerKey );
   if ( i != metaData.end() )
   {
     return i->second;
@@ -126,8 +127,8 @@ void QgsProviderGuiRegistry::loadDynamicProviders( const QString &pluginPath )
   }
 
   // provider file regex pattern, only files matching the pattern are loaded if the variable is defined
-  QString filePattern = getenv( "QGIS_PROVIDER_FILE" );
-  QRegExp fileRegexp;
+  const QString filePattern = getenv( "QGIS_PROVIDER_FILE" );
+  QRegularExpression fileRegexp;
   if ( !filePattern.isEmpty() )
   {
     fileRegexp.setPattern( filePattern );
@@ -136,9 +137,10 @@ void QgsProviderGuiRegistry::loadDynamicProviders( const QString &pluginPath )
   const auto constEntryInfoList = mLibraryDirectory.entryInfoList();
   for ( const QFileInfo &fi : constEntryInfoList )
   {
-    if ( !fileRegexp.isEmpty() )
+    if ( !fileRegexp.pattern().isEmpty() )
     {
-      if ( fileRegexp.indexIn( fi.fileName() ) == -1 )
+      const QRegularExpressionMatch fileNameMatch = fileRegexp.match( fi.fileName() );
+      if ( !fileNameMatch.hasMatch() )
       {
         QgsDebugMsg( "provider " + fi.fileName() + " skipped because doesn't match pattern " + filePattern );
         continue;

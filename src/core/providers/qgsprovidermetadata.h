@@ -85,11 +85,32 @@ class CORE_EXPORT QgsMeshDriverMetadata
      * \param description short description of the driver
      * \param capabilities driver's capabilities
      * \param writeDatasetOnFileSuffix suffix used to write datasets on file
+     *
+     * \deprecated QGIS 3.22
+     */
+    Q_DECL_DEPRECATED QgsMeshDriverMetadata( const QString &name,
+        const QString &description,
+        const MeshDriverCapabilities &capabilities,
+        const QString &writeDatasetOnFileSuffix ) SIP_DEPRECATED;
+
+    /**
+     * Constructs driver metadata with selected capabilities
+     *
+     * \param name name/key of the driver
+     * \param description short description of the driver
+     * \param capabilities driver's capabilities
+     * \param writeDatasetOnFileSuffix suffix used to write datasets on file
+     * \param writeMeshFrameOnFileSuffix suffix used to write mesh frame on file
+     * \param maxVerticesPerface maximum vertices count per face supported by the driver
+     *
+     * \since QGIS 3.22
      */
     QgsMeshDriverMetadata( const QString &name,
                            const QString &description,
                            const MeshDriverCapabilities &capabilities,
-                           const QString &writeDatasetOnFileSuffix );
+                           const QString &writeDatasetOnFileSuffix,
+                           const QString &writeMeshFrameOnFileSuffix,
+                           int maxVerticesPerface );
 
     /**
      * Returns the capabilities for this driver.
@@ -111,11 +132,27 @@ class CORE_EXPORT QgsMeshDriverMetadata
      */
     QString writeDatasetOnFileSuffix() const;
 
+    /**
+     * Returns the suffix used to write mesh on file
+     *
+     * \since QGIS 3.22
+     */
+    QString writeMeshFrameOnFileSuffix() const;
+
+    /**
+     * Returns the maximum number of vertices per face supported by the driver
+     *
+     * \since QGIS 3.22
+     */
+    int maximumVerticesCountPerFace() const;
+
   private:
     QString mName;
     QString mDescription;
     MeshDriverCapabilities mCapabilities;
     QString mWriteDatasetOnFileSuffix;
+    QString mWriteMeshFrameOnFileSuffix;
+    int mMaxVerticesPerFace = -1;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMeshDriverMetadata::MeshDriverCapabilities )
@@ -152,6 +189,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     {
       PriorityForUri = 1 << 0, //!< Indicates that the metadata can calculate a priority for a URI
       LayerTypesForUri = 1 << 1, //!< Indicates that the metadata can determine valid layer types for a URI
+      QuerySublayers = 1 << 2, //!< Indicates that the metadata can query sublayers for a URI (since QGIS 3.22)
     };
     Q_DECLARE_FLAGS( ProviderMetadataCapabilities, ProviderMetadataCapability )
 
@@ -327,6 +365,29 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     virtual bool uriIsBlocklisted( const QString &uri ) const;
 
     /**
+     * Given a \a uri, returns any sidecar files which are associated with the URI and this
+     * provider.
+     *
+     * In this context a sidecar file is defined as a file which shares the same base filename
+     * as a dataset, but which differs in file extension. It defines the list of additional
+     * files which must be renamed or deleted alongside the main file associated with the
+     * dataset in order to completely rename/delete the dataset.
+     *
+     * For instance, the OGR provider would return the corresponding .dbf, .idx, etc files for a
+     * uri pointing at a .shp file.
+     *
+     * Implementations should files any files which MAY exist for the URI, and it is up to the caller
+     * to filter these to only existing files if required.
+     *
+     * \note Some file formats consist of a set of static file names, such as ESRI aigrid datasets
+     * which consist of a folder with files with the names "hdr.adf", "prj.adf", etc. These statically
+     * named files are NOT considered as sidecar files.
+     *
+     * \since QGIS 3.22
+     */
+    virtual QStringList sidecarFilesForUri( const QString &uri ) const;
+
+    /**
      * Queries the specified \a uri and returns a list of any valid sublayers found in the dataset which can be handled by this provider.
      *
      * The optional \a flags argument can be used to control the behavior of the query.
@@ -405,13 +466,22 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
       const QStringList &createOptions = QStringList() ) SIP_FACTORY;
 
     /**
-     * Creates mesh data source, that is the mesh frame stored in file, memory or with other way (depending of the provider)
+     * Creates mesh data source from a file name \a fileName and a driver \a driverName, that is the mesh frame stored in file, memory or with other way (depending of the provider)
      * \since QGIS 3.16
      */
     virtual bool createMeshData(
       const QgsMesh &mesh,
-      const QString uri,
+      const QString &fileName,
       const QString &driverName,
+      const QgsCoordinateReferenceSystem &crs ) const;
+
+    /**
+     * Creates mesh data source from an \a uri, that is the mesh frame stored in file, memory or with other way (depending of the provider)
+     * \since QGIS 3.22
+     */
+    virtual bool createMeshData(
+      const QgsMesh &mesh,
+      const QString &uri,
       const QgsCoordinateReferenceSystem &crs ) const;
 
     /**

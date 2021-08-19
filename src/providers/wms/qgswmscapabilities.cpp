@@ -184,7 +184,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     for ( const QString &opacity : opacities )
     {
       bool ok = false;
-      opacity.toInt( &ok );
+      ( void )opacity.toInt( &ok );
       if ( ok )
       {
         mOpacities.append( opacity );

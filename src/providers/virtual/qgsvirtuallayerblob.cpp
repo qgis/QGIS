@@ -69,7 +69,7 @@ void qgsGeometryToSpatialiteBlob( const QgsGeometry &geom, int32_t srid, char *&
 
   // we segment the geometry as spatialite doesn't support curves
   std::unique_ptr < QgsAbstractGeometry > segmentized( geom.constGet()->segmentize() );
-  QByteArray wkb( segmentized->asWkb() );
+  const QByteArray wkb( segmentized->asWkb() );
 
   const int wkb_size = wkb.length();
   size = header_len + wkb_size;
@@ -79,7 +79,7 @@ void qgsGeometryToSpatialiteBlob( const QgsGeometry &geom, int32_t srid, char *&
 
   // write the header
   SpatialiteBlobHeader pHeader;
-  QgsRectangle bbox = const_cast<QgsGeometry &>( geom ).boundingBox(); // boundingBox should be const
+  const QgsRectangle bbox = const_cast<QgsGeometry &>( geom ).boundingBox(); // boundingBox should be const
   pHeader.srid = srid;
   pHeader.mbrMinX = bbox.xMinimum();
   pHeader.mbrMinY = bbox.yMinimum();
@@ -118,7 +118,7 @@ QgsRectangle spatialiteBlobBbox( const char *blob, size_t size )
 
 void copySpatialiteSingleWkbToQgsGeometry( QgsWkbTypes::Type type, const char *iwkb, char *owkb, uint32_t &osize )
 {
-  int n_dims = QgsWkbTypes::coordDimensions( type );
+  const int n_dims = QgsWkbTypes::coordDimensions( type );
   switch ( QgsWkbTypes::flatType( type ) )
   {
     case QgsWkbTypes::Point:
@@ -129,7 +129,7 @@ void copySpatialiteSingleWkbToQgsGeometry( QgsWkbTypes::Type type, const char *i
       break;
     case QgsWkbTypes::LineString:
     {
-      uint32_t n_points = *( reinterpret_cast<const uint32_t *>( iwkb ) );
+      const uint32_t n_points = *( reinterpret_cast<const uint32_t *>( iwkb ) );
       memcpy( owkb, iwkb, 4 );
       iwkb += 4;
       owkb += 4;
@@ -144,14 +144,14 @@ void copySpatialiteSingleWkbToQgsGeometry( QgsWkbTypes::Type type, const char *i
     }
     case QgsWkbTypes::Polygon:
     {
-      uint32_t n_rings = *( reinterpret_cast<const uint32_t *>( iwkb ) );
+      const uint32_t n_rings = *( reinterpret_cast<const uint32_t *>( iwkb ) );
       memcpy( owkb, iwkb, 4 );
       iwkb += 4;
       owkb += 4;
       osize = 4;
       for ( uint32_t i = 0; i < n_rings; i++ )
       {
-        uint32_t n_points = *( reinterpret_cast<const uint32_t *>( iwkb ) );
+        const uint32_t n_points = *( reinterpret_cast<const uint32_t *>( iwkb ) );
         memcpy( owkb, iwkb, 4 );
         iwkb += 4;
         owkb += 4;
@@ -184,12 +184,12 @@ void copySpatialiteCollectionWkbToQgsGeometry( const char *iwkb, char *owkb, uin
   // replace 0x69 by the endianness
   owkb[0] = endianness;
 
-  QgsWkbTypes::Type type = static_cast<QgsWkbTypes::Type>( *( reinterpret_cast<const uint32_t *>( iwkb + 1 ) ) );
+  const QgsWkbTypes::Type type = static_cast<QgsWkbTypes::Type>( *( reinterpret_cast<const uint32_t *>( iwkb + 1 ) ) );
 
   if ( QgsWkbTypes::isMultiType( type ) )
   {
     // multi type
-    uint32_t n_elements = *( reinterpret_cast<const  uint32_t * >( iwkb + 5 ) );
+    const uint32_t n_elements = *( reinterpret_cast<const  uint32_t * >( iwkb + 5 ) );
     memcpy( owkb + 5, iwkb + 5, 4 );
     uint32_t p = 0;
     for ( uint32_t i = 0; i < n_elements; i++ )
@@ -229,8 +229,8 @@ QPair<QgsWkbTypes::Type, long> spatialiteBlobGeometryType( const char *blob, siz
     return qMakePair( QgsWkbTypes::NoGeometry, long( 0 ) );
   }
 
-  uint32_t srid = *( reinterpret_cast< const uint32_t * >( blob + 2 ) );
-  uint32_t type = *( reinterpret_cast< const uint32_t * >( blob + SpatialiteBlobHeader::LENGTH ) );
+  const uint32_t srid = *( reinterpret_cast< const uint32_t * >( blob + 2 ) );
+  const uint32_t type = *( reinterpret_cast< const uint32_t * >( blob + SpatialiteBlobHeader::LENGTH ) );
 
   return qMakePair( static_cast<QgsWkbTypes::Type>( type ), long( srid ) );
 }

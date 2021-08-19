@@ -123,7 +123,7 @@ void QgsInterpolatedLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer
 
   mLayer = static_cast<QgsInterpolatedLineSymbolLayer *>( layer );
 
-  QgsInterpolatedLineWidth interpolatedWidth = mLayer->interpolatedWidth();
+  const QgsInterpolatedLineWidth interpolatedWidth = mLayer->interpolatedWidth();
   whileBlocking( mWidthMethodComboBox )->setCurrentIndex( mWidthMethodComboBox->findData( interpolatedWidth.isVariableWidth() ) );
 
   whileBlocking( mDoubleSpinBoxWidth )->setValue( interpolatedWidth.fixedStrokeWidth() );
@@ -138,7 +138,7 @@ void QgsInterpolatedLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer
   whileBlocking( mCheckBoxAbsoluteValue )->setChecked( interpolatedWidth.useAbsoluteValue() );
   whileBlocking( mCheckBoxOutOfrange )->setChecked( interpolatedLineWidth().ignoreOutOfRange() );
 
-  QgsInterpolatedLineColor interpolatedColor = mLayer->interpolatedColor();
+  const QgsInterpolatedLineColor interpolatedColor = mLayer->interpolatedColor();
   whileBlocking( mColorMethodComboBox )->setCurrentIndex( mColorMethodComboBox->findData( interpolatedColor.coloringMethod() ) );
 
   whileBlocking( mColorStartFieldExpression )->setExpression( mLayer->startValueExpressionForWidth() );
@@ -300,8 +300,8 @@ void QgsInterpolatedLineSymbolLayerWidget::reloadMinMaxColorFromLayer()
   while ( it.nextFeature( feat ) )
   {
     expressionContext.setFeature( feat );
-    double startValue = expressionStart.evaluate( &expressionContext ).toDouble();
-    double endValue = expressionEnd.evaluate( &expressionContext ).toDouble();
+    const double startValue = expressionStart.evaluate( &expressionContext ).toDouble();
+    const double endValue = expressionEnd.evaluate( &expressionContext ).toDouble();
 
     if ( startValue < mMinimumForColorFromLayer )
       mMinimumForColorFromLayer = startValue;
@@ -335,16 +335,16 @@ void QgsInterpolatedLineSymbolLayerWidget::reloadMinMaxColorFromLayer()
 
 void QgsInterpolatedLineSymbolLayerWidget::onColorMinMaxLineTextChanged()
 {
-  double min = lineEditValue( mLineEditColorMinValue );
-  double max = lineEditValue( mLineEditColorMaxValue );
+  const double min = lineEditValue( mLineEditColorMinValue );
+  const double max = lineEditValue( mLineEditColorMaxValue );
   whileBlocking( mColorRampShaderWidget )->setMinimumMaximum( min, max );
   apply();
 }
 
 void QgsInterpolatedLineSymbolLayerWidget::onColorMinMaxLineTextEdited()
 {
-  double min = lineEditValue( mLineEditColorMinValue );
-  double max = lineEditValue( mLineEditColorMaxValue );
+  const double min = lineEditValue( mLineEditColorMinValue );
+  const double max = lineEditValue( mLineEditColorMaxValue );
   whileBlocking( mColorRampShaderWidget )->setMinimumMaximumAndClassify( min, max );
   apply();
 }
@@ -368,7 +368,7 @@ QgsInterpolatedLineColor QgsInterpolatedLineSymbolLayerWidget::interpolatedLineC
 {
   QgsInterpolatedLineColor interColor;
   interColor.setColor( mColorButton->color() );
-  QgsColorRampShader colorRampShader = mColorRampShaderWidget->shader();
+  const QgsColorRampShader colorRampShader = mColorRampShaderWidget->shader();
   interColor.setColor( colorRampShader );
   interColor.setColoringMethod( static_cast<QgsInterpolatedLineColor::ColoringMethod>( mColorMethodComboBox->currentData().toInt() ) );
 
@@ -389,6 +389,6 @@ void QgsInterpolatedLineSymbolLayerWidget::setLineEditValue( QLineEdit *lineEdit
 {
   QString strValue;
   if ( !std::isnan( value ) )
-    strValue = QString::number( value );
+    strValue = QLocale().toString( value );
   whileBlocking( lineEdit )->setText( strValue );
 }

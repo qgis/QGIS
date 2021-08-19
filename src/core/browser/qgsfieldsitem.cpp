@@ -148,6 +148,20 @@ QgsFieldItem::QgsFieldItem( QgsDataItem *parent, const QgsField &field )
   // Precondition
   Q_ASSERT( static_cast<QgsFieldsItem *>( parent ) );
   setState( Qgis::BrowserItemState::Populated );
+  const auto constraints { field.constraints().constraints() };
+  QStringList constraintsText;
+  if ( constraints.testFlag( QgsFieldConstraints::Constraint::ConstraintNotNull ) )
+  {
+    constraintsText.push_back( tr( "NOT NULL" ) );
+  }
+  if ( constraints.testFlag( QgsFieldConstraints::Constraint::ConstraintUnique ) )
+  {
+    constraintsText.push_back( tr( "UNIQUE" ) );
+  }
+  if ( ! constraintsText.isEmpty() )
+  {
+    setToolTip( QStringLiteral( "<ul><li>%1</li></ul>" ).arg( constraintsText.join( QStringLiteral( "</li><li>" ) ) ) );
+  }
 }
 
 QgsFieldItem::~QgsFieldItem()
@@ -176,6 +190,7 @@ QIcon QgsFieldItem::icon()
       case QgsWkbTypes::GeometryType::PolygonGeometry:
         return QgsIconUtils::iconPolygon();
       case QgsWkbTypes::GeometryType::UnknownGeometry:
+        return QgsIconUtils::iconGeometryCollection();
       case QgsWkbTypes::GeometryType::NullGeometry:
         return QgsIconUtils::iconDefaultLayer();
     }
@@ -188,5 +203,4 @@ QIcon QgsFieldItem::icon()
   }
   return icon;
 }
-
 

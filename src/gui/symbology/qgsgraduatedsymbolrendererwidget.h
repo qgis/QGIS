@@ -24,6 +24,7 @@
 #include "qgsrendererwidget.h"
 #include "qgsproxystyle.h"
 #include "qgsprocessingwidgetwrapper.h"
+#include "qgsdoublevalidator.h"
 
 #include "ui_qgsgraduatedsymbolrendererwidget.h"
 
@@ -197,7 +198,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
 
     QgsRangeList mCopyBuffer;
 
-    QDoubleValidator *mSymmetryPointValidator = nullptr;
+    QgsDoubleValidator *mSymmetryPointValidator = nullptr;
     QAction *mActionLevels = nullptr;
     std::vector< std::unique_ptr< QgsAbstractProcessingParameterWidgetWrapper >> mParameterWidgetWrappers;
 };

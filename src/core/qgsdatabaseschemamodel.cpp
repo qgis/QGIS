@@ -132,7 +132,7 @@ void QgsDatabaseSchemaModel::refresh()
   {
     if ( !newSchemas.contains( oldSchema ) )
     {
-      int r = mSchemas.indexOf( oldSchema ) ;
+      const int r = mSchemas.indexOf( oldSchema ) ;
       beginRemoveRows( QModelIndex(), r + ( mAllowEmpty ? 1 : 0 ), r + ( mAllowEmpty ? 1 : 0 ) );
       mSchemas.removeAt( r );
       endRemoveRows();

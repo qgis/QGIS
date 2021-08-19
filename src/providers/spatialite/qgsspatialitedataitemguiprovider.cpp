@@ -36,18 +36,18 @@ void QgsSpatiaLiteDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
 {
   if ( QgsSLRootItem *rootItem = qobject_cast< QgsSLRootItem * >( item ) )
   {
-    QAction *actionNew = new QAction( tr( "New Connection…" ), this );
+    QAction *actionNew = new QAction( tr( "New Connection…" ), menu );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
     menu->addAction( actionNew );
 
-    QAction *actionCreateDatabase = new QAction( tr( "Create Database…" ), this );
+    QAction *actionCreateDatabase = new QAction( tr( "Create Database…" ), menu );
     connect( actionCreateDatabase, &QAction::triggered, this, [rootItem] { createDatabase( rootItem ); } );
     menu->addAction( actionCreateDatabase );
   }
 
   if ( QgsSLConnectionItem *connItem = qobject_cast< QgsSLConnectionItem * >( item ) )
   {
-    QAction *actionDelete = new QAction( tr( "Delete" ), this );
+    QAction *actionDelete = new QAction( tr( "Delete" ), menu );
     connect( actionDelete, &QAction::triggered, this, [connItem] { deleteConnection( connItem ); } );
     menu->addAction( actionDelete );
   }
@@ -62,7 +62,7 @@ bool QgsSpatiaLiteDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataI
                                 QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
       return false;
 
-    QgsDataSourceUri uri( layerItem->uri() );
+    const QgsDataSourceUri uri( layerItem->uri() );
     QString errCause;
     if ( !SpatiaLiteUtils::deleteLayer( uri.database(), uri.table(), errCause ) )
     {
@@ -107,12 +107,12 @@ void QgsSpatiaLiteDataItemGuiProvider::newConnection( QgsDataItem *item )
 
 void QgsSpatiaLiteDataItemGuiProvider::createDatabase( QgsDataItem *item )
 {
-  QgsSettings settings;
-  QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSpatiaLiteDir" ), QDir::homePath() ).toString();
+  const QgsSettings settings;
+  const QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSpatiaLiteDir" ), QDir::homePath() ).toString();
 
-  QString filename = QFileDialog::getSaveFileName( nullptr, tr( "New SpatiaLite Database File" ),
-                     lastUsedDir,
-                     tr( "SpatiaLite" ) + " (*.sqlite *.db *.sqlite3 *.db3 *.s3db)" );
+  const QString filename = QFileDialog::getSaveFileName( nullptr, tr( "New SpatiaLite Database File" ),
+                           lastUsedDir,
+                           tr( "SpatiaLite" ) + " (*.sqlite *.db *.sqlite3 *.db3 *.s3db)" );
   if ( filename.isEmpty() )
     return;
 
@@ -158,7 +158,7 @@ bool QgsSpatiaLiteDataItemGuiProvider::handleDropConnectionItem( QgsSLConnection
   QStringList importResults;
   bool hasError = false;
 
-  QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
+  const QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
   const auto constLst = lst;
   for ( const QgsMimeDataUtils::Uri &u : constLst )
   {

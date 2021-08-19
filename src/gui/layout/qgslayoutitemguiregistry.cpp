@@ -72,7 +72,7 @@ bool QgsLayoutItemGuiRegistry::addLayoutItemGuiMetadata( QgsLayoutItemAbstractGu
   if ( !metadata )
     return false;
 
-  int id = mMetadata.count();
+  const int id = mMetadata.count();
   mMetadata[id] = metadata;
   emit typeAdded( id );
   return true;
@@ -101,7 +101,7 @@ QgsLayoutItem *QgsLayoutItemGuiRegistry::createItem( int metadataId, QgsLayout *
   if ( item )
     return item.release();
 
-  int type = mMetadata.value( metadataId )->type();
+  const int type = mMetadata.value( metadataId )->type();
   return QgsApplication::layoutItemRegistry()->createItem( type, layout );
 }
 

@@ -47,7 +47,7 @@ QgsAppScreenShots::QgsAppScreenShots( const QString &saveDirectory )
   layerDef = QStringLiteral( "Polygon?crs=epsg:2056&field=pk:integer&field=my_text:string&field=my_integer:integer&field=height:double&key=pk" );
   mPolygonLayer = new QgsVectorLayer( layerDef, QStringLiteral( "Polygon Layer" ), QStringLiteral( "memory" ), options );
 
-  QString dataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString dataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mRasterLayer = new QgsRasterLayer( dataPath + "/raster/with_color_table.tif", QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
   Q_ASSERT( mRasterLayer->isValid() );
 
@@ -88,11 +88,11 @@ QPixmap QgsAppScreenShots::takeScreenshot( QWidget *widget, GrabMode mode, QRect
   }
   if ( !widget || mode != GrabWidget )
   {
-    WId wid = widget ? widget->winId() : 0;
+    const WId wid = widget ? widget->winId() : 0;
     pixmap = scr->grabWindow( wid );
     if ( !geom.isEmpty() )
     {
-      qreal dpr = scr->devicePixelRatio();
+      const qreal dpr = scr->devicePixelRatio();
       pixmap = pixmap.copy( static_cast<int>( geom.x() * dpr ),
                             static_cast<int>( geom.y() * dpr ),
                             static_cast<int>( geom.width() * dpr ),
@@ -104,7 +104,7 @@ QPixmap QgsAppScreenShots::takeScreenshot( QWidget *widget, GrabMode mode, QRect
 
   if ( !crop.isNull() )
   {
-    qreal dpr = scr->devicePixelRatio();
+    const qreal dpr = scr->devicePixelRatio();
     if ( crop.height() == 0 )
       crop.setHeight( static_cast<int>( pixmap.height() / dpr ) );
     if ( crop.width() == 0 )
@@ -113,7 +113,7 @@ QPixmap QgsAppScreenShots::takeScreenshot( QWidget *widget, GrabMode mode, QRect
 
   if ( !crop.isEmpty() )
   {
-    qreal dpr = scr->devicePixelRatio();
+    const qreal dpr = scr->devicePixelRatio();
     crop = QRect( static_cast<int>( crop.x() * dpr ),
                   static_cast<int>( crop.y() * dpr ),
                   static_cast<int>( crop.width() * dpr ),
@@ -235,7 +235,7 @@ void QgsAppScreenShots::setGradientSize( int size )
 
 void QgsAppScreenShots::takeVectorLayerProperties()
 {
-  QString folder = QStringLiteral( "working_with_vector/img/auto_generated/vector_layer_properties" );
+  const QString folder = QStringLiteral( "working_with_vector/img/auto_generated/vector_layer_properties" );
   QgsVectorLayerProperties *dlg = new QgsVectorLayerProperties( QgisApp::instance()->mapCanvas(), QgisApp::instance()->visibleMessageBar(), mLineLayer, QgisApp::instance() );
   dlg->show();
   dlg->mJoinTreeWidget->expandAll(); // expand join tree
@@ -272,13 +272,13 @@ void QgsAppScreenShots::takeVectorLayerProperties()
 
 void QgsAppScreenShots::takeVectorLayerProperties25DSymbol()
 {
-  QString folder = QStringLiteral( "working_with_vector/img/auto_generated/vector_layer_properties/" );
+  const QString folder = QStringLiteral( "working_with_vector/img/auto_generated/vector_layer_properties/" );
   QgsVectorLayerProperties *dlg = new QgsVectorLayerProperties( QgisApp::instance()->mapCanvas(), QgisApp::instance()->visibleMessageBar(), mPolygonLayer, QgisApp::instance() );
   dlg->show();
   dlg->mOptionsListWidget->setCurrentRow( 2 );
   Q_ASSERT( dlg->mOptionsListWidget->currentItem()->icon().pixmap( 24, 24 ).toImage()
             == QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/symbology.svg" ) ).pixmap( 24, 24 ).toImage() );
-  int idx = dlg->mRendererDialog->cboRenderers->findData( QLatin1String( "25dRenderer" ) );
+  const int idx = dlg->mRendererDialog->cboRenderers->findData( QLatin1String( "25dRenderer" ) );
   Q_ASSERT( idx >= 0 );
   dlg->mRendererDialog->cboRenderers->setCurrentIndex( idx );
   QCoreApplication::processEvents();
@@ -288,7 +288,7 @@ void QgsAppScreenShots::takeVectorLayerProperties25DSymbol()
   QCoreApplication::processEvents();
   dlg->adjustSize();
   QCoreApplication::processEvents();
-  int cropHeight = w->mAdvancedConfigurationBox->mapTo( dlg, w->mAdvancedConfigurationBox->frameGeometry().bottomLeft() ).y();
+  const int cropHeight = w->mAdvancedConfigurationBox->mapTo( dlg, w->mAdvancedConfigurationBox->frameGeometry().bottomLeft() ).y();
   QPixmap pixmap = takeScreenshot( dlg, GrabWidgetAndFrame, QRect( 0, 0, 0, cropHeight ), true );
   saveScreenshot( pixmap, QStringLiteral( "25dsymbol" ), folder );
 
@@ -301,25 +301,26 @@ void QgsAppScreenShots::takeVectorLayerProperties25DSymbol()
 
 void QgsAppScreenShots::takeGlobalOptions()
 {
-  QString folder = QStringLiteral( "introduction/img/auto_generated/global_options/" );
+  const QString folder = QStringLiteral( "introduction/img/auto_generated/global_options/" );
   QgsOptions *dlg = QgisApp::instance()->createOptionsDialog();
   dlg->setMinimumHeight( 600 );
   dlg->show();
   QCoreApplication::processEvents();
-  for ( int row = 0; row < dlg->mOptionsListWidget->count(); ++row )
+
+  for ( int page = 0; page < dlg->mOptionsStackedWidget->count(); ++page )
   {
-    dlg->mOptionsListWidget->setCurrentRow( row );
+    dlg->mOptionsStackedWidget->setCurrentIndex( page );
     dlg->adjustSize();
     QCoreApplication::processEvents();
-    QString name = dlg->mOptionsListWidget->item( row )[0].text().toLower();
+    QString name = dlg->mOptTreeView->currentIndex().data( Qt::DisplayRole ).toString().toLower();
     name.replace( QLatin1String( " " ), QLatin1String( "_" ) ).replace( QLatin1String( "&" ), QLatin1String( "and" ) );
     takeScreenshot( name, folder, dlg );
   }
   // -----------------
   // advanced settings
-  dlg->mOptionsListWidget->setCurrentRow( dlg->mOptionsListWidget->count() - 1 );
+  dlg->mOptionsStackedWidget->setCurrentIndex( dlg->mOptionsStackedWidget->count() - 1 );
   QCoreApplication::processEvents();
-  Q_ASSERT( dlg->mOptionsListWidget->currentItem()->icon().pixmap( 24, 24 ).toImage()
+  Q_ASSERT( dlg->mOptTreeView->currentIndex().data( Qt::DecorationRole ).value< QIcon >().pixmap( 24, 24 ).toImage()
             == QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) ).pixmap( 24, 24 ).toImage() );
   QWidget *editor = dlg->findChild< QWidget * >( QStringLiteral( "mAdvancedSettingsEditor" ) );
   if ( editor )
@@ -337,7 +338,7 @@ void QgsAppScreenShots::takeGlobalOptions()
 
 void QgsAppScreenShots::takeRasterLayerProperties()
 {
-  QString folder = QStringLiteral( "working_with_raster/img/auto_generated/raster_layer_properties" );
+  const QString folder = QStringLiteral( "working_with_raster/img/auto_generated/raster_layer_properties" );
   QgsRasterLayerProperties *dlg = new QgsRasterLayerProperties( mRasterLayer, QgisApp::instance()->mapCanvas() );
   dlg->show();
   // ----------------

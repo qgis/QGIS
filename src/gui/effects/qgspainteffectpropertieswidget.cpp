@@ -77,7 +77,7 @@ QgsPaintEffectPropertiesWidget::QgsPaintEffectPropertiesWidget( QgsPaintEffect *
   // update effect type combo box
   if ( effect )
   {
-    int idx = mEffectTypeCombo->findData( effect->type() );
+    const int idx = mEffectTypeCombo->findData( effect->type() );
     mEffectTypeCombo->setCurrentIndex( idx );
   }
   // set the corresponding widget
@@ -89,7 +89,7 @@ QgsPaintEffectPropertiesWidget::QgsPaintEffectPropertiesWidget( QgsPaintEffect *
 void QgsPaintEffectPropertiesWidget::populateEffectTypes()
 {
   QgsPaintEffectRegistry *registry = QgsApplication::paintEffectRegistry();
-  QStringList types = registry->effects();
+  const QStringList types = registry->effects();
 
   const auto constTypes = types;
   for ( const QString &type : constTypes )
@@ -143,7 +143,7 @@ void QgsPaintEffectPropertiesWidget::effectTypeChanged()
   if ( !effect )
     return;
 
-  QString newEffectType = mEffectTypeCombo->currentData().toString();
+  const QString newEffectType = mEffectTypeCombo->currentData().toString();
   if ( effect->type() == newEffectType )
     return;
 

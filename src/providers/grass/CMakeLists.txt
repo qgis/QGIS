@@ -62,9 +62,16 @@ macro(ADD_GRASSLIB GRASS_BUILD_VERSION)
       )
     endif()
 
-    QT5_WRAP_UI (GRASS_LIBRARY_UIS_H
-      ../qgsgrassoptionsbase.ui
-    )
+    if (WITH_QT6)
+      QT6_WRAP_UI (GRASS_LIBRARY_UIS_H
+	../qgsgrassoptionsbase.ui
+      )
+    else()
+      QT5_WRAP_UI (GRASS_LIBRARY_UIS_H
+	../qgsgrassoptionsbase.ui
+      )
+    endif()
+
 
     add_library(qgisgrass${GRASS_BUILD_VERSION} SHARED
       ${GRASS_LIBRARY_SRCS}

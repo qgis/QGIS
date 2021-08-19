@@ -72,12 +72,12 @@ void QgsFormAnnotationDialog::applySettingsToItem()
 void QgsFormAnnotationDialog::mBrowseToolButton_clicked()
 {
   QString directory;
-  QFileInfo fi( mFileLineEdit->text() );
+  const QFileInfo fi( mFileLineEdit->text() );
   if ( fi.exists() )
   {
     directory = fi.absolutePath();
   }
-  QString filename = QFileDialog::getOpenFileName( nullptr, tr( "Qt designer file" ), directory, QStringLiteral( "*.ui" ) );
+  const QString filename = QFileDialog::getOpenFileName( nullptr, tr( "Qt designer file" ), directory, QStringLiteral( "*.ui" ) );
   mFileLineEdit->setText( filename );
 }
 

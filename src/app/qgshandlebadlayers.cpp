@@ -581,7 +581,7 @@ void QgsHandleBadLayers::autoFind()
     progressDialog.setValue( i );
     QChar sentenceEnd = ( name.length() > 15 ) ? QChar( 0x2026 ) : '.';
     progressDialog.setLabelText( QObject::tr( "Searching for file: %1 \n [ %2 of %3 ] " ).arg( name.left( 15 ) + sentenceEnd,
-                                 QString::number( i + 1 ), QString::number( layersToFind.size() ) ) );
+                                 QLocale().toString( i + 1 ), QLocale().toString( layersToFind.size() ) ) );
     progressDialog.open();
 
     QVariantMap providerMap = QgsProviderRegistry::instance()->decodeUri( provider, dataInfo.absoluteFilePath() );

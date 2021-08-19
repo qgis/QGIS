@@ -42,6 +42,7 @@
 #include "qgssettings.h"
 #include "qgsmapmouseevent.h"
 #include "qgspointcloudlayer.h"
+#include "qgslayertreeview.h"
 
 #include <QCursor>
 #include <QPixmap>
@@ -116,8 +117,8 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
   resultsDialog()->clear();
   connect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
 
-  QgsGeometry geometry = mSelectionHandler->selectedGeometry();
-  bool isSinglePoint = geometry.type() == QgsWkbTypes::PointGeometry;
+  const QgsGeometry geometry = mSelectionHandler->selectedGeometry();
+  const bool isSinglePoint = geometry.type() == QgsWkbTypes::PointGeometry;
 
   if ( isSinglePoint )
     setClickContextScope( geometry.asPoint() );
@@ -126,15 +127,21 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
 
   // enable the right click for extended menu so it behaves as a contextual menu
   // this would be removed when a true contextual menu is brought in QGIS
-  bool extendedMenu = isSinglePoint && mShowExtendedMenu;
+  const bool extendedMenu = isSinglePoint && mShowExtendedMenu;
   identifyMenu()->setExecWithSingleResult( extendedMenu );
   identifyMenu()->setShowFeatureActions( extendedMenu );
   IdentifyMode mode = extendedMenu ? LayerSelection : DefaultQgsSetting;
-
+  if ( mode == DefaultQgsSetting )
+    mode = QgsSettings().enumValue( QStringLiteral( "Map/identifyMode" ), ActiveLayer );
+  QList<QgsMapLayer *> layerList;
+  if ( mode == ActiveLayer )
+  {
+    layerList = QgisApp::instance()->layerTreeView()->selectedLayersRecursive();
+  }
   QgsIdentifyContext identifyContext;
   if ( mCanvas->mapSettings().isTemporal() )
     identifyContext.setTemporalRange( mCanvas->temporalRange() );
-  QList<IdentifyResult> results = QgsMapToolIdentify::identify( geometry, mode, AllLayers, identifyContext );
+  const QList<IdentifyResult> results = QgsMapToolIdentify::identify( geometry, mode, layerList, AllLayers, identifyContext );
 
   disconnect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
 
@@ -222,8 +229,8 @@ void QgsMapToolIdentifyAction::clearResults()
 
 void QgsMapToolIdentifyAction::showResultsForFeature( QgsVectorLayer *vlayer, QgsFeatureId fid, const QgsPoint &pt )
 {
-  QgsFeature feature = vlayer->getFeature( fid );
-  QMap< QString, QString > derivedAttributes = derivedAttributesForPoint( pt );
+  const QgsFeature feature = vlayer->getFeature( fid );
+  const QMap< QString, QString > derivedAttributes = derivedAttributesForPoint( pt );
   // TODO: private in QgsMapToolIdentify
   //derivedAttributes.unite( featureDerivedAttributes( feature, vlayer, QgsPointXY( pt ) ) );
 

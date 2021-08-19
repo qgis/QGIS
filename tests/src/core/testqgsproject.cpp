@@ -58,6 +58,7 @@ class TestQgsProject : public QObject
     void testDefaultRelativePaths();
     void testAttachmentsQgs();
     void testAttachmentsQgz();
+    void testAttachmentIdentifier();
 };
 
 void TestQgsProject::init()
@@ -103,9 +104,10 @@ void TestQgsProject::testReadPath()
 {
   QgsProject *prj = new QgsProject;
   // this is a bit hacky as we do not really load such project
-  QString prefix;
 #if defined(Q_OS_WIN)
-  prefix = "C:";
+  const QString prefix( "C:" );
+#else
+  const QString prefix;
 #endif
   prj->setFileName( prefix + "/home/qgis/a-project-file.qgs" ); // not expected to exist
   // make sure we work with relative paths!
@@ -128,7 +130,7 @@ void TestQgsProject::testReadPath()
 void TestQgsProject::testPathResolver()
 {
   // Test resolver with a non existing file path
-  QgsPathResolver resolverLegacy( QStringLiteral( "/home/qgis/test.qgs" ) );
+  const QgsPathResolver resolverLegacy( QStringLiteral( "/home/qgis/test.qgs" ) );
   QCOMPARE( resolverLegacy.readPath( QString() ), QString() );
   QCOMPARE( resolverLegacy.writePath( QString() ), QString() );
   QCOMPARE( resolverLegacy.writePath( "/home/qgis/file1.txt" ), QString( "./file1.txt" ) );
@@ -140,12 +142,12 @@ void TestQgsProject::testPathResolver()
   QCOMPARE( resolverLegacy.readPath( "/home/qgis/file1.txt" ), QString( "/home/qgis/file1.txt" ) );
 
   // Test resolver with existing file path
-  QTemporaryDir tmpDir;
-  QString tmpDirName = tmpDir.path();
-  QDir dir( tmpDirName );
+  const QTemporaryDir tmpDir;
+  const QString tmpDirName = tmpDir.path();
+  const QDir dir( tmpDirName );
   dir.mkpath( tmpDirName + "/home/qgis/" );
 
-  QgsPathResolver resolverRel( QString( tmpDirName + "/home/qgis/test.qgs" ) );
+  const QgsPathResolver resolverRel( QString( tmpDirName + "/home/qgis/test.qgs" ) );
   QCOMPARE( resolverRel.readPath( QString() ), QString() );
   QCOMPARE( resolverRel.writePath( QString() ), QString() );
   QCOMPARE( resolverRel.writePath( tmpDirName + "/home/qgis/file1.txt" ), QString( "./file1.txt" ) );
@@ -159,17 +161,17 @@ void TestQgsProject::testPathResolver()
   // test older style relative path - file must exist for this to work
   QTemporaryFile tmpFile;
   tmpFile.open(); // fileName is not available until we open the file
-  QString tmpName =  tmpFile.fileName();
+  const QString tmpName =  tmpFile.fileName();
   tmpFile.close();
-  QgsPathResolver tempRel( tmpName );
-  QFileInfo fi( tmpName );
+  const QgsPathResolver tempRel( tmpName );
+  const QFileInfo fi( tmpName );
   QFile testFile( fi.path() + QStringLiteral( "/file1.txt" ) );
   QVERIFY( testFile.open( QIODevice::WriteOnly | QIODevice::Text ) );
   testFile.close();
   QVERIFY( QFile::exists( fi.path() + QStringLiteral( "/file1.txt" ) ) );
   QCOMPARE( tempRel.readPath( "file1.txt" ), QString( fi.path() + QStringLiteral( "/file1.txt" ) ) );
 
-  QgsPathResolver resolverAbs;
+  const QgsPathResolver resolverAbs;
   QCOMPARE( resolverAbs.writePath( "/home/qgis/file1.txt" ), QString( "/home/qgis/file1.txt" ) );
   QCOMPARE( resolverAbs.readPath( "/home/qgis/file1.txt" ), QString( "/home/qgis/file1.txt" ) );
   QCOMPARE( resolverAbs.readPath( "./file1.txt" ), QString( "./file1.txt" ) );
@@ -214,14 +216,14 @@ static QHash<QString, QString> _parseSvgPathsForLayers( const QString &projectFi
   Q_ASSERT( res );
   projectFile.close();
 
-  QDomElement docElem = doc.documentElement();
-  QDomElement layersElem = docElem.firstChildElement( QStringLiteral( "projectlayers" ) );
+  const QDomElement docElem = doc.documentElement();
+  const QDomElement layersElem = docElem.firstChildElement( QStringLiteral( "projectlayers" ) );
   QDomElement layerElem = layersElem.firstChildElement();
   while ( !layerElem.isNull() )
   {
-    QString layerName = layerElem.firstChildElement( QStringLiteral( "layername" ) ).text();
+    const QString layerName = layerElem.firstChildElement( QStringLiteral( "layername" ) ).text();
     QString svgPath;
-    QDomElement symbolElem = layerElem.firstChildElement( QStringLiteral( "renderer-v2" ) ).firstChildElement( QStringLiteral( "symbols" ) ).firstChildElement( QStringLiteral( "symbol" ) ).firstChildElement( QStringLiteral( "layer" ) );
+    const QDomElement symbolElem = layerElem.firstChildElement( QStringLiteral( "renderer-v2" ) ).firstChildElement( QStringLiteral( "symbols" ) ).firstChildElement( QStringLiteral( "symbol" ) ).firstChildElement( QStringLiteral( "layer" ) );
     QDomElement propElem = symbolElem.firstChildElement( QStringLiteral( "prop" ) );
     while ( !propElem.isNull() )
     {
@@ -240,8 +242,8 @@ static QHash<QString, QString> _parseSvgPathsForLayers( const QString &projectFi
 
 void TestQgsProject::testPathResolverSvg()
 {
-  QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QString layerPath = dataDir + "/points.shp";
+  const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString layerPath = dataDir + "/points.shp";
 
   QVERIFY( QgsSymbolLayerUtils::svgSymbolNameToPath( QString(), QgsPathResolver() ).isEmpty() );
   QVERIFY( QgsSymbolLayerUtils::svgSymbolPathToName( QString(), QgsPathResolver() ).isEmpty() );
@@ -251,14 +253,14 @@ void TestQgsProject::testPathResolverSvg()
   // - existing SVG file in QGIS dir
   // - non-exsiting SVG file
 
-  QTemporaryDir dir;
+  const QTemporaryDir dir;
   QVERIFY( dir.isValid() );
   // on mac the returned path was not canonical and the resolver failed to convert paths properly
-  QString dirPath = QFileInfo( dir.path() ).canonicalFilePath();
+  const QString dirPath = QFileInfo( dir.path() ).canonicalFilePath();
 
-  QString projectFilename = dirPath + "/project.qgs";
-  QString ourSvgPath = dirPath + "/valid.svg";
-  QString invalidSvgPath = dirPath + "/invalid.svg";
+  const QString projectFilename = dirPath + "/project.qgs";
+  const QString ourSvgPath = dirPath + "/valid.svg";
+  const QString invalidSvgPath = dirPath + "/invalid.svg";
 
   QFile svgFile( ourSvgPath );
   QVERIFY( svgFile.open( QIODevice::WriteOnly ) );
@@ -267,7 +269,7 @@ void TestQgsProject::testPathResolverSvg()
 
   QVERIFY( QFileInfo::exists( ourSvgPath ) );  // should exist now
 
-  QString librarySvgPath = QgsSymbolLayerUtils::svgSymbolNameToPath( QStringLiteral( "transport/transport_airport.svg" ), QgsPathResolver() );
+  const QString librarySvgPath = QgsSymbolLayerUtils::svgSymbolNameToPath( QStringLiteral( "transport/transport_airport.svg" ), QgsPathResolver() );
   QCOMPARE( QgsSymbolLayerUtils::svgSymbolPathToName( librarySvgPath, QgsPathResolver() ), QStringLiteral( "transport/transport_airport.svg" ) );
 
   QgsVectorLayer *layer1 = new QgsVectorLayer( layerPath, QStringLiteral( "points 1" ), QStringLiteral( "ogr" ) );
@@ -302,9 +304,9 @@ void TestQgsProject::testPathResolverSvg()
   // load project again, check that the paths are absolute
   QgsProject projectLoaded;
   projectLoaded.read( projectFilename );
-  QString svg1 = _getLayerSvgMarkerPath( projectLoaded, QStringLiteral( "points 1" ) );
-  QString svg2 = _getLayerSvgMarkerPath( projectLoaded, QStringLiteral( "points 2" ) );
-  QString svg3 = _getLayerSvgMarkerPath( projectLoaded, QStringLiteral( "points 3" ) );
+  const QString svg1 = _getLayerSvgMarkerPath( projectLoaded, QStringLiteral( "points 1" ) );
+  const QString svg2 = _getLayerSvgMarkerPath( projectLoaded, QStringLiteral( "points 2" ) );
+  const QString svg3 = _getLayerSvgMarkerPath( projectLoaded, QStringLiteral( "points 3" ) );
   QCOMPARE( svg1, ourSvgPath );
   QCOMPARE( svg2, invalidSvgPath );
   QCOMPARE( svg3, librarySvgPath );
@@ -319,9 +321,9 @@ void TestQgsProject::testPathResolverSvg()
   QVERIFY( projectMaster.createEmbeddedLayer( layer2->id(), projectFilename, brokenNodes ) );
   QVERIFY( projectMaster.createEmbeddedLayer( layer3->id(), projectFilename, brokenNodes ) );
 
-  QString svg1x = _getLayerSvgMarkerPath( projectMaster, QStringLiteral( "points 1" ) );
-  QString svg2x = _getLayerSvgMarkerPath( projectLoaded, QStringLiteral( "points 2" ) );
-  QString svg3x = _getLayerSvgMarkerPath( projectLoaded, QStringLiteral( "points 3" ) );
+  const QString svg1x = _getLayerSvgMarkerPath( projectMaster, QStringLiteral( "points 1" ) );
+  const QString svg2x = _getLayerSvgMarkerPath( projectLoaded, QStringLiteral( "points 2" ) );
+  const QString svg3x = _getLayerSvgMarkerPath( projectLoaded, QStringLiteral( "points 3" ) );
   QCOMPARE( svg1x, ourSvgPath );
   QCOMPARE( svg2x, invalidSvgPath );
   QCOMPARE( svg3x, librarySvgPath );
@@ -375,7 +377,7 @@ void TestQgsProject::testProjectUnits()
 void TestQgsProject::variablesChanged()
 {
   QgsProject *prj = new QgsProject;
-  QSignalSpy spyVariablesChanged( prj, &QgsProject::customVariablesChanged );
+  const QSignalSpy spyVariablesChanged( prj, &QgsProject::customVariablesChanged );
   QVariantMap vars;
   vars.insert( QStringLiteral( "variable" ), QStringLiteral( "1" ) );
   prj->setCustomVariables( vars );
@@ -385,8 +387,8 @@ void TestQgsProject::variablesChanged()
 
 void TestQgsProject::testLayerFlags()
 {
-  QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QString layerPath = dataDir + "/points.shp";
+  const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString layerPath = dataDir + "/points.shp";
   QgsVectorLayer *layer1 = new QgsVectorLayer( layerPath, QStringLiteral( "points 1" ), QStringLiteral( "ogr" ) );
   QgsVectorLayer *layer2 = new QgsVectorLayer( layerPath, QStringLiteral( "points 2" ), QStringLiteral( "ogr" ) );
 
@@ -396,7 +398,7 @@ void TestQgsProject::testLayerFlags()
 
   layer2->setFlags( layer2->flags() & ~QgsMapLayer::Removable );
 
-  QString layer2id = layer2->id();
+  const QString layer2id = layer2->id();
 
   QTemporaryFile f;
   QVERIFY( f.open() );
@@ -419,15 +421,15 @@ void TestQgsProject::testLocalFiles()
   QVERIFY( f.open() );
   f.close();
   QgsProject prj;
-  QFileInfo info( f.fileName() );
+  const QFileInfo info( f.fileName() );
   prj.setFileName( f.fileName() );
   prj.write();
-  QString shpPath = info.dir().path() + '/' + info.baseName() + ".shp";
-  QString layerPath = "file://" + shpPath;
+  const QString shpPath = info.dir().path() + '/' + info.baseName() + ".shp";
+  const QString layerPath = "file://" + shpPath;
   QFile f2( shpPath );
   QVERIFY( f2.open( QFile::ReadWrite ) );
   f2.close();
-  QgsPathResolver resolver( f.fileName( ) );
+  const QgsPathResolver resolver( f.fileName( ) );
   QCOMPARE( resolver.writePath( layerPath ), QString( "./" + info.baseName() + ".shp" ) ) ;
 
 }
@@ -438,23 +440,23 @@ void TestQgsProject::testLocalUrlFiles()
   QVERIFY( f.open() );
   f.close();
   QgsProject prj;
-  QFileInfo info( f.fileName() );
+  const QFileInfo info( f.fileName() );
   prj.setFileName( f.fileName() );
   prj.write();
-  QString shpPath = info.dir().path() + '/' + info.baseName() + ".shp";
-  QString extraStuff {"?someVar=someValue&someOtherVar=someOtherValue" };
-  QString layerPath = "file://" + shpPath + extraStuff;
+  const QString shpPath = info.dir().path() + '/' + info.baseName() + ".shp";
+  const QString extraStuff {"?someVar=someValue&someOtherVar=someOtherValue" };
+  const QString layerPath = "file://" + shpPath + extraStuff;
   QFile f2( shpPath );
   QVERIFY( f2.open( QFile::ReadWrite ) );
   f2.close();
-  QgsPathResolver resolver( f.fileName( ) );
+  const QgsPathResolver resolver( f.fileName( ) );
   QCOMPARE( resolver.writePath( layerPath ), QString( "./" + info.baseName() + ".shp" + extraStuff ) ) ;
 
 }
 
 void TestQgsProject::testReadFlags()
 {
-  QString project1Path = QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_groups/project1.qgs" );
+  const QString project1Path = QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_groups/project1.qgs" );
   QgsProject p;
   QVERIFY( p.read( project1Path, QgsProject::ReadFlag::FlagDontResolveLayers ) );
   auto layers = p.mapLayers();
@@ -476,7 +478,7 @@ void TestQgsProject::testReadFlags()
   QVERIFY( layers.value( QStringLiteral( "polys20170310142652234" ) )->originalXmlProperties().isEmpty() );
 
   // project with embedded groups
-  QString project2Path = QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_groups/project2.qgs" );
+  const QString project2Path = QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_groups/project2.qgs" );
   QgsProject p2;
   QVERIFY( p2.read( project2Path, QgsProject::ReadFlag::FlagDontResolveLayers ) );
   // layers should be invalid - we skipped loading them!
@@ -488,7 +490,7 @@ void TestQgsProject::testReadFlags()
   QCOMPARE( qobject_cast< QgsVectorLayer * >( layers.value( QStringLiteral( "polys20170310142652234" ) ) )->renderer()->type(), QStringLiteral( "categorizedSymbol" ) );
 
 
-  QString project3Path = QString( TEST_DATA_DIR ) + QStringLiteral( "/layouts/layout_casting.qgs" );
+  const QString project3Path = QString( TEST_DATA_DIR ) + QStringLiteral( "/layouts/layout_casting.qgs" );
   QgsProject p3;
   QVERIFY( p3.read( project3Path, QgsProject::ReadFlag::FlagDontLoadLayouts ) );
   QCOMPARE( p3.layoutManager()->layouts().count(), 0 );
@@ -517,10 +519,10 @@ void TestQgsProject::testEmbeddedLayerGroupFromQgz()
   p2.read( path );
 
   QgsMapLayer *points2 = p0.mapLayersByName( "points" )[0];
-  bool saveFlag = p2.mEmbeddedLayers[points2->id()].second;
+  const bool saveFlag = p2.mEmbeddedLayers[points2->id()].second;
   QCOMPARE( saveFlag, true );
 
-  bool valid = p2.loadEmbeddedNodes( p2.layerTreeRoot() );
+  const bool valid = p2.loadEmbeddedNodes( p2.layerTreeRoot() );
   QCOMPARE( valid, true );
 }
 
@@ -632,18 +634,18 @@ void TestQgsProject::testSetGetCrs()
 void TestQgsProject::testCrsValidAfterReadingProjectFile()
 {
   QgsProject p;
-  QSignalSpy crsChangedSpy( &p, &QgsProject::crsChanged );
+  const QSignalSpy crsChangedSpy( &p, &QgsProject::crsChanged );
 
   //  - new project
   //  - set CRS tp 4326, the crs changes
   //  - save the project
   //  - clear()
   //  - load the project, the CRS should be 4326
-  QTemporaryDir dir;
+  const QTemporaryDir dir;
   QVERIFY( dir.isValid() );
   // on mac the returned path was not canonical and the resolver failed to convert paths properly
-  QString dirPath = QFileInfo( dir.path() ).canonicalFilePath();
-  QString projectFilename = dirPath + "/project.qgs";
+  const QString dirPath = QFileInfo( dir.path() ).canonicalFilePath();
+  const QString projectFilename = dirPath + "/project.qgs";
 
   p.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
 
@@ -678,7 +680,7 @@ void TestQgsProject::testCrsExpressions()
 
   p.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
 
-  QgsExpressionContext c = p.createExpressionContext();
+  const QgsExpressionContext c = p.createExpressionContext();
 
   QgsExpression e2( QStringLiteral( "@project_crs" ) );
   r = e2.evaluate( &c );
@@ -716,7 +718,7 @@ void TestQgsProject::testCrsExpressions()
 void TestQgsProject::testDefaultRelativePaths()
 {
   QgsSettings s;
-  bool bk_defaultRelativePaths = s.value( QStringLiteral( "/qgis/defaultProjectPathsRelative" ), QVariant( true ) ).toBool();
+  const bool bk_defaultRelativePaths = s.value( QStringLiteral( "/qgis/defaultProjectPathsRelative" ), QVariant( true ) ).toBool();
 
   s.setValue( QStringLiteral( "/qgis/defaultProjectPathsRelative" ), true );
   QgsProject p1;
@@ -742,7 +744,7 @@ void TestQgsProject::testAttachmentsQgs()
   {
     QgsProject p;
 
-    QString fileName = p.createAttachedFile( "myattachment" );
+    const QString fileName = p.createAttachedFile( "myattachment" );
     QVERIFY( QFile( fileName ).exists() );
     QVERIFY( p.attachedFiles().contains( fileName ) );
     QVERIFY( p.removeAttachedFile( fileName ) );
@@ -757,7 +759,7 @@ void TestQgsProject::testAttachmentsQgs()
 
     QgsProject p;
     QFile file;
-    QString fileName = p.createAttachedFile( "myattachment" );
+    const QString fileName = p.createAttachedFile( "myattachment" );
 
     file.setFileName( fileName );
     QVERIFY( file.open( QIODevice::WriteOnly ) );
@@ -766,8 +768,8 @@ void TestQgsProject::testAttachmentsQgs()
 
     p.write( projFile.fileName() );
 
-    QFileInfo finfo( projFile.fileName() );
-    QString attachmentsZip = finfo.absoluteDir().absoluteFilePath( QStringLiteral( "%1_attachments.zip" ).arg( finfo.completeBaseName() ) );
+    const QFileInfo finfo( projFile.fileName() );
+    const QString attachmentsZip = finfo.absoluteDir().absoluteFilePath( QStringLiteral( "%1_attachments.zip" ).arg( finfo.completeBaseName() ) );
     QVERIFY( QFile( attachmentsZip ).exists() );
 
     QgsProject p2;
@@ -785,7 +787,7 @@ void TestQgsProject::testAttachmentsQgs()
     projFile.open();
 
     QgsProject p;
-    QString fileName = p.createAttachedFile( "testlayer.gpx" );
+    const QString fileName = p.createAttachedFile( "testlayer.gpx" );
     QFile file( fileName );
     file.open( QIODevice::WriteOnly );
     file.write( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" );
@@ -801,8 +803,8 @@ void TestQgsProject::testAttachmentsQgs()
     p.addMapLayer( layer );
     p.write( projFile.fileName() );
 
-    QFileInfo finfo( projFile.fileName() );
-    QString attachmentsZip = finfo.absoluteDir().absoluteFilePath( QStringLiteral( "%1_attachments.zip" ).arg( finfo.completeBaseName() ) );
+    const QFileInfo finfo( projFile.fileName() );
+    const QString attachmentsZip = finfo.absoluteDir().absoluteFilePath( QStringLiteral( "%1_attachments.zip" ).arg( finfo.completeBaseName() ) );
     QVERIFY( QFile( attachmentsZip ).exists() );
 
     QgsProject p2;
@@ -820,7 +822,7 @@ void TestQgsProject::testAttachmentsQgz()
   {
     QgsProject p;
 
-    QString fileName = p.createAttachedFile( "myattachment" );
+    const QString fileName = p.createAttachedFile( "myattachment" );
     QVERIFY( QFile( fileName ).exists() );
     QVERIFY( p.attachedFiles().contains( fileName ) );
     QVERIFY( p.removeAttachedFile( fileName ) );
@@ -835,7 +837,7 @@ void TestQgsProject::testAttachmentsQgz()
 
     QgsProject p;
     QFile file;
-    QString fileName = p.createAttachedFile( "myattachment" );
+    const QString fileName = p.createAttachedFile( "myattachment" );
 
     file.setFileName( fileName );
     QVERIFY( file.open( QIODevice::WriteOnly ) );
@@ -859,7 +861,7 @@ void TestQgsProject::testAttachmentsQgz()
     projFile.open();
 
     QgsProject p;
-    QString fileName = p.createAttachedFile( "testlayer.gpx" );
+    const QString fileName = p.createAttachedFile( "testlayer.gpx" );
     QFile file( fileName );
     file.open( QIODevice::WriteOnly );
     file.write( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" );
@@ -882,6 +884,25 @@ void TestQgsProject::testAttachmentsQgz()
     QVERIFY( p2.mapLayer( p2.mapLayers().firstKey() )->source() == p2.attachedFiles().first() );
   }
 
+}
+
+void TestQgsProject::testAttachmentIdentifier()
+{
+  // Verify attachment identifiers
+  {
+    QTemporaryFile projFile( QDir::temp().absoluteFilePath( "XXXXXX_test.qgz" ) );
+    projFile.open();
+
+    QgsProject p;
+    const QString attachmentFileName = p.createAttachedFile( "test.jpg" );
+    const QString attachmentId = p.attachmentIdentifier( attachmentFileName );
+    QCOMPARE( p.resolveAttachmentIdentifier( attachmentId ), attachmentFileName );
+    p.write( projFile.fileName() );
+
+    QgsProject p2;
+    p2.read( projFile.fileName() );
+    QVERIFY( QFile( p2.resolveAttachmentIdentifier( attachmentId ) ).exists() );
+  }
 }
 
 

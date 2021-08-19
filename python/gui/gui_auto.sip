@@ -19,6 +19,7 @@
 %Include auto_generated/qgsattributetypeloaddialog.sip
 %Include auto_generated/qgsblendmodecombobox.sip
 %Include auto_generated/qgsbrowserdockwidget.sip
+%Include auto_generated/qgsbrowserwidget.sip
 %Include auto_generated/qgsbrowserguimodel.sip
 %Include auto_generated/qgsbrowsertreeview.sip
 %Include auto_generated/qgsbusyindicatordialog.sip
@@ -79,6 +80,7 @@
 %Include auto_generated/qgsfilecontentsourcelineedit.sip
 %Include auto_generated/qgsfiledownloaderdialog.sip
 %Include auto_generated/qgsfilewidget.sip
+%Include auto_generated/qgsexternalstoragefilewidget.sip
 %Include auto_generated/qgsfilterlineedit.sip
 %Include auto_generated/qgsfindfilesbypatternwidget.sip
 %Include auto_generated/qgsfloatingwidget.sip
@@ -175,6 +177,7 @@
 %Include auto_generated/qgsprovidersourcewidgetproviderregistry.sip
 %Include auto_generated/qgsproxystyle.sip
 %Include auto_generated/qgsquerybuilder.sip
+%Include auto_generated/qgsqueryresultwidget.sip
 %Include auto_generated/qgsrangeslider.sip
 %Include auto_generated/qgsrasterformatsaveoptionswidget.sip
 %Include auto_generated/qgsrasterlayersaveasdialog.sip
@@ -424,6 +427,7 @@
 %Include auto_generated/symbology/qgssymbolslistwidget.sip
 %Include auto_generated/symbology/qgssymbolwidgetcontext.sip
 %Include auto_generated/symbology/qgsvectorfieldsymbollayerwidget.sip
+%Include auto_generated/settings/qgssettingsregistrygui.sip
 %Include auto_generated/tableeditor/qgstableeditordialog.sip
 %Include auto_generated/tableeditor/qgstableeditorwidget.sip
 %Include auto_generated/editorwidgets/qgsqmlwidgetwrapper.sip

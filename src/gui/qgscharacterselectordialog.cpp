@@ -40,7 +40,7 @@ QChar QgsCharacterSelectorDialog::selectCharacter( bool *gotChar, const QFont &f
   mCharWidget->setCharacter( initialSelection );
 
   QApplication::setOverrideCursor( Qt::ArrowCursor );
-  int res = exec();
+  const int res = exec();
   QApplication::restoreOverrideCursor();
 
   if ( res == QDialog::Accepted )

@@ -140,6 +140,17 @@ class CORE_EXPORT QgsProviderSublayerModel: public QAbstractItemModel
          */
         void setIcon( const QIcon &icon );
 
+        bool operator==( const QgsProviderSublayerModel::NonLayerItem &other ) const;
+        bool operator!=( const QgsProviderSublayerModel::NonLayerItem &other ) const;
+
+#ifdef SIP_RUN
+        SIP_PYOBJECT __repr__();
+        % MethodCode
+        QString str = QStringLiteral( "<QgsProviderSublayerModel.NonLayerItem: %1 - %2>" ).arg( sipCpp->type(), sipCpp->name() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        % End
+#endif
+
       private:
 
         QString mType;
@@ -170,6 +181,16 @@ class CORE_EXPORT QgsProviderSublayerModel: public QAbstractItemModel
     QList< QgsProviderSublayerDetails > sublayerDetails() const;
 
     /**
+     * Returns the sublayer corresponding to the given \a index.
+     */
+    QgsProviderSublayerDetails indexToSublayer( const QModelIndex &index ) const;
+
+    /**
+     * Returns the non layer item corresponding to the given \a index.
+     */
+    QgsProviderSublayerModel::NonLayerItem indexToNonLayerItem( const QModelIndex &index ) const;
+
+    /**
      * Adds a non-layer item (e.g. an embedded QGIS project item) to the model.
      */
     void addNonLayerItem( const QgsProviderSublayerModel::NonLayerItem &item );
@@ -181,9 +202,12 @@ class CORE_EXPORT QgsProviderSublayerModel: public QAbstractItemModel
     QVariant data( const QModelIndex &index, int role ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
-  private:
+  protected:
 
+    //! Sublayer list
     QList<QgsProviderSublayerDetails> mSublayers;
+
+    //! Non layer item list
     QList<NonLayerItem> mNonLayerItems;
 
 };

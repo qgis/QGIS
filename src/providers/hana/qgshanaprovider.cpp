@@ -32,11 +32,7 @@
 #include "qgshanaresultset.h"
 #include "qgshanacrsutils.h"
 #include "qgshanautils.h"
-#ifdef HAVE_GUI
 #include "qgshanadataitems.h"
-#include "qgshanasourceselect.h"
-#include "qgssourceselectprovider.h"
-#endif
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsrectangle.h"

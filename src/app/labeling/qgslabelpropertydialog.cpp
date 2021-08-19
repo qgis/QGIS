@@ -119,7 +119,7 @@ void QgsLabelPropertyDialog::init( const QString &layerId, const QString &provid
   {
     return;
   }
-  QgsAttributes attributeValues = mCurLabelFeat.attributes();
+  const QgsAttributes attributeValues = mCurLabelFeat.attributes();
 
   //get layerproperties. Problem: only for pallabeling...
 
@@ -136,7 +136,7 @@ void QgsLabelPropertyDialog::init( const QString &layerId, const QString &provid
   }
   else
   {
-    QString labelFieldName = layerSettings.fieldName;
+    const QString labelFieldName = layerSettings.fieldName;
     if ( !labelFieldName.isEmpty() )
     {
       mCurLabelField = vlayer->fields().lookupField( labelFieldName );
@@ -177,7 +177,7 @@ void QgsLabelPropertyDialog::init( const QString &layerId, const QString &provid
   updateFont( mLabelFont, false );
 
   QgsTextFormat format = layerSettings.format();
-  QgsTextBufferSettings buffer = format.buffer();
+  const QgsTextBufferSettings buffer = format.buffer();
 
   //set all the gui elements to the default layer-level values
   mLabelDistanceSpinBox->clear();
@@ -347,13 +347,13 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
   context.setFeature( mCurLabelFeat );
 
   const auto constPropertyKeys = mDataDefinedProperties.propertyKeys();
-  for ( int key : constPropertyKeys )
+  for ( const int key : constPropertyKeys )
   {
     if ( !mDataDefinedProperties.isActive( key ) )
       continue;
 
     //TODO - pass expression context
-    QVariant result = mDataDefinedProperties.value( key, context );
+    const QVariant result = mDataDefinedProperties.value( key, context );
     if ( !result.isValid() || result.isNull() )
     {
       //could not evaluate data defined value
@@ -365,7 +365,7 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
     {
       case QgsPalLayerSettings::Show:
       {
-        int showLabel = result.toInt( &ok );
+        const int showLabel = result.toInt( &ok );
         mShowLabelChkbx->setChecked( !ok || showLabel != 0 );
         break;
       }
@@ -383,7 +383,7 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
 
       case QgsPalLayerSettings::MinimumScale:
       {
-        double minScale = result.toDouble( &ok );
+        const double minScale = result.toDouble( &ok );
         if ( ok )
         {
           mMinScaleWidget->setScale( minScale );
@@ -392,7 +392,7 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
       }
       case QgsPalLayerSettings::MaximumScale:
       {
-        double maxScale = result.toDouble( &ok );
+        const double maxScale = result.toDouble( &ok );
         if ( ok )
         {
           mMaxScaleWidget->setScale( maxScale );
@@ -401,7 +401,7 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
       }
       case QgsPalLayerSettings::BufferSize:
       {
-        double bufferSize = result.toDouble( &ok );
+        const double bufferSize = result.toDouble( &ok );
         if ( ok )
         {
           mBufferSizeSpinBox->setValue( bufferSize );
@@ -410,7 +410,7 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
       }
       case QgsPalLayerSettings::PositionX:
       {
-        double posX = result.toDouble( &ok );
+        const double posX = result.toDouble( &ok );
         if ( ok )
         {
           mXCoordSpinBox->setValue( posX );
@@ -419,7 +419,7 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
       }
       case QgsPalLayerSettings::PositionY:
       {
-        double posY = result.toDouble( &ok );
+        const double posY = result.toDouble( &ok );
         if ( ok )
         {
           mYCoordSpinBox->setValue( posY );
@@ -428,7 +428,7 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
       }
       case QgsPalLayerSettings::LabelDistance:
       {
-        double labelDist = result.toDouble( &ok );
+        const double labelDist = result.toDouble( &ok );
         if ( ok )
         {
           mLabelDistanceSpinBox->setValue( labelDist );
@@ -457,7 +457,7 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
         break;
       case QgsPalLayerSettings::LabelRotation:
       {
-        double rot = result.toDouble( &ok );
+        const double rot = result.toDouble( &ok );
         if ( ok )
         {
           mRotationSpinBox->setValue( rot );
@@ -467,7 +467,7 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
 
       case QgsPalLayerSettings::Size:
       {
-        double size = result.toDouble( &ok );
+        const double size = result.toDouble( &ok );
         if ( ok )
         {
           mFontSizeSpinBox->setValue( size );
@@ -493,15 +493,15 @@ void QgsLabelPropertyDialog::enableDataDefinedWidgets( QgsVectorLayer *vlayer )
   //loop through data defined properties, this time setting whether or not the widgets are enabled
   //this can only be done for properties which are assigned to fields
   const auto constPropertyKeys = mDataDefinedProperties.propertyKeys();
-  for ( int key : constPropertyKeys )
+  for ( const int key : constPropertyKeys )
   {
-    QgsProperty prop = mDataDefinedProperties.property( key );
+    const QgsProperty prop = mDataDefinedProperties.property( key );
     if ( !prop || !prop.isActive() )
     {
       continue;
     }
 
-    int ddIndex = dataDefinedColumnIndex( static_cast< QgsPalLayerSettings::Property >( key ), vlayer, context );
+    const int ddIndex = dataDefinedColumnIndex( static_cast< QgsPalLayerSettings::Property >( key ), vlayer, context );
     mPropertyToFieldMap[ key ] = ddIndex;
     if ( ddIndex < 0 )
       continue; // can only modify attributes with an active data definition of a mapped field
@@ -620,7 +620,7 @@ void QgsLabelPropertyDialog::populateFontStyleComboBox()
   }
 
   int curIndx = 0;
-  int stylIndx = mFontStyleCmbBx->findText( mFontDB.styleString( mLabelFont ) );
+  const int stylIndx = mFontStyleCmbBx->findText( mFontDB.styleString( mLabelFont ) );
   if ( stylIndx > -1 )
   {
     curIndx = stylIndx;
@@ -837,8 +837,8 @@ void QgsLabelPropertyDialog::insertChangedValue( QgsPalLayerSettings::Property p
 {
   if ( mDataDefinedProperties.isActive( p ) )
   {
-    QgsProperty prop = mDataDefinedProperties.property( p );
-    if ( int index = mPropertyToFieldMap.value( p ); index >= 0 )
+    const QgsProperty prop = mDataDefinedProperties.property( p );
+    if ( const int index = mPropertyToFieldMap.value( p ); index >= 0 )
     {
       mChangedProperties.insert( index, value );
     }

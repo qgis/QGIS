@@ -71,7 +71,7 @@ QgsSkyboxSettings QgsSkyboxRenderingSettingsWidget::toSkyboxSettings()
 
 void QgsSkyboxRenderingSettingsWidget::showSkyboxSettings( int )
 {
-  QgsSkyboxEntity::SkyboxType type = static_cast< QgsSkyboxEntity::SkyboxType >( skyboxTypeComboBox->currentIndex() );
+  const QgsSkyboxEntity::SkyboxType type = static_cast< QgsSkyboxEntity::SkyboxType >( skyboxTypeComboBox->currentIndex() );
   const bool isPanoramic = type == QgsSkyboxEntity::PanoramicSkybox;
   const bool isDistinctFaces = type == QgsSkyboxEntity::DistinctTexturesSkybox;
 

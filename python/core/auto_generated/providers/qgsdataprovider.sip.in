@@ -170,7 +170,6 @@ Returns ``True`` if this is a valid layer. It is up to individual providers
 to determine what constitutes a valid layer.
 %End
 
-
     virtual void updateExtents();
 %Docstring
 Update the extents of the layer. Not implemented by default.

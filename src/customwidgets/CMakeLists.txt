@@ -1,8 +1,8 @@
 add_definitions(-DQT_PLUGIN)
 add_definitions(-DQT_SHARED)
 
-find_package(Qt5UiPlugin REQUIRED)
-find_package(Qt5Designer REQUIRED)
+find_package(${QT_VERSION_BASE}UiPlugin REQUIRED)
+find_package(${QT_VERSION_BASE}Designer REQUIRED)
 
 set(QT_USE_QTDESIGNER ON)
 
@@ -94,11 +94,15 @@ include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
 )
 include_directories(SYSTEM
-  ${Qt5UiPlugin_INCLUDE_DIRS}
-  ${Qt5Designer_INCLUDE_DIRS}
+  ${${QT_VERSION_BASE}UiPlugin_INCLUDE_DIRS}
+  ${${QT_VERSION_BASE}Designer_INCLUDE_DIRS}
 )
 
-QT5_WRAP_CPP(QGIS_CUSTOMWIDGETS_MOC_SRCS ${QGIS_CUSTOMWIDGETS_MOC_HDRS})
+if (WITH_QT6)
+  QT6_WRAP_CPP(QGIS_CUSTOMWIDGETS_MOC_SRCS ${QGIS_CUSTOMWIDGETS_MOC_HDRS})
+else()
+  QT5_WRAP_CPP(QGIS_CUSTOMWIDGETS_MOC_SRCS ${QGIS_CUSTOMWIDGETS_MOC_HDRS})
+endif()
 
 #############################################################
 # qgis_customwidgets library

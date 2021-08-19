@@ -87,6 +87,8 @@
 #include <QUrl>
 #include <QMenu>
 #include <QScreen>
+#include <QRegularExpressionValidator>
+#include <QRegularExpression>
 
 QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags fl )
   : QgsOptionsDialogBase( QStringLiteral( "RasterLayerProperties" ), parent, fl )
@@ -110,7 +112,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   mMetadataViewer = new QgsWebView( this );
   mOptsPage_Information->layout()->addWidget( mMetadataViewer );
 
-  connect( mLayerOrigNameLineEd, &QLineEdit::textEdited, this, &QgsRasterLayerProperties::mLayerOrigNameLineEd_textEdited );
   connect( buttonBuildPyramids, &QPushButton::clicked, this, &QgsRasterLayerProperties::buttonBuildPyramids_clicked );
   connect( pbnAddValuesFromDisplay, &QToolButton::clicked, this, &QgsRasterLayerProperties::pbnAddValuesFromDisplay_clicked );
   connect( pbnAddValuesManually, &QToolButton::clicked, this, &QgsRasterLayerProperties::pbnAddValuesManually_clicked );
@@ -855,9 +856,7 @@ void QgsRasterLayerProperties::sync()
    * General Tab
    */
 
-  //these properties (layer name and label) are provided by the qgsmaplayer superclass
   mLayerOrigNameLineEd->setText( mRasterLayer->name() );
-  leDisplayName->setText( mRasterLayer->name() );
 
   QgsDebugMsgLevel( QStringLiteral( "populate metadata tab" ), 2 );
   /*
@@ -869,7 +868,7 @@ void QgsRasterLayerProperties::sync()
   // WMS Name as layer short name
   mLayerShortNameLineEdit->setText( mRasterLayer->shortName() );
   // WMS Name validator
-  QValidator *shortNameValidator = new QRegExpValidator( QgsApplication::shortNameRegExp(), this );
+  QValidator *shortNameValidator = new QRegularExpressionValidator( QgsApplication::shortNameRegularExpression(), this );
   mLayerShortNameLineEdit->setValidator( shortNameValidator );
 
   //layer title and abstract
@@ -1155,11 +1154,6 @@ void QgsRasterLayerProperties::apply()
   QgsProject::instance()->setDirty( true );
 }
 
-void QgsRasterLayerProperties::mLayerOrigNameLineEd_textEdited( const QString &text )
-{
-  leDisplayName->setText( mRasterLayer->formatLayerName( text ) );
-}
-
 void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
 {
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
@@ -1244,7 +1238,6 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
   QIcon myPyramidPixmap( QgsApplication::getThemeIcon( "/mIconPyramid.svg" ) );
   QIcon myNoPyramidPixmap( QgsApplication::getThemeIcon( "/mIconNoPyramid.svg" ) );
 
-  QList< QgsRasterPyramid >::iterator myRasterPyramidIterator;
   for ( const QgsRasterPyramid &pyramid : std::as_const( myPyramidList ) )
   {
     if ( pyramid.getExists() )
@@ -1673,7 +1666,7 @@ void QgsRasterLayerProperties::pbnImportTransparentPixelValues_clicked()
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
             QStringList myTokens = myInputLine.split( QRegExp( "\\s+" ), QString::SkipEmptyParts );
 #else
-            QStringList myTokens = myInputLine.split( QRegExp( "\\s+" ), Qt::SkipEmptyParts );
+            QStringList myTokens = myInputLine.split( QRegularExpression( "\\s+" ), Qt::SkipEmptyParts );
 #endif
             if ( myTokens.count() != 4 )
             {
@@ -1710,7 +1703,7 @@ void QgsRasterLayerProperties::pbnImportTransparentPixelValues_clicked()
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
             QStringList myTokens = myInputLine.split( QRegExp( "\\s+" ), QString::SkipEmptyParts );
 #else
-            QStringList myTokens = myInputLine.split( QRegExp( "\\s+" ), Qt::SkipEmptyParts );
+            QStringList myTokens = myInputLine.split( QRegularExpression( "\\s+" ), Qt::SkipEmptyParts );
 #endif
             if ( myTokens.count() != 3 && myTokens.count() != 2 ) // 2 for QGIS < 1.9 compatibility
             {

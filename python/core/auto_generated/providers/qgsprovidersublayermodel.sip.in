@@ -138,6 +138,15 @@ Sets the item's ``icon``.
 .. seealso:: :py:func:`setIcon`
 %End
 
+        bool operator==( const QgsProviderSublayerModel::NonLayerItem &other ) const;
+        bool operator!=( const QgsProviderSublayerModel::NonLayerItem &other ) const;
+
+        SIP_PYOBJECT __repr__();
+%MethodCode
+        QString str = QStringLiteral( "<QgsProviderSublayerModel.NonLayerItem: %1 - %2>" ).arg( sipCpp->type(), sipCpp->name() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
     };
 
     QgsProviderSublayerModel( QObject *parent /TransferThis/ = 0 );
@@ -159,6 +168,16 @@ Returns the sublayer details shown in the model.
 .. seealso:: :py:func:`setSublayerDetails`
 %End
 
+    QgsProviderSublayerDetails indexToSublayer( const QModelIndex &index ) const;
+%Docstring
+Returns the sublayer corresponding to the given ``index``.
+%End
+
+    QgsProviderSublayerModel::NonLayerItem indexToNonLayerItem( const QModelIndex &index ) const;
+%Docstring
+Returns the non layer item corresponding to the given ``index``.
+%End
+
     void addNonLayerItem( const QgsProviderSublayerModel::NonLayerItem &item );
 %Docstring
 Adds a non-layer item (e.g. an embedded QGIS project item) to the model.
@@ -175,6 +194,10 @@ Adds a non-layer item (e.g. an embedded QGIS project item) to the model.
     virtual QVariant data( const QModelIndex &index, int role ) const;
 
     virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+
+
+  protected:
+
 
 
 };

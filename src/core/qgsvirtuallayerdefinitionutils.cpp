@@ -33,7 +33,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
     columns << "t.geometry";
 
   // look for the uid
-  QgsFields fields = layer->dataProvider()->fields();
+  const QgsFields fields = layer->dataProvider()->fields();
   {
     QgsAttributeList pk = layer->dataProvider()->pkAttributeIndexes();
     if ( pk.size() == 1 )
@@ -62,11 +62,11 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
   const auto constVectorJoins = layer->vectorJoins();
   for ( const QgsVectorLayerJoinInfo &join : constVectorJoins )
   {
-    QString joinName = QStringLiteral( "j%1" ).arg( ++joinIdx );
+    const QString joinName = QStringLiteral( "j%1" ).arg( ++joinIdx );
     QgsVectorLayer *joinedLayer = join.joinLayer();
     if ( !joinedLayer )
       continue;
-    QString prefix = join.prefix().isEmpty() ? joinedLayer->name() + "_" : join.prefix();
+    const QString prefix = join.prefix().isEmpty() ? joinedLayer->name() + "_" : join.prefix();
 
     leftJoins << QStringLiteral( "LEFT JOIN \"%1\" AS %2 ON t.\"%5\"=%2.\"%3\"" ).arg( joinedLayer->id(), joinName, join.joinFieldName(), join.targetFieldName() );
     if ( auto *lJoinFieldNamesSubset = join.joinFieldNamesSubset() )
@@ -89,7 +89,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
     }
   }
 
-  QString query = "SELECT " + columns.join( QLatin1String( ", " ) ) + " FROM \"" + layer->id() + "\" AS t " + leftJoins.join( QLatin1Char( ' ' ) );
+  const QString query = "SELECT " + columns.join( QLatin1String( ", " ) ) + " FROM \"" + layer->id() + "\" AS t " + leftJoins.join( QLatin1Char( ' ' ) );
   def.setQuery( query );
 
   return def;

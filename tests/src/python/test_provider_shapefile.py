@@ -843,8 +843,8 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
 
         # Check DataItem
         registry = QgsApplication.dataItemProviderRegistry()
-        ogrprovider = next(provider for provider in registry.providers() if provider.name() == 'OGR')
-        item = ogrprovider.createDataItem(tmpfile, None)
+        files_provider = next(provider for provider in registry.providers() if provider.name() == 'files')
+        item = files_provider.createDataItem(tmpfile, None)
         self.assertTrue(item.uri().endswith('testShzSupport.shz'))
 
     def testShpZipSupport(self):
@@ -899,17 +899,13 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
 
         # Check DataItem
         registry = QgsApplication.dataItemProviderRegistry()
-        ogrprovider = next(provider for provider in registry.providers() if provider.name() == 'OGR')
-        item = ogrprovider.createDataItem(tmpfile, None)
+        files_provider = next(provider for provider in registry.providers() if provider.name() == 'files')
+        item = files_provider.createDataItem(tmpfile, None)
         children = item.createChildren()
         self.assertEqual(len(children), 2)
         uris = sorted([children[i].uri() for i in range(2)])
         self.assertIn('testShpZipSupport.shp.zip|layername=layer1', uris[0])
         self.assertIn('testShpZipSupport.shp.zip|layername=layer2', uris[1])
-
-        gdalprovider = next(provider for provider in registry.providers() if provider.name() == 'GDAL')
-        item = gdalprovider.createDataItem(tmpfile, None)
-        assert not item
 
     def testWriteShapefileWithSingleConversion(self):
         """Check writing geometries from a POLYGON ESRI shapefile does not

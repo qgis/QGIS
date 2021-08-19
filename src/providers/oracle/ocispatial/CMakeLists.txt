@@ -10,7 +10,7 @@ add_definitions(-DQT_SHARED)
 
 include_directories(SYSTEM
 	${OCI_INCLUDE_DIR}
-	${Qt5Sql_PRIVATE_INCLUDE_DIRS}
+	${${QT_VERSION_BASE}Sql_PRIVATE_INCLUDE_DIRS}
 )
 
 set(QSQLOCISPATIAL_SRC qsql_ocispatial.cpp main.cpp qsql_ocispatial.h main.h)
@@ -18,8 +18,8 @@ set(QSQLOCISPATIAL_SRC qsql_ocispatial.cpp main.cpp qsql_ocispatial.h main.h)
 add_library(qsqlocispatial SHARED ${QSQLOCISPATIAL_SRC})
 
 target_link_libraries(qsqlocispatial
-  ${Qt5Core_LIBRARIES}
-  ${Qt5Sql_LIBRARIES}
+  ${QT_VERSION_BASE}::Core
+  ${QT_VERSION_BASE}::Sql
   ${OCI_LIBRARY}
 )
 

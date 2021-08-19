@@ -47,7 +47,7 @@ void QgsExpressionCalculatorLocatorFilter::fetchResults( const QString &string, 
   if ( QgsExpression::checkExpression( string, &context, error ) )
   {
     QgsExpression exp( string );
-    QString resultString = exp.evaluate( &context ).toString();
+    const QString resultString = exp.evaluate( &context ).toString();
     if ( !resultString.isEmpty() )
     {
       QgsLocatorResult result;

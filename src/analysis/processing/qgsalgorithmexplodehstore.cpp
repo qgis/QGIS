@@ -173,7 +173,8 @@ QVariantMap QgsExplodeHstoreAlgorithm::processAlgorithm( const QVariantMap &para
 
     outFeature.setGeometry( QgsGeometry( feat.geometry() ) );
     outFeature.setAttributes( outAttributes );
-    sink->addFeature( outFeature, QgsFeatureSink::FastInsert );
+    if ( !sink->addFeature( outFeature, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
   }
 
   QVariantMap outputs;

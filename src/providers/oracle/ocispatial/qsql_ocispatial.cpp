@@ -62,7 +62,7 @@
 #include <qvariant.h>
 #include <qdatetime.h>
 #include <qmetatype.h>
-#include <qregexp.h>
+#include <qregularexpression.h>
 #include <qshareddata.h>
 #include <qsqlerror.h>
 #include <qsqlfield.h>
@@ -2628,7 +2628,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
 
     int wkbSize = 0;
 
-    if ( nPoints > nDims )
+    if ( iType == GtMultiPoint )
       wkbSize += 1 + 2 * sizeof( int );
 
     wkbSize += ( nPoints / nDims ) * ( 1 + sizeof( int ) ) + nPoints * sizeof( double );
@@ -2637,7 +2637,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
     ba.resize( wkbSize );
     ptr.cPtr = ba.data();
 
-    if ( nPoints > nDims )
+    if ( iType == GtMultiPoint )
     {
       *ptr.ucPtr++ = byteorder();
       *ptr.iPtr++  = nDims == 2 ? WKBMultiPoint : WKBMultiPoint25D;
@@ -2709,11 +2709,11 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
     }
 
     int binarySize = 1 + sizeof( int ) ;
-    if ( lines.size() > 1 )
+    if ( iType == GtMultiLine )
       binarySize += sizeof( int );
     for ( int partIndex = 0; partIndex < lines.size(); ++partIndex )
     {
-      if ( lines.size() > 1 )
+      if ( iType == GtMultiLine )
         binarySize += 1 + sizeof( int );
       auto &line = lines[ partIndex ];
 
@@ -2739,14 +2739,11 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
 
     ba.resize( binarySize );
     ptr.cPtr = ba.data();
-    *ptr.ucPtr++ = byteorder();
 
-    if ( lines.size() == 1 )
+    Q_ASSERT( iType == GtMultiLine || lines.size() == 1 );
+    if ( iType == GtMultiLine )
     {
-      *ptr.iPtr++ = lines[0].first;
-    }
-    else
-    {
+      *ptr.ucPtr++ = byteorder();
       if ( isCurved )
         *ptr.iPtr++ = nDims == 2 ? WKBMultiCurve : WKBMultiCurveZ;
       else
@@ -2756,11 +2753,8 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
 
     for ( const auto &line : qAsConst( lines ) )
     {
-      if ( lines.size() > 1 )
-      {
-        *ptr.ucPtr++ = byteorder();
-        *ptr.iPtr++ = line.first;
-      }
+      *ptr.ucPtr++ = byteorder();
+      *ptr.iPtr++ = line.first;
 
       if ( line.first == WKBCompoundCurve || line.first == WKBCompoundCurveZ )
       {
@@ -3903,9 +3897,10 @@ bool QOCISpatialDriver::open( const QString &db,
   {
     QString versionStr;
     versionStr = QString( reinterpret_cast<const QChar *>( vertxt ) );
-    QRegExp vers( QLatin1String( "([0-9]+)\\.[0-9\\.]+[0-9]" ) );
-    if ( vers.indexIn( versionStr ) >= 0 )
-      d->serverVersion = vers.cap( 1 ).toInt();
+    QRegularExpression vers( QLatin1String( "([0-9]+)\\.[0-9\\.]+[0-9]" ) );
+    QRegularExpressionMatch match = vers.match( versionStr );
+    if ( match.hasMatch() )
+      d->serverVersion = match.captured( 1 ).toInt();
     if ( d->serverVersion == 0 )
       d->serverVersion = -1;
   }

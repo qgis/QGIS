@@ -158,15 +158,15 @@ bool QgsMapToolSelect::populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEve
     modifiers = event->modifiers();
     mapPoint = event->mapPoint();
   }
-  QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection;
+  Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection;
   if ( modifiers & Qt::ShiftModifier && modifiers & Qt::ControlModifier )
-    behavior = QgsVectorLayer::IntersectSelection;
+    behavior = Qgis::SelectBehavior::IntersectSelection;
   else if ( modifiers & Qt::ShiftModifier )
-    behavior = QgsVectorLayer::AddToSelection;
+    behavior = Qgis::SelectBehavior::AddToSelection;
   else if ( modifiers & Qt::ControlModifier )
-    behavior = QgsVectorLayer::RemoveFromSelection;
+    behavior = Qgis::SelectBehavior::RemoveFromSelection;
 
-  QgsRectangle r = QgsMapToolSelectUtils::expandSelectRectangle( mapPoint, mCanvas, vlayer );
+  const QgsRectangle r = QgsMapToolSelectUtils::expandSelectRectangle( mapPoint, mCanvas, vlayer );
 
   QgsMapToolSelectUtils::QgsMapToolSelectMenuActions *menuActions
     = new QgsMapToolSelectUtils::QgsMapToolSelectMenuActions( mCanvas, vlayer, behavior, QgsGeometry::fromRect( r ), menu );
@@ -184,7 +184,7 @@ void QgsMapToolSelect::selectFeatures( Qt::KeyboardModifiers modifiers )
        mSelectionHandler->selectedGeometry().type() == QgsWkbTypes::PointGeometry )
   {
     QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
-    QgsRectangle r = QgsMapToolSelectUtils::expandSelectRectangle( mSelectionHandler->selectedGeometry().asPoint(), mCanvas, vlayer );
+    const QgsRectangle r = QgsMapToolSelectUtils::expandSelectRectangle( mSelectionHandler->selectedGeometry().asPoint(), mCanvas, vlayer );
     QgsMapToolSelectUtils::selectSingleFeature( mCanvas, QgsGeometry::fromRect( r ), modifiers );
   }
   else

@@ -82,11 +82,18 @@ Returns the next result row or an empty row if there are no rows left.
 .. seealso:: :py:func:`rewind`
 %End
 
-        qlonglong fetchedRowCount( ) const;
+        long long fetchedRowCount( ) const;
 %Docstring
 Returns the number of fetched rows.
 
 .. seealso:: :py:func:`rowCount`
+%End
+
+        long long rowCount( ) const;
+%Docstring
+Returns the number of rows returned by a SELECT query or Qgis.FeatureCountState.UnknownCount if unknown.
+
+.. seealso:: :py:func:`fetchedRowCount`
 %End
 
 
@@ -118,9 +125,29 @@ Returns the number of fetched rows.
 
 
 
+        double queryExecutionTime( );
+%Docstring
+Returns the query execution time in milliseconds.
+%End
+
+        void setQueryExecutionTime( double queryExecutionTime );
+%Docstring
+Sets the query execution time to ``queryExecutionTime`` milliseconds.
+%End
+
 
     };
 
+    struct SqlVectorLayerOptions
+    {
+      QString sql;
+      QString filter;
+      QString layerName;
+      QStringList primaryKeyColumns;
+      QString geometryColumn;
+      bool disableSelectAtId;
+
+    };
 
     struct TableProperty
     {
@@ -294,6 +321,11 @@ This information is calculated from the geometry columns types.
 
     };
 
+    struct SpatialIndexOptions
+    {
+      QString geometryColumnName;
+    };
+
     enum Capability
     {
       CreateVectorTable,
@@ -360,6 +392,13 @@ Returns connection capabilities
 Returns connection geometry column capabilities (Z, M, SinglePart, Curves).
 
 .. versionadded:: 3.16
+%End
+
+    virtual Qgis::SqlLayerDefinitionCapabilities sqlLayerDefinitionCapabilities();
+%Docstring
+Returns SQL layer definition capabilities (Filters, GeometryColumn, PrimaryKeys).
+
+.. versionadded:: 3.22
 %End
 
 
@@ -434,7 +473,7 @@ Renames a raster table with given ``schema`` (schema is ignored if not supported
 %Docstring
 Creates a new schema with the specified ``name``.
 
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if any errors are encountered.
 %End
 
     virtual void dropSchema( const QString &name, bool force = false ) const throw( QgsProviderConnectionException );
@@ -486,7 +525,6 @@ Adds a field.
 .. versionadded:: 3.16
 %End
 
-
     virtual void renameSchema( const QString &name, const QString &newName ) const throw( QgsProviderConnectionException );
 %Docstring
 Renames a schema with the specified ``name``.
@@ -496,7 +534,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 
    it is responsibility of the caller to handle open layers and registry entries.
 
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if any errors are encountered.
 %End
 
     virtual QList<QList<QVariant>> executeSql( const QString &sql, QgsFeedback *feedback = 0 ) const throw( QgsProviderConnectionException );
@@ -506,6 +544,28 @@ Executes raw ``sql`` and returns the (possibly empty) list of results in a multi
 .. seealso:: :py:func:`execSql`
 
 :raises QgsProviderConnectionException: if any errors are encountered.
+%End
+
+    virtual QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const throw( QgsProviderConnectionException ) /Factory/;
+%Docstring
+Creates and returns a (possibly invalid) vector layer based on the ``sql`` statement and optional ``options``.
+
+:raises QgsProviderConnectionException: if any errors are encountered or if SQL layer creation is not supported.
+
+.. versionadded:: 3.22
+%End
+
+    virtual SqlVectorLayerOptions sqlOptions( const QString &layerSource ) throw( QgsProviderConnectionException );
+%Docstring
+Returns the SQL layer options from a ``layerSource``.
+
+.. note::
+
+   the default implementation returns a default constructed option object.
+
+:raises QgsProviderConnectionException: if any errors are encountered or if SQL layer creation is not supported.
+
+.. versionadded:: 3.22
 %End
 
     virtual QueryResult execSql( const QString &sql, QgsFeedback *feedback = 0 ) const throw( QgsProviderConnectionException );
@@ -525,11 +585,6 @@ Vacuum the database table with given ``schema`` and ``name`` (schema is ignored 
 
 :raises QgsProviderConnectionException: if any errors are encountered.
 %End
-
-    struct SpatialIndexOptions
-    {
-      QString geometryColumnName;
-    };
 
     virtual void createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options = QgsAbstractDatabaseProviderConnection::SpatialIndexOptions() ) const throw( QgsProviderConnectionException );
 %Docstring
@@ -601,8 +656,10 @@ Returns the fields of a ``table`` and ``schema``.
 
 .. note::
 
-   The default implementation creates a temporary vector layer, providers may
-   choose to override this method for a greater efficiency.
+   the default implementation creates a temporary vector layer, providers may
+   choose to override this method for a greater efficiency of to overcome provider's
+   behavior when the layer does not expose all fields (GPKG for example hides geometry
+   and primary key column).
 
 :raises QgsProviderConnectionException: if any errors are encountered.
 
@@ -613,7 +670,7 @@ Returns the fields of a ``table`` and ``schema``.
 %Docstring
 Returns a list of native types supported by the connection.
 
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if any errors are encountered.
 
 .. versionadded:: 3.16
 %End
@@ -623,6 +680,17 @@ Returns a list of native types supported by the connection.
 Returns the provider key.
 
 .. versionadded:: 3.16
+%End
+
+    virtual QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary();
+%Docstring
+Returns a dictionary of SQL keywords supported by the provider.
+The default implementation returns an list of common reserved words under the
+"Keyword" and "Constant" categories.
+
+Subclasses should add provider- and/or connection- specific words.
+
+.. versionadded:: 3.22
 %End
 
   protected:

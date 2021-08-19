@@ -18,7 +18,7 @@
  ***************************************************************************/
 
 #include <limits>
-#include <QRegExpValidator>
+#include <QRegularExpressionValidator>
 #include <QRegularExpression>
 #include <QLocale>
 #include "qgis_gui.h"
@@ -33,7 +33,7 @@ QgsDoubleValidator::QgsDoubleValidator( QObject *parent )
   , mMaximum( std::numeric_limits<qreal>::max() )
 {
   // The regular expression accept double with point as decimal point but also the locale decimal point
-  QRegularExpression reg( PERMISSIVE_DOUBLE.arg( locale().decimalPoint() ).arg( 1000 ) );
+  const QRegularExpression reg( PERMISSIVE_DOUBLE.arg( locale().decimalPoint() ).arg( 1000 ) );
   setRegularExpression( reg );
 }
 
@@ -51,7 +51,7 @@ QgsDoubleValidator::QgsDoubleValidator( double bottom, double top, QObject *pare
   , mMaximum( top )
 {
   // The regular expression accept double with point as decimal point but also the locale decimal point
-  QRegularExpression reg( PERMISSIVE_DOUBLE.arg( locale().decimalPoint() ).arg( 1000 ) );
+  const QRegularExpression reg( PERMISSIVE_DOUBLE.arg( locale().decimalPoint() ).arg( 1000 ) );
   setRegularExpression( reg );
 }
 
@@ -61,7 +61,7 @@ QgsDoubleValidator::QgsDoubleValidator( double bottom, double top, int decimal, 
   , mMaximum( top )
 {
   // The regular expression accept double with point as decimal point but also the locale decimal point
-  QRegularExpression reg( PERMISSIVE_DOUBLE.arg( locale().decimalPoint() ).arg( QString::number( decimal ) ) );
+  const QRegularExpression reg( PERMISSIVE_DOUBLE.arg( locale().decimalPoint() ).arg( QString::number( decimal ) ) );
   setRegularExpression( reg );
 }
 
@@ -71,7 +71,13 @@ QgsDoubleValidator::QgsDoubleValidator( int decimal, QObject *parent )
   , mMaximum( std::numeric_limits<qreal>::max() )
 {
   // The regular expression accept double with point as decimal point but also the locale decimal point
-  QRegularExpression reg( PERMISSIVE_DOUBLE.arg( locale().decimalPoint() ).arg( QString::number( decimal ) ) );
+  const QRegularExpression reg( PERMISSIVE_DOUBLE.arg( locale().decimalPoint() ).arg( QString::number( decimal ) ) );
+  setRegularExpression( reg );
+}
+
+void QgsDoubleValidator::setMaxDecimals( int maxDecimals )
+{
+  const QRegularExpression reg( PERMISSIVE_DOUBLE.arg( locale().decimalPoint() ).arg( QString::number( maxDecimals ) ) );
   setRegularExpression( reg );
 }
 

@@ -56,6 +56,26 @@ QList<QgsProviderSublayerDetails> QgsProviderSublayerModel::sublayerDetails() co
   return mSublayers;
 }
 
+QgsProviderSublayerDetails QgsProviderSublayerModel::indexToSublayer( const QModelIndex &index ) const
+{
+  if ( index.isValid() && index.row() < mSublayers.count() )
+  {
+    return mSublayers.at( index.row() );
+  }
+
+  return QgsProviderSublayerDetails();
+}
+
+QgsProviderSublayerModel::NonLayerItem QgsProviderSublayerModel::indexToNonLayerItem( const QModelIndex &index ) const
+{
+  if ( index.isValid() && index.row() >= mSublayers.count() && index.row() < mSublayers.count() + mNonLayerItems.count() )
+  {
+    return mNonLayerItems.at( index.row() - mSublayers.count() );
+  }
+
+  return QgsProviderSublayerModel::NonLayerItem();
+}
+
 void QgsProviderSublayerModel::addNonLayerItem( const QgsProviderSublayerModel::NonLayerItem &item )
 {
   beginInsertRows( QModelIndex(), mSublayers.count() + mNonLayerItems.count(), mSublayers.count() + mNonLayerItems.count() );
@@ -173,7 +193,7 @@ QVariant QgsProviderSublayerModel::data( const QModelIndex &index, int role ) co
       {
         if ( index.column() == 0 )
           return details.type() == QgsMapLayerType::VectorLayer
-                 ? QgsIconUtils::iconForWkbType( details.wkbType() )
+                 ? ( details.wkbType() != QgsWkbTypes::Unknown ? QgsIconUtils::iconForWkbType( details.wkbType() ) : QVariant() )
                  : QgsIconUtils::iconForLayerType( details.type() );
         else
           return QVariant();
@@ -281,7 +301,7 @@ QVariant QgsProviderSublayerModel::headerData( int section, Qt::Orientation orie
           switch ( static_cast< Column>( section ) )
           {
             case QgsProviderSublayerModel::Column::Name:
-              return tr( "Layer" );
+              return tr( "Item" );
             case QgsProviderSublayerModel::Column::Description:
               return tr( "Description" );
           }
@@ -349,6 +369,19 @@ void QgsProviderSublayerModel::NonLayerItem::setIcon( const QIcon &icon )
   mIcon = icon;
 }
 
+bool QgsProviderSublayerModel::NonLayerItem::operator==( const QgsProviderSublayerModel::NonLayerItem &other ) const
+{
+  return mType == other.mType
+         && mName == other.mName
+         && mDescription == other.mDescription
+         && mUri == other.mUri;
+}
+
+bool QgsProviderSublayerModel::NonLayerItem::operator!=( const QgsProviderSublayerModel::NonLayerItem &other ) const
+{
+  return !( *this == other );
+}
+
 //
 // QgsProviderSublayerProxyModel
 //
@@ -373,6 +406,14 @@ bool QgsProviderSublayerProxyModel::filterAcceptsRow( int source_row, const QMod
   if ( sourceModel()->data( sourceIndex, static_cast< int >( QgsProviderSublayerModel::Role::Description ) ).toString().contains( mFilterString, Qt::CaseInsensitive ) )
     return true;
 
+  const QVariant wkbTypeVariant =  sourceModel()->data( sourceIndex, static_cast< int >( QgsProviderSublayerModel::Role::WkbType ) );
+  if ( wkbTypeVariant.isValid() )
+  {
+    const QgsWkbTypes::Type wkbType = static_cast< QgsWkbTypes::Type >( wkbTypeVariant.toInt() );
+    if ( QgsWkbTypes::displayString( wkbType ).contains( mFilterString, Qt::CaseInsensitive ) )
+      return true;
+  }
+
   return false;
 }
 
@@ -389,7 +430,7 @@ bool QgsProviderSublayerProxyModel::lessThan( const QModelIndex &source_left, co
   const QString leftName = sourceModel()->data( source_left, static_cast< int >( QgsProviderSublayerModel::Role::Name ) ).toString();
   const QString rightName = sourceModel()->data( source_right, static_cast< int >( QgsProviderSublayerModel::Role::Name ) ).toString();
 
-  return leftName.compare( rightName, Qt::CaseInsensitive );
+  return QString::localeAwareCompare( leftName, rightName ) < 0;
 }
 
 QString QgsProviderSublayerProxyModel::filterString() const

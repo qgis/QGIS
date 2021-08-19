@@ -111,9 +111,9 @@ void QgsRunProcess::die()
 
 void QgsRunProcess::stdoutAvailable()
 {
-  QByteArray bytes( mProcess->readAllStandardOutput() );
+  const QByteArray bytes( mProcess->readAllStandardOutput() );
   QTextCodec *codec = QTextCodec::codecForLocale();
-  QString line( codec->toUnicode( bytes ) );
+  const QString line( codec->toUnicode( bytes ) );
 
   // Add the new output to the dialog box
   mOutput->appendMessage( line );
@@ -121,9 +121,9 @@ void QgsRunProcess::stdoutAvailable()
 
 void QgsRunProcess::stderrAvailable()
 {
-  QByteArray bytes( mProcess->readAllStandardOutput() );
+  const QByteArray bytes( mProcess->readAllStandardOutput() );
   QTextCodec *codec = QTextCodec::codecForLocale();
-  QString line( codec->toUnicode( bytes ) );
+  const QString line( codec->toUnicode( bytes ) );
 
   // Add the new output to the dialog box, but color it red
   mOutput->appendMessage( "<font color=red>" + line + "</font>" );
@@ -274,14 +274,14 @@ int QgsBlockingProcess::run( QgsFeedback *feedback )
   QProcess::ExitStatus exitStatus = QProcess::NormalExit;
   QProcess::ProcessError error = QProcess::UnknownError;
 
-  std::function<void()> runFunction = [ this, &result, &exitStatus, &error, feedback]()
+  const std::function<void()> runFunction = [ this, &result, &exitStatus, &error, feedback]()
   {
     // this function will always be run in worker threads -- either the blocking call is being made in a worker thread,
     // or the blocking call has been made from the main thread and we've fired up a new thread for this function
     Q_ASSERT( QThread::currentThread() != QgsApplication::instance()->thread() );
 
     QProcess p;
-    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    const QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
     p.setProcessEnvironment( env );
 
     QEventLoop loop;
@@ -311,12 +311,12 @@ int QgsBlockingProcess::run( QgsFeedback *feedback )
 
     connect( &p, &QProcess::readyReadStandardOutput, &p, [&p, this]
     {
-      QByteArray ba = p.readAllStandardOutput();
+      const QByteArray ba = p.readAllStandardOutput();
       mStdoutHandler( ba );
     } );
     connect( &p, &QProcess::readyReadStandardError, &p, [&p, this]
     {
-      QByteArray ba = p.readAllStandardError();
+      const QByteArray ba = p.readAllStandardError();
       mStderrHandler( ba );
     } );
     p.start( mProcess, mArguments, QProcess::Unbuffered | QProcess::ReadWrite );

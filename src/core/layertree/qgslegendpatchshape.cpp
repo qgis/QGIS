@@ -76,7 +76,7 @@ QPolygonF curveToPolygonF( const QgsCurve *curve )
   }
   else
   {
-    std::unique_ptr< QgsLineString > straightened( curve->curveToLine() );
+    const std::unique_ptr< QgsLineString > straightened( curve->curveToLine() );
     return lineStringToQPolygonF( straightened.get() );
   }
 }
@@ -102,10 +102,10 @@ QList<QList<QPolygonF> > QgsLegendPatchShape::toQPolygonF( Qgis::SymbolType type
   }
 
   // important -- the transform needs to flip from north-up to painter style "increasing y down" coordinates
-  QPolygonF targetRectPoly = QPolygonF() << QPointF( dx, dy + size.height() )
-                             << QPointF( dx + size.width(), dy + size.height() )
-                             << QPointF( dx + size.width(), dy )
-                             << QPointF( dx, dy );
+  const QPolygonF targetRectPoly = QPolygonF() << QPointF( dx, dy + size.height() )
+                                   << QPointF( dx + size.width(), dy + size.height() )
+                                   << QPointF( dx + size.width(), dy )
+                                   << QPointF( dx, dy );
   QTransform t;
 
   if ( bounds.width() > 0 && bounds.height() > 0 )

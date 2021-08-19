@@ -380,9 +380,15 @@ colors are specified then the ``size`` argument also must be set.
 Returns the path to user's style.
 %End
 
-    static QRegExp shortNameRegExp();
+    static QRegularExpression shortNameRegularExpression();
 %Docstring
 Returns the short name regular expression for line edit validator
+
+.. note::
+
+   This functionality was previously available as `shortNameRegExp` for QGIS <= 3.20
+
+.. versionadded:: 3.22
 %End
 
     static QString userLoginName();
@@ -788,6 +794,13 @@ Returns the application's GPS connection registry, used for managing GPS connect
 .. versionadded:: 3.0
 %End
 
+    static QgsBabelFormatRegistry *gpsBabelFormatRegistry() /KeepReference/;
+%Docstring
+Returns the application's GPSBabel format registry, used for managing GPSBabel formats.
+
+.. versionadded:: 3.22
+%End
+
     static QgsPluginLayerRegistry *pluginLayerRegistry() /KeepReference/;
 %Docstring
 Returns the application's plugin layer registry, used for managing plugin layer types.
@@ -914,6 +927,13 @@ Gets the registry of available scalebar renderers.
 Returns registry of available project storage implementations.
 
 .. versionadded:: 3.2
+%End
+
+    static QgsExternalStorageRegistry *externalStorageRegistry() /KeepReference/;
+%Docstring
+Returns registry of available external storage implementations.
+
+.. versionadded:: 3.20
 %End
 
     static QgsLocalizedDataPathRegistry *localizedDataPathRegistry() /KeepReference/;

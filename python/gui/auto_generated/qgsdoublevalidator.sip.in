@@ -70,6 +70,18 @@ Constructor for QgsDoubleValidator.
 .. versionadded:: 3.16
 %End
 
+    void setMaxDecimals( int maxDecimals );
+%Docstring
+Sets the number of decimals accepted by the validator to ``maxDecimals``.
+
+.. warning::
+
+   setting decimals overrides any custom regular expression that was previously set
+
+.. versionadded:: 3.22
+%End
+
+
 
     QValidator::State validate( QString &input ) const;
 %Docstring

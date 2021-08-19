@@ -64,7 +64,7 @@ QVariant QgsReportSectionModel::data( const QModelIndex &index, int role ) const
       {
         case 0:
         {
-          QIcon icon = section->icon();
+          const QIcon icon = section->icon();
 
           if ( section == mEditedSection )
           {
@@ -232,7 +232,7 @@ void QgsReportSectionModel::setEditedSection( QgsAbstractReportSection *section 
 
   if ( mEditedSection )
   {
-    QModelIndex newSection = indexForSection( mEditedSection );
+    const QModelIndex newSection = indexForSection( mEditedSection );
     emit dataChanged( newSection, newSection, QVector<int>() << Qt::DecorationRole );
   }
 

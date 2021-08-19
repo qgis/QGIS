@@ -104,7 +104,7 @@ bool QgsMapRendererStagedRenderJob::renderCurrentPart( QPainter *painter )
     LayerRenderJob &job = *mJobIt;
     job.renderer->renderContext()->setPainter( painter );
 
-    if ( job.context.useAdvancedEffects() )
+    if ( job.context()->useAdvancedEffects() )
     {
       // Set the QPainter composition mode so that this layer is rendered using
       // the desired blending mode
@@ -126,7 +126,7 @@ bool QgsMapRendererStagedRenderJob::renderCurrentPart( QPainter *painter )
       painter->drawImage( 0, 0, *job.img );
       painter->setOpacity( 1.0 );
     }
-    job.context.setPainter( nullptr );
+    job.context()->setPainter( nullptr );
   }
   else
   {
@@ -226,7 +226,7 @@ QString QgsMapRendererStagedRenderJob::currentLayerId() const
 {
   if ( mJobIt != mLayerJobs.end() )
   {
-    LayerRenderJob &job = *mJobIt;
+    const LayerRenderJob &job = *mJobIt;
     return job.layerId;
   }
   else if ( mFlags & RenderLabelsByMapLayer && mPreparedStagedLabelJob )
@@ -241,7 +241,7 @@ double QgsMapRendererStagedRenderJob::currentLayerOpacity() const
 {
   if ( mJobIt != mLayerJobs.end() )
   {
-    LayerRenderJob &job = *mJobIt;
+    const LayerRenderJob &job = *mJobIt;
     return job.opacity;
   }
   return 1.0;
@@ -251,7 +251,7 @@ QPainter::CompositionMode QgsMapRendererStagedRenderJob::currentLayerComposition
 {
   if ( mJobIt != mLayerJobs.end() )
   {
-    LayerRenderJob &job = *mJobIt;
+    const LayerRenderJob &job = *mJobIt;
     return job.blendMode;
   }
   return QPainter::CompositionMode_SourceOver;

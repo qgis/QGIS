@@ -37,6 +37,10 @@ value.
 
 .. seealso:: :py:func:`compatibleMeshLayers`
 
+.. seealso:: :py:func:`compatiblePluginLayers`
+
+.. seealso:: :py:func:`compatiblePointCloudLayers`
+
 .. seealso:: :py:func:`compatibleLayers`
 %End
 
@@ -59,6 +63,10 @@ value.
 
 .. seealso:: :py:func:`compatibleMeshLayers`
 
+.. seealso:: :py:func:`compatiblePluginLayers`
+
+.. seealso:: :py:func:`compatiblePointCloudLayers`
+
 .. seealso:: :py:func:`compatibleLayers`
 %End
 
@@ -74,9 +82,55 @@ value.
 
 .. seealso:: :py:func:`compatibleVectorLayers`
 
+.. seealso:: :py:func:`compatiblePluginLayers`
+
+.. seealso:: :py:func:`compatiblePointCloudLayers`
+
 .. seealso:: :py:func:`compatibleLayers`
 
 .. versionadded:: 3.6
+%End
+
+    static QList<QgsPluginLayer *> compatiblePluginLayers( QgsProject *project, bool sort = true );
+%Docstring
+Returns a list of plugin layers from a ``project`` which are compatible with the processing
+framework.
+
+If the ``sort`` argument is ``True`` then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
+value.
+
+.. seealso:: :py:func:`compatibleRasterLayers`
+
+.. seealso:: :py:func:`compatibleVectorLayers`
+
+.. seealso:: :py:func:`compatibleMeshLayers`
+
+.. seealso:: :py:func:`compatiblePointCloudLayers`
+
+.. seealso:: :py:func:`compatibleLayers`
+
+.. versionadded:: 3.22
+%End
+
+    static QList<QgsPointCloudLayer *> compatiblePointCloudLayers( QgsProject *project, bool sort = true );
+%Docstring
+Returns a list of point cloud layers from a ``project`` which are compatible with the processing
+framework.
+
+If the ``sort`` argument is ``True`` then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
+value.
+
+.. seealso:: :py:func:`compatibleRasterLayers`
+
+.. seealso:: :py:func:`compatibleVectorLayers`
+
+.. seealso:: :py:func:`compatibleMeshLayers`
+
+.. seealso:: :py:func:`compatiblePluginLayers`
+
+.. seealso:: :py:func:`compatibleLayers`
+
+.. versionadded:: 3.22
 %End
 
     static QList< QgsMapLayer * > compatibleLayers( QgsProject *project, bool sort = true );
@@ -120,6 +174,7 @@ Decodes a provider key and layer ``uri`` from an encoded string, for use with
       Vector,
       Raster,
       Mesh,
+      PointCloud,
     };
 
     static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType );

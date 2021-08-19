@@ -35,6 +35,7 @@ set(TESTS
   testqgsdockwidget.cpp
   testqgsfieldexpressionwidget.cpp
   testqgsfilewidget.cpp
+  testqgsexternalstoragefilewidget.cpp
   testqgsfocuswatcher.cpp
   testqgshtmlwidgetwrapper.cpp
   testqgsmapcanvas.cpp
@@ -67,6 +68,7 @@ set(TESTS
   testqgsmeshlayerpropertiesdialog.cpp
   testqgsexternalresourcewidgetwrapper.cpp
   testqgsquerybuilder.cpp
+  testqgsqueryresultwidget.cpp
 )
 
 foreach(TESTSRC ${TESTS})
@@ -83,5 +85,6 @@ if (ENABLE_PGTEST)
     test_gui_valuerelationwidgetwrapper
     test_gui_texteditwrapper
     test_gui_newdatabasetablewidget
+    test_gui_queryresultwidget
     PROPERTIES LABELS "POSTGRES")
 endif()

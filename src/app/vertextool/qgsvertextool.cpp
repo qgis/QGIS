@@ -2506,21 +2506,21 @@ void QgsVertexTool::deleteVertex()
       QgsFeatureId fid = it2.key();
       QList<int> &vertexIds = it2.value();
 
-      bool res = QgsVectorLayer::Success;
+      Qgis::VectorEditResult res = Qgis::VectorEditResult::Success;
       std::sort( vertexIds.begin(), vertexIds.end(), std::greater<int>() );
       for ( int vertexId : vertexIds )
       {
         QgsMessageLog::logMessage( "DELETE : fid:" + QString::number( fid ) + " ; vertexId:" + QString::number( vertexId ), "DEBUG" );
-        if ( res != QgsVectorLayer::EmptyGeometry )
+        if ( res != Qgis::VectorEditResult::EmptyGeometry )
           res = layer->deleteVertex( fid, vertexId );
-        if ( res != QgsVectorLayer::EmptyGeometry && res != QgsVectorLayer::Success )
+        if ( res != Qgis::VectorEditResult::EmptyGeometry && res != Qgis::VectorEditResult::Success )
         {
           QgsDebugMsg( QStringLiteral( "failed to delete vertex %1 %2 %3!" ).arg( layer->name() ).arg( fid ).arg( vertexId ) );
           success = false;
         }
       }
 
-      if ( res == QgsVectorLayer::EmptyGeometry )
+      if ( res == Qgis::VectorEditResult::EmptyGeometry )
       {
         emit messageEmitted( tr( "Geometry has been cleared. Use the add part tool to set geometry for this feature." ) );
       }
@@ -2882,9 +2882,9 @@ void QgsVertexTool::GeometryValidation::start( QgsGeometry &geom, QgsVertexTool 
 {
   tool = t;
   layer = l;
-  QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal;
+  Qgis::GeometryValidationEngine method = Qgis::GeometryValidationEngine::QgisInternal;
   if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.value() == 2 )
-    method = QgsGeometry::ValidatorGeos;
+    method = Qgis::GeometryValidationEngine::Geos;
 
   validator = new QgsGeometryValidator( geom, nullptr, method );
   connect( validator, &QgsGeometryValidator::errorFound, tool, &QgsVertexTool::validationErrorFound );

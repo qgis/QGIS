@@ -146,7 +146,7 @@ bool QgsBench::openProject( const QString &fileName )
 
 void QgsBench::readProject( const QDomDocument &doc )
 {
-  QDomNodeList nodes = doc.elementsByTagName( QStringLiteral( "mapcanvas" ) );
+  const QDomNodeList nodes = doc.elementsByTagName( QStringLiteral( "mapcanvas" ) );
   if ( nodes.count() )
   {
     QDomNode node = nodes.item( 0 );
@@ -169,7 +169,7 @@ void QgsBench::render()
 
   QgsDebugMsg( "extent: " +  mMapSettings.extent().toString() );
 
-  QMap<QString, QgsMapLayer *> layersMap = QgsProject::instance()->mapLayers();
+  const QMap<QString, QgsMapLayer *> layersMap = QgsProject::instance()->mapLayers();
 
   mMapSettings.setLayers( layersMap.values() );
 
@@ -238,7 +238,7 @@ void QgsBench::render()
     {
       for ( int i = 0; i < mTimes.size(); i++ )
       {
-        double d = std::fabs( avg[t] - mTimes.at( i )[t] );
+        const double d = std::fabs( avg[t] - mTimes.at( i )[t] );
         stdev[t] += std::pow( d, 2 );
         if ( i == 0 || d > maxdev[t] ) maxdev[t] = d;
       }
@@ -285,7 +285,7 @@ void QgsBench::printLog( const QString &printTime )
   QMap<QString, QVariant>::iterator i = totalMap.begin();
   while ( i != totalMap.end() )
   {
-    QString s = printTime + '_' + i.key() + ": " + i.value().toString();
+    const QString s = printTime + '_' + i.key() + ": " + i.value().toString();
     std::cout << s.toLatin1().constData() << std::endl;
     ++i;
   }
@@ -294,8 +294,8 @@ void QgsBench::printLog( const QString &printTime )
 QString QgsBench::serialize( const QMap<QString, QVariant> &map, int level )
 {
   QStringList list;
-  QString space = QStringLiteral( " " ).repeated( level * 2 );
-  QString space2 = QStringLiteral( " " ).repeated( level * 2 + 2 );
+  const QString space = QStringLiteral( " " ).repeated( level * 2 );
+  const QString space2 = QStringLiteral( " " ).repeated( level * 2 + 2 );
   QMap<QString, QVariant>::const_iterator i = map.constBegin();
   while ( i != map.constEnd() )
   {
@@ -345,8 +345,8 @@ void QgsBench::elapsed()
   struct rusage usage;
   getrusage( RUSAGE_SELF, &usage );
 
-  double userEnd = usage.ru_utime.tv_sec + usage.ru_utime.tv_usec / 1000000.;
-  double sysEnd = usage.ru_stime.tv_sec + usage.ru_stime.tv_usec / 1000000.;
+  const double userEnd = usage.ru_utime.tv_sec + usage.ru_utime.tv_usec / 1000000.;
+  const double sysEnd = usage.ru_stime.tv_sec + usage.ru_stime.tv_usec / 1000000.;
 
   double *t = new double[4];
   t[0] = userEnd - mUserStart;

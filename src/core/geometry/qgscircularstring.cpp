@@ -575,7 +575,7 @@ bool QgsCircularString::isEmpty() const
   return mX.isEmpty();
 }
 
-bool QgsCircularString::isValid( QString &error, int flags ) const
+bool QgsCircularString::isValid( QString &error, Qgis::GeometryValidityFlags flags ) const
 {
   if ( !isEmpty() && ( numPoints() < 3 ) )
   {

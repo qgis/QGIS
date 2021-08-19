@@ -40,12 +40,12 @@ QgsVectorLayerSaveStyleDialog::QgsVectorLayerSaveStyleDialog( QgsVectorLayer *la
       providerName = QStringLiteral( "GeoPackage" );
   }
 
-  QString myLastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
+  const QString myLastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   // save style type combobox
   connect( mStyleTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
   {
-    QgsVectorLayerProperties::StyleType type = currentStyleType();
+    const QgsVectorLayerProperties::StyleType type = currentStyleType();
     mSaveToFileWidget->setVisible( type != QgsVectorLayerProperties::DB );
     mSaveToDbWidget->setVisible( type == QgsVectorLayerProperties::DB );
     mStyleCategoriesListView->setEnabled( type == QgsVectorLayerProperties::QML );
@@ -74,13 +74,13 @@ QgsVectorLayerSaveStyleDialog::QgsVectorLayerSaveStyleDialog( QgsVectorLayer *la
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
   {
     QgsSettings settings;
-    QFileInfo tmplFileInfo( path );
+    const QFileInfo tmplFileInfo( path );
     settings.setValue( QStringLiteral( "style/lastStyleDir" ), tmplFileInfo.absolutePath() );
   } );
 
   // fill style categories
   mModel = new QgsMapLayerStyleCategoriesModel( mLayer->type(), this );
-  QgsMapLayer::StyleCategories lastStyleCategories = settings.flagValue( QStringLiteral( "style/lastStyleCategories" ), QgsMapLayer::AllStyleCategories );
+  const QgsMapLayer::StyleCategories lastStyleCategories = settings.flagValue( QStringLiteral( "style/lastStyleCategories" ), QgsMapLayer::AllStyleCategories );
   mModel->setCategories( lastStyleCategories );
   mStyleCategoriesListView->setModel( mModel );
 
@@ -98,7 +98,7 @@ void QgsVectorLayerSaveStyleDialog::accept()
 
 void QgsVectorLayerSaveStyleDialog::updateSaveButtonState()
 {
-  QgsVectorLayerProperties::StyleType type = currentStyleType();
+  const QgsVectorLayerProperties::StyleType type = currentStyleType();
   bool enabled { false };
   switch ( type )
   {
@@ -155,15 +155,15 @@ void QgsVectorLayerSaveStyleDialog::readUiFileContent( const QString &filePath )
     return;
   }
 
-  QFileInfo myFI( filePath );
+  const QFileInfo myFI( filePath );
   QFile uiFile( myFI.filePath() );
 
-  QString myPath = myFI.path();
+  const QString myPath = myFI.path();
   myQSettings.setValue( QStringLiteral( "style/lastStyleDir" ), myPath );
 
   if ( uiFile.open( QIODevice::ReadOnly ) )
   {
-    QString content( uiFile.readAll() );
+    const QString content( uiFile.readAll() );
     QDomDocument doc;
 
     if ( !doc.setContent( content ) || doc.documentElement().tagName().compare( QLatin1String( "ui" ) ) )

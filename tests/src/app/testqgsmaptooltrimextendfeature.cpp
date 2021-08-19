@@ -66,7 +66,7 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       //       |           + (2,1) |
       // (0,0) +-------------------+ (3,0)
       vlPolygon.reset( new QgsVectorLayer( QStringLiteral( "MultiPolygon?field=fld:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) ) );
-      int idx = vlPolygon->fields().indexFromName( QStringLiteral( "fld" ) );
+      const int idx = vlPolygon->fields().indexFromName( QStringLiteral( "fld" ) );
       QVERIFY( idx != -1 );
       f1.initAttributes( 1 );
       f2.initAttributes( 1 );
@@ -75,7 +75,7 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       QgsPolylineXY polyline;
       polyline << QgsPointXY( 1, 2 ) << QgsPointXY( 2, 1 ) << QgsPointXY( 2, 2 ) << QgsPointXY( 1, 2 );
       polygon << polyline;
-      QgsGeometry polygonGeom = QgsGeometry::fromPolygonXY( polygon );
+      const QgsGeometry polygonGeom = QgsGeometry::fromPolygonXY( polygon );
       f1.setGeometry( polygonGeom );
       f1.setAttribute( idx, QVariant( 1 ) );
       QgsFeatureList flist;
@@ -86,7 +86,7 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       QgsPolylineXY polyline2;
       polyline2 << QgsPointXY( 0, 0 ) << QgsPointXY( 3, 0 ) << QgsPointXY( 3, 3 ) << QgsPointXY( 0, 3 ) << QgsPointXY( 0, 0 );
       polygon2 << polyline2;
-      QgsGeometry polygonGeom2 = QgsGeometry::fromPolygonXY( polygon2 );
+      const QgsGeometry polygonGeom2 = QgsGeometry::fromPolygonXY( polygon2 );
       f2.setGeometry( polygonGeom2 );
       f2.setAttribute( idx, QVariant( 2 ) );
       QgsFeatureList flist2;
@@ -247,9 +247,9 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       //       |               \ \ |
       //       |                  \|
       // (0,0) +-------------------+ (3,0)
-      QgsFeature f = vlPolygon->getFeature( 1 );
+      const QgsFeature f = vlPolygon->getFeature( 1 );
 
-      QString wkt = "Polygon ((1 2, 3 0, 2 2, 1 2))";
+      const QString wkt = "Polygon ((1 2, 3 0, 2 2, 1 2))";
       QCOMPARE( f.geometry().asWkt(), wkt );
 
       vlPolygon->rollBack();
@@ -463,9 +463,9 @@ class TestQgsMapToolTrimExtendFeature : public QObject
            /  \
       (0 5 100)      (3 5 5)
       */
-      QgsFeature f = vlLineZ->getFeature( 1 );
+      const QgsFeature f = vlLineZ->getFeature( 1 );
 
-      QString wkt = "LineStringZ (3 5 5, 1.5 6.5 150)";
+      const QString wkt = "LineStringZ (3 5 5, 1.5 6.5 150)";
       QCOMPARE( f.geometry().asWkt(), wkt );
 
       vlLineZ->rollBack();
@@ -473,7 +473,7 @@ class TestQgsMapToolTrimExtendFeature : public QObject
 
     void testTopologicalPoints()
     {
-      bool topologicalEditing = QgsProject::instance()->topologicalEditing();
+      const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
       QgsProject::instance()->setTopologicalEditing( true );
 
       mCanvas->setCurrentLayer( vlTopoEdit.get() );
@@ -514,11 +514,11 @@ class TestQgsMapToolTrimExtendFeature : public QObject
                    ) );
       tool->canvasReleaseEvent( event.get() );
 
-      QgsFeature fEdit = vlTopoEdit->getFeature( 1 );
-      QgsFeature fLimit = vlTopoLimit->getFeature( 1 );
+      const QgsFeature fEdit = vlTopoEdit->getFeature( 1 );
+      const QgsFeature fLimit = vlTopoLimit->getFeature( 1 );
 
-      QString wktEdit = "LineString (20 15, 30 15)";
-      QString wktLimit = "LineString (30 0, 30 15, 30 30)";
+      const QString wktEdit = "LineString (20 15, 30 15)";
+      const QString wktLimit = "LineString (30 0, 30 15, 30 30)";
       QCOMPARE( fEdit.geometry().asWkt(), wktEdit );
       QCOMPARE( fLimit.geometry().asWkt(), wktLimit );
 

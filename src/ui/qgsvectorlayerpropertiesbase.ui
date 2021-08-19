@@ -474,29 +474,6 @@
                     <item>
                      <widget class="QLineEdit" name="mLayerOrigNameLineEdit"/>
                     </item>
-                    <item>
-                     <widget class="QLabel" name="label_2">
-                      <property name="text">
-                       <string>displayed as</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLineEdit" name="txtDisplayName">
-                      <property name="enabled">
-                       <bool>true</bool>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">color: #505050;
-background-color: #F0F0F0;
-border: 1px solid #B0B0B0;
-border-radius: 2px;</string>
-                      </property>
-                      <property name="readOnly">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
                    </layout>
                   </item>
                   <item>
@@ -2039,6 +2016,9 @@ border-radius: 2px;</string>
                 <property name="enabled">
                  <bool>true</bool>
                 </property>
+                <attribute name="headerVisible">
+                 <bool>false</bool>
+                </attribute>
                </widget>
               </item>
               <item>
@@ -2704,7 +2684,6 @@ border-radius: 2px;</string>
   <tabstop>teMetadataViewer</tabstop>
   <tabstop>scrollArea_4</tabstop>
   <tabstop>mLayerOrigNameLineEdit</tabstop>
-  <tabstop>txtDisplayName</tabstop>
   <tabstop>cboProviderEncoding</tabstop>
   <tabstop>mCrsGroupBox</tabstop>
   <tabstop>mCrsSelector</tabstop>

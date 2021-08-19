@@ -58,8 +58,8 @@ void TestQgsMeshLayerPropertiesDialog::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/" );
-  QString uri( testDataDir + "/quad_and_triangle.2dm" );
+  const QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/" );
+  const QString uri( testDataDir + "/quad_and_triangle.2dm" );
   mpMeshLayer = new QgsMeshLayer( uri, "Triangle and Quad MDAL", "mdal" );
 
   QgsProject::instance()->addMapLayers(
@@ -76,7 +76,7 @@ void TestQgsMeshLayerPropertiesDialog::testInvalidLayer()
 {
   QgsMeshLayer invalidLayer;
   QgsMapCanvas mapCanvas;
-  std::unique_ptr< QgsMeshLayerProperties > dialog = std::make_unique< QgsMeshLayerProperties > ( &invalidLayer,
+  const std::unique_ptr< QgsMeshLayerProperties > dialog = std::make_unique< QgsMeshLayerProperties > ( &invalidLayer,
       &mapCanvas );
 
   QVERIFY( dialog );
@@ -88,15 +88,15 @@ void TestQgsMeshLayerPropertiesDialog::testCrs()
   std::unique_ptr< QgsMeshLayerProperties > dialog = std::make_unique< QgsMeshLayerProperties > ( mpMeshLayer,
       &mapCanvas );
   QCOMPARE( dialog->mCrsSelector->crs(), mpMeshLayer->crs() );
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromEpsgId( 27700 );
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromEpsgId( 27700 );
   dialog->mCrsSelector->setCrs( crs );
   QCOMPARE( crs, mpMeshLayer->crs() );
 }
 
 void TestQgsMeshLayerPropertiesDialog::testDatasetGroupTree()
 {
-  QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/" );
-  QString uri( testDataDir + "/trap_steady_05_3D.nc" );
+  const QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/" );
+  const QString uri( testDataDir + "/trap_steady_05_3D.nc" );
   QgsMeshLayer meshLayer( uri, "", "mdal" );
 
   QgsMeshRendererSettings rendererSettings = meshLayer.rendererSettings();

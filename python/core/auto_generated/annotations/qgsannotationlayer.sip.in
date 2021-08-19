@@ -93,6 +93,24 @@ This map contains references to items owned by the layer, and ownership of these
 with the layer.
 %End
 
+    QgsAnnotationItem *item( const QString &id );
+%Docstring
+Returns the item with the specified ``id``, or ``None`` if no matching item was found.
+
+.. versionadded:: 3.22
+%End
+
+    QStringList itemsInBounds( const QgsRectangle &bounds, QgsFeedback *feedback = 0 ) const;
+%Docstring
+Returns a list of the IDs of all annotation items within the specified ``bounds``.
+
+The optional ``feedback`` argument can be used to cancel the search early.
+
+.. versionadded:: 3.22
+%End
+
+    virtual Qgis::MapLayerProperties properties() const;
+
     virtual QgsAnnotationLayer *clone() const /Factory/;
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
@@ -108,6 +126,10 @@ with the layer.
     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &, StyleCategories categories = AllStyleCategories ) const;
 
     virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
+
+    virtual bool isEditable() const;
+
+    virtual bool supportsEditing() const;
 
 
 };

@@ -53,6 +53,7 @@
 #include <QValidator>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QRegularExpression>
 
 QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
@@ -96,7 +97,7 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
   {
     //set the current project CRS if available
-    QgsCoordinateReferenceSystem currentRefSys = QgsProject::instance()->crs();
+    const QgsCoordinateReferenceSystem currentRefSys = QgsProject::instance()->crs();
     //convert CRS id to epsg
     if ( currentRefSys.isValid() )
     {
@@ -173,14 +174,14 @@ void QgsOWSSourceSelect::populateFormats()
   formatsMap.insert( QStringLiteral( "png" ), QStringLiteral( "png" ) );
 
   int preferred = -1;
-  QStringList layersFormats = selectedLayersFormats();
+  const QStringList layersFormats = selectedLayersFormats();
   for ( int i = 0; i < layersFormats.size(); i++ )
   {
-    QString format = layersFormats.value( i );
+    const QString format = layersFormats.value( i );
     QgsDebugMsg( "server format = " + format );
-    QString simpleFormat = format.toLower().remove( QStringLiteral( "image/" ) ).remove( QRegExp( "_.*" ) );
+    const QString simpleFormat = format.toLower().remove( QStringLiteral( "image/" ) ).remove( QRegularExpression( "_.*" ) );
     QgsDebugMsg( "server simpleFormat = " + simpleFormat );
-    QString mimeFormat = "image/" + formatsMap.value( simpleFormat );
+    const QString mimeFormat = "image/" + formatsMap.value( simpleFormat );
     QgsDebugMsg( "server mimeFormat = " + mimeFormat );
 
     QString label = format;
@@ -253,7 +254,7 @@ QgsNewHttpConnection::ConnectionType connectionTypeFromServiceString( const QStr
 
 void QgsOWSSourceSelect::mNewButton_clicked()
 {
-  QgsNewHttpConnection::ConnectionType type = connectionTypeFromServiceString( mService );
+  const QgsNewHttpConnection::ConnectionType type = connectionTypeFromServiceString( mService );
   QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, type, "/qgis/connections-" + mService.toLower() + '/' );
 
   if ( nc->exec() )
@@ -267,7 +268,7 @@ void QgsOWSSourceSelect::mNewButton_clicked()
 
 void QgsOWSSourceSelect::mEditButton_clicked()
 {
-  QgsNewHttpConnection::ConnectionType type = connectionTypeFromServiceString( mService );
+  const QgsNewHttpConnection::ConnectionType type = connectionTypeFromServiceString( mService );
   QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, type, "/qgis/connections-" + mService.toLower() + '/', mConnectionsComboBox->currentText() );
 
   if ( nc->exec() )
@@ -281,9 +282,9 @@ void QgsOWSSourceSelect::mEditButton_clicked()
 
 void QgsOWSSourceSelect::mDeleteButton_clicked()
 {
-  QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                .arg( mConnectionsComboBox->currentText() );
-  QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Delete Connection" ), msg, QMessageBox::Yes | QMessageBox::No );
+  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
+                      .arg( mConnectionsComboBox->currentText() );
+  const QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Delete Connection" ), msg, QMessageBox::Yes | QMessageBox::No );
   if ( result == QMessageBox::Yes )
   {
     QgsOwsConnection::deleteConnection( mService, mConnectionsComboBox->currentText() );
@@ -301,8 +302,8 @@ void QgsOWSSourceSelect::mSaveButton_clicked()
 
 void QgsOWSSourceSelect::mLoadButton_clicked()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
-                     tr( "XML files (*.xml *.XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
+                           tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -331,7 +332,7 @@ QgsTreeWidgetItem *QgsOWSSourceSelect::createItem(
   if ( layerParents.contains( id ) )
   {
     // it has parent -> create first its parent
-    int parent = layerParents[ id ];
+    const int parent = layerParents[ id ];
     item = new QgsTreeWidgetItem( createItem( parent, layerParentNames[ parent ], items, layerAndStyleCount, layerParents, layerParentNames ) );
   }
   else
@@ -362,7 +363,7 @@ void QgsOWSSourceSelect::mConnectButton_clicked()
 
   mConnName = mConnectionsComboBox->currentText();
 
-  QgsOwsConnection connection( mService, mConnectionsComboBox->currentText() );
+  const QgsOwsConnection connection( mService, mConnectionsComboBox->currentText() );
   mUri = connection.uri();
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -383,7 +384,7 @@ void QgsOWSSourceSelect::mChangeCRSButton_clicked()
   const auto constSelectedItems = mLayersTreeWidget->selectedItems();
   for ( QTreeWidgetItem *item : constSelectedItems )
   {
-    QString layer = item->data( 0, Qt::UserRole + 0 ).toString();
+    const QString layer = item->data( 0, Qt::UserRole + 0 ).toString();
     if ( !layer.isEmpty() )
       layers << layer;
   }
@@ -391,7 +392,7 @@ void QgsOWSSourceSelect::mChangeCRSButton_clicked()
   QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog( this );
   mySelector->setOgcWmsCrsFilter( mSelectedLayersCRSs );
 
-  QgsCoordinateReferenceSystem defaultCRS = QgsProject::instance()->crs();
+  const QgsCoordinateReferenceSystem defaultCRS = QgsProject::instance()->crs();
   if ( defaultCRS.isValid() )
   {
     mySelector->setCrs( defaultCRS );
@@ -480,7 +481,7 @@ void QgsOWSSourceSelect::mTilesetsTableWidget_itemClicked( QTableWidgetItem *ite
   Q_UNUSED( item )
 
   QTableWidgetItem *rowItem = mTilesetsTableWidget->item( mTilesetsTableWidget->currentRow(), 0 );
-  bool wasSelected = mCurrentTileset == rowItem;
+  const bool wasSelected = mCurrentTileset == rowItem;
 
   mTilesetsTableWidget->blockSignals( true );
   mTilesetsTableWidget->clearSelection();
@@ -518,7 +519,7 @@ QString QgsOWSSourceSelect::selectedFormat()
 
 QNetworkRequest::CacheLoadControl QgsOWSSourceSelect::selectedCacheLoadControl()
 {
-  int cache = mCacheComboBox->currentData().toInt();
+  const int cache = mCacheComboBox->currentData().toInt();
   return static_cast<QNetworkRequest::CacheLoadControl>( cache );
 }
 
@@ -534,7 +535,7 @@ QString QgsOWSSourceSelect::selectedTime()
 
 void QgsOWSSourceSelect::setConnectionListPosition()
 {
-  QString toSelect = QgsOwsConnection::selectedConnection( mService );
+  const QString toSelect = QgsOwsConnection::selectedConnection( mService );
 
   mConnectionsComboBox->setCurrentIndex( mConnectionsComboBox->findText( toSelect ) );
 
@@ -607,7 +608,7 @@ QString QgsOWSSourceSelect::descriptionForAuthId( const QString &authId )
   if ( mCrsNames.contains( authId ) )
     return mCrsNames[ authId ];
 
-  QgsCoordinateReferenceSystem qgisSrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( authId );
+  const QgsCoordinateReferenceSystem qgisSrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( authId );
   mCrsNames.insert( authId, qgisSrs.userFriendlyIdentifier() );
   return qgisSrs.userFriendlyIdentifier();
 }
@@ -626,10 +627,10 @@ void QgsOWSSourceSelect::addDefaultServers()
   for ( ; i != exampleServers.constEnd(); ++i )
   {
     // Only do a server if it's name doesn't already exist.
-    QStringList keys = settings.childGroups();
+    const QStringList keys = settings.childGroups();
     if ( !keys.contains( i.key() ) )
     {
-      QString path = i.key();
+      const QString path = i.key();
       settings.setValue( path + "/url", i.value() );
     }
   }
@@ -649,7 +650,7 @@ void QgsOWSSourceSelect::mLayerUpButton_clicked()
   {
     return;
   }
-  int selectedIndex = mLayerOrderTreeWidget->indexOfTopLevelItem( selectionList[0] );
+  const int selectedIndex = mLayerOrderTreeWidget->indexOfTopLevelItem( selectionList[0] );
   if ( selectedIndex < 1 )
   {
     return; //item not existing or already on top
@@ -668,7 +669,7 @@ void QgsOWSSourceSelect::mLayerDownButton_clicked()
   {
     return;
   }
-  int selectedIndex = mLayerOrderTreeWidget->indexOfTopLevelItem( selectionList[0] );
+  const int selectedIndex = mLayerOrderTreeWidget->indexOfTopLevelItem( selectionList[0] );
   if ( selectedIndex < 0 || selectedIndex > mLayerOrderTreeWidget->topLevelItemCount() - 2 )
   {
     return; //item not existing or already at bottom

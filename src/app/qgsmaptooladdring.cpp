@@ -70,7 +70,7 @@ void QgsMapToolAddRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   //add point to list and to rubber band
   if ( e->button() == Qt::LeftButton )
   {
-    int error = addVertex( e->mapPoint(), e->mapPointMatch() );
+    const int error = addVertex( e->mapPoint(), e->mapPointMatch() );
     if ( error == 1 )
     {
       //current layer is not a vector layer
@@ -98,8 +98,8 @@ void QgsMapToolAddRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
     //does compoundcurve contain circular strings?
     //does provider support circular strings?
-    bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
-    bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
+    const bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
+    const bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
 
     QgsCurve *curveToAdd = nullptr;
     if ( hasCurvedSegments && providerSupportsCurvedSegments )
@@ -111,36 +111,43 @@ void QgsMapToolAddRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       curveToAdd = captureCurve()->curveToLine();
     }
 
-    int addRingReturnCode = vlayer->addRing( curveToAdd );
-    if ( addRingReturnCode != 0 )
+    const Qgis::GeometryOperationResult addRingReturnCode = vlayer->addRing( curveToAdd );
+    QString errorMessage;
+    switch ( addRingReturnCode )
     {
-      QString errorMessage;
-      //todo: open message box to communicate errors
-      if ( addRingReturnCode == 1 )
-      {
+      case Qgis::GeometryOperationResult::Success:
+        break;
+      case Qgis::GeometryOperationResult::InvalidInputGeometryType:
         errorMessage = tr( "a problem with geometry type occurred" );
-      }
-      else if ( addRingReturnCode == 2 )
-      {
+        break;
+      case Qgis::GeometryOperationResult::AddRingNotClosed:
         errorMessage = tr( "the inserted ring is not closed" );
-      }
-      else if ( addRingReturnCode == 3 )
-      {
+        break;
+      case Qgis::GeometryOperationResult::AddRingNotValid:
         errorMessage = tr( "the inserted ring is not a valid geometry" );
-      }
-      else if ( addRingReturnCode == 4 )
-      {
+        break;
+      case Qgis::GeometryOperationResult::AddRingCrossesExistingRings:
         errorMessage = tr( "the inserted ring crosses existing rings" );
-      }
-      else if ( addRingReturnCode == 5 )
-      {
+        break;
+      case Qgis::GeometryOperationResult::AddRingNotInExistingFeature:
         errorMessage = tr( "the inserted ring is not contained in a feature" );
-      }
-      else
-      {
-        errorMessage = tr( "an unknown error occurred" );
-      }
-      emit messageEmitted( tr( "Could not add ring since %1." ).arg( errorMessage ), Qgis::MessageLevel::Critical );
+        break;
+      case Qgis::GeometryOperationResult::SplitCannotSplitPoint:
+      case Qgis::GeometryOperationResult::InvalidBaseGeometry:
+      case Qgis::GeometryOperationResult::NothingHappened:
+      case Qgis::GeometryOperationResult::SelectionIsEmpty:
+      case Qgis::GeometryOperationResult::SelectionIsGreaterThanOne:
+      case Qgis::GeometryOperationResult::GeometryEngineError:
+      case Qgis::GeometryOperationResult::LayerNotEditable:
+      case Qgis::GeometryOperationResult::AddPartSelectedGeometryNotFound:
+      case Qgis::GeometryOperationResult::AddPartNotMultiGeometry:
+        errorMessage = tr( "an unknown error occurred (%1)" ).arg( qgsEnumValueToKey( addRingReturnCode ) );
+        break;
+    }
+
+    if ( addRingReturnCode != Qgis::GeometryOperationResult::Success )
+    {
+      emit messageEmitted( tr( "Could not add ring: %1." ).arg( errorMessage ), Qgis::MessageLevel::Critical );
       vlayer->destroyEditCommand();
     }
     else

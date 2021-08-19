@@ -142,6 +142,15 @@ Returns number of edges in the native mesh
 .. versionadded:: 3.14
 %End
 
+    virtual int maximumVerticesCountPerFace() const;
+%Docstring
+Returns the maximum number of vertices per face supported by the current mesh,
+if returns 0, the number of vertices is unlimited
+
+:return: Maximum number of vertices per face
+
+.. versionadded:: 3.22
+%End
     virtual void populateMesh( QgsMesh *mesh ) const = 0;
 %Docstring
 Populates the mesh vertices, edges and faces

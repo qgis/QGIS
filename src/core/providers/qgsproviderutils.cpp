@@ -17,14 +17,23 @@
 #include "qgsproviderutils.h"
 #include "qgsprovidersublayerdetails.h"
 
-bool QgsProviderUtils::sublayerDetailsAreIncomplete( const QList<QgsProviderSublayerDetails> &details )
+#include <QFileInfo>
+
+bool QgsProviderUtils::sublayerDetailsAreIncomplete( const QList<QgsProviderSublayerDetails> &details, SublayerCompletenessFlags flags )
 {
+  const bool ignoreUnknownGeometryTypes = flags & SublayerCompletenessFlag::IgnoreUnknownGeometryType;
+  const bool ignoreUnknownFeatureCount = flags & SublayerCompletenessFlag::IgnoreUnknownFeatureCount;
+
   for ( const QgsProviderSublayerDetails &sublayer : details )
   {
     switch ( sublayer.type() )
     {
       case QgsMapLayerType::VectorLayer:
-        if ( sublayer.wkbType() == QgsWkbTypes::Unknown )
+        if ( sublayer.skippedContainerScan()
+             || ( !ignoreUnknownGeometryTypes && sublayer.wkbType() == QgsWkbTypes::Unknown )
+             || ( !ignoreUnknownFeatureCount &&
+                  ( sublayer.featureCount() == static_cast< long long >( Qgis::FeatureCountState::Uncounted )
+                    || sublayer.featureCount() == static_cast< long long >( Qgis::FeatureCountState::UnknownCount ) ) ) )
           return true;
         break;
 
@@ -39,4 +48,26 @@ bool QgsProviderUtils::sublayerDetailsAreIncomplete( const QList<QgsProviderSubl
   }
 
   return false;
+}
+
+QString QgsProviderUtils::suggestLayerNameFromFilePath( const QString &path )
+{
+  const QFileInfo info( path );
+  // default to base name of file
+  QString name = info.completeBaseName();
+
+  // special handling for .adf files -- use directory as base name, not the unhelpful .adf file name
+  if ( info.suffix().compare( QLatin1String( "adf" ), Qt::CaseInsensitive ) == 0 )
+  {
+    const QString dirName = info.path();
+    name = QFileInfo( dirName ).completeBaseName();
+  }
+  // special handling for ept.json files -- use directory as base name
+  else if ( info.fileName().compare( QLatin1String( "ept.json" ), Qt::CaseInsensitive ) == 0 )
+  {
+    const QString dirName = info.path();
+    name = QFileInfo( dirName ).completeBaseName();
+  }
+
+  return name;
 }

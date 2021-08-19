@@ -17,6 +17,9 @@
 #include <QStyle>
 #include <QtConcurrentMap>
 #include <QUrl>
+#include <QStorageInfo>
+#include <QFuture>
+#include <QFutureWatcher>
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -37,11 +40,27 @@
 #define PROJECT_HOME_PREFIX "project:"
 #define HOME_PREFIX "home:"
 
-QgsBrowserWatcher::QgsBrowserWatcher( QgsDataItem *item )
-  : QFutureWatcher( nullptr )
-  , mItem( item )
+/// @cond PRIVATE
+class QgsBrowserWatcher : public QFutureWatcher<QVector <QgsDataItem *> >
 {
-}
+    Q_OBJECT
+
+  public:
+    QgsBrowserWatcher( QgsDataItem *item )
+      : QFutureWatcher( nullptr )
+      , mItem( item )
+    {
+    }
+
+    QgsDataItem *item() const { return mItem; }
+
+  signals:
+    void finished( QgsDataItem *item, const QVector <QgsDataItem *> &items );
+
+  private:
+    QgsDataItem *mItem = nullptr;
+};
+///@endcond
 
 // sort function for QList<QgsDataItem*>, e.g. sorted/grouped provider listings
 static bool cmpByDataItemName_( QgsDataItem *a, QgsDataItem *b )
@@ -120,7 +139,10 @@ void QgsBrowserModel::addRootItems()
     if ( QgsDirectoryItem::hiddenPath( path ) )
       continue;
 
-    QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, path, path, path, QStringLiteral( "special:Drives" ) );
+    const QString driveName = QStorageInfo( path ).displayName();
+    const QString name = driveName.isEmpty() || driveName == path ? path : QStringLiteral( "%1 (%2)" ).arg( path, driveName );
+
+    QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, name, path, path, QStringLiteral( "special:Drives" ) );
     item->setSortKey( QStringLiteral( " 3 %1" ).arg( path ) );
     mDriveItems.insert( path, item );
 
@@ -257,7 +279,8 @@ Qt::ItemFlags QgsBrowserModel::flags( const QModelIndex &index ) const
     flags |= Qt::ItemIsDropEnabled;
   Q_NOWARN_DEPRECATED_POP
 
-  if ( ptr->capabilities2() & Qgis::BrowserItemCapability::Rename )
+  if ( ( ptr->capabilities2() & Qgis::BrowserItemCapability::Rename )
+       || ( ptr->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile ) )
     flags |= Qt::ItemIsEditable;
 
   return flags;
@@ -325,7 +348,8 @@ bool QgsBrowserModel::setData( const QModelIndex &index, const QVariant &value, 
     return false;
   }
 
-  if ( !( item->capabilities2() & Qgis::BrowserItemCapability::Rename ) )
+  if ( !( item->capabilities2() & Qgis::BrowserItemCapability::Rename )
+       && !( item->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile ) )
     return false;
 
   switch ( role )
@@ -502,7 +526,10 @@ void QgsBrowserModel::refreshDrives()
     // does an item for this drive already exist?
     if ( !mDriveItems.contains( path ) )
     {
-      QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, path, path, path, QStringLiteral( "special:Drives" ) );
+      const QString driveName = QStorageInfo( path ).displayName();
+      const QString name = driveName.isEmpty() || driveName == path ? path : QStringLiteral( "%1 (%2)" ).arg( path, driveName );
+
+      QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, name, path, path, QStringLiteral( "special:Drives" ) );
       item->setSortKey( QStringLiteral( " 3 %1" ).arg( path ) );
 
       mDriveItems.insert( path, item );
@@ -638,8 +665,12 @@ QMimeData *QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
     {
       QgsDataItem *ptr = reinterpret_cast< QgsDataItem * >( index.internalPointer() );
       const QgsMimeDataUtils::UriList uris = ptr->mimeUris();
-      for ( const auto &uri : std::as_const( uris ) )
+      for ( QgsMimeDataUtils::Uri uri : std::as_const( uris ) )
       {
+        if ( ptr->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile )
+        {
+          uri.filePath = ptr->path();
+        }
         lst.append( uri );
       }
     }
@@ -792,3 +823,6 @@ QgsDataItem *QgsBrowserModel::addProviderRootItem( QgsDataItemProvider *pr )
   }
   return item;
 }
+
+// For QgsBrowserWatcher
+#include "qgsbrowsermodel.moc"

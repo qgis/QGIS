@@ -536,6 +536,48 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     static QList<QPair<QString, QString> > pyramidResamplingMethods( const QString &providerKey );
 
     /**
+     * Struct that stores information of the raster used in QgsVirtualRasterProvider for the calculations,
+     * this struct is  stored in the DecodedUriParameters
+     * \note used by QgsVirtualRasterProvider only
+     */
+    struct VirtualRasterInputLayers
+    {
+      QString name;
+      QString uri;
+      QString provider;
+    };
+
+    /**
+     * Struct that stores the information about the parameters that should be given to the
+     * QgsVirtualRasterProvider through the QgsRasterDataProvider::DecodedUriParameters
+     * \note used by QgsVirtualRasterProvider only
+     */
+    struct VirtualRasterParameters
+    {
+      QgsCoordinateReferenceSystem crs;
+      QgsRectangle extent;
+      int width;
+      int height;
+      QString formula;
+      QList <QgsRasterDataProvider::VirtualRasterInputLayers> rInputLayers;
+
+    };
+
+    /**
+     * Decodes the URI returning a struct with all the parameters for QgsVirtualRasterProvider class
+     * \note used by Virtual Raster Provider only
+     * \note since QGIS 3.22
+     */
+    static QgsRasterDataProvider::VirtualRasterParameters decodeVirtualRasterProviderUri( const QString &uri, bool *ok = nullptr );
+
+    /**
+     * Encodes the URI starting from the struct .
+     * \note used by Virtual Raster Provider only
+     * \note since QGIS 3.22
+     */
+    static QString encodeVirtualRasterProviderUri( const VirtualRasterParameters &parts );
+
+    /**
      * Validates creation options for a specific dataset and destination format.
      * \note used by GDAL provider only
      * \note see also validateCreationOptionsFormat() in gdal provider for validating options based on format only

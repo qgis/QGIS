@@ -24,12 +24,14 @@
 #include "qgscoordinatereferencesystemregistry.h"
 #include "qgsdatums.h"
 #include "qgsprojoperation.h"
+#include "qgsstringutils.h"
 
 //qt includes
 #include <QFileInfo>
 #include <QHeaderView>
 #include <QResizeEvent>
 #include <QMessageBox>
+#include <QRegularExpression>
 
 QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *parent )
   : QWidget( parent )
@@ -782,9 +784,9 @@ void QgsProjectionSelectionTreeWidget::lstRecent_itemDoubleClicked( QTreeWidgetI
 
 void QgsProjectionSelectionTreeWidget::updateFilter()
 {
-  QString filterTxtCopy = QRegExp::escape( leSearch->text() );
-  filterTxtCopy.replace( QRegExp( "\\s+" ), QStringLiteral( ".*" ) );
-  QRegExp re( filterTxtCopy, Qt::CaseInsensitive );
+  QString filterTxtCopy = QgsStringUtils::qRegExpEscape( leSearch->text() );
+  filterTxtCopy.replace( QRegularExpression( "\\s+" ), QStringLiteral( ".*" ) );
+  const QRegularExpression re( filterTxtCopy, QRegularExpression::PatternOption::CaseInsensitiveOption );
 
   const bool hideDeprecated = cbxHideDeprecated->isChecked();
 

@@ -30,7 +30,6 @@
 #include "qgscoordinatetransform.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdatasourceuri.h"
-#include "qgsgdaldataitems.h"
 #include "qgshtmlutils.h"
 #include "qgsmessagelog.h"
 #include "qgsrectangle.h"
@@ -45,6 +44,7 @@
 #include "qgsruntimeprofiler.h"
 #include "qgszipitem.h"
 #include "qgsprovidersublayerdetails.h"
+#include "qgsproviderutils.h"
 
 #include <QImage>
 #include <QColor>
@@ -184,16 +184,6 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, const ProviderOptions &opt
     // and confusing values shown to users, force Float64
     CPLSetConfigOption( "AAIGRID_DATATYPE", "Float64" );
   }
-
-#if !(GDAL_VERSION_MAJOR > 2 || (GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR >= 3))
-  if ( !CPLGetConfigOption( "VRT_SHARED_SOURCE", nullptr ) )
-  {
-    // GDAL < 2.3 has issues with use of VRT in multi-threaded
-    // scenarios. See https://github.com/qgis/QGIS/issues/24413 /
-    // https://trac.osgeo.org/gdal/ticket/6939
-    CPLSetConfigOption( "VRT_SHARED_SOURCE", "NO" );
-  }
-#endif
 
   // To get buildSupportedRasterFileFilter the provider is called with empty uri
   if ( uri.isEmpty() )
@@ -1261,7 +1251,6 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
         if ( values.at( 0 ) == QLatin1String( "NETCDF_DIM_EXTRA" ) || values.at( 0 ) == QLatin1String( "GTIFF_DIM_EXTRA" ) )
         {
           dimExtraValues = val.replace( '{', QString() ).replace( '}', QString() ).split( ',' );
-          //http://qt-project.org/doc/qt-4.8/qregexp.html#capturedTexts
         }
         else
         {
@@ -1648,11 +1637,15 @@ QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH
     return {};
   }
 
+  GDALDriverH hDriver = GDALGetDatasetDriver( dataset );
+  const QString gdalDriverName = GDALGetDriverShortName( hDriver );
+
   QList<QgsProviderSublayerDetails> res;
 
   char **metadata = GDALGetMetadata( dataset, "SUBDATASETS" );
 
   QVariantMap uriParts = decodeGdalUri( baseUri );
+  const QString datasetPath = uriParts.value( QStringLiteral( "path" ) ).toString();
 
   if ( metadata )
   {
@@ -1678,10 +1671,10 @@ QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH
         else
         {
           // try to extract layer name from a path like 'NETCDF:"/baseUri":cell_node'
-          sepIdx = layerName.indexOf( baseUri + "\":" );
+          sepIdx = layerName.indexOf( datasetPath + "\":" );
           if ( sepIdx >= 0 )
           {
-            layerName = layerName.mid( layerName.indexOf( baseUri + "\":" ) + baseUri.length() + 2 );
+            layerName = layerName.mid( layerName.indexOf( datasetPath + "\":" ) + datasetPath.length() + 2 );
           }
         }
 
@@ -1691,11 +1684,14 @@ QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH
         details.setName( layerName );
         details.setDescription( layerDesc );
         details.setLayerNumber( i );
+        details.setDriverName( gdalDriverName );
 
-        QVariantMap layerUriParts = decodeGdalUri( uri );
+        const QVariantMap layerUriParts = decodeGdalUri( uri );
+        // update original uri parts with this layername and path -- this ensures that other uri components
+        // like open options are preserved for the sublayer uris
         uriParts.insert( QStringLiteral( "layerName" ), layerUriParts.value( QStringLiteral( "layerName" ) ) );
         uriParts.insert( QStringLiteral( "path" ), layerUriParts.value( QStringLiteral( "path" ) ) );
-        details.setUri( encodeGdalUri( layerUriParts ) );
+        details.setUri( encodeGdalUri( uriParts ) );
 
         res << details;
       }
@@ -2461,7 +2457,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
     QString myGdalDriverLongName = GDALGetMetadataItem( myGdalDriver, GDAL_DMD_LONGNAME, "" );
     // remove any superfluous (.*) strings at the end as
     // they'll confuse QFileDialog::getOpenFileNames()
-    myGdalDriverLongName.remove( QRegExp( "\\(.*\\)$" ) );
+    myGdalDriverLongName.remove( QRegularExpression( "\\(.*\\)$" ) );
 
     // if we have both the file name extension and the long name,
     // then we've all the information we need for the current
@@ -2528,20 +2524,6 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
         fileFiltersString += createFileFilter_( myGdalDriverLongName, QStringLiteral( "hdr.adf" ) );
         wildcards << QStringLiteral( "hdr.adf" );
       }
-#if !(GDAL_VERSION_MAJOR > 2 || (GDAL_VERSION_MAJOR == 2 && GDAL_VERSION_MINOR >= 3))
-      else if ( myGdalDriverDescription.startsWith( QLatin1String( "EHdr" ) ) )
-      {
-        // Fixed in GDAL 2.3
-        fileFiltersString += createFileFilter_( myGdalDriverLongName, QStringLiteral( "*.bil" ) );
-        extensions << QStringLiteral( "bil" );
-      }
-      else if ( myGdalDriverDescription == QLatin1String( "ERS" ) )
-      {
-        // Fixed in GDAL 2.3
-        fileFiltersString += createFileFilter_( myGdalDriverLongName, QStringLiteral( "*.ers" ) );
-        extensions << QStringLiteral( "ers" );
-      }
-#endif
       else
       {
         catchallFilter << QString( GDALGetDescription( myGdalDriver ) );
@@ -3548,78 +3530,135 @@ QList<QPair<QString, QString> > QgsGdalProviderMetadata::pyramidResamplingMethod
   return methods;
 }
 
+QgsProviderMetadata::ProviderMetadataCapabilities QgsGdalProviderMetadata::capabilities() const
+{
+  return QuerySublayers;
+}
+
 QgsProviderMetadata::ProviderCapabilities QgsGdalProviderMetadata::providerCapabilities() const
 {
   return FileBasedUris;
 }
 
-QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags, QgsFeedback * ) const
+QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags, QgsFeedback *feedback ) const
 {
   gdal::dataset_unique_ptr dataset;
 
   QgsGdalProviderBase::registerGdalDrivers();
 
-  CPLErrorReset();
-
   QString gdalUri = uri;
+
+  QVariantMap uriParts = decodeUri( gdalUri );
 
   // Try to open using VSIFileHandler
   QString vsiPrefix = QgsZipItem::vsiPrefix( gdalUri );
   if ( !vsiPrefix.isEmpty() )
   {
     if ( !gdalUri.startsWith( vsiPrefix ) )
-      gdalUri = vsiPrefix + gdalUri;
-  }
-
-  if ( flags & Qgis::SublayerQueryFlag::FastScan )
-  {
-    // filter based on extension
-    const QVariantMap uriParts = decodeUri( uri );
-    const QString path = uriParts.value( QStringLiteral( "path" ) ).toString();
-    QFileInfo info( path );
-    if ( info.isFile() )
     {
-      const QString suffix = info.suffix().toLower();
-
-      static QString sFilterString;
-      static QStringList sExtensions;
-      static QStringList sWildcards;
-
-      // get supported extensions
-      static std::once_flag initialized;
-      std::call_once( initialized, [ = ]
-      {
-        buildSupportedRasterFileFilterAndExtensions( sFilterString, sExtensions, sWildcards );
-        QgsDebugMsgLevel( QStringLiteral( "extensions: " ) + sExtensions.join( ' ' ), 2 );
-        QgsDebugMsgLevel( QStringLiteral( "wildcards: " ) + sWildcards.join( ' ' ), 2 );
-      } );
-
-      if ( !sExtensions.contains( suffix ) )
-      {
-        bool matches = false;
-        for ( const QString &wildcard : std::as_const( sWildcards ) )
-        {
-          const thread_local QRegularExpression rx( QRegularExpression::anchoredPattern(
-                QRegularExpression::wildcardToRegularExpression( wildcard )
-              ), QRegularExpression::CaseInsensitiveOption );
-          const QRegularExpressionMatch match = rx.match( info.fileName() );
-          if ( match.hasMatch() )
-          {
-            matches = true;
-            break;
-          }
-        }
-        if ( !matches )
-          return {};
-      }
+      gdalUri = vsiPrefix + gdalUri;
+      uriParts = decodeUri( gdalUri );
     }
   }
 
+  const QString path = uriParts.value( QStringLiteral( "path" ) ).toString();
+  const QFileInfo pathInfo( path );
+  if ( ( flags & Qgis::SublayerQueryFlag::FastScan ) && ( pathInfo.isFile() || pathInfo.isDir() ) )
+  {
+    // fast scan, so we don't actually try to open the dataset and instead just check the extension alone
+    static QString sFilterString;
+    static QStringList sExtensions;
+    static QStringList sWildcards;
+
+    // get supported extensions
+    static std::once_flag initialized;
+    std::call_once( initialized, [ = ]
+    {
+      buildSupportedRasterFileFilterAndExtensions( sFilterString, sExtensions, sWildcards );
+      QgsDebugMsgLevel( QStringLiteral( "extensions: " ) + sExtensions.join( ' ' ), 2 );
+      QgsDebugMsgLevel( QStringLiteral( "wildcards: " ) + sWildcards.join( ' ' ), 2 );
+    } );
+
+    const QString suffix = pathInfo.suffix().toLower();
+
+    if ( !sExtensions.contains( suffix ) )
+    {
+      bool matches = false;
+      for ( const QString &wildcard : std::as_const( sWildcards ) )
+      {
+        const thread_local QRegularExpression rx( QRegularExpression::anchoredPattern(
+              QRegularExpression::wildcardToRegularExpression( wildcard )
+            ), QRegularExpression::CaseInsensitiveOption );
+        const QRegularExpressionMatch match = rx.match( pathInfo.fileName() );
+        if ( match.hasMatch() )
+        {
+          matches = true;
+          break;
+        }
+      }
+      if ( !matches )
+        return {};
+    }
+
+    // if this is a VRT file make sure it is raster VRT
+    if ( suffix == QLatin1String( "vrt" ) && !QgsGdalUtils::vrtMatchesLayerType( path, QgsMapLayerType::RasterLayer ) )
+    {
+      return {};
+    }
+
+    QgsProviderSublayerDetails details;
+    details.setType( QgsMapLayerType::RasterLayer );
+    details.setProviderKey( QStringLiteral( "gdal" ) );
+    details.setUri( uri );
+    details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( path ) );
+    if ( QgsGdalUtils::multiLayerFileExtensions().contains( suffix ) )
+    {
+      // uri may contain sublayers, but query flags prevent us from examining them
+      details.setSkippedContainerScan( true );
+    }
+    return {details};
+  }
+
+  if ( !uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString().isEmpty()
+       && uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty() )
+  {
+    // get list of files inside archive file
+    QgsDebugMsgLevel( QStringLiteral( "Open file %1 with gdal vsi" ).arg( vsiPrefix + uriParts.value( QStringLiteral( "path" ) ).toString() ), 3 );
+    char **papszSiblingFiles = VSIReadDirRecursive( QString( vsiPrefix + uriParts.value( QStringLiteral( "path" ) ).toString() ).toLocal8Bit().constData() );
+    if ( papszSiblingFiles )
+    {
+      QList<QgsProviderSublayerDetails> res;
+
+      QStringList files;
+      for ( int i = 0; papszSiblingFiles[i]; i++ )
+      {
+        files << papszSiblingFiles[i];
+      }
+
+      for ( const QString &file : std::as_const( files ) )
+      {
+        if ( feedback && feedback->isCanceled() )
+          break;
+
+        // skip directories (files ending with /)
+        if ( file.right( 1 ) != QLatin1String( "/" ) )
+        {
+          uriParts.insert( QStringLiteral( "vsiSuffix" ), QStringLiteral( "/%1" ).arg( file ) );
+          res << querySublayers( encodeUri( uriParts ), flags, feedback );
+        }
+      }
+      CSLDestroy( papszSiblingFiles );
+      return res;
+    }
+  }
+
+  CPLPushErrorHandler( CPLQuietErrorHandler );
+  CPLErrorReset();
   dataset.reset( QgsGdalProviderBase::gdalOpen( gdalUri, GDAL_OF_READONLY ) );
+  CPLPopErrorHandler();
+
   if ( !dataset )
   {
-    if ( CPLGetLastErrorNo() != CPLE_OpenFailed )
-      QgsDebugMsg( QStringLiteral( "Error querying sublayers: %1 " ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
     return {};
   }
 
@@ -3634,13 +3673,20 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
       details.setType( QgsMapLayerType::RasterLayer );
       details.setUri( uri );
       details.setLayerNumber( 1 );
+      GDALDriverH hDriver = GDALGetDatasetDriver( dataset.get() );
+      details.setDriverName( GDALGetDriverShortName( hDriver ) );
 
       QString name;
       const QVariantMap parts = decodeUri( uri );
-      if ( parts.contains( QStringLiteral( "path" ) ) )
+      if ( !parts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty() )
       {
-        QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
-        name = fi.baseName();
+        name = parts.value( QStringLiteral( "vsiSuffix" ) ).toString();
+        if ( name.startsWith( '/' ) )
+          name = name.mid( 1 );
+      }
+      else if ( parts.contains( QStringLiteral( "path" ) ) )
+      {
+        name = QgsProviderUtils::suggestLayerNameFromFilePath( parts.value( QStringLiteral( "path" ) ).toString() );
       }
       details.setName( name.isEmpty() ? uri : name );
       return {details};
@@ -3656,11 +3702,105 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
   }
 }
 
-QList<QgsDataItemProvider *> QgsGdalProviderMetadata::dataItemProviders() const
+QStringList QgsGdalProviderMetadata::sidecarFilesForUri( const QString &uri ) const
 {
-  QList< QgsDataItemProvider * > providers;
-  providers << new QgsGdalDataItemProvider;
-  return providers;
+  const QVariantMap uriParts = decodeUri( uri );
+  const QString path = uriParts.value( QStringLiteral( "path" ) ).toString();
+
+  if ( path.isEmpty() )
+    return {};
+
+  const QFileInfo fileInfo( path );
+  const QString suffix = fileInfo.suffix();
+
+  static QMap< QString, QStringList > sExtensions
+  {
+    {
+      QStringLiteral( "jpg" ), {
+        QStringLiteral( "jpw" ),
+        QStringLiteral( "jgw" ),
+        QStringLiteral( "jpgw" ),
+        QStringLiteral( "jpegw" ),
+      }
+    },
+    {
+      QStringLiteral( "img" ), {
+        QStringLiteral( "ige" ),
+      }
+    },
+    {
+      QStringLiteral( "sid" ), {
+        QStringLiteral( "j2w" ),
+      }
+    },
+    {
+      QStringLiteral( "tif" ), {
+        QStringLiteral( "tifw" ),
+        QStringLiteral( "tfw" ),
+      }
+    },
+    {
+      QStringLiteral( "bil" ), {
+        QStringLiteral( "bilw" ),
+        QStringLiteral( "blw" ),
+      }
+    },
+    {
+      QStringLiteral( "raster" ), {
+        QStringLiteral( "rasterw" ),
+      }
+    },
+    {
+      QStringLiteral( "bt" ), {
+        QStringLiteral( "btw" ),
+      }
+    },
+    {
+      QStringLiteral( "rst" ), {
+        QStringLiteral( "rdc" ),
+        QStringLiteral( "smp" ),
+        QStringLiteral( "ref" ),
+        QStringLiteral( "vct" ),
+        QStringLiteral( "vdc" ),
+        QStringLiteral( "avl" ),
+      }
+    },
+    {
+      QStringLiteral( "sdat" ), {
+        QStringLiteral( "sgrd" ),
+        QStringLiteral( "mgrd" ),
+        QStringLiteral( "prj" ),
+      }
+    }
+  };
+
+
+  QStringList res;
+  // format specific sidecars
+  for ( auto it = sExtensions.constBegin(); it != sExtensions.constEnd(); ++it )
+  {
+    if ( suffix.compare( it.key(), Qt::CaseInsensitive ) == 0 )
+    {
+      for ( const QString &ext : it.value() )
+      {
+        res.append( fileInfo.dir().filePath( fileInfo.completeBaseName() + '.' + ext ) );
+      }
+    }
+  }
+
+  // sidecars which could be present for any file
+  for ( const QString &ext :
+        {
+          QStringLiteral( "aux.xml" ),
+          QStringLiteral( "vat.dbf" ),
+          QStringLiteral( "ovr" ),
+          QStringLiteral( "wld" ),
+        } )
+  {
+    res.append( fileInfo.dir().filePath( fileInfo.completeBaseName() + '.' + ext ) );
+    res.append( path + '.' + ext );
+  }
+  return res;
 }
 
 QgsGdalProviderMetadata::QgsGdalProviderMetadata():
@@ -3669,3 +3809,4 @@ QgsGdalProviderMetadata::QgsGdalProviderMetadata():
 }
 
 ///@endcond
+

@@ -82,11 +82,11 @@ void QgsDecorationImage::setImagePath( const QString &imagePath )
   mImagePath = imagePath;
   mImageFormat = FormatUnknown;
 
-  QString resolvedPath = QgsSymbolLayerUtils::svgSymbolNameToPath( mImagePath, QgsProject::instance()->pathResolver() );
-  QFileInfo fileInfo( resolvedPath );
+  const QString resolvedPath = QgsSymbolLayerUtils::svgSymbolNameToPath( mImagePath, QgsProject::instance()->pathResolver() );
+  const QFileInfo fileInfo( resolvedPath );
   if ( fileInfo.exists() )
   {
-    QString suffix = fileInfo.suffix();
+    const QString suffix = fileInfo.suffix();
     if ( suffix.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
     {
       mImageFormat = FormatSVG;
@@ -108,7 +108,7 @@ void QgsDecorationImage::setImagePath( const QString &imagePath )
       return;
     }
     bool cached;
-    QImage img = QgsApplication::imageCache()->pathAsImage( mImagePath, QSize( 1, 0 ), true, 1.0, cached );
+    const QImage img = QgsApplication::imageCache()->pathAsImage( mImagePath, QSize( 1, 0 ), true, 1.0, cached );
     if ( !img.isNull() )
     {
       mImageFormat = FormatRaster;
@@ -121,7 +121,7 @@ QString QgsDecorationImage::imagePath()
   if ( !mImagePath.isEmpty() )
   {
     QString resolvedPath = QgsSymbolLayerUtils::svgSymbolNameToPath( mImagePath, QgsProject::instance()->pathResolver() );
-    bool validSvg = QFileInfo::exists( resolvedPath );
+    const bool validSvg = QFileInfo::exists( resolvedPath );
     if ( validSvg )
     {
       return resolvedPath;
@@ -136,7 +136,7 @@ void QgsDecorationImage::render( const QgsMapSettings &mapSettings, QgsRenderCon
   if ( !enabled() )
     return;
 
-  double maxLength = mSize * mapSettings.outputDpi() / 25.4;
+  const double maxLength = mSize * mapSettings.outputDpi() / 25.4;
   QSize size( maxLength, maxLength );
 
   QSvgRenderer svg;
@@ -150,7 +150,7 @@ void QgsDecorationImage::render( const QgsMapSettings &mapSettings, QgsRenderCon
 
       if ( svg.isValid() )
       {
-        QRectF viewBox = svg.viewBoxF();
+        const QRectF viewBox = svg.viewBoxF();
         if ( viewBox.height() > viewBox.width() )
         {
           size.setWidth( maxLength * viewBox.width() / viewBox.height() );
@@ -170,7 +170,7 @@ void QgsDecorationImage::render( const QgsMapSettings &mapSettings, QgsRenderCon
 
     case FormatRaster:
     {
-      QSize originalSize = QgsApplication::imageCache()->originalSize( imagePath() );
+      const QSize originalSize = QgsApplication::imageCache()->originalSize( imagePath() );
       if ( originalSize.isValid() )
       {
         if ( originalSize.height() > originalSize.width() )
@@ -199,12 +199,12 @@ void QgsDecorationImage::render( const QgsMapSettings &mapSettings, QgsRenderCon
       return;
   }
 
-  QgsScopedQPainterState painterState( context.painter() );
+  const QgsScopedQPainterState painterState( context.painter() );
 
   // need width/height of paint device
   QPaintDevice *device = context.painter()->device();
-  int deviceHeight = device->height() / device->devicePixelRatioF();
-  int deviceWidth = device->width() / device->devicePixelRatioF();
+  const int deviceHeight = device->height() / device->devicePixelRatioF();
+  const int deviceWidth = device->width() / device->devicePixelRatioF();
 
   // Set  margin according to selected units
   int xOffset = 0;
@@ -213,8 +213,8 @@ void QgsDecorationImage::render( const QgsMapSettings &mapSettings, QgsRenderCon
   {
     case QgsUnitTypes::RenderMillimeters:
     {
-      int pixelsInchX = context.painter()->device()->logicalDpiX();
-      int pixelsInchY = context.painter()->device()->logicalDpiY();
+      const int pixelsInchX = context.painter()->device()->logicalDpiX();
+      const int pixelsInchY = context.painter()->device()->logicalDpiY();
       xOffset = pixelsInchX * INCHES_TO_MM * mMarginHorizontal;
       yOffset = pixelsInchY * INCHES_TO_MM * mMarginVertical;
       break;

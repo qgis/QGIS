@@ -115,7 +115,7 @@ void QgsLayoutItemPolyline::refreshSymbol()
 {
   if ( auto *lLayout = layout() )
   {
-    QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( lLayout, nullptr, lLayout->renderContext().dpi() );
+    const QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( lLayout, nullptr, lLayout->renderContext().dpi() );
     mMaxSymbolBleed = ( 25.4 / lLayout->renderContext().dpi() ) * QgsSymbolLayerUtils::estimateMaxSymbolBleed( mPolylineStyleSymbol.get(), rc );
   }
 
@@ -137,8 +137,8 @@ void QgsLayoutItemPolyline::drawStartMarker( QPainter *painter )
     case MarkerMode::ArrowHead:
     {
       // calculate angle at start of line
-      QLineF startLine( mPolygon.at( 0 ), mPolygon.at( 1 ) );
-      double angle = startLine.angle();
+      const QLineF startLine( mPolygon.at( 0 ), mPolygon.at( 1 ) );
+      const double angle = startLine.angle();
       drawArrow( painter, mPolygon.at( 0 ), angle );
       break;
     }
@@ -146,8 +146,8 @@ void QgsLayoutItemPolyline::drawStartMarker( QPainter *painter )
     case MarkerMode::SvgMarker:
     {
       // calculate angle at start of line
-      QLineF startLine( mPolygon.at( 0 ), mPolygon.at( 1 ) );
-      double angle = startLine.angle();
+      const QLineF startLine( mPolygon.at( 0 ), mPolygon.at( 1 ) );
+      const double angle = startLine.angle();
       drawSvgMarker( painter, mPolygon.at( 0 ), angle, mStartMarkerFile, mStartArrowHeadHeight );
       break;
     }
@@ -168,11 +168,11 @@ void QgsLayoutItemPolyline::drawEndMarker( QPainter *painter )
     case MarkerMode::ArrowHead:
     {
       // calculate angle at end of line
-      QLineF endLine( mPolygon.at( mPolygon.count() - 2 ), mPolygon.at( mPolygon.count() - 1 ) );
-      double angle = endLine.angle();
+      const QLineF endLine( mPolygon.at( mPolygon.count() - 2 ), mPolygon.at( mPolygon.count() - 1 ) );
+      const double angle = endLine.angle();
 
       //move end point depending on arrow width
-      QVector2D dir = QVector2D( endLine.dx(), endLine.dy() ).normalized();
+      const QVector2D dir = QVector2D( endLine.dx(), endLine.dy() ).normalized();
       QPointF endPoint = endLine.p2();
       endPoint += ( dir * 0.5 * mArrowHeadWidth ).toPointF();
 
@@ -182,8 +182,8 @@ void QgsLayoutItemPolyline::drawEndMarker( QPainter *painter )
     case MarkerMode::SvgMarker:
     {
       // calculate angle at end of line
-      QLineF endLine( mPolygon.at( mPolygon.count() - 2 ), mPolygon.at( mPolygon.count() - 1 ) );
-      double angle = endLine.angle();
+      const QLineF endLine( mPolygon.at( mPolygon.count() - 2 ), mPolygon.at( mPolygon.count() - 1 ) );
+      const double angle = endLine.angle();
       drawSvgMarker( painter, endLine.p2(), angle, mEndMarkerFile, mEndArrowHeadHeight );
       break;
     }
@@ -216,12 +216,12 @@ void QgsLayoutItemPolyline::drawArrowHead( QPainter *p, const double x, const do
   if ( !p )
     return;
 
-  double angleRad = angle / 180.0 * M_PI;
-  QPointF middlePoint( x, y );
+  const double angleRad = angle / 180.0 * M_PI;
+  const QPointF middlePoint( x, y );
 
   //rotate both arrow points
-  QPointF p1 = QPointF( -arrowHeadWidth / 2.0, arrowHeadWidth );
-  QPointF p2 = QPointF( arrowHeadWidth / 2.0, arrowHeadWidth );
+  const QPointF p1 = QPointF( -arrowHeadWidth / 2.0, arrowHeadWidth );
+  const QPointF p2 = QPointF( arrowHeadWidth / 2.0, arrowHeadWidth );
 
   QPointF p1Rotated, p2Rotated;
   p1Rotated.setX( p1.x() * std::cos( angleRad ) + p1.y() * -std::sin( angleRad ) );
@@ -262,7 +262,7 @@ void QgsLayoutItemPolyline::drawSvgMarker( QPainter *p, QPointF point, double an
                                  1.0 );
   r.load( svgContent );
 
-  QgsScopedQPainterState painterState( p );
+  const QgsScopedQPainterState painterState( p );
   p->translate( point.x(), point.y() );
   p->rotate( angle );
   p->translate( -mArrowHeadWidth / 2.0, -height / 2.0 );
@@ -279,10 +279,10 @@ QString QgsLayoutItemPolyline::displayName() const
 
 void QgsLayoutItemPolyline::_draw( QgsLayoutItemRenderContext &context, const QStyleOptionGraphicsItem * )
 {
-  QgsScopedQPainterState painterState( context.renderContext().painter() );
+  const QgsScopedQPainterState painterState( context.renderContext().painter() );
   //setup painter scaling to dots so that raster symbology is drawn to scale
-  double scale = context.renderContext().convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
-  QTransform t = QTransform::fromScale( scale, scale );
+  const double scale = context.renderContext().convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+  const QTransform t = QTransform::fromScale( scale, scale );
 
   mPolylineStyleSymbol->startRender( context.renderContext() );
   mPolylineStyleSymbol->renderPolyline( t.map( mPolygon ), nullptr, context.renderContext() );
@@ -333,7 +333,7 @@ QPainterPath QgsLayoutItemPolyline::shape() const
   QPainterPathStroker ps;
 
   ps.setWidth( 2 * mMaxSymbolBleed );
-  QPainterPath strokedOutline = ps.createStroke( path );
+  const QPainterPath strokedOutline = ps.createStroke( path );
 
   return strokedOutline;
 }
@@ -354,7 +354,7 @@ void QgsLayoutItemPolyline::setStartSvgMarkerPath( const QString &path )
   else
   {
     //calculate mArrowHeadHeight from svg file and mArrowHeadWidth
-    QRect viewBox = r.viewBox();
+    const QRect viewBox = r.viewBox();
     mStartArrowHeadHeight = mArrowHeadWidth / viewBox.width() * viewBox.height();
   }
   updateBoundingRect();
@@ -371,7 +371,7 @@ void QgsLayoutItemPolyline::setEndSvgMarkerPath( const QString &path )
   else
   {
     //calculate mArrowHeadHeight from svg file and mArrowHeadWidth
-    QRect viewBox = r.viewBox();
+    const QRect viewBox = r.viewBox();
     mEndArrowHeadHeight = mArrowHeadWidth / viewBox.width() * viewBox.height();
   }
   updateBoundingRect();
@@ -422,8 +422,8 @@ bool QgsLayoutItemPolyline::writePropertiesToElement( QDomElement &elmt, QDomDoc
   QgsLayoutNodesItem::writePropertiesToElement( elmt, doc, context );
 
   // absolute paths to relative
-  QString startMarkerPath = QgsSymbolLayerUtils::svgSymbolPathToName( mStartMarkerFile, context.pathResolver() );
-  QString endMarkerPath = QgsSymbolLayerUtils::svgSymbolPathToName( mEndMarkerFile, context.pathResolver() );
+  const QString startMarkerPath = QgsSymbolLayerUtils::svgSymbolPathToName( mStartMarkerFile, context.pathResolver() );
+  const QString endMarkerPath = QgsSymbolLayerUtils::svgSymbolPathToName( mEndMarkerFile, context.pathResolver() );
 
   elmt.setAttribute( QStringLiteral( "arrowHeadWidth" ), QString::number( mArrowHeadWidth ) );
   elmt.setAttribute( QStringLiteral( "arrowHeadFillColor" ), QgsSymbolLayerUtils::encodeColor( mArrowHeadFillColor ) );
@@ -444,8 +444,8 @@ bool QgsLayoutItemPolyline::readPropertiesFromElement( const QDomElement &elmt, 
   mArrowHeadStrokeColor = QgsSymbolLayerUtils::decodeColor( elmt.attribute( QStringLiteral( "arrowHeadOutlineColor" ), QStringLiteral( "0,0,0,255" ) ) );
   mArrowHeadStrokeWidth = elmt.attribute( QStringLiteral( "outlineWidth" ), QStringLiteral( "1.0" ) ).toDouble();
   // relative paths to absolute
-  QString startMarkerPath = elmt.attribute( QStringLiteral( "startMarkerFile" ), QString() );
-  QString endMarkerPath = elmt.attribute( QStringLiteral( "endMarkerFile" ), QString() );
+  const QString startMarkerPath = elmt.attribute( QStringLiteral( "startMarkerFile" ), QString() );
+  const QString endMarkerPath = elmt.attribute( QStringLiteral( "endMarkerFile" ), QString() );
   setStartSvgMarkerPath( QgsSymbolLayerUtils::svgSymbolNameToPath( startMarkerPath, context.pathResolver() ) );
   setEndSvgMarkerPath( QgsSymbolLayerUtils::svgSymbolNameToPath( endMarkerPath, context.pathResolver() ) );
   mEndMarker = static_cast< QgsLayoutItemPolyline::MarkerMode >( elmt.attribute( QStringLiteral( "markerMode" ), QStringLiteral( "0" ) ).toInt() );
@@ -486,13 +486,13 @@ double QgsLayoutItemPolyline::computeMarkerMargin() const
 
   if ( mStartMarker == SvgMarker )
   {
-    double startMarkerMargin = std::sqrt( 0.25 * ( mStartArrowHeadHeight * mStartArrowHeadHeight + mArrowHeadWidth * mArrowHeadWidth ) );
+    const double startMarkerMargin = std::sqrt( 0.25 * ( mStartArrowHeadHeight * mStartArrowHeadHeight + mArrowHeadWidth * mArrowHeadWidth ) );
     margin = std::max( startMarkerMargin, margin );
   }
 
   if ( mEndMarker == SvgMarker )
   {
-    double endMarkerMargin = std::sqrt( 0.25 * ( mEndArrowHeadHeight * mEndArrowHeadHeight + mArrowHeadWidth * mArrowHeadWidth ) );
+    const double endMarkerMargin = std::sqrt( 0.25 * ( mEndArrowHeadHeight * mEndArrowHeadHeight + mArrowHeadWidth * mArrowHeadWidth ) );
     margin = std::max( endMarkerMargin, margin );
   }
 

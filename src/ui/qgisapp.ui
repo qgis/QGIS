@@ -175,6 +175,8 @@
      <addaction name="mActionNewVectorLayer"/>
      <addaction name="mActionNewSpatiaLiteLayer"/>
      <addaction name="mActionNewMemoryLayer"/>
+     <addaction name="mActionNewMeshLayer"/>
+     <addaction name="mActionNewGpxLayer"/>
      <addaction name="separator"/>
      <addaction name="mActionNewVirtualLayer"/>
     </widget>
@@ -189,7 +191,6 @@
      <addaction name="mActionAddPgLayer"/>
      <addaction name="mActionAddSpatiaLiteLayer"/>
      <addaction name="mActionAddMssqlLayer"/>
-     <addaction name="mActionAddDb2Layer"/>
      <addaction name="mActionAddOracleLayer"/>
      <addaction name="mActionAddHanaLayer"/>
      <addaction name="mActionAddVirtualLayer"/>
@@ -746,6 +747,7 @@
    <addaction name="mActionNewVectorLayer"/>
    <addaction name="mActionNewSpatiaLiteLayer"/>
    <addaction name="mActionNewMemoryLayer"/>
+   <addaction name="mActionNewMeshLayer"/>
    <addaction name="separator"/>
    <addaction name="mActionNewVirtualLayer"/>
    <addaction name="separator"/>
@@ -770,6 +772,17 @@
    </property>
    <property name="toolTip">
     <string>Selection Toolbar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QToolBar" name="mMeshToolBar">
+   <property name="windowTitle">
+    <string>Mesh Digitizing Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -1631,18 +1644,6 @@ Shift+R to enable range selection.</string>
    </property>
    <property name="text">
     <string>Add MSSQL Spatial Layer…</string>
-   </property>
-  </action>
-  <action name="mActionAddDb2Layer">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddDb2Layer.svg</normaloff>:/images/themes/default/mActionAddDb2Layer.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Add DB2 Spatial Layer…</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+2</string>
    </property>
   </action>
   <action name="mActionAddOracleLayer">
@@ -3548,10 +3549,31 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
     <string>Measure Bearing</string>
    </property>
   </action>
+  <action name="mActionNewMeshLayer">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/images/themes/default/mActionNewMeshLayer.svg</normaloff>:/images/themes/default/mActionNewMeshLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>New Mesh Layer…</string>
+   </property>
+   <property name="toolTip">
+    <string>New Mesh Layer</string>
+   </property>
+  </action>
+  <action name="mActionNewGpxLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionNewGpx.svg</normaloff>:/images/themes/default/mActionNewGpx.svg</iconset>
+   </property>
+   <property name="text">
+    <string>New GPX Layer…</string>
+   </property>
+   <property name="toolTip">
+    <string>New GPX Layer</string>
+   </property>
+  </action>
  </widget>
- <resources>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

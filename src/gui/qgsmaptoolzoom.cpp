@@ -98,7 +98,7 @@ void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent *e )
   // We are not really dragging in this case. This is sometimes caused by
   // a pen based computer reporting a press, move, and release, all the
   // one point.
-  bool tooShort = ( mZoomRect.topLeft() - mZoomRect.bottomRight() ).manhattanLength() < mMinPixelZoom;
+  const bool tooShort = ( mZoomRect.topLeft() - mZoomRect.bottomRight() ).manhattanLength() < mMinPixelZoom;
   if ( !mDragging || tooShort )
   {
     mDragging = false;
@@ -125,12 +125,12 @@ void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent *e )
     const QSize &zoomRectSize = mZoomRect.size();
     const QgsMapSettings &mapSettings = mCanvas->mapSettings();
     const QSize &canvasSize = mapSettings.outputSize();
-    double sfx = static_cast<double>( zoomRectSize.width() ) / canvasSize.width();
-    double sfy = static_cast<double>( zoomRectSize.height() ) / canvasSize.height();
-    double sf = std::max( sfx, sfy );
+    const double sfx = static_cast<double>( zoomRectSize.width() ) / canvasSize.width();
+    const double sfy = static_cast<double>( zoomRectSize.height() ) / canvasSize.height();
+    const double sf = std::max( sfx, sfy );
 
     const QgsMapToPixel *m2p = mCanvas->getCoordinateTransform();
-    QgsPointXY c = m2p->toMapCoordinates( mZoomRect.center() );
+    const QgsPointXY c = m2p->toMapCoordinates( mZoomRect.center() );
 
     mCanvas->zoomByFactor( mZoomOut ? 1.0 / sf : sf, &c );
 

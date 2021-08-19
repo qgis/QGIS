@@ -16,7 +16,11 @@ if (WITH_GUI)
     gui/qgsauthesritokenedit.h
   )
   set(AUTH_ESRITOKEN_UIS gui/qgsauthesritokenedit.ui)
-  QT5_WRAP_UI(AUTH_ESRITOKEN_UIS_H ${AUTH_ESRITOKEN_UIS})
+  if (WITH_QT6)
+    QT6_WRAP_UI(AUTH_ESRITOKEN_UIS_H ${AUTH_ESRITOKEN_UIS})
+  else()
+    QT5_WRAP_UI(AUTH_ESRITOKEN_UIS_H ${AUTH_ESRITOKEN_UIS})
+  endif()
 endif()
 
 

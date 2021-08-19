@@ -96,6 +96,8 @@
 #include <QClipboard>
 #include <QRegularExpression>
 #include <QUrl>
+#include <QWindow>
+#include <QScreen>
 
 #ifdef Q_OS_MACX
 #include <ApplicationServices/ApplicationServices.h>
@@ -1617,6 +1619,25 @@ void QgsLayoutDesignerDialog::dragEnterEvent( QDragEnterEvent *event )
   }
 }
 
+void QgsLayoutDesignerDialog::showEvent( QShowEvent *event )
+{
+  QMainWindow::showEvent( event );
+
+  updateDevicePixelFromScreen();
+  // keep device pixel ratio up to date on screen or resolution change
+  if ( window()->windowHandle() )
+  {
+    connect( window()->windowHandle(), &QWindow::screenChanged, this, [ = ]( QScreen * )
+    {
+      disconnect( mScreenDpiChangedConnection );
+      mScreenDpiChangedConnection = connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsLayoutDesignerDialog::updateDevicePixelFromScreen );
+      updateDevicePixelFromScreen();
+    } );
+
+    mScreenDpiChangedConnection = connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsLayoutDesignerDialog::updateDevicePixelFromScreen );
+  }
+}
+
 void QgsLayoutDesignerDialog::setTitle( const QString &title )
 {
   mTitle = title;
@@ -1801,7 +1822,7 @@ void QgsLayoutDesignerDialog::updateStatusZoom()
   }
   else
   {
-    double dpi = QgsApplication::desktop()->logicalDpiX();
+    double dpi = mScreenDpi;
     //monitor dpi is not always correct - so make sure the value is sane
     if ( ( dpi < 60 ) || ( dpi > 1200 ) )
       dpi = 72;
@@ -4922,6 +4943,13 @@ void QgsLayoutDesignerDialog::onItemAdded( QgsLayoutItem *item )
   {
     connect( map, &QgsLayoutItemMap::previewRefreshed, this, &QgsLayoutDesignerDialog::onMapPreviewRefreshed );
   }
+}
+
+void QgsLayoutDesignerDialog::updateDevicePixelFromScreen()
+{
+  if ( window()->windowHandle() )
+    mScreenDpi = window()->windowHandle()->screen()->physicalDotsPerInch();
+  updateStatusZoom();
 }
 
 void QgsLayoutDesignerDialog::storeExportResults( QgsLayoutExporter::ExportResult result, QgsLayoutExporter *exporter )

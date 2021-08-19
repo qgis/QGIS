@@ -33,7 +33,7 @@ class SubLayerItem : public QTreeWidgetItem
     bool operator <( const QTreeWidgetItem &other ) const override
     {
       QgsSublayersDialog *d = qobject_cast<QgsSublayersDialog *>( treeWidget()->parent() );
-      int col = treeWidget()->sortColumn();
+      const int col = treeWidget()->sortColumn();
 
       if ( col == 0 || ( col > 0 && d->countColumn() == col ) )
         return text( col ).toInt() < other.text( col ).toInt();
@@ -162,9 +162,9 @@ void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefi
   }
 
   // resize columns
-  QgsSettings settings;
-  QByteArray ba = settings.value( "/Windows/" + mName + "SubLayers/headerState" ).toByteArray();
-  int savedColumnCount = settings.value( "/Windows/" + mName + "SubLayers/headerColumnCount" ).toInt();
+  const QgsSettings settings;
+  const QByteArray ba = settings.value( "/Windows/" + mName + "SubLayers/headerState" ).toByteArray();
+  const int savedColumnCount = settings.value( "/Windows/" + mName + "SubLayers/headerColumnCount" ).toInt();
   if ( ! ba.isNull() && savedColumnCount == layersTable->columnCount() )
   {
     layersTable->header()->restoreState( ba );
@@ -183,7 +183,7 @@ void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefi
 int QgsSublayersDialog::exec()
 {
   QgsSettings settings;
-  PromptMode promptLayers = settings.enumValue( QStringLiteral( "qgis/promptForSublayers" ), PromptAlways );
+  const Qgis::SublayerPromptMode promptLayers = settings.enumValue( QStringLiteral( "qgis/promptForSublayers" ), Qgis::SublayerPromptMode::AlwaysAsk );
 
   // make sure three are sublayers to choose
   if ( layersTable->topLevelItemCount() == 0 )
@@ -192,9 +192,9 @@ int QgsSublayersDialog::exec()
   layersTable->selectAll();
 
   // check promptForSublayers settings - perhaps this should be in QgsDataSource instead?
-  if ( promptLayers == PromptNever )
+  if ( promptLayers == Qgis::SublayerPromptMode::NeverAskSkip )
     return QDialog::Rejected;
-  else if ( promptLayers == PromptLoadAll )
+  else if ( promptLayers == Qgis::SublayerPromptMode::NeverAskLoadAll )
     return QDialog::Accepted;
 
   // if there is only 1 sublayer (probably the main layer), just select that one and return
@@ -207,7 +207,7 @@ int QgsSublayersDialog::exec()
   // if we got here, disable override cursor, open dialog and return result
   // TODO add override cursor where it is missing (e.g. when opening via "Add Raster")
   QCursor cursor;
-  bool overrideCursor = nullptr != QApplication::overrideCursor();
+  const bool overrideCursor = nullptr != QApplication::overrideCursor();
   if ( overrideCursor )
   {
     cursor = QCursor( * QApplication::overrideCursor() );
@@ -218,11 +218,11 @@ int QgsSublayersDialog::exec()
   if ( mShowAddToGroupCheckbox )
   {
     mCbxAddToGroup->setVisible( true );
-    bool addToGroup = settings.value( QStringLiteral( "/qgis/openSublayersInGroup" ), false ).toBool();
+    const bool addToGroup = settings.value( QStringLiteral( "/qgis/openSublayersInGroup" ), false ).toBool();
     mCbxAddToGroup->setChecked( addToGroup );
   }
 
-  int ret = QDialog::exec();
+  const int ret = QDialog::exec();
   if ( overrideCursor )
     QApplication::setOverrideCursor( cursor );
 

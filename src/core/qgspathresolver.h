@@ -213,7 +213,7 @@ class CORE_EXPORT QgsPathResolver
      *
      * \code{.py}
      *   def my_processor(path):
-     *      return path.replace('c:/Users/ClintBarton/Documents/Projects', '@projectdir@')
+     *      return path.replace('c:/Users/ClintBarton/Documents/Projects', '$projectdir$')
      *
      *   QgsPathResolver.setPathWriter(my_processor)
      * \endcode

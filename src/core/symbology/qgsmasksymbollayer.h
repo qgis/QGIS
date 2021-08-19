@@ -66,7 +66,7 @@ class CORE_EXPORT QgsMaskMarkerSymbolLayer : public QgsMarkerSymbolLayer
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
 
     //! Whether some masked symbol layers are defined
-    bool enabled() const { return ! mMaskedSymbolLayers.isEmpty(); }
+    bool enabled() const;
 
     /**
      * Returns a list of references to symbol layers that are masked by the sub symbol's shape.

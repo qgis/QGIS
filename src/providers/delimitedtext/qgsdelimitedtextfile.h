@@ -27,15 +27,15 @@ class QgsFeature;
 class QgsField;
 class QFile;
 class QFileSystemWatcher;
-class QTextStream;
+class QTextCodec;
 
 
 /**
 * \class QgsDelimitedTextFile
-* \brief Delimited text file parser extracts records from a QTextStream as a QStringList.
+* \brief Delimited text file parser extracts records from a text file as a QStringList.
 *
 * The delimited text parser is used by the QgsDelimitedTextProvider to parse
-* a QTextStream into records of QStringList.  It provides a number of variants
+* a text file into records of QStringList.  It provides a number of variants
 * for parsing each record.  The following options are supported:
 *
 * - Basic whitespace parsing.  Each line in the file is treated as a record.
@@ -267,7 +267,7 @@ class QgsDelimitedTextFile : public QObject
     int fieldIndex( const QString &name );
 
     /**
-     * Reads the next record from the stream splits into string fields.
+     * Reads the next record from the file splits into string fields.
      *  \param fields  The string list to populate with the fields
      *  \returns status The result of trying to parse a record.  RecordOk
      *                 if read successfully, RecordEOF if reached the end of the
@@ -403,7 +403,7 @@ class QgsDelimitedTextFile : public QObject
     QString mFileName;
     QString mEncoding;
     QFile *mFile = nullptr;
-    QTextStream *mStream = nullptr;
+    QTextCodec *mCodec = nullptr;
     bool mUseWatcher = false;
     QFileSystemWatcher *mWatcher = nullptr;
 
@@ -432,7 +432,7 @@ class QgsDelimitedTextFile : public QObject
     QString mBuffer;
     int mPosInBuffer = 0;
     int mMaxBufferSize = 0;
-    QChar mFirstEOLChar = 0; // '\r' if EOL is "\r" or "\r\n", or `\n' if EOL is "\n"
+    QChar mFirstEOLChar; // '\r' if EOL is "\r" or "\r\n", or `\n' if EOL is "\n"
     QStringList mCurrentRecord;
     bool mHoldCurrentRecord = false;
     // Maximum number of record (ie maximum record number visited)

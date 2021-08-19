@@ -31,11 +31,50 @@ code autocompletion.
 Constructor for QgsCodeEditorSQL
 %End
 
+
+    virtual ~QgsCodeEditorSQL();
+
     void setFields( const QgsFields &fields );
 %Docstring
 Set field names to be added to the lexer API.
 
 .. versionadded:: 3.14
+%End
+
+    void setFieldNames( const QStringList &fieldNames );
+%Docstring
+Set field names to ``fieldNames`` to be added to the lexer API.
+
+.. versionadded:: 3.18
+%End
+
+    QStringList fieldNames() const;
+%Docstring
+Returns field names from the lexer API.
+
+.. versionadded:: 3.22
+%End
+
+    void setExtraKeywords( const QStringList &extraKeywords );
+%Docstring
+Set extra keywords to ``extraKeywords``.
+
+Extra keywords are usually added
+from provider connections and represent function and other provider specific
+keywords.
+
+.. versionadded:: 3.22
+%End
+
+    QStringList extraKeywords() const;
+%Docstring
+Returns the extra keywords.
+
+Extra keywords are usually added
+from provider connections and represent function and other provider specific
+keywords.
+
+.. versionadded:: 3.22
 %End
 
   protected:

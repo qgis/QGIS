@@ -23,12 +23,12 @@ void QgsGeometrySegmentLengthCheck::collectErrors( const QMap<QString, QgsFeatur
 {
   Q_UNUSED( messages )
 
-  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext );
+  const QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
+  const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
-    double layerToMapUnits = scaleFactor( layerFeature.layer() );
-    double minLength = mMinLengthMapUnits / layerToMapUnits;
+    const double layerToMapUnits = scaleFactor( layerFeature.layer() );
+    const double minLength = mMinLengthMapUnits / layerToMapUnits;
 
     const QgsAbstractGeometry *geom = layerFeature.geometry().constGet();
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
@@ -36,20 +36,20 @@ void QgsGeometrySegmentLengthCheck::collectErrors( const QMap<QString, QgsFeatur
       for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
       {
         bool isClosed = false;
-        int nVerts = QgsGeometryCheckerUtils::polyLineSize( geom, iPart, iRing, &isClosed );
+        const int nVerts = QgsGeometryCheckerUtils::polyLineSize( geom, iPart, iRing, &isClosed );
         if ( nVerts < 2 )
         {
           continue;
         }
         for ( int iVert = isClosed ? 0 : 1, jVert = isClosed ? nVerts - 1 : 0; iVert < nVerts; jVert = iVert++ )
         {
-          QgsPoint pi = geom->vertexAt( QgsVertexId( iPart, iRing, iVert ) );
-          QgsPoint pj = geom->vertexAt( QgsVertexId( iPart, iRing, jVert ) );
-          double dist = pi.distance( pj );
+          const QgsPoint pi = geom->vertexAt( QgsVertexId( iPart, iRing, iVert ) );
+          const QgsPoint pj = geom->vertexAt( QgsVertexId( iPart, iRing, jVert ) );
+          const double dist = pi.distance( pj );
           // Don't report very small lengths, they are either duplicate nodes or degenerate geometries
           if ( dist < minLength && dist > mContext->tolerance )
           {
-            QgsPointXY pos( 0.5 * ( pi.x() + pj.x() ), 0.5 * ( pi.y() + pj.y() ) );
+            const QgsPointXY pos( 0.5 * ( pi.x() + pj.x() ), 0.5 * ( pi.y() + pj.y() ) );
             errors.append( new QgsGeometryCheckError( this, layerFeature, pos, QgsVertexId( iPart, iRing, iVert ), dist * layerToMapUnits, QgsGeometryCheckError::ValueLength ) );
           }
         }
@@ -68,9 +68,9 @@ void QgsGeometrySegmentLengthCheck::fixError( const QMap<QString, QgsFeaturePool
     return;
   }
 
-  QgsGeometry featureGeom = feature.geometry();
+  const QgsGeometry featureGeom = feature.geometry();
   const QgsAbstractGeometry *geom = featureGeom.constGet();
-  QgsVertexId vidx = error->vidx();
+  const QgsVertexId vidx = error->vidx();
 
   // Check if point still exists
   if ( !vidx.isValid( geom ) )
@@ -80,18 +80,18 @@ void QgsGeometrySegmentLengthCheck::fixError( const QMap<QString, QgsFeaturePool
   }
 
   // Check if error still applies
-  int nVerts = QgsGeometryCheckerUtils::polyLineSize( geom, vidx.part, vidx.ring );
+  const int nVerts = QgsGeometryCheckerUtils::polyLineSize( geom, vidx.part, vidx.ring );
   if ( nVerts == 0 )
   {
     error->setObsolete();
     return;
   }
 
-  QgsPoint pi = geom->vertexAt( error->vidx() );
-  QgsPoint pj = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex - 1 + nVerts ) % nVerts ) );
-  double dist = pi.distance( pj );
-  double layerToMapUnits = scaleFactor( featurePool->layer() );
-  double minLength = mMinLengthMapUnits / layerToMapUnits;
+  const QgsPoint pi = geom->vertexAt( error->vidx() );
+  const QgsPoint pj = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex - 1 + nVerts ) % nVerts ) );
+  const double dist = pi.distance( pj );
+  const double layerToMapUnits = scaleFactor( featurePool->layer() );
+  const double minLength = mMinLengthMapUnits / layerToMapUnits;
   if ( dist >= minLength )
   {
     error->setObsolete();
@@ -111,7 +111,7 @@ void QgsGeometrySegmentLengthCheck::fixError( const QMap<QString, QgsFeaturePool
 
 QStringList QgsGeometrySegmentLengthCheck::resolutionMethods() const
 {
-  static QStringList methods = QStringList() << tr( "No action" );
+  static const QStringList methods = QStringList() << tr( "No action" );
   return methods;
 }
 

@@ -22,6 +22,7 @@
 
 SIP_NO_FILE
 
+class QgsMessageBar;
 
 /**
  * \ingroup gui
@@ -35,15 +36,18 @@ class GUI_EXPORT QgsExternalResourceWidgetFactory : public QgsEditorWidgetFactor
 
     /**
      * Constructor for QgsExternalResourceWidgetFactory, where \a name is a human-readable
-     * name for the factory.
+     * name for the factory and \a messageBar the message bar used to report messages.
      */
-    QgsExternalResourceWidgetFactory( const QString &name );
+    QgsExternalResourceWidgetFactory( const QString &name, QgsMessageBar *messageBar );
 
     // QgsEditorWidgetFactory interface
   public:
     QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const override;
     QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
     unsigned int fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const override;
+
+  private:
+    QgsMessageBar *mMessageBar = nullptr;
 };
 
 #endif // QGSEXTERNALRESOURCEWIDGETFACTORY_H

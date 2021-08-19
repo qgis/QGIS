@@ -2,7 +2,7 @@
 "type": "FeatureCollection",
 "name": "qgis-hackfests",
 "features": [
-{ "type": "Feature", "properties": { "year": 2005, "month": "?", "hackfest_number": "0", "place": "Karslruhe", "notes": "Unofficialfirst hackfest at Linuxtag", "month_int": 1, "day_int": 1, "date_nice": "2005\/01\/01" }, "geometry": { "type": "Point", "coordinates": [ 8.403854370117188, 49.014230118337892 ] } },
+{ "type": "Feature", "properties": { "year": 2005, "month": "?", "hackfest_number": "0", "place": "Karlsruhe", "notes": "Unofficialfirst hackfest at Linuxtag", "month_int": 1, "day_int": 1, "date_nice": "2005\/01\/01" }, "geometry": { "type": "Point", "coordinates": [ 8.403854370117188, 49.014230118337892 ] } },
 { "type": "Feature", "properties": { "year": 2009, "month": "March", "hackfest_number": "1", "place": "Hannover", "notes": "Held just before FOSSGIS", "month_int": 3, "day_int": 1, "date_nice": "2009\/03\/01" }, "geometry": { "type": "Point", "coordinates": [ 9.738006591796875, 52.374551201517249 ] } },
 { "type": "Feature", "properties": { "year": 2009, "month": "November", "hackfest_number": "2", "place": "Wien", "notes": "Werner's girlfriend Verena made awesome cake", "month_int": 11, "day_int": 1, "date_nice": "2009\/11\/01" }, "geometry": { "type": "Point", "coordinates": [ 16.403961181640625, 48.230619167874089 ] } },
 { "type": "Feature", "properties": { "year": 2010, "month": "March", "hackfest_number": "3", "place": "Pisa", "notes": "Jürgen really liked the food and there were wild boar seen on the way home from dinner", "month_int": 3, "day_int": 1, "date_nice": "2010\/03\/01" }, "geometry": { "type": "Point", "coordinates": [ 10.340194702148438, 43.736375427948587 ] } },

@@ -267,7 +267,7 @@ bool QgsAffineTransformationAlgorithm::supportInPlaceEdit( const QgsMapLayer *l 
     return false;
 
   // If the type differs there is no sense in executing the algorithm and drop the result
-  QgsWkbTypes::Type inPlaceWkbType = layer->wkbType();
+  const QgsWkbTypes::Type inPlaceWkbType = layer->wkbType();
   return inPlaceWkbType == outputWkbType( inPlaceWkbType );
 }
 ///@endcond

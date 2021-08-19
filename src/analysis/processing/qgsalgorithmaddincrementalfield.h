@@ -58,6 +58,7 @@ class QgsAddIncrementalFieldAlgorithm : public QgsProcessingFeatureBasedAlgorith
   private:
 
     long long mStartValue = 0;
+    long long mModulusValue = 0;
     long long mValue = 0;
     QString mFieldName;
     QHash< QgsAttributes, long long > mGroupedValues;

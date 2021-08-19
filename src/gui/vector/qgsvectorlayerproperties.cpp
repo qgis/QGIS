@@ -87,6 +87,7 @@
 #include <QColorDialog>
 #include <QMenu>
 #include <QUrl>
+#include <QRegularExpressionValidator>
 
 #include "qgsrendererpropertiesdialog.h"
 #include "qgsstyle.h"
@@ -106,7 +107,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   , mOriginalSubsetSQL( lyr->subsetString() )
 {
   setupUi( this );
-  connect( mLayerOrigNameLineEdit, &QLineEdit::textEdited, this, &QgsVectorLayerProperties::mLayerOrigNameLineEdit_textEdited );
   connect( pbnQueryBuilder, &QPushButton::clicked, this, &QgsVectorLayerProperties::pbnQueryBuilder_clicked );
   connect( pbnIndex, &QPushButton::clicked, this, &QgsVectorLayerProperties::pbnIndex_clicked );
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsVectorLayerProperties::mCrsSelector_crsChanged );
@@ -323,7 +323,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   // WMS Name as layer short name
   mLayerShortNameLineEdit->setText( mLayer->shortName() );
   // WMS Name validator
-  QValidator *shortNameValidator = new QRegExpValidator( QgsApplication::shortNameRegExp(), this );
+  QValidator *shortNameValidator = new QRegularExpressionValidator( QgsApplication::shortNameRegularExpression(), this );
   mLayerShortNameLineEdit->setValidator( shortNameValidator );
 
   //layer title and abstract
@@ -517,7 +517,6 @@ void QgsVectorLayerProperties::syncToLayer()
 
   // populate the general information
   mLayerOrigNameLineEdit->setText( mLayer->name() );
-  txtDisplayName->setText( mLayer->name() );
 
   //see if we are dealing with a pg layer here
   mSubsetGroupBox->setEnabled( true );
@@ -935,11 +934,6 @@ void QgsVectorLayerProperties::pbnIndex_clicked()
 QString QgsVectorLayerProperties::htmlMetadata()
 {
   return mLayer->htmlMetadata();
-}
-
-void QgsVectorLayerProperties::mLayerOrigNameLineEdit_textEdited( const QString &text )
-{
-  txtDisplayName->setText( mLayer->formatLayerName( text ) );
 }
 
 void QgsVectorLayerProperties::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
@@ -1601,7 +1595,7 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorLayerJoinInfo
   childFields->setText( 0, tr( "Joined fields" ) );
   const QStringList *list = join.joinFieldNamesSubset();
   if ( list )
-    childFields->setText( 1, QString::number( list->count() ) );
+    childFields->setText( 1, QLocale().toString( list->count() ) );
   else
     childFields->setText( 1, tr( "all" ) );
   joinItem->addChild( childFields );
@@ -1926,8 +1920,8 @@ void QgsVectorLayerProperties::updateAuxiliaryStoragePage()
     mAuxiliaryStorageKeyLineEdit->setText( alayer->joinInfo().targetFieldName() );
 
     // update feature count
-    long features = alayer->featureCount();
-    mAuxiliaryStorageFeaturesLineEdit->setText( QString::number( features ) );
+    const qlonglong features = alayer->featureCount();
+    mAuxiliaryStorageFeaturesLineEdit->setText( QLocale().toString( features ) );
 
     // update actions
     mAuxiliaryLayerActionClear->setEnabled( true );
@@ -1939,7 +1933,7 @@ void QgsVectorLayerProperties::updateAuxiliaryStoragePage()
     if ( alayer )
     {
       const int fields = alayer->auxiliaryFields().count();
-      mAuxiliaryStorageFieldsLineEdit->setText( QString::number( fields ) );
+      mAuxiliaryStorageFieldsLineEdit->setText( QLocale().toString( fields ) );
 
       // add fields
       mAuxiliaryStorageFieldsTree->clear();

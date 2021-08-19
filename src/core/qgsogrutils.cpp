@@ -957,7 +957,37 @@ QgsCoordinateReferenceSystem QgsOgrUtils::OGRSpatialReferenceToCrs( OGRSpatialRe
   if ( wkt.isEmpty() )
     return QgsCoordinateReferenceSystem();
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
+  QgsCoordinateReferenceSystem res = QgsCoordinateReferenceSystem::fromWkt( wkt );
+  const double coordinateEpoch = OSRGetCoordinateEpoch( srs );
+  if ( coordinateEpoch > 0 )
+    res.setCoordinateEpoch( coordinateEpoch );
+  return res;
+#else
   return QgsCoordinateReferenceSystem::fromWkt( wkt );
+#endif
+}
+
+OGRSpatialReferenceH QgsOgrUtils::crsToOGRSpatialReference( const QgsCoordinateReferenceSystem &crs )
+{
+  if ( crs.isValid() )
+  {
+    const QString srsWkt = crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL );
+
+    if ( OGRSpatialReferenceH ogrSrs = OSRNewSpatialReference( srsWkt.toLocal8Bit().constData() ) )
+    {
+      OSRSetAxisMappingStrategy( ogrSrs, OAMS_TRADITIONAL_GIS_ORDER );
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
+      if ( !std::isnan( crs.coordinateEpoch() ) )
+      {
+        OSRSetCoordinateEpoch( ogrSrs, crs.coordinateEpoch() );
+      }
+#endif
+      return ogrSrs;
+    }
+  }
+
+  return nullptr;
 }
 
 QString QgsOgrUtils::readShapefileEncoding( const QString &path )

@@ -75,7 +75,7 @@ void TestQgsTableEditor::testData()
   QgsTableEditorWidget w;
   QVERIFY( w.tableContents().isEmpty() );
 
-  QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
+  const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
   std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
@@ -126,7 +126,7 @@ void TestQgsTableEditor::insertRowsBelow()
   QgsTableEditorWidget w;
   QVERIFY( w.tableContents().isEmpty() );
 
-  QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
+  const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
   std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
@@ -236,7 +236,7 @@ void TestQgsTableEditor::insertRowsAbove()
   QgsTableEditorWidget w;
   QVERIFY( w.tableContents().isEmpty() );
 
-  QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
+  const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
   std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
@@ -346,7 +346,7 @@ void TestQgsTableEditor::insertColumnsBefore()
   QgsTableEditorWidget w;
   QVERIFY( w.tableContents().isEmpty() );
 
-  QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
+  const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
   std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
@@ -428,7 +428,7 @@ void TestQgsTableEditor::insertColumnsAfter()
   QgsTableEditorWidget w;
   QVERIFY( w.tableContents().isEmpty() );
 
-  QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
+  const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
   std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
@@ -510,7 +510,7 @@ void TestQgsTableEditor::deleteRows()
   QgsTableEditorWidget w;
   QVERIFY( w.tableContents().isEmpty() );
 
-  QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
+  const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
   std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
@@ -577,7 +577,7 @@ void TestQgsTableEditor::deleteColumns()
   QgsTableEditorWidget w;
   QVERIFY( w.tableContents().isEmpty() );
 
-  QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
+  const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
   std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
@@ -709,7 +709,7 @@ void TestQgsTableEditor::clearSelected()
                       << ( QgsTableRow() << QgsTableCell( QStringLiteral( "B1" ) )  << QgsTableCell( QStringLiteral( "B2" ) ) << QgsTableCell( QStringLiteral( "B3" ) ) )
                       << ( QgsTableRow() << QgsTableCell( QStringLiteral( "C1" ) ) << QgsTableCell( QStringLiteral( "C2" ) ) << QgsTableCell( QStringLiteral( "C3" ) ) ) );
 
-  QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
+  const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   w.selectionModel()->clearSelection();
   w.clearSelectedCells();
   QCOMPARE( spy.count(), 0 );
@@ -753,7 +753,7 @@ void TestQgsTableEditor::foregroundColor()
   QgsTableEditorWidget w;
   QVERIFY( w.tableContents().isEmpty() );
 
-  QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
+  const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
   std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
@@ -818,7 +818,7 @@ void TestQgsTableEditor::backgroundColor()
   QgsTableEditorWidget w;
   QVERIFY( w.tableContents().isEmpty() );
 
-  QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
+  const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
   std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
@@ -881,7 +881,7 @@ void TestQgsTableEditor::alignment()
   QgsTableEditorWidget w;
   QVERIFY( w.tableContents().isEmpty() );
 
-  QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
+  const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
   std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
@@ -949,14 +949,14 @@ void TestQgsTableEditor::properties()
   QgsTableEditorWidget w;
   QVERIFY( w.tableContents().isEmpty() );
 
-  QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
+  const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
   std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
   format->setNumberDecimalPlaces( 2 );
   format->setPrefix( QStringLiteral( "$" ) );
   c3.setNumericFormat( format.release() );
-  QgsTableCell c2( QVariant::fromValue( QgsProperty::fromExpression( "1+2" ) ) );
+  const QgsTableCell c2( QVariant::fromValue( QgsProperty::fromExpression( "1+2" ) ) );
   w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) << c2 << c3 << QgsTableCell( QStringLiteral( "Jet3" ) ) ) );
   QCOMPARE( spy.count(), 1 );
 
@@ -1005,7 +1005,7 @@ void TestQgsTableEditor::textFormat()
   QgsTableEditorWidget w;
   QVERIFY( w.tableContents().isEmpty() );
 
-  QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
+  const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
   QgsTextFormat format;
@@ -1057,7 +1057,7 @@ void TestQgsTableEditor::numericFormat()
   QgsTableEditorWidget w;
   QVERIFY( w.tableContents().isEmpty() );
 
-  QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
+  const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
   std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
@@ -1127,7 +1127,7 @@ void TestQgsTableEditor::rowHeight()
   QgsTableEditorWidget w;
   QVERIFY( w.tableContents().isEmpty() );
 
-  QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
+  const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() )
                       << ( QgsTableRow() << QgsTableCell()  << QgsTableCell() << QgsTableCell() )
                       << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) );
@@ -1169,7 +1169,7 @@ void TestQgsTableEditor::columnWidth()
   QgsTableEditorWidget w;
   QVERIFY( w.tableContents().isEmpty() );
 
-  QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
+  const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() )
                       << ( QgsTableRow() << QgsTableCell()  << QgsTableCell() << QgsTableCell() )
                       << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) );
@@ -1211,7 +1211,7 @@ void TestQgsTableEditor::headers()
   QgsTableEditorWidget w;
   QVERIFY( w.tableContents().isEmpty() );
 
-  QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
+  const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( 1 ) << QgsTableCell( 2 ) << QgsTableCell( 3 ) )
                       << ( QgsTableRow() << QgsTableCell( 4 )  << QgsTableCell( 5 ) << QgsTableCell( 6 ) ) );
   QCOMPARE( spy.count(), 1 );

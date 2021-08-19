@@ -376,15 +376,15 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
   return std::unique_ptr<Mesh>( mesh.release() );
 }
 
-void MDAL::Driver2dm::save( const std::string &uri, MDAL::Mesh *mesh )
+void MDAL::Driver2dm::save( const std::string &fileName, const std::string &, MDAL::Mesh *mesh )
 {
   MDAL::Log::resetLastStatus();
 
-  std::ofstream file( uri, std::ofstream::out );
+  std::ofstream file( fileName, std::ofstream::out );
 
   if ( !file.is_open() )
   {
-    MDAL::Log::error( MDAL_Status::Err_FailToWriteToDisk, name(), "Could not open file " + uri );
+    MDAL::Log::error( MDAL_Status::Err_FailToWriteToDisk, name(), "Could not open file " + fileName );
   }
 
   std::string line = "MESH2D";

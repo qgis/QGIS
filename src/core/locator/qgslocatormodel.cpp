@@ -115,7 +115,7 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
         case Name:
           if ( !mResults.at( index.row() ).filter )
           {
-            QIcon icon = mResults.at( index.row() ).result.icon;
+            const QIcon icon = mResults.at( index.row() ).result.icon;
             if ( !icon.isNull() )
               return icon;
             return QgsApplication::getThemeIcon( QStringLiteral( "/search.svg" ) );
@@ -205,13 +205,13 @@ void QgsLocatorModel::addResult( const QgsLocatorResult &result )
     mFoundResultsFilterGroups.clear();
   }
 
-  int pos = mResults.size();
-  bool addingFilter = !result.filter->displayName().isEmpty() && !mFoundResultsFromFilterNames.contains( result.filter->name() );
+  const int pos = mResults.size();
+  const bool addingFilter = !result.filter->displayName().isEmpty() && !mFoundResultsFromFilterNames.contains( result.filter->name() );
   if ( addingFilter )
     mFoundResultsFromFilterNames << result.filter->name();
 
-  bool addingGroup = !result.group.isEmpty() && ( !mFoundResultsFilterGroups.contains( result.filter )
-                     || !mFoundResultsFilterGroups.value( result.filter ).contains( result.group ) );
+  const bool addingGroup = !result.group.isEmpty() && ( !mFoundResultsFilterGroups.contains( result.filter )
+                           || !mFoundResultsFilterGroups.value( result.filter ).contains( result.group ) );
   if ( addingGroup )
   {
     if ( !mFoundResultsFilterGroups.contains( result.filter ) )
@@ -306,7 +306,7 @@ void QgsLocatorAutomaticModel::searchFinished()
   if ( mHasQueuedRequest )
   {
     // a queued request was waiting for this - run the queued search now
-    QString nextSearch = mNextRequestedString;
+    const QString nextSearch = mNextRequestedString;
     mNextRequestedString.clear();
     mHasQueuedRequest = false;
     search( nextSearch );
@@ -333,8 +333,8 @@ QgsLocatorProxyModel::QgsLocatorProxyModel( QObject *parent )
 bool QgsLocatorProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
   // first go by filter priority
-  int leftFilterPriority = sourceModel()->data( left, QgsLocatorModel::ResultFilterPriorityRole ).toInt();
-  int rightFilterPriority  = sourceModel()->data( right, QgsLocatorModel::ResultFilterPriorityRole ).toInt();
+  const int leftFilterPriority = sourceModel()->data( left, QgsLocatorModel::ResultFilterPriorityRole ).toInt();
+  const int rightFilterPriority  = sourceModel()->data( right, QgsLocatorModel::ResultFilterPriorityRole ).toInt();
   if ( leftFilterPriority != rightFilterPriority )
     return leftFilterPriority < rightFilterPriority;
 
@@ -345,20 +345,20 @@ bool QgsLocatorProxyModel::lessThan( const QModelIndex &left, const QModelIndex 
     return QString::localeAwareCompare( leftFilter, rightFilter ) < 0;
 
   // then make sure filter title or group appears before filter's results
-  int leftTypeRole = sourceModel()->data( left, QgsLocatorModel::ResultTypeRole ).toInt();
-  int rightTypeRole = sourceModel()->data( right, QgsLocatorModel::ResultTypeRole ).toInt();
+  const int leftTypeRole = sourceModel()->data( left, QgsLocatorModel::ResultTypeRole ).toInt();
+  const int rightTypeRole = sourceModel()->data( right, QgsLocatorModel::ResultTypeRole ).toInt();
   if ( leftTypeRole != rightTypeRole )
     return leftTypeRole < rightTypeRole;
 
   // make sure group title are above
-  int leftGroupRole = sourceModel()->data( left, QgsLocatorModel::ResultFilterGroupSortingRole ).toInt();
-  int rightGroupRole = sourceModel()->data( right, QgsLocatorModel::ResultFilterGroupSortingRole ).toInt();
+  const int leftGroupRole = sourceModel()->data( left, QgsLocatorModel::ResultFilterGroupSortingRole ).toInt();
+  const int rightGroupRole = sourceModel()->data( right, QgsLocatorModel::ResultFilterGroupSortingRole ).toInt();
   if ( leftGroupRole != rightGroupRole )
     return leftGroupRole < rightGroupRole;
 
   // sort filter's results by score
-  double leftScore = sourceModel()->data( left, QgsLocatorModel::ResultScoreRole ).toDouble();
-  double rightScore = sourceModel()->data( right, QgsLocatorModel::ResultScoreRole ).toDouble();
+  const double leftScore = sourceModel()->data( left, QgsLocatorModel::ResultScoreRole ).toDouble();
+  const double rightScore = sourceModel()->data( right, QgsLocatorModel::ResultScoreRole ).toDouble();
   if ( !qgsDoubleNear( leftScore, rightScore ) )
     return leftScore > rightScore;
 

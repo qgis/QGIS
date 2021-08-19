@@ -32,7 +32,7 @@ QgsBookmarkLocatorFilter *QgsBookmarkLocatorFilter::clone() const
 
 void QgsBookmarkLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback )
 {
-  QMap<QString, QModelIndex> bookmarkMap = QgisApp::instance()->getBookmarkIndexMap();
+  const QMap<QString, QModelIndex> bookmarkMap = QgisApp::instance()->getBookmarkIndexMap();
 
   QMapIterator<QString, QModelIndex> i( bookmarkMap );
 
@@ -43,8 +43,8 @@ void QgsBookmarkLocatorFilter::fetchResults( const QString &string, const QgsLoc
     if ( feedback->isCanceled() )
       return;
 
-    QString name = i.key();
-    QModelIndex index = i.value();
+    const QString name = i.key();
+    const QModelIndex index = i.value();
     QgsLocatorResult result;
     result.filter = this;
     result.displayString = name;
@@ -66,6 +66,6 @@ void QgsBookmarkLocatorFilter::fetchResults( const QString &string, const QgsLoc
 
 void QgsBookmarkLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
-  QModelIndex index = qvariant_cast<QModelIndex>( result.userData );
+  const QModelIndex index = qvariant_cast<QModelIndex>( result.userData );
   QgisApp::instance()->zoomToBookmarkIndex( index );
 }

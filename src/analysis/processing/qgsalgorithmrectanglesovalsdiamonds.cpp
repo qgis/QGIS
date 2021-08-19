@@ -143,7 +143,7 @@ QgsFeatureList QgsRectanglesOvalsDiamondsAlgorithm::processFeature( const QgsFea
   QgsFeature outFeature = feature;
   if ( outFeature.hasGeometry() )
   {
-    QgsGeometry geometry = outFeature.geometry();
+    const QgsGeometry geometry = outFeature.geometry();
     if ( geometry.isMultipart() )
     {
       throw QgsProcessingException( QObject::tr( "Multipart geometry. Please promote input layer to singleparts first." ) );
@@ -166,12 +166,12 @@ QgsFeatureList QgsRectanglesOvalsDiamondsAlgorithm::processFeature( const QgsFea
       throw QgsProcessingException( QObject::tr( "Width and height should be greater than 0." ) );
     }
 
-    double phi = rotation * M_PI / 180;
-    double xOffset = width / 2.0;
-    double yOffset = height / 2.0;
-    QgsPointXY point = geometry.asPoint();
-    double x = point.x();
-    double y = point.y();
+    const double phi = rotation * M_PI / 180;
+    const double xOffset = width / 2.0;
+    const double yOffset = height / 2.0;
+    const QgsPointXY point = geometry.asPoint();
+    const double x = point.x();
+    const double y = point.y();
 
     QVector< double > ringX( 5 );
     QVector< double > ringY( 5 );
@@ -194,7 +194,7 @@ QgsFeatureList QgsRectanglesOvalsDiamondsAlgorithm::processFeature( const QgsFea
         ringY.resize( mSegments + 1 );
         for ( int i = 0; i < mSegments; i ++ )
         {
-          double t = ( 2 * M_PI ) / mSegments * i;
+          const double t = ( 2 * M_PI ) / mSegments * i;
           ringX[ i ] = xOffset * cos( t ) + x;
           ringY[ i ] = yOffset * sin( t ) + y;
         }
@@ -207,8 +207,8 @@ QgsFeatureList QgsRectanglesOvalsDiamondsAlgorithm::processFeature( const QgsFea
     {
       for ( int i = 0; i < ringX.size(); ++i )
       {
-        double px = ringX.at( i );
-        double py = ringY.at( i );
+        const double px = ringX.at( i );
+        const double py = ringY.at( i );
         ringX[ i ] = ( px - x ) * cos( phi ) + ( py - y ) * sin( phi ) + x;
         ringY[ i ] = -( px - x ) * sin( phi ) + ( py - y ) * cos( phi ) + y;
       }

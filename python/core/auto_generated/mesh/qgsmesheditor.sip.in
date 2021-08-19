@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsMeshEditingError
 {
 %Docstring(signature="appended")
@@ -65,6 +67,17 @@ Constructor with a specified layer ``meshLayer``
 Initialize the mesh editor and return errors if the internal native mesh have topologic errors
 %End
 
+    bool faceCanBeAdded( const QgsMeshFace &face );
+%Docstring
+Returns ``True`` if a ``face`` can be added to the mesh
+%End
+
+    bool isFaceGeometricallyCompatible( const QgsMeshFace &face );
+%Docstring
+Returns ``True`` if the face does not intersect or contains any other elements (faces or vertices)
+The topological compatibility is not checked
+%End
+
     QgsMeshEditingError addFace( const QVector<int> &vertexIndexes );
 %Docstring
 Adds a face ``face`` to the mesh with vertex indexes ``vertexIndexes``, returns topological errors if this operation fails (operation is not realized)
@@ -73,6 +86,37 @@ Adds a face ``face`` to the mesh with vertex indexes ``vertexIndexes``, returns 
     QgsMeshEditingError removeFaces( const QList<int> &facesToRemove );
 %Docstring
 Removes faces ``faces`` to the mesh, returns topological errors if this operation fails (operation is not realized)
+%End
+
+    bool edgeCanBeFlipped( int vertexIndex1, int vertexIndex2 ) const;
+%Docstring
+Returns ``True`` if the edge can be flipped (only available for edge shared by two faces with 3 vertices)
+%End
+
+    void flipEdge( int vertexIndex1, int vertexIndex2 );
+%Docstring
+Flips edge (``vertexIndex1``, ``vertexIndex2``)
+%End
+
+    bool canBeMerged( int vertexIndex1, int vertexIndex2 ) const;
+%Docstring
+Returns ``True`` if faces separated by vertices with indexes ``vertexIndex1`` and ``vertexIndex2`` can be merged
+%End
+
+    void merge( int vertexIndex1, int vertexIndex2 );
+%Docstring
+Merges faces separated by vertices with indexes ``vertexIndex1`` and ``vertexIndex2``
+%End
+
+    bool faceCanBeSplit( int faceIndex ) const;
+%Docstring
+Returns ``True`` if face with index ``faceIndex`` can be split
+%End
+
+    int splitFaces( const QList<int> &faceIndexes );
+%Docstring
+Splits faces with index ``faceIndexes``. Only faces that can be split are split.
+Returns the count of faces effictively split
 %End
 
     int addPointsAsVertices( const QVector<QgsPoint> &point, double tolerance );
@@ -95,6 +139,22 @@ if ``fillHoles`` is set to ``True``, this operation will fill holes created in t
 If removing these vertices leads to a topological errors, the method will return the corresponding error and the operatio is canceled
 %End
 
+    void changeZValues( const QList<int> &verticesIndexes, const QList<double> &newValues );
+%Docstring
+Changes the Z values of the vertices with indexes in ``vertices`` indexes with the values in ``newValues``
+%End
+
+    void changeXYValues( const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues );
+%Docstring
+Changes the (X,Y) coordinates values of the vertices with indexes in ``vertices`` indexes with the values in ``newValues``.
+The caller has the responsibility to check if changing the vertices coordinates does not lead to topological errors
+%End
+
+    void advancedEdit( QgsMeshAdvancedEditing *editing );
+%Docstring
+Applies an advance editing on the edited mesh, see :py:class:`QgsMeshAdvancedEditing`
+%End
+
     void stopEditing();
 %Docstring
 Stops editing
@@ -108,6 +168,27 @@ Returns the extent of the edited mesh
     bool isModified() const;
 %Docstring
 Returns whether the mesh has been modified
+%End
+
+
+    QList<int> freeVerticesIndexes();
+%Docstring
+Returns all the free vertices indexes
+%End
+
+    bool isVertexOnBoundary( int vertexIndex ) const;
+%Docstring
+Returns whether the vertex with index ``vertexIndex`` is on a boundary
+%End
+
+    bool isVertexFree( int vertexIndex ) const;
+%Docstring
+Returns whether the vertex with index ``vertexIndex`` is a free vertex
+%End
+
+    bool checkConsistency() const;
+%Docstring
+Return ``True`` if the edited mesh is consistent
 %End
 
   signals:

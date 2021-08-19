@@ -74,26 +74,26 @@ void QgsVectorLayerServerProperties::readXml( const QDomNode &layer_node )
   if ( !wmsDimsNode.isNull() )
   {
     const QDomElement wmsDimsElem = wmsDimsNode.toElement();
-    QDomNodeList wmsDimsList = wmsDimsElem.elementsByTagName( QStringLiteral( "dimension" ) );
+    const QDomNodeList wmsDimsList = wmsDimsElem.elementsByTagName( QStringLiteral( "dimension" ) );
     for ( int i = 0; i < wmsDimsList.size(); ++i )
     {
-      QDomElement dimElem = wmsDimsList.at( i ).toElement();
-      QString dimName = dimElem.attribute( QStringLiteral( "name" ) );
-      QString dimFieldName = dimElem.attribute( QStringLiteral( "fieldName" ) );
+      const QDomElement dimElem = wmsDimsList.at( i ).toElement();
+      const QString dimName = dimElem.attribute( QStringLiteral( "name" ) );
+      const QString dimFieldName = dimElem.attribute( QStringLiteral( "fieldName" ) );
       // check field name
-      int dimFieldNameIndex = fields.indexOf( dimFieldName );
+      const int dimFieldNameIndex = fields.indexOf( dimFieldName );
       if ( dimFieldNameIndex == -1 )
       {
         continue;
       }
       QVariant dimRefValue;
-      int dimDefaultDisplayType = dimElem.attribute( QStringLiteral( "defaultDisplayType" ) ).toInt();
+      const int dimDefaultDisplayType = dimElem.attribute( QStringLiteral( "defaultDisplayType" ) ).toInt();
       if ( dimDefaultDisplayType == QgsVectorLayerServerProperties::WmsDimensionInfo::AllValues )
       {
-        QString dimRefValueStr = dimElem.attribute( QStringLiteral( "referenceValue" ) );
+        const QString dimRefValueStr = dimElem.attribute( QStringLiteral( "referenceValue" ) );
         if ( !dimRefValueStr.isEmpty() )
         {
-          QgsField dimField = fields.at( dimFieldNameIndex );
+          const QgsField dimField = fields.at( dimFieldNameIndex );
           dimRefValue = QVariant( dimRefValueStr );
           if ( !dimField.convertCompatible( dimRefValue ) )
           {
@@ -101,7 +101,7 @@ void QgsVectorLayerServerProperties::readXml( const QDomNode &layer_node )
           }
         }
       }
-      QgsVectorLayerServerProperties::WmsDimensionInfo dim( dimName, dimFieldName,
+      const QgsVectorLayerServerProperties::WmsDimensionInfo dim( dimName, dimFieldName,
           dimElem.attribute( QStringLiteral( "endFieldName" ) ),
           dimElem.attribute( QStringLiteral( "units" ) ),
           dimElem.attribute( QStringLiteral( "unitSymbol" ) ),

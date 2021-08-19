@@ -37,6 +37,7 @@
 #include <qwt_plot_layout.h>
 #include <qwt_plot_renderer.h>
 #include <qwt_plot_histogram.h>
+#include <qwt_text.h>
 
 
 QgsHistogramWidget::QgsHistogramWidget( QWidget *parent, QgsVectorLayer *layer, const QString &fieldOrExp )
@@ -254,7 +255,7 @@ void QgsHistogramWidget::drawHistogram()
     rangeMarker->attach( mpPlot );
     rangeMarker->setLineStyle( QwtPlotMarker::VLine );
     rangeMarker->setXValue( range.upperValue() );
-    rangeMarker->setLabel( QString::number( range.upperValue() ) );
+    rangeMarker->setLabel( QLocale().toString( range.upperValue() ) );
     rangeMarker->setLabelOrientation( Qt::Vertical );
     rangeMarker->setLabelAlignment( Qt::AlignLeft | Qt::AlignTop );
     rangeMarker->show();

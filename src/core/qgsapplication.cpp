@@ -41,6 +41,7 @@
 #include "qgscolorschemeregistry.h"
 #include "qgspainteffectregistry.h"
 #include "qgsprojectstorageregistry.h"
+#include "qgsexternalstorageregistry.h"
 #include "qgsrasterrendererregistry.h"
 #include "qgsrendererregistry.h"
 #include "qgspointcloudrendererregistry.h"
@@ -75,6 +76,7 @@
 #include "qgsfeaturestore.h"
 #include "qgslocator.h"
 #include "qgsreadwritelocker.h"
+#include "qgsbabelformatregistry.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -281,15 +283,21 @@ void QgsApplication::init( QString profileFolder )
     qRegisterMetaType<QgsRectangle>( "QgsRectangle" );
     qRegisterMetaType<QgsLocatorResult>( "QgsLocatorResult" );
     qRegisterMetaType<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    // Qt6 documentation says these are not needed anymore (https://www.qt.io/blog/whats-new-in-qmetatype-qvariant) #spellok
+    // TODO: when tests can run against Qt6 builds, check for any regressions
     qRegisterMetaTypeStreamOperators<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
+#endif
     qRegisterMetaType<QgsRemappingSinkDefinition>( "QgsRemappingSinkDefinition" );
     qRegisterMetaType<QgsProcessingModelChildDependency>( "QgsProcessingModelChildDependency" );
     qRegisterMetaType<QgsTextFormat>( "QgsTextFormat" );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QMetaType::registerComparators<QgsProcessingModelChildDependency>();
     QMetaType::registerEqualsComparator<QgsProcessingFeatureSourceDefinition>();
     QMetaType::registerEqualsComparator<QgsProperty>();
     QMetaType::registerEqualsComparator<QgsDateTimeRange>();
     QMetaType::registerEqualsComparator<QgsDateRange>();
+#endif
     qRegisterMetaType<QPainter::CompositionMode>( "QPainter::CompositionMode" );
     qRegisterMetaType<QgsDateTimeRange>( "QgsDateTimeRange" );
   } );
@@ -1178,9 +1186,9 @@ QString QgsApplication::userStylePath()
   return qgisSettingsDirPath() + QStringLiteral( "symbology-style.db" );
 }
 
-QRegExp QgsApplication::shortNameRegExp()
+QRegularExpression QgsApplication::shortNameRegularExpression()
 {
-  const thread_local QRegExp regexp( QStringLiteral( "^[A-Za-z][A-Za-z0-9\\._-]*" ) );
+  const thread_local QRegularExpression regexp( QRegularExpression::anchoredPattern( QStringLiteral( "^[A-Za-z][A-Za-z0-9\\._-]*" ) ) );
   return regexp;
 }
 
@@ -2341,6 +2349,11 @@ QgsGpsConnectionRegistry *QgsApplication::gpsConnectionRegistry()
   return members()->mGpsConnectionRegistry;
 }
 
+QgsBabelFormatRegistry *QgsApplication::gpsBabelFormatRegistry()
+{
+  return members()->mGpsBabelFormatRegistry;
+}
+
 QgsPluginLayerRegistry *QgsApplication::pluginLayerRegistry()
 {
   return members()->mPluginLayerRegistry;
@@ -2418,7 +2431,12 @@ QgsScaleBarRendererRegistry *QgsApplication::scaleBarRendererRegistry()
 
 QgsProjectStorageRegistry *QgsApplication::projectStorageRegistry()
 {
-  return members()->mProjectStorageRegistry;
+  return members()->mProjectStorageRegistry.get();
+}
+
+QgsExternalStorageRegistry *QgsApplication::externalStorageRegistry()
+{
+  return members()->mExternalStorageRegistry;
 }
 
 QgsLocalizedDataPathRegistry *QgsApplication::localizedDataPathRegistry()
@@ -2521,6 +2539,11 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     profiler->end();
   }
   {
+    profiler->start( tr( "Setup GPSBabel format registry" ) );
+    mGpsBabelFormatRegistry = new QgsBabelFormatRegistry();
+    profiler->end();
+  }
+  {
     profiler->start( tr( "Setup plugin layer registry" ) );
     mPluginLayerRegistry = new QgsPluginLayerRegistry();
     profiler->end();
@@ -2560,7 +2583,12 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   }
   {
     profiler->start( tr( "Setup project storage registry" ) );
-    mProjectStorageRegistry = new QgsProjectStorageRegistry();
+    mProjectStorageRegistry.reset( new QgsProjectStorageRegistry() );
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup external storage registry" ) );
+    mExternalStorageRegistry = new QgsExternalStorageRegistry();
     profiler->end();
   }
   {
@@ -2608,11 +2636,11 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mColorSchemeRegistry;
   delete mFieldFormatterRegistry;
   delete mGpsConnectionRegistry;
+  delete mGpsBabelFormatRegistry;
   delete mMessageLog;
   delete mPaintEffectRegistry;
   delete mPluginLayerRegistry;
   delete mProcessingRegistry;
-  delete mProjectStorageRegistry;
   delete mPageSizeRegistry;
   delete mAnnotationItemRegistry;
   delete mLayoutItemRegistry;

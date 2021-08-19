@@ -127,7 +127,8 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
 
     if ( !inFeatureA.hasGeometry() )
     {
-      sink->addFeature( inFeatureA, QgsFeatureSink::FastInsert );
+      if ( !sink->addFeature( inFeatureA, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
       continue;
     }
 
@@ -205,11 +206,11 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
 
               QVector< QgsGeometry > newGeometries;
               QgsPointSequence topologyTestPoints;
-              QgsGeometry::OperationResult result = inGeom.splitGeometry( splitterPList, newGeometries, false, topologyTestPoints, true );
+              Qgis::GeometryOperationResult result = inGeom.splitGeometry( splitterPList, newGeometries, false, topologyTestPoints, true );
 
               // splitGeometry: If there are several intersections
               // between geometry and splitLine, only the first one is considered.
-              if ( result == QgsGeometry::Success )
+              if ( result == Qgis::GeometryOperationResult::Success )
               {
                 // sometimes the resultant geometry has changed from the input, but only because of numerical precision issues.
                 // and is effectively indistinguishable from the input. By testing the Hausdorff distance is less than this threshold
@@ -270,7 +271,8 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
     for ( const QgsGeometry &g : parts )
     {
       outFeat.setGeometry( g );
-      sink->addFeature( outFeat, QgsFeatureSink::FastInsert );
+      if ( !sink->addFeature( outFeat, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
     }
 
     feedback->setProgress( i * step );

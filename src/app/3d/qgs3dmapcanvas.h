@@ -18,6 +18,7 @@
 
 #include <QWidget>
 #include <Qt3DRender/QRenderCapture>
+#include <QSplitter>
 
 #include "qgsrange.h"
 #include "qgscameracontroller.h"
@@ -145,6 +146,8 @@ class Qgs3DMapCanvas : public QWidget
     Qgs3DNavigationWidget *mNavigationWidget = nullptr;
 
     QgsTemporalController *mTemporalController = nullptr;
+
+    QSplitter *mSplitter = nullptr;
 };
 
 #endif // QGS3DMAPCANVAS_H

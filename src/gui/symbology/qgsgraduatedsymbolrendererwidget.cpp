@@ -466,7 +466,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   // setup user interface
   setupUi( this );
 
-  mSymmetryPointValidator = new QDoubleValidator( this );
+  mSymmetryPointValidator = new QgsDoubleValidator( this );
   cboSymmetryPoint->setEditable( true );
   cboSymmetryPoint->setValidator( mSymmetryPointValidator );
 
@@ -695,7 +695,7 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
   while ( cboSymmetryPoint->count() )
     cboSymmetryPoint->removeItem( 0 );
   for ( int i = 0; i < ranges.count() - 1; i++ )
-    cboSymmetryPoint->addItem( QString::number( ranges.at( i ).upperValue(), 'f', precision ), ranges.at( i ).upperValue() );
+    cboSymmetryPoint->addItem( QLocale().toString( ranges.at( i ).upperValue(), 'f', precision ), ranges.at( i ).upperValue() );
 
   if ( method )
   {
@@ -1024,7 +1024,7 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
   double maximum = maxVal.toDouble();
   mSymmetryPointValidator->setBottom( minimum );
   mSymmetryPointValidator->setTop( maximum );
-  mSymmetryPointValidator->setDecimals( spinPrecision->value() );
+  mSymmetryPointValidator->setMaxDecimals( spinPrecision->value() );
 
   if ( method->id() == QgsClassificationEqualInterval::METHOD_ID ||
        method->id() == QgsClassificationStandardDeviation::METHOD_ID )

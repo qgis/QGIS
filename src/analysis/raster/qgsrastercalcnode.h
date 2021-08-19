@@ -125,6 +125,19 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
 
     static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) SIP_FACTORY;
 
+    /**
+     * Returns a list of raster layer names that are referenced in the formula without the quotation marks.
+     * It uses QgsRasterCalcNode::cleanRasterReferences
+     * \note since QGIS 3.22
+     */
+    QStringList referencedLayerNames( );
+
+    /**
+     * Returns a list of raster layer references that are addressed in the formula, without quotation marks.
+     * \note since QGIS 3.22
+     */
+    QStringList cleanRasterReferences();
+
   private:
 #ifdef SIP_RUN
     QgsRasterCalcNode( const QgsRasterCalcNode &rh );

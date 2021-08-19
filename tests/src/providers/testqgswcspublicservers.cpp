@@ -21,6 +21,7 @@
 #include <QString>
 #include <QStringList>
 #include <QTextStream>
+#include <QRegularExpression>
 
 #include "qgsapplication.h"
 #include "qgsdatasourceuri.h"
@@ -272,8 +273,8 @@ void TestQgsWcsPublicServers::test()
     QStringList myServerLog;
     myServerLog << "server:" + serverUrl;
     QString myServerDirName = serverUrl;
-    myServerDirName.replace( QRegExp( "[:/]+" ), QStringLiteral( "." ) );
-    myServerDirName.remove( QRegExp( "\\.$" ) );
+    myServerDirName.replace( QRegularExpression( "[:/]+" ), QStringLiteral( "." ) );
+    myServerDirName.remove( QRegularExpression( "\\.$" ) );
     QgsDebugMsg( "myServerDirName = " + myServerDirName );
 
     QDir myServerDir( mCacheDir.absolutePath() + '/' + myServerDirName );
@@ -340,7 +341,7 @@ void TestQgsWcsPublicServers::test()
       myVersionLog << QStringLiteral( "totalCoverages:%1" ).arg( myCoverages.size() );
 
       int myCoverageCount = 0;
-      int myStep = myCoverages.size() / std::min( mMaxCoverages, myCoverages.size() );
+      int myStep = myCoverages.size() / std::min< int >( mMaxCoverages, myCoverages.size() );
       int myStepCount = -1;
       bool myCoverageFound = false;
       for ( QgsWcsCoverageSummary myCoverage : myCoverages )

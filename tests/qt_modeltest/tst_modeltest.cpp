@@ -52,6 +52,7 @@
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QStandardItemModel>
+#include <QRegularExpression>
 
 #include "modeltest.h"
 #include "dynamictreemodel.h"
@@ -116,7 +117,7 @@ void tst_ModelTest::stringListModel()
   model.setStringList( QStringList() << "a" << "e" << "plop" << "b" << "c" );
 
   proxy.setDynamicSortFilter( true );
-  proxy.setFilterRegExp( QRegExp( "[^b]" ) );
+  proxy.setFilterRegularExpression( QRegularExpression( "[^b]" ) );
 }
 
 void tst_ModelTest::treeWidgetModel()

@@ -34,6 +34,14 @@ QgsCodeEditorSQL::QgsCodeEditorSQL( QWidget *parent )
   QgsCodeEditorSQL::initializeLexer(); // avoid cppcheck warning by explicitly specifying namespace
 }
 
+QgsCodeEditorSQL::~QgsCodeEditorSQL()
+{
+  if ( mApis )
+  {
+    mApis->cancelPreparation( );
+  }
+}
+
 void QgsCodeEditorSQL::initializeLexer()
 {
   QFont font = lexerFont();
@@ -71,14 +79,16 @@ void QgsCodeEditorSQL::initializeLexer()
 
 void QgsCodeEditorSQL::setFields( const QgsFields &fields )
 {
-  mFieldNames.clear();
 
-  for ( const QgsField &field : fields )
+  QStringList fieldNames;
+
+  for ( const QgsField &field : std::as_const( fields ) )
   {
-    mFieldNames << field.name();
+    fieldNames.push_back( field.name() );
   }
 
-  updateApis();
+  setFieldNames( fieldNames );
+
 }
 
 void QgsCodeEditorSQL::updateApis()
@@ -90,6 +100,35 @@ void QgsCodeEditorSQL::updateApis()
     mApis->add( fieldName );
   }
 
+  for ( const QString &keyword : std::as_const( mExtraKeywords ) )
+  {
+    mApis->add( keyword );
+  }
+
   mApis->prepare();
   mSqlLexer->setAPIs( mApis );
 }
+
+QStringList QgsCodeEditorSQL::extraKeywords() const
+{
+  return mExtraKeywords.values();
+}
+
+void QgsCodeEditorSQL::setExtraKeywords( const QStringList &extraKeywords )
+{
+  mExtraKeywords = qgis::listToSet( extraKeywords );
+  updateApis();
+}
+
+QStringList QgsCodeEditorSQL::fieldNames() const
+{
+  return mFieldNames.values();
+}
+
+void QgsCodeEditorSQL::setFieldNames( const QStringList &fieldNames )
+{
+  mFieldNames = qgis::listToSet( fieldNames );
+  updateApis();
+}
+
+

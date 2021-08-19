@@ -248,7 +248,7 @@ void QgsOfflineEditingPluginGui::showHelp()
 
 void QgsOfflineEditingPluginGui::restoreState()
 {
-  QgsSettings settings;
+  const QgsSettings settings;
   mOfflineDataPath = settings.value( QStringLiteral( "OfflineEditing/offline_data_path" ), QDir::homePath(), QgsSettings::Section::Plugins ).toString();
 }
 

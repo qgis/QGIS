@@ -127,7 +127,7 @@ void QgsAuthCertInfo::updateCurrentCert( QTreeWidgetItem *item )
   if ( !item )
     return;
 
-  int indx( item->data( 0, Qt::UserRole ).toInt() );
+  const int indx( item->data( 0, Qt::UserRole ).toInt() );
   updateCurrentCertInfo( indx );
 }
 
@@ -137,7 +137,7 @@ bool QgsAuthCertInfo::populateQcaCertCollection()
   for ( int i = 0; i < certpairs.size(); ++i )
   {
     QCA::ConvertResult res;
-    QCA::Certificate acert = QCA::Certificate::fromPEM( certpairs.at( i ).second.toPem(), &res, QStringLiteral( "qca-ossl" ) );
+    const QCA::Certificate acert = QCA::Certificate::fromPEM( certpairs.at( i ).second.toPem(), &res, QStringLiteral( "qca-ossl" ) );
     if ( res == QCA::ConvertGood && !acert.isNull() )
     {
       mCaCerts.addCertificate( acert );
@@ -149,7 +149,7 @@ bool QgsAuthCertInfo::populateQcaCertCollection()
     for ( const QSslCertificate &cert : constMConnectionCAs )
     {
       QCA::ConvertResult res;
-      QCA::Certificate acert = QCA::Certificate::fromPEM( cert.toPem(), &res, QStringLiteral( "qca-ossl" ) );
+      const QCA::Certificate acert = QCA::Certificate::fromPEM( cert.toPem(), &res, QStringLiteral( "qca-ossl" ) );
       if ( res == QCA::ConvertGood && !acert.isNull() )
       {
         mCaCerts.addCertificate( acert );
@@ -179,7 +179,7 @@ bool QgsAuthCertInfo::setQcaCertificate( const QSslCertificate &cert )
 
 bool QgsAuthCertInfo::populateCertChain()
 {
-  QCA::CertificateChain certchain( mCert );
+  const QCA::CertificateChain certchain( mCert );
   QCA::Validity valid;
   mACertChain = certchain.complete( mCaCerts.certificates(), &valid );
   if ( valid != QCA::ValidityGood && valid != QCA::ErrorInvalidCA )
@@ -204,7 +204,7 @@ bool QgsAuthCertInfo::populateCertChain()
 
   // mirror chain to QSslCertificate
   const auto constMACertChain = mACertChain;
-  for ( QCA::Certificate cert : constMACertChain )
+  for ( const QCA::Certificate &cert : constMACertChain )
   {
     QSslCertificate qcert;
     if ( !cert.isNull() )
@@ -225,8 +225,8 @@ void QgsAuthCertInfo::setCertHierarchy()
   QTreeWidgetItem *previtem = nullptr;
   while ( it.hasPrevious() )
   {
-    QSslCertificate cert( it.previous() );
-    bool missingCA = cert.isNull();
+    const QSslCertificate cert( it.previous() );
+    const bool missingCA = cert.isNull();
     QString cert_source;
     if ( missingCA && it.hasPrevious() )
     {
@@ -236,7 +236,7 @@ void QgsAuthCertInfo::setCertHierarchy()
     else
     {
       cert_source = QgsAuthCertUtils::resolvedCertName( cert );
-      QString sha = QgsAuthCertUtils::shaHexForCert( cert );
+      const QString sha = QgsAuthCertUtils::shaHexForCert( cert );
       if ( mCaCertsCache.contains( sha ) )
       {
         const QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate > &certpair( mCaCertsCache.value( sha ) );
@@ -294,7 +294,7 @@ void QgsAuthCertInfo::updateCurrentCertInfo( int chainindx )
 
   if ( !mCurrentQCert.isNull() )
   {
-    QgsAuthCertUtils::CertTrustPolicy trustpolicy( QgsApplication::authManager()->certificateTrustPolicy( mCurrentQCert ) );
+    const QgsAuthCertUtils::CertTrustPolicy trustpolicy( QgsApplication::authManager()->certificateTrustPolicy( mCurrentQCert ) );
     mCurrentTrustPolicy = trustpolicy;
 
     cmbbxTrust->setTrustPolicy( trustpolicy );
@@ -461,15 +461,15 @@ void QgsAuthCertInfo::populateInfoGeneralSection()
   }
 
   QString certype;
-  bool isselfsigned = mCurrentACert.isSelfSigned();
-  QString selfsigned( tr( "self-signed" ) );
+  const bool isselfsigned = mCurrentACert.isSelfSigned();
+  const QString selfsigned( tr( "self-signed" ) );
 
-  QList<QgsAuthCertUtils::CertUsageType> usagetypes(
+  const QList<QgsAuthCertUtils::CertUsageType> usagetypes(
     QgsAuthCertUtils::certificateUsageTypes( mCurrentQCert ) );
-  bool isca = usagetypes.contains( QgsAuthCertUtils::CertAuthorityUsage );
-  bool isissuer = usagetypes.contains( QgsAuthCertUtils::CertIssuerUsage );
-  bool issslserver = usagetypes.contains( QgsAuthCertUtils::TlsServerUsage );
-  bool issslclient = usagetypes.contains( QgsAuthCertUtils::TlsClientUsage );
+  const bool isca = usagetypes.contains( QgsAuthCertUtils::CertAuthorityUsage );
+  const bool isissuer = usagetypes.contains( QgsAuthCertUtils::CertIssuerUsage );
+  const bool issslserver = usagetypes.contains( QgsAuthCertUtils::TlsServerUsage );
+  const bool issslclient = usagetypes.contains( QgsAuthCertUtils::TlsClientUsage );
 
   if ( issslclient )
   {
@@ -508,9 +508,9 @@ void QgsAuthCertInfo::populateInfoGeneralSection()
                 LineEdit,
                 mCurrentQCert.expiryDate() < QDateTime::currentDateTime() ? QgsAuthGuiUtils::redColor() : QColor() );
 
-  QSslKey pubkey( mCurrentQCert.publicKey() );
-  QString alg( pubkey.algorithm() == QSsl::Rsa ? "RSA" : "DSA" );
-  int bitsize( pubkey.length() );
+  const QSslKey pubkey( mCurrentQCert.publicKey() );
+  const QString alg( pubkey.algorithm() == QSsl::Rsa ? "RSA" : "DSA" );
+  const int bitsize( pubkey.length() );
   addFieldItem( mSecGeneral, tr( "Public key" ),
                 QStringLiteral( "%1, %2 bits" ).arg( alg, bitsize == -1 ? QStringLiteral( "?" ) : QString::number( bitsize ) ),
                 LineEdit );
@@ -580,16 +580,16 @@ void QgsAuthCertInfo::populateInfoDetailsSection()
                 mCurrentACert.subjectInfo().value( QCA::XMPP ),
                 LineEdit );
 
-  QMultiMap<QSsl::AlternativeNameEntryType, QString> alts( mCurrentQCert.subjectAlternativeNames() );
+  const QMultiMap<QSsl::AlternativeNameEntryType, QString> alts( mCurrentQCert.subjectAlternativeNames() );
   QStringList altslist;
-  QString email( tr( "Email: " ) );
-  QStringList emails( alts.values( QSsl::EmailEntry ) );
+  const QString email( tr( "Email: " ) );
+  const QStringList emails( alts.values( QSsl::EmailEntry ) );
   if ( !emails.isEmpty() )
   {
     altslist << email + emails.join( '\n' + email );
   }
-  QString dns( tr( "DNS: " ) );
-  QStringList dnss( alts.values( QSsl::DnsEntry ) );
+  const QString dns( tr( "DNS: " ) );
+  const QStringList dnss( alts.values( QSsl::DnsEntry ) );
   if ( !dnss.isEmpty() )
   {
     altslist << dns + dnss.join( '\n' + dns );
@@ -673,21 +673,21 @@ void QgsAuthCertInfo::populateInfoDetailsSection()
                 QgsAuthCertUtils::shaHexForCert( mCurrentQCert, true ).toUpper(),
                 LineEdit );
 
-  QStringList crllocs( mCurrentACert.crlLocations() );
+  const QStringList crllocs( mCurrentACert.crlLocations() );
   if ( !crllocs.isEmpty() )
   {
     addFieldItem( mGrpCert, tr( "CRL locations" ),
                   crllocs.join( QLatin1Char( '\n' ) ),
                   TextEdit );
   }
-  QStringList issulocs( mCurrentACert.issuerLocations() );
+  const QStringList issulocs( mCurrentACert.issuerLocations() );
   if ( !issulocs.isEmpty() )
   {
     addFieldItem( mGrpCert, tr( "Issuer locations" ),
                   issulocs.join( QLatin1Char( '\n' ) ),
                   TextEdit );
   }
-  QStringList ocsplocs( mCurrentACert.ocspLocations() );
+  const QStringList ocsplocs( mCurrentACert.ocspLocations() );
   if ( !ocsplocs.isEmpty() )
   {
     addFieldItem( mGrpCert, tr( "OCSP locations" ),
@@ -697,9 +697,9 @@ void QgsAuthCertInfo::populateInfoDetailsSection()
 
   // Public Key Info
   // TODO: handle ECC (Elliptic Curve) keys when Qt supports them
-  QSslKey pubqkey( mCurrentQCert.publicKey() );
-  QString alg( pubqkey.algorithm() == QSsl::Rsa ? "RSA" : "DSA" );
-  int bitsize( pubqkey.length() );
+  const QSslKey pubqkey( mCurrentQCert.publicKey() );
+  const QString alg( pubqkey.algorithm() == QSsl::Rsa ? "RSA" : "DSA" );
+  const int bitsize( pubqkey.length() );
   addFieldItem( mGrpPkey, tr( "Algorithm" ),
                 bitsize == -1 ? QStringLiteral( "Unknown (possibly Elliptic Curve)" ) : alg,
                 LineEdit );
@@ -708,18 +708,18 @@ void QgsAuthCertInfo::populateInfoDetailsSection()
                 LineEdit );
   if ( bitsize > 0 ) // ECC keys unsupported by Qt/QCA, so returned key size is 0
   {
-    QCA::PublicKey pubakey( mCurrentACert.subjectPublicKey() );
+    const QCA::PublicKey pubakey( mCurrentACert.subjectPublicKey() );
 
     if ( pubqkey.algorithm() == QSsl::Rsa )
     {
-      QCA::RSAPublicKey rsakey( pubakey.toRSA() );
-      QCA::BigInteger modulus = rsakey.n();
+      const QCA::RSAPublicKey rsakey( pubakey.toRSA() );
+      const QCA::BigInteger modulus = rsakey.n();
       QByteArray modarray( modulus.toArray().toByteArray().toHex() );
       if ( modarray.size() > 2 && modarray.mid( 0, 2 ) == QByteArray( "00" ) )
       {
         modarray = modarray.mid( 2 );
       }
-      QCA::BigInteger exponent = rsakey.e();
+      const QCA::BigInteger exponent = rsakey.e();
       addFieldItem( mGrpPkey, tr( "Public key" ),
                     QgsAuthCertUtils::getColonDelimited( modarray ).toUpper(),
                     TextEdit );
@@ -779,7 +779,7 @@ void QgsAuthCertInfo::populateInfoDetailsSection()
 
   QStringList keyusage;
   QStringList extkeyusage;
-  QList<QCA::ConstraintType> certconsts = mCurrentACert.constraints();
+  const QList<QCA::ConstraintType> certconsts = mCurrentACert.constraints();
   const auto constCertconsts = certconsts;
   for ( const QCA::ConstraintType &certconst : constCertconsts )
   {
@@ -837,7 +837,7 @@ void QgsAuthCertInfo::populateInfoPemTextSection()
 
 void QgsAuthCertInfo::btnSaveTrust_clicked()
 {
-  QgsAuthCertUtils::CertTrustPolicy newpolicy( cmbbxTrust->trustPolicy() );
+  const QgsAuthCertUtils::CertTrustPolicy newpolicy( cmbbxTrust->trustPolicy() );
   if ( !QgsApplication::authManager()->storeCertTrustPolicy( mCurrentQCert, newpolicy ) )
   {
     QgsDebugMsg( QStringLiteral( "Could not set trust policy for certificate" ) );
@@ -854,7 +854,7 @@ void QgsAuthCertInfo::btnSaveTrust_clicked()
 
 void QgsAuthCertInfo::currentPolicyIndexChanged( int indx )
 {
-  QgsAuthCertUtils::CertTrustPolicy newpolicy( cmbbxTrust->trustPolicyForIndex( indx ) );
+  const QgsAuthCertUtils::CertTrustPolicy newpolicy( cmbbxTrust->trustPolicyForIndex( indx ) );
   btnSaveTrust->setEnabled( newpolicy != mCurrentTrustPolicy );
 }
 
