@@ -39,6 +39,12 @@ class QgsProviderSublayerDialogModel : public QgsProviderSublayerModel
     QVariant data( const QModelIndex &index, int role ) const override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
+    void setGeometryTypesResolved( bool resolved );
+
+  private:
+
+    bool mGeometryTypesResolved = false;
+
 
 };
 
@@ -75,7 +81,7 @@ class QgsProviderSublayersDialog : public QDialog, private Ui::QgsProviderSublay
 
   private:
 
-    QgsProviderSublayerModel *mModel = nullptr;
+    QgsProviderSublayerDialogModel *mModel = nullptr;
     QgsProviderSublayerProxyModel *mProxyModel = nullptr;
     QPointer< QgsProviderSublayerTask > mTask;
     QString mFilePath;
