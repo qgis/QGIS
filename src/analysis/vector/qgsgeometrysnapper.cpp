@@ -584,12 +584,11 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
     }
   }
 
-  //nothing more to do for points
+  // no extra vertices to add for point geometry
   if ( qgsgeometry_cast< const QgsPoint * >( subjGeom ) )
     return QgsGeometry( subjGeom );
 
-
-  //or for end point snapping
+  // nor for no extra vertices modes and end point only snapping
   if ( mode == PreferClosestNoExtraVertices || mode == PreferNodesNoExtraVertices || mode == EndPointPreferClosest || mode == EndPointPreferNodes || mode == EndPointToEndPoint )
   {
     QgsGeometry result( subjGeom );
@@ -597,7 +596,6 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
     return result;
   }
 
-  // SnapIndex for subject feature
   std::unique_ptr< QgsSnapIndex > subjSnapIndex( new QgsSnapIndex() );
   subjSnapIndex->addGeometry( subjGeom );
 
@@ -758,3 +756,4 @@ QgsGeometry QgsInternalGeometrySnapper::snapFeature( const QgsFeature &feature )
   mFirstFeature = false;
   return geometry;
 }
+

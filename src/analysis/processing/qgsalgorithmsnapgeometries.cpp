@@ -125,11 +125,11 @@ QVariantMap QgsSnapGeometriesAlgorithm::processAlgorithm( const QVariantMap &par
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  const double step = source->featureCount() > 0 ? 100.0 / source->featureCount() : 1;
   QgsFeatureIterator features = source->getFeatures();
 
   if ( parameters.value( QStringLiteral( "INPUT" ) ) != parameters.value( QStringLiteral( "REFERENCE_LAYER" ) ) )
   {
+    const double step = source->featureCount() > 0 ? 100.0 / source->featureCount() : 1;
     if ( mode == 7 )
       throw QgsProcessingException( QObject::tr( "This mode applies when the input and reference layer are the same." ) );
 
@@ -166,28 +166,56 @@ QVariantMap QgsSnapGeometriesAlgorithm::processAlgorithm( const QVariantMap &par
   else
   {
     // snapping internally
-    QgsInternalGeometrySnapper snapper( tolerance, mode );
+    const double step = source->featureCount() > 0 ? 100.0 / ( source->featureCount() * 2 ) : 1;
     long long processed = 0;
+
+    QgsInternalGeometrySnapper snapper( tolerance, mode );
     QgsFeature f;
+    QList<QgsFeatureId> editedFeatureIds;
+    QMap<QgsFeatureId, QgsFeature> editedFeatures;
     while ( features.nextFeature( f ) )
     {
       if ( feedback->isCanceled() )
         break;
 
+      QgsFeature editedFeature( f );
       if ( f.hasGeometry() )
       {
-        QgsFeature outFeature( f );
-        outFeature.setGeometry( snapper.snapFeature( f ) );
-        if ( !sink->addFeature( outFeature, QgsFeatureSink::FastInsert ) )
-          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+        editedFeature.setGeometry( snapper.snapFeature( f ) );
       }
-      else
-      {
-        if ( !sink->addFeature( f ) )
-          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
-      }
+      editedFeatureIds << editedFeature.id();
+      editedFeatures.insert( editedFeature.id(), editedFeature );
       processed += 1;
-      feedback->setProgress( processed * step );
+    }
+
+    // reversed order snapping round is required to insure geometries are snapped against all features
+    snapper = QgsInternalGeometrySnapper( tolerance, mode );
+    std::reverse( editedFeatureIds.begin(), editedFeatureIds.end() );
+    for ( const QgsFeatureId &fid : editedFeatureIds )
+    {
+      if ( feedback->isCanceled() )
+        break;
+
+      QgsFeature editedFeature( editedFeatures.value( fid ) );
+      if ( editedFeature.hasGeometry() )
+      {
+        editedFeature.setGeometry( snapper.snapFeature( editedFeature ) );
+        editedFeatures.insert( editedFeature.id(), editedFeature );
+      }
+    }
+    std::reverse( editedFeatureIds.begin(), editedFeatureIds.end() );
+    processed += 1;
+
+    if ( !feedback->isCanceled() )
+    {
+      for ( const QgsFeatureId &fid : editedFeatureIds )
+      {
+        QgsFeature outFeature( editedFeatures.value( fid ) );
+        if ( !sink->addFeature( outFeature ) )
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+
+        feedback->setProgress( processed * step );
+      }
     }
   }
 
