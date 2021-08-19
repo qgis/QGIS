@@ -31,6 +31,7 @@ set(TESTS
   testqgsregularpolygon.cpp
   testqgscompoundcurve.cpp
   testqgsmultilinestring.cpp
+  testqgsmulticurve.cpp
   )
 
 foreach(TESTSRC ${TESTS})
