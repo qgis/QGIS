@@ -71,7 +71,7 @@ QList<int> QgsDensifyGeometriesByIntervalAlgorithm::inputLayerTypes() const
 void QgsDensifyGeometriesByIntervalAlgorithm::initParameters( const QVariantMap &configuration )
 {
   Q_UNUSED( configuration )
-  std::unique_ptr<QgsProcessingParameterDistance> interval = qgis::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "INTERVAL" ),
+  std::unique_ptr<QgsProcessingParameterDistance> interval = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "INTERVAL" ),
       QObject::tr( "Interval between vertices to add" ),
       1, QStringLiteral( "INPUT" ), false, 0, 10000000 );
   interval->setIsDynamic( true );

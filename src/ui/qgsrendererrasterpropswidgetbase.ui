@@ -105,7 +105,7 @@
          <string>Layer Rendering</string>
         </property>
         <layout class="QGridLayout" name="gridLayout_3">
-         <item row="6" column="1" colspan="2">
+         <item row="7" column="1" colspan="2">
           <layout class="QGridLayout" name="gridLayout">
            <item row="0" column="0" colspan="2">
             <widget class="QCheckBox" name="mColorizeCheck">
@@ -175,7 +175,7 @@
            </item>
           </layout>
          </item>
-         <item row="6" column="0">
+         <item row="7" column="0">
           <widget class="QLabel" name="label_3">
            <property name="text">
             <string>Hue</string>
@@ -211,7 +211,7 @@
            </property>
           </widget>
          </item>
-         <item row="5" column="0">
+         <item row="6" column="0">
           <widget class="QLabel" name="labelGrayscale">
            <property name="text">
             <string>Grayscale</string>
@@ -238,7 +238,7 @@
            </property>
           </widget>
          </item>
-         <item row="5" column="1" colspan="2">
+         <item row="6" column="1" colspan="2">
           <widget class="QComboBox" name="comboGrayscale">
            <item>
             <property name="text">
@@ -345,7 +345,14 @@
            </property>
           </widget>
          </item>
-         <item row="7" column="1">
+         <item row="5" column="1" colspan="2">
+          <widget class="QCheckBox" name="mInvertColorsCheck">
+           <property name="text">
+           <string>Invert colors</string>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="1">
           <widget class="QToolButton" name="mResetColorRenderingBtn">
            <property name="toolTip">
             <string>Reset all color rendering options to default</string>

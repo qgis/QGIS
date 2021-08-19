@@ -23,7 +23,10 @@
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"
 #include <QDateTime>
-
+#include <QUrlQuery>
+#include <QFile>
+#include <QDir>
+#include <QRegularExpression>
 
 QgsNewsFeedParser::QgsNewsFeedParser( const QUrl &feedUrl, const QString &authcfg, QObject *parent )
   : QObject( parent )
@@ -37,24 +40,23 @@ QgsNewsFeedParser::QgsNewsFeedParser( const QUrl &feedUrl, const QString &authcf
 
   QUrlQuery query( feedUrl );
 
-  const qint64 after = QgsSettings().value( QStringLiteral( "%1/lastFetchTime" ).arg( mSettingsKey ), 0, QgsSettings::Core ).toUInt();
+  const qint64 after = settingsFeedLastFetchTime.value( mSettingsKey );
   if ( after > 0 )
     query.addQueryItem( QStringLiteral( "after" ), qgsDoubleToString( after, 0 ) );
 
-  QString feedLanguage = QgsSettings().value( QStringLiteral( "%1/lang" ).arg( mSettingsKey ), QString(), QgsSettings::Core ).toString();
+  QString feedLanguage = settingsFeedLanguage.value( mSettingsKey );
   if ( feedLanguage.isEmpty() )
   {
-    feedLanguage = QgsSettings().value( QStringLiteral( "locale/userLocale" ), QStringLiteral( "en_US" ) ).toString().left( 2 );
+    feedLanguage = QgsApplication::settingsLocaleUserLocale.value( QString(), true, QStringLiteral( "en" ) );
   }
   if ( !feedLanguage.isEmpty() && feedLanguage != QLatin1String( "C" ) )
-    query.addQueryItem( QStringLiteral( "lang" ), feedLanguage );
+    query.addQueryItem( QStringLiteral( "lang" ), feedLanguage.mid( 0, 2 ) );
 
-  bool latOk = false;
-  bool longOk = false;
-  const double feedLat = QgsSettings().value( QStringLiteral( "%1/latitude" ).arg( mSettingsKey ), QString(), QgsSettings::Core ).toDouble( &latOk );
-  const double feedLong = QgsSettings().value( QStringLiteral( "%1/longitude" ).arg( mSettingsKey ), QString(), QgsSettings::Core ).toDouble( &longOk );
-  if ( latOk && longOk )
+  if ( settingsFeedLatitude.exists( mSettingsKey ) && settingsFeedLongitude.exists( mSettingsKey ) )
   {
+    const double feedLat = settingsFeedLatitude.value( mSettingsKey );
+    const double feedLong = settingsFeedLongitude.value( mSettingsKey );
+
     // hack to allow testing using local files
     if ( feedUrl.isLocalFile() )
     {
@@ -167,7 +169,7 @@ void QgsNewsFeedParser::fetch()
 
 void QgsNewsFeedParser::onFetch( const QString &content )
 {
-  QgsSettings().setValue( mSettingsKey + "/lastFetchTime", mFetchStartTime, QgsSettings::Core );
+  settingsFeedLastFetchTime.setValue( mFetchStartTime, mSettingsKey );
 
   const QVariant json = QgsJsonUtils::parseJson( content );
 
@@ -276,7 +278,7 @@ void QgsNewsFeedParser::fetchImageForEntry( const QgsNewsFeedParser::Entry &entr
   QgsNetworkContentFetcher *fetcher = new QgsNetworkContentFetcher();
   connect( fetcher, &QgsNetworkContentFetcher::finished, this, [ = ]
   {
-    auto findIter = std::find_if( mEntries.begin(), mEntries.end(), [entry]( const QgsNewsFeedParser::Entry & candidate )
+    const auto findIter = std::find_if( mEntries.begin(), mEntries.end(), [entry]( const QgsNewsFeedParser::Entry & candidate )
     {
       return candidate.key == entry.key;
     } );
@@ -332,7 +334,7 @@ void QgsNewsFeedParser::fetchImageForEntry( const QgsNewsFeedParser::Entry &entr
 
 QString QgsNewsFeedParser::keyForFeed( const QString &baseUrl )
 {
-  static QRegularExpression sRegexp( QStringLiteral( "[^a-zA-Z0-9]" ) );
+  static const QRegularExpression sRegexp( QStringLiteral( "[^a-zA-Z0-9]" ) );
   QString res = baseUrl;
   res = res.replace( sRegexp, QString() );
   return QStringLiteral( "NewsFeed/%1" ).arg( res );

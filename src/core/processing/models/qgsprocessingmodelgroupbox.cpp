@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingmodelgroupbox.h"
+#include <QUuid>
 
 ///@cond NOT_STABLE
 

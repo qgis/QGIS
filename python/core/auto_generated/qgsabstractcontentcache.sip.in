@@ -12,7 +12,7 @@
 
 class QgsAbstractContentCacheEntry
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for entries in a :py:class:`QgsAbstractContentCache`.
 
 Subclasses must take care to correctly implement the :py:func:`~isEqual` method, applying their
@@ -73,7 +73,7 @@ properties, such as image size.
 
 class QgsAbstractContentCacheBase: QObject
 {
-%Docstring
+%Docstring(signature="appended")
 
 A QObject derived base class for :py:class:`QgsAbstractContentCache`.
 

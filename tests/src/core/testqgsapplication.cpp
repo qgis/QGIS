@@ -20,6 +20,7 @@ Email                : sherman at mrcc dot com
 
 //header for class being tested
 #include <qgsapplication.h>
+#include "qgsrenderchecker.h"
 
 class TestQgsApplication: public QObject
 {
@@ -33,9 +34,12 @@ class TestQgsApplication: public QObject
     void accountName();
     void osName();
     void platformName();
+    void themeIcon();
 
   private:
     QString getQgisPath();
+    bool renderCheck( const QString &testName, QImage &image, int mismatchCount = 0 );
+    QString mReport;
 };
 
 
@@ -48,23 +52,34 @@ void TestQgsApplication::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   qDebug( "%s", QgsApplication::showSettings().toUtf8().constData() );
+
+  mReport = QStringLiteral( "<h1>QgsApplication Tests</h1>\n" );
+
 }
 
 void TestQgsApplication::cleanupTestCase()
 {
+  const QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
+  {
+    QTextStream myQTextStream( &myFile );
+    myQTextStream << mReport;
+    myFile.close();
+  }
   QgsApplication::exitQgis();
 }
 
 void TestQgsApplication::accountName()
 {
-  QString loginName = QgsApplication::userLoginName();
+  const QString loginName = QgsApplication::userLoginName();
   qDebug() << QStringLiteral( "Got login name: '%1'" ).arg( loginName );
   QVERIFY( !loginName.isEmpty() );
   //test cached return works correctly
   QCOMPARE( loginName, QgsApplication::userLoginName() );
 
   //can't test contents, as it can be validly empty (e.g., on Travis). Just testing that we don't crash
-  QString fullName = QgsApplication::userFullName();
+  const QString fullName = QgsApplication::userFullName();
   qDebug() << QStringLiteral( "Got full name: '%1'" ).arg( fullName );
   //test cached return works correctly
   QCOMPARE( fullName, QgsApplication::userFullName() );
@@ -83,9 +98,42 @@ void TestQgsApplication::platformName()
   QCOMPARE( QgsApplication::platform(), QString( "desktop" ) );
 }
 
+void TestQgsApplication::themeIcon()
+{
+  QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolder.svg" ) );
+  QVERIFY( !icon.isNull() );
+  QImage im( icon.pixmap( 16, 16 ).toImage() );
+  QVERIFY( renderCheck( QStringLiteral( "theme_icon" ), im, 0 ) );
+
+  // with colors
+  icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderParams.svg" ), QColor( 255, 100, 100 ), QColor( 255, 0, 0 ) );
+  im = QImage( icon.pixmap( 16, 16 ).toImage() );
+  QVERIFY( renderCheck( QStringLiteral( "theme_icon_colors_1" ), im, 0 ) );
+
+  // different colors
+  icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderParams.svg" ), QColor( 170, 255, 170 ), QColor( 0, 255, 0 ) );
+  im = QImage( icon.pixmap( 16, 16 ).toImage() );
+  QVERIFY( renderCheck( QStringLiteral( "theme_icon_colors_2" ), im, 0 ) );
+}
+
+bool TestQgsApplication::renderCheck( const QString &testName, QImage &image, int mismatchCount )
+{
+  mReport += "<h2>" + testName + "</h2>\n";
+  const QString myTmpDir = QDir::tempPath() + '/';
+  const QString myFileName = myTmpDir + testName + ".png";
+  image.save( myFileName, "PNG" );
+  QgsRenderChecker myChecker;
+  myChecker.setControlPathPrefix( QStringLiteral( "application" ) );
+  myChecker.setControlName( "expected_" + testName );
+  myChecker.setRenderedImage( myFileName );
+  const bool myResultFlag = myChecker.compareImages( testName, mismatchCount );
+  mReport += myChecker.report();
+  return myResultFlag;
+}
+
 void TestQgsApplication::checkPaths()
 {
-  QString myPath = QgsApplication::authorsFilePath();
+  const QString myPath = QgsApplication::authorsFilePath();
   qDebug( "Checking authors file exists:" );
   qDebug( "%s", myPath.toLocal8Bit().constData() );
   QVERIFY( !myPath.isEmpty() );

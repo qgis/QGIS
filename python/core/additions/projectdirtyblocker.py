@@ -44,4 +44,4 @@ class ProjectDirtyBlocker():
 
     def __exit__(self, ex_type, ex_value, traceback):
         del self.blocker
-        return True
+        return ex_type is None

@@ -34,7 +34,7 @@ class QgsLayoutItemPage;
 
 /**
  * \ingroup gui
- * A widget for configuring properties of pages in a layout
+ * \brief A widget for configuring properties of pages in a layout
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12

@@ -22,6 +22,8 @@
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvectorlayer.h"
 
+#include <QElapsedTimer>
+
 QgsVectorLayerCache::QgsVectorLayerCache( QgsVectorLayer *layer, int cacheSize, QObject *parent )
   : QObject( parent )
   , mLayer( layer )
@@ -67,7 +69,7 @@ void QgsVectorLayerCache::setCacheGeometry( bool cacheGeometry )
   mCacheGeometry = shouldCacheGeometry;
   if ( cacheGeometry )
   {
-    connect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsVectorLayerCache::geometryChanged );
+    connect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsVectorLayerCache::geometryChanged, Qt::UniqueConnection );
   }
   else
   {
@@ -173,7 +175,18 @@ bool QgsVectorLayerCache::featureAtId( QgsFeatureId featureId, QgsFeature &featu
 
 bool QgsVectorLayerCache::removeCachedFeature( QgsFeatureId fid )
 {
-  return mCache.remove( fid );
+  bool removed = mCache.remove( fid );
+  if ( removed )
+  {
+    if ( auto unorderedIt = std::find( mCacheUnorderedKeys.begin(), mCacheUnorderedKeys.end(), fid ); unorderedIt != mCacheUnorderedKeys.end() )
+    {
+      mCacheUnorderedKeys.erase( unorderedIt );
+
+      if ( auto orderedIt = std::find( mCacheOrderedKeys.begin(), mCacheOrderedKeys.end(), fid ); orderedIt != mCacheOrderedKeys.end() )
+        mCacheOrderedKeys.erase( orderedIt );
+    }
+  }
+  return removed;
 }
 
 QgsVectorLayer *QgsVectorLayerCache::layer()
@@ -196,7 +209,7 @@ QgsFields QgsVectorLayerCache::fields() const
   return mLayer->fields();
 }
 
-long QgsVectorLayerCache::featureCount() const
+long long QgsVectorLayerCache::featureCount() const
 {
   return mLayer->featureCount();
 }
@@ -206,12 +219,12 @@ void QgsVectorLayerCache::requestCompleted( const QgsFeatureRequest &featureRequ
   // If a request is too large for the cache don't notify to prevent from indexing incomplete requests
   if ( fids.count() <= mCache.size() )
   {
-    for ( const auto &idx : qgis::as_const( mCacheIndices ) )
+    for ( const auto &idx : std::as_const( mCacheIndices ) )
     {
       idx->requestCompleted( featureRequest, fids );
     }
     if ( featureRequest.filterType() == QgsFeatureRequest::FilterNone &&
-         ( featureRequest.filterRect().isNull() || featureRequest.filterRect().contains( mLayer->extent() ) ) )
+         ( featureRequest.spatialFilterType() == Qgis::SpatialFilterType::NoFilter || featureRequest.filterRect().contains( mLayer->extent() ) ) )
     {
       mFullCache = true;
     }
@@ -265,6 +278,13 @@ void QgsVectorLayerCache::onJoinAttributeValueChanged( QgsFeatureId fid, int fie
 void QgsVectorLayerCache::featureDeleted( QgsFeatureId fid )
 {
   mCache.remove( fid );
+
+  if ( auto it = mCacheUnorderedKeys.find( fid ); it != mCacheUnorderedKeys.end() )
+  {
+    mCacheUnorderedKeys.erase( it );
+    if ( auto orderedIt = std::find( mCacheOrderedKeys.begin(), mCacheOrderedKeys.end(), fid ); orderedIt != mCacheOrderedKeys.end() )
+      mCacheOrderedKeys.erase( orderedIt );
+  }
 }
 
 void QgsVectorLayerCache::onFeatureAdded( QgsFeatureId fid )
@@ -323,6 +343,8 @@ void QgsVectorLayerCache::layerDeleted()
 void QgsVectorLayerCache::invalidate()
 {
   mCache.clear();
+  mCacheOrderedKeys.clear();
+  mCacheUnorderedKeys.clear();
   mFullCache = false;
   emit invalidated();
 }

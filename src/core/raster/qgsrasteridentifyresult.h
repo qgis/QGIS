@@ -25,7 +25,7 @@
 
 /**
  * \ingroup core
- * Raster identify results container.
+ * \brief Raster identify results container.
  */
 class CORE_EXPORT QgsRasterIdentifyResult
 {

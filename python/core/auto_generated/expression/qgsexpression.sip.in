@@ -10,25 +10,25 @@
 
 
 
-
 class QgsExpression
 {
-%Docstring
+%Docstring(signature="appended")
 Class for parsing and evaluation of expressions (formerly called "search strings").
 The expressions try to follow both syntax and semantics of SQL expressions.
 
 Usage:
+
 .. code-block:: python
 
-    exp = QgsExpression("gid*2 > 10 and type not in ('D','F')")
-    if exp.hasParserError():
-    # show error message with parserErrorString() and exit
+       exp = QgsExpression("gid*2 > 10 and type not in ('D','F')")
+       if exp.hasParserError():
+           # show error message with parserErrorString() and exit
 
-    result = exp.evaluate(feature, fields)
-    if exp.hasEvalError():
-    # show error message with evalErrorString()
-    else:
-    # examine the result
+       result = exp.evaluate(feature, fields)
+       if exp.hasEvalError():
+           # show error message with evalErrorString()
+       else:
+           # examine the result
 
 Three Value Logic
 -----------------
@@ -179,6 +179,17 @@ Gets list of columns referenced by the expression.
    all attributes from the layer are required for evaluation of the expression.
    :py:class:`QgsFeatureRequest`.setSubsetOfAttributes automatically handles this case.
 
+.. warning::
+
+   If the expression has been prepared via a call to :py:func:`QgsExpression.prepare()`,
+   or a call to :py:func:`QgsExpressionNode.prepare()` for a node has been made, then parts of
+   the expression may have been determined to evaluate to a static pre-calculatable value.
+   In this case the results will omit attribute indices which are used by these
+   pre-calculated nodes, regardless of their actual referenced columns.
+   If you are seeking to use these functions to introspect an expression you must
+   take care to do this with an unprepared expression.
+
+
 .. seealso:: :py:func:`referencedAttributeIndexes`
 %End
 
@@ -188,12 +199,24 @@ Returns a list of all variables which are used in this expression.
 If the list contains a NULL QString, there is a variable name used
 which is determined at runtime.
 
+.. note::
+
+   In contrast to the :py:func:`~QgsExpression.referencedColumns` function this method
+   is not affected by any previous calls to :py:func:`QgsExpression.prepare()`,
+   or :py:func:`QgsExpressionNode.prepare()`.
+
 .. versionadded:: 3.0
 %End
 
     QSet<QString> referencedFunctions() const;
 %Docstring
 Returns a list of the names of all functions which are used in this expression.
+
+.. note::
+
+   In contrast to the :py:func:`~QgsExpression.referencedColumns` function this method
+   is not affected by any previous calls to :py:func:`QgsExpression.prepare()`,
+   or :py:func:`QgsExpressionNode.prepare()`.
 
 .. versionadded:: 3.2
 %End
@@ -202,6 +225,16 @@ Returns a list of the names of all functions which are used in this expression.
     QSet<int> referencedAttributeIndexes( const QgsFields &fields ) const;
 %Docstring
 Returns a list of field name indexes obtained from the provided fields.
+
+.. warning::
+
+   If the expression has been prepared via a call to :py:func:`QgsExpression.prepare()`,
+   or a call to :py:func:`QgsExpressionNode.prepare()` for a node has been made, then parts of
+   the expression may have been determined to evaluate to a static pre-calculatable value.
+   In this case the results will omit attribute indices which are used by these
+   pre-calculated nodes, regardless of their actual referenced columns.
+   If you are seeking to use these functions to introspect an expression you must
+   take care to do this with an unprepared expression.
 
 .. versionadded:: 3.0
 %End
@@ -253,7 +286,24 @@ Sets evaluation error (used internally by evaluation functions)
 %Docstring
 Checks whether an expression consists only of a single field reference
 
+.. seealso:: :py:func:`expressionToLayerFieldIndex`
+
 .. versionadded:: 2.9
+%End
+
+    static int expressionToLayerFieldIndex( const QString &expression, const QgsVectorLayer *layer );
+%Docstring
+Attempts to resolve an expression to a field index from the given ``layer``.
+
+Given a string which may either directly match a field name from a layer, OR may
+be an expression which consists only of a single field reference for that layer, this
+method will return the corresponding field index.
+
+:return: field index if found, or -1 if ``expression`` does not represent a field from the layer.
+
+.. seealso:: :py:func:`isField`
+
+.. versionadded:: 3.22
 %End
 
     static bool checkExpression( const QString &text, const QgsExpressionContext *context, QString &errorMessage /Out/ );

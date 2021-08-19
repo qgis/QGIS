@@ -134,6 +134,18 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
       CapturePolygon  //!< Capture polygons
     };
 
+    /**
+     * Capture technique.
+     *
+     * \since QGIS 3.20
+     */
+    enum CaptureTechnique
+    {
+      StraightSegments, //!< Default capture mode - capture occurs with straight line segments
+      CircularString, //!< Capture in circular strings
+      Streaming, //!< Streaming points digitizing mode (points are automatically added as the mouse cursor moves). Since QGIS 3.20.
+    };
+
     //! Specific capabilities of the tool
     enum Capability
     {
@@ -152,6 +164,13 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * Returns flags containing the supported capabilities
      */
     virtual QgsMapToolCapture::Capabilities capabilities() const;
+
+    /**
+     * Returns TRUE if the tool supports the specified capture \a technique.
+     *
+     * \since QGIS 3.20
+     */
+    virtual bool supportsTechnique( CaptureTechnique technique ) const;
 
     void activate() override;
     void deactivate() override;
@@ -214,6 +233,12 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
   public slots:
     //! Enable the digitizing with curve
     void setCircularDigitizingEnabled( bool enable );
+
+    /**
+     * Toggles the stream digitizing mode.
+     * \since QGIS 3.20
+     */
+    void setStreamDigitizingEnabled( bool enable );
 
   private slots:
     void addError( const QgsGeometry::Error &error );
@@ -301,8 +326,13 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     int addVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match &match );
 
-    //! Removes the last vertex from mRubberBand and mCaptureList
-    void undo();
+    /**
+     * Removes the last vertex from mRubberBand and mCaptureList.
+     *
+     * Since QGIS 3.20, if \a isAutoRepeat is set to TRUE then the undo operation will be treated
+     * as a auto repeated undo as if the user has held down the undo key for an extended period of time.
+     */
+    void undo( bool isAutoRepeat = false );
 
     /**
      * Start capturing
@@ -391,6 +421,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     //! The capture mode in which this tool operates
     CaptureMode mCaptureMode;
 
+
+
     //! Flag to indicate a map canvas capture operation is taking place
     bool mCapturing = false;
 
@@ -434,6 +466,15 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     //! Used to store the state of digitizing type (linear or circular)
     QgsWkbTypes::Type mDigitizingType = QgsWkbTypes::LineString;
+
+    bool mStreamingEnabled = false;
+    bool mAllowAddingStreamingPoints = false;
+    int mStreamingToleranceInPixels = 1;
+
+    bool mStartNewCurve = false;
+
+    bool mIgnoreSubsequentAutoRepeatUndo = false;
+
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapToolCapture::Capabilities )

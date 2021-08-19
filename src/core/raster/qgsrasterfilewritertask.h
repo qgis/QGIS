@@ -23,12 +23,13 @@
 #include "qgsrasterfilewriter.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgsrasterinterface.h"
-#include "qgsrasterpipe.h"
+
+class QgsRasterPipe;
 
 /**
  * \class QgsRasterFileWriterTask
  * \ingroup core
- * QgsTask task which performs a QgsRasterFileWriter layer saving operation as a background
+ * \brief QgsTask task which performs a QgsRasterFileWriter layer saving operation as a background
  * task. This can be used to save a raster layer out to a file without blocking the
  * QGIS interface.
  * \see QgsVectorFileWriterTask
@@ -67,6 +68,8 @@ class CORE_EXPORT QgsRasterFileWriterTask : public QgsTask
                              const QgsCoordinateReferenceSystem &crs,
                              const QgsCoordinateTransformContext &transformContext
                            );
+
+    ~QgsRasterFileWriterTask() override;
 
     void cancel() override;
 

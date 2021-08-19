@@ -26,7 +26,7 @@ import qgis  # NOQA
 import os
 
 from qgis.PyQt.QtCore import QSize, QDir
-from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtGui import QColor, QPainter, QImage
 
 from qgis.core import (
     QgsVectorLayer,
@@ -40,7 +40,11 @@ from qgis.core import (
     QgsProperty,
     QgsSymbolLayer,
     QgsMapSettings,
-    QgsSymbol
+    QgsSymbol,
+    QgsGeometry,
+    QgsFeature,
+    QgsRenderContext,
+    QgsRenderChecker
 )
 
 from qgis.testing import start_app, unittest
@@ -167,6 +171,20 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
         self.assertEqual(sym_layer.subSymbol().color(), QColor(250, 150, 200))
         self.assertEqual(sym_layer.color(), QColor(250, 150, 200))
 
+    def testRingNumberVariable(self):
+        # test test geometry_ring_num variable
+        s3 = QgsFillSymbol()
+        s3.deleteSymbolLayer(0)
+        s3.appendSymbolLayer(
+            QgsArrowSymbolLayer())
+        s3.symbolLayer(0).setIsCurved(False)
+        s3.symbolLayer(0).subSymbol()[0].setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor,
+                                                                QgsProperty.fromExpression('case when @geometry_ring_num=0 then \'green\' when @geometry_ring_num=1 then \'blue\' when @geometry_ring_num=2 then \'red\' end'))
+
+        g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
+        rendered_image = self.renderGeometry(s3, g)
+        assert self.imageCheck('arrow_ring_num', 'arrow_ring_num', rendered_image)
+
     def testOpacityWithDataDefinedColor(self):
         line_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
         line_layer = QgsVectorLayer(line_shp, 'Lines', 'ogr')
@@ -238,6 +256,53 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
         res = renderchecker.runTest('expected_arrow_ddopacity')
         self.report += renderchecker.report()
         self.assertTrue(res)
+
+    def renderGeometry(self, symbol, geom):
+        f = QgsFeature()
+        f.setGeometry(geom)
+
+        image = QImage(200, 200, QImage.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        extent = geom.get().boundingBox()
+        # buffer extent by 10%
+        if extent.width() > 0:
+            extent = extent.buffered((extent.height() + extent.width()) / 20.0)
+        else:
+            extent = extent.buffered(10)
+
+        ms.setExtent(extent)
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+
+        painter.begin(image)
+        try:
+            image.fill(QColor(0, 0, 0))
+            symbol.startRender(context)
+            symbol.renderFeature(f, context)
+            symbol.stopRender(context)
+        finally:
+            painter.end()
+
+        return image
+
+    def imageCheck(self, name, reference_image, image):
+        self.report += "<h2>Render {}</h2>\n".format(name)
+        temp_dir = QDir.tempPath() + '/'
+        file_name = temp_dir + 'symbol_' + name + ".png"
+        image.save(file_name, "PNG")
+        checker = QgsRenderChecker()
+        checker.setControlPathPrefix("symbol_arrow")
+        checker.setControlName("expected_" + reference_image)
+        checker.setRenderedImage(file_name)
+        checker.setColorTolerance(2)
+        result = checker.compareImages(name, 20)
+        self.report += checker.report()
+        print((self.report))
+        return result
 
 
 if __name__ == '__main__':

@@ -138,7 +138,7 @@ QgsLayoutGeoPdfExporter::QgsLayoutGeoPdfExporter( QgsLayout *layout )
   // on construction, we install a rendered feature handler on layout item maps
   QList< QgsLayoutItemMap * > maps;
   mLayout->layoutItems( maps );
-  for ( QgsLayoutItemMap *map : qgis::as_const( maps ) )
+  for ( QgsLayoutItemMap *map : std::as_const( maps ) )
   {
     QgsGeoPdfRenderedFeatureHandler *handler = new QgsGeoPdfRenderedFeatureHandler( map, this, exportableLayerIds );
     mMapHandlers.insert( map, handler );

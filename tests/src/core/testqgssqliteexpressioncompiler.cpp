@@ -41,6 +41,7 @@ class TestQgsSQLiteExpressionCompiler: public QObject
     void cleanupTestCase();
     void testMakeExpression();
     void testCompiler();
+    void testPreparedCachedNodes();
 
   private:
 
@@ -56,7 +57,7 @@ QgsExpression TestQgsSQLiteExpressionCompiler::makeExpression( const int length 
   {
     expString.append( QStringLiteral( "(\"Z\" >= %1) AND (\"Bottom\" <= %2)" ).arg( i ).arg( i + 1 ) );
   }
-  QgsExpression exp( expString.join( QLatin1String( ") OR (" ) ).prepend( '(' ).append( ')' ) );
+  const QgsExpression exp( expString.join( QLatin1String( ") OR (" ) ).prepend( '(' ).append( ')' ) );
   return exp;
 }
 
@@ -83,17 +84,17 @@ void TestQgsSQLiteExpressionCompiler::cleanupTestCase()
 
 void TestQgsSQLiteExpressionCompiler::testMakeExpression()
 {
-  QgsExpression exp( makeExpression( 1 ) );
+  const QgsExpression exp( makeExpression( 1 ) );
   QVERIFY( exp.isValid() );
   QCOMPARE( QString( exp ), QString( "((\"Z\" >= 0) AND (\"Bottom\" <= 1))" ) );
-  QgsExpression exp2( makeExpression( 2 ) );
+  const QgsExpression exp2( makeExpression( 2 ) );
   QVERIFY( exp2.isValid() );
   QCOMPARE( QString( exp2 ), QString( "((\"Z\" >= 0) AND (\"Bottom\" <= 1)) OR ((\"Z\" >= 1) AND (\"Bottom\" <= 2))" ) );
 }
 
 void TestQgsSQLiteExpressionCompiler::testCompiler()
 {
-  QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( mPointsLayer->fields() );
+  QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( mPointsLayer->fields(), true );
   QgsExpression exp( makeExpression( 1 ) );
   QCOMPARE( compiler.compile( &exp ), QgsSqlExpressionCompiler::Result::Complete );
   QCOMPARE( compiler.result(), QString( exp ) );
@@ -103,15 +104,40 @@ void TestQgsSQLiteExpressionCompiler::testCompiler()
   QCOMPARE( compiler.result().count( '(' ),  compiler.result().count( ')' ) );
   QCOMPARE( compiler.result(), QStringLiteral( "((((\"Z\" >= 0) AND (\"Bottom\" <= 1)) OR ((\"Z\" >= 1) AND (\"Bottom\" <= 2))) OR ((\"Z\" >= 2) AND (\"Bottom\" <= 3)))" ) );
 
-  QgsExpression ilike( QStringLiteral( "'a' ilike 'A'" ) );
+  const QgsExpression ilike( QStringLiteral( "'a' ilike 'A'" ) );
   QCOMPARE( compiler.compile( &ilike ), QgsSqlExpressionCompiler::Result::Complete );
   QCOMPARE( compiler.result(), QStringLiteral( "lower('a') LIKE lower('A') ESCAPE '\\'" ) );
 
-  QgsExpression nilike( QStringLiteral( "'a' not ilike 'A'" ) );
+  const QgsExpression nilike( QStringLiteral( "'a' not ilike 'A'" ) );
   QCOMPARE( compiler.compile( &nilike ), QgsSqlExpressionCompiler::Result::Complete );
   QCOMPARE( compiler.result(), QStringLiteral( "lower('a') NOT LIKE lower('A') ESCAPE '\\'" ) );
 }
 
+void TestQgsSQLiteExpressionCompiler::testPreparedCachedNodes()
+{
+  // test that expression compilation of an expression which has precalculated static values for nodes will take advantage of these values
+
+  QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( mPointsLayer->fields(), false );
+  QgsExpression exp( QStringLiteral( "\"Z\" = (1 + 2) OR \"z\" < (@static_var + 5)" ) );
+
+  QgsExpressionContext context;
+  std::unique_ptr< QgsExpressionContextScope > scope = std::make_unique< QgsExpressionContextScope >();
+  scope->setVariable( QStringLiteral( "static_var" ), 10, true );
+  context.appendScope( scope.release() );
+  // not possible to compile due to use of a variable
+  QCOMPARE( compiler.compile( &exp ), QgsSqlExpressionCompiler::Result::Fail );
+
+  // now prepare the expression, so that the static nodes will be precalculated
+  exp.prepare( &context );
+  // should now succeed -- the variable node was identified as a static value and replaced by a pre-computed value
+  QCOMPARE( compiler.compile( &exp ), QgsSqlExpressionCompiler::Result::Complete );
+  QCOMPARE( compiler.result(), QStringLiteral( "((\"Z\" = 3) OR (\"Z\" < 15))" ) );
+
+  // let's try again, denying the compiler the ability to use pre-computed values
+  QgsSQLiteExpressionCompiler compiler2 = QgsSQLiteExpressionCompiler( mPointsLayer->fields(), true );
+  // will fail, because it can't take advantage of the pre-computer variable value and a variable can't be compiled
+  QCOMPARE( compiler2.compile( &exp ), QgsSqlExpressionCompiler::Result::Fail );
+}
 
 
 QGSTEST_MAIN( TestQgsSQLiteExpressionCompiler )

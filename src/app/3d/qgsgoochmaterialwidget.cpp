@@ -100,7 +100,7 @@ void QgsGoochMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique
 
 QgsAbstractMaterialSettings *QgsGoochMaterialWidget::settings()
 {
-  std::unique_ptr< QgsGoochMaterialSettings > m = qgis::make_unique< QgsGoochMaterialSettings >();
+  std::unique_ptr< QgsGoochMaterialSettings > m = std::make_unique< QgsGoochMaterialSettings >();
   m->setDiffuse( btnDiffuse->color() );
   m->setWarm( btnWarm->color() );
   m->setCool( btnCool->color() );

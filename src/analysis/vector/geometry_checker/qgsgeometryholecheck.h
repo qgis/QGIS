@@ -22,6 +22,7 @@
 
 /**
  * \ingroup analysis
+ * \brief A hole check.
  */
 class ANALYSIS_EXPORT QgsGeometryHoleCheck : public QgsGeometryCheck
 {

@@ -32,7 +32,7 @@
 
 /**
  * \ingroup core
- * Provides data stored in-memory for QgsMeshLayer. Useful for plugins or tests.
+ * \brief Provides data stored in-memory for QgsMeshLayer. Useful for plugins or tests.
  * \since QGIS 3.2
  */
 class CORE_EXPORT QgsMeshMemoryDataProvider final: public QgsMeshDataProvider
@@ -152,6 +152,10 @@ class CORE_EXPORT QgsMeshMemoryDataProvider final: public QgsMeshDataProvider
                                       QgsMeshDatasetSourceInterface *source,
                                       int datasetGroupIndex
                                     ) override;
+
+    bool saveMeshFrame( const QgsMesh & ) override {return false;}
+
+    void close() override;
 
     //! Returns the memory provider key
     static QString providerKey();

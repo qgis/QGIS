@@ -93,19 +93,19 @@ void QgsRectanglesOvalsDiamondsAlgorithm::initParameters( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "SHAPE" ), QObject::tr( "Shape" ), QStringList() << QObject::tr( "Rectangle" ) << QObject::tr( "Diamond" ) << QObject::tr( "Oval" ), false, 0 ) );
 
-  auto widthParam = qgis::make_unique < QgsProcessingParameterDistance >( QStringLiteral( "WIDTH" ), QObject::tr( "Width" ), 1.0, QStringLiteral( "INPUT" ), false, 0.0 );
+  auto widthParam = std::make_unique < QgsProcessingParameterDistance >( QStringLiteral( "WIDTH" ), QObject::tr( "Width" ), 1.0, QStringLiteral( "INPUT" ), false, 0.0 );
   widthParam->setIsDynamic( true );
   widthParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Width" ), QObject::tr( "Width" ), QgsPropertyDefinition::DoublePositive ) );
   widthParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( widthParam.release() );
 
-  auto heightParam = qgis::make_unique < QgsProcessingParameterDistance >( QStringLiteral( "HEIGHT" ), QObject::tr( "Height" ), 1.0, QStringLiteral( "INPUT" ), false, 0.0 );
+  auto heightParam = std::make_unique < QgsProcessingParameterDistance >( QStringLiteral( "HEIGHT" ), QObject::tr( "Height" ), 1.0, QStringLiteral( "INPUT" ), false, 0.0 );
   heightParam->setIsDynamic( true );
   heightParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Height" ), QObject::tr( "Height" ), QgsPropertyDefinition::DoublePositive ) );
   heightParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( heightParam.release() );
 
-  auto rotationParam = qgis::make_unique < QgsProcessingParameterNumber >( QStringLiteral( "ROTATION" ), QObject::tr( "Rotation" ), QgsProcessingParameterNumber::Double, 0.0, true, -360.0, 360.0 );
+  auto rotationParam = std::make_unique < QgsProcessingParameterNumber >( QStringLiteral( "ROTATION" ), QObject::tr( "Rotation" ), QgsProcessingParameterNumber::Double, 0.0, true, -360.0, 360.0 );
   rotationParam->setIsDynamic( true );
   rotationParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Rotation" ), QObject::tr( "Rotation" ), QgsPropertyDefinition::Double ) );
   rotationParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
@@ -143,7 +143,7 @@ QgsFeatureList QgsRectanglesOvalsDiamondsAlgorithm::processFeature( const QgsFea
   QgsFeature outFeature = feature;
   if ( outFeature.hasGeometry() )
   {
-    QgsGeometry geometry = outFeature.geometry();
+    const QgsGeometry geometry = outFeature.geometry();
     if ( geometry.isMultipart() )
     {
       throw QgsProcessingException( QObject::tr( "Multipart geometry. Please promote input layer to singleparts first." ) );
@@ -166,12 +166,12 @@ QgsFeatureList QgsRectanglesOvalsDiamondsAlgorithm::processFeature( const QgsFea
       throw QgsProcessingException( QObject::tr( "Width and height should be greater than 0." ) );
     }
 
-    double phi = rotation * M_PI / 180;
-    double xOffset = width / 2.0;
-    double yOffset = height / 2.0;
-    QgsPointXY point = geometry.asPoint();
-    double x = point.x();
-    double y = point.y();
+    const double phi = rotation * M_PI / 180;
+    const double xOffset = width / 2.0;
+    const double yOffset = height / 2.0;
+    const QgsPointXY point = geometry.asPoint();
+    const double x = point.x();
+    const double y = point.y();
 
     QVector< double > ringX( 5 );
     QVector< double > ringY( 5 );
@@ -194,7 +194,7 @@ QgsFeatureList QgsRectanglesOvalsDiamondsAlgorithm::processFeature( const QgsFea
         ringY.resize( mSegments + 1 );
         for ( int i = 0; i < mSegments; i ++ )
         {
-          double t = ( 2 * M_PI ) / mSegments * i;
+          const double t = ( 2 * M_PI ) / mSegments * i;
           ringX[ i ] = xOffset * cos( t ) + x;
           ringY[ i ] = yOffset * sin( t ) + y;
         }
@@ -207,14 +207,14 @@ QgsFeatureList QgsRectanglesOvalsDiamondsAlgorithm::processFeature( const QgsFea
     {
       for ( int i = 0; i < ringX.size(); ++i )
       {
-        double px = ringX.at( i );
-        double py = ringY.at( i );
+        const double px = ringX.at( i );
+        const double py = ringY.at( i );
         ringX[ i ] = ( px - x ) * cos( phi ) + ( py - y ) * sin( phi ) + x;
         ringY[ i ] = -( px - x ) * sin( phi ) + ( py - y ) * cos( phi ) + y;
       }
     }
 
-    std::unique_ptr< QgsPolygon > poly = qgis::make_unique< QgsPolygon >();
+    std::unique_ptr< QgsPolygon > poly = std::make_unique< QgsPolygon >();
     poly->setExteriorRing( new QgsLineString( ringX, ringY ) );
 
     if ( geometry.constGet()->is3D() )

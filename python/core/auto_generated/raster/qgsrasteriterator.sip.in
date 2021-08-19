@@ -10,7 +10,7 @@
 
 class QgsRasterIterator
 {
-%Docstring
+%Docstring(signature="appended")
 Iterator for sequentially processing raster cells.
 %End
 

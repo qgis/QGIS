@@ -27,7 +27,7 @@ class QgsMapLayer;
 
 /**
  * \ingroup core
- * Layer tree node points to a map layer.
+ * \brief Layer tree node points to a map layer.
  *
  * The node can exist also without a valid instance of a layer (just ID). That
  * means the referenced layer does not need to be loaded in order to use it
@@ -54,6 +54,14 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
      * Constructor for QgsLayerTreeLayer using weak references to layer ID, \a name, public \a source, and \a provider key.
      */
     explicit QgsLayerTreeLayer( const QString &layerId, const QString &name = QString(), const QString &source = QString(), const QString &provider = QString() );
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsLayerTreeLayer: %1>" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
     /**
      * Returns the ID for the map layer associated with this node.

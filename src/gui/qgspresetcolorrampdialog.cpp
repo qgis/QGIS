@@ -57,7 +57,7 @@ void QgsPresetColorRampWidget::setRamp( const QgsPresetSchemeColorRamp &ramp )
 
 void QgsPresetColorRampWidget::updatePreview()
 {
-  QSize size( 300, 40 );
+  const QSize size( 300, 40 );
   lblPreview->setPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( &mRamp, size ) );
 }
 
@@ -81,7 +81,7 @@ void QgsPresetColorRampWidget::mButtonAddColor_clicked()
   }
   else
   {
-    QColor newColor = QgsColorDialog::getColor( QColor(), this->parentWidget(), tr( "Select Color" ), true );
+    const QColor newColor = QgsColorDialog::getColor( QColor(), this->parentWidget(), tr( "Select Color" ), true );
     if ( !newColor.isValid() )
     {
       return;
@@ -101,8 +101,8 @@ void QgsPresetColorRampWidget::schemeChanged()
 
 void QgsPresetColorRampWidget::newColorChanged( const QColor &color )
 {
-  int row = mTreeColors->model()->rowCount() - 1;
-  QModelIndex colorIndex = mTreeColors->model()->index( row, 0 );
+  const int row = mTreeColors->model()->rowCount() - 1;
+  const QModelIndex colorIndex = mTreeColors->model()->index( row, 0 );
   mTreeColors->model()->setData( colorIndex, color );
 }
 

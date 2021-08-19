@@ -19,7 +19,8 @@
 #include <QMessageBox>
 #include <QSqlDatabase>
 #include <QSqlError>
-#include <QRegExpValidator>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 
 #include "qgssettings.h"
 #include "qgslogger.h"
@@ -53,9 +54,9 @@ QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString &connNa
   {
     // populate the dialog with the information stored for the connection
     // populate the fields with the stored setting parameters
-    QgsSettings settings;
+    const QgsSettings settings;
 
-    QString key = "/DB2/connections/" + connName;
+    const QString key = "/DB2/connections/" + connName;
     txtService->setText( settings.value( key + "/service" ).toString() );
     txtHost->setText( settings.value( key + "/host" ).toString() );
     txtPort->setText( settings.value( key + "/port" ).toString() );
@@ -74,13 +75,13 @@ QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString &connNa
       mAuthSettings->setStorePasswordChecked( true );
     }
 
-    QString authcfg = settings.value( key + "/authcfg" ).toString();
+    const QString authcfg = settings.value( key + "/authcfg" ).toString();
     QgsDebugMsg( QStringLiteral( "authcfg: %1" ).arg( authcfg ) );
     mAuthSettings->setConfigId( authcfg );
 
     txtName->setText( connName );
   }
-  txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
+  txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( QStringLiteral( "[^\\/]+" ) ), txtName ) );
 }
 
 //! Autoconnected SLOTS
@@ -89,7 +90,7 @@ void QgsDb2NewConnection::accept()
   QgsSettings settings;
   QString baseKey = QStringLiteral( "/DB2/connections/" );
   settings.setValue( baseKey + "selected", txtName->text() );
-  bool hasAuthConfigID = !mAuthSettings->configId().isEmpty();
+  const bool hasAuthConfigID = !mAuthSettings->configId().isEmpty();
   QgsDebugMsg( QStringLiteral( "hasAuthConfigID: %1" ).arg( hasAuthConfigID ) );
   if ( !hasAuthConfigID && mAuthSettings->storePasswordIsChecked( ) &&
        QMessageBox::question( this,
@@ -164,21 +165,21 @@ bool QgsDb2NewConnection::testConnection()
   {
     authcfg = mAuthSettings->configId( );
   }
-  bool rc = QgsDb2ConnectionItem::ConnInfoFromParameters(
-              txtService->text().trimmed(),
-              txtDriver->text().trimmed(),
-              txtHost->text().trimmed(),
-              txtPort->text().trimmed(),
-              txtDatabase->text().trimmed(),
-              mAuthSettings->username().trimmed(),
-              mAuthSettings->password().trimmed(),
-              authcfg,
-              connInfo, errMsg );
+  const bool rc = QgsDb2ConnectionItem::ConnInfoFromParameters(
+                    txtService->text().trimmed(),
+                    txtDriver->text().trimmed(),
+                    txtHost->text().trimmed(),
+                    txtPort->text().trimmed(),
+                    txtDatabase->text().trimmed(),
+                    mAuthSettings->username().trimmed(),
+                    mAuthSettings->password().trimmed(),
+                    authcfg,
+                    connInfo, errMsg );
 
   if ( !rc )
   {
     bar->pushMessage( tr( "Error: %1." ).arg( errMsg ),
-                      Qgis::Warning );
+                      Qgis::MessageLevel::Warning );
     QgsDebugMsg( "errMsg: " + errMsg );
     return false;
   }
@@ -188,14 +189,14 @@ bool QgsDb2NewConnection::testConnection()
   {
     QgsDebugMsg( "connection open succeeded " + connInfo );
     bar->pushMessage( tr( "Connection to %1 was successful." ).arg( txtName->text() ),
-                      Qgis::Info );
+                      Qgis::MessageLevel::Info );
     return true;
   }
   else
   {
     QgsDebugMsg( "connection open failed: " + errMsg );
     bar->pushMessage( tr( "Connection failed: %1." ).arg( errMsg ),
-                      Qgis::Warning );
+                      Qgis::MessageLevel::Warning );
     return false;
   }
 }
@@ -211,8 +212,8 @@ void QgsDb2NewConnection::showHelp()
 
 void QgsDb2NewConnection::updateOkButtonState()
 {
-  bool enabled = !txtName->text().isEmpty() && (
-                   ( !txtService->text().isEmpty() && !txtDatabase->text().isEmpty() ) ||
-                   ( !txtDriver->text().isEmpty() && !txtHost->text().isEmpty() && !txtPort->text().isEmpty() && !txtDatabase->text().isEmpty() ) );
+  const bool enabled = !txtName->text().isEmpty() && (
+                         ( !txtService->text().isEmpty() && !txtDatabase->text().isEmpty() ) ||
+                         ( !txtDriver->text().isEmpty() && !txtHost->text().isEmpty() && !txtPort->text().isEmpty() && !txtDatabase->text().isEmpty() ) );
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
 }

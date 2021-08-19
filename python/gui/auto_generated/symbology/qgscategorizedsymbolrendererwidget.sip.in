@@ -88,6 +88,10 @@ from the XML file with a matching name.
 .. versionadded:: 2.9
 %End
 
+  protected:
+    virtual void setSymbolLevels( const QgsLegendSymbolList &levels, bool enabled );
+
+
   protected slots:
 
     virtual void pasteSymbolToSelection();

@@ -21,7 +21,7 @@
 
 /**
  * \ingroup core
- * QgsClassificationCustom is a dummy implementation of QgsClassification
+ * \brief QgsClassificationCustom is a dummy implementation of QgsClassification
  * which does not compute any break.
  * \since QGIS 3.10
  */

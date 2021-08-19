@@ -11,7 +11,7 @@
 
 class QgsSvgAnnotation: QgsAnnotation
 {
-%Docstring
+%Docstring(signature="appended")
 An annotation which renders the contents of an SVG file.
 
 .. versionadded:: 3.0

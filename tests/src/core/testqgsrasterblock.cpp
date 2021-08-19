@@ -55,7 +55,7 @@ void TestQgsRasterBlock::initTestCase()
   QgsApplication::initQgis();
 
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QString band1byteRaster = mTestDataDir + "/raster/band1_byte_ct_epsg4326.tif";
+  const QString band1byteRaster = mTestDataDir + "/raster/band1_byte_ct_epsg4326.tif";
 
   mpRasterLayer = new QgsRasterLayer( band1byteRaster, QStringLiteral( "band1_byte" ) );
 
@@ -75,9 +75,9 @@ void TestQgsRasterBlock::testBasic()
   QgsRasterDataProvider *provider = mpRasterLayer->dataProvider();
   QVERIFY( provider );
 
-  QgsRectangle fullExtent = mpRasterLayer->extent();
-  int width = mpRasterLayer->width();
-  int height = mpRasterLayer->height();
+  const QgsRectangle fullExtent = mpRasterLayer->extent();
+  const int width = mpRasterLayer->width();
+  const int height = mpRasterLayer->height();
 
   QgsRasterBlock *block = provider->block( 1, fullExtent, width, height );
 
@@ -88,7 +88,7 @@ void TestQgsRasterBlock::testBasic()
 
   QVERIFY( block->isValid() );
   QVERIFY( !block->isEmpty() );
-  QCOMPARE( block->dataType(), Qgis::Byte );
+  QCOMPARE( block->dataType(), Qgis::DataType::Byte );
   QCOMPARE( block->dataTypeSize(), 1 );
   QVERIFY( block->hasNoDataValue() );
   QVERIFY( block->hasNoData() );
@@ -135,16 +135,16 @@ void TestQgsRasterBlock::testBasic()
   QVERIFY( isNoData );
 
   // data()
-  QByteArray data = block->data();
+  const QByteArray data = block->data();
   QCOMPARE( data.count(), 100 );  // 10x10 raster with 1 byte/pixel
   QCOMPARE( data.at( 0 ), ( char ) 2 );
   QCOMPARE( data.at( 1 ), ( char ) 5 );
   QCOMPARE( data.at( 10 ), ( char ) 27 );
 
   // setData()
-  QByteArray newData( "\xaa\xbb\xcc\xdd" );
+  const QByteArray newData( "\xaa\xbb\xcc\xdd" );
   block->setData( newData, 1 );
-  QByteArray data2 = block->data();
+  const QByteArray data2 = block->data();
   QCOMPARE( data2.at( 0 ), ( char ) 2 );
   QCOMPARE( data2.at( 1 ), '\xaa' );
   QCOMPARE( data2.at( 2 ), '\xbb' );
@@ -155,7 +155,7 @@ void TestQgsRasterBlock::testBasic()
 
 void TestQgsRasterBlock::testWrite()
 {
-  QgsRectangle extent = mpRasterLayer->extent();
+  const QgsRectangle extent = mpRasterLayer->extent();
   int nCols = mpRasterLayer->width(), nRows = mpRasterLayer->height();
   QVERIFY( nCols > 0 );
   QVERIFY( nRows > 0 );
@@ -171,8 +171,8 @@ void TestQgsRasterBlock::testWrite()
   tmpFile.close();
 
   // create a GeoTIFF - this will create data provider in editable mode
-  QString filename = tmpFile.fileName();
-  QgsRasterDataProvider *dp = QgsRasterDataProvider::create( QStringLiteral( "gdal" ), filename, QStringLiteral( "GTiff" ), 1, Qgis::Byte, 10, 10, tform, mpRasterLayer->crs() );
+  const QString filename = tmpFile.fileName();
+  QgsRasterDataProvider *dp = QgsRasterDataProvider::create( QStringLiteral( "gdal" ), filename, QStringLiteral( "GTiff" ), 1, Qgis::DataType::Byte, 10, 10, tform, mpRasterLayer->crs() );
 
   QgsRasterBlock *block = mpRasterLayer->dataProvider()->block( 1, mpRasterLayer->extent(), mpRasterLayer->width(), mpRasterLayer->height() );
 
@@ -187,7 +187,7 @@ void TestQgsRasterBlock::testWrite()
   QVERIFY( res );
 
   QgsRasterBlock *block2 = dp->block( 1, mpRasterLayer->extent(), mpRasterLayer->width(), mpRasterLayer->height() );
-  QByteArray newData2 = block2->data();
+  const QByteArray newData2 = block2->data();
   QCOMPARE( newData2.at( 0 ), '\xa0' );
   QCOMPARE( newData2.at( 1 ), '\xa1' );
 
@@ -198,11 +198,11 @@ void TestQgsRasterBlock::testWrite()
   QgsRasterLayer *rlayer = new QgsRasterLayer( filename, QStringLiteral( "tmp" ), QStringLiteral( "gdal" ) );
   QVERIFY( rlayer->isValid() );
   QgsRasterBlock *block3 = rlayer->dataProvider()->block( 1, rlayer->extent(), rlayer->width(), rlayer->height() );
-  QByteArray newData3 = block3->data();
+  const QByteArray newData3 = block3->data();
   QCOMPARE( newData3.at( 0 ), '\xa0' );
   QCOMPARE( newData3.at( 1 ), '\xa1' );
 
-  QgsRasterBlock *block4 = new QgsRasterBlock( Qgis::Byte, 1, 2 );
+  QgsRasterBlock *block4 = new QgsRasterBlock( Qgis::DataType::Byte, 1, 2 );
   block4->setData( QByteArray( "\xb0\xb1" ) );
 
   // cannot write when provider is not editable
@@ -229,7 +229,7 @@ void TestQgsRasterBlock::testWrite()
 
   // verify the change is there
   QgsRasterBlock *block5 = rlayer->dataProvider()->block( 1, rlayer->extent(), rlayer->width(), rlayer->height() );
-  QByteArray newData5 = block5->data();
+  const QByteArray newData5 = block5->data();
   QCOMPARE( newData5.at( 0 ), '\xb0' );
   QCOMPARE( newData5.at( 1 ), '\xa1' ); // original data
   QCOMPARE( newData5.at( 10 ), '\xb1' );

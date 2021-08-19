@@ -28,7 +28,7 @@ class QgsMapCanvas;
 /**
  * \ingroup app
  * \class QgsSelectByFormDialog
- * A dialog for selecting features from a layer, using a form based off the layer's editor widgets.
+ * \brief A dialog for selecting features from a layer, using a form based off the layer's editor widgets.
  * \since QGIS 2.16
  */
 

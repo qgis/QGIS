@@ -21,6 +21,7 @@
 #include <QFont>
 #include <QIcon>
 #include <QTimer>
+#include <QUuid>
 #include <memory>
 
 #include "qgsgeometry.h"
@@ -37,7 +38,8 @@ class QgsLayerTree;
 
 /**
  * \ingroup core
- * The QgsLayerTreeModel class is model implementation for Qt item views framework.
+ * \brief The QgsLayerTreeModel class is model implementation for Qt item views framework.
+ *
  * The model can be used in any QTreeView, it is however recommended to use it
  * with QgsLayerTreeView which brings additional functionality specific to layer tree handling.
  *
@@ -292,7 +294,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      * Emits a message than can be displayed to the user in a GUI class
      * \since QGIS 3.14
      */
-    void messageEmitted( const QString &message, Qgis::MessageLevel level = Qgis::Info, int duration = 5 );
+    void messageEmitted( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 5 );
 
   protected slots:
     void nodeWillAddChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );

@@ -1892,6 +1892,9 @@ tests:
       OUTPUT:
         name: expected/service_area_from_point_nodes_bounds.gml
         type: vector
+        compare:
+          geometry:
+            precision: 3
 
   - algorithm: native:serviceareafrompoint
     name: Service area from point (shortest, lines)
@@ -1943,9 +1946,15 @@ tests:
       OUTPUT:
         name: expected/service_area_fastest_nodes.gml
         type: vector
+        compare:
+          geometry:
+            precision: 3
       OUTPUT_LINES:
         name: expected/service_area_fastests_lines.gml
         type: vector
+        compare:
+          geometry:
+            precision: 3
 
   - algorithm: native:serviceareafrompoint
     name: Service area from point (fastest, new parameter)
@@ -1967,9 +1976,15 @@ tests:
       OUTPUT:
         name: expected/service_area_fastest_nodes.gml
         type: vector
+        compare:
+          geometry:
+            precision: 3
       OUTPUT_LINES:
         name: expected/service_area_fastests_lines.gml
         type: vector
+        compare:
+          geometry:
+            precision: 3
 
   - algorithm: native:serviceareafromlayer
     name: Service area from layer (shortest, nodes)

@@ -19,6 +19,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgswmsutils.h"
+#include "qgswmsrequest.h"
 #include "qgswmsgetprint.h"
 #include "qgswmsrenderer.h"
 #include "qgswmsserviceexception.h"
@@ -26,11 +27,10 @@
 namespace QgsWms
 {
   void writeGetPrint( QgsServerInterface *serverIface, const QgsProject *project,
-                      const QString &, const QgsServerRequest &request,
+                      const QgsWmsRequest &request,
                       QgsServerResponse &response )
   {
-    // get wms parameters from query
-    const QgsWmsParameters parameters( QUrlQuery( request.url() ) );
+    const QgsWmsParameters parameters = request.wmsParameters();
 
     // GetPrint supports svg/png/pdf
     const QgsWmsParameters::Format format = parameters.format();
@@ -64,6 +64,7 @@ namespace QgsWms
     context.setFlag( QgsWmsRenderContext::SetAccessControl );
     context.setFlag( QgsWmsRenderContext::AddHighlightLayers );
     context.setFlag( QgsWmsRenderContext::AddExternalLayers );
+    context.setFlag( QgsWmsRenderContext::AddAllLayers );
     context.setParameters( parameters );
 
     // rendering

@@ -12,7 +12,7 @@
 
 class QgsRasterDrawer
 {
-%Docstring
+%Docstring(signature="appended")
 The drawing pipe for raster layers.
 %End
 
@@ -20,7 +20,14 @@ The drawing pipe for raster layers.
 #include "qgsrasterdrawer.h"
 %End
   public:
-    QgsRasterDrawer( QgsRasterIterator *iterator );
+
+    QgsRasterDrawer( QgsRasterIterator *iterator, double dpiTarget = -1.0 );
+%Docstring
+The QgsRasterDrawer constructor.
+
+:param iterator: the raster iterator to fetch data from
+:param dpiTarget: the target ``dpi`` (dots per inch) to be taken into consideration when rendering
+%End
 
     void draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsMapToPixel *qgsMapToPixel, QgsRasterBlockFeedback *feedback = 0 );
 %Docstring

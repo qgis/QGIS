@@ -47,18 +47,17 @@
 ///////////////
 
 QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node, std::unique_ptr< QgsPointCloud3DSymbol > symbol,
-    double zValueScale, double zValueOffset )
+    const QgsCoordinateTransform &coordinateTransform, double zValueScale, double zValueOffset )
   : QgsChunkLoader( node )
   , mFactory( factory )
-  , mContext( factory->mMap, std::move( symbol ), zValueScale, zValueOffset )
+  , mContext( factory->mMap, coordinateTransform, std::move( symbol ), zValueScale, zValueOffset )
 {
-  mContext.setIsCanceledCallback( [this] { return mCanceled; } );
 
   QgsPointCloudIndex *pc = mFactory->mPointCloudIndex;
   mContext.setAttributes( pc->attributes() );
 
-  QgsChunkNodeId nodeId = node->tileId();
-  IndexedPointCloudNode pcNode( nodeId.d, nodeId.x, nodeId.y, nodeId.z );
+  const QgsChunkNodeId nodeId = node->tileId();
+  const IndexedPointCloudNode pcNode( nodeId.d, nodeId.x, nodeId.y, nodeId.z );
 
   Q_ASSERT( pc->hasNode( pcNode ) );
 
@@ -80,11 +79,11 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
   //
   // this will be run in a background thread
   //
-  QFuture<void> future = QtConcurrent::run( [pc, pcNode, this]
+  const QFuture<void> future = QtConcurrent::run( [pc, pcNode, this]
   {
-    QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "PC chunk load" ) );
+    const QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "PC chunk load" ) );
 
-    if ( mCanceled )
+    if ( mContext.isCanceled() )
     {
       QgsDebugMsgLevel( QStringLiteral( "canceled" ), 2 );
       return;
@@ -104,20 +103,21 @@ QgsPointCloudLayerChunkLoader::~QgsPointCloudLayerChunkLoader()
   if ( mFutureWatcher && !mFutureWatcher->isFinished() )
   {
     disconnect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
+    mContext.cancelRendering();
     mFutureWatcher->waitForFinished();
   }
 }
 
 void QgsPointCloudLayerChunkLoader::cancel()
 {
-  mCanceled = true;
+  mContext.cancelRendering();
 }
 
 Qt3DCore::QEntity *QgsPointCloudLayerChunkLoader::createEntity( Qt3DCore::QEntity *parent )
 {
   QgsPointCloudIndex *pc = mFactory->mPointCloudIndex;
-  QgsChunkNodeId nodeId = mNode->tileId();
-  IndexedPointCloudNode pcNode( nodeId.d, nodeId.x, nodeId.y, nodeId.z );
+  const QgsChunkNodeId nodeId = mNode->tileId();
+  const IndexedPointCloudNode pcNode( nodeId.d, nodeId.x, nodeId.y, nodeId.z );
   Q_ASSERT( pc->hasNode( pcNode ) );
 
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
@@ -125,48 +125,59 @@ Qt3DCore::QEntity *QgsPointCloudLayerChunkLoader::createEntity( Qt3DCore::QEntit
   return entity;
 }
 
-
 ///////////////
 
 
-QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsPointCloudIndex *pc, QgsPointCloud3DSymbol *symbol,
-    double zValueScale, double zValueOffset )
+QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, QgsPointCloudIndex *pc, QgsPointCloud3DSymbol *symbol,
+    double zValueScale, double zValueOffset, int pointBudget )
   : mMap( map )
+  , mCoordinateTransform( coordinateTransform )
   , mPointCloudIndex( pc )
   , mZValueScale( zValueScale )
   , mZValueOffset( zValueOffset )
+  , mPointBudget( pointBudget )
 {
   mSymbol.reset( symbol );
 }
 
 QgsChunkLoader *QgsPointCloudLayerChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
 {
-  QgsChunkNodeId id = node->tileId();
+  const QgsChunkNodeId id = node->tileId();
+
   Q_ASSERT( mPointCloudIndex->hasNode( IndexedPointCloudNode( id.d, id.x, id.y, id.z ) ) );
-  return new QgsPointCloudLayerChunkLoader( this, node, std::unique_ptr< QgsPointCloud3DSymbol >( static_cast< QgsPointCloud3DSymbol * >( mSymbol->clone() ) ), mZValueScale, mZValueOffset );
+  QgsPointCloud3DSymbol *symbol = static_cast< QgsPointCloud3DSymbol * >( mSymbol->clone() );
+  return new QgsPointCloudLayerChunkLoader( this, node, std::unique_ptr< QgsPointCloud3DSymbol >( symbol ), mCoordinateTransform, mZValueScale, mZValueOffset );
 }
 
-QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset, QgsVector3D scale, const Qgs3DMapSettings &map, double zValueOffset );
+int QgsPointCloudLayerChunkLoaderFactory::primitivesCount( QgsChunkNode *node ) const
+{
+  const QgsChunkNodeId id = node->tileId();
+  const IndexedPointCloudNode n( id.d, id.x, id.y, id.z );
+  Q_ASSERT( mPointCloudIndex->hasNode( n ) );
+  return mPointCloudIndex->nodePointCount( n );
+}
+
+QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset, QgsVector3D scale, const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, double zValueOffset );
 
 QgsChunkNode *QgsPointCloudLayerChunkLoaderFactory::createRootNode() const
 {
-  QgsAABB bbox = nodeBoundsToAABB( mPointCloudIndex->nodeBounds( IndexedPointCloudNode( 0, 0, 0, 0 ) ), mPointCloudIndex->offset(), mPointCloudIndex->scale(), mMap, mZValueOffset );
-  float error = mPointCloudIndex->nodeError( IndexedPointCloudNode( 0, 0, 0, 0 ) );
+  const QgsAABB bbox = nodeBoundsToAABB( mPointCloudIndex->nodeBounds( IndexedPointCloudNode( 0, 0, 0, 0 ) ), mPointCloudIndex->offset(), mPointCloudIndex->scale(), mMap, mCoordinateTransform, mZValueOffset );
+  const float error = mPointCloudIndex->nodeError( IndexedPointCloudNode( 0, 0, 0, 0 ) );
   return new QgsChunkNode( QgsChunkNodeId( 0, 0, 0, 0 ), bbox, error );
 }
 
 QVector<QgsChunkNode *> QgsPointCloudLayerChunkLoaderFactory::createChildren( QgsChunkNode *node ) const
 {
   QVector<QgsChunkNode *> children;
-  QgsChunkNodeId nodeId = node->tileId();
-  QgsAABB bbox = node->bbox();
-  float childError = node->error() / 2;
+  const QgsChunkNodeId nodeId = node->tileId();
+  const QgsAABB bbox = node->bbox();
+  const float childError = node->error() / 2;
   float xc = bbox.xCenter(), yc = bbox.yCenter(), zc = bbox.zCenter();
 
   for ( int i = 0; i < 8; ++i )
   {
     int dx = i & 1, dy = !!( i & 2 ), dz = !!( i & 4 );
-    QgsChunkNodeId childId( nodeId.d + 1, nodeId.x * 2 + dx, nodeId.y * 2 + dy, nodeId.z * 2 + dz );
+    const QgsChunkNodeId childId( nodeId.d + 1, nodeId.x * 2 + dx, nodeId.y * 2 + dy, nodeId.z * 2 + dz );
 
     if ( !mPointCloudIndex->hasNode( IndexedPointCloudNode( childId.d, childId.x, childId.y, childId.z ) ) )
       continue;
@@ -174,13 +185,13 @@ QVector<QgsChunkNode *> QgsPointCloudLayerChunkLoaderFactory::createChildren( Qg
     // the Y and Z coordinates below are intentionally flipped, because
     // in chunk node IDs the X,Y axes define horizontal plane,
     // while in our 3D scene the X,Z axes define the horizontal plane
-    float chXMin = dx ? xc : bbox.xMin;
-    float chXMax = dx ? bbox.xMax : xc;
+    const float chXMin = dx ? xc : bbox.xMin;
+    const float chXMax = dx ? bbox.xMax : xc;
     // Z axis: values are increasing to the south
-    float chZMin = !dy ? zc : bbox.zMin;
-    float chZMax = !dy ? bbox.zMax : zc;
-    float chYMin = dz ? yc : bbox.yMin;
-    float chYMax = dz ? bbox.yMax : yc;
+    const float chZMin = !dy ? zc : bbox.zMin;
+    const float chZMax = !dy ? bbox.zMax : zc;
+    const float chYMin = dz ? yc : bbox.yMin;
+    const float chYMax = dz ? bbox.yMax : yc;
     children << new QgsChunkNode( childId, QgsAABB( chXMin, chYMin, chZMin, chXMax, chYMax, chZMax ), childError, node );
   }
   return children;
@@ -189,22 +200,30 @@ QVector<QgsChunkNode *> QgsPointCloudLayerChunkLoaderFactory::createChildren( Qg
 ///////////////
 
 
-QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset, QgsVector3D scale, const Qgs3DMapSettings &map, double zValueOffset )
+QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset, QgsVector3D scale, const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, double zValueOffset )
 {
-  // TODO: reprojection from layer to map coordinates if needed
   QgsVector3D extentMin3D( nodeBounds.xMin() * scale.x() + offset.x(), nodeBounds.yMin() * scale.y() + offset.y(), nodeBounds.zMin() * scale.z() + offset.z() + zValueOffset );
   QgsVector3D extentMax3D( nodeBounds.xMax() * scale.x() + offset.x(), nodeBounds.yMax() * scale.y() + offset.y(), nodeBounds.zMax() * scale.z() + offset.z() + zValueOffset );
-  QgsVector3D worldExtentMin3D = Qgs3DUtils::mapToWorldCoordinates( extentMin3D, map.origin() );
-  QgsVector3D worldExtentMax3D = Qgs3DUtils::mapToWorldCoordinates( extentMax3D, map.origin() );
+  try
+  {
+    extentMin3D = coordinateTransform.transform( extentMin3D );
+    extentMax3D = coordinateTransform.transform( extentMax3D );
+  }
+  catch ( QgsCsException & )
+  {
+    QgsDebugMsg( QStringLiteral( "Error transforming node bounds coordinate" ) );
+  }
+  const QgsVector3D worldExtentMin3D = Qgs3DUtils::mapToWorldCoordinates( extentMin3D, map.origin() );
+  const QgsVector3D worldExtentMax3D = Qgs3DUtils::mapToWorldCoordinates( extentMax3D, map.origin() );
   QgsAABB rootBbox( worldExtentMin3D.x(), worldExtentMin3D.y(), worldExtentMin3D.z(),
                     worldExtentMax3D.x(), worldExtentMax3D.y(), worldExtentMax3D.z() );
   return rootBbox;
 }
 
 
-QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, QgsPointCloud3DSymbol *symbol, float maxScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset )
-  : QgsChunkedEntity( maxScreenError,
-                      new QgsPointCloudLayerChunkLoaderFactory( map, pc, symbol, zValueScale, zValueOffset ), true )
+QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol, float maximumScreenSpaceError, bool showBoundingBoxes, double zValueScale, double zValueOffset, int pointBudget )
+  : QgsChunkedEntity( maximumScreenSpaceError,
+                      new QgsPointCloudLayerChunkLoaderFactory( map, coordinateTransform, pc, symbol, zValueScale, zValueOffset, pointBudget ), true, pointBudget )
 {
   setUsingAdditiveStrategy( true );
   setShowBoundingBoxes( showBoundingBoxes );

@@ -43,6 +43,11 @@ void QgsDataItemGuiProvider::populateContextMenu( QgsDataItem *, QMenu *, const 
 
 }
 
+int QgsDataItemGuiProvider::precedenceWhenPopulatingMenus() const
+{
+  return 0;
+}
+
 bool QgsDataItemGuiProvider::rename( QgsDataItem *, const QString &, QgsDataItemGuiContext )
 {
   return false;
@@ -84,7 +89,7 @@ void QgsDataItemGuiProvider::notify( const QString &title, const QString &messag
     switch ( level )
     {
       case Qgis::MessageLevel::Info:
-      case Qgis::MessageLevel::None:
+      case Qgis::MessageLevel::NoLevel:
       {
         QMessageBox::information( parent, title, message );
         break;

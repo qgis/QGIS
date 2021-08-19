@@ -22,6 +22,7 @@
 #include "qgssettings.h"
 #include "qgsexception.h"
 #include "qgsmssqlconnection.h"
+#include "qgsgeometryengine.h"
 
 #include <QObject>
 #include <QTextStream>
@@ -49,6 +50,22 @@ QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource *source,
     // can't reproject mFilterRect
     close();
     return;
+  }
+  // prepare spatial filter geometries for optimal speed
+  switch ( mRequest.spatialFilterType() )
+  {
+    case Qgis::SpatialFilterType::NoFilter:
+    case Qgis::SpatialFilterType::BoundingBox:
+      break;
+
+    case Qgis::SpatialFilterType::DistanceWithin:
+      if ( !mRequest.referenceGeometry().isEmpty() )
+      {
+        mDistanceWithinGeom = mRequest.referenceGeometry();
+        mDistanceWithinEngine.reset( QgsGeometry::createGeometryEngine( mDistanceWithinGeom.constGet() ) );
+        mDistanceWithinEngine->prepareGeometry();
+      }
+      break;
   }
 
   BuildStatement( request );
@@ -136,7 +153,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   mFallbackStatement.clear();
   mStatement.clear();
 
-  bool limitAtProvider = mRequest.limit() >= 0;
+  bool limitAtProvider = mRequest.limit() >= 0 && mRequest.spatialFilterType() != Qgis::SpatialFilterType::DistanceWithin;
 
   // build sql statement
 
@@ -173,7 +190,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     }
   }
 
-  for ( int i : qgis::as_const( attrs ) )
+  for ( int i : std::as_const( attrs ) )
   {
     if ( mSource->mPrimaryKeyAttrs.contains( i ) )
       continue;
@@ -185,6 +202,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
 
   // get geometry col
   if ( ( !( request.flags() & QgsFeatureRequest::NoGeometry )
+         || ( request.spatialFilterType() == Qgis::SpatialFilterType::DistanceWithin )
          || ( request.filterType() == QgsFeatureRequest::FilterExpression && request.filterExpression()->needsGeometry() )
        )
        && mSource->isSpatial() )
@@ -330,7 +348,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   mCompileStatus = NoCompilation;
   if ( request.filterType() == QgsFeatureRequest::FilterExpression )
   {
-    QgsMssqlExpressionCompiler compiler = QgsMssqlExpressionCompiler( mSource );
+    QgsMssqlExpressionCompiler compiler = QgsMssqlExpressionCompiler( mSource, request.flags() & QgsFeatureRequest::IgnoreStaticNodesDuringExpressionCompilation );
     QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
     if ( result == QgsSqlExpressionCompiler::Complete || result == QgsSqlExpressionCompiler::Partial )
     {
@@ -364,7 +382,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
       break;
     }
 
-    QgsMssqlExpressionCompiler compiler = QgsMssqlExpressionCompiler( mSource );
+    QgsMssqlExpressionCompiler compiler = QgsMssqlExpressionCompiler( mSource, request.flags() & QgsFeatureRequest::IgnoreStaticNodesDuringExpressionCompilation );
     QgsExpression expression = clause.expression();
     if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )
     {
@@ -450,7 +468,7 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
     return false;
   }
 
-  if ( mQuery->next() )
+  while ( mQuery->next() )
   {
     feature.initAttributes( mSource->mFields.count() );
     feature.setFields( mSource->mFields ); // allow name-based attribute lookups
@@ -498,7 +516,7 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
       case PktFidMap:
       {
         QVariantList primaryKeyVals;
-        foreach ( int idx, mSource->mPrimaryKeyAttrs )
+        for ( int idx : mSource->mPrimaryKeyAttrs )
         {
           QgsField fld = mSource->mFields.at( idx );
 
@@ -536,8 +554,13 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
       }
     }
 
-    feature.setValid( true );
     geometryToDestinationCrs( feature, mTransform );
+    if ( mDistanceWithinEngine && mDistanceWithinEngine->distance( feature.geometry().constGet() ) > mRequest.distanceWithin() )
+    {
+      continue;
+    }
+
+    feature.setValid( true );
     return true;
   }
   return false;

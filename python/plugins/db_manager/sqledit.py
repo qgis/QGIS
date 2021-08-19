@@ -172,6 +172,3 @@ class SqlEdit(QsciScintilla):
 
     def lexer(self):
         return self.mylexer
-
-    def setMarginVisible(self, visible):
-        pass

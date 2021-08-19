@@ -28,7 +28,7 @@ class QgsMapCanvas;
 /**
  * \ingroup gui
  * \class QgsCalloutWidget
- * Base class for widgets which allow control over the properties of callouts.
+ * \brief Base class for widgets which allow control over the properties of callouts.
  * \since QGIS 3.10
  */
 class GUI_EXPORT QgsCalloutWidget : public QWidget, protected QgsExpressionContextGenerator
@@ -153,6 +153,7 @@ class GUI_EXPORT QgsSimpleLineCalloutWidget : public QgsCalloutWidget, private U
     void lineSymbolChanged();
     void mAnchorPointComboBox_currentIndexChanged( int index );
     void mLabelAnchorPointComboBox_currentIndexChanged( int index );
+    void mCalloutBlendComboBox_currentIndexChanged( int index );
     void drawToAllPartsToggled( bool active );
 
   private:
@@ -169,6 +170,85 @@ class GUI_EXPORT QgsManhattanLineCalloutWidget : public QgsSimpleLineCalloutWidg
     QgsManhattanLineCalloutWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     static QgsCalloutWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsManhattanLineCalloutWidget( vl ); }
+
+};
+
+
+///////////
+
+#include "ui_widget_curvedlinecallout.h"
+
+class QgsCurvedLineCallout;
+///@cond PRIVATE
+
+class GUI_EXPORT QgsCurvedLineCalloutWidget : public QgsCalloutWidget, private Ui::WidgetCurvedLineCallout
+{
+    Q_OBJECT
+
+  public:
+
+    QgsCurvedLineCalloutWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    static QgsCalloutWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsCurvedLineCalloutWidget( vl ); }
+
+    void setCallout( QgsCallout *callout ) override;
+
+    QgsCallout *callout() override;
+
+    void setGeometryType( QgsWkbTypes::GeometryType type ) override;
+
+  private slots:
+
+    void minimumLengthChanged();
+    void minimumLengthUnitWidgetChanged();
+    void offsetFromAnchorUnitWidgetChanged();
+    void offsetFromAnchorChanged();
+    void offsetFromLabelUnitWidgetChanged();
+    void offsetFromLabelChanged();
+    void lineSymbolChanged();
+    void mAnchorPointComboBox_currentIndexChanged( int index );
+    void mLabelAnchorPointComboBox_currentIndexChanged( int index );
+    void mCalloutBlendComboBox_currentIndexChanged( int index );
+    void drawToAllPartsToggled( bool active );
+
+  private:
+    std::unique_ptr< QgsCurvedLineCallout > mCallout;
+
+};
+
+
+///////////
+
+#include "ui_widget_ballooncallout.h"
+
+class QgsBalloonCallout;
+
+class GUI_EXPORT QgsBalloonCalloutWidget : public QgsCalloutWidget, private Ui::WidgetBalloonCallout
+{
+    Q_OBJECT
+
+  public:
+
+    QgsBalloonCalloutWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    static QgsCalloutWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsBalloonCalloutWidget( vl ); }
+
+    void setCallout( QgsCallout *callout ) override;
+
+    QgsCallout *callout() override;
+
+    void setGeometryType( QgsWkbTypes::GeometryType type ) override;
+
+  private slots:
+
+    void offsetFromAnchorUnitWidgetChanged();
+    void offsetFromAnchorChanged();
+    void fillSymbolChanged();
+    void mAnchorPointComboBox_currentIndexChanged( int index );
+    void mCalloutBlendComboBox_currentIndexChanged( int index );
+
+  private:
+    std::unique_ptr< QgsBalloonCallout > mCallout;
 
 };
 

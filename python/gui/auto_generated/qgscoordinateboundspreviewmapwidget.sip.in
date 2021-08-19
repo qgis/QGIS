@@ -11,7 +11,7 @@
 
 class QgsCoordinateBoundsPreviewMapWidget : QgsMapCanvas
 {
-%Docstring
+%Docstring(signature="appended")
 A widget for showing the bounds of a rectangular region on an interactive map.
 
 .. versionadded:: 3.8.1

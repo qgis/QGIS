@@ -54,7 +54,7 @@ QgsDecorationImageDialog::QgsDecorationImageDialog( QgsDecorationImage &deco, QW
   cboPlacement->addItem( tr( "Bottom Left" ), QgsDecorationItem::BottomLeft );
   cboPlacement->addItem( tr( "Bottom Center" ), QgsDecorationItem::BottomCenter );
   cboPlacement->addItem( tr( "Bottom Right" ), QgsDecorationItem::BottomRight );
-  connect( cboPlacement, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  connect( cboPlacement, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
   {
     spinHorizontal->setMinimum( cboPlacement->currentData() == QgsDecorationItem::TopCenter || cboPlacement->currentData() == QgsDecorationItem::BottomCenter ? -100 : 0 );
   } );
@@ -168,7 +168,7 @@ void QgsDecorationImageDialog::updateImagePath( const QString &imagePath )
 void QgsDecorationImageDialog::drawImage()
 {
   bool missing = false;
-  double maxLength = 64;
+  const double maxLength = 64;
   QSize size( maxLength, maxLength );
   QSvgRenderer svg;
   QImage img;
@@ -181,7 +181,7 @@ void QgsDecorationImageDialog::drawImage()
 
       if ( svg.isValid() )
       {
-        QRectF viewBox = svg.viewBoxF();
+        const QRectF viewBox = svg.viewBoxF();
         if ( viewBox.height() > viewBox.width() )
         {
           size.setWidth( maxLength * viewBox.width() / viewBox.height() );
@@ -201,7 +201,7 @@ void QgsDecorationImageDialog::drawImage()
 
     case QgsDecorationImage::FormatRaster:
     {
-      QSize originalSize = QgsApplication::imageCache()->originalSize( mDeco.imagePath() );
+      const QSize originalSize = QgsApplication::imageCache()->originalSize( mDeco.imagePath() );
       if ( originalSize.isValid() )
       {
         if ( originalSize.height() > originalSize.width() )
@@ -260,7 +260,7 @@ void QgsDecorationImageDialog::drawImage()
     px.fill( Qt::transparent );
     QPainter painter;
     painter.begin( &px );
-    QFont font( QStringLiteral( "time" ), 12, QFont::Bold );
+    const QFont font( QStringLiteral( "time" ), 12, QFont::Bold );
     painter.setFont( font );
     painter.setPen( Qt::red );
     painter.drawText( 10, 20, tr( "Pixmap not found" ) );

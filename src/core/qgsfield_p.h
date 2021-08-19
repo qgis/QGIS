@@ -84,6 +84,7 @@ class QgsFieldPrivate : public QSharedData
 
     ~QgsFieldPrivate() = default;
 
+    // TODO c++20 - replace with = default
     bool operator==( const QgsFieldPrivate &other ) const
     {
       return ( ( name == other.name ) && ( type == other.type ) && ( subType == other.subType )

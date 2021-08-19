@@ -36,7 +36,7 @@ class QgsMapLayer;
 
 /**
  * \ingroup gui
- * A widget for configuration of a map extent.
+ * \brief A widget for configuration of a map extent.
  *
  * Besides allowing the user to enter the extent manually, it comes with options to use
  * original extent or extent defined by the current view in map canvas.

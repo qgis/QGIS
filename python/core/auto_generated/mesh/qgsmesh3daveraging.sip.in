@@ -13,7 +13,7 @@
 
 class QgsMesh3dAveragingMethod /Abstract/
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract class to interpolate 3d stacked mesh data to 2d data
 
 .. versionadded:: 3.12
@@ -113,7 +113,7 @@ Returns type of averaging method
 
 class QgsMeshMultiLevelsAveragingMethod: QgsMesh3dAveragingMethod
 {
-%Docstring
+%Docstring(signature="appended")
 
 Multi level averaging method specifies limits of vertical layers from the top layer down or reversed.
 
@@ -195,7 +195,7 @@ Returns whether the averaging method selects only a single vertical level
 
 class QgsMeshSigmaAveragingMethod: QgsMesh3dAveragingMethod
 {
-%Docstring
+%Docstring(signature="appended")
 
 Sigma averages over the values between 0 (bed level) and 1 (surface).
 
@@ -252,7 +252,7 @@ Always higher or equal than :py:func:`~QgsMeshSigmaAveragingMethod.startFraction
 
 class QgsMeshRelativeHeightAveragingMethod: QgsMesh3dAveragingMethod
 {
-%Docstring
+%Docstring(signature="appended")
 
 Relative height averaging method averages the values based on range defined relative to bed elevation or surface (when :py:func:`~QgsMeshSigmaAveragingMethod.countedFromTop`)
 The range is defined in the same length units as defined by model (e.g. meters)
@@ -321,7 +321,7 @@ Returns whether the start and end vertical levels are relative to top (surface) 
 
 class QgsMeshElevationAveragingMethod: QgsMesh3dAveragingMethod
 {
-%Docstring
+%Docstring(signature="appended")
 
 Elevation averaging method averages the values based on range defined absolute value to the model's datum
 The range is defined in the same length units as defined by model (e.g. meters)

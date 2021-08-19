@@ -60,7 +60,8 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     void points( QgsPointSequence &pts SIP_OUT ) const override;
     int numPoints() const override SIP_HOLDGIL;
     bool isEmpty() const override SIP_HOLDGIL;
-    bool isValid( QString &error SIP_OUT, int flags = 0 ) const override;
+    bool isValid( QString &error SIP_OUT, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const override;
+    int indexOf( const QgsPoint &point ) const final;
 
     /**
      * Returns a new line string geometry corresponding to a segmentized approximation
@@ -72,6 +73,8 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
     QgsCompoundCurve *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
+    bool boundingBoxIntersects( const QgsRectangle &rectangle ) const override SIP_HOLDGIL;
+    const QgsAbstractGeometry *simplifiedTypeRef() const override SIP_HOLDGIL;
 
     /**
      * Returns the number of curves in the geometry.
@@ -84,9 +87,15 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     const QgsCurve *curveAt( int i ) const SIP_HOLDGIL;
 
     /**
-     * Adds a curve to the geometry (takes ownership)
+     * Adds a curve to the geometry (takes ownership).
+     *
+     * Since QGIS 3.20, if \a extendPrevious is TRUE, then adding a LineString when the last existing curve
+     * in the compound curve is also a LineString will cause the existing linestring to be
+     * extended with the newly added LineString vertices instead of appending a whole new
+     * LineString curve to the compound curve. This can result in simplified compound curves with lesser number
+     * of component curves while still being topologically identical to the desired result.
      */
-    void addCurve( QgsCurve *c SIP_TRANSFER );
+    void addCurve( QgsCurve *c SIP_TRANSFER, bool extendPrevious = false );
 
     /**
      * Removes a curve from the geometry.
@@ -98,6 +107,24 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
      * Adds a vertex to the end of the geometry.
      */
     void addVertex( const QgsPoint &pt );
+
+    /**
+     * Condenses the curves in this geometry by combining adjacent linestrings a to a single continuous linestring,
+     * and combining adjacent circularstrings to a single continuous circularstring.
+     *
+     * \since QGIS 3.20
+     */
+    void condenseCurves();
+
+    /**
+     * Converts the vertex at the given position from/to circular
+     * \returns FALSE if atVertex does not correspond to a valid vertex
+     * on this geometry (including if this geometry is a Point),
+     * or if the specified vertex can't be converted (e.g. start/end points).
+     *
+     * \since QGIS 3.20
+     */
+    bool toggleCircularAtVertex( QgsVertexId position );
 
     void draw( QPainter &p ) const override;
     void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) override  SIP_THROW( QgsCsException );
@@ -131,9 +158,13 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     double xAt( int index ) const override SIP_HOLDGIL;
     double yAt( int index ) const override SIP_HOLDGIL;
 
+    bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = nullptr ) override;
+    void scroll( int firstVertexIndex ) final;
+
 #ifndef SIP_RUN
     void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
     void transformVertices( const std::function< QgsPoint( const QgsPoint & ) > &transform ) override;
+    std::tuple< std::unique_ptr< QgsCurve >, std::unique_ptr< QgsCurve > > splitCurveAtVertex( int index ) const final;
 
     /**
      * Cast the \a geom to a QgsCompoundCurve.
@@ -165,6 +196,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
   protected:
 
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     QgsRectangle calculateBoundingBox() const override;
 
   private:

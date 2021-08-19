@@ -26,7 +26,7 @@ class QDomDocument;
 class QgsProject;
 
 /**
- * Contains settings and properties relating to how a QgsProject should be displayed inside
+ * \brief Contains settings and properties relating to how a QgsProject should be displayed inside
  * map canvas, e.g. map scales and default view extent for the project.
  *
  * \ingroup core

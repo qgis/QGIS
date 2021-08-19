@@ -26,10 +26,11 @@
 class QgsGeometry;
 class QgsAbstractGeometry;
 class QgsCurve;
+class geod_geodesic;
 
 /**
  * \ingroup core
- * A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
+ * \brief A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
  *
  * Measurements can either be performed on existing QgsGeometry objects, or using
  * lists of points.
@@ -45,6 +46,8 @@ class QgsCurve;
  * Usually, the measurements returned by QgsDistanceArea are in meters. If no valid
  * ellipsoid is set, then the units may not be meters. The units can be retrieved
  * by calling lengthUnits() and areaUnits().
+ *
+ * Internally, the GeographicLib library is used to calculate all ellipsoid based measurements.
 */
 class CORE_EXPORT QgsDistanceArea
 {
@@ -52,6 +55,11 @@ class CORE_EXPORT QgsDistanceArea
 
     //! Constructor
     QgsDistanceArea();
+    ~QgsDistanceArea();
+
+    //! Copy constructor
+    QgsDistanceArea( const QgsDistanceArea &other );
+    QgsDistanceArea &operator=( const QgsDistanceArea &other );
 
     /**
      * Returns whether calculations will use the ellipsoid. Calculations will only use the
@@ -281,20 +289,12 @@ class CORE_EXPORT QgsDistanceArea
 
     /**
      * Given a location, an azimuth and a distance, computes the
-     * location of the projected point. Based on Vincenty's formula
-     * for the geodetic direct problem as described in "Geocentric
-     * Datum of Australia Technical Manual", Chapter 4.
+     * location of the projected point.
+     *
      * \param p1 - location of first geographic (latitude/longitude) point as degrees.
      * \param distance - distance in meters.
      * \param azimuth - azimuth in radians, clockwise from North
      * \return p2 - location of projected point as longitude/latitude.
-     * \note code (and documentation) taken from rttopo project
-     * https://git.osgeo.org/gogs/rttopo/librttopo
-     *
-     * - spheroid_project.spheroid_project(...)
-     * - Valid bounds checking for degrees (latitude=+- 85.05115) is based values used for
-     *   -> 'WGS84 Web Mercator (Auxiliary Sphere)' calculations
-     *   --> latitudes outside these bounds cause the calculations to become unstable and can return invalid results
      *
      * \since QGIS 3.0
      */
@@ -367,19 +367,6 @@ class CORE_EXPORT QgsDistanceArea
   private:
 
     /**
-     * Calculates distance from two points on ellipsoid
-     * based on inverse Vincenty's formulae
-     *
-     * Points \a p1 and \a p2 are expected to be in degrees and in currently used ellipsoid
-     *
-     * \returns distance in meters
-     * \note if course1 is not NULLPTR, bearing (in radians) from first point is calculated
-     * (the same for course2)
-     */
-    double computeDistanceBearing( const QgsPointXY &p1, const QgsPointXY &p2,
-                                   double *course1 = nullptr, double *course2 = nullptr ) const;
-
-    /**
      * Calculates area of polygon on ellipsoid
      * algorithm has been taken from GRASS: gis/area_poly1.c
      */
@@ -391,7 +378,7 @@ class CORE_EXPORT QgsDistanceArea
      * Precalculates some values
      * (must be called always when changing ellipsoid)
      */
-    void computeAreaInit();
+    void computeAreaInit() const;
 
     void setFromParams( const QgsEllipsoidUtils::EllipsoidParameters &params );
 
@@ -411,23 +398,13 @@ class CORE_EXPORT QgsDistanceArea
     //! ellipsoid parameters
     double mSemiMajor, mSemiMinor, mInvFlattening;
 
-    // utility functions for polygon area measurement
+    mutable std::unique_ptr< geod_geodesic > mGeod;
 
-    double getQ( double x ) const;
-    double getQbar( double x ) const;
+    // utility functions for polygon area measurement
 
     double measure( const QgsAbstractGeometry *geomV2, MeasureType type = Default ) const;
     double measureLine( const QgsCurve *curve ) const;
     double measurePolygon( const QgsCurve *curve ) const;
-
-    // temporary area measurement stuff
-
-    double m_QA, m_QB, m_QC;
-    double m_QbarA, m_QbarB, m_QbarC, m_QbarD;
-    double m_AE;  /* a^2(1-e^2) */
-    double m_Qp;  /* Q at the north pole */
-    double m_E;   /* area of the earth */
-    double m_TwoPI;
 
 };
 

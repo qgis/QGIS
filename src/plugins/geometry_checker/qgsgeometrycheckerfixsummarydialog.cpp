@@ -70,14 +70,14 @@ QgsGeometryCheckerFixSummaryDialog::QgsGeometryCheckerFixSummaryDialog( const St
 
 void QgsGeometryCheckerFixSummaryDialog::addError( QTableWidget *table, QgsGeometryCheckError *error )
 {
-  bool sortingWasEnabled = table->isSortingEnabled();
+  const bool sortingWasEnabled = table->isSortingEnabled();
   if ( sortingWasEnabled )
     table->setSortingEnabled( false );
 
-  int prec = 7 - std::floor( std::max( 0., std::log10( std::max( error->location().x(), error->location().y() ) ) ) );
-  QString posStr = QStringLiteral( "%1, %2" ).arg( error->location().x(), 0, 'f', prec ).arg( error->location().y(), 0, 'f', prec );
+  const int prec = 7 - std::floor( std::max( 0., std::log10( std::max( error->location().x(), error->location().y() ) ) ) );
+  const QString posStr = QStringLiteral( "%1, %2" ).arg( error->location().x(), 0, 'f', prec ).arg( error->location().y(), 0, 'f', prec );
 
-  int row = table->rowCount();
+  const int row = table->rowCount();
   table->insertRow( row );
   table->setItem( row, 0, new QTableWidgetItem( !error->layerId().isEmpty() ? mChecker->featurePools()[error->layerId()]->layer()->name() : "" ) );
   QTableWidgetItem *idItem = new QTableWidgetItem();
@@ -128,7 +128,7 @@ void QgsGeometryCheckerFixSummaryDialog::onTableSelectionChanged( const QItemSel
 
   if ( !newSel.isEmpty() && !newSel.first().indexes().isEmpty() )
   {
-    QModelIndex idx = newSel.first().indexes().first();
+    const QModelIndex idx = newSel.first().indexes().first();
     QgsGeometryCheckError *error = reinterpret_cast<QgsGeometryCheckError *>( model->data( model->index( idx.row(), 0 ), Qt::UserRole ).value<void *>() );
     emit errorSelected( error );
   }

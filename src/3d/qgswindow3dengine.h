@@ -39,7 +39,7 @@ class QWindow;
 
 /**
  * \ingroup 3d
- * On-screen 3D engine: it creates OpenGL window (QWindow) and displays rendered 3D scene there.
+ * \brief On-screen 3D engine: it creates OpenGL window (QWindow) and displays rendered 3D scene there.
  * The window can be embedded into a QWidget-based application with QWidget::createWindowContainer().
  *
  * \note Not available in Python bindings
@@ -58,11 +58,6 @@ class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
 
     //! Returns the internal 3D window where all the rendered output is displayed
     QWindow *window();
-
-    //! Returns the frame graph object
-    QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph() { return mShadowRenderingFrameGraph; }
-
-    void requestCaptureImage() override;
 
     //! Sets whether shadow rendering is enabled
     void setShadowRenderingEnabled( bool enabled );
@@ -84,8 +79,6 @@ class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
     Qt3DExtras::Qt3DWindow *mWindow3D = nullptr;
     //! Frame graph node for render capture
     bool mShadowRenderingEnabled = false;
-    QgsShadowRenderingFrameGraph *mShadowRenderingFrameGraph = nullptr;
-    Qt3DExtras::QForwardRenderer *mDefaultForwardRenderer = nullptr;
     Qt3DCore::QEntity *mRoot = nullptr;
     Qt3DCore::QEntity *mSceneRoot = nullptr;
 

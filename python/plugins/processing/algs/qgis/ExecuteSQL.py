@@ -145,10 +145,9 @@ class ExecuteSQL(QgisAlgorithm):
         if query == '':
             raise QgsProcessingException(
                 self.tr('Empty SQL. Please enter valid SQL expression and try again.'))
-        else:
-            localContext = self.createExpressionContext(parameters, context)
-            expandedQuery = QgsExpression.replaceExpressionText(query, localContext)
-            df.setQuery(expandedQuery)
+        localContext = self.createExpressionContext(parameters, context)
+        expandedQuery = QgsExpression.replaceExpressionText(query, localContext)
+        df.setQuery(expandedQuery)
 
         if uid_field:
             df.setUid(uid_field)

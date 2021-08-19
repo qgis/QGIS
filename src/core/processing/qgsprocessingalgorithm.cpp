@@ -28,6 +28,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsprocessingfeedback.h"
 #include "qgsmeshlayer.h"
+#include "qgspointcloudlayer.h"
 #include "qgsexpressioncontextutils.h"
 
 
@@ -137,7 +138,7 @@ void QgsProcessingAlgorithm::setProvider( QgsProcessingProvider *provider )
   if ( mProvider && !mProvider->supportsNonFileBasedOutput() )
   {
     // need to update all destination parameters to turn off non file based outputs
-    for ( const QgsProcessingParameterDefinition *definition : qgis::as_const( mParameters ) )
+    for ( const QgsProcessingParameterDefinition *definition : std::as_const( mParameters ) )
     {
       if ( definition->isDestination() )
       {
@@ -465,7 +466,7 @@ QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProce
     if ( !catchExceptions )
       throw e;
 
-    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), Qgis::Critical );
+    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), Qgis::MessageLevel::Critical );
     feedback->reportError( e.what() );
     return QVariantMap();
   }
@@ -491,7 +492,7 @@ bool QgsProcessingAlgorithm::prepare( const QVariantMap &parameters, QgsProcessi
   }
   catch ( QgsProcessingException &e )
   {
-    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), Qgis::Critical );
+    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), Qgis::MessageLevel::Critical );
     feedback->reportError( e.what() );
     return false;
   }
@@ -576,7 +577,7 @@ QVariantMap QgsProcessingAlgorithm::postProcess( QgsProcessingContext &context, 
   }
   catch ( QgsProcessingException &e )
   {
-    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), Qgis::Critical );
+    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), Qgis::MessageLevel::Critical );
     feedback->reportError( e.what() );
     return QVariantMap();
   }
@@ -795,6 +796,11 @@ QString QgsProcessingAlgorithm::parameterAsDatabaseTableName( const QVariantMap 
   return QgsProcessingParameters::parameterAsDatabaseTableName( parameterDefinition( name ), parameters, context );
 }
 
+QgsPointCloudLayer *QgsProcessingAlgorithm::parameterAsPointCloudLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
+{
+  return QgsProcessingParameters::parameterAsPointCloudLayer( parameterDefinition( name ), parameters, context );
+}
+
 QString QgsProcessingAlgorithm::invalidSourceError( const QVariantMap &parameters, const QString &name )
 {
   if ( !parameters.contains( name ) )
@@ -874,6 +880,16 @@ QString QgsProcessingAlgorithm::invalidSinkError( const QVariantMap &parameters,
     else
       return QObject::tr( "Could not create destination layer for %1: invalid value" ).arg( name );
   }
+}
+
+QString QgsProcessingAlgorithm::writeFeatureError( QgsFeatureSink *sink, const QVariantMap &parameters, const QString &name )
+{
+  Q_UNUSED( sink );
+  Q_UNUSED( parameters );
+  if ( !name.isEmpty() )
+    return QObject::tr( "Could not write feature into %1" ).arg( name );
+  else
+    return QObject::tr( "Could not write feature" );
 }
 
 bool QgsProcessingAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const

@@ -1,14 +1,15 @@
 #############################################################
 # CMake settings
-cmake_minimum_required(VERSION 3.10.0)
+cmake_minimum_required(VERSION 3.12.0)
 set(CMAKE_COLOR_MAKEFILE ON)
 set(CMAKE_AUTORCC ON)
 # set path to additional CMake modules
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 # POLICIES
-cmake_policy (SET CMP0048 NEW)
-cmake_policy (SET CMP0053 NEW)
-cmake_policy (SET CMP0071 NEW)
+cmake_policy(SET CMP0048 NEW)
+cmake_policy(SET CMP0053 NEW)
+cmake_policy(SET CMP0071 NEW)
+cmake_policy(SET CMP0094 NEW)
 
 # don't relink it only the shared object changes
 set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
@@ -16,7 +17,7 @@ set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 #############################################################
 # Project and version
 set(CPACK_PACKAGE_VERSION_MAJOR "3")
-set(CPACK_PACKAGE_VERSION_MINOR "17")
+set(CPACK_PACKAGE_VERSION_MINOR "21")
 set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 set(RELEASE_NAME "Master")
@@ -31,6 +32,8 @@ endif()
 # Note the version no is Mmmpp for Major/minor/patch, 0-padded, thus '10100' for 1.1.0
 math(EXPR QGIS_VERSION_INT "${CPACK_PACKAGE_VERSION_MAJOR}*10000+${CPACK_PACKAGE_VERSION_MINOR}*100+${CPACK_PACKAGE_VERSION_PATCH}")
 message(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSION_INT})")
+
+set (ENABLE_LOCAL_BUILD_SHORTCUTS FALSE CACHE BOOL "Disables some build steps which are only relevant for releases to speed up compilation time for development")
 
 #############################################################
 if (APPLE)
@@ -84,31 +87,26 @@ if(NOT MSVC)
     if(CCACHE_FOUND)
         set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
         set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
+        message(STATUS "ccache found")
     endif(CCACHE_FOUND)
   endif(USE_CCACHE)
 endif(NOT MSVC)
 
 if (IOS)
     set (DEFAULT_FORCE_STATIC_LIBS TRUE)
-    set (DEFAULT_FORCE_STATIC_PROVIDERS TRUE)
 else()
     set (DEFAULT_FORCE_STATIC_LIBS FALSE)
-    set (DEFAULT_FORCE_STATIC_PROVIDERS FALSE)
 endif()
 
 set (FORCE_STATIC_LIBS ${DEFAULT_FORCE_STATIC_LIBS} CACHE BOOL "Determines whether libraries should be static only")
 mark_as_advanced(FORCE_STATIC_LIBS)
 if (FORCE_STATIC_LIBS)
   set (LIBRARY_TYPE STATIC)
-else()
-  set (LIBRARY_TYPE SHARED)
-endif()
-
-set (FORCE_STATIC_PROVIDERS ${DEFAULT_FORCE_STATIC_PROVIDERS} CACHE BOOL "Determines whether data providers should be static only")
-mark_as_advanced(FORCE_STATIC_PROVIDERS)
-if (FORCE_STATIC_PROVIDERS)
   # following variable is used in qgsconfig.h
   set (HAVE_STATIC_PROVIDERS TRUE)
+else()
+  set (LIBRARY_TYPE SHARED)
+  unset(HAVE_STATIC_PROVIDERS)
 endif()
 
 # in generated makefiles use relative paths so the project dir is moveable
@@ -140,6 +138,13 @@ if(WITH_CORE)
 
   set (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library (and everything built on top of it) should be built")
 
+  set (WITH_OAUTH2_PLUGIN TRUE CACHE BOOL "Build OAuth2 authentication method plugin")
+  if(WITH_OAUTH2_PLUGIN)
+    set(HAVE_OAUTH2_PLUGIN TRUE)
+  endif()
+
+  set (WITH_AUTH TRUE CACHE BOOL "Determines whether QGIS authentication methods should be built")
+
   set (WITH_ANALYSIS TRUE CACHE BOOL "Determines whether QGIS analysis library should be built")
 
   set (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
@@ -167,7 +172,6 @@ if(WITH_CORE)
       # keep casual users from updating their source tree via WITH_QSCIAPI
       mark_as_advanced (WITH_QSCIAPI)
     endif()
-    add_definitions(-DWITH_BINDINGS)
   endif()
 
   # server disabled default because it needs FastCGI (which is optional dependency)
@@ -212,7 +216,7 @@ if(WITH_CORE)
     # The qgis_desktop target is meant to build a minimal but complete running QGIS during development
     # This should help to reduce compile time while still having a "complete enough" QGIS for most of the development
     add_custom_target(qgis_desktop
-      DEPENDS qgis qgispython pycore pygui pyanalysis postgresprovider staged-plugins pyplugin-installer resources svg doc icons
+      DEPENDS qgis qgispython pycore pygui pyanalysis provider_postgres staged-plugins pyplugin-installer resources svg doc icons
     )
   endif()
 
@@ -231,7 +235,11 @@ if(WITH_CORE)
     set (POSTGRESQL_PREFIX "" CACHE PATH "Path to POSTGRESQL base directory")
   endif()
 
-  set (WITH_QSPATIALITE FALSE CACHE BOOL "Determines whether QSPATIALITE sql driver should be built")
+  # try to configure and build POSTGRESQL support
+  set (WITH_SPATIALITE TRUE CACHE BOOL "Determines whether Spatialite support should be built (required for spatialite, virtual, wfs providers)")
+  if (WITH_SPATIALITE)
+      set (WITH_QSPATIALITE FALSE CACHE BOOL "Determines whether QSPATIALITE sql driver should be built")
+  endif()
 
   set (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be built")
   if(WITH_ORACLE)
@@ -261,16 +269,6 @@ if(WITH_CORE)
   if(WITH_EPT)
     set(HAVE_EPT TRUE)
   endif()
-
-  #BUILD WITH QtMobility by default on android only. Other platform can force it
-  if (ANDROID)
-      set (DEFAULT_WITH_QTMOBILITY TRUE)
-  else()
-      set (DEFAULT_WITH_QTMOBILITY FALSE)
-  endif()
-  set (WITH_QTMOBILITY ${DEFAULT_WITH_QTMOBILITY} CACHE BOOL "Determines if QtMobility related code should be build (for example internal GPS)")
-
-  set (WITH_GEOREFERENCER TRUE CACHE BOOL "Determines whether GeoReferencer plugin should be built")
 
   set (WITH_THREAD_LOCAL TRUE CACHE BOOL "Determines whether std::thread_local should be used")
   mark_as_advanced(WITH_THREAD_LOCAL)
@@ -313,25 +311,8 @@ if(WITH_CORE)
     set (USING_NINJA TRUE)
   endif()
 
-  #############################################################
-  # check if lexer and parser are not missing
-  # http://www.mail-archive.com/cmake@cmake.org/msg02861.html
-
-  include(Flex)
-
-  FIND_FLEX()
-
-  if (NOT FLEX_EXECUTABLE)
-    message(FATAL_ERROR "Couldn't find Flex")
-  endif()
-
-  include(Bison)
-
-  FIND_BISON()
-
-  if (NOT BISON_EXECUTABLE)
-    message(FATAL_ERROR "Couldn't find Bison")
-  endif()
+  find_package(FLEX 2.6 REQUIRED)
+  find_package(BISON REQUIRED)
 
   #############################################################
   # search for dependencies
@@ -375,6 +356,8 @@ if(WITH_CORE)
   find_package(ZLIB REQUIRED)       # for decompression of vector tiles in MBTiles file
   message(STATUS "Found zlib: ${ZLIB_LIBRARIES}")
 
+  find_package(EXIV2 REQUIRED)
+
   # optional
   if (WITH_POSTGRESQL)
     find_package(Postgres) # PostgreSQL provider
@@ -388,7 +371,10 @@ if(WITH_CORE)
     find_package(Poly2Tri REQUIRED)
   endif()
 
-  find_package(SpatiaLite REQUIRED)
+  if (WITH_SPATIALITE)
+    find_package(SpatiaLite REQUIRED)
+    set (HAVE_SPATIALITE TRUE)
+  endif()
 
   if (NOT PROJ_FOUND OR NOT GEOS_FOUND OR NOT GDAL_FOUND)
     message (SEND_ERROR "Some dependencies were not found! Proj: ${PROJ_FOUND}, Geos: ${GEOS_FOUND}, GDAL: ${GDAL_FOUND}")
@@ -430,48 +416,64 @@ if(WITH_CORE)
   endif()
 
   #############################################################
-  # search for Qt5
-  set(QT_MIN_VERSION 5.9.0)
+  # search for Qt
+
+  set (WITH_QT6 FALSE CACHE BOOL "Enable (broken, experimental) Qt6 support")
+  if (WITH_QT6)
+    set(QT_MIN_VERSION 6.0.0)
+    set(QT_VERSION_BASE "Qt6")
+  else()
+    set(QT_MIN_VERSION 5.12.0)
+    set(QT_VERSION_BASE "Qt5")
+  endif()
 
   # Use Qt5SerialPort optionally for GPS
   set (WITH_QT5SERIALPORT TRUE CACHE BOOL "Determines whether Qt5SerialPort should be tried for GPS positioning")
   if (WITH_QT5SERIALPORT)
-      find_package(Qt5 COMPONENTS SerialPort REQUIRED)
+      find_package(${QT_VERSION_BASE} COMPONENTS SerialPort REQUIRED)
       # following variable is used in qgsconfig.h
       set (HAVE_QT5SERIALPORT TRUE)
   endif()
 
-  find_package(Qt5 COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test UiTools Sql REQUIRED)
+  find_package(${QT_VERSION_BASE} COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test UiTools Sql REQUIRED)
+  if (WITH_QT6)
+    find_package(${QT_VERSION_BASE} COMPONENTS Core5Compat REQUIRED)
+  else()
+    # TODO only available starting from Qt 6.2
+    find_package(${QT_VERSION_BASE} COMPONENTS Positioning)
+  endif()
   if (NOT IOS)
-    find_package(Qt5 COMPONENTS PrintSupport REQUIRED)
+    find_package(${QT_VERSION_BASE} COMPONENTS PrintSupport REQUIRED)
   else()
     add_definitions(-DQT_NO_PRINTER)
   endif()
-  find_package(Qt5 COMPONENTS Positioning)
-  if (WITH_QTWEBKIT)
+  if (WITH_QTWEBKIT AND NOT WITH_QT6)
     find_package(Qt5WebKit REQUIRED)
     find_package(Qt5WebKitWidgets REQUIRED)
   endif()
   if (WITH_3D)
-    find_package(Qt5 COMPONENTS 3DCore 3DRender 3DInput 3DLogic 3DExtras REQUIRED)
+    find_package(${QT_VERSION_BASE} COMPONENTS 3DCore 3DRender 3DInput 3DLogic 3DExtras REQUIRED)
     set(HAVE_3D TRUE)  # used in qgsconfig.h
   endif()
   if (APPLE)
-    find_package(Qt5 COMPONENTS MacExtras REQUIRED)
+    find_package(${QT_VERSION_BASE} COMPONENTS MacExtras REQUIRED)
   endif()
 
   # get the Qt plugins directory
-  get_target_property(QMAKE_EXECUTABLE Qt5::qmake LOCATION)
+  get_target_property(QMAKE_EXECUTABLE ${QT_VERSION_BASE}::qmake LOCATION)
+
   EXEC_PROGRAM(${QMAKE_EXECUTABLE} ARGS "-query QT_INSTALL_PLUGINS" RETURN_VALUE return_code OUTPUT_VARIABLE DEFAULT_QT_PLUGINS_DIR )
   set (QT_PLUGINS_DIR ${DEFAULT_QT_PLUGINS_DIR} CACHE STRING "Path to installation directory for Qt Plugins. Defaults to Qt native plugin directory")
 
-  message(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
+  if (WITH_QT6)
+    message(STATUS "Found Qt version: ${Qt6Core_VERSION}")
+  else()
+    message(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
+  endif()
   if (WITH_QUICK)
-    find_package(Qt5 COMPONENTS Qml Quick REQUIRED)
+    find_package(${QT_VERSION_BASE} COMPONENTS Qml Quick REQUIRED)
     if(${CMAKE_SYSTEM_NAME} MATCHES "Android")
-        find_package(Qt5 COMPONENTS AndroidExtras)
-    else()
-        find_package(QtQmlTools)
+      find_package(${QT_VERSION_BASE} COMPONENTS AndroidExtras)
     endif()
 
     # following variable is used in qgsconfig.h
@@ -480,10 +482,6 @@ if(WITH_CORE)
 
   if(WITH_QTWEBKIT)
     set(OPTIONAL_QTWEBKIT ${Qt5WebKitWidgets_LIBRARIES})
-  endif()
-
-  if (WITH_QTMOBILITY)
-    find_package(QtMobility 1.1.0)
   endif()
 
   # search for QScintilla2 (C++ lib)
@@ -498,8 +496,8 @@ if(WITH_CORE)
   # Check for runtime dependency of qca-ossl plugin
   # REQUIRED if unit tests are to be run from build directory
   if(NOT MSVC)
-  include(QCAMacros)
-  FIND_QCAOSSL_PLUGIN_CPP(ENABLE_TESTS)
+    include(QCAMacros)
+    FIND_QCAOSSL_PLUGIN_CPP(ENABLE_TESTS)
   endif()
 
   if (APPLE)
@@ -532,33 +530,31 @@ set(QML_IMPORT_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" CACHE PATH "QML director
 # whether unit tests should be build
 set (ENABLE_TESTS TRUE CACHE BOOL "Build unit tests?")
 if (ENABLE_TESTS)
-set( QT_USE_QTTEST  TRUE )
-enable_testing()
-# Adds some testing specific build targets e.g. make Experimental
-include(Dart)
-# Additional test configuration options e.g. max upload size of test report
-configure_file(
-  "${CMAKE_SOURCE_DIR}/cmake_templates/CTestCustom.cmake.in"
-  "${CMAKE_BINARY_DIR}/CTestCustom.cmake"
-  IMMEDIATE @ONLY)
-# For server side testing we have no X, we can use xvfb as a fake x
-# sudo apt-get install xvfb
-add_custom_target(check COMMAND xvfb-run --server-args=-screen\ 0\ 1024x768x24 ctest --output-on-failure)
+  set (PUSH_TO_CDASH FALSE CACHE BOOL "Determines whether test results should be pushed to CDASH site")
+  set(QT_USE_QTTEST TRUE)
+  enable_testing()
+  # Adds some testing specific build targets e.g. make Experimental
+  include(Dart)
+  # Additional test configuration options e.g. max upload size of test report
+  configure_file(
+    "${CMAKE_SOURCE_DIR}/cmake_templates/CTestCustom.cmake.in"
+    "${CMAKE_BINARY_DIR}/CTestCustom.cmake"
+    IMMEDIATE @ONLY)
+  if (PUSH_TO_CDASH)
+    configure_file(
+      "${CMAKE_SOURCE_DIR}/cmake_templates/CTestConfig.cmake.in"
+      "${CMAKE_BINARY_DIR}/CTestConfig.cmake"
+      IMMEDIATE @ONLY)
+  endif()
+  # For server side testing we have no X, we can use xvfb as a fake x
+  # sudo apt-get install xvfb
+  add_custom_target(check COMMAND xvfb-run --server-args=-screen\ 0\ 1024x768x24 ctest --output-on-failure)
 endif()
 
 if (WITH_CORE)
 # ModelTest
   set(ENABLE_MODELTEST FALSE CACHE BOOL "Enable QT ModelTest (not for production)")
 endif()
-
-#############################################################
-# enable use of c++11 features where available
-# full c++11 support in clang 3.3+: http://clang.llvm.org/cxx_status.html
-# for Mac, this is probably Apple LLVM 4.2 (based on LLVM 3.2svn, in XCode 4.6+)
-#   or definitely Apple LLVM 5.0 (based on LLVM 3.3svn, in Xcode 5+):
-#   https://gist.github.com/yamaya/2924292
-
-set(CMAKE_CXX_STANDARD 11)
 
 #############################################################
 # enable warnings
@@ -624,7 +620,7 @@ if (PEDANTIC)
     # add_definitions( -fstrict-aliasing -Wstrict-aliasing=1 -Wredundant-decls )
 
     if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-return-type-c-linkage -Wno-overloaded-virtual -Wimplicit-fallthrough")
+       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wreturn-type-c-linkage -Woverloaded-virtual -Wimplicit-fallthrough")
     endif()
 
     # add any extra CXXFLAGS flags set by user. can be -D CXX_EXTRA_FLAGS or environment variable
@@ -663,8 +659,8 @@ else()
 endif()
 
 if(MSVC)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /utf-8")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8 /std:c++17")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /utf-8 /std:c++17")
   set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
   # disable macros that offend std::numeric_limits<T>::min()/max()
@@ -679,8 +675,11 @@ add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050800)
 # For fast string concatenation
 add_definitions(-DQT_USE_QSTRINGBUILDER)
 
-if (WITH_GEOREFERENCER)
+set(WITH_GSL TRUE CACHE BOOL "Determines whether GSL library should be used")
+
+if (WITH_ANALYSIS AND WITH_GSL)
   find_package(GSL REQUIRED)
+  set(HAVE_GSL TRUE)
   set(HAVE_GEOREFERENCER TRUE)
 endif()
 
@@ -757,12 +756,6 @@ if (WITH_CORE)
       set (QGIS_MACAPP_BUNDLE_USER "" CACHE STRING "Path to user bundling script")
       set (QGIS_MACAPP_INSTALL_DEV FALSE CACHE BOOL "Install developer frameworks")
       set (QGIS_MACAPP_DEV_PREFIX "/Library/Frameworks" CACHE STRING "Path to install developer frameworks")
-      # if we have @loader_path, >=OSX 10.5 (darwin 9+)
-      if (CMAKE_SYSTEM_VERSION VERSION_GREATER 9.0.0 OR CMAKE_SYSTEM_VERSION VERSION_EQUAL 9.0.0)
-          set (OSX_HAVE_LOADERPATH 1)
-      else()
-          set (OSX_HAVE_LOADERPATH 0)
-      endif()
 
       set (DEFAULT_BIN_SUBDIR      bin)
       set (QGIS_BIN_SUBDIR_REV     ..)
@@ -915,23 +908,26 @@ endif()
 set(QGIS_INSTALL_SYS_LIBS TRUE CACHE BOOL "If set to TRUE install all required system libs in the output package")
 
 #############################################################
-# Python build dependency
+# Python
 
-find_package(PythonLibrary REQUIRED)
-set(MIN_PYTHON_VERSION "3.6")
-if(${PYTHON_SHORT_VERSION} VERSION_LESS ${MIN_PYTHON_VERSION})
-    message(FATAL_ERROR "Python version ${PYTHON_SHORT_VERSION} is too old. Minimum Python version is ${MIN_PYTHON_VERSION}.")
+set(MIN_PYTHON_VERSION "3.7")
+set(Python_FIND_FRAMEWORK "LAST")
+
+
+if (WITH_BINDINGS)
+  find_package(Python ${MIN_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter Development)
+else()
+  find_package(Python ${MIN_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter)
 endif()
 
-set(MIN_PYTHON_VERSION "3.6")
-if(${PYTHON_SHORT_VERSION} VERSION_LESS ${MIN_PYTHON_VERSION})
-    message(FATAL_ERROR "Python version ${PYTHON_SHORT_VERSION} is too old. Minimum Python version is ${MIN_PYTHON_VERSION}.")
-endif()
+message("-- Found Python executable: ${Python_EXECUTABLE} (version ${Python_VERSION})")
+message("-- Python library: ${Python_LIBRARIES}")
+message("-- Python site-packages: ${Python_SITEARCH}")
 
-#############################################################
-# Python bindings
+if (WITH_CORE AND WITH_BINDINGS AND NOT WITH_QT6)
+  set(PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
+  set (QGIS_PYTHON_OUTPUT_DIRECTORY ${PYTHON_OUTPUT_DIRECTORY}/qgis)
 
-if (WITH_CORE AND WITH_BINDINGS)
   # python support: check for interpreter, sip, pyqt5
   find_package(PyQt5 REQUIRED)
   set(PYQT_SIP_FLAGS ${PYQT5_SIP_FLAGS})
@@ -945,17 +941,17 @@ if (WITH_CORE AND WITH_BINDINGS)
   include(SIPMacros)
 
   set(SIP_INCLUDES ${PYQT_SIP_DIR} ${CMAKE_SOURCE_DIR}/python)
-  set(SIP_CONCAT_PARTS 11)
+  set(SIP_CONCAT_PARTS 16)
 
   if (NOT BINDINGS_GLOBAL_INSTALL)
-    set(PYTHON_SITE_PACKAGES_DIR ${QGIS_DATA_DIR}/python)
+    set(Python_SITEARCH ${QGIS_DATA_DIR}/python)
   endif()
 
   if (WITH_CUSTOM_WIDGETS)
     set(PYUIC_WIDGET_PLUGIN_DIRECTORY ${PYQT5_MOD_DIR}/uic/widget-plugins/)
   endif()
-
 endif()
+
 
 #############################################################
 # create qgsconfig.h

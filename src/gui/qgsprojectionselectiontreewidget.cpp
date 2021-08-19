@@ -22,12 +22,16 @@
 #include "qgssettings.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystemregistry.h"
+#include "qgsdatums.h"
+#include "qgsprojoperation.h"
+#include "qgsstringutils.h"
 
 //qt includes
 #include <QFileInfo>
 #include <QHeaderView>
 #include <QResizeEvent>
 #include <QMessageBox>
+#include <QRegularExpression>
 
 QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *parent )
   : QWidget( parent )
@@ -48,12 +52,6 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
   connect( leSearch, &QgsFilterLineEdit::textChanged, this, &QgsProjectionSelectionTreeWidget::updateFilter );
 
   mAreaCanvas->setVisible( mShowMap );
-
-  if ( QDialog *dlg = qobject_cast<QDialog *>( parent ) )
-  {
-    // mark selected projection for push to front if parent dialog is accepted
-    connect( dlg, &QDialog::accepted, this, &QgsProjectionSelectionTreeWidget::pushProjectionToFront );
-  }
 
   // Get the full path name to the sqlite3 spatial reference database.
   mSrsDatabaseFileName = QgsApplication::srsDatabaseFilePath();
@@ -98,20 +96,13 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
 
 QgsProjectionSelectionTreeWidget::~QgsProjectionSelectionTreeWidget()
 {
-  if ( !mPushProjectionToFront )
-  {
-    return;
-  }
-
-  // Push current projection to front, only if set
-  long crsId = selectedCrsId();
-  if ( crsId == 0 )
-    return;
-
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Windows/ProjectionSelector/splitterState" ), mSplitter->saveState() );
 
-  QgsCoordinateReferenceSystem::pushRecentCoordinateReferenceSystem( crs() );
+  // Push current projection to front, only if set
+  const QgsCoordinateReferenceSystem selectedCrs = crs();
+  if ( selectedCrs.isValid() )
+    QgsCoordinateReferenceSystem::pushRecentCoordinateReferenceSystem( selectedCrs );
 }
 
 void QgsProjectionSelectionTreeWidget::resizeEvent( QResizeEvent *event )
@@ -137,7 +128,7 @@ void QgsProjectionSelectionTreeWidget::showEvent( QShowEvent *event )
 
   if ( !mRecentProjListDone )
   {
-    for ( const QgsCoordinateReferenceSystem &crs : qgis::as_const( mRecentProjections ) )
+    for ( const QgsCoordinateReferenceSystem &crs : std::as_const( mRecentProjections ) )
       insertRecent( crs );
     mRecentProjListDone = true;
   }
@@ -357,7 +348,7 @@ QString QgsProjectionSelectionTreeWidget::getSelectedExpression( const QString &
   {
     QgsMessageLog::logMessage( tr( "Resource Location Error" ), tr( "Error reading database file from: \n %1\n"
                                "Because of this the projection selector will not work…" ).arg( databaseFileName ),
-                               Qgis::Critical );
+                               Qgis::MessageLevel::Critical );
     return QString();
   }
 
@@ -793,9 +784,9 @@ void QgsProjectionSelectionTreeWidget::lstRecent_itemDoubleClicked( QTreeWidgetI
 
 void QgsProjectionSelectionTreeWidget::updateFilter()
 {
-  QString filterTxtCopy = leSearch->text();
-  filterTxtCopy.replace( QRegExp( "\\s+" ), QStringLiteral( ".*" ) );
-  QRegExp re( filterTxtCopy, Qt::CaseInsensitive );
+  QString filterTxtCopy = QgsStringUtils::qRegExpEscape( leSearch->text() );
+  filterTxtCopy.replace( QRegularExpression( "\\s+" ), QStringLiteral( ".*" ) );
+  const QRegularExpression re( filterTxtCopy, QRegularExpression::PatternOption::CaseInsensitiveOption );
 
   const bool hideDeprecated = cbxHideDeprecated->isChecked();
 
@@ -848,13 +839,9 @@ void QgsProjectionSelectionTreeWidget::updateFilter()
   filterTreeWidget( lstCoordinateSystems );
 }
 
-
 void QgsProjectionSelectionTreeWidget::pushProjectionToFront()
 {
-  // set flag to push selected projection to front in destructor
-  mPushProjectionToFront = true;
 }
-
 
 long QgsProjectionSelectionTreeWidget::getLargestCrsIdMatch( const QString &sql )
 {
@@ -947,9 +934,62 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
                    .arg( rect.yMaximum(), 0, 'f', 2 );
   }
 
+  QStringList properties;
+  if ( currentCrs.isGeographic() )
+    properties << tr( "Geographic (uses latitude and longitude for coordinates)" );
+  else
+  {
+    properties << tr( "Units: %1" ).arg( QgsUnitTypes::toString( currentCrs.mapUnits() ) );
+  }
+  properties << ( currentCrs.isDynamic() ? tr( "Dynamic (relies on a datum which is not plate-fixed)" ) : tr( "Static (relies on a datum which is plate-fixed)" ) );
+
+  try
+  {
+    const QString celestialBody = currentCrs.celestialBodyName();
+    if ( !celestialBody.isEmpty() )
+    {
+      properties << tr( "Celestial body: %1" ).arg( celestialBody );
+    }
+  }
+  catch ( QgsNotSupportedException & )
+  {
+
+  }
+
+  try
+  {
+    const QgsDatumEnsemble ensemble = currentCrs.datumEnsemble();
+    if ( ensemble.isValid() )
+    {
+      QString id;
+      if ( !ensemble.code().isEmpty() )
+        id = QStringLiteral( "<i>%1</i> (%2:%3)" ).arg( ensemble.name(), ensemble.authority(), ensemble.code() );
+      else
+        id = QStringLiteral( "<i>%</i>”" ).arg( ensemble.name() );
+      if ( ensemble.accuracy() > 0 )
+      {
+        properties << tr( "Based on %1, which has a limited accuracy of <b>at best %2 meters</b>." ).arg( id ).arg( ensemble.accuracy() );
+      }
+      else
+      {
+        properties << tr( "Based on %1, which has a limited accuracy." ).arg( id );
+      }
+    }
+  }
+  catch ( QgsNotSupportedException & )
+  {
+
+  }
+
+  const QgsProjOperation operation = currentCrs.operation();
+  properties << tr( "Method: %1" ).arg( operation.description() );
+
+  const QString propertiesString = QStringLiteral( "<dt><b>%1</b></dt><dd><ul><li>%2</li></ul></dd>" ).arg( tr( "Properties" ),
+                                   properties.join( QLatin1String( "</li><li>" ) ) );
+
   const QString extentHtml = QStringLiteral( "<dt><b>%1</b></dt><dd>%2</dd>" ).arg( tr( "Extent" ), extentString );
-  const QString wktString = tr( "<dt><b>%1</b></dt><dd><code>%2</code></dd>" ).arg( tr( "WKT" ), currentCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, true ).replace( '\n', QLatin1String( "<br>" ) ).replace( ' ', QLatin1String( "&nbsp;" ) ) );
-  const QString proj4String = tr( "<dt><b>%1</b></dt><dd><code>%2</code></dd>" ).arg( tr( "Proj4" ), currentCrs.toProj() );
+  const QString wktString = QStringLiteral( "<dt><b>%1</b></dt><dd><code>%2</code></dd>" ).arg( tr( "WKT" ), currentCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, true ).replace( '\n', QLatin1String( "<br>" ) ).replace( ' ', QLatin1String( "&nbsp;" ) ) );
+  const QString proj4String = QStringLiteral( "<dt><b>%1</b></dt><dd><code>%2</code></dd>" ).arg( tr( "Proj4" ), currentCrs.toProj() );
 
 #ifdef Q_OS_WIN
   const int smallerPointSize = std::max( font().pointSize() - 1, 8 ); // bit less on windows, due to poor rendering of small point sizes
@@ -957,7 +997,7 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
   const int smallerPointSize = std::max( font().pointSize() - 2, 6 );
 #endif
 
-  teProjection->setText( QStringLiteral( "<div style=\"font-size: %1pt\"><h3>%2</h3><dl>" ).arg( smallerPointSize ).arg( selectedName() ) + wktString + proj4String + extentHtml + QStringLiteral( "</dl></div>" ) );
+  teProjection->setText( QStringLiteral( "<div style=\"font-size: %1pt\"><h3>%2</h3><dl>" ).arg( smallerPointSize ).arg( selectedName() ) + propertiesString + wktString + proj4String + extentHtml + QStringLiteral( "</dl></div>" ) );
 }
 
 QStringList QgsProjectionSelectionTreeWidget::authorities()

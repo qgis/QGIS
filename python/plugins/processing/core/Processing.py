@@ -42,6 +42,7 @@ from qgis.core import (QgsMessageLog,
                        QgsProcessingOutputMultipleLayers,
                        QgsProcessingFeedback,
                        QgsRuntimeProfiler)
+from qgis.analysis import QgsNativeAlgorithms
 
 import processing
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -55,17 +56,8 @@ from processing.tools import dataobjects
 with QgsRuntimeProfiler.profile('Import QGIS Provider'):
     from processing.algs.qgis.QgisAlgorithmProvider import QgisAlgorithmProvider  # NOQA
 
-with QgsRuntimeProfiler.profile('Import GRASS Provider'):
-    from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider
-
 with QgsRuntimeProfiler.profile('Import GDAL Provider'):
     from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider  # NOQA
-
-with QgsRuntimeProfiler.profile('Import OTB Provider'):
-    from processing.algs.otb.OtbAlgorithmProvider import OtbAlgorithmProvider  # NOQA
-
-with QgsRuntimeProfiler.profile('Import SAGA Provider'):
-    from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider  # NOQA
 
 with QgsRuntimeProfiler.profile('Import Script Provider'):
     from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  # NOQA
@@ -99,13 +91,24 @@ class Processing(object):
             return
 
         with QgsRuntimeProfiler.profile('Initialize'):
+
+            # add native provider if not already added
+            if "native" not in [p.id() for p in QgsApplication.processingRegistry().providers()]:
+                QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms(QgsApplication.processingRegistry()))
+
+            # add 3d provider if available and not already added
+            if "3d" not in [p.id() for p in QgsApplication.processingRegistry().providers()]:
+                try:
+                    from qgis._3d import Qgs3DAlgorithms
+                    QgsApplication.processingRegistry().addProvider(Qgs3DAlgorithms(QgsApplication.processingRegistry()))
+                except ImportError:
+                    # no 3d library available
+                    pass
+
             # Add the basic providers
             for c in [
                 QgisAlgorithmProvider,
-                Grass7AlgorithmProvider,
                 GdalAlgorithmProvider,
-                OtbAlgorithmProvider,
-                SagaAlgorithmProvider,
                 ScriptAlgorithmProvider,
                 ModelerAlgorithmProvider,
                 ProjectProvider

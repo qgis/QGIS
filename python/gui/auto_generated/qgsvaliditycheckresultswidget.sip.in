@@ -13,7 +13,7 @@
 
 class QgsValidityCheckResultsModel : QAbstractItemModel
 {
-%Docstring
+%Docstring(signature="appended")
 A QAbstractItemModel subclass for displaying the results from a :py:class:`QgsAbtractValidityCheck`.
 
 .. versionadded:: 3.6
@@ -48,7 +48,7 @@ Constructor for QgsValidityCheckResultsModel, showing the specified list of chec
 
 class QgsValidityCheckResultsWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A reusable widget which displays a summary of the results from a :py:class:`QgsAbstractValidityCheck` (or checks).
 
 .. versionadded:: 3.6

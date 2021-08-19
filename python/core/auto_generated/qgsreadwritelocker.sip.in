@@ -12,7 +12,7 @@
 
 class QgsReadWriteLocker
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsReadWriteLocker` class is a convenience class that simplifies locking and unlocking QReadWriteLocks.
 
 Locking and unlocking a QReadWriteLocks in complex functions and statements or in exception handling code

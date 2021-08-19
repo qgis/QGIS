@@ -24,7 +24,7 @@
 
 /**
  * \ingroup core
- * Encapsulates the context of a geocoding operation.
+ * \brief Encapsulates the context of a geocoding operation.
  *
  * \since QGIS 3.18
 */

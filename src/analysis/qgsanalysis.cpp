@@ -38,7 +38,7 @@ QgsGeometryCheckRegistry *QgsAnalysis::geometryCheckRegistry()
 }
 
 QgsAnalysis::QgsAnalysis()
-  : mGeometryCheckRegistry( qgis::make_unique<QgsGeometryCheckRegistry>() )
+  : mGeometryCheckRegistry( std::make_unique<QgsGeometryCheckRegistry>() )
 {
   qRegisterMetaType< QList<std::shared_ptr<QgsGeometryCheckError> > >( "QList<std::shared_ptr<QgsGeometryCheckError>>" );
 

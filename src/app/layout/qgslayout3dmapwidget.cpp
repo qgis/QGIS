@@ -95,8 +95,8 @@ QgsLayout3DMapWidget::QgsLayout3DMapWidget( QgsLayoutItem3DMap *map3D )
 
   QList<QgsDoubleSpinBox *> lst;
   lst << mCenterXSpinBox << mCenterYSpinBox << mCenterZSpinBox << mDistanceToCenterSpinBox << mPitchAngleSpinBox << mHeadingAngleSpinBox;
-  for ( QgsDoubleSpinBox *spinBox : qgis::as_const( lst ) )
-    connect( spinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayout3DMapWidget::updateCameraPose );
+  for ( QgsDoubleSpinBox *spinBox : std::as_const( lst ) )
+    connect( spinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayout3DMapWidget::updateCameraPose );
 
   updateCameraPoseWidgetsFromItem();
 }

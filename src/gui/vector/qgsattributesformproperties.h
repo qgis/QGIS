@@ -71,7 +71,6 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     {
       operator QVariant();
 
-      QgsAttributeEditorRelation::Buttons buttons = QgsAttributeEditorRelation::Button::AllButtons;
       QString mRelationWidgetType;
       QVariantMap mRelationWidgetConfig;
       QVariant nmRelationId;
@@ -170,9 +169,10 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
       FieldConfig() = default;
       FieldConfig( QgsVectorLayer *layer, int idx );
 
-      bool mEditable =  true ;
-      bool mEditableEnabled =  true ;
-      bool mLabelOnTop =  false ;
+      bool mEditable = true;
+      bool mEditableEnabled = true;
+      bool mLabelOnTop = false;
+      bool mReuseLastValues = false;
       QgsFieldConstraints mFieldConstraints;
       QPushButton *mButton = nullptr;
       QString mEditorWidgetType;
@@ -304,8 +304,12 @@ class GUI_EXPORT QgsAttributesDnDTree : public QTreeWidget
     // QTreeWidget interface
   protected:
     QStringList mimeTypes() const override;
-    QMimeData *mimeData( const QList<QTreeWidgetItem *> items ) const override;
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    QMimeData *mimeData( const QList<QTreeWidgetItem *> items ) const override;
+#else
+    QMimeData *mimeData( const QList<QTreeWidgetItem *> &items ) const override;
+#endif
 
   private slots:
     void onItemDoubleClicked( QTreeWidgetItem *item, int column );

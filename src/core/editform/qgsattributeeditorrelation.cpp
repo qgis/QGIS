@@ -66,16 +66,24 @@ void QgsAttributeEditorRelation::loadConfiguration( const QDomElement &element, 
   {
     if ( element.hasAttribute( "buttons" ) )
     {
-      QString buttonString = element.attribute( QStringLiteral( "buttons" ), qgsFlagValueToKeys( QgsAttributeEditorRelation::Button::AllButtons ) );
+      Q_NOWARN_DEPRECATED_PUSH
+      // QgsAttributeEditorRelation::Button has been deprecated in favor of QgsRelationEditorWidget::Button
+      // we cannot use it here since the new flags are in gui, while the current code is in core
+      // TODO: remove this compatibility code in QGIS 4
+      //       or make the enum private if we really want to keep the backward compatibility (but not worth it!)
+      const QString buttonString = element.attribute( QStringLiteral( "buttons" ), qgsFlagValueToKeys( QgsAttributeEditorRelation::Button::AllButtons ) );
       config.insert( "buttons", qgsFlagValueToKeys( qgsFlagKeysToValue( buttonString, QgsAttributeEditorRelation::Button::AllButtons ) ) );
+      Q_NOWARN_DEPRECATED_POP
     }
     else
     {
       // pre QGIS 3.16 compatibility
+      Q_NOWARN_DEPRECATED_PUSH
       QgsAttributeEditorRelation::Buttons buttons = QgsAttributeEditorRelation::Button::AllButtons;
       buttons.setFlag( QgsAttributeEditorRelation::Button::Link, element.attribute( QStringLiteral( "showLinkButton" ), QStringLiteral( "1" ) ).toInt() );
       buttons.setFlag( QgsAttributeEditorRelation::Button::Unlink, element.attribute( QStringLiteral( "showUnlinkButton" ), QStringLiteral( "1" ) ).toInt() );
       buttons.setFlag( QgsAttributeEditorRelation::Button::SaveChildEdits, element.attribute( QStringLiteral( "showSaveChildEditsButton" ), QStringLiteral( "1" ) ).toInt() );
+      Q_NOWARN_DEPRECATED_POP
       config.insert( "buttons", qgsFlagValueToKeys( buttons ) );
     }
   }
@@ -91,12 +99,12 @@ void QgsAttributeEditorRelation::loadConfiguration( const QDomElement &element, 
 
   if ( element.hasAttribute( "label" ) )
   {
-    QString label = element.attribute( QStringLiteral( "label" ) );
+    const QString label = element.attribute( QStringLiteral( "label" ) );
     setLabel( label );
   }
   if ( element.hasAttribute( "relationWidgetTypeId" ) )
   {
-    QString relationWidgetTypeId = element.attribute( QStringLiteral( "relationWidgetTypeId" ) );
+    const QString relationWidgetTypeId = element.attribute( QStringLiteral( "relationWidgetTypeId" ) );
     setRelationWidgetTypeId( relationWidgetTypeId );
   }
 }

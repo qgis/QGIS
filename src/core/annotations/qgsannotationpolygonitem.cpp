@@ -19,11 +19,12 @@
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgssurface.h"
+#include "qgsfillsymbol.h"
 
 QgsAnnotationPolygonItem::QgsAnnotationPolygonItem( QgsCurvePolygon *polygon )
   : QgsAnnotationItem()
   , mPolygon( polygon )
-  , mSymbol( qgis::make_unique< QgsFillSymbol >() )
+  , mSymbol( std::make_unique< QgsFillSymbol >() )
 {
 
 }
@@ -116,7 +117,7 @@ bool QgsAnnotationPolygonItem::readXml( const QDomElement &element, const QgsRea
 
 QgsAnnotationPolygonItem *QgsAnnotationPolygonItem::clone()
 {
-  std::unique_ptr< QgsAnnotationPolygonItem > item = qgis::make_unique< QgsAnnotationPolygonItem >( mPolygon->clone() );
+  std::unique_ptr< QgsAnnotationPolygonItem > item = std::make_unique< QgsAnnotationPolygonItem >( mPolygon->clone() );
   item->setSymbol( mSymbol->clone() );
   item->setZIndex( zIndex() );
   return item.release();

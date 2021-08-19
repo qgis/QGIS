@@ -65,13 +65,13 @@ void QgsFieldCalculatorAlgorithm::initParameters( const QVariantMap &configurati
 {
   Q_UNUSED( configuration );
 
-  QStringList fieldTypes = QStringList( {QObject::tr( "Float" ), QObject::tr( "Integer" ), QObject::tr( "String" ), QObject::tr( "Date" ) } );
+  const QStringList fieldTypes = QStringList( {QObject::tr( "Float" ), QObject::tr( "Integer" ), QObject::tr( "String" ), QObject::tr( "Date" ) } );
 
-  std::unique_ptr< QgsProcessingParameterString > fieldName = qgis::make_unique< QgsProcessingParameterString > ( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Field name" ), QVariant(), false );
-  std::unique_ptr< QgsProcessingParameterEnum > fieldType = qgis::make_unique< QgsProcessingParameterEnum > ( QStringLiteral( "FIELD_TYPE" ), QObject::tr( "Result field type" ), fieldTypes, false, 0 );
-  std::unique_ptr< QgsProcessingParameterNumber > fieldLength = qgis::make_unique< QgsProcessingParameterNumber > ( QStringLiteral( "FIELD_LENGTH" ), QObject::tr( "Result field length" ), QgsProcessingParameterNumber::Integer, QVariant( 0 ), false, 0 );
-  std::unique_ptr< QgsProcessingParameterNumber > fieldPrecision = qgis::make_unique< QgsProcessingParameterNumber > ( QStringLiteral( "FIELD_PRECISION" ), QObject::tr( "Result field precision" ), QgsProcessingParameterNumber::Integer, QVariant( 0 ), false, 0 );
-  std::unique_ptr< QgsProcessingParameterExpression > expression = qgis::make_unique< QgsProcessingParameterExpression> ( QStringLiteral( "FORMULA" ), QObject::tr( "Formula" ), QVariant(), QStringLiteral( "INPUT" ), false );
+  std::unique_ptr< QgsProcessingParameterString > fieldName = std::make_unique< QgsProcessingParameterString > ( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Field name" ), QVariant(), false );
+  std::unique_ptr< QgsProcessingParameterEnum > fieldType = std::make_unique< QgsProcessingParameterEnum > ( QStringLiteral( "FIELD_TYPE" ), QObject::tr( "Result field type" ), fieldTypes, false, 0 );
+  std::unique_ptr< QgsProcessingParameterNumber > fieldLength = std::make_unique< QgsProcessingParameterNumber > ( QStringLiteral( "FIELD_LENGTH" ), QObject::tr( "Result field length" ), QgsProcessingParameterNumber::Integer, QVariant( 0 ), false, 0 );
+  std::unique_ptr< QgsProcessingParameterNumber > fieldPrecision = std::make_unique< QgsProcessingParameterNumber > ( QStringLiteral( "FIELD_PRECISION" ), QObject::tr( "Result field precision" ), QgsProcessingParameterNumber::Integer, QVariant( 0 ), false, 0 );
+  std::unique_ptr< QgsProcessingParameterExpression > expression = std::make_unique< QgsProcessingParameterExpression> ( QStringLiteral( "FORMULA" ), QObject::tr( "Formula" ), QVariant(), QStringLiteral( "INPUT" ), false );
 
   expression->setMetadata( QVariantMap( {{"inlineEditor", true}} ) );
 
@@ -116,7 +116,7 @@ bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameter
   const int fieldPrecision = parameterAsInt( parameters, QStringLiteral( "FIELD_PRECISION" ), context );
   const QString fieldName = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
 
-  QVariant::Type fieldType = fieldTypes[fieldTypeIdx];
+  const QVariant::Type fieldType = fieldTypes[fieldTypeIdx];
 
   if ( fieldName.isEmpty() )
     throw QgsProcessingException( QObject::tr( "Field name must not be an empty string" ) );
@@ -131,7 +131,7 @@ bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameter
 
   mFields = source->fields();
 
-  int fieldIdx = mFields.indexFromName( field.name() );
+  const int fieldIdx = mFields.indexFromName( field.name() );
 
   if ( fieldIdx < 0 )
   {
@@ -142,12 +142,12 @@ bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameter
     feedback->pushWarning( QObject::tr( "Field name %1 already exists and will be replaced" ).arg( field.name() ) );
   }
 
-  QString dest;
+  const QString dest;
 
   mFieldIdx = mFields.lookupField( field.name() );
 
   // prepare expression
-  QString expressionString = parameterAsString( parameters, QStringLiteral( "FORMULA" ), context );
+  const QString expressionString = parameterAsString( parameters, QStringLiteral( "FORMULA" ), context );
   mExpressionContext = createExpressionContext( parameters, context, source.get() );
   mExpression = QgsExpression( expressionString );
   mDa.setSourceCrs( source->sourceCrs(), context.transformContext() );

@@ -37,7 +37,7 @@ void QgsAttributeEditorQmlElement::setQmlCode( const QString &qmlCode )
 
 void QgsAttributeEditorQmlElement::saveConfiguration( QDomElement &elem, QDomDocument &doc ) const
 {
-  QDomText codeElem = doc.createTextNode( mQmlCode );
+  const QDomText codeElem = doc.createTextNode( mQmlCode );
   elem.appendChild( codeElem );
 }
 

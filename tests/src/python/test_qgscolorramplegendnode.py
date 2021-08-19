@@ -77,6 +77,10 @@ class TestQgsColorRampLegendNode(unittest.TestCase):
         self.assertEqual(settings.orientation(), Qt.Vertical)
         settings.setOrientation(Qt.Horizontal)
         self.assertEqual(settings.orientation(), Qt.Horizontal)
+        # Test default
+        self.assertTrue(settings.useContinuousLegend())
+        settings.setUseContinuousLegend(False)
+        self.assertFalse(settings.useContinuousLegend())
 
         self.assertFalse(settings.textFormat().isValid())
         tf = QgsTextFormat()
@@ -116,6 +120,7 @@ class TestQgsColorRampLegendNode(unittest.TestCase):
         self.assertEqual(settings3.suffix(), 'suff')
         self.assertEqual(settings3.textFormat().size(), 13)
         self.assertEqual(settings3.orientation(), Qt.Horizontal)
+        self.assertFalse(settings3.useContinuousLegend())
 
         # no text format
         elem = doc.createElement('test2')

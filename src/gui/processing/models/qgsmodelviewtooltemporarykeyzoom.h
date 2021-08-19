@@ -26,7 +26,7 @@
 
 /**
  * \ingroup gui
- * Model view tool for temporarily zooming a model while a key is depressed.
+ * \brief Model view tool for temporarily zooming a model while a key is depressed.
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsModelViewToolTemporaryKeyZoom : public QgsModelViewToolZoom

@@ -53,6 +53,134 @@ def createLayerWithOnePoint():
 
 class TestQgsVectorLayerUtils(unittest.TestCase):
 
+    def test_field_is_read_only(self):
+        """
+        Test fieldIsReadOnly
+        """
+        layer = createLayerWithOnePoint()
+        # layer is not editable => all fields are read only
+        self.assertTrue(QgsVectorLayerUtils.fieldIsReadOnly(layer, 0))
+        self.assertTrue(QgsVectorLayerUtils.fieldIsReadOnly(layer, 1))
+
+        layer.startEditing()
+        self.assertFalse(QgsVectorLayerUtils.fieldIsReadOnly(layer, 0))
+        self.assertFalse(QgsVectorLayerUtils.fieldIsReadOnly(layer, 1))
+
+        field = QgsField('test', QVariant.String)
+        layer.addAttribute(field)
+        self.assertFalse(QgsVectorLayerUtils.fieldIsReadOnly(layer, 0))
+        self.assertFalse(QgsVectorLayerUtils.fieldIsReadOnly(layer, 1))
+        self.assertFalse(QgsVectorLayerUtils.fieldIsReadOnly(layer, 2))
+
+        # simulate read-only field from provider
+        field = QgsField('test2', QVariant.String)
+        field.setReadOnly(True)
+        layer.addAttribute(field)
+        self.assertFalse(QgsVectorLayerUtils.fieldIsReadOnly(layer, 0))
+        self.assertFalse(QgsVectorLayerUtils.fieldIsReadOnly(layer, 1))
+        self.assertFalse(QgsVectorLayerUtils.fieldIsReadOnly(layer, 2))
+        self.assertTrue(QgsVectorLayerUtils.fieldIsReadOnly(layer, 3))
+
+        layer.rollBack()
+        layer.startEditing()
+
+        # edit form config specifies read only
+        form_config = layer.editFormConfig()
+        form_config.setReadOnly(1, True)
+        layer.setEditFormConfig(form_config)
+        self.assertFalse(QgsVectorLayerUtils.fieldIsReadOnly(layer, 0))
+        self.assertTrue(QgsVectorLayerUtils.fieldIsReadOnly(layer, 1))
+        form_config.setReadOnly(1, False)
+        layer.setEditFormConfig(form_config)
+        self.assertFalse(QgsVectorLayerUtils.fieldIsReadOnly(layer, 0))
+        self.assertFalse(QgsVectorLayerUtils.fieldIsReadOnly(layer, 1))
+
+        # joined field
+        layer2 = QgsVectorLayer("Point?field=fldtxt2:string&field=fldint:integer",
+                                "addfeat", "memory")
+        join_info = QgsVectorLayerJoinInfo()
+        join_info.setJoinLayer(layer2)
+        join_info.setJoinFieldName('fldint')
+        join_info.setTargetFieldName('fldint')
+        join_info.setUsingMemoryCache(True)
+        layer.addJoin(join_info)
+        layer.updateFields()
+
+        self.assertEqual([f.name() for f in layer.fields()], ['fldtxt', 'fldint', 'addfeat_fldtxt2'])
+        self.assertFalse(QgsVectorLayerUtils.fieldIsReadOnly(layer, 0))
+        self.assertFalse(QgsVectorLayerUtils.fieldIsReadOnly(layer, 1))
+        # join layer is not editable
+        self.assertTrue(QgsVectorLayerUtils.fieldIsReadOnly(layer, 2))
+
+        # make join editable
+        layer.removeJoin(layer2.id())
+        join_info.setEditable(True)
+        layer.addJoin(join_info)
+        layer.updateFields()
+        self.assertEqual([f.name() for f in layer.fields()], ['fldtxt', 'fldint', 'addfeat_fldtxt2'])
+
+        # should still be read only -- the join layer itself is not editable
+        self.assertTrue(QgsVectorLayerUtils.fieldIsReadOnly(layer, 2))
+
+        layer2.startEditing()
+        self.assertFalse(QgsVectorLayerUtils.fieldIsReadOnly(layer, 2))
+
+        # but now we set a property on the join layer which blocks editing for the feature...
+        form_config = layer2.editFormConfig()
+        form_config.setReadOnly(0, True)
+        layer2.setEditFormConfig(form_config)
+        # should now be read only -- the joined layer edit form config prohibits edits
+        self.assertTrue(QgsVectorLayerUtils.fieldIsReadOnly(layer, 2))
+
+    def test_field_editability_depends_on_feature(self):
+        """
+        Test QgsVectorLayerUtils.fieldEditabilityDependsOnFeature
+        """
+        layer = createLayerWithOnePoint()
+
+        # not joined fields, so answer should be False
+        self.assertFalse(QgsVectorLayerUtils.fieldEditabilityDependsOnFeature(layer, 0))
+        self.assertFalse(QgsVectorLayerUtils.fieldEditabilityDependsOnFeature(layer, 1))
+
+        # joined field
+        layer2 = QgsVectorLayer("Point?field=fldtxt2:string&field=fldint:integer",
+                                "addfeat", "memory")
+        join_info = QgsVectorLayerJoinInfo()
+        join_info.setJoinLayer(layer2)
+        join_info.setJoinFieldName('fldint')
+        join_info.setTargetFieldName('fldint')
+        join_info.setUsingMemoryCache(True)
+        layer.addJoin(join_info)
+        layer.updateFields()
+
+        self.assertEqual([f.name() for f in layer.fields()], ['fldtxt', 'fldint', 'addfeat_fldtxt2'])
+        self.assertFalse(QgsVectorLayerUtils.fieldEditabilityDependsOnFeature(layer, 0))
+        self.assertFalse(QgsVectorLayerUtils.fieldEditabilityDependsOnFeature(layer, 1))
+        # join layer is not editable => regardless of the feature, the field will always be read-only
+        self.assertFalse(QgsVectorLayerUtils.fieldEditabilityDependsOnFeature(layer, 2))
+
+        # make join editable
+        layer.removeJoin(layer2.id())
+        join_info.setEditable(True)
+        join_info.setUpsertOnEdit(True)
+        layer.addJoin(join_info)
+        layer.updateFields()
+        self.assertEqual([f.name() for f in layer.fields()], ['fldtxt', 'fldint', 'addfeat_fldtxt2'])
+
+        # has upsert on edit => regardless of feature, we can create the join target to make the field editable
+        self.assertFalse(QgsVectorLayerUtils.fieldEditabilityDependsOnFeature(layer, 2))
+
+        layer.removeJoin(layer2.id())
+        join_info.setEditable(True)
+        join_info.setUpsertOnEdit(False)
+        layer.addJoin(join_info)
+        layer.updateFields()
+        self.assertEqual([f.name() for f in layer.fields()], ['fldtxt', 'fldint', 'addfeat_fldtxt2'])
+
+        # No upsert on edit => depending on feature, we either can edit the field or not, depending on whether
+        # the join target feature already exists or not
+        self.assertTrue(QgsVectorLayerUtils.fieldEditabilityDependsOnFeature(layer, 2))
+
     def test_value_exists(self):
         layer = createLayerWithOnePoint()
         # add some more features
@@ -343,43 +471,6 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         # test with manually correct unique constraint
         f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'test_1', 1: 132})
         self.assertEqual(f.attributes(), ['test_5', 132, NULL])
-
-        """ test creating a feature respecting unique values of postgres provider """
-        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer&field=flddbl:double",
-                               "addfeat", "memory")
-
-        # init connection string
-        dbconn = 'service=qgis_test'
-        if 'QGIS_PGTEST_DB' in os.environ:
-            dbconn = os.environ['QGIS_PGTEST_DB']
-
-        # create a vector layer
-        pg_layer = QgsVectorLayer('{} table="qgis_test"."authors" sql='.format(dbconn), "authors", "postgres")
-        self.assertTrue(pg_layer.isValid())
-        # check the default clause
-        default_clause = 'nextval(\'qgis_test.authors_pk_seq\'::regclass)'
-        self.assertEqual(pg_layer.dataProvider().defaultValueClause(0), default_clause)
-
-        # though default_clause is after the first create not unique (until save), it should fill up all the features with it
-        pg_layer.startEditing()
-        f = QgsVectorLayerUtils.createFeature(pg_layer)
-        self.assertEqual(f.attributes(), [default_clause, NULL])
-        self.assertTrue(pg_layer.addFeatures([f]))
-        self.assertTrue(QgsVectorLayerUtils.valueExists(pg_layer, 0, default_clause))
-        f = QgsVectorLayerUtils.createFeature(pg_layer)
-        self.assertEqual(f.attributes(), [default_clause, NULL])
-        self.assertTrue(pg_layer.addFeatures([f]))
-        f = QgsVectorLayerUtils.createFeature(pg_layer)
-        self.assertEqual(f.attributes(), [default_clause, NULL])
-        self.assertTrue(pg_layer.addFeatures([f]))
-        # if a unique value is passed, use it
-        f = QgsVectorLayerUtils.createFeature(pg_layer, attributes={0: 40, 1: NULL})
-        self.assertEqual(f.attributes(), [40, NULL])
-        # and if a default value is configured use it as well
-        pg_layer.setDefaultValueDefinition(0, QgsDefaultValue('11*4'))
-        f = QgsVectorLayerUtils.createFeature(pg_layer)
-        self.assertEqual(f.attributes(), [44, NULL])
-        pg_layer.rollBack()
 
     def testDuplicateFeature(self):
         """ test duplicating a feature """

@@ -14,6 +14,9 @@ set (LANDINGPAGE_SRCS
 
 add_library (landingpage MODULE ${LANDINGPAGE_SRCS})
 
+# require c++17
+target_compile_features(landingpage PRIVATE cxx_std_17)
+
 include_directories(SYSTEM
 )
 

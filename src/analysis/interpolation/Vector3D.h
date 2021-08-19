@@ -24,8 +24,10 @@
 
 /**
  * \ingroup analysis
- * Class Vector3D represents a 3D-Vector, capable to store x-,y- and
- * z-coordinates in double values. In fact, the class is the same as QgsPoint.
+ * \brief Class Vector3D represents a 3D-Vector, capable to store x-,y- and
+ * z-coordinates in double values.
+ *
+ * In fact, the class is the same as QgsPoint.
  * The name 'vector' makes it easier to understand the programs.
  * \note Not available in Python bindings
  */
@@ -46,6 +48,7 @@ class ANALYSIS_EXPORT Vector3D
     //! Default constructor
     Vector3D() = default;
 
+    // TODO c++20 - replace with = default
     bool operator==( const Vector3D &v ) const;
     bool operator!=( const Vector3D &v ) const;
     //! Returns the x-component of the vector

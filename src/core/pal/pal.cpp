@@ -81,7 +81,7 @@ Layer *Pal::addLayer( QgsAbstractLabelProvider *provider, const QString &layerNa
 
   Q_ASSERT( mLayers.find( provider ) == mLayers.end() );
 
-  std::unique_ptr< Layer > layer = qgis::make_unique< Layer >( provider, layerName, arrangement, defaultPriority, active, toLabel, this, displayAll );
+  std::unique_ptr< Layer > layer = std::make_unique< Layer >( provider, layerName, arrangement, defaultPriority, active, toLabel, this, displayAll );
   Layer *res = layer.get();
   mLayers.insert( std::pair<QgsAbstractLabelProvider *, std::unique_ptr< Layer >>( provider, std::move( layer ) ) );
   mMutex.unlock();
@@ -100,7 +100,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
   PalRtree< FeaturePart > obstacles( maxCoordinateExtentForSpatialIndices );
   PalRtree< LabelPosition > allCandidatesFirstRound( maxCoordinateExtentForSpatialIndices );
   std::vector< FeaturePart * > allObstacleParts;
-  std::unique_ptr< Problem > prob = qgis::make_unique< Problem >( maxCoordinateExtentForSpatialIndices );
+  std::unique_ptr< Problem > prob = std::make_unique< Problem >( maxCoordinateExtentForSpatialIndices );
 
   double bbx[4];
   double bby[4];
@@ -156,7 +156,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
     QMutexLocker locker( &layer->mMutex );
 
     // generate candidates for all features
-    for ( FeaturePart *featurePart : qgis::as_const( layer->mFeatureParts ) )
+    for ( const std::unique_ptr< FeaturePart > &featurePart : std::as_const( layer->mFeatureParts ) )
     {
       if ( isCanceled() )
         break;
@@ -197,13 +197,14 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
         for ( std::unique_ptr< LabelPosition > &candidate : candidates )
         {
           candidate->insertIntoIndex( allCandidatesFirstRound );
+          candidate->setGlobalId( mNextCandidateId++ );
         }
 
         std::sort( candidates.begin(), candidates.end(), CostCalculator::candidateSortGrow );
 
         // valid features are added to fFeats
-        std::unique_ptr< Feats > ft = qgis::make_unique< Feats >();
-        ft->feature = featurePart;
+        std::unique_ptr< Feats > ft = std::make_unique< Feats >();
+        ft->feature = featurePart.get();
         ft->shape = nullptr;
         ft->candidates = std::move( candidates );
         ft->priority = featurePart->calculatePriority();
@@ -212,7 +213,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       else
       {
         // no candidates, so generate a default "point on surface" one
-        std::unique_ptr< LabelPosition > unplacedPosition = featurePart->createCandidatePointOnSurface( featurePart );
+        std::unique_ptr< LabelPosition > unplacedPosition = featurePart->createCandidatePointOnSurface( featurePart.get() );
         if ( !unplacedPosition )
           continue;
 
@@ -220,11 +221,12 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
         {
           // if we are displaying all labels, we throw the default candidate in too
           unplacedPosition->insertIntoIndex( allCandidatesFirstRound );
+          unplacedPosition->setGlobalId( mNextCandidateId++ );
           candidates.emplace_back( std::move( unplacedPosition ) );
 
           // valid features are added to fFeats
-          std::unique_ptr< Feats > ft = qgis::make_unique< Feats >();
-          ft->feature = featurePart;
+          std::unique_ptr< Feats > ft = std::make_unique< Feats >();
+          ft->feature = featurePart.get();
           ft->shape = nullptr;
           ft->candidates = std::move( candidates );
           ft->priority = featurePart->calculatePriority();
@@ -241,7 +243,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
       return nullptr;
 
     // collate all layer obstacles
-    for ( FeaturePart *obstaclePart : qgis::as_const( layer->mObstacleParts ) )
+    for ( FeaturePart *obstaclePart : std::as_const( layer->mObstacleParts ) )
     {
       if ( isCanceled() )
         break; // do not continue searching
@@ -311,7 +313,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
     }
 
     int idlp = 0;
-    for ( std::size_t i = 0; i < prob->mFeatureCount; i++ ) /* foreach feature into prob */
+    for ( std::size_t i = 0; i < prob->mFeatureCount; i++ ) /* for each feature into prob */
     {
       std::unique_ptr< Feats > feat = std::move( features.front() );
       features.pop_front();
@@ -424,7 +426,7 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
     double amin[2];
     double amax[2];
-    while ( !features.empty() ) // foreach feature
+    while ( !features.empty() ) // for each feature
     {
       if ( isCanceled() )
         return nullptr;
@@ -445,9 +447,9 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
         // lookup for overlapping candidate
         lp->getBoundingBox( amin, amax );
-        prob->allCandidatesIndex().intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&lp]( const LabelPosition * lp2 )->bool
+        prob->allCandidatesIndex().intersects( QgsRectangle( amin[0], amin[1], amax[0], amax[1] ), [&lp, this]( const LabelPosition * lp2 )->bool
         {
-          if ( lp->isInConflict( lp2 ) )
+          if ( candidatesAreConflicting( lp.get(), lp2 ) )
           {
             lp->incrementNumOverlaps();
           }
@@ -548,6 +550,22 @@ QgsLabelingEngineSettings::PlacementEngineVersion Pal::placementVersion() const
 void Pal::setPlacementVersion( QgsLabelingEngineSettings::PlacementEngineVersion placementVersion )
 {
   mPlacementVersion = placementVersion;
+}
+
+bool Pal::candidatesAreConflicting( const LabelPosition *lp1, const LabelPosition *lp2 ) const
+{
+  // we cache the value -- this can be costly to calculate, and we check this multiple times
+  // per candidate during the labeling problem solving
+
+  // conflicts are commutative - so we always store them in the cache using the smaller id as the first element of the key pair
+  auto key = qMakePair( std::min( lp1->globalId(), lp2->globalId() ), std::max( lp1->globalId(), lp2->globalId() ) );
+  auto it = mCandidateConflicts.constFind( key );
+  if ( it != mCandidateConflicts.constEnd() )
+    return *it;
+
+  const bool res = lp1->isInConflict( lp2 );
+  mCandidateConflicts.insert( key, res );
+  return res;
 }
 
 int Pal::getMinIt()

@@ -31,12 +31,15 @@
 #include "qgslayoutmultiframe.h"
 #include "qgsfeatureid.h"
 #include "qgslayoutitemmap.h"
+#include "qgsmaplayerlistutils.h"
+#include "qgsprojoperation.h"
+#include "qgsmarkersymbol.h"
 
 QgsExpressionContextScope *QgsExpressionContextUtils::globalScope()
 {
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Global" ) );
 
-  QVariantMap customVariables = QgsApplication::customVariables();
+  const QVariantMap customVariables = QgsApplication::customVariables();
 
   for ( QVariantMap::const_iterator it = customVariables.constBegin(); it != customVariables.constEnd(); ++it )
   {
@@ -89,13 +92,13 @@ class GetLayoutItemVariables : public QgsScopedExpressionFunction
       if ( !mLayout )
         return QVariant();
 
-      QString id = values.at( 0 ).toString();
+      const QString id = values.at( 0 ).toString();
 
       const QgsLayoutItem *item = mLayout->itemById( id );
       if ( !item )
         return QVariant();
 
-      QgsExpressionContext c = item->createExpressionContext();
+      const QgsExpressionContext c = item->createExpressionContext();
 
       return c.variablesToMap();
     }
@@ -128,11 +131,11 @@ class GetLayoutMapLayerCredits : public QgsScopedExpressionFunction
       if ( !mLayout )
         return QVariant();
 
-      QString id = values.value( 0 ).toString();
+      const QString id = values.value( 0 ).toString();
 
       if ( QgsLayoutItemMap *map = qobject_cast< QgsLayoutItemMap * >( mLayout->itemById( id ) ) )
       {
-        QgsExpressionContext c = map->createExpressionContext();
+        const QgsExpressionContext c = map->createExpressionContext();
         const QVariantList mapLayers = c.variable( QStringLiteral( "map_layers" ) ).toList();
 
         const bool includeLayerNames = values.value( 1 ).toBool();
@@ -183,7 +186,7 @@ class GetCurrentFormFieldValue : public QgsScopedExpressionFunction
 
     QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * ) override
     {
-      QString fieldName( values.at( 0 ).toString() );
+      const QString fieldName( values.at( 0 ).toString() );
       const QgsFeature feat( context->variable( QStringLiteral( "current_feature" ) ).value<QgsFeature>() );
       if ( fieldName.isEmpty() || ! feat.isValid( ) )
       {
@@ -213,7 +216,7 @@ class GetCurrentParentFormFieldValue : public QgsScopedExpressionFunction
 
     QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * ) override
     {
-      QString fieldName( values.at( 0 ).toString() );
+      const QString fieldName( values.at( 0 ).toString() );
       const QgsFeature feat( context->variable( QStringLiteral( "current_parent_feature" ) ).value<QgsFeature>() );
       if ( fieldName.isEmpty() || ! feat.isValid( ) )
       {
@@ -345,7 +348,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layerScope( const QgsMapLa
       break;
     }
 
-    QVariant varValue = variableValues.at( varIndex );
+    const QVariant varValue = variableValues.at( varIndex );
     varIndex++;
     scope->setVariable( variableName, varValue, true );
   }
@@ -436,7 +439,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::mapSettingsScope( const Qg
   // IMPORTANT: ANY CHANGES HERE ALSO NEED TO BE MADE TO QgsLayoutItemMap::createExpressionContext()
   // (rationale is described in QgsLayoutItemMap::createExpressionContext() )
 
-  QgsGeometry extent = QgsGeometry::fromRect( mapSettings.visibleExtent() );
+  const QgsGeometry extent = QgsGeometry::fromRect( mapSettings.visibleExtent() );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_extent" ), QVariant::fromValue( extent ), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_extent_width" ), mapSettings.visibleExtent().width(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_extent_height" ), mapSettings.visibleExtent().height(), true ) );
@@ -444,7 +447,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::mapSettingsScope( const Qg
   // IMPORTANT: ANY CHANGES HERE ALSO NEED TO BE MADE TO QgsLayoutItemMap::createExpressionContext()
   // (rationale is described in QgsLayoutItemMap::createExpressionContext() )
 
-  QgsGeometry centerPoint = QgsGeometry::fromPointXY( mapSettings.visibleExtent().center() );
+  const QgsGeometry centerPoint = QgsGeometry::fromPointXY( mapSettings.visibleExtent().center() );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_extent_center" ), QVariant::fromValue( centerPoint ), true ) );
 
   // IMPORTANT: ANY CHANGES HERE ALSO NEED TO BE MADE TO QgsLayoutItemMap::createExpressionContext()
@@ -455,6 +458,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::mapSettingsScope( const Qg
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_units" ), QgsUnitTypes::toString( mapSettings.mapUnits() ), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_description" ), mapSettings.destinationCrs().description(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_acronym" ), mapSettings.destinationCrs().projectionAcronym(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_projection" ), mapSettings.destinationCrs().operation().description(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_ellipsoid" ), mapSettings.destinationCrs().ellipsoidAcronym(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_proj4" ), mapSettings.destinationCrs().toProj(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_wkt" ), mapSettings.destinationCrs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ), true ) );
@@ -558,7 +562,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layoutScope( const QgsLayo
       break;
     }
 
-    QVariant varValue = variableValues.at( varIndex );
+    const QVariant varValue = variableValues.at( varIndex );
     varIndex++;
     scope->setVariable( variableName, varValue );
   }
@@ -571,7 +575,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layoutScope( const QgsLayo
   if ( layout->pageCollection()->pageCount() > 0 )
   {
     // just take first page size
-    QSizeF s = layout->pageCollection()->page( 0 )->sizeWithUnits().toQSizeF();
+    const QSizeF s = layout->pageCollection()->page( 0 )->sizeWithUnits().toQSizeF();
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_pageheight" ), s.height(), true ) );
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_pagewidth" ), s.width(), true ) );
   }
@@ -579,7 +583,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layoutScope( const QgsLayo
   QVariantList offsets;
   for ( int i = 0; i < layout->pageCollection()->pageCount(); i++ )
   {
-    QPointF p = layout->pageCollection()->pagePositionToLayoutPosition( i, QgsLayoutPoint( 0, 0 ) );
+    const QPointF p = layout->pageCollection()->pagePositionToLayoutPosition( i, QgsLayoutPoint( 0, 0 ) );
     offsets << p.y();
   }
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_pageoffsets" ), offsets, true ) );
@@ -598,7 +602,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layoutScope( const QgsLayo
 
   if ( layout->reportContext().feature().isValid() )
   {
-    QgsFeature atlasFeature = layout->reportContext().feature();
+    const QgsFeature atlasFeature = layout->reportContext().feature();
     scope->setFeature( atlasFeature );
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_feature" ), QVariant::fromValue( atlasFeature ), true ) );
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_featureid" ), FID_IS_NULL( atlasFeature.id() ) ? QVariant() : atlasFeature.id(), true ) );
@@ -650,18 +654,18 @@ QgsExpressionContextScope *QgsExpressionContextUtils::atlasScope( const QgsLayou
   {
     //add some dummy atlas variables. This is done so that as in certain contexts we want to show
     //users that these variables are available even if they have no current value
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_pagename" ), QString(), true ) );
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_feature" ), QVariant::fromValue( QgsFeature() ), true ) );
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_featureid" ), QVariant(), true ) );
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_geometry" ), QVariant::fromValue( QgsGeometry() ), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_pagename" ), QString(), true, true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_feature" ), QVariant::fromValue( QgsFeature() ), true, true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_featureid" ), QVariant(), true, true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_geometry" ), QVariant::fromValue( QgsGeometry() ), true, true ) );
     return scope;
   }
 
   //add known atlas variables
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_totalfeatures" ), atlas->count(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_featurenumber" ), atlas->currentFeatureNumber() + 1, true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_filename" ), atlas->currentFilename(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_pagename" ), atlas->nameForPage( atlas->currentFeatureNumber() ), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_totalfeatures" ), atlas->count(), true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_featurenumber" ), atlas->currentFeatureNumber() + 1, true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_filename" ), atlas->currentFilename(), true, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_pagename" ), atlas->nameForPage( atlas->currentFeatureNumber() ), true, true ) );
 
   if ( atlas->enabled() && atlas->coverageLayer() )
   {
@@ -672,7 +676,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::atlasScope( const QgsLayou
 
   if ( atlas->enabled() )
   {
-    QgsFeature atlasFeature = atlas->layout()->reportContext().feature();
+    const QgsFeature atlasFeature = atlas->layout()->reportContext().feature();
     scope->setFeature( atlasFeature );
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_feature" ), QVariant::fromValue( atlasFeature ), true ) );
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_featureid" ), FID_IS_NULL( atlasFeature.id() ) ? QVariant() : atlasFeature.id(), true ) );
@@ -700,7 +704,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layoutItemScope( const Qgs
       break;
     }
 
-    QVariant varValue = variableValues.at( varIndex );
+    const QVariant varValue = variableValues.at( varIndex );
     varIndex++;
     scope->setVariable( variableName, varValue );
   }
@@ -782,7 +786,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::multiFrameScope( const Qgs
       break;
     }
 
-    QVariant varValue = variableValues.at( varIndex );
+    const QVariant varValue = variableValues.at( varIndex );
     varIndex++;
     scope->setVariable( variableName, varValue );
   }

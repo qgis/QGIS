@@ -14,7 +14,7 @@
 
 class QgsServerCacheManager
 {
-%Docstring
+%Docstring(signature="appended")
 A helper class that centralizes caches accesses given by all the server cache filter plugins.
 
 .. versionadded:: 3.4
@@ -22,10 +22,9 @@ A helper class that centralizes caches accesses given by all the server cache fi
 
 %TypeHeaderCode
 #include "qgsservercachemanager.h"
-#include "qgsservercachefilter.h"
 %End
   public:
-    QgsServerCacheManager();
+    QgsServerCacheManager( const QgsServerSettings &settings = QgsServerSettings() );
 %Docstring
 Constructor
 %End

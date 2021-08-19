@@ -11,7 +11,7 @@
 
 class QgsExpressionNodeUnaryOperator : QgsExpressionNode
 {
-%Docstring
+%Docstring(signature="appended")
 A unary node is either negative as in boolean (not) or as in numbers (minus).
 %End
 
@@ -31,6 +31,12 @@ A unary node is either negative as in boolean (not) or as in numbers (minus).
 A node unary operator is modifying the value of ``operand`` by negating it with ``op``.
 %End
     ~QgsExpressionNodeUnaryOperator();
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsExpressionNodeUnaryOperator: %1>" ).arg( sipCpp->text() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
 
     QgsExpressionNodeUnaryOperator::UnaryOperator op() const;
 %Docstring
@@ -73,7 +79,7 @@ I.e. "NOT" or "-"
 
 class QgsExpressionNodeBinaryOperator : QgsExpressionNode
 {
-%Docstring
+%Docstring(signature="appended")
 A binary expression operator, which operates on two values.
 %End
 
@@ -121,6 +127,12 @@ A binary expression operator, which operates on two values.
 Binary combination of the left and the right with op.
 %End
     ~QgsExpressionNodeBinaryOperator();
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsExpressionNodeBinaryOperator: %1>" ).arg( sipCpp->text() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
 
     QgsExpressionNodeBinaryOperator::BinaryOperator op() const;
 %Docstring
@@ -183,7 +195,7 @@ I.e. "AND", "OR", ...
 
 class QgsExpressionNodeIndexOperator : QgsExpressionNode
 {
-%Docstring
+%Docstring(signature="appended")
 A indexing expression operator, which allows use of square brackets [] to reference map and array items.
 
 .. versionadded:: 3.6
@@ -240,7 +252,7 @@ Returns the index node, representing an array element index or map key.
 
 class QgsExpressionNodeInOperator : QgsExpressionNode
 {
-%Docstring
+%Docstring(signature="appended")
 An expression node for value IN or NOT IN clauses.
 %End
 
@@ -294,7 +306,7 @@ Returns the list of nodes to search for matching values within.
 
 class QgsExpressionNodeFunction : QgsExpressionNode
 {
-%Docstring
+%Docstring(signature="appended")
 An expression node for expression functions.
 %End
 
@@ -310,6 +322,22 @@ a list of arguments that will be passed to it.
 %End
 
     ~QgsExpressionNodeFunction();
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString function;
+    if ( QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[sipCpp->fnIndex()] )
+    {
+      function = fd->name();
+    }
+    else
+    {
+      function = QString::number( sipCpp->fnIndex() );
+    }
+
+    QString str = QStringLiteral( "<QgsExpressionNodeFunction: %1>" ).arg( function );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
 
     int fnIndex() const;
 %Docstring
@@ -351,7 +379,7 @@ Tests whether the provided argument list is valid for the matching function
 
 class QgsExpressionNodeLiteral : QgsExpressionNode
 {
-%Docstring
+%Docstring(signature="appended")
 An expression node for literal values.
 %End
 
@@ -363,6 +391,12 @@ An expression node for literal values.
     QgsExpressionNodeLiteral( const QVariant &value );
 %Docstring
 Constructor for QgsExpressionNodeLiteral, with the specified literal ``value``.
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsExpressionNodeLiteral: %1>" ).arg( sipCpp->valueAsString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
     QVariant value() const;
@@ -391,11 +425,18 @@ The value of the literal.
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
 
 
+    QString valueAsString() const;
+%Docstring
+Returns a string representation of the node's literal value.
+
+.. versionadded:: 3.20
+%End
+
 };
 
 class QgsExpressionNodeColumnRef : QgsExpressionNode
 {
-%Docstring
+%Docstring(signature="appended")
 An expression node which takes it value from a feature's field.
 %End
 
@@ -408,6 +449,12 @@ An expression node which takes it value from a feature's field.
 %Docstring
 Constructor for QgsExpressionNodeColumnRef, referencing the column
 with the specified ``name``.
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsExpressionNodeColumnRef: \"%1\">" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
     QString name() const;
@@ -442,7 +489,7 @@ The name of the column.
 
 class QgsExpressionNodeCondition : QgsExpressionNode
 {
-%Docstring
+%Docstring(signature="appended")
 An expression node for CASE WHEN clauses.
 %End
 
@@ -453,7 +500,7 @@ An expression node for CASE WHEN clauses.
 
     class WhenThen
 {
-%Docstring
+%Docstring(signature="appended")
 Represents a "WHEN... THEN..." portation of a CASE WHEN clause in an expression.
 %End
 

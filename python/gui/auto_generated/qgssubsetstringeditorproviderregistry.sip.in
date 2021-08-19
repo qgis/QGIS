@@ -12,7 +12,7 @@
 
 class QgsSubsetStringEditorProviderRegistry
 {
-%Docstring
+%Docstring(signature="appended")
 This class keeps a list of subset string editor providers.
 
 :py:class:`QgsSubsetStringEditorProviderRegistry` is not usually directly created, but rather accessed through

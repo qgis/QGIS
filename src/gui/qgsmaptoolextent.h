@@ -27,7 +27,7 @@ class QgsMapCanvas;
 
 /**
  * \ingroup gui
- * A map tool that emits an extent from a rectangle drawn onto the map canvas.
+ * \brief A map tool that emits an extent from a rectangle drawn onto the map canvas.
  * \since QGIS 3.0
  */
 class GUI_EXPORT QgsMapToolExtent : public QgsMapTool
@@ -63,6 +63,13 @@ class GUI_EXPORT QgsMapToolExtent : public QgsMapTool
      * Returns the current extent drawn onto the canvas.
      */
     QgsRectangle extent() const;
+
+    /**
+     * Removes the tool's rubber band from the canvas.
+     *
+     * \since QGIS 3.20
+     */
+    void clearRubberBand();
 
   signals:
 

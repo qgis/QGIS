@@ -31,6 +31,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudindex.h"
 #include "qgspointcloudlayerelevationproperties.h"
+#include "qgsprovidersublayerdetails.h"
 
 /**
  * \ingroup UnitTests
@@ -52,6 +53,7 @@ class TestQgsEptProvider : public QObject
     void preferredUri();
     void layerTypesForUri();
     void uriIsBlocklisted();
+    void querySublayers();
     void brokenPath();
     void validLayer();
     void validLayerWithEptHierarchy();
@@ -79,7 +81,7 @@ void TestQgsEptProvider::initTestCase()
 void TestQgsEptProvider::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -155,16 +157,43 @@ void TestQgsEptProvider::uriIsBlocklisted()
   QVERIFY( QgsProviderRegistry::instance()->uriIsBlocklisted( QStringLiteral( "/home/nyall/ept-build.json" ) ) );
 }
 
+void TestQgsEptProvider::querySublayers()
+{
+  // test querying sub layers for a ept layer
+  QgsProviderMetadata *eptMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ept" ) );
+
+  // invalid uri
+  QList< QgsProviderSublayerDetails >res = eptMetadata->querySublayers( QString() );
+  QVERIFY( res.empty() );
+
+  // not a ept layer
+  res = eptMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/lines.shp" );
+  QVERIFY( res.empty() );
+
+  // valid ept layer
+  res = eptMetadata->querySublayers( mTestDataDir + "/point_clouds/ept/sunshine-coast/ept.json" );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "sunshine-coast" ) );
+  QCOMPARE( res.at( 0 ).uri(), mTestDataDir + "/point_clouds/ept/sunshine-coast/ept.json" );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "ept" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::PointCloudLayer );
+
+  // make sure result is valid to load layer from
+  const QgsProviderSublayerDetails::LayerOptions options{ QgsCoordinateTransformContext() };
+  std::unique_ptr< QgsPointCloudLayer > ml( qgis::down_cast< QgsPointCloudLayer * >( res.at( 0 ).toLayer( options ) ) );
+  QVERIFY( ml->isValid() );
+}
+
 void TestQgsEptProvider::brokenPath()
 {
   // test loading a bad layer URI
-  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >( QStringLiteral( "not valid" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( QStringLiteral( "not valid" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
   QVERIFY( !layer->isValid() );
 }
 
 void TestQgsEptProvider::validLayer()
 {
-  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
   QVERIFY( layer->isValid() );
 
   QCOMPARE( layer->crs().authid(), QStringLiteral( "EPSG:28356" ) );
@@ -184,7 +213,7 @@ void TestQgsEptProvider::validLayer()
 
 void TestQgsEptProvider::validLayerWithEptHierarchy()
 {
-  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/lone-star-laszip/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/lone-star-laszip/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
   QVERIFY( layer->isValid() );
 
   QGSCOMPARENEAR( layer->extent().xMinimum(), 515368.000000, 0.1 );
@@ -200,7 +229,7 @@ void TestQgsEptProvider::validLayerWithEptHierarchy()
 
 void TestQgsEptProvider::attributes()
 {
-  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
   QVERIFY( layer->isValid() );
 
   const QgsPointCloudAttributeCollection attributes = layer->attributes();
@@ -241,7 +270,7 @@ void TestQgsEptProvider::attributes()
 
 void TestQgsEptProvider::calculateZRange()
 {
-  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
   QVERIFY( layer->isValid() );
 
   QgsDoubleRange range = layer->elevationProperties()->calculateZRange( layer.get() );
@@ -258,7 +287,7 @@ void TestQgsEptProvider::calculateZRange()
 
 void TestQgsEptProvider::testIdentify()
 {
-  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
 
   // identify 1 point click (rectangular point shape)
   {
@@ -270,10 +299,10 @@ void TestQgsEptProvider::testIdentify()
     ring.push_back( QgsPointXY( 498062.50018404237926, 7050996.6248482363299 ) );
     ring.push_back( QgsPointXY( 498062.50018404237926, 7050996.5845294082537 ) );
     polygon.push_back( ring );
-    float maxErrorInMapCoords = 0.0022857920266687870026;
+    const float maxErrorInMapCoords = 0.0022857920266687870026;
     QVector<QMap<QString, QVariant>> points = layer->dataProvider()->identify( maxErrorInMapCoords, QgsGeometry::fromPolygonXY( polygon ) );
     QCOMPARE( points.size(), 1 );
-    QMap<QString, QVariant> identifiedPoint = points[0];
+    const QMap<QString, QVariant> identifiedPoint = points[0];
     QMap<QString, QVariant> expected;
 
     expected[ QStringLiteral( "Blue" ) ] = 0;
@@ -305,8 +334,8 @@ void TestQgsEptProvider::testIdentify()
     polygon.push_back( QPointF( 498066.35857078444678,  7050995.0919103417546 ) );
     polygon.push_back( QPointF( 498066.35857078444678,  7050995.0112726856023 ) );
     polygon.push_back( QPointF( 498066.28873652569018,  7050994.9709538575262 ) );
-    float maxErrorInMapCoords =  0.0091431681066751480103;
-    QVector<QMap<QString, QVariant>> identifiedPoints = layer->dataProvider()->identify( maxErrorInMapCoords, QgsGeometry::fromQPolygonF( polygon ) );
+    const float maxErrorInMapCoords =  0.0091431681066751480103;
+    const QVector<QMap<QString, QVariant>> identifiedPoints = layer->dataProvider()->identify( maxErrorInMapCoords, QgsGeometry::fromQPolygonF( polygon ) );
     QVector<QMap<QString, QVariant>> expected;
     {
       QMap<QString, QVariant> point;
@@ -340,8 +369,8 @@ void TestQgsEptProvider::testIdentify()
     polygon.push_back( QPointF( 498063.24382022250211, 7050996.6360026793554 ) );
     polygon.push_back( QPointF( 498063.24382022250211, 7050996.8638040581718 ) );
 
-    float maxErrorInMapCoords = 0.0022857920266687870026;
-    QVector<QMap<QString, QVariant>> identifiedPoints = layer->dataProvider()->identify( maxErrorInMapCoords, QgsGeometry::fromQPolygonF( polygon ) );
+    const float maxErrorInMapCoords = 0.0022857920266687870026;
+    const QVector<QMap<QString, QVariant>> identifiedPoints = layer->dataProvider()->identify( maxErrorInMapCoords, QgsGeometry::fromQPolygonF( polygon ) );
     QVector<QMap<QString, QVariant>> expected;
     {
       QMap<QString, QVariant> point;

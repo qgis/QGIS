@@ -54,7 +54,7 @@ QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget *parent, const Q
   QgsEmbeddedLayerTreeModel *model = new QgsEmbeddedLayerTreeModel( mRootGroup, this );
   mTreeView->setModel( model );
 
-  QgsSettings settings;
+  const QgsSettings settings;
 
   mProjectFileWidget->setStorageMode( QgsFileWidget::GetFile );
   mProjectFileWidget->setFilter( tr( "QGIS files" ) + QStringLiteral( " (*.qgs *.QGS *.qgz *.QGZ)" ) );
@@ -79,6 +79,33 @@ QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget *parent, const Q
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsProjectLayerGroupDialog::mButtonBox_accepted );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsProjectLayerGroupDialog::showHelp );
+}
+
+QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( const QgsProject *project, QWidget *parent, Qt::WindowFlags f )
+  : QDialog( parent, f )
+{
+
+  // Preconditions
+  Q_ASSERT( project );
+  Q_ASSERT( project->layerTreeRoot() );
+
+  setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
+  mRootGroup = project->layerTreeRoot()->clone();
+  QgsEmbeddedLayerTreeModel *model = new QgsEmbeddedLayerTreeModel( mRootGroup, this );
+  mTreeView->setModel( model );
+
+  mProjectFileWidget->hide();
+  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
+
+  removeEmbeddedNodes( mRootGroup );
+
+  connect( mTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsProjectLayerGroupDialog::onTreeViewSelectionChanged );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsProjectLayerGroupDialog::mButtonBox_accepted );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsProjectLayerGroupDialog::showHelp );
+
 }
 
 QgsProjectLayerGroupDialog::~QgsProjectLayerGroupDialog()
@@ -168,7 +195,7 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
   if ( QgsZipUtils::isZipFile( mProjectFileWidget->filePath() ) )
   {
 
-    archive = qgis::make_unique<QgsProjectArchive>();
+    archive = std::make_unique<QgsProjectArchive>();
 
     // unzip the archive
     if ( !archive->unzip( mProjectFileWidget->filePath() ) )
@@ -255,10 +282,10 @@ void QgsProjectLayerGroupDialog::onTreeViewSelectionChanged()
 
 void QgsProjectLayerGroupDialog::deselectChildren( const QModelIndex &index )
 {
-  int childCount = mTreeView->model()->rowCount( index );
+  const int childCount = mTreeView->model()->rowCount( index );
   for ( int i = 0; i < childCount; ++i )
   {
-    QModelIndex childIndex = mTreeView->model()->index( i, 0, index );
+    const QModelIndex childIndex = mTreeView->model()->index( i, 0, index );
     if ( mTreeView->selectionModel()->isSelected( childIndex ) )
       mTreeView->selectionModel()->select( childIndex, QItemSelectionModel::Deselect );
 
@@ -269,7 +296,7 @@ void QgsProjectLayerGroupDialog::deselectChildren( const QModelIndex &index )
 void QgsProjectLayerGroupDialog::mButtonBox_accepted()
 {
   QgsSettings s;
-  QFileInfo fi( mProjectPath );
+  const QFileInfo fi( mProjectPath );
   if ( fi.exists() )
   {
     s.setValue( QStringLiteral( "/qgis/last_embedded_project_path" ), fi.absolutePath() );

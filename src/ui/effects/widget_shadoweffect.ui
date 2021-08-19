@@ -251,25 +251,31 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsBlendModeComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsblendmodecombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsEffectDrawModeComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgseffectdrawmodecombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsOpacityWidget</class>
@@ -278,15 +284,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsUnitSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsunitselectionwidget.h</header>
-   <container>1</container>
+   <class>QgsEffectDrawModeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgseffectdrawmodecombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -295,6 +295,7 @@
   <tabstop>mShadowOffsetSpnBx</tabstop>
   <tabstop>mOffsetUnitWidget</tabstop>
   <tabstop>mShadowRadiuSpnBx</tabstop>
+  <tabstop>mBlurUnitWidget</tabstop>
   <tabstop>mOpacityWidget</tabstop>
   <tabstop>mShadowColorBtn</tabstop>
   <tabstop>mShadowBlendCmbBx</tabstop>

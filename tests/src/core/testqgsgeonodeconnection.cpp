@@ -13,7 +13,7 @@
  *
  ***************************************************************************/
 #include "qgstest.h"
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 
 #include "qgsgeonodeconnection.h"
 #include "qgssettings.h"
@@ -95,13 +95,13 @@ void TestQgsGeoNodeConnection::initTestCase()
 // Test the creation of geonode connection
 void TestQgsGeoNodeConnection::testCreation()
 {
-  if ( QgsTest::isTravis() )
+  if ( QgsTest::isCIRun() )
   {
     QSKIP( "Skip remote test for faster testing" );
   }
 
-  QStringList connectionList = QgsGeoNodeConnectionUtils::connectionList();
-  int numberOfConnection = connectionList.count();
+  const QStringList connectionList = QgsGeoNodeConnectionUtils::connectionList();
+  const int numberOfConnection = connectionList.count();
   // Verify if the demo.geonode.org is created properly
   QVERIFY( connectionList.contains( mDemoGeoNodeName ) );
   QVERIFY( !connectionList.contains( mGeoNodeConnectionName ) );
@@ -111,8 +111,8 @@ void TestQgsGeoNodeConnection::testCreation()
 
   settings.setValue( QgsGeoNodeConnectionUtils::pathGeoNodeConnection() + QStringLiteral( "/%1/url" ).arg( mGeoNodeConnectionName ), mGeoNodeConnectionURL );
 
-  QStringList newConnectionList = QgsGeoNodeConnectionUtils::connectionList();
-  int newNumberOfConnection = newConnectionList.count();
+  const QStringList newConnectionList = QgsGeoNodeConnectionUtils::connectionList();
+  const int newNumberOfConnection = newConnectionList.count();
 
   // Check the number is increased by 1
   QCOMPARE( numberOfConnection + 1, newNumberOfConnection );
@@ -124,14 +124,14 @@ void TestQgsGeoNodeConnection::testCreation()
 // Test Layer API
 void TestQgsGeoNodeConnection::testLayerAPI()
 {
-  if ( QgsTest::isTravis() )
+  if ( QgsTest::isCIRun() )
   {
     QSKIP( "Skip remote test for faster testing" );
   }
 
   QgsGeoNodeRequest geonodeRequest( mKartozaGeoNodeQGISServerURL, true );
-  QList<QgsGeoNodeRequest::ServiceLayerDetail> layers = geonodeRequest.fetchLayersBlocking();
-  QString msg = QStringLiteral( "Number of layers: %1" ).arg( layers.count() );
+  const QList<QgsGeoNodeRequest::ServiceLayerDetail> layers = geonodeRequest.fetchLayersBlocking();
+  const QString msg = QStringLiteral( "Number of layers: %1" ).arg( layers.count() );
   QgsDebugMsg( msg );
   QVERIFY( layers.count() > 0 );
 }
@@ -139,24 +139,24 @@ void TestQgsGeoNodeConnection::testLayerAPI()
 // Test Style API
 void TestQgsGeoNodeConnection::testStyleAPI()
 {
-  if ( QgsTest::isTravis() )
+  if ( QgsTest::isCIRun() )
   {
     QSKIP( "Skip remote test for faster testing" );
   }
 
   QgsGeoNodeRequest geonodeRequest( mKartozaGeoNodeQGISServerURL, true );
-  QgsGeoNodeStyle defaultStyle = geonodeRequest.fetchDefaultStyleBlocking( QStringLiteral( "airports" ) );
+  const QgsGeoNodeStyle defaultStyle = geonodeRequest.fetchDefaultStyleBlocking( QStringLiteral( "airports" ) );
   QVERIFY( !defaultStyle.name.isEmpty() );
   QVERIFY( defaultStyle.body.toString().startsWith( QLatin1String( "<qgis" ) ) );
   QVERIFY( defaultStyle.body.toString().contains( QStringLiteral( "</qgis>" ) ) );
 
-  QgsGeoNodeStyle geoNodeStyle = geonodeRequest.fetchStyleBlocking( QStringLiteral( "76" ) );
+  const QgsGeoNodeStyle geoNodeStyle = geonodeRequest.fetchStyleBlocking( QStringLiteral( "76" ) );
   QVERIFY( !geoNodeStyle.name.isEmpty() );
   QVERIFY( geoNodeStyle.body.toString().startsWith( QLatin1String( "<qgis" ) ) );
   QVERIFY( geoNodeStyle.body.toString().contains( QStringLiteral( "</qgis>" ) ) );
 
-  QList<QgsGeoNodeStyle> geoNodeStyles = geonodeRequest.fetchStylesBlocking( QStringLiteral( "airports" ) );
-  QgsDebugMsg( geoNodeStyles.count() );
+  const QList<QgsGeoNodeStyle> geoNodeStyles = geonodeRequest.fetchStylesBlocking( QStringLiteral( "airports" ) );
+  QgsDebugMsg( QString::number( geoNodeStyles.count() ) );
   QVERIFY( geoNodeStyles.count() == 2 );
 
 }

@@ -23,17 +23,17 @@
 #include <QMap>
 #include <QMutex>
 #include <QNetworkReply>
+#include <QFile>
+#include <QTemporaryFile>
 
 #include "qgis_core.h"
 #include "qgstaskmanager.h"
 #include "qgsnetworkcontentfetchertask.h"
 
-class QTemporaryFile;
-
 /**
  * \class QgsFetchedContent
  * \ingroup core
- * FetchedContent holds useful information about a network content being fetched
+ * \brief FetchedContent holds useful information about a network content being fetched
  * \see QgsNetworkContentFetcherRegistry
  * \since QGIS 3.2
  */
@@ -124,13 +124,6 @@ class CORE_EXPORT QgsNetworkContentFetcherRegistry : public QObject
 {
     Q_OBJECT
   public:
-    //! Enum to determine when the download should start
-    enum FetchingMode
-    {
-      DownloadLater,       //!< Do not start immediately the download to properly connect the fetched signal
-      DownloadImmediately, //!< The download will start immediately, not need to run QgsFecthedContent::download()
-    };
-    Q_ENUM( FetchingMode )
 
     //! Create the registry for temporary downloaded files
     explicit QgsNetworkContentFetcherRegistry() = default;
@@ -143,7 +136,7 @@ class CORE_EXPORT QgsNetworkContentFetcherRegistry : public QObject
      * \param fetchingMode defines if the download will start immediately or shall be manually triggered
      * \note If the download starts immediately, it will not redownload any already fetched or currently fetching file.
      */
-    const QgsFetchedContent *fetch( const QString &url, FetchingMode fetchingMode = DownloadLater );
+    const QgsFetchedContent *fetch( const QString &url, Qgis::ActionStart fetchingMode = Qgis::ActionStart::Deferred );
 
 #ifndef SIP_RUN
 

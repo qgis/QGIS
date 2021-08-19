@@ -27,7 +27,14 @@
     <number>0</number>
    </property>
    <item row="5" column="1">
-    <widget class="QgsColorButton" name="mColorWidget"/>
+    <widget class="QgsColorButton" name="mColorWidget">
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>0</height>
+      </size>
+     </property>
+    </widget>
    </item>
    <item row="4" column="1">
     <widget class="QComboBox" name="mColoringMethodComboBox"/>
@@ -40,7 +47,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>40</height>
+       <height>0</height>
       </size>
      </property>
     </spacer>
@@ -128,7 +135,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QgsUnitSelectionWidget" name="mTracesTailLengthMapUnitWidget"/>
+         <widget class="QgsUnitSelectionWidget" name="mTracesTailLengthMapUnitWidget" native="true"/>
         </item>
        </layout>
       </item>
@@ -141,14 +148,31 @@
       <string>Color Ramp Shader</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_5">
+      <item row="0" column="2">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Max</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="4">
        <widget class="QPushButton" name="mColorRampShaderLoadButton">
-        <property name="text">
-         <string/>
+        <property name="toolTip">
+         <string>Load</string>
         </property>
         <property name="icon">
          <iconset resource="../../../images/images.qrc">
           <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="5">
+       <widget class="QgsColorRampShaderWidget" name="mColorRampShaderWidget" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
         </property>
        </widget>
       </item>
@@ -165,15 +189,21 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
-       <widget class="QLabel" name="label_5">
-        <property name="text">
-         <string>Max</string>
+      <item row="0" column="3">
+       <widget class="QgsDoubleSpinBox" name="mColorRampShaderMaximumSpinBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimum">
+         <double>-1000000000000000.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>1000000000000000.000000000000000</double>
         </property>
        </widget>
-      </item>
-      <item row="0" column="3">
-       <widget class="QLineEdit" name="mColorRampShaderMaximumEditLine"/>
       </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label">
@@ -183,15 +213,18 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLineEdit" name="mColorRampShaderMinimumEditLine"/>
-      </item>
-      <item row="2" column="0" colspan="5">
-       <widget class="QgsColorRampShaderWidget" name="mColorRampShaderWidget" native="true">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
+       <widget class="QgsDoubleSpinBox" name="mColorRampShaderMinimumSpinBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimum">
+         <double>-1000000000000000.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>1000000000000000.000000000000000</double>
         </property>
        </widget>
       </item>
@@ -244,10 +277,10 @@
    </item>
    <item row="7" column="0" colspan="2">
     <layout class="QGridLayout" name="gridLayout_3">
-     <item row="0" column="1">
-      <widget class="QLabel" name="minimumMagLabel">
+     <item row="0" column="0" rowspan="2">
+      <widget class="QLabel" name="filterByMagnitudeLabel">
        <property name="text">
-        <string>Min</string>
+        <string>Filter by magnitude</string>
        </property>
       </widget>
      </item>
@@ -259,15 +292,35 @@
       </widget>
      </item>
      <item row="1" column="2">
-      <widget class="QLineEdit" name="mMaxMagLineEdit"/>
+      <widget class="QgsDoubleSpinBox" name="mMaxMagSpinBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimum">
+        <double>-1000000000000000.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>1000000000000000.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="minimumMagLabel">
+       <property name="text">
+        <string>Min</string>
+       </property>
+      </widget>
      </item>
      <item row="0" column="2">
-      <widget class="QLineEdit" name="mMinMagLineEdit"/>
-     </item>
-     <item row="0" column="0" rowspan="2">
-      <widget class="QLabel" name="filterByMagnitudeLabel">
-       <property name="text">
-        <string>Filter by magnitude</string>
+      <widget class="QgsDoubleSpinBox" name="mMinMagSpinBox">
+       <property name="minimum">
+        <double>-1000000000000000.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>1000000000000000.000000000000000</double>
        </property>
       </widget>
      </item>
@@ -410,15 +463,32 @@
       <string>Head Options</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
-      <item row="0" column="0">
-       <widget class="QLabel" name="headWidthLabel">
+      <item row="1" column="2">
+       <widget class="QLabel" name="percShaftLenLabel_2">
         <property name="text">
-         <string>Width</string>
+         <string>% of shaft length</string>
         </property>
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLineEdit" name="mHeadWidthLineEdit"/>
+       <widget class="QgsDoubleSpinBox" name="mHeadWidthSpinBox">
+        <property name="maximum">
+         <double>100.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QgsDoubleSpinBox" name="mHeadLengthSpinBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximum">
+         <double>100.000000000000000</double>
+        </property>
+       </widget>
       </item>
       <item row="0" column="2">
        <widget class="QLabel" name="percShaftLenLabel">
@@ -434,13 +504,10 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="mHeadLengthLineEdit"/>
-      </item>
-      <item row="1" column="2">
-       <widget class="QLabel" name="percShaftLenLabel_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="headWidthLabel">
         <property name="text">
-         <string>% of shaft length</string>
+         <string>Width</string>
         </property>
        </widget>
       </item>
@@ -517,25 +584,25 @@
           <property name="bottomMargin">
            <number>0</number>
           </property>
-          <item row="0" column="0">
+          <item row="2" column="0">
            <widget class="QLabel" name="minimumShaftLabel">
             <property name="text">
              <string>Minimum</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="mMinimumShaftLineEdit"/>
-          </item>
-          <item row="1" column="0">
+          <item row="4" column="0">
            <widget class="QLabel" name="maximumShaftLabel">
             <property name="text">
              <string>Maximum</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="mMaximumShaftLineEdit"/>
+          <item row="2" column="1">
+           <widget class="QgsDoubleSpinBox" name="mMinimumShaftSpinBox"/>
+          </item>
+          <item row="4" column="1">
+           <widget class="QgsDoubleSpinBox" name="mMaximumShaftSpinBox"/>
           </item>
          </layout>
         </widget>
@@ -553,15 +620,22 @@
           <property name="bottomMargin">
            <number>0</number>
           </property>
+          <item row="0" column="1">
+           <widget class="QgsDoubleSpinBox" name="mScaleShaftByFactorOfSpinBox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="scaleByFactorOfLabel">
             <property name="text">
              <string>Scale by a factor of</string>
             </property>
            </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="mScaleShaftByFactorOfLineEdit"/>
           </item>
          </layout>
         </widget>
@@ -579,15 +653,15 @@
           <property name="bottomMargin">
            <number>0</number>
           </property>
+          <item row="0" column="1">
+           <widget class="QgsDoubleSpinBox" name="mShaftLengthSpinBox"/>
+          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="LengthLabel">
             <property name="text">
              <string>Length</string>
             </property>
            </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="mShaftLengthLineEdit"/>
           </item>
          </layout>
         </widget>
@@ -600,20 +674,20 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -623,9 +697,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsUnitSelectionWidget</class>
-   <extends>QComboBox</extends>
-   <header>qgsunitselectionwidget.h</header>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -639,28 +713,28 @@
   <tabstop>mLineWidthSpinBox</tabstop>
   <tabstop>mColoringMethodComboBox</tabstop>
   <tabstop>mColorWidget</tabstop>
-  <tabstop>mColorRampShaderMinimumEditLine</tabstop>
-  <tabstop>mColorRampShaderMaximumEditLine</tabstop>
+  <tabstop>mColorRampShaderMinimumSpinBox</tabstop>
+  <tabstop>mColorRampShaderMaximumSpinBox</tabstop>
   <tabstop>mColorRampShaderLoadButton</tabstop>
-  <tabstop>mMinMagLineEdit</tabstop>
-  <tabstop>mMaxMagLineEdit</tabstop>
+  <tabstop>mMinMagSpinBox</tabstop>
+  <tabstop>mMaxMagSpinBox</tabstop>
   <tabstop>mDisplayVectorsOnGridGroupBox</tabstop>
   <tabstop>mXSpacingSpinBox</tabstop>
   <tabstop>mYSpacingSpinBox</tabstop>
-  <tabstop>mHeadWidthLineEdit</tabstop>
-  <tabstop>mHeadLengthLineEdit</tabstop>
+  <tabstop>mHeadWidthSpinBox</tabstop>
+  <tabstop>mHeadLengthSpinBox</tabstop>
   <tabstop>mShaftLengthComboBox</tabstop>
-  <tabstop>mMinimumShaftLineEdit</tabstop>
-  <tabstop>mMaximumShaftLineEdit</tabstop>
+  <tabstop>mMinimumShaftSpinBox</tabstop>
+  <tabstop>mMaximumShaftSpinBox</tabstop>
   <tabstop>mStreamlinesSeedingMethodComboBox</tabstop>
   <tabstop>mStreamlinesDensitySpinBox</tabstop>
   <tabstop>mTracesParticlesCountSpinBox</tabstop>
   <tabstop>mTracesMaxLengthSpinBox</tabstop>
-  <tabstop>mTracesTailLengthMapUnitWidget</tabstop>
-  <tabstop>mShaftLengthLineEdit</tabstop>
-  <tabstop>mScaleShaftByFactorOfLineEdit</tabstop>
+  <tabstop>mScaleShaftByFactorOfSpinBox</tabstop>
+  <tabstop>mShaftLengthSpinBox</tabstop>
  </tabstops>
  <resources>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>

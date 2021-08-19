@@ -26,7 +26,7 @@
 /**
  * \class QgsProxyFeatureSink
  * \ingroup core
- * A simple feature sink which proxies feature addition on to another feature sink.
+ * \brief A simple feature sink which proxies feature addition on to another feature sink.
  *
  * This class is designed to allow factory methods which always return new QgsFeatureSink
  * objects. Since it is not always possible to create an entirely new QgsFeatureSink

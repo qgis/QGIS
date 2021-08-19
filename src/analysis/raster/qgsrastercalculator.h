@@ -33,7 +33,7 @@ class QgsFeedback;
 /**
  * \ingroup analysis
  * \class QgsRasterCalculatorEntry
- * Represents an individual raster layer/band number entry within a raster calculation.
+ * \brief Represents an individual raster layer/band number entry within a raster calculation.
  * \since QGIS 2.18
 */
 class ANALYSIS_EXPORT QgsRasterCalculatorEntry
@@ -71,7 +71,7 @@ class ANALYSIS_EXPORT QgsRasterCalculatorEntry
 
 /**
  * \ingroup analysis
- * Performs raster layer calculations.
+ * \brief Performs raster layer calculations.
 */
 class ANALYSIS_EXPORT QgsRasterCalculator
 {

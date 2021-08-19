@@ -29,6 +29,10 @@
 #include <qgsproviderregistry.h>
 #include <qgsrasterdataprovider.h>
 #include <qgsrectangle.h>
+#include "qgspoint.h"
+#include "qgsprovidermetadata.h"
+#include "qgsprovidersublayerdetails.h"
+#include "qgsrasterlayer.h"
 
 /**
  * \ingroup UnitTests
@@ -59,6 +63,8 @@ class TestQgsGdalProvider : public QObject
     void interactionBetweenRasterChangeAndCache(); // test that updading a raster invalidates the GDAL dataset cache (#20104)
     void scale0(); //test when data has scale 0 (#20493)
     void transformCoordinates();
+    void testGdalProviderQuerySublayers();
+    void testGdalProviderQuerySublayersFastScan();
 
   private:
     QString mTestDataDir;
@@ -80,7 +86,7 @@ void TestQgsGdalProvider::initTestCase()
 void TestQgsGdalProvider::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -103,6 +109,12 @@ void TestQgsGdalProvider::decodeUri()
   QCOMPARE( components[QStringLiteral( "path" )].toString(), QStringLiteral( "/home/to/path/my_file.gpkg" ) );
   QCOMPARE( components[QStringLiteral( "layerName" )].toString(), QStringLiteral( "layer_name" ) );
 
+  uri = QStringLiteral( "/vsizip//home/to/path/file.zip/my.tif" );
+  components = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), uri );
+  QCOMPARE( components[QStringLiteral( "path" )].toString(), QStringLiteral( "/home/to/path/file.zip" ) );
+  QCOMPARE( components[QStringLiteral( "vsiPrefix" )].toString(), QStringLiteral( "/vsizip/" ) );
+  QCOMPARE( components[QStringLiteral( "vsiSuffix" )].toString(), QStringLiteral( "/my.tif" ) );
+
   //test windows path
   uri = QStringLiteral( "gpkg:c:/home/to/path/my_file.gpkg:layer_name" );
   components = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), uri );
@@ -118,23 +130,29 @@ void TestQgsGdalProvider::encodeUri()
 
   parts.insert( QStringLiteral( "layerName" ), QStringLiteral( "layername" ) );
   QCOMPARE( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts ), QStringLiteral( "GPKG:/home/user/test.gpkg:layername" ) );
+
+  parts.clear();
+  parts.insert( QStringLiteral( "path" ), QStringLiteral( "/home/user/test.zip" ) );
+  parts.insert( QStringLiteral( "vsiPrefix" ), QStringLiteral( "/vsizip/" ) );
+  parts.insert( QStringLiteral( "vsiSuffix" ), QStringLiteral( "/my.tif" ) );
+  QCOMPARE( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts ), QStringLiteral( "/vsizip//home/user/test.zip/my.tif" ) );
 }
 
 void TestQgsGdalProvider::scaleDataType()
 {
-  QString rasterWithOffset = QStringLiteral( TEST_DATA_DIR ) + "/int_raster_with_scale.tif";
+  const QString rasterWithOffset = QStringLiteral( TEST_DATA_DIR ) + "/int_raster_with_scale.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), rasterWithOffset, QgsDataProvider::ProviderOptions() );
   QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
   //raster is an integer data type, but has a scale < 1, so data type must be float
-  QCOMPARE( rp->dataType( 1 ), Qgis::Float32 );
-  QCOMPARE( rp->sourceDataType( 1 ), Qgis::Float32 );
+  QCOMPARE( rp->dataType( 1 ), Qgis::DataType::Float32 );
+  QCOMPARE( rp->sourceDataType( 1 ), Qgis::DataType::Float32 );
   delete provider;
 }
 
 void TestQgsGdalProvider::warpedVrt()
 {
-  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/requires_warped_vrt.tif";
+  const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/requires_warped_vrt.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
@@ -153,7 +171,7 @@ void TestQgsGdalProvider::warpedVrt()
 
 void TestQgsGdalProvider::noData()
 {
-  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif";
+  const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QVERIFY( provider->isValid() );
   QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
@@ -167,7 +185,7 @@ void TestQgsGdalProvider::noData()
 
 void TestQgsGdalProvider::noDataOutsideExtent()
 {
-  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif";
+  const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QVERIFY( provider->isValid() );
   QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
@@ -191,7 +209,7 @@ void TestQgsGdalProvider::noDataOutsideExtent()
 
 void TestQgsGdalProvider::invalidNoDataInSourceIgnored()
 {
-  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/byte_with_nan_nodata.tif";
+  const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/byte_with_nan_nodata.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QVERIFY( provider->isValid() );
   QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
@@ -205,65 +223,65 @@ void TestQgsGdalProvider::invalidNoDataInSourceIgnored()
 
 void TestQgsGdalProvider::isRepresentableValue()
 {
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::infinity(), Qgis::Byte ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::infinity(), Qgis::Byte ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::Byte ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( -1., Qgis::Byte ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( 0., Qgis::Byte ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( 255., Qgis::Byte ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( 256., Qgis::Byte ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::infinity(), Qgis::DataType::Byte ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::infinity(), Qgis::DataType::Byte ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::DataType::Byte ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( -1., Qgis::DataType::Byte ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( 0., Qgis::DataType::Byte ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( 255., Qgis::DataType::Byte ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( 256., Qgis::DataType::Byte ), false );
 
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::infinity(), Qgis::UInt16 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::infinity(), Qgis::UInt16 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::UInt16 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( -1., Qgis::UInt16 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( 0., Qgis::UInt16 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( 65535., Qgis::UInt16 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( 65536., Qgis::UInt16 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::infinity(), Qgis::DataType::UInt16 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::infinity(), Qgis::DataType::UInt16 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::DataType::UInt16 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( -1., Qgis::DataType::UInt16 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( 0., Qgis::DataType::UInt16 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( 65535., Qgis::DataType::UInt16 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( 65536., Qgis::DataType::UInt16 ), false );
 
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::infinity(), Qgis::Int16 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::infinity(), Qgis::Int16 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::Int16 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( -32769., Qgis::Int16 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( -32768., Qgis::Int16 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( 32767., Qgis::Int16 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( 32768., Qgis::Int16 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::infinity(), Qgis::DataType::Int16 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::infinity(), Qgis::DataType::Int16 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::DataType::Int16 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( -32769., Qgis::DataType::Int16 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( -32768., Qgis::DataType::Int16 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( 32767., Qgis::DataType::Int16 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( 32768., Qgis::DataType::Int16 ), false );
 
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::infinity(), Qgis::UInt32 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::infinity(), Qgis::UInt32 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::UInt32 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( -1., Qgis::UInt32 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( 0., Qgis::UInt32 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( 4294967295., Qgis::UInt32 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( 4294967296., Qgis::UInt32 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::infinity(), Qgis::DataType::UInt32 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::infinity(), Qgis::DataType::UInt32 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::DataType::UInt32 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( -1., Qgis::DataType::UInt32 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( 0., Qgis::DataType::UInt32 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( 4294967295., Qgis::DataType::UInt32 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( 4294967296., Qgis::DataType::UInt32 ), false );
 
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::infinity(), Qgis::Int32 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::infinity(), Qgis::Int32 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::Int32 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( -2147483649., Qgis::Int32 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( -2147483648., Qgis::Int32 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( 2147483647., Qgis::Int32 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( 2147483648., Qgis::Int32 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( 4294967296., Qgis::UInt32 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::infinity(), Qgis::DataType::Int32 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::infinity(), Qgis::DataType::Int32 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::DataType::Int32 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( -2147483649., Qgis::DataType::Int32 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( -2147483648., Qgis::DataType::Int32 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( 2147483647., Qgis::DataType::Int32 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( 2147483648., Qgis::DataType::Int32 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( 4294967296., Qgis::DataType::UInt32 ), false );
 
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::infinity(), Qgis::Float32 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::infinity(), Qgis::Float32 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::Float32 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::max(), Qgis::Float32 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::max(), Qgis::Float32 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<float>::max(), Qgis::Float32 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<float>::max(), Qgis::Float32 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::infinity(), Qgis::DataType::Float32 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::infinity(), Qgis::DataType::Float32 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::DataType::Float32 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::max(), Qgis::DataType::Float32 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::max(), Qgis::DataType::Float32 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<float>::max(), Qgis::DataType::Float32 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<float>::max(), Qgis::DataType::Float32 ), true );
 
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::infinity(), Qgis::Float64 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::infinity(), Qgis::Float64 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::Float64 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::max(), Qgis::Float64 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::max(), Qgis::Float64 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::infinity(), Qgis::DataType::Float64 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::infinity(), Qgis::DataType::Float64 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::DataType::Float64 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::max(), Qgis::DataType::Float64 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::max(), Qgis::DataType::Float64 ), true );
 }
 
 void TestQgsGdalProvider::mask()
 {
-  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/rgb_with_mask.tif";
+  const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/rgb_with_mask.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QVERIFY( provider->isValid() );
   QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
@@ -271,12 +289,12 @@ void TestQgsGdalProvider::mask()
   if ( rp )
   {
     QCOMPARE( rp->bandCount(), 4 );
-    QCOMPARE( rp->dataType( 4 ), Qgis::Byte );
-    QCOMPARE( rp->sourceDataType( 4 ), Qgis::Byte );
+    QCOMPARE( rp->dataType( 4 ), Qgis::DataType::Byte );
+    QCOMPARE( rp->sourceDataType( 4 ), Qgis::DataType::Byte );
     QCOMPARE( rp->colorInterpretation( 4 ), static_cast<int>( QgsRaster::AlphaBand ) );
     QCOMPARE( rp->bandScale( 4 ), 1.0 );
     QCOMPARE( rp->bandOffset( 4 ), 0.0 );
-    QgsRectangle rect( 0, 0, 162, 150 );
+    const QgsRectangle rect( 0, 0, 162, 150 );
     QgsRasterBlock *block = rp->block( 4, rect, 162, 150 );
     QVERIFY( block );
     delete block;
@@ -286,7 +304,7 @@ void TestQgsGdalProvider::mask()
 
 void TestQgsGdalProvider::bandName()
 {
-  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/gtiff_tags.tif";
+  const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/gtiff_tags.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
@@ -296,7 +314,7 @@ void TestQgsGdalProvider::bandName()
 
 void TestQgsGdalProvider::bandNameNoDescription()
 {
-  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif";
+  const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
@@ -306,7 +324,7 @@ void TestQgsGdalProvider::bandNameNoDescription()
 
 void TestQgsGdalProvider::bandNameWithDescription()
 {
-  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/gtiff_desc.tif";
+  const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/gtiff_desc.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
@@ -317,12 +335,12 @@ void TestQgsGdalProvider::bandNameWithDescription()
 void TestQgsGdalProvider::interactionBetweenRasterChangeAndCache()
 {
   double geoTransform[6] = { 0, 2, 0, 0, 0, -2};
-  QgsCoordinateReferenceSystem crs;
-  QString filename = QStringLiteral( "/vsimem/temp.tif" );
+  const QgsCoordinateReferenceSystem crs;
+  const QString filename = QStringLiteral( "/vsimem/temp.tif" );
 
   // Create a all-0 dataset
   auto provider = QgsRasterDataProvider::create(
-                    QStringLiteral( "gdal" ), filename, "GTiff", 1, Qgis::Byte, 1, 1, geoTransform, crs );
+                    QStringLiteral( "gdal" ), filename, "GTiff", 1, Qgis::DataType::Byte, 1, 1, geoTransform, crs );
   delete provider;
 
   // Open it
@@ -343,7 +361,7 @@ void TestQgsGdalProvider::interactionBetweenRasterChangeAndCache()
 
   // Modify the raster
   rp->setEditable( true );
-  auto rblock = new QgsRasterBlock( Qgis::Byte, 1, 1 );
+  auto rblock = new QgsRasterBlock( Qgis::DataType::Byte, 1, 1 );
   rblock->setValue( 0, 0, 255 );
   rp->writeBlock( rblock, 1, 0, 0 );
   delete rblock;
@@ -361,7 +379,7 @@ void TestQgsGdalProvider::interactionBetweenRasterChangeAndCache()
 
 void TestQgsGdalProvider::scale0()
 {
-  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/scale0ingdal23.tif";
+  const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/scale0ingdal23.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
@@ -373,30 +391,292 @@ void TestQgsGdalProvider::scale0()
 void TestQgsGdalProvider::transformCoordinates()
 {
   // Test implementation of QgsRasterDataProvider::transformCoordinates()
-  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/float1-16.tif";
+  const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/float1-16.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
   QVERIFY( rp->isValid() );
 
   // forward transform - image coordinates to georeferenced coordinates
-  QgsPoint pt1Layer = rp->transformCoordinates( QgsPoint( 0, 0 ), QgsRasterDataProvider::TransformImageToLayer ); // bottom-left corner
-  QgsPoint pt2Layer = rp->transformCoordinates( QgsPoint( 4, 0 ), QgsRasterDataProvider::TransformImageToLayer );
-  QgsPoint pt3Layer = rp->transformCoordinates( QgsPoint( 4, 4 ), QgsRasterDataProvider::TransformImageToLayer ); // top-right corner
+  const QgsPoint pt1Layer = rp->transformCoordinates( QgsPoint( 0, 0 ), QgsRasterDataProvider::TransformImageToLayer ); // bottom-left corner
+  const QgsPoint pt2Layer = rp->transformCoordinates( QgsPoint( 4, 0 ), QgsRasterDataProvider::TransformImageToLayer );
+  const QgsPoint pt3Layer = rp->transformCoordinates( QgsPoint( 4, 4 ), QgsRasterDataProvider::TransformImageToLayer ); // top-right corner
 
   QCOMPARE( pt1Layer, QgsPoint( 106.0, -7.0, 0 ) );
   QCOMPARE( pt2Layer, QgsPoint( 106.8, -7.0, 0 ) );
   QCOMPARE( pt3Layer, QgsPoint( 106.8, -6.2, 0 ) );
 
   // inverse transform - georeferenced coordinates to image coordinates
-  QgsPoint pt1Image = rp->transformCoordinates( QgsPoint( 106.0, -7.0 ), QgsRasterDataProvider::TransformLayerToImage ); // bottom-left corner
-  QgsPoint pt2Image = rp->transformCoordinates( QgsPoint( 106.8, -7.0 ), QgsRasterDataProvider::TransformLayerToImage );
-  QgsPoint pt3Image = rp->transformCoordinates( QgsPoint( 106.8, -6.2 ), QgsRasterDataProvider::TransformLayerToImage ); // top-right corner
+  const QgsPoint pt1Image = rp->transformCoordinates( QgsPoint( 106.0, -7.0 ), QgsRasterDataProvider::TransformLayerToImage ); // bottom-left corner
+  const QgsPoint pt2Image = rp->transformCoordinates( QgsPoint( 106.8, -7.0 ), QgsRasterDataProvider::TransformLayerToImage );
+  const QgsPoint pt3Image = rp->transformCoordinates( QgsPoint( 106.8, -6.2 ), QgsRasterDataProvider::TransformLayerToImage ); // top-right corner
 
   QCOMPARE( pt1Image, QgsPoint( 0, 0, 0 ) );
   QCOMPARE( pt2Image, QgsPoint( 4, 0, 0 ) );
   QCOMPARE( pt3Image, QgsPoint( 4, 4, 0 ) );
 
+}
+
+void TestQgsGdalProvider::testGdalProviderQuerySublayers()
+{
+  // test querying sub layers for a mesh layer
+  QgsProviderMetadata *gdalMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "gdal" ) );
+
+  // invalid uri
+  QList< QgsProviderSublayerDetails >res = gdalMetadata->querySublayers( QString() );
+  QVERIFY( res.empty() );
+
+  // not a raster
+  res = gdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/lines.shp" );
+  QVERIFY( res.empty() );
+
+  // single layer raster
+  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 1 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "landsat" ) );
+  QCOMPARE( res.at( 0 ).description(), QString() );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
+  QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "GTiff" ) );
+
+  // make sure result is valid to load layer from
+  const QgsProviderSublayerDetails::LayerOptions options{ QgsCoordinateTransformContext() };
+  std::unique_ptr< QgsRasterLayer > rl( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
+  QVERIFY( rl->isValid() );
+
+  // geopackage with two raster layers
+  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/mixed_layers.gpkg" );
+  QCOMPARE( res.count(), 2 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 1 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "band1" ) );
+  QCOMPARE( res.at( 0 ).description(), QStringLiteral( "band1" ) );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "GPKG:%1/mixed_layers.gpkg:band1" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
+  QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "GPKG" ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
+  QVERIFY( rl->isValid() );
+  QCOMPARE( res.at( 1 ).layerNumber(), 2 );
+  QCOMPARE( res.at( 1 ).name(), QStringLiteral( "band2" ) );
+  QCOMPARE( res.at( 1 ).description(), QStringLiteral( "band2" ) );
+  QCOMPARE( res.at( 1 ).uri(), QStringLiteral( "GPKG:%1/mixed_layers.gpkg:band2" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 1 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 1 ).type(), QgsMapLayerType::RasterLayer );
+  QCOMPARE( res.at( 1 ).driverName(), QStringLiteral( "GPKG" ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 1 ).toLayer( options ) ) );
+  QVERIFY( rl->isValid() );
+
+  // netcdf file
+  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc" );
+  QCOMPARE( res.count(), 8 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 1 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "cell_node" ) );
+  QCOMPARE( res.at( 0 ).description(), QStringLiteral( "[320x4] cell_node (32-bit integer)" ) );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "NETCDF:\"%1/mesh/trap_steady_05_3D.nc\":cell_node" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
+  QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "netCDF" ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
+  QVERIFY( rl->isValid() );
+  QCOMPARE( res.at( 1 ).layerNumber(), 2 );
+  QCOMPARE( res.at( 1 ).name(), QStringLiteral( "layerface_Z" ) );
+  QCOMPARE( res.at( 1 ).description(), QStringLiteral( "[37x3520] layerface_Z (32-bit floating-point)" ) );
+  QCOMPARE( res.at( 1 ).uri(), QStringLiteral( "NETCDF:\"%1/mesh/trap_steady_05_3D.nc\":layerface_Z" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 1 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 1 ).type(), QgsMapLayerType::RasterLayer );
+  QCOMPARE( res.at( 1 ).driverName(), QStringLiteral( "netCDF" ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 1 ).toLayer( options ) ) );
+  QVERIFY( rl->isValid() );
+
+  // netcdf with open options
+  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc|option:HONOUR_VALID_RANGE=YES" );
+  QCOMPARE( res.count(), 8 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 1 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "cell_node" ) );
+  QCOMPARE( res.at( 0 ).description(), QStringLiteral( "[320x4] cell_node (32-bit integer)" ) );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "NETCDF:\"%1/mesh/trap_steady_05_3D.nc\":cell_node|option:HONOUR_VALID_RANGE=YES" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
+  QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "netCDF" ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
+  QVERIFY( rl->isValid() );
+  QCOMPARE( res.at( 1 ).layerNumber(), 2 );
+  QCOMPARE( res.at( 1 ).name(), QStringLiteral( "layerface_Z" ) );
+  QCOMPARE( res.at( 1 ).description(), QStringLiteral( "[37x3520] layerface_Z (32-bit floating-point)" ) );
+  QCOMPARE( res.at( 1 ).uri(), QStringLiteral( "NETCDF:\"%1/mesh/trap_steady_05_3D.nc\":layerface_Z|option:HONOUR_VALID_RANGE=YES" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 1 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 1 ).type(), QgsMapLayerType::RasterLayer );
+  QCOMPARE( res.at( 1 ).driverName(), QStringLiteral( "netCDF" ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 1 ).toLayer( options ) ) );
+  QVERIFY( rl->isValid() );
+
+  // aigrid file
+  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/aigrid" );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 1 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "aigrid" ) );
+  QCOMPARE( res.at( 0 ).description(), QString() );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "%1/aigrid" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
+  QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "AIG" ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
+  QVERIFY( rl->isValid() );
+
+  // aigrid, pointing to .adf file
+  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/aigrid/hdr.adf" );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 1 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "aigrid" ) );
+  QCOMPARE( res.at( 0 ).description(), QString() );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "%1/aigrid/hdr.adf" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
+  QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "AIG" ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
+  QVERIFY( rl->isValid() );
+
+  // zip archive, only 1 file
+  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/zip/landsat_b1.zip" );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 1 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "landsat_b1.tif" ) );
+  QCOMPARE( res.at( 0 ).description(), QString() );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "/vsizip/%1/zip/landsat_b1.zip/landsat_b1.tif" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
+  QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "GTiff" ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
+  QVERIFY( rl->isValid() );
+
+  // multi-layer archive
+  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/zip/testtar.tgz" );
+  QCOMPARE( res.count(), 3 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 1 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "folder/folder2/landsat_b2.tif" ) );
+  QCOMPARE( res.at( 0 ).description(), QString() );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "/vsitar/%1/zip/testtar.tgz/folder/folder2/landsat_b2.tif" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
+  QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "GTiff" ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
+  QVERIFY( rl->isValid() );
+  QCOMPARE( res.at( 1 ).layerNumber(), 1 );
+  QCOMPARE( res.at( 1 ).name(), QStringLiteral( "landsat_b1.tif" ) );
+  QCOMPARE( res.at( 1 ).description(), QString() );
+  QCOMPARE( res.at( 1 ).uri(), QStringLiteral( "/vsitar/%1/zip/testtar.tgz/landsat_b1.tif" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 1 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 1 ).type(), QgsMapLayerType::RasterLayer );
+  QCOMPARE( res.at( 1 ).driverName(), QStringLiteral( "GTiff" ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 1 ).toLayer( options ) ) );
+  QVERIFY( rl->isValid() );
+  QCOMPARE( res.at( 2 ).layerNumber(), 1 );
+  QCOMPARE( res.at( 2 ).name(), QStringLiteral( "landsat_b1.vrt" ) );
+  QCOMPARE( res.at( 2 ).description(), QString() );
+  QCOMPARE( res.at( 2 ).uri(), QStringLiteral( "/vsitar/%1/zip/testtar.tgz/landsat_b1.vrt" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 2 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 2 ).type(), QgsMapLayerType::RasterLayer );
+  QCOMPARE( res.at( 2 ).driverName(), QStringLiteral( "VRT" ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 2 ).toLayer( options ) ) );
+  QVERIFY( rl->isValid() );
+
+  // multi-layer archive, but with specific suffix specified
+  res = gdalMetadata->querySublayers( QStringLiteral( "/vsitar/" ) + QStringLiteral( TEST_DATA_DIR ) + "/zip/testtar.tgz/folder/folder2/landsat_b2.tif" );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 1 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "folder/folder2/landsat_b2.tif" ) );
+  QCOMPARE( res.at( 0 ).description(), QString() );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "/vsitar/%1/zip/testtar.tgz/folder/folder2/landsat_b2.tif" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
+  QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "GTiff" ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
+  QVERIFY( rl->isValid() );
+  res = gdalMetadata->querySublayers( QStringLiteral( "/vsitar/" ) + QStringLiteral( TEST_DATA_DIR ) + "/zip/testtar.tgz/landsat_b1.tif" );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 1 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "landsat_b1.tif" ) );
+  QCOMPARE( res.at( 0 ).description(), QString() );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "/vsitar/%1/zip/testtar.tgz/landsat_b1.tif" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
+  QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "GTiff" ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
+  QVERIFY( rl->isValid() );
+}
+
+void TestQgsGdalProvider::testGdalProviderQuerySublayersFastScan()
+{
+  // test querying sub layers for a mesh layer
+  QgsProviderMetadata *gdalMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "gdal" ) );
+
+  // invalid uri
+  QList< QgsProviderSublayerDetails >res = gdalMetadata->querySublayers( QString(), Qgis::SublayerQueryFlag::FastScan );
+  QVERIFY( res.empty() );
+
+  // not a raster
+  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/lines.shp", Qgis::SublayerQueryFlag::FastScan );
+  QVERIFY( res.empty() );
+
+  // single layer raster
+  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif", Qgis::SublayerQueryFlag::FastScan );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "landsat" ) );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
+  QVERIFY( !res.at( 0 ).skippedContainerScan() );
+
+  // geopackage with two raster layers
+  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/mixed_layers.gpkg", Qgis::SublayerQueryFlag::FastScan );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "mixed_layers" ) );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( TEST_DATA_DIR ) + "/mixed_layers.gpkg" );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
+  QVERIFY( res.at( 0 ).skippedContainerScan() );
+
+  // netcdf file
+  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc", Qgis::SublayerQueryFlag::FastScan );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "trap_steady_05_3D" ) );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc" );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
+  QVERIFY( res.at( 0 ).skippedContainerScan() );
+
+  // netcdf with open options
+  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc|option:HONOUR_VALID_RANGE=YES", Qgis::SublayerQueryFlag::FastScan );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "trap_steady_05_3D" ) );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc|option:HONOUR_VALID_RANGE=YES" );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
+  QVERIFY( res.at( 0 ).skippedContainerScan() );
+
+  // aigrid, pointing to .adf file
+  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/aigrid/hdr.adf", Qgis::SublayerQueryFlag::FastScan );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "aigrid" ) );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "%1/aigrid/hdr.adf" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
+  QVERIFY( !res.at( 0 ).skippedContainerScan() );
+
+  // vector vrt
+  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/vector_vrt.vrt", Qgis::SublayerQueryFlag::FastScan );
+  QCOMPARE( res.count(), 0 );
+
+  // raster vrt
+  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/raster/hub13263.vrt", Qgis::SublayerQueryFlag::FastScan );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "hub13263" ) );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( TEST_DATA_DIR ) + "/raster/hub13263.vrt" );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
+  QVERIFY( !res.at( 0 ).skippedContainerScan() );
 }
 
 QGSTEST_MAIN( TestQgsGdalProvider )

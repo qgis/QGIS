@@ -21,11 +21,14 @@
 #include "qgis_sip.h"
 #include "qgssymbolwidgetcontext.h"
 #include "qgssymbollayer.h"
+
 #include <QWidget>
 #include <QStandardItemModel>
 
 class QgsVectorLayer;
 class QgsMapCanvas;
+class QgsMarkerSymbol;
+class QgsLineSymbol;
 
 /**
  * \ingroup gui
@@ -137,6 +140,8 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
      */
     QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
+    ~QgsSimpleLineSymbolLayerWidget() override;
+
     /**
      * Creates a new QgsSimpleLineSymbolLayerWidget.
      * \param vl associated vector layer
@@ -200,6 +205,7 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
      * \param parent parent widget
      */
     QgsSimpleMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsSimpleMarkerSymbolLayerWidget() override;
 
     /**
      * Creates a new QgsSimpleMarkerSymbolLayerWidget.
@@ -233,6 +239,7 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
     void setShape();
     void updateAssistantSymbol();
     void penJoinStyleChanged();
+    void penCapStyleChanged();
 
   private:
 
@@ -314,6 +321,7 @@ class GUI_EXPORT QgsFilledMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
      * \param parent parent widget
      */
     QgsFilledMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsFilledMarkerSymbolLayerWidget() override;
 
     /**
      * Creates a new QgsFilledMarkerSymbolLayerWidget.
@@ -517,7 +525,7 @@ class QgsHashedLineSymbolLayer;
 /**
  * \ingroup gui
  * \class QgsHashedLineSymbolLayerWidget
- * Widget for controlling the properties of a QgsHashedLineSymbolLayer.
+ * \brief Widget for controlling the properties of a QgsHashedLineSymbolLayer.
  * \since QGIS 3.8
  */
 class GUI_EXPORT QgsHashedLineSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetHashedLine
@@ -588,6 +596,7 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
      * \param parent parent widget
      */
     QgsSvgMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsSvgMarkerSymbolLayerWidget() override;
 
     /**
      * Creates a new QgsSvgMarkerSymbolLayerWidget.
@@ -918,7 +927,7 @@ class QgsRandomMarkerFillSymbolLayer;
  * \ingroup gui
  * \class QgsRandomMarkerFillSymbolLayerWidget
  *
- * Widget for controlling the properties of a QgsRandomMarkerFillSymbolLayer.
+ * \brief Widget for controlling the properties of a QgsRandomMarkerFillSymbolLayer.
  *
  * \since QGIS 3.12
  */
@@ -979,6 +988,7 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, p
      * \param parent parent widget
      */
     QgsFontMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsFontMarkerSymbolLayerWidget() override;
 
     /**
      * Creates a new QgsFontMarkerSymbolLayerWidget.

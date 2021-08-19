@@ -81,21 +81,21 @@ QUrl QgsServerOgcApi::sanitizeUrl( const QUrl &url )
 void QgsServerOgcApi::executeRequest( const QgsServerApiContext &context ) const
 {
   // Get url
-  auto path { sanitizeUrl( context.request()->url() ).path() };
+  const auto path { sanitizeUrl( context.request()->url() ).path() };
   // Find matching handler
   auto hasMatch { false };
-  for ( const auto &h : mHandlers )
+  for ( const auto &handler : mHandlers )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Checking API path %1 for %2 " ).arg( path, h->path().pattern() ), QStringLiteral( "Server" ), Qgis::Info );
-    if ( h->path().match( path ).hasMatch() )
+    QgsMessageLog::logMessage( QStringLiteral( "Checking API path %1 for %2 " ).arg( path, handler->path().pattern() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+    if ( handler->path().match( path ).hasMatch() )
     {
       hasMatch = true;
       // Execute handler
-      QgsMessageLog::logMessage( QStringLiteral( "API %1: found handler %2" ).arg( name(), QString::fromStdString( h->operationId() ) ), QStringLiteral( "Server" ), Qgis::Info );
+      QgsMessageLog::logMessage( QStringLiteral( "API %1: found handler %2" ).arg( name(), QString::fromStdString( handler->operationId() ) ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
       // May throw QgsServerApiBadRequestException or JSON exceptions on serializing
       try
       {
-        h->handleRequest( context );
+        handler->handleRequest( context );
       }
       catch ( json::exception &ex )
       {
@@ -123,7 +123,7 @@ const QHash<QgsServerOgcApi::ContentType, QList<QgsServerOgcApi::ContentType> > 
 
 std::string QgsServerOgcApi::relToString( const Rel &rel )
 {
-  static QMetaEnum metaEnum = QMetaEnum::fromType<QgsServerOgcApi::Rel>();
+  static const QMetaEnum metaEnum = QMetaEnum::fromType<QgsServerOgcApi::Rel>();
   std::string val { metaEnum.valueToKey( rel ) };
   std::replace( val.begin(), val.end(), '_', '-' );
   return val;
@@ -131,14 +131,14 @@ std::string QgsServerOgcApi::relToString( const Rel &rel )
 
 QString QgsServerOgcApi::contentTypeToString( const ContentType &ct )
 {
-  static QMetaEnum metaEnum = QMetaEnum::fromType<ContentType>();
+  static const QMetaEnum metaEnum = QMetaEnum::fromType<ContentType>();
   QString result { metaEnum.valueToKey( ct ) };
   return result.replace( '_', '-' );
 }
 
 std::string QgsServerOgcApi::contentTypeToStdString( const ContentType &ct )
 {
-  static QMetaEnum metaEnum = QMetaEnum::fromType<ContentType>();
+  static const QMetaEnum metaEnum = QMetaEnum::fromType<ContentType>();
   return metaEnum.valueToKey( ct );
 }
 
@@ -167,7 +167,7 @@ QgsServerOgcApi::ContentType QgsServerOgcApi::contenTypeFromExtension( const std
   // Default to JSON, but log a warning!
   QgsMessageLog::logMessage( QStringLiteral( "Content type for extension %1 not found! Returning default (JSON)" ).arg( exts ),
                              QStringLiteral( "Server" ),
-                             Qgis::Warning );
+                             Qgis::MessageLevel::Warning );
   return QgsServerOgcApi::ContentType::JSON;
 }
 

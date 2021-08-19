@@ -64,7 +64,7 @@ QgsSourceFieldsProperties::QgsSourceFieldsProperties( QgsVectorLayer *layer, QWi
   mFieldsList->setHorizontalHeaderItem( AttrLengthCol, new QTableWidgetItem( tr( "Length" ) ) );
   mFieldsList->setHorizontalHeaderItem( AttrPrecCol, new QTableWidgetItem( tr( "Precision" ) ) );
   mFieldsList->setHorizontalHeaderItem( AttrCommentCol, new QTableWidgetItem( tr( "Comment" ) ) );
-  const auto configurationFlagsWi = new QTableWidgetItem( QStringLiteral( "Configuration" ) );
+  const auto configurationFlagsWi = new QTableWidgetItem( tr( "Configuration" ) );
   configurationFlagsWi->setToolTip( tr( "Configures the field" ) );
   mFieldsList->setHorizontalHeaderItem( AttrConfigurationFlagsCol, configurationFlagsWi );
   mFieldsList->setHorizontalHeaderItem( AttrAliasCol, new QTableWidgetItem( tr( "Alias" ) ) );
@@ -107,7 +107,7 @@ void QgsSourceFieldsProperties::loadRows()
 
 void QgsSourceFieldsProperties::updateFieldRenamingStatus()
 {
-  bool canRenameFields = mLayer->isEditable() && ( mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::RenameAttributes ) && !mLayer->readOnly();
+  const bool canRenameFields = mLayer->isEditable() && ( mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::RenameAttributes ) && !mLayer->readOnly();
 
   for ( int row = 0; row < mFieldsList->rowCount(); ++row )
   {
@@ -123,7 +123,7 @@ void QgsSourceFieldsProperties::updateExpression()
   QToolButton *btn = qobject_cast<QToolButton *>( sender() );
   Q_ASSERT( btn );
 
-  int index = btn->property( "Index" ).toInt();
+  const int index = btn->property( "Index" ).toInt();
 
   const QString exp = mLayer->expressionField( index );
 
@@ -142,19 +142,19 @@ void QgsSourceFieldsProperties::updateExpression()
 
 void QgsSourceFieldsProperties::attributeAdded( int idx )
 {
-  bool sorted = mFieldsList->isSortingEnabled();
+  const bool sorted = mFieldsList->isSortingEnabled();
   if ( sorted )
     mFieldsList->setSortingEnabled( false );
 
   const QgsFields &fields = mLayer->fields();
-  int row = mFieldsList->rowCount();
+  const int row = mFieldsList->rowCount();
   mFieldsList->insertRow( row );
   setRow( row, idx, fields.at( idx ) );
   mFieldsList->setCurrentCell( row, idx );
 
-  QColor expressionColor = QColor( 103, 0, 243, 44 );
-  QColor joinColor = QColor( 0, 243, 79, 44 );
-  QColor defaultColor = QColor( 252, 255, 79, 44 );
+  const QColor expressionColor = QColor( 103, 0, 243, 44 );
+  const QColor joinColor = QColor( 0, 243, 79, 44 );
+  const QColor defaultColor = QColor( 252, 255, 79, 44 );
 
   for ( int i = 0; i < mFieldsList->columnCount(); i++ )
   {
@@ -243,14 +243,14 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
                                << AttrCommentCol;
 
   const auto constNotEditableCols = notEditableCols;
-  for ( int i : constNotEditableCols )
+  for ( const int i : constNotEditableCols )
   {
     if ( notEditableCols[i] != AttrCommentCol || mLayer->fields().fieldOrigin( idx ) != QgsFields::OriginExpression )
       mFieldsList->item( row, i )->setFlags( mFieldsList->item( row, i )->flags() & ~Qt::ItemIsEditable );
     if ( notEditableCols[i] == AttrAliasCol )
       mFieldsList->item( row, i )->setToolTip( tr( "Edit alias in the Form config tab" ) );
   }
-  bool canRenameFields = mLayer->isEditable() && ( mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::RenameAttributes ) && !mLayer->readOnly();
+  const bool canRenameFields = mLayer->isEditable() && ( mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::RenameAttributes ) && !mLayer->readOnly();
   if ( canRenameFields )
     mFieldsList->item( row, AttrNameCol )->setFlags( mFieldsList->item( row, AttrNameCol )->flags() | Qt::ItemIsEditable );
   else
@@ -292,7 +292,7 @@ void QgsSourceFieldsProperties::apply()
 {
   for ( int i = 0; i < mFieldsList->rowCount(); i++ )
   {
-    int idx = mFieldsList->item( i, AttrIdCol )->data( Qt::DisplayRole ).toInt();
+    const int idx = mFieldsList->item( i, AttrIdCol )->data( Qt::DisplayRole ).toInt();
     QgsField::ConfigurationFlags flags = mLayer->fieldConfigurationFlags( idx );
 
     QgsCheckableComboBox *cb = qobject_cast<QgsCheckableComboBox *>( mFieldsList->cellWidget( i, AttrConfigurationFlagsCol ) );
@@ -301,9 +301,9 @@ void QgsSourceFieldsProperties::apply()
       QgsCheckableItemModel *model = cb->model();
       for ( int r = 0; r < model->rowCount(); ++r )
       {
-        QModelIndex index = model->index( r, 0 );
-        QgsField::ConfigurationFlag flag = model->data( index, Qt::UserRole ).value<QgsField::ConfigurationFlag>();
-        bool active = model->data( index, Qt::CheckStateRole ).value<Qt::CheckState>() == Qt::Checked ? true : false;
+        const QModelIndex index = model->index( r, 0 );
+        const QgsField::ConfigurationFlag flag = model->data( index, Qt::UserRole ).value<QgsField::ConfigurationFlag>();
+        const bool active = model->data( index, Qt::CheckStateRole ).value<Qt::CheckState>() == Qt::Checked ? true : false;
         flags.setFlag( flag, active );
       }
       mLayer->setFieldConfigurationFlags( idx, flags );
@@ -321,6 +321,11 @@ void QgsSourceFieldsProperties::editingToggled()
 
 void QgsSourceFieldsProperties::addAttributeClicked()
 {
+  if ( !mLayer || !mLayer->dataProvider() )
+  {
+    return;
+  }
+
   QgsAddAttrDialog dialog( mLayer, this );
   if ( dialog.exec() == QDialog::Accepted )
   {
@@ -338,7 +343,7 @@ void QgsSourceFieldsProperties::deleteAttributeClicked()
   {
     if ( item->column() == 0 )
     {
-      int idx = mIndexedWidgets.indexOf( item );
+      const int idx = mIndexedWidgets.indexOf( item );
       if ( idx < 0 )
         continue;
 
@@ -364,7 +369,7 @@ void QgsSourceFieldsProperties::deleteAttributeClicked()
 
 void QgsSourceFieldsProperties::calculateFieldClicked()
 {
-  if ( !mLayer )
+  if ( !mLayer || !mLayer->dataProvider() )
   {
     return;
   }
@@ -380,7 +385,7 @@ void QgsSourceFieldsProperties::attributesListCellChanged( int row, int column )
 {
   if ( column == AttrNameCol && mLayer && mLayer->isEditable() )
   {
-    int idx = mIndexedWidgets.indexOf( mFieldsList->item( row, AttrIdCol ) );
+    const int idx = mIndexedWidgets.indexOf( mFieldsList->item( row, AttrIdCol ) );
 
     QTableWidgetItem *nameItem = mFieldsList->item( row, column );
     //avoiding that something will be changed, just because this is triggered by simple re-sorting
@@ -438,7 +443,7 @@ void QgsSourceFieldsProperties::updateButtons()
     {
       if ( item->column() == 0 )
       {
-        int idx = mIndexedWidgets.indexOf( item );
+        const int idx = mIndexedWidgets.indexOf( item );
         if ( mLayer->fields().fieldOrigin( idx ) != QgsFields::OriginExpression )
         {
           mDeleteAttributeButton->setEnabled( false );

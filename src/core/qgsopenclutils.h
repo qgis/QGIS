@@ -31,7 +31,13 @@
 #define CL_TARGET_OPENCL_VERSION 200
 #endif
 
+#include "qgsconfig.h"
+
+#ifdef OPENCL_USE_NEW_HEADER
+#include <CL/opencl.hpp>
+#else
 #include <CL/cl2.hpp>
+#endif
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -53,18 +59,18 @@
  * Usage:
  *
  * \code{.cpp}
-   // This will check if OpenCL is enabled in user options and if there is a suitable
-   // device, if a device is found it is initialized.
-   if ( QgsOpenClUtils::enabled() && QgsOpenClUtils::available() )
-   {
-      // Use the default context
-      cl::Context ctx = QgsOpenClUtils::context();
-      cl::CommandQueue queue( ctx );
-      // Load the program from a standard location and build it
-      cl::Program program = QgsOpenClUtils::buildProgram( ctx, QgsOpenClUtils::sourceFromBaseName( QStringLiteral ( "hillshade" ) ) );
-      // Continue with the usual OpenCL buffer, kernel and execution
-      ...
-   }
+ * // This will check if OpenCL is enabled in user options and if there is a suitable
+ * // device, if a device is found it is initialized.
+ * if ( QgsOpenClUtils::enabled() && QgsOpenClUtils::available() )
+ * {
+ *    // Use the default context
+ *    cl::Context ctx = QgsOpenClUtils::context();
+ *    cl::CommandQueue queue( ctx );
+ *    // Load the program from a standard location and build it
+ *    cl::Program program = QgsOpenClUtils::buildProgram( ctx, QgsOpenClUtils::sourceFromBaseName( QStringLiteral ( "hillshade" ) ) );
+ *    // Continue with the usual OpenCL buffer, kernel and execution
+ *    ...
+ * }
  * \endcode
  *
  * \note not available in Python bindings

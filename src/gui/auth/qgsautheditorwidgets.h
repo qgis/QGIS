@@ -25,7 +25,7 @@
 
 /**
  * \ingroup gui
- * Dialog for viewing available authentication method plugins
+ * \brief Dialog for viewing available authentication method plugins
  */
 class GUI_EXPORT QgsAuthMethodPlugins : public QDialog, private Ui::QgsAuthMethodPlugins
 {
@@ -52,7 +52,7 @@ class GUI_EXPORT QgsAuthMethodPlugins : public QDialog, private Ui::QgsAuthMetho
 
 /**
  * \ingroup gui
- * Wrapper widget for available authentication editors
+ * \brief Wrapper widget for available authentication editors
  */
 class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEditors
 {
@@ -69,6 +69,12 @@ class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEdito
   private slots:
     void btnCertManager_clicked();
     void btnAuthPlugins_clicked();
+
+    //! Import authentication configurations from a XML file
+    void importAuthenticationConfigs();
+
+    //! Exports selected authentication configurations to a XML file
+    void exportSelectedAuthenticationConfigs();
 
     //! Sets the cached master password (and verifies it if its hash is in authentication database)
     void setMasterPassword();
@@ -109,6 +115,8 @@ class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEdito
     QgsMessageBar *messageBar();
 
     QMenu *mAuthUtilitiesMenu = nullptr;
+    QAction *mActionExportSelectedAuthenticationConfigs = nullptr;
+    QAction *mActionImportAuthenticationConfigs = nullptr;
     QAction *mActionSetMasterPassword = nullptr;
     QAction *mActionClearCachedMasterPassword = nullptr;
     QAction *mActionResetMasterPassword = nullptr;
@@ -121,6 +129,7 @@ class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEdito
     QAction *mActionPasswordHelperLoggingEnable = nullptr;
     QAction *mActionClearAccessCacheNow = nullptr;
     QAction *mActionAutoClearAccessCache = nullptr;
+
 };
 
 #endif // QGSAUTHEDITORWIDGETS_H

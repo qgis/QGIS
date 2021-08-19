@@ -13,7 +13,7 @@
 
 class QgsGlowEffect : QgsPaintEffect
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for paint effect which draw a glow inside or outside a
 picture.
 
@@ -348,7 +348,7 @@ the picture.
 
 class QgsOuterGlowEffect : QgsGlowEffect
 {
-%Docstring
+%Docstring(signature="appended")
 A paint effect which draws a glow outside of a picture.
 
 .. versionadded:: 2.9
@@ -384,7 +384,7 @@ Creates a new QgsOuterGlowEffect effect from a properties string map.
 
 class QgsInnerGlowEffect : QgsGlowEffect
 {
-%Docstring
+%Docstring(signature="appended")
 A paint effect which draws a glow within a picture.
 
 .. versionadded:: 2.9

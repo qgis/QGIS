@@ -12,7 +12,7 @@
 
 class QgsCurveTransform
 {
-%Docstring
+%Docstring(signature="appended")
 Handles scaling of input values to output values by using a curve created
 from smoothly joining a number of set control points.
 
@@ -141,7 +141,7 @@ You can use :py:class:`QgsXmlUtils`.writeVariant to load it from an XML document
 
 class QgsPropertyTransformer
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for objects which transform the calculated value of a property.
 Possible uses include transformers which map a value into a scaled size or color from a gradient.
 
@@ -315,7 +315,7 @@ This applies any curve transforms which may exist on the transformer.
 
 class QgsGenericNumericTransformer : QgsPropertyTransformer
 {
-%Docstring
+%Docstring(signature="appended")
 QgsPropertyTransformer subclass for scaling an input numeric value into an output numeric value.
 
 .. versionadded:: 3.0
@@ -449,7 +449,7 @@ Sets the exponent for an exponential expression.
 
 class QgsSizeScaleTransformer : QgsPropertyTransformer
 {
-%Docstring
+%Docstring(signature="appended")
 :py:class:`QgsPropertyTransformer` subclass for scaling a value into a size according to various
 scaling methods.
 
@@ -616,7 +616,7 @@ the size from a value).
 
 class QgsColorRampTransformer : QgsPropertyTransformer
 {
-%Docstring
+%Docstring(signature="appended")
 :py:class:`QgsPropertyTransformer` subclass for transforming a numeric value into a color from a
 color ramp.
 

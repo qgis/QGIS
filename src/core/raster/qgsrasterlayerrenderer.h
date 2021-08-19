@@ -38,7 +38,7 @@ class QgsRasterLayerRenderer;
 
 /**
  * \ingroup core
- * Specific internal feedback class to provide preview of raster layer rendering.
+ * \brief Specific internal feedback class to provide preview of raster layer rendering.
  * \note not available in Python bindings
  * \since QGIS 3.0
  */
@@ -62,7 +62,7 @@ class CORE_EXPORT QgsRasterLayerRendererFeedback : public QgsRasterBlockFeedback
 
 /**
  * \ingroup core
- * Implementation of threaded rendering for raster layers.
+ * \brief Implementation of threaded rendering for raster layers.
  *
  * \note not available in Python bindings
  * \since QGIS 2.4

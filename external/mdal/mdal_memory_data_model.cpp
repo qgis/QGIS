@@ -117,6 +117,106 @@ size_t MDAL::MemoryDataset2D::vectorData( size_t indexStart, size_t count, doubl
   return copyValues;
 }
 
+MDAL::MemoryDataset3D::MemoryDataset3D(
+  DatasetGroup *grp,
+  size_t volumes,
+  size_t maxVerticalLevelCount,
+  const int *verticalLevelCounts,
+  const double *verticalExtrusions
+) : Dataset3D( grp, volumes, maxVerticalLevelCount ),
+  mValues( group()->isScalar() ? volumes : 2 * volumes,
+           std::numeric_limits<double>::quiet_NaN() ),
+  mFaceToVolume( grp->mesh()->facesCount(), 0 ),
+  mVerticalLevelCounts( verticalLevelCounts, verticalLevelCounts + grp->mesh()->facesCount() ),
+  mVerticalExtrusions( verticalExtrusions, verticalExtrusions + grp->mesh()->facesCount() + volumes )
+{
+  updateIndices();
+}
+
+MDAL::MemoryDataset3D::~MemoryDataset3D() = default;
+
+void MDAL::MemoryDataset3D::updateIndices()
+{
+  size_t offset = 0;
+  for ( size_t i = 0; i < mVerticalLevelCounts.size(); i++ )
+  {
+    mFaceToVolume[i] = offset;
+    offset += mVerticalLevelCounts[i];
+    if ( offset > volumesCount() )
+    {
+      MDAL::Log::error( Err_InvalidData, "Incompatible volume count" );
+      return;
+    }
+  }
+}
+
+size_t MDAL::MemoryDataset3D::verticalLevelCountData( size_t indexStart, size_t count, int *buffer )
+{
+  size_t nValues = group()->mesh()->facesCount();
+  assert( mVerticalLevelCounts.size() == nValues );
+
+  if ( ( count < 1 ) || ( indexStart >= nValues ) )
+    return 0;
+
+  size_t copyValues = std::min( nValues - indexStart, count );
+  memcpy( buffer, mVerticalLevelCounts.data() + indexStart, copyValues * sizeof( int ) );
+  return copyValues;
+}
+
+size_t MDAL::MemoryDataset3D::verticalLevelData( size_t indexStart, size_t count, double *buffer )
+{
+  size_t nValues = group()->mesh()->facesCount() + valuesCount();
+  assert( mVerticalExtrusions.size() == nValues );
+
+  if ( ( count < 1 ) || ( indexStart >= nValues ) )
+    return 0;
+
+  size_t copyValues = std::min( nValues - indexStart, count );
+  memcpy( buffer, mVerticalExtrusions.data() + indexStart, copyValues * sizeof( double ) );
+  return copyValues;
+}
+
+size_t MDAL::MemoryDataset3D::faceToVolumeData( size_t indexStart, size_t count, int *buffer )
+{
+  size_t nValues = group()->mesh()->facesCount();
+  assert( mFaceToVolume.size() == nValues );
+
+  if ( ( count < 1 ) || ( indexStart >= nValues ) )
+    return 0;
+
+  size_t copyValues = std::min( nValues - indexStart, count );
+  memcpy( buffer, mFaceToVolume.data() + indexStart, copyValues * sizeof( int ) );
+  return copyValues;
+}
+
+size_t MDAL::MemoryDataset3D::scalarVolumesData( size_t indexStart, size_t count, double *buffer )
+{
+  assert( group()->isScalar() ); //checked in C API interface
+  size_t nValues = valuesCount();
+  assert( mValues.size() == nValues );
+
+  if ( ( count < 1 ) || ( indexStart >= nValues ) )
+    return 0;
+
+  size_t copyValues = std::min( nValues - indexStart, count );
+  memcpy( buffer, mValues.data() + indexStart, copyValues * sizeof( double ) );
+  return copyValues;
+}
+
+size_t MDAL::MemoryDataset3D::vectorVolumesData( size_t indexStart, size_t count, double *buffer )
+{
+  assert( !group()->isScalar() ); //checked in C API interface
+  size_t nValues = valuesCount();
+  assert( mValues.size() == nValues * 2 );
+
+  if ( ( count < 1 ) || ( indexStart >= nValues ) )
+    return 0;
+
+  size_t copyValues = std::min( nValues - indexStart, count );
+  memcpy( buffer, mValues.data() + 2 * indexStart, 2 * copyValues * sizeof( double ) );
+  return copyValues;
+}
+
 MDAL::MemoryMesh::MemoryMesh( const std::string &driverName,
                               size_t faceVerticesMaximumCount,
                               const std::string &uri )

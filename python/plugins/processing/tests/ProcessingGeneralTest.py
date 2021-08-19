@@ -44,7 +44,6 @@ class TestProcessingGeneral(unittest.TestCase):
         start_app()
         from processing.core.Processing import Processing
         Processing.initialize()
-        QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
         cls.cleanup_paths = []
         cls.in_place_layers = {}
         cls.vector_layer_params = {}

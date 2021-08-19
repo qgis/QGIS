@@ -12,7 +12,7 @@
 
 class QgsRasterLayerTemporalProperties : QgsMapLayerTemporalProperties
 {
-%Docstring
+%Docstring(signature="appended")
 Implementation of map layer temporal properties for raster layers.
 
 .. versionadded:: 3.14
@@ -32,11 +32,14 @@ The ``enabled`` argument specifies whether the temporal properties are initially
 
     virtual bool isVisibleInTemporalRange( const QgsDateTimeRange &range ) const;
 
+    virtual QList< QgsDateTimeRange > allTemporalRanges( QgsMapLayer *layer ) const;
+
 
     enum TemporalMode
     {
       ModeFixedTemporalRange,
       ModeTemporalRangeFromDataProvider,
+      ModeRedrawLayerOnly,
     };
 
     TemporalMode mode() const;

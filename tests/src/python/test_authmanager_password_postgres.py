@@ -6,7 +6,9 @@ This is an integration test for QGIS Desktop Auth Manager postgres provider that
 checks if QGIS can use a stored auth manager auth configuration to access
 a Password protected postgres.
 
-It uses a docker container as postgres/postgis server with certificates from tests/testdata/auth_system/certs_keys
+From build dir, run: ctest -R PyQgsAuthManagerPasswordPostgresTest -V
+
+It uses a docker container as postgres/postgis server with certificates from tests/testdata/auth_system/certs_keys_2048
 
 Use docker-compose -f .ci/travis/linux/docker-compose.travis.yml up postgres to start the server.
 
@@ -96,8 +98,8 @@ class TestAuthManager(unittest.TestCase):
 
         authm = QgsApplication.authManager()
         assert (authm.setMasterPassword('masterpassword', True))
-        cls.certsdata_path = os.path.join(unitTestDataPath('auth_system'), 'certs_keys')
-        cls.sslrootcert_path = os.path.join(cls.certsdata_path, 'chains_subissuer-issuer-root_issuer2-root2.pem')
+        cls.certsdata_path = os.path.join(unitTestDataPath('auth_system'), 'certs_keys_2048')
+        cls.sslrootcert_path = os.path.join(cls.certsdata_path, 'qgis_ca.crt')
 
     def setUp(self):
         """Run before each test."""

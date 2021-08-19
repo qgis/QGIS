@@ -12,7 +12,7 @@
 
 class QgsVectorTileWriter
 {
-%Docstring
+%Docstring(signature="appended")
 Takes care of writing vector tiles. The intended use is to set up the class
 by setting the destination URI, extent, zoom level range and input vector
 layers. Then with a call to :py:func:`~writeTiles` the data gets written. In case
@@ -62,7 +62,7 @@ and "maxzoom".
 
     class Layer
 {
-%Docstring
+%Docstring(signature="appended")
 Configuration of a single input vector layer to be included in the output
 
 .. versionadded:: 3.14

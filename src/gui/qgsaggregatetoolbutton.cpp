@@ -50,7 +50,7 @@ void QgsAggregateToolButton::aboutToShowMenu()
     setActive( false );
   } );
 
-  for ( const auto &aggregate : qgis::as_const( mAvailableAggregates ) )
+  for ( const auto &aggregate : std::as_const( mAvailableAggregates ) )
   {
     QAction *action = mMenu->addAction( aggregate.name );
     connect( action, &QAction::triggered, this, [ this, aggregate ]
@@ -98,7 +98,7 @@ void QgsAggregateToolButton::setAggregate( const QString &aggregate )
 
   mAggregate = QString();
 
-  for ( const auto &agg : qgis::as_const( mAvailableAggregates ) )
+  for ( const auto &agg : std::as_const( mAvailableAggregates ) )
   {
     if ( agg.function == aggregate )
     {

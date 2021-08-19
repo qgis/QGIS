@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>394</width>
-    <height>133</height>
+    <height>134</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -127,21 +127,24 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>btnDiffuse</tabstop>
+  <tabstop>mDiffuseDataDefinedButton</tabstop>
   <tabstop>btnAmbient</tabstop>
+  <tabstop>mAmbientDataDefinedButton</tabstop>
   <tabstop>btnSpecular</tabstop>
+  <tabstop>mSpecularDataDefinedButton</tabstop>
   <tabstop>spinShininess</tabstop>
  </tabstops>
  <resources/>

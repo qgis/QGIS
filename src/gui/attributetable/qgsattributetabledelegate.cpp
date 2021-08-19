@@ -66,11 +66,11 @@ QWidget *QgsAttributeTableDelegate::createEditor( QWidget *parent, const QStyleO
   if ( !vl )
     return nullptr;
 
-  int fieldIdx = index.model()->data( index, QgsAttributeTableModel::FieldIndexRole ).toInt();
+  const int fieldIdx = index.model()->data( index, QgsAttributeTableModel::FieldIndexRole ).toInt();
   QgsAttributeEditorContext context( masterModel( index.model() )->editorContext(), QgsAttributeEditorContext::Popup );
 
   // Update the editor form context with the feature being edited
-  QgsFeatureId fid( index.model()->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong() );
+  const QgsFeatureId fid( index.model()->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong() );
   context.setFormFeature( vl->getFeature( fid ) );
 
   QgsEditorWidgetWrapper *eww = QgsGui::editorWidgetRegistry()->create( vl, fieldIdx, nullptr, parent, context );
@@ -103,9 +103,9 @@ void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemMode
   if ( !vl )
     return;
 
-  int fieldIdx = model->data( index, QgsAttributeTableModel::FieldIndexRole ).toInt();
-  QgsFeatureId fid = model->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong();
-  QVariant oldValue = model->data( index, Qt::EditRole );
+  const int fieldIdx = model->data( index, QgsAttributeTableModel::FieldIndexRole ).toInt();
+  const QgsFeatureId fid = model->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong();
+  const QVariant oldValue = model->data( index, Qt::EditRole );
 
   QgsEditorWidgetWrapper *eww = QgsEditorWidgetWrapper::fromWidget( editor );
   if ( !eww )
@@ -145,7 +145,7 @@ void QgsAttributeTableDelegate::setEditorData( QWidget *editor, const QModelInde
   if ( !eww )
     return;
 
-  QVariant value = index.model()->data( index, Qt::EditRole );
+  const QVariant value = index.model()->data( index, Qt::EditRole );
   const QStringList additionalFields = eww->additionalFields();
 
   if ( !additionalFields.empty() )
@@ -153,9 +153,9 @@ void QgsAttributeTableDelegate::setEditorData( QWidget *editor, const QModelInde
     const QgsAttributeTableModel *model = masterModel( index.model() );
     if ( model )
     {
-      QgsFeature feat = model->feature( index );
+      const QgsFeature feat = model->feature( index );
       QVariantList additionalFieldValues;
-      for ( QString fieldName : additionalFields )
+      for ( const QString &fieldName : additionalFields )
       {
         additionalFieldValues << feat.attribute( fieldName );
       }
@@ -175,7 +175,7 @@ void QgsAttributeTableDelegate::setFeatureSelectionModel( QgsFeatureSelectionMod
 
 void QgsAttributeTableDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  QgsAttributeTableFilterModel::ColumnType columnType = static_cast<QgsAttributeTableFilterModel::ColumnType>( index.model()->data( index, QgsAttributeTableFilterModel::TypeRole ).toInt() );
+  const QgsAttributeTableFilterModel::ColumnType columnType = static_cast<QgsAttributeTableFilterModel::ColumnType>( index.model()->data( index, QgsAttributeTableFilterModel::TypeRole ).toInt() );
 
   if ( columnType == QgsAttributeTableFilterModel::ColumnTypeActionButton )
   {
@@ -183,7 +183,7 @@ void QgsAttributeTableDelegate::paint( QPainter *painter, const QStyleOptionView
   }
   else
   {
-    QgsFeatureId fid = index.model()->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong();
+    const QgsFeatureId fid = index.model()->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong();
 
     QStyleOptionViewItem myOpt = option;
 
@@ -200,9 +200,9 @@ void QgsAttributeTableDelegate::paint( QPainter *painter, const QStyleOptionView
 
     if ( option.state & QStyle::State_HasFocus )
     {
-      QRect r = option.rect.adjusted( 1, 1, -1, -1 );
-      QPen p( QBrush( QColor( 0, 255, 127 ) ), 2 );
-      QgsScopedQPainterState painterState( painter );
+      const QRect r = option.rect.adjusted( 1, 1, -1, -1 );
+      const QPen p( QBrush( QColor( 0, 255, 127 ) ), 2 );
+      const QgsScopedQPainterState painterState( painter );
       painter->setPen( p );
       painter->drawRect( r );
     }

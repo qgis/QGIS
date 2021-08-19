@@ -21,10 +21,12 @@
 #include "ui_qgssublayersdialogbase.h"
 #include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis.h"
 
 /**
  * \ingroup gui
  * \class QgsSublayersDialog
+ * \deprecated Will be removed in QGIS 4.0
  */
 class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDialogBase
 {
@@ -33,7 +35,7 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
 
     /**
      * Prompt behavior of the QgsSublayersDialog
-     * \since QGIS 3.14
+     * \deprecated Use Qgis::SublayerPromptMode instead
      */
     enum PromptMode
     {
@@ -74,11 +76,24 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
      */
     struct LayerDefinition
     {
-      int layerId = -1 ;        //!< Identifier of the layer (one unique layer id may have multiple types though)
-      QString layerName;  //!< Name of the layer (not necessarily unique)
-      int count = -1 ;          //!< Number of features (might be unused)
-      QString type;       //!< Extra type depending on the use (e.g. geometry type for vector sublayers)
-      QString description;  //!< Description. Added in QGIS 3.10
+      //! Identifier of the layer (one unique layer id may have multiple types though)
+      int layerId = -1;
+
+      //! Name of the layer (not necessarily unique)
+      QString layerName;
+
+      //! Number of features (might be unused)
+      int count = -1;
+
+      //! Extra type depending on the use (e.g. geometry type for vector sublayers)
+      QString type;
+
+      /**
+       * Description.
+       *
+       * \since QGIS 3.10
+       */
+      QString description;
     };
 
     /**
@@ -97,12 +112,14 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
      * \param parent parent widget of the dialog
      * \param fl window flags
      * \param dataSourceUri data source URI
+     *
+     * \deprecated Will be removed in QGIS 4.0
      */
-    QgsSublayersDialog( ProviderType providerType,
-                        const QString &name,
-                        QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                        Qt::WindowFlags fl = Qt::WindowFlags(),
-                        const QString &dataSourceUri = QString() );
+    Q_DECL_DEPRECATED QgsSublayersDialog( ProviderType providerType,
+                                          const QString &name,
+                                          QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                                          Qt::WindowFlags fl = Qt::WindowFlags(),
+                                          const QString &dataSourceUri = QString() ) SIP_DEPRECATED;
 
     ~QgsSublayersDialog() override;
 
@@ -156,13 +173,17 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
      */
     QString mName;
     QStringList mSelectedSubLayers;
-    bool mShowCount = false;  //!< Whether to show number of features in the table
-    bool mShowType = false;   //!< Whether to show type in the table
-    bool mShowDescription = false;   //!< Whether to show description in the table
+
+    //! Whether to show number of features in the table
+    bool mShowCount = false;
+    //! Whether to show type in the table
+    bool mShowType = false;
+    //! Whether to show description in the table
+    bool mShowDescription = false;
 
   private:
-
-    bool mShowAddToGroupCheckbox = false;   //!< Whether to show the add to group checkbox
+    //! Whether to show the add to group checkbox
+    bool mShowAddToGroupCheckbox = false;
 };
 
 #endif

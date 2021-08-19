@@ -154,10 +154,10 @@ class contour(GdalAlgorithm):
         self.setOutputValue(self.OUTPUT, outFile)
         output, outFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 
-        arguments = []
-        arguments.append('-b')
-        arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
-
+        arguments = [
+            '-b',
+            str(self.parameterAsInt(parameters, self.BAND, context))
+        ]
         if fieldName:
             arguments.append('-a')
             arguments.append(fieldName)

@@ -24,6 +24,8 @@
 
 #include "qgis_server.h"
 #include "qgis_sip.h"
+#include "qgsserverrequest.h"
+#include "qgsserversettings.h"
 
 class QgsProject;
 class QgsRectangle;
@@ -37,7 +39,7 @@ class QgsRectangle;
 
 /**
  * \ingroup server
- * The QgsServerProjectUtils namespace provides a way to retrieve specific
+ * \brief The QgsServerProjectUtils namespace provides a way to retrieve specific
  * entries from a QgsProject.
  * \since QGIS 3.0
  */
@@ -170,6 +172,20 @@ namespace QgsServerProjectUtils
    * \since QGIS 3.10
    */
   SERVER_EXPORT int wmsTileBuffer( const QgsProject &project );
+
+  /**
+   * Returns TRUE if WMS requests should use the QgsMapSettings::RenderMapTile flag,
+   * so that no visible artifacts are visible between adjacent tiles.
+   *
+   * This flag can slow down rendering considerably, so it is only used if the corresponding
+   * setting is enabled in the project.
+   *
+   * \param project the QGIS project
+   * \returns TRUE if the flag should be used, or FALSE if not.
+   *
+   * \since QGIS 3.18
+   */
+  SERVER_EXPORT bool wmsRenderMapTiles( const QgsProject &project );
 
   /**
    * Returns the maximum number of atlas features which can be printed in a request
@@ -306,16 +322,20 @@ namespace QgsServerProjectUtils
   SERVER_EXPORT QStringList wmsRestrictedComposers( const QgsProject &project );
 
   /**
-   * Returns the WMS service url defined in a QGIS project.
+   * Returns the WMS service url.
+   * The URL defined in the project or if not defined the URL from serviceUrl.
+   *
    * \param project the QGIS project
-   * \returns url if defined in project, an empty string otherwise.
+   * \param request the request
+   * \param settings the server settings
+   * \returns url to use for this service
    */
-  SERVER_EXPORT QString wmsServiceUrl( const QgsProject &project );
+  SERVER_EXPORT QString wmsServiceUrl( const QgsProject &project, const QgsServerRequest &request = QgsServerRequest(), const QgsServerSettings &settings = QgsServerSettings() );
 
   /**
    * Returns the WMS root layer name defined in a QGIS project.
    * \param project the QGIS project
-   * \returns root layer name if defined in project, an empty string otherwise.
+   * \returns root layer name to use for this service
    */
   SERVER_EXPORT QString wmsRootName( const QgsProject &project );
 
@@ -341,11 +361,15 @@ namespace QgsServerProjectUtils
   SERVER_EXPORT  QgsRectangle wmsExtent( const QgsProject &project );
 
   /**
-   * Returns the WFS service url defined in a QGIS project.
+   * Returns the WFS service url.
+   * The URL defined in the project or if not defined the URL from serviceUrl.
+   *
    * \param project the QGIS project
-   * \returns url if defined in project, an empty string otherwise.
+   * \param request the request
+   * \param settings the server settings
+   * \returns url to use for this service
    */
-  SERVER_EXPORT QString wfsServiceUrl( const QgsProject &project );
+  SERVER_EXPORT QString wfsServiceUrl( const QgsProject &project, const QgsServerRequest &request = QgsServerRequest(), const QgsServerSettings &settings = QgsServerSettings() );
 
   /**
    * Returns the Layer ids list defined in a QGIS project as published in WFS.
@@ -385,11 +409,15 @@ namespace QgsServerProjectUtils
   SERVER_EXPORT QStringList wfstDeleteLayerIds( const QgsProject &project );
 
   /**
-   * Returns the WCS service url defined in a QGIS project.
+   * Returns the WCS service url.
+   * The URL defined in the project or if not defined the URL from serviceUrl.
+   *
    * \param project the QGIS project
-   * \returns url if defined in project, an empty string otherwise.
+   * \param request the request
+   * \param settings the server settings
+   * \returns url to use for this service
    */
-  SERVER_EXPORT QString wcsServiceUrl( const QgsProject &project );
+  SERVER_EXPORT QString wcsServiceUrl( const QgsProject &project, const QgsServerRequest &request = QgsServerRequest(), const QgsServerSettings &settings = QgsServerSettings() );
 
   /**
    * Returns the Layer ids list defined in a QGIS project as published in WCS.
@@ -399,12 +427,38 @@ namespace QgsServerProjectUtils
   SERVER_EXPORT QStringList wcsLayerIds( const QgsProject &project );
 
   /**
-   * Returns the WMTS service url defined in a QGIS project.
+   * Returns the WMTS service url.
+   * The URL defined in the project or if not defined the URL from serviceUrl.
+   *
    * \param project the QGIS project
-   * \returns url if defined in project, an empty string otherwise.
+   * \param request the request
+   * \param settings the server settings
+   * \returns url to use for this service
    * \since QGIS 3.4
    */
-  SERVER_EXPORT QString wmtsServiceUrl( const QgsProject &project );
+  SERVER_EXPORT QString wmtsServiceUrl( const QgsProject &project, const QgsServerRequest &request = QgsServerRequest(), const QgsServerSettings &settings = QgsServerSettings() );
+
+  /**
+   * Returns the service url defined in the environment variable or with HTTP header.
+   * The is calculated from, in the order:
+   *
+   * - Value defined in the project per service.
+   * - The ``<service>_SERVICE_URL`` environment variable.
+   * - The ``SERVICE_URL`` environment variable.
+   * - The custom ``X-Qgis-<service>-Servcie-Url`` header.
+   * - The custom ``X-Qgis-Service-Url`` header.
+   * - Build form the standard ``Forwarded`` header.
+   * - Build form the pseudo standard ``X-Forwarded-Host`` and ``X-Forwarded-Proto`` headers.
+   * - Build form the standard ``Host`` header and the server protocol.
+   * - Build form the server name and the server protocol.
+   *
+   * \param request the request
+   * \param service the used service
+   * \param settings the server settings
+   * \returns url to use for this service
+   * \since QGIS 3.20
+   */
+  SERVER_EXPORT QString serviceUrl( const QString &service, const QgsServerRequest &request, const QgsServerSettings &settings );
 };
 
 #endif

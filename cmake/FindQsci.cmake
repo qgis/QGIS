@@ -25,7 +25,7 @@ ELSE(QSCI_MOD_VERSION_STR)
 
   SET(QSCI_VER 5)
 
-  EXECUTE_PROCESS(COMMAND ${PYTHON_EXECUTABLE} ${_find_qsci_py} ${QSCI_VER} OUTPUT_VARIABLE qsci_ver)
+  EXECUTE_PROCESS(COMMAND ${Python_EXECUTABLE} ${_find_qsci_py} ${QSCI_VER} OUTPUT_VARIABLE qsci_ver)
 
   IF(qsci_ver)
     STRING(REGEX REPLACE "^qsci_version_str:([^\n]+).*$" "\\1" QSCI_MOD_VERSION_STR ${qsci_ver})

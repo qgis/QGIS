@@ -59,7 +59,8 @@ from qgis.core import (
     QgsMeshLayer,
     QgsDataSourceUri,
     QgsDoubleRange,
-    QgsIntRange
+    QgsIntRange,
+    QgsDefaultValue
 )
 
 start_app()
@@ -188,6 +189,8 @@ class TestPython__repr__(unittest.TestCase):
         self.assertEqual(crs.__repr__(), '<QgsCoordinateReferenceSystem: invalid>')
         crs = QgsCoordinateReferenceSystem('EPSG:4326')
         self.assertEqual(crs.__repr__(), '<QgsCoordinateReferenceSystem: EPSG:4326>')
+        crs.setCoordinateEpoch(2021.3)
+        self.assertEqual(crs.__repr__(), '<QgsCoordinateReferenceSystem: EPSG:4326 @ 2021.3>')
         crs = QgsCoordinateReferenceSystem('EPSG:3111')
         self.assertEqual(crs.__repr__(), '<QgsCoordinateReferenceSystem: EPSG:3111>')
 
@@ -328,6 +331,10 @@ class TestPython__repr__(unittest.TestCase):
                          "<QgsIntRange: (1, 10]>")
         self.assertEqual(QgsIntRange(1, 10, True, False).__repr__(),
                          "<QgsIntRange: [1, 10)>")
+
+    def testDefaultValue(self):
+        self.assertEqual(QgsDefaultValue().__repr__(), '<QgsDefaultValue: invalid>')
+        self.assertEqual(QgsDefaultValue('1+3').__repr__(), '<QgsDefaultValue: 1+3>')
 
 
 if __name__ == "__main__":

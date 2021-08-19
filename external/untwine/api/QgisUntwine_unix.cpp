@@ -15,6 +15,7 @@ bool QgisUntwine::start(Options& options)
 {
     int fd[2];
     int ret = ::pipe(fd);
+    (void)ret;
 
     m_pid = ::fork();
 

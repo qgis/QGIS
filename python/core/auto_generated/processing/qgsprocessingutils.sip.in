@@ -14,7 +14,7 @@
 
 class QgsProcessingUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Utility functions for use with processing classes.
 
 .. versionadded:: 3.0
@@ -36,6 +36,10 @@ value.
 .. seealso:: :py:func:`compatibleVectorLayers`
 
 .. seealso:: :py:func:`compatibleMeshLayers`
+
+.. seealso:: :py:func:`compatiblePluginLayers`
+
+.. seealso:: :py:func:`compatiblePointCloudLayers`
 
 .. seealso:: :py:func:`compatibleLayers`
 %End
@@ -59,6 +63,10 @@ value.
 
 .. seealso:: :py:func:`compatibleMeshLayers`
 
+.. seealso:: :py:func:`compatiblePluginLayers`
+
+.. seealso:: :py:func:`compatiblePointCloudLayers`
+
 .. seealso:: :py:func:`compatibleLayers`
 %End
 
@@ -74,9 +82,55 @@ value.
 
 .. seealso:: :py:func:`compatibleVectorLayers`
 
+.. seealso:: :py:func:`compatiblePluginLayers`
+
+.. seealso:: :py:func:`compatiblePointCloudLayers`
+
 .. seealso:: :py:func:`compatibleLayers`
 
 .. versionadded:: 3.6
+%End
+
+    static QList<QgsPluginLayer *> compatiblePluginLayers( QgsProject *project, bool sort = true );
+%Docstring
+Returns a list of plugin layers from a ``project`` which are compatible with the processing
+framework.
+
+If the ``sort`` argument is ``True`` then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
+value.
+
+.. seealso:: :py:func:`compatibleRasterLayers`
+
+.. seealso:: :py:func:`compatibleVectorLayers`
+
+.. seealso:: :py:func:`compatibleMeshLayers`
+
+.. seealso:: :py:func:`compatiblePointCloudLayers`
+
+.. seealso:: :py:func:`compatibleLayers`
+
+.. versionadded:: 3.22
+%End
+
+    static QList<QgsPointCloudLayer *> compatiblePointCloudLayers( QgsProject *project, bool sort = true );
+%Docstring
+Returns a list of point cloud layers from a ``project`` which are compatible with the processing
+framework.
+
+If the ``sort`` argument is ``True`` then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
+value.
+
+.. seealso:: :py:func:`compatibleRasterLayers`
+
+.. seealso:: :py:func:`compatibleVectorLayers`
+
+.. seealso:: :py:func:`compatibleMeshLayers`
+
+.. seealso:: :py:func:`compatiblePluginLayers`
+
+.. seealso:: :py:func:`compatibleLayers`
+
+.. versionadded:: 3.22
 %End
 
     static QList< QgsMapLayer * > compatibleLayers( QgsProject *project, bool sort = true );
@@ -120,6 +174,7 @@ Decodes a provider key and layer ``uri`` from an encoded string, for use with
       Vector,
       Raster,
       Mesh,
+      PointCloud,
     };
 
     static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType );
@@ -387,7 +442,7 @@ a fallback value of "tif".
 
 class QgsProcessingFeatureSource : QgsFeatureSource
 {
-%Docstring
+%Docstring(signature="appended")
 :py:class:`QgsFeatureSource` subclass which proxies methods to an underlying :py:class:`QgsFeatureSource`, modifying
 results according to the settings in a :py:class:`QgsProcessingContext`.
 
@@ -439,7 +494,7 @@ iterator, eg by restricting the returned attributes or geometry.
 
     virtual QgsWkbTypes::Type wkbType() const;
 
-    virtual long featureCount() const;
+    virtual long long featureCount() const;
 
     virtual QString sourceName() const;
 

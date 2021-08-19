@@ -26,7 +26,9 @@ namespace MDAL
       DriverUgrid();
       ~DriverUgrid() override = default;
       DriverUgrid *create() override;
-      void save( const std::string &uri, Mesh *mesh ) override;
+      void save( const std::string &fileName, const std::string &meshName, Mesh *mesh ) override;
+
+      std::string saveMeshOnFileSuffix() const override;
 
     private:
       std::string buildUri( const std::string &meshFile ) override;

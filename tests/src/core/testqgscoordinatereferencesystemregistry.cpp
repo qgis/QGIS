@@ -14,6 +14,8 @@
  ***************************************************************************/
 #include "qgstest.h"
 #include <QPixmap>
+#include <QSettings>
+#include <QSignalSpy>
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -21,6 +23,7 @@
 //header for class being tested
 #include "qgscoordinatereferencesystemregistry.h"
 #include "qgsapplication.h"
+#include "qgsprojoperation.h"
 
 class TestQgsCoordinateReferenceSystemRegistry: public QObject
 {
@@ -31,6 +34,7 @@ class TestQgsCoordinateReferenceSystemRegistry: public QObject
     void addUserCrs();
     void changeUserCrs();
     void removeUserCrs();
+    void projOperations();
 
   private:
 
@@ -42,7 +46,7 @@ void TestQgsCoordinateReferenceSystemRegistry::initTestCase()
 {
   // we start from a clean profile - we don't want to mess with user custom SRSes
   // create temporary folder
-  QString subPath = QUuid::createUuid().toString().remove( '-' ).remove( '{' ).remove( '}' );
+  const QString subPath = QUuid::createUuid().toString().remove( '-' ).remove( '{' ).remove( '}' );
   mTempFolder = QDir::tempPath() + '/' + subPath;
   if ( !QDir( mTempFolder ).exists() )
     QDir().mkpath( mTempFolder );
@@ -74,15 +78,15 @@ void TestQgsCoordinateReferenceSystemRegistry::addUserCrs()
 
   QVERIFY( registry->userCrsList().isEmpty() );
 
-  QString madeUpProjection = QStringLiteral( "+proj=aea +lat_1=20 +lat_2=-23 +lat_0=4 +lon_0=29 +x_0=10 +y_0=3 +datum=WGS84 +units=m +no_defs" );
-  QgsCoordinateReferenceSystem userCrs = QgsCoordinateReferenceSystem::fromProj( madeUpProjection );
+  const QString madeUpProjection = QStringLiteral( "+proj=aea +lat_1=20 +lat_2=-23 +lat_0=4 +lon_0=29 +x_0=10 +y_0=3 +datum=WGS84 +units=m +no_defs" );
+  const QgsCoordinateReferenceSystem userCrs = QgsCoordinateReferenceSystem::fromProj( madeUpProjection );
   QVERIFY( userCrs.isValid() );
   QCOMPARE( userCrs.toProj(), madeUpProjection );
   QCOMPARE( userCrs.srsid(), 0L ); // not saved to database yet
 
-  QSignalSpy spyAdded( registry, &QgsCoordinateReferenceSystemRegistry::userCrsAdded );
-  QSignalSpy spyChanged( registry, &QgsCoordinateReferenceSystemRegistry::userCrsChanged );
-  QSignalSpy spyCrsDefsChanged( registry, &QgsCoordinateReferenceSystemRegistry::crsDefinitionsChanged );
+  const QSignalSpy spyAdded( registry, &QgsCoordinateReferenceSystemRegistry::userCrsAdded );
+  const QSignalSpy spyChanged( registry, &QgsCoordinateReferenceSystemRegistry::userCrsChanged );
+  const QSignalSpy spyCrsDefsChanged( registry, &QgsCoordinateReferenceSystemRegistry::crsDefinitionsChanged );
 
   // invalid crs -- should be rejected
   long res = registry->addUserCrs( QgsCoordinateReferenceSystem(), QStringLiteral( "test" ) );
@@ -144,9 +148,9 @@ void TestQgsCoordinateReferenceSystemRegistry::changeUserCrs()
   QCOMPARE( userCrs.toProj(), madeUpProjection );
   QCOMPARE( userCrs.srsid(), 0L ); // not saved to database yet
 
-  QSignalSpy spyAdded( registry, &QgsCoordinateReferenceSystemRegistry::userCrsAdded );
-  QSignalSpy spyChanged( registry, &QgsCoordinateReferenceSystemRegistry::userCrsChanged );
-  QSignalSpy spyCrsDefsChanged( registry, &QgsCoordinateReferenceSystemRegistry::crsDefinitionsChanged );
+  const QSignalSpy spyAdded( registry, &QgsCoordinateReferenceSystemRegistry::userCrsAdded );
+  const QSignalSpy spyChanged( registry, &QgsCoordinateReferenceSystemRegistry::userCrsChanged );
+  const QSignalSpy spyCrsDefsChanged( registry, &QgsCoordinateReferenceSystemRegistry::crsDefinitionsChanged );
 
   // invalid crs -- should be rejected
   bool res = registry->updateUserCrs( 100000, QgsCoordinateReferenceSystem(), QStringLiteral( "test" ) );
@@ -179,11 +183,11 @@ void TestQgsCoordinateReferenceSystemRegistry::changeUserCrs()
   const QString madeUpProjection2 = QStringLiteral( "+proj=aea +lat_1=22.5 +lat_2=-24.5 +lat_0=4 +lon_0=29 +x_0=10 +y_0=3 +datum=WGS84 +units=m +no_defs" );
   crs2.createFromProj( madeUpProjection2 );
 
-  QMetaObject::Connection conn1 =  connect( registry, &QgsCoordinateReferenceSystemRegistry::userCrsChanged, this, [&]
+  const QMetaObject::Connection conn1 =  connect( registry, &QgsCoordinateReferenceSystemRegistry::userCrsChanged, this, [&]
   {
     // make sure that caches are invalidated before the signals are emitted, so that slots will
     // get the new definition!
-    QgsCoordinateReferenceSystem crs4( authid );
+    const QgsCoordinateReferenceSystem crs4( authid );
     QCOMPARE( crs4.toProj(), madeUpProjection2 );
 
     // original crs object should be unchanged until it's refreshed
@@ -207,7 +211,7 @@ void TestQgsCoordinateReferenceSystemRegistry::changeUserCrs()
   QCOMPARE( registry->userCrsList().at( 2 ).crs.toProj(), madeUpProjection2 );
 
   // newly created crs should get new definition, not old
-  QgsCoordinateReferenceSystem crs3( authid );
+  const QgsCoordinateReferenceSystem crs3( authid );
   QCOMPARE( crs3.toProj(), madeUpProjection2 );
 
   // with proj native format
@@ -230,20 +234,20 @@ void TestQgsCoordinateReferenceSystemRegistry::removeUserCrs()
 {
   QgsCoordinateReferenceSystemRegistry *registry = QgsApplication::coordinateReferenceSystemRegistry();
 
-  QString madeUpProjection = QStringLiteral( "+proj=aea +lat_1=27 +lat_2=-26 +lat_0=4 +lon_0=29 +x_0=10 +y_0=3 +datum=WGS84 +units=m +no_defs" );
-  QgsCoordinateReferenceSystem userCrs = QgsCoordinateReferenceSystem::fromProj( madeUpProjection );
+  const QString madeUpProjection = QStringLiteral( "+proj=aea +lat_1=27 +lat_2=-26 +lat_0=4 +lon_0=29 +x_0=10 +y_0=3 +datum=WGS84 +units=m +no_defs" );
+  const QgsCoordinateReferenceSystem userCrs = QgsCoordinateReferenceSystem::fromProj( madeUpProjection );
   QVERIFY( userCrs.isValid() );
   QCOMPARE( userCrs.toProj(), madeUpProjection );
   QCOMPARE( userCrs.srsid(), 0L ); // not saved to database yet
 
-  QSignalSpy spyAdded( registry, &QgsCoordinateReferenceSystemRegistry::userCrsAdded );
-  QSignalSpy spyChanged( registry, &QgsCoordinateReferenceSystemRegistry::userCrsChanged );
-  QSignalSpy spyRemoved( registry, &QgsCoordinateReferenceSystemRegistry::userCrsRemoved );
-  QSignalSpy spyCrsDefsChanged( registry, &QgsCoordinateReferenceSystemRegistry::crsDefinitionsChanged );
+  const QSignalSpy spyAdded( registry, &QgsCoordinateReferenceSystemRegistry::userCrsAdded );
+  const QSignalSpy spyChanged( registry, &QgsCoordinateReferenceSystemRegistry::userCrsChanged );
+  const QSignalSpy spyRemoved( registry, &QgsCoordinateReferenceSystemRegistry::userCrsRemoved );
+  const QSignalSpy spyCrsDefsChanged( registry, &QgsCoordinateReferenceSystemRegistry::crsDefinitionsChanged );
 
   QCOMPARE( registry->userCrsList().count(), 3 );
   // non-existing crs - should be rejected
-  bool res = registry->removeUserCrs( 100100 );
+  const bool res = registry->removeUserCrs( 100100 );
   QVERIFY( !res );
   QCOMPARE( spyAdded.length(), 0 );
   QCOMPARE( spyChanged.length(), 0 );
@@ -262,14 +266,14 @@ void TestQgsCoordinateReferenceSystemRegistry::removeUserCrs()
   QCOMPARE( spyCrsDefsChanged.length(), 1 );
   QCOMPARE( registry->userCrsList().count(), 4 );
 
-  QgsCoordinateReferenceSystem crs2( authid );
+  const QgsCoordinateReferenceSystem crs2( authid );
   QVERIFY( crs2.isValid() );
 
   // now try removing it
   connect( registry, &QgsCoordinateReferenceSystemRegistry::userCrsRemoved, this, [&]
   {
     // make sure that caches are invalidated before the signals are emitted
-    QgsCoordinateReferenceSystem crs4( authid );
+    const QgsCoordinateReferenceSystem crs4( authid );
     QVERIFY( !crs4.isValid() );
   } );
   QVERIFY( registry->removeUserCrs( id ) );
@@ -297,8 +301,19 @@ void TestQgsCoordinateReferenceSystemRegistry::removeUserCrs()
   QVERIFY( registry->userCrsList().at( 2 ).wkt.isEmpty() );
 
   // doesn't exist anymore...
-  QgsCoordinateReferenceSystem crs3( authid );
+  const QgsCoordinateReferenceSystem crs3( authid );
   QVERIFY( !crs3.isValid() );
+}
+
+void TestQgsCoordinateReferenceSystemRegistry::projOperations()
+{
+  const QMap< QString, QgsProjOperation > operations = QgsApplication::coordinateReferenceSystemRegistry()->projOperations();
+
+  QVERIFY( operations.contains( QStringLiteral( "lcc" ) ) );
+  QVERIFY( operations.value( QStringLiteral( "lcc" ) ).isValid() );
+  QCOMPARE( operations.value( QStringLiteral( "lcc" ) ).id(), QStringLiteral( "lcc" ) );
+  QCOMPARE( operations.value( QStringLiteral( "lcc" ) ).description(), QStringLiteral( "Lambert Conformal Conic" ) );
+  QVERIFY( operations.value( QStringLiteral( "lcc" ) ).details().contains( QStringLiteral( "Conic" ) ) );
 }
 
 QGSTEST_MAIN( TestQgsCoordinateReferenceSystemRegistry )

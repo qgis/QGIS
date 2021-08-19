@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtWidgets>
 #include <QIcon>
 #include <QPushButton>
 #include <QComboBox>
@@ -183,11 +182,11 @@ QgsAbstractMetadataBase *QgsMetadataWidget::metadata()
   switch ( mMode )
   {
     case LayerMetadata:
-      md = qgis::make_unique< QgsLayerMetadata >();
+      md = std::make_unique< QgsLayerMetadata >();
       break;
 
     case ProjectMetadata:
-      md = qgis::make_unique< QgsProjectMetadata >();
+      md = std::make_unique< QgsProjectMetadata >();
       break;
 
   }
@@ -781,11 +780,11 @@ bool QgsMetadataWidget::checkMetadata()
   switch ( mMode )
   {
     case LayerMetadata:
-      validator = qgis::make_unique< QgsNativeMetadataValidator>();
+      validator = std::make_unique< QgsNativeMetadataValidator>();
       break;
 
     case ProjectMetadata:
-      validator = qgis::make_unique< QgsNativeProjectMetadataValidator>();
+      validator = std::make_unique< QgsNativeProjectMetadataValidator>();
       break;
   }
 
@@ -795,7 +794,7 @@ bool QgsMetadataWidget::checkMetadata()
   QString errors;
   if ( !results )
   {
-    for ( const QgsAbstractMetadataBaseValidator::ValidationResult &result : qgis::as_const( validationResults ) )
+    for ( const QgsAbstractMetadataBaseValidator::ValidationResult &result : std::as_const( validationResults ) )
     {
       errors += QLatin1String( "<b>" ) % result.section;
       if ( ! result._identifier().isNull() )
@@ -1105,6 +1104,7 @@ void QgsMetadataWidget::removeSelectedCategories()
   mDefaultCategoriesModel->sort( 0 );
 }
 
+///@cond PRIVATE
 LinkItemDelegate::LinkItemDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
 {
@@ -1160,3 +1160,4 @@ QWidget *ConstraintItemDelegate::createEditor( QWidget *parent, const QStyleOpti
 
   return QStyledItemDelegate::createEditor( parent, option, index );
 }
+///@endcond

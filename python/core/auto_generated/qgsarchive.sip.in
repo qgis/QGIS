@@ -12,7 +12,7 @@
 
 class QgsArchive
 {
-%Docstring
+%Docstring(signature="appended")
 Class allowing to manage the zip/unzip actions
 
 .. versionadded:: 3.0
@@ -88,11 +88,18 @@ Returns the list of files within this archive
 Returns the current temporary directory.
 %End
 
+    bool exists() const;
+%Docstring
+Returns ``True`` if the archive exists on the filesystem, ``False`` otherwise.
+
+.. versionadded:: 3.20
+%End
+
 };
 
 class QgsProjectArchive : QgsArchive
 {
-%Docstring
+%Docstring(signature="appended")
 Class allowing to manage the zip/unzip actions on project file
 
 .. versionadded:: 3.0

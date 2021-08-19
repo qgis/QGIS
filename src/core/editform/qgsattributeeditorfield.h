@@ -22,7 +22,7 @@
 
 /**
  * \ingroup core
- * This element will load a field's widget onto the form.
+ * \brief This element will load a field's widget onto the form.
  */
 class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
 {

@@ -37,7 +37,7 @@ class QDomDocument;
 /**
  * \class QgsProjectProperty
  * \ingroup core
- * An Abstract Base Class for QGIS project property hierarchys.
+ * \brief An Abstract Base Class for QGIS project property hierarchys.
  *
  * Each sub-class is either a QgsProjectPropertyKey or QgsProjectPropertyValue.  QgsProjectPropertyKey can
  * contain either QgsProjectPropertyKey or QgsProjectPropertyValues, thus describing an
@@ -122,7 +122,7 @@ class CORE_EXPORT QgsProjectProperty
 /**
  * \class QgsProjectPropertyValue
  * \ingroup core
- * Project property value node, contains a QgsProjectPropertyKey's value.
+ * \brief Project property value node, contains a QgsProjectPropertyKey's value.
  * \since QGIS 3.0
 */
 class CORE_EXPORT QgsProjectPropertyValue : public QgsProjectProperty
@@ -164,7 +164,7 @@ class CORE_EXPORT QgsProjectPropertyValue : public QgsProjectProperty
  * \class QgsProjectPropertyKey
  * \ingroup core
  *
- * Project property key node.
+ * \brief Project property key node.
  *
  * Can, itself, contain QgsProjectPropertyKey and QgsProjectPropertyValues.
  *

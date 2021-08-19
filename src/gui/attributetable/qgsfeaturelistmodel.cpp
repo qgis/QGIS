@@ -19,6 +19,7 @@
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsapplication.h"
+#include "qgsvectorlayercache.h"
 
 #include <QItemSelection>
 #include <QSettings>
@@ -130,7 +131,7 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
   {
     QgsVectorLayer *layer = mFilterModel->layer();
     QgsFeature feat;
-    QgsFeatureId fid = idxToFid( index );
+    const QgsFeatureId fid = idxToFid( index );
     mFilterModel->layerCache()->featureAtId( fid, feat );
     mExpressionContext.setFeature( feat );
     QList<QgsConditionalStyle> styles;
@@ -145,18 +146,18 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
       mRowStylesMap.insert( fid, styles );
     }
 
-    QgsConditionalStyle rowstyle = QgsConditionalStyle::compressStyles( styles );
+    const QgsConditionalStyle rowstyle = QgsConditionalStyle::compressStyles( styles );
 
     if ( mDisplayExpression.isField() )
     {
-      QString fieldName = *mDisplayExpression.referencedColumns().constBegin();
+      const QString fieldName = *mDisplayExpression.referencedColumns().constBegin();
       styles = layer->conditionalStyles()->fieldStyles( fieldName );
       styles = QgsConditionalStyle::matchingConditionalStyles( styles, feat.attribute( fieldName ),  mExpressionContext );
     }
 
     styles.insert( 0, rowstyle );
 
-    QgsConditionalStyle style = QgsConditionalStyle::compressStyles( styles );
+    const QgsConditionalStyle style = QgsConditionalStyle::compressStyles( styles );
 
     if ( style.isValid() )
     {
@@ -319,7 +320,7 @@ QModelIndex QgsFeatureListModel::mapToMaster( const QModelIndex &proxyIndex ) co
     }
     else
     {
-      int offset = mInjectNull ? 1 : 0;
+      const int offset = mInjectNull ? 1 : 0;
 
       masterIndex = mFilterModel->mapToMaster( mFilterModel->index( proxyIndex.row() - offset, proxyIndex.column() ) );
     }
@@ -339,7 +340,7 @@ QModelIndex QgsFeatureListModel::mapFromMaster( const QModelIndex &masterIndex )
     }
     else
     {
-      int offset = mInjectNull ? 1 : 0;
+      const int offset = mInjectNull ? 1 : 0;
 
       return createIndex( mFilterModel->mapFromMaster( masterIndex ).row() + offset, 0 );
     }
@@ -373,7 +374,7 @@ QModelIndex QgsFeatureListModel::mapToSource( const QModelIndex &proxyIndex ) co
     if ( !proxyIndex.isValid() )
       return QModelIndex();
 
-    int offset = mInjectNull ? 1 : 0;
+    const int offset = mInjectNull ? 1 : 0;
 
     sourceIndex = sourceModel()->index( proxyIndex.row() - offset, proxyIndex.column() );
   }
@@ -414,7 +415,7 @@ int QgsFeatureListModel::rowCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
 
-  int offset = mInjectNull ? 1 : 0;
+  const int offset = mInjectNull ? 1 : 0;
 
   return sourceModel()->rowCount() + offset;
 }

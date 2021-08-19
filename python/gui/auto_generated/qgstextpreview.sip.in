@@ -11,7 +11,7 @@
 
 class QgsTextPreview : QLabel
 {
-%Docstring
+%Docstring(signature="appended")
 A widget for previewing text formatting settings.
 
 :py:class:`QgsTextPreview` provides a widget for previewing the appearance of text rendered

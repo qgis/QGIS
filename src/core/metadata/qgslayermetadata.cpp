@@ -122,7 +122,7 @@ void QgsLayerMetadata::readFromLayer( const QgsMapLayer *layer )
   mLicenses = layer->customProperty( QStringLiteral( "metadata/licenses" ) ).toStringList();
   mHistory = layer->customProperty( QStringLiteral( "metadata/history" ) ).toStringList();
   mEncoding = layer->customProperty( QStringLiteral( "metadata/encoding" ) ).toString();
-  QString crsAuthId = layer->customProperty( QStringLiteral( "metadata/crs" ) ).toString();
+  const QString crsAuthId = layer->customProperty( QStringLiteral( "metadata/crs" ) ).toString();
   mCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsAuthId );
   mExtent = layer->customProperty( QStringLiteral( "metadata/extent" ) ).value<Extent>();
   mConstraints = layer->customProperty( QStringLiteral( "metadata/constraints" ) ).value<ConstraintList>();
@@ -143,7 +143,7 @@ bool QgsLayerMetadata::readMetadataXml( const QDomElement &metadataElement )
   mFees = mnl.toElement().text();
 
   // constraints
-  QDomNodeList constraintsList = metadataElement.elementsByTagName( QStringLiteral( "constraints" ) );
+  const QDomNodeList constraintsList = metadataElement.elementsByTagName( QStringLiteral( "constraints" ) );
   mConstraints.clear();
   for ( int i = 0; i < constraintsList.size(); i++ )
   {
@@ -153,7 +153,7 @@ bool QgsLayerMetadata::readMetadataXml( const QDomElement &metadataElement )
   }
 
   // rights
-  QDomNodeList rightsNodeList = metadataElement.elementsByTagName( QStringLiteral( "rights" ) );
+  const QDomNodeList rightsNodeList = metadataElement.elementsByTagName( QStringLiteral( "rights" ) );
   QStringList rightsList;
   for ( int i = 0; i < rightsNodeList.size(); i++ )
   {
@@ -164,7 +164,7 @@ bool QgsLayerMetadata::readMetadataXml( const QDomElement &metadataElement )
   setRights( rightsList );
 
   // licenses
-  QDomNodeList licensesNodeList = metadataElement.elementsByTagName( QStringLiteral( "license" ) );
+  const QDomNodeList licensesNodeList = metadataElement.elementsByTagName( QStringLiteral( "license" ) );
   QStringList licensesList;
   for ( int i = 0; i < licensesNodeList.size(); i++ )
   {
@@ -188,7 +188,7 @@ bool QgsLayerMetadata::readMetadataXml( const QDomElement &metadataElement )
   QgsLayerMetadata::Extent metadataExtent;
 
   // spatial extent
-  QDomNodeList spatialList = mnl.toElement().elementsByTagName( QStringLiteral( "spatial" ) );
+  const QDomNodeList spatialList = mnl.toElement().elementsByTagName( QStringLiteral( "spatial" ) );
   QList< QgsLayerMetadata::SpatialExtent > metadataSpatialExtents;
   for ( int i = 0; i < spatialList.size(); i++ )
   {
@@ -209,27 +209,27 @@ bool QgsLayerMetadata::readMetadataXml( const QDomElement &metadataElement )
 
   // temporal extent
   mnl = metadataElement.namedItem( QStringLiteral( "extent" ) );
-  QDomNodeList temporalList = mnl.toElement().elementsByTagName( QStringLiteral( "temporal" ) );
+  const QDomNodeList temporalList = mnl.toElement().elementsByTagName( QStringLiteral( "temporal" ) );
   QList<QgsDateTimeRange> metadataDates;
   for ( int j = 0; j < temporalList.size(); j++ )
   {
     mnl = temporalList.at( j );
-    QDomNodeList instantList = mnl.toElement().elementsByTagName( QStringLiteral( "instant" ) );
+    const QDomNodeList instantList = mnl.toElement().elementsByTagName( QStringLiteral( "instant" ) );
     for ( int i = 0; i < instantList.size(); i++ )
     {
       mnl = instantList.at( i );
-      QDateTime d = QDateTime().fromString( mnl.toElement().text(), Qt::ISODate );
-      QgsDateTimeRange date = QgsDateTimeRange( d, d );
+      const QDateTime d = QDateTime().fromString( mnl.toElement().text(), Qt::ISODate );
+      const QgsDateTimeRange date = QgsDateTimeRange( d, d );
       metadataDates << date;
     }
-    QDomNodeList periodList = mnl.toElement().elementsByTagName( QStringLiteral( "period" ) );
+    const QDomNodeList periodList = mnl.toElement().elementsByTagName( QStringLiteral( "period" ) );
     for ( int i = 0; i < periodList.size(); i++ )
     {
-      QDomNode begin = periodList.at( i ).namedItem( QStringLiteral( "start" ) );
-      QDomNode end = periodList.at( i ).namedItem( QStringLiteral( "end" ) );
-      QDateTime beginDate = QDateTime().fromString( begin.toElement().text(), Qt::ISODate );
-      QDateTime endDate = QDateTime().fromString( end.toElement().text(), Qt::ISODate );
-      QgsDateTimeRange date = QgsDateTimeRange( beginDate, endDate );
+      const QDomNode begin = periodList.at( i ).namedItem( QStringLiteral( "start" ) );
+      const QDomNode end = periodList.at( i ).namedItem( QStringLiteral( "end" ) );
+      const QDateTime beginDate = QDateTime().fromString( begin.toElement().text(), Qt::ISODate );
+      const QDateTime endDate = QDateTime().fromString( end.toElement().text(), Qt::ISODate );
+      const QgsDateTimeRange date = QgsDateTimeRange( beginDate, endDate );
       metadataDates << date;
     }
   }
@@ -245,7 +245,7 @@ bool QgsLayerMetadata::writeMetadataXml( QDomElement &metadataElement, QDomDocum
 
   // fees
   QDomElement fees = document.createElement( QStringLiteral( "fees" ) );
-  QDomText feesText = document.createTextNode( mFees );
+  const QDomText feesText = document.createTextNode( mFees );
   fees.appendChild( feesText );
   metadataElement.appendChild( fees );
 
@@ -254,7 +254,7 @@ bool QgsLayerMetadata::writeMetadataXml( QDomElement &metadataElement, QDomDocum
   {
     QDomElement constraintElement = document.createElement( QStringLiteral( "constraints" ) );
     constraintElement.setAttribute( QStringLiteral( "type" ), constraint.type );
-    QDomText constraintText = document.createTextNode( constraint.constraint );
+    const QDomText constraintText = document.createTextNode( constraint.constraint );
     constraintElement.appendChild( constraintText );
     metadataElement.appendChild( constraintElement );
   }
@@ -263,7 +263,7 @@ bool QgsLayerMetadata::writeMetadataXml( QDomElement &metadataElement, QDomDocum
   for ( const QString &right : mRights )
   {
     QDomElement rightElement = document.createElement( QStringLiteral( "rights" ) );
-    QDomText rightText = document.createTextNode( right );
+    const QDomText rightText = document.createTextNode( right );
     rightElement.appendChild( rightText );
     metadataElement.appendChild( rightElement );
   }
@@ -272,14 +272,14 @@ bool QgsLayerMetadata::writeMetadataXml( QDomElement &metadataElement, QDomDocum
   for ( const QString &license : mLicenses )
   {
     QDomElement licenseElement = document.createElement( QStringLiteral( "license" ) );
-    QDomText licenseText = document.createTextNode( license );
+    const QDomText licenseText = document.createTextNode( license );
     licenseElement.appendChild( licenseText );
     metadataElement.appendChild( licenseElement );
   }
 
   // encoding
   QDomElement encoding = document.createElement( QStringLiteral( "encoding" ) );
-  QDomText encodingText = document.createTextNode( mEncoding );
+  const QDomText encodingText = document.createTextNode( mEncoding );
   encoding.appendChild( encodingText );
   metadataElement.appendChild( encoding );
 
@@ -316,7 +316,7 @@ bool QgsLayerMetadata::writeMetadataXml( QDomElement &metadataElement, QDomDocum
     if ( temporalExtent.isInstant() )
     {
       QDomElement instantElement = document.createElement( QStringLiteral( "instant" ) );
-      QDomText instantText = document.createTextNode( temporalExtent.begin().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
+      const QDomText instantText = document.createTextNode( temporalExtent.begin().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
       instantElement.appendChild( instantText );
       temporalElement.appendChild( instantElement );
     }
@@ -325,8 +325,8 @@ bool QgsLayerMetadata::writeMetadataXml( QDomElement &metadataElement, QDomDocum
       QDomElement periodElement = document.createElement( QStringLiteral( "period" ) );
       QDomElement startElement = document.createElement( QStringLiteral( "start" ) );
       QDomElement endElement = document.createElement( QStringLiteral( "end" ) );
-      QDomText startText = document.createTextNode( temporalExtent.begin().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
-      QDomText endText = document.createTextNode( temporalExtent.end().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
+      const QDomText startText = document.createTextNode( temporalExtent.begin().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
+      const QDomText endText = document.createTextNode( temporalExtent.end().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
       startElement.appendChild( startText );
       endElement.appendChild( endText );
       periodElement.appendChild( startElement );
@@ -339,6 +339,38 @@ bool QgsLayerMetadata::writeMetadataXml( QDomElement &metadataElement, QDomDocum
   metadataElement.appendChild( extentElement );
 
   return true;
+}
+
+void QgsLayerMetadata::combine( const QgsAbstractMetadataBase *other )
+{
+  QgsAbstractMetadataBase::combine( other );
+
+  if ( const QgsLayerMetadata *otherLayerMetadata = dynamic_cast< const QgsLayerMetadata * >( other ) )
+  {
+    if ( !otherLayerMetadata->fees().isEmpty() )
+      mFees = otherLayerMetadata->fees();
+
+    if ( !otherLayerMetadata->constraints().isEmpty() )
+      mConstraints = otherLayerMetadata->constraints();
+
+    if ( !otherLayerMetadata->rights().isEmpty() )
+      mRights = otherLayerMetadata->rights();
+
+    if ( !otherLayerMetadata->licenses().isEmpty() )
+      mLicenses = otherLayerMetadata->licenses();
+
+    if ( !otherLayerMetadata->encoding().isEmpty() )
+      mEncoding = otherLayerMetadata->encoding();
+
+    if ( otherLayerMetadata->crs().isValid() )
+      mCrs = otherLayerMetadata->crs();
+
+    if ( !otherLayerMetadata->extent().spatialExtents().isEmpty() )
+      mExtent.setSpatialExtents( otherLayerMetadata->extent().spatialExtents() );
+
+    if ( !otherLayerMetadata->extent().temporalExtents().isEmpty() )
+      mExtent.setTemporalExtents( otherLayerMetadata->extent().temporalExtents() );
+  }
 }
 
 const QgsLayerMetadata::Extent &QgsLayerMetadata::extent() const

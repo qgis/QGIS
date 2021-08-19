@@ -104,6 +104,8 @@ class QgsDb2FeatureIterator final: public QgsAbstractFeatureIteratorFromSource<Q
 
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;
+    QgsGeometry mDistanceWithinGeom;
+    std::unique_ptr< QgsGeometryEngine > mDistanceWithinEngine;
 };
 
 #endif // QGSDB2FEATUREITERATOR_H

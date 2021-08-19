@@ -28,7 +28,7 @@
 /**
  * \ingroup core
  *
- * Represents a mesh time settings for mesh datasets
+ * \brief Represents a mesh time settings for mesh datasets
  *
  * \since QGIS 3.8
  */

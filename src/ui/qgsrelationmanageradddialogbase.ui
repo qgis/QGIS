@@ -101,19 +101,19 @@
         <string>Add new field pair as part of a composite foreign key</string>
        </property>
        <property name="icon">
-        <iconset theme="add">
-         <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QToolButton" name="mFieldsMappingRemoveButton">
        <property name="toolTip">
-        <string>Remove the select or last pair of fields</string>
+        <string>Remove the selected or last pair of fields</string>
        </property>
        <property name="icon">
-        <iconset theme="remove">
-         <normaloff>../../../../../../.designer/backup</normaloff>../../../../../../.designer/backup</iconset>
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
        </property>
       </widget>
      </item>
@@ -134,6 +134,16 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <tabstops>
+  <tabstop>mIdLineEdit</tabstop>
+  <tabstop>mNameLineEdit</tabstop>
+  <tabstop>mRelationStrengthComboBox</tabstop>
+  <tabstop>mFieldsMappingTable</tabstop>
+  <tabstop>mFieldsMappingAddButton</tabstop>
+  <tabstop>mFieldsMappingRemoveButton</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>

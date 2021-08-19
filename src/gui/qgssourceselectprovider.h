@@ -28,7 +28,7 @@ class QWidget;
 
 /**
  * \ingroup gui
- * This is the interface for those who want to add entries to the QgsDataSourceManagerDialog
+ * \brief This is the interface for those who want to add entries to the QgsDataSourceManagerDialog
  *
  * \since QGIS 3.0
  */

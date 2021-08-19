@@ -21,7 +21,7 @@
 #include <QByteArray>
 
 /**
- * Encapsulates a network reply within a container which is inexpensive to copy and safe to pass between threads.
+ * \brief Encapsulates a network reply within a container which is inexpensive to copy and safe to pass between threads.
  * \ingroup core
  * \since QGIS 3.6
  */

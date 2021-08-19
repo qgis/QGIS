@@ -34,7 +34,7 @@ void Bezier3D::calcFirstDer( float t, Vector3D *v )
 
     for ( int n = 1; n <= int( mControlPoly->count() - 1 ); n++ )
     {
-      double bernst = MathUtils::calcBernsteinPoly( mControlPoly->count() - 2, n - 1, t );
+      const double bernst = MathUtils::calcBernsteinPoly( mControlPoly->count() - 2, n - 1, t );
       v->setX( v->getX() + ( ( *mControlPoly )[n]->x() - ( *mControlPoly )[n - 1]->x() )*bernst );
       v->setY( v->getY() + ( ( *mControlPoly )[n]->y() - ( *mControlPoly )[n - 1]->y() )*bernst );
       v->setZ( v->getZ() + ( ( *mControlPoly )[n]->z() - ( *mControlPoly )[n - 1]->z() )*bernst );
@@ -61,7 +61,7 @@ void Bezier3D::calcPoint( float t, QgsPoint *p )
 
     for ( int n = 1; n <= int( mControlPoly->count() ); n++ )
     {
-      double bernst = MathUtils::calcBernsteinPoly( mControlPoly->count() - 1, n - 1, t );
+      const double bernst = MathUtils::calcBernsteinPoly( mControlPoly->count() - 1, n - 1, t );
       p->setX( p->x() + ( *mControlPoly )[n - 1]->x()*bernst );
       p->setY( p->y() + ( *mControlPoly )[n - 1]->y()*bernst );
       p->setZ( p->z() + ( *mControlPoly )[n - 1]->z()*bernst );
@@ -82,7 +82,7 @@ void Bezier3D::calcSecDer( float t, Vector3D *v )
     v->setY( 0 );
     v->setZ( 0 );
 
-    int nodes = mControlPoly->count();
+    const int nodes = mControlPoly->count();
     if ( nodes < 3 )
     {
       return;
@@ -90,7 +90,7 @@ void Bezier3D::calcSecDer( float t, Vector3D *v )
 
     for ( int n = 1; n <= int( nodes - 2 ); n++ )
     {
-      double bernst = MathUtils::calcBernsteinPoly( nodes - 3, n - 1, t );
+      const double bernst = MathUtils::calcBernsteinPoly( nodes - 3, n - 1, t );
       v->setX( v->getX() + ( ( *mControlPoly )[n + 1]->x() - 2 * ( *mControlPoly )[n]->x() + ( *mControlPoly )[n - 1]->x() )*bernst );
       v->setY( v->getY() + ( ( *mControlPoly )[n + 1]->y() - 2 * ( *mControlPoly )[n]->y() + ( *mControlPoly )[n - 1]->y() )*bernst );
       v->setZ( v->getZ() + ( ( *mControlPoly )[n + 1]->z() - 2 * ( *mControlPoly )[n]->z() + ( *mControlPoly )[n - 1]->z() )*bernst );

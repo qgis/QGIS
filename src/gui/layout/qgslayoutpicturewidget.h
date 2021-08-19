@@ -29,7 +29,7 @@ class QgsLayoutItemPicture;
 
 /**
  * \ingroup gui
- * A widget for configuring layout picture items.
+ * \brief A widget for configuring layout picture items.
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12
@@ -70,14 +70,10 @@ class GUI_EXPORT QgsLayoutPictureWidget: public QgsLayoutItemBaseWidget, private
     void mStrokeWidthSpinBox_valueChanged( double d );
     void mPictureRotationOffsetSpinBox_valueChanged( double d );
     void mNorthTypeComboBox_currentIndexChanged( int index );
-    void modeChanged();
-    void updatePictureTypeWidgets();
 
-    void populateList();
-    void populateIcons( const QModelIndex &idx );
-    void setSvgName( const QModelIndex &idx );
-    void svgSourceChanged( const QString &source );
-    void rasterSourceChanged( const QString &source );
+    void sourceChanged( const QString &source );
+    void setSvgDynamicParameters( const QMap<QString, QgsProperty> &parameters );
+    void modeChanged( bool checked );
   private:
     QPointer< QgsLayoutItemPicture > mPicture;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;

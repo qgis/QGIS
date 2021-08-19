@@ -13,7 +13,7 @@
 
 class QgsStackedBarDiagram: QgsDiagram /NoDefaultCtors/
 {
-%Docstring
+%Docstring(signature="appended")
 
 A stacked bar chart diagram.
 

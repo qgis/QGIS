@@ -26,7 +26,7 @@ class QgsRelationAggregateSearchWidgetWrapper;
 /**
  * \ingroup gui
  *
- * Widget to show for child relations on an attribute form.
+ * \brief Widget to show for child relations on an attribute form.
  *
  * \since QGIS 3.0
  */

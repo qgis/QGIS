@@ -25,7 +25,7 @@
 
 /**
  * \ingroup core
- * Utilities for map settings.
+ * \brief Utilities for map settings.
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsMapSettingsUtils

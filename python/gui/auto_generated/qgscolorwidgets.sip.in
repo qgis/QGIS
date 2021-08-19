@@ -12,7 +12,7 @@
 
 class QgsColorWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A base class for interactive color widgets. Widgets can either allow setting a single component of
 a color (e.g., the red or green components), or an entire color. The :py:class:`QgsColorWidget` also keeps track of
 any explicitly set hue for the color, so that this information is not lost when the widget is
@@ -211,7 +211,7 @@ Generates a checkboard pattern pixmap for use as a background to transparent col
 
 class QgsColorWidgetAction: QWidgetAction
 {
-%Docstring
+%Docstring(signature="appended")
 An action containing a color widget, which can be embedded into a menu.
 
 .. seealso:: :py:class:`QgsColorWidget`
@@ -274,7 +274,7 @@ Emitted when a color has been selected from the widget
 
 class QgsColorWheel : QgsColorWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A color wheel widget. This widget consists of an outer ring which allows for hue selection, and an
 inner rotating triangle which allows for saturation and value selection.
 
@@ -322,7 +322,7 @@ Constructs a new color wheel widget.
 
 class QgsColorBox : QgsColorWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A color box widget. This widget consists of a two dimensional rectangle filled with color
 variations, where a different color component varies along both the horizontal and vertical
 axis.
@@ -374,7 +374,7 @@ Construct a new color box widget.
 
 class QgsColorRampWidget : QgsColorWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A color ramp widget. This widget consists of an interactive box filled with a color which varies along
 its length by a single color component (e.g., varying saturation from 0 to 100%).
 
@@ -495,7 +495,7 @@ Emitted when the widget's color component value changes
 
 class QgsColorSliderWidget : QgsColorWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A composite horizontal color ramp widget and associated spinbox for manual value entry.
 
 .. versionadded:: 2.5
@@ -527,7 +527,7 @@ Construct a new color slider widget.
 
 class QgsColorTextWidget : QgsColorWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A line edit widget which displays colors as text and accepts string representations
 of colors.
 
@@ -567,7 +567,7 @@ Construct a new color line edit widget.
 
 class QgsColorPreviewWidget : QgsColorWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A preview box which displays one or two colors as swatches.
 
 .. versionadded:: 2.5

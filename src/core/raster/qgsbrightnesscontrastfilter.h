@@ -26,7 +26,7 @@ class QDomElement;
 
 /**
  * \ingroup core
-  * Brightness/contrast and gamma correction filter pipe for rasters.
+  * \brief Brightness/contrast and gamma correction filter pipe for rasters.
   */
 class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
 {
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
      * Set brightness level. Acceptable value range is -255…255
      * \see brightness()
      */
-    void setBrightness( int brightness ) { mBrightness = qBound( -255, brightness, 255 ); }
+    void setBrightness( int brightness );
 
     /**
      * Returns current brightness level.
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
      * Set contrast level. Acceptable value range is -100…100
      * \see contrast()
      */
-    void setContrast( int contrast ) { mContrast = qBound( -100, contrast, 100 ); }
+    void setContrast( int contrast );
 
     /**
      * Returns current contrast level.
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
      *
      * \since QGIS 3.16
      */
-    void setGamma( double gamma ) { mGamma = qBound( 0.1, gamma, 10.0 ); }
+    void setGamma( double gamma );
 
     /**
      * Returns current gamma value.

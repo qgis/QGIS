@@ -67,6 +67,22 @@ class GUI_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
     bool labelOnTop() const;
 
     /**
+     * Setter for checkbox to reuse last entered values for the field.
+     *
+     * \see reuseLastValues()
+     * \since QGIS 3.20
+     */
+    void setReuseLastValues( bool reuse );
+
+    /**
+     * Getter for checkbox to reuse last entered values for the field.
+     *
+     * \see setReuseLastValues()
+     * \since QGIS 3.20
+     */
+    bool reuseLastValues() const;
+
+    /**
      * Setter for label alias
      */
     void setAlias( const QString &alias );

@@ -115,7 +115,7 @@ class RandomSelectionWithinSubsets(QgisAlgorithm):
 
         total = 100.0 / (featureCount * len(unique)) if featureCount else 1
 
-        if not len(unique) == featureCount:
+        if len(unique) != featureCount:
             classes = defaultdict(list)
 
             features = layer.getFeatures(QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes([index]))

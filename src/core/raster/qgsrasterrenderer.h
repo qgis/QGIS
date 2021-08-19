@@ -35,7 +35,7 @@ class QgsLayerTreeLayer;
 
 /**
  * \ingroup core
-  * Raster renderer pipe that applies colors to a raster.
+  * \brief Raster renderer pipe that applies colors to a raster.
   */
 class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 {

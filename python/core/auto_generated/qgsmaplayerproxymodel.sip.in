@@ -12,7 +12,7 @@
 
 class QgsMapLayerProxyModel : QSortFilterProxyModel
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsMapLayerProxyModel` class provides an easy to use model to display the list of layers in widgets.
 
 .. versionadded:: 2.3

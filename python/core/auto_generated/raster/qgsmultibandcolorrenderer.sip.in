@@ -12,7 +12,7 @@
 
 class QgsMultiBandColorRenderer: QgsRasterRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 Renderer for multiband images with the color components
 %End
 

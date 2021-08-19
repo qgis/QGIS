@@ -21,7 +21,8 @@
 
 /**
  * \ingroup core
- * Field formatter for a date time field.
+ * \brief Field formatter for a date time field.
+ *
  * This represents a date, time or datetime value based on
  * the field configuration.
  *

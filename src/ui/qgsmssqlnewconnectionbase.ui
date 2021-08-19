@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>810</width>
-    <height>765</height>
+    <width>800</width>
+    <height>755</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -265,6 +265,13 @@ Untick save if you don't wish to be the case.</string>
         </layout>
        </widget>
       </item>
+      <item row="3" column="0" colspan="2">
+       <widget class="QCheckBox" name="checkBoxPKFromGeometryColumns">
+        <property name="text">
+         <string>Use primary key from geometry_columns table</string>
+        </property>
+       </widget>
+      </item>
       <item row="4" column="0" colspan="2">
        <widget class="QCheckBox" name="cb_allowGeometrylessTables">
         <property name="toolTip">
@@ -302,19 +309,6 @@ Untick save if you don't wish to be the case.</string>
        </widget>
       </item>
       <item row="8" column="0" colspan="2">
-       <widget class="Line" name="line">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="0" colspan="2">
        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBoxSchemasFilter">
         <property name="title">
          <string>Use Only a Subset of Schemas</string>
@@ -347,17 +341,10 @@ Untick save if you don't wish to be the case.</string>
         </layout>
        </widget>
       </item>
-      <item row="10" column="0" colspan="2">
+      <item row="9" column="0" colspan="2">
        <widget class="QPushButton" name="btnConnect">
         <property name="text">
          <string>Test Connection</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0" colspan="2">
-       <widget class="QCheckBox" name="checkBoxPKFromGeometryColumns">
-        <property name="text">
-         <string>Use primary key from geometry_columns table</string>
         </property>
        </widget>
       </item>
@@ -376,6 +363,12 @@ Untick save if you don't wish to be the case.</string>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsMessageBar</class>
    <extends>QWidget</extends>
    <header>qgsmessagebar.h</header>
@@ -385,12 +378,6 @@ Untick save if you don't wish to be the case.</string>
    <class>QgsPasswordLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgspasswordlineedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -404,9 +391,14 @@ Untick save if you don't wish to be the case.</string>
   <tabstop>chkStorePassword</tabstop>
   <tabstop>btnListDatabase</tabstop>
   <tabstop>listDatabase</tabstop>
+  <tabstop>groupBoxGeometryColumns</tabstop>
+  <tabstop>checkBoxExtentFromGeometryColumns</tabstop>
+  <tabstop>checkBoxPKFromGeometryColumns</tabstop>
   <tabstop>cb_allowGeometrylessTables</tabstop>
   <tabstop>cb_useEstimatedMetadata</tabstop>
   <tabstop>mCheckNoInvalidGeometryHandling</tabstop>
+  <tabstop>groupBoxSchemasFilter</tabstop>
+  <tabstop>schemaView</tabstop>
   <tabstop>btnConnect</tabstop>
  </tabstops>
  <resources/>

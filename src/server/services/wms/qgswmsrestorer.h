@@ -29,7 +29,7 @@ class QgsMapLayer;
 
 /**
  * \ingroup server
- * RAII class to restore layer configuration on destruction (opacity,
+ * \brief RAII class to restore layer configuration on destruction (opacity,
  * filters, ...)
  * \since QGIS 3.0
  */
@@ -69,7 +69,7 @@ namespace QgsWms
 
   /**
    * \ingroup server
-   * RAII class to restore the rendering context configuration on destruction
+   * \brief RAII class to restore the rendering context configuration on destruction
    * \since QGIS 3.14
    */
   class QgsWmsRestorer

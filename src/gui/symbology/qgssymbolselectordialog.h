@@ -82,7 +82,7 @@ class QgsSymbolSelectorDialog;
 
 /**
  * \ingroup gui
- * Symbol selector widget that can be used to select and build a symbol
+ * \brief Symbol selector widget that can be used to select and build a symbol
  */
 class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::QgsSymbolSelectorDialogBase
 {
@@ -258,7 +258,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     QMenu *mAdvancedMenu = nullptr;
     QgsVectorLayer *mVectorLayer = nullptr;
 
-    QStandardItemModel *model = nullptr;
+    QStandardItemModel *mSymbolLayersModel = nullptr;
     QWidget *mPresentWidget = nullptr;
 
     std::unique_ptr<DataDefinedRestorer> mDataDefineRestorer;

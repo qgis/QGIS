@@ -37,7 +37,7 @@ namespace QgsWfs
     /**
      * Create Capability element for get capabilities document
      */
-    QDomElement getCapabilityElement( QDomDocument &doc, const QgsProject *project, const QgsServerRequest &request );
+    QDomElement getCapabilityElement( QDomDocument &doc, const QgsProject *project, const QgsServerRequest &request, const QgsServerSettings *settings );
 
     /**
      * Create Service element for get capabilities document

@@ -32,6 +32,17 @@
 /**
  * \ingroup core
  * \brief Point geometry type, with support for z-dimension and m-values.
+ *
+ * A QgsPoint represents a 2, 3 or 4-dimensional position, with X and Y and optional
+ * Z or M coordinates. Since it supports these additional dimensions, QgsPoint is
+ * used as the low-level storage of geometry coordinates throughout QGIS.
+ *
+ * In some scenarios it is preferable to use the QgsPointXY class instead, which is
+ * lighter and has smaller memory requirements compared to QgsPoint. See the QgsPointXY
+ * documentation for examples of situations where it is appropriate to use QgsPointXY
+ * instead of QgsPoint.
+ *
+ * \see QgsPointXY
  * \since QGIS 3.0, (previously QgsPointV2 since QGIS 2.10)
  */
 class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
@@ -60,21 +71,21 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      *   pt.asWkt() # Point(43.4 5.3)
      *
      *   pt_z = QgsPoint(120, 343, 77)
-     *   pt.asWkt() # PointZ(120 343 77)
+     *   pt_z.asWkt() # PointZ(120 343 77)
      *
      *   pt_m = QgsPoint(33, 88, m=5)
      *   pt_m.m() # 5
-     *   pt_m.wkbType() # QgsWkbTypes.PointM
+     *   pt_m.wkbType() # 2001 (QgsWkbTypes.PointM)
      *
      *   pt = QgsPoint(30, 40, wkbType=QgsWkbTypes.PointZ)
      *   pt.z() # nan
-     *   pt.wkbType() # QgsWkbTypes.PointZ
+     *   pt.wkbType() # 1001 (QgsWkbTypes.PointZ)
      * \endcode
      */
 #ifndef SIP_RUN
     QgsPoint( double x = std::numeric_limits<double>::quiet_NaN(), double y = std::numeric_limits<double>::quiet_NaN(), double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN(), QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown );
 #else
-    QgsPoint( SIP_PYOBJECT x = Py_None, SIP_PYOBJECT y = Py_None, SIP_PYOBJECT z = Py_None, SIP_PYOBJECT m = Py_None, SIP_PYOBJECT wkbType = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown )];
+    QgsPoint( SIP_PYOBJECT x SIP_TYPEHINT( Optional[Union[QgsPoint, QPointF, float]] ) = Py_None, SIP_PYOBJECT y SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT z SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT m SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT wkbType SIP_TYPEHINT( Optional[int] ) = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown )];
     % MethodCode
     if ( sipCanConvertToType( a0, sipType_QgsPointXY, SIP_NOT_NONE ) && a1 == Py_None && a2 == Py_None && a3 == Py_None && a4 == Py_None )
     {
@@ -338,6 +349,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * Returns the Cartesian 2D distance between this point and another point. In certain
      * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
      * when comparing distances.
+     * \see distanceSquared()
      * \since QGIS 3.0
     */
     double distance( const QgsPoint &other ) const SIP_HOLDGIL
@@ -371,35 +383,36 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 
     /**
      * Returns the Cartesian 3D distance between this point and a specified x, y, z coordinate. In certain
-     * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
+     * cases it may be more appropriate to call the faster distanceSquared3D() method, e.g.,
      * when comparing distances.
-     * \see distanceSquared()
+     * \see distanceSquared3D()
      * \since QGIS 3.0
     */
     double distance3D( double x, double y, double z ) const SIP_HOLDGIL;
 
     /**
      * Returns the Cartesian 3D distance between this point and another point. In certain
-     * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
+     * cases it may be more appropriate to call the faster distanceSquared3D() method, e.g.,
      * when comparing distances.
+     * \see distanceSquared3D()
      * \since QGIS 3.0
     */
     double distance3D( const QgsPoint &other ) const SIP_HOLDGIL;
 
     /**
      * Returns the Cartesian 3D squared distance between this point and a specified x, y, z coordinate. Calling
-     * this is faster than calling distance(), and may be useful in use cases such as comparing
-     * distances where the extra expense of calling distance() is not required.
-     * \see distance()
+     * this is faster than calling distance3D(), and may be useful in use cases such as comparing
+     * distances where the extra expense of calling distance3D() is not required.
+     * \see distance3D()
      * \since QGIS 3.0
     */
     double distanceSquared3D( double x, double y, double z ) const SIP_HOLDGIL;
 
     /**
      * Returns the Cartesian 3D squared distance between this point and another point. Calling
-     * this is faster than calling distance(), and may be useful in use cases such as comparing
-     * distances where the extra expense of calling distance() is not required.
-     * \see distance()
+     * this is faster than calling distance3D(), and may be useful in use cases such as comparing
+     * distances where the extra expense of calling distance3D() is not required.
+     * \see distance3D()
      * \since QGIS 3.0
     */
     double distanceSquared3D( const QgsPoint &other ) const SIP_HOLDGIL;
@@ -436,8 +449,8 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      *   pr = p.project ( 1, 0, 90 )
      *   # pr is a 2D point: 'Point (1 3)'
      *   pr = p.project (1, 0, 0 )
-     *   # pr is a 3D point: 'PointZ (1 2 1)'
-     *   p = QgsPoint( QgsWkbTypes.PointZ, 1, 2, 2 ) # 3D point
+     *   # pr is a 3D point: 'PointZ (1 2 nan)'
+     *   p = QgsPoint( 1, 2, 2, wkbType=QgsWkbTypes.PointZ ) # 3D point
      *   pr = p.project ( 1, 0 )
      *   # pr is a 3D point: 'PointZ (1 3 2)'
      *   pr = p.project ( 1, 0, 90 )
@@ -480,6 +493,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     QgsPoint operator-( QgsVector v ) const SIP_HOLDGIL { QgsPoint r = *this; r.rx() -= v.x(); r.ry() -= v.y(); return r; }
 
     //implementation of inherited methods
+    void normalize() final SIP_HOLDGIL;
     bool isEmpty() const override SIP_HOLDGIL;
     QgsRectangle boundingBox() const override SIP_HOLDGIL;
     QString geometryType() const override SIP_HOLDGIL;
@@ -505,7 +519,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     int nCoordinates() const override SIP_HOLDGIL;
     int vertexNumberFromVertexId( QgsVertexId id ) const override;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
-    bool isValid( QString &error SIP_OUT, int flags = 0 ) const override SIP_HOLDGIL;
+    bool isValid( QString &error SIP_OUT, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const override SIP_HOLDGIL;
 
     //low-level editing
     bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
@@ -529,6 +543,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     QgsPoint vertexAt( QgsVertexId /*id*/ ) const override;
     QgsPoint *toCurveType() const override SIP_FACTORY;
     double segmentLength( QgsVertexId startVertex ) const override;
+    bool boundingBoxIntersects( const QgsRectangle &rectangle ) const override SIP_HOLDGIL;
 
     bool addZValue( double zValue = 0 ) override;
     bool addMValue( double mValue = 0 ) override;
@@ -536,6 +551,8 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     bool dropMValue() override;
     void swapXy() override;
     bool convertTo( QgsWkbTypes::Type type ) override;
+
+    bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = nullptr ) override;
 
 #ifndef SIP_RUN
 
@@ -569,6 +586,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 
   protected:
 
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     int childCount() const override;
     QgsPoint childPoint( int index ) const override;
 

@@ -20,7 +20,7 @@
 
 class QgsWidgetWrapper : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Manages an editor widget
 Widget and wrapper share the same parent
 
@@ -51,7 +51,8 @@ changed status of the widget will be saved.
     enum Property
     {
       RootPath,
-      DocumentViewerContent
+      DocumentViewerContent,
+      StorageUrl
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();

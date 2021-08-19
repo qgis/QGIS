@@ -59,32 +59,33 @@ class Dissolve(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterString(self.GEOMETRY,
                                                        self.tr('Geometry column name'),
                                                        defaultValue='geometry'))
-        params = []
-        params.append(QgsProcessingParameterBoolean(self.EXPLODE_COLLECTIONS,
-                                                    self.tr('Produce one feature for each geometry in any kind of geometry collection in the source file'),
-                                                    defaultValue=False))
-        params.append(QgsProcessingParameterBoolean(self.KEEP_ATTRIBUTES,
-                                                    self.tr('Keep input attributes'),
-                                                    defaultValue=False))
-        params.append(QgsProcessingParameterBoolean(self.COUNT_FEATURES,
-                                                    self.tr('Count dissolved features'),
-                                                    defaultValue=False))
-        params.append(QgsProcessingParameterBoolean(self.COMPUTE_AREA,
-                                                    self.tr('Compute area and perimeter of dissolved features'),
-                                                    defaultValue=False))
-        params.append(QgsProcessingParameterBoolean(self.COMPUTE_STATISTICS,
-                                                    self.tr('Compute min/max/sum/mean for attribute'),
-                                                    defaultValue=False))
-        params.append(QgsProcessingParameterField(self.STATISTICS_ATTRIBUTE,
-                                                  self.tr('Numeric attribute to calculate statistics on'),
-                                                  None,
-                                                  self.INPUT,
-                                                  QgsProcessingParameterField.Numeric,
-                                                  optional=True))
-        params.append(QgsProcessingParameterString(self.OPTIONS,
-                                                   self.tr('Additional creation options'),
-                                                   defaultValue='',
-                                                   optional=True))
+        params = [
+            QgsProcessingParameterBoolean(self.EXPLODE_COLLECTIONS,
+                                          self.tr('Produce one feature for each geometry in any kind of geometry collection in the source file'),
+                                          defaultValue=False,),
+            QgsProcessingParameterBoolean(self.KEEP_ATTRIBUTES,
+                                          self.tr('Keep input attributes'),
+                                          defaultValue=False),
+            QgsProcessingParameterBoolean(self.COUNT_FEATURES,
+                                          self.tr('Count dissolved features'),
+                                          defaultValue=False),
+            QgsProcessingParameterBoolean(self.COMPUTE_AREA,
+                                          self.tr('Compute area and perimeter of dissolved features'),
+                                          defaultValue=False),
+            QgsProcessingParameterBoolean(self.COMPUTE_STATISTICS,
+                                          self.tr('Compute min/max/sum/mean for attribute'),
+                                          defaultValue=False),
+            QgsProcessingParameterField(self.STATISTICS_ATTRIBUTE,
+                                        self.tr('Numeric attribute to calculate statistics on'),
+                                        None,
+                                        self.INPUT,
+                                        QgsProcessingParameterField.Numeric,
+                                        optional=True),
+            QgsProcessingParameterString(self.OPTIONS,
+                                         self.tr('Additional creation options'),
+                                         defaultValue='',
+                                         optional=True)
+        ]
         for param in params:
             param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(param)
@@ -123,25 +124,21 @@ class Dissolve(GdalAlgorithm):
 
         output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 
-        other_fields = []
-        for f in fields:
-            if f.name() == geometry:
-                continue
+        other_fields_exist = any(
+            True for f in fields
+            if f.name() != geometry
+        )
 
-            other_fields.append('"{}"'.format(f.name()))
+        other_fields = ',*' if other_fields_exist else ''
 
-        if other_fields:
-            other_fields = ',*'
-        else:
-            other_fields = ''
-
-        arguments = []
-        arguments.append(output)
-        arguments.append(ogrLayer)
-        arguments.append('-nlt PROMOTE_TO_MULTI')
-        arguments.append('-dialect')
-        arguments.append('sqlite')
-        arguments.append('-sql')
+        arguments = [
+            output,
+            ogrLayer,
+            '-nlt PROMOTE_TO_MULTI',
+            '-dialect',
+            'sqlite',
+            '-sql',
+        ]
 
         tokens = []
         if self.parameterAsBoolean(parameters, self.COUNT_FEATURES, context):

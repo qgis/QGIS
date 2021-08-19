@@ -22,6 +22,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsguiutils.h"
+#include "qgsmarkersymbol.h"
 
 //
 // QgsFieldConditionalFormatWidget
@@ -55,8 +56,8 @@ void QgsFieldConditionalFormatWidget::setLayer( QgsVectorLayer *layer )
 
 void QgsFieldConditionalFormatWidget::ruleClicked( const QModelIndex &index )
 {
-  QList<QgsConditionalStyle> styles = getStyles();
-  QgsConditionalStyle style = styles.at( index.row() );
+  const QList<QgsConditionalStyle> styles = getStyles();
+  const QgsConditionalStyle style = styles.at( index.row() );
   editStyle( index.row(), style );
 }
 
@@ -192,11 +193,7 @@ void QgsFieldConditionalFormatWidget::reloadStyles()
 
   const auto constGetStyles = getStyles();
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  const QSize size( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 10, Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 2 );
-#else
   const QSize size( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 10, Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 2 );
-#endif
 
   listView->setIconSize( size );
 
@@ -288,7 +285,7 @@ QgsEditConditionalFormatRuleWidget::QgsEditConditionalFormatRuleWidget( QWidget 
   mPresetsModel = new QStandardItemModel( mPresetsList );
   mPresetsList->setModel( mPresetsModel );
 
-  btnChangeIcon->setSymbolType( QgsSymbol::Marker );
+  btnChangeIcon->setSymbolType( Qgis::SymbolType::Marker );
   btnChangeIcon->setSymbol( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
   connect( checkIcon, &QCheckBox::toggled, btnChangeIcon, &QWidget::setEnabled );
 }
@@ -312,8 +309,8 @@ QgsConditionalStyle QgsEditConditionalFormatRuleWidget::currentStyle() const
   style.setRule( mRuleEdit->text() );
   style.setName( mNameEdit->text() );
 
-  QColor backColor = btnBackgroundColor->color();
-  QColor fontColor = btnTextColor->color();
+  const QColor backColor = btnBackgroundColor->color();
+  const QColor fontColor = btnTextColor->color();
 
   QFont font = mFontFamilyCmbBx->currentFont();
   font.setBold( mFontBoldBtn->isChecked() );
@@ -345,7 +342,7 @@ void QgsEditConditionalFormatRuleWidget::setExpression()
 
   if ( dlg.exec() )
   {
-    QString expression = dlg.expressionBuilder()->expressionText();
+    const QString expression = dlg.expressionBuilder()->expressionText();
     mRuleEdit->setText( expression );
   }
 }
@@ -356,7 +353,7 @@ void QgsEditConditionalFormatRuleWidget::presetSet( int index )
     return;
 
   const int styleIndex = mPresetsList->currentData( Qt::UserRole + 1 ).toInt();
-  QgsConditionalStyle style = mPresets.at( styleIndex );
+  const QgsConditionalStyle style = mPresets.at( styleIndex );
   setFormattingFromStyle( style );
 }
 
@@ -373,7 +370,7 @@ void QgsEditConditionalFormatRuleWidget::setFormattingFromStyle( const QgsCondit
   {
     checkIcon->setChecked( false );
   }
-  QFont font = style.font();
+  const QFont font = style.font();
   mFontBoldBtn->setChecked( font.bold() );
   mFontItalicBtn->setChecked( font.italic() );
   mFontStrikethroughBtn->setChecked( font.strikeOut() );

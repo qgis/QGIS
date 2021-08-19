@@ -177,7 +177,7 @@ class ClipRasterByMask(GdalAlgorithm):
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, out)
 
-        arguments = []
+        arguments = ['-overwrite']
 
         if sourceCrs.isValid():
             arguments.append('-s_srs')

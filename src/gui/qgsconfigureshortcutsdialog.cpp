@@ -16,6 +16,7 @@
 #include "qgsconfigureshortcutsdialog.h"
 
 #include "qgsshortcutsmanager.h"
+#include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
@@ -55,7 +56,7 @@ QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget *parent, QgsSh
 
 void QgsConfigureShortcutsDialog::populateActions()
 {
-  QList<QObject *> objects = mManager->listAll();
+  const QList<QObject *> objects = mManager->listAll();
 
   QList<QTreeWidgetItem *> items;
   items.reserve( objects.count() );
@@ -135,7 +136,7 @@ void QgsConfigureShortcutsDialog::saveShortcuts()
   QDomDocument doc( QStringLiteral( "shortcuts" ) );
   QDomElement root = doc.createElement( QStringLiteral( "qgsshortcuts" ) );
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
-  root.setAttribute( QStringLiteral( "locale" ), settings.value( QStringLiteral( "locale/userLocale" ), "en_US" ).toString() );
+  root.setAttribute( QStringLiteral( "locale" ), settings.value( QgsApplication::settingsLocaleUserLocale.key(), "en_US" ).toString() );
   doc.appendChild( root );
 
   settings.beginGroup( mManager->settingsPath() );
@@ -161,8 +162,8 @@ void QgsConfigureShortcutsDialog::saveShortcuts()
 
 void QgsConfigureShortcutsDialog::loadShortcuts()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Shortcuts" ), QDir::homePath(),
-                     tr( "XML file" ) + " (*.xml);;" + tr( "All files" ) + " (*)" );
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Shortcuts" ), QDir::homePath(),
+                           tr( "XML file" ) + " (*.xml);;" + tr( "All files" ) + " (*)" );
 
   if ( fileName.isEmpty() )
   {
@@ -194,7 +195,7 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
     return;
   }
 
-  QDomElement root = doc.documentElement();
+  const QDomElement root = doc.documentElement();
   if ( root.tagName() != QLatin1String( "qgsshortcuts" ) )
   {
     QMessageBox::information( this, tr( "Loading Shortcuts" ),
@@ -202,13 +203,12 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
     return;
   }
 
-  QgsSettings settings;
   QString currentLocale;
 
-  bool localeOverrideFlag = settings.value( QStringLiteral( "locale/overrideFlag" ), false ).toBool();
+  const bool localeOverrideFlag = QgsApplication::settingsLocaleOverrideFlag.value();
   if ( localeOverrideFlag )
   {
-    currentLocale = settings.value( QStringLiteral( "locale/userLocale" ), "en_US" ).toString();
+    currentLocale = QgsApplication::settingsLocaleUserLocale.value( QString(), true, "en_US" );
   }
   else // use QGIS locale
   {
@@ -248,7 +248,7 @@ void QgsConfigureShortcutsDialog::changeShortcut()
 void QgsConfigureShortcutsDialog::resetShortcut()
 {
   QObject *object = currentObject();
-  QString sequence = mManager->objectDefaultKeySequence( object );
+  const QString sequence = mManager->objectDefaultKeySequence( object );
   setCurrentActionShortcut( sequence );
 }
 
@@ -311,7 +311,7 @@ void QgsConfigureShortcutsDialog::keyPressEvent( QKeyEvent *event )
     return;
   }
 
-  int key = event->key();
+  const int key = event->key();
   switch ( key )
   {
     // modifiers
@@ -351,7 +351,7 @@ void QgsConfigureShortcutsDialog::keyReleaseEvent( QKeyEvent *event )
     return;
   }
 
-  int key = event->key();
+  const int key = event->key();
   switch ( key )
   {
     // modifiers
@@ -396,7 +396,7 @@ QObject *QgsConfigureShortcutsDialog::currentObject()
 void QgsConfigureShortcutsDialog::updateShortcutText()
 {
   // update text of the button so that user can see what has typed already
-  QKeySequence s( mModifiers + mKey );
+  const QKeySequence s( mModifiers + mKey );
   btnChangeShortcut->setText( tr( "Input: " ) + s.toString( QKeySequence::NativeText ) );
 }
 
@@ -440,9 +440,9 @@ void QgsConfigureShortcutsDialog::setCurrentActionShortcut( const QKeySequence &
       otherText = otherShortcut->whatsThis();
     }
 
-    int res = QMessageBox::question( this, tr( "Change Shortcut" ),
-                                     tr( "This shortcut is already assigned to action %1. Reassign?" ).arg( otherText ),
-                                     QMessageBox::Yes | QMessageBox::No );
+    const int res = QMessageBox::question( this, tr( "Change Shortcut" ),
+                                           tr( "This shortcut is already assigned to action %1. Reassign?" ).arg( otherText ),
+                                           QMessageBox::Yes | QMessageBox::No );
 
     if ( res != QMessageBox::Yes )
       return;

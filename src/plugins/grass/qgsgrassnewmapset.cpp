@@ -46,9 +46,6 @@ extern "C"
 #if defined(_MSC_VER) && defined(M_PI_4)
 #undef M_PI_4 //avoid redefinition warning
 #endif
-#if defined(PROJ_VERSION_MAJOR) && PROJ_VERSION_MAJOR>=6
-#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
-#endif
 #include <grass/gprojects.h>
 }
 
@@ -797,15 +794,24 @@ void QgsGrassNewMapset::loadRegions()
     if ( coorElem.text().isNull() )
       continue;
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     QStringList coor = coorElem.text().split( QStringLiteral( " " ), QString::SkipEmptyParts );
+#else
+    QStringList coor = coorElem.text().split( QStringLiteral( " " ), Qt::SkipEmptyParts );
+#endif
     if ( coor.size() != 2 )
     {
       QgsDebugMsg( QString( "Cannot parse coordinates: %1" ).arg( coorElem.text() ) );
       continue;
     }
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     QStringList ll = coor[0].split( QStringLiteral( "," ), QString::SkipEmptyParts );
     QStringList ur = coor[1].split( QStringLiteral( "," ), QString::SkipEmptyParts );
+#else
+    QStringList ll = coor[0].split( QStringLiteral( "," ), Qt::SkipEmptyParts );
+    QStringList ur = coor[1].split( QStringLiteral( "," ), Qt::SkipEmptyParts );
+#endif
     if ( ll.size() != 2 || ur.size() != 2 )
     {
       QgsDebugMsg( QString( "Cannot parse coordinates: %1" ).arg( coorElem.text() ) );

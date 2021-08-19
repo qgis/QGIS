@@ -80,7 +80,7 @@ void QgsPolygon3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, Qgs
 
 QgsAbstract3DSymbol *QgsPolygon3DSymbolWidget::symbol()
 {
-  std::unique_ptr< QgsPolygon3DSymbol > sym = qgis::make_unique< QgsPolygon3DSymbol >();
+  std::unique_ptr< QgsPolygon3DSymbol > sym = std::make_unique< QgsPolygon3DSymbol >();
   sym->setHeight( spinHeight->value() );
   sym->setExtrusionHeight( spinExtrusion->value() );
   sym->setAltitudeClamping( static_cast<Qgs3DTypes::AltitudeClamping>( cboAltClamping->currentIndex() ) );

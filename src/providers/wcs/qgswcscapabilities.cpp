@@ -652,7 +652,8 @@ QString QgsWcsCapabilities::domElementText( const QDomElement &element, const QS
 QList<int> QgsWcsCapabilities::parseInts( const QString &text )
 {
   QList<int> list;
-  Q_FOREACH ( const QString &s, text.split( ' ' ) )
+  const QStringList parts = text.split( ' ' );
+  for ( const QString &s : parts )
   {
     bool ok;
     list.append( s.toInt( &ok ) );
@@ -668,7 +669,8 @@ QList<int> QgsWcsCapabilities::parseInts( const QString &text )
 QList<double> QgsWcsCapabilities::parseDoubles( const QString &text )
 {
   QList<double> list;
-  Q_FOREACH ( const QString &s, text.split( ' ' ) )
+  const QStringList parts = text.split( ' ' );
+  for ( const QString &s : parts )
   {
     bool ok;
     list.append( s.toDouble( &ok ) );
@@ -854,7 +856,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
   }
 
   // exclude invalid CRSs from the lists
-  for ( const QString &crsid : qgis::as_const( crsList ) )
+  for ( const QString &crsid : std::as_const( crsList ) )
   {
     if ( QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsid ).isValid() )
     {
@@ -978,7 +980,8 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
 
   // NULL / no data values
   // TODO: handle multiple range sets
-  Q_FOREACH ( const QString &text, domElementsTexts( coverageOfferingElement, "rangeSet.RangeSet.nullValue.singleValue" ) )
+  const QStringList elements = domElementsTexts( coverageOfferingElement, "rangeSet.RangeSet.nullValue.singleValue" );
+  for ( const QString &text : elements )
   {
     bool ok;
     double val = text.toDouble( &ok );
@@ -1095,7 +1098,8 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
 
   // NULL / no data values
   // TODO: handle multiple fields / ranges (?)
-  Q_FOREACH ( const QString &text, domElementsTexts( documentElement, "CoverageDescription.Range.Field.NullValue" ) )
+  const QStringList elements = domElementsTexts( documentElement, "CoverageDescription.Range.Field.NullValue" );
+  for ( const QString &text : elements )
   {
     bool ok;
     double val = text.toDouble( &ok );

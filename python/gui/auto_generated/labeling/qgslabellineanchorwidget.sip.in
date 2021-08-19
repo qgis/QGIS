@@ -10,7 +10,7 @@
 
 class QgsLabelLineAnchorWidget : QgsLabelSettingsWidgetBase
 {
-%Docstring
+%Docstring(signature="appended")
 A widget for customising label line anchor settings.
 
 .. versionadded:: 3.16

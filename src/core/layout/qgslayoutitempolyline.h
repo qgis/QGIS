@@ -19,14 +19,15 @@
 
 #include "qgis_core.h"
 #include "qgslayoutitemnodeitem.h"
-#include "qgssymbol.h"
 #include <QGraphicsPathItem>
 #include "qgslogger.h"
 #include "qgslayout.h"
 
+class QgsLineSymbol;
+
 /**
  * \ingroup core
- * Layout item for node based polyline shapes.
+ * \brief Layout item for node based polyline shapes.
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemPolyline: public QgsLayoutNodesItem
@@ -47,6 +48,7 @@ class CORE_EXPORT QgsLayoutItemPolyline: public QgsLayoutNodesItem
      * Constructor for QgsLayoutItemPolyline for the specified \a layout.
      */
     QgsLayoutItemPolyline( QgsLayout *layout );
+    ~QgsLayoutItemPolyline() override;
 
     /**
      * Constructor for QgsLayoutItemPolyline for the specified \a polyline
@@ -70,7 +72,7 @@ class CORE_EXPORT QgsLayoutItemPolyline: public QgsLayoutNodesItem
      * Returns the line symbol used to draw the shape.
      * \see setSymbol()
      */
-    QgsLineSymbol *symbol() { return mPolylineStyleSymbol.get(); }
+    QgsLineSymbol *symbol();
 
     /**
      * Sets the \a symbol used to draw the shape.

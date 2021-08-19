@@ -111,9 +111,9 @@ void QgsRunProcess::die()
 
 void QgsRunProcess::stdoutAvailable()
 {
-  QByteArray bytes( mProcess->readAllStandardOutput() );
+  const QByteArray bytes( mProcess->readAllStandardOutput() );
   QTextCodec *codec = QTextCodec::codecForLocale();
-  QString line( codec->toUnicode( bytes ) );
+  const QString line( codec->toUnicode( bytes ) );
 
   // Add the new output to the dialog box
   mOutput->appendMessage( line );
@@ -121,9 +121,9 @@ void QgsRunProcess::stdoutAvailable()
 
 void QgsRunProcess::stderrAvailable()
 {
-  QByteArray bytes( mProcess->readAllStandardOutput() );
+  const QByteArray bytes( mProcess->readAllStandardOutput() );
   QTextCodec *codec = QTextCodec::codecForLocale();
-  QString line( codec->toUnicode( bytes ) );
+  const QString line( codec->toUnicode( bytes ) );
 
   // Add the new output to the dialog box, but color it red
   mOutput->appendMessage( "<font color=red>" + line + "</font>" );
@@ -272,15 +272,16 @@ int QgsBlockingProcess::run( QgsFeedback *feedback )
 
   int result = 0;
   QProcess::ExitStatus exitStatus = QProcess::NormalExit;
+  QProcess::ProcessError error = QProcess::UnknownError;
 
-  std::function<void()> runFunction = [ this, &result, &exitStatus, feedback]()
+  const std::function<void()> runFunction = [ this, &result, &exitStatus, &error, feedback]()
   {
     // this function will always be run in worker threads -- either the blocking call is being made in a worker thread,
     // or the blocking call has been made from the main thread and we've fired up a new thread for this function
     Q_ASSERT( QThread::currentThread() != QgsApplication::instance()->thread() );
 
     QProcess p;
-    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    const QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
     p.setProcessEnvironment( env );
 
     QEventLoop loop;
@@ -301,26 +302,34 @@ int QgsBlockingProcess::run( QgsFeedback *feedback )
       p.terminate();
 #endif
     } );
-    connect( &p, qgis::overload< int, QProcess::ExitStatus >::of( &QProcess::finished ), this, [&loop, &result, &exitStatus]( int res, QProcess::ExitStatus st )
+    connect( &p, qOverload< int, QProcess::ExitStatus >( &QProcess::finished ), this, [&loop, &result, &exitStatus]( int res, QProcess::ExitStatus st )
     {
       result = res;
       exitStatus = st;
       loop.quit();
     }, Qt::DirectConnection );
 
-    connect( &p, &QProcess::readyReadStandardOutput, this, [&p, this]
+    connect( &p, &QProcess::readyReadStandardOutput, &p, [&p, this]
     {
-      QByteArray ba = p.readAllStandardOutput();
+      const QByteArray ba = p.readAllStandardOutput();
       mStdoutHandler( ba );
     } );
-    connect( &p, &QProcess::readyReadStandardError, this, [&p, this]
+    connect( &p, &QProcess::readyReadStandardError, &p, [&p, this]
     {
-      QByteArray ba = p.readAllStandardError();
+      const QByteArray ba = p.readAllStandardError();
       mStderrHandler( ba );
     } );
     p.start( mProcess, mArguments, QProcess::Unbuffered | QProcess::ReadWrite );
-
-    loop.exec();
+    if ( !p.waitForStarted() )
+    {
+      result = 1;
+      exitStatus = QProcess::NormalExit;
+      error = p.error();
+    }
+    else
+    {
+      loop.exec();
+    }
 
     mStdoutHandler( p.readAllStandardOutput() );
     mStderrHandler( p.readAllStandardError() );
@@ -328,7 +337,7 @@ int QgsBlockingProcess::run( QgsFeedback *feedback )
 
   if ( requestMadeFromMainThread )
   {
-    std::unique_ptr<ProcessThread> processThread = qgis::make_unique<ProcessThread>( runFunction );
+    std::unique_ptr<ProcessThread> processThread = std::make_unique<ProcessThread>( runFunction );
     processThread->start();
     // wait for thread to gracefully exit
     processThread->wait();
@@ -339,11 +348,17 @@ int QgsBlockingProcess::run( QgsFeedback *feedback )
   }
 
   mExitStatus = exitStatus;
+  mProcessError = error;
   return result;
 }
 
 QProcess::ExitStatus QgsBlockingProcess::exitStatus() const
 {
   return mExitStatus;
+};
+
+QProcess::ProcessError QgsBlockingProcess::processError() const
+{
+  return mProcessError;
 };
 #endif // QT_CONFIG(process)

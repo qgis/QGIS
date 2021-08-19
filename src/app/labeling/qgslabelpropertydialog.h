@@ -37,6 +37,7 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
                             const QString &labelText,
                             bool isPinned,
                             const QgsPalLayerSettings &layerSettings,
+                            QgsMapCanvas *canvas,
                             QWidget *parent = nullptr,
                             Qt::WindowFlags f = Qt::WindowFlags() );
 
@@ -89,6 +90,8 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
     //! Block / unblock all input element signals
     void blockElementSignals( bool block );
 
+    int dataDefinedColumnIndex( QgsPalLayerSettings::Property p, const QgsVectorLayer *vlayer, const QgsExpressionContext &context ) const;
+
     void setDataDefinedValues( QgsVectorLayer *vlayer );
     void enableDataDefinedWidgets( QgsVectorLayer *vlayer );
 
@@ -107,8 +110,11 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
 
     void enableWidgetsForPinnedLabels();
 
+    QgsMapCanvas *mCanvas = nullptr;
+
     QgsAttributeMap mChangedProperties;
     QgsPropertyCollection mDataDefinedProperties;
+    QMap< int, int > mPropertyToFieldMap;
     QFont mLabelFont;
 
     QFontDatabase mFontDB;

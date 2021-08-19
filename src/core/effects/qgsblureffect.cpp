@@ -45,7 +45,7 @@ void QgsBlurEffect::draw( QgsRenderContext &context )
 
 void QgsBlurEffect::drawStackBlur( QgsRenderContext &context )
 {
-  int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
+  const int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
   QImage im = sourceAsImage( context )->copy();
   QgsImageOperation::stackBlur( im, blurLevel );
   drawBlurredImage( context, im );
@@ -53,7 +53,7 @@ void QgsBlurEffect::drawStackBlur( QgsRenderContext &context )
 
 void QgsBlurEffect::drawGaussianBlur( QgsRenderContext &context )
 {
-  int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
+  const int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
   QImage *im = QgsImageOperation::gaussianBlur( *sourceAsImage( context ), blurLevel );
   drawBlurredImage( context, *im );
   delete im;
@@ -65,7 +65,7 @@ void QgsBlurEffect::drawBlurredImage( QgsRenderContext &context, QImage &image )
   QgsImageOperation::multiplyOpacity( image, mOpacity );
 
   QPainter *painter = context.painter();
-  QgsScopedQPainterState painterState( painter );
+  const QgsScopedQPainterState painterState( painter );
   painter->setCompositionMode( mBlendMode );
   painter->drawImage( imageOffset( context ), image );
 }
@@ -87,14 +87,14 @@ QVariantMap QgsBlurEffect::properties() const
 void QgsBlurEffect::readProperties( const QVariantMap &props )
 {
   bool ok;
-  QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( QStringLiteral( "blend_mode" ) ).toInt( &ok ) );
+  const QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( QStringLiteral( "blend_mode" ) ).toInt( &ok ) );
   if ( ok )
   {
     mBlendMode = mode;
   }
   if ( props.contains( QStringLiteral( "transparency" ) ) )
   {
-    double transparency = props.value( QStringLiteral( "transparency" ) ).toDouble( &ok );
+    const double transparency = props.value( QStringLiteral( "transparency" ) ).toDouble( &ok );
     if ( ok )
     {
       mOpacity = 1.0 - transparency;
@@ -102,7 +102,7 @@ void QgsBlurEffect::readProperties( const QVariantMap &props )
   }
   else
   {
-    double opacity = props.value( QStringLiteral( "opacity" ) ).toDouble( &ok );
+    const double opacity = props.value( QStringLiteral( "opacity" ) ).toDouble( &ok );
     if ( ok )
     {
       mOpacity = opacity;
@@ -111,7 +111,7 @@ void QgsBlurEffect::readProperties( const QVariantMap &props )
 
   mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt();
   mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
-  double level = props.value( QStringLiteral( "blur_level" ) ).toDouble( &ok );
+  const double level = props.value( QStringLiteral( "blur_level" ) ).toDouble( &ok );
   if ( ok )
   {
     mBlurLevel = level;
@@ -123,7 +123,7 @@ void QgsBlurEffect::readProperties( const QVariantMap &props )
   }
   mBlurUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "blur_unit" ) ).toString() );
   mBlurMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "blur_unit_scale" ) ).toString() );
-  QgsBlurEffect::BlurMethod method = static_cast< QgsBlurEffect::BlurMethod >( props.value( QStringLiteral( "blur_method" ) ).toInt( &ok ) );
+  const QgsBlurEffect::BlurMethod method = static_cast< QgsBlurEffect::BlurMethod >( props.value( QStringLiteral( "blur_method" ) ).toInt( &ok ) );
   if ( ok )
   {
     mBlurMethod = method;
@@ -138,8 +138,8 @@ QgsBlurEffect *QgsBlurEffect::clone() const
 
 QRectF QgsBlurEffect::boundingRect( const QRectF &rect, const QgsRenderContext &context ) const
 {
-  int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
+  const int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
   //plus possible extension due to blur, with a couple of extra pixels thrown in for safety
-  double spread = blurLevel * 2.0 + 10;
+  const double spread = blurLevel * 2.0 + 10;
   return rect.adjusted( -spread, -spread, spread, spread );
 }

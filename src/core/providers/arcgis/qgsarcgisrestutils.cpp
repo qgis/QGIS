@@ -35,6 +35,11 @@
 #include "qgsgeometryengine.h"
 #include "qgsmultisurface.h"
 #include "qgsmultipoint.h"
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
+#include "qgsfillsymbol.h"
+
+#include <QRegularExpression>
 
 QVariant::Type QgsArcGisRestUtils::convertFieldType( const QString &esriFieldType )
 {
@@ -112,7 +117,7 @@ std::unique_ptr< QgsPoint > QgsArcGisRestUtils::convertPoint( const QVariantList
     return nullptr;
   double z = nCoords >= 3 ? coordList[2].toDouble() : 0;
   double m = nCoords >= 4 ? coordList[3].toDouble() : 0;
-  return qgis::make_unique< QgsPoint >( pointType, x, y, z, m );
+  return std::make_unique< QgsPoint >( pointType, x, y, z, m );
 }
 
 std::unique_ptr< QgsCircularString > QgsArcGisRestUtils::convertCircularString( const QVariantMap &curveData, QgsWkbTypes::Type pointType, const QgsPoint &startPoint )
@@ -131,7 +136,7 @@ std::unique_ptr< QgsCircularString > QgsArcGisRestUtils::convertCircularString( 
     }
     points.append( *point );
   }
-  std::unique_ptr< QgsCircularString > curve = qgis::make_unique< QgsCircularString> ();
+  std::unique_ptr< QgsCircularString > curve = std::make_unique< QgsCircularString> ();
   curve->setPoints( points );
   return curve;
 }
@@ -139,7 +144,7 @@ std::unique_ptr< QgsCircularString > QgsArcGisRestUtils::convertCircularString( 
 std::unique_ptr< QgsCompoundCurve > QgsArcGisRestUtils::convertCompoundCurve( const QVariantList &curvesList, QgsWkbTypes::Type pointType )
 {
   // [[6,3],[5,3],{"b":[[3,2],[6,1],[2,4]]},[1,2],{"c": [[3,3],[1,4]]}]
-  std::unique_ptr< QgsCompoundCurve > compoundCurve = qgis::make_unique< QgsCompoundCurve >();
+  std::unique_ptr< QgsCompoundCurve > compoundCurve = std::make_unique< QgsCompoundCurve >();
   QgsLineString *lineString = new QgsLineString();
   compoundCurve->addCurve( lineString );
   for ( const QVariant &curveData : curvesList )
@@ -188,7 +193,7 @@ std::unique_ptr< QgsPoint > QgsArcGisRestUtils::convertGeometryPoint( const QVar
     return nullptr;
   double z = geometryData[QStringLiteral( "z" )].toDouble();
   double m = geometryData[QStringLiteral( "m" )].toDouble();
-  return qgis::make_unique< QgsPoint >( pointType, x, y, z, m );
+  return std::make_unique< QgsPoint >( pointType, x, y, z, m );
 }
 
 std::unique_ptr< QgsMultiPoint > QgsArcGisRestUtils::convertMultiPoint( const QVariantMap &geometryData, QgsWkbTypes::Type pointType )
@@ -196,7 +201,7 @@ std::unique_ptr< QgsMultiPoint > QgsArcGisRestUtils::convertMultiPoint( const QV
   // {"points" : [[ <x1>, <y1>, <z1>, <m1> ] , [ <x2>, <y2>, <z2>, <m2> ], ... ]}
   const QVariantList coordsList = geometryData[QStringLiteral( "points" )].toList();
 
-  std::unique_ptr< QgsMultiPoint > multiPoint = qgis::make_unique< QgsMultiPoint >();
+  std::unique_ptr< QgsMultiPoint > multiPoint = std::make_unique< QgsMultiPoint >();
   multiPoint->reserve( coordsList.size() );
   for ( const QVariant &coordData : coordsList )
   {
@@ -233,9 +238,9 @@ std::unique_ptr< QgsMultiCurve > QgsArcGisRestUtils::convertGeometryPolyline( co
     pathsList = geometryData[QStringLiteral( "curvePaths" )].toList();
   if ( pathsList.isEmpty() )
     return nullptr;
-  std::unique_ptr< QgsMultiCurve > multiCurve = qgis::make_unique< QgsMultiCurve >();
+  std::unique_ptr< QgsMultiCurve > multiCurve = std::make_unique< QgsMultiCurve >();
   multiCurve->reserve( pathsList.size() );
-  for ( const QVariant &pathData : qgis::as_const( pathsList ) )
+  for ( const QVariant &pathData : std::as_const( pathsList ) )
   {
     std::unique_ptr< QgsCompoundCurve > curve = convertCompoundCurve( pathData.toList(), pointType );
     if ( !curve )
@@ -272,7 +277,7 @@ std::unique_ptr< QgsMultiSurface > QgsArcGisRestUtils::convertGeometryPolygon( c
     return nullptr;
 
   std::sort( curves.begin(), curves.end(), []( const QgsCompoundCurve * a, const QgsCompoundCurve * b )->bool{ double a_area = 0.0; double b_area = 0.0; a->sumUpArea( a_area ); b->sumUpArea( b_area ); return std::abs( a_area ) > std::abs( b_area ); } );
-  std::unique_ptr< QgsMultiSurface > result = qgis::make_unique< QgsMultiSurface >();
+  std::unique_ptr< QgsMultiSurface > result = std::make_unique< QgsMultiSurface >();
   result->reserve( curves.size() );
   while ( !curves.isEmpty() )
   {
@@ -317,13 +322,13 @@ std::unique_ptr< QgsPolygon > QgsArcGisRestUtils::convertEnvelope( const QVarian
   double ymax = geometryData[QStringLiteral( "ymax" )].toDouble( &ymaxOk );
   if ( !xminOk || !yminOk || !xmaxOk || !ymaxOk )
     return nullptr;
-  std::unique_ptr< QgsLineString > ext = qgis::make_unique< QgsLineString> ();
+  std::unique_ptr< QgsLineString > ext = std::make_unique< QgsLineString> ();
   ext->addVertex( QgsPoint( xmin, ymin ) );
   ext->addVertex( QgsPoint( xmax, ymin ) );
   ext->addVertex( QgsPoint( xmax, ymax ) );
   ext->addVertex( QgsPoint( xmin, ymax ) );
   ext->addVertex( QgsPoint( xmin, ymin ) );
-  std::unique_ptr< QgsPolygon > poly = qgis::make_unique< QgsPolygon >();
+  std::unique_ptr< QgsPolygon > poly = std::make_unique< QgsPolygon >();
   poly->setExteriorRing( ext.release() );
   return poly;
 }
@@ -434,11 +439,11 @@ std::unique_ptr<QgsLineSymbol> QgsArcGisRestUtils::parseEsriLineSymbolJson( cons
 
   QgsSymbolLayerList layers;
   Qt::PenStyle penStyle = convertLineStyle( symbolData.value( QStringLiteral( "style" ) ).toString() );
-  std::unique_ptr< QgsSimpleLineSymbolLayer > lineLayer = qgis::make_unique< QgsSimpleLineSymbolLayer >( lineColor, widthInPoints, penStyle );
+  std::unique_ptr< QgsSimpleLineSymbolLayer > lineLayer = std::make_unique< QgsSimpleLineSymbolLayer >( lineColor, widthInPoints, penStyle );
   lineLayer->setWidthUnit( QgsUnitTypes::RenderPoints );
   layers.append( lineLayer.release() );
 
-  std::unique_ptr< QgsLineSymbol > symbol = qgis::make_unique< QgsLineSymbol >( layers );
+  std::unique_ptr< QgsLineSymbol > symbol = std::make_unique< QgsLineSymbol >( layers );
   return symbol;
 }
 
@@ -454,11 +459,11 @@ std::unique_ptr<QgsFillSymbol> QgsArcGisRestUtils::parseEsriFillSymbolJson( cons
   double penWidthInPoints = outlineData.value( QStringLiteral( "width" ) ).toDouble( &ok );
 
   QgsSymbolLayerList layers;
-  std::unique_ptr< QgsSimpleFillSymbolLayer > fillLayer = qgis::make_unique< QgsSimpleFillSymbolLayer >( fillColor, brushStyle, lineColor, penStyle, penWidthInPoints );
+  std::unique_ptr< QgsSimpleFillSymbolLayer > fillLayer = std::make_unique< QgsSimpleFillSymbolLayer >( fillColor, brushStyle, lineColor, penStyle, penWidthInPoints );
   fillLayer->setStrokeWidthUnit( QgsUnitTypes::RenderPoints );
   layers.append( fillLayer.release() );
 
-  std::unique_ptr< QgsFillSymbol > symbol = qgis::make_unique< QgsFillSymbol >( layers );
+  std::unique_ptr< QgsFillSymbol > symbol = std::make_unique< QgsFillSymbol >( layers );
   return symbol;
 }
 
@@ -486,7 +491,7 @@ std::unique_ptr<QgsFillSymbol> QgsArcGisRestUtils::parseEsriPictureFillSymbolJso
   symbolPath.prepend( QLatin1String( "base64:" ) );
 
   QgsSymbolLayerList layers;
-  std::unique_ptr< QgsRasterFillSymbolLayer > fillLayer = qgis::make_unique< QgsRasterFillSymbolLayer >( symbolPath );
+  std::unique_ptr< QgsRasterFillSymbolLayer > fillLayer = std::make_unique< QgsRasterFillSymbolLayer >( symbolPath );
   fillLayer->setWidth( widthInPixels );
   fillLayer->setAngle( angleCW );
   fillLayer->setWidthUnit( QgsUnitTypes::RenderPoints );
@@ -499,11 +504,11 @@ std::unique_ptr<QgsFillSymbol> QgsArcGisRestUtils::parseEsriPictureFillSymbolJso
   Qt::PenStyle penStyle = convertLineStyle( outlineData.value( QStringLiteral( "style" ) ).toString() );
   double penWidthInPoints = outlineData.value( QStringLiteral( "width" ) ).toDouble( &ok );
 
-  std::unique_ptr< QgsSimpleLineSymbolLayer > lineLayer = qgis::make_unique< QgsSimpleLineSymbolLayer >( lineColor, penWidthInPoints, penStyle );
+  std::unique_ptr< QgsSimpleLineSymbolLayer > lineLayer = std::make_unique< QgsSimpleLineSymbolLayer >( lineColor, penWidthInPoints, penStyle );
   lineLayer->setWidthUnit( QgsUnitTypes::RenderPoints );
   layers.append( lineLayer.release() );
 
-  std::unique_ptr< QgsFillSymbol > symbol = qgis::make_unique< QgsFillSymbol >( layers );
+  std::unique_ptr< QgsFillSymbol > symbol = std::make_unique< QgsFillSymbol >( layers );
   return symbol;
 }
 
@@ -548,7 +553,7 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriMarkerSymbolJson( 
   double penWidthInPoints = outlineData.value( QStringLiteral( "width" ) ).toDouble( &ok );
 
   QgsSymbolLayerList layers;
-  std::unique_ptr< QgsSimpleMarkerSymbolLayer > markerLayer = qgis::make_unique< QgsSimpleMarkerSymbolLayer >( shape, sizeInPoints, angleCW, QgsSymbol::ScaleArea, fillColor, lineColor );
+  std::unique_ptr< QgsSimpleMarkerSymbolLayer > markerLayer = std::make_unique< QgsSimpleMarkerSymbolLayer >( shape, sizeInPoints, angleCW, Qgis::ScaleMethod::ScaleArea, fillColor, lineColor );
   markerLayer->setSizeUnit( QgsUnitTypes::RenderPoints );
   markerLayer->setStrokeWidthUnit( QgsUnitTypes::RenderPoints );
   markerLayer->setStrokeStyle( penStyle );
@@ -557,7 +562,7 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriMarkerSymbolJson( 
   markerLayer->setOffsetUnit( QgsUnitTypes::RenderPoints );
   layers.append( markerLayer.release() );
 
-  std::unique_ptr< QgsMarkerSymbol > symbol = qgis::make_unique< QgsMarkerSymbol >( layers );
+  std::unique_ptr< QgsMarkerSymbol > symbol = std::make_unique< QgsMarkerSymbol >( layers );
   return symbol;
 }
 
@@ -585,7 +590,7 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriPictureMarkerSymbo
   symbolPath.prepend( QLatin1String( "base64:" ) );
 
   QgsSymbolLayerList layers;
-  std::unique_ptr< QgsRasterMarkerSymbolLayer > markerLayer = qgis::make_unique< QgsRasterMarkerSymbolLayer >( symbolPath, widthInPixels, angleCW, QgsSymbol::ScaleArea );
+  std::unique_ptr< QgsRasterMarkerSymbolLayer > markerLayer = std::make_unique< QgsRasterMarkerSymbolLayer >( symbolPath, widthInPixels, angleCW, Qgis::ScaleMethod::ScaleArea );
   markerLayer->setSizeUnit( QgsUnitTypes::RenderPoints );
 
   // only change the default aspect ratio if the server height setting requires this
@@ -596,7 +601,7 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriPictureMarkerSymbo
   markerLayer->setOffsetUnit( QgsUnitTypes::RenderPoints );
   layers.append( markerLayer.release() );
 
-  std::unique_ptr< QgsMarkerSymbol > symbol = qgis::make_unique< QgsMarkerSymbol >( layers );
+  std::unique_ptr< QgsMarkerSymbol > symbol = std::make_unique< QgsMarkerSymbol >( layers );
   return symbol;
 }
 

@@ -42,7 +42,7 @@ QString QgsAggregateAlgorithm::shortHelpString() const
 
 QStringList QgsAggregateAlgorithm::tags() const
 {
-  return QObject::tr( "attributes,sum,mean,collect,dissolve" ).split( ',' );
+  return QObject::tr( "attributes,sum,mean,collect,dissolve,statistics" ).split( ',' );
 }
 
 QString QgsAggregateAlgorithm::group() const
@@ -83,7 +83,7 @@ bool QgsAggregateAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
   mGeometryExpression = createExpression( QStringLiteral( "collect($geometry, %1)" ).arg( mGroupBy ), context );
 
   const QVariantList aggregates = parameters.value( QStringLiteral( "AGGREGATES" ) ).toList();
-
+  int currentAttributeIndex = 0;
   for ( const QVariant &aggregate : aggregates )
   {
     const QVariantMap aggregateDef = aggregate.toMap();
@@ -109,6 +109,11 @@ bool QgsAggregateAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
     {
       expression = source;
     }
+    else if ( aggregateType == QLatin1String( "last_value" ) )
+    {
+      expression = source;
+      mAttributesRequireLastFeature << currentAttributeIndex;
+    }
     else if ( aggregateType == QLatin1String( "concatenate" ) || aggregateType == QLatin1String( "concatenate_unique" ) )
     {
       expression = QStringLiteral( "%1(%2, %3, %4, \'%5\')" ).arg( aggregateType,
@@ -122,6 +127,7 @@ bool QgsAggregateAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
       expression = QStringLiteral( "%1(%2, %3)" ).arg( aggregateType, source, mGroupBy );
     }
     mExpressions.append( createExpression( expression, context ) );
+    currentAttributeIndex++;
   }
 
   return true;
@@ -157,8 +163,8 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
     // upgrade group by value to a list, so that we get correct behavior with the QHash
     const QVariantList key = groupByValue.type() == QVariant::List ? groupByValue.toList() : ( QVariantList() << groupByValue );
 
-    auto groupIt = groups.constFind( key );
-    if ( groupIt == groups.constEnd() )
+    const auto groupIt = groups.find( key );
+    if ( groupIt == groups.end() )
     {
       QString id = QStringLiteral( "memory:" );
       std::unique_ptr< QgsFeatureSink > sink( QgsProcessingUtils::createFeatureSink( id,
@@ -167,7 +173,8 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
                                               mSource->wkbType(),
                                               mSource->sourceCrs() ) );
 
-      sink->addFeature( feature, QgsFeatureSink::FastInsert );
+      if ( !sink->addFeature( feature, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QString() ) );
 
       QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( id, context );
 
@@ -176,13 +183,16 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
       //store ownership of sink in groupSinks, so that these get deleted automatically if an exception is raised later..
       groupSinks.emplace_back( std::move( sink ) );
       group.layer = layer;
-      group.feature = feature;
+      group.firstFeature = feature;
+      group.lastFeature = feature;
       groups[key] = group;
       keys.append( key );
     }
     else
     {
-      groupIt->sink->addFeature( feature, QgsFeatureSink::FastInsert );
+      if ( !groupIt->sink->addFeature( feature, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( groupIt->sink, parameters, QString() ) );
+      groupIt->lastFeature = feature;
     }
 
     current++;
@@ -206,11 +216,11 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
   current = 0;
   for ( const QVariantList &key : keys )
   {
-    Group &group = groups[ key ];
+    const Group &group = groups[ key ];
 
     QgsExpressionContext exprContext = createExpressionContext( parameters, context );
     exprContext.appendScope( QgsExpressionContextUtils::layerScope( group.layer ) );
-    exprContext.setFeature( group.feature );
+    exprContext.setFeature( group.firstFeature );
 
     QgsGeometry geometry = mGeometryExpression.evaluate( &exprContext ).value< QgsGeometry >();
     if ( mGeometryExpression.hasEvalError() )
@@ -234,8 +244,10 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
 
     QgsAttributes attributes;
     attributes.reserve( mExpressions.size() );
+    int currentAttributeIndex = 0;
     for ( auto it = mExpressions.begin(); it != mExpressions.end(); ++it )
     {
+      exprContext.setFeature( mAttributesRequireLastFeature.contains( currentAttributeIndex ) ? group.lastFeature : group.firstFeature );
       if ( it->isValid() )
       {
         const QVariant value = it->evaluate( &exprContext );
@@ -249,13 +261,15 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
       {
         attributes.append( QVariant() );
       }
+      currentAttributeIndex++;
     }
 
     // Write output feature
     QgsFeature outFeat;
     outFeat.setGeometry( geometry );
     outFeat.setAttributes( attributes );
-    sink->addFeature( outFeat, QgsFeatureSink::FastInsert );
+    if ( !sink->addFeature( outFeat, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
     current++;
     feedback->setProgress( 50 + current * progressStep );

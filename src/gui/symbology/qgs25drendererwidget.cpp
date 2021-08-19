@@ -18,6 +18,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgssymbol.h"
 
 Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
   : QgsRendererWidget( layer, style )
@@ -54,14 +55,14 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer *layer, QgsStyle *sty
 
   if ( renderer )
   {
-    mRenderer = Qgs25DRenderer::convertFromRenderer( renderer );
+    mRenderer.reset( Qgs25DRenderer::convertFromRenderer( renderer ) );
   }
 
   mHeightWidget->setLayer( layer );
 
   QgsExpressionContextScope *scope = QgsExpressionContextUtils::layerScope( mLayer );
-  QVariant height = scope->variable( QStringLiteral( "qgis_25d_height" ) );
-  QVariant angle = scope->variable( QStringLiteral( "qgis_25d_angle" ) );
+  const QVariant height = scope->variable( QStringLiteral( "qgis_25d_height" ) );
+  const QVariant angle = scope->variable( QStringLiteral( "qgis_25d_angle" ) );
   delete scope;
 
   mHeightWidget->setField( height.isNull() ? QStringLiteral( "10" ) : height.toString() );
@@ -85,9 +86,11 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer *layer, QgsStyle *sty
   connect( mWallExpositionShading, &QAbstractButton::toggled, this, &Qgs25DRendererWidget::updateRenderer );
 }
 
+Qgs25DRendererWidget::~Qgs25DRendererWidget() = default;
+
 QgsFeatureRenderer *Qgs25DRendererWidget::renderer()
 {
-  return mRenderer;
+  return mRenderer.get();
 }
 
 void Qgs25DRendererWidget::updateRenderer()

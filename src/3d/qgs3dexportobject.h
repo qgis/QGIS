@@ -30,8 +30,7 @@
 class QgsAbstractMaterialSettings;
 
 /**
- * \brief The Qgs3DExportObject class
- * Manages the data of each object of the scene (positions, normals, texture coordinates ...) since each object
+ * \brief Manages the data of each object of the scene (positions, normals, texture coordinates ...) since each object
  *
  * \note Not available in Python bindings
  *

@@ -27,7 +27,7 @@ class QDomDocument;
 class QgsBearingNumericFormat;
 
 /**
- * Contains settings and properties relating to how a QgsProject should display
+ * \brief Contains settings and properties relating to how a QgsProject should display
  * values such as map coordinates and bearings.
  *
  * \ingroup core

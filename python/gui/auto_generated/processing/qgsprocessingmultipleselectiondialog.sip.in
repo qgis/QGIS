@@ -12,7 +12,7 @@
 
 class QgsProcessingMultipleSelectionPanelWidget : QgsPanelWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A panel widget for selection of multiple options from a fixed list of options.
 
 .. note::
@@ -108,7 +108,7 @@ Returns pointer to the list view
 
 class QgsProcessingMultipleSelectionDialog : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 A dialog for selection of multiple options from a fixed list of options.
 
 .. note::
@@ -176,7 +176,7 @@ Returns the ordered list of selected options.
 
 class QgsProcessingMultipleInputPanelWidget : QgsProcessingMultipleSelectionPanelWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A panel widget for selection of multiple inputs from a fixed list of options.
 
 .. note::
@@ -210,7 +210,7 @@ Sets the project associated with the widget.
 
 class QgsProcessingMultipleInputDialog : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 A dialog for selection of multiple layer inputs.
 
 .. note::

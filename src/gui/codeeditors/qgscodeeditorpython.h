@@ -40,7 +40,7 @@ class QgsQsciLexerPython : public QsciLexerPython
 
 /**
  * \ingroup gui
- * A Python editor based on QScintilla2. Adds syntax highlighting and
+ * \brief A Python editor based on QScintilla2. Adds syntax highlighting and
  * code autocompletion.
  * \note may not be available in Python bindings, depending on platform support
  * \since QGIS 2.6

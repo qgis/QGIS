@@ -314,9 +314,11 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
                 point = feat.geometry().asPoint()
                 x = point.x()
                 y = point.y()
-                points = []
-                for t in [(2 * math.pi) / segments * i for i in range(segments)]:
-                    points.append((xOffset * math.cos(t), yOffset * math.sin(t)))
+                points = [
+                    (xOffset * math.cos(t), yOffset * math.sin(t))
+                    for t in [(2 * math.pi) / segments * i for i in range(segments)]
+                ]
+
                 polygon = [[QgsPointXY(i[0] * math.cos(phi) + i[1] * math.sin(phi) + x,
                                        -i[0] * math.sin(phi) + i[1] * math.cos(phi) + y) for i in points]]
 
@@ -346,9 +348,11 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
                 point = feat.geometry().asPoint()
                 x = point.x()
                 y = point.y()
-                points = []
-                for t in [(2 * math.pi) / segments * i for i in range(segments)]:
-                    points.append((xOffset * math.cos(t), yOffset * math.sin(t)))
+                points = [
+                    (xOffset * math.cos(t), yOffset * math.sin(t))
+                    for t in [(2 * math.pi) / segments * i for i in range(segments)]
+                ]
+
                 polygon = [[QgsPointXY(i[0] + x, i[1] + y) for i in points]]
 
                 ft.setGeometry(QgsGeometry.fromPolygonXY(polygon))

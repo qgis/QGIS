@@ -75,10 +75,10 @@ class gdal2xyz(GdalAlgorithm):
         return super().flags() | QgsProcessingAlgorithm.FlagDisplayNameIsLiteral
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        arguments = []
-        arguments.append('-band')
-        arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
-
+        arguments = [
+            '-band',
+            str(self.parameterAsInt(parameters, self.BAND, context))
+        ]
         if self.parameterAsBoolean(parameters, self.CSV, context):
             arguments.append('-csv')
 
@@ -89,11 +89,4 @@ class gdal2xyz(GdalAlgorithm):
         arguments.append(raster.source())
         arguments.append(self.parameterAsFileOutput(parameters, self.OUTPUT, context))
 
-        if isWindows():
-            commands = ["python3", "-m", self.commandName()]
-        else:
-            commands = [self.commandName() + '.py']
-
-        commands.append(GdalUtils.escapeAndJoin(arguments))
-
-        return commands
+        return [self.commandName() + ('.bat' if isWindows() else '.py'), GdalUtils.escapeAndJoin(arguments)]

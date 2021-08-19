@@ -134,7 +134,6 @@ class TestQgsProjectionSelectionWidgets(unittest.TestCase):
         self.assertEqual(w.crs().authid(), 'EPSG:3111')
         self.assertTrue(w.hasValidSelection())
 
-    @unittest.skipIf(QgsProjUtils.projVersionMajor() < 6, 'Not a proj6 build')
     def testTreeWidgetUnknownCrs(self):
         w = QgsProjectionSelectionTreeWidget()
         w.show()

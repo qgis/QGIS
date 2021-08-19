@@ -10,7 +10,7 @@
 
 class QgsDetailedItemWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget renderer for detailed item views.
 
 .. seealso:: :py:func:`also`

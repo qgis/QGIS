@@ -33,6 +33,7 @@ class QgsRenderContext;
 /**
  * \ingroup core
  * \class QgsPieDiagram
+ * \brief A pie chart diagram.
  */
 class CORE_EXPORT QgsPieDiagram: public QgsDiagram SIP_NODEFAULTCTORS
 {

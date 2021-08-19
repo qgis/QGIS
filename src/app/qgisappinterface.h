@@ -137,7 +137,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void addTabifiedDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget, const QStringList &tabifyWith = QStringList(), bool raiseTab = false ) override;
     void removeDockWidget( QDockWidget *dockwidget ) override;
     QgsAdvancedDigitizingDockWidget *cadDockWidget() override;
-    void showLayerProperties( QgsMapLayer *l ) override;
+    void showLayerProperties( QgsMapLayer *l, const QString &page = QString() ) override;
     QDialog *showAttributeTable( QgsVectorLayer *l, const QString &filterExpression = QString() ) override;
     void addWindow( QAction *action ) override;
     void removeWindow( QAction *action ) override;
@@ -321,6 +321,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgsBrowserGuiModel *browserModel() override;
     QgsLayerTreeRegistryBridge::InsertionPoint layerTreeInsertionPoint() override;
     void setGpsPanelConnection( QgsGpsConnection *connection ) override;
+    QList<QgsMapDecoration *> activeDecorations() override;
 
   private slots:
 

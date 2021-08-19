@@ -153,25 +153,25 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsFieldComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsfieldcombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsMapLayerComboBox</class>
+   <class>QgsFieldComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgsmaplayercombobox.h</header>
+   <header>qgsfieldcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsFieldExpressionWidget</class>
    <extends>QWidget</extends>
    <header>qgsfieldexpressionwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsmaplayercombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -181,6 +181,7 @@
   <tabstop>mAllowNull</tabstop>
   <tabstop>mOrderByValue</tabstop>
   <tabstop>mAllowMulti</tabstop>
+  <tabstop>mNofColumns</tabstop>
   <tabstop>mUseCompleter</tabstop>
   <tabstop>mEditExpression</tabstop>
   <tabstop>mFilterExpression</tabstop>

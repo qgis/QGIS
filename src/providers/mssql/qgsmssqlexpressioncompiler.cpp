@@ -16,16 +16,20 @@
 #include "qgsmssqlexpressioncompiler.h"
 #include "qgsexpressionnodeimpl.h"
 
-QgsMssqlExpressionCompiler::QgsMssqlExpressionCompiler( QgsMssqlFeatureSource *source )
+QgsMssqlExpressionCompiler::QgsMssqlExpressionCompiler( QgsMssqlFeatureSource *source, bool ignoreStaticNodes )
   : QgsSqlExpressionCompiler( source->mFields,
                               QgsSqlExpressionCompiler::LikeIsCaseInsensitive |
                               QgsSqlExpressionCompiler::CaseInsensitiveStringMatch |
-                              QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
+                              QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger, ignoreStaticNodes )
 {
 }
 
 QgsSqlExpressionCompiler::Result QgsMssqlExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
 {
+  const QgsSqlExpressionCompiler::Result staticRes = replaceNodeByStaticCachedValueIfPossible( node, result );
+  if ( staticRes != Fail )
+    return staticRes;
+
   switch ( node->nodeType() )
   {
     case QgsExpressionNode::ntBinaryOperator:
@@ -46,8 +50,8 @@ QgsSqlExpressionCompiler::Result QgsMssqlExpressionCompiler::compileNode( const 
 
       QString op1, op2;
 
-      Result result1 = compileNode( bin->opLeft(), op1 );
-      Result result2 = compileNode( bin->opRight(), op2 );
+      const Result result1 = compileNode( bin->opLeft(), op1 );
+      const Result result2 = compileNode( bin->opRight(), op2 );
       if ( result1 == Fail || result2 == Fail )
         return Fail;
 

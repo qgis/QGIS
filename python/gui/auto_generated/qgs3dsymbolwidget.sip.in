@@ -11,7 +11,7 @@
 
 class Qgs3DSymbolWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for 3D symbol configuration widgets.
 
 .. versionadded:: 3.16
@@ -56,7 +56,7 @@ Emitted when the symbol is changed.
 
 class Qgs3DSymbolDialog : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 A dialog for configuring a 3D symbol.
 
 .. versionadded:: 3.16

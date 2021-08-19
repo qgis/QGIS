@@ -22,7 +22,7 @@
 
 /**
  * \ingroup core
- * A unary node is either negative as in boolean (not) or as in numbers (minus).
+ * \brief A unary node is either negative as in boolean (not) or as in numbers (minus).
  */
 class CORE_EXPORT QgsExpressionNodeUnaryOperator : public QgsExpressionNode
 {
@@ -46,6 +46,14 @@ class CORE_EXPORT QgsExpressionNodeUnaryOperator : public QgsExpressionNode
       , mOperand( operand )
     {}
     ~QgsExpressionNodeUnaryOperator() override { delete mOperand; }
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsExpressionNodeUnaryOperator: %1>" ).arg( sipCpp->text() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
     /**
      * Returns the unary operator.
@@ -85,7 +93,7 @@ class CORE_EXPORT QgsExpressionNodeUnaryOperator : public QgsExpressionNode
 };
 
 /**
- * A binary expression operator, which operates on two values.
+ * \brief A binary expression operator, which operates on two values.
  * \ingroup core
  */
 class CORE_EXPORT QgsExpressionNodeBinaryOperator : public QgsExpressionNode
@@ -139,6 +147,14 @@ class CORE_EXPORT QgsExpressionNodeBinaryOperator : public QgsExpressionNode
       , mOpRight( opRight )
     {}
     ~QgsExpressionNodeBinaryOperator() override { delete mOpLeft; delete mOpRight; }
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsExpressionNodeBinaryOperator: %1>" ).arg( sipCpp->text() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
     /**
      * Returns the binary operator.
@@ -207,7 +223,7 @@ class CORE_EXPORT QgsExpressionNodeBinaryOperator : public QgsExpressionNode
 };
 
 /**
- * A indexing expression operator, which allows use of square brackets [] to reference map and array items.
+ * \brief A indexing expression operator, which allows use of square brackets [] to reference map and array items.
  * \ingroup core
  * \since QGIS 3.6
  */
@@ -258,7 +274,7 @@ class CORE_EXPORT QgsExpressionNodeIndexOperator : public QgsExpressionNode
 };
 
 /**
- * An expression node for value IN or NOT IN clauses.
+ * \brief An expression node for value IN or NOT IN clauses.
  * \ingroup core
  */
 class CORE_EXPORT QgsExpressionNodeInOperator : public QgsExpressionNode
@@ -310,7 +326,7 @@ class CORE_EXPORT QgsExpressionNodeInOperator : public QgsExpressionNode
 };
 
 /**
- * An expression node for expression functions.
+ * \brief An expression node for expression functions.
  * \ingroup core
  */
 class CORE_EXPORT QgsExpressionNodeFunction : public QgsExpressionNode
@@ -324,6 +340,24 @@ class CORE_EXPORT QgsExpressionNodeFunction : public QgsExpressionNode
     QgsExpressionNodeFunction( int fnIndex, QgsExpressionNode::NodeList *args SIP_TRANSFER );
 
     ~QgsExpressionNodeFunction() override;
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString function;
+    if ( QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[sipCpp->fnIndex()] )
+    {
+      function = fd->name();
+    }
+    else
+    {
+      function = QString::number( sipCpp->fnIndex() );
+    }
+
+    QString str = QStringLiteral( "<QgsExpressionNodeFunction: %1>" ).arg( function );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
     /**
      * Returns the index of the node's function.
@@ -358,7 +392,7 @@ class CORE_EXPORT QgsExpressionNodeFunction : public QgsExpressionNode
 };
 
 /**
- * An expression node for literal values.
+ * \brief An expression node for literal values.
  * \ingroup core
  */
 class CORE_EXPORT QgsExpressionNodeLiteral : public QgsExpressionNode
@@ -371,6 +405,14 @@ class CORE_EXPORT QgsExpressionNodeLiteral : public QgsExpressionNode
     QgsExpressionNodeLiteral( const QVariant &value )
       : mValue( value )
     {}
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsExpressionNodeLiteral: %1>" ).arg( sipCpp->valueAsString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
     //! The value of the literal.
     inline QVariant value() const { return mValue; }
@@ -389,12 +431,19 @@ class CORE_EXPORT QgsExpressionNodeLiteral : public QgsExpressionNode
     QgsExpressionNode *clone() const override SIP_FACTORY;
     bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
 
+    /**
+     * Returns a string representation of the node's literal value.
+     *
+     * \since QGIS 3.20
+     */
+    QString valueAsString() const;
+
   private:
     QVariant mValue;
 };
 
 /**
- * An expression node which takes it value from a feature's field.
+ * \brief An expression node which takes it value from a feature's field.
  * \ingroup core
  */
 class CORE_EXPORT QgsExpressionNodeColumnRef : public QgsExpressionNode
@@ -409,6 +458,14 @@ class CORE_EXPORT QgsExpressionNodeColumnRef : public QgsExpressionNode
       : mName( name )
       , mIndex( -1 )
     {}
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsExpressionNodeColumnRef: \"%1\">" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
     //! The name of the column.
     QString name() const { return mName; }
@@ -434,7 +491,7 @@ class CORE_EXPORT QgsExpressionNodeColumnRef : public QgsExpressionNode
 };
 
 /**
- * An expression node for CASE WHEN clauses.
+ * \brief An expression node for CASE WHEN clauses.
  * \ingroup core
  */
 class CORE_EXPORT QgsExpressionNodeCondition : public QgsExpressionNode
@@ -442,7 +499,7 @@ class CORE_EXPORT QgsExpressionNodeCondition : public QgsExpressionNode
   public:
 
     /**
-     * Represents a "WHEN... THEN..." portation of a CASE WHEN clause in an expression.
+     * \brief Represents a "WHEN... THEN..." portation of a CASE WHEN clause in an expression.
      * \ingroup core
      */
     class CORE_EXPORT WhenThen

@@ -1,0 +1,98 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/browser/qgsdatacollectionitem.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsDataCollectionItem : QgsDataItem
+{
+%Docstring(signature="appended")
+A Collection: logical collection of layers or subcollections, e.g. GRASS location/mapset, database? wms source?
+%End
+
+%TypeHeaderCode
+#include "qgsdatacollectionitem.h"
+%End
+  public:
+
+    QgsDataCollectionItem( QgsDataItem *parent /TransferThis/, const QString &name, const QString &path = QString(), const QString &providerKey = QString() );
+%Docstring
+Constructor for QgsDataCollectionItem, with the specified ``parent`` item.
+
+The ``name`` argument specifies the text to show in the model for the item. A translated string should
+be used wherever appropriate.
+
+The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
+but QgsDataCollectionItem items pointing to different logical locations should always use a different item ``path``.
+
+The optional ``providerKey`` string can be used to specify the key for the :py:class:`QgsDataItemProvider` that created this item.
+%End
+
+    ~QgsDataCollectionItem();
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsDataCollectionItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    void addChild( QgsDataItem *item /Transfer/ );
+
+    static QIcon iconDir( const QColor &fillColor = QColor(), const QColor &strokeColor = QColor() );
+%Docstring
+Returns the standard browser directory icon.
+
+Since QGIS 3.20 the optional ``fillColor`` and ``strokeColor`` arguments can be used to specify
+a fill and stroke color for the icon.
+
+.. seealso:: :py:func:`iconDataCollection`
+%End
+
+    static QIcon iconDataCollection();
+%Docstring
+Returns the standard browser data collection icon.
+
+.. seealso:: :py:func:`iconDir`
+%End
+
+    virtual QgsAbstractDatabaseProviderConnection *databaseConnection() const;
+
+
+  protected:
+
+    static QIcon openDirIcon( const QColor &fillColor = QColor(), const QColor &strokeColor = QColor() );
+%Docstring
+Shared open directory icon.
+
+Since QGIS 3.20 the optional ``fillColor`` and ``strokeColor`` arguments can be used to specify
+a fill and stroke color for the icon.
+
+.. versionadded:: 3.4
+%End
+
+    static QIcon homeDirIcon( const QColor &fillColor = QColor(), const QColor &strokeColor = QColor() );
+%Docstring
+Shared home directory icon.
+
+Since QGIS 3.20 the optional ``fillColor`` and ``strokeColor`` arguments can be used to specify
+a fill and stroke color for the icon.
+
+.. versionadded:: 3.4
+%End
+
+};
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/browser/qgsdatacollectionitem.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

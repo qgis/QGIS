@@ -18,7 +18,11 @@
 #include "qgssymbollayerutils.h"
 
 #include <QPainter>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QStyleOptionFrameV3>
+#else
+#include <QStyleOptionFrame>
+#endif
 #include <QMouseEvent>
 
 #define MARKER_WIDTH 11
@@ -365,7 +369,7 @@ void QgsGradientStopEditor::keyPressEvent( QKeyEvent *e )
       if ( e->key() == Qt::Key_Left )
         offsetDiff *= -1;
 
-      mStops[ mSelectedStop - 1 ].offset = qBound( 0.0, mStops[ mSelectedStop - 1 ].offset + offsetDiff, 1.0 );
+      mStops[ mSelectedStop - 1 ].offset = std::clamp( mStops[ mSelectedStop - 1 ].offset + offsetDiff, 0.0, 1.0 );
       mGradient.setStops( mStops );
       update();
       e->accept();

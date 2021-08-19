@@ -30,7 +30,7 @@ class QDomElement;
 
 /**
  * \ingroup core
-  * Raster renderer pipe for single band gray.
+  * \brief Raster renderer pipe for single band gray.
   */
 class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
 {

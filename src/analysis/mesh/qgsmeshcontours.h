@@ -43,7 +43,7 @@ class QgsFeedback;
  * \ingroup analysis
  * \class QgsMeshContours
  *
- * Exporter of contours lines or polygons from a mesh layer.
+ * \brief Exporter of contours lines or polygons from a mesh layer.
  *
  * \since QGIS 3.12
  */

@@ -40,11 +40,11 @@ namespace QgsWms
     if ( mParallelRendering )
     {
       QgsApplication::setMaxThreads( maxThreads );
-      QgsMessageLog::logMessage( QStringLiteral( "Parallel rendering activated with %1 threads" ).arg( maxThreads ), QStringLiteral( "server" ), Qgis::Info );
+      QgsMessageLog::logMessage( QStringLiteral( "Parallel rendering activated with %1 threads" ).arg( maxThreads ), QStringLiteral( "server" ), Qgis::MessageLevel::Info );
     }
     else
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Parallel rendering deactivated" ), QStringLiteral( "server" ), Qgis::Info );
+      QgsMessageLog::logMessage( QStringLiteral( "Parallel rendering deactivated" ), QStringLiteral( "server" ), Qgis::MessageLevel::Info );
     }
   }
 

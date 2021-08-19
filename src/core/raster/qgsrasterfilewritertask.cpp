@@ -18,6 +18,7 @@
 #include "qgsrasterfilewritertask.h"
 #include "qgsrasterinterface.h"
 #include "qgsrasterdataprovider.h"
+#include "qgsrasterpipe.h"
 
 // Deprecated!
 QgsRasterFileWriterTask::QgsRasterFileWriterTask( const QgsRasterFileWriter &writer, QgsRasterPipe *pipe, int columns, int rows,
@@ -42,6 +43,8 @@ QgsRasterFileWriterTask::QgsRasterFileWriterTask( const QgsRasterFileWriter &wri
   , mTransformContext( transformContext )
 {
 }
+
+QgsRasterFileWriterTask::~QgsRasterFileWriterTask() = default;
 
 void QgsRasterFileWriterTask::cancel()
 {

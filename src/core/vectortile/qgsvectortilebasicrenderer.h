@@ -29,7 +29,7 @@ class QgsSymbol;
 
 /**
  * \ingroup core
- * Definition of map rendering of a subset of vector tile data. The subset of data is defined by:
+ * \brief Definition of map rendering of a subset of vector tile data. The subset of data is defined by:
  *
  * - sub-layer name
  * - geometry type (a single sub-layer may have multiple geometry types)
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsVectorTileBasicRendererStyle
 
 /**
  * \ingroup core
- * The default vector tile renderer implementation. It has an ordered list of "styles",
+ * \brief The default vector tile renderer implementation. It has an ordered list of "styles",
  * each defines a rendering rule.
  *
  * \since QGIS 3.14

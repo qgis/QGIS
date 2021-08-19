@@ -225,21 +225,19 @@ class ProcessingConfig:
 
     @staticmethod
     def getSetting(name, readable=False):
-        if name in list(ProcessingConfig.settings.keys()):
-            v = ProcessingConfig.settings[name].value
-            try:
-                if v == NULL:
-                    v = None
-            except:
-                pass
-            if ProcessingConfig.settings[name].valuetype == Setting.SELECTION:
-                if readable:
-                    return v
-                return ProcessingConfig.settings[name].options.index(v)
-            else:
-                return v
-        else:
+        if name not in list(ProcessingConfig.settings.keys()):
             return None
+        v = ProcessingConfig.settings[name].value
+        try:
+            if v == NULL:
+                v = None
+        except:
+            pass
+        if ProcessingConfig.settings[name].valuetype != Setting.SELECTION:
+            return v
+        if readable:
+            return v
+        return ProcessingConfig.settings[name].options.index(v)
 
     @staticmethod
     def setSettingValue(name, value):

@@ -20,7 +20,6 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
-#include <QtCore>
 
 class QgsRenderContext;
 

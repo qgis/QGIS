@@ -12,7 +12,7 @@
 
 class QgsRelationReferenceWidgetWrapper : QgsEditorWidgetWrapper
 {
-%Docstring
+%Docstring(signature="appended")
 Wraps a relation reference widget.
 
 Options:

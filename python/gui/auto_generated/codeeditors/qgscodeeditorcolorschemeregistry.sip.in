@@ -11,7 +11,7 @@
 
 class QgsCodeEditorColorSchemeRegistry
 {
-%Docstring
+%Docstring(signature="appended")
 A registry of color schemes for use in :py:class:`QgsCodeEditor` widgets.
 
 :py:class:`QgsCodeEditorColorSchemeRegistry` is not usually directly created, but rather accessed through

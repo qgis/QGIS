@@ -24,11 +24,13 @@
 #include <QFont>
 
 class QgsSpatialIndex;
+class QgsMarkerSymbol;
+class QgsSymbolRenderContext;
 
 /**
  * \class QgsPointDistanceRenderer
  * \ingroup core
- * An abstract base class for distance based point renderers (e.g., clusterer and displacement renderers).
+ * \brief An abstract base class for distance based point renderers (e.g., clusterer and displacement renderers).
  * QgsPointDistanceRenderer handles calculation of point clusters using a distance based threshold.
  * Subclasses must implement drawGroup() to handle the rendering of individual point clusters
  * in the desired style.
@@ -40,7 +42,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
   public:
 
     //! Contains properties for a feature within a clustered group.
-    struct GroupedFeature
+    struct CORE_EXPORT GroupedFeature
     {
 
         /**
@@ -50,12 +52,8 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
         * \param isSelected set to TRUE if feature is selected and should be rendered in a selected state
         * \param label optional label text, or empty string for no label
         */
-        GroupedFeature( const QgsFeature &feature, QgsMarkerSymbol *symbol SIP_TRANSFER, bool isSelected, const QString &label = QString() )
-          : feature( feature )
-          , isSelected( isSelected )
-          , label( label )
-          , mSymbol( symbol )
-        {}
+        GroupedFeature( const QgsFeature &feature, QgsMarkerSymbol *symbol SIP_TRANSFER, bool isSelected, const QString &label = QString() );
+        ~GroupedFeature();
 
         //! Feature
         QgsFeature feature;

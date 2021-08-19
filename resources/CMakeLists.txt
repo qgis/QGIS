@@ -42,14 +42,8 @@ endif()
 
 ADD_QGIS_RESOURCES("${CMAKE_CURRENT_SOURCE_DIR}" resources DEST_RESOURCE_FILES "${RESOURCES_FILES}")
 
-# srs.db -- special handling because there is a switch and rename depending on proj version
-if (PROJ_VERSION_MAJOR GREATER 5)
-  message(STATUS "Using PROJ >= 6 srs database.")
-  set(SRSDB srs6.db)
-else()
-  message(STATUS "Using PROJ <6 srs database.")
-  set(SRSDB srs.db)
-endif()
+message(STATUS "Using PROJ >= 6 srs database.")
+set(SRSDB srs6.db)
 
 add_custom_command(
   OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/srs.db"

@@ -47,7 +47,6 @@ class TestQgsTranslateProject : public QObject
     void translateProject();
 
   private:
-    QgsSettings settings;
     QString original_locale;
 
 };
@@ -58,12 +57,12 @@ void TestQgsTranslateProject::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  original_locale = settings.value( QStringLiteral( "locale/userLocale" ), "" ).toString() ;
+  original_locale = QgsApplication::settingsLocaleUserLocale.value();
 }
 
 void TestQgsTranslateProject::cleanupTestCase()
 {
-  settings.setValue( QStringLiteral( "locale/userLocale" ), original_locale );
+  QgsApplication::settingsLocaleUserLocale.setValue( original_locale );
   QgsApplication::exitQgis();
 
   //delete translated project file
@@ -92,7 +91,7 @@ void TestQgsTranslateProject::cleanup()
 void TestQgsTranslateProject::createTsFile()
 {
   //open project in english
-  settings.setValue( QStringLiteral( "locale/userLocale" ), "en" );
+  QgsApplication::settingsLocaleUserLocale.setValue( "en" );
   QString projectFileName( TEST_DATA_DIR );
   projectFileName = projectFileName + "/project_translation/points_translation.qgs";
   QgsProject::instance()->read( projectFileName );
@@ -108,7 +107,7 @@ void TestQgsTranslateProject::createTsFile()
 
   tsFile.open( QIODevice::ReadWrite );
 
-  QString tsFileContent( tsFile.readAll() );
+  const QString tsFileContent( tsFile.readAll() );
 
   //LAYER NAMES
   //lines
@@ -164,7 +163,7 @@ void TestQgsTranslateProject::createTsFile()
 void TestQgsTranslateProject::translateProject()
 {
   //open project in german
-  settings.setValue( QStringLiteral( "locale/userLocale" ), "de" );
+  QgsApplication::settingsLocaleUserLocale.setValue( "de" );
   QString projectFileName( TEST_DATA_DIR );
   projectFileName = projectFileName + "/project_translation/points_translation.qgs";
   QgsProject::instance()->read( projectFileName );
@@ -210,7 +209,7 @@ void TestQgsTranslateProject::translateProject()
   QCOMPARE( points_fields.field( QStringLiteral( "Staff" ) ).alias(), QStringLiteral( "Mitarbeiter" ) );
 
   //FORMCONTAINERS
-  QList<QgsAttributeEditorElement *> elements = points_layer->editFormConfig().invisibleRootContainer()->children();
+  const QList<QgsAttributeEditorElement *> elements = points_layer->editFormConfig().invisibleRootContainer()->children();
   QList<QgsAttributeEditorContainer *> containers;
   for ( QgsAttributeEditorElement *element : elements )
   {
@@ -237,7 +236,7 @@ void TestQgsTranslateProject::translateProject()
 
   QString deProjectFileName( TEST_DATA_DIR );
   deProjectFileName = deProjectFileName + "/project_translation/points_translation_de.qgs";
-  QFile deProjectFile( deProjectFileName );
+  const QFile deProjectFile( deProjectFileName );
   QVERIFY( deProjectFile.exists() );
 }
 

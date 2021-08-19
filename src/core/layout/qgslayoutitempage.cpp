@@ -24,6 +24,8 @@
 #include "qgslayoutundostack.h"
 #include "qgsstyle.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgsfillsymbol.h"
+
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
@@ -40,8 +42,8 @@ QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
     prepareGeometryChange();
   } );
 
-  QFont font;
-  QFontMetrics fm( font );
+  const QFont font;
+  const QFontMetrics fm( font );
   mMaximumShadowWidth = fm.boundingRect( QStringLiteral( "X" ) ).width();
 
   mGrid.reset( new QgsLayoutItemPageGrid( pos().x(), pos().y(), rect().width(), rect().height(), mLayout ) );
@@ -85,7 +87,7 @@ bool QgsLayoutItemPage::setPageSize( const QString &size, Orientation orientatio
       case Landscape:
       {
         // flip height and width
-        double x = newSize.size.width();
+        const double x = newSize.size.width();
         newSize.size.setWidth( newSize.size.height() );
         newSize.size.setHeight( x );
         break;
@@ -99,6 +101,27 @@ bool QgsLayoutItemPage::setPageSize( const QString &size, Orientation orientatio
   {
     return false;
   }
+}
+
+QPageLayout QgsLayoutItemPage::pageLayout() const
+{
+  QPageLayout pageLayout;
+  pageLayout.setMargins( {0, 0, 0, 0} );
+  pageLayout.setMode( QPageLayout::FullPageMode );
+  const QSizeF size = layout()->renderContext().measurementConverter().convert( pageSize(), QgsUnitTypes::LayoutMillimeters ).toQSizeF();
+
+  if ( pageSize().width() > pageSize().height() )
+  {
+    pageLayout.setOrientation( QPageLayout::Landscape );
+    pageLayout.setPageSize( QPageSize( QSizeF( size.height(), size.width() ), QPageSize::Millimeter ) );
+  }
+  else
+  {
+    pageLayout.setOrientation( QPageLayout::Portrait );
+    pageLayout.setPageSize( QPageSize( size, QPageSize::Millimeter ) );
+  }
+  pageLayout.setUnits( QPageLayout::Millimeter );
+  return pageLayout;
 }
 
 QgsLayoutSize QgsLayoutItemPage::pageSize() const
@@ -125,7 +148,7 @@ QgsLayoutItemPage::Orientation QgsLayoutItemPage::decodePageOrientation( const Q
   if ( ok )
     *ok = false;
 
-  QString trimmedString = string.trimmed();
+  const QString trimmedString = string.trimmed();
   if ( trimmedString.compare( QLatin1String( "portrait" ), Qt::CaseInsensitive ) == 0 )
   {
     if ( ok )
@@ -145,7 +168,7 @@ QRectF QgsLayoutItemPage::boundingRect() const
 {
   if ( mBoundingRect.isNull() )
   {
-    double shadowWidth = mLayout->pageCollection()->pageShadowWidth();
+    const double shadowWidth = mLayout->pageCollection()->pageShadowWidth();
     mBoundingRect = rect();
     mBoundingRect.adjust( 0, 0, shadowWidth, shadowWidth );
   }
@@ -230,13 +253,13 @@ void QgsLayoutItemPage::draw( QgsLayoutItemRenderContext &context )
     return;
   }
 
-  double scale = context.renderContext().convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+  const double scale = context.renderContext().convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
 
-  QgsExpressionContext expressionContext = createExpressionContext();
+  const QgsExpressionContext expressionContext = createExpressionContext();
   context.renderContext().setExpressionContext( expressionContext );
 
   QPainter *painter = context.renderContext().painter();
-  QgsScopedQPainterState painterState( painter );
+  const QgsScopedQPainterState painterState( painter );
 
   if ( mLayout->renderContext().isPreviewRender() )
   {
@@ -244,7 +267,7 @@ void QgsLayoutItemPage::draw( QgsLayoutItemRenderContext &context )
     //still possible to tell where pages with a transparent style begin and end
     painter->setRenderHint( QPainter::Antialiasing, false );
 
-    QRectF pageRect = QRectF( 0, 0, scale * rect().width(), scale * rect().height() );
+    const QRectF pageRect = QRectF( 0, 0, scale * rect().width(), scale * rect().height() );
 
     //shadow
     painter->setBrush( QBrush( QColor( 150, 150, 150 ) ) );
@@ -278,9 +301,9 @@ void QgsLayoutItemPage::draw( QgsLayoutItemRenderContext &context )
     }
 
     // round up
-    QPolygonF pagePolygon = QPolygonF( QRectF( maxBleedPixels, maxBleedPixels,
-                                       std::ceil( rect().width() * scale ) - 2 * maxBleedPixels, std::ceil( rect().height() * scale ) - 2 * maxBleedPixels ) );
-    QVector<QPolygonF> rings; //empty list
+    const QPolygonF pagePolygon = QPolygonF( QRectF( maxBleedPixels, maxBleedPixels,
+                                  std::ceil( rect().width() * scale ) - 2 * maxBleedPixels, std::ceil( rect().height() * scale ) - 2 * maxBleedPixels ) );
+    const QVector<QPolygonF> rings; //empty list
 
     symbol->renderPolygon( pagePolygon, &rings, nullptr, context.renderContext() );
     symbol->stopRender( context.renderContext() );
@@ -295,14 +318,14 @@ void QgsLayoutItemPage::drawBackground( QgsRenderContext & )
 
 bool QgsLayoutItemPage::writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
-  QDomElement styleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mPageStyleSymbol.get(), document, context );
+  const QDomElement styleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mPageStyleSymbol.get(), document, context );
   element.appendChild( styleElem );
   return true;
 }
 
 bool QgsLayoutItemPage::readPropertiesFromElement( const QDomElement &element, const QDomDocument &, const QgsReadWriteContext &context )
 {
-  QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !symbolElem.isNull() )
   {
     mPageStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, context ) );
@@ -350,15 +373,15 @@ void QgsLayoutItemPageGrid::paint( QPainter *painter, const QStyleOptionGraphics
   if ( !context.gridVisible() || grid.resolution().length() <= 0 )
     return;
 
-  QPointF gridOffset = mLayout->convertToLayoutUnits( grid.offset() );
-  double gridResolution = mLayout->convertToLayoutUnits( grid.resolution() );
-  int gridMultiplyX = static_cast< int >( gridOffset.x() / gridResolution );
-  int gridMultiplyY = static_cast< int >( gridOffset.y() / gridResolution );
+  const QPointF gridOffset = mLayout->convertToLayoutUnits( grid.offset() );
+  const double gridResolution = mLayout->convertToLayoutUnits( grid.resolution() );
+  const int gridMultiplyX = static_cast< int >( gridOffset.x() / gridResolution );
+  const int gridMultiplyY = static_cast< int >( gridOffset.y() / gridResolution );
   double currentXCoord = gridOffset.x() - gridMultiplyX * gridResolution;
   double currentYCoord;
-  double minYCoord = gridOffset.y() - gridMultiplyY * gridResolution;
+  const double minYCoord = gridOffset.y() - gridMultiplyY * gridResolution;
 
-  QgsScopedQPainterState painterState( painter );
+  const QgsScopedQPainterState painterState( painter );
   //turn of antialiasing so grid is nice and sharp
   painter->setRenderHint( QPainter::Antialiasing, false );
 
@@ -386,7 +409,7 @@ void QgsLayoutItemPageGrid::paint( QPainter *painter, const QStyleOptionGraphics
     case QgsLayoutGridSettings::StyleDots:
     case QgsLayoutGridSettings::StyleCrosses:
     {
-      QPen gridPen = grid.pen();
+      const QPen gridPen = grid.pen();
       painter->setPen( gridPen );
       painter->setBrush( QBrush( gridPen.color() ) );
       double halfCrossLength = 1;
@@ -394,7 +417,7 @@ void QgsLayoutItemPageGrid::paint( QPainter *painter, const QStyleOptionGraphics
       {
         //dots are actually drawn as tiny crosses a few pixels across
         //set halfCrossLength to equivalent of 1 pixel
-        halfCrossLength = 1 / QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle );
+        halfCrossLength = 1 / QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle, painter );
       }
       else
       {

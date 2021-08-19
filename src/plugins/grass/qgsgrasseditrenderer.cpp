@@ -26,6 +26,9 @@
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgssymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
+#include "qgsfillsymbol.h"
 
 #include "qgsgrasseditrenderer.h"
 #include "qgsgrassprovider.h"
@@ -64,7 +67,7 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
   firstVertexMarkerLine->setPlacement( QgsTemplatedLineSymbolLayerBase::FirstVertex );
   QgsMarkerLineSymbolLayer *lastVertexMarkerLine = static_cast<QgsMarkerLineSymbolLayer *>( firstVertexMarkerLine->clone() );
   lastVertexMarkerLine->setPlacement( QgsTemplatedLineSymbolLayerBase::LastVertex );
-  Q_FOREACH ( int value, colors.keys() )
+  for ( int value : colors.keys() )
   {
     QgsSymbol *symbol = QgsSymbol::defaultSymbol( QgsWkbTypes::LineGeometry );
     symbol->setColor( colors.value( value ) );
@@ -91,7 +94,7 @@ QgsGrassEditRenderer::QgsGrassEditRenderer()
 
   categoryList.clear();
 
-  Q_FOREACH ( int value, colors.keys() )
+  for ( int value : colors.keys() )
   {
     QgsSymbol *symbol = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
     symbol->setColor( colors.value( value ) );

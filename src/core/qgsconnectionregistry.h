@@ -28,7 +28,7 @@ class QgsAbstractProviderConnection;
 /**
  * \class QgsConnectionRegistry
  * \ingroup core
- * A registry for saved data provider connections, allowing retrieval of
+ * \brief A registry for saved data provider connections, allowing retrieval of
  * saved connections by name and provider type.
  *
  * QgsConnectionRegistry is not usually directly created, but rather accessed through

@@ -11,7 +11,7 @@
 
 class QgsCompoundCurve: QgsCurve
 {
-%Docstring
+%Docstring(signature="appended")
 Compound curve geometry type
 
 .. versionadded:: 2.10
@@ -65,8 +65,9 @@ Compound curve geometry type
 
     virtual bool isEmpty() const /HoldGIL/;
 
-    virtual bool isValid( QString &error /Out/, int flags = 0 ) const;
+    virtual bool isValid( QString &error /Out/, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
 
+    int indexOf( const QgsPoint &point ) const final;
 
     virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
@@ -82,6 +83,10 @@ of the curve.
 
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
 
+    virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const /HoldGIL/;
+
+    virtual const QgsAbstractGeometry *simplifiedTypeRef() const /HoldGIL/;
+
 
     int nCurves() const /HoldGIL/;
 %Docstring
@@ -93,9 +98,15 @@ Returns the number of curves in the geometry.
 Returns the curve at the specified index.
 %End
 
-    void addCurve( QgsCurve *c /Transfer/ );
+    void addCurve( QgsCurve *c /Transfer/, bool extendPrevious = false );
 %Docstring
-Adds a curve to the geometry (takes ownership)
+Adds a curve to the geometry (takes ownership).
+
+Since QGIS 3.20, if ``extendPrevious`` is ``True``, then adding a LineString when the last existing curve
+in the compound curve is also a LineString will cause the existing linestring to be
+extended with the newly added LineString vertices instead of appending a whole new
+LineString curve to the compound curve. This can result in simplified compound curves with lesser number
+of component curves while still being topologically identical to the desired result.
 %End
 
     void removeCurve( int i );
@@ -108,6 +119,25 @@ Removes a curve from the geometry.
     void addVertex( const QgsPoint &pt );
 %Docstring
 Adds a vertex to the end of the geometry.
+%End
+
+    void condenseCurves();
+%Docstring
+Condenses the curves in this geometry by combining adjacent linestrings a to a single continuous linestring,
+and combining adjacent circularstrings to a single continuous circularstring.
+
+.. versionadded:: 3.20
+%End
+
+    bool toggleCircularAtVertex( QgsVertexId position );
+%Docstring
+Converts the vertex at the given position from/to circular
+
+:return: ``False`` if atVertex does not correspond to a valid vertex
+         on this geometry (including if this geometry is a Point),
+         or if the specified vertex can't be converted (e.g. start/end points).
+
+.. versionadded:: 3.20
 %End
 
     virtual void draw( QPainter &p ) const;
@@ -168,6 +198,10 @@ Appends first point if not already closed.
     virtual double yAt( int index ) const /HoldGIL/;
 
 
+    virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );
+
+    void scroll( int firstVertexIndex ) final;
+
 
     virtual QgsCompoundCurve *createEmptyWithSameType() const /Factory/;
 
@@ -183,6 +217,7 @@ Appends first point if not already closed.
 
   protected:
 
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     virtual QgsRectangle calculateBoundingBox() const;
 
 

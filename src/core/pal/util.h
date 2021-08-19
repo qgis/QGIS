@@ -80,6 +80,7 @@ namespace pal
   /**
    * \class pal::Util
    * \note not available in Python bindings
+   * \brief Pal utilities.
    * \ingroup core
    */
   class Util

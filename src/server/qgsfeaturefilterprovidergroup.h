@@ -36,11 +36,13 @@ class SERVER_EXPORT QgsFeatureFilterProviderGroup : public QgsFeatureFilterProvi
     QgsFeatureFilterProviderGroup() = default;
 
     /**
-     * Filter the features of the layer
+     * Filter the features of the layer.
      * \param layer the layer to control
      * \param filterFeatures the request to fill
      */
     void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const override;
+
+    QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const override;
 
     /**
      * Returns a clone of the object
@@ -55,8 +57,11 @@ class SERVER_EXPORT QgsFeatureFilterProviderGroup : public QgsFeatureFilterProvi
      */
     QgsFeatureFilterProviderGroup &addProvider( const QgsFeatureFilterProvider *provider );
 
+
   private:
     QList<const QgsFeatureFilterProvider *> mProviders;
+
+
 };
 
 #endif

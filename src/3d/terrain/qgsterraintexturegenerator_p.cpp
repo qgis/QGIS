@@ -39,11 +39,19 @@ int QgsTerrainTextureGenerator::render( const QgsRectangle &extent, QgsChunkNode
   QgsMapSettings mapSettings( baseMapSettings() );
   mapSettings.setExtent( extent );
 
+  QList<QgsMapLayer *> layers = mMap.layers();
+  QList<QgsMapLayer *> toBeRenderedLayers;
+  for ( QgsMapLayer *l : layers )
+  {
+    if ( l->renderer3D() == nullptr )
+      toBeRenderedLayers.push_back( l );
+  }
+  mapSettings.setLayers( toBeRenderedLayers );
+
   QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, QStringLiteral( "3D" ), QStringLiteral( "Texture" ), tileId.text() );
 
   QgsMapRendererSequentialJob *job = new QgsMapRendererSequentialJob( mapSettings );
   connect( job, &QgsMapRendererJob::finished, this, &QgsTerrainTextureGenerator::onRenderingFinished );
-  job->start();
 
   JobData jobData;
   jobData.jobId = ++mLastJobId;
@@ -52,14 +60,16 @@ int QgsTerrainTextureGenerator::render( const QgsRectangle &extent, QgsChunkNode
   jobData.extent = extent;
   jobData.debugText = debugText;
 
-  mJobs.insert( job, jobData );
+  mJobs.insert( job, jobData ); //store job data just before launching the job
+  job->start();
+
   // QgsDebugMsgLevel( QStringLiteral("added job: %1 .... in queue: %2").arg( jobData.jobId ).arg( jobs.count() ), 2);
   return jobData.jobId;
 }
 
 void QgsTerrainTextureGenerator::cancelJob( int jobId )
 {
-  Q_FOREACH ( const JobData &jd, mJobs )
+  for ( const JobData &jd : std::as_const( mJobs ) )
   {
     if ( jd.jobId == jobId )
     {
@@ -154,7 +164,7 @@ QgsMapSettings QgsTerrainTextureGenerator::baseMapSettings()
   QString mapThemeName = mMap.terrainMapTheme();
   if ( mapThemeName.isEmpty() || !mapThemes || !mapThemes->hasMapTheme( mapThemeName ) )
   {
-    mapSettings.setLayers( mMap.terrainLayers() );
+    mapSettings.setLayers( mMap.layers() );
   }
   else
   {

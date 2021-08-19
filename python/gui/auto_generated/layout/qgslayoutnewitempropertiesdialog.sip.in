@@ -11,7 +11,7 @@
 
 class QgsLayoutItemPropertiesDialog : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 A dialog for configuring properties like the size and position of layout items.
 
 This is usually used only when constructing new layout items, allowing users to precisely

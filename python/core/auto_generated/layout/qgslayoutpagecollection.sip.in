@@ -11,7 +11,7 @@
 
 class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
 {
-%Docstring
+%Docstring(signature="appended")
 A manager for a collection of pages in a layout.
 
 .. versionadded:: 3.0

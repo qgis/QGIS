@@ -10,7 +10,7 @@
 
 class QgsDoubleBoxScaleBarRenderer: QgsScaleBarRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 Double box with alternating colors.
 
 .. versionadded:: 3.0

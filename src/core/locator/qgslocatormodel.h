@@ -32,7 +32,7 @@ class QgsLocatorProxyModel;
 /**
  * \class QgsLocatorModel
  * \ingroup core
- * An abstract list model for displaying the results of locator searches.
+ * \brief An abstract list model for displaying the results of locator searches.
  *
  * Note that this class should generally be used with a QgsLocatorProxyModel
  * in order to ensure correct sorting of results by priority and match level.
@@ -118,7 +118,7 @@ class CORE_EXPORT QgsLocatorModel : public QAbstractTableModel
 /**
  * \class QgsLocatorAutomaticModel
  * \ingroup core
- * A QgsLocatorModel which has is associated directly with a
+ * \brief A QgsLocatorModel which has is associated directly with a
  * QgsLocator, and is automatically populated with results
  * from locator searches.
  *
@@ -184,7 +184,7 @@ class CORE_EXPORT QgsLocatorAutomaticModel : public QgsLocatorModel
 /**
  * \class QgsLocatorProxyModel
  * \ingroup core
- * A sort proxy model for QgsLocatorModel, which automatically sorts
+ * \brief A sort proxy model for QgsLocatorModel, which automatically sorts
  * results by precedence.
  * \since QGIS 3.0
  */

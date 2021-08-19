@@ -51,7 +51,7 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
     /**
      * Returns the line string with the specified \a index.
      *
-     * An IndexError will be raised if no line string with the specified index exists.
+     * \throws IndexError if no line string with the specified index exists.
      *
      * \since QGIS 3.16
      */

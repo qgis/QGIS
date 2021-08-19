@@ -27,7 +27,7 @@ class QgsVectorTileRendererData;
 
 /**
  * \ingroup core
- * Internal base class for implementation of label providers for vector tile labeling.
+ * \brief Internal base class for implementation of label providers for vector tile labeling.
  * \since QGIS 3.14
  */
 class QgsVectorTileLabelProvider : public QgsVectorLayerLabelProvider
@@ -63,7 +63,7 @@ class QgsVectorTileLabelProvider : public QgsVectorLayerLabelProvider
 
 /**
  * \ingroup core
- * Base class for labeling configuration classes for vector tile layers.
+ * \brief Base class for labeling configuration classes for vector tile layers.
  *
  * \since QGIS 3.14
  */

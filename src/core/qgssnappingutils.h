@@ -28,7 +28,8 @@ class QgsSnappingConfig;
 
 /**
  * \ingroup core
- * This class has all the configuration of snapping and can return answers to snapping queries.
+ * \brief This class has all the configuration of snapping and can return answers to snapping queries.
+ *
  * Internally, it keeps a cache of QgsPointLocator instances for multiple layers.
  *
  * Currently it supports the following queries:
@@ -145,6 +146,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
         , unit( u )
       {}
 
+      // TODO c++20 - replace with = default
       bool operator==( const QgsSnappingUtils::LayerConfig &other ) const
       {
         return layer == other.layer && type == other.type && tolerance == other.tolerance && unit == other.unit;

@@ -24,7 +24,8 @@ class QgsVectorLayer;
 
 /**
  * \ingroup 3d
- * Abstract base class for handlers that process pick events from a 3D map scene.
+ * \brief Abstract base class for handlers that process pick events from a 3D map scene.
+ *
  * 3D entities in map scene get QObjectPicker components assigned and mouse press events trigger virtual methods
  * or pick handlers.
  *

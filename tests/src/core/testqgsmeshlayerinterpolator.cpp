@@ -64,7 +64,7 @@ void TestQgsMeshLayerInterpolator::testExportRasterBand()
                             "Triangle and Quad Mdal",
                             "mdal" );
   QVERIFY( memoryLayer.isValid() );
-  QgsMeshDatasetIndex index( 0, 0 ); // bed elevation
+  const QgsMeshDatasetIndex index( 0, 0 ); // bed elevation
   memoryLayer.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 27700 ) );
 
   QgsRasterBlock *block = QgsMeshUtils::exportRasterBlock(
@@ -80,7 +80,7 @@ void TestQgsMeshLayerInterpolator::testExportRasterBand()
   QCOMPARE( block->height(), 10 );
   QVERIFY( block->isValid() );
   QVERIFY( !block->isEmpty() );
-  QCOMPARE( block->dataType(), Qgis::Float64 );
+  QCOMPARE( block->dataType(), Qgis::DataType::Float64 );
   QVERIFY( block->hasNoDataValue() );
   QVERIFY( block->hasNoData() );
 

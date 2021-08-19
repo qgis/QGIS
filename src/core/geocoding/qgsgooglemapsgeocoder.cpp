@@ -26,7 +26,9 @@
 #include <QJsonObject>
 
 QReadWriteLock QgsGoogleMapsGeocoder::sMutex;
-QMap< QUrl, QList< QgsGeocoderResult > > QgsGoogleMapsGeocoder::sCachedResults;
+
+typedef QMap< QUrl, QList< QgsGeocoderResult > > CachedGeocodeResult;
+Q_GLOBAL_STATIC( CachedGeocodeResult, sCachedResults )
 
 
 QgsGoogleMapsGeocoder::QgsGoogleMapsGeocoder( const QString &apiKey, const QString &regionBias )
@@ -72,7 +74,7 @@ QList<QgsGeocoderResult> QgsGoogleMapsGeocoder::geocodeString( const QString &st
   if ( !context.areaOfInterest().isEmpty() )
   {
     QgsGeometry g = context.areaOfInterest();
-    QgsCoordinateTransform ct( context.areaOfInterestCrs(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), context.transformContext() );
+    const QgsCoordinateTransform ct( context.areaOfInterestCrs(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), context.transformContext() );
     try
     {
       g.transform( ct );
@@ -87,8 +89,8 @@ QList<QgsGeocoderResult> QgsGoogleMapsGeocoder::geocodeString( const QString &st
   const QUrl url = requestUrl( string, bounds );
 
   QgsReadWriteLocker locker( sMutex, QgsReadWriteLocker::Read );
-  auto it = sCachedResults.constFind( url );
-  if ( it != sCachedResults.constEnd() )
+  const auto it = sCachedResults()->constFind( url );
+  if ( it != sCachedResults()->constEnd() )
   {
     return *it;
   }
@@ -106,7 +108,7 @@ QList<QgsGeocoderResult> QgsGoogleMapsGeocoder::geocodeString( const QString &st
 
   // Parse data
   QJsonParseError err;
-  QJsonDocument doc = QJsonDocument::fromJson( newReq.reply().content(), &err );
+  const QJsonDocument doc = QJsonDocument::fromJson( newReq.reply().content(), &err );
   if ( doc.isNull() )
   {
     return QList<QgsGeocoderResult>() << QgsGeocoderResult::errorResult( err.errorString() );
@@ -138,7 +140,7 @@ QList<QgsGeocoderResult> QgsGoogleMapsGeocoder::geocodeString( const QString &st
   const QVariantList results = res.value( QStringLiteral( "results" ) ).toList();
   if ( results.empty() )
   {
-    sCachedResults.insert( url, QList<QgsGeocoderResult>() );
+    sCachedResults()->insert( url, QList<QgsGeocoderResult>() );
     return QList<QgsGeocoderResult>();
   }
 
@@ -148,7 +150,7 @@ QList<QgsGeocoderResult> QgsGoogleMapsGeocoder::geocodeString( const QString &st
   {
     matches << jsonToResult( result.toMap() );
   }
-  sCachedResults.insert( url, matches );
+  sCachedResults()->insert( url, matches );
 
   return matches;
 }

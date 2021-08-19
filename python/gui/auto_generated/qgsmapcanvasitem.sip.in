@@ -11,7 +11,7 @@
 
 class QgsMapCanvasItem : QGraphicsItem
 {
-%Docstring
+%Docstring(signature="appended")
 An abstract class for items that can be placed on the
 map canvas.
 %End

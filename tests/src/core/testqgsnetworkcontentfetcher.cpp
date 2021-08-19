@@ -105,7 +105,7 @@ void TestQgsNetworkContentFetcher::fetchEncodedContent()
   QVERIFY( fetcher.reply()->error() == QNetworkReply::NoError );
 
   //test retrieved content and check for correct detection of encoding
-  QString mFetchedHtml = fetcher.contentAsString();
+  const QString mFetchedHtml = fetcher.contentAsString();
   QVERIFY( mFetchedHtml.contains( QChar( 6040 ) ) );
 }
 

@@ -93,7 +93,7 @@ QMenu *QgsMapThemes::menu()
 void QgsMapThemes::addPreset()
 {
   QStringList existingNames = QgsProject::instance()->mapThemeCollection()->mapThemes();
-  QgsNewNameDialog dlg( tr( "theme" ), tr( "Theme" ), QStringList(), existingNames, QRegExp(), Qt::CaseInsensitive, mMenu );
+  QgsNewNameDialog dlg( tr( "theme" ), tr( "Theme" ), QStringList(), existingNames, Qt::CaseInsensitive, mMenu );
   dlg.setWindowTitle( tr( "Map Themes" ) );
   dlg.setHintString( tr( "Name of the new theme" ) );
   dlg.setOverwriteEnabled( false );
@@ -148,14 +148,14 @@ void QgsMapThemes::renameCurrentPreset()
   QgsMapThemeCollection::MapThemeRecord mapTheme = currentState();
   QStringList existingNames = QgsProject::instance()->mapThemeCollection()->mapThemes();
 
-  for ( QAction *actionPreset : qgis::as_const( mMenuPresetActions ) )
+  for ( QAction *actionPreset : std::as_const( mMenuPresetActions ) )
   {
     if ( actionPreset->isChecked() )
     {
       QgsNewNameDialog dlg(
         tr( "theme" ),
         tr( "%1" ).arg( actionPreset->text() ),
-        QStringList(), existingNames, QRegExp(), Qt::CaseInsensitive, mMenu );
+        QStringList(), existingNames,  Qt::CaseInsensitive, mMenu );
 
       dlg.setWindowTitle( tr( "Rename Map Theme" ) );
       dlg.setHintString( tr( "Enter the new name of the map theme" ) );
@@ -173,7 +173,7 @@ void QgsMapThemes::renameCurrentPreset()
 
 void QgsMapThemes::removeCurrentPreset()
 {
-  for ( QAction *actionPreset : qgis::as_const( mMenuPresetActions ) )
+  for ( QAction *actionPreset : std::as_const( mMenuPresetActions ) )
   {
     if ( actionPreset->isChecked() )
     {

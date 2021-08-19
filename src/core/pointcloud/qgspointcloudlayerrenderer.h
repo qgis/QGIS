@@ -30,10 +30,12 @@
 #include "qgsidentifycontext.h"
 #include "qgspointcloudrenderer.h"
 #include "qgsmapclippingregion.h"
+#include "qgsrasterinterface.h"
 
 #include <QDomElement>
 #include <QString>
 #include <QPainter>
+#include <QElapsedTimer>
 
 class QgsRenderContext;
 class QgsPointCloudLayer;
@@ -42,10 +44,12 @@ class QgsPointCloudRenderContext;
 
 #define SIP_NO_FILE
 
+///@endcond
+
 /**
  * \ingroup core
  *
- * Implementation of threaded rendering for point cloud layers.
+ * \brief Implementation of threaded rendering for point cloud layers.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  * \note Not available in Python bindings
@@ -64,8 +68,13 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
     bool forceRasterRender() const override;
     void setLayerRenderingTimeHint( int time ) override;
 
+    QgsFeedback *feedback() const override { return mFeedback.get(); }
+
   private:
     QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, const QgsRenderContext &context, IndexedPointCloudNode n, double maxErrorPixels, double nodeErrorPixels );
+
+    int renderNodesSync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled );
+    int renderNodesAsync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled );
 
     QgsPointCloudLayer *mLayer = nullptr;
 
@@ -85,6 +94,7 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
     bool mBlockRenderUpdates = false;
     QElapsedTimer mElapsedTimer;
 
+    std::unique_ptr<QgsFeedback> mFeedback = nullptr;
 };
 
 #endif // QGSPOINTCLOUDLAYERRENDERER_H

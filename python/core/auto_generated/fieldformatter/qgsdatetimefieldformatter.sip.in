@@ -9,8 +9,9 @@
 
 class QgsDateTimeFieldFormatter : QgsFieldFormatter
 {
-%Docstring
+%Docstring(signature="appended")
 Field formatter for a date time field.
+
 This represents a date, time or datetime value based on
 the field configuration.
 

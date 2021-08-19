@@ -22,26 +22,47 @@
 #include "qgsmapmouseevent.h"
 #include "qgisapp.h"
 #include "qgsmessagebar.h"
+#include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsvectorlayerlabeling.h"
+#include "qgscallout.h"
+#include "qgsstatusbar.h"
 
-QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas *canvas )
-  : QgsMapToolLabel( canvas )
+QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
+  : QgsMapToolLabel( canvas, cadDock )
 {
-  mToolName = tr( "Move label" );
+  mToolName = tr( "Move label or callout" );
 
   mPalProperties << QgsPalLayerSettings::PositionX;
   mPalProperties << QgsPalLayerSettings::PositionY;
 
   mDiagramProperties << QgsDiagramLayerSettings::PositionX;
   mDiagramProperties << QgsDiagramLayerSettings::PositionY;
+
+  mCalloutProperties << QgsCallout::OriginX;
+  mCalloutProperties << QgsCallout::OriginY;
+  mCalloutProperties << QgsCallout::DestinationX;
+  mCalloutProperties << QgsCallout::DestinationY;
 }
 
-void QgsMapToolMoveLabel::canvasMoveEvent( QgsMapMouseEvent *e )
+QgsMapToolMoveLabel::~QgsMapToolMoveLabel()
+{
+  delete mCalloutMoveRubberBand;
+}
+
+void QgsMapToolMoveLabel::deleteRubberBands()
+{
+  QgsMapToolLabel::deleteRubberBands();
+  delete mCalloutMoveRubberBand;
+  mCalloutMoveRubberBand = nullptr;
+}
+
+void QgsMapToolMoveLabel::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( mLabelRubberBand )
   {
-    QgsPointXY pointCanvasCoords = toMapCoordinates( e->pos() );
-    double offsetX = pointCanvasCoords.x() - mStartPointMapCoords.x();
-    double offsetY = pointCanvasCoords.y() - mStartPointMapCoords.y();
+    const QgsPointXY pointMapCoords = e->mapPoint();
+    const double offsetX = pointMapCoords.x() - mStartPointMapCoords.x();
+    const double offsetY = pointMapCoords.y() - mStartPointMapCoords.y();
     mLabelRubberBand->setTranslationOffset( offsetX, offsetY );
     mLabelRubberBand->updatePosition();
     mLabelRubberBand->update();
@@ -49,11 +70,29 @@ void QgsMapToolMoveLabel::canvasMoveEvent( QgsMapMouseEvent *e )
     mFixPointRubberBand->updatePosition();
     mFixPointRubberBand->update();
   }
+  else if ( mCalloutMoveRubberBand )
+  {
+    const int index = mCurrentCalloutMoveOrigin ? 0 : 1;
+
+    QgsPointXY mapPoint = e->mapPoint();
+    if ( e->modifiers() & Qt::ShiftModifier )
+    {
+      // shift modifier = snap to common angles
+      mapPoint = snapCalloutPointToCommonAngle( mapPoint, true );
+    }
+
+    mCalloutMoveRubberBand->movePoint( index, mapPoint );
+    mCalloutMoveRubberBand->update();
+  }
+  else
+  {
+    updateHoveredLabel( e );
+  }
 }
 
-void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent *e )
+void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
 {
-  if ( !mLabelRubberBand )
+  if ( !mLabelRubberBand && !mCalloutMoveRubberBand )
   {
     if ( e->button() != Qt::LeftButton )
       return;
@@ -61,77 +100,146 @@ void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent *e )
     // first click starts move
     deleteRubberBands();
 
+    QgsCalloutPosition calloutPosition;
     QgsLabelPosition labelPos;
-    if ( !labelAtPosition( e, labelPos ) )
+
+    int xCol = 0;
+    int yCol = 0;
+    if ( calloutAtPosition( e, calloutPosition, mCurrentCalloutMoveOrigin ) )
     {
+      if ( !canModifyCallout( calloutPosition, mCurrentCalloutMoveOrigin, xCol, yCol ) )
+      {
+        QgsCalloutIndexes indexes;
+
+        if ( createAuxiliaryFields( calloutPosition, indexes ) )
+          return;
+
+        if ( !canModifyCallout( calloutPosition, mCurrentCalloutMoveOrigin, xCol, yCol ) )
+          return;
+      }
+
+      // callouts are a smaller target, so they take precedence over labels
       mCurrentLabel = LabelDetails();
-      return;
-    }
+      mCurrentCallout = calloutPosition;
 
-    mCurrentLabel = LabelDetails( labelPos );
+      clearHoveredLabel();
 
-    QgsVectorLayer *vlayer = mCurrentLabel.layer;
-    if ( !vlayer )
-    {
-      return;
-    }
-
-    int xCol = -1, yCol = -1;
-
-    if ( !mCurrentLabel.pos.isDiagram && !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol ) )
-    {
-      QgsPalIndexes indexes;
-
-      if ( createAuxiliaryFields( indexes ) )
+      QgsVectorLayer *vlayer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( mCurrentCallout.layerID );
+      if ( !vlayer || xCol < 0 || yCol < 0 )
+      {
         return;
+      }
 
-      if ( !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol ) )
-        return;
-
-      xCol = indexes[ QgsPalLayerSettings::PositionX ];
-      yCol = indexes[ QgsPalLayerSettings::PositionY ];
-    }
-    else if ( mCurrentLabel.pos.isDiagram && !diagramMoveable( vlayer, xCol, yCol ) )
-    {
-      QgsDiagramIndexes indexes;
-
-      if ( createAuxiliaryFields( indexes ) )
-        return;
-
-      if ( !diagramMoveable( vlayer, xCol, yCol ) )
-        return;
-
-      xCol = indexes[ QgsDiagramLayerSettings::PositionX ];
-      yCol = indexes[ QgsDiagramLayerSettings::PositionY ];
-    }
-
-    if ( xCol >= 0 && yCol >= 0 )
-    {
       const bool usesAuxFields = vlayer->fields().fieldOrigin( xCol ) == QgsFields::OriginJoin
                                  && vlayer->fields().fieldOrigin( yCol ) == QgsFields::OriginJoin;
       if ( !usesAuxFields && !vlayer->isEditable() )
       {
         if ( vlayer->startEditing() )
         {
-          QgisApp::instance()->messageBar()->pushInfo( tr( "Move Label" ), tr( "Layer “%1” was made editable" ).arg( vlayer->name() ) );
+          QgisApp::instance()->messageBar()->pushInfo( tr( "Move Callout" ), tr( "Layer “%1” was made editable" ).arg( vlayer->name() ) );
         }
         else
         {
-          QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "Cannot move “%1” — the layer “%2” could not be made editable" ).arg( mCurrentLabel.pos.labelText, vlayer->name() ) );
+          QgisApp::instance()->messageBar()->pushWarning( tr( "Move Callout" ), tr( "Cannot move callout — the layer “%2” could not be made editable" ).arg( vlayer->name() ) );
           return;
         }
       }
 
-      mStartPointMapCoords = toMapCoordinates( e->pos() );
-      QgsPointXY referencePoint;
-      if ( !currentLabelRotationPoint( referencePoint, !currentLabelPreserveRotation(), false ) )
+      mStartPointMapCoords = e->mapPoint();
+      mClickOffsetX = 0;
+      mClickOffsetY = 0;
+
+      mCalloutMoveRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::LineGeometry );
+      mCalloutMoveRubberBand->addPoint( mCurrentCallout.origin() );
+      mCalloutMoveRubberBand->addPoint( mCurrentCallout.destination() );
+      mCalloutMoveRubberBand->setColor( QColor( 0, 255, 0, 65 ) );
+      mCalloutMoveRubberBand->setWidth( 3 );
+      mCalloutMoveRubberBand->show();
+
+      // set initial cad point as the other side of the callout -- NOTE we have to add two points here!
+      cadDockWidget()->addPoint( mCurrentCalloutMoveOrigin ? mCurrentCallout.destination() : mCurrentCallout.origin() );
+      cadDockWidget()->addPoint( e->mapPoint() );
+      cadDockWidget()->releaseLocks( false );
+
+      return;
+    }
+    else
+    {
+      mCurrentCallout = QgsCalloutPosition();
+      if ( !labelAtPosition( e, labelPos ) )
       {
-        referencePoint.setX( mCurrentLabel.pos.labelRect.xMinimum() );
-        referencePoint.setY( mCurrentLabel.pos.labelRect.yMinimum() );
+        mCurrentLabel = LabelDetails();
+
+        return;
       }
-      mClickOffsetX = mStartPointMapCoords.x() - referencePoint.x();
-      mClickOffsetY = mStartPointMapCoords.y() - referencePoint.y();
-      createRubberBands();
+
+      clearHoveredLabel();
+
+      mCurrentLabel = LabelDetails( labelPos );
+
+      QgsVectorLayer *vlayer = mCurrentLabel.layer;
+      if ( !vlayer )
+      {
+        return;
+      }
+
+      int xCol = -1, yCol = -1;
+
+      if ( !mCurrentLabel.pos.isDiagram && !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol ) )
+      {
+        QgsPalIndexes indexes;
+
+        if ( createAuxiliaryFields( indexes ) )
+          return;
+
+        if ( !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol ) )
+          return;
+
+        xCol = indexes[ QgsPalLayerSettings::PositionX ];
+        yCol = indexes[ QgsPalLayerSettings::PositionY ];
+      }
+      else if ( mCurrentLabel.pos.isDiagram && !diagramMoveable( vlayer, xCol, yCol ) )
+      {
+        QgsDiagramIndexes indexes;
+
+        if ( createAuxiliaryFields( indexes ) )
+          return;
+
+        if ( !diagramMoveable( vlayer, xCol, yCol ) )
+          return;
+
+        xCol = indexes[ QgsDiagramLayerSettings::PositionX ];
+        yCol = indexes[ QgsDiagramLayerSettings::PositionY ];
+      }
+
+      if ( xCol >= 0 && yCol >= 0 )
+      {
+        const bool usesAuxFields = vlayer->fields().fieldOrigin( xCol ) == QgsFields::OriginJoin
+                                   && vlayer->fields().fieldOrigin( yCol ) == QgsFields::OriginJoin;
+        if ( !usesAuxFields && !vlayer->isEditable() )
+        {
+          if ( vlayer->startEditing() )
+          {
+            QgisApp::instance()->messageBar()->pushInfo( tr( "Move Label" ), tr( "Layer “%1” was made editable" ).arg( vlayer->name() ) );
+          }
+          else
+          {
+            QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "Cannot move “%1” — the layer “%2” could not be made editable" ).arg( mCurrentLabel.pos.labelText, vlayer->name() ) );
+            return;
+          }
+        }
+
+        mStartPointMapCoords = e->mapPoint();
+        QgsPointXY referencePoint;
+        if ( !currentLabelRotationPoint( referencePoint, !currentLabelPreserveRotation(), false ) )
+        {
+          referencePoint.setX( mCurrentLabel.pos.labelRect.xMinimum() );
+          referencePoint.setY( mCurrentLabel.pos.labelRect.yMinimum() );
+        }
+        mClickOffsetX = mStartPointMapCoords.x() - referencePoint.x();
+        mClickOffsetY = mStartPointMapCoords.y() - referencePoint.y();
+        createRubberBands();
+      }
     }
   }
   else
@@ -147,28 +255,45 @@ void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent *e )
 
       case Qt::LeftButton:
       {
-        // second click drops label
+        // second click drops label/callout
+        const bool isCalloutMove = !mCurrentCallout.layerID.isEmpty();
+        QgsPointXY releaseCoords = e->mapPoint();
+        if ( isCalloutMove && e->modifiers() & Qt::ShiftModifier )
+        {
+          // shift modifier = snap to common angles
+          releaseCoords = snapCalloutPointToCommonAngle( releaseCoords, false );
+        }
+
         deleteRubberBands();
-        QgsVectorLayer *vlayer = mCurrentLabel.layer;
+
+        QgsVectorLayer *vlayer = !isCalloutMove ? mCurrentLabel.layer : QgsProject::instance()->mapLayer<QgsVectorLayer *>( mCurrentCallout.layerID );
         if ( !vlayer )
         {
           return;
         }
+        const QgsFeatureId featureId = !isCalloutMove ? mCurrentLabel.pos.featureId : mCurrentCallout.featureId;
 
-        QgsPointXY releaseCoords = toMapCoordinates( e->pos() );
-        double xdiff = releaseCoords.x() - mStartPointMapCoords.x();
-        double ydiff = releaseCoords.y() - mStartPointMapCoords.y();
+        const double xdiff = releaseCoords.x() - mStartPointMapCoords.x();
+        const double ydiff = releaseCoords.y() - mStartPointMapCoords.y();
 
-        int xCol, yCol;
-        double xPosOrig, yPosOrig;
-        bool xSuccess, ySuccess;
+        int xCol = -1;
+        int  yCol = -1;
+        double xPosOrig = 0;
+        double yPosOrig = 0;
+        bool xSuccess = false;
+        bool ySuccess = false;
 
-        if ( !currentLabelDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol ) )
+        if ( !isCalloutMove && !currentLabelDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol ) )
+        {
+          return;
+        }
+        else if ( isCalloutMove && !currentCalloutDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol ) )
         {
           return;
         }
 
-        double xPosNew, yPosNew;
+        double xPosNew = 0;
+        double yPosNew = 0;
 
         if ( !xSuccess || !ySuccess )
         {
@@ -179,7 +304,7 @@ void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent *e )
         {
           //transform to map crs first, because xdiff,ydiff are in map coordinates
           const QgsMapSettings &ms = mCanvas->mapSettings();
-          QgsPointXY transformedPoint = ms.layerToMapCoordinates( vlayer, QgsPointXY( xPosOrig, yPosOrig ) );
+          const QgsPointXY transformedPoint = ms.layerToMapCoordinates( vlayer, QgsPointXY( xPosOrig, yPosOrig ) );
           xPosOrig = transformedPoint.x();
           yPosOrig = transformedPoint.y();
           xPosNew = xPosOrig + xdiff;
@@ -190,25 +315,56 @@ void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent *e )
         if ( mCanvas )
         {
           const QgsMapSettings &s = mCanvas->mapSettings();
-          QgsPointXY transformedPoint = s.mapToLayerCoordinates( vlayer, QgsPointXY( xPosNew, yPosNew ) );
+          const QgsPointXY transformedPoint = s.mapToLayerCoordinates( vlayer, QgsPointXY( xPosNew, yPosNew ) );
           xPosNew = transformedPoint.x();
           yPosNew = transformedPoint.y();
         }
 
-        vlayer->beginEditCommand( tr( "Moved label" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
-        bool success = vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, xCol, xPosNew );
-        success = vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, yCol, yPosNew ) && success;
+        if ( !isCalloutMove )
+          vlayer->beginEditCommand( tr( "Moved label" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
+        else
+          vlayer->beginEditCommand( tr( "Moved callout" ) );
+
+        // Try to convert to the destination field type
+        QVariant xNewPos( xPosNew );
+        QVariant yNewPos( yPosNew );
+
+        if ( xCol < vlayer->fields().count() )
+        {
+          if ( ! vlayer->fields().at( xCol ).convertCompatible( xNewPos ) )
+          {
+            xNewPos = xPosNew; // revert and hope for the best
+          }
+        }
+
+        if ( yCol < vlayer->fields().count() )
+        {
+          if ( ! vlayer->fields().at( yCol ).convertCompatible( yNewPos ) )
+          {
+            yNewPos = yPosNew; // revert and hope for the best
+          }
+        }
+
+        bool success = vlayer->changeAttributeValue( featureId, xCol, xNewPos );
+        success = vlayer->changeAttributeValue( featureId, yCol, yNewPos ) && success;
+
         if ( !success )
         {
           // if the edit command fails, it's likely because the label x/y is being stored in a physical field (not a auxiliary one!)
           // and the layer isn't in edit mode
           if ( !vlayer->isEditable() )
           {
-            QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "Layer “%1” must be editable in order to move labels from it" ).arg( vlayer->name() ) );
+            if ( !isCalloutMove )
+              QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "Layer “%1” must be editable in order to move labels from it" ).arg( vlayer->name() ) );
+            else
+              QgisApp::instance()->messageBar()->pushWarning( tr( "Move Callout" ), tr( "Layer “%1” must be editable in order to move callouts from it" ).arg( vlayer->name() ) );
           }
           else
           {
-            QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "Error encountered while storing new label position" ) );
+            if ( !isCalloutMove )
+              QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "Error encountered while storing new label position" ) );
+            else
+              QgisApp::instance()->messageBar()->pushWarning( tr( "Move Callout" ), tr( "Error encountered while storing new callout position" ) );
           }
           vlayer->endEditCommand();
           break;
@@ -217,7 +373,7 @@ void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent *e )
         // set rotation to that of label, if data-defined and no rotation set yet
         // honor whether to preserve preexisting data on pin
         // must come after setting x and y positions
-        if ( !mCurrentLabel.pos.isDiagram
+        if ( !isCalloutMove && !mCurrentLabel.pos.isDiagram
              && !mCurrentLabel.pos.isPinned
              && !currentLabelPreserveRotation() )
         {
@@ -226,7 +382,7 @@ void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent *e )
           int rCol;
           if ( currentLabelDataDefinedRotation( defRot, rSuccess, rCol ) )
           {
-            double labelRot = mCurrentLabel.pos.rotation * 180 / M_PI;
+            const double labelRot = mCurrentLabel.pos.rotation * 180 / M_PI;
             vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, rCol, labelRot );
           }
         }
@@ -241,45 +397,98 @@ void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent *e )
   }
 }
 
-void QgsMapToolMoveLabel::keyReleaseEvent( QKeyEvent *e )
+void QgsMapToolMoveLabel::cadCanvasReleaseEvent( QgsMapMouseEvent * )
 {
-  if ( mLabelRubberBand )
+  if ( !mLabelRubberBand && !mCalloutMoveRubberBand )
+  {
+    // this tool doesn't collect points -- we want the angle constraints to be reset whenever we drop a label
+    cadDockWidget()->clearPoints();
+  }
+}
+
+void QgsMapToolMoveLabel::canvasReleaseEvent( QgsMapMouseEvent *e )
+{
+  if ( mCalloutMoveRubberBand )
+    return; // don't allow cad dock widget points to be cleared after starting to move a callout endpoint
+
+  QgsMapToolLabel::canvasReleaseEvent( e );
+}
+
+void QgsMapToolMoveLabel::keyPressEvent( QKeyEvent *e )
+{
+  if ( mLabelRubberBand || mCalloutMoveRubberBand )
   {
     switch ( e->key() )
     {
       case Qt::Key_Delete:
       {
-        // delete the label position
-        QgsVectorLayer *vlayer = mCurrentLabel.layer;
+        e->ignore();  // Override default shortcut management
+        return;
+      }
+    }
+  }
+
+  QgsMapToolLabel::keyPressEvent( e );
+}
+
+void QgsMapToolMoveLabel::keyReleaseEvent( QKeyEvent *e )
+{
+  if ( mLabelRubberBand || mCalloutMoveRubberBand )
+  {
+    switch ( e->key() )
+    {
+      case Qt::Key_Delete:
+      {
+        e->ignore();  // Override default shortcut management
+
+        // delete the stored label/callout position
+        const bool isCalloutMove = !mCurrentCallout.layerID.isEmpty();
+        QgsVectorLayer *vlayer = !isCalloutMove ? mCurrentLabel.layer : QgsProject::instance()->mapLayer<QgsVectorLayer *>( mCurrentCallout.layerID );
+        const QgsFeatureId featureId = !isCalloutMove ? mCurrentLabel.pos.featureId : mCurrentCallout.featureId;
         if ( vlayer )
         {
-          int xCol, yCol;
-          double xPosOrig, yPosOrig;
-          bool xSuccess, ySuccess;
+          int xCol = -1;
+          int yCol = -1;
+          double xPosOrig = 0;
+          double yPosOrig = 0;
+          bool xSuccess = false;
+          bool ySuccess = false;
 
-          if ( currentLabelDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol ) )
+          if ( !isCalloutMove && !currentLabelDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol ) )
           {
-            vlayer->beginEditCommand( tr( "Delete Label Position" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
-            bool success = vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, xCol, QVariant() );
-            success = vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, yCol, QVariant() ) && success;
-            if ( !success )
-            {
-              // if the edit command fails, it's likely because the label x/y is being stored in a physical field (not a auxiliary one!)
-              // and the layer isn't in edit mode
-              if ( !vlayer->isEditable() )
-              {
-                QgisApp::instance()->messageBar()->pushWarning( tr( "Delete Label Position" ), tr( "Layer “%1” must be editable in order to remove stored label positions" ).arg( vlayer->name() ) );
-              }
-              else
-              {
-                QgisApp::instance()->messageBar()->pushWarning( tr( "Delete Label Position" ), tr( "Error encountered while removing stored label position" ) );
-              }
-
-            }
-            vlayer->endEditCommand();
-            deleteRubberBands();
-            vlayer->triggerRepaint();
+            break;
           }
+          else if ( isCalloutMove && !currentCalloutDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol ) )
+          {
+            break;
+          }
+
+          vlayer->beginEditCommand( !isCalloutMove ? tr( "Delete Label Position" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) : tr( "Delete Callout Position" ) );
+          bool success = vlayer->changeAttributeValue( featureId, xCol, QVariant() );
+          success = vlayer->changeAttributeValue( featureId, yCol, QVariant() ) && success;
+          if ( !success )
+          {
+            // if the edit command fails, it's likely because the label x/y is being stored in a physical field (not a auxiliary one!)
+            // and the layer isn't in edit mode
+            if ( !vlayer->isEditable() )
+            {
+              if ( !isCalloutMove )
+                QgisApp::instance()->messageBar()->pushWarning( tr( "Delete Label Position" ), tr( "Layer “%1” must be editable in order to remove stored label positions" ).arg( vlayer->name() ) );
+              else
+                QgisApp::instance()->messageBar()->pushWarning( tr( "Delete Callout Position" ), tr( "Layer “%1” must be editable in order to remove stored callout positions" ).arg( vlayer->name() ) );
+            }
+            else
+            {
+              if ( !isCalloutMove )
+                QgisApp::instance()->messageBar()->pushWarning( tr( "Delete Label Position" ), tr( "Error encountered while removing stored label position" ) );
+              else
+                QgisApp::instance()->messageBar()->pushWarning( tr( "Delete Callout Position" ), tr( "Error encountered while removing stored callout position" ) );
+            }
+
+          }
+          vlayer->endEditCommand();
+          deleteRubberBands();
+          vlayer->triggerRepaint();
         }
         break;
       }
@@ -292,6 +501,119 @@ void QgsMapToolMoveLabel::keyReleaseEvent( QKeyEvent *e )
       }
     }
   }
+}
+
+bool QgsMapToolMoveLabel::canModifyCallout( const QgsCalloutPosition &pos, bool isOrigin, int &xCol, int &yCol )
+{
+  QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( pos.layerID );
+  QgsPalLayerSettings settings;
+  if ( layer && layer->labelsEnabled() )
+  {
+    settings = layer->labeling()->settings( pos.providerID );
+  }
+
+  const QgsCallout *callout = settings.callout();
+
+  if ( !layer || !layer->labelsEnabled() || !callout )
+  {
+    return false;
+  }
+
+  auto calloutPropertyColumnName = [callout]( QgsCallout::Property p )
+  {
+    if ( !callout->dataDefinedProperties().isActive( p ) )
+      return QString();
+
+    const QgsProperty prop = callout->dataDefinedProperties().property( p );
+    if ( prop.propertyType() != QgsProperty::FieldBasedProperty )
+      return QString();
+
+    return prop.field();
+  };
+
+  const QStringList subProviders = layer->labeling()->subProviders();
+  for ( const QString &provider : subProviders )
+  {
+    ( void )provider;
+
+    const QString xColName = isOrigin ? calloutPropertyColumnName( QgsCallout::OriginX ) : calloutPropertyColumnName( QgsCallout::DestinationX );
+    const QString yColName = isOrigin ? calloutPropertyColumnName( QgsCallout::OriginY ) : calloutPropertyColumnName( QgsCallout::DestinationY );
+
+    xCol = layer->fields().lookupField( xColName );
+    yCol = layer->fields().lookupField( yColName );
+    return ( xCol != -1 && yCol != -1 );
+  }
+
+  return false;
+}
+
+bool QgsMapToolMoveLabel::currentCalloutDataDefinedPosition( double &x, bool &xSuccess, double &y, bool &ySuccess, int &xCol, int &yCol )
+{
+  QgsVectorLayer *vlayer =  QgsProject::instance()->mapLayer<QgsVectorLayer *>( mCurrentCallout.layerID );
+  const QgsFeatureId featureId = mCurrentCallout.featureId;
+
+  xSuccess = false;
+  ySuccess = false;
+
+  if ( !vlayer )
+  {
+    return false;
+  }
+
+  if ( !canModifyCallout( mCurrentCallout, mCurrentCalloutMoveOrigin, xCol, yCol ) )
+  {
+    return false;
+  }
+
+  QgsFeature f;
+  if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setFlags( QgsFeatureRequest::NoGeometry ) ).nextFeature( f ) )
+  {
+    return false;
+  }
+
+  const QgsAttributes attributes = f.attributes();
+  if ( !attributes.at( xCol ).isNull() )
+    x = attributes.at( xCol ).toDouble( &xSuccess );
+  if ( !attributes.at( yCol ).isNull() )
+    y = attributes.at( yCol ).toDouble( &ySuccess );
+
+  return true;
+}
+
+QgsPointXY QgsMapToolMoveLabel::snapCalloutPointToCommonAngle( const QgsPointXY &mapPoint, bool showStatusMessage ) const
+{
+  const int index = mCurrentCalloutMoveOrigin ? 0 : 1;
+
+  const QgsPointXY start = *mCalloutMoveRubberBand->getPoint( 0, index == 0 ? 1 : 0 );
+  const double cursorDistance = start.distance( mapPoint );
+
+  // snap to common angles (15 degree increments)
+  double closestDist = std::numeric_limits< double >::max();
+  double closestX = 0;
+  double closestY = 0;
+  int bestAngle = 0;
+
+  const double angleOffset = -canvas()->rotation();
+
+  for ( int angle = 0; angle < 360; angle += 15 )
+  {
+    const QgsPointXY end = start.project( cursorDistance * 2, angle + angleOffset );
+    double minDistX = 0;
+    double minDistY = 0;
+    const double angleDist = QgsGeometryUtils::sqrDistToLine( mapPoint.x(), mapPoint.y(), start.x(), start.y(), end.x(), end.y(), minDistX, minDistY, 4 * std::numeric_limits<double>::epsilon() );
+    if ( angleDist < closestDist )
+    {
+      closestDist = angleDist;
+      closestX = minDistX;
+      closestY = minDistY;
+      bestAngle = angle;
+    }
+  }
+
+  if ( showStatusMessage )
+    QgisApp::instance()->statusBarIface()->showMessage( tr( "Callout angle: %1°" ).arg( bestAngle ), 2000 );
+
+  return QgsPointXY( closestX, closestY );
 }
 
 

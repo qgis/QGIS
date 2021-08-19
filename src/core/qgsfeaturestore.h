@@ -27,7 +27,7 @@
 
 /**
  * \ingroup core
- * A container for features with the same fields and crs.
+ * \brief A container for features with the same fields and crs.
  */
 class CORE_EXPORT QgsFeatureStore : public QgsFeatureSink
 {

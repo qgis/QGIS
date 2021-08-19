@@ -22,6 +22,11 @@
  *                                                                         *
  ***************************************************************************/
 """
+from typing import (
+    Dict,
+    Optional,
+    Any
+)
 
 from qgis.PyQt.QtCore import (pyqtSignal, QObject, QCoreApplication, QFile,
                               QDir, QDirIterator, QDate, QUrl, QFileInfo,
@@ -127,14 +132,12 @@ def removeDir(path):
     if not QDir(pluginDir).exists():
         QDir().mkpath(pluginDir)
     return result
-# --- /common functions ------------------------------------------------------------------ #
 
 
-# --- class Relay  ----------------------------------------------------------------------- #
 class Relay(QObject):
-
-    """ Relay object for transmitting signals from QPHttp with adding the repoName information """
-    # ----------------------------------------- #
+    """
+    Relay object for transmitting signals from QPHttp with adding the repoName information
+    """
     anythingChanged = pyqtSignal(str, int, int)
 
     def __init__(self, key):
@@ -144,23 +147,25 @@ class Relay(QObject):
     def stateChanged(self, state):
         self.anythingChanged.emit(self.key, state, 0)
 
-    # ----------------------------------------- #
     def dataReadProgress(self, done, total):
-        state = 4
+        state = Repositories.STATE_REJECTED
         if total > 0:
             progress = int(float(done) / float(total) * 100)
         else:
             progress = 0
         self.anythingChanged.emit(self.key, state, progress)
 
-# --- /class Relay  ---------------------------------------------------------------------- #
 
-
-# --- class Repositories ----------------------------------------------------------------- #
 class Repositories(QObject):
+    """
+    A dict-like class for handling repositories data
+    """
 
-    """ A dict-like class for handling repositories data """
-    # ----------------------------------------- #
+    STATE_DISABLED = 0
+    STATE_LOADING = 1
+    STATE_LOADED = 2
+    STATE_UNAVAILABLE = 3
+    STATE_REJECTED = 4
 
     anythingChanged = pyqtSignal(str, int, int)
     repositoryFetched = pyqtSignal(str)
@@ -168,82 +173,65 @@ class Repositories(QObject):
 
     def __init__(self):
         QObject.__init__(self)
-        self.mRepositories = {}
+        self.mRepositories: Dict[str, Dict[str, Any]] = {}
         self.httpId = {}   # {httpId : repoName}
-        self.mInspectionFilter = None
+        self.mInspectionFilter: Optional[str] = None
 
-    # ----------------------------------------- #
-    def all(self):
+    def all(self) -> Dict[str, Dict[str, Any]]:
         """ return dict of all repositories """
         return self.mRepositories
 
-    # ----------------------------------------- #
-    def allEnabled(self):
+    def allEnabled(self) -> Dict[str, Dict[str, Any]]:
         """ return dict of all enabled and valid repositories """
         if self.mInspectionFilter:
             return {self.mInspectionFilter: self.mRepositories[self.mInspectionFilter]}
 
-        repos = {}
-        for i in self.mRepositories:
-            if self.mRepositories[i]["enabled"] and self.mRepositories[i]["valid"]:
-                repos[i] = self.mRepositories[i]
-        return repos
+        return {k: v for k, v in self.mRepositories.items() if v['enabled'] and v['valid']}
 
-    # ----------------------------------------- #
-    def allUnavailable(self):
+    def allUnavailable(self) -> Dict[str, Dict[str, Any]]:
         """ return dict of all unavailable repositories """
         repos = {}
 
         if self.mInspectionFilter:
             # return the inspected repo if unavailable, otherwise empty dict
-            if self.mRepositories[self.mInspectionFilter]["state"] == 3:
+            if self.mRepositories[self.mInspectionFilter]["state"] == Repositories.STATE_UNAVAILABLE:
                 repos[self.mInspectionFilter] = self.mRepositories[self.mInspectionFilter]
             return repos
 
-        for i in self.mRepositories:
-            if self.mRepositories[i]["enabled"] and self.mRepositories[i]["valid"] and self.mRepositories[i]["state"] == 3:
-                repos[i] = self.mRepositories[i]
-        return repos
+        return {k: v for k, v in self.mRepositories.items() if v['enabled'] and v['valid'] and v['state'] == Repositories.STATE_UNAVAILABLE}
 
-    # ----------------------------------------- #
-    def urlParams(self):
+    def urlParams(self) -> str:
         """ return GET parameters to be added to every request """
         # Strip down the point release segment from the version string
         return "?qgis={}".format(re.sub(r'\.\d*$', '', pyQgisVersion()))
 
-    # ----------------------------------------- #
-    def setRepositoryData(self, reposName, key, value):
+    def setRepositoryData(self, reposName: str, key: str, value):
         """ write data to the mRepositories dict """
         self.mRepositories[reposName][key] = value
 
-    # ----------------------------------------- #
-    def remove(self, reposName):
+    def remove(self, reposName: str):
         """ remove given item from the mRepositories dict """
         del self.mRepositories[reposName]
 
-    # ----------------------------------------- #
-    def rename(self, oldName, newName):
+    def rename(self, oldName: str, newName: str):
         """ rename repository key """
         if oldName == newName:
             return
         self.mRepositories[newName] = self.mRepositories[oldName]
         del self.mRepositories[oldName]
 
-    # ----------------------------------------- #
-    def checkingOnStart(self):
+    def checkingOnStart(self) -> bool:
         """ return true if checking for news and updates is enabled """
         settings = QgsSettings()
         return settings.value(settingsGroup + "/checkOnStart", False, type=bool)
 
-    # ----------------------------------------- #
-    def setCheckingOnStart(self, state):
+    def setCheckingOnStart(self, state: bool):
         """ set state of checking for news and updates """
         settings = QgsSettings()
         settings.setValue(settingsGroup + "/checkOnStart", state)
 
-    # ----------------------------------------- #
-    def checkingOnStartInterval(self):
-        """ return checking for news and updates interval """
+    def checkingOnStartInterval(self) -> int:
+        """ return checking for news and updates interval (in days)"""
         settings = QgsSettings()
         try:
             # QgsSettings may contain non-int value...
@@ -260,20 +248,17 @@ class Repositories(QObject):
                 interval = j
         return interval
 
-    # ----------------------------------------- #
-    def setCheckingOnStartInterval(self, interval):
-        """ set checking for news and updates interval """
+    def setCheckingOnStartInterval(self, interval: int):
+        """ set checking for news and updates interval (in days)"""
         settings = QgsSettings()
         settings.setValue(settingsGroup + "/checkOnStartInterval", interval)
 
-    # ----------------------------------------- #
     def saveCheckingOnStartLastDate(self):
         """ set today's date as the day of last checking  """
         settings = QgsSettings()
         settings.setValue(settingsGroup + "/checkOnStartLastDate", QDate.currentDate())
 
-    # ----------------------------------------- #
-    def timeForChecking(self):
+    def timeForChecking(self) -> bool:
         """ determine whether it's the time for checking for news and updates now """
         if self.checkingOnStartInterval() == 0:
             return True
@@ -288,7 +273,6 @@ class Repositories(QObject):
         else:
             return False
 
-    # ----------------------------------------- #
     def load(self):
         """ populate the mRepositories dict"""
         self.mRepositories = {}
@@ -311,14 +295,13 @@ class Repositories(QObject):
             self.mRepositories[key]["valid"] = settings.value(key + "/valid", True, type=bool)
             self.mRepositories[key]["Relay"] = Relay(key)
             self.mRepositories[key]["xmlData"] = None
-            self.mRepositories[key]["state"] = 0
+            self.mRepositories[key]["state"] = Repositories.STATE_DISABLED
             self.mRepositories[key]["error"] = ""
         settings.endGroup()
 
-    # ----------------------------------------- #
-    def requestFetching(self, key, url=None, redirectionCounter=0, force_reload=False):
+    def requestFetching(self, key: str, url: Optional[QUrl] = None, redirectionCounter=0, force_reload: bool = False):
         """ start fetching the repository given by key """
-        self.mRepositories[key]["state"] = 1
+        self.mRepositories[key]["state"] = Repositories.STATE_LOADING
         if not url:
             url = QUrl(self.mRepositories[key]["url"] + self.urlParams())
         # v=str(Qgis.QGIS_VERSION_INT)
@@ -347,28 +330,22 @@ class Repositories(QObject):
         self.mRepositories[key]["xmlData"].downloadProgress.connect(self.mRepositories[key]["Relay"].dataReadProgress)
         self.mRepositories[key]["xmlDataFinished"] = self.mRepositories[key]["xmlData"].finished.connect(self.xmlDownloaded)
 
-    # ----------------------------------------- #
-    def fetchingInProgress(self):
-        """ return true if fetching repositories is still in progress """
-        for key in self.mRepositories:
-            if self.mRepositories[key]["state"] == 1:
-                return True
-        return False
+    def fetchingInProgress(self) -> bool:
+        """ return True if fetching repositories is still in progress """
+        return any(v['state'] == Repositories.STATE_LOADING for v in self.mRepositories.values())
 
-    # ----------------------------------------- #
-    def killConnection(self, key):
+    def killConnection(self, key: str):
         """ kill the fetching on demand """
-        if self.mRepositories[key]["state"] == 1 and self.mRepositories[key]["xmlData"] and self.mRepositories[key]["xmlData"].isRunning():
+        if self.mRepositories[key]["state"] == Repositories.STATE_LOADING and self.mRepositories[key]["xmlData"] and self.mRepositories[key]["xmlData"].isRunning():
             self.mRepositories[key]["xmlData"].finished.disconnect(self.mRepositories[key]["xmlDataFinished"])
             self.mRepositories[key]["xmlData"].abort()
 
-    # ----------------------------------------- #
     def xmlDownloaded(self):
         """ populate the plugins object with the fetched data """
         reply = self.sender()
         reposName = reply.property('reposName')
-        if reply.error() != QNetworkReply.NoError:                             # fetching failed
-            self.mRepositories[reposName]["state"] = 3
+        if reply.error() != QNetworkReply.NoError:  # fetching failed
+            self.mRepositories[reposName]["state"] = Repositories.STATE_UNAVAILABLE
             self.mRepositories[reposName]["error"] = reply.errorString()
             if reply.error() == QNetworkReply.OperationCanceledError:
                 self.mRepositories[reposName]["error"] += "\n\n" + QCoreApplication.translate("QgsPluginInstaller", "If you haven't canceled the download manually, it was most likely caused by a timeout. In this case consider increasing the connection timeout value in QGIS options window.")
@@ -378,7 +355,7 @@ class Repositories(QObject):
                 redirectionUrl = reply.url().resolved(redirectionUrl)
             redirectionCounter = reply.property('redirectionCounter') + 1
             if redirectionCounter > 4:
-                self.mRepositories[reposName]["state"] = 3
+                self.mRepositories[reposName]["state"] = Repositories.STATE_UNAVAILABLE
                 self.mRepositories[reposName]["error"] = QCoreApplication.translate("QgsPluginInstaller", "Too many redirections")
             else:
                 # Fire a new request and exit immediately in order to quietly destroy the old one
@@ -482,10 +459,10 @@ class Repositories(QObject):
                         if isCompatible(pyQgisVersion(), qgisMinimumVersion, qgisMaximumVersion):
                             # add the plugin to the cache
                             plugins.addFromRepository(plugin)
-                self.mRepositories[reposName]["state"] = 2
+                self.mRepositories[reposName]["state"] = Repositories.STATE_LOADED
             else:
                 # no plugin metadata found
-                self.mRepositories[reposName]["state"] = 3
+                self.mRepositories[reposName]["state"] = Repositories.STATE_UNAVAILABLE
                 if reply.attribute(QNetworkRequest.HttpStatusCodeAttribute) == 200:
                     self.mRepositories[reposName]["error"] = QCoreApplication.translate("QgsPluginInstaller", "Server response is 200 OK, but doesn't contain plugin metatada. This is most likely caused by a proxy or a wrong repository URL. You can configure proxy settings in QGIS options.")
                 else:
@@ -502,17 +479,13 @@ class Repositories(QObject):
 
         reply.deleteLater()
 
-    # ----------------------------------------- #
-    def inspectionFilter(self):
+    def inspectionFilter(self) -> Optional[str]:
         """ return inspection filter (only one repository to be fetched) """
         return self.mInspectionFilter
 
-    # ----------------------------------------- #
-    def setInspectionFilter(self, key=None):
+    def setInspectionFilter(self, key: Optional[str] = None):
         """ temporarily disable all repositories but this for inspection """
         self.mInspectionFilter = key
-
-# --- /class Repositories ---------------------------------------------------------------- #
 
 
 # --- class Plugins ---------------------------------------------------------------------- #
@@ -571,7 +544,7 @@ class Plugins(QObject):
             del self.localCache[key]
 
     # ----------------------------------------- #
-    def removeRepository(self, repo):
+    def removeRepository(self, repo: str):
         """ remove whole repository from the repoCache """
         if repo in self.repoCache:
             del self.repoCache[repo]

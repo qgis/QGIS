@@ -17,16 +17,17 @@
 
 #include "qgsserverprojectutils.h"
 #include "qgsproject.h"
+#include "qgsmessagelog.h"
 
 double  QgsServerProjectUtils::ceilWithPrecision( double number, int places )
 {
-  double scaleFactor = std::pow( 10.0, places );
+  const double scaleFactor = std::pow( 10.0, places );
   return ( std::ceil( number * scaleFactor ) / scaleFactor );
 }
 
 double  QgsServerProjectUtils::floorWithPrecision( double number, int places )
 {
-  double scaleFactor = std::pow( 10.0, places );
+  const double scaleFactor = std::pow( 10.0, places );
   return ( std::floor( number * scaleFactor ) / scaleFactor );
 }
 
@@ -57,12 +58,12 @@ QString QgsServerProjectUtils::owsServiceAbstract( const QgsProject &project )
 QStringList QgsServerProjectUtils::owsServiceKeywords( const QgsProject &project )
 {
   QStringList keywordList;
-  QStringList list = project.readListEntry( QStringLiteral( "WMSKeywordList" ), QStringLiteral( "/" ), QStringList() );
+  const QStringList list = project.readListEntry( QStringLiteral( "WMSKeywordList" ), QStringLiteral( "/" ), QStringList() );
   if ( !list.isEmpty() )
   {
     for ( int i = 0; i < list.size(); ++i )
     {
-      QString keyword = list.at( i );
+      const QString keyword = list.at( i );
       if ( !keyword.isEmpty() )
       {
         keywordList.append( keyword );
@@ -76,10 +77,10 @@ QString QgsServerProjectUtils::owsServiceOnlineResource( const QgsProject &proje
 {
   QString wmsOnlineResource = project.readEntry( QStringLiteral( "WMSOnlineResource" ), QStringLiteral( "/" ) );
 
-  QgsProperty wmsOnlineResourceProperty = project.dataDefinedServerProperties().property( QgsProject::DataDefinedServerProperty::WMSOnlineResource );
+  const QgsProperty wmsOnlineResourceProperty = project.dataDefinedServerProperties().property( QgsProject::DataDefinedServerProperty::WMSOnlineResource );
   if ( wmsOnlineResourceProperty.isActive() && ! wmsOnlineResourceProperty.expressionString().isEmpty() )
   {
-    QgsExpressionContext context = project.createExpressionContext();
+    const QgsExpressionContext context = project.createExpressionContext();
     return wmsOnlineResourceProperty.valueAsString( context, wmsOnlineResource );
   }
 
@@ -158,7 +159,7 @@ double QgsServerProjectUtils::wmsDefaultMapUnitsPerMm( const QgsProject &project
 
 bool QgsServerProjectUtils::wmsInfoFormatSia2045( const QgsProject &project )
 {
-  QString sia2045 = project.readEntry( QStringLiteral( "WMSInfoFormatSIA2045" ), QStringLiteral( "/" ), "" );
+  const QString sia2045 = project.readEntry( QStringLiteral( "WMSInfoFormatSIA2045" ), QStringLiteral( "/" ), "" );
 
   return sia2045.compare( QLatin1String( "enabled" ), Qt::CaseInsensitive ) == 0
          || sia2045.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
@@ -166,7 +167,7 @@ bool QgsServerProjectUtils::wmsInfoFormatSia2045( const QgsProject &project )
 
 bool QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( const QgsProject &project )
 {
-  QString wktGeom = project.readEntry( QStringLiteral( "WMSAddWktGeometry" ), QStringLiteral( "/" ), "" );
+  const QString wktGeom = project.readEntry( QStringLiteral( "WMSAddWktGeometry" ), QStringLiteral( "/" ), "" );
 
   return wktGeom.compare( QLatin1String( "enabled" ), Qt::CaseInsensitive ) == 0
          || wktGeom.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
@@ -174,14 +175,14 @@ bool QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( const QgsProject &proj
 
 bool QgsServerProjectUtils::wmsFeatureInfoUseAttributeFormSettings( const QgsProject &project )
 {
-  QString useFormSettings = project.readEntry( QStringLiteral( "WMSFeatureInfoUseAttributeFormSettings" ), QStringLiteral( "/" ), "" );
+  const QString useFormSettings = project.readEntry( QStringLiteral( "WMSFeatureInfoUseAttributeFormSettings" ), QStringLiteral( "/" ), "" );
   return useFormSettings.compare( QLatin1String( "enabled" ), Qt::CaseInsensitive ) == 0
          || useFormSettings.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
 }
 
 bool QgsServerProjectUtils::wmsFeatureInfoSegmentizeWktGeometry( const QgsProject &project )
 {
-  QString segmGeom = project.readEntry( QStringLiteral( "WMSSegmentizeFeatureInfoGeometry" ), QStringLiteral( "/" ), "" );
+  const QString segmGeom = project.readEntry( QStringLiteral( "WMSSegmentizeFeatureInfoGeometry" ), QStringLiteral( "/" ), "" );
 
   return segmGeom.compare( QLatin1String( "enabled" ), Qt::CaseInsensitive ) == 0
          || segmGeom.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
@@ -212,20 +213,20 @@ QHash<QString, QString> QgsServerProjectUtils::wmsFeatureInfoLayerAliasMap( cons
   QHash<QString, QString> aliasMap;
 
   //WMSFeatureInfoAliasLayers
-  QStringList aliasLayerStringList = project.readListEntry( QStringLiteral( "WMSFeatureInfoAliasLayers" ), QStringLiteral( "/value" ), QStringList() );
+  const QStringList aliasLayerStringList = project.readListEntry( QStringLiteral( "WMSFeatureInfoAliasLayers" ), QStringLiteral( "/value" ), QStringList() );
   if ( aliasLayerStringList.isEmpty() )
   {
     return aliasMap;
   }
 
   //WMSFeatureInfoLayerAliases
-  QStringList layerAliasStringList = project.readListEntry( QStringLiteral( "WMSFeatureInfoLayerAliases" ), QStringLiteral( "/value" ), QStringList() );
+  const QStringList layerAliasStringList = project.readListEntry( QStringLiteral( "WMSFeatureInfoLayerAliases" ), QStringLiteral( "/value" ), QStringList() );
   if ( layerAliasStringList.isEmpty() )
   {
     return aliasMap;
   }
 
-  int nMapEntries = std::min( aliasLayerStringList.size(), layerAliasStringList.size() );
+  const int nMapEntries = std::min( aliasLayerStringList.size(), layerAliasStringList.size() );
   for ( int i = 0; i < nMapEntries; ++i )
   {
     aliasMap.insert( aliasLayerStringList.at( i ), layerAliasStringList.at( i ) );
@@ -272,12 +273,12 @@ QStringList QgsServerProjectUtils::wmsRestrictedComposers( const QgsProject &pro
 QStringList QgsServerProjectUtils::wmsOutputCrsList( const QgsProject &project )
 {
   QStringList crsList;
-  QStringList wmsCrsList = project.readListEntry( QStringLiteral( "WMSCrsList" ), QStringLiteral( "/" ), QStringList() );
+  const QStringList wmsCrsList = project.readListEntry( QStringLiteral( "WMSCrsList" ), QStringLiteral( "/" ), QStringList() );
   if ( !wmsCrsList.isEmpty() )
   {
     for ( int i = 0; i < wmsCrsList.size(); ++i )
     {
-      QString crs = wmsCrsList.at( i );
+      const QString crs = wmsCrsList.at( i );
       if ( !crs.isEmpty() )
       {
         crsList.append( crs );
@@ -286,11 +287,11 @@ QStringList QgsServerProjectUtils::wmsOutputCrsList( const QgsProject &project )
   }
   if ( crsList.isEmpty() )
   {
-    QStringList valueList = project.readListEntry( QStringLiteral( "WMSEpsgList" ), QStringLiteral( "/" ), QStringList() );
+    const QStringList valueList = project.readListEntry( QStringLiteral( "WMSEpsgList" ), QStringLiteral( "/" ), QStringList() );
     bool conversionOk;
     for ( int i = 0; i < valueList.size(); ++i )
     {
-      int epsgNr = valueList.at( i ).toInt( &conversionOk );
+      const int epsgNr = valueList.at( i ).toInt( &conversionOk );
       if ( conversionOk )
       {
         crsList.append( QStringLiteral( "EPSG:%1" ).arg( epsgNr ) );
@@ -300,7 +301,7 @@ QStringList QgsServerProjectUtils::wmsOutputCrsList( const QgsProject &project )
   if ( crsList.isEmpty() )
   {
     //no CRS restriction defined in the project. Provide project CRS, wgs84 and pseudo mercator
-    QString projectCrsId = project.crs().authid();
+    const QString projectCrsId = project.crs().authid();
     crsList.append( projectCrsId );
     if ( projectCrsId.compare( QLatin1String( "EPSG:4326" ), Qt::CaseInsensitive ) != 0 )
     {
@@ -314,9 +315,120 @@ QStringList QgsServerProjectUtils::wmsOutputCrsList( const QgsProject &project )
   return crsList;
 }
 
-QString QgsServerProjectUtils::wmsServiceUrl( const QgsProject &project )
+QString QgsServerProjectUtils::serviceUrl( const QString &service, const QgsServerRequest &request, const QgsServerSettings &settings )
 {
-  return project.readEntry( QStringLiteral( "WMSUrl" ), QStringLiteral( "/" ), "" );
+  const QString serviceUpper = service.toUpper();
+  QString url = settings.serviceUrl( serviceUpper );
+  if ( ! url.isEmpty() )
+  {
+    return url;
+  }
+
+  QgsServerRequest::RequestHeader header = QgsServerRequest::RequestHeader::X_QGIS_SERVICE_URL;
+  if ( serviceUpper == QLatin1String( "WMS" ) )
+  {
+    header = QgsServerRequest::RequestHeader::X_QGIS_WMS_SERVICE_URL;
+  }
+  else if ( serviceUpper == QLatin1String( "WFS" ) )
+  {
+    header = QgsServerRequest::RequestHeader::X_QGIS_WFS_SERVICE_URL;
+  }
+  else if ( serviceUpper == QLatin1String( "WCS" ) )
+  {
+    header = QgsServerRequest::RequestHeader::X_QGIS_WCS_SERVICE_URL;
+  }
+  else if ( serviceUpper == QLatin1String( "WMTS" ) )
+  {
+    header = QgsServerRequest::RequestHeader::X_QGIS_WMTS_SERVICE_URL;
+  }
+  url = request.header( header );
+  if ( ! url.isEmpty() )
+  {
+    return url;
+  }
+  url = request.header( QgsServerRequest::RequestHeader::X_QGIS_SERVICE_URL );
+  if ( ! url.isEmpty() )
+  {
+    return url;
+  }
+
+  QString proto;
+  QString host;
+
+  QString  forwarded = request.header( QgsServerRequest::FORWARDED );
+  if ( ! forwarded.isEmpty() )
+  {
+    forwarded = forwarded.split( QLatin1Char( ',' ) )[0];
+    const QStringList elements = forwarded.split( ';' );
+    for ( const QString &element : elements )
+    {
+      QStringList splited_element = element.trimmed().split( QLatin1Char( '=' ) );
+      if ( splited_element[0] == "host" )
+      {
+        host = splited_element[1];
+      }
+      if ( splited_element[0] == "proto" )
+      {
+        proto = splited_element[1];
+      }
+    }
+  }
+
+  if ( host.isEmpty() )
+  {
+    host = request.header( QgsServerRequest::RequestHeader::X_FORWARDED_HOST );
+    proto = request.header( QgsServerRequest::RequestHeader::X_FORWARDED_PROTO );
+  }
+
+  if ( host.isEmpty() )
+  {
+    host = request.header( QgsServerRequest::RequestHeader::HOST );
+  }
+
+  QUrl urlQUrl = request.baseUrl();
+  if ( ! proto.isEmpty() )
+  {
+    urlQUrl.setScheme( proto );
+  }
+
+  if ( ! host.isEmpty() )
+  {
+    QStringList hostPort = host.split( QLatin1Char( ':' ) );
+    if ( hostPort.length() == 1 )
+    {
+      urlQUrl.setHost( hostPort[0] );
+      urlQUrl.setPort( -1 );
+    }
+    if ( hostPort.length() == 2 )
+    {
+      urlQUrl.setHost( hostPort[0] );
+      urlQUrl.setPort( hostPort[1].toInt() );
+    }
+  }
+
+  // https://docs.qgis.org/3.16/en/docs/server_manual/services.html#wms-map
+  const QString map = request.parameter( QStringLiteral( "MAP" ) );
+  if ( ! map.isEmpty() )
+  {
+    QUrlQuery query;
+    query.setQueryItems( {{"MAP", map}} );
+    urlQUrl.setQuery( query );
+  }
+  else
+  {
+    urlQUrl.setQuery( NULL );
+  }
+  return urlQUrl.url();
+}
+
+QString QgsServerProjectUtils::wmsServiceUrl( const QgsProject &project, const  QgsServerRequest &request, const QgsServerSettings &settings )
+{
+  QString url = project.readEntry( QStringLiteral( "WMSUrl" ), QStringLiteral( "/" ), "" );
+  if ( url.isEmpty() )
+  {
+    url = serviceUrl( QStringLiteral( "WMS" ), request, settings );
+  }
+  return url;
 }
 
 QString QgsServerProjectUtils::wmsRootName( const QgsProject &project )
@@ -338,16 +450,21 @@ QgsRectangle QgsServerProjectUtils::wmsExtent( const QgsProject &project )
     return QgsRectangle();
   }
   //order of value elements must be xmin, ymin, xmax, ymax
-  double xmin = values[ 0 ].toDouble();
-  double ymin = values[ 1 ].toDouble();
-  double xmax = values[ 2 ].toDouble();
-  double ymax = values[ 3 ].toDouble();
+  const double xmin = values[ 0 ].toDouble();
+  const double ymin = values[ 1 ].toDouble();
+  const double xmax = values[ 2 ].toDouble();
+  const double ymax = values[ 3 ].toDouble();
   return QgsRectangle( xmin, ymin, xmax, ymax );
 }
 
-QString QgsServerProjectUtils::wfsServiceUrl( const QgsProject &project )
+QString QgsServerProjectUtils::wfsServiceUrl( const QgsProject &project, const QgsServerRequest &request, const QgsServerSettings &settings )
 {
-  return project.readEntry( QStringLiteral( "WFSUrl" ), QStringLiteral( "/" ), "" );
+  QString url = project.readEntry( QStringLiteral( "WFSUrl" ), QStringLiteral( "/" ), "" );
+  if ( url.isEmpty() )
+  {
+    url = serviceUrl( QStringLiteral( "WFS" ), request, settings );
+  }
+  return url;
 }
 
 QStringList QgsServerProjectUtils::wfsLayerIds( const QgsProject &project )
@@ -375,9 +492,14 @@ QStringList QgsServerProjectUtils::wfstDeleteLayerIds( const QgsProject &project
   return project.readListEntry( QStringLiteral( "WFSTLayers" ), QStringLiteral( "Delete" ) );
 }
 
-QString QgsServerProjectUtils::wcsServiceUrl( const QgsProject &project )
+QString QgsServerProjectUtils::wcsServiceUrl( const QgsProject &project, const QgsServerRequest &request, const QgsServerSettings &settings )
 {
-  return project.readEntry( QStringLiteral( "WCSUrl" ), QStringLiteral( "/" ), "" );
+  QString url = project.readEntry( QStringLiteral( "WCSUrl" ), QStringLiteral( "/" ), "" );
+  if ( url.isEmpty() )
+  {
+    url = serviceUrl( QStringLiteral( "WCS" ), request, settings );
+  }
+  return url;
 }
 
 QStringList QgsServerProjectUtils::wcsLayerIds( const QgsProject &project )
@@ -385,7 +507,17 @@ QStringList QgsServerProjectUtils::wcsLayerIds( const QgsProject &project )
   return project.readListEntry( QStringLiteral( "WCSLayers" ), QStringLiteral( "/" ) );
 }
 
-QString QgsServerProjectUtils::wmtsServiceUrl( const QgsProject &project )
+QString QgsServerProjectUtils::wmtsServiceUrl( const QgsProject &project, const QgsServerRequest &request, const QgsServerSettings &settings )
 {
-  return project.readEntry( QStringLiteral( "WMTSUrl" ), QStringLiteral( "/" ), "" );
+  QString url = project.readEntry( QStringLiteral( "WMTSUrl" ), QStringLiteral( "/" ), "" );
+  if ( url.isEmpty() )
+  {
+    url = serviceUrl( QStringLiteral( "WMTS" ), request, settings );
+  }
+  return url;
+}
+
+bool QgsServerProjectUtils::wmsRenderMapTiles( const QgsProject &project )
+{
+  return project.readBoolEntry( QStringLiteral( "RenderMapTile" ), QStringLiteral( "/" ), false );
 }

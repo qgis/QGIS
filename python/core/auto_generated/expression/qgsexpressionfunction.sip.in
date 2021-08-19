@@ -13,7 +13,7 @@
 
 class QgsExpressionFunction
 {
-%Docstring
+%Docstring(signature="appended")
 A abstract base class for defining :py:class:`QgsExpression` functions.
 %End
 
@@ -25,7 +25,7 @@ A abstract base class for defining :py:class:`QgsExpression` functions.
 
     class Parameter
 {
-%Docstring
+%Docstring(signature="appended")
 Represents a single parameter passed to a function.
 
 .. versionadded:: 2.16

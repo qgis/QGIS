@@ -55,7 +55,7 @@ static void _initRendererWidgetFunctions()
   if ( sInitialized )
     return;
 
-  _initRenderer( QStringLiteral( "extent" ), QgsPointCloudExtentRendererWidget::create, QString( ) );
+  _initRenderer( QStringLiteral( "extent" ), QgsPointCloudExtentRendererWidget::create, QStringLiteral( "styleicons/pointcloudextent.svg" ) );
   _initRenderer( QStringLiteral( "rgb" ), QgsPointCloudRgbRendererWidget::create, QStringLiteral( "styleicons/multibandcolor.svg" ) );
   _initRenderer( QStringLiteral( "ramp" ), QgsPointCloudAttributeByRampRendererWidget::create, QStringLiteral( "styleicons/singlebandpseudocolor.svg" ) );
   _initRenderer( QStringLiteral( "classified" ), QgsPointCloudClassifiedRendererWidget::create, QStringLiteral( "styleicons/paletted.svg" ) );
@@ -96,14 +96,14 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
   mPointSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                   << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
-  connect( mPointSizeSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mPointSizeSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mPointSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
   mMaxErrorUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mMaxErrorSpinBox->setClearValue( 0.3 );
 
-  connect( mMaxErrorSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mMaxErrorSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mMaxErrorUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
   connect( mPointStyleComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
@@ -132,9 +132,9 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   if ( mLayer->renderer() )
   {
     // set current renderer from layer
-    QString rendererName = mLayer->renderer()->type();
+    const QString rendererName = mLayer->renderer()->type();
 
-    int rendererIdx = cboRenderers->findData( rendererName );
+    const int rendererIdx = cboRenderers->findData( rendererName );
     cboRenderers->setCurrentIndex( rendererIdx );
 
     // no renderer found... this mustn't happen
@@ -191,7 +191,7 @@ void QgsPointCloudRendererPropertiesWidget::rendererChanged()
     return;
   }
 
-  QString rendererName = cboRenderers->currentData().toString();
+  const QString rendererName = cboRenderers->currentData().toString();
 
   //Retrieve the previous renderer: from the old active widget if possible, otherwise from the layer
   std::unique_ptr< QgsPointCloudRenderer > oldRenderer;

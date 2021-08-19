@@ -25,6 +25,10 @@
 #include <qgsvectorlayer.h>
 #include <qgsrubberband.h>
 #include <qgslogger.h>
+#include "qgssymbol.h"
+#include "qgsrenderchecker.h"
+#include "qgslinesymbol.h"
+#include "qgsfillsymbol.h"
 
 class TestQgsRubberband : public QObject
 {
@@ -42,12 +46,15 @@ class TestQgsRubberband : public QObject
     void testBoundingRect(); //test for #12392
     void testVisibility(); //test for 12486
     void testClose(); //test closing geometry
+    void testLineSymbolRender();
+    void testFillSymbolRender();
 
   private:
     QgsMapCanvas *mCanvas = nullptr;
     QgsVectorLayer *mPolygonLayer = nullptr;
     QString mTestDataDir;
     QgsRubberBand *mRubberband = nullptr;
+    QString mReport;
 };
 
 void TestQgsRubberband::initTestCase()
@@ -57,14 +64,14 @@ void TestQgsRubberband::initTestCase()
   QgsApplication::showSettings();
 
   // Setup a map canvas with a vector layer loaded...
-  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + '/';
 
   //
   // load a vector layer
   //
-  QString myPolygonFileName = mTestDataDir + "polys.shp";
-  QFileInfo myPolygonFileInfo( myPolygonFileName );
+  const QString myPolygonFileName = mTestDataDir + "polys.shp";
+  const QFileInfo myPolygonFileInfo( myPolygonFileName );
   mPolygonLayer = new QgsVectorLayer( myPolygonFileInfo.filePath(),
                                       myPolygonFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
@@ -75,6 +82,7 @@ void TestQgsRubberband::initTestCase()
   mCanvas->hide();
 
   mRubberband = nullptr;
+  mReport += QLatin1String( "<h1>Rubberband Tests</h1>\n" );
 }
 
 void TestQgsRubberband::cleanupTestCase()
@@ -82,6 +90,15 @@ void TestQgsRubberband::cleanupTestCase()
   delete mRubberband;
   delete mPolygonLayer;
   delete mCanvas;
+
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
+  {
+    QTextStream myQTextStream( &myFile );
+    myQTextStream << mReport;
+    myFile.close();
+  }
 
   QgsApplication::exitQgis();
 }
@@ -99,8 +116,8 @@ void TestQgsRubberband::cleanup()
 void TestQgsRubberband::testAddSingleMultiGeometries()
 {
   mRubberband = new QgsRubberBand( mCanvas, mPolygonLayer->geometryType() );
-  QgsGeometry geomSinglePart( QgsGeometry::fromWkt( QStringLiteral( "POLYGON((-0.00022418 -0.00000279,-0.0001039 0.00002395,-0.00008677 -0.00005313,-0.00020705 -0.00007987,-0.00022418 -0.00000279))" ) ) );
-  QgsGeometry geomMultiPart( QgsGeometry::fromWkt( QStringLiteral( "MULTIPOLYGON(((-0.00018203 0.00012178,-0.00009444 0.00014125,-0.00007861 0.00007001,-0.00016619 0.00005054,-0.00018203 0.00012178)),((-0.00030957 0.00009464,-0.00021849 0.00011489,-0.00020447 0.00005184,-0.00029555 0.00003158,-0.00030957 0.00009464)))" ) ) );
+  const QgsGeometry geomSinglePart( QgsGeometry::fromWkt( QStringLiteral( "POLYGON((-0.00022418 -0.00000279,-0.0001039 0.00002395,-0.00008677 -0.00005313,-0.00020705 -0.00007987,-0.00022418 -0.00000279))" ) ) );
+  const QgsGeometry geomMultiPart( QgsGeometry::fromWkt( QStringLiteral( "MULTIPOLYGON(((-0.00018203 0.00012178,-0.00009444 0.00014125,-0.00007861 0.00007001,-0.00016619 0.00005054,-0.00018203 0.00012178)),((-0.00030957 0.00009464,-0.00021849 0.00011489,-0.00020447 0.00005184,-0.00029555 0.00003158,-0.00030957 0.00009464)))" ) ) );
 
   mCanvas->setExtent( QgsRectangle( -1e-3, -1e-3, 1e-3, 1e-3 ) ); // otherwise point cannot be converted to canvas coord
 
@@ -118,9 +135,9 @@ void TestQgsRubberband::testBoundingRect()
   QCOMPARE( mCanvas->mapUnitsPerPixel(), 1.0 );
 
   // Polygon extent is 10,10 to 30,30
-  QgsGeometry geom( QgsGeometry::fromWkt(
-                      QStringLiteral( "POLYGON((10 10,10 30,30 30,30 10,10 10))" )
-                    ) );
+  const QgsGeometry geom( QgsGeometry::fromWkt(
+                            QStringLiteral( "POLYGON((10 10,10 30,30 30,30 10,10 10))" )
+                          ) );
   mRubberband = new QgsRubberBand( mCanvas, mPolygonLayer->geometryType() );
   mRubberband->setIconSize( 5 ); // default, but better be explicit
   mRubberband->setWidth( 1 );    // default, but better be explicit
@@ -156,7 +173,7 @@ void TestQgsRubberband::testVisibility()
   QCOMPARE( mRubberband->isVisible(), false );
 
   // Check visibility after setting to empty geometry
-  std::shared_ptr<QgsGeometry> emptyGeom( new QgsGeometry );
+  const std::shared_ptr<QgsGeometry> emptyGeom( new QgsGeometry );
   mRubberband->setToGeometry( *emptyGeom.get(), mPolygonLayer );
   QCOMPARE( mRubberband->isVisible(), false );
 
@@ -166,9 +183,9 @@ void TestQgsRubberband::testVisibility()
   QCOMPARE( mRubberband->isVisible(), false );
 
   // Check visibility after setting to valid geometry
-  QgsGeometry geom( QgsGeometry::fromWkt(
-                      QStringLiteral( "POLYGON((10 10,10 30,30 30,30 10,10 10))" )
-                    ) );
+  const QgsGeometry geom( QgsGeometry::fromWkt(
+                            QStringLiteral( "POLYGON((10 10,10 30,30 30,30 10,10 10))" )
+                          ) );
   mRubberband->setToGeometry( geom, mPolygonLayer );
   QCOMPARE( mRubberband->isVisible(), true );
 
@@ -214,6 +231,79 @@ void TestQgsRubberband::testClose()
   // close already closed polygon, should be no change
   r.closePoints();
   QCOMPARE( r.partSize( 0 ), 4 );
+}
+
+void TestQgsRubberband::testLineSymbolRender()
+{
+  std::unique_ptr< QgsMapCanvas > canvas = std::make_unique< QgsMapCanvas >();
+  canvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  canvas->setFrameStyle( 0 );
+  canvas->resize( 600, 400 );
+  canvas->setExtent( QgsRectangle( 10, 30, 20, 35 ) );
+  canvas->show();
+
+  QgsRubberBand r( canvas.get(), QgsWkbTypes::LineGeometry );
+  r.addGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString( 12 32, 18 33)" ) ) );
+
+  std::unique_ptr< QgsLineSymbol > lineSymbol( QgsLineSymbol::createSimple(
+  {
+    { QStringLiteral( "line_color" ), QStringLiteral( "#0000ff" ) },
+    { QStringLiteral( "line_width" ), QStringLiteral( "3" )},
+    { QStringLiteral( "capstyle" ), QStringLiteral( "round" )}
+  } ) );
+  r.setSymbol( lineSymbol.release() );
+
+  QPixmap pixmap( canvas->size() );
+  QPainter painter( &pixmap );
+  canvas->render( &painter );
+  painter.end();
+  const QString destFile = QDir::tempPath() + QStringLiteral( "/rubberband_line_symbol.png" );
+  pixmap.save( destFile );
+
+  QgsRenderChecker checker;
+  checker.setControlPathPrefix( QStringLiteral( "rubberband" ) );
+  checker.setControlName( QStringLiteral( "expected_line_symbol" ) );
+  checker.setRenderedImage( destFile );
+  const bool result = checker.compareImages( QStringLiteral( "expected_line_symbol" ) );
+  mReport += checker.report();
+  QVERIFY( result );
+}
+
+void TestQgsRubberband::testFillSymbolRender()
+{
+  std::unique_ptr< QgsMapCanvas > canvas = std::make_unique< QgsMapCanvas >();
+  canvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  canvas->setFrameStyle( 0 );
+  canvas->resize( 600, 400 );
+  canvas->setExtent( QgsRectangle( 10, 30, 20, 35 ) );
+  canvas->show();
+
+  QgsRubberBand r( canvas.get(), QgsWkbTypes::LineGeometry );
+  r.addGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon((12 32, 12 35, 18 35, 12 32))" ) ) );
+
+  std::unique_ptr< QgsFillSymbol > fillSymbol( QgsFillSymbol::createSimple(
+  {
+    { QStringLiteral( "color" ), QStringLiteral( "#ff00ff" ) },
+    { QStringLiteral( "line_color" ), QStringLiteral( "#0000ff" ) },
+    { QStringLiteral( "line_width" ), QStringLiteral( "3" )},
+    { QStringLiteral( "joinstyle" ), QStringLiteral( "round" )}
+  } ) );
+  r.setSymbol( fillSymbol.release() );
+
+  QPixmap pixmap( canvas->size() );
+  QPainter painter( &pixmap );
+  canvas->render( &painter );
+  painter.end();
+  const QString destFile = QDir::tempPath() + QStringLiteral( "/rubberband_fill_symbol.png" );
+  pixmap.save( destFile );
+
+  QgsRenderChecker checker;
+  checker.setControlPathPrefix( QStringLiteral( "rubberband" ) );
+  checker.setControlName( QStringLiteral( "expected_fill_symbol" ) );
+  checker.setRenderedImage( destFile );
+  const bool result = checker.compareImages( QStringLiteral( "expected_fill_symbol" ) );
+  mReport += checker.report();
+  QVERIFY( result );
 }
 
 

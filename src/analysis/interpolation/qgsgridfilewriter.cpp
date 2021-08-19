@@ -48,6 +48,9 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
   }
 
   QTextStream outStream( &outputFile );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  outStream.setCodec( "UTF-8" );
+#endif
   outStream.setRealNumberPrecision( 8 );
   writeHeader( outStream );
 
@@ -70,7 +73,11 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
       }
       currentXValue += mCellSizeX;
     }
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     outStream << endl;
+#else
+    outStream << Qt::endl;
+#endif
     currentYValue -= mCellSizeY;
 
     if ( feedback )
@@ -88,9 +95,9 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
   QgsInterpolator::LayerData ld;
   ld = mInterpolator->layerData().at( 0 );
   QgsFeatureSource *source = ld.source;
-  QString crs = source->sourceCrs().toWkt();
-  QFileInfo fi( mOutputFilePath );
-  QString fileName = fi.absolutePath() + '/' + fi.completeBaseName() + ".prj";
+  const QString crs = source->sourceCrs().toWkt();
+  const QFileInfo fi( mOutputFilePath );
+  const QString fileName = fi.absolutePath() + '/' + fi.completeBaseName() + ".prj";
   QFile prjFile( fileName );
   if ( !prjFile.open( QFile::WriteOnly | QIODevice::Truncate ) )
   {
@@ -98,7 +105,11 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
   }
   QTextStream prjStream( &prjFile );
   prjStream << crs;
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
   prjStream << endl;
+#else
+  prjStream << Qt::endl;
+#endif
   prjFile.close();
 
   return 0;
@@ -106,20 +117,39 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
 
 int QgsGridFileWriter::writeHeader( QTextStream &outStream )
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
   outStream << "NCOLS " << mNumColumns << endl;
   outStream << "NROWS " << mNumRows << endl;
   outStream << "XLLCORNER " << mInterpolationExtent.xMinimum() << endl;
   outStream << "YLLCORNER " <<  mInterpolationExtent.yMinimum() << endl;
+#else
+  outStream << "NCOLS " << mNumColumns << Qt::endl;
+  outStream << "NROWS " << mNumRows << Qt::endl;
+  outStream << "XLLCORNER " << mInterpolationExtent.xMinimum() << Qt::endl;
+  outStream << "YLLCORNER " <<  mInterpolationExtent.yMinimum() << Qt::endl;
+#endif
   if ( mCellSizeX == mCellSizeY ) //standard way
   {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     outStream << "CELLSIZE " << mCellSizeX << endl;
+#else
+    outStream << "CELLSIZE " << mCellSizeX << Qt::endl;
+#endif
   }
   else //this is supported by GDAL but probably not by other products
   {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     outStream << "DX " << mCellSizeX << endl;
     outStream << "DY " << mCellSizeY << endl;
+#else
+    outStream << "DX " << mCellSizeX << Qt::endl;
+    outStream << "DY " << mCellSizeY << Qt::endl;
+#endif
   }
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
   outStream << "NODATA_VALUE -9999" << endl;
-
+#else
+  outStream << "NODATA_VALUE -9999" << Qt::endl;
+#endif
   return 0;
 }

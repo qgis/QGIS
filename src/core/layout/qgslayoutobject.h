@@ -33,7 +33,7 @@ class QgsReadWriteContext;
 
 /**
  * \ingroup core
- * A base class for objects which belong to a layout.
+ * \brief A base class for objects which belong to a layout.
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGenerator
@@ -219,6 +219,18 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
      * Returns the layout object property definitions.
      */
     static const QgsPropertiesDefinition &propertyDefinitions();
+
+    /**
+     * Returns TRUE if the specified \a property key is normally associated with the parent
+     * QgsLayoutMultiFrame object instead of a child QgsLayoutFrame object.
+     *
+     * While some properties like QgsLayoutObject::DataDefinedProperty::PositionX and QgsLayoutObject::DataDefinedProperty::ItemWidth
+     * are typically associated with a direct QgsLayoutItem subclass (including QgsLayoutFrame objects), other properties
+     * are instead associated with a QgsLayoutMultiFrame object (such as QgsLayoutObject::DataDefinedProperty::SourceUrl or QgsLayoutObject::DataDefinedProperty::AttributeTableSourceLayer).
+     *
+     * \since QGIS 3.18.1
+     */
+    static bool propertyAssociatesWithParentMultiframe( DataDefinedProperty property );
 
     /**
      * Constructor for QgsLayoutObject, with the specified parent \a layout.

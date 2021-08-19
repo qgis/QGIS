@@ -24,7 +24,7 @@
 /**
  * \class QgsSingleBoxScaleBarRenderer
  * \ingroup core
- * Scalebar style that draws a single box with alternating
+ * \brief Scalebar style that draws a single box with alternating
  * color for the segments.
  * \since QGIS 3.0
  */

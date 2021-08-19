@@ -23,7 +23,7 @@
 
 /**
  * \ingroup analysis
- * Calculates slope values in a window of 3x3 cells based on first order derivatives in x- and y- directions.
+ * \brief Calculates slope values in a window of 3x3 cells based on first order derivatives in x- and y- directions.
 */
 class ANALYSIS_EXPORT QgsSlopeFilter: public QgsDerivativeFilter
 {

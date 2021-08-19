@@ -64,9 +64,9 @@ class TestAuthManager(unittest.TestCase):
         """Run before all tests and set up authentication"""
         authm = QgsApplication.authManager()
         assert (authm.setMasterPassword('masterpassword', True))
-        cls.sslrootcert_path = os.path.join(cls.certsdata_path, 'chains_subissuer-issuer-root_issuer2-root2.pem')
-        cls.sslcert = os.path.join(cls.certsdata_path, 'gerardus_cert.pem')
-        cls.sslkey = os.path.join(cls.certsdata_path, 'gerardus_key.pem')
+        cls.sslrootcert_path = os.path.join(cls.certsdata_path, 'qgis_ca.crt')
+        cls.sslcert = os.path.join(cls.certsdata_path, 'Gerardus.crt')
+        cls.sslkey = os.path.join(cls.certsdata_path, 'Gerardus.key')
         assert os.path.isfile(cls.sslcert)
         assert os.path.isfile(cls.sslkey)
         assert os.path.isfile(cls.sslrootcert_path)
@@ -86,10 +86,8 @@ class TestAuthManager(unittest.TestCase):
         assert (authm.storeAuthenticationConfig(cls.auth_config)[0])
         assert cls.auth_config.isValid()
 
-        # cls.server_cert = os.path.join(cls.certsdata_path, 'localhost_ssl_cert.pem')
-        cls.server_cert = os.path.join(cls.certsdata_path, '127_0_0_1_ssl_cert.pem')
-        # cls.server_key = os.path.join(cls.certsdata_path, 'localhost_ssl_key.pem')
-        cls.server_key = os.path.join(cls.certsdata_path, '127_0_0_1_ssl_key.pem')
+        cls.server_cert = os.path.join(cls.certsdata_path, '127_0_0_1.crt')
+        cls.server_key = os.path.join(cls.certsdata_path, '127_0_0_1.key')
         cls.server_rootcert = cls.sslrootcert_path
         os.chmod(cls.server_cert, stat.S_IRUSR)
         os.chmod(cls.server_key, stat.S_IRUSR)
@@ -115,7 +113,7 @@ class TestAuthManager(unittest.TestCase):
             except KeyError:
                 pass
         cls.testdata_path = unitTestDataPath('qgis_server')
-        cls.certsdata_path = os.path.join(unitTestDataPath('auth_system'), 'certs_keys')
+        cls.certsdata_path = os.path.join(unitTestDataPath('auth_system'), 'certs_keys_2048')
         cls.project_path = os.path.join(cls.testdata_path, "test_project.qgs")
         # cls.hostname = 'localhost'
         cls.protocol = 'https'

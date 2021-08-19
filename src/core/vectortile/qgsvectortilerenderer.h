@@ -29,7 +29,7 @@ typedef QMap<QString, QVector<QgsFeature> > QgsVectorTileFeatures SIP_SKIP;
 
 /**
  * \ingroup core
- * Contains decoded features of a single vector tile and any other data necessary
+ * \brief Contains decoded features of a single vector tile and any other data necessary
  * for rendering of it.
  *
  * \since QGIS 3.14
@@ -38,7 +38,9 @@ class CORE_EXPORT QgsVectorTileRendererData
 {
   public:
     //! Constructs the object
-    explicit QgsVectorTileRendererData( QgsTileXYZ id ): mId( id ) {}
+    explicit QgsVectorTileRendererData( QgsTileXYZ id )
+      : mId( id )
+    {}
 
     //! Returns coordinates of the tile
     QgsTileXYZ id() const { return mId; }
@@ -75,7 +77,7 @@ class CORE_EXPORT QgsVectorTileRendererData
 
 /**
  * \ingroup core
- * Abstract base class for all vector tile renderer implementations.
+ * \brief Abstract base class for all vector tile renderer implementations.
  *
  * For rendering it is expected that client code calls:
  *

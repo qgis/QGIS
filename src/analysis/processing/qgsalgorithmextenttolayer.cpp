@@ -44,8 +44,8 @@ QgsExtentToLayerAlgorithm *QgsExtentToLayerAlgorithm::createInstance() const
 
 QVariantMap QgsExtentToLayerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QgsCoordinateReferenceSystem crs = parameterAsExtentCrs( parameters, QStringLiteral( "INPUT" ), context );
-  QgsGeometry geom = parameterAsExtentGeometry( parameters, QStringLiteral( "INPUT" ), context );
+  const QgsCoordinateReferenceSystem crs = parameterAsExtentCrs( parameters, QStringLiteral( "INPUT" ), context );
+  const QgsGeometry geom = parameterAsExtentGeometry( parameters, QStringLiteral( "INPUT" ), context );
 
   QgsFields fields;
   fields.append( QgsField( QStringLiteral( "id" ), QVariant::Int ) );
@@ -58,7 +58,8 @@ QVariantMap QgsExtentToLayerAlgorithm::processAlgorithm( const QVariantMap &para
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
   f.setGeometry( geom );
-  sink->addFeature( f, QgsFeatureSink::FastInsert );
+  if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+    throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
   feedback->setProgress( 100 );
 

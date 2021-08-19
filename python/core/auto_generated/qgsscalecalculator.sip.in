@@ -12,7 +12,7 @@
 
 class QgsScaleCalculator
 {
-%Docstring
+%Docstring(signature="appended")
 Calculates scale for a given combination of canvas size, map extent,
 and monitor dpi.
 %End

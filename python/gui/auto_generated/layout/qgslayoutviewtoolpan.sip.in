@@ -10,7 +10,7 @@
 
 class QgsLayoutViewToolPan : QgsLayoutViewTool
 {
-%Docstring
+%Docstring(signature="appended")
 Layout view tool for panning the layout.
 
 .. versionadded:: 3.0

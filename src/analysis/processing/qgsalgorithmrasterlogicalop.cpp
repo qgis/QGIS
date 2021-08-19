@@ -47,12 +47,12 @@ void QgsRasterBooleanLogicAlgorithmBase::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "REF_LAYER" ), QObject::tr( "Reference layer" ) ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "NODATA_AS_FALSE" ), QObject::tr( "Treat nodata values as false" ), false ) );
 
-  std::unique_ptr< QgsProcessingParameterNumber > noDataValueParam = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "NO_DATA" ),
+  std::unique_ptr< QgsProcessingParameterNumber > noDataValueParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "NO_DATA" ),
       QObject::tr( "Output no data value" ), QgsProcessingParameterNumber::Double, -9999 );
   noDataValueParam->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( noDataValueParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterDefinition > typeChoice = QgsRasterAnalysisUtils::createRasterTypeParameter( QStringLiteral( "DATA_TYPE" ), QObject::tr( "Output data type" ), Qgis::Float32 );
+  std::unique_ptr< QgsProcessingParameterDefinition > typeChoice = QgsRasterAnalysisUtils::createRasterTypeParameter( QStringLiteral( "DATA_TYPE" ), QObject::tr( "Output data type" ), Qgis::DataType::Float32 );
   typeChoice->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( typeChoice.release() );
 
@@ -101,7 +101,7 @@ bool QgsRasterBooleanLogicAlgorithmBase::prepareAlgorithm( const QVariantMap &pa
       // add projector if necessary
       if ( layer->crs() != mCrs )
       {
-        input.projector = qgis::make_unique< QgsRasterProjector >();
+        input.projector = std::make_unique< QgsRasterProjector >();
         input.projector->setInput( input.sourceDataProvider.get() );
         input.projector->setCrs( layer->crs(), mCrs, context.transformContext() );
         input.interface = input.projector.get();
@@ -116,10 +116,10 @@ bool QgsRasterBooleanLogicAlgorithmBase::prepareAlgorithm( const QVariantMap &pa
 QVariantMap QgsRasterBooleanLogicAlgorithmBase::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  QFileInfo fi( outputFile );
+  const QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
 
-  std::unique_ptr< QgsRasterFileWriter > writer = qgis::make_unique< QgsRasterFileWriter >( outputFile );
+  std::unique_ptr< QgsRasterFileWriter > writer = std::make_unique< QgsRasterFileWriter >( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
   writer->setOutputFormat( outputFormat );
   std::unique_ptr<QgsRasterDataProvider > provider( writer->createOneBandRaster( mDataType, mLayerWidth, mLayerHeight, mExtent, mCrs ) );
@@ -132,7 +132,7 @@ QVariantMap QgsRasterBooleanLogicAlgorithmBase::processAlgorithm( const QVariant
   qgssize noDataCount = 0;
   qgssize trueCount = 0;
   qgssize falseCount = 0;
-  qgssize layerSize = static_cast< qgssize >( mLayerWidth ) * static_cast< qgssize >( mLayerHeight );
+  const qgssize layerSize = static_cast< qgssize >( mLayerWidth ) * static_cast< qgssize >( mLayerHeight );
 
   QgsRasterAnalysisUtils::applyRasterLogicOperator( mInputs, provider.get(), mNoDataValue, mTreatNodataAsFalse, mLayerWidth, mLayerHeight,
       mExtent, feedback, mExtractValFunc, noDataCount, trueCount, falseCount );

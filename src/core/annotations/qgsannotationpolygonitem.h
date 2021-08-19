@@ -25,7 +25,7 @@
 
 /**
  * \ingroup core
- * An annotation item which renders a fill symbol for a polygon geometry.
+ * \brief An annotation item which renders a fill symbol for a polygon geometry.
  *
  * \since QGIS 3.16
  */

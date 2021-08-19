@@ -26,7 +26,7 @@ class QgsLayoutMeasurementConverter;
 
 /**
  * \ingroup gui
- * A custom combo box for selecting units for layout settings.
+ * \brief A custom combo box for selecting units for layout settings.
  *
  * \since QGIS 3.0
  */

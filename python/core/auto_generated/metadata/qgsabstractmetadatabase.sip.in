@@ -12,7 +12,7 @@
 
 class QgsAbstractMetadataBase
 {
-%Docstring
+%Docstring(signature="appended")
 An abstract base class for metadata stores.
 
 :py:class:`QgsAbstractMetadataBase` is the base class for handling storage and management of the metadata
@@ -424,6 +424,15 @@ Stores state in a DOM node.
 
 Subclasses which override this method should take care to also call the base
 class method in order to write common metadata properties.
+%End
+
+    virtual void combine( const QgsAbstractMetadataBase *other );
+%Docstring
+Combines the metadata from this object with the metadata from an ``other`` object.
+
+Any existing values in this object will be overwritten by non-empty values from ``other``.
+
+.. versionadded:: 3.20
 %End
 
   protected:

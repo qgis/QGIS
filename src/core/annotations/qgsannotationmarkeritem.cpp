@@ -18,11 +18,12 @@
 #include "qgsannotationmarkeritem.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
+#include "qgsmarkersymbol.h"
 
 QgsAnnotationMarkerItem::QgsAnnotationMarkerItem( const QgsPoint &point )
   : QgsAnnotationItem()
   , mPoint( point )
-  , mSymbol( qgis::make_unique< QgsMarkerSymbol >() )
+  , mSymbol( std::make_unique< QgsMarkerSymbol >() )
 {
 
 }
@@ -88,7 +89,7 @@ bool QgsAnnotationMarkerItem::readXml( const QDomElement &element, const QgsRead
 
 QgsAnnotationMarkerItem *QgsAnnotationMarkerItem::clone()
 {
-  std::unique_ptr< QgsAnnotationMarkerItem > item = qgis::make_unique< QgsAnnotationMarkerItem >( mPoint );
+  std::unique_ptr< QgsAnnotationMarkerItem > item = std::make_unique< QgsAnnotationMarkerItem >( mPoint );
   item->setSymbol( mSymbol->clone() );
   item->setZIndex( zIndex() );
   return item.release();

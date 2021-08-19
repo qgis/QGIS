@@ -11,7 +11,7 @@
 
 class QgsLabelThinningSettings
 {
-%Docstring
+%Docstring(signature="appended")
 
 Contains settings related to how the label engine removes candidate label positions and reduces the number
 of displayed labels.

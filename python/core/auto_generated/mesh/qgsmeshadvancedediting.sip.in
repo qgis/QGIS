@@ -1,0 +1,92 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmeshadvancedediting.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsMeshAdvancedEditing : protected QgsTopologicalMesh::Changes /Abstract/
+{
+%Docstring(signature="appended")
+
+Abstract class that can be derived to implement advanced editing on mesh
+
+To apply the advanced editing, a pointer to an instance of a derived class is passed
+in the method :py:func:`QgsMeshEditor.advancedEdit()`.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsmeshadvancedediting.h"
+%End
+  public:
+
+    QgsMeshAdvancedEditing();
+%Docstring
+Constructor
+%End
+    virtual ~QgsMeshAdvancedEditing();
+
+    void setInputVertices( const QList<int> verticesIndexes );
+%Docstring
+Sets the input vertices indexes that will be used for the editing
+%End
+
+    void setInputFaces( const QList<int> faceIndexes );
+%Docstring
+Sets the input faces indexes that will be used for the editing
+%End
+
+    QString message() const;
+%Docstring
+Returns a message that can be provided by the advanced editing when applying is done
+%End
+
+    void clear();
+%Docstring
+Removes all data provided to the editing or created by the editing
+%End
+
+  protected:
+
+};
+
+class QgsMeshEditRefineFaces : QgsMeshAdvancedEditing
+{
+%Docstring(signature="appended")
+
+Class that can do a refinement of faces of a mesh.
+This refinement is operated only on faces with 3 or 4 vertices (triangles or quads) by adding a vertex on the middle of each refined face.
+For quad faces, a vertex is added on the centroid of the original face.
+New vertices Z value are interpolated between original vertices.
+Original triangle faces are replaced by four triangles, and original quad faces are replaced by four quads.
+Neighboring faces are triangulated to take account of the new vertex in the shared edge.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsmeshadvancedediting.h"
+%End
+  public:
+
+    QgsMeshEditRefineFaces();
+%Docstring
+Constructor
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmeshadvancedediting.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -30,6 +30,7 @@
 
 class QgsVectorLayer;
 class QPaintEvent;
+class QgsSymbol;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -40,7 +41,7 @@ class QPaintEvent;
 
 /**
  * \ingroup gui
- * A class for drawing transient features (e.g. digitizing lines) on the map.
+ * \brief A class for drawing transient features (e.g. digitizing lines) on the map.
  *
  * The QgsRubberBand class provides a transparent overlay widget
  * for tracking the mouse while drawing polylines or polygons.
@@ -132,6 +133,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      *         QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry or QgsWkbTypes::PointGeometry
      */
     QgsRubberBand( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
+    ~QgsRubberBand() override;
 
     /**
      * Sets the color for the rubberband.
@@ -324,11 +326,15 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      * of the rubberband explicitly by calling reset() or setToGeometry() with appropriate arguments.
      * setToGeometry() is also to be preferred for backwards-compatibility.
      *
+     * If additional geometries are to be added then set \a doUpdate to FALSE to defer costly repaint and bounding rectangle calculations for better performance.
+     * After adding the final geometry updatePosition() should be called.
+     *
      *  \param geometry the geometry object. Will be treated as a collection of vertices.
      *  \param layer the layer containing the feature, used for coord transformation to map
      *               crs. If \a layer is NULLPTR, the coordinates are not going to be transformed.
+     *  \param doUpdate set to FALSE to defer updates of the rubber band.
      */
-    void addGeometry( const QgsGeometry &geometry, QgsVectorLayer *layer );
+    void addGeometry( const QgsGeometry &geometry, QgsVectorLayer *layer, bool doUpdate = true );
 
     /**
      * Adds a \a geometry to the rubberband.
@@ -336,9 +342,12 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      * If \a crs is specified, the geometry will be automatically reprojected from \a crs
      * to the canvas CRS.
      *
+     * If additional geometries are to be added then set \a doUpdate to FALSE to defer costly repaint and bounding rectangle calculations for better performance.
+     * After adding the final geometry updatePosition() should be called.
+     *
      * \since QGIS 3.0
      */
-    void addGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+    void addGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), bool doUpdate = true );
 
     /**
      * Adds translation to original coordinates (all in map coordinates)
@@ -378,6 +387,29 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
 
     void updatePosition() override;
 
+    /**
+     * Returns the symbol used for rendering the rubberband, if set.
+     *
+     * \see setSymbol()
+     * \since QGIS 3.20
+     */
+    QgsSymbol *symbol() const;
+
+    /**
+     * Sets the \a symbol used for rendering the rubberband.
+     *
+     * Ownership of \a symbol is transferred to the rubberband.
+     *
+     * \warning Only line and fill symbols are currently supported.
+     *
+     * \note Setting a symbol for the rubberband overrides any other appearance setting,
+     * such as the strokeColor() or width().
+     *
+     * \see setSymbol()
+     * \since QGIS 3.20
+     */
+    void setSymbol( QgsSymbol *symbol SIP_TRANSFER );
+
   protected:
 
     /**
@@ -415,6 +447,8 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     IconType mIconType = ICON_CIRCLE;
     std::unique_ptr<QSvgRenderer> mSvgRenderer;
     QPoint mSvgOffset;
+
+    std::unique_ptr< QgsSymbol > mSymbol;
 
     /**
      * Nested lists used for multitypes

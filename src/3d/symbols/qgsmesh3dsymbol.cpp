@@ -19,7 +19,7 @@
 #include "qgsphongmaterialsettings.h"
 
 QgsMesh3DSymbol::QgsMesh3DSymbol()
-  : mMaterial( qgis::make_unique< QgsPhongMaterialSettings >() )
+  : mMaterial( std::make_unique< QgsPhongMaterialSettings >() )
 {
 
 }
@@ -28,7 +28,7 @@ QgsMesh3DSymbol::~QgsMesh3DSymbol() = default;
 
 QgsMesh3DSymbol *QgsMesh3DSymbol::clone() const
 {
-  std::unique_ptr< QgsMesh3DSymbol > result = qgis::make_unique< QgsMesh3DSymbol >();
+  std::unique_ptr< QgsMesh3DSymbol > result = std::make_unique< QgsMesh3DSymbol >();
 
   result->mAltClamping = mAltClamping;
   result->mHeight = mHeight;
@@ -99,16 +99,16 @@ void QgsMesh3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &co
 void QgsMesh3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   //Simple symbol
-  QDomElement elemDataProperties = elem.firstChildElement( QStringLiteral( "data" ) );
+  const QDomElement elemDataProperties = elem.firstChildElement( QStringLiteral( "data" ) );
   mAltClamping = Qgs3DUtils::altClampingFromString( elemDataProperties.attribute( QStringLiteral( "alt-clamping" ) ) );
   mHeight = elemDataProperties.attribute( QStringLiteral( "height" ) ).toFloat();
   mAddBackFaces = elemDataProperties.attribute( QStringLiteral( "add-back-faces" ) ).toInt();
 
-  QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
+  const QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
   mMaterial->readXml( elemMaterial, context );
 
   //Advanced symbol
-  QDomElement elemAdvancedSettings = elem.firstChildElement( QStringLiteral( "advanced-settings" ) );
+  const QDomElement elemAdvancedSettings = elem.firstChildElement( QStringLiteral( "advanced-settings" ) );
   mEnabled = elemAdvancedSettings.attribute( QStringLiteral( "renderer-3d-enabled" ) ).toInt();
   mSmoothedTriangles = elemAdvancedSettings.attribute( QStringLiteral( "smoothed-triangle" ) ).toInt();
   mWireframeEnabled = elemAdvancedSettings.attribute( QStringLiteral( "wireframe-enabled" ) ).toInt();
@@ -127,7 +127,7 @@ void QgsMesh3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContex
   if ( elemAdvancedSettings.hasAttribute( QStringLiteral( "arrows-spacing" ) ) )
     mArrowsSpacing = elemAdvancedSettings.attribute( QStringLiteral( "arrows-spacing" ) ).toDouble();
   mArrowsFixedSize = elemAdvancedSettings.attribute( QStringLiteral( "arrows-fixed-size" ) ).toInt();
-  QDomElement elemDDP = elem.firstChildElement( QStringLiteral( "data-defined-properties" ) );
+  const QDomElement elemDDP = elem.firstChildElement( QStringLiteral( "data-defined-properties" ) );
   if ( !elemDDP.isNull() )
     mDataDefinedProperties.readXml( elemDDP, propertyDefinitions() );
 }

@@ -11,7 +11,7 @@
 
 class QgsLayoutManager : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 
 Manages storage of a set of layouts.
 
@@ -158,7 +158,7 @@ Emitted when a layout is renamed
 
 class QgsLayoutManagerModel : QAbstractListModel
 {
-%Docstring
+%Docstring(signature="appended")
 
 List model representing the print layouts and reports available in a
 layout manager.
@@ -223,7 +223,7 @@ Returns ``True`` if the model allows the empty layout ("not set") choice.
 
 class QgsLayoutManagerProxyModel : QSortFilterProxyModel
 {
-%Docstring
+%Docstring(signature="appended")
 
 QSortFilterProxyModel subclass for QgsLayoutManagerModel
 

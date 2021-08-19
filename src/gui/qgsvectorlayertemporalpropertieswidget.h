@@ -27,7 +27,7 @@ class QgsVectorLayer;
 /**
  * \ingroup gui
  * \class QgsVectorLayerTemporalPropertiesWidget
- * A widget for configuring the temporal properties for a vector layer.
+ * \brief A widget for configuring the temporal properties for a vector layer.
  *
  * \since QGIS 3.14
  */

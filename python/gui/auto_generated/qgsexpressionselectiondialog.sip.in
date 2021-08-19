@@ -12,7 +12,7 @@
 
 class QgsExpressionSelectionDialog : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 This class offers a dialog to change feature selections.
 To do so, a :py:class:`QgsExpressionBuilderWidget` is shown in a dialog.
 It offers the possibilities to create a new selection, add to the current selection

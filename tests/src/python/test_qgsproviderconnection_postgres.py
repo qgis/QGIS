@@ -42,6 +42,10 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
     # Provider test cases can define a slowQuery for executeSql cancellation test
     slowQuery = "select pg_sleep(30)"
 
+    # Provider test cases can define a schema and table name for SQL query layers test
+    sqlVectorLayerSchema = 'qgis_test'
+    sqlVectorLayerTable = 'someData'
+
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -206,7 +210,6 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         conn.executeSql('GRANT SELECT ON raster_columns TO qgis_test_user')
 
     # error: ERROR: relation "qgis_test.raster1" does not exist
-    @unittest.skipIf(gdal.VersionInfo() < '2040000', 'This test requires GDAL >= 2.4.0')
     def test_postgis_raster_rename(self):
         """Test raster rename"""
 
@@ -216,10 +219,10 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         md.saveConnection(conn, 'qgis_test1')
 
         table = self._table_by_name(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Raster), 'Raster1')
-        self.assertTrue(QgsRasterLayer("PG: %s schema='qgis_test' column='%s' table='%s'" % (conn.uri(), table.geometryColumn(), table.tableName()), 'r1', 'gdal').isValid())
+        self.assertTrue(QgsRasterLayer("PG: %s dbname='qgis_test' schema='qgis_test' column='%s' table='%s'" % (conn.uri(), table.geometryColumn(), table.tableName()), 'r1', 'gdal').isValid())
         conn.renameRasterTable('qgis_test', table.tableName(), 'Raster2')
         table = self._table_by_name(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Raster), 'Raster2')
-        self.assertTrue(QgsRasterLayer("PG: %s schema='qgis_test' column='%s' table='%s'" % (conn.uri(), table.geometryColumn(), table.tableName()), 'r1', 'gdal').isValid())
+        self.assertTrue(QgsRasterLayer("PG: %s dbname='qgis_test' schema='qgis_test' column='%s' table='%s'" % (conn.uri(), table.geometryColumn(), table.tableName()), 'r1', 'gdal').isValid())
         table_names = self._table_names(conn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Raster))
         self.assertFalse('Raster1' in table_names)
         self.assertTrue('Raster2' in table_names)
@@ -293,7 +296,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
 
         self.assertNotEquals(conn.tables('public', QgsAbstractDatabaseProviderConnection.Foreign | QgsAbstractDatabaseProviderConnection.Aspatial), [])
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Disabled on Travis')
+    @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'), 'Disabled on Travis')
     def test_foreign_table_server(self):
         """Test foreign table with server"""
 
@@ -340,7 +343,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
 
         conn.executeSql(sql)
         fields = conn.fields('qgis_test', 'gh_37666')
-        self.assertEqual([f.name() for f in fields], ['id', 'geom', 'geog'])
+        self.assertEqual(fields.names(), ['id', 'geom', 'geog'])
         self.assertEqual([f.typeName() for f in fields], ['int4', 'geometry', 'geography'])
         table = conn.table('qgis_test', 'gh_37666')
         self.assertEqual(table.primaryKeyColumns(), ['id'])
@@ -377,6 +380,190 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         conn = md.createConnection(self.uri, {})
         with self.assertRaises(QgsProviderConnectionException):
             conn.table('my_not_existent_schema', 'my_not_existent_table')
+
+    def test_zm(self):
+        """Test regression GH #43268"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection(self.uri, {})
+        sql = """
+        DROP TABLE IF EXISTS qgis_test.gh_43268_test_zm;
+        CREATE TABLE qgis_test.gh_43268_test_zm (geom geometry(GeometryZ));
+        INSERT INTO qgis_test.gh_43268_test_zm (geom) VALUES
+            ('POINT(0 0 0)'),
+            ('LINESTRING(0 0 0, 0 0 0)'),
+            ('POLYGON((0 0 0, 0 0 0, 0 0 0, 0 0 0))');
+        """
+        conn.executeSql(sql)
+
+        table_info = conn.table('qgis_test', 'gh_43268_test_zm')
+        self.assertEqual(sorted([QgsWkbTypes.displayString(col.wkbType) for col in table_info.geometryColumnTypes()]), ['LineStringZ', 'PointZ', 'PolygonZ'])
+
+    def test_table_scan(self):
+        """Test that with use estimated metadata disabled all geometry column
+        types can be identified, test for GH #43186 """
+
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        uri = QgsDataSourceUri(self.uri)
+        conn = md.createConnection(uri.uri(), {'estimatedMetadata': True})
+
+        sql = """
+        DROP TABLE IF EXISTS qgis_test.geometry_table_with_multiple_types;
+        CREATE TABLE qgis_test.geometry_table_with_multiple_types (
+            id SERIAL PRIMARY KEY,
+            geom geometry(Geometry,4326)
+        );
+        """
+
+        conn.executeSql(sql)
+
+        for i in range(110):
+            sql = "INSERT INTO qgis_test.geometry_table_with_multiple_types (geom) VALUES (ST_GeomFromText('point(9 45)', 4326));"
+            conn.executeSql(sql)
+
+        for i in range(10):
+            sql = "INSERT INTO qgis_test.geometry_table_with_multiple_types (geom) VALUES (ST_GeomFromText('linestring(9 45, 10 46)', 4326));"
+            conn.executeSql(sql)
+
+        table = conn.table('qgis_test', 'geometry_table_with_multiple_types')
+
+        self.assertEqual(len(table.geometryColumnTypes()), 1)
+
+        uri = QgsDataSourceUri(self.uri)
+        uri.setUseEstimatedMetadata(False)
+        conn = md.createConnection(uri.uri(), {'estimatedMetadata': False})
+
+        table = conn.table('qgis_test', 'geometry_table_with_multiple_types')
+
+        self.assertEqual(len(table.geometryColumnTypes()), 2)
+
+        # Tesf for #43199
+
+        uri.setSchema('qgis_test')
+        uri.setTable('geometry_table_with_multiple_types')
+        uri.setGeometryColumn('geom')
+        uri.setWkbType(QgsWkbTypes.Point)
+        vl = QgsVectorLayer(uri.uri(), 'points', 'postgres')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 110)
+
+        uri.setGeometryColumn('geom')
+        uri.setWkbType(QgsWkbTypes.LineString)
+        vl = QgsVectorLayer(uri.uri(), 'lines', 'postgres')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 10)
+
+    def test_create_vector_layer(self):
+        """Test query layers"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection(self.uri, {})
+
+        sql = """
+        DROP TABLE IF EXISTS qgis_test.query_layer1;
+        CREATE TABLE qgis_test.query_layer1 (
+            id SERIAL PRIMARY KEY,
+            geom geometry(POINT,4326)
+        );
+        INSERT INTO qgis_test.query_layer1 (id, geom) VALUES (221, ST_GeomFromText('point(9 45)', 4326));
+        INSERT INTO qgis_test.query_layer1 (id, geom) VALUES (201, ST_GeomFromText('point(9.5 45.5)', 4326));
+        """
+
+        conn.executeSql(sql)
+
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        options.sql = 'SELECT id, geom FROM qgis_test.query_layer1 WHERE id < 200 LIMIT 2'
+        options.primaryKeyColumns = ['id']
+        options.geometryColumn = 'geom'
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.PointGeometry)
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 0)
+
+        options.sql = 'SELECT id, geom FROM qgis_test.query_layer1 WHERE id > 200 LIMIT 2'
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.PointGeometry)
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 2)
+
+        options.sql = 'SELECT id, geom FROM qgis_test.query_layer1 WHERE id > 210 LIMIT 2'
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.PointGeometry)
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+
+        options.sql = 'SELECT id, geom FROM qgis_test.query_layer1 LIMIT 2'
+        options.filter = 'id > 210'
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.PointGeometry)
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+
+        # Wrong calls
+        options.primaryKeyColumns = ['DOES_NOT_EXIST']
+        vl = conn.createSqlVectorLayer(options)
+        self.assertFalse(vl.isValid())
+
+        options.primaryKeyColumns = ['id']
+        options.geometryColumn = 'DOES_NOT_EXIST'
+        vl = conn.createSqlVectorLayer(options)
+        self.assertFalse(vl.isValid())
+
+        options.sql = 'SELECT id, geom FROM qgis_test.query_layer1 WHERE id > 210 LIMIT 2'
+        options.primaryKeyColumns = []
+        options.geometryColumn = ''
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+
+        # No geometry and no PK, aspatial layer
+        options.sql = 'SELECT id, geom FROM qgis_test.query_layer1 WHERE id > 210 LIMIT 2'
+        options.primaryKeyColumns = []
+        options.geometryColumn = ''
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertNotEqual(vl.geometryType(), QgsWkbTypes.PointGeometry)
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+
+        # Composite keys
+        sql = """
+        DROP TABLE IF EXISTS qgis_test.query_layer2;
+        CREATE TABLE qgis_test.query_layer2 (
+            id SERIAL,
+            id2 SERIAL,
+            geom geometry(POINT,4326),
+            PRIMARY KEY(id, id2)
+        );
+        INSERT INTO qgis_test.query_layer2 (id, id2, geom) VALUES (101, 101, ST_GeomFromText('point(9 45)', 4326));
+        INSERT INTO qgis_test.query_layer2 (id, id2, geom) VALUES (201, 201, ST_GeomFromText('point(9.5 45.5)', 4326));
+        """
+
+        conn.executeSql(sql)
+
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        options.sql = 'SELECT id, id2, geom FROM qgis_test.query_layer2 ORDER BY id ASC LIMIT 1'
+        options.primaryKeyColumns = ['id', 'id2']
+        options.geometryColumn = 'geom'
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.PointGeometry)
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+
+        # No PKs
+        options.primaryKeyColumns = []
+        options.geometryColumn = 'geom'
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.PointGeometry)
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
 
 
 if __name__ == '__main__':

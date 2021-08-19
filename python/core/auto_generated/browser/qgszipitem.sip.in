@@ -1,0 +1,75 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/browser/qgszipitem.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsZipItem : QgsDataCollectionItem
+{
+%Docstring(signature="appended")
+A zip file: contains layers, using GDAL/OGR VSIFILE mechanism
+%End
+
+%TypeHeaderCode
+#include "qgszipitem.h"
+%End
+  protected:
+
+  public:
+    QgsZipItem( QgsDataItem *parent, const QString &name, const QString &path );
+%Docstring
+Constructor
+%End
+
+    QgsZipItem( QgsDataItem *parent, const QString &name, const QString &filePath, const QString &path, const QString &providerKey = QString() );
+%Docstring
+Constructor
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsZipItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    virtual QVector<QgsDataItem *> createChildren();
+
+    QStringList getZipFileList();
+
+    static QStringList sProviderNames;
+
+    static QString vsiPrefix( const QString &uri );
+
+    static QgsDataItem *itemFromPath( QgsDataItem *parent, const QString &path, const QString &name ) /Factory/;
+%Docstring
+Creates a new data item from the specified path.
+%End
+
+    static QgsDataItem *itemFromPath( QgsDataItem *parent, const QString &filePath, const QString &name, const QString &path ) /Factory,PyName=itemFromFilePath/;
+%Docstring
+Creates a new data item from the specified path.
+
+.. note::
+
+   available in Python as itemFromFilePath
+%End
+
+    static QIcon iconZip();
+
+};
+
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/browser/qgszipitem.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

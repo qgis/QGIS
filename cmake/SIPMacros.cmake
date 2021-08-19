@@ -145,9 +145,13 @@ MACRO(BUILD_SIP_PYTHON_MODULE MODULE_NAME SIP_FILES EXTRA_OBJECTS)
   SET(_logical_name "python_module_${_logical_name}")
 
   ADD_LIBRARY(${_logical_name} MODULE ${_sip_output_files} ${EXTRA_OBJECTS})
+
+  # require c++14 only -- sip breaks with newer versions due to reliance on throw(...) annotations removed in c++17
+  TARGET_COMPILE_FEATURES(${_logical_name} PRIVATE cxx_std_14)
+
   SET_TARGET_PROPERTIES(${_logical_name} PROPERTIES CXX_VISIBILITY_PRESET default)
   IF (NOT APPLE)
-    TARGET_LINK_LIBRARIES(${_logical_name} ${PYTHON_LIBRARY})
+    TARGET_LINK_LIBRARIES(${_logical_name} ${Python_LIBRARIES})
   ENDIF (NOT APPLE)
   TARGET_LINK_LIBRARIES(${_logical_name} ${EXTRA_LINK_LIBRARIES})
   IF (APPLE)
@@ -168,5 +172,5 @@ MACRO(BUILD_SIP_PYTHON_MODULE MODULE_NAME SIP_FILES EXTRA_OBJECTS)
       )
   ENDIF(WIN32)
 
-  INSTALL(TARGETS ${_logical_name} DESTINATION "${PYTHON_SITE_PACKAGES_DIR}/${_parent_module_path}")
+  INSTALL(TARGETS ${_logical_name} DESTINATION "${Python_SITEARCH}/${_parent_module_path}")
 ENDMACRO(BUILD_SIP_PYTHON_MODULE MODULE_NAME SIP_FILES EXTRA_OBJECTS)

@@ -10,7 +10,7 @@
 
 class QgsCodeEditorColorScheme
 {
-%Docstring
+%Docstring(signature="appended")
 Defines a color scheme for use in :py:class:`QgsCodeEditor` widgets.
 
 .. versionadded:: 3.16

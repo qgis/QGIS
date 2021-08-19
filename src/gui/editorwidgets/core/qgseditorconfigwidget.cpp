@@ -66,14 +66,14 @@ void QgsEditorConfigWidget::updateDataDefinedButton( QgsPropertyOverrideButton *
   if ( button->propertyKey() < 0 )
     return;
 
-  QgsWidgetWrapper::Property key = static_cast< QgsWidgetWrapper::Property >( button->propertyKey() );
+  const QgsWidgetWrapper::Property key = static_cast< QgsWidgetWrapper::Property >( button->propertyKey() );
   whileBlocking( button )->setToProperty( mPropertyCollection.property( key ) );
 }
 
 void QgsEditorConfigWidget::updateProperty()
 {
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  QgsWidgetWrapper::Property key = static_cast<  QgsWidgetWrapper::Property >( button->propertyKey() );
+  const QgsWidgetWrapper::Property key = static_cast<  QgsWidgetWrapper::Property >( button->propertyKey() );
   mPropertyCollection.setProperty( key, button->toProperty() );
   emit changed();
 }

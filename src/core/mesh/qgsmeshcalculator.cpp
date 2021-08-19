@@ -164,7 +164,7 @@ QgsMeshCalculator::Result QgsMeshCalculator::expressionIsValid(
   if ( !layer || !layer->dataProvider() )
     return InputLayerError;
 
-  QgsMeshDatasetGroupMetadata::DataType dataType = QgsMeshCalcUtils::determineResultDataType( layer, calcNode->usedDatasetGroupNames() );
+  const QgsMeshDatasetGroupMetadata::DataType dataType = QgsMeshCalcUtils::determineResultDataType( layer, calcNode->usedDatasetGroupNames() );
 
   requiredCapability = dataType == QgsMeshDatasetGroupMetadata::DataOnFaces ? QgsMeshDriverMetadata::MeshDriverCapability::CanWriteFaceDatasets :
                        QgsMeshDriverMetadata::MeshDriverCapability::CanWriteVertexDatasets;
@@ -201,7 +201,7 @@ QgsMeshCalculator::Result QgsMeshCalculator::processCalculation( QgsFeedback *fe
   if ( mDestination ==  QgsMeshDatasetGroup::Virtual )
   {
     std::unique_ptr<QgsMeshDatasetGroup> virtualDatasetGroup =
-      qgis::make_unique<QgsMeshVirtualDatasetGroup> ( mOutputGroupName, mFormulaString, mMeshLayer, mStartTime * 3600 * 1000, mEndTime * 3600 * 1000 );
+      std::make_unique<QgsMeshVirtualDatasetGroup> ( mOutputGroupName, mFormulaString, mMeshLayer, mStartTime * 3600 * 1000, mEndTime * 3600 * 1000 );
     virtualDatasetGroup->initialize();
     virtualDatasetGroup->setReferenceTime( static_cast<QgsMeshLayerTemporalProperties *>( mMeshLayer->temporalProperties() )->referenceTime() );
     err = !mMeshLayer->addDatasets( virtualDatasetGroup.release() );
@@ -218,16 +218,16 @@ QgsMeshCalculator::Result QgsMeshCalculator::processCalculation( QgsFeedback *fe
   }
 
   //open output dataset
-  QgsMeshCalcUtils dsu( mMeshLayer, calcNode->usedDatasetGroupNames(), mStartTime, mEndTime );
+  const QgsMeshCalcUtils dsu( mMeshLayer, calcNode->usedDatasetGroupNames(), mStartTime, mEndTime );
   if ( !dsu.isValid() )
   {
     return InvalidDatasets;
   }
 
-  std::unique_ptr<QgsMeshMemoryDatasetGroup> outputGroup = qgis::make_unique<QgsMeshMemoryDatasetGroup> ( mOutputGroupName, dsu.outputType() );
+  std::unique_ptr<QgsMeshMemoryDatasetGroup> outputGroup = std::make_unique<QgsMeshMemoryDatasetGroup> ( mOutputGroupName, dsu.outputType() );
 
   // calculate
-  bool ok = calcNode->calculate( dsu, *outputGroup );
+  const bool ok = calcNode->calculate( dsu, *outputGroup );
   if ( !ok )
   {
     return EvaluateError;

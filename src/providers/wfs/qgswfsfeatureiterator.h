@@ -58,11 +58,11 @@ class QgsWFSFeatureHitsAsyncRequest final: public QgsWfsRequest
 
 /**
  * This class runs one (or several if paging is needed) GetFeature request,
-    process the results as soon as they arrived and notify them to the
-    serializer to fill the case, and to the iterator that subscribed
-    Instances of this class may be run in a dedicated thread (QgsWFSThreadedFeatureDownloader)
-    A progress dialog may pop-up in GUI mode (if the download takes a certain time)
-    to allow canceling the download.
+ * process the results as soon as they arrived and notify them to the
+ * serializer to fill the case, and to the iterator that subscribed
+ * Instances of this class may be run in a dedicated thread (QgsWFSThreadedFeatureDownloader)
+ * A progress dialog may pop-up in GUI mode (if the download takes a certain time)
+ * to allow canceling the download.
 */
 class QgsWFSFeatureDownloaderImpl final: public QgsWfsRequest, public QgsFeatureDownloaderImpl
 {
@@ -75,13 +75,13 @@ class QgsWFSFeatureDownloaderImpl final: public QgsWfsRequest, public QgsFeature
     void doStop();
 
     /* Emitted with the total accumulated number of features downloaded. */
-    void updateProgress( int totalFeatureCount );
+    void updateProgress( long long totalFeatureCount );
 
   public:
     QgsWFSFeatureDownloaderImpl( QgsWFSSharedData *shared, QgsFeatureDownloader *downloader, bool requestMadeFromMainThread );
     ~QgsWFSFeatureDownloaderImpl() override;
 
-    void run( bool serializeFeatures, int maxFeatures ) override;
+    void run( bool serializeFeatures, long long maxFeatures ) override;
 
   protected:
     QString errorMessageWithReason( const QString &reason ) override;
@@ -93,16 +93,16 @@ class QgsWFSFeatureDownloaderImpl final: public QgsWfsRequest, public QgsFeature
     void createProgressDialog();
 
   private:
-    QUrl buildURL( qint64 startIndex, int maxFeatures, bool forHits );
+    QUrl buildURL( qint64 startIndex, long long maxFeatures, bool forHits );
     void pushError( const QString &errorMsg );
     QString sanitizeFilter( QString filter );
 
     //! Mutable data shared between provider, feature sources and downloader.
     QgsWFSSharedData *mShared = nullptr;
 
-    int mPageSize = 0;
+    long long mPageSize = 0;
     bool mRemoveNSPrefix = false;
-    int mNumberMatched = -1;
+    long long mNumberMatched = -1;
     QgsWFSFeatureHitsAsyncRequest mFeatureHitsAsyncRequest;
     qint64 mTotalDownloadedFeatureCount = 0;
 };

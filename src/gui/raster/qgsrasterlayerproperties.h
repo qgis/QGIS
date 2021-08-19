@@ -29,6 +29,7 @@
 #include "qgsmaptoolemitpoint.h"
 #include "qgis_gui.h"
 #include "qgsresamplingutils.h"
+#include "qgsrasterpipe.h"
 
 class QgsPointXY;
 class QgsMapLayer;
@@ -41,16 +42,19 @@ class QgsRasterHistogramWidget;
 class QgsRasterLayerTemporalPropertiesWidget;
 class QgsWebView;
 class QgsProviderSourceWidget;
+class QgsMapLayerConfigWidgetFactory;
+class QgsMapLayerConfigWidget;
+class QgsPropertyOverrideButton;
 
 
 /**
  * \ingroup gui
  * \class QgsRasterLayerProperties
- * Property sheet for a raster map layer
+ * \brief Property sheet for a raster map layer
  * \since QGIS 3.12 (in the GUI API)
  */
 
-class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private Ui::QgsRasterLayerPropertiesBase
+class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private Ui::QgsRasterLayerPropertiesBase, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -77,18 +81,53 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
      */
     QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
+    /**
+     * Adds a properties page factory to the raster layer properties dialog.
+     * \since QGIS 3.18
+     */
+    void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
+
+    QgsExpressionContext createExpressionContext() const override;
+
   protected slots:
     //! \brief auto slot executed when the active page in the main widget stack is changed
     void optionsStackedWidget_CurrentChanged( int index ) override SIP_SKIP ;
 
+  private:
+
+    // TODO -- consider moving these to a common raster widget base class
+
+    /**
+     * Registers a property override button, setting up its initial value, connections and description.
+     * \param button button to register
+     * \param key corresponding data defined property key
+     * \since QGIS 3.22
+     */
+    void initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsRasterPipe::Property key );
+
+    /**
+     * Updates all property override buttons to reflect the widgets's current properties.
+     * \since QGIS 3.22
+     */
+    void updateDataDefinedButtons();
+
+    /**
+     * Updates a specific property override \a button to reflect the widgets's current properties.
+     * \since QGIS 3.22
+     */
+    void updateDataDefinedButton( QgsPropertyOverrideButton *button );
+
+    //! Temporary property collection
+    QgsPropertyCollection mPropertyCollection;
+
   private slots:
+
+    void updateProperty();
 
     //! \brief Applies the settings made in the dialog without closing the box
     void apply();
     //! \brief Called when cancel button is pressed
     void onCancel();
-    //! \brief Slot to update layer display name as original is edited.
-    void mLayerOrigNameLineEd_textEdited( const QString &text );
     //! \brief this slot asks the rasterlayer to construct pyramids
     void buttonBuildPyramids_clicked();
     //! \brief slot executed when user presses "Add Values From Display" button on the transparency page
@@ -105,18 +144,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void pbnImportTransparentPixelValues_clicked();
     //! \brief slot executed when user presses "Remove Selected Row" button on the transparency page
     void pbnRemoveSelectedRow_clicked();
-
-    //! \brief slot executed when user "Set end same as start" button on time options in source page.
-    void setEndAsStartStaticButton_clicked();
-
-    //! \brief slot executed when user "Pass provider temporal range" radio button on time options in source page.
-    void passProjectTemporalRange_toggled( bool checked );
-
-    //! \brief slot executed when user "Static time range" radio button on time options in source page.
-    void staticTemporalRange_toggled( bool checked );
-
-    //! \brief slot executed when temporal properties status change.
-    void temporalPropertiesChange();
 
     /**
      * \brief slot executed when the single band radio button is pressed.
@@ -191,6 +218,9 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     QAction *mActionLoadMetadata = nullptr;
     QAction *mActionSaveMetadataAs = nullptr;
 
+    //! A list of additional pages provided by plugins
+    QList<QgsMapLayerConfigWidget *> mLayerPropertiesPages;
+
     //! \brief  A constant that signals property not used
     const QString TRSTRING_NOT_SET;
 
@@ -214,14 +244,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //! \brief Pointer to the raster layer that this property dilog changes the behavior of.
     QgsRasterLayer *mRasterLayer = nullptr;
 
-    /**
-     * \brief If the underlying raster layer doesn't have a provider
-
-        This variable is used to determine if various parts of the Properties UI are
-        included or not
-     */
-    //bool mRasterLayerIsInternal;
-
     QgsRasterRendererWidget *mRendererWidget = nullptr;
     QgsMetadataWidget *mMetadataWidget = nullptr;
 
@@ -236,20 +258,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
      * Updates the information tab by reloading metadata
      */
     void updateInformationContent();
-
-    /**
-     * Updates the layers date source URI with the new time.
-     *
-     * \since QGIS 3.14
-     */
-    void updateSourceStaticTime();
-
-    /**
-     * Initializes the layers static time inputs state.
-     *
-     * \since QGIS 3.14
-     */
-    void setSourceStaticTimeState();
 
     void setupTransparencyTable( int nBands );
 
@@ -297,6 +305,10 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     QgsResamplingUtils mResamplingUtils;
 
     QgsProviderSourceWidget *mSourceWidget = nullptr;
+
+    QgsWebView *mMetadataViewer = nullptr;
+
+    QgsExpressionContext mContext;
 
     friend class QgsAppScreenShots;
 };

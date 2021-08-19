@@ -90,7 +90,7 @@ QgsAuxiliaryLayer *QgsAuxiliaryLayer::clone( QgsVectorLayer *target ) const
 
 bool QgsAuxiliaryLayer::clear()
 {
-  bool rc = deleteFeatures( allFeatureIds() );
+  const bool rc = deleteFeatures( allFeatureIds() );
   commitChanges();
   startEditing();
   return rc;
@@ -100,7 +100,7 @@ QgsVectorLayer *QgsAuxiliaryLayer::toSpatialLayer() const
 {
   QgsVectorLayer *layer = QgsMemoryProviderUtils::createMemoryLayer( QStringLiteral( "auxiliary_layer" ), fields(), mLayer->wkbType(), mLayer->crs() );
 
-  QString pkField = mJoinInfo.targetFieldName();
+  const QString pkField = mJoinInfo.targetFieldName();
   QgsFeature joinFeature;
   QgsFeature targetFeature;
   QgsFeatureIterator it = getFeatures();
@@ -108,7 +108,7 @@ QgsVectorLayer *QgsAuxiliaryLayer::toSpatialLayer() const
   layer->startEditing();
   while ( it.nextFeature( joinFeature ) )
   {
-    QString filter = QgsExpression::createFieldEqualityExpression( pkField, joinFeature.attribute( AS_JOINFIELD ) );
+    const QString filter = QgsExpression::createFieldEqualityExpression( pkField, joinFeature.attribute( AS_JOINFIELD ) );
 
     QgsFeatureRequest request;
     request.setFilterExpression( filter );
@@ -149,15 +149,15 @@ bool QgsAuxiliaryLayer::addAuxiliaryField( const QgsPropertyDefinition &definiti
 
   if ( rc )
   {
-    int auxIndex = indexOfPropertyDefinition( definition );
-    int index = mLayer->fields().indexOf( nameFromProperty( definition, true ) );
+    const int auxIndex = indexOfPropertyDefinition( definition );
+    const int index = mLayer->fields().indexOf( nameFromProperty( definition, true ) );
 
     if ( index >= 0 && auxIndex >= 0 )
     {
       if ( isHiddenProperty( auxIndex ) )
       {
         // update editor widget
-        QgsEditorWidgetSetup setup = QgsEditorWidgetSetup( QStringLiteral( "Hidden" ), QVariantMap() );
+        const QgsEditorWidgetSetup setup = QgsEditorWidgetSetup( QStringLiteral( "Hidden" ), QVariantMap() );
         setEditorWidgetSetup( auxIndex, setup );
 
         // column is hidden
@@ -178,7 +178,7 @@ bool QgsAuxiliaryLayer::addAuxiliaryField( const QgsPropertyDefinition &definiti
       else if ( definition.standardTemplate() == QgsPropertyDefinition::ColorNoAlpha
                 || definition.standardTemplate() == QgsPropertyDefinition::ColorWithAlpha )
       {
-        QgsEditorWidgetSetup setup = QgsEditorWidgetSetup( QStringLiteral( "Color" ), QVariantMap() );
+        const QgsEditorWidgetSetup setup = QgsEditorWidgetSetup( QStringLiteral( "Color" ), QVariantMap() );
         setEditorWidgetSetup( auxIndex, setup );
       }
 
@@ -202,7 +202,7 @@ QgsFields QgsAuxiliaryLayer::auxiliaryFields() const
 bool QgsAuxiliaryLayer::deleteAttribute( int attr )
 {
   QgsVectorLayer::deleteAttribute( attr );
-  bool rc = commitChanges();
+  const bool rc = commitChanges();
   startEditing();
   return rc;
 }
@@ -283,10 +283,46 @@ int QgsAuxiliaryLayer::createProperty( QgsDiagramLayerSettings::Property propert
   return index;
 }
 
+int QgsAuxiliaryLayer::createProperty( QgsCallout::Property property, QgsVectorLayer *layer )
+{
+  int index = -1;
+
+  if ( layer && layer->labeling() && layer->labeling()->settings().callout() && layer->auxiliaryLayer() )
+  {
+    // property definition are identical whatever the provider id
+    const QgsPropertyDefinition def = layer->labeling()->settings().callout()->propertyDefinitions()[property];
+    const QString fieldName = nameFromProperty( def, true );
+
+    layer->auxiliaryLayer()->addAuxiliaryField( def );
+
+    if ( layer->auxiliaryLayer()->indexOfPropertyDefinition( def ) >= 0 )
+    {
+      const QgsProperty prop = QgsProperty::fromField( fieldName );
+
+      const QStringList subProviderIds = layer->labeling()->subProviders();
+      for ( const QString &providerId : subProviderIds )
+      {
+        QgsPalLayerSettings *settings = new QgsPalLayerSettings( layer->labeling()->settings( providerId ) );
+        if ( settings->callout() )
+        {
+          QgsPropertyCollection c = settings->callout()->dataDefinedProperties();
+          c.setProperty( property, prop );
+          settings->callout()->setDataDefinedProperties( c );
+        }
+        layer->labeling()->setSettings( settings, providerId );
+      }
+    }
+
+    index = layer->fields().lookupField( fieldName );
+  }
+
+  return index;
+}
+
 bool QgsAuxiliaryLayer::isHiddenProperty( int index ) const
 {
   bool hidden = false;
-  QgsPropertyDefinition def = propertyDefinitionFromIndex( index );
+  const QgsPropertyDefinition def = propertyDefinitionFromIndex( index );
 
   if ( def.origin().compare( QLatin1String( "labeling" ) ) == 0 )
   {
@@ -308,7 +344,7 @@ bool QgsAuxiliaryLayer::isHiddenProperty( int index ) const
 int QgsAuxiliaryLayer::propertyFromIndex( int index ) const
 {
   int p = -1;
-  QgsPropertyDefinition aDef = propertyDefinitionFromIndex( index );
+  const QgsPropertyDefinition aDef = propertyDefinitionFromIndex( index );
 
   if ( aDef.origin().compare( QLatin1String( "labeling" ) ) == 0 )
   {
@@ -499,7 +535,7 @@ QgsPropertyDefinition QgsAuxiliaryLayer::propertyDefinitionFromField( const QgsF
 
 QgsField QgsAuxiliaryLayer::createAuxiliaryField( const QgsField &field )
 {
-  QgsPropertyDefinition def = propertyDefinitionFromField( field );
+  const QgsPropertyDefinition def = propertyDefinitionFromField( field );
   QgsField afield;
 
   if ( !def.name().isEmpty() || !def.comment().isEmpty() )
@@ -587,7 +623,7 @@ QgsAuxiliaryLayer *QgsAuxiliaryStorage::createAuxiliaryLayer( const QgsField &fi
 
     if ( !tableExists( table, database.get() ) )
     {
-      if ( !createTable( field.typeName(), table, database.get() ) )
+      if ( !createTable( field.typeName(), table, database.get(), mErrorString ) )
       {
         return alayer;
       }
@@ -603,7 +639,7 @@ QgsAuxiliaryLayer *QgsAuxiliaryStorage::createAuxiliaryLayer( const QgsField &fi
 bool QgsAuxiliaryStorage::deleteTable( const QgsDataSourceUri &ogrUri )
 {
   bool rc = false;
-  QgsDataSourceUri uri = parseOgrUri( ogrUri );
+  const QgsDataSourceUri uri = parseOgrUri( ogrUri );
 
   if ( !uri.database().isEmpty() && !uri.table().isEmpty() )
   {
@@ -625,7 +661,7 @@ bool QgsAuxiliaryStorage::deleteTable( const QgsDataSourceUri &ogrUri )
 
 bool QgsAuxiliaryStorage::duplicateTable( const QgsDataSourceUri &ogrUri, const QString &newTable )
 {
-  QgsDataSourceUri uri = parseOgrUri( ogrUri );
+  const QgsDataSourceUri uri = parseOgrUri( ogrUri );
   bool rc = false;
 
   if ( !uri.table().isEmpty() && !uri.database().isEmpty() )
@@ -635,7 +671,7 @@ bool QgsAuxiliaryStorage::duplicateTable( const QgsDataSourceUri &ogrUri, const 
 
     if ( database )
     {
-      QString sql = QStringLiteral( "CREATE TABLE %1 AS SELECT * FROM %2" ).arg( newTable, uri.table() );
+      const QString sql = QStringLiteral( "CREATE TABLE %1 AS SELECT * FROM %2" ).arg( newTable, uri.table() );
       rc = exec( sql, database.get() );
     }
   }
@@ -702,25 +738,24 @@ bool QgsAuxiliaryStorage::exec( const QString &sql, sqlite3 *handler )
   return rc;
 }
 
-void QgsAuxiliaryStorage::debugMsg( const QString &sql, sqlite3 *handler )
+QString QgsAuxiliaryStorage::debugMsg( const QString &sql, sqlite3 *handler )
 {
-#ifdef QGISDEBUG
   const QString err = QString::fromUtf8( sqlite3_errmsg( handler ) );
   const QString msg = QObject::tr( "Unable to execute" );
   const QString errMsg = QObject::tr( "%1 '%2': %3" ).arg( msg, sql, err );
   QgsDebugMsg( errMsg );
-#else
-  Q_UNUSED( sql )
-  Q_UNUSED( handler )
-#endif
+  return errMsg;
 }
 
-bool QgsAuxiliaryStorage::createTable( const QString &type, const QString &table, sqlite3 *handler )
+bool QgsAuxiliaryStorage::createTable( const QString &type, const QString &table, sqlite3 *handler, QString &errorMsg )
 {
   const QString sql = QStringLiteral( "CREATE TABLE IF NOT EXISTS '%1' ( '%2' %3  )" ).arg( table, AS_JOINFIELD, type );
 
   if ( !exec( sql, handler ) )
+  {
+    errorMsg = QgsAuxiliaryStorage::debugMsg( sql, handler );
     return false;
+  }
 
   return true;
 }
@@ -745,7 +780,7 @@ spatialite_database_unique_ptr QgsAuxiliaryStorage::createDB( const QString &fil
 spatialite_database_unique_ptr QgsAuxiliaryStorage::openDB( const QString &filename )
 {
   spatialite_database_unique_ptr database;
-  int rc = database.open_v2( filename, SQLITE_OPEN_READWRITE, nullptr );
+  const int rc = database.open_v2( filename, SQLITE_OPEN_READWRITE, nullptr );
 
   if ( rc )
   {

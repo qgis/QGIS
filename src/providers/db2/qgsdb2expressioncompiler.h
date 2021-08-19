@@ -26,7 +26,7 @@ class QgsDb2ExpressionCompiler : public QgsSqlExpressionCompiler
 {
   public:
 
-    explicit QgsDb2ExpressionCompiler( QgsDb2FeatureSource *source );
+    explicit QgsDb2ExpressionCompiler( QgsDb2FeatureSource *source, bool ignoreStaticNodes = false );
 
   protected:
     Result compileNode( const QgsExpressionNode *node, QString &result ) override;

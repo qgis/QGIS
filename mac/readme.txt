@@ -1,4 +1,5 @@
 Mac Notes
+*********
 
 The 'cmake' folder scripts handle bundling dependent libraries in the QGIS
 application package and fixing up the library paths.  It is automatic during

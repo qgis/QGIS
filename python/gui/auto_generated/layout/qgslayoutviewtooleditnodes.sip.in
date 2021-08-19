@@ -11,7 +11,7 @@
 
 class QgsLayoutViewToolEditNodes : QgsLayoutViewTool
 {
-%Docstring
+%Docstring(signature="appended")
 Layout view tool for edit node based items in the layout.
 
 .. versionadded:: 3.0

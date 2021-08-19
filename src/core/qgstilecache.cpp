@@ -19,6 +19,7 @@
 #include "qgsapplication.h"
 #include <QAbstractNetworkCache>
 #include <QImage>
+#include <QUrl>
 
 QCache<QUrl, QImage> QgsTileCache::sTileCache( 256 );
 QMutex QgsTileCache::sTileCacheMutex;
@@ -26,24 +27,29 @@ QMutex QgsTileCache::sTileCacheMutex;
 
 void QgsTileCache::insertTile( const QUrl &url, const QImage &image )
 {
-  QMutexLocker locker( &sTileCacheMutex );
+  const QMutexLocker locker( &sTileCacheMutex );
   sTileCache.insert( url, new QImage( image ) );
 }
 
 bool QgsTileCache::tile( const QUrl &url, QImage &image )
 {
-  QMutexLocker locker( &sTileCacheMutex );
+  QNetworkRequest req( url );
+  //Preprocessing might alter the url, so we need to make sure we store/retrieve the url after preprocessing
+  QgsNetworkAccessManager::instance()->preprocessRequest( &req );
+  const QUrl adjUrl = req.url();
+
+  const QMutexLocker locker( &sTileCacheMutex );
   bool success = false;
-  if ( QImage *i = sTileCache.object( url ) )
+  if ( QImage *i = sTileCache.object( adjUrl ) )
   {
     image = *i;
     success = true;
   }
-  else if ( QgsNetworkAccessManager::instance()->cache()->metaData( url ).isValid() )
+  else if ( QgsNetworkAccessManager::instance()->cache()->metaData( adjUrl ).isValid() )
   {
-    if ( QIODevice *data = QgsNetworkAccessManager::instance()->cache()->data( url ) )
+    if ( QIODevice *data = QgsNetworkAccessManager::instance()->cache()->data( adjUrl ) )
     {
-      QByteArray imageData = data->readAll();
+      const QByteArray imageData = data->readAll();
       delete data;
 
       image = QImage::fromData( imageData );
@@ -52,10 +58,22 @@ bool QgsTileCache::tile( const QUrl &url, QImage &image )
       // Check for null because it could be a redirect (see: https://github.com/qgis/QGIS/issues/24336 )
       if ( ! image.isNull( ) )
       {
-        sTileCache.insert( url, new QImage( image ) );
+        sTileCache.insert( adjUrl, new QImage( image ) );
         success = true;
       }
     }
   }
   return success;
+}
+
+int QgsTileCache::totalCost()
+{
+  const QMutexLocker locker( &sTileCacheMutex );
+  return sTileCache.totalCost();
+}
+
+int QgsTileCache::maxCost()
+{
+  const QMutexLocker locker( &sTileCacheMutex );
+  return sTileCache.maxCost();
 }

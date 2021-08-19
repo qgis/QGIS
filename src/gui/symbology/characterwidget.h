@@ -63,7 +63,7 @@ class QPaintEvent;
 /**
  * \ingroup gui
  *
- * A widget for displaying characters available in a preset font, and allowing
+ * \brief A widget for displaying characters available in a preset font, and allowing
  * users to select an individual character.
  */
 class GUI_EXPORT CharacterWidget : public QWidget

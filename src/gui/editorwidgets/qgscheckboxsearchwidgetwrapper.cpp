@@ -60,8 +60,8 @@ QgsSearchWidgetWrapper::FilterFlags QgsCheckboxSearchWidgetWrapper::defaultFlags
 
 QString QgsCheckboxSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const
 {
-  QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
-  QString fieldName = createFieldIdentifier();
+  const QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
+  const QString fieldName = createFieldIdentifier();
 
   //clear any unsupported flags
   flags &= supportedFlags();
@@ -71,7 +71,7 @@ QString QgsCheckboxSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper
   if ( flags & IsNotNull )
     return fieldName + " IS NOT NULL";
 
-  QVariant v = value();
+  const QVariant v = value();
   if ( !v.isValid() )
     return QString();
 
@@ -127,12 +127,12 @@ bool QgsCheckboxSearchWidgetWrapper::valid() const
 void QgsCheckboxSearchWidgetWrapper::setExpression( const QString &expression )
 {
   QString exp = expression;
-  QString fieldName = layer()->fields().at( mFieldIdx ).name();
+  const QString fieldName = layer()->fields().at( mFieldIdx ).name();
 
-  QString str = QStringLiteral( "%1 = '%3'" )
-                .arg( QgsExpression::quotedColumnRef( fieldName ),
-                      exp.replace( '\'', QLatin1String( "''" ) )
-                    );
+  const QString str = QStringLiteral( "%1 = '%3'" )
+                      .arg( QgsExpression::quotedColumnRef( fieldName ),
+                            exp.replace( '\'', QLatin1String( "''" ) )
+                          );
   mExpression = str;
 }
 
@@ -141,7 +141,7 @@ void QgsCheckboxSearchWidgetWrapper::stateChanged( int )
   if ( mCheckBox )
   {
     mCheckBox->setTristate( false );
-    QString exp = value().toString();
+    const QString exp = value().toString();
     setExpression( exp );
     emit valueChanged();
     emit expressionChanged( mExpression );

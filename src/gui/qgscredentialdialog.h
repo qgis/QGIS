@@ -29,7 +29,7 @@ class QPushButton;
 
 /**
  * \ingroup gui
- * A generic dialog for requesting credentials
+ * \brief A generic dialog for requesting credentials
  */
 class GUI_EXPORT QgsCredentialDialog : public QDialog, public QgsCredentials, private Ui_QgsCredentialDialog
 {

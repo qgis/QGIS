@@ -28,8 +28,8 @@
 #include "qgsmessagelog.h"
 #include "qgis.h"
 
-QgsPdalEptGenerationTask::QgsPdalEptGenerationTask( const QString &file, const QString &outputDir )
-  : QgsTask( tr( "Generate EPT Index" ) )
+QgsPdalEptGenerationTask::QgsPdalEptGenerationTask( const QString &file, const QString &outputDir, const QString &name )
+  : QgsTask( tr( "Indexing Point Cloud (%1)" ).arg( name ) )
   , mOutputDir( outputDir )
   , mFile( file )
 {
@@ -57,22 +57,22 @@ void QgsPdalEptGenerationTask::cleanTemp()
   QDir tmpDir( mOutputDir + QStringLiteral( "/temp" ) );
   if ( tmpDir.exists() )
   {
-    QgsMessageLog::logMessage( tr( "Removing temporary files in %1" ).arg( tmpDir.dirName() ), QObject::tr( "Point clouds" ), Qgis::Info );
+    QgsMessageLog::logMessage( tr( "Removing temporary files in %1" ).arg( tmpDir.dirName() ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Info );
     tmpDir.removeRecursively();
   }
 }
 
 bool QgsPdalEptGenerationTask::runUntwine()
 {
-  QFileInfo executable( mUntwineExecutableBinary );
+  const QFileInfo executable( mUntwineExecutableBinary );
   if ( !executable.isExecutable() )
   {
-    QgsMessageLog::logMessage( tr( "Untwine executable not found %1" ).arg( mUntwineExecutableBinary ), QObject::tr( "Point clouds" ), Qgis::Critical );
+    QgsMessageLog::logMessage( tr( "Untwine executable not found %1" ).arg( mUntwineExecutableBinary ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Critical );
     return false;
   }
   else
   {
-    QgsMessageLog::logMessage( tr( "Using executable %1" ).arg( mUntwineExecutableBinary ), QObject::tr( "Point clouds" ), Qgis::Info );
+    QgsMessageLog::logMessage( tr( "Using executable %1" ).arg( mUntwineExecutableBinary ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Info );
   }
 
   untwine::QgisUntwine untwineProcess( mUntwineExecutableBinary.toStdString() );
@@ -82,18 +82,18 @@ bool QgsPdalEptGenerationTask::runUntwine()
   // we can use them to set automatically set valid range for the data without having to scan the points again.
   options.push_back( { "stats", std::string() } );
 
-  std::vector<std::string> files = {mFile.toStdString()};
+  const std::vector<std::string> files = {mFile.toStdString()};
   untwineProcess.start( files, mOutputDir.toStdString(), options );
-  int lastPercent = 0;
+  const int lastPercent = 0;
   while ( true )
   {
     QThread::msleep( 100 );
-    int percent = untwineProcess.progressPercent();
+    const int percent = untwineProcess.progressPercent();
     if ( lastPercent != percent )
     {
-      QString message = QString::fromStdString( untwineProcess.progressMessage() );
+      const QString message = QString::fromStdString( untwineProcess.progressMessage() );
       if ( !message.isEmpty() )
-        QgsMessageLog::logMessage( message, QObject::tr( "Point clouds" ), Qgis::Info );
+        QgsMessageLog::logMessage( message, QObject::tr( "Point clouds" ), Qgis::MessageLevel::Info );
 
       setProgress( percent );
     }
@@ -143,10 +143,10 @@ QString QgsPdalEptGenerationTask::outputDir() const
 
 bool QgsPdalEptGenerationTask::prepareOutputDir()
 {
-  QFileInfo fi( mOutputDir + "/ept.json" );
+  const QFileInfo fi( mOutputDir + "/ept.json" );
   if ( fi.exists() )
   {
-    QgsMessageLog::logMessage( tr( "File %1 is already indexed" ).arg( mFile ), QObject::tr( "Point clouds" ), Qgis::Info );
+    QgsMessageLog::logMessage( tr( "File %1 is already indexed" ).arg( mFile ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Info );
     return true;
   }
   else
@@ -157,26 +157,26 @@ bool QgsPdalEptGenerationTask::prepareOutputDir()
       {
         if ( QDir( mOutputDir + "/temp" ).exists() )
         {
-          QgsMessageLog::logMessage( tr( "Another indexing process is running (or finished with crash) in directory %1" ).arg( mOutputDir ), QObject::tr( "Point clouds" ), Qgis::Warning );
+          QgsMessageLog::logMessage( tr( "Another indexing process is running (or finished with crash) in directory %1" ).arg( mOutputDir ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Warning );
           return false;
         }
         else
         {
-          QgsMessageLog::logMessage( tr( "Folder %1 is non-empty, but there isn't ept.json present." ).arg( mOutputDir ), QObject::tr( "Point clouds" ), Qgis::Critical );
+          QgsMessageLog::logMessage( tr( "Folder %1 is non-empty, but there isn't ept.json present." ).arg( mOutputDir ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Critical );
           return false;
         }
       }
     }
     else
     {
-      bool success = QDir().mkdir( mOutputDir );
+      const bool success = QDir().mkdir( mOutputDir );
       if ( success )
       {
-        QgsMessageLog::logMessage( tr( "Created output directory %1" ).arg( mOutputDir ), QObject::tr( "Point clouds" ), Qgis::Info );
+        QgsMessageLog::logMessage( tr( "Created output directory %1" ).arg( mOutputDir ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Info );
       }
       else
       {
-        QgsMessageLog::logMessage( tr( "Unable to create output directory %1" ).arg( mOutputDir ), QObject::tr( "Point clouds" ), Qgis::Critical );
+        QgsMessageLog::logMessage( tr( "Unable to create output directory %1" ).arg( mOutputDir ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Critical );
         return false;
       }
     }

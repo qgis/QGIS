@@ -12,7 +12,7 @@
 
 class QgsAttributeTableModel: QAbstractTableModel
 {
-%Docstring
+%Docstring(signature="appended")
 A model backed by a :py:class:`QgsVectorLayerCache` which is able to provide
 feature/attribute information to a QAbstractItemView.
 

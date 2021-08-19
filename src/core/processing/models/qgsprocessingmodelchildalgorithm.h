@@ -33,7 +33,7 @@ class QgsProcessingAlgorithm;
 ///@cond NOT_STABLE
 
 /**
- * Child algorithm representing a single component of a QgsProcessingModelAlgorithm.
+ * \brief Child algorithm representing a single component of a QgsProcessingModelAlgorithm.
  * \ingroup core
  * \since QGIS 3.0
  */

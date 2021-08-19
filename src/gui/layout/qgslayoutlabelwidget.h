@@ -29,7 +29,7 @@
 
 /**
  * \ingroup gui
- * A widget for layout item settings.
+ * \brief A widget for layout item settings.
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12

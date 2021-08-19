@@ -150,6 +150,11 @@ int QgsWmsRenderContext::tileBuffer() const
   return tileBuffer;
 }
 
+bool QgsWmsRenderContext::renderMapTiles() const
+{
+  return QgsServerProjectUtils::wmsRenderMapTiles( *mProject );
+}
+
 int QgsWmsRenderContext::precision() const
 {
   int precision = QgsServerProjectUtils::wmsFeatureInfoPrecision( *mProject );
@@ -167,7 +172,7 @@ qreal QgsWmsRenderContext::dotsPerMm() const
   // Apply DPI parameter if present. This is an extension of QGIS Server
   // compared to WMS 1.3.
   // Because of backwards compatibility, this parameter is optional
-  int dpm = 1 / OGC_PX_M;
+  qreal dpm = 1 / OGC_PX_M;
 
   if ( !mParameters.dpi().isEmpty() )
   {
@@ -177,7 +182,7 @@ qreal QgsWmsRenderContext::dotsPerMm() const
   return dpm / 1000.0;
 }
 
-QStringList QgsWmsRenderContext::flattenedQueryLayers() const
+QStringList QgsWmsRenderContext::flattenedQueryLayers( const QStringList &layerNames ) const
 {
   QStringList result;
   std::function <QStringList( const QString &name )> findLeaves = [ & ]( const QString & name ) -> QStringList
@@ -206,8 +211,8 @@ QStringList QgsWmsRenderContext::flattenedQueryLayers() const
     }
     return _result;
   };
-  const auto constNicks { mParameters.queryLayersNickname() };
-  for ( const auto &name : constNicks )
+
+  for ( const auto &name : std::as_const( layerNames ) )
   {
     result.append( findLeaves( name ) );
   }
@@ -379,7 +384,7 @@ void QgsWmsRenderContext::initRestrictedLayers()
   QStringList restrictedLayersNames;
   QgsLayerTreeGroup *root = mProject->layerTreeRoot();
 
-  for ( const QString &l : qgis::as_const( restricted ) )
+  for ( const QString &l : std::as_const( restricted ) )
   {
     const QgsLayerTreeGroup *group = root->findGroup( l );
     if ( group )
@@ -424,7 +429,21 @@ void QgsWmsRenderContext::searchLayersToRender()
 
   if ( mFlags & AddQueryLayers )
   {
-    const QStringList queryLayerNames { flattenedQueryLayers() };
+    const QStringList queryLayerNames = flattenedQueryLayers( mParameters.queryLayersNickname() );
+    for ( const QString &layerName : queryLayerNames )
+    {
+      const QList<QgsMapLayer *> layers = mNicknameLayers.values( layerName );
+      for ( QgsMapLayer *lyr : layers )
+        if ( !mLayersToRender.contains( lyr ) )
+        {
+          mLayersToRender.append( lyr );
+        }
+    }
+  }
+
+  if ( mFlags & AddAllLayers )
+  {
+    const QStringList queryLayerNames = flattenedQueryLayers( mParameters.allLayersNickname() );
     for ( const QString &layerName : queryLayerNames )
     {
       const QList<QgsMapLayer *> layers = mNicknameLayers.values( layerName );
@@ -499,7 +518,7 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
 
     if ( ! param.mExternalUri.isEmpty() && ( mFlags & AddExternalLayers ) )
     {
-      std::unique_ptr<QgsMapLayer> layer = qgis::make_unique< QgsRasterLayer >( param.mExternalUri, param.mNickname, QStringLiteral( "wms" ) );
+      std::unique_ptr<QgsMapLayer> layer = std::make_unique< QgsRasterLayer >( param.mExternalUri, param.mNickname, QStringLiteral( "wms" ) );
 
       if ( layer->isValid() )
       {
@@ -603,6 +622,11 @@ int QgsWmsRenderContext::mapHeight() const
 
 bool QgsWmsRenderContext::isValidWidthHeight() const
 {
+  return isValidWidthHeight( mapWidth(), mapHeight() );
+}
+
+bool QgsWmsRenderContext::isValidWidthHeight( int width, int height ) const
+{
   //test if maxWidth / maxHeight are set in the project or as an env variable
   //and WIDTH / HEIGHT parameter is in the range allowed range
   //WIDTH
@@ -620,7 +644,7 @@ bool QgsWmsRenderContext::isValidWidthHeight() const
     wmsMaxWidth = std::max( wmsMaxWidthProj, wmsMaxWidthEnv );
   }
 
-  if ( wmsMaxWidth != -1 && mapWidth() > wmsMaxWidth )
+  if ( wmsMaxWidth != -1 && width > wmsMaxWidth )
   {
     return false;
   }
@@ -640,7 +664,7 @@ bool QgsWmsRenderContext::isValidWidthHeight() const
     wmsMaxHeight = std::max( wmsMaxHeightProj, wmsMaxHeightEnv );
   }
 
-  if ( wmsMaxHeight != -1 && mapHeight() > wmsMaxHeight )
+  if ( wmsMaxHeight != -1 && height > wmsMaxHeight )
   {
     return false;
   }
@@ -661,13 +685,13 @@ bool QgsWmsRenderContext::isValidWidthHeight() const
       depth = 32;
   }
 
-  const int bytes_per_line = ( ( mapWidth() * depth + 31 ) >> 5 ) << 2; // bytes per scanline (must be multiple of 4)
+  const int bytes_per_line = ( ( width * depth + 31 ) >> 5 ) << 2; // bytes per scanline (must be multiple of 4)
 
-  if ( std::numeric_limits<int>::max() / depth < static_cast<uint>( mapWidth() )
+  if ( std::numeric_limits<int>::max() / depth < static_cast<uint>( width )
        || bytes_per_line <= 0
-       || mapHeight() <= 0
-       || std::numeric_limits<int>::max() / static_cast<uint>( bytes_per_line ) < static_cast<uint>( mapHeight() )
-       || std::numeric_limits<int>::max() / sizeof( uchar * ) < static_cast<uint>( mapHeight() ) )
+       || height <= 0
+       || std::numeric_limits<int>::max() / static_cast<uint>( bytes_per_line ) < static_cast<uint>( height )
+       || std::numeric_limits<int>::max() / sizeof( uchar * ) < static_cast<uint>( height ) )
   {
     return false;
   }

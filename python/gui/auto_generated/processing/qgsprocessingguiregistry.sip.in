@@ -12,7 +12,7 @@
 
 class QgsProcessingGuiRegistry
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsProcessingGuiRegistry` is a home for widgets for processing
 configuration widgets.
 

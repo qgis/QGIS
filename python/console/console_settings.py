@@ -38,6 +38,9 @@ class ConsoleOptionsFactory(QgsOptionsWidgetFactory):
     def icon(self):
         return QgsApplication.getThemeIcon('/console/mIconRunConsole.svg')
 
+    def path(self):
+        return ['ide']
+
     def createWidget(self, parent):
         return ConsoleOptionsPage(parent)
 

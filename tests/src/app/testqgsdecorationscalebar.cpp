@@ -81,12 +81,10 @@ void TestQgsDecorationScalebar::mapWidth()
   scalebar.mSettings.setUnits( QgsUnitTypes::DistanceMiles );
   QGSCOMPARENEAR( scalebar.mapWidth( settings ), 4.97097, 0.0001 );
 
-#if PROJ_VERSION_MAJOR>=6
   // ellipsoidal measure
   QgsProject::instance()->setEllipsoid( QStringLiteral( "EPSG:7030" ) );
   QGSCOMPARENEAR( scalebar.mapWidth( settings ), 4.060337, 0.0001 );
   QgsProject::instance()->setEllipsoid( QString() );
-#endif
 
   // with non-uniform output size vs extent aspect ratio
   settings.setExtent( QgsRectangle( 16700000, -4212000, 16708000, -4204000 ) );

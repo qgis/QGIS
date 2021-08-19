@@ -52,9 +52,9 @@ class QgsExpressionPrivate
       , mAreaUnit( other.mAreaUnit )
     {
       if ( other.mDaCrs )
-        mDaCrs = qgis::make_unique<QgsCoordinateReferenceSystem>( *other.mDaCrs.get() );
+        mDaCrs = std::make_unique<QgsCoordinateReferenceSystem>( *other.mDaCrs.get() );
       if ( other.mDaTransformContext )
-        mDaTransformContext = qgis::make_unique<QgsCoordinateTransformContext>( *other.mDaTransformContext.get() );
+        mDaTransformContext = std::make_unique<QgsCoordinateTransformContext>( *other.mDaTransformContext.get() );
     }
 
     ~QgsExpressionPrivate()

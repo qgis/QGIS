@@ -18,7 +18,6 @@
 
 #include "qgis_sip.h"
 #include "qgis_core.h"
-#include "qgssymbollayerreference.h"
 #include "qgsunittypes.h"
 #include "qgsmapunitscale.h"
 
@@ -28,11 +27,12 @@
 class QgsTextMaskSettingsPrivate;
 class QgsPaintEffect;
 class QgsPropertyCollection;
+class QgsSymbolLayerReference;
 
 /**
  * \class QgsTextMaskSettings
   * \ingroup core
-  * Container for settings relating to a selective masking around a text.
+  * \brief Container for settings relating to a selective masking around a text.
   * A selective masking only makes sense in contexts where the text is rendered over some other map layers, especially for labeling.
   * \note QgsTextMaskSettings objects are implicitly shared.
   * \since QGIS 3.12
@@ -198,14 +198,14 @@ class CORE_EXPORT QgsTextMaskSettings
      * \returns a list of references to masked symbol layers
      * \see setMaskedSymbolLayers
      */
-    QgsSymbolLayerReferenceList maskedSymbolLayers() const;
+    QList<QgsSymbolLayerReference> maskedSymbolLayers() const;
 
     /**
      * Sets the symbol layers that will be masked by this buffer.
      * \param maskedLayers list of references to symbol layers
      * \see setMaskedSymbolLayers
      */
-    void setMaskedSymbolLayers( QgsSymbolLayerReferenceList maskedLayers );
+    void setMaskedSymbolLayers( const QList<QgsSymbolLayerReference> &maskedLayers );
 
     /**
      * Updates the format by evaluating current values of data defined properties.

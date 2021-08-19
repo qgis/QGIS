@@ -22,6 +22,7 @@
 #include "qgsguiutils.h"
 #include "qgslayoutitemmap.h"
 #include "qgsvectorlayer.h"
+#include "qgsprojoperation.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
@@ -75,15 +76,23 @@ QgsLayoutLabelWidget::QgsLayoutLabelWidget( QgsLayoutItemLabel *label )
   connect( mDynamicTextMenu, &QMenu::aboutToShow, this, [ = ]
   {
     mDynamicTextMenu->clear();
-    // we need to rebuild this on each show, as the content varies depending on other available items...
-    buildInsertDynamicTextMenu( mLabel->layout(), mDynamicTextMenu, [ = ]( const QString & expression )
+    if ( mLabel->layout() )
     {
-      mLabel->beginCommand( tr( "Insert dynamic text" ) );
-      mTextEdit->insertPlainText( "[%" + expression + "%]" );
-      mLabel->endCommand();
-    } );
+      // we need to rebuild this on each show, as the content varies depending on other available items...
+      buildInsertDynamicTextMenu( mLabel->layout(), mDynamicTextMenu, [ = ]( const QString & expression )
+      {
+        mLabel->beginCommand( tr( "Insert dynamic text" ) );
+        mTextEdit->insertPlainText( "[%" + expression + "%]" );
+        mLabel->endCommand();
+      } );
+    }
   } );
 
+  QMenu *expressionMenu = new QMenu( this );
+  QAction *convertToStaticAction = new QAction( tr( "Convert to Static Text" ), this );
+  expressionMenu->addAction( convertToStaticAction );
+  connect( convertToStaticAction, &QAction::triggered, mLabel, &QgsLayoutItemLabel::convertToStaticText );
+  mInsertExpressionButton->setMenu( expressionMenu );
 }
 
 void QgsLayoutLabelWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )
@@ -94,6 +103,7 @@ void QgsLayoutLabelWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayo
 
 void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu *menu, const std::function<void ( const QString & )> &callback )
 {
+  Q_ASSERT( layout );
   auto addExpression = [&callback]( QMenu * menu, const QString & name, const QString & expression )
   {
     QAction *action = new QAction( name, menu );
@@ -119,7 +129,7 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
   QMenu *mapsMenu = new QMenu( tr( "Map Properties" ), menu );
   QList< QgsLayoutItemMap * > maps;
   layout->layoutItems( maps );
-  for ( QgsLayoutItemMap *map : qgis::as_const( maps ) )
+  for ( QgsLayoutItemMap *map : std::as_const( maps ) )
   {
     // these expressions require the map to have a non-empty ID set
     if ( map->id().isEmpty() )
@@ -141,6 +151,7 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
             std::make_pair( tr( "CRS Name (%1)" ).arg( map->crs().description() ),  QStringLiteral( "item_variables('%1')['map_crs_description']" ).arg( map->id() ) ),
             std::make_pair( tr( "Ellipsoid Name (%1)" ).arg( map->crs().ellipsoidAcronym() ),  QStringLiteral( "item_variables('%1')['map_crs_ellipsoid']" ).arg( map->id() ) ),
             std::make_pair( tr( "Units (%1)" ).arg( QgsUnitTypes::toString( map->crs().mapUnits() ) ),  QStringLiteral( "item_variables('%1')['map_units']" ).arg( map->id() ) ),
+            std::make_pair( tr( "Projection (%1)" ).arg( map->crs().operation().description() ),  QStringLiteral( "item_variables('%1')['map_crs_projection']" ).arg( map->id() ) ),
           } )
     {
       addExpression( mapMenu, expression.first, expression.second );

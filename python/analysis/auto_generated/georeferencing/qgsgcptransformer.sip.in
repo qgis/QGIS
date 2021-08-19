@@ -1,0 +1,122 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/georeferencing/qgsgcptransformer.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsGcpTransformerInterface /Abstract/
+{
+%Docstring(signature="appended")
+An interface for Ground Control Points (GCP) based transformations.
+
+:py:class:`QgsGcpTransformerInterface` implementations are able to transform point locations
+based on a transformation method and a list of GCPs.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgsgcptransformer.h"
+%End
+  public:
+
+    enum class TransformMethod
+    {
+      Linear,
+      Helmert,
+      PolynomialOrder1,
+      PolynomialOrder2,
+      PolynomialOrder3,
+      ThinPlateSpline,
+      Projective,
+      InvalidTransform
+    };
+
+    QgsGcpTransformerInterface();
+%Docstring
+Constructor for QgsGcpTransformerInterface
+%End
+
+    virtual ~QgsGcpTransformerInterface();
+
+
+
+    virtual QgsGcpTransformerInterface *clone() const = 0 /Factory/;
+%Docstring
+Clones the transformer, returning a new copy of the transformer with the same
+parameters as this one.
+
+Caller takes ownership of the returned object.
+%End
+
+    virtual bool updateParametersFromGcps( const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates, bool invertYAxis = false ) throw( QgsNotSupportedException ) = 0;
+%Docstring
+Fits transformation parameters using the specified Ground Control Points (GCPs) lists of source and destination coordinates.
+
+If ``invertYAxis`` is set to ``True`` then the y-axis of source coordinates will be inverted, e.g. to allow for transformation of raster layers
+with ascending top-to-bottom vertical axis coordinates.
+
+:return: ``True`` on success, ``False`` on failure
+%End
+
+    virtual int minimumGcpCount() const = 0;
+%Docstring
+Returns the minimum number of Ground Control Points (GCPs) required for parameter fitting.
+%End
+
+    virtual TransformMethod method() const = 0;
+%Docstring
+Returns the transformation method.
+%End
+
+    bool transform( double &x /In,Out/, double &y /In,Out/, bool inverseTransform = false ) const;
+%Docstring
+Transforms the point (``x``, ``y``) from source to destination coordinates.
+
+If ``inverseTransform`` is set to ``True``, the point will be transformed from the destination to the source.
+
+:return: ``True`` if transformation was successful.
+%End
+
+    static QString methodToString( TransformMethod method );
+%Docstring
+Returns a translated string representing the specified transform ``method``.
+%End
+
+    static QgsGcpTransformerInterface *create( TransformMethod method ) /Factory/;
+%Docstring
+Creates a new QgsGcpTransformerInterface subclass representing the specified transform ``method``.
+
+Caller takes ownership of the returned object.
+%End
+
+    static QgsGcpTransformerInterface *createFromParameters( TransformMethod method, const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates ) throw( QgsNotSupportedException ) /Factory/;
+%Docstring
+Creates a new QgsGcpTransformerInterface subclass representing the specified transform ``method``, initialized
+using the given lists of source and destination coordinates.
+
+If the parameters cannot be fit to a transform ``None`` will be returned.
+
+Caller takes ownership of the returned object.
+%End
+
+
+  private:
+    QgsGcpTransformerInterface( const QgsGcpTransformerInterface &other );
+};
+
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/georeferencing/qgsgcptransformer.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

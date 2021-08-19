@@ -27,7 +27,6 @@ extern "C"
 
 #include "qgsvectordataprovider.h"
 #include "qgsrectangle.h"
-#include "qgsvectorlayerexporter.h"
 #include "qgsfields.h"
 #include "qgswkbtypes.h"
 
@@ -66,7 +65,7 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
     static const QString SPATIALITE_DESCRIPTION;
 
     //! Import a vector layer into the database
-    static QgsVectorLayerExporter::ExportError createEmptyLayer(
+    static Qgis::VectorExportResult createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,
       QgsWkbTypes::Type wkbType,
@@ -104,7 +103,7 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
      */
     size_t layerCount() const;
 
-    long featureCount() const override;
+    long long featureCount() const override;
     QgsRectangle extent() const override;
     void updateExtents() override;
     QgsFields fields() const override;
@@ -309,7 +308,7 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
     QgsRectangle mLayerExtent;
 
     //! Number of features in the layer
-    long mNumberFeatures = 0;
+    long long mNumberFeatures = 0;
 
     //! this Geometry is supported by an R*Tree spatial index
     bool mSpatialIndexRTree = false;
@@ -430,9 +429,10 @@ class QgsSpatiaLiteProviderMetadata final: public QgsProviderMetadata
                     QStringList &descriptions, QString &errCause ) override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
+    ProviderCapabilities providerCapabilities() const override;
     QgsSpatiaLiteProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
 
-    QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &uri, const QgsFields &fields,
+    Qgis::VectorExportResult createEmptyLayer( const QString &uri, const QgsFields &fields,
         QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs,
         bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage,
         const QMap<QString, QVariant> *options ) override;

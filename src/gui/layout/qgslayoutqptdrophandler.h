@@ -24,7 +24,7 @@
 
 /**
  * \ingroup gui
- * Layout drop handler for handling QPT files
+ * \brief Layout drop handler for handling QPT files
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12

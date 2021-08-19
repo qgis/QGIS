@@ -33,7 +33,7 @@
 
 /**
  * \ingroup core
- * Feedback object tailored for raster block reading.
+ * \brief Feedback object tailored for raster block reading.
  *
  * \since QGIS 3.0
  */
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
 
 /**
  * \ingroup core
- * Base class for processing filters like renderers, reprojector, resampler etc.
+ * \brief Base class for processing filters like renderers, reprojector, resampler etc.
  */
 class CORE_EXPORT QgsRasterInterface
 {
@@ -220,7 +220,7 @@ class CORE_EXPORT QgsRasterInterface
      * Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType
     */
-    virtual Qgis::DataType sourceDataType( int bandNo ) const { return mInput ? mInput->sourceDataType( bandNo ) : Qgis::UnknownDataType; }
+    virtual Qgis::DataType sourceDataType( int bandNo ) const { return mInput ? mInput->sourceDataType( bandNo ) : Qgis::DataType::UnknownDataType; }
 
     /**
      * Gets the extent of the interface.
@@ -228,7 +228,10 @@ class CORE_EXPORT QgsRasterInterface
      */
     virtual QgsRectangle extent() const { return mInput ? mInput->extent() : QgsRectangle(); }
 
-    int dataTypeSize( int bandNo ) { return QgsRasterBlock::typeSize( dataType( bandNo ) ); }
+    /**
+     * Returns the size (in bytes) for the data type for the specified band.
+     */
+    int dataTypeSize( int bandNo ) const { return QgsRasterBlock::typeSize( dataType( bandNo ) ); }
 
     //! Gets number of bands
     virtual int bandCount() const = 0;

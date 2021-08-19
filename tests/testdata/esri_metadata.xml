@@ -1,0 +1,1027 @@
+<metadata xml:lang="en">
+  <Esri>
+    <CreaDate>20140723</CreaDate>
+    <CreaTime>11115900</CreaTime>
+    <ArcGISFormat>1.0</ArcGISFormat>
+    <ArcGISstyle>North American Profile of ISO19115 2003</ArcGISstyle>
+    <SyncOnce>FALSE</SyncOnce>
+    <DataProperties>
+      <itemProps>
+        <itemName Sync="TRUE">Baseline_roads_and_tracks</itemName>
+        <nativeExtBox>
+          <westBL Sync="TRUE">137.921721</westBL>
+          <eastBL Sync="TRUE">153.551682</eastBL>
+          <southBL Sync="TRUE">-29.177948</southBL>
+          <northBL Sync="TRUE">-9.373145</northBL>
+          <exTypeCode Sync="TRUE">1</exTypeCode>
+        </nativeExtBox>
+        <itemSize Sync="TRUE">92.910</itemSize>
+        <itemLocation>
+          <linkage Sync="TRUE">
+            file://\\SIRGIS11\D$\sirgis-fs\customApps\QSC\working\QSC_Extracted_Data_20161102_145414886000-4824\data.gdb
+          </linkage>
+          <protocol Sync="TRUE">Local Area Network</protocol>
+        </itemLocation>
+        <imsContentType Sync="TRUE">002</imsContentType>
+      </itemProps>
+      <coordRef>
+        <type Sync="TRUE">Geographic</type>
+        <geogcsn Sync="TRUE">GCS_GDA_1994</geogcsn>
+        <csUnits Sync="TRUE">Angular Unit: Degree (0.017453)</csUnits>
+        <peXml Sync="TRUE">&lt;GeographicCoordinateSystem xsi:type='typens:GeographicCoordinateSystem'
+          xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xs='http://www.w3.org/2001/XMLSchema'
+          xmlns:typens='http://www.esri.com/schemas/ArcGIS/10.3'&gt;&lt;WKT&gt;GEOGCS[&amp;quot;GCS_GDA_1994&amp;quot;,DATUM[&amp;quot;D_GDA_1994&amp;quot;,SPHEROID[&amp;quot;GRS_1980&amp;quot;,6378137.0,298.257222101]],PRIMEM[&amp;quot;Greenwich&amp;quot;,0.0],UNIT[&amp;quot;Degree&amp;quot;,0.0174532925199433],AUTHORITY[&amp;quot;EPSG&amp;quot;,4283]]&lt;/WKT&gt;&lt;XOrigin&gt;-400&lt;/XOrigin&gt;&lt;YOrigin&gt;-400&lt;/YOrigin&gt;&lt;XYScale&gt;1111948722.2222199&lt;/XYScale&gt;&lt;ZOrigin&gt;-100000&lt;/ZOrigin&gt;&lt;ZScale&gt;10000&lt;/ZScale&gt;&lt;MOrigin&gt;-100000&lt;/MOrigin&gt;&lt;MScale&gt;10000&lt;/MScale&gt;&lt;XYTolerance&gt;8.98315284119521e-009&lt;/XYTolerance&gt;&lt;ZTolerance&gt;0.001&lt;/ZTolerance&gt;&lt;MTolerance&gt;0.001&lt;/MTolerance&gt;&lt;HighPrecision&gt;true&lt;/HighPrecision&gt;&lt;LeftLongitude&gt;-180&lt;/LeftLongitude&gt;&lt;WKID&gt;4283&lt;/WKID&gt;&lt;LatestWKID&gt;4283&lt;/LatestWKID&gt;&lt;/GeographicCoordinateSystem&gt;
+        </peXml>
+      </coordRef>
+    </DataProperties>
+    <SyncDate>20161102</SyncDate>
+    <SyncTime>14544700</SyncTime>
+    <ModDate>20161102</ModDate>
+    <ModTime>14544700</ModTime>
+    <ArcGISProfile>ISO19139</ArcGISProfile>
+    <locales>
+      <locale language="eng" country="AU"/>
+    </locales>
+    <scaleRange>
+      <minScale>150000000</minScale>
+      <maxScale>5000</maxScale>
+    </scaleRange>
+  </Esri>
+  <mdChar>
+    <CharSetCd value="004"/>
+  </mdChar>
+  <mdContact>
+    <editorSource>external</editorSource>
+    <rpIndName>Name</rpIndName>
+    <rpOrgName>Department of Natural Resources and Mines</rpOrgName>
+    <rpPosName>Senior Spatial Information Officer</rpPosName>
+    <rpCntInfo>
+      <cntAddress>
+        <eMailAdd>someone@gov.au</eMailAdd>
+      </cntAddress>
+      <cntPhone>
+        <voiceNum>77777777</voiceNum>
+      </cntPhone>
+    </rpCntInfo>
+    <editorSave>True</editorSave>
+    <displayName>Disp name</displayName>
+    <role>
+      <RoleCd value="007"/>
+    </role>
+  </mdContact>
+  <distInfo>
+    <distFormat>
+      <formatVer>10.3</formatVer>
+      <formatName>SDE Feature Class</formatName>
+    </distFormat>
+    <distFormat>
+      <formatName>Shapefile (SHP)</formatName>
+      <formatVer>1</formatVer>
+    </distFormat>
+    <distFormat>
+      <formatName>MapInfo (TAB)</formatName>
+      <formatVer>1</formatVer>
+    </distFormat>
+    <distFormat>
+      <formatName>File Geodatabase (FGDB)</formatName>
+      <formatVer>1</formatVer>
+    </distFormat>
+    <distFormat>
+      <formatName>Keyhole Markup Language (KML)</formatName>
+      <formatVer>1</formatVer>
+    </distFormat>
+    <distributor>
+      <distorCont>
+        <rpIndName>DNRM, Product Delivery</rpIndName>
+        <rpOrgName>Department of Natural Resources and Mines</rpOrgName>
+        <rpPosName>Senior Spatial Information Officer (Product Delivery)</rpPosName>
+        <rpCntInfo>
+          <cntAddress>
+            <eMailAdd>someone@gov.au</eMailAdd>
+          </cntAddress>
+          <cntPhone>
+            <voiceNum>7777</voiceNum>
+          </cntPhone>
+        </rpCntInfo>
+        <displayName>DNRM, Product Delivery</displayName>
+        <role>
+          <RoleCd value="005"/>
+        </role>
+      </distorCont>
+      <distorOrdPrc>
+        <ordInstr>Open the Queensland Spatial Catalog (QSpatial).
+          Select the large SEARCH button and all available records are displayed.
+          Select one of the four filter options provided and then the further options within the filter.
+          The resultant search is then displayed.
+          Select your record and complete the order.
+        </ordInstr>
+      </distorOrdPrc>
+      <distorTran>
+        <unitsODist>Whole of dataset, although clipped areas are available through QSpatial.</unitsODist>
+        <onLineSrc>
+          <linkage>http://qldspatial.information.qld.gov.au/catalog/custom/</linkage>
+        </onLineSrc>
+        <transSize>95</transSize>
+      </distorTran>
+      <distorFormat>
+        <formatName>Queensland Spatial Catalog</formatName>
+        <formatVer>2.0</formatVer>
+        <formatSpec>Download Service</formatSpec>
+      </distorFormat>
+    </distributor>
+    <distFormat>
+      <formatName>Queensland Spatial Catalog</formatName>
+      <formatVer>2.0</formatVer>
+      <formatSpec>Download Service</formatSpec>
+    </distFormat>
+  </distInfo>
+  <dataIdInfo>
+    <idCitation>
+      <resAltTitle>Baseline roads and tracks</resAltTitle>
+      <resTitle Sync="FALSE">Baseline roads and tracks Queensland</resTitle>
+      <date>
+        <pubDate>2016-06-28T00:00:00</pubDate>
+      </date>
+      <citRespParty>
+        <rpIndName>DNRM, NR, LSI, ED</rpIndName>
+        <rpOrgName>Department of Natural Resources and Mines</rpOrgName>
+        <rpPosName>Executive Director, Land and Spatial Information</rpPosName>
+        <displayName>DNRM, NR, LSI, ED</displayName>
+        <role>
+          <RoleCd value="002"/>
+        </role>
+      </citRespParty>
+      <citRespParty>
+        <editorSource>external</editorSource>
+        <editorDigest>9228b01d13fdc07144bddd09eec6c8b6</editorDigest>
+        <rpIndName>DNRM, NR, LSI, SDM, MAN Administrative Data</rpIndName>
+        <rpOrgName>Department of Natural Resources and Mines</rpOrgName>
+        <rpPosName>Manager Administrative Data, Spatial Data and Mapping, Land and Spatial Information</rpPosName>
+        <editorSave>True</editorSave>
+        <displayName>DNRM, NR, LSI, SDM, MAN Administrative Data</displayName>
+        <role>
+          <RoleCd value="001"/>
+        </role>
+      </citRespParty>
+      <citRespParty>
+        <editorSource>external</editorSource>
+        <editorDigest>9228b01d13fdc07144bddd09eec6c8b6</editorDigest>
+        <rpIndName>DNRM, NR, LSI, SDM, MAN Administrative Data</rpIndName>
+        <rpOrgName>Department of Natural Resources and Mines</rpOrgName>
+        <rpPosName>Manager Administrative Data, Spatial Data and Mapping, Land and Spatial Information</rpPosName>
+        <editorSave>True</editorSave>
+        <displayName>DNRM, NR, LSI, SDM, MAN Administrative Data</displayName>
+        <role>
+          <RoleCd value="008"/>
+        </role>
+      </citRespParty>
+      <citRespParty>
+        <editorSource>external</editorSource>
+        <editorDigest>9228b01d13fdc07144bddd09eec6c8b6</editorDigest>
+        <rpIndName>DNRM, NR, LSI, SDM, MAN Administrative Data</rpIndName>
+        <rpOrgName>Department of Natural Resources and Mines</rpOrgName>
+        <rpPosName>Manager Administrative Data, Spatial Data and Mapping, Land and Spatial Information</rpPosName>
+        <editorSave>True</editorSave>
+        <displayName>DNRM, NR, LSI, SDM, MAN Administrative Data</displayName>
+        <role>
+          <RoleCd value="006"/>
+        </role>
+      </citRespParty>
+      <citRespParty>
+        <editorSource>external</editorSource>
+        <editorDigest>5aea8649c4dea572310f4eb9652ff2</editorDigest>
+        <rpIndName>Name</rpIndName>
+        <rpOrgName>Department of Natural Resources and Mines</rpOrgName>
+        <rpPosName>Senior Spatial Information Officer</rpPosName>
+        <rpCntInfo>
+          <cntAddress>
+            <eMailAdd>someone@gov.au</eMailAdd>
+          </cntAddress>
+          <cntPhone>
+            <voiceNum>7777</voiceNum>
+          </cntPhone>
+        </rpCntInfo>
+        <editorSave>True</editorSave>
+        <displayName>Name</displayName>
+        <role>
+          <RoleCd value="007"/>
+        </role>
+      </citRespParty>
+      <presForm>
+        <PresFormCd value="005" Sync="TRUE"/>
+      </presForm>
+    </idCitation>
+    <idPurp>To provide the digital road network of Queensland.
+    </idPurp>
+    <idAbs>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN STYLE="font-size:10pt"&gt;This
+      dataset represents street centrelines of Queensland.&lt;/SPAN&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;
+    </idAbs>
+    <themeKeys>
+      <thesaName>
+        <resTitle>ANZLIC Search Words</resTitle>
+        <date>
+          <pubDate>2007-08-01T00:00:00</pubDate>
+        </date>
+      </thesaName>
+      <keyword>TRANSPORTATION Land</keyword>
+    </themeKeys>
+    <dataChar>
+      <CharSetCd value="004"/>
+    </dataChar>
+    <idStatus>
+      <ProgCd value="004"/>
+    </idStatus>
+    <resMaint>
+      <maintFreq>
+        <MaintFreqCd value="006"/>
+      </maintFreq>
+      <maintCont>
+        <editorSource>external</editorSource>
+        <editorDigest>5aea8649c4dea572310f4eb9652ff2</editorDigest>
+        <rpIndName>Name</rpIndName>
+        <rpOrgName>Department of Natural Resources and Mines</rpOrgName>
+        <rpPosName>Senior Spatial Information Officer</rpPosName>
+        <rpCntInfo>
+          <cntAddress>
+            <eMailAdd>someone@gov.au</eMailAdd>
+          </cntAddress>
+          <cntPhone>
+            <voiceNum>77777</voiceNum>
+          </cntPhone>
+        </rpCntInfo>
+        <editorSave>True</editorSave>
+        <displayName>Name</displayName>
+        <role>
+          <RoleCd value="007"/>
+        </role>
+      </maintCont>
+    </resMaint>
+    <placeKeys>
+      <thesaName>
+        <resTitle>ANZLIC Search Words</resTitle>
+        <date>
+          <pubDate>2007-08-01T00:00:00</pubDate>
+        </date>
+      </thesaName>
+      <keyword>Queensland</keyword>
+    </placeKeys>
+    <suppInfo>This is supplementary info</suppInfo>
+    <dataExt xmlns="">
+      <exDesc>Bounding Box</exDesc>
+    </dataExt>
+    <idCredit>© State of Queensland (Department of Natural Resources and Mines) 2016</idCredit>
+    <themeKeys>
+      <thesaName>
+        <resTitle>Common Search Terms</resTitle>
+        <date>
+          <pubDate>2016-02-05T00:00:00</pubDate>
+        </date>
+      </thesaName>
+      <keyword>road</keyword>
+    </themeKeys>
+    <aggrInfo>
+      <assocType>
+        <AscTypeCd value="004"/>
+      </assocType>
+      <aggrDSIdent>
+        <identCode>BUILT.QLD_BASELINE_ROADS_AND_TRACKS</identCode>
+        <identAuth>
+          <resTitle>Spatial Information Resource (SIR) Feature Class</resTitle>
+          <date>
+            <pubDate>2016-03-15T00:00:00</pubDate>
+          </date>
+        </identAuth>
+      </aggrDSIdent>
+    </aggrInfo>
+    <resConst>
+      <LegConsts>
+        <useConsts>
+          <RestrictCd value="006"/>
+        </useConsts>
+        <useLimit>The State of Queensland (Department of Natural Resources and Mines)</useLimit>
+      </LegConsts>
+    </resConst>
+    <resConst>
+      <LegConsts>
+        <useConsts>
+          <RestrictCd value="005"/>
+        </useConsts>
+        <useLimit>This material is licensed under a CC4</useLimit>
+      </LegConsts>
+    </resConst>
+    <resConst>
+      <SecConsts>
+        <class>
+          <ClasscationCd value="001"/>
+        </class>
+        <userNote>Unrestricted to all levels of government and community.
+        </userNote>
+        <classSys>ISO 19115 (mapped from Qld Govt Information Security Standard IS18)</classSys>
+      </SecConsts>
+    </resConst>
+    <resConst>
+      <Consts>
+        <useLimit>&lt;DIV STYLE="text-align:Left;"&gt;&lt;DIV&gt;&lt;DIV&gt;&lt;P&gt;&lt;SPAN STYLE="font-size:10pt"&gt;Dataset
+          is wholly created and owned by Natural Resources and Mines for the State of Queensland.&lt;/SPAN&gt;&lt;/P&gt;&lt;P&gt;&lt;SPAN
+          /&gt;&lt;/P&gt;&lt;/DIV&gt;&lt;/DIV&gt;&lt;/DIV&gt;
+        </useLimit>
+      </Consts>
+    </resConst>
+    <idPoC>
+      <editorSource>external</editorSource>
+      <editorDigest>9228b01d13fdc07144bddd09eec6c8b6</editorDigest>
+      <rpIndName>DNRM, NR, LSI, SDM, MAN Administrative Data</rpIndName>
+      <rpOrgName>Department of Natural Resources and Mines</rpOrgName>
+      <rpPosName>Manager Administrative Data, Spatial Data and Mapping, Land and Spatial Information</rpPosName>
+      <editorSave>True</editorSave>
+      <displayName>DNRM, NR, LSI, SDM, MAN Administrative Data</displayName>
+      <role>
+        <RoleCd value="006"/>
+      </role>
+    </idPoC>
+    <envirDesc Sync="TRUE">Version 6.2 (Build 9200) ; Esri ArcGIS 10.3.1.5004</envirDesc>
+    <dataLang>
+      <languageCode value="eng" Sync="TRUE"/>
+      <countryCode value="AUS" Sync="TRUE"/>
+    </dataLang>
+    <spatRpType>
+      <SpatRepTypCd value="001" Sync="TRUE"/>
+    </spatRpType>
+    <dataExt xmlns="">
+      <geoEle xmlns="">
+        <GeoBndBox esriExtentType="search">
+          <exTypeCode Sync="TRUE">1</exTypeCode>
+          <westBL Sync="TRUE">137.921721</westBL>
+          <eastBL Sync="TRUE">153.551682</eastBL>
+          <northBL Sync="TRUE">-9.373145</northBL>
+          <southBL Sync="TRUE">-29.177948</southBL>
+        </GeoBndBox>
+      </geoEle>
+    </dataExt>
+    <tpCat>
+      <TopicCatCd value="018"/>
+    </tpCat>
+  </dataIdInfo>
+  <mdMaint>
+    <maintFreq>
+      <MaintFreqCd value="009"/>
+    </maintFreq>
+  </mdMaint>
+  <mdConst>
+    <SecConsts>
+      <class>
+        <ClasscationCd value="001"/>
+      </class>
+      <classSys>Metadata Access Level</classSys>
+      <useLimit>Public</useLimit>
+    </SecConsts>
+  </mdConst>
+  <dqInfo>
+    <dataLineage>
+      <statement>The street records of the State Digital Road Network (SDRN) baseline dataset have been generated from
+        road casement boundaries of the QLD Digital Cadastre Database (DCDB)and updated where more accurate source data
+        has been available. Other sources used in the maintenance of the streets dataset include aerial imagery, QLD
+        Department of Transport and Main Roads State Controlled Roads dataset, supplied datasets from other State
+        Government Departments, Local Government data, field work using GPS, and user feedback.
+
+      </statement>
+      <dataSource>
+        <srcDesc>Land parcel boundaries Queensland</srcDesc>
+      </dataSource>
+      <dataSource>
+        <srcDesc>QLD Department of Transport and Main Roads State Controlled Roads</srcDesc>
+      </dataSource>
+      <dataSource>
+        <srcDesc>Local Government data</srcDesc>
+      </dataSource>
+      <dataSource>
+        <srcDesc>field work</srcDesc>
+      </dataSource>
+      <dataSource>
+        <srcDesc>other State Government Departments</srcDesc>
+      </dataSource>
+    </dataLineage>
+    <report type="DQCompOm">
+      <measDesc>Completeness is a reflection of the completeness and validity of the DCDB casement layer. Each
+        maintenance release uses the DCDB data current to within 1-2 months of the release date. Private streets (or
+        non-gazetted streets) are included only where they form an important part of the overall street network.
+      </measDesc>
+      <measResult>
+        <ConResult>
+          <conSpec>
+            <resTitle>Department of Natural Resources and Mines data capture process</resTitle>
+            <date>
+              <pubDate>2015-08-19T00:00:00</pubDate>
+            </date>
+          </conSpec>
+          <conExpl>The data is to a standard determined as fit for the purpose for which it was collected.</conExpl>
+          <conPass>1</conPass>
+        </ConResult>
+      </measResult>
+    </report>
+    <report type="DQConcConsis">
+      <measDesc>There are two forms of Logical consistency checks performed on the streets dataset. In terms of the
+        street segment geometry, procedures are carried out to identify and rectify: Overshoots and undershoots,
+        Pseudo-nodes (unnecessary breaks in continuous roads) except at location of overpassesunderpasses, Segments less
+        than 3 metres, Duplicate objects, Null objects, and Objects are polylines only. In regards to the attribution of
+        the street segment, checks are carried out to ensure: Street names contain valid characters (i.e. Alpha-numeric
+        characters, no apostrophes, or other punctuation characters), all components of the street name, including
+        prefixes, suffixes, and road types, are described in full, all characters are in Upper case, and no null values.
+      </measDesc>
+      <measResult>
+        <ConResult>
+          <conSpec>
+            <resTitle>Department of Natural Resources and Mines data capture process</resTitle>
+            <date>
+              <pubDate>2015-08-19T00:00:00</pubDate>
+            </date>
+          </conSpec>
+          <conExpl>The data is to a standard determined as fit for the purpose for which it was collected.</conExpl>
+          <conPass>1</conPass>
+        </ConResult>
+      </measResult>
+    </report>
+    <report type="DQAbsExtPosAcc">
+      <measDesc>Horizontal positional accuracy of the street centrelines varies from +/- 1.5 metres in urban areas up to
+        +/- 250 metres in rural/remote areas.
+      </measDesc>
+      <measResult>
+        <ConResult>
+          <conSpec>
+            <resTitle>Department of Natural Resources and Mines data capture process</resTitle>
+            <date>
+              <pubDate>2015-08-19T00:00:00</pubDate>
+            </date>
+          </conSpec>
+          <conExpl>The data is to a standard determined as fit for the purpose for which it was collected.</conExpl>
+          <conPass>1</conPass>
+        </ConResult>
+      </measResult>
+    </report>
+    <report type="DQNonQuanAttAcc">
+      <measDesc>Street names are sourced originally from the QLD DCDB and subsequently validated with various Local and
+        State Government datasets, including the QLD Property Location Index. Road classifications were originally
+        derived from Queensland Government road maps and are revised during maintenance periods.
+      </measDesc>
+      <measResult>
+        <ConResult>
+          <conSpec>
+            <resTitle>Department of Natural Resources and Mines data capture process</resTitle>
+            <date>
+              <pubDate>2015-08-19T00:00:00</pubDate>
+            </date>
+          </conSpec>
+          <conExpl>The data is to a standard determined as fit for the purpose for which it was collected.</conExpl>
+          <conPass>1</conPass>
+        </ConResult>
+      </measResult>
+    </report>
+    <dqScope>
+      <scpLvl>
+        <ScopeCd value="005"/>
+      </scpLvl>
+    </dqScope>
+  </dqInfo>
+  <eainfo>
+    <detailed Name="Baseline_roads_and_tracks">
+      <enttyp>
+        <enttypl Sync="FALSE">Baseline roads and tracks Queensland</enttypl>
+        <enttypt Sync="TRUE">Feature Class</enttypt>
+        <enttypc Sync="TRUE">0</enttypc>
+      </enttyp>
+      <attr>
+        <attrlabl Sync="TRUE">OBJECTID</attrlabl>
+        <attalias Sync="TRUE">OBJECTID</attalias>
+        <attrtype Sync="TRUE">OID</attrtype>
+        <attwidth Sync="TRUE">4</attwidth>
+        <atprecis Sync="TRUE">0</atprecis>
+        <attscale Sync="TRUE">0</attscale>
+        <attrdef Sync="TRUE">Internal feature number.</attrdef>
+        <attrdefs Sync="TRUE">ESRI</attrdefs>
+        <attrdomv>
+          <udom Sync="TRUE">Sequential unique whole numbers that are automatically generated.</udom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl Sync="TRUE">Shape</attrlabl>
+        <attalias Sync="TRUE">SHAPE</attalias>
+        <attrtype Sync="TRUE">Geometry</attrtype>
+        <attwidth Sync="TRUE">0</attwidth>
+        <atprecis Sync="TRUE">0</atprecis>
+        <attscale Sync="TRUE">0</attscale>
+        <attrdef Sync="TRUE">Feature geometry.</attrdef>
+        <attrdefs Sync="TRUE">ESRI</attrdefs>
+        <attrdomv>
+          <udom Sync="TRUE">Coordinates defining the features.</udom>
+        </attrdomv>
+      </attr>
+      <subtype>
+        <stname Sync="TRUE">Connector</stname>
+        <stcode Sync="TRUE">1</stcode>
+        <stfield>
+          <stfldnm Sync="TRUE">FEATURETYPE</stfldnm>
+          <stflddv Sync="TRUE">Connector</stflddv>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">TYPE</stfldnm>
+          <stflddv Sync="TRUE">2</stflddv>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">PERENNIALITY</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">dm_PerennialityMultScle</domname>
+            <domdesc Sync="TRUE">Perennialty which may be populated</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Duplicate</splttype>
+            <domfldtp Sync="TRUE">String</domfldtp>
+            <domowner Sync="TRUE">NAT</domowner>
+          </stflddd>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">HIERARCHY</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">dm_HierarchyMultScle</domname>
+            <domdesc Sync="TRUE">Hierarchy which may be populated</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Duplicate</splttype>
+            <domfldtp Sync="TRUE">String</domfldtp>
+            <domowner Sync="TRUE">NAT</domowner>
+          </stflddd>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">UPPERSCALE</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">dm_UpperScaleMultScle</domname>
+            <domdesc Sync="TRUE">Upper Scale of Data Utilisation</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Duplicate</splttype>
+            <domfldtp Sync="TRUE">Integer</domfldtp>
+            <domowner Sync="TRUE">BUILT</domowner>
+          </stflddd>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">USCERTAINTY</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">dm_USCertaintyMultScle</domname>
+            <domdesc Sync="TRUE">Upper Scale Certainity</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Duplicate</splttype>
+            <domfldtp Sync="TRUE">String</domfldtp>
+            <domowner Sync="TRUE">BUILT</domowner>
+          </stflddd>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">SYMBOL100K</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">SYMBOL100K_WatercourseLines_Rules</domname>
+            <domdesc Sync="TRUE">Representation rules</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Default value</splttype>
+            <domowner Sync="TRUE">NAT</domowner>
+            <domfldtp Sync="TRUE">Integer</domfldtp>
+          </stflddd>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">SYMBOL250K</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">SYMBOL250K_WatercourseLines_Rules</domname>
+            <domdesc Sync="TRUE">Representation rules</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Default value</splttype>
+            <domowner Sync="TRUE">NAT</domowner>
+            <domfldtp Sync="TRUE">Integer</domfldtp>
+          </stflddd>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">SYMBOLWAC1MIL</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">SYMBOLWAC1Mil_WatercourseLines_Rules</domname>
+            <domdesc Sync="TRUE">Representation rules</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Default value</splttype>
+            <domowner Sync="TRUE">NAT</domowner>
+            <domfldtp Sync="TRUE">Integer</domfldtp>
+          </stflddd>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">SYMBOL2_5MIL</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">SYMBOL2_5Mil_WatercourseLines_Rules</domname>
+            <domdesc Sync="TRUE">Representation rules</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Default value</splttype>
+            <domowner Sync="TRUE">NAT</domowner>
+            <domfldtp Sync="TRUE">Integer</domfldtp>
+          </stflddd>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">SYMBOL5MIL</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">SYMBOL5Mil_WatercourseLines_Rules</domname>
+            <domdesc Sync="TRUE">Representation rules</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Default value</splttype>
+            <domowner Sync="TRUE">NAT</domowner>
+            <domfldtp Sync="TRUE">Integer</domfldtp>
+          </stflddd>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">SYMBOL10MIL</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">SYMBOL10Mil_WatercourseLines_Rules</domname>
+            <domdesc Sync="TRUE">Representation rules</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Default value</splttype>
+            <domowner Sync="TRUE">NAT</domowner>
+            <domfldtp Sync="TRUE">Integer</domfldtp>
+          </stflddd>
+        </stfield>
+      </subtype>
+      <subtype>
+        <stname Sync="TRUE">Watercourse</stname>
+        <stcode Sync="TRUE">2</stcode>
+        <stfield>
+          <stfldnm Sync="TRUE">FEATURETYPE</stfldnm>
+          <stflddv Sync="TRUE">Watercourse</stflddv>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">TYPE</stfldnm>
+          <stflddv Sync="TRUE">2</stflddv>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">PERENNIALITY</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">dm_PerennialityMultScle</domname>
+            <domdesc Sync="TRUE">Perennialty which may be populated</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Duplicate</splttype>
+            <domfldtp Sync="TRUE">String</domfldtp>
+            <domowner Sync="TRUE">NAT</domowner>
+          </stflddd>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">HIERARCHY</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">dm_HierarchyMultScle</domname>
+            <domdesc Sync="TRUE">Hierarchy which may be populated</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Duplicate</splttype>
+            <domfldtp Sync="TRUE">String</domfldtp>
+            <domowner Sync="TRUE">NAT</domowner>
+          </stflddd>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">UPPERSCALE</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">dm_UpperScaleMultScle</domname>
+            <domdesc Sync="TRUE">Upper Scale of Data Utilisation</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Duplicate</splttype>
+            <domfldtp Sync="TRUE">Integer</domfldtp>
+            <domowner Sync="TRUE">BUILT</domowner>
+          </stflddd>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">USCERTAINTY</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">dm_USCertaintyMultScle</domname>
+            <domdesc Sync="TRUE">Upper Scale Certainity</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Duplicate</splttype>
+            <domfldtp Sync="TRUE">String</domfldtp>
+            <domowner Sync="TRUE">BUILT</domowner>
+          </stflddd>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">SYMBOL100K</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">SYMBOL100K_WatercourseLines_Rules</domname>
+            <domdesc Sync="TRUE">Representation rules</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Default value</splttype>
+            <domowner Sync="TRUE">NAT</domowner>
+            <domfldtp Sync="TRUE">Integer</domfldtp>
+          </stflddd>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">SYMBOL250K</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">SYMBOL250K_WatercourseLines_Rules</domname>
+            <domdesc Sync="TRUE">Representation rules</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Default value</splttype>
+            <domowner Sync="TRUE">NAT</domowner>
+            <domfldtp Sync="TRUE">Integer</domfldtp>
+          </stflddd>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">SYMBOLWAC1MIL</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">SYMBOLWAC1Mil_WatercourseLines_Rules</domname>
+            <domdesc Sync="TRUE">Representation rules</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Default value</splttype>
+            <domowner Sync="TRUE">NAT</domowner>
+            <domfldtp Sync="TRUE">Integer</domfldtp>
+          </stflddd>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">SYMBOL2_5MIL</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">SYMBOL2_5Mil_WatercourseLines_Rules</domname>
+            <domdesc Sync="TRUE">Representation rules</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Default value</splttype>
+            <domowner Sync="TRUE">NAT</domowner>
+            <domfldtp Sync="TRUE">Integer</domfldtp>
+          </stflddd>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">SYMBOL5MIL</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">SYMBOL5Mil_WatercourseLines_Rules</domname>
+            <domdesc Sync="TRUE">Representation rules</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Default value</splttype>
+            <domowner Sync="TRUE">NAT</domowner>
+            <domfldtp Sync="TRUE">Integer</domfldtp>
+          </stflddd>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">SYMBOL10MIL</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">SYMBOL10Mil_WatercourseLines_Rules</domname>
+            <domdesc Sync="TRUE">Representation rules</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Default value</splttype>
+            <domowner Sync="TRUE">NAT</domowner>
+            <domfldtp Sync="TRUE">Integer</domfldtp>
+          </stflddd>
+        </stfield>
+      </subtype>
+      <subtype>
+        <stname Sync="TRUE">DEMConnector</stname>
+        <stcode Sync="TRUE">3</stcode>
+        <stfield>
+          <stfldnm Sync="TRUE">FEATURETYPE</stfldnm>
+          <stflddv Sync="TRUE">DEM Connector</stflddv>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">TYPE</stfldnm>
+          <stflddv Sync="TRUE">2</stflddv>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">PERENNIALITY</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">dm_PerennialityMultScle</domname>
+            <domdesc Sync="TRUE">Perennialty which may be populated</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Duplicate</splttype>
+            <domfldtp Sync="TRUE">String</domfldtp>
+            <domowner Sync="TRUE">NAT</domowner>
+          </stflddd>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">HIERARCHY</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">dm_HierarchyMultScle</domname>
+            <domdesc Sync="TRUE">Hierarchy which may be populated</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Duplicate</splttype>
+            <domfldtp Sync="TRUE">String</domfldtp>
+            <domowner Sync="TRUE">NAT</domowner>
+          </stflddd>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">UPPERSCALE</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">dm_UpperScaleMultScle</domname>
+            <domdesc Sync="TRUE">Upper Scale of Data Utilisation</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Duplicate</splttype>
+            <domfldtp Sync="TRUE">Integer</domfldtp>
+            <domowner Sync="TRUE">BUILT</domowner>
+          </stflddd>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">USCERTAINTY</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">dm_USCertaintyMultScle</domname>
+            <domdesc Sync="TRUE">Upper Scale Certainity</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Duplicate</splttype>
+            <domfldtp Sync="TRUE">String</domfldtp>
+            <domowner Sync="TRUE">BUILT</domowner>
+          </stflddd>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">SYMBOL100K</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">SYMBOL100K_WatercourseLines_Rules</domname>
+            <domdesc Sync="TRUE">Representation rules</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Default value</splttype>
+            <domowner Sync="TRUE">NAT</domowner>
+            <domfldtp Sync="TRUE">Integer</domfldtp>
+          </stflddd>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">SYMBOL250K</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">SYMBOL250K_WatercourseLines_Rules</domname>
+            <domdesc Sync="TRUE">Representation rules</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Default value</splttype>
+            <domowner Sync="TRUE">NAT</domowner>
+            <domfldtp Sync="TRUE">Integer</domfldtp>
+          </stflddd>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">SYMBOLWAC1MIL</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">SYMBOLWAC1Mil_WatercourseLines_Rules</domname>
+            <domdesc Sync="TRUE">Representation rules</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Default value</splttype>
+            <domowner Sync="TRUE">NAT</domowner>
+            <domfldtp Sync="TRUE">Integer</domfldtp>
+          </stflddd>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">SYMBOL2_5MIL</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">SYMBOL2_5Mil_WatercourseLines_Rules</domname>
+            <domdesc Sync="TRUE">Representation rules</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Default value</splttype>
+            <domowner Sync="TRUE">NAT</domowner>
+            <domfldtp Sync="TRUE">Integer</domfldtp>
+          </stflddd>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">SYMBOL5MIL</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">SYMBOL5Mil_WatercourseLines_Rules</domname>
+            <domdesc Sync="TRUE">Representation rules</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Default value</splttype>
+            <domowner Sync="TRUE">NAT</domowner>
+            <domfldtp Sync="TRUE">Integer</domfldtp>
+          </stflddd>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">SYMBOL10MIL</stfldnm>
+          <stflddd>
+            <domname Sync="TRUE">SYMBOL10Mil_WatercourseLines_Rules</domname>
+            <domdesc Sync="TRUE">Representation rules</domdesc>
+            <domtype Sync="TRUE">Coded Value</domtype>
+            <mrgtype Sync="TRUE">Default value</mrgtype>
+            <splttype Sync="TRUE">Default value</splttype>
+            <domowner Sync="TRUE">NAT</domowner>
+            <domfldtp Sync="TRUE">Integer</domfldtp>
+          </stflddd>
+        </stfield>
+      </subtype>
+      <attr>
+        <attrlabl Sync="TRUE">STREET</attrlabl>
+        <attalias Sync="TRUE">STREET</attalias>
+        <attrtype Sync="TRUE">String</attrtype>
+        <attwidth Sync="TRUE">60</attwidth>
+        <atprecis Sync="TRUE">0</atprecis>
+        <attscale Sync="TRUE">0</attscale>
+      </attr>
+      <attr>
+        <attrlabl Sync="TRUE">ROADTYPE</attrlabl>
+        <attalias Sync="TRUE">ROADTYPE</attalias>
+        <attrtype Sync="TRUE">Integer</attrtype>
+        <attwidth Sync="TRUE">4</attwidth>
+        <atprecis Sync="TRUE">0</atprecis>
+        <attscale Sync="TRUE">0</attscale>
+      </attr>
+      <attr>
+        <attrlabl Sync="TRUE">STE_ROUTE_</attrlabl>
+        <attalias Sync="TRUE">STE_ROUTE_</attalias>
+        <attrtype Sync="TRUE">String</attrtype>
+        <attwidth Sync="TRUE">10</attwidth>
+        <atprecis Sync="TRUE">0</atprecis>
+        <attscale Sync="TRUE">0</attscale>
+      </attr>
+      <attr>
+        <attrlabl Sync="TRUE">NAT_ROUTE_</attrlabl>
+        <attalias Sync="TRUE">NAT_ROUTE_</attalias>
+        <attrtype Sync="TRUE">String</attrtype>
+        <attwidth Sync="TRUE">10</attwidth>
+        <atprecis Sync="TRUE">0</atprecis>
+        <attscale Sync="TRUE">0</attscale>
+      </attr>
+      <attr>
+        <attrlabl Sync="TRUE">BASELINE_I</attrlabl>
+        <attalias Sync="TRUE">BASELINE_I</attalias>
+        <attrtype Sync="TRUE">Double</attrtype>
+        <attwidth Sync="TRUE">8</attwidth>
+        <atprecis Sync="TRUE">0</atprecis>
+        <attscale Sync="TRUE">0</attscale>
+      </attr>
+      <subtype>
+        <stname Sync="TRUE">Culvert</stname>
+        <stcode Sync="TRUE">4</stcode>
+        <stfield>
+          <stfldnm Sync="TRUE">FEATURETYPE</stfldnm>
+          <stflddv Sync="TRUE">Culvert</stflddv>
+        </stfield>
+        <stfield>
+          <stfldnm Sync="TRUE">TYPE</stfldnm>
+          <stflddv Sync="TRUE">2</stflddv>
+        </stfield>
+      </subtype>
+      <attr>
+        <attrlabl Sync="TRUE">SHAPE_Length</attrlabl>
+        <attalias Sync="TRUE">SHAPE_Length</attalias>
+        <attrtype Sync="TRUE">Double</attrtype>
+        <attwidth Sync="TRUE">8</attwidth>
+        <atprecis Sync="TRUE">0</atprecis>
+        <attscale Sync="TRUE">0</attscale>
+        <attrdef Sync="TRUE">Length of feature in internal units.</attrdef>
+        <attrdefs Sync="TRUE">Esri</attrdefs>
+        <attrdomv>
+          <udom Sync="TRUE">Positive real numbers that are automatically generated.</udom>
+        </attrdomv>
+      </attr>
+    </detailed>
+  </eainfo>
+  <mdLang>
+    <languageCode value="eng" Sync="TRUE"/>
+    <countryCode value="AUS" Sync="TRUE"/>
+  </mdLang>
+  <mdHrLv>
+    <ScopeCd value="005" Sync="TRUE"/>
+  </mdHrLv>
+  <refSysInfo>
+    <RefSystem>
+      <refSysID>
+        <identCode code="4283" Sync="TRUE"/>
+        <idCodeSpace Sync="TRUE">EPSG</idCodeSpace>
+        <idVersion Sync="TRUE">8.6.2</idVersion>
+      </refSysID>
+    </RefSystem>
+  </refSysInfo>
+  <spatRepInfo>
+    <VectSpatRep>
+      <geometObjs Name="Baseline_roads_and_tracks">
+        <geoObjTyp>
+          <GeoObjTypCd value="002" Sync="TRUE"></GeoObjTypCd>
+        </geoObjTyp>
+        <geoObjCnt Sync="TRUE">0</geoObjCnt>
+      </geometObjs>
+      <topLvl>
+        <TopoLevCd value="001" Sync="TRUE"></TopoLevCd>
+      </topLvl>
+    </VectSpatRep>
+  </spatRepInfo>
+  <spdoinfo>
+    <ptvctinf>
+      <esriterm Name="Baseline_roads_and_tracks">
+        <efeatyp Sync="TRUE">Simple</efeatyp>
+        <efeageom code="3" Sync="TRUE"></efeageom>
+        <esritopo Sync="TRUE">FALSE</esritopo>
+        <efeacnt Sync="TRUE">0</efeacnt>
+        <spindex Sync="TRUE">TRUE</spindex>
+        <linrefer Sync="TRUE">TRUE</linrefer>
+      </esriterm>
+    </ptvctinf>
+  </spdoinfo>
+  <mdDateSt Sync="TRUE">20161102</mdDateSt>
+  <mdFileID>8F5BC21A-252F-417F-9C9E-0D50D0229C83</mdFileID>
+  <mdHrLvName Sync="TRUE">dataset</mdHrLvName>
+</metadata>
+
+

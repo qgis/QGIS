@@ -270,9 +270,9 @@ QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::parseLayers( con
   const QVariantMap jsonVariantMap = jsonObject.toVariantMap();
   const QVariantList layerList = jsonVariantMap.value( QStringLiteral( "objects" ) ).toList();
 
-  QString wmsURLFormat, wfsURLFormat, xyzURLFormat;
+  QString wmsURLFormat, wfsURLFormat, wcsURLFormat, xyzURLFormat;
 
-  for ( const QVariant &layer : qgis::as_const( layerList ) )
+  for ( const QVariant &layer : std::as_const( layerList ) )
   {
     QgsGeoNodeRequest::ServiceLayerDetail layerStruct;
     const QVariantMap layerMap = layer.toMap();
@@ -283,7 +283,7 @@ QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::parseLayers( con
       const QStringList splitUrl = layerMap.value( QStringLiteral( "detail_url" ) ).toString().split( '/' );
       layerStruct.typeName = !splitUrl.isEmpty() ? splitUrl.last() : QString();
     }
-    layerStruct.uuid = layerMap.value( QStringLiteral( "uuid" ) ).toString();
+    layerStruct.uuid = QUuid( layerMap.value( QStringLiteral( "uuid" ) ).toString() );
     layerStruct.id = layerMap.value( QStringLiteral( "id" ) ).toString();
     layerStruct.name = layerMap.value( QStringLiteral( "name" ) ).toString();
     layerStruct.typeName = layerMap.value( QStringLiteral( "typename" ) ).toString();
@@ -291,7 +291,7 @@ QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::parseLayers( con
 
     if ( ! layerMap.contains( QStringLiteral( "links" ) ) )
     {
-      if ( wmsURLFormat.isEmpty() && wfsURLFormat.isEmpty() && xyzURLFormat.isEmpty() )
+      if ( wmsURLFormat.isEmpty() && wfsURLFormat.isEmpty() && wcsURLFormat.isEmpty() && xyzURLFormat.isEmpty() )
       {
         bool success = requestBlocking( QStringLiteral( "/api/layers/" ) + layerStruct.id );
         if ( success )
@@ -303,17 +303,18 @@ QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::parseLayers( con
           QgsGeoNodeRequest::ServiceLayerDetail tempLayerStruct;
           tempLayerStruct = parseOwsUrl( tempLayerStruct, resourceUriLinks );
 
-          if ( tempLayerStruct.wmsURL.isEmpty() && tempLayerStruct.wfsURL.isEmpty() && tempLayerStruct.xyzURL.isEmpty() )
+          if ( tempLayerStruct.wmsURL.isEmpty() && tempLayerStruct.wfsURL.isEmpty() && tempLayerStruct.wcsURL.isEmpty() && tempLayerStruct.xyzURL.isEmpty() )
             continue;
 
           // Avoid iterating all the layers to get the service url. Instead, generate a string format once we found one service url
-          // for every service (wms, wfs, xyz). And then use the string format for the other layers since they are identical.
+          // for every service (wms, wfs, wcs, xyz). And then use the string format for the other layers since they are identical.
           switch ( tempLayerStruct.server )
           {
             case QgsGeoNodeRequest::BackendServer::QgisServer:
             {
               wmsURLFormat = ! tempLayerStruct.wmsURL.isEmpty() ? tempLayerStruct.wmsURL.replace( layerStruct.name, QStringLiteral( "%1" ) ) : QString();
               wfsURLFormat = ! tempLayerStruct.wfsURL.isEmpty() ? tempLayerStruct.wfsURL.replace( layerStruct.name, QStringLiteral( "%1" ) ) : QString();
+              wcsURLFormat = ! tempLayerStruct.wcsURL.isEmpty() ? tempLayerStruct.wcsURL.replace( layerStruct.name, QStringLiteral( "%1" ) ) : QString();
               xyzURLFormat = ! tempLayerStruct.xyzURL.isEmpty() ? tempLayerStruct.xyzURL.replace( layerStruct.name, QStringLiteral( "%1" ) ) : QString();
               break;
             }
@@ -321,6 +322,7 @@ QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::parseLayers( con
             {
               wmsURLFormat = ! tempLayerStruct.wmsURL.isEmpty() ? tempLayerStruct.wmsURL : QString();
               wfsURLFormat = ! tempLayerStruct.wfsURL.isEmpty() ? tempLayerStruct.wfsURL : QString();
+              wcsURLFormat = ! tempLayerStruct.wcsURL.isEmpty() ? tempLayerStruct.wcsURL : QString();
               xyzURLFormat = ! tempLayerStruct.xyzURL.isEmpty() ? tempLayerStruct.xyzURL.replace( layerStruct.name, QStringLiteral( "%1" ) ) : QString();
               break;
             }
@@ -336,6 +338,7 @@ QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::parseLayers( con
         // Replace string argument with the layer id.
         layerStruct.wmsURL = wmsURLFormat.contains( "%1" ) ? wmsURLFormat.arg( layerStruct.name ) : wmsURLFormat;
         layerStruct.wfsURL = wfsURLFormat.contains( "%1" ) ? wfsURLFormat.arg( layerStruct.name ) : wfsURLFormat;
+        layerStruct.wcsURL = wcsURLFormat.contains( "%1" ) ? wcsURLFormat.arg( layerStruct.name ) : wcsURLFormat;
         layerStruct.xyzURL = xyzURLFormat.contains( "%1" ) ? xyzURLFormat.arg( layerStruct.name ) : xyzURLFormat;
       }
     }
@@ -363,6 +366,10 @@ QgsGeoNodeRequest::ServiceLayerDetail QgsGeoNodeRequest::parseOwsUrl( QgsGeoNode
       else if ( linkMap.value( QStringLiteral( "link_type" ) ) == QLatin1String( "OGC:WFS" ) )
       {
         urlFound = layerStruct.wfsURL = linkMap.value( QStringLiteral( "url" ) ).toString();
+      }
+      else if ( linkMap.value( QStringLiteral( "link_type" ) ) == QLatin1String( "OGC:WCS" ) )
+      {
+        urlFound = layerStruct.wcsURL = linkMap.value( QStringLiteral( "url" ) ).toString();
       }
       else if ( linkMap.value( QStringLiteral( "link_type" ) ) == QLatin1String( "image" ) )
       {
@@ -445,6 +452,10 @@ QStringList QgsGeoNodeRequest::fetchServiceUrlsBlocking( const QString &serviceT
     {
       url = layer.wfsURL;
     }
+    else if ( QString::compare( serviceType, QStringLiteral( "wcs" ), Qt::CaseInsensitive ) == 0 )
+    {
+      url = layer.wcsURL;
+    }
     else if ( QString::compare( serviceType, QStringLiteral( "xyz" ), Qt::CaseInsensitive ) == 0 )
     {
       url = layer.xyzURL;
@@ -488,6 +499,10 @@ QgsStringMap QgsGeoNodeRequest::fetchServiceUrlDataBlocking( const QString &serv
     else if ( QString::compare( serviceType, QStringLiteral( "wfs" ), Qt::CaseInsensitive ) == 0 )
     {
       url = layer.wfsURL;
+    }
+    else if ( QString::compare( serviceType, QStringLiteral( "wcs" ), Qt::CaseInsensitive ) == 0 )
+    {
+      url = layer.wcsURL;
     }
     else if ( QString::compare( serviceType, QStringLiteral( "xyz" ), Qt::CaseInsensitive ) == 0 )
     {
@@ -543,7 +558,7 @@ bool QgsGeoNodeRequest::requestBlocking( const QString &endPoint )
 QNetworkReply *QgsGeoNodeRequest::requestUrl( const QString &url )
 {
   QNetworkRequest request( url );
-  request.setAttribute( QNetworkRequest::FollowRedirectsAttribute, true );
+  request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, 1 );
 
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsGeoNodeRequest" ) );
   // Add authentication check here

@@ -74,11 +74,7 @@ QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
   mValueDelegate = new QgsLocaleAwareNumericLineEditDelegate( Qgis::DataType::UnknownDataType, this );
   mColormapTreeWidget->setItemDelegateForColumn( ValueColumn, mValueDelegate );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  mColormapTreeWidget->setColumnWidth( ColorColumn, Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 6.6 );
-#else
   mColormapTreeWidget->setColumnWidth( ColorColumn, Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 6.6 );
-#endif
 
   mColormapTreeWidget->setContextMenuPolicy( Qt::CustomContextMenu );
   mColormapTreeWidget->setSelectionMode( QAbstractItemView::ExtendedSelection );
@@ -109,7 +105,7 @@ QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsColorRampShaderWidget::applyColorRamp );
   connect( mNumberOfEntriesSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsColorRampShaderWidget::classify );
   connect( mClipCheckBox, &QAbstractButton::toggled, this, &QgsColorRampShaderWidget::widgetChanged );
-  connect( mLabelPrecisionSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, [ = ]( int )
+  connect( mLabelPrecisionSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [ = ]( int )
   {
     autoLabel();
   } );
@@ -516,6 +512,7 @@ void QgsColorRampShaderWidget::mLoadFromFileButton_clicked()
   settings.setValue( QStringLiteral( "lastColorMapDir" ), fileInfo.absoluteDir().absolutePath() );
 
   loadMinimumMaximumFromTree();
+  updateColorRamp();
   emit widgetChanged();
 }
 
@@ -838,7 +835,7 @@ void QgsColorRampShaderWidget::changeColor()
     colorWidget->setAllowOpacity( true );
     connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, [ = ]( const QColor & newColor )
     {
-      for ( QTreeWidgetItem *item : qgis::as_const( itemList ) )
+      for ( QTreeWidgetItem *item : std::as_const( itemList ) )
       {
         item->setData( ColorColumn, Qt::ItemDataRole::EditRole, newColor );
       }
@@ -854,7 +851,7 @@ void QgsColorRampShaderWidget::changeColor()
     QColor newColor = QgsColorDialog::getColor( currentColor, this, QStringLiteral( "Change Color" ), true );
     if ( newColor.isValid() )
     {
-      for ( QTreeWidgetItem *item : qgis::as_const( itemList ) )
+      for ( QTreeWidgetItem *item : std::as_const( itemList ) )
       {
         item->setData( ColorColumn, Qt::ItemDataRole::EditRole, newColor );
       }

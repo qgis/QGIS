@@ -58,6 +58,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     json asJsonObject( int precision = 17 ) const override SIP_SKIP;
     QString asKml( int precision = 17 ) const override;
+    void normalize() final SIP_HOLDGIL;
 
     //surface interface
     double area() const override SIP_HOLDGIL;
@@ -66,6 +67,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     QgsCurvePolygon *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
+    bool boundingBoxIntersects( const QgsRectangle &rectangle ) const override SIP_HOLDGIL;
 
     //curve polygon interface
 
@@ -89,6 +91,19 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
       return mExteriorRing.get();
     }
 
+    /**
+     * Returns a non-const pointer to the curve polygon's exterior ring.
+     * Ownership stays with this QgsCurve.
+     *
+     * \see interiorRing()
+     * \note Not available in Python.
+     * \since QGIS 3.20
+     */
+    QgsCurve *exteriorRing() SIP_SKIP
+    {
+      return mExteriorRing.get();
+    }
+
 #ifndef SIP_RUN
 
     /**
@@ -105,12 +120,29 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
       }
       return mInteriorRings.at( i );
     }
+
+    /**
+     * Retrieves an interior ring from the curve polygon. The first interior ring has index 0.
+     *
+     * \see numInteriorRings()
+     * \see exteriorRing()
+     * \note Not available in Python.
+     * \since QGIS 3.20
+     */
+    QgsCurve *interiorRing( int i ) SIP_SKIP
+    {
+      if ( i < 0 || i >= mInteriorRings.size() )
+      {
+        return nullptr;
+      }
+      return mInteriorRings.at( i );
+    }
 #else
 
     /**
      * Retrieves an interior ring from the curve polygon. The first interior ring has index 0.
      *
-     * An IndexError will be raised if no interior ring with the specified index exists.
+     * \throws IndexError if no interior ring with the specified index exists.
      *
      * \see numInteriorRings()
      * \see exteriorRing()
@@ -168,7 +200,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * The corresponding ring is removed from the polygon and deleted.
      * It is not possible to remove the exterior ring using this method.
      *
-     * An IndexError will be raised if no interior ring with the specified index exists.
+     * \throws IndexError if no interior ring with the specified index exists.
      *
      * \see removeInteriorRings()
      */
@@ -261,6 +293,8 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
     QgsCurvePolygon *toCurveType() const override SIP_FACTORY;
 
+    bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = nullptr ) override;
+
 #ifndef SIP_RUN
     void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
     void transformVertices( const std::function< QgsPoint( const QgsPoint & ) > &transform ) override;
@@ -277,7 +311,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
       if ( !geom )
         return nullptr;
 
-      QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( geom->wkbType() );
+      const QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( geom->wkbType() );
       if ( flatType == QgsWkbTypes::CurvePolygon
            || flatType == QgsWkbTypes::Polygon
            || flatType == QgsWkbTypes::Triangle )
@@ -303,6 +337,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
     int childCount() const override;
     QgsAbstractGeometry *childGeometry( int index ) const override;
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
 
   protected:
 

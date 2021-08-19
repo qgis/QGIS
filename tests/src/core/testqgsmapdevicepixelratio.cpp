@@ -72,8 +72,8 @@ void TestQgsMapDevicePixelRatio::initTestCase()
   mMapSettings = new QgsMapSettings();
 
   //create a point layer that will be used in all tests...
-  QString myPointsFileName = mTestDataDir + "points.shp";
-  QFileInfo myPointFileInfo( myPointsFileName );
+  const QString myPointsFileName = mTestDataDir + "points.shp";
+  const QFileInfo myPointFileInfo( myPointsFileName );
   mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
                                      myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
@@ -91,7 +91,7 @@ void TestQgsMapDevicePixelRatio::cleanupTestCase()
   delete mPointsLayer;
   QgsApplication::exitQgis();
 
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -105,7 +105,7 @@ void TestQgsMapDevicePixelRatio::pointsLayer()
 {
   mMapSettings->setLayers( QList<QgsMapLayer *>() << mPointsLayer );
 
-  QString qml = mTestDataDir + "points.qml";
+  const QString qml = mTestDataDir + "points.qml";
   bool success = false;
   mPointsLayer->loadNamedStyle( qml, success );
   QVERIFY( success );
@@ -127,7 +127,7 @@ bool TestQgsMapDevicePixelRatio::render( const QString &testType, float dpr )
   checker.setControlPathPrefix( QStringLiteral( "mapdevicepixelratio" ) );
   checker.setControlName( "expected_" + testType );
   checker.setMapSettings( *mMapSettings );
-  bool result = checker.runTest( testType );
+  const bool result = checker.runTest( testType );
   mReport += "\n\n\n" + checker.report();
   return result;
 }

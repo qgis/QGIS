@@ -16,11 +16,11 @@
 #ifndef QGSRENDERERRANGE_H
 #define QGSRENDERERRANGE_H
 
-#include <QRegExp>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgssymbollayerutils.h"
+
+#include <QRegularExpression>
 
 class QDomDocument;
 class QDomElement;
@@ -41,6 +41,7 @@ class CORE_EXPORT QgsRendererRange
      * Constructor for QgsRendererRange.
      */
     QgsRendererRange() = default;
+    ~QgsRendererRange();
 
     /**
      * Creates a renderer symbol range
@@ -104,7 +105,7 @@ typedef QList<QgsRendererRange> QgsRangeList;
  * \since QGIS 2.6
  * \deprecated since QGIS 3.10, use QgsClassificationMethod instead
  */
-class Q_DECL_DEPRECATED CORE_EXPORT QgsRendererRangeLabelFormat SIP_DEPRECATED
+class CORE_EXPORT Q_DECL_DEPRECATED QgsRendererRangeLabelFormat SIP_DEPRECATED
 {
   public:
     QgsRendererRangeLabelFormat();
@@ -140,8 +141,8 @@ class Q_DECL_DEPRECATED CORE_EXPORT QgsRendererRangeLabelFormat SIP_DEPRECATED
     // values used to manage number formatting - precision and trailing zeroes
     double mNumberScale = 1.0;
     QString mNumberSuffix;
-    QRegExp mReTrailingZeroes;
-    QRegExp mReNegativeZero;
+    QRegularExpression mReTrailingZeroes;
+    QRegularExpression mReNegativeZero;
 };
 
 

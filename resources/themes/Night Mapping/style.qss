@@ -148,17 +148,22 @@ QMenu
     padding-right: 0em;
 }
 
+QMenu::icon
+{
+    padding-left: 0.3em;
+}
+
 QMenu::item
 {
     background: transparent;
-    padding: 0.2em 1.3em 0.2em 1.3em;
+    padding: 0.2em 1.3em 0.2em 0.4em;
 }
 
 QMenu::item:disabled
 {
     color: #555;
     background: transparent;
-    padding: 0.2em 1.3em 0.2em 1.3em;
+    padding: 0.2em 1.3em 0.2em 0.4em;
 }
 
 QMenu::item:selected
@@ -170,6 +175,11 @@ QMenu::item:selected
 QMenu::item:checked
 {
     text-decoration:underline;
+}
+
+QMenu::indicator
+{
+    width: 0em;
 }
 
 QWidget:disabled, QWidget:editable:disabled
@@ -347,15 +357,15 @@ QComboBox::down-arrow
 }
 
 QComboBox:item {
-    padding-left: 1.3em;
+    padding-left: 0.1em;
     height:1.25em;
 }
 QComboBox:item:selected {
-    padding-left: 1.3em;
+    padding-left: 0.1em;
     height:1.25em;
 }
 QComboBox:item:checked {
-    padding-left: 1.3em;
+    padding-left: 0.1em;
     height:1.25em;
     text-decoration:underline;
 }

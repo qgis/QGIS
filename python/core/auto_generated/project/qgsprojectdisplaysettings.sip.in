@@ -10,7 +10,7 @@
 
 class QgsProjectDisplaySettings : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Contains settings and properties relating to how a :py:class:`QgsProject` should display
 values such as map coordinates and bearings.
 

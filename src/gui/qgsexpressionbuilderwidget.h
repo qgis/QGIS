@@ -36,7 +36,7 @@ class QgsRelation;
 
 /**
  * \ingroup gui
- * A reusable widget that can be used to build a expression string.
+ * \brief A reusable widget that can be used to build a expression string.
   * See QgsExpressionBuilderDialog for example of usage.
   */
 class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExpressionBuilderWidgetBase
@@ -69,19 +69,19 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * Initialize without any layer
      * \since QGIS 3.14
      */
-    void init( const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), const Flags &flags = LoadAll );
+    void init( const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), QgsExpressionBuilderWidget::Flags flags = LoadAll );
 
     /**
      * Initialize with a layer
      * \since QGIS 3.14
      */
-    void initWithLayer( QgsVectorLayer *layer, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), const Flags &flags = LoadAll );
+    void initWithLayer( QgsVectorLayer *layer, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), QgsExpressionBuilderWidget::Flags flags = LoadAll );
 
     /**
      * Initialize with given fields without any layer
      * \since QGIS 3.14
      */
-    void initWithFields( const QgsFields &fields, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), const Flags &flags = LoadAll );
+    void initWithFields( const QgsFields &fields, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), QgsExpressionBuilderWidget::Flags flags = LoadAll );
 
     /**
      * Sets layer in order to get the fields and values
@@ -186,7 +186,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * \deprecated since QGIS 3.14 use expressionTree()->saveToUserExpressions() instead
      * \since QGIS 3.12
      */
-    Q_DECL_DEPRECATED void saveToUserExpressions( const QString &label, const QString expression, const QString &helpText ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED void saveToUserExpressions( const QString &label, const QString &expression, const QString &helpText ) SIP_DEPRECATED;
 
     /**
      * Removes the expression \a label from the user stored expressions.
@@ -407,7 +407,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     int FUNCTION_MARKER_ID = 25;
 
-    void createErrorMarkers( QList<QgsExpression::ParserError> errors );
+    void createErrorMarkers( const QList<QgsExpression::ParserError> &errors );
     void createMarkers( const QgsExpressionNode *node );
     void clearFunctionMarkers();
     void clearErrors();
@@ -416,6 +416,9 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QString getFunctionHelp( QgsExpressionFunction *function );
     QString loadFunctionHelp( QgsExpressionItem *functionName );
     QString helpStylesheet() const;
+
+    // To be called whenever expression context has been updated
+    void expressionContextUpdated();
 
     // Will hold items with
     // * a display string that matches the represented field values

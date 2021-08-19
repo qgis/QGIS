@@ -21,7 +21,7 @@
 #include "qgsmaplayerstylemanager.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsvectorlayer.h"
-
+#include "qgslinesymbol.h"
 
 class TestQgsMapLayerStyleManager : public QObject
 {
@@ -78,7 +78,7 @@ void TestQgsMapLayerStyleManager::testDefault()
 
 void TestQgsMapLayerStyleManager::testStyle()
 {
-  QgsMapLayerStyle st;
+  const QgsMapLayerStyle st;
   QCOMPARE( st.isValid(), false );
 
   QgsLineSymbol *sym1 = new QgsLineSymbol();
@@ -203,8 +203,8 @@ void TestQgsMapLayerStyleManager::testSwitchingStyles()
 
 void TestQgsMapLayerStyleManager::testCopyStyles()
 {
-  std::unique_ptr<QgsVectorLayer> lines = qgis::make_unique<QgsVectorLayer>( QStringLiteral( "LineString" ), QStringLiteral( "Line Layer" ), QStringLiteral( "memory" ) );
-  std::unique_ptr<QgsVectorLayer> lines2 = qgis::make_unique<QgsVectorLayer>( QStringLiteral( "LineString" ), QStringLiteral( "Line Layer" ), QStringLiteral( "memory" ) );
+  std::unique_ptr<QgsVectorLayer> lines = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString" ), QStringLiteral( "Line Layer" ), QStringLiteral( "memory" ) );
+  std::unique_ptr<QgsVectorLayer> lines2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString" ), QStringLiteral( "Line Layer" ), QStringLiteral( "memory" ) );
 
   QgsMapLayerStyleManager *sm = lines->styleManager();
 

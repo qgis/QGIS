@@ -11,7 +11,7 @@
 
 class QgsHelp
 {
-%Docstring
+%Docstring(signature="appended")
 Helper class for showing help topic URI for the given key.
 
 Help can be stored online, on the local directory or on the intranet

@@ -34,7 +34,7 @@ class QgsAttributes;
 
 /**
  * \ingroup core
- * Base class for all diagram types.
+ * \brief Base class for all diagram types.
 */
 class CORE_EXPORT QgsDiagram SIP_NODEFAULTCTORS
 {

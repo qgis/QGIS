@@ -113,6 +113,31 @@ class TestQgsBlockingProcess(unittest.TestCase):
         self.assertNotEqual(p.run(f), 0)
         self.assertEqual(p.exitStatus(), QProcess.CrashExit)
 
+    def test_process_no_file(self):
+        """
+        Test a script which doesn't exist
+        """
+
+        def std_out(ba):
+            std_out.val += ba.data().decode('UTF-8')
+
+        std_out.val = ''
+
+        def std_err(ba):
+            std_err.val += ba.data().decode('UTF-8')
+
+        std_err.val = ''
+
+        # this program definitely doesn't exist!
+        p = QgsBlockingProcess('qgis_sucks', ['--version'])
+        p.setStdOutHandler(std_out)
+        p.setStdErrHandler(std_err)
+
+        f = QgsFeedback()
+        self.assertEqual(p.run(f), 1)
+        self.assertEqual(p.exitStatus(), QProcess.NormalExit)
+        self.assertEqual(p.processError(), QProcess.FailedToStart)
+
     def test_process_env(self):
         """
         Test that process inherits system environment correctly

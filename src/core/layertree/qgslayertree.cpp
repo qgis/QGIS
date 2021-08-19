@@ -129,14 +129,14 @@ void QgsLayerTree::writeXml( QDomElement &parentElement, const QgsReadWriteConte
 
   writeCommonXml( elem );
 
-  for ( QgsLayerTreeNode *node : qgis::as_const( mChildren ) )
+  for ( QgsLayerTreeNode *node : std::as_const( mChildren ) )
     node->writeXml( elem, context );
 
   QDomElement customOrderElem = doc.createElement( QStringLiteral( "custom-order" ) );
   customOrderElem.setAttribute( QStringLiteral( "enabled" ), mHasCustomLayerOrder ? 1 : 0 );
   elem.appendChild( customOrderElem );
 
-  for ( QgsMapLayer *layer : qgis::as_const( mCustomLayerOrder ) )
+  for ( QgsMapLayer *layer : std::as_const( mCustomLayerOrder ) )
   {
     // Safety belt, see https://github.com/qgis/QGIS/issues/26975
     // Crash when deleting an item from the layout legend
@@ -187,7 +187,7 @@ void QgsLayerTree::nodeAddedChildren( QgsLayerTreeNode *node, int indexFrom, int
     }
   }
 
-  for ( QgsMapLayer *layer : qgis::as_const( layers ) )
+  for ( QgsMapLayer *layer : std::as_const( layers ) )
   {
     if ( !mCustomLayerOrder.contains( layer ) && layer )
       mCustomLayerOrder.append( layer );

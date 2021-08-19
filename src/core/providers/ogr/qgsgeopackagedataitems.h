@@ -15,9 +15,11 @@
 #ifndef QGSGEOPACKAGEDATAITEMS_H
 #define QGSGEOPACKAGEDATAITEMS_H
 
-#include "qgsdataitem.h"
+#include "qgsdatacollectionitem.h"
 #include "qgsdataitemprovider.h"
+#include "qgsconnectionsitem.h"
 #include "qgsdataprovider.h"
+#include "qgslayeritem.h"
 #include "qgstaskmanager.h"
 #include "qgis_sip.h"
 
@@ -41,7 +43,7 @@ class CORE_EXPORT QgsGeoPackageCollectionItem : public QgsDataCollectionItem
     bool equal( const QgsDataItem *other ) override;
 
     //! Returns the layer type from \a geometryType
-    static QgsLayerItem::LayerType layerTypeFromDb( const QString &geometryType );
+    static Qgis::BrowserLayerType layerTypeFromDb( const QString &geometryType );
 
     //! Deletes a geopackage raster layer
     bool deleteRasterLayer( const QString &layerName, QString &errCause );
@@ -66,7 +68,7 @@ class CORE_EXPORT QgsGeoPackageCollectionItem : public QgsDataCollectionItem
   public:
     bool layerCollection() const override;
     bool hasDragEnabled() const override;
-    QgsMimeDataUtils::Uri mimeUri() const override;
+    QgsMimeDataUtils::UriList mimeUris() const override;
 };
 
 
@@ -101,7 +103,7 @@ class CORE_EXPORT QgsGeoPackageAbstractLayerItem : public QgsLayerItem
     QgsGeoPackageCollectionItem *collection() const;
 
   protected:
-    QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType, const QString &providerKey );
+    QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, Qgis::BrowserLayerType layerType, const QString &providerKey );
 
   private:
 
@@ -125,7 +127,7 @@ class CORE_EXPORT QgsGeoPackageVectorLayerItem final: public QgsGeoPackageAbstra
     Q_OBJECT
 
   public:
-    QgsGeoPackageVectorLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType );
+    QgsGeoPackageVectorLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, Qgis::BrowserLayerType layerType );
     bool executeDeleteLayer( QString &errCause ) override;
 
     // QgsDataItem interface

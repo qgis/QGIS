@@ -24,7 +24,7 @@ QgsPixmapLabel::QgsPixmapLabel( QWidget *parent )
 
 void QgsPixmapLabel::setPixmap( const QPixmap &p )
 {
-  bool sizeChanged = ( p.size() != mPixmap.size() );
+  const bool sizeChanged = ( p.size() != mPixmap.size() );
   mPixmap = p;
 
   if ( sizeChanged )
@@ -32,8 +32,7 @@ void QgsPixmapLabel::setPixmap( const QPixmap &p )
     updateGeometry();
   }
 
-  QLabel::setPixmap( mPixmap.scaled( this->size(),
-                                     Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
+  QLabel::setPixmap( mPixmap.scaled( this->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
 }
 
 int QgsPixmapLabel::heightForWidth( int width ) const
@@ -49,13 +48,22 @@ QSize QgsPixmapLabel::sizeHint() const
   if ( mPixmap.isNull() )
     return QSize( 0, 0 );
 
-  int w = this->width();
+  const int w = this->width();
   return QSize( w, heightForWidth( w ) );
 }
 
 void QgsPixmapLabel::resizeEvent( QResizeEvent *e )
 {
   QLabel::resizeEvent( e );
-  QLabel::setPixmap( mPixmap.scaled( this->size(),
-                                     Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
+  if ( !mPixmap.isNull() )
+  {
+    // Avoid infinite resize loop by setting a pixmap that'll always have a width and height less or equal to the label size
+    QLabel::setPixmap( mPixmap.scaled( this->size() -= QSize( 1, 1 ), Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
+  }
+}
+
+void QgsPixmapLabel::clear()
+{
+  mPixmap = QPixmap();
+  QLabel::clear();
 }

@@ -18,6 +18,8 @@
 
 #define SIP_NO_FILE
 
+#if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR<8 )
+
 #include <memory>
 
 class QString;
@@ -25,5 +27,7 @@ class QgsAbstractGeometry;
 
 //! Implementation of QgsGeometry::makeValid(). Not a public API.
 std::unique_ptr< QgsAbstractGeometry > _qgis_lwgeom_make_valid( const QgsAbstractGeometry *lwgeom_in, QString &errorMessage );
+
+#endif
 
 #endif // QGSGEOMETRYMAKEVALID_H

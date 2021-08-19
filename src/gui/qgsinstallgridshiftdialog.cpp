@@ -58,7 +58,7 @@ void QgsInstallGridShiftFileDialog::installFromFile()
     return; //canceled by the user
   }
 
-  QFileInfo fi( gridFilePath );
+  const QFileInfo fi( gridFilePath );
   settings.setValue( QStringLiteral( "lastTransformGridFolder" ), fi.absolutePath(), QgsSettings::App );
 
   const QString baseGridPath = QgsApplication::qgisSettingsDirPath() + QStringLiteral( "proj" );

@@ -23,7 +23,7 @@ class QgsLineSymbol;
 
 /**
  * \ingroup core
- * Raster renderer that generates contours on the fly for a source raster band.
+ * \brief Raster renderer that generates contours on the fly for a source raster band.
  *
  * \since QGIS 3.14
  */

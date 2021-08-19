@@ -87,6 +87,12 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     QgsRelation relation() const {return mRelation;}
 
     /**
+     * Returns the nm relation
+     * \since QGIS 3.18
+     */
+    QgsRelation nmRelation() const {return mNmRelation;}
+
+    /**
      * Sets the \a feature being edited and updates the UI unless \a update is set to FALSE
      */
     void setFeature( const QgsFeature &feature, bool update = true );
@@ -105,13 +111,15 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
 
     /**
      * Defines if a title label should be shown for this widget.
+     * \deprecated since QGIS 3.20 label is handled directly in QgsAttributeForm.
      */
-    bool showLabel() const;
+    Q_DECL_DEPRECATED bool showLabel() const SIP_DEPRECATED;
 
     /**
      * Defines if a title label should be shown for this widget.
+     * \deprecated since QGIS 3.20 label is handled directly in QgsAttributeForm.
      */
-    void setShowLabel( bool showLabel );
+    Q_DECL_DEPRECATED void setShowLabel( bool showLabel ) SIP_DEPRECATED;
 
     /**
     * Determines the relation id of the second relation involved in an N:M relation.
@@ -126,8 +134,9 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
 
     /**
      * Determines the label of this element
+     * \deprecated since QGIS 3.20 label is handled directly in QgsAttributeForm.
      */
-    QString label() const;
+    Q_DECL_DEPRECATED QString label() const SIP_DEPRECATED;
 
     /**
      * Sets \a label for this element
@@ -222,17 +231,20 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     QgsRelation mNmRelation;
     QgsFeature mFeature;
 
-    bool mShowLabel = true;
     bool mLayerInSameTransactionGroup = false;
 
     bool mForceSuppressFormPopup = false;
-    QVariant mNmRelationId;
-    QString mLabel;
+
+    /**
+     * Refresh the UI when the widget becomes visible
+     */
+    void showEvent( QShowEvent * );
 
     /**
      * Updates the title contents to reflect the current state of the widget
+     * \deprecated since QGIS 3.20 label is handled directly in QgsAttributeForm.
      */
-    void updateTitle();
+    Q_DECL_DEPRECATED void updateTitle() SIP_DEPRECATED;
 
     /**
      * Deletes the features with \a fids
@@ -256,9 +268,9 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
 
     /**
      * Sets the title of the widget, if it is wrapped within a QgsCollapsibleGroupBox
-     * Check QgsRealationEditorWidget as an example.
+     * \deprecated since QGIS 3.20 label is handled directly in QgsAttributeForm.
      */
-    virtual void setTitle( const QString &title );
+    Q_DECL_DEPRECATED virtual void setTitle( const QString &title ) SIP_DEPRECATED;
 
     /**
      * A hook called right before setRelationFeature() is executed. Used to update the UI once setting the relation feature is done.
@@ -288,7 +300,7 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
 
 /**
  * \ingroup gui
- * This class should be subclassed for every configurable relation widget type.
+ * \brief This class should be subclassed for every configurable relation widget type.
  *
  * It implements the GUI configuration widget and transforms this to/from a configuration.
  *
@@ -346,10 +358,24 @@ class GUI_EXPORT QgsAbstractRelationEditorConfigWidget : public QWidget
      */
     QgsRelation relation() const;
 
+    /**
+     * \brief Set the nm relation for this widget.
+     *
+     * \param nmRelation The nm relation
+     */
+    virtual void setNmRelation( const QgsRelation &nmRelation );
+
+    /**
+     * Returns the nm relation for which this configuration widget applies
+     *
+     * \returns The nm relation
+     */
+    virtual QgsRelation nmRelation() const;
 
   private:
     QgsVectorLayer *mLayer = nullptr;
     QgsRelation mRelation;
+    QgsRelation mNmRelation;
 };
 
 

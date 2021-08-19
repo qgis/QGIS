@@ -13,7 +13,7 @@
 
 class QgsAggregateCalculator
 {
-%Docstring
+%Docstring(signature="appended")
 Utility class for calculating aggregates for a field (or expression) over the features
 from a vector layer. It is recommended that :py:func:`QgsVectorLayer.aggregate()` is used rather then
 directly using this class, as the :py:class:`QgsVectorLayer` method can handle delegating aggregate calculation
@@ -29,9 +29,9 @@ to a data provider for remote calculation.
 
     struct AggregateInfo
     {
-      QString function; //!< The expression function
-      QString name; //!< A translated, human readable name
-      QSet<QVariant::Type> supportedTypes; //!< This aggregate function can only be used with these datatypes
+      QString function;
+      QString name;
+      QSet<QVariant::Type> supportedTypes;
     };
 
     enum Aggregate
@@ -75,6 +75,13 @@ to a data provider for remote calculation.
 Constructor for QgsAggregateCalculator.
 
 :param layer: vector layer to calculate aggregate from
+%End
+
+    QString lastError() const;
+%Docstring
+Returns the last error encountered during the aggregate calculation.
+
+.. versionadded:: 3.22
 %End
 
     const QgsVectorLayer *layer() const;
@@ -132,7 +139,7 @@ Returns the delimiter used for joining values with the StringConcatenate aggrega
 %End
 
     QVariant calculate( Aggregate aggregate, const QString &fieldOrExpression,
-                        QgsExpressionContext *context = 0, bool *ok = 0 ) const;
+                        QgsExpressionContext *context = 0, bool *ok = 0, QgsFeedback *feedback = 0 ) const;
 %Docstring
 Calculates the value of an aggregate.
 
@@ -140,7 +147,9 @@ Calculates the value of an aggregate.
 :param fieldOrExpression: source field or expression to use as basis for aggregated values.
                           If an expression is used, then the context parameter must be set.
 :param context: expression context for evaluating expressions
-:param ok: if specified, will be set to ``True`` if aggregate calculation was successful
+:param ok: if specified, will be set to ``True`` if aggregate calculation was successful. If ``ok`` is ``False`` then :py:func:`~QgsAggregateCalculator.lastError` can be used to retrieve a descriptive error message.
+:param feedback: optional feedback argument for early cancellation (since QGIS 3.22). If set, this will take precedence over any feedback object
+                 set on the expression ``context``.
 
 :return: calculated aggregate value
 %End
@@ -153,6 +162,13 @@ Converts a string to a aggregate type.
 :param ok: if specified, will be set to ``True`` if conversion was successful
 
 :return: aggregate type
+%End
+
+    static QString displayName( Aggregate aggregate );
+%Docstring
+Returns the friendly display name for a ``aggregate``.
+
+.. versionadded:: 3.22
 %End
 
     static QList< QgsAggregateCalculator::AggregateInfo > aggregates();

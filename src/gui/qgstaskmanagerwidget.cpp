@@ -47,18 +47,10 @@ QgsTaskManagerWidget::QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *pa
   mTreeView->setRootIsDecorated( false );
   mTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  int progressColWidth = static_cast< int >( fontMetrics().width( 'X' ) * 10 * Qgis::UI_SCALE_FACTOR );
-#else
-  int progressColWidth = static_cast< int >( fontMetrics().horizontalAdvance( 'X' ) * 10 * Qgis::UI_SCALE_FACTOR );
-#endif
+  const int progressColWidth = static_cast< int >( fontMetrics().horizontalAdvance( 'X' ) * 10 * Qgis::UI_SCALE_FACTOR );
   mTreeView->setColumnWidth( QgsTaskManagerModel::Progress, progressColWidth );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  int statusColWidth = static_cast< int >( fontMetrics().width( 'X' ) * 2 * Qgis::UI_SCALE_FACTOR );
-#else
-  int statusColWidth = static_cast< int >( fontMetrics().horizontalAdvance( 'X' ) * 2 * Qgis::UI_SCALE_FACTOR );
-#endif
+  const int statusColWidth = static_cast< int >( fontMetrics().horizontalAdvance( 'X' ) * 2 * Qgis::UI_SCALE_FACTOR );
   mTreeView->setColumnWidth( QgsTaskManagerModel::Status, statusColWidth );
   mTreeView->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   mTreeView->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
@@ -308,7 +300,7 @@ void QgsTaskManagerModel::progressChanged( long id, double progress )
 {
   Q_UNUSED( progress )
 
-  QModelIndex index = idToIndex( id, Progress );
+  const QModelIndex index = idToIndex( id, Progress );
   if ( !index.isValid() )
   {
     return;
@@ -325,7 +317,7 @@ void QgsTaskManagerModel::statusChanged( long id, int status )
   }
   else
   {
-    QModelIndex index = idToIndex( id, Status );
+    const QModelIndex index = idToIndex( id, Status );
     if ( !index.isValid() )
     {
       return;
@@ -340,7 +332,7 @@ QgsTask *QgsTaskManagerModel::indexToTask( const QModelIndex &index ) const
   if ( !index.isValid() || index.parent().isValid() )
     return nullptr;
 
-  long id = index.row() >= 0 && index.row() < mRowToTaskIdList.count() ? mRowToTaskIdList.at( index.row() ) : -1;
+  const long id = index.row() >= 0 && index.row() < mRowToTaskIdList.count() ? mRowToTaskIdList.at( index.row() ) : -1;
   if ( id >= 0 )
     return mManager->task( id );
   else
@@ -361,7 +353,7 @@ int QgsTaskManagerModel::idToRow( long id ) const
 
 QModelIndex QgsTaskManagerModel::idToIndex( long id, int column ) const
 {
-  int row = idToRow( id );
+  const int row = idToRow( id );
   if ( row < 0 )
     return QModelIndex();
 
@@ -404,16 +396,16 @@ QString QgsTaskManagerModel::createTooltip( QgsTask *task, ToolTipType type )
 
   QString formattedTime;
 
-  qint64 elapsed = task->elapsedTime();
+  const qint64 elapsed = task->elapsedTime();
 
   if ( task->progress() > 0 )
   {
     // estimate time remaining
-    qint64 msRemain = static_cast< qint64 >( elapsed * 100.0 / task->progress() - elapsed );
+    const qint64 msRemain = static_cast< qint64 >( elapsed * 100.0 / task->progress() - elapsed );
     if ( msRemain > 120 * 1000 )
     {
-      long long minutes = msRemain / 1000 / 60;
-      int seconds = ( msRemain / 1000 ) % 60;
+      const long long minutes = msRemain / 1000 / 60;
+      const int seconds = ( msRemain / 1000 ) % 60;
       formattedTime = tr( "%1:%2 minutes" ).arg( minutes ).arg( seconds, 2, 10, QChar( '0' ) );
     }
     else
@@ -421,15 +413,15 @@ QString QgsTaskManagerModel::createTooltip( QgsTask *task, ToolTipType type )
 
     formattedTime = tr( "Estimated time remaining: %1" ).arg( formattedTime );
 
-    QTime estimatedEnd = QTime::currentTime().addMSecs( msRemain );
+    const QTime estimatedEnd = QTime::currentTime().addMSecs( msRemain );
     formattedTime += tr( " (%1)" ).arg( QLocale::system().toString( estimatedEnd, QLocale::ShortFormat ) );
   }
   else
   {
     if ( elapsed > 120 * 1000 )
     {
-      long long minutes = elapsed / 1000 / 60;
-      int seconds = ( elapsed / 1000 ) % 60;
+      const long long minutes = elapsed / 1000 / 60;
+      const int seconds = ( elapsed / 1000 ) % 60;
       formattedTime = tr( "%1:%2 minutes" ).arg( minutes ).arg( seconds, 2, 10, QChar( '0' ) );
     }
     else
@@ -582,12 +574,8 @@ QgsTaskManagerFloatingWidget::QgsTaskManagerFloatingWidget( QgsTaskManager *mana
   setLayout( new QVBoxLayout() );
   QgsTaskManagerWidget *w = new QgsTaskManagerWidget( manager );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  int minWidth = static_cast< int >( fontMetrics().width( 'X' ) * 60 * Qgis::UI_SCALE_FACTOR );
-#else
-  int minWidth = static_cast< int >( fontMetrics().horizontalAdvance( 'X' ) * 60 * Qgis::UI_SCALE_FACTOR );
-#endif
-  int minHeight = static_cast< int >( fontMetrics().height() * 15 * Qgis::UI_SCALE_FACTOR );
+  const int minWidth = static_cast< int >( fontMetrics().horizontalAdvance( 'X' ) * 60 * Qgis::UI_SCALE_FACTOR );
+  const int minHeight = static_cast< int >( fontMetrics().height() * 15 * Qgis::UI_SCALE_FACTOR );
   setMinimumSize( minWidth, minHeight );
   layout()->addWidget( w );
   setStyleSheet( ".QgsTaskManagerFloatingWidget { border-top-left-radius: 8px;"
@@ -628,13 +616,8 @@ QgsTaskManagerStatusBarWidget::QgsTaskManagerStatusBarWidget( QgsTaskManager *ma
 
 QSize QgsTaskManagerStatusBarWidget::sizeHint() const
 {
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  int width = static_cast< int >( fontMetrics().width( 'X' ) * 20 * Qgis::UI_SCALE_FACTOR );
-#else
-  int width = static_cast< int >( fontMetrics().horizontalAdvance( 'X' ) * 20 * Qgis::UI_SCALE_FACTOR );
-#endif
-  int height = QToolButton::sizeHint().height();
+  const int width = static_cast< int >( fontMetrics().horizontalAdvance( 'X' ) * 20 * Qgis::UI_SCALE_FACTOR );
+  const int height = QToolButton::sizeHint().height();
   return QSize( width, height );
 }
 

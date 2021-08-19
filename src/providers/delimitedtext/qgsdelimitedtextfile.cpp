@@ -22,27 +22,28 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QDataStream>
-#include <QTextStream>
 #include <QFileSystemWatcher>
 #include <QTextCodec>
 #include <QStringList>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QUrl>
 #include <QUrlQuery>
 
 QgsDelimitedTextFile::QgsDelimitedTextFile( const QString &url )
   : mFileName( QString() )
   , mEncoding( QStringLiteral( "UTF-8" ) )
+  , mFirstEOLChar( QChar( 0 ) )
   , mDefaultFieldName( QStringLiteral( "field_%1" ) )
-  , mDefaultFieldRegexp( "^(?:field_)(\\d+)$", Qt::CaseInsensitive )
+  , mDefaultFieldRegexp( QStringLiteral( "^(?:field_)(\\d+)$" ) )
 {
+  mDefaultFieldRegexp.setPatternOptions( QRegularExpression::CaseInsensitiveOption );
   // The default type is CSV
   setTypeCSV();
   if ( ! url.isNull() ) setFromUrl( url );
 
   // For tests
-  QString bufferSizeStr( getenv( "QGIS_DELIMITED_TEXT_FILE_BUFFER_SIZE" ) );
-  mMaxBufferSize = bufferSizeStr.isEmpty() ? 1024 * 1024 : bufferSizeStr.toInt();
+  const QString bufferSizeStr( getenv( "QGIS_DELIMITED_TEXT_FILE_BUFFER_SIZE" ) );
+  mMaxBufferSize = bufferSizeStr.isEmpty() ? 10 * 1024 * 1024 : bufferSizeStr.toInt();
 }
 
 
@@ -53,10 +54,9 @@ QgsDelimitedTextFile::~QgsDelimitedTextFile()
 
 void QgsDelimitedTextFile::close()
 {
-  if ( mStream )
+  if ( mCodec )
   {
-    delete mStream;
-    mStream = nullptr;
+    mCodec = nullptr;
   }
   if ( mFile )
   {
@@ -89,12 +89,7 @@ bool QgsDelimitedTextFile::open()
     }
     if ( mFile )
     {
-      mStream = new QTextStream( mFile );
-      if ( ! mEncoding.isEmpty() )
-      {
-        QTextCodec *codec = QTextCodec::codecForName( mEncoding.toLatin1() );
-        mStream->setCodec( codec );
-      }
+      mCodec = QTextCodec::codecForName( !mEncoding.isEmpty() ? mEncoding.toLatin1() : "UTF-8" );
       if ( mUseWatcher )
       {
         mWatcher = new QFileSystemWatcher();
@@ -123,7 +118,7 @@ void QgsDelimitedTextFile::resetDefinition()
 // Extract the provider definition from the url
 bool QgsDelimitedTextFile::setFromUrl( const QString &url )
 {
-  QUrl qurl = QUrl::fromEncoded( url.toLatin1() );
+  const QUrl qurl = QUrl::fromEncoded( url.toLatin1() );
   return setFromUrl( qurl );
 }
 
@@ -413,7 +408,7 @@ void QgsDelimitedTextFile::setFieldNames( const QStringList &names )
   for ( QString name : constNames )
   {
     bool nameOk = true;
-    int fieldNo = mFieldNames.size() + 1;
+    const int fieldNo = mFieldNames.size() + 1;
     name = name.trimmed();
     if ( name.length() > mMaxNameLength ) name = name.mid( 0, mMaxNameLength );
 
@@ -424,9 +419,9 @@ void QgsDelimitedTextFile::setFieldNames( const QStringList &names )
     }
     // If the name looks like a default field name (field_##), then it is
     // valid if the number matches its column number..
-    else if ( mDefaultFieldRegexp.indexIn( name ) == 0 )
+    else if ( const QRegularExpressionMatch match = mDefaultFieldRegexp.match( name ); match.capturedStart() == 0 )
     {
-      int col = mDefaultFieldRegexp.capturedTexts().at( 1 ).toInt();
+      const int col = match.captured( 1 ).toInt();
       nameOk = col == fieldNo;
     }
     // Otherwise it is valid if isn't the name of an existing field...
@@ -439,7 +434,7 @@ void QgsDelimitedTextFile::setFieldNames( const QStringList &names )
     if ( ! nameOk )
     {
       int suffix = 0;
-      QString basename = name + "_%1";
+      const QString basename = name + "_%1";
       while ( true )
       {
         suffix++;
@@ -480,9 +475,9 @@ int QgsDelimitedTextFile::fieldIndex( const QString &name )
   if ( mUseHeader && ! mFile ) reset();
   // Try to determine the field based on a default field name, includes
   // Field_### and simple integer fields.
-  if ( mDefaultFieldRegexp.indexIn( name ) == 0 )
+  if ( const QRegularExpressionMatch match = mDefaultFieldRegexp.match( name ); match.capturedStart() == 0 )
   {
-    return mDefaultFieldRegexp.capturedTexts().at( 1 ).toInt() - 1;
+    return match.captured( 1 ).toInt() - 1;
   }
   for ( int i = 0; i < mFieldNames.size(); i++ )
   {
@@ -543,7 +538,7 @@ QgsDelimitedTextFile::Status  QgsDelimitedTextFile::reset()
   if ( ! isValid() || ! open() ) return InvalidDefinition;
 
   // Reset the file pointer
-  mStream->seek( 0 );
+  mFile->seek( 0 );
   mLineNumber = 0;
   mRecordNumber = -1;
   mRecordLineNumber = -1;
@@ -570,21 +565,21 @@ QgsDelimitedTextFile::Status  QgsDelimitedTextFile::reset()
 
 QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextLine( QString &buffer, bool skipBlank )
 {
-  if ( ! mStream )
+  if ( ! mFile )
   {
-    Status status = reset();
+    const Status status = reset();
     if ( status != RecordOk ) return status;
   }
   if ( mLineNumber == 0 )
   {
     mPosInBuffer = 0;
-    mBuffer = mStream->read( mMaxBufferSize );
+    mBuffer = mCodec->toUnicode( mFile->read( mMaxBufferSize ) );
   }
 
   while ( !mBuffer.isEmpty() )
   {
     // Identify position of \r , \n or \r\n
-    // We should rather use mStream->readLine(), but it fails to detect \r
+    // We should rather use mFile->readLine(), but it fails to detect \r
     // line endings.
     int eolPos = -1;
     {
@@ -627,7 +622,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextLine( QString &buffer, bo
         {
           // If we are just at the end of the buffer, read an extra character
           // from the stream
-          QString newChar = mStream->read( 1 );
+          const QString newChar = mCodec->toUnicode( mFile->read( 1 ) );
           mBuffer += newChar;
           if ( newChar == '\n' )
           {
@@ -658,7 +653,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextLine( QString &buffer, bo
         // Read more bytes from file to have up to mMaxBufferSize characters
         // in our buffer (after having subset it from mPosInBuffer)
         mBuffer = mBuffer.mid( mPosInBuffer );
-        mBuffer += mStream->read( mMaxBufferSize - mBuffer.size() );
+        mBuffer += mCodec->toUnicode( mFile->read( mMaxBufferSize - mBuffer.size() ) );
         mPosInBuffer = 0;
         continue;
       }
@@ -674,11 +669,11 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextLine( QString &buffer, bo
 
 bool QgsDelimitedTextFile::setNextLineNumber( long nextLineNumber )
 {
-  if ( ! mStream ) return false;
+  if ( ! mFile ) return false;
   if ( mLineNumber > nextLineNumber - 1 )
   {
     mRecordNumber = -1;
-    mStream->seek( 0 );
+    mFile->seek( 0 );
     mLineNumber = 0;
   }
   QString buffer;
@@ -716,8 +711,10 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseRegexp( QString &buffer,
   // and extract capture groups
   if ( mAnchoredRegexp )
   {
-    if ( mDelimRegexp.indexIn( buffer ) < 0 ) return RecordInvalid;
-    QStringList groups = mDelimRegexp.capturedTexts();
+    const QRegularExpressionMatch match = mDelimRegexp.match( buffer );
+    if ( !match.hasMatch() )
+      return RecordInvalid;
+    const QStringList groups = match.capturedTexts();
     for ( int i = 1; i < groups.size(); i++ )
     {
       appendField( fields, groups[i] );
@@ -726,18 +723,22 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseRegexp( QString &buffer,
   }
 
   int pos = 0;
-  int size = buffer.size();
+  const int size = buffer.size();
   while ( true )
   {
-    if ( pos >= size ) break;
-    int matchPos = mDelimRegexp.indexIn( buffer, pos );
+    if ( pos >= size )
+      break;
+    QRegularExpressionMatch match = mDelimRegexp.match( buffer, pos );
+
+    int matchPos = match.capturedStart();
     // If match won't advance cursor, then need to force it along one place
     // to avoid infinite loop.
-    int matchLen = mDelimRegexp.matchedLength();
+    int matchLen = match.capturedLength();
     if ( matchPos == pos && matchLen == 0 )
     {
-      matchPos = mDelimRegexp.indexIn( buffer, pos + 1 );
-      matchLen = mDelimRegexp.matchedLength();
+      match = mDelimRegexp.match( buffer, pos + 1 );
+      matchPos = match.capturedStart();
+      matchLen = match.capturedLength();
     }
     // If no match, then field is to end of record
     if ( matchPos < 0 )
@@ -750,7 +751,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseRegexp( QString &buffer,
     appendField( fields, buffer.mid( pos, matchPos - pos ) );
     if ( mDelimRegexp.captureCount() > 0 )
     {
-      QStringList groups = mDelimRegexp.capturedTexts();
+      QStringList groups = match.capturedTexts();
       for ( int i = 1; i < groups.size(); i++ )
       {
         appendField( fields, groups[i] );
@@ -771,7 +772,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QString &buffer,
   QString field;        // String in which to accumulate next field
   bool escaped = false; // Next char is escaped
   bool quoted = false;  // In quotes
-  QChar quoteChar = 0;  // Actual quote character used to open quotes
+  QChar quoteChar( 0 );  // Actual quote character used to open quotes
   bool started = false; // Non-blank chars in field or quotes started
   bool ended = false;   // Quoted field ended
   int cp = 0;          // Pointer to the next character in the buffer
@@ -799,7 +800,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QString &buffer,
       break;
     }
 
-    QChar c = buffer[cp];
+    const QChar c = buffer[cp];
     cp++;
 
     // If escaped, then just append the character
@@ -820,10 +821,10 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QString &buffer,
 
     bool isQuote = false;
     bool isEscape = false;
-    bool isDelim = mDelimChars.contains( c );
+    const bool isDelim = mDelimChars.contains( c );
     if ( ! isDelim )
     {
-      bool isQuoteChar = mQuoteChar.contains( c );
+      const bool isQuoteChar = mQuoteChar.contains( c );
       isQuote = quoted ? c == quoteChar : isQuoteChar;
       isEscape = mEscapeChar.contains( c );
       if ( isQuoteChar && isEscape ) isEscape = isQuote;

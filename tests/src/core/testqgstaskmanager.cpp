@@ -21,6 +21,10 @@
 #include "qgsapplication.h"
 #include "qgsproxyprogresstask.h"
 #include <QObject>
+#include <QThread>
+#include <QSignalSpy>
+#include <QThreadPool>
+#include <QTimer>
 #include "qgstest.h"
 
 class TestTask : public QgsTask
@@ -1560,12 +1564,12 @@ void TestQgsTaskManager::cancelBeforeStart()
     manager.addTask( task );
   }
 
-  for ( QgsTask *t : qgis::as_const( tasks ) )
+  for ( QgsTask *t : std::as_const( tasks ) )
   {
     t->cancel();
   }
 
-  for ( QgsTask *t : qgis::as_const( tasks ) )
+  for ( QgsTask *t : std::as_const( tasks ) )
   {
     t->waitForFinished();
   }

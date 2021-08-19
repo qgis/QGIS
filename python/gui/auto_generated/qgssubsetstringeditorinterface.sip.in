@@ -10,7 +10,7 @@
 
 class QgsSubsetStringEditorInterface: QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 Interface for a dialog that can edit subset strings
 
 .. versionadded:: 3.18

@@ -25,7 +25,7 @@
 /**
  * \ingroup core
  *
- * Initializes a virtual layer with postpone mode activated and reloads the
+ * \brief Initializes a virtual layer with postpone mode activated and reloads the
  * data in a separated thread.
  *
  * \since QGIS 3.2

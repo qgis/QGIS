@@ -32,7 +32,7 @@
 /**
  * \class QgsProcessingModelAlgorithm
  * \ingroup core
- * Model based algorithm with processing.
+ * \brief Model based algorithm with processing.
   * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
@@ -405,7 +405,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
         const QStringList &outputTypes = QStringList(), const QList< int > &dataTypes = QList< int >() ) const;
 
     /**
-     * Definition of a expression context variable available during model execution.
+     * \brief Definition of a expression context variable available during model execution.
      * \ingroup core
      * \since QGIS 3.0
      */

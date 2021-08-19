@@ -30,6 +30,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
 
+#include <QComboBox>
 #include <QFileDialog>
 #include <QHeaderView>
 #include <QInputDialog>
@@ -43,7 +44,7 @@ QWidget *QgsHanaSourceSelectDelegate::createEditor(
 {
   Q_UNUSED( option );
 
-  QString tableName = index.sibling( index.row(), QgsHanaTableModel::DbtmTable ).data( Qt::DisplayRole ).toString();
+  const QString tableName = index.sibling( index.row(), QgsHanaTableModel::DbtmTable ).data( Qt::DisplayRole ).toString();
   if ( tableName.isEmpty() )
     return nullptr;
 
@@ -55,7 +56,7 @@ QWidget *QgsHanaSourceSelectDelegate::createEditor(
   if ( index.column() == QgsHanaTableModel::DbtmGeomType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
-    for ( QgsWkbTypes::Type type :
+    for ( const QgsWkbTypes::Type type :
           QList<QgsWkbTypes::Type>()
           << QgsWkbTypes::Point
           << QgsWkbTypes::LineString
@@ -117,7 +118,7 @@ void QgsHanaSourceSelectDelegate::setModelData(
   {
     if ( index.column() == QgsHanaTableModel::DbtmGeomType )
     {
-      QgsWkbTypes::Type type = static_cast<QgsWkbTypes::Type>( cb->currentData().toInt() );
+      const QgsWkbTypes::Type type = static_cast<QgsWkbTypes::Type>( cb->currentData().toInt() );
 
       model->setData( index, QgsHanaTableModel::iconForWkbType( type ), Qt::DecorationRole );
       model->setData( index, type != QgsWkbTypes::Unknown ? QgsWkbTypes::displayString( type ) : tr( "Select…" ) );
@@ -211,10 +212,8 @@ QgsHanaSourceSelect::QgsHanaSourceSelect(
   connect( btnLoad, &QPushButton::clicked, this, &QgsHanaSourceSelect::btnLoad_clicked );
   connect( mSearchGroupBox, &QGroupBox::toggled, this, &QgsHanaSourceSelect::mSearchGroupBox_toggled );
   connect( mSearchTableEdit, &QLineEdit::textChanged, this, &QgsHanaSourceSelect::mSearchTableEdit_textChanged );
-  connect( mSearchColumnComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ),
-           this, &QgsHanaSourceSelect::mSearchColumnComboBox_currentIndexChanged );
-  connect( mSearchModeComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ),
-           this, &QgsHanaSourceSelect::mSearchModeComboBox_currentIndexChanged );
+  connect( mSearchColumnComboBox, &QComboBox::currentTextChanged, this, &QgsHanaSourceSelect::mSearchColumnComboBox_currentTextChanged );
+  connect( mSearchModeComboBox, &QComboBox::currentTextChanged, this, &QgsHanaSourceSelect::mSearchModeComboBox_currentTextChanged );
   connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ),
            this, &QgsHanaSourceSelect::cmbConnections_activated );
   connect( mTablesTreeView, &QTreeView::clicked, this, &QgsHanaSourceSelect::mTablesTreeView_clicked );
@@ -265,7 +264,7 @@ QgsHanaSourceSelect::QgsHanaSourceSelect(
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged,
            this, &QgsHanaSourceSelect::treeWidgetSelectionChanged );
 
-  QgsSettings settings;
+  const QgsSettings settings;
   mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "qgis/addHanaDC" ), false ).toBool() ?
                                      QAbstractItemView::ExtendedSelection : QAbstractItemView::MultiSelection );
 
@@ -309,8 +308,8 @@ void QgsHanaSourceSelect::btnNew_clicked()
 // Slot for deleting an existing connection
 void QgsHanaSourceSelect::btnDelete_clicked()
 {
-  QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                .arg( cmbConnections->currentText() );
+  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
+                      .arg( cmbConnections->currentText() );
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No ) )
     return;
 
@@ -333,8 +332,8 @@ void QgsHanaSourceSelect::btnSave_clicked()
 
 void QgsHanaSourceSelect::btnLoad_clicked()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ),
-                     QDir::homePath(), tr( "XML files (*.xml *XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ),
+                           QDir::homePath(), tr( "XML files (*.xml *XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -389,7 +388,7 @@ void QgsHanaSourceSelect::mTablesTreeView_clicked( const QModelIndex &index )
 
 void QgsHanaSourceSelect::mTablesTreeView_doubleClicked( const QModelIndex &index )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
   if ( settings.value( QStringLiteral( "qgis/addHANADC" ), false ).toBool() )
     addButtonClicked();
   else
@@ -412,7 +411,7 @@ void QgsHanaSourceSelect::mSearchTableEdit_textChanged( const QString &text )
     mProxyModel._setFilterRegExp( text );
 }
 
-void QgsHanaSourceSelect::mSearchColumnComboBox_currentIndexChanged( const QString &text )
+void QgsHanaSourceSelect::mSearchColumnComboBox_currentTextChanged( const QString &text )
 {
   if ( text == tr( "All" ) )
   {
@@ -452,7 +451,7 @@ void QgsHanaSourceSelect::mSearchColumnComboBox_currentIndexChanged( const QStri
   }
 }
 
-void QgsHanaSourceSelect::mSearchModeComboBox_currentIndexChanged( const QString &text )
+void QgsHanaSourceSelect::mSearchModeComboBox_currentTextChanged( const QString &text )
 {
   Q_UNUSED( text );
   mSearchTableEdit_textChanged( mSearchTableEdit->text() );
@@ -519,7 +518,7 @@ void QgsHanaSourceSelect::addButtonClicked()
     if ( idx.column() != QgsHanaTableModel::DbtmTable )
       continue;
 
-    QString uri = mTableModel.layerURI( mProxyModel.mapToSource( idx ), mConnectionName, mConnectionInfo );
+    const QString uri = mTableModel.layerURI( mProxyModel.mapToSource( idx ), mConnectionName, mConnectionInfo );
     if ( uri.isNull() )
       continue;
 
@@ -551,7 +550,7 @@ void QgsHanaSourceSelect::btnConnect_clicked()
 
   const QString connName = cmbConnections->currentText();
 
-  QModelIndex rootItemIndex = mTableModel.indexFromItem( mTableModel.invisibleRootItem() );
+  const QModelIndex rootItemIndex = mTableModel.indexFromItem( mTableModel.invisibleRootItem() );
   mTableModel.removeRows( 0, mTableModel.rowCount( rootItemIndex ), rootItemIndex );
 
   QgsHanaSettings settings( connName, true );
@@ -560,7 +559,7 @@ void QgsHanaSourceSelect::btnConnect_clicked()
   const QgsDataSourceUri uri = settings.toDataSourceUri();
   bool canceled = false;
 
-  std::unique_ptr<QgsHanaConnection> conn( QgsHanaConnection::createConnection( uri, &canceled, nullptr ) );
+  const std::unique_ptr<QgsHanaConnection> conn( QgsHanaConnection::createConnection( uri, &canceled, nullptr ) );
   if ( !conn )
   {
     if ( !canceled )
@@ -573,8 +572,8 @@ void QgsHanaSourceSelect::btnConnect_clicked()
 
   QApplication::setOverrideCursor( Qt::BusyCursor );
 
-  mColumnTypeThread = qgis::make_unique<QgsHanaColumnTypeThread>( mConnectionName, uri, settings.allowGeometrylessTables(), settings.userTablesOnly() );
-  mColumnTypeTask = qgis::make_unique<QgsProxyProgressTask>( tr( "Scanning tables for %1" ).arg( mConnectionName ) );
+  mColumnTypeThread = std::make_unique<QgsHanaColumnTypeThread>( mConnectionName, uri, settings.allowGeometrylessTables(), settings.userTablesOnly() );
+  mColumnTypeTask = std::make_unique<QgsProxyProgressTask>( tr( "Scanning tables for %1" ).arg( mConnectionName ) );
   QgsApplication::taskManager()->addTask( mColumnTypeTask.get() );
 
   connect( mColumnTypeThread.get(), &QgsHanaColumnTypeThread::setLayerType,
@@ -603,9 +602,12 @@ void QgsHanaSourceSelect::finishList()
 
 void QgsHanaSourceSelect::columnThreadFinished()
 {
+  const QString errorMsg = mColumnTypeThread->errorMessage();
   mColumnTypeThread.reset( nullptr );
   QgsProxyProgressTask *task = mColumnTypeTask.release();
-  task->finalize( true );
+  task->finalize( errorMsg.isEmpty() );
+  if ( !errorMsg.isEmpty() )
+    pushMessage( tr( "Failed to retrieve tables for %1" ).arg( mConnectionName ), errorMsg, Qgis::MessageLevel::Warning );
 
   btnConnect->setText( tr( "Connect" ) );
 
@@ -625,15 +627,15 @@ void QgsHanaSourceSelect::setSql( const QModelIndex &index )
     return;
   }
 
-  QModelIndex idx = mProxyModel.mapToSource( index );
-  QString uri = mTableModel.layerURI( idx, mConnectionName, mConnectionInfo );
+  const QModelIndex idx = mProxyModel.mapToSource( index );
+  const QString uri = mTableModel.layerURI( idx, mConnectionName, mConnectionInfo );
   if ( uri.isNull() )
   {
     QgsDebugMsg( "no uri" );
     return;
   }
 
-  QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsHanaTableModel::DbtmTable ) )->text();
+  const QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsHanaTableModel::DbtmTable ) )->text();
 
   QgsVectorLayer vlayer( uri, tableName, QStringLiteral( "hana" ) );
   if ( !vlayer.isValid() )
@@ -656,7 +658,7 @@ QString QgsHanaSourceSelect::fullDescription(
 
 void QgsHanaSourceSelect::setConnectionListPosition()
 {
-  QString selectedConnName = QgsHanaSettings::getSelectedConnection();
+  const QString selectedConnName = QgsHanaSettings::getSelectedConnection();
   cmbConnections->setCurrentIndex( cmbConnections->findText( selectedConnName ) );
   if ( cmbConnections->currentIndex() < 0 )
     cmbConnections->setCurrentIndex( selectedConnName.isNull() ? 0 : cmbConnections->count() - 1 );

@@ -12,7 +12,7 @@
 
 class QgsPointCloudCategory
 {
-%Docstring
+%Docstring(signature="appended")
 Represents an individual category (class) from a :py:class:`QgsPointCloudClassifiedRenderer`.
 
 .. versionadded:: 3.18
@@ -103,7 +103,7 @@ typedef QList<QgsPointCloudCategory> QgsPointCloudCategoryList;
 
 class QgsPointCloudClassifiedRenderer : QgsPointCloudRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 Renders point clouds by a classification attribute.
 
 .. versionadded:: 3.18

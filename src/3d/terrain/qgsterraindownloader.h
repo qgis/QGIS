@@ -33,7 +33,7 @@ class QgsCoordinateTransformContext;
 
 /**
  * \ingroup 3d
- * Takes care of downloading terrain data from a publicly available data source.
+ * \brief Takes care of downloading terrain data from a publicly available data source.
  *
  * Currently using terrain tiles in Terrarium format hosted on AWS. More info:
  *

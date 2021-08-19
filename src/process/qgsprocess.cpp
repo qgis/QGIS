@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgscommandlineutils.h"
 #include "qgsprocess.h"
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingalgorithm.h"
@@ -36,14 +37,11 @@
 
 #include <iostream>
 #include <QObject>
+#include <QLibrary>
 
 #include <ogr_api.h>
 #include <gdal_version.h>
-#if PROJ_VERSION_MAJOR > 4
 #include <proj.h>
-#else
-#include <proj_api.h>
-#endif
 #include <json.hpp>
 
 ConsoleFeedback::ConsoleFeedback( bool useJson )
@@ -60,9 +58,10 @@ void ConsoleFeedback::setProgressText( const QString &text )
 {
   if ( !mUseJson )
     std::cout << text.toLocal8Bit().constData() << '\n';
+  QgsProcessingFeedback::setProgressText( text );
 }
 
-void ConsoleFeedback::reportError( const QString &error, bool )
+void ConsoleFeedback::reportError( const QString &error, bool fatalError )
 {
   if ( !mUseJson )
     std::cerr << "ERROR:\t" << error.toLocal8Bit().constData() << '\n';
@@ -72,6 +71,7 @@ void ConsoleFeedback::reportError( const QString &error, bool )
       mJsonLog.insert( QStringLiteral( "errors" ), QStringList() );
     mJsonLog[ QStringLiteral( "errors" )] = mJsonLog.value( QStringLiteral( "errors" ) ).toStringList() << error;
   }
+  QgsProcessingFeedback::reportError( error, fatalError );
 }
 
 void ConsoleFeedback::pushWarning( const QString &warning )
@@ -84,6 +84,7 @@ void ConsoleFeedback::pushWarning( const QString &warning )
       mJsonLog.insert( QStringLiteral( "warning" ), QStringList() );
     mJsonLog[ QStringLiteral( "warning" )] = mJsonLog.value( QStringLiteral( "warning" ) ).toStringList() << warning;
   }
+  QgsProcessingFeedback::pushWarning( warning );
 }
 
 void ConsoleFeedback::pushInfo( const QString &info )
@@ -96,6 +97,7 @@ void ConsoleFeedback::pushInfo( const QString &info )
       mJsonLog.insert( QStringLiteral( "info" ), QStringList() );
     mJsonLog[ QStringLiteral( "info" )] = mJsonLog.value( QStringLiteral( "info" ) ).toStringList() << info;
   }
+  QgsProcessingFeedback::pushInfo( info );
 }
 
 void ConsoleFeedback::pushCommandInfo( const QString &info )
@@ -108,6 +110,7 @@ void ConsoleFeedback::pushCommandInfo( const QString &info )
       mJsonLog.insert( QStringLiteral( "info" ), QStringList() );
     mJsonLog[ QStringLiteral( "info" )] = mJsonLog.value( QStringLiteral( "info" ) ).toStringList() << info;
   }
+  QgsProcessingFeedback::pushCommandInfo( info );
 }
 
 void ConsoleFeedback::pushDebugInfo( const QString &info )
@@ -120,6 +123,7 @@ void ConsoleFeedback::pushDebugInfo( const QString &info )
       mJsonLog.insert( QStringLiteral( "info" ), QStringList() );
     mJsonLog[ QStringLiteral( "info" )] = mJsonLog.value( QStringLiteral( "info" ) ).toStringList() << info;
   }
+  QgsProcessingFeedback::pushDebugInfo( info );
 }
 
 void ConsoleFeedback::pushConsoleInfo( const QString &info )
@@ -132,6 +136,7 @@ void ConsoleFeedback::pushConsoleInfo( const QString &info )
       mJsonLog.insert( QStringLiteral( "info" ), QStringList() );
     mJsonLog[ QStringLiteral( "info" )] = mJsonLog.value( QStringLiteral( "info" ) ).toStringList() << info;
   }
+  QgsProcessingFeedback::pushConsoleInfo( info );
 }
 
 QVariantMap ConsoleFeedback::jsonLog() const
@@ -169,7 +174,7 @@ void ConsoleFeedback::showTerminalProgress( double progress )
     fflush( stdout );
 }
 
-
+#ifdef WITH_BINDINGS
 //! load Python support if possible
 std::unique_ptr< QgsPythonUtils > QgsProcessingExec::loadPythonSupport()
 {
@@ -213,6 +218,7 @@ std::unique_ptr< QgsPythonUtils > QgsProcessingExec::loadPythonSupport()
 
   return pythonUtils;
 }
+#endif
 
 QgsProcessingExec::QgsProcessingExec()
 {
@@ -225,7 +231,7 @@ int QgsProcessingExec::run( const QStringList &constArgs )
   QObject::connect( QgsApplication::messageLog(), static_cast < void ( QgsMessageLog::* )( const QString &message, const QString &tag, Qgis::MessageLevel level ) >( &QgsMessageLog::messageReceived ), QgsApplication::instance(),
                     [ = ]( const QString & message, const QString &, Qgis::MessageLevel level )
   {
-    if ( level == Qgis::Critical )
+    if ( level == Qgis::MessageLevel::Critical )
     {
       if ( !message.contains( QLatin1String( "DeprecationWarning:" ) ) )
         std::cerr << message.toLocal8Bit().constData() << '\n';
@@ -240,6 +246,14 @@ int QgsProcessingExec::run( const QStringList &constArgs )
     args.removeAt( jsonIndex );
   }
 
+  const int verboseIndex = args.indexOf( QLatin1String( "--verbose" ) );
+  QgsProcessingContext::LogLevel logLevel = QgsProcessingContext::DefaultLevel;
+  if ( verboseIndex >= 0 )
+  {
+    logLevel = QgsProcessingContext::Verbose;
+    args.removeAt( verboseIndex );
+  }
+
   if ( args.size() == 1 )
   {
     showUsage( args.at( 0 ) );
@@ -251,6 +265,8 @@ int QgsProcessingExec::run( const QStringList &constArgs )
 #ifdef HAVE_3D
   QgsApplication::processingRegistry()->addProvider( new Qgs3DAlgorithms( QgsApplication::processingRegistry() ) );
 #endif
+
+#ifdef WITH_BINDINGS
 
   // give Python plugins a chance to load providers
   mPythonUtils = loadPythonSupport();
@@ -284,6 +300,16 @@ int QgsProcessingExec::run( const QStringList &constArgs )
   {
     loadPlugins();
     listAlgorithms( useJson );
+    return 0;
+  }
+  else if ( command == QLatin1String( "--version" ) || command == QLatin1String( "-v" ) )
+  {
+    std::cout << QgsCommandLineUtils::allVersions().toStdString();
+    return 0;
+  }
+  else if ( command == QLatin1String( "--help" ) || command == QLatin1String( "-h" ) )
+  {
+    showUsage( args.at( 0 ) );
     return 0;
   }
   else if ( command == QLatin1String( "help" ) )
@@ -418,12 +444,13 @@ int QgsProcessingExec::run( const QStringList &constArgs )
       }
     }
 
-    return execute( algId, params, ellipsoid, distanceUnit, areaUnit, useJson, projectPath );
+    return execute( algId, params, ellipsoid, distanceUnit, areaUnit, logLevel, useJson, projectPath );
   }
   else
   {
     std::cerr << QStringLiteral( "Command %1 not known!\n" ).arg( command ).toLocal8Bit().constData();
   }
+#endif
   return 1;
 }
 
@@ -433,9 +460,12 @@ void QgsProcessingExec::showUsage( const QString &appName )
 
   msg << "QGIS Processing Executor - " << VERSION << " '" << RELEASE_NAME << "' ("
       << Qgis::version() << ")\n"
-      << "Usage: " << appName <<  " [--json] [command] [algorithm id or path to model file] [parameters]\n"
+      << "Usage: " << appName <<  " [--help] [--version] [--json] [--verbose] [command] [algorithm id or path to model file] [parameters]\n"
       << "\nOptions:\n"
+      << "\t--help or -h\t\tOutput the help\n"
+      << "\t--version or -v\t\tOutput all versions related to QGIS Process\n"
       << "\t--json\t\tOutput results as JSON objects\n"
+      << "\t--verbose\tOutput verbose logs\n"
       << "\nAvailable commands:\n"
       << "\tplugins\t\tlist available and active plugins\n"
       << "\tplugins enable\tenables an installed plugin. The plugin name must be specified, e.g. \"plugins enable cartography_tools\"\n"
@@ -449,6 +479,7 @@ void QgsProcessingExec::showUsage( const QString &appName )
   std::cout << msg.join( QString() ).toLocal8Bit().constData();
 }
 
+#ifdef WITH_BINDINGS
 void QgsProcessingExec::loadPlugins()
 {
   QgsSettings settings;
@@ -469,6 +500,7 @@ void QgsProcessingExec::loadPlugins()
     }
   }
 }
+#endif
 
 void QgsProcessingExec::listAlgorithms( bool useJson )
 {
@@ -552,6 +584,7 @@ void QgsProcessingExec::listPlugins( bool useJson, bool showLoaded )
     addVersionInformation( json );
   }
 
+#ifdef WITH_BINDINGS
   QVariantMap jsonPlugins;
   const QStringList plugins = mPythonUtils->pluginList();
   for ( const QString &plugin : plugins )
@@ -580,6 +613,7 @@ void QgsProcessingExec::listPlugins( bool useJson, bool showLoaded )
     json.insert( QStringLiteral( "plugins" ), jsonPlugins );
     std::cout << QgsJsonUtils::jsonFromVariant( json ).dump( 2 );
   }
+#endif
 }
 
 int QgsProcessingExec::enablePlugin( const QString &name, bool enabled )
@@ -589,6 +623,7 @@ int QgsProcessingExec::enablePlugin( const QString &name, bool enabled )
   else
     std::cout << QStringLiteral( "Disabling plugin: \"%1\"\n" ).arg( name ).toLocal8Bit().constData();
 
+#ifdef WITH_BINDINGS
   const QStringList plugins = mPythonUtils->pluginList();
   if ( !plugins.contains( name ) )
   {
@@ -638,6 +673,10 @@ int QgsProcessingExec::enablePlugin( const QString &name, bool enabled )
   listPlugins( false, false );
 
   return 0;
+#else
+  std::cerr << "No Python support\n";
+  return 1;
+#endif
 }
 
 int QgsProcessingExec::showAlgorithmHelp( const QString &id, bool useJson )
@@ -646,7 +685,7 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &id, bool useJson )
   const QgsProcessingAlgorithm *alg = nullptr;
   if ( QFile::exists( id ) && QFileInfo( id ).suffix() == QLatin1String( "model3" ) )
   {
-    model = qgis::make_unique< QgsProcessingModelAlgorithm >();
+    model = std::make_unique< QgsProcessingModelAlgorithm >();
     if ( !model->fromFile( id ) )
     {
       std::cerr << QStringLiteral( "File %1 is not a valid Processing model!\n" ).arg( id ).toLocal8Bit().constData();
@@ -822,7 +861,7 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &id, bool useJson )
   return 0;
 }
 
-int QgsProcessingExec::execute( const QString &id, const QVariantMap &params, const QString &ellipsoid, QgsUnitTypes::DistanceUnit distanceUnit, QgsUnitTypes::AreaUnit areaUnit, bool useJson, const QString &projectPath )
+int QgsProcessingExec::execute( const QString &id, const QVariantMap &params, const QString &ellipsoid, QgsUnitTypes::DistanceUnit distanceUnit, QgsUnitTypes::AreaUnit areaUnit, QgsProcessingContext::LogLevel logLevel, bool useJson, const QString &projectPath )
 {
   QVariantMap json;
   if ( useJson )
@@ -834,7 +873,7 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params, co
   const QgsProcessingAlgorithm *alg = nullptr;
   if ( QFile::exists( id ) && QFileInfo( id ).suffix() == QLatin1String( "model3" ) )
   {
-    model = qgis::make_unique< QgsProcessingModelAlgorithm >();
+    model = std::make_unique< QgsProcessingModelAlgorithm >();
     if ( !model->fromFile( id ) )
     {
       std::cerr << QStringLiteral( "File %1 is not a valid Processing model!\n" ).arg( id ).toLocal8Bit().constData();
@@ -885,15 +924,19 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params, co
     algorithmDetails.insert( QStringLiteral( "id" ), alg->id() );
     addAlgorithmInformation( algorithmDetails, alg );
     json.insert( QStringLiteral( "algorithm_details" ), algorithmDetails );
-    QVariantMap providerJson;
-    addProviderInformation( providerJson, alg->provider() );
-    json.insert( QStringLiteral( "provider_details" ), providerJson );
+
+    if ( alg->provider() )
+    {
+      QVariantMap providerJson;
+      addProviderInformation( providerJson, alg->provider() );
+      json.insert( QStringLiteral( "provider_details" ), providerJson );
+    }
   }
 
   std::unique_ptr< QgsProject > project;
   if ( !projectPath.isEmpty() )
   {
-    project = qgis::make_unique< QgsProject >();
+    project = std::make_unique< QgsProject >();
     if ( !project->read( projectPath ) )
     {
       std::cerr << QStringLiteral( "Could not load the QGIS project \"%1\"\n" ).arg( projectPath ).toLocal8Bit().constData();
@@ -948,6 +991,7 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params, co
   context.setDistanceUnit( distanceUnit );
   context.setAreaUnit( areaUnit );
   context.setProject( project.get() );
+  context.setLogLevel( logLevel );
 
   const QgsProcessingParameterDefinitions defs = alg->parameterDefinitions();
   QList< const QgsProcessingParameterDefinition * > missingParams;
@@ -965,7 +1009,7 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params, co
   if ( !missingParams.isEmpty() )
   {
     std::cerr << QStringLiteral( "ERROR: The following mandatory parameters were not specified\n\n" ).toLocal8Bit().constData();
-    for ( const QgsProcessingParameterDefinition *p : qgis::as_const( missingParams ) )
+    for ( const QgsProcessingParameterDefinition *p : std::as_const( missingParams ) )
     {
       std::cerr << QStringLiteral( "\t%1:\t%2\n" ).arg( p->name(), p->description() ).toLocal8Bit().constData();
     }
@@ -1065,15 +1109,12 @@ void QgsProcessingExec::addVersionInformation( QVariantMap &json )
     json.insert( QStringLiteral( "qgis_code_revision" ), Qgis::devVersion() );
   }
   json.insert( QStringLiteral( "qt_version" ), qVersion() );
+  json.insert( QStringLiteral( "python_version" ), PYTHON_VERSION );
   json.insert( QStringLiteral( "gdal_version" ), GDALVersionInfo( "RELEASE_NAME" ) );
   json.insert( QStringLiteral( "geos_version" ), GEOSversion() );
 
-#if PROJ_VERSION_MAJOR > 4
   PJ_INFO info = proj_info();
   json.insert( QStringLiteral( "proj_version" ), info.release );
-#else
-  json.insert( QStringLiteral( "proj_version" ), PJ_VERSION );
-#endif
 }
 
 void QgsProcessingExec::addAlgorithmInformation( QVariantMap &algorithmJson, const QgsProcessingAlgorithm *algorithm )

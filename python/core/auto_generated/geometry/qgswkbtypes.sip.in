@@ -14,7 +14,7 @@
 
 class QgsWkbTypes
 {
-%Docstring
+%Docstring(signature="appended")
 Handles storage of information regarding WKB types and their properties.
 
 .. versionadded:: 2.10

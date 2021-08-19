@@ -75,6 +75,16 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
     virtual void setDockMode( bool dockMode );
 
     /**
+     * Returns TRUE if the size constraints and hints for the panel widget should be
+     * applied to the parent QgsPanelWidgetStack which this panel is shown in.
+     *
+     * The default behavior is to return FALSE.
+     *
+     * \since QGIS 3.20
+     */
+    virtual bool applySizeConstraintsToStack() const;
+
+    /**
      * Returns the dock mode state.
      * \returns TRUE if in dock mode.  If in dock mode the widget
      * will emit the showPanel signal to handle panel opening

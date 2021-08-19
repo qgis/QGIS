@@ -13,7 +13,7 @@
 
 class QgsImageCache : QgsAbstractContentCacheBase
 {
-%Docstring
+%Docstring(signature="appended")
 A cache for images derived from raster files.
 
 :py:class:`QgsImageCache` stores pre-rendered resampled versions of raster image files, allowing efficient

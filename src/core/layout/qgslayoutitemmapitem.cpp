@@ -263,7 +263,7 @@ bool QgsLayoutItemMapItemStack::writeXml( QDomElement &elem, QDomDocument &doc, 
 
 void QgsLayoutItemMapItemStack::finalizeRestoreFromXml()
 {
-  for ( QgsLayoutItemMapItem *item : qgis::as_const( mItems ) )
+  for ( QgsLayoutItemMapItem *item : std::as_const( mItems ) )
   {
     item->finalizeRestoreFromXml();
   }
@@ -276,7 +276,7 @@ void QgsLayoutItemMapItemStack::drawItems( QPainter *painter, bool ignoreStackin
     return;
   }
 
-  for ( QgsLayoutItemMapItem *item : qgis::as_const( mItems ) )
+  for ( QgsLayoutItemMapItem *item : std::as_const( mItems ) )
   {
     switch ( item->stackingPosition() )
     {

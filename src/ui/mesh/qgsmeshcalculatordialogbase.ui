@@ -621,30 +621,64 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsMapLayerComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsmaplayercombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsFileWidget</class>
    <extends>QWidget</extends>
    <header>qgsfilewidget.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsmaplayercombobox.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mDatasetsListWidget</tabstop>
+  <tabstop>mOutputOnFileRadioButton</tabstop>
+  <tabstop>mOutputVirtualRadioButton</tabstop>
+  <tabstop>mOutputFormatComboBox</tabstop>
+  <tabstop>mOutputGroupNameLineEdit</tabstop>
+  <tabstop>useExtentCb</tabstop>
+  <tabstop>useMaskCb</tabstop>
+  <tabstop>cboLayerMask</tabstop>
+  <tabstop>mCurrentLayerExtentButton</tabstop>
   <tabstop>mXMinSpinBox</tabstop>
   <tabstop>mXMaxSpinBox</tabstop>
   <tabstop>mYMinSpinBox</tabstop>
   <tabstop>mYMaxSpinBox</tabstop>
+  <tabstop>mAllTimesButton</tabstop>
+  <tabstop>mStartTimeComboBox</tabstop>
+  <tabstop>mEndTimeComboBox</tabstop>
   <tabstop>mPlusPushButton</tabstop>
   <tabstop>mMultiplyPushButton</tabstop>
+  <tabstop>mOpenBracketPushButton</tabstop>
+  <tabstop>mMinButton</tabstop>
+  <tabstop>mIfButton</tabstop>
+  <tabstop>mSumAggrButton</tabstop>
   <tabstop>mMinusPushButton</tabstop>
   <tabstop>mDividePushButton</tabstop>
+  <tabstop>mCloseBracketPushButton</tabstop>
+  <tabstop>mMaxButton</tabstop>
+  <tabstop>mAndButton</tabstop>
+  <tabstop>mMaxAggrButton</tabstop>
+  <tabstop>mLessButton</tabstop>
+  <tabstop>mGreaterButton</tabstop>
+  <tabstop>mEqualButton</tabstop>
+  <tabstop>mAbsButton</tabstop>
+  <tabstop>mOrButton</tabstop>
+  <tabstop>mMinAggrButton</tabstop>
+  <tabstop>mLesserEqualButton</tabstop>
+  <tabstop>mGreaterEqualButton</tabstop>
+  <tabstop>mNotEqualButton</tabstop>
+  <tabstop>mPowButton</tabstop>
+  <tabstop>mNotButton</tabstop>
+  <tabstop>mAverageAggrButton</tabstop>
+  <tabstop>mNoDataButton</tabstop>
   <tabstop>mExpressionTextEdit</tabstop>
  </tabstops>
  <resources/>

@@ -32,15 +32,15 @@ class QgsServerInterface;
 
 
 /**
- All calls to Python functions in QGIS come here.
- This class is a singleton.
-
- Default path for Python plugins is:
- - QgsApplication::qgisSettingsDirPath() + "/python/plugins"
- - QgsApplication::pkgDataPath() + "/python/plugins"
-
+ * All calls to Python functions in QGIS come here.
+ * This class is a singleton.
+ *
+ * Default path for Python plugins is:
+ *
+ * - QgsApplication::qgisSettingsDirPath() + "/python/plugins"
+ * - QgsApplication::pkgDataPath() + "/python/plugins"
+ *
  */
-
 class PYTHON_EXPORT QgsPythonUtils
 {
   public:

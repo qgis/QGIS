@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>377</width>
-    <height>148</height>
+    <height>152</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -121,7 +121,8 @@
  <tabstops>
   <tabstop>grpEnable</tabstop>
   <tabstop>mSymbolButton</tabstop>
-  <tabstop>buttonBox</tabstop>
+  <tabstop>mCheckBoxLabelExtents</tabstop>
+  <tabstop>mButtonFontStyle</tabstop>
  </tabstops>
  <resources/>
  <connections/>

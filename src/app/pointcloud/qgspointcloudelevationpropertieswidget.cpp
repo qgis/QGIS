@@ -31,8 +31,9 @@ QgsPointCloudElevationPropertiesWidget::QgsPointCloudElevationPropertiesWidget( 
 
   syncToLayer( layer );
 
-  connect( mOffsetZSpinBox, qgis::overload<double >::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudElevationPropertiesWidget::onChanged );
-  connect( mScaleZSpinBox, qgis::overload<double >::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudElevationPropertiesWidget::onChanged );
+  connect( mOffsetZSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudElevationPropertiesWidget::onChanged );
+  connect( mScaleZSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudElevationPropertiesWidget::onChanged );
+  connect( mShifPointCloudZAxisButton, &QPushButton::clicked, this, &QgsPointCloudElevationPropertiesWidget::shiftPointCloudZAxis );
 }
 
 void QgsPointCloudElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
@@ -61,6 +62,15 @@ void QgsPointCloudElevationPropertiesWidget::onChanged()
 {
   if ( !mBlockUpdates )
     emit widgetChanged();
+}
+
+void QgsPointCloudElevationPropertiesWidget::shiftPointCloudZAxis()
+{
+  const QgsDoubleRange range = mLayer->elevationProperties()->calculateZRange( mLayer );
+  if ( !range.isEmpty() )
+  {
+    mOffsetZSpinBox->setValue( -range.lower() + mOffsetZSpinBox->value() );
+  }
 }
 
 //

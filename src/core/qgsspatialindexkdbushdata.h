@@ -25,7 +25,7 @@
  * \class QgsSpatialIndexKDBushData
  * \ingroup core
  *
- * A container for data stored inside a QgsSpatialIndexKDBush index.
+ * \brief A container for data stored inside a QgsSpatialIndexKDBush index.
  *
  * \since QGIS 3.4
 */

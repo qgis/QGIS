@@ -12,7 +12,7 @@
 
 class QgsOwsConnection : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Connections management
 %End
 

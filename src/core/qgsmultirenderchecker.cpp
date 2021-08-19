@@ -47,7 +47,7 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
 
   QVector<QgsDartMeasurement> dartMeasurements;
 
-  for ( const QString &suffix : qgis::as_const( subDirs ) )
+  for ( const QString &suffix : std::as_const( subDirs ) )
   {
     if ( subDirs.count() > 1 )
     {

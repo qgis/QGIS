@@ -15,11 +15,12 @@
 
 #include <QIcon>
 
-#include "qgsdataitem.h"
 #include "qgsmaplayermodel.h"
 #include "qgsproject.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
+#include "qgsiconutils.h"
+#include <QMimeData>
 
 QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent, QgsProject *project )
   : QAbstractItemModel( parent )
@@ -63,8 +64,10 @@ void QgsMapLayerModel::checkAll( Qt::CheckState checkState )
   emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
 }
 
-void QgsMapLayerModel::setAllowEmptyLayer( bool allowEmpty )
+void QgsMapLayerModel::setAllowEmptyLayer( bool allowEmpty, const QString &text, const QIcon &icon )
 {
+  mEmptyText = text;
+  mEmptyIcon = icon;
   if ( allowEmpty == mAllowEmpty )
     return;
 
@@ -252,7 +255,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
     case Qt::EditRole:
     {
       if ( index.row() == 0 && mAllowEmpty )
-        return QVariant();
+        return mEmptyText;
 
       if ( additionalIndex >= 0 )
         return mAdditionalItems.at( additionalIndex );
@@ -337,7 +340,10 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
 
     case Qt::DecorationRole:
     {
-      if ( isEmpty || additionalIndex >= 0 )
+      if ( isEmpty )
+        return mEmptyIcon.isNull() ? QVariant() : mEmptyIcon;
+
+      if ( additionalIndex >= 0 )
         return QVariant();
 
       QgsMapLayer *layer = mLayers.value( index.row() - ( mAllowEmpty ? 1 : 0 ) );
@@ -447,7 +453,7 @@ bool QgsMapLayerModel::canDropMimeData( const QMimeData *data, Qt::DropAction ac
 
 QMimeData *QgsMapLayerModel::mimeData( const QModelIndexList &indexes ) const
 {
-  std::unique_ptr< QMimeData > mimeData = qgis::make_unique< QMimeData >();
+  std::unique_ptr< QMimeData > mimeData = std::make_unique< QMimeData >();
 
   QByteArray encodedData;
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
@@ -493,7 +499,7 @@ bool QgsMapLayerModel::dropMimeData( const QMimeData *data, Qt::DropAction actio
   }
 
   insertRows( row, rows, QModelIndex() );
-  for ( const QString &text : qgis::as_const( newItems ) )
+  for ( const QString &text : std::as_const( newItems ) )
   {
     QModelIndex idx = index( row, 0, QModelIndex() );
     setData( idx, text, LayerIdRole );
@@ -510,68 +516,8 @@ Qt::DropActions QgsMapLayerModel::supportedDropActions() const
 
 QIcon QgsMapLayerModel::iconForLayer( QgsMapLayer *layer )
 {
-  switch ( layer->type() )
-  {
-    case QgsMapLayerType::RasterLayer:
-    {
-      return QgsLayerItem::iconRaster();
-    }
-
-    case QgsMapLayerType::MeshLayer:
-    {
-      return QgsLayerItem::iconMesh();
-    }
-
-    case QgsMapLayerType::VectorTileLayer:
-    {
-      return QgsLayerItem::iconVectorTile();
-    }
-
-    case QgsMapLayerType::PointCloudLayer:
-    {
-      return QgsLayerItem::iconPointCloud();
-    }
-
-    case QgsMapLayerType::VectorLayer:
-    {
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
-      if ( !vl )
-      {
-        return QIcon();
-      }
-      QgsWkbTypes::GeometryType geomType = vl->geometryType();
-      switch ( geomType )
-      {
-        case QgsWkbTypes::PointGeometry:
-        {
-          return QgsLayerItem::iconPoint();
-        }
-        case QgsWkbTypes::PolygonGeometry :
-        {
-          return QgsLayerItem::iconPolygon();
-        }
-        case QgsWkbTypes::LineGeometry :
-        {
-          return QgsLayerItem::iconLine();
-        }
-        case QgsWkbTypes::NullGeometry :
-        {
-          return QgsLayerItem::iconTable();
-        }
-        default:
-        {
-          return QIcon();
-        }
-      }
-    }
-
-    default:
-    {
-      return QIcon();
-    }
-  }
+  return QgsIconUtils::iconForLayer( layer );
 }
-
 
 bool QgsMapLayerModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {

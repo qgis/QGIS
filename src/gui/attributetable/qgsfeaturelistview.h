@@ -23,6 +23,7 @@
 
 #include "qgsfeature.h" // For QgsFeatureIds
 #include "qgis_gui.h"
+#include <QTimer>
 
 class QgsAttributeTableFilterModel;
 class QgsFeatureListModel;
@@ -36,7 +37,7 @@ class QRect;
 
 /**
  * \ingroup gui
- * Shows a list of features and renders a edit button next to each feature.
+ * \brief Shows a list of features and renders a edit button next to each feature.
  *
  * Accepts a display expression to define the way, features are rendered.
  * Uses a QgsFeatureListModel as source model.
@@ -61,12 +62,20 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      */
     QgsVectorLayerCache *layerCache();
 
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#endif
+
     /**
      * Set the QgsFeatureListModel which is used to retrieve information
      *
      * \param featureListModel  The model to use
      */
     virtual void setModel( QgsFeatureListModel *featureListModel );
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 
     /**
      * Gets the featureListModel used by this view

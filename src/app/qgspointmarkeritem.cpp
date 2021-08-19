@@ -19,6 +19,9 @@
 #include "qgsmapsettings.h"
 #include "qgsproject.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
+
 #include <QPainter>
 #include <cmath>
 
@@ -33,6 +36,8 @@ QgsMapCanvasSymbolItem::QgsMapCanvasSymbolItem( QgsMapCanvas *canvas )
 {
   setCacheMode( QGraphicsItem::ItemCoordinateCache );
 }
+
+QgsMapCanvasSymbolItem::~QgsMapCanvasSymbolItem() = default;
 
 QgsRenderContext QgsMapCanvasSymbolItem::renderContext( QPainter *painter )
 {
@@ -71,7 +76,7 @@ void QgsMapCanvasSymbolItem::paint( QPainter *painter )
 
   QgsRenderContext rc = renderContext( painter );
 
-  bool useEffect = !qgsDoubleNear( mOpacityEffect->opacity(), 1.0 );
+  const bool useEffect = !qgsDoubleNear( mOpacityEffect->opacity(), 1.0 );
   if ( useEffect )
   {
     //use a paint effect to reduce opacity. If we directly set the opacity on the painter, then the symbol will NOT
@@ -121,7 +126,7 @@ double QgsMapCanvasSymbolItem::opacity() const
 QgsMapCanvasMarkerSymbolItem::QgsMapCanvasMarkerSymbolItem( QgsMapCanvas *canvas )
   : QgsMapCanvasSymbolItem( canvas )
 {
-  setSymbol( qgis::make_unique< QgsMarkerSymbol >() );
+  setSymbol( std::make_unique< QgsMarkerSymbol >() );
 }
 
 
@@ -134,12 +139,12 @@ void QgsMapCanvasMarkerSymbolItem::updateSize()
 {
   QgsRenderContext rc = renderContext( nullptr );
   markerSymbol()->startRender( rc, mFeature.fields() );
-  QRectF bounds = markerSymbol()->bounds( mLocation, rc, mFeature );
+  const QRectF bounds = markerSymbol()->bounds( mLocation, rc, mFeature );
   markerSymbol()->stopRender( rc );
-  QgsRectangle r( mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( static_cast<int>( bounds.x() ),
-                  static_cast<int>( bounds.y() ) ),
-                  mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( static_cast<int>( bounds.x() + bounds.width() * 2 ),
-                      static_cast<int>( bounds.y() + bounds.height() * 2 ) ) );
+  const QgsRectangle r( mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( static_cast<int>( bounds.x() ),
+                        static_cast<int>( bounds.y() ) ),
+                        mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( static_cast<int>( bounds.x() + bounds.width() * 2 ),
+                            static_cast<int>( bounds.y() + bounds.height() * 2 ) ) );
   setRect( r );
 }
 
@@ -164,7 +169,7 @@ QgsMarkerSymbol *QgsMapCanvasMarkerSymbolItem::markerSymbol()
 QgsMapCanvasLineSymbolItem::QgsMapCanvasLineSymbolItem( QgsMapCanvas *canvas )
   : QgsMapCanvasSymbolItem( canvas )
 {
-  setSymbol( qgis::make_unique< QgsLineSymbol >() );
+  setSymbol( std::make_unique< QgsLineSymbol >() );
 }
 
 void QgsMapCanvasLineSymbolItem::setLine( const QPolygonF &line )

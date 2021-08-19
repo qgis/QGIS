@@ -12,7 +12,7 @@
 
 class QgsNullSymbolRendererWidget : QgsRendererWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Blank widget for customizing :py:class:`QgsNullSymbolRenderer`.
 
 .. versionadded:: 2.16

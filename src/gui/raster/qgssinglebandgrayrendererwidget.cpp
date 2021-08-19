@@ -89,7 +89,7 @@ QgsRasterRenderer *QgsSingleBandGrayRendererWidget::renderer()
   {
     return nullptr;
   }
-  int band = mGrayBandComboBox->currentBand();
+  const int band = mGrayBandComboBox->currentBand();
 
   QgsContrastEnhancement *e = new QgsContrastEnhancement( ( Qgis::DataType )(
         provider->dataType( band ) ) );
@@ -229,6 +229,7 @@ void QgsSingleBandGrayRendererWidget::showLegendSettings()
   if ( panel && panel->dockMode() )
   {
     QgsColorRampLegendNodeWidget *legendPanel = new QgsColorRampLegendNodeWidget();
+    legendPanel->setUseContinuousRampCheckBoxVisibility( false );
     legendPanel->setPanelTitle( tr( "Legend Settings" ) );
     legendPanel->setSettings( mLegendSettings );
     connect( legendPanel, &QgsColorRampLegendNodeWidget::widgetChanged, this, [ = ]
@@ -241,6 +242,7 @@ void QgsSingleBandGrayRendererWidget::showLegendSettings()
   else
   {
     QgsColorRampLegendNodeDialog dialog( mLegendSettings, this );
+    dialog.setUseContinuousRampCheckBoxVisibility( false );
     dialog.setWindowTitle( tr( "Legend Settings" ) );
     if ( dialog.exec() )
     {

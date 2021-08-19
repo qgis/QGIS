@@ -25,7 +25,7 @@ class QgsColorButton;
 
 /**
  * \ingroup gui
- * Wraps a color widget. Users will be able to choose a color.
+ * \brief Wraps a color widget. Users will be able to choose a color.
  * \note not available in Python bindings
  */
 

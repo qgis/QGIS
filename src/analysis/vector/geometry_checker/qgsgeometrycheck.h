@@ -34,7 +34,7 @@ class QgsFeaturePool;
 
 /**
  * \ingroup analysis
- * This class implements a geometry check.
+ * \brief This class implements a geometry check.
  *
  * Geometry checks run over a set of features and can detect errors like topological
  * or other issues which are reported in the geometry validation panel in QGIS and
@@ -200,9 +200,16 @@ class ANALYSIS_EXPORT QgsGeometryCheck
        * The index of the part / ring / vertex, depending on \see what.
        */
       QgsVertexId vidx;
-      bool operator==( const QgsGeometryCheck::Change &other )
+
+      // TODO c++20 - replace with = default
+      bool operator==( const QgsGeometryCheck::Change &other ) const
       {
         return what == other.what && type == other.type && vidx == other.vidx;
+      }
+
+      bool operator!=( const QgsGeometryCheck::Change &other ) const
+      {
+        return !( *this == other );
       }
     };
 

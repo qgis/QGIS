@@ -33,7 +33,7 @@ QgsMapToolRectangleExtent::QgsMapToolRectangleExtent( QgsMapToolCapture *parentT
 
 void QgsMapToolRectangleExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint point = mapPoint( *e );
+  const QgsPoint point = mapPoint( *e );
 
   if ( !currentVectorLayer() )
   {
@@ -65,7 +65,7 @@ void QgsMapToolRectangleExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolRectangleExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint point = mapPoint( *e );
+  const QgsPoint point = mapPoint( *e );
 
   mSnapIndicator->setMatch( e->mapPointMatch() );
 
@@ -75,8 +75,8 @@ void QgsMapToolRectangleExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e )
     {
       case 1:
       {
-        double dist = mPoints.at( 0 ).distance( point );
-        double angle = mPoints.at( 0 ).azimuth( point );
+        const double dist = mPoints.at( 0 ).distance( point );
+        const double angle = mPoints.at( 0 ).azimuth( point );
 
         mRectangle = QgsQuadrilateral::rectangleFromExtent( mPoints.at( 0 ), mPoints.at( 0 ).project( dist, angle ) );
         mTempRubberBand->setGeometry( mRectangle.toPolygon() );

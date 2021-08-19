@@ -20,7 +20,9 @@
 
 QgsRelationWidgetRegistry::QgsRelationWidgetRegistry()
 {
-  addRelationWidget( new QgsRelationEditorWidgetFactory() );
+  QgsRelationEditorWidgetFactory *factory = new QgsRelationEditorWidgetFactory();
+  addRelationWidget( factory );
+  setDefaultWidgetType( factory->type() );
 }
 
 QgsRelationWidgetRegistry::~QgsRelationWidgetRegistry()
@@ -42,8 +44,8 @@ void QgsRelationWidgetRegistry::addRelationWidget( QgsAbstractRelationEditorWidg
 
 void QgsRelationWidgetRegistry::removeRelationWidget( const QString &widgetType )
 {
-  // protect the relation editor widget from removing, so the user has at least one relation widget type
-  if ( dynamic_cast<QgsRelationEditorWidgetFactory *>( mRelationWidgetFactories.value( widgetType ) ) )
+  // protect the default relation editor widget from removing, so the user has at least one relation widget type
+  if ( widgetType == mDefaultWidgetType )
     return;
 
   mRelationWidgetFactories.remove( widgetType );
@@ -52,6 +54,19 @@ void QgsRelationWidgetRegistry::removeRelationWidget( const QString &widgetType 
 QStringList QgsRelationWidgetRegistry::relationWidgetNames()
 {
   return mRelationWidgetFactories.keys();
+}
+
+void QgsRelationWidgetRegistry::setDefaultWidgetType( const QString &defaultWidgetType )
+{
+  if ( !mRelationWidgetFactories.contains( defaultWidgetType ) )
+    return;
+
+  mDefaultWidgetType = defaultWidgetType;
+}
+
+QString QgsRelationWidgetRegistry::defaultWidgetType() const
+{
+  return mDefaultWidgetType;
 }
 
 QMap<QString, QgsAbstractRelationEditorWidgetFactory *> QgsRelationWidgetRegistry::factories() const

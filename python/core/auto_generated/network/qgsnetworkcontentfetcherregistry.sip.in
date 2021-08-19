@@ -10,10 +10,9 @@
 
 
 
-
 class QgsFetchedContent : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 FetchedContent holds useful information about a network content being fetched
 
 .. seealso:: :py:class:`QgsNetworkContentFetcherRegistry`
@@ -81,7 +80,7 @@ Emitted when the file is fetched and accessible
 
 class QgsNetworkContentFetcherRegistry : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Registry for temporary fetched files
 
 This provides a simple way of downloading and accessing
@@ -96,11 +95,6 @@ remote files during QGIS application running.
 #include "qgsnetworkcontentfetcherregistry.h"
 %End
   public:
-    enum FetchingMode
-    {
-      DownloadLater,
-      DownloadImmediately,
-    };
 
     explicit QgsNetworkContentFetcherRegistry();
 %Docstring
@@ -109,7 +103,7 @@ Create the registry for temporary downloaded files
 
     ~QgsNetworkContentFetcherRegistry();
 
-    const QgsFetchedContent *fetch( const QString &url, FetchingMode fetchingMode = DownloadLater );
+    const QgsFetchedContent *fetch( const QString &url, Qgis::ActionStart fetchingMode = Qgis::ActionStart::Deferred );
 %Docstring
 Initialize a download for the given URL
 

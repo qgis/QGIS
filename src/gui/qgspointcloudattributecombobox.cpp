@@ -67,10 +67,10 @@ QgsPointCloudAttributeCollection QgsPointCloudAttributeComboBox::attributes() co
 void QgsPointCloudAttributeComboBox::setAttribute( const QString &name )
 {
   const QString prevAttribute = currentAttribute();
-  QModelIndex idx = mAttributeModel->indexFromName( name );
+  const QModelIndex idx = mAttributeModel->indexFromName( name );
   if ( idx.isValid() )
   {
-    QModelIndex proxyIdx = mProxyModel->mapFromSource( idx );
+    const QModelIndex proxyIdx = mProxyModel->mapFromSource( idx );
     if ( proxyIdx.isValid() )
     {
       setCurrentIndex( proxyIdx.row() );
@@ -91,7 +91,7 @@ void QgsPointCloudAttributeComboBox::setAttribute( const QString &name )
 
 QString QgsPointCloudAttributeComboBox::currentAttribute() const
 {
-  int i = currentIndex();
+  const int i = currentIndex();
 
   const QModelIndex proxyIndex = mProxyModel->index( i, 0 );
   if ( !proxyIndex.isValid() )

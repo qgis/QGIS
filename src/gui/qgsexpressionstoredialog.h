@@ -24,7 +24,7 @@
 
 /**
  * \ingroup gui
- * A generic dialog for editing expression text, label and help text.
+ * \brief A generic dialog for editing expression text, label and help text.
  * \since QGIS 3.12
  */
 class GUI_EXPORT QgsExpressionStoreDialog : public QDialog, private Ui::QgsExpressionStoreDialogBase
@@ -57,9 +57,16 @@ class GUI_EXPORT QgsExpressionStoreDialog : public QDialog, private Ui::QgsExpre
      */
     QString helpText() const;
 
+    /**
+     * Returns whether the label text was modified either manually by the user,
+     * or automatically because it contained slashes or leading/trailing whitespace characters
+     */
+    bool isLabelModified() const { return mLabel->text() != mOriginalLabel; } SIP_SKIP
+
   private:
 
     QStringList mExistingLabels;
+    QString mOriginalLabel;
 
 };
 

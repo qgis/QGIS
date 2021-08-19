@@ -47,6 +47,7 @@
 #include "qgsprojectdisplaysettings.h"
 #include "qgsbearingnumericformat.h"
 #include "qgspolygon.h"
+#include "qgslinesymbol.h"
 
 // QWT Charting widget
 
@@ -69,7 +70,7 @@
 #include <QFileDialog>
 #include <QPixmap>
 #include <QPen>
-
+#include <QTimeZone>
 
 const int MAXACQUISITIONINTERVAL = 3000; // max gps information acquisition suspension interval (in seconds)
 const int MAXDISTANCETHRESHOLD = 200; // max gps distance threshold (in meters)
@@ -85,7 +86,7 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   connect( mRecenterButton, &QPushButton::clicked, this, &QgsGpsInformationWidget::recenter );
   connect( mConnectButton, &QAbstractButton::toggled, mRecenterButton, &QWidget::setEnabled );
   connect( mBtnTrackColor, &QgsColorButton::colorChanged, this, &QgsGpsInformationWidget::trackColorChanged );
-  connect( mSpinTrackWidth, qgis::overload< int >::of( &QSpinBox::valueChanged ), this, &QgsGpsInformationWidget::mSpinTrackWidth_valueChanged );
+  connect( mSpinTrackWidth, qOverload< int >( &QSpinBox::valueChanged ), this, &QgsGpsInformationWidget::mSpinTrackWidth_valueChanged );
   connect( mBtnPosition, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnPosition_clicked );
   connect( mBtnSignal, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnSignal_clicked );
   connect( mBtnSatellites, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnSatellites_clicked );
@@ -229,13 +230,13 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   mBtnTrackColor->setAllowOpacity( true );
   mBtnTrackColor->setColorDialogTitle( tr( "Track Color" ) );
 
-  mBearingLineStyleButton->setSymbolType( QgsSymbol::Line );
+  mBearingLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
 
-  QgsSettings mySettings;
+  const QgsSettings mySettings;
 
   QDomDocument doc;
   QDomElement elem;
-  QString symbolXml = mySettings.value( QStringLiteral( "gps/bearingLineSymbol" ) ).toString();
+  const QString symbolXml = mySettings.value( QStringLiteral( "bearingLineSymbol" ), QVariant(), QgsSettings::Gps ).toString();
   if ( !symbolXml.isEmpty() )
   {
     doc.setContent( symbolXml );
@@ -253,21 +254,21 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
 
   // Restore state
 
-  mGroupShowMarker->setChecked( mySettings.value( QStringLiteral( "gps/showMarker" ), "true" ).toBool() );
-  mTravelBearingCheckBox->setChecked( mySettings.value( QStringLiteral( "gps/calculateBearingFromTravel" ), "false" ).toBool() );
-  mSliderMarkerSize->setValue( mySettings.value( QStringLiteral( "gps/markerSize" ), "12" ).toInt() );
-  mSpinTrackWidth->setValue( mySettings.value( QStringLiteral( "gps/trackWidth" ), "2" ).toInt() );
+  mGroupShowMarker->setChecked( mySettings.value( QStringLiteral( "showMarker" ), "true", QgsSettings::Gps ).toBool() );
+  mTravelBearingCheckBox->setChecked( mySettings.value( QStringLiteral( "calculateBearingFromTravel" ), "false", QgsSettings::Gps ).toBool() );
+  mSliderMarkerSize->setValue( mySettings.value( QStringLiteral( "markerSize" ), "12", QgsSettings::Gps ).toInt() );
+  mSpinTrackWidth->setValue( mySettings.value( QStringLiteral( "trackWidth" ), "2", QgsSettings::Gps ).toInt() );
   mSpinTrackWidth->setClearValue( 2 );
-  mBtnTrackColor->setColor( mySettings.value( QStringLiteral( "gps/trackColor" ), QColor( Qt::red ) ).value<QColor>() );
-  QString myPortMode = mySettings.value( QStringLiteral( "gps/portMode" ), "scanPorts" ).toString();
+  mBtnTrackColor->setColor( mySettings.value( QStringLiteral( "trackColor" ), QColor( Qt::red ), QgsSettings::Gps ).value<QColor>() );
+  const QString myPortMode = mySettings.value( QStringLiteral( "portMode" ), "scanPorts", QgsSettings::Gps ).toString();
 
-  mSpinMapExtentMultiplier->setValue( mySettings.value( QStringLiteral( "gps/mapExtentMultiplier" ), "50" ).toInt() );
+  mSpinMapExtentMultiplier->setValue( mySettings.value( QStringLiteral( "mapExtentMultiplier" ), "50", QgsSettings::Gps ).toInt() );
   mSpinMapExtentMultiplier->setClearValue( 50 );
-  mDateTimeFormat = mySettings.value( QStringLiteral( "gps/dateTimeFormat" ), "" ).toString(); // zero-length string signifies default format
+  mDateTimeFormat = mySettings.value( QStringLiteral( "dateTimeFormat" ), "", QgsSettings::Gps ).toString(); // zero-length string signifies default format
 
-  mGpsdHost->setText( mySettings.value( QStringLiteral( "gps/gpsdHost" ), "localhost" ).toString() );
-  mGpsdPort->setText( mySettings.value( QStringLiteral( "gps/gpsdPort" ), 2947 ).toString() );
-  mGpsdDevice->setText( mySettings.value( QStringLiteral( "gps/gpsdDevice" ) ).toString() );
+  mGpsdHost->setText( mySettings.value( QStringLiteral( "gpsdHost" ), "localhost", QgsSettings::Gps ).toString() );
+  mGpsdPort->setText( mySettings.value( QStringLiteral( "gpsdPort" ), 2947, QgsSettings::Gps ).toString() );
+  mGpsdDevice->setText( mySettings.value( QStringLiteral( "gpsdDevice" ), QVariant(), QgsSettings::Gps ).toString() );
 
   //port mode
   if ( myPortMode == QLatin1String( "scanPorts" ) )
@@ -286,24 +287,21 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   {
     mRadGpsd->setChecked( true );
   }
-  //hide the internal port method if build is without QtLocation
-#ifndef HAVE_QT_MOBILITY_LOCATION
   if ( mRadInternal->isChecked() )
   {
     mRadAutodetect->setChecked( true );
   }
   mRadInternal->hide();
-#endif
 
   //auto digitizing behavior
-  mCbxAutoAddVertices->setChecked( mySettings.value( QStringLiteral( "gps/autoAddVertices" ), "false" ).toBool() );
+  mCbxAutoAddVertices->setChecked( mySettings.value( QStringLiteral( "autoAddVertices" ), "false", QgsSettings::Gps ).toBool() );
 
   mBtnAddVertex->setEnabled( !mCbxAutoAddVertices->isChecked() );
 
-  mCbxAutoCommit->setChecked( mySettings.value( QStringLiteral( "gps/autoCommit" ), "false" ).toBool() );
+  mCbxAutoCommit->setChecked( mySettings.value( QStringLiteral( "autoCommit" ), "false", QgsSettings::Gps ).toBool() );
 
   //pan mode
-  QString myPanMode = mySettings.value( QStringLiteral( "gps/panMode" ), "recenterWhenNeeded" ).toString();
+  const QString myPanMode = mySettings.value( QStringLiteral( "panMode" ), "recenterWhenNeeded", QgsSettings::Gps ).toString();
   if ( myPanMode == QLatin1String( "none" ) )
   {
     radNeverRecenter->setChecked( true );
@@ -319,9 +317,9 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
 
   connect( mRotateMapCheckBox, &QCheckBox::toggled, mSpinMapRotateInterval, &QSpinBox::setEnabled );
 
-  mRotateMapCheckBox->setChecked( mySettings.value( QStringLiteral( "gps/rotateMap" ), false ).toBool() );
-  mSpinMapRotateInterval->setValue( mySettings.value( QStringLiteral( "gps/rotateMapInterval" ), 0 ).toInt() );
-  mShowBearingLineCheck->setChecked( mySettings.value( QStringLiteral( "gps/showBearingLine" ), false ).toBool() );
+  mRotateMapCheckBox->setChecked( mySettings.value( QStringLiteral( "rotateMap" ), false, QgsSettings::Gps ).toBool() );
+  mSpinMapRotateInterval->setValue( mySettings.value( QStringLiteral( "rotateMapInterval" ), 0, QgsSettings::Gps ).toInt() );
+  mShowBearingLineCheck->setChecked( mySettings.value( QStringLiteral( "showBearingLine" ), false, QgsSettings::Gps ).toBool() );
   connect( mShowBearingLineCheck, &QgsCollapsibleGroupBox::toggled, this, [ = ]( bool checked )
   {
     if ( !checked )
@@ -334,7 +332,7 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
     }
   } );
 
-  mBtnDebug->setVisible( mySettings.value( QStringLiteral( "gps/showDebug" ), "false" ).toBool() );  // use a registry setting to control - power users/devs could set it
+  mBtnDebug->setVisible( mySettings.value( QStringLiteral( "showDebug" ), "false", QgsSettings::Gps ).toBool() );  // use a registry setting to control - power users/devs could set it
 
   // status = unknown
   setStatusIndicator( NoData );
@@ -367,8 +365,8 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
 
   mCboAcquisitionInterval->setValidator( mAcquisitionIntValidator );
   mCboDistanceThreshold->setValidator( mDistanceThresholdValidator );
-  mCboAcquisitionInterval->setCurrentText( mySettings.value( QStringLiteral( "gps/acquisitionInterval" ), 0 ).toString() );
-  mCboDistanceThreshold->setCurrentText( mySettings.value( QStringLiteral( "gps/distanceThreshold" ), 0 ).toString() );
+  mCboAcquisitionInterval->setCurrentText( mySettings.value( QStringLiteral( "acquisitionInterval" ), 0, QgsSettings::Gps ).toString() );
+  mCboDistanceThreshold->setCurrentText( mySettings.value( QStringLiteral( "distanceThreshold" ), 0, QgsSettings::Gps ).toString() );
 
   // Timestamp
   mCboTimestampField->setAllowEmptyFieldName( true );
@@ -380,10 +378,10 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   mCboTimestampFormat->addItem( tr( "Local Time" ), Qt::TimeSpec::LocalTime );
   mCboTimestampFormat->addItem( tr( "UTC" ), Qt::TimeSpec::UTC );
   mCboTimestampFormat->addItem( tr( "Time Zone" ), Qt::TimeSpec::TimeZone );
-  mCboTimestampFormat->setCurrentIndex( mySettings.value( QStringLiteral( "gps/timeStampFormat" ), Qt::LocalTime ).toInt() );
-  connect( mCboTimestampFormat, qgis::overload< int >::of( &QComboBox::currentIndexChanged ),
+  mCboTimestampFormat->setCurrentIndex( mySettings.value( QStringLiteral( "timeStampFormat" ), Qt::LocalTime, QgsSettings::Gps ).toInt() );
+  connect( mCboTimestampFormat, qOverload< int >( &QComboBox::currentIndexChanged ),
            this, &QgsGpsInformationWidget::timestampFormatChanged );
-  connect( mCboTimestampField, qgis::overload< int >::of( &QComboBox::currentIndexChanged ),
+  connect( mCboTimestampField, qOverload< int >( &QComboBox::currentIndexChanged ),
            this, [ = ]( int index )
   {
     const bool enabled { index > 0 };
@@ -411,25 +409,25 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
     mCboTimeZones->addItem( tzId );
   }
 
-  QString lastTz { mySettings.value( QStringLiteral( "gps/timestampTimeZone" ) ).toString() };
+  const QString lastTz { mySettings.value( QStringLiteral( "timestampTimeZone" ), QVariant(), QgsSettings::Gps ).toString() };
   int tzIdx { mCboTimeZones->findText( lastTz ) };
   if ( tzIdx == -1 )
   {
-    QString currentTz { QTimeZone::systemTimeZoneId() };
+    const QString currentTz { QTimeZone::systemTimeZoneId() };
     tzIdx = mCboTimeZones->findText( currentTz );
   }
   mCboTimeZones->setCurrentIndex( tzIdx );
 
-  mCbxLeapSeconds->setChecked( mySettings.value( QStringLiteral( "gps/applyLeapSeconds" ), true ).toBool() );
+  mCbxLeapSeconds->setChecked( mySettings.value( QStringLiteral( "applyLeapSeconds" ), true, QgsSettings::Gps ).toBool() );
   // Leap seconds as of 2019-06-20, if the default changes, it can be updated in qgis_global_settings.ini
-  mLeapSeconds->setValue( mySettings.value( QStringLiteral( "gps/leapSecondsCorrection" ), 18 ).toInt() );
+  mLeapSeconds->setValue( mySettings.value( QStringLiteral( "leapSecondsCorrection" ), 18, QgsSettings::Gps ).toInt() );
   mLeapSeconds->setClearValue( 18 );
 
   connect( mAcquisitionTimer.get(), &QTimer::timeout,
            this, &QgsGpsInformationWidget::switchAcquisition );
-  connect( mCboAcquisitionInterval, qgis::overload< const QString & >::of( &QComboBox::currentTextChanged ),
+  connect( mCboAcquisitionInterval, qOverload< const QString & >( &QComboBox::currentTextChanged ),
            this, &QgsGpsInformationWidget::cboAcquisitionIntervalEdited );
-  connect( mCboDistanceThreshold, qgis::overload< const QString & >::of( &QComboBox::currentTextChanged ),
+  connect( mCboDistanceThreshold, qOverload< const QString & >( &QComboBox::currentTextChanged ),
            this, &QgsGpsInformationWidget::cboDistanceThresholdEdited );
 
   mMapCanvas->installInteractionBlocker( this );
@@ -451,64 +449,64 @@ QgsGpsInformationWidget::~QgsGpsInformationWidget()
 #endif
 
   QgsSettings mySettings;
-  mySettings.setValue( QStringLiteral( "gps/lastPort" ), mCboDevices->currentData().toString() );
-  mySettings.setValue( QStringLiteral( "gps/trackWidth" ), mSpinTrackWidth->value() );
-  mySettings.setValue( QStringLiteral( "gps/trackColor" ), mBtnTrackColor->color() );
-  mySettings.setValue( QStringLiteral( "gps/markerSize" ), mSliderMarkerSize->value() );
-  mySettings.setValue( QStringLiteral( "gps/showMarker" ), mGroupShowMarker->isChecked() );
-  mySettings.setValue( QStringLiteral( "gps/calculateBearingFromTravel" ), mTravelBearingCheckBox->isChecked() );
-  mySettings.setValue( QStringLiteral( "gps/autoAddVertices" ), mCbxAutoAddVertices->isChecked() );
-  mySettings.setValue( QStringLiteral( "gps/autoCommit" ), mCbxAutoCommit->isChecked() );
-  mySettings.setValue( QStringLiteral( "gps/acquisitionInterval" ), mCboAcquisitionInterval->currentText() );
-  mySettings.setValue( QStringLiteral( "gps/distanceThreshold" ), mCboDistanceThreshold->currentText() );
-  mySettings.setValue( QStringLiteral( "gps/timestampTimeZone" ), mCboTimeZones->currentText() );
-  mySettings.setValue( QStringLiteral( "gps/applyLeapSeconds" ), mCbxLeapSeconds->isChecked() );
-  mySettings.setValue( QStringLiteral( "gps/leapSecondsCorrection" ), mLeapSeconds->value() );
-  mySettings.setValue( QStringLiteral( "gps/mapExtentMultiplier" ), mSpinMapExtentMultiplier->value() );
+  mySettings.setValue( QStringLiteral( "lastPort" ), mCboDevices->currentData().toString(), QgsSettings::Gps );
+  mySettings.setValue( QStringLiteral( "trackWidth" ), mSpinTrackWidth->value(), QgsSettings::Gps );
+  mySettings.setValue( QStringLiteral( "trackColor" ), mBtnTrackColor->color(), QgsSettings::Gps );
+  mySettings.setValue( QStringLiteral( "markerSize" ), mSliderMarkerSize->value(), QgsSettings::Gps );
+  mySettings.setValue( QStringLiteral( "showMarker" ), mGroupShowMarker->isChecked(), QgsSettings::Gps );
+  mySettings.setValue( QStringLiteral( "calculateBearingFromTravel" ), mTravelBearingCheckBox->isChecked(), QgsSettings::Gps );
+  mySettings.setValue( QStringLiteral( "autoAddVertices" ), mCbxAutoAddVertices->isChecked(), QgsSettings::Gps );
+  mySettings.setValue( QStringLiteral( "autoCommit" ), mCbxAutoCommit->isChecked(), QgsSettings::Gps );
+  mySettings.setValue( QStringLiteral( "acquisitionInterval" ), mCboAcquisitionInterval->currentText(), QgsSettings::Gps );
+  mySettings.setValue( QStringLiteral( "distanceThreshold" ), mCboDistanceThreshold->currentText(), QgsSettings::Gps );
+  mySettings.setValue( QStringLiteral( "timestampTimeZone" ), mCboTimeZones->currentText(), QgsSettings::Gps );
+  mySettings.setValue( QStringLiteral( "applyLeapSeconds" ), mCbxLeapSeconds->isChecked(), QgsSettings::Gps );
+  mySettings.setValue( QStringLiteral( "leapSecondsCorrection" ), mLeapSeconds->value(), QgsSettings::Gps );
+  mySettings.setValue( QStringLiteral( "mapExtentMultiplier" ), mSpinMapExtentMultiplier->value(), QgsSettings::Gps );
 
   // scan, explicit port or gpsd
   if ( mRadAutodetect->isChecked() )
   {
-    mySettings.setValue( QStringLiteral( "gps/portMode" ), "scanPorts" );
+    mySettings.setValue( QStringLiteral( "portMode" ), "scanPorts", QgsSettings::Gps );
   }
   else if ( mRadInternal->isChecked() )
   {
-    mySettings.setValue( QStringLiteral( "gps/portMode" ), "internalGPS" );
+    mySettings.setValue( QStringLiteral( "portMode" ), "internalGPS", QgsSettings::Gps );
   }
   else if ( mRadUserPath->isChecked() )
   {
-    mySettings.setValue( QStringLiteral( "gps/portMode" ), "explicitPort" );
+    mySettings.setValue( QStringLiteral( "portMode" ), "explicitPort", QgsSettings::Gps );
   }
   else
   {
-    mySettings.setValue( QStringLiteral( "gps/portMode" ), "gpsd" );
+    mySettings.setValue( QStringLiteral( "portMode" ), "gpsd", QgsSettings::Gps );
   }
 
-  mySettings.setValue( QStringLiteral( "gps/gpsdHost" ), mGpsdHost->text() );
-  mySettings.setValue( QStringLiteral( "gps/gpsdPort" ), mGpsdPort->text().toInt() );
-  mySettings.setValue( QStringLiteral( "gps/gpsdDevice" ), mGpsdDevice->text() );
+  mySettings.setValue( QStringLiteral( "gpsdHost" ), mGpsdHost->text(), QgsSettings::Gps );
+  mySettings.setValue( QStringLiteral( "gpsdPort" ), mGpsdPort->text().toInt(), QgsSettings::Gps );
+  mySettings.setValue( QStringLiteral( "gpsdDevice" ), mGpsdDevice->text(), QgsSettings::Gps );
 
   // pan mode
   if ( radRecenterMap->isChecked() )
   {
-    mySettings.setValue( QStringLiteral( "gps/panMode" ), "recenterAlways" );
+    mySettings.setValue( QStringLiteral( "panMode" ), "recenterAlways", QgsSettings::Gps );
   }
   else if ( radRecenterWhenNeeded->isChecked() )
   {
-    mySettings.setValue( QStringLiteral( "gps/panMode" ), "recenterWhenNeeded" );
+    mySettings.setValue( QStringLiteral( "panMode" ), "recenterWhenNeeded", QgsSettings::Gps );
   }
   else
   {
-    mySettings.setValue( QStringLiteral( "gps/panMode" ), "none" );
+    mySettings.setValue( QStringLiteral( "panMode" ), "none", QgsSettings::Gps );
   }
-  mySettings.setValue( QStringLiteral( "gps/rotateMap" ), mRotateMapCheckBox->isChecked() );
-  mySettings.setValue( QStringLiteral( "gps/rotateMapInterval" ), mSpinMapRotateInterval->value() );
-  mySettings.setValue( QStringLiteral( "gps/showBearingLine" ), mShowBearingLineCheck->isChecked() );
+  mySettings.setValue( QStringLiteral( "rotateMap" ), mRotateMapCheckBox->isChecked(), QgsSettings::Gps );
+  mySettings.setValue( QStringLiteral( "rotateMapInterval" ), mSpinMapRotateInterval->value(), QgsSettings::Gps );
+  mySettings.setValue( QStringLiteral( "showBearingLine" ), mShowBearingLineCheck->isChecked(), QgsSettings::Gps );
 
   QDomDocument doc;
-  QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "Symbol" ), mBearingLineStyleButton->symbol(), doc, QgsReadWriteContext() );
+  const QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "Symbol" ), mBearingLineStyleButton->symbol(), doc, QgsReadWriteContext() );
   doc.appendChild( elem );
-  mySettings.setValue( QStringLiteral( "gps/bearingLineSymbol" ), doc.toString() );
+  mySettings.setValue( QStringLiteral( "bearingLineSymbol" ), doc.toString(), QgsSettings::Gps );
 
   if ( mMapCanvas )
     mMapCanvas->removeInteractionBlocker( this );
@@ -799,7 +797,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
 
   for ( int i = 0; i < info.satellitesInView.size(); ++i ) //satellite processing loop
   {
-    QgsSatelliteInfo currentInfo = info.satellitesInView.at( i );
+    const QgsSatelliteInfo currentInfo = info.satellitesInView.at( i );
 
     if ( mStackedWidget->currentIndex() == 1 && info.satInfoComplete ) //signal
     {
@@ -991,9 +989,9 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     {
       try
       {
-        QgsPointXY myPoint = mCanvasToWgs84Transform.transform( myNewCenter, QgsCoordinateTransform::ReverseTransform );
+        const QgsPointXY myPoint = mCanvasToWgs84Transform.transform( myNewCenter, QgsCoordinateTransform::ReverseTransform );
         //keep the extent the same just center the map canvas in the display so our feature is in the middle
-        QgsRectangle myRect( myPoint, myPoint );  // empty rect can be used to set new extent that is centered on the point used to construct the rect
+        const QgsRectangle myRect( myPoint, myPoint );  // empty rect can be used to set new extent that is centered on the point used to construct the rect
 
         // testing if position is outside some proportion of the map extent
         // this is a user setting - useful range: 5% to 100% (0.05 to 1.0)
@@ -1024,7 +1022,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
 
   if ( !std::isnan( info.direction ) || ( mTravelBearingCheckBox->isChecked() && !mSecondLastGpsPosition.isEmpty() ) )
   {
-    QgsSettings settings;
+    const QgsSettings settings;
     double bearing = 0;
     double trueNorth = 0;
     if ( !mTravelBearingCheckBox->isChecked() )
@@ -1051,7 +1049,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
 
     if ( mRotateMapCheckBox->isChecked() && ( !mLastRotateTimer.isValid() || mLastRotateTimer.hasExpired( mSpinMapRotateInterval->value() * 1000 ) ) )
     {
-      QgsCoordinateTransform wgs84ToCanvas( mWgs84CRS, mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
+      const QgsCoordinateTransform wgs84ToCanvas( mWgs84CRS, mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
 
       try
       {
@@ -1146,7 +1144,7 @@ void QgsGpsInformationWidget::addVertex()
 
   // we store the capture list in wgs84 and then transform to layer crs when
   // calling close feature
-  QgsPoint point = QgsPoint( mLastGpsPosition.x(), mLastGpsPosition.y(), mLastElevation );
+  const QgsPoint point = QgsPoint( mLastGpsPosition.x(), mLastGpsPosition.y(), mLastElevation );
   mCaptureList.push_back( point );
 
 
@@ -1195,18 +1193,18 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
 
   // Handle timestamp
   QgsAttributeMap attrMap;
-  int idx { vlayer->fields().indexOf( mCboTimestampField->currentText() ) };
+  const int idx { vlayer->fields().indexOf( mCboTimestampField->currentText() ) };
   if ( idx != -1 )
   {
-    QVariant ts { timestamp( vlayer, idx ) };
+    const QVariant ts = timestamp( vlayer, idx );
     if ( ts.isValid() )
     {
       attrMap[ idx ] = ts;
     }
   }
 
-  QgsCoordinateTransform t( mWgs84CRS, vlayer->crs(), QgsProject::instance() );
-  bool is3D = QgsWkbTypes::hasZ( vlayer->wkbType() );
+  const QgsCoordinateTransform t( mWgs84CRS, vlayer->crs(), QgsProject::instance() );
+  const bool is3D = QgsWkbTypes::hasZ( vlayer->wkbType() );
   switch ( vlayer->geometryType() )
   {
     case QgsWkbTypes::PointGeometry:
@@ -1214,7 +1212,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
       QgsFeature f;
       try
       {
-        QgsPointXY pointXY = t.transform( mLastGpsPosition );
+        const QgsPointXY pointXY = t.transform( mLastGpsPosition );
 
         QgsGeometry g;
         if ( is3D )
@@ -1308,7 +1306,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
         if ( QgsWkbTypes::isMultiType( vlayer->wkbType() ) )
           g.convertToMultiType();
 
-        int avoidIntersectionsReturn = g.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
+        const int avoidIntersectionsReturn = g.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
         if ( avoidIntersectionsReturn == 1 )
         {
           //not a polygon type. Impossible to get there
@@ -1322,7 +1320,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
         }
         else if ( avoidIntersectionsReturn == 3 )
         {
-          QgisApp::instance()->messageBar()->pushCritical( tr( "Add Feature" ), tr( "An error was reported during intersection removal." ) );
+          QgisApp::instance()->messageBar()->pushCritical( tr( "Add Feature" ), tr( "The feature has been added, but at least one geometry intersected is invalid. These geometries must be manually repaired." ) );
           connectGpsSlot();
           return;
         }
@@ -1391,10 +1389,10 @@ void QgsGpsInformationWidget::populateDevices()
   }
 
   // remember the last ports used
-  QgsSettings settings;
-  QString lastPort = settings.value( QStringLiteral( "gps/lastPort" ), "" ).toString();
+  const QgsSettings settings;
+  const QString lastPort = settings.value( QStringLiteral( "lastPort" ), "", QgsSettings::Gps ).toString();
 
-  int idx = mCboDevices->findData( lastPort );
+  const int idx = mCboDevices->findData( lastPort );
   mCboDevices->setCurrentIndex( idx < 0 ? 0 : idx );
 }
 
@@ -1414,15 +1412,15 @@ void QgsGpsInformationWidget::mBtnLogFile_clicked()
   // This does not allow for an extension other than ".nmea"
   // Retrieve last used log file dir from persistent settings
   QgsSettings settings;
-  QString settingPath( QStringLiteral( "/gps/lastLogFileDir" ) );
-  QString lastUsedDir = settings.value( settingPath, QDir::homePath() ).toString();
+  const QString settingPath( QStringLiteral( "/gps/lastLogFileDir" ) );
+  const QString lastUsedDir = settings.value( settingPath, QDir::homePath() ).toString();
   QString saveFilePath = QFileDialog::getSaveFileName( this, tr( "Save GPS log file As" ), lastUsedDir, tr( "NMEA files" ) + " (*.nmea)" );
   if ( saveFilePath.isNull() ) //canceled
   {
     return;
   }
-  QFileInfo myFI( saveFilePath );
-  QString myPath = myFI.path();
+  const QFileInfo myFI( saveFilePath );
+  const QString myPath = myFI.path();
   settings.setValue( settingPath, myPath );
 
   // make sure the .nmea extension is included in the path name. if not, add it...
@@ -1554,7 +1552,7 @@ void QgsGpsInformationWidget::setDistanceThreshold( uint distance )
 
 void QgsGpsInformationWidget::updateTimeZones()
 {
-  QgsSettings().setValue( QStringLiteral( "gps/timestampFormat" ), mCboTimestampFormat->currentData( ) );
+  QgsSettings().setValue( QStringLiteral( "timestampFormat" ), mCboTimestampFormat->currentData( ), QgsSettings::Gps );
   const bool enabled { static_cast<Qt::TimeSpec>( mCboTimestampFormat->currentData( ).toInt() ) == Qt::TimeSpec::TimeZone };
   mCboTimeZones->setEnabled( enabled );
   mLblTimeZone->setEnabled( enabled );
@@ -1575,12 +1573,12 @@ QVariant QgsGpsInformationWidget::timestamp( QgsVectorLayer *vlayer, int idx )
       time = time.addSecs( mLeapSeconds->value() );
     }
     // Desired format
-    Qt::TimeSpec timeSpec { static_cast<Qt::TimeSpec>( mCboTimestampFormat->currentData( ).toInt() ) };
+    const Qt::TimeSpec timeSpec { static_cast<Qt::TimeSpec>( mCboTimestampFormat->currentData( ).toInt() ) };
     time = time.toTimeSpec( timeSpec );
     if ( timeSpec == Qt::TimeSpec::TimeZone )
     {
       // Get timezone from the combo
-      QTimeZone destTz( mCboTimeZones->currentText().toUtf8() );
+      const QTimeZone destTz( mCboTimeZones->currentText().toUtf8() );
       if ( destTz.isValid() )
       {
         time = time.toTimeZone( destTz );
@@ -1623,7 +1621,7 @@ void QgsGpsInformationWidget::cboDistanceThresholdEdited()
 
 void QgsGpsInformationWidget::timestampFormatChanged( int )
 {
-  QgsSettings().setValue( QStringLiteral( "gps/timestampFormat" ), mCboTimestampFormat->currentData( ).toInt() );
+  QgsSettings().setValue( QStringLiteral( "timestampFormat" ), mCboTimestampFormat->currentData( ).toInt(), QgsSettings::Gps );
   const bool enabled { static_cast<Qt::TimeSpec>( mCboTimestampFormat->currentData( ).toInt() ) == Qt::TimeSpec::TimeZone };
   mCboTimeZones->setEnabled( enabled );
   mLblTimeZone->setEnabled( enabled );
@@ -1690,7 +1688,7 @@ void QgsGpsInformationWidget::updateTimestampDestinationFields( QgsMapLayer *map
       // Set preferred if stored
       if ( mPreferredTimestampFields.contains( vlayer->id( ) ) )
       {
-        int idx { mCboTimestampField->findText( mPreferredTimestampFields[ vlayer->id( ) ] ) };
+        const int idx { mCboTimestampField->findText( mPreferredTimestampFields[ vlayer->id( ) ] ) };
         if ( idx > 0 )
         {
           mCboTimestampField->setCurrentIndex( idx );

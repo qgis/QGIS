@@ -94,9 +94,7 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
   //add protocol drivers
   QStringList protocolTypes = QStringLiteral( "HTTP/HTTPS/FTP,vsicurl;AWS S3,vsis3;Google Cloud Storage,vsigs;" ).split( ';' );
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
   protocolTypes += QStringLiteral( "Microsoft Azure Blob,vsiaz;Alibaba Cloud OSS,vsioss;OpenStack Swift Object Storage,vsiswift;WFS3 (experimental),WFS3" ).split( ';' );
-#endif
   protocolTypes += QgsProviderRegistry::instance()->protocolDrivers().split( ';' );
   for ( int i = 0; i < protocolTypes.count(); i++ )
   {
@@ -653,7 +651,7 @@ void QgsOgrSourceSelect::fillOpenOptions()
   if ( STARTS_WITH_CI( mDataSources[0].toUtf8().toStdString().c_str(), "PG:" ) )
     hDriver = GDALGetDriverByName( "PostgreSQL" ); // otherwise the PostgisRaster driver gets identified
   else
-    hDriver = GDALIdentifyDriver( mDataSources[0].toUtf8().toStdString().c_str(), nullptr );
+    hDriver = GDALIdentifyDriverEx( mDataSources[0].toUtf8().toStdString().c_str(), GDAL_OF_VECTOR, nullptr, nullptr );
   if ( hDriver == nullptr )
     return;
 
@@ -737,7 +735,7 @@ void QgsOgrSourceSelect::fillOpenOptions()
     else if ( !options.isEmpty() )
     {
       QComboBox *cb = new QComboBox();
-      for ( const QString &val : qgis::as_const( options ) )
+      for ( const QString &val : std::as_const( options ) )
       {
         cb->addItem( val, val );
       }

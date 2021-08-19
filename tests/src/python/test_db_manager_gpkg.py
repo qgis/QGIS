@@ -139,7 +139,7 @@ class TestPyQgsDBManagerGpkg(unittest.TestCase):
 
         connection.remove()
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true',
+    @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'),
                      'Test flaky')  # see https://travis-ci.org/qgis/QGIS/jobs/502556996
     def testCreateRenameDeleteTable(self):
         connection_name = 'testCreateRenameDeleteTable'
@@ -284,10 +284,6 @@ class TestPyQgsDBManagerGpkg(unittest.TestCase):
         connection.remove()
 
     def testRaster(self):
-
-        if int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 0, 2):
-            return
-
         connection_name = 'testRaster'
         plugin = createDbPlugin('gpkg')
         uri = QgsDataSourceUri()
@@ -329,10 +325,6 @@ class TestPyQgsDBManagerGpkg(unittest.TestCase):
         connection.remove()
 
     def testTwoRaster(self):
-
-        if int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 0, 2):
-            return
-
         connection_name = 'testTwoRaster'
         plugin = createDbPlugin('gpkg')
         uri = QgsDataSourceUri()

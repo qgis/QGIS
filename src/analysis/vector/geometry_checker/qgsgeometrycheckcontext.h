@@ -23,7 +23,7 @@
 
 /**
  * \ingroup analysis
- * Base configuration for geometry checks.
+ * \brief Base configuration for geometry checks.
  *
  * \note This class is a technology preview and unstable API.
  * \since QGIS 3.4

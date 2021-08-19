@@ -62,7 +62,7 @@ void QgsLayoutItem3DMap::assignFreeId()
 
   int maxId = -1;
   bool used = false;
-  for ( QgsLayoutItem3DMap *map : qgis::as_const( mapsList ) )
+  for ( QgsLayoutItem3DMap *map : std::as_const( mapsList ) )
   {
     if ( map == this )
       continue;

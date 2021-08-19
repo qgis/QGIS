@@ -27,6 +27,7 @@
 
 #include "qgsexpressioncontext.h"
 #include "qgslegendpatchshape.h"
+#include "qgspallabeling.h"
 
 class QgsLayerTreeLayer;
 class QgsLayerTreeModel;
@@ -37,7 +38,7 @@ class QgsRenderContext;
 
 /**
  * \ingroup core
- * The QgsLegendRendererItem class is abstract interface for legend items
+ * \brief The QgsLegendRendererItem class is abstract interface for legend items
  * returned from QgsMapLayerLegend implementation.
  *
  * The objects are used in QgsLayerTreeModel. Custom implementations may offer additional interactivity
@@ -349,7 +350,7 @@ Q_DECLARE_METATYPE( QgsLayerTreeModelLegendNode::NodeTypes )
 
 /**
  * \ingroup core
- * Implementation of legend node interface for displaying preview of vector symbols and their labels
+ * \brief Implementation of legend node interface for displaying preview of vector symbols and their labels
  * and allowing interaction with the symbol / renderer.
  *
  * \since QGIS 2.6
@@ -536,7 +537,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 
 /**
  * \ingroup core
- * Implementation of legend node interface for displaying arbitrary label with icon.
+ * \brief Implementation of legend node interface for displaying arbitrary label with icon.
  *
  * \since QGIS 2.6
  */
@@ -568,7 +569,7 @@ class CORE_EXPORT QgsSimpleLegendNode : public QgsLayerTreeModelLegendNode
 
 /**
  * \ingroup core
- * Implementation of legend node interface for displaying arbitrary raster image
+ * \brief Implementation of legend node interface for displaying arbitrary raster image
  *
  * \since QGIS 2.6
  */
@@ -598,7 +599,7 @@ class CORE_EXPORT QgsImageLegendNode : public QgsLayerTreeModelLegendNode
 
 /**
  * \ingroup core
- * Implementation of legend node interface for displaying raster legend entries
+ * \brief Implementation of legend node interface for displaying raster legend entries
  *
  * \since QGIS 2.6
  */
@@ -650,7 +651,7 @@ class QgsImageFetcher;
 
 /**
  * \ingroup core
- * Implementation of legend node interface for displaying WMS legend entries
+ * \brief Implementation of legend node interface for displaying WMS legend entries
  *
  * \since QGIS 2.8
  */
@@ -700,7 +701,7 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
 
 /**
  * \ingroup core
- * Produces legend node with a marker symbol
+ * \brief Produces legend node with a marker symbol
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsDataDefinedSizeLegendNode : public QgsLayerTreeModelLegendNode
@@ -721,5 +722,54 @@ class CORE_EXPORT QgsDataDefinedSizeLegendNode : public QgsLayerTreeModelLegendN
     QgsDataDefinedSizeLegend *mSettings = nullptr;
     mutable QImage mImage;
 };
+
+/**
+ * \ingroup core
+ * \brief Produces legend node for a labeling text symbol
+ * \since QGIS 3.20
+ */
+class CORE_EXPORT QgsVectorLabelLegendNode : public QgsLayerTreeModelLegendNode
+{
+  public:
+
+    /**
+     * \brief QgsVectorLabelLegendNode
+     * \param nodeLayer the parent node
+     * \param labelSettings setting of the label class
+     * \param parent the parent object
+     */
+    QgsVectorLabelLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsPalLayerSettings &labelSettings, QObject *parent = nullptr );
+    ~QgsVectorLabelLegendNode() override;
+
+    /**
+     * \brief data Returns data associated with the item
+     * \param role the data role
+     * \returns variant containing the data for the role
+     */
+    QVariant data( int role ) const override;
+
+    /**
+     * \brief drawSymbol
+     * \param settings the legend settings
+     * \param ctx context for the item
+     * \param itemHeight the height of the item
+     * \returns size of the item
+     */
+    QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
+
+    /**
+     * \brief exportSymbolToJson
+     * \param settings the legend settings
+     * \param context the item context
+     * \returns the json object
+     */
+    QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const override;
+
+  private:
+    QgsPalLayerSettings mLabelSettings;
+    QSizeF drawSymbol( const QgsLegendSettings &settings, const QgsRenderContext &renderContext, double xOffset = 0.0, double yOffset = 0.0 ) const;
+    void textWidthHeight( double &width, double &height, QgsRenderContext &ctx, const QgsTextFormat &textFormat, const QStringList &textLines ) const;
+};
+
 
 #endif // QGSLAYERTREEMODELLEGENDNODE_H

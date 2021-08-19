@@ -23,7 +23,7 @@
 /**
  * \ingroup gui
  * \class QgsFocusWatcher
- * A event filter for watching for focus events on a parent object. Usually QObjects must
+ * \brief A event filter for watching for focus events on a parent object. Usually QObjects must
  * subclass and override methods like focusOutEvent to handle focus events. Using this class
  * as an event filter avoids the need to subclass objects and the focus events can be directly
  * caught using the emitted signals.

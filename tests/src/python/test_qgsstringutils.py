@@ -220,6 +220,23 @@ class PyQgsStringUtils(unittest.TestCase):
             QgsStringUtils.fuzzyScore('abcd efg hig', 'abcd e hi')
         )
 
+    def test_truncate_from_middle(self):
+        """
+        Test QgsStringUtils.truncateMiddleOfString
+        """
+        self.assertEqual(QgsStringUtils.truncateMiddleOfString('', 0), '')
+        self.assertEqual(QgsStringUtils.truncateMiddleOfString('', 10), '')
+        self.assertEqual(QgsStringUtils.truncateMiddleOfString('abcdef', 10), 'abcdef')
+        self.assertEqual(QgsStringUtils.truncateMiddleOfString('abcdefghij', 10), 'abcdefghij')
+        self.assertEqual(QgsStringUtils.truncateMiddleOfString('abcdefghijk', 10), 'abcd…ghijk')
+        self.assertEqual(QgsStringUtils.truncateMiddleOfString('abcdefghijkl', 10), 'abcde…ijkl')
+        self.assertEqual(QgsStringUtils.truncateMiddleOfString('abcdefghijklmnop', 10), 'abcde…mnop')
+        self.assertEqual(QgsStringUtils.truncateMiddleOfString('this is a test', 11), 'this … test')
+        self.assertEqual(QgsStringUtils.truncateMiddleOfString('this is a test', 1), '…')
+        self.assertEqual(QgsStringUtils.truncateMiddleOfString('this is a test', 2), 't…')
+        self.assertEqual(QgsStringUtils.truncateMiddleOfString('this is a test', 3), 't…t')
+        self.assertEqual(QgsStringUtils.truncateMiddleOfString('this is a test', 0), '…')
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -26,7 +26,7 @@ class QgsMapLayerProxyModel;
 
 /**
  * \ingroup gui
- * A dialog to add new layers to the legend.
+ * \brief A dialog to add new layers to the legend.
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12

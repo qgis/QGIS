@@ -25,6 +25,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsguiutils.h"
 #include "qgsapplication.h"
+#include "qgsmarkersymbol.h"
 
 QgsRendererWidget *QgsPointClusterRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {
@@ -58,21 +59,23 @@ QgsPointClusterRendererWidget::QgsPointClusterRendererWidget( QgsVectorLayer *la
   mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
-  mCenterSymbolToolButton->setSymbolType( QgsSymbol::Marker );
+  mCenterSymbolToolButton->setSymbolType( Qgis::SymbolType::Marker );
 
   if ( renderer )
   {
-    mRenderer = QgsPointClusterRenderer::convertFromRenderer( renderer );
+    mRenderer.reset( QgsPointClusterRenderer::convertFromRenderer( renderer ) );
   }
   if ( !mRenderer )
   {
-    mRenderer = new QgsPointClusterRenderer();
+    mRenderer = std::make_unique< QgsPointClusterRenderer >();
+    if ( renderer )
+      renderer->copyRendererData( mRenderer.get() );
   }
 
   blockAllSignals( true );
 
   //insert possible renderer types
-  QStringList rendererList = QgsApplication::rendererRegistry()->renderersList( QgsRendererAbstractMetadata::PointLayer );
+  const QStringList rendererList = QgsApplication::rendererRegistry()->renderersList( QgsRendererAbstractMetadata::PointLayer );
   QStringList::const_iterator it = rendererList.constBegin();
   for ( ; it != rendererList.constEnd(); ++it )
   {
@@ -93,8 +96,8 @@ QgsPointClusterRendererWidget::QgsPointClusterRendererWidget( QgsVectorLayer *la
   //set the appropriate renderer dialog
   if ( mRenderer->embeddedRenderer() )
   {
-    QString rendererName = mRenderer->embeddedRenderer()->type();
-    int rendererIndex = mRendererComboBox->findData( rendererName );
+    const QString rendererName = mRenderer->embeddedRenderer()->type();
+    const int rendererIndex = mRendererComboBox->findData( rendererName );
     if ( rendererIndex != -1 )
     {
       mRendererComboBox->setCurrentIndex( rendererIndex );
@@ -108,14 +111,11 @@ QgsPointClusterRendererWidget::QgsPointClusterRendererWidget( QgsVectorLayer *la
   mCenterSymbolToolButton->registerExpressionContextGenerator( this );
 }
 
-QgsPointClusterRendererWidget::~QgsPointClusterRendererWidget()
-{
-  delete mRenderer;
-}
+QgsPointClusterRendererWidget::~QgsPointClusterRendererWidget() = default;
 
 QgsFeatureRenderer *QgsPointClusterRendererWidget::renderer()
 {
-  return mRenderer;
+  return mRenderer.get();
 }
 
 void QgsPointClusterRendererWidget::setContext( const QgsSymbolWidgetContext &context )
@@ -132,12 +132,12 @@ void QgsPointClusterRendererWidget::setContext( const QgsSymbolWidgetContext &co
 
 void QgsPointClusterRendererWidget::mRendererComboBox_currentIndexChanged( int index )
 {
-  QString rendererId = mRendererComboBox->itemData( index ).toString();
+  const QString rendererId = mRendererComboBox->itemData( index ).toString();
   QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( rendererId );
   if ( m )
   {
     // unfortunately renderer conversion is only available through the creation of a widget...
-    std::unique_ptr< QgsFeatureRenderer > oldRenderer( mRenderer->embeddedRenderer()->clone() );
+    const std::unique_ptr< QgsFeatureRenderer > oldRenderer( mRenderer->embeddedRenderer()->clone() );
     QgsRendererWidget *tempRenderWidget = m->createRendererWidget( mLayer, mStyle, oldRenderer.get() );
     mRenderer->setEmbeddedRenderer( tempRenderWidget->renderer()->clone() );
     delete tempRenderWidget;
@@ -164,6 +164,7 @@ void QgsPointClusterRendererWidget::mRendererSettingsButton_clicked()
     QgsSymbolWidgetContext context = mContext;
     context.setAdditionalExpressionContextScopes( scopes );
     w->setContext( context );
+    w->disableSymbolLevels();
     connect( w, &QgsPanelWidget::widgetChanged, this, &QgsPointClusterRendererWidget::updateRendererFromWidget );
     w->setDockMode( this->dockMode() );
     openPanel( w );

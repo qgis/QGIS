@@ -30,7 +30,7 @@ class QGraphicsItem;
 
 /**
  * \ingroup gui
- * Model designer view tool for selecting items in the model.
+ * \brief Model designer view tool for selecting items in the model.
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsModelViewToolSelect : public QgsModelViewTool

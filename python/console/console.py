@@ -32,7 +32,12 @@ from .console_sci import ShellScintilla
 from .console_output import ShellOutputScintilla
 from .console_editor import EditorTabWidget
 from .console_settings import ConsoleOptionsFactory
-from qgis.core import Qgis, QgsApplication, QgsSettings
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsSettings,
+    QgsFileUtils
+)
 from qgis.gui import (
     QgsFilterLineEdit,
     QgsHelp,
@@ -714,6 +719,8 @@ class PythonConsoleWidget(QWidget):
                                                        saveAsFileTr,
                                                        pathFileName, "Script file (*.py)")
         if filename:
+            filename = QgsFileUtils.ensureFileNameHasExtension(filename, ['py'])
+
             try:
                 tabWidget.save(filename)
             except (IOError, OSError) as error:

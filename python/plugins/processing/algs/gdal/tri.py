@@ -84,18 +84,20 @@ class tri(GdalAlgorithm):
         return 'gdaldem'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        arguments = ['TRI']
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if inLayer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
 
-        arguments.append(inLayer.source())
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, out)
-        arguments.append(out)
 
-        arguments.append('-b')
-        arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
+        arguments = [
+            'TRI',
+            inLayer.source(),
+            out,
+            '-b',
+            str(self.parameterAsInt(parameters, self.BAND, context)),
+        ]
 
         if self.parameterAsBoolean(parameters, self.COMPUTE_EDGES, context):
             arguments.append('-compute_edges')

@@ -31,6 +31,16 @@ QgsOgrTransaction::QgsOgrTransaction( const QString &connString, QgsOgrDatasetSh
 
 bool QgsOgrTransaction::beginTransaction( QString &error, int /* statementTimeout */ )
 {
+  GDALDriverH hDriver = GDALGetDatasetDriver( mSharedDS.get()->mDs->hDS );
+  const QString driverName = GDALGetDriverShortName( hDriver );
+  if ( driverName == QLatin1String( "GPKG" ) || driverName == QLatin1String( "SQLite" ) )
+  {
+    QString fkDeferError;
+    if ( ! executeSql( QStringLiteral( "PRAGMA defer_foreign_keys = ON" ), fkDeferError ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Error setting PRAGMA defer_foreign_keys = ON: %1" ).arg( fkDeferError ) );
+    }
+  }
   return executeSql( QStringLiteral( "BEGIN" ), error );
 }
 
@@ -53,7 +63,7 @@ bool QgsOgrTransaction::executeSql( const QString &sql, QString &errorMsg, bool 
     createSavepoint( err );
   }
 
-  QgsDebugMsg( QStringLiteral( "Transaction sql: %1" ).arg( sql ) );
+  QgsDebugMsgLevel( QStringLiteral( "Transaction sql: %1" ).arg( sql ), 2 );
   if ( !mSharedDS->executeSQLNoReturn( sql ) )
   {
     errorMsg = CPLGetLastErrorMsg();
@@ -73,7 +83,7 @@ bool QgsOgrTransaction::executeSql( const QString &sql, QString &errorMsg, bool 
     emit dirtied( sql, name );
   }
 
-  QgsDebugMsg( QStringLiteral( "... ok" ) );
+  QgsDebugMsgLevel( QStringLiteral( "... ok" ), 2 );
   return true;
 }
 

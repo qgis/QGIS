@@ -26,7 +26,6 @@
 #include "ui_qgspropertygenericnumericassistantwidget.h"
 #include "qgsproperty.h"
 #include "qgslayertreegroup.h"
-#include "qgssymbol.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgis_gui.h"
 #include <QStandardItemModel>
@@ -109,7 +108,7 @@ class GUI_EXPORT QgsPropertyColorAssistantWidget : public QgsPropertyAbstractTra
 /**
  * \class QgsPropertyAssistantWidget
  * \ingroup gui
- * Shows a user-friendly assistant guiding users through the creation of QgsProperty overrides.
+ * \brief Shows a user-friendly assistant guiding users through the creation of QgsProperty overrides.
  * \since QGIS 3.0
  */
 class GUI_EXPORT QgsPropertyAssistantWidget : public QgsPanelWidget, private Ui::PropertyAssistantBase

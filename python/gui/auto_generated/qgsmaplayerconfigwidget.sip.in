@@ -11,7 +11,7 @@
 
 class QgsMapLayerConfigWidget : QgsPanelWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A panel widget that can be shown in the map style dock
 
 .. versionadded:: 2.16
@@ -60,7 +60,11 @@ Called when changes to the layer need to be made.
 Will be called when live update is enabled.
 %End
 
+  signals:
+
+
   protected:
+
 };
 
 /************************************************************************

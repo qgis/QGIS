@@ -141,7 +141,6 @@ class PyQgsTextFormatWidget(unittest.TestCase):
         self.assertEqual(s.fillColor(), QColor(255, 0, 0))
         self.assertEqual(s.strokeColor(), QColor(0, 255, 0))
         self.assertEqual(s.opacity(), 0.5)
-        self.assertEqual(s.joinStyle(), Qt.RoundJoin)
         self.assertEqual(s.blendMode(), QPainter.CompositionMode_Difference)
         self.assertEqual(s.strokeWidth(), 7)
         self.assertEqual(s.strokeWidthUnit(), QgsUnitTypes.RenderMapUnits)

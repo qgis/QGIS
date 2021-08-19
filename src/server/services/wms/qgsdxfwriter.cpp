@@ -22,24 +22,21 @@ email                : david dot marteau at 3liz dot com
 namespace QgsWms
 {
   void writeAsDxf( QgsServerInterface *serverIface, const QgsProject *project,
-                   const QString &,  const QgsServerRequest &request,
+                   const QgsWmsRequest &request,
                    QgsServerResponse &response )
   {
-    // get wms parameters from query
-    QgsWmsParameters parameters( QUrlQuery( request.url() ) );
-
     // prepare render context
     QgsWmsRenderContext context( project, serverIface );
     context.setFlag( QgsWmsRenderContext::UseWfsLayersOnly );
     context.setFlag( QgsWmsRenderContext::UseOpacity );
     context.setFlag( QgsWmsRenderContext::UseFilter );
     context.setFlag( QgsWmsRenderContext::SetAccessControl );
-    context.setParameters( parameters );
+    context.setParameters( request.wmsParameters() );
 
     // Write output
     QgsRenderer renderer( context );
     std::unique_ptr<QgsDxfExport> dxf = renderer.getDxf();
     response.setHeader( "Content-Type", "application/dxf" );
-    dxf->writeToFile( response.io(), parameters.dxfCodec() );
+    dxf->writeToFile( response.io(), request.wmsParameters().dxfCodec() );
   }
 } // namespace QgsWms

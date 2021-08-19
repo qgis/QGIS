@@ -194,6 +194,26 @@ class TestQgsExpressionBuilderWidget(unittest.TestCase):
         items = w.findExpressions('Stored Expression Number One')
         self.assertEqual(len(items), 0)
 
+    def testLayerVariables(self):
+        """ check through widget model to ensure it is populated with layer variables """
+        w = QgsExpressionBuilderWidget()
+        m = w.model()
+
+        p = QgsProject.instance()
+        layer = QgsVectorLayer("Point", "layer1", "memory")
+        p.addMapLayers([layer])
+
+        w.setLayer(layer)
+
+        items = m.findItems("layer", Qt.MatchRecursive)
+        self.assertEqual(len(items), 1)
+        items = m.findItems("layer_id", Qt.MatchRecursive)
+        self.assertEqual(len(items), 1)
+        items = m.findItems("layer_name", Qt.MatchRecursive)
+        self.assertEqual(len(items), 1)
+
+        p.removeMapLayer(layer)
+
 
 if __name__ == '__main__':
     unittest.main()

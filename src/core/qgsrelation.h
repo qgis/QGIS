@@ -78,7 +78,8 @@ class CORE_EXPORT QgsRelation
 
     /**
      * \ingroup core
-     * Defines a relation between matching fields of the two involved tables of a relation.
+     * \brief Defines a relation between matching fields of the two involved tables of a relation.
+     *
      * Often, a relation is only defined by just one FieldPair with the name of the foreign key
      * column of the referencing (child) table as first element and the name of the primary key column
      * of the referenced (parent) table as the second element.
@@ -398,7 +399,7 @@ class CORE_EXPORT QgsRelation
      * Sets the parent polymorphic relation id.
      * \since QGIS 3.18
      */
-    void setPolymorphicRelationId( const QString polymorphicRelationId );
+    void setPolymorphicRelationId( const QString &polymorphicRelationId );
 
     /**
      * Returns the parent polymorphic relation id. If the relation is a normal relation, a null string is returned.

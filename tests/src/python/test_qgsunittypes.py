@@ -287,6 +287,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                  QgsUnitTypes.TemporalYears,
                  QgsUnitTypes.TemporalDecades,
                  QgsUnitTypes.TemporalCenturies,
+                 QgsUnitTypes.TemporalIrregularStep,
                  QgsUnitTypes.TemporalUnknownUnit]
 
         for u in units:
@@ -316,6 +317,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                  QgsUnitTypes.TemporalYears,
                  QgsUnitTypes.TemporalDecades,
                  QgsUnitTypes.TemporalCenturies,
+                 QgsUnitTypes.TemporalIrregularStep,
                  QgsUnitTypes.TemporalUnknownUnit]
 
         for u in units:
@@ -892,7 +894,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.TemporalYears: 3.170980821917834278e-11,
                 QgsUnitTypes.TemporalDecades: 3.170980821917834117e-12,
                 QgsUnitTypes.TemporalCenturies: 3.170980821917834319e-13,
-                QgsUnitTypes.TemporalUnknownUnit: 1.0
+                QgsUnitTypes.TemporalUnknownUnit: 1.0,
+                QgsUnitTypes.TemporalIrregularStep: 1.0,
             },
             QgsUnitTypes.TemporalSeconds: {
                 QgsUnitTypes.TemporalMilliseconds: 1000.0,
@@ -905,7 +908,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.TemporalYears: 3.170980821917834046e-8,
                 QgsUnitTypes.TemporalDecades: 3.170980821917834046e-9,
                 QgsUnitTypes.TemporalCenturies: 3.170980821917834149e-10,
-                QgsUnitTypes.TemporalUnknownUnit: 1.0
+                QgsUnitTypes.TemporalUnknownUnit: 1.0,
+                QgsUnitTypes.TemporalIrregularStep: 1.0,
             },
             QgsUnitTypes.TemporalMinutes: {
                 QgsUnitTypes.TemporalMilliseconds: 60000.0,
@@ -918,7 +922,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.TemporalYears: 1.902828841643645226e-6,
                 QgsUnitTypes.TemporalDecades: 1.902828841643645332e-7,
                 QgsUnitTypes.TemporalCenturies: 1.9028288416436452e-8,
-                QgsUnitTypes.TemporalUnknownUnit: 1.0
+                QgsUnitTypes.TemporalUnknownUnit: 1.0,
+                QgsUnitTypes.TemporalIrregularStep: 1.0,
             },
             QgsUnitTypes.TemporalHours: {
                 QgsUnitTypes.TemporalMilliseconds: 3600000.0,
@@ -931,7 +936,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.TemporalYears: 0.00011407711613050422,
                 QgsUnitTypes.TemporalDecades: 1.141553424664109737e-5,
                 QgsUnitTypes.TemporalCenturies: 1.141553424664109737e-6,
-                QgsUnitTypes.TemporalUnknownUnit: 1.0
+                QgsUnitTypes.TemporalUnknownUnit: 1.0,
+                QgsUnitTypes.TemporalIrregularStep: 1.0,
             },
             QgsUnitTypes.TemporalDays: {
                 QgsUnitTypes.TemporalMilliseconds: 8.64e+7,
@@ -944,7 +950,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.TemporalYears: 0.0027378507871321013,
                 QgsUnitTypes.TemporalDecades: 0.0002737850787132101,
                 QgsUnitTypes.TemporalCenturies: 2.739723287683189167e-5,
-                QgsUnitTypes.TemporalUnknownUnit: 1.0
+                QgsUnitTypes.TemporalUnknownUnit: 1.0,
+                QgsUnitTypes.TemporalIrregularStep: 1.0,
             },
             QgsUnitTypes.TemporalWeeks: {
                 QgsUnitTypes.TemporalMilliseconds: 6.048e+8,
@@ -957,7 +964,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.TemporalYears: 0.019164955509924708,
                 QgsUnitTypes.TemporalDecades: 0.0019164955509924709,
                 QgsUnitTypes.TemporalCenturies: 0.0001916495550992471,
-                QgsUnitTypes.TemporalUnknownUnit: 1.0
+                QgsUnitTypes.TemporalUnknownUnit: 1.0,
+                QgsUnitTypes.TemporalIrregularStep: 1.0,
             },
             QgsUnitTypes.TemporalMonths: {
                 QgsUnitTypes.TemporalMilliseconds: 2592000000.0,
@@ -970,7 +978,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.TemporalYears: 0.08213552361396304,
                 QgsUnitTypes.TemporalDecades: 0.008213552361396304,
                 QgsUnitTypes.TemporalCenturies: 0.0008213552361396304,
-                QgsUnitTypes.TemporalUnknownUnit: 1.0
+                QgsUnitTypes.TemporalUnknownUnit: 1.0,
+                QgsUnitTypes.TemporalIrregularStep: 1.0,
             },
             QgsUnitTypes.TemporalYears: {
                 QgsUnitTypes.TemporalMilliseconds: 31557600000.0,
@@ -983,7 +992,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.TemporalYears: 1,
                 QgsUnitTypes.TemporalDecades: 0.1,
                 QgsUnitTypes.TemporalCenturies: 0.01,
-                QgsUnitTypes.TemporalUnknownUnit: 1.0
+                QgsUnitTypes.TemporalUnknownUnit: 1.0,
+                QgsUnitTypes.TemporalIrregularStep: 1.0,
             },
             QgsUnitTypes.TemporalDecades: {
                 QgsUnitTypes.TemporalMilliseconds: 315576000000.0,
@@ -996,7 +1006,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.TemporalYears: 10,
                 QgsUnitTypes.TemporalDecades: 1,
                 QgsUnitTypes.TemporalCenturies: 0.1,
-                QgsUnitTypes.TemporalUnknownUnit: 1.0
+                QgsUnitTypes.TemporalUnknownUnit: 1.0,
+                QgsUnitTypes.TemporalIrregularStep: 1.0,
             },
             QgsUnitTypes.TemporalCenturies: {
                 QgsUnitTypes.TemporalMilliseconds: 3155760000000.0,
@@ -1009,7 +1020,8 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.TemporalYears: 100,
                 QgsUnitTypes.TemporalDecades: 10,
                 QgsUnitTypes.TemporalCenturies: 1,
-                QgsUnitTypes.TemporalUnknownUnit: 1.0
+                QgsUnitTypes.TemporalUnknownUnit: 1.0,
+                QgsUnitTypes.TemporalIrregularStep: 1.0,
             }
         }
 
@@ -1024,6 +1036,10 @@ class TestQgsUnitTypes(unittest.TestCase):
                                                                                                                 QgsUnitTypes.toString(to_unit)))
                 # test conversion to unknown units
                 res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.TemporalUnknownUnit)
+                self.assertAlmostEqual(res,
+                                       1.0,
+                                       msg='got {:.7f}, expected 1.0 when converting from {} to unknown units'.format(res, QgsUnitTypes.toString(from_unit)))
+                res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.TemporalIrregularStep)
                 self.assertAlmostEqual(res,
                                        1.0,
                                        msg='got {:.7f}, expected 1.0 when converting from {} to unknown units'.format(res, QgsUnitTypes.toString(from_unit)))

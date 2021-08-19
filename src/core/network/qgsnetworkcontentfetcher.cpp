@@ -129,13 +129,13 @@ QTextCodec *QgsNetworkContentFetcher::codecForHtml( QByteArray &array ) const
   }
 
   //check for meta charset tag
-  QByteArray header = array.left( 1024 ).toLower();
+  const QByteArray header = array.left( 1024 ).toLower();
   int pos = header.indexOf( "meta charset=" );
   if ( pos != -1 )
   {
     pos += int( strlen( "meta charset=" ) ) + 1;
-    int pos2 = header.indexOf( '\"', pos );
-    QByteArray cs = header.mid( pos, pos2 - pos );
+    const int pos2 = header.indexOf( '\"', pos );
+    const QByteArray cs = header.mid( pos, pos2 - pos );
     codec = QTextCodec::codecForName( cs );
     if ( codec )
     {
@@ -172,11 +172,11 @@ void QgsNetworkContentFetcher::contentLoaded( bool ok )
     return;
   }
 
-  QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
+  const QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
   if ( redirect.isNull() )
   {
     //no error or redirect, got target
-    QVariant status = mReply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
+    const QVariant status = mReply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
     if ( !status.isNull() && status.toInt() >= 400 )
     {
       QgsMessageLog::logMessage( tr( "HTTP fetch %1 failed with error %2" ).arg( mReply->url().toString(), status.toString() ) );

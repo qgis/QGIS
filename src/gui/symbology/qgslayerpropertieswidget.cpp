@@ -31,6 +31,7 @@
 #include "qgssymbollayerwidget.h"
 #include "qgsarrowsymbollayerwidget.h"
 #include "qgsellipsesymbollayerwidget.h"
+#include "qgsinterpolatedlinesymbollayerwidget.h"
 #include "qgsvectorfieldsymbollayerwidget.h"
 #include "qgssymbol.h" //for the unit
 #include "qgspanelwidget.h"
@@ -73,6 +74,7 @@ static void _initWidgetFunctions()
   _initWidgetFunction( QStringLiteral( "MarkerLine" ), QgsMarkerLineSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "HashLine" ), QgsHashedLineSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "ArrowLine" ), QgsArrowSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "InterpolatedLine" ), QgsInterpolatedLineSymbolLayerWidget::create );
 
   _initWidgetFunction( QStringLiteral( "SimpleMarker" ), QgsSimpleMarkerSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "FilledMarker" ), QgsFilledMarkerSymbolLayerWidget::create );
@@ -124,7 +126,7 @@ QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const
   //
   populateLayerTypes();
   // update layer type combo box
-  int idx = cboLayerType->findData( mLayer->layerType() );
+  const int idx = cboLayerType->findData( mLayer->layerType() );
   cboLayerType->setCurrentIndex( idx );
 
   connect( mEnabledCheckBox, &QAbstractButton::toggled, mEnabledDDBtn, &QWidget::setEnabled );
@@ -172,23 +174,23 @@ void QgsLayerPropertiesWidget::setDockMode( bool dockMode )
 
 void QgsLayerPropertiesWidget::populateLayerTypes()
 {
-  QStringList symbolLayerIds = QgsApplication::symbolLayerRegistry()->symbolLayersForType( mSymbol->type() );
+  const QStringList symbolLayerIds = QgsApplication::symbolLayerRegistry()->symbolLayersForType( mSymbol->type() );
 
   const auto constSymbolLayerIds = symbolLayerIds;
   for ( const QString &symbolLayerId : constSymbolLayerIds )
     cboLayerType->addItem( QgsApplication::symbolLayerRegistry()->symbolLayerMetadata( symbolLayerId )->visibleName(), symbolLayerId );
 
-  if ( mSymbol->type() == QgsSymbol::Fill )
+  if ( mSymbol->type() == Qgis::SymbolType::Fill )
   {
-    QStringList lineLayerIds = QgsApplication::symbolLayerRegistry()->symbolLayersForType( QgsSymbol::Line );
+    const QStringList lineLayerIds = QgsApplication::symbolLayerRegistry()->symbolLayersForType( Qgis::SymbolType::Line );
     const auto constLineLayerIds = lineLayerIds;
     for ( const QString &lineLayerId : constLineLayerIds )
     {
       QgsSymbolLayerAbstractMetadata *layerInfo = QgsApplication::symbolLayerRegistry()->symbolLayerMetadata( lineLayerId );
-      if ( layerInfo->type() != QgsSymbol::Hybrid )
+      if ( layerInfo->type() != Qgis::SymbolType::Hybrid )
       {
-        QString visibleName = layerInfo->visibleName();
-        QString name = tr( "Outline: %1" ).arg( visibleName );
+        const QString visibleName = layerInfo->visibleName();
+        const QString name = tr( "Outline: %1" ).arg( visibleName );
         cboLayerType->addItem( name, lineLayerId );
       }
     }
@@ -207,7 +209,7 @@ void QgsLayerPropertiesWidget::updateSymbolLayerWidget( QgsSymbolLayer *layer )
 
   QgsSymbolLayerRegistry *pReg = QgsApplication::symbolLayerRegistry();
 
-  QString layerType = layer->layerType();
+  const QString layerType = layer->layerType();
   QgsSymbolLayerAbstractMetadata *am = pReg->symbolLayerMetadata( layerType );
   if ( am )
   {
@@ -264,6 +266,7 @@ QgsExpressionContext QgsLayerPropertiesWidget::createExpressionContext() const
   expContext << symbolScope;
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT, 1, true ) );
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, 1, true ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_RING_NUM, 0, true ) );
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT, 1, true ) );
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, 1, true ) );
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_layer_count" ), 1, true ) );
@@ -283,6 +286,7 @@ QgsExpressionContext QgsLayerPropertiesWidget::createExpressionContext() const
 
   expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE << QgsExpressionContext::EXPR_SYMBOL_COLOR
                                       << QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT << QgsExpressionContext::EXPR_GEOMETRY_PART_NUM
+                                      << QgsExpressionContext::EXPR_GEOMETRY_RING_NUM
                                       << QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT << QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM
                                       << QgsExpressionContext::EXPR_CLUSTER_COLOR << QgsExpressionContext::EXPR_CLUSTER_SIZE
                                       << QStringLiteral( "symbol_layer_count" ) << QStringLiteral( "symbol_layer_index" ) );
@@ -300,7 +304,7 @@ void QgsLayerPropertiesWidget::registerDataDefinedButton( QgsPropertyOverrideBut
 void QgsLayerPropertiesWidget::updateProperty()
 {
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  QgsSymbolLayer::Property key = static_cast<  QgsSymbolLayer::Property >( button->propertyKey() );
+  const QgsSymbolLayer::Property key = static_cast<  QgsSymbolLayer::Property >( button->propertyKey() );
   mLayer->setDataDefinedProperty( key, button->toProperty() );
   emit changed();
 }
@@ -310,7 +314,7 @@ void QgsLayerPropertiesWidget::layerTypeChanged()
   QgsSymbolLayer *layer = mLayer;
   if ( !layer )
     return;
-  QString newLayerType = cboLayerType->currentData().toString();
+  const QString newLayerType = cboLayerType->currentData().toString();
   if ( layer->layerType() == newLayerType )
     return;
 

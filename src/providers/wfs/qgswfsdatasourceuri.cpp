@@ -30,7 +30,7 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
   // http://example.com/?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=x&SRSNAME=y&username=foo&password=
   if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_URL ) )
   {
-    static QSet<QString> sFilter
+    static const QSet<QString> sFilter
     {
       QStringLiteral( "service" ),
       QgsWFSConstants::URI_PARAM_VERSION,
@@ -55,12 +55,12 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
       query.addQueryItem( item.first.toLower(), item.second );
     }
 
-    QString srsname = query.queryItemValue( QgsWFSConstants::URI_PARAM_SRSNAME );
-    QString bbox = query.queryItemValue( QgsWFSConstants::URI_PARAM_BBOX );
-    QString typeName = query.queryItemValue( QgsWFSConstants::URI_PARAM_TYPENAME );
-    QString version = query.queryItemValue( QgsWFSConstants::URI_PARAM_VERSION );
+    const QString srsname = query.queryItemValue( QgsWFSConstants::URI_PARAM_SRSNAME );
+    const QString bbox = query.queryItemValue( QgsWFSConstants::URI_PARAM_BBOX );
+    const QString typeName = query.queryItemValue( QgsWFSConstants::URI_PARAM_TYPENAME );
+    const QString version = query.queryItemValue( QgsWFSConstants::URI_PARAM_VERSION );
     QString filter = query.queryItemValue( QgsWFSConstants::URI_PARAM_FILTER );
-    QString outputFormat = query.queryItemValue( QgsWFSConstants::URI_PARAM_OUTPUTFORMAT );
+    const QString outputFormat = query.queryItemValue( QgsWFSConstants::URI_PARAM_OUTPUTFORMAT );
     mAuth.mAuthCfg = query.queryItemValue( QgsWFSConstants::URI_PARAM_AUTHCFG );
     // NOTE: A defined authcfg overrides any older username/password auth
     //       Only check for older auth if it is undefined
@@ -247,24 +247,24 @@ QString QgsWFSDataSourceURI::version() const
   return mURI.param( QgsWFSConstants::URI_PARAM_VERSION );
 }
 
-int QgsWFSDataSourceURI::maxNumFeatures() const
+long long QgsWFSDataSourceURI::maxNumFeatures() const
 {
   if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_MAXNUMFEATURES ) )
     return 0;
-  return mURI.param( QgsWFSConstants::URI_PARAM_MAXNUMFEATURES ).toInt();
+  return mURI.param( QgsWFSConstants::URI_PARAM_MAXNUMFEATURES ).toLongLong();
 }
 
-void QgsWFSDataSourceURI::setMaxNumFeatures( int maxNumFeatures )
+void QgsWFSDataSourceURI::setMaxNumFeatures( long long maxNumFeatures )
 {
   mURI.removeParam( QgsWFSConstants::URI_PARAM_MAXNUMFEATURES );
-  mURI.setParam( QgsWFSConstants::URI_PARAM_MAXNUMFEATURES, QString( maxNumFeatures ) );
+  mURI.setParam( QgsWFSConstants::URI_PARAM_MAXNUMFEATURES, QString::number( maxNumFeatures ) );
 }
 
-int QgsWFSDataSourceURI::pageSize() const
+long long QgsWFSDataSourceURI::pageSize() const
 {
   if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_PAGE_SIZE ) )
     return 0;
-  return mURI.param( QgsWFSConstants::URI_PARAM_PAGE_SIZE ).toInt();
+  return mURI.param( QgsWFSConstants::URI_PARAM_PAGE_SIZE ).toLongLong();
 }
 
 bool QgsWFSDataSourceURI::pagingEnabled() const

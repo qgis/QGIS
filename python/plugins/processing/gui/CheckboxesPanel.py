@@ -93,18 +93,17 @@ class CheckboxesPanel(QWidget):
 
     def value(self):
         if self._multiple:
-            value = []
-            for (v, checkbox) in self._buttons:
-                if checkbox.isChecked():
-                    value.append(v)
-            return value
+            return [
+                v
+                for (v, checkbox) in self._buttons
+                if checkbox.isChecked()
+            ]
         else:
             return self._options[self._buttonGroup.checkedId()][0]
 
     def setValue(self, value):
-        if self._multiple:
-            for (v, button) in self._buttons:
+        for (v, button) in self._buttons:
+            if self._multiple:
                 button.setChecked(v in value)
-        else:
-            for v, button in self._buttons:
+            else:
                 button.setChecked(v == value)

@@ -75,26 +75,20 @@ class rgb2pct(GdalAlgorithm):
         return 'rgb2pct'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        arguments = []
-        arguments.append('-n')
-        arguments.append(str(self.parameterAsInt(parameters, self.NCOLORS, context)))
-
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, out)
-        arguments.append('-of')
-        arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
+
         raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if raster is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
 
-        arguments.append(raster.source())
-        arguments.append(out)
+        arguments = [
+            '-n',
+            str(self.parameterAsInt(parameters, self.NCOLORS, context)),
+            '-of',
+            QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]),
+            raster.source(),
+            out
+        ]
 
-        if isWindows():
-            commands = ["python3", "-m", self.commandName()]
-        else:
-            commands = [self.commandName() + '.py']
-
-        commands.append(GdalUtils.escapeAndJoin(arguments))
-
-        return commands
+        return [self.commandName() + ('.bat' if isWindows() else '.py'), GdalUtils.escapeAndJoin(arguments)]

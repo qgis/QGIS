@@ -67,8 +67,11 @@ class CORE_EXPORT QgsSqlExpressionCompiler
      * Constructor for expression compiler.
      * \param fields fields from provider
      * \param flags flags which control how expression is compiled
+     * \param ignoreStaticNodes If an expression has been partially precalculated due to static nodes in the expression, setting this argument to FALSE
+     * will prevent these precalculated values from being utilized during compilation of the expression. This flag significantly limits the effectiveness
+     * of compilation and should be used for debugging purposes only. (Since QGIS 3.18)
      */
-    explicit QgsSqlExpressionCompiler( const QgsFields &fields, QgsSqlExpressionCompiler::Flags flags = Flags() );
+    explicit QgsSqlExpressionCompiler( const QgsFields &fields, QgsSqlExpressionCompiler::Flags flags = Flags(), bool ignoreStaticNodes = false );
     virtual ~QgsSqlExpressionCompiler() = default;
 
     /**
@@ -173,12 +176,21 @@ class CORE_EXPORT QgsSqlExpressionCompiler
      */
     virtual QString castToInt( const QString &value ) const;
 
+    /**
+     * Tries to replace a node by its static cached value where possible.
+     *
+     * \since QGIS 3.18
+     */
+    virtual Result replaceNodeByStaticCachedValueIfPossible( const QgsExpressionNode *node, QString &str );
+
     QString mResult;
     QgsFields mFields;
 
   private:
 
     Flags mFlags;
+
+    bool mIgnoreStaticNodes = false;
 
     bool nodeIsNullLiteral( const QgsExpressionNode *node ) const;
 

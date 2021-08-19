@@ -62,7 +62,7 @@ void QgsUnionAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "OVERLAY" ), QObject::tr( "Overlay layer" ), QList< int >(), QVariant(), true ) );
 
-  std::unique_ptr< QgsProcessingParameterString > prefix = qgis::make_unique< QgsProcessingParameterString >( QStringLiteral( "OVERLAY_FIELDS_PREFIX" ), QObject::tr( "Overlay fields prefix" ), QString(), false, true );
+  std::unique_ptr< QgsProcessingParameterString > prefix = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "OVERLAY_FIELDS_PREFIX" ), QObject::tr( "Overlay fields prefix" ), QString(), false, true );
   prefix->setFlags( prefix->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( prefix.release() );
 
@@ -79,10 +79,10 @@ QVariantMap QgsUnionAlgorithm::processAlgorithm( const QVariantMap &parameters, 
   if ( parameters.value( QStringLiteral( "OVERLAY" ) ).isValid() && !sourceB )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "OVERLAY" ) ) );
 
-  QgsWkbTypes::Type geomType = QgsWkbTypes::multiType( sourceA->wkbType() );
+  const QgsWkbTypes::Type geomType = QgsWkbTypes::multiType( sourceA->wkbType() );
 
-  QString overlayFieldsPrefix = parameterAsString( parameters, QStringLiteral( "OVERLAY_FIELDS_PREFIX" ), context );
-  QgsFields fields = sourceB ? QgsProcessingUtils::combineFields( sourceA->fields(), sourceB->fields(), overlayFieldsPrefix ) : sourceA->fields();
+  const QString overlayFieldsPrefix = parameterAsString( parameters, QStringLiteral( "OVERLAY_FIELDS_PREFIX" ), context );
+  const QgsFields fields = sourceB ? QgsProcessingUtils::combineFields( sourceA->fields(), sourceB->fields(), overlayFieldsPrefix ) : sourceA->fields();
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, geomType, sourceA->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
@@ -99,15 +99,19 @@ QVariantMap QgsUnionAlgorithm::processAlgorithm( const QVariantMap &parameters, 
     return outputs;
   }
 
-  QList<int> fieldIndicesA = QgsProcessingUtils::fieldNamesToIndices( QStringList(), sourceA->fields() );
-  QList<int> fieldIndicesB = QgsProcessingUtils::fieldNamesToIndices( QStringList(), sourceB->fields() );
+  const QList<int> fieldIndicesA = QgsProcessingUtils::fieldNamesToIndices( QStringList(), sourceA->fields() );
+  const QList<int> fieldIndicesB = QgsProcessingUtils::fieldNamesToIndices( QStringList(), sourceB->fields() );
 
-  int count = 0;
-  int total = sourceA->featureCount() * 2 + sourceB->featureCount();
+  long count = 0;
+  const long total = sourceA->featureCount() * 2 + sourceB->featureCount();
 
   QgsOverlayUtils::intersection( *sourceA, *sourceB, *sink, context, feedback, count, total, fieldIndicesA, fieldIndicesB );
+  if ( feedback->isCanceled() )
+    return outputs;
 
   QgsOverlayUtils::difference( *sourceA, *sourceB, *sink, context, feedback, count, total, QgsOverlayUtils::OutputAB );
+  if ( feedback->isCanceled() )
+    return outputs;
 
   QgsOverlayUtils::difference( *sourceB, *sourceA, *sink, context, feedback, count, total, QgsOverlayUtils::OutputBA );
 

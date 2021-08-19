@@ -46,9 +46,9 @@ void QgsMeshVirtualDatasetGroup::initialize()
   //populate used group indexes
   QMap<QString, int> usedDatasetGroupindexes;
   const QList<int> &indexes = mLayer->datasetGroupsIndexes();
-  for ( int i : indexes )
+  for ( const int i : indexes )
   {
-    QString usedName = mLayer->datasetGroupMetadata( i ).name();
+    const QString usedName = mLayer->datasetGroupMetadata( i ).name();
     if ( mDatasetGroupNameUsed.contains( usedName ) )
       usedDatasetGroupindexes[usedName] = i;
   }
@@ -58,9 +58,9 @@ void QgsMeshVirtualDatasetGroup::initialize()
   {
     //populate dataset index with time;
     const QList<int> &usedIndexes = usedDatasetGroupindexes.values();
-    for ( int groupIndex : usedIndexes )
+    for ( const int groupIndex : usedIndexes )
     {
-      int dsCount = mLayer->datasetCount( groupIndex );
+      const int dsCount = mLayer->datasetCount( groupIndex );
       if ( dsCount == 0 )
         return;
 
@@ -68,7 +68,7 @@ void QgsMeshVirtualDatasetGroup::initialize()
         continue;
       for ( int i = 0; i < dsCount; i++ )
       {
-        qint64 time = mLayer->datasetRelativeTimeInMilliseconds( QgsMeshDatasetIndex( groupIndex, i ) );
+        const qint64 time = mLayer->datasetRelativeTimeInMilliseconds( QgsMeshDatasetIndex( groupIndex, i ) );
         if ( time != INVALID_MESHLAYER_TIME )
           times.insert( time );
       }
@@ -152,13 +152,13 @@ bool QgsMeshVirtualDatasetGroup::calculateDataset() const
   if ( !mLayer )
     return false;
 
-  QgsMeshCalcUtils dsu( mLayer, mDatasetGroupNameUsed, QgsInterval( mDatasetTimes[mCurrentDatasetIndex] / 1000.0 ) );
+  const QgsMeshCalcUtils dsu( mLayer, mDatasetGroupNameUsed, QgsInterval( mDatasetTimes[mCurrentDatasetIndex] / 1000.0 ) );
 
   if ( !dsu.isValid() )
     return false;
 
   //open output dataset
-  std::unique_ptr<QgsMeshMemoryDatasetGroup> outputGroup = qgis::make_unique<QgsMeshMemoryDatasetGroup> ( QString(), dsu.outputType() );
+  std::unique_ptr<QgsMeshMemoryDatasetGroup> outputGroup = std::make_unique<QgsMeshMemoryDatasetGroup> ( QString(), dsu.outputType() );
   mCalcNode->calculate( dsu, *outputGroup );
 
   if ( outputGroup->memoryDatasets.isEmpty() )

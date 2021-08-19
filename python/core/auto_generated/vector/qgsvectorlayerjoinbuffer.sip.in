@@ -16,7 +16,7 @@ typedef QList< QgsVectorLayerJoinInfo > QgsVectorJoinList;
 
 class QgsVectorLayerJoinBuffer : QObject, QgsFeatureSink
 {
-%Docstring
+%Docstring(signature="appended")
 Manages joined fields for a vector layer.
 %End
 
@@ -102,6 +102,13 @@ Find out what is the first index of the join within fields. Returns -1 if join i
 Returns a vector of indices for use in join based on field names from the layer
 
 .. versionadded:: 2.6
+%End
+
+    static QVector<int> joinSubsetIndices( const QgsFields &joinLayerFields, const QStringList &joinFieldsSubset );
+%Docstring
+Returns a vector of indices for use in join based on field names from the join layer's fields.
+
+.. versionadded:: 3.20
 %End
 
     QList<const QgsVectorLayerJoinInfo *> joinsWhereFieldIsId( const QgsField &field ) const;

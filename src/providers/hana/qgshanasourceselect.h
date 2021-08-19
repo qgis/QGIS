@@ -116,8 +116,8 @@ class QgsHanaSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsD
     void btnLoad_clicked();
     void mSearchGroupBox_toggled( bool );
     void mSearchTableEdit_textChanged( const QString &text );
-    void mSearchColumnComboBox_currentIndexChanged( const QString &text );
-    void mSearchModeComboBox_currentIndexChanged( const QString &text );
+    void mSearchColumnComboBox_currentTextChanged( const QString &text );
+    void mSearchModeComboBox_currentTextChanged( const QString &text );
     void setSql( const QModelIndex &index );
     //! Store the selected database
     void cmbConnections_activated( int );

@@ -28,7 +28,8 @@
 /**
  * \ingroup core
  * \class QgsMeshVirtualDatasetGroup
- * Represents a dataset group calculated from a formula string.
+ * \brief Represents a dataset group calculated from a formula string.
+ *
  * The calculation is done by the QgsMeshCalcUtils class from a QgsMeshCalcNode created from the formula
  * Each dataset is calculted when needed, so there is only one dataset store in this class all the time.
  *

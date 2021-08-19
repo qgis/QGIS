@@ -28,6 +28,11 @@ QgsFeaturePickerModelBase::QgsFeaturePickerModelBase( QObject *parent )
   mReloadTimer.setInterval( 100 );
   mReloadTimer.setSingleShot( true );
   connect( &mReloadTimer, &QTimer::timeout, this, &QgsFeaturePickerModelBase::scheduledReload );
+
+  // The fact that the feature changed is a combination of the 2 signals:
+  // If the extra value is set to a feature currently not fetched, it will go through an intermediate step while the extra value does not exist (as it call reloadFeature)
+  connect( this, &QgsFeaturePickerModelBase::extraIdentifierValueChanged, this, &QgsFeaturePickerModelBase::currentFeatureChanged );
+  connect( this, &QgsFeaturePickerModelBase::extraValueDoesNotExistChanged, this, &QgsFeaturePickerModelBase::currentFeatureChanged );
 }
 
 
@@ -182,7 +187,7 @@ QVariant QgsFeaturePickerModelBase::data( const QModelIndex &index, int role ) c
     case Qt::DecorationRole:
     case Qt::FontRole:
     {
-      bool isNull = identifierIsNull( entryIdentifier( mEntries.value( index.row() ) ) );
+      const bool isNull = identifierIsNull( entryIdentifier( mEntries.value( index.row() ) ) );
       if ( isNull )
       {
         // Representation for NULL value
@@ -256,7 +261,7 @@ void QgsFeaturePickerModelBase::updateCompleter()
   }
 
   // Only reloading the current entry?
-  bool reloadCurrentFeatureOnly = mGatherer->data().toBool();
+  const bool reloadCurrentFeatureOnly = mGatherer->data().toBool();
   if ( reloadCurrentFeatureOnly )
   {
     if ( !entries.isEmpty() )
@@ -451,17 +456,17 @@ QSet<QString> QgsFeaturePickerModelBase::requestedAttributesForStyle() const
 
   for ( const QgsConditionalStyle &style : rowStyles )
   {
-    QgsExpression exp( style.rule() );
+    const QgsExpression exp( style.rule() );
     requestedAttrs += exp.referencedColumns();
   }
 
   if ( mDisplayExpression.isField() )
   {
-    QString fieldName = *mDisplayExpression.referencedColumns().constBegin();
+    const QString fieldName = *mDisplayExpression.referencedColumns().constBegin();
     const auto constFieldStyles = mSourceLayer->conditionalStyles()->fieldStyles( fieldName );
     for ( const QgsConditionalStyle &style : constFieldStyles )
     {
-      QgsExpression exp( style.rule() );
+      const QgsExpression exp( style.rule() );
       requestedAttrs += exp.referencedColumns();
     }
   }
@@ -506,18 +511,20 @@ void QgsFeaturePickerModelBase::setExtraIdentifierValueUnguarded( const QVariant
   // Value not found in current entries
   if ( mExtraValueIndex != index )
   {
-    bool isNull = identifierIsNull( identifierValue );
+    const bool isNull = identifierIsNull( identifierValue );
     if ( !isNull || mAllowNull )
     {
       beginInsertRows( QModelIndex(), 0, 0 );
       if ( !isNull )
       {
         mEntries.prepend( createEntry( identifierValue ) );
+        setExtraValueDoesNotExist( true );
         reloadCurrentFeature();
       }
       else
       {
         mEntries.prepend( QgsFeatureExpressionValuesGatherer::nullEntry( mSourceLayer ) );
+        setExtraValueDoesNotExist( false );
       }
       endInsertRows();
 
@@ -533,7 +540,7 @@ QgsConditionalStyle QgsFeaturePickerModelBase::featureStyle( const QgsFeature &f
     return QgsConditionalStyle();
 
   QgsVectorLayer *layer = mSourceLayer;
-  QgsFeatureId fid = feature.id();
+  const QgsFeatureId fid = feature.id();
   mExpressionContext.setFeature( feature );
 
   auto styles = QgsConditionalStyle::matchingConditionalStyles( layer->conditionalStyles()->rowStyles(), QVariant(),  mExpressionContext );
@@ -541,7 +548,7 @@ QgsConditionalStyle QgsFeaturePickerModelBase::featureStyle( const QgsFeature &f
   if ( mDisplayExpression.referencedColumns().count() == 1 )
   {
     // Style specific for this field
-    QString fieldName = *mDisplayExpression.referencedColumns().constBegin();
+    const QString fieldName = *mDisplayExpression.referencedColumns().constBegin();
     const auto allStyles = layer->conditionalStyles()->fieldStyles( fieldName );
     const auto matchingFieldStyles = QgsConditionalStyle::matchingConditionalStyles( allStyles, feature.attribute( fieldName ),  mExpressionContext );
 

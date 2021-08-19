@@ -25,7 +25,7 @@ class QDomElement;
 
 /**
  * \ingroup 3d
- * Definition of a directional light in a 3D map scene
+ * \brief Definition of a directional light in a 3D map scene
  *
  * \since QGIS 3.16
  */
@@ -55,6 +55,7 @@ class _3D_EXPORT QgsDirectionalLightSettings
     //! Reads configuration from a DOM element previously written using writeXml()
     void readXml( const QDomElement &elem );
 
+    // TODO c++20 - replace with = default
     bool operator==( const QgsDirectionalLightSettings &other );
 
   private:

@@ -17,6 +17,8 @@
 #include "qgssqlstatement.h"
 #include "qgis.h"
 
+#include <QRegularExpression>
+
 #include <cmath>
 #include <limits>
 
@@ -89,8 +91,8 @@ QString QgsSQLStatement::quotedIdentifierIfNeeded( const QString &name )
       return quotedIdentifier( name );
     }
   }
-  static const QRegExp IDENTIFIER_RE( "^[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*$" );
-  return IDENTIFIER_RE.exactMatch( name ) ? name : quotedIdentifier( name );
+  const thread_local QRegularExpression IDENTIFIER_RE( "^[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*$" );
+  return IDENTIFIER_RE.match( name ).hasMatch() ? name : quotedIdentifier( name );
 }
 
 QString QgsSQLStatement::stripQuotedIdentifier( QString text )
@@ -212,8 +214,8 @@ void QgsSQLStatement::RecursiveVisitor::visit( const QgsSQLStatement::NodeJoin &
 
 /**
  * \ingroup core
- * Internal use.
- *  \note not available in Python bindings
+ * \brief Internal use.
+ * \note not available in Python bindings
  */
 class QgsSQLStatementCollectTableNames: public QgsSQLStatement::RecursiveVisitor
 {
@@ -256,7 +258,7 @@ bool QgsSQLStatement::doBasicValidationChecks( QString &errorMsgOut ) const
   QgsSQLStatementCollectTableNames v;
   mRootNode->accept( v );
 
-  for ( const QgsSQLStatementCollectTableNames::TableColumnPair &pair : qgis::as_const( v.tableNamesReferenced ) )
+  for ( const QgsSQLStatementCollectTableNames::TableColumnPair &pair : std::as_const( v.tableNamesReferenced ) )
   {
     if ( !v.tableNamesDeclared.contains( pair.first ) )
     {

@@ -331,7 +331,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /**
      * Is it snapped to a vertex
      */
-    inline bool snappedToVertex() const { return ( mSnapMatch.isValid() && mSnapMatch.hasVertex() ); }
+    inline bool snappedToVertex() const { return ( mSnapMatch.isValid() && ( mSnapMatch.hasVertex() || mSnapMatch.hasLineEndpoint() ) ); }
 
     /**
      * Snapped to a segment

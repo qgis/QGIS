@@ -16,7 +16,6 @@
 #include "qgsogrdbtablemodel.h"
 ///@cond PRIVATE
 
-#include "qgsdataitem.h"
 #include "qgsapplication.h"
 
 #include <QIcon>
@@ -31,11 +30,11 @@ QgsOgrDbTableModel::QgsOgrDbTableModel()
   setHorizontalHeaderLabels( headerLabels );
 }
 
-void QgsOgrDbTableModel::addTableEntry( const QgsLayerItem::LayerType &layerType, const QString &tableName, const QString &uri, const QString &geometryColName, const QString &geometryType, const QString &sql )
+void QgsOgrDbTableModel::addTableEntry( const Qgis::BrowserLayerType &layerType, const QString &tableName, const QString &uri, const QString &geometryColName, const QString &geometryType, const QString &sql )
 {
   //is there already a root item ?
   QStandardItem *dbItem = nullptr;
-  QList < QStandardItem * >dbItems = findItems( mPath, Qt::MatchExactly, 0 );
+  const QList < QStandardItem * >dbItems = findItems( mPath, Qt::MatchExactly, 0 );
 
   //there is already an item
   if ( !dbItems.isEmpty() )
@@ -80,15 +79,15 @@ void QgsOgrDbTableModel::setSql( const QModelIndex &index, const QString &sql )
   }
 
   //find out table name
-  QModelIndex tableSibling = index.sibling( index.row(), 0 );
-  QModelIndex geomSibling = index.sibling( index.row(), 2 );
+  const QModelIndex tableSibling = index.sibling( index.row(), 0 );
+  const QModelIndex geomSibling = index.sibling( index.row(), 2 );
 
   if ( !tableSibling.isValid() || !geomSibling.isValid() )
   {
     return;
   }
 
-  QModelIndex sqlIndex = index.sibling( index.row(), 3 );
+  const QModelIndex sqlIndex = index.sibling( index.row(), 3 );
   if ( sqlIndex.isValid() )
   {
     itemFromIndex( sqlIndex )->setText( sql );

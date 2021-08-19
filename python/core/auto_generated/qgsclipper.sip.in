@@ -16,8 +16,9 @@
 
 class QgsClipper
 {
-%Docstring
+%Docstring(signature="appended")
 A class to trim lines and polygons to within a rectangular region.
+
 The functions in this class are likely to be called from within a
 render loop and hence need to as CPU efficient as possible.
 The main purpose of the functions in this class are to trim lines

@@ -11,7 +11,7 @@
 
 class QgsLayoutUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Utilities for layouts.
 
 .. versionadded:: 3.0
@@ -220,9 +220,19 @@ decoded orientation.
 If the string was correctly decoded, ``ok`` will be set to ``True``.
 %End
 
-    static double scaleFactorFromItemStyle( const QStyleOptionGraphicsItem *style );
+ static double scaleFactorFromItemStyle( const QStyleOptionGraphicsItem *style ) /Deprecated/;
 %Docstring
 Extracts the scale factor from an item ``style``.
+
+.. deprecated::
+   Use the variant with a QPainter argument instead
+%End
+
+    static double scaleFactorFromItemStyle( const QStyleOptionGraphicsItem *style, QPainter *painter );
+%Docstring
+Extracts the scale factor from an item ``style`` and ``painter``.
+
+.. versionadded:: 3.20
 %End
 
     static QgsMapLayer *mapLayerFromString( const QString &string, QgsProject *project );
@@ -251,6 +261,13 @@ the largest "pretty" number possible.
 Returns ``True`` if an ``item`` is a clipping item for another layout item.
 
 .. versionadded:: 3.16
+%End
+
+    static QVector< double > predefinedScales( const QgsLayout *layout );
+%Docstring
+Returns a list of predefined scales associated with a ``layout``.
+
+.. versionadded:: 3.20
 %End
 
 };

@@ -22,6 +22,7 @@
 
 /**
  * \ingroup analysis
+ * \brief A sliver polygon check.
  */
 class ANALYSIS_EXPORT QgsGeometrySliverPolygonCheck : public QgsGeometryAreaCheck
 {

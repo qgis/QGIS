@@ -98,7 +98,8 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 
     /**
      * Returns a geometry from within the collection.
-     * \param n index of geometry to return. An IndexError will be raised if no geometry with the specified index exists.
+     * \param n index of geometry to return.
+     * \throws IndexError if no geometry with the specified index exists.
      */
     SIP_PYOBJECT geometryN( int n ) SIP_TYPEHINT( QgsAbstractGeometry );
     % MethodCode
@@ -125,6 +126,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) const override;
     int vertexNumberFromVertexId( QgsVertexId id ) const override;
+    bool boundingBoxIntersects( const QgsRectangle &rectangle ) const override SIP_HOLDGIL;
 
     /**
      * Attempts to allocate memory for at least \a size geometries.
@@ -159,9 +161,8 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     /**
      * Removes a geometry from the collection by index.
      *
-     * An IndexError will be raised if no geometry with the specified index exists.
-     *
      * \returns TRUE if removal was successful.
+     * \throws IndexError if no geometry with the specified index exists.
      */
     virtual bool removeGeometry( int nr );
     % MethodCode
@@ -178,6 +179,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     % End
 #endif
 
+    void normalize() final SIP_HOLDGIL;
     void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) override SIP_THROW( QgsCsException );
     void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
 
@@ -227,7 +229,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     int ringCount( int part = 0 ) const override;
     int partCount() const override;
     QgsPoint vertexAt( QgsVertexId id ) const override;
-    bool isValid( QString &error SIP_OUT, int flags = 0 ) const override;
+    bool isValid( QString &error SIP_OUT, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const override;
 
     bool addZValue( double zValue = 0 ) override;
     bool addMValue( double mValue = 0 ) override;
@@ -235,6 +237,9 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     bool dropMValue() override;
     void swapXy() override;
     QgsGeometryCollection *toCurveType() const override SIP_FACTORY;
+    const QgsAbstractGeometry *simplifiedTypeRef() const override SIP_HOLDGIL;
+
+    bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = nullptr ) override;
 
 #ifndef SIP_RUN
     void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
@@ -259,10 +264,12 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 #ifdef SIP_RUN
 
     /**
-    * Returns the geometry at the specified ``index``. An IndexError will be raised if no geometry with the specified ``index`` exists.
+    * Returns the geometry at the specified ``index``.
     *
     * Indexes can be less than 0, in which case they correspond to geometries from the end of the collect. E.g. an index of -1
     * corresponds to the last geometry in the collection.
+    *
+    * \throws IndexError if no geometry with the specified ``index`` exists.
     *
     * \since QGIS 3.6
     */
@@ -285,10 +292,12 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     % End
 
     /**
-     * Deletes the geometry at the specified ``index``. A geometry at the ``index`` must already exist or an IndexError will be raised.
+     * Deletes the geometry at the specified ``index``.
      *
      * Indexes can be less than 0, in which case they correspond to geometries from the end of the collection. E.g. an index of -1
      * corresponds to the last geometry in the collection.
+     *
+     * \throws IndexError if no geometry at the ``index`` exists
      *
      * \since QGIS 3.6
      */
@@ -322,6 +331,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
   protected:
     int childCount() const override;
     QgsAbstractGeometry *childGeometry( int index ) const override;
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
 
   protected:
     QVector< QgsAbstractGeometry * > mGeometries;

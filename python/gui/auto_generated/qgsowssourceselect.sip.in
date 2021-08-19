@@ -13,7 +13,7 @@
 
 class QgsOWSSourceSelect : QgsAbstractDataSourceWidget, protected Ui::QgsOWSSourceSelectBase
 {
-%Docstring
+%Docstring(signature="appended")
 Dialog to create connections and add layers WCS etc.
 
 This dialog allows the user to define and save connection information

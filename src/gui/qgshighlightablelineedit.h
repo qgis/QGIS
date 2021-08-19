@@ -26,7 +26,7 @@
  * \class QgsHighlightableLineEdit
  * \ingroup gui
  *
- * A QgsFilterLineEdit subclass with the ability to "highlight" the edges of the widget.
+ * \brief A QgsFilterLineEdit subclass with the ability to "highlight" the edges of the widget.
  *
  * \since QGIS 3.14
  */

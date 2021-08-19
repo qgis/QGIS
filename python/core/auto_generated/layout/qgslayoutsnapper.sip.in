@@ -10,7 +10,7 @@
 
 class QgsLayoutSnapper: QgsLayoutSerializableObject
 {
-%Docstring
+%Docstring(signature="appended")
 Manages snapping grids and preset snap lines in a layout, and handles
 snapping points to the nearest grid coordinate/snap line when possible.
 

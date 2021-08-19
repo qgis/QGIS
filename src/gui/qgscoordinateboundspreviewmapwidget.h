@@ -20,7 +20,7 @@ class QgsVertexMarker;
 /**
  * \class QgsCoordinateBoundsPreviewMapWidget
  * \ingroup gui
- * A widget for showing the bounds of a rectangular region on an interactive map.
+ * \brief A widget for showing the bounds of a rectangular region on an interactive map.
  * \since QGIS 3.8.1
  */
 

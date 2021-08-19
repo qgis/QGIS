@@ -82,7 +82,7 @@ void QgsZonalStatisticsFeatureBasedAlgorithm::initParameters( const QVariantMap 
   Q_UNUSED( configuration )
   QStringList statChoices;
   statChoices.reserve( STATS.size() );
-  for ( QgsZonalStatistics::Statistic stat : STATS )
+  for ( const QgsZonalStatistics::Statistic stat : STATS )
   {
     statChoices << QgsZonalStatistics::displayName( stat );
   }
@@ -114,7 +114,7 @@ bool QgsZonalStatisticsFeatureBasedAlgorithm::prepareAlgorithm( const QVariantMa
 
   const QList< int > stats = parameterAsEnums( parameters, QStringLiteral( "STATISTICS" ), context );
   mStats = QgsZonalStatistics::Statistics();
-  for ( int s : stats )
+  for ( const int s : stats )
   {
     mStats |= STATS.at( s );
   }
@@ -139,11 +139,11 @@ bool QgsZonalStatisticsFeatureBasedAlgorithm::prepareAlgorithm( const QVariantMa
 
   mOutputFields = source->fields();
 
-  for ( QgsZonalStatistics::Statistic stat : STATS )
+  for ( const QgsZonalStatistics::Statistic stat : STATS )
   {
     if ( mStats & stat )
     {
-      QgsField field = QgsField( mPrefix + QgsZonalStatistics::shortName( stat ), QVariant::Double, QStringLiteral( "double precision" ) );
+      const QgsField field = QgsField( mPrefix + QgsZonalStatistics::shortName( stat ), QVariant::Double, QStringLiteral( "double precision" ) );
       if ( mOutputFields.names().contains( field.name() ) )
       {
         throw QgsProcessingException( QObject::tr( "Field %1 already exists" ).arg( field.name() ) );
@@ -158,12 +158,28 @@ bool QgsZonalStatisticsFeatureBasedAlgorithm::prepareAlgorithm( const QVariantMa
 
 QgsFeatureList QgsZonalStatisticsFeatureBasedAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  Q_UNUSED( context )
+  if ( !mCreatedTransform )
+  {
+    mCreatedTransform = true;
+    mFeatureToRasterTransform = QgsCoordinateTransform( sourceCrs(), mCrs, context.transformContext() );
+  }
+
   Q_UNUSED( feedback )
   QgsAttributes attributes = feature.attributes();
   attributes.resize( mOutputFields.size() );
 
-  QMap<QgsZonalStatistics::Statistic, QVariant> results = QgsZonalStatistics::calculateStatistics( mRaster.get(), feature.geometry(), mPixelSizeX, mPixelSizeY, mBand, mStats );
+  QgsGeometry geometry = feature.geometry();
+  try
+  {
+    geometry.transform( mFeatureToRasterTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    if ( feedback )
+      feedback->reportError( QObject::tr( "Encountered a transform error when reprojecting feature with id %1." ).arg( feature.id() ) );
+  }
+
+  const QMap<QgsZonalStatistics::Statistic, QVariant> results = QgsZonalStatistics::calculateStatistics( mRaster.get(), geometry, mPixelSizeX, mPixelSizeY, mBand, mStats );
   for ( auto result = results.constBegin(); result != results.constEnd(); ++result )
   {
     attributes.replace( mStatFieldsMapping.value( result.key() ), result.value() );

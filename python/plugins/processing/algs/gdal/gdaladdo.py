@@ -129,9 +129,7 @@ class gdaladdo(GdalAlgorithm):
 
         fileName = inLayer.source()
 
-        arguments = []
-        arguments.append(fileName)
-
+        arguments = [fileName]
         if self.RESAMPLING in parameters and parameters[self.RESAMPLING] is not None:
             arguments.append('-r')
             arguments.append(self.methods[self.parameterAsEnum(parameters, self.RESAMPLING, context)][1])

@@ -21,6 +21,7 @@
 #include "qgscircularstring.h"
 #include "qgscompoundcurve.h"
 #include "qgsgeometrycollection.h"
+#include <QRegularExpression>
 
 ///@cond PRIVATE
 
@@ -72,7 +73,7 @@ void QgsSplitFeaturesByAttributeCharacterAlgorithm::initParameters( const QVaria
 {
   addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Split using values in field" ), QVariant(), QStringLiteral( "INPUT" ) ) );
   addParameter( new QgsProcessingParameterString( QStringLiteral( "CHAR" ), QObject::tr( "Split values using character" ) ) );
-  std::unique_ptr< QgsProcessingParameterDefinition > regexParam = qgis::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "REGEX" ), QObject::tr( "Use regular expression separator" ) );
+  std::unique_ptr< QgsProcessingParameterDefinition > regexParam = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "REGEX" ), QObject::tr( "Use regular expression separator" ) );
   regexParam->setFlags( regexParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( regexParam.release() );
 }

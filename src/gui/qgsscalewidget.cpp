@@ -123,7 +123,7 @@ void QgsScaleWidget::menuAboutToShow()
       first = false;
 
       QMenu *layoutMenu = new QMenu( layout->name(), mMenu );
-      for ( const QgsLayoutItemMap *map : qgis::as_const( maps ) )
+      for ( const QgsLayoutItemMap *map : std::as_const( maps ) )
       {
         scale = map->scale();
         QAction *mapScaleAction = new QAction( tr( "%1 (1:%2)" ).arg( map->displayName(), qgsDoubleToString( scale, 0 ) ), mMenu );

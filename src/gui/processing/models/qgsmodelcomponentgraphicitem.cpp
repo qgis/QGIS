@@ -288,7 +288,7 @@ QVariant QgsModelComponentGraphicItem::itemChange( QGraphicsItem::GraphicsItemCh
 
 QRectF QgsModelComponentGraphicItem::boundingRect() const
 {
-  QFontMetricsF fm( mFont );
+  const QFontMetricsF fm( mFont );
   const int linksAbove = linkPointCount( Qt::TopEdge );
   const int linksBelow = linkPointCount( Qt::BottomEdge );
 
@@ -304,7 +304,7 @@ QRectF QgsModelComponentGraphicItem::boundingRect() const
 
 bool QgsModelComponentGraphicItem::contains( const QPointF &point ) const
 {
-  QRectF paintingBounds = boundingRect();
+  const QRectF paintingBounds = boundingRect();
   if ( point.x() < paintingBounds.left() + RECT_PEN_SIZE )
     return false;
   if ( point.x() > paintingBounds.right() - RECT_PEN_SIZE )
@@ -360,20 +360,20 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
 
   const QSizeF componentSize = itemSize();
 
-  QFontMetricsF fm( font() );
+  const QFontMetricsF fm( font() );
   double h = fm.ascent();
   QPointF pt( -componentSize.width() / 2 + 25, componentSize.height() / 2.0 - h + 1 );
 
   if ( iconPicture().isNull() && iconPixmap().isNull() )
   {
-    QRectF labelRect = QRectF( rect.left() + TEXT_MARGIN, rect.top() + TEXT_MARGIN, rect.width() - 2 * TEXT_MARGIN - mButtonSize.width() - BUTTON_MARGIN, rect.height() - 2 * TEXT_MARGIN );
+    const QRectF labelRect = QRectF( rect.left() + TEXT_MARGIN, rect.top() + TEXT_MARGIN, rect.width() - 2 * TEXT_MARGIN - mButtonSize.width() - BUTTON_MARGIN, rect.height() - 2 * TEXT_MARGIN );
     text = label();
     painter->drawText( labelRect, Qt::TextWordWrap | titleAlignment(), text );
   }
   else
   {
-    QRectF labelRect = QRectF( rect.left() + 21 + TEXT_MARGIN, rect.top() + TEXT_MARGIN,
-                               rect.width() - 2 * TEXT_MARGIN - mButtonSize.width() - BUTTON_MARGIN - 21, rect.height() - 2 * TEXT_MARGIN );
+    const QRectF labelRect = QRectF( rect.left() + 21 + TEXT_MARGIN, rect.top() + TEXT_MARGIN,
+                                     rect.width() - 2 * TEXT_MARGIN - mButtonSize.width() - BUTTON_MARGIN - 21, rect.height() - 2 * TEXT_MARGIN );
     text = label();
     painter->drawText( labelRect, Qt::TextWordWrap | Qt::AlignVCenter, text );
   }
@@ -450,7 +450,7 @@ QRectF QgsModelComponentGraphicItem::itemRect( bool storedRect ) const
 
 QString QgsModelComponentGraphicItem::truncatedTextForItem( const QString &text ) const
 {
-  QFontMetricsF fm( mFont );
+  const QFontMetricsF fm( mFont );
   double width = fm.boundingRect( text ).width();
   if ( width < itemSize().width() - 25 - mButtonSize.width() )
     return text;
@@ -498,12 +498,12 @@ void QgsModelComponentGraphicItem::updateButtonPositions()
 
   if ( mExpandTopButton )
   {
-    QPointF pt = linkPoint( Qt::TopEdge, -1, true );
+    const QPointF pt = linkPoint( Qt::TopEdge, -1, true );
     mExpandTopButton->setPosition( QPointF( 0, pt.y() ) );
   }
   if ( mExpandBottomButton )
   {
-    QPointF pt = linkPoint( Qt::BottomEdge, -1, false );
+    const QPointF pt = linkPoint( Qt::BottomEdge, -1, false );
     mExpandBottomButton->setPosition( QPointF( 0, pt.y() ) );
   }
 }
@@ -599,7 +599,7 @@ QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index, bool 
         }
         const int pointIndex = !mComponent->linksCollapsed( Qt::BottomEdge ) ? index : -1;
         const QString text = truncatedTextForItem( linkPointText( Qt::BottomEdge, index ) );
-        QFontMetricsF fm( mFont );
+        const QFontMetricsF fm( mFont );
         const double w = fm.boundingRect( text ).width();
         const double h = fm.height() * 1.2 * ( pointIndex + 1 ) + fm.height() / 2.0;
         const double y = h + itemSize().height() / 2.0 + 5;
@@ -622,7 +622,7 @@ QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index, bool 
           paramIndex = -1;
           offsetX = 17;
         }
-        QFontMetricsF fm( mFont );
+        const QFontMetricsF fm( mFont );
         const QString text = truncatedTextForItem( linkPointText( Qt::TopEdge, index ) );
         const double w = fm.boundingRect( text ).width();
         double h = -( fm.height() * 1.2 ) * ( paramIndex + 2 ) - fm.height() / 2.0 + 8;
@@ -933,7 +933,7 @@ QColor QgsModelChildAlgorithmGraphicItem::strokeColor( QgsModelComponentGraphicI
 
 QColor QgsModelChildAlgorithmGraphicItem::textColor( QgsModelComponentGraphicItem::State ) const
 {
-  return mIsValid ? ( dynamic_cast< const QgsProcessingModelChildAlgorithm * >( component() )->isActive() ? Qt::black : Qt::gray ) : QColor( 255, 255, 255 );
+  return mIsValid ? ( qgis::down_cast< const QgsProcessingModelChildAlgorithm * >( component() )->isActive() ? Qt::black : Qt::gray ) : QColor( 255, 255, 255 );
 }
 
 QPixmap QgsModelChildAlgorithmGraphicItem::iconPixmap() const
@@ -983,12 +983,21 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
   if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast< const QgsProcessingModelChildAlgorithm * >( component() ) )
   {
     if ( !child->algorithm() )
-      return 0;
+      return QString();
 
     switch ( edge )
     {
       case Qt::BottomEdge:
       {
+        if ( index >= child->algorithm()->outputDefinitions().length() )
+        {
+          // something goes wrong and tried to link to an not existing output
+          QgsMessageLog::logMessage(
+            tr( "Cannot link output for child: %1" ).arg( child->algorithm()->name() ),
+            "QgsModelChildAlgorithmGraphicItem", Qgis::MessageLevel::Warning, true );
+          return QString();
+        }
+
         const QgsProcessingOutputDefinition *output = child->algorithm()->outputDefinitions().at( index );
         QString title = output->description();
         if ( mResults.contains( output->name() ) )
@@ -1006,6 +1015,14 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
           return param->flags() & QgsProcessingParameterDefinition::FlagHidden || param->isDestination();
         } ), params.end() );
 
+        if ( index >= params.length() )
+        {
+          // something goes wrong and tried to link to an not existing source parameter
+          QgsMessageLog::logMessage(
+            tr( "Cannot link source for child: %1" ).arg( child->algorithm()->name() ),
+            "QgsModelChildAlgorithmGraphicItem", Qgis::MessageLevel::Warning, true );
+          return QString();
+        }
 
         QString title = params.at( index )->description();
         if ( !mInputs.value( params.at( index )->name() ).toString().isEmpty() )

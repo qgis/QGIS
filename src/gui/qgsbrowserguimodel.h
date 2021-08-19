@@ -16,7 +16,6 @@
 #define QGSBROWSERGUIMODEL_H
 
 #include "qgis_gui.h"
-#include "qgsdataitem.h"
 #include "qgsbrowsermodel.h"
 
 class QgsDataItemGuiContext;
@@ -26,7 +25,7 @@ class QgsMessageBar;
  * \ingroup gui
  * \class QgsBrowserGuiModel
  *
- * A model for showing available data sources and other items in a structured
+ * \brief A model for showing available data sources and other items in a structured
  * tree.
  *
  * QgsBrowserGuiModel is the foundation for the QGIS browser panel, and includes

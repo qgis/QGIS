@@ -12,7 +12,7 @@
 
 class QgsKeyValueWidget: QgsTableWidgetBase
 {
-%Docstring
+%Docstring(signature="appended")
 Widget allowing to edit a QVariantMap, using a table.
 
 .. versionadded:: 3.0

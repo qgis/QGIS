@@ -13,7 +13,7 @@
 
 class QgsExpressionNode /Abstract/
 {
-%Docstring
+%Docstring(signature="appended")
 
 Abstract base class for all nodes that can appear in an expression.
 %End
@@ -84,7 +84,7 @@ Constructor for NamedNode
 
     class NodeList
 {
-%Docstring
+%Docstring(signature="appended")
 A list of expression nodes.
 %End
 
@@ -191,17 +191,37 @@ When reimplementing this, you need to return any column that is required to
 evaluate this node and in addition recursively collect all the columns required
 to evaluate child nodes.
 
+.. warning::
+
+   If the expression has been prepared via a call to :py:func:`QgsExpression.prepare()`,
+   or a call to :py:func:`QgsExpressionNode.prepare()` for a node has been made, then some nodes in
+   the expression may have been determined to evaluate to a static pre-calculatable value.
+   In this case the results will omit attribute indices which are used by these
+   pre-calculated nodes, regardless of their actual referenced columns.
+   If you are seeking to use these functions to introspect an expression you must
+   take care to do this with an unprepared expression node.
+
 :return: A list of columns required to evaluate this expression
 %End
 
     virtual QSet<QString> referencedVariables() const = 0;
 %Docstring
 Returns a set of all variables which are used in this expression.
+
+.. note::
+
+   In contrast to the :py:func:`~QgsExpressionNode.referencedColumns` function this method
+   is not affected by any previous calls to :py:func:`QgsExpressionNode.prepare()`.
 %End
 
     virtual QSet<QString> referencedFunctions() const = 0;
 %Docstring
 Returns a set of all functions which are used in this expression.
+
+.. note::
+
+   In contrast to the :py:func:`~QgsExpressionNode.referencedColumns` function this method
+   is not affected by any previous calls to :py:func:`QgsExpressionNode.prepare()`.
 %End
 
     virtual bool needsGeometry() const = 0;
@@ -242,7 +262,50 @@ work like for example resolving a column name to an attribute index.
 
     int parserLastColumn;
 
+    bool hasCachedStaticValue() const;
+%Docstring
+Returns ``True`` if the node can be replaced by a static cached value.
+
+.. seealso:: :py:func:`cachedStaticValue`
+
+.. versionadded:: 3.18
+%End
+
+    QVariant cachedStaticValue() const;
+%Docstring
+Returns the node's static cached value. Only valid if :py:func:`~QgsExpressionNode.hasCachedStaticValue` is ``True``.
+
+.. seealso:: :py:func:`hasCachedStaticValue`
+
+.. versionadded:: 3.18
+%End
+
+    const QgsExpressionNode *effectiveNode() const;
+%Docstring
+Returns a reference to the simplest node which represents this node,
+after any compilation optimizations have been applied.
+
+Eg. a node like "CASE WHEN true THEN "some_field" WHEN other condition THEN ... END" can effectively
+be replaced entirely by a :py:class:`QgsExpressionNodeColumnRef` referencing the "some_field" field, as the
+CASE WHEN ... will ALWAYS evaluate to "some_field".
+
+Returns a reference to the current object if no optimizations were applied.
+
+.. versionadded:: 3.20
+%End
+
   protected:
+
+    QgsExpressionNode();
+%Docstring
+Constructor.
+%End
+
+    QgsExpressionNode( const QgsExpressionNode &other );
+%Docstring
+Copy constructor
+%End
+
 
 
 };

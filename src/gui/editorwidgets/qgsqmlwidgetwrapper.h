@@ -23,7 +23,7 @@
 
 /**
  * \ingroup gui
- * Wraps a QQuickWidget to display QML code
+ * \brief Wraps a QQuickWidget to display QML code
  * \since QGIS 3.4
  */
 class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
@@ -72,7 +72,7 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
 
 /**
  * \ingroup gui
- * To pass the QgsExpression functionality and it's context to the context of the QQuickWidget
+ * \brief To pass the QgsExpression functionality and it's context to the context of the QQuickWidget
  * \since QGIS 3.4
  */
 class QmlExpression : public QObject

@@ -23,6 +23,8 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgis.h"
+
 #include <memory>
 #include <QHash>
 #include <QList>
@@ -50,6 +52,8 @@
 #include "qgssettings.h"
 #include "qgspropertycollection.h"
 
+#include "qgsrelationmanager.h"
+#include "qgsmapthemecollection.h"
 
 class QFileInfo;
 class QDomDocument;
@@ -59,11 +63,9 @@ class QDomNode;
 class QgsLayerTreeGroup;
 class QgsLayerTreeRegistryBridge;
 class QgsMapLayer;
-class QgsMapThemeCollection;
 class QgsPathResolver;
 class QgsProjectBadLayerHandler;
 class QgsProjectStorage;
-class QgsRelationManager;
 class QgsTolerance;
 class QgsTransactionGroup;
 class QgsVectorLayer;
@@ -84,7 +86,7 @@ class QgsPropertyCollection;
 
 /**
  * \ingroup core
- * Encapsulates a QGIS project, including sets of map layers and their styles,
+ * \brief Encapsulates a QGIS project, including sets of map layers and their styles,
  * layouts, annotations, canvases, etc.
  *
  * QgsProject is available both as a singleton (QgsProject::instance()) and for use as
@@ -333,6 +335,22 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.2
      */
     QString baseName() const;
+
+    /**
+     * Returns the type of paths used when storing file paths in a QGS/QGZ project file.
+     *
+     * \see setFilePathStorage()
+     * \since QGIS 3.22
+     */
+    Qgis::FilePathType filePathStorage() const;
+
+    /**
+     * Sets the \a type of paths used when storing file paths in a QGS/QGZ project file.
+     *
+     * \see filePathStorage()
+     * \since QGIS 3.22
+     */
+    void setFilePathStorage( Qgis::FilePathType type );
 
     /**
      * Returns the project's native coordinate reference system.
@@ -1320,25 +1338,47 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsAuxiliaryStorage *auxiliaryStorage();
 
     /**
-     * Returns the path to an attached file known by \a fileName.
-     *
-     * \note Not available in Python bindings
-     * \note Attached files are only supported by QGZ file based projects
-     * \see collectAttachedFiles()
-     * \since QGIS 3.8
+     * Attaches a file to the project
+     * \param nameTemplate Any filename template, used as a basename for attachment file, i.e. "myfile.ext"
+     * \return The path to the file where the contents can be written to.
+     * \since QGIS 3.22
      */
-    QString attachedFile( const QString &fileName ) const SIP_SKIP;
+    QString createAttachedFile( const QString &nameTemplate );
 
     /**
-     * Returns a map of all attached files with relative paths and real paths.
+     * Returns a map of all attached files with identifier and real paths.
      *
-     * \note Not available in Python bindings
-     * \note Attached files are only supported by QGZ file based projects
-     * \see collectAttachedFiles()
-     * \see attachedFile()
-     * \since QGIS 3.8
+     * \see createAttachedFile()
+     * \since QGIS 3.22
      */
-    QgsStringMap attachedFiles() const SIP_SKIP;
+    QStringList attachedFiles() const;
+
+    /**
+     * Removes the attached file
+     * \param path Path to the attached file
+     * \return Whether removal succeeded.
+     * \see createAttachedFile()
+     * \since QGIS 3.22
+     */
+    bool removeAttachedFile( const QString &path );
+
+    /**
+     * Returns an identifier for an attachment file path
+     * An attachment identifier is a string which does not depend on the project archive
+     * storage location.
+     * \param attachedFile An attachment file path
+     * \return An identifier for the attached file
+     * \since QGIS 3.22
+     */
+    QString attachmentIdentifier( const QString &attachedFile ) const;
+
+    /**
+     * Resolves an attachment identifier to a attachment file path
+     * \param identifier An attachment identifier
+     * \return The attachment file path, or an empty string if the identifier is invalid
+     * \since QGIS 3.22
+     */
+    QString resolveAttachmentIdentifier( const QString &identifier ) const;
 
     /**
      * Returns a reference to the project's metadata store.
@@ -1825,19 +1865,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void isDirtyChanged( bool dirty );
 
     /**
-     * Emitted whenever the project is saved to a qgz file.
-     * This can be used to package additional files into the qgz file by modifying the \a files map.
+     * Emitted when setDirty(true) is called.
+     * \note As opposed to isDirtyChanged(), this signal is invoked every time setDirty(true)
+     * is called, regardless of whether the project was already dirty.
      *
-     * Map keys represent relative paths inside the qgz file, map values represent the path to
-     * the source file.
-     *
-     * \note Not available in Python bindings
-     * \note Only will be emitted with QGZ project files
-     * \see attachedFiles()
-     * \see attachedFile()
-     * \since QGIS 3.8
+     * \since QGIS 3.20
      */
-    void collectAttachedFiles( QgsStringMap &files SIP_INOUT ) SIP_SKIP;
+    void dirtySet();
 
     /**
      * Emitted when the list of custom project map scales changes.
@@ -2030,7 +2064,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QVariantMap mCustomVariables;
 
-    std::unique_ptr<QgsProjectArchive> mArchive;
+    std::unique_ptr<QgsArchive> mArchive;
 
     std::unique_ptr<QgsAuxiliaryStorage> mAuxiliaryStorage;
 
@@ -2093,7 +2127,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProject::ReadFlags )
 
 /**
- * Temporarily blocks QgsProject "dirtying" for the lifetime of the object.
+ * \brief Temporarily blocks QgsProject "dirtying" for the lifetime of the object.
  *
  * QgsProjectDirtyBlocker supports "stacked" blocking, so two QgsProjectDirtyBlockers created
  * for the same project will both need to be destroyed before the project can be dirtied again.

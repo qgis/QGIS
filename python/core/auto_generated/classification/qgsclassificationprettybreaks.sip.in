@@ -10,7 +10,7 @@
 
 class QgsClassificationPrettyBreaks : QgsClassificationMethod
 {
-%Docstring
+%Docstring(signature="appended")
 :py:class:`QgsClassificationPrettyBreaks` is an implementation of :py:class:`QgsClassificationMethod`
 for pretty breaks
 

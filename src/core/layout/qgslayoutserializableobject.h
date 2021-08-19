@@ -29,7 +29,7 @@ class QgsAbstractLayoutUndoCommand;
 
 /**
  * \ingroup core
- * An interface for layout objects which can be stored and read from DOM elements.
+ * \brief An interface for layout objects which can be stored and read from DOM elements.
  * \since QGIS 3.0
 */
 class CORE_EXPORT QgsLayoutSerializableObject : public QgsLayoutUndoObjectInterface

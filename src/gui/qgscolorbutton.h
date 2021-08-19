@@ -27,7 +27,7 @@ class QgsPanelWidget;
 /**
  * \ingroup gui
  * \class QgsColorButton
- * A cross platform button subclass for selecting colors. Will open a color chooser dialog when clicked.
+ * \brief A cross platform button subclass for selecting colors. Will open a color chooser dialog when clicked.
  * Offers live updates to button from color chooser dialog. An attached drop-down menu allows for copying
  * and pasting colors, picking colors from the screen, and selecting colors from color swatch grids.
  * \since QGIS 2.5

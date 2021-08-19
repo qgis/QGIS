@@ -41,7 +41,7 @@ QgsProcessingDxfLayerDetailsWidget::QgsProcessingDxfLayerDetailsWidget( const QV
 
   mContext.setProject( project );
 
-  QgsDxfExport::DxfLayer layer = QgsProcessingParameterDxfLayers::variantMapAsLayer( value.toMap(), mContext );
+  const QgsDxfExport::DxfLayer layer = QgsProcessingParameterDxfLayers::variantMapAsLayer( value.toMap(), mContext );
   mLayer = layer.layer();
 
   if ( !mLayer )
@@ -55,8 +55,8 @@ QgsProcessingDxfLayerDetailsWidget::QgsProcessingDxfLayerDetailsWidget( const QV
 
 QVariant QgsProcessingDxfLayerDetailsWidget::value() const
 {
-  int index = mLayer->fields().lookupField( mFieldsComboBox->currentField() );
-  QgsDxfExport::DxfLayer layer( mLayer, index );
+  const int index = mLayer->fields().lookupField( mFieldsComboBox->currentField() );
+  const QgsDxfExport::DxfLayer layer( mLayer, index );
   return QgsProcessingParameterDxfLayers::layerAsVariantMap( layer );
 }
 
@@ -85,7 +85,7 @@ QgsProcessingDxfLayersPanelWidget::QgsProcessingDxfLayersPanelWidget(
   const QVariantList valueList = value.toList();
   for ( const QVariant &v : valueList )
   {
-    QgsDxfExport::DxfLayer layer = QgsProcessingParameterDxfLayers::variantMapAsLayer( v.toMap(), mContext );
+    const QgsDxfExport::DxfLayer layer = QgsProcessingParameterDxfLayers::variantMapAsLayer( v.toMap(), mContext );
     if ( !layer.layer() )
       continue;  // skip any invalid layers
 
@@ -103,7 +103,7 @@ QgsProcessingDxfLayersPanelWidget::QgsProcessingDxfLayersPanelWidget(
     vm["layer"] = layer->id();
     vm["attributeIndex"] = -1;
 
-    QString title = layer->name();
+    const QString title = layer->name();
     addOption( vm, title, false );
   }
 }
@@ -118,7 +118,7 @@ void QgsProcessingDxfLayersPanelWidget::configureLayer()
   }
 
   QStandardItem *item = mModel->itemFromIndex( selection[0] );
-  QVariant value = item->data( Qt::UserRole );
+  const QVariant value = item->data( Qt::UserRole );
 
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
@@ -154,7 +154,7 @@ void QgsProcessingDxfLayersPanelWidget::setItemValue( QStandardItem *item, const
 {
   mContext.setProject( mProject );
 
-  QgsDxfExport::DxfLayer layer = QgsProcessingParameterDxfLayers::variantMapAsLayer( value.toMap(), mContext );
+  const QgsDxfExport::DxfLayer layer = QgsProcessingParameterDxfLayers::variantMapAsLayer( value.toMap(), mContext );
 
   item->setText( titleForLayer( layer ) );
   item->setData( value, Qt::UserRole );
@@ -179,7 +179,6 @@ QgsProcessingDxfLayersWidget::QgsProcessingDxfLayersWidget( QWidget *parent )
   : QWidget( parent )
 {
   QHBoxLayout *hl = new QHBoxLayout();
-  hl->setMargin( 0 );
   hl->setContentsMargins( 0, 0, 0, 0 );
 
   mLineEdit = new QLineEdit();

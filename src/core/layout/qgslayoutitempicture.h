@@ -29,7 +29,7 @@ class QgsLayoutNorthArrowHandler;
 
 /**
  * \ingroup core
- * A layout item subclass that displays SVG files or raster format images (jpg, png, ...).
+ * \brief A layout item subclass that displays SVG files or raster format images (jpg, png, ...).
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
@@ -259,6 +259,18 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      * \since QGIS 3.6
      */
     QString evaluatedPath() const;
+
+    /**
+     * Returns the SVG dynamic parameters
+     * \since QGIS 3.20
+     */
+    QMap<QString, QgsProperty> svgDynamicParameters() const;
+
+    /**
+     * Sets the SVG dynamic parameters
+     * \since QGIS 3.20
+     */
+    void setSvgDynamicParameters( const QMap<QString, QgsProperty> &parameters );
 
   public slots:
 

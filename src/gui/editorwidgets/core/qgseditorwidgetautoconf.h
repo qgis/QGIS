@@ -25,7 +25,7 @@ class QgsEditorWidgetSetup;
 
 /**
  * \ingroup gui
- * Base class for plugins allowing to pick automatically a widget type for editing fields.
+ * \brief Base class for plugins allowing to pick automatically a widget type for editing fields.
  *
  * \since QGIS 3.0
  */
@@ -57,7 +57,7 @@ class GUI_EXPORT QgsEditorWidgetAutoConfPlugin
 
 /**
  * \ingroup gui
- * Class that allows registering plugins to pick automatically a widget type for editing fields.
+ * \brief Class that allows registering plugins to pick automatically a widget type for editing fields.
  * This class has only one instance, owned by the QgsEditorWidgetRegistry singleton
  *
  * The plugins are instances of QgsEditorWidgetAutoConfPlugin.

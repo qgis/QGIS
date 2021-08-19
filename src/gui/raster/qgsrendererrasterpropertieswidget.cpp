@@ -103,6 +103,7 @@ QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLaye
   connect( spinBoxSaturation, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
   connect( spinColorizeStrength, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
   connect( btnColorizeColor, &QgsColorButton::colorChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( mInvertColorsCheck, &QAbstractButton::toggled, this, &QgsPanelWidget::widgetChanged );
 
   connect( mBlendModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
   connect( mZoomedInResamplingComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
@@ -124,7 +125,7 @@ void QgsRendererRasterPropertiesWidget::setMapCanvas( QgsMapCanvas *canvas )
 
 void QgsRendererRasterPropertiesWidget::rendererChanged()
 {
-  QString rendererName = cboRenderers->currentData().toString();
+  const QString rendererName = cboRenderers->currentData().toString();
   setRendererWidget( rendererName );
   emit widgetChanged();
 }
@@ -160,6 +161,7 @@ void QgsRendererRasterPropertiesWidget::apply()
     hueSaturationFilter->setColorizeOn( mColorizeCheck->checkState() );
     hueSaturationFilter->setColorizeColor( btnColorizeColor->color() );
     hueSaturationFilter->setColorizeStrength( sliderColorizeStrength->value() );
+    hueSaturationFilter->setInvertColors( mInvertColorsCheck->isChecked() );
   }
 
   mResamplingUtils.refreshLayerFromWidgets();
@@ -219,6 +221,8 @@ void QgsRendererRasterPropertiesWidget::syncToLayer( QgsRasterLayer *layer )
     btnColorizeColor->setColor( hueSaturationFilter->colorizeColor() );
     toggleColorizeControls( hueSaturationFilter->colorizeOn() );
     sliderColorizeStrength->setValue( hueSaturationFilter->colorizeStrength() );
+
+    mInvertColorsCheck->setChecked( hueSaturationFilter->invertColors() );
   }
 
   //blend mode
@@ -288,7 +292,7 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
     {
       QgsDebugMsgLevel( QStringLiteral( "renderer has widgetCreateFunction" ), 3 );
       // Current canvas extent (used to calc min/max) in layer CRS
-      QgsRectangle myExtent = mMapCanvas->mapSettings().outputExtentToLayerExtent( mRasterLayer, mMapCanvas->extent() );
+      const QgsRectangle myExtent = mMapCanvas->mapSettings().outputExtentToLayerExtent( mRasterLayer, mMapCanvas->extent() );
       if ( oldWidget )
       {
         if ( rendererName == QLatin1String( "singlebandgray" ) )
@@ -334,7 +338,7 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
   if ( mRendererWidget != oldWidget )
     delete oldWidget;
 
-  int widgetIndex = cboRenderers->findData( rendererName );
+  const int widgetIndex = cboRenderers->findData( rendererName );
   if ( widgetIndex != -1 )
   {
     whileBlocking( cboRenderers )->setCurrentIndex( widgetIndex );
@@ -352,20 +356,20 @@ void QgsRendererRasterPropertiesWidget::refreshAfterStyleChanged()
       const QgsContrastEnhancement *redCe = mbcr->redContrastEnhancement();
       if ( redCe )
       {
-        mRendererWidget->setMin( QString::number( redCe->minimumValue() ), 0 );
-        mRendererWidget->setMax( QString::number( redCe->maximumValue() ), 0 );
+        mRendererWidget->setMin( QLocale().toString( redCe->minimumValue() ), 0 );
+        mRendererWidget->setMax( QLocale().toString( redCe->maximumValue() ), 0 );
       }
       const QgsContrastEnhancement *greenCe = mbcr->greenContrastEnhancement();
       if ( greenCe )
       {
-        mRendererWidget->setMin( QString::number( greenCe->minimumValue() ), 1 );
-        mRendererWidget->setMax( QString::number( greenCe->maximumValue() ), 1 );
+        mRendererWidget->setMin( QLocale().toString( greenCe->minimumValue() ), 1 );
+        mRendererWidget->setMax( QLocale().toString( greenCe->maximumValue() ), 1 );
       }
       const QgsContrastEnhancement *blueCe = mbcr->blueContrastEnhancement();
       if ( blueCe )
       {
-        mRendererWidget->setMin( QString::number( blueCe->minimumValue() ), 2 );
-        mRendererWidget->setMax( QString::number( blueCe->maximumValue() ), 2 );
+        mRendererWidget->setMin( QLocale().toString( blueCe->minimumValue() ), 2 );
+        mRendererWidget->setMax( QLocale().toString( blueCe->maximumValue() ), 2 );
       }
     }
     else if ( QgsSingleBandGrayRenderer *sbgr = dynamic_cast<QgsSingleBandGrayRenderer *>( renderer ) )
@@ -373,8 +377,8 @@ void QgsRendererRasterPropertiesWidget::refreshAfterStyleChanged()
       const QgsContrastEnhancement *ce = sbgr->contrastEnhancement();
       if ( ce )
       {
-        mRendererWidget->setMin( QString::number( ce->minimumValue() ) );
-        mRendererWidget->setMax( QString::number( ce->maximumValue() ) );
+        mRendererWidget->setMin( QLocale().toString( ce->minimumValue() ) );
+        mRendererWidget->setMax( QLocale().toString( ce->maximumValue() ) );
       }
     }
   }

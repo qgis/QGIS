@@ -11,7 +11,7 @@
 
 class QgsCachedFeatureIterator : QgsAbstractFeatureIterator
 {
-%Docstring
+%Docstring(signature="appended")
 Delivers features from the cache
 %End
 
@@ -27,6 +27,8 @@ This constructor creates a feature iterator, that delivers all cached features. 
 :param vlCache: The vector layer cache to use
 :param featureRequest: The feature request to answer
 %End
+
+    ~QgsCachedFeatureIterator();
 
     virtual bool rewind();
 
@@ -67,11 +69,13 @@ We have a local special iterator for FilterFids, no need to run the generic.
 :return: bool  ``True`` if the operation was OK
 %End
 
+  private:
+    QgsCachedFeatureIterator( const QgsCachedFeatureIterator &other );
 };
 
 class QgsCachedFeatureWriterIterator : QgsAbstractFeatureIterator
 {
-%Docstring
+%Docstring(signature="appended")
 Uses another iterator as backend and writes features to the cache
 %End
 

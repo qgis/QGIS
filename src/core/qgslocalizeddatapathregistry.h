@@ -24,10 +24,11 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgssettingsentry.h"
 
 /**
  * \ingroup core
- * A registry class to hold localized data paths which can be used for basemaps, logos, etc.
+ * \brief A registry class to hold localized data paths which can be used for basemaps, logos, etc.
  * Paths are meant to be absolute paths and are stored by order of preference.
  *
  * If a layer from one of the paths is loaded, it will be saved as localized in the project file.
@@ -64,6 +65,11 @@ class CORE_EXPORT QgsLocalizedDataPathRegistry
 
     //! Unregisters a localized path
     void unregisterPath( const QString &path );
+
+#ifndef SIP_RUN
+    //! Settings entry localized data paths
+    static const inline QgsSettingsEntryStringList settingsLocalizedDataPaths = QgsSettingsEntryStringList( QStringLiteral( "/qgis/localized_data_paths" ), QgsSettings::NoSection, QStringList() );
+#endif
 
   private:
 #ifdef SIP_RUN

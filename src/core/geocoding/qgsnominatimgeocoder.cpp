@@ -27,13 +27,14 @@
 #include <QJsonArray>
 
 QMutex QgsNominatimGeocoder::sMutex;
-QMap< QUrl, QList< QgsGeocoderResult > > QgsNominatimGeocoder::sCachedResults;
+typedef QMap< QUrl, QList< QgsGeocoderResult > > CachedGeocodeResult;
+Q_GLOBAL_STATIC( CachedGeocodeResult, sCachedResults )
 qint64 QgsNominatimGeocoder::sLastRequestTimestamp = 0;
 
 QgsNominatimGeocoder::QgsNominatimGeocoder( const QString &countryCodes, const QString &endpoint )
   : QgsGeocoderInterface()
   , mCountryCodes( countryCodes )
-  , mEndpoint( QStringLiteral( "https://nominatim.openstreetmap.org/search" ) )
+  , mEndpoint( QStringLiteral( "https://nominatim.qgis.org/search" ) )
 {
   if ( !endpoint.isEmpty() )
     mEndpoint = endpoint;
@@ -74,7 +75,7 @@ QList<QgsGeocoderResult> QgsNominatimGeocoder::geocodeString( const QString &str
   if ( !context.areaOfInterest().isEmpty() )
   {
     QgsGeometry g = context.areaOfInterest();
-    QgsCoordinateTransform ct( context.areaOfInterestCrs(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), context.transformContext() );
+    const QgsCoordinateTransform ct( context.areaOfInterestCrs(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), context.transformContext() );
     try
     {
       g.transform( ct );
@@ -88,9 +89,9 @@ QList<QgsGeocoderResult> QgsNominatimGeocoder::geocodeString( const QString &str
 
   const QUrl url = requestUrl( string, bounds );
 
-  QMutexLocker locker( &sMutex );
-  auto it = sCachedResults.constFind( url );
-  if ( it != sCachedResults.constEnd() )
+  const QMutexLocker locker( &sMutex );
+  const auto it = sCachedResults()->constFind( url );
+  if ( it != sCachedResults()->constEnd() )
   {
     return *it;
   }
@@ -117,7 +118,7 @@ QList<QgsGeocoderResult> QgsNominatimGeocoder::geocodeString( const QString &str
 
   // Parse data
   QJsonParseError err;
-  QJsonDocument doc = QJsonDocument::fromJson( newReq.reply().content(), &err );
+  const QJsonDocument doc = QJsonDocument::fromJson( newReq.reply().content(), &err );
   if ( doc.isNull() )
   {
     return QList<QgsGeocoderResult>() << QgsGeocoderResult::errorResult( err.errorString() );
@@ -126,7 +127,7 @@ QList<QgsGeocoderResult> QgsNominatimGeocoder::geocodeString( const QString &str
   const QVariantList results = doc.array().toVariantList();
   if ( results.isEmpty() )
   {
-    sCachedResults.insert( url, QList<QgsGeocoderResult>() );
+    sCachedResults()->insert( url, QList<QgsGeocoderResult>() );
     return QList<QgsGeocoderResult>();
   }
 
@@ -137,7 +138,7 @@ QList<QgsGeocoderResult> QgsNominatimGeocoder::geocodeString( const QString &str
     matches << jsonToResult( result.toMap() );
   }
 
-  sCachedResults.insert( url, matches );
+  sCachedResults()->insert( url, matches );
 
   return matches;
 }
@@ -215,7 +216,7 @@ QgsGeocoderResult QgsNominatimGeocoder::jsonToResult( const QVariantMap &json ) 
 
   if ( json.contains( QStringLiteral( "boundingbox" ) ) )
   {
-    QVariantList boundingBox = json.value( QStringLiteral( "boundingbox" ) ).toList();
+    const QVariantList boundingBox = json.value( QStringLiteral( "boundingbox" ) ).toList();
     if ( boundingBox.size() == 4 )
       res.setViewport( QgsRectangle( boundingBox.at( 2 ).toDouble(),
                                      boundingBox.at( 0 ).toDouble(),

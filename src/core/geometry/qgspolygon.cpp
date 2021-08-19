@@ -46,7 +46,7 @@ QString QgsPolygon::geometryType() const
 
 QgsPolygon *QgsPolygon::createEmptyWithSameType() const
 {
-  auto result = qgis::make_unique< QgsPolygon >();
+  auto result = std::make_unique< QgsPolygon >();
   result->mWkbType = mWkbType;
   return result.release();
 }
@@ -243,7 +243,7 @@ void QgsPolygon::setExteriorRing( QgsCurve *ring )
   setZMTypeFromSubGeometry( ring, QgsWkbTypes::Polygon );
 
   //match dimensionality for rings
-  for ( QgsCurve *ring : qgis::as_const( mInteriorRings ) )
+  for ( QgsCurve *ring : std::as_const( mInteriorRings ) )
   {
     ring->convertTo( mExteriorRing->wkbType() );
   }

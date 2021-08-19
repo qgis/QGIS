@@ -9,7 +9,7 @@
 
 class QgsPluginLayer : QgsMapLayer
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for plugin layers. These can be implemented by plugins
 and registered in :py:class:`QgsPluginLayerRegistry`.
 

@@ -18,6 +18,7 @@
 #include "qgsscalebarsettings.h"
 #include "qgslayoututils.h"
 #include "qgssymbol.h"
+#include "qgslinesymbol.h"
 #include "qgstextrenderer.h"
 #include <QPainter>
 
@@ -192,7 +193,7 @@ void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBa
     //draw last tick and horizontal line
     if ( !positions.isEmpty() )
     {
-      double lastTickPositionX = context.convertToPainterUnits( positions.at( positions.size() - 1 ) + scaleContext.segmentWidth, QgsUnitTypes::RenderMillimeters ) + xOffset;
+      const double lastTickPositionX = context.convertToPainterUnits( positions.at( positions.size() - 1 ) + scaleContext.segmentWidth, QgsUnitTypes::RenderMillimeters ) + xOffset;
 
       //last vertical line
       if ( drawDivisionsForThisSymbolLayer )

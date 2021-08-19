@@ -29,7 +29,7 @@ class QToolButton;
 /**
  * \ingroup gui
  * \class QgsColorWidget
- * A base class for interactive color widgets. Widgets can either allow setting a single component of
+ * \brief A base class for interactive color widgets. Widgets can either allow setting a single component of
  * a color (e.g., the red or green components), or an entire color. The QgsColorWidget also keeps track of
  * any explicitly set hue for the color, so that this information is not lost when the widget is
  * set to a color with an ambiguous hue (e.g., black or white shades).
@@ -205,7 +205,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
 /**
  * \ingroup gui
  * \class QgsColorWidgetAction
- * An action containing a color widget, which can be embedded into a menu.
+ * \brief An action containing a color widget, which can be embedded into a menu.
  * \see QgsColorWidget
  * \since QGIS 2.14
  */
@@ -281,7 +281,7 @@ class GUI_EXPORT QgsColorWidgetAction: public QWidgetAction
 /**
  * \ingroup gui
  * \class QgsColorWheel
- * A color wheel widget. This widget consists of an outer ring which allows for hue selection, and an
+ * \brief A color wheel widget. This widget consists of an outer ring which allows for hue selection, and an
  * inner rotating triangle which allows for saturation and value selection.
  * \since QGIS 2.5
  */
@@ -374,7 +374,7 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
 /**
  * \ingroup gui
  * \class QgsColorBox
- * A color box widget. This widget consists of a two dimensional rectangle filled with color
+ * \brief A color box widget. This widget consists of a two dimensional rectangle filled with color
  * variations, where a different color component varies along both the horizontal and vertical
  * axis.
  * \since QGIS 2.5
@@ -471,7 +471,7 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
 /**
  * \ingroup gui
  * \class QgsColorRampWidget
- * A color ramp widget. This widget consists of an interactive box filled with a color which varies along
+ * \brief A color ramp widget. This widget consists of an interactive box filled with a color which varies along
  * its length by a single color component (e.g., varying saturation from 0 to 100%).
  * \since QGIS 2.5
  */
@@ -596,7 +596,7 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
 /**
  * \ingroup gui
  * \class QgsColorSliderWidget
- * A composite horizontal color ramp widget and associated spinbox for manual value entry.
+ * \brief A composite horizontal color ramp widget and associated spinbox for manual value entry.
  * \since QGIS 2.5
  */
 
@@ -665,7 +665,7 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
 /**
  * \ingroup gui
  * \class QgsColorTextWidget
- * A line edit widget which displays colors as text and accepts string representations
+ * \brief A line edit widget which displays colors as text and accepts string representations
  * of colors.
  * \since QGIS 2.5
  */
@@ -731,7 +731,7 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
 /**
  * \ingroup gui
  * \class QgsColorPreviewWidget
- * A preview box which displays one or two colors as swatches.
+ * \brief A preview box which displays one or two colors as swatches.
  * \since QGIS 2.5
  */
 

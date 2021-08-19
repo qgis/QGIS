@@ -20,7 +20,6 @@
 
 #include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsvectorlayerexporter.h"
 #include "qgsfields.h"
 
 #include <QStringList>
@@ -52,9 +51,8 @@ enum QgsMssqlPrimaryKeyType
 };
 
 /**
-\class QgsMssqlProvider
-\brief Data provider for mssql server.
-*
+ * \class QgsMssqlProvider
+ * \brief Data provider for mssql server.
 */
 class QgsMssqlProvider final: public QgsVectorDataProvider
 {
@@ -87,7 +85,7 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
 
     QgsWkbTypes::Type wkbType() const override;
 
-    long featureCount() const override;
+    long long featureCount() const override;
 
     //! Update the extent, feature count, wkb type and srid for this layer
     void UpdateStatistics( bool estimate ) const;
@@ -148,7 +146,7 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
 
 
     //! Import a vector layer into the database
-    static QgsVectorLayerExporter::ExportError createEmptyLayer(
+    static Qgis::VectorExportResult createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,
       QgsWkbTypes::Type wkbType,
@@ -186,7 +184,7 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
     bool mSkipFailures = false;
     bool mUseGeometryColumnsTableForExtent = false;
 
-    long mNumberFeatures = 0;
+    long long mNumberFeatures = 0;
 
     /**
       *
@@ -300,7 +298,7 @@ class QgsMssqlProviderMetadata final: public QgsProviderMetadata
                     const QString &styleName, const QString &styleDescription,
                     const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
 
-    QgsVectorLayerExporter::ExportError createEmptyLayer(
+    Qgis::VectorExportResult createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,
       QgsWkbTypes::Type wkbType,

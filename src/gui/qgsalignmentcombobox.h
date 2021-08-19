@@ -23,7 +23,7 @@
 /**
  * \ingroup gui
  * \class QgsAlignmentComboBox
- * A combo box which allows choice of alignment settings (e.g. left, right, ...).
+ * \brief A combo box which allows choice of alignment settings (e.g. left, right, ...).
  *
  * Currently only horizontal alignments are supported. Available alignment choices
  * can be manually specified by calling setAvailableAlignments(), which is useful

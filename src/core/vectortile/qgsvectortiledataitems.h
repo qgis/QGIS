@@ -15,7 +15,8 @@
 #ifndef QGSVECTORTILEDATAITEMS_H
 #define QGSVECTORTILEDATAITEMS_H
 
-#include "qgsdataitem.h"
+#include "qgsconnectionsitem.h"
+#include "qgslayeritem.h"
 #include "qgsdataitemprovider.h"
 
 ///@cond PRIVATE

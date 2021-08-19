@@ -20,7 +20,7 @@
 
 /**
  * \ingroup core
- * Provides a list of features based on filter conditions.
+ * \brief Provides a list of features based on filter conditions.
  * Features are fetched asynchronously.
  *
  * \since QGIS 3.0
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsFeatureFilterModel : public QgsFeaturePickerModelBase
   private:
     QgsFeatureExpressionValuesGatherer *createValuesGatherer( const QgsFeatureRequest &request ) const override;
 
-    void requestToReloadCurrentFeature( QgsFeatureRequest &request ) override;
+    void requestToReloadCurrentFeature( QgsFeatureRequest &request ) override SIP_FORCE;
 
     QSet<QString> requestedAttributes() const override;
 

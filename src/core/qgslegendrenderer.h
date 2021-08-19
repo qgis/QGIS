@@ -145,6 +145,12 @@ class CORE_EXPORT QgsLegendRenderer
         QSizeF size;
 
         /**
+         * Starting indent for groups/subgroups nested in other groups/subgroups.
+         * This value is the sum of the indents of all parent groups/subgroups.
+         */
+        double indent = 0;
+
+        /**
          * Horizontal offset for the symbol label.
          *
          * This offset is the same for all symbol labels belonging to the same layer,
@@ -215,7 +221,7 @@ class CORE_EXPORT QgsLegendRenderer
      * Returns a list of component groups for the specified \a parentGroup, respecting the current layer's
      * splitting settings.
      */
-    QList<LegendComponentGroup> createComponentGroupList( QgsLayerTreeGroup *parentGroup, QgsRenderContext &context );
+    QList<LegendComponentGroup> createComponentGroupList( QgsLayerTreeGroup *parentGroup, QgsRenderContext &context, double indent = 0 );
 
     /**
      * Divides a list of component groups into columns, and sets the column index for each group in the list.

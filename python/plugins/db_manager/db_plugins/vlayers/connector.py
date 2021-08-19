@@ -45,8 +45,9 @@ class sqlite3_connection(object):
     def __enter__(self):
         return self.conn
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, ex_type, value, traceback):
         self.conn.close()
+        return ex_type is None
 
 
 def getQueryGeometryName(sqlite_file):
@@ -214,45 +215,20 @@ class VLayerConnector(DBConnector):
 
                 geomType = None
                 dim = None
-                g = l.dataProvider().wkbType()
-                if g == QgsWkbTypes.Point:
-                    geomType = 'POINT'
-                    dim = 'XY'
-                elif g == QgsWkbTypes.LineString:
-                    geomType = 'LINESTRING'
-                    dim = 'XY'
-                elif g == QgsWkbTypes.Polygon:
-                    geomType = 'POLYGON'
-                    dim = 'XY'
-                elif g == QgsWkbTypes.MultiPoint:
-                    geomType = 'MULTIPOINT'
-                    dim = 'XY'
-                elif g == QgsWkbTypes.MultiLineString:
-                    geomType = 'MULTILINESTRING'
-                    dim = 'XY'
-                elif g == QgsWkbTypes.MultiPolygon:
-                    geomType = 'MULTIPOLYGON'
-                    dim = 'XY'
-                elif g == QgsWkbTypes.Point25D:
-                    geomType = 'POINT'
-                    dim = 'XYZ'
-                elif g == QgsWkbTypes.LineString25D:
-                    geomType = 'LINESTRING'
-                    dim = 'XYZ'
-                elif g == QgsWkbTypes.Polygon25D:
-                    geomType = 'POLYGON'
-                    dim = 'XYZ'
-                elif g == QgsWkbTypes.MultiPoint25D:
-                    geomType = 'MULTIPOINT'
-                    dim = 'XYZ'
-                elif g == QgsWkbTypes.MultiLineString25D:
-                    geomType = 'MULTILINESTRING'
-                    dim = 'XYZ'
-                elif g == QgsWkbTypes.MultiPolygon25D:
-                    geomType = 'MULTIPOLYGON'
-                    dim = 'XYZ'
-                lst.append(
-                    (Table.VectorType, lname, False, False, l.id(), 'geometry', geomType, dim, l.crs().postgisSrid()))
+                if l.isSpatial():
+                    g = l.dataProvider().wkbType()
+                    g_flat = QgsWkbTypes.flatType(g)
+                    geomType = QgsWkbTypes.displayString(g_flat).upper()
+                    if geomType:
+                        dim = 'XY'
+                        if QgsWkbTypes.hasZ(g):
+                            dim += 'Z'
+                        if QgsWkbTypes.hasM(g):
+                            dim += 'M'
+                    lst.append(
+                        (Table.VectorType, lname, False, False, l.id(), 'geometry', geomType, dim, l.crs().postgisSrid()))
+                else:
+                    lst.append((Table.TableType, lname, False, False))
         return lst
 
     def getRasterTables(self, schema=None):
@@ -275,7 +251,8 @@ class VLayerConnector(DBConnector):
         n = l.dataProvider().fields().size()
         f = [(i, f.name(), f.typeName(), False, None, False)
              for i, f in enumerate(l.dataProvider().fields())]
-        f += [(n, "geometry", "geometry", False, None, False)]
+        if l.isSpatial():
+            f += [(n, "geometry", "geometry", False, None, False)]
         return f
 
     def getTableIndexes(self, table):

@@ -20,9 +20,8 @@
 #include "qgsexpressionnodeimpl.h"
 #include "qgslogger.h"
 
-QgsDb2ExpressionCompiler::QgsDb2ExpressionCompiler( QgsDb2FeatureSource *source )
-  : QgsSqlExpressionCompiler( source->mFields
-                            )
+QgsDb2ExpressionCompiler::QgsDb2ExpressionCompiler( QgsDb2FeatureSource *source, bool ignoreStaticNodes )
+  : QgsSqlExpressionCompiler( source->mFields, Flags(), ignoreStaticNodes )
 {
 
 }
@@ -54,14 +53,18 @@ QString resultType( QgsSqlExpressionCompiler::Result result )
 
 QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
 {
+  const QgsSqlExpressionCompiler::Result staticRes = replaceNodeByStaticCachedValueIfPossible( node, result );
+  if ( staticRes != Fail )
+    return staticRes;
+
   QgsDebugMsg( QStringLiteral( "nodeType: %1" ).arg( nodeType( node ) ) );
   if ( node->nodeType() == QgsExpressionNode::ntColumnRef )
   {
     const QgsExpressionNodeColumnRef *n( static_cast<const QgsExpressionNodeColumnRef *>( node ) );
     QgsDebugMsg( QStringLiteral( "column ref node: " ) + n->dump() );
     // TODO - consider escaped names - not sure how to handle
-    QString upperName = n->name().toUpper();
-    int idx = mFields.indexFromName( upperName );
+    const QString upperName = n->name().toUpper();
+    const int idx = mFields.indexFromName( upperName );
     QgsDebugMsg( QStringLiteral( "%1 - %2" ).arg( idx ).arg( upperName ) );
     if ( idx > -1 )
     {
@@ -132,8 +135,8 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
     const QgsExpressionNodeBinaryOperator *bin( static_cast<const QgsExpressionNodeBinaryOperator *>( node ) );
     QString left, right;
 
-    Result lr = compileNode( bin->opLeft(), left );
-    Result rr = compileNode( bin->opRight(), right );
+    const Result lr = compileNode( bin->opLeft(), left );
+    const Result rr = compileNode( bin->opRight(), right );
     Result compileResult;
     QgsDebugMsg( "left: '" + left + "'; right: '" + right +
                  QString( "'; op: %1; lr: %2; rr: %3" ).arg( bin->op() ).arg( lr ).arg( rr ) );
@@ -218,7 +221,7 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
 
   //fallback to default handling
   QgsDebugMsg( QStringLiteral( "fallback: %1 - " ).arg( nodeType( node ) ) );
-  QgsSqlExpressionCompiler::Result rc = QgsSqlExpressionCompiler::compileNode( node, result );
+  const QgsSqlExpressionCompiler::Result rc = QgsSqlExpressionCompiler::compileNode( node, result );
   QgsDebugMsg( QStringLiteral( "fallback: %1 - " ).arg( resultType( rc ) ) + result );
   return rc;
 }

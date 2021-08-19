@@ -26,7 +26,7 @@ struct QgsGeoNodeStyle
 
 class QgsGeoNodeRequest : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Request handler for GeoNode servers.
 
 :py:class:`QgsGeoNodeRequest` handles requesting and parsing service details from a GeoNode
@@ -56,6 +56,7 @@ server instance, for instance requesting all available layers or layer styles.
       QString title;
       QString wmsURL;
       QString wfsURL;
+      QString wcsURL;
       QString xyzURL;
       BackendServer server;
     };

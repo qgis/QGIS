@@ -20,7 +20,6 @@
 
 QgsMapToolIdentifyFeature::QgsMapToolIdentifyFeature( QgsMapCanvas *canvas, QgsVectorLayer *vl )
   : QgsMapToolIdentify( canvas )
-  , mCanvas( canvas )
   , mLayer( vl )
 {
   mToolName = tr( "Identify feature" );
@@ -32,7 +31,7 @@ QgsMapToolIdentifyFeature::QgsMapToolIdentifyFeature( QgsMapCanvas *canvas, QgsV
 void QgsMapToolIdentifyFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
 
-  QgsPointXY point = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
+  const QgsPointXY point = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
 
   QList<IdentifyResult> results;
   if ( !identifyVectorLayer( &results, mLayer, point ) )

@@ -29,7 +29,7 @@ class QgsPropertyOverrideButton;
 /**
  * \ingroup gui
  * \class QgsAbstractFileContentSourceLineEdit
- * Abstract base class for a widgets which allows users to select content from a file, embedding a file, etc.
+ * \brief Abstract base class for a widgets which allows users to select content from a file, embedding a file, etc.
  *
  * This class is designed to be used by content which is managed by a QgsAbstractContentCache,
  * i.e. it can handle either direct file paths, base64 encoded contents, or remote HTTP
@@ -176,10 +176,73 @@ class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTR
 
 };
 
+
+
+/**
+ * \ingroup gui
+ * \class QgsPictureSourceLineEditBase
+ * \brief A line edit widget with toolbutton for setting a raster image path.
+ *
+ * \see QgsSvgSourceLineEdit
+ *
+ * \since QGIS 3.20
+ */
+class GUI_EXPORT QgsPictureSourceLineEditBase : public QgsAbstractFileContentSourceLineEdit
+{
+    Q_OBJECT
+  public:
+
+    /**
+     * Format of source image
+     */
+    enum Format
+    {
+      Svg, //!< SVG image
+      Image, //!< Raster image
+    };
+
+    /**
+     * Constructor for QgsImageSourceLineEdit, with the specified \a parent widget.
+     * The default format is SVG.
+     */
+    QgsPictureSourceLineEditBase( QWidget *parent SIP_TRANSFERTHIS = nullptr )
+      : QgsAbstractFileContentSourceLineEdit( parent )
+    {}
+
+    //! Defines the mode of the source line edit
+    void setMode( Format format ) {mFormat = format;}
+
+  protected:
+
+    /**
+     * Constructor for QgsImageSourceLineEdit, with the specified \a parent widget.
+     */
+    QgsPictureSourceLineEditBase( Format format, QWidget *parent SIP_TRANSFERTHIS = nullptr )
+      : QgsAbstractFileContentSourceLineEdit( parent )
+      , mFormat( format )
+    {}
+
+  private:
+    Format mFormat = Svg;
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+    QString fileFilter() const override;
+    QString selectFileTitle() const override;
+    QString fileFromUrlTitle() const override;
+    QString fileFromUrlText() const override;
+    QString embedFileTitle() const override;
+    QString extractFileTitle() const override;
+    QString defaultSettingsKey() const override;
+    ///@endcond
+#endif
+};
+
+
 /**
  * \ingroup gui
  * \class QgsSvgSourceLineEdit
- * A line edit widget with toolbutton for setting an SVG image path.
+ * \brief A line edit widget with toolbutton for setting an SVG image path.
  *
  * Designed for use with QgsSvgCache.
  *
@@ -187,7 +250,7 @@ class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTR
  *
  * \since QGIS 3.4
  */
-class GUI_EXPORT QgsSvgSourceLineEdit : public QgsAbstractFileContentSourceLineEdit
+class GUI_EXPORT QgsSvgSourceLineEdit : public QgsPictureSourceLineEditBase
 {
     Q_OBJECT
   public:
@@ -196,29 +259,14 @@ class GUI_EXPORT QgsSvgSourceLineEdit : public QgsAbstractFileContentSourceLineE
      * Constructor for QgsSvgSourceLineEdit, with the specified \a parent widget.
      */
     QgsSvgSourceLineEdit( QWidget *parent SIP_TRANSFERTHIS = nullptr )
-      : QgsAbstractFileContentSourceLineEdit( parent )
+      : QgsPictureSourceLineEditBase( Svg, parent )
     {}
-
-  private:
-
-#ifndef SIP_RUN
-///@cond PRIVATE
-    QString fileFilter() const override;
-    QString selectFileTitle() const override;
-    QString fileFromUrlTitle() const override;
-    QString fileFromUrlText() const override;
-    QString embedFileTitle() const override;
-    QString extractFileTitle() const override;
-    QString defaultSettingsKey() const override;
-///@endcond
-#endif
 };
-
 
 /**
  * \ingroup gui
  * \class QgsImageSourceLineEdit
- * A line edit widget with toolbutton for setting a raster image path.
+ * \brief A line edit widget with toolbutton for setting a raster image path.
  *
  * Designed for use with QgsImageCache.
  *
@@ -226,7 +274,7 @@ class GUI_EXPORT QgsSvgSourceLineEdit : public QgsAbstractFileContentSourceLineE
  *
  * \since QGIS 3.6
  */
-class GUI_EXPORT QgsImageSourceLineEdit : public QgsAbstractFileContentSourceLineEdit
+class GUI_EXPORT QgsImageSourceLineEdit : public QgsPictureSourceLineEditBase
 {
     Q_OBJECT
   public:
@@ -235,21 +283,8 @@ class GUI_EXPORT QgsImageSourceLineEdit : public QgsAbstractFileContentSourceLin
      * Constructor for QgsImageSourceLineEdit, with the specified \a parent widget.
      */
     QgsImageSourceLineEdit( QWidget *parent SIP_TRANSFERTHIS = nullptr )
-      : QgsAbstractFileContentSourceLineEdit( parent )
+      : QgsPictureSourceLineEditBase( Image, parent )
     {}
-
-  private:
-#ifndef SIP_RUN
-///@cond PRIVATE
-    QString fileFilter() const override;
-    QString selectFileTitle() const override;
-    QString fileFromUrlTitle() const override;
-    QString fileFromUrlText() const override;
-    QString embedFileTitle() const override;
-    QString extractFileTitle() const override;
-    QString defaultSettingsKey() const override;
-///@endcond
-#endif
 };
 
 #endif // QGSFILECONTENTSOURCELINEEDIT_H

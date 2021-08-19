@@ -59,15 +59,15 @@ QgsHanaNewConnection::QgsHanaNewConnection(
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsHanaNewConnection::showHelp );
 
   txtDriver->setText( QgsHanaDriver::instance()->driver() );
-#if defined(Q_OS_WIN)
-  txtDriver->setToolTip( tr( "The name of the SAP HANA ODBC driver.\r\n\r\n"
-                             "The SAP HANA ODBC driver is a part of the SAP HANA Client,\r\n"
+#ifdef Q_OS_WIN
+  txtDriver->setToolTip( tr( "The name of the SAP HANA ODBC driver.\n\n"
+                             "The SAP HANA ODBC driver is a part of the SAP HANA Client,\n"
                              "which can be found at https://tools.hana.ondemand.com/#hanatools." ) );
 #else
-  txtDriver->setToolTip( tr( "The name or path to the SAP HANA ODBC driver.\r\n\r\n"
-                             "If the driver is registered in odbcinst.ini, enter the driver's name.\r\n"
-                             "Otherwise, enter the path to the driver (libodbcHDB.so).\r\n\r\n"
-                             "The SAP HANA ODBC driver is a part of the SAP HANA Client,\r\n"
+  txtDriver->setToolTip( tr( "The name or path to the SAP HANA ODBC driver.\n\n"
+                             "If the driver is registered in odbcinst.ini, enter the driver's name.\n"
+                             "Otherwise, enter the path to the driver (libodbcHDB.so).\n\n"
+                             "The SAP HANA ODBC driver is a part of the SAP HANA Client,\n"
                              "which can be found at https://tools.hana.ondemand.com/#hanatools." ) );
 #endif
 
@@ -86,7 +86,7 @@ QgsHanaNewConnection::QgsHanaNewConnection(
   }
   else
   {
-    QgsHanaSettings settings( connName, true );
+    const QgsHanaSettings settings( connName, true );
     updateControlsFromSettings( settings );
   }
   txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]*" ), txtName ) );
@@ -127,9 +127,9 @@ void QgsHanaNewConnection::accept()
     }
   }
 
-  QString connName = txtName->text();
+  const QString connName = txtName->text();
   QgsHanaSettings::setSelectedConnection( connName );
-  bool hasAuthConfigID = !mAuthSettings->configId().isEmpty();
+  const bool hasAuthConfigID = !mAuthSettings->configId().isEmpty();
 
   if ( !hasAuthConfigID && mAuthSettings->storePasswordIsChecked() &&
        QMessageBox::question( this,
@@ -137,7 +137,7 @@ void QgsHanaNewConnection::accept()
                               tr( "WARNING: You have opted to save your password. It will be stored in unsecured "
                                   "plain text in your project files and in your home directory (Unix-like OS) or user profile (Windows). "
                                   "If you want to avoid this, press Cancel and either:\n\na) Don't save a password in the connection "
-                                  "settings  — it will be requested interactively when needed;\nb) Use the Configuration tab to add your "
+                                  "settings — it will be requested interactively when needed;\nb) Use the Configuration tab to add your "
                                   "credentials in an HTTP Basic Authentication method and store them in an encrypted database." ),
                               QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
@@ -215,7 +215,7 @@ void QgsHanaNewConnection::rbtnSystemDatabase_clicked()
 
 void QgsHanaNewConnection::chkEnableSSL_clicked()
 {
-  bool enabled = chkEnableSSL->isChecked();
+  const bool enabled = chkEnableSSL->isChecked();
   lblCryptoProvider->setEnabled( enabled );
   cbxCryptoProvider->setEnabled( enabled );
   chkValidateCertificate->setEnabled( enabled );
@@ -281,7 +281,7 @@ void QgsHanaNewConnection::updateControlsFromSettings( const QgsHanaSettings &se
   chkAllowGeometrylessTables->setChecked( settings.allowGeometrylessTables() );
 
   chkEnableSSL->setChecked( settings.enableSsl() );
-  int idx = cbxCryptoProvider->findData( settings.sslCryptoProvider() );
+  const int idx = cbxCryptoProvider->findData( settings.sslCryptoProvider() );
   if ( idx >= 0 )
     cbxCryptoProvider->setCurrentIndex( idx );
 
@@ -323,7 +323,7 @@ void QgsHanaNewConnection::testConnection()
     warningMsg = tr( "Identifier has not been specified." );
   else
   {
-    QString driver = txtDriver->text();
+    const QString driver = txtDriver->text();
     if ( driver.isEmpty() )
       warningMsg = tr( "Driver name/path has not been specified." );
     else
@@ -352,18 +352,18 @@ void QgsHanaNewConnection::testConnection()
     return;
   }
 
-  QgsTemporaryCursorOverride cursorOverride( Qt::WaitCursor );
+  const QgsTemporaryCursorOverride cursorOverride( Qt::WaitCursor );
 
   QgsHanaSettings settings( txtName->text() );
   readSettingsFromControls( settings );
 
   QString errorMsg;
-  unique_ptr<QgsHanaConnection> conn( QgsHanaConnection::createConnection( settings.toDataSourceUri(), nullptr, &errorMsg ) );
+  const unique_ptr<QgsHanaConnection> conn( QgsHanaConnection::createConnection( settings.toDataSourceUri(), nullptr, &errorMsg ) );
 
   if ( conn )
-    bar->pushMessage( tr( "Connection to the server was successful." ), Qgis::Info );
+    bar->pushMessage( tr( "Connection to the server was successful." ), Qgis::MessageLevel::Info );
   else
-    bar->pushMessage( tr( "Connection failed: %1." ).arg( errorMsg ), Qgis::Warning );
+    bar->pushMessage( tr( "Connection failed: %1." ).arg( errorMsg ), Qgis::MessageLevel::Warning );
 }
 
 QString QgsHanaNewConnection::getDatabaseName() const

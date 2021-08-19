@@ -61,7 +61,7 @@ bool QgsArcGisRestBrowserProxyModel::filterAcceptsRow( int sourceRow, const QMod
   if ( !QgsBrowserProxyModel::filterAcceptsRow( sourceRow, sourceParent ) )
     return false;
 
-  QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
+  const QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
   if ( QgsArcGisRestConnectionItem *connectionItem = qobject_cast< QgsArcGisRestConnectionItem * >( mModel->dataItem( sourceIndex ) ) )
   {
     if ( connectionItem->name() != mConnectionName )
@@ -100,7 +100,7 @@ QgsArcGisRestSourceSelect::QgsArcGisRestSourceSelect( QWidget *parent, Qt::Windo
   lineFilter->setShowClearButton( true );
   lineFilter->setShowSearchIcon( true );
 
-  QgsSettings settings;
+  const QgsSettings settings;
 
   mImageEncodingGroup = new QButtonGroup( this );
 }
@@ -198,14 +198,14 @@ void QgsArcGisRestSourceSelect::populateConnectionList()
   {
     cmbConnections->addItem( item );
   }
-  bool connectionsAvailable = !conns.isEmpty();
+  const bool connectionsAvailable = !conns.isEmpty();
   btnEdit->setEnabled( connectionsAvailable );
   btnDelete->setEnabled( connectionsAvailable );
   btnSave->setEnabled( connectionsAvailable );
 
   //set last used connection
-  QString selectedConnection = QgsOwsConnection::selectedConnection( QStringLiteral( "ARCGISFEATURESERVER" ) );
-  int index = cmbConnections->findText( selectedConnection );
+  const QString selectedConnection = QgsOwsConnection::selectedConnection( QStringLiteral( "ARCGISFEATURESERVER" ) );
+  const int index = cmbConnections->findText( selectedConnection );
   if ( index != -1 )
   {
     cmbConnections->setCurrentIndex( index );
@@ -244,15 +244,15 @@ void QgsArcGisRestSourceSelect::modifyEntryOfServerList()
 void QgsArcGisRestSourceSelect::deleteEntryOfServerList()
 {
   const QString selectedConnection = cmbConnections->currentText();
-  QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                .arg( selectedConnection );
-  QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No );
+  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
+                      .arg( selectedConnection );
+  const QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No );
   if ( result == QMessageBox::Yes )
   {
     QgsOwsConnection::deleteConnection( QStringLiteral( "ARCGISFEATURESERVER" ), selectedConnection );
     cmbConnections->removeItem( cmbConnections->currentIndex() );
     emit connectionsChanged();
-    bool connectionsAvailable = cmbConnections->count() > 0;
+    const bool connectionsAvailable = cmbConnections->count() > 0;
     btnEdit->setEnabled( connectionsAvailable );
     btnDelete->setEnabled( connectionsAvailable );
     btnSave->setEnabled( connectionsAvailable );
@@ -264,11 +264,11 @@ void QgsArcGisRestSourceSelect::deleteEntryOfServerList()
 
 void QgsArcGisRestSourceSelect::connectToServer()
 {
-  bool haveLayers = false;
+  const bool haveLayers = false;
   btnConnect->setEnabled( false );
 
   mConnectedService = cmbConnections->currentText();
-  QgsOwsConnection connection( QStringLiteral( "ARCGISFEATURESERVER" ), mConnectedService );
+  const QgsOwsConnection connection( QStringLiteral( "ARCGISFEATURESERVER" ), mConnectedService );
 
   // find index of corresponding node
   if ( mBrowserModel && mProxyModel )
@@ -297,10 +297,10 @@ void QgsArcGisRestSourceSelect::addButtonClicked()
     return;
   }
 
-  QgsOwsConnection connection( QStringLiteral( "ARCGISFEATURESERVER" ), cmbConnections->currentText() );
+  const QgsOwsConnection connection( QStringLiteral( "ARCGISFEATURESERVER" ), cmbConnections->currentText() );
 
-  QString pCrsString( labelCoordRefSys->text() );
-  QgsCoordinateReferenceSystem pCrs( pCrsString );
+  const QString pCrsString( labelCoordRefSys->text() );
+  const QgsCoordinateReferenceSystem pCrs( pCrsString );
   //prepare canvas extent info for layers with "cache features" option not set
   QgsRectangle extent;
   QgsCoordinateReferenceSystem canvasCrs;
@@ -372,7 +372,7 @@ void QgsArcGisRestSourceSelect::addButtonClicked()
 void QgsArcGisRestSourceSelect::updateCrsLabel()
 {
   //evaluate currently selected typename and set the CRS filter in mProjectionSelector
-  QModelIndex currentIndex = mBrowserView->selectionModel()->currentIndex();
+  const QModelIndex currentIndex = mBrowserView->selectionModel()->currentIndex();
   if ( currentIndex.isValid() )
   {
     const QModelIndex sourceIndex = mProxyModel->mapToSource( currentIndex );
@@ -384,7 +384,7 @@ void QgsArcGisRestSourceSelect::updateCrsLabel()
 
     if ( QgsLayerItem *layerItem = qobject_cast< QgsLayerItem * >( mBrowserModel->dataItem( sourceIndex ) ) )
     {
-      QgsDataSourceUri uri( layerItem->uri() );
+      const QgsDataSourceUri uri( layerItem->uri() );
       labelCoordRefSys->setText( uri.param( QStringLiteral( "crs" ) ) );
     }
     else
@@ -397,7 +397,7 @@ void QgsArcGisRestSourceSelect::updateCrsLabel()
 void QgsArcGisRestSourceSelect::updateImageEncodings()
 {
   //evaluate currently selected typename and set the CRS filter in mProjectionSelector
-  QModelIndex currentIndex = mBrowserView->selectionModel()->currentIndex();
+  const QModelIndex currentIndex = mBrowserView->selectionModel()->currentIndex();
   if ( currentIndex.isValid() )
   {
     const QModelIndex sourceIndex = mProxyModel->mapToSource( currentIndex );
@@ -447,8 +447,8 @@ void QgsArcGisRestSourceSelect::btnSave_clicked()
 
 void QgsArcGisRestSourceSelect::btnLoad_clicked()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
-                     tr( "XML files (*.xml *.XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
+                           tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -470,26 +470,26 @@ void QgsArcGisRestSourceSelect::refreshModel( const QModelIndex &index )
   if ( mBrowserModel && mProxyModel )
   {
     QgsDataItem *item = mBrowserModel->dataItem( index );
-    if ( item && ( item->capabilities2() & QgsDataItem::Fertile ) )
+    if ( item && ( item->capabilities2() & Qgis::BrowserItemCapability::Fertile ) )
     {
       mBrowserModel->refresh( index );
     }
 
     for ( int i = 0; i < mBrowserModel->rowCount( index ); i++ )
     {
-      QModelIndex idx = mBrowserModel->index( i, 0, index );
-      QModelIndex proxyIdx = mProxyModel->mapFromSource( idx );
+      const QModelIndex idx = mBrowserModel->index( i, 0, index );
+      const QModelIndex proxyIdx = mProxyModel->mapFromSource( idx );
       QgsDataItem *child = mBrowserModel->dataItem( idx );
 
       // Check also expanded descendants so that the whole expanded path does not get collapsed if one item is collapsed.
       // Fast items (usually root items) are refreshed so that when collapsed, it is obvious they are if empty (no expand symbol).
-      if ( mBrowserView->isExpanded( proxyIdx ) || mBrowserView->hasExpandedDescendant( proxyIdx ) || ( child && child->capabilities2() & QgsDataItem::Fast ) )
+      if ( mBrowserView->isExpanded( proxyIdx ) || mBrowserView->hasExpandedDescendant( proxyIdx ) || ( child && child->capabilities2() & Qgis::BrowserItemCapability::Fast ) )
       {
         refreshModel( idx );
       }
       else
       {
-        if ( child && ( child->capabilities2() & QgsDataItem::Fertile ) )
+        if ( child && ( child->capabilities2() & Qgis::BrowserItemCapability::Fertile ) )
         {
           child->depopulate();
         }

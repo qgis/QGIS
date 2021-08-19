@@ -47,7 +47,7 @@ using namespace nlohmann;
 
 /**
  * \ingroup server
- * The QgsServerApiUtils class contains helper functions to handle common API operations.
+ * \brief The QgsServerApiUtils class contains helper functions to handle common API operations.
  * \since QGIS 3.10
  */
 class SERVER_EXPORT QgsServerApiUtils

@@ -20,7 +20,7 @@
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutundostack.h"
 #include "qgsexpressioncontextutils.h"
-#include <QtCore>
+#include <QUuid>
 
 QgsLayoutMultiFrame::QgsLayoutMultiFrame( QgsLayout *layout )
   : QgsLayoutObject( layout )
@@ -402,7 +402,7 @@ void QgsLayoutMultiFrame::handlePageChange()
     for ( int i = lastItemPage + 1; i < mLayout->pageCollection()->pageCount(); ++i )
     {
       //copy last frame to current page
-      std::unique_ptr< QgsLayoutFrame > newFrame = qgis::make_unique< QgsLayoutFrame >( mLayout, this );
+      std::unique_ptr< QgsLayoutFrame > newFrame = std::make_unique< QgsLayoutFrame >( mLayout, this );
 
       newFrame->attemptSetSceneRect( QRectF( lastFrame->pos().x(),
                                              mLayout->pageCollection()->page( i )->pos().y() + lastFrame->pagePos().y(),
@@ -444,7 +444,7 @@ void QgsLayoutMultiFrame::removeFrame( int i, const bool removeEmptyPages )
 
 void QgsLayoutMultiFrame::update()
 {
-  for ( QgsLayoutFrame *frame : qgis::as_const( mFrameItems ) )
+  for ( QgsLayoutFrame *frame : std::as_const( mFrameItems ) )
   {
     frame->update();
   }
@@ -456,7 +456,7 @@ void QgsLayoutMultiFrame::deleteFrames()
   ResizeMode bkResizeMode = mResizeMode;
   mResizeMode = UseExistingFrames;
   mLayout->undoStack()->blockCommands( true );
-  for ( QgsLayoutFrame *frame : qgis::as_const( mFrameItems ) )
+  for ( QgsLayoutFrame *frame : std::as_const( mFrameItems ) )
   {
     mLayout->removeLayoutItem( frame );
   }
@@ -550,7 +550,7 @@ bool QgsLayoutMultiFrame::readXml( const QDomElement &element, const QDomDocumen
       if ( !frameNodes.isEmpty() )
       {
         QDomElement frameItemElement = frameNodes.at( 0 ).toElement();
-        std::unique_ptr< QgsLayoutFrame > newFrame = qgis::make_unique< QgsLayoutFrame >( mLayout, this );
+        std::unique_ptr< QgsLayoutFrame > newFrame = std::make_unique< QgsLayoutFrame >( mLayout, this );
         newFrame->readXml( frameItemElement, doc, context );
         addFrame( newFrame.release(), false );
       }

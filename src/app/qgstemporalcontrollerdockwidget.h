@@ -23,10 +23,11 @@
 
 class QgsTemporalControllerWidget;
 class QgsTemporalController;
+class QgsMapCanvas;
 
 /**
  * \ingroup app
- * The QgsTemporalControllerDockWidget class
+ * \brief The QgsTemporalControllerDockWidget class
  *
  * \since QGIS 3.14
  */
@@ -46,6 +47,12 @@ class APP_EXPORT QgsTemporalControllerDockWidget : public QgsDockWidget
      * The dock widget retains ownership of the returned object.
      */
     QgsTemporalController *temporalController();
+
+    void setMapCanvas( QgsMapCanvas *canvas );
+
+  protected:
+
+    bool eventFilter( QObject *object, QEvent *event ) override;
 
   private slots:
 

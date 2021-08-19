@@ -22,7 +22,7 @@
 
 /**
  * \ingroup gui
- * An interface that may be implemented to allow plugins or scripts to temporarily block
+ * \brief An interface that may be implemented to allow plugins or scripts to temporarily block
  * the QGIS application from exiting.
  *
  * This interface allows plugins to implement custom logic to determine whether it is safe

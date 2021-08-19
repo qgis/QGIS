@@ -81,7 +81,7 @@ class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
     void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dock ) override;
     void removeDockWidget( QDockWidget *dock ) override;
     void activateTool( StandardTool tool ) override;
-
+    QgsLayoutDesignerInterface::ExportResults *lastExportResults() const override;
   public slots:
 
     void close() override;
@@ -202,6 +202,13 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
      * Toggles the visibility of the guide manager dock widget.
      */
     void showGuideDock( bool show );
+
+    /**
+     * Returns the results of the last export operation performed in the designer.
+     *
+     * May be NULLPTR if no export has been performed in the designer.
+     */
+    std::unique_ptr< QgsLayoutDesignerInterface::ExportResults > lastExportResults() const;
 
   public slots:
 
@@ -331,11 +338,23 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
      */
     void aboutToClose();
 
+    /**
+     * Emitted whenever a layout is exported from the layout designer.
+     *
+     */
+    void layoutExported();
+
+    /**
+     * Emitted when a \a map preview has been refreshed.
+     */
+    void mapPreviewRefreshed( QgsLayoutItemMap *map );
+
   protected:
 
     void closeEvent( QCloseEvent * ) override;
     void dropEvent( QDropEvent *event ) override;
     void dragEnterEvent( QDragEnterEvent *event ) override;
+    void showEvent( QShowEvent *event ) override;
 
   private slots:
 
@@ -397,6 +416,9 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     void updateWindowTitle();
 
     void backgroundTaskCountChanged( int total );
+    void onMapPreviewRefreshed();
+    void onItemAdded( QgsLayoutItem *item );
+    void updateDevicePixelFromScreen();
 
   private:
 
@@ -492,6 +514,12 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     QgsLayoutGuideWidget *mGuideWidget = nullptr;
 
     bool mIsExportingAtlas = false;
+    void storeExportResults( QgsLayoutExporter::ExportResult result, QgsLayoutExporter *exporter = nullptr );
+    std::unique_ptr< QgsLayoutDesignerInterface::ExportResults> mLastExportResults;
+    QMap< QString, QgsLabelingResults *> mLastExportLabelingResults;
+
+    double mScreenDpi = 96.0;
+    QMetaObject::Connection mScreenDpiChangedConnection;
 
     //! Save window state
     void saveWindowState();
@@ -514,11 +542,6 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     void showWmsPrintingWarning();
 
     void showSvgExportWarning();
-
-    //! True if the layout contains advanced effects, such as blend modes
-    bool requiresRasterization() const;
-
-    bool containsAdvancedEffects() const;
 
     //! Displays a warning because of incompatibility between blend modes and QPrinter
     void showRasterizationWarning();
@@ -546,7 +569,6 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
 
     //! Load predefined scales from the project's properties
     void loadPredefinedScalesFromProject();
-    QVector<double> predefinedScales() const;
 
     QgsLayoutAtlas *atlas();
 

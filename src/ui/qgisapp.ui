@@ -97,6 +97,7 @@
      </property>
      <addaction name="mActionMeasure"/>
      <addaction name="mActionMeasureArea"/>
+     <addaction name="mActionMeasureBearing"/>
      <addaction name="mActionMeasureAngle"/>
     </widget>
     <widget class="QMenu" name="mMenuDecorations">
@@ -174,6 +175,8 @@
      <addaction name="mActionNewVectorLayer"/>
      <addaction name="mActionNewSpatiaLiteLayer"/>
      <addaction name="mActionNewMemoryLayer"/>
+     <addaction name="mActionNewMeshLayer"/>
+     <addaction name="mActionNewGpxLayer"/>
      <addaction name="separator"/>
      <addaction name="mActionNewVirtualLayer"/>
     </widget>
@@ -188,19 +191,25 @@
      <addaction name="mActionAddPgLayer"/>
      <addaction name="mActionAddSpatiaLiteLayer"/>
      <addaction name="mActionAddMssqlLayer"/>
-     <addaction name="mActionAddDb2Layer"/>
      <addaction name="mActionAddOracleLayer"/>
      <addaction name="mActionAddHanaLayer"/>
      <addaction name="mActionAddVirtualLayer"/>
      <addaction name="mActionAddWmsLayer"/>
      <addaction name="mActionAddXyzLayer"/>
-     <addaction name="mActionAddAmsLayer"/>
      <addaction name="mActionAddLayerSeparator"/>
      <addaction name="mActionAddWcsLayer"/>
      <addaction name="mActionAddWfsLayer"/>
      <addaction name="mActionAddAfsLayer"/>
      <addaction name="mActionAddVectorTileLayer"/>
      <addaction name="mActionAddPointCloudLayer"/>
+    </widget>
+    <widget class="QMenu" name="mMenuFilterTable">
+     <property name="title">
+      <string>Filter Attribute Table</string>
+     </property>
+     <addaction name="mActionOpenTableSelected"/>
+     <addaction name="mActionOpenTableVisible"/>
+     <addaction name="mActionOpenTableEdited"/>
     </widget>
     <addaction name="mActionDataSourceManager"/>
     <addaction name="mNewLayerMenu"/>
@@ -215,6 +224,7 @@
     <addaction name="mActionPasteLayer"/>
     <addaction name="separator"/>
     <addaction name="mActionOpenTable"/>
+    <addaction name="mMenuFilterTable"/>
     <addaction name="mActionToggleEditing"/>
     <addaction name="mActionSaveLayerEdits"/>
     <addaction name="mActionAllEdits"/>
@@ -498,7 +508,6 @@
    <addaction name="mActionToggleEditing"/>
    <addaction name="mActionSaveLayerEdits"/>
    <addaction name="mActionAddFeature"/>
-   <addaction name="mActionVertexTool"/>
    <addaction name="mActionMultiEditAttributes"/>
    <addaction name="mActionDeleteSelected"/>
    <addaction name="mActionCutFeatures"/>
@@ -520,7 +529,6 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="mActionDigitizeWithCurve"/>
    <addaction name="mActionRotateFeature"/>
    <addaction name="mActionScaleFeature"/>
    <addaction name="mActionSimplifyFeature"/>
@@ -582,7 +590,6 @@
     <bool>true</bool>
    </attribute>
    <addaction name="mActionIdentify"/>
-   <addaction name="mActionOpenTable"/>
    <addaction name="mActionOpenFieldCalc"/>
    <addaction name="mActionStatisticalSummary"/>
    <addaction name="mActionMapTips"/>
@@ -740,6 +747,7 @@
    <addaction name="mActionNewVectorLayer"/>
    <addaction name="mActionNewSpatiaLiteLayer"/>
    <addaction name="mActionNewMemoryLayer"/>
+   <addaction name="mActionNewMeshLayer"/>
    <addaction name="separator"/>
    <addaction name="mActionNewVirtualLayer"/>
    <addaction name="separator"/>
@@ -764,6 +772,17 @@
    </property>
    <property name="toolTip">
     <string>Selection Toolbar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QToolBar" name="mMeshToolBar">
+   <property name="windowTitle">
+    <string>Mesh Digitizing Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -1099,7 +1118,14 @@
     <string>&amp;Vertex Tool (All Layers)</string>
    </property>
    <property name="toolTip">
-    <string>Vertex Tool (All Layers)</string>
+    <string>Vertex Tool — All Layers
+Manipulate vertices on any editable layer:
+Right click to lock on a feature.
+Click and drag to select vertices by rectangle.
+Alt+click to select vertices by polygon.
+Shift+click/drag to add vertices to selection.
+Ctrl+click/drag to remove vertices from selection.
+Shift+R to enable range selection.</string>
    </property>
   </action>
   <action name="mActionRotatePointSymbols">
@@ -1620,18 +1646,6 @@
     <string>Add MSSQL Spatial Layer…</string>
    </property>
   </action>
-  <action name="mActionAddDb2Layer">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddDb2Layer.svg</normaloff>:/images/themes/default/mActionAddDb2Layer.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Add DB2 Spatial Layer…</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+2</string>
-   </property>
-  </action>
   <action name="mActionAddOracleLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -1651,9 +1665,6 @@
    </property>
    <property name="text">
     <string>Add SAP HANA Spatial Layer…</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+G</string>
    </property>
   </action>
   <action name="mActionAddWmsLayer">
@@ -1678,6 +1689,39 @@
    </property>
    <property name="shortcut">
     <string>F6</string>
+   </property>
+  </action>
+  <action name="mActionOpenTableSelected">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionOpenTableSelected.svg</normaloff>:/images/themes/default/mActionOpenTableSelected.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Open Attribute Table (Selected Features)</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+F6</string>
+   </property>
+  </action>
+  <action name="mActionOpenTableVisible">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionOpenTableVisible.svg</normaloff>:/images/themes/default/mActionOpenTableVisible.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Open Attribute Table (Visible Features)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F6</string>
+   </property>
+  </action>
+  <action name="mActionOpenTableEdited">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionOpenTableEdited.svg</normaloff>:/images/themes/default/mActionOpenTableEdited.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Open Attribute Table (Edited and New Features)</string>
    </property>
   </action>
   <action name="mActionToggleEditing">
@@ -1974,10 +2018,10 @@
      <normaloff>:/images/themes/default/mActionMoveLabel.svg</normaloff>:/images/themes/default/mActionMoveLabel.svg</iconset>
    </property>
    <property name="text">
-    <string>Move Label and Diagram</string>
+    <string>Move Label, Diagram or Callout</string>
    </property>
    <property name="toolTip">
-    <string>Moves a Label or Diagram
+    <string>Move a Label, Diagram or Callout
 Acts on all layers.</string>
    </property>
   </action>
@@ -1993,7 +2037,7 @@ Acts on all layers.</string>
     <string>Rotate Label</string>
    </property>
    <property name="toolTip">
-    <string>Rotates a Label
+    <string>Rotate a Label
 Holding Ctrl (Cmd) while rotating increments by 15 deg.
 Acts on all layers.</string>
    </property>
@@ -2281,7 +2325,7 @@ Acts on all layers.</string>
    <property name="toolTip">
     <string>Pin/Unpin Labels and Diagrams
 Click or marquee on label/diagram to pin.
-Shift clicking or marqueeing unpins labels, while Ctrl (Cmd) toggles label state.
+Shift clicking or marqueeing unpins labels and diagrams, while Ctrl (Cmd) toggles their state.
 Acts on all layers.</string>
    </property>
   </action>
@@ -2294,11 +2338,11 @@ Acts on all layers.</string>
      <normaloff>:/images/themes/default/mActionShowPinnedLabels.svg</normaloff>:/images/themes/default/mActionShowPinnedLabels.svg</iconset>
    </property>
    <property name="text">
-    <string>Highlight Pinned Labels and Diagrams</string>
+    <string>Highlight Pinned Labels, Diagrams and Callouts</string>
    </property>
    <property name="toolTip">
-    <string>Highlight Pinned Labels and Diagrams
-Shows highlight rectangles around labels which are fixed in place, e.g. due to manual placement.</string>
+    <string>Highlight Pinned Labels, Diagrams and Callouts
+Shows highlight rectangles around labels, diagrams and callout points which are fixed in place, e.g. due to manual placement.</string>
    </property>
   </action>
   <action name="mActionNewBlankProject">
@@ -2508,7 +2552,8 @@ Acts on the currently active layer only.</string>
     <string>Scale Feature(s)</string>
    </property>
    <property name="toolTip">
-    <string>Scale Feature(s)</string>
+    <string>Scale Feature(s)
+Ctrl+click to set the base point.</string>
    </property>
   </action>
   <action name="mActionRotateFeature">
@@ -2523,7 +2568,9 @@ Acts on the currently active layer only.</string>
     <string>Rotate Feature(s)</string>
    </property>
    <property name="toolTip">
-    <string>Rotate Feature(s)</string>
+    <string>Rotate Feature(s)
+Ctrl+click to set the center of rotation.
+Shift+click to snap rotation to 45 degree steps.</string>
    </property>
   </action>
   <action name="mActionIncreaseBrightness">
@@ -2893,28 +2940,16 @@ Acts on the currently active layer only.</string>
     <string>Modify the Attributes of all Selected Features Simultaneously</string>
    </property>
   </action>
-  <action name="mActionAddAmsLayer">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddAmsLayer.svg</normaloff>:/images/themes/default/mActionAddAmsLayer.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Add Arc&amp;GIS Map Service Layer…</string>
-   </property>
-   <property name="toolTip">
-    <string>Add ArcGIS Map Service Layer</string>
-   </property>
-  </action>
   <action name="mActionAddAfsLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionAddAfsLayer.svg</normaloff>:/images/themes/default/mActionAddAfsLayer.svg</iconset>
    </property>
    <property name="text">
-    <string>Add Ar&amp;cGIS Feature Service Layer…</string>
+    <string>Add Ar&amp;cGIS REST Server Layer…</string>
    </property>
    <property name="toolTip">
-    <string>Add ArcGIS Feature Service Layer</string>
+    <string>Add ArcGIS REST Server Layer</string>
    </property>
   </action>
   <action name="mActionSelectByForm">
@@ -3302,7 +3337,14 @@ Acts on the currently active layer only.</string>
     <string>&amp;Vertex Tool (Current Layer)</string>
    </property>
    <property name="toolTip">
-    <string>Vertex Tool (Current Layer)</string>
+    <string>Vertex Tool — Current Layer
+Manipulate vertices on the active layer:
+Right click to lock on a feature.
+Click and drag to select vertices by rectangle.
+Alt+click to select vertices by polygon.
+Shift+click/drag to add vertices to selection.
+Ctrl+click/drag to remove vertices from selection.
+Shift+R to enable range selection.</string>
    </property>
   </action>
   <action name="mActionRectangle3PointsProjected">
@@ -3362,7 +3404,7 @@ Acts on the currently active layer only.</string>
     <string>Show Unplaced Labels</string>
    </property>
    <property name="toolTip">
-    <string>Toggles Display of Unplaced Labels
+    <string>Toggle Display of Unplaced Labels
 Shows placeholders for labels which could not be placed, e.g. due to overlaps with other map labels.</string>
    </property>
   </action>
@@ -3456,7 +3498,7 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
      <normaloff>:/images/themes/default/mActionDigitizeWithCurve.svg</normaloff>:/images/themes/default/mActionDigitizeWithCurve.svg</iconset>
    </property>
    <property name="text">
-    <string>Digitize with curve</string>
+    <string>Digitize with Curve</string>
    </property>
    <property name="toolTip">
     <string>Digitize with curve</string>
@@ -3474,9 +3516,64 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
     <string>Add Point Cloud Layer...</string>
    </property>
   </action>
+  <action name="mActionStreamDigitize">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionStreamingDigitize.svg</normaloff>:/images/themes/default/mActionStreamingDigitize.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Stream Digitizing</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggles stream digitizing mode</string>
+   </property>
+  </action>
+  <action name="mActionMeasureBearing">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionMeasureBearing.svg</normaloff>:/images/themes/default/mActionMeasureBearing.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Measure Bearing</string>
+   </property>
+   <property name="toolTip">
+    <string>Measure Bearing</string>
+   </property>
+  </action>
+  <action name="mActionNewMeshLayer">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/images/themes/default/mActionNewMeshLayer.svg</normaloff>:/images/themes/default/mActionNewMeshLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>New Mesh Layer…</string>
+   </property>
+   <property name="toolTip">
+    <string>New Mesh Layer</string>
+   </property>
+  </action>
+  <action name="mActionNewGpxLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionNewGpx.svg</normaloff>:/images/themes/default/mActionNewGpx.svg</iconset>
+   </property>
+   <property name="text">
+    <string>New GPX Layer…</string>
+   </property>
+   <property name="toolTip">
+    <string>New GPX Layer</string>
+   </property>
+  </action>
  </widget>
- <resources>
-  <include location="../../images/images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

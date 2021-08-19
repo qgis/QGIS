@@ -75,7 +75,7 @@ static int CPL_STDCALL _progress( double dfComplete, const char *pszMessage, voi
 static CPLErr rescalePreWarpChunkProcessor( void *pKern, void *pArg )
 {
   GDALWarpKernel *kern = ( GDALWarpKernel * ) pKern;
-  double cellsize = ( ( double * )pArg )[0];
+  const double cellsize = ( ( double * )pArg )[0];
 
   for ( int nBand = 0; nBand < kern->nBands; ++nBand )
   {
@@ -96,7 +96,7 @@ static CPLErr rescalePreWarpChunkProcessor( void *pKern, void *pArg )
 static CPLErr rescalePostWarpChunkProcessor( void *pKern, void *pArg )
 {
   GDALWarpKernel *kern = ( GDALWarpKernel * ) pKern;
-  double cellsize = ( ( double * )pArg )[1];
+  const double cellsize = ( ( double * )pArg )[1];
 
   for ( int nBand = 0; nBand < kern->nBands; ++nBand )
   {
@@ -260,7 +260,7 @@ bool QgsAlignRaster::checkInputParameters()
   {
     Item &r = mRasters[i];
 
-    RasterInfo info( r.inputFilename );
+    const RasterInfo info( r.inputFilename );
 
     QSizeF cs;
     QgsRectangle extent;
@@ -302,10 +302,10 @@ bool QgsAlignRaster::checkInputParameters()
   if ( !( mClipExtent[0] == 0 && mClipExtent[1] == 0 && mClipExtent[2] == 0 && mClipExtent[3] == 0 ) )
   {
     // extend clip extent to grid
-    double clipX0 = floor_with_tolerance( ( mClipExtent[0] - mGridOffsetX ) / mCellSizeX ) * mCellSizeX + mGridOffsetX;
-    double clipY0 = floor_with_tolerance( ( mClipExtent[1] - mGridOffsetY ) / mCellSizeY ) * mCellSizeY + mGridOffsetY;
-    double clipX1 = ceil_with_tolerance( ( mClipExtent[2] - clipX0 ) / mCellSizeX ) * mCellSizeX + clipX0;
-    double clipY1 = ceil_with_tolerance( ( mClipExtent[3] - clipY0 ) / mCellSizeY ) * mCellSizeY + clipY0;
+    const double clipX0 = floor_with_tolerance( ( mClipExtent[0] - mGridOffsetX ) / mCellSizeX ) * mCellSizeX + mGridOffsetX;
+    const double clipY0 = floor_with_tolerance( ( mClipExtent[1] - mGridOffsetY ) / mCellSizeY ) * mCellSizeY + mGridOffsetY;
+    const double clipX1 = ceil_with_tolerance( ( mClipExtent[2] - clipX0 ) / mCellSizeX ) * mCellSizeX + clipX0;
+    const double clipY1 = ceil_with_tolerance( ( mClipExtent[3] - clipY0 ) / mCellSizeY ) * mCellSizeY + clipY0;
     if ( clipX0 > finalExtent[0] ) finalExtent[0] = clipX0;
     if ( clipY0 > finalExtent[1] ) finalExtent[1] = clipY0;
     if ( clipX1 < finalExtent[2] ) finalExtent[2] = clipX1;
@@ -316,10 +316,10 @@ bool QgsAlignRaster::checkInputParameters()
   // output raster grid configuration (with no rotation/shear)
   // ... and raster width/height
 
-  double originX = ceil_with_tolerance( ( finalExtent[0] - mGridOffsetX ) / mCellSizeX ) * mCellSizeX + mGridOffsetX;
-  double originY = ceil_with_tolerance( ( finalExtent[1] - mGridOffsetY ) / mCellSizeY ) * mCellSizeY + mGridOffsetY;
-  int xSize = floor_with_tolerance( ( finalExtent[2] - originX ) / mCellSizeX );
-  int ySize = floor_with_tolerance( ( finalExtent[3] - originY ) / mCellSizeY );
+  const double originX = ceil_with_tolerance( ( finalExtent[0] - mGridOffsetX ) / mCellSizeX ) * mCellSizeX + mGridOffsetX;
+  const double originY = ceil_with_tolerance( ( finalExtent[1] - mGridOffsetY ) / mCellSizeY ) * mCellSizeY + mGridOffsetY;
+  const int xSize = floor_with_tolerance( ( finalExtent[2] - originX ) / mCellSizeX );
+  const int ySize = floor_with_tolerance( ( finalExtent[3] - originY ) / mCellSizeY );
 
   if ( xSize <= 0 || ySize <= 0 )
   {
@@ -382,7 +382,7 @@ void QgsAlignRaster::dump() const
   qDebug( "%6.2f %6.2f %6.2f", mGeoTransform[0], mGeoTransform[1], mGeoTransform[2] );
   qDebug( "%6.2f %6.2f %6.2f", mGeoTransform[3], mGeoTransform[4], mGeoTransform[5] );
 
-  QgsRectangle e = transform_to_extent( mGeoTransform, mXSize, mYSize );
+  const QgsRectangle e = transform_to_extent( mGeoTransform, mXSize, mYSize );
   qDebug( "extent %s", e.toString().toLatin1().constData() );
 }
 
@@ -396,8 +396,8 @@ int QgsAlignRaster::suggestedReferenceLayer() const
   // using WGS84 as a destination CRS... but maybe some projected CRS
   // would be a better a choice to more accurately compute areas?
   // (Why earth is not flat???)
-  QgsCoordinateReferenceSystem destCRS( QStringLiteral( "EPSG:4326" ) );
-  QString destWkt = destCRS.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL );
+  const QgsCoordinateReferenceSystem destCRS( QStringLiteral( "EPSG:4326" ) );
+  const QString destWkt = destCRS.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL );
 
   const auto constMRasters = mRasters;
   for ( const Item &raster : constMRasters )
@@ -405,7 +405,7 @@ int QgsAlignRaster::suggestedReferenceLayer() const
     if ( !suggestedWarpOutput( RasterInfo( raster.inputFilename ), destWkt, &cs ) )
       return false;
 
-    double cellArea = cs.width() * cs.height();
+    const double cellArea = cs.width() * cs.height();
     if ( cellArea < bestCellArea )
     {
       bestCellArea = cellArea;
@@ -428,7 +428,7 @@ bool QgsAlignRaster::createAndWarp( const Item &raster )
   }
 
   // Open the source file.
-  gdal::dataset_unique_ptr hSrcDS( GDALOpen( raster.inputFilename.toLocal8Bit().constData(), GA_ReadOnly ) );
+  const gdal::dataset_unique_ptr hSrcDS( GDALOpen( raster.inputFilename.toLocal8Bit().constData(), GA_ReadOnly ) );
   if ( !hSrcDS )
   {
     mErrorMessage = QObject::tr( "Unable to open input file: %1" ).arg( raster.inputFilename );
@@ -437,12 +437,12 @@ bool QgsAlignRaster::createAndWarp( const Item &raster )
 
   // Create output with same datatype as first input band.
 
-  int bandCount = GDALGetRasterCount( hSrcDS.get() );
-  GDALDataType eDT = GDALGetRasterDataType( GDALGetRasterBand( hSrcDS.get(), 1 ) );
+  const int bandCount = GDALGetRasterCount( hSrcDS.get() );
+  const GDALDataType eDT = GDALGetRasterDataType( GDALGetRasterBand( hSrcDS.get(), 1 ) );
 
   // Create the output file.
-  gdal::dataset_unique_ptr hDstDS( GDALCreate( hDriver, raster.outputFilename.toLocal8Bit().constData(), mXSize, mYSize,
-                                   bandCount, eDT, nullptr ) );
+  const gdal::dataset_unique_ptr hDstDS( GDALCreate( hDriver, raster.outputFilename.toLocal8Bit().constData(), mXSize, mYSize,
+                                         bandCount, eDT, nullptr ) );
   if ( !hDstDS )
   {
     mErrorMessage = QObject::tr( "Unable to create output file: %1" ).arg( raster.outputFilename );
@@ -532,7 +532,7 @@ bool QgsAlignRaster::suggestedWarpOutput( const QgsAlignRaster::RasterInfo &info
   if ( eErr != CE_None )
     return false;
 
-  QSizeF cs( std::fabs( adfDstGeoTransform[1] ), std::fabs( adfDstGeoTransform[5] ) );
+  const QSizeF cs( std::fabs( adfDstGeoTransform[1] ), std::fabs( adfDstGeoTransform[5] ) );
 
   if ( rect )
     *rect = QgsRectangle( extents[0], extents[1], extents[2], extents[3] );
@@ -593,7 +593,7 @@ void QgsAlignRaster::RasterInfo::dump() const
   qDebug( "w/h %d,%d", mXSize, mYSize );
   qDebug( "cell x/y %f,%f", cellSize().width(), cellSize().width() );
 
-  QgsRectangle r = extent();
+  const QgsRectangle r = extent();
   qDebug( "extent %s", r.toString().toLatin1().constData() );
 
   qDebug( "transform" );
@@ -606,13 +606,13 @@ double QgsAlignRaster::RasterInfo::identify( double mx, double my )
   GDALRasterBandH hBand = GDALGetRasterBand( mDataset.get(), 1 );
 
   // must not be rotated in order for this to work
-  int px = int( ( mx - mGeoTransform[0] ) / mGeoTransform[1] );
-  int py = int( ( my - mGeoTransform[3] ) / mGeoTransform[5] );
+  const int px = int( ( mx - mGeoTransform[0] ) / mGeoTransform[1] );
+  const int py = int( ( my - mGeoTransform[3] ) / mGeoTransform[5] );
 
   float *pafScanline = ( float * ) CPLMalloc( sizeof( float ) );
-  CPLErr err = GDALRasterIO( hBand, GF_Read, px, py, 1, 1,
-                             pafScanline, 1, 1, GDT_Float32, 0, 0 );
-  double value = err == CE_None ? pafScanline[0] : std::numeric_limits<double>::quiet_NaN();
+  const CPLErr err = GDALRasterIO( hBand, GF_Read, px, py, 1, 1,
+                                   pafScanline, 1, 1, GDT_Float32, 0, 0 );
+  const double value = err == CE_None ? pafScanline[0] : std::numeric_limits<double>::quiet_NaN();
   CPLFree( pafScanline );
 
   return value;

@@ -43,7 +43,7 @@ struct QgsVertexId;
 
 /**
  * \ingroup gui
- * A rubberband class for QgsAbstractGeometry (considering curved geometries).
+ * \brief A rubberband class for QgsAbstractGeometry (considering curved geometries).
 */
 class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
 {

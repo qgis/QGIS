@@ -21,7 +21,7 @@
 
 /**
  * \ingroup core
- * A numeric formatter which returns a text representation of a direction/bearing.
+ * \brief A numeric formatter which returns a text representation of a direction/bearing.
  *
  * \since QGIS 3.12
  */

@@ -18,20 +18,21 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QDir>
-#include <QString>
-#include <QRegExp>
-#include <QList>
 
 #include "qgslogger.h"
 #include "qgsmapsettings.h"
 #include "qgsdartmeasurement.h"
 
+#include <QDir>
+#include <QString>
+#include <QRegularExpression>
+#include <QList>
+
 class QImage;
 
 /**
  * \ingroup core
- * This is a helper class for unit tests that need to
+ * \brief This is a helper class for unit tests that need to
  * write an image and compare it to an expected result
  * or render time.
  */
@@ -98,9 +99,15 @@ class CORE_EXPORT QgsRenderChecker
      * suffixed).
      *
      * The path to the image will be constructed like this:
-     * controlImagePath() + '/' + control name + '/' + control name + '.png'
+     * controlImagePath() + '/' + control name + '/' + control name + '.' + extension ('png' by default)
      */
     void setControlName( const QString &name );
+
+    /**
+     * Sets file extension for the control image. By default it is "png"
+     * \since QGIS 3.20
+     */
+    void setControlExtension( const QString &extension ) { mControlExtension = extension; }
 
     /**
      * Sets the path prefix where the control images are kept.
@@ -171,6 +178,13 @@ class CORE_EXPORT QgsRenderChecker
     bool compareImages( const QString &testName, unsigned int mismatchCount = 0, const QString &renderedImageFile = QString() );
 
     /**
+     * Test using two arbitrary images at the specified paths for equality.
+     *
+     * \since QGIS 3.18
+     */
+    bool compareImages( const QString &testName, const QString &referenceImageFile, const QString &renderedImageFile, unsigned int mismatchCount = 0 );
+
+    /**
      * Gets a list of all the anomalies. An anomaly is a rendered difference
      * file where there is some red pixel content (indicating a render check
      * mismatch), but where the output was still acceptable. If the render
@@ -230,6 +244,7 @@ class CORE_EXPORT QgsRenderChecker
     int mMaxSizeDifferenceY = 0;
     int mElapsedTimeTarget = 0;
     QgsMapSettings mMapSettings;
+    QString mControlExtension = QStringLiteral( "png" );
     QString mControlPathPrefix;
     QString mControlPathSuffix;
     QVector<QgsDartMeasurement> mDashMessages;
@@ -248,7 +263,7 @@ class CORE_EXPORT QgsRenderChecker
 inline bool compareWkt( const QString &a, const QString &b, double tolerance = 0.000001 )
 {
   QgsDebugMsg( QStringLiteral( "a:%1 b:%2 tol:%3" ).arg( a, b ).arg( tolerance ) );
-  QRegExp re( "-?\\d+(?:\\.\\d+)?(?:[eE]\\d+)?" );
+  const QRegularExpression re( "-?\\d+(?:\\.\\d+)?(?:[eE]\\d+)?" );
 
   QString a0( a ), b0( b );
   a0.replace( re, QStringLiteral( "#" ) );
@@ -261,14 +276,21 @@ inline bool compareWkt( const QString &a, const QString &b, double tolerance = 0
 
   QList<double> al, bl;
 
-  int pos;
-  for ( pos = 0; ( pos = re.indexIn( a, pos ) ) != -1; pos += re.matchedLength() )
+  int pos = 0;
+  QRegularExpressionMatch match = re.match( a );
+  while ( match.hasMatch() )
   {
-    al << re.cap( 0 ).toDouble();
+    al << match.captured( 0 ).toDouble();
+    pos = match.capturedStart( 0 ) + match.capturedLength( 0 );
+    match = re.match( a, pos );
   }
-  for ( pos = 0; ( pos = re.indexIn( b, pos ) ) != -1; pos += re.matchedLength() )
+  pos = 0;
+  match = re.match( b );
+  while ( match.hasMatch() )
   {
-    bl << re.cap( 0 ).toDouble();
+    bl << match.captured( 0 ).toDouble();
+    pos = match.capturedStart( 0 ) + match.capturedLength( 0 );
+    match = re.match( b, pos );
   }
 
   if ( al.size() != bl.size() )

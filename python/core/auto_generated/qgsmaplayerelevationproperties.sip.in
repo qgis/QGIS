@@ -13,7 +13,7 @@
 
 class QgsMapLayerElevationProperties : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for storage of map layer elevation properties.
 
 :py:class:`QgsMapLayerElevationProperties` exposes user-configurable settings for controlling

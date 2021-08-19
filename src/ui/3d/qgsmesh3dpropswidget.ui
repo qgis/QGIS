@@ -89,6 +89,12 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
+           <property name="minimumSize">
+            <size>
+             <width>120</width>
+             <height>0</height>
+            </size>
+           </property>
           </widget>
          </item>
         </layout>
@@ -103,6 +109,12 @@
       </item>
       <item row="2" column="1" colspan="2">
        <widget class="QSlider" name="mLodSlider">
+        <property name="toolTip">
+         <string>Level of detail can only be set when mesh simplification is enabled (see Rendering tab in the Mesh Layer Properties)</string>
+        </property>
+        <property name="value">
+         <number>99</number>
+        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -117,14 +129,14 @@
       <string>Vertical Settings</string>
      </property>
      <layout class="QFormLayout" name="formLayout">
-      <item row="0" column="0">
+      <item row="2" column="0">
        <widget class="QLabel" name="label_4">
         <property name="text">
          <string>Vertical scale</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
+      <item row="2" column="1">
        <widget class="QgsDoubleSpinBox" name="mSpinBoxVerticaleScale">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
@@ -140,14 +152,14 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
+      <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
          <string>Dataset group for vertical value</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
+      <item row="0" column="1">
        <widget class="QComboBox" name="mComboBoxDatasetVertical">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
@@ -157,7 +169,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0" colspan="2">
+      <item row="1" column="0" colspan="2">
        <widget class="QCheckBox" name="mCheckBoxVerticalMagnitudeRelative">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
@@ -242,8 +254,8 @@
              <height>24</height>
             </size>
            </property>
-           <property name="text">
-            <string/>
+           <property name="toolTip">
+            <string>Load</string>
            </property>
            <property name="icon">
             <iconset resource="../../../images/images.qrc">
@@ -316,6 +328,12 @@
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>120</width>
+             <height>0</height>
+            </size>
            </property>
            <property name="text">
             <string/>
@@ -398,7 +416,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>40</height>
+       <height>0</height>
       </size>
      </property>
     </spacer>
@@ -406,6 +424,18 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsColorRampShaderWidget</class>
+   <extends>QWidget</extends>
+   <header>raster/qgscolorrampshaderwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
@@ -417,24 +447,13 @@
    <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorRampShaderWidget</class>
-   <extends>QWidget</extends>
-   <header>raster/qgscolorrampshaderwidget.h</header>
-   <container>1</container>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mChkSmoothTriangles</tabstop>
   <tabstop>mGroupBoxWireframe</tabstop>
   <tabstop>mSpinBoxWireframeLineWidth</tabstop>
   <tabstop>mColorButtonWireframe</tabstop>
+  <tabstop>mLodSlider</tabstop>
   <tabstop>mSpinBoxVerticaleScale</tabstop>
   <tabstop>mComboBoxDatasetVertical</tabstop>
   <tabstop>mCheckBoxVerticalMagnitudeRelative</tabstop>

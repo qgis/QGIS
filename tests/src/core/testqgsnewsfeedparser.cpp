@@ -75,10 +75,10 @@ void TestQgsNewsFeedParser::testFetch()
   const QString feedKey = QgsNewsFeedParser::keyForFeed( url.toString() );
   QgsSettings().remove( feedKey, QgsSettings::Core );
 
-  qint64 beforeTime = QDateTime::currentDateTimeUtc().toSecsSinceEpoch();
+  const qint64 beforeTime = QDateTime::currentDateTimeUtc().toSecsSinceEpoch();
 
   QgsNewsFeedParser parser( url );
-  QSignalSpy spy( &parser, &QgsNewsFeedParser::entryAdded );
+  const QSignalSpy spy( &parser, &QgsNewsFeedParser::entryAdded );
   QVERIFY( parser.entries().isEmpty() );
   QEventLoop loop;
   connect( &parser, &QgsNewsFeedParser::fetched, this, [ =, &loop, &entries ]( const  QList< QgsNewsFeedParser::Entry > &e )
@@ -111,12 +111,12 @@ void TestQgsNewsFeedParser::testFetch()
   entries.clear();
 
   // after a fetch, the current timestamp should be saved to avoid refetching these
-  uint after = QgsSettings().value( feedKey + "/lastFetchTime", 0, QgsSettings::Core ).toUInt();
+  const uint after = QgsNewsFeedParser::settingsFeedLastFetchTime.value( feedKey );
   QVERIFY( after >= beforeTime );
 
   // reset to a standard known last time
   QgsSettings().remove( feedKey, QgsSettings::Core );
-  QgsSettings().setValue( feedKey + "/lastFetchTime", 1457360008, QgsSettings::Core );
+  QgsNewsFeedParser::settingsFeedLastFetchTime.setValue( 1457360008, feedKey );
 
   // refetch, only new items should be fetched
   QgsNewsFeedParser parser2( url );
@@ -162,7 +162,7 @@ void TestQgsNewsFeedParser::testFetch()
   QCOMPARE( parser3.entries().at( 3 ).title, QStringLiteral( "QGIS Italian Meeting" ) );
 
   // dismiss imaginary entry
-  QSignalSpy dismissSpy( &parser3, &QgsNewsFeedParser::entryDismissed );
+  const QSignalSpy dismissSpy( &parser3, &QgsNewsFeedParser::entryDismissed );
   parser3.dismissEntry( -1 );
   QCOMPARE( dismissSpy.count(), 0 );
   QCOMPARE( parser3.entries().count(), 4 );
@@ -192,7 +192,7 @@ void TestQgsNewsFeedParser::testFetch()
   parser4.dismissAll();
   QCOMPARE( parser4.entries().count(), 0 );
 
-  QgsNewsFeedParser parser5( url );
+  const QgsNewsFeedParser parser5( url );
   QCOMPARE( parser5.entries().count(), 0 );
 }
 
@@ -216,7 +216,7 @@ void TestQgsNewsFeedParser::testAutoExpiry()
   parser.storeEntryInSettings( testEntry2 );
 
   // on relaunch, expired entries should be auto-pruned
-  QgsNewsFeedParser parser2( url );
+  const QgsNewsFeedParser parser2( url );
   QCOMPARE( parser2.entries().count(), 1 );
   QCOMPARE( parser2.entries().at( 0 ).title, QStringLiteral( "test entry" ) );
   QVERIFY( !parser2.entries().at( 0 ).expiry.isValid() );
@@ -230,10 +230,10 @@ void TestQgsNewsFeedParser::testLang()
   const QString feedKey = QgsNewsFeedParser::keyForFeed( url.toString() );
   QgsSettings().remove( feedKey, QgsSettings::Core );
   // force to Spanish language
-  QgsSettings().setValue( QStringLiteral( "%1/lang" ).arg( feedKey ), QStringLiteral( "es" ), QgsSettings::Core );
+  QgsNewsFeedParser::settingsFeedLanguage.setValue( QStringLiteral( "es" ), feedKey );
 
   QgsNewsFeedParser parser( url );
-  QSignalSpy spy( &parser, &QgsNewsFeedParser::entryAdded );
+  const QSignalSpy spy( &parser, &QgsNewsFeedParser::entryAdded );
   QVERIFY( parser.entries().isEmpty() );
   QEventLoop loop;
   connect( &parser, &QgsNewsFeedParser::fetched, this, [ =, &loop, &entries ]( const  QList< QgsNewsFeedParser::Entry > &e )
@@ -256,11 +256,11 @@ void TestQgsNewsFeedParser::testGeoFencing()
   const QUrl url( QUrl::fromLocalFile( QStringLiteral( TEST_DATA_DIR ) + "/newsfeed/feed" ) );
   const QString feedKey = QgsNewsFeedParser::keyForFeed( url.toString() );
   QgsSettings().remove( feedKey, QgsSettings::Core );
-  QgsSettings().setValue( QStringLiteral( "%1/latitude" ).arg( feedKey ), 37.2343, QgsSettings::Core );
-  QgsSettings().setValue( QStringLiteral( "%1/longitude" ).arg( feedKey ), -115.8067, QgsSettings::Core );
+  QgsNewsFeedParser::settingsFeedLatitude.setValue( 37.2343, feedKey );
+  QgsNewsFeedParser::settingsFeedLongitude.setValue( -115.8067, feedKey );
 
   QgsNewsFeedParser parser( url );
-  QSignalSpy spy( &parser, &QgsNewsFeedParser::entryAdded );
+  const QSignalSpy spy( &parser, &QgsNewsFeedParser::entryAdded );
   QVERIFY( parser.entries().isEmpty() );
   QEventLoop loop;
   connect( &parser, &QgsNewsFeedParser::fetched, this, [ =, &loop, &entries ]( const  QList< QgsNewsFeedParser::Entry > &e )
@@ -285,7 +285,7 @@ void TestQgsNewsFeedParser::testModel()
   QgsSettings().remove( feedKey, QgsSettings::Core );
 
   QgsNewsFeedParser parser( url );
-  QgsNewsFeedModel model( &parser );
+  const QgsNewsFeedModel model( &parser );
   QCOMPARE( model.rowCount(), 0 );
 
   QEventLoop loop;
@@ -348,7 +348,7 @@ void TestQgsNewsFeedParser::testModel()
 
   // construct a new model/parser -- should initially have stored entries
   QgsNewsFeedParser parser2( url );
-  QgsNewsFeedModel model2( &parser2 );
+  const QgsNewsFeedModel model2( &parser2 );
   QCOMPARE( model2.rowCount(), 4 );
   QCOMPARE( model2.data( model2.index( 0, 0, QModelIndex() ), QgsNewsFeedModel::Title ).toString(), QStringLiteral( "QGIS acquired by ESRI" ) );
   QCOMPARE( model2.data( model2.index( 1, 0, QModelIndex() ), QgsNewsFeedModel::Title ).toString(), QStringLiteral( "Next Microsoft Windows code name revealed" ) );
@@ -364,7 +364,7 @@ void TestQgsNewsFeedParser::testProxyModel()
   QgsSettings().remove( feedKey, QgsSettings::Core );
 
   QgsNewsFeedParser parser( url );
-  QgsNewsFeedProxyModel model( &parser );
+  const QgsNewsFeedProxyModel model( &parser );
   QCOMPARE( model.rowCount(), 0 );
 
   QEventLoop loop;
@@ -403,7 +403,7 @@ void TestQgsNewsFeedParser::testProxyModel()
 
   // construct a new model/parser -- should initially have stored entries
   QgsNewsFeedParser parser2( url );
-  QgsNewsFeedProxyModel model2( &parser2 );
+  const QgsNewsFeedProxyModel model2( &parser2 );
   QCOMPARE( model2.rowCount(), 4 );
   QCOMPARE( model2.data( model2.index( 0, 0, QModelIndex() ), QgsNewsFeedModel::Title ).toString(), QStringLiteral( "QGIS core will be rewritten in Rust" ) );
   QCOMPARE( model2.data( model2.index( 1, 0, QModelIndex() ), QgsNewsFeedModel::Title ).toString(), QStringLiteral( "Next Microsoft Windows code name revealed" ) );

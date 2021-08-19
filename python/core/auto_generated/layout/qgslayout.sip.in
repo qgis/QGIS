@@ -10,7 +10,7 @@
 
 class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoObjectInterface
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for layouts, which can contain items such as maps, labels, scalebars, etc.
 
 While the raw QGraphicsScene API can be used to render the contents of a :py:class:`QgsLayout`
@@ -614,6 +614,7 @@ should be canceled.
 .. versionadded:: 3.10
 %End
 
+
   public slots:
 
     void refresh();
@@ -662,6 +663,13 @@ and updated.
 Emitted whenever the ``total`` number of background tasks running in items from the layout changes.
 
 .. versionadded:: 3.10
+%End
+
+    void itemAdded( QgsLayoutItem *item );
+%Docstring
+Emitted when an ``item`` was added to the layout.
+
+.. versionadded:: 3.20
 %End
 
 };

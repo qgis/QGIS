@@ -30,7 +30,7 @@ namespace QgsWmts
   /**
    * Create OperationsMetadata element for get capabilities document
    */
-  QDomElement getOperationsMetadataElement( QDomDocument &doc, const QgsProject *project, const QgsServerRequest &request );
+  QDomElement getOperationsMetadataElement( QDomDocument &doc, const QgsProject *project, const QgsServerRequest &request, const QgsServerSettings *settings );
 
   /**
    * Create ServiceProvider element for get capabilities document

@@ -638,7 +638,7 @@ int QgsGrassTools::debug( QStandardItem *item )
     }
     QgsGrassModule *module = new QgsGrassModule( this, name, mIface, false );
     QgsDebugMsg( QString( "module: %1 errors: %2" ).arg( name ).arg( module->errors().size() ) );
-    Q_FOREACH ( QString error, module->errors() )
+    for ( QString error : module->errors() )
     {
       // each error may have multiple rows and may be html formatted (<br>)
       label += "\n  ERROR:\t" + error.replace( QLatin1String( "<br>" ), QLatin1String( "\n" ) ).replace( QLatin1String( "\n" ), QLatin1String( "\n\t" ) );

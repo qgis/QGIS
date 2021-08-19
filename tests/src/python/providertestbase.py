@@ -83,7 +83,7 @@ class ProviderTestCase(FeatureSourceTestCase):
 
         if self.compiled:
             # Check compilation status
-            it = source.getFeatures(QgsFeatureRequest().setFilterExpression(expression))
+            it = source.getFeatures(QgsFeatureRequest().setFilterExpression(expression).setFlags(QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation))
 
             if expression in self.uncompiledFilters():
                 self.assertEqual(it.compileStatus(), QgsAbstractFeatureIterator.NoCompilation)
@@ -104,7 +104,7 @@ class ProviderTestCase(FeatureSourceTestCase):
 
         request = QgsFeatureRequest()
         request.setExpressionContext(context)
-        request.setFilterExpression('"pk" = attribute(@parent, \'pk\')')
+        request.setFilterExpression('"pk" = attribute(@parent, \'pk\')').setFlags(QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation)
         request.setLimit(1)
 
         values = [f[self.pk_name] for f in self.vl.getFeatures(request)]
@@ -1095,12 +1095,12 @@ class ProviderTestCase(FeatureSourceTestCase):
                 '15 NOT LIKE \'5\'',
                 '15 NOT ILIKE \'5\'',
                 '5 ~ \'5\''):
-            iterator = self.source.getFeatures(QgsFeatureRequest().setFilterExpression('5 LIKE \'5\''))
+            iterator = self.source.getFeatures(QgsFeatureRequest().setFilterExpression('5 LIKE \'5\'').setFlags(QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation))
             count = len([f for f in iterator])
             self.assertEqual(count, 5)
             self.assertFalse(iterator.compileFailed())
             if self.enableCompiler():
-                iterator = self.source.getFeatures(QgsFeatureRequest().setFilterExpression('5 LIKE \'5\''))
+                iterator = self.source.getFeatures(QgsFeatureRequest().setFilterExpression('5 LIKE \'5\'').setFlags(QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation))
                 self.assertEqual(count, 5)
                 self.assertFalse(iterator.compileFailed())
                 self.disableCompiler()

@@ -21,6 +21,9 @@
 #include "qgsdataprovider.h"
 #include "qgscustomdrophandler.h"
 #include "qgsdataitemguiprovider.h"
+#include "qgslayeritem.h"
+#include "qgsprojectitem.h"
+#include "qgsdatacollectionitem.h"
 
 /**
  * Custom data item for QLR files.
@@ -34,6 +37,7 @@ class QgsQlrDataItem : public QgsLayerItem
     QgsQlrDataItem( QgsDataItem *parent, const QString &name, const QString &path );
     bool hasDragEnabled() const override;
     QgsMimeDataUtils::Uri mimeUri() const override;
+    QgsMimeDataUtils::UriList mimeUris() const override;
 
 };
 

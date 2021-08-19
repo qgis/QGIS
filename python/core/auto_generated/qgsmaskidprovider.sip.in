@@ -10,7 +10,9 @@
 
 class QgsMaskIdProvider
 {
-%Docstring
+%Docstring(signature="appended")
+
+This class allows the creation of mask ids based on the different label layers and to give a mask id from a label layer.
 
 Some rendering operations may need multiple mask images. This is the case for label rendering in which we can
 have different mask images: one different for each labeling rule for instance.
@@ -18,8 +20,6 @@ Some label layers may need to share their mask images, some other need to have d
 Label layers share the same mask image if the set of symbol layers they mask is the same.
 
 A "mask id" is then associated to each label layer. They are contiguous integer numbers starting at 0.
-
-This class allows the creation of mask ids based on the different label layers and to give a mask id from a label layer.
 
 .. versionadded:: 3.12
 %End

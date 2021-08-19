@@ -32,7 +32,7 @@ class QgsGeoPdfLayerFilteredTreeModel;
 
 /**
  * \ingroup gui
- * A dialog for customizing the properties of an exported PDF file from a layout.
+ * \brief A dialog for customizing the properties of an exported PDF file from a layout.
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12

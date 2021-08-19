@@ -1,58 +1,24 @@
 ############################################################
 # sources
 set(QGIS_QUICK_GUI_MOC_HDRS
-  attributes/qgsquickattributeformmodel.h
-  attributes/qgsquickattributeformmodelbase.h
-  attributes/qgsquickattributemodel.h
-  attributes/qgsquicksubmodel.h
-
-  qgsquickfeaturelayerpair.h
   qgsquickcoordinatetransformer.h
-  qgsquickfeaturehighlight.h
-  qgsquickidentifykit.h
   qgsquickmapcanvasmap.h
   qgsquickmapsettings.h
   qgsquickmaptransform.h
-  qgsquickmessagelogmodel.h
-  qgsquickpositionkit.h
-  qgsquickscalebarkit.h
-  qgsquicksimulatedpositionsource.h
   qgsquickutils.h
-  qgsquickfeatureslistmodel.h
-)
-
-set(QGIS_QUICK_GUI_HDRS
-  qgsquickhighlightsgnode.h
 )
 
 set(QGIS_QUICK_GUI_SRC
-  attributes/qgsquickattributeformmodel.cpp
-  attributes/qgsquickattributeformmodelbase.cpp
-  attributes/qgsquickattributemodel.cpp
-  attributes/qgsquicksubmodel.cpp
-
-  qgsquickfeaturelayerpair.cpp
   qgsquickcoordinatetransformer.cpp
-  qgsquickfeaturehighlight.cpp
-  qgsquickhighlightsgnode.cpp
-  qgsquickidentifykit.cpp
   qgsquickmapcanvasmap.cpp
   qgsquickmapsettings.cpp
   qgsquickmaptransform.cpp
-  qgsquickmessagelogmodel.cpp
-  qgsquickpositionkit.cpp
-  qgsquickscalebarkit.cpp
-  qgsquicksimulatedpositionsource.cpp
   qgsquickutils.cpp
-  qgsquickfeatureslistmodel.cpp
 )
 
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_CURRENT_SOURCE_DIR}/attributes
   ${CMAKE_CURRENT_BINARY_DIR}
-
-
 )
 
 include_directories(SYSTEM
@@ -68,11 +34,14 @@ include_directories(SYSTEM
   ${QTKEYCHAIN_INCLUDE_DIR}
 )
 
-set(QGIS_QUICK_GUI_IMAGE_RCCS ./images/images.qrc)
-
 ############################################################
 # qgis_quick shared library
-QT5_WRAP_CPP(QGIS_QUICK_GUI_MOC_SRCS ${QGIS_QUICK_GUI_MOC_HDRS})
+if (WITH_QT6)
+  QT6_WRAP_CPP(QGIS_QUICK_GUI_MOC_SRCS ${QGIS_QUICK_GUI_MOC_HDRS})
+else()
+  QT5_WRAP_CPP(QGIS_QUICK_GUI_MOC_SRCS ${QGIS_QUICK_GUI_MOC_HDRS})
+endif()
+
 if(MSVC)
   set_source_files_properties(${QGIS_QUICK_GUI_MOC_SRCS} PROPERTIES COMPILE_FLAGS "/wd4512 /wd4996" )
 else()
@@ -80,14 +49,26 @@ else()
 endif()
 
 add_library(qgis_quick ${LIBRARY_TYPE}
-    ${QGIS_QUICK_GUI_IMAGE_RCCS}
     ${QGIS_QUICK_GUI_SRC}
     ${QGIS_QUICK_GUI_MOC_HDRS}
     ${QGIS_QUICK_GUI_MOC_SRCS}
     ${QGIS_QUICK_GUI_HDRS})
-target_link_libraries(qgis_quick Qt5::Quick Qt5::Qml Qt5::Xml Qt5::Concurrent Qt5::Positioning qgis_core)
+
+# require c++17
+target_compile_features(qgis_quick PRIVATE cxx_std_17)
+
+if (WITH_QT6)
+  target_link_libraries(qgis_quick Qt6::Quick Qt6::Qml Qt6::Xml Qt6::Concurrent Qt6::Positioning qgis_core)
+else()
+  target_link_libraries(qgis_quick Qt5::Quick Qt5::Qml Qt5::Xml Qt5::Concurrent Qt5::Positioning qgis_core)
+endif()
+
 if(CMAKE_SYSTEM_NAME STREQUAL "Android")
-  target_link_libraries(qgis_quick Qt5::AndroidExtras)
+  if (WITH_QT6)
+    target_link_libraries(qgis_quick Qt6::AndroidExtras)
+  else()
+    target_link_libraries(qgis_quick Qt5::AndroidExtras)
+  endif()
 endif()
 target_compile_definitions(qgis_quick PRIVATE "-DQT_NO_FOREACH")
 

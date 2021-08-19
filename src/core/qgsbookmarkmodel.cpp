@@ -49,7 +49,7 @@ QVariant QgsBookmarkManagerModel::data( const QModelIndex &index, int role ) con
   if ( !index.isValid() )
     return QVariant();
 
-  QgsBookmark b = bookmarkForIndex( index );
+  const QgsBookmark b = bookmarkForIndex( index );
   const int managerCount = mManager->bookmarks().count();
 
   switch ( role )
@@ -217,7 +217,7 @@ bool QgsBookmarkManagerModel::setData( const QModelIndex &index, const QVariant 
 bool QgsBookmarkManagerModel::insertRows( int, int count, const QModelIndex &parent )
 {
   // append
-  int oldCount = mManager->bookmarks().count();
+  const int oldCount = mManager->bookmarks().count();
   beginInsertRows( parent, oldCount, oldCount + count );
   bool result = true;
   for ( int i = 0; i < count; ++i )
@@ -236,8 +236,8 @@ bool QgsBookmarkManagerModel::removeRows( int row, int count, const QModelIndex 
 {
   beginRemoveRows( parent, row, row + count );
 
-  QList< QgsBookmark > appBookmarks = mManager->bookmarks();
-  QList< QgsBookmark > projectBookmarks = mProjectManager->bookmarks();
+  const QList< QgsBookmark > appBookmarks = mManager->bookmarks();
+  const QList< QgsBookmark > projectBookmarks = mProjectManager->bookmarks();
   for ( int r = row + count - 1; r >= row; --r )
   {
     if ( r >= appBookmarks.count() )
@@ -303,7 +303,7 @@ void QgsBookmarkManagerModel::bookmarkAboutToBeRemoved( const QString &id )
 
   QgsBookmarkManager *manager = qobject_cast< QgsBookmarkManager * >( sender() );
 
-  QList< QgsBookmark > bookmarks = manager->bookmarks();
+  const QList< QgsBookmark > bookmarks = manager->bookmarks();
   bool found = false;
   int i = 0;
   for ( i = 0; i < bookmarks.count(); ++i )
@@ -338,7 +338,7 @@ void QgsBookmarkManagerModel::bookmarkChanged( const QString &id )
     return;
 
   QgsBookmarkManager *manager = qobject_cast< QgsBookmarkManager * >( sender() );
-  QList< QgsBookmark > bookmarks = manager->bookmarks();
+  const QList< QgsBookmark > bookmarks = manager->bookmarks();
   bool found = false;
   int i = 0;
   for ( i = 0; i < bookmarks.count(); ++i )

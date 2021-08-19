@@ -127,7 +127,7 @@ struct QgsPostgresLayerProperty
   {
     QString typeString;
     const auto constTypes = types;
-    for ( QgsWkbTypes::Type type : constTypes )
+    for ( const QgsWkbTypes::Type type : constTypes )
     {
       if ( !typeString.isEmpty() )
         typeString += '|';
@@ -135,7 +135,7 @@ struct QgsPostgresLayerProperty
     }
     QString sridString;
     const auto constSrids = srids;
-    for ( int srid : constSrids )
+    for ( const int srid : constSrids )
     {
       if ( !sridString.isEmpty() )
         sridString += '|';
@@ -211,6 +211,10 @@ class QgsPostgresConn : public QObject
      *        An assertion guards against such programmatic error.
      */
     static QgsPostgresConn *connectDb( const QString &connInfo, bool readOnly, bool shared = true, bool transaction = false );
+
+
+    QgsPostgresConn( const QString &conninfo, bool readOnly, bool shared, bool transaction );
+    ~QgsPostgresConn() override;
 
     void ref();
     void unref();
@@ -403,8 +407,6 @@ class QgsPostgresConn : public QObject
     void unlock() { mLock.unlock(); }
 
   private:
-    QgsPostgresConn( const QString &conninfo, bool readOnly, bool shared, bool transaction );
-    ~QgsPostgresConn() override;
 
     int mRef;
     int mOpenCursors;
@@ -476,7 +478,11 @@ class QgsPostgresConn : public QObject
 
     bool mTransaction;
 
-    mutable QMutex mLock;
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    mutable QMutex mLock { QMutex::Recursive };
+#else
+    mutable QRecursiveMutex mLock;
+#endif
 };
 
 // clazy:excludeall=qstring-allocations

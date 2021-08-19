@@ -11,6 +11,9 @@
 
 class QgsRasterMatrix
 {
+%Docstring(signature="appended")
+Represents a matrix in a raster calculator operation.
+%End
 
 %TypeHeaderCode
 #include "qgsrastermatrix.h"

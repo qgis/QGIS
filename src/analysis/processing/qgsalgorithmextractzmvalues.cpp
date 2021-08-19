@@ -127,7 +127,7 @@ QgsFeatureList QgsExtractZMValuesAlgorithmBase::processFeature( const QgsFeature
     }
     stat.finalize();
 
-    for ( QgsStatisticalSummary::Statistic s : qgis::as_const( mSelectedStats ) )
+    for ( QgsStatisticalSummary::Statistic s : std::as_const( mSelectedStats ) )
       attrs.append( stat.statistic( s ) );
   }
   f.setAttributes( attrs );

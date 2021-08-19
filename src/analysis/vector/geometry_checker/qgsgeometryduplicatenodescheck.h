@@ -22,6 +22,7 @@
 
 /**
  * \ingroup analysis
+ * \brief A duplicate nodes check.
  */
 class ANALYSIS_EXPORT QgsGeometryDuplicateNodesCheck : public QgsGeometryCheck
 {

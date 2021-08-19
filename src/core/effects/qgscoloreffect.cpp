@@ -18,6 +18,7 @@
 #include "qgscoloreffect.h"
 #include "qgsimageoperation.h"
 #include "qgssymbollayerutils.h"
+#include <algorithm>
 
 QgsPaintEffect *QgsColorEffect::create( const QVariantMap &map )
 {
@@ -117,6 +118,16 @@ QgsColorEffect *QgsColorEffect::clone() const
 {
   QgsColorEffect *newEffect = new QgsColorEffect( *this );
   return newEffect;
+}
+
+void QgsColorEffect::setBrightness( int brightness )
+{
+  mBrightness = std::clamp( brightness, -255, 255 );
+}
+
+void QgsColorEffect::setContrast( int contrast )
+{
+  mContrast = std::clamp( contrast, -100, 100 );
 }
 
 void QgsColorEffect::setColorizeColor( const QColor &colorizeColor )

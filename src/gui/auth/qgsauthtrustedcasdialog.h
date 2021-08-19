@@ -30,7 +30,7 @@ class QgsMessageBar;
 
 /**
  * \ingroup gui
- * Widget for listing trusted Certificate (Intermediate) Authorities used in secure connections
+ * \brief Widget for listing trusted Certificate (Intermediate) Authorities used in secure connections
  */
 class GUI_EXPORT QgsAuthTrustedCAsDialog : public QDialog, private Ui::QgsAuthTrustedCAsDialog
 {

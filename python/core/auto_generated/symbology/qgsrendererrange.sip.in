@@ -24,6 +24,7 @@ class QgsRendererRange
 %Docstring
 Constructor for QgsRendererRange.
 %End
+    ~QgsRendererRange();
 
     QgsRendererRange( const QgsClassificationRange &range, QgsSymbol *symbol /Transfer/, bool render = true );
 %Docstring
@@ -76,7 +77,7 @@ typedef QList<QgsRendererRange> QgsRangeList;
 
 class QgsRendererRangeLabelFormat /Deprecated/
 {
-%Docstring
+%Docstring(signature="appended")
 
 .. versionadded:: 2.6
 

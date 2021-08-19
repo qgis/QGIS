@@ -262,7 +262,7 @@ class TestQgsTaskManager(unittest.TestCase):
         self.assertEqual(result_value, 5)
         self.assertEqual(result_statement, 'whoo')
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Test is unstable on Travis')
+    @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'), 'Test is unstable on Travis')
     def testTaskFromFunctionWithSubTaskCompletedIsCalledOnce(self):  # spellok
         """ test that when a parent task has subtasks it does emit taskCompleted only once"""
 

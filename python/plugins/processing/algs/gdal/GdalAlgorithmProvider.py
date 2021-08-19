@@ -209,7 +209,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             self.addAlgorithm(a)
 
     def supportedOutputRasterLayerExtensions(self):
-        return GdalUtils.getSupportedRasterExtensions()
+        return GdalUtils.getSupportedOutputRasterExtensions()
 
     def supportsNonFileBasedOutput(self):
         """

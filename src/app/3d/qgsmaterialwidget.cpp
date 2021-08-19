@@ -23,7 +23,7 @@
 
 QgsMaterialWidget::QgsMaterialWidget( QWidget *parent )
   : QWidget( parent )
-  , mCurrentSettings( qgis::make_unique< QgsPhongMaterialSettings >() )
+  , mCurrentSettings( std::make_unique< QgsPhongMaterialSettings >() )
   , mTechnique( QgsMaterialSettingsRenderingTechnique::Triangles )
 {
   setupUi( this );

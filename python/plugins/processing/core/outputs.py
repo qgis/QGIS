@@ -52,7 +52,7 @@ def getOutputFromString(s):
             return clazz(*params)
         else:
             tokens = s.split("=")
-            if not tokens[1].lower()[:len('output')] == 'output':
+            if tokens[1].lower()[: len('output')] != 'output':
                 return None
 
             name = tokens[0]

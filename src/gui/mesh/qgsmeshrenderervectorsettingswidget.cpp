@@ -24,6 +24,20 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
 {
   setupUi( this );
 
+  QVector<QgsDoubleSpinBox *> widgets;
+  widgets << mMinMagSpinBox << mMaxMagSpinBox
+          << mHeadWidthSpinBox << mHeadLengthSpinBox
+          << mMinimumShaftSpinBox << mMaximumShaftSpinBox
+          << mScaleShaftByFactorOfSpinBox << mShaftLengthSpinBox;
+
+  // Setup defaults and clear values for spin boxes
+  for ( const auto &widget : std::as_const( widgets ) )
+  {
+    widget->setClearValueMode( QgsDoubleSpinBox::ClearValueMode::MinimumValue );
+    widget->setSpecialValueText( QString( ) );
+    widget->setValue( widget->minimum() );
+  }
+
   mShaftLengthComboBox->setCurrentIndex( -1 );
 
   mColoringMethodComboBox->addItem( tr( "Single Color" ), QgsInterpolatedLineColor::SingleColor );
@@ -36,22 +50,22 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
   mTracesMaxLengthSpinBox->setClearValue( 100.0 );
 
   connect( mColorWidget, &QgsColorButton::colorChanged, this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
-  connect( mColoringMethodComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
+  connect( mColoringMethodComboBox, qOverload<int>( &QComboBox::currentIndexChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::onColoringMethodChanged );
   connect( mColorRampShaderWidget, &QgsColorRampShaderWidget::widgetChanged,
            this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
-  connect( mColorRampShaderMinimumEditLine, &QLineEdit::textEdited,
+  connect( mColorRampShaderMinimumSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::onColorRampMinMaxChanged );
-  connect( mColorRampShaderMaximumEditLine, &QLineEdit::textEdited,
+  connect( mColorRampShaderMaximumSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::onColorRampMinMaxChanged );
 
-  connect( mLineWidthSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+  connect( mLineWidthSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 
-  connect( mShaftLengthComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
+  connect( mShaftLengthComboBox, qOverload<int>( &QComboBox::currentIndexChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 
-  connect( mShaftLengthComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
+  connect( mShaftLengthComboBox, qOverload<int>( &QComboBox::currentIndexChanged ),
            mShaftOptionsStackedWidget, &QStackedWidget::setCurrentIndex );
 
   connect( mDisplayVectorsOnGridGroupBox, &QGroupBox::toggled, this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
@@ -60,41 +74,35 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
 
   onColoringMethodChanged();
 
-  QVector<QLineEdit *> widgets;
-  widgets << mMinMagLineEdit << mMaxMagLineEdit
-          << mHeadWidthLineEdit << mHeadLengthLineEdit
-          << mMinimumShaftLineEdit << mMaximumShaftLineEdit
-          << mScaleShaftByFactorOfLineEdit << mShaftLengthLineEdit;
-
-  for ( auto widget : widgets )
+  for ( const auto &widget : std::as_const( widgets ) )
   {
-    connect( widget, &QLineEdit::textChanged, this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
+    connect( widget, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
   }
 
-  connect( mXSpacingSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ), this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
-  connect( mYSpacingSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ), this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
+  connect( mXSpacingSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
+  connect( mYSpacingSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 
-  connect( mSymbologyVectorComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
+  connect( mSymbologyVectorComboBox, qOverload<int>( &QComboBox::currentIndexChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::onSymbologyChanged );
   onSymbologyChanged( 0 );
 
-  connect( mSymbologyVectorComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
+  connect( mSymbologyVectorComboBox, qOverload<int>( &QComboBox::currentIndexChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 
-  connect( mStreamlinesSeedingMethodComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
+  connect( mStreamlinesSeedingMethodComboBox, qOverload<int>( &QComboBox::currentIndexChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::onStreamLineSeedingMethodChanged );
   onStreamLineSeedingMethodChanged( 0 );
 
-  connect( mStreamlinesSeedingMethodComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
+  connect( mStreamlinesSeedingMethodComboBox, qOverload<int>( &QComboBox::currentIndexChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 
-  connect( mStreamlinesDensitySpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+  connect( mStreamlinesDensitySpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 
-  connect( mTracesMaxLengthSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+  connect( mTracesMaxLengthSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 
-  connect( mTracesParticlesCountSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ),
+  connect( mTracesParticlesCountSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 
   mTracesTailLengthMapUnitWidget->setUnits( QgsUnitTypes::RenderUnitList()
@@ -129,17 +137,17 @@ QgsMeshRendererVectorSettings QgsMeshRendererVectorSettingsWidget::settings() co
   settings.setColorRampShader( mColorRampShaderWidget->shader() );
 
   // filter by magnitude
-  double val = filterValue( mMinMagLineEdit->text(), -1 );
+  double val = filterValue( mMinMagSpinBox, -1 );
   settings.setFilterMin( val );
 
-  val = filterValue( mMaxMagLineEdit->text(), -1 );
+  val = filterValue( mMaxMagSpinBox, -1 );
   settings.setFilterMax( val );
 
   // arrow head
-  val = filterValue( mHeadWidthLineEdit->text(), arrowSettings.arrowHeadWidthRatio() * 100.0 );
+  val = filterValue( mHeadWidthSpinBox, arrowSettings.arrowHeadWidthRatio() * 100.0 );
   arrowSettings.setArrowHeadWidthRatio( val / 100.0 );
 
-  val = filterValue( mHeadLengthLineEdit->text(), arrowSettings.arrowHeadLengthRatio() * 100.0 );
+  val = filterValue( mHeadLengthSpinBox, arrowSettings.arrowHeadLengthRatio() * 100.0 );
   arrowSettings.setArrowHeadLengthRatio( val / 100.0 );
 
   // user grid
@@ -152,16 +160,16 @@ QgsMeshRendererVectorSettings QgsMeshRendererVectorSettingsWidget::settings() co
   auto method = static_cast<QgsMeshRendererVectorArrowSettings::ArrowScalingMethod>( mShaftLengthComboBox->currentIndex() );
   arrowSettings.setShaftLengthMethod( method );
 
-  val = filterValue( mMinimumShaftLineEdit->text(), arrowSettings.minShaftLength() );
+  val = filterValue( mMinimumShaftSpinBox, arrowSettings.minShaftLength() );
   arrowSettings.setMinShaftLength( val );
 
-  val = filterValue( mMaximumShaftLineEdit->text(), arrowSettings.maxShaftLength() );
+  val = filterValue( mMaximumShaftSpinBox, arrowSettings.maxShaftLength() );
   arrowSettings.setMaxShaftLength( val );
 
-  val = filterValue( mScaleShaftByFactorOfLineEdit->text(), arrowSettings.scaleFactor() );
+  val = filterValue( mScaleShaftByFactorOfSpinBox, arrowSettings.scaleFactor() );
   arrowSettings.setScaleFactor( val );
 
-  val = filterValue( mShaftLengthLineEdit->text(), arrowSettings.fixedShaftLength() );
+  val = filterValue( mShaftLengthSpinBox, arrowSettings.fixedShaftLength() );
   arrowSettings.setFixedShaftLength( val );
 
   settings.setArrowsSettings( arrowSettings );
@@ -187,7 +195,7 @@ QgsMeshRendererVectorSettings QgsMeshRendererVectorSettingsWidget::settings() co
 
 void QgsMeshRendererVectorSettingsWidget::syncToLayer( )
 {
-  if ( !mMeshLayer && !mMeshLayer->dataProvider() )
+  if ( !mMeshLayer || !mMeshLayer->dataProvider() )
     return;
 
   if ( mActiveDatasetGroup < 0 )
@@ -211,22 +219,22 @@ void QgsMeshRendererVectorSettingsWidget::syncToLayer( )
   mLineWidthSpinBox->setValue( settings.lineWidth() );
   mColoringMethodComboBox->setCurrentIndex( mColoringMethodComboBox->findData( settings.coloringMethod() ) );
   mColorRampShaderWidget->setFromShader( settings.colorRampShader() );
-  mColorRampShaderMinimumEditLine->setText( QString::number( settings.colorRampShader().minimumValue() ) );
-  mColorRampShaderMaximumEditLine->setText( QString::number( settings.colorRampShader().maximumValue() ) );
+  mColorRampShaderMinimumSpinBox->setValue( settings.colorRampShader().minimumValue() );
+  mColorRampShaderMaximumSpinBox->setValue( settings.colorRampShader().maximumValue() );
 
   // filter by magnitude
   if ( settings.filterMin() > 0 )
   {
-    mMinMagLineEdit->setText( QString::number( settings.filterMin() ) );
+    mMinMagSpinBox->setValue( settings.filterMin() );
   }
   if ( settings.filterMax() > 0 )
   {
-    mMaxMagLineEdit->setText( QString::number( settings.filterMax() ) );
+    mMaxMagSpinBox->setValue( settings.filterMax() );
   }
 
   // arrow head
-  mHeadWidthLineEdit->setText( QString::number( arrowSettings.arrowHeadWidthRatio() * 100.0 ) );
-  mHeadLengthLineEdit->setText( QString::number( arrowSettings.arrowHeadLengthRatio() * 100.0 ) );
+  mHeadWidthSpinBox->setValue( arrowSettings.arrowHeadWidthRatio() * 100.0 );
+  mHeadLengthSpinBox->setValue( arrowSettings.arrowHeadLengthRatio() * 100.0 );
 
   // user grid
   mDisplayVectorsOnGridGroupBox->setVisible( hasFaces );
@@ -237,10 +245,10 @@ void QgsMeshRendererVectorSettingsWidget::syncToLayer( )
   // shaft length
   mShaftLengthComboBox->setCurrentIndex( arrowSettings.shaftLengthMethod() );
 
-  mMinimumShaftLineEdit->setText( QString::number( arrowSettings.minShaftLength() ) );
-  mMaximumShaftLineEdit->setText( QString::number( arrowSettings.maxShaftLength() ) );
-  mScaleShaftByFactorOfLineEdit->setText( QString::number( arrowSettings.scaleFactor() ) );
-  mShaftLengthLineEdit->setText( QString::number( arrowSettings.fixedShaftLength() ) );
+  mMinimumShaftSpinBox->setValue( arrowSettings.minShaftLength() );
+  mMaximumShaftSpinBox->setValue( arrowSettings.maxShaftLength() );
+  mScaleShaftByFactorOfSpinBox->setValue( arrowSettings.scaleFactor() );
+  mShaftLengthSpinBox->setValue( arrowSettings.fixedShaftLength() );
 
   //Streamlines settings
   const QgsMeshRendererVectorStreamlineSettings streamlinesSettings = settings.streamLinesSettings();
@@ -267,9 +275,9 @@ void QgsMeshRendererVectorSettingsWidget::onSymbologyChanged( int currentIndex )
   mDisplayVectorsOnGridGroupBox->setVisible( currentIndex != QgsMeshRendererVectorSettings::Traces );
   filterByMagnitudeLabel->setVisible( currentIndex != QgsMeshRendererVectorSettings::Traces );
   minimumMagLabel->setVisible( currentIndex != QgsMeshRendererVectorSettings::Traces );
-  mMinMagLineEdit->setVisible( currentIndex != QgsMeshRendererVectorSettings::Traces );
+  mMinMagSpinBox->setVisible( currentIndex != QgsMeshRendererVectorSettings::Traces );
   maximumMagLabel->setVisible( currentIndex != QgsMeshRendererVectorSettings::Traces );
-  mMaxMagLineEdit->setVisible( currentIndex != QgsMeshRendererVectorSettings::Traces );
+  mMaxMagSpinBox->setVisible( currentIndex != QgsMeshRendererVectorSettings::Traces );
 
   mDisplayVectorsOnGridGroupBox->setEnabled(
     currentIndex == QgsMeshRendererVectorSettings::Arrows ||
@@ -301,8 +309,8 @@ void QgsMeshRendererVectorSettingsWidget::onColoringMethodChanged()
 void QgsMeshRendererVectorSettingsWidget::onColorRampMinMaxChanged()
 {
   mColorRampShaderWidget->setMinimumMaximumAndClassify(
-    filterValue( mColorRampShaderMinimumEditLine->text(), 0 ),
-    filterValue( mColorRampShaderMaximumEditLine->text(), 0 ) );
+    filterValue( mColorRampShaderMinimumSpinBox, 0 ),
+    filterValue( mColorRampShaderMaximumSpinBox, 0 ) );
 }
 
 void QgsMeshRendererVectorSettingsWidget::loadColorRampShader()
@@ -320,22 +328,14 @@ void QgsMeshRendererVectorSettingsWidget::loadColorRampShader()
   double max = meta.maximum();
 
   mColorRampShaderWidget->setMinimumMaximumAndClassify( min, max );
-  whileBlocking( mColorRampShaderMinimumEditLine )->setText( QString::number( min ) );
-  whileBlocking( mColorRampShaderMaximumEditLine )->setText( QString::number( max ) );
+  whileBlocking( mColorRampShaderMinimumSpinBox )->setValue( min );
+  whileBlocking( mColorRampShaderMaximumSpinBox )->setValue( max );
 }
 
-double QgsMeshRendererVectorSettingsWidget::filterValue( const QString &text, double errVal ) const
+double QgsMeshRendererVectorSettingsWidget::filterValue( const QgsDoubleSpinBox *spinBox, double errVal ) const
 {
-  if ( text.isEmpty() )
+  if ( spinBox->value() == spinBox->clearValue() )
     return errVal;
 
-  bool ok;
-  double val = text.toDouble( &ok );
-  if ( !ok )
-    return errVal;
-
-  if ( val < 0 )
-    return errVal;
-
-  return val;
+  return spinBox->value();
 }

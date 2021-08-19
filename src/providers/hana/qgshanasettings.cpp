@@ -176,7 +176,7 @@ void QgsHanaSettings::load()
         continue;
       for ( const QString &objectName : objectNames )
       {
-        QVariant value = subSettings.value( objectName );
+        const QVariant value = subSettings.value( objectName );
         if ( !value.isNull() )
           mKeyColumns[schemaName][objectName] = value.toStringList();
       }
@@ -269,7 +269,7 @@ QStringList QgsHanaSettings::getConnectionNames()
 
 QString QgsHanaSettings::getSelectedConnection()
 {
-  QgsSettings settings;
+  const QgsSettings settings;
   return settings.value( getBaseKey() + "selected" ).toString();
 }
 

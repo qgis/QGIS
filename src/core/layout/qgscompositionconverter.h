@@ -43,10 +43,11 @@ class QgsLayoutItemScaleBar;
 class QgsLayoutItemLegend;
 class QgsLayoutItemHtml;
 class QgsLayoutItemAttributeTable;
+class QgsLayoutItemGroup;
 class QgsLayoutAtlas;
 
 /**
- * QgsCompositionConverter class converts a QGIS 2.x composition to a QGIS 3.x layout
+ * \brief QgsCompositionConverter class converts a QGIS 2.x composition to a QGIS 3.x layout
  * \note Not available in Python bindings.
  * \ingroup core
  * \since QGIS 3.0
@@ -216,6 +217,11 @@ class CORE_EXPORT QgsCompositionConverter
     static bool readTableXml( QgsLayoutItemAttributeTable *layoutItem,
                               const QDomElement &itemElem,
                               const QgsProject *project );
+
+    static bool readGroupXml( QgsLayoutItemGroup *layoutItem,
+                              const QDomElement &itemElem,
+                              const QgsProject *project,
+                              const QList<QgsLayoutObject *> &items );
 
     static bool readOldComposerObjectXml( QgsLayoutObject *layoutItem, const QDomElement &itemElem );
 

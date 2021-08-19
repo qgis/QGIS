@@ -22,9 +22,11 @@
 #include "qgis.h"
 #include "qgssymbollayer.h"
 
+class QgsLineSymbol;
+
 /**
  * \ingroup core
- * A symbol layer class for displaying displacement arrows based on point layer attributes.
+ * \brief A symbol layer class for displaying displacement arrows based on point layer attributes.
 */
 class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
 {
@@ -49,6 +51,7 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
     };
 
     QgsVectorFieldSymbolLayer();
+    ~QgsVectorFieldSymbolLayer() override;
 
     //! Creates the symbol layer
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() );
@@ -57,7 +60,7 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
     QString layerType() const override { return QStringLiteral( "VectorField" ); }
 
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
-    QgsSymbol *subSymbol() override { return mLineSymbol.get(); }
+    QgsSymbol *subSymbol() override;
 
     void setColor( const QColor &color ) override;
     QColor color() const override;

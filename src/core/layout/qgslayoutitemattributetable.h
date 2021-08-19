@@ -28,7 +28,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup core
- * A layout table subclass that displays attributes from a vector layer.
+ * \brief A layout table subclass that displays attributes from a vector layer.
  * \since QGIS 3.0
 */
 class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
@@ -389,6 +389,14 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
      * \param variant input cell contents
      */
     QVariant replaceWrapChar( const QVariant &variant ) const;
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+
+    /**
+     * Returns the list of visible columns filtered by feature filter provider.
+     */
+    QgsLayoutTableColumns filteredColumns( );
+#endif
 
   private slots:
     //! Checks if this vector layer will be removed (and sets mVectorLayer to 0 if yes)

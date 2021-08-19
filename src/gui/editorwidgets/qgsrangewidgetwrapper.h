@@ -33,7 +33,7 @@ class TestQgsRangeWidgetWrapper;
 
 /**
  * \ingroup gui
- * Wraps a range widget.
+ * \brief Wraps a range widget.
  *
  * Options:
  * <ul>

@@ -21,6 +21,7 @@
 #include "qgslayoutitempicture.h"
 #include "qgslayout.h"
 #include "qgssettings.h"
+#include <QUrl>
 
 //
 // QgsLayoutScaleBarValidityCheck
@@ -52,7 +53,7 @@ bool QgsLayoutScaleBarValidityCheck::prepareCheck( const QgsValidityCheckContext
 
   QList< QgsLayoutItemScaleBar * > barItems;
   layoutContext->layout->layoutItems( barItems );
-  for ( QgsLayoutItemScaleBar *bar : qgis::as_const( barItems ) )
+  for ( QgsLayoutItemScaleBar *bar : std::as_const( barItems ) )
   {
     if ( !bar->linkedMap() )
     {
@@ -107,7 +108,7 @@ bool QgsLayoutNorthArrowValidityCheck::prepareCheck( const QgsValidityCheckConte
 
   QList< QgsLayoutItemPicture * > pictureItems;
   layoutContext->layout->layoutItems( pictureItems );
-  for ( QgsLayoutItemPicture *picture : qgis::as_const( pictureItems ) )
+  for ( QgsLayoutItemPicture *picture : std::as_const( pictureItems ) )
   {
     // look for pictures which use the default north arrow svg, but aren't actually linked to maps.
     // alternatively identify them by looking for the default "North Arrow" string in their id
@@ -162,7 +163,7 @@ bool QgsLayoutOverviewValidityCheck::prepareCheck( const QgsValidityCheckContext
 
   QList< QgsLayoutItemMap * > mapItems;
   layoutContext->layout->layoutItems( mapItems );
-  for ( QgsLayoutItemMap *map : qgis::as_const( mapItems ) )
+  for ( QgsLayoutItemMap *map : std::as_const( mapItems ) )
   {
     for ( int i = 0; i < map->overviews()->size(); ++i )
     {
@@ -219,7 +220,7 @@ bool QgsLayoutPictureSourceValidityCheck::prepareCheck( const QgsValidityCheckCo
 
   QList< QgsLayoutItemPicture * > pictureItems;
   layoutContext->layout->layoutItems( pictureItems );
-  for ( QgsLayoutItemPicture *picture : qgis::as_const( pictureItems ) )
+  for ( QgsLayoutItemPicture *picture : std::as_const( pictureItems ) )
   {
     if ( picture->isMissingImage() )
     {

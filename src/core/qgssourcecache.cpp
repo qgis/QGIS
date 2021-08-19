@@ -67,7 +67,7 @@ QString QgsSourceCache::localFilePath( const QString &path, bool blocking )
   if ( file.isEmpty() )
     return QString();
 
-  QMutexLocker locker( &mMutex );
+  const QMutexLocker locker( &mMutex );
 
   QgsSourceCacheEntry *currentEntry = findExistingEntry( new QgsSourceCacheEntry( file ) );
 
@@ -75,7 +75,7 @@ QString QgsSourceCache::localFilePath( const QString &path, bool blocking )
   if ( currentEntry->filePath.isEmpty() )
   {
     bool isBroken;
-    QString filePath = fetchSource( file, isBroken, blocking );
+    const QString filePath = fetchSource( file, isBroken, blocking );
     currentEntry->filePath = filePath;
   }
 
@@ -92,7 +92,7 @@ QString QgsSourceCache::fetchSource( const QString &path, bool &isBroken, bool b
   }
   else
   {
-    QByteArray ba = getContent( path, QByteArray( "broken" ), QByteArray( "fetching" ), blocking );
+    const QByteArray ba = getContent( path, QByteArray( "broken" ), QByteArray( "fetching" ), blocking );
 
     if ( ba == "broken" )
     {

@@ -39,19 +39,17 @@ class QgsHanaFeatureSource : public QgsAbstractFeatureSource
   private:
     QVersionNumber mDatabaseVersion;
     QgsDataSourceUri mUri;
-    QString mSchemaName;
-    QString mTableName;
+    QString mQuery;
+    QString mQueryWhereClause;
     QgsHanaPrimaryKeyType mPrimaryKeyType = QgsHanaPrimaryKeyType::PktUnknown;
     QList<int> mPrimaryKeyAttrs;
     std::shared_ptr<QgsHanaPrimaryKeyContext> mPrimaryKeyCntx;
     QgsFields mFields;
-    QVector<FieldInfo> mFieldInfos;
     QString mGeometryColumn;
     QgsWkbTypes::Type mGeometryType;
     int mSrid;
     QgsRectangle mSrsExtent;
     QgsCoordinateReferenceSystem mCrs;
-    QString mQueryWhereClause;
 
     friend class QgsHanaFeatureIterator;
     friend class QgsHanaExpressionCompiler;
@@ -89,6 +87,8 @@ class QgsHanaFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsHa
     QString mSqlQuery;
     QVariantList mSqlQueryParams;
     QgsRectangle mFilterRect;
+    QgsGeometry mDistanceWithinGeom;
+    std::unique_ptr< QgsGeometryEngine > mDistanceWithinEngine;
     QgsAttributeList mAttributesToFetch;
     QgsCoordinateTransform mTransform;
     bool mHasAttributes = false;

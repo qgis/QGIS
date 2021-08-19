@@ -20,17 +20,14 @@
 
 QgsAnnotationLayerRenderer::QgsAnnotationLayerRenderer( QgsAnnotationLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
-  , mFeedback( qgis::make_unique< QgsFeedback >() )
+  , mFeedback( std::make_unique< QgsFeedback >() )
   , mLayerOpacity( layer->opacity() )
 {
-  // clone items from layer
-  const QMap< QString, QgsAnnotationItem * > items = layer->items();
+  // clone items from layer which fall inside the rendered extent
+  const QStringList items = layer->itemsInBounds( context.extent() );
   mItems.reserve( items.size() );
-  for ( auto it = items.constBegin(); it != items.constEnd(); ++it )
-  {
-    if ( it.value() )
-      mItems << ( *it )->clone();
-  }
+  std::transform( items.begin(), items.end(), std::back_inserter( mItems ),
+                  [layer]( const QString & id ) -> QgsAnnotationItem* { return layer->item( id )->clone(); } );
 
   std::sort( mItems.begin(), mItems.end(), []( QgsAnnotationItem * a, QgsAnnotationItem * b ) { return a->zIndex() < b->zIndex(); } );  //clazy:exclude=detaching-member
 }
@@ -50,7 +47,7 @@ bool QgsAnnotationLayerRenderer::render()
   QgsRenderContext &context = *renderContext();
 
   bool canceled = false;
-  for ( QgsAnnotationItem *item : qgis::as_const( mItems ) )
+  for ( QgsAnnotationItem *item : std::as_const( mItems ) )
   {
     if ( mFeedback->isCanceled() )
     {

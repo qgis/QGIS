@@ -85,7 +85,7 @@ QgsWkbTypes::Type QgsSetZValueAlgorithm::outputWkbType( QgsWkbTypes::Type type )
 
 void QgsSetZValueAlgorithm::initParameters( const QVariantMap & )
 {
-  auto zValueParam = qgis::make_unique < QgsProcessingParameterNumber >( QStringLiteral( "Z_VALUE" ), QObject::tr( "Z Value" ), QgsProcessingParameterNumber::Double, 0.0 );
+  auto zValueParam = std::make_unique < QgsProcessingParameterNumber >( QStringLiteral( "Z_VALUE" ), QObject::tr( "Z Value" ), QgsProcessingParameterNumber::Double, 0.0 );
   zValueParam->setIsDynamic( true );
   zValueParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Z_VALUE" ), QObject::tr( "Z Value" ), QgsPropertyDefinition::Double ) );
   zValueParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );

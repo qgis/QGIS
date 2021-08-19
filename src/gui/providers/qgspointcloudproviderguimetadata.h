@@ -28,7 +28,7 @@
 
 /**
  * \ingroup gui
- * Provides a generic source select widget for point cloud providers.
+ * \brief Provides a generic source select widget for point cloud providers.
  *
  * The generated widget is provider agnostic, and is not attached to any single individual
  * provider but rather adapts to all available point cloud providers.

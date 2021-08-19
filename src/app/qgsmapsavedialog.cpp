@@ -24,6 +24,7 @@
 #include <QPainter>
 #include <QPrinter>
 #include <QSpinBox>
+#include <QUrl>
 
 #include "qgsmapsavedialog.h"
 #include "qgsabstractgeopdfexporter.h"
@@ -165,8 +166,8 @@ void QgsMapSaveDialog::updateDpi( int dpi )
 
 void QgsMapSaveDialog::updateOutputWidth( int width )
 {
-  double scale = static_cast<double>( width ) / mSize.width();
-  double adjustment = ( ( mExtent.width() * scale ) - mExtent.width() ) / 2;
+  const double scale = static_cast<double>( width ) / mSize.width();
+  const double adjustment = ( ( mExtent.width() * scale ) - mExtent.width() ) / 2;
 
   mSize.setWidth( width );
 
@@ -175,9 +176,9 @@ void QgsMapSaveDialog::updateOutputWidth( int width )
 
   if ( mLockAspectRatio->locked() )
   {
-    int height = width * mExtentGroupBox->ratio().height() / mExtentGroupBox->ratio().width();
-    double scale = static_cast<double>( height ) / mSize.height();
-    double adjustment = ( ( mExtent.height() * scale ) - mExtent.height() ) / 2;
+    const int height = width * mExtentGroupBox->ratio().height() / mExtentGroupBox->ratio().width();
+    const double scale = static_cast<double>( height ) / mSize.height();
+    const double adjustment = ( ( mExtent.height() * scale ) - mExtent.height() ) / 2;
 
     whileBlocking( mOutputHeightSpinBox )->setValue( height );
     mSize.setHeight( height );
@@ -191,8 +192,8 @@ void QgsMapSaveDialog::updateOutputWidth( int width )
 
 void QgsMapSaveDialog::updateOutputHeight( int height )
 {
-  double scale = static_cast<double>( height ) / mSize.height();
-  double adjustment = ( ( mExtent.height() * scale ) - mExtent.height() ) / 2;
+  const double scale = static_cast<double>( height ) / mSize.height();
+  const double adjustment = ( ( mExtent.height() * scale ) - mExtent.height() ) / 2;
 
   mSize.setHeight( height );
 
@@ -201,9 +202,9 @@ void QgsMapSaveDialog::updateOutputHeight( int height )
 
   if ( mLockAspectRatio->locked() )
   {
-    int width = height * mExtentGroupBox->ratio().width() / mExtentGroupBox->ratio().height();
-    double scale = static_cast<double>( width ) / mSize.width();
-    double adjustment = ( ( mExtent.width() * scale ) - mExtent.width() ) / 2;
+    const int width = height * mExtentGroupBox->ratio().width() / mExtentGroupBox->ratio().height();
+    const double scale = static_cast<double>( width ) / mSize.width();
+    const double adjustment = ( ( mExtent.width() * scale ) - mExtent.width() ) / 2;
 
     whileBlocking( mOutputWidthSpinBox )->setValue( width );
     mSize.setWidth( width );
@@ -258,8 +259,8 @@ void QgsMapSaveDialog::updateScale( double scale )
   calculator.setMapUnits( mExtentGroupBox->currentCrs().mapUnits() );
   calculator.setDpi( mDpi );
 
-  double oldScale = calculator.calculate( mExtent, mSize.width() );
-  double scaleRatio = scale / oldScale;
+  const double oldScale = calculator.calculate( mExtent, mSize.width() );
+  const double scaleRatio = scale / oldScale;
   mExtent.scale( scaleRatio );
   mExtentGroupBox->setOutputExtentFromUser( mExtent, mExtentGroupBox->currentCrs() );
 }
@@ -312,7 +313,7 @@ bool QgsMapSaveDialog::saveAsRaster() const
 
 void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
 
   switch ( mDialogType )
   {
@@ -434,7 +435,7 @@ void QgsMapSaveDialog::onAccepted()
   {
     case Image:
     {
-      QPair< QString, QString> fileNameAndFilter = QgsGuiUtils::getSaveAsImageName( QgisApp::instance(), tr( "Choose a file name to save the map image as" ) );
+      const QPair< QString, QString> fileNameAndFilter = QgsGuiUtils::getSaveAsImageName( QgisApp::instance(), tr( "Choose a file name to save the map image as" ) );
       if ( !fileNameAndFilter.first.isEmpty() )
       {
         QgsMapSettings ms = QgsMapSettings();
@@ -484,7 +485,7 @@ void QgsMapSaveDialog::onAccepted()
     case Pdf:
     {
       QgsSettings settings;
-      QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
+      const QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
       QString fileName = QFileDialog::getSaveFileName( QgisApp::instance(), tr( "Save Map As" ), lastUsedDir, tr( "PDF Format" ) + " (*.pdf *.PDF)" );
       if ( !fileName.isEmpty() )
       {
@@ -574,7 +575,7 @@ void QgsMapSaveDialog::onAccepted()
 
 void QgsMapSaveDialog::updatePdfExportWarning()
 {
-  QStringList layers = QgsMapSettingsUtils::containsAdvancedEffects( mMapCanvas->mapSettings(), mGeoPDFGroupBox->isChecked() ? QgsMapSettingsUtils::EffectsCheckFlags( QgsMapSettingsUtils::EffectsCheckFlag::IgnoreGeoPdfSupportedEffects ) : QgsMapSettingsUtils::EffectsCheckFlags() );
+  const QStringList layers = QgsMapSettingsUtils::containsAdvancedEffects( mMapCanvas->mapSettings(), mGeoPDFGroupBox->isChecked() ? QgsMapSettingsUtils::EffectsCheckFlags( QgsMapSettingsUtils::EffectsCheckFlag::IgnoreGeoPdfSupportedEffects ) : QgsMapSettingsUtils::EffectsCheckFlags() );
   if ( !layers.isEmpty() )
   {
     mInfoDetails = tr( "The following layer(s) use advanced effects:\n\n%1\n\nRasterizing map is recommended for proper rendering." ).arg(

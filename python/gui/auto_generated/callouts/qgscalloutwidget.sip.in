@@ -10,7 +10,7 @@
 
 class QgsCalloutWidget : QWidget, protected QgsExpressionContextGenerator
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for widgets which allow control over the properties of callouts.
 
 .. versionadded:: 3.10

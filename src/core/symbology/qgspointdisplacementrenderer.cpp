@@ -23,6 +23,7 @@
 #include "qgspointclusterrenderer.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsrenderedfeaturehandlerinterface.h"
+#include "qgsmarkersymbol.h"
 
 #include <QPainter>
 #include <cmath>
@@ -107,7 +108,7 @@ void QgsPointDisplacementRenderer::drawGroup( QPointF centerPoint, QgsRenderCont
   if ( group.size() > 1 )
   {
     //draw mid point
-    QgsFeature firstFeature = group.at( 0 ).feature;
+    const QgsFeature firstFeature = group.at( 0 ).feature;
     if ( mCenterSymbol )
     {
       mCenterSymbol->renderPoint( centerPoint, &firstFeature, context, -1, false );
@@ -177,7 +178,7 @@ QgsFeatureRenderer *QgsPointDisplacementRenderer::create( QDomElement &symbology
   }
 
   //center symbol
-  QDomElement centerSymbolElem = symbologyElem.firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement centerSymbolElem = symbologyElem.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !centerSymbolElem.isNull() )
   {
     r->setCenterSymbol( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( centerSymbolElem, context ) );
@@ -193,7 +194,6 @@ QgsMarkerSymbol *QgsPointDisplacementRenderer::centerSymbol()
 QDomElement QgsPointDisplacementRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
 {
   QDomElement rendererElement = doc.createElement( RENDERER_TAG_NAME );
-  rendererElement.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
   rendererElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "pointDisplacement" ) );
   rendererElement.setAttribute( QStringLiteral( "labelAttributeName" ), mLabelAttributeName );
   rendererElement.appendChild( QgsFontUtils::toXmlElement( mLabelFont, doc, QStringLiteral( "labelFontProperties" ) ) );
@@ -210,25 +210,16 @@ QDomElement QgsPointDisplacementRenderer::save( QDomDocument &doc, const QgsRead
 
   if ( mRenderer )
   {
-    QDomElement embeddedRendererElem = mRenderer->save( doc, context );
+    const QDomElement embeddedRendererElem = mRenderer->save( doc, context );
     rendererElement.appendChild( embeddedRendererElem );
   }
   if ( mCenterSymbol )
   {
-    QDomElement centerSymbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "centerSymbol" ), mCenterSymbol.get(), doc, context );
+    const QDomElement centerSymbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "centerSymbol" ), mCenterSymbol.get(), doc, context );
     rendererElement.appendChild( centerSymbolElem );
   }
 
-  if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
-    mPaintEffect->saveProperties( doc, rendererElement );
-
-  if ( !mOrderBy.isEmpty() )
-  {
-    QDomElement orderBy = doc.createElement( QStringLiteral( "orderby" ) );
-    mOrderBy.save( orderBy );
-    rendererElement.appendChild( orderBy );
-  }
-  rendererElement.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
+  saveRendererData( doc, rendererElement, context );
 
   return rendererElement;
 }
@@ -280,7 +271,7 @@ void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( QgsSymbolRe
     return;
   }
 
-  double circleAdditionPainterUnits = symbolContext.renderContext().convertToPainterUnits( mCircleRadiusAddition, QgsUnitTypes::RenderMillimeters );
+  const double circleAdditionPainterUnits = symbolContext.renderContext().convertToPainterUnits( mCircleRadiusAddition, QgsUnitTypes::RenderMillimeters );
 
   switch ( mPlacement )
   {
@@ -306,26 +297,26 @@ void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( QgsSymbolRe
     }
     case ConcentricRings:
     {
-      double centerDiagonal = mCenterSymbol->size( symbolContext.renderContext() ) * M_SQRT2;
+      const double centerDiagonal = mCenterSymbol->size( symbolContext.renderContext() ) * M_SQRT2;
 
       int pointsRemaining = nPosition;
       int ringNumber = 1;
-      double firstRingRadius = centerDiagonal / 2.0 + symbolDiagonal / 2.0;
+      const double firstRingRadius = centerDiagonal / 2.0 + symbolDiagonal / 2.0;
       int featureIndex = 0;
       while ( pointsRemaining > 0 )
       {
-        double radiusCurrentRing = std::max( firstRingRadius + ( ringNumber - 1 ) * symbolDiagonal + ringNumber * circleAdditionPainterUnits, 0.0 );
-        int maxPointsCurrentRing = std::max( std::floor( 2 * M_PI * radiusCurrentRing / symbolDiagonal ), 1.0 );
-        int actualPointsCurrentRing = std::min( maxPointsCurrentRing, pointsRemaining );
+        const double radiusCurrentRing = std::max( firstRingRadius + ( ringNumber - 1 ) * symbolDiagonal + ringNumber * circleAdditionPainterUnits, 0.0 );
+        const int maxPointsCurrentRing = std::max( std::floor( 2 * M_PI * radiusCurrentRing / symbolDiagonal ), 1.0 );
+        const int actualPointsCurrentRing = std::min( maxPointsCurrentRing, pointsRemaining );
 
-        double angleStep = 2 * M_PI / actualPointsCurrentRing;
+        const double angleStep = 2 * M_PI / actualPointsCurrentRing;
         double currentAngle = 0.0;
         for ( int i = 0; i < actualPointsCurrentRing; ++i )
         {
-          double sinusCurrentAngle = std::sin( currentAngle );
-          double cosinusCurrentAngle = std::cos( currentAngle );
-          QPointF positionShift( radiusCurrentRing * sinusCurrentAngle, radiusCurrentRing * cosinusCurrentAngle );
-          QPointF labelShift( ( radiusCurrentRing + diagonals.at( featureIndex ) * mLabelDistanceFactor ) * sinusCurrentAngle, ( radiusCurrentRing + diagonals.at( featureIndex ) * mLabelDistanceFactor ) * cosinusCurrentAngle );
+          const double sinusCurrentAngle = std::sin( currentAngle );
+          const double cosinusCurrentAngle = std::cos( currentAngle );
+          const QPointF positionShift( radiusCurrentRing * sinusCurrentAngle, radiusCurrentRing * cosinusCurrentAngle );
+          const QPointF labelShift( ( radiusCurrentRing + diagonals.at( featureIndex ) * mLabelDistanceFactor ) * sinusCurrentAngle, ( radiusCurrentRing + diagonals.at( featureIndex ) * mLabelDistanceFactor ) * cosinusCurrentAngle );
           symbolPositions.append( centerPoint + positionShift );
           labelShifts.append( labelShift );
           currentAngle += angleStep;
@@ -340,20 +331,20 @@ void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( QgsSymbolRe
     }
     case Grid:
     {
-      double centerDiagonal = mCenterSymbol->size( symbolContext.renderContext() ) * M_SQRT2;
+      const double centerDiagonal = mCenterSymbol->size( symbolContext.renderContext() ) * M_SQRT2;
       int pointsRemaining = nPosition;
       gridSize = std::ceil( std::sqrt( pointsRemaining ) );
       if ( pointsRemaining - std::pow( gridSize - 1, 2 ) < gridSize )
         gridSize -= 1;
-      double originalPointRadius = ( ( centerDiagonal / 2.0 + symbolDiagonal / 2.0 ) + symbolDiagonal ) / 2;
-      double userPointRadius =  originalPointRadius + circleAdditionPainterUnits;
+      const double originalPointRadius = ( ( centerDiagonal / 2.0 + symbolDiagonal / 2.0 ) + symbolDiagonal ) / 2;
+      const double userPointRadius =  originalPointRadius + circleAdditionPainterUnits;
 
       int yIndex = 0;
       while ( pointsRemaining > 0 )
       {
         for ( int xIndex = 0; xIndex < gridSize && pointsRemaining > 0; ++xIndex )
         {
-          QPointF positionShift( userPointRadius * xIndex, userPointRadius * yIndex );
+          const QPointF positionShift( userPointRadius * xIndex, userPointRadius * yIndex );
           symbolPositions.append( centerPoint + positionShift );
           pointsRemaining--;
         }
@@ -386,7 +377,7 @@ void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( QgsSymbolRe
         }
 
         side = std::sqrt( std::pow( diagonals.at( symbolIndex ), 2 ) / 2.0 );
-        QPointF labelShift( ( side * mLabelDistanceFactor * xFactor ), ( -side * mLabelDistanceFactor * yFactor ) );
+        const QPointF labelShift( ( side * mLabelDistanceFactor * xFactor ), ( -side * mLabelDistanceFactor * yFactor ) );
         labelShifts.append( symbolPositions.at( symbolIndex ) - centerPoint + labelShift );
       }
 
@@ -398,8 +389,8 @@ void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( QgsSymbolRe
 
 void QgsPointDisplacementRenderer::centralizeGrid( QList<QPointF> &pointSymbolPositions, double radius, int size ) const
 {
-  double shiftAmount = -radius * ( size - 1.0 ) / 2.0;
-  QPointF centralShift( shiftAmount, shiftAmount );
+  const double shiftAmount = -radius * ( size - 1.0 ) / 2.0;
+  const QPointF centralShift( shiftAmount, shiftAmount );
   for ( int i = 0; i < pointSymbolPositions.size(); ++i )
   {
     pointSymbolPositions[i] += centralShift;
@@ -423,13 +414,13 @@ void QgsPointDisplacementRenderer::drawGrid( int gridSizeUnits, QgsSymbolRenderC
   {
     if ( i + 1 < pointSymbolPositions.size() && 0 != ( i + 1 ) % gridSizeUnits )
     {
-      QLineF gridLineRow( pointSymbolPositions[i], pointSymbolPositions[i + 1] );
+      const QLineF gridLineRow( pointSymbolPositions[i], pointSymbolPositions[i + 1] );
       p->drawLine( gridLineRow );
     }
 
     if ( i + gridSizeUnits < pointSymbolPositions.size() )
     {
-      QLineF gridLineColumn( pointSymbolPositions[i], pointSymbolPositions[i + gridSizeUnits] );
+      const QLineF gridLineColumn( pointSymbolPositions[i], pointSymbolPositions[i + gridSizeUnits] );
       p->drawLine( gridLineColumn );
     }
   }
@@ -464,7 +455,7 @@ void QgsPointDisplacementRenderer::drawSymbols( const ClusteredGroup &group, Qgs
     {
       const QgsGeometry bounds( QgsGeometry::fromRect( QgsRectangle( groupIt->symbol()->bounds( *symbolPosIt, context, groupIt->feature ) ) ) );
       const QList< QgsRenderedFeatureHandlerInterface * > handlers = context.renderedFeatureHandlers();
-      QgsRenderedFeatureHandlerInterface::RenderedFeatureContext featureContext( context );
+      const QgsRenderedFeatureHandlerInterface::RenderedFeatureContext featureContext( context );
       for ( QgsRenderedFeatureHandlerInterface *handler : handlers )
         handler->handleRenderedFeature( groupIt->feature, bounds, featureContext );
     }
@@ -485,6 +476,7 @@ QgsPointDisplacementRenderer *QgsPointDisplacementRenderer::convertFromRenderer(
   {
     QgsPointDisplacementRenderer *pointRenderer = new QgsPointDisplacementRenderer();
     pointRenderer->setEmbeddedRenderer( renderer->clone() );
+    renderer->copyRendererData( pointRenderer );
     return pointRenderer;
   }
   else if ( renderer->type() == QLatin1String( "pointCluster" ) )
@@ -498,6 +490,7 @@ QgsPointDisplacementRenderer *QgsPointDisplacementRenderer::convertFromRenderer(
     pointRenderer->setToleranceMapUnitScale( clusterRenderer->toleranceMapUnitScale() );
     if ( const_cast< QgsPointClusterRenderer * >( clusterRenderer )->clusterSymbol() )
       pointRenderer->setCenterSymbol( const_cast< QgsPointClusterRenderer * >( clusterRenderer )->clusterSymbol()->clone() );
+    renderer->copyRendererData( pointRenderer );
     return pointRenderer;
   }
   else

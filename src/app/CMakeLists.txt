@@ -44,18 +44,22 @@ set(QGIS_APP_SRCS
   qgsidentifyresultsdialog.cpp
   qgsfeatureaction.cpp
   qgslayercapabilitiesmodel.cpp
+  qgslayernotesmanager.cpp
   qgslayertreeviewindicatorprovider.cpp
   qgslayertreeviewembeddedindicator.cpp
   qgslayertreeviewfilterindicator.cpp
+  qgslayertreeviewlowaccuracyindicator.cpp
   qgslayertreeviewmemoryindicator.cpp
   qgslayertreeviewnocrsindicator.cpp
   qgslayertreeviewnonremovableindicator.cpp
+  qgslayertreeviewnotesindicator.cpp
   qgslayertreeviewbadlayerindicator.cpp
   qgslayertreeviewtemporalindicator.cpp
   qgslayertreeviewofflineindicator.cpp
   qgsmapcanvasdockwidget.cpp
   qgsmapsavedialog.cpp
   qgsprojectlistitemdelegate.cpp
+  qgsprovidersublayersdialog.cpp
   qgspuzzlewidget.cpp
   qgsversionmigration.cpp
   qgssnappinglayertreemodel.cpp
@@ -83,6 +87,7 @@ set(QGIS_APP_SRCS
   qgsmaptoolhtmlannotation.cpp
   qgsmaptoolidentifyaction.cpp
   qgsmaptoolmeasureangle.cpp
+  qgsmaptoolmeasurebearing.cpp
   qgsmaptoolmovefeature.cpp
   qgsmaptooloffsetcurve.cpp
   qgsmaptooloffsetpointsymbol.cpp
@@ -140,7 +145,7 @@ set(QGIS_APP_SRCS
   qgsrastercalcdialog.cpp
   qgsrelationmanagerdialog.cpp
   qgsrelationadddlg.cpp
-  qgsrelationaddpolymorphicdlg.cpp
+  qgsrelationaddpolymorphicdialog.cpp
   qgsselectbyformdialog.cpp
   qgsstatisticalsummarydockwidget.cpp
   qgstextannotationdialog.cpp
@@ -148,6 +153,7 @@ set(QGIS_APP_SRCS
   qgsundowidget.cpp
   qgsmapthemes.cpp
   qgshandlebadlayers.cpp
+  qgsmaptooladdabstract.cpp
   qgsmaptooladdcircularstring.cpp
   qgsmaptoolcircularstringcurvepoint.cpp
   qgsmaptoolcircularstringradius.cpp
@@ -201,11 +207,24 @@ set(QGIS_APP_SRCS
   layout/qgsreportsectionmodel.cpp
   layout/qgsreportsectionwidget.cpp
 
-  locator/qgsinbuiltlocatorfilters.cpp
+  locator/qgsactionlocatorfilter.cpp
+  locator/qgsactivelayerfeatureslocatorfilter.cpp
+  locator/qgsalllayersfeatureslocatorfilter.cpp
+  locator/qgsbookmarklocatorfilter.cpp
+  locator/qgsexpressioncalculatorlocatorfilter.cpp
+  locator/qgsgotolocatorfilter.cpp
+  locator/qgslayertreelocatorfilter.cpp
+  locator/qgslayoutlocatorfilter.cpp
+  locator/qgsnominatimlocatorfilter.cpp
+  locator/qgssettingslocatorfilter.cpp
+
   locator/qgslocatoroptionswidget.cpp
+
+  maptools/qgsappmaptools.cpp
 
   options/qgsadvancedoptions.cpp
   options/qgscodeeditoroptions.cpp
+  options/qgsgpsdeviceoptions.cpp
   options/qgsoptions.cpp
   options/qgsoptionsutils.cpp
 
@@ -222,16 +241,23 @@ set(QGIS_APP_SRCS
   pluginmanager/qgspluginsortfilterproxymodel.cpp
   pluginmanager/qgspluginitemdelegate.cpp
 
-  qgsnewspatialitelayerdialog.cpp
-
   qgssettingstree.cpp
   qgsvariantdelegate.cpp
   qgscrashhandler.cpp
 
   mesh/qgsmeshcalculatordialog.cpp
+  mesh/qgsnewmeshlayerdialog.cpp
+  mesh/qgsmaptooleditmeshframe.cpp
 )
 
-if (WITH_GEOREFERENCER)
+if (WITH_SPATIALITE)
+  set(QGIS_APP_SRCS
+    ${QGIS_APP_SRCS}
+    qgsnewspatialitelayerdialog.cpp
+  )
+endif()
+
+if (HAVE_GEOREFERENCER)
   set(QGIS_APP_SRCS
     ${QGIS_APP_SRCS}
     georeferencer/qgsgcpcanvasitem.cpp
@@ -243,7 +269,6 @@ if (WITH_GEOREFERENCER)
     georeferencer/qgsgeoreftooldeletepoint.cpp
     georeferencer/qgsgeoreftoolmovepoint.cpp
     georeferencer/qgsgeorefvalidators.cpp
-    georeferencer/qgsleastsquares.cpp
     georeferencer/qgsmapcoordsdialog.cpp
     georeferencer/qgsresidualplotitem.cpp
     georeferencer/qgstransformsettingsdialog.cpp
@@ -357,33 +382,13 @@ set(TEST_RCCS ../../tests/testdata/testdata.qrc)
 if (WIN32)
   set (QGIS_APP_SRCS ${QGIS_APP_SRCS} main.cpp ${TEST_RCCS})
   set (QGIS_APPMAIN_SRCS mainwin.cpp)
-
-  if (MSVC)
-    set (QGIS_APPMAIN_SRCS ${QGIS_APPMAIN_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/qgis_win32.rc)
-  else()
-    # Icon for windows MINGW
-    # Note: can't include .rc directly to source files
-    # as it's ignored when used MinGW
-
-    if (NOT WINDRES)
-      find_program(WINDRES windres)
-      if (NOT WINDRES AND NOT CMAKE_RC_COMPILER)
-        message(FATAL_ERROR "windres not found - aborting")
-      endif()
-    endif()
-
-    if (WINDRES)
-        #############################################################
-        # application icon
-        # resource compilation for MinGW
-        add_custom_command( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/icon.o
-          COMMAND ${WINDRES} -I${CMAKE_CURRENT_SOURCE_DIR} -i${CMAKE_CURRENT_SOURCE_DIR}/qgis_win32.rc
-          -o ${CMAKE_CURRENT_BINARY_DIR}/icon.o )
-        set(QGIS_APPMAIN_SRCS ${QGIS_APPMAIN_SRCS} ${CMAKE_CURRENT_BINARY_DIR}/icon.o)
-    else()
-        # MXE
-    endif()
+  if (NOT MSVC)
+    enable_language(RC)
+    set(CMAKE_RC_COMPILER_INIT ${CMAKE_GENERATOR_RC})
+    set(CMAKE_RC_COMPILE_OBJECT "<CMAKE_RC_COMPILER> -O coff -i <SOURCE> -o <OBJECT>")
+    set(QGIS_RC_LIBS -mwindows)
   endif()
+  set (QGIS_APPMAIN_SRCS ${QGIS_APPMAIN_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/qgis_win32.rc)
 else()
   set (QGIS_APPMAIN_SRCS main.cpp ${TEST_RCCS})
 endif()
@@ -419,9 +424,10 @@ if(HAVE_OPENCL)
 endif()
 
 if (HAVE_PDAL)
-  include_directories(SYSTEM
-    ${PDAL_INCLUDE_DIR}
-  )
+  include_directories(SYSTEM ${PDAL_INCLUDE_DIR})
+  if(MSVC)
+    add_definitions(-DWIN32_LEAN_AND_MEAN)
+  endif()
 endif()
 
 if(ENABLE_MODELTEST)
@@ -442,14 +448,23 @@ endif()
 
 #############
 if (ANDROID)
-  add_library(${QGIS_APP_NAME} SHARED ${QGIS_APPMAIN_SRCS})
+  add_library(${QGIS_APP_NAME} ${LIBRARY_TYPE} ${QGIS_APPMAIN_SRCS})
+
+  # require c++17
+  target_compile_features(${QGIS_APP_NAME} PRIVATE cxx_std_17)
 else()
   add_executable(${QGIS_APP_NAME} MACOSX_BUNDLE WIN32 ${QGIS_APPMAIN_SRCS})
+
+  # require c++17
+  target_compile_features(${QGIS_APP_NAME} PRIVATE cxx_std_17)
 endif()
 
 # Putting IMAGE_RCC_SRCS into qgis_app lib is causing problems when the lib is
 # loaded (by plugin for example) in test unit (qgis_layoutpicturetest).
-add_library(qgis_app SHARED ${QGIS_APP_SRCS})
+add_library(qgis_app ${LIBRARY_TYPE} ${QGIS_APP_SRCS})
+
+# require c++17
+target_compile_features(qgis_app PRIVATE cxx_std_17)
 
 target_include_directories(qgis_app PUBLIC
   ${CMAKE_SOURCE_DIR}/external/nmea
@@ -462,6 +477,7 @@ target_include_directories(qgis_app PUBLIC
   ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
   ${CMAKE_SOURCE_DIR}/src/app/gps
   ${CMAKE_SOURCE_DIR}/src/app/dwg
+  ${CMAKE_SOURCE_DIR}/src/app/maptools
   ${CMAKE_SOURCE_DIR}/src/app/mesh
   ${CMAKE_SOURCE_DIR}/src/app/locator
   ${CMAKE_SOURCE_DIR}/src/app/pointcloud
@@ -489,11 +505,13 @@ add_dependencies(qgis_gui ui)
 
 target_link_libraries(qgis_app
   ${QWT_LIBRARY}
-  ${Qt5Sql_LIBRARIES}
-  ${Qt5UiTools_LIBRARIES}
+  ${QWTPOLAR_LIBRARY}
+  ${QT_VERSION_BASE}::Sql
+  ${QT_VERSION_BASE}::UiTools
   ${OPTIONAL_QTWEBKIT}
   #should only be needed for win
   ${QT_QTMAIN_LIBRARY}
+  ${QGIS_RC_LIBS}
   qgis_core
   qgis_gui
   qgis_analysis
@@ -504,18 +522,19 @@ target_link_libraries(qgis_app
 target_compile_definitions(qgis_app PRIVATE "-DQT_NO_FOREACH")
 
 if (WITH_BINDINGS)
+  add_definitions(-DWITH_BINDINGS)
   target_link_libraries(qgis_app qgispython)
 endif()
 
 if(ENABLE_MODELTEST)
-  target_link_libraries(qgis_app ${Qt5Test_LIBRARIES})
+  target_link_libraries(qgis_app ${QT_VERSION_BASE}::Test)
 endif()
 
 if (WITH_3D)
   target_link_libraries(qgis_app qgis_3d)
 endif()
 
-if (WITH_GEOREFERENCER)
+if (HAVE_GEOREFERENCER)
   include_directories(SYSTEM
     ${GSL_INCLUDE_DIR}
   )
@@ -592,9 +611,7 @@ if (POSTGRES_FOUND)
 endif()
 
 if (HAVE_PDAL)
-  target_link_libraries(qgis_app
-    ${PDAL_LIBRARIES}
-  )
+  target_link_libraries(qgis_app ${PDAL_LIBRARIES})
 endif()
 
 if(MSVC)

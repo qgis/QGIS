@@ -33,7 +33,7 @@ class QgsPointCloudLayerElevationProperties;
 /**
  * \ingroup core
  *
- * Represents a map layer supporting display of point clouds
+ * \brief Represents a map layer supporting display of point clouds
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -88,7 +88,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     /**
      * Constructor - creates a point cloud layer
      */
-    explicit QgsPointCloudLayer( const QString &path = QString(),
+    explicit QgsPointCloudLayer( const QString &uri = QString(),
                                  const QString &baseName = QString(),
                                  const QString &providerLib = QStringLiteral( "pointcloud" ),
                                  const QgsPointCloudLayer::LayerOptions &options = QgsPointCloudLayer::LayerOptions() );
@@ -128,7 +128,9 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const FINAL;
 
     void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
-    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false ) override;
+
+    QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const override;
+    QString decodedSource( const QString &source, const QString &dataProvider, const QgsReadWriteContext &context ) const override;
     QString loadDefaultStyle( bool &resultFlag SIP_OUT ) FINAL;
     QString htmlMetadata() const override;
     QgsMapLayerElevationProperties *elevationProperties() override;
@@ -141,7 +143,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     /**
      * Returns the total number of points available in the layer.
      */
-    int pointCount() const;
+    qint64 pointCount() const;
 
     /**
      * Returns the 2D renderer for the point cloud.
@@ -169,6 +171,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
 
   private slots:
     void onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state );
+    void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) override;
 
   private:
 

@@ -21,6 +21,7 @@
 #include <QList>
 #include <memory>
 
+#include "qgis.h"
 #include "qgsfeature.h"
 #include "qgsrectangle.h"
 #include "qgsexpression.h"
@@ -31,18 +32,20 @@
 
 /**
  * \ingroup core
- * This class wraps a request for features to a vector layer (or directly its vector data provider).
- * The request may apply a filter to fetch only a particular subset of features. Currently supported filters:
+ * \brief This class wraps a request for features to a vector layer (or directly its vector data provider).
+ *
+ * The request may apply an attribute/ID filter to fetch only a particular subset of features. Currently supported filters:
  *
  * - no filter - all features are returned
  * - feature id - only feature that matches given feature id is returned
  * - feature ids - only features that match any of the given feature ids are returned
  * - filter expression - only features that match the given filter expression are returned
  *
- * Additionally a spatial rectangle can be set in combination:
- * Only features that intersect given rectangle should be fetched. For the sake of speed,
- * the intersection is often done only using feature's bounding box. There is a flag
- * ExactIntersect that makes sure that only intersecting features will be returned.
+ * Additionally a spatial filter can be set in combination with the attribute/ID filter. Supported
+ * spatial filters are:
+ *
+ * - Qgis::SpatialFilterType::BoundingBox: Only features that intersect a given rectangle will be fetched. For the sake of speed, the intersection is often done only using feature's bounding box. There is a flag ExactIntersect that makes sure that only intersecting features will be returned.
+ * - Qgis::SpatialFilterType::DistanceWithin: Only features within a specified distance of a reference geometry will be fetched.
  *
  * For efficiency, it is also possible to tell provider that some data is not required:
  *
@@ -67,8 +70,12 @@
  *   QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
  *   # fetch only features from particular extent
  *   QgsFeatureRequest().setFilterRect(QgsRectangle(0,0,1,1))
+ *   # fetch only features from particular extent, where the 'type' attribute is equal to 'road':
+ *   QgsFeatureRequest().setFilterRect(QgsRectangle(0,0,1,1)).setFilterExpression('"type"=\'road\'')
  *   # fetch only one feature
  *   QgsFeatureRequest().setFilterFid(45)
+ *   # fetch features within 50 map units of a linestring geometry
+ *   QgsFeatureRequest().setDistanceWithin(QgsGeometry.fromWkt('LineString(0 0, 10 0, 12 1)'), 50)
  * \endcode
  *
  */
@@ -80,7 +87,9 @@ class CORE_EXPORT QgsFeatureRequest
       NoFlags            = 0,
       NoGeometry         = 1,  //!< Geometry is not required. It may still be returned if e.g. required for a filter condition.
       SubsetOfAttributes = 2,  //!< Fetch only a subset of attributes (setSubsetOfAttributes sets this flag)
-      ExactIntersect     = 4   //!< Use exact geometry intersection (slower) instead of bounding boxes
+      ExactIntersect     = 4,   //!< Use exact geometry intersection (slower) instead of bounding boxes
+      IgnoreStaticNodesDuringExpressionCompilation = 8, //!< If a feature request uses a filter expression which can be partially precalculated due to static nodes in the expression, setting this flag will prevent these precalculated values from being utilized during compilation of the filter for the backend provider. This flag significantly slows down feature requests and should be used for debugging purposes only. (Since QGIS 3.18)
+      EmbeddedSymbols    = 16,  //!< Retrieve any embedded feature symbology (since QGIS 3.20)
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -115,7 +124,7 @@ class CORE_EXPORT QgsFeatureRequest
 
     /**
      * \ingroup core
-     * The OrderByClause class represents an order by clause for a QgsFeatureRequest.
+     * \brief The OrderByClause class represents an order by clause for a QgsFeatureRequest.
      *
      * It can be a simple field or an expression. Multiple order by clauses can be added to
      * a QgsFeatureRequest to fine tune the behavior if a single field or expression is not
@@ -231,7 +240,7 @@ class CORE_EXPORT QgsFeatureRequest
 
     /**
      * \ingroup core
-     * Represents a list of OrderByClauses, with the most important first and the least
+     * \brief Represents a list of OrderByClauses, with the most important first and the least
      * important last.
      *
      * \since QGIS 2.14
@@ -314,12 +323,34 @@ class CORE_EXPORT QgsFeatureRequest
     //! Assignment operator
     QgsFeatureRequest &operator=( const QgsFeatureRequest &rh );
 
+    ~QgsFeatureRequest();
+
     /**
-     * Returns the filter type which is currently set on this request
+     * Returns the attribute/ID filter type which is currently set on this request.
      *
-     * \returns Filter type
+     * This type will automatically be set to the appropriate value whenever setFilterFid(),
+     * setFilterFids(), setFilterExpression() or disableFilter() are called.
+     *
+     * \note A feature request may have both an attribute/ID filter AND a spatial filter
+     * set. See spatialFilterType() to retrieve the spatial filter.
+     *
+     * \see spatialFilterType()
      */
     FilterType filterType() const { return mFilter; }
+
+    /**
+     * Returns the spatial filter type which is currently set on this request.
+     *
+     * This type will automatically be set to the appropriate value whenever setFilterRect(),
+     * or setDistanceWithin() are called.
+     *
+     * \note A feature request may have both an attribute/ID filter AND a spatial filter
+     * set. See filterType() to retrieve the attribute/ID filter.
+     *
+     * \see filterType()
+     * \since QGIS 3.22
+     */
+    Qgis::SpatialFilterType spatialFilterType() const { return mSpatialFilter; }
 
     /**
      * Sets the \a rectangle from which features will be taken. An empty rectangle removes the filter.
@@ -327,6 +358,9 @@ class CORE_EXPORT QgsFeatureRequest
      * When a destination CRS is set using setDestinationCrs(), \a rectangle
      * is expected to be in the same CRS as the destinationCrs(). Otherwise, \a rectangle
      * should use the same CRS as the source layer/provider.
+     *
+     * Calling this method will automatically set spatialFilterType() to Qgis::SpatialFilterType::BoundingBox.
+     * If \a rectangle is a null rectangle then spatialFilterType() will be reset to Qgis::SpatialFilterType::NoFilter.
      *
      * \see filterRect()
      */
@@ -336,22 +370,99 @@ class CORE_EXPORT QgsFeatureRequest
      * Returns the rectangle from which features will be taken. If the returned
      * rectangle is null, then no filter rectangle is set.
      *
+     * If spatialFilterType() is Qgis::SpatialFilterType::BoundingBox then only
+     * features from within this bounding box will be fetched. If spatialFilterType()
+     * is Qgis::SpatialFilterType::DistanceWithin then the returned rectangle
+     * represents the bounding box of the referenceGeometry() extended by distanceWithin().
+     *
      * When a destination CRS is set using setDestinationCrs(), the rectangle
      * will be in the same CRS as the destinationCrs(). Otherwise, the rectangle
      * will use the same CRS as the source layer/provider.
      *
      * \see setFilterRect()
      */
-    const QgsRectangle &filterRect() const { return mFilterRect; }
+    QgsRectangle filterRect() const;
 
-    //! Sets feature ID that should be fetched.
+    /**
+     * Sets a reference \a geometry and a maximum \a distance from this geometry to retrieve
+     * features within.
+     *
+     * When a destination CRS is set using setDestinationCrs(), \a geometry
+     * is expected to be in the same CRS as the destinationCrs() and \a distance is in
+     * the spatial units of the destinationCrs(). Otherwise, \a geometry
+     * should use the same CRS as the source layer/provider and \a distance
+     * should use the spatial units as this same CRS.
+     *
+     * Calling this method will automatically set spatialFilterType() to Qgis::SpatialFilterType::DistanceWithin.
+     *
+     * \see filterRect()
+     * \since QGIS 3.22
+     */
+    QgsFeatureRequest &setDistanceWithin( const QgsGeometry &geometry, double distance );
+
+    /**
+     * Returns the reference geometry used for spatial filtering of features.
+     *
+     * When spatialFilterType() is Qgis::SpatialFilterType::DistanceWithin then only
+     * features within distanceWithin() units of the reference geometry will be
+     * fetched.
+     *
+     * When a destination CRS is set using setDestinationCrs(), the geometry
+     * will be in the same CRS as the destinationCrs(). Otherwise, the geometry
+     * will use the same CRS as the source layer/provider.
+     *
+     * \see setDistanceWithin()
+     * \since QGIS 3.22
+     */
+    QgsGeometry referenceGeometry() const { return mReferenceGeometry; }
+
+    /**
+     * Returns the maximum distance from the referenceGeometry() of fetched
+     * features, if spatialFilterType() is Qgis::SpatialFilterType::DistanceWithin.
+     *
+     * When a destination CRS is set using setDestinationCrs(), the distance
+     * will be in the spatial units of destinationCrs(). Otherwise, the distance
+     * will use the same units as the CRS of the source layer/provider.
+     *
+     * \see setDistanceWithin()
+     * \since QGIS 3.22
+     */
+    double distanceWithin() const { return mDistanceWithin; }
+
+    /**
+     * Sets the feature ID that should be fetched.
+     *
+     * Calling this method will automatically set filterType() to QgsFeatureRequest::FilterFid.
+     *
+     * \see filterFid()
+     * \see setFilterFids()
+     */
     QgsFeatureRequest &setFilterFid( QgsFeatureId fid );
-    //! Gets the feature ID that should be fetched.
+
+    /**
+     * Returns the feature ID that should be fetched.
+     *
+     * \see setFilterFid()
+     * \see filterFids()
+     */
     QgsFeatureId filterFid() const { return mFilterFid; }
 
-    //! Sets feature IDs that should be fetched.
+    /**
+     * Sets the feature IDs that should be fetched.
+     *
+     * Calling this method will automatically set filterType() to QgsFeatureRequest::FilterFids.
+     *
+     * \see filterFids()
+     * \see setFilterFid()
+     */
     QgsFeatureRequest &setFilterFids( const QgsFeatureIds &fids );
-    //! Gets feature IDs that should be fetched.
+
+    /**
+     * Returns the feature IDs that should be fetched.
+     *
+     * \see setFilterFids()
+     * \see filterFid()
+     */
     const QgsFeatureIds &filterFids() const { return mFilterFids; }
 
     /**
@@ -423,17 +534,20 @@ class CORE_EXPORT QgsFeatureRequest
     AutoFixIntensity autofixFlag() const { return mAutofixFlag; }
 
     /**
-     * Set the filter expression. {\see QgsExpression}
+     * Set the filter \a expression. {\see QgsExpression}
      * \param expression expression string
-     * \see filterExpression
-     * \see setExpressionContext
+     *
+     * Calling this method will automatically set filterType() to QgsFeatureRequest::FilterExpression.
+     *
+     * \see filterExpression()
+     * \see setExpressionContext()
      */
     QgsFeatureRequest &setFilterExpression( const QString &expression );
 
     /**
-     * Returns the filter expression if set.
-     * \see setFilterExpression
-     * \see expressionContext
+     * Returns the filter expression (if set).
+     * \see setFilterExpression()
+     * \see expressionContext()
      */
     QgsExpression *filterExpression() const { return mFilterExpression.get(); }
 
@@ -441,6 +555,9 @@ class CORE_EXPORT QgsFeatureRequest
      * Modifies the existing filter expression to add an additional expression filter. The
      * filter expressions are combined using AND, so only features matching both
      * the existing expression and the additional expression will be returned.
+     *
+     * Calling this method will automatically set filterType() to QgsFeatureRequest::FilterExpression.
+     *
      * \since QGIS 2.14
      */
     QgsFeatureRequest &combineFilterExpression( const QString &expression );
@@ -462,8 +579,11 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureRequest &setExpressionContext( const QgsExpressionContext &context );
 
     /**
-     * Disables filter conditions.
-     * The spatial filter (filterRect) will be kept in place.
+     * Disables any attribute/ID filtering.
+     *
+     * Calling this method will automatically set filterType() to QgsFeatureRequest::FilterNone.
+     *
+     * \note Spatial filters will be left in place.
      *
      * \returns The object the method is called on for chaining
      *
@@ -515,18 +635,32 @@ class CORE_EXPORT QgsFeatureRequest
      * \see limit()
      * \since QGIS 2.14
      */
-    QgsFeatureRequest &setLimit( long limit );
+    QgsFeatureRequest &setLimit( long long limit );
 
     /**
      * Returns the maximum number of features to request, or -1 if no limit set.
      * \see setLimit
      * \since QGIS 2.14
      */
-    long limit() const { return mLimit; }
+#ifndef SIP_RUN
+    long long limit() const { return mLimit; }
+#else
+    long long limit() const;
+#endif
 
-    //! Sets flags that affect how features will be fetched
+    /**
+     * Sets \a flags that affect how features will be fetched.
+     *
+     * \see flags()
+     */
     QgsFeatureRequest &setFlags( QgsFeatureRequest::Flags flags );
-    const Flags &flags() const { return mFlags; }
+
+    /**
+     * Returns the flags which affect how features are fetched.
+     *
+     * \see setFlags()
+     */
+    Flags flags() const { return mFlags; }
 
     /**
      * Set a subset of attributes that will be fetched.
@@ -534,37 +668,59 @@ class CORE_EXPORT QgsFeatureRequest
      * An empty attributes list indicates that no attributes will be fetched.
      * To revert a call to setSubsetOfAttributes and fetch all available attributes,
      * the SubsetOfAttributes flag should be removed from the request.
+     *
+     * \see subsetOfAttributes()
+     * \see setNoAttributes()
      */
     QgsFeatureRequest &setSubsetOfAttributes( const QgsAttributeList &attrs );
 
     /**
      * Set that no attributes will be fetched.
+     *
      * To revert a call to setNoAttributes and fetch all or some available attributes,
      * the SubsetOfAttributes flag should be removed from the request.
+     *
+     * \see setSubsetOfAttributes()
+     *
      * \since QGIS 3.4
      */
     QgsFeatureRequest &setNoAttributes();
 
     /**
-     * Returns the subset of attributes which at least need to be fetched
+     * Returns the subset of attributes which at least need to be fetched.
      * \returns A list of attributes to be fetched
+     *
+     * \see setSubsetOfAttributes()
+     * \see setNoAttributes()
      */
     QgsAttributeList subsetOfAttributes() const { return mAttrs; }
 
-    //! Sets a subset of attributes by names that will be fetched
+    /**
+     * Sets a subset of attributes by names that will be fetched.
+     *
+     * \see subsetOfAttributes()
+     */
     QgsFeatureRequest &setSubsetOfAttributes( const QStringList &attrNames, const QgsFields &fields );
 
-    //! Sets a subset of attributes by names that will be fetched
+    /**
+     * Sets a subset of attributes by names that will be fetched.
+     *
+     * \see subsetOfAttributes()
+     */
     QgsFeatureRequest &setSubsetOfAttributes( const QSet<QString> &attrNames, const QgsFields &fields );
 
     /**
-     * Set a simplification method for geometries that will be fetched
+     * Set a simplification method for geometries that will be fetched.
+     *
+     * \see simplifyMethod()
      * \since QGIS 2.2
      */
     QgsFeatureRequest &setSimplifyMethod( const QgsSimplifyMethod &simplifyMethod );
 
     /**
-     * Gets simplification method for geometries that will be fetched
+     * Returns the simplification method for geometries that will be fetched.
+     *
+     * \see setSimplifyMethod()
      * \since QGIS 2.2
      */
     const QgsSimplifyMethod &simplifyMethod() const { return mSimplifyMethod; }
@@ -596,8 +752,8 @@ class CORE_EXPORT QgsFeatureRequest
      * and all features will be left with their original geometry.
      *
      * When a \a crs is set using setDestinationCrs(), then any filterRect()
-     * set on the request is expected to be in the same CRS as the destination
-     * CRS.
+     * or referenceGeometry() set on the request is expected to be in the
+     * same CRS as the destination CRS.
      *
      * The feature geometry transformation to the destination CRS is performed
      * after all filter expressions are tested and any virtual fields are
@@ -691,6 +847,7 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * \note Only works if the provider supports this option.
      *
+     * \see setTimeout()
      * \since QGIS 3.4
      */
     int timeout() const;
@@ -701,6 +858,7 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * \note Only works if the provider supports this option.
      *
+     * \see timeout()
      * \since QGIS 3.4
      */
     QgsFeatureRequest &setTimeout( int timeout );
@@ -715,6 +873,7 @@ class CORE_EXPORT QgsFeatureRequest
      * For example, this should be set on requests that are issued from an
      * expression function.
      *
+     * \see setRequestMayBeNested()
      * \since QGIS 3.4
      */
     bool requestMayBeNested() const;
@@ -729,13 +888,68 @@ class CORE_EXPORT QgsFeatureRequest
      * For example, this should be set on requests that are issued from an
      * expression function.
      *
+     * \see requestMayBeNested()
      * \since QGIS 3.4
      */
     QgsFeatureRequest &setRequestMayBeNested( bool requestMayBeNested );
 
+    /**
+     * Attach a \a feedback object that can be queried regularly by the iterator to check
+     * if it should be canceled.
+     *
+     * Ownership of \a feedback is NOT transferred, and the caller must take care that it exists
+     * for the lifetime of the feature request and feature iterators.
+     *
+     * \see feedback()
+     *
+     * \since QGIS 3.20
+     */
+    void setFeedback( QgsFeedback *feedback );
+
+    /**
+     * Returns the feedback object that can be queried regularly by the iterator to check
+     * if it should be canceled, if set.
+     *
+     * \see setFeedback()
+     *
+     * \since QGIS 3.20
+     */
+    QgsFeedback *feedback() const;
+
   protected:
+
+    /**
+     * Attribute/ID filter type.
+     */
     FilterType mFilter = FilterNone;
+
+    /**
+     * Spatial filter type.
+     *
+     * \since QGIS 3.22
+     */
+    Qgis::SpatialFilterType mSpatialFilter = Qgis::SpatialFilterType::NoFilter;
+
+    /**
+     * Bounding box for spatial filtering.
+     */
     QgsRectangle mFilterRect;
+
+    /**
+     * Reference geometry for Qgis::RequestSpatialFilter::DistanceWithin filtering.
+     */
+    QgsGeometry mReferenceGeometry;
+
+    /**
+     * Prepared geometry engine for mReferenceGeometry.
+     */
+    std::unique_ptr< QgsGeometryEngine > mReferenceGeometryEngine;
+
+    /**
+     * Maximum distance from reference geometry.
+     */
+    double mDistanceWithin = 0;
+
     QgsFeatureId mFilterFid = -1;
     QgsFeatureIds mFilterFids;
     std::unique_ptr< QgsExpression > mFilterExpression;
@@ -743,7 +957,7 @@ class CORE_EXPORT QgsFeatureRequest
     Flags mFlags = Flags();
     QgsAttributeList mAttrs;
     QgsSimplifyMethod mSimplifyMethod;
-    long mLimit = -1;
+    long long mLimit = -1;
     OrderBy mOrderBy;
     InvalidGeometryCheck mInvalidGeometryFilter = GeometryNoCheck;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
@@ -753,6 +967,7 @@ class CORE_EXPORT QgsFeatureRequest
     int mTimeout = -1;
     AutoFixIntensity mAutofixFlag = FixAtAllCosts;
     int mRequestMayBeNested = false;
+    QgsFeedback *mFeedback = nullptr;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )
@@ -763,7 +978,7 @@ class QgsAbstractFeatureIterator;
 
 /**
  * \ingroup core
- * Base class that can be used for any class that is capable of returning features
+ * \brief Base class that can be used for any class that is capable of returning features
  * \since QGIS 2.4
  */
 class CORE_EXPORT QgsAbstractFeatureSource
@@ -771,12 +986,19 @@ class CORE_EXPORT QgsAbstractFeatureSource
   public:
     virtual ~QgsAbstractFeatureSource();
 
+
+    // IMPORTANT -- do NOT remove the /TransferBack/ annotation here -- while it looks completely wrong, it's
+    // required for Python data providers to work correctly! Argh!
+
     /**
      * Gets an iterator for features matching the specified request
      * \param request The request
      * \returns A feature iterator
      */
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) = 0;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) = 0 SIP_TRANSFERBACK;
+
+    // IMPORTANT -- do NOT remove the /TransferBack/ annotation here -- while it looks completely wrong, it's
+    // required for Python data providers to work correctly! Argh!
 
   protected:
     void iteratorOpened( QgsAbstractFeatureIterator *it );

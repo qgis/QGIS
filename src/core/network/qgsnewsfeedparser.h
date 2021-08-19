@@ -17,6 +17,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgssettingsentry.h"
 #include <QObject>
 #include <QUrl>
 #include <QPixmap>
@@ -26,7 +27,7 @@ class QgsNetworkContentFetcher;
 
 /**
  * \ingroup core
- * Parser for published QGIS news feeds.
+ * \brief Parser for published QGIS news feeds.
  *
  * This class is designed to work with the specialized QGIS news feed API. See
  * https://github.com/elpaso/qgis-feed.
@@ -39,7 +40,7 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
   public:
 
     /**
-     * Represents a single entry from a news feed.
+     * \brief Represents a single entry from a news feed.
      * \ingroup core
      * \since QGIS 3.10
      */
@@ -109,6 +110,17 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
      * Returns the settings key used for a feed with the given \a baseUrl.
      */
     static QString keyForFeed( const QString &baseUrl );
+
+#ifndef SIP_RUN
+    //! Settings entry last fetch time
+    static const inline QgsSettingsEntryInteger settingsFeedLastFetchTime = QgsSettingsEntryInteger( QStringLiteral( "%1/lastFetchTime" ), QgsSettings::Core, 0, QObject::tr( "Feed last fetch time" ), 0 );
+    //! Settings entry feed language
+    static const inline QgsSettingsEntryString settingsFeedLanguage = QgsSettingsEntryString( QStringLiteral( "%1/lang" ), QgsSettings::Core, QString(), QObject::tr( "Feed language" ) );
+    //! Settings entry feed latitude
+    static const inline QgsSettingsEntryDouble settingsFeedLatitude = QgsSettingsEntryDouble( QStringLiteral( "%1/latitude" ), QgsSettings::Core, 0.0, QObject::tr( "Feed latitude" ) );
+    //! Settings entry feed longitude
+    static const inline QgsSettingsEntryDouble settingsFeedLongitude = QgsSettingsEntryDouble( QStringLiteral( "%1/longitude" ), QgsSettings::Core, 0.0, QObject::tr( "Feed longitude" ) );
+#endif
 
   public slots:
 

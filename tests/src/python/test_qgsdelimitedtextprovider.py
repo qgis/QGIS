@@ -574,7 +574,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
     def test_018_regular_expression_2(self):
         # Parsing regular expression delimiter with capture groups
         filename = 'testre.txt'
-        params = {'geomType': 'none', 'trimFields': 'Y', 'delimiter': '(RE)(GEXP)?', 'type': 'regexp'}
+        params = {'geomType': 'none', 'trimFields': 'Y', 'delimiter': '(RE)((?:GEXP)?)', 'type': 'regexp'}
         requests = None
         self.runTest(filename, requests, **params)
 
@@ -951,13 +951,22 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
         vl.dataProvider().createSpatialIndex()
         self.assertEqual(vl.hasSpatialIndex(), QgsFeatureSource.SpatialIndexPresent)
 
-    def testEncodeuri(self):
+    def testEncodeDecodeUri(self):
+        registry = QgsProviderRegistry.instance()
+
         # URI decoding
         filename = '/home/to/path/test.csv'
-        registry = QgsProviderRegistry.instance()
         parts = {'path': filename}
         uri = registry.encodeUri('delimitedtext', parts)
         self.assertEqual(uri, 'file://' + filename)
+
+        # URI encoding / decoding with unicode characters
+        filename = '/höme/to/path/pöints.txt'
+        parts = {'path': filename}
+        uri = registry.encodeUri('delimitedtext', parts)
+        self.assertEqual(uri, 'file:///h%C3%B6me/to/path/p%C3%B6ints.txt')
+        parts = registry.decodeUri('delimitedtext', uri)
+        self.assertEqual(parts['path'], filename)
 
     def testCREndOfLineAndWorkingBuffer(self):
         # Test CSV file with \r (CR) endings

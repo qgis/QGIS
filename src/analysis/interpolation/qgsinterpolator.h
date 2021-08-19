@@ -29,6 +29,12 @@ class QgsFeatureSource;
 class QgsGeometry;
 class QgsFeedback;
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include "qgsinterpolator.h"
+% End
+#endif
+
 /**
  * Interpolation data for an individual source vertex.
  * \since QGIS 3.0
@@ -59,7 +65,9 @@ struct ANALYSIS_EXPORT QgsInterpolatorVertexData
 
 /**
  * \ingroup analysis
- * Interface class for interpolations. Interpolators take
+ * \brief Interface class for interpolations.
+ *
+ * Interpolators take
  * the vertices of a vector layer as base data. The z-Value
  * can be an attribute or the z-coordinates in case of 3D types.
 */

@@ -61,9 +61,6 @@ extern "C"
 #if defined(_MSC_VER) && defined(M_PI_4)
 #undef M_PI_4 //avoid redefinition warning
 #endif
-#if defined(PROJ_VERSION_MAJOR) && PROJ_VERSION_MAJOR>=6
-#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
-#endif
 #include <grass/gprojects.h>
 #include <grass/gis.h>
 #include <grass/dbmi.h>
@@ -283,7 +280,7 @@ QgsVectorDataProvider::Capabilities QgsGrassProvider::capabilities() const
 #ifndef Q_OS_WIN
   if ( sEditedCount > 0 && !mEditBuffer )
   {
-    return nullptr;
+    return QgsVectorDataProvider::Capabilities();
   }
 #endif
   // for now, only one map may be edited at time
@@ -291,7 +288,7 @@ QgsVectorDataProvider::Capabilities QgsGrassProvider::capabilities() const
   {
     return AddFeatures | DeleteFeatures | ChangeGeometries | AddAttributes | DeleteAttributes | ChangeAttributeValues;
   }
-  return nullptr;
+  return QgsVectorDataProvider::Capabilities();
 }
 
 bool QgsGrassProvider::openLayer()
@@ -431,7 +428,7 @@ QgsWkbTypes::Type QgsGrassProvider::wkbType() const
   return mQgisType;
 }
 
-long QgsGrassProvider::featureCount() const
+long long QgsGrassProvider::featureCount() const
 {
   return mNumberFeatures;
 }

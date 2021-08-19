@@ -94,6 +94,11 @@ class QgsHanaConnectionRef
     QgsHanaConnectionRef() = default;
     QgsHanaConnectionRef( const QString &name );
     QgsHanaConnectionRef( const QgsDataSourceUri &uri );
+
+    QgsHanaConnectionRef( QgsHanaConnectionRef &&other ) = default;
+    QgsHanaConnectionRef &operator=( QgsHanaConnectionRef && ) = delete;
+    Q_DISABLE_COPY( QgsHanaConnectionRef )
+
     ~QgsHanaConnectionRef();
 
     bool isNull() const { return mConnection.get() == nullptr; }

@@ -16,10 +16,10 @@ email                : jpalmer at linz dot govt dot nz
 #ifndef QGSMAPTOOLSELECTUTILS_H
 #define QGSMAPTOOLSELECTUTILS_H
 
-#include <Qt>
 #include <QRect>
 #include <QPoint>
 #include <QList>
+#include <QFutureWatcher>
 
 #include "qgsvectorlayer.h"
 
@@ -33,7 +33,7 @@ class QMenu;
 class QgsHighlight;
 
 /**
-  Namespace containing methods which are useful for the select maptool widgets
+ * Namespace containing methods which are useful for the select maptool widgets
  */
 namespace QgsMapToolSelectUtils
 {
@@ -41,11 +41,11 @@ namespace QgsMapToolSelectUtils
   /**
    * Calculates a list of features matching a selection geometry and flags.
    * \param canvas the map canvas used to get the current selected vector layer and
-    for any required geometry transformations
+   * for any required geometry transformations
    * \param selectGeometry the geometry to select the layers features. This geometry
-    must be in terms of the canvas coordinate system.
+   * must be in terms of the canvas coordinate system.
    * \param doContains features will only be selected if fully contained within
-    the selection rubber band (otherwise intersection is enough).
+   * the selection rubber band (otherwise intersection is enough).
    * \param singleSelect only selects the closest feature to the selectGeometry.
    * \returns list of features which match search geometry and parameters
    * \since QGIS 2.16
@@ -66,7 +66,7 @@ namespace QgsMapToolSelectUtils
   */
   void setSelectedFeatures( QgsMapCanvas *canvas,
                             const QgsGeometry &selectGeometry,
-                            QgsVectorLayer::SelectBehavior selectBehavior = QgsVectorLayer::SetSelection,
+                            Qgis::SelectBehavior selectBehavior = Qgis::SelectBehavior::SetSelection,
                             bool doContains = true,
                             bool singleSelect = false );
 
@@ -138,8 +138,8 @@ namespace QgsMapToolSelectUtils
       */
       QgsMapToolSelectMenuActions( QgsMapCanvas *canvas,
                                    QgsVectorLayer *vectorLayer,
-                                   QgsVectorLayer::SelectBehavior behavior,
-                                   QgsGeometry selectionGeometry,
+                                   Qgis::SelectBehavior behavior,
+                                   const QgsGeometry &selectionGeometry,
                                    QObject *parent = nullptr );
 
 
@@ -161,7 +161,7 @@ namespace QgsMapToolSelectUtils
     private:
       QgsMapCanvas *mCanvas = nullptr;
       QgsVectorLayer *mVectorLayer = nullptr;
-      QgsVectorLayer::SelectBehavior mBehavior = QgsVectorLayer::SetSelection;
+      Qgis::SelectBehavior mBehavior = Qgis::SelectBehavior::SetSelection;
       QgsGeometry mSelectGeometry;
       QAction *mActionChooseAll = nullptr;
       QMenu *mMenuChooseOne = nullptr;
@@ -179,7 +179,7 @@ namespace QgsMapToolSelectUtils
 
       static QgsFeatureIds filterIds( const QgsFeatureIds &ids,
                                       const QgsFeatureIds &existingSelection,
-                                      QgsVectorLayer::SelectBehavior behavior );
+                                      Qgis::SelectBehavior behavior );
 
       struct DataForSearchingJob
       {
@@ -190,7 +190,7 @@ namespace QgsMapToolSelectUtils
         QgsRenderContext context;
         std::unique_ptr<QgsFeatureRenderer> featureRenderer;
         QString filterString;
-        QgsVectorLayer::SelectBehavior selectBehavior;
+        Qgis::SelectBehavior selectBehavior;
         QgsFeatureIds existingSelection;
       };
 

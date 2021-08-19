@@ -10,7 +10,7 @@
 
 class QgsAttributeEditorRelation : QgsAttributeEditorElement
 {
-%Docstring
+%Docstring(signature="appended")
 This element will load a relation editor onto the form.
 %End
 
@@ -163,7 +163,6 @@ Sets the relation editor configuration
 };
 
 QFlags<QgsAttributeEditorRelation::Button> operator|(QgsAttributeEditorRelation::Button f1, QFlags<QgsAttributeEditorRelation::Button> f2);
-
 
 
 /************************************************************************

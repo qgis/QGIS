@@ -15,6 +15,7 @@ import qgis  # NOQA
 from qgis.PyQt.QtGui import (QColor)
 from qgis.core import (QgsMapBoxGlStyleConverter,
                        QgsMapBoxGlStyleConversionContext,
+                       QgsWkbTypes,
                        QgsEffectStack
                        )
 
@@ -547,6 +548,47 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertTrue(has_labeling)
         self.assertEqual(labeling.labelSettings().fieldName, '''lower(concat(concat("name_en",' - ',"name_fr"),"bar"))''')
         self.assertTrue(labeling.labelSettings().isExpression)
+
+    def testCircleLayer(self):
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "id": "cicle_layer",
+            "type": "circle",
+            "paint": {
+                "circle-stroke-color": "rgba(46, 46, 46, 1)",
+                "circle-stroke-opacity": 0.5,
+                "circle-stroke-width": 3,
+                "circle-color": "rgba(22, 22, 22, 1)",
+                "circle-opacity": 0.6,
+                "circle-radius": 33,
+                "circle-translate": [11, 22]
+            }
+        }
+        has_renderer, rendererStyle = QgsMapBoxGlStyleConverter.parseCircleLayer(style, context)
+        self.assertTrue(has_renderer)
+        self.assertEqual(rendererStyle.geometryType(), QgsWkbTypes.PointGeometry)
+        properties = rendererStyle.symbol().symbolLayers()[0].properties()
+        expected_properties = {
+            'angle': '0',
+            'cap_style': 'square',
+            'color': '22,22,22,153',
+            'horizontal_anchor_point': '1',
+            'joinstyle': 'bevel',
+            'name': 'circle',
+            'offset': '11,22',
+            'offset_map_unit_scale': '3x:0,0,0,0,0,0',
+            'offset_unit': 'Pixel',
+            'outline_color': '46,46,46,128',
+            'outline_style': 'solid',
+            'outline_width': '3',
+            'outline_width_map_unit_scale': '3x:0,0,0,0,0,0',
+            'outline_width_unit': 'Pixel',
+            'scale_method': 'diameter',
+            'size': '66',
+            'size_map_unit_scale': '3x:0,0,0,0,0,0',
+            'size_unit': 'Pixel',
+            'vertical_anchor_point': '1'}
+        self.assertEqual(properties, expected_properties)
 
 
 if __name__ == '__main__':

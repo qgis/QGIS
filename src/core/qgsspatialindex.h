@@ -53,7 +53,7 @@ class QgsFeatureSource;
  * \ingroup core
  * \class QgsSpatialIndex
  *
- * A spatial index for QgsFeature objects.
+ * \brief A spatial index for QgsFeature objects.
  *
  * QgsSpatialIndex objects are implicitly shared and can be inexpensively copied.
  *
@@ -243,16 +243,17 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
 #else
 
     /**
-     * Returns the stored geometry for the indexed feature with matching \a id. A KeyError will be raised if no
-     * geometry with the specified feature id exists in the index.
+     * Returns the stored geometry for the indexed feature with matching \a id.
      *
      * Geometry is only stored if the QgsSpatialIndex was created with the FlagStoreFeatureGeometries flag.
+     *
+     * \throws KeyError if no geometry with the specified feature id exists in the index.
      *
      * \since QGIS 3.6
      */
     SIP_PYOBJECT geometry( QgsFeatureId id ) const SIP_TYPEHINT( QgsGeometry );
     % MethodCode
-    std::unique_ptr< QgsGeometry > g = qgis::make_unique< QgsGeometry >( sipCpp->geometry( a0 ) );
+    std::unique_ptr< QgsGeometry > g = std::make_unique< QgsGeometry >( sipCpp->geometry( a0 ) );
     if ( g->isNull() )
     {
       PyErr_SetString( PyExc_KeyError, QStringLiteral( "No geometry with feature id %1 exists in the index." ).arg( a0 ).toUtf8().constData() );

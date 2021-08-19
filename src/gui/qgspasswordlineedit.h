@@ -26,7 +26,7 @@
 /**
  * \class QgsPasswordLineEdit
  * \ingroup gui
- * QLineEdit subclass with built in support for showing/hiding
+ * \brief QLineEdit subclass with built in support for showing/hiding
  * entered password.
  * \since QGIS 3.0
  */

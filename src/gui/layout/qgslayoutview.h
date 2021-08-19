@@ -22,6 +22,7 @@
 #include "qgis_gui.h"
 #include "qgslayoutitempage.h"
 #include "qgslayoutaligner.h"
+#include "qgslayoutviewtool.h"
 #include <QPointer>
 #include <QGraphicsView>
 #include <QGraphicsRectItem>
@@ -29,7 +30,6 @@
 
 class QMenu;
 class QgsLayout;
-class QgsLayoutViewTool;
 class QgsLayoutViewToolTemporaryKeyPan;
 class QgsLayoutViewToolTemporaryKeyZoom;
 class QgsLayoutViewToolTemporaryMousePan;
@@ -40,7 +40,7 @@ class QgsLayoutReportSectionLabel;
 
 /**
  * \ingroup gui
- * A graphical widget to display and interact with QgsLayouts.
+ * \brief A graphical widget to display and interact with QgsLayouts.
  *
  * QgsLayoutView manages the layout interaction tools and mouse/key events.
  *
@@ -544,10 +544,12 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     void scrollContentsBy( int dx, int dy ) override;
     void dragEnterEvent( QDragEnterEvent *e ) override;
     void paintEvent( QPaintEvent *event ) override;
+    void showEvent( QShowEvent *event ) override;
 
   private slots:
 
     void invalidateCachedRenders();
+    void updateDevicePixelFromScreen();
 
   private:
 
@@ -578,6 +580,9 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
 
     bool mPaintingEnabled = true;
 
+    double mScreenDpi = 96.0;
+    QMetaObject::Connection mScreenDpiChangedConnection;
+
     friend class TestQgsLayoutView;
     friend class QgsLayoutMouseHandles;
 
@@ -588,7 +593,7 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
 /**
  * \ingroup gui
  *
- * Interface for a QgsLayoutView context menu.
+ * \brief Interface for a QgsLayoutView context menu.
  *
  * Implementations of this interface can be made to allow QgsLayoutView
  * instances to provide custom context menus (opened upon right-click).
@@ -612,7 +617,7 @@ class GUI_EXPORT QgsLayoutViewMenuProvider
 
 /**
  * \ingroup gui
- * A simple graphics item rendered as an 'x'.
+ * \brief A simple graphics item rendered as an 'x'.
  */
 class GUI_EXPORT QgsLayoutViewSnapMarker : public QGraphicsRectItem
 {

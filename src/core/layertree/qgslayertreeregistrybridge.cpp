@@ -30,7 +30,7 @@ QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root,
   , mInsertionPoint( root, 0 )
 {
   connect( mProject, &QgsProject::legendLayersAdded, this, &QgsLayerTreeRegistryBridge::layersAdded );
-  connect( mProject, qgis::overload<const QStringList &>::of<QgsProject>( &QgsProject::layersWillBeRemoved ), this, &QgsLayerTreeRegistryBridge::layersWillBeRemoved );
+  connect( mProject, qOverload<const QStringList &>( &QgsProject::layersWillBeRemoved ), this, &QgsLayerTreeRegistryBridge::layersWillBeRemoved );
 
   connect( mRoot, &QgsLayerTreeNode::willRemoveChildren, this, &QgsLayerTreeRegistryBridge::groupWillRemoveChildren );
   connect( mRoot, &QgsLayerTreeNode::removedChildren, this, &QgsLayerTreeRegistryBridge::groupRemovedChildren );
@@ -53,8 +53,7 @@ void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer *> &layers
     return;
 
   QList<QgsLayerTreeNode *> nodes;
-  const auto constLayers = layers;
-  for ( QgsMapLayer *layer : constLayers )
+  for ( QgsMapLayer *layer : layers )
   {
     QgsLayerTreeLayer *nodeLayer = new QgsLayerTreeLayer( layer );
     nodeLayer->setItemVisibilityChecked( mNewLayersVisible );
@@ -62,7 +61,7 @@ void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer *> &layers
     nodes << nodeLayer;
 
     // check whether the layer is marked as embedded
-    QString projectFile = mProject->layerIsEmbedded( nodeLayer->layerId() );
+    const QString projectFile = mProject->layerIsEmbedded( nodeLayer->layerId() );
     if ( !projectFile.isEmpty() )
     {
       nodeLayer->setCustomProperty( QStringLiteral( "embedded" ), 1 );

@@ -12,7 +12,7 @@
 
 class QgsAuxiliaryLayer : QgsVectorLayer
 {
-%Docstring
+%Docstring(signature="appended")
 
 
 Class allowing to manage the auxiliary storage for a vector layer.
@@ -60,6 +60,7 @@ Constructor
     QString str = QStringLiteral( "<QgsAuxiliaryLayer: '%1'>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
+
 
     QgsAuxiliaryLayer *clone( QgsVectorLayer *layer ) const /Factory/;
 %Docstring
@@ -192,6 +193,19 @@ activates this property in settings.
 :return: The index of the auxiliary field or -1
 %End
 
+    static int createProperty( QgsCallout::Property property, QgsVectorLayer *vlayer );
+%Docstring
+Creates if necessary a new auxiliary field for a callout's property and
+activates this property in settings.
+
+:param property: The property to create
+:param vlayer: The vector layer
+
+:return: The index of the auxiliary field or -1
+
+.. versionadded:: 3.20
+%End
+
     static QgsField createAuxiliaryField( const QgsPropertyDefinition &definition );
 %Docstring
 Creates a new auxiliary field from a property definition.
@@ -226,7 +240,7 @@ Returns the property definition from an auxiliary field.
 
 class QgsAuxiliaryStorage
 {
-%Docstring
+%Docstring(signature="appended")
 
 
 Class providing some utility methods to manage auxiliary storage.

@@ -137,26 +137,27 @@ void QgsCodeEditorExpression::updateApis()
 {
   mApis = new QgsSciApisExpression( mSqlLexer );
 
-  for ( const QString &var : qgis::as_const( mVariables ) )
+  for ( const QString &var : std::as_const( mVariables ) )
   {
     mApis->add( var );
   }
 
-  for ( const QString &function : qgis::as_const( mContextFunctions ) )
+  for ( const QString &function : std::as_const( mContextFunctions ) )
   {
     mApis->add( function );
   }
 
-  for ( const QString &function : qgis::as_const( mFunctions ) )
+  for ( const QString &function : std::as_const( mFunctions ) )
   {
     mApis->add( function );
   }
 
-  for ( const QString &fieldName : qgis::as_const( mFieldNames ) )
+  for ( const QString &fieldName : std::as_const( mFieldNames ) )
   {
     mApis->add( fieldName );
   }
 
+  mApis->add( QString( "NULL" ) );
   mApis->prepare();
   mSqlLexer->setAPIs( mApis );
 }
@@ -165,6 +166,7 @@ void QgsCodeEditorExpression::updateApis()
 QgsLexerExpression::QgsLexerExpression( QObject *parent )
   : QsciLexerSQL( parent )
 {
+  setBackslashEscapes( true );
 }
 
 const char *QgsLexerExpression::language() const

@@ -6,5 +6,5 @@
   "arguments": [ {"arg":"geometry","description":"a linestring or curve geometry"},
                  {"arg":"start_distance","description":"distance to start of substring"},
                  {"arg":"end_distance","description":"distance to end of substring"}],
-  "examples": [ { "expression":"geom_to_wkt(line_substring(geometry:=geom_from_wkt('LineString(0 0, 10 0)'),start_distance:=2,end_distance=6))", "returns":"'LineString (2 0,6 0)'"}]
+  "examples": [ { "expression":"geom_to_wkt(line_substring(geometry:=geom_from_wkt('LineString(0 0, 10 0)'),start_distance:=2,end_distance:=6))", "returns":"'LineString (2 0,6 0)'"}]
 }

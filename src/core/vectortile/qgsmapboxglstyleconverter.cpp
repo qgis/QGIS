@@ -33,7 +33,12 @@
 #include "qgsblureffect.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgstextbackgroundsettings.h"
+#include "qgsfillsymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
 
+#include <QBuffer>
+#include <QRegularExpression>
 
 QgsMapBoxGlStyleConverter::QgsMapBoxGlStyleConverter()
 {
@@ -67,7 +72,7 @@ void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers, QgsMapB
   std::unique_ptr< QgsMapBoxGlStyleConversionContext > tmpContext;
   if ( !context )
   {
-    tmpContext = qgis::make_unique< QgsMapBoxGlStyleConversionContext >();
+    tmpContext = std::make_unique< QgsMapBoxGlStyleConversionContext >();
     context = tmpContext.get();
   }
 
@@ -110,6 +115,10 @@ void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers, QgsMapB
     {
       hasRendererStyle = parseLineLayer( jsonLayer, rendererStyle, *context );
     }
+    else if ( layerType == QLatin1String( "circle" ) )
+    {
+      hasRendererStyle = parseCircleLayer( jsonLayer, rendererStyle, *context );
+    }
     else if ( layerType == QLatin1String( "symbol" ) )
     {
       parseSymbolLayer( jsonLayer, rendererStyle, hasRendererStyle, labelingStyle, hasLabelingStyle, *context );
@@ -147,11 +156,11 @@ void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers, QgsMapB
     context->clearWarnings();
   }
 
-  mRenderer = qgis::make_unique< QgsVectorTileBasicRenderer >();
+  mRenderer = std::make_unique< QgsVectorTileBasicRenderer >();
   QgsVectorTileBasicRenderer *renderer = dynamic_cast< QgsVectorTileBasicRenderer *>( mRenderer.get() );
   renderer->setStyles( rendererStyles );
 
-  mLabeling = qgis::make_unique< QgsVectorTileBasicLabeling >();
+  mLabeling = std::make_unique< QgsVectorTileBasicLabeling >();
   QgsVectorTileBasicLabeling *labeling = dynamic_cast< QgsVectorTileBasicLabeling * >( mLabeling.get() );
   labeling->setStyles( labelingStyles );
 }
@@ -309,8 +318,9 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
     }
   }
 
-  std::unique_ptr< QgsSymbol > symbol( QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry ) );
+  std::unique_ptr< QgsSymbol > symbol( std::make_unique< QgsFillSymbol >() );
   QgsSimpleFillSymbolLayer *fillSymbol = dynamic_cast< QgsSimpleFillSymbolLayer * >( symbol->symbolLayer( 0 ) );
+  Q_ASSERT( fillSymbol ); // should not fail since QgsFillSymbol() constructor instantiates a QgsSimpleFillSymbolLayer
 
   // set render units
   symbol->setOutputUnit( context.targetUnit() );
@@ -588,8 +598,9 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
     }
   }
 
-  std::unique_ptr< QgsSymbol > symbol( QgsSymbol::defaultSymbol( QgsWkbTypes::LineGeometry ) );
+  std::unique_ptr< QgsSymbol > symbol( std::make_unique< QgsLineSymbol >() );
   QgsSimpleLineSymbolLayer *lineSymbol = dynamic_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) );
+  Q_ASSERT( lineSymbol ); // should not fail since QgsLineSymbol() constructor instantiates a QgsSimpleLineSymbolLayer
 
   // set render units
   symbol->setOutputUnit( context.targetUnit() );
@@ -623,6 +634,252 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
   return true;
 }
 
+bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style, QgsMapBoxGlStyleConversionContext &context )
+{
+  if ( !jsonLayer.contains( QStringLiteral( "paint" ) ) )
+  {
+    context.pushWarning( QObject::tr( "%1: Style has no paint property, skipping" ).arg( context.layerId() ) );
+    return false;
+  }
+
+  const QVariantMap jsonPaint = jsonLayer.value( QStringLiteral( "paint" ) ).toMap();
+  QgsPropertyCollection ddProperties;
+
+  // circle color
+  QColor circleFillColor;
+  if ( jsonPaint.contains( QStringLiteral( "circle-color" ) ) )
+  {
+    const QVariant jsonCircleColor = jsonPaint.value( QStringLiteral( "circle-color" ) );
+    switch ( jsonCircleColor.type() )
+    {
+      case QVariant::Map:
+        ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseInterpolateColorByZoom( jsonCircleColor.toMap(), context, &circleFillColor ) );
+        break;
+
+      case QVariant::List:
+      case QVariant::StringList:
+        ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseValueList( jsonCircleColor.toList(), PropertyType::Color, context, 1, 255, &circleFillColor ) );
+        break;
+
+      case QVariant::String:
+        circleFillColor = parseColor( jsonCircleColor.toString(), context );
+        break;
+
+      default:
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported circle-color type (%2)" ).arg( context.layerId(), QMetaType::typeName( jsonCircleColor.type() ) ) );
+        break;
+    }
+  }
+  else
+  {
+    // defaults to #000000
+    circleFillColor = QColor( 0, 0, 0 );
+  }
+
+  // circle radius
+  double circleDiameter = 10.0;
+  if ( jsonPaint.contains( QStringLiteral( "circle-radius" ) ) )
+  {
+    const QVariant jsonCircleRadius = jsonPaint.value( QStringLiteral( "circle-radius" ) );
+    switch ( jsonCircleRadius.type() )
+    {
+      case QVariant::Int:
+      case QVariant::Double:
+        circleDiameter = jsonCircleRadius.toDouble() * context.pixelSizeConversionFactor() * 2;
+        break;
+
+      case QVariant::Map:
+        circleDiameter = -1;
+        ddProperties.setProperty( QgsSymbolLayer::PropertyWidth, parseInterpolateByZoom( jsonCircleRadius.toMap(), context, context.pixelSizeConversionFactor() * 2, &circleDiameter ) );
+        break;
+
+      case QVariant::List:
+      case QVariant::StringList:
+        ddProperties.setProperty( QgsSymbolLayer::PropertyWidth, parseValueList( jsonCircleRadius.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor() * 2, 255, nullptr, &circleDiameter ) );
+        break;
+
+      default:
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported circle-radius type (%2)" ).arg( context.layerId(), QMetaType::typeName( jsonCircleRadius.type() ) ) );
+        break;
+    }
+  }
+
+  double circleOpacity = -1.0;
+  if ( jsonPaint.contains( QStringLiteral( "circle-opacity" ) ) )
+  {
+    const QVariant jsonCircleOpacity = jsonPaint.value( QStringLiteral( "circle-opacity" ) );
+    switch ( jsonCircleOpacity.type() )
+    {
+      case QVariant::Int:
+      case QVariant::Double:
+        circleOpacity = jsonCircleOpacity.toDouble();
+        break;
+
+      case QVariant::Map:
+        ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseInterpolateOpacityByZoom( jsonCircleOpacity.toMap(), circleFillColor.isValid() ? circleFillColor.alpha() : 255 ) );
+        break;
+
+      case QVariant::List:
+      case QVariant::StringList:
+        ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseValueList( jsonCircleOpacity.toList(), PropertyType::Opacity, context, 1, circleFillColor.isValid() ? circleFillColor.alpha() : 255 ) );
+        break;
+
+      default:
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported circle-opacity type (%2)" ).arg( context.layerId(), QMetaType::typeName( jsonCircleOpacity.type() ) ) );
+        break;
+    }
+  }
+  if ( ( circleOpacity != -1 ) && circleFillColor.isValid() )
+  {
+    circleFillColor.setAlphaF( circleOpacity );
+  }
+
+  // circle stroke color
+  QColor circleStrokeColor;
+  if ( jsonPaint.contains( QStringLiteral( "circle-stroke-color" ) ) )
+  {
+    const QVariant jsonCircleStrokeColor = jsonPaint.value( QStringLiteral( "circle-stroke-color" ) );
+    switch ( jsonCircleStrokeColor.type() )
+    {
+      case QVariant::Map:
+        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseInterpolateColorByZoom( jsonCircleStrokeColor.toMap(), context, &circleStrokeColor ) );
+        break;
+
+      case QVariant::List:
+      case QVariant::StringList:
+        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseValueList( jsonCircleStrokeColor.toList(), PropertyType::Color, context, 1, 255, &circleStrokeColor ) );
+        break;
+
+      case QVariant::String:
+        circleStrokeColor = parseColor( jsonCircleStrokeColor.toString(), context );
+        break;
+
+      default:
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported circle-stroke-color type (%2)" ).arg( context.layerId(), QMetaType::typeName( jsonCircleStrokeColor.type() ) ) );
+        break;
+    }
+  }
+
+  // circle stroke width
+  double circleStrokeWidth = -1.0;
+  if ( jsonPaint.contains( QStringLiteral( "circle-stroke-width" ) ) )
+  {
+    const QVariant circleStrokeWidthJson = jsonPaint.value( QStringLiteral( "circle-stroke-width" ) );
+    switch ( circleStrokeWidthJson.type() )
+    {
+      case QVariant::Int:
+      case QVariant::Double:
+        circleStrokeWidth = circleStrokeWidthJson.toDouble() * context.pixelSizeConversionFactor();
+        break;
+
+      case QVariant::Map:
+        circleStrokeWidth = -1.0;
+        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeWidth, parseInterpolateByZoom( circleStrokeWidthJson.toMap(), context, context.pixelSizeConversionFactor(), &circleStrokeWidth ) );
+        break;
+
+      case QVariant::List:
+      case QVariant::StringList:
+        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeWidth, parseValueList( circleStrokeWidthJson.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), 255, nullptr, &circleStrokeWidth ) );
+        break;
+
+      default:
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported circle-stroke-width type (%2)" ).arg( context.layerId(), QMetaType::typeName( circleStrokeWidthJson.type() ) ) );
+        break;
+    }
+  }
+
+  double circleStrokeOpacity = -1.0;
+  if ( jsonPaint.contains( QStringLiteral( "circle-stroke-opacity" ) ) )
+  {
+    const QVariant jsonCircleStrokeOpacity = jsonPaint.value( QStringLiteral( "circle-stroke-opacity" ) );
+    switch ( jsonCircleStrokeOpacity.type() )
+    {
+      case QVariant::Int:
+      case QVariant::Double:
+        circleStrokeOpacity = jsonCircleStrokeOpacity.toDouble();
+        break;
+
+      case QVariant::Map:
+        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseInterpolateOpacityByZoom( jsonCircleStrokeOpacity.toMap(), circleStrokeColor.isValid() ? circleStrokeColor.alpha() : 255 ) );
+        break;
+
+      case QVariant::List:
+      case QVariant::StringList:
+        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseValueList( jsonCircleStrokeOpacity.toList(), PropertyType::Opacity, context, 1, circleStrokeColor.isValid() ? circleStrokeColor.alpha() : 255 ) );
+        break;
+
+      default:
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported circle-stroke-opacity type (%2)" ).arg( context.layerId(), QMetaType::typeName( jsonCircleStrokeOpacity.type() ) ) );
+        break;
+    }
+  }
+  if ( ( circleStrokeOpacity != -1 ) && circleStrokeColor.isValid() )
+  {
+    circleStrokeColor.setAlphaF( circleStrokeOpacity );
+  }
+
+  // translate
+  QPointF circleTranslate;
+  if ( jsonPaint.contains( QStringLiteral( "circle-translate" ) ) )
+  {
+    const QVariant jsonCircleTranslate = jsonPaint.value( QStringLiteral( "circle-translate" ) );
+    switch ( jsonCircleTranslate.type() )
+    {
+
+      case QVariant::Map:
+        ddProperties.setProperty( QgsSymbolLayer::PropertyOffset, parseInterpolatePointByZoom( jsonCircleTranslate.toMap(), context, context.pixelSizeConversionFactor(), &circleTranslate ) );
+        break;
+
+      case QVariant::List:
+      case QVariant::StringList:
+        circleTranslate = QPointF( jsonCircleTranslate.toList().value( 0 ).toDouble() * context.pixelSizeConversionFactor(),
+                                   jsonCircleTranslate.toList().value( 1 ).toDouble() * context.pixelSizeConversionFactor() );
+        break;
+
+      default:
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported circle-translate type (%2)" ).arg( context.layerId(), QMetaType::typeName( jsonCircleTranslate.type() ) ) );
+        break;
+    }
+  }
+
+  std::unique_ptr< QgsSymbol > symbol( std::make_unique< QgsMarkerSymbol >() );
+  QgsSimpleMarkerSymbolLayer *markerSymbolLayer = dynamic_cast< QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) );
+  Q_ASSERT( markerSymbolLayer );
+
+  // set render units
+  symbol->setOutputUnit( context.targetUnit() );
+  symbol->setDataDefinedProperties( ddProperties );
+
+  if ( !circleTranslate.isNull() )
+  {
+    markerSymbolLayer->setOffset( circleTranslate );
+    markerSymbolLayer->setOffsetUnit( context.targetUnit() );
+  }
+
+  if ( circleFillColor.isValid() )
+  {
+    markerSymbolLayer->setFillColor( circleFillColor );
+  }
+  if ( circleDiameter != -1 )
+  {
+    markerSymbolLayer->setSize( circleDiameter );
+    markerSymbolLayer->setSizeUnit( context.targetUnit() );
+  }
+  if ( circleStrokeColor.isValid() )
+  {
+    markerSymbolLayer->setStrokeColor( circleStrokeColor );
+  }
+  if ( circleStrokeWidth != -1 )
+  {
+    markerSymbolLayer->setStrokeWidth( circleStrokeWidth );
+    markerSymbolLayer->setStrokeWidthUnit( context.targetUnit() );
+  }
+
+  style.setGeometryType( QgsWkbTypes::PointGeometry );
+  style.setSymbol( symbol.release() );
+  return true;
+}
+
 void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &renderer, bool &hasRenderer, QgsVectorTileBasicLabelingStyle &labelingStyle, bool &hasLabeling, QgsMapBoxGlStyleConversionContext &context )
 {
   hasLabeling = false;
@@ -650,7 +907,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
   QgsPropertyCollection ddLabelProperties;
 
   double textSize = 16.0 * context.pixelSizeConversionFactor();
-  QString textSizeProperty;
+  QgsProperty textSizeProperty;
   if ( jsonLayout.contains( QStringLiteral( "text-size" ) ) )
   {
     const QVariant jsonTextSize = jsonLayout.value( QStringLiteral( "text-size" ) );
@@ -678,7 +935,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
         break;
     }
 
-    if ( !textSizeProperty.isEmpty() )
+    if ( textSizeProperty )
     {
       ddLabelProperties.setProperty( QgsPalLayerSettings::Size, textSizeProperty );
     }
@@ -1062,7 +1319,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     // {field_name} is permitted in string -- if multiple fields are present, convert them to an expression
     // but if single field is covered in {}, return it directly
     const QRegularExpression singleFieldRx( QStringLiteral( "^{([^}]+)}$" ) );
-    QRegularExpressionMatch match = singleFieldRx.match( string );
+    const QRegularExpressionMatch match = singleFieldRx.match( string );
     if ( match.hasMatch() )
     {
       isExpression = false;
@@ -1190,7 +1447,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
       if ( labelSettings.placement == QgsPalLayerSettings::Curved )
       {
         QPointF textOffset;
-        QString textOffsetProperty;
+        QgsProperty textOffsetProperty;
         if ( jsonLayout.contains( QStringLiteral( "text-offset" ) ) )
         {
           const QVariant jsonTextOffset = jsonLayout.value( QStringLiteral( "text-offset" ) );
@@ -1199,14 +1456,14 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
           switch ( jsonTextOffset.type() )
           {
             case QVariant::Map:
-              textOffsetProperty = parseInterpolatePointByZoom( jsonTextOffset.toMap(), context, textSizeProperty.isEmpty() ? textSize : 1.0, &textOffset );
-              if ( textSizeProperty.isEmpty() )
+              textOffsetProperty = parseInterpolatePointByZoom( jsonTextOffset.toMap(), context, !textSizeProperty ? textSize : 1.0, &textOffset );
+              if ( !textSizeProperty )
               {
                 ddLabelProperties.setProperty( QgsPalLayerSettings::LabelDistance, QStringLiteral( "abs(array_get(%1,1))-%2" ).arg( textOffsetProperty ).arg( textSize ) );
               }
               else
               {
-                ddLabelProperties.setProperty( QgsPalLayerSettings::LabelDistance, QStringLiteral( "with_variable('text_size',%2,abs(array_get(%1,1))*@text_size-@text_size)" ).arg( textOffsetProperty ).arg( textSizeProperty ) );
+                ddLabelProperties.setProperty( QgsPalLayerSettings::LabelDistance, QStringLiteral( "with_variable('text_size',%2,abs(array_get(%1,1))*@text_size-@text_size)" ).arg( textOffsetProperty.asExpression(), textSizeProperty.asExpression() ) );
               }
               ddLabelProperties.setProperty( QgsPalLayerSettings::LinePlacementOptions, QStringLiteral( "if(array_get(%1,1)>0,'BL','AL')" ).arg( textOffsetProperty ) );
               break;
@@ -1227,9 +1484,9 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
             labelSettings.distUnits = context.targetUnit();
             labelSettings.dist = std::abs( textOffset.y() ) - textSize;
             labelSettings.lineSettings().setPlacementFlags( textOffset.y() > 0.0 ? QgsLabeling::BelowLine : QgsLabeling::AboveLine );
-            if ( !textSizeProperty.isEmpty() && textOffsetProperty.isEmpty() )
+            if ( textSizeProperty && !textOffsetProperty )
             {
-              ddLabelProperties.setProperty( QgsPalLayerSettings::LabelDistance, QStringLiteral( "with_variable('text_size',%2,%1*@text_size-@text_size)" ).arg( std::abs( textOffset.y() / textSize ) ).arg( ( textSizeProperty ) ) );
+              ddLabelProperties.setProperty( QgsPalLayerSettings::LabelDistance, QStringLiteral( "with_variable('text_size',%2,%1*@text_size-@text_size)" ).arg( std::abs( textOffset.y() / textSize ) ).arg( textSizeProperty.asExpression() ) );
             }
           }
         }
@@ -1595,7 +1852,7 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
     markerLayer->setAngle( rotation );
     lineSymbol->setSubSymbol( new QgsMarkerSymbol( QgsSymbolLayerList() << markerLayer ) );
 
-    std::unique_ptr< QgsSymbol > symbol = qgis::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << lineSymbol );
+    std::unique_ptr< QgsSymbol > symbol = std::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << lineSymbol );
 
     // set render units
     symbol->setOutputUnit( context.targetUnit() );
@@ -1909,7 +2166,7 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateStringByZoom( const QVari
   if ( stops.empty() )
     return QgsProperty();
 
-  QString scaleExpression = parseStringStops( stops, context, conversionMap, defaultString );
+  const QString scaleExpression = parseStringStops( stops, context, conversionMap, defaultString );
 
   return QgsProperty::fromExpression( scaleExpression );
 }
@@ -2279,7 +2536,7 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
     QStringList parts;
     for ( int i = 1; i < expression.size(); ++i )
     {
-      QString part = parseValue( expression.at( i ), context );
+      const QString part = parseValue( expression.at( i ), context );
       if ( part.isEmpty() )
       {
         context.pushWarning( QObject::tr( "%1: Skipping unsupported expression" ).arg( context.layerId() ) );
@@ -2336,7 +2593,7 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
     QStringList parts;
     for ( int i = 2; i < expression.size(); ++i )
     {
-      QString part = parseValue( expression.at( i ), context );
+      const QString part = parseValue( expression.at( i ), context );
       if ( part.isEmpty() )
       {
         context.pushWarning( QObject::tr( "%1: Skipping unsupported expression" ).arg( context.layerId() ) );
@@ -2470,7 +2727,7 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64( const QVariant &value
       buffer.open( QIODevice::WriteOnly );
       sprite.save( &buffer, "PNG" );
       buffer.close();
-      QByteArray encoded = blob.toBase64();
+      const QByteArray encoded = blob.toBase64();
       path = QString( encoded );
       path.prepend( QLatin1String( "base64:" ) );
     }
@@ -2482,7 +2739,7 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64( const QVariant &value
     case QVariant::String:
     {
       QString spriteName = value.toString();
-      QRegularExpression fieldNameMatch( QStringLiteral( "{([^}]+)}" ) );
+      const QRegularExpression fieldNameMatch( QStringLiteral( "{([^}]+)}" ) );
       QRegularExpressionMatch match = fieldNameMatch.match( spriteName );
       if ( match.hasMatch() )
       {
@@ -2493,7 +2750,7 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64( const QVariant &value
         spriteName.replace( "(", QLatin1String( "\\(" ) );
         spriteName.replace( ")", QLatin1String( "\\)" ) );
         spriteName.replace( fieldNameMatch, QStringLiteral( "([^\\/\\\\]+)" ) );
-        QRegularExpression fieldValueMatch( spriteName );
+        const QRegularExpression fieldValueMatch( spriteName );
         const QStringList spriteNames = context.spriteDefinitions().keys();
         for ( const QString &name : spriteNames )
         {

@@ -25,7 +25,7 @@ class QgsListWidget;
 
 /**
  * \ingroup gui
- * Wraps a list widget.
+ * \brief Wraps a list widget.
  * \note not available in Python bindings
  * \since QGIS 3.0
  */

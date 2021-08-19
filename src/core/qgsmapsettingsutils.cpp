@@ -54,6 +54,13 @@ QStringList QgsMapSettingsUtils::containsAdvancedEffects( const QgsMapSettings &
       // if vector layer, check labels and feature blend mode
       if ( QgsVectorLayer *currentVectorLayer = qobject_cast<QgsVectorLayer *>( layer ) )
       {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+        // Qt < 5.15 does not correctly support layer level opacity in PDF exports -- see https://github.com/qgis/QGIS/issues/42698
+        if ( !qgsDoubleNear( currentVectorLayer->opacity(), 1.0 ) && !( flags & EffectsCheckFlag::IgnoreGeoPdfSupportedEffects ) )
+        {
+          layers << layer->name();
+        }
+#endif
         if ( currentVectorLayer->featureBlendMode() != QPainter::CompositionMode_SourceOver )
         {
           layers << layer->name();
@@ -79,17 +86,17 @@ void QgsMapSettingsUtils::worldFileParameters( const QgsMapSettings &mapSettings
 {
   QgsMapSettings ms = mapSettings;
 
-  double rotation = ms.rotation();
-  double alpha = rotation / 180 * M_PI;
+  const double rotation = ms.rotation();
+  const double alpha = rotation / 180 * M_PI;
 
   // reset rotation to 0 to calculate world file parameters
   ms.setRotation( 0 );
 
-  double xOrigin = ms.visibleExtent().xMinimum() + ( ms.mapUnitsPerPixel() / 2 );
-  double yOrigin = ms.visibleExtent().yMaximum() - ( ms.mapUnitsPerPixel() / 2 );
+  const double xOrigin = ms.visibleExtent().xMinimum() + ( ms.mapUnitsPerPixel() / 2 );
+  const double yOrigin = ms.visibleExtent().yMaximum() - ( ms.mapUnitsPerPixel() / 2 );
 
-  double xCenter = ms.visibleExtent().center().x();
-  double yCenter = ms.visibleExtent().center().y();
+  const double xCenter = ms.visibleExtent().center().x();
+  const double yCenter = ms.visibleExtent().center().y();
 
   // scaling matrix
   double s[6];

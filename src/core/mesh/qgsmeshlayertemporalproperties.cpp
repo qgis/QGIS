@@ -44,8 +44,8 @@ bool QgsMeshLayerTemporalProperties::readXml( const QDomElement &element, const 
 {
   Q_UNUSED( context );
 
-  QDomElement temporalElement = element.firstChildElement( QStringLiteral( "temporal" ) );
-  bool active = temporalElement.attribute( QStringLiteral( "temporal-active" ) ).toInt();
+  const QDomElement temporalElement = element.firstChildElement( QStringLiteral( "temporal" ) );
+  const bool active = temporalElement.attribute( QStringLiteral( "temporal-active" ) ).toInt();
   setIsActive( active );
 
   mReferenceTime = QDateTime::fromString( temporalElement.attribute( QStringLiteral( "reference-time" ) ), Qt::ISODate );
@@ -53,8 +53,8 @@ bool QgsMeshLayerTemporalProperties::readXml( const QDomElement &element, const 
   if ( temporalElement.hasAttribute( QStringLiteral( "start-time-extent" ) )
        && temporalElement.hasAttribute( QStringLiteral( "end-time-extent" ) ) )
   {
-    QDateTime start = QDateTime::fromString( temporalElement.attribute( QStringLiteral( "start-time-extent" ) ), Qt::ISODate );
-    QDateTime end = QDateTime::fromString( temporalElement.attribute( QStringLiteral( "end-time-extent" ) ), Qt::ISODate );
+    const QDateTime start = QDateTime::fromString( temporalElement.attribute( QStringLiteral( "start-time-extent" ) ), Qt::ISODate );
+    const QDateTime end = QDateTime::fromString( temporalElement.attribute( QStringLiteral( "end-time-extent" ) ), Qt::ISODate );
     mTimeExtent = QgsDateTimeRange( start, end );
   }
 

@@ -15,7 +15,7 @@
 
 class QgsVectorLayerUndoCommand : QUndoCommand
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for undo commands within a :py:class:`QgsVectorLayerEditBuffer`.
 %End
 
@@ -46,7 +46,7 @@ Returns the layer associated with the undo command
 
 class QgsVectorLayerUndoCommandAddFeature : QgsVectorLayerUndoCommand
 {
-%Docstring
+%Docstring(signature="appended")
 Undo command for adding a feature to a vector layer.
 %End
 
@@ -74,7 +74,7 @@ Constructor for QgsVectorLayerUndoCommandAddFeature
 
 class QgsVectorLayerUndoCommandDeleteFeature : QgsVectorLayerUndoCommand
 {
-%Docstring
+%Docstring(signature="appended")
 Undo command for deleting a feature from a vector layer.
 %End
 
@@ -101,7 +101,7 @@ Constructor for QgsVectorLayerUndoCommandDeleteFeature
 
 class QgsVectorLayerUndoCommandChangeGeometry : QgsVectorLayerUndoCommand
 {
-%Docstring
+%Docstring(signature="appended")
 Undo command for modifying the geometry of a feature from a vector layer.
 %End
 
@@ -124,8 +124,7 @@ Constructor for QgsVectorLayerUndoCommandChangeGeometry
     virtual void redo();
 
     virtual int id() const;
-
-    virtual bool mergeWith( const QUndoCommand * );
+    virtual bool mergeWith( const QUndoCommand *other );
 
 
 };
@@ -134,7 +133,7 @@ Constructor for QgsVectorLayerUndoCommandChangeGeometry
 
 class QgsVectorLayerUndoCommandChangeAttribute : QgsVectorLayerUndoCommand
 {
-%Docstring
+%Docstring(signature="appended")
 Undo command for modifying an attribute of a feature from a vector layer.
 %End
 
@@ -163,7 +162,7 @@ Constructor for QgsVectorLayerUndoCommandChangeAttribute
 
 class QgsVectorLayerUndoCommandAddAttribute : QgsVectorLayerUndoCommand
 {
-%Docstring
+%Docstring(signature="appended")
 Undo command for adding a new attribute to a vector layer.
 %End
 
@@ -190,7 +189,7 @@ Constructor for QgsVectorLayerUndoCommandAddAttribute
 
 class QgsVectorLayerUndoCommandDeleteAttribute : QgsVectorLayerUndoCommand
 {
-%Docstring
+%Docstring(signature="appended")
 Undo command for removing an existing attribute from a vector layer.
 %End
 
@@ -218,7 +217,7 @@ Constructor for QgsVectorLayerUndoCommandDeleteAttribute
 
 class QgsVectorLayerUndoCommandRenameAttribute : QgsVectorLayerUndoCommand
 {
-%Docstring
+%Docstring(signature="appended")
 Undo command for renaming an existing attribute of a vector layer.
 
 .. versionadded:: 2.16

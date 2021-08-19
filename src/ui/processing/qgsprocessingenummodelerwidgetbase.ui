@@ -103,6 +103,13 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mButtonAdd</tabstop>
+  <tabstop>mButtonRemove</tabstop>
+  <tabstop>mButtonClear</tabstop>
+  <tabstop>mItemList</tabstop>
+  <tabstop>mAllowMultiple</tabstop>
+ </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>
  </resources>

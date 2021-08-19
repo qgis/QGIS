@@ -22,7 +22,7 @@
 
 /**
  * \ingroup core
-  * Utility functions for raster renderers.
+  * \brief Utility functions for raster renderers.
   *
   * \since QGIS 3.16
   */

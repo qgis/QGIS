@@ -34,8 +34,8 @@ QgsProcessingFeatureSourceOptionsWidget::QgsProcessingFeatureSourceOptionsWidget
   mComboInvalidFeatureFiltering->addItem( tr( "Try to fix Invalid Geometry, otherwise skip it. May discard m-value and other attr." ), QgsFeatureRequest::GeometryFixInvalidSkipOnFailure );
   mComboInvalidFeatureFiltering->addItem( tr( "Try to fix Invalid Geometry, otherwise abort. May discard m-value and other attr." ), QgsFeatureRequest::GeometryFixInvalidAbortOnFailure );
 
-  connect( mFeatureLimitSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
-  connect( mComboInvalidFeatureFiltering, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
+  connect( mFeatureLimitSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
+  connect( mComboInvalidFeatureFiltering, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
 }
 
 void QgsProcessingFeatureSourceOptionsWidget::setGeometryCheckMethod( bool isOverridden, QgsFeatureRequest::InvalidGeometryCheck check )

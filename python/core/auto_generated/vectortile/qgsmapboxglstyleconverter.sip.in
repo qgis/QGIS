@@ -11,7 +11,7 @@
 
 class QgsMapBoxGlStyleConversionContext
 {
-%Docstring
+%Docstring(signature="appended")
 Context for a MapBox GL style conversion operation.
 
 .. warning::
@@ -140,7 +140,7 @@ Sets the layer ID of the layer currently being converted.
 
 class QgsMapBoxGlStyleConverter
 {
-%Docstring
+%Docstring(signature="appended")
 Handles conversion of MapBox GL styles to QGIS vector tile renderers and labeling
 settings.
 
@@ -266,7 +266,22 @@ Parses a line layer.
 
    This is private API only, and may change in future QGIS versions
 
-:param jsonLayer: fill layer to parse
+:param jsonLayer: line layer to parse
+:param context: conversion context
+
+:return: - ``True`` if the layer was successfully parsed.
+         - style: generated QGIS vector tile style
+%End
+
+    static bool parseCircleLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style /Out/, QgsMapBoxGlStyleConversionContext &context );
+%Docstring
+Parses a circle layer.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+
+:param jsonLayer: circle layer to parse
 :param context: conversion context
 
 :return: - ``True`` if the layer was successfully parsed.
@@ -285,7 +300,7 @@ Parses a symbol layer as renderer or labeling.
 
    This is private API only, and may change in future QGIS versions
 
-:param jsonLayer: fill layer to parse
+:param jsonLayer: symbol layer to parse
 :param rendererStyle: generated QGIS vector tile style
 :param hasRenderer: will be set to ``True`` if symbol layer generated a renderer style
 :param labelingStyle: generated QGIS vector tile labeling

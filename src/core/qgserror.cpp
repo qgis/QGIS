@@ -20,7 +20,7 @@
 #include "qgserror.h"
 #include "qgslogger.h"
 
-#include <QRegExp>
+#include <QRegularExpression>
 
 QgsErrorMessage::QgsErrorMessage( const QString &message, const QString &tag, const QString &file, const QString &function, int line )
   : mMessage( message )
@@ -61,7 +61,7 @@ QString QgsError::message( QgsErrorMessage::Format format ) const
   QString remote = QStringLiteral( QGS_GIT_REMOTE_URL );
   if ( !hash.isEmpty() && !remote.isEmpty() && remote.contains( QLatin1String( "github.com" ) ) )
   {
-    QString path = remote.remove( QRegExp( ".*github.com[:/]" ) ).remove( QStringLiteral( ".git" ) );
+    QString path = remote.remove( QRegularExpression( ".*github.com[:/]" ) ).remove( QStringLiteral( ".git" ) );
     srcUrl = "https://github.com/" + path + "/blob/" + hash;
   }
 #endif
@@ -72,7 +72,7 @@ QString QgsError::message( QgsErrorMessage::Format format ) const
 #ifdef QGISDEBUG
     QString file;
 #ifndef _MSC_VER
-    int sPrefixLength = strlen( CMAKE_SOURCE_DIR ) + 1;
+    const int sPrefixLength = strlen( CMAKE_SOURCE_DIR ) + 1;
     file = m.file().mid( sPrefixLength );
 #else
     file = m.file();
@@ -110,10 +110,10 @@ QString QgsError::message( QgsErrorMessage::Format format ) const
     {
       str += "<p><b>" + m.tag() + ":</b> " + m.message();
 #ifdef QGISDEBUG
-      QString location = QStringLiteral( "%1 : %2 : %3" ).arg( file ).arg( m.line() ).arg( m.function() );
+      const QString location = QStringLiteral( "%1 : %2 : %3" ).arg( file ).arg( m.line() ).arg( m.function() );
       if ( !srcUrl.isEmpty() )
       {
-        QString url = QStringLiteral( "%1/%2#L%3" ).arg( srcUrl, file ).arg( m.line() );
+        const QString url = QStringLiteral( "%1/%2#L%3" ).arg( srcUrl, file ).arg( m.line() );
         str += QStringLiteral( "<br>(<a href='%1'>%2</a>)" ).arg( url, location );
       }
       else

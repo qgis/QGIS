@@ -33,7 +33,7 @@
 /**
  * \ingroup core
  * \class QgsMeshCalculator
- * Performs mesh layer calculations.
+ * \brief Performs mesh layer calculations.
  *
  * Mesh calculator can do various mathematical operations
  * between dataset groups from a single mesh layer.

@@ -11,7 +11,7 @@
 
 class QgsHtmlUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Class for HTML utilities.
 
 .. versionadded:: 3.0

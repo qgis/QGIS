@@ -27,7 +27,7 @@
 /**
  * \class QgsProcessingModelChildDependency
  * \ingroup core
- * Contains details of a child algorithm dependency.
+ * \brief Contains details of a child algorithm dependency.
  * \since QGIS 3.14
  */
 class CORE_EXPORT QgsProcessingModelChildDependency
@@ -72,6 +72,7 @@ class CORE_EXPORT QgsProcessingModelChildDependency
       return true;
     }
 
+    // TODO c++20 - replace with = default
     bool operator==( const QgsProcessingModelChildDependency &other ) const
     {
       return childId == other.childId && conditionalBranch == other.conditionalBranch;

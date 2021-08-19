@@ -10,7 +10,7 @@
 
 class QgsGeometryCheckResolutionMethod
 {
-%Docstring
+%Docstring(signature="appended")
 This class implements a resolution for problems detected in geometry checks.
 
 .. versionadded:: 3.12

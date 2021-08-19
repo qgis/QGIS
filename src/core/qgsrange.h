@@ -28,7 +28,7 @@
 /**
  * \class QgsRange
  * \ingroup core
- * A template based class for storing ranges (lower to upper values).
+ * \brief A template based class for storing ranges (lower to upper values).
  *
  * QgsRange classes represent a range of values of some element type. For instance,
  * ranges of int might be used to represent integer ranges.
@@ -107,15 +107,15 @@ class QgsRange
      */
     bool contains( const QgsRange<T> &other ) const
     {
-      bool lowerOk = ( mIncludeLower && mLower <= other.mLower )
-                     || ( !mIncludeLower && mLower < other.mLower )
-                     || ( !mIncludeLower && !other.mIncludeLower && mLower <= other.mLower );
+      const bool lowerOk = ( mIncludeLower && mLower <= other.mLower )
+                           || ( !mIncludeLower && mLower < other.mLower )
+                           || ( !mIncludeLower && !other.mIncludeLower && mLower <= other.mLower );
       if ( !lowerOk )
         return false;
 
-      bool upperOk = ( mIncludeUpper && mUpper >= other.mUpper )
-                     || ( !mIncludeUpper && mUpper > other.mUpper )
-                     || ( !mIncludeUpper && !other.mIncludeUpper && mUpper >= other.mUpper );
+      const bool upperOk = ( mIncludeUpper && mUpper >= other.mUpper )
+                           || ( !mIncludeUpper && mUpper > other.mUpper )
+                           || ( !mIncludeUpper && !other.mIncludeUpper && mUpper >= other.mUpper );
       if ( !upperOk )
         return false;
 
@@ -127,13 +127,13 @@ class QgsRange
      */
     bool contains( T element ) const
     {
-      bool lowerOk = ( mIncludeLower && mLower <= element )
-                     || ( !mIncludeLower && mLower < element );
+      const bool lowerOk = ( mIncludeLower && mLower <= element )
+                           || ( !mIncludeLower && mLower < element );
       if ( !lowerOk )
         return false;
 
-      bool upperOk = ( mIncludeUpper && mUpper >= element )
-                     || ( !mIncludeUpper && mUpper > element );
+      const bool upperOk = ( mIncludeUpper && mUpper >= element )
+                           || ( !mIncludeUpper && mUpper > element );
       if ( !upperOk )
         return false;
 
@@ -192,7 +192,7 @@ class QgsRange
 
 
 /**
- * QgsRange which stores a range of double values.
+ * \brief QgsRange which stores a range of double values.
  * \ingroup core
  * \see QgsIntRange
  * \see QgsDateRange
@@ -277,7 +277,7 @@ class CORE_EXPORT QgsDoubleRange : public QgsRange< double >
 
 
 /**
- * QgsRange which stores a range of integer values.
+ * \brief QgsRange which stores a range of integer values.
  * \ingroup core
  * \see QgsDoubleRange
  * \see QgsDateRange
@@ -351,7 +351,7 @@ class CORE_EXPORT QgsIntRange : public QgsRange< int >
 /**
  * \class QgsTemporalRange
  * \ingroup core
- * A template based class for storing temporal ranges (beginning to end values).
+ * \brief A template based class for storing temporal ranges (beginning to end values).
  *
  * QgsTemporalRange classes represent a range of values of some temporal type. For instance,
  * ranges of QDateTime might be used to represent datetime ranges.
@@ -464,9 +464,9 @@ class QgsTemporalRange
 
       if ( mLower.isValid() )
       {
-        bool lowerOk = ( mIncludeLower && mLower <= other.mLower )
-                       || ( !mIncludeLower && mLower < other.mLower )
-                       || ( !mIncludeLower && !other.mIncludeLower && mLower <= other.mLower );
+        const bool lowerOk = ( mIncludeLower && mLower <= other.mLower )
+                             || ( !mIncludeLower && mLower < other.mLower )
+                             || ( !mIncludeLower && !other.mIncludeLower && mLower <= other.mLower );
         if ( !lowerOk )
           return false;
       }
@@ -476,9 +476,9 @@ class QgsTemporalRange
 
       if ( mUpper.isValid() )
       {
-        bool upperOk = ( mIncludeUpper && mUpper >= other.mUpper )
-                       || ( !mIncludeUpper && mUpper > other.mUpper )
-                       || ( !mIncludeUpper && !other.mIncludeUpper && mUpper >= other.mUpper );
+        const bool upperOk = ( mIncludeUpper && mUpper >= other.mUpper )
+                             || ( !mIncludeUpper && mUpper > other.mUpper )
+                             || ( !mIncludeUpper && !other.mIncludeUpper && mUpper >= other.mUpper );
         if ( !upperOk )
           return false;
       }
@@ -496,16 +496,16 @@ class QgsTemporalRange
 
       if ( mLower.isValid() )
       {
-        bool lowerOk = ( mIncludeLower && mLower <= element )
-                       || ( !mIncludeLower && mLower < element );
+        const bool lowerOk = ( mIncludeLower && mLower <= element )
+                             || ( !mIncludeLower && mLower < element );
         if ( !lowerOk )
           return false;
       }
 
       if ( mUpper.isValid() )
       {
-        bool upperOk = ( mIncludeUpper && mUpper >= element )
-                       || ( !mIncludeUpper && mUpper > element );
+        const bool upperOk = ( mIncludeUpper && mUpper >= element )
+                             || ( !mIncludeUpper && mUpper > element );
         if ( !upperOk )
           return false;
       }
@@ -599,6 +599,51 @@ class QgsTemporalRange
       return changed;
     }
 
+#ifndef SIP_RUN
+
+    /**
+     * Merges a list of temporal ranges.
+     *
+     * Any overlapping ranges will be converted to a single range which covers the entire
+     * range of the input ranges.
+     *
+     * The returned value will be a list of non-contiguous ranges which completely encompass
+     * the input \a ranges, sorted in ascending order.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 3.20
+     */
+    static QList< QgsTemporalRange<T> > mergeRanges( const QList< QgsTemporalRange<T> > &ranges )
+    {
+      if ( ranges.empty() )
+        return {};
+
+      QList< QgsTemporalRange<T > > sortedRanges = ranges;
+      std::sort( sortedRanges.begin(), sortedRanges.end(), []( const QgsTemporalRange< T > &a, const QgsTemporalRange< T > &b ) -> bool { return a.begin() < b.begin(); } );
+      QList< QgsTemporalRange<T>> res;
+      res.reserve( sortedRanges.size() );
+
+      QgsTemporalRange<T> prevRange;
+      auto it = sortedRanges.constBegin();
+      prevRange = *it++;
+      for ( ; it != sortedRanges.constEnd(); ++it )
+      {
+        if ( prevRange.overlaps( *it ) )
+        {
+          prevRange.extend( *it );
+        }
+        else
+        {
+          res << prevRange;
+          prevRange = *it;
+        }
+      }
+      res << prevRange;
+      return res;
+    }
+#endif
+
     bool operator==( const QgsTemporalRange<T> &other ) const
     {
       return mLower == other.mLower &&
@@ -633,6 +678,8 @@ class QgsTemporalRange
  */
 typedef QgsTemporalRange< QDate > QgsDateRange SIP_DOC_TEMPLATE;
 
+Q_DECLARE_METATYPE( QgsDateRange )
+
 /**
  * QgsRange which stores a range of date times.
  *
@@ -644,5 +691,7 @@ typedef QgsTemporalRange< QDate > QgsDateRange SIP_DOC_TEMPLATE;
  * \since QGIS 3.0
  */
 typedef QgsTemporalRange< QDateTime > QgsDateTimeRange SIP_DOC_TEMPLATE;
+
+Q_DECLARE_METATYPE( QgsDateTimeRange )
 
 #endif // QGSRANGE_H

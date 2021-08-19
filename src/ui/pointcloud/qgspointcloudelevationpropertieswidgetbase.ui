@@ -41,36 +41,6 @@
       <string notr="true">vectorgeneral</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="1" column="1">
-       <widget class="QgsDoubleSpinBox" name="mScaleZSpinBox">
-        <property name="decimals">
-         <number>6</number>
-        </property>
-        <property name="minimum">
-         <double>0.000000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>99999999999.000000000000000</double>
-        </property>
-        <property name="value">
-         <double>1.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Scale</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Offset</string>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="1">
        <widget class="QgsDoubleSpinBox" name="mOffsetZSpinBox">
         <property name="decimals">
@@ -91,7 +61,61 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="0" colspan="2">
+      <item row="1" column="1">
+       <widget class="QgsDoubleSpinBox" name="mScaleZSpinBox">
+        <property name="decimals">
+         <number>6</number>
+        </property>
+        <property name="minimum">
+         <double>0.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>99999999999.000000000000000</double>
+        </property>
+        <property name="value">
+         <double>1.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Offset</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Scale</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QPushButton" name="mShifPointCloudZAxisButton">
+        <property name="minimumSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>24</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Automatically sets the offset so that the lowest point in the cloud sits at an elevation of 0.</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normalon>:/images/themes/default/mActionRefresh.svg</normalon>
+         </iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="3">
        <widget class="QLabel" name="label_3">
         <property name="text">
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Elevation scaling and offset can be used to manually correct elevation values in the point cloud at render time.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;The scale is applied to the point cloud elevation values before adding the offset.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -132,6 +156,12 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mCrsGroupBox_2</tabstop>
+  <tabstop>mScaleZSpinBox</tabstop>
+  <tabstop>mOffsetZSpinBox</tabstop>
+  <tabstop>mShifPointCloudZAxisButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

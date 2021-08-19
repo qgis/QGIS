@@ -96,12 +96,12 @@ class MeanAndStdDevPlot(QgisAlgorithm):
             else:
                 d[v].append(values[valuefieldname][i])
 
-        data = []
-        for k, v in d.items():
-            data.append(go.Box(y=list(v),
-                               boxmean='sd',
-                               name=k
-                               ))
+        data = [
+            go.Box(y=list(v),
+                   boxmean='sd',
+                   name=k)
+            for k, v in d.items()
+        ]
         plt.offline.plot(data, filename=output, auto_open=False)
 
         return {self.OUTPUT: output}

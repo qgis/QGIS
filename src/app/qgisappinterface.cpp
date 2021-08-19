@@ -136,7 +136,7 @@ QgsVectorLayer *QgisAppInterface::addVectorLayer( const QString &vectorLayerPath
   QString nonNullBaseBame = baseName;
   if ( nonNullBaseBame.isEmpty() )
   {
-    QFileInfo fi( vectorLayerPath );
+    const QFileInfo fi( vectorLayerPath );
     nonNullBaseBame = fi.completeBaseName();
   }
   return qgis->addVectorLayer( vectorLayerPath, nonNullBaseBame, providerKey );
@@ -147,10 +147,10 @@ QgsRasterLayer *QgisAppInterface::addRasterLayer( const QString &rasterLayerPath
   QString nonNullBaseName = baseName;
   if ( nonNullBaseName.isEmpty() )
   {
-    QFileInfo fi( rasterLayerPath );
+    const QFileInfo fi( rasterLayerPath );
     nonNullBaseName = fi.completeBaseName();
   }
-  return qgis->addRasterLayer( rasterLayerPath, nonNullBaseName );
+  return qgis->addRasterLayer( rasterLayerPath, nonNullBaseName, QString() );
 }
 
 QgsRasterLayer *QgisAppInterface::addRasterLayer( const QString &url, const QString &baseName, const QString &providerKey )
@@ -497,17 +497,17 @@ QgsAdvancedDigitizingDockWidget *QgisAppInterface::cadDockWidget()
   return qgis->cadDockWidget();
 }
 
-void QgisAppInterface::showLayerProperties( QgsMapLayer *l )
+void QgisAppInterface::showLayerProperties( QgsMapLayer *l, const QString &page )
 {
   if ( l && qgis )
   {
-    qgis->showLayerProperties( l );
+    qgis->showLayerProperties( l, page );
   }
 }
 
 QDialog *QgisAppInterface::showAttributeTable( QgsVectorLayer *l, const QString &filterExpression )
 {
-  if ( l )
+  if ( l && l->dataProvider() )
   {
     QgsAttributeTableDialog *dialog = new QgsAttributeTableDialog( l, QgsAttributeTableFilterModel::ShowFilteredList );
     dialog->setFilterExpression( filterExpression );
@@ -736,7 +736,7 @@ QAction *QgisAppInterface::actionAddXyzLayer() { return qgis->actionAddXyzLayer(
 QAction *QgisAppInterface::actionAddVectorTileLayer() { return qgis->actionAddVectorTileLayer(); }
 QAction *QgisAppInterface::actionAddPointCloudLayer() { return qgis->actionAddPointCloudLayer(); }
 QAction *QgisAppInterface::actionAddAfsLayer() { return qgis->actionAddAfsLayer(); }
-QAction *QgisAppInterface::actionAddAmsLayer() { return qgis->actionAddAmsLayer(); }
+QAction *QgisAppInterface::actionAddAmsLayer() { return qgis->actionAddAfsLayer(); }
 QAction *QgisAppInterface::actionCopyLayerStyle() { return qgis->actionCopyLayerStyle(); }
 QAction *QgisAppInterface::actionPasteLayerStyle() { return qgis->actionPasteLayerStyle(); }
 QAction *QgisAppInterface::actionOpenTable() { return qgis->actionOpenTable(); }
@@ -812,7 +812,7 @@ void QgisAppInterface::cacheloadForm( const QString &uifile )
   {
     QUiLoader loader;
 
-    QFileInfo fi( uifile );
+    const QFileInfo fi( uifile );
     loader.setWorkingDirectory( fi.dir() );
     QWidget *myWidget = loader.load( &file );
     file.close();
@@ -901,4 +901,9 @@ QgsLayerTreeRegistryBridge::InsertionPoint QgisAppInterface::layerTreeInsertionP
 void QgisAppInterface::setGpsPanelConnection( QgsGpsConnection *connection )
 {
   qgis->setGpsPanelConnection( connection );
+}
+
+QList<QgsMapDecoration *> QgisAppInterface::activeDecorations()
+{
+  return qgis->activeDecorations();
 }

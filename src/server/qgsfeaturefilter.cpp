@@ -29,6 +29,12 @@ void QgsFeatureFilter::filterFeatures( const QgsVectorLayer *layer, QgsFeatureRe
   }
 }
 
+QStringList QgsFeatureFilter::layerAttributes( const QgsVectorLayer *, const QStringList &attributes ) const
+{
+  // Do nothing
+  return attributes;
+}
+
 QgsFeatureFilterProvider *QgsFeatureFilter::clone() const
 {
   auto result = new QgsFeatureFilter();

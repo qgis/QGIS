@@ -32,7 +32,7 @@ class QgsProviderGuiRegistry;
 
 /**
  * \ingroup gui
- * A registry / canonical manager of GUI parts of project storage backends.
+ * \brief A registry / canonical manager of GUI parts of project storage backends.
  *
  * QgsProjectStorageGuiRegistry is not usually directly created, but rather accessed through
  * QgsGui::projectStorageGuiRegistry().

@@ -33,6 +33,7 @@ class QgsRenderContext;
 /**
  * \ingroup core
  * \class QgsTextDiagram
+ * \brief A text based diagram.
  */
 class CORE_EXPORT QgsTextDiagram: public QgsDiagram SIP_NODEFAULTCTORS
 {

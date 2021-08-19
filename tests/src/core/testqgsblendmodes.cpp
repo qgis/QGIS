@@ -85,16 +85,16 @@ void TestQgsBlendModes::initTestCase()
   //create some objects that will be used in tests
 
   //create a point layer
-  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + '/';
-  QString myPointsFileName = mTestDataDir + "points.shp";
-  QFileInfo myPointFileInfo( myPointsFileName );
+  const QString myPointsFileName = mTestDataDir + "points.shp";
+  const QFileInfo myPointFileInfo( myPointsFileName );
   mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
                                       myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   //create a poly layer that will be used in tests
-  QString myPolysFileName = mTestDataDir + "polys.shp";
-  QFileInfo myPolyFileInfo( myPolysFileName );
+  const QString myPolysFileName = mTestDataDir + "polys.shp";
+  const QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
                                      myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
@@ -104,14 +104,14 @@ void TestQgsBlendModes::initTestCase()
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
 
   //create a line layer that will be used in tests
-  QString myLinesFileName = mTestDataDir + "lines.shp";
-  QFileInfo myLineFileInfo( myLinesFileName );
+  const QString myLinesFileName = mTestDataDir + "lines.shp";
+  const QFileInfo myLineFileInfo( myLinesFileName );
   mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(),
                                      myLineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   mpLinesLayer->setSimplifyMethod( simplifyMethod );
 
   //create two raster layers
-  QFileInfo rasterFileInfo( mTestDataDir + "rgb256x256.png" );
+  const QFileInfo rasterFileInfo( mTestDataDir + "rgb256x256.png" );
   mRasterLayer1 = new QgsRasterLayer( rasterFileInfo.filePath(),
                                       rasterFileInfo.completeBaseName() );
   mRasterLayer2 = new QgsRasterLayer( rasterFileInfo.filePath(),
@@ -125,7 +125,7 @@ void TestQgsBlendModes::initTestCase()
 }
 void TestQgsBlendModes::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -155,7 +155,7 @@ void TestQgsBlendModes::vectorBlending()
   mpLinesLayer->setBlendMode( QPainter::CompositionMode_Difference );
   mpPolysLayer->setBlendMode( QPainter::CompositionMode_Difference );
   mMapSettings->setExtent( mExtent );
-  bool res = imageCheck( QStringLiteral( "vector_blendmodes" ) );
+  const bool res = imageCheck( QStringLiteral( "vector_blendmodes" ) );
 
   //Reset layers
   mpLinesLayer->setBlendMode( QPainter::CompositionMode_SourceOver );
@@ -175,7 +175,7 @@ void TestQgsBlendModes::featureBlending()
   //Set feature blending modes for point layer
   mpLinesLayer->setFeatureBlendMode( QPainter::CompositionMode_Plus );
   mMapSettings->setExtent( mExtent );
-  bool res = imageCheck( QStringLiteral( "vector_featureblendmodes" ) );
+  const bool res = imageCheck( QStringLiteral( "vector_featureblendmodes" ) );
 
   //Reset layers
   mpLinesLayer->setFeatureBlendMode( QPainter::CompositionMode_SourceOver );
@@ -194,7 +194,7 @@ void TestQgsBlendModes::vectorLayerTransparency()
   //Set feature blending modes for point layer
   mpLinesLayer->setOpacity( 0.50 );
   mMapSettings->setExtent( mExtent );
-  bool res = imageCheck( QStringLiteral( "vector_layertransparency" ) );
+  const bool res = imageCheck( QStringLiteral( "vector_layertransparency" ) );
 
   //Reset layers
   mpLinesLayer->setOpacity( 1.0 );
@@ -229,7 +229,7 @@ bool TestQgsBlendModes::imageCheck( const QString &testType )
   myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( *mMapSettings );
   myChecker.setColorTolerance( 5 );
-  bool myResultFlag = myChecker.runTest( testType, 20 );
+  const bool myResultFlag = myChecker.runTest( testType, 20 );
   mReport += myChecker.report();
   return myResultFlag;
 }

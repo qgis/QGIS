@@ -35,6 +35,7 @@ bool QgsRasterLayerTemporalProperties::isVisibleInTemporalRange( const QgsDateTi
       return range.isInfinite() || mFixedRange.isInfinite() || mFixedRange.overlaps( range );
 
     case ModeTemporalRangeFromDataProvider:
+    case ModeRedrawLayerOnly:
       return true;
   }
   return true;
@@ -53,9 +54,36 @@ QgsDateTimeRange QgsRasterLayerTemporalProperties::calculateTemporalExtent( QgsM
 
     case QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider:
       return rasterLayer->dataProvider()->temporalCapabilities()->availableTemporalRange();
+
+    case QgsRasterLayerTemporalProperties::ModeRedrawLayerOnly:
+      break;
   }
 
   return QgsDateTimeRange();
+}
+
+QList<QgsDateTimeRange> QgsRasterLayerTemporalProperties::allTemporalRanges( QgsMapLayer *layer ) const
+{
+  QgsRasterLayer *rasterLayer = qobject_cast< QgsRasterLayer *>( layer );
+  if ( !rasterLayer )
+    return {};
+
+  switch ( mMode )
+  {
+    case QgsRasterLayerTemporalProperties::ModeFixedTemporalRange:
+      return { mFixedRange };
+
+    case QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider:
+    {
+      const QList< QgsDateTimeRange > ranges = rasterLayer->dataProvider()->temporalCapabilities()->allAvailableTemporalRanges();
+      return ranges.empty() ? QList< QgsDateTimeRange > { rasterLayer->dataProvider()->temporalCapabilities()->availableTemporalRange() } : ranges;
+    }
+
+    case QgsRasterLayerTemporalProperties::ModeRedrawLayerOnly:
+      break;
+  }
+
+  return {};
 }
 
 QgsRasterLayerTemporalProperties::TemporalMode QgsRasterLayerTemporalProperties::mode() const
@@ -102,22 +130,22 @@ bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, cons
   Q_UNUSED( context )
   // TODO add support for raster layers with multi-temporal properties.
 
-  QDomElement temporalNode = element.firstChildElement( QStringLiteral( "temporal" ) );
+  const QDomElement temporalNode = element.firstChildElement( QStringLiteral( "temporal" ) );
 
   setIsActive( temporalNode.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt() );
 
   mMode = static_cast< TemporalMode >( temporalNode.attribute( QStringLiteral( "mode" ), QStringLiteral( "0" ) ). toInt() );
   mIntervalHandlingMethod = static_cast< QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod >( temporalNode.attribute( QStringLiteral( "fetchMode" ), QStringLiteral( "0" ) ). toInt() );
 
-  QDomNode rangeElement = temporalNode.namedItem( QStringLiteral( "fixedRange" ) );
+  const QDomNode rangeElement = temporalNode.namedItem( QStringLiteral( "fixedRange" ) );
 
-  QDomNode begin = rangeElement.namedItem( QStringLiteral( "start" ) );
-  QDomNode end = rangeElement.namedItem( QStringLiteral( "end" ) );
+  const QDomNode begin = rangeElement.namedItem( QStringLiteral( "start" ) );
+  const QDomNode end = rangeElement.namedItem( QStringLiteral( "end" ) );
 
-  QDateTime beginDate = QDateTime::fromString( begin.toElement().text(), Qt::ISODate );
-  QDateTime endDate = QDateTime::fromString( end.toElement().text(), Qt::ISODate );
+  const QDateTime beginDate = QDateTime::fromString( begin.toElement().text(), Qt::ISODate );
+  const QDateTime endDate = QDateTime::fromString( end.toElement().text(), Qt::ISODate );
 
-  QgsDateTimeRange range = QgsDateTimeRange( beginDate, endDate );
+  const QgsDateTimeRange range = QgsDateTimeRange( beginDate, endDate );
   setFixedTemporalRange( range );
 
   return true;
@@ -139,8 +167,8 @@ QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QD
   QDomElement startElement = document.createElement( QStringLiteral( "start" ) );
   QDomElement endElement = document.createElement( QStringLiteral( "end" ) );
 
-  QDomText startText = document.createTextNode( mFixedRange.begin().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
-  QDomText endText = document.createTextNode( mFixedRange.end().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
+  const QDomText startText = document.createTextNode( mFixedRange.begin().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
+  const QDomText endText = document.createTextNode( mFixedRange.end().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
   startElement.appendChild( startText );
   endElement.appendChild( endText );
   rangeElement.appendChild( startElement );

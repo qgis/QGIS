@@ -347,7 +347,7 @@ class CORE_EXPORT QgsExpressionContextUtils
 
 /**
  * \class QgsExpressionContextScopePopper
- * RAII class to pop scope from an expression context on destruction
+ * \brief RAII class to pop scope from an expression context on destruction
  * \ingroup core
  * \since QGIS 3.10
  */

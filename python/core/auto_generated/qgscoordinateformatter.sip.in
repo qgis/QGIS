@@ -12,7 +12,7 @@
 
 class QgsCoordinateFormatter
 {
-%Docstring
+%Docstring(signature="appended")
 Contains methods for converting coordinates for display in various formats.
 
 :py:class:`QgsCoordinateFormatter` contains static methods for converting numeric coordinates into different
@@ -87,6 +87,14 @@ Optional ``flags`` can be specified to control the output format.
 %Docstring
 Formats coordinates as an "``x``,``y``" pair, with optional decimal ``precision`` (number
 of decimal places to include).
+%End
+
+    static QChar separator( );
+%Docstring
+Returns the character used as X/Y separator, this is a `,` on locales that do not use
+`,` as decimal separator, it is a space otherwise.
+
+.. versionadded:: 3.20
 %End
 
 };

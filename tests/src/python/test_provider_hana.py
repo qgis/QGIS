@@ -24,11 +24,20 @@ from qgis.core import (
     NULL,
     QgsCoordinateReferenceSystem,
     QgsDataProvider,
+    QgsDataSourceUri,
     QgsFeatureRequest,
     QgsFeature,
+    QgsField,
+    QgsFieldConstraints,
+    QgsGeometry,
+    QgsPointXY,
     QgsProviderRegistry,
     QgsRectangle,
-    QgsSettings)
+    QgsSettings,
+    QgsVectorDataProvider,
+    QgsVectorLayer,
+    QgsVectorLayerExporter,
+    QgsWkbTypes)
 from qgis.testing import start_app, unittest
 from test_hana_utils import QgsHanaProviderUtils
 from utilities import unitTestDataPath
@@ -60,7 +69,8 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
             cls.uri + f' key=\'pk\' srid=4326 type=POINT table="{cls.schemaName}"."some_data" (geom) sql=', 'test')
         cls.source = cls.vl.dataProvider()
         cls.poly_vl = QgsHanaProviderUtils.createVectorLayer(
-            cls.uri + f' key=\'pk\' srid=4326 type=POLYGON table="{cls.schemaName}"."some_poly_data" (geom) sql=', 'test')
+            cls.uri + f' key=\'pk\' srid=4326 type=POLYGON table="{cls.schemaName}"."some_poly_data" (geom) sql=',
+            'test')
         cls.poly_provider = cls.poly_vl.dataProvider()
 
     @classmethod
@@ -86,17 +96,17 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
     def getSource(self):
         # create temporary table for edit tests
         create_sql = f'CREATE TABLE "{self.schemaName}"."edit_data" ( ' \
-            '"pk" INTEGER NOT NULL PRIMARY KEY,' \
-            '"cnt" INTEGER,' \
-            '"name" NVARCHAR(100), ' \
-            '"name2" NVARCHAR(100), ' \
-            '"num_char" NVARCHAR(100),' \
-            '"dt" TIMESTAMP,' \
-            '"date" DATE,' \
-            '"time" TIME,' \
-            '"geom" ST_POINT(4326))'
+                     '"pk" INTEGER NOT NULL PRIMARY KEY,' \
+                     '"cnt" INTEGER,' \
+                     '"name" NVARCHAR(100), ' \
+                     '"name2" NVARCHAR(100), ' \
+                     '"num_char" NVARCHAR(100),' \
+                     '"dt" TIMESTAMP,' \
+                     '"date" DATE,' \
+                     '"time" TIME,' \
+                     '"geom" ST_POINT(4326))'
         insert_sql = f'INSERT INTO "{self.schemaName}"."edit_data" ("pk", "cnt", "name", "name2", "num_char", "dt", "date", ' \
-            '"time", "geom") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ST_GeomFromEWKB(?)) '
+                     '"time", "geom") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ST_GeomFromEWKB(?)) '
         insert_args = [
             [5, -200, None, 'NuLl', '5', '2020-05-04 12:13:14', '2020-05-02', '12:13:01',
              bytes.fromhex('0101000020E61000001D5A643BDFC751C01F85EB51B88E5340')],
@@ -109,8 +119,9 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
              bytes.fromhex('0101000020E610000014AE47E17A5450C03333333333935340')]]
         self.prepareTestTable('edit_data', create_sql, insert_sql, insert_args)
 
-        return self.createVectorLayer(f'key=\'pk\' srid=4326 type=POINT table="{self.schemaName}"."edit_data" (geom) sql=',
-                                      'test')
+        return self.createVectorLayer(
+            f'key=\'pk\' srid=4326 type=POINT table="{self.schemaName}"."edit_data" (geom) sql=',
+            'test')
 
     def getEditableLayer(self):
         return self.getSource()
@@ -199,10 +210,96 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(self.source.defaultValue(4), NULL)
         self.source.setProviderProperty(QgsDataProvider.EvaluateDefaultValues, False)
 
+    def testCompositeUniqueConstraints(self):
+        create_sql = f'CREATE TABLE "{self.schemaName}"."unique_composite_constraints" ( ' \
+                     '"ID" INTEGER PRIMARY KEY,' \
+                     '"VAL1" INTEGER,' \
+                     '"VAL2" INTEGER,' \
+                     '"VAL3" INTEGER,' \
+                     'UNIQUE (VAL1, VAL2))'
+        QgsHanaProviderUtils.executeSQL(self.conn, create_sql)
+
+        vl = self.createVectorLayer(f'table="{self.schemaName}"."unique_composite_constraints" sql=',
+                                    'testcompositeuniqueconstraints')
+
+        fields = vl.dataProvider().fields()
+        id_field_idx = fields.indexFromName('ID')
+        val1_field_idx = vl.fields().indexFromName('VAL1')
+        val2_field_idx = vl.fields().indexFromName('VAL2')
+        val3_field_idx = vl.fields().indexFromName('VAL3')
+        self.assertTrue(id_field_idx >= 0)
+        self.assertTrue(val1_field_idx >= 0)
+        self.assertTrue(val2_field_idx >= 0)
+        self.assertTrue(val3_field_idx >= 0)
+        self.assertTrue(bool(vl.fieldConstraints(id_field_idx) & QgsFieldConstraints.ConstraintUnique))
+        self.assertFalse(bool(vl.fieldConstraints(val1_field_idx) & QgsFieldConstraints.ConstraintUnique))
+        self.assertFalse(bool(vl.fieldConstraints(val2_field_idx) & QgsFieldConstraints.ConstraintUnique))
+        self.assertFalse(bool(vl.fieldConstraints(val3_field_idx) & QgsFieldConstraints.ConstraintUnique))
+
+    def testQueryLayers(self):
+        def test_query(query, key, geometry, attribute_names, wkb_type=QgsWkbTypes.NoGeometry):
+            uri = QgsDataSourceUri()
+            uri.setSchema(self.schemaName)
+            uri.setTable(query)
+            uri.setKeyColumn(key)
+            uri.setGeometryColumn(geometry)
+            vl = self.createVectorLayer(uri.uri(False), 'testquery')
+
+            for capability in [QgsVectorDataProvider.SelectAtId,
+                               QgsVectorDataProvider.TransactionSupport,
+                               QgsVectorDataProvider.CircularGeometries,
+                               QgsVectorDataProvider.ReadLayerMetadata]:
+                self.assertTrue(vl.dataProvider().capabilities() & capability)
+
+            for capability in [QgsVectorDataProvider.AddAttributes,
+                               QgsVectorDataProvider.ChangeAttributeValues,
+                               QgsVectorDataProvider.DeleteAttributes,
+                               QgsVectorDataProvider.RenameAttributes,
+                               QgsVectorDataProvider.AddFeatures,
+                               QgsVectorDataProvider.ChangeFeatures,
+                               QgsVectorDataProvider.DeleteFeatures,
+                               QgsVectorDataProvider.ChangeGeometries,
+                               QgsVectorDataProvider.FastTruncate]:
+                self.assertFalse(vl.dataProvider().capabilities() & capability)
+
+            fields = vl.dataProvider().fields()
+            self.assertCountEqual(attribute_names, fields.names())
+            for field_idx in vl.primaryKeyAttributes():
+                self.assertIn(fields[field_idx].name(), key.split(","))
+                self.assertEqual(len(vl.primaryKeyAttributes()) == 1,
+                                 bool(vl.fieldConstraints(field_idx) & QgsFieldConstraints.ConstraintUnique))
+            if fields.count() > 0:
+                if vl.featureCount() == 0:
+                    self.assertEqual(QVariant(), vl.maximumValue(0))
+                    self.assertEqual(QVariant(), vl.minimumValue(0))
+                else:
+                    vl.maximumValue(0)
+                    vl.minimumValue(0)
+            self.assertEqual(vl.featureCount(), len([f for f in vl.getFeatures()]))
+            self.assertFalse(vl.addFeatures([QgsFeature()]))
+            self.assertFalse(vl.deleteFeatures([0]))
+            self.assertEqual(wkb_type, vl.wkbType())
+            self.assertEqual(wkb_type == QgsWkbTypes.NoGeometry or wkb_type == QgsWkbTypes.Unknown,
+                             vl.extent().isNull())
+
+        test_query('(SELECT * FROM DUMMY)', None, None, ['DUMMY'], QgsWkbTypes.NoGeometry)
+        test_query('(SELECT CAST(NULL AS INT) ID1, CAST(NULL AS INT) ID2, CAST(NULL AS ST_GEOMETRY) SHAPE FROM DUMMY)',
+                   'ID1,ID2', None, ['ID1', 'ID2', 'SHAPE'], QgsWkbTypes.NoGeometry)
+        test_query('(SELECT CAST(1 AS INT) ID1, CAST(NULL AS BIGINT) ID2 FROM DUMMY)',
+                   'ID1', None, ['ID1', 'ID2'], QgsWkbTypes.NoGeometry)
+        test_query('(SELECT CAST(NULL AS INT) ID1, CAST(NULL AS INT) ID2, CAST(NULL AS ST_GEOMETRY) SHAPE FROM DUMMY)',
+                   None, 'SHAPE', ['ID1', 'ID2'], QgsWkbTypes.Unknown)
+        test_query('(SELECT CAST(NULL AS INT) ID1, CAST(NULL AS BIGINT) ID2, CAST(NULL AS ST_GEOMETRY) SHAPE FROM '
+                   'DUMMY)', 'ID2', 'SHAPE', ['ID1', 'ID2'], QgsWkbTypes.Unknown)
+        test_query('(SELECT CAST(NULL AS INT) ID1, CAST(NULL AS ST_GEOMETRY) SHAPE1, CAST(NULL AS ST_GEOMETRY) SHAPE2 '
+                   'FROM DUMMY)', 'ID1', 'SHAPE1', ['ID1', 'SHAPE2'], QgsWkbTypes.Unknown)
+        test_query(f'(SELECT "pk" AS "key", "cnt", "geom" AS "g" FROM "{self.schemaName}"."some_data")',
+                   'key', 'g', ['key', 'cnt'], QgsWkbTypes.Point)
+
     def testBooleanType(self):
         create_sql = f'CREATE TABLE "{self.schemaName}"."boolean_type" ( ' \
-            '"id" INTEGER NOT NULL PRIMARY KEY,' \
-            '"fld1" BOOLEAN)'
+                     '"id" INTEGER NOT NULL PRIMARY KEY,' \
+                     '"fld1" BOOLEAN)'
         insert_sql = f'INSERT INTO "{self.schemaName}"."boolean_type" ("id", "fld1") VALUES (?, ?)'
         insert_args = [[1, 'TRUE'], [2, 'FALSE'], [3, None]]
         self.prepareTestTable('boolean_type', create_sql, insert_sql, insert_args)
@@ -216,14 +313,45 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         expected = {1: True, 2: False, 3: NULL}
         self.assertEqual(values, expected)
 
+    def testDecimalAndFloatTypes(self):
+        create_sql = f'CREATE TABLE "{self.schemaName}"."decimal_and_float_type" ( ' \
+                     '"id" INTEGER NOT NULL PRIMARY KEY,' \
+                     '"decimal_field" DECIMAL(15,4),' \
+                     '"float_field" FLOAT(12))'
+        insert_sql = f'INSERT INTO "{self.schemaName}"."decimal_and_float_type" ("id", "decimal_field", ' \
+                     f'"float_field") VALUES (?, ?, ?) '
+        insert_args = [[1, 1.1234, 1.76543]]
+        self.prepareTestTable('decimal_and_float_type', create_sql, insert_sql, insert_args)
+
+        vl = self.createVectorLayer(f'table="{self.schemaName}"."decimal_and_float_type" sql=', 'testdecimalfloat')
+
+        fields = vl.dataProvider().fields()
+        decimal_field = fields.at(fields.indexFromName('decimal_field'))
+        self.assertEqual(decimal_field.type(), QVariant.Double)
+        self.assertEqual(decimal_field.length(), 15)
+        self.assertEqual(decimal_field.precision(), 4)
+        float_field = fields.at(fields.indexFromName('float_field'))
+        self.assertEqual(float_field.type(), QVariant.Double)
+        self.assertEqual(float_field.length(), 7)
+        self.assertEqual(float_field.precision(), 0)
+
+        feat = next(vl.getFeatures(QgsFeatureRequest()))
+
+        decimal_idx = vl.fields().lookupField('decimal_field')
+        self.assertIsInstance(feat.attributes()[decimal_idx], float)
+        self.assertEqual(feat.attributes()[decimal_idx], 1.1234)
+        float_idx = vl.fields().lookupField('float_field')
+        self.assertIsInstance(feat.attributes()[float_idx], float)
+        self.assertAlmostEqual(feat.attributes()[float_idx], 1.76543, 5)
+
     def testDateTimeTypes(self):
         create_sql = f'CREATE TABLE "{self.schemaName}"."date_time_type" ( ' \
-            '"id" INTEGER NOT NULL PRIMARY KEY,' \
-            '"date_field" DATE,' \
-            '"time_field" TIME,' \
-            '"datetime_field" TIMESTAMP)'
+                     '"id" INTEGER NOT NULL PRIMARY KEY,' \
+                     '"date_field" DATE,' \
+                     '"time_field" TIME,' \
+                     '"datetime_field" TIMESTAMP)'
         insert_sql = f'INSERT INTO "{self.schemaName}"."date_time_type" ("id", "date_field", "time_field", "datetime_field") ' \
-            'VALUES (?, ?, ?, ?)'
+                     'VALUES (?, ?, ?, ?)'
         insert_args = [[1, '2004-03-04', '13:41:52', '2004-03-04 13:41:52']]
         self.prepareTestTable('date_time_type', create_sql, insert_sql, insert_args)
 
@@ -248,8 +376,8 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
 
     def testBinaryType(self):
         create_sql = f'CREATE TABLE "{self.schemaName}"."binary_type" ( ' \
-            '"id" INTEGER NOT NULL PRIMARY KEY,' \
-            '"blob" VARBINARY(114))'
+                     '"id" INTEGER NOT NULL PRIMARY KEY,' \
+                     '"blob" VARBINARY(114))'
         insert_sql = f'INSERT INTO "{self.schemaName}"."binary_type" ("id", "blob") VALUES (?, ?)'
         insert_args = [[1, QByteArray(b'YmludmFsdWU=')], [2, None]]
         self.prepareTestTable('binary_type', create_sql, insert_sql, insert_args)
@@ -266,8 +394,8 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
 
     def testBinaryTypeEdit(self):
         create_sql = f'CREATE TABLE "{self.schemaName}"."binary_type_edit" ( ' \
-            '"id" INTEGER NOT NULL PRIMARY KEY,' \
-            '"blob" VARBINARY(1000))'
+                     '"id" INTEGER NOT NULL PRIMARY KEY,' \
+                     '"blob" VARBINARY(1000))'
         insert_sql = f'INSERT INTO "{self.schemaName}"."binary_type_edit" ("id", "blob") VALUES (?, ?)'
         insert_args = [[1, QByteArray(b'YmJi')]]
         self.prepareTestTable('binary_type_edit', create_sql, insert_sql, insert_args)
@@ -296,6 +424,113 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         values = {feat['id']: feat['blob'] for feat in vl.getFeatures()}
         expected = {1: QByteArray(b'bbbvx'), 2: QByteArray(b'dddd')}
         self.assertEqual(values, expected)
+
+    def testGeometryAttributes(self):
+        create_sql = f'CREATE TABLE "{self.schemaName}"."geometry_attribute" ( ' \
+                     'ID INTEGER NOT NULL PRIMARY KEY,' \
+                     'GEOM1 ST_GEOMETRY(4326),' \
+                     'GEOM2 ST_GEOMETRY(4326))'
+        insert_sql = f'INSERT INTO "{self.schemaName}"."geometry_attribute" (ID, GEOM1, GEOM2) ' \
+                     f'VALUES (?, ST_GeomFromText(?, 4326), ST_GeomFromText(?, 4326)) '
+        insert_args = [[1, 'POINT (1 2)', 'LINESTRING (0 0,1 1)']]
+        self.prepareTestTable('geometry_attribute', create_sql, insert_sql, insert_args)
+
+        vl = self.createVectorLayer(f'table="{self.schemaName}"."geometry_attribute" (GEOM1) sql=',
+                                    'testgeometryattribute')
+        fields = vl.dataProvider().fields()
+        self.assertEqual(fields.names(), ['ID', 'GEOM2'])
+        self.assertEqual(fields.at(fields.indexFromName('ID')).type(), QVariant.Int)
+        self.assertEqual(fields.at(fields.indexFromName('GEOM2')).type(), QVariant.String)
+        values = {feat['ID']: feat['GEOM2'] for feat in vl.getFeatures()}
+        self.assertEqual(values, {1: 'LINESTRING (0 0,1 1)'})
+
+        # change attribute value
+        self.assertTrue(vl.dataProvider().changeAttributeValues({1: {1: 'LINESTRING (0 0,2 2)'}}))
+        values = {feat['ID']: feat['GEOM2'] for feat in vl.getFeatures()}
+        self.assertEqual(values, {1: 'LINESTRING (0 0,2 2)'})
+
+    def testCreateLayerViaExport(self):
+        def runTest(crs, primaryKey, attributeNames, attributeValues):
+            self.assertTrue(crs.isValid())
+
+            layer = QgsVectorLayer(f"Point?crs={crs.authid()}", "new_table", "memory")
+            pr = layer.dataProvider()
+
+            fields = [QgsField("fldid", QVariant.LongLong),
+                      QgsField("fldtxt", QVariant.String),
+                      QgsField("fldint", QVariant.Int)]
+
+            if primaryKey == "fldid":
+                constraints = QgsFieldConstraints()
+                constraints.setConstraint(QgsFieldConstraints.ConstraintNotNull,
+                                          QgsFieldConstraints.ConstraintOriginProvider)
+                constraints.setConstraint(QgsFieldConstraints.ConstraintUnique,
+                                          QgsFieldConstraints.ConstraintOriginProvider)
+                fields[0].setConstraints(constraints)
+
+            layer.startEditing()
+            for f in fields:
+                layer.addAttribute(f)
+            layer.commitChanges(True)
+
+            f1 = QgsFeature()
+            f1.setAttributes([1, "test", 11])
+            f1.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)))
+            f2 = QgsFeature()
+            f2.setAttributes([2, "test2", 13])
+            f3 = QgsFeature()
+            f3.setAttributes([3, "test2", NULL])
+            f3.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(3, 2)))
+            f4 = QgsFeature()
+            f4.setAttributes([4, NULL, 13])
+            f4.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(4, 3)))
+            pr.addFeatures([f1, f2, f3, f4])
+            layer.commitChanges()
+
+            QgsHanaProviderUtils.dropTableIfExists(self.conn, self.schemaName, 'import_data')
+            uri = self.uri + f' key=\'{primaryKey}\' table="{self.schemaName}"."import_data" (geom) sql='
+            error, message = QgsVectorLayerExporter.exportLayer(layer, uri, 'hana', crs)
+            self.assertEqual(error, QgsVectorLayerExporter.NoError)
+
+            import_layer = self.createVectorLayer(
+                f'key=\'{primaryKey}\' table="{self.schemaName}"."import_data" (geom) sql=', 'testimportedlayer')
+            self.assertEqual(import_layer.wkbType(), QgsWkbTypes.Point)
+            self.assertEqual([f.name() for f in import_layer.fields()], attributeNames)
+
+            features = [f.attributes() for f in import_layer.getFeatures()]
+            self.assertEqual(features, attributeValues)
+            geom = [f.geometry().asWkt() for f in import_layer.getFeatures()]
+            self.assertEqual(geom, ['Point (1 2)', '', 'Point (3 2)', 'Point (4 3)'])
+
+            QgsHanaProviderUtils.dropTableIfExists(self.conn, self.schemaName, 'import_data')
+
+        def is_crs_installed(srid):
+            num_crs = QgsHanaProviderUtils.executeSQLFetchOne(self.conn,
+                                                              f'SELECT COUNT(*) FROM SYS.ST_SPATIAL_REFERENCE_SYSTEMS '
+                                                              f'WHERE SRS_ID = {srid}')
+            return num_crs == 1
+
+        crs_4326 = QgsCoordinateReferenceSystem('EPSG:4326')
+        # primary key already exists in the  imported layer
+        runTest(crs_4326, 'fldid', ['fldid', 'fldtxt', 'fldint'], [[1, 'test', 11], [2, 'test2', 13],
+                                                                   [3, 'test2', NULL], [4, NULL, 13]])
+        # primary key doesn't exist in the imported layer
+        runTest(crs_4326, 'pk', ['pk', 'fldid', 'fldtxt', 'fldint'], [[1, 1, 'test', 11], [2, 2, 'test2', 13],
+                                                                      [3, 3, 'test2', NULL], [4, 4, NULL, 13]])
+        # crs id that do not exist
+        # unfortunately, we cannot test new units of measure as
+        # QgsCoordinateReferenceSystem does not allow creating
+        # a new crs object from WKT that contain custom AUTHORITY
+        # or UNIT values.
+        unknown_srid = 3395
+        if not is_crs_installed(unknown_srid):
+            crs = QgsCoordinateReferenceSystem.fromEpsgId(unknown_srid)
+
+            runTest(crs, 'fldid', ['fldid', 'fldtxt', 'fldint'], [[1, 'test', 11], [2, 'test2', 13],
+                                                                  [3, 'test2', NULL], [4, NULL, 13]])
+            self.assertTrue(is_crs_installed(unknown_srid))
+            QgsHanaProviderUtils.executeSQL(self.conn, f'DROP SPATIAL REFERENCE SYSTEM "{crs.description()}"')
+            # QgsHanaProviderUtils.executeSQL(self.conn, 'DROP SPATIAL UNIT OF MEASURE degree_qgis')
 
     def testFilterRectOutsideSrsExtent(self):
         """Test filterRect which partially lies outside of the srs extent"""

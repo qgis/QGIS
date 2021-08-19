@@ -25,6 +25,7 @@
 #include "qgsjsonutils.h"
 #include "qgssettings.h"
 #include "qgsexception.h"
+#include "qgsgeometryengine.h"
 
 QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsSpatiaLiteFeatureSource>( source, ownSource, request )
@@ -64,9 +65,27 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
     return;
   }
 
+  // prepare spatial filter geometries for optimal speed
+  switch ( mRequest.spatialFilterType() )
+  {
+    case Qgis::SpatialFilterType::NoFilter:
+    case Qgis::SpatialFilterType::BoundingBox:
+      break;
+
+    case Qgis::SpatialFilterType::DistanceWithin:
+      if ( !mRequest.referenceGeometry().isEmpty() )
+      {
+        mDistanceWithinGeom = mRequest.referenceGeometry();
+        mDistanceWithinEngine.reset( QgsGeometry::createGeometryEngine( mDistanceWithinGeom.constGet() ) );
+        mDistanceWithinEngine->prepareGeometry();
+        mFetchGeometry = true;
+      }
+      break;
+  }
+
   //beware - limitAtProvider needs to be set to false if the request cannot be completely handled
   //by the provider (e.g., utilising QGIS expression filters)
-  bool limitAtProvider = ( mRequest.limit() >= 0 );
+  bool limitAtProvider = ( mRequest.limit() >= 0 ) && mRequest.spatialFilterType() != Qgis::SpatialFilterType::DistanceWithin;
 
   if ( !mFilterRect.isNull() && !mSource->mGeometryColumn.isNull() )
   {
@@ -123,7 +142,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
       mFetchGeometry = true;
     }
 
-    QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( source->mFields );
+    QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( source->mFields, request.flags() & QgsFeatureRequest::IgnoreStaticNodesDuringExpressionCompilation );
     QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
     if ( result == QgsSqlExpressionCompiler::Complete || result == QgsSqlExpressionCompiler::Partial )
     {
@@ -157,7 +176,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
     const auto constOrderBy = request.orderBy();
     for ( const QgsFeatureRequest::OrderByClause &clause : constOrderBy )
     {
-      QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( source->mFields );
+      QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( source->mFields, request.flags() & QgsFeatureRequest::IgnoreStaticNodesDuringExpressionCompilation );
       QgsExpression expression = clause.expression();
       if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )
       {
@@ -238,16 +257,27 @@ bool QgsSpatiaLiteFeatureIterator::fetchFeature( QgsFeature &feature )
     return false;
   }
 
-  if ( !getFeature( sqliteStatement, feature ) )
+  bool foundMatchingFeature = false;
+  while ( !foundMatchingFeature )
   {
-    sqlite3_finalize( sqliteStatement );
-    sqliteStatement = nullptr;
-    close();
-    return false;
-  }
+    if ( !getFeature( sqliteStatement, feature ) )
+    {
+      sqlite3_finalize( sqliteStatement );
+      sqliteStatement = nullptr;
+      close();
+      return false;
+    }
 
-  feature.setValid( true );
-  geometryToDestinationCrs( feature, mTransform );
+    foundMatchingFeature = true;
+    feature.setValid( true );
+    geometryToDestinationCrs( feature, mTransform );
+
+    if ( mDistanceWithinEngine && mDistanceWithinEngine->distance( feature.geometry().constGet() ) > mRequest.distanceWithin() )
+    {
+      foundMatchingFeature = false;
+      feature.setValid( false );
+    }
+  }
   return true;
 }
 

@@ -15,20 +15,24 @@
 #ifndef QGSHIGHLIGHT_H
 #define QGSHIGHLIGHT_H
 
+#include "qgis_gui.h"
+#include "qgsfeature.h"
+#include "qgsrendercontext.h"
 #include "qgsmapcanvasitem.h"
 #include "qgsgeometry.h"
-#include "qgssymbol.h"
 #include <QBrush>
 #include <QColor>
 #include <QList>
 #include <QPen>
 #include <QPainter>
 #include <QPainterPath>
-#include "qgis_gui.h"
+#include <QPointer>
 
 class QgsMapLayer;
 class QgsVectorLayer;
 class QgsSymbol;
+class QgsFeatureRenderer;
+
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -39,7 +43,7 @@ class QgsSymbol;
 
 /**
  * \ingroup gui
- * A class for highlight features on the map.
+ * \brief A class for highlight features on the map.
  *
  * The QgsHighlight class provides a transparent overlay canvas item
  * for highlighting features or geometries on a map canvas.
@@ -195,7 +199,7 @@ class GUI_EXPORT QgsHighlight : public QgsMapCanvasItem
     QPen mPen;
     QgsGeometry mOriginalGeometry;
     QgsGeometry mGeometry;
-    QgsMapLayer *mLayer = nullptr;
+    QPointer< QgsMapLayer > mLayer;
     QgsFeature mFeature;
     double mBuffer = 0; // line / stroke buffer in pixels
     double mMinWidth = 0; // line / stroke minimum width in pixels

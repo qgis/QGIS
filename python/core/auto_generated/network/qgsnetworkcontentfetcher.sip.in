@@ -11,9 +11,10 @@
 
 
 
+
 class QgsNetworkContentFetcher : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 HTTP network content fetcher. A simple method for fetching remote HTTP content
 and converting the content to standard formats. Url redirects are automatically
 handled.

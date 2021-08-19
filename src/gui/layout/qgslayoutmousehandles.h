@@ -37,7 +37,7 @@ class QgsAbstractLayoutUndoCommand;
 
 /**
  * \ingroup gui
- * Handles drawing of selection outlines and mouse handles in a QgsLayoutView
+ * \brief Handles drawing of selection outlines and mouse handles in a QgsLayoutView
  *
  * Also is responsible for mouse interactions such as resizing and moving selected items.
  *

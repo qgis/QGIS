@@ -27,7 +27,7 @@ class QgsProcessingProvider;
 /**
  * \class QgsProcessingFeedback
  * \ingroup core
- * Base class for providing feedback from a processing algorithm.
+ * \brief Base class for providing feedback from a processing algorithm.
  *
  * This base class implementation silently ignores all feedback reported by algorithms.
  * Subclasses of QgsProcessingFeedback can be used to log this feedback or report
@@ -140,9 +140,13 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
     virtual QString textLog() const;
 
   private:
+
+    void log( const QString &htmlMessage, const QString &textMessage );
+
     bool mLogFeedback = true;
     QString mHtmlLog;
     QString mTextLog;
+    int mMessageLoggedCount = 0;
 
 };
 
@@ -151,7 +155,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
  * \class QgsProcessingMultiStepFeedback
  * \ingroup core
  *
- * Processing feedback object for multi-step operations.
+ * \brief Processing feedback object for multi-step operations.
  *
  * A processing feedback object which proxies its calls to an underlying
  * feedback object, but scales overall progress reports to account
@@ -196,6 +200,7 @@ class CORE_EXPORT QgsProcessingMultiStepFeedback : public QgsProcessingFeedback
     int mChildSteps = 0;
     int mCurrentStep = 0;
     QgsProcessingFeedback *mFeedback = nullptr;
+
 };
 
 #endif // QGSPROCESSINGFEEDBACK_H

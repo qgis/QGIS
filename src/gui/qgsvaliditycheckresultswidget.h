@@ -30,7 +30,7 @@ class QgsValidityCheckContext;
 /**
  * \class QgsValidityCheckResultsModel
  * \ingroup gui
- * A QAbstractItemModel subclass for displaying the results from a QgsAbtractValidityCheck.
+ * \brief A QAbstractItemModel subclass for displaying the results from a QgsAbtractValidityCheck.
  *
  * \since QGIS 3.6
  */
@@ -63,7 +63,7 @@ class GUI_EXPORT QgsValidityCheckResultsModel : public QAbstractItemModel
 /**
  * \class QgsValidityCheckResultsWidget
  * \ingroup gui
- * A reusable widget which displays a summary of the results from a QgsAbstractValidityCheck (or checks).
+ * \brief A reusable widget which displays a summary of the results from a QgsAbstractValidityCheck (or checks).
  *
  * \since QGIS 3.6
  */

@@ -19,6 +19,7 @@
 #include <QString>
 #include <QStringList>
 #include <QApplication>
+#include <QTemporaryFile>
 
 #include <qgsdatasourceuri.h>
 #include <qgsrasterlayer.h>
@@ -81,7 +82,7 @@ void TestQgsWcsProvider::initTestCase()
 //runs after all tests
 void TestQgsWcsProvider::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -117,14 +118,14 @@ void TestQgsWcsProvider::read()
   // How to reasonably log multiple fails within this loop?
   QTemporaryFile *tmpFile = new QTemporaryFile( QStringLiteral( "qgis-wcs-test-XXXXXX.tif" ) );
   tmpFile->open();
-  QString tmpFilePath = tmpFile->fileName();
+  const QString tmpFilePath = tmpFile->fileName();
   delete tmpFile; // removes the file
-  Q_FOREACH ( const QString &version, versions )
+  for ( const QString &version : versions )
   {
-    Q_FOREACH ( const QString &identifier, identifiers )
+    for ( const QString &identifier : identifiers )
     {
       // copy to temporary to avoid creation/changes/use of GDAL .aux.xml files
-      QString testFilePath = mTestDataDir + '/' + identifier + ".tif";
+      const QString testFilePath = mTestDataDir + '/' + identifier + ".tif";
       qDebug() << "copy " <<  testFilePath << " to " << tmpFilePath;
       if ( !QFile::copy( testFilePath, tmpFilePath ) )
       {
@@ -155,7 +156,7 @@ bool TestQgsWcsProvider::read( const QString &identifier, const QString &wcsUri,
   report += QStringLiteral( "<h2>Identifier (coverage): %1</h2>" ).arg( identifier );
 
   QgsRasterChecker checker;
-  bool ok = checker.runTest( QStringLiteral( "wcs" ), wcsUri, QStringLiteral( "gdal" ), filePath );
+  const bool ok = checker.runTest( QStringLiteral( "wcs" ), wcsUri, QStringLiteral( "gdal" ), filePath );
 
   report += checker.report();
   return ok;

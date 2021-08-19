@@ -36,6 +36,8 @@ QgsLegendSettings::QgsLegendSettings()
   rstyle( QgsLegendStyle::Group ).rfont().setPointSizeF( 14.0 );
   rstyle( QgsLegendStyle::Subgroup ).rfont().setPointSizeF( 12.0 );
   rstyle( QgsLegendStyle::SymbolLabel ).rfont().setPointSizeF( 12.0 );
+  rstyle( QgsLegendStyle::Group ).setIndent( 0.0 );
+  rstyle( QgsLegendStyle::Subgroup ).setIndent( 0.0 );
 }
 
 double QgsLegendSettings::mmPerMapUnit() const
@@ -115,11 +117,11 @@ QStringList QgsLegendSettings::splitStringForWrapping( const QString &stringToSp
 
 void QgsLegendSettings::drawText( QPainter *p, double x, double y, const QString &text, const QFont &font ) const
 {
-  QFont textFont = scaledFontPixelSize( font );
+  const QFont textFont = scaledFontPixelSize( font );
 
-  QgsScopedQPainterState painterState( p );
+  const QgsScopedQPainterState painterState( p );
   p->setFont( textFont );
-  double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
+  const double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
   p->scale( scaleFactor, scaleFactor );
   p->drawText( QPointF( x * FONT_WORKAROUND_SCALE, y * FONT_WORKAROUND_SCALE ), text );
 }
@@ -127,14 +129,14 @@ void QgsLegendSettings::drawText( QPainter *p, double x, double y, const QString
 
 void QgsLegendSettings::drawText( QPainter *p, const QRectF &rect, const QString &text, const QFont &font, Qt::AlignmentFlag halignment, Qt::AlignmentFlag valignment, int flags ) const
 {
-  QFont textFont = scaledFontPixelSize( font );
+  const QFont textFont = scaledFontPixelSize( font );
 
-  QRectF scaledRect( rect.x() * FONT_WORKAROUND_SCALE, rect.y() * FONT_WORKAROUND_SCALE,
-                     rect.width() * FONT_WORKAROUND_SCALE, rect.height() * FONT_WORKAROUND_SCALE );
+  const QRectF scaledRect( rect.x() * FONT_WORKAROUND_SCALE, rect.y() * FONT_WORKAROUND_SCALE,
+                           rect.width() * FONT_WORKAROUND_SCALE, rect.height() * FONT_WORKAROUND_SCALE );
 
-  QgsScopedQPainterState painterState( p );
+  const QgsScopedQPainterState painterState( p );
   p->setFont( textFont );
-  double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
+  const double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
   p->scale( scaleFactor, scaleFactor );
   p->drawText( scaledRect, halignment | valignment | flags, text );
 }
@@ -143,7 +145,7 @@ void QgsLegendSettings::drawText( QPainter *p, const QRectF &rect, const QString
 QFont QgsLegendSettings::scaledFontPixelSize( const QFont &font ) const
 {
   QFont scaledFont = font;
-  double pixelSize = pixelFontSize( font.pointSizeF() ) * FONT_WORKAROUND_SCALE + 0.5;
+  const double pixelSize = pixelFontSize( font.pointSizeF() ) * FONT_WORKAROUND_SCALE + 0.5;
   scaledFont.setPixelSize( pixelSize );
   return scaledFont;
 }
@@ -155,33 +157,29 @@ double QgsLegendSettings::pixelFontSize( double pointSize ) const
 
 double QgsLegendSettings::textWidthMillimeters( const QFont &font, const QString &text ) const
 {
-  QFont metricsFont = scaledFontPixelSize( font );
-  QFontMetricsF fontMetrics( metricsFont );
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  return ( fontMetrics.width( text ) / FONT_WORKAROUND_SCALE );
-#else
+  const QFont metricsFont = scaledFontPixelSize( font );
+  const QFontMetricsF fontMetrics( metricsFont );
   return ( fontMetrics.horizontalAdvance( text ) / FONT_WORKAROUND_SCALE );
-#endif
 }
 
 double QgsLegendSettings::fontHeightCharacterMM( const QFont &font, QChar c ) const
 {
-  QFont metricsFont = scaledFontPixelSize( font );
-  QFontMetricsF fontMetrics( metricsFont );
+  const QFont metricsFont = scaledFontPixelSize( font );
+  const QFontMetricsF fontMetrics( metricsFont );
   return ( fontMetrics.boundingRect( c ).height() / FONT_WORKAROUND_SCALE );
 }
 
 double QgsLegendSettings::fontAscentMillimeters( const QFont &font ) const
 {
-  QFont metricsFont = scaledFontPixelSize( font );
-  QFontMetricsF fontMetrics( metricsFont );
+  const QFont metricsFont = scaledFontPixelSize( font );
+  const QFontMetricsF fontMetrics( metricsFont );
   return ( fontMetrics.ascent() / FONT_WORKAROUND_SCALE );
 }
 
 double QgsLegendSettings::fontDescentMillimeters( const QFont &font ) const
 {
-  QFont metricsFont = scaledFontPixelSize( font );
-  QFontMetricsF fontMetrics( metricsFont );
+  const QFont metricsFont = scaledFontPixelSize( font );
+  const QFontMetricsF fontMetrics( metricsFont );
   return ( fontMetrics.descent() / FONT_WORKAROUND_SCALE );
 }
 

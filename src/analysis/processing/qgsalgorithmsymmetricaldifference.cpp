@@ -61,7 +61,7 @@ void QgsSymmetricalDifferenceAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "OVERLAY" ), QObject::tr( "Overlay layer" ) ) );
 
-  std::unique_ptr< QgsProcessingParameterString > prefix = qgis::make_unique< QgsProcessingParameterString >( QStringLiteral( "OVERLAY_FIELDS_PREFIX" ), QObject::tr( "Overlay fields prefix" ), QString(), false, true );
+  std::unique_ptr< QgsProcessingParameterString > prefix = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "OVERLAY_FIELDS_PREFIX" ), QObject::tr( "Overlay fields prefix" ), QString(), false, true );
   prefix->setFlags( prefix->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( prefix.release() );
 
@@ -79,10 +79,10 @@ QVariantMap QgsSymmetricalDifferenceAlgorithm::processAlgorithm( const QVariantM
   if ( !sourceB )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "OVERLAY" ) ) );
 
-  QgsWkbTypes::Type geomType = QgsWkbTypes::multiType( sourceA->wkbType() );
+  const QgsWkbTypes::Type geomType = QgsWkbTypes::multiType( sourceA->wkbType() );
 
-  QString overlayFieldsPrefix = parameterAsString( parameters, QStringLiteral( "OVERLAY_FIELDS_PREFIX" ), context );
-  QgsFields fields = QgsProcessingUtils::combineFields( sourceA->fields(), sourceB->fields(), overlayFieldsPrefix );
+  const QString overlayFieldsPrefix = parameterAsString( parameters, QStringLiteral( "OVERLAY_FIELDS_PREFIX" ), context );
+  const QgsFields fields = QgsProcessingUtils::combineFields( sourceA->fields(), sourceB->fields(), overlayFieldsPrefix );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, geomType, sourceA->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
@@ -92,10 +92,12 @@ QVariantMap QgsSymmetricalDifferenceAlgorithm::processAlgorithm( const QVariantM
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
 
-  int count = 0;
-  int total = sourceA->featureCount() + sourceB->featureCount();
+  long count = 0;
+  const long total = sourceA->featureCount() + sourceB->featureCount();
 
   QgsOverlayUtils::difference( *sourceA, *sourceB, *sink, context, feedback, count, total, QgsOverlayUtils::OutputAB );
+  if ( feedback->isCanceled() )
+    return outputs;
 
   QgsOverlayUtils::difference( *sourceB, *sourceA, *sink, context, feedback, count, total, QgsOverlayUtils::OutputBA );
 

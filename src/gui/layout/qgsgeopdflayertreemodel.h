@@ -31,7 +31,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup gui
- * Layer tree model for Geo-PDF layers
+ * \brief Layer tree model for Geo-PDF layers
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12

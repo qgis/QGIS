@@ -20,7 +20,11 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include <QObject>
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #include <QMutex>
+#else
+#include <QRecursiveMutex>
+#endif
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QSqlDatabase>
@@ -50,12 +54,13 @@ namespace QCA
 class QgsAuthMethod;
 class QgsAuthMethodEdit;
 class QgsAuthProvider;
+class QgsAuthMethodMetadata;
 class QTimer;
 
 
 /**
  * \ingroup core
- * Singleton offering an interface to manage the authentication configuration database
+ * \brief Singleton offering an interface to manage the authentication configuration database
  * and to utilize configurations through various authentication method plugins
  *
  * QgsAuthManager should not usually be directly created, but rather accessed through
@@ -226,11 +231,21 @@ class CORE_EXPORT QgsAuthManager : public QObject
     QgsAuthMethod *authMethod( const QString &authMethodKey );
 
     /**
+     * Gets authentication method metadata via its key
+     * \param authMethodKey Authentication method key
+     * \since QGIS 3.22
+     */
+    const QgsAuthMethodMetadata *authMethodMetadata( const QString &authMethodKey ) SIP_SKIP;
+
+    /**
      * Gets available authentication methods mapped to their key
      * \param dataprovider Provider key filter, returning only methods that support a particular provider
      * \note not available in Python bindings
      */
     QgsAuthMethodsMap authMethodsMap( const QString &dataprovider = QString() ) SIP_SKIP;
+
+#ifdef HAVE_GUI
+    SIP_IF_FEATURE( HAVE_GUI )
 
     /**
      * Gets authentication method edit widget via its key
@@ -238,6 +253,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \param parent Parent widget
      */
     QWidget *authMethodEditWidget( const QString &authMethodKey, QWidget *parent );
+    SIP_END
+#endif
 
     /**
      * Gets supported authentication method expansion(s), e.g. NetworkRequest | DataSourceURI, as flags
@@ -269,9 +286,10 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /**
      * Store an authentication config in the database
      * \param mconfig Associated authentication config id
+     * \param overwrite If set to TRUE, pre-existing authentication configurations will be overwritten
      * \returns Whether operation succeeded
      */
-    bool storeAuthenticationConfig( QgsAuthMethodConfig &mconfig SIP_INOUT );
+    bool storeAuthenticationConfig( QgsAuthMethodConfig &mconfig SIP_INOUT, bool overwrite = false );
 
     /**
      * Update an authentication config in the database
@@ -295,6 +313,24 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \returns Whether operation succeeded
      */
     bool removeAuthenticationConfig( const QString &authcfg );
+
+    /**
+     * Export authentication configurations to an XML file
+     * \param filename The file path to save the XML content to
+     * \param authcfgs The list of configuration IDs to export
+     * \param password A password string to encrypt the XML content
+     * \since QGIS 3.20
+     */
+    bool exportAuthenticationConfigsToXml( const QString &filename, const QStringList &authcfgs, const QString &password = QString() );
+
+    /**
+     * Import authentication configurations from an XML file
+     * \param filename The file path from which the XML content will be read
+     * \param password A password string to decrypt the XML content
+     * \param overwrite If set to TRUE, pre-existing authentication configurations will be overwritten
+     * \since QGIS 3.20
+     */
+    bool importAuthenticationConfigsFromXml( const QString &filename, const QString &password = QString(), bool overwrite = false );
 
     /**
      * Clear all authentication configs from table in database and from provider caches
@@ -752,7 +788,14 @@ class CORE_EXPORT QgsAuthManager : public QObject
      */
     static QgsAuthManager *instance() SIP_SKIP;
 
+
+#ifdef Q_OS_WIN
+  public:
     explicit QgsAuthManager() SIP_SKIP;
+#else
+  protected:
+    explicit QgsAuthManager() SIP_SKIP;
+#endif
 
   private:
 
@@ -863,9 +906,13 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool mScheduledDbEraseRequestEmitted = false;
     int mScheduledDbEraseRequestCount = 0;
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     std::unique_ptr<QMutex> mMutex;
     std::unique_ptr<QMutex> mMasterPasswordMutex;
-
+#else
+    std::unique_ptr<QRecursiveMutex> mMutex;
+    std::unique_ptr<QRecursiveMutex> mMasterPasswordMutex;
+#endif
 #ifndef QT_NO_SSL
     // mapping of sha1 digest and cert source and cert
     // appending removes duplicates

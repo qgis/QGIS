@@ -14,7 +14,7 @@
 
 class QgsCodeEditorCSS : QgsCodeEditor
 {
-%Docstring
+%Docstring(signature="appended")
 A CSS editor based on QScintilla2. Adds syntax highlighting and
 code autocompletion.
 

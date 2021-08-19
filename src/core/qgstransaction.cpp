@@ -36,8 +36,8 @@ QgsTransaction *QgsTransaction::create( const QSet<QgsVectorLayer *> &layers )
 
   QgsVectorLayer *firstLayer = *layers.constBegin();
 
-  QString connStr = connectionString( firstLayer->source() );
-  QString providerKey = firstLayer->providerType();
+  const QString connStr = connectionString( firstLayer->source() );
+  const QString providerKey = firstLayer->providerType();
   std::unique_ptr<QgsTransaction> transaction( QgsTransaction::create( connStr, providerKey ) );
   if ( transaction )
   {
@@ -74,10 +74,10 @@ QString QgsTransaction::removeLayerIdOrName( const QString &str )
 
   for ( int i = 0; i < 2; i++ )
   {
-    int pos = res.indexOf( i == 0 ? QLatin1String( "|layername=" ) :  QLatin1String( "|layerid=" ) );
+    const int pos = res.indexOf( i == 0 ? QLatin1String( "|layername=" ) :  QLatin1String( "|layerid=" ) );
     if ( pos >= 0 )
     {
-      int end = res.indexOf( '|', pos + 1 );
+      const int end = res.indexOf( '|', pos + 1 );
       if ( end >= 0 )
       {
         res = res.mid( 0, pos ) + res.mid( end );
@@ -218,7 +218,9 @@ QString QgsTransaction::createSavepoint( QString &error SIP_OUT )
     return QString();
 
   if ( !mLastSavePointIsDirty && !mSavepoints.isEmpty() )
+  {
     return mSavepoints.top();
+  }
 
   const QString name( QStringLiteral( "qgis" ) + ( QUuid::createUuid().toString().mid( 1, 24 ).replace( '-', QString() ) ) );
 
@@ -260,7 +262,10 @@ bool QgsTransaction::rollbackToSavepoint( const QString &name, QString &error SI
     return false;
 
   mSavepoints.resize( idx );
-  mLastSavePointIsDirty = false;
+  // Rolling back always dirties the previous savepoint because
+  // the status of the DB has changed between the previous savepoint and the
+  // one we are rolling back to.
+  mLastSavePointIsDirty = true;
   return executeSql( QStringLiteral( "ROLLBACK TO SAVEPOINT %1" ).arg( QgsExpression::quotedColumnRef( name ) ), error );
 }
 

@@ -29,7 +29,7 @@
 /**
  * \ingroup gui
  * \class QgsBusyIndicatorDialog
- * A simple dialog to show an indeterminate busy progress indicator.
+ * \brief A simple dialog to show an indeterminate busy progress indicator.
  */
 class GUI_EXPORT QgsBusyIndicatorDialog : public QDialog
 {

@@ -42,7 +42,7 @@ QString QgsZonalStatisticsAlgorithm::name() const
 
 QString QgsZonalStatisticsAlgorithm::displayName() const
 {
-  return QObject::tr( "Zonal statistics" );
+  return QObject::tr( "Zonal statistics (in place)" );
 }
 
 QStringList QgsZonalStatisticsAlgorithm::tags() const
@@ -81,7 +81,7 @@ void QgsZonalStatisticsAlgorithm::initAlgorithm( const QVariantMap & )
 {
   QStringList statChoices;
   statChoices.reserve( STATS.size() );
-  for ( QgsZonalStatistics::Statistic stat : STATS )
+  for ( const QgsZonalStatistics::Statistic stat : STATS )
   {
     statChoices << QgsZonalStatistics::displayName( stat );
   }
@@ -119,7 +119,7 @@ bool QgsZonalStatisticsAlgorithm::prepareAlgorithm( const QVariantMap &parameter
 
   const QList< int > stats = parameterAsEnums( parameters, QStringLiteral( "STATISTICS" ), context );
   mStats = QgsZonalStatistics::Statistics();
-  for ( int s : stats )
+  for ( const int s : stats )
   {
     mStats |= STATS.at( s );
   }

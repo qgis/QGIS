@@ -67,7 +67,7 @@ class GUI_EXPORT QgsLegendPatchShapeWidget : public QgsPanelWidget, private Ui::
 
   private:
 
-    QgsSymbol::SymbolType mType = QgsSymbol::Fill;
+    Qgis::SymbolType mType = Qgis::SymbolType::Fill;
 
 };
 

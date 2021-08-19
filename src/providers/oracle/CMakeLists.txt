@@ -10,7 +10,7 @@ set(ORACLE_SRCS
   qgsoraclenewconnection.cpp
   qgsoracletablecache.cpp
   qgsoracletablemodel.cpp
-  qgsoraclecolumntypethread.cpp
+  qgsoraclecolumntypetask.cpp
   qgsoraclefeatureiterator.cpp
   qgsoracleconnpool.cpp
   qgsoracleexpressioncompiler.cpp
@@ -47,24 +47,27 @@ if (WITH_GUI)
   )
 endif()
 
-add_library (oracleprovider MODULE ${ORACLE_SRCS} ${ORACLE_HDRS})
+add_library (provider_oracle MODULE ${ORACLE_SRCS} ${ORACLE_HDRS})
 
-target_link_libraries (oracleprovider
+# require c++17
+target_compile_features(provider_oracle PRIVATE cxx_std_17)
+
+target_link_libraries (provider_oracle
   qgis_core
-  ${Qt5Sql_LIBRARIES}
+  ${QT_VERSION_BASE}::Sql
 )
 
 if (WITH_GUI)
-  target_link_libraries (oracleprovider
+  target_link_libraries (provider_oracle
     qgis_gui
   )
-  add_dependencies(oracleprovider ui)
+  add_dependencies(provider_oracle ui)
 endif()
 
 
 ########################################################
 # Install
 
-install(TARGETS oracleprovider
+install(TARGETS provider_oracle
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})

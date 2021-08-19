@@ -30,7 +30,7 @@ class QUndoStack;
 
 /**
  * \ingroup core
- * An undo stack for QgsLayouts.
+ * \brief An undo stack for QgsLayouts.
  * \since QGIS 3.0
 */
 class CORE_EXPORT QgsLayoutUndoStack : public QObject

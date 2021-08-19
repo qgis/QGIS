@@ -33,12 +33,15 @@
 #include <string>
 
 class QgsCoordinateReferenceSystem;
+class QTextCodec;
 
 #ifndef SIP_RUN
 
 /**
  * \ingroup core
- * This class builds features from GML data in a streaming way. The caller must call processData()
+ * \brief This class builds features from GML data in a streaming way.
+ *
+ * The caller must call processData()
  * as soon it has new content from the source. At any point, it can call
  * getAndStealReadyFeatures() to collect the features that have been completely
  * parsed.
@@ -53,7 +56,7 @@ class CORE_EXPORT QgsGmlStreamingParser
 
     /**
      * \ingroup core
-     * Layer properties
+     * \brief Layer properties
     */
     class LayerProperties
     {
@@ -251,8 +254,11 @@ class CORE_EXPORT QgsGmlStreamingParser
     //! Safely (if empty) pop from mode stack
     ParseMode modeStackPop() { return mParseModeStack.isEmpty() ? None : mParseModeStack.pop(); }
 
+    //! create parser with specified encoding if any
+    void createParser( const QByteArray &encoding = QByteArray() );
+
     //! Expat parser
-    XML_Parser mParser;
+    XML_Parser mParser = nullptr;
 
     //! List of (feature, gml_id) pairs
     QVector<QgsGmlFeaturePtrGmlIdPair> mFeatureList;
@@ -342,13 +348,17 @@ class CORE_EXPORT QgsGmlStreamingParser
     std::string mGeometryString;
     //! Whether we found a unhandled geometry element
     bool mFoundUnhandledGeometryElement;
+    //! text codec used to read data with an expat unsupported encoding
+    QTextCodec *mCodec = nullptr;
 };
 
 #endif
 
 /**
  * \ingroup core
- * This class reads data from a WFS server or alternatively from a GML file. It
+ * \brief This class reads data from a WFS server or alternatively from a GML file.
+ *
+ * It
  * uses the expat XML parser and an event based model to keep performance high.
  * The parsing starts when the first data arrives, it does not wait until the
  * request is finished
@@ -364,7 +374,6 @@ class CORE_EXPORT QgsGml : public QObject
 
     /**
      * Does the Http GET request to the wfs server
-     *  Supports only UTF-8, UTF-16, ISO-8859-1, ISO-8859-1 XML encodings.
      *  \param uri GML URL
      *  \param wkbType wkbType to retrieve
      *  \param extent retrieved extents
@@ -383,7 +392,6 @@ class CORE_EXPORT QgsGml : public QObject
 
     /**
      * Read from GML data. Constructor uri param is ignored
-     *  Supports only UTF-8, UTF-16, ISO-8859-1, ISO-8859-1 XML encodings.
      */
     int getFeatures( const QByteArray &data, QgsWkbTypes::Type *wkbType, QgsRectangle *extent = nullptr );
 

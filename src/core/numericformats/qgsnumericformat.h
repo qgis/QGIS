@@ -27,7 +27,7 @@ class QgsReadWriteContext;
 
 /**
  * \ingroup core
- * A context for numeric formats
+ * \brief A context for numeric formats
  *
  * \since QGIS 3.12
  */
@@ -206,7 +206,7 @@ class CORE_EXPORT QgsNumericFormatContext
 
 /**
  * \ingroup core
- * A numeric formatter allows for formatting a numeric value for display, using
+ * \brief A numeric formatter allows for formatting a numeric value for display, using
  * a variety of different formatting techniques (e.g. as scientific notation, currency values,
  * percentage values, etc)
  *

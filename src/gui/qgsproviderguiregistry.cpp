@@ -20,12 +20,14 @@
 #include <QString>
 #include <QDir>
 #include <QLibrary>
+#include <QRegularExpression>
 
 #include "qgslogger.h"
 #include "qgsgdalguiprovider.h"
 #include "qgsogrguiprovider.h"
 #include "qgsvectortileproviderguimetadata.h"
 #include "qgspointcloudproviderguimetadata.h"
+#include "qgsmaplayerconfigwidgetfactory.h"
 
 #ifdef HAVE_EPT
 #include "qgseptproviderguimetadata.h"
@@ -38,17 +40,17 @@
 
 /**
  * Convenience function for finding any existing data providers that match "providerKey"
-
-  Necessary because [] map operator will create a QgsProviderGuiMetadata
-  instance.  Also you cannot use the map [] operator in const members for that
-  very reason.  So there needs to be a convenient way to find a data provider
-  without accidentally adding a null meta data item to the metadata map.
+ *
+ * Necessary because [] map operator will create a QgsProviderGuiMetadata
+ * instance.  Also you cannot use the map [] operator in const members for that
+ * very reason.  So there needs to be a convenient way to find a data provider
+ * without accidentally adding a null meta data item to the metadata map.
 */
 static
 QgsProviderGuiMetadata *findMetadata_( QgsProviderGuiRegistry::GuiProviders const &metaData,
                                        QString const &providerKey )
 {
-  QgsProviderGuiRegistry::GuiProviders::const_iterator i = metaData.find( providerKey );
+  const QgsProviderGuiRegistry::GuiProviders::const_iterator i = metaData.find( providerKey );
   if ( i != metaData.end() )
   {
     return i->second;
@@ -99,6 +101,7 @@ void QgsProviderGuiRegistry::loadStaticProviders( )
 void QgsProviderGuiRegistry::loadDynamicProviders( const QString &pluginPath )
 {
 #ifdef HAVE_STATIC_PROVIDERS
+  Q_UNUSED( pluginPath )
   QgsDebugMsg( QStringLiteral( "Forced only static GUI providers" ) );
 #else
   typedef QgsProviderGuiMetadata *factory_function( );
@@ -124,8 +127,8 @@ void QgsProviderGuiRegistry::loadDynamicProviders( const QString &pluginPath )
   }
 
   // provider file regex pattern, only files matching the pattern are loaded if the variable is defined
-  QString filePattern = getenv( "QGIS_PROVIDER_FILE" );
-  QRegExp fileRegexp;
+  const QString filePattern = getenv( "QGIS_PROVIDER_FILE" );
+  QRegularExpression fileRegexp;
   if ( !filePattern.isEmpty() )
   {
     fileRegexp.setPattern( filePattern );
@@ -134,9 +137,10 @@ void QgsProviderGuiRegistry::loadDynamicProviders( const QString &pluginPath )
   const auto constEntryInfoList = mLibraryDirectory.entryInfoList();
   for ( const QFileInfo &fi : constEntryInfoList )
   {
-    if ( !fileRegexp.isEmpty() )
+    if ( !fileRegexp.pattern().isEmpty() )
     {
-      if ( fileRegexp.indexIn( fi.fileName() ) == -1 )
+      const QRegularExpressionMatch fileNameMatch = fileRegexp.match( fi.fileName() );
+      if ( !fileNameMatch.hasMatch() )
       {
         QgsDebugMsg( "provider " + fi.fileName() + " skipped because doesn't match pattern " + filePattern );
         continue;
@@ -227,6 +231,21 @@ QList<QgsProviderSourceWidgetProvider *> QgsProviderGuiRegistry::sourceWidgetPro
   if ( meta )
     return meta->sourceWidgetProviders();
   return QList<QgsProviderSourceWidgetProvider *>();
+}
+
+QList<const QgsMapLayerConfigWidgetFactory *> QgsProviderGuiRegistry::mapLayerConfigWidgetFactories( QgsMapLayer *layer )
+{
+  QList<const QgsMapLayerConfigWidgetFactory *> res;
+  for ( GuiProviders::const_iterator it = mProviders.begin(); it != mProviders.end(); ++it )
+  {
+    const QList<const QgsMapLayerConfigWidgetFactory *> providerFactories = ( *it ).second->mapLayerConfigWidgetFactories();
+    for ( const QgsMapLayerConfigWidgetFactory *factory : providerFactories )
+    {
+      if ( !layer || factory->supportsLayer( layer ) )
+        res << factory;
+    }
+  }
+  return res;
 }
 
 QStringList QgsProviderGuiRegistry::providerList() const

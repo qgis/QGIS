@@ -54,9 +54,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-76</y>
         <width>394</width>
-        <height>914</height>
+        <height>868</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -464,10 +464,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
-   <container>1</container>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsScrollArea</class>
@@ -482,14 +481,15 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsFontButton</class>
    <extends>QToolButton</extends>
    <header>qgsfontbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -499,6 +499,7 @@
   <tabstop>groupBox_6</tabstop>
   <tabstop>mDrawEmptyCheckBox</tabstop>
   <tabstop>mMarginSpinBox</tabstop>
+  <tabstop>mHeaderModeComboBox</tabstop>
   <tabstop>mBackgroundColorButton</tabstop>
   <tabstop>mAdvancedCustomizationButton</tabstop>
   <tabstop>mWrapBehaviorComboBox</tabstop>
@@ -507,6 +508,9 @@
   <tabstop>mGridColorButton</tabstop>
   <tabstop>mDrawHorizontalGrid</tabstop>
   <tabstop>mDrawVerticalGrid</tabstop>
+  <tabstop>mHeaderFontToolButton</tabstop>
+  <tabstop>mHeaderHAlignmentComboBox</tabstop>
+  <tabstop>mContentFontToolButton</tabstop>
   <tabstop>frameGroupBox</tabstop>
   <tabstop>mResizeModeComboBox</tabstop>
   <tabstop>mAddFramePushButton</tabstop>

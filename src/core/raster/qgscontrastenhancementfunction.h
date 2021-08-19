@@ -24,7 +24,7 @@ email                : ersts@amnh.org
 
 /**
  * \ingroup core
- * A contrast enhancement function is the base class for all raster contrast enhancements.
+ * \brief A contrast enhancement function is the base class for all raster contrast enhancements.
  *
  * The purpose of a contrast enhancement is to enhanceContrast or clip a pixel value into
  * a specified bounding range.

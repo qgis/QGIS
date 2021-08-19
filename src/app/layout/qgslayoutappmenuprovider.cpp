@@ -58,7 +58,7 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
     bool foundSelectedGroup = false;
     QList< QgsLayoutItemGroup * > groups;
     layout->layoutItems( groups );
-    for ( QgsLayoutItemGroup *group : qgis::as_const( groups ) )
+    for ( QgsLayoutItemGroup *group : std::as_const( groups ) )
     {
       if ( group->isSelected() )
       {

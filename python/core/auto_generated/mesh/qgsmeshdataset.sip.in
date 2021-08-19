@@ -14,7 +14,7 @@
 
 class QgsMeshDatasetIndex
 {
-%Docstring
+%Docstring(signature="appended")
 
 :py:class:`QgsMeshDatasetIndex` is index that identifies the dataset group (e.g. wind speed)
 and a dataset in this group (e.g. magnitude of wind speed in particular time)
@@ -52,11 +52,11 @@ Returns whether index is valid, ie at least groups is set
 
 class QgsMeshDatasetValue
 {
-%Docstring
+%Docstring(signature="appended")
 
-:py:class:`QgsMeshDatasetValue` represents single dataset value
+:py:class:`QgsMeshDatasetValue` represents single dataset value.
 
-could be scalar or vector. Nodata values are represented by NaNs.
+Values may be scalar or vector. Nodata values are represented by NaNs.
 
 .. note::
 
@@ -123,7 +123,7 @@ Returns y value
 
 class QgsMeshDataBlock
 {
-%Docstring
+%Docstring(signature="appended")
 
 :py:class:`QgsMeshDataBlock` is a block of integers/doubles that can be used
 to retrieve:
@@ -244,12 +244,12 @@ Sets block validity
 
 class QgsMesh3dDataBlock
 {
-%Docstring
+%Docstring(signature="appended")
 
 :py:class:`QgsMesh3dDataBlock` is a block of 3d stacked mesh data related N
 faces defined on base mesh frame.
 
-data are implicitly shared, so the class can be quickly copied
+Data are implicitly shared, so the class can be quickly copied
 std.numeric_limits<double>.quiet_NaN() represents NODATA value
 
 .. note::
@@ -367,7 +367,7 @@ For vector datasets the number of values is doubled (x1, y1, x2, y2, ... )
 
 class QgsMeshDatasetGroupMetadata
 {
-%Docstring
+%Docstring(signature="appended")
 
 :py:class:`QgsMeshDatasetGroupMetadata` is a collection of dataset group metadata
 such as whether the data is vector or scalar, name
@@ -489,7 +489,7 @@ Returns the reference time
 
 class QgsMeshDatasetMetadata
 {
-%Docstring
+%Docstring(signature="appended")
 
 :py:class:`QgsMeshDatasetMetadata` is a collection of mesh dataset metadata such
 as whether the data is valid or associated time for the dataset
@@ -558,7 +558,7 @@ Returns maximum number of vertical levels for 3d stacked meshes
 
 class QgsMeshDataset
 {
-%Docstring
+%Docstring(signature="appended")
 
 Abstract class that represents a dataset
 
@@ -609,7 +609,7 @@ Returns the values count
 
 class QgsMeshDatasetGroup
 {
-%Docstring
+%Docstring(signature="appended")
 
 Abstract class that represents a dataset group
 
@@ -768,7 +768,7 @@ Sets the reference time of the dataset group
 
 class QgsMeshDatasetGroupTreeItem
 {
-%Docstring
+%Docstring(signature="appended")
 
 Tree item for display of the mesh dataset groups.
 Dataset group is set of datasets with the same name,
@@ -833,9 +833,7 @@ Clones the item
 
     void appendChild( QgsMeshDatasetGroupTreeItem *item /Transfer/ );
 %Docstring
-Appends a item child
-
-:param item: the item to append
+Appends a child ``item``.
 
 .. note::
 

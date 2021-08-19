@@ -23,7 +23,7 @@
 
 /**
  * \ingroup core
- * A numeric formatter which returns a vulgar fractional representation of a decimal value (e.g. "1/2" instead of 0.5).
+ * \brief A numeric formatter which returns a vulgar fractional representation of a decimal value (e.g. "1/2" instead of 0.5).
  *
  * \since QGIS 3.14
  */

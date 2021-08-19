@@ -37,7 +37,7 @@ QgsColorRampShader::QgsColorRampShader( double minimumValue, double maximumValue
   : QgsRasterShaderFunction( minimumValue, maximumValue )
   , mColorRampType( type )
   , mClassificationMode( classificationMode )
-  , mLegendSettings( qgis::make_unique< QgsColorRampLegendNodeSettings >() )
+  , mLegendSettings( std::make_unique< QgsColorRampLegendNodeSettings >() )
 {
   QgsDebugMsgLevel( QStringLiteral( "called." ), 4 );
 
@@ -137,8 +137,8 @@ QgsColorRamp *QgsColorRampShader::sourceColorRamp() const
 
 QgsColorRamp *QgsColorRampShader::createColorRamp() const
 {
-  std::unique_ptr<QgsGradientColorRamp> ramp = qgis::make_unique< QgsGradientColorRamp >();
-  int count = mColorRampItemList.size();
+  std::unique_ptr<QgsGradientColorRamp> ramp = std::make_unique< QgsGradientColorRamp >();
+  const int count = mColorRampItemList.size();
   if ( count == 0 )
   {
     const QColor none( 0, 0, 0, 0 );
@@ -158,7 +158,7 @@ QgsColorRamp *QgsColorRampShader::createColorRamp() const
     const double max = maximumValue();
     for ( int i = 0; i < count; i++ )
     {
-      double offset = ( mColorRampItemList[i].value - min ) / ( max - min );
+      const double offset = ( mColorRampItemList[i].value - min ) / ( max - min );
       if ( i == 0 )
       {
         ramp->setColor1( mColorRampItemList[i].color );
@@ -189,7 +189,7 @@ void QgsColorRampShader::classifyColorRamp( const int classes, const int band, c
   if ( minimumValue() > maximumValue() )
     return;
 
-  bool discrete = colorRampType() == Discrete;
+  const bool discrete = colorRampType() == Discrete;
 
   QList<double> entryValues;
   QVector<QColor> entryColors;
@@ -234,7 +234,7 @@ void QgsColorRampShader::classifyColorRamp( const int classes, const int band, c
         // skip first value (always 0.0)
         for ( int i = 1; i < numberOfEntries; ++i )
         {
-          double value = sourceColorRamp()->value( i );
+          const double value = sourceColorRamp()->value( i );
           entryValues.push_back( min + value * intervalDiff );
         }
         entryValues.push_back( std::numeric_limits<double>::infinity() );
@@ -243,14 +243,14 @@ void QgsColorRampShader::classifyColorRamp( const int classes, const int band, c
       {
         for ( int i = 0; i < numberOfEntries; ++i )
         {
-          double value = sourceColorRamp()->value( i );
+          const double value = sourceColorRamp()->value( i );
           entryValues.push_back( min + value * ( max - min ) );
         }
       }
       // for continuous mode take original color map colors
       for ( int i = 0; i < numberOfEntries; ++i )
       {
-        int idx = i;
+        const int idx = i;
         entryColors.push_back( sourceColorRamp()->color( sourceColorRamp()->value( idx ) ) );
       }
     }
@@ -277,7 +277,7 @@ void QgsColorRampShader::classifyColorRamp( const int classes, const int band, c
       entryValues.reserve( classes );
       if ( discrete )
       {
-        double intervalDiff = 1.0 / ( classes );
+        const double intervalDiff = 1.0 / ( classes );
         for ( int i = 1; i < classes; ++i )
         {
           input->cumulativeCut( band, 0.0, i * intervalDiff, cut1, cut2, extent, sampleSize );
@@ -287,7 +287,7 @@ void QgsColorRampShader::classifyColorRamp( const int classes, const int band, c
       }
       else
       {
-        double intervalDiff = 1.0 / ( classes - 1 );
+        const double intervalDiff = 1.0 / ( classes - 1 );
         for ( int i = 0; i < classes; ++i )
         {
           input->cumulativeCut( band, 0.0, i * intervalDiff, cut1, cut2, extent, sampleSize );
@@ -303,7 +303,7 @@ void QgsColorRampShader::classifyColorRamp( const int classes, const int band, c
         // in discrete mode the lowest value is not an entry and the highest
         // value is inf, there are ( numberOfEntries ) of which the first
         // and last are not used.
-        double intervalDiff = ( max - min ) / ( classes );
+        const double intervalDiff = ( max - min ) / ( classes );
 
         for ( int i = 1; i < classes; ++i )
         {
@@ -314,7 +314,7 @@ void QgsColorRampShader::classifyColorRamp( const int classes, const int band, c
       else
       {
         //because the highest value is also an entry, there are (numberOfEntries - 1) intervals
-        double intervalDiff = ( max - min ) / ( classes - 1 );
+        const double intervalDiff = ( max - min ) / ( classes - 1 );
 
         for ( int i = 0; i < classes; ++i )
         {
@@ -336,7 +336,7 @@ void QgsColorRampShader::classifyColorRamp( const int classes, const int band, c
       for ( int i = 0; i < classes; ++i )
       {
         QColor currentColor;
-        int idx = i;
+        const int idx = i;
         currentColor.setRgb( colorDiff * idx, 0, 255 - colorDiff * idx );
         entryColors.push_back( currentColor );
       }
@@ -346,7 +346,7 @@ void QgsColorRampShader::classifyColorRamp( const int classes, const int band, c
       entryColors.reserve( classes );
       for ( int i = 0; i < classes; ++i )
       {
-        int idx = i;
+        const int idx = i;
         entryColors.push_back( sourceColorRamp()->color( ( ( double ) idx ) / ( classes - 1 ) ) );
       }
     }
@@ -356,8 +356,8 @@ void QgsColorRampShader::classifyColorRamp( const int classes, const int band, c
   QVector<QColor>::const_iterator color_it = entryColors.constBegin();
 
   // calculate a reasonable number of decimals to display
-  double maxabs = std::log10( std::max( std::fabs( max ), std::fabs( min ) ) );
-  int nDecimals = std::round( std::max( 3.0 + maxabs - std::log10( max - min ), maxabs <= 15.0 ? maxabs + 0.49 : 0.0 ) );
+  const double maxabs = std::log10( std::max( std::fabs( max ), std::fabs( min ) ) );
+  const int nDecimals = std::round( std::max( 3.0 + maxabs - std::log10( max - min ), maxabs <= 15.0 ? maxabs + 0.49 : 0.0 ) );
 
   QList<QgsColorRampShader::ColorRampItem> colorRampItems;
   for ( ; value_it != entryValues.constEnd(); ++value_it, ++color_it )
@@ -387,22 +387,22 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
   if ( std::isnan( value ) || std::isinf( value ) )
     return false;
 
-  int colorRampItemListCount = mColorRampItemList.count();
+  const int colorRampItemListCount = mColorRampItemList.count();
   const QgsColorRampShader::ColorRampItem *colorRampItems = mColorRampItemList.constData();
   int idx;
   if ( !mLUTInitialized )
   {
     // calculate LUT for faster index recovery
     mLUTFactor = 1.0;
-    double minimumValue = colorRampItems[0].value;
+    const double minimumValue = colorRampItems[0].value;
     mLUTOffset = minimumValue + DOUBLE_DIFF_THRESHOLD;
     // Only make lut if at least 3 items, with 2 items the low and high cases handle both
     if ( colorRampItemListCount >= 3 )
     {
-      double rangeValue = colorRampItems[colorRampItemListCount - 2].value - minimumValue;
+      const double rangeValue = colorRampItems[colorRampItemListCount - 2].value - minimumValue;
       if ( rangeValue > 0 )
       {
-        int lutSize = 256; // TODO: test if speed can be increased with a different LUT size
+        const int lutSize = 256; // TODO: test if speed can be increased with a different LUT size
         mLUTFactor = ( lutSize - 0.0000001 ) / rangeValue; // decrease slightly to make sure last LUT category is correct
         idx = 0;
         double val;
@@ -427,7 +427,7 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
   bool overflow = false;
 
   // find index of the first ColorRampItem that is equal or higher to theValue
-  int lutIndex = ( value - mLUTOffset ) * mLUTFactor;
+  const int lutIndex = ( value - mLUTOffset ) * mLUTFactor;
   if ( value < mLUTOffset )
   {
     idx = 0;
@@ -485,9 +485,9 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
 
       const QgsColorRampShader::ColorRampItem &previousColorRampItem = colorRampItems[idx - 1];
 
-      float currentRampRange = currentColorRampItem.value - previousColorRampItem.value;
-      float offsetInRange = value - previousColorRampItem.value;
-      float scale = offsetInRange / currentRampRange;
+      const float currentRampRange = currentColorRampItem.value - previousColorRampItem.value;
+      const float offsetInRange = value - previousColorRampItem.value;
+      const float scale = offsetInRange / currentRampRange;
 
       const QRgb c1 = previousColorRampItem.color.rgba();
       const QRgb c2 = currentColorRampItem.color.rgba();
@@ -573,12 +573,12 @@ QDomElement QgsColorRampShader::writeXml( QDomDocument &doc, const QgsReadWriteC
   // save source color ramp
   if ( sourceColorRamp() )
   {
-    QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( QStringLiteral( "[source]" ), sourceColorRamp(), doc );
+    const QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( QStringLiteral( "[source]" ), sourceColorRamp(), doc );
     colorRampShaderElem.appendChild( colorRampElem );
   }
 
   //items
-  QList<QgsColorRampShader::ColorRampItem> itemList = colorRampItemList();
+  const QList<QgsColorRampShader::ColorRampItem> itemList = colorRampItemList();
   QList<QgsColorRampShader::ColorRampItem>::const_iterator itemIt = itemList.constBegin();
   for ( ; itemIt != itemList.constEnd(); ++itemIt )
   {
@@ -618,7 +618,7 @@ void QgsColorRampShader::readXml( const QDomElement &colorRampShaderElem, const 
   double itemValue;
   QColor itemColor;
 
-  QDomNodeList itemNodeList = colorRampShaderElem.elementsByTagName( QStringLiteral( "item" ) );
+  const QDomNodeList itemNodeList = colorRampShaderElem.elementsByTagName( QStringLiteral( "item" ) );
   itemList.reserve( itemNodeList.size() );
   for ( int i = 0; i < itemNodeList.size(); ++i )
   {
@@ -633,7 +633,7 @@ void QgsColorRampShader::readXml( const QDomElement &colorRampShaderElem, const 
   setColorRampItemList( itemList );
 
   if ( !mLegendSettings )
-    mLegendSettings = qgis::make_unique< QgsColorRampLegendNodeSettings >();
+    mLegendSettings = std::make_unique< QgsColorRampLegendNodeSettings >();
 
   mLegendSettings->readXml( colorRampShaderElem, context );
 }

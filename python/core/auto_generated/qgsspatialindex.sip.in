@@ -16,7 +16,7 @@
 
 class QgsSpatialIndex : QgsFeatureSink
 {
-%Docstring
+%Docstring(signature="appended")
 
 A spatial index for :py:class:`QgsFeature` objects.
 
@@ -195,15 +195,16 @@ number of returned feature IDs may exceed ``neighbors``.
 
     SIP_PYOBJECT geometry( QgsFeatureId id ) const /TypeHint="QgsGeometry"/;
 %Docstring
-Returns the stored geometry for the indexed feature with matching ``id``. A KeyError will be raised if no
-geometry with the specified feature id exists in the index.
+Returns the stored geometry for the indexed feature with matching ``id``.
 
 Geometry is only stored if the QgsSpatialIndex was created with the FlagStoreFeatureGeometries flag.
+
+:raises KeyError: if no geometry with the specified feature id exists in the index.
 
 .. versionadded:: 3.6
 %End
 %MethodCode
-    std::unique_ptr< QgsGeometry > g = qgis::make_unique< QgsGeometry >( sipCpp->geometry( a0 ) );
+    std::unique_ptr< QgsGeometry > g = std::make_unique< QgsGeometry >( sipCpp->geometry( a0 ) );
     if ( g->isNull() )
     {
       PyErr_SetString( PyExc_KeyError, QStringLiteral( "No geometry with feature id %1 exists in the index." ).arg( a0 ).toUtf8().constData() );

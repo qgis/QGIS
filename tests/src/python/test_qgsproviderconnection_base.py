@@ -36,6 +36,8 @@ from qgis.core import (
     QgsFeedback,
     QgsApplication,
     QgsTask,
+    QgsMapLayerUtils,
+    Qgis,
 )
 from qgis.PyQt import QtCore
 from qgis.PyQt.QtTest import QSignalSpy
@@ -56,6 +58,10 @@ class TestPyQgsProviderConnectionBase():
     myUtf8Table = 'myUtf8\U0001f604Table'
     geometryColumnName = 'geom'
 
+    # Provider test cases can define a schema and table name for SQL query layers test
+    sqlVectorLayerSchema = None  # string, empty string for schema-less DBs (SQLite)
+    sqlVectorLayerTable = None   # string
+
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -71,6 +77,16 @@ class TestPyQgsProviderConnectionBase():
 
     def setUp(self):
         QgsSettings().clear()
+
+    def treat_date_as_string(self):
+        """Provider test case can override this to treat DATE type as STRING"""
+
+        return False
+
+    def getUniqueSchemaName(self, name):
+        """This function must return a schema name with unique prefix/postfix,
+        if the tests are run simultaneously on the same machine by different CI instances"""
+        return name
 
     def _test_save_load(self, md, uri, configuration):
         """Common tests on connection save and load"""
@@ -105,42 +121,45 @@ class TestPyQgsProviderConnectionBase():
             and capabilities & QgsAbstractDatabaseProviderConnection.Schemas
                 and capabilities & QgsAbstractDatabaseProviderConnection.DropSchema):
 
+            myNewSchema = self.getUniqueSchemaName('myNewSchema')
             # Start clean
-            if 'myNewSchema' in conn.schemas():
-                conn.dropSchema('myNewSchema', True)
+            if myNewSchema in conn.schemas():
+                conn.dropSchema(myNewSchema, True)
 
             # Create
-            conn.createSchema('myNewSchema')
+            conn.createSchema(myNewSchema)
             schemas = conn.schemas()
-            self.assertTrue('myNewSchema' in schemas)
+            self.assertTrue(myNewSchema in schemas)
 
             # Create again
             with self.assertRaises(QgsProviderConnectionException) as ex:
-                conn.createSchema('myNewSchema')
+                conn.createSchema(myNewSchema)
 
             # Test rename
             if capabilities & QgsAbstractDatabaseProviderConnection.RenameSchema:
                 # Rename
-                conn.renameSchema('myNewSchema', 'myVeryNewSchema')
+                myVeryNewSchema = self.getUniqueSchemaName('myVeryNewSchema')
+                conn.renameSchema(myNewSchema, myVeryNewSchema)
                 schemas = conn.schemas()
-                self.assertTrue('myVeryNewSchema' in schemas)
-                self.assertFalse('myNewSchema' in schemas)
-                conn.renameSchema('myVeryNewSchema', 'myNewSchema')
+                self.assertTrue(myVeryNewSchema in schemas)
+                self.assertFalse(myNewSchema in schemas)
+                conn.renameSchema(myVeryNewSchema, myNewSchema)
                 schemas = conn.schemas()
-                self.assertFalse('myVeryNewSchema' in schemas)
-                self.assertTrue('myNewSchema' in schemas)
+                self.assertFalse(myVeryNewSchema in schemas)
+                self.assertTrue(myNewSchema in schemas)
 
             # Drop
-            conn.dropSchema('myNewSchema')
+            conn.dropSchema(myNewSchema)
             schemas = conn.schemas()
-            self.assertFalse('myNewSchema' in schemas)
+            self.assertFalse(myNewSchema in schemas)
 
             # UTF8 schema
-            conn.createSchema('myUtf8\U0001f604NewSchema')
+            myUtf8NewSchema = self.getUniqueSchemaName('myUtf8\U0001f604NewSchema')
+            conn.createSchema(myUtf8NewSchema)
             schemas = conn.schemas()
-            conn.dropSchema('myUtf8\U0001f604NewSchema')
+            conn.dropSchema(myUtf8NewSchema)
             schemas = conn.schemas()
-            self.assertFalse('myUtf8\U0001f604NewSchema' in schemas)
+            self.assertFalse(myUtf8NewSchema in schemas)
 
         # Table operations
         schema = None
@@ -149,11 +168,11 @@ class TestPyQgsProviderConnectionBase():
                 and capabilities & QgsAbstractDatabaseProviderConnection.DropVectorTable):
 
             if capabilities & QgsAbstractDatabaseProviderConnection.CreateSchema:
-                schema = 'myNewSchema'
+                schema = self.getUniqueSchemaName('myNewSchema')
                 conn.createSchema(schema)
 
             elif capabilities & QgsAbstractDatabaseProviderConnection.Schemas:
-                schema = self.defaultSchema
+                schema = self.getUniqueSchemaName(self.defaultSchema)
 
             # Start clean
             if self.myNewTable in self._table_names(conn.tables(schema)):
@@ -256,9 +275,17 @@ class TestPyQgsProviderConnectionBase():
 
                 # Test column names
                 res = conn.execSql(sql)
+
+                row_count = res.rowCount()
+                # Some providers do not support rowCount and return -1
+                if row_count != -1:
+                    self.assertEqual(row_count, 1)
+
                 rows = res.rows()
                 self.assertEqual(rows, [['QGIS Rocks - \U0001f604', 666, 1.234, 1234, expected_date, QtCore.QDateTime(2019, 7, 8, 12, 0, 12)]])
                 self.assertEqual(res.columns(), ['string_t', 'long_t', 'double_t', 'integer_t', 'date_t', 'datetime_t'])
+
+                self.assertEqual(res.fetchedRowCount(), 1)
 
                 # Test iterator
                 old_rows = rows
@@ -330,7 +357,7 @@ class TestPyQgsProviderConnectionBase():
 
             # Spatial index
             spatial_index_exists = False
-            # we don't initially know if a spatial index exists -- some formats may create them by default, others not
+            # we don't initially know if a spatial index exists -- some formats may create them by default, others don't
             if capabilities & QgsAbstractDatabaseProviderConnection.SpatialIndexExists:
                 spatial_index_exists = conn.spatialIndexExists(schema, self.myNewTable, self.geometryColumnName)
             if capabilities & QgsAbstractDatabaseProviderConnection.DeleteSpatialIndex:
@@ -493,5 +520,75 @@ class TestPyQgsProviderConnectionBase():
             end = time.time()
             self.assertTrue(end - start < 1)
 
-    def treat_date_as_string(self):
-        return False
+    def testCreateSqlVectorLayer(self):
+        """Test vector layer creation from SQL query"""
+
+        md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
+        conn = md.createConnection(self.uri, {})
+
+        if not conn.capabilities() & QgsAbstractDatabaseProviderConnection.SqlLayers:
+            print(f"FIXME: {self.providerKey} data provider does not support query layers!")
+            return
+
+        schema = getattr(self, 'sqlVectorLayerSchema', None)
+        if schema is None:
+            print(f"FIXME: {self.providerKey} data provider test case does not define self.sqlVectorLayerSchema for query layers test!")
+            return
+
+        table = getattr(self, 'sqlVectorLayerTable', None)
+        if table is None:
+            print(f"FIXME: {self.providerKey} data provider test case does not define self.sqlVectorLayerTable for query layers test!")
+            return
+
+        sql_layer_capabilities = conn.sqlLayerDefinitionCapabilities()
+
+        # Try a simple select first
+        table_info = conn.table(schema, table)
+
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        options.layerName = 'My SQL Layer'
+
+        # Some providers do not support schema
+        if schema != '':
+            options.sql = f'SELECT * FROM "{table_info.schema()}"."{table_info.tableName()}"'
+        else:
+            options.sql = f'SELECT * FROM "{table_info.tableName()}"'
+
+        options.geometryColumn = table_info.geometryColumn()
+        options.primaryKeyColumns = table_info.primaryKeyColumns()
+
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.isSpatial())
+        self.assertEqual(vl.name(), options.layerName)
+
+        # Test that a database connection can be retrieved from an existing layer
+        vlconn = QgsMapLayerUtils.databaseConnection(vl)
+        self.assertIsNotNone(vlconn)
+        self.assertEqual(vlconn.uri(), conn.uri())
+
+        # Some providers can also create SQL layer without an explicit PK
+        if sql_layer_capabilities & Qgis.SqlLayerDefinitionCapability.PrimaryKeys:
+            options.primaryKeyColumns = []
+            vl = conn.createSqlVectorLayer(options)
+            self.assertTrue(vl.isValid())
+            self.assertTrue(vl.isSpatial())
+
+        # Some providers can also create SQL layer without an explicit geometry column
+        if sql_layer_capabilities & Qgis.SqlLayerDefinitionCapability.GeometryColumn:
+            options.primaryKeyColumns = table_info.primaryKeyColumns()
+            options.geometryColumn = ''
+            vl = conn.createSqlVectorLayer(options)
+            self.assertTrue(vl.isValid())
+            # This may fail for OGR where the provider is smart enough to guess the geometry column
+            if self.providerKey != 'ogr':
+                self.assertFalse(vl.isSpatial())
+
+        # Some providers can also create SQL layer with filters
+        if sql_layer_capabilities & Qgis.SqlLayerDefinitionCapability.SubsetStringFilter:
+            options.primaryKeyColumns = table_info.primaryKeyColumns()
+            options.geometryColumn = table_info.geometryColumn()
+            options.filter = f'"{options.primaryKeyColumns[0]}" > 0'
+            vl = conn.createSqlVectorLayer(options)
+            self.assertTrue(vl.isValid())
+            self.assertTrue(vl.isSpatial())

@@ -25,7 +25,7 @@
 
 /**
  * \ingroup 3d
- * Material component for QgsPreviewQuad object
+ * \brief Material component for QgsPreviewQuad object
  *
  * \note Not available in Python bindings
  * \since QGIS 3.16
@@ -46,7 +46,7 @@ class QgsPreviewQuadMaterial : public Qt3DRender::QMaterial
 
 /**
  * \ingroup 3d
- * Rectangular quad entity used for debugging depth maps
+ * \brief Rectangular quad entity used for debugging depth maps
  *
  * \note Not available in Python bindings
  * \since QGIS 3.16

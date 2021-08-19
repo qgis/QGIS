@@ -421,9 +421,6 @@ class QgsGrassModuleGdalInput : public QgsGrassModuleGroupBoxItem
 
     //! Ogr where clauses
     QStringList mOgrWheres;
-
-    //! Required field
-    bool mRequired;
 };
 
 

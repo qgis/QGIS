@@ -35,7 +35,8 @@ class QgsImageTexture;
 #define SIP_NO_FILE
 
 /**
- * \brief base class for all skybox types
+ * \brief Base class for all skybox types.
+ *
  * It holds the common member data between different skybox entity types
  * \ingroup 3d
  * \since QGIS 3.16
@@ -69,7 +70,8 @@ class _3D_EXPORT QgsSkyboxEntity : public Qt3DCore::QEntity
 };
 
 /**
- * \brief a skybox constructed from a panoramic image
+ * \brief A skybox constructed from a panoramic image.
+ *
  * \ingroup 3d
  * \since QGIS 3.16
  */
@@ -93,7 +95,8 @@ class _3D_EXPORT QgsPanoramicSkyboxEntity : public QgsSkyboxEntity
 };
 
 /**
- * \brief a skybox constructed from a 6 cube faces
+ * \brief A skybox constructed from a 6 cube faces.
+ *
  * \ingroup 3d
  * \since QGIS 3.16
  */

@@ -82,7 +82,7 @@ const QgsConstWkbPtr &QgsConstWkbPtr::operator>>( QPointF &point ) const
 
 const QgsConstWkbPtr &QgsConstWkbPtr::operator>>( QPolygonF &points ) const
 {
-  int skipZM = ( QgsWkbTypes::coordDimensions( mWkbType ) - 2 ) * sizeof( double );
+  const int skipZM = ( QgsWkbTypes::coordDimensions( mWkbType ) - 2 ) * sizeof( double );
   Q_ASSERT( skipZM >= 0 );
 
   unsigned int nPoints;

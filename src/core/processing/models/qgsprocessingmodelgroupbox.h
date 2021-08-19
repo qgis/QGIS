@@ -26,7 +26,7 @@
 ///@cond NOT_STABLE
 
 /**
- * Represents a group box in a model.
+ * \brief Represents a group box in a model.
  * \ingroup core
  * \since QGIS 3.14
  */

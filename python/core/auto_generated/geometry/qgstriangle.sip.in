@@ -11,7 +11,7 @@
 
 class QgsTriangle : QgsPolygon
 {
-%Docstring
+%Docstring(signature="appended")
 Triangle geometry type.
 
 .. versionadded:: 3.0
@@ -102,6 +102,8 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
 
 
     virtual QgsCurve *boundary() const /Factory/;
+
+
 
 
 

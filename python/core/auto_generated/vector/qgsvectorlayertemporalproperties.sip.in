@@ -13,7 +13,7 @@
 
 class QgsVectorLayerTemporalContext
 {
-%Docstring
+%Docstring(signature="appended")
 Encapsulates the context in which a :py:class:`QgsVectorLayer`'s temporal capabilities
 will be applied
 
@@ -43,7 +43,7 @@ Sets the associated ``layer``.
 
 class QgsVectorLayerTemporalProperties : QgsMapLayerTemporalProperties
 {
-%Docstring
+%Docstring(signature="appended")
 Implementation of map layer temporal properties for vector layers.
 
 .. versionadded:: 3.14
@@ -328,7 +328,7 @@ occur before or within the map's temporal range should be rendered).
 .. seealso:: :py:func:`accumulateFeatures`
 %End
 
-    QString createFilterString( const QgsVectorLayerTemporalContext &context, const QgsDateTimeRange &range ) const;
+    QString createFilterString( QgsVectorLayerTemporalContext context, const QgsDateTimeRange &range ) const;
 %Docstring
 Creates a QGIS expression filter string for filtering features within
 the specified ``context`` to those within the specified time ``range``.

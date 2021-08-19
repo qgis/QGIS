@@ -460,7 +460,7 @@ if __name__ == '__main__':
                 keyfile=QGIS_SERVER_OAUTH2_KEY,
                 server_side=True,
                 # cert_reqs=ssl.CERT_REQUIRED,  # No certs for OAuth2
-                ssl_version=ssl.PROTOCOL_TLSv1)
+                ssl_version=ssl.PROTOCOL_TLSv1_2)
         else:
             server.socket = ssl.wrap_socket(
                 server.socket,
@@ -469,7 +469,7 @@ if __name__ == '__main__':
                 ca_certs=QGIS_SERVER_PKI_AUTHORITY,
                 cert_reqs=ssl.CERT_REQUIRED,
                 server_side=True,
-                ssl_version=ssl.PROTOCOL_TLSv1)
+                ssl_version=ssl.PROTOCOL_TLSv1_2)
 
     print('Starting server on %s://%s:%s, use <Ctrl-C> to stop' %
           ('https' if HTTPS_ENABLED else 'http', QGIS_SERVER_HOST, server.server_port), flush=True)

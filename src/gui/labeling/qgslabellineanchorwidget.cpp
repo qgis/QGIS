@@ -30,10 +30,13 @@ QgsLabelLineAnchorWidget::QgsLabelLineAnchorWidget( QWidget *parent, QgsVectorLa
   mPercentPlacementComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mActionLabelAnchorEnd.svg" ) ), tr( "End of Line" ), 1.0 );
   mPercentPlacementComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mActionLabelAnchorCustom.svg" ) ), tr( "Custom…" ), -1.0 );
 
+  mClippingComboBox->addItem( tr( "Use Visible Part of Line" ), static_cast< int >( QgsLabelLineSettings::AnchorClipping::UseVisiblePartsOfLine ) );
+  mClippingComboBox->addItem( tr( "Use Entire Line" ), static_cast< int >( QgsLabelLineSettings::AnchorClipping::UseEntireLine ) );
+
   mAnchorTypeComboBox->addItem( tr( "Preferred Placement Hint" ), static_cast< int >( QgsLabelLineSettings::AnchorType::HintOnly ) );
   mAnchorTypeComboBox->addItem( tr( "Strict" ), static_cast< int >( QgsLabelLineSettings::AnchorType::Strict ) );
 
-  connect( mPercentPlacementComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  connect( mPercentPlacementComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
   {
     if ( !mBlockSignals )
       emit changed();
@@ -48,13 +51,13 @@ QgsLabelLineAnchorWidget::QgsLabelLineAnchorWidget( QWidget *parent, QgsVectorLa
       mBlockSignals = false;
     }
   } );
-  connect( mCustomPlacementSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, [ = ]( double )
+  connect( mCustomPlacementSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [ = ]( double )
   {
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mAnchorTypeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  connect( mAnchorTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
   {
     if ( !mBlockSignals )
       emit changed();
@@ -62,7 +65,14 @@ QgsLabelLineAnchorWidget::QgsLabelLineAnchorWidget( QWidget *parent, QgsVectorLa
     updateAnchorTypeHint();
   } );
 
+  connect( mClippingComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  {
+    if ( !mBlockSignals )
+      emit changed();
+  } );
+
   registerDataDefinedButton( mLinePlacementDDBtn, QgsPalLayerSettings::LineAnchorPercent );
+  registerDataDefinedButton( mLineClippingDDBtn, QgsPalLayerSettings::LineAnchorClipping );
   updateAnchorTypeHint();
 }
 
@@ -83,6 +93,7 @@ void QgsLabelLineAnchorWidget::setSettings( const QgsLabelLineSettings &settings
   mCustomPlacementSpinBox->setEnabled( mPercentPlacementComboBox->currentData().toDouble() < 0 );
 
   mAnchorTypeComboBox->setCurrentIndex( mAnchorTypeComboBox->findData( static_cast< int >( settings.anchorType() ) ) );
+  mClippingComboBox->setCurrentIndex( mClippingComboBox->findData( static_cast< int >( settings.anchorClipping() ) ) );
   mBlockSignals = false;
 }
 
@@ -100,12 +111,14 @@ QgsLabelLineSettings QgsLabelLineAnchorWidget::settings() const
   }
 
   settings.setAnchorType( static_cast< QgsLabelLineSettings::AnchorType >( mAnchorTypeComboBox->currentData().toInt() ) );
+  settings.setAnchorClipping( static_cast< QgsLabelLineSettings::AnchorClipping >( mClippingComboBox->currentData().toInt() ) );
   return settings;
 }
 
 void QgsLabelLineAnchorWidget::updateDataDefinedProperties( QgsPropertyCollection &properties )
 {
   properties.setProperty( QgsPalLayerSettings::LineAnchorPercent, mDataDefinedProperties.property( QgsPalLayerSettings::LineAnchorPercent ) );
+  properties.setProperty( QgsPalLayerSettings::LineAnchorClipping, mDataDefinedProperties.property( QgsPalLayerSettings::LineAnchorClipping ) );
 }
 
 void QgsLabelLineAnchorWidget::updateAnchorTypeHint()

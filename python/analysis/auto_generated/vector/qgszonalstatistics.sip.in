@@ -14,7 +14,7 @@
 
 class QgsZonalStatistics
 {
-%Docstring
+%Docstring(signature="appended")
 A class that calculates raster statistics (count, sum, mean) for a polygon or multipolygon layer and appends the results as attributes.
 %End
 
@@ -130,7 +130,9 @@ Returns a short, friendly display name for a ``statistic``, suitable for use in 
 .. versionadded:: 3.12
 %End
 
-    static QMap<QgsZonalStatistics::Statistic, QVariant> calculateStatistics( QgsRasterInterface *rasterInterface, const QgsGeometry &geometry, double cellSizeX, double cellSizeY, int rasterBand, QgsZonalStatistics::Statistics statistics );
+
+
+    static QMap<int, QVariant> calculateStatisticsInt( QgsRasterInterface *rasterInterface, const QgsGeometry &geometry, double cellSizeX, double cellSizeY, int rasterBand, QgsZonalStatistics::Statistics statistics ) /PyName=calculateStatistics/;
 %Docstring
 Calculates the specified ``statistics`` for the pixels of ``rasterBand``
 in ``rasterInterface`` (a raster layer :py:func:`~QgsZonalStatistics.dataProvider` ) within polygon ``geometry``.

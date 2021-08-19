@@ -17,7 +17,7 @@
 
 class QgsVectorLayerFeatureSource : QgsAbstractFeatureSource
 {
-%Docstring
+%Docstring(signature="appended")
 Partial snapshot of vector layer's state (only the members necessary for access to features)
 %End
 
@@ -32,6 +32,7 @@ Constructor for QgsVectorLayerFeatureSource.
 
 :param layer: source layer
 %End
+
 
     ~QgsVectorLayerFeatureSource();
 
@@ -70,7 +71,8 @@ Returns the layer id of the source layer.
 
 
 
-
+  private:
+    QgsVectorLayerFeatureSource( const QgsVectorLayerFeatureSource &other );
 };
 
 
@@ -104,17 +106,18 @@ end of iterating: free the resources / lock
 
     struct FetchJoinInfo
     {
-      const QgsVectorLayerJoinInfo *joinInfo;//!< Canonical source of information about the join
-      QgsAttributeList attributes;      //!< Attributes to fetch
-      int indexOffset;                  //!< At what position the joined fields start
-      QgsVectorLayer *joinLayer;        //!< Resolved pointer to the joined layer
-      int targetField;                  //!< Index of field (of this layer) that drives the join
-      int joinField;                    //!< Index of field (of the joined layer) must have equal value
+      const QgsVectorLayerJoinInfo *joinInfo;
+      QgsAttributeList attributes;
+      int indexOffset;
+
+
+      int targetField;
+
+      int joinField;
 
       void addJoinedAttributesCached( QgsFeature &f, const QVariant &joinValue ) const;
       void addJoinedAttributesDirect( QgsFeature &f, const QVariant &joinValue ) const;
     };
-
 
     virtual bool isValid() const;
 
@@ -155,6 +158,7 @@ Setup the simplification of geometries to fetch using the specified simplify met
 
 
 
+
   private:
     QgsVectorLayerFeatureIterator( const QgsVectorLayerFeatureIterator &rhs );
 };
@@ -163,7 +167,7 @@ Setup the simplification of geometries to fetch using the specified simplify met
 
 class QgsVectorLayerSelectedFeatureSource : QgsFeatureSource, QgsExpressionContextScopeGenerator
 {
-%Docstring
+%Docstring(signature="appended")
 :py:class:`QgsFeatureSource` subclass for the selected features from a :py:class:`QgsVectorLayer`.
 
 .. versionadded:: 3.0
@@ -181,6 +185,7 @@ The currently selected feature IDs are stored, so change to the layer selection 
 the QgsVectorLayerSelectedFeatureSource will not be reflected.
 %End
 
+
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const;
 
     virtual QgsCoordinateReferenceSystem sourceCrs() const;
@@ -189,7 +194,7 @@ the QgsVectorLayerSelectedFeatureSource will not be reflected.
 
     virtual QgsWkbTypes::Type wkbType() const;
 
-    virtual long featureCount() const;
+    virtual long long featureCount() const;
 
     virtual QString sourceName() const;
 
@@ -198,6 +203,8 @@ the QgsVectorLayerSelectedFeatureSource will not be reflected.
     virtual SpatialIndexPresence hasSpatialIndex() const;
 
 
+  private:
+    QgsVectorLayerSelectedFeatureSource( const QgsVectorLayerSelectedFeatureSource &other );
 };
 
 

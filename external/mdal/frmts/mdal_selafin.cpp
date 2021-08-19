@@ -728,7 +728,7 @@ bool MDAL::DriverSelafin::saveDatasetGroupOnFile( MDAL::DatasetGroup *datasetGro
   if ( ! MDAL::fileExists( fileName ) )
   {
     //create a new mesh file
-    save( fileName, datasetGroup->mesh() );
+    save( fileName, "", datasetGroup->mesh() );
 
     if ( ! MDAL::fileExists( fileName ) )
       throw MDAL::Error( MDAL_Status::Err_FailToWriteToDisk, "Unable to create new file" );
@@ -983,9 +983,9 @@ static void writeVertices( std::ofstream &file, MDAL::Mesh *mesh )
   writeValueArrayRecord( file, yValues );
 }
 
-void MDAL::DriverSelafin::save( const std::string &uri, MDAL::Mesh *mesh )
+void MDAL::DriverSelafin::save( const std::string &fileName, const std::string &, MDAL::Mesh *mesh )
 {
-  std::ofstream file( uri.c_str(), std::ofstream::binary );
+  std::ofstream file( fileName.c_str(), std::ofstream::binary );
 
   std::string header( "Selafin file created by MDAL library" );
   std::string remainingStr( " ", 72 - header.size() );
@@ -1023,17 +1023,20 @@ void MDAL::DriverSelafin::save( const std::string &uri, MDAL::Mesh *mesh )
   std::unique_ptr<MeshFaceIterator> faceIter = mesh->readFaces();
   size_t count = 0;
   writeInt( file, MDAL::toInt( facesCount * verticesPerFace * 4 ) );
-  do
+  if ( facesCount > 0 )
   {
-    std::vector<int> inkle( bufferSize * verticesPerFace );
-    count = faceIter->next( bufferSize, faceOffsetBuffer.data(), bufferSize * verticesPerFace, inkle.data() );
-    inkle.resize( count * verticesPerFace );
-    for ( size_t i = 0; i < inkle.size(); ++i )
-      inkle[i]++;
+    do
+    {
+      std::vector<int> inkle( bufferSize * verticesPerFace );
+      count = faceIter->next( bufferSize, faceOffsetBuffer.data(), bufferSize * verticesPerFace, inkle.data() );
+      inkle.resize( count * verticesPerFace );
+      for ( size_t i = 0; i < inkle.size(); ++i )
+        inkle[i]++;
 
-    writeValueArray( file, inkle );
+      writeValueArray( file, inkle );
+    }
+    while ( count != 0 );
   }
-  while ( count != 0 );
   writeInt( file, MDAL::toInt( facesCount * verticesPerFace * 4 ) );
 
   // IPOBO filled with 0
@@ -1046,6 +1049,11 @@ void MDAL::DriverSelafin::save( const std::string &uri, MDAL::Mesh *mesh )
 }
 
 std::string MDAL::DriverSelafin::writeDatasetOnFileSuffix() const
+{
+  return "slf";
+}
+
+std::string MDAL::DriverSelafin::saveMeshOnFileSuffix() const
 {
   return "slf";
 }

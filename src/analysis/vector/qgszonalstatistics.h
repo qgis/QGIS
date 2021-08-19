@@ -41,7 +41,7 @@ class QgsFeatureSource;
 
 /**
  * \ingroup analysis
- * A class that calculates raster statistics (count, sum, mean) for a polygon or multipolygon layer and appends the results as attributes.
+ * \brief A class that calculates raster statistics (count, sum, mean) for a polygon or multipolygon layer and appends the results as attributes.
 */
 class ANALYSIS_EXPORT QgsZonalStatistics
 {
@@ -155,7 +155,23 @@ class ANALYSIS_EXPORT QgsZonalStatistics
      *
      * \since QGIS 3.16
      */
+#ifndef SIP_RUN
     static QMap<QgsZonalStatistics::Statistic, QVariant> calculateStatistics( QgsRasterInterface *rasterInterface, const QgsGeometry &geometry, double cellSizeX, double cellSizeY, int rasterBand, QgsZonalStatistics::Statistics statistics );
+#endif
+
+///@cond PRIVATE
+    // Required to fix https://github.com/qgis/QGIS/issues/43245 (SIP is failing to convert the enum to values)
+
+    /**
+     * Calculates the specified \a statistics for the pixels of \a rasterBand
+     * in \a rasterInterface (a raster layer dataProvider() ) within polygon \a geometry.
+     *
+     * Returns a map of statistic to result value.
+     *
+     * \since QGIS 3.16
+     */
+    static QMap<int, QVariant> calculateStatisticsInt( QgsRasterInterface *rasterInterface, const QgsGeometry &geometry, double cellSizeX, double cellSizeY, int rasterBand, QgsZonalStatistics::Statistics statistics ) SIP_PYNAME( calculateStatistics );
+/// @endcond
 
   private:
     QgsZonalStatistics() = default;

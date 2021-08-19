@@ -11,18 +11,19 @@ __date__ = '2016-01-28'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import os
+import shutil
 import tempfile
 
-from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsVectorDataProvider, QgsField
+import osgeo.gdal  # NOQA
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir
+from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsVectorDataProvider, QgsField
 from qgis.testing import start_app, unittest
 
-import osgeo.gdal  # NOQA
 from utilities import unitTestDataPath
-import shutil
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
+
 
 # Note - doesn't implement ProviderTestCase as OGR provider is tested by the shapefile provider test
 
@@ -95,6 +96,20 @@ class TestPyQgsTabfileProvider(unittest.TestCase):
         vl = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
         self.assertTrue(vl.isValid())
         self.assertTrue(vl.dataProvider().addAttributes([QgsField("int8", QVariant.LongLong, "integer64")]))
+
+    def testEmbeddedSymbols(self):
+        """
+        Test retrieving embedded symbols from a TAB file
+        """
+        layer = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'embedded_symbols', 'lines.TAB'), 'Lines')
+        self.assertTrue(layer.isValid())
+
+        # symbols should not be fetched by default
+        self.assertFalse(any(f.embeddedSymbol() for f in layer.getFeatures()))
+
+        symbols = [f.embeddedSymbol().clone() for f in layer.getFeatures(QgsFeatureRequest().setFlags(QgsFeatureRequest.EmbeddedSymbols))]
+        self.assertTrue(all(symbols))
+        self.assertCountEqual([s.color().name() for s in symbols], ['#0040c0', '#ffb060', '#e03800'])
 
 
 if __name__ == '__main__':

@@ -100,15 +100,11 @@ void QgsQtLocationConnection::satellitesInViewUpdated(
   mLastGPSInformation.satellitesInView.clear();
   for ( int i = 0; i < satellites.size(); ++i )
   {
-    QGeoSatelliteInfo currentSatellite = satellites.at( i );
+    const QGeoSatelliteInfo currentSatellite = satellites.at( i );
     QgsSatelliteInfo satelliteInfo;
     satelliteInfo.azimuth = currentSatellite.attribute( QGeoSatelliteInfo::Azimuth );
     satelliteInfo.elevation = currentSatellite.attribute( QGeoSatelliteInfo::Elevation );
-#if defined(HAVE_QT_MOBILITY_LOCATION )
-    satelliteInfo.id = currentSatellite.prnNumber();
-#else // QtPositioning
     satelliteInfo.id = currentSatellite.satelliteIdentifier();
-#endif
     satelliteInfo.signal = currentSatellite.signalStrength();
     mLastGPSInformation.satellitesInView.append( satelliteInfo );
   }
@@ -127,20 +123,12 @@ void QgsQtLocationConnection::satellitesInUseUpdated(
   for ( const QGeoSatelliteInfo &currentSatellite : satellites )
   {
     //add pnr to mLastGPSInformation.satPrn
-#if defined(HAVE_QT_MOBILITY_LOCATION )
-    mLastGPSInformation.satPrn.append( currentSatellite.prnNumber() );
-#else // QtPositioning
     mLastGPSInformation.satPrn.append( currentSatellite.satelliteIdentifier() );
-#endif
 
     //set QgsSatelliteInfo.inuse to true for the satellites in use
     for ( QgsSatelliteInfo &satInView : mLastGPSInformation.satellitesInView )
     {
-#if defined(HAVE_QT_MOBILITY_LOCATION )
-      if ( satInView.id == currentSatellite.prnNumber() )
-#else // QtPositioning
       if ( satInView.id == currentSatellite.satelliteIdentifier() )
-#endif
       {
         satInView.inUse = true;
         break;

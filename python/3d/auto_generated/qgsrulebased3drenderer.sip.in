@@ -11,10 +11,9 @@
 
 
 
-
 class QgsRuleBased3DRendererMetadata : Qgs3DRendererAbstractMetadata
 {
-%Docstring
+%Docstring(signature="appended")
 Metadata for rule-based 3D renderer to allow creation of its instances from XML
 
 .. warning::
@@ -41,7 +40,7 @@ Creates an instance of a 3D renderer based on a DOM element with renderer config
 
 class QgsRuleBased3DRenderer : QgsAbstractVectorLayer3DRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 Rule-based 3D renderer.
 
 Similar to rule-based 2D renderer and rule-based labeling, it allows specification of rules for 3D symbols.
@@ -64,7 +63,8 @@ Similar to rule-based 2D renderer and rule-based labeling, it allows specificati
 
     class Rule
 {
-%Docstring
+%Docstring(signature="appended")
+A child rule for a QgsRuleBased3DRenderer
 
 .. versionadded:: 3.6
 %End

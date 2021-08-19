@@ -32,6 +32,7 @@
 #include <qwt_polar_grid.h>
 #include <qwt_polar_marker.h>
 #endif
+#include <QTextStream>
 
 class QextSerialPort;
 class QgsGpsConnection;

@@ -20,8 +20,9 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgspainteffect.h"
-#include "qgssymbol.h"
 #include "qgscolorramp.h"
+#include "qgsunittypes.h"
+#include "qgsmapunitscale.h"
 
 #include <QPainter>
 

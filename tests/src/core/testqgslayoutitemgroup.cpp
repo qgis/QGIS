@@ -139,7 +139,7 @@ void TestQgsLayoutItemGroup::createGroupDirect()
   QVERIFY( l.items().contains( item2 ) );
 
   // manually delete an item
-  QPointer< QgsLayoutItemShape > pItem( item ); // for testing deletion
+  const QPointer< QgsLayoutItemShape > pItem( item ); // for testing deletion
   l.removeLayoutItem( item );
   QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
   QVERIFY( !pItem );
@@ -149,7 +149,7 @@ void TestQgsLayoutItemGroup::createGroupDirect()
   QCOMPARE( group->items().count(), 1 );
   QVERIFY( group->items().contains( item2 ) );
 
-  QPointer< QgsLayoutItemShape > pItem2( item2 ); // for testing deletion
+  const QPointer< QgsLayoutItemShape > pItem2( item2 ); // for testing deletion
   // remove items
   group->removeItems();
   QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
@@ -216,7 +216,7 @@ void TestQgsLayoutItemGroup::ungroup()
   QVERIFY( groups.contains( group ) );
   QCOMPARE( group->layout(), &l );
 
-  QPointer< QgsLayoutItemGroup > pGroup( group ); // for testing deletion
+  const QPointer< QgsLayoutItemGroup > pGroup( group ); // for testing deletion
   //ungroup group
   QList<QgsLayoutItem *> ungroupedItems;
   ungroupedItems = l.ungroupItems( group );
@@ -251,17 +251,17 @@ void TestQgsLayoutItemGroup::deleteGroup()
   QgsLayout l( &proj );
 
   QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
-  QPointer< QgsLayoutItemShape > pItem( item ); // for testing deletion
+  const QPointer< QgsLayoutItemShape > pItem( item ); // for testing deletion
   l.addLayoutItem( item );
   QgsLayoutItemShape *item2 = new QgsLayoutItemShape( &l );
-  QPointer< QgsLayoutItemShape > pItem2( item2 ); // for testing deletion
+  const QPointer< QgsLayoutItemShape > pItem2( item2 ); // for testing deletion
   l.addLayoutItem( item2 );
 
   //group items
   QList<QgsLayoutItem *> groupItems;
   groupItems << item << item2;
   QgsLayoutItemGroup *group = l.groupItems( groupItems );
-  QPointer< QgsLayoutItemGroup > pGroup( group ); // for testing deletion
+  const QPointer< QgsLayoutItemGroup > pGroup( group ); // for testing deletion
 
   QList<QgsLayoutItem *> items;
   l.layoutItems( items );
@@ -584,14 +584,14 @@ void TestQgsLayoutItemGroup::undoRedo()
   item1 = new QgsLayoutItemShape( &l );
   item1->attemptMove( QgsLayoutPoint( 0.05, 0.09, QgsUnitTypes::LayoutMeters ) );
   QPointer< QgsLayoutItem > pItem1( item1 );
-  QString item1Uuid = item1->uuid();
+  const QString item1Uuid = item1->uuid();
   item1->attemptResize( QgsLayoutSize( 0.1, 0.15, QgsUnitTypes::LayoutMeters ) );
 
   l.addLayoutItem( item1 );
 //  QCOMPARE( spyPolygonAdded.count(), ++shapesAdded );
   item2 = new QgsLayoutItemShape( &l );
   QPointer< QgsLayoutItem > pItem2( item2 );
-  QString item2Uuid = item2->uuid();
+  const QString item2Uuid = item2->uuid();
   item2->attemptMove( QgsLayoutPoint( 2, 3, QgsUnitTypes::LayoutMillimeters ) );
   item2->attemptResize( QgsLayoutSize( 4, 6, QgsUnitTypes::LayoutMillimeters ) );
   l.addLayoutItem( item2 );
@@ -607,7 +607,7 @@ void TestQgsLayoutItemGroup::undoRedo()
   items.clear();
   items << item1 << item2;
   QgsLayoutItemGroup *group = l.groupItems( items );
-  QString groupUuid = group->uuid();
+  const QString groupUuid = group->uuid();
 // QCOMPARE( spyPolygonAdded.count(), shapesAdded );
 //  QCOMPARE( spyGroupAdded.count(), ++groupsAdded );
 //  QCOMPARE( spyItemRemoved.count(), itemsRemoved );

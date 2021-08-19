@@ -10,7 +10,7 @@
 
 class QgsProjectTranslator
 {
-%Docstring
+%Docstring(signature="appended")
 Wherever an object of this class is available, the derived translate function can be called from.
 
 .. versionadded:: 3.4

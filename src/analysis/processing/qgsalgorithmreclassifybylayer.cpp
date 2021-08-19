@@ -47,12 +47,12 @@ void QgsReclassifyAlgorithmBase::initAlgorithm( const QVariantMap & )
 
   addAlgorithmParams();
 
-  std::unique_ptr< QgsProcessingParameterNumber > noDataValueParam = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "NO_DATA" ),
+  std::unique_ptr< QgsProcessingParameterNumber > noDataValueParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "NO_DATA" ),
       QObject::tr( "Output no data value" ), QgsProcessingParameterNumber::Double, -9999 );
   noDataValueParam->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( noDataValueParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterEnum > boundsHandling = qgis::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "RANGE_BOUNDARIES" ),
+  std::unique_ptr< QgsProcessingParameterEnum > boundsHandling = std::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "RANGE_BOUNDARIES" ),
       QObject::tr( "Range boundaries" ), QStringList() << QObject::tr( "min < value <= max" )
       << QObject::tr( "min <= value < max" )
       << QObject::tr( "min <= value <= max" )
@@ -61,12 +61,12 @@ void QgsReclassifyAlgorithmBase::initAlgorithm( const QVariantMap & )
   boundsHandling->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( boundsHandling.release() );
 
-  std::unique_ptr< QgsProcessingParameterBoolean > missingValuesParam = qgis::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "NODATA_FOR_MISSING" ),
+  std::unique_ptr< QgsProcessingParameterBoolean > missingValuesParam = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "NODATA_FOR_MISSING" ),
       QObject::tr( "Use no data when no range matches value" ), false, false );
   missingValuesParam->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( missingValuesParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterDefinition > typeChoice = QgsRasterAnalysisUtils::createRasterTypeParameter( QStringLiteral( "DATA_TYPE" ), QObject::tr( "Output data type" ), Qgis::Float32 );
+  std::unique_ptr< QgsProcessingParameterDefinition > typeChoice = QgsRasterAnalysisUtils::createRasterTypeParameter( QStringLiteral( "DATA_TYPE" ), QObject::tr( "Output data type" ), Qgis::DataType::Float32 );
   typeChoice->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( typeChoice.release() );
 
@@ -97,7 +97,7 @@ bool QgsReclassifyAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters
   mNoDataValue = parameterAsDouble( parameters, QStringLiteral( "NO_DATA" ), context );
   mUseNoDataForMissingValues = parameterAsBoolean( parameters, QStringLiteral( "NODATA_FOR_MISSING" ), context );
 
-  int boundsType = parameterAsEnum( parameters, QStringLiteral( "RANGE_BOUNDARIES" ), context );
+  const int boundsType = parameterAsEnum( parameters, QStringLiteral( "RANGE_BOUNDARIES" ), context );
   switch ( boundsType )
   {
     case 0:
@@ -122,16 +122,16 @@ bool QgsReclassifyAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters
 
 QVariantMap QgsReclassifyAlgorithmBase::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QVector< QgsReclassifyUtils::RasterClass > classes = createClasses( mBoundsType, parameters, context, feedback );
+  const QVector< QgsReclassifyUtils::RasterClass > classes = createClasses( mBoundsType, parameters, context, feedback );
 
   QgsReclassifyUtils::reportClasses( classes, feedback );
   QgsReclassifyUtils::checkForOverlaps( classes, feedback );
 
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  QFileInfo fi( outputFile );
+  const QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
 
-  std::unique_ptr< QgsRasterFileWriter > writer = qgis::make_unique< QgsRasterFileWriter >( outputFile );
+  std::unique_ptr< QgsRasterFileWriter > writer = std::make_unique< QgsRasterFileWriter >( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
   writer->setOutputFormat( outputFormat );
   std::unique_ptr<QgsRasterDataProvider > provider( writer->createOneBandRaster( mDataType, mNbCellsXProvider, mNbCellsYProvider, mExtent, mCrs ) );
@@ -198,15 +198,15 @@ bool QgsReclassifyByLayerAlgorithm::_prepareAlgorithm( const QVariantMap &parame
   if ( !tableSource )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT_TABLE" ) ) );
 
-  QString fieldMin = parameterAsString( parameters, QStringLiteral( "MIN_FIELD" ), context );
+  const QString fieldMin = parameterAsString( parameters, QStringLiteral( "MIN_FIELD" ), context );
   mMinFieldIdx = tableSource->fields().lookupField( fieldMin );
   if ( mMinFieldIdx < 0 )
     throw QgsProcessingException( QObject::tr( "Invalid field specified for MIN_FIELD: %1" ).arg( fieldMin ) );
-  QString fieldMax = parameterAsString( parameters, QStringLiteral( "MAX_FIELD" ), context );
+  const QString fieldMax = parameterAsString( parameters, QStringLiteral( "MAX_FIELD" ), context );
   mMaxFieldIdx = tableSource->fields().lookupField( fieldMax );
   if ( mMaxFieldIdx < 0 )
     throw QgsProcessingException( QObject::tr( "Invalid field specified for MAX_FIELD: %1" ).arg( fieldMax ) );
-  QString fieldValue = parameterAsString( parameters, QStringLiteral( "VALUE_FIELD" ), context );
+  const QString fieldValue = parameterAsString( parameters, QStringLiteral( "VALUE_FIELD" ), context );
   mValueFieldIdx = tableSource->fields().lookupField( fieldValue );
   if ( mValueFieldIdx < 0 )
     throw QgsProcessingException( QObject::tr( "Invalid field specified for VALUE_FIELD: %1" ).arg( fieldValue ) );

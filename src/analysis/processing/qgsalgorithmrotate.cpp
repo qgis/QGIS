@@ -63,7 +63,7 @@ QgsRotateFeaturesAlgorithm *QgsRotateFeaturesAlgorithm::createInstance() const
 
 void QgsRotateFeaturesAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr< QgsProcessingParameterNumber > rotation = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "ANGLE" ),
+  std::unique_ptr< QgsProcessingParameterNumber > rotation = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "ANGLE" ),
       QObject::tr( "Rotation (degrees clockwise)" ), QgsProcessingParameterNumber::Double,
       0.0 );
   rotation->setIsDynamic( true );
@@ -71,7 +71,7 @@ void QgsRotateFeaturesAlgorithm::initParameters( const QVariantMap & )
   rotation->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( rotation.release() );
 
-  std::unique_ptr< QgsProcessingParameterPoint > anchor = qgis::make_unique< QgsProcessingParameterPoint >( QStringLiteral( "ANCHOR" ),
+  std::unique_ptr< QgsProcessingParameterPoint > anchor = std::make_unique< QgsProcessingParameterPoint >( QStringLiteral( "ANCHOR" ),
       QObject::tr( "Rotation anchor point" ), QVariant(), true );
   addParameter( anchor.release() );
 }
@@ -100,7 +100,7 @@ QgsFeatureList QgsRotateFeaturesAlgorithm::processFeature( const QgsFeature &fea
     mTransformedAnchor = true;
     if ( mAnchorCrs != sourceCrs() )
     {
-      QgsCoordinateTransform ct( mAnchorCrs, sourceCrs(), context.transformContext() );
+      const QgsCoordinateTransform ct( mAnchorCrs, sourceCrs(), context.transformContext() );
       try
       {
         mAnchor = ct.transform( mAnchor );
@@ -128,7 +128,7 @@ QgsFeatureList QgsRotateFeaturesAlgorithm::processFeature( const QgsFeature &fea
     }
     else
     {
-      QgsGeometry centroid = geometry.centroid();
+      const QgsGeometry centroid = geometry.centroid();
       if ( !centroid.isNull() )
       {
         geometry.rotate( angle, centroid.asPoint() );

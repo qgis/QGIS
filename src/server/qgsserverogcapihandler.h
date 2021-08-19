@@ -31,7 +31,7 @@ class QgsServerApiContext;
 
 /**
  * \ingroup server
- * The QgsServerOgcApiHandler abstract class represents a OGC API handler to be registered
+ * \brief The QgsServerOgcApiHandler abstract class represents a OGC API handler to be registered
  * in QgsServerOgcApi class.
  *
  * Subclasses must override operational and informative methods and define

@@ -27,7 +27,7 @@ class QgsMapCanvas;
 
 /**
  * \ingroup gui
- * A rectangular graphics item representing the map on the canvas.
+ * \brief A rectangular graphics item representing the map on the canvas.
  *
  * \note This class is not a part of public API
  */

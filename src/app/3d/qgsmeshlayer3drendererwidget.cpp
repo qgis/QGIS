@@ -18,7 +18,7 @@
 #include "qgsmesh3dsymbol.h"
 #include "qgsmesh3dsymbolwidget.h"
 #include "qgsmeshlayer3drenderer.h"
-
+#include "qgsvscrollarea.h"
 #include "qgsmeshlayer.h"
 
 #include <QBoxLayout>
@@ -29,8 +29,20 @@ QgsMeshLayer3DRendererWidget::QgsMeshLayer3DRendererWidget( QgsMeshLayer *layer,
 {
   setPanelTitle( tr( "3D View" ) );
 
-  QVBoxLayout *layout = new QVBoxLayout( this );
+  QgsVScrollArea *scrollArea = new QgsVScrollArea( this );
+  scrollArea->setFrameShape( QFrame::NoFrame );
+  scrollArea->setFrameShadow( QFrame::Plain );
+  scrollArea->setWidgetResizable( true );
+  QVBoxLayout *scrollLayout = new QVBoxLayout( this );
+  scrollLayout->setContentsMargins( 0, 0, 0, 0 );
+  scrollLayout->addWidget( scrollArea );
+
+  QVBoxLayout *layout = new QVBoxLayout;
   layout->setContentsMargins( 0, 0, 0, 0 );
+  QWidget *widget = new QWidget;
+  widget->setLayout( layout );
+  scrollArea->setWidget( widget );
+
   mChkEnabled = new QCheckBox( tr( "Enable 3D Renderer" ), this );
   layout->addWidget( mChkEnabled );
 

@@ -12,7 +12,7 @@
 
 class QgsAuthMethod : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for authentication method plugins
 %End
 
@@ -52,6 +52,17 @@ Translatable display version of the ':py:func:`~QgsAuthMethod.description`'
     int version() const;
 %Docstring
 Increment this if method is significantly updated, allow updater code to be written for previously stored authcfg
+%End
+
+
+%If (HAVE_GUI)
+
+    virtual QWidget *editWidget( QWidget *parent ) const;
+%Docstring
+Constructs the configuration for the authentication method
+
+.. versionadded:: 3.22
+%End
 %End
 
     QgsAuthMethod::Expansions supportedExpansions() const;
@@ -153,7 +164,6 @@ Construct a default authentication method
    Non-public since this is an abstract base class
 %End
 
-
     static QString authMethodTag();
 %Docstring
 Tag signifying that this is an authentcation method (e.g. for use as title in message log panel output)
@@ -172,7 +182,6 @@ Sets the support expansions (points in providers where the authentication is inj
 %Docstring
 Sets list of data providers this auth method supports
 %End
-
 
 };
 QFlags<QgsAuthMethod::Expansion> operator|(QgsAuthMethod::Expansion f1, QFlags<QgsAuthMethod::Expansion> f2);

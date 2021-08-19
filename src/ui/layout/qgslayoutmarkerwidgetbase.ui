@@ -56,7 +56,7 @@
         <x>0</x>
         <y>0</y>
         <width>306</width>
-        <height>247</height>
+        <height>249</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -167,26 +167,26 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsSymbolButton</class>
    <extends>QToolButton</extends>
    <header>qgssymbolbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsLayoutItemComboBox</class>
@@ -195,9 +195,14 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>groupBox</tabstop>
   <tabstop>scrollArea</tabstop>
+  <tabstop>groupBox</tabstop>
   <tabstop>mShapeStyleButton</tabstop>
+  <tabstop>mRotationGroupBox</tabstop>
+  <tabstop>mRotationFromMapCheckBox</tabstop>
+  <tabstop>mMapComboBox</tabstop>
+  <tabstop>mNorthTypeComboBox</tabstop>
+  <tabstop>mNorthOffsetSpinBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>

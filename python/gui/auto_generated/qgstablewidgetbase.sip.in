@@ -10,7 +10,7 @@
 
 class QgsTableWidgetBase: QWidget, protected Ui::QgsTableWidgetUiBase
 {
-%Docstring
+%Docstring(signature="appended")
 Base widget allowing to edit a collection, using a table.
 
 This widget includes buttons to add and remove rows.

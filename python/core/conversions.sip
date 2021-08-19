@@ -22,10 +22,6 @@ which are not wrapped by PyQt:
 - NULL QVariant which is missing in PyQt5 with sip.enableautoconversion
 */
 
-%ModuleHeaderCode
-
-%End
-
 
 template <TYPE>
 %MappedType QVector< QVector<TYPE> >

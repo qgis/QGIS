@@ -25,7 +25,7 @@
 /**
  * \ingroup gui
  * \class QgsGradientStopEditor
- * An interactive editor for previewing a gradient color ramp and modifying the position of color
+ * \brief An interactive editor for previewing a gradient color ramp and modifying the position of color
  * stops along the gradient.
  * \since QGIS 2.16
  */

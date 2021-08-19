@@ -11,7 +11,7 @@
 
 class QgsDirectionalLightSettings
 {
-%Docstring
+%Docstring(signature="appended")
 Definition of a directional light in a 3D map scene
 
 .. versionadded:: 3.16

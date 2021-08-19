@@ -63,15 +63,24 @@ namespace DRW
   enum Version
   {
     UNKNOWNV,     //!< UNKNOWN VERSION.
-    AC1006,       //!< R10.
-    AC1009,       //!< R11 & R12.
-    AC1012,       //!< R13.
-    AC1014,       //!< R14.
-    AC1015,       //!< ACAD 2000.
-    AC1018,       //!< ACAD 2004.
-    AC1021,       //!< ACAD 2007.
-    AC1024,       //!< ACAD 2010.
-    AC1027        //!< ACAD 2013.
+    MC00,       //!< DWG Release 1.1
+    AC12,         //!< DWG Release 1.2
+    AC14,         //!< DWG Release 1.4
+    AC150,        //!< DWG Release 2.0
+    AC210,        //!< DWG Release 2.10
+    AC1002,       //!< DWG Release 2.5
+    AC1003,       //!< DWG Release 2.6
+    AC1004,       //!< DWG Relase 9
+    AC1006,       //!< DWG Release 10
+    AC1009,       //!< DWG Release 11/12 (LT R1/R2)
+    AC1012,       //!< DWG Release 13 (LT95)
+    AC1014,       //!< DWG Release 14/14.01 (LT97/LT98)
+    AC1015,       //!< AutoCAD 2000/2000i/2002
+    AC1018,       //!< AutoCAD 2004/2005/2006
+    AC1021,       //!< AutoCAD 2007/2008/2009
+    AC1024,       //!< AutoCAD 2010/2011/2012
+    AC1027,       //!< AutoCAD 2013/2014/2015/2016/2017
+    AC1032,       //!< AutoCAD 2018/2019/2020
   };
 
   enum error
@@ -91,11 +100,36 @@ namespace DRW
     BAD_READ_OBJECTS      //!< Error in objects read process.
   };
 
-  enum DBG_LEVEL
-  {
-    none,
-    debug
+  enum class DebugLevel {
+      None,
+      Debug
   };
+
+  /**
+   * Interface for debug printers.
+   *
+   * The base class is silent and ignores all debugging.
+   */
+  class DebugPrinter {
+  public:
+      virtual void printS(const std::string &s, const char *file, const char *function, int line){(void)s;(void)file;(void)function;(void)line;}
+      virtual void printI(long long int i, const char *file, const char *function, int line){(void)i;(void)file;(void)function;(void)line;}
+      virtual void printUI(long long unsigned int i, const char *file, const char *function, int line){(void)i;(void)file;(void)function;(void)line;}
+      virtual void printD(double d, const char *file, const char *function, int line){(void)d;(void)file;(void)function;(void)line;}
+      virtual void printH(long long int i, const char *file, const char *function, int line){(void)i;(void)file;(void)function;(void)line;}
+      virtual void printB(int i, const char *file, const char *function, int line){(void)i;(void)file;(void)function;(void)line;}
+      virtual void printHL(int c, int s, int h, const char *file, const char *function, int line){(void)c;(void)s;(void)h;(void)file;(void)function;(void)line;}
+      virtual void printPT(double x, double y, double z, const char *file, const char *function, int line){(void)x;(void)y;(void)z;(void)file;(void)function;(void)line;}
+      DebugPrinter()=default;
+      virtual ~DebugPrinter();
+  };
+
+  /**
+   * Sets a custom debug printer to use when outputting debug messages.
+   *
+   * Ownership of `printer` is transferred.
+   */
+  void setCustomDebugPrinter( DebugPrinter* printer );
 
   //! Special codes for colors
   enum ColorCodes

@@ -58,7 +58,7 @@ void QgsRasterLayerZonalStatsAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterBand( QStringLiteral( "ZONES_BAND" ),
                 QObject::tr( "Zones band number" ), 1, QStringLiteral( "ZONES" ) ) );
 
-  std::unique_ptr< QgsProcessingParameterEnum > refParam = qgis::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "REF_LAYER" ), QObject::tr( "Reference layer" ),
+  std::unique_ptr< QgsProcessingParameterEnum > refParam = std::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "REF_LAYER" ), QObject::tr( "Reference layer" ),
       QStringList() << QObject::tr( "Input layer" ) << QObject::tr( "Zones layer" ), false, 0 );
   refParam->setFlags( refParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( refParam.release() );
@@ -97,7 +97,7 @@ bool QgsRasterLayerZonalStatsAlgorithm::prepareAlgorithm( const QVariantMap &par
   mRefLayer = static_cast< RefLayer >( parameterAsEnum( parameters, QStringLiteral( "REF_LAYER" ), context ) );
 
   QgsRasterLayer *layer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT" ), context );
-  int band = parameterAsInt( parameters, QStringLiteral( "BAND" ), context );
+  const int band = parameterAsInt( parameters, QStringLiteral( "BAND" ), context );
 
   if ( !layer )
     throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT" ) ) );
@@ -138,7 +138,7 @@ bool QgsRasterLayerZonalStatsAlgorithm::prepareAlgorithm( const QVariantMap &par
       // add projector if necessary
       if ( layer->crs() != zonesLayer->crs() )
       {
-        mProjector = qgis::make_unique< QgsRasterProjector >();
+        mProjector = std::make_unique< QgsRasterProjector >();
         mProjector->setInput( mZonesDataProvider.get() );
         mProjector->setCrs( zonesLayer->crs(), layer->crs(), context.transformContext() );
         mZonesInterface = mProjector.get();
@@ -156,7 +156,7 @@ bool QgsRasterLayerZonalStatsAlgorithm::prepareAlgorithm( const QVariantMap &par
       // add projector if necessary
       if ( layer->crs() != zonesLayer->crs() )
       {
-        mProjector = qgis::make_unique< QgsRasterProjector >();
+        mProjector = std::make_unique< QgsRasterProjector >();
         mProjector->setInput( mSourceDataProvider.get() );
         mProjector->setCrs( layer->crs(), zonesLayer->crs(), context.transformContext() );
         mSourceInterface = mProjector.get();
@@ -177,7 +177,7 @@ QVariantMap QgsRasterLayerZonalStatsAlgorithm::processAlgorithm( const QVariantM
   {
     QgsFields outFields;
     outFields.append( QgsField( QStringLiteral( "zone" ), QVariant::Double, QString(), 20, 8 ) );
-    outFields.append( QgsField( areaUnit.replace( QStringLiteral( "²" ), QStringLiteral( "2" ) ), QVariant::Double, QString(), 20, 8 ) );
+    outFields.append( QgsField( areaUnit.isEmpty() ? "area" : areaUnit.replace( QStringLiteral( "²" ), QStringLiteral( "2" ) ), QVariant::Double, QString(), 20, 8 ) );
     outFields.append( QgsField( QStringLiteral( "sum" ), QVariant::Double, QString(), 20, 8 ) );
     outFields.append( QgsField( QStringLiteral( "count" ), QVariant::LongLong, QString(), 20 ) );
     outFields.append( QgsField( QStringLiteral( "min" ), QVariant::Double, QString(), 20, 8 ) );
@@ -198,12 +198,12 @@ QVariantMap QgsRasterLayerZonalStatsAlgorithm::processAlgorithm( const QVariantM
   QHash<double, StatCalculator > zoneStats;
   qgssize noDataCount = 0;
 
-  qgssize layerSize = static_cast< qgssize >( mLayerWidth ) * static_cast< qgssize >( mLayerHeight );
-  int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-  int nbBlocksWidth = static_cast< int>( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
-  int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
-  int nbBlocks = nbBlocksWidth * nbBlocksHeight;
+  const qgssize layerSize = static_cast< qgssize >( mLayerWidth ) * static_cast< qgssize >( mLayerHeight );
+  const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
+  const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
+  const int nbBlocksWidth = static_cast< int>( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
+  const int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
+  const int nbBlocks = nbBlocksWidth * nbBlocksHeight;
 
   QgsRasterIterator iter = mRefLayer == Source ? QgsRasterIterator( mSourceInterface )
                            : QgsRasterIterator( mZonesInterface );
@@ -247,13 +247,13 @@ QVariantMap QgsRasterLayerZonalStatsAlgorithm::processAlgorithm( const QVariantM
 
       for ( int column = 0; column < iterCols; column++ )
       {
-        double value = rasterBlock->valueAndNoData( row, column, isNoData );
+        const double value = rasterBlock->valueAndNoData( row, column, isNoData );
         if ( mHasNoDataValue && isNoData )
         {
           noDataCount += 1;
           continue;
         }
-        double zone = zonesRasterBlock->valueAndNoData( row, column, isNoData );
+        const double zone = zonesRasterBlock->valueAndNoData( row, column, isNoData );
         if ( mZonesHasNoDataValue && isNoData )
         {
           noDataCount += 1;
@@ -272,7 +272,7 @@ QVariantMap QgsRasterLayerZonalStatsAlgorithm::processAlgorithm( const QVariantM
   outputs.insert( QStringLiteral( "TOTAL_PIXEL_COUNT" ), layerSize );
   outputs.insert( QStringLiteral( "NODATA_PIXEL_COUNT" ), noDataCount );
 
-  double pixelArea = mRasterUnitsPerPixelX * mRasterUnitsPerPixelY;
+  const double pixelArea = mRasterUnitsPerPixelX * mRasterUnitsPerPixelY;
 
   for ( auto it = zoneStats.begin(); it != zoneStats.end(); ++it )
   {
@@ -280,7 +280,8 @@ QVariantMap QgsRasterLayerZonalStatsAlgorithm::processAlgorithm( const QVariantM
     it->s.finalize();
     f.setAttributes( QgsAttributes() << it.key() << it->s.count() * pixelArea << it->s.sum() << it->s.count() <<
                      it->s.min() << it->s.max() << it->s.mean() );
-    sink->addFeature( f, QgsFeatureSink::FastInsert );
+    if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT_TABLE" ) ) );
   }
   outputs.insert( QStringLiteral( "OUTPUT_TABLE" ), tableDest );
 

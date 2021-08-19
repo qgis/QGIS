@@ -21,7 +21,8 @@
 
 /**
  * \ingroup core
- * Field formatter for a list field.
+ * \brief Field formatter for a list field.
+ *
  * This represents a list type value.
  * Values will be represented as a comma-separated list.
  *

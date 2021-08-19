@@ -23,6 +23,7 @@
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QDepthTest>
+#include <QUrl>
 
 #include "qgsshadowrenderingframegraph.h"
 
@@ -31,15 +32,11 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *
 {
   Qt3DRender::QGeometry *geom = new Qt3DRender::QGeometry( this );
   Qt3DRender::QAttribute *positionAttribute = new Qt3DRender::QAttribute( this );
-  QVector<float> vert = { -1.0f, -1.0f, 0.0f, /**/ 1.0f, -1.0f, 0.0f, /**/ -1.0f,  1.0f, 0.0f, /**/ -1.0f,  1.0f, 0.0f, /**/ 1.0f, -1.0f, 0.0f, /**/ 1.0f,  1.0f, 0.0f };
+  const QVector<float> vert = { -1.0f, -1.0f, 0.0f, /**/ 1.0f, -1.0f, 0.0f, /**/ -1.0f,  1.0f, 0.0f, /**/ -1.0f,  1.0f, 0.0f, /**/ 1.0f, -1.0f, 0.0f, /**/ 1.0f,  1.0f, 0.0f };
 
-  QByteArray vertexArr( ( const char * ) vert.constData(), vert.size() * sizeof( float ) );
+  const QByteArray vertexArr( ( const char * ) vert.constData(), vert.size() * sizeof( float ) );
   Qt3DRender::QBuffer *vertexBuffer = nullptr;
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-  vertexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, this );
-#else
   vertexBuffer = new Qt3DRender::QBuffer( this );
-#endif
   vertexBuffer->setData( vertexArr );
 
   positionAttribute->setName( Qt3DRender::QAttribute::defaultPositionAttributeName() );
@@ -146,8 +143,8 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *
   Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass( this );
   Qt3DRender::QShaderProgram *shader = new Qt3DRender::QShaderProgram( this );
 
-  QString vertexShaderPath = QStringLiteral( "qrc:/shaders/postprocess.vert" );
-  QString fragmentShaderPath = QStringLiteral( "qrc:/shaders/postprocess.frag" );
+  const QString vertexShaderPath = QStringLiteral( "qrc:/shaders/postprocess.vert" );
+  const QString fragmentShaderPath = QStringLiteral( "qrc:/shaders/postprocess.frag" );
 
   shader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( vertexShaderPath ) ) );
   shader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( fragmentShaderPath ) ) );

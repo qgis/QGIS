@@ -23,15 +23,21 @@
 #include <QNetworkRequest>
 #include <QStringList>
 #include <QUrl>
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #include <QMutex>
+#else
+#include <QRecursiveMutex>
+#endif
 
+#include "qgsconfig.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 class QgsAuthMethodConfig;
 
 /**
  * \ingroup core
- * Abstract base class for authentication method plugins
+ * \brief Abstract base class for authentication method plugins
  */
 class CORE_EXPORT QgsAuthMethod : public QObject
 {
@@ -70,6 +76,18 @@ class CORE_EXPORT QgsAuthMethod : public QObject
 
     //! Increment this if method is significantly updated, allow updater code to be written for previously stored authcfg
     int version() const { return mVersion; }
+
+
+#ifdef HAVE_GUI
+    SIP_IF_FEATURE( HAVE_GUI )
+
+    /**
+     * Constructs the configuration for the authentication method
+     * \since QGIS 3.22
+     */
+    virtual QWidget *editWidget( QWidget *parent ) const;
+    SIP_END
+#endif
 
     /**
      * Flags that represent the update points (where authentication configurations are expanded)
@@ -172,10 +190,7 @@ class CORE_EXPORT QgsAuthMethod : public QObject
      * Construct a default authentication method
      * \note Non-public since this is an abstract base class
      */
-    explicit QgsAuthMethod()
-      : mMutex( QMutex::RecursionMode::Recursive )
-    {}
-
+    explicit QgsAuthMethod();
 
     //! Tag signifying that this is an authentcation method (e.g. for use as title in message log panel output)
     static QString authMethodTag() { return QObject::tr( "Authentication method" ); }
@@ -191,8 +206,11 @@ class CORE_EXPORT QgsAuthMethod : public QObject
     QgsAuthMethod::Expansions mExpansions = QgsAuthMethod::Expansions();
     QStringList mDataProviders;
     int mVersion = 0;
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     QMutex mMutex;
-
+#else
+    QRecursiveMutex mMutex;
+#endif
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAuthMethod::Expansions )
 

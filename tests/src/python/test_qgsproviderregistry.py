@@ -12,12 +12,36 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import QgsProviderRegistry
+from qgis.core import (
+    QgsProviderRegistry,
+    QgsMapLayerType,
+    QgsProviderMetadata,
+    QgsProviderSublayerDetails,
+    Qgis,
+    QgsProviderUtils
+)
 from qgis.testing import start_app, unittest
+from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
 # to find the srs.db
 start_app()
+
+
+class TestProviderMetadata(QgsProviderMetadata):
+    """
+    Test metadata
+    """
+
+    def __init__(self, key):
+        super().__init__(key, key)
+
+    def querySublayers(self, uri: str, flags=Qgis.SublayerQueryFlags(), feedback=None):
+        res = QgsProviderSublayerDetails()
+        res.setProviderKey(self.key())
+        res.setUri(uri)
+        res.setName(QgsProviderUtils.suggestLayerNameFromFilePath(uri))
+        return [res]
 
 
 class TestQgsProviderRegistry(unittest.TestCase):
@@ -90,6 +114,56 @@ class TestQgsProviderRegistry(unittest.TestCase):
 
         self.assertEqual(parts[1], 'All Files (*.*)')
         self.assertIn('Entwine Point Clouds (ept.json EPT.JSON)', parts)
+
+    def testUnusableUriDetails(self):
+        """
+        Test retrieving user-friendly details about an unusable URI
+        """
+        res, details = QgsProviderRegistry.instance().handleUnusableUri('')
+        self.assertFalse(res)
+        res, details = QgsProviderRegistry.instance().handleUnusableUri('/home/me/test.png')
+        self.assertFalse(res)
+        res, details = QgsProviderRegistry.instance().handleUnusableUri('/home/me/test.las')
+        self.assertTrue(res)
+        self.assertIn('LAS', details.warning)
+        res, details = QgsProviderRegistry.instance().handleUnusableUri('/home/me/test.laz')
+        self.assertTrue(res)
+        self.assertIn('LAZ', details.warning)
+
+    def testSublayerDetails(self):
+        ept_provider_metadata = QgsProviderRegistry.instance().providerMetadata('ept')
+        ogr_provider_metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+
+        if ept_provider_metadata is not None:
+            # test querying a uri which should be blocklisted
+            self.assertFalse(QgsProviderRegistry.instance().querySublayers(unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept-build.json'))
+
+        if ept_provider_metadata is not None and ogr_provider_metadata is not None:
+            # test querying a uri which is technically capable of being opened by two providers, but which one provider is preferred
+            # in this case we are testing a ept.json file, which should ALWAYS be treated as a ept point cloud layer even though
+            # the OGR provider CAN technically open json files
+
+            # when we directly query ogr provider metadata it should report sublayers for the json file...
+            self.assertEqual([l.providerKey() for l in ogr_provider_metadata.querySublayers(
+                unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept.json', Qgis.SublayerQueryFlags(Qgis.SublayerQueryFlag.FastScan))], ['ogr'])
+
+            # ...and when we query ept provider metadata directly it should also report sublayers for ept.json files...
+            self.assertEqual([l.providerKey() for l in ept_provider_metadata.querySublayers(
+                unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept.json', Qgis.SublayerQueryFlags(Qgis.SublayerQueryFlag.FastScan))], ['ept'])
+
+            # ... but when we query the provider registry itself, it should ONLY report the ept provider sublayers
+            self.assertEqual([l.providerKey() for l in QgsProviderRegistry.instance().querySublayers(unitTestDataPath() + '/point_clouds/ept/sunshine-coast/ept.json', Qgis.SublayerQueryFlags(Qgis.SublayerQueryFlag.FastScan))], ['ept'])
+
+        provider1 = TestProviderMetadata('p1')
+        provider2 = TestProviderMetadata('p2')
+
+        self.assertFalse(QgsProviderRegistry.instance().querySublayers('test_uri'))
+
+        self.assertTrue(QgsProviderRegistry.instance().registerProvider(provider1))
+        self.assertTrue(QgsProviderRegistry.instance().registerProvider(provider2))
+
+        self.assertCountEqual([p.providerKey() for p in QgsProviderRegistry.instance().querySublayers('test_uri')],
+                              ['p1', 'p2'])
 
 
 if __name__ == '__main__':

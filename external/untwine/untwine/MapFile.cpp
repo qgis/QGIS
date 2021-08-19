@@ -30,6 +30,11 @@
 
 #include "MapFile.hpp"
 
+#ifdef _MSC_VER
+#include <io.h>
+#include <fcntl.h>
+#endif
+
 namespace untwine
 {
 
@@ -44,10 +49,10 @@ MapContext mapFile(const std::string& filename, bool readOnly,
         return ctx;
     }
 
-#ifndef WIN32
+#ifndef _WIN32
     ctx.m_fd = ::open(filename.c_str(), readOnly ? O_RDONLY : O_RDWR);
 #else
-    ctx.m_fd = ::_open(filename.c_str(), readOnly ? O_RDONLY : O_RDWR);
+    ctx.m_fd = ::_open(filename.c_str(), readOnly ? _O_RDONLY : _O_RDWR);
 #endif
 
     if (ctx.m_fd == -1)

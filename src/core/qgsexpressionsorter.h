@@ -36,7 +36,7 @@ class QgsExpressionSorter
     bool operator()( const QgsIndexedFeature &f1, const QgsIndexedFeature &f2 ) const
     {
       int i = 0;
-      for ( const QgsFeatureRequest::OrderByClause &orderBy : qgis::as_const( mPreparedOrderBys ) )
+      for ( const QgsFeatureRequest::OrderByClause &orderBy : std::as_const( mPreparedOrderBys ) )
       {
         const QVariant &v1 = f1.mIndexes.at( i );
         const QVariant &v2 = f2.mIndexes.at( i );
@@ -143,7 +143,7 @@ class QgsExpressionSorter
 
       QgsIndexedFeature indexedFeatureToAppend;
 
-      for ( const QgsFeature &f : qgis::as_const( features ) )
+      for ( const QgsFeature &f : std::as_const( features ) )
       {
         indexedFeatureToAppend.mIndexes.resize( mPreparedOrderBys.size() );
         indexedFeatureToAppend.mFeature = f;
@@ -151,7 +151,7 @@ class QgsExpressionSorter
         expressionContext->setFeature( indexedFeatureToAppend.mFeature );
 
         int i = 0;
-        for ( const QgsFeatureRequest::OrderByClause &orderBy : qgis::as_const( mPreparedOrderBys ) )
+        for ( const QgsFeatureRequest::OrderByClause &orderBy : std::as_const( mPreparedOrderBys ) )
         {
           indexedFeatureToAppend.mIndexes.replace( i++, orderBy.expression().evaluate( expressionContext ) );
         }
@@ -164,7 +164,7 @@ class QgsExpressionSorter
 
       features.clear();
 
-      for ( const QgsIndexedFeature &indexedFeature : qgis::as_const( indexedFeatures ) )
+      for ( const QgsIndexedFeature &indexedFeature : std::as_const( indexedFeatures ) )
         features.append( indexedFeature.mFeature );
     }
 

@@ -39,6 +39,9 @@ class FieldSelectorDelegate : public QItemDelegate
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
+  private:
+    QgsVectorLayer *indexToLayer( const QAbstractItemModel *model, const QModelIndex &index ) const;
+    int attributeIndex( const QAbstractItemModel *model, const QgsVectorLayer *vl ) const;
 };
 
 class QgsVectorLayerAndAttributeModel : public QgsLayerTreeModel
@@ -108,6 +111,7 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     void cleanGroup( QgsLayerTreeNode *node );
     QgsLayerTree *mLayerTreeGroup = nullptr;
     FieldSelectorDelegate *mFieldSelectorDelegate = nullptr;
+    QgsVectorLayerAndAttributeModel *mModel = nullptr;
 
     QgsCoordinateReferenceSystem mCRS;
 };

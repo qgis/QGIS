@@ -120,6 +120,7 @@ cmake -G "%CMAKEGEN%" ^
 	-D CMAKE_PDB_OUTPUT_DIRECTORY_RELEASE=%BUILDDIR%\apps\%PACKAGENAME%\pdb ^
 	-D CMAKE_SHARED_LINKER_FLAGS_RELEASE="/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF" ^
 	-D CMAKE_MODULE_LINKER_FLAGS_RELEASE="/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF" ^
+	-D SUBMIT_URL="https://cdash.orfeo-toolbox.org/submit.php?project=QGIS" ^
 	-D BUILDNAME="%BUILDNAME%" ^
 	-D SITE="%SITE%" ^
 	-D PEDANTIC=TRUE ^
@@ -141,7 +142,7 @@ cmake -G "%CMAKEGEN%" ^
 	-D SPATIALITE_LIBRARY=%O4W_ROOT%/lib/spatialite_i.lib ^
 	-D PYTHON_EXECUTABLE=%O4W_ROOT%/bin/python3.exe ^
 	-D SIP_BINARY_PATH=%PYTHONHOME:\=/%/sip.exe ^
-	-D PYTHON_INCLUDE_PATH=%PYTHONHOME:\=/%/include ^
+	-D PYTHON_INCLUDE_DIR=%PYTHONHOME:\=/%/include ^
 	-D PYTHON_LIBRARY=%PYTHONHOME:\=/%/libs/%PYVER%.lib ^
 	-D QT_LIBRARY_DIR=%O4W_ROOT%/lib ^
 	-D QT_HEADERS_DIR=%O4W_ROOT%/apps/qt5/include ^
@@ -290,29 +291,28 @@ for %%i in (%packages%) do (
 	"apps/%PACKAGENAME%/bin/qgis_native.dll" ^
 	"apps/%PACKAGENAME%/bin/qgis_process.exe" ^
 	"apps/%PACKAGENAME%/doc/" ^
-	"apps/%PACKAGENAME%/plugins/basicauthmethod.dll" ^
-	"apps/%PACKAGENAME%/plugins/delimitedtextprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/esritokenauthmethod.dll" ^
-	"apps/%PACKAGENAME%/plugins/geonodeprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/gpxprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/identcertauthmethod.dll" ^
-	"apps/%PACKAGENAME%/plugins/mssqlprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/db2provider.dll" ^
-	"apps/%PACKAGENAME%/plugins/owsprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/pkcs12authmethod.dll" ^
-	"apps/%PACKAGENAME%/plugins/pkipathsauthmethod.dll" ^
-	"apps/%PACKAGENAME%/plugins/postgresprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/postgresrasterprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/spatialiteprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/virtuallayerprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/wcsprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/wfsprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/wmsprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/arcgismapserverprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/arcgisfeatureserverprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/mdalprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/hanaprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/oauth2authmethod.dll" ^
+  "apps/%PACKAGENAME%/plugins/authmethod_basic.dll" ^
+  "apps/%PACKAGENAME%/plugins/provider_delimitedtext.dll" ^
+  "apps/%PACKAGENAME%/plugins/authmethod_esritoken.dll" ^
+  "apps/%PACKAGENAME%/plugins/provider_geonode.dll" ^
+  "apps/%PACKAGENAME%/plugins/provider_gpx.dll" ^
+  "apps/%PACKAGENAME%/plugins/authmethod_identcert.dll" ^
+  "apps/%PACKAGENAME%/plugins/provider_mssql.dll" ^
+  "apps/%PACKAGENAME%/plugins/provider_db2.dll" ^
+  "apps/%PACKAGENAME%/plugins/authmethod_pkcs12.dll" ^
+  "apps/%PACKAGENAME%/plugins/authmethod_pkipaths.dll" ^
+  "apps/%PACKAGENAME%/plugins/provider_postgres.dll" ^
+  "apps/%PACKAGENAME%/plugins/provider_postgresraster.dll" ^
+  "apps/%PACKAGENAME%/plugins/provider_spatialite.dll" ^
+  "apps/%PACKAGENAME%/plugins/provider_virtuallayer.dll" ^
+  "apps/%PACKAGENAME%/plugins/provider_wcs.dll" ^
+  "apps/%PACKAGENAME%/plugins/provider_wfs.dll" ^
+  "apps/%PACKAGENAME%/plugins/provider_wms.dll" ^
+  "apps/%PACKAGENAME%/plugins/provider_arcgismapserver.dll" ^
+  "apps/%PACKAGENAME%/plugins/provider_arcgisfeatureserver.dll" ^
+  "apps/%PACKAGENAME%/plugins/provider_mdal.dll" ^
+  "apps/%PACKAGENAME%/plugins/provider_hana.dll" ^
+  "apps/%PACKAGENAME%/plugins/authmethod_oauth2.dll" ^
 	"apps/%PACKAGENAME%/resources/qgis.db" ^
 	"apps/%PACKAGENAME%/resources/spatialite.db" ^
 	"apps/%PACKAGENAME%/resources/srs.db" ^
@@ -333,6 +333,7 @@ if errorlevel 1 (echo tar common failed & goto error)
 	"apps/%PACKAGENAME%/resources/server/" ^
 	"apps/%PACKAGENAME%/server/" ^
 	"apps/%PACKAGENAME%/python/qgis/_server.pyd" ^
+	"apps/%PACKAGENAME%/python/qgis/_server.pyi" ^
 	"apps/%PACKAGENAME%/python/qgis/server/" ^
 	"httpd.d/httpd_%PACKAGENAME%.conf.tmpl" ^
 	"etc/postinstall/%PACKAGENAME%-server.bat" ^
@@ -368,6 +369,7 @@ if not exist %ARCH%\release\qgis\%PACKAGENAME% mkdir %ARCH%\release\qgis\%PACKAG
 	--exclude-from exclude ^
 	--exclude "*.pyc" ^
 	--exclude "apps/%PACKAGENAME%/python/qgis/_server.pyd" ^
+	--exclude "apps/%PACKAGENAME%/python/qgis/_server.pyi" ^
 	--exclude "apps/%PACKAGENAME%/python/qgis/_server.lib" ^
 	--exclude "apps/%PACKAGENAME%/python/qgis/server" ^
 	--exclude "apps/%PACKAGENAME%/server/" ^
@@ -380,7 +382,6 @@ if not exist %ARCH%\release\qgis\%PACKAGENAME% mkdir %ARCH%\release\qgis\%PACKAG
 	"apps/%PACKAGENAME%/i18n/" ^
 	"apps/%PACKAGENAME%/icons/" ^
 	"apps/%PACKAGENAME%/images/" ^
-	"apps/%PACKAGENAME%/plugins/gpsimporterplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/offlineeditingplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/topolplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/geometrycheckerplugin.dll" ^
@@ -441,8 +442,8 @@ for %%g IN (%GRASS_VERSIONS%) do (
 		"apps/%PACKAGENAME%/grass/modules/qgis.r.in!v!.exe" ^
 		"apps/%PACKAGENAME%/grass/modules/qgis.v.in!v!.exe" ^
 		"apps/%PACKAGENAME%/plugins/grassplugin!v!.dll" ^
-		"apps/%PACKAGENAME%/plugins/grassprovider!v!.dll" ^
-		"apps/%PACKAGENAME%/plugins/grassrasterprovider!v!.dll" ^
+		"apps/%PACKAGENAME%/plugins/provider_grass!v!.dll" ^
+		"apps/%PACKAGENAME%/plugins/provider_grassraster!v!.dll" ^
 		"bin/%PACKAGENAME%-grass!v!.bat.tmpl" ^
 		"etc/postinstall/%PACKAGENAME%-grass-plugin!w!.bat" ^
 		"etc/preremove/%PACKAGENAME%-grass-plugin!w!.bat"

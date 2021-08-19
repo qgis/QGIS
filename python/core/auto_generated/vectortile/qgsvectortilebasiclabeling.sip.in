@@ -13,7 +13,7 @@
 
 class QgsVectorTileBasicLabelingStyle
 {
-%Docstring
+%Docstring(signature="appended")
 Configuration of a single style within :py:class:`QgsVectorTileBasicLabeling`
 
 .. versionadded:: 3.14
@@ -115,7 +115,7 @@ Reads object content from given DOM element
 
 class QgsVectorTileBasicLabeling : QgsVectorTileLabeling
 {
-%Docstring
+%Docstring(signature="appended")
 Basic labeling configuration for vector tile layers. It contains a definition
 of a list of labeling styles, where each labeling style is a combination of
 sub-layer name, geometry type, filter expression, zoom range and label settings.

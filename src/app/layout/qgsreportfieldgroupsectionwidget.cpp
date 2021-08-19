@@ -89,7 +89,7 @@ void QgsReportSectionFieldGroupWidget::editHeader()
 {
   if ( !mSection->header() )
   {
-    std::unique_ptr< QgsLayout > header = qgis::make_unique< QgsLayout >( mSection->project() );
+    std::unique_ptr< QgsLayout > header = std::make_unique< QgsLayout >( mSection->project() );
     header->initializeDefaults();
     mSection->setHeader( header.release() );
   }
@@ -107,7 +107,7 @@ void QgsReportSectionFieldGroupWidget::editFooter()
 {
   if ( !mSection->footer() )
   {
-    std::unique_ptr< QgsLayout > footer = qgis::make_unique< QgsLayout >( mSection->project() );
+    std::unique_ptr< QgsLayout > footer = std::make_unique< QgsLayout >( mSection->project() );
     footer->initializeDefaults();
     mSection->setFooter( footer.release() );
   }
@@ -130,7 +130,7 @@ void QgsReportSectionFieldGroupWidget::editBody()
 {
   if ( !mSection->body() )
   {
-    std::unique_ptr< QgsLayout > body = qgis::make_unique< QgsLayout >( mSection->project() );
+    std::unique_ptr< QgsLayout > body = std::make_unique< QgsLayout >( mSection->project() );
     body->initializeDefaults();
     mSection->setBody( body.release() );
   }

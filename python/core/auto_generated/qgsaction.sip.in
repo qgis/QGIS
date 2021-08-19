@@ -11,7 +11,7 @@
 
 class QgsAction
 {
-%Docstring
+%Docstring(signature="appended")
 Utility class that encapsulates an action based on vector attributes.
 %End
 

@@ -31,8 +31,6 @@ QgsLabelFeature::~QgsLabelFeature()
     mPermissibleZoneGeosPrepared.reset();
     mPermissibleZoneGeos.reset();
   }
-
-  delete mInfo;
 }
 
 void QgsLabelFeature::setPermissibleZone( const QgsGeometry &geometry )
@@ -108,6 +106,16 @@ const QgsLabelObstacleSettings &QgsLabelFeature::obstacleSettings() const
 void QgsLabelFeature::setObstacleSettings( const QgsLabelObstacleSettings &settings )
 {
   mObstacleSettings = settings;
+}
+
+QgsCoordinateReferenceSystem QgsLabelFeature::originalFeatureCrs() const
+{
+  return mOriginalFeatureCrs;
+}
+
+void QgsLabelFeature::setOriginalFeatureCrs( const QgsCoordinateReferenceSystem &originalFeatureCrs )
+{
+  mOriginalFeatureCrs = originalFeatureCrs;
 }
 
 void QgsLabelFeature::setAnchorPosition( const QgsPointXY &anchorPosition )

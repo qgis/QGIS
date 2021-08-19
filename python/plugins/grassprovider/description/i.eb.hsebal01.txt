@@ -1,0 +1,16 @@
+i.eb.hsebal01
+i.eb.hsebal01.coords - Computes sensible heat flux iteration SEBAL 01. Inline coordinates
+Imagery (i.*)
+QgsProcessingParameterRasterLayer|netradiation|Name of instantaneous net radiation raster map [W/m2]|None|False
+QgsProcessingParameterRasterLayer|soilheatflux|Name of instantaneous soil heat flux raster map [W/m2]|None|False
+QgsProcessingParameterRasterLayer|aerodynresistance|Name of aerodynamic resistance to heat momentum raster map [s/m]|None|False
+QgsProcessingParameterRasterLayer|temperaturemeansealevel|Name of altitude corrected surface temperature raster map [K]|None|False
+QgsProcessingParameterNumber|frictionvelocitystar|Value of the height independent friction velocity (u*) [m/s]|QgsProcessingParameterNumber.Double|0.32407|False|0.0|None
+QgsProcessingParameterRasterLayer|vapourpressureactual|Name of the actual vapour pressure (e_act) map [KPa]|None|False
+QgsProcessingParameterNumber|row_wet_pixel|Row value of the wet pixel|QgsProcessingParameterNumber.Double|None|True|None|None
+QgsProcessingParameterNumber|column_wet_pixel|Column value of the wet pixel|QgsProcessingParameterNumber.Double|None|True|None|None
+QgsProcessingParameterNumber|row_dry_pixel|Row value of the dry pixel|QgsProcessingParameterNumber.Double|None|True|None|None
+QgsProcessingParameterNumber|column_dry_pixel|Column value of the dry pixel|QgsProcessingParameterNumber.Double|None|True|None|None
+*QgsProcessingParameterBoolean|-a|Automatic wet/dry pixel (careful!)|False
+*QgsProcessingParameterBoolean|-c|Dry/Wet pixels coordinates are in image projection, not row/col|False
+QgsProcessingParameterRasterDestination|output|Sensible Heat Flux

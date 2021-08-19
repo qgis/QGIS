@@ -25,7 +25,7 @@
 
 /**
  * \ingroup analysis
- * Decorator class for Triangulations (s. Decorator pattern in Gamma et al.).
+ * \brief Decorator class for Triangulations (s. Decorator pattern in Gamma et al.).
  * \note Not available in Python bindings.
 */
 class ANALYSIS_EXPORT TriDecorator : public QgsTriangulation

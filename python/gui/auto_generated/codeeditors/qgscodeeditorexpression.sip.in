@@ -12,7 +12,7 @@
 
 class QgsCodeEditorExpression : QgsCodeEditor
 {
-%Docstring
+%Docstring(signature="appended")
 
 A QGIS expression editor based on QScintilla2. Adds syntax highlighting and
 code autocompletion.

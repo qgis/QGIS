@@ -19,12 +19,14 @@
 #include "qgssettings.h"
 #include "qgshelp.h"
 #include "qgsgui.h"
+#include "fromencodedcomponenthelper.h"
 
 #include <QMessageBox>
 #include <QUrl>
 #include <QPushButton>
-#include <QRegExp>
-#include <QRegExpValidator>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
+#include <QUrlQuery>
 
 QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes types, const QString &baseKey, const QString &connectionName, QgsNewHttpConnection::Flags flags, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -41,10 +43,11 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewHttpConnection::showHelp );
 
-  QRegExp rx( "/connections-([^/]+)/" );
-  if ( rx.indexIn( baseKey ) != -1 )
+  const thread_local QRegularExpression rx( "/connections-([^/]+)/" );
+  const QRegularExpressionMatch rxMatch = rx.match( baseKey );
+  if ( rxMatch.hasMatch() )
   {
-    QString connectionType( rx.cap( 1 ).toUpper() );
+    QString connectionType( rxMatch.captured( 1 ).toUpper() );
     if ( connectionType == QLatin1String( "WMS" ) )
     {
       connectionType = QStringLiteral( "WMS/WMTS" );
@@ -59,7 +62,7 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
   // using connection-wms and connection-wfs -> parse credential key from it.
   mCredentialsBaseKey = mBaseKey.split( '-' ).last().toUpper();
 
-  txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
+  txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( "[^\\/]+" ), txtName ) );
 
   cmbDpiMode->clear();
   cmbDpiMode->addItem( tr( "all" ) );
@@ -86,10 +89,10 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
     // populate the dialog with the information stored for the connection
     // populate the fields with the stored setting parameters
 
-    QgsSettings settings;
+    const QgsSettings settings;
 
-    QString key = mBaseKey + connectionName;
-    QString credentialsKey = "qgis/" + mCredentialsBaseKey + '/' + connectionName;
+    const QString key = mBaseKey + connectionName;
+    const QString credentialsKey = "qgis/" + mCredentialsBaseKey + '/' + connectionName;
     txtName->setText( connectionName );
     txtUrl->setText( settings.value( key + "/url" ).toString() );
     mRefererLineEdit->setText( settings.value( key + "/referer" ).toString() );
@@ -112,6 +115,10 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
   {
     mWfsOptionsGroupBox->setVisible( false );
     mGroupBox->layout()->removeWidget( mWfsOptionsGroupBox );
+  }
+  else
+  {
+    txtUrl->setToolTip( tr( "HTTP address of the WFS service, or landing page of a OGC API service<br>(an ending slash might be needed for some OGC API servers)" ) );
   }
 
   if ( mTypes & ConnectionWcs )
@@ -144,7 +151,7 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
     mGroupBox->layout()->removeWidget( mAuthGroupBox );
   }
   // Adjust height
-  int w = width();
+  const int w = width();
   adjustSize();
   resize( w, height() );
 
@@ -200,14 +207,14 @@ void QgsNewHttpConnection::urlChanged( const QString &text )
 
 void QgsNewHttpConnection::updateOkButtonState()
 {
-  bool enabled = !txtName->text().isEmpty() && !txtUrl->text().isEmpty();
+  const bool enabled = !txtName->text().isEmpty() && !txtUrl->text().isEmpty();
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
 }
 
 bool QgsNewHttpConnection::validate()
 {
-  QgsSettings settings;
-  QString key = mBaseKey + txtName->text();
+  const QgsSettings settings;
+  const QString key = mBaseKey + txtName->text();
 
   // warn if entry was renamed to an existing connection
   if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
@@ -279,9 +286,9 @@ QString QgsNewHttpConnection::wmsSettingsKey( const QString &base, const QString
 
 void QgsNewHttpConnection::updateServiceSpecificSettings()
 {
-  QgsSettings settings;
-  QString wfsKey = wfsSettingsKey( mBaseKey, mOriginalConnName );
-  QString wmsKey = wmsSettingsKey( mBaseKey, mOriginalConnName );
+  const QgsSettings settings;
+  const QString wfsKey = wfsSettingsKey( mBaseKey, mOriginalConnName );
+  const QString wmsKey = wmsSettingsKey( mBaseKey, mOriginalConnName );
 
   cbxIgnoreGetMapURI->setChecked( settings.value( wmsKey + "/ignoreGetMapURI", false ).toBool() );
   cbxWmsIgnoreReportedLayerExtents->setChecked( settings.value( wmsKey + QStringLiteral( "/ignoreReportedLayerExtents" ), false ).toBool() );
@@ -315,7 +322,7 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
   }
   cmbDpiMode->setCurrentIndex( dpiIdx );
 
-  QString version = settings.value( wfsKey + "/version" ).toString();
+  const QString version = settings.value( wfsKey + "/version" ).toString();
   int versionIdx = WFS_VERSION_MAX; // AUTO
   if ( version == QLatin1String( "1.0.0" ) )
     versionIdx = WFS_VERSION_1_0;
@@ -334,86 +341,10 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
   txtMaxNumFeatures->setText( settings.value( wfsKey + "/maxnumfeatures" ).toString() );
 
   // Only default to paging enabled if WFS 2.0.0 or higher
-  bool pagingEnabled = settings.value( wfsKey + "/pagingenabled", ( versionIdx == WFS_VERSION_MAX || versionIdx >= WFS_VERSION_2_0 ) ).toBool();
+  const bool pagingEnabled = settings.value( wfsKey + "/pagingenabled", ( versionIdx == WFS_VERSION_MAX || versionIdx >= WFS_VERSION_2_0 ) ).toBool();
   txtPageSize->setText( settings.value( wfsKey + "/pagesize" ).toString() );
   cbxWfsFeaturePaging->setChecked( pagingEnabled );
 }
-
-// Mega ewwww. all this is taken from Qt's QUrl::setEncodedPath compatibility helper.
-// (I can't see any way to port the below code to NOT require this).
-
-inline char toHexUpper( uint value ) noexcept
-{
-  return "0123456789ABCDEF"[value & 0xF];
-}
-
-static inline ushort encodeNibble( ushort c )
-{
-  return ushort( toHexUpper( c ) );
-}
-
-bool qt_is_ascii( const char *&ptr, const char *end ) noexcept
-{
-  while ( ptr + 4 <= end )
-  {
-    quint32 data = qFromUnaligned<quint32>( ptr );
-    if ( data &= 0x80808080U )
-    {
-#if Q_BYTE_ORDER == Q_BIG_ENDIAN
-      uint idx = qCountLeadingZeroBits( data );
-#else
-      uint idx = qCountTrailingZeroBits( data );
-#endif
-      ptr += idx / 8;
-      return false;
-    }
-    ptr += 4;
-  }
-  while ( ptr != end )
-  {
-    if ( quint8( *ptr ) & 0x80 )
-      return false;
-    ++ptr;
-  }
-  return true;
-}
-
-QString fromEncodedComponent_helper( const QByteArray &ba )
-{
-  if ( ba.isNull() )
-    return QString();
-  // scan ba for anything above or equal to 0x80
-  // control points below 0x20 are fine in QString
-  const char *in = ba.constData();
-  const char *const end = ba.constEnd();
-  if ( qt_is_ascii( in, end ) )
-  {
-    // no non-ASCII found, we're safe to convert to QString
-    return QString::fromLatin1( ba, ba.size() );
-  }
-  // we found something that we need to encode
-  QByteArray intermediate = ba;
-  intermediate.resize( ba.size() * 3 - ( in - ba.constData() ) );
-  uchar *out = reinterpret_cast<uchar *>( intermediate.data() + ( in - ba.constData() ) );
-  for ( ; in < end; ++in )
-  {
-    if ( *in & 0x80 )
-    {
-      // encode
-      *out++ = '%';
-      *out++ = encodeNibble( uchar( *in ) >> 4 );
-      *out++ = encodeNibble( uchar( *in ) & 0xf );
-    }
-    else
-    {
-      // keep
-      *out++ = uchar( *in );
-    }
-  }
-  // now it's safe to call fromLatin1
-  return QString::fromLatin1( intermediate, out - reinterpret_cast<uchar *>( intermediate.data() ) );
-}
-
 
 QUrl QgsNewHttpConnection::urlTrimmed() const
 {
@@ -447,8 +378,8 @@ QUrl QgsNewHttpConnection::urlTrimmed() const
 void QgsNewHttpConnection::accept()
 {
   QgsSettings settings;
-  QString key = mBaseKey + txtName->text();
-  QString credentialsKey = "qgis/" + mCredentialsBaseKey + '/' + txtName->text();
+  const QString key = mBaseKey + txtName->text();
+  const QString credentialsKey = "qgis/" + mCredentialsBaseKey + '/' + txtName->text();
 
   if ( !validate() )
     return;
@@ -461,11 +392,11 @@ void QgsNewHttpConnection::accept()
     settings.sync();
   }
 
-  QUrl url( urlTrimmed() );
+  const QUrl url( urlTrimmed() );
   settings.setValue( key + "/url", url.toString() );
 
-  QString wfsKey = wfsSettingsKey( mBaseKey, txtName->text() );
-  QString wmsKey = wmsSettingsKey( mBaseKey, txtName->text() );
+  const QString wfsKey = wfsSettingsKey( mBaseKey, txtName->text() );
+  const QString wmsKey = wmsSettingsKey( mBaseKey, txtName->text() );
 
   if ( mTypes & ConnectionWfs )
   {

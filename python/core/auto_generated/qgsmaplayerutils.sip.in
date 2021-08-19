@@ -1,0 +1,70 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerutils.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsMapLayerUtils
+{
+%Docstring(signature="appended")
+Contains utility functions for working with map layers.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerutils.h"
+%End
+  public:
+
+    static QgsRectangle combinedExtent( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext );
+%Docstring
+Returns the combined extent of a list of ``layers``.
+
+The ``crs`` argument specifies the desired coordinate reference system for the combined extent.
+%End
+
+    static QgsAbstractDatabaseProviderConnection *databaseConnection( const QgsMapLayer *layer ) /Factory/;
+%Docstring
+Creates and returns the (possibly ``None``) database connection for a ``layer``.
+Ownership is transferred to the caller.
+
+.. versionadded:: 3.22
+%End
+
+    static bool layerSourceMatchesPath( const QgsMapLayer *layer, const QString &path );
+%Docstring
+Returns ``True`` if the source of the specified ``layer`` matches the given ``path``.
+
+This method can be used to test whether a layer is associated with a file path.
+
+.. versionadded:: 3.22
+%End
+
+    static bool updateLayerSourcePath( QgsMapLayer *layer, const QString &newPath );
+%Docstring
+Updates a ``layer``'s data source, replacing its data source with a path referring to ``newPath``.
+
+Returns ``True`` if the layer was updated, or ``False`` if the layer was not updated (e.g. it
+uses a data provider which does not specify paths in a layer URI.
+
+.. versionadded:: 3.22
+%End
+
+
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerutils.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

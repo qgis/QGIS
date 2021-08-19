@@ -26,6 +26,7 @@
 #include <QDialog>
 #include <QPointer>
 #include <QStyledItemDelegate>
+#include <QSortFilterProxyModel>
 
 class QDialogButtonBox;
 class QListWidget;
@@ -35,15 +36,38 @@ class QPainter;
 class QStackedWidget;
 class QStyleOptionViewItem;
 class QSplitter;
+class QStandardItem;
+class QTreeView;
+class QStandardItemModel;
 
 class QgsFilterLineEdit;
 class QgsOptionsDialogHighlightWidget;
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+class GUI_EXPORT QgsOptionsProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+  public:
+
+    QgsOptionsProxyModel( QObject *parent );
+
+    void setPageHidden( int page, bool hidden );
+    QModelIndex pageNumberToSourceIndex( int page ) const;
+    int sourceIndexToPageNumber( const QModelIndex &index ) const;
+    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+
+  private:
+    QMap< int, bool > mHiddenPages;
+};
+///@endcond
+#endif
 
 
 /**
  * \ingroup gui
  * \class QgsOptionsDialogBase
- * A base dialog for options and properties dialogs that offers vertical tabs.
+ * \brief A base dialog for options and properties dialogs that offers vertical tabs.
  * It handles saving/restoring of geometry, splitter and current tab states,
  * switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
  * and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
@@ -125,10 +149,13 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      *
      * The page content is specified via the \a widget argument. Ownership of \a widget is transferred to the dialog.
      *
+     * Since QGIS 3.22, the optional \a path argument can be used to set the path of the item's entry in the tree view
+     * (for dialogs which show a tree view of options pages only).
+     *
      * \see insertPage()
      * \since QGIS 3.14
      */
-    void addPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget SIP_TRANSFER );
+    void addPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget SIP_TRANSFER, const QStringList &path = QStringList() );
 
     /**
      * Inserts a new page into the dialog pages.
@@ -140,10 +167,13 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      * The \a before argument specifies the object name of an existing page. The new page will be inserted directly
      * before the matching page.
      *
+     * Since QGIS 3.22, the optional \a path argument can be used to set the path of the item's entry in the tree view
+     * (for dialogs which show a tree view of options pages only).
+     *
      * \see addPage()
      * \since QGIS 3.14
      */
-    void insertPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget SIP_TRANSFER, const QString &before );
+    void insertPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget SIP_TRANSFER, const QString &before, const QStringList &path = QStringList() );
 
   public slots:
 
@@ -177,21 +207,37 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      */
     void registerTextSearchWidgets();
 
+    /**
+     * Creates a new QStandardItem with the specified name, tooltip and icon.
+     *
+     * \since QGIS 3.22
+     */
+    QStandardItem *createItem( const QString &name, const QString &tooltip, const QString &icon ) SIP_SKIP;
+
     QList< QPair< QgsOptionsDialogHighlightWidget *, int > > mRegisteredSearchWidgets;
 
     QString mOptsKey;
-    bool mInit;
+    bool mInit = false;
     QListWidget *mOptListWidget = nullptr;
+    QTreeView *mOptTreeView = nullptr;
+    QStandardItemModel *mOptTreeModel = nullptr;
+    QgsOptionsProxyModel *mTreeProxyModel = nullptr;
+
     QStackedWidget *mOptStackedWidget = nullptr;
     QSplitter *mOptSplitter = nullptr;
     QDialogButtonBox *mOptButtonBox = nullptr;
     QgsFilterLineEdit *mSearchLineEdit = nullptr;
     QString mDialogTitle;
-    bool mIconOnly;
+    bool mIconOnly = false;
     // pointer to app or custom, external QgsSettings
     // QPointer in case custom settings obj gets deleted while dialog is open
     QPointer<QgsSettings> mSettings;
-    bool mDelSettings;
+    bool mDelSettings = false;
+
+  private:
+
+    void setListToItemAtIndex( int index );
+
 };
 
 #endif // QGSOPTIONSDIALOGBASE_H

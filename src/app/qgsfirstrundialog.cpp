@@ -25,9 +25,9 @@ QgsFirstRunDialog::QgsFirstRunDialog( QWidget *parent ) : QDialog( parent )
   {
     mWelcomeDevLabel->show();
   }
-  QStringList versionParts = Qgis::version().split( '.' );
+  const QStringList versionParts = Qgis::version().split( '.' );
   QString major = versionParts.at( 0 );
-  QString minor = versionParts.at( 1 );
+  const QString minor = versionParts.at( 1 );
   if ( minor.toInt() % 2 == 1 )
   {
     // Development version doesn't show the link to the changelog

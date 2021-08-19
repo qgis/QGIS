@@ -19,10 +19,8 @@
 
 #include "qgsfields.h"
 #include "qgsprovidermetadata.h"
+#include "qgshanaconnection.h"
 #include "qgshanaprimarykeys.h"
-#ifdef HAVE_GUI
-#include "qgsproviderguimetadata.h"
-#endif
 #include "qgsvectordataprovider.h"
 
 #include <QVersionNumber>
@@ -33,20 +31,12 @@ class QgsFeature;
 class QgsField;
 class QDomDocument;
 
+class QgsHanaConnectionRef;
 class QgsHanaFeatureIterator;
 
-struct FieldInfo
-{
-  short type;
-  bool isAutoIncrement;
-  bool isNullable;
-  bool isSigned;
-};
-
 /**
-\class QgsHanaProvider
-\brief Data provider for SAP HANA database.
-*
+ * \class QgsHanaProvider
+ * \brief Data provider for SAP HANA database.
 */
 class QgsHanaProvider final : public QgsVectorDataProvider
 {
@@ -67,7 +57,7 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     QgsWkbTypes::Type wkbType() const override;
     QgsLayerMetadata layerMetadata() const override;
     QString dataComment() const override;
-    long featureCount() const override;
+    long long featureCount() const override;
     QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
     QgsFields fields() const override;
     QVariant minimumValue( int index ) const override;
@@ -101,7 +91,7 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     QgsCoordinateReferenceSystem crs() const override;
 
     //! Import a vector layer into the database
-    static QgsVectorLayerExporter::ExportError createEmptyLayer(
+    static Qgis::VectorExportResult createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,
       QgsWkbTypes::Type wkbType,
@@ -113,19 +103,18 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     );
 
   private:
+    QgsHanaConnectionRef createConnection() const;
     QString buildQuery( const QString &columns, const QString &where, const QString &orderBy, int limit ) const;
     QString buildQuery( const QString &columns, const QString &where ) const;
     QString buildQuery( const QString &columns ) const;
-    bool checkPermissionsAndSetCapabilities();
+    bool checkPermissionsAndSetCapabilities( QgsHanaConnection &conn );
     QgsRectangle estimateExtent() const;
-    bool isSrsRoundEarth( int srsID ) const;
-    int readSrid();
-    void readAttributeFields();
-    void readGeometryType();
-    void readMetadata();
-    void readSrsInformation();
-    void determinePrimaryKey();
-    long getFeatureCount( const QString &whereClause ) const;
+    void readAttributeFields( QgsHanaConnection &conn );
+    void readGeometryType( QgsHanaConnection &conn );
+    void readMetadata( QgsHanaConnection &conn );
+    void readSrsInformation( QgsHanaConnection &conn );
+    void determinePrimaryKey( QgsHanaConnection &conn );
+    long long getFeatureCount( const QString &whereClause ) const;
     void updateFeatureIdMap( QgsFeatureId fid, const QgsAttributeMap &attributes );
 
   private:
@@ -165,15 +154,14 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     // Disable support for SelectAtId
     bool mSelectAtIdDisabled = false;
     // Attributes of nongeometry fields
-    QgsFields mAttributeFields;
-    // Additional information about HANA fields
-    QVector<FieldInfo> mFieldInfos;
+    QgsFields mFields;
+    AttributeFields mAttributeFields;
     //Capabilities of the layer
     QgsVectorDataProvider::Capabilities mCapabilities;
     // Default values of the result set
     QMap<int, QVariant> mDefaultValues;
     // Number of features in the layer
-    mutable long mFeaturesCount = 0;
+    mutable long long mFeaturesCount = 0;
     QgsLayerMetadata mLayerMetadata;
     std::shared_ptr<QgsHanaPrimaryKeyContext> mPrimaryKeyCntx;
 
@@ -189,7 +177,7 @@ class QgsHanaProviderMetadata : public QgsProviderMetadata
 
     QgsHanaProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
 
-    QgsVectorLayerExporter::ExportError createEmptyLayer(
+    Qgis::VectorExportResult createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,
       QgsWkbTypes::Type wkbType,

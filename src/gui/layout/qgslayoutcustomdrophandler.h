@@ -26,7 +26,7 @@ class QgsLayoutItem;
 
 /**
  * \ingroup gui
- * Abstract base class that may be implemented to handle new types of data to be dropped or pasted in QGIS layouts.
+ * \brief Abstract base class that may be implemented to handle new types of data to be dropped or pasted in QGIS layouts.
  *
  * \since QGIS 3.0
  */

@@ -40,7 +40,7 @@ class QgsLayoutItemRenderContext;
 /**
  * \ingroup core
  * \class QgsLayoutMultiFrame
- * Abstract base class for layout items with the ability to distribute the content to
+ * \brief Abstract base class for layout items with the ability to distribute the content to
  * several frames (QgsLayoutFrame items).
  * \since QGIS 3.0
  */

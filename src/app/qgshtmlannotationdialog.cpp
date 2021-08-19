@@ -42,7 +42,17 @@ QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsMapCanvasAnnotationItem *it
   if ( item && item->annotation() )
   {
     QgsHtmlAnnotation *annotation = static_cast< QgsHtmlAnnotation * >( item->annotation() );
-    mFileLineEdit->setText( annotation->sourceFile() );
+    const QString file = annotation->sourceFile();
+    if ( !file.isEmpty() )
+    {
+      mFileLineEdit->setText( file );
+      mFileRadioButton->setChecked( true );
+    }
+    else
+    {
+      mHtmlSourceTextEdit->setText( annotation->htmlSource() );
+      mSourceRadioButton->setChecked( true );
+    }
   }
 
   QObject::connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsHtmlAnnotationDialog::applySettingsToItem );
@@ -65,7 +75,15 @@ void QgsHtmlAnnotationDialog::applySettingsToItem()
   if ( mItem && mItem->annotation() )
   {
     QgsHtmlAnnotation *annotation = static_cast< QgsHtmlAnnotation * >( mItem->annotation() );
-    annotation->setSourceFile( mFileLineEdit->text() );
+    const QString file = mFileLineEdit->text();
+    if ( mFileRadioButton->isChecked() )
+    {
+      annotation->setSourceFile( mFileLineEdit->text() );
+    }
+    else
+    {
+      annotation->setHtmlSource( mHtmlSourceTextEdit->text() );
+    }
     mItem->update();
   }
 }
@@ -73,7 +91,7 @@ void QgsHtmlAnnotationDialog::applySettingsToItem()
 void QgsHtmlAnnotationDialog::mBrowseToolButton_clicked()
 {
   QString directory;
-  QFileInfo fi( mFileLineEdit->text() );
+  const QFileInfo fi( mFileLineEdit->text() );
   if ( fi.exists() )
   {
     directory = fi.absolutePath();
@@ -82,8 +100,18 @@ void QgsHtmlAnnotationDialog::mBrowseToolButton_clicked()
   {
     directory = QDir::homePath();
   }
-  QString filename = QFileDialog::getOpenFileName( nullptr, tr( "html" ), directory, QStringLiteral( "HTML (*.html *.htm);;All files (*.*)" ) );
+  const QString filename = QFileDialog::getOpenFileName( nullptr, tr( "html" ), directory, QStringLiteral( "HTML (*.html *.htm);;All files (*.*)" ) );
   mFileLineEdit->setText( filename );
+}
+
+void QgsHtmlAnnotationDialog::on_mFileRadioButton_toggled( bool checked )
+{
+  mFileLineEdit->setEnabled( checked );
+}
+
+void QgsHtmlAnnotationDialog::on_mSourceRadioButton_toggled( bool checked )
+{
+  mHtmlSourceTextEdit->setEnabled( checked );
 }
 
 void QgsHtmlAnnotationDialog::deleteItem()

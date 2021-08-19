@@ -13,7 +13,7 @@
 
 class QgsCurveEditorWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget for manipulating :py:class:`QgsCurveTransform` curves.
 
 .. versionadded:: 3.0

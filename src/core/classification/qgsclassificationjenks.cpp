@@ -77,6 +77,7 @@ QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &
   }
 
   QVector<double> sample;
+  QVector<double> sorted;
 
   // if we have lots of values, we need to take a random sample
   if ( values.size() > mMaximumSize )
@@ -85,7 +86,7 @@ QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &
     // is larger. This will produce a more representative sample for very large
     // layers, but could end up being computationally intensive...
 
-    sample.resize( std::max( mMaximumSize, values.size() / 10 ) );
+    sample.resize( std::max( mMaximumSize, static_cast<int>( values.size() ) / 10 ) );
 
     QgsDebugMsgLevel( QStringLiteral( "natural breaks (jenks) sample size: %1" ).arg( sample.size() ), 2 );
     QgsDebugMsgLevel( QStringLiteral( "values:%1" ).arg( values.size() ), 2 );
@@ -93,17 +94,22 @@ QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &
     sample[ 0 ] = minimum;
     sample[ 1 ] = maximum;
 
-    for ( int i = 2; i < sample.size(); i++ )
-    {
-      // pick a random integer from 0 to n
+    sorted = values.toVector();
+    std::sort( sorted.begin(), sorted.end() );
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
-      double r = QRandomGenerator::global()->generate();
-#else
-      double r = qrand();
-#endif
-      int j = std::floor( r / RAND_MAX * ( values.size() - 1 ) );
-      sample[ i ] = values[ j ];
+    int j = -1;
+
+    // loop through all values in initial array
+    // skip the first value as it is a minimum one
+    // skip the last value as that one is a maximum one
+    // and those are already in the sample as items 0 and 1
+    for ( int i = 1; i < sorted.size() - 2; i++ )
+    {
+      if ( ( i * ( mMaximumSize - 2 ) / ( sorted.size() - 2 ) ) > j )
+      {
+        j++;
+        sample[ j + 2 ] = sorted[ i ];
+      }
     }
   }
   else
@@ -111,7 +117,7 @@ QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &
     sample = values.toVector();
   }
 
-  int n = sample.size();
+  const int n = sample.size();
 
   // sort the sample values
   std::sort( sample.begin(), sample.end() );
@@ -146,16 +152,16 @@ QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &
 
     for ( int m = 1; m <= l; m++ )
     {
-      int i3 = l - m + 1;
+      const int i3 = l - m + 1;
 
-      double val = sample[ i3 - 1 ];
+      const double val = sample[ i3 - 1 ];
 
       s2 += val * val;
       s1 += val;
       w++;
 
       v = s2 - ( s1 * s1 ) / static_cast< double >( w );
-      int i4 = i3 - 1;
+      const int i4 = i3 - 1;
       if ( i4 != 0 )
       {
         for ( int j = 2; j <= nclasses; j++ )
@@ -177,7 +183,7 @@ QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &
 
   for ( int j = nclasses, k = n; j >= 2; j-- )
   {
-    int id = matrixOne[k][j] - 1;
+    const int id = matrixOne[k][j] - 1;
     breaks[j - 2] = sample[id];
     k = matrixOne[k][j] - 1;
   }

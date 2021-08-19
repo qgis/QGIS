@@ -92,8 +92,8 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
     doUpdateFilterByMap();
   }
 
-  int dpi = painter->device()->logicalDpiX();
-  double dotsPerMM = dpi / 25.4;
+  const int dpi = painter->device()->logicalDpiX();
+  const double dotsPerMM = dpi / 25.4;
 
   if ( mLayout )
   {
@@ -111,10 +111,10 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
     Q_NOWARN_DEPRECATED_POP
 
     // use a temporary QgsMapSettings to find out real map scale
-    QSizeF mapSizePixels = QSizeF( mMap->rect().width() * dotsPerMM, mMap->rect().height() * dotsPerMM );
-    QgsRectangle mapExtent = mMap->extent();
+    const QSizeF mapSizePixels = QSizeF( mMap->rect().width() * dotsPerMM, mMap->rect().height() * dotsPerMM );
+    const QgsRectangle mapExtent = mMap->extent();
 
-    QgsMapSettings ms = mMap->mapSettings( mapExtent, mapSizePixels, dpi, false );
+    const QgsMapSettings ms = mMap->mapSettings( mapExtent, mapSizePixels, dpi, false );
 
     // no longer required, but left set for api stability
     Q_NOWARN_DEPRECATED_PUSH
@@ -132,13 +132,13 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
     QgsRenderContext context = mMap ? QgsLayoutUtils::createRenderContextForMap( mMap, painter )
                                : QgsLayoutUtils::createRenderContextForLayout( mLayout, painter );
 
-    QSizeF size = legendRenderer.minimumSize( &context );
+    const QSizeF size = legendRenderer.minimumSize( &context );
     if ( mForceResize )
     {
       mForceResize = false;
 
       //set new rect, respecting position mode and data defined size/position
-      QgsLayoutSize newSize = mLayout->convertFromLayoutUnits( size, sizeWithUnits().units() );
+      const QgsLayoutSize newSize = mLayout->convertFromLayoutUnits( size, sizeWithUnits().units() );
       attemptResize( newSize );
     }
     else if ( size.height() > rect().height() || size.width() > rect().width() )
@@ -150,7 +150,7 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
       if ( size.width() > targetSize.width() )
         targetSize.setWidth( size.width() );
 
-      QgsLayoutSize newSize = mLayout->convertFromLayoutUnits( targetSize, sizeWithUnits().units() );
+      const QgsLayoutSize newSize = mLayout->convertFromLayoutUnits( targetSize, sizeWithUnits().units() );
       //set new rect, respecting position mode and data defined size/position
       attemptResize( newSize );
     }
@@ -181,7 +181,9 @@ void QgsLayoutItemLegend::draw( QgsLayoutItemRenderContext &context )
   QgsRenderContext rc = mMap ? QgsLayoutUtils::createRenderContextForMap( mMap, painter, context.renderContext().scaleFactor() * 25.4 )
                         : QgsLayoutUtils::createRenderContextForLayout( mLayout, painter, context.renderContext().scaleFactor() * 25.4 );
 
-  QgsScopedQPainterState painterState( painter );
+  rc.expressionContext().appendScopes( createExpressionContext().takeScopes() );
+
+  const QgsScopedQPainterState painterState( painter );
 
   // painter is scaled to dots, so scale back to layout units
   painter->scale( rc.scaleFactor(), rc.scaleFactor() );
@@ -191,7 +193,7 @@ void QgsLayoutItemLegend::draw( QgsLayoutItemRenderContext &context )
   if ( !mSizeToContents )
   {
     // set a clip region to crop out parts of legend which don't fit
-    QRectF thisPaintRect = QRectF( 0, 0, rect().width(), rect().height() );
+    const QRectF thisPaintRect = QRectF( 0, 0, rect().width(), rect().height() );
     painter->setClipRect( thisPaintRect );
   }
 
@@ -230,11 +232,11 @@ void QgsLayoutItemLegend::adjustBoxSize()
                              QgsLayoutUtils::createRenderContextForLayout( mLayout, nullptr );
 
   QgsLegendRenderer legendRenderer( mLegendModel.get(), mSettings );
-  QSizeF size = legendRenderer.minimumSize( &context );
+  const QSizeF size = legendRenderer.minimumSize( &context );
   QgsDebugMsg( QStringLiteral( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ) );
   if ( size.isValid() )
   {
-    QgsLayoutSize newSize = mLayout->convertFromLayoutUnits( size, sizeWithUnits().units() );
+    const QgsLayoutSize newSize = mLayout->convertFromLayoutUnits( size, sizeWithUnits().units() );
     //set new rect, respecting position mode and data defined size/position
     attemptResize( newSize );
   }
@@ -619,16 +621,16 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
   mSettings.setSplitLayer( itemElem.attribute( QStringLiteral( "splitLayer" ), QStringLiteral( "0" ) ).toInt() == 1 );
   mSettings.setEqualColumnWidth( itemElem.attribute( QStringLiteral( "equalColumnWidth" ), QStringLiteral( "0" ) ).toInt() == 1 );
 
-  QDomNodeList stylesNodeList = itemElem.elementsByTagName( QStringLiteral( "styles" ) );
+  const QDomNodeList stylesNodeList = itemElem.elementsByTagName( QStringLiteral( "styles" ) );
   if ( !stylesNodeList.isEmpty() )
   {
-    QDomNode stylesNode = stylesNodeList.at( 0 );
+    const QDomNode stylesNode = stylesNodeList.at( 0 );
     for ( int i = 0; i < stylesNode.childNodes().size(); i++ )
     {
-      QDomElement styleElem = stylesNode.childNodes().at( i ).toElement();
+      const QDomElement styleElem = stylesNode.childNodes().at( i ).toElement();
       QgsLegendStyle style;
       style.readXml( styleElem, doc, context );
-      QString name = styleElem.attribute( QStringLiteral( "name" ) );
+      const QString name = styleElem.attribute( QStringLiteral( "name" ) );
       QgsLegendStyle::Style s;
       if ( name == QLatin1String( "title" ) ) s = QgsLegendStyle::Title;
       else if ( name == QLatin1String( "group" ) ) s = QgsLegendStyle::Group;
@@ -772,14 +774,14 @@ void QgsLayoutItemLegend::invalidateCurrentMap()
 
 void QgsLayoutItemLegend::refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property )
 {
-  QgsExpressionContext context = createExpressionContext();
+  const QgsExpressionContext context = createExpressionContext();
 
   bool forceUpdate = false;
   //updates data defined properties and redraws item to match
   if ( property == QgsLayoutObject::LegendTitle || property == QgsLayoutObject::AllProperties )
   {
     bool ok = false;
-    QString t = mDataDefinedProperties.valueAsString( QgsLayoutObject::LegendTitle, context, mTitle, &ok );
+    const QString t = mDataDefinedProperties.valueAsString( QgsLayoutObject::LegendTitle, context, mTitle, &ok );
     if ( ok )
     {
       mSettings.setTitle( t );
@@ -789,7 +791,7 @@ void QgsLayoutItemLegend::refreshDataDefinedProperty( const QgsLayoutObject::Dat
   if ( property == QgsLayoutObject::LegendColumnCount || property == QgsLayoutObject::AllProperties )
   {
     bool ok = false;
-    int cols = mDataDefinedProperties.valueAsInt( QgsLayoutObject::LegendColumnCount, context, mColumnCount, &ok );
+    const int cols = mDataDefinedProperties.valueAsInt( QgsLayoutObject::LegendColumnCount, context, mColumnCount, &ok );
     if ( ok && cols >= 0 )
     {
       mSettings.setColumnCount( cols );
@@ -925,18 +927,18 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
     mLegendModel->setLayerStyleOverrides( QMap<QString, QString>() );
 
 
-  bool filterByExpression = QgsLayerTreeUtils::hasLegendFilterExpression( *( mCustomLayerTree ? mCustomLayerTree.get() : mLayout->project()->layerTreeRoot() ) );
+  const bool filterByExpression = QgsLayerTreeUtils::hasLegendFilterExpression( *( mCustomLayerTree ? mCustomLayerTree.get() : mLayout->project()->layerTreeRoot() ) );
 
   if ( mMap && ( mLegendFilterByMap || filterByExpression || mInAtlas ) )
   {
-    double dpi = mLayout->renderContext().dpi();
+    const double dpi = mLayout->renderContext().dpi();
 
-    QgsRectangle requestRectangle = mMap->requestedExtent();
+    const QgsRectangle requestRectangle = mMap->requestedExtent();
 
     QSizeF size( requestRectangle.width(), requestRectangle.height() );
     size *= mLayout->convertFromLayoutUnits( mMap->mapUnitsToLayoutUnits(), QgsUnitTypes::LayoutMillimeters ).length() * dpi / 25.4;
 
-    QgsMapSettings ms = mMap->mapSettings( requestRectangle, size, dpi, true );
+    const QgsMapSettings ms = mMap->mapSettings( requestRectangle, size, dpi, true );
 
     QgsGeometry filterPolygon;
     if ( mInAtlas )

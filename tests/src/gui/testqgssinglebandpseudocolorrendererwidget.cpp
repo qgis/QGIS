@@ -56,8 +56,8 @@ void TestQgsSingleBandPseudoColorRendererWidget::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  QString mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
-  QString myLandsatFileName = mTestDataDir + "landsat.tif";
+  const QString mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+  const QString myLandsatFileName = mTestDataDir + "landsat.tif";
 
   mRasterLayer = new QgsRasterLayer( myLandsatFileName, "landsat" );
   QVERIFY( mRasterLayer->isValid() );
@@ -110,8 +110,23 @@ void TestQgsSingleBandPseudoColorRendererWidget::testEditLabel()
   QgsColorRampShader *newColorRampShader = dynamic_cast<QgsColorRampShader *>( newRasterRenderer->shader()->rasterShaderFunction() );
   QVERIFY( newColorRampShader );
 
-  QList<QgsColorRampShader::ColorRampItem> newColorRampItems = newColorRampShader->colorRampItemList();
+  const QList<QgsColorRampShader::ColorRampItem> newColorRampItems = newColorRampShader->colorRampItemList();
   QCOMPARE( newColorRampItems.at( 0 ).label, QStringLiteral( "zero" ) );
+
+  QCOMPARE( widget.mMinLineEdit->text(), widget.displayValueWithMaxPrecision( widget.mColorRampShaderWidget->minimum() ) );
+  QCOMPARE( widget.mMaxLineEdit->text(), widget.displayValueWithMaxPrecision( widget.mColorRampShaderWidget->maximum() ) );
+  QCOMPARE( widget.mMinLineEdit->text(), widget.displayValueWithMaxPrecision( widget.mColorRampShaderWidget->shader().minimumValue() ) );
+  QCOMPARE( widget.mMaxLineEdit->text(), widget.displayValueWithMaxPrecision( widget.mColorRampShaderWidget->shader().maximumValue() ) );
+
+  // change the min/max
+  widget.loadMinMax( 1, min + 1.0, max - 1.0 );
+
+  QCOMPARE( widget.mMinLineEdit->text(), widget.displayValueWithMaxPrecision( min + 1.0 ) );
+  QCOMPARE( widget.mMaxLineEdit->text(), widget.displayValueWithMaxPrecision( max - 1.0 ) );
+  QCOMPARE( widget.mMinLineEdit->text(), widget.displayValueWithMaxPrecision( widget.mColorRampShaderWidget->minimum() ) );
+  QCOMPARE( widget.mMaxLineEdit->text(), widget.displayValueWithMaxPrecision( widget.mColorRampShaderWidget->maximum() ) );
+  QCOMPARE( widget.mMinLineEdit->text(), widget.displayValueWithMaxPrecision( widget.mColorRampShaderWidget->shader().minimumValue() ) );
+  QCOMPARE( widget.mMaxLineEdit->text(), widget.displayValueWithMaxPrecision( widget.mColorRampShaderWidget->shader().maximumValue() ) );
 }
 
 

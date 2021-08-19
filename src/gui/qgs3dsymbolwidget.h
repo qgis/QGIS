@@ -28,7 +28,7 @@ class QDialogButtonBox;
 /**
  * \ingroup gui
  * \class Qgs3DSymbolWidget
- * Base class for 3D symbol configuration widgets.
+ * \brief Base class for 3D symbol configuration widgets.
  * \since QGIS 3.16
  */
 class GUI_EXPORT Qgs3DSymbolWidget : public QWidget

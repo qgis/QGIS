@@ -106,7 +106,7 @@ void QgsLabelingWidget::adaptToLayer()
   }
   else if ( mLayer->labelsEnabled() && mLayer->labeling()->type() == QLatin1String( "simple" ) )
   {
-    QgsPalLayerSettings lyr = mLayer->labeling()->settings();
+    const QgsPalLayerSettings lyr = mLayer->labeling()->settings();
 
     mLabelModeComboBox->setCurrentIndex( mLabelModeComboBox->findData( lyr.drawLabels ? ModeSingle : ModeBlocking ) );
   }
@@ -216,7 +216,9 @@ void QgsLabelingWidget::labelModeChanged( int index )
       }
 
       if ( !mSimpleSettings )
-        mSimpleSettings.reset( new QgsPalLayerSettings() );
+      {
+        mSimpleSettings = std::make_unique< QgsPalLayerSettings >( QgsAbstractVectorLayerLabeling::defaultSettingsForLayer( mLayer ) );
+      }
 
       if ( mSimpleSettings->fieldName.isEmpty() )
         mSimpleSettings->fieldName = mLayer->displayField();

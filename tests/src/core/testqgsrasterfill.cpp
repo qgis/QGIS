@@ -31,6 +31,7 @@
 #include <qgssymbol.h>
 #include <qgssinglesymbolrenderer.h>
 #include <qgsfillsymbollayer.h>
+#include "qgsfillsymbol.h"
 // qgis test includes
 #include "qgsmultirenderchecker.h"
 
@@ -87,14 +88,14 @@ void TestQgsRasterFill::initTestCase()
   QgsApplication::showSettings();
 
   //create some objects that will be used in all tests...
-  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + '/';
 
   //
   //create a poly layer that will be used in all tests...
   //
-  QString myPolysFileName = mTestDataDir + "polys.shp";
-  QFileInfo myPolyFileInfo( myPolysFileName );
+  const QString myPolysFileName = mTestDataDir + "polys.shp";
+  const QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
                                      myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
@@ -123,7 +124,7 @@ void TestQgsRasterFill::initTestCase()
 
 void TestQgsRasterFill::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -153,7 +154,7 @@ void TestQgsRasterFill::cleanup()
 void TestQgsRasterFill::rasterFillSymbol()
 {
   mReport += QLatin1String( "<h2>Raster fill symbol renderer test</h2>\n" );
-  bool result = imageCheck( QStringLiteral( "rasterfill" ) );
+  const bool result = imageCheck( QStringLiteral( "rasterfill" ) );
   QVERIFY( result );
 }
 
@@ -161,7 +162,7 @@ void TestQgsRasterFill::coordinateMode()
 {
   mReport += QLatin1String( "<h2>Raster fill viewport mode</h2>\n" );
   mRasterFill->setCoordinateMode( QgsRasterFillSymbolLayer::Viewport );
-  bool result = imageCheck( QStringLiteral( "rasterfill_viewport" ) );
+  const bool result = imageCheck( QStringLiteral( "rasterfill_viewport" ) );
   QVERIFY( result );
 }
 
@@ -169,7 +170,7 @@ void TestQgsRasterFill::alpha()
 {
   mReport += QLatin1String( "<h2>Raster fill alpha</h2>\n" );
   mRasterFill->setOpacity( 0.5 );
-  bool result = imageCheck( QStringLiteral( "rasterfill_alpha" ) );
+  const bool result = imageCheck( QStringLiteral( "rasterfill_alpha" ) );
   QVERIFY( result );
 }
 
@@ -177,7 +178,7 @@ void TestQgsRasterFill::offset()
 {
   mReport += QLatin1String( "<h2>Raster fill offset</h2>\n" );
   mRasterFill->setOffset( QPointF( 5, 10 ) );
-  bool result = imageCheck( QStringLiteral( "rasterfill_offset" ) );
+  const bool result = imageCheck( QStringLiteral( "rasterfill_offset" ) );
   QVERIFY( result );
 }
 
@@ -186,7 +187,7 @@ void TestQgsRasterFill::width()
   mReport += QLatin1String( "<h2>Raster fill width</h2>\n" );
   mRasterFill->setWidthUnit( QgsUnitTypes::RenderMillimeters );
   mRasterFill->setWidth( 5.0 );
-  bool result = imageCheck( QStringLiteral( "rasterfill_width" ) );
+  const bool result = imageCheck( QStringLiteral( "rasterfill_width" ) );
   QVERIFY( result );
 }
 
@@ -195,7 +196,7 @@ void TestQgsRasterFill::percentage()
   mReport += QString( "<h2>Raster fill percentage (6.3 %)</h2>\n" );
   mRasterFill->setWidthUnit( QgsUnitTypes::RenderPercentage );
   mRasterFill->setWidth( 6.3 );
-  bool result = imageCheck( QStringLiteral( "rasterfill_percentage" ) );
+  const bool result = imageCheck( QStringLiteral( "rasterfill_percentage" ) );
   QVERIFY( result );
 }
 
@@ -205,7 +206,7 @@ void TestQgsRasterFill::percentageCoordinateMode()
   mRasterFill->setWidthUnit( QgsUnitTypes::RenderPercentage );
   mRasterFill->setWidth( 6.3 );
   mRasterFill->setCoordinateMode( QgsRasterFillSymbolLayer::Viewport );
-  bool result = imageCheck( QStringLiteral( "rasterfill_viewport_percentage" ) );
+  const bool result = imageCheck( QStringLiteral( "rasterfill_viewport_percentage" ) );
   QVERIFY( result );
 }
 
@@ -216,7 +217,7 @@ void TestQgsRasterFill::percentageOffset()
   mRasterFill->setWidth( 6.3 );
   mRasterFill->setOffsetUnit( QgsUnitTypes::RenderPixels );
   mRasterFill->setOffset( QPointF( 12, 15 ) );
-  bool result = imageCheck( QStringLiteral( "rasterfill_offset_percentage" ) );
+  const bool result = imageCheck( QStringLiteral( "rasterfill_offset_percentage" ) );
   QVERIFY( result );
 }
 
@@ -226,7 +227,7 @@ void TestQgsRasterFill::percentageAlpha()
   mRasterFill->setWidthUnit( QgsUnitTypes::RenderPercentage );
   mRasterFill->setWidth( 6.3 );
   mRasterFill->setOpacity( 0.5 );
-  bool result = imageCheck( QStringLiteral( "rasterfill_alpha_percentage" ) );
+  const bool result = imageCheck( QStringLiteral( "rasterfill_alpha_percentage" ) );
   QVERIFY( result );
 }
 
@@ -235,7 +236,7 @@ void TestQgsRasterFill::percentageWidth()
   mReport += QLatin1String( "<h2>Raster fill percentage width (3.3 %)</h2>\n" );
   mRasterFill->setWidthUnit( QgsUnitTypes::RenderPercentage );
   mRasterFill->setWidth( 3.3 );
-  bool result = imageCheck( QStringLiteral( "rasterfill_width_percentage" ) );
+  const bool result = imageCheck( QStringLiteral( "rasterfill_width_percentage" ) );
   QVERIFY( result );
 }
 
@@ -248,9 +249,9 @@ bool TestQgsRasterFill::setQml( const QString &type )
   //load a qml style and apply to our layer
   //the style will correspond to the renderer
   //type we are testing
-  QString myFileName = mTestDataDir + "polys_" + type + "_symbol.qml";
+  const QString myFileName = mTestDataDir + "polys_" + type + "_symbol.qml";
   bool myStyleFlag = false;
-  QString error = mpPolysLayer->loadNamedStyle( myFileName, myStyleFlag );
+  const QString error = mpPolysLayer->loadNamedStyle( myFileName, myStyleFlag );
   if ( !myStyleFlag )
   {
     qDebug( "%s", error.toLocal8Bit().constData() );
@@ -269,7 +270,7 @@ bool TestQgsRasterFill::imageCheck( const QString &testType )
   myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( mMapSettings );
   myChecker.setColorTolerance( 20 );
-  bool myResultFlag = myChecker.runTest( testType, 500 );
+  const bool myResultFlag = myChecker.runTest( testType, 500 );
   mReport += myChecker.report();
   return myResultFlag;
 }

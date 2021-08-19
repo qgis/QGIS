@@ -23,6 +23,8 @@
 #include "qgsmaptopixel.h"
 #include "qgswkbptr.h"
 #include "qgslinesegment.h"
+#include "qgsgeometrytransformer.h"
+#include "qgsfeedback.h"
 
 #include <nlohmann/json.hpp>
 #include <cmath>
@@ -310,7 +312,38 @@ bool QgsLineString::isEmpty() const
   return mX.isEmpty();
 }
 
-bool QgsLineString::isValid( QString &error, int flags ) const
+int QgsLineString::indexOf( const QgsPoint &point ) const
+{
+  const int size = mX.size();
+  if ( size == 0 )
+    return -1;
+
+  const double *x = mX.constData();
+  const double *y = mY.constData();
+  const bool useZ = is3D();
+  const bool useM = isMeasure();
+  const double *z = useZ ? mZ.constData() : nullptr;
+  const double *m = useM ? mM.constData() : nullptr;
+
+  for ( int i = 0; i < size; ++i )
+  {
+    if ( qgsDoubleNear( *x, point.x() )
+         && qgsDoubleNear( *y, point.y() )
+         && ( !useZ || qgsDoubleNear( *z, point.z() ) )
+         && ( !useM || qgsDoubleNear( *m, point.m() ) ) )
+      return i;
+
+    x++;
+    y++;
+    if ( useZ )
+      z++;
+    if ( useM )
+      m++;
+  }
+  return -1;
+}
+
+bool QgsLineString::isValid( QString &error, Qgis::GeometryValidityFlags flags ) const
 {
   if ( !isEmpty() && ( numPoints() < 2 ) )
   {
@@ -371,6 +404,102 @@ bool QgsLineString::removeDuplicateNodes( double epsilon, bool useZValues )
     }
   }
   return result;
+}
+
+bool QgsLineString::isClosed2D() const
+{
+  if ( mX.empty() )
+    return false;
+
+  return qgsDoubleNear( mX.first(), mX.last() ) &&
+         qgsDoubleNear( mY.first(), mY.last() );
+}
+
+bool QgsLineString::isClosed() const
+{
+  bool closed = isClosed2D();
+
+  if ( is3D() && closed )
+    closed &= qgsDoubleNear( mZ.first(), mZ.last() ) || ( std::isnan( mZ.first() ) && std::isnan( mZ.last() ) );
+  return closed;
+}
+
+bool QgsLineString::boundingBoxIntersects( const QgsRectangle &rectangle ) const
+{
+  if ( mX.empty() )
+    return false;
+
+  if ( !mBoundingBox.isNull() )
+  {
+    return mBoundingBox.intersects( rectangle );
+  }
+  const int nb = mX.size();
+
+  // We are a little fancy here!
+  if ( nb > 40 )
+  {
+    // if a large number of vertices, take some sample vertices at 1/5th increments through the linestring
+    // and test whether any are inside the rectangle. Maybe we can shortcut a lot of iterations by doing this!
+    // (why 1/5th? it's picked so that it works nicely for polygon rings which are almost rectangles, so the vertex extremities
+    // will fall on approximately these vertex indices)
+    if ( rectangle.contains( mX.at( 0 ), mY.at( 0 ) ) ||
+         rectangle.contains( mX.at( static_cast< int >( nb * 0.2 ) ), mY.at( static_cast< int >( nb * 0.2 ) ) ) ||
+         rectangle.contains( mX.at( static_cast< int >( nb * 0.4 ) ), mY.at( static_cast< int >( nb * 0.4 ) ) ) ||
+         rectangle.contains( mX.at( static_cast< int >( nb * 0.6 ) ), mY.at( static_cast< int >( nb * 0.6 ) ) ) ||
+         rectangle.contains( mX.at( static_cast< int >( nb * 0.8 ) ), mY.at( static_cast< int >( nb * 0.8 ) ) ) ||
+         rectangle.contains( mX.at( nb - 1 ), mY.at( nb - 1 ) ) )
+      return true;
+  }
+
+  // Be even MORE fancy! Given that bounding box calculation is non-free, cached, and we don't
+  // already have it, we start performing the bounding box calculation while we are testing whether
+  // each point falls inside the rectangle. That way if we end up testing the majority of the points
+  // anyway, we can update the cached bounding box with the results we've calculated along the way
+  // and save future calls to calculate the bounding box!
+  double xmin = std::numeric_limits<double>::max();
+  double ymin = std::numeric_limits<double>::max();
+  double xmax = -std::numeric_limits<double>::max();
+  double ymax = -std::numeric_limits<double>::max();
+
+  const double *x = mX.constData();
+  const double *y = mY.constData();
+  bool foundPointInRectangle = false;
+  for ( int i = 0; i < nb; ++i )
+  {
+    const double px = *x++;
+    xmin = std::min( xmin, px );
+    xmax = std::max( xmax, px );
+    const double py = *y++;
+    ymin = std::min( ymin, py );
+    ymax = std::max( ymax, py );
+
+    if ( !foundPointInRectangle && rectangle.contains( px, py ) )
+    {
+      foundPointInRectangle = true;
+
+      // now... we have a choice to make. If we've already looped through the majority of the points
+      // in this linestring then let's just continue to iterate through the remainder so that we can
+      // complete the overall bounding box calculation we've already mostly done. If however we're only
+      // just at the start of iterating the vertices, we shortcut out early and leave the bounding box
+      // uncalculated
+      if ( i < nb * 0.5 )
+        return true;
+    }
+  }
+
+  // at this stage we now know the overall bounding box of the linestring, so let's cache
+  // it so we don't ever have to calculate this again. We've done all the hard work anyway!
+  mBoundingBox = QgsRectangle( xmin, ymin, xmax, ymax, false );
+
+  if ( foundPointInRectangle )
+    return true;
+
+  // NOTE: if none of the points in the line actually fell inside the rectangle, it doesn't
+  // exclude that the OVERALL bounding box of the linestring itself intersects the rectangle!!
+  // So we fall back to the parent class method which compares the overall bounding box against
+  // the rectangle... and this will be very cheap now that we've already calculated and cached
+  // the linestring's bounding box!
+  return QgsCurve::boundingBoxIntersects( rectangle );
 }
 
 QVector< QgsVertexId > QgsLineString::collectDuplicateNodes( double epsilon, bool useZValues ) const
@@ -446,26 +575,54 @@ bool QgsLineString::fromWkb( QgsConstWkbPtr &wkbPtr )
 
 QgsRectangle QgsLineString::calculateBoundingBox() const
 {
-  double xmin = std::numeric_limits<double>::max();
-  double ymin = std::numeric_limits<double>::max();
-  double xmax = -std::numeric_limits<double>::max();
-  double ymax = -std::numeric_limits<double>::max();
+  if ( mX.empty() )
+    return QgsRectangle();
 
-  for ( double x : mX )
+  auto result = std::minmax_element( mX.begin(), mX.end() );
+  const double xmin = *result.first;
+  const double xmax = *result.second;
+  result = std::minmax_element( mY.begin(), mY.end() );
+  const double ymin = *result.first;
+  const double ymax = *result.second;
+  return QgsRectangle( xmin, ymin, xmax, ymax, false );
+}
+
+void QgsLineString::scroll( int index )
+{
+  const int size = mX.size();
+  if ( index < 1 || index >= size - 1 )
+    return;
+
+  const bool useZ = is3D();
+  const bool useM = isMeasure();
+
+  QVector<double> newX( size );
+  QVector<double> newY( size );
+  QVector<double> newZ( useZ ? size : 0 );
+  QVector<double> newM( useM ? size : 0 );
+  auto it = std::copy( mX.constBegin() + index, mX.constEnd() - 1, newX.begin() );
+  it = std::copy( mX.constBegin(), mX.constBegin() + index, it );
+  *it = *newX.constBegin();
+  mX = std::move( newX );
+
+  it = std::copy( mY.constBegin() + index, mY.constEnd() - 1, newY.begin() );
+  it = std::copy( mY.constBegin(), mY.constBegin() + index, it );
+  *it = *newY.constBegin();
+  mY = std::move( newY );
+  if ( useZ )
   {
-    if ( x < xmin )
-      xmin = x;
-    if ( x > xmax )
-      xmax = x;
+    it = std::copy( mZ.constBegin() + index, mZ.constEnd() - 1, newZ.begin() );
+    it = std::copy( mZ.constBegin(), mZ.constBegin() + index, it );
+    *it = *newZ.constBegin();
+    mZ = std::move( newZ );
   }
-  for ( double y : mY )
+  if ( useM )
   {
-    if ( y < ymin )
-      ymin = y;
-    if ( y > ymax )
-      ymax = y;
+    it = std::copy( mM.constBegin() + index, mM.constEnd() - 1, newM.begin() );
+    it = std::copy( mM.constBegin(), mM.constBegin() + index, it );
+    *it = *newM.constBegin();
+    mM = std::move( newM );
   }
-  return QgsRectangle( xmin, ymin, xmax, ymax );
 }
 
 /***************************************************************************
@@ -645,33 +802,119 @@ QString QgsLineString::asKml( int precision ) const
 
 double QgsLineString::length() const
 {
-  double length = 0;
-  int size = mX.size();
+  double total = 0;
+  const int size = mX.size();
+  if ( size < 2 )
+    return 0;
+
+  const double *x = mX.constData();
+  const double *y = mY.constData();
   double dx, dy;
+
+  double prevX = *x++;
+  double prevY = *y++;
+
   for ( int i = 1; i < size; ++i )
   {
-    dx = mX.at( i ) - mX.at( i - 1 );
-    dy = mY.at( i ) - mY.at( i - 1 );
-    length += std::sqrt( dx * dx + dy * dy );
+    dx = *x - prevX;
+    dy = *y - prevY;
+    total += std::sqrt( dx * dx + dy * dy );
+
+    prevX = *x++;
+    prevY = *y++;
   }
-  return length;
+  return total;
+}
+
+std::tuple<std::unique_ptr<QgsCurve>, std::unique_ptr<QgsCurve> > QgsLineString::splitCurveAtVertex( int index ) const
+{
+  const bool useZ = is3D();
+  const bool useM = isMeasure();
+
+  const int size = mX.size();
+  if ( size == 0 )
+    return std::make_tuple( std::make_unique< QgsLineString >(), std::make_unique< QgsLineString >() );
+
+  index = std::clamp( index, 0, size - 1 );
+
+  const int part1Size = index + 1;
+  QVector< double > x1( part1Size );
+  QVector< double > y1( part1Size );
+  QVector< double > z1( useZ ? part1Size : 0 );
+  QVector< double > m1( useM ? part1Size : 0 );
+
+  const double *sourceX = mX.constData();
+  const double *sourceY = mY.constData();
+  const double *sourceZ = useZ ? mZ.constData() : nullptr;
+  const double *sourceM = useM ? mM.constData() : nullptr;
+
+  double *destX = x1.data();
+  double *destY = y1.data();
+  double *destZ = useZ ? z1.data() : nullptr;
+  double *destM = useM ? m1.data() : nullptr;
+
+  std::copy( sourceX, sourceX + part1Size, destX );
+  std::copy( sourceY, sourceY + part1Size, destY );
+  if ( useZ )
+    std::copy( sourceZ, sourceZ + part1Size, destZ );
+  if ( useM )
+    std::copy( sourceM, sourceM + part1Size, destM );
+
+  const int part2Size = size - index;
+  if ( part2Size < 2 )
+    return std::make_tuple( std::make_unique< QgsLineString >( x1, y1, z1, m1 ), std::make_unique< QgsLineString >() );
+
+  QVector< double > x2( part2Size );
+  QVector< double > y2( part2Size );
+  QVector< double > z2( useZ ? part2Size : 0 );
+  QVector< double > m2( useM ? part2Size : 0 );
+  destX = x2.data();
+  destY = y2.data();
+  destZ = useZ ? z2.data() : nullptr;
+  destM = useM ? m2.data() : nullptr;
+  std::copy( sourceX + index, sourceX + size, destX );
+  std::copy( sourceY + index, sourceY + size, destY );
+  if ( useZ )
+    std::copy( sourceZ + index, sourceZ + size, destZ );
+  if ( useM )
+    std::copy( sourceM + index, sourceM + size, destM );
+
+  if ( part1Size < 2 )
+    return std::make_tuple( std::make_unique< QgsLineString >(), std::make_unique< QgsLineString >( x2, y2, z2, m2 ) );
+  else
+    return std::make_tuple( std::make_unique< QgsLineString >( x1, y1, z1, m1 ), std::make_unique< QgsLineString >( x2, y2, z2, m2 ) );
 }
 
 double QgsLineString::length3D() const
 {
   if ( is3D() )
   {
-    double length = 0;
-    int size = mX.size();
+    double total = 0;
+    const int size = mX.size();
+    if ( size < 2 )
+      return 0;
+
+    const double *x = mX.constData();
+    const double *y = mY.constData();
+    const double *z = mZ.constData();
     double dx, dy, dz;
+
+    double prevX = *x++;
+    double prevY = *y++;
+    double prevZ = *z++;
+
     for ( int i = 1; i < size; ++i )
     {
-      dx = mX.at( i ) - mX.at( i - 1 );
-      dy = mY.at( i ) - mY.at( i - 1 );
-      dz = mZ.at( i ) - mZ.at( i - 1 );
-      length += std::sqrt( dx * dx + dy * dy + dz * dz );
+      dx = *x - prevX;
+      dy = *y - prevY;
+      dz = *z - prevZ;
+      total += std::sqrt( dx * dx + dy * dy + dz * dz );
+
+      prevX = *x++;
+      prevY = *y++;
+      prevZ = *z++;
     }
-    return length;
+    return total;
   }
   else
   {
@@ -887,7 +1130,7 @@ void QgsLineString::append( const QgsLineString *line )
     setZMTypeFromSubGeometry( line, QgsWkbTypes::LineString );
   }
 
-  // do not store duplicit points
+  // do not store duplicate points
   if ( numPoints() > 0 &&
        line->numPoints() > 0 &&
        endPoint() == line->startPoint() )
@@ -1027,7 +1270,7 @@ QgsPoint *QgsLineString::interpolatePoint( const double distance ) const
   std::unique_ptr< QgsPoint > res;
   visitPointsByRegularDistance( distance, [ & ]( double x, double y, double z, double m, double, double, double, double, double, double, double, double )->bool
   {
-    res = qgis::make_unique< QgsPoint >( pointType, x, y, z, m );
+    res = std::make_unique< QgsPoint >( pointType, x, y, z, m );
     return false;
   } );
   return res.release();
@@ -1196,9 +1439,95 @@ void QgsLineString::extend( double startDistance, double endDistance )
 
 QgsLineString *QgsLineString::createEmptyWithSameType() const
 {
-  auto result = qgis::make_unique< QgsLineString >();
+  auto result = std::make_unique< QgsLineString >();
   result->mWkbType = mWkbType;
   return result.release();
+}
+
+int QgsLineString::compareToSameClass( const QgsAbstractGeometry *other ) const
+{
+  const QgsLineString *otherLine = qgsgeometry_cast<const QgsLineString *>( other );
+  if ( !otherLine )
+    return -1;
+
+  const int size = mX.size();
+  const int otherSize = otherLine->mX.size();
+  if ( size > otherSize )
+  {
+    return 1;
+  }
+  else if ( size < otherSize )
+  {
+    return -1;
+  }
+
+  if ( is3D() && !otherLine->is3D() )
+    return 1;
+  else if ( !is3D() && otherLine->is3D() )
+    return -1;
+  const bool considerZ = is3D();
+
+  if ( isMeasure() && !otherLine->isMeasure() )
+    return 1;
+  else if ( !isMeasure() && otherLine->isMeasure() )
+    return -1;
+  const bool considerM = isMeasure();
+
+  for ( int i = 0; i < size; i++ )
+  {
+    const double x = mX[i];
+    const double otherX = otherLine->mX[i];
+    if ( x < otherX )
+    {
+      return -1;
+    }
+    else if ( x > otherX )
+    {
+      return 1;
+    }
+
+    const double y = mY[i];
+    const double otherY = otherLine->mY[i];
+    if ( y < otherY )
+    {
+      return -1;
+    }
+    else if ( y > otherY )
+    {
+      return 1;
+    }
+
+    if ( considerZ )
+    {
+      const double z = mZ[i];
+      const double otherZ = otherLine->mZ[i];
+
+      if ( z < otherZ )
+      {
+        return -1;
+      }
+      else if ( z > otherZ )
+      {
+        return 1;
+      }
+    }
+
+    if ( considerM )
+    {
+      const double m = mM[i];
+      const double otherM = otherLine->mM[i];
+
+      if ( m < otherM )
+      {
+        return -1;
+      }
+      else if ( m > otherM )
+      {
+        return 1;
+      }
+    }
+  }
+  return 0;
 }
 
 QString QgsLineString::geometryType() const
@@ -1720,6 +2049,50 @@ bool QgsLineString::convertTo( QgsWkbTypes::Type type )
   {
     return QgsCurve::convertTo( type );
   }
+}
+
+bool QgsLineString::transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback )
+{
+  if ( !transformer )
+    return false;
+
+  bool hasZ = is3D();
+  bool hasM = isMeasure();
+  int size = mX.size();
+
+  double *srcX = mX.data();
+  double *srcY = mY.data();
+  double *srcM = hasM ? mM.data() : nullptr;
+  double *srcZ = hasZ ? mZ.data() : nullptr;
+
+  bool res = true;
+  for ( int i = 0; i < size; ++i )
+  {
+    double x = *srcX;
+    double y = *srcY;
+    double z = hasZ ? *srcZ : std::numeric_limits<double>::quiet_NaN();
+    double m = hasM ? *srcM : std::numeric_limits<double>::quiet_NaN();
+    if ( !transformer->transformPoint( x, y, z, m ) )
+    {
+      res = false;
+      break;
+    }
+
+    *srcX++ = x;
+    *srcY++ = y;
+    if ( hasM )
+      *srcM++ = m;
+    if ( hasZ )
+      *srcZ++ = z;
+
+    if ( feedback && feedback->isCanceled() )
+    {
+      res = false;
+      break;
+    }
+  }
+  clearCache();
+  return res;
 }
 
 void QgsLineString::filterVertices( const std::function<bool ( const QgsPoint & )> &filter )

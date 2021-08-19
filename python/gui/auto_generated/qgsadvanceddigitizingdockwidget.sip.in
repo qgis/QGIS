@@ -14,7 +14,7 @@
 
 class QgsAdvancedDigitizingDockWidget : QgsDockWidget
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsAdvancedDigitizingDockWidget` class is a dockable widget
 used to handle the CAD tools on top of a selection of map tools.
 It handles both the UI and the constraints. Constraints are applied
@@ -50,7 +50,7 @@ by implementing filters called from :py:class:`QgsMapToolAdvancedDigitizing`.
 
     class CadConstraint
 {
-%Docstring
+%Docstring(signature="appended")
 The CadConstraint is an abstract class for all basic constraints (angle/distance/x/y).
 It contains all values (locked, value, relative) and pointers to corresponding widgets.
 

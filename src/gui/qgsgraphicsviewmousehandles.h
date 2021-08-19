@@ -34,7 +34,7 @@ class QInputEvent;
 
 /**
  * \ingroup gui
- * Base class for an item handling drawing of selection outlines and mouse handles in a QGraphicsView
+ * \brief Base class for an item handling drawing of selection outlines and mouse handles in a QGraphicsView
  *
  * Also is responsible for mouse interactions such as resizing and moving selected items.
  *

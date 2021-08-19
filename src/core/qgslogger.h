@@ -41,7 +41,8 @@ class QFile;
 
 /**
  * \ingroup core
- * QgsLogger is a class to print debug/warning/error messages to the console.
+ * \brief QgsLogger is a class to print debug/warning/error messages to the console.
+ *
  * The advantage of this class over iostream & co. is that the
  * output can be controlled with environment variables:
  * QGIS_DEBUG is an int describing what debug messages are written to the console.

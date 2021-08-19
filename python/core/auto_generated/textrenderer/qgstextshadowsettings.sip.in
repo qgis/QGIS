@@ -12,7 +12,7 @@
 
 class QgsTextShadowSettings
 {
-%Docstring
+%Docstring(signature="appended")
 Container for settings relating to a text shadow.
 
 .. note::

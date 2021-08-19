@@ -284,7 +284,7 @@ void QgsMergedFeatureRenderer::stopRender( QgsRenderContext &context )
   QgsMultiPolygonXY finalMulti; //avoid expensive allocation for list for every feature
   QgsPolygonXY newPoly;
 
-  for ( const CombinedFeature &cit : qgis::as_const( mFeaturesCategories ) )
+  for ( const CombinedFeature &cit : std::as_const( mFeaturesCategories ) )
   {
     finalMulti.resize( 0 ); //preserve capacity - don't use clear!
     QgsFeature feat = cit.feature; // just a copy, so that we do not accumulate geometries again
@@ -325,7 +325,7 @@ void QgsMergedFeatureRenderer::stopRender( QgsRenderContext &context )
         // operations do not need geometries to be valid
 
         finalMulti.append( mExtentPolygon );
-        for ( const QgsGeometry &geom : qgis::as_const( cit.geometries ) )
+        for ( const QgsGeometry &geom : std::as_const( cit.geometries ) )
         {
           QgsMultiPolygonXY multi;
           QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom.constGet()->wkbType() );
@@ -391,7 +391,7 @@ void QgsMergedFeatureRenderer::stopRender( QgsRenderContext &context )
   }
 
   // draw feature decorations
-  for ( FeatureDecoration deco : qgis::as_const( mFeatureDecorations ) )
+  for ( FeatureDecoration deco : std::as_const( mFeatureDecorations ) )
   {
     mSubRenderer->renderFeature( deco.feature, mContext, deco.layer, deco.selected, deco.drawMarkers );
   }
@@ -442,7 +442,6 @@ QDomElement QgsMergedFeatureRenderer::save( QDomDocument &doc, const QgsReadWrit
 
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "mergedFeatureRenderer" ) );
-  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 
   if ( mSubRenderer )
   {
@@ -450,16 +449,7 @@ QDomElement QgsMergedFeatureRenderer::save( QDomDocument &doc, const QgsReadWrit
     rendererElem.appendChild( embeddedRendererElem );
   }
 
-  if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
-    mPaintEffect->saveProperties( doc, rendererElem );
-
-  if ( !mOrderBy.isEmpty() )
-  {
-    QDomElement orderBy = doc.createElement( QStringLiteral( "orderby" ) );
-    mOrderBy.save( orderBy );
-    rendererElem.appendChild( orderBy );
-  }
-  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
+  saveRendererData( doc, rendererElem, context );
 
   return rendererElem;
 }
@@ -565,11 +555,15 @@ QgsMergedFeatureRenderer *QgsMergedFeatureRenderer::convertFromRenderer( const Q
        renderer->type() == QLatin1String( "graduatedSymbol" ) ||
        renderer->type() == QLatin1String( "RuleRenderer" ) )
   {
-    return new QgsMergedFeatureRenderer( renderer->clone() );
+    std::unique_ptr< QgsMergedFeatureRenderer > res = std::make_unique< QgsMergedFeatureRenderer >( renderer->clone() );
+    renderer->copyRendererData( res.get() );
+    return res.release();
   }
   else if ( renderer->type() == QLatin1String( "invertedPolygonRenderer" ) )
   {
-    return new QgsMergedFeatureRenderer( renderer->embeddedRenderer() ? renderer->embeddedRenderer()->clone() : nullptr );
+    std::unique_ptr< QgsMergedFeatureRenderer > res = std::make_unique< QgsMergedFeatureRenderer >( renderer->embeddedRenderer() ? renderer->embeddedRenderer()->clone() : nullptr );
+    renderer->copyRendererData( res.get() );
+    return res.release();
   }
   return nullptr;
 }

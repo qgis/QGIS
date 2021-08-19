@@ -9,7 +9,7 @@
 
 class QgsServerStaticHandler: QgsServerOgcApiHandler
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsServerStaticHandler` class serves static files from the static path (resources/server/api/wfs3/static)
 
 .. seealso:: :py:func:`QgsServerOgcApiHandler.staticPath`

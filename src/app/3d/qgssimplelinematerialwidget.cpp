@@ -45,7 +45,7 @@ void QgsSimpleLineMaterialWidget::setSettings( const QgsAbstractMaterialSettings
 
 QgsAbstractMaterialSettings *QgsSimpleLineMaterialWidget::settings()
 {
-  std::unique_ptr< QgsSimpleLineMaterialSettings > m = qgis::make_unique< QgsSimpleLineMaterialSettings >();
+  std::unique_ptr< QgsSimpleLineMaterialSettings > m = std::make_unique< QgsSimpleLineMaterialSettings >();
   m->setAmbient( btnAmbient->color() );
   return m.release();
 }

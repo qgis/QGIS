@@ -26,7 +26,7 @@
 /**
  * \class QgsRemappingSinkDefinition
  * \ingroup core
- * Defines the parameters used to remap features when creating a QgsRemappingProxyFeatureSink.
+ * \brief Defines the parameters used to remap features when creating a QgsRemappingProxyFeatureSink.
  *
  * The definition includes parameters required to correctly map incoming features to the structure
  * of the destination sink, e.g. information about how to create output field values and how to transform
@@ -143,6 +143,7 @@ class CORE_EXPORT QgsRemappingSinkDefinition
      */
     bool loadVariant( const QVariantMap &map );
 
+    // TODO c++20 - replace with = default
     bool operator==( const QgsRemappingSinkDefinition &other ) const;
     bool operator!=( const QgsRemappingSinkDefinition &other ) const;
 
@@ -166,7 +167,7 @@ Q_DECLARE_METATYPE( QgsRemappingSinkDefinition )
 /**
  * \class QgsRemappingProxyFeatureSink
  * \ingroup core
- * A QgsFeatureSink which proxies incoming features to a destination feature sink, after applying
+ * \brief A QgsFeatureSink which proxies incoming features to a destination feature sink, after applying
  * transformations and field value mappings.
  *
  * This sink allows for transformation of incoming features to match the requirements of storing

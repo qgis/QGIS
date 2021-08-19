@@ -132,12 +132,13 @@ class ClipRasterByExtent(GdalAlgorithm):
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, out)
 
-        arguments = []
-        arguments.append('-projwin')
-        arguments.append(str(bbox.xMinimum()))
-        arguments.append(str(bbox.yMaximum()))
-        arguments.append(str(bbox.xMaximum()))
-        arguments.append(str(bbox.yMinimum()))
+        arguments = [
+            '-projwin',
+            str(bbox.xMinimum()),
+            str(bbox.yMaximum()),
+            str(bbox.xMaximum()),
+            str(bbox.yMinimum()),
+        ]
 
         crs = inLayer.crs()
         if override_crs and crs.isValid():

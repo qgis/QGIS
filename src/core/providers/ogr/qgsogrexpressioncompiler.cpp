@@ -19,9 +19,9 @@
 #include "qgsexpressionnodeimpl.h"
 #include "qgsogrprovider.h"
 
-QgsOgrExpressionCompiler::QgsOgrExpressionCompiler( QgsOgrFeatureSource *source )
+QgsOgrExpressionCompiler::QgsOgrExpressionCompiler( QgsOgrFeatureSource *source, bool ignoreStaticNodes )
   : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::CaseInsensitiveStringMatch | QgsSqlExpressionCompiler::NoNullInBooleanLogic
-                              | QgsSqlExpressionCompiler::NoUnaryMinus | QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
+                              | QgsSqlExpressionCompiler::NoUnaryMinus | QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger, ignoreStaticNodes )
   , mSource( source )
 {
 }
@@ -50,6 +50,10 @@ QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compile( const QgsExp
 
 QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
 {
+  QgsSqlExpressionCompiler::Result staticRes = replaceNodeByStaticCachedValueIfPossible( node, result );
+  if ( staticRes != Fail )
+    return staticRes;
+
   switch ( node->nodeType() )
   {
     case QgsExpressionNode::ntBinaryOperator:

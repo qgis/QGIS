@@ -29,7 +29,7 @@ class QgsLayoutGuide;
 
 /**
  * \ingroup gui
- * A custom ruler widget for use with QgsLayoutView, displaying the
+ * \brief A custom ruler widget for use with QgsLayoutView, displaying the
  * current zoom and position of the visible layout and for interacting
  * with guides in a layout.
  *

@@ -58,7 +58,8 @@ class RasterOptionsWidgetWrapper(WidgetWrapper):
         elif self.dialogType == DIALOG_BATCH:
             self.widget.setText(value)
         else:
-            self.widget.setOptions(value)
+            # The QgsRasterFormatSaveOptionsWidget requires space delimited options, but this wrapper uses | delimiter
+            self.widget.setOptions(value.replace('|', ' '))
 
     def value(self):
         if self.dialogType == DIALOG_MODELER:

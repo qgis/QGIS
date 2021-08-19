@@ -19,6 +19,7 @@
 #define QGSPROCESSING_H
 
 #include "qgis_core.h"
+#include "qgssettingsentry.h"
 #include <QString>
 
 //
@@ -29,7 +30,7 @@
  * \class QgsProcessing
  * \ingroup core
  *
- * Contains enumerations and other constants for use in processing algorithms
+ * \brief Contains enumerations and other constants for use in processing algorithms
  * and parameters.
  *
  * \since QGIS 3.0
@@ -43,7 +44,7 @@ class CORE_EXPORT QgsProcessing
     //! Data source types enum
     enum SourceType
     {
-      TypeMapLayer = -2, //!< Any map layer type (raster or vector or mesh)
+      TypeMapLayer = -2, //!< Any map layer type (raster, vector, mesh, point cloud or plugin layer)
       TypeVectorAnyGeometry = -1, //!< Any vector layer with geometry
       TypeVectorPoint = 0, //!< Vector point layers
       TypeVectorLine = 1, //!< Vector line layers
@@ -51,7 +52,9 @@ class CORE_EXPORT QgsProcessing
       TypeRaster = 3, //!< Raster layers
       TypeFile = 4, //!< Files (i.e. non map layer sources, such as text files)
       TypeVector = 5, //!< Tables (i.e. vector layers with or without geometry). When used for a sink this indicates the sink has no geometry.
-      TypeMesh = 6 //!< Mesh layers \since QGIS 3.6
+      TypeMesh = 6, //!< Mesh layers \since QGIS 3.6
+      TypePlugin = 7, //!< Plugin layers \since QGIS 3.22
+      TypePointCloud = 8 //!< Point cloud layers \since QGIS 3.22
     };
 
     //! Available Python output types
@@ -87,6 +90,10 @@ class CORE_EXPORT QgsProcessing
           return QStringLiteral( "TypeVector" );
         case QgsProcessing::TypeMesh:
           return QStringLiteral( "TypeMesh" );
+        case QgsProcessing::TypePlugin:
+          return QStringLiteral( "TypePlugin" );
+        case QgsProcessing::TypePointCloud:
+          return QStringLiteral( "TypePointCloud" );
       }
       return QString();
     }
@@ -97,6 +104,17 @@ class CORE_EXPORT QgsProcessing
      * \since QGIS 3.6
      */
     static const QString TEMPORARY_OUTPUT;
+
+#ifndef SIP_RUN
+    //! Settings entry prefer filename as layer name
+    static const inline QgsSettingsEntryBool settingsPreferFilenameAsLayerName = QgsSettingsEntryBool( QStringLiteral( "Processing/Configuration/PREFER_FILENAME_AS_LAYER_NAME" ), QgsSettings::NoSection, true, QObject::tr( "Prefer filename as layer name" ) );
+    //! Settings entry temp path
+    static const inline QgsSettingsEntryString settingsTempPath = QgsSettingsEntryString( QStringLiteral( "Processing/Configuration/TEMP_PATH2" ), QgsSettings::NoSection, QString() );
+    //! Settings entry default output vector layer ext
+    static const inline QgsSettingsEntryInteger settingsDefaultOutputVectorLayerExt = QgsSettingsEntryInteger( QStringLiteral( "Processing/Configuration/DefaultOutputVectorLayerExt" ), QgsSettings::NoSection, -1 );
+    //! Settings entry default output raster layer ext
+    static const inline QgsSettingsEntryInteger settingsDefaultOutputRasterLayerExt = QgsSettingsEntryInteger( QStringLiteral( "Processing/Configuration/DefaultOutputRasterLayerExt" ), QgsSettings::NoSection, -1 );
+#endif
 };
 
 #endif // QGSPROCESSING_H

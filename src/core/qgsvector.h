@@ -22,7 +22,7 @@
 
 /**
  * \ingroup core
- * A class to represent a vector.
+ * \brief A class to represent a vector.
  * Currently no Z axis / 2.5D support is implemented.
  */
 
@@ -171,7 +171,7 @@ class CORE_EXPORT QgsVector
      */
     double angle() const SIP_HOLDGIL
     {
-      double angle = std::atan2( mY, mX );
+      const double angle = std::atan2( mY, mX );
       return angle < 0.0 ? angle + 2.0 * M_PI : angle;
     }
 

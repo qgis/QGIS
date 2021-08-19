@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0,0,0,0,0,0,0">
+    <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0">
      <item row="2" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
@@ -374,20 +374,9 @@ Rasterizing the map is recommended when such effects are used.</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsScaleWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsscalewidget.h</header>
   </customwidget>
   <customwidget>
    <class>QgsExtentGroupBox</class>
@@ -401,6 +390,17 @@ Rasterizing the map is recommended when such effects are used.</string>
    <header>qgsratiolockbutton.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsScaleWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mExtentGroupBox</tabstop>
@@ -411,9 +411,9 @@ Rasterizing the map is recommended when such effects are used.</string>
   <tabstop>mDrawDecorations</tabstop>
   <tabstop>mDrawAnnotations</tabstop>
   <tabstop>mSaveWorldFile</tabstop>
+  <tabstop>mExportMetadataCheckBox</tabstop>
   <tabstop>mGeoPDFGroupBox</tabstop>
   <tabstop>mGeoPdfFormatComboBox</tabstop>
-  <tabstop>mExportMetadataCheckBox</tabstop>
   <tabstop>mExportGeoPdfFeaturesCheckBox</tabstop>
   <tabstop>mSaveAsRaster</tabstop>
   <tabstop>mSimplifyGeometriesCheckbox</tabstop>

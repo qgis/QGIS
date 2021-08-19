@@ -42,17 +42,31 @@ bool QgsProjectMetadata::writeMetadataXml( QDomElement &metadataElement, QDomDoc
 
   // author
   QDomElement author = document.createElement( QStringLiteral( "author" ) );
-  QDomText authorText = document.createTextNode( mAuthor );
+  const QDomText authorText = document.createTextNode( mAuthor );
   author.appendChild( authorText );
   metadataElement.appendChild( author );
 
   // creation datetime
   QDomElement creation = document.createElement( QStringLiteral( "creation" ) );
-  QDomText creationText = document.createTextNode( mCreationDateTime.toString( Qt::ISODate ) );
+  const QDomText creationText = document.createTextNode( mCreationDateTime.toString( Qt::ISODate ) );
   creation.appendChild( creationText );
   metadataElement.appendChild( creation );
 
   return true;
+}
+
+void QgsProjectMetadata::combine( const QgsAbstractMetadataBase *other )
+{
+  QgsAbstractMetadataBase::combine( other );
+
+  if ( const QgsProjectMetadata *otherProjectMetadata = dynamic_cast< const QgsProjectMetadata * >( other ) )
+  {
+    if ( !otherProjectMetadata->author().isEmpty() )
+      mAuthor = otherProjectMetadata->author();
+
+    if ( otherProjectMetadata->creationDateTime().isValid() )
+      mCreationDateTime = otherProjectMetadata->creationDateTime();
+  }
 }
 
 bool QgsProjectMetadata::operator==( const QgsProjectMetadata &metadataOther )  const

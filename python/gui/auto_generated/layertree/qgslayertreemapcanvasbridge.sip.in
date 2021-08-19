@@ -12,7 +12,7 @@
 
 class QgsLayerTreeMapCanvasBridge : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsLayerTreeMapCanvasBridge` class takes care of updates of layer set
 for :py:class:`QgsMapCanvas` from a layer tree. The class listens to the updates in the layer tree
 and updates the list of layers for rendering whenever some layers are added, removed,

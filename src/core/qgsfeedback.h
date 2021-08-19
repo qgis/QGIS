@@ -23,7 +23,8 @@
 
 /**
  * \ingroup core
- * Base class for feedback objects to be used for cancellation of something running in a worker thread.
+ * \brief Base class for feedback objects to be used for cancellation of something running in a worker thread.
+ *
  * The class may be used as is or it may be subclassed for extended functionality
  * for a particular operation (e.g. report progress or pass some data for preview).
  *
@@ -50,7 +51,7 @@ class CORE_EXPORT QgsFeedback : public QObject
     {}
 
     //! Tells whether the operation has been canceled already
-    bool isCanceled() const { return mCanceled; }
+    bool isCanceled() const SIP_HOLDGIL { return mCanceled; }
 
     /**
      * Sets the current progress for the feedback object. The \a progress
@@ -76,7 +77,7 @@ class CORE_EXPORT QgsFeedback : public QObject
      * \see progressChanged()
      * \since QGIS 3.0
      */
-    double progress() const { return mProgress; }
+    double progress() const SIP_HOLDGIL { return mProgress; }
 
   public slots:
 

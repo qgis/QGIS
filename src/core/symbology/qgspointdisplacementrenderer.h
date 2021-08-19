@@ -25,7 +25,7 @@
 /**
  * \class QgsPointDisplacementRenderer
  * \ingroup core
- * A renderer that automatically displaces points with the same geographic location.
+ * \brief A renderer that automatically displaces points with the same geographic location.
 */
 class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
 {

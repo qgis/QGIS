@@ -22,7 +22,6 @@
 #include "qgis_sip.h"
 #include "qgis.h"
 #include "qgsgeometry.h"
-#include "qgssymbol.h" // for OutputUnit enum
 #include "qgsmapsettings.h"
 #include "qgslabelsink.h"
 
@@ -40,6 +39,7 @@ class QgsCurvePolygon;
 class QgsCircularString;
 class QgsCompoundCurve;
 struct DxfLayerJob;
+class QgsSymbolRenderContext;
 
 #define DXF_HANDSEED 100
 #define DXF_HANDMAX 9999999
@@ -54,6 +54,7 @@ namespace pal // SIP_SKIP
 /**
  * \ingroup core
  * \class QgsDxfExport
+ * \brief Exports QGIS layers to the DXF format.
  */
 #ifdef SIP_RUN
 class CORE_EXPORT QgsDxfExport
@@ -332,6 +333,14 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     void writeGroup( int code, int i ) SIP_PYNAME( writeGroupInt );
 
     /**
+     * Write a tuple of group code and long value
+     * \param code group code
+     * \param i integer value
+     * \note available in Python bindings as writeGroupLong
+     */
+    void writeGroup( int code, long long i ) SIP_PYNAME( writeGroupLong );
+
+    /**
      * Write a group code with a floating point value
      * \param code group code
      * \param d floating point value
@@ -574,16 +583,26 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     void writeText( const QString &layer, const QString &text, pal::LabelPosition *label, const QgsPalLayerSettings &layerSettings, const QgsExpressionContext &expressionContext );
 
     /**
-     * Writes geometry generator symbol layer
-     * \param ctx the symbol render context
-     * \param ct the coordinate transform
+     * Writes geometry generator symbol layer.
+     *
+     * \param context the symbol render context, with the reference to the feature set
+     * \param ct coordinate transform from CRS of feature being added to destination DXF CRS
      * \param layer the layer name
-     * \param symbolLayer the symbollayer to write to the dxf file
+     * \param symbolLayer the symbol layer to write to the dxf file
      * \param allSymbolLayers if TRUE, all symbol layers of the subsymbol are written. If FALSE, only the first one is written
     */
-    void addGeometryGeneratorSymbolLayer( QgsSymbolRenderContext &ctx, const QgsCoordinateTransform &ct, const QString &layer, QgsSymbolLayer *symbolLayer, bool allSymbolLayers );
+    void addGeometryGeneratorSymbolLayer( QgsSymbolRenderContext &context, const QgsCoordinateTransform &ct, const QString &layer, QgsSymbolLayer *symbolLayer, bool allSymbolLayers );
 
-    void addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateTransform &ct, const QString &layer, const QgsSymbolLayer *symbolLayer, const QgsSymbol *symbol );
+    /**
+     * Writes a feature to the DXF file.
+     *
+     * \param context the symbol render context, with the reference to the feature set
+     * \param ct coordinate transform from CRS of feature being added to destination DXF CRS
+     * \param layer the layer name
+     * \param symbolLayer the symbol layer to write to the dxf file
+     * \param symbol symbol associated with feature being added
+     */
+    void addFeature( QgsSymbolRenderContext &context, const QgsCoordinateTransform &ct, const QString &layer, const QgsSymbolLayer *symbolLayer, const QgsSymbol *symbol );
 
     //returns dxf palette index from symbol layer color
     static QColor colorFromSymbolLayer( const QgsSymbolLayer *symbolLayer, QgsSymbolRenderContext &ctx );

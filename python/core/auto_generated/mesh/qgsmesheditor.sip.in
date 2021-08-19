@@ -1,0 +1,209 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmesheditor.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsMeshEditingError
+{
+%Docstring(signature="appended")
+
+Class that represents an error during mesh editing
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsmesheditor.h"
+%End
+  public:
+
+    QgsMeshEditingError();
+%Docstring
+Constructor of the default error, that is NoError
+%End
+
+    QgsMeshEditingError( Qgis::MeshEditingErrorType type, int elementIndex );
+%Docstring
+Constructor with eht error ``type`` and the index of the element ``elementIndex``
+%End
+
+    Qgis::MeshEditingErrorType errorType;
+
+    int elementIndex;
+
+    bool operator==( const QgsMeshEditingError &other ) const;
+    bool operator!=( const QgsMeshEditingError &other ) const;
+};
+
+class QgsMeshEditor : QObject
+{
+%Docstring(signature="appended")
+
+Class that makes edit operation on a mesh
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsmesheditor.h"
+%End
+  public:
+
+    QgsMeshEditor( QgsMeshLayer *meshLayer );
+%Docstring
+Constructor with a specified layer ``meshLayer``
+%End
+
+
+    QgsMeshEditingError initialize();
+%Docstring
+Initialize the mesh editor and return errors if the internal native mesh have topologic errors
+%End
+
+    bool faceCanBeAdded( const QgsMeshFace &face );
+%Docstring
+Returns ``True`` if a ``face`` can be added to the mesh
+%End
+
+    bool isFaceGeometricallyCompatible( const QgsMeshFace &face );
+%Docstring
+Returns ``True`` if the face does not intersect or contains any other elements (faces or vertices)
+The topological compatibility is not checked
+%End
+
+    QgsMeshEditingError addFace( const QVector<int> &vertexIndexes );
+%Docstring
+Adds a face ``face`` to the mesh with vertex indexes ``vertexIndexes``, returns topological errors if this operation fails (operation is not realized)
+%End
+
+    QgsMeshEditingError removeFaces( const QList<int> &facesToRemove );
+%Docstring
+Removes faces ``faces`` to the mesh, returns topological errors if this operation fails (operation is not realized)
+%End
+
+    bool edgeCanBeFlipped( int vertexIndex1, int vertexIndex2 ) const;
+%Docstring
+Returns ``True`` if the edge can be flipped (only available for edge shared by two faces with 3 vertices)
+%End
+
+    void flipEdge( int vertexIndex1, int vertexIndex2 );
+%Docstring
+Flips edge (``vertexIndex1``, ``vertexIndex2``)
+%End
+
+    bool canBeMerged( int vertexIndex1, int vertexIndex2 ) const;
+%Docstring
+Returns ``True`` if faces separated by vertices with indexes ``vertexIndex1`` and ``vertexIndex2`` can be merged
+%End
+
+    void merge( int vertexIndex1, int vertexIndex2 );
+%Docstring
+Merges faces separated by vertices with indexes ``vertexIndex1`` and ``vertexIndex2``
+%End
+
+    bool faceCanBeSplit( int faceIndex ) const;
+%Docstring
+Returns ``True`` if face with index ``faceIndex`` can be split
+%End
+
+    int splitFaces( const QList<int> &faceIndexes );
+%Docstring
+Splits faces with index ``faceIndexes``. Only faces that can be split are split.
+Returns the count of faces effictively split
+%End
+
+    int addPointsAsVertices( const QVector<QgsPoint> &point, double tolerance );
+%Docstring
+Adds points as vertices in triangular mesh coordinate in the mesh. Vertex is effectivly added if the transform
+from triangular coordinate to layer coordinate succeeds or if any vertices are next the added vertex (under ``tolerance`` distance).
+The method returns the number of vertices effectivly added.
+
+.. note::
+
+   this operation remove including face if exists and replace it by new faces surrounding the vertex
+   if the mesh hasn't topological error before this operation, the toological operation always succeed
+%End
+
+    QgsMeshEditingError removeVertices( const QList<int> &verticesToRemoveIndexes, bool fillHoles = false );
+%Docstring
+Removes vertices with indexes in the list ``verticesToRemoveIndexes`` in the mesh
+if ``fillHoles`` is set to ``True``, this operation will fill holes created in the mesh, if not remove the surrounding faces
+
+If removing these vertices leads to a topological errors, the method will return the corresponding error and the operatio is canceled
+%End
+
+    void changeZValues( const QList<int> &verticesIndexes, const QList<double> &newValues );
+%Docstring
+Changes the Z values of the vertices with indexes in ``vertices`` indexes with the values in ``newValues``
+%End
+
+    void changeXYValues( const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues );
+%Docstring
+Changes the (X,Y) coordinates values of the vertices with indexes in ``vertices`` indexes with the values in ``newValues``.
+The caller has the responsibility to check if changing the vertices coordinates does not lead to topological errors
+%End
+
+    void advancedEdit( QgsMeshAdvancedEditing *editing );
+%Docstring
+Applies an advance editing on the edited mesh, see :py:class:`QgsMeshAdvancedEditing`
+%End
+
+    void stopEditing();
+%Docstring
+Stops editing
+%End
+
+    QgsRectangle extent() const;
+%Docstring
+Returns the extent of the edited mesh
+%End
+
+    bool isModified() const;
+%Docstring
+Returns whether the mesh has been modified
+%End
+
+
+    QList<int> freeVerticesIndexes();
+%Docstring
+Returns all the free vertices indexes
+%End
+
+    bool isVertexOnBoundary( int vertexIndex ) const;
+%Docstring
+Returns whether the vertex with index ``vertexIndex`` is on a boundary
+%End
+
+    bool isVertexFree( int vertexIndex ) const;
+%Docstring
+Returns whether the vertex with index ``vertexIndex`` is a free vertex
+%End
+
+    bool checkConsistency() const;
+%Docstring
+Return ``True`` if the edited mesh is consistent
+%End
+
+  signals:
+    void meshEdited();
+%Docstring
+Emitted when the mesh is edited
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmesheditor.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

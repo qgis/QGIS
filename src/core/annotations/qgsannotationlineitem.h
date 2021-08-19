@@ -26,7 +26,7 @@ class QgsCurve;
 
 /**
  * \ingroup core
- * An annotation item which renders a line symbol along a line geometry.
+ * \brief An annotation item which renders a line symbol along a line geometry.
  *
  * \since QGIS 3.16
  */

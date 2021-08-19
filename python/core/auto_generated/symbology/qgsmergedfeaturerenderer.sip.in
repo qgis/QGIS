@@ -9,7 +9,7 @@
 
 class QgsMergedFeatureRenderer : QgsFeatureRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 :py:class:`QgsMergedFeatureRenderer` is a polygon or line-only feature renderer used to
 renderer a set of features merged (or dissolved) into a single geometry.
 

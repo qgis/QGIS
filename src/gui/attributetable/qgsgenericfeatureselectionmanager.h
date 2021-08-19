@@ -24,7 +24,7 @@ SIP_NO_FILE
 
 /**
  * \ingroup gui
- * This selection manager synchronizes a local set of selected features with an attribute table.
+ * \brief This selection manager synchronizes a local set of selected features with an attribute table.
  * If you want to synchronize the attribute table selection with the map canvas selection, you
  * should use QgsVectorLayerSelectionManager instead.
  * \note not available in Python bindings

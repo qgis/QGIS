@@ -69,7 +69,7 @@ void QgsFlattenRelationshipsAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ),
                 QObject::tr( "Input layer" ), QList< int>() << QgsProcessing::TypeVector ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Flattened layer" ), QgsProcessing::TypeVectorAnyGeometry, QVariant(), true, true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Flattened layer" ), QgsProcessing::TypeVectorAnyGeometry ) );
 }
 
 QgsFlattenRelationshipsAlgorithm *QgsFlattenRelationshipsAlgorithm::createInstance() const
@@ -99,7 +99,7 @@ bool QgsFlattenRelationshipsAlgorithm::prepareAlgorithm( const QVariantMap &para
   if ( !referencingLayer )
     throw QgsProcessingException( QObject::tr( "Could not resolved referenced layer." ) );
 
-  mReferencingSource = qgis::make_unique< QgsVectorLayerFeatureSource >( referencingLayer );
+  mReferencingSource = std::make_unique< QgsVectorLayerFeatureSource >( referencingLayer );
   mReferencingFields = referencingLayer->fields();
 
   return true;
@@ -111,7 +111,7 @@ QVariantMap QgsFlattenRelationshipsAlgorithm::processAlgorithm( const QVariantMa
   if ( !input )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  QgsFields outFields = QgsProcessingUtils::combineFields( input->fields(), mReferencingFields );
+  const QgsFields outFields = QgsProcessingUtils::combineFields( input->fields(), mReferencingFields );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outFields,
@@ -120,7 +120,7 @@ QVariantMap QgsFlattenRelationshipsAlgorithm::processAlgorithm( const QVariantMa
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   // Create output vector layer with additional attributes
-  double step = input->featureCount() > 0 ? 100.0 / input->featureCount() : 1;
+  const double step = input->featureCount() > 0 ? 100.0 / input->featureCount() : 1;
   QgsFeatureIterator features = input->getFeatures( QgsFeatureRequest(), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
   long long i = 0;
   QgsFeature feat;
@@ -144,7 +144,8 @@ QVariantMap QgsFlattenRelationshipsAlgorithm::processAlgorithm( const QVariantMa
       attrs.append( relatedFeature.attributes() );
       QgsFeature outFeat = feat;
       outFeat.setAttributes( attrs );
-      sink->addFeature( outFeat, QgsFeatureSink::FastInsert );
+      if ( !sink->addFeature( outFeat, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
     }
   }
 

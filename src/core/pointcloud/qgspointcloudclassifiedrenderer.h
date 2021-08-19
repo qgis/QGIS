@@ -112,7 +112,7 @@ typedef QList<QgsPointCloudCategory> QgsPointCloudCategoryList;
 
 /**
  * \ingroup core
- * Renders point clouds by a classification attribute.
+ * \brief Renders point clouds by a classification attribute.
  *
  * \since QGIS 3.18
  */

@@ -21,7 +21,8 @@
 
 /**
  * \ingroup core
- * A default fallback field formatter in case no specialized field formatter is defined.
+ * \brief A default fallback field formatter in case no specialized field formatter is defined.
+ *
  * The values will be returned unmodified.
  *
  * \since QGIS 3.0

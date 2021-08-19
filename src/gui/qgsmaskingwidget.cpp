@@ -13,6 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
+
+///@cond PRIVATE
+
 #include <QSet>
 #include <QCheckBox>
 
@@ -39,7 +42,7 @@ QgsMaskingWidget::QgsMaskingWidget( QWidget *parent ) :
 void QgsMaskingWidget::onSelectionChanged()
 {
   // display message if configuration is not consistent
-  bool printMessage = mMaskTargetsWidget->selection().empty() != mMaskSourcesWidget->selection().empty();
+  const bool printMessage = mMaskTargetsWidget->selection().empty() != mMaskSourcesWidget->selection().empty();
 
   if ( mMessageBarItem && !printMessage )
   {
@@ -48,7 +51,7 @@ void QgsMaskingWidget::onSelectionChanged()
   }
   else if ( !mMessageBarItem && printMessage )
   {
-    mMessageBarItem = new QgsMessageBarItem( tr( "Select both sources and symbol layers or your configuration will be lost" ), Qgis::Warning, 0, this );
+    mMessageBarItem = new QgsMessageBarItem( tr( "Select both sources and symbol layers or your configuration will be lost" ), Qgis::MessageLevel::Warning, 0, this );
     mMessageBar->pushItem( mMessageBarItem );
   }
 
@@ -75,68 +78,8 @@ void QgsMaskingWidget::showEvent( QShowEvent *event )
   }
 }
 
-/**
- * \ingroup gui
- * Generic visitor that collects symbol layers of a vector layer's renderer
- * and call a callback function on them with their corresponding QgsSymbolLayerId
- *
- * \note This class is not a part of public API
- * \since QGIS 3.14
- */
-class SymbolLayerVisitor : public QgsStyleEntityVisitorInterface
-{
-  public:
-    typedef std::function<void( const QgsSymbolLayer *, const QgsSymbolLayerId & )> SymbolLayerCallback;
 
-    //! constructor
-    SymbolLayerVisitor( SymbolLayerCallback callback ) :
-      mCallback( callback )
-    {}
 
-    bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node ) override
-    {
-      if ( node.type != QgsStyleEntityVisitorInterface::NodeType::SymbolRule )
-        return false;
-
-      mSymbolKey = node.identifier;
-      return true;
-    }
-
-    //! Process a symbol
-    void visitSymbol( const QgsSymbol *symbol, const QString &leafIdentifier, QVector<int> rootPath )
-    {
-      for ( int idx = 0; idx < symbol->symbolLayerCount(); idx++ )
-      {
-        QVector<int> indexPath = rootPath;
-        indexPath.push_back( idx );
-
-        const QgsSymbolLayer *sl = symbol->symbolLayer( idx );
-
-        mCallback( sl, QgsSymbolLayerId( mSymbolKey + leafIdentifier, indexPath ) );
-
-        // recurse over sub symbols
-        const QgsSymbol *subSymbol = const_cast<QgsSymbolLayer *>( sl )->subSymbol();
-        if ( subSymbol )
-          visitSymbol( subSymbol, leafIdentifier, indexPath );
-      }
-    }
-
-    bool visit( const QgsStyleEntityVisitorInterface::StyleLeaf &leaf ) override
-    {
-      if ( leaf.entity && leaf.entity->type() == QgsStyle::SymbolEntity )
-      {
-        auto symbolEntity = static_cast<const QgsStyleSymbolEntity *>( leaf.entity );
-        if ( symbolEntity->symbol() )
-          visitSymbol( symbolEntity->symbol(), leaf.identifier, {} );
-      }
-      return true;
-    }
-
-  private:
-    QString mSymbolKey;
-    QList<QPair<QgsSymbolLayerId, QList<QgsSymbolLayerReference>>> mMasks;
-    SymbolLayerCallback mCallback;
-};
 
 /**
  * Symbol layer masks collector. It is an enhanced version of QgsVectorLayerUtils::symbolLayerMasks.
@@ -184,14 +127,14 @@ void QgsMaskingWidget::populate()
   QgsMaskSourceSelectionWidget::MaskSource source;
   for ( auto layerIt = layers.begin(); layerIt != layers.end(); layerIt++ )
   {
-    QString layerId = layerIt.key();
+    const QString layerId = layerIt.key();
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layerIt.value() );
     if ( ! vl )
       continue;
 
     // collect symbol layer masks
-    QList<QPair<QgsSymbolLayerId, QList<QgsSymbolLayerReference>>> slMasks = symbolLayerMasks( vl );
-    for ( auto p : slMasks )
+    const QList<QPair<QgsSymbolLayerId, QList<QgsSymbolLayerReference>>> slMasks = symbolLayerMasks( vl );
+    for ( const QPair<QgsSymbolLayerId, QList<QgsSymbolLayerReference>> &p : slMasks )
     {
       const QgsSymbolLayerId &sourceSymbolLayerId = p.first;
       for ( const QgsSymbolLayerReference &ref : p.second )
@@ -256,7 +199,7 @@ void QgsMaskingWidget::apply()
       {
         QgsMaskMarkerSymbolLayer *maskSl = const_cast<QgsMaskMarkerSymbolLayer *>( static_cast<const QgsMaskMarkerSymbolLayer *>( sl ) );
 
-        QgsSymbolLayerReferenceList masks = maskSl->masks();
+        const QgsSymbolLayerReferenceList masks = maskSl->masks();
         QgsSymbolLayerReferenceList newMasks;
         for ( const QgsSymbolLayerReference &ref : masks )
         {
@@ -287,14 +230,14 @@ void QgsMaskingWidget::apply()
     // Now reset label masks
     if ( ! vl->labeling() )
       continue;
-    for ( QString labelProvider : vl->labeling()->subProviders() )
+    for ( const QString &labelProvider : vl->labeling()->subProviders() )
     {
       // clear symbol layers
       QgsPalLayerSettings settings = vl->labeling()->settings( labelProvider );
       QgsTextFormat format = settings.format();
       if ( ! format.mask().enabled() )
         continue;
-      QgsSymbolLayerReferenceList masks = format.mask().maskedSymbolLayers();
+      const QgsSymbolLayerReferenceList masks = format.mask().maskedSymbolLayers();
       QgsSymbolLayerReferenceList newMasks;
       for ( const QgsSymbolLayerReference &ref : masks )
       {
@@ -326,7 +269,7 @@ void QgsMaskingWidget::apply()
   // trigger refresh of the current layer
   mLayer->triggerRepaint();
   // trigger refresh of dependent layers (i.e. mask source layers)
-  for ( QString layerId : layersToRefresh )
+  for ( const QString &layerId : layersToRefresh )
   {
     QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerId );
     layer->triggerRepaint();
@@ -337,3 +280,47 @@ bool QgsMaskingWidget::hasBeenPopulated()
 {
   return !mMustPopulate;
 }
+
+SymbolLayerVisitor::SymbolLayerVisitor( SymbolLayerVisitor::SymbolLayerCallback callback ) :
+  mCallback( callback )
+{}
+
+bool SymbolLayerVisitor::visitEnter( const QgsStyleEntityVisitorInterface::Node &node )
+{
+  if ( node.type != QgsStyleEntityVisitorInterface::NodeType::SymbolRule )
+    return false;
+
+  mSymbolKey = node.identifier;
+  return true;
+}
+
+void SymbolLayerVisitor::visitSymbol( const QgsSymbol *symbol, const QString &leafIdentifier, QVector<int> rootPath )
+{
+  for ( int idx = 0; idx < symbol->symbolLayerCount(); idx++ )
+  {
+    QVector<int> indexPath = rootPath;
+    indexPath.push_back( idx );
+
+    const QgsSymbolLayer *sl = symbol->symbolLayer( idx );
+
+    mCallback( sl, QgsSymbolLayerId( mSymbolKey + leafIdentifier, indexPath ) );
+
+    // recurse over sub symbols
+    const QgsSymbol *subSymbol = const_cast<QgsSymbolLayer *>( sl )->subSymbol();
+    if ( subSymbol )
+      visitSymbol( subSymbol, leafIdentifier, indexPath );
+  }
+}
+
+bool SymbolLayerVisitor::visit( const QgsStyleEntityVisitorInterface::StyleLeaf &leaf )
+{
+  if ( leaf.entity && leaf.entity->type() == QgsStyle::SymbolEntity )
+  {
+    auto symbolEntity = static_cast<const QgsStyleSymbolEntity *>( leaf.entity );
+    if ( symbolEntity->symbol() )
+      visitSymbol( symbolEntity->symbol(), leaf.identifier, {} );
+  }
+  return true;
+}
+
+///@endcond

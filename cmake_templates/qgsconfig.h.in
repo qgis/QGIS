@@ -35,7 +35,9 @@
 
 #define QGIS_SERVER_MODULE_SUBDIR "${QGIS_SERVER_MODULE_SUBDIR}"
 
+#if !defined(QSCINTILLA_VERSION_STR)
 #define QSCINTILLA_VERSION_STR "${QSCINTILLA_VERSION_STR}"
+#endif
 
 #if defined( __APPLE__ )
 //used by Mac to find system or bundle resources relative to amount of bundling
@@ -44,11 +46,18 @@
 
 #define QT_PLUGINS_DIR "${QT_PLUGINS_DIR}"
 
+#define PYTHON_VERSION "${Python_VERSION}"
+#define PYTHON_VERSION_MAJOR "${Python_VERSION_MAJOR}"
+#define PYTHON_VERSION_MINOR "${Python_VERSION_MINOR}"
+#define PYTHON_VERSION_PATCH "${Python_VERSION_PATCH}"
+
 #cmakedefine USING_NMAKE
 
 #cmakedefine USING_NINJA
 
 #cmakedefine HAVE_GUI
+
+#cmakedefine HAVE_SPATIALITE
 
 #cmakedefine HAVE_POSTGRESQL
 
@@ -60,11 +69,16 @@
 
 #cmakedefine HAVE_SERVER_PYTHON_PLUGINS
 
+#cmakedefine HAVE_OAUTH2_PLUGIN
+
 #cmakedefine HAVE_OPENCL
+#cmakedefine OPENCL_USE_NEW_HEADER
 
 #cmakedefine ENABLE_MODELTEST
 
 #cmakedefine HAVE_3D
+
+#cmakedefine HAVE_GSL
 
 #cmakedefine HAVE_GEOREFERENCER
 
@@ -87,6 +101,8 @@
 #define PDAL_VERSION_MAJOR "${PDAL_VERSION_MAJOR}"
 #define PDAL_VERSION_MINOR "${PDAL_VERSION_MINOR}"
 #define PDAL_VERSION_MICRO "${PDAL_VERSION_MICRO}"
+
+#cmakedefine ENABLE_TESTS
 
 #endif
 

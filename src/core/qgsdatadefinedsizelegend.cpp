@@ -22,11 +22,13 @@
 #include "qgslinesymbollayer.h"
 #include "qgstextformat.h"
 #include "qgstextrenderer.h"
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
 
 QgsDataDefinedSizeLegend::QgsDataDefinedSizeLegend()
 {
-  std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = qgis::make_unique< QgsSimpleLineSymbolLayer >( QColor( 0, 0, 0 ), 0.2 );
-  mLineSymbol = qgis::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << lineSymbolLayer.release() );
+  std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = std::make_unique< QgsSimpleLineSymbolLayer >( QColor( 0, 0, 0 ), 0.2 );
+  mLineSymbol = std::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << lineSymbolLayer.release() );
 }
 
 QgsDataDefinedSizeLegend::~QgsDataDefinedSizeLegend() = default;
@@ -209,7 +211,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
 
   // find out how wide the text will be
   double maxTextWidth = 0;
-  for ( const SizeClass &c : qgis::as_const( classes ) )
+  for ( const SizeClass &c : std::as_const( classes ) )
   {
     maxTextWidth = std::max( maxTextWidth, fm.boundingRect( c.label ).width() );
   }
@@ -222,7 +224,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
 
   // find out top Y coordinate for individual symbol sizes
   QList<double> symbolTopY;
-  for ( const SizeClass &c : qgis::as_const( classes ) )
+  for ( const SizeClass &c : std::as_const( classes ) )
   {
     double outputSymbolSize = context.convertToPainterUnits( c.size, s->sizeUnit(), s->sizeMapUnitScale() );
     switch ( mVAlign )
@@ -275,7 +277,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
   p->translate( 0, -textTopY );
 
   // draw symbols first so that they do not cover
-  for ( const SizeClass &c : qgis::as_const( classes ) )
+  for ( const SizeClass &c : std::as_const( classes ) )
   {
     s->setSize( c.size );
 
@@ -300,12 +302,11 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
 
   if ( mLineSymbol )
   {
-    mLineSymbol->setColor( mTextColor );
     mLineSymbol->startRender( context );
   }
 
   int i = 0;
-  for ( const SizeClass &c : qgis::as_const( classes ) )
+  for ( const SizeClass &c : std::as_const( classes ) )
   {
     // line from symbol to the text
     if ( mLineSymbol )
@@ -375,10 +376,10 @@ QgsDataDefinedSizeLegend *QgsDataDefinedSizeLegend::readXml( const QDomElement &
     ddsLegend->setSymbol( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( elemSymbol, context ) );
   }
 
-  QDomElement lineSymbol = elem.firstChildElement( QStringLiteral( "lineSymbol" ) );
-  if ( !lineSymbol.isNull() )
+  const QDomElement lineSymbolElem = elem.firstChildElement( QStringLiteral( "lineSymbol" ) );
+  if ( !lineSymbolElem.isNull() )
   {
-    ddsLegend->setLineSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( lineSymbol, context ) );
+    ddsLegend->setLineSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( lineSymbolElem.firstChildElement(), context ) );
   }
 
   QgsSizeScaleTransformer *transformer = nullptr;
@@ -435,8 +436,9 @@ void QgsDataDefinedSizeLegend::writeXml( QDomElement &elem, const QgsReadWriteCo
 
   if ( mLineSymbol )
   {
-    QDomElement elemSymbol = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "lineSymbol" ), mLineSymbol.get(), doc, context );
-    elem.appendChild( elemSymbol );
+    QDomElement lineSymbolElem = doc.createElement( QStringLiteral( "lineSymbol" ) );
+    lineSymbolElem.appendChild( QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "lineSymbol" ), mLineSymbol.get(), doc, context ) );
+    elem.appendChild( lineSymbolElem );
   }
 
   if ( mSizeScaleTransformer )
@@ -461,7 +463,7 @@ void QgsDataDefinedSizeLegend::writeXml( QDomElement &elem, const QgsReadWriteCo
   if ( !mSizeClasses.isEmpty() )
   {
     QDomElement elemClasses = doc.createElement( QStringLiteral( "classes" ) );
-    for ( const SizeClass &sc : qgis::as_const( mSizeClasses ) )
+    for ( const SizeClass &sc : std::as_const( mSizeClasses ) )
     {
       QDomElement elemClass = doc.createElement( QStringLiteral( "class" ) );
       elemClass.setAttribute( QStringLiteral( "size" ), sc.size );

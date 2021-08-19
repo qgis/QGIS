@@ -189,5 +189,7 @@ class GUI_EXPORT QgsQueryBuilder : public QgsSubsetStringEditorInterface, privat
 
     //! whether to ignore subsetStringChanged() signal from the layer
     bool mIgnoreLayerSubsetStringChangedSignal = false;
+
+    friend class TestQgsQueryBuilder;
 };
 #endif //QGSQUERYBUILDER_H

@@ -10,7 +10,7 @@
 
 class QgsLayerTree : QgsLayerTreeGroup
 {
-%Docstring
+%Docstring(signature="appended")
 Namespace with helper functions for layer tree operations.
 
 Only generally useful routines should be here. Miscellaneous utility functions for work
@@ -44,6 +44,13 @@ Check whether the node is a valid layer node
     QgsLayerTree();
 %Docstring
 Create a new empty layer tree
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    // override parent QgsLayerTreeGroup __repr__ and resort back to default repr for QgsLayerTree -- there's no extra useful context we can show
+    QString str = QStringLiteral( "<qgis._core.QgsLayerTree object at 0x%1>" ).arg( reinterpret_cast<quintptr>( sipCpp ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
     QList<QgsMapLayer *> customLayerOrder() const;

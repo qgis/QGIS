@@ -34,7 +34,7 @@ class QSpinBox;
 
 /**
  * \ingroup gui
- * Widget for editing an SSL server configuration
+ * \brief Widget for editing an SSL server configuration
  */
 class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSslConfigWidget
 {
@@ -186,7 +186,7 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
 
 /**
  * \ingroup gui
- * Dialog wrapper of widget for editing an SSL server configuration
+ * \brief Dialog wrapper of widget for editing an SSL server configuration
  */
 class GUI_EXPORT QgsAuthSslConfigDialog : public QDialog
 {

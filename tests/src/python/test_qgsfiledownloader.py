@@ -53,7 +53,7 @@ class TestQgsFileDownloader(unittest.TestCase):
 
         loop.exec_()
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true',
+    @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'),
                      'Test with http://www.qgis.org unstable. Needs local server.')
     def test_validDownload(self):
         """Tests a valid download"""
@@ -79,7 +79,7 @@ class TestQgsFileDownloader(unittest.TestCase):
         self.assertEqual(self.error_args[1], [u'Download failed: Host www.doesnotexistofthatimsure.qgis not found'])
         self.assertFalse(os.path.isfile(destination))
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true',
+    @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'),
                      'Test with http://www.github.com unstable. Needs local server.')
     def test_dowloadCanceled(self):
         """Tests user canceled download"""
@@ -101,7 +101,7 @@ class TestQgsFileDownloader(unittest.TestCase):
         self.assertFalse(os.path.isfile(destination))
         self.assertEqual(self.error_args[1], [u"Download failed: Protocol \"xyz\" is unknown"])
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true',
+    @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'),
                      'Test with http://www.github.com unstable. Needs local server.')
     def test_InvalidFile(self):
         self._make_download('https://github.com/qgis/QGIS/archive/master.zip', "")
@@ -134,7 +134,7 @@ class TestQgsFileDownloader(unittest.TestCase):
         result = ';'.join(result)
         self.assertTrue(result.startswith(error), msg + "expected:\n%s\nactual:\n%s\n" % (result, error))
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Test with badssl.com unstable. Needs local server.')
+    @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'), 'Test with badssl.com unstable. Needs local server.')
     def test_sslExpired(self):
         self.ssl_compare("expired", "https://expired.badssl.com/", "SSL Errors: ;The certificate has expired")
         self.ssl_compare("self-signed", "https://self-signed.badssl.com/",

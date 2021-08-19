@@ -27,7 +27,7 @@
 #include <QAction>
 #include <QClipboard>
 #include <QMessageBox>
-
+#include <QMimeData>
 
 QgsRuleBased3DRendererWidget::QgsRuleBased3DRendererWidget( QWidget *parent )
   : QgsPanelWidget( parent )
@@ -113,17 +113,17 @@ void QgsRuleBased3DRendererWidget::addRule()
   if ( current )
   {
     // add after this rule
-    QModelIndex currentIndex = viewRules->selectionModel()->currentIndex();
+    const QModelIndex currentIndex = viewRules->selectionModel()->currentIndex();
     mModel->insertRule( currentIndex.parent(), currentIndex.row() + 1, newrule );
-    QModelIndex newindex = mModel->index( currentIndex.row() + 1, 0, currentIndex.parent() );
+    const QModelIndex newindex = mModel->index( currentIndex.row() + 1, 0, currentIndex.parent() );
     viewRules->selectionModel()->setCurrentIndex( newindex, QItemSelectionModel::ClearAndSelect );
   }
   else
   {
     // append to root rule
-    int rows = mModel->rowCount();
+    const int rows = mModel->rowCount();
     mModel->insertRule( QModelIndex(), rows, newrule );
-    QModelIndex newindex = mModel->index( rows, 0 );
+    const QModelIndex newindex = mModel->index( rows, 0 );
     viewRules->selectionModel()->setCurrentIndex( newindex, QItemSelectionModel::ClearAndSelect );
   }
   editRule();
@@ -134,7 +134,7 @@ void QgsRuleBased3DRendererWidget::ruleWidgetPanelAccepted( QgsPanelWidget *pane
   Qgs3DRendererRulePropsWidget *widget = qobject_cast<Qgs3DRendererRulePropsWidget *>( panel );
   widget->apply();
 
-  QModelIndex index = viewRules->selectionModel()->currentIndex();
+  const QModelIndex index = viewRules->selectionModel()->currentIndex();
   mModel->updateRule( index.parent(), index.row() );
 }
 
@@ -165,7 +165,7 @@ void QgsRuleBased3DRendererWidget::editRule( const QModelIndex &index )
 
 void QgsRuleBased3DRendererWidget::removeRule()
 {
-  QItemSelection sel = viewRules->selectionModel()->selection();
+  const QItemSelection sel = viewRules->selectionModel()->selection();
   const auto constSel = sel;
   for ( const QItemSelectionRange &range : constSel )
   {
@@ -178,7 +178,7 @@ void QgsRuleBased3DRendererWidget::removeRule()
 
 void QgsRuleBased3DRendererWidget::copy()
 {
-  QModelIndexList indexlist = viewRules->selectionModel()->selectedRows();
+  const QModelIndexList indexlist = viewRules->selectionModel()->selectedRows();
 
   if ( indexlist.isEmpty() )
     return;
@@ -202,7 +202,7 @@ void QgsRuleBased3DRendererWidget::paste()
 QgsRuleBased3DRenderer::Rule *QgsRuleBased3DRendererWidget::currentRule()
 {
   QItemSelectionModel *sel = viewRules->selectionModel();
-  QModelIndex idx = sel->currentIndex();
+  const QModelIndex idx = sel->currentIndex();
   if ( !idx.isValid() )
     return nullptr;
   return mModel->ruleForIndex( idx );
@@ -223,9 +223,9 @@ Qt::ItemFlags QgsRuleBased3DRendererModel::flags( const QModelIndex &index ) con
     return Qt::ItemIsDropEnabled;
 
   // allow drop only at first column
-  Qt::ItemFlag drop = ( index.column() == 0 ? Qt::ItemIsDropEnabled : Qt::NoItemFlags );
+  const Qt::ItemFlag drop = ( index.column() == 0 ? Qt::ItemIsDropEnabled : Qt::NoItemFlags );
 
-  Qt::ItemFlag checkable = ( index.column() == 0 ? Qt::ItemIsUserCheckable : Qt::NoItemFlags );
+  const Qt::ItemFlag checkable = ( index.column() == 0 ? Qt::ItemIsUserCheckable : Qt::NoItemFlags );
 
   return Qt::ItemIsEnabled | Qt::ItemIsSelectable |
          Qt::ItemIsEditable | checkable |
@@ -349,7 +349,7 @@ QModelIndex QgsRuleBased3DRendererModel::parent( const QModelIndex &index ) cons
     return QModelIndex();
 
   // this is right: we need to know row number of our parent (in our grandparent)
-  int row = parentRule->parent()->children().indexOf( parentRule );
+  const int row = parentRule->parent()->children().indexOf( parentRule );
 
   return createIndex( row, 0, parentRule );
 }
@@ -436,7 +436,7 @@ QMimeData *QgsRuleBased3DRendererModel::mimeData( const QModelIndexList &indexes
 
     QDomElement rootElem = doc.createElement( QStringLiteral( "rule_mime" ) );
     rootElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "labeling" ) ); // for determining whether rules are from renderer or labeling
-    QDomElement rulesElem = rule->save( doc, QgsReadWriteContext() );
+    const QDomElement rulesElem = rule->save( doc, QgsReadWriteContext() );
     rootElem.appendChild( rulesElem );
     doc.appendChild( rootElem );
 
@@ -480,7 +480,7 @@ bool QgsRuleBased3DRendererModel::dropMimeData( const QMimeData *data, Qt::DropA
     QDomDocument doc;
     if ( !doc.setContent( text ) )
       continue;
-    QDomElement rootElem = doc.documentElement();
+    const QDomElement rootElem = doc.documentElement();
     if ( rootElem.tagName() != QLatin1String( "rule_mime" ) )
       continue;
     QDomElement ruleElem = rootElem.firstChildElement( QStringLiteral( "rule" ) );
@@ -620,7 +620,7 @@ void Qgs3DRendererRulePropsWidget::testFilter()
   {
     context.setFeature( f );
 
-    QVariant value = filter.evaluate( &context );
+    const QVariant value = filter.evaluate( &context );
     if ( value.toInt() != 0 )
       count++;
     if ( filter.hasEvalError() )
@@ -635,7 +635,7 @@ void Qgs3DRendererRulePropsWidget::testFilter()
 
 void Qgs3DRendererRulePropsWidget::buildExpression()
 {
-  QgsExpressionContext context( Qgs3DUtils::globalProjectLayerExpressionContext( mLayer ) );
+  const QgsExpressionContext context( Qgs3DUtils::globalProjectLayerExpressionContext( mLayer ) );
 
   QgsExpressionBuilderDialog dlg( mLayer, editFilter->text(), this, QStringLiteral( "generic" ), context );
 
@@ -645,7 +645,7 @@ void Qgs3DRendererRulePropsWidget::buildExpression()
 
 void Qgs3DRendererRulePropsWidget::apply()
 {
-  QString filter = mElseRadio->isChecked() ? QStringLiteral( "ELSE" ) : editFilter->text();
+  const QString filter = mElseRadio->isChecked() ? QStringLiteral( "ELSE" ) : editFilter->text();
   mRule->setFilterExpression( filter );
   mRule->setDescription( editDescription->text() );
   std::unique_ptr< QgsAbstract3DSymbol > newSymbol;

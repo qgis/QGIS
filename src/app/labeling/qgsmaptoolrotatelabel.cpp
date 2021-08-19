@@ -27,8 +27,8 @@
 #include "qgsmessagebar.h"
 #include "qgsapplication.h"
 
-QgsMapToolRotateLabel::QgsMapToolRotateLabel( QgsMapCanvas *canvas )
-  : QgsMapToolLabel( canvas )
+QgsMapToolRotateLabel::QgsMapToolRotateLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
+  : QgsMapToolLabel( canvas, cadDock )
   , mStartRotation( 0.0 )
   , mCurrentRotation( 0.0 )
   , mCurrentMouseAzimuth( 0.0 )
@@ -47,8 +47,8 @@ void QgsMapToolRotateLabel::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( mLabelRubberBand )
   {
-    QgsPointXY currentPoint = toMapCoordinates( e->pos() );
-    double azimuth = convertAzimuth( mRotationPoint.azimuth( currentPoint ) );
+    const QgsPointXY currentPoint = toMapCoordinates( e->pos() );
+    const double azimuth = convertAzimuth( mRotationPoint.azimuth( currentPoint ) );
     double azimuthDiff = azimuth - mCurrentMouseAzimuth;
     azimuthDiff = azimuthDiff > 180 ? azimuthDiff - 360 : azimuthDiff;
 
@@ -80,6 +80,10 @@ void QgsMapToolRotateLabel::canvasMoveEvent( QgsMapMouseEvent *e )
       mRotationItem->update();
     }
   }
+  else
+  {
+    updateHoveredLabel( e );
+  }
 }
 
 void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
@@ -91,6 +95,7 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
 
     // first click starts rotation tool
     deleteRubberBands();
+    clearHoveredLabel();
 
     QgsLabelPosition labelPos;
     if ( !labelAtPosition( e, labelPos ) )
@@ -204,7 +209,7 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
           return;
         }
 
-        double rotation = mCtrlPressed ? roundTo15Degrees( mCurrentRotation ) : mCurrentRotation;
+        const double rotation = mCtrlPressed ? roundTo15Degrees( mCurrentRotation ) : mCurrentRotation;
         if ( qgsDoubleNear( rotation, mStartRotation ) ) //mouse button pressed / released, but no rotation
         {
           return;
@@ -288,9 +293,20 @@ void QgsMapToolRotateLabel::keyReleaseEvent( QKeyEvent *e )
   }
 }
 
+bool QgsMapToolRotateLabel::canModifyLabel( const QgsMapToolLabel::LabelDetails &label )
+{
+  // only rotate non-pinned OverPoint placements until other placements are supported in pal::Feature
+
+  if ( !label.pos.isPinned
+       && label.settings.placement != QgsPalLayerSettings::OverPoint )
+    return false;
+
+  return true;
+}
+
 int QgsMapToolRotateLabel::roundTo15Degrees( double n )
 {
-  int m = static_cast< int >( n / 15.0 + 0.5 );
+  const int m = static_cast< int >( n / 15.0 + 0.5 );
   return ( m * 15 );
 }
 
@@ -303,7 +319,7 @@ double QgsMapToolRotateLabel::convertAzimuth( double a )
 QgsRubberBand *QgsMapToolRotateLabel::createRotationPreviewBox()
 {
   delete mRotationPreviewBox;
-  QVector< QgsPointXY > boxPoints = mCurrentLabel.pos.cornerPoints;
+  const QVector< QgsPointXY > boxPoints = mCurrentLabel.pos.cornerPoints;
   if ( boxPoints.empty() )
   {
     return nullptr;
@@ -324,7 +340,7 @@ void QgsMapToolRotateLabel::setRotationPreviewBox( double rotation )
   }
 
   mRotationPreviewBox->reset();
-  QVector< QgsPointXY > boxPoints = mCurrentLabel.pos.cornerPoints;
+  const QVector< QgsPointXY > boxPoints = mCurrentLabel.pos.cornerPoints;
   if ( boxPoints.empty() )
   {
     return;
@@ -340,12 +356,12 @@ void QgsMapToolRotateLabel::setRotationPreviewBox( double rotation )
 
 QgsPointXY QgsMapToolRotateLabel::rotatePointClockwise( const QgsPointXY &input, const QgsPointXY &centerPoint, double degrees ) const
 {
-  double rad = -degrees / 180 * M_PI;
-  double v1x = input.x() - centerPoint.x();
-  double v1y = input.y() - centerPoint.y();
+  const double rad = -degrees / 180 * M_PI;
+  const double v1x = input.x() - centerPoint.x();
+  const double v1y = input.y() - centerPoint.y();
 
-  double v2x = std::cos( rad ) * v1x - std::sin( rad ) * v1y;
-  double v2y = std::sin( rad ) * v1x + std::cos( rad ) * v1y;
+  const double v2x = std::cos( rad ) * v1x - std::sin( rad ) * v1y;
+  const double v2y = std::sin( rad ) * v1x + std::cos( rad ) * v1y;
 
   return QgsPointXY( centerPoint.x() + v2x, centerPoint.y() + v2y );
 }

@@ -21,7 +21,7 @@
 #include "qgs3dsceneexporter.h"
 
 QgsLine3DSymbol::QgsLine3DSymbol()
-  : mMaterial( qgis::make_unique< QgsPhongMaterialSettings >() )
+  : mMaterial( std::make_unique< QgsPhongMaterialSettings >() )
 {
 
 }
@@ -30,7 +30,7 @@ QgsLine3DSymbol::~QgsLine3DSymbol() = default;
 
 QgsAbstract3DSymbol *QgsLine3DSymbol::clone() const
 {
-  std::unique_ptr< QgsLine3DSymbol > result = qgis::make_unique< QgsLine3DSymbol >();
+  std::unique_ptr< QgsLine3DSymbol > result = std::make_unique< QgsLine3DSymbol >();
   result->mAltClamping = mAltClamping;
   result->mAltBinding = mAltBinding;
   result->mWidth = mWidth;
@@ -67,7 +67,7 @@ void QgsLine3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContex
 {
   Q_UNUSED( context )
 
-  QDomElement elemDataProperties = elem.firstChildElement( QStringLiteral( "data" ) );
+  const QDomElement elemDataProperties = elem.firstChildElement( QStringLiteral( "data" ) );
   mAltClamping = Qgs3DUtils::altClampingFromString( elemDataProperties.attribute( QStringLiteral( "alt-clamping" ) ) );
   mAltBinding = Qgs3DUtils::altBindingFromString( elemDataProperties.attribute( QStringLiteral( "alt-binding" ) ) );
   mHeight = elemDataProperties.attribute( QStringLiteral( "height" ) ).toFloat();
@@ -110,13 +110,13 @@ bool QgsLine3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::
 {
   if ( renderAsSimpleLines() )
   {
-    QVector<Qgs3DExportObject *> objs = exporter->processLines( entity, objectNamePrefix );
+    const QVector<Qgs3DExportObject *> objs = exporter->processLines( entity, objectNamePrefix );
     exporter->mObjects << objs;
     return objs.size() != 0;
   }
   else
   {
-    QList<Qt3DRender::QGeometryRenderer *> renderers = entity->findChildren<Qt3DRender::QGeometryRenderer *>();
+    const QList<Qt3DRender::QGeometryRenderer *> renderers = entity->findChildren<Qt3DRender::QGeometryRenderer *>();
     for ( Qt3DRender::QGeometryRenderer *r : renderers )
     {
       Qgs3DExportObject *object = exporter->processGeometryRenderer( r, objectNamePrefix );

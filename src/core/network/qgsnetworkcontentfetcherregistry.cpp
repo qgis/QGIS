@@ -19,6 +19,7 @@
 #include "qgsnetworkcontentfetcherregistry.h"
 
 #include "qgsapplication.h"
+#include <QUrl>
 
 QgsNetworkContentFetcherRegistry::~QgsNetworkContentFetcherRegistry()
 {
@@ -30,7 +31,7 @@ QgsNetworkContentFetcherRegistry::~QgsNetworkContentFetcherRegistry()
   mFileRegistry.clear();
 }
 
-const QgsFetchedContent *QgsNetworkContentFetcherRegistry::fetch( const QString &url, const FetchingMode fetchingMode )
+const QgsFetchedContent *QgsNetworkContentFetcherRegistry::fetch( const QString &url, const Qgis::ActionStart fetchingMode )
 {
 
   if ( mFileRegistry.contains( url ) )
@@ -42,7 +43,7 @@ const QgsFetchedContent *QgsNetworkContentFetcherRegistry::fetch( const QString 
 
   mFileRegistry.insert( url, content );
 
-  if ( fetchingMode == DownloadImmediately )
+  if ( fetchingMode == Qgis::ActionStart::Immediate )
     content->download();
 
 
@@ -52,7 +53,7 @@ const QgsFetchedContent *QgsNetworkContentFetcherRegistry::fetch( const QString 
 QFile *QgsNetworkContentFetcherRegistry::localFile( const QString &filePathOrUrl )
 {
   QFile *file = nullptr;
-  QString path = filePathOrUrl;
+  const QString path = filePathOrUrl;
 
   if ( !QUrl::fromUserInput( filePathOrUrl ).isLocalFile() )
   {

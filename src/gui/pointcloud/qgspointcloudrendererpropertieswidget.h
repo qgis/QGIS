@@ -31,7 +31,7 @@ class QgsMessageBar;
 
 /**
  * \ingroup gui
- * A generic widget for setting the 2D renderer for a point cloud layer.
+ * \brief A generic widget for setting the 2D renderer for a point cloud layer.
  *
  * \since QGIS 3.18
  */

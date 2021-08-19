@@ -10,9 +10,10 @@
 
 
 
+
 class QgsStringReplacement
 {
-%Docstring
+%Docstring(signature="appended")
 A representation of a single string replacement.
 
 .. versionadded:: 3.0
@@ -87,7 +88,7 @@ Creates a new QgsStringReplacement from an encoded properties map.
 
 class QgsStringReplacementCollection
 {
-%Docstring
+%Docstring(signature="appended")
 A collection of string replacements (specified using QgsStringReplacement objects).
 
 .. versionadded:: 3.0
@@ -157,7 +158,7 @@ Reads the collection state from an XML element.
 
 class QgsStringUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Utility functions for working with strings.
 
 .. versionadded:: 2.11
@@ -280,6 +281,17 @@ links.
 .. versionadded:: 3.0
 %End
 
+    static bool isUrl( const QString &string );
+%Docstring
+Returns whether the string is a URL (http,https,ftp,file)
+
+:param string: the string to check
+
+:return: whether the string is an URL
+
+.. versionadded:: 3.22
+%End
+
     static QString wordWrap( const QString &string, int length, bool useMaxLineLength = true, const QString &customDelimiter = QString() );
 %Docstring
 Automatically wraps a ``string`` by inserting new line characters at appropriate locations in the string.
@@ -314,6 +326,28 @@ Convert simple HTML to markdown. Only br, b and link are supported.
 :return: String formatted as markdown
 
 .. versionadded:: 3.10
+%End
+
+    static QString qRegExpEscape( const QString &string );
+%Docstring
+Returns an escaped string matching the behavior of QRegExp.escape.
+
+:param string: String to escape
+
+:return: Escaped string
+
+.. versionadded:: 3.22
+%End
+
+    static QString truncateMiddleOfString( const QString &string, int maxLength );
+%Docstring
+Truncates a ``string`` to the specified maximum character length.
+
+If the ``string`` exceeds the maximum character length, then the string
+will be truncated by removing characters from the middle of the string
+and replacing them with a horizontal ellipsis character.
+
+.. versionadded:: 3.22
 %End
 
 };

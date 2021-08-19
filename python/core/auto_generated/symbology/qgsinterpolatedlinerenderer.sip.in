@@ -9,9 +9,10 @@
 
 
 
+
 class QgsInterpolatedLineColor
 {
-%Docstring
+%Docstring(signature="appended")
 
 Class defining color to render mesh datasets. The color can vary depending on the dataset value.
 
@@ -59,6 +60,13 @@ Sets the single color to define the coloring
 Returns the color corresponding to the magnitude
 %End
 
+    void setColoringMethod( const QgsInterpolatedLineColor::ColoringMethod &coloringMethod );
+%Docstring
+Sets the coloring method used
+
+.. versionadded:: 3.20
+%End
+
     QgsInterpolatedLineColor::ColoringMethod coloringMethod() const;
 %Docstring
 Returns the coloring method used
@@ -67,6 +75,13 @@ Returns the coloring method used
     QgsColorRampShader colorRampShader() const;
 %Docstring
 Returns the color ramp shader
+%End
+
+    QColor singleColor() const;
+%Docstring
+Returns the single color that is used if SingleColor coloring mode is set
+
+.. versionadded:: 3.20
 %End
 
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
@@ -93,7 +108,7 @@ Returns the break values, graduated colors and the associated gradients between 
 
 class QgsInterpolatedLineWidth
 {
-%Docstring
+%Docstring(signature="appended")
 
 Represents a width than can vary depending on values
 
@@ -194,8 +209,8 @@ Reads configuration from the given DOM element
 
 class QgsInterpolatedLineRenderer
 {
-%Docstring
-Represents a line with width and color varying depending on values.
+%Docstring(signature="appended")
+Represents a simple line renderer with width and color varying depending on values.
 
 .. versionadded:: 3.14
 %End
@@ -204,9 +219,17 @@ Represents a line with width and color varying depending on values.
 #include "qgsinterpolatedlinerenderer.h"
 %End
   public:
+
     void setInterpolatedWidth( const QgsInterpolatedLineWidth &strokeWidth );
 %Docstring
-Sets the stroke width used to plot
+Sets the stroke width used to render
+%End
+
+    QgsInterpolatedLineWidth interpolatedLineWidth() const;
+%Docstring
+Returns the stroke width used to render
+
+.. versionadded:: 3.20
 %End
 
     void setWidthUnit( const QgsUnitTypes::RenderUnit &strokeWidthUnit );
@@ -214,18 +237,162 @@ Sets the stroke width used to plot
 Sets the unit of the stroke width
 %End
 
-    void setInterpolatedColor( const QgsInterpolatedLineColor &strokeColoring );
+    QgsUnitTypes::RenderUnit widthUnit() const;
 %Docstring
-Sets the stroke color used to plot
+Returns the unit of the stroke width
+
+.. versionadded:: 3.20
 %End
 
-    void render( double value1, double value2, QgsPointXY point1, QgsPointXY point2, QgsRenderContext &context ) const;
+    void setInterpolatedColor( const QgsInterpolatedLineColor &strokeColoring );
 %Docstring
-Render a line in the ``context`` between ``point1`` and ``point2``
+Sets the stroke color used to render
+%End
+
+    QgsInterpolatedLineColor interpolatedColor() const;
+%Docstring
+Returns the stroke color used to render
+
+.. versionadded:: 3.20
+%End
+
+    void render( double value1, double value2, const QgsPointXY &point1, const QgsPointXY &point2, QgsRenderContext &context ) const;
+%Docstring
+Renders a line in the ``context`` between ``point1`` and ``point2``
 with color and width that vary depending on ``value1`` and ``value2``
 %End
 
+    void render( double valueColor1, double valueColor2, double valueWidth1, double valueWidth2, const QgsPointXY &point1, const QgsPointXY &point2, QgsRenderContext &context ) const;
+%Docstring
+Renders a line in the ``context`` between ``point1`` and ``point2``
+with color that varies depending on ``valueColor1`` and ``valueColor2`` and and width that varies between ``valueWidth1`` and ``valueWidth2``
+
+.. versionadded:: 3.20
+%End
+
+    void setSelected( bool selected );
+%Docstring
+Sets if the rendering must be done as the element is selected
+
+.. versionadded:: 3.20
+%End
+
 };
+
+class QgsInterpolatedLineSymbolLayer : QgsLineSymbolLayer
+{
+%Docstring(signature="appended")
+A symbol layer that represents vector layer line feature as interpolated line
+The interpolation is done between two values defined at the extremities
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgsinterpolatedlinerenderer.h"
+%End
+  public:
+
+    QgsInterpolatedLineSymbolLayer();
+%Docstring
+Constructor
+%End
+
+    static QgsSymbolLayer *create( const QVariantMap &properties ) /Factory/;
+%Docstring
+Creates the symbol layer
+%End
+
+    virtual QString layerType() const;
+
+    virtual void startRender( QgsSymbolRenderContext &context );
+
+    virtual void stopRender( QgsSymbolRenderContext &context );
+
+    virtual QgsInterpolatedLineSymbolLayer *clone() const /Factory/;
+
+    virtual QVariantMap properties() const;
+
+    virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );
+
+
+    virtual void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
+    virtual void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
+    virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context );
+
+    virtual bool isCompatibleWithSymbol( QgsSymbol *symbol ) const;
+
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
+    virtual bool canCauseArtifactsBetweenAdjacentTiles() const;
+
+
+    void setExpressionsStringForWidth( QString start, QString end );
+%Docstring
+Sets the expressions (as string) that define the extremety values af the line feature for width
+%End
+
+    QString startValueExpressionForWidth() const;
+%Docstring
+Returns the epression related to the start extremity value for width
+%End
+
+    QString endValueExpressionForWidth() const;
+%Docstring
+Returns the expression related to the end extremity value for width
+%End
+
+    void setWidthUnit( const QgsUnitTypes::RenderUnit &strokeWidthUnit );
+%Docstring
+Sets the width unit
+%End
+
+    QgsUnitTypes::RenderUnit widthUnit() const;
+%Docstring
+Returns the width unit
+%End
+
+    void setInterpolatedWidth( const QgsInterpolatedLineWidth &interpolatedLineWidth );
+%Docstring
+Sets the interpolated width used to render the width of lines, ``see`` :py:class:`QgsInterpolatedLineWidth`
+%End
+
+    QgsInterpolatedLineWidth interpolatedWidth() const;
+%Docstring
+Returns the interpolated width used to render the width of lines, see ``:py:class:`QgsInterpolatedLineWidth```
+%End
+
+    void setExpressionsStringForColor( QString start, QString end );
+%Docstring
+Sets the expressions (as string) that define the extremety values af the line feature for color
+%End
+
+    QString startValueExpressionForColor() const;
+%Docstring
+Returns the epression related to the start extremity value for width for color
+%End
+
+    QString endValueExpressionForColor() const;
+%Docstring
+Returns the expression related to the end extremity value for width for color
+%End
+
+    void setInterpolatedColor( const QgsInterpolatedLineColor &interpolatedLineColor );
+%Docstring
+Sets the interpolated color used to render the colors of lines, ``see`` :py:class:`QgsInterpolatedLineColor`
+%End
+
+    QgsInterpolatedLineColor interpolatedColor() const;
+%Docstring
+Returns the interpolated color used to render the colors of lines, see ``:py:class:`QgsInterpolatedLineColor```
+%End
+
+  private:
+    QgsInterpolatedLineSymbolLayer( const QgsInterpolatedLineSymbolLayer &copy );
+};
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

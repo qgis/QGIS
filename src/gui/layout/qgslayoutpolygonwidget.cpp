@@ -22,6 +22,7 @@
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutundostack.h"
 #include "qgsvectorlayer.h"
+#include "qgsfillsymbol.h"
 
 QgsLayoutPolygonWidget::QgsLayoutPolygonWidget( QgsLayoutItemPolygon *polygon )
   : QgsLayoutItemBaseWidget( nullptr, polygon )
@@ -37,7 +38,7 @@ QgsLayoutPolygonWidget::QgsLayoutPolygonWidget( QgsLayoutItemPolygon *polygon )
   mItemPropertiesWidget->showFrameGroup( false );
   mainLayout->addWidget( mItemPropertiesWidget );
 
-  mPolygonStyleButton->setSymbolType( QgsSymbol::Fill );
+  mPolygonStyleButton->setSymbolType( Qgis::SymbolType::Fill );
   connect( mPolygonStyleButton, &QgsSymbolButton::changed, this, &QgsLayoutPolygonWidget::symbolChanged );
 
   if ( mPolygon )

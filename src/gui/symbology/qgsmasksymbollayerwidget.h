@@ -26,7 +26,7 @@ class QgsSymbolLayerSelectionWidget;
 /**
  * \ingroup gui
  * \class QgsMaskMarkerSymbolLayerWidget
- * Symbol layer widget for the handling of QgsMaskMarkerSymbolLayer.
+ * \brief Symbol layer widget for the handling of QgsMaskMarkerSymbolLayer.
  * \since QGIS 3.12
  */
 class GUI_EXPORT QgsMaskMarkerSymbolLayerWidget: public QgsSymbolLayerWidget, private Ui::QgsMaskSymbolLayerWidgetBase

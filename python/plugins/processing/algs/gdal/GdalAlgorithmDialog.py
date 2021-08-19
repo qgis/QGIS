@@ -123,13 +123,16 @@ class GdalParametersPanel(ParametersPanel):
             parameters = self.dialog.createProcessingParameters()
             for output in self.algorithm().destinationParameterDefinitions():
                 if not output.name() in parameters or parameters[output.name()] is None:
-                    parameters[output.name()] = self.tr("[temporary file]")
+                    if not output.flags() & QgsProcessingParameterDefinition.FlagOptional:
+                        parameters[output.name()] = self.tr("[temporary file]")
             for p in self.algorithm().parameterDefinitions():
                 if p.flags() & QgsProcessingParameterDefinition.FlagHidden:
                     continue
 
-                if (not p.name() in parameters and not p.flags() & QgsProcessingParameterDefinition.FlagOptional) \
-                        or (not p.checkValueIsAcceptable(parameters[p.name()])):
+                if p.flags() & QgsProcessingParameterDefinition.FlagOptional and p.name() not in parameters:
+                    continue
+
+                if p.name() not in parameters or not p.checkValueIsAcceptable(parameters[p.name()]):
                     # not ready yet
                     self.text.setPlainText('')
                     return

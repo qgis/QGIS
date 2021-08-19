@@ -48,11 +48,11 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
 
   mWidget->setEditorContext( *ctx, mCanvas, mMessageBar );
 
-  bool showForm = config( QStringLiteral( "ShowForm" ), false ).toBool();
-  bool mapIdent = config( QStringLiteral( "MapIdentification" ), false ).toBool();
-  bool readOnlyWidget = config( QStringLiteral( "ReadOnly" ), false ).toBool();
-  bool orderByValue = config( QStringLiteral( "OrderByValue" ), false ).toBool();
-  bool showOpenFormButton = config( QStringLiteral( "ShowOpenFormButton" ), true ).toBool();
+  const bool showForm = config( QStringLiteral( "ShowForm" ), false ).toBool();
+  const bool mapIdent = config( QStringLiteral( "MapIdentification" ), false ).toBool();
+  const bool readOnlyWidget = config( QStringLiteral( "ReadOnly" ), false ).toBool();
+  const bool orderByValue = config( QStringLiteral( "OrderByValue" ), false ).toBool();
+  const bool showOpenFormButton = config( QStringLiteral( "ShowOpenFormButton" ), true ).toBool();
 
   mWidget->setEmbedForm( showForm );
   mWidget->setReadOnlySelector( readOnlyWidget );
@@ -63,6 +63,9 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
   {
     mWidget->setFilterFields( config( QStringLiteral( "FilterFields" ) ).toStringList() );
     mWidget->setChainFilters( config( QStringLiteral( "ChainFilters" ) ).toBool() );
+  }
+  if ( !config( QStringLiteral( "FilterExpression" ) ).toString().isEmpty() )
+  {
     mWidget->setFilterExpression( config( QStringLiteral( "FilterExpression" ) ).toString() );
   }
   mWidget->setAllowAddFeatures( config( QStringLiteral( "AllowAddFeatures" ), false ).toBool() );
@@ -155,7 +158,7 @@ QVariantList QgsRelationReferenceWidgetWrapper::additionalFieldValues() const
   {
     QVariantList values = mWidget->foreignKeys();
     const QList<QgsRelation::FieldPair> fieldPairs = mWidget->relation().fieldPairs();
-    int fieldCount = std::min( fieldPairs.count(), values.count() );
+    const int fieldCount = std::min( fieldPairs.count(), values.count() );
     for ( int i = 0; i < fieldCount; i++ )
     {
       if ( fieldPairs.at( i ).referencingField() == field().name() )
@@ -204,8 +207,10 @@ void QgsRelationReferenceWidgetWrapper::updateValues( const QVariant &val, const
   }
   Q_ASSERT( values.count() == fieldPairs.count() );
 
+  mBlockChanges++;
   mWidget->setForeignKeys( values );
   mWidget->setFormFeature( formFeature() );
+  mBlockChanges--;
 }
 
 void QgsRelationReferenceWidgetWrapper::setEnabled( bool enabled )
@@ -218,6 +223,9 @@ void QgsRelationReferenceWidgetWrapper::setEnabled( bool enabled )
 
 void QgsRelationReferenceWidgetWrapper::foreignKeysChanged( const QVariantList &values )
 {
+  if ( mBlockChanges != 0 ) // initial value is being set, we can ignore this signal
+    return;
+
   QVariant mainValue = QVariant( field().type() );
 
   if ( !mWidget || !mWidget->relation().isValid() )

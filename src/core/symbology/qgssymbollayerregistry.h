@@ -18,15 +18,17 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
-#include "qgssymbol.h"
 
 class QgsPathResolver;
 class QgsVectorLayer;
 class QgsSymbolLayerWidget SIP_EXTERNAL;
+class QgsSymbolLayer;
+class QDomElement;
+class QgsReadWriteContext;
 
 /**
  * \ingroup core
- * Stores metadata about one symbol layer class.
+ * \brief Stores metadata about one symbol layer class.
  *
  * \note It's necessary to implement createSymbolLayer() function.
  *   In C++ you can use QgsSymbolLayerMetadata convenience class.
@@ -34,7 +36,14 @@ class QgsSymbolLayerWidget SIP_EXTERNAL;
 class CORE_EXPORT QgsSymbolLayerAbstractMetadata
 {
   public:
-    QgsSymbolLayerAbstractMetadata( const QString &name, const QString &visibleName, QgsSymbol::SymbolType type )
+
+    /**
+     * Constructor for QgsSymbolLayerAbstractMetadata.
+     * \param name internal symbol layer name (unique identifier)
+     * \param visibleName user visible, translated name for symbol layer
+     * \param type associated symbol type
+     */
+    QgsSymbolLayerAbstractMetadata( const QString &name, const QString &visibleName, Qgis::SymbolType type )
       : mName( name )
       , mVisibleName( visibleName )
       , mType( type )
@@ -44,7 +53,7 @@ class CORE_EXPORT QgsSymbolLayerAbstractMetadata
 
     QString name() const { return mName; }
     QString visibleName() const { return mVisibleName; }
-    QgsSymbol::SymbolType type() const { return mType; }
+    Qgis::SymbolType type() const { return mType; }
 
     //! Create a symbol layer of this type given the map of properties.
     virtual QgsSymbolLayer *createSymbolLayer( const QVariantMap &map ) = 0 SIP_FACTORY;
@@ -68,36 +77,53 @@ class CORE_EXPORT QgsSymbolLayerAbstractMetadata
       Q_UNUSED( saving )
     }
 
+    /**
+     * Resolve fonts from the  symbol layer's \a properties.
+     *
+     * This tests whether the required fonts from the encoded \a properties are available on the system, and records
+     * warnings in the \a context if not.
+     *
+     * \since QGIS 3.20
+     */
+    virtual void resolveFonts( const QVariantMap &properties, const QgsReadWriteContext &context )
+    {
+      Q_UNUSED( properties )
+      Q_UNUSED( context )
+    }
+
   protected:
     QString mName;
     QString mVisibleName;
-    QgsSymbol::SymbolType mType;
+    Qgis::SymbolType mType;
 };
 
 typedef QgsSymbolLayer *( *QgsSymbolLayerCreateFunc )( const QVariantMap & ) SIP_SKIP;
 typedef QgsSymbolLayerWidget *( *QgsSymbolLayerWidgetFunc )( QgsVectorLayer * ) SIP_SKIP;
 typedef QgsSymbolLayer *( *QgsSymbolLayerCreateFromSldFunc )( QDomElement & ) SIP_SKIP;
 typedef void ( *QgsSymbolLayerPathResolverFunc )( QVariantMap &, const QgsPathResolver &, bool ) SIP_SKIP;
+typedef void ( *QgsSymbolLayerFontResolverFunc )( const QVariantMap &, const QgsReadWriteContext & ) SIP_SKIP;
 
 /**
  * \ingroup core
- Convenience metadata class that uses static functions to create symbol layer and its widget.
+ * \brief Convenience metadata class that uses static functions to create symbol layer and its widget.
  */
 class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
 {
   public:
     //! \note not available in Python bindings
     QgsSymbolLayerMetadata( const QString &name, const QString &visibleName,
-                            QgsSymbol::SymbolType type,
+                            Qgis::SymbolType type,
                             QgsSymbolLayerCreateFunc pfCreate,
                             QgsSymbolLayerCreateFromSldFunc pfCreateFromSld = nullptr,
                             QgsSymbolLayerPathResolverFunc pfPathResolver = nullptr,
-                            QgsSymbolLayerWidgetFunc pfWidget = nullptr ) SIP_SKIP
+                            QgsSymbolLayerWidgetFunc pfWidget = nullptr,
+                            QgsSymbolLayerFontResolverFunc pfFontResolver = nullptr ) SIP_SKIP
   : QgsSymbolLayerAbstractMetadata( name, visibleName, type )
     , mCreateFunc( pfCreate )
     , mWidgetFunc( pfWidget )
     , mCreateFromSldFunc( pfCreateFromSld )
     , mPathResolverFunc( pfPathResolver )
+    , mFontResolverFunc( pfFontResolver )
     {}
 
     //! \note not available in Python bindings
@@ -121,11 +147,24 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
         mPathResolverFunc( properties, pathResolver, saving );
     }
 
+    void resolveFonts( const QVariantMap &properties, const QgsReadWriteContext &context ) override
+    {
+      if ( mFontResolverFunc )
+        mFontResolverFunc( properties, context );
+    }
+
   protected:
     QgsSymbolLayerCreateFunc mCreateFunc;
     QgsSymbolLayerWidgetFunc mWidgetFunc;
     QgsSymbolLayerCreateFromSldFunc mCreateFromSldFunc;
     QgsSymbolLayerPathResolverFunc mPathResolverFunc;
+
+    /**
+     * Font resolver function pointer.
+     *
+     * \since QGIS 3.20
+     */
+    QgsSymbolLayerFontResolverFunc mFontResolverFunc;
 
   private:
 #ifdef SIP_RUN
@@ -136,7 +175,7 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
 
 /**
  * \ingroup core
- * Registry of available symbol layer classes.
+ * \brief Registry of available symbol layer classes.
  *
  * QgsSymbolLayerRegistry is not usually directly created, but rather accessed through
  * QgsApplication::symbolLayerRegistry().
@@ -173,11 +212,21 @@ class CORE_EXPORT QgsSymbolLayerRegistry
      */
     void resolvePaths( const QString &name, QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving ) const;
 
+    /**
+     * Resolve fonts from the \a properties of a particular symbol layer.
+     *
+     * This tests whether the required fonts from the encoded \a properties are available on the system, and records
+     * warnings in the \a context if not.
+     *
+     * \since QGIS 3.20
+     */
+    void resolveFonts( const QString &name, QVariantMap &properties, const QgsReadWriteContext &context ) const;
+
     //! Returns a list of available symbol layers for a specified symbol type
-    QStringList symbolLayersForType( QgsSymbol::SymbolType type );
+    QStringList symbolLayersForType( Qgis::SymbolType type );
 
     //! create a new instance of symbol layer for specified symbol type with default settings
-    static QgsSymbolLayer *defaultSymbolLayer( QgsSymbol::SymbolType type ) SIP_FACTORY;
+    static QgsSymbolLayer *defaultSymbolLayer( Qgis::SymbolType type ) SIP_FACTORY;
 
   private:
 #ifdef SIP_RUN

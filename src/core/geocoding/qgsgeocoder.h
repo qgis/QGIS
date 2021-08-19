@@ -26,7 +26,7 @@ class QgsGeocoderContext;
 
 /**
  * \ingroup core
- * Interface for geocoders.
+ * \brief Interface for geocoders.
  *
  * QgsGeocoderInterface implementations are able to take either a QgsFeature or a free-form string
  * and calculate the corresponding geometry of the feature.

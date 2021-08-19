@@ -33,7 +33,7 @@ class QgsRectangle;
 ///@cond PRIVATE
 
 /**
- * Utility functions for reclassifying raster layers.
+ * \brief Utility functions for reclassifying raster layers.
  * \ingroup analysis
  * \since QGIS 3.2
  */

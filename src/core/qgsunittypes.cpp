@@ -48,7 +48,7 @@ QString QgsUnitTypes::encodeUnitType( QgsUnitTypes::UnitType type )
 
 QgsUnitTypes::UnitType QgsUnitTypes::decodeUnitType( const QString &string, bool *ok )
 {
-  QString normalized = string.trimmed().toLower();
+  const QString normalized = string.trimmed().toLower();
 
   if ( ok )
     *ok = true;
@@ -164,7 +164,7 @@ QString QgsUnitTypes::encodeUnit( DistanceUnit unit )
 
 QgsUnitTypes::DistanceUnit QgsUnitTypes::decodeDistanceUnit( const QString &string, bool *ok )
 {
-  QString normalized = string.trimmed().toLower();
+  const QString normalized = string.trimmed().toLower();
 
   if ( ok )
     *ok = true;
@@ -311,7 +311,7 @@ QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::DistanceUnit unit )
 
 QgsUnitTypes::DistanceUnit QgsUnitTypes::stringToDistanceUnit( const QString &string, bool *ok )
 {
-  QString normalized = string.trimmed().toLower();
+  const QString normalized = string.trimmed().toLower();
 
   if ( ok )
     *ok = true;
@@ -656,7 +656,7 @@ QString QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaUnit unit )
 
 QgsUnitTypes::AreaUnit QgsUnitTypes::decodeAreaUnit( const QString &string, bool *ok )
 {
-  QString normalized = string.trimmed().toLower();
+  const QString normalized = string.trimmed().toLower();
 
   if ( ok )
     *ok = true;
@@ -758,7 +758,7 @@ QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::AreaUnit unit )
 
 QgsUnitTypes::AreaUnit QgsUnitTypes::stringToAreaUnit( const QString &string, bool *ok )
 {
-  QString normalized = string.trimmed().toLower();
+  const QString normalized = string.trimmed().toLower();
 
   if ( ok )
     *ok = true;
@@ -1275,6 +1275,8 @@ QString QgsUnitTypes::encodeUnit( QgsUnitTypes::TemporalUnit unit )
       return QStringLiteral( "dec" );
     case TemporalCenturies:
       return QStringLiteral( "c" );
+    case TemporalIrregularStep:
+      return QStringLiteral( "xxx" );
     case TemporalUnknownUnit:
       return QStringLiteral( "<unknown>" );
   }
@@ -1283,7 +1285,7 @@ QString QgsUnitTypes::encodeUnit( QgsUnitTypes::TemporalUnit unit )
 
 QgsUnitTypes::TemporalUnit QgsUnitTypes::decodeTemporalUnit( const QString &string, bool *ok )
 {
-  QString normalized = string.trimmed().toLower();
+  const QString normalized = string.trimmed().toLower();
 
   if ( ok )
     *ok = true;
@@ -1308,6 +1310,8 @@ QgsUnitTypes::TemporalUnit QgsUnitTypes::decodeTemporalUnit( const QString &stri
     return TemporalDecades;
   if ( normalized == encodeUnit( TemporalCenturies ) )
     return TemporalCenturies;
+  if ( normalized == encodeUnit( TemporalIrregularStep ) )
+    return TemporalIrregularStep;
   if ( normalized == encodeUnit( TemporalUnknownUnit ) )
     return TemporalUnknownUnit;
 
@@ -1341,6 +1345,8 @@ QString QgsUnitTypes::toString( QgsUnitTypes::TemporalUnit unit )
       return QObject::tr( "decades", "temporal" );
     case TemporalCenturies:
       return QObject::tr( "centuries", "temporal" );
+    case TemporalIrregularStep:
+      return QObject::tr( "steps", "temporal" );
     case TemporalUnknownUnit:
       return QObject::tr( "<unknown>", "temporal" );
   }
@@ -1371,6 +1377,8 @@ QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::TemporalUnit unit )
       return QObject::tr( "dec", "temporal" );
     case TemporalCenturies:
       return QObject::tr( "cen", "temporal" );
+    case TemporalIrregularStep:
+      return QObject::tr( "steps", "temporal" );
     case TemporalUnknownUnit:
       return QObject::tr( "<unknown>", "temporal" );
   }
@@ -1379,7 +1387,7 @@ QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::TemporalUnit unit )
 
 QgsUnitTypes::TemporalUnit QgsUnitTypes::stringToTemporalUnit( const QString &string, bool *ok )
 {
-  QString normalized = string.trimmed().toLower();
+  const QString normalized = string.trimmed().toLower();
 
   if ( ok )
     *ok = true;
@@ -1404,6 +1412,8 @@ QgsUnitTypes::TemporalUnit QgsUnitTypes::stringToTemporalUnit( const QString &st
     return TemporalDecades;
   if ( normalized == toString( TemporalCenturies ) )
     return TemporalCenturies;
+  if ( normalized == toString( TemporalIrregularStep ) )
+    return TemporalIrregularStep;
   if ( normalized == toString( TemporalUnknownUnit ) )
     return TemporalUnknownUnit;
 
@@ -1442,6 +1452,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalUnit fromUnit, 
         case TemporalCenturies:
           return 1 / 3155760000.0;
         case TemporalUnknownUnit:
+        case TemporalIrregularStep:
           return 1.0;
       }
       break;
@@ -1471,6 +1482,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalUnit fromUnit, 
         case TemporalCenturies:
           return 1 / 315576000000.0;
         case TemporalUnknownUnit:
+        case TemporalIrregularStep:
           return 1.0;
       }
       break;
@@ -1500,6 +1512,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalUnit fromUnit, 
         case TemporalCenturies:
           return 1 / 52596000.0;
         case TemporalUnknownUnit:
+        case TemporalIrregularStep:
           return 1.0;
       }
       break;
@@ -1529,6 +1542,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalUnit fromUnit, 
         case TemporalCenturies:
           return 1 / 876600.0;
         case TemporalUnknownUnit:
+        case TemporalIrregularStep:
           return 1.0;
       }
       break;
@@ -1558,6 +1572,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalUnit fromUnit, 
         case TemporalCenturies:
           return 1 / 36525.0;
         case TemporalUnknownUnit:
+        case TemporalIrregularStep:
           return 1.0;
       }
       break;
@@ -1587,6 +1602,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalUnit fromUnit, 
         case TemporalCenturies:
           return 7 / 36525.0;
         case TemporalUnknownUnit:
+        case TemporalIrregularStep:
           return 1.0;
       }
       break;
@@ -1616,6 +1632,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalUnit fromUnit, 
         case TemporalCenturies:
           return 30 / 36525.0;
         case TemporalUnknownUnit:
+        case TemporalIrregularStep:
           return 1.0;
       }
       break;
@@ -1645,6 +1662,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalUnit fromUnit, 
         case TemporalCenturies:
           return 0.01;
         case TemporalUnknownUnit:
+        case TemporalIrregularStep:
           return 1.0;
       }
       break;
@@ -1674,6 +1692,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalUnit fromUnit, 
         case TemporalCenturies:
           return 0.1;
         case TemporalUnknownUnit:
+        case TemporalIrregularStep:
           return 1.0;
       }
       break;
@@ -1704,12 +1723,14 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalUnit fromUnit, 
         case TemporalCenturies:
           return 1;
         case TemporalUnknownUnit:
+        case TemporalIrregularStep:
           return 1.0;
       }
       break;
     }
 
     case TemporalUnknownUnit:
+    case TemporalIrregularStep:
     {
       return 1.0;
     }
@@ -1719,7 +1740,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalUnit fromUnit, 
 
 QgsUnitTypes::VolumeUnit QgsUnitTypes::decodeVolumeUnit( const QString &string, bool *ok )
 {
-  QString normalized = string.trimmed().toLower();
+  const QString normalized = string.trimmed().toLower();
 
   if ( ok )
     *ok = true;
@@ -1816,7 +1837,7 @@ QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::VolumeUnit unit )
 
 QgsUnitTypes::VolumeUnit QgsUnitTypes::stringToVolumeUnit( const QString &string, bool *ok )
 {
-  QString normalized = string.trimmed().toLower();
+  const QString normalized = string.trimmed().toLower();
 
   if ( ok )
     *ok = true;
@@ -2246,7 +2267,7 @@ QString QgsUnitTypes::encodeUnit( QgsUnitTypes::AngleUnit unit )
 
 QgsUnitTypes::AngleUnit QgsUnitTypes::decodeAngleUnit( const QString &string, bool *ok )
 {
-  QString normalized = string.trimmed().toLower();
+  const QString normalized = string.trimmed().toLower();
 
   if ( ok )
     *ok = true;
@@ -2851,7 +2872,7 @@ QgsUnitTypes::AreaValue QgsUnitTypes::scaledArea( double area, QgsUnitTypes::Are
 
 QString QgsUnitTypes::formatDistance( double distance, int decimals, QgsUnitTypes::DistanceUnit unit, bool keepBaseUnit )
 {
-  DistanceValue dist = scaledDistance( distance, unit, decimals, keepBaseUnit );
+  const DistanceValue dist = scaledDistance( distance, unit, decimals, keepBaseUnit );
 
   QString unitText;
 
@@ -2863,7 +2884,7 @@ QString QgsUnitTypes::formatDistance( double distance, int decimals, QgsUnitType
 
 QString QgsUnitTypes::formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit )
 {
-  AreaValue areaValue = scaledArea( area, unit, decimals, keepBaseUnit );
+  const AreaValue areaValue = scaledArea( area, unit, decimals, keepBaseUnit );
 
   QString unitText;
 
@@ -2899,7 +2920,7 @@ QString QgsUnitTypes::encodeUnit( RenderUnit unit )
 
 QgsUnitTypes::RenderUnit QgsUnitTypes::decodeRenderUnit( const QString &string, bool *ok )
 {
-  QString normalized = string.trimmed().toLower();
+  const QString normalized = string.trimmed().toLower();
 
   if ( ok )
     *ok = true;
@@ -2994,7 +3015,7 @@ QString QgsUnitTypes::encodeUnit( QgsUnitTypes::LayoutUnit unit )
 
 QgsUnitTypes::LayoutUnit QgsUnitTypes::decodeLayoutUnit( const QString &string, bool *ok )
 {
-  QString normalized = string.trimmed().toLower();
+  const QString normalized = string.trimmed().toLower();
 
   if ( ok )
     *ok = true;

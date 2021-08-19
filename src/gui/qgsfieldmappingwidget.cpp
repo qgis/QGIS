@@ -136,7 +136,7 @@ bool QgsFieldMappingWidget::removeSelectedFields()
 
   std::list<int> rowsToRemove { selectedRows() };
   rowsToRemove.reverse();
-  for ( int row : rowsToRemove )
+  for ( const int row : rowsToRemove )
   {
     if ( ! model()->removeField( model()->index( row, 0, QModelIndex() ) ) )
     {
@@ -152,7 +152,7 @@ bool QgsFieldMappingWidget::moveSelectedFieldsUp()
     return false;
 
   const std::list<int> rowsToMoveUp { selectedRows() };
-  for ( int row : rowsToMoveUp )
+  for ( const int row : rowsToMoveUp )
   {
     if ( ! model()->moveUp( model()->index( row, 0, QModelIndex() ) ) )
     {
@@ -169,7 +169,7 @@ bool QgsFieldMappingWidget::moveSelectedFieldsDown()
 
   std::list<int> rowsToMoveDown { selectedRows() };
   rowsToMoveDown.reverse();
-  for ( int row : rowsToMoveDown )
+  for ( const int row : rowsToMoveDown )
   {
     if ( ! model()->moveDown( model()->index( row, 0, QModelIndex() ) ) )
     {
@@ -253,7 +253,6 @@ QWidget *QgsFieldMappingWidget::ExpressionDelegate::createEditor( QWidget *paren
   QgsFieldExpressionWidget *editor = new QgsFieldExpressionWidget( parent );
   editor->setAutoFillBackground( true );
   editor->setAllowEvalErrors( false );
-  editor->setAllowEmptyFieldName( true );
   if ( const QgsFieldMappingModel *model = qobject_cast<const QgsFieldMappingModel *>( index.model() ) )
   {
     editor->registerExpressionContextGenerator( model->contextGenerator() );
@@ -282,7 +281,7 @@ QWidget *QgsFieldMappingWidget::ExpressionDelegate::createEditor( QWidget *paren
 
   editor->setField( index.model()->data( index, Qt::DisplayRole ).toString() );
   connect( editor,
-           qgis::overload<const  QString &, bool >::of( &QgsFieldExpressionWidget::fieldChanged ),
+           qOverload<const  QString &, bool >( &QgsFieldExpressionWidget::fieldChanged ),
            this,
            [ = ]( const QString & fieldName, bool isValid )
   {
@@ -326,7 +325,7 @@ QWidget *QgsFieldMappingWidget::TypeDelegate::createEditor( QWidget *parent, con
   else
   {
     connect( editor,
-             qgis::overload<int >::of( &QComboBox::currentIndexChanged ),
+             qOverload<int >( &QComboBox::currentIndexChanged ),
              this,
              [ = ]( int currentIndex )
     {
@@ -343,7 +342,7 @@ void QgsFieldMappingWidget::TypeDelegate::setEditorData( QWidget *editor, const 
   if ( ! editorWidget )
     return;
 
-  const QVariant value { index.model()->data( index, Qt::EditRole ) };
+  const QVariant value = index.model()->data( index, Qt::EditRole );
   editorWidget->setCurrentIndex( editorWidget->findData( value ) );
 }
 
@@ -353,6 +352,6 @@ void QgsFieldMappingWidget::TypeDelegate::setModelData( QWidget *editor, QAbstra
   if ( ! editorWidget )
     return;
 
-  const QVariant currentValue { editorWidget->currentData( ) };
+  const QVariant currentValue = editorWidget->currentData( );
   model->setData( index, currentValue, Qt::EditRole );
 }

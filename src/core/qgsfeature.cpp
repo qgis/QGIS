@@ -68,7 +68,8 @@ bool QgsFeature::operator ==( const QgsFeature &other ) const
        && d->valid == other.d->valid
        && d->fields == other.d->fields
        && d->attributes == other.d->attributes
-       && d->geometry.equals( other.d->geometry ) )
+       && d->geometry.equals( other.d->geometry )
+       && d->symbol == other.d->symbol )
     return true;
 
   return false;
@@ -237,7 +238,7 @@ bool QgsFeature::setAttribute( int idx, const QVariant &value )
 {
   if ( idx < 0 || idx >= d->attributes.size() )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Attribute index %1 out of bounds [0;%2]" ).arg( idx ).arg( d->attributes.size() ), QString(), Qgis::Warning );
+    QgsMessageLog::logMessage( QObject::tr( "Attribute index %1 out of bounds [0;%2]" ).arg( idx ).arg( d->attributes.size() ), QString(), Qgis::MessageLevel::Warning );
     return false;
   }
 
@@ -282,6 +283,20 @@ QVariant QgsFeature::attribute( int fieldIdx ) const
     return QVariant();
 
   return d->attributes.at( fieldIdx );
+}
+
+const QgsSymbol *QgsFeature::embeddedSymbol() const
+{
+  return d->symbol.get();
+}
+
+void QgsFeature::setEmbeddedSymbol( QgsSymbol *symbol )
+{
+  if ( symbol == d->symbol.get() )
+    return;
+
+  d.detach();
+  d->symbol.reset( symbol );
 }
 
 QVariant QgsFeature::attribute( const QString &name ) const
@@ -336,7 +351,7 @@ int QgsFeature::approximateMemoryUsage() const
   size_t s = sizeof( *this ) + sizeof( *d );
 
   // Attributes
-  for ( const QVariant &attr : qgis::as_const( d->attributes ) )
+  for ( const QVariant &attr : std::as_const( d->attributes ) )
   {
     s += qgsQVariantApproximateMemoryUsage( attr );
   }

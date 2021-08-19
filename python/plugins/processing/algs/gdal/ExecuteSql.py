@@ -95,12 +95,12 @@ class ExecuteSql(GdalAlgorithm):
             raise QgsProcessingException(
                 self.tr('Empty SQL. Please enter valid SQL expression and try again.'))
 
-        arguments = []
-        arguments.append(output)
-        arguments.append(ogrLayer)
-        arguments.append('-sql')
-        arguments.append(sql)
-
+        arguments = [
+            output,
+            ogrLayer,
+            '-sql',
+            sql
+        ]
         dialect = self.dialects[self.parameterAsEnum(parameters, self.DIALECT, context)][1]
         if dialect:
             arguments.append('-dialect')

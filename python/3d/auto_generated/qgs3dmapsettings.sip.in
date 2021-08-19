@@ -17,8 +17,8 @@
 
 class Qgs3DMapSettings : QObject, QgsTemporalRangeObject
 {
-%Docstring
-Definition of the world
+%Docstring(signature="appended")
+Definition of the world.
 
 .. versionadded:: 3.0
 %End
@@ -167,15 +167,9 @@ Sets the list of 3D map ``layers`` to be rendered in the scene.
 
 This setting dictates which layers are to be rendered using their 3D rendering configuration, if available.
 
-.. note::
-
-   Layers which are rendered as part of the map terrain are specified via ``setTerrainLayers``().
-
 .. seealso:: :py:func:`layers`
 
 .. seealso:: :py:func:`layersChanged`
-
-.. seealso:: :py:func:`setTerrainLayers`
 %End
 
     QList<QgsMapLayer *> layers() const;
@@ -184,61 +178,11 @@ Returns the list of 3D map layers to be rendered in the scene.
 
 This setting dictates which layers are to be rendered using their 3D rendering configuration, if available.
 
-.. note::
-
-   Layers which are rendered as part of the map terrain are retrieved via ``terrainLayers``().
-
 .. seealso:: :py:func:`setLayers`
 
 .. seealso:: :py:func:`layersChanged`
-
-.. seealso:: :py:func:`terrainLayers`
 %End
 
-
-    void setTerrainLayers( const QList<QgsMapLayer *> &layers );
-%Docstring
-Sets the list of 2d map ``layers`` to be rendered in the terrain.
-
-.. note::
-
-   Layers which are rendered as 3D layers as part of the scene are specified via ``setLayers``().
-
-.. note::
-
-   If :py:func:`~Qgs3DMapSettings.terrainMapTheme` is set, it has a priority over the list of layers specified here.
-
-
-.. seealso:: :py:func:`terrainLayers`
-
-.. seealso:: :py:func:`terrainLayersChanged`
-
-.. seealso:: :py:func:`setLayers`
-
-.. versionadded:: 3.16
-%End
-
-    QList<QgsMapLayer *> terrainLayers() const;
-%Docstring
-Returns the list of map layers to be rendered as a texture of the terrain.
-
-.. note::
-
-   Layers which are rendered as 3D layers as part of the scene are retrieved via ``layers``().
-
-.. note::
-
-   If :py:func:`~Qgs3DMapSettings.terrainMapTheme` is set, it has a priority over the list of layers returned here.
-
-
-.. seealso:: :py:func:`setTerrainLayers`
-
-.. seealso:: :py:func:`terrainLayersChanged`
-
-.. seealso:: :py:func:`layers`
-
-.. versionadded:: 3.16
-%End
 
     void setTerrainVerticalScale( double zScale );
 %Docstring
@@ -627,6 +571,24 @@ Sets whether FPS counter label is enabled
 .. versionadded:: 3.18
 %End
 
+    bool terrainRenderingEnabled();
+%Docstring
+Returns whether the 2D terrain surface will be rendered.
+
+.. seealso:: :py:func:`setTerrainRenderingEnabled`
+
+.. versionadded:: 3.22
+%End
+
+    void setTerrainRenderingEnabled( bool terrainRenderingEnabled );
+%Docstring
+Sets whether the 2D terrain surface will be rendered in.
+
+.. seealso:: :py:func:`terrainRenderingEnabled`
+
+.. versionadded:: 3.22
+%End
+
   signals:
     void backgroundColorChanged();
 %Docstring
@@ -644,21 +606,6 @@ Emitted when the list of map layers for 3d rendering has changed.
 .. seealso:: :py:func:`setLayers`
 
 .. seealso:: :py:func:`layers`
-
-.. seealso:: :py:func:`terrainLayersChanged`
-%End
-
-    void terrainLayersChanged();
-%Docstring
-Emitted when the list of map layers for terrain texture has changed.
-
-.. seealso:: :py:func:`terrainLayers`
-
-.. seealso:: :py:func:`setTerrainLayers`
-
-.. seealso:: :py:func:`layersChanged`
-
-.. versionadded:: 3.16
 %End
 
     void terrainGeneratorChanged();

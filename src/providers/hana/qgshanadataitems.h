@@ -17,9 +17,13 @@
 #ifndef QGSHANADATAITEMS_H
 #define QGSHANADATAITEMS_H
 
-#include "qgsdataitem.h"
+#include "qgsconnectionsitem.h"
 #include "qgsdataitemprovider.h"
 #include "qgshanatablemodel.h"
+#include "qgsdatabaseschemaitem.h"
+#include "qgsdatacollectionitem.h"
+#include "qgslayeritem.h"
+#include "qgsdataprovider.h"
 
 class QgsHanaRootItem;
 class QgsHanaConnectionItem;
@@ -35,8 +39,6 @@ class QgsHanaRootItem : public QgsConnectionsRootItem
     QVector<QgsDataItem *> createChildren() override;
 
     QVariant sortKey() const override { return 3; }
-
-    QWidget *paramWidget() override;
 
   public slots:
     void onConnectionsChanged();
@@ -90,7 +92,7 @@ class QgsHanaLayerItem : public QgsLayerItem
 
   public:
     QgsHanaLayerItem( QgsDataItem *parent, const QString &name, const QString &path,
-                      QgsLayerItem::LayerType layerType, const QgsHanaLayerProperty &layerProperties );
+                      Qgis::BrowserLayerType layerType, const QgsHanaLayerProperty &layerProperties );
 
     QVector<QgsDataItem *> createChildren() override;
 

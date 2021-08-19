@@ -48,7 +48,8 @@ namespace QgsWms
         UseWfsLayersOnly       = 0x100,
         AddExternalLayers      = 0x200,
         UseSrcWidthHeight      = 0x400,
-        UseTileBuffer          = 0x800
+        UseTileBuffer          = 0x800,
+        AddAllLayers           = 0x1000 //!< For GetPrint: add layers from LAYER(S) parameter
       };
       Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -157,6 +158,17 @@ namespace QgsWms
       int tileBuffer() const;
 
       /**
+       * Returns TRUE if WMS requests should use the QgsMapSettings::RenderMapTile flag,
+       * so that no visible artifacts are visible between adjacent tiles.
+       *
+       * This flag can slow down rendering considerably, so it is only used if the corresponding
+       * if explicitly opted in.
+       *
+       * \since QGIS 3.18
+       */
+      bool renderMapTiles() const;
+
+      /**
        * Returns the precision to use according to the current configuration.
        */
       int precision() const;
@@ -198,7 +210,7 @@ namespace QgsWms
        * Returns a list of query layer names where group names are replaced by the names of their layer components.
        * \since QGIS 3.8
        */
-      QStringList flattenedQueryLayers() const;
+      QStringList flattenedQueryLayers( const QStringList &layerNames ) const;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 
@@ -233,6 +245,14 @@ namespace QgsWms
        * \since QGIS 3.8
        */
       bool isValidWidthHeight() const;
+
+      /**
+       * Returns true if width and height are valid according to the maximum image width/height
+       * \param width the image width in pixels
+       * \param height the image height in pixels
+       * \since QGIS 3.22
+       */
+      bool isValidWidthHeight( int width, int height ) const;
 
       /**
        * Returns WIDTH or SRCWIDTH according to \a UseSrcWidthHeight flag.

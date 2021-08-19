@@ -25,7 +25,7 @@
 
 /**
  * \ingroup core
- * An RGB renderer for 2d visualisation of point clouds using embedded red, green and blue attributes.
+ * \brief An RGB renderer for 2d visualisation of point clouds using embedded red, green and blue attributes.
  *
  * \since QGIS 3.18
  */

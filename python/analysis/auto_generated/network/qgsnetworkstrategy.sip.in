@@ -17,7 +17,7 @@
 
 class QgsNetworkStrategy
 {
-%Docstring
+%Docstring(signature="appended")
 :py:class:`QgsNetworkStrategy` defines strategy used for calculation of the edge cost. For example it can
 take into account travel distance, amount of time or money. Currently there are two strategies
 implemented in the analysis library: :py:class:`QgsNetworkDistanceStrategy` and :py:class:`QgsNetworkSpeedStrategy`.

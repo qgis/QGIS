@@ -12,7 +12,7 @@
 
 class QgsTextCharacterFormat
 {
-%Docstring
+%Docstring(signature="appended")
 Stores information relating to individual character formatting.
 
 These options encapsulate formatting options which override the default

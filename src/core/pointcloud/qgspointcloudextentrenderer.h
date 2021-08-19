@@ -22,11 +22,11 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
-#include "qgssymbol.h"
+class QgsFillSymbol;
 
 /**
  * \ingroup core
- * A renderer for 2d visualisation of point clouds which shows the dataset's extents using a fill symbol.
+ * \brief A renderer for 2d visualisation of point clouds which shows the dataset's extents using a fill symbol.
  *
  * \since QGIS 3.18
  */
@@ -41,6 +41,7 @@ class CORE_EXPORT QgsPointCloudExtentRenderer : public QgsPointCloudRenderer
      * transferred to the renderer. If no \a symbol is specified a default one will be created instead.
      */
     QgsPointCloudExtentRenderer( QgsFillSymbol *symbol SIP_TRANSFER = nullptr );
+    ~QgsPointCloudExtentRenderer() override;
 
     QString type() const override;
     QgsPointCloudRenderer *clone() const override;

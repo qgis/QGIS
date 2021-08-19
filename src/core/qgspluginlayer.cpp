@@ -40,7 +40,7 @@ QString QgsPluginLayer::pluginLayerType()
 
 void QgsPluginLayer::setExtent( const QgsRectangle &extent )
 {
-  mExtent = extent;
+  QgsMapLayer::setExtent( extent );
   static_cast<QgsPluginLayerDataProvider *>( mDataProvider )->setExtent( extent );
 }
 

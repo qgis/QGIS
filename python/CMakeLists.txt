@@ -1,6 +1,3 @@
-set(PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
-
-set (QGIS_PYTHON_OUTPUT_DIRECTORY ${PYTHON_OUTPUT_DIRECTORY}/qgis)
 file (MAKE_DIRECTORY ${QGIS_PYTHON_OUTPUT_DIRECTORY})
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${QGIS_PYTHON_OUTPUT_DIRECTORY})
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_PYTHON_OUTPUT_DIRECTORY})
@@ -25,7 +22,7 @@ endif()
 
 # Non-default/non-option-controlled target to stage and compile plugins and extras
 add_custom_target(staged-plugins-pyc DEPENDS staged-plugins
-  COMMAND ${PYTHON_EXECUTABLE} -m compileall -q "${PYTHON_OUTPUT_DIRECTORY}"
+  COMMAND ${Python_EXECUTABLE} -m compileall -q "${PYTHON_OUTPUT_DIRECTORY}"
   WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
   COMMENT "Byte-compiling build output/python directory..."
 )
@@ -40,7 +37,7 @@ macro(PY_COMPILE TARGET_NAME RESOURCE_PATHS)
   if(WITH_PY_COMPILE)
     add_custom_command(TARGET ${TARGET_NAME}
       POST_BUILD
-      COMMAND ${PYTHON_EXECUTABLE} -m compileall -q ${RESOURCE_PATHS}
+      COMMAND ${Python_EXECUTABLE} -m compileall -q ${RESOURCE_PATHS}
       WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
       COMMENT "Byte-compiling staged resource..."
     )
@@ -51,7 +48,7 @@ endmacro(PY_COMPILE)
 macro(PY_2TO3 TARGET_NAME RESOURCE_PATHS)
   add_custom_command(TARGET ${TARGET_NAME}
     POST_BUILD
-    COMMAND "${PYTHON_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/scripts/2to3" --no-diffs -w ${RESOURCE_PATHS}
+    COMMAND "${Python_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/scripts/2to3" --no-diffs -w ${RESOURCE_PATHS}
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
     COMMENT "Porting ${RESOURCE_PATHS} to Python 3 and Qt5"
   )
@@ -69,7 +66,7 @@ add_subdirectory(testing)
 add_subdirectory(processing)
 
 include_directories(SYSTEM
-  ${PYTHON_INCLUDE_PATH}
+  ${Python_INCLUDE_DIRS}
   ${SIP_INCLUDE_DIR}
   ${QT_QTCORE_INCLUDE_DIR}
   ${QT_QTGUI_INCLUDE_DIR}
@@ -124,10 +121,6 @@ else()
   set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} ARM)
 endif()
 
-if(NOT QT_MOBILITY_LOCATION_FOUND)
-  set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} MOBILITY_LOCATION)
-endif()
-
 # SIP 4.19.7+ can:
 # * prepend auto-generated Python signature to existing Docstrings
 # * document template based classes
@@ -158,9 +151,19 @@ if((${PYQT5_VERSION_STR} VERSION_EQUAL 5.15) OR (${PYQT5_VERSION_STR} VERSION_GR
   set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} VECTOR_MAPPED_TYPE)
 endif()
 
+if(NOT WITH_GUI)
+  set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_GUI)
+endif()
+
 GENERATE_SIP_PYTHON_MODULE_CODE(qgis._core core/core.sip "${sip_files_core}" cpp_files)
 BUILD_SIP_PYTHON_MODULE(qgis._core core/core.sip ${cpp_files} "" qgis_core)
 set(SIP_CORE_CPP_FILES ${cpp_files})
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  # Bad hack to fix compilation with gcc 11 - for some reason it's ignoring
+  # the c++ standard version set for the target in BUILD_SIP_PYTHON_MODULE!
+  add_definitions(-std=c++14)
+endif()
 
 if(UNIX AND NOT SIP_VERSION_NUM LESS 265984)
   set(SIP_EXTRA_OPTIONS -P ${SIP_EXTRA_OPTIONS})
@@ -245,6 +248,7 @@ if(WITH_ANALYSIS)
   include_directories(BEFORE
 
     ${CMAKE_BINARY_DIR}/src/analysis/processing
+    ${CMAKE_BINARY_DIR}/src/analysis/georeferencing
     ${CMAKE_BINARY_DIR}/src/analysis/vector
     ${CMAKE_BINARY_DIR}/src/analysis/mesh
     ${CMAKE_BINARY_DIR}/src/analysis/raster
@@ -254,6 +258,7 @@ if(WITH_ANALYSIS)
 
   # analysis module
   file(GLOB_RECURSE sip_files_analysis analysis/*.sip analysis/*.sip.in)
+
   set(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_analysis})
   set(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -g -o -a ${CMAKE_BINARY_DIR}/python/qgis.analysis.api)
   if((${SIP_VERSION_STR} VERSION_EQUAL 4.19.11) OR (${SIP_VERSION_STR} VERSION_GREATER 4.19.11))
@@ -266,7 +271,7 @@ if(WITH_ANALYSIS)
   BUILD_SIP_PYTHON_MODULE(qgis._analysis analysis/analysis.sip ${cpp_files} "" qgis_core qgis_analysis)
 endif()
 
-set(QGIS_PYTHON_DIR ${PYTHON_SITE_PACKAGES_DIR}/qgis)
+set(QGIS_PYTHON_DIR ${Python_SITEARCH}/qgis)
 
 if(WITH_QSCIAPI)
   # wait until after python module builds for api files to be available
@@ -296,7 +301,7 @@ if(WITH_QSCIAPI)
   set(PAP_NAME "pyqgis.pap")
   add_custom_command(TARGET qsci-pap-src
     POST_BUILD
-    COMMAND ${PYTHON_EXECUTABLE} "${APIS_SRC_DIR}/generate_console_pap.py" "${APIS_SRC_DIR}/${PAP_NAME}" "${APIS_SRC_DIR}" "${APIS_BIN_DIR}"
+    COMMAND ${Python_EXECUTABLE} "${APIS_SRC_DIR}/generate_console_pap.py" "${APIS_SRC_DIR}/${PAP_NAME}" "${APIS_SRC_DIR}" "${APIS_BIN_DIR}"
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
     COMMENT "Generating ${PAP_NAME} for console auto-completion (MAY TAKE > 1 MINUTE!)" VERBATIM)
 endif()
@@ -364,3 +369,8 @@ foreach(module ${PY_MODULES})
     install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${module}/auto_generated DESTINATION ${SIP_DEFAULT_SIP_DIR}/qgis/${module})
   endif()
 endforeach(module)
+
+if((${SIP_VERSION_STR} VERSION_EQUAL 4.18) OR (${SIP_VERSION_STR} VERSION_GREATER 4.18))
+  file(GLOB PY_PYIS ${QGIS_PYTHON_OUTPUT_DIRECTORY}/*.pyi)
+  install(FILES ${PY_PYIS} DESTINATION ${QGIS_PYTHON_DIR})
+endif()

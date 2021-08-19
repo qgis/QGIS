@@ -30,7 +30,7 @@ class APP_EXPORT QgsMapToolPinLabels: public QgsMapToolLabel
     Q_OBJECT
 
   public:
-    QgsMapToolPinLabels( QgsMapCanvas *canvas );
+    QgsMapToolPinLabels( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock );
     ~QgsMapToolPinLabels() override;
 
     //! Overridden mouse move event
@@ -81,6 +81,11 @@ class APP_EXPORT QgsMapToolPinLabels: public QgsMapToolLabel
     void highlightLabel( const QgsLabelPosition &labelpos,
                          const QString &id,
                          const QColor &color );
+
+    //! Highlights a given callout relative to whether its pinned and editable
+    void highlightCallout( bool isOrigin, const QgsCalloutPosition &labelpos,
+                           const QString &id,
+                           const QColor &color );
 
     //! Select valid labels to pin or unpin
     void pinUnpinLabels( const QgsRectangle &ext, QMouseEvent *e );

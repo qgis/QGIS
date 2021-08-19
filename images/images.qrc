@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/images">
-        <file alias="last-hackfest.png">splash/dev-splash.png</file>
         <file>flags/af.svg</file>
         <file>flags/ar.svg</file>
         <file>flags/bg.svg</file>
@@ -69,6 +68,7 @@
         <file>flags/ky.svg</file>
         <file>icons/qgis-icon-16x16.png</file>
         <file>icons/qgis-icon-60x60.png</file>
+        <file>icons/qgis-full.png</file>
         <file>icons/qbrowser_icon.svg</file>
         <file>north_arrows/default.png</file>
         <file>north_arrows/default.svg</file>
@@ -309,6 +309,7 @@
         <file>themes/default/mActionFilter2.svg</file>
         <file>themes/default/mActionFolder.svg</file>
         <file>themes/default/mActionFormAnnotation.svg</file>
+        <file>themes/default/mActionFromLargestFeature.svg</file>
         <file>themes/default/mActionFromSelectedFeature.svg</file>
         <file>themes/default/mActionFormView.svg</file>
         <file>themes/default/mActionFullCumulativeCutStretch.svg</file>
@@ -363,6 +364,9 @@
         <file>themes/default/mActionViewScaleInCanvas.svg</file>
         <file>themes/default/mActionOffsetCurve.svg</file>
         <file>themes/default/mActionOpenTable.svg</file>
+        <file>themes/default/mActionOpenTableEdited.svg</file>
+        <file>themes/default/mActionOpenTableSelected.svg</file>
+        <file>themes/default/mActionOpenTableVisible.svg</file>
         <file>themes/default/mActionAddTable.svg</file>
         <file>themes/default/mActionOffsetPointSymbols.svg</file>
         <file>themes/default/mActionOptions.svg</file>
@@ -401,7 +405,7 @@
         <file>themes/default/mActionSaveEdits.svg</file>
         <file>themes/default/mActionSaveMapAsImage.svg</file>
         <file>themes/default/mActionScaleBar.svg</file>
-	    <file>themes/default/mActionScaleFeature.svg</file>
+        <file>themes/default/mActionScaleFeature.svg</file>
         <file>themes/default/mActionScriptOpen.svg</file>
         <file>themes/default/mActionSelect.svg</file>
         <file>themes/default/mActionSelectAll.svg</file>
@@ -638,10 +642,12 @@
         <file>themes/default/rendererHeatmapSymbol.svg</file>
         <file>themes/default/renderer25dSymbol.svg</file>
         <file>themes/default/rendererGrassSymbol.svg</file>
+        <file>themes/default/rendererMergedFeatures.svg</file>
         <file>themes/default/labelingNone.svg</file>
         <file>themes/default/labelingSingle.svg</file>
         <file>themes/default/labelingRuleBased.svg</file>
         <file>themes/default/labelingObstacle.svg</file>
+        <file>themes/default/labelingCalloutCurved.svg</file>
         <file>themes/default/labelingCalloutSimple.svg</file>
         <file>themes/default/labelingCalloutManhattan.svg</file>
         <file>themes/default/repositoryConnected.svg</file>
@@ -650,6 +656,8 @@
         <file>themes/default/stars_empty.svg</file>
         <file>themes/default/stars_full.svg</file>
         <file>themes/default/styleicons/color.svg</file>
+        <file>themes/default/styleicons/singlecolor.svg</file>
+        <file>themes/default/styleicons/pointcloudextent.svg</file>
         <file>themes/default/symbologyAdd.svg</file>
         <file>themes/default/symbologyEdit.svg</file>
         <file>themes/default/symbologyRemove.svg</file>
@@ -904,6 +912,23 @@
         <file>themes/default/transformation.svg</file>
         <file>themes/default/mIconCodeEditor.svg</file>
         <file>themes/default/console/iconSyntaxErrorConsoleParams.svg</file>
+        <file>themes/default/mIconSnappingEndpoint.svg</file>
+        <file>themes/default/mActionStreamingDigitize.svg</file>
+        <file>themes/default/mActionEditHtml.svg</file>
+        <file>themes/default/mIndicatorNotes.svg</file>
+        <file>themes/default/mIndicatorLowAccuracy.svg</file>
+        <file>themes/default/mIconFolderParams.svg</file>
+        <file>themes/default/mIconFolderOpenParams.svg</file>
+        <file>themes/default/mIconFolderLinkParams.svg</file>
+        <file>themes/default/mIconFolderHomeParams.svg</file>
+        <file>themes/default/mActionMeasureBearing.svg</file>
+        <file>themes/default/mActionMeshDigitizing.svg</file>
+        <file>themes/default/mActionMeshSelectPolygon.svg</file>
+        <file>themes/default/mActionNewMeshLayer.svg</file>
+        <file>themes/default/mIconGeometryCollectionLayer.svg</file>
+        <file>themes/default/mIconGps.svg</file>
+        <file>themes/default/mActionNewGpx.svg</file>
+        <file>themes/default/mActionAddGpsLayer.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

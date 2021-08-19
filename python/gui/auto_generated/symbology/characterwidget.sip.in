@@ -13,7 +13,7 @@
 
 class CharacterWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 
 A widget for displaying characters available in a preset font, and allowing
 users to select an individual character.

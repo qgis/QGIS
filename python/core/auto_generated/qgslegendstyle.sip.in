@@ -12,7 +12,7 @@
 
 class QgsLegendStyle
 {
-%Docstring
+%Docstring(signature="appended")
 Contains detailed styling information relating to how a layout legend should be rendered.
 %End
 
@@ -103,6 +103,24 @@ Sets the alignment for the legend component.
 .. seealso:: :py:func:`alignment`
 
 .. versionadded:: 3.10
+%End
+
+    double indent();
+%Docstring
+Returns the indent (in mm) of a group or subgroup.
+
+.. seealso:: :py:func:`indent`
+
+.. versionadded:: 3.22
+%End
+
+    void setIndent( double indent );
+%Docstring
+Sets the indent (in mm) of a group or subgroup.
+
+.. seealso:: :py:func:`indent`
+
+.. versionadded:: 3.22
 %End
 
     void writeXml( const QString &name, QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;

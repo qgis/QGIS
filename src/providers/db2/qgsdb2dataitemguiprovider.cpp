@@ -30,11 +30,11 @@ void QgsDb2DataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
     menu->addAction( actionNew );
 
-    QAction *actionSaveServers = new QAction( tr( "Save Connections…" ), this );
+    QAction *actionSaveServers = new QAction( tr( "Save Connections…" ), menu );
     connect( actionSaveServers, &QAction::triggered, this, [] { saveConnections(); } );
     menu->addAction( actionSaveServers );
 
-    QAction *actionLoadServers = new QAction( tr( "Load Connections…" ), this );
+    QAction *actionLoadServers = new QAction( tr( "Load Connections…" ), menu );
     connect( actionLoadServers, &QAction::triggered, this, [rootItem] { loadConnections( rootItem ); } );
     menu->addAction( actionLoadServers );
   }
@@ -104,7 +104,7 @@ void QgsDb2DataItemGuiProvider::editConnection( QgsDataItem *item )
 
 void QgsDb2DataItemGuiProvider::deleteConnection( QgsDataItem *item )
 {
-  QString key = "/DB2/connections/" + item->name();
+  const QString key = "/DB2/connections/" + item->name();
   QgsSettings settings;
   settings.remove( key + "/service" );
   settings.remove( key + "/driver" );
@@ -131,8 +131,8 @@ void QgsDb2DataItemGuiProvider::saveConnections()
 
 void QgsDb2DataItemGuiProvider::loadConnections( QgsDataItem *item )
 {
-  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
-                     tr( "XML files (*.xml *.XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
+                           tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;

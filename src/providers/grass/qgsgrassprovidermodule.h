@@ -19,6 +19,10 @@
 #include "qgsdataitem.h"
 #include "qgsgrass.h"
 #include "qgsgrassimport.h"
+#include "qgsdirectoryitem.h"
+#include "qgslayeritem.h"
+#include "qgsdatacollectionitem.h"
+#include "qgsprovidermetadata.h"
 
 class QTextEdit;
 class QProgressBar;
@@ -81,7 +85,7 @@ class QgsGrassLocationItem : public QgsDirectoryItem, public QgsGrassObjectItemB
     Q_OBJECT
 
   public:
-    QgsGrassLocationItem( QgsDataItem *parent, QString dirPath, QString path );
+    QgsGrassLocationItem( QgsDataItem *parent, const QString &dirPath, const QString &path );
 
     QIcon icon() override;
 
@@ -101,9 +105,9 @@ class QgsGrassMapsetItem : public QgsDirectoryItem, public QgsGrassObjectItemBas
 {
     Q_OBJECT
   public:
-    QgsGrassMapsetItem( QgsDataItem *parent, QString dirPath, QString path );
+    QgsGrassMapsetItem( QgsDataItem *parent, const QString &dirPath, const QString &path );
 
-    void setState( State state ) override;
+    void setState( Qgis::BrowserItemState state ) override;
 
     QIcon icon() override;
 
@@ -136,9 +140,9 @@ class QgsGrassObjectItem : public QgsLayerItem, public QgsGrassObjectItemBase
 {
     Q_OBJECT
   public:
-    QgsGrassObjectItem( QgsDataItem *parent, QgsGrassObject grassObject,
-                        QString name, QString path, QString uri,
-                        LayerType layerType, QString providerKey );
+    QgsGrassObjectItem( QgsDataItem *parent, const QgsGrassObject &grassObject,
+                        const QString &name, const QString &path, const QString &uri,
+                        Qgis::BrowserLayerType layerType, const QString &providerKey );
 
 #ifdef HAVE_GUI
     QList<QAction *> actions( QWidget *parent ) override { return mActions->actions( parent ); }
@@ -158,7 +162,7 @@ class QgsGrassVectorItem : public QgsDataCollectionItem, public QgsGrassObjectIt
     Q_OBJECT
   public:
     // labelName - name to be displayed in tree if it should be different from grassObject.name() (e.g. invalid vector)
-    QgsGrassVectorItem( QgsDataItem *parent, QgsGrassObject grassObject, QString path, QString labelName = QString(), bool valid = true );
+    QgsGrassVectorItem( QgsDataItem *parent, const QgsGrassObject &grassObject, const QString &path, const QString &labelName = QString(), bool valid = true );
     ~QgsGrassVectorItem() override;
 
 #ifdef HAVE_GUI
@@ -182,8 +186,8 @@ class QgsGrassVectorLayerItem : public QgsGrassObjectItem
 {
     Q_OBJECT
   public:
-    QgsGrassVectorLayerItem( QgsDataItem *parent, QgsGrassObject vector, QString layerName,
-                             QString path, QString uri, LayerType layerType, bool singleLayer );
+    QgsGrassVectorLayerItem( QgsDataItem *parent, const QgsGrassObject &vector, const QString &layerName,
+                             const QString &path, const QString &uri, Qgis::BrowserLayerType layerType, bool singleLayer );
 
     QString layerName() const override;
     bool equal( const QgsDataItem *other ) override;
@@ -197,8 +201,8 @@ class QgsGrassRasterItem : public QgsGrassObjectItem
 {
     Q_OBJECT
   public:
-    QgsGrassRasterItem( QgsDataItem *parent, QgsGrassObject grassObject,
-                        QString path, QString uri, bool isExternal );
+    QgsGrassRasterItem( QgsDataItem *parent, const QgsGrassObject &grassObject,
+                        const QString &path, const QString &uri, bool isExternal );
 
     QIcon icon() override;
     bool equal( const QgsDataItem *other ) override;
@@ -213,8 +217,8 @@ class QgsGrassGroupItem : public QgsGrassObjectItem
 {
     Q_OBJECT
   public:
-    QgsGrassGroupItem( QgsDataItem *parent, QgsGrassObject grassObject,
-                       QString path, QString uril );
+    QgsGrassGroupItem( QgsDataItem *parent, const QgsGrassObject &grassObject,
+                       const QString &path, const QString &uril );
 
     QIcon icon() override;
 
@@ -268,6 +272,18 @@ class QgsGrassImportItem : public QgsDataItem, public QgsGrassObjectItemBase
 
   private:
     static QgsAnimatedIcon *sImportIcon;
+};
+
+
+class QgsGrassProviderMetadata: public QgsProviderMetadata
+{
+    Q_OBJECT
+
+  public:
+    QgsGrassProviderMetadata();
+    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QList< QgsDataItemProvider * > dataItemProviders() const override;
+    void initProvider() override;
 };
 
 #endif // QGSGRASSPROVIDERMODULE_H

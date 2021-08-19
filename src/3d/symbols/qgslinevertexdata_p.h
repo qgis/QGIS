@@ -49,7 +49,7 @@ class Qgs3DMapSettings;
 
 /**
  * \ingroup 3d
- * Helper class to store vertex buffer and index buffer data that will be used to render
+ * \brief Helper class to store vertex buffer and index buffer data that will be used to render
  * lines (either using "line strip" or "line strip with adjacency" primitive.
  *
  * Index zero is used for primitive restart (to separate two linestrings).

@@ -20,6 +20,7 @@ from qgis.core import (QgsSettings,
                        QgsFeature,
                        QgsField,
                        QgsFields,
+                       QgsFieldConstraints,
                        QgsDataSourceUri,
                        QgsWkbTypes,
                        QgsGeometry,
@@ -63,7 +64,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         cls.poly_provider = cls.poly_vl.dataProvider()
 
         # Triggers a segfault in the sql server odbc driver on Travis - TODO test with more recent Ubuntu base image
-        if os.environ.get('TRAVIS', '') == 'true':
+        if os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'):
             del cls.getEditableLayer
 
         # Use connections API
@@ -133,6 +134,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         filters = set([
             'name ILIKE \'QGIS\'',
             'name = \'Apple\'',
+            '\"NaMe\" = \'Apple\'',
             'name = \'apple\'',
             'name LIKE \'Apple\'',
             'name LIKE \'aPple\'',
@@ -215,22 +217,22 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         return filters
 
     def testGetFeaturesUncompiled(self):
-        if os.environ.get('TRAVIS', '') == 'true':
+        if os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'):
             return
         super().testGetFeaturesUncompiled()
 
     def testGetFeaturesExp(self):
-        if os.environ.get('TRAVIS', '') == 'true':
+        if os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'):
             return
         super().testGetFeaturesExp()
 
     def testOrderBy(self):
-        if os.environ.get('TRAVIS', '') == 'true':
+        if os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'):
             return
         super().testOrderBy()
 
     def testOrderByCompiled(self):
-        if os.environ.get('TRAVIS', '') == 'true':
+        if os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'):
             return
         super().testOrderByCompiled()
 
@@ -290,7 +292,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         self.assertIsInstance(f.attributes()[dec_idx], float)
         self.assertEqual(f.attributes()[dec_idx], 1.123)
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Failing on Travis')
+    @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'), 'Failing on Travis')
     def testCreateLayer(self):
         layer = QgsVectorLayer("Point?field=id:integer&field=fldtxt:string&field=fldint:integer",
                                "addfeat", "memory")
@@ -326,7 +328,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         geom = [f.geometry().asWkt() for f in new_layer.getFeatures()]
         self.assertEqual(geom, ['Point (1 2)', '', 'Point (3 2)', 'Point (4 3)'])
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Failing on Travis')
+    @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'), 'Failing on Travis')
     def testCreateLayerMultiPoint(self):
         layer = QgsVectorLayer("MultiPoint?crs=epsg:3111&field=id:integer&field=fldtxt:string&field=fldint:integer",
                                "addfeat", "memory")
@@ -359,7 +361,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         geom = [f.geometry().asWkt() for f in new_layer.getFeatures()]
         self.assertEqual(geom, ['MultiPoint ((1 2),(3 4))', '', 'MultiPoint ((7 8))'])
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Failing on Travis')
+    @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'), 'Failing on Travis')
     def testCurveGeometries(self):
         geomtypes = ['CompoundCurveM', 'CurvePolygonM', 'CircularStringM', 'CompoundCurveZM', 'CurvePolygonZM',
                      'CircularStringZM', 'CompoundCurveZ', 'CurvePolygonZ', 'CircularStringZ', 'CompoundCurve',
@@ -669,6 +671,78 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
             got_feature = False
 
         self.assertFalse(got_feature)
+
+    def testNotNullConstraint(self):
+        vl = QgsVectorLayer('%s table="qgis_test"."constraints" sql=' %
+                            (self.dbconn), "testdatetimes", "mssql")
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.fields()), 4)
+
+        # test some bad field indexes
+        self.assertEqual(vl.dataProvider().fieldConstraints(-1),
+                         QgsFieldConstraints.Constraints())
+        self.assertEqual(vl.dataProvider().fieldConstraints(
+            1001), QgsFieldConstraints.Constraints())
+
+        self.assertTrue(vl.dataProvider().fieldConstraints(0) &
+                        QgsFieldConstraints.ConstraintNotNull)
+        self.assertFalse(vl.dataProvider().fieldConstraints(1)
+                         & QgsFieldConstraints.ConstraintNotNull)
+        self.assertTrue(vl.dataProvider().fieldConstraints(2) &
+                        QgsFieldConstraints.ConstraintNotNull)
+        self.assertFalse(vl.dataProvider().fieldConstraints(3)
+                         & QgsFieldConstraints.ConstraintNotNull)
+
+        # test that constraints have been saved to fields correctly
+        fields = vl.fields()
+        self.assertTrue(fields.at(0).constraints().constraints()
+                        & QgsFieldConstraints.ConstraintNotNull)
+        self.assertEqual(fields.at(0).constraints().constraintOrigin(QgsFieldConstraints.ConstraintNotNull),
+                         QgsFieldConstraints.ConstraintOriginProvider)
+        self.assertFalse(fields.at(1).constraints().constraints()
+                         & QgsFieldConstraints.ConstraintNotNull)
+        self.assertTrue(fields.at(2).constraints().constraints()
+                        & QgsFieldConstraints.ConstraintNotNull)
+        self.assertEqual(fields.at(2).constraints().constraintOrigin(QgsFieldConstraints.ConstraintNotNull),
+                         QgsFieldConstraints.ConstraintOriginProvider)
+        self.assertFalse(fields.at(3).constraints().constraints()
+                         & QgsFieldConstraints.ConstraintNotNull)
+
+    def testUniqueConstraint(self):
+        vl = QgsVectorLayer('%s table="qgis_test"."constraints" sql=' %
+                            (self.dbconn), "testdatetimes", "mssql")
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.fields()), 4)
+
+        # test some bad field indexes
+        self.assertEqual(vl.dataProvider().fieldConstraints(-1),
+                         QgsFieldConstraints.Constraints())
+        self.assertEqual(vl.dataProvider().fieldConstraints(
+            1001), QgsFieldConstraints.Constraints())
+
+        self.assertTrue(vl.dataProvider().fieldConstraints(0)
+                        & QgsFieldConstraints.ConstraintUnique)
+        self.assertTrue(vl.dataProvider().fieldConstraints(1)
+                        & QgsFieldConstraints.ConstraintUnique)
+        self.assertFalse(vl.dataProvider().fieldConstraints(2)
+                         & QgsFieldConstraints.ConstraintUnique)
+        self.assertFalse(vl.dataProvider().fieldConstraints(3)
+                         & QgsFieldConstraints.ConstraintUnique)
+
+        # test that constraints have been saved to fields correctly
+        fields = vl.fields()
+        self.assertTrue(fields.at(0).constraints().constraints()
+                        & QgsFieldConstraints.ConstraintUnique)
+        self.assertEqual(fields.at(0).constraints().constraintOrigin(QgsFieldConstraints.ConstraintUnique),
+                         QgsFieldConstraints.ConstraintOriginProvider)
+        self.assertTrue(fields.at(1).constraints().constraints()
+                        & QgsFieldConstraints.ConstraintUnique)
+        self.assertEqual(fields.at(1).constraints().constraintOrigin(QgsFieldConstraints.ConstraintUnique),
+                         QgsFieldConstraints.ConstraintOriginProvider)
+        self.assertFalse(fields.at(2).constraints().constraints()
+                         & QgsFieldConstraints.ConstraintUnique)
+        self.assertFalse(fields.at(3).constraints().constraints()
+                         & QgsFieldConstraints.ConstraintUnique)
 
     def getSubsetString(self):
         return '[cnt] > 100 and [cnt] < 410'

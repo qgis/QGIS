@@ -22,10 +22,12 @@ from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsWkbTypes,
                        QgsAction,
+                       QgsAuxiliaryStorage,
                        QgsCoordinateTransformContext,
                        QgsDataProvider,
                        QgsDefaultValue,
                        QgsEditorWidgetSetup,
+                       QgsMapLayer,
                        QgsVectorLayer,
                        QgsRectangle,
                        QgsFeature,
@@ -51,6 +53,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsLineSymbol,
                        QgsMapLayerStyle,
                        QgsMapLayerDependency,
+                       QgsRenderContext,
                        QgsPalLayerSettings,
                        QgsVectorLayerSimpleLabeling,
                        QgsSingleCategoryDiagramRenderer,
@@ -58,6 +61,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsTextFormat,
                        QgsVectorLayerSelectedFeatureSource,
                        QgsExpression,
+                       QgsLayerMetadata,
                        NULL)
 from qgis.gui import (QgsAttributeTableModel,
                       QgsGui
@@ -185,31 +189,6 @@ def dumpEditBuffer(layer):
     print("CHANGED GEOM:")
     for fid, geom in editBuffer.changedGeometries().items():
         print(("%d | %s" % (f.id(), f.geometry().asWkt())))
-
-
-class TestQgsVectorLayerShapefile(unittest.TestCase, FeatureSourceTestCase):
-
-    """
-    Tests a vector layer against the feature source tests, using a real layer source (not a memory layer)
-    """
-    @classmethod
-    def getSource(cls):
-        vl = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'provider', 'shapefile.shp'), 'test')
-        assert (vl.isValid())
-        return vl
-
-    @classmethod
-    def setUpClass(cls):
-        """Run before all tests"""
-        QgsGui.editorWidgetRegistry().initEditors()
-        # Create test layer for FeatureSourceTestCase
-        cls.source = cls.getSource()
-
-    def treat_time_as_string(self):
-        return True
-
-    def treat_datetime_as_string(self):
-        return True
 
 
 class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
@@ -510,9 +489,82 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertFalse(vl.crs().isValid())
 
         # even if provider has a crs - we don't respect it for non-spatial layers!
-        vl = QgsVectorLayer('None?crs=epsg:3111field=pk:integer', 'test', 'memory')
+        vl = QgsVectorLayer('None?crs=epsg:3111&field=pk:integer', 'test', 'memory')
         self.assertFalse(vl.isSpatial())
         self.assertFalse(vl.crs().isValid())
+
+    def test_wgs84Extent(self):
+
+        # We use this particular shapefile because we need a layer with an
+        # epsg != 4326
+        p = os.path.join(unitTestDataPath(), 'bug5598.shp')
+        vl0 = QgsVectorLayer(p, 'test', 'ogr')
+
+        extent = vl0.extent()
+        wgs84_extent = vl0.wgs84Extent()
+
+        # write xml document where the wgs84 extent will be stored
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("maplayer")
+        self.assertTrue(vl0.writeLayerXml(elem, doc, QgsReadWriteContext()))
+
+        # create a 2nd layer and read the xml document WITHOUT trust
+        vl1 = QgsVectorLayer()
+        flags = QgsMapLayer.ReadFlags()
+        vl1.readLayerXml(elem, QgsReadWriteContext(), flags)
+
+        self.assertTrue(extent == vl1.extent())
+        self.assertTrue(wgs84_extent == vl1.wgs84Extent())
+
+        # we add a feature and check that the original extent has been
+        # updated (the extent is bigger with the new feature)
+        vl1.startEditing()
+
+        f = QgsFeature()
+        f.setAttributes([0, "", "", 0.0, 0.0, 0.0, 0.0])
+        f.setGeometry(QgsGeometry.fromPolygonXY([[QgsPointXY(2484588, 2425732), QgsPointXY(2482767, 2398853),
+                                                  QgsPointXY(2520109, 2397715), QgsPointXY(2520792, 2425494),
+                                                  QgsPointXY(2484588, 2425732)]]))
+        vl1.addFeature(f)
+        vl1.updateExtents()
+
+        self.assertTrue(extent != vl1.extent())
+
+        # trust is not activated so the wgs84 extent is updated
+        # accordingly
+        self.assertTrue(wgs84_extent != vl1.wgs84Extent())
+        vl1.rollBack()
+
+        # create a 3rd layer and read the xml document WITH trust
+        vl2 = QgsVectorLayer()
+        flags = QgsMapLayer.ReadFlags()
+        flags |= QgsMapLayer.FlagTrustLayerMetadata
+        vl2.readLayerXml(elem, QgsReadWriteContext(), flags)
+
+        self.assertTrue(extent == vl2.extent())
+        self.assertTrue(wgs84_extent == vl2.wgs84Extent())
+
+        # we add a feature and check that the original extent has been
+        # updated (the extent is bigger with the new feature)
+        vl2.startEditing()
+
+        f = QgsFeature()
+        f.setAttributes([0, "", "", 0.0, 0.0, 0.0, 0.0])
+        f.setGeometry(QgsGeometry.fromPolygonXY([[QgsPointXY(2484588, 2425732), QgsPointXY(2482767, 2398853),
+                                                  QgsPointXY(2520109, 2397715), QgsPointXY(2520792, 2425494),
+                                                  QgsPointXY(2484588, 2425732)]]))
+        vl2.addFeature(f)
+        vl2.updateExtents()
+
+        self.assertTrue(extent != vl2.extent())
+
+        # trust is activated so the wgs84 extent is not updated
+        self.assertTrue(wgs84_extent == vl2.wgs84Extent())
+
+        # but we can still retrieve the current wgs84 xtent with the force
+        # parameter
+        self.assertTrue(wgs84_extent != vl2.wgs84Extent(True))
+        vl2.rollBack()
 
     # ADD FEATURE
 
@@ -1702,14 +1754,17 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         # strings
         self.assertEqual(layer.minimumValue(2), "foo")
         self.assertEqual(layer.maximumValue(2), "qar")
+        self.assertEqual(layer.minimumAndMaximumValue(2), ("foo", "qar"))
 
         # numbers
         self.assertEqual(layer.minimumValue(3), 111)
         self.assertEqual(layer.maximumValue(3), 321)
+        self.assertEqual(layer.minimumAndMaximumValue(3), (111, 321))
 
         # dates (maximumValue also tests we properly handle null values by skipping those)
         self.assertEqual(layer.minimumValue(4), QDateTime(QDate(2010, 1, 1)))
         self.assertEqual(layer.maximumValue(4), QDateTime(QDate(2010, 1, 1)))
+        self.assertEqual(layer.minimumAndMaximumValue(4), (QDateTime(QDate(2010, 1, 1)), QDateTime(QDate(2010, 1, 1))))
 
         self.assertEqual(set(layer.uniqueValues(3)), set([111, 321]))
 
@@ -1928,6 +1983,63 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertTrue(layer.changeAttributeValue(f1_id, 1, 1001))
         self.assertEqual(layer.maximumValue(1), 1001)
 
+    def testMinAndMaxValue(self):
+        """ test retrieving minimum and maximum values at once"""
+        layer = createLayerWithFivePoints()
+
+        # test layer with just provider features
+        self.assertEqual(layer.minimumAndMaximumValue(1), (-1, 888))
+
+        # add feature with new value
+        layer.startEditing()
+        f1 = QgsFeature()
+        f1.setAttributes(["test2", 999])
+        self.assertTrue(layer.addFeature(f1))
+
+        # should be new maximum value
+        self.assertEqual(layer.minimumAndMaximumValue(1), (-1, 999))
+        # add it again, should be no change
+        f2 = QgsFeature()
+        f2.setAttributes(["test2", 999])
+        self.assertTrue(layer.addFeature(f1))
+        self.assertEqual(layer.minimumAndMaximumValue(1), (-1, 999))
+
+        # add another feature
+        f3 = QgsFeature()
+        f3.setAttributes(["test2", 1000])
+        self.assertTrue(layer.addFeature(f3))
+        self.assertEqual(layer.minimumAndMaximumValue(1), (-1, 1000))
+
+        # add feature with new minimum value
+        layer.startEditing()
+        f1 = QgsFeature()
+        f1.setAttributes(["test2", -999])
+        self.assertTrue(layer.addFeature(f1))
+
+        # should be new minimum value
+        self.assertEqual(layer.minimumAndMaximumValue(1), (-999, 1000))
+        # add it again, should be no change
+        f2 = QgsFeature()
+        f2.setAttributes(["test2", -999])
+        self.assertTrue(layer.addFeature(f1))
+        self.assertEqual(layer.minimumAndMaximumValue(1), (-999, 1000))
+
+        # add another feature
+        f3 = QgsFeature()
+        f3.setAttributes(["test2", -1000])
+        self.assertTrue(layer.addFeature(f3))
+        self.assertEqual(layer.minimumAndMaximumValue(1), (-1000, 1000))
+
+        # change an attribute value to a new maximum value
+        it = layer.getFeatures()
+        f1_id = next(it).id()
+        self.assertTrue(layer.changeAttributeValue(f1_id, 1, 1001))
+        self.assertEqual(layer.minimumAndMaximumValue(1), (-1000, 1001))
+
+        f1_id = next(it).id()
+        self.assertTrue(layer.changeAttributeValue(f1_id, 1, -1001))
+        self.assertEqual(layer.minimumAndMaximumValue(1), (-1001, 1001))
+
     def testMinMaxInVirtualField(self):
         """
         Test minimum and maximum values in a virtual field
@@ -1949,6 +2061,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertEqual(len(layer.getFeature(1).attributes()), 2)
         self.assertEqual(layer.minimumValue(1), QDate(2010, 1, 1))
         self.assertEqual(layer.maximumValue(1), QDate(2020, 1, 1))
+        self.assertEqual(layer.minimumAndMaximumValue(1), (QDate(2010, 1, 1), QDate(2020, 1, 1)))
 
     def test_InvalidOperations(self):
         layer = createLayerWithOnePoint()
@@ -2087,13 +2200,13 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         # check value
         f = next(temp_layer.getFeatures())
-        expected = 1005721496.7800847
+        expected = 1005755617.8191342
         self.assertAlmostEqual(f['area'], expected, delta=1.0)
 
         # change project area unit, check calculation respects unit
         QgsProject.instance().setAreaUnits(QgsUnitTypes.AreaSquareMiles)
         f = next(temp_layer.getFeatures())
-        expected = 388.31124079933016
+        expected = 388.3244150061589
         self.assertAlmostEqual(f['area'], expected, 3)
 
     def test_ExpressionFilter(self):
@@ -2919,8 +3032,14 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         action = QgsAction(QgsAction.Unix, "MyActionDescription", "MyActionCmd")
         layer.actions().addAction(action)
 
+        metadata = QgsLayerMetadata()
+        metadata.setFees('a handful of roos')
+        layer.setMetadata(metadata)
+
         # clone layer
         clone = layer.clone()
+
+        self.assertEqual(layer.metadata().fees(), 'a handful of roos')
 
         # generate xml from layer
         layer_doc = QDomDocument("doc")
@@ -3527,6 +3646,193 @@ class TestQgsVectorLayerTransformContext(unittest.TestCase):
         vl2.readXml(elem, QgsReadWriteContext())
         self.assertEqual(vl2.subsetString(), 'xxxxxxxxx')
 
+    def testLayerWithoutProvider(self):
+        """Test that we don't crash when invoking methods on a layer with a broken provider"""
+        layer = QgsVectorLayer("test", "test", "broken_provider")
+        layer.clone()
+        layer.storageType()
+        layer.capabilitiesString()
+        layer.dataComment()
+        layer.displayField()
+        layer.setDisplayExpression('')
+        layer.displayExpression()
+        layer.dataProvider()
+        layer.temporalProperties()
+        layer.setProviderEncoding('utf-8')
+        layer.setCoordinateSystem()
+        layer.addJoin(QgsVectorLayerJoinInfo())
+        layer.removeJoin('id')
+        layer.joinBuffer()
+        layer.vectorJoins()
+        layer.setDependencies([])
+        layer.dependencies()
+        idx = layer.addExpressionField('1+1', QgsField('foo'))
+        # layer.expressionField(idx)
+        # layer.updateExpressionField(idx, '')
+        # layer.removeExpressionField(idx)
+        layer.actions()
+        layer.serverProperties()
+        layer.selectedFeatureCount()
+        layer.selectByRect(QgsRectangle())
+        layer.selectByExpression('1')
+        layer.selectByIds([0])
+        layer.modifySelection([], [])
+        layer.invertSelection()
+        layer.selectAll()
+        layer.invertSelectionInRectangle(QgsRectangle())
+        layer.selectedFeatures()
+        layer.getSelectedFeatures()
+        layer.selectedFeatureIds()
+        layer.boundingBoxOfSelected()
+        layer.labelsEnabled()
+        layer.setLabelsEnabled(False)
+        layer.diagramsEnabled()
+        layer.setDiagramRenderer(None)
+        layer.diagramRenderer()
+        layer.diagramLayerSettings()
+        layer.setDiagramLayerSettings(QgsDiagramLayerSettings())
+        layer.renderer()
+        layer.setRenderer(None)
+        layer.addFeatureRendererGenerator(None)
+        layer.removeFeatureRendererGenerator(None)
+        layer.featureRendererGenerators()
+        layer.geometryType()
+        layer.wkbType()
+        layer.sourceCrs()
+        layer.sourceName()
+        layer.readXml
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("maplayer")
+        layer.writeXml(elem, doc, QgsReadWriteContext())
+        layer.readXml(elem, QgsReadWriteContext())
+        layer.encodedSource('', QgsReadWriteContext())
+        layer.decodedSource('', 'invalid_provider', QgsReadWriteContext())
+        layer.resolveReferences(QgsProject())
+        layer.saveStyleToDatabase('name', 'description', False, 'uiFileContent')
+        layer.listStylesInDatabase()
+        layer.getStyleFromDatabase('id')
+        layer.deleteStyleFromDatabase('id')
+        layer.loadNamedStyle('uri', False)
+        layer.loadAuxiliaryLayer(QgsAuxiliaryStorage())
+        layer.setAuxiliaryLayer(None)
+        layer.auxiliaryLayer()
+        # layer.readSymbology()
+        # layer.readStyle()
+        # layer.writeSymbology()
+        # layer.writeStyle()
+        # layer.writeSld()
+        # layer.readSld()
+        layer.featureCount(None)
+        layer.symbolFeatureIds(None)
+        layer.hasFeatures()
+        layer.loadDefaultStyle()
+        layer.countSymbolFeatures()
+        layer.setSubsetString(None)
+        layer.subsetString()
+        layer.getFeatures()
+        layer.getFeature(0)
+        layer.getGeometry(0)
+        layer.getFeatures([0])
+        layer.getFeatures(QgsRectangle())
+        layer.addFeature(QgsFeature())
+        layer.updateFeature(QgsFeature())
+        layer.insertVertex(0, 0, 0, False)
+        layer.moveVertex(0, 0, 0, False)
+        layer.moveVertexV2(QgsPoint(), 0, False)
+        layer.deleteVertex(0, 0)
+        layer.deleteSelectedFeatures()
+        layer.addRing([QgsPointXY()])
+        # layer.addRing(QgsPointSequence())
+        # layer.addRing(QgsCurve())
+        # layer.addPart()
+        layer.translateFeature(0, 0, 0)
+        layer.splitParts([])
+        layer.splitFeatures([])
+        layer.addTopologicalPoints(QgsPoint())
+        layer.labeling()
+        layer.setLabeling(None)
+        layer.isEditable()
+        layer.isSpatial()
+        layer.isModified()
+        layer.isAuxiliaryField(0)
+        layer.reload()
+        layer.createMapRenderer(QgsRenderContext())
+        layer.extent()
+        layer.sourceExtent()
+        layer.fields()
+        layer.attributeList()
+        layer.primaryKeyAttributes()
+        layer.featureCount()
+        layer.setReadOnly(False)
+        layer.supportsEditing()
+        layer.changeGeometry(0, QgsGeometry())
+        layer.changeAttributeValue(0, 0, '')
+        layer.changeAttributeValues(0, {})
+        layer.addAttribute(QgsField('foo'))
+        layer.setFieldAlias(0, 'bar')
+        layer.removeFieldAlias(0)
+        layer.renameAttribute(0, 'bar')
+        layer.attributeAlias(0)
+        layer.attributeDisplayName(0)
+        layer.attributeAliases()
+        layer.deleteAttribute(0)
+        layer.deleteAttributes([])
+        layer.deleteFeature(0)
+        layer.deleteFeatures([])
+        layer.commitChanges()
+        layer.commitErrors()
+        layer.rollBack()
+        layer.referencingRelations(0)
+        layer.editBuffer()
+        layer.beginEditCommand('foo')
+        layer.endEditCommand()
+        layer.destroyEditCommand()
+        layer.updateFields()
+        layer.defaultValue(0)
+        layer.setDefaultValueDefinition(0, layer.defaultValueDefinition(0))
+        layer.fieldConstraints(0)
+        layer.fieldConstraintsAndStrength(0)
+        layer.setFieldConstraint(0, QgsFieldConstraints.ConstraintUnique)
+        layer.removeFieldConstraint(0, QgsFieldConstraints.ConstraintUnique)
+        layer.constraintExpression(0)
+        layer.constraintDescription(0)
+        layer.setConstraintExpression(0, '1')
+        layer.setEditorWidgetSetup(0, QgsEditorWidgetSetup('Hidden', {}))
+        layer.editorWidgetSetup(0)
+        layer.uniqueValues(0)
+        layer.uniqueStringsMatching(0, None)
+        layer.minimumValue(0)
+        layer.maximumValue(0)
+        layer.minimumAndMaximumValue(0)
+        layer.aggregate(QgsAggregateCalculator.Count, 'foo')
+        layer.setFeatureBlendMode(QPainter.CompositionMode_Screen)
+        layer.featureBlendMode()
+        layer.htmlMetadata()
+        layer.setSimplifyMethod(layer.simplifyMethod())
+        # layer.simplifyDrawingCanbeApplied()
+        layer.conditionalStyles()
+        layer.attributeTableConfig()
+        layer.setAttributeTableConfig(layer.attributeTableConfig())
+        layer.mapTipTemplate()
+        layer.setMapTipTemplate('')
+        layer.createExpressionContext()
+        layer.editFormConfig()
+        layer.setEditFormConfig(layer.editFormConfig())
+        layer.setReadExtentFromXml(False)
+        layer.readExtentFromXml()
+        layer.isEditCommandActive()
+        layer.storedExpressionManager()
+        layer.select(0)
+        layer.select([])
+        layer.deselect(0)
+        layer.deselect([])
+        layer.removeSelection()
+        layer.reselect()
+        layer.updateExtents()
+        layer.startEditing()
+        layer.setTransformContext(QgsCoordinateTransformContext())
+        layer.hasSpatialIndex()
+        # layer.accept(QgsStyleEntityVisitorInterface())
 
 # TODO:
 # - fetch rect: feat with changed geometry: 1. in rect, 2. out of rect

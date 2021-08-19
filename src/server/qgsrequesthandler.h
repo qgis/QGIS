@@ -32,7 +32,7 @@ class QgsServerResponse;
 
 /**
  * \ingroup server
- * This class is an interface hiding the details of reading input and writing
+ * \brief This class is an interface hiding the details of reading input and writing
  * output from/to a wms request mechanism.
  */
 class SERVER_EXPORT QgsRequestHandler

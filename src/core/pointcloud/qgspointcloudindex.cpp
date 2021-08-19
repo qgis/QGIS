@@ -25,6 +25,8 @@
 #include <QTime>
 #include <QtDebug>
 
+#include "qgstiledownloadmanager.h"
+
 IndexedPointCloudNode::IndexedPointCloudNode():
   mD( -1 ),
   mX( 0 ),
@@ -38,6 +40,11 @@ IndexedPointCloudNode::IndexedPointCloudNode( int _d, int _x, int _y, int _z ):
   mY( _y ),
   mZ( _z )
 {}
+
+IndexedPointCloudNode IndexedPointCloudNode::parentNode() const
+{
+  return IndexedPointCloudNode( mD - 1, mX / 2, mY / 2, mZ / 2 );
+}
 
 IndexedPointCloudNode IndexedPointCloudNode::fromString( const QString &str )
 {
@@ -141,7 +148,6 @@ QgsDoubleRange QgsPointCloudDataBounds::zRange( const QgsVector3D &offset, const
 
 ///@endcond
 
-
 //
 // QgsPointCloudIndex
 //
@@ -150,22 +156,32 @@ QgsPointCloudIndex::QgsPointCloudIndex() = default;
 
 QgsPointCloudIndex::~QgsPointCloudIndex() = default;
 
+bool QgsPointCloudIndex::hasNode( const IndexedPointCloudNode &n ) const
+{
+  mHierarchyMutex.lock();
+  const bool found = mHierarchy.contains( n );
+  mHierarchyMutex.unlock();
+  return found;
+}
+
 QList<IndexedPointCloudNode> QgsPointCloudIndex::nodeChildren( const IndexedPointCloudNode &n ) const
 {
+  mHierarchyMutex.lock();
   Q_ASSERT( mHierarchy.contains( n ) );
   QList<IndexedPointCloudNode> lst;
-  int d = n.d() + 1;
-  int x = n.x() * 2;
-  int y = n.y() * 2;
-  int z = n.z() * 2;
+  const int d = n.d() + 1;
+  const int x = n.x() * 2;
+  const int y = n.y() * 2;
+  const int z = n.z() * 2;
 
   for ( int i = 0; i < 8; ++i )
   {
     int dx = i & 1, dy = !!( i & 2 ), dz = !!( i & 4 );
-    IndexedPointCloudNode n2( d, x + dx, y + dy, z + dz );
+    const IndexedPointCloudNode n2( d, x + dx, y + dy, z + dz );
     if ( mHierarchy.contains( n2 ) )
       lst.append( n2 );
   }
+  mHierarchyMutex.unlock();
   return lst;
 }
 
@@ -179,8 +195,8 @@ QgsPointCloudDataBounds QgsPointCloudIndex::nodeBounds( const IndexedPointCloudN
   qint32 xMin = -999999999, yMin = -999999999, zMin = -999999999;
   qint32 xMax = 999999999, yMax = 999999999, zMax = 999999999;
 
-  int d = mRootBounds.xMax() - mRootBounds.xMin();
-  double dLevel = ( double )d / pow( 2, n.d() );
+  const int d = mRootBounds.xMax() - mRootBounds.xMin();
+  const double dLevel = ( double )d / pow( 2, n.d() );
 
   xMin = round( mRootBounds.xMin() + dLevel * n.x() );
   xMax = round( mRootBounds.xMin() + dLevel * ( n.x() + 1 ) );
@@ -205,7 +221,7 @@ QgsDoubleRange QgsPointCloudIndex::nodeZRange( const IndexedPointCloudNode &node
 
 float QgsPointCloudIndex::nodeError( const IndexedPointCloudNode &n ) const
 {
-  double w = nodeMapExtent( n ).width();
+  const double w = nodeMapExtent( n ).width();
   return w / mSpan;
 }
 
@@ -227,4 +243,14 @@ void QgsPointCloudIndex::setAttributes( const QgsPointCloudAttributeCollection &
 int QgsPointCloudIndex::span() const
 {
   return mSpan;
+}
+
+int QgsPointCloudIndex::nodePointCount( const IndexedPointCloudNode &n )
+{
+  int count = -1;
+  mHierarchyMutex.lock();
+  if ( mHierarchy.contains( n ) )
+    count = mHierarchy.contains( n );
+  mHierarchyMutex.unlock();
+  return count;
 }

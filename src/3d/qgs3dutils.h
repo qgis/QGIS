@@ -45,7 +45,7 @@ namespace Qt3DExtras
 
 /**
  * \ingroup 3d
- * Miscellaneous utility functions used from 3D code.
+ * \brief Miscellaneous utility functions used from 3D code.
  * \note Not available in Python bindings
  * \since QGIS 3.0
  */
@@ -125,8 +125,8 @@ class _3D_EXPORT Qgs3DUtils
     static void extractPointPositions( const QgsFeature &f, const Qgs3DMapSettings &map, Qgs3DTypes::AltitudeClamping altClamp, QVector<QVector3D> &positions );
 
     /**
-        Returns true if bbox is completely outside the current viewing volume.
-        This is used to perform object culling checks.
+     * Returns TRUE if bbox is completely outside the current viewing volume.
+     * This is used to perform object culling checks.
     */
     static bool isCullable( const QgsAABB &bbox, const QMatrix4x4 &viewProjectionMatrix );
 

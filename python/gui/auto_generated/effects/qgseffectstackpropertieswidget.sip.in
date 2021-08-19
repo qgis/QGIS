@@ -13,7 +13,7 @@
 
 class QgsEffectStackPropertiesWidget : QgsPanelWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget for modifying the properties of a :py:class:`QgsEffectStack`, including adding
 and reordering effects within the stack.
 
@@ -131,7 +131,7 @@ Sets the effect properties widget
 
 class QgsEffectStackPropertiesDialog: QgsDialog
 {
-%Docstring
+%Docstring(signature="appended")
 A dialog for modifying the properties of a :py:class:`QgsEffectStack`, including adding
 and reordering effects within the stack.
 
@@ -181,7 +181,7 @@ Sets the picture to use for effect previews for the dialog
 
 class QgsEffectStackCompactWidget: QgsPanelWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A small widget consisting of a checkbox for enabling/disabling an effect stack
 and a button for opening an effect stack customization dialog.
 

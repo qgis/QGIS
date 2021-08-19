@@ -29,7 +29,7 @@ class QgsCodeEditorCSS;
 
 /**
  * \ingroup gui
- * A widget for configuring layout html items.
+ * \brief A widget for configuring layout html items.
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12

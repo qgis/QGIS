@@ -23,7 +23,7 @@
 /**
  * \class QgsMapCanvasInteractionBlocker
  * \ingroup gui
- * An interface for objects which block interactions with a QgsMapCanvas.
+ * \brief An interface for objects which block interactions with a QgsMapCanvas.
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsMapCanvasInteractionBlocker

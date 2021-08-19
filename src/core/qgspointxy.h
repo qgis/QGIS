@@ -32,12 +32,27 @@ class QgsPoint;
 
 /**
  * \ingroup core
- * A class to represent a 2D point.
+ * \brief A class to represent a 2D point.
  *
- * A QgsPointXY represents a position with X and Y coordinates.
- * In most scenarios it is preferable to use a QgsPoint instead which also
- * supports Z and M values.
+ * A QgsPointXY represents a strictly 2-dimensional position, with only X and Y coordinates.
+ * This is a very lightweight class, designed to minimize the memory requirements of storing
+ * millions of points.
  *
+ * In many scenarios it is preferable to use a QgsPoint instead which also
+ * supports optional Z and M values. QgsPointXY should only be used for situations where
+ * a point can only EVER be two dimensional.
+ *
+ * Some valid use cases for QgsPointXY include:
+ *
+ * - A mouse cursor location
+ * - A coordinate on a purely 2-dimensional rendered map, e.g. a QgsMapCanvas
+ * - A coordinate in a raster, vector tile, or other purely 2-dimensional layer
+ *
+ * Use cases for which QgsPointXY is NOT a valid choice include:
+ *
+ * - Storage of coordinates for a geometry. Since QgsPointXY is strictly 2-dimensional it should never be used to store coordinates for vector geometries, as this will involve a loss of any z or m values present in the geometry.
+ *
+ * \see QgsPoint
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsPointXY
@@ -415,8 +430,8 @@ inline std::ostream &operator << ( std::ostream &os, const QgsPointXY &p ) SIP_S
 inline uint qHash( const QgsPointXY &p ) SIP_SKIP
 {
   uint hash;
-  uint h1 = qHash( static_cast< quint64 >( p.mX ) );
-  uint h2 = qHash( static_cast< quint64 >( p.mY ) );
+  const uint h1 = qHash( static_cast< quint64 >( p.mX ) );
+  const uint h2 = qHash( static_cast< quint64 >( p.mY ) );
   hash = h1 ^ ( h2 << 1 );
   return hash;
 }

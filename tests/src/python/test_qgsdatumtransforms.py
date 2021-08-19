@@ -27,7 +27,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 class TestPyQgsDatumTransform(unittest.TestCase):
 
-    @unittest.skipIf(QgsProjUtils.projVersionMajor() < 6, 'Not a proj6 build')
     def testOperations(self):
         ops = QgsDatumTransform.operations(QgsCoordinateReferenceSystem(),
                                            QgsCoordinateReferenceSystem())
@@ -246,6 +245,47 @@ class TestPyQgsDatumTransform(unittest.TestCase):
         self.assertTrue(ops[0].proj)
         self.assertTrue(ops[1].name)
         self.assertTrue(ops[1].proj)
+
+    @unittest.skipIf(QgsProjUtils.projVersionMajor() < 8, 'Not a proj >= 8 build')
+    def testDatumEnsembles(self):
+        """
+        Test datum ensemble details
+        """
+        crs = QgsCoordinateReferenceSystem()
+        self.assertFalse(crs.datumEnsemble().isValid())
+        self.assertEqual(str(crs.datumEnsemble()), '<QgsDatumEnsemble: invalid>')
+        crs = QgsCoordinateReferenceSystem('EPSG:3111')
+        self.assertFalse(crs.datumEnsemble().isValid())
+
+        crs = QgsCoordinateReferenceSystem('EPSG:3857')
+        ensemble = crs.datumEnsemble()
+        self.assertTrue(ensemble.isValid())
+        self.assertEqual(ensemble.name(), 'World Geodetic System 1984 ensemble')
+        self.assertEqual(ensemble.authority(), 'EPSG')
+        self.assertEqual(ensemble.code(), '6326')
+        self.assertEqual(ensemble.scope(), 'Satellite navigation.')
+        self.assertEqual(ensemble.accuracy(), 2.0)
+        self.assertEqual(str(ensemble), '<QgsDatumEnsemble: World Geodetic System 1984 ensemble (EPSG:6326)>')
+        self.assertEqual(ensemble.members()[0].name(), 'World Geodetic System 1984 (Transit)')
+        self.assertEqual(ensemble.members()[0].authority(), 'EPSG')
+        self.assertEqual(ensemble.members()[0].code(), '1166')
+        self.assertEqual(ensemble.members()[0].scope(), 'Geodesy. Navigation and positioning using GPS satellite system.')
+        self.assertEqual(str(ensemble.members()[0]),
+                         '<QgsDatumEnsembleMember: World Geodetic System 1984 (Transit) (EPSG:1166)>')
+        self.assertEqual(ensemble.members()[1].name(), 'World Geodetic System 1984 (G730)')
+        self.assertEqual(ensemble.members()[1].authority(), 'EPSG')
+        self.assertEqual(ensemble.members()[1].code(), '1152')
+        self.assertEqual(ensemble.members()[1].scope(), 'Geodesy. Navigation and positioning using GPS satellite system.')
+
+        crs = QgsCoordinateReferenceSystem('EPSG:4936')
+        ensemble = crs.datumEnsemble()
+        self.assertTrue(ensemble.isValid())
+        self.assertEqual(ensemble.name(), 'European Terrestrial Reference System 1989 ensemble')
+        self.assertEqual(ensemble.authority(), 'EPSG')
+        self.assertEqual(ensemble.code(), '6258')
+        self.assertEqual(ensemble.scope(), 'Spatial referencing.')
+        self.assertEqual(ensemble.accuracy(), 0.1)
+        self.assertTrue(ensemble.members())
 
 
 if __name__ == '__main__':

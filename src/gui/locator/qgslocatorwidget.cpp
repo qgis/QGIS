@@ -132,7 +132,7 @@ void QgsLocatorWidget::setMapCanvas( QgsMapCanvas *canvas )
   if ( mMapCanvas == canvas )
     return;
 
-  for ( const QMetaObject::Connection &conn : qgis::as_const( mCanvasConnections ) )
+  for ( const QMetaObject::Connection &conn : std::as_const( mCanvasConnections ) )
   {
     disconnect( conn );
   }
@@ -378,8 +378,15 @@ QgsLocatorResultsView::QgsLocatorResultsView( QWidget *parent )
 
 void QgsLocatorResultsView::recalculateSize()
 {
+  QStyleOptionViewItem optView;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  optView.init( this );
+#else
+  optView.initFrom( this );
+#endif
+
   // try to show about 20 rows
-  int rowSize = 20 * itemDelegate()->sizeHint( viewOptions(), model()->index( 0, 0 ) ).height();
+  int rowSize = 20 * itemDelegate()->sizeHint( optView, model()->index( 0, 0 ) ).height();
 
   // try to take up a sensible portion of window width (about half)
   int width = std::max( 300, window()->size().width() / 2 );
@@ -394,16 +401,24 @@ void QgsLocatorResultsView::recalculateSize()
 
 void QgsLocatorResultsView::selectNextResult()
 {
+  const int rowCount = model()->rowCount( QModelIndex() );
+  if ( rowCount == 0 )
+    return;
+
   int nextRow = currentIndex().row() + 1;
-  nextRow = nextRow % model()->rowCount( QModelIndex() );
+  nextRow = nextRow % rowCount;
   setCurrentIndex( model()->index( nextRow, 0 ) );
 }
 
 void QgsLocatorResultsView::selectPreviousResult()
 {
+  const int rowCount = model()->rowCount( QModelIndex() );
+  if ( rowCount == 0 )
+    return;
+
   int previousRow = currentIndex().row() - 1;
   if ( previousRow < 0 )
-    previousRow = model()->rowCount( QModelIndex() ) - 1;
+    previousRow = rowCount - 1;
   setCurrentIndex( model()->index( previousRow, 0 ) );
 }
 

@@ -28,7 +28,7 @@
 #include "qgssymbollayerutils.h" // QgsStringMap
 #include "qgstextformat.h"
 #include "qgspallabeling.h"
-#include "layertree/qgslegendpatchshape.h"
+#include "qgslegendpatchshape.h"
 
 class QgsSymbol;
 class QgsSymbolLayer;
@@ -389,7 +389,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *
      * \since QGIS 3.14
      */
-    QgsSymbol::SymbolType legendPatchShapeSymbolType( const QString &name ) const;
+    Qgis::SymbolType legendPatchShapeSymbolType( const QString &name ) const;
 
     /**
      * Returns a new copy of the 3D symbol with the specified \a name.
@@ -712,7 +712,7 @@ class CORE_EXPORT QgsStyle : public QObject
      * \see defaultPatchAsQPolygonF()
      * \since QGIS 3.14
      */
-    QgsLegendPatchShape defaultPatch( QgsSymbol::SymbolType type, QSizeF size ) const;
+    QgsLegendPatchShape defaultPatch( Qgis::SymbolType type, QSizeF size ) const;
 
     /**
      * Returns the default patch geometry for the given symbol \a type and \a size as a set of QPolygonF objects (parts and rings).
@@ -720,7 +720,24 @@ class CORE_EXPORT QgsStyle : public QObject
      * \see defaultPatch()
      * \since QGIS 3.14
      */
-    QList< QList< QPolygonF > > defaultPatchAsQPolygonF( QgsSymbol::SymbolType type, QSizeF size ) const;
+    QList< QList< QPolygonF > > defaultPatchAsQPolygonF( Qgis::SymbolType type, QSizeF size ) const;
+
+    /**
+     * Text format context.
+     *
+     * \since QGIS 3.20
+     */
+    enum class TextFormatContext : int
+    {
+      Labeling, //!< Text format used in labeling
+    };
+
+    /**
+     * Returns the default text format to use for new text based objects in the specified \a context.
+     *
+     * \since QGIS 3.20
+     */
+    QgsTextFormat defaultTextFormat( QgsStyle::TextFormatContext context = QgsStyle::TextFormatContext::Labeling ) const;
 
     /**
      * Adds a 3d \a symbol to the database.
@@ -1080,8 +1097,8 @@ class CORE_EXPORT QgsStyle : public QObject
     std::unique_ptr< QgsSymbol > mPatchLineSymbol;
     std::unique_ptr< QgsSymbol > mPatchFillSymbol;
 
-    mutable QHash< QgsSymbol::SymbolType, QHash< QSizeF, QgsLegendPatchShape > > mDefaultPatchCache;
-    mutable QHash< QgsSymbol::SymbolType, QHash< QSizeF, QList< QList< QPolygonF > > > > mDefaultPatchQPolygonFCache;
+    mutable QHash< int, QHash< QSizeF, QgsLegendPatchShape > > mDefaultPatchCache;
+    mutable QHash< int, QHash< QSizeF, QList< QList< QPolygonF > > > > mDefaultPatchQPolygonFCache;
 
     QMap< QString, QDomElement > mDeferred3DsymbolElements;
     void handleDeferred3DSymbolCreation();
@@ -1139,6 +1156,7 @@ class CORE_EXPORT QgsStyle : public QObject
     static QString tagmapEntityIdFieldName( StyleEntity type );
 
     friend class Qgs3D;
+    friend class TestStyle;
 
     Q_DISABLE_COPY( QgsStyle )
 };
@@ -1146,7 +1164,7 @@ class CORE_EXPORT QgsStyle : public QObject
 /**
  * \class QgsStyleEntityInterface
  * \ingroup core
- * An interface for entities which can be placed in a QgsStyle database.
+ * \brief An interface for entities which can be placed in a QgsStyle database.
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsStyleEntityInterface
@@ -1194,7 +1212,7 @@ class CORE_EXPORT QgsStyleEntityInterface
 /**
  * \class QgsStyleSymbolEntity
  * \ingroup core
- * A symbol entity for QgsStyle databases.
+ * \brief A symbol entity for QgsStyle databases.
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsStyleSymbolEntity : public QgsStyleEntityInterface
@@ -1226,7 +1244,7 @@ class CORE_EXPORT QgsStyleSymbolEntity : public QgsStyleEntityInterface
 /**
  * \class QgsStyleColorRampEntity
  * \ingroup core
- * A color ramp entity for QgsStyle databases.
+ * \brief A color ramp entity for QgsStyle databases.
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsStyleColorRampEntity : public QgsStyleEntityInterface
@@ -1257,7 +1275,7 @@ class CORE_EXPORT QgsStyleColorRampEntity : public QgsStyleEntityInterface
 /**
  * \class QgsStyleTextFormatEntity
  * \ingroup core
- * A text format entity for QgsStyle databases.
+ * \brief A text format entity for QgsStyle databases.
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsStyleTextFormatEntity : public QgsStyleEntityInterface
@@ -1287,7 +1305,7 @@ class CORE_EXPORT QgsStyleTextFormatEntity : public QgsStyleEntityInterface
 /**
  * \class QgsStyleLabelSettingsEntity
  * \ingroup core
- * A label settings entity for QgsStyle databases.
+ * \brief A label settings entity for QgsStyle databases.
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsStyleLabelSettingsEntity : public QgsStyleEntityInterface
@@ -1317,7 +1335,7 @@ class CORE_EXPORT QgsStyleLabelSettingsEntity : public QgsStyleEntityInterface
 /**
  * \class QgsStyleLegendPatchShapeEntity
  * \ingroup core
- * A legend patch shape entity for QgsStyle databases.
+ * \brief A legend patch shape entity for QgsStyle databases.
  * \since QGIS 3.14
  */
 class CORE_EXPORT QgsStyleLegendPatchShapeEntity : public QgsStyleEntityInterface
@@ -1347,7 +1365,7 @@ class CORE_EXPORT QgsStyleLegendPatchShapeEntity : public QgsStyleEntityInterfac
 /**
  * \class QgsStyleSymbol3DEntity
  * \ingroup core
- * A 3d symbol entity for QgsStyle databases.
+ * \brief A 3d symbol entity for QgsStyle databases.
  * \since QGIS 3.16
  */
 class CORE_EXPORT QgsStyleSymbol3DEntity : public QgsStyleEntityInterface

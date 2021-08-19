@@ -35,7 +35,7 @@ class QDomDocument;
 
 /**
  * \ingroup core
- * Stored expression containing name, content (expression text) and a category tag.
+ * \brief Stored expression containing name, content (expression text) and a category tag.
  * \since QGIS 3.10
  */
 struct CORE_EXPORT QgsStoredExpression
@@ -87,7 +87,7 @@ struct CORE_EXPORT QgsStoredExpression
 
 /**
  * \ingroup core
- * Manages stored expressions regarding creation, modification and storing in the project
+ * \brief Manages stored expressions regarding creation, modification and storing in the project
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsStoredExpressionManager : public QObject

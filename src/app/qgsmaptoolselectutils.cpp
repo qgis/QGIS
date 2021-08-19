@@ -48,7 +48,7 @@ QgsVectorLayer *QgsMapToolSelectUtils::getCurrentVectorLayer( QgsMapCanvas *canv
     QgisApp::instance()->messageBar()->pushMessage(
       QObject::tr( "No active vector layer" ),
       QObject::tr( "To select features, choose a vector layer in the layers panel" ),
-      Qgis::Info );
+      Qgis::MessageLevel::Info );
   }
   return vlayer;
 }
@@ -95,13 +95,13 @@ QgsRectangle QgsMapToolSelectUtils::expandSelectRectangle( QgsPointXY mapPoint, 
 
 void QgsMapToolSelectUtils::selectMultipleFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, Qt::KeyboardModifiers modifiers )
 {
-  QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection;
+  Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection;
   if ( modifiers & Qt::ShiftModifier && modifiers & Qt::ControlModifier )
-    behavior = QgsVectorLayer::IntersectSelection;
+    behavior = Qgis::SelectBehavior::IntersectSelection;
   else if ( modifiers & Qt::ShiftModifier )
-    behavior = QgsVectorLayer::AddToSelection;
+    behavior = Qgis::SelectBehavior::AddToSelection;
   else if ( modifiers & Qt::ControlModifier )
-    behavior = QgsVectorLayer::RemoveFromSelection;
+    behavior = Qgis::SelectBehavior::RemoveFromSelection;
 
   bool doContains = modifiers & Qt::AltModifier;
   setSelectedFeatures( canvas, selectGeometry, behavior, doContains );
@@ -130,7 +130,7 @@ void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const Qgs
     return;
   }
 
-  QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection;
+  Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection;
 
   //either shift or control modifier switches to "toggle" selection mode
   if ( modifiers & Qt::ShiftModifier || modifiers & Qt::ControlModifier )
@@ -138,9 +138,9 @@ void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const Qgs
     QgsFeatureId selectId = *selectedFeatures.constBegin();
     QgsFeatureIds layerSelectedFeatures = vlayer->selectedFeatureIds();
     if ( layerSelectedFeatures.contains( selectId ) )
-      behavior = QgsVectorLayer::RemoveFromSelection;
+      behavior = Qgis::SelectBehavior::RemoveFromSelection;
     else
-      behavior = QgsVectorLayer::AddToSelection;
+      behavior = Qgis::SelectBehavior::AddToSelection;
   }
 
   vlayer->selectByIds( selectedFeatures, behavior );
@@ -149,7 +149,7 @@ void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const Qgs
 }
 
 void QgsMapToolSelectUtils::setSelectedFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry,
-    QgsVectorLayer::SelectBehavior selectBehavior, bool doContains, bool singleSelect )
+    Qgis::SelectBehavior selectBehavior, bool doContains, bool singleSelect )
 {
   QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas );
   if ( !vlayer )
@@ -209,7 +209,7 @@ static bool transformSelectGeometry( const QgsGeometry &selectGeometry,  QgsGeom
     QgisApp::instance()->messageBar()->pushMessage(
       QObject::tr( "CRS Exception" ),
       QObject::tr( "Selection extends beyond layer's coordinate system" ),
-      Qgis::Warning );
+      Qgis::MessageLevel::Warning );
     return false;
   }
 }
@@ -236,13 +236,15 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
 
   QgsDebugMsgLevel( "Selection layer: " + vlayer->name(), 3 );
   QgsDebugMsgLevel( "Selection polygon: " + selectGeomTrans.asWkt(), 3 );
-  QgsDebugMsgLevel( "doContains: " + QString( doContains ? "T" : "F" ), 3 );
+  QgsDebugMsgLevel( "doContains: " + QString( doContains ? QStringLiteral( "T" ) : QStringLiteral( "F" ) ), 3 );
 
   // make sure the selection geometry is valid, or intersection tests won't work correctly...
   if ( !selectGeomTrans.isGeosValid( ) )
   {
     // a zero width buffer is safer than calling make valid here!
     selectGeomTrans = selectGeomTrans.buffer( 0, 1 );
+    if ( selectGeomTrans.isEmpty() )
+      return newSelectedFeatures;
   }
 
   std::unique_ptr< QgsGeometryEngine > selectionGeometryEngine( QgsGeometry::createGeometryEngine( selectGeomTrans.constGet() ) );
@@ -250,7 +252,11 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
   selectionGeometryEngine->prepareGeometry();
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( canvas->mapSettings() );
-  context.expressionContext() << QgsExpressionContextUtils::layerScope( vlayer );
+
+  QgsExpressionContext expressionContext = canvas->createExpressionContext();
+  expressionContext << QgsExpressionContextUtils::layerScope( vlayer );
+  context.setExpressionContext( expressionContext );
+
   std::unique_ptr< QgsFeatureRenderer > r;
   if ( vlayer->renderer() )
   {
@@ -288,6 +294,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
     }
   }
 
+  request.setExpressionContext( context.expressionContext() );
   QgsFeatureIterator fit = vlayer->getFeatures( request );
 
   QgsFeature f;
@@ -315,7 +322,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
       if ( !errorMessage.isEmpty() )
       {
         // contains relation test still failed, even after trying to make valid!
-        QgsMessageLog::logMessage( QObject::tr( "Error determining selection: %1" ).arg( errorMessage ), QString(), Qgis::Warning );
+        QgsMessageLog::logMessage( QObject::tr( "Error determining selection: %1" ).arg( errorMessage ), QString(), Qgis::MessageLevel::Warning );
       }
 
       if ( notContained )
@@ -333,7 +340,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
       if ( !errorMessage.isEmpty() )
       {
         // intersects relation test still failed, even after trying to make valid!
-        QgsMessageLog::logMessage( QObject::tr( "Error determining selection: %1" ).arg( errorMessage ), QString(), Qgis::Warning );
+        QgsMessageLog::logMessage( QObject::tr( "Error determining selection: %1" ).arg( errorMessage ), QString(), Qgis::MessageLevel::Warning );
       }
 
       if ( notIntersects )
@@ -370,7 +377,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
 
 QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::QgsMapToolSelectMenuActions( QgsMapCanvas *canvas,
     QgsVectorLayer *vectorLayer,
-    QgsVectorLayer::SelectBehavior behavior, QgsGeometry selectionGeometry,
+    Qgis::SelectBehavior behavior, const QgsGeometry &selectionGeometry,
     QObject *parent ):
   QObject( parent ),
   mCanvas( canvas ),
@@ -428,9 +435,10 @@ void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::startFeatureSearch()
   mJobData->ct = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mVectorLayer->crs(), mJobData->context.transformContext() );
   mJobData->featureRenderer.reset( mVectorLayer->renderer()->clone() );
 
+  mJobData->context.setExpressionContext( mCanvas->createExpressionContext() );
   mJobData->context.expressionContext() << QgsExpressionContextUtils::layerScope( mVectorLayer );
   mJobData->selectBehavior = mBehavior;
-  if ( mBehavior != QgsVectorLayer::SetSelection )
+  if ( mBehavior != Qgis::SelectBehavior::SetSelection )
     mJobData->existingSelection = mVectorLayer->selectedFeatureIds();
   QFuture<QgsFeatureIds> future = QtConcurrent::run( search, mJobData );
   mFutureWatcher->setFuture( future );
@@ -482,6 +490,7 @@ QgsFeatureIds QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::search( std::s
       request.combineFilterExpression( filterExpression );
     }
   }
+  request.setExpressionContext( data->context.expressionContext() );
 
   QgsFeatureIterator fit = data->source->getFeatures( request );
 
@@ -507,7 +516,7 @@ QgsFeatureIds QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::search( std::s
     if ( !errorMessage.isEmpty() )
     {
       // intersects relation test still failed, even after trying to make valid!
-      QgsMessageLog::logMessage( QObject::tr( "Error determining selection: %1" ).arg( errorMessage ), QString(), Qgis::Warning );
+      QgsMessageLog::logMessage( QObject::tr( "Error determining selection: %1" ).arg( errorMessage ), QString(), Qgis::MessageLevel::Warning );
     }
 
     if ( notIntersects )
@@ -543,18 +552,17 @@ QString QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::textForChooseAll( qi
   {
     switch ( mBehavior )
     {
-      case QgsVectorLayer::SetSelection:
+      case Qgis::SelectBehavior::SetSelection:
         return tr( "Select Feature" );
-        break;
-      case QgsVectorLayer::AddToSelection:
+
+      case Qgis::SelectBehavior::AddToSelection:
         return tr( "Add to Selection" );
-        break;
-      case QgsVectorLayer::IntersectSelection:
+
+      case Qgis::SelectBehavior::IntersectSelection:
         return tr( "Intersect with Selection" );
-        break;
-      case QgsVectorLayer::RemoveFromSelection:
+
+      case Qgis::SelectBehavior::RemoveFromSelection:
         return tr( "Remove from Selection" );
-        break;
     }
   }
 
@@ -562,22 +570,18 @@ QString QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::textForChooseAll( qi
   if ( featureCount < 0 )
     featureCountText = tr( "Searching…" );
   else
-    featureCountText = QString::number( featureCount );
+    featureCountText = QLocale().toString( featureCount );
 
   switch ( mBehavior )
   {
-    case QgsVectorLayer::SetSelection:
+    case Qgis::SelectBehavior::SetSelection:
       return tr( "Select All (%1)" ).arg( featureCountText );
-      break;
-    case QgsVectorLayer::AddToSelection:
+    case Qgis::SelectBehavior::AddToSelection:
       return tr( "Add All to Selection (%1)" ).arg( featureCountText );
-      break;
-    case QgsVectorLayer::IntersectSelection:
+    case Qgis::SelectBehavior::IntersectSelection:
       return tr( "Intersect All with Selection (%1)" ).arg( featureCountText );
-      break;
-    case QgsVectorLayer::RemoveFromSelection:
+    case Qgis::SelectBehavior::RemoveFromSelection:
       return tr( "Remove All from Selection (%1)" ).arg( featureCountText );
-      break;
   }
 
   return QString();
@@ -587,18 +591,14 @@ QString QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::textForChooseOneMenu
 {
   switch ( mBehavior )
   {
-    case QgsVectorLayer::SetSelection:
+    case Qgis::SelectBehavior::SetSelection:
       return tr( "Select Feature" );
-      break;
-    case QgsVectorLayer::AddToSelection:
+    case Qgis::SelectBehavior::AddToSelection:
       return tr( "Add Feature to Selection" );
-      break;
-    case QgsVectorLayer::IntersectSelection:
+    case Qgis::SelectBehavior::IntersectSelection:
       return tr( "Intersect Feature with Selection" );
-      break;
-    case QgsVectorLayer::RemoveFromSelection:
+    case Qgis::SelectBehavior::RemoveFromSelection:
       return tr( "Remove Feature from Selection" );
-      break;
   }
 
   return QString();
@@ -678,7 +678,7 @@ void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::highlightAllFeatures()
   if ( !mAllFeatureIds.empty() )
   {
     int count = 0;
-    for ( const QgsFeatureId &id : mAllFeatureIds )
+    for ( const QgsFeatureId &id : std::as_const( mAllFeatureIds ) )
     {
       QgsFeature feat = mVectorLayer->getFeature( id );
       QgsGeometry geom = feat.geometry();
@@ -729,14 +729,14 @@ void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::styleHighlight( QgsHigh
 
 QgsFeatureIds QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::filterIds( const QgsFeatureIds &ids,
     const QgsFeatureIds &existingSelection,
-    QgsVectorLayer::SelectBehavior behavior )
+    Qgis::SelectBehavior behavior )
 {
   QgsFeatureIds effectiveFeatureIds = ids;
   switch ( behavior )
   {
-    case QgsVectorLayer::SetSelection:
+    case Qgis::SelectBehavior::SetSelection:
       break;
-    case QgsVectorLayer::AddToSelection:
+    case Qgis::SelectBehavior::AddToSelection:
     {
       for ( QgsFeatureId newSelected : ids )
       {
@@ -745,8 +745,8 @@ QgsFeatureIds QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::filterIds( con
       }
     }
     break;
-    case QgsVectorLayer::IntersectSelection:
-    case QgsVectorLayer::RemoveFromSelection:
+    case Qgis::SelectBehavior::IntersectSelection:
+    case Qgis::SelectBehavior::RemoveFromSelection:
     {
       for ( QgsFeatureId newSelected : ids )
       {

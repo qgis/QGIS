@@ -1,0 +1,22 @@
+version: '3'
+services:
+
+# Proving very fragile!
+#  mssql:
+#    image: microsoft/mssql-server-linux:2017-latest
+#    environment:
+#      ACCEPT_EULA: Y
+#      SA_PASSWORD: <YourStrong!Passw0rd>
+
+  qgis-deps:
+    tty: true
+    image: qgis3-build-deps-binary-image
+    volumes:
+      - ${GH_WORKSPACE}:/root/QGIS
+    # links:
+    #  - mssql
+    env_file:
+      - docker-variables.env
+    environment:
+      - LANG=C.UTF-8
+      - LC_ALL=en_US.UTF-8

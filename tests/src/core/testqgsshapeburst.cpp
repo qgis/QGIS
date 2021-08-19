@@ -34,6 +34,7 @@
 #include <qgscolorramp.h>
 //qgis test includes
 #include "qgsmultirenderchecker.h"
+#include "qgsfillsymbol.h"
 
 /**
  * \ingroup UnitTests
@@ -83,14 +84,14 @@ void TestQgsShapeburst::initTestCase()
   QgsApplication::showSettings();
 
   //create some objects that will be used in all tests...
-  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + '/';
 
   //
   //create a poly layer that will be used in all tests...
   //
-  QString myPolysFileName = mTestDataDir + "polys.shp";
-  QFileInfo myPolyFileInfo( myPolysFileName );
+  const QString myPolysFileName = mTestDataDir + "polys.shp";
+  const QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
                                      myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
@@ -119,7 +120,7 @@ void TestQgsShapeburst::initTestCase()
 }
 void TestQgsShapeburst::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -222,9 +223,9 @@ bool TestQgsShapeburst::setQml( const QString &type )
   //load a qml style and apply to our layer
   //the style will correspond to the renderer
   //type we are testing
-  QString myFileName = mTestDataDir + "polys_" + type + "_symbol.qml";
+  const QString myFileName = mTestDataDir + "polys_" + type + "_symbol.qml";
   bool myStyleFlag = false;
-  QString error = mpPolysLayer->loadNamedStyle( myFileName, myStyleFlag );
+  const QString error = mpPolysLayer->loadNamedStyle( myFileName, myStyleFlag );
   if ( !myStyleFlag )
   {
     qDebug( "%s", error.toLocal8Bit().constData() );
@@ -243,7 +244,7 @@ bool TestQgsShapeburst::imageCheck( const QString &testType )
   myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( mMapSettings );
   myChecker.setColorTolerance( 20 );
-  bool myResultFlag = myChecker.runTest( testType, 500 );
+  const bool myResultFlag = myChecker.runTest( testType, 500 );
   mReport += myChecker.report();
   return myResultFlag;
 }

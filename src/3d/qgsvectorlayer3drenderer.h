@@ -33,7 +33,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup core
- * Metadata for vector layer 3D renderer to allow creation of its instances from XML
+ * \brief Metadata for vector layer 3D renderer to allow creation of its instances from XML.
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is
  * exposed to the Python bindings as a tech preview only.
@@ -52,7 +52,7 @@ class _3D_EXPORT QgsVectorLayer3DRendererMetadata : public Qgs3DRendererAbstract
 
 /**
  * \ingroup core
- * 3D renderer that renders all features of a vector layer with the same 3D symbol.
+ * \brief 3D renderer that renders all features of a vector layer with the same 3D symbol.
  * The appearance is completely defined by the symbol.
  * \since QGIS 3.0
  */

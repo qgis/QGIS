@@ -27,7 +27,7 @@
 
 /**
  * \ingroup gui
- * A generic message view for displaying QGIS messages.
+ * \brief A generic message view for displaying QGIS messages.
  */
 class GUI_EXPORT QgsMessageViewer: public QDialog, public QgsMessageOutput, private Ui::QgsMessageViewer
 {

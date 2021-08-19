@@ -67,7 +67,7 @@ QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &center, const QgsPoint &pt
       case CircumscribedCircle:
       {
         mRadius = apothemToRadius( center.distance( pt1 ), numSides );
-        double azimuth = center.azimuth( pt1 );
+        const double azimuth = center.azimuth( pt1 );
         // TODO: inclination
         mFirstVertex = mCenter.project( mRadius, azimuth - centralAngle( numSides ) / 2 );
         break;
@@ -84,12 +84,12 @@ QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &pt1, const QgsPoint &pt2, 
   {
     mNumberSides = numSides;
 
-    double azimuth = pt1.azimuth( pt2 );
-    QgsPoint pm = QgsGeometryUtils::midpoint( pt1, pt2 );
-    double length = pt1.distance( pm );
+    const double azimuth = pt1.azimuth( pt2 );
+    const QgsPoint pm = QgsGeometryUtils::midpoint( pt1, pt2 );
+    const double length = pt1.distance( pm );
 
-    double angle = ( 180 - ( 360 / numSides ) ) / 2.0;
-    double hypothenuse = length / std::cos( angle * M_PI / 180 );
+    const double angle = ( 180 - ( 360 / numSides ) ) / 2.0;
+    const double hypothenuse = length / std::cos( angle * M_PI / 180 );
     // TODO: inclination
 
     mCenter = pt1.project( hypothenuse, azimuth + angle );
@@ -122,7 +122,7 @@ bool QgsRegularPolygon::isEmpty() const
 
 void QgsRegularPolygon::setCenter( const QgsPoint &center )
 {
-  double azimuth = mFirstVertex.isEmpty() ? 0 : mCenter.azimuth( mFirstVertex );
+  const double azimuth = mFirstVertex.isEmpty() ? 0 : mCenter.azimuth( mFirstVertex );
   // TODO: double inclination = mCenter.inclination(mFirstVertex);
   mCenter = center;
   mFirstVertex = center.project( mRadius, azimuth );
@@ -131,14 +131,14 @@ void QgsRegularPolygon::setCenter( const QgsPoint &center )
 void QgsRegularPolygon::setRadius( const double radius )
 {
   mRadius = std::fabs( radius );
-  double azimuth = mFirstVertex.isEmpty() ? 0 : mCenter.azimuth( mFirstVertex );
+  const double azimuth = mFirstVertex.isEmpty() ? 0 : mCenter.azimuth( mFirstVertex );
   // TODO: double inclination = mCenter.inclination(mFirstVertex);
   mFirstVertex = mCenter.project( mRadius, azimuth );
 }
 
 void QgsRegularPolygon::setFirstVertex( const QgsPoint &firstVertex )
 {
-  double azimuth = mCenter.azimuth( mFirstVertex );
+  const double azimuth = mCenter.azimuth( mFirstVertex );
   // TODO: double inclination = mCenter.inclination(firstVertex);
   mFirstVertex = firstVertex;
   mCenter = mFirstVertex.project( mRadius, azimuth );
@@ -161,7 +161,7 @@ QgsPointSequence QgsRegularPolygon::points() const
   }
 
   double azimuth = mCenter.azimuth( mFirstVertex );
-  double azimuth_add = centralAngle();
+  const double azimuth_add = centralAngle();
   // TODO: inclination
 
   unsigned int n = 1;

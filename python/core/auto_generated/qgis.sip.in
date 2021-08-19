@@ -10,6 +10,7 @@
 
 
 
+
 %ModuleHeaderCode
 #include <qgis.h>
 %End
@@ -18,10 +19,21 @@
 int QgisEvent = QEvent::User + 1;
 %End
 
+enum class QgsMapLayerType
+  {
+  VectorLayer,
+  RasterLayer,
+  PluginLayer,
+  MeshLayer,
+  VectorTileLayer,
+  AnnotationLayer,
+  PointCloudLayer,
+};
+
 
 class Qgis
 {
-%Docstring
+%Docstring(signature="appended")
 The Qgis class provides global constants for use throughout the application.
 %End
 
@@ -70,11 +82,11 @@ The development version
       Warning,
       Critical,
       Success,
-      None
+      NoLevel,
     };
 
-    enum DataType
-    {
+    enum class DataType
+      {
       UnknownDataType,
       Byte,
       UInt16,
@@ -91,14 +103,361 @@ The development version
       ARGB32_Premultiplied
     };
 
-    enum PythonMacroMode
-    {
+    enum class PythonMacroMode
+      {
       Never,
       Ask,
       SessionOnly,
       Always,
       NotForThisSession,
     };
+
+    enum class FeatureCountState
+      {
+      Uncounted,
+      UnknownCount,
+    };
+
+    enum class SymbolType
+      {
+      Marker,
+      Line,
+      Fill,
+      Hybrid
+    };
+
+    enum class ScaleMethod
+      {
+      ScaleArea,
+      ScaleDiameter
+    };
+
+    enum class SymbolRenderHint
+      {
+      DynamicRotation,
+    };
+    typedef QFlags<Qgis::SymbolRenderHint> SymbolRenderHints;
+
+
+    enum class SymbolFlag
+    {
+      RendererShouldUseSymbolLevels,
+    };
+    typedef QFlags<Qgis::SymbolFlag> SymbolFlags;
+
+
+    enum class SymbolPreviewFlag
+      {
+      FlagIncludeCrosshairsForMarkerSymbols,
+    };
+    typedef QFlags<Qgis::SymbolPreviewFlag> SymbolPreviewFlags;
+
+
+    enum class BrowserItemType
+      {
+      Collection,
+      Directory,
+      Layer,
+      Error,
+      Favorites,
+      Project,
+      Custom,
+      Fields,
+      Field,
+    };
+
+    enum class BrowserItemState
+      {
+      NotPopulated,
+      Populating,
+      Populated,
+    };
+
+    enum class BrowserItemCapability
+      {
+      NoCapabilities,
+      SetCrs,
+      Fertile,
+      Fast,
+      Collapse,
+      Rename,
+      Delete,
+      ItemRepresentsFile,
+    };
+    typedef QFlags<Qgis::BrowserItemCapability> BrowserItemCapabilities;
+
+
+    enum class BrowserLayerType
+      {
+      NoType,
+      Vector,
+      Raster,
+      Point,
+      Line,
+      Polygon,
+      TableLayer,
+      Database,
+      Table,
+      Plugin,
+      Mesh,
+      VectorTile,
+      PointCloud
+    };
+
+    enum class BrowserDirectoryMonitoring
+    {
+      Default,
+      NeverMonitor,
+      AlwaysMonitor,
+    };
+
+    enum class VectorExportResult
+      {
+      Success,
+      ErrorCreatingDataSource,
+      ErrorCreatingLayer,
+      ErrorAttributeTypeUnsupported,
+      ErrorAttributeCreationFailed,
+      ErrorProjectingFeatures,
+      ErrorFeatureWriteFailed,
+      ErrorInvalidLayer,
+      ErrorInvalidProvider,
+      ErrorProviderUnsupportedFeature,
+      ErrorConnectionFailed,
+      UserCanceled,
+    };
+
+    enum class SqlLayerDefinitionCapability
+    {
+      SubsetStringFilter,
+      GeometryColumn,
+      PrimaryKeys,
+      UnstableFeatureIds
+    };
+    typedef QFlags<Qgis::SqlLayerDefinitionCapability> SqlLayerDefinitionCapabilities;
+
+
+    enum class SqlKeywordCategory
+    {
+      Keyword,
+      Constant,
+      Function,
+      Geospatial,
+      Operator,
+      Math,
+      Aggregate,
+      String,
+      Identifier
+    };
+
+    enum class DriveType
+    {
+      Unknown,
+      Invalid,
+      Removable,
+      Fixed,
+      Remote,
+      CdRom,
+      RamDisk,
+    };
+
+    enum class ActionStart
+      {
+      Deferred,
+      Immediate,
+    };
+
+    enum class UnplacedLabelVisibility
+    {
+      FollowEngineSetting,
+      NeverShow,
+    };
+
+    enum class SublayerQueryFlag
+    {
+      FastScan,
+      ResolveGeometryType,
+      CountFeatures,
+    };
+    typedef QFlags<Qgis::SublayerQueryFlag> SublayerQueryFlags;
+
+
+    enum class RasterPipeInterfaceRole
+      {
+      Unknown,
+      Provider,
+      Renderer,
+      Brightness,
+      Resampler,
+      Projector,
+      Nuller,
+      HueSaturation,
+    };
+
+    enum class RasterResamplingStage
+      {
+      //! Resampling occurs in ResamplingFilter
+      ResampleFilter,
+      //! Resampling occurs in Provider
+      Provider
+    };
+
+    enum class MeshEditingErrorType
+    {
+      NoError,
+      InvalidFace,
+      TooManyVerticesInFace,
+      FlatFace,
+      UniqueSharedVertex,
+      InvalidVertex,
+      ManifoldFace,
+    };
+
+    enum class FilePathType
+    {
+      Absolute,
+      Relative,
+    };
+
+    enum class SublayerPromptMode
+    {
+      AlwaysAsk,
+      AskExcludingRasterBands,
+      NeverAskSkip,
+      NeverAskLoadAll,
+    };
+
+    enum class SelectBehavior
+      {
+      SetSelection,
+      AddToSelection,
+      IntersectSelection,
+      RemoveFromSelection,
+    };
+
+    enum class VectorEditResult
+      {
+      Success,
+      EmptyGeometry,
+      EditFailed,
+      FetchFeatureFailed,
+      InvalidLayer,
+    };
+
+    enum class VertexMarkerType
+      {
+      SemiTransparentCircle,
+      Cross,
+      NoMarker,
+    };
+
+    enum class ContentStatus
+    {
+      NotStarted,
+      Running,
+      Finished,
+      Failed,
+      Canceled,
+    };
+
+    enum class BabelFormatCapability
+    {
+      Import,
+      Export,
+      Waypoints,
+      Routes,
+      Tracks,
+    };
+    typedef QFlags<Qgis::BabelFormatCapability> BabelFormatCapabilities;
+
+
+    enum class BabelCommandFlag
+    {
+      QuoteFilePaths,
+    };
+    typedef QFlags<Qgis::BabelCommandFlag> BabelCommandFlags;
+
+
+    enum class GpsFeatureType
+    {
+      Waypoint,
+      Route,
+      Track,
+    };
+
+    enum class GeometryOperationResult
+      {
+      Success,
+      NothingHappened,
+      InvalidBaseGeometry,
+      InvalidInputGeometryType,
+      SelectionIsEmpty,
+      SelectionIsGreaterThanOne,
+      GeometryEngineError,
+      LayerNotEditable,
+      AddPartSelectedGeometryNotFound,
+      AddPartNotMultiGeometry,
+      AddRingNotClosed,
+      AddRingNotValid,
+      AddRingCrossesExistingRings,
+      AddRingNotInExistingFeature,
+      SplitCannotSplitPoint,
+    };
+
+    enum class GeometryValidityFlag
+      {
+      AllowSelfTouchingHoles,
+    };
+    typedef QFlags<Qgis::GeometryValidityFlag> GeometryValidityFlags;
+
+
+    enum class GeometryValidationEngine
+      {
+      QgisInternal,
+      Geos,
+    };
+
+    enum class BufferSide
+      {
+      Left,
+      Right,
+    };
+
+    enum class EndCapStyle
+      {
+      Round,
+      Flat,
+      Square,
+    };
+
+    enum class JoinStyle
+      {
+      Round,
+      Miter,
+      Bevel,
+    };
+
+    enum class SpatialFilterType
+    {
+      NoFilter,
+      BoundingBox,
+      DistanceWithin,
+    };
+
+    enum class FileOperationFlag
+    {
+      IncludeMetadataFile,
+      IncludeStyleFile,
+    };
+    typedef QFlags<Qgis::FileOperationFlag> FileOperationFlags;
+
+
+    enum class MapLayerProperty
+    {
+      UsersCannotToggleEditing,
+    };
+    typedef QFlags<Qgis::MapLayerProperty> MapLayerProperties;
+
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
@@ -114,6 +473,8 @@ The development version
 
     static const double DEFAULT_Z_COORDINATE;
 
+    static const double DEFAULT_M_COORDINATE;
+
     static const double UI_SCALE_FACTOR;
 
     static const double DEFAULT_SNAP_TOLERANCE;
@@ -126,7 +487,63 @@ A string with default project scales.
 
 .. versionadded:: 3.12
 %End
+
+    static int geosVersionInt();
+%Docstring
+GEOS version number linked
+
+.. versionadded:: 3.20
+%End
+
+    static int geosVersionMajor();
+%Docstring
+GEOS Major version number linked
+
+.. versionadded:: 3.20
+%End
+
+    static int geosVersionMinor();
+%Docstring
+GEOS Minor version number linked
+
+.. versionadded:: 3.20
+%End
+
+    static int geosVersionPatch();
+%Docstring
+GEOS Patch version number linked
+
+.. versionadded:: 3.20
+%End
+
+    static QString geosVersion();
+%Docstring
+GEOS string version linked
+
+.. versionadded:: 3.20
+%End
 };
+
+QFlags<Qgis::SymbolRenderHint> operator|(Qgis::SymbolRenderHint f1, QFlags<Qgis::SymbolRenderHint> f2);
+
+QFlags<Qgis::SymbolFlag> operator|(Qgis::SymbolFlag f1, QFlags<Qgis::SymbolFlag> f2);
+
+QFlags<Qgis::SymbolPreviewFlag> operator|(Qgis::SymbolPreviewFlag f1, QFlags<Qgis::SymbolPreviewFlag> f2);
+
+QFlags<Qgis::BrowserItemCapability> operator|(Qgis::BrowserItemCapability f1, QFlags<Qgis::BrowserItemCapability> f2);
+
+QFlags<Qgis::SublayerQueryFlag> operator|(Qgis::SublayerQueryFlag f1, QFlags<Qgis::SublayerQueryFlag> f2);
+
+QFlags<Qgis::SqlLayerDefinitionCapability> operator|(Qgis::SqlLayerDefinitionCapability f1, QFlags<Qgis::SqlLayerDefinitionCapability> f2);
+
+QFlags<Qgis::BabelFormatCapability> operator|(Qgis::BabelFormatCapability f1, QFlags<Qgis::BabelFormatCapability> f2);
+
+QFlags<Qgis::BabelCommandFlag> operator|(Qgis::BabelCommandFlag f1, QFlags<Qgis::BabelCommandFlag> f2);
+
+QFlags<Qgis::GeometryValidityFlag> operator|(Qgis::GeometryValidityFlag f1, QFlags<Qgis::GeometryValidityFlag> f2);
+
+QFlags<Qgis::FileOperationFlag> operator|(Qgis::FileOperationFlag f1, QFlags<Qgis::FileOperationFlag> f2);
+
 
 
 
@@ -143,6 +560,16 @@ Returns a string representation of a double
 
 :param a: double value
 :param precision: number of decimal places to retain
+%End
+
+bool qgsNanCompatibleEquals( double a, double b );
+%Docstring
+Compare two doubles, treating nan values as equal
+
+:param a: first double
+:param b: second double
+
+.. versionadded:: 3.20
 %End
 
 bool qgsDoubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON );
@@ -250,7 +677,6 @@ always treated as equal and 0 is not treated as equal with NULL
 :return: ``True`` if values are equal
 %End
 
-
 bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
 %Docstring
 Compares two QVariant values and returns whether the first is greater than the second.
@@ -259,6 +685,12 @@ QVariant data types (such as strings, numeric values, dates and times)
 
 .. seealso:: :py:func:`qgsVariantLessThan`
 %End
+
+
+bool operator> ( const QVariant &v1, const QVariant &v2 );
+
+bool operator< ( const QVariant &v1, const QVariant &v2 );
+
 
 
 
@@ -284,6 +716,7 @@ const double DEFAULT_SEGMENT_EPSILON;
 
 
 typedef unsigned long long qgssize;
+
 
 
 

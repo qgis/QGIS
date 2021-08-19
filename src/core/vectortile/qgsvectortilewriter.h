@@ -28,7 +28,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup core
- * Takes care of writing vector tiles. The intended use is to set up the class
+ * \brief Takes care of writing vector tiles. The intended use is to set up the class
  * by setting the destination URI, extent, zoom level range and input vector
  * layers. Then with a call to writeTiles() the data gets written. In case
  * of a failure, errorMessage() returns the cause of the problem during writing.
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsVectorTileWriter
 
     /**
      * \ingroup core
-     * Configuration of a single input vector layer to be included in the output
+     * \brief Configuration of a single input vector layer to be included in the output
      * \since QGIS 3.14
      */
     class Layer

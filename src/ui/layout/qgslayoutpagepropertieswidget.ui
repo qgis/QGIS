@@ -256,6 +256,12 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsRatioLockButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsratiolockbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
@@ -266,20 +272,14 @@
    <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsRatioLockButton</class>
+   <class>QgsSymbolButton</class>
    <extends>QToolButton</extends>
-   <header>qgsratiolockbutton.h</header>
-   <container>1</container>
+   <header>qgssymbolbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsLayoutUnitsComboBox</class>
    <extends>QComboBox</extends>
    <header>qgslayoutunitscombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsSymbolButton</class>
-   <extends>QToolButton</extends>
-   <header>qgssymbolbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -289,9 +289,9 @@
   <tabstop>mOrientationDDBtn</tabstop>
   <tabstop>mWidthSpin</tabstop>
   <tabstop>mWidthDDBtn</tabstop>
-  <tabstop>mLockAspectRatio</tabstop>
   <tabstop>mHeightSpin</tabstop>
   <tabstop>mHeightDDBtn</tabstop>
+  <tabstop>mLockAspectRatio</tabstop>
   <tabstop>mSizeUnitsComboBox</tabstop>
   <tabstop>mExcludePageCheckBox</tabstop>
   <tabstop>mExcludePageDDBtn</tabstop>

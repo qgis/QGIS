@@ -34,10 +34,12 @@ from .additions.qgsfeature import mapping_feature
 from .additions.qgsfunction import register_function, qgsfunction
 from .additions.qgsgeometry import _geometryNonZero, mapping_geometry
 from .additions.qgssettings import _qgssettings_enum_value, _qgssettings_set_enum_value, _qgssettings_flag_value
+from .additions.qgssettingsentry import PyQgsSettingsEntryEnumFlag
 from .additions.qgstaskwrapper import QgsTaskWrapper
 from .additions.readwritecontextentercategory import ReadWriteContextEnterCategory
 from .additions.runtimeprofiler import ScopedRuntimeProfileContextManager
 from .additions.validitycheck import check
+from .additions.ranges import datetime_range_repr, date_range_repr
 
 # Injections into classes
 QgsFeature.__geo_interface__ = property(mapping_feature)
@@ -53,6 +55,11 @@ QgsSettings.enumValue = _qgssettings_enum_value
 QgsSettings.setEnumValue = _qgssettings_set_enum_value
 QgsSettings.flagValue = _qgssettings_flag_value
 QgsTask.fromFunction = fromFunction
+QgsDateTimeRange.__repr__ = datetime_range_repr
+QgsDateRange.__repr__ = date_range_repr
+
+# Classes patched
+QgsSettingsEntryEnumFlag = PyQgsSettingsEntryEnumFlag
 
 # Classes patched using a derived class
 QgsProviderMetadata = PyProviderMetadata
@@ -65,6 +72,22 @@ QgsMarkerLineSymbolLayer.LastVertex = QgsTemplatedLineSymbolLayerBase.LastVertex
 QgsMarkerLineSymbolLayer.FirstVertex = QgsTemplatedLineSymbolLayerBase.FirstVertex
 QgsMarkerLineSymbolLayer.CentralPoint = QgsTemplatedLineSymbolLayerBase.CentralPoint
 QgsMarkerLineSymbolLayer.CurvePoint = QgsTemplatedLineSymbolLayerBase.CurvePoint
+
+QgsVectorLayer.VertexMarkerType = Qgis.VertexMarkerType
+QgsVectorLayer.SemiTransparentCircle = Qgis.VertexMarkerType.SemiTransparentCircle
+QgsVectorLayer.SemiTransparentCircle.is_monkey_patched = True
+QgsVectorLayer.SemiTransparentCircle.__doc__ = "Semi-transparent circle marker"
+QgsVectorLayer.Cross = Qgis.VertexMarkerType.Cross
+QgsVectorLayer.Cross.is_monkey_patched = True
+QgsVectorLayer.Cross.__doc__ = "Cross marker"
+QgsVectorLayer.NoMarker = Qgis.VertexMarkerType.NoMarker
+QgsVectorLayer.NoMarker.is_monkey_patched = True
+QgsVectorLayer.NoMarker.__doc__ = "No marker"
+
+QgsSymbol.RenderHints = Qgis.SymbolRenderHints
+QgsSymbol.PreviewFlags = Qgis.SymbolPreviewFlags
+QgsDataItem.Capabilities = Qgis.BrowserItemCapabilities
+QgsGeometry.ValidityFlags = Qgis.GeometryValidityFlags
 
 # Monkey patch static const "QgsDataProvider.SUBLAYER_SEPARATOR" which was removed for QGIS 3.12
 QgsDataProvider.SUBLAYER_SEPARATOR = QgsDataProvider.sublayerSeparator()

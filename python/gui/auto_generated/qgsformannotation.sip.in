@@ -11,7 +11,7 @@
 
 class QgsFormAnnotation: QgsAnnotation
 {
-%Docstring
+%Docstring(signature="appended")
 An annotation item that embeds a designer form showing the feature attribute
 
 .. versionadded:: 3.0

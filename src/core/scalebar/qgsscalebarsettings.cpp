@@ -21,6 +21,8 @@
 #include "qgslinesymbollayer.h"
 #include "qgssymbol.h"
 #include "qgsfillsymbollayer.h"
+#include "qgslinesymbol.h"
+#include "qgsfillsymbol.h"
 
 QgsScaleBarSettings::QgsScaleBarSettings()
 {
@@ -28,9 +30,9 @@ QgsScaleBarSettings::QgsScaleBarSettings()
   mTextFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
   mTextFormat.setColor( QColor( 0, 0, 0 ) );
 
-  mNumericFormat = qgis::make_unique< QgsBasicNumericFormat >();
+  mNumericFormat = std::make_unique< QgsBasicNumericFormat >();
 
-  mLineSymbol = qgis::make_unique< QgsLineSymbol >();
+  mLineSymbol = std::make_unique< QgsLineSymbol >();
   mLineSymbol->setColor( QColor( 0, 0, 0 ) );
   mLineSymbol->setWidth( 0.3 );
   if ( QgsSimpleLineSymbolLayer *line = dynamic_cast< QgsSimpleLineSymbolLayer * >( mLineSymbol->symbolLayer( 0 ) ) )
@@ -42,13 +44,13 @@ QgsScaleBarSettings::QgsScaleBarSettings()
   mDivisionLineSymbol.reset( mLineSymbol->clone() );
   mSubdivisionLineSymbol.reset( mLineSymbol->clone() );
 
-  mFillSymbol = qgis::make_unique< QgsFillSymbol >();
+  mFillSymbol = std::make_unique< QgsFillSymbol >();
   mFillSymbol->setColor( QColor( 0, 0, 0 ) );
   if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast< QgsSimpleFillSymbolLayer * >( mFillSymbol->symbolLayer( 0 ) ) )
   {
     fill->setStrokeStyle( Qt::NoPen );
   }
-  mAlternateFillSymbol = qgis::make_unique< QgsFillSymbol >();
+  mAlternateFillSymbol = std::make_unique< QgsFillSymbol >();
   mAlternateFillSymbol->setColor( QColor( 255, 255, 255 ) );
   if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast< QgsSimpleFillSymbolLayer * >( mAlternateFillSymbol->symbolLayer( 0 ) ) )
   {

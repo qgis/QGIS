@@ -21,7 +21,7 @@
 
 /**
  * \ingroup gui
- * The QgsTabWidget class is the same as the QTabWidget but with additional methods to
+ * \brief The QgsTabWidget class is the same as the QTabWidget but with additional methods to
  * temporarily hide/show tabs.
  *
  * \since QGIS 3.0
@@ -100,7 +100,8 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
       //! Constructor for TabInformation
       TabInformation() = default;
 
-      bool operator ==( const TabInformation &other );
+      bool operator ==( const TabInformation &other ) const;
+      bool operator !=( const TabInformation &other ) const;
 
       int sourceIndex = -1;
       QWidget *widget = nullptr;

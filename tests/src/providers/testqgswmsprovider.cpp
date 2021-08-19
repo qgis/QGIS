@@ -14,6 +14,8 @@
  ***************************************************************************/
 #include <QFile>
 #include <QObject>
+#include <QUrlQuery>
+
 #include "qgstest.h"
 #include <qgswmsprovider.h>
 #include <qgsapplication.h>
@@ -156,7 +158,37 @@ class TestQgsWmsProvider: public QObject
       QgsRasterLayer layer( uq.toString(), "isle_of_man", "wms" );
       QVERIFY( layer.isValid() );
 
-      QVERIFY( imageCheck( "mbtiles_1", &layer, layer.extent() ) );
+      QgsMapSettings mapSettings;
+      mapSettings.setLayers( QList<QgsMapLayer *>() << &layer );
+      mapSettings.setExtent( layer.extent() );
+      mapSettings.setOutputSize( QSize( 400, 400 ) );
+      mapSettings.setOutputDpi( 96 );
+      QVERIFY( imageCheck( "mbtiles_1", mapSettings ) );
+    }
+
+    void testDpiDependentData()
+    {
+      QString dataDir( TEST_DATA_DIR );
+      QUrlQuery uq;
+      uq.addQueryItem( "type", "mbtiles" );
+      uq.addQueryItem( "url", QUrl::fromLocalFile( dataDir + "/isle_of_man_xxx_invalid.mbtiles" ).toString() );
+
+      // check first that we do not accept invalid mbtiles paths
+      QgsRasterLayer layerInvalid( uq.toString(), "invalid", "wms" );
+      //QgsWmsProvider providerInvalid( uq.toString(), QgsDataProvider::ProviderOptions() );
+      QVERIFY( !layerInvalid.isValid() );
+
+      uq.addQueryItem( "url", QUrl::fromLocalFile( dataDir + "/isle_of_man.mbtiles" ).toString() );
+      QgsRasterLayer layer( uq.toString(), "isle_of_man", "wms" );
+      QVERIFY( layer.isValid() );
+
+      QgsMapSettings mapSettings;
+      mapSettings.setLayers( QList<QgsMapLayer *>() << &layer );
+      mapSettings.setExtent( layer.extent() );
+      mapSettings.setOutputSize( QSize( 400, 400 ) );
+      mapSettings.setOutputDpi( 96 );
+      mapSettings.setDpiTarget( 48 );
+      QVERIFY( imageCheck( "mbtiles_dpidependentdata", mapSettings ) );
     }
 
     void providerUriUpdates()
@@ -211,15 +243,10 @@ class TestQgsWmsProvider: public QObject
       QVERIFY( provider.layerMetadata().rights().at( 0 ).startsWith( "Base map and data from OpenStreetMap and OpenStreetMap Foundation" ) );
     }
 
-    bool imageCheck( const QString &testType, QgsMapLayer *layer, const QgsRectangle &extent )
+    bool imageCheck( const QString &testType, QgsMapSettings &mapSettings )
     {
       //use the QgsRenderChecker test utility class to
       //ensure the rendered output matches our control image
-      QgsMapSettings mapSettings;
-      mapSettings.setLayers( QList<QgsMapLayer *>() << layer );
-      mapSettings.setExtent( extent );
-      mapSettings.setOutputSize( QSize( 400, 400 ) );
-      mapSettings.setOutputDpi( 96 );
       QgsMultiRenderChecker myChecker;
       myChecker.setControlPathPrefix( QStringLiteral( "wmsprovider" ) );
       myChecker.setControlName( "expected_" + testType );
@@ -228,6 +255,13 @@ class TestQgsWmsProvider: public QObject
       bool myResultFlag = myChecker.runTest( testType, 500 );
       mReport += myChecker.report();
       return myResultFlag;
+    }
+
+    void testParseWmstUriWithoutTemporalExtent()
+    {
+      // test fix for https://github.com/qgis/QGIS/issues/43158
+      // we just check we don't crash
+      QgsWmsProvider provider( QStringLiteral( "allowTemporalUpdates=true&temporalSource=provider&type=wmst&layers=foostyles=bar&crs=EPSG:3857&format=image/png&url=file:///dummy" ), QgsDataProvider::ProviderOptions(), mCapabilities );
     }
 
   private:

@@ -45,8 +45,7 @@ class QgsMeshEntity;
 #define SIP_NO_FILE
 
 /**
- * \brief The Qgs3DSceneExporter class
- * Entity that handles the exporting of 3D scene
+ * \brief Entity that handles the exporting of 3D scene
  *
  * \note Not available in Python bindings
  *

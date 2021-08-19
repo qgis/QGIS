@@ -18,13 +18,14 @@
 #include <QSqlDatabase>
 #include <QMainWindow>
 
-#include "qgsdataitem.h"
+#include "qgsconnectionsitem.h"
+#include "qgsdatacollectionitem.h"
 
 #include "qgsoracletablemodel.h"
 #include "qgsoraclesourceselect.h"
 #include "qgsmimedatautils.h"
-#include "qgsvectorlayerexporter.h"
 #include "qgsdataitemprovider.h"
+#include "qgslayeritem.h"
 
 class QSqlDatabase;
 
@@ -32,7 +33,7 @@ class QgsOracleRootItem;
 class QgsOracleConnectionItem;
 class QgsOracleOwnerItem;
 class QgsOracleLayerItem;
-class QgsProxyProgressTask;
+class QgsOracleColumnTypeTask;
 
 class QgsOracleRootItem : public QgsConnectionsRootItem
 {
@@ -81,14 +82,13 @@ class QgsOracleConnectionItem : public QgsDataCollectionItem
 
     void setLayerType( const QgsOracleLayerProperty &layerProperty );
 
-    void threadStarted();
-    void threadFinished();
+    void taskStarted();
+    void taskFinished();
 
   private:
     void stop();
     QMap<QString, QgsOracleOwnerItem * > mOwnerMap;
-    QgsOracleColumnTypeThread *mColumnTypeThread = nullptr;
-    QgsProxyProgressTask *mColumnTypeTask = nullptr;
+    QgsOracleColumnTypeTask *mColumnTypeTask = nullptr;
     void setAllAsPopulated();
 };
 
@@ -113,7 +113,7 @@ class QgsOracleLayerItem : public QgsLayerItem
     Q_OBJECT
 
   public:
-    QgsOracleLayerItem( QgsDataItem *parent, const QString &name, const QString &path, QgsLayerItem::LayerType layerType, const QgsOracleLayerProperty &layerProperties );
+    QgsOracleLayerItem( QgsDataItem *parent, const QString &name, const QString &path, Qgis::BrowserLayerType layerType, const QgsOracleLayerProperty &layerProperties );
 
     QString createUri();
 

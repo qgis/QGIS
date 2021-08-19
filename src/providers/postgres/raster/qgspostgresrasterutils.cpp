@@ -26,7 +26,7 @@ QVariantMap QgsPostgresRasterUtils::parseWkb( const QByteArray &wkb, int bandNo 
   {
     QgsMessageLog::logMessage( QStringLiteral( "Wrong wkb size: min expected = %1, actual = %2" )
                                .arg( minWkbSize )
-                               .arg( wkb.size() ), QStringLiteral( "PostGIS" ), Qgis::Critical );
+                               .arg( wkb.size() ), QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Critical );
 
     return result;
   }
@@ -128,7 +128,7 @@ QVariantMap QgsPostgresRasterUtils::parseWkb( const QByteArray &wkb, int bandNo 
       default:
         result[ QStringLiteral( "nodata" ) ] = std::numeric_limits<double>::min();
         QgsMessageLog::logMessage( QStringLiteral( "Unsupported pixel type: %1" )
-                                   .arg( result[ QStringLiteral( "pxType" ) ].toInt() ), QStringLiteral( "PostGIS" ), Qgis::Critical );
+                                   .arg( result[ QStringLiteral( "pxType" ) ].toInt() ), QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Critical );
 
     }
     result[ QStringLiteral( "pxSize" ) ] = pxSize;
@@ -139,7 +139,7 @@ QVariantMap QgsPostgresRasterUtils::parseWkb( const QByteArray &wkb, int bandNo 
   if ( static_cast<unsigned int>( bandNo ) > nBands )
   {
     QgsMessageLog::logMessage( QStringLiteral( "Band number is not valid: %1 (nBands: %2" )
-                               .arg( bandNo ).arg( nBands ), QStringLiteral( "PostGIS" ), Qgis::Critical );
+                               .arg( bandNo ).arg( nBands ), QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Critical );
     return result;
   }
 

@@ -29,7 +29,7 @@
 
 /**
  * \ingroup gui
- * Draws a label describing the current report section within a layout designer view.
+ * \brief Draws a label describing the current report section within a layout designer view.
  *
  * \note not available in Python bindings
  *

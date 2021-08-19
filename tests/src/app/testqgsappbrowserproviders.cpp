@@ -26,6 +26,7 @@
 #include "qgsdataitemproviderregistry.h"
 #include "qgssettings.h"
 #include "qgsappbrowserproviders.h"
+#include "qgsdirectoryitem.h"
 
 class TestQgsAppBrowserProviders : public QObject
 {
@@ -60,7 +61,7 @@ void TestQgsAppBrowserProviders::initTestCase()
   QgsApplication::initQgis();
   QgsApplication::showSettings();
 
-  QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = dataDir + '/';
 
   // Set up the QgsSettings environment
@@ -68,7 +69,7 @@ void TestQgsAppBrowserProviders::initTestCase()
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
   // save current scanItemsSetting value
-  QgsSettings settings;
+  const QgsSettings settings;
   mScanItemsSetting = settings.value( QStringLiteral( "/qgis/scanItemsInBrowser2" ), QVariant( "" ) ).toString();
 
   //create a directory item that will be used in all tests...
@@ -100,7 +101,7 @@ void TestQgsAppBrowserProviders::testProjectItemCreation()
 
   for ( QgsDataItem *child : children )
   {
-    if ( child->type() == QgsDataItem::Project && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgs" ) )
+    if ( child->type() == Qgis::BrowserItemType::Project && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgs" ) )
     {
       child->populate( true );
 

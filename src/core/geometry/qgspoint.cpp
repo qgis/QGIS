@@ -22,6 +22,7 @@
 #include "qgsgeometryutils.h"
 #include "qgsmaptopixel.h"
 #include "qgswkbptr.h"
+#include "qgsgeometrytransformer.h"
 
 #include <cmath>
 #include <QPainter>
@@ -117,10 +118,10 @@ QgsPoint *QgsPoint::snappedToGrid( double hSpacing, double vSpacing, double dSpa
   };
 
   // Get the new values
-  auto x = gridifyValue( mX, hSpacing );
-  auto y = gridifyValue( mY, vSpacing );
-  auto z = gridifyValue( mZ, dSpacing, QgsWkbTypes::hasZ( mWkbType ) );
-  auto m = gridifyValue( mM, mSpacing, QgsWkbTypes::hasM( mWkbType ) );
+  const auto x = gridifyValue( mX, hSpacing );
+  const auto y = gridifyValue( mY, vSpacing );
+  const auto z = gridifyValue( mZ, dSpacing, QgsWkbTypes::hasZ( mWkbType ) );
+  const auto m = gridifyValue( mM, mSpacing, QgsWkbTypes::hasM( mWkbType ) );
 
   // return the new object
   return new QgsPoint( mWkbType, x, y, z, m );
@@ -133,7 +134,7 @@ bool QgsPoint::removeDuplicateNodes( double, bool )
 
 bool QgsPoint::fromWkb( QgsConstWkbPtr &wkbPtr )
 {
-  QgsWkbTypes::Type type = wkbPtr.readHeader();
+  const QgsWkbTypes::Type type = wkbPtr.readHeader();
   if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::Point )
   {
     clear();
@@ -176,8 +177,12 @@ bool QgsPoint::fromWkt( const QString &wkt )
        secondWithoutParentheses.isEmpty() )
     return true;
 
-  QRegularExpression rx( QStringLiteral( "\\s" ) );
+  const QRegularExpression rx( QStringLiteral( "\\s" ) );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList coordinates = parts.second.split( rx, QString::SkipEmptyParts );
+#else
+  QStringList coordinates = parts.second.split( rx, Qt::SkipEmptyParts );
+#endif
 
   // So far the parser hasn't looked at the coordinates. We'll avoid having anything but numbers and return NULL instead of 0 as a coordinate.
   // Without this check, "POINT (a, b)" or "POINT (( 4, 3 ))" returned "POINT (0 ,0)"
@@ -190,7 +195,7 @@ bool QgsPoint::fromWkt( const QString &wkt )
   // True
   // p.asWkt()
   // 'Point (0 -1.43209999999999993)'
-  QRegularExpression rxIsNumber( QStringLiteral( "^[+-]?(\\d\\.?\\d*[Ee][+\\-]?\\d+|(\\d+\\.\\d*|\\d*\\.\\d+)|\\d+)$" ) );
+  const QRegularExpression rxIsNumber( QStringLiteral( "^[+-]?(\\d\\.?\\d*[Ee][+\\-]?\\d+|(\\d+\\.\\d*|\\d*\\.\\d+)|\\d+)$" ) );
   if ( coordinates.filter( rxIsNumber ).size() != coordinates.size() )
     return false;
 
@@ -281,9 +286,9 @@ QDomElement QgsPoint::asGml2( QDomDocument &doc, int precision, const QString &n
   QDomElement elemCoordinates = doc.createElementNS( ns, QStringLiteral( "coordinates" ) );
 
   // coordinate separator
-  QString cs = QStringLiteral( "," );
+  const QString cs = QStringLiteral( "," );
   // tuple separator
-  QString ts = QStringLiteral( " " );
+  const QString ts = QStringLiteral( " " );
 
   elemCoordinates.setAttribute( QStringLiteral( "cs" ), cs );
   elemCoordinates.setAttribute( QStringLiteral( "ts" ), ts );
@@ -416,7 +421,7 @@ QgsAbstractGeometry *QgsPoint::boundary() const
   return nullptr;
 }
 
-bool QgsPoint::isValid( QString &, int ) const
+bool QgsPoint::isValid( QString &, Qgis::GeometryValidityFlags ) const
 {
   return true;
 }
@@ -532,6 +537,11 @@ double QgsPoint::segmentLength( QgsVertexId ) const
   return 0.0;
 }
 
+bool QgsPoint::boundingBoxIntersects( const QgsRectangle &rectangle ) const
+{
+  return rectangle.contains( mX, mY );
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.
@@ -640,6 +650,16 @@ bool QgsPoint::convertTo( QgsWkbTypes::Type type )
   return false;
 }
 
+bool QgsPoint::transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback * )
+{
+  if ( !transformer )
+    return false;
+
+  const bool res = transformer->transformPoint( mX, mY, mZ, mM );
+  clearCache();
+  return res;
+}
+
 void QgsPoint::filterVertices( const std::function<bool ( const QgsPoint & )> & )
 {
   // no meaning for points
@@ -647,7 +667,7 @@ void QgsPoint::filterVertices( const std::function<bool ( const QgsPoint & )> & 
 
 void QgsPoint::transformVertices( const std::function<QgsPoint( const QgsPoint & )> &transform )
 {
-  QgsPoint res = transform( *this );
+  const QgsPoint res = transform( *this );
   mX = res.x();
   mY = res.y();
   if ( is3D() )
@@ -695,19 +715,19 @@ double QgsPoint::distanceSquared3D( const QgsPoint &other ) const
 
 double QgsPoint::azimuth( const QgsPoint &other ) const
 {
-  double dx = other.x() - mX;
-  double dy = other.y() - mY;
+  const double dx = other.x() - mX;
+  const double dy = other.y() - mY;
   return ( std::atan2( dx, dy ) * 180.0 / M_PI );
 }
 
 double QgsPoint::inclination( const QgsPoint &other ) const
 {
-  double distance = distance3D( other );
+  const double distance = distance3D( other );
   if ( qgsDoubleNear( distance, 0.0 ) )
   {
     return 90.0;
   }
-  double dz = other.z() - mZ;
+  const double dz = other.z() - mZ;
 
   return ( std::acos( dz / distance ) * 180.0 / M_PI );
 }
@@ -715,7 +735,7 @@ double QgsPoint::inclination( const QgsPoint &other ) const
 QgsPoint QgsPoint::project( double distance, double azimuth, double inclination ) const
 {
   QgsWkbTypes::Type pType = mWkbType;
-  double radsXy = azimuth * M_PI / 180.0;
+  const double radsXy = azimuth * M_PI / 180.0;
   double dx = 0.0, dy = 0.0, dz = 0.0;
 
   inclination = std::fmod( inclination, 360.0 );
@@ -730,13 +750,18 @@ QgsPoint QgsPoint::project( double distance, double azimuth, double inclination 
   }
   else
   {
-    double radsZ = inclination * M_PI / 180.0;
+    const double radsZ = inclination * M_PI / 180.0;
     dx = distance * std::sin( radsZ ) * std::sin( radsXy );
     dy = distance * std::sin( radsZ ) * std::cos( radsXy );
     dz = distance * std::cos( radsZ );
   }
 
   return QgsPoint( mX + dx, mY + dy, mZ + dz, mM, pType );
+}
+
+void QgsPoint::normalize()
+{
+  // nothing to do
 }
 
 bool QgsPoint::isEmpty() const
@@ -772,6 +797,65 @@ QgsPoint QgsPoint::childPoint( int index ) const
 
 QgsPoint *QgsPoint::createEmptyWithSameType() const
 {
-  double nan = std::numeric_limits<double>::quiet_NaN();
+  const double nan = std::numeric_limits<double>::quiet_NaN();
   return new QgsPoint( nan, nan, nan, nan, mWkbType );
+}
+
+int QgsPoint::compareToSameClass( const QgsAbstractGeometry *other ) const
+{
+  const QgsPoint *otherPoint = qgsgeometry_cast< const QgsPoint * >( other );
+  if ( !otherPoint )
+    return -1;
+
+  if ( mX < otherPoint->mX )
+  {
+    return -1;
+  }
+  else if ( mX > otherPoint->mX )
+  {
+    return 1;
+  }
+
+  if ( mY < otherPoint->mY )
+  {
+    return -1;
+  }
+  else if ( mY > otherPoint->mY )
+  {
+    return 1;
+  }
+
+  if ( is3D() && !otherPoint->is3D() )
+    return 1;
+  else if ( !is3D() && otherPoint->is3D() )
+    return -1;
+  else if ( is3D() && otherPoint->is3D() )
+  {
+    if ( mZ < otherPoint->mZ )
+    {
+      return -1;
+    }
+    else if ( mZ > otherPoint->mZ )
+    {
+      return 1;
+    }
+  }
+
+  if ( isMeasure() && !otherPoint->isMeasure() )
+    return 1;
+  else if ( !isMeasure() && otherPoint->isMeasure() )
+    return -1;
+  else if ( isMeasure() && otherPoint->isMeasure() )
+  {
+    if ( mM < otherPoint->mM )
+    {
+      return -1;
+    }
+    else if ( mM > otherPoint->mM )
+    {
+      return 1;
+    }
+  }
+
+  return 0;
 }

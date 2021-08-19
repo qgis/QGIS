@@ -78,7 +78,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
     typedef QMap< QString, QStringList > KeywordMap;
 
     /**
-     * Metadata address structure.
+     * \brief Metadata address structure.
      * \ingroup core
      * \since QGIS 3.2
      */
@@ -127,11 +127,12 @@ class CORE_EXPORT QgsAbstractMetadataBase
        */
       QString country;
 
+      // TODO c++20 - replace with = default
       bool operator==( const QgsAbstractMetadataBase::Address &other ) const;
     };
 
     /**
-     * Metadata contact structure.
+     * \brief Metadata contact structure.
      * \ingroup core
      * \since QGIS 3.2
      */
@@ -188,11 +189,12 @@ class CORE_EXPORT QgsAbstractMetadataBase
        */
       QString role;
 
+      // TODO c++20 - replace with = default
       bool operator==( const QgsAbstractMetadataBase::Contact &other ) const;
     };
 
     /**
-     * A list of contacts.
+     * \brief A list of contacts.
      * \ingroup core
      * \since QGIS 3.2
      */
@@ -200,7 +202,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
 
 
     /**
-     * Metadata link structure.
+     * \brief Metadata link structure.
      * \ingroup core
      * \since QGIS 3.2
      */
@@ -252,11 +254,12 @@ class CORE_EXPORT QgsAbstractMetadataBase
        */
       QString size;
 
+      // TODO c++20 - replace with = default
       bool operator==( const QgsAbstractMetadataBase::Link &other ) const;
     };
 
     /**
-     * A list of links.
+     * \brief A list of links.
      * \ingroup core
      * \since QGIS 3.2
      */
@@ -523,6 +526,15 @@ class CORE_EXPORT QgsAbstractMetadataBase
      * class method in order to write common metadata properties.
      */
     virtual bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const;
+
+    /**
+     * Combines the metadata from this object with the metadata from an \a other object.
+     *
+     * Any existing values in this object will be overwritten by non-empty values from \a other.
+     *
+     * \since QGIS 3.20
+     */
+    virtual void combine( const QgsAbstractMetadataBase *other );
 
   protected:
 

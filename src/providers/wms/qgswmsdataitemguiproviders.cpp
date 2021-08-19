@@ -43,32 +43,32 @@ void QgsWmsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
 {
   if ( QgsWMSConnectionItem *connItem = qobject_cast< QgsWMSConnectionItem * >( item ) )
   {
-    QAction *actionRefresh = new QAction( tr( "Refresh" ), this );
+    QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
     connect( actionRefresh, &QAction::triggered, this, [connItem] { refreshConnection( connItem ); } );
     menu->addAction( actionRefresh );
 
     menu->addSeparator();
 
-    QAction *actionEdit = new QAction( tr( "Edit…" ), this );
+    QAction *actionEdit = new QAction( tr( "Edit…" ), menu );
     connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
     menu->addAction( actionEdit );
 
-    QAction *actionDelete = new QAction( tr( "Delete" ), this );
+    QAction *actionDelete = new QAction( tr( "Delete" ), menu );
     connect( actionDelete, &QAction::triggered, this, [connItem] { deleteConnection( connItem ); } );
     menu->addAction( actionDelete );
   }
 
   if ( QgsWMSRootItem *rootItem = qobject_cast< QgsWMSRootItem * >( item ) )
   {
-    QAction *actionNew = new QAction( tr( "New Connection…" ), this );
+    QAction *actionNew = new QAction( tr( "New Connection…" ), menu );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
     menu->addAction( actionNew );
 
-    QAction *actionSaveServers = new QAction( tr( "Save Connections…" ), this );
+    QAction *actionSaveServers = new QAction( tr( "Save Connections…" ), menu );
     connect( actionSaveServers, &QAction::triggered, this, [] { saveConnections(); } );
     menu->addAction( actionSaveServers );
 
-    QAction *actionLoadServers = new QAction( tr( "Load Connections…" ), this );
+    QAction *actionLoadServers = new QAction( tr( "Load Connections…" ), menu );
     connect( actionLoadServers, &QAction::triggered, this, [rootItem] { loadConnections( rootItem ); } );
     menu->addAction( actionLoadServers );
   }

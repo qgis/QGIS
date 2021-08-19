@@ -24,7 +24,7 @@
 /**
  * \ingroup gui
  * \class QgsDockWidget
- * QgsDockWidget subclass with more fine-grained control over how the widget is closed or opened.
+ * \brief QgsDockWidget subclass with more fine-grained control over how the widget is closed or opened.
  * \since QGIS 2.16
  */
 

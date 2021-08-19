@@ -118,15 +118,15 @@ class pansharp(GdalAlgorithm):
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, out)
 
-        arguments = []
-        arguments.append(panchromatic.source())
-        arguments.append(spectral.source())
-        arguments.append(out)
-
-        arguments.append('-r')
-        arguments.append(self.methods[self.parameterAsEnum(parameters, self.RESAMPLING, context)][1])
-        arguments.append('-of')
-        arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
+        arguments = [
+            panchromatic.source(),
+            spectral.source(),
+            out,
+            '-r',
+            self.methods[self.parameterAsEnum(parameters, self.RESAMPLING, context)][1],
+            '-of',
+            QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1])
+        ]
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
@@ -136,11 +136,4 @@ class pansharp(GdalAlgorithm):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
             arguments.append(extra)
 
-        if isWindows():
-            commands = ['python3', '-m', self.commandName()]
-        else:
-            commands = [self.commandName() + '.py']
-
-        commands.append(GdalUtils.escapeAndJoin(arguments))
-
-        return commands
+        return [self.commandName() + ('.bat' if isWindows() else '.py'), GdalUtils.escapeAndJoin(arguments)]

@@ -27,7 +27,7 @@ class APP_EXPORT QgsMapToolRotateLabel: public QgsMapToolLabel
     Q_OBJECT
 
   public:
-    QgsMapToolRotateLabel( QgsMapCanvas *canvas );
+    QgsMapToolRotateLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock );
     ~QgsMapToolRotateLabel() override;
 
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
@@ -35,6 +35,8 @@ class APP_EXPORT QgsMapToolRotateLabel: public QgsMapToolLabel
     void keyReleaseEvent( QKeyEvent *e ) override;
 
   protected:
+
+    bool canModifyLabel( const LabelDetails &label ) override;
 
     static int roundTo15Degrees( double n );
     //! Converts azimuth value so that 0 is corresponds to East

@@ -29,7 +29,7 @@ SIP_NO_FILE
 /**
  * \ingroup core
  *
- * Represents a overview renderer settings
+ * \brief Represents a overview renderer settings
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *

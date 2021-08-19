@@ -45,6 +45,8 @@ class QgsGeometryPartIterator;
 class QgsGeometryConstPartIterator;
 class QgsConstWkbPtr;
 class QPainterPath;
+class QgsAbstractGeometryTransformer;
+class QgsFeedback;
 
 typedef QVector< QgsPoint > QgsPointSequence;
 #ifndef SIP_RUN
@@ -162,6 +164,13 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual QgsAbstractGeometry *clone() const = 0 SIP_FACTORY;
 
     /**
+     * Comparator for sorting of geometry.
+     *
+     * \since QGIS 3.20
+     */
+    virtual int compareTo( const QgsAbstractGeometry *other ) const;
+
+    /**
      * Clears the geometry, ie reset it to a null geometry
      */
     virtual void clear() = 0;
@@ -225,6 +234,17 @@ class CORE_EXPORT QgsAbstractGeometry
      * \since QGIS 3.0
      */
     virtual QgsAbstractGeometry *boundary() const = 0 SIP_FACTORY;
+
+    /**
+     * Reorganizes the geometry into a normalized form (or "canonical" form).
+     *
+     * Polygon rings will be rearranged so that their starting vertex is the lower left and ring orientation follows the
+     * right hand rule, collections are ordered by geometry type, and other normalization techniques are applied. The
+     * resultant geometry will be geometrically equivalent to the original geometry.
+     *
+     * \since QGIS 3.20
+     */
+    virtual void normalize() = 0;
 
     //import
 
@@ -536,6 +556,16 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual bool hasCurvedSegments() const;
 
     /**
+     * Returns TRUE if the bounding box of this geometry intersects with a \a rectangle.
+     *
+     * Since this test only considers the bounding box of the geometry, is is very fast to
+     * calculate and handles invalid geometries.
+     *
+     * \since QGIS 3.20
+     */
+    virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const SIP_HOLDGIL;
+
+    /**
      * Returns a version of the geometry without curves. Caller takes ownership of
      * the returned geometry.
      * \param tolerance segmentation tolerance
@@ -677,17 +707,52 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual bool convertTo( QgsWkbTypes::Type type );
 
     /**
+     * Returns a reference to the simplest lossless representation of this geometry,
+     * e.g. if the geometry is a multipart geometry type with a single member geometry,
+     * a reference to that part will be returned.
+     *
+     * This method employs the following logic:
+     *
+     * - For multipart geometries containing a single part only a direct reference to that part will be returned.
+     * - For compound curve geometries containing a single curve only a direct reference to that curve will be returned.
+     *
+     * This method returns a reference only, and does not involve any geometry cloning.
+     *
+     * \note Ownership of the returned geometry is NOT transferred, and remains with the original
+     * geometry object. Callers must take care to ensure that the original geometry object
+     * exists for the lifespan of the returned object.
+     *
+     * \since QGIS 3.20
+     */
+    virtual const QgsAbstractGeometry *simplifiedTypeRef() const SIP_HOLDGIL;
+
+    /**
      * Checks validity of the geometry, and returns TRUE if the geometry is valid.
      *
      * \param error will be set to the validity error message
      * \param flags indicates optional flags which control the type of validity checking performed
-     * (corresponding to QgsGeometry::ValidityFlags).
+     * (corresponding to Qgis::GeometryValidityFlags).
      *
      * \returns TRUE if geometry is valid
      *
      * \since QGIS 3.8
      */
-    virtual bool isValid( QString &error SIP_OUT, int flags = 0 ) const = 0;
+    virtual bool isValid( QString &error SIP_OUT, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const = 0;
+
+    /**
+     * Transforms the vertices from the geometry in place, using the specified geometry \a transformer
+     * object.
+     *
+     * Depending on the \a transformer used, this may result in an invalid geometry.
+     *
+     * The optional \a feedback argument can be used to cancel the transformation before it completes.
+     * If this is done, the geometry will be left in a semi-transformed state.
+     *
+     * \returns TRUE if the geometry was successfully transformed.
+     *
+     * \since QGIS 3.18
+     */
+    virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = nullptr ) = 0;
 
 #ifndef SIP_RUN
 
@@ -720,7 +785,7 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /**
      * \ingroup core
-     * The part_iterator class provides STL-style iterator for geometry parts.
+     * \brief The part_iterator class provides STL-style iterator for geometry parts.
      * \since QGIS 3.6
      */
     class CORE_EXPORT part_iterator
@@ -790,7 +855,7 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /**
      * \ingroup core
-     * The part_iterator class provides STL-style iterator for const references to geometry parts.
+     * \brief The part_iterator class provides STL-style iterator for const references to geometry parts.
      * \since QGIS 3.6
      */
     class CORE_EXPORT const_part_iterator
@@ -850,7 +915,7 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /**
      * \ingroup core
-     * The vertex_iterator class provides STL-style iterator for vertices.
+     * \brief The vertex_iterator class provides STL-style iterator for vertices.
      * \since QGIS 3.0
      */
     class CORE_EXPORT vertex_iterator
@@ -998,6 +1063,26 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual QgsAbstractGeometry *createEmptyWithSameType() const = 0 SIP_FACTORY;
 
   protected:
+
+    /**
+     * Returns the sort index for the geometry, used in the compareTo() method to compare
+     * geometries of different types.
+     *
+     * \since QGIS 3.20
+     */
+    int sortIndex() const;
+
+    /**
+     * Compares to an \a other geometry of the same class, and returns a integer
+     * for sorting of the two geometries.
+     *
+     * \note The actual logic for the sorting is an internal detail only and is subject to change
+     * between QGIS versions. The result should only be used for direct comparison of geometries
+     * and not stored for later use.
+     *
+     * \since QGIS 3.20
+     */
+    virtual int compareToSameClass( const QgsAbstractGeometry *other ) const = 0;
 
     /**
      * Returns whether the geometry has any child geometries (FALSE for point / curve, TRUE otherwise)

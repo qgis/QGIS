@@ -22,7 +22,7 @@
 
 /**
  * \ingroup gui
- * Abstract base class that may be implemented to handle new project file types within
+ * \brief Abstract base class that may be implemented to handle new project file types within
  * the QGIS application.
  *
  * This interface allows extending the QGIS interface by adding support for opening additional

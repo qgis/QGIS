@@ -43,13 +43,13 @@ QgsWmsDimensionDialog::QgsWmsDimensionDialog( QgsVectorLayer *layer, QStringList
   connect( mFieldComboBox, &QgsFieldComboBox::fieldChanged, this, &QgsWmsDimensionDialog::fieldChanged );
   connect( mEndFieldComboBox, &QgsFieldComboBox::fieldChanged, this, &QgsWmsDimensionDialog::fieldChanged );
   connect( mNameComboBox, &QComboBox::editTextChanged, this, &QgsWmsDimensionDialog::nameChanged );
-  connect( mDefaultDisplayComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsWmsDimensionDialog::defaultDisplayChanged );
+  connect( mDefaultDisplayComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsWmsDimensionDialog::defaultDisplayChanged );
 
   // Set available names
   const QMetaEnum pnMetaEnum( QMetaEnum::fromType<QgsVectorLayerServerProperties::PredefinedWmsDimensionName>() );
   for ( int i = 0; i < pnMetaEnum.keyCount(); i++ )
   {
-    QString name( pnMetaEnum.key( i ) );
+    const QString name( pnMetaEnum.key( i ) );
     if ( !alreadyDefinedDimensions.contains( name.toLower() ) )
     {
       mNameComboBox->addItem( QStringLiteral( "%1%2" ).arg( !name.isEmpty() ? name.at( 0 ) : QString(), name.mid( 1 ).toLower() ), QVariant( pnMetaEnum.value( i ) ) );
@@ -73,7 +73,7 @@ QgsWmsDimensionDialog::QgsWmsDimensionDialog( QgsVectorLayer *layer, QStringList
 void QgsWmsDimensionDialog::setInfo( const QgsVectorLayerServerProperties::WmsDimensionInfo &info )
 {
   const QMetaEnum pnMetaEnum( QMetaEnum::fromType<QgsVectorLayerServerProperties::PredefinedWmsDimensionName>() );
-  int predefinedNameValue = pnMetaEnum.keyToValue( info.name.toUpper().toStdString().c_str() );
+  const int predefinedNameValue = pnMetaEnum.keyToValue( info.name.toUpper().toStdString().c_str() );
   if ( predefinedNameValue == -1 )
   {
     mNameComboBox->setEditText( info.name );
@@ -93,7 +93,7 @@ void QgsWmsDimensionDialog::setInfo( const QgsVectorLayerServerProperties::WmsDi
   mDefaultDisplayComboBox->setCurrentIndex( mDefaultDisplayComboBox->findData( QVariant( info.defaultDisplayType ) ) );
   if ( info.defaultDisplayType == QgsVectorLayerServerProperties::WmsDimensionInfo::ReferenceValue )
   {
-    int referenceValueIndex = mReferenceValueComboBox->findData( info.referenceValue );
+    const int referenceValueIndex = mReferenceValueComboBox->findData( info.referenceValue );
     if ( referenceValueIndex == -1 )
     {
       mReferenceValueComboBox->setEditText( info.referenceValue.toString() );
@@ -119,7 +119,7 @@ QgsVectorLayerServerProperties::WmsDimensionInfo QgsWmsDimensionDialog::info() c
   }
 
   // Gets the reference value
-  QString refText = mReferenceValueComboBox->currentText();
+  const QString refText = mReferenceValueComboBox->currentText();
   QVariant refValue;
   if ( mReferenceValueComboBox->findText( refText ) != -1 )
   {
@@ -144,7 +144,7 @@ void QgsWmsDimensionDialog::nameChanged( const QString &name )
   // Is the name a predefined value?
   if ( mNameComboBox->findText( name ) != -1 )
   {
-    int data = mNameComboBox->currentData().toInt();
+    const int data = mNameComboBox->currentData().toInt();
     if ( data == QgsVectorLayerServerProperties::TIME )
     {
       const QgsFieldProxyModel::Filters filters = QgsFieldProxyModel::String |
@@ -187,14 +187,14 @@ void QgsWmsDimensionDialog::nameChanged( const QString &name )
 
 void QgsWmsDimensionDialog::fieldChanged()
 {
-  QString currentFieldName = mFieldComboBox->currentField();
-  int currentFieldIndexOf = mLayer->fields().indexOf( currentFieldName );
+  const QString currentFieldName = mFieldComboBox->currentField();
+  const int currentFieldIndexOf = mLayer->fields().indexOf( currentFieldName );
   QSet<QVariant> uniqueValues = mLayer->uniqueValues( currentFieldIndexOf );
 
-  QString currentEndFieldName = mEndFieldComboBox->currentField();
+  const QString currentEndFieldName = mEndFieldComboBox->currentField();
   if ( !currentEndFieldName.isEmpty() )
   {
-    int currentEndFieldIndexOf = mLayer->fields().indexOf( currentEndFieldName );
+    const int currentEndFieldIndexOf = mLayer->fields().indexOf( currentEndFieldName );
     uniqueValues.unite( mLayer->uniqueValues( currentEndFieldIndexOf ) );
   }
   QList<QVariant> values = qgis::setToList( uniqueValues );

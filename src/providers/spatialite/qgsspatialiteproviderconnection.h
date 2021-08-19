@@ -25,14 +25,13 @@
 
 struct QgsSpatialiteProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
 {
-    QgsSpatialiteProviderResultIterator( gdal::ogr_datasource_unique_ptr hDS, OGRLayerH ogrLayer )
-      : mHDS( std::move( hDS ) )
-      , mOgrLayer( ogrLayer )
-    {}
+    QgsSpatialiteProviderResultIterator( gdal::ogr_datasource_unique_ptr hDS, OGRLayerH ogrLayer );
 
     ~QgsSpatialiteProviderResultIterator();
 
     void setFields( const QgsFields &fields );
+
+    void setGeometryColumnName( const QString &geometryColumnName );
 
   private:
 
@@ -40,10 +39,16 @@ struct QgsSpatialiteProviderResultIterator: public QgsAbstractDatabaseProviderCo
     OGRLayerH mOgrLayer;
     QgsFields mFields;
     QVariantList mNextRow;
+    QString mGeometryColumnName;
 
     QVariantList nextRowPrivate() override;
     bool hasNextRowPrivate() const override;
     QVariantList nextRowInternal();
+
+    // QueryResultIterator interface
+  private:
+    long long rowCountPrivate() const override;
+    long long mRowCount = -1;
 };
 
 
@@ -62,6 +67,7 @@ class QgsSpatiaLiteProviderConnection : public QgsAbstractDatabaseProviderConnec
     void remove( const QString &name ) const override;
     QString tableUri( const QString &schema, const QString &name ) const override;
     void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const override;
+    QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
     void dropVectorTable( const QString &schema, const QString &name ) const override;
     void renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const override;
     QgsAbstractDatabaseProviderConnection::QueryResult execSql( const QString &sql, QgsFeedback *feedback = nullptr ) const override;
@@ -73,6 +79,8 @@ class QgsSpatiaLiteProviderConnection : public QgsAbstractDatabaseProviderConnec
     QIcon icon() const override;
     void deleteField( const QString &fieldName, const QString &schema, const QString &tableName, bool force ) const override;
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
+    QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary() override;
+    SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
 
   private:
 
@@ -87,9 +95,6 @@ class QgsSpatiaLiteProviderConnection : public QgsAbstractDatabaseProviderConnec
     QString pathFromUri() const;
 
 };
-
-
-
 
 
 ///@endcond

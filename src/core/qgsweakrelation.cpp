@@ -50,7 +50,7 @@ QgsRelation QgsWeakRelation::resolvedRelation( const QgsProject *project, QgsVec
   {
     relation.setReferencingLayer( referencingLayer->id() );
   }
-  for ( const auto &fp : qgis::as_const( mFieldPairs ) )
+  for ( const auto &fp : std::as_const( mFieldPairs ) )
   {
     relation.addFieldPair( fp );
   }

@@ -28,7 +28,8 @@ class QgsLayerTreeNode;
 
 /**
  * \ingroup core
- * QgsLayerTreeFilterProxyModel is a sort filter proxy model to easily reproduce the legend/layer tree in a tree view.
+ * \brief QgsLayerTreeFilterProxyModel is a sort filter proxy model to easily reproduce the legend/layer tree in a tree view.
+ *
  * Layers are checkable by default.
  * Symbology nodes will not be shown.
  * Layers can be filtered by their type.

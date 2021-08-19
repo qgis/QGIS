@@ -34,7 +34,7 @@ class QgsModelGraphicsScene;
 
 /**
  * \ingroup gui
- * Abstract base class for all model designer view tools.
+ * \brief Abstract base class for all model designer view tools.
  *
  * Model designer view tools are user interactive tools for manipulating and adding items
  * within the model designer.

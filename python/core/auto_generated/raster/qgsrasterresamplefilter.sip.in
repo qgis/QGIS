@@ -12,7 +12,7 @@
 
 class QgsRasterResampleFilter : QgsRasterInterface
 {
-%Docstring
+%Docstring(signature="appended")
 Resample filter pipe for rasters.
 %End
 

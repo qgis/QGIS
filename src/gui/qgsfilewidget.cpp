@@ -22,6 +22,7 @@
 #include <QGridLayout>
 #include <QUrl>
 #include <QDropEvent>
+#include <QRegularExpression>
 
 #include "qgssettings.h"
 #include "qgsfilterlineedit.h"
@@ -51,10 +52,7 @@ QgsFileWidget::QgsFileWidget( QWidget *parent )
   mLinkLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
   mLinkLabel->setTextFormat( Qt::RichText );
   mLinkLabel->hide(); // do not show by default
-  mLinkEditButton = new QToolButton( this );
-  mLinkEditButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
-  connect( mLinkEditButton, &QToolButton::clicked, this, &QgsFileWidget::editLink );
-  mLinkEditButton->hide(); // do not show by default
+  mLayout->addWidget( mLinkLabel );
 
   // otherwise, use the traditional QLineEdit subclass
   mLineEdit = new QgsFileDropEdit( this );
@@ -62,6 +60,12 @@ QgsFileWidget::QgsFileWidget( QWidget *parent )
   mLineEdit->setToolTip( tr( "Full path to the file(s), including name and extension" ) );
   connect( mLineEdit, &QLineEdit::textChanged, this, &QgsFileWidget::textEdited );
   mLayout->addWidget( mLineEdit );
+
+  mLinkEditButton = new QToolButton( this );
+  mLinkEditButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
+  mLayout->addWidget( mLinkEditButton );
+  connect( mLinkEditButton, &QToolButton::clicked, this, &QgsFileWidget::editLink );
+  mLinkEditButton->hide(); // do not show by default
 
   mFileWidgetButton = new QToolButton( this );
   mFileWidgetButton->setText( QChar( 0x2026 ) );
@@ -80,17 +84,25 @@ QString QgsFileWidget::filePath()
 QStringList QgsFileWidget::splitFilePaths( const QString &path )
 {
   QStringList paths;
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   const QStringList pathParts = path.split( QRegExp( "\"\\s+\"" ), QString::SkipEmptyParts );
-  for ( const auto &pathsPart : pathParts )
+#else
+  const thread_local QRegularExpression partsRegex = QRegularExpression( QStringLiteral( "\"\\s+\"" ) );
+  const QStringList pathParts = path.split( partsRegex, Qt::SkipEmptyParts );
+#endif
+
+  const thread_local QRegularExpression cleanRe( QStringLiteral( "(^\\s*\")|(\"\\s*)" ) );
+  paths.reserve( pathParts.size() );
+  for ( const QString &pathsPart : pathParts )
   {
     QString cleaned = pathsPart;
-    cleaned.remove( QRegExp( "(^\\s*\")|(\"\\s*)" ) );
+    cleaned.remove( cleanRe );
     paths.append( cleaned );
   }
   return paths;
 }
 
-void QgsFileWidget::setFilePath( QString path )
+void QgsFileWidget::setFilePath( const QString &path )
 {
   //will trigger textEdited slot
   mLineEdit->setValue( path );
@@ -148,12 +160,17 @@ void QgsFileWidget::setFileWidgetButtonVisible( bool visible )
   mFileWidgetButton->setVisible( visible );
 }
 
+bool QgsFileWidget::isMultiFiles( const QString &path )
+{
+  return path.contains( QStringLiteral( "\" \"" ) );
+}
+
 void QgsFileWidget::textEdited( const QString &path )
 {
   mFilePath = path;
   mLinkLabel->setText( toUrl( path ) );
   // Show tooltip if multiple files are selected
-  if ( path.contains( QStringLiteral( "\" \"" ) ) )
+  if ( isMultiFiles( path ) )
   {
     mLineEdit->setToolTip( tr( "Selected files:<br><ul><li>%1</li></ul><br>" ).arg( splitFilePaths( path ).join( QLatin1String( "</li><li>" ) ) ) );
   }
@@ -235,39 +252,18 @@ QgsFilterLineEdit *QgsFileWidget::lineEdit()
 
 void QgsFileWidget::updateLayout()
 {
-  mLayout->removeWidget( mLineEdit );
-  mLayout->removeWidget( mLinkLabel );
-  mLayout->removeWidget( mLinkEditButton );
+  const bool linkVisible = mUseLink && !mIsLinkEdited;
 
+  mLineEdit->setVisible( !linkVisible );
+  mLinkLabel->setVisible( linkVisible );
   mLinkEditButton->setVisible( mUseLink && !mReadOnly );
 
   mFileWidgetButton->setEnabled( !mReadOnly );
   mLineEdit->setEnabled( !mReadOnly );
 
-  if ( mUseLink && !mIsLinkEdited )
-  {
-    mLayout->insertWidget( 0, mLinkLabel );
-    mLineEdit->setVisible( false );
-    mLinkLabel->setVisible( true );
-
-    if ( !mReadOnly )
-    {
-      mLayout->insertWidget( 1, mLinkEditButton );
-      mLinkEditButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
-    }
-  }
-  else
-  {
-    mLayout->insertWidget( 0, mLineEdit );
-    mLineEdit->setVisible( true );
-    mLinkLabel->setVisible( false );
-
-    if ( mIsLinkEdited )
-    {
-      mLayout->insertWidget( 1, mLinkEditButton );
-      mLinkEditButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveEdits.svg" ) ) );
-    }
-  }
+  mLinkEditButton->setIcon( linkVisible && !mReadOnly ?
+                            QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) :
+                            QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveEdits.svg" ) ) );
 }
 
 void QgsFileWidget::openFileDialog()
@@ -345,15 +341,11 @@ void QgsFileWidget::openFileDialog()
     return;
 
   if ( mStorageMode != GetMultipleFiles )
+    fileNames << fileName;
+
+  for ( int i = 0; i < fileNames.length(); i++ )
   {
-    fileName = QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( fileName ).absoluteFilePath() ) );
-  }
-  else
-  {
-    for ( int i = 0; i < fileNames.length(); i++ )
-    {
-      fileNames.replace( i, QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( fileNames.at( i ) ).absoluteFilePath() ) ) );
-    }
+    fileNames.replace( i, QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( fileNames.at( i ) ).absoluteFilePath() ) ) );
   }
 
   // Store the last used path:
@@ -361,39 +353,48 @@ void QgsFileWidget::openFileDialog()
   {
     case GetFile:
     case SaveFile:
-      settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), QFileInfo( fileName ).absolutePath() );
+    case GetMultipleFiles:
+      settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), QFileInfo( fileNames.first() ).absolutePath() );
       break;
     case GetDirectory:
-      settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), fileName );
-      break;
-    case GetMultipleFiles:
-      settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), QFileInfo( fileNames.first( ) ).absolutePath() );
+      settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), fileNames.first() );
       break;
   }
 
+  setSelectedFileNames( fileNames );
+}
+
+void QgsFileWidget::setSelectedFileNames( QStringList fileNames )
+{
+  Q_ASSERT( fileNames.count() );
+
   // Handle relative Path storage
+  for ( int i = 0; i < fileNames.length(); i++ )
+  {
+    fileNames.replace( i, relativePath( fileNames.at( i ), true ) );
+  }
+
+  setFilePaths( fileNames );
+}
+
+void QgsFileWidget::setFilePaths( const QStringList &filePaths )
+{
   if ( mStorageMode != GetMultipleFiles )
   {
-    fileName = relativePath( fileName, true );
-    setFilePath( fileName );
+    setFilePath( filePaths.first() );
   }
   else
   {
-    for ( int i = 0; i < fileNames.length(); i++ )
+    if ( filePaths.length() > 1 )
     {
-      fileNames.replace( i, relativePath( fileNames.at( i ), true ) );
-    }
-    if ( fileNames.length() > 1 )
-    {
-      setFilePath( QStringLiteral( "\"%1\"" ).arg( fileNames.join( QLatin1String( "\" \"" ) ) ) );
+      setFilePath( QStringLiteral( "\"%1\"" ).arg( filePaths.join( QLatin1String( "\" \"" ) ) ) );
     }
     else
     {
-      setFilePath( fileNames.first( ) );
+      setFilePath( filePaths.first( ) );
     }
   }
 }
-
 
 QString QgsFileWidget::relativePath( const QString &filePath, bool removeRelative ) const
 {
@@ -431,6 +432,11 @@ QString QgsFileWidget::toUrl( const QString &path ) const
     return QgsApplication::nullRepresentation();
   }
 
+  if ( isMultiFiles( path ) )
+  {
+    return QStringLiteral( "<a>%1</a>" ).arg( path );
+  }
+
   QString urlStr = relativePath( path, false );
   QUrl url = QUrl::fromUserInput( urlStr );
   if ( !url.isValid() || !url.isLocalFile() )
@@ -452,7 +458,6 @@ QString QgsFileWidget::toUrl( const QString &path ) const
 
   return rep;
 }
-
 
 
 ///@cond PRIVATE
@@ -500,7 +505,7 @@ QString QgsFileDropEdit::acceptableFilePath( QDropEvent *event ) const
   }
 
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( event->mimeData() );
-  for ( const QgsMimeDataUtils::Uri &u : qgis::as_const( lst ) )
+  for ( const QgsMimeDataUtils::Uri &u : std::as_const( lst ) )
   {
     if ( !rawPaths.contains( u.uri ) )
       rawPaths.append( u.uri );
@@ -510,7 +515,7 @@ QString QgsFileDropEdit::acceptableFilePath( QDropEvent *event ) const
     rawPaths.append( event->mimeData()->text() );
 
   paths.reserve( rawPaths.count() );
-  for ( const QString &path : qgis::as_const( rawPaths ) )
+  for ( const QString &path : std::as_const( rawPaths ) )
   {
     QFileInfo file( path );
     switch ( mStorageMode )

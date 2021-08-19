@@ -87,9 +87,9 @@ QVariantMap QgsRemoveNullGeometryAlgorithm::processAlgorithm( const QVariantMap 
   QString nullSinkId;
   std::unique_ptr< QgsFeatureSink > nullSink( parameterAsSink( parameters, QStringLiteral( "NULL_OUTPUT" ), context, nullSinkId, source->fields() ) );
 
-  long count = source->featureCount();
+  const long count = source->featureCount();
 
-  double step = count > 0 ? 100.0 / count : 1;
+  const double step = count > 0 ? 100.0 / count : 1;
   int current = 0;
 
   QgsFeature f;
@@ -103,11 +103,13 @@ QVariantMap QgsRemoveNullGeometryAlgorithm::processAlgorithm( const QVariantMap 
 
     if ( ( ( !removeEmpty && f.hasGeometry() ) || ( removeEmpty && !f.geometry().isEmpty() ) ) && nonNullSink )
     {
-      nonNullSink->addFeature( f, QgsFeatureSink::FastInsert );
+      if ( !nonNullSink->addFeature( f, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( nonNullSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
     }
     else if ( ( ( !removeEmpty && !f.hasGeometry() ) || ( removeEmpty && f.geometry().isEmpty() ) ) && nullSink )
     {
-      nullSink->addFeature( f, QgsFeatureSink::FastInsert );
+      if ( !nullSink->addFeature( f, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( nullSink.get(), parameters, QStringLiteral( "NULL_OUTPUT" ) ) );
     }
 
     feedback->setProgress( current * step );

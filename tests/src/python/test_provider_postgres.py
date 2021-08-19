@@ -2046,13 +2046,23 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(vl1.extent(), originalExtent)
 
         # read xml with custom extent with readExtent option. Extent read from
-        # xml document should NOT be used because we don't have a view or a
+        # xml document should be used even if we don't have a view or a
         # materialized view
         vl2 = QgsVectorLayer()
         vl2.setReadExtentFromXml(True)
         vl2.readLayerXml(elem, QgsReadWriteContext())
         self.assertTrue(vl2.isValid())
 
+        self.assertEqual(vl2.extent(), customExtent)
+
+        # but a force update on extent should allow retrieveing the data
+        # provider extent
+        vl2.updateExtents()
+        vl2.readLayerXml(elem, QgsReadWriteContext())
+        self.assertEqual(vl2.extent(), customExtent)
+
+        vl2.updateExtents(force=True)
+        vl2.readLayerXml(elem, QgsReadWriteContext())
         self.assertEqual(vl2.extent(), originalExtent)
 
     def testDeterminePkey(self):
@@ -2373,6 +2383,8 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         feature.setGeometry(geom)
         self.assertTrue(vl.dataProvider().addFeature(feature))
 
+        self.assertEqual(vl.dataProvider().defaultValueClause(0), "nextval('b29560_gid_seq'::regclass)")
+
         del (vl)
 
         # Verify
@@ -2384,7 +2396,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         feature = next(vl.getFeatures())
         self.assertIsNotNone(feature.id())
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Test flaky')
+    @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'), 'Test flaky')
     def testDefaultValuesAndClauses(self):
         """Test whether default values like CURRENT_TIMESTAMP or
         now() they are respected. See GH #33383"""
@@ -2596,6 +2608,123 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         _test(vl, QgsRectangle(40 - 5, -60 - 9.99, 40 + 5, -60 + 0.01), [3])
 
         _test(vl, QgsRectangle(-181, -90, 181, 90), [1, 2, 3])  # no use of spatial index currently
+
+    def testReadCustomSRID(self):
+        """Test that we can correctly read the SRS from a custom SRID"""
+
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.dbconn, {})
+
+        # Cleanup if needed
+        try:
+            conn.dropVectorTable('qgis_test', 'test_custom_srid')
+        except QgsProviderConnectionException:
+            pass
+
+        conn.executeSql("DELETE FROM spatial_ref_sys WHERE srid = 543210 AND auth_name='FOO' AND auth_srid=32600;")
+        conn.executeSql("""INSERT INTO spatial_ref_sys (srid, auth_name, auth_srid, srtext, proj4text) VALUES (543210, 'FOO', 32600, 'PROJCS["my_projection",GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",0],PARAMETER["scale_factor",1],PARAMETER["false_easting",0],PARAMETER["false_northing",0],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH]]','+proj=tmerc +lat_0=0 +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs');""")
+
+        conn.executeSql('''
+        CREATE TABLE "qgis_test"."test_custom_srid" (
+            gid serial primary key,
+            geom geometry(Point, 543210)
+        );''')
+
+        layer = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'gid\'table="qgis_test"."test_custom_srid" (geom) sql=', 'test', 'postgres')
+
+        conn.executeSql("DELETE FROM spatial_ref_sys WHERE srid = 543210 AND auth_name='FOO' AND auth_srid=32600;")
+
+        self.assertTrue(layer.isValid())
+        self.assertEqual(layer.crs().description(), 'my_projection')
+
+    def testSingleMultiColumnPkSmallData(self):
+        """Test Single and Multi Column PK, `Small` Data"""
+        from itertools import combinations
+
+        def test_for_pk_combinations(test_type_list, pk_column_name_list, fids_get_count):
+            pk_column_name = ','.join(pk_column_name_list)
+            set_new_pk = '''
+                ALTER TABLE qgis_test.multi_column_pk_small_data_table DROP CONSTRAINT multi_column_pk_small_data_pk;
+                ALTER TABLE qgis_test.multi_column_pk_small_data_table
+                    ADD CONSTRAINT multi_column_pk_small_data_pk PRIMARY KEY ({});'''
+            set_new_layer = ' sslmode=disable key=\'{}\' srid=3857 type=POLYGON table="qgis_test"."multi_column_pk_small_data_{}" (geom) sql='
+            error_string = 'from {} with PK - {} : expected {}, got {}'
+
+            if 'table' in test_type_list:
+                self.execSQLCommand(set_new_pk.format(pk_column_name))
+            for test_type in test_type_list:
+                vl = QgsVectorLayer(self.dbconn + set_new_layer.format(pk_column_name, test_type), 'test_multi_column_pk_small_data', 'postgres')
+                fids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setLimit(fids_get_count))]
+                fids2 = [f.id() for f in vl.getFeatures(fids)]
+                self.assertEqual(fids_get_count, len(fids), "Get with limit " +
+                                 error_string.format(test_type, pk_column_name, fids_get_count, len(fids)))
+                self.assertEqual(fids_get_count, len(fids2), "Get by fids " +
+                                 error_string.format(test_type, pk_column_name, fids_get_count, len(fids2)))
+
+        self.execSQLCommand('DROP TABLE IF EXISTS qgis_test.multi_column_pk_small_data_table CASCADE;')
+        self.execSQLCommand('''
+        CREATE TABLE qgis_test.multi_column_pk_small_data_table (
+          id_serial serial NOT NULL,
+          id_uuid uuid NOT NULL,
+          id_int int NOT NULL,
+          id_bigint bigint NOT NULL,
+          id_str character varying(20) NOT NULL,
+          id_inet4 inet NOT NULL,
+          id_inet6 inet NOT NULL,
+          id_cidr4 cidr NOT NULL,
+          id_cidr6 cidr NOT NULL,
+          id_macaddr macaddr NOT NULL,
+          id_macaddr8 macaddr8 NOT NULL,
+          id_timestamp timestamp with time zone NOT NULL,
+          id_half_null_uuid uuid,
+          id_all_null_uuid uuid,
+          geom geometry(Polygon,3857),
+          CONSTRAINT multi_column_pk_small_data_pk
+            PRIMARY KEY (id_serial, id_uuid, id_int, id_bigint, id_str) );''')
+        self.execSQLCommand('''
+        CREATE OR REPLACE VIEW qgis_test.multi_column_pk_small_data_view AS
+          SELECT * FROM qgis_test.multi_column_pk_small_data_table;
+        DROP MATERIALIZED VIEW IF EXISTS qgis_test.multi_column_pk_small_data_mat_view;
+        CREATE MATERIALIZED VIEW qgis_test.multi_column_pk_small_data_mat_view AS
+          SELECT * FROM qgis_test.multi_column_pk_small_data_table;''')
+        self.execSQLCommand('''
+        TRUNCATE qgis_test.multi_column_pk_small_data_table;
+        INSERT INTO qgis_test.multi_column_pk_small_data_table(
+          id_uuid, id_int, id_bigint, id_str, id_inet4, id_inet6, id_cidr4, id_cidr6,
+            id_macaddr, id_macaddr8, id_timestamp, id_half_null_uuid, id_all_null_uuid, geom)
+          SELECT
+            ( (10000000)::text || (100000000000 + dy)::text || (100000000000 + dx)::text )::uuid,
+            dx + 1000000 * dy,                                                    --id_int
+            dx + 1000000 * dy,                                                    --id_bigint
+            dx || E\' ot\\'her \' || dy,                                          --id_str
+            (\'192.168.0.1\'::inet + dx + 100 * dy )::inet,                       --id_inet4
+            (\'2001:4f8:3:ba:2e0:81ff:fe22:d1f1\'::inet + dx + 100 * dy )::inet,  --id_inet6
+            (\'192.168.0.1\'::cidr + dx + 100 * dy )::cidr,                       --id_cidr4
+            (\'2001:4f8:3:ba:2e0:81ff:fe22:d1f1\'::cidr + dx + 100 * dy )::cidr,  --id_cidr6
+            ((112233445566 + dx + 100 * dy)::text)::macaddr,                      --id_macaddr
+            ((1122334455667788 + dx + 100 * dy)::text)::macaddr8,                 --id_macaddr8
+            now() - ((dx||\' hour\')::text)::interval - ((dy||\' day\')::text)::interval,
+            NULLIF( ( (10000000)::text || (100000000000 + dy)::text || (100000000000 + dx)::text )::uuid,
+              ( (10000000)::text || (100000000000 + dy + dy%2)::text || (100000000000 + dx)::text )::uuid ),
+            NULL,
+            ST_Translate(
+              ST_GeomFromText(\'POLYGON((3396900.0 6521800.0,3396900.0 6521870.0,
+                  3396830.0 6521870.0,3396830.0 6521800.0,3396900.0 6521800.0))\', 3857 ),
+              100.0 * dx,
+              100.0 * dy )
+          FROM generate_series(1,3) dx, generate_series(1,3) dy;
+        REFRESH MATERIALIZED VIEW qgis_test.multi_column_pk_small_data_mat_view;''')
+
+        pk_col_list = ("id_serial", "id_uuid", "id_int", "id_bigint", "id_str", "id_inet4", "id_inet6", "id_cidr4", "id_cidr6", "id_macaddr", "id_macaddr8")
+        test_type_list = ["table", "view", "mat_view"]
+        for n in [1, 2, len(pk_col_list)]:
+            pk_col_set_list = list(combinations(pk_col_list, n))
+            for pk_col_set in pk_col_set_list:
+                test_for_pk_combinations(test_type_list, pk_col_set, 7)
+
+        for col_name in ["id_serial", "id_uuid", "id_int", "id_bigint", "id_str", "id_inet4"]:
+            test_for_pk_combinations(["view", "mat_view"], ["id_half_null_uuid", col_name], 7)
+            test_for_pk_combinations(["view", "mat_view"], ["id_all_null_uuid", col_name], 7)
 
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
@@ -3164,6 +3293,32 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
         self.assertTrue(vl.startEditing())
         self.assertTrue(QgsVectorLayerUtils.fieldIsEditable(vl, 0, feature))
         self.assertTrue(QgsVectorLayerUtils.fieldIsEditable(vl, 1, feature))
+
+    def testPkeyIntArray(self):
+        """
+        Test issue #42778 when pkey is an int array
+        """
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.dbconn, {})
+        conn.executeSql('DROP TABLE IF EXISTS public.test_pkey_intarray')
+        conn.executeSql('CREATE TABLE public.test_pkey_intarray (id _int8 PRIMARY KEY, name VARCHAR(64))')
+        conn.executeSql("""INSERT INTO public.test_pkey_intarray (id, name) VALUES('{0,0,19111815}', 'test')""")
+
+        uri = QgsDataSourceUri(self.dbconn +
+                               ' sslmode=disable  key=\'id\' table="public"."test_pkey_intarray" sql=')
+        vl = QgsVectorLayer(uri.uri(), 'test', 'postgres')
+        self.assertTrue(vl.isValid())
+
+        feat = next(vl.getFeatures())
+        self.assertTrue(feat.isValid())
+        self.assertEqual(feat["name"], "test")
+
+        fid = feat.id()
+        self.assertTrue(fid > 0)
+
+        feat = vl.getFeature(fid)
+        self.assertTrue(feat.isValid())
+        self.assertEqual(feat["name"], "test")
 
 
 if __name__ == '__main__':

@@ -75,6 +75,8 @@ class QgsFeatureRenderer
       sipType = sipType_Qgs25DRenderer;
     else if ( type == QLatin1String( "nullSymbol" ) )
       sipType = sipType_QgsNullSymbolRenderer;
+    else if ( type == QLatin1String( "embeddedSymbol" ) )
+      sipType = sipType_QgsEmbeddedSymbolRenderer;
     else
       sipType = 0;
 %End
@@ -169,6 +171,14 @@ not have been requested from the provider at rendering time.
 :return: A set of attributes
 %End
 
+    virtual bool usesEmbeddedSymbols() const;
+%Docstring
+Returns ``True`` if the renderer uses embedded symbols for features.
+The default implementation returns ``False``.
+
+.. versionadded:: 3.20
+%End
+
     virtual bool filterNeedsGeometry() const;
 %Docstring
 Returns ``True`` if this renderer requires the geometry to apply the filter.
@@ -192,7 +202,7 @@ Default implementation renders a symbol as determined by :py:func:`~QgsFeatureRe
 Returns ``True`` if the feature has been returned (this is used for example
 to determine whether the feature may be labelled).
 
-If layer is not -1, the renderer should draw only a particula layer from symbols
+If layer is not -1, the renderer should draw only a particular layer from symbols
 (in order to support symbol level rendering).
 
 .. seealso:: :py:func:`startRender`
@@ -249,7 +259,10 @@ create a renderer from XML element
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
 %Docstring
-store renderer info to XML element
+Stores renderer properties to an XML element.
+
+Subclasses which override this method should call :py:func:`~QgsFeatureRenderer.saveRendererData` as part of their
+implementation in order to store all common base class properties in the returned DOM element.
 %End
 
     virtual QDomElement writeSld( QDomDocument &doc, const QString &styleName, const QVariantMap &props = QVariantMap() ) const;
@@ -324,7 +337,7 @@ If supported by the renderer, return classification attribute for the use in leg
 .. versionadded:: 2.6
 %End
 
-    void setVertexMarkerAppearance( int type, double size );
+    void setVertexMarkerAppearance( Qgis::VertexMarkerType type, double size );
 %Docstring
 Sets type and size of editing vertex markers for subsequent rendering
 %End
@@ -410,6 +423,40 @@ Sets whether the renderer should be rendered to a raster destination.
 .. versionadded:: 2.12
 %End
 
+    double referenceScale() const;
+%Docstring
+Returns the symbology reference scale.
+
+This represents the desired scale denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
+A value of -1 indicates that symbology scaling by reference scale is disabled.
+
+The symbology reference scale is an optional property which specifies the reference
+scale at which symbology in paper units (such a millimeters or points) is fixed
+to. For instance, if the scale is 1000 then a 2mm thick line will be rendered at
+exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm thick at 1:500.
+
+.. seealso:: :py:func:`setReferenceScale`
+
+.. versionadded:: 3.22
+%End
+
+    void setReferenceScale( double scale );
+%Docstring
+Sets the symbology reference ``scale``.
+
+This should match the desired scale denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
+Set to -1 to disable symbology scaling by reference scale.
+
+The symbology reference scale is an optional property which specifies the reference
+scale at which symbology in paper units (such a millimeters or points) is fixed
+to. For instance, if ``scale`` is set to 1000 then a 2mm thick line will be rendered at
+exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm thick at 1:500.
+
+.. seealso:: :py:func:`referenceScale`
+
+.. versionadded:: 3.22
+%End
+
     QgsFeatureRequest::OrderBy orderBy() const;
 %Docstring
 Gets the order in which features shall be processed by this renderer.
@@ -493,6 +540,23 @@ should be canceled.
 .. versionadded:: 3.10
 %End
 
+    void copyRendererData( QgsFeatureRenderer *destRenderer ) const;
+%Docstring
+Clones generic renderer data to another renderer.
+
+Currently clones
+
+- Order by
+- Paint effect
+- Reference scale
+- Symbol levels enabled/disabled
+- Force raster render enabled/disabled
+
+:param destRenderer: destination renderer for copied effect
+
+.. versionadded:: 3.22
+%End
+
   protected:
     QgsFeatureRenderer( const QString &type );
 
@@ -523,15 +587,14 @@ Creates a point in screen coordinates from a wkb string in map
 coordinates
 %End
 
-    void copyRendererData( QgsFeatureRenderer *destRenderer ) const;
+    void saveRendererData( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
-Clones generic renderer data to another renderer.
-Currently clones
+Saves generic renderer data into the specified ``element``.
 
-- Order By
-- Paint Effect
+This method should be called in a subclass' :py:func:`~QgsFeatureRenderer.save` implementation in order
+to store all common base class properties in the DOM ``element``.
 
-:param destRenderer: destination renderer for copied effect
+.. versionadded:: 3.22
 %End
 
 
@@ -539,7 +602,9 @@ Currently clones
 
 
 
-    static void convertSymbolSizeScale( QgsSymbol *symbol, QgsSymbol::ScaleMethod method, const QString &field );
+
+
+    static void convertSymbolSizeScale( QgsSymbol *symbol, Qgis::ScaleMethod method, const QString &field );
 %Docstring
 
 .. note::

@@ -31,6 +31,7 @@
 #include "qgsfeature3dhandler_p.h"
 #include "qgschunkedentity_p.h"
 #include "qgsrulebased3drenderer.h"
+#include <QFutureWatcher>
 
 #define SIP_NO_FILE
 
@@ -47,7 +48,7 @@ namespace Qt3DCore
 
 /**
  * \ingroup 3d
- * This loader factory is responsible for creation of loaders for individual tiles
+ * \brief This loader factory is responsible for creation of loaders for individual tiles
  * of QgsRuleBasedChunkedEntity whenever a new tile is requested by the entity.
  *
  * \since QGIS 3.12
@@ -71,7 +72,7 @@ class QgsRuleBasedChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
 
 /**
  * \ingroup 3d
- * This loader class is responsible for async loading of data for a single tile
+ * \brief This loader class is responsible for async loading of data for a single tile
  * of QgsRuleBasedChunkedEntity and creation of final 3D entity from the data
  * previously prepared in a worker thread.
  *
@@ -100,7 +101,7 @@ class QgsRuleBasedChunkLoader : public QgsChunkLoader
 
 /**
  * \ingroup 3d
- * 3D entity used for rendering of vector layers using a hierarchy of rules (just like
+ * \brief 3D entity used for rendering of vector layers using a hierarchy of rules (just like
  * in case of 2D rule-based rendering or labeling).
  *
  * It is implemented using tiling approach with QgsChunkedEntity. Internally it uses

@@ -11,7 +11,7 @@
 
 class QgsReport : QObject, QgsAbstractReportSection, QgsMasterLayoutInterface
 {
-%Docstring
+%Docstring(signature="appended")
 Represents a report for use with the :py:class:`QgsLayout` engine.
 
 Reports consist of multiple sections, represented by :py:class:`QgsAbstractReportSection`

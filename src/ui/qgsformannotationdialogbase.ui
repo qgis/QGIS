@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>298</width>
-    <height>134</height>
+    <width>433</width>
+    <height>246</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,6 +16,16 @@
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QRadioButton" name="mFileRadioButton">
+       <property name="text">
+        <string>File</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QLineEdit" name="mFileLineEdit"/>
      </item>
@@ -28,19 +38,29 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0">
+   <item row="3" column="0">
     <widget class="QStackedWidget" name="mStackedWidget">
      <widget class="QWidget" name="page"/>
      <widget class="QWidget" name="page_2"/>
     </widget>
    </item>
-   <item row="2" column="0">
+   <item row="4" column="0">
     <widget class="QDialogButtonBox" name="mButtonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QgsCodeEditorHTML" name="mHtmlSourceTextEdit"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="QRadioButton" name="mSourceRadioButton">
+     <property name="text">
+      <string>Source</string>
      </property>
     </widget>
    </item>
@@ -81,4 +101,11 @@
    </hints>
   </connection>
  </connections>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCodeEditorHTML</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditorhtml.h</header>
+  </customwidget>
+</customwidgets>
 </ui>

@@ -28,6 +28,9 @@
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
 
+#include <QThread>
+#include <QLocale>
+
 #define ENSURE_NO_EVAL_ERROR   {  if ( parent->hasEvalError() ) return QVariant(); }
 #define SET_EVAL_ERROR(x)   { parent->setEvalErrorString( x ); return QVariant(); }
 
@@ -84,13 +87,13 @@ class QgsExpressionUtils
       if ( value.canConvert<QgsGeometry>() )
       {
         //geom is false if empty
-        QgsGeometry geom = value.value<QgsGeometry>();
+        const QgsGeometry geom = value.value<QgsGeometry>();
         return geom.isNull() ? False : True;
       }
       else if ( value.canConvert<QgsFeature>() )
       {
         //feat is false if non-valid
-        QgsFeature feat = value.value<QgsFeature>();
+        const QgsFeature feat = value.value<QgsFeature>();
         return feat.isValid() ? True : False;
       }
 
@@ -98,7 +101,7 @@ class QgsExpressionUtils
         return value.toInt() != 0 ? True : False;
 
       bool ok;
-      double x = value.toDouble( &ok );
+      const double x = value.toDouble( &ok );
       if ( !ok )
       {
         parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to boolean" ).arg( value.toString() ) );
@@ -144,7 +147,7 @@ class QgsExpressionUtils
       if ( v.type() == QVariant::String )
       {
         bool ok;
-        double val = v.toString().toDouble( &ok );
+        const double val = v.toString().toDouble( &ok );
         ok = ok && std::isfinite( val ) && !std::isnan( val );
         return ok;
       }
@@ -208,7 +211,7 @@ class QgsExpressionUtils
     static double getDoubleValue( const QVariant &value, QgsExpression *parent )
     {
       bool ok;
-      double x = value.toDouble( &ok );
+      const double x = value.toDouble( &ok );
       if ( !ok || std::isnan( x ) || !std::isfinite( x ) )
       {
         parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to double" ).arg( value.toString() ) );
@@ -220,7 +223,7 @@ class QgsExpressionUtils
     static qlonglong getIntValue( const QVariant &value, QgsExpression *parent )
     {
       bool ok;
-      qlonglong x = value.toLongLong( &ok );
+      const qlonglong x = value.toLongLong( &ok );
       if ( ok )
       {
         return x;
@@ -235,7 +238,7 @@ class QgsExpressionUtils
     static int getNativeIntValue( const QVariant &value, QgsExpression *parent )
     {
       bool ok;
-      qlonglong x = value.toLongLong( &ok );
+      const qlonglong x = value.toLongLong( &ok );
       if ( ok && x >= std::numeric_limits<int>::min() && x <= std::numeric_limits<int>::max() )
       {
         return static_cast<int>( x );
@@ -256,7 +259,7 @@ class QgsExpressionUtils
       }
       else
       {
-        QTime t = value.toTime();
+        const QTime t = value.toTime();
         if ( t.isValid() )
         {
           return QDateTime( QDate( 1, 1, 1 ), t );
@@ -382,16 +385,12 @@ class QgsExpressionUtils
         }
       };
 
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 10, 0 )
       // Make sure we only deal with the vector layer on the main thread where it lives.
       // Anything else risks a crash.
       if ( QThread::currentThread() == qApp->thread() )
         getFeatureSource();
       else
         QMetaObject::invokeMethod( qApp, getFeatureSource, Qt::BlockingQueuedConnection );
-#else
-      getFeatureSource();
-#endif
 
       return featureSource;
     }
@@ -429,6 +428,61 @@ class QgsExpressionUtils
       {
         parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to map" ).arg( value.toString() ) );
         return QVariantMap();
+      }
+    }
+
+    /**
+     * Returns the localized string representation of a QVariant, converting numbers according to locale settings.
+     * \param value the QVariant to convert.
+     * \returns the string representation of the value.
+     * \since QGIS 3.20
+     */
+    static QString toLocalizedString( const QVariant &value )
+    {
+      if ( value.type() == QVariant::Int || value.type() == QVariant::UInt || value.type() == QVariant::LongLong || value.type() == QVariant::ULongLong )
+      {
+        bool ok;
+        QString res;
+
+        if ( value.type() == QVariant::ULongLong )
+        {
+          res = QLocale().toString( value.toULongLong( &ok ) );
+        }
+        else
+        {
+          res = QLocale().toString( value.toLongLong( &ok ) );
+        }
+
+        if ( ok )
+        {
+          return res;
+        }
+        else
+        {
+          return value.toString();
+        }
+      }
+      // Qt madness with QMetaType::Float :/
+      else if ( value.type() == QVariant::Double || value.type() == static_cast<QVariant::Type>( QMetaType::Float ) )
+      {
+        bool ok;
+        const QString strVal = value.toString();
+        const int dotPosition = strVal.indexOf( '.' );
+        const int precision = dotPosition > 0 ? strVal.length() - dotPosition - 1 : 0;
+        const QString res = QLocale().toString( value.toDouble( &ok ), 'f', precision );
+
+        if ( ok )
+        {
+          return res;
+        }
+        else
+        {
+          return value.toString();
+        }
+      }
+      else
+      {
+        return value.toString();
       }
     }
 };

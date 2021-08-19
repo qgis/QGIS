@@ -13,7 +13,7 @@
 
 class QgsMapLayerStore : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 A storage object for map layers, in which the layers are owned by the
 store and have their lifetime bound to the store.
 

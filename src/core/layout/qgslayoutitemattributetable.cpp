@@ -29,6 +29,7 @@
 #include "qgsexception.h"
 #include "qgsmapsettings.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsexpressionnodeimpl.h"
 #include "qgsgeometryengine.h"
 #include "qgsconditionalstyle.h"
 
@@ -176,6 +177,7 @@ void QgsLayoutItemAttributeTable::resetColumns()
   //rebuild columns list from vector layer fields
   int idx = 0;
   const QgsFields sourceFields = source->fields();
+
   for ( const auto &field : sourceFields )
   {
     QString currentAlias = source->attributeDisplayName( idx );
@@ -329,8 +331,9 @@ void QgsLayoutItemAttributeTable::setDisplayedFields( const QStringList &fields,
     {
       int attrIdx = layerFields.lookupField( field );
       if ( attrIdx < 0 )
+      {
         continue;
-
+      }
       QString currentAlias = source->attributeDisplayName( attrIdx );
       QgsLayoutTableColumn col;
       col.setAttribute( layerFields.at( attrIdx ).name() );
@@ -405,13 +408,20 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
   bool activeFilter = false;
   if ( mFilterFeatures && !mFeatureFilter.isEmpty() )
   {
-    filterExpression = qgis::make_unique< QgsExpression >( mFeatureFilter );
+    filterExpression = std::make_unique< QgsExpression >( mFeatureFilter );
     if ( !filterExpression->hasParserError() )
     {
       activeFilter = true;
       req.setFilterExpression( mFeatureFilter );
     }
   }
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  if ( mLayout->renderContext().featureFilterProvider() )
+  {
+    mLayout->renderContext().featureFilterProvider()->filterFeatures( layer, req );
+  }
+#endif
 
   QgsRectangle selectionRect;
   QgsGeometry visibleRegion;
@@ -476,7 +486,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     req.setFilterFid( atlasFeature.id() );
   }
 
-  for ( const QgsLayoutTableColumn &column : qgis::as_const( mSortColumns ) )
+  for ( const QgsLayoutTableColumn &column : std::as_const( mSortColumns ) )
   {
     req.addOrderBy( column.attribute(), column.sortOrder() == Qt::AscendingOrder );
   }
@@ -541,11 +551,14 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     // We also need a list of just the cell contents, so that we can do a quick check for row uniqueness (when the
     // corresponding option is enabled)
     QVector< Cell > currentRow;
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    mColumns = filteredColumns();
+#endif
     currentRow.reserve( mColumns.count() );
     QgsLayoutTableRow rowContents;
     rowContents.reserve( mColumns.count() );
 
-    for ( const QgsLayoutTableColumn &column : qgis::as_const( mColumns ) )
+    for ( const QgsLayoutTableColumn &column : std::as_const( mColumns ) )
     {
       int idx = layer->fields().lookupField( column.attribute() );
 
@@ -570,7 +583,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
       else
       {
         // Lets assume it's an expression
-        std::unique_ptr< QgsExpression > expression = qgis::make_unique< QgsExpression >( column.attribute() );
+        std::unique_ptr< QgsExpression > expression = std::make_unique< QgsExpression >( column.attribute() );
         context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), counter + 1, true ) );
         expression->prepare( &context );
         QVariant value = expression->evaluate( &context );
@@ -692,6 +705,69 @@ QVariant QgsLayoutItemAttributeTable::replaceWrapChar( const QVariant &variant )
   replaced.replace( mWrapString, QLatin1String( "\n" ) );
   return replaced;
 }
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+QgsLayoutTableColumns QgsLayoutItemAttributeTable::filteredColumns()
+{
+
+  QgsLayoutTableColumns allowedColumns { mColumns };
+
+  // Filter columns
+  if ( mLayout->renderContext().featureFilterProvider() )
+  {
+
+    QgsVectorLayer *source { sourceLayer() };
+
+    if ( ! source )
+    {
+      return allowedColumns;
+    }
+
+    QHash<const QString, QSet<QString>> columnAttributesMap;
+    QSet<QString> allowedAttributes;
+
+    for ( const auto &c : std::as_const( allowedColumns ) )
+    {
+      if ( ! c.attribute().isEmpty() && ! columnAttributesMap.contains( c.attribute() ) )
+      {
+        columnAttributesMap[ c.attribute() ] = QSet<QString>();
+        const QgsExpression columnExp { c.attribute() };
+        const auto constRefs { columnExp.findNodes<QgsExpressionNodeColumnRef>() };
+        for ( const auto &cref : constRefs )
+        {
+          columnAttributesMap[ c.attribute() ].insert( cref->name() );
+          allowedAttributes.insert( cref->name() );
+        }
+      }
+    }
+
+    const QStringList filteredAttributes { layout()->renderContext().featureFilterProvider()->layerAttributes( source, allowedAttributes.values() ) };
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    const QSet<QString> filteredAttributesSet( filteredAttributes.constBegin(), filteredAttributes.constEnd() );
+#else
+    const QSet<QString> filteredAttributesSet { filteredAttributes.toSet() };
+#endif
+    if ( filteredAttributesSet != allowedAttributes )
+    {
+      const auto forbidden { allowedAttributes.subtract( filteredAttributesSet ) };
+      allowedColumns.erase( std::remove_if( allowedColumns.begin(), allowedColumns.end(), [ &columnAttributesMap, &forbidden ]( QgsLayoutTableColumn & c ) -> bool
+      {
+        for ( const auto &f : std::as_const( forbidden ) )
+        {
+          if ( columnAttributesMap[ c.attribute() ].contains( f ) )
+          {
+            return true;
+          }
+        }
+        return false;
+      } ), allowedColumns.end() );
+
+    }
+  }
+
+  return allowedColumns;
+}
+#endif
 
 QgsVectorLayer *QgsLayoutItemAttributeTable::sourceLayer() const
 {

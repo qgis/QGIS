@@ -25,7 +25,7 @@ class QgsVectorLayerCache;
 /**
  * \ingroup core
  * \brief
- * Delivers features from the cache
+ * \brief Delivers features from the cache
  *
  */
 class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
@@ -39,6 +39,8 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
      * \param featureRequest   The feature request to answer
      */
     QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest &featureRequest );
+
+    ~QgsCachedFeatureIterator() override;
 
     /**
      * Rewind to the beginning of the iterator
@@ -76,17 +78,25 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
     bool nextFeatureFilterFids( QgsFeature &f ) override { return fetchFeature( f ); }
 
   private:
-    QgsFeatureIds mFeatureIds;
+#ifdef SIP_RUN
+    QgsCachedFeatureIterator( const QgsCachedFeatureIterator &other );
+#endif
+
+    QList< QgsFeatureId > mFeatureIds;
     QgsVectorLayerCache *mVectorLayerCache = nullptr;
-    QgsFeatureIds::ConstIterator mFeatureIdIterator;
+    QList< QgsFeatureId >::ConstIterator mFeatureIdIterator;
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;
+
+    QgsGeometry mDistanceWithinGeom;
+    std::unique_ptr< QgsGeometryEngine > mDistanceWithinEngine;
+    double mDistanceWithin = 0;
 };
 
 /**
  * \ingroup core
  * \brief
- * Uses another iterator as backend and writes features to the cache
+ * \brief Uses another iterator as backend and writes features to the cache
  *
  */
 class CORE_EXPORT QgsCachedFeatureWriterIterator : public QgsAbstractFeatureIterator
@@ -133,5 +143,6 @@ class CORE_EXPORT QgsCachedFeatureWriterIterator : public QgsAbstractFeatureIter
     QgsFeatureIds mFids;
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;
+
 };
 #endif // QGSCACHEDFEATUREITERATOR_H

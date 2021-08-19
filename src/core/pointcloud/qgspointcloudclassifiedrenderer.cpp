@@ -48,7 +48,7 @@ QString QgsPointCloudClassifiedRenderer::type() const
 
 QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::clone() const
 {
-  std::unique_ptr< QgsPointCloudClassifiedRenderer > res = qgis::make_unique< QgsPointCloudClassifiedRenderer >();
+  std::unique_ptr< QgsPointCloudClassifiedRenderer > res = std::make_unique< QgsPointCloudClassifiedRenderer >();
   res->mAttribute = mAttribute;
   res->mCategories = mCategories;
 
@@ -83,7 +83,7 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
   const bool reproject = ct.isValid();
 
   QHash< int, QColor > colors;
-  for ( const QgsPointCloudCategory &category : qgis::as_const( mCategories ) )
+  for ( const QgsPointCloudCategory &category : std::as_const( mCategories ) )
   {
     if ( !category.renderState() )
       continue;
@@ -113,7 +113,7 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
       continue;
 
     pointXY( context, ptr, i, x, y );
-    if ( visibleExtent.contains( QgsPointXY( x, y ) ) )
+    if ( visibleExtent.contains( x, y ) )
     {
       if ( reproject )
       {
@@ -142,7 +142,7 @@ bool QgsPointCloudClassifiedRenderer::willRenderPoint( const QVariantMap &pointA
   int attributeInt = pointAttributes[ mAttribute ].toInt( &parsedCorrectly );
   if ( !parsedCorrectly )
     return false;
-  for ( const QgsPointCloudCategory &category : qgis::as_const( mCategories ) )
+  for ( const QgsPointCloudCategory &category : std::as_const( mCategories ) )
   {
     if ( category.value() == attributeInt )
       return category.renderState();
@@ -152,7 +152,7 @@ bool QgsPointCloudClassifiedRenderer::willRenderPoint( const QVariantMap &pointA
 
 QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
-  std::unique_ptr< QgsPointCloudClassifiedRenderer > r = qgis::make_unique< QgsPointCloudClassifiedRenderer >();
+  std::unique_ptr< QgsPointCloudClassifiedRenderer > r = std::make_unique< QgsPointCloudClassifiedRenderer >();
 
   r->setAttribute( element.attribute( QStringLiteral( "attribute" ), QStringLiteral( "Classification" ) ) );
 
@@ -239,7 +239,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsPointCloudClassifiedRenderer::createLege
 {
   QList<QgsLayerTreeModelLegendNode *> nodes;
 
-  for ( const QgsPointCloudCategory &category : qgis::as_const( mCategories ) )
+  for ( const QgsPointCloudCategory &category : std::as_const( mCategories ) )
   {
     nodes << new QgsRasterSymbolLegendNode( nodeLayer, category.color(), category.label(), nullptr, true, QString::number( category.value() ) );
   }
@@ -250,7 +250,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsPointCloudClassifiedRenderer::createLege
 QStringList QgsPointCloudClassifiedRenderer::legendRuleKeys() const
 {
   QStringList res;
-  for ( const QgsPointCloudCategory &category : qgis::as_const( mCategories ) )
+  for ( const QgsPointCloudCategory &category : std::as_const( mCategories ) )
   {
     res << QString::number( category.value() );
   }
@@ -264,7 +264,7 @@ bool QgsPointCloudClassifiedRenderer::legendItemChecked( const QString &key )
   if ( !ok )
     return false;
 
-  for ( const QgsPointCloudCategory &category : qgis::as_const( mCategories ) )
+  for ( const QgsPointCloudCategory &category : std::as_const( mCategories ) )
   {
     if ( category.value() == value )
       return category.renderState();

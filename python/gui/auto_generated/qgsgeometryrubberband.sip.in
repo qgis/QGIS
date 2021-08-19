@@ -18,7 +18,7 @@
 
 class QgsGeometryRubberBand: QgsMapCanvasItem
 {
-%Docstring
+%Docstring(signature="appended")
 A rubberband class for :py:class:`QgsAbstractGeometry` (considering curved geometries).
 %End
 

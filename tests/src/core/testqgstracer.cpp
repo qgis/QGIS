@@ -26,6 +26,7 @@
 #include "qgslayertreemodel.h"
 #include "qgsmapsettings.h"
 #include "qgssnappingutils.h"
+#include "qgssymbol.h"
 
 class TestQgsTracer : public QObject
 {
@@ -62,7 +63,7 @@ namespace QTest
 static QgsFeature make_feature( const QString &wkt )
 {
   QgsFeature f;
-  QgsGeometry g = QgsGeometry::fromWkt( wkt ) ;
+  const QgsGeometry g = QgsGeometry::fromWkt( wkt ) ;
   f.setGeometry( g );
   return f;
 }
@@ -73,7 +74,7 @@ static QgsVectorLayer *make_layer( const QStringList &wkts )
   Q_ASSERT( vl->isValid() );
 
   vl->startEditing();
-  Q_FOREACH ( const QString &wkt, wkts )
+  for ( const QString &wkt : wkts )
   {
     QgsFeature f( make_feature( wkt ) );
     vl->addFeature( f );
@@ -86,12 +87,12 @@ static QgsVectorLayer *make_layer( const QStringList &wkts )
 void print_shortest_path( QgsTracer &tracer, const QgsPointXY &p1, const QgsPointXY &p2 )
 {
   qDebug( "from (%f,%f) to (%f,%f)", p1.x(), p1.y(), p2.x(), p2.y() );
-  QVector<QgsPointXY> points = tracer.findShortestPath( p1, p2 );
+  const QVector<QgsPointXY> points = tracer.findShortestPath( p1, p2 );
 
   if ( points.isEmpty() )
     qDebug( "no path!" );
 
-  Q_FOREACH ( const QgsPointXY &p, points )
+  for ( const QgsPointXY &p : points )
     qDebug( "p: %f %f", p.x(), p.y() );
 }
 
@@ -157,7 +158,7 @@ void TestQgsTracer::testSimple()
   QCOMPARE( points4[1], QgsPointXY( 19, 9 ) );
 
   // no path to (1,1)
-  QgsPolylineXY points5 = tracer.findShortestPath( QgsPointXY( 0, 0 ), QgsPointXY( 1, 1 ) );
+  const QgsPolylineXY points5 = tracer.findShortestPath( QgsPointXY( 0, 0 ), QgsPointXY( 1, 1 ) );
   QCOMPARE( points5.count(), 0 );
 
   delete vl;
@@ -167,7 +168,7 @@ void TestQgsTracer::testInvisible()
 {
   QgsVectorLayer *mVL = new QgsVectorLayer( QStringLiteral( "Linestring?field=fld:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
   QgsFeature f1, f2, f3, f4;
-  int idx = mVL->fields().indexFromName( QStringLiteral( "fld" ) );
+  const int idx = mVL->fields().indexFromName( QStringLiteral( "fld" ) );
   QVERIFY( idx != -1 );
   f1.initAttributes( 1 );
   f2.initAttributes( 1 );
@@ -212,11 +213,11 @@ void TestQgsTracer::testInvisible()
   QgsLayerTreeModel *m = new QgsLayerTreeModel( root, nullptr );
   m->refreshLayerLegend( n );
 
-  QList<QgsLayerTreeModelLegendNode *> nodes = m->layerLegendNodes( n );
+  const QList<QgsLayerTreeModelLegendNode *> nodes = m->layerLegendNodes( n );
   QCOMPARE( nodes.length(), 1 );
   //uncheck all and test that all nodes are unchecked
   static_cast< QgsSymbolLegendNode * >( nodes.at( 0 ) )->uncheckAllItems();
-  Q_FOREACH ( QgsLayerTreeModelLegendNode *ln, nodes )
+  for ( QgsLayerTreeModelLegendNode *ln :  nodes )
   {
     QVERIFY( ln->data( Qt::CheckStateRole ) == Qt::Unchecked );
   }
@@ -247,7 +248,7 @@ void TestQgsTracer::testInvisible()
   QCOMPARE( points1[1], QgsPointXY( 0, 0 ) );
   QCOMPARE( points1[2], QgsPointXY( 0, 10 ) );
 
-  QgsRenderContext renderContext = QgsRenderContext::fromMapSettings( mapSettings );
+  const QgsRenderContext renderContext = QgsRenderContext::fromMapSettings( mapSettings );
   tracer.setRenderContext( &renderContext );
   points1 = tracer.findShortestPath( QgsPointXY( 10, 0 ), QgsPointXY( 0, 10 ) );
   QCOMPARE( points1.count(), 0 );
@@ -393,7 +394,7 @@ void TestQgsTracer::testExtent()
   QCOMPARE( points1[0], QgsPointXY( 0, 0 ) );
   QCOMPARE( points1[1], QgsPointXY( 10, 0 ) );
 
-  QgsPolylineXY points2 = tracer.findShortestPath( QgsPointXY( 0, 0 ), QgsPointXY( 20, 10 ) );
+  const QgsPolylineXY points2 = tracer.findShortestPath( QgsPointXY( 0, 0 ), QgsPointXY( 20, 10 ) );
   QCOMPARE( points2.count(), 0 );
 }
 
@@ -404,18 +405,18 @@ void TestQgsTracer::testReprojection()
 
   QgsVectorLayer *vl = make_layer( wkts );
 
-  QgsCoordinateReferenceSystem dstCrs( QStringLiteral( "EPSG:3857" ) );
-  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), dstCrs, QgsProject::instance() );
-  QgsPointXY p1 = ct.transform( QgsPointXY( 1, 0 ) );
-  QgsPointXY p2 = ct.transform( QgsPointXY( 2, 0 ) );
+  const QgsCoordinateReferenceSystem dstCrs( QStringLiteral( "EPSG:3857" ) );
+  const QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), dstCrs, QgsProject::instance() );
+  const QgsPointXY p1 = ct.transform( QgsPointXY( 1, 0 ) );
+  const QgsPointXY p2 = ct.transform( QgsPointXY( 2, 0 ) );
 
   QgsTracer tracer;
   tracer.setLayers( QList<QgsVectorLayer *>() << vl );
-  QgsCoordinateTransformContext context;
+  const QgsCoordinateTransformContext context;
   tracer.setDestinationCrs( dstCrs, context );
   tracer.init();
 
-  QgsPolylineXY points1 = tracer.findShortestPath( p1, p2 );
+  const QgsPolylineXY points1 = tracer.findShortestPath( p1, p2 );
   QCOMPARE( points1.count(), 2 );
 }
 
@@ -439,11 +440,11 @@ void TestQgsTracer::testCurved()
 
   QVERIFY( !points1.isEmpty() );
 
-  QgsGeometry tmpG1 = QgsGeometry::fromPolylineXY( points1 );
-  double l = tmpG1.length();
+  const QgsGeometry tmpG1 = QgsGeometry::fromPolylineXY( points1 );
+  const double l = tmpG1.length();
 
   // fuzzy comparison as QCOMPARE is too strict for this case
-  double full_circle_length = 2 * M_PI * 10;
+  const double full_circle_length = 2 * M_PI * 10;
   QGSCOMPARENEAR( l, full_circle_length / 4, 0.01 );
 
   QCOMPARE( points1[0], QgsPointXY( 0, 0 ) );

@@ -20,6 +20,7 @@
  ***************************************************************************/
 
 #include "qgswmsutils.h"
+#include "qgswmsrequest.h"
 #include "qgswmsserviceexception.h"
 #include "qgswmsdescribelayer.h"
 #include "qgsserverprojectutils.h"
@@ -28,21 +29,19 @@
 namespace QgsWms
 {
 
-  void writeDescribeLayer( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
-                           const QgsServerRequest &request, QgsServerResponse &response )
+  void writeDescribeLayer( QgsServerInterface *serverIface, const QgsProject *project,
+                           const QgsWmsRequest &request, QgsServerResponse &response )
   {
-    QDomDocument doc = describeLayer( serverIface, project, version, request );
+    const QDomDocument doc = describeLayer( serverIface, project, request );
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
     response.write( doc.toByteArray() );
   }
 
   // DescribeLayer is defined for WMS1.1.1/SLD1.0 and in WMS 1.3.0 SLD Extension
-  QDomDocument describeLayer( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
-                              const QgsServerRequest &request )
+  QDomDocument describeLayer( QgsServerInterface *serverIface, const QgsProject *project,
+                              const QgsWmsRequest &request )
   {
-    Q_UNUSED( version )
-
-    QgsServerRequest::Parameters parameters = request.parameters();
+    const QgsServerRequest::Parameters parameters = request.parameters();
 
     if ( !parameters.contains( QStringLiteral( "SLD_VERSION" ) ) )
     {
@@ -61,14 +60,18 @@ namespace QgsWms
                                  QStringLiteral( "LAYERS is mandatory for DescribeLayer operation" ), 400 );
     }
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     QStringList layersList = parameters[ QStringLiteral( "LAYERS" )].split( ',', QString::SkipEmptyParts );
+#else
+    const QStringList layersList = parameters[ QStringLiteral( "LAYERS" )].split( ',', Qt::SkipEmptyParts );
+#endif
     if ( layersList.isEmpty() )
     {
       throw QgsServiceException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Layers is empty" ), 400 );
     }
     QDomDocument myDocument = QDomDocument();
 
-    QDomNode header = myDocument.createProcessingInstruction( QStringLiteral( "xml" ), QStringLiteral( "version=\"1.0\" encoding=\"UTF-8\"" ) );
+    const QDomNode header = myDocument.createProcessingInstruction( QStringLiteral( "xml" ), QStringLiteral( "version=\"1.0\" encoding=\"UTF-8\"" ) );
     myDocument.appendChild( header );
 
     // Create the root element
@@ -87,11 +90,11 @@ namespace QgsWms
 
     // get the wms service url defined in project or keep the one from the
     // request url
-    QString wmsHrefString = serviceUrl( request, project ).toString();
+    const QString wmsHrefString = serviceUrl( request, project, *serverIface->serverSettings() ).toString();
 
     // get the wfs service url defined in project or take the same as the
     // wms service url
-    QString wfsHrefString = QgsServerProjectUtils::wfsServiceUrl( *project );
+    QString wfsHrefString = QgsServerProjectUtils::wfsServiceUrl( *project, request, *serverIface->serverSettings() );
     if ( wfsHrefString.isEmpty() )
     {
       wfsHrefString = wmsHrefString;
@@ -99,7 +102,7 @@ namespace QgsWms
 
     // get the wcs service url defined in project or take the same as the
     // wms service url
-    QString wcsHrefString = QgsServerProjectUtils::wcsServiceUrl( *project );
+    QString wcsHrefString = QgsServerProjectUtils::wcsServiceUrl( *project, request, *serverIface->serverSettings() );
     if ( wcsHrefString.isEmpty() )
     {
       wcsHrefString = wmsHrefString;
@@ -112,13 +115,13 @@ namespace QgsWms
     ( void )serverIface;
 #endif
     // Use layer ids
-    bool useLayerIds = QgsServerProjectUtils::wmsUseLayerIds( *project );
+    const bool useLayerIds = QgsServerProjectUtils::wmsUseLayerIds( *project );
     // WMS restricted layers
-    QStringList restrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *project );
+    const QStringList restrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *project );
     // WFS layers
-    QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
+    const QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
     // WCS layers
-    QStringList wcsLayerIds = QgsServerProjectUtils::wcsLayerIds( *project );
+    const QStringList wcsLayerIds = QgsServerProjectUtils::wcsLayerIds( *project );
 
     for ( QgsMapLayer *layer : project->mapLayers() )
     {

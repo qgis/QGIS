@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>563</width>
-    <height>464</height>
+    <width>581</width>
+    <height>491</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -34,48 +34,98 @@
      <property name="checkable">
       <bool>false</bool>
      </property>
-     <layout class="QGridLayout" name="gridLayout_5" columnstretch="1,2">
+     <layout class="QGridLayout" name="gridLayout_5" columnstretch="1,0">
       <property name="leftMargin">
        <number>0</number>
       </property>
       <property name="rightMargin">
        <number>3</number>
       </property>
-      <item row="0" column="1">
-       <widget class="QgsDoubleSpinBox" name="mPointSizeSpinBox">
-        <property name="maximum">
-         <double>10.000000000000000</double>
-        </property>
-        <property name="value">
-         <double>2.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="lblTransparency_4">
-        <property name="text">
-         <string>Point size</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QgsDoubleSpinBox" name="mMaxScreenErrorSpinBox">
-        <property name="maximum">
-         <double>100000.000000000000000</double>
-        </property>
-        <property name="value">
-         <double>1.000000000000000</double>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Maximum screen space error</string>
-        </property>
-       </widget>
+       <layout class="QGridLayout" name="gridLayout_7">
+        <item row="0" column="1" colspan="2">
+         <widget class="QgsDoubleSpinBox" name="mPointSizeSpinBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximum">
+           <double>10.000000000000000</double>
+          </property>
+          <property name="value">
+           <double>2.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1" colspan="2">
+         <widget class="QgsDoubleSpinBox" name="mMaxScreenErrorSpinBox">
+          <property name="maximum">
+           <double>100000.000000000000000</double>
+          </property>
+          <property name="value">
+           <double>1.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1" colspan="2">
+         <widget class="QLabel" name="mPointCloudSizeLabel">
+          <property name="text">
+           <string>10000</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1" colspan="2">
+         <widget class="QDoubleSpinBox" name="mPointBudgetSpinBox">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="minimum">
+           <double>100000.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>99999999.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>Maximum screen space error</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>Point cloud size</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="lblTransparency_4">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Point size</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Point budget</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
-      <item row="2" column="0" colspan="2">
+      <item row="4" column="0" colspan="2">
        <widget class="QCheckBox" name="mShowBoundingBoxesCheckBox">
         <property name="text">
          <string>Show bounding boxes</string>
@@ -88,7 +138,7 @@
    <item row="2" column="0" colspan="3">
     <widget class="QStackedWidget" name="mStackedWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="noRendererPage"/>
      <widget class="QWidget" name="singleColorRendererPage">
@@ -486,9 +536,10 @@ enhancement</string>
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsPointCloudAttributeComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgspointcloudattributecombobox.h</header>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsColorRampShaderWidget</class>
@@ -497,12 +548,33 @@ enhancement</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
+   <class>QgsPointCloudAttributeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgspointcloudattributecombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mRenderingStyleComboBox</tabstop>
+  <tabstop>mSingleColorBtn</tabstop>
+  <tabstop>mPointSizeSpinBox</tabstop>
+  <tabstop>mMaxScreenErrorSpinBox</tabstop>
+  <tabstop>mPointBudgetSpinBox</tabstop>
+  <tabstop>mShowBoundingBoxesCheckBox</tabstop>
+  <tabstop>mRenderingParameterComboBox</tabstop>
+  <tabstop>mColorRampShaderMinEdit</tabstop>
+  <tabstop>mColorRampShaderMaxEdit</tabstop>
+  <tabstop>mScalarRecalculateMinMaxButton</tabstop>
+  <tabstop>mContrastEnhancementAlgorithmComboBox</tabstop>
+  <tabstop>mRedMinLineEdit</tabstop>
+  <tabstop>mRedAttributeComboBox</tabstop>
+  <tabstop>mGreenAttributeComboBox</tabstop>
+  <tabstop>mBlueAttributeComboBox</tabstop>
+  <tabstop>mRedMaxLineEdit</tabstop>
+  <tabstop>mGreenMinLineEdit</tabstop>
+  <tabstop>mBlueMinLineEdit</tabstop>
+  <tabstop>mBlueMaxLineEdit</tabstop>
+  <tabstop>mGreenMaxLineEdit</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

@@ -25,6 +25,7 @@
 #include "qgsapplication.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgsabstractmaterialsettings.h"
+#include "qgsvscrollarea.h"
 
 #include <QBoxLayout>
 #include <QCheckBox>
@@ -38,11 +39,19 @@ QgsSingleSymbol3DRendererWidget::QgsSingleSymbol3DRendererWidget( QgsVectorLayer
   : QWidget( parent )
   , mLayer( layer )
 {
-  widgetSymbol = new QgsSymbol3DWidget( mLayer, this );
+  QVBoxLayout *scrollLayout = new QVBoxLayout();
+  scrollLayout->setContentsMargins( 0, 0, 0, 0 );
 
-  QVBoxLayout *layout = new QVBoxLayout( this );
-  layout->setContentsMargins( 0, 0, 0, 0 );
-  layout->addWidget( widgetSymbol );
+  QgsVScrollArea *scrollArea = new QgsVScrollArea( this );
+  scrollArea->setFrameShape( QFrame::NoFrame );
+  scrollArea->setFrameShadow( QFrame::Plain );
+  scrollArea->setWidgetResizable( true );
+  scrollLayout->addWidget( scrollArea );
+
+  widgetSymbol = new QgsSymbol3DWidget( mLayer, this );
+  scrollArea->setWidget( widgetSymbol );
+
+  setLayout( scrollLayout );
 
   connect( widgetSymbol, &QgsSymbol3DWidget::widgetChanged, this, &QgsSingleSymbol3DRendererWidget::widgetChanged );
 }
@@ -58,7 +67,7 @@ void QgsSingleSymbol3DRendererWidget::setLayer( QgsVectorLayer *layer )
   }
   else
   {
-    std::unique_ptr<QgsAbstract3DSymbol> sym( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( layer->geometryType() ) );
+    const std::unique_ptr<QgsAbstract3DSymbol> sym( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( layer->geometryType() ) );
     widgetSymbol->setSymbol( sym.get(), layer );
   }
 }
@@ -98,7 +107,7 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsMapLayer *lay
   widgetRendererStack->addWidget( widgetSingleSymbolRenderer );
   widgetRendererStack->addWidget( widgetRuleBasedRenderer );
 
-  connect( cboRendererType, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), this, &QgsVectorLayer3DRendererWidget::onRendererTypeChanged );
+  connect( cboRendererType, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsVectorLayer3DRendererWidget::onRendererTypeChanged );
   connect( widgetSingleSymbolRenderer, &QgsSingleSymbol3DRendererWidget::widgetChanged, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
   connect( widgetRuleBasedRenderer, &QgsRuleBased3DRendererWidget::widgetChanged, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
   connect( widgetRuleBasedRenderer, &QgsRuleBased3DRendererWidget::showPanel, this, &QgsPanelWidget::openPanel );
@@ -151,7 +160,7 @@ void QgsVectorLayer3DRendererWidget::setDockMode( bool dockMode )
 
 void QgsVectorLayer3DRendererWidget::apply()
 {
-  int idx = widgetRendererStack->currentIndex();
+  const int idx = widgetRendererStack->currentIndex();
   switch ( idx )
   {
     case 0:

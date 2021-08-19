@@ -24,6 +24,7 @@
 #include <QString>
 #include <QTextStream>
 #include <QStack>
+#include <QMutex>
 
 #include "qgsrectangle.h"
 #include "qgsfeatureid.h"
@@ -38,7 +39,8 @@
 
 /**
  * This is the parent class for all GPS data classes (except tracksegment).
-    It contains the variables that all GPS objects can have.
+ *
+ * It contains the variables that all GPS objects can have.
 */
 class QgsGpsObject
 {
@@ -52,7 +54,7 @@ class QgsGpsObject
 
 /**
  * This is the parent class for all GPS point classes. It contains common data
-    members and common initialization code for all point classes.
+ * members and common initialization code for all point classes.
 */
 class QgsGpsPoint : public QgsGpsObject
 {
@@ -66,8 +68,9 @@ class QgsGpsPoint : public QgsGpsObject
 
 /**
  * This is the parent class for all GPS object types that can have a nonempty
-    bounding box (Route, Track). It contains common data members for all
-    those classes. */
+ * bounding box (Route, Track). It contains common data members for all
+ * those classes.
+*/
 class QgsGpsExtended : public QgsGpsObject
 {
   public:
@@ -106,7 +109,7 @@ class QgsRoute : public QgsGpsExtended
 
 /**
  * This class represents a GPS track segment, which is a contiguous part of
-    a track. See the GPX specification for a better explanation.
+ * a track. See the GPX specification for a better explanation.
 */
 class QgsTrackSegment
 {
@@ -117,7 +120,7 @@ class QgsTrackSegment
 
 /**
  * This class represents a GPS tracklog. It consists of 0 or more track
-    segments.
+ * segments.
 */
 class QgsTrack : public QgsGpsExtended
 {
@@ -145,13 +148,15 @@ class QgsGpsData
 
     /**
      * This constructor initializes the extent to a nonsense value. Don't try
-        to use a GPSData object in QGIS without parsing a datafile into it. */
+     * to use a GPSData object in QGIS without parsing a datafile into it.
+    */
     QgsGpsData();
 
     /**
      * This function returns a pointer to a dynamically allocated QgsRectangle
-        which is the bounding box for this dataset. You'll have to deallocate it
-        yourself. */
+     * which is the bounding box for this dataset. You'll have to deallocate it
+     * yourself.
+    */
     QgsRectangle getExtent() const;
 
     //! Sets a default sensible extent. Only applies when there are no actual data.
@@ -177,23 +182,27 @@ class QgsGpsData
 
     /**
      * This function returns an iterator that points to the end of the
-        waypoint list. */
+     * waypoint list.
+    */
     WaypointIterator waypointsEnd();
 
     /**
      * This function returns an iterator that points to the end of the
-        route list. */
+     * route list.
+    */
     RouteIterator routesEnd();
 
     /**
      * This function returns an iterator that points to the end of the
-        track list. */
+     * track list.
+    */
     TrackIterator tracksEnd();
 
     /**
      * This function tries to add a new waypoint. An iterator to the new
-        waypoint will be returned (it will be waypointsEnd() if the waypoint
-        couldn't be added. */
+     * waypoint will be returned (it will be waypointsEnd() if the waypoint
+     * couldn't be added.
+    */
     WaypointIterator addWaypoint( double lat, double lon, const QString &name = "",
                                   double ele = -std::numeric_limits<double>::max() );
 
@@ -201,14 +210,16 @@ class QgsGpsData
 
     /**
      * This function tries to add a new route. It returns an iterator to the
-        new route. */
+     * new route.
+    */
     RouteIterator addRoute( const QString &name = "" );
 
     RouteIterator addRoute( const QgsRoute &rte );
 
     /**
      * This function tries to add a new track. An iterator to the new track
-        will be returned. */
+     * will be returned.
+    */
     TrackIterator addTrack( const QString &name = "" );
 
     TrackIterator addTrack( const QgsTrack &trk );
@@ -224,26 +235,29 @@ class QgsGpsData
 
     /**
      * This function will write the contents of this GPSData object as XML to
-        the given text stream. */
+     * the given text stream.
+    */
     void writeXml( QTextStream &stream );
 
     /**
      * This function returns a pointer to the GPSData object associated with
-        the file \c file name. If the file does not exist or can't be parsed,
-        NULL will be returned. If the file is already used by another layer,
-        a pointer to the same GPSData object will be returned. And if the file
-        is not used by any other layer, and can be parsed, a new GPSData object
-        will be created and a pointer to it will be returned. If you use this
-        function you should also call releaseData() with the same \c file name
-        when you're done with the GPSData pointer, otherwise the data will stay
-        in memory forever and you will get an ugly memory leak. */
+     * the file \c file name. If the file does not exist or can't be parsed,
+     * NULL will be returned. If the file is already used by another layer,
+     * a pointer to the same GPSData object will be returned. And if the file
+     * is not used by any other layer, and can be parsed, a new GPSData object
+     * will be created and a pointer to it will be returned. If you use this
+     * function you should also call releaseData() with the same \c file name
+     * when you're done with the GPSData pointer, otherwise the data will stay
+     * in memory forever and you will get an ugly memory leak.
+    */
     static QgsGpsData *getData( const QString &fileName );
 
     /**
      * Call this function when you're done with a GPSData pointer that you
-        got earlier using getData(). Do NOT call this function if you haven't
-        called getData() earlier with the same \c file name, that can cause data
-        that is still in use to be deleted. */
+     * got earlier using getData(). Do NOT call this function if you haven't
+     * called getData() earlier with the same \c file name, that can cause data
+     * that is still in use to be deleted.
+    */
     static void releaseData( const QString &fileName );
 
 
@@ -264,9 +278,17 @@ class QgsGpsData
 
     /**
      * This is the static container that maps file names to GPSData objects and
-        does reference counting, so several providers can use the same GPSData
-        object. */
-    static DataMap dataObjects;
+     * does reference counting, so several providers can use the same GPSData
+     * object.
+    */
+    static DataMap sDataObjects;
+
+    //! Mutex for sDataObjects
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    static QMutex sDataObjectsMutex;
+#else
+    static QRecursiveMutex sDataObjectsMutex;
+#endif
 
 };
 
@@ -281,17 +303,20 @@ class QgsGPXHandler
 
     /**
      * This function is called when expat encounters a new start element in
-        the XML stream. */
+     * the XML stream.
+    */
     bool startElement( const XML_Char *qName, const XML_Char **attr );
 
     /**
      * This function is called when expat encounters character data in the
-        XML stream. */
+     * XML stream.
+    */
     void characters( const XML_Char *chars, int len );
 
     /**
      * This function is called when expat encounters a new end element in
-        the XML stream. */
+     * the XML stream.
+    */
     bool endElement( const std::string &qName );
 
     // static wrapper functions for the XML handler functions (expat is in C,
@@ -342,7 +367,5 @@ class QgsGPXHandler
     int *mInt = nullptr;
     QString mCharBuffer;
 };
-
-
 
 #endif

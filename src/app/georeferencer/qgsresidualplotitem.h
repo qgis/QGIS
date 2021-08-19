@@ -22,7 +22,8 @@
 
 /**
  * A composer item to visualise the distribution of georeference residuals. For the visualisation,
-the length of the residual arrows are scaled*/
+ * the length of the residual arrows are scaled.
+*/
 class QgsResidualPlotItem: public QgsLayoutItem
 {
     Q_OBJECT

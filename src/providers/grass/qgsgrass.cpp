@@ -55,7 +55,7 @@
 #include <QHash>
 #include <QTextCodec>
 #include <QElapsedTimer>
-
+#include <QRegExp>
 
 extern "C"
 {
@@ -66,9 +66,6 @@ extern "C"
 #include <grass/version.h>
 #if defined(_MSC_VER) && defined(M_PI_4)
 #undef M_PI_4 //avoid redefinition warning
-#endif
-#if defined(PROJ_VERSION_MAJOR) && PROJ_VERSION_MAJOR>=6
-#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H
 #endif
 #include <grass/gprojects.h>
 #include <grass/vector.h>
@@ -242,18 +239,17 @@ bool QgsGrassObject::mapsetIdentical( const QgsGrassObject &other ) const
   return fi == otherFi;
 }
 
-QRegExp QgsGrassObject::newNameRegExp( Type type )
+QString QgsGrassObject::newNameRegExp( Type type )
 {
-  QRegExp rx;
   if ( type == QgsGrassObject::Vector )
   {
-    rx.setPattern( QStringLiteral( "[A-Za-z_][A-Za-z0-9_]+" ) );
+    return QStringLiteral( "[A-Za-z_][A-Za-z0-9_]+" );
   }
   else // location, raster, see G_legal_filename
   {
-    rx.setPattern( QStringLiteral( "[\\w_\\-][\\w_\\-.]+" ) );
+    return QStringLiteral( "[\\w_\\-][\\w_\\-.]+" );
   }
-  return rx;
+  return QString();
 }
 
 bool QgsGrassObject::operator==( const QgsGrassObject &other ) const
@@ -440,7 +436,7 @@ bool QgsGrass::init( void )
         int state;
 
         QProcess p;
-        p.start( pagers.at( i ) );
+        p.start( pagers.at( i ), QStringList() );
         p.waitForStarted();
         state = p.state();
         p.write( "\004" ); // Ctrl-D
@@ -1516,7 +1512,7 @@ QStringList QgsGrass::grassObjects( const QgsGrassObject &mapsetObject, QgsGrass
       try
       {
         QByteArray data = runModule( mapsetObject.gisdbase(), mapsetObject.location(), mapsetObject.mapset(), cmd, arguments, timeout, false );
-        Q_FOREACH ( QString fullName, QString::fromLocal8Bit( data ).split( '\n' ) )
+        for ( QString fullName : QString::fromLocal8Bit( data ).split( '\n' ) )
         {
           fullName = fullName.trimmed();
           if ( !fullName.isEmpty() )

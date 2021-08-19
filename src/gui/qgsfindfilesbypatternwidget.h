@@ -26,7 +26,7 @@ class QDialogButtonBox;
 /**
  * \class QgsFindFilesByPatternWidget
  * \ingroup gui
- * A reusable widget for finding files (recursively) by file pattern.
+ * \brief A reusable widget for finding files (recursively) by file pattern.
  * \since QGIS 3.8
  */
 class GUI_EXPORT QgsFindFilesByPatternWidget : public QWidget, private Ui::QgsFindFilesByPatternWidgetBase
@@ -73,7 +73,7 @@ class GUI_EXPORT QgsFindFilesByPatternWidget : public QWidget, private Ui::QgsFi
 /**
  * \class QgsFindFilesByPatternDialog
  * \ingroup gui
- * A dialog for finding files (recursively) by file pattern.
+ * \brief A dialog for finding files (recursively) by file pattern.
  * \since QGIS 3.8
  */
 class GUI_EXPORT QgsFindFilesByPatternDialog : public QDialog

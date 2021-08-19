@@ -28,7 +28,7 @@
 #include "qgsapplication.h"
 #include "qgsdataprovider.h"
 #include "qgsinterval.h"
-
+#include "qgstemporalutils.h"
 
 class QNetworkReply;
 
@@ -370,7 +370,7 @@ struct QgsWmsLayerProperty
     if ( dimensions.isEmpty() )
       return false;
 
-    for ( const QgsWmsDimensionProperty &dimension : qgis::as_const( dimensions ) )
+    for ( const QgsWmsDimensionProperty &dimension : std::as_const( dimensions ) )
     {
       if ( dimension.name == dimensionName )
         return true;
@@ -422,101 +422,6 @@ struct QgsWmstDates
 };
 
 /**
- * Stores resolution part of the WMS-T dimension extent.
- *
- * If resolution does not exist, active() will return false;
- */
-struct QgsWmstResolution
-{
-  int year = -1;
-  int month = -1;
-  int day = -1;
-
-  int hour = -1;
-  int minutes = -1;
-  int seconds = -1;
-
-  long long interval() const
-  {
-    long long secs = 0.0;
-
-    if ( year != -1 )
-      secs += year * QgsInterval::YEARS ;
-    if ( month != -1 )
-      secs += month * QgsInterval::MONTHS;
-    if ( day != -1 )
-      secs += day * QgsInterval::DAY;
-    if ( hour != -1 )
-      secs += hour * QgsInterval::HOUR;
-    if ( minutes != -1 )
-      secs += minutes * QgsInterval::MINUTE;
-    if ( seconds != -1 )
-      secs += seconds;
-
-    return secs;
-  }
-
-  bool active() const
-  {
-    return year != -1 || month != -1 || day != -1 ||
-           hour != -1 || minutes != -1 || seconds != -1;
-  }
-
-  QString text() const
-  {
-    QString text( "P" );
-
-    if ( year != -1 )
-    {
-      text.append( QString::number( year ) );
-      text.append( 'Y' );
-    }
-    if ( month != -1 )
-    {
-      text.append( QString::number( month ) );
-      text.append( 'M' );
-    }
-    if ( day != -1 )
-    {
-      text.append( QString::number( day ) );
-      text.append( 'D' );
-    }
-
-    if ( hour != -1 )
-    {
-      if ( !text.contains( 'T' ) )
-        text.append( 'T' );
-      text.append( QString::number( hour ) );
-      text.append( 'H' );
-    }
-    if ( minutes != -1 )
-    {
-      if ( !text.contains( 'T' ) )
-        text.append( 'T' );
-      text.append( QString::number( minutes ) );
-      text.append( 'M' );
-    }
-    if ( seconds != -1 )
-    {
-      if ( !text.contains( 'T' ) )
-        text.append( 'T' );
-      text.append( QString::number( seconds ) );
-      text.append( 'S' );
-    }
-    return text;
-  }
-
-  bool operator==( const QgsWmstResolution &other ) const
-  {
-    return year == other.year && month == other.month &&
-           day == other.day && hour == other.hour &&
-           minutes == other.minutes && seconds == other.seconds;
-  }
-
-};
-
-
-/**
  * Stores dates and resolution structure pair.
  */
 struct QgsWmstExtentPair
@@ -525,10 +430,10 @@ struct QgsWmstExtentPair
   {
   }
 
-  QgsWmstExtentPair( QgsWmstDates otherDates, QgsWmstResolution otherResolution )
+  QgsWmstExtentPair( QgsWmstDates dates, QgsTimeDuration resolution )
+    : dates( dates )
+    , resolution( resolution )
   {
-    dates = otherDates;
-    resolution = otherResolution;
   }
 
   bool operator ==( const QgsWmstExtentPair &other )
@@ -538,7 +443,8 @@ struct QgsWmstExtentPair
   }
 
   QgsWmstDates dates;
-  QgsWmstResolution resolution;
+  QgsTimeDuration resolution;
+
 };
 
 
@@ -764,7 +670,7 @@ struct QgsWmsAuthorization
     }
     else if ( !mUserName.isEmpty() || !mPassword.isEmpty() )
     {
-      request.setRawHeader( "Authorization", "Basic " + QStringLiteral( "%1:%2" ).arg( mUserName, mPassword ).toLatin1().toBase64() );
+      request.setRawHeader( "Authorization", "Basic " + QStringLiteral( "%1:%2" ).arg( mUserName, mPassword ).toUtf8().toBase64() );
     }
 
     if ( !mReferer.isEmpty() )
@@ -838,7 +744,7 @@ class QgsWmsSettings
      *
      * \since QGIS 3.14
      */
-    QgsWmstResolution parseWmstResolution( const QString &item );
+    QgsTimeDuration parseWmstResolution( const QString &item );
 
     /**
      * Parse the given string item into QDateTime instant.
@@ -846,13 +752,6 @@ class QgsWmsSettings
      * \since QGIS 3.14
      */
     QDateTime parseWmstDateTimes( const QString &item );
-
-    /**
-     * Returns the datetime with the sum of passed \a dateTime and the \a resolution time.
-     *
-     * \since QGIS 3.14
-     */
-    QDateTime addTime( const QDateTime &dateTime, const QgsWmstResolution &resolution );
 
     /**
      * Finds the least closest datetime from list of available dimension temporal ranges
@@ -883,6 +782,11 @@ class QgsWmsSettings
 
     //! Fixed temporal range for the data provider
     QgsDateTimeRange mFixedRange;
+
+    //! All available temporal ranges
+    QList< QgsDateTimeRange > mAllRanges;
+
+    QgsInterval mDefaultInterval;
 
     //! Fixed reference temporal range for the data provider
     QgsDateTimeRange mFixedReferenceRange;

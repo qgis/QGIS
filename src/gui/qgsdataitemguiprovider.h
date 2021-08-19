@@ -33,7 +33,7 @@ class QgsLayerItem;
  * \class QgsDataItemGuiContext
  * \ingroup gui
  *
- * Encapsulates the context in which a QgsDataItem is shown within the application GUI.
+ * \brief Encapsulates the context in which a QgsDataItem is shown within the application GUI.
  *
  * \since QGIS 3.6
  */
@@ -75,7 +75,7 @@ Q_DECLARE_METATYPE( QgsDataItemGuiContext );
  * \class QgsDataItemGuiProvider
  * \ingroup gui
  *
- * Abstract base class for providers which affect how QgsDataItem items behave
+ * \brief Abstract base class for providers which affect how QgsDataItem items behave
  * within the application GUI.
  *
  * Providers must be registered via QgsDataItemGuiProviderRegistry.
@@ -119,6 +119,19 @@ class GUI_EXPORT QgsDataItemGuiProvider
      */
     virtual void populateContextMenu( QgsDataItem *item, QMenu *menu,
                                       const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context );
+
+    /**
+     * Returns the provider's precedence to use when populating context menus via calls to populateContextMenu().
+     *
+     * Providers which return larger values will be called AFTER other providers when the menu is being populated.
+     * This allows them to nicely insert their corresponding menu items in the desired location with respect to
+     * existing items added by other providers.
+     *
+     * The default implementation returns 0.
+     *
+     * \since QGIS 3.22
+     */
+    virtual int precedenceWhenPopulatingMenus() const;
 
     /**
      * Sets a new \a name for the item, and returns TRUE if the item was successfully renamed.
@@ -187,7 +200,7 @@ class GUI_EXPORT QgsDataItemGuiProvider
      *
      * \since QGIS 3.16
      */
-    static void notify( const QString &title, const QString &message, QgsDataItemGuiContext context, Qgis::MessageLevel level = Qgis::Info, int duration = -1, QWidget *parent = nullptr );
+    static void notify( const QString &title, const QString &message, QgsDataItemGuiContext context, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = -1, QWidget *parent = nullptr );
 };
 
 #endif // QGSDATAITEMGUIPROVIDER_H

@@ -14,8 +14,9 @@
 
 class QgsRunProcess: QObject /NoDefaultCtors/
 {
-%Docstring
+%Docstring(signature="appended")
 A class that executes an external program/script.
+
 It can optionally capture the standard output and error from the
 process and displays them in a dialog box.
 
@@ -55,7 +56,7 @@ consecutive double quotes represent the quote character itself.
 
 class QgsBlockingProcess : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 A thread safe class for performing blocking (sync) execution of external processes.
 
 This class should be used whenever a blocking process run is required. Unlike implementations
@@ -128,6 +129,13 @@ After execution completes, the process' result code will be returned.
     QProcess::ExitStatus exitStatus() const;
 %Docstring
 After a call to :py:func:`~QgsBlockingProcess.run`, returns the process' exit status.
+%End
+
+    QProcess::ProcessError processError() const;
+%Docstring
+After a call to :py:func:`~QgsBlockingProcess.run`, returns the process' reported error.
+
+Returns QProcess.UnknownError if no error occurred.
 %End
 
 };

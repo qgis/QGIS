@@ -34,6 +34,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QDesktopServices>
+#include <QUrl>
 
 QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *, QWidget *parent, Qt::WindowFlags flags )
   : QgsOptionsDialogBase( QStringLiteral( "PointCloudLayerProperties" ), parent, flags )
@@ -47,7 +48,6 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsPointCloudLayerProperties::apply );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPointCloudLayerProperties::showHelp );
 
-  connect( mLayerOrigNameLineEdit, &QLineEdit::textEdited, this, &QgsPointCloudLayerProperties::originalNameEdited );
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsPointCloudLayerProperties::crsChanged );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
@@ -120,7 +120,7 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
   restoreOptionsBaseUi( title );
 }
 
-void QgsPointCloudLayerProperties::addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory )
+void QgsPointCloudLayerProperties::addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory )
 {
   if ( !factory->supportsLayer( mLayer ) || !factory->supportLayerPropertiesDialog() )
   {
@@ -171,7 +171,6 @@ void QgsPointCloudLayerProperties::syncToLayer()
 {
   // populate the general information
   mLayerOrigNameLineEdit->setText( mLayer->name() );
-  txtDisplayName->setText( mLayer->name() );
 
   /*
    * Information Tab
@@ -194,7 +193,7 @@ void QgsPointCloudLayerProperties::syncToLayer()
 void QgsPointCloudLayerProperties::loadDefaultStyle()
 {
   bool defaultLoadedFlag = false;
-  QString myMessage = mLayer->loadDefaultStyle( defaultLoadedFlag );
+  const QString myMessage = mLayer->loadDefaultStyle( defaultLoadedFlag );
   // reset if the default style was loaded OK only
   if ( defaultLoadedFlag )
   {
@@ -218,7 +217,7 @@ void QgsPointCloudLayerProperties::saveDefaultStyle()
   bool defaultSavedFlag = false;
   // after calling this the above flag will be set true for success
   // or false if the save operation failed
-  QString myMessage = mLayer->saveDefaultStyle( defaultSavedFlag );
+  const QString myMessage = mLayer->saveDefaultStyle( defaultSavedFlag );
   if ( !defaultSavedFlag )
   {
     // let the user know what went wrong
@@ -232,7 +231,7 @@ void QgsPointCloudLayerProperties::saveDefaultStyle()
 void QgsPointCloudLayerProperties::loadStyle()
 {
   QgsSettings settings;
-  QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
+  const QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getOpenFileName(
                        this,
@@ -249,7 +248,7 @@ void QgsPointCloudLayerProperties::loadStyle()
   mOldStyle = mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() );
 
   bool defaultLoadedFlag = false;
-  QString message = mLayer->loadNamedStyle( fileName, defaultLoadedFlag );
+  const QString message = mLayer->loadNamedStyle( fileName, defaultLoadedFlag );
   if ( defaultLoadedFlag )
   {
     settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( fileName ).absolutePath() );
@@ -264,7 +263,7 @@ void QgsPointCloudLayerProperties::loadStyle()
 void QgsPointCloudLayerProperties::saveStyleAs()
 {
   QgsSettings settings;
-  QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
+  const QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   QString outputFileName = QFileDialog::getSaveFileName(
                              this,
@@ -305,10 +304,10 @@ void QgsPointCloudLayerProperties::aboutToShowStyleMenu()
 void QgsPointCloudLayerProperties::loadMetadata()
 {
   QgsSettings myQSettings;  // where we keep last used filter in persistent state
-  QString myLastUsedDir = myQSettings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
+  const QString myLastUsedDir = myQSettings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
-  QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load layer metadata from metadata file" ), myLastUsedDir,
-                       tr( "QGIS Layer Metadata File" ) + " (*.qmd)" );
+  const QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load layer metadata from metadata file" ), myLastUsedDir,
+                             tr( "QGIS Layer Metadata File" ) + " (*.qmd)" );
   if ( myFileName.isNull() )
   {
     return;
@@ -329,8 +328,8 @@ void QgsPointCloudLayerProperties::loadMetadata()
     QMessageBox::warning( this, tr( "Load Metadata" ), myMessage );
   }
 
-  QFileInfo myFI( myFileName );
-  QString myPath = myFI.path();
+  const QFileInfo myFI( myFileName );
+  const QString myPath = myFI.path();
   myQSettings.setValue( QStringLiteral( "style/lastStyleDir" ), myPath );
 
   activateWindow(); // set focus back to properties dialog
@@ -339,7 +338,7 @@ void QgsPointCloudLayerProperties::loadMetadata()
 void QgsPointCloudLayerProperties::saveMetadataAs()
 {
   QgsSettings myQSettings;  // where we keep last used filter in persistent state
-  QString myLastUsedDir = myQSettings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
+  const QString myLastUsedDir = myQSettings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   QString myOutputFileName = QFileDialog::getSaveFileName( this, tr( "Save Layer Metadata as QMD" ),
                              myLastUsedDir, tr( "QMD File" ) + " (*.qmd)" );
@@ -357,7 +356,7 @@ void QgsPointCloudLayerProperties::saveMetadataAs()
   }
 
   bool defaultLoadedFlag = false;
-  QString message = mLayer->saveNamedMetadata( myOutputFileName, defaultLoadedFlag );
+  const QString message = mLayer->saveNamedMetadata( myOutputFileName, defaultLoadedFlag );
   if ( defaultLoadedFlag )
     myQSettings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( myOutputFileName ).absolutePath() );
   else
@@ -369,7 +368,7 @@ void QgsPointCloudLayerProperties::saveDefaultMetadata()
   mMetadataWidget->acceptMetadata();
 
   bool defaultSavedFlag = false;
-  QString errorMsg = mLayer->saveDefaultMetadata( defaultSavedFlag );
+  const QString errorMsg = mLayer->saveDefaultMetadata( defaultSavedFlag );
   if ( !defaultSavedFlag )
   {
     QMessageBox::warning( this, tr( "Default Metadata" ), errorMsg );
@@ -379,7 +378,7 @@ void QgsPointCloudLayerProperties::saveDefaultMetadata()
 void QgsPointCloudLayerProperties::loadDefaultMetadata()
 {
   bool defaultLoadedFlag = false;
-  QString myMessage = mLayer->loadNamedMetadata( mLayer->metadataUri(), defaultLoadedFlag );
+  const QString myMessage = mLayer->loadNamedMetadata( mLayer->metadataUri(), defaultLoadedFlag );
   //reset if the default metadata was loaded OK only
   if ( defaultLoadedFlag )
   {
@@ -407,16 +406,11 @@ void QgsPointCloudLayerProperties::showHelp()
 
 void QgsPointCloudLayerProperties::urlClicked( const QUrl &url )
 {
-  QFileInfo file( url.toLocalFile() );
+  const QFileInfo file( url.toLocalFile() );
   if ( file.exists() && !file.isDir() )
     QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
   else
     QDesktopServices::openUrl( url );
-}
-
-void QgsPointCloudLayerProperties::originalNameEdited( const QString &text )
-{
-  txtDisplayName->setText( mLayer->formatLayerName( text ) );
 }
 
 void QgsPointCloudLayerProperties::crsChanged( const QgsCoordinateReferenceSystem &crs )
@@ -430,7 +424,7 @@ void QgsPointCloudLayerProperties::optionsStackedWidget_CurrentChanged( int inde
 {
   QgsOptionsDialogBase::optionsStackedWidget_CurrentChanged( index );
 
-  bool isMetadataPanel = ( index == mOptStackedWidget->indexOf( mOptsPage_Metadata ) );
+  const bool isMetadataPanel = ( index == mOptStackedWidget->indexOf( mOptsPage_Metadata ) );
   mBtnStyle->setVisible( ! isMetadataPanel );
   mBtnMetadata->setVisible( isMetadataPanel );
 }
@@ -598,7 +592,7 @@ QVariant QgsPointCloudClassificationStatisticsModel::data( const QModelIndex &in
 
         case Percent:
         {
-          const int pointCount = mLayer->dataProvider() ? mLayer->dataProvider()->pointCount() : -1;
+          const qint64 pointCount = mLayer->dataProvider() ? mLayer->dataProvider()->pointCount() : -1;
           return pointCount > 0 ? mLayer->dataProvider()->metadataClassStatistic( mAttribute, classValue, QgsStatisticalSummary::Count ).toDouble() / pointCount * 100 : QVariant();
         }
 

@@ -26,10 +26,11 @@ class APP_EXPORT QgsMapToolChangeLabelProperties: public QgsMapToolLabel
     Q_OBJECT
 
   public:
-    QgsMapToolChangeLabelProperties( QgsMapCanvas *canvas );
+    QgsMapToolChangeLabelProperties( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock );
 
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
 
   protected:
 

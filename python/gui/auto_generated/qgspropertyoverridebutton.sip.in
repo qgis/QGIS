@@ -11,7 +11,7 @@
 
 class QgsPropertyOverrideButton: QToolButton
 {
-%Docstring
+%Docstring(signature="appended")
 A button for controlling property overrides which may apply to a widget.
 
 :py:class:`QgsPropertyOverrideButton` is designed to be used alongside the QGIS

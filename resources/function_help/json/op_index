@@ -1,6 +1,7 @@
 {
   "name": "[]",
   "type": "operator",
+  "groups": ["Operators"],
   "description": "Index operator. Returns an element from an array or map value.",
   "arguments": [
         { "arg": "index", "description": "array index or map key value" }

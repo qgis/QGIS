@@ -35,7 +35,7 @@ class QgsGeometryCheckContext;
 /**
  * \ingroup analysis
  *
- * A factory for geometry checks.
+ * \brief A factory for geometry checks.
  *
  * \note This class is a technology preview and unstable API.
  * \since QGIS 3.4
@@ -84,7 +84,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckFactory SIP_ABSTRACT
 
 /**
  * \ingroup analysis
- * Template to create a factory for a geometry check.
+ * \brief Template to create a factory for a geometry check.
  *
  * \note Not available in Python bindings.
  */

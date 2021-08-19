@@ -30,7 +30,7 @@ class QgsExpressionContext;
  * \ingroup core
  * \class QgsLabelLineSettings
  *
- * Contains settings related to how the label engine places and formats
+ * \brief Contains settings related to how the label engine places and formats
  * labels for line features (or polygon features which are labeled in
  * a "perimeter" style mode).
  *
@@ -57,6 +57,17 @@ class CORE_EXPORT QgsLabelLineSettings
     {
       HintOnly, //!< Line anchor is a hint for preferred placement only, but other placements close to the hint are permitted
       Strict, //!< Line anchor is a strict placement, and other placements are not permitted
+    };
+
+    /**
+     * Clipping behavior for line anchor calculation.
+     *
+     * \since QGIS 3.20
+     */
+    enum class AnchorClipping : int
+    {
+      UseVisiblePartsOfLine, //!< Only visible parts of lines are considered when calculating the line anchor for labels
+      UseEntireLine, //!< Entire original feature line geometry is used when calculating the line anchor for labels
     };
 
     /**
@@ -251,6 +262,7 @@ class CORE_EXPORT QgsLabelLineSettings
      *
      * \see setLineAnchorPercent()
      * \see anchorType()
+     * \see anchorClipping()
      */
     double lineAnchorPercent() const { return mLineAnchorPercent; }
 
@@ -264,6 +276,7 @@ class CORE_EXPORT QgsLabelLineSettings
      *
      * \see lineAnchorPercent()
      * \see setAnchorType()
+     * \see setAnchorClipping()
      */
     void setLineAnchorPercent( double percent ) { mLineAnchorPercent = percent; }
 
@@ -273,6 +286,7 @@ class CORE_EXPORT QgsLabelLineSettings
      *
      * \see setAnchorType()
      * \see lineAnchorPercent()
+     * \see anchorClipping()
      */
     AnchorType anchorType() const { return mAnchorType; }
 
@@ -282,8 +296,33 @@ class CORE_EXPORT QgsLabelLineSettings
      *
      * \see anchorType()
      * \see setLineAnchorPercent()
+     * \see setAnchorClipping()
      */
     void setAnchorType( AnchorType type ) { mAnchorType = type; }
+
+    /**
+     * Returns the line anchor clipping mode, which dictates how line strings are clipped
+     * before calculating the line anchor placement.
+     *
+     * \see setAnchorClipping()
+     * \see anchorType()
+     * \see lineAnchorPercent()
+     *
+     * \since QGIS 3.20
+     */
+    AnchorClipping anchorClipping() const { return mAnchorClipping; }
+
+    /**
+     * Sets the line anchor \a clipping mode, which dictates how line strings are clipped
+     * before calculating the line anchor placement.
+     *
+     * \see anchorClipping()
+     * \see setAnchorType()
+     * \see setLineAnchorPercent()
+     *
+     * \since QGIS 3.20
+     */
+    void setAnchorClipping( AnchorClipping clipping ) { mAnchorClipping = clipping; }
 
   private:
     QgsLabeling::LinePlacementFlags mPlacementFlags = QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::MapOrientation;
@@ -299,6 +338,7 @@ class CORE_EXPORT QgsLabelLineSettings
 
     double mLineAnchorPercent = 0.5;
     AnchorType mAnchorType = AnchorType::HintOnly;
+    AnchorClipping mAnchorClipping = AnchorClipping::UseVisiblePartsOfLine;
 };
 
 #endif // QGSLABELLINESETTINGS_H

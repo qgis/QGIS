@@ -38,7 +38,7 @@ class QgsVectorTileLayer;
 
 /**
  * \ingroup core
- * Random utility functions for working with vector tiles
+ * \brief Random utility functions for working with vector tiles
  *
  * \since QGIS 3.14
  */

@@ -66,9 +66,9 @@ QgsRasterRenderer *QgsHillshadeRendererWidget::renderer()
     return nullptr;
   }
 
-  int band = mBandsCombo->currentBand();
+  const int band = mBandsCombo->currentBand();
   QgsHillshadeRenderer *renderer = new QgsHillshadeRenderer( provider, band, mLightAzimuth->value(), mLightAngle->value() );
-  double value = mZFactor->value();
+  const double value = mZFactor->value();
   renderer->setZFactor( value );
   renderer->setMultiDirectional( mMultiDirection->checkState() );
   return renderer;

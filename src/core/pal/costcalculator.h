@@ -33,6 +33,7 @@ namespace pal
 
   /**
    * \ingroup core
+   * \brief Calculates label candidate costs considering different factors.
    */
   class CostCalculator
   {

@@ -48,11 +48,13 @@ namespace Qt3DLogic
   class QLogicAspect;
 }
 
+#include "qgsshadowrenderingframegraph.h"
+
 #define SIP_NO_FILE
 
 /**
  * \ingroup 3d
- * Off-screen 3D engine implementation. It is useful for recording rendered 3D scenes of arbitrary size.
+ * \brief Off-screen 3D engine implementation. It is useful for recording rendered 3D scenes of arbitrary size.
  *
  * \note While the on-screen 3D engine also allows capturing of images, its limitation is that
  * the captured images are of the size of the on-screen window.
@@ -78,19 +80,14 @@ class _3D_EXPORT QgsOffscreen3DEngine : public QgsAbstract3DEngine
     Qt3DRender::QCamera *camera() override;
     QSize size() const override;
     QSurface *surface() const override;
-
-    void requestCaptureImage() override;
-
-  private:
-    void createRenderTarget();
-    void createFrameGraph();
-
+  signals:
+    //! Emitted after a call to requestCaptureImage() to return the captured image.
+    void imageCaptured( const QImage &image );
   private:
 
     QSize mSize = QSize( 640, 480 );
     Qt3DRender::QCamera *mCamera = nullptr;
     QOffscreenSurface *mOffscreenSurface = nullptr;
-    Qt3DRender::QRenderCaptureReply *mReply = nullptr;
 
     // basic Qt3D stuff
     Qt3DCore::QAspectEngine *mAspectEngine = nullptr;              // The aspect engine, which holds the scene and related aspects.
@@ -99,22 +96,6 @@ class _3D_EXPORT QgsOffscreen3DEngine : public QgsAbstract3DEngine
     Qt3DRender::QRenderSettings *mRenderSettings = nullptr;        // The render settings, which control the general rendering behavior.
     Qt3DCore::QNode *mSceneRoot = nullptr;                         // The scene root, which becomes a child of the engine's root entity.
     Qt3DCore::QEntity *mRoot = nullptr;
-
-    // render target stuff
-    Qt3DRender::QRenderTarget *mTextureTarget = nullptr;
-    Qt3DRender::QRenderTargetOutput *mTextureOutput = nullptr;
-    Qt3DRender::QTexture2D *mTexture = nullptr;
-    Qt3DRender::QRenderTargetOutput *mDepthTextureOutput = nullptr;
-    Qt3DRender::QTexture2D *mDepthTexture = nullptr;
-
-    // frame graph stuff
-    Qt3DRender::QRenderSurfaceSelector *mSurfaceSelector = nullptr;
-    Qt3DRender::QRenderTargetSelector *mRenderTargetSelector = nullptr;
-    Qt3DRender::QViewport *mViewport = nullptr;
-    Qt3DRender::QClearBuffers *mClearBuffers = nullptr;
-    Qt3DRender::QCameraSelector *mCameraSelector = nullptr;
-    Qt3DRender::QRenderCapture *mRenderCapture = nullptr;          // The render capture node, which is appended to the frame graph.
-
 };
 
 #endif // QGSOFFSCREEN3DENGINE_H

@@ -17,13 +17,17 @@
 #include "qgssqlexpressioncompiler.h"
 #include "qgsexpressionnodeimpl.h"
 
-QgsOracleExpressionCompiler::QgsOracleExpressionCompiler( QgsOracleFeatureSource *source )
-  : QgsSqlExpressionCompiler( source->mFields )
+QgsOracleExpressionCompiler::QgsOracleExpressionCompiler( QgsOracleFeatureSource *source, bool ignoreStaticNodes )
+  : QgsSqlExpressionCompiler( source->mFields, Flags(), ignoreStaticNodes )
 {
 }
 
 QgsSqlExpressionCompiler::Result QgsOracleExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
 {
+  QgsSqlExpressionCompiler::Result staticRes = replaceNodeByStaticCachedValueIfPossible( node, result );
+  if ( staticRes != Fail )
+    return staticRes;
+
   switch ( node->nodeType() )
   {
     case QgsExpressionNode::ntBinaryOperator:

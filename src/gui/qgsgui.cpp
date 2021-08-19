@@ -61,6 +61,7 @@
 #include "qgssubsetstringeditorproviderregistry.h"
 #include "qgsprovidersourcewidgetproviderregistry.h"
 #include "qgsrelationwidgetregistry.h"
+#include "qgssettingsregistrygui.h"
 
 QgsGui *QgsGui::instance()
 {
@@ -71,6 +72,11 @@ QgsGui *QgsGui::instance()
 QgsNative *QgsGui::nativePlatformInterface()
 {
   return instance()->mNative;
+}
+
+QgsSettingsRegistryGui *QgsGui::settingsRegistryGui()
+{
+  return instance()->mSettingsRegistryGui;
 }
 
 QgsEditorWidgetRegistry *QgsGui::editorWidgetRegistry()
@@ -174,8 +180,7 @@ void QgsGui::setWindowManager( QgsWindowManagerInterface *manager )
 
 QgsGui::HigFlags QgsGui::higFlags()
 {
-  QgsSettings settings;
-  if ( settings.value( QStringLiteral( "locale/userLocale" ), QString() ).toString().startsWith( QLatin1String( "en" ) ) )
+  if ( QgsApplication::settingsLocaleUserLocale.value().startsWith( QLatin1String( "en" ) ) )
   {
     return HigMenuTextIsTitleCase | HigDialogTitleIsTitleCase;
   }
@@ -205,6 +210,7 @@ QgsGui::~QgsGui()
   delete mSubsetStringEditorProviderRegistry;
   delete mProviderSourceWidgetProviderRegistry;
   delete mRelationEditorRegistry;
+  delete mSettingsRegistryGui;
 }
 
 QColor QgsGui::sampleColor( QPoint point )
@@ -214,8 +220,8 @@ QColor QgsGui::sampleColor( QPoint point )
   {
     return QColor();
   }
-  QPixmap snappedPixmap = screen->grabWindow( QApplication::desktop()->winId(), point.x(), point.y(), 1, 1 );
-  QImage snappedImage = snappedPixmap.toImage();
+  const QPixmap snappedPixmap = screen->grabWindow( QApplication::desktop()->winId(), point.x(), point.y(), 1, 1 );
+  const QImage snappedImage = snappedPixmap.toImage();
   return snappedImage.pixel( 0, 0 );
 }
 
@@ -250,6 +256,8 @@ QgsGui::QgsGui()
   mNative = new QgsNative();
 #endif
 
+  mSettingsRegistryGui = new QgsSettingsRegistryGui();
+
   mCodeEditorColorSchemeRegistry = new QgsCodeEditorColorSchemeRegistry();
 
   // provider gui registry initialize QgsProviderRegistry too
@@ -280,7 +288,7 @@ QgsGui::QgsGui()
 
 bool QgsGui::pythonMacroAllowed( void ( *lambda )(), QgsMessageBar *messageBar )
 {
-  Qgis::PythonMacroMode macroMode = QgsSettings().enumValue( QStringLiteral( "qgis/enableMacros" ), Qgis::PythonMacroMode::Ask );
+  const Qgis::PythonMacroMode macroMode = QgsSettings().enumValue( QStringLiteral( "qgis/enableMacros" ), Qgis::PythonMacroMode::Ask );
 
   switch ( macroMode )
   {
@@ -331,7 +339,7 @@ bool QgsGui::pythonMacroAllowed( void ( *lambda )(), QgsMessageBar *messageBar )
             tr( "Security warning" ),
             tr( "Python macros cannot currently be run." ),
             btnEnableMacros,
-            Qgis::Warning,
+            Qgis::MessageLevel::Warning,
             0,
             messageBar );
 

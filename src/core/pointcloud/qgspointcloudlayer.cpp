@@ -30,19 +30,26 @@
 #include "qgspointcloudrendererregistry.h"
 #include "qgspointcloudlayerelevationproperties.h"
 #include "qgsmaplayerlegend.h"
+#include "qgsxmlutils.h"
+#include "qgsmaplayerfactory.h"
+#include <QUrl>
 
-QgsPointCloudLayer::QgsPointCloudLayer( const QString &path,
+QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
                                         const QString &baseName,
                                         const QString &providerLib,
                                         const QgsPointCloudLayer::LayerOptions &options )
-  : QgsMapLayer( QgsMapLayerType::PointCloudLayer, baseName, path )
+  : QgsMapLayer( QgsMapLayerType::PointCloudLayer, baseName, uri )
   , mElevationProperties( new QgsPointCloudLayerElevationProperties( this ) )
 {
-
-  if ( !path.isEmpty() && !providerLib.isEmpty() )
+  if ( !uri.isEmpty() && !providerLib.isEmpty() )
   {
-    QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
-    setDataSource( path, baseName, providerLib, providerOptions, options.loadDefaultStyle );
+    const QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
+    QgsDataProvider::ReadFlags providerFlags = QgsDataProvider::ReadFlags();
+    if ( options.loadDefaultStyle )
+    {
+      providerFlags |= QgsDataProvider::FlagLoadDefaultStyle;
+    }
+    setDataSource( uri, baseName, providerLib, providerOptions, providerFlags );
 
     if ( !options.skipIndexGeneration && mDataProvider && mDataProvider->isValid() )
       mDataProvider.get()->generateIndex();
@@ -95,13 +102,34 @@ const QgsPointCloudDataProvider *QgsPointCloudLayer::dataProvider() const
 bool QgsPointCloudLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext &context )
 {
   // create provider
-  QDomNode pkeyNode = layerNode.namedItem( QStringLiteral( "provider" ) );
+  const QDomNode pkeyNode = layerNode.namedItem( QStringLiteral( "provider" ) );
   mProviderKey = pkeyNode.toElement().text();
 
   if ( !( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) )
   {
-    QgsDataProvider::ProviderOptions providerOptions { context.transformContext() };
-    setDataSource( mDataSource, mLayerName, mProviderKey, providerOptions, false );
+    const QgsDataProvider::ProviderOptions providerOptions { context.transformContext() };
+    QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+    // read extent
+    if ( mReadFlags & QgsMapLayer::FlagReadExtentFromXml )
+    {
+      const QDomNode extentNode = layerNode.namedItem( QStringLiteral( "extent" ) );
+      if ( !extentNode.isNull() )
+      {
+        // get the extent
+        const QgsRectangle mbr = QgsXmlUtils::readRectangle( extentNode.toElement() );
+
+        // store the extent
+        setExtent( mbr );
+
+        // skip get extent
+        flags |= QgsDataProvider::SkipGetExtent;
+      }
+    }
+    if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
+    {
+      flags |= QgsDataProvider::FlagTrustDataSource;
+    }
+    setDataSource( mDataSource, mLayerName, mProviderKey, providerOptions, flags );
   }
 
   if ( !isValid() )
@@ -120,12 +148,12 @@ bool QgsPointCloudLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
 bool QgsPointCloudLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement mapLayerNode = layerNode.toElement();
-  mapLayerNode.setAttribute( QStringLiteral( "type" ), QStringLiteral( "point-cloud" ) );
+  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::PointCloudLayer ) );
 
   if ( mDataProvider )
   {
     QDomElement provider  = doc.createElement( QStringLiteral( "provider" ) );
-    QDomText providerText = doc.createTextNode( providerType() );
+    const QDomText providerText = doc.createTextNode( providerType() );
     provider.appendChild( providerText );
     layerNode.appendChild( provider );
   }
@@ -138,7 +166,7 @@ bool QgsPointCloudLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
 
 bool QgsPointCloudLayer::readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
-  QDomElement elem = node.toElement();
+  const QDomElement elem = node.toElement();
 
   readCommonStyle( elem, context, categories );
 
@@ -179,10 +207,10 @@ bool QgsPointCloudLayer::readStyle( const QDomNode &node, QString &, QgsReadWrit
   if ( categories.testFlag( Symbology ) )
   {
     // get and set the blend mode if it exists
-    QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
+    const QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
     if ( !blendModeNode.isNull() )
     {
-      QDomElement e = blendModeNode.toElement();
+      const QDomElement e = blendModeNode.toElement();
       setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( e.text().toInt() ) ) );
     }
   }
@@ -190,10 +218,10 @@ bool QgsPointCloudLayer::readStyle( const QDomNode &node, QString &, QgsReadWrit
   // get and set the layer transparency and scale visibility if they exists
   if ( categories.testFlag( Rendering ) )
   {
-    QDomNode layerOpacityNode = node.namedItem( QStringLiteral( "layerOpacity" ) );
+    const QDomNode layerOpacityNode = node.namedItem( QStringLiteral( "layerOpacity" ) );
     if ( !layerOpacityNode.isNull() )
     {
-      QDomElement e = layerOpacityNode.toElement();
+      const QDomElement e = layerOpacityNode.toElement();
       setOpacity( e.text().toDouble() );
     }
 
@@ -235,7 +263,7 @@ bool QgsPointCloudLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString 
   {
     if ( mRenderer )
     {
-      QDomElement rendererElement = mRenderer->save( doc, context );
+      const QDomElement rendererElement = mRenderer->save( doc, context );
       node.appendChild( rendererElement );
     }
   }
@@ -250,7 +278,7 @@ bool QgsPointCloudLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString 
   {
     // add the blend mode field
     QDomElement blendModeElem  = doc.createElement( QStringLiteral( "blendMode" ) );
-    QDomText blendModeText = doc.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
+    const QDomText blendModeText = doc.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
     blendModeElem.appendChild( blendModeText );
     node.appendChild( blendModeElem );
   }
@@ -259,7 +287,7 @@ bool QgsPointCloudLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString 
   if ( categories.testFlag( Rendering ) )
   {
     QDomElement layerOpacityElem = doc.createElement( QStringLiteral( "layerOpacity" ) );
-    QDomText layerOpacityText = doc.createTextNode( QString::number( opacity() ) );
+    const QDomText layerOpacityText = doc.createTextNode( QString::number( opacity() ) );
     layerOpacityElem.appendChild( layerOpacityText );
     node.appendChild( layerOpacityElem );
 
@@ -275,10 +303,11 @@ void QgsPointCloudLayer::setTransformContext( const QgsCoordinateTransformContex
 {
   if ( mDataProvider )
     mDataProvider->setTransformContext( transformContext );
+  invalidateWgs84Extent();
 }
 
-void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider,
-                                        const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
+void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
+    const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
   if ( mDataProvider )
   {
@@ -290,18 +319,11 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
   mProviderKey = provider;
   mDataSource = dataSource;
 
-  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
-  if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
-  {
-    flags |= QgsDataProvider::FlagTrustDataSource;
-  }
-
   mDataProvider.reset( qobject_cast<QgsPointCloudDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource, options, flags ) ) );
   if ( !mDataProvider )
   {
     QgsDebugMsg( QStringLiteral( "Unable to get point cloud data provider" ) );
     setValid( false );
-    emit dataSourceChanged();
     return;
   }
 
@@ -312,7 +334,6 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
   if ( !isValid() )
   {
     QgsDebugMsg( QStringLiteral( "Invalid point cloud provider plugin %1" ).arg( QString( mDataSource.toUtf8() ) ) );
-    emit dataSourceChanged();
     return;
   }
 
@@ -321,13 +342,22 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
 
   // Load initial extent, crs and renderer
   setCrs( mDataProvider->crs() );
-  setExtent( mDataProvider->extent() );
+  if ( !( flags & QgsDataProvider::SkipGetExtent ) )
+  {
+    setExtent( mDataProvider->extent() );
+  }
+
+  bool loadDefaultStyleFlag = false;
+  if ( flags & QgsDataProvider::FlagLoadDefaultStyle )
+  {
+    loadDefaultStyleFlag = true;
+  }
 
   if ( !mRenderer || loadDefaultStyleFlag )
   {
     std::unique_ptr< QgsScopedRuntimeProfile > profile;
     if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-      profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Load layer style" ), QStringLiteral( "projectload" ) );
+      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Load layer style" ), QStringLiteral( "projectload" ) );
 
     bool defaultLoadedFlag = false;
 
@@ -353,9 +383,34 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
       setRenderer( QgsApplication::pointCloudRendererRegistry()->defaultRenderer( mDataProvider.get() ) );
     }
   }
+}
 
-  emit dataSourceChanged();
-  triggerRepaint();
+QString QgsPointCloudLayer::encodedSource( const QString &source, const QgsReadWriteContext &context ) const
+{
+  QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( providerType(), source );
+  if ( parts.contains( QStringLiteral( "path" ) ) )
+  {
+    parts.insert( QStringLiteral( "path" ), context.pathResolver().writePath( parts.value( QStringLiteral( "path" ) ).toString() ) );
+    return QgsProviderRegistry::instance()->encodeUri( providerType(), parts );
+  }
+  else
+  {
+    return source;
+  }
+}
+
+QString QgsPointCloudLayer::decodedSource( const QString &source, const QString &dataProvider, const QgsReadWriteContext &context ) const
+{
+  QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( dataProvider, source );
+  if ( parts.contains( QStringLiteral( "path" ) ) )
+  {
+    parts.insert( QStringLiteral( "path" ), context.pathResolver().readPath( parts.value( QStringLiteral( "path" ) ).toString() ) );
+    return QgsProviderRegistry::instance()->encodeUri( dataProvider, parts );
+  }
+  else
+  {
+    return source;
+  }
 }
 
 void QgsPointCloudLayer::onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state )
@@ -369,7 +424,7 @@ void QgsPointCloudLayer::onPointCloudIndexGenerationStateChanged( QgsPointCloudD
     }
     triggerRepaint();
 
-    emit renderer3DChanged();
+    emit rendererChanged();
   }
 }
 
@@ -392,7 +447,7 @@ QString QgsPointCloudLayer::loadDefaultStyle( bool &resultFlag )
 
 QString QgsPointCloudLayer::htmlMetadata() const
 {
-  QgsLayerMetadataFormatter htmlFormatter( metadata() );
+  const QgsLayerMetadataFormatter htmlFormatter( metadata() );
   QString myMetadata = QStringLiteral( "<html>\n<body>\n" );
 
   // Begin Provider section
@@ -410,44 +465,32 @@ QString QgsPointCloudLayer::htmlMetadata() const
     path = uriComponents[QStringLiteral( "path" )].toString();
     if ( QFile::exists( path ) )
       myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Path" ) + QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( path ).toString(), QDir::toNativeSeparators( path ) ) ) + QStringLiteral( "</td></tr>\n" );
-  }
-  if ( uriComponents.contains( QStringLiteral( "url" ) ) )
-  {
-    const QString url = uriComponents[QStringLiteral( "url" )].toString();
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "URL" ) + QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl( url ).toString(), url ) ) + QStringLiteral( "</td></tr>\n" );
+    else
+      myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "URL" ) + QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl( path ).toString(), path ) ) + QStringLiteral( "</td></tr>\n" );
   }
 
   // data source
   if ( publicSource() != path )
     myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Source" ) + QStringLiteral( "</td><td>%1" ).arg( publicSource() ) + QStringLiteral( "</td></tr>\n" );
 
-  // EPSG
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "CRS" ) + QStringLiteral( "</td><td>" );
-  if ( crs().isValid() )
-  {
-    myMetadata += crs().userFriendlyIdentifier( QgsCoordinateReferenceSystem::FullString ) + QStringLiteral( " - " );
-    if ( crs().isGeographic() )
-      myMetadata += tr( "Geographic" );
-    else
-      myMetadata += tr( "Projected" );
-  }
-  myMetadata += QLatin1String( "</td></tr>\n" );
-
   // Extent
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Extent" ) + QStringLiteral( "</td><td>" ) + extent().toString() + QStringLiteral( "</td></tr>\n" );
-
-  // unit
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Unit" ) + QStringLiteral( "</td><td>" ) + QgsUnitTypes::toString( crs().mapUnits() ) + QStringLiteral( "</td></tr>\n" );
 
   // feature count
   QLocale locale = QLocale();
   locale.setNumberOptions( locale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
-  const int pointCount = mDataProvider ? mDataProvider->pointCount() : -1;
+  const qint64 pointCount = mDataProvider ? mDataProvider->pointCount() : -1;
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
                 + tr( "Point count" ) + QStringLiteral( "</td><td>" )
                 + ( pointCount < 0 ? tr( "unknown" ) : locale.toString( static_cast<qlonglong>( pointCount ) ) )
                 + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QLatin1String( "</table>\n<br><br>" );
 
+  // CRS
+  myMetadata += crsHtmlMetadata();
+
+  // provider metadata section
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "Metadata" ) + QStringLiteral( "</h1>\n<hr>\n" ) + QStringLiteral( "<table class=\"list-view\">\n" );
   const QVariantMap originalMetadata = mDataProvider ? mDataProvider->originalMetadata() : QVariantMap();
 
   if ( originalMetadata.value( QStringLiteral( "creation_year" ) ).toInt() > 0 && originalMetadata.contains( QStringLiteral( "creation_doy" ) ) )
@@ -599,7 +642,7 @@ QgsPointCloudAttributeCollection QgsPointCloudLayer::attributes() const
   return mDataProvider ? mDataProvider->attributes() : QgsPointCloudAttributeCollection();
 }
 
-int QgsPointCloudLayer::pointCount() const
+qint64 QgsPointCloudLayer::pointCount() const
 {
   return mDataProvider ? mDataProvider->pointCount() : 0;
 }
@@ -621,5 +664,5 @@ void QgsPointCloudLayer::setRenderer( QgsPointCloudRenderer *renderer )
 
   mRenderer.reset( renderer );
   emit rendererChanged();
-  emit styleChanged();
+  emitStyleChanged();
 }

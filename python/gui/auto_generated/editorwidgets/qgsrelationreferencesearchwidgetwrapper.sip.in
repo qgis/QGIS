@@ -14,7 +14,7 @@
 
 class QgsRelationReferenceSearchWidgetWrapper : QgsSearchWidgetWrapper
 {
-%Docstring
+%Docstring(signature="appended")
 Wraps a relation reference search widget.
 
 .. versionadded:: 2.16

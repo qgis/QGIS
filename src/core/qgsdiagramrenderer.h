@@ -27,12 +27,12 @@
 #include "qgsexpressioncontext.h"
 #include "qgsfields.h"
 #include "qgscoordinatetransform.h"
-#include "qgssymbol.h"
 #include "qgsproperty.h"
 #include "qgspropertycollection.h"
 
 #include "diagram/qgsdiagram.h"
 #include "qgsreadwritecontext.h"
+#include "qgsmapunitscale.h"
 
 class QgsDiagramRenderer;
 class QgsFeature;
@@ -45,6 +45,7 @@ class QgsLayerTreeModelLegendNode;
 class QgsLayerTreeLayer;
 class QgsPaintEffect;
 class QgsDataDefinedSizeLegend;
+class QgsLineSymbol;
 
 namespace pal { class Layer; } SIP_SKIP
 
@@ -656,7 +657,7 @@ class CORE_EXPORT QgsDiagramSettings
 /**
  * \ingroup core
  * \class QgsDiagramInterpolationSettings
- * Additional diagram settings for interpolated size rendering.
+ * \brief Additional diagram settings for interpolated size rendering.
  */
 class CORE_EXPORT QgsDiagramInterpolationSettings
 {
@@ -814,7 +815,7 @@ class CORE_EXPORT QgsDiagramRenderer
 
 /**
  * \ingroup core
- * Renders the diagrams for all features with the same settings
+ * \brief Renders the diagrams for all features with the same settings
 */
 class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
 {

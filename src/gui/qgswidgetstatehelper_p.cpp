@@ -38,17 +38,16 @@ bool QgsWidgetStateHelper::eventFilter( QObject *object, QEvent *event )
     // don't save geometry for windows which were never shown
     if ( widget->property( "widgetStateHelperWasShown" ).toBool() )
     {
-      QString name = widgetSafeName( widget );
-      QString key = mKeys[name];
+      const QString name = widgetSafeName( widget );
+      const QString key = mKeys[name];
       QgsGuiUtils::saveGeometry( widget, key );
     }
   }
   else if ( event->type() == QEvent::Show )
   {
     QWidget *widget = qobject_cast<QWidget *>( object );
-    QString name = widgetSafeName( widget );
+    const QString name = widgetSafeName( widget );
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     // If window is already maximized by Window Manager,
     // there is no need to restore its geometry as it might lead to
     // an incorrect state of QFlags<Qt::WindowState>(WindowMinimized|WindowMaximized)
@@ -61,13 +60,9 @@ bool QgsWidgetStateHelper::eventFilter( QObject *object, QEvent *event )
 
     if ( !( win->windowStates() & Qt::WindowMaximized ) )
     {
-      QString key = mKeys[name];
+      const QString key = mKeys[name];
       QgsGuiUtils::restoreGeometry( widget, key );
     }
-#else
-    QString key = mKeys[name];
-    QgsGuiUtils::restoreGeometry( widget, key );
-#endif
 
     widget->setProperty( "widgetStateHelperWasShown", QVariant( true ) );
   }
@@ -76,7 +71,7 @@ bool QgsWidgetStateHelper::eventFilter( QObject *object, QEvent *event )
 
 void QgsWidgetStateHelper::registerWidget( QWidget *widget, const QString &key )
 {
-  QString name = widgetSafeName( widget );
+  const QString name = widgetSafeName( widget );
   mKeys[name] = key;
   widget->installEventFilter( this );
 }

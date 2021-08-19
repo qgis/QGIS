@@ -34,7 +34,7 @@ struct QgsStoredExpression
 
 class QgsStoredExpressionManager : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Manages stored expressions regarding creation, modification and storing in the project
 
 .. versionadded:: 3.10

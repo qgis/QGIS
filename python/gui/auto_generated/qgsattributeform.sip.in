@@ -279,6 +279,18 @@ Save all the values from the editors to the layer.
 :return: ``True`` if successful
 %End
 
+    bool saveWithDetails( QString *error /Out/ = 0 );
+%Docstring
+Save all the values from the editors to the layer.
+
+
+:return: - ``True`` if save was successful
+         - error: will be set to an explanatory error message if an error occurs while saving the form.
+
+
+.. versionadded:: 3.18
+%End
+
     void resetValues();
 %Docstring
 Sets all values to the values of the current feature
@@ -307,9 +319,14 @@ have filter expressions that depend on the parent form scope.
 .. versionadded:: 3.14
 %End
 
+    bool needsGeometry() const;
+%Docstring
+Returns ``True`` if any of the form widgets need feature geometry
+
+.. versionadded:: 3.20
+%End
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

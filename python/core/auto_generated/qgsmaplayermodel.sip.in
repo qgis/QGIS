@@ -12,7 +12,7 @@
 
 class QgsMapLayerModel : QAbstractItemModel
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsMapLayerModel` class is a model to display layers in widgets.
 
 .. seealso:: :py:class:`QgsMapLayerProxyModel`
@@ -79,9 +79,11 @@ Returns ``True`` if items in the model can be reordered via drag and drop.
 checkAll changes the checkstate for all the layers
 %End
 
-    void setAllowEmptyLayer( bool allowEmpty );
+    void setAllowEmptyLayer( bool allowEmpty, const QString &text = QString(), const QIcon &icon = QIcon() );
 %Docstring
 Sets whether an optional empty layer ("not set") option is present in the model.
+
+Since QGIS 3.20, the optional ``text`` and ``icon`` arguments allows the text and icon for the empty layer item to be set.
 
 .. seealso:: :py:func:`allowEmptyLayer`
 

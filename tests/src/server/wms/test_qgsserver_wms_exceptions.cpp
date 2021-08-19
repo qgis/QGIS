@@ -47,27 +47,27 @@ void TestQgsServerWmsExceptions::cleanupTestCase()
 void TestQgsServerWmsExceptions::exception_code()
 {
   QgsWms::QgsServiceException::ExceptionCode code = QgsWms::QgsServiceException::OGC_InvalidFormat;
-  QgsWms::QgsServiceException exception0( code, QString(), 400 );
+  const QgsWms::QgsServiceException exception0( code, QString(), 400 );
   QCOMPARE( exception0.code(), QString( "InvalidFormat" ) );
 
   code = QgsWms::QgsServiceException::QGIS_InvalidParameterValue;
-  QgsWms::QgsServiceException exception1( code, QString(), 400 );
+  const QgsWms::QgsServiceException exception1( code, QString(), 400 );
   QCOMPARE( exception1.code(), QString( "InvalidParameterValue" ) );
 }
 
 void TestQgsServerWmsExceptions::exception_message()
 {
   QgsWms::QgsServiceException::ExceptionCode code = QgsWms::QgsServiceException::QGIS_MissingParameterValue;
-  QgsWms::QgsServiceException exception( code, QgsWms::QgsWmsParameter::LAYER, 400 );
+  const QgsWms::QgsServiceException exception( code, QgsWms::QgsWmsParameter::LAYER, 400 );
   QCOMPARE( exception.message(), QString( "The LAYER parameter is missing." ) );
 
   code = QgsWms::QgsServiceException::OGC_InvalidSRS;
-  QgsWms::QgsServiceException exception_srs( code, QgsWms::QgsWmsParameter::SRS, 400 );
+  const QgsWms::QgsServiceException exception_srs( code, QgsWms::QgsWmsParameter::SRS, 400 );
   QCOMPARE( exception_srs.message(), QString( "The SRS is not valid." ) );
   QCOMPARE( exception_srs.code(), QString( "InvalidSRS" ) );
 
   code = QgsWms::QgsServiceException::OGC_InvalidCRS;
-  QgsWms::QgsServiceException exception_crs( code, QgsWms::QgsWmsParameter::CRS, 400 );
+  const QgsWms::QgsServiceException exception_crs( code, QgsWms::QgsWmsParameter::CRS, 400 );
   QCOMPARE( exception_crs.message(), QString( "The CRS is not valid." ) );
   QCOMPARE( exception_crs.code(), QString( "InvalidCRS" ) );
 }

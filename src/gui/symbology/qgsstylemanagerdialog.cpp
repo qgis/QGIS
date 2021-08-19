@@ -16,7 +16,6 @@
 #include "qgsstylemanagerdialog.h"
 #include "qgsstylesavedialog.h"
 
-#include "qgsdataitem.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
@@ -38,6 +37,11 @@
 #include "qgsabstract3dsymbol.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgs3dsymbolwidget.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgsiconutils.h"
+
 #include <QAction>
 #include <QFile>
 #include <QFileDialog>
@@ -48,6 +52,7 @@
 #include <QMenu>
 #include <QClipboard>
 #include <QDesktopServices>
+#include <QUrl>
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -258,17 +263,9 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
   connect( exportAction, &QAction::triggered, this, &QgsStyleManagerDialog::exportItems );
   btnShare->setMenu( shareMenu );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 10;
-#else
   double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 10;
-#endif
   listItems->setIconSize( QSize( static_cast< int >( iconSize ), static_cast< int >( iconSize * 0.9 ) ) );  // ~100, 90 on low dpi
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  double treeIconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 2;
-#else
   double treeIconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 2;
-#endif
   mSymbolTreeView->setIconSize( QSize( static_cast< int >( treeIconSize ), static_cast< int >( treeIconSize ) ) );
 
   mModel = mStyle == QgsStyle::defaultStyle() ? new QgsCheckableStyleModel( QgsApplication::defaultStyleModel(), this, mReadOnly )
@@ -341,14 +338,14 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
     mMenuBtnAddItemLegendPatchShape = new QMenu( this );
     mMenuBtnAddItemSymbol3D = new QMenu( this );
 
-    QAction *item = new QAction( QgsLayerItem::iconPoint(), tr( "Marker…" ), this );
-    connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( QgsSymbol::Marker ); } );
+    QAction *item = new QAction( QgsIconUtils::iconPoint(), tr( "Marker…" ), this );
+    connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( static_cast< int >( Qgis::SymbolType::Marker ) ); } );
     mMenuBtnAddItemAll->addAction( item );
-    item = new QAction( QgsLayerItem::iconLine(), tr( "Line…" ), this );
-    connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( QgsSymbol::Line ); } );
+    item = new QAction( QgsIconUtils::iconLine(), tr( "Line…" ), this );
+    connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( static_cast< int >( Qgis::SymbolType::Line ) ); } );
     mMenuBtnAddItemAll->addAction( item );
-    item = new QAction( QgsLayerItem::iconPolygon(), tr( "Fill…" ), this );
-    connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( QgsSymbol::Fill ); } );
+    item = new QAction( QgsIconUtils::iconPolygon(), tr( "Fill…" ), this );
+    connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( static_cast< int >( Qgis::SymbolType::Fill ) ); } );
     mMenuBtnAddItemAll->addAction( item );
     mMenuBtnAddItemAll->addSeparator();
 
@@ -380,15 +377,15 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
 
     mMenuBtnAddItemAll->addSeparator();
     item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "legend.svg" ) ), tr( "Marker Legend Patch Shape…" ), this );
-    connect( item, &QAction::triggered, this, [ = ]( bool ) { addLegendPatchShape( QgsSymbol::Marker ); } );
+    connect( item, &QAction::triggered, this, [ = ]( bool ) { addLegendPatchShape( Qgis::SymbolType::Marker ); } );
     mMenuBtnAddItemAll->addAction( item );
     mMenuBtnAddItemLegendPatchShape->addAction( item );
     item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "legend.svg" ) ), tr( "Line Legend Patch Shape…" ), this );
-    connect( item, &QAction::triggered, this, [ = ]( bool ) {  addLegendPatchShape( QgsSymbol::Line ); } );
+    connect( item, &QAction::triggered, this, [ = ]( bool ) {  addLegendPatchShape( Qgis::SymbolType::Line ); } );
     mMenuBtnAddItemAll->addAction( item );
     mMenuBtnAddItemLegendPatchShape->addAction( item );
     item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "legend.svg" ) ), tr( "Fill Legend Patch Shape…" ), this );
-    connect( item, &QAction::triggered, this, [ = ]( bool ) {  addLegendPatchShape( QgsSymbol::Fill ); } );
+    connect( item, &QAction::triggered, this, [ = ]( bool ) {  addLegendPatchShape( Qgis::SymbolType::Fill ); } );
     mMenuBtnAddItemAll->addAction( item );
     mMenuBtnAddItemLegendPatchShape->addAction( item );
 
@@ -570,7 +567,7 @@ void QgsStyleManagerDialog::tabItemType_currentChanged( int )
   mModel->setEntityFilterEnabled( !allTypesSelected() );
   mModel->setSymbolTypeFilterEnabled( isSymbol && !allTypesSelected() );
   if ( isSymbol && !allTypesSelected() )
-    mModel->setSymbolType( static_cast< QgsSymbol::SymbolType >( currentItemType() ) );
+    mModel->setSymbolType( static_cast< Qgis::SymbolType >( currentItemType() ) );
 
   populateList();
 }
@@ -593,13 +590,17 @@ void QgsStyleManagerDialog::copyItemsToDefault()
     if ( !ok )
       return;
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     const QStringList parts = tags.split( ',', QString::SkipEmptyParts );
+#else
+    const QStringList parts = tags.split( ',', Qt::SkipEmptyParts );
+#endif
     QStringList additionalTags;
     additionalTags.reserve( parts.count() );
     for ( const QString &tag : parts )
       additionalTags << tag.trimmed();
 
-    auto cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+    auto cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
     const int count = copyItems( items, mStyle, QgsStyle::defaultStyle(), this, cursorOverride, true, additionalTags, false, false );
     cursorOverride.reset();
     if ( count > 0 )
@@ -753,7 +754,7 @@ QList< QgsStyleManagerDialog::ItemDetails > QgsStyleManagerDialog::selectedItems
     ItemDetails details;
     details.entityType = static_cast< QgsStyle::StyleEntity >( mModel->data( index, QgsStyleModel::TypeRole ).toInt() );
     if ( details.entityType == QgsStyle::SymbolEntity )
-      details.symbolType = static_cast< QgsSymbol::SymbolType >( mModel->data( index, QgsStyleModel::SymbolTypeRole ).toInt() );
+      details.symbolType = static_cast< Qgis::SymbolType >( mModel->data( index, QgsStyleModel::SymbolTypeRole ).toInt() );
     details.name = mModel->data( mModel->index( index.row(), QgsStyleModel::Name, index.parent() ), Qt::DisplayRole ).toString();
 
     res << details;
@@ -810,7 +811,7 @@ int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDet
                                           tr( "A symbol with the name “%1” already exists.\nOverwrite?" )
                                           .arg( details.name ),
                                           QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-          cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+          cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
           switch ( res )
           {
             case QMessageBox::Cancel:
@@ -863,7 +864,7 @@ int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDet
                                           tr( "A color ramp with the name “%1” already exists.\nOverwrite?" )
                                           .arg( details.name ),
                                           QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-          cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+          cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
           switch ( res )
           {
             case QMessageBox::Cancel:
@@ -914,7 +915,7 @@ int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDet
                                           tr( "A text format with the name “%1” already exists.\nOverwrite?" )
                                           .arg( details.name ),
                                           QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-          cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+          cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
           switch ( res )
           {
             case QMessageBox::Cancel:
@@ -964,7 +965,7 @@ int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDet
                                           tr( "Label settings with the name “%1” already exist.\nOverwrite?" )
                                           .arg( details.name ),
                                           QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-          cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+          cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
           switch ( res )
           {
             case QMessageBox::Cancel:
@@ -1014,7 +1015,7 @@ int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDet
                                           tr( "Legend patch shape with the name “%1” already exist.\nOverwrite?" )
                                           .arg( details.name ),
                                           QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-          cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+          cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
           switch ( res )
           {
             case QMessageBox::Cancel:
@@ -1066,7 +1067,7 @@ int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDet
                                           tr( "A 3D symbol with the name “%1” already exists.\nOverwrite?" )
                                           .arg( details.name ),
                                           QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-          cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+          cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
           switch ( res )
           {
             case QMessageBox::Cancel:
@@ -1191,11 +1192,11 @@ int QgsStyleManagerDialog::currentItemType()
   switch ( tabItemType->currentIndex() )
   {
     case 1:
-      return QgsSymbol::Marker;
+      return static_cast< int >( Qgis::SymbolType::Marker );
     case 2:
-      return QgsSymbol::Line;
+      return static_cast< int >( Qgis::SymbolType::Line );
     case 3:
-      return QgsSymbol::Fill;
+      return static_cast< int >( Qgis::SymbolType::Fill );
     case 4:
       return 3;
     case 5:
@@ -1268,15 +1269,15 @@ bool QgsStyleManagerDialog::addSymbol( int symbolType )
   QString name = tr( "new symbol" );
   switch ( symbolType == -1 ? currentItemType() : symbolType )
   {
-    case QgsSymbol::Marker:
+    case static_cast< int >( Qgis::SymbolType::Marker ):
       symbol = new QgsMarkerSymbol();
       name = tr( "new marker" );
       break;
-    case QgsSymbol::Line:
+    case static_cast< int>( Qgis::SymbolType::Line ):
       symbol = new QgsLineSymbol();
       name = tr( "new line" );
       break;
-    case QgsSymbol::Fill:
+    case static_cast< int >( Qgis::SymbolType::Fill ):
       symbol = new QgsFillSymbol();
       name = tr( "new fill symbol" );
       break;
@@ -1800,7 +1801,7 @@ bool QgsStyleManagerDialog::editLabelSettings()
   return true;
 }
 
-bool QgsStyleManagerDialog::addLegendPatchShape( QgsSymbol::SymbolType type )
+bool QgsStyleManagerDialog::addLegendPatchShape( Qgis::SymbolType type )
 {
   QgsLegendPatchShape shape = mStyle->defaultPatch( type, QSizeF( 10, 5 ) );
   QgsLegendPatchShapeDialog dialog( shape, this );
@@ -2165,7 +2166,7 @@ void QgsStyleManagerDialog::populateGroups()
   taggroup->setEditable( false );
   QStringList tags = mStyle->tags();
   tags.sort();
-  for ( const QString &tag : qgis::as_const( tags ) )
+  for ( const QString &tag : std::as_const( tags ) )
   {
     QStandardItem *item = new QStandardItem( tag );
     item->setData( mStyle->tagId( tag ) );
@@ -2603,7 +2604,7 @@ void QgsStyleManagerDialog::listitemsContextMenu( QPoint point )
     QAction *a = nullptr;
     QStringList tags = mStyle->tags();
     tags.sort();
-    for ( const QString &tag : qgis::as_const( tags ) )
+    for ( const QString &tag : std::as_const( tags ) )
     {
       a = new QAction( tag, mGroupListMenu );
       a->setData( tag );

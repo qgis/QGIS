@@ -37,12 +37,12 @@ QStringList QgsFilterAlgorithm::tags() const
 
 QString QgsFilterAlgorithm::group() const
 {
-  return QObject::tr( "Vector table" );
+  return QObject::tr( "Modeler tools" );
 }
 
 QString QgsFilterAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectortable" );
+  return QStringLiteral( "modelertools" );
 }
 
 QgsProcessingAlgorithm::Flags QgsFilterAlgorithm::flags() const
@@ -93,7 +93,7 @@ QVariantMap QgsFilterAlgorithm::processAlgorithm( const QVariantMap &parameters,
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context, source.get() );
-  for ( Output *output : qgis::as_const( mOutputs ) )
+  for ( Output *output : std::as_const( mOutputs ) )
   {
     output->sink.reset( parameterAsSink( parameters, output->name, context, output->destinationIdentifier, source->fields(), source->wkbType(), source->sourceCrs() ) );
     if ( !output->sink )
@@ -118,11 +118,12 @@ QVariantMap QgsFilterAlgorithm::processAlgorithm( const QVariantMap &parameters,
 
     expressionContext.setFeature( f );
 
-    for ( Output *output : qgis::as_const( mOutputs ) )
+    for ( Output *output : std::as_const( mOutputs ) )
     {
       if ( output->expression.evaluate( &expressionContext ).toBool() )
       {
-        output->sink->addFeature( f, QgsFeatureSink::FastInsert );
+        if ( !output->sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( output->sink.get(), parameters, output->name ) );
       }
     }
 
@@ -131,7 +132,7 @@ QVariantMap QgsFilterAlgorithm::processAlgorithm( const QVariantMap &parameters,
   }
 
   QVariantMap outputs;
-  for ( const Output *output : qgis::as_const( mOutputs ) )
+  for ( const Output *output : std::as_const( mOutputs ) )
   {
     outputs.insert( output->name, output->destinationIdentifier );
   }

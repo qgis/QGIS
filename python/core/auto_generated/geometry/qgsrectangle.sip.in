@@ -13,7 +13,7 @@
 
 class QgsRectangle
 {
-%Docstring
+%Docstring(signature="appended")
 A rectangle specified with double values.
 
 :py:class:`QgsRectangle` is used to store a rectangle when double values are required.
@@ -29,19 +29,27 @@ Examples are storing a layer extent or the current view extent of a map
 
     QgsRectangle(); // optimised constructor for null rectangle - no need to call normalize here
 
-    explicit QgsRectangle( double xMin, double yMin = 0, double xMax = 0, double yMax = 0 ) /HoldGIL/;
+    explicit QgsRectangle( double xMin, double yMin = 0, double xMax = 0, double yMax = 0, bool normalize = true ) /HoldGIL/;
 %Docstring
-Constructor
+Constructs a QgsRectangle from a set of x and y minimum and maximum coordinates.
+
+The rectangle will be normalized after creation. Since QGIS 3.20, if ``normalize`` is ``False`` then
+the normalization step will not be applied automatically.
 %End
 
-    QgsRectangle( const QgsPointXY &p1, const QgsPointXY &p2 ) /HoldGIL/;
+    QgsRectangle( const QgsPointXY &p1, const QgsPointXY &p2, bool normalize = true ) /HoldGIL/;
 %Docstring
-Construct a rectangle from two points. The rectangle is normalized after construction.
+Construct a rectangle from two points.
+
+The rectangle is normalized after construction. Since QGIS 3.20, if ``normalize`` is ``False`` then
+the normalization step will not be applied automatically.
 %End
 
     QgsRectangle( const QRectF &qRectF ) /HoldGIL/;
 %Docstring
-Construct a rectangle from a QRectF. The rectangle is normalized after construction.
+Construct a rectangle from a QRectF.
+
+The rectangle is NOT normalized after construction.
 %End
 
     QgsRectangle( const QgsRectangle &other ) /HoldGIL/;
@@ -67,16 +75,20 @@ and ``width`` and ``height``.
 .. versionadded:: 3.0
 %End
 
-    void set( const QgsPointXY &p1, const QgsPointXY &p2 );
+    void set( const QgsPointXY &p1, const QgsPointXY &p2, bool normalize = true );
 %Docstring
-Sets the rectangle from two :py:class:`QgsPoints`. The rectangle is
-normalised after construction.
+Sets the rectangle from two :py:class:`QgsPoints`.
+
+The rectangle is normalised after construction. Since QGIS 3.20, if ``normalize`` is ``False`` then
+the normalization step will not be applied automatically.
 %End
 
-    void set( double xMin, double yMin, double xMax, double yMax );
+    void set( double xMin, double yMin, double xMax, double yMax, bool normalize = true );
 %Docstring
-Sets the rectangle from four points. The rectangle is
-normalised after construction.
+Sets the rectangle from four points.
+
+The rectangle is normalised after construction. Since QGIS 3.20, if ``normalize`` is ``False`` then
+the normalization step will not be applied automatically.
 %End
 
     void setXMinimum( double x ) /HoldGIL/;
@@ -222,19 +234,26 @@ Gets rectangle enlarged by buffer.
 Returns the intersection with the given rectangle.
 %End
 
-    bool intersects( const QgsRectangle &rect ) const;
+    bool intersects( const QgsRectangle &rect ) const /HoldGIL/;
 %Docstring
 Returns ``True`` when rectangle intersects with other rectangle.
 %End
 
-    bool contains( const QgsRectangle &rect ) const;
+    bool contains( const QgsRectangle &rect ) const /HoldGIL/;
 %Docstring
 Returns ``True`` when rectangle contains other rectangle.
 %End
 
-    bool contains( const QgsPointXY &p ) const;
+    bool contains( const QgsPointXY &p ) const /HoldGIL/;
 %Docstring
 Returns ``True`` when rectangle contains a point.
+%End
+
+    bool contains( double x, double y ) const /HoldGIL/;
+%Docstring
+Returns ``True`` when rectangle contains the point at (``x``, ``y``).
+
+.. versionadded:: 3.20
 %End
 
     void combineExtentWith( const QgsRectangle &rect );

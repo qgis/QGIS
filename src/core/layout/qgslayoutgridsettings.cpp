@@ -53,7 +53,7 @@ void QgsLayoutGridSettings::setOffset( const QgsLayoutPoint &offset )
 void QgsLayoutGridSettings::loadFromSettings()
 {
   //read grid style, grid color and pen width from settings
-  QgsSettings s;
+  const QgsSettings s;
 
   QString gridStyleString;
   gridStyleString = s.value( QStringLiteral( "LayoutDesigner/gridStyle" ), "Dots", QgsSettings::Gui ).toString();
@@ -63,7 +63,7 @@ void QgsLayoutGridSettings::loadFromSettings()
   gridGreen = s.value( QStringLiteral( "LayoutDesigner/gridGreen" ), 190, QgsSettings::Gui ).toInt();
   gridBlue = s.value( QStringLiteral( "LayoutDesigner/gridBlue" ), 190, QgsSettings::Gui ).toInt();
   gridAlpha = s.value( QStringLiteral( "LayoutDesigner/gridAlpha" ), 100, QgsSettings::Gui ).toInt();
-  QColor gridColor = QColor( gridRed, gridGreen, gridBlue, gridAlpha );
+  const QColor gridColor = QColor( gridRed, gridGreen, gridBlue, gridAlpha );
 
   mGridPen.setColor( gridColor );
   mGridPen.setWidthF( 0 );
@@ -116,13 +116,13 @@ bool QgsLayoutGridSettings::readXml( const QDomElement &e, const QDomDocument &,
     return false;
   }
 
-  double res = element.attribute( QStringLiteral( "resolution" ), QStringLiteral( "10" ) ).toDouble();
-  QgsUnitTypes::LayoutUnit resUnit = QgsUnitTypes::decodeLayoutUnit( element.attribute( QStringLiteral( "resUnits" ) ) );
+  const double res = element.attribute( QStringLiteral( "resolution" ), QStringLiteral( "10" ) ).toDouble();
+  const QgsUnitTypes::LayoutUnit resUnit = QgsUnitTypes::decodeLayoutUnit( element.attribute( QStringLiteral( "resUnits" ) ) );
   mGridResolution = QgsLayoutMeasurement( res, resUnit );
 
-  double offsetX = element.attribute( QStringLiteral( "offsetX" ) ).toDouble();
-  double offsetY = element.attribute( QStringLiteral( "offsetY" ) ).toDouble();
-  QgsUnitTypes::LayoutUnit offsetUnit = QgsUnitTypes::decodeLayoutUnit( element.attribute( QStringLiteral( "offsetUnits" ) ) );
+  const double offsetX = element.attribute( QStringLiteral( "offsetX" ) ).toDouble();
+  const double offsetY = element.attribute( QStringLiteral( "offsetY" ) ).toDouble();
+  const QgsUnitTypes::LayoutUnit offsetUnit = QgsUnitTypes::decodeLayoutUnit( element.attribute( QStringLiteral( "offsetUnits" ) ) );
   mGridOffset = QgsLayoutPoint( offsetX, offsetY, offsetUnit );
 
   mLayout->pageCollection()->redraw();
