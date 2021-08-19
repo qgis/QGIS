@@ -147,8 +147,11 @@ class QgsMdalProviderMetadata: public QgsProviderMetadata
     QList<QgsMeshDriverMetadata> meshDriversMetadata() override;
     QgsMdalProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     bool createMeshData( const QgsMesh &mesh,
-                         const QString uri,
+                         const QString &fileName,
                          const QString &driverName,
+                         const QgsCoordinateReferenceSystem &crs ) const override;
+    bool createMeshData( const QgsMesh &mesh,
+                         const QString &uri,
                          const QgsCoordinateReferenceSystem &crs ) const override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;

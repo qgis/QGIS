@@ -192,11 +192,17 @@ QgsRasterDataProvider *QgsProviderMetadata::createRasterDataProvider(
   return nullptr;
 }
 
-bool QgsProviderMetadata::createMeshData(
-  const QgsMesh &,
-  const QString,
-  const QString &,
-  const QgsCoordinateReferenceSystem & ) const
+bool QgsProviderMetadata::createMeshData( const QgsMesh &,
+    const QString &,
+    const QString &,
+    const QgsCoordinateReferenceSystem & ) const
+{
+  return false;
+}
+
+bool QgsProviderMetadata::createMeshData( const QgsMesh &,
+    const QString &,
+    const QgsCoordinateReferenceSystem & ) const
 {
   return false;
 }

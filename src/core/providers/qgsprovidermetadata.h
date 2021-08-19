@@ -466,13 +466,22 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
       const QStringList &createOptions = QStringList() ) SIP_FACTORY;
 
     /**
-     * Creates mesh data source, that is the mesh frame stored in file, memory or with other way (depending of the provider)
+     * Creates mesh data source from a file name \a fileName and a driver \a driverName, that is the mesh frame stored in file, memory or with other way (depending of the provider)
      * \since QGIS 3.16
      */
     virtual bool createMeshData(
       const QgsMesh &mesh,
-      const QString uri,
+      const QString &fileName,
       const QString &driverName,
+      const QgsCoordinateReferenceSystem &crs ) const;
+
+    /**
+     * Creates mesh data source from an \a uri, that is the mesh frame stored in file, memory or with other way (depending of the provider)
+     * \since QGIS 3.22
+     */
+    virtual bool createMeshData(
+      const QgsMesh &mesh,
+      const QString &uri,
       const QgsCoordinateReferenceSystem &crs ) const;
 
     /**
