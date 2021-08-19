@@ -440,7 +440,13 @@ QColor QgsRandomColorRamp::color( double value ) const
   int maxVal = 255;
 
   //if value is nan, then use last precalculated color
-  int colorIndex = ( !std::isnan( value ) ? value : 1 ) * ( mTotalColorCount - 1 );
+  if ( std::isnan( value ) )
+  {
+    value = 1.0;
+  }
+  // Caller has converted an index into a value in [0.0, 1.0]
+  // by doing "index / (mTotalColorCount - 1)"; retrieve the original index.
+  int colorIndex = std::round( value * ( mTotalColorCount - 1 ) );
   if ( mTotalColorCount >= 1 && mPrecalculatedColors.length() > colorIndex )
   {
     //use precalculated hue
