@@ -288,11 +288,14 @@ class PyQgsColorRamp(unittest.TestCase):
         self.assertEqual(cloned.type(), 'randomcolors')
 
         # test with pregenerated colors
-        for i in range(10000):
-            r.setTotalColorCount(10)
-            for j in range(10):
-                c = r.color(j * 0.1)
+        for n in range(2, 100):
+            r.setTotalColorCount(n)
+            seen = set()
+            for j in range(n):
+                c = r.color(j / (n - 1))
                 self.assertTrue(c.isValid())
+                seen.add(c.rgb())
+            self.assertEqual(len(seen), n)
 
     def testQgsPresetSchemeColorRamp(self):
         # test preset color ramp
