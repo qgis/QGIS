@@ -15,13 +15,14 @@
 #include "qgstest.h"
 #include <QObject>
 #include <QString>
-//header for class being tested
+
+#include "qgscircularstring.h"
 #include "qgsgeometryutils.h"
+#include "qgslinestring.h"
+#include "qgsmultipoint.h"
 #include "qgspoint.h"
 #include "qgsproject.h"
-#include "qgsmultipoint.h"
-#include "qgslinestring.h"
-#include "qgscircularstring.h"
+
 #include "testgeometryutils.h"
 #include "testtransformer.h"
 

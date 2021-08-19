@@ -15,11 +15,12 @@
 #include "qgstest.h"
 #include <QObject>
 #include <QString>
-//header for class being tested
-#include "qgsproject.h"
-#include "qgspoint.h"
+
 #include "qgslinestring.h"
+#include "qgspoint.h"
+#include "qgsproject.h"
 #include "testtransformer.h"
+
 #include "testgeometryutils.h"
 
 class TestQgsPoint: public QObject

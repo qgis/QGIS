@@ -16,13 +16,14 @@
 #include <QObject>
 #include <QPainter>
 #include <QString>
-//header for class being tested
-#include "qgspoint.h"
-#include "qgscurvepolygon.h"
+
 #include "qgscircularstring.h"
+#include "qgscurvepolygon.h"
 #include "qgslinestring.h"
-#include "qgspolygon.h"
 #include "qgsmulticurve.h"
+#include "qgspoint.h"
+#include "qgspolygon.h"
+
 #include "testgeometryutils.h"
 
 class TestQgsCurvePolygon: public QObject

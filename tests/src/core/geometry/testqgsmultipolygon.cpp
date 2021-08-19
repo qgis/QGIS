@@ -15,13 +15,14 @@
 #include "qgstest.h"
 #include <QObject>
 #include <QString>
-//header for class being tested
-#include "qgspoint.h"
-#include "qgsmultipolygon.h"
+
+#include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgsmultilinestring.h"
+#include "qgsmultipolygon.h"
+#include "qgspoint.h"
 #include "qgspolygon.h"
-#include "qgsgeometryutils.h"
+
 #include "testgeometryutils.h"
 
 class TestQgsMultiPolygon: public QObject
