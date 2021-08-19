@@ -111,7 +111,8 @@ void QgsAttributeActionDialog::insertRow( int row, const QgsAction &action )
 
   // Type
   item = new QTableWidgetItem( textForType( action.type() ) );
-  item->setData( Qt::UserRole, action.type() );
+  item->setData( Role::ActionType, action.type() );
+  item->setData( Role::ActionId, action.id() );
   item->setFlags( item->flags() & ~Qt::ItemIsEditable );
   mAttributeActionTable->setItem( row, Type, item );
 
@@ -224,7 +225,9 @@ void QgsAttributeActionDialog::swapRows( int row1, int row2 )
 
 QgsAction QgsAttributeActionDialog::rowToAction( int row ) const
 {
-  QgsAction action( static_cast<QgsAction::ActionType>( mAttributeActionTable->item( row, Type )->data( Qt::UserRole ).toInt() ),
+  const QUuid id { mAttributeActionTable->item( row, Type )->data( Role::ActionId ).toUuid() };
+  QgsAction action( id,
+                    static_cast<QgsAction::ActionType>( mAttributeActionTable->item( row, Type )->data( Role::ActionType ).toInt() ),
                     mAttributeActionTable->item( row, Description )->text(),
                     mAttributeActionTable->item( row, ActionText )->data( Qt::UserRole ).toString(),
                     mAttributeActionTable->verticalHeaderItem( row )->data( Qt::UserRole ).toString(),
@@ -331,7 +334,7 @@ void QgsAttributeActionDialog::itemDoubleClicked( QTableWidgetItem *item )
   const int row = item->row();
 
   QgsAttributeActionPropertiesDialog actionProperties(
-    static_cast<QgsAction::ActionType>( mAttributeActionTable->item( row, Type )->data( Qt::UserRole ).toInt() ),
+    static_cast<QgsAction::ActionType>( mAttributeActionTable->item( row, Type )->data( Role::ActionType ).toInt() ),
     mAttributeActionTable->item( row, Description )->text(),
     mAttributeActionTable->item( row, ShortTitle )->text(),
     mAttributeActionTable->verticalHeaderItem( row )->data( Qt::UserRole ).toString(),
@@ -347,7 +350,7 @@ void QgsAttributeActionDialog::itemDoubleClicked( QTableWidgetItem *item )
 
   if ( actionProperties.exec() )
   {
-    mAttributeActionTable->item( row, Type )->setData( Qt::UserRole, actionProperties.type() );
+    mAttributeActionTable->item( row, Type )->setData( Role::ActionType, actionProperties.type() );
     mAttributeActionTable->item( row, Type )->setText( textForType( actionProperties.type() ) );
     mAttributeActionTable->item( row, Description )->setText( actionProperties.description() );
     mAttributeActionTable->item( row, ShortTitle )->setText( actionProperties.shortTitle() );
