@@ -8,6 +8,9 @@ services:
 #      ACCEPT_EULA: Y
 #      SA_PASSWORD: <YourStrong!Passw0rd>
 
+  httpbin:
+    image: kennethreitz/httpbin:latest
+
   qgis-deps:
     tty: true
     image: qgis3-build-deps-binary-image
@@ -15,8 +18,11 @@ services:
       - ${GH_WORKSPACE}:/root/QGIS
     # links:
     #  - mssql
+    links:
+      - httpbin
     env_file:
       - docker-variables.env
     environment:
       - LANG=C.UTF-8
       - LC_ALL=en_US.UTF-8
+      - QGIS_HTTPBIN_HOST=httpbin

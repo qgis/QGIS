@@ -307,13 +307,6 @@ jobs:
 
       fail-fast: false
 
-    services:
-      # Run httpbin container for QgsNetwor* tests
-      httpbin:
-        image: kennethreitz/httpbin:latest
-        ports:
-          - 8082:80
-
     steps:
 
       - name: Print disk space
@@ -386,7 +379,6 @@ jobs:
         id: tests
         env:
           TEST_BATCH: ${{matrix.test-batch}}
-          QGIS_HTTPBIN_HOST: "localhost:8082"
         run: |
           DOCKERFILE=$( ( [[ ${{ matrix.test-batch }} == "ORACLE"   ]] && echo "docker-compose-testing-oracle.yml" ) \
                      || ( [[ ${{ matrix.test-batch }} == "POSTGRES" ]] && echo "docker-compose-testing-postgres.yml" ) \
