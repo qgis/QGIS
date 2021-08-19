@@ -70,6 +70,7 @@ class TestQgsRasterCalculator : public QObject
     void testFunctTypeFirstCase(); //test type tFUnct with use case such as "if (raster1 > 5.0, 100.0, 10.0)"
     void testFunctTypeSecondCase(); //test type tFUnct with use case such as "if (raster1 > 5.0, raster2, 10.0)"
     void testFunctTypeThirdCase(); //test type tFUnct with use case such as "if (raster1 > 5.0, raster2, raster3)"
+    void parseFunctTypeString(); //
 
   private:
 
@@ -1029,6 +1030,22 @@ void TestQgsRasterCalculator::testFunctTypeThirdCase()
   QCOMPARE( result.data()[3], result.nodataValue() );
   QCOMPARE( result.data()[4], 125 );
   QCOMPARE( result.data()[5], -55 );
+
+}
+
+void TestQgsRasterCalculator::parseFunctTypeString()
+{
+  std::unique_ptr< QgsRasterCalcNode > calcNode;
+
+  auto _test =
+    [ & ]( QString exp, const QgsRasterCalcNode::Type type ) -> QList<const QgsRasterCalcNode *>
+  {
+    QString error;
+    calcNode.reset( QgsRasterCalcNode::parseRasterCalcString( exp, error ) );
+    return calcNode->findNodes( type );
+  };
+
+  //QCOMPARE( _test( QStringLiteral( "if(\"raster@1\">10,100,5)" ), QgsRasterCalcNode::Type::tRasterRef ).length(), 1 );
 
 }
 

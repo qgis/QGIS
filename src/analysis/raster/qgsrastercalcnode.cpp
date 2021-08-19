@@ -418,10 +418,14 @@ QgsRasterMatrix QgsRasterCalcNode::evaluation( const QVector<QgsRasterMatrix *> 
     int nRows = matrixVector.at( 0 )->nRows();
     int nEntries = nCols * nRows;
     std::unique_ptr< double > dataResult( new double[nEntries] );
+    double *dataResultRawPtr =  dataResult.get();
+
     double *condition = matrixVector.at( 0 )->data();
     double *firstOption = matrixVector.at( 1 )->data();
     double *secondOption = matrixVector.at( 2 )->data();
 
+    bool isFirstOptionNumber = matrixVector.at( 1 )->isNumber();
+    bool isSecondCOptionNumber = matrixVector.at( 2 )->isNumber();
     double noDataValueCondition = matrixVector.at( 0 )->nodataValue();
 
     if ( matrixVector.at( 0 )->isNumber() ) return result;
@@ -432,16 +436,15 @@ QgsRasterMatrix QgsRasterCalcNode::evaluation( const QVector<QgsRasterMatrix *> 
       //dataResult.get()[i] = condition.get()[i] != 0  ? firstOption[0] : secondOption[0] ;
       if ( condition[i] == noDataValueCondition )
       {
-        dataResult.get()[i] = result.nodataValue();
+        dataResultRawPtr[i] = result.nodataValue();
         continue;
       }
       else if ( condition[i] != 0 )
       {
-        //idk if it's better checking at every iteration or make 3 different if statement (faster but more code)
-        dataResult.get()[i] = matrixVector.at( 1 )->isNumber() ? firstOption[0] : firstOption[i];
+        dataResultRawPtr[i] = isFirstOptionNumber ? firstOption[0] : firstOption[i];
         continue;
       }
-      dataResult.get()[i] = matrixVector.at( 2 )->isNumber() ? secondOption[0] : secondOption[i];
+      dataResultRawPtr[i] = isSecondCOptionNumber ? secondOption[0] : secondOption[i];
     }
 
     result.setData( nCols, nRows, dataResult.release(), result.nodataValue() );
