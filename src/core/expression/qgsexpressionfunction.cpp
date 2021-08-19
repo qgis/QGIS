@@ -3587,7 +3587,7 @@ static QVariant fcnSinuosity( const QVariantList &values, const QgsExpressionCon
 
 static QVariant fcnStraightDistance2d( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  const QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( geom.constGet() );
   if ( !curve )
   {
