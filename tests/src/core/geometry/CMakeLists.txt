@@ -34,6 +34,7 @@ set(TESTS
   testqgsmulticurve.cpp
   testqgsmultisurface.cpp
   testqgsmultipolygon.cpp
+  testqgsgeometrycollection.cpp
   )
 
 foreach(TESTSRC ${TESTS})
