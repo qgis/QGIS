@@ -313,16 +313,18 @@ void QgsLayerTreeUtils::removeInvalidLayers( QgsLayerTreeGroup *group )
 
 void QgsLayerTreeUtils::storeOriginalLayersProperties( QgsLayerTreeGroup *group,  const QDomDocument *doc )
 {
-
   const QDomElement projectLayersElement { doc->documentElement().firstChildElement( QStringLiteral( "projectlayers" ) ) };
 
   std::function<void ( QgsLayerTreeNode * )> _store = [ & ]( QgsLayerTreeNode * node )
   {
     if ( QgsLayerTree::isLayer( node ) )
     {
-      QgsMapLayer *l( QgsLayerTree::toLayer( node )->layer() );
-      if ( l )
+      if ( QgsMapLayer *l = QgsLayerTree::toLayer( node )->layer() )
       {
+        // no need to store for annotation layers, they can never break!
+        if ( l->type() == QgsMapLayerType::AnnotationLayer )
+          return;
+
         QDomElement layerElement { projectLayersElement.firstChildElement( QStringLiteral( "maplayer" ) ) };
         while ( ! layerElement.isNull() )
         {
