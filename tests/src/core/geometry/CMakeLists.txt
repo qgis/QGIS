@@ -31,5 +31,5 @@ set(TESTS
   )
 
 foreach(TESTSRC ${TESTS})
-  add_qgis_test(${TESTSRC} MODULE app LINKEDLIBRARIES qgis_app)
+  add_qgis_test(${TESTSRC} MODULE core LINKEDLIBRARIES qgis_core)
 endforeach(TESTSRC)
