@@ -33,16 +33,12 @@
 #include "qgscompoundcurve.h"
 #include <qgsgeometry.h>
 #include "qgsgeometryutils.h"
-#include <qgspoint.h>
 #include "qgspoint.h"
 #include "qgslinestring.h"
 #include "qgspolygon.h"
 #include "qgstriangle.h"
 #include "qgsgeometryengine.h"
 #include "qgscircle.h"
-#include "qgsellipse.h"
-#include "qgsquadrilateral.h"
-#include "qgsregularpolygon.h"
 #include "qgsmultipoint.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipolygon.h"
@@ -51,7 +47,6 @@
 #include "qgsgeometryfactory.h"
 #include "qgscurvepolygon.h"
 #include "qgsproject.h"
-#include "qgslinesegment.h"
 #include "qgsgeos.h"
 #include "qgsreferencedgeometry.h"
 
