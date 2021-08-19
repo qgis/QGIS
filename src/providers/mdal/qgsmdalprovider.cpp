@@ -972,7 +972,7 @@ QgsMdalProvider *QgsMdalProviderMetadata::createProvider( const QString &uri, co
 }
 
 
-MDAL_MeshH createMDALMesh( const QgsMesh &mesh, const QString &fileName, const QString &driverName, const QgsCoordinateReferenceSystem &crs )
+static MDAL_MeshH createMDALMesh( const QgsMesh &mesh, const QString &driverName, const QgsCoordinateReferenceSystem &crs )
 {
   MDAL_DriverH driver = MDAL_driverFromName( driverName.toStdString().c_str() );
   if ( !driver )
@@ -1033,7 +1033,7 @@ MDAL_MeshH createMDALMesh( const QgsMesh &mesh, const QString &fileName, const Q
 
 bool QgsMdalProviderMetadata::createMeshData( const QgsMesh &mesh, const QString &fileName, const QString &driverName, const QgsCoordinateReferenceSystem &crs ) const
 {
-  MDAL_MeshH mdalMesh = createMDALMesh( mesh, fileName, driverName, crs );
+  MDAL_MeshH mdalMesh = createMDALMesh( mesh, driverName, crs );
 
   if ( !mdalMesh )
     return false;
@@ -1058,7 +1058,6 @@ bool QgsMdalProviderMetadata::createMeshData( const QgsMesh &mesh, const QString
     return false;
 
   MDAL_MeshH mdalMesh = createMDALMesh( mesh,
-                                        uriComponents.value( QStringLiteral( "path" ) ).toString(),
                                         uriComponents.value( QStringLiteral( "driver" ) ).toString()
                                         , crs );
 
