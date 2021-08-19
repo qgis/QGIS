@@ -101,6 +101,7 @@ class CORE_EXPORT QgsMeshDriverMetadata
      * \param capabilities driver's capabilities
      * \param writeDatasetOnFileSuffix suffix used to write datasets on file
      * \param writeMeshFrameOnFileSuffix suffix used to write mesh frame on file
+     * \param maxVerticesPerface maximum vertices count per face supported by the driver
      *
      * \since QGIS 3.22
      */
