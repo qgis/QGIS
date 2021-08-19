@@ -2,7 +2,7 @@
   "name": "straight_distance_2d",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Returns the straight distance of a geometry. The geometry must be a curve (circularstring, linestring).",
+  "description": "Returns the direct/euclidean distance between the first and last vertex of a geometry. The geometry must be a curve (circularstring, linestring).",
   "arguments": [
     {"arg":"geometry", "description": "The geometry."}
   ],
