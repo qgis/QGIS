@@ -456,7 +456,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
       const QStringList &createOptions = QStringList() ) SIP_FACTORY;
 
     /**
-     * Creates mesh data source from a file name \fileName and a driver \driverName, that is the mesh frame stored in file, memory or with other way (depending of the provider)
+     * Creates mesh data source from a file name \a fileName and a driver \a driverName, that is the mesh frame stored in file, memory or with other way (depending of the provider)
      * \since QGIS 3.16
      */
     virtual bool createMeshData(
