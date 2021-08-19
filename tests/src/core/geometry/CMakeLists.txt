@@ -14,27 +14,27 @@ include_directories(
 # Tests:
 
 set(TESTS
-  testqgsgeometry.cpp
-  testqgsgeometryutils.cpp
+  testqgscircle.cpp
   testqgscircularstring.cpp
+  testqgscompoundcurve.cpp
+  testqgscurvepolygon.cpp
+  testqgsellipse.cpp
+  testqgsgeometry.cpp
+  testqgsgeometrycollection.cpp
+  testqgsgeometryutils.cpp
+  testqgslinestring.cpp
+  testqgsmulticurve.cpp
+  testqgsmultilinestring.cpp
+  testqgsmultipoint.cpp
+  testqgsmultipolygon.cpp
+  testqgsmultisurface.cpp
   testqgspoint.cpp
   testqgspointxy.cpp
-  testqgscurvepolygon.cpp
   testqgspolygon.cpp
-  testqgstriangle.cpp
-  testqgsellipse.cpp
-  testqgscircle.cpp
   testqgsquadrilateral.cpp
-  testqgsmultipoint.cpp
-  testqgslinestring.cpp
   testqgsrectangle.cpp
   testqgsregularpolygon.cpp
-  testqgscompoundcurve.cpp
-  testqgsmultilinestring.cpp
-  testqgsmulticurve.cpp
-  testqgsmultisurface.cpp
-  testqgsmultipolygon.cpp
-  testqgsgeometrycollection.cpp
+  testqgstriangle.cpp
   )
 
 foreach(TESTSRC ${TESTS})
