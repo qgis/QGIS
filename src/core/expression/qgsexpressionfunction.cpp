@@ -3606,7 +3606,7 @@ static QVariant fcnSinuosity( const QVariantList &values, const QgsExpressionCon
 static QVariant fcnStraightDistance2d( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   const QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
-  const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( geom.constGet() );
+  const QgsCurve *curve = geom.constGet() ? qgsgeometry_cast< const QgsCurve * >( geom.constGet()->simplifiedTypeRef() ) : nullptr;
   if ( !curve )
   {
     parent->setEvalErrorString( QObject::tr( "Function `straight_distance_2d` requires a line geometry." ) );
