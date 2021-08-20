@@ -7,7 +7,7 @@
     {"arg":"geometry","description":"a geometry"},
     {"arg":"deltaX","description":"x-axis translation"},
     {"arg":"deltaY","description":"y-axis translation"},
-    {"arg":"rotationZ","description":"rotation around z-axis in degrees"},
+    {"arg":"rotationZ","description":"rotation around z-axis in degrees counter-clockwise"},
     {"arg":"scaleX","description":"x-axis scale factor"},
     {"arg":"scaleY","description":"y-axis scale factor"},
     {"arg":"deltaZ","optional":true,"default":"0","description":"z-axis translation"},
