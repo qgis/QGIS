@@ -1035,17 +1035,18 @@ void TestQgsRasterCalculator::testFunctTypeThirdCase()
 
 void TestQgsRasterCalculator::parseFunctTypeString()
 {
-  std::unique_ptr< QgsRasterCalcNode > calcNode;
 
-  auto _test =
-    [ & ]( QString exp, const QgsRasterCalcNode::Type type ) -> QList<const QgsRasterCalcNode *>
-  {
-    QString error;
-    calcNode.reset( QgsRasterCalcNode::parseRasterCalcString( exp, error ) );
-    return calcNode->findNodes( type );
-  };
+  //( QStringLiteral( "if(\"raster@1\">10,100,5)" )
 
-  //QCOMPARE( _test( QStringLiteral( "if(\"raster@1\">10,100,5)" ), QgsRasterCalcNode::Type::tRasterRef ).length(), 1 );
+  QString errorString;
+  const QgsRasterCalcNode *node { QgsRasterCalcNode::parseRasterCalcString( QString( ), errorString ) };
+  QVERIFY( ! node );
+  QVERIFY( ! errorString.isEmpty() );
+
+  errorString = QString();
+  node = QgsRasterCalcNode::parseRasterCalcString( QStringLiteral( "if(\"raster@1\">10,100,5)" ), errorString );
+  QVERIFY( node );
+  QVERIFY( errorString.isEmpty() );
 
 }
 
