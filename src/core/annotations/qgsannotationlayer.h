@@ -128,13 +128,14 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     QgsAnnotationItem *item( const QString &id );
 
     /**
-     * Returns a list of the IDs of all annotation items within the specified \a bounds.
+     * Returns a list of the IDs of all annotation items within the specified \a bounds (in layer CRS), when
+     * rendered using the given render \a context.
      *
      * The optional \a feedback argument can be used to cancel the search early.
      *
      * \since QGIS 3.22
      */
-    QStringList itemsInBounds( const QgsRectangle &bounds, QgsFeedback *feedback = nullptr ) const;
+    QStringList itemsInBounds( const QgsRectangle &bounds, const QgsRenderContext &context, QgsFeedback *feedback = nullptr ) const;
 
     Qgis::MapLayerProperties properties() const override;
     QgsAnnotationLayer *clone() const override SIP_FACTORY;
@@ -153,6 +154,11 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     QgsCoordinateTransformContext mTransformContext;
 
     std::unique_ptr< QgsAnnotationLayerSpatialIndex > mSpatialIndex;
+    QSet< QString > mNonIndexedItems;
+
+    QStringList queryIndex( const QgsRectangle &bounds, QgsFeedback *feedback = nullptr ) const;
+
+    friend class QgsAnnotationLayerRenderer;
 
 };
 

@@ -75,6 +75,11 @@ Returns a unique (untranslated) string identifying the type of item.
 Returns the bounding box of the item's geographic location, in the parent layer's coordinate reference system.
 %End
 
+    virtual QgsRectangle boundingBox( const QgsRenderContext &context ) const;
+%Docstring
+Returns the bounding box of the item's geographic location, in the parent layer's coordinate reference system.
+%End
+
     virtual void render( QgsRenderContext &context, QgsFeedback *feedback ) = 0;
 %Docstring
 Renders the item to the specified render ``context``.
