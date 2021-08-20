@@ -17,7 +17,7 @@
   ],
   "examples": [
     { "expression":"geom_to_wkt(affine_transform(geom_from_wkt('LINESTRING(1 1, 2 2)'), 2, 2, 0, 1, 1))", "returns":"'LineString (3 3, 4 4)'"},
-    { "expression":"geom_to_wkt(affine_transform(geom_from_wkt('POLYGON((0 0, 0 3, 2 2))'), 0, 0, -90, 1, 2))", "returns":"'Polygon ((0 0, 6 0, 4 -2))'"},
+    { "expression":"geom_to_wkt(affine_transform(geom_from_wkt('POLYGON((0 0, 0 3, 2 2, 0 0))'), 0, 0, -90, 1, 2))", "returns":"'Polygon ((0 0, 6 0, 4 -2, 0 0))'"},
     { "expression":"geom_to_wkt(affine_transform(geom_from_wkt('POINT(3 1)'), 0, 0, 0, 1, 1, 5, 0))", "returns":"'PointZ (3 1 5)'"}
   ]
 }
