@@ -546,6 +546,7 @@ QgsPoint QgsMapSettings::layerToMapCoordinates( const QgsMapLayer *layer, const 
   double x = point.x();
   double y = point.y();
   double z = point.z();
+  const double m = point.m();
 
   try
   {
@@ -558,7 +559,7 @@ QgsPoint QgsMapSettings::layerToMapCoordinates( const QgsMapLayer *layer, const 
     QgsMessageLog::logMessage( QObject::tr( "Transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
   }
 
-  return QgsPoint( x, y, z );
+  return QgsPoint( x, y, z, m );
 }
 
 
@@ -600,6 +601,7 @@ QgsPoint QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, const 
   double x = point.x();
   double y = point.y();
   double z = point.z();
+  const double m = point.m();
 
   try
   {
@@ -612,7 +614,7 @@ QgsPoint QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, const 
     QgsMessageLog::logMessage( QObject::tr( "Transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
   }
 
-  return QgsPoint( x, y, z );
+  return QgsPoint( x, y, z, m );
 }
 
 
