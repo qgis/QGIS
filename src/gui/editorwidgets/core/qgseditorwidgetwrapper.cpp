@@ -288,5 +288,6 @@ bool QgsEditorWidgetWrapper::isInTable( const QWidget *parent )
 
 void QgsEditorWidgetWrapper::setHint( const QString &hintText )
 {
-  widget()->setToolTip( hintText );
+  if ( QWidget *w = widget() )
+    w->setToolTip( hintText );
 }
