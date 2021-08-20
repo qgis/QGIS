@@ -159,10 +159,11 @@ class TestQgsAnnotationLayer(unittest.TestCase):
             QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 150)])))
         item3uuid = layer.addItem(QgsAnnotationMarkerItem(QgsPoint(120, 13)))
 
-        self.assertFalse(layer.itemsInBounds(QgsRectangle(-10, -10, -9, 9)))
-        self.assertCountEqual(layer.itemsInBounds(QgsRectangle(12, 13, 14, 15)), [item1uuid, item2uuid])
-        self.assertCountEqual(layer.itemsInBounds(QgsRectangle(12, 130, 14, 150)), [item2uuid])
-        self.assertCountEqual(layer.itemsInBounds(QgsRectangle(110, 0, 120, 20)), [item3uuid])
+        rc = QgsRenderContext()
+        self.assertFalse(layer.itemsInBounds(QgsRectangle(-10, -10, -9, 9), rc))
+        self.assertCountEqual(layer.itemsInBounds(QgsRectangle(12, 13, 14, 15), rc), [item1uuid, item2uuid])
+        self.assertCountEqual(layer.itemsInBounds(QgsRectangle(12, 130, 14, 150), rc), [item2uuid])
+        self.assertCountEqual(layer.itemsInBounds(QgsRectangle(110, 0, 120, 20), rc), [item3uuid])
 
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")

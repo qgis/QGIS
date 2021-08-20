@@ -123,7 +123,10 @@ QString QgsAnnotationLayer::addItem( QgsAnnotationItem *item )
 {
   const QString uuid = QUuid::createUuid().toString();
   mItems.insert( uuid, item );
-  mSpatialIndex->insert( uuid, item->boundingBox() );
+  if ( item->flags() & Qgis::AnnotationItemFlag::ScaleDependentBoundingBox )
+    mNonIndexedItems.insert( uuid );
+  else
+    mSpatialIndex->insert( uuid, item->boundingBox() );
 
   triggerRepaint();
 
@@ -136,7 +139,17 @@ bool QgsAnnotationLayer::removeItem( const QString &id )
     return false;
 
   std::unique_ptr< QgsAnnotationItem> item( mItems.take( id ) );
-  mSpatialIndex->remove( id, item->boundingBox() );
+
+  auto it = mNonIndexedItems.find( id );
+  if ( it == mNonIndexedItems.end() )
+  {
+    mSpatialIndex->remove( id, item->boundingBox() );
+  }
+  else
+  {
+    mNonIndexedItems.erase( it );
+  }
+
   item.reset();
 
   triggerRepaint();
@@ -149,6 +162,7 @@ void QgsAnnotationLayer::clear()
   qDeleteAll( mItems );
   mItems.clear();
   mSpatialIndex = std::make_unique< QgsAnnotationLayerSpatialIndex >();
+  mNonIndexedItems.clear();
 
   triggerRepaint();
 }
@@ -163,7 +177,8 @@ QgsAnnotationItem *QgsAnnotationLayer::item( const QString &id )
   return mItems.value( id );
 }
 
-QStringList QgsAnnotationLayer::itemsInBounds( const QgsRectangle &bounds, QgsFeedback *feedback ) const
+
+QStringList QgsAnnotationLayer::queryIndex( const QgsRectangle &bounds, QgsFeedback *feedback ) const
 {
   QStringList res;
 
@@ -172,6 +187,19 @@ QStringList QgsAnnotationLayer::itemsInBounds( const QgsRectangle &bounds, QgsFe
     res << uuid;
     return !feedback || !feedback->isCanceled();
   } );
+  return res;
+}
+
+QStringList QgsAnnotationLayer::itemsInBounds( const QgsRectangle &bounds, const QgsRenderContext &context, QgsFeedback *feedback ) const
+{
+  QStringList res = queryIndex( bounds, feedback );
+  // we also have to search through any non-indexed items
+  for ( const QString &uuid : mNonIndexedItems )
+  {
+    if ( mItems.value( uuid )->boundingBox( context ).intersects( bounds ) )
+      res << uuid;
+  }
+
   return res;
 }
 
@@ -190,7 +218,10 @@ QgsAnnotationLayer *QgsAnnotationLayer::clone() const
   for ( auto it = mItems.constBegin(); it != mItems.constEnd(); ++it )
   {
     layer->mItems.insert( it.key(), ( *it )->clone() );
-    layer->mSpatialIndex->insert( it.key(), ( *it )->boundingBox() );
+    if ( ( *it )->flags() & Qgis::AnnotationItemFlag::ScaleDependentBoundingBox )
+      layer->mNonIndexedItems.insert( it.key() );
+    else
+      layer->mSpatialIndex->insert( it.key(), ( *it )->boundingBox() );
   }
 
   return layer.release();
@@ -234,6 +265,7 @@ bool QgsAnnotationLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
   qDeleteAll( mItems );
   mItems.clear();
   mSpatialIndex = std::make_unique< QgsAnnotationLayerSpatialIndex >();
+  mNonIndexedItems.clear();
 
   const QDomNodeList itemsElements = layerNode.toElement().elementsByTagName( QStringLiteral( "items" ) );
   if ( itemsElements.size() == 0 )
@@ -249,7 +281,10 @@ bool QgsAnnotationLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
     if ( item )
     {
       item->readXml( itemElement, context );
-      mSpatialIndex->insert( id, item->boundingBox() );
+      if ( item->flags() & Qgis::AnnotationItemFlag::ScaleDependentBoundingBox )
+        mNonIndexedItems.insert( id );
+      else
+        mSpatialIndex->insert( id, item->boundingBox() );
       mItems.insert( id, item.release() );
     }
   }

@@ -28,6 +28,7 @@ QgsAnnotationPointTextItem::QgsAnnotationPointTextItem( const QString &text, Qgs
 
 Qgis::AnnotationItemFlags QgsAnnotationPointTextItem::flags() const
 {
+  // in truth this should depend on whether the text format is scale dependent or not!
   return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox;
 }
 
@@ -114,6 +115,17 @@ QgsAnnotationPointTextItem *QgsAnnotationPointTextItem::clone()
 QgsRectangle QgsAnnotationPointTextItem::boundingBox() const
 {
   return QgsRectangle( mPoint.x(), mPoint.y(), mPoint.x(), mPoint.y() );
+}
+
+QgsRectangle QgsAnnotationPointTextItem::boundingBox( const QgsRenderContext &context ) const
+{
+  const double widthInPixels = QgsTextRenderer::textWidth( context, mTextFormat, mText.split( '\n' ) );
+  const double heightInPixels = QgsTextRenderer::textHeight( context, mTextFormat, mText.split( '\n' ) );
+
+  const double widthInMapUnits = context.convertToMapUnits( widthInPixels, QgsUnitTypes::RenderPixels );
+  const double heightInMapUnits = context.convertToMapUnits( heightInPixels, QgsUnitTypes::RenderPixels );
+
+  return QgsRectangle( mPoint.x(), mPoint.y(), mPoint.x() + widthInMapUnits, mPoint.y() + heightInMapUnits );
 }
 
 QgsTextFormat QgsAnnotationPointTextItem::format() const

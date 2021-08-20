@@ -23,8 +23,20 @@ QgsAnnotationLayerRenderer::QgsAnnotationLayerRenderer( QgsAnnotationLayer *laye
   , mFeedback( std::make_unique< QgsFeedback >() )
   , mLayerOpacity( layer->opacity() )
 {
-  // clone items from layer which fall inside the rendered extent
-  const QStringList items = layer->itemsInBounds( context.extent() );
+  // Clone items from layer which fall inside the rendered extent
+  // Because some items have scale dependent bounds, we have to accept some limitations here.
+  // first, we can use the layer's spatial index to very quickly retrieve items we know will fall within the visible
+  // extent. This will ONLY apply to items which have a non-scale-dependent bounding box though.
+
+  QSet< QString > items = qgis::listToSet( layer->queryIndex( context.extent() ) );
+
+  // we also have NO choice but to clone ALL non-indexed items (i.e. those with a scale-dependent bounding box)
+  // since these won't be in the layer's spatial index, and it's too expensive to determine their actual bounding box
+  // upfront (we are blocking the main thread right now!)
+
+  // TODO -- come up with some brilliant way to avoid this and also index scale-dependent items ;)
+  items.unite( layer->mNonIndexedItems );
+
   mItems.reserve( items.size() );
   std::transform( items.begin(), items.end(), std::back_inserter( mItems ),
                   [layer]( const QString & id ) -> QgsAnnotationItem* { return layer->item( id )->clone(); } );
