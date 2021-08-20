@@ -35,7 +35,7 @@ bool operator==( const QgsGeometry &g1, const QgsGeometry &g2 )
   if ( g1.isNull() && g2.isNull() )
     return true;
   else
-    return g1.isGeosEqual( g2 );
+    return g1.equals( g2 );
 }
 
 namespace QTest
@@ -627,7 +627,7 @@ void TestQgsMapToolAddFeatureLine::testLineString()
 
   const QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
-  const QString wkt = "LineStringZ (5 6.5 5, 6.25 6.5 333, 6.75 6.5 333, 7.25 6.5 333, 7.5 6.5 333)";
+  const QString wkt = "LineString (5 6.5, 6.25 6.5, 6.75 6.5, 7.25 6.5, 7.5 6.5)";
   QCOMPARE( mLayerLine->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
 
   mLayerLine->undoStack()->undo();
