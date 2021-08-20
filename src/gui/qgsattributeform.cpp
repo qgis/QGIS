@@ -909,7 +909,8 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariant
 
       signalEmitted = true;
 
-      updateJoinedFields( *eww );
+      if ( mValuesInitialized )
+        updateJoinedFields( *eww );
 
       break;
     }
