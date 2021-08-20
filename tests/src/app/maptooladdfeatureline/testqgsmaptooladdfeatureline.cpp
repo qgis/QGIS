@@ -663,7 +663,7 @@ void TestQgsMapToolAddFeatureLine::testCompoundCurve()
 
   const QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
-  const QString wkt = "CompoundCurve ((5 6.5, 6.25 6.5),CircularString (6.25 6.5, 6.75 6.5, 7.25 6.5),(7.25 6.5, 7.5 6.5),(7.5 6.5, 7.5 6),(7.5 6, 7.703125 6))";
+  const QString wkt = "CompoundCurve ((5 6.5, 6.25 6.5),CircularString (6.25 6.5, 6.75 6.5, 7.25 6.5),(7.25 6.5, 7.5 6.5, 7.5 6, 7.703125 6))";
   QCOMPARE( mLayerLineCurved->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
 
   mLayerLineCurved->undoStack()->undo();
