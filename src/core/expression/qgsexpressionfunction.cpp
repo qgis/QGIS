@@ -5477,13 +5477,13 @@ static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionCo
   }
   QgsFeatureRequest req;
   QString cacheValueKey;
-  if ( values.size() == 2 && values.at( 1 ).canConvert<QVariantMap>() )
+  if ( values.size() == 2 && values.at( 1 ).type() == QVariant::Map  )
   {
-    QVariantMap map = values.at( 1 ).toMap();
+    QVariantMap attributeMap = QgsExpressionUtils::getMapValue( values.at( 1 ), parent );
 
-    QMap <QString, QVariant>::const_iterator i = map.constBegin();
+    QMap <QString, QVariant>::const_iterator i = attributeMap.constBegin();
     QString filterString;
-    for ( ; i != map.constEnd(); ++i )
+    for ( ; i != attributeMap.constEnd(); ++i )
     {
       if ( !filterString.isEmpty() )
       {
