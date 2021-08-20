@@ -3609,7 +3609,7 @@ static QVariant fcnStraightDistance2d( const QVariantList &values, const QgsExpr
   const QgsCurve *curve = geom.constGet() ? qgsgeometry_cast< const QgsCurve * >( geom.constGet()->simplifiedTypeRef() ) : nullptr;
   if ( !curve )
   {
-    parent->setEvalErrorString( QObject::tr( "Function `straight_distance_2d` requires a line geometry." ) );
+    parent->setEvalErrorString( QObject::tr( "Function `straight_distance_2d` requires a line geometry or a multi line geometry with a single part." ) );
     return QVariant();
   }
 
