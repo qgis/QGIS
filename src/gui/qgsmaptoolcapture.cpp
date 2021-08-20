@@ -1020,26 +1020,19 @@ QgsPoint QgsMapToolCapture::mapPoint( const QgsMapMouseEvent &e ) const
 {
   QgsPoint newPoint = mapPoint( e.mapPoint() );
 
-  // set z or m value from snapped point if necessary
-  if ( QgsWkbTypes::hasZ( newPoint.wkbType() ) || QgsWkbTypes::hasM( newPoint.wkbType() ) )
+  // set z value from snapped point if necessary
+  if ( QgsWkbTypes::hasZ( newPoint.wkbType() ) )
   {
-    // if snapped, z and m dimension are taken from the corresponding snapped
+    // if snapped, z dimension is taken from the corresponding snapped
     // point.
     if ( e.isSnapped() )
     {
       const QgsPointLocator::Match match = e.mapPointMatch();
 
-      if ( match.layer() )
+      if ( match.layer() && QgsWkbTypes::hasZ( match.layer()->wkbType() ) )
       {
         const QgsFeature ft = match.layer()->getFeature( match.featureId() );
-        if ( QgsWkbTypes::hasZ( match.layer()->wkbType() ) )
-        {
-          newPoint.setZ( ft.geometry().vertexAt( match.vertexIndex() ).z() );
-        }
-        if ( QgsWkbTypes::hasM( match.layer()->wkbType() ) )
-        {
-          newPoint.setM( ft.geometry().vertexAt( match.vertexIndex() ).m() );
-        }
+        newPoint.setZ( ft.geometry().vertexAt( match.vertexIndex() ).z() );
       }
     }
   }
