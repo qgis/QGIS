@@ -3937,6 +3937,10 @@ static QVariant fcnRotate( const QVariantList &values, const QgsExpressionContex
 static QVariant fcnAffineTransform( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  if ( fGeom.isNull() )
+  {
+    return QVariant();
+  }
 
   const double deltaX = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
   const double deltaY = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
@@ -3951,10 +3955,12 @@ static QVariant fcnAffineTransform( const QVariantList &values, const QgsExpress
   const double scaleZ = QgsExpressionUtils::getDoubleValue( values.at( 8 ), parent );
   const double scaleM = QgsExpressionUtils::getDoubleValue( values.at( 9 ), parent );
 
-  if ( deltaZ != 0.0 && !fGeom.constGet()->is3D() ) {
+  if ( deltaZ != 0.0 && !fGeom.constGet()->is3D() )
+  {
     fGeom.get()->addZValue( 0 );
   }
-  if ( deltaM != 0.0 && !fGeom.constGet()->isMeasure() ) {
+  if ( deltaM != 0.0 && !fGeom.constGet()->isMeasure() )
+  {
     fGeom.get()->addMValue( 0 );
   }
 
@@ -3964,7 +3970,7 @@ static QVariant fcnAffineTransform( const QVariantList &values, const QgsExpress
   transform.scale( scaleX, scaleY );
   fGeom.transform( transform, deltaZ, scaleZ, deltaM, scaleM );
 
-  return !fGeom.isNull() ? QVariant::fromValue( fGeom ) : QVariant();
+  return QVariant::fromValue( fGeom );
 }
 
 
