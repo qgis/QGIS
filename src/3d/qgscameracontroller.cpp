@@ -295,6 +295,8 @@ void QgsCameraController::updateCameraFromPose( bool centerPointChanged )
   if ( mCamera )
     mCameraPose.updateCamera( mCamera );
 
+  double elevation = cameraCenterElevation( centerPointChanged );
+
   if ( mCamera && mTerrainEntity && centerPointChanged )
   {
     // figure out our distance from terrain and update the camera's view center
@@ -311,7 +313,9 @@ void QgsCameraController::updateCameraFromPose( bool centerPointChanged )
     else
     {
       QgsVector3D centerPoint = mCameraPose.centerPoint();
-      centerPoint.set( centerPoint.x(), mTerrainEntity->terrainElevationOffset(), centerPoint.z() );
+      double d = ( elevation - ray.origin().y() ) / ray.direction().y();
+      centerPoint = ray.origin() + d * ray.direction();
+//      centerPoint.set( centerPoint.x(), mTerrainEntity->terrainElevationOffset(), centerPoint.z() );
       mCameraPose.setCenterPoint( centerPoint );
       mCameraPose.updateCamera( mCamera );
     }
@@ -320,12 +324,46 @@ void QgsCameraController::updateCameraFromPose( bool centerPointChanged )
   if ( mCamera && !mTerrainEntity && centerPointChanged )
   {
     QgsVector3D centerPoint = mCameraPose.centerPoint();
-    centerPoint.set( centerPoint.x(), 0, centerPoint.z() );
+    QVector3D ray_direction = ( centerPoint.toVector3D() - mCamera->position() ).normalized();
+    double d = ( elevation - mCamera->position().y() ) / ray_direction.y();
+    centerPoint = mCamera->position() + d * ray_direction;
+//    centerPoint.set( centerPoint.x(), 0, centerPoint.z() );
     mCameraPose.setCenterPoint( centerPoint );
     mCameraPose.updateCamera( mCamera );
   }
 
   emit cameraChanged();
+}
+
+double QgsCameraController::cameraCenterElevation( bool centerPointChanged )
+{
+  if ( std::isnan( mCameraPose.centerPoint().x() ) || std::isnan( mCameraPose.centerPoint().y() ) || std::isnan( mCameraPose.centerPoint().z() ) )
+  {
+    // something went horribly wrong but we need to at least try to fix it somehow
+    qWarning() << "camera position got NaN!";
+    return 0;
+  }
+
+  double res = 0.0;
+
+  if ( mCamera && mTerrainEntity && centerPointChanged )
+  {
+    // figure out our distance from terrain and update the camera's view center
+    // so that camera tilting and rotation is around a point on terrain, not an point at fixed elevation
+    QVector3D intersectionPoint;
+    QgsRayCastingUtils::Ray3D ray = QgsRayCastingUtils::rayForCameraCenter( mCamera );
+    if ( mTerrainEntity->rayIntersection( ray, intersectionPoint ) )
+      res = intersectionPoint.y();
+    else
+      res = mTerrainEntity->terrainElevationOffset();
+  }
+
+  if ( mCamera && !mTerrainEntity && centerPointChanged )
+  {
+    res = 0.0;
+  }
+
+  return res;
 }
 
 void QgsCameraController::moveCameraPositionBy( const QVector3D &posDiff )
@@ -385,9 +423,22 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     float yaw = mCameraPose.headingAngle();
     pitch += 0.2f * dy;
     yaw -= 0.2f * dx;
+
+    QVector3D lookAtPos = Qgs3DUtils::mouseToWorldLookAtPoint( mMousePos.x(), mMousePos.y(), mCameraPose.distanceFromCenterPoint(), mViewport, mCamera );
+    mCameraPose.setCenterPoint( lookAtPos );
+
     mCameraPose.setPitchAngle( pitch );
     mCameraPose.setHeadingAngle( yaw );
-    updateCameraFromPose();
+
+    updateCameraFromPose( true );
+
+    lookAtPos = Qgs3DUtils::mouseToWorldLookAtPoint(
+                  ( -double( mMousePos.x() ) / mViewport.width() + 1.0 ) * mViewport.width(),
+                  ( -double( mMousePos.y() ) / mViewport.height() + 1.0 ) * mViewport.height(),
+                  mCameraPose.distanceFromCenterPoint(), mViewport, mCamera );
+    mCameraPose.setCenterPoint( lookAtPos );
+
+    updateCameraFromPose( true );
   }
   else if ( hasLeftButton && hasCtrl && !hasShift )
   {
@@ -451,7 +502,7 @@ void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
       QVector3D lookAtPos = Qgs3DUtils::mouseToWorldLookAtPoint( mMousePos.x(), mMousePos.y(), mCameraPose.distanceFromCenterPoint(), mViewport, mCamera );
       mCameraPose.setCenterPoint( lookAtPos );
       mCameraPose.setDistanceFromCenterPoint( dist );
-      mCameraPose.updateCamera( mCamera );
+      updateCameraFromPose( true );
 
       lookAtPos = Qgs3DUtils::mouseToWorldLookAtPoint(
                     ( -double( mMousePos.x() ) / mViewport.width() + 1.0 ) * mViewport.width(),
