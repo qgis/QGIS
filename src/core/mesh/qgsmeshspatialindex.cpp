@@ -27,11 +27,15 @@ using namespace SpatialIndex;
 
 ///@cond PRIVATE
 
-static Region faceToRegion( const QgsMesh &mesh, int id )
+static Region faceToRegion( const QgsMesh &mesh, int id, bool &ok )
 {
   const QgsMeshFace face = mesh.face( id );
 
-  Q_ASSERT( !face.isEmpty() );
+  if ( face.isEmpty() )
+  {
+    ok = false;
+    return Region();
+  }
 
   const QVector<QgsMeshVertex> &vertices = mesh.vertices;
 
@@ -50,10 +54,12 @@ static Region faceToRegion( const QgsMesh &mesh, int id )
 
   double pt1[2] = { xMinimum, yMinimum };
   double pt2[2] = { xMaximum, yMaximum };
+
+  ok = true;
   return SpatialIndex::Region( pt1, pt2, 2 );
 }
 
-static Region edgeToRegion( const QgsMesh &mesh, int id )
+static Region edgeToRegion( const QgsMesh &mesh, int id, bool &ok )
 {
   const QgsMeshEdge edge = mesh.edge( id );
   const QgsMeshVertex firstVertex = mesh.vertices[edge.first];
@@ -64,6 +70,7 @@ static Region edgeToRegion( const QgsMesh &mesh, int id )
   const double yMaximum = std::max( firstVertex.y(), secondVertex.y() );
   double pt1[2] = { xMinimum, yMinimum };
   double pt2[2] = { xMaximum, yMaximum };
+  ok = true;
   return SpatialIndex::Region( pt1, pt2, 2 );
 }
 
@@ -144,7 +151,7 @@ class QgsMeshIteratorDataStream : public IDataStream
     //! constructor - needs to load all data to a vector for later access when bulk loading
     explicit QgsMeshIteratorDataStream( const QgsMesh &mesh,
                                         int featuresCount,
-                                        std::function<Region( const QgsMesh &mesh, int id )> featureToRegionFunction,
+                                        std::function<Region( const QgsMesh &mesh, int id, bool &ok )> featureToRegionFunction,
                                         QgsFeedback *feedback = nullptr )
       : mMesh( mesh )
       , mFeaturesCount( featuresCount )
@@ -195,18 +202,19 @@ class QgsMeshIteratorDataStream : public IDataStream
       SpatialIndex::Region r;
       while ( mIterator < mFeaturesCount )
       {
-        if ( !mMesh.faces.at( mIterator ).isEmpty() )
+        bool ok = false;
+        r = mFeatureToRegionFunction( mMesh, mIterator, ok );
+        if ( ok )
         {
-          r = mFeatureToRegionFunction( mMesh, mIterator );
-          mNextData = new RTree::Data(
-            0,
-            nullptr,
-            r,
-            mIterator );
+          mNextData = new RTree::Data( 0, nullptr, r, mIterator );
           ++mIterator;
           return;
         }
-        ++mIterator;
+        else
+        {
+          ++mIterator;
+          continue;
+        }
       }
     }
 
@@ -214,7 +222,7 @@ class QgsMeshIteratorDataStream : public IDataStream
     int mIterator = 0;
     const QgsMesh &mMesh;
     int mFeaturesCount = 0;
-    std::function<Region( const QgsMesh &mesh, int id )> mFeatureToRegionFunction;
+    std::function<Region( const QgsMesh &mesh, int id, bool &ok )> mFeatureToRegionFunction;
     RTree::Data *mNextData = nullptr;
     QgsFeedback *mFeedback = nullptr;
 };
@@ -395,7 +403,11 @@ void QgsMeshSpatialIndex::addFace( int faceIndex, const QgsMesh &mesh )
 {
   if ( mesh.face( faceIndex ).isEmpty() )
     return;
-  const SpatialIndex::Region r( faceToRegion( mesh, faceIndex ) );
+
+  bool ok = false;
+  const SpatialIndex::Region r( faceToRegion( mesh, faceIndex, ok ) );
+  if ( !ok )
+    return;
 
   const QMutexLocker locker( &d->mMutex );
 
@@ -424,6 +436,6 @@ void QgsMeshSpatialIndex::removeFace( int faceIndex, const QgsMesh &mesh )
   if ( mesh.face( faceIndex ).isEmpty() )
     return;
   const QMutexLocker locker( &d->mMutex );
-
-  d->mRTree->deleteData( faceToRegion( mesh, faceIndex ), faceIndex );
+  bool ok = false;
+  d->mRTree->deleteData( faceToRegion( mesh, faceIndex, ok ), faceIndex );
 }
