@@ -321,6 +321,11 @@ class CORE_EXPORT QgsExpressionContextUtils
      */
     static void registerContextFunctions();
 
+    /**
+     * Creates a new scope which contains functions relating to mesh layer elements (face, vertex, ...)
+     */
+    static QgsExpressionContextScope *meshExpressionScope(); SIP_FACTORY;
+
   private:
 
     class GetLayerVisibility : public QgsScopedExpressionFunction

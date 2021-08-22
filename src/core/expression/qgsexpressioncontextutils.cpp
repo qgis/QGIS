@@ -975,3 +975,97 @@ QgsScopedExpressionFunction *QgsExpressionContextUtils::GetLayerVisibility::clon
   func->mScaleBasedVisibilityDetails = mScaleBasedVisibilityDetails;
   return func;
 }
+
+//
+// mesh expression context
+//
+
+class CurrentVertexZValueExpressionFunction: public QgsScopedExpressionFunction
+{
+  public:
+    CurrentVertexZValueExpressionFunction():
+      QgsScopedExpressionFunction( "$vertex_Z_value",
+                                   0,
+                                   QObject::tr( "Mesh" ),
+                                   QObject::tr( "return the z value of the current vertex" ), false )
+    {}
+
+    QgsScopedExpressionFunction *clone() const override {return new CurrentVertexZValueExpressionFunction();}
+
+    QVariant func( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * ) override
+    {
+      if ( !context )
+        return QVariant();
+
+      if ( !context->hasVariable( QStringLiteral( "_vertex_index" ) ) || !context->hasVariable( QStringLiteral( "_mesh_layer" ) ) )
+        return QVariant();
+
+      int vertexIndex = context->variable( QStringLiteral( "_vertex_index" ) ).toInt();
+
+      QgsMeshLayer *layer = qobject_cast<QgsMeshLayer *>( qvariant_cast<QgsMapLayer *>( context->variable( QStringLiteral( "_mesh_layer" ) ) ) );
+      if ( !layer || !layer->nativeMesh() || layer->nativeMesh()->vertexCount() <= vertexIndex )
+        return QVariant();
+
+      const QgsMeshVertex &vertex = layer->nativeMesh()->vertex( vertexIndex );
+      if ( !vertex.isEmpty() )
+        return vertex.z();
+      else
+        return QVariant();
+    }
+
+    bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override
+    {
+      return false;
+    }
+};
+
+class CurrentVertexExpressionFunction: public QgsScopedExpressionFunction
+{
+  public:
+    CurrentVertexExpressionFunction():
+      QgsScopedExpressionFunction( "$vertex_as_point",
+                                   0,
+                                   QObject::tr( "Mesh" ),
+                                   QObject::tr( "return the vertex as a point geometry" ), false )
+    {}
+
+    QgsScopedExpressionFunction *clone() const override {return new CurrentVertexExpressionFunction();}
+
+    QVariant func( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * ) override
+    {
+      if ( !context )
+        return QVariant();
+
+      if ( !context->hasVariable( QStringLiteral( "_vertex_index" ) ) || !context->hasVariable( QStringLiteral( "_mesh_layer" ) ) )
+        return QVariant();
+
+      int vertexIndex = context->variable( QStringLiteral( "_vertex_index" ) ).toInt();
+
+      QgsMeshLayer *layer = qobject_cast<QgsMeshLayer *>( qvariant_cast<QgsMapLayer *>( context->variable( QStringLiteral( "_mesh_layer" ) ) ) );
+      if ( !layer || !layer->nativeMesh() || layer->nativeMesh()->vertexCount() <= vertexIndex )
+        return QVariant();
+
+      const QgsMeshVertex &vertex = layer->nativeMesh()->vertex( vertexIndex );
+      if ( !vertex.isEmpty() )
+        return QVariant::fromValue( QgsGeometry( new QgsPoint( vertex ) ) );
+      else
+        return QVariant();
+    }
+
+    bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override
+    {
+      return false;
+    }
+};
+
+QgsExpressionContextScope *QgsExpressionContextUtils::meshExpressionScope()
+{
+  QgsExpression::registerFunction( new CurrentVertexExpressionFunction, true );
+  QgsExpression::registerFunction( new CurrentVertexZValueExpressionFunction, true );
+
+  std::unique_ptr<QgsExpressionContextScope> scope = std::make_unique<QgsExpressionContextScope>();
+  scope->addFunction( "$vertex_as_point", new CurrentVertexExpressionFunction );
+  scope->addFunction( "$vertex_Z_value", new CurrentVertexZValueExpressionFunction );
+
+  return scope.release();
+}

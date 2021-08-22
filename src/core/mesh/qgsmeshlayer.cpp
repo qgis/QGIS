@@ -42,6 +42,7 @@
 #include "qgslayermetadataformatter.h"
 #include "qgsmesheditor.h"
 #include "qgsmessagelog.h"
+#include "qgsexpressioncontextutils.h"
 
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
@@ -1136,6 +1137,41 @@ QgsPointXY QgsMeshLayer::snapOnElement( QgsMesh::ElementType elementType, const 
       return snapOnFace( point, searchRadius );
   }
   return QgsPointXY(); // avoid warnings
+}
+
+QList<int> QgsMeshLayer::selectVerticesByExpression( const QString &expressionString, const QgsExpressionContext &expressionContext )
+{
+  if ( !mNativeMesh )
+  {
+    // lazy loading of mesh data
+    fillNativeMesh();
+  }
+
+  QList<int> ret;
+
+  if ( !mNativeMesh )
+    return ret;
+
+  QgsExpression expression( expressionString );
+  QgsExpressionContext context = expressionContext;
+
+  std::unique_ptr<QgsExpressionContextScope> expScope( QgsExpressionContextUtils::meshExpressionScope() );
+
+
+  context.appendScope( expScope.release() );
+  context.lastScope()->setVariable( QStringLiteral( "_mesh_layer" ), QVariant::fromValue( this ) );
+
+  expression.prepare( &context );
+
+  for ( int i = 0; i < mNativeMesh->vertexCount(); ++i )
+  {
+    context.lastScope()->setVariable( QStringLiteral( "_vertex_index" ), i, false );
+
+    if ( expression.evaluate( &context ).toBool() )
+      ret.append( i );
+  }
+
+  return ret;
 }
 
 QgsMeshDatasetIndex QgsMeshLayer::staticScalarDatasetIndex() const
