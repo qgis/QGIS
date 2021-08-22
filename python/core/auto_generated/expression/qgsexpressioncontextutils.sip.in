@@ -367,7 +367,7 @@ Creates a new scope which contains variables and functions relating to provider 
 Registers all known core functions provided by :py:class:`QgsExpressionContextScope` objects.
 %End
 
-    static QgsExpressionContextScope *meshExpressionScope(); /Factory/;
+    static QgsExpressionContextScope *meshExpressionScope() /Factory/;
 %Docstring
 Creates a new scope which contains functions relating to mesh layer elements (face, vertex, ...)
 %End
