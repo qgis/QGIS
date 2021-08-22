@@ -127,9 +127,9 @@ void QgsFileDownloaderAlgorithm::sendProgressFeedback()
   {
     mLastReport = mReceived;
     if ( mTotal.isEmpty() )
-      mFeedback->pushInfo( tr( "%1 downloaded." ).arg( mReceived ) );
+      mFeedback->pushInfo( tr( "%1 downloaded" ).arg( mReceived ) );
     else
-      mFeedback->pushInfo( tr( "%1 of %2 downloaded." ).arg( mReceived, mTotal ) );
+      mFeedback->pushInfo( tr( "%1 of %2 downloaded" ).arg( mReceived, mTotal ) );
   }
 }
 
