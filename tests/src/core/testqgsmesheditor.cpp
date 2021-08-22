@@ -22,6 +22,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsmesheditor.h"
 #include "qgsmeshadvancedediting.h"
+#include "qgstransformeffect.h"
 
 
 class TestQgsMeshEditor : public QObject
@@ -984,7 +985,7 @@ void TestQgsMeshEditor::particularCases()
         }
       }
 
-    const QgsCoordinateTransform transform;
+    QgsCoordinateTransform transform;
     triangularMesh.update( &mesh, transform );
     QVERIFY( meshEditor.initialize() == QgsMeshEditingError() );
 
@@ -1009,8 +1010,15 @@ void TestQgsMeshEditor::particularCases()
 
     QVERIFY( meshEditor.removeVertices( verticesToRemove, false ) == QgsMeshEditingError() );
     QVERIFY( meshEditor.checkConsistency() );
+
+    // just create a valid different transform to update the vertices of the triangular mesh
+    transform = QgsCoordinateTransform( QgsCoordinateReferenceSystem( "EPSG:32620" ),
+                                        QgsCoordinateReferenceSystem( "EPSG:32620" ),
+                                        QgsCoordinateTransformContext() );
+    triangularMesh.update( &mesh, transform );
     meshEditor.mUndoStack->undo();
     QVERIFY( meshEditor.checkConsistency() );
+    meshEditor.mUndoStack->redo();
   }
 }
 
