@@ -38,14 +38,15 @@ QString QgsFileUtils::representFileSize( qint64 bytes )
   list << QObject::tr( "KB" ) << QObject::tr( "MB" ) << QObject::tr( "GB" ) << QObject::tr( "TB" );
 
   QStringListIterator i( list );
-  QString unit = QObject::tr( "bytes" );
+  QString unit = QObject::tr( "B" );
 
-  while ( bytes >= 1024.0 && i.hasNext() )
+  double fileSize = bytes;
+  while ( fileSize >= 1024.0 && i.hasNext() )
   {
+    fileSize /= 1024.0;
     unit = i.next();
-    bytes /= 1024.0;
   }
-  return QStringLiteral( "%1 %2" ).arg( QString::number( bytes ), unit );
+  return QStringLiteral( "%1 %2" ).arg( QString::number( fileSize, 'f', bytes >= 1048576 ? 2 : 0 ), unit );
 }
 
 QStringList QgsFileUtils::extensionsFromFilter( const QString &filter )
