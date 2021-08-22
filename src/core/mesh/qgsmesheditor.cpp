@@ -184,7 +184,7 @@ void QgsMeshEditor::applyEdit( QgsMeshEditor::Edit &edit )
 void QgsMeshEditor::reverseEdit( QgsMeshEditor::Edit &edit )
 {
   mTopologicalMesh.reverseChanges( edit.topologicalChanges );
-  mTriangularMesh->reverseChanges( edit.triangularMeshChanges );
+  mTriangularMesh->reverseChanges( edit.triangularMeshChanges, *mMesh );
 }
 
 void QgsMeshEditor::applyAddVertex( QgsMeshEditor::Edit &edit, const QgsMeshVertex &vertex )

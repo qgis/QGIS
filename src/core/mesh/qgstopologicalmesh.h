@@ -100,6 +100,9 @@ class CORE_EXPORT QgsTopologicalMesh
         //! Returns the added vertices with this changes
         QVector<QgsMeshVertex> addedVertices() const;
 
+        //! Returns the indexes of vertices to remove
+        QList<int> verticesToRemoveIndexes() const;
+
         //! Returns the indexes of vertices that have changed coordinates
         QList<int> changedCoordinatesVerticesIndexes() const;
 

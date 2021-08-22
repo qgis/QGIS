@@ -739,6 +739,11 @@ QList<int> QgsTopologicalMesh::Changes::nativeFacesIndexesGeometryChanged() cons
   return mNativeFacesIndexesGeometryChanged;
 }
 
+QList<int> QgsTopologicalMesh::Changes::verticesToRemoveIndexes() const
+{
+  return mVerticesToRemoveIndexes;
+}
+
 int QgsTopologicalMesh::Changes::addedFaceIndexInMesh( int internalIndex ) const
 {
   if ( internalIndex == -1 )
