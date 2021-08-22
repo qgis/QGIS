@@ -2,6 +2,11 @@
 
 set -e
 
+# Debug env
+echo "::group::Print env"
+env
+echo "::endgroup::"
+
 # Temporarily uncomment to debug ccache issues
 # cat /tmp/cache.debug
 

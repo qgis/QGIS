@@ -151,7 +151,6 @@ class TestQgsNetworkAccessManager : public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void testRequestPreprocessor();
-    void testProxyExcludeList();
     void fetchEmptyUrl(); //test fetching blank url
     void fetchBadUrl(); //test fetching bad url
     void fetchEncodedContent(); //test fetching url content encoded as utf-8
@@ -161,6 +160,7 @@ class TestQgsNetworkAccessManager : public QObject
     void testAuthRequestHandler();
     void fetchTimeout();
     void testCookieManagement();
+    void testProxyExcludeList();
 
   private:
 
@@ -493,8 +493,6 @@ void TestQgsNetworkAccessManager::fetchPost()
     loaded = true;
   } );
 
-  // TODO: something is borked with NAM.finished() signal, see #42554
-  /*
   QNetworkReply *reply = QgsNetworkAccessManager::instance()->post( req, QByteArray( "a=b&c=d" ) );
 
   while ( !loaded )
@@ -506,7 +504,6 @@ void TestQgsNetworkAccessManager::fetchPost()
   replyContent = reply->readAll();
   QVERIFY( replyContent.contains( QStringLiteral( "\"a\": \"b\"" ) ) );
   QVERIFY( replyContent.contains( QStringLiteral( "\"c\": \"d\"" ) ) );
-  */
   gotRequestAboutToBeCreatedSignal = false;
   loaded = false;
 
@@ -596,8 +593,6 @@ void TestQgsNetworkAccessManager::fetchBadSsl()
     gotRequestEncounteredSslError = true;
   } );
 
-  // TODO: something is borked with NAM.finished() signal, see #42554
-  /*
   QgsNetworkAccessManager::instance()->get( QNetworkRequest( u ) );
 
   while ( !loaded || !gotSslError || !gotRequestAboutToBeCreatedSignal || !gotRequestEncounteredSslError )
@@ -606,7 +601,6 @@ void TestQgsNetworkAccessManager::fetchBadSsl()
   }
 
   QVERIFY( gotRequestAboutToBeCreatedSignal );
-  */
 
   // blocking request
   gotRequestAboutToBeCreatedSignal = false;
@@ -698,8 +692,6 @@ void TestQgsNetworkAccessManager::testSslErrorHandler()
     gotRequestEncounteredSslError = true;
   } );
 
-  // TODO: something is borked with NAM.finished() signal, see #42554
-  /*
   QgsNetworkAccessManager::instance()->get( QNetworkRequest( u ) );
 
   while ( !loaded || !gotSslError || !gotRequestAboutToBeCreatedSignal || !gotRequestEncounteredSslError )
@@ -708,7 +700,6 @@ void TestQgsNetworkAccessManager::testSslErrorHandler()
   }
 
   QVERIFY( gotRequestAboutToBeCreatedSignal );
-  */
 
   // blocking request
   gotRequestAboutToBeCreatedSignal = false;
@@ -778,7 +769,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   QString expectedPassword;
   int requestId = -1;
   QUrl u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
-  QNetworkReply::NetworkError expectedError = QNetworkReply::AuthenticationRequiredError;
+  QNetworkReply::NetworkError expectedError = QNetworkReply::NoError;
 
   connect( QgsNetworkAccessManager::instance(), qOverload< QgsNetworkRequestParameters >( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( const QgsNetworkRequestParameters & params )
   {
@@ -812,8 +803,6 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
     gotAuthDetailsAdded = true;
   } );
 
-  // TODO: something is borked with NAM.finished() signal, see #42554
-  /*
   expectedError = QNetworkReply::AuthenticationRequiredError;
   QgsNetworkAccessManager::instance()->get( QNetworkRequest( u ) );
 
@@ -823,7 +812,6 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   }
 
   QVERIFY( gotRequestAboutToBeCreatedSignal );
-  */
 
   // blocking request
   hash = QUuid::createUuid().toString().mid( 1, 10 );
@@ -896,15 +884,12 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   expectedUser = QStringLiteral( "me" );
   expectedPassword = hash;
 
-  // TODO: something is borked with NAM.finished() signal, see #42554
-  /*
   QgsNetworkAccessManager::instance()->get( QNetworkRequest( u ) );
 
   while ( !loaded || !gotAuthRequest || !gotRequestAboutToBeCreatedSignal  || !gotAuthDetailsAdded )
   {
     qApp->processEvents();
   }
-  */
 
   // blocking request
   loaded = false;
@@ -1006,8 +991,6 @@ void TestQgsNetworkAccessManager::fetchTimeout()
     finished = reply.error() != QNetworkReply::OperationCanceledError; // should not happen!
   } );
 
-  // TODO: something is borked with NAM.finished() signal, see #42554
-  /*
   QgsNetworkAccessManager::instance()->get( QNetworkRequest( u ) );
 
   while ( !gotTimeoutError )
@@ -1018,7 +1001,6 @@ void TestQgsNetworkAccessManager::fetchTimeout()
   QVERIFY( !finished );
 
   QVERIFY( gotRequestAboutToBeCreatedSignal );
-  */
 
   // blocking request
   gotRequestAboutToBeCreatedSignal = false;
