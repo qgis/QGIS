@@ -980,6 +980,7 @@ QgsScopedExpressionFunction *QgsExpressionContextUtils::GetLayerVisibility::clon
 // mesh expression context
 //
 
+/// @cond PRIVATE
 class CurrentVertexZValueExpressionFunction: public QgsScopedExpressionFunction
 {
   public:
@@ -1069,3 +1070,4 @@ QgsExpressionContextScope *QgsExpressionContextUtils::meshExpressionScope()
 
   return scope.release();
 }
+///@endcond
