@@ -30,6 +30,9 @@ using namespace SpatialIndex;
 static Region faceToRegion( const QgsMesh &mesh, int id )
 {
   const QgsMeshFace face = mesh.face( id );
+
+  Q_ASSERT( !face.isEmpty() );
+
   const QVector<QgsMeshVertex> &vertices = mesh.vertices;
 
   double xMinimum = vertices[face[0]].x();
@@ -190,14 +193,19 @@ class QgsMeshIteratorDataStream : public IDataStream
     void readNextEntry()
     {
       SpatialIndex::Region r;
-      if ( mIterator < mFeaturesCount )
+      while ( mIterator < mFeaturesCount )
       {
-        r = mFeatureToRegionFunction( mMesh, mIterator );
-        mNextData = new RTree::Data(
-          0,
-          nullptr,
-          r,
-          mIterator );
+        if ( !mMesh.faces.at( mIterator ).isEmpty() )
+        {
+          r = mFeatureToRegionFunction( mMesh, mIterator );
+          mNextData = new RTree::Data(
+            0,
+            nullptr,
+            r,
+            mIterator );
+          ++mIterator;
+          return;
+        }
         ++mIterator;
       }
     }
