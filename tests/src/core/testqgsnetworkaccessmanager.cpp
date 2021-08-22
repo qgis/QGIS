@@ -151,7 +151,6 @@ class TestQgsNetworkAccessManager : public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void testRequestPreprocessor();
-    void testProxyExcludeList();
     void fetchEmptyUrl(); //test fetching blank url
     void fetchBadUrl(); //test fetching bad url
     void fetchEncodedContent(); //test fetching url content encoded as utf-8
@@ -161,6 +160,7 @@ class TestQgsNetworkAccessManager : public QObject
     void testAuthRequestHandler();
     void fetchTimeout();
     void testCookieManagement();
+    void testProxyExcludeList();
 
   private:
 
