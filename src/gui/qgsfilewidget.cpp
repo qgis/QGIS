@@ -59,6 +59,7 @@ QgsFileWidget::QgsFileWidget( QWidget *parent )
   mLineEdit->setDragEnabled( true );
   mLineEdit->setToolTip( tr( "Full path to the file(s), including name and extension" ) );
   connect( mLineEdit, &QLineEdit::textChanged, this, &QgsFileWidget::textEdited );
+  connect( mLineEdit, &QgsFileDropEdit::fileDropped, this, &QgsFileWidget::fileDropped );
   mLayout->addWidget( mLineEdit );
 
   mLinkEditButton = new QToolButton( this );
@@ -188,6 +189,13 @@ void QgsFileWidget::editLink()
 
   mIsLinkEdited = !mIsLinkEdited;
   updateLayout();
+}
+
+void QgsFileWidget::fileDropped( const QString &filePath )
+{
+  setSelectedFileNames( QStringList() << filePath );
+  mLineEdit->selectAll();
+  mLineEdit->setFocus( Qt::MouseFocusReason );
 }
 
 bool QgsFileWidget::useLink() const
@@ -585,12 +593,11 @@ void QgsFileDropEdit::dropEvent( QDropEvent *event )
   QString filePath = acceptableFilePath( event );
   if ( !filePath.isEmpty() )
   {
-    setText( filePath );
-    selectAll();
-    setFocus( Qt::MouseFocusReason );
     event->acceptProposedAction();
-    setHighlighted( false );
+    emit fileDropped( filePath );
   }
+
+  setHighlighted( false );
 }
 
 ///@endcond

@@ -298,6 +298,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     void openFileDialog();
     void textEdited( const QString &path );
     void editLink();
+    void fileDropped( const QString &filePath );
 
   protected:
 
@@ -378,6 +379,13 @@ class GUI_EXPORT QgsFileDropEdit: public QgsHighlightableLineEdit
     void setStorageMode( QgsFileWidget::StorageMode storageMode ) { mStorageMode = storageMode; }
 
     void setFilters( const QString &filters );
+
+  signals:
+
+    /**
+     * Emitted when the file \a filePath is droppen onto the line edit.
+     */
+    void fileDropped( const QString &filePath );
 
   protected:
 
