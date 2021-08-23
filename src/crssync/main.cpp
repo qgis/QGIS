@@ -51,6 +51,10 @@ int main( int argc, char **argv )
       verbose = true;
   }
 
+  const QTemporaryDir stemp;
+  QSettings::setDefaultFormat( QSettings::IniFormat );
+  QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, stemp.path() );
+
   const QTemporaryDir temp;
   QgsApplication::init( temp.path() );
 
