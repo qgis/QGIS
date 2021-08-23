@@ -200,7 +200,7 @@ bool QgsAbstractMetadataBase::readMetadataXml( const QDomElement &metadataElemen
   mAbstract = mnl.toElement().text();
 
   // set keywords
-  QDomNodeList keywords = metadataElement.elementsByTagName( QStringLiteral( "keywords" ) );
+  const QDomNodeList keywords = metadataElement.elementsByTagName( QStringLiteral( "keywords" ) );
   mKeywords.clear();
   for ( int i = 0; i < keywords.size(); i++ )
   {
@@ -208,7 +208,7 @@ bool QgsAbstractMetadataBase::readMetadataXml( const QDomElement &metadataElemen
     mnl = keywords.at( i );
     mne = mnl.toElement();
 
-    QDomNodeList el = mne.elementsByTagName( QStringLiteral( "keyword" ) );
+    const QDomNodeList el = mne.elementsByTagName( QStringLiteral( "keyword" ) );
     for ( int j = 0; j < el.size(); j++ )
     {
       keywordsList.append( el.at( j ).toElement().text() );
@@ -217,7 +217,7 @@ bool QgsAbstractMetadataBase::readMetadataXml( const QDomElement &metadataElemen
   }
 
   // contact
-  QDomNodeList contactsList = metadataElement.elementsByTagName( QStringLiteral( "contact" ) );
+  const QDomNodeList contactsList = metadataElement.elementsByTagName( QStringLiteral( "contact" ) );
   mContacts.clear();
   for ( int i = 0; i < contactsList.size(); i++ )
   {
@@ -234,10 +234,10 @@ bool QgsAbstractMetadataBase::readMetadataXml( const QDomElement &metadataElemen
     oneContact.role = mne.namedItem( QStringLiteral( "role" ) ).toElement().text();
 
     QList< QgsAbstractMetadataBase::Address > addresses;
-    QDomNodeList addressList = mne.elementsByTagName( QStringLiteral( "contactAddress" ) );
+    const QDomNodeList addressList = mne.elementsByTagName( QStringLiteral( "contactAddress" ) );
     for ( int j = 0; j < addressList.size(); j++ )
     {
-      QDomElement addressElement = addressList.at( j ).toElement();
+      const QDomElement addressElement = addressList.at( j ).toElement();
       QgsAbstractMetadataBase::Address oneAddress;
       oneAddress.address = addressElement.namedItem( QStringLiteral( "address" ) ).toElement().text();
       oneAddress.administrativeArea = addressElement.namedItem( QStringLiteral( "administrativearea" ) ).toElement().text();
@@ -255,7 +255,7 @@ bool QgsAbstractMetadataBase::readMetadataXml( const QDomElement &metadataElemen
   mnl = metadataElement.namedItem( QStringLiteral( "links" ) );
   mne = mnl.toElement();
   mLinks.clear();
-  QDomNodeList el = mne.elementsByTagName( QStringLiteral( "link" ) );
+  const QDomNodeList el = mne.elementsByTagName( QStringLiteral( "link" ) );
   for ( int i = 0; i < el.size(); i++ )
   {
     mne = el.at( i ).toElement();
@@ -271,7 +271,7 @@ bool QgsAbstractMetadataBase::readMetadataXml( const QDomElement &metadataElemen
   }
 
   // history
-  QDomNodeList historyNodeList = metadataElement.elementsByTagName( QStringLiteral( "history" ) );
+  const QDomNodeList historyNodeList = metadataElement.elementsByTagName( QStringLiteral( "history" ) );
   QStringList historyList;
   for ( int i = 0; i < historyNodeList.size(); i++ )
   {
@@ -288,37 +288,37 @@ bool QgsAbstractMetadataBase::writeMetadataXml( QDomElement &metadataElement, QD
 {
   // identifier
   QDomElement identifier = document.createElement( QStringLiteral( "identifier" ) );
-  QDomText identifierText = document.createTextNode( mIdentifier );
+  const QDomText identifierText = document.createTextNode( mIdentifier );
   identifier.appendChild( identifierText );
   metadataElement.appendChild( identifier );
 
   // parent identifier
   QDomElement parentIdentifier = document.createElement( QStringLiteral( "parentidentifier" ) );
-  QDomText parentIdentifierText = document.createTextNode( mParentIdentifier );
+  const QDomText parentIdentifierText = document.createTextNode( mParentIdentifier );
   parentIdentifier.appendChild( parentIdentifierText );
   metadataElement.appendChild( parentIdentifier );
 
   // language
   QDomElement language = document.createElement( QStringLiteral( "language" ) );
-  QDomText languageText = document.createTextNode( mLanguage );
+  const QDomText languageText = document.createTextNode( mLanguage );
   language.appendChild( languageText );
   metadataElement.appendChild( language );
 
   // type
   QDomElement type = document.createElement( QStringLiteral( "type" ) );
-  QDomText typeText = document.createTextNode( mType );
+  const QDomText typeText = document.createTextNode( mType );
   type.appendChild( typeText );
   metadataElement.appendChild( type );
 
   // title
   QDomElement title = document.createElement( QStringLiteral( "title" ) );
-  QDomText titleText = document.createTextNode( mTitle );
+  const QDomText titleText = document.createTextNode( mTitle );
   title.appendChild( titleText );
   metadataElement.appendChild( title );
 
   // abstract
   QDomElement abstract = document.createElement( QStringLiteral( "abstract" ) );
-  QDomText abstractText = document.createTextNode( mAbstract );
+  const QDomText abstractText = document.createTextNode( mAbstract );
   abstract.appendChild( abstractText );
   metadataElement.appendChild( abstract );
 
@@ -333,7 +333,7 @@ bool QgsAbstractMetadataBase::writeMetadataXml( QDomElement &metadataElement, QD
     for ( const QString &kw : values )
     {
       QDomElement keyword = document.createElement( QStringLiteral( "keyword" ) );
-      QDomText keywordText = document.createTextNode( kw );
+      const QDomText keywordText = document.createTextNode( kw );
       keyword.appendChild( keywordText );
       keywordsElement.appendChild( keyword );
     }
@@ -352,13 +352,13 @@ bool QgsAbstractMetadataBase::writeMetadataXml( QDomElement &metadataElement, QD
     QDomElement emailElement = document.createElement( QStringLiteral( "email" ) );
     QDomElement roleElement = document.createElement( QStringLiteral( "role" ) );
 
-    QDomText nameText = document.createTextNode( contact.name );
-    QDomText orgaText = document.createTextNode( contact.organization );
-    QDomText positionText = document.createTextNode( contact.position );
-    QDomText voiceText = document.createTextNode( contact.voice );
-    QDomText faxText = document.createTextNode( contact.fax );
-    QDomText emailText = document.createTextNode( contact.email );
-    QDomText roleText = document.createTextNode( contact.role );
+    const QDomText nameText = document.createTextNode( contact.name );
+    const QDomText orgaText = document.createTextNode( contact.organization );
+    const QDomText positionText = document.createTextNode( contact.position );
+    const QDomText voiceText = document.createTextNode( contact.voice );
+    const QDomText faxText = document.createTextNode( contact.fax );
+    const QDomText emailText = document.createTextNode( contact.email );
+    const QDomText roleText = document.createTextNode( contact.role );
 
     for ( const QgsAbstractMetadataBase::Address &oneAddress : contact.addresses )
     {
@@ -424,7 +424,7 @@ bool QgsAbstractMetadataBase::writeMetadataXml( QDomElement &metadataElement, QD
   for ( const QString &history : mHistory )
   {
     QDomElement historyElement = document.createElement( QStringLiteral( "history" ) );
-    QDomText historyText = document.createTextNode( history );
+    const QDomText historyText = document.createTextNode( history );
     historyElement.appendChild( historyText );
     metadataElement.appendChild( historyElement );
   }

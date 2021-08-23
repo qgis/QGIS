@@ -80,6 +80,10 @@ class QgsOracleProviderConnection : public QgsAbstractDatabaseProviderConnection
     QgsAbstractDatabaseProviderConnection::QueryResult executeSqlPrivate( const QString &sql, QgsFeedback *feedback = nullptr ) const;
     void setDefaultCapabilities();
 
+
+    // QgsAbstractDatabaseProviderConnection interface
+  public:
+    SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
 };
 
 

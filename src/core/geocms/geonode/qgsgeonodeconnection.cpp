@@ -25,24 +25,24 @@ const QString QgsGeoNodeConnectionUtils::sPathGeoNodeConnectionDetails = QString
 QgsGeoNodeConnection::QgsGeoNodeConnection( const QString &name )
   : mConnName( name )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
 
 //  settings.Section
-  QString key = settingsKey();
-  QString credentialsKey = QgsGeoNodeConnectionUtils::pathGeoNodeConnectionDetails() + QStringLiteral( "/" ) + mConnName;
+  const QString key = settingsKey();
+  const QString credentialsKey = QgsGeoNodeConnectionUtils::pathGeoNodeConnectionDetails() + QStringLiteral( "/" ) + mConnName;
 
   mUri.setParam( QStringLiteral( "url" ), settings.value( key + QStringLiteral( "/url" ), QString() ).toString() );
 
   // Check for credentials and prepend to the connection info
-  QString username = settings.value( credentialsKey + QStringLiteral( "/username" ), QString() ).toString();
-  QString password = settings.value( credentialsKey + QStringLiteral( "/password" ), QString() ).toString();
+  const QString username = settings.value( credentialsKey + QStringLiteral( "/username" ), QString() ).toString();
+  const QString password = settings.value( credentialsKey + QStringLiteral( "/password" ), QString() ).toString();
   if ( !username.isEmpty() )
   {
     mUri.setUsername( username );
     mUri.setPassword( password );
   }
 
-  QString authcfg = settings.value( credentialsKey + QStringLiteral( "/authcfg" ), QString() ).toString();
+  const QString authcfg = settings.value( credentialsKey + QStringLiteral( "/authcfg" ), QString() ).toString();
   if ( !authcfg.isEmpty() )
   {
     mUri.setAuthConfigId( authcfg );

@@ -57,7 +57,7 @@ void QgsMapRendererParallelJob::startPrivate()
     mLabelingEngineV2->setMapSettings( mSettings );
   }
 
-  bool canUseLabelCache = prepareLabelCache();
+  const bool canUseLabelCache = prepareLabelCache();
   mLayerJobs = prepareJobs( nullptr, mLabelingEngineV2.get() );
   mLabelJob = prepareLabelingJob( nullptr, mLabelingEngineV2.get(), canUseLabelCache );
   mSecondPassLayerJobs = prepareSecondPassJobs( mLayerJobs, mLabelJob );
@@ -80,11 +80,11 @@ void QgsMapRendererParallelJob::cancel()
   QgsDebugMsgLevel( QStringLiteral( "PARALLEL cancel at status %1" ).arg( mStatus ), 2 );
 
   mLabelJob.context.setRenderingStopped( true );
-  for ( LayerRenderJobs::iterator it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
+  for ( LayerRenderJob &job : mLayerJobs )
   {
-    it->context.setRenderingStopped( true );
-    if ( it->renderer && it->renderer->feedback() )
-      it->renderer->feedback()->cancel();
+    job.context()->setRenderingStopped( true );
+    if ( job.renderer && job.renderer->feedback() )
+      job.renderer->feedback()->cancel();
   }
 
   if ( mStatus == RenderingLayers )
@@ -125,11 +125,11 @@ void QgsMapRendererParallelJob::cancelWithoutBlocking()
   QgsDebugMsgLevel( QStringLiteral( "PARALLEL cancel at status %1" ).arg( mStatus ), 2 );
 
   mLabelJob.context.setRenderingStopped( true );
-  for ( LayerRenderJobs::iterator it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
+  for ( LayerRenderJob &job : mLayerJobs )
   {
-    it->context.setRenderingStopped( true );
-    if ( it->renderer && it->renderer->feedback() )
-      it->renderer->feedback()->cancel();
+    job.context()->setRenderingStopped( true );
+    if ( job.renderer && job.renderer->feedback() )
+      job.renderer->feedback()->cancel();
   }
 
   if ( mStatus == RenderingLayers )
@@ -224,17 +224,16 @@ void QgsMapRendererParallelJob::renderLayersFinished()
 {
   Q_ASSERT( mStatus == RenderingLayers );
 
-  LayerRenderJobs::const_iterator it = mLayerJobs.constBegin();
-  for ( ; it != mLayerJobs.constEnd(); ++it )
+  for ( const LayerRenderJob &job : mLayerJobs )
   {
-    if ( !it->errors.isEmpty() )
+    if ( !job.errors.isEmpty() )
     {
-      mErrors.append( Error( it->layer->id(), it->errors.join( ',' ) ) );
+      mErrors.append( Error( job.layerId, job.errors.join( ',' ) ) );
     }
   }
 
   // compose final image for labeling
-  if ( mSecondPassLayerJobs.isEmpty() )
+  if ( mSecondPassLayerJobs.empty() )
   {
     mFinalImage = composeImage( mSettings, mLayerJobs, mLabelJob, mCache );
   }
@@ -285,7 +284,7 @@ void QgsMapRendererParallelJob::renderingFinished()
     mLabelJob.maskImage->save( QString( "/tmp/labels_mask.png" ) );
   }
 #endif
-  if ( ! mSecondPassLayerJobs.isEmpty() )
+  if ( ! mSecondPassLayerJobs.empty() )
   {
     mStatus = RenderingSecondPass;
     // We have a second pass to do.
@@ -344,7 +343,7 @@ void QgsMapRendererParallelJob::renderLayersSecondPassFinished()
 
 void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob &job )
 {
-  if ( job.context.renderingStopped() )
+  if ( job.context()->renderingStopped() )
     return;
 
   if ( job.cached )

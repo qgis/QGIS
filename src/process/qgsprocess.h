@@ -17,9 +17,12 @@
 #ifndef QGSPROCESS_H
 #define QGSPROCESS_H
 
-#include "qgsprocessingfeedback.h"
+#ifdef WITH_BINDINGS
 #include "qgspythonrunner.h"
 #include "qgspythonutils.h"
+#endif
+
+#include "qgsprocessingfeedback.h"
 #include "qgsunittypes.h"
 #include "qgsprocessingcontext.h"
 #include <QElapsedTimer>
@@ -90,8 +93,11 @@ class QgsProcessingExec
     void addAlgorithmInformation( QVariantMap &json, const QgsProcessingAlgorithm *algorithm );
     void addProviderInformation( QVariantMap &json, QgsProcessingProvider *provider );
 
+
+#ifdef WITH_BINDINGS
     std::unique_ptr< QgsPythonUtils > mPythonUtils;
     std::unique_ptr<QgsPythonUtils> loadPythonSupport();
+#endif
 };
 
 #endif // QGSPROCESS_H

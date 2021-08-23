@@ -189,11 +189,12 @@ class CORE_EXPORT QgsTextFormat
      * QgsTextRenderer::FONT_WORKAROUND_SCALE and then manually scale painter devices or calculations
      * based on the resultant font metrics. Failure to do so will result in poor quality text rendering
      * at small font sizes.
+     * \param isZeroSize will be set to true if the font is scaled down to a near 0 size, and nothing should be rendered. Not available in Python bindings.
      * \returns font with scaled size
      * \see font()
      * \see size()
      */
-    QFont scaledFont( const QgsRenderContext &context, double scaleFactor = 1.0 ) const;
+    QFont scaledFont( const QgsRenderContext &context, double scaleFactor = 1.0, bool *isZeroSize SIP_PYARGREMOVE = nullptr ) const;
 
     /**
      * Sets the font used for rendering text. Note that the size of the font

@@ -89,11 +89,11 @@ void QgsConstantRasterAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsConstantRasterAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, QStringLiteral( "TARGET_CRS" ), context );
-  QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, crs );
-  double pixelSize = parameterAsDouble( parameters, QStringLiteral( "PIXEL_SIZE" ), context );
-  double value = parameterAsDouble( parameters, QStringLiteral( "NUMBER" ), context );
-  int typeId = parameterAsInt( parameters, QStringLiteral( "OUTPUT_TYPE" ), context );
+  const QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, QStringLiteral( "TARGET_CRS" ), context );
+  const QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, crs );
+  const double pixelSize = parameterAsDouble( parameters, QStringLiteral( "PIXEL_SIZE" ), context );
+  const double value = parameterAsDouble( parameters, QStringLiteral( "NUMBER" ), context );
+  const int typeId = parameterAsInt( parameters, QStringLiteral( "OUTPUT_TYPE" ), context );
 
   //implement warning if input float has decimal places but is written to integer raster
   double fractpart;
@@ -148,15 +148,15 @@ QVariantMap QgsConstantRasterAlgorithm::processAlgorithm( const QVariantMap &par
       break;
   }
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  QFileInfo fi( outputFile );
+  const QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
 
-  int rows = std::max( std::ceil( extent.height() / pixelSize ), 1.0 );
-  int cols = std::max( std::ceil( extent.width() / pixelSize ), 1.0 );
+  const int rows = std::max( std::ceil( extent.height() / pixelSize ), 1.0 );
+  const int cols = std::max( std::ceil( extent.width() / pixelSize ), 1.0 );
 
   //build new raster extent based on number of columns and cellsize
   //this prevents output cellsize being calculated too small
-  QgsRectangle rasterExtent = QgsRectangle( extent.xMinimum(), extent.yMaximum() - ( rows * pixelSize ), extent.xMinimum() + ( cols * pixelSize ), extent.yMaximum() );
+  const QgsRectangle rasterExtent = QgsRectangle( extent.xMinimum(), extent.yMaximum() - ( rows * pixelSize ), extent.xMinimum() + ( cols * pixelSize ), extent.yMaximum() );
 
   std::unique_ptr< QgsRasterFileWriter > writer = std::make_unique< QgsRasterFileWriter >( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
@@ -233,7 +233,7 @@ QVariantMap QgsConstantRasterAlgorithm::processAlgorithm( const QVariantMap &par
     }
   }
 
-  double step = rows > 0 ? 100.0 / rows : 1;
+  const double step = rows > 0 ? 100.0 / rows : 1;
 
   for ( int i = 0; i < rows ; i++ )
   {

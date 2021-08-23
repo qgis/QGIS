@@ -197,7 +197,7 @@ QString QgsProcessingParameterMeshDatasetTime::valueAsPythonString( const QVaria
 {
   Q_UNUSED( context );
   QStringList parts;
-  QString type = QgsProcessingUtils::variantToPythonLiteral( valueAsTimeType( value ) );
+  const QString type = QgsProcessingUtils::variantToPythonLiteral( valueAsTimeType( value ) );
   parts << QStringLiteral( "'type': " ) +  type;
 
   if ( value.toDateTime().isValid() )
@@ -211,7 +211,7 @@ QString QgsProcessingParameterMeshDatasetTime::valueAsPythonString( const QVaria
     const QVariantMap variantTimeDataset = value.toMap();
     if ( variantTimeDataset.value( QStringLiteral( "type" ) ) == QLatin1String( "dataset-time-step" ) )
     {
-      QVariantList datasetIndex = variantTimeDataset.value( QStringLiteral( "value" ) ).toList();
+      const QVariantList datasetIndex = variantTimeDataset.value( QStringLiteral( "value" ) ).toList();
       parts << QStringLiteral( "'value': " ) + QString( "[%1,%2]" ).arg( datasetIndex.at( 0 ).toString(), datasetIndex.at( 1 ).toString() );
     }
     else if ( variantTimeDataset.value( QStringLiteral( "type" ) ) == QLatin1String( "defined-date-time" ) )
@@ -284,7 +284,7 @@ QgsMeshDatasetIndex QgsProcessingParameterMeshDatasetTime::timeValueAsDatasetInd
   if ( !valueIsAcceptable( value, false ) || valueAsTimeType( value ) != QLatin1String( "dataset-time-step" ) )
     return QgsMeshDatasetIndex( -1, -1 );
 
-  QVariantList list = value.toMap().value( QStringLiteral( "value" ) ).toList();
+  const QVariantList list = value.toMap().value( QStringLiteral( "value" ) ).toList();
   return QgsMeshDatasetIndex( list.at( 0 ).toInt(), list.at( 1 ).toInt() );
 }
 
@@ -308,7 +308,7 @@ bool QgsProcessingParameterMeshDatasetTime::valueIsAcceptable( const QVariant &i
   if ( !input.isValid() )
     return allowEmpty;
 
-  QDateTime timeDate = input.toDateTime();
+  const QDateTime timeDate = input.toDateTime();
 
   if ( input.toDateTime().isValid() )
     return true;
@@ -324,8 +324,8 @@ bool QgsProcessingParameterMeshDatasetTime::valueIsAcceptable( const QVariant &i
   if ( ! map.contains( QStringLiteral( "type" ) ) )
     return false;
 
-  QString type = map.value( QStringLiteral( "type" ) ).toString();
-  QVariant value = map.value( QStringLiteral( "value" ) );
+  const QString type = map.value( QStringLiteral( "type" ) ).toString();
+  const QVariant value = map.value( QStringLiteral( "value" ) );
 
   if ( type == QLatin1String( "static" ) || type == QLatin1String( "current-context-time" ) )
     return true;
@@ -334,7 +334,7 @@ bool QgsProcessingParameterMeshDatasetTime::valueIsAcceptable( const QVariant &i
   {
     if ( value.type() != QVariant::List )
       return false;
-    QVariantList list = value.toList();
+    const QVariantList list = value.toList();
     if ( value.toList().count() != 2 )
       return false;
     if ( list.at( 0 ).type() != QVariant::Int || list.at( 1 ).type() != QVariant::Int )

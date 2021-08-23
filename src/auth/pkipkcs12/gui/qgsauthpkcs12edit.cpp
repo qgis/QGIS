@@ -46,9 +46,9 @@ QgsAuthPkcs12Edit::QgsAuthPkcs12Edit( QWidget *parent )
 bool QgsAuthPkcs12Edit::validateConfig()
 {
   // required components
-  QString bundlepath( lePkcs12Bundle->text() );
+  const QString bundlepath( lePkcs12Bundle->text() );
 
-  bool bundlefound = QFile::exists( bundlepath );
+  const bool bundlefound = QFile::exists( bundlepath );
 
   QgsAuthGuiUtils::fileFound( bundlepath.isEmpty() || bundlefound, lePkcs12Bundle );
 
@@ -70,7 +70,7 @@ bool QgsAuthPkcs12Edit::validateConfig()
     passarray = QCA::SecureArray( lePkcs12KeyPass->text().toUtf8() );
 
   QCA::ConvertResult res;
-  QCA::KeyBundle bundle( QCA::KeyBundle::fromFile( bundlepath, passarray, &res, QStringLiteral( "qca-ossl" ) ) );
+  const QCA::KeyBundle bundle( QCA::KeyBundle::fromFile( bundlepath, passarray, &res, QStringLiteral( "qca-ossl" ) ) );
 
   if ( res == QCA::ErrorFile )
   {
@@ -96,7 +96,7 @@ bool QgsAuthPkcs12Edit::validateConfig()
   }
 
   // check for primary cert and that it is valid
-  QCA::Certificate cert( bundle.certificateChain().primary() );
+  const QCA::Certificate cert( bundle.certificateChain().primary() );
   if ( cert.isNull() )
   {
     writePkiMessage( lePkcs12Msg, tr( "Bundle client cert can not be loaded" ), Invalid );
@@ -104,16 +104,16 @@ bool QgsAuthPkcs12Edit::validateConfig()
   }
 
   // TODO: add more robust validation, including cert chain resolution
-  QDateTime startdate( cert.notValidBefore() );
-  QDateTime enddate( cert.notValidAfter() );
-  QDateTime now( QDateTime::currentDateTime() );
-  bool bundlevalid = ( now >= startdate && now <= enddate );
+  const QDateTime startdate( cert.notValidBefore() );
+  const QDateTime enddate( cert.notValidAfter() );
+  const QDateTime now( QDateTime::currentDateTime() );
+  const bool bundlevalid = ( now >= startdate && now <= enddate );
 
   writePkiMessage( lePkcs12Msg,
                    tr( "%1 thru %2" ).arg( startdate.toString(), enddate.toString() ),
                    ( bundlevalid ? Valid : Invalid ) );
 
-  bool showCas( bundlevalid && populateCas() );
+  const bool showCas( bundlevalid && populateCas() );
   lblCas->setVisible( showCas );
   twCas->setVisible( showCas );
   cbAddCas->setVisible( showCas );

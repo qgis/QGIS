@@ -43,6 +43,7 @@ from qgis.server import QgsServer, QgsServerRequest, QgsBufferServerRequest, Qgs
 from qgis.core import QgsRenderChecker, QgsApplication, QgsFontUtils, QgsMultiRenderChecker
 from qgis.testing import unittest, start_app
 from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtGui import QColor
 from utilities import unitTestDataPath
 
 import osgeo.gdal  # NOQA
@@ -283,6 +284,31 @@ class QgsServerTestBase(unittest.TestCase):
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, project)
         assert response.statusCode() == status_code, "%s != %s" % (response.statusCode(), status_code)
+
+    def _assertRed(self, color: QColor):
+        self.assertEqual(color.red(), 255)
+        self.assertEqual(color.green(), 0)
+        self.assertEqual(color.blue(), 0)
+
+    def _assertGreen(self, color: QColor):
+        self.assertEqual(color.red(), 0)
+        self.assertEqual(color.green(), 255)
+        self.assertEqual(color.blue(), 0)
+
+    def _assertBlue(self, color: QColor):
+        self.assertEqual(color.red(), 0)
+        self.assertEqual(color.green(), 0)
+        self.assertEqual(color.blue(), 255)
+
+    def _assertBlack(self, color: QColor):
+        self.assertEqual(color.red(), 0)
+        self.assertEqual(color.green(), 0)
+        self.assertEqual(color.blue(), 255)
+
+    def _assertWhite(self, color: QColor):
+        self.assertEqual(color.red(), 255)
+        self.assertEqual(color.green(), 255)
+        self.assertEqual(color.blue(), 255)
 
 
 class TestQgsServerTestBase(unittest.TestCase):

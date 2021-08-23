@@ -242,7 +242,7 @@ bool QgsOapifCollection::deserialize( const json &j )
     const auto jLicense = j["license"];
     if ( jLicense.is_string() )
     {
-      auto license = QString::fromStdString( jLicense.get<std::string>() );
+      const auto license = QString::fromStdString( jLicense.get<std::string>() );
       if ( license == QLatin1String( "proprietary" ) )
       {
         isProprietaryLicense = true;
@@ -261,7 +261,7 @@ bool QgsOapifCollection::deserialize( const json &j )
     {
       if ( link.rel == QLatin1String( "license" ) )
       {
-        auto license =  !link.title.isEmpty() ? link.title : link.href;
+        const auto license =  !link.title.isEmpty() ? link.title : link.href;
         if ( licenseSet.find( license ) == licenseSet.end() )
         {
           licenseSet.insert( license );
@@ -371,7 +371,7 @@ void QgsOapifCollectionsRequest::processReply()
     {
       if ( link.rel == QLatin1String( "license" ) )
       {
-        auto license =  !link.title.isEmpty() ? link.title : link.href;
+        const auto license =  !link.title.isEmpty() ? link.title : link.href;
         if ( licenseSet.find( license ) == licenseSet.end() )
         {
           licenseSet.insert( license );

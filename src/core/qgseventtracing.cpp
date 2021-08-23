@@ -101,7 +101,7 @@ bool QgsEventTracing::writeTrace( const QString &fileName )
       f.write( ",\n" );
     else
       first = false;
-    char t = _eventTypeToChar( item.type );
+    const char t = _eventTypeToChar( item.type );
     QString msg = QStringLiteral( "  {\"cat\": \"%1\", \"pid\": 1, \"tid\": %2, \"ts\": %3, \"ph\": \"%4\", \"name\": \"%5\"" )
                   .arg( item.category ).arg( item.threadId ).arg( item.timestamp ).arg( t ).arg( item.name );
 

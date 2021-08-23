@@ -357,11 +357,15 @@ void QgsJoinByLocationAlgorithm::processAlgorithmByIteratingOverJoinedSource( Qg
         attributes.append( emptyAttributes );
         QgsFeature outputFeature( f2 );
         outputFeature.setAttributes( attributes );
-        mJoinedFeatures->addFeature( outputFeature, QgsFeatureSink::FastInsert );
+        if ( !mJoinedFeatures->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( mJoinedFeatures.get(), QVariantMap(), QStringLiteral( "OUTPUT" ) ) );
       }
 
       if ( mUnjoinedFeatures )
-        mUnjoinedFeatures->addFeature( f2, QgsFeatureSink::FastInsert );
+      {
+        if ( !mUnjoinedFeatures->addFeature( f2, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( mUnjoinedFeatures.get(), QVariantMap(), QStringLiteral( "NON_MATCHING" ) ) );
+      }
     }
   }
 }
@@ -465,7 +469,8 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromJoinSource( QgsFeature &joinF
       {
         QgsFeature outputFeature( baseFeature );
         outputFeature.setAttributes( baseFeature.attributes() + joinAttributes );
-        mJoinedFeatures->addFeature( outputFeature, QgsFeatureSink::FastInsert );
+        if ( !mJoinedFeatures->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( mJoinedFeatures.get(), QVariantMap(), QStringLiteral( "OUTPUT" ) ) );
       }
       if ( !ok )
         ok = true;
@@ -493,11 +498,15 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromInputSource( QgsFeature &base
       attributes.append( emptyAttributes );
       QgsFeature outputFeature( baseFeature );
       outputFeature.setAttributes( attributes );
-      mJoinedFeatures->addFeature( outputFeature, QgsFeatureSink::FastInsert );
+      if ( !mJoinedFeatures->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( mJoinedFeatures.get(), QVariantMap(), QStringLiteral( "OUTPUT" ) ) );
     }
 
     if ( mUnjoinedFeatures )
-      mUnjoinedFeatures->addFeature( baseFeature, QgsFeatureSink::FastInsert );
+    {
+      if ( !mUnjoinedFeatures->addFeature( baseFeature, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( mUnjoinedFeatures.get(), QVariantMap(), QStringLiteral( "NON_MATCHING" ) ) );
+    }
 
     return false;
   }
@@ -542,7 +551,8 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromInputSource( QgsFeature &base
 
             QgsFeature outputFeature( baseFeature );
             outputFeature.setAttributes( joinAttributes );
-            mJoinedFeatures->addFeature( outputFeature, QgsFeatureSink::FastInsert );
+            if ( !mJoinedFeatures->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
+              throw QgsProcessingException( writeFeatureError( mJoinedFeatures.get(), QVariantMap(), QStringLiteral( "OUTPUT" ) ) );
           }
           break;
 
@@ -605,7 +615,8 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromInputSource( QgsFeature &base
 
           QgsFeature outputFeature( baseFeature );
           outputFeature.setAttributes( joinAttributes );
-          mJoinedFeatures->addFeature( outputFeature, QgsFeatureSink::FastInsert );
+          if ( !mJoinedFeatures->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
+            throw QgsProcessingException( writeFeatureError( mJoinedFeatures.get(), QVariantMap(), QStringLiteral( "OUTPUT" ) ) );
         }
       }
       else
@@ -630,11 +641,15 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromInputSource( QgsFeature &base
       attributes.append( emptyAttributes );
       QgsFeature outputFeature( baseFeature );
       outputFeature.setAttributes( attributes );
-      mJoinedFeatures->addFeature( outputFeature, QgsFeatureSink::FastInsert );
+      if ( !mJoinedFeatures->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( mJoinedFeatures.get(), QVariantMap(), QStringLiteral( "OUTPUT" ) ) );
     }
 
     if ( mUnjoinedFeatures )
-      mUnjoinedFeatures->addFeature( baseFeature, QgsFeatureSink::FastInsert );
+    {
+      if ( !mUnjoinedFeatures->addFeature( baseFeature, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( mUnjoinedFeatures.get(), QVariantMap(), QStringLiteral( "NON_MATCHING" ) ) );
+    }
   }
   else
     mJoinedCount++;

@@ -30,7 +30,11 @@ set (geometrychecker_RCCS
 ########################################################
 # Build
 
-QT5_WRAP_UI (geometrychecker_UIS_H  ${geometrychecker_UIS})
+if (WITH_QT6)
+  QT6_WRAP_UI (geometrychecker_UIS_H  ${geometrychecker_UIS})
+else()
+  QT5_WRAP_UI (geometrychecker_UIS_H  ${geometrychecker_UIS})
+endif()
 
 add_library (geometrycheckerplugin   MODULE ${geometrychecker_SRCS}  ${geometrychecker_RCCS} ${geometrychecker_UIS_H})
 

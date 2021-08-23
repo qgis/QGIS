@@ -51,6 +51,9 @@ set(QGIS_CORE_SRCS
   geocoding/qgsnominatimgeocoder.cpp
   geocoding/qgsgooglemapsgeocoder.cpp
 
+  gps/qgsbabelformat.cpp
+  gps/qgsbabelformatregistry.cpp
+  gps/qgsbabelgpsdevice.cpp
   gps/qgsgpsconnection.cpp
   gps/qgsgpsconnectionregistry.cpp
   gps/qgsgpsdconnection.cpp
@@ -109,6 +112,7 @@ set(QGIS_CORE_SRCS
   diagram/qgstextdiagram.cpp
 
   editform/qgseditformconfig.cpp
+  editform/qgsattributeeditoraction.cpp
   editform/qgsattributeeditorelement.cpp
   editform/qgsattributeeditorcontainer.cpp
   editform/qgsattributeeditorfield.cpp
@@ -125,6 +129,10 @@ set(QGIS_CORE_SRCS
   effects/qgspainteffectregistry.cpp
   effects/qgsshadoweffect.cpp
   effects/qgstransformeffect.cpp
+
+  externalstorage/qgsexternalstorage.cpp
+  externalstorage/qgsexternalstorageregistry.cpp
+  externalstorage/qgssimplecopyexternalstorage.cpp
 
   layertree/qgscolorramplegendnode.cpp
   layertree/qgscolorramplegendnodesettings.cpp
@@ -243,7 +251,6 @@ set(QGIS_CORE_SRCS
 
   providers/gdal/qgsgdalproviderbase.cpp
   providers/gdal/qgsgdalprovider.cpp
-  providers/gdal/qgsgdaldataitems.cpp
 
   providers/memory/qgsmemoryfeatureiterator.cpp
   providers/memory/qgsmemoryprovider.cpp
@@ -254,7 +261,6 @@ set(QGIS_CORE_SRCS
   providers/ogr/qgsogrprovider.cpp
   providers/ogr/qgsogrprovidermetadata.cpp
   providers/ogr/qgsogrproviderutils.cpp
-  providers/ogr/qgsogrdataitems.cpp
   providers/ogr/qgsogrfeatureiterator.cpp
   providers/ogr/qgsogrconnpool.cpp
   providers/ogr/qgsogrexpressioncompiler.cpp
@@ -319,6 +325,7 @@ set(QGIS_CORE_SRCS
   qgsconnectionregistry.cpp
   qgscoordinateformatter.cpp
   qgscoordinateutils.cpp
+  qgscopyfiletask.cpp
   qgscplhttpfetchoverrider.cpp
   qgscredentials.cpp
   qgsdartmeasurement.cpp
@@ -502,6 +509,7 @@ set(QGIS_CORE_SRCS
   browser/qgsdirectoryitem.cpp
   browser/qgsfavoritesitem.cpp
   browser/qgsfieldsitem.cpp
+  browser/qgsfilebaseddataitemprovider.cpp
   browser/qgslayeritem.cpp
   browser/qgsprojectitem.cpp
   browser/qgszipitem.cpp
@@ -609,6 +617,7 @@ set(QGIS_CORE_SRCS
   project/qgsprojectstorage.cpp
   project/qgsprojectstorageregistry.cpp
   project/qgsprojecttimesettings.cpp
+  project/qgsprojectutils.cpp
   project/qgsprojectversion.cpp
   project/qgsprojectviewsettings.cpp
 
@@ -935,6 +944,7 @@ set(QGIS_CORE_HDRS
   qgsconnectionregistry.h
   qgscoordinateformatter.h
   qgscoordinateutils.h
+  qgscopyfiletask.h
   qgscredentials.h
   qgsdartmeasurement.h
   qgsdatabaseschemamodel.h
@@ -1168,6 +1178,7 @@ set(QGIS_CORE_HDRS
   browser/qgsdirectoryitem.h
   browser/qgsfavoritesitem.h
   browser/qgsfieldsitem.h
+  browser/qgsfilebaseddataitemprovider.h
   browser/qgslayeritem.h
   browser/qgsprojectitem.h
   browser/qgszipitem.h
@@ -1194,12 +1205,16 @@ set(QGIS_CORE_HDRS
   dxf/qgsdxfexport.h
 
   editform/qgseditformconfig.h
+  editform/qgsattributeeditoraction.h
   editform/qgsattributeeditorelement.h
   editform/qgsattributeeditorcontainer.h
   editform/qgsattributeeditorfield.h
   editform/qgsattributeeditorrelation.h
   editform/qgsattributeeditorhtmlelement.h
   editform/qgsattributeeditorqmlelement.h
+
+  externalstorage/qgsexternalstorage.h
+  externalstorage/qgsexternalstorageregistry.h
 
   effects/qgsblureffect.h
   effects/qgscoloreffect.h
@@ -1273,6 +1288,9 @@ set(QGIS_CORE_HDRS
   geometry/qgswkbtypes.h
   geometry/qgsray3d.h
 
+  gps/qgsbabelformat.h
+  gps/qgsbabelformatregistry.h
+  gps/qgsbabelgpsdevice.h
   gps/qgsgpsconnection.h
   gps/qgsgpsdconnection.h
   gps/qgsgpsdetector.h
@@ -1521,6 +1539,7 @@ set(QGIS_CORE_HDRS
   project/qgsprojectstorageregistry.h
   project/qgsprojecttimesettings.h
   project/qgsprojecttranslator.h
+  project/qgsprojectutils.h
   project/qgsprojectversion.h
   project/qgsprojectviewsettings.h
 
@@ -1538,7 +1557,6 @@ set(QGIS_CORE_HDRS
   providers/arcgis/qgsarcgisrestquery.h
   providers/arcgis/qgsarcgisrestutils.h
 
-  providers/gdal/qgsgdaldataitems.h
   providers/gdal/qgsgdalprovider.h
 
   providers/memory/qgsmemoryfeatureiterator.h
@@ -1552,7 +1570,6 @@ set(QGIS_CORE_HDRS
   providers/ogr/qgsgeopackageproviderconnection.h
   providers/ogr/qgsgeopackagerasterwritertask.h
   providers/ogr/qgsogrconnpool.h
-  providers/ogr/qgsogrdataitems.h
   providers/ogr/qgsogrdbconnection.h
   providers/ogr/qgsogrprovider.h
   providers/ogr/qgsogrprovidermetadata.h
@@ -1733,6 +1750,9 @@ set(QGIS_CORE_PRIVATE_HDRS
   qgsspatialindexkdbush_p.h
 
   editform/qgseditformconfig_p.h
+
+  externalstorage/qgssimplecopyexternalstorage_p.h
+
   proj/qgscoordinatereferencesystem_p.h
   proj/qgscoordinatetransformcontext_p.h
   proj/qgscoordinatetransform_p.h
@@ -1820,14 +1840,12 @@ if (WITH_EPT)
   endif()
 
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
-      providers/ept/qgseptdataitems.cpp
       providers/ept/qgseptprovider.cpp
       pointcloud/qgseptdecoder.cpp
       pointcloud/qgseptpointcloudindex.cpp
       pointcloud/qgsremoteeptpointcloudindex.cpp
   )
   set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
-      providers/ept/qgseptdataitems.h
       providers/ept/qgseptprovider.h
       pointcloud/qgseptdecoder.h
       pointcloud/qgseptpointcloudindex.h
@@ -1920,6 +1938,7 @@ target_include_directories(qgis_core PUBLIC
   editform
   effects
   expression
+  externalstorage
   fieldformatter
   geometry
   geocms
@@ -1978,7 +1997,7 @@ GENERATE_EXPORT_HEADER(
 set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_core.h)
 
 if(ENABLE_MODELTEST)
-  target_link_libraries(qgis_core ${${QT_VERSION_BASE}Test_LIBRARIES})
+  target_link_libraries(qgis_core ${QT_VERSION_BASE}::Test)
 endif()
 
 if (NOT WITH_INTERNAL_POLY2TRI)
@@ -2046,15 +2065,15 @@ if (ADD_CLAZY_CHECKS)
 endif()
 
 target_link_libraries(qgis_core
-  ${${QT_VERSION_BASE}Core_LIBRARIES}
-  ${${QT_VERSION_BASE}Gui_LIBRARIES}
-  ${${QT_VERSION_BASE}Xml_LIBRARIES}
-  ${${QT_VERSION_BASE}Widgets_LIBRARIES}
-  ${${QT_VERSION_BASE}Svg_LIBRARIES}
-  ${${QT_VERSION_BASE}PrintSupport_LIBRARIES}
-  ${${QT_VERSION_BASE}Network_LIBRARIES}
-  ${${QT_VERSION_BASE}Sql_LIBRARIES}
-  ${${QT_VERSION_BASE}Concurrent_LIBRARIES}
+  ${QT_VERSION_BASE}::Core
+  ${QT_VERSION_BASE}::Gui
+  ${QT_VERSION_BASE}::Xml
+  ${QT_VERSION_BASE}::Widgets
+  ${QT_VERSION_BASE}::Svg
+  ${QT_VERSION_BASE}::PrintSupport
+  ${QT_VERSION_BASE}::Network
+  ${QT_VERSION_BASE}::Sql
+  ${QT_VERSION_BASE}::Concurrent
   ${OPTIONAL_QTWEBKIT}
   ${QCA_LIBRARY}
   ${QTKEYCHAIN_LIBRARY}
@@ -2091,11 +2110,6 @@ if (HAVE_PDAL)
 endif()
 
 if (FORCE_STATIC_LIBS)
-  include_directories(
-    ${CMAKE_SOURCE_DIR}/src/providers/wms
-    ${CMAKE_SOURCE_DIR}/src/providers/postgres
-  )
-
   target_link_libraries(qgis_core
     provider_wms_a
     provider_postgres_a

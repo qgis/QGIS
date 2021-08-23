@@ -55,7 +55,7 @@ void QgsVertexEditorModel::setFeature( QgsLockedFeature *lockedFeature )
   mLockedFeature = lockedFeature;
   if ( mLockedFeature && mLockedFeature->layer() )
   {
-    QgsWkbTypes::Type layerWKBType = mLockedFeature->layer()->wkbType();
+    const QgsWkbTypes::Type layerWKBType = mLockedFeature->layer()->wkbType();
 
     mHasZ = QgsWkbTypes::hasZ( layerWKBType );
     mHasM = QgsWkbTypes::hasM( layerWKBType );
@@ -248,12 +248,12 @@ bool QgsVertexEditorModel::setData( const QModelIndex &index, const QVariant &va
     if ( index.row() == 0 || index.row() >= mLockedFeature->vertexMap().count() - 1 )
       return false;
 
-    double x1 = mLockedFeature->vertexMap().at( index.row() - 1 )->point().x();
-    double y1 = mLockedFeature->vertexMap().at( index.row() - 1 )->point().y();
-    double x2 = x;
-    double y2 = y;
-    double x3 = mLockedFeature->vertexMap().at( index.row() + 1 )->point().x();
-    double y3 = mLockedFeature->vertexMap().at( index.row() + 1 )->point().y();
+    const double x1 = mLockedFeature->vertexMap().at( index.row() - 1 )->point().x();
+    const double y1 = mLockedFeature->vertexMap().at( index.row() - 1 )->point().y();
+    const double x2 = x;
+    const double y2 = y;
+    const double x3 = mLockedFeature->vertexMap().at( index.row() + 1 )->point().x();
+    const double y3 = mLockedFeature->vertexMap().at( index.row() + 1 )->point().y();
 
     QgsPoint result;
     if ( QgsGeometryUtils::segmentMidPoint( QgsPoint( x1, y1 ), QgsPoint( x3, y3 ), result, doubleValue, QgsPoint( x2, y2 ) ) )
@@ -262,9 +262,9 @@ bool QgsVertexEditorModel::setData( const QModelIndex &index, const QVariant &va
       y = result.y();
     }
   }
-  double z = ( index.column() == mZCol ? doubleValue : mLockedFeature->vertexMap().at( index.row() )->point().z() );
-  double m = ( index.column() == mMCol ? doubleValue : mLockedFeature->vertexMap().at( index.row() )->point().m() );
-  QgsPoint p( QgsWkbTypes::PointZM, x, y, z, m );
+  const double z = ( index.column() == mZCol ? doubleValue : mLockedFeature->vertexMap().at( index.row() )->point().z() );
+  const double m = ( index.column() == mMCol ? doubleValue : mLockedFeature->vertexMap().at( index.row() )->point().m() );
+  const QgsPoint p( QgsWkbTypes::PointZM, x, y, z, m );
 
   mLockedFeature->layer()->beginEditCommand( QObject::tr( "Moved vertices" ) );
   mLockedFeature->layer()->moveVertex( p, mLockedFeature->featureId(), index.row() );
@@ -295,7 +295,7 @@ bool QgsVertexEditorModel::calcR( int row, double &r, double &minRadius ) const
 
   const QgsVertexEntry *entry = mLockedFeature->vertexMap().at( row );
 
-  bool curvePoint = ( entry->vertexId().type == QgsVertexId::CurveVertex );
+  const bool curvePoint = ( entry->vertexId().type == QgsVertexId::CurveVertex );
   if ( !curvePoint )
     return false;
 
@@ -362,7 +362,7 @@ void QgsVertexEditor::updateEditor( QgsLockedFeature *lockedFeature )
 
     if ( mLockedFeature->layer() )
     {
-      QgsCoordinateReferenceSystem crs = mLockedFeature->layer()->crs();
+      const QgsCoordinateReferenceSystem crs = mLockedFeature->layer()->crs();
       mTableView->setItemDelegateForColumn( 0, new CoordinateItemDelegate( crs, this ) );
       mTableView->setItemDelegateForColumn( 1, new CoordinateItemDelegate( crs, this ) );
       mTableView->setItemDelegateForColumn( 2, new CoordinateItemDelegate( crs, this ) );
@@ -412,16 +412,16 @@ void QgsVertexEditor::updateVertexSelection( const QItemSelection &, const QItem
 
   mLockedFeature->deselectAllVertices();
 
-  QgsCoordinateTransform t( mLockedFeature->layer()->crs(), mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+  const QgsCoordinateTransform t( mLockedFeature->layer()->crs(), mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
   std::unique_ptr<QgsRectangle> bbox;
   const QModelIndexList indexList = mTableView->selectionModel()->selectedRows();
   for ( const QModelIndex &index : indexList )
   {
-    int vertexIdx = index.row();
+    const int vertexIdx = index.row();
     mLockedFeature->selectVertex( vertexIdx );
 
     // create a bounding box of selected vertices
-    QgsPointXY point( mLockedFeature->vertexMap().at( vertexIdx )->point() );
+    const QgsPointXY point( mLockedFeature->vertexMap().at( vertexIdx )->point() );
     if ( !bbox )
       bbox.reset( new QgsRectangle( point, point ) );
     else

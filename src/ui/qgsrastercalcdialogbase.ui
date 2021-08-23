@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>756</width>
-    <height>644</height>
+    <height>687</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -37,8 +37,18 @@
        <property name="title">
         <string>Result Layer</string>
        </property>
-       <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,1,1,0">
-        <item row="3" column="0" colspan="4">
+       <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0,0,0">
+        <item row="3" column="1" colspan="3">
+         <widget class="QComboBox" name="mOutputFormatComboBox"/>
+        </item>
+        <item row="6" column="1" colspan="3">
+         <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0" colspan="4">
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="3" column="3">
            <widget class="QLabel" name="mRowsLabel">
@@ -163,31 +173,7 @@
           </item>
          </layout>
         </item>
-        <item row="0" column="1" colspan="3">
-         <widget class="QgsFileWidget" name="mOutputLayer" native="true"/>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="mOutputFormatLabel">
-          <property name="text">
-           <string>Output format</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QPushButton" name="mCurrentLayerExtentButton">
-          <property name="text">
-           <string>Selected Layer Extent</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="mOutputLayerLabel">
-          <property name="text">
-           <string>Output layer</string>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="0" colspan="4">
+        <item row="8" column="0" colspan="4">
          <widget class="QCheckBox" name="mAddResultToProjectCheckBox">
           <property name="text">
            <string>Add result to project</string>
@@ -197,10 +183,54 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="1" colspan="3">
-         <widget class="QComboBox" name="mOutputFormatComboBox"/>
+        <item row="6" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Output CRS</string>
+          </property>
+         </widget>
         </item>
-        <item row="5" column="1">
+        <item row="2" column="0">
+         <widget class="QLabel" name="mOutputLayerLabel">
+          <property name="text">
+           <string>Output layer</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="mOutputFormatLabel">
+          <property name="text">
+           <string>Output format</string>
+          </property>
+         </widget>
+        </item>
+        <item row="9" column="0">
+         <spacer name="verticalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="0" colspan="4">
+         <widget class="QCheckBox" name="mUseVirtualProviderCheckBox">
+          <property name="layoutDirection">
+           <enum>Qt::LeftToRight</enum>
+          </property>
+          <property name="text">
+           <string>Create on-the-fly raster instead of writing layer to disk</string>
+          </property>
+          <property name="tristate">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="1">
          <spacer name="verticalSpacer">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -214,31 +244,31 @@
          </spacer>
         </item>
         <item row="4" column="0">
-         <widget class="QLabel" name="label">
+         <widget class="QPushButton" name="mCurrentLayerExtentButton">
           <property name="text">
-           <string>Output CRS</string>
+           <string>Selected Layer Extent</string>
           </property>
          </widget>
         </item>
-        <item row="4" column="1" colspan="3">
-         <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
-          <property name="focusPolicy">
-           <enum>Qt::StrongFocus</enum>
+        <item row="2" column="1" colspan="3">
+         <widget class="QgsFileWidget" name="mOutputLayer" native="true"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="mVirtualLayerLabel">
+          <property name="text">
+           <string>Layer name</string>
           </property>
          </widget>
         </item>
-        <item row="7" column="0">
-         <spacer name="verticalSpacer_2">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
+        <item row="1" column="1" colspan="3">
+         <widget class="QLineEdit" name="mVirtualLayerName">
+          <property name="text">
+           <string/>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
+          <property name="placeholderText">
+           <string>Autogenerated from expression</string>
           </property>
-         </spacer>
+         </widget>
         </item>
        </layout>
       </widget>

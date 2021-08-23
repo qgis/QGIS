@@ -53,8 +53,8 @@ void TestQgsVector::vector3d()
   QCOMPARE( QgsVector3D( 0.12, 1.234, 2.3456789 ).toString( 1 ), QString( "Vector3D (0.1, 1.2, 2.3)" ) );
 
   QgsVector3D p0( 0.0, 0.0, 0.0 );
-  QgsVector3D p1( 1.0, 2.0, 3.0 );
-  QgsVector3D p2( 4.0, 5.0, 6.0 );
+  const QgsVector3D p1( 1.0, 2.0, 3.0 );
+  const QgsVector3D p2( 4.0, 5.0, 6.0 );
   // cross product
   QCOMPARE( QgsVector3D::crossProduct( p1, p2 ), QgsVector3D( -3.0, 6.0, -3.0 ) );
 

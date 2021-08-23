@@ -91,7 +91,7 @@ void TestQgsMeasureBearingTool::cleanupTestCase()
 void TestQgsMeasureBearingTool::testBearingCartesian()
 {
   // set project CRS and set ellipsoid to none, so that Cartesian calculations are performed
-  QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3857" ) );
+  const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3857" ) );
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QString() );
 
@@ -125,7 +125,7 @@ void TestQgsMeasureBearingTool::testBearingCartesian()
 void TestQgsMeasureBearingTool::testBearingEllipsoid()
 {
   // set project CRS and ellipsoid
-  QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3857" ) );
+  const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3857" ) );
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "EPSG:7030" ) );
 

@@ -126,7 +126,7 @@ class CORE_EXPORT QgsSettingsEntryBase
     /**
      * Returns TRUE if the provided key match the settings entry.
      *
-     * This is useful for settings with dynamic keys. For example this permits to check that
+     * This is useful for settings with dynamic keys. For example this permits one to check that
      * the settings key "NewsFeed/httpsfeedqgisorg/27/content" is valid for the settings entry
      * defined with the key "NewsFeed/%1/%2/content"
      *
@@ -895,7 +895,7 @@ class CORE_EXPORT QgsSettingsEntryEnumFlag : public QgsSettingsEntryBase
      * \note for Python bindings, a custom implementation is achieved in Python directly
      */
     QgsSettingsEntryEnumFlag( const QString &key, QgsSettings::Section section, const T &defaultValue, const QString &description = QString() )
-      : QgsSettingsEntryBase( key, section, QMetaEnum::fromType<T>().isFlag() ? QVariant( QMetaEnum::fromType<T>().valueToKeys( defaultValue ) ) : QVariant( QMetaEnum::fromType<T>().valueToKey( defaultValue ) ), description )
+      : QgsSettingsEntryBase( key, section, QMetaEnum::fromType<T>().isFlag() ? QVariant( QMetaEnum::fromType<T>().valueToKeys( static_cast <int >( defaultValue ) ) ) : QVariant( QMetaEnum::fromType<T>().valueToKey( static_cast< int >( defaultValue ) ) ), description )
     {
       mMetaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( mMetaEnum.isValid() );
@@ -990,10 +990,10 @@ class CORE_EXPORT QgsSettingsEntryEnumFlag : public QgsSettingsEntryBase
 
       if ( !mMetaEnum.isFlag() )
       {
-        const char *enumKey = mMetaEnum.valueToKey( value );
+        const char *enumKey = mMetaEnum.valueToKey( static_cast< int >( value ) );
         if ( enumKey == nullptr )
         {
-          QgsDebugMsg( QStringLiteral( "Invalid enum value '%1'." ).arg( value ) );
+          QgsDebugMsg( QStringLiteral( "Invalid enum value '%1'." ).arg( static_cast< int >( value ) ) );
           return false;
         }
 
@@ -1001,10 +1001,10 @@ class CORE_EXPORT QgsSettingsEntryEnumFlag : public QgsSettingsEntryBase
       }
       else
       {
-        QByteArray flagKeys = mMetaEnum.valueToKeys( value );
+        const QByteArray flagKeys = mMetaEnum.valueToKeys( static_cast< int >( value ) );
         if ( flagKeys.isEmpty() )
         {
-          QgsDebugMsg( QStringLiteral( "Invalid flag value '%1'." ).arg( value ) );
+          QgsDebugMsg( QStringLiteral( "Invalid flag value '%1'." ).arg( static_cast< int >( value ) ) );
           return false;
         }
         return QgsSettingsEntryBase::setVariantValue( flagKeys, dynamicKeyPartList );

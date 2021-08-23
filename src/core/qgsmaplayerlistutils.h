@@ -82,7 +82,7 @@ inline void _qgis_removeLayers( QList< QgsMapLayerRef > &list, const QList< QgsM
   QMutableListIterator<QgsMapLayerRef> it( list );
   while ( it.hasNext() )
   {
-    QgsMapLayerRef &ref = it.next();
+    const QgsMapLayerRef &ref = it.next();
     if ( layersToRemove.contains( ref.get() ) )
       it.remove();
   }

@@ -19,6 +19,7 @@ usr/lib/qgis/plugins/libprovider_postgres.so
 usr/lib/qgis/plugins/libprovider_postgresraster.so
 usr/lib/qgis/plugins/libprovider_spatialite.so
 usr/lib/qgis/plugins/libprovider_virtuallayer.so
+usr/lib/qgis/plugins/libvirtualraster.so
 usr/lib/qgis/plugins/libprovider_wcs.so
 usr/lib/qgis/plugins/libprovider_wfs.so
 usr/lib/qgis/plugins/libprovider_wms.so

@@ -54,6 +54,26 @@ class QgsAppDirectoryItemGuiProvider : public QObject, public QgsDataItemGuiProv
     void showProperties( QgsDirectoryItem *item, QgsDataItemGuiContext context );
 };
 
+class QgsAppFileItemGuiProvider : public QObject, public QgsDataItemGuiProvider
+{
+    Q_OBJECT
+
+  public:
+
+    QgsAppFileItemGuiProvider() = default;
+
+    QString name() override;
+
+    void populateContextMenu( QgsDataItem *item, QMenu *menu,
+                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+    int precedenceWhenPopulatingMenus() const override;
+    bool rename( QgsDataItem *item, const QString &name, QgsDataItemGuiContext context ) override;
+
+  private:
+
+    bool rename( const QString &oldPath, const QString &newName, QgsDataItemGuiContext context, const QList< QPointer< QgsDataItem > > &parentItems );
+};
+
 
 class QgsProjectHomeItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
@@ -99,6 +119,7 @@ class QgsLayerItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu,
                               const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+    int precedenceWhenPopulatingMenus() const override;
     bool handleDoubleClick( QgsDataItem *item, QgsDataItemGuiContext context ) override;
 
   private:

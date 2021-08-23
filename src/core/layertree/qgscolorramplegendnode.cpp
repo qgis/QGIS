@@ -70,7 +70,7 @@ QString QgsColorRampLegendNode::labelForMinimum() const
   if ( !mSettings.minimumLabel().isEmpty() )
     return mSettings.prefix() + mSettings.minimumLabel() + mSettings.suffix();
 
-  QgsNumericFormatContext numericContext;
+  const QgsNumericFormatContext numericContext;
   return mSettings.prefix() + mSettings.numericFormat()->formatDouble( mMinimumValue, numericContext )  + mSettings.suffix();
 }
 
@@ -79,7 +79,7 @@ QString QgsColorRampLegendNode::labelForMaximum() const
   if ( !mSettings.maximumLabel().isEmpty() )
     return mSettings.prefix() + mSettings.maximumLabel() + mSettings.suffix();
 
-  QgsNumericFormatContext numericContext;
+  const QgsNumericFormatContext numericContext;
   return mSettings.prefix() + mSettings.numericFormat()->formatDouble( mMaximumValue, numericContext ) + mSettings.suffix();
 }
 
@@ -208,7 +208,7 @@ QSizeF QgsColorRampLegendNode::drawSymbol( const QgsLegendSettings &settings, It
     context = tempRenderContext.get();
   }
 
-  QFont symbolLabelFont = settings.style( QgsLegendStyle::SymbolLabel ).font();
+  const QFont symbolLabelFont = settings.style( QgsLegendStyle::SymbolLabel ).font();
   QgsTextFormat format = mSettings.textFormat().isValid() ? mSettings.textFormat() : QgsTextFormat::fromQFont( symbolLabelFont );
   if ( !mSettings.textFormat().isValid() )
     format.setColor( settings.fontColor() );
@@ -243,21 +243,21 @@ QSizeF QgsColorRampLegendNode::drawSymbol( const QgsLegendSettings &settings, It
 
   if ( ctx && ctx->painter )
   {
-    double currentYCoord = ctx->top;
+    const double currentYCoord = ctx->top;
     QPainter *p = ctx->painter;
 
     //setup painter scaling to dots so that raster symbology is drawn to scale
-    double dotsPerMM = context->scaleFactor();
+    const double dotsPerMM = context->scaleFactor();
 
     double opacity = 1;
     if ( QgsMapLayer *layer = layerNode()->layer() )
       opacity = layer->opacity();
 
-    QgsScopedQPainterState painterState( p );
+    const QgsScopedQPainterState painterState( p );
     context->setPainterFlagsUsingContext( p );
 
     double rampLeftMm = 0;
-    double rampTopMm = currentYCoord;
+    const double rampTopMm = currentYCoord;
     switch ( settings.symbolAlignment() )
     {
       case Qt::AlignLeft:
@@ -325,13 +325,13 @@ QSizeF QgsColorRampLegendNode::drawSymbol( const QgsLegendSettings &settings, It
     // we treat the text as part of the symbol for horizontal bar items
     if ( ctx && ctx->painter )
     {
-      double currentYCoord = ctx->top;
+      const double currentYCoord = ctx->top;
       QPainter *p = ctx->painter;
 
       //setup painter scaling to dots so that raster symbology is drawn to scale
-      double dotsPerMM = context->scaleFactor();
+      const double dotsPerMM = context->scaleFactor();
 
-      QgsScopedQPainterState painterState( p );
+      const QgsScopedQPainterState painterState( p );
       context->setPainterFlagsUsingContext( p );
 
       p->scale( 1.0 / dotsPerMM, 1.0 / dotsPerMM );
@@ -341,10 +341,10 @@ QSizeF QgsColorRampLegendNode::drawSymbol( const QgsLegendSettings &settings, It
       // NOTE -- while the below calculations use the flipped margins from the style, that's only done because
       // those are the only margins we expose and use for now! (and we expose them as generic margins, not side-specific
       // ones) TODO when/if we expose other margin settings, these should be reversed...
-      double labelYMin = currentYCoord + rampHeight + settings.style( QgsLegendStyle::Symbol ).margin( QgsLegendStyle::Right )
-                         + settings.style( QgsLegendStyle::SymbolLabel ).margin( QgsLegendStyle::Left );
-      double labelHeight = std::max( QgsTextRenderer::textHeight( *context, format, QStringList() << minLabel ),
-                                     QgsTextRenderer::textHeight( *context, format, QStringList() << maxLabel ) ) / dotsPerMM;
+      const double labelYMin = currentYCoord + rampHeight + settings.style( QgsLegendStyle::Symbol ).margin( QgsLegendStyle::Right )
+                               + settings.style( QgsLegendStyle::SymbolLabel ).margin( QgsLegendStyle::Left );
+      const double labelHeight = std::max( QgsTextRenderer::textHeight( *context, format, QStringList() << minLabel ),
+                                           QgsTextRenderer::textHeight( *context, format, QStringList() << maxLabel ) ) / dotsPerMM;
       switch ( settings.symbolAlignment() )
       {
         case Qt::AlignLeft:
@@ -412,7 +412,7 @@ QSizeF QgsColorRampLegendNode::drawSymbolText( const QgsLegendSettings &settings
     context = tempRenderContext.get();
   }
 
-  QFont symbolLabelFont = settings.style( QgsLegendStyle::SymbolLabel ).font();
+  const QFont symbolLabelFont = settings.style( QgsLegendStyle::SymbolLabel ).font();
   QgsTextFormat format = mSettings.textFormat().isValid() ? mSettings.textFormat() : QgsTextFormat::fromQFont( symbolLabelFont );
   if ( !mSettings.textFormat().isValid() )
     format.setColor( settings.fontColor() );
@@ -427,13 +427,13 @@ QSizeF QgsColorRampLegendNode::drawSymbolText( const QgsLegendSettings &settings
 
   if ( ctx && ctx->painter )
   {
-    double currentYCoord = ctx->top;
+    const double currentYCoord = ctx->top;
     QPainter *p = ctx->painter;
 
     //setup painter scaling to dots so that raster symbology is drawn to scale
-    double dotsPerMM = context->scaleFactor();
+    const double dotsPerMM = context->scaleFactor();
 
-    QgsScopedQPainterState painterState( p );
+    const QgsScopedQPainterState painterState( p );
     context->setPainterFlagsUsingContext( p );
 
     p->scale( 1.0 / dotsPerMM, 1.0 / dotsPerMM );

@@ -165,7 +165,7 @@ class CORE_EXPORT QgsMapToPixel
     QgsPointXY toMapCoordinates( double x, double y ) const SIP_PYNAME( toMapCoordinatesF )
     {
       bool invertible;
-      QTransform matrix = mMatrix.inverted( &invertible );
+      const QTransform matrix = mMatrix.inverted( &invertible );
       assert( invertible );
       qreal mx, my;
       matrix.map( static_cast< qreal >( x ), static_cast< qreal >( y ), &mx, &my );
@@ -179,7 +179,7 @@ class CORE_EXPORT QgsMapToPixel
      */
     QgsPointXY toMapCoordinates( QPoint p ) const
     {
-      QgsPointXY mapPt = toMapCoordinates( static_cast<double>( p.x() ), static_cast<double>( p.y() ) );
+      const QgsPointXY mapPt = toMapCoordinates( static_cast<double>( p.x() ), static_cast<double>( p.y() ) );
       return QgsPointXY( mapPt );
     }
 

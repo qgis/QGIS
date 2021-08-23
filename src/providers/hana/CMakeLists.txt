@@ -6,6 +6,7 @@ set (HANA_SRCS
   qgshanaconnection.cpp
   qgshanaconnectionpool.cpp
   qgshanaconnectionstringbuilder.cpp
+  qgshanadataitems.cpp
   qgshanadriver.cpp
   qgshanaexpressioncompiler.cpp
   qgshanafeatureiterator.cpp
@@ -21,7 +22,6 @@ set (HANA_SRCS
 
 if (WITH_GUI)
   set(HANA_SRCS ${HANA_SRCS}
-    qgshanadataitems.cpp
     qgshanadataitemguiprovider.cpp
     qgshananewconnection.cpp
     qgshanaprovidergui.cpp

@@ -79,7 +79,7 @@ QgsSearchWidgetWrapper::FilterFlags QgsRelationReferenceSearchWidgetWrapper::def
 
 QString QgsRelationReferenceSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const
 {
-  QString fieldName = createFieldIdentifier();
+  const QString fieldName = createFieldIdentifier();
 
   //clear any unsupported flags
   flags &= supportedFlags();
@@ -88,7 +88,7 @@ QString QgsRelationReferenceSearchWidgetWrapper::createExpression( QgsSearchWidg
   if ( flags & IsNotNull )
     return fieldName + " IS NOT NULL";
 
-  QVariant v = value();
+  const QVariant v = value();
   if ( !v.isValid() )
     return QString();
 
@@ -163,9 +163,9 @@ void QgsRelationReferenceSearchWidgetWrapper::onValuesChanged( const QVariantLis
   }
   else
   {
-    QgsSettings settings;
+    const QgsSettings settings;
     // TODO: adapt for composite keys
-    QVariant value = values.at( 0 );
+    const QVariant value = values.at( 0 );
     setExpression( value.isNull() ? QgsApplication::nullRepresentation() : value.toString() );
     emit valueChanged();
   }
@@ -175,8 +175,8 @@ void QgsRelationReferenceSearchWidgetWrapper::onValuesChanged( const QVariantLis
 void QgsRelationReferenceSearchWidgetWrapper::setExpression( const QString &expression )
 {
   QString exp = expression;
-  QString nullValue = QgsApplication::nullRepresentation();
-  QString fieldName = layer()->fields().at( mFieldIdx ).name();
+  const QString nullValue = QgsApplication::nullRepresentation();
+  const QString fieldName = layer()->fields().at( mFieldIdx ).name();
 
   QString str;
   if ( exp == nullValue )

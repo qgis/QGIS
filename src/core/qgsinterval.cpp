@@ -235,9 +235,9 @@ QgsInterval QgsInterval::fromString( const QString &string )
   for ( const QString &match : constList )
   {
     const thread_local QRegularExpression splitRx( "\\s+" );
-    QStringList split = match.split( splitRx );
+    const QStringList split = match.split( splitRx );
     bool ok;
-    double value = split.at( 0 ).toDouble( &ok );
+    const double value = split.at( 0 ).toDouble( &ok );
     if ( !ok )
     {
       continue;
@@ -247,7 +247,7 @@ QgsInterval QgsInterval::fromString( const QString &string )
     QMap<int, QStringList>::const_iterator it = map.constBegin();
     for ( ; it != map.constEnd(); ++it )
     {
-      int duration = it.key();
+      const int duration = it.key();
       const auto constValue = it.value();
       for ( const QString &name : constValue )
       {
@@ -284,7 +284,7 @@ QDebug operator<<( QDebug dbg, const QgsInterval &interval )
 
 QgsInterval operator-( const QDateTime &dt1, const QDateTime &dt2 )
 {
-  qint64 mSeconds = dt2.msecsTo( dt1 );
+  const qint64 mSeconds = dt2.msecsTo( dt1 );
   return QgsInterval( mSeconds / 1000.0 );
 }
 
@@ -295,12 +295,12 @@ QDateTime operator+( const QDateTime &start, const QgsInterval &interval )
 
 QgsInterval operator-( QDate date1, QDate date2 )
 {
-  qint64 seconds = static_cast< qint64 >( date2.daysTo( date1 ) ) * 24 * 60 * 60;
+  const qint64 seconds = static_cast< qint64 >( date2.daysTo( date1 ) ) * 24 * 60 * 60;
   return QgsInterval( seconds );
 }
 
 QgsInterval operator-( QTime time1, QTime time2 )
 {
-  qint64 mSeconds = time2.msecsTo( time1 );
+  const qint64 mSeconds = time2.msecsTo( time1 );
   return QgsInterval( mSeconds / 1000.0 );
 }

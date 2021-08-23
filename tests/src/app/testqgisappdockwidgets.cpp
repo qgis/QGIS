@@ -98,7 +98,7 @@ void TestQgisAppDockWidgets::init()
 void TestQgisAppDockWidgets::tabifiedQDockWidgetEmptyArea()
 {
   qDebug() << "TestQgisAppDockWidgets::tabifiedQDockWidgetEmptyArea()";
-  Qt::DockWidgetArea area = Qt::LeftDockWidgetArea;
+  const Qt::DockWidgetArea area = Qt::LeftDockWidgetArea;
 
   QDockWidget *dw = new QDockWidget();
   mQgisApp->addTabifiedDockWidget( area, dw );
@@ -119,7 +119,7 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetEmptyArea()
 void TestQgisAppDockWidgets::tabifiedQgsDockWidgetEmptyArea()
 {
   qDebug() << "TestQgisAppDockWidgets::tabifiedQgsDockWidgetEmptyArea()";
-  Qt::DockWidgetArea area = Qt::LeftDockWidgetArea;
+  const Qt::DockWidgetArea area = Qt::LeftDockWidgetArea;
 
   QgsDockWidget *dw = new QgsDockWidget();
   mQgisApp->addTabifiedDockWidget( area, dw );
@@ -141,7 +141,7 @@ void TestQgisAppDockWidgets::tabifiedQgsDockWidgetEmptyArea()
 void TestQgisAppDockWidgets::tabifiedQDockWidgetOneExisting()
 {
   qDebug() << "TestQgisAppDockWidgets::tabifiedQDockWidgetOneExisting()";
-  Qt::DockWidgetArea area = Qt::LeftDockWidgetArea;
+  const Qt::DockWidgetArea area = Qt::LeftDockWidgetArea;
 
   // Add a base dock widget to the area
   QgsDockWidget *mLayerTreeDock = new QgsDockWidget( tr( "Layers" ), mQgisApp );
@@ -149,7 +149,7 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetOneExisting()
   QVERIFY( mLayerTreeDock->isVisible() );
 
   // Tabify our dock widget
-  QString dockName = QStringLiteral( "QDockWidget 1" );
+  const QString dockName = QStringLiteral( "QDockWidget 1" );
   QDockWidget *dw = new QDockWidget( dockName );
   mQgisApp->addTabifiedDockWidget( area, dw );
   QVERIFY( dw->isVisible() );
@@ -196,7 +196,7 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetOneExisting()
 void TestQgisAppDockWidgets::tabifiedQDockWidgetOneExistingRaiseTab()
 {
   qDebug() << "TestQgisAppDockWidgets::tabifiedQDockWidgetOneExistingRaiseTab()";
-  Qt::DockWidgetArea area = Qt::LeftDockWidgetArea;
+  const Qt::DockWidgetArea area = Qt::LeftDockWidgetArea;
 
   // Add a base dock widget to the area
   QgsDockWidget *mLayerTreeDock = new QgsDockWidget( tr( "Layers" ), mQgisApp );
@@ -204,7 +204,7 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetOneExistingRaiseTab()
   QVERIFY( mLayerTreeDock->isVisible() );
 
   // Tabify our dock widget
-  QString dockName = QStringLiteral( "QDockWidget 1" );
+  const QString dockName = QStringLiteral( "QDockWidget 1" );
   QDockWidget *dw = new QDockWidget( dockName );
   mQgisApp->addTabifiedDockWidget( area, dw, QStringList(), true );
   QVERIFY( dw->isVisible() );
@@ -251,7 +251,7 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetOneExistingRaiseTab()
 void TestQgisAppDockWidgets::tabifiedQgsDockWidgetOneExisting()
 {
   qDebug() << "TestQgisAppDockWidgets::tabifiedQgsDockWidgetOneExisting()";
-  Qt::DockWidgetArea area = Qt::LeftDockWidgetArea;
+  const Qt::DockWidgetArea area = Qt::LeftDockWidgetArea;
 
   // Add a base dock widget to the area
   QgsDockWidget *mLayerTreeDock = new QgsDockWidget( tr( "Layers" ), mQgisApp );
@@ -259,7 +259,7 @@ void TestQgisAppDockWidgets::tabifiedQgsDockWidgetOneExisting()
   QVERIFY( mLayerTreeDock->isVisible() );
 
   // Tabify our dock widget
-  QString dockName = QStringLiteral( "QgsDockWidget 1" );
+  const QString dockName = QStringLiteral( "QgsDockWidget 1" );
   QgsDockWidget *dw = new QgsDockWidget( dockName );
   mQgisApp->addTabifiedDockWidget( area, dw );
   QVERIFY( dw->isVisible() );
@@ -306,7 +306,7 @@ void TestQgisAppDockWidgets::tabifiedQgsDockWidgetOneExisting()
 void TestQgisAppDockWidgets::tabifiedQgsDockWidgetOneExistingRaiseTab()
 {
   qDebug() << "TestQgisAppDockWidgets::tabifiedQgsDockWidgetOneExistingRaiseTab()";
-  Qt::DockWidgetArea area = Qt::LeftDockWidgetArea;
+  const Qt::DockWidgetArea area = Qt::LeftDockWidgetArea;
 
   // Add a base dock widget to the area
   QgsDockWidget *mLayerTreeDock = new QgsDockWidget( tr( "Layers" ), mQgisApp );
@@ -314,7 +314,7 @@ void TestQgisAppDockWidgets::tabifiedQgsDockWidgetOneExistingRaiseTab()
   QVERIFY( mLayerTreeDock->isVisible() );
 
   // Tabify our dock widget
-  QString dockName = QStringLiteral( "QgsDockWidget 1" );
+  const QString dockName = QStringLiteral( "QgsDockWidget 1" );
   QgsDockWidget *dw = new QgsDockWidget( dockName );
   mQgisApp->addTabifiedDockWidget( area, dw, QStringList(), true );
   QVERIFY( dw->isVisible() );
@@ -361,11 +361,11 @@ void TestQgisAppDockWidgets::tabifiedQgsDockWidgetOneExistingRaiseTab()
 void TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExisting()
 {
   qDebug() << "TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExisting()";
-  Qt::DockWidgetArea area = Qt::LeftDockWidgetArea;
+  const Qt::DockWidgetArea area = Qt::LeftDockWidgetArea;
 
   // Add 2 base dock widgets to the area
-  QString objectName1 = QStringLiteral( "Layers" );
-  QString objectName2 = QStringLiteral( "LayerOrder" );
+  const QString objectName1 = QStringLiteral( "Layers" );
+  const QString objectName2 = QStringLiteral( "LayerOrder" );
   QgsDockWidget *mLayerTreeDock = new QgsDockWidget( tr( "Layers" ), mQgisApp );
   mLayerTreeDock->setObjectName( objectName1 );
   mQgisApp->addDockWidget( area, mLayerTreeDock );
@@ -380,7 +380,7 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExisting()
   QVERIFY( mQgisApp->tabifiedDockWidgets( mLayerOrderDock ).isEmpty() );
 
   // Tabify our 1st dock widget (picking 1st priority)
-  QString dockName1 = QStringLiteral( "QDockWidget 1" );
+  const QString dockName1 = QStringLiteral( "QDockWidget 1" );
   QDockWidget *dw1 = new QDockWidget( dockName1 );
   mQgisApp->addTabifiedDockWidget( area, dw1, QStringList() << objectName1 );
   QVERIFY( dw1->isVisible() );
@@ -390,7 +390,7 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExisting()
   QVERIFY( mQgisApp->tabifiedDockWidgets( mLayerOrderDock ).isEmpty() );
 
   // Tabify our 2nd dock widget (picking 1st priority)
-  QString dockName2 = QStringLiteral( "QDockWidget 2" );
+  const QString dockName2 = QStringLiteral( "QDockWidget 2" );
   QDockWidget *dw2 = new QDockWidget( dockName2 );
   mQgisApp->addTabifiedDockWidget( area, dw2, QStringList() << objectName2 );
   QVERIFY( dw2->isVisible() );
@@ -400,7 +400,7 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExisting()
   QCOMPARE( mQgisApp->tabifiedDockWidgets( mLayerOrderDock ).length(), 1 );
 
   // Tabify our 3rd dock widget (picking 2nd priority)
-  QString dockName3 = QStringLiteral( "QDockWidget 3" );
+  const QString dockName3 = QStringLiteral( "QDockWidget 3" );
   QDockWidget *dw3 = new QDockWidget( dockName3 );
   mQgisApp->addTabifiedDockWidget( area, dw3, QStringList() << QStringLiteral( "Foo" ) << objectName2 );
   QVERIFY( dw3->isVisible() );
@@ -452,11 +452,11 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExisting()
 void TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExistingRaiseTab()
 {
   qDebug() << "TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExistingRaiseTab()";
-  Qt::DockWidgetArea area = Qt::LeftDockWidgetArea;
+  const Qt::DockWidgetArea area = Qt::LeftDockWidgetArea;
 
   // Add 2 base dock widgets to the area
-  QString objectName1 = QStringLiteral( "Layers" );
-  QString objectName2 = QStringLiteral( "LayerOrder" );
+  const QString objectName1 = QStringLiteral( "Layers" );
+  const QString objectName2 = QStringLiteral( "LayerOrder" );
   QgsDockWidget *mLayerTreeDock = new QgsDockWidget( tr( "Layers" ), mQgisApp );
   mLayerTreeDock->setObjectName( objectName1 );
   mQgisApp->addDockWidget( area, mLayerTreeDock );
@@ -471,7 +471,7 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExistingRaiseTab()
   QVERIFY( mQgisApp->tabifiedDockWidgets( mLayerOrderDock ).isEmpty() );
 
   // Tabify our 1st dock widget (picking 1st priority)
-  QString dockName1 = QStringLiteral( "QDockWidget 1" );
+  const QString dockName1 = QStringLiteral( "QDockWidget 1" );
   QDockWidget *dw1 = new QDockWidget( dockName1 );
   mQgisApp->addTabifiedDockWidget( area, dw1, QStringList() << objectName1, true );
   QVERIFY( dw1->isVisible() );
@@ -481,7 +481,7 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExistingRaiseTab()
   QVERIFY( mQgisApp->tabifiedDockWidgets( mLayerOrderDock ).isEmpty() );
 
   // Tabify our 2nd dock widget (picking 1st priority)
-  QString dockName2 = QStringLiteral( "QDockWidget 2" );
+  const QString dockName2 = QStringLiteral( "QDockWidget 2" );
   QDockWidget *dw2 = new QDockWidget( dockName2 );
   mQgisApp->addTabifiedDockWidget( area, dw2, QStringList() << objectName2, true );
   QVERIFY( dw2->isVisible() );
@@ -491,7 +491,7 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExistingRaiseTab()
   QCOMPARE( mQgisApp->tabifiedDockWidgets( mLayerOrderDock ).length(), 1 );
 
   // Tabify our 3rd dock widget (picking 2nd priority)
-  QString dockName3 = QStringLiteral( "QDockWidget 3" );
+  const QString dockName3 = QStringLiteral( "QDockWidget 3" );
   QDockWidget *dw3 = new QDockWidget( dockName3 );
   mQgisApp->addTabifiedDockWidget( area, dw3, QStringList() << QStringLiteral( "Foo" ) << objectName2, true );
   QVERIFY( dw3->isVisible() );
@@ -550,11 +550,11 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExistingRaiseTab()
 void TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExistingOneHidden()
 {
   qDebug() << "TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExistingOneHidden()";
-  Qt::DockWidgetArea area = Qt::LeftDockWidgetArea;
+  const Qt::DockWidgetArea area = Qt::LeftDockWidgetArea;
 
   // Add 2 base dock widgets to the area
-  QString objectName1 = QStringLiteral( "Layers" );
-  QString objectName2 = QStringLiteral( "LayerOrder" );
+  const QString objectName1 = QStringLiteral( "Layers" );
+  const QString objectName2 = QStringLiteral( "LayerOrder" );
   QgsDockWidget *mLayerTreeDock = new QgsDockWidget( tr( "Layers" ), mQgisApp );
   mLayerTreeDock->setObjectName( objectName1 );
   mQgisApp->addDockWidget( area, mLayerTreeDock );
@@ -570,7 +570,7 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExistingOneHidden()
   QVERIFY( mQgisApp->tabifiedDockWidgets( mLayerOrderDock ).isEmpty() );
 
   // Tabify our dock widget (picking 2nd priority)
-  QString dockName1 = QStringLiteral( "QDockWidget 1" );
+  const QString dockName1 = QStringLiteral( "QDockWidget 1" );
   QDockWidget *dw1 = new QDockWidget( dockName1 );
   mQgisApp->addTabifiedDockWidget( area, dw1, QStringList() << objectName1 << objectName2 );
   QVERIFY( dw1->isVisible() );
@@ -622,11 +622,11 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExistingOneHidden()
 void TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExistingOneHiddenRaiseTab()
 {
   qDebug() << "TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExistingOneHiddenRaiseTab()";
-  Qt::DockWidgetArea area = Qt::LeftDockWidgetArea;
+  const Qt::DockWidgetArea area = Qt::LeftDockWidgetArea;
 
   // Add 2 base dock widgets to the area
-  QString objectName1 = QStringLiteral( "Layers" );
-  QString objectName2 = QStringLiteral( "LayerOrder" );
+  const QString objectName1 = QStringLiteral( "Layers" );
+  const QString objectName2 = QStringLiteral( "LayerOrder" );
   QgsDockWidget *mLayerTreeDock = new QgsDockWidget( tr( "Layers" ), mQgisApp );
   mLayerTreeDock->setObjectName( objectName1 );
   mQgisApp->addDockWidget( area, mLayerTreeDock );
@@ -642,7 +642,7 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExistingOneHiddenRaiseTab()
   QVERIFY( mQgisApp->tabifiedDockWidgets( mLayerOrderDock ).isEmpty() );
 
   // Tabify our dock widget (picking 2nd priority)
-  QString dockName1 = QStringLiteral( "QDockWidget 1" );
+  const QString dockName1 = QStringLiteral( "QDockWidget 1" );
   QDockWidget *dw1 = new QDockWidget( dockName1 );
   mQgisApp->addTabifiedDockWidget( area, dw1, QStringList() << objectName1 << objectName2, true );
   QVERIFY( dw1->isVisible() );

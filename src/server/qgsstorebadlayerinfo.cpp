@@ -26,7 +26,7 @@ void QgsStoreBadLayerInfo::handleBadLayers( const QList<QDomNode> &layers )
   {
     if ( !it->isNull() )
     {
-      QDomElement idElem = it->firstChildElement( "id" );
+      const QDomElement idElem = it->firstChildElement( "id" );
       if ( !idElem.isNull() )
       {
         const QString badLayerId = idElem.text();

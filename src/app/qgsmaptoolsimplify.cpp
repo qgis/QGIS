@@ -140,7 +140,7 @@ void QgsSimplifyUserInputWidget::keyReleaseEvent( QKeyEvent *event )
 QgsMapToolSimplify::QgsMapToolSimplify( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
   mTolerance = settings.value( QStringLiteral( "digitizing/simplify_tolerance" ), 1 ).toDouble();
   mToleranceUnits = static_cast< QgsTolerance::UnitType >( settings.value( QStringLiteral( "digitizing/simplify_tolerance_units" ), 0 ).toInt() );
   mMethod = static_cast< QgsMapToolSimplify::Method >( settings.value( QStringLiteral( "digitizing/simplify_method" ), 0 ).toInt() );
@@ -180,7 +180,7 @@ void QgsMapToolSimplify::updateSimplificationPreview()
 {
   QgsVectorLayer *vl = currentVectorLayer();
 
-  double layerTolerance = QgsTolerance::toleranceInMapUnits( mTolerance, vl, mCanvas->mapSettings(), mToleranceUnits );
+  const double layerTolerance = QgsTolerance::toleranceInMapUnits( mTolerance, vl, mCanvas->mapSettings(), mToleranceUnits );
   mReducedHasErrors = false;
   mReducedVertexCount = 0;
   int i = 0;
@@ -188,7 +188,7 @@ void QgsMapToolSimplify::updateSimplificationPreview()
   const auto constMSelectedFeatures = mSelectedFeatures;
   for ( const QgsFeature &fSel : constMSelectedFeatures )
   {
-    QgsGeometry g = processGeometry( fSel.geometry(), layerTolerance );
+    const QgsGeometry g = processGeometry( fSel.geometry(), layerTolerance );
     if ( !g.isNull() )
     {
       mReducedVertexCount += g.constGet()->nCoordinates();
@@ -234,7 +234,7 @@ QgsGeometry QgsMapToolSimplify::processGeometry( const QgsGeometry &geometry, do
     case SimplifyVisvalingam:
     {
 
-      QgsMapToPixelSimplifier simplifier( QgsMapToPixelSimplifier::SimplifyGeometry, tolerance, mMethod == SimplifySnapToGrid ? QgsMapToPixelSimplifier::SnapToGrid : QgsMapToPixelSimplifier::Visvalingam );
+      const QgsMapToPixelSimplifier simplifier( QgsMapToPixelSimplifier::SimplifyGeometry, tolerance, mMethod == SimplifySnapToGrid ? QgsMapToPixelSimplifier::SnapToGrid : QgsMapToPixelSimplifier::Visvalingam );
       return simplifier.simplify( geometry );
     }
 
@@ -296,7 +296,7 @@ void QgsMapToolSimplify::setMethod( QgsMapToolSimplify::Method method )
 void QgsMapToolSimplify::storeSimplified()
 {
   QgsVectorLayer *vlayer = currentVectorLayer();
-  double layerTolerance = QgsTolerance::toleranceInMapUnits( mTolerance, vlayer, mCanvas->mapSettings(), mToleranceUnits );
+  const double layerTolerance = QgsTolerance::toleranceInMapUnits( mTolerance, vlayer, mCanvas->mapSettings(), mToleranceUnits );
 
   vlayer->beginEditCommand( tr( "Geometry simplified" ) );
   const auto constMSelectedFeatures = mSelectedFeatures;
@@ -423,13 +423,13 @@ void QgsMapToolSimplify::keyReleaseEvent( QKeyEvent *e )
 void QgsMapToolSimplify::selectOneFeature( QPoint canvasPoint )
 {
   QgsVectorLayer *vlayer = currentVectorLayer();
-  QgsPointXY layerCoords = toLayerCoordinates( vlayer, canvasPoint );
-  double r = QgsTolerance::vertexSearchRadius( vlayer, mCanvas->mapSettings() );
-  QgsRectangle selectRect = QgsRectangle( layerCoords.x() - r, layerCoords.y() - r,
-                                          layerCoords.x() + r, layerCoords.y() + r );
+  const QgsPointXY layerCoords = toLayerCoordinates( vlayer, canvasPoint );
+  const double r = QgsTolerance::vertexSearchRadius( vlayer, mCanvas->mapSettings() );
+  const QgsRectangle selectRect = QgsRectangle( layerCoords.x() - r, layerCoords.y() - r,
+                                  layerCoords.x() + r, layerCoords.y() + r );
   QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ).setNoAttributes() );
 
-  QgsGeometry geometry = QgsGeometry::fromPointXY( layerCoords );
+  const QgsGeometry geometry = QgsGeometry::fromPointXY( layerCoords );
   double minDistance = std::numeric_limits<double>::max();
   double currentDistance;
   QgsFeature minDistanceFeature;
@@ -454,9 +454,9 @@ void QgsMapToolSimplify::selectOneFeature( QPoint canvasPoint )
 void QgsMapToolSimplify::selectFeaturesInRect()
 {
   QgsVectorLayer *vlayer = currentVectorLayer();
-  QgsPointXY pt1 = toMapCoordinates( mSelectionRect.topLeft() );
-  QgsPointXY pt2 = toMapCoordinates( mSelectionRect.bottomRight() );
-  QgsRectangle rect = toLayerCoordinates( vlayer, QgsRectangle( pt1, pt2 ) );
+  const QgsPointXY pt1 = toMapCoordinates( mSelectionRect.topLeft() );
+  const QgsPointXY pt2 = toMapCoordinates( mSelectionRect.bottomRight() );
+  const QgsRectangle rect = toLayerCoordinates( vlayer, QgsRectangle( pt1, pt2 ) );
 
   QgsFeature f;
   QgsFeatureRequest request;
@@ -488,7 +488,7 @@ void QgsMapToolSimplify::deactivate()
 
 QString QgsMapToolSimplify::statusText() const
 {
-  int percent = mOriginalVertexCount ? ( 100 * mReducedVertexCount / mOriginalVertexCount ) : 0;
+  const int percent = mOriginalVertexCount ? ( 100 * mReducedVertexCount / mOriginalVertexCount ) : 0;
   QString txt = tr( "%1 feature(s): %2 to %3 vertices (%4%)" )
                 .arg( mSelectedFeatures.count() ).arg( mOriginalVertexCount ).arg( mReducedVertexCount ).arg( percent );
   if ( mReducedHasErrors )

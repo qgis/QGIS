@@ -66,11 +66,11 @@ void TestQgsRasterLayerSaveAsDialog::cleanup()
 
 void TestQgsRasterLayerSaveAsDialog::outputLayerExists()
 {
-  QString fileName { prepareDb() };
+  const QString fileName { prepareDb() };
 
   // Try to add a raster layer to the DB
-  QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QString rasterPath { dataDir + "/landsat.tif" };
+  const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString rasterPath { dataDir + "/landsat.tif" };
 
   QgsRasterLayer rl( rasterPath, QStringLiteral( "my_raster" ) );
   QVERIFY( rl.isValid() );
@@ -84,8 +84,8 @@ void TestQgsRasterLayerSaveAsDialog::outputLayerExists()
   QVERIFY( ! d.outputLayerExists() );
 
   // Write the raster into the destination file
-  auto pipe { *rl.pipe() };
-  auto rasterUri { QStringLiteral( "GPKG:%1:%2" ).arg( d.outputFileName() ).arg( d.outputLayerName() ) };
+  const auto pipe { *rl.pipe() };
+  const auto rasterUri { QStringLiteral( "GPKG:%1:%2" ).arg( d.outputFileName() ).arg( d.outputLayerName() ) };
   auto fileWriter { QgsRasterFileWriter( d.outputFileName() ) };
   fileWriter.setCreateOptions( d.createOptions() );
   fileWriter.setOutputFormat( d.outputFormat() );
@@ -105,7 +105,7 @@ void TestQgsRasterLayerSaveAsDialog::outputLayerExists()
   auto fileWriter2 { QgsRasterFileWriter( d.outputFileName() ) };
   fileWriter2.writeRaster( &pipe, 10, 10, rl.extent(), rl.crs(), rl.transformContext() );
   {
-    auto rasterUri2 { QStringLiteral( "GPKG:%1:%2" ).arg( d.outputFileName() ).arg( d.outputLayerName() ) };
+    const auto rasterUri2 { QStringLiteral( "GPKG:%1:%2" ).arg( d.outputFileName() ).arg( d.outputLayerName() ) };
     QVERIFY( ! QgsRasterLayer( rasterUri2, QStringLiteral( "my_raster2" ) ).isValid() );
   }
 }
@@ -116,12 +116,12 @@ QString TestQgsRasterLayerSaveAsDialog::prepareDb()
   QTemporaryFile tmpFile( QDir::tempPath() +  QStringLiteral( "/test_qgsrasterlayersavesdialog_XXXXXX.gpkg" ) );
   tmpFile.setAutoRemove( false );
   tmpFile.open();
-  QString fileName( tmpFile.fileName( ) );
+  const QString fileName( tmpFile.fileName( ) );
   QgsVectorLayer vl( QStringLiteral( "Point?field=firstfield:string(1024)" ), "test_vector_layer", "memory" );
 
   QgsVectorFileWriter::SaveVectorOptions saveOptions;
   saveOptions.fileEncoding = QStringLiteral( "UTF-8" );
-  std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( fileName, vl.fields(), QgsWkbTypes::Point, vl.crs(), QgsCoordinateTransformContext(), saveOptions ) );
+  const std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( fileName, vl.fields(), QgsWkbTypes::Point, vl.crs(), QgsCoordinateTransformContext(), saveOptions ) );
 
   QgsFeature f { vl.fields() };
   f.setAttribute( 0, QString( 1024, 'x' ) );
@@ -141,7 +141,7 @@ QString TestQgsRasterLayerSaveAsDialog::prepareDb()
     nullptr,
     nullptr
   );
-  QgsVectorLayer vl2( QStringLiteral( "%1|layername=test_vector_layer" ).arg( fileName ), "test_vector_layer", "ogr" );
+  const QgsVectorLayer vl2( QStringLiteral( "%1|layername=test_vector_layer" ).arg( fileName ), "test_vector_layer", "ogr" );
   Q_ASSERT( vl2.isValid() );
   return tmpFile.fileName( );
 }

@@ -90,7 +90,7 @@ QgsPaintEffect *QgsPaintEffectRegistry::createEffect( const QDomElement &element
     return nullptr;
   }
 
-  QString type = element.attribute( QStringLiteral( "type" ) );
+  const QString type = element.attribute( QStringLiteral( "type" ) );
 
   QgsPaintEffect *effect = QgsApplication::paintEffectRegistry()->createEffect( type );
   if ( !effect )

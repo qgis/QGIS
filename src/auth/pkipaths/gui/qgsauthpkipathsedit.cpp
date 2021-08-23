@@ -47,11 +47,11 @@ QgsAuthPkiPathsEdit::QgsAuthPkiPathsEdit( QWidget *parent )
 bool QgsAuthPkiPathsEdit::validateConfig()
 {
   // required components
-  QString certpath( lePkiPathsCert->text() );
-  QString keypath( lePkiPathsKey->text() );
+  const QString certpath( lePkiPathsCert->text() );
+  const QString keypath( lePkiPathsKey->text() );
 
-  bool certfound = QFile::exists( certpath );
-  bool keyfound = QFile::exists( keypath );
+  const bool certfound = QFile::exists( certpath );
+  const bool keyfound = QFile::exists( keypath );
 
   QgsAuthGuiUtils::fileFound( certpath.isEmpty() || certfound, lePkiPathsCert );
   QgsAuthGuiUtils::fileFound( keypath.isEmpty() || keyfound, lePkiPathsKey );
@@ -63,7 +63,7 @@ bool QgsAuthPkiPathsEdit::validateConfig()
   }
 
   // check for issue date validity, then notify status
-  QSslCertificate cert( QgsAuthCertUtils::certFromFile( certpath ) );
+  const QSslCertificate cert( QgsAuthCertUtils::certFromFile( certpath ) );
 
   if ( cert.isNull() )
   {
@@ -71,15 +71,15 @@ bool QgsAuthPkiPathsEdit::validateConfig()
     return validityChange( false );
   }
 
-  QDateTime startdate( cert.effectiveDate() );
-  QDateTime enddate( cert.expiryDate() );
+  const QDateTime startdate( cert.effectiveDate() );
+  const QDateTime enddate( cert.expiryDate() );
 
   writePkiMessage( lePkiPathsMsg,
                    tr( "%1 thru %2" ).arg( startdate.toString(), enddate.toString() ),
                    ( QgsAuthCertUtils::certIsCurrent( cert ) ? Valid : Invalid ) );
 
-  bool certviable = QgsAuthCertUtils::certIsViable( cert );
-  bool showCas( certviable && populateCas() );
+  const bool certviable = QgsAuthCertUtils::certIsViable( cert );
+  const bool showCas( certviable && populateCas() );
   lblCas->setVisible( showCas );
   twCas->setVisible( showCas );
   cbAddCas->setVisible( showCas );

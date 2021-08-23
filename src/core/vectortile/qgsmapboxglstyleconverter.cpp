@@ -1319,7 +1319,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     // {field_name} is permitted in string -- if multiple fields are present, convert them to an expression
     // but if single field is covered in {}, return it directly
     const QRegularExpression singleFieldRx( QStringLiteral( "^{([^}]+)}$" ) );
-    QRegularExpressionMatch match = singleFieldRx.match( string );
+    const QRegularExpressionMatch match = singleFieldRx.match( string );
     if ( match.hasMatch() )
     {
       isExpression = false;
@@ -2166,7 +2166,7 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateStringByZoom( const QVari
   if ( stops.empty() )
     return QgsProperty();
 
-  QString scaleExpression = parseStringStops( stops, context, conversionMap, defaultString );
+  const QString scaleExpression = parseStringStops( stops, context, conversionMap, defaultString );
 
   return QgsProperty::fromExpression( scaleExpression );
 }
@@ -2536,7 +2536,7 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
     QStringList parts;
     for ( int i = 1; i < expression.size(); ++i )
     {
-      QString part = parseValue( expression.at( i ), context );
+      const QString part = parseValue( expression.at( i ), context );
       if ( part.isEmpty() )
       {
         context.pushWarning( QObject::tr( "%1: Skipping unsupported expression" ).arg( context.layerId() ) );
@@ -2593,7 +2593,7 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
     QStringList parts;
     for ( int i = 2; i < expression.size(); ++i )
     {
-      QString part = parseValue( expression.at( i ), context );
+      const QString part = parseValue( expression.at( i ), context );
       if ( part.isEmpty() )
       {
         context.pushWarning( QObject::tr( "%1: Skipping unsupported expression" ).arg( context.layerId() ) );
@@ -2727,7 +2727,7 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64( const QVariant &value
       buffer.open( QIODevice::WriteOnly );
       sprite.save( &buffer, "PNG" );
       buffer.close();
-      QByteArray encoded = blob.toBase64();
+      const QByteArray encoded = blob.toBase64();
       path = QString( encoded );
       path.prepend( QLatin1String( "base64:" ) );
     }
@@ -2739,7 +2739,7 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64( const QVariant &value
     case QVariant::String:
     {
       QString spriteName = value.toString();
-      QRegularExpression fieldNameMatch( QStringLiteral( "{([^}]+)}" ) );
+      const QRegularExpression fieldNameMatch( QStringLiteral( "{([^}]+)}" ) );
       QRegularExpressionMatch match = fieldNameMatch.match( spriteName );
       if ( match.hasMatch() )
       {
@@ -2750,7 +2750,7 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64( const QVariant &value
         spriteName.replace( "(", QLatin1String( "\\(" ) );
         spriteName.replace( ")", QLatin1String( "\\)" ) );
         spriteName.replace( fieldNameMatch, QStringLiteral( "([^\\/\\\\]+)" ) );
-        QRegularExpression fieldValueMatch( spriteName );
+        const QRegularExpression fieldValueMatch( spriteName );
         const QStringList spriteNames = context.spriteDefinitions().keys();
         for ( const QString &name : spriteNames )
         {

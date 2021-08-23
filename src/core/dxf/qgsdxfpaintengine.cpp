@@ -98,7 +98,7 @@ void QgsDxfPaintEngine::drawPolygon( const QPointF *points, int pointCount, Poly
 
 void QgsDxfPaintEngine::drawPath( const QPainterPath &path )
 {
-  int pathLength = path.elementCount();
+  const int pathLength = path.elementCount();
   for ( int i = 0; i < pathLength; ++i )
   {
     const QPainterPath::Element &pathElem = path.elementAt( i );
@@ -208,7 +208,7 @@ QgsPoint QgsDxfPaintEngine::toDxfCoordinates( QPointF pt ) const
   if ( !mPaintDevice || !mDxf )
     return QgsPoint( pt.x(), pt.y() );
 
-  QPointF dxfPt = mPaintDevice->dxfCoordinates( mTransform.map( pt ) ) + mShift;
+  const QPointF dxfPt = mPaintDevice->dxfCoordinates( mTransform.map( pt ) ) + mShift;
   return QgsPoint( dxfPt.x(), dxfPt.y() );
 }
 
@@ -225,7 +225,7 @@ QPointF QgsDxfPaintEngine::bezierPoint( const QList<QPointF> &controlPolygon, do
 {
   double x = 0;
   double y = 0;
-  int cPolySize = controlPolygon.size();
+  const int cPolySize = controlPolygon.size();
   double bPoly  = 0;
 
   QList<QPointF>::const_iterator it = controlPolygon.constBegin();
@@ -266,7 +266,7 @@ double QgsDxfPaintEngine::power( double a, int b )
   if ( b == 0 )
     return 1;
 
-  double tmp = a;
+  const double tmp = a;
   for ( int i = 2; i <= std::abs( b ); i++ )
     a *= tmp;
 

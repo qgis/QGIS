@@ -37,7 +37,7 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
 {
   // Initialize the geometry with the uri to support old style uri's
   // (ie, just 'point', 'line', 'polygon')
-  QUrl url = QUrl::fromEncoded( uri.toUtf8() );
+  const QUrl url = QUrl::fromEncoded( uri.toUtf8() );
   const QUrlQuery query( url );
   QString geometry;
   if ( query.hasQueryItem( QStringLiteral( "geometry" ) ) )
@@ -60,7 +60,7 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
 
   if ( query.hasQueryItem( QStringLiteral( "crs" ) ) )
   {
-    QString crsDef = query.queryItemValue( QStringLiteral( "crs" ) );
+    const QString crsDef = query.queryItemValue( QStringLiteral( "crs" ) );
     mCrs.createFromString( crsDef );
   }
   else
@@ -112,7 +112,7 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
                   << QgsVectorDataProvider::NativeType( tr( "String list" ), QStringLiteral( "stringlist" ), QVariant::StringList, 0, 0, 0, 0, QVariant::String )
                   << QgsVectorDataProvider::NativeType( tr( "Integer list" ), QStringLiteral( "integerlist" ), QVariant::List, 0, 0, 0, 0, QVariant::Int )
                   << QgsVectorDataProvider::NativeType( tr( "Decimal (real) list" ), QStringLiteral( "doublelist" ), QVariant::List, 0, 0, 0, 0, QVariant::Double )
-                  << QgsVectorDataProvider::NativeType( tr( "Integer (64bit) list" ), QStringLiteral( "doublelist" ), QVariant::List, 0, 0, 0, 0, QVariant::Double )
+                  << QgsVectorDataProvider::NativeType( tr( "Integer (64bit) list" ), QStringLiteral( "integer64list" ), QVariant::List, 0, 0, 0, 0, QVariant::LongLong )
 
                 );
 
@@ -126,11 +126,11 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
         "\\))?(\\[\\])?"             // array
         "$",
         QRegularExpression::CaseInsensitiveOption );
-    QStringList fields = query.allQueryItemValues( QStringLiteral( "field" ) );
+    const QStringList fields = query.allQueryItemValues( QStringLiteral( "field" ) );
     for ( int i = 0; i < fields.size(); i++ )
     {
       QString name = QUrl::fromPercentEncoding( fields.at( i ).toUtf8() );
-      QRegularExpressionMatch regularExpressionMatch = reFieldDef.match( name );
+      const QRegularExpressionMatch regularExpressionMatch = reFieldDef.match( name );
 
       // If no match -> use string as type
       QVariant::Type type = QVariant::String;
@@ -258,13 +258,13 @@ QString QgsMemoryProvider::dataSourceUri( bool expandAuthConfig ) const
 
   QUrl uri( QStringLiteral( "memory" ) );
   QUrlQuery query;
-  QString geometry = QgsWkbTypes::displayString( mWkbType );
+  const QString geometry = QgsWkbTypes::displayString( mWkbType );
   query.addQueryItem( QStringLiteral( "geometry" ), geometry );
 
   if ( mCrs.isValid() )
   {
     QString crsDef;
-    QString authid = mCrs.authid();
+    const QString authid = mCrs.authid();
     if ( authid.startsWith( QLatin1String( "EPSG:" ) ) )
     {
       crsDef = authid;
@@ -421,9 +421,9 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
   bool result = true;
   // whether or not to update the layer extent on the fly as we add features
-  bool updateExtent = mFeatures.isEmpty() || !mExtent.isEmpty();
+  const bool updateExtent = mFeatures.isEmpty() || !mExtent.isEmpty();
 
-  int fieldCount = mFields.count();
+  const int fieldCount = mFields.count();
 
   // For rollback
   const auto oldExtent { mExtent };
@@ -541,7 +541,7 @@ bool QgsMemoryProvider::deleteFeatures( const QgsFeatureIds &id )
 {
   for ( QgsFeatureIds::const_iterator it = id.begin(); it != id.end(); ++it )
   {
-    QgsFeatureMap::iterator fit = mFeatures.find( *it );
+    const QgsFeatureMap::iterator fit = mFeatures.find( *it );
 
     // check whether such feature exists
     if ( fit == mFeatures.end() )
@@ -614,7 +614,7 @@ bool QgsMemoryProvider::renameAttributes( const QgsFieldNameMap &renamedAttribut
   bool result = true;
   for ( ; renameIt != renamedAttributes.constEnd(); ++renameIt )
   {
-    int fieldIndex = renameIt.key();
+    const int fieldIndex = renameIt.key();
     if ( fieldIndex < 0 || fieldIndex >= mFields.count() )
     {
       result = false;
@@ -640,7 +640,7 @@ bool QgsMemoryProvider::deleteAttributes( const QgsAttributeIds &attributes )
   // delete attributes one-by-one with decreasing index
   for ( QList<int>::const_iterator it = attrIdx.constBegin(); it != attrIdx.constEnd(); ++it )
   {
-    int idx = *it;
+    const int idx = *it;
     mFields.remove( idx );
 
     for ( QgsFeatureMap::iterator fit = mFeatures.begin(); fit != mFeatures.end(); ++fit )
@@ -664,7 +664,7 @@ bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap &at
   QString errorMessage;
   for ( QgsChangedAttributesMap::const_iterator it = attr_map.begin(); it != attr_map.end(); ++it )
   {
-    QgsFeatureMap::iterator fit = mFeatures.find( it.key() );
+    const QgsFeatureMap::iterator fit = mFeatures.find( it.key() );
     if ( fit == mFeatures.end() )
       continue;
 
@@ -712,7 +712,7 @@ bool QgsMemoryProvider::changeGeometryValues( const QgsGeometryMap &geometry_map
 {
   for ( QgsGeometryMap::const_iterator it = geometry_map.begin(); it != geometry_map.end(); ++it )
   {
-    QgsFeatureMap::iterator fit = mFeatures.find( it.key() );
+    const QgsFeatureMap::iterator fit = mFeatures.find( it.key() );
     if ( fit == mFeatures.end() )
       continue;
 
@@ -743,7 +743,7 @@ bool QgsMemoryProvider::setSubsetString( const QString &theSQL, bool updateFeatu
 
   if ( !theSQL.isEmpty() )
   {
-    QgsExpression tempExpression( theSQL );
+    const QgsExpression tempExpression( theSQL );
     if ( tempExpression.hasParserError() )
       return false;
   }

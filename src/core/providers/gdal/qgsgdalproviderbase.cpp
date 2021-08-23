@@ -74,10 +74,10 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
       }
     }
 
-    int myEntryCount = GDALGetColorEntryCount( myGdalColorTable );
-    GDALColorInterp myColorInterpretation = GDALGetRasterColorInterpretation( myGdalBand );
+    const int myEntryCount = GDALGetColorEntryCount( myGdalColorTable );
+    const GDALColorInterp myColorInterpretation = GDALGetRasterColorInterpretation( myGdalBand );
     QgsDebugMsgLevel( "Color Interpretation: " + QString::number( static_cast< int >( myColorInterpretation ) ), 2 );
-    GDALPaletteInterp myPaletteInterpretation  = GDALGetPaletteInterpretation( myGdalColorTable );
+    const GDALPaletteInterp myPaletteInterpretation  = GDALGetPaletteInterpretation( myGdalColorTable );
     QgsDebugMsgLevel( "Palette Interpretation: " + QString::number( static_cast< int >( myPaletteInterpretation ) ), 2 );
 
     const GDALColorEntry *myColorEntry = nullptr;
@@ -232,7 +232,7 @@ QgsRectangle QgsGdalProviderBase::extent( GDALDatasetH gdalDataset )const
 {
   double myGeoTransform[6];
 
-  bool myHasGeoTransform = GDALGetGeoTransform( gdalDataset, myGeoTransform ) == CE_None;
+  const bool myHasGeoTransform = GDALGetGeoTransform( gdalDataset, myGeoTransform ) == CE_None;
   if ( !myHasGeoTransform )
   {
     // Initialize the affine transform matrix
@@ -246,14 +246,14 @@ QgsRectangle QgsGdalProviderBase::extent( GDALDatasetH gdalDataset )const
 
   // Use the affine transform to get geo coordinates for
   // the corners of the raster
-  double myXMax = myGeoTransform[0] +
-                  GDALGetRasterXSize( gdalDataset ) * myGeoTransform[1] +
-                  GDALGetRasterYSize( gdalDataset ) * myGeoTransform[2];
-  double myYMin = myGeoTransform[3] +
-                  GDALGetRasterXSize( gdalDataset ) * myGeoTransform[4] +
-                  GDALGetRasterYSize( gdalDataset ) * myGeoTransform[5];
+  const double myXMax = myGeoTransform[0] +
+                        GDALGetRasterXSize( gdalDataset ) * myGeoTransform[1] +
+                        GDALGetRasterYSize( gdalDataset ) * myGeoTransform[2];
+  const double myYMin = myGeoTransform[3] +
+                        GDALGetRasterXSize( gdalDataset ) * myGeoTransform[4] +
+                        GDALGetRasterYSize( gdalDataset ) * myGeoTransform[5];
 
-  QgsRectangle extent( myGeoTransform[0], myYMin, myXMax, myGeoTransform[3] );
+  const QgsRectangle extent( myGeoTransform[0], myYMin, myXMax, myGeoTransform[3] );
   return extent;
 }
 
@@ -270,7 +270,7 @@ GDALDatasetH QgsGdalProviderBase::gdalOpen( const QString &uri, unsigned int nOp
                                      option.toUtf8().constData() );
   }
 
-  bool modify_OGR_GPKG_FOREIGN_KEY_CHECK = !CPLGetConfigOption( "OGR_GPKG_FOREIGN_KEY_CHECK", nullptr );
+  const bool modify_OGR_GPKG_FOREIGN_KEY_CHECK = !CPLGetConfigOption( "OGR_GPKG_FOREIGN_KEY_CHECK", nullptr );
   if ( modify_OGR_GPKG_FOREIGN_KEY_CHECK )
   {
     CPLSetThreadLocalConfigOption( "OGR_GPKG_FOREIGN_KEY_CHECK", "NO" );
@@ -310,14 +310,14 @@ CPLErr QgsGdalProviderBase::gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWF
     extra.pfnProgress = _gdalProgressFnWithFeedback;
     extra.pProgressData = ( void * ) feedback;
   }
-  CPLErr err = GDALRasterIOEx( hBand, eRWFlag, nXOff, nYOff, nXSize, nYSize, pData, nBufXSize, nBufYSize, eBufType, nPixelSpace, nLineSpace, &extra );
+  const CPLErr err = GDALRasterIOEx( hBand, eRWFlag, nXOff, nYOff, nXSize, nYSize, pData, nBufXSize, nBufYSize, eBufType, nPixelSpace, nLineSpace, &extra );
 
   return err;
 }
 
 int QgsGdalProviderBase::gdalGetOverviewCount( GDALRasterBandH hBand )
 {
-  int count = GDALGetOverviewCount( hBand );
+  const int count = GDALGetOverviewCount( hBand );
   return count;
 }
 
@@ -334,7 +334,7 @@ QVariantMap QgsGdalProviderBase::decodeGdalUri( const QString &uri )
     path = path.mid( vsiPrefix.count() );
 
     const QRegularExpression vsiRegex( QStringLiteral( "(?:\\.zip|\\.tar|\\.gz|\\.tar\\.gz|\\.tgz)([^|]+)" ) );
-    QRegularExpressionMatch match = vsiRegex.match( path );
+    const QRegularExpressionMatch match = vsiRegex.match( path );
     if ( match.hasMatch() )
     {
       vsiSuffix = match.captured( 1 );
@@ -367,7 +367,7 @@ QVariantMap QgsGdalProviderBase::decodeGdalUri( const QString &uri )
     const QRegularExpression openOptionRegex( QStringLiteral( "\\|option:([^|]*)" ) );
     while ( true )
     {
-      QRegularExpressionMatch match = openOptionRegex.match( path );
+      const QRegularExpressionMatch match = openOptionRegex.match( path );
       if ( match.hasMatch() )
       {
         openOptions << match.captured( 1 );

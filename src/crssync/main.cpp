@@ -30,7 +30,7 @@
 void CPL_STDCALL showError( CPLErr errClass, int errNo, const char *msg )
 {
   Q_UNUSED( errClass )
-  QRegExp re( "EPSG PCS/GCS code \\d+ not found in EPSG support files.  Is this a valid\nEPSG coordinate system?" );
+  const QRegExp re( "EPSG PCS/GCS code \\d+ not found in EPSG support files.  Is this a valid\nEPSG coordinate system?" );
   if ( errNo != 6 && !re.exactMatch( msg ) )
   {
     std::cerr << msg;
@@ -39,7 +39,7 @@ void CPL_STDCALL showError( CPLErr errClass, int errNo, const char *msg )
 
 int main( int argc, char **argv )
 {
-  QCoreApplication app( argc, argv );
+  const QCoreApplication app( argc, argv );
 
   const QStringList args = QCoreApplication::arguments();
 
@@ -51,7 +51,11 @@ int main( int argc, char **argv )
       verbose = true;
   }
 
-  QTemporaryDir temp;
+  const QTemporaryDir stemp;
+  QSettings::setDefaultFormat( QSettings::IniFormat );
+  QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, stemp.path() );
+
+  const QTemporaryDir temp;
   QgsApplication::init( temp.path() );
 
   if ( !QgsApplication::isRunningFromBuildDir() )
@@ -65,7 +69,7 @@ int main( int argc, char **argv )
 
   CPLPushErrorHandler( showError );
 
-  int res = QgsCoordinateReferenceSystem::syncDatabase();
+  const int res = QgsCoordinateReferenceSystem::syncDatabase();
 
   CPLPopErrorHandler();
 

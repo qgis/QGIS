@@ -86,7 +86,7 @@ void QgsProfilerProxyModel::setGroup( const QString &group )
 
 bool QgsProfilerProxyModel::filterAcceptsRow( int row, const QModelIndex &source_parent ) const
 {
-  QModelIndex index = sourceModel()->index( row, 0, source_parent );
+  const QModelIndex index = sourceModel()->index( row, 0, source_parent );
   return sourceModel()->data( index, QgsRuntimeProfilerNode::Group ).toString() == mGroup;
 }
 
@@ -135,7 +135,7 @@ void CostDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
     painter->drawRect( option.rect );
   }
 
-  auto color = QColor::fromHsv( 120 - fraction * 120, 255, 255, ( -( ( fraction - 1 ) * ( fraction - 1 ) ) ) * 120 + 120 );
+  const auto color = QColor::fromHsv( 120 - fraction * 120, 255, 255, ( -( ( fraction - 1 ) * ( fraction - 1 ) ) ) * 120 + 120 );
   painter->setBrush( color );
   painter->drawRect( rect );
 

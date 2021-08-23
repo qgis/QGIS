@@ -22,8 +22,11 @@
 #include "qgsmaplayer.h"
 #include "qgsmaplayerrenderer.h"
 
-class QgsAnnotationItem;
 
+class QgsAnnotationItem;
+///@cond PRIVATE
+class QgsAnnotationLayerSpatialIndex;
+///@endcond
 
 /**
  * \ingroup core
@@ -117,6 +120,23 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
      */
     QMap<QString, QgsAnnotationItem *> items() const { return mItems; }
 
+    /**
+     * Returns the item with the specified \a id, or NULLPTR if no matching item was found.
+     *
+     * \since QGIS 3.22
+     */
+    QgsAnnotationItem *item( const QString &id );
+
+    /**
+     * Returns a list of the IDs of all annotation items within the specified \a bounds.
+     *
+     * The optional \a feedback argument can be used to cancel the search early.
+     *
+     * \since QGIS 3.22
+     */
+    QStringList itemsInBounds( const QgsRectangle &bounds, QgsFeedback *feedback = nullptr ) const;
+
+    Qgis::MapLayerProperties properties() const override;
     QgsAnnotationLayer *clone() const override SIP_FACTORY;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
     QgsRectangle extent() const override;
@@ -125,10 +145,15 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &, StyleCategories categories = AllStyleCategories ) const override;
     bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) override;
+    bool isEditable() const override;
+    bool supportsEditing() const override;
 
   private:
     QMap<QString, QgsAnnotationItem *> mItems;
     QgsCoordinateTransformContext mTransformContext;
+
+    std::unique_ptr< QgsAnnotationLayerSpatialIndex > mSpatialIndex;
+
 };
 
 #endif // QGSANNOTATIONLAYER_H

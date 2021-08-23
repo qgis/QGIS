@@ -224,6 +224,7 @@ set(QGIS_APP_SRCS
 
   options/qgsadvancedoptions.cpp
   options/qgscodeeditoroptions.cpp
+  options/qgsgpsdeviceoptions.cpp
   options/qgsoptions.cpp
   options/qgsoptionsutils.cpp
 
@@ -505,8 +506,8 @@ add_dependencies(qgis_gui ui)
 target_link_libraries(qgis_app
   ${QWT_LIBRARY}
   ${QWTPOLAR_LIBRARY}
-  ${Qt5Sql_LIBRARIES}
-  ${Qt5UiTools_LIBRARIES}
+  ${QT_VERSION_BASE}::Sql
+  ${QT_VERSION_BASE}::UiTools
   ${OPTIONAL_QTWEBKIT}
   #should only be needed for win
   ${QT_QTMAIN_LIBRARY}
@@ -526,7 +527,7 @@ if (WITH_BINDINGS)
 endif()
 
 if(ENABLE_MODELTEST)
-  target_link_libraries(qgis_app ${Qt5Test_LIBRARIES})
+  target_link_libraries(qgis_app ${QT_VERSION_BASE}::Test)
 endif()
 
 if (WITH_3D)

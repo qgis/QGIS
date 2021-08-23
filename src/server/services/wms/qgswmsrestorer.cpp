@@ -74,7 +74,7 @@ QgsLayerRestorer::~QgsLayerRestorer()
 {
   for ( QgsMapLayer *layer : mLayerSettings.keys() )
   {
-    QgsLayerSettings settings = mLayerSettings[layer];
+    const QgsLayerSettings settings = mLayerSettings[layer];
     layer->styleManager()->setCurrentStyle( settings.mNamedStyle );
     layer->setName( mLayerSettings[layer].name );
 

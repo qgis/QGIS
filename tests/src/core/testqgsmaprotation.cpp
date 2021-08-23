@@ -81,21 +81,21 @@ void TestQgsMapRotation::initTestCase()
   mMapSettings = new QgsMapSettings();
 
   //create a raster layer that will be used in all tests...
-  QFileInfo rasterFileInfo( mTestDataDir + "rgb256x256.png" );
+  const QFileInfo rasterFileInfo( mTestDataDir + "rgb256x256.png" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                      rasterFileInfo.completeBaseName() );
   QgsMultiBandColorRenderer *rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 1, 2, 3 );
   mRasterLayer->setRenderer( rasterRenderer );
 
   //create a point layer that will be used in all tests...
-  QString myPointsFileName = mTestDataDir + "points.shp";
-  QFileInfo myPointFileInfo( myPointsFileName );
+  const QString myPointsFileName = mTestDataDir + "points.shp";
+  const QFileInfo myPointFileInfo( myPointsFileName );
   mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
                                      myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   //create a line layer that will be used in all tests...
-  QString myLinesFileName = mTestDataDir + "lines_cardinals.shp";
-  QFileInfo myLinesFileInfo( myLinesFileName );
+  const QString myLinesFileName = mTestDataDir + "lines_cardinals.shp";
+  const QFileInfo myLinesFileInfo( myLinesFileName );
   mLinesLayer = new QgsVectorLayer( myLinesFileInfo.filePath(),
                                     myLinesFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
@@ -120,7 +120,7 @@ void TestQgsMapRotation::cleanupTestCase()
   delete mRasterLayer;
   QgsApplication::exitQgis();
 
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -193,7 +193,7 @@ void TestQgsMapRotation::linesLayer()
   mMapSettings->setLayers( QList<QgsMapLayer *>() << mLinesLayer );
 
   // Arrowed line with parallel labels
-  QString qml = mTestDataDir + "lines_cardinals_arrowed_parallel_label.qml";
+  const QString qml = mTestDataDir + "lines_cardinals_arrowed_parallel_label.qml";
   bool success = false;
   mLinesLayer->loadNamedStyle( qml, success );
 
@@ -226,7 +226,7 @@ bool TestQgsMapRotation::render( const QString &testType )
   checker.setControlPathPrefix( QStringLiteral( "maprotation" ) );
   checker.setControlName( "expected_" + testType );
   checker.setMapSettings( *mMapSettings );
-  bool result = checker.runTest( testType );
+  const bool result = checker.runTest( testType );
   mReport += "\n\n\n" + checker.report();
   return result;
 }

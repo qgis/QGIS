@@ -114,7 +114,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
 
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
 
-  bool featureGeomIsObstacleGeom = lf->obstacleSettings().obstacleGeometry().isNull();
+  const bool featureGeomIsObstacleGeom = lf->obstacleSettings().obstacleGeometry().isNull();
 
   while ( !simpleGeometries->isEmpty() )
   {
@@ -126,7 +126,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
       continue;
     }
 
-    int type = GEOSGeomTypeId_r( geosctxt, geom );
+    const int type = GEOSGeomTypeId_r( geosctxt, geom );
 
     if ( type != GEOS_POINT && type != GEOS_LINESTRING && type != GEOS_POLYGON )
     {
@@ -149,7 +149,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
     }
 
     // is the feature well defined?  TODO Check epsilon
-    bool labelWellDefined = ( lf->size().width() > 0.0000001 && lf->size().height() > 0.0000001 );
+    const bool labelWellDefined = ( lf->size().width() > 0.0000001 && lf->size().height() > 0.0000001 );
 
     if ( lf->obstacleSettings().isObstacle() && featureGeomIsObstacleGeom )
     {
@@ -216,7 +216,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
         continue;
       }
 
-      int type = GEOSGeomTypeId_r( geosctxt, geom.get() );
+      const int type = GEOSGeomTypeId_r( geosctxt, geom.get() );
 
       if ( type != GEOS_POINT && type != GEOS_LINESTRING && type != GEOS_POLYGON )
       {
@@ -336,7 +336,7 @@ void Layer::joinConnectedFeatures()
 
             // otherPart was merged into partToJoinTo, so now we completely delete the redundant feature part which was merged in
             partsToMerge.removeAll( otherPart );
-            auto matchingPartIt = std::find_if( mFeatureParts.begin(), mFeatureParts.end(), [otherPart]( const std::unique_ptr< FeaturePart> &part ) { return part.get() == otherPart; } );
+            const auto matchingPartIt = std::find_if( mFeatureParts.begin(), mFeatureParts.end(), [otherPart]( const std::unique_ptr< FeaturePart> &part ) { return part.get() == otherPart; } );
             Q_ASSERT( matchingPartIt != mFeatureParts.end() );
             mFeatureParts.erase( matchingPartIt );
           }
@@ -439,8 +439,8 @@ void Layer::chopFeaturesAtRepeatDistance()
       std::vector<double> len( n, 0 );
       for ( unsigned int i = 1; i < n; ++i )
       {
-        double dx = points[i].x - points[i - 1].x;
-        double dy = points[i].y - points[i - 1].y;
+        const double dx = points[i].x - points[i - 1].x;
+        const double dy = points[i].y - points[i - 1].y;
         len[i] = len[i - 1] + std::sqrt( dx * dx + dy * dy );
       }
 
@@ -478,7 +478,7 @@ void Layer::chopFeaturesAtRepeatDistance()
           newFeatureParts.emplace_back( std::move( newfpart ) );
           break;
         }
-        double c = ( lambda - len[cur - 1] ) / ( len[cur] - len[cur - 1] );
+        const double c = ( lambda - len[cur - 1] ) / ( len[cur] - len[cur - 1] );
         Point p;
         p.x = points[cur - 1].x + c * ( points[cur].x - points[cur - 1].x );
         p.y = points[cur - 1].y + c * ( points[cur].y - points[cur - 1].y );

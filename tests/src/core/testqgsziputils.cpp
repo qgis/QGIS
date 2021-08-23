@@ -92,9 +92,9 @@ void TestQgsZipUtils::specialChars()
 
 void TestQgsZipUtils::testZip()
 {
-  QString txtFile = QString( TEST_DATA_DIR ) + "/zip/aæýì.txt";
+  const QString txtFile = QString( TEST_DATA_DIR ) + "/zip/aæýì.txt";
 
-  QString zipDirPath = QDir::tempPath() + "/test_special_chars æì";
+  const QString zipDirPath = QDir::tempPath() + "/test_special_chars æì";
   QStringList files;
 
   // Create a root folder otherwise nothing is unzipped
@@ -126,11 +126,11 @@ void TestQgsZipUtils::testZip()
  */
 void TestQgsZipUtils::genericTest( QString zipName, int expectedEntries, bool includeFolders, const QStringList &testFileNames )
 {
-  QFile zipFile( QString( TEST_DATA_DIR ) + QStringLiteral( "/zip/%1.zip" ).arg( zipName ) );
+  const QFile zipFile( QString( TEST_DATA_DIR ) + QStringLiteral( "/zip/%1.zip" ).arg( zipName ) );
   QVERIFY( zipFile.exists() );
 
-  QFileInfo fileInfo( zipFile );
-  QString unzipDirPath = QDir::tempPath() + '/' + zipName;
+  const QFileInfo fileInfo( zipFile );
+  const QString unzipDirPath = QDir::tempPath() + '/' + zipName;
   QStringList files;
 
   // Create a root folder otherwise nothing is unzipped
@@ -162,13 +162,13 @@ void TestQgsZipUtils::genericTest( QString zipName, int expectedEntries, bool in
   QCOMPARE( files.count(), filesFromResultDir.count() );
 
   // Test if specific files are included in the root folder
-  for ( QString fileName : testFileNames )
+  for ( const QString &fileName : testFileNames )
   {
     QVERIFY( filesFromResultDir.contains( unzipDirPath + fileName ) );
   }
 
   // Delete unzipped data
-  bool testDataRemoved = dir.removeRecursively();
+  const bool testDataRemoved = dir.removeRecursively();
   QVERIFY( testDataRemoved );
 }
 

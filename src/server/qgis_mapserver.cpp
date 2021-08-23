@@ -198,7 +198,7 @@ class TcpServerWorker: public QObject
             try
             {
               // Parse protocol and URL GET /path HTTP/1.1
-              int firstLinePos { incomingData->indexOf( "\r\n" ) };
+              const int firstLinePos { incomingData->indexOf( "\r\n" ) };
               if ( firstLinePos == -1 )
               {
                 throw HttpException( QStringLiteral( "HTTP error finding protocol header" ) );
@@ -251,7 +251,7 @@ class TcpServerWorker: public QObject
 
               // Headers
               QgsBufferServerRequest::Headers headers;
-              int endHeadersPos { incomingData->indexOf( "\r\n\r\n" ) };
+              const int endHeadersPos { incomingData->indexOf( "\r\n\r\n" ) };
 
               if ( endHeadersPos == -1 )
               {
@@ -361,7 +361,7 @@ class TcpServerWorker: public QObject
     void responseReady( RequestContext *requestContext )  //#spellok
     {
       std::unique_ptr<RequestContext> request { requestContext };
-      auto elapsedTime { std::chrono::steady_clock::now() - request->startTime };
+      const auto elapsedTime { std::chrono::steady_clock::now() - request->startTime };
 
       const auto &response { request->response };
       const auto &clientConnection { request->clientConnection };
@@ -435,7 +435,7 @@ class TcpServerThread: public QThread
 
     void run( )
     {
-      TcpServerWorker worker( mIpAddress, mPort );
+      const TcpServerWorker worker( mIpAddress, mPort );
       if ( ! worker.isListening() )
       {
         emit serverError();
@@ -518,7 +518,7 @@ int main( int argc, char *argv[] )
   }
 
   // since version 3.0 QgsServer now needs a qApp so initialize QgsApplication
-  QgsApplication app( argc, argv, withDisplay, QString(), QStringLiteral( "QGIS Development Server" ) );
+  const QgsApplication app( argc, argv, withDisplay, QString(), QStringLiteral( "QGIS Development Server" ) );
 
   QCoreApplication::setOrganizationName( QgsApplication::QGIS_ORGANIZATION_NAME );
   QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );
@@ -556,22 +556,22 @@ int main( int argc, char *argv[] )
   parser.setApplicationDescription( QObject::tr( "QGIS Development Server %1" ).arg( VERSION ) );
   parser.addHelpOption();
 
-  QCommandLineOption versionOption( QStringList() << "v" << "version", QObject::tr( "Version of QGIS and libraries" ) );
+  const QCommandLineOption versionOption( QStringList() << "v" << "version", QObject::tr( "Version of QGIS and libraries" ) );
   parser.addOption( versionOption );
 
   parser.addPositionalArgument( QStringLiteral( "addressAndPort" ),
                                 QObject::tr( "Address and port (default: \"localhost:8000\")\n"
                                     "address and port can also be specified with the environment\n"
                                     "variables QGIS_SERVER_ADDRESS and QGIS_SERVER_PORT." ), QStringLiteral( "[address:port]" ) );
-  QCommandLineOption logLevelOption( "l", QObject::tr( "Log level (default: 0)\n"
-                                     "0: INFO\n"
-                                     "1: WARNING\n"
-                                     "2: CRITICAL" ), "logLevel", "0" );
+  const QCommandLineOption logLevelOption( "l", QObject::tr( "Log level (default: 0)\n"
+      "0: INFO\n"
+      "1: WARNING\n"
+      "2: CRITICAL" ), "logLevel", "0" );
   parser.addOption( logLevelOption );
 
-  QCommandLineOption projectOption( "p", QObject::tr( "Path to a QGIS project file (*.qgs or *.qgz),\n"
-                                    "if specified it will override the query string MAP argument\n"
-                                    "and the QGIS_PROJECT_FILE environment variable." ), "projectPath", "" );
+  const QCommandLineOption projectOption( "p", QObject::tr( "Path to a QGIS project file (*.qgs or *.qgz),\n"
+                                          "if specified it will override the query string MAP argument\n"
+                                          "and the QGIS_PROJECT_FILE environment variable." ), "projectPath", "" );
   parser.addOption( projectOption );
 
   parser.process( app );
@@ -586,7 +586,7 @@ int main( int argc, char *argv[] )
 
   if ( args.size() == 1 )
   {
-    QStringList addressAndPort { args.at( 0 ).split( ':' ) };
+    const QStringList addressAndPort { args.at( 0 ).split( ':' ) };
     if ( addressAndPort.size() == 2 )
     {
       ipAddress = addressAndPort.at( 0 );
@@ -594,7 +594,7 @@ int main( int argc, char *argv[] )
     }
   }
 
-  QString logLevel = parser.value( logLevelOption );
+  const QString logLevel = parser.value( logLevelOption );
   qunsetenv( "QGIS_SERVER_LOG_FILE" );
   qputenv( "QGIS_SERVER_LOG_LEVEL", logLevel.toUtf8() );
   qputenv( "QGIS_SERVER_LOG_STDERR", "1" );

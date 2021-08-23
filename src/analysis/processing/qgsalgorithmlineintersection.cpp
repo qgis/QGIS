@@ -192,7 +192,8 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
           {
             outFeature.setGeometry( QgsGeometry::fromPointXY( j ) );
             outFeature.setAttributes( outAttributes );
-            sink->addFeature( outFeature, QgsFeatureSink::FastInsert );
+            if ( !sink->addFeature( outFeature, QgsFeatureSink::FastInsert ) )
+              throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
           }
         }
       }

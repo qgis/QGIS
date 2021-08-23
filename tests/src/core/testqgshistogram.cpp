@@ -88,7 +88,7 @@ void TestQgsHistogram::binEdges()
 
   QgsHistogram h;
   h.setValues( vals );
-  QList<double> edges = h.binEdges( 3 );
+  const QList<double> edges = h.binEdges( 3 );
   QCOMPARE( edges.count(), 4 );
   QCOMPARE( edges.at( 0 ), 1.0 );
   QCOMPARE( edges.at( 1 ), 4.0 );
@@ -143,7 +143,7 @@ void TestQgsHistogram::fromLayer()
 
   QVERIFY( !h.setValues( layer, QString() ) );
   QVERIFY( h.setValues( layer, QString( "col1" ) ) );
-  QList<int>counts = h.counts( 5 );
+  const QList<int>counts = h.counts( 5 );
   QList<int> expected;
   expected << 2 << 2 << 2 << 2 << 2;
   QCOMPARE( counts, expected );

@@ -53,14 +53,14 @@ QgsQuadrilateral QgsQuadrilateral::rectangleFrom3Points( const QgsPoint &p1, con
     if ( mode == Projected )
       z = 0;
   }
-  QgsPoint point1( pType, p1.x(), p1.y(), std::isnan( p1.z() ) ? z : p1.z() );
-  QgsPoint point2( pType, p2.x(), p2.y(), std::isnan( p2.z() ) ? z : p2.z() );
-  QgsPoint point3( pType, p3.x(), p3.y(), std::isnan( p3.z() ) ? z : p3.z() );
+  const QgsPoint point1( pType, p1.x(), p1.y(), std::isnan( p1.z() ) ? z : p1.z() );
+  const QgsPoint point2( pType, p2.x(), p2.y(), std::isnan( p2.z() ) ? z : p2.z() );
+  const QgsPoint point3( pType, p3.x(), p3.y(), std::isnan( p3.z() ) ? z : p3.z() );
 
   QgsQuadrilateral rect;
   double inclination = 90.0;
   double distance = 0;
-  double azimuth = point1.azimuth( point2 ) + 90.0 * QgsGeometryUtils::leftOfLine( point3.x(), point3.y(), point1.x(), point1.y(), point2.x(), point2.y() );
+  const double azimuth = point1.azimuth( point2 ) + 90.0 * QgsGeometryUtils::leftOfLine( point3.x(), point3.y(), point1.x(), point1.y(), point2.x(), point2.y() );
   switch ( mode )
   {
     case Distance:
@@ -80,10 +80,10 @@ QgsQuadrilateral QgsQuadrilateral::rectangleFrom3Points( const QgsPoint &p1, con
     }
     case Projected:
     {
-      QgsVector3D v3 = QgsVector3D::perpendicularPoint( QgsVector3D( point1.x(), point1.y(), std::isnan( point1.z() ) ? z : point1.z() ),
-                       QgsVector3D( point2.x(), point2.y(), std::isnan( point2.z() ) ? z : point2.z() ),
-                       QgsVector3D( point3.x(), point3.y(), std::isnan( point3.z() ) ? z : point3.z() ) );
-      QgsPoint pV3( pType, v3.x(), v3.y(), v3.z() );
+      const QgsVector3D v3 = QgsVector3D::perpendicularPoint( QgsVector3D( point1.x(), point1.y(), std::isnan( point1.z() ) ? z : point1.z() ),
+                             QgsVector3D( point2.x(), point2.y(), std::isnan( point2.z() ) ? z : point2.z() ),
+                             QgsVector3D( point3.x(), point3.y(), std::isnan( point3.z() ) ? z : point3.z() ) );
+      const QgsPoint pV3( pType, v3.x(), v3.y(), v3.z() );
       if ( p3.is3D() )
       {
         inclination = pV3.inclination( p3 );
@@ -120,7 +120,7 @@ QgsQuadrilateral QgsQuadrilateral::rectangleFromExtent( const QgsPoint &p1, cons
     return QgsQuadrilateral();
 
   QgsQuadrilateral quad;
-  double z = p1.z();
+  const double z = p1.z();
 
   double xMin = 0, xMax = 0, yMin = 0, yMax = 0;
 
@@ -165,9 +165,9 @@ QgsQuadrilateral QgsQuadrilateral::squareFromDiagonal( const QgsPoint &p1, const
   QgsQuadrilateral quad;
   QgsPoint point2, point3 = QgsPoint( p2.x(), p2.y() ), point4;
 
-  double azimuth = p1.azimuth( point3 ) + 90.0;
-  double distance = p1.distance( point3 ) / 2.0;
-  QgsPoint midPoint = QgsGeometryUtils::midpoint( p1, point3 );
+  const double azimuth = p1.azimuth( point3 ) + 90.0;
+  const double distance = p1.distance( point3 ) / 2.0;
+  const QgsPoint midPoint = QgsGeometryUtils::midpoint( p1, point3 );
 
   point2 = midPoint.project( -distance, azimuth );
   point4 = midPoint.project( distance, azimuth );
@@ -190,8 +190,8 @@ QgsQuadrilateral QgsQuadrilateral::rectangleFromCenterPoint( const QgsPoint &cen
 {
   if ( QgsPoint( center.x(), center.y() ) == QgsPoint( point.x(), point.y() ) )
     return QgsQuadrilateral();
-  double xOffset = std::fabs( point.x() - center.x() );
-  double yOffset = std::fabs( point.y() - center.y() );
+  const double xOffset = std::fabs( point.x() - center.x() );
+  const double yOffset = std::fabs( point.y() - center.y() );
 
   return QgsQuadrilateral( QgsPoint( center.x() - xOffset, center.y() - yOffset, center.z() ),
                            QgsPoint( center.x() - xOffset, center.y() + yOffset, center.z() ),
@@ -273,7 +273,7 @@ static bool isNotAntiParallelogram( const QgsPoint &p1, const QgsPoint &p2, cons
 
 static bool isNotCollinear( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 )
 {
-  bool isCollinear =
+  const bool isCollinear =
     (
       ( QgsGeometryUtils::segmentSide( p1, p2, p3 ) == 0 ) ||
       ( QgsGeometryUtils::segmentSide( p1, p2, p4 ) == 0 ) ||
@@ -287,7 +287,7 @@ static bool isNotCollinear( const QgsPoint &p1, const QgsPoint &p2, const QgsPoi
 
 static bool notHaveDoublePoints( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 )
 {
-  bool doublePoints =
+  const bool doublePoints =
     (
       ( p1 == p2 ) || ( p1 == p3 ) || ( p1 == p4 ) || ( p2 == p3 ) || ( p2 == p4 ) || ( p3 == p4 ) );
 
@@ -296,7 +296,7 @@ static bool notHaveDoublePoints( const QgsPoint &p1, const QgsPoint &p2, const Q
 
 static bool haveSameType( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 )
 {
-  bool sameType = !( ( p1.wkbType() != p2.wkbType() ) || ( p1.wkbType() != p3.wkbType() ) || ( p1.wkbType() != p4.wkbType() ) );
+  const bool sameType = !( ( p1.wkbType() != p2.wkbType() ) || ( p1.wkbType() != p3.wkbType() ) || ( p1.wkbType() != p4.wkbType() ) );
   return sameType;
 }
 // Convenient method to validate inputs

@@ -70,14 +70,14 @@ void TestQgsOverlayExpression::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
+  const QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
 
-  QString rectanglesFileName = testDataDir + QStringLiteral( "rectangles.shp" );
-  QFileInfo rectanglesFileInfo( rectanglesFileName );
+  const QString rectanglesFileName = testDataDir + QStringLiteral( "rectangles.shp" );
+  const QFileInfo rectanglesFileInfo( rectanglesFileName );
   mRectanglesLayer = new QgsVectorLayer( rectanglesFileInfo.filePath(),
                                          QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
-  QString polygonsFileName = testDataDir + QStringLiteral( "polys_overlapping_with_id.shp" );
-  QFileInfo polygonsFileInfo( polygonsFileName );
+  const QString polygonsFileName = testDataDir + QStringLiteral( "polys_overlapping_with_id.shp" );
+  const QFileInfo polygonsFileInfo( polygonsFileName );
   mPolyLayer = new QgsVectorLayer( polygonsFileInfo.filePath(),
                                    QStringLiteral( "polys" ), QStringLiteral( "ogr" ) );
   QgsProject::instance()->addMapLayer( mRectanglesLayer );

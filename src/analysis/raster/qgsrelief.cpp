@@ -73,7 +73,7 @@ int QgsRelief::processRaster( QgsFeedback *feedback )
 {
   //open input file
   int xSize, ySize;
-  gdal::dataset_unique_ptr inputDataset = openInputFile( xSize, ySize );
+  const gdal::dataset_unique_ptr inputDataset = openInputFile( xSize, ySize );
   if ( !inputDataset )
   {
     return 1; //opening of input file failed
@@ -279,7 +279,7 @@ bool QgsRelief::processNineCellWindow( float *x1, float *x2, float *x3, float *x
   int g = 0;
   int b = 0;
 
-  float hillShadeValue300 = mHillshadeFilter300->processNineCellWindow( x1, x2, x3, x4, x5, x6, x7, x8, x9 );
+  const float hillShadeValue300 = mHillshadeFilter300->processNineCellWindow( x1, x2, x3, x4, x5, x6, x7, x8, x9 );
   if ( hillShadeValue300 != mOutputNodataValue )
   {
     if ( !setElevationColor( *x5, &r, &g, &b ) )
@@ -297,8 +297,8 @@ bool QgsRelief::processNineCellWindow( float *x1, float *x2, float *x3, float *x
   }
 
   //2. component: hillshade and slope
-  float hillShadeValue315 = mHillshadeFilter315->processNineCellWindow( x1, x2, x3, x4, x5, x6, x7, x8, x9 );
-  float slope = mSlopeFilter->processNineCellWindow( x1, x2, x3, x4, x5, x6, x7, x8, x9 );
+  const float hillShadeValue315 = mHillshadeFilter315->processNineCellWindow( x1, x2, x3, x4, x5, x6, x7, x8, x9 );
+  const float slope = mSlopeFilter->processNineCellWindow( x1, x2, x3, x4, x5, x6, x7, x8, x9 );
   if ( hillShadeValue315 != mOutputNodataValue && slope != mOutputNodataValue )
   {
     int r2, g2, b2;
@@ -310,7 +310,7 @@ bool QgsRelief::processNineCellWindow( float *x1, float *x2, float *x3, float *x
     }
     else if ( slope >= 1 )
     {
-      int slopeValue = 255 - ( slope / 15.0 * 255.0 );
+      const int slopeValue = 255 - ( slope / 15.0 * 255.0 );
       r2 = slopeValue / 2.0 + hillShadeValue315 / 2.0;
       g2 = slopeValue / 2.0 + hillShadeValue315 / 2.0;
       b2 = slopeValue / 2.0 + hillShadeValue315 / 2.0;
@@ -329,8 +329,8 @@ bool QgsRelief::processNineCellWindow( float *x1, float *x2, float *x3, float *x
   }
 
   //3. combine yellow aspect with 10% transparency, illumination from 285 degrees
-  float hillShadeValue285 = mHillshadeFilter285->processNineCellWindow( x1, x2, x3, x4, x5, x6, x7, x8, x9 );
-  float aspect = mAspectFilter->processNineCellWindow( x1, x2, x3, x4, x5, x6, x7, x8, x9 );
+  const float hillShadeValue285 = mHillshadeFilter285->processNineCellWindow( x1, x2, x3, x4, x5, x6, x7, x8, x9 );
+  const float aspect = mAspectFilter->processNineCellWindow( x1, x2, x3, x4, x5, x6, x7, x8, x9 );
   if ( hillShadeValue285 != mOutputNodataValue && aspect != mOutputNodataValue )
   {
     double angle_diff = std::fabs( 285 - aspect );
@@ -342,7 +342,7 @@ bool QgsRelief::processNineCellWindow( float *x1, float *x2, float *x3, float *x
     int r3, g3, b3;
     if ( angle_diff < 90 )
     {
-      int aspectVal = ( 1 - std::cos( angle_diff * M_PI / 180 ) ) * 255;
+      const int aspectVal = ( 1 - std::cos( angle_diff * M_PI / 180 ) ) * 255;
       r3 = 0.5 * 255 + hillShadeValue315 * 0.5;
       g3 = 0.5 * 255 + hillShadeValue315 * 0.5;
       b3 = 0.5 * aspectVal + hillShadeValue315 * 0.5;
@@ -426,8 +426,8 @@ gdal::dataset_unique_ptr QgsRelief::openOutputFile( GDALDatasetH inputDataset, G
     return nullptr;
   }
 
-  int xSize = GDALGetRasterXSize( inputDataset );
-  int ySize = GDALGetRasterYSize( inputDataset );
+  const int xSize = GDALGetRasterXSize( inputDataset );
+  const int ySize = GDALGetRasterYSize( inputDataset );
 
   //open output file
   char **papszOptions = nullptr;
@@ -475,7 +475,7 @@ gdal::dataset_unique_ptr QgsRelief::openOutputFile( GDALDatasetH inputDataset, G
 bool QgsRelief::exportFrequencyDistributionToCsv( const QString &file )
 {
   int nCellsX, nCellsY;
-  gdal::dataset_unique_ptr inputDataset = openInputFile( nCellsX, nCellsY );
+  const gdal::dataset_unique_ptr inputDataset = openInputFile( nCellsX, nCellsY );
   if ( !inputDataset )
   {
     return false;
@@ -503,7 +503,7 @@ bool QgsRelief::exportFrequencyDistributionToCsv( const QString &file )
 
   //store elevation frequency in 256 elevation classes
   double frequency[252] = {0};
-  double frequencyClassRange = ( minMax[1] - minMax[0] ) / 252.0;
+  const double frequencyClassRange = ( minMax[1] - minMax[0] ) / 252.0;
 
   float *scanLine = ( float * ) CPLMalloc( sizeof( float ) *  nCellsX );
   int elevationClass = -1;
@@ -563,7 +563,7 @@ QList< QgsRelief::ReliefColor > QgsRelief::calculateOptimizedReliefClasses()
   QList< QgsRelief::ReliefColor > resultList;
 
   int nCellsX, nCellsY;
-  gdal::dataset_unique_ptr inputDataset = openInputFile( nCellsX, nCellsY );
+  const gdal::dataset_unique_ptr inputDataset = openInputFile( nCellsX, nCellsY );
   if ( !inputDataset )
   {
     return resultList;
@@ -591,7 +591,7 @@ QList< QgsRelief::ReliefColor > QgsRelief::calculateOptimizedReliefClasses()
 
   //store elevation frequency in 256 elevation classes
   double frequency[252] = {0};
-  double frequencyClassRange = ( minMax[1] - minMax[0] ) / 252.0;
+  const double frequencyClassRange = ( minMax[1] - minMax[0] ) / 252.0;
 
   float *scanLine = ( float * ) CPLMalloc( sizeof( float ) *  nCellsX );
   int elevationClass = -1;
@@ -660,8 +660,8 @@ QList< QgsRelief::ReliefColor > QgsRelief::calculateOptimizedReliefClasses()
   resultList.reserve( classBreaks.size() );
   for ( int i = 1; i < classBreaks.size(); ++i )
   {
-    double minElevation = minMax[0] + classBreaks[i - 1] * frequencyClassRange;
-    double maxElevation = minMax[0] + classBreaks[i] * frequencyClassRange;
+    const double minElevation = minMax[0] + classBreaks[i - 1] * frequencyClassRange;
+    const double maxElevation = minMax[0] + classBreaks[i] * frequencyClassRange;
     resultList.push_back( QgsRelief::ReliefColor( colorList.at( i - 1 ), minElevation, maxElevation ) );
   }
 
@@ -670,7 +670,7 @@ QList< QgsRelief::ReliefColor > QgsRelief::calculateOptimizedReliefClasses()
 
 void QgsRelief::optimiseClassBreaks( QList<int> &breaks, double *frequencies )
 {
-  int nClasses = breaks.size() - 1;
+  const int nClasses = breaks.size() - 1;
   double *a = new double[nClasses]; //slopes
   double *b = new double[nClasses]; //y-offsets
 
@@ -697,7 +697,7 @@ void QgsRelief::optimiseClassBreaks( QList<int> &breaks, double *frequencies )
     }
   }
 
-  QList<int> classesToRemove;
+  const QList<int> classesToRemove;
 
   //shift class boundaries or eliminate classes which fall together
   for ( int i = 1; i < nClasses ; ++i )

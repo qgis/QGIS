@@ -95,9 +95,9 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
   QgsInterpolator::LayerData ld;
   ld = mInterpolator->layerData().at( 0 );
   QgsFeatureSource *source = ld.source;
-  QString crs = source->sourceCrs().toWkt();
-  QFileInfo fi( mOutputFilePath );
-  QString fileName = fi.absolutePath() + '/' + fi.completeBaseName() + ".prj";
+  const QString crs = source->sourceCrs().toWkt();
+  const QFileInfo fi( mOutputFilePath );
+  const QString fileName = fi.absolutePath() + '/' + fi.completeBaseName() + ".prj";
   QFile prjFile( fileName );
   if ( !prjFile.open( QFile::WriteOnly | QIODevice::Truncate ) )
   {

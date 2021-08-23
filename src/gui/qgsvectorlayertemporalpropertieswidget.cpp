@@ -60,7 +60,7 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
   mFixedDurationSpinBox->setMinimum( 0 );
   mFixedDurationSpinBox->setClearValue( 0 );
 
-  for ( QgsUnitTypes::TemporalUnit u :
+  for ( const QgsUnitTypes::TemporalUnit u :
         {
           QgsUnitTypes::TemporalMilliseconds,
           QgsUnitTypes::TemporalSeconds,
@@ -105,8 +105,8 @@ void QgsVectorLayerTemporalPropertiesWidget::saveTemporalProperties()
   properties->setIsActive( mTemporalGroupBox->isChecked() );
   properties->setMode( static_cast< QgsVectorLayerTemporalProperties::TemporalMode >( mModeComboBox->currentData().toInt() ) );
 
-  QgsDateTimeRange normalRange = QgsDateTimeRange( mStartTemporalDateTimeEdit->dateTime(),
-                                 mEndTemporalDateTimeEdit->dateTime() );
+  const QgsDateTimeRange normalRange = QgsDateTimeRange( mStartTemporalDateTimeEdit->dateTime(),
+                                       mEndTemporalDateTimeEdit->dateTime() );
 
   properties->setFixedTemporalRange( normalRange );
 

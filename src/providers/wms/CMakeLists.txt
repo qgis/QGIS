@@ -25,18 +25,14 @@ endif()
 # static library
 add_library(provider_wms_a STATIC ${WMS_SRCS})
 
+target_include_directories(provider_wms_a PUBLIC
+  ${CMAKE_SOURCE_DIR}/src/providers/wms
+)
+
 # require c++17
 target_compile_features(provider_wms_a PRIVATE cxx_std_17)
 
 if (WITH_GUI)
-  include_directories (
-    ${CMAKE_BINARY_DIR}/src/providers/wms
-    ${CMAKE_SOURCE_DIR}/src/providers/wms
-    ${CMAKE_BINARY_DIR}/src/ui
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}
-  )
-
   if (WITH_QT6)
     QT6_WRAP_UI(WMS_UIS_H ${WMS_UIS})
   else()
@@ -44,6 +40,10 @@ if (WITH_GUI)
   endif()
 
   add_library(provider_wms_gui_a STATIC ${WMS_GUI_SRCS} ${WMS_UIS_H})
+
+  target_include_directories (provider_wms_gui_a PUBLIC
+    ${CMAKE_BINARY_DIR}/src/providers/wms
+  )
 
   # require c++17
   target_compile_features(provider_wms_gui_a PRIVATE cxx_std_17)
@@ -54,12 +54,6 @@ endif()
 
 target_link_libraries(provider_wms_a
   qgis_core
-  ${${QT_VERSION_BASE}Xml_LIBRARIES}
-  ${${QT_VERSION_BASE}Core_LIBRARIES}
-  ${${QT_VERSION_BASE}Svg_LIBRARIES}
-  ${${QT_VERSION_BASE}Network_LIBRARIES}
-  ${${QT_VERSION_BASE}Sql_LIBRARIES}
-  ${${QT_VERSION_BASE}Concurrent_LIBRARIES}
 )
 target_compile_definitions(provider_wms_a PRIVATE "-DQT_NO_FOREACH")
 
@@ -67,14 +61,6 @@ if (WITH_GUI)
   target_link_libraries(provider_wms_gui_a
     qgis_gui
     provider_wms_a
-    ${${QT_VERSION_BASE}Xml_LIBRARIES}
-    ${${QT_VERSION_BASE}Core_LIBRARIES}
-    ${${QT_VERSION_BASE}Svg_LIBRARIES}
-    ${${QT_VERSION_BASE}Network_LIBRARIES}
-    ${${QT_VERSION_BASE}Sql_LIBRARIES}
-    ${${QT_VERSION_BASE}Concurrent_LIBRARIES}
-    ${${QT_VERSION_BASE}Gui_LIBRARIES}
-    ${${QT_VERSION_BASE}Widgets_LIBRARIES}
   )
   target_compile_definitions(provider_wms_gui_a PRIVATE "-DQT_NO_FOREACH")
 endif()

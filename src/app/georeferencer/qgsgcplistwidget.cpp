@@ -104,7 +104,7 @@ void QgsGCPListWidget::itemDoubleClicked( QModelIndex index )
   index = static_cast<const QSortFilterProxyModel *>( model() )->mapToSource( index );
   QStandardItem *item = mGCPListModel->item( index.row(), 1 );
   bool ok;
-  int id = item->text().toInt( &ok );
+  const int id = item->text().toInt( &ok );
 
   if ( ok )
   {
@@ -141,7 +141,7 @@ void QgsGCPListWidget::keyPressEvent( QKeyEvent *e )
 {
   if ( e->key() == Qt::Key_Delete )
   {
-    QModelIndex index = currentIndex();
+    const QModelIndex index = currentIndex();
     if ( index.isValid() )
     {
       removeRow();
@@ -154,10 +154,10 @@ void QgsGCPListWidget::keyPressEvent( QKeyEvent *e )
   }
   else if ( e->key() == Qt::Key_Space )
   {
-    QModelIndex index = currentIndex();
+    const QModelIndex index = currentIndex();
     if ( index.isValid() )
     {
-      QModelIndex sourceIndex = static_cast<const QSortFilterProxyModel *>( model() )->mapToSource( index );
+      const QModelIndex sourceIndex = static_cast<const QSortFilterProxyModel *>( model() )->mapToSource( index );
       QgsGeorefDataPoint *p = mGCPList->at( sourceIndex.row() );
       p->setEnabled( !p->isEnabled() );
 
@@ -170,7 +170,7 @@ void QgsGCPListWidget::keyPressEvent( QKeyEvent *e )
   }
   else if ( e->key() == Qt::Key_Up )
   {
-    QModelIndex index = currentIndex();
+    const QModelIndex index = currentIndex();
     if ( index.isValid() && index.row() > 0 )
     {
       setCurrentIndex( model()->index( index.row() - 1, index.column() ) );
@@ -179,7 +179,7 @@ void QgsGCPListWidget::keyPressEvent( QKeyEvent *e )
   }
   else if ( e->key() == Qt::Key_Down )
   {
-    QModelIndex index = currentIndex();
+    const QModelIndex index = currentIndex();
     if ( index.isValid() && index.row() < ( model()->rowCount() - 1 ) )
     {
       setCurrentIndex( model()->index( index.row() + 1, index.column() ) );
@@ -188,7 +188,7 @@ void QgsGCPListWidget::keyPressEvent( QKeyEvent *e )
   }
   else if ( e->key() == Qt::Key_Left )
   {
-    QModelIndex index = currentIndex();
+    const QModelIndex index = currentIndex();
     if ( index.isValid() && index.column() > 0 )
     {
       setCurrentIndex( model()->index( index.row(), index.column() - 1 ) );
@@ -197,7 +197,7 @@ void QgsGCPListWidget::keyPressEvent( QKeyEvent *e )
   }
   else if ( e->key() == Qt::Key_Right )
   {
-    QModelIndex index = currentIndex();
+    const QModelIndex index = currentIndex();
     if ( index.isValid() && index.column() < ( model()->columnCount() - 1 ) )
     {
       setCurrentIndex( model()->index( index.row(), index.column() + 1 ) );
@@ -213,7 +213,7 @@ void QgsGCPListWidget::updateItemCoords( QWidget *editor )
   QgsGeorefDataPoint *dataPoint = mGCPList->at( mPrevRow );
   if ( lineEdit )
   {
-    double value = lineEdit->text().toDouble();
+    const double value = lineEdit->text().toDouble();
     QgsPointXY newMapCoords( dataPoint->mapCoords() );
     QgsPointXY newPixelCoords( dataPoint->pixelCoords() );
     if ( mPrevColumn == 2 ) // srcX
@@ -251,7 +251,7 @@ void QgsGCPListWidget::showContextMenu( QPoint p )
     return;
 
   QMenu m;// = new QMenu(this);
-  QModelIndex index = indexAt( p );
+  const QModelIndex index = indexAt( p );
   if ( index == QModelIndex() )
     return;
 
@@ -270,7 +270,7 @@ void QgsGCPListWidget::showContextMenu( QPoint p )
 
 void QgsGCPListWidget::removeRow()
 {
-  QModelIndex index = static_cast<const QSortFilterProxyModel *>( model() )->mapToSource( currentIndex() );
+  const QModelIndex index = static_cast<const QSortFilterProxyModel *>( model() )->mapToSource( currentIndex() );
   emit deleteDataPoint( index.row() );
 }
 
@@ -281,7 +281,7 @@ void QgsGCPListWidget::editCell()
 
 void QgsGCPListWidget::jumpToPoint()
 {
-  QModelIndex index = static_cast<const QSortFilterProxyModel *>( model() )->mapToSource( currentIndex() );
+  const QModelIndex index = static_cast<const QSortFilterProxyModel *>( model() )->mapToSource( currentIndex() );
   mPrevRow = index.row();
   mPrevColumn = index.column();
   emit jumpToGCP( index.row() );

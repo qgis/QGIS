@@ -246,7 +246,7 @@ void TestQgsMapToolAddFeatureLine::testNoTracing()
 
   // tracing not enabled - will be straight line
 
-  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+  const QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
   utils.mouseClick( 1, 1, Qt::LeftButton );
   utils.mouseClick( 3, 2, Qt::LeftButton );
@@ -303,13 +303,13 @@ void TestQgsMapToolAddFeatureLine::testTracing()
 
   mEnableTracingAction->setChecked( true );
 
-  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+  const QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
   utils.mouseClick( 1, 1, Qt::LeftButton );
   utils.mouseClick( 3, 2, Qt::LeftButton );
   utils.mouseClick( 3, 2, Qt::RightButton );
 
-  QgsFeatureId newFid = utils.newFeatureId( oldFids );
+  const QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
   QCOMPARE( mLayerLine->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( "LINESTRING(1 1, 2 1, 3 2)" ) );
@@ -327,7 +327,7 @@ void TestQgsMapToolAddFeatureLine::testTracing()
   utils.mouseClick( 4, 1, Qt::LeftButton );
   utils.mouseClick( 4, 1, Qt::RightButton );
 
-  QgsFeatureId newFid2 = utils.newFeatureId( oldFids );
+  const QgsFeatureId newFid2 = utils.newFeatureId( oldFids );
 
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
   QCOMPARE( mLayerLine->getFeature( newFid2 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(0 2, 1 1, 2 1, 3 2, 4 1)" ) );
@@ -349,17 +349,17 @@ void TestQgsMapToolAddFeatureLine::testTracingWithOffset()
   mEnableTracingAction->setChecked( true );
   mTracer->setOffset( 0.1 );
 
-  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+  const QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
   utils.mouseClick( 2, 1, Qt::LeftButton );
   utils.mouseClick( 1, 2, Qt::LeftButton );
   utils.mouseClick( 1, 2, Qt::RightButton );
 
-  QgsFeatureId newFid = utils.newFeatureId( oldFids );
+  const QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
 
-  QgsGeometry g = mLayerLine->getFeature( newFid ).geometry();
+  const QgsGeometry g = mLayerLine->getFeature( newFid ).geometry();
   QgsPolylineXY poly = g.asPolyline();
   QCOMPARE( poly.count(), 3 );
   QCOMPARE( poly[0], QgsPointXY( 2, 0.9 ) );
@@ -378,9 +378,9 @@ void TestQgsMapToolAddFeatureLine::testTracingWithOffset()
   utils.mouseClick( 1, 2, Qt::LeftButton );
   utils.mouseClick( 1, 2, Qt::RightButton );
 
-  QgsFeatureId newFid2 = utils.newFeatureId( oldFids );
+  const QgsFeatureId newFid2 = utils.newFeatureId( oldFids );
 
-  QgsGeometry g2 = mLayerLine->getFeature( newFid2 ).geometry();
+  const QgsGeometry g2 = mLayerLine->getFeature( newFid2 ).geometry();
   QgsPolylineXY poly2 = g2.asPolyline();
   QCOMPARE( poly2.count(), 3 );
   QCOMPARE( poly2[0], QgsPointXY( 2, 1.1 ) );
@@ -397,10 +397,10 @@ void TestQgsMapToolAddFeatureLine::testTracingWithOffset()
   utils.mouseClick( 0, 1, Qt::LeftButton );
   utils.mouseClick( 0, 1, Qt::RightButton );
 
-  QgsFeatureId newFid3 = utils.newFeatureId( oldFids );
+  const QgsFeatureId newFid3 = utils.newFeatureId( oldFids );
 
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
-  QgsGeometry g3 = mLayerLine->getFeature( newFid3 ).geometry();
+  const QgsGeometry g3 = mLayerLine->getFeature( newFid3 ).geometry();
   QgsPolylineXY poly3 = g3.asPolyline();
   QCOMPARE( poly3.count(), 5 );
   QCOMPARE( poly3[0], QgsPointXY( 3, 0 ) );
@@ -428,7 +428,7 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurves()
   // enable snapping and tracing
   mEnableTracingAction->setChecked( true );
 
-  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+  const QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
   // tracing enabled - without converting to curves
   QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), false );
@@ -437,7 +437,7 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurves()
   utils.mouseClick( 7, 1, Qt::LeftButton );
   utils.mouseClick( 7, 1, Qt::RightButton );
 
-  QgsFeatureId newFid1 = utils.newFeatureId( oldFids );
+  const QgsFeatureId newFid1 = utils.newFeatureId( oldFids );
 
   const QgsAbstractGeometry *g = mLayerLineCurved->getFeature( newFid1 ).geometry().constGet();
   QCOMPARE( g->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( 6, 1 ) );
@@ -454,7 +454,7 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurves()
   utils.mouseClick( 7, 1, Qt::LeftButton );
   utils.mouseClick( 7, 1, Qt::RightButton );
 
-  QgsFeatureId newFid2 = utils.newFeatureId( oldFids );
+  const QgsFeatureId newFid2 = utils.newFeatureId( oldFids );
 
   g = mLayerLineCurved->getFeature( newFid2 ).geometry().constGet();
   QCOMPARE( g->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( 6, 1 ) );
@@ -474,7 +474,7 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurvesCustomTolerance
 {
   // Exactly the same as testTracingWithConvertToCurves but far from the origin
   // At this distance, the arcs aren't correctly detected with the default tolerance
-  double offset = 100000000; // remember to change the feature geometry accordingly in initTestCase (sic)
+  const double offset = 100000000; // remember to change the feature geometry accordingly in initTestCase (sic)
 
   QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve_angle_tolerance" ), 1e-5 );
   QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve_distance_tolerance" ), 1e-5 );
@@ -489,7 +489,7 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurvesCustomTolerance
   // enable snapping and tracing
   mEnableTracingAction->setChecked( true );
 
-  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+  const QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
   // tracing enabled - without converting to curves
   QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), false );
@@ -498,7 +498,7 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurvesCustomTolerance
   utils.mouseClick( offset + 7, offset + 1, Qt::LeftButton );
   utils.mouseClick( offset + 7, offset + 1, Qt::RightButton );
 
-  QgsFeatureId newFid1 = utils.newFeatureId( oldFids );
+  const QgsFeatureId newFid1 = utils.newFeatureId( oldFids );
 
   const QgsAbstractGeometry *g = mLayerLineCurvedOffset->getFeature( newFid1 ).geometry().constGet();
   QCOMPARE( g->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( offset + 6, offset + 1 ) );
@@ -515,7 +515,7 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurvesCustomTolerance
   utils.mouseClick( offset + 7, offset + 1, Qt::LeftButton );
   utils.mouseClick( offset + 7, offset + 1, Qt::RightButton );
 
-  QgsFeatureId newFid2 = utils.newFeatureId( oldFids );
+  const QgsFeatureId newFid2 = utils.newFeatureId( oldFids );
 
   g = mLayerLineCurvedOffset->getFeature( newFid2 ).geometry().constGet();
   QCOMPARE( g->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( offset + 6, offset + 1 ) );
@@ -540,14 +540,14 @@ void TestQgsMapToolAddFeatureLine::testCloseLine()
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
 
   mCanvas->setCurrentLayer( mLayerCloseLine );
-  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+  const QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
   utils.mouseClick( 1, 1, Qt::LeftButton );
   utils.mouseClick( 5, 1, Qt::LeftButton );
   utils.mouseClick( 5, 5, Qt::LeftButton );
   utils.mouseClick( 5, 5, Qt::RightButton, Qt::ShiftModifier );
-  QgsFeatureId newFid = utils.newFeatureId( oldFids );
+  const QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
-  QString wkt = "LineString (1 1, 5 1, 5 5, 1 1)";
+  const QString wkt = "LineString (1 1, 5 1, 5 5, 1 1)";
   QCOMPARE( mLayerCloseLine->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
 
   mLayerCloseLine->undoStack()->undo();
@@ -559,7 +559,7 @@ void TestQgsMapToolAddFeatureLine::testSelfSnapping()
 
   mCanvas->setCurrentLayer( mLayerSelfSnapLine );
 
-  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+  const QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
   cfg.setEnabled( true );
@@ -570,7 +570,7 @@ void TestQgsMapToolAddFeatureLine::testSelfSnapping()
   mCanvas->snappingUtils()->setConfig( cfg );
 
 
-  QString targetWkt = "LineString (2 5, 3 5, 3 6, 2 5)";
+  const QString targetWkt = "LineString (2 5, 3 5, 3 6, 2 5)";
 
   // Without self snapping, endpoint won't snap to start point
   cfg.setSelfSnapping( false );
@@ -582,7 +582,7 @@ void TestQgsMapToolAddFeatureLine::testSelfSnapping()
   utils.mouseClick( 2, 5.1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 2, 5.1, Qt::RightButton );
 
-  QgsFeatureId newFid1 = utils.newFeatureId( oldFids );
+  const QgsFeatureId newFid1 = utils.newFeatureId( oldFids );
   QVERIFY( ! mLayerSelfSnapLine->getFeature( newFid1 ).geometry().equals( QgsGeometry::fromWkt( targetWkt ) ) );
   mLayerSelfSnapLine->undoStack()->undo();
 
@@ -596,7 +596,7 @@ void TestQgsMapToolAddFeatureLine::testSelfSnapping()
   utils.mouseClick( 2, 5.1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 2, 5.1, Qt::RightButton );
 
-  QgsFeatureId newFid2 = utils.newFeatureId( oldFids );
+  const QgsFeatureId newFid2 = utils.newFeatureId( oldFids );
   QCOMPARE( mLayerSelfSnapLine->getFeature( newFid2 ).geometry(), QgsGeometry::fromWkt( targetWkt ) );
   mLayerSelfSnapLine->undoStack()->undo();
 }
@@ -625,9 +625,9 @@ void TestQgsMapToolAddFeatureLine::testLineString()
 
   utils.mouseClick( 8, 6.5, Qt::RightButton );
 
-  QgsFeatureId newFid = utils.newFeatureId( oldFids );
+  const QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
-  QString wkt = "LineStringZ (5 6.5 5, 6.25 6.5 333, 6.75 6.5 333, 7.25 6.5 333, 7.5 6.5 333)";
+  const QString wkt = "LineStringZ (5 6.5 5, 6.25 6.5 333, 6.75 6.5 333, 7.25 6.5 333, 7.5 6.5 333)";
   QCOMPARE( mLayerLine->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
 
   mLayerLine->undoStack()->undo();
@@ -661,9 +661,9 @@ void TestQgsMapToolAddFeatureLine::testCompoundCurve()
 
   utils.mouseClick( 8, 6.5, Qt::RightButton );
 
-  QgsFeatureId newFid = utils.newFeatureId( oldFids );
+  const QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
-  QString wkt = "CompoundCurve ((5 6.5, 6.25 6.5),CircularString (6.25 6.5, 6.75 6.5, 7.25 6.5),(7.25 6.5, 7.5 6.5),(7.5 6.5, 7.5 6),(7.5 6, 7.703125 6))";
+  const QString wkt = "CompoundCurve ((5 6.5, 6.25 6.5),CircularString (6.25 6.5, 6.75 6.5, 7.25 6.5),(7.25 6.5, 7.5 6.5),(7.5 6.5, 7.5 6),(7.5 6, 7.703125 6))";
   QCOMPARE( mLayerLineCurved->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
 
   mLayerLineCurved->undoStack()->undo();
@@ -708,9 +708,9 @@ void TestQgsMapToolAddFeatureLine::testStream()
   utils.mouseClick( 7.0, 5.0, Qt::RightButton );
   mCaptureTool->setStreamDigitizingEnabled( false );
 
-  QgsFeatureId newFid = utils.newFeatureId( oldFids );
+  const QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
-  QString wkt = "LineString (5 6.5, 6.25 6.5, 6.75 6.5, 7 6.59375, 7.09375 6.703125, 7.203125 6.59375, 7.296875 6.5, 7.5 6.90625, 7.59375 6.296875, 7.5 5, 7.40625 5, 7.296875 5.09375, 7.203125 5, 7.09375 4.90625)";
+  const QString wkt = "LineString (5 6.5, 6.25 6.5, 6.75 6.5, 7 6.59375, 7.09375 6.703125, 7.203125 6.59375, 7.296875 6.5, 7.5 6.90625, 7.59375 6.296875, 7.5 5, 7.40625 5, 7.296875 5.09375, 7.203125 5, 7.09375 4.90625)";
   QCOMPARE( mLayerLine->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
 
   mLayerLine->undoStack()->undo();
@@ -843,9 +843,9 @@ void TestQgsMapToolAddFeatureLine::testStreamTolerance()
   utils.mouseClick( 7.0, 5.0, Qt::RightButton );
   mCaptureTool->setStreamDigitizingEnabled( false );
 
-  QgsFeatureId newFid = utils.newFeatureId( oldFids );
+  const QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
-  QString wkt = "LineString (5 6.5, 6.25 6.5, 6.75 6.5, 7 6.59375, 7.203125 6.59375, 7.5 6.90625, 7.59375 6.296875, 7.5 5, 7.296875 5.09375, 7.09375 4.90625)";
+  const QString wkt = "LineString (5 6.5, 6.25 6.5, 6.75 6.5, 7 6.59375, 7.203125 6.59375, 7.5 6.90625, 7.59375 6.296875, 7.5 5, 7.296875 5.09375, 7.09375 4.90625)";
   QCOMPARE( mLayerLine->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
 
   mLayerLine->undoStack()->undo();

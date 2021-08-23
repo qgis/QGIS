@@ -55,10 +55,10 @@ static Region edgeToRegion( const QgsMesh &mesh, int id )
   const QgsMeshEdge edge = mesh.edge( id );
   const QgsMeshVertex firstVertex = mesh.vertices[edge.first];
   const QgsMeshVertex secondVertex = mesh.vertices[edge.second];
-  double xMinimum = std::min( firstVertex.x(), secondVertex.x() );
-  double yMinimum = std::min( firstVertex.y(), secondVertex.y() );
-  double xMaximum = std::max( firstVertex.x(), secondVertex.x() );
-  double yMaximum = std::max( firstVertex.y(), secondVertex.y() );
+  const double xMinimum = std::min( firstVertex.x(), secondVertex.x() );
+  const double yMinimum = std::min( firstVertex.y(), secondVertex.y() );
+  const double xMaximum = std::max( firstVertex.x(), secondVertex.x() );
+  const double yMaximum = std::max( firstVertex.y(), secondVertex.y() );
   double pt1[2] = { xMinimum, yMinimum };
   double pt2[2] = { xMaximum, yMaximum };
   return SpatialIndex::Region( pt1, pt2, 2 );
@@ -259,14 +259,14 @@ class QgsMeshSpatialIndexData : public QSharedData
     QgsMeshSpatialIndexData( const QgsMeshSpatialIndexData &other )
       : QSharedData( other )
     {
-      QMutexLocker locker( &other.mMutex );
+      const QMutexLocker locker( &other.mMutex );
 
       initTree();
 
       // copy R-tree data one by one (is there a faster way??)
       double low[]  = { std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest() };
       double high[] = { std::numeric_limits<double>::max(), std::numeric_limits<double>::max() };
-      SpatialIndex::Region query( low, high, 2 );
+      const SpatialIndex::Region query( low, high, 2 );
       QgsMeshSpatialIndexCopyVisitor visitor( mRTree.get() );
       other.mRTree->intersectsWithQuery( query, visitor );
     }
@@ -281,11 +281,11 @@ class QgsMeshSpatialIndexData : public QSharedData
       mStorage.reset( StorageManager::createNewMemoryStorageManager() );
 
       // R-Tree parameters
-      double fillFactor = 0.7;
-      unsigned int indexCapacity = 10;
-      unsigned int leafCapacity = 10;
-      unsigned int dimension = 2;
-      RTree::RTreeVariant variant = RTree::RV_RSTAR;
+      const double fillFactor = 0.7;
+      const unsigned int indexCapacity = 10;
+      const unsigned int leafCapacity = 10;
+      const unsigned int dimension = 2;
+      const RTree::RTreeVariant variant = RTree::RV_RSTAR;
 
       // create R-tree
       SpatialIndex::id_type indexId;
@@ -356,9 +356,9 @@ QList<int> QgsMeshSpatialIndex::intersects( const QgsRectangle &rect ) const
   QList<int> list;
   QgisMeshVisitor visitor( list );
 
-  SpatialIndex::Region r = rectToRegion( rect );
+  const SpatialIndex::Region r = rectToRegion( rect );
 
-  QMutexLocker locker( &d->mMutex );
+  const QMutexLocker locker( &d->mMutex );
   d->mRTree->intersectsWithQuery( r, visitor );
 
   return list;
@@ -370,9 +370,9 @@ QList<int> QgsMeshSpatialIndex::nearestNeighbor( const QgsPointXY &point, int ne
   QgisMeshVisitor visitor( list );
 
   double pt[2] = { point.x(), point.y() };
-  Point p( pt, 2 );
+  const Point p( pt, 2 );
 
-  QMutexLocker locker( &d->mMutex );
+  const QMutexLocker locker( &d->mMutex );
   d->mRTree->nearestNeighborQuery( static_cast<uint32_t>( neighbors ), p, visitor );
 
   return list;
@@ -387,9 +387,9 @@ void QgsMeshSpatialIndex::addFace( int faceIndex, const QgsMesh &mesh )
 {
   if ( mesh.face( faceIndex ).isEmpty() )
     return;
-  SpatialIndex::Region r( faceToRegion( mesh, faceIndex ) );
+  const SpatialIndex::Region r( faceToRegion( mesh, faceIndex ) );
 
-  QMutexLocker locker( &d->mMutex );
+  const QMutexLocker locker( &d->mMutex );
 
   try
   {
@@ -415,7 +415,7 @@ void QgsMeshSpatialIndex::removeFace( int faceIndex, const QgsMesh &mesh )
 {
   if ( mesh.face( faceIndex ).isEmpty() )
     return;
-  QMutexLocker locker( &d->mMutex );
+  const QMutexLocker locker( &d->mMutex );
 
   d->mRTree->deleteData( faceToRegion( mesh, faceIndex ), faceIndex );
 }

@@ -10,12 +10,18 @@ __author__ = 'Nyall Dawson'
 __date__ = '18/12/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
 
+import shutil
+
 import qgis  # NOQA
 
 import tempfile
 import os
-from qgis.core import QgsFileUtils
+from qgis.core import (
+    Qgis,
+    QgsFileUtils
+)
 from qgis.testing import unittest
+from utilities import unitTestDataPath
 
 
 class TestQgsFileUtils(unittest.TestCase):
@@ -182,6 +188,118 @@ class TestQgsFileUtils(unittest.TestCase):
         # invalid path, too deep
         files = QgsFileUtils.findFile(filename, os.path.join(nest, 'nest2'), 2, 4)
         self.assertEqual(files[0], os.path.join(nest, filename).replace(os.sep, '/'))
+
+    def test_represent_file_size(self):
+        """
+        Test QgsFileUtils.representFileSize
+        """
+
+        self.assertEqual(QgsFileUtils.representFileSize(1023), '1023 B')
+        self.assertEqual(QgsFileUtils.representFileSize(1024), '1 KB')
+        self.assertEqual(QgsFileUtils.representFileSize(1048576), '1.00 MB')
+        self.assertEqual(QgsFileUtils.representFileSize(9876543210), '9.20 GB')
+
+    def test_sidecar_files_for_path(self):
+        """
+        Test QgsFileUtils.sidecarFilesForPath
+        """
+        # file which doesn't exist
+        self.assertFalse(QgsFileUtils.sidecarFilesForPath('/not a valid path'))
+        # a directory
+        self.assertFalse(QgsFileUtils.sidecarFilesForPath(unitTestDataPath()))
+        # not a spatial data file
+        self.assertFalse(QgsFileUtils.sidecarFilesForPath(f'{unitTestDataPath()}/kbs.qgs'))
+
+        # shapefile
+        self.assertEqual(QgsFileUtils.sidecarFilesForPath(f'{unitTestDataPath()}/lines.shp'),
+                         {f'{unitTestDataPath()}/lines.shx', f'{unitTestDataPath()}/lines.dbf',
+                          f'{unitTestDataPath()}/lines.prj'})
+        # gpkg
+        self.assertFalse(QgsFileUtils.sidecarFilesForPath(f'{unitTestDataPath()}/mixed_layers.gpkg'))
+
+        # MapInfo TAB file
+        self.assertEqual(QgsFileUtils.sidecarFilesForPath(f'{unitTestDataPath()}/ogr_types.tab'),
+                         {f'{unitTestDataPath()}/ogr_types.dat', f'{unitTestDataPath()}/ogr_types.id',
+                          f'{unitTestDataPath()}/ogr_types.map'})
+
+        # GML
+        self.assertEqual(QgsFileUtils.sidecarFilesForPath(f'{unitTestDataPath()}/invalidgeometries.gml'),
+                         {f'{unitTestDataPath()}/invalidgeometries.gfs'})
+
+        # netcdf
+        self.assertEqual(QgsFileUtils.sidecarFilesForPath(f'{unitTestDataPath()}/landsat2.nc'),
+                         {f'{unitTestDataPath()}/landsat2.nc.aux.xml'})
+        # tif
+        self.assertEqual(QgsFileUtils.sidecarFilesForPath(f'{unitTestDataPath()}/ALLINGES_RGF93_CC46_1_1.tif'),
+                         {f'{unitTestDataPath()}/ALLINGES_RGF93_CC46_1_1.tfw'})
+
+    def test_rename_dataset(self):
+        """
+        Test QgsFileUtils.renameDataset
+        """
+        base_path = tempfile.mkdtemp()
+        for ext in ['shp', 'dbf', 'prj', 'qml', 'shx']:
+            shutil.copy(f'{unitTestDataPath()}/lines.{ext}', f'{base_path}/lines.{ext}')
+            shutil.copy(f'{unitTestDataPath()}/lines.{ext}', f'{base_path}/lines.{ext}')
+        self.assertTrue(os.path.exists(f'{base_path}/lines.shp'))
+
+        res, error = QgsFileUtils.renameDataset(f'{base_path}/lines.shp', f'{base_path}/other_lines.shp')
+        self.assertTrue(res)
+        for ext in ['shp', 'dbf', 'prj', 'qml', 'shx']:
+            self.assertTrue(os.path.exists(f'{base_path}/other_lines.{ext}'))
+            self.assertFalse(os.path.exists(f'{base_path}/lines.{ext}'))
+
+        # skip qml file
+        res, error = QgsFileUtils.renameDataset(f'{base_path}/other_lines.shp', f'{base_path}/other_lines2.shp', Qgis.FileOperationFlags())
+        self.assertTrue(res)
+        for ext in ['shp', 'dbf', 'prj', 'shx']:
+            self.assertTrue(os.path.exists(f'{base_path}/other_lines2.{ext}'))
+            self.assertFalse(os.path.exists(f'{base_path}/other_lines.{ext}'))
+        self.assertFalse(os.path.exists(f'{base_path}/other_lines2.qml'))
+        self.assertTrue(os.path.exists(f'{base_path}/other_lines.qml'))
+
+        # try changing extension -- sidecars won't be renamed
+        res, error = QgsFileUtils.renameDataset(f'{base_path}/other_lines2.shp', f'{base_path}/other_lines2.txt',
+                                                Qgis.FileOperationFlags())
+        self.assertFalse(error)
+        self.assertTrue(res)
+        self.assertFalse(os.path.exists(f'{base_path}/other_lines2.shp'))
+        self.assertTrue(os.path.exists(f'{base_path}/other_lines2.txt'))
+        for ext in ['dbf', 'prj', 'shx']:
+            self.assertTrue(os.path.exists(f'{base_path}/other_lines2.{ext}'))
+
+        for ext in ['shp', 'dbf', 'prj', 'qml', 'shx']:
+            shutil.copy(f'{unitTestDataPath()}/lines.{ext}', f'{base_path}/ll.{ext}')
+            shutil.copy(f'{unitTestDataPath()}/lines.{ext}', f'{base_path}/ll.{ext}')
+
+        # file name clash
+        with open(f'{base_path}/yy.shp', 'wt') as f:
+            f.write('')
+        res, error = QgsFileUtils.renameDataset(f'{base_path}/ll.shp', f'{base_path}/yy.shp',
+                                                Qgis.FileOperationFlags())
+        self.assertFalse(res)
+        self.assertTrue(error)
+        # nothing should be renamed
+        for ext in ['shp', 'dbf', 'prj', 'qml', 'shx']:
+            self.assertTrue(os.path.exists(f'{base_path}/ll.{ext}'))
+
+        # sidecar clash
+        with open(f'{base_path}/yyy.shx', 'wt') as f:
+            f.write('')
+        res, error = QgsFileUtils.renameDataset(f'{base_path}/ll.shp', f'{base_path}/yyy.shp')
+        self.assertFalse(res)
+        self.assertTrue(error)
+        # no files should have been renamed
+        for ext in ['shp', 'dbf', 'prj', 'qml']:
+            self.assertTrue(os.path.exists(f'{base_path}/ll.{ext}'))
+            self.assertFalse(os.path.exists(f'{base_path}/yyy.{ext}'))
+        self.assertTrue(os.path.exists(f'{base_path}/ll.shx'))
+
+        # try renaming missing file
+        res, error = QgsFileUtils.renameDataset('/not a file.txt', f'{base_path}/not a file.txt',
+                                                Qgis.FileOperationFlags())
+        self.assertFalse(res)
+        self.assertTrue(error)
 
 
 if __name__ == '__main__':

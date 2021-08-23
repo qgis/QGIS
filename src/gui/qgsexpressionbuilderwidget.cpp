@@ -77,19 +77,19 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   setupUi( this );
 
   connect( btnRun, &QToolButton::pressed, this, &QgsExpressionBuilderWidget::btnRun_pressed );
-  connect( btnNewFile, &QPushButton::pressed, this, &QgsExpressionBuilderWidget::btnNewFile_pressed );
-  connect( btnRemoveFile, &QPushButton::pressed, this, &QgsExpressionBuilderWidget::btnRemoveFile_pressed );
+  connect( btnNewFile, &QPushButton::clicked, this, &QgsExpressionBuilderWidget::btnNewFile_pressed );
+  connect( btnRemoveFile, &QPushButton::clicked, this, &QgsExpressionBuilderWidget::btnRemoveFile_pressed );
   connect( cmbFileNames, &QListWidget::currentItemChanged, this, &QgsExpressionBuilderWidget::cmbFileNames_currentItemChanged );
   connect( txtExpressionString, &QgsCodeEditorExpression::textChanged, this, &QgsExpressionBuilderWidget::txtExpressionString_textChanged );
   connect( txtPython, &QgsCodeEditorPython::textChanged, this, &QgsExpressionBuilderWidget::txtPython_textChanged );
   connect( txtSearchEditValues, &QgsFilterLineEdit::textChanged, this, &QgsExpressionBuilderWidget::txtSearchEditValues_textChanged );
   connect( mValuesListView, &QListView::doubleClicked, this, &QgsExpressionBuilderWidget::mValuesListView_doubleClicked );
-  connect( btnSaveExpression, &QPushButton::pressed, this, &QgsExpressionBuilderWidget::storeCurrentUserExpression );
-  connect( btnEditExpression, &QPushButton::pressed, this, &QgsExpressionBuilderWidget::editSelectedUserExpression );
-  connect( btnRemoveExpression, &QPushButton::pressed, this, &QgsExpressionBuilderWidget::removeSelectedUserExpression );
-  connect( btnImportExpressions, &QPushButton::pressed, this, &QgsExpressionBuilderWidget::importUserExpressions_pressed );
-  connect( btnExportExpressions, &QPushButton::pressed, this, &QgsExpressionBuilderWidget::exportUserExpressions_pressed );
-  connect( btnClearEditor, &QPushButton::pressed, txtExpressionString, &QgsCodeEditorExpression::clear );
+  connect( btnSaveExpression, &QToolButton::clicked, this, &QgsExpressionBuilderWidget::storeCurrentUserExpression );
+  connect( btnEditExpression, &QToolButton::clicked, this, &QgsExpressionBuilderWidget::editSelectedUserExpression );
+  connect( btnRemoveExpression, &QToolButton::clicked, this, &QgsExpressionBuilderWidget::removeSelectedUserExpression );
+  connect( btnImportExpressions, &QToolButton::clicked, this, &QgsExpressionBuilderWidget::importUserExpressions_pressed );
+  connect( btnExportExpressions, &QToolButton::clicked, this, &QgsExpressionBuilderWidget::exportUserExpressions_pressed );
+  connect( btnClearEditor, &QToolButton::clicked, txtExpressionString, &QgsCodeEditorExpression::clear );
   connect( txtSearchEdit, &QgsFilterLineEdit::textChanged, mExpressionTreeView, &QgsExpressionTreeView::setSearchText );
 
   connect( mExpressionPreviewWidget, &QgsExpressionPreviewWidget::toolTipChanged, txtExpressionString, &QgsCodeEditorExpression::setToolTip );
@@ -120,13 +120,13 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   btnImportExpressions->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionSharingImport.svg" ) ) );
   btnClearEditor->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileNew.svg" ) ) );
 
-  connect( btnLoadAll, &QAbstractButton::pressed, this, &QgsExpressionBuilderWidget::loadAllValues );
-  connect( btnLoadSample, &QAbstractButton::pressed, this, &QgsExpressionBuilderWidget::loadSampleValues );
+  connect( btnLoadAll, &QAbstractButton::clicked, this, &QgsExpressionBuilderWidget::loadAllValues );
+  connect( btnLoadSample, &QAbstractButton::clicked, this, &QgsExpressionBuilderWidget::loadSampleValues );
 
   const auto pushButtons { mOperatorsGroupBox->findChildren<QPushButton *>() };
   for ( QPushButton *button : pushButtons )
   {
-    connect( button, &QAbstractButton::pressed, this, &QgsExpressionBuilderWidget::operatorButtonClicked );
+    connect( button, &QAbstractButton::clicked, this, &QgsExpressionBuilderWidget::operatorButtonClicked );
   }
 
   txtSearchEdit->setShowSearchIcon( true );
@@ -251,7 +251,7 @@ QgsExpressionBuilderWidget::~QgsExpressionBuilderWidget()
   delete mExpressionTreeMenuProvider;
 }
 
-void QgsExpressionBuilderWidget::init( const QgsExpressionContext &context, const QString &recentCollection, const Flags &flags )
+void QgsExpressionBuilderWidget::init( const QgsExpressionContext &context, const QString &recentCollection, QgsExpressionBuilderWidget::Flags flags )
 {
   setExpressionContext( context );
 
@@ -262,13 +262,13 @@ void QgsExpressionBuilderWidget::init( const QgsExpressionContext &context, cons
     mExpressionTreeView->loadUserExpressions();
 }
 
-void QgsExpressionBuilderWidget::initWithLayer( QgsVectorLayer *layer, const QgsExpressionContext &context, const QString &recentCollection, const Flags &flags )
+void QgsExpressionBuilderWidget::initWithLayer( QgsVectorLayer *layer, const QgsExpressionContext &context, const QString &recentCollection, QgsExpressionBuilderWidget::Flags flags )
 {
   init( context, recentCollection, flags );
   setLayer( layer );
 }
 
-void QgsExpressionBuilderWidget::initWithFields( const QgsFields &fields, const QgsExpressionContext &context, const QString &recentCollection, const Flags &flags )
+void QgsExpressionBuilderWidget::initWithFields( const QgsFields &fields, const QgsExpressionContext &context, const QString &recentCollection, QgsExpressionBuilderWidget::Flags flags )
 {
   init( context, recentCollection, flags );
   mExpressionTreeView->loadFieldNames( fields );
@@ -402,10 +402,10 @@ void QgsExpressionBuilderWidget::updateFunctionFileList( const QString &path )
   if ( cmbFileNames->count() == 0 )
   {
     // Create default sample entry.
-    newFunctionFile( "default" );
+    newFunctionFile( QStringLiteral( "default" ) );
     txtPython->setText( QStringLiteral( "'''\n#Sample custom function file\n"
                                         "#(uncomment to use and customize or Add button to create a new file) \n%1 \n '''" ).arg( txtPython->text() ) );
-    saveFunctionFile( "default" );
+    saveFunctionFile( QStringLiteral( "default" ) );
   }
 }
 
@@ -598,7 +598,7 @@ void QgsExpressionBuilderWidget::loadUserExpressions( )
   mExpressionTreeView->loadUserExpressions();
 }
 
-void QgsExpressionBuilderWidget::saveToUserExpressions( const QString &label, const QString expression, const QString &helpText )
+void QgsExpressionBuilderWidget::saveToUserExpressions( const QString &label, const QString &expression, const QString &helpText )
 {
   mExpressionTreeView->saveToUserExpressions( label, expression, helpText );
 }
@@ -685,7 +685,7 @@ void QgsExpressionBuilderWidget::showEvent( QShowEvent *e )
   txtExpressionString->setFocus();
 }
 
-void QgsExpressionBuilderWidget::createErrorMarkers( QList<QgsExpression::ParserError> errors )
+void QgsExpressionBuilderWidget::createErrorMarkers( const QList<QgsExpression::ParserError> &errors )
 {
   clearErrors();
   for ( const QgsExpression::ParserError &error : errors )
@@ -769,7 +769,8 @@ void QgsExpressionBuilderWidget::createMarkers( const QgsExpressionNode *inNode 
     case QgsExpressionNode::NodeType::ntCondition:
     {
       const QgsExpressionNodeCondition *node = static_cast<const QgsExpressionNodeCondition *>( inNode );
-      for ( QgsExpressionNodeCondition::WhenThen *cond : node->conditions() )
+      const QList<QgsExpressionNodeCondition::WhenThen *> conditions = node->conditions();
+      for ( QgsExpressionNodeCondition::WhenThen *cond : conditions )
       {
         createMarkers( cond->whenExp() );
         createMarkers( cond->thenExp() );
@@ -912,7 +913,7 @@ void QgsExpressionBuilderWidget::storeCurrentUserExpression()
   QgsExpressionStoreDialog dlg { expression, expression, QString( ), mExpressionTreeView->userExpressionLabels() };
   if ( dlg.exec() == QDialog::DialogCode::Accepted )
   {
-    mExpressionTreeView->saveToUserExpressions( dlg.label(), dlg.expression(), dlg.helpText() );
+    mExpressionTreeView->saveToUserExpressions( dlg.label().simplified(), dlg.expression(), dlg.helpText() );
   }
 }
 
@@ -931,17 +932,17 @@ void QgsExpressionBuilderWidget::editSelectedUserExpression()
 
   QgsSettings settings;
   QString helpText = settings.value( QStringLiteral( "user/%1/helpText" ).arg( item->text() ), "", QgsSettings::Section::Expressions ).toString();
-  QgsExpressionStoreDialog dlg { item->text(), item->getExpressionText(), helpText };
+  QgsExpressionStoreDialog dlg { item->text(), item->getExpressionText(), helpText, mExpressionTreeView->userExpressionLabels() };
 
   if ( dlg.exec() == QDialog::DialogCode::Accepted )
   {
     // label has changed removed the old one before adding the new one
-    if ( dlg.label() != item->text() )
+    if ( dlg.isLabelModified() )
     {
       mExpressionTreeView->removeFromUserExpressions( item->text() );
     }
 
-    mExpressionTreeView->saveToUserExpressions( dlg.label(), dlg.expression(), dlg.helpText() );
+    mExpressionTreeView->saveToUserExpressions( dlg.label().simplified(), dlg.expression(), dlg.helpText() );
   }
 }
 
@@ -1123,7 +1124,7 @@ QMenu *QgsExpressionBuilderWidget::ExpressionTreeMenuProvider::createContextMenu
 
     if ( formatterCanProvideAvailableValues( layer, item->data( QgsExpressionItem::ITEM_NAME_ROLE ).toString() ) )
     {
-      menu->addAction( tr( "Load First 10 Unique Used Values" ), mExpressionBuilderWidget, SLOT( loadSampleUsedValues() ) );
+      menu->addAction( tr( "Load First 10 Unique Used Values" ), mExpressionBuilderWidget, &QgsExpressionBuilderWidget::loadSampleUsedValues );
       menu->addAction( tr( "Load All Unique Used Values" ), mExpressionBuilderWidget, &QgsExpressionBuilderWidget::loadAllUsedValues );
     }
   }

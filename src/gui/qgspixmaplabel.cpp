@@ -24,7 +24,7 @@ QgsPixmapLabel::QgsPixmapLabel( QWidget *parent )
 
 void QgsPixmapLabel::setPixmap( const QPixmap &p )
 {
-  bool sizeChanged = ( p.size() != mPixmap.size() );
+  const bool sizeChanged = ( p.size() != mPixmap.size() );
   mPixmap = p;
 
   if ( sizeChanged )
@@ -48,7 +48,7 @@ QSize QgsPixmapLabel::sizeHint() const
   if ( mPixmap.isNull() )
     return QSize( 0, 0 );
 
-  int w = this->width();
+  const int w = this->width();
   return QSize( w, heightForWidth( w ) );
 }
 

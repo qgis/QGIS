@@ -81,8 +81,8 @@ bool LinTriangleInterpolator::calcNormVec( double x, double y, QgsPoint &vec )
     {return false;}
     if ( !calcFirstDerY( x, y, &vec2 ) )
     {return false;}
-    Vector3D vec3( vec1.getY()*vec2.getZ() - vec1.getZ()*vec2.getY(), vec1.getZ()*vec2.getX() - vec1.getX()*vec2.getZ(), vec1.getX()*vec2.getY() - vec1.getY()*vec2.getX() );//calculate vector product
-    double absvec3 = std::sqrt( vec3.getX() * vec3.getX() + vec3.getY() * vec3.getY() + vec3.getZ() * vec3.getZ() );//length of vec3
+    const Vector3D vec3( vec1.getY()*vec2.getZ() - vec1.getZ()*vec2.getY(), vec1.getZ()*vec2.getX() - vec1.getX()*vec2.getZ(), vec1.getX()*vec2.getY() - vec1.getY()*vec2.getX() );//calculate vector product
+    const double absvec3 = std::sqrt( vec3.getX() * vec3.getX() + vec3.getY() * vec3.getY() + vec3.getZ() * vec3.getZ() );//length of vec3
     vec.setX( vec3.getX() / absvec3 );//standardize vec3 and assign it to vec
     vec.setY( vec3.getY() / absvec3 );
     vec.setZ( vec3.getZ() / absvec3 );
@@ -110,9 +110,9 @@ bool LinTriangleInterpolator::calcPoint( double x, double y, QgsPoint &point )
       return false;//point is outside the convex hull or numerical problems
     }
 
-    double a = ( pt1.z() * ( pt2.y() - pt3.y() ) + pt2.z() * ( pt3.y() - pt1.y() ) + pt3.z() * ( pt1.y() - pt2.y() ) ) / ( ( pt1.x() - pt2.x() ) * ( pt2.y() - pt3.y() ) - ( pt2.x() - pt3.x() ) * ( pt1.y() - pt2.y() ) );
-    double b = ( pt1.z() * ( pt2.x() - pt3.x() ) + pt2.z() * ( pt3.x() - pt1.x() ) + pt3.z() * ( pt1.x() - pt2.x() ) ) / ( ( pt1.y() - pt2.y() ) * ( pt2.x() - pt3.x() ) - ( pt2.y() - pt3.y() ) * ( pt1.x() - pt2.x() ) );
-    double c = pt1.z() - a * pt1.x() - b * pt1.y();
+    const double a = ( pt1.z() * ( pt2.y() - pt3.y() ) + pt2.z() * ( pt3.y() - pt1.y() ) + pt3.z() * ( pt1.y() - pt2.y() ) ) / ( ( pt1.x() - pt2.x() ) * ( pt2.y() - pt3.y() ) - ( pt2.x() - pt3.x() ) * ( pt1.y() - pt2.y() ) );
+    const double b = ( pt1.z() * ( pt2.x() - pt3.x() ) + pt2.z() * ( pt3.x() - pt1.x() ) + pt3.z() * ( pt1.x() - pt2.x() ) ) / ( ( pt1.y() - pt2.y() ) * ( pt2.x() - pt3.x() ) - ( pt2.y() - pt3.y() ) * ( pt1.x() - pt2.x() ) );
+    const double c = pt1.z() - a * pt1.x() - b * pt1.y();
 
     point.setX( x );
     point.setY( y );

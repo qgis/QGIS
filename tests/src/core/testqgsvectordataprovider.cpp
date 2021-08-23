@@ -61,8 +61,8 @@ void TestQgsVectorDataProvider::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  QString layerPointsUrl = QStringLiteral( TEST_DATA_DIR ) + "/points.shp";
-  QString layerLinesUrl = QStringLiteral( TEST_DATA_DIR ) + "/lines.shp";
+  const QString layerPointsUrl = QStringLiteral( TEST_DATA_DIR ) + "/points.shp";
+  const QString layerLinesUrl = QStringLiteral( TEST_DATA_DIR ) + "/lines.shp";
 
   // load layers
   const QgsVectorLayer::LayerOptions options { QgsCoordinateTransformContext() };
@@ -173,8 +173,8 @@ void TestQgsVectorDataProvider::select_checkSubset_data()
   QTest::addColumn<QgsFeatureRequest>( "request" );
   QTest::addColumn<int>( "count" );
 
-  QgsRectangle rect1( -98, 31, -95, 34 ); // bounding box -> 2 feats, exact intersect -> 0 feats
-  QgsRectangle rect2( -90, 37, -86, 39 ); // bounding box -> 4 feats, exact intersect -> 2 feats
+  const QgsRectangle rect1( -98, 31, -95, 34 ); // bounding box -> 2 feats, exact intersect -> 0 feats
+  const QgsRectangle rect2( -90, 37, -86, 39 ); // bounding box -> 4 feats, exact intersect -> 2 feats
 
   QTest::newRow( "all" ) << QgsFeatureRequest() << 6;
   // OGR always does exact intersection test

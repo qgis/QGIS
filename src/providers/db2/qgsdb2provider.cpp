@@ -45,7 +45,7 @@ QgsDb2Provider::QgsDb2Provider( const QString &uri, const ProviderOptions &optio
   , mEnvironment( ENV_LUW )
 {
   QgsDebugMsg( "uri: " + uri );
-  QgsDataSourceUri anUri = QgsDataSourceUri( uri );
+  const QgsDataSourceUri anUri = QgsDataSourceUri( uri );
   if ( !anUri.srid().isEmpty() )
     mSRId = anUri.srid().toInt();
   else
@@ -78,7 +78,7 @@ QgsDb2Provider::QgsDb2Provider( const QString &uri, const ProviderOptions &optio
   QString errMsg;
   mDatabase = getDatabase( uri, errMsg );
   mConnInfo = anUri.connectionInfo();
-  QgsCoordinateReferenceSystem layerCrs = crs();
+  const QgsCoordinateReferenceSystem layerCrs = crs();
   QgsDebugMsg( "CRS: " + layerCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
 
   if ( !errMsg.isEmpty() )
@@ -167,11 +167,11 @@ QSqlDatabase QgsDb2Provider::getDatabase( const QString &connInfo, QString &errM
   QString connectionName;
   QString connectionString;
 
-  QgsDataSourceUri uri( connInfo );
+  const QgsDataSourceUri uri( connInfo );
   // Fill in the password if authentication is used
-  QString expandedConnectionInfo = uri.connectionInfo( true );
+  const QString expandedConnectionInfo = uri.connectionInfo( true );
   QgsDebugMsg( "expanded connInfo: " + expandedConnectionInfo );
-  QgsDataSourceUri uriExpanded( expandedConnectionInfo );
+  const QgsDataSourceUri uriExpanded( expandedConnectionInfo );
 
   userName = uriExpanded.username();
   password = uriExpanded.password();
@@ -226,7 +226,7 @@ QSqlDatabase QgsDb2Provider::getDatabase( const QString &connInfo, QString &errM
       // QSqlDatabase::removeDatabase is thread safe, so this is ok to do.
       QObject::connect( QThread::currentThread(), &QThread::finished, QThread::currentThread(), [connectionName]
       {
-        QMutexLocker locker( &sMutex );
+        const QMutexLocker locker( &sMutex );
         QSqlDatabase::removeDatabase( connectionName );
       }, Qt::DirectConnection );
     }
@@ -250,8 +250,8 @@ QSqlDatabase QgsDb2Provider::getDatabase( const QString &connInfo, QString &errM
     // This is needed for Python or any non-GUI process
     if ( userName.isEmpty() || password.isEmpty() || ( !connected && i > 1 ) )
     {
-      bool ok = QgsCredentials::instance()->get( databaseName, userName,
-                password, errMsg );
+      const bool ok = QgsCredentials::instance()->get( databaseName, userName,
+                      password, errMsg );
       if ( !ok )
       {
         errMsg = QStringLiteral( "Cancel clicked" );
@@ -322,18 +322,18 @@ void QgsDb2Provider::loadFields()
 {
   mAttributeFields.clear();
   //mDefaultValues.clear();
-  QString table = QStringLiteral( "%1.%2" ).arg( mSchemaName, mTableName );
+  const QString table = QStringLiteral( "%1.%2" ).arg( mSchemaName, mTableName );
 
   // Use the Qt functionality to get the fields and their definitions.
-  QSqlRecord r = mDatabase.record( table );
-  int fieldCount = r.count();
+  const QSqlRecord r = mDatabase.record( table );
+  const int fieldCount = r.count();
 
   for ( int i = 0; i < fieldCount; i++ )
   {
-    QSqlField f = r.field( i );
-    int typeID = f.typeID(); // seems to be DB2 numeric type id (standard?)
-    QString sqlTypeName = db2TypeName( typeID );
-    QVariant::Type sqlType = f.type();
+    const QSqlField f = r.field( i );
+    const int typeID = f.typeID(); // seems to be DB2 numeric type id (standard?)
+    const QString sqlTypeName = db2TypeName( typeID );
+    const QVariant::Type sqlType = f.type();
     QgsDebugMsg( QStringLiteral( "name: %1; length: %2; sqlTypeID: %3; sqlTypeName: %4" )
                  .arg( f.name() ).arg( f.length() ).arg( QString::number( typeID ), sqlTypeName ) );
     if ( f.name() == mGeometryColName ) continue; // Got this with uri, just skip
@@ -534,8 +534,8 @@ long long QgsDb2Provider::featureCount() const
   QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
 
-  QString sql = QStringLiteral( "SELECT COUNT(*) FROM %1.%2" );
-  QString statement = QString( sql ).arg( mSchemaName, mTableName );
+  const QString sql = QStringLiteral( "SELECT COUNT(*) FROM %1.%2" );
+  const QString statement = QString( sql ).arg( mSchemaName, mTableName );
   QgsDebugMsg( statement );
   if ( query.exec( statement ) && query.next() )
   {
@@ -562,7 +562,7 @@ QgsCoordinateReferenceSystem QgsDb2Provider::crs() const
     // try to load crs from the database tables as a fallback
     QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );
-    bool execOk = query.exec( QStringLiteral( "SELECT DEFINITION FROM DB2GSE.ST_SPATIAL_REFERENCE_SYSTEMS WHERE SRS_ID = %1" ).arg( QString::number( mSRId ) ) );
+    const bool execOk = query.exec( QStringLiteral( "SELECT DEFINITION FROM DB2GSE.ST_SPATIAL_REFERENCE_SYSTEMS WHERE SRS_ID = %1" ).arg( QString::number( mSRId ) ) );
     if ( execOk && query.isActive() )
     {
       if ( query.next() )
@@ -616,7 +616,7 @@ void QgsDb2Provider::updateStatistics() const
 
   QgsDebugMsg( QStringLiteral( "mSRId: %1" ).arg( mSRId ) );
   QgsDb2GeometryColumns gc( mDatabase );
-  QString rc = gc.open( mSchemaName, mTableName );  // returns SQLCODE if failure
+  const QString rc = gc.open( mSchemaName, mTableName );  // returns SQLCODE if failure
   if ( rc.isEmpty() || rc == QLatin1String( "0" ) )
   {
     mEnvironment = gc.db2Environment();
@@ -688,7 +688,7 @@ QString QgsDb2Provider::subsetString() const
 
 bool QgsDb2Provider::setSubsetString( const QString &theSQL, bool )
 {
-  QString prevWhere = mSqlWhereClause;
+  const QString prevWhere = mSqlWhereClause;
   QgsDebugMsg( theSQL );
   mSqlWhereClause = theSQL.trimmed();
 
@@ -747,7 +747,7 @@ void QgsDb2Provider::db2WkbTypeAndDimension( QgsWkbTypes::Type wkbType, QString 
   if ( QgsWkbTypes::hasZ( wkbType ) )
     dim = 3;
 
-  QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( wkbType );
+  const QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( wkbType );
 
   if ( flatType == QgsWkbTypes::Point )
     geometryType = QStringLiteral( "POINT" );
@@ -817,7 +817,7 @@ bool QgsDb2Provider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
   for ( QgsChangedAttributesMap::const_iterator it = attr_map.begin(); it != attr_map.end(); ++it )
   {
-    QgsFeatureId fid = it.key();
+    const QgsFeatureId fid = it.key();
 
     // skip added features
     if ( FID_IS_NEW( fid ) )
@@ -844,7 +844,7 @@ bool QgsDb2Provider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
     for ( QgsAttributeMap::const_iterator it2 = attrs.begin(); it2 != attrs.end(); ++it2 )
     {
-      QgsField fld = mAttributeFields.at( it2.key() );
+      const QgsField fld = mAttributeFields.at( it2.key() );
 
       if ( fld.typeName().endsWith( QLatin1String( " identity" ), Qt::CaseInsensitive ) )
         continue; // skip identity field
@@ -875,12 +875,12 @@ bool QgsDb2Provider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     QgsDebugMsg( statement );
     for ( QgsAttributeMap::const_iterator it2 = attrs.begin(); it2 != attrs.end(); ++it2 )
     {
-      QgsField fld = mAttributeFields.at( it2.key() );
+      const QgsField fld = mAttributeFields.at( it2.key() );
 
       if ( fld.name().isEmpty() )
         continue; // invalid
 
-      QVariant::Type type = fld.type();
+      const QVariant::Type type = fld.type();
       if ( it2->isNull() || !it2->isValid() )
       {
         // binding null values
@@ -960,7 +960,7 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList &flist, Flags flags )
   QSqlQuery queryFid = QSqlQuery( mDatabase );
   queryFid.setForwardOnly( true );
 
-  QgsFeature it = flist.at( 0 );
+  const QgsFeature it = flist.at( 0 );
   QString statement;
   QString values;
   statement = QStringLiteral( "INSERT INTO %1.%2 (" ).arg( mSchemaName, mTableName );
@@ -1000,7 +1000,7 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList &flist, Flags flags )
 
   for ( int i = 0; i < mAttributeFields.count(); ++i )
   {
-    QgsField fld = mAttributeFields.at( i );
+    const QgsField fld = mAttributeFields.at( i );
     QgsDebugMsg( QStringLiteral( "i: %1; got field: %2" ).arg( i ).arg( fld.name() ) );
 
     if ( fld.name().isEmpty() )
@@ -1050,7 +1050,7 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList &flist, Flags flags )
   // use prepared statement to prevent from sql injection
   if ( !query.prepare( statement ) )
   {
-    QString msg = query.lastError().text();
+    const QString msg = query.lastError().text();
     QgsDebugMsg( msg );
     pushError( msg );
     return false;
@@ -1069,7 +1069,7 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList &flist, Flags flags )
     int bindIdx = 0;
     for ( int i = 0; i < attrs.count(); i++ )
     {
-      QgsField fld = mAttributeFields.at( fieldIdx++ );
+      const QgsField fld = mAttributeFields.at( fieldIdx++ );
       if ( fld.name().isEmpty() )
         continue; // invalid
 
@@ -1079,7 +1079,7 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList &flist, Flags flags )
 //      if ( mDefaultValues.contains( i ) && mDefaultValues[i] == attrs.at( i ) )
 //        continue; // skip fields having default values
 
-      QVariant::Type type = fld.type();
+      const QVariant::Type type = fld.type();
       if ( attrs.at( i ).isNull() || !attrs.at( i ).isValid() )
       {
         // binding null values
@@ -1132,9 +1132,9 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList &flist, Flags flags )
 
     if ( !mGeometryColName.isEmpty() )
     {
-      QgsGeometry geom = it->geometry();
+      const QgsGeometry geom = it->geometry();
 
-      QByteArray bytea = geom.asWkb();
+      const QByteArray bytea = geom.asWkb();
       query.bindValue( bindIdx,  bytea, QSql::In | QSql::Binary );
     }
 
@@ -1150,7 +1150,7 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList &flist, Flags flags )
 #endif
     if ( !query.exec() )
     {
-      QString msg = query.lastError().text();
+      const QString msg = query.lastError().text();
       QgsDebugMsg( msg );
       if ( !mSkipFailures )
       {
@@ -1166,7 +1166,7 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList &flist, Flags flags )
 //    QgsDebugMsg( statement );
       if ( !queryFid.exec( statement ) )
       {
-        QString msg = query.lastError().text();
+        const QString msg = query.lastError().text();
         QgsDebugMsg( msg );
         if ( !mSkipFailures )
         {
@@ -1177,7 +1177,7 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList &flist, Flags flags )
 
       if ( !queryFid.next() )
       {
-        QString msg = query.lastError().text();
+        const QString msg = query.lastError().text();
         QgsDebugMsg( msg );
         if ( !mSkipFailures )
         {
@@ -1190,7 +1190,7 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList &flist, Flags flags )
     writeCount++;
 //    QgsDebugMsg( QStringLiteral( "count: %1; featureId: %2" ).arg( writeCount ).arg( queryFid.value( 0 ).toLongLong() ) );
   }
-  bool commitStatus = mDatabase.commit();
+  const bool commitStatus = mDatabase.commit();
   QgsDebugMsg( QStringLiteral( "commitStatus: %1; write count: %2; featureId: %3" )
                .arg( commitStatus ).arg( writeCount ).arg( queryFid.value( 0 ).toLongLong() ) );
   if ( !commitStatus )
@@ -1233,7 +1233,7 @@ bool QgsDb2Provider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 
   for ( QgsGeometryMap::const_iterator it = geometry_map.constBegin(); it != geometry_map.constEnd(); ++it )
   {
-    QgsFeatureId fid = it.key();
+    const QgsFeatureId fid = it.key();
     // skip added features
     if ( FID_IS_NEW( fid ) )
     {
@@ -1271,7 +1271,7 @@ bool QgsDb2Provider::changeGeometryValues( const QgsGeometryMap &geometry_map )
     }
 
     // add geometry param
-    QByteArray bytea = it->asWkb();
+    const QByteArray bytea = it->asWkb();
     query.addBindValue( bytea, QSql::In | QSql::Binary );
 
     if ( !query.exec() )
@@ -1293,15 +1293,15 @@ Qgis::VectorExportResult QgsDb2Provider::createEmptyLayer( const QString &uri,
     QString *errorMessage )
 {
   // populate members from the uri structure
-  QgsDataSourceUri dsUri( uri );
+  const QgsDataSourceUri dsUri( uri );
 
-  QString connInfo = dsUri.connectionInfo();
+  const QString connInfo = dsUri.connectionInfo();
   QString errMsg;
   QString srsName;
   QgsDebugMsg( "uri: " + uri );
 
   // connect to database
-  QSqlDatabase db = QgsDb2Provider::getDatabase( connInfo, errMsg );
+  const QSqlDatabase db = QgsDb2Provider::getDatabase( connInfo, errMsg );
 
   if ( !errMsg.isEmpty() )
   {
@@ -1315,13 +1315,13 @@ Qgis::VectorExportResult QgsDb2Provider::createEmptyLayer( const QString &uri,
   // most often the EPSG id.  Hopefully DB2 has defined an SRS using this
   // value as the srid / srs_id.  If not, we are out of luck.
   QgsDebugMsg( "srs: " + srs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
-  long srid = srs.postgisSrid();
+  const long srid = srs.postgisSrid();
   QgsDebugMsg( QStringLiteral( "srid: %1" ).arg( srid ) );
   if ( srid >= 0 )
   {
     QSqlQuery query( db );
-    QString statement = QStringLiteral( "SELECT srs_name FROM db2gse.st_spatial_reference_systems where srs_id=%1" )
-                        .arg( srid );
+    const QString statement = QStringLiteral( "SELECT srs_name FROM db2gse.st_spatial_reference_systems where srs_id=%1" )
+                              .arg( srid );
     QgsDebugMsg( statement );
 
     if ( !query.exec( statement ) || !query.isActive() )
@@ -1341,7 +1341,7 @@ Qgis::VectorExportResult QgsDb2Provider::createEmptyLayer( const QString &uri,
   }
 
   QString schemaName = dsUri.schema().toUpper();
-  QString tableName = dsUri.table().toUpper();
+  const QString tableName = dsUri.table().toUpper();
   QString fullName;
 
   if ( schemaName.isEmpty() )
@@ -1376,11 +1376,11 @@ Qgis::VectorExportResult QgsDb2Provider::createEmptyLayer( const QString &uri,
 
   // get the pk's name and type
   // if no pk name was passed, define the new pk field name
-  int fieldCount = fields.size();
+  const int fieldCount = fields.size();
   if ( primaryKey.isEmpty() )
   {
     int index = 0;
-    QString pk = primaryKey = QStringLiteral( "QGS_FID" );
+    const QString pk = primaryKey = QStringLiteral( "QGS_FID" );
     for ( int i = 0; i < fieldCount; ++i )
     {
       if ( fields.at( i ).name() == primaryKey )
@@ -1426,7 +1426,7 @@ Qgis::VectorExportResult QgsDb2Provider::createEmptyLayer( const QString &uri,
     {
       if ( q.lastError().nativeErrorCode() != QLatin1String( "-206" ) ) // -206 is "not found" just ignore
       {
-        QString lastError = q.lastError().text();
+        const QString lastError = q.lastError().text();
         QgsDebugMsg( lastError );
         if ( errorMessage )
         {
@@ -1449,7 +1449,7 @@ Qgis::VectorExportResult QgsDb2Provider::createEmptyLayer( const QString &uri,
     QgsDebugMsg( "PrimaryKey: '" + primaryKey + "'" );
     for ( int i = 0; i < fieldCount; ++i )
     {
-      QgsField fld = fields.field( i );
+      const QgsField fld = fields.field( i );
       QgsDebugMsg( QStringLiteral( "i: %1; fldIdx: %2; offset: %3" )
                    .arg( i ).arg( fields.lookupField( fld.name() ) ).arg( offset ) );
 
@@ -1464,7 +1464,7 @@ Qgis::VectorExportResult QgsDb2Provider::createEmptyLayer( const QString &uri,
         // Found a field with the same name of the geometry column. Skip it!
         continue;
       }
-      QString db2Field = qgsFieldToDb2Field( fld );
+      const QString db2Field = qgsFieldToDb2Field( fld );
 
       if ( db2Field.isEmpty() )
       {
@@ -1506,7 +1506,7 @@ Qgis::VectorExportResult QgsDb2Provider::createEmptyLayer( const QString &uri,
     QgsDebugMsg( sql );
     if ( !q.exec( sql ) )
     {
-      QString lastError = q.lastError().text();
+      const QString lastError = q.lastError().text();
       QgsDebugMsg( lastError );
       if ( errorMessage )
       {
@@ -1518,7 +1518,7 @@ Qgis::VectorExportResult QgsDb2Provider::createEmptyLayer( const QString &uri,
 
     if ( !geometryColumn.isEmpty() )
     {
-      int computeExtents = 0;
+      const int computeExtents = 0;
       int msgCode = 0;
       int outCode;
       int outMsg;
@@ -1528,7 +1528,7 @@ Qgis::VectorExportResult QgsDb2Provider::createEmptyLayer( const QString &uri,
 
 // get the environment
       QgsDb2GeometryColumns gc( db );
-      QString rc = gc.open( schemaName, tableName );  // returns SQLCODE if failure
+      const QString rc = gc.open( schemaName, tableName );  // returns SQLCODE if failure
       if ( rc.isEmpty() || rc == QLatin1String( "0" ) )
       {
         db2Environment = gc.db2Environment();
@@ -1739,7 +1739,7 @@ QgsDb2ProviderMetadata::QgsDb2ProviderMetadata()
 QList< QgsDataItemProvider * > QgsDb2ProviderMetadata::dataItemProviders() const
 {
   QList<QgsDataItemProvider *> providers;
-  QgsSettings settings;
+  const QgsSettings settings;
   if ( settings.value( QStringLiteral( "showDeprecated" ), false, QgsSettings::Providers ).toBool() )
   {
     providers << new QgsDb2DataItemProvider;

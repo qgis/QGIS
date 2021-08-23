@@ -73,8 +73,8 @@ void TestQgsLayoutGui::itemTypeComboBox()
   cb2->setItemType( QgsLayoutItemRegistry::LayoutShape );
 
   qRegisterMetaType<QgsLayoutItem *>();
-  QSignalSpy spy1( cb, &QgsLayoutItemComboBox::itemChanged );
-  QSignalSpy spy2( cb2, &QgsLayoutItemComboBox::itemChanged );
+  const QSignalSpy spy1( cb, &QgsLayoutItemComboBox::itemChanged );
+  const QSignalSpy spy2( cb2, &QgsLayoutItemComboBox::itemChanged );
 
   // add some items to layout
   QgsLayoutItemMap *item1 = new QgsLayoutItemMap( layout );

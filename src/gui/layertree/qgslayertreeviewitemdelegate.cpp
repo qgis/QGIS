@@ -42,14 +42,14 @@ QRect QgsLayerTreeViewProxyStyle::subElementRect( QStyle::SubElement element, co
     {
       if ( QgsLayerTreeNode *node = mLayerTreeView->index2node( vopt->index ) )
       {
-        int count = mLayerTreeView->indicators( node ).count();
+        const int count = mLayerTreeView->indicators( node ).count();
         if ( count )
         {
-          QRect vpr = mLayerTreeView->viewport()->rect();
-          QRect r = QProxyStyle::subElementRect( SE_ItemViewItemText, option, widget );
-          int indiWidth = r.height() * count;
-          int spacing = r.height() / 10;
-          int vpIndiWidth = vpr.width() - indiWidth - spacing - mLayerTreeView->layerMarkWidth();
+          const QRect vpr = mLayerTreeView->viewport()->rect();
+          const QRect r = QProxyStyle::subElementRect( SE_ItemViewItemText, option, widget );
+          const int indiWidth = r.height() * count;
+          const int spacing = r.height() / 10;
+          const int vpIndiWidth = vpr.width() - indiWidth - spacing - mLayerTreeView->layerMarkWidth();
           return QRect( vpIndiWidth, r.top(), indiWidth, r.height() );
         }
       }
@@ -82,15 +82,15 @@ void QgsLayerTreeViewItemDelegate::paint( QPainter *painter, const QStyleOptionV
   initStyleOption( &opt, index );
 
   const QColor baseColor = opt.palette.base().color();
-  QRect tRect = mLayerTreeView->style()->subElementRect( QStyle::SE_ItemViewItemText, &opt, mLayerTreeView );
+  const QRect tRect = mLayerTreeView->style()->subElementRect( QStyle::SE_ItemViewItemText, &opt, mLayerTreeView );
 
   const bool shouldShowLayerMark = tRect.left() < 0;  // Layer/group node icon not visible anymore?
   if ( shouldShowLayerMark )
   {
-    int tPadding = tRect.height() / 10;
-    QRect mRect( mLayerTreeView->viewport()->rect().right() - mLayerTreeView->layerMarkWidth(), tRect.top() + tPadding, mLayerTreeView->layerMarkWidth(), tRect.height() - tPadding * 2 );
-    QBrush pb = painter->brush();
-    QPen pp = painter->pen();
+    const int tPadding = tRect.height() / 10;
+    const QRect mRect( mLayerTreeView->viewport()->rect().right() - mLayerTreeView->layerMarkWidth(), tRect.top() + tPadding, mLayerTreeView->layerMarkWidth(), tRect.height() - tPadding * 2 );
+    const QBrush pb = painter->brush();
+    const QPen pp = painter->pen();
     painter->setPen( QPen( Qt::NoPen ) );
     QBrush b = QBrush( opt.palette.mid() );
     QColor bc = b.color();
@@ -109,16 +109,16 @@ void QgsLayerTreeViewItemDelegate::paint( QPainter *painter, const QStyleOptionV
   if ( indicators.isEmpty() )
     return;
 
-  QRect indRect = mLayerTreeView->style()->subElementRect( static_cast<QStyle::SubElement>( QgsLayerTreeViewProxyStyle::SE_LayerTreeItemIndicator ), &opt, mLayerTreeView );
-  int spacing = indRect.height() / 10;
-  int h = indRect.height();
+  const QRect indRect = mLayerTreeView->style()->subElementRect( static_cast<QStyle::SubElement>( QgsLayerTreeViewProxyStyle::SE_LayerTreeItemIndicator ), &opt, mLayerTreeView );
+  const int spacing = indRect.height() / 10;
+  const int h = indRect.height();
   int x = indRect.left();
 
   for ( QgsLayerTreeViewIndicator *indicator : indicators )
   {
-    QRect rect( x + spacing, indRect.top() + spacing, h - spacing * 2, h - spacing * 2 );
+    const QRect rect( x + spacing, indRect.top() + spacing, h - spacing * 2, h - spacing * 2 );
     // Add a little more padding so the icon does not look misaligned to background
-    QRect iconRect( x + spacing * 2, indRect.top() + spacing * 2, h - spacing * 4, h - spacing * 4 );
+    const QRect iconRect( x + spacing * 2, indRect.top() + spacing * 2, h - spacing * 4, h - spacing * 4 );
     x += h;
 
     QIcon::Mode mode = QIcon::Normal;
@@ -128,9 +128,9 @@ void QgsLayerTreeViewItemDelegate::paint( QPainter *painter, const QStyleOptionV
       mode = QIcon::Selected;
 
     // Draw indicator background, for when floating over text content
-    qreal bradius = spacing;
-    QBrush pb = painter->brush();
-    QPen pp = painter->pen();
+    const qreal bradius = spacing;
+    const QBrush pb = painter->brush();
+    const QPen pp = painter->pen();
     QBrush b = QBrush( opt.palette.midlight() );
     QColor bc = b.color();
     bc.setRed( static_cast< int >( bc.red() * 0.3 + baseColor.red() * 0.7 ) );
@@ -172,11 +172,11 @@ bool QgsLayerTreeViewItemDelegate::helpEvent( QHelpEvent *event, QAbstractItemVi
         initStyleOption( &opt, index );
         _fixStyleOption( opt );
 
-        QRect indRect = mLayerTreeView->style()->subElementRect( static_cast<QStyle::SubElement>( QgsLayerTreeViewProxyStyle::SE_LayerTreeItemIndicator ), &opt, mLayerTreeView );
+        const QRect indRect = mLayerTreeView->style()->subElementRect( static_cast<QStyle::SubElement>( QgsLayerTreeViewProxyStyle::SE_LayerTreeItemIndicator ), &opt, mLayerTreeView );
 
         if ( indRect.contains( event->pos() ) )
         {
-          int indicatorIndex = ( event->pos().x() - indRect.left() ) / indRect.height();
+          const int indicatorIndex = ( event->pos().x() - indRect.left() ) / indRect.height();
           if ( indicatorIndex >= 0 && indicatorIndex < indicators.count() )
           {
             const QString tooltip = indicators[indicatorIndex]->toolTip();
@@ -214,12 +214,12 @@ void QgsLayerTreeViewItemDelegate::onClicked( const QModelIndex &index )
   initStyleOption( &opt, index );
   _fixStyleOption( opt );
 
-  QRect indRect = mLayerTreeView->style()->subElementRect( static_cast<QStyle::SubElement>( QgsLayerTreeViewProxyStyle::SE_LayerTreeItemIndicator ), &opt, mLayerTreeView );
+  const QRect indRect = mLayerTreeView->style()->subElementRect( static_cast<QStyle::SubElement>( QgsLayerTreeViewProxyStyle::SE_LayerTreeItemIndicator ), &opt, mLayerTreeView );
 
-  QPoint pos = mLayerTreeView->mLastReleaseMousePos;
+  const QPoint pos = mLayerTreeView->mLastReleaseMousePos;
   if ( indRect.contains( pos ) )
   {
-    int indicatorIndex = ( pos.x() - indRect.left() ) / indRect.height();
+    const int indicatorIndex = ( pos.x() - indRect.left() ) / indRect.height();
     if ( indicatorIndex >= 0 && indicatorIndex < indicators.count() )
       emit indicators[indicatorIndex]->clicked( index );
   }

@@ -147,9 +147,9 @@ void Qgs3DMapToolMeasureLine::handleClick( Qt3DRender::QPickEvent *event, const 
     }
 
     mDone = false;
-    QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( QgsVector3D( worldIntersection.x(),
-                            worldIntersection.y(),
-                            worldIntersection.z() ), mCanvas->map()->origin() );
+    const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( QgsVector3D( worldIntersection.x(),
+                                  worldIntersection.y(),
+                                  worldIntersection.z() ), mCanvas->map()->origin() );
     addPoint( QgsPoint( mapCoords.x(), mapCoords.y(), mapCoords.z() ) );
     mDialog->show();
   }
@@ -169,10 +169,10 @@ void Qgs3DMapToolMeasureLine::handleClick( Qt3DRender::QPickEvent *event, const 
 
 void Qgs3DMapToolMeasureLine::updateSettings()
 {
-  QgsSettings settings;
-  int myRed = settings.value( QStringLiteral( "qgis/default_measure_color_red" ), 222 ).toInt();
-  int myGreen = settings.value( QStringLiteral( "qgis/default_measure_color_green" ), 155 ).toInt();
-  int myBlue = settings.value( QStringLiteral( "qgis/default_measure_color_blue" ), 67 ).toInt();
+  const QgsSettings settings;
+  const int myRed = settings.value( QStringLiteral( "qgis/default_measure_color_red" ), 222 ).toInt();
+  const int myGreen = settings.value( QStringLiteral( "qgis/default_measure_color_green" ), 155 ).toInt();
+  const int myBlue = settings.value( QStringLiteral( "qgis/default_measure_color_blue" ), 67 ).toInt();
 
   mRubberBand->setWidth( 3 );
   mRubberBand->setColor( QColor( myRed, myGreen, myBlue ) );
@@ -186,7 +186,7 @@ void Qgs3DMapToolMeasureLine::addPoint( const QgsPoint &point )
     return;
   }
 
-  QgsPoint addedPoint( point );
+  const QgsPoint addedPoint( point );
 
   mPoints.append( addedPoint );
   mDialog->addPoint();

@@ -360,7 +360,7 @@ int QgsFields::lookupField( const QString &fieldName ) const
 
   for ( int idx = 0; idx < count(); ++idx )
   {
-    QString alias = d->fields[idx].field.alias();
+    const QString alias = d->fields[idx].field.alias();
     if ( !alias.isEmpty() && QString::compare( alias, fieldName, Qt::CaseInsensitive ) == 0 )
       return idx;
   }

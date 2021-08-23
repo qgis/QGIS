@@ -149,7 +149,7 @@ void QgsFeaturePickerWidget::onCurrentIndexChanged( int i )
   if ( i < 0 )
     return;
 
-  QModelIndex modelIndex = mModel->index( i, 0, QModelIndex() );
+  const QModelIndex modelIndex = mModel->index( i, 0, QModelIndex() );
   mModel->setFeature( mModel->data( modelIndex, QgsFeaturePickerModel::FeatureIdRole ).value<QgsFeatureId>() );
   mLineEdit->setText( mModel->data( modelIndex, QgsFeaturePickerModel::ValueRole ).toString() );
   mLineEdit->setFont( mModel->data( modelIndex, Qt::FontRole ).value<QFont>() );
@@ -200,7 +200,7 @@ void QgsFeaturePickerWidget::onDataChanged( const QModelIndex &topLeft, const QM
     const int currentIndex = mModel->extraIdentifierValueIndex();
     if ( currentIndex >= topLeft.row() && currentIndex <= bottomRight.row() )
     {
-      QModelIndex modelIndex = mModel->index( currentIndex, 0, QModelIndex() );
+      const QModelIndex modelIndex = mModel->index( currentIndex, 0, QModelIndex() );
       mLineEdit->setText( mModel->data( modelIndex, QgsFeaturePickerModel::ValueRole ).toString() );
     }
   }
@@ -208,7 +208,7 @@ void QgsFeaturePickerWidget::onDataChanged( const QModelIndex &topLeft, const QM
 
 void QgsFeaturePickerWidget::browseFeatures( int direction )
 {
-  int newIndex = std::min( std::max( 0, mComboBox->currentIndex() + direction ), mComboBox->model()->rowCount() - 1 );
+  const int newIndex = std::min( std::max( 0, mComboBox->currentIndex() + direction ), mComboBox->model()->rowCount() - 1 );
   mComboBox->setCurrentIndex( newIndex );
 }
 

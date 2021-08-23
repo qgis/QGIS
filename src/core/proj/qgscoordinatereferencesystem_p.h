@@ -144,7 +144,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
 
     void setPj( QgsProjUtils::proj_pj_unique_ptr obj )
     {
-      QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
+      const QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
       cleanPjObjects();
 
       mPj = std::move( obj );
@@ -153,7 +153,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
 
     bool hasPj() const
     {
-      QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Read );
+      const QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Read );
       return static_cast< bool >( mPj );
     }
 
@@ -180,7 +180,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
         return nullptr;
 
       PJ_CONTEXT *context = QgsProjContext::get();
-      QMap < PJ_CONTEXT *, PJ * >::const_iterator it = mProjObjects.constFind( context );
+      const QMap < PJ_CONTEXT *, PJ * >::const_iterator it = mProjObjects.constFind( context );
 
       if ( it != mProjObjects.constEnd() )
       {
@@ -198,9 +198,9 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     // Only meant to be called by QgsCoordinateReferenceSystem::removeFromCacheObjectsBelongingToCurrentThread()
     bool removeObjectsBelongingToCurrentThread( PJ_CONTEXT *pj_context )
     {
-      QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
+      const QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
 
-      QMap < PJ_CONTEXT *, PJ * >::iterator it = mProjObjects.find( pj_context );
+      const QMap < PJ_CONTEXT *, PJ * >::iterator it = mProjObjects.find( pj_context );
       if ( it != mProjObjects.end() )
       {
         proj_destroy( it.value() );

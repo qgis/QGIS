@@ -42,13 +42,13 @@ void QgsModelViewToolZoom::modelPressEvent( QgsModelViewMouseEvent *event )
   if ( event->modifiers() & Qt::AltModifier )
   {
     //zoom out action, so zoom out and recenter on clicked point
-    double scaleFactor = 2;
+    const double scaleFactor = 2;
     //get current visible part of scene
-    QRect viewportRect( 0, 0, view()->viewport()->width(), view()->viewport()->height() );
+    const QRect viewportRect( 0, 0, view()->viewport()->width(), view()->viewport()->height() );
     QgsRectangle visibleRect = QgsRectangle( view()->mapToScene( viewportRect ).boundingRect() );
 
     visibleRect.scale( scaleFactor, event->modelPoint().x(), event->modelPoint().y() );
-    QRectF boundsRect = visibleRect.toRectF();
+    const QRectF boundsRect = visibleRect.toRectF();
 
     //zoom view to fit desired bounds
     view()->fitInView( boundsRect, Qt::KeepAspectRatio );
@@ -86,9 +86,9 @@ void QgsModelViewToolZoom::modelReleaseEvent( QgsModelViewMouseEvent *event )
   if ( !isClickAndDrag( mMousePressStartPos, event->pos() ) )
   {
     //just a click, so zoom to clicked point and recenter
-    double scaleFactor = 0.5;
+    const double scaleFactor = 0.5;
     //get current visible part of scene
-    QRect viewportRect( 0, 0, view()->viewport()->width(), view()->viewport()->height() );
+    const QRect viewportRect( 0, 0, view()->viewport()->width(), view()->viewport()->height() );
     QgsRectangle visibleRect = QgsRectangle( view()->mapToScene( viewportRect ).boundingRect() );
 
     visibleRect.scale( scaleFactor, event->modelPoint().x(), event->modelPoint().y() );

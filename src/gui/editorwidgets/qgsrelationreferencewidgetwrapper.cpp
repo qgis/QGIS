@@ -48,11 +48,11 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
 
   mWidget->setEditorContext( *ctx, mCanvas, mMessageBar );
 
-  bool showForm = config( QStringLiteral( "ShowForm" ), false ).toBool();
-  bool mapIdent = config( QStringLiteral( "MapIdentification" ), false ).toBool();
-  bool readOnlyWidget = config( QStringLiteral( "ReadOnly" ), false ).toBool();
-  bool orderByValue = config( QStringLiteral( "OrderByValue" ), false ).toBool();
-  bool showOpenFormButton = config( QStringLiteral( "ShowOpenFormButton" ), true ).toBool();
+  const bool showForm = config( QStringLiteral( "ShowForm" ), false ).toBool();
+  const bool mapIdent = config( QStringLiteral( "MapIdentification" ), false ).toBool();
+  const bool readOnlyWidget = config( QStringLiteral( "ReadOnly" ), false ).toBool();
+  const bool orderByValue = config( QStringLiteral( "OrderByValue" ), false ).toBool();
+  const bool showOpenFormButton = config( QStringLiteral( "ShowOpenFormButton" ), true ).toBool();
 
   mWidget->setEmbedForm( showForm );
   mWidget->setReadOnlySelector( readOnlyWidget );
@@ -158,7 +158,7 @@ QVariantList QgsRelationReferenceWidgetWrapper::additionalFieldValues() const
   {
     QVariantList values = mWidget->foreignKeys();
     const QList<QgsRelation::FieldPair> fieldPairs = mWidget->relation().fieldPairs();
-    int fieldCount = std::min( fieldPairs.count(), values.count() );
+    const int fieldCount = std::min( fieldPairs.count(), values.count() );
     for ( int i = 0; i < fieldCount; i++ )
     {
       if ( fieldPairs.at( i ).referencingField() == field().name() )

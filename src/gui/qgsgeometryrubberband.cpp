@@ -39,7 +39,7 @@ void QgsGeometryRubberBand::paint( QPainter *painter )
     return;
   }
 
-  QgsScopedQPainterState painterState( painter );
+  const QgsScopedQPainterState painterState( painter );
   painter->translate( -pos() );
 
   if ( mGeometryType == QgsWkbTypes::PolygonGeometry )
@@ -82,7 +82,7 @@ void QgsGeometryRubberBand::setGeometryType( const QgsWkbTypes::GeometryType &ge
 
 void QgsGeometryRubberBand::drawVertex( QPainter *p, double x, double y )
 {
-  qreal s = ( mIconSize - 1 ) / 2.0;
+  const qreal s = ( mIconSize - 1 ) / 2.0;
 
   switch ( mIconType )
   {
@@ -167,8 +167,8 @@ void QgsGeometryRubberBand::setVertexDrawingEnabled( bool isVerticesDrawn )
 
 QgsRectangle QgsGeometryRubberBand::rubberBandRectangle() const
 {
-  qreal scale = mMapCanvas->mapUnitsPerPixel();
-  qreal s = ( mIconSize - 1 ) / 2.0 * scale;
-  qreal p = mPen.width() * scale;
+  const qreal scale = mMapCanvas->mapUnitsPerPixel();
+  const qreal s = ( mIconSize - 1 ) / 2.0 * scale;
+  const qreal p = mPen.width() * scale;
   return mGeometry->boundingBox().buffered( s + p );
 }

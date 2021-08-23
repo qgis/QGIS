@@ -34,10 +34,10 @@ float QgsTotalCurvatureFilter::processNineCellWindow( float *x11, float *x21, fl
     return mOutputNodataValue;
   }
 
-  double cellSizeAvg = ( mCellSizeX + mCellSizeY ) / 2.0;
-  double dxx = ( *x32 - 2 * *x22 + *x12 ) / ( mCellSizeX * mCellSizeX );
-  double dxy = ( -*x11 + *x31 + *x13 - *x33 ) / ( 4 * cellSizeAvg * cellSizeAvg );
-  double dyy = ( *x21 - 2 * *x22 + *x23 ) / ( mCellSizeY * mCellSizeY );
+  const double cellSizeAvg = ( mCellSizeX + mCellSizeY ) / 2.0;
+  const double dxx = ( *x32 - 2 * *x22 + *x12 ) / ( mCellSizeX * mCellSizeX );
+  const double dxy = ( -*x11 + *x31 + *x13 - *x33 ) / ( 4 * cellSizeAvg * cellSizeAvg );
+  const double dyy = ( *x21 - 2 * *x22 + *x23 ) / ( mCellSizeY * mCellSizeY );
 
   return dxx * dxx + 2 * dxy * dxy + dyy * dyy;
 }

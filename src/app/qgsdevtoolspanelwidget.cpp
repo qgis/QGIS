@@ -46,7 +46,7 @@ void QgsDevToolsPanelWidget::addToolFactory( QgsDevToolWidgetFactory *factory )
     QListWidgetItem *item = new QListWidgetItem( factory->icon(), QString() );
     item->setToolTip( factory->title() );
     mOptionsListWidget->addItem( item );
-    int row = mOptionsListWidget->row( item );
+    const int row = mOptionsListWidget->row( item );
     mFactoryPages[factory] = row;
 
     if ( mOptionsListWidget->count() == 1 )
@@ -60,8 +60,8 @@ void QgsDevToolsPanelWidget::removeToolFactory( QgsDevToolWidgetFactory *factory
 {
   if ( mFactoryPages.contains( factory ) )
   {
-    int currentRow = mStackedWidget->currentIndex();
-    int row = mFactoryPages.value( factory );
+    const int currentRow = mStackedWidget->currentIndex();
+    const int row = mFactoryPages.value( factory );
     mStackedWidget->removeWidget( mStackedWidget->widget( row ) );
     mOptionsListWidget->removeItemWidget( mOptionsListWidget->item( row ) );
     mFactoryPages.remove( factory );

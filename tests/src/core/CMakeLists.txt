@@ -40,6 +40,7 @@ set(TESTS
  testqgsconnectionpool.cpp
  testqgscoordinatereferencesystemregistry.cpp
  testqgscoordinatetransform.cpp
+ testqgscopyfiletask.cpp
  testqgscredentials.cpp
  testqgscurve.cpp
  testqgsdatadefinedsizelegend.cpp
@@ -60,9 +61,7 @@ set(TESTS
  testqgsgdalprovider.cpp
  testqgsgdalutils.cpp
  testqgsgenericspatialindex.cpp
- testqgsgeometry.cpp
  testqgsgeometryimport.cpp
- testqgsgeometryutils.cpp
  testqgsgeonodeconnection.cpp
  testqgsgeopdfexport.cpp
  testqgsgml.cpp
@@ -134,7 +133,6 @@ set(TESTS
  testqgspainteffect.cpp
  testqgspainteffectregistry.cpp
  testqgspallabeling.cpp
- testqgspoint.cpp
  testqgspointcloudattribute.cpp
  testqgspointcloudrendererregistry.cpp
  testqgspointlocator.cpp
@@ -156,7 +154,6 @@ set(TESTS
  testqgsrasterlayertemporalproperties.cpp
  testqgsrastermarker.cpp
  testqgsrastersublayer.cpp
- testqgsrectangle.cpp
  testqgsrelationreferencefieldformatter.cpp
  testqgsrenderers.cpp
  testqgsrulebasedrenderer.cpp
@@ -221,3 +218,5 @@ add_qgis_test(testqgscoordinatereferencesystem.cpp MODULE core LINKEDLIBRARIES q
 if (ENABLE_PGTEST)
   SET_TESTS_PROPERTIES(test_core_vectorlayerjoinbuffer PROPERTIES LABELS "POSTGRES")
 endif()
+
+add_subdirectory(geometry)

@@ -35,7 +35,7 @@ class TestQObjectUniquePtr : public QObject
 void TestQObjectUniquePtr::testMemLeak()
 {
   QObject *myobj = new QObject();
-  QObjectUniquePtr<QObject> obj( myobj );
+  const QObjectUniquePtr<QObject> obj( myobj );
 }
 
 void TestQObjectUniquePtr::testParentDeletedFirst()
@@ -43,7 +43,7 @@ void TestQObjectUniquePtr::testParentDeletedFirst()
   QObject *parent = new QObject();
   QObject *child = new QObject( parent );
 
-  QObjectUniquePtr<QObject> obj( child );
+  const QObjectUniquePtr<QObject> obj( child );
   QVERIFY( !obj.isNull() );
   QVERIFY( obj );
   QCOMPARE( child, obj.get() );
@@ -58,10 +58,10 @@ void TestQObjectUniquePtr::testParentDeletedAfter()
 {
   QObject *parent = new QObject();
   QObject *child = new QObject( parent );
-  QPointer<QObject> observer( child );
+  const QPointer<QObject> observer( child );
 
   {
-    QObjectUniquePtr<QObject> obj( child );
+    const QObjectUniquePtr<QObject> obj( child );
     QVERIFY( !observer.isNull() );
   }
   QVERIFY( observer.isNull() );
@@ -74,9 +74,9 @@ void TestQObjectUniquePtr::testParentDeletedAfter()
 
 void TestQObjectUniquePtr::testOperatorBool()
 {
-  QObjectUniquePtr<QObject> obj;
+  const QObjectUniquePtr<QObject> obj;
   QVERIFY( !obj );
-  QObjectUniquePtr<QObject> obj2( new QObject() );
+  const QObjectUniquePtr<QObject> obj2( new QObject() );
   QVERIFY( obj2 );
 }
 
@@ -100,7 +100,7 @@ void TestQObjectUniquePtr::testOperatorArrow()
 {
   QObject *o = new QObject();
   o->setObjectName( "Teddy" );
-  QObjectUniquePtr<QObject> obj( o );
+  const QObjectUniquePtr<QObject> obj( o );
   QCOMPARE( obj->objectName(), QStringLiteral( "Teddy" ) );
 }
 
@@ -109,7 +109,7 @@ void TestQObjectUniquePtr::testDeleteLater()
   QObject *o = new QObject();
   QObject *o2 = new QObject();
 
-  QObjectUniquePtr<QObject> obj( o );
+  const QObjectUniquePtr<QObject> obj( o );
   QObjectUniquePtr<QObject> obj2( o2 );
 
   obj2->deleteLater();

@@ -51,7 +51,7 @@ void QgsProviderConnectionModel::setAllowEmptyConnection( bool allowEmpty )
 
 void QgsProviderConnectionModel::removeConnection( const QString &connection )
 {
-  int index = mConnections.indexOf( connection );
+  const int index = mConnections.indexOf( connection );
   if ( index < 0 )
     return;
 

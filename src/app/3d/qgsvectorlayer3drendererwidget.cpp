@@ -39,20 +39,19 @@ QgsSingleSymbol3DRendererWidget::QgsSingleSymbol3DRendererWidget( QgsVectorLayer
   : QWidget( parent )
   , mLayer( layer )
 {
-  widgetSymbol = new QgsSymbol3DWidget( mLayer, this );
+  QVBoxLayout *scrollLayout = new QVBoxLayout();
+  scrollLayout->setContentsMargins( 0, 0, 0, 0 );
 
   QgsVScrollArea *scrollArea = new QgsVScrollArea( this );
   scrollArea->setFrameShape( QFrame::NoFrame );
   scrollArea->setFrameShadow( QFrame::Plain );
   scrollArea->setWidgetResizable( true );
-  QVBoxLayout *scrollLayout = new QVBoxLayout( this );
-  scrollLayout->setContentsMargins( 0, 0, 0, 0 );
   scrollLayout->addWidget( scrollArea );
 
-  QVBoxLayout *layout = new QVBoxLayout( this );
-  layout->setContentsMargins( 0, 0, 0, 0 );
-  widgetSymbol->setLayout( layout );
+  widgetSymbol = new QgsSymbol3DWidget( mLayer, this );
   scrollArea->setWidget( widgetSymbol );
+
+  setLayout( scrollLayout );
 
   connect( widgetSymbol, &QgsSymbol3DWidget::widgetChanged, this, &QgsSingleSymbol3DRendererWidget::widgetChanged );
 }
@@ -68,7 +67,7 @@ void QgsSingleSymbol3DRendererWidget::setLayer( QgsVectorLayer *layer )
   }
   else
   {
-    std::unique_ptr<QgsAbstract3DSymbol> sym( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( layer->geometryType() ) );
+    const std::unique_ptr<QgsAbstract3DSymbol> sym( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( layer->geometryType() ) );
     widgetSymbol->setSymbol( sym.get(), layer );
   }
 }
@@ -161,7 +160,7 @@ void QgsVectorLayer3DRendererWidget::setDockMode( bool dockMode )
 
 void QgsVectorLayer3DRendererWidget::apply()
 {
-  int idx = widgetRendererStack->currentIndex();
+  const int idx = widgetRendererStack->currentIndex();
   switch ( idx )
   {
     case 0:

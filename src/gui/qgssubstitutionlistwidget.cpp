@@ -65,10 +65,10 @@ QgsStringReplacementCollection QgsSubstitutionListWidget::substitutions() const
     QCheckBox *chkCaseSensitive = qobject_cast<QCheckBox *>( mTableSubstitutions->cellWidget( i, 2 ) );
     QCheckBox *chkWholeWord = qobject_cast<QCheckBox *>( mTableSubstitutions->cellWidget( i, 3 ) );
 
-    QgsStringReplacement replacement( mTableSubstitutions->item( i, 0 )->text(),
-                                      mTableSubstitutions->item( i, 1 )->text(),
-                                      chkCaseSensitive->isChecked(),
-                                      chkWholeWord->isChecked() );
+    const QgsStringReplacement replacement( mTableSubstitutions->item( i, 0 )->text(),
+                                            mTableSubstitutions->item( i, 1 )->text(),
+                                            chkCaseSensitive->isChecked(),
+                                            chkWholeWord->isChecked() );
     result << replacement;
   }
   return QgsStringReplacementCollection( result );
@@ -83,7 +83,7 @@ void QgsSubstitutionListWidget::mButtonAdd_clicked()
 
 void QgsSubstitutionListWidget::mButtonRemove_clicked()
 {
-  int currentRow = mTableSubstitutions->currentRow();
+  const int currentRow = mTableSubstitutions->currentRow();
   mTableSubstitutions->removeRow( currentRow );
   tableChanged();
 }
@@ -111,7 +111,7 @@ void QgsSubstitutionListWidget::mButtonExport_clicked()
   QDomDocument doc;
   QDomElement root = doc.createElement( QStringLiteral( "substitutions" ) );
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
-  QgsStringReplacementCollection collection = substitutions();
+  const QgsStringReplacementCollection collection = substitutions();
   collection.writeXml( root, doc );
   doc.appendChild( root );
 
@@ -131,8 +131,8 @@ void QgsSubstitutionListWidget::mButtonExport_clicked()
 
 void QgsSubstitutionListWidget::mButtonImport_clicked()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Substitutions" ), QDir::homePath(),
-                     tr( "XML files (*.xml *.XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Substitutions" ), QDir::homePath(),
+                           tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -165,7 +165,7 @@ void QgsSubstitutionListWidget::mButtonImport_clicked()
     return;
   }
 
-  QDomElement root = doc.documentElement();
+  const QDomElement root = doc.documentElement();
   if ( root.tagName() != QLatin1String( "substitutions" ) )
   {
     QMessageBox::warning( nullptr, tr( "Import Substitutions" ),
@@ -183,11 +183,11 @@ void QgsSubstitutionListWidget::mButtonImport_clicked()
 
 void QgsSubstitutionListWidget::addSubstitution( const QgsStringReplacement &substitution )
 {
-  int row = mTableSubstitutions->rowCount();
+  const int row = mTableSubstitutions->rowCount();
   mTableSubstitutions->insertRow( row );
 
-  Qt::ItemFlags itemFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable
-                            | Qt::ItemIsEditable;
+  const Qt::ItemFlags itemFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable
+                                  | Qt::ItemIsEditable;
 
   QTableWidgetItem *matchItem = new QTableWidgetItem( substitution.match() );
   matchItem->setFlags( itemFlags );

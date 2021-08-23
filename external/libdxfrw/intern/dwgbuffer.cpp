@@ -10,24 +10,10 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.    **
 ******************************************************************************/
 
-// uncomment to get detailed debug output on DWG read. Caution: this option makes DWG import super-slow!
-// #define DWGDEBUG 1
-
 #include "dwgbuffer.h"
 #include "../libdwgr.h"
 #include "drw_textcodec.h"
 #include "drw_dbg.h"
-
-#include "qgslogger.h"
-
-#ifndef DWGDEBUG
-#undef QgsDebugCall
-#undef QgsDebugMsg
-#undef QgsDebugMsgLevel
-#define QgsDebugCall
-#define QgsDebugMsg(str)
-#define QgsDebugMsgLevel(str, level)
-#endif
 
 static unsigned int crctable[256] =
 {
@@ -151,34 +137,29 @@ bool dwgCharStream::read( duint8 *s, duint64 n )
   return true;
 }
 
-dwgBuffer::dwgBuffer( duint8 *buf, int size, DRW_TextCodec *dc )
-{
-  filestr = new dwgCharStream( buf, size );
-  decoder = dc;
-  maxSize = size;
-  bitPos = 0;
-}
+dwgBuffer::dwgBuffer( duint8 *buf, duint64 size, DRW_TextCodec *dc )
+  : decoder{dc}
+  , filestr{new dwgCharStream( buf, size )}
+, maxSize{size}
+{}
 
 dwgBuffer::dwgBuffer( std::ifstream *stream, DRW_TextCodec *dc )
-{
-  filestr = new dwgFileStream( stream );
-  decoder = dc;
-  maxSize = filestr->size();
-  bitPos = 0;
-}
+  : decoder{dc}
+  , filestr{new dwgFileStream( stream )}
+, maxSize{filestr->size()}
+{}
 
 dwgBuffer::dwgBuffer( const dwgBuffer &org )
-{
-  filestr = org.filestr->clone();
-  decoder = org.decoder;
-  maxSize = filestr->size();
-  currByte = org.currByte;
-  bitPos = org.bitPos;
-}
+  : decoder{org.decoder}
+  , filestr{org.filestr->clone()}
+  , maxSize{filestr->size()}
+  , currByte{org.currByte}
+  , bitPos{org.bitPos}
+{}
 
 dwgBuffer &dwgBuffer::operator=( const dwgBuffer &org )
 {
-  filestr = org.filestr->clone();
+  filestr.reset( org.filestr->clone() );
   decoder = org.decoder;
   maxSize = filestr->size();
   currByte = org.currByte;
@@ -186,10 +167,7 @@ dwgBuffer &dwgBuffer::operator=( const dwgBuffer &org )
   return *this;
 }
 
-dwgBuffer::~dwgBuffer()
-{
-  delete filestr;
-}
+dwgBuffer::~dwgBuffer() = default;
 
 //! Gets the current byte position in buffer
 duint64 dwgBuffer::getPosition()
@@ -349,9 +327,9 @@ dint16 dwgBuffer::getSBitShort()
 {
   duint8 b = get2Bits();
   if ( b == 0 )
-    return ( dint16 )getRawShort16();
+    return static_cast<dint16>( getRawShort16() );
   else if ( b == 1 )
-    return ( dint16 )getRawChar8();
+    return static_cast<dint16>( getRawChar8() );
   else if ( b == 2 )
     return 0;
   else
@@ -422,8 +400,8 @@ DRW_Coord dwgBuffer::get3BitDouble()
 //! Reads raw char 8 bits returns a unsigned char (RC)
 duint8 dwgBuffer::getRawChar8()
 {
-  duint8 ret;
-  duint8 buffer;
+  duint8 ret = 0;
+  duint8 buffer = 0;
   filestr->read( &buffer, 1 );
   if ( bitPos == 0 )
     return buffer;
@@ -439,8 +417,8 @@ duint8 dwgBuffer::getRawChar8()
 //! Reads raw short 16 bits little-endian order, returns a unsigned short (RS)
 duint16 dwgBuffer::getRawShort16()
 {
-  duint8 buffer[2];
-  duint16 ret;
+  duint8 buffer[2] = {0, 0};
+  duint16 ret = 0;
 
   filestr->read( buffer, 2 );
   if ( bitPos == 0 )
@@ -465,6 +443,7 @@ duint16 dwgBuffer::getRawShort16()
 double dwgBuffer::getRawDouble()
 {
   duint8 buffer[8];
+  memset( buffer, 0, sizeof( buffer ) );
   if ( bitPos == 0 )
     filestr->read( buffer, 8 );
   else
@@ -505,6 +484,7 @@ duint64 dwgBuffer::getRawLong64()
 
   return ret;
 }
+
 
 //! Reads modular unsigner int, char based, compressed form, little-endian order, returns a unsigned int (U-MC)
 duint32 dwgBuffer::getUModularChar()
@@ -700,10 +680,7 @@ std::string dwgBuffer::getCP8Text()
 
 //TU unicode 16 bit (UCS) text converted to utf8
 
-/**
- * Reads 2-bytes char (UCS2, nullptr terminated) and convert to std::string (only for Latin-1)
-   ts= total input size in bytes.
-**/
+//! Reads 2-bytes char (UCS2, nullptr terminated) and convert to std::string (only for Latin-1) ts= total input size in bytes. **/
 std::string dwgBuffer::getUCSStr( duint16 ts )
 {
   std::string strData;
@@ -860,37 +837,29 @@ duint32 dwgBuffer::getCmColor( DRW::Version v )
   duint32 rgb = getBitLong();
   duint8 cb = getRawChar8();
   duint8 type = rgb >> 24;
-
-  QgsDebugMsg( QString( "type COLOR:%1 index COLOR:%2 RGB COLOR:0x%3 byte COLOR:%4" )
-               .arg( type ).arg( idx ).arg( rgb, 0, 16 ).arg( cb )
-             );
-  Q_UNUSED( idx );
-
+  DRW_DBG( "type COLOR:" ); DRW_DBG( type ); DRW_DBG( " index COLOR:" ); DRW_DBG( idx );
+  DRW_DBG( " RGB COLOR:" ); DRW_DBGH( rgb ); DRW_DBG( " byte COLOR:" ); DRW_DBG( cb ); DRW_DBG( "\n" );
   if ( cb & 1 )
   {
     std::string colorName = getVariableText( v, false );
-    QgsDebugMsg( QString( "colorName:%1" ).arg( colorName.c_str() ) );
+    DRW_DBG( "colorName:" ); DRW_DBG( colorName ); DRW_DBG( "\n" );
   }
   if ( cb & 2 )
   {
     std::string bookName = getVariableText( v, false );
-    QgsDebugMsg( QString( "bookName: %1" ).arg( bookName.c_str() ) );
+    DRW_DBG( "bookName:" ); DRW_DBG( bookName ); DRW_DBG( "\n" );
   }
 
   switch ( type )
   {
     case 0xC0:
       return 256;//ByLayer
-      break;
     case 0xC1:
       return 0;//ByBlock
-      break;
     case 0xC2:
       return 256;//RGB RLZ TODO
-      break;
     case 0xC3:
       return rgb & 0xFF; //ACIS
-      break;
     default:
       break;
   }
@@ -912,31 +881,28 @@ duint32 dwgBuffer::getEnColor( DRW::Version v, int &rgb, int &transparency )
   transparency = 0;
 
   duint16 idx = getBitShort();
-  QgsDebugMsgLevel( QString( "idx reads COLOR: 0x%1" ).arg( idx, 0, 16 ), 4 );
+  DRW_DBG( "idx reads COLOR: " ); DRW_DBGH( idx ); DRW_DBG( "\n" );
 
   duint16 flags = idx >> 8;
 
   idx = idx & 0x1FF; //RLZ: warning this is correct?
-
-  QgsDebugMsgLevel( QString( "flag COLOR:0x%1, index COLOR:0x%2" ).arg( flags, 0, 16 ).arg( idx, 0, 16 ), 4 );
-
+  DRW_DBG( "flag COLOR:" ); DRW_DBGH( flags ); DRW_DBG( ", index COLOR:" ); DRW_DBGH( idx ); DRW_DBG( "\n" );
   if ( flags & 0x80 )
   {
     // complex color (rgb)
     rgb = getBitLong() & 0xffffff;
 
-    QgsDebugMsgLevel( QString( "RGB COLOR:0x%1" ).arg( rgb, 0, 16 ), 4 );
-
+    DRW_DBG( "RGB COLOR:" ); DRW_DBGH( rgb ); DRW_DBG( "\n" );
     if ( flags & 0x80 )
     {
-      QgsDebugMsgLevel( "acdbColor COLOR are present", 4 );
+      DRW_DBG( "acdbColor COLOR are present\n" );
     }
   }
 
   if ( flags & 0x20 )
   {
     transparency = getBitLong();
-    QgsDebugMsgLevel( QString( "Transparency COLOR:0x%1" ).arg( transparency, 0, 16 ), 4 );
+    DRW_DBG( "Transparency COLOR:" ); DRW_DBGH( transparency ); DRW_DBG( "\n" );
   }
 
   return idx; //default return ByLayer
@@ -961,7 +927,7 @@ bool dwgBuffer::getBytes( unsigned char *buf, int size )
   filestr->read( buf, size );
   if ( !filestr->good() && ( int ) filestr->getPos() - pos != size )
   {
-    QgsDebugMsg( QString( "short read: wanted %1; got %2 (at %3)" ).arg( size ).arg( filestr->getPos() - pos ).arg( filestr->getPos() ) );
+    DRW_DBG( "short read: wanted " ); DRW_DBG( size ); DRW_DBG( "; got " ); DRW_DBGH( filestr->getPos() - pos ); DRW_DBG( " (at " ); DRW_DBG( filestr->getPos() ); DRW_DBG( "\n" );
     return false;
   }
 
@@ -979,7 +945,7 @@ bool dwgBuffer::getBytes( unsigned char *buf, int size )
 
 duint16 dwgBuffer::crc8( duint16 dx, dint32 start, dint32 end )
 {
-  int pos = filestr->getPos();
+  duint64 pos = filestr->getPos();
   filestr->setPos( start );
   int n = end - start;
   duint8 *tmpBuf = new duint8[n];
@@ -1004,7 +970,7 @@ duint16 dwgBuffer::crc8( duint16 dx, dint32 start, dint32 end )
 
 duint32 dwgBuffer::crc32( duint32 seed, dint32 start, dint32 end )
 {
-  int pos = filestr->getPos();
+  duint64 pos = filestr->getPos();
   filestr->setPos( start );
   int n = end - start;
   duint8 *tmpBuf = new duint8[n];

@@ -29,6 +29,7 @@
 #include "qgsmessagebar.h"
 #include "qgsgui.h"
 #include "qgsbrowserguimodel.h"
+#include "qgsbrowserwidget.h"
 
 QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *browserModel, QWidget *parent, QgsMapCanvas *canvas, Qt::WindowFlags fl )
   : QgsOptionsDialogBase( QStringLiteral( "Data Source Manager" ), parent, fl )
@@ -62,7 +63,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
   connect( mBrowserWidget, &QgsBrowserDockWidget::handleDropUriList, this, &QgsDataSourceManagerDialog::handleDropUriList );
   connect( mBrowserWidget, &QgsBrowserDockWidget::openFile, this, &QgsDataSourceManagerDialog::openFile );
   connect( mBrowserWidget, &QgsBrowserDockWidget::connectionsChanged, this, &QgsDataSourceManagerDialog::connectionsChanged );
-  connect( this, &QgsDataSourceManagerDialog::updateProjectHome, mBrowserWidget, &QgsBrowserDockWidget::updateProjectHome );
+  connect( this, &QgsDataSourceManagerDialog::updateProjectHome, mBrowserWidget->browserWidget(), &QgsBrowserWidget::updateProjectHome );
 
   // Add provider dialogs
   const QList<QgsSourceSelectProvider *> sourceSelectProviders = QgsGui::sourceSelectProviderRegistry()->providers( );
@@ -87,7 +88,7 @@ QgsDataSourceManagerDialog::~QgsDataSourceManagerDialog()
 
 void QgsDataSourceManagerDialog::openPage( const QString &pageName )
 {
-  int pageIdx = mPageNames.indexOf( pageName );
+  const int pageIdx = mPageNames.indexOf( pageName );
   if ( pageIdx != -1 )
   {
     QTimer::singleShot( 0, this, [ = ] { setCurrentPage( pageIdx ); } );
@@ -109,19 +110,19 @@ void QgsDataSourceManagerDialog::setCurrentPage( int index )
 
 void QgsDataSourceManagerDialog::setPreviousPage()
 {
-  int prevPage = mPreviousRow != -1 ? mPreviousRow : 0;
+  const int prevPage = mPreviousRow != -1 ? mPreviousRow : 0;
   setCurrentPage( prevPage );
 }
 
 void QgsDataSourceManagerDialog::refresh()
 {
-  mBrowserWidget->refresh();
+  mBrowserWidget->browserWidget()->refresh();
   emit providerDialogsRefreshRequested();
 }
 
 void QgsDataSourceManagerDialog::reset()
 {
-  int pageCount = ui->mOptionsStackedWidget->count();
+  const int pageCount = ui->mOptionsStackedWidget->count();
   for ( int i = 0; i < pageCount; ++i )
   {
     QWidget *widget = ui->mOptionsStackedWidget->widget( i );
@@ -180,7 +181,7 @@ void QgsDataSourceManagerDialog::makeConnections( QgsAbstractDataSourceWidget *d
   // Vector
   connect( dlg, &QgsAbstractDataSourceWidget::addVectorLayer, this, [ = ]( const QString & vectorLayerPath, const QString & baseName, const QString & specifiedProvider )
   {
-    QString key = specifiedProvider.isEmpty() ? providerKey : specifiedProvider;
+    const QString key = specifiedProvider.isEmpty() ? providerKey : specifiedProvider;
     this->vectorLayerAdded( vectorLayerPath, baseName, key );
   }
          );

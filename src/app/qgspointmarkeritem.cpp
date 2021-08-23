@@ -76,7 +76,7 @@ void QgsMapCanvasSymbolItem::paint( QPainter *painter )
 
   QgsRenderContext rc = renderContext( painter );
 
-  bool useEffect = !qgsDoubleNear( mOpacityEffect->opacity(), 1.0 );
+  const bool useEffect = !qgsDoubleNear( mOpacityEffect->opacity(), 1.0 );
   if ( useEffect )
   {
     //use a paint effect to reduce opacity. If we directly set the opacity on the painter, then the symbol will NOT
@@ -139,12 +139,12 @@ void QgsMapCanvasMarkerSymbolItem::updateSize()
 {
   QgsRenderContext rc = renderContext( nullptr );
   markerSymbol()->startRender( rc, mFeature.fields() );
-  QRectF bounds = markerSymbol()->bounds( mLocation, rc, mFeature );
+  const QRectF bounds = markerSymbol()->bounds( mLocation, rc, mFeature );
   markerSymbol()->stopRender( rc );
-  QgsRectangle r( mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( static_cast<int>( bounds.x() ),
-                  static_cast<int>( bounds.y() ) ),
-                  mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( static_cast<int>( bounds.x() + bounds.width() * 2 ),
-                      static_cast<int>( bounds.y() + bounds.height() * 2 ) ) );
+  const QgsRectangle r( mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( static_cast<int>( bounds.x() ),
+                        static_cast<int>( bounds.y() ) ),
+                        mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( static_cast<int>( bounds.x() + bounds.width() * 2 ),
+                            static_cast<int>( bounds.y() + bounds.height() * 2 ) ) );
   setRect( r );
 }
 

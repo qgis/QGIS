@@ -269,7 +269,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
           const QgsGeometry geom = mLayer->getGeometry( mFid );
           if ( !( geom.isNull() || geom.isEmpty() ) )
           {
-            QgsLineString line( geom.vertexAt( mVertexIndex ), geom.vertexAt( mVertexIndex + 1 ) );
+            const QgsLineString line( geom.vertexAt( mVertexIndex ), geom.vertexAt( mVertexIndex + 1 ) );
 
             point = QgsGeometryUtils::closestPoint( line, QgsPoint( mPoint ) );
           }

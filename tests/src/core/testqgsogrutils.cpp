@@ -21,6 +21,8 @@
 #include <ogr_api.h>
 #include "cpl_conv.h"
 #include "cpl_string.h"
+#include <ogr_srs_api.h>
+#include <gdal.h>
 
 #include "qgsfield.h"
 #include "qgsgeometry.h"
@@ -57,6 +59,7 @@ class TestQgsOgrUtils: public QObject
     void parseStyleString_data();
     void parseStyleString();
     void convertStyleString();
+    void ogrCrsConversion();
 
   private:
 
@@ -66,7 +69,7 @@ class TestQgsOgrUtils: public QObject
 
 void TestQgsOgrUtils::initTestCase()
 {
-  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + '/';
 
   mTestFile = mTestDataDir + "ogr_types.tab";
@@ -209,17 +212,17 @@ void TestQgsOgrUtils::ogrGeometryToQgsGeometry2()
   QFETCH( QString, wkt );
   QFETCH( int, type );
 
-  QgsGeometry input = QgsGeometry::fromWkt( wkt );
+  const QgsGeometry input = QgsGeometry::fromWkt( wkt );
   QVERIFY( !input.isNull() );
 
   // to OGR Geometry
-  QByteArray wkb( input.asWkb() );
+  const QByteArray wkb( input.asWkb() );
   OGRGeometryH ogrGeom = nullptr;
 
   QCOMPARE( OGR_G_CreateFromWkb( reinterpret_cast<unsigned char *>( const_cast<char *>( wkb.constData() ) ), nullptr, &ogrGeom, wkb.length() ), OGRERR_NONE );
 
   // back again!
-  QgsGeometry geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
+  const QgsGeometry geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
   QCOMPARE( static_cast< int >( geom.wkbType() ), type );
   OGR_G_DestroyGeometry( ogrGeom );
 
@@ -257,7 +260,7 @@ void TestQgsOgrUtils::readOgrFeatureGeometry()
 
 void TestQgsOgrUtils::getOgrFeatureAttribute()
 {
-  QgsFeature f;
+  const QgsFeature f;
   QgsFields fields;
 
   // null feature
@@ -681,7 +684,7 @@ void TestQgsOgrUtils::convertStyleString()
   QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->strokeColor().name(), QStringLiteral( "#3030ff" ) );
 
   // font symbol
-  QFont f = QgsFontUtils::getStandardTestFont();
+  const QFont f = QgsFontUtils::getStandardTestFont();
   symbol = QgsOgrUtils::symbolFromStyleString( QStringLiteral( R"""(SYMBOL(c:#00FF00,s:12pt,id:"font-sym-75,ogr-sym-9",f:"%1"))""" ).arg( f.family() ), Qgis::SymbolType::Marker );
   QVERIFY( symbol );
   QCOMPARE( symbol->symbolLayerCount(), 1 );
@@ -714,6 +717,39 @@ void TestQgsOgrUtils::convertStyleString()
   QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->angle(), 0.0 );
   QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->sizeUnit(), QgsUnitTypes::RenderPoints );
   QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->strokeStyle(), Qt::NoPen );
+}
+
+void TestQgsOgrUtils::ogrCrsConversion()
+{
+  // test conversion utilities for OGR srs objects
+  {
+    const QgsCoordinateReferenceSystem crs1( QStringLiteral( "EPSG:3111" ) );
+    OGRSpatialReferenceH srs = QgsOgrUtils::crsToOGRSpatialReference( crs1 );
+    QVERIFY( srs );
+    const QgsCoordinateReferenceSystem crs2( QgsOgrUtils::OGRSpatialReferenceToCrs( srs ) );
+    // round trip should be lossless
+    QCOMPARE( crs1, crs2 );
+    OSRRelease( srs );
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
+    QVERIFY( std::isnan( crs2.coordinateEpoch() ) );
+#endif
+  }
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
+  {
+    // test conversion with a coordinate epoch, should work on GDAL 3.4+
+    QgsCoordinateReferenceSystem crs1( QStringLiteral( "EPSG:4326" ) );
+    crs1.setCoordinateEpoch( 2020.7 );
+    OGRSpatialReferenceH srs = QgsOgrUtils::crsToOGRSpatialReference( crs1 );
+    QVERIFY( srs );
+    const QgsCoordinateReferenceSystem crs2( QgsOgrUtils::OGRSpatialReferenceToCrs( srs ) );
+    // round trip should be lossless
+    QCOMPARE( crs1, crs2 );
+    QCOMPARE( crs2.coordinateEpoch(), 2020.7 );
+    OSRRelease( srs );
+  }
+#endif
 }
 
 QGSTEST_MAIN( TestQgsOgrUtils )

@@ -48,7 +48,7 @@ void QgsAbout::init()
   setPluginInfo();
 
   // check internet connection in order to hide/show the developers map widget
-  int DEVELOPERS_MAP_INDEX = 5;
+  const int DEVELOPERS_MAP_INDEX = 5;
   QTcpSocket socket;
   socket.connectToHost( QgsApplication::QGIS_ORGANIZATION_DOMAIN, 80 );
   if ( socket.waitForConnected( 1000 ) )
@@ -58,7 +58,7 @@ void QgsAbout::init()
   else
   {
     mOptionsListWidget->item( DEVELOPERS_MAP_INDEX )->setHidden( true );
-    QModelIndex firstItem = mOptionsListWidget->model()->index( 0, 0, QModelIndex() );
+    const QModelIndex firstItem = mOptionsListWidget->model()->index( 0, 0, QModelIndex() );
     mOptionsListWidget->setCurrentIndex( firstItem );
   }
   developersMapView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
@@ -134,10 +134,10 @@ void QgsAbout::init()
   QFile donorsFile( QgsApplication::donorsFilePath() );
   if ( donorsFile.open( QIODevice::ReadOnly ) )
   {
-    QString donorsHTML = tr( "<p>For a list of individuals and institutions who have contributed "
-                             "money to fund QGIS development and other project costs see "
-                             "<a href=\"https://qgis.org/en/site/about/sustaining_members.html#list-of-donors\">"
-                             "https://qgis.org/en/site/about/sustaining_members.html#list-of-donors</a></p>" );
+    const QString donorsHTML = tr( "<p>For a list of individuals and institutions who have contributed "
+                                   "money to fund QGIS development and other project costs see "
+                                   "<a href=\"https://qgis.org/en/site/about/sustaining_members.html#list-of-donors\">"
+                                   "https://qgis.org/en/site/about/sustaining_members.html#list-of-donors</a></p>" );
 #if 0
     QString website;
     QTextStream donorsStream( &donorsFile );
@@ -181,7 +181,7 @@ void QgsAbout::init()
     QTextStream translatorStream( &translatorFile );
     // Always use UTF-8
     translatorStream.setCodec( "UTF-8" );
-    QString myStyle = QgsApplication::reportStyleSheet();
+    const QString myStyle = QgsApplication::reportStyleSheet();
     translatorHTML += "<style>" + myStyle + "</style>";
     while ( !translatorStream.atEnd() )
     {
@@ -236,7 +236,7 @@ void QgsAbout::setPluginInfo()
   //qt database plugins
   myString += "<b>" + tr( "Available Qt Database Plugins" ) + "</b><br>";
   myString += QLatin1String( "<ol>\n<li>\n" );
-  QStringList myDbDriverList = QSqlDatabase::drivers();
+  const QStringList myDbDriverList = QSqlDatabase::drivers();
   myString += myDbDriverList.join( QLatin1String( "</li>\n<li>" ) );
   myString += QLatin1String( "</li>\n</ol>\n" );
   //qt image plugins
@@ -244,17 +244,17 @@ void QgsAbout::setPluginInfo()
   myString += tr( "Qt Image Plugin Search Paths <br>" );
   myString += QApplication::libraryPaths().join( QLatin1String( "<br>" ) );
   myString += QLatin1String( "<ol>\n<li>\n" );
-  QList<QByteArray> myImageFormats = QImageReader::supportedImageFormats();
+  const QList<QByteArray> myImageFormats = QImageReader::supportedImageFormats();
   QList<QByteArray>::const_iterator myIterator = myImageFormats.constBegin();
   while ( myIterator != myImageFormats.constEnd() )
   {
-    QString myFormat = ( *myIterator ).data();
+    const QString myFormat = ( *myIterator ).data();
     myString += myFormat + "</li>\n<li>";
     ++myIterator;
   }
   myString += QLatin1String( "</li>\n</ol>\n" );
 
-  QString myStyle = QgsApplication::reportStyleSheet();
+  const QString myStyle = QgsApplication::reportStyleSheet();
   txtProviders->clear();
   txtProviders->document()->setDefaultStyleSheet( myStyle );
   txtProviders->setText( myString );
@@ -289,7 +289,7 @@ QString QgsAbout::fileSystemSafe( const QString &fileName )
 
   for ( int i = 0; i < utf8.size(); i++ )
   {
-    uchar c = utf8[i];
+    const uchar c = utf8[i];
 
     if ( c > 0x7f )
     {
@@ -309,6 +309,6 @@ QString QgsAbout::fileSystemSafe( const QString &fileName )
 void QgsAbout::setDevelopersMap()
 {
   developersMapView->settings()->setAttribute( QWebSettings::JavascriptEnabled, true );
-  QUrl url = QUrl::fromLocalFile( QgsApplication::developersMapFilePath() );
+  const QUrl url = QUrl::fromLocalFile( QgsApplication::developersMapFilePath() );
   developersMapView->load( url );
 }

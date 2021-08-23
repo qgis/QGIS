@@ -219,8 +219,8 @@ void QgsPropertyAssistantWidget::updatePreview()
                          maxValueSpinBox->value(), 8 );
 
   QgsCurveTransform curve = mCurveEditor->curve();
-  QList< QgsSymbolLegendNode * > nodes = mTransformerWidget->generatePreviews( breaks, mLayerTreeLayer, mSymbol.get(), minValueSpinBox->value(),
-                                         maxValueSpinBox->value(), mTransformCurveCheckBox->isChecked() ? &curve : nullptr );
+  const QList< QgsSymbolLegendNode * > nodes = mTransformerWidget->generatePreviews( breaks, mLayerTreeLayer, mSymbol.get(), minValueSpinBox->value(),
+      maxValueSpinBox->value(), mTransformCurveCheckBox->isChecked() ? &curve : nullptr );
 
   int widthMax = 0;
   int i = 0;
@@ -240,7 +240,7 @@ void QgsPropertyAssistantWidget::updatePreview()
   // TODO maybe add some space so that icons don't touch
   for ( int i = 0; i < breaks.length(); i++ )
   {
-    QPixmap img( mPreviewList.item( i )->icon().pixmap( mPreviewList.item( i )->icon().actualSize( QSize( 512, 512 ) ) ) );
+    const QPixmap img( mPreviewList.item( i )->icon().pixmap( mPreviewList.item( i )->icon().actualSize( QSize( 512, 512 ) ) ) );
     QPixmap enlarged( widthMax, img.height() );
     // fill transparent and add original image
     enlarged.fill( Qt::transparent );
@@ -270,7 +270,7 @@ bool QgsPropertyAssistantWidget::computeValuesFromExpression( const QString &exp
   if ( !e.prepare( &context ) )
     return false;
 
-  QSet<QString> referencedCols( e.referencedColumns() );
+  const QSet<QString> referencedCols( e.referencedColumns() );
 
   QgsFeatureIterator fit = mLayer->getFeatures(
                              QgsFeatureRequest().setFlags( e.needsGeometry()
@@ -305,7 +305,7 @@ bool QgsPropertyAssistantWidget::computeValuesFromExpression( const QString &exp
 
 bool QgsPropertyAssistantWidget::computeValuesFromField( const QString &fieldName, double &minValue, double &maxValue ) const
 {
-  int fieldIndex = mLayer->fields().lookupField( fieldName );
+  const int fieldIndex = mLayer->fields().lookupField( fieldName );
   if ( fieldIndex < 0 )
   {
     return false;
@@ -316,11 +316,11 @@ bool QgsPropertyAssistantWidget::computeValuesFromField( const QString &fieldNam
   mLayer->minimumAndMaximumValue( fieldIndex, min, max );
 
   bool ok = false;
-  double minDouble = min.toDouble( &ok );
+  const double minDouble = min.toDouble( &ok );
   if ( !ok )
     return false;
 
-  double maxDouble = max.toDouble( &ok );
+  const double maxDouble = max.toDouble( &ok );
   if ( !ok )
     return false;
 
@@ -458,7 +458,7 @@ QgsPropertyColorAssistantWidget::QgsPropertyColorAssistantWidget( QWidget *paren
 
   layout()->setContentsMargins( 0, 0, 0, 0 );
 
-  bool supportsAlpha = definition.standardTemplate() == QgsPropertyDefinition::ColorWithAlpha;
+  const bool supportsAlpha = definition.standardTemplate() == QgsPropertyDefinition::ColorWithAlpha;
   mNullColorButton->setAllowOpacity( supportsAlpha );
   mNullColorButton->setShowNoColor( true );
   mNullColorButton->setColorDialogTitle( tr( "Color For Null Values" ) );
@@ -478,8 +478,8 @@ QgsPropertyColorAssistantWidget::QgsPropertyColorAssistantWidget( QWidget *paren
   if ( !mColorRampButton->colorRamp() )
   {
     // set a default ramp
-    QString defaultRampName = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ), QString() );
-    std::unique_ptr< QgsColorRamp > defaultRamp( QgsStyle::defaultStyle()->colorRamp( !defaultRampName.isEmpty() ? defaultRampName : QStringLiteral( "Blues" ) ) );
+    const QString defaultRampName = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ), QString() );
+    const std::unique_ptr< QgsColorRamp > defaultRamp( QgsStyle::defaultStyle()->colorRamp( !defaultRampName.isEmpty() ? defaultRampName : QStringLiteral( "Blues" ) ) );
     if ( defaultRamp )
       mColorRampButton->setColorRamp( defaultRamp.get() );
   }

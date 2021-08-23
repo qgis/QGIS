@@ -22,6 +22,9 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsvectorfilewriter.h"
 #include "qgsauthmanager.h"
 #include "qgsprovidersublayerdetails.h"
+#include "qgsproviderregistry.h"
+#include "qgsgeopackageproviderconnection.h"
+#include "qgsogrdbconnection.h"
 
 #include <ogr_srs_api.h>
 #include <cpl_port.h>
@@ -31,6 +34,8 @@ email                : nyall dot dawson at gmail dot com
 #include <QTextCodec>
 #include <QStorageInfo>
 #include <QRegularExpression>
+#include <QFileDialog>
+#include <QInputDialog>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -789,7 +794,6 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
   }
 
   //consider spatial reference system
-  OGRSpatialReferenceH reference = nullptr;
 
   QgsCoordinateReferenceSystem mySpatialRefSys;
   if ( srs.isValid() )
@@ -801,12 +805,7 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
     mySpatialRefSys.validate();
   }
 
-  QString myWkt = mySpatialRefSys.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL );
-
-  if ( !myWkt.isNull()  &&  myWkt.length() != 0 )
-  {
-    reference = OSRNewSpatialReference( myWkt.toLocal8Bit().data() );
-  }
+  OGRSpatialReferenceH reference = QgsOgrUtils::crsToOGRSpatialReference( mySpatialRefSys );
 
   // Map the qgis geometry type to the OGR geometry type
   OGRwkbGeometryType OGRvectortype = wkbUnknown;
@@ -2031,9 +2030,9 @@ OGRwkbGeometryType QgsOgrProviderUtils::resolveGeometryTypeForFeature( OGRFeatur
   {
     OGRwkbGeometryType gType = OGR_G_GetGeometryType( geom );
 
-    // Shapefile MultiPatch can be reported as GeometryCollectionZ of TINZ
+    // ESRI MultiPatch can be reported as GeometryCollectionZ of TINZ
     if ( wkbFlatten( gType ) == wkbGeometryCollection &&
-         driverName == QLatin1String( "ESRI Shapefile" )  &&
+         ( driverName == QLatin1String( "ESRI Shapefile" ) || driverName == QLatin1String( "OpenFileGDB" ) || driverName == QLatin1String( "FileGDB" ) ) &&
          OGR_G_GetGeometryCount( geom ) >= 1 &&
          wkbFlatten( OGR_G_GetGeometryType( OGR_G_GetGeometryRef( geom, 0 ) ) ) == wkbTIN )
     {
@@ -2341,7 +2340,7 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
   // TODO: add support for multiple
   QString geometryColumnName;
   OGRwkbGeometryType layerGeomType = wkbUnknown;
-  const bool slowGeomTypeRetrieval = driverName == QLatin1String( "OAPIF" ) || driverName == QLatin1String( "WFS3" ) || driverName == QLatin1String( "PGeo" );
+  const bool slowGeomTypeRetrieval = driverName == QLatin1String( "OAPIF" ) || driverName == QLatin1String( "WFS3" );
   if ( !slowGeomTypeRetrieval )
   {
     QgsOgrFeatureDefn &fdef = layer->GetLayerDefn();
@@ -2389,6 +2388,7 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
     details.setGeometryColumnName( geometryColumnName );
     details.setDescription( longDescription );
     details.setProviderKey( QStringLiteral( "ogr" ) );
+    details.setDriverName( driverName );
 
     const QString uri = QgsOgrProviderMetadata().encodeUri( parts );
     details.setUri( uri );
@@ -2478,8 +2478,12 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
       details.setGeometryColumnName( geometryColumnName );
       details.setDescription( longDescription );
       details.setProviderKey( QStringLiteral( "ogr" ) );
+      details.setDriverName( driverName );
 
-      if ( fCount.size() > 1 )
+      // if we had to iterate through the table to find geometry types, make sure to include these
+      // in the uri for the sublayers (otherwise we'll be forced to re-do this iteration whenever
+      // the uri from the sublayer is used to construct an actual vector layer)
+      if ( details.wkbType() != QgsWkbTypes::Unknown )
         parts.insert( QStringLiteral( "geometryType" ), ogrWkbGeometryTypeName( countIt.key() ) );
       else
         parts.remove( QStringLiteral( "geometryType" ) );
@@ -2490,6 +2494,37 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
     }
     return res;
   }
+}
+
+bool QgsOgrProviderUtils::createConnection( const QString &name, const QString &extensions, const QString &ogrDriverName )
+{
+  QString path = QFileDialog::getOpenFileName( nullptr, QObject::tr( "Open %1" ).arg( name ), QString(), extensions );
+  return saveConnection( path, ogrDriverName );
+}
+
+bool QgsOgrProviderUtils::saveConnection( const QString &path, const QString &ogrDriverName )
+{
+  QFileInfo fileInfo( path );
+  QString connName = fileInfo.fileName();
+  if ( ! path.isEmpty() )
+  {
+    bool ok = true;
+    while ( ok && ! QgsOgrDbConnection( connName, ogrDriverName ).path( ).isEmpty( ) )
+    {
+
+      connName = QInputDialog::getText( nullptr, QObject::tr( "Add Connection" ),
+                                        QObject::tr( "A connection with the same name already exists,\nplease provide a new name:" ), QLineEdit::Normal,
+                                        QString(), &ok );
+    }
+    if ( ok && ! connName.isEmpty() )
+    {
+      QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
+      QgsGeoPackageProviderConnection *providerConnection =  static_cast<QgsGeoPackageProviderConnection *>( providerMetadata->createConnection( connName ) );
+      providerMetadata->saveConnection( providerConnection, connName );
+      return true;
+    }
+  }
+  return false;
 }
 
 QgsOgrDatasetSharedPtr QgsOgrDataset::create( const QgsOgrProviderUtils::DatasetIdentification &ident,
@@ -2969,16 +3004,16 @@ bool QgsOgrProviderUtils::deleteLayer( const QString &uri, QString &errCause )
                                  openOptions );
 
 
-  GDALDatasetH hDS = GDALOpenEx( filePath.toUtf8().constData(), GDAL_OF_RASTER | GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr );
+  gdal::dataset_unique_ptr hDS( GDALOpenEx( filePath.toUtf8().constData(), GDAL_OF_RASTER | GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
   if ( hDS  && ( ! layerName.isEmpty() || layerIndex != -1 ) )
   {
     // If we have got a name we convert it into an index
     if ( ! layerName.isEmpty() )
     {
       layerIndex = -1;
-      for ( int i = 0; i < GDALDatasetGetLayerCount( hDS ); i++ )
+      for ( int i = 0; i < GDALDatasetGetLayerCount( hDS.get() ); i++ )
       {
-        OGRLayerH hL = GDALDatasetGetLayer( hDS, i );
+        OGRLayerH hL = GDALDatasetGetLayer( hDS.get(), i );
         if ( layerName == QString::fromUtf8( OGR_L_GetName( hL ) ) )
         {
           layerIndex = i;
@@ -2989,7 +3024,7 @@ bool QgsOgrProviderUtils::deleteLayer( const QString &uri, QString &errCause )
     // Do delete!
     if ( layerIndex != -1 )
     {
-      OGRErr error = GDALDatasetDeleteLayer( hDS, layerIndex );
+      OGRErr error = GDALDatasetDeleteLayer( hDS.get(), layerIndex );
       switch ( error )
       {
         case OGRERR_NOT_ENOUGH_DATA:
@@ -3019,10 +3054,12 @@ bool QgsOgrProviderUtils::deleteLayer( const QString &uri, QString &errCause )
         case OGRERR_NON_EXISTING_FEATURE:
           errCause = QObject::tr( "Non existing feature" );
           break;
-        default:
+
         case OGRERR_NONE:
+        {
           errCause = QObject::tr( "Success" );
           break;
+        }
       }
       errCause = QObject::tr( "GDAL result code: %1" ).arg( errCause );
       return error == OGRERR_NONE;

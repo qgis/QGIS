@@ -162,9 +162,9 @@ void transform081to090( QgsProjectFileTransform *pft )
 
       // See if we can find if projection is on.
 
-      QDomElement properties = qgis.firstChildElement( QStringLiteral( "properties" ) );
-      QDomElement spatial = properties.firstChildElement( QStringLiteral( "SpatialRefSys" ) );
-      QDomElement hasCrsTransformEnabled = spatial.firstChildElement( QStringLiteral( "ProjectionsEnabled" ) );
+      const QDomElement properties = qgis.firstChildElement( QStringLiteral( "properties" ) );
+      const QDomElement spatial = properties.firstChildElement( QStringLiteral( "SpatialRefSys" ) );
+      const QDomElement hasCrsTransformEnabled = spatial.firstChildElement( QStringLiteral( "ProjectionsEnabled" ) );
       // Type is 'int', and '1' if on.
       // Create an element
       QDomElement projection = pft->dom().createElement( QStringLiteral( "projections" ) );
@@ -179,15 +179,15 @@ void transform081to090( QgsProjectFileTransform *pft )
 
     // Transforming coordinate-transforms
     // Create a list of all map layers
-    QDomNodeList mapLayers = pft->dom().elementsByTagName( QStringLiteral( "maplayer" ) );
+    const QDomNodeList mapLayers = pft->dom().elementsByTagName( QStringLiteral( "maplayer" ) );
     bool doneDestination = false;
     for ( int i = 0; i < mapLayers.count(); i++ )
     {
       QDomNode mapLayer = mapLayers.item( i );
       // Find the coordinatetransform
-      QDomNode coordinateTransform = mapLayer.namedItem( QStringLiteral( "coordinatetransform" ) );
+      const QDomNode coordinateTransform = mapLayer.namedItem( QStringLiteral( "coordinatetransform" ) );
       // Find the sourcesrs
-      QDomNode sourceCrs = coordinateTransform.namedItem( QStringLiteral( "sourcesrs" ) );
+      const QDomNode sourceCrs = coordinateTransform.namedItem( QStringLiteral( "sourcesrs" ) );
       // Rename to srs
       sourceCrs.toElement().setTagName( QStringLiteral( "srs" ) );
       // Re-parent to maplayer
@@ -197,7 +197,7 @@ void transform081to090( QgsProjectFileTransform *pft )
       if ( ! doneDestination )
       {
         // Use destination CRS from the last layer
-        QDomNode destinationCRS = coordinateTransform.namedItem( QStringLiteral( "destinationsrs" ) );
+        const QDomNode destinationCRS = coordinateTransform.namedItem( QStringLiteral( "destinationsrs" ) );
         // Re-parent the destination CRS to the mapcanvas
         // If mapcanvas wasn't set, nothing will happen.
         mapCanvas.appendChild( destinationCRS );
@@ -211,14 +211,14 @@ void transform081to090( QgsProjectFileTransform *pft )
     }
 
     // Set the flag 'visible' to match the status of 'checked'
-    QDomNodeList legendLayerFiles = pft->dom().elementsByTagName( QStringLiteral( "legendlayerfile" ) );
+    const QDomNodeList legendLayerFiles = pft->dom().elementsByTagName( QStringLiteral( "legendlayerfile" ) );
     QgsDebugMsg( QStringLiteral( "Legend layer file entries: " ) + QString::number( legendLayerFiles.count() ) );
     for ( int i = 0; i < mapLayers.count(); i++ )
     {
       // Get one maplayer element from list
-      QDomElement mapLayer = mapLayers.item( i ).toElement();
+      const QDomElement mapLayer = mapLayers.item( i ).toElement();
       // Find it's id.
-      QString id = mapLayer.firstChildElement( QStringLiteral( "id" ) ).text();
+      const QString id = mapLayer.firstChildElement( QStringLiteral( "id" ) ).text();
       QgsDebugMsg( QStringLiteral( "Handling layer %1" ).arg( id ) );
       // Now, look it up in legend
       for ( int j = 0; j < legendLayerFiles.count(); j++ )
@@ -245,12 +245,12 @@ void transform091to0100( QgsProjectFileTransform *pft )
   if ( ! pft->dom().isNull() )
   {
     // Insert transforms here!
-    QDomNodeList rasterPropertyList = pft->dom().elementsByTagName( QStringLiteral( "rasterproperties" ) );
+    const QDomNodeList rasterPropertyList = pft->dom().elementsByTagName( QStringLiteral( "rasterproperties" ) );
     QgsDebugMsg( QStringLiteral( "Raster properties file entries: " ) + QString::number( rasterPropertyList.count() ) );
     for ( int i = 0; i < rasterPropertyList.count(); i++ )
     {
       // Get one rasterproperty element from list, and rename the sub-properties.
-      QDomNode rasterProperty = rasterPropertyList.item( i );
+      const QDomNode rasterProperty = rasterPropertyList.item( i );
       // rasterProperty.namedItem("").toElement().setTagName("");
 
       rasterProperty.namedItem( QStringLiteral( "stdDevsToPlotDouble" ) ).toElement().setTagName( QStringLiteral( "mStandardDeviations" ) );
@@ -265,17 +265,17 @@ void transform091to0100( QgsProjectFileTransform *pft )
     }
 
     // Changing symbol size for hard: symbols
-    QDomNodeList symbolPropertyList = pft->dom().elementsByTagName( QStringLiteral( "symbol" ) );
+    const QDomNodeList symbolPropertyList = pft->dom().elementsByTagName( QStringLiteral( "symbol" ) );
     for ( int i = 0; i < symbolPropertyList.count(); i++ )
     {
       // Get the <poinmtsymbol> to check for 'hard:' for each <symbol>
       QDomNode symbolProperty = symbolPropertyList.item( i );
 
-      QDomElement pointSymbol = symbolProperty.firstChildElement( QStringLiteral( "pointsymbol" ) );
+      const QDomElement pointSymbol = symbolProperty.firstChildElement( QStringLiteral( "pointsymbol" ) );
       if ( pointSymbol.text().startsWith( QLatin1String( "hard:" ) ) )
       {
         // Get pointsize and line width
-        int lineWidth = symbolProperty.firstChildElement( QStringLiteral( "outlinewidth" ) ).text().toInt();
+        const int lineWidth = symbolProperty.firstChildElement( QStringLiteral( "outlinewidth" ) ).text().toInt();
         int pointSize = symbolProperty.firstChildElement( QStringLiteral( "pointsize" ) ).text().toInt();
         // Just a precaution, checking for 0
         if ( pointSize != 0 )
@@ -286,7 +286,7 @@ void transform091to0100( QgsProjectFileTransform *pft )
           pointSize = pointSize + 2 + 2 * lineWidth;
           QgsDebugMsg( QStringLiteral( "Setting point size to %1" ).arg( pointSize ) );
           QDomElement newPointSizeProperty = pft->dom().createElement( QStringLiteral( "pointsize" ) );
-          QDomText newPointSizeTxt = pft->dom().createTextNode( QString::number( pointSize ) );
+          const QDomText newPointSizeTxt = pft->dom().createTextNode( QString::number( pointSize ) );
           newPointSizeProperty.appendChild( newPointSizeTxt );
           symbolProperty.replaceChild( newPointSizeProperty, pointSymbol );
         }
@@ -302,11 +302,11 @@ void transform0100to0110( QgsProjectFileTransform *pft )
   {
 #ifndef QT_NO_PRINTER
     //Change 'outlinewidth' in QgsSymbol
-    QPrinter myPrinter( QPrinter::ScreenResolution );
-    int screenDpi = myPrinter.resolution();
-    double widthScaleFactor = 25.4 / screenDpi;
+    const QPrinter myPrinter( QPrinter::ScreenResolution );
+    const int screenDpi = myPrinter.resolution();
+    const double widthScaleFactor = 25.4 / screenDpi;
 
-    QDomNodeList outlineWidthList = pft->dom().elementsByTagName( QStringLiteral( "outlinewidth" ) );
+    const QDomNodeList outlineWidthList = pft->dom().elementsByTagName( QStringLiteral( "outlinewidth" ) );
     for ( int i = 0; i < outlineWidthList.size(); ++i )
     {
       //calculate new width
@@ -315,14 +315,14 @@ void transform0100to0110( QgsProjectFileTransform *pft )
       outlineWidth *= widthScaleFactor;
 
       //replace old text node
-      QDomNode outlineTextNode = currentOutlineElem.firstChild();
-      QDomText newOutlineText = pft->dom().createTextNode( QString::number( outlineWidth ) );
+      const QDomNode outlineTextNode = currentOutlineElem.firstChild();
+      const QDomText newOutlineText = pft->dom().createTextNode( QString::number( outlineWidth ) );
       currentOutlineElem.replaceChild( newOutlineText, outlineTextNode );
 
     }
 
     //Change 'pointsize' in QgsSymbol
-    QDomNodeList pointSizeList = pft->dom().elementsByTagName( QStringLiteral( "pointsize" ) );
+    const QDomNodeList pointSizeList = pft->dom().elementsByTagName( QStringLiteral( "pointsize" ) );
     for ( int i = 0; i < pointSizeList.size(); ++i )
     {
       //calculate new size
@@ -331,8 +331,8 @@ void transform0100to0110( QgsProjectFileTransform *pft )
       pointSize *= widthScaleFactor;
 
       //replace old text node
-      QDomNode pointSizeTextNode = currentPointSizeElem.firstChild();
-      QDomText newPointSizeText = pft->dom().createTextNode( QString::number( static_cast< int >( pointSize ) ) );
+      const QDomNode pointSizeTextNode = currentPointSizeElem.firstChild();
+      const QDomText newPointSizeText = pft->dom().createTextNode( QString::number( static_cast< int >( pointSize ) ) );
       currentPointSizeElem.replaceChild( newPointSizeText, pointSizeTextNode );
     }
 #endif
@@ -343,31 +343,31 @@ void transform0110to1000( QgsProjectFileTransform *pft )
 {
   if ( ! pft->dom().isNull() )
   {
-    QDomNodeList layerList = pft->dom().elementsByTagName( QStringLiteral( "maplayer" ) );
+    const QDomNodeList layerList = pft->dom().elementsByTagName( QStringLiteral( "maplayer" ) );
     for ( int i = 0; i < layerList.size(); ++i )
     {
-      QDomElement layerElem = layerList.at( i ).toElement();
-      QString typeString = layerElem.attribute( QStringLiteral( "type" ) );
+      const QDomElement layerElem = layerList.at( i ).toElement();
+      const QString typeString = layerElem.attribute( QStringLiteral( "type" ) );
       if ( typeString != QLatin1String( "vector" ) )
       {
         continue;
       }
 
       //datasource
-      QDomNode dataSourceNode = layerElem.namedItem( QStringLiteral( "datasource" ) );
+      const QDomNode dataSourceNode = layerElem.namedItem( QStringLiteral( "datasource" ) );
       if ( dataSourceNode.isNull() )
       {
         return;
       }
-      QString dataSource = dataSourceNode.toElement().text();
+      const QString dataSource = dataSourceNode.toElement().text();
 
       //provider key
-      QDomNode providerNode = layerElem.namedItem( QStringLiteral( "provider" ) );
+      const QDomNode providerNode = layerElem.namedItem( QStringLiteral( "provider" ) );
       if ( providerNode.isNull() )
       {
         return;
       }
-      QString providerKey = providerNode.toElement().text();
+      const QString providerKey = providerNode.toElement().text();
 
       //create the layer to get the provider for int->fieldName conversion
       QgsVectorLayer::LayerOptions options { QgsCoordinateTransformContext() };
@@ -384,18 +384,18 @@ void transform0110to1000( QgsProjectFileTransform *pft )
       {
         return;
       }
-      QgsFields fields = provider->fields();
+      const QgsFields fields = provider->fields();
 
       //read classificationfield
-      QDomNodeList classificationFieldList = layerElem.elementsByTagName( QStringLiteral( "classificationfield" ) );
+      const QDomNodeList classificationFieldList = layerElem.elementsByTagName( QStringLiteral( "classificationfield" ) );
       for ( int j = 0; j < classificationFieldList.size(); ++j )
       {
         QDomElement classificationFieldElem = classificationFieldList.at( j ).toElement();
-        int fieldNumber = classificationFieldElem.text().toInt();
+        const int fieldNumber = classificationFieldElem.text().toInt();
         if ( fieldNumber >= 0 && fieldNumber < fields.count() )
         {
-          QDomText fieldName = pft->dom().createTextNode( fields.at( fieldNumber ).name() );
-          QDomNode nameNode = classificationFieldElem.firstChild();
+          const QDomText fieldName = pft->dom().createTextNode( fields.at( fieldNumber ).name() );
+          const QDomNode nameNode = classificationFieldElem.firstChild();
           classificationFieldElem.replaceChild( fieldName, nameNode );
         }
       }
@@ -410,11 +410,11 @@ void transform1100to1200( QgsProjectFileTransform *pft )
   if ( pft->dom().isNull() )
     return;
 
-  QDomNode qgis = pft->dom().firstChildElement( QStringLiteral( "qgis" ) );
+  const QDomNode qgis = pft->dom().firstChildElement( QStringLiteral( "qgis" ) );
   if ( qgis.isNull() )
     return;
 
-  QDomElement properties = qgis.firstChildElement( QStringLiteral( "properties" ) );
+  const QDomElement properties = qgis.firstChildElement( QStringLiteral( "properties" ) );
   if ( properties.isNull() )
     return;
 
@@ -422,11 +422,11 @@ void transform1100to1200( QgsProjectFileTransform *pft )
   if ( digitizing.isNull() )
     return;
 
-  QDomElement tolList = digitizing.firstChildElement( QStringLiteral( "LayerSnappingToleranceList" ) );
+  const QDomElement tolList = digitizing.firstChildElement( QStringLiteral( "LayerSnappingToleranceList" ) );
   if ( tolList.isNull() )
     return;
 
-  QDomElement tolUnitList = digitizing.firstChildElement( QStringLiteral( "LayerSnappingToleranceUnitList" ) );
+  const QDomElement tolUnitList = digitizing.firstChildElement( QStringLiteral( "LayerSnappingToleranceUnitList" ) );
   if ( !tolUnitList.isNull() )
     return;
 
@@ -446,7 +446,7 @@ void transform1400to1500( QgsProjectFileTransform *pft )
     return;
   }
   //Add layer id to <VectorClassificationItem>
-  QDomNodeList layerItemList = pft->dom().elementsByTagName( QStringLiteral( "LayerItem" ) );
+  const QDomNodeList layerItemList = pft->dom().elementsByTagName( QStringLiteral( "LayerItem" ) );
   QDomElement currentLayerItemElem;
   QString currentLayerId;
 
@@ -459,7 +459,7 @@ void transform1400to1500( QgsProjectFileTransform *pft )
     }
     currentLayerId = currentLayerItemElem.attribute( QStringLiteral( "layerId" ) );
 
-    QDomNodeList vectorClassificationList = currentLayerItemElem.elementsByTagName( QStringLiteral( "VectorClassificationItem" ) );
+    const QDomNodeList vectorClassificationList = currentLayerItemElem.elementsByTagName( QStringLiteral( "VectorClassificationItem" ) );
     QDomElement currentClassificationElem;
     for ( int j = 0; j < vectorClassificationList.size(); ++j )
     {
@@ -471,7 +471,7 @@ void transform1400to1500( QgsProjectFileTransform *pft )
     }
 
     //replace the text items with VectorClassification or RasterClassification items
-    QDomNodeList textItemList = currentLayerItemElem.elementsByTagName( QStringLiteral( "TextItem" ) );
+    const QDomNodeList textItemList = currentLayerItemElem.elementsByTagName( QStringLiteral( "TextItem" ) );
     QDomElement currentTextItem;
 
     for ( int j = 0; j < textItemList.size(); ++j )
@@ -509,13 +509,13 @@ void transform1800to1900( QgsProjectFileTransform *pft )
   QgsReadWriteContext context;
   context.setPathResolver( QgsProject::instance()->pathResolver() );
 
-  QDomNodeList layerItemList = pft->dom().elementsByTagName( QStringLiteral( "rasterproperties" ) );
+  const QDomNodeList layerItemList = pft->dom().elementsByTagName( QStringLiteral( "rasterproperties" ) );
   for ( int i = 0; i < layerItemList.size(); ++i )
   {
     QDomElement rasterPropertiesElem = layerItemList.at( i ).toElement();
     QDomNode layerNode = rasterPropertiesElem.parentNode();
-    QDomElement dataSourceElem = layerNode.firstChildElement( QStringLiteral( "datasource" ) );
-    QDomElement layerNameElem = layerNode.firstChildElement( QStringLiteral( "layername" ) );
+    const QDomElement dataSourceElem = layerNode.firstChildElement( QStringLiteral( "datasource" ) );
+    const QDomElement layerNameElem = layerNode.firstChildElement( QStringLiteral( "layername" ) );
     QgsRasterLayer rasterLayer;
     // TODO: We have to use more data from project file to read the layer it correctly,
     // OTOH, we should not read it until it was converted
@@ -525,13 +525,13 @@ void transform1800to1900( QgsProjectFileTransform *pft )
 
   //composer: replace mGridAnnotationPosition with mLeftGridAnnotationPosition & co.
   // and mGridAnnotationDirection with mLeftGridAnnotationDirection & co.
-  QDomNodeList composerMapList = pft->dom().elementsByTagName( QStringLiteral( "ComposerMap" ) );
+  const QDomNodeList composerMapList = pft->dom().elementsByTagName( QStringLiteral( "ComposerMap" ) );
   for ( int i = 0; i < composerMapList.size(); ++i )
   {
-    QDomNodeList gridList = composerMapList.at( i ).toElement().elementsByTagName( QStringLiteral( "Grid" ) );
+    const QDomNodeList gridList = composerMapList.at( i ).toElement().elementsByTagName( QStringLiteral( "Grid" ) );
     for ( int j = 0; j < gridList.size(); ++j )
     {
-      QDomNodeList annotationList = gridList.at( j ).toElement().elementsByTagName( QStringLiteral( "Annotation" ) );
+      const QDomNodeList annotationList = gridList.at( j ).toElement().elementsByTagName( QStringLiteral( "Annotation" ) );
       for ( int k = 0; k < annotationList.size(); ++k )
       {
         QDomElement annotationElem = annotationList.at( k ).toElement();
@@ -539,7 +539,7 @@ void transform1800to1900( QgsProjectFileTransform *pft )
         //position
         if ( annotationElem.hasAttribute( QStringLiteral( "position" ) ) )
         {
-          int pos = annotationElem.attribute( QStringLiteral( "position" ) ).toInt();
+          const int pos = annotationElem.attribute( QStringLiteral( "position" ) ).toInt();
           annotationElem.setAttribute( QStringLiteral( "leftPosition" ), pos );
           annotationElem.setAttribute( QStringLiteral( "rightPosition" ), pos );
           annotationElem.setAttribute( QStringLiteral( "topPosition" ), pos );
@@ -550,7 +550,7 @@ void transform1800to1900( QgsProjectFileTransform *pft )
         //direction
         if ( annotationElem.hasAttribute( QStringLiteral( "direction" ) ) )
         {
-          int dir = annotationElem.attribute( QStringLiteral( "direction" ) ).toInt();
+          const int dir = annotationElem.attribute( QStringLiteral( "direction" ) ).toInt();
           if ( dir == 2 )
           {
             annotationElem.setAttribute( QStringLiteral( "leftDirection" ), 0 );
@@ -579,7 +579,7 @@ void transform1800to1900( QgsProjectFileTransform *pft )
   }
 
   //Composer: move all items under Composition element
-  QDomNodeList composerList = pft->dom().elementsByTagName( QStringLiteral( "Composer" ) );
+  const QDomNodeList composerList = pft->dom().elementsByTagName( QStringLiteral( "Composer" ) );
   for ( int i = 0; i < composerList.size(); ++i )
   {
     QDomElement composerElem = composerList.at( i ).toElement();
@@ -591,7 +591,7 @@ void transform1800to1900( QgsProjectFileTransform *pft )
       continue;
     }
 
-    QDomNodeList composerChildren = composerElem.childNodes();
+    const QDomNodeList composerChildren = composerElem.childNodes();
 
     if ( composerChildren.size() < 1 )
     {
@@ -600,7 +600,7 @@ void transform1800to1900( QgsProjectFileTransform *pft )
 
     for ( int j = composerChildren.size() - 1; j >= 0; --j )
     {
-      QDomElement childElem = composerChildren.at( j ).toElement();
+      const QDomElement childElem = composerChildren.at( j ).toElement();
       if ( childElem.tagName() == QLatin1String( "Composition" ) )
       {
         continue;
@@ -615,16 +615,16 @@ void transform1800to1900( QgsProjectFileTransform *pft )
   // SimpleFill symbol layer v2: avoid double transparency
   // replacing alpha value of symbol layer's color with 255 (the
   // transparency value is already stored as symbol transparency).
-  QDomNodeList rendererList = pft->dom().elementsByTagName( QStringLiteral( "renderer-v2" ) );
+  const QDomNodeList rendererList = pft->dom().elementsByTagName( QStringLiteral( "renderer-v2" ) );
   for ( int i = 0; i < rendererList.size(); ++i )
   {
-    QDomNodeList layerList = rendererList.at( i ).toElement().elementsByTagName( QStringLiteral( "layer" ) );
+    const QDomNodeList layerList = rendererList.at( i ).toElement().elementsByTagName( QStringLiteral( "layer" ) );
     for ( int j = 0; j < layerList.size(); ++j )
     {
-      QDomElement layerElem = layerList.at( j ).toElement();
+      const QDomElement layerElem = layerList.at( j ).toElement();
       if ( layerElem.attribute( QStringLiteral( "class" ) ) == QLatin1String( "SimpleFill" ) )
       {
-        QDomNodeList propList = layerElem.elementsByTagName( QStringLiteral( "prop" ) );
+        const QDomNodeList propList = layerElem.elementsByTagName( QStringLiteral( "prop" ) );
         for ( int k = 0; k < propList.size(); ++k )
         {
           QDomElement propElem = propList.at( k ).toElement();
@@ -643,7 +643,7 @@ void transform1800to1900( QgsProjectFileTransform *pft )
 void transform2200to2300( QgsProjectFileTransform *pft )
 {
   //composer: set placement for all picture items to middle, to mimic <=2.2 behavior
-  QDomNodeList composerPictureList = pft->dom().elementsByTagName( QStringLiteral( "ComposerPicture" ) );
+  const QDomNodeList composerPictureList = pft->dom().elementsByTagName( QStringLiteral( "ComposerPicture" ) );
   for ( int i = 0; i < composerPictureList.size(); ++i )
   {
     QDomElement picture = composerPictureList.at( i ).toElement();
@@ -657,18 +657,18 @@ void transform3000( QgsProjectFileTransform *pft )
   QDomElement propsElem = pft->dom().firstChildElement( QStringLiteral( "qgis" ) ).toElement().firstChildElement( QStringLiteral( "properties" ) );
   if ( !propsElem.isNull() )
   {
-    QDomNodeList srsNodes = propsElem.elementsByTagName( QStringLiteral( "SpatialRefSys" ) );
+    const QDomNodeList srsNodes = propsElem.elementsByTagName( QStringLiteral( "SpatialRefSys" ) );
     QDomElement srsElem;
     QDomElement projElem;
     if ( srsNodes.count() > 0 )
     {
       srsElem = srsNodes.at( 0 ).toElement();
-      QDomNodeList projNodes = srsElem.elementsByTagName( QStringLiteral( "ProjectionsEnabled" ) );
+      const QDomNodeList projNodes = srsElem.elementsByTagName( QStringLiteral( "ProjectionsEnabled" ) );
       if ( projNodes.count() == 0 )
       {
         projElem = pft->dom().createElement( QStringLiteral( "ProjectionsEnabled" ) );
         projElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "int" ) );
-        QDomText projText = pft->dom().createTextNode( QStringLiteral( "0" ) );
+        const QDomText projText = pft->dom().createTextNode( QStringLiteral( "0" ) );
         projElem.appendChild( projText );
         srsElem.appendChild( projElem );
       }
@@ -678,7 +678,7 @@ void transform3000( QgsProjectFileTransform *pft )
       srsElem = pft->dom().createElement( QStringLiteral( "SpatialRefSys" ) );
       projElem = pft->dom().createElement( QStringLiteral( "ProjectionsEnabled" ) );
       projElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "int" ) );
-      QDomText projText = pft->dom().createTextNode( QStringLiteral( "0" ) );
+      const QDomText projText = pft->dom().createTextNode( QStringLiteral( "0" ) );
       projElem.appendChild( projText );
       srsElem.appendChild( projElem );
       propsElem.appendChild( srsElem );
@@ -687,54 +687,54 @@ void transform3000( QgsProjectFileTransform *pft )
     // transform map canvas CRS to project CRS - this is because project CRS was inconsistently used
     // prior to 3.0. In >= 3.0 main canvas CRS is forced to match project CRS, so we need to make
     // sure we can read the project CRS correctly
-    QDomNodeList canvasNodes = pft->dom().elementsByTagName( QStringLiteral( "mapcanvas" ) );
+    const QDomNodeList canvasNodes = pft->dom().elementsByTagName( QStringLiteral( "mapcanvas" ) );
     if ( canvasNodes.count() > 0 )
     {
-      QDomElement canvasElem = canvasNodes.at( 0 ).toElement();
-      QDomNodeList canvasSrsNodes = canvasElem.elementsByTagName( QStringLiteral( "spatialrefsys" ) );
+      const QDomElement canvasElem = canvasNodes.at( 0 ).toElement();
+      const QDomNodeList canvasSrsNodes = canvasElem.elementsByTagName( QStringLiteral( "spatialrefsys" ) );
       if ( canvasSrsNodes.count() > 0 )
       {
-        QDomElement canvasSrsElem = canvasSrsNodes.at( 0 ).toElement();
+        const QDomElement canvasSrsElem = canvasSrsNodes.at( 0 ).toElement();
         QString proj;
         QString authid;
         QString srsid;
 
-        QDomNodeList proj4Nodes = canvasSrsElem.elementsByTagName( QStringLiteral( "proj4" ) );
+        const QDomNodeList proj4Nodes = canvasSrsElem.elementsByTagName( QStringLiteral( "proj4" ) );
         if ( proj4Nodes.count() > 0 )
         {
-          QDomElement proj4Node = proj4Nodes.at( 0 ).toElement();
+          const QDomElement proj4Node = proj4Nodes.at( 0 ).toElement();
           proj = proj4Node.text();
         }
-        QDomNodeList authidNodes = canvasSrsElem.elementsByTagName( QStringLiteral( "authid" ) );
+        const QDomNodeList authidNodes = canvasSrsElem.elementsByTagName( QStringLiteral( "authid" ) );
         if ( authidNodes.count() > 0 )
         {
-          QDomElement authidNode = authidNodes.at( 0 ).toElement();
+          const QDomElement authidNode = authidNodes.at( 0 ).toElement();
           authid = authidNode.text();
         }
-        QDomNodeList srsidNodes = canvasSrsElem.elementsByTagName( QStringLiteral( "srsid" ) );
+        const QDomNodeList srsidNodes = canvasSrsElem.elementsByTagName( QStringLiteral( "srsid" ) );
         if ( srsidNodes.count() > 0 )
         {
-          QDomElement srsidNode = srsidNodes.at( 0 ).toElement();
+          const QDomElement srsidNode = srsidNodes.at( 0 ).toElement();
           srsid = srsidNode.text();
         }
 
         // clear existing project CRS nodes
-        QDomNodeList oldProjectProj4Nodes = srsElem.elementsByTagName( QStringLiteral( "ProjectCRSProj4String" ) );
+        const QDomNodeList oldProjectProj4Nodes = srsElem.elementsByTagName( QStringLiteral( "ProjectCRSProj4String" ) );
         for ( int i = oldProjectProj4Nodes.count(); i >= 0; --i )
         {
           srsElem.removeChild( oldProjectProj4Nodes.at( i ) );
         }
-        QDomNodeList oldProjectCrsNodes = srsElem.elementsByTagName( QStringLiteral( "ProjectCrs" ) );
+        const QDomNodeList oldProjectCrsNodes = srsElem.elementsByTagName( QStringLiteral( "ProjectCrs" ) );
         for ( int i = oldProjectCrsNodes.count(); i >= 0; --i )
         {
           srsElem.removeChild( oldProjectCrsNodes.at( i ) );
         }
-        QDomNodeList oldProjectCrsIdNodes = srsElem.elementsByTagName( QStringLiteral( "ProjectCRSID" ) );
+        const QDomNodeList oldProjectCrsIdNodes = srsElem.elementsByTagName( QStringLiteral( "ProjectCRSID" ) );
         for ( int i = oldProjectCrsIdNodes.count(); i >= 0; --i )
         {
           srsElem.removeChild( oldProjectCrsIdNodes.at( i ) );
         }
-        QDomNodeList projectionsEnabledNodes = srsElem.elementsByTagName( QStringLiteral( "ProjectionsEnabled" ) );
+        const QDomNodeList projectionsEnabledNodes = srsElem.elementsByTagName( QStringLiteral( "ProjectionsEnabled" ) );
         for ( int i = projectionsEnabledNodes.count(); i >= 0; --i )
         {
           srsElem.removeChild( projectionsEnabledNodes.at( i ) );
@@ -742,26 +742,26 @@ void transform3000( QgsProjectFileTransform *pft )
 
         QDomElement proj4Elem = pft->dom().createElement( QStringLiteral( "ProjectCRSProj4String" ) );
         proj4Elem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QString" ) );
-        QDomText proj4Text = pft->dom().createTextNode( proj );
+        const QDomText proj4Text = pft->dom().createTextNode( proj );
         proj4Elem.appendChild( proj4Text );
         QDomElement projectCrsElem = pft->dom().createElement( QStringLiteral( "ProjectCrs" ) );
         projectCrsElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QString" ) );
-        QDomText projectCrsText = pft->dom().createTextNode( authid );
+        const QDomText projectCrsText = pft->dom().createTextNode( authid );
         projectCrsElem.appendChild( projectCrsText );
         QDomElement projectCrsIdElem = pft->dom().createElement( QStringLiteral( "ProjectCRSID" ) );
         projectCrsIdElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "int" ) );
-        QDomText srsidText = pft->dom().createTextNode( srsid );
+        const QDomText srsidText = pft->dom().createTextNode( srsid );
         projectCrsIdElem.appendChild( srsidText );
         QDomElement projectionsEnabledElem = pft->dom().createElement( QStringLiteral( "ProjectionsEnabled" ) );
         projectionsEnabledElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "int" ) );
-        QDomText projectionsEnabledText = pft->dom().createTextNode( QStringLiteral( "1" ) );
+        const QDomText projectionsEnabledText = pft->dom().createTextNode( QStringLiteral( "1" ) );
         projectionsEnabledElem.appendChild( projectionsEnabledText );
         srsElem.appendChild( proj4Elem );
         srsElem.appendChild( projectCrsElem );
         srsElem.appendChild( projectCrsIdElem );
         srsElem.appendChild( projectionsEnabledElem );
 
-        QDomNodeList srsNodes = propsElem.elementsByTagName( QStringLiteral( "SpatialRefSys" ) );
+        const QDomNodeList srsNodes = propsElem.elementsByTagName( QStringLiteral( "SpatialRefSys" ) );
         for ( int i = srsNodes.count(); i >= 0; --i )
         {
           propsElem.removeChild( srsNodes.at( i ) );
@@ -772,7 +772,7 @@ void transform3000( QgsProjectFileTransform *pft )
   }
 
 
-  QDomNodeList mapLayers = pft->dom().elementsByTagName( QStringLiteral( "maplayer" ) );
+  const QDomNodeList mapLayers = pft->dom().elementsByTagName( QStringLiteral( "maplayer" ) );
 
   for ( int mapLayerIndex = 0; mapLayerIndex < mapLayers.count(); ++mapLayerIndex )
   {
@@ -782,19 +782,19 @@ void transform3000( QgsProjectFileTransform *pft )
     QDomElement fieldConfigurationElement = pft->dom().createElement( QStringLiteral( "fieldConfiguration" ) );
     layerElem.appendChild( fieldConfigurationElement );
 
-    QDomNodeList editTypeNodes = layerElem.namedItem( QStringLiteral( "edittypes" ) ).childNodes();
+    const QDomNodeList editTypeNodes = layerElem.namedItem( QStringLiteral( "edittypes" ) ).childNodes();
     QDomElement constraintExpressionsElem = pft->dom().createElement( QStringLiteral( "constraintExpressions" ) );
     layerElem.appendChild( constraintExpressionsElem );
 
     for ( int i = 0; i < editTypeNodes.size(); ++i )
     {
-      QDomNode editTypeNode = editTypeNodes.at( i );
-      QDomElement editTypeElement = editTypeNode.toElement();
+      const QDomNode editTypeNode = editTypeNodes.at( i );
+      const QDomElement editTypeElement = editTypeNode.toElement();
 
       QDomElement fieldElement = pft->dom().createElement( QStringLiteral( "field" ) );
       fieldConfigurationElement.appendChild( fieldElement );
 
-      QString name = editTypeElement.attribute( QStringLiteral( "name" ) );
+      const QString name = editTypeElement.attribute( QStringLiteral( "name" ) );
       fieldElement.setAttribute( QStringLiteral( "name" ), name );
       QDomElement constraintExpressionElem = pft->dom().createElement( QStringLiteral( "constraint" ) );
       constraintExpressionElem.setAttribute( QStringLiteral( "field" ), name );
@@ -803,10 +803,10 @@ void transform3000( QgsProjectFileTransform *pft )
       QDomElement editWidgetElement = pft->dom().createElement( QStringLiteral( "editWidget" ) );
       fieldElement.appendChild( editWidgetElement );
 
-      QString ewv2Type = editTypeElement.attribute( QStringLiteral( "widgetv2type" ) );
+      const QString ewv2Type = editTypeElement.attribute( QStringLiteral( "widgetv2type" ) );
       editWidgetElement.setAttribute( QStringLiteral( "type" ), ewv2Type );
 
-      QDomElement ewv2CfgElem = editTypeElement.namedItem( QStringLiteral( "widgetv2config" ) ).toElement();
+      const QDomElement ewv2CfgElem = editTypeElement.namedItem( QStringLiteral( "widgetv2config" ) ).toElement();
 
       if ( !ewv2CfgElem.isNull() )
       {
@@ -815,10 +815,10 @@ void transform3000( QgsProjectFileTransform *pft )
 
         QVariantMap editWidgetConfiguration;
 
-        QDomNamedNodeMap configAttrs = ewv2CfgElem.attributes();
+        const QDomNamedNodeMap configAttrs = ewv2CfgElem.attributes();
         for ( int configIndex = 0; configIndex < configAttrs.count(); ++configIndex )
         {
-          QDomAttr configAttr = configAttrs.item( configIndex ).toAttr();
+          const QDomAttr configAttr = configAttrs.item( configIndex ).toAttr();
           if ( configAttr.name() == QLatin1String( "fieldEditable" ) )
           {
             editWidgetConfigElement.setAttribute( QStringLiteral( "fieldEditable" ), configAttr.value() );
@@ -847,11 +847,11 @@ void transform3000( QgsProjectFileTransform *pft )
 
         if ( ewv2Type == QLatin1String( "ValueMap" ) )
         {
-          QDomNodeList configElements = ewv2CfgElem.childNodes();
+          const QDomNodeList configElements = ewv2CfgElem.childNodes();
           QVariantMap map;
           for ( int configIndex = 0; configIndex < configElements.count(); ++configIndex )
           {
-            QDomElement configElem = configElements.at( configIndex ).toElement();
+            const QDomElement configElem = configElements.at( configIndex ).toElement();
             map.insert( configElem.attribute( QStringLiteral( "key" ) ), configElem.attribute( QStringLiteral( "value" ) ) );
           }
           editWidgetConfiguration.insert( QStringLiteral( "map" ), map );
@@ -891,8 +891,8 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument &doc, QDomNo
 {
   //no data
   //TODO: We would need to set no data on all bands, but we don't know number of bands here
-  QDomNode noDataNode = rasterPropertiesElem.namedItem( QStringLiteral( "mNoDataValue" ) );
-  QDomElement noDataElement = noDataNode.toElement();
+  const QDomNode noDataNode = rasterPropertiesElem.namedItem( QStringLiteral( "mNoDataValue" ) );
+  const QDomElement noDataElement = noDataNode.toElement();
   if ( !noDataElement.text().isEmpty() )
   {
     QgsDebugMsg( "mNoDataValue = " + noDataElement.text() );
@@ -916,7 +916,7 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument &doc, QDomNo
 
   //invert color
   rasterRendererElem.setAttribute( QStringLiteral( "invertColor" ), QStringLiteral( "0" ) );
-  QDomElement  invertColorElem = rasterPropertiesElem.firstChildElement( QStringLiteral( "mInvertColor" ) );
+  const QDomElement  invertColorElem = rasterPropertiesElem.firstChildElement( QStringLiteral( "mInvertColor" ) );
   if ( !invertColorElem.isNull() )
   {
     if ( invertColorElem.text() == QLatin1String( "true" ) )
@@ -927,10 +927,10 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument &doc, QDomNo
 
   //opacity
   rasterRendererElem.setAttribute( QStringLiteral( "opacity" ), QStringLiteral( "1" ) );
-  QDomElement transparencyElem = parentNode.firstChildElement( QStringLiteral( "transparencyLevelInt" ) );
+  const QDomElement transparencyElem = parentNode.firstChildElement( QStringLiteral( "transparencyLevelInt" ) );
   if ( !transparencyElem.isNull() )
   {
-    double transparency = transparencyElem.text().toInt();
+    const double transparency = transparencyElem.text().toInt();
     rasterRendererElem.setAttribute( QStringLiteral( "opacity" ), QString::number( transparency / 255.0 ) );
   }
 
@@ -938,7 +938,7 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument &doc, QDomNo
   rasterRendererElem.setAttribute( QStringLiteral( "alphaBand" ), -1 );
 
   //gray band is used for several renderers
-  int grayBand = rasterBandNumber( rasterPropertiesElem, QStringLiteral( "mGrayBandName" ), rlayer );
+  const int grayBand = rasterBandNumber( rasterPropertiesElem, QStringLiteral( "mGrayBandName" ), rlayer );
 
   //convert renderer specific properties
   QString drawingStyle = rasterPropertiesElem.firstChildElement( QStringLiteral( "mDrawingStyle" ) ).text();
@@ -950,14 +950,14 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument &doc, QDomNo
   // => we have to check first the values and change drawingStyle if necessary
   if ( drawingStyle == QLatin1String( "PalettedColor" ) )
   {
-    QDomElement customColorRampElem = rasterPropertiesElem.firstChildElement( QStringLiteral( "customColorRamp" ) );
-    QDomNodeList colorRampEntryList = customColorRampElem.elementsByTagName( QStringLiteral( "colorRampEntry" ) );
+    const QDomElement customColorRampElem = rasterPropertiesElem.firstChildElement( QStringLiteral( "customColorRamp" ) );
+    const QDomNodeList colorRampEntryList = customColorRampElem.elementsByTagName( QStringLiteral( "colorRampEntry" ) );
 
     for ( int i = 0; i < colorRampEntryList.size(); ++i )
     {
-      QDomElement colorRampEntryElem = colorRampEntryList.at( i ).toElement();
-      QString strValue = colorRampEntryElem.attribute( QStringLiteral( "value" ) );
-      double value = strValue.toDouble();
+      const QDomElement colorRampEntryElem = colorRampEntryList.at( i ).toElement();
+      const QString strValue = colorRampEntryElem.attribute( QStringLiteral( "value" ) );
+      const double value = strValue.toDouble();
       if ( value < 0 || value > 10000 || !qgsDoubleNear( value, static_cast< int >( value ) ) )
       {
         QgsDebugMsg( QStringLiteral( "forcing SingleBandPseudoColor value = %1" ).arg( value ) );
@@ -983,16 +983,16 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument &doc, QDomNo
     rasterRendererElem.appendChild( newRasterShaderElem );
 
     //switch depending on mColorShadingAlgorithm
-    QString colorShadingAlgorithm = rasterPropertiesElem.firstChildElement( QStringLiteral( "mColorShadingAlgorithm" ) ).text();
+    const QString colorShadingAlgorithm = rasterPropertiesElem.firstChildElement( QStringLiteral( "mColorShadingAlgorithm" ) ).text();
     if ( colorShadingAlgorithm == QLatin1String( "PseudoColorShader" ) || colorShadingAlgorithm == QLatin1String( "FreakOutShader" ) )
     {
       newColorRampShaderElem.setAttribute( QStringLiteral( "colorRampType" ), QStringLiteral( "INTERPOLATED" ) );
 
       //get minmax from rasterlayer
-      QgsRasterBandStats rasterBandStats = rlayer->dataProvider()->bandStatistics( grayBand );
-      double minValue = rasterBandStats.minimumValue;
-      double maxValue = rasterBandStats.maximumValue;
-      double breakSize = ( maxValue - minValue ) / 3;
+      const QgsRasterBandStats rasterBandStats = rlayer->dataProvider()->bandStatistics( grayBand );
+      const double minValue = rasterBandStats.minimumValue;
+      const double maxValue = rasterBandStats.maximumValue;
+      const double breakSize = ( maxValue - minValue ) / 3;
 
       QStringList colorList;
       if ( colorShadingAlgorithm == QLatin1String( "FreakOutShader" ) )
@@ -1017,10 +1017,10 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument &doc, QDomNo
     }
     else if ( colorShadingAlgorithm == QLatin1String( "ColorRampShader" ) )
     {
-      QDomElement customColorRampElem = rasterPropertiesElem.firstChildElement( QStringLiteral( "customColorRamp" ) );
-      QString type = customColorRampElem.firstChildElement( QStringLiteral( "colorRampType" ) ).text();
+      const QDomElement customColorRampElem = rasterPropertiesElem.firstChildElement( QStringLiteral( "customColorRamp" ) );
+      const QString type = customColorRampElem.firstChildElement( QStringLiteral( "colorRampType" ) ).text();
       newColorRampShaderElem.setAttribute( QStringLiteral( "colorRampType" ), type );
-      QDomNodeList colorNodeList = customColorRampElem.elementsByTagName( QStringLiteral( "colorRampEntry" ) );
+      const QDomNodeList colorNodeList = customColorRampElem.elementsByTagName( QStringLiteral( "colorRampEntry" ) );
 
       QString value, label;
       QColor newColor;
@@ -1047,8 +1047,8 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument &doc, QDomNo
   {
     rasterRendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "paletted" ) );
     rasterRendererElem.setAttribute( QStringLiteral( "band" ), grayBand );
-    QDomElement customColorRampElem = rasterPropertiesElem.firstChildElement( QStringLiteral( "customColorRamp" ) );
-    QDomNodeList colorRampEntryList = customColorRampElem.elementsByTagName( QStringLiteral( "colorRampEntry" ) );
+    const QDomElement customColorRampElem = rasterPropertiesElem.firstChildElement( QStringLiteral( "customColorRamp" ) );
+    const QDomNodeList colorRampEntryList = customColorRampElem.elementsByTagName( QStringLiteral( "colorRampEntry" ) );
     QDomElement newColorPaletteElem = doc.createElement( QStringLiteral( "colorPalette" ) );
 
     int red = 0;
@@ -1066,7 +1066,7 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument &doc, QDomNo
       green = colorRampEntryElem.attribute( QStringLiteral( "green" ) ).toInt();
       blue = colorRampEntryElem.attribute( QStringLiteral( "blue" ) ).toInt();
       newPaletteElem.setAttribute( QStringLiteral( "color" ), QColor( red, green, blue ).name() );
-      QString label = colorRampEntryElem.attribute( QStringLiteral( "label" ) );
+      const QString label = colorRampEntryElem.attribute( QStringLiteral( "label" ) );
       if ( !label.isEmpty() )
       {
         newPaletteElem.setAttribute( QStringLiteral( "label" ), label );
@@ -1080,9 +1080,9 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument &doc, QDomNo
     rasterRendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "multibandcolor" ) );
 
     //red band, green band, blue band
-    int redBand = rasterBandNumber( rasterPropertiesElem, QStringLiteral( "mRedBandName" ), rlayer );
-    int greenBand = rasterBandNumber( rasterPropertiesElem, QStringLiteral( "mGreenBandName" ), rlayer );
-    int blueBand = rasterBandNumber( rasterPropertiesElem, QStringLiteral( "mBlueBandName" ), rlayer );
+    const int redBand = rasterBandNumber( rasterPropertiesElem, QStringLiteral( "mRedBandName" ), rlayer );
+    const int greenBand = rasterBandNumber( rasterPropertiesElem, QStringLiteral( "mGreenBandName" ), rlayer );
+    const int blueBand = rasterBandNumber( rasterPropertiesElem, QStringLiteral( "mBlueBandName" ), rlayer );
     rasterRendererElem.setAttribute( QStringLiteral( "redBand" ), redBand );
     rasterRendererElem.setAttribute( QStringLiteral( "greenBand" ), greenBand );
     rasterRendererElem.setAttribute( QStringLiteral( "blueBand" ), blueBand );
@@ -1118,8 +1118,8 @@ int rasterBandNumber( const QDomElement &rasterPropertiesElem, const QString &ba
     return -1;
   }
 
-  int band = -1;
-  QDomElement rasterBandElem = rasterPropertiesElem.firstChildElement( bandName );
+  const int band = -1;
+  const QDomElement rasterBandElem = rasterPropertiesElem.firstChildElement( bandName );
   if ( !rasterBandElem.isNull() )
   {
     const thread_local QRegularExpression re( "(\\d+)" );
@@ -1141,13 +1141,13 @@ void transformContrastEnhancement( QDomDocument &doc, const QDomElement &rasterp
 
   double minimumValue = 0;
   double maximumValue = 0;
-  QDomElement contrastMinMaxElem = rasterproperties.firstChildElement( QStringLiteral( "contrastEnhancementMinMaxValues" ) );
+  const QDomElement contrastMinMaxElem = rasterproperties.firstChildElement( QStringLiteral( "contrastEnhancementMinMaxValues" ) );
   if ( contrastMinMaxElem.isNull() )
   {
     return;
   }
 
-  QDomElement contrastEnhancementAlgorithmElem = rasterproperties.firstChildElement( QStringLiteral( "mContrastEnhancementAlgorithm" ) );
+  const QDomElement contrastEnhancementAlgorithmElem = rasterproperties.firstChildElement( QStringLiteral( "mContrastEnhancementAlgorithm" ) );
   if ( contrastEnhancementAlgorithmElem.isNull() )
   {
     return;
@@ -1155,7 +1155,7 @@ void transformContrastEnhancement( QDomDocument &doc, const QDomElement &rasterp
 
   //convert enhancement name to enumeration
   int algorithmEnum = 0;
-  QString algorithmString = contrastEnhancementAlgorithmElem.text();
+  const QString algorithmString = contrastEnhancementAlgorithmElem.text();
   if ( algorithmString == QLatin1String( "StretchToMinimumMaximum" ) )
   {
     algorithmEnum = 1;
@@ -1173,7 +1173,7 @@ void transformContrastEnhancement( QDomDocument &doc, const QDomElement &rasterp
     algorithmEnum = 4;
   }
 
-  QDomNodeList minMaxEntryList = contrastMinMaxElem.elementsByTagName( QStringLiteral( "minMaxEntry" ) );
+  const QDomNodeList minMaxEntryList = contrastMinMaxElem.elementsByTagName( QStringLiteral( "minMaxEntry" ) );
   QStringList enhancementNameList;
   if ( minMaxEntryList.size() == 1 )
   {
@@ -1192,14 +1192,14 @@ void transformContrastEnhancement( QDomDocument &doc, const QDomElement &rasterp
   for ( int i = 0; i < minMaxEntryList.size(); ++i )
   {
     minMaxEntryElem = minMaxEntryList.at( i ).toElement();
-    QDomElement minElem = minMaxEntryElem.firstChildElement( QStringLiteral( "min" ) );
+    const QDomElement minElem = minMaxEntryElem.firstChildElement( QStringLiteral( "min" ) );
     if ( minElem.isNull() )
     {
       return;
     }
     minimumValue = minElem.text().toDouble();
 
-    QDomElement maxElem = minMaxEntryElem.firstChildElement( QStringLiteral( "max" ) );
+    const QDomElement maxElem = minMaxEntryElem.firstChildElement( QStringLiteral( "max" ) );
     if ( maxElem.isNull() )
     {
       return;
@@ -1208,16 +1208,16 @@ void transformContrastEnhancement( QDomDocument &doc, const QDomElement &rasterp
 
     QDomElement newContrastEnhancementElem = doc.createElement( enhancementNameList.at( i ) );
     QDomElement newMinValElem = doc.createElement( QStringLiteral( "minValue" ) );
-    QDomText minText = doc.createTextNode( QString::number( minimumValue ) );
+    const QDomText minText = doc.createTextNode( QString::number( minimumValue ) );
     newMinValElem.appendChild( minText );
     newContrastEnhancementElem.appendChild( newMinValElem );
     QDomElement newMaxValElem = doc.createElement( QStringLiteral( "maxValue" ) );
-    QDomText maxText = doc.createTextNode( QString::number( maximumValue ) );
+    const QDomText maxText = doc.createTextNode( QString::number( maximumValue ) );
     newMaxValElem.appendChild( maxText );
     newContrastEnhancementElem.appendChild( newMaxValElem );
 
     QDomElement newAlgorithmElem = doc.createElement( QStringLiteral( "algorithm" ) );
-    QDomText newAlgorithmText = doc.createTextNode( QString::number( algorithmEnum ) );
+    const QDomText newAlgorithmText = doc.createTextNode( QString::number( algorithmEnum ) );
     newAlgorithmElem.appendChild( newAlgorithmText );
     newContrastEnhancementElem.appendChild( newAlgorithmElem );
 

@@ -304,7 +304,11 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
     referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
   }
 
-  const QFont font = format.scaledFont( context, scaleFactor );
+  bool isNullSize = false;
+  const QFont font = format.scaledFont( context, scaleFactor, &isNullSize );
+  if ( isNullSize )
+    return 0;
+
   referenceScaleOverride.reset();
 
   QPainterPath path;
@@ -460,7 +464,11 @@ void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer
     referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
   }
 
-  const QFont font = format.scaledFont( context, scaleFactor );
+  bool isNullSize = false;
+  const QFont font = format.scaledFont( context, scaleFactor, &isNullSize );
+  if ( isNullSize )
+    return;
+
   referenceScaleOverride.reset();
 
   double xOffset = 0;
@@ -535,7 +543,11 @@ double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTex
 {
   //calculate max width of text lines
   const double scaleFactor = ( context.flags() & QgsRenderContext::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
-  const QFont baseFont = format.scaledFont( context, scaleFactor );
+
+  bool isNullSize = false;
+  const QFont baseFont = format.scaledFont( context, scaleFactor, &isNullSize );
+  if ( isNullSize )
+    return 0;
 
   double width = 0;
   switch ( format.orientation() )
@@ -602,7 +614,11 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
 double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, QChar character, bool includeEffects )
 {
   const double scaleFactor = ( context.flags() & QgsRenderContext::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
-  const QFont baseFont = format.scaledFont( context, scaleFactor );
+  bool isNullSize = false;
+  const QFont baseFont = format.scaledFont( context, scaleFactor, &isNullSize );
+  if ( isNullSize )
+    return 0;
+
   const QFontMetrics fm( baseFont );
   const double height = ( character.isNull() ? fm.height() : fm.boundingRect( character ).height() ) / scaleFactor;
 
@@ -640,7 +656,10 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
   //calculate max height of text lines
   const double scaleFactor = ( context.flags() & QgsRenderContext::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
 
-  const QFont baseFont = format.scaledFont( context, scaleFactor );
+  bool isNullSize = false;
+  const QFont baseFont = format.scaledFont( context, scaleFactor, &isNullSize );
+  if ( isNullSize )
+    return 0;
 
   switch ( format.orientation() )
   {
@@ -766,7 +785,6 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
   if ( mode != Label )
   {
     // need to calculate size of text
-    QFontMetricsF fm( format.scaledFont( context, scaleFactor ) );
     double width = textWidth( context, format, document );
     double height = textHeight( context, format, document, mode );
 
@@ -795,7 +813,9 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
 
       case Point:
       {
-        double originAdjust = fm.ascent() / scaleFactor / 2.0 - fm.leading() / scaleFactor / 2.0;
+        bool isNullSize = false;
+        QFontMetricsF fm( format.scaledFont( context, scaleFactor, &isNullSize ) );
+        double originAdjust = isNullSize ? 0 : ( fm.ascent() / scaleFactor / 2.0 - fm.leading() / scaleFactor / 2.0 );
         switch ( component.hAlign )
         {
           case AlignLeft:
@@ -1287,7 +1307,11 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
       referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
     }
 
-    const QFont f = format.scaledFont( context, fontScale );
+    bool isNullSize = false;
+    const QFont f = format.scaledFont( context, fontScale, &isNullSize );
+    if ( isNullSize )
+      return;
+
     tmpMetrics = std::make_unique< QFontMetricsF >( f );
     fontMetrics = tmpMetrics.get();
 
@@ -1427,12 +1451,6 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
   if ( mode == Rect && vAlignment != AlignTop )
   {
     std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
-    if ( mode == Label )
-    {
-      // label size has already been calculated using any symbology reference scale factor -- we need
-      // to temporarily remove the reference scale here or we'll be applying the scaling twice
-      referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
-    }
 
     const double overallHeight = textHeight( context, format, textLines, Rect );
     switch ( vAlignment )
@@ -1589,34 +1607,38 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
         // to temporarily remove the reference scale here or we'll be applying the scaling twice
         referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
       }
-      const QFont font = format.scaledFont( context, fontScale );
+      bool isNullSize = false;
+      const QFont font = format.scaledFont( context, fontScale, &isNullSize );
       referenceScaleOverride.reset();
 
-      textp.scale( 1 / fontScale, 1 / fontScale );
-
-      double xOffset = 0;
-      for ( const QgsTextFragment &fragment : block )
+      if ( !isNullSize )
       {
-        // draw text, QPainterPath method
-        QPainterPath path;
-        path.setFillRule( Qt::WindingFill );
+        textp.scale( 1 / fontScale, 1 / fontScale );
 
-        QFont fragmentFont = font;
-        fragment.characterFormat().updateFontForFormat( fragmentFont, fontScale );
+        double xOffset = 0;
+        for ( const QgsTextFragment &fragment : block )
+        {
+          // draw text, QPainterPath method
+          QPainterPath path;
+          path.setFillRule( Qt::WindingFill );
 
-        if ( extraWordSpace || extraLetterSpace )
-          applyExtraSpacingForLineJustification( fragmentFont, extraWordSpace * fontScale, extraLetterSpace * fontScale );
+          QFont fragmentFont = font;
+          fragment.characterFormat().updateFontForFormat( fragmentFont, fontScale );
 
-        path.addText( xOffset, 0, fragmentFont, fragment.text() );
+          if ( extraWordSpace || extraLetterSpace )
+            applyExtraSpacingForLineJustification( fragmentFont, extraWordSpace * fontScale, extraLetterSpace * fontScale );
 
-        QColor textColor = fragment.characterFormat().textColor().isValid() ? fragment.characterFormat().textColor() : format.color();
-        textColor.setAlphaF( fragment.characterFormat().textColor().isValid() ? textColor.alphaF() * format.opacity() : format.opacity() );
-        textp.setBrush( textColor );
-        textp.drawPath( path );
+          path.addText( xOffset, 0, fragmentFont, fragment.text() );
 
-        xOffset += fragment.horizontalAdvance( fragmentFont, true );
+          QColor textColor = fragment.characterFormat().textColor().isValid() ? fragment.characterFormat().textColor() : format.color();
+          textColor.setAlphaF( fragment.characterFormat().textColor().isValid() ? textColor.alphaF() * format.opacity() : format.opacity() );
+          textp.setBrush( textColor );
+          textp.drawPath( path );
+
+          xOffset += fragment.horizontalAdvance( fragmentFont, true );
+        }
+        textp.end();
       }
-      textp.end();
 
       if ( format.shadow().enabled() && format.shadow().shadowPlacement() == QgsTextShadowSettings::ShadowText )
       {
@@ -1692,7 +1714,11 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
     referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
   }
 
-  const QFont font = format.scaledFont( context, fontScale );
+  bool isNullSize = false;
+  const QFont font = format.scaledFont( context, fontScale, &isNullSize );
+  if ( isNullSize )
+    return;
+
   referenceScaleOverride.reset();
 
   double letterSpacing = font.letterSpacing() / fontScale;

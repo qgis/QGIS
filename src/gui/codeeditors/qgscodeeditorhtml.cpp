@@ -37,7 +37,7 @@ QgsCodeEditorHTML::QgsCodeEditorHTML( QWidget *parent )
 void QgsCodeEditorHTML::initializeLexer()
 {
   QFont font = lexerFont();
-  QColor defaultColor = lexerColor( QgsCodeEditorColorScheme::ColorRole::Default );
+  const QColor defaultColor = lexerColor( QgsCodeEditorColorScheme::ColorRole::Default );
 
   QsciLexerHTML *lexer = new QsciLexerHTML( this );
   lexer->setDefaultFont( font );

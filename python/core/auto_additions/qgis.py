@@ -219,7 +219,10 @@ QgsDataItem.Rename.__doc__ = "Item can be renamed"
 QgsDataItem.Delete = Qgis.BrowserItemCapability.Delete
 QgsDataItem.Delete.is_monkey_patched = True
 QgsDataItem.Delete.__doc__ = "Item can be deleted"
-Qgis.BrowserItemCapability.__doc__ = 'Browser item capabilities.\n\n.. versionadded:: 3.20\n\n' + '* ``NoCapabilities``: ' + Qgis.BrowserItemCapability.NoCapabilities.__doc__ + '\n' + '* ``SetCrs``: ' + Qgis.BrowserItemCapability.SetCrs.__doc__ + '\n' + '* ``Fertile``: ' + Qgis.BrowserItemCapability.Fertile.__doc__ + '\n' + '* ``Fast``: ' + Qgis.BrowserItemCapability.Fast.__doc__ + '\n' + '* ``Collapse``: ' + Qgis.BrowserItemCapability.Collapse.__doc__ + '\n' + '* ``Rename``: ' + Qgis.BrowserItemCapability.Rename.__doc__ + '\n' + '* ``Delete``: ' + Qgis.BrowserItemCapability.Delete.__doc__
+QgsDataItem.ItemRepresentsFile = Qgis.BrowserItemCapability.ItemRepresentsFile
+QgsDataItem.ItemRepresentsFile.is_monkey_patched = True
+QgsDataItem.ItemRepresentsFile.__doc__ = "Item's path() directly represents a file on disk (since QGIS 3.22)"
+Qgis.BrowserItemCapability.__doc__ = 'Browser item capabilities.\n\n.. versionadded:: 3.20\n\n' + '* ``NoCapabilities``: ' + Qgis.BrowserItemCapability.NoCapabilities.__doc__ + '\n' + '* ``SetCrs``: ' + Qgis.BrowserItemCapability.SetCrs.__doc__ + '\n' + '* ``Fertile``: ' + Qgis.BrowserItemCapability.Fertile.__doc__ + '\n' + '* ``Fast``: ' + Qgis.BrowserItemCapability.Fast.__doc__ + '\n' + '* ``Collapse``: ' + Qgis.BrowserItemCapability.Collapse.__doc__ + '\n' + '* ``Rename``: ' + Qgis.BrowserItemCapability.Rename.__doc__ + '\n' + '* ``Delete``: ' + Qgis.BrowserItemCapability.Delete.__doc__ + '\n' + '* ``ItemRepresentsFile``: ' + Qgis.BrowserItemCapability.ItemRepresentsFile.__doc__
 # --
 Qgis.BrowserItemCapability.baseClass = Qgis
 QgsLayerItem.LayerType = Qgis.BrowserLayerType
@@ -346,6 +349,17 @@ Qgis.DriveType.RamDisk.__doc__ = "RAM disk"
 Qgis.DriveType.__doc__ = 'Drive types\n\n.. versionadded:: 3.20\n\n' + '* ``Unknown``: ' + Qgis.DriveType.Unknown.__doc__ + '\n' + '* ``Invalid``: ' + Qgis.DriveType.Invalid.__doc__ + '\n' + '* ``Removable``: ' + Qgis.DriveType.Removable.__doc__ + '\n' + '* ``Fixed``: ' + Qgis.DriveType.Fixed.__doc__ + '\n' + '* ``Remote``: ' + Qgis.DriveType.Remote.__doc__ + '\n' + '* ``CdRom``: ' + Qgis.DriveType.CdRom.__doc__ + '\n' + '* ``RamDisk``: ' + Qgis.DriveType.RamDisk.__doc__
 # --
 Qgis.DriveType.baseClass = Qgis
+QgsNetworkContentFetcherRegistry.FetchingMode = Qgis.ActionStart
+# monkey patching scoped based enum
+QgsNetworkContentFetcherRegistry.DownloadLater = Qgis.ActionStart.Deferred
+QgsNetworkContentFetcherRegistry.DownloadLater.is_monkey_patched = True
+QgsNetworkContentFetcherRegistry.DownloadLater.__doc__ = "Do not start immediately the action"
+QgsNetworkContentFetcherRegistry.DownloadImmediately = Qgis.ActionStart.Immediate
+QgsNetworkContentFetcherRegistry.DownloadImmediately.is_monkey_patched = True
+QgsNetworkContentFetcherRegistry.DownloadImmediately.__doc__ = "Action will start immediately"
+Qgis.ActionStart.__doc__ = 'Enum to determine when an operation would begin\n\n.. versionadded:: 3.22\n\n' + '* ``DownloadLater``: ' + Qgis.ActionStart.Deferred.__doc__ + '\n' + '* ``DownloadImmediately``: ' + Qgis.ActionStart.Immediate.__doc__
+# --
+Qgis.ActionStart.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.UnplacedLabelVisibility.FollowEngineSetting.__doc__ = "Respect the label engine setting"
 Qgis.UnplacedLabelVisibility.NeverShow.__doc__ = "Never show unplaced labels, regardless of the engine setting"
@@ -475,3 +489,159 @@ QgsSymbolLayerUtils.NoMarker.__doc__ = "No marker"
 Qgis.VertexMarkerType.__doc__ = 'Editing vertex markers, used for showing vertices during a edit operation.\n\n.. versionadded:: 3.22\n\n' + '* ``SemiTransparentCircle``: ' + Qgis.VertexMarkerType.SemiTransparentCircle.__doc__ + '\n' + '* ``Cross``: ' + Qgis.VertexMarkerType.Cross.__doc__ + '\n' + '* ``NoMarker``: ' + Qgis.VertexMarkerType.NoMarker.__doc__
 # --
 Qgis.VertexMarkerType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ContentStatus.NotStarted.__doc__ = "Content fetching/storing has not started yet"
+Qgis.ContentStatus.Running.__doc__ = "Content fetching/storing is in progress"
+Qgis.ContentStatus.Finished.__doc__ = "Content fetching/storing is finished and successful"
+Qgis.ContentStatus.Failed.__doc__ = "Content fetching/storing has failed"
+Qgis.ContentStatus.Canceled.__doc__ = "Content fetching/storing has been canceled"
+Qgis.ContentStatus.__doc__ = 'Status for fetched or stored content\n\n.. versionadded:: 3.22\n\n' + '* ``NotStarted``: ' + Qgis.ContentStatus.NotStarted.__doc__ + '\n' + '* ``Running``: ' + Qgis.ContentStatus.Running.__doc__ + '\n' + '* ``Finished``: ' + Qgis.ContentStatus.Finished.__doc__ + '\n' + '* ``Failed``: ' + Qgis.ContentStatus.Failed.__doc__ + '\n' + '* ``Canceled``: ' + Qgis.ContentStatus.Canceled.__doc__
+# --
+Qgis.ContentStatus.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.BabelFormatCapability.Import.__doc__ = "Format supports importing"
+Qgis.BabelFormatCapability.Export.__doc__ = "Format supports exporting"
+Qgis.BabelFormatCapability.Waypoints.__doc__ = "Format supports waypoints"
+Qgis.BabelFormatCapability.Routes.__doc__ = "Format supports routes"
+Qgis.BabelFormatCapability.Tracks.__doc__ = "Format supports tracks"
+Qgis.BabelFormatCapability.__doc__ = 'Babel GPS format capabilities.\n\n.. versionadded:: 3.22\n\n' + '* ``Import``: ' + Qgis.BabelFormatCapability.Import.__doc__ + '\n' + '* ``Export``: ' + Qgis.BabelFormatCapability.Export.__doc__ + '\n' + '* ``Waypoints``: ' + Qgis.BabelFormatCapability.Waypoints.__doc__ + '\n' + '* ``Routes``: ' + Qgis.BabelFormatCapability.Routes.__doc__ + '\n' + '* ``Tracks``: ' + Qgis.BabelFormatCapability.Tracks.__doc__
+# --
+Qgis.BabelFormatCapability.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.BabelCommandFlag.QuoteFilePaths.__doc__ = "File paths should be enclosed in quotations and escaped"
+Qgis.BabelCommandFlag.__doc__ = 'Babel command flags, which control how commands and arguments\nare generated for executing GPSBabel processes.\n\n.. versionadded:: 3.22\n\n' + '* ``QuoteFilePaths``: ' + Qgis.BabelCommandFlag.QuoteFilePaths.__doc__
+# --
+Qgis.BabelCommandFlag.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.GpsFeatureType.Waypoint.__doc__ = "Waypoint"
+Qgis.GpsFeatureType.Route.__doc__ = "Route"
+Qgis.GpsFeatureType.Track.__doc__ = "Track"
+Qgis.GpsFeatureType.__doc__ = 'GPS feature types.\n\n.. versionadded:: 3.22\n\n' + '* ``Waypoint``: ' + Qgis.GpsFeatureType.Waypoint.__doc__ + '\n' + '* ``Route``: ' + Qgis.GpsFeatureType.Route.__doc__ + '\n' + '* ``Track``: ' + Qgis.GpsFeatureType.Track.__doc__
+# --
+Qgis.GpsFeatureType.baseClass = Qgis
+QgsGeometry.OperationResult = Qgis.GeometryOperationResult
+# monkey patching scoped based enum
+QgsGeometry.Success = Qgis.GeometryOperationResult.Success
+QgsGeometry.Success.is_monkey_patched = True
+QgsGeometry.Success.__doc__ = "Operation succeeded"
+QgsGeometry.NothingHappened = Qgis.GeometryOperationResult.NothingHappened
+QgsGeometry.NothingHappened.is_monkey_patched = True
+QgsGeometry.NothingHappened.__doc__ = "Nothing happened, without any error"
+QgsGeometry.InvalidBaseGeometry = Qgis.GeometryOperationResult.InvalidBaseGeometry
+QgsGeometry.InvalidBaseGeometry.is_monkey_patched = True
+QgsGeometry.InvalidBaseGeometry.__doc__ = "The base geometry on which the operation is done is invalid or empty"
+QgsGeometry.InvalidInputGeometryType = Qgis.GeometryOperationResult.InvalidInputGeometryType
+QgsGeometry.InvalidInputGeometryType.is_monkey_patched = True
+QgsGeometry.InvalidInputGeometryType.__doc__ = "The input geometry (ring, part, split line, etc.) has not the correct geometry type"
+QgsGeometry.SelectionIsEmpty = Qgis.GeometryOperationResult.SelectionIsEmpty
+QgsGeometry.SelectionIsEmpty.is_monkey_patched = True
+QgsGeometry.SelectionIsEmpty.__doc__ = "No features were selected"
+QgsGeometry.SelectionIsGreaterThanOne = Qgis.GeometryOperationResult.SelectionIsGreaterThanOne
+QgsGeometry.SelectionIsGreaterThanOne.is_monkey_patched = True
+QgsGeometry.SelectionIsGreaterThanOne.__doc__ = "More than one features were selected"
+QgsGeometry.GeometryEngineError = Qgis.GeometryOperationResult.GeometryEngineError
+QgsGeometry.GeometryEngineError.is_monkey_patched = True
+QgsGeometry.GeometryEngineError.__doc__ = "Geometry engine misses a method implemented or an error occurred in the geometry engine"
+QgsGeometry.LayerNotEditable = Qgis.GeometryOperationResult.LayerNotEditable
+QgsGeometry.LayerNotEditable.is_monkey_patched = True
+QgsGeometry.LayerNotEditable.__doc__ = "Cannot edit layer"
+QgsGeometry.AddPartSelectedGeometryNotFound = Qgis.GeometryOperationResult.AddPartSelectedGeometryNotFound
+QgsGeometry.AddPartSelectedGeometryNotFound.is_monkey_patched = True
+QgsGeometry.AddPartSelectedGeometryNotFound.__doc__ = "The selected geometry cannot be found"
+QgsGeometry.AddPartNotMultiGeometry = Qgis.GeometryOperationResult.AddPartNotMultiGeometry
+QgsGeometry.AddPartNotMultiGeometry.is_monkey_patched = True
+QgsGeometry.AddPartNotMultiGeometry.__doc__ = "The source geometry is not multi"
+QgsGeometry.AddRingNotClosed = Qgis.GeometryOperationResult.AddRingNotClosed
+QgsGeometry.AddRingNotClosed.is_monkey_patched = True
+QgsGeometry.AddRingNotClosed.__doc__ = "The input ring is not closed"
+QgsGeometry.AddRingNotValid = Qgis.GeometryOperationResult.AddRingNotValid
+QgsGeometry.AddRingNotValid.is_monkey_patched = True
+QgsGeometry.AddRingNotValid.__doc__ = "The input ring is not valid"
+QgsGeometry.AddRingCrossesExistingRings = Qgis.GeometryOperationResult.AddRingCrossesExistingRings
+QgsGeometry.AddRingCrossesExistingRings.is_monkey_patched = True
+QgsGeometry.AddRingCrossesExistingRings.__doc__ = "The input ring crosses existing rings (it is not disjoint)"
+QgsGeometry.AddRingNotInExistingFeature = Qgis.GeometryOperationResult.AddRingNotInExistingFeature
+QgsGeometry.AddRingNotInExistingFeature.is_monkey_patched = True
+QgsGeometry.AddRingNotInExistingFeature.__doc__ = "The input ring doesn't have any existing ring to fit into"
+QgsGeometry.SplitCannotSplitPoint = Qgis.GeometryOperationResult.SplitCannotSplitPoint
+QgsGeometry.SplitCannotSplitPoint.is_monkey_patched = True
+QgsGeometry.SplitCannotSplitPoint.__doc__ = "Cannot split points"
+Qgis.GeometryOperationResult.__doc__ = 'Split features */\n\n' + '* ``Success``: ' + Qgis.GeometryOperationResult.Success.__doc__ + '\n' + '* ``NothingHappened``: ' + Qgis.GeometryOperationResult.NothingHappened.__doc__ + '\n' + '* ``InvalidBaseGeometry``: ' + Qgis.GeometryOperationResult.InvalidBaseGeometry.__doc__ + '\n' + '* ``InvalidInputGeometryType``: ' + Qgis.GeometryOperationResult.InvalidInputGeometryType.__doc__ + '\n' + '* ``SelectionIsEmpty``: ' + Qgis.GeometryOperationResult.SelectionIsEmpty.__doc__ + '\n' + '* ``SelectionIsGreaterThanOne``: ' + Qgis.GeometryOperationResult.SelectionIsGreaterThanOne.__doc__ + '\n' + '* ``GeometryEngineError``: ' + Qgis.GeometryOperationResult.GeometryEngineError.__doc__ + '\n' + '* ``LayerNotEditable``: ' + Qgis.GeometryOperationResult.LayerNotEditable.__doc__ + '\n' + '* ``AddPartSelectedGeometryNotFound``: ' + Qgis.GeometryOperationResult.AddPartSelectedGeometryNotFound.__doc__ + '\n' + '* ``AddPartNotMultiGeometry``: ' + Qgis.GeometryOperationResult.AddPartNotMultiGeometry.__doc__ + '\n' + '* ``AddRingNotClosed``: ' + Qgis.GeometryOperationResult.AddRingNotClosed.__doc__ + '\n' + '* ``AddRingNotValid``: ' + Qgis.GeometryOperationResult.AddRingNotValid.__doc__ + '\n' + '* ``AddRingCrossesExistingRings``: ' + Qgis.GeometryOperationResult.AddRingCrossesExistingRings.__doc__ + '\n' + '* ``AddRingNotInExistingFeature``: ' + Qgis.GeometryOperationResult.AddRingNotInExistingFeature.__doc__ + '\n' + '* ``SplitCannotSplitPoint``: ' + Qgis.GeometryOperationResult.SplitCannotSplitPoint.__doc__
+# --
+Qgis.GeometryOperationResult.baseClass = Qgis
+QgsGeometry.ValidityFlag = Qgis.GeometryValidityFlag
+# monkey patching scoped based enum
+QgsGeometry.FlagAllowSelfTouchingHoles = Qgis.GeometryValidityFlag.AllowSelfTouchingHoles
+QgsGeometry.FlagAllowSelfTouchingHoles.is_monkey_patched = True
+QgsGeometry.FlagAllowSelfTouchingHoles.__doc__ = "Indicates that self-touching holes are permitted. OGC validity states that self-touching holes are NOT permitted, whilst other vendor validity checks (e.g. ESRI) permit self-touching holes."
+Qgis.GeometryValidityFlag.__doc__ = 'Geometry validity check flags.\n\n.. versionadded:: 3.22\n\n' + '* ``FlagAllowSelfTouchingHoles``: ' + Qgis.GeometryValidityFlag.AllowSelfTouchingHoles.__doc__
+# --
+Qgis.GeometryValidityFlag.baseClass = Qgis
+QgsGeometry.ValidationMethod = Qgis.GeometryValidationEngine
+# monkey patching scoped based enum
+QgsGeometry.ValidatorQgisInternal = Qgis.GeometryValidationEngine.QgisInternal
+QgsGeometry.ValidatorQgisInternal.is_monkey_patched = True
+QgsGeometry.ValidatorQgisInternal.__doc__ = "Use internal QgsGeometryValidator method"
+QgsGeometry.ValidatorGeos = Qgis.GeometryValidationEngine.Geos
+QgsGeometry.ValidatorGeos.is_monkey_patched = True
+QgsGeometry.ValidatorGeos.__doc__ = "Use GEOS validation methods"
+Qgis.GeometryValidationEngine.__doc__ = 'Available engines for validating geometries.\n\n.. versionadded:: 3.22\n\n' + '* ``ValidatorQgisInternal``: ' + Qgis.GeometryValidationEngine.QgisInternal.__doc__ + '\n' + '* ``ValidatorGeos``: ' + Qgis.GeometryValidationEngine.Geos.__doc__
+# --
+Qgis.GeometryValidationEngine.baseClass = Qgis
+QgsGeometry.BufferSide = Qgis.BufferSide
+# monkey patching scoped based enum
+QgsGeometry.SideLeft = Qgis.BufferSide.Left
+QgsGeometry.SideLeft.is_monkey_patched = True
+QgsGeometry.SideLeft.__doc__ = "Buffer to left of line"
+QgsGeometry.SideRight = Qgis.BufferSide.Right
+QgsGeometry.SideRight.is_monkey_patched = True
+QgsGeometry.SideRight.__doc__ = "Buffer to right of line"
+Qgis.BufferSide.__doc__ = 'Side of line to buffer.\n\n.. versionadded:: 3.22\n\n' + '* ``SideLeft``: ' + Qgis.BufferSide.Left.__doc__ + '\n' + '* ``SideRight``: ' + Qgis.BufferSide.Right.__doc__
+# --
+Qgis.BufferSide.baseClass = Qgis
+QgsGeometry.EndCapStyle = Qgis.EndCapStyle
+# monkey patching scoped based enum
+QgsGeometry.CapRound = Qgis.EndCapStyle.Round
+QgsGeometry.CapRound.is_monkey_patched = True
+QgsGeometry.CapRound.__doc__ = "Round cap"
+QgsGeometry.CapFlat = Qgis.EndCapStyle.Flat
+QgsGeometry.CapFlat.is_monkey_patched = True
+QgsGeometry.CapFlat.__doc__ = "Flat cap (in line with start/end of line)"
+QgsGeometry.CapSquare = Qgis.EndCapStyle.Square
+QgsGeometry.CapSquare.is_monkey_patched = True
+QgsGeometry.CapSquare.__doc__ = "Square cap (extends past start/end of line by buffer distance)"
+Qgis.EndCapStyle.__doc__ = 'End cap styles for buffers.\n\n.. versionadded:: 3.22\n\n' + '* ``CapRound``: ' + Qgis.EndCapStyle.Round.__doc__ + '\n' + '* ``CapFlat``: ' + Qgis.EndCapStyle.Flat.__doc__ + '\n' + '* ``CapSquare``: ' + Qgis.EndCapStyle.Square.__doc__
+# --
+Qgis.EndCapStyle.baseClass = Qgis
+QgsGeometry.JoinStyle = Qgis.JoinStyle
+# monkey patching scoped based enum
+QgsGeometry.JoinStyleRound = Qgis.JoinStyle.Round
+QgsGeometry.JoinStyleRound.is_monkey_patched = True
+QgsGeometry.JoinStyleRound.__doc__ = "Use rounded joins"
+QgsGeometry.JoinStyleMiter = Qgis.JoinStyle.Miter
+QgsGeometry.JoinStyleMiter.is_monkey_patched = True
+QgsGeometry.JoinStyleMiter.__doc__ = "Use mitered joins"
+QgsGeometry.JoinStyleBevel = Qgis.JoinStyle.Bevel
+QgsGeometry.JoinStyleBevel.is_monkey_patched = True
+QgsGeometry.JoinStyleBevel.__doc__ = "Use beveled joins"
+Qgis.JoinStyle.__doc__ = 'Join styles for buffers.\n\n.. versionadded:: 3.22\n\n' + '* ``JoinStyleRound``: ' + Qgis.JoinStyle.Round.__doc__ + '\n' + '* ``JoinStyleMiter``: ' + Qgis.JoinStyle.Miter.__doc__ + '\n' + '* ``JoinStyleBevel``: ' + Qgis.JoinStyle.Bevel.__doc__
+# --
+Qgis.JoinStyle.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SpatialFilterType.NoFilter.__doc__ = "No spatial filtering of features"
+Qgis.SpatialFilterType.BoundingBox.__doc__ = "Filter using a bounding box"
+Qgis.SpatialFilterType.DistanceWithin.__doc__ = "Filter by distance to reference geometry"
+Qgis.SpatialFilterType.__doc__ = 'Feature request spatial filter types.\n\n.. versionadded:: 3.22\n\n' + '* ``NoFilter``: ' + Qgis.SpatialFilterType.NoFilter.__doc__ + '\n' + '* ``BoundingBox``: ' + Qgis.SpatialFilterType.BoundingBox.__doc__ + '\n' + '* ``DistanceWithin``: ' + Qgis.SpatialFilterType.DistanceWithin.__doc__
+# --
+Qgis.SpatialFilterType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.FileOperationFlag.IncludeMetadataFile.__doc__ = "Indicates that any associated .qmd metadata file should be included with the operation"
+Qgis.FileOperationFlag.IncludeStyleFile.__doc__ = "Indicates that any associated .qml styling file should be included with the operation"
+Qgis.FileOperationFlag.__doc__ = 'File operation flags.\n\n.. versionadded:: 3.22\n\n' + '* ``IncludeMetadataFile``: ' + Qgis.FileOperationFlag.IncludeMetadataFile.__doc__ + '\n' + '* ``IncludeStyleFile``: ' + Qgis.FileOperationFlag.IncludeStyleFile.__doc__
+# --
+Qgis.FileOperationFlag.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.MapLayerProperty.UsersCannotToggleEditing.__doc__ = "Indicates that users are not allowed to toggle editing for this layer. Note that this does not imply that the layer is non-editable (see isEditable(), supportsEditing() ), rather that the editable status of the layer cannot be changed by users manually. Since QGIS 3.22."
+Qgis.MapLayerProperty.__doc__ = 'Generic map layer properties.\n\n.. versionadded:: 3.22\n\n' + '* ``UsersCannotToggleEditing``: ' + Qgis.MapLayerProperty.UsersCannotToggleEditing.__doc__
+# --
+Qgis.MapLayerProperty.baseClass = Qgis

@@ -72,7 +72,7 @@ void QgsFieldValuesLineEdit::requestCompleterUpdate()
 void QgsFieldValuesLineEdit::triggerCompleterUpdate()
 {
   mShowPopupTimer.stop();
-  QString currentText = text();
+  const QString currentText = text();
 
   if ( currentText.isEmpty() )
   {
@@ -112,14 +112,14 @@ void QgsFieldValuesLineEdit::updateCompletionList( const QString &text )
 
 void QgsFieldValuesLineEdit::gathererThreadFinished()
 {
-  bool wasCanceled = mGatherer->wasCanceled();
+  const bool wasCanceled = mGatherer->wasCanceled();
 
   delete mGatherer;
   mGatherer = nullptr;
 
   if ( wasCanceled )
   {
-    QString text = mRequestedCompletionText;
+    const QString text = mRequestedCompletionText;
     mRequestedCompletionText.clear();
     updateCompletionList( text );
     return;

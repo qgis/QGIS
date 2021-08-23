@@ -80,10 +80,10 @@ void QgsProviderConnectionComboBox::setConnection( const QString &connection )
     return;
   }
 
-  QModelIndexList idx = mSortModel->match( mSortModel->index( 0, 0 ), QgsProviderConnectionModel::RoleConnectionName, connection, Qt::MatchFixedString | Qt::MatchCaseSensitive );
+  const QModelIndexList idx = mSortModel->match( mSortModel->index( 0, 0 ), QgsProviderConnectionModel::RoleConnectionName, connection, Qt::MatchFixedString | Qt::MatchCaseSensitive );
   if ( !idx.empty() )
   {
-    QModelIndex proxyIdx = idx.at( 0 );
+    const QModelIndex proxyIdx = idx.at( 0 );
     if ( proxyIdx.isValid() )
     {
       setCurrentIndex( proxyIdx.row() );
@@ -153,8 +153,8 @@ bool QgsProviderConnectionComboBoxSortModel::lessThan( const QModelIndex &left, 
     return false;
 
   // default mode is alphabetical order
-  QString leftStr = sourceModel()->data( left ).toString();
-  QString rightStr = sourceModel()->data( right ).toString();
+  const QString leftStr = sourceModel()->data( left ).toString();
+  const QString rightStr = sourceModel()->data( right ).toString();
   return QString::localeAwareCompare( leftStr, rightStr ) < 0;
 }
 

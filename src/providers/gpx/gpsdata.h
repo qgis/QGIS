@@ -24,6 +24,7 @@
 #include <QString>
 #include <QTextStream>
 #include <QStack>
+#include <QMutex>
 
 #include "qgsrectangle.h"
 #include "qgsfeatureid.h"
@@ -280,7 +281,14 @@ class QgsGpsData
      * does reference counting, so several providers can use the same GPSData
      * object.
     */
-    static DataMap dataObjects;
+    static DataMap sDataObjects;
+
+    //! Mutex for sDataObjects
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    static QMutex sDataObjectsMutex;
+#else
+    static QRecursiveMutex sDataObjectsMutex;
+#endif
 
 };
 

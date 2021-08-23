@@ -121,19 +121,44 @@ Content-Type: text/xml; charset=utf-8
    <BoundingBox CRS="EPSG:4326" miny="-174.766579" minx="-69.957839" maxy="177.930822" maxx="84.307877"/>
    <BoundingBox CRS="EPSG:3857" miny="-11055007" minx="-20609694" maxy="19143773" maxx="20961936"/>
    <Layer queryable="1">
+    <Name>Datetime_dim</Name>
+    <Title>Datetime_dim</Title>
+    <CRS>CRS:84</CRS>
+    <CRS>EPSG:3857</CRS>
+    <CRS>EPSG:4326</CRS>
+    <EX_GeographicBoundingBox>
+     <westBoundLongitude>-7.99492</westBoundLongitude>
+     <eastBoundLongitude>-0.855025</eastBoundLongitude>
+     <southBoundLatitude>37.4402</southBoundLatitude>
+     <northBoundLatitude>43.0264</northBoundLatitude>
+    </EX_GeographicBoundingBox>
+    <BoundingBox miny="-7.99492" minx="37.4402" maxy="-0.855025" maxx="43.0264" CRS="EPSG:4326"/>
+    <BoundingBox miny="4500643.903" minx="-889990.424" maxy="5315991.06" maxx="-95180.947" CRS="EPSG:3857"/>
+    <Style>
+     <Name>défaut</Name>
+     <Title>défaut</Title>
+     <LegendURL>
+      <Format>image/png</Format>
+      <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://www.qgis.org/?*****"/>
+     </LegendURL>
+    </Style>
+    <Dimension nearestValue="0" multipleValues="1" name="time" units="ISO8601">2021-05-31T10:00:00, 2021-05-31T17:00:00, 2021-06-30T07:00:00, 2021-07-30T01:00:00, 2021-07-30T05:00:00, 2021-08-29T19:00:00, 2021-09-28T09:00:00, 2021-09-28T21:00:00, 2021-10-28T10:00:00, 2021-12-27T22:00:00</Dimension>
+    <Dimension nearestValue="0" multipleValues="1" name="date" units="ISO8601">2021-05-31, 2021-06-30, 2021-07-30, 2021-08-29, 2021-09-28, 2021-10-28, 2021-12-27</Dimension>
+   </Layer>
+   <Layer queryable="1">
     <Name>Contours</Name>
     <Title>Contours</Title>
     <CRS>CRS:84</CRS>
     <CRS>EPSG:3857</CRS>
     <CRS>EPSG:4326</CRS>
     <EX_GeographicBoundingBox>
-     <westBoundLongitude>-28.7614</westBoundLongitude>
+     <westBoundLongitude>-28.761387</westBoundLongitude>
      <eastBoundLongitude>0.000001</eastBoundLongitude>
-     <southBoundLatitude>30</southBoundLatitude>
+     <southBoundLatitude>29.999996</southBoundLatitude>
      <northBoundLatitude>60</northBoundLatitude>
     </EX_GeographicBoundingBox>
-    <BoundingBox CRS="EPSG:4326" miny="-28.7614" minx="30" maxy="0.000001" maxx="60"/>
-    <BoundingBox CRS="EPSG:3857" miny="3503549.843" minx="-3201704.403" maxy="8399737.89" maxx="0.001"/>
+    <BoundingBox maxy="0.000001" minx="29.999996" CRS="EPSG:4326" maxx="60" miny="-28.761387"/>
+    <BoundingBox maxy="8399737.89" minx="-3201702.942" CRS="EPSG:3857" maxx="0.001" miny="3503549.353"/>
     <Style>
      <Name>default</Name>
      <Title>default</Title>

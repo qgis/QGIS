@@ -10,7 +10,7 @@ set(ORACLE_SRCS
   qgsoraclenewconnection.cpp
   qgsoracletablecache.cpp
   qgsoracletablemodel.cpp
-  qgsoraclecolumntypethread.cpp
+  qgsoraclecolumntypetask.cpp
   qgsoraclefeatureiterator.cpp
   qgsoracleconnpool.cpp
   qgsoracleexpressioncompiler.cpp
@@ -54,7 +54,7 @@ target_compile_features(provider_oracle PRIVATE cxx_std_17)
 
 target_link_libraries (provider_oracle
   qgis_core
-  ${Qt5Sql_LIBRARIES}
+  ${QT_VERSION_BASE}::Sql
 )
 
 if (WITH_GUI)

@@ -118,7 +118,7 @@ void QgsLayoutConfigObject::updateDataDefinedButton( QgsPropertyOverrideButton *
   if ( button->propertyKey() < 0 || !mLayoutObject )
     return;
 
-  QgsLayoutObject::DataDefinedProperty key = static_cast< QgsLayoutObject::DataDefinedProperty >( button->propertyKey() );
+  const QgsLayoutObject::DataDefinedProperty key = static_cast< QgsLayoutObject::DataDefinedProperty >( button->propertyKey() );
   whileBlocking( button )->setToProperty( mLayoutObject->dataDefinedProperties().property( key ) );
 
   // In case the button was initialized to a different config object, we need to reconnect to it here (see https://github.com/qgis/QGIS/issues/26582 )
@@ -439,7 +439,7 @@ void QgsLayoutItemPropertiesWidget::changeItemPosition()
 
   mItem->layout()->undoStack()->beginCommand( mItem, tr( "Move Item" ), QgsLayoutItem::UndoIncrementalMove );
 
-  QgsLayoutPoint point( mXPosSpin->value(), mYPosSpin->value(), mPosUnitsComboBox->unit() );
+  const QgsLayoutPoint point( mXPosSpin->value(), mYPosSpin->value(), mPosUnitsComboBox->unit() );
   mItem->attemptMove( point, true, false, mPageSpinBox->value() - 1 );
 
   mItem->layout()->undoStack()->endCommand();
@@ -462,7 +462,7 @@ void QgsLayoutItemPropertiesWidget::changeItemSize()
 
   mItem->layout()->undoStack()->beginCommand( mItem, tr( "Resize Item" ), QgsLayoutItem::UndoIncrementalResize );
 
-  QgsLayoutSize size( mWidthSpin->value(), mHeightSpin->value(), mSizeUnitsComboBox->unit() );
+  const QgsLayoutSize size( mWidthSpin->value(), mHeightSpin->value(), mSizeUnitsComboBox->unit() );
   mItem->attemptResize( size );
 
   mItem->layout()->undoStack()->endCommand();
@@ -619,7 +619,7 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiPositionElements()
   };
   block( true );
 
-  QgsLayoutPoint point = mItem->pagePositionWithUnits();
+  const QgsLayoutPoint point = mItem->pagePositionWithUnits();
 
   if ( !mFreezeXPosSpin )
     mXPosSpin->setValue( point.x() );
@@ -684,7 +684,7 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiPositionElements()
     }
   }
 
-  QgsLayoutSize size = mItem->sizeWithUnits();
+  const QgsLayoutSize size = mItem->sizeWithUnits();
   if ( !mFreezeWidthSpin )
     mWidthSpin->setValue( size.width() );
   if ( !mFreezeHeightSpin )

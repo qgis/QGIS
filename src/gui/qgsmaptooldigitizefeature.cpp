@@ -74,7 +74,7 @@ void QgsMapToolDigitizeFeature::activate()
 
   if ( vlayer && vlayer->geometryType() == QgsWkbTypes::NullGeometry )
   {
-    QgsFeature f;
+    const QgsFeature f;
     digitized( f );
     return;
   }
@@ -124,7 +124,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  QgsWkbTypes::Type layerWKBType = vlayer->wkbType();
+  const QgsWkbTypes::Type layerWKBType = vlayer->wkbType();
 
   QgsVectorDataProvider *provider = vlayer->dataProvider();
 
@@ -172,7 +172,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       }
       else
       {
-        QgsPointXY layerPoint = toLayerCoordinates( vlayer, e->mapPoint() );
+        const QgsPointXY layerPoint = toLayerCoordinates( vlayer, e->mapPoint() );
         if ( isMatchPointZ )
           savePoint = QgsPoint( QgsWkbTypes::PointZ, layerPoint.x(), layerPoint.y(), fetchPoint.z() );
         else
@@ -258,7 +258,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     //add point to list and to rubber band
     if ( e->button() == Qt::LeftButton )
     {
-      int error = addVertex( e->mapPoint(), e->mapPointMatch() );
+      const int error = addVertex( e->mapPoint(), e->mapPointMatch() );
       if ( error == 1 )
       {
         //current layer is not a vector layer
@@ -302,8 +302,8 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       //does compoundcurve contain circular strings?
       //does provider support circular strings?
-      bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
-      bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
+      const bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
+      const bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
 
       QList<QgsPointLocator::Match> snappingMatchesList;
       QgsCurve *curveToAdd = nullptr;
@@ -319,7 +319,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       if ( mode() == CaptureLine )
       {
-        QgsGeometry g( curveToAdd );
+        const QgsGeometry g( curveToAdd );
         f->setGeometry( g );
       }
       else
@@ -334,7 +334,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           poly = new QgsPolygon();
         }
         poly->setExteriorRing( curveToAdd );
-        QgsGeometry g( poly );
+        const QgsGeometry g( poly );
         f->setGeometry( g );
 
         QList<QgsVectorLayer *>  avoidIntersectionsLayers;
@@ -352,7 +352,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         if ( avoidIntersectionsLayers.size() > 0 )
         {
           QgsGeometry featGeom = f->geometry();
-          int avoidIntersectionsReturn = featGeom.avoidIntersections( avoidIntersectionsLayers );
+          const int avoidIntersectionsReturn = featGeom.avoidIntersections( avoidIntersectionsLayers );
           f->setGeometry( featGeom );
           if ( avoidIntersectionsReturn == 3 )
           {
