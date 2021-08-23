@@ -747,7 +747,7 @@ LabelRenderJob QgsMapRendererJob::prepareLabelingJob( QPainter *painter, QgsLabe
 
   QgsRectangle r1 = mSettings.visibleExtent();
   r1.grow( mSettings.extentBuffer() );
-  job.context.setExtent( mSettings.visibleExtent() );
+  job.context.setExtent( r1 );
 
   job.context.setFeatureFilterProvider( mFeatureFilterProvider );
   QgsCoordinateTransform ct;
