@@ -770,9 +770,11 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   int requestId = -1;
   QUrl u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
   QNetworkReply::NetworkError expectedError = QNetworkReply::NoError;
+  QString lastTest = QStringLiteral( "NONE --->>>" );
 
   connect( QgsNetworkAccessManager::instance(), qOverload< QgsNetworkRequestParameters >( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( const QgsNetworkRequestParameters & params )
   {
+    QWARN( ( lastTest + QStringLiteral( "requestAboutToBeCreated --->>>" ) ).toLatin1().data() );
     gotRequestAboutToBeCreatedSignal = true;
     requestId = params.requestId();
     QVERIFY( requestId > 0 );
@@ -781,6 +783,8 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   } );
   connect( QgsNetworkAccessManager::instance(), qOverload< QgsNetworkReplyContent >( &QgsNetworkAccessManager::finished ), &context, [&]( const QgsNetworkReplyContent & reply )
   {
+    QWARN( ( lastTest + QStringLiteral( "finished --->>>" ) ).toLatin1().data() );
+    QWARN( reply.errorString().toLatin1().data() );
     QCOMPARE( reply.error(), expectedError );
     QCOMPARE( reply.requestId(), requestId );
     QCOMPARE( reply.request().url(), u );
@@ -789,6 +793,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
 
   connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::requestRequiresAuth, &context, [&]( int authRequestId, const QString & realm )
   {
+    QWARN( ( lastTest + QStringLiteral( "requestRequiresAuth --->>>" ) ).toLatin1().data() );
     QCOMPARE( authRequestId, requestId );
     QCOMPARE( realm, QStringLiteral( "Fake Realm" ) );
     gotAuthRequest = true;
@@ -796,6 +801,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
 
   connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::requestAuthDetailsAdded, &context, [&]( int authRequestId, const QString & realm, const QString & user, const QString & password )
   {
+    QWARN( ( lastTest + QStringLiteral( "requestAuthDetailsAdded --->>>" ) ).toLatin1().data() );
     QCOMPARE( authRequestId, requestId );
     QCOMPARE( realm, QStringLiteral( "Fake Realm" ) );
     QCOMPARE( user, expectedUser );
@@ -803,6 +809,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
     gotAuthDetailsAdded = true;
   } );
 
+  lastTest = QStringLiteral( "TEST_01 initially this request should fail -- we aren't providing the username and password required --->>> " );
   expectedError = QNetworkReply::AuthenticationRequiredError;
   QgsNetworkAccessManager::instance()->get( QNetworkRequest( u ) );
 
@@ -814,6 +821,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   QVERIFY( gotRequestAboutToBeCreatedSignal );
 
   // blocking request
+  lastTest = QStringLiteral( "TEST_02 blocking request --->>> " );
   hash = QUuid::createUuid().toString().mid( 1, 10 );
   u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
   loaded = false;
@@ -832,6 +840,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   QCOMPARE( rep.requestId(), requestId );
 
   // now try in a thread
+  lastTest = QStringLiteral( "TEST_03 now try in a thread --->>> " );
   loaded = false;
   gotAuthRequest = false;
   gotRequestAboutToBeCreatedSignal = false;
@@ -853,7 +862,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   thread->deleteLater();
 
   // blocking request in a thread
-
+  lastTest = QStringLiteral( "TEST_04 blocking request in a thread --->>> " );
   loaded = false;
   gotAuthRequest = false;
   gotRequestAboutToBeCreatedSignal = false;
@@ -873,6 +882,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   blockingThread->deleteLater();
 
   // try with username and password specified
+  lastTest = QStringLiteral( "TEST_05 try with username and password specified --->>> " );
   hash = QUuid::createUuid().toString().mid( 1, 10 );
   u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
   QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< TestAuthRequestHandler >( QStringLiteral( "me" ), hash ) );
@@ -892,6 +902,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   }
 
   // blocking request
+  lastTest = QStringLiteral( "TEST_06 blocking request --->>> " );
   loaded = false;
   gotAuthRequest = false;
   gotRequestAboutToBeCreatedSignal = false;
@@ -911,6 +922,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   QCOMPARE( rep.requestId(), requestId );
 
   // correct username and password, in a thread
+  lastTest = QStringLiteral( "TEST_07 correct username and password, in a thread --->>> " );
   hash = QUuid::createUuid().toString().mid( 1, 10 );
   QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< TestAuthRequestHandler >( QStringLiteral( "me2" ), hash ) );
   u = QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me2/" ) + hash );
@@ -935,6 +947,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
 
 
   // blocking request in worker thread
+  lastTest = QStringLiteral( "TEST_08 blocking request in worker thread --->>> " );
   hash = QUuid::createUuid().toString().mid( 1, 10 );
   QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< TestAuthRequestHandler >( QStringLiteral( "me2" ), hash ) );
   u = QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me2/" ) + hash );
