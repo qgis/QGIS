@@ -454,24 +454,7 @@ QString QgsPointCloudLayer::htmlMetadata() const
   myMetadata += QStringLiteral( "<h1>" ) + tr( "Information from provider" ) + QStringLiteral( "</h1>\n<hr>\n" );
   myMetadata += QLatin1String( "<table class=\"list-view\">\n" );
 
-  // name
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Name" ) + QStringLiteral( "</td><td>" ) + name() + QStringLiteral( "</td></tr>\n" );
-
-  // local path
-  QVariantMap uriComponents = QgsProviderRegistry::instance()->decodeUri( mProviderKey, publicSource() );
-  QString path;
-  if ( uriComponents.contains( QStringLiteral( "path" ) ) )
-  {
-    path = uriComponents[QStringLiteral( "path" )].toString();
-    if ( QFile::exists( path ) )
-      myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Path" ) + QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( path ).toString(), QDir::toNativeSeparators( path ) ) ) + QStringLiteral( "</td></tr>\n" );
-    else
-      myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "URL" ) + QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl( path ).toString(), path ) ) + QStringLiteral( "</td></tr>\n" );
-  }
-
-  // data source
-  if ( publicSource() != path )
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Source" ) + QStringLiteral( "</td><td>%1" ).arg( publicSource() ) + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QgsMapLayerUtils::generalHtmlMetadata( this );
 
   // Extent
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Extent" ) + QStringLiteral( "</td><td>" ) + extent().toString() + QStringLiteral( "</td></tr>\n" );
