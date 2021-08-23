@@ -2252,8 +2252,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "get_feature multi2" ) << "get_feature('test',map('col1','3','col2','test3'))" << true << 3;
 
       // multi-param no match
-      QTest::newRow( "get_feature no match-multi1" ) << "get_feature('test',array('col1','col2'),'no match!')" << false << -1;
-      QTest::newRow( "get_feature no match-multi2" ) << "get_feature('test',array('col1','col2'),array('10','test3'))" << false << -1;
+      QTest::newRow( "get_feature no match-multi1" ) << "get_feature('test',map('col1','col2'),'no match!')" << false << -1;
+      QTest::newRow( "get_feature no match-multi2" ) << "get_feature('test',map('col2','10','col4','test3'))" << false << -1;
 
     }
 
