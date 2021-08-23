@@ -94,9 +94,9 @@ namespace
 
 QgsFeatureId QgsHanaPrimaryKeyContext::lookupFid( const QVariantList &v )
 {
-  QMutexLocker locker( &mMutex );
+  const QMutexLocker locker( &mMutex );
 
-  QMap<QVariantList, QgsFeatureId>::const_iterator it = mKeyToFid.constFind( v );
+  const QMap<QVariantList, QgsFeatureId>::const_iterator it = mKeyToFid.constFind( v );
 
   if ( it != mKeyToFid.constEnd() )
     return it.value();
@@ -109,7 +109,7 @@ QgsFeatureId QgsHanaPrimaryKeyContext::lookupFid( const QVariantList &v )
 
 QVariantList QgsHanaPrimaryKeyContext::removeFid( QgsFeatureId fid )
 {
-  QMutexLocker locker( &mMutex );
+  const QMutexLocker locker( &mMutex );
 
   QVariantList v = mFidToKey[ fid ];
   mFidToKey.remove( fid );
@@ -119,7 +119,7 @@ QVariantList QgsHanaPrimaryKeyContext::removeFid( QgsFeatureId fid )
 
 void QgsHanaPrimaryKeyContext::insertFid( QgsFeatureId fid, const QVariantList &k )
 {
-  QMutexLocker locker( &mMutex );
+  const QMutexLocker locker( &mMutex );
 
   mFidToKey.insert( fid, k );
   mKeyToFid.insert( k, fid );
@@ -127,9 +127,9 @@ void QgsHanaPrimaryKeyContext::insertFid( QgsFeatureId fid, const QVariantList &
 
 QVariantList QgsHanaPrimaryKeyContext::lookupKey( QgsFeatureId featureId )
 {
-  QMutexLocker locker( &mMutex );
+  const QMutexLocker locker( &mMutex );
 
-  QMap<QgsFeatureId, QVariantList>::const_iterator it = mFidToKey.constFind( featureId );
+  const QMap<QgsFeatureId, QVariantList>::const_iterator it = mFidToKey.constFind( featureId );
   if ( it != mFidToKey.constEnd() )
     return it.value();
   return QVariantList();
@@ -142,7 +142,7 @@ QPair<QgsHanaPrimaryKeyType, QList<int>> QgsHanaPrimaryKeyUtils::determinePrimar
 
   for ( const QString &clmName : columnNames )
   {
-    int idx = fields.indexFromName( clmName );
+    const int idx = fields.indexFromName( clmName );
     if ( idx < 0 )
     {
       attrs.clear();
@@ -202,14 +202,14 @@ QString QgsHanaPrimaryKeyUtils::buildWhereClause( const QgsFields &fields, QgsHa
     case PktInt:
     case PktInt64:
     {
-      QString columnName = fields.at( pkAttrs[0] ).name() ;
+      const QString columnName = fields.at( pkAttrs[0] ).name() ;
       return QStringLiteral( "%1=?" ).arg( QgsHanaUtils::quotedIdentifier( columnName ) );
     }
     case PktFidMap:
     {
       QList<QString> conditions;
       conditions.reserve( pkAttrs.size() );
-      for ( int idx : pkAttrs )
+      for ( const int idx : pkAttrs )
         conditions << QStringLiteral( "%1=?" ).arg( QgsHanaUtils::quotedIdentifier( fields[idx].name() ) );
       return conditions.join( QLatin1String( " AND " ) );
     }
@@ -227,7 +227,7 @@ QString QgsHanaPrimaryKeyUtils::buildWhereClause( QgsFeatureId featureId, const 
     case PktInt:
     {
       Q_ASSERT( pkAttrs.size() == 1 );
-      QString fieldName = fields[pkAttrs[0]].name();
+      const QString fieldName = fields[pkAttrs[0]].name();
       return QStringLiteral( "%1=%2" ).arg( QgsHanaUtils::quotedIdentifier( fieldName ) ).arg( fidToInt( featureId ) );
     }
     case PktInt64:
@@ -275,7 +275,7 @@ QString QgsHanaPrimaryKeyUtils::buildWhereClause( const QgsFeatureIds &featureId
     case PktInt64:
     {
       QStringList fids;
-      for ( QgsFeatureId featureId : featureIds )
+      for ( const QgsFeatureId featureId : featureIds )
       {
         if ( pkType == PktInt )
           fids << QString::number( fidToInt( featureId ) );
@@ -294,7 +294,7 @@ QString QgsHanaPrimaryKeyUtils::buildWhereClause( const QgsFeatureIds &featureId
     case PktFidMap:
     {
       QStringList whereClauses;
-      for ( QgsFeatureId featureId : featureIds )
+      for ( const QgsFeatureId featureId : featureIds )
       {
         const QString fidWhereClause = buildWhereClause( featureId, fields, pkType, pkAttrs, primaryKeyCntx );
         if ( fidWhereClause.isEmpty() )

@@ -60,7 +60,7 @@ bool QgsCoordinateTransformContext::operator==( const QgsCoordinateTransformCont
 
   d->mLock.lockForRead();
   rhs.d->mLock.lockForRead();
-  bool equal = d->mSourceDestDatumTransforms == rhs.d->mSourceDestDatumTransforms;
+  const bool equal = d->mSourceDestDatumTransforms == rhs.d->mSourceDestDatumTransforms;
   d->mLock.unlock();
   rhs.d->mLock.unlock();
   return equal;
@@ -302,7 +302,7 @@ void QgsCoordinateTransformContext::readSettings()
 
   QgsSettings settings;
   settings.beginGroup( QStringLiteral( "/Projections" ) );
-  QStringList projectionKeys = settings.allKeys();
+  const QStringList projectionKeys = settings.allKeys();
 
   //collect src and dest entries that belong together
   QMap< QPair< QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem >, QgsCoordinateTransformContextPrivate::OperationDetails > transforms;
@@ -311,7 +311,7 @@ void QgsCoordinateTransformContext::readSettings()
   {
     if ( pkeyIt->contains( QLatin1String( "coordinateOp" ) ) )
     {
-      QStringList split = pkeyIt->split( '/' );
+      const QStringList split = pkeyIt->split( '/' );
       QString srcAuthId, destAuthId;
       if ( ! split.isEmpty() )
       {
@@ -349,7 +349,7 @@ void QgsCoordinateTransformContext::writeSettings()
 {
   QgsSettings settings;
   settings.beginGroup( QStringLiteral( "/Projections" ) );
-  QStringList groupKeys = settings.allKeys();
+  const QStringList groupKeys = settings.allKeys();
   QStringList::const_iterator groupKeyIt = groupKeys.constBegin();
   for ( ; groupKeyIt != groupKeys.constEnd(); ++groupKeyIt )
   {

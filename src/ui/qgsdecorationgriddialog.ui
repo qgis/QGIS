@@ -54,6 +54,9 @@
       </item>
       <item row="10" column="2">
        <widget class="QgsDoubleSpinBox" name="mOffsetYEdit">
+        <property name="minimum">
+         <double>-10000000000000000.000000000000000</double>
+        </property>
         <property name="maximum">
          <double>10000000000000000.000000000000000</double>
         </property>
@@ -231,6 +234,9 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="minimum">
+         <double>-10000000000000000.000000000000000</double>
+        </property>
         <property name="maximum">
          <double>10000000000000000.000000000000000</double>
         </property>
@@ -255,9 +261,6 @@
       </item>
       <item row="0" column="0" colspan="2">
        <widget class="QLabel" name="mGridTypeLabel">
-        <property name="accessibleName">
-         <string extracomment="Hello translotor"/>
-        </property>
         <property name="text">
          <string>Grid type</string>
         </property>

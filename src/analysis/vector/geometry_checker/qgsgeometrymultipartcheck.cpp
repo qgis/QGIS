@@ -22,7 +22,7 @@ QList<QgsSingleGeometryCheckError *> QgsGeometryMultipartCheck::processGeometry(
   QList<QgsSingleGeometryCheckError *> errors;
 
   const QgsAbstractGeometry *geom = geometry.constGet();
-  QgsWkbTypes::Type type = geom->wkbType();
+  const QgsWkbTypes::Type type = geom->wkbType();
   if ( geom->partCount() == 1 && QgsWkbTypes::isMultiType( type ) )
   {
     errors.append( new QgsSingleGeometryCheckError( this, geometry, geometry ) );
@@ -39,7 +39,7 @@ void QgsGeometryMultipartCheck::fixError( const QMap<QString, QgsFeaturePool *> 
     error->setObsolete();
     return;
   }
-  QgsGeometry featureGeom = feature.geometry();
+  const QgsGeometry featureGeom = feature.geometry();
   const QgsAbstractGeometry *geom = featureGeom.constGet();
 
   // Check if error still applies
@@ -75,9 +75,9 @@ void QgsGeometryMultipartCheck::fixError( const QMap<QString, QgsFeaturePool *> 
 
 QStringList QgsGeometryMultipartCheck::resolutionMethods() const
 {
-  static QStringList methods = QStringList()
-                               << tr( "Convert to single part feature" )
-                               << tr( "Delete feature" )
-                               << tr( "No action" );
+  static const QStringList methods = QStringList()
+                                     << tr( "Convert to single part feature" )
+                                     << tr( "Delete feature" )
+                                     << tr( "No action" );
   return methods;
 }

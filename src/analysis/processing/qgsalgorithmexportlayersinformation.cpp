@@ -110,7 +110,7 @@ QVariantMap QgsExportLayersInformationAlgorithm::processAlgorithm( const QVarian
 
   const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
 
-  double step = layers.size() > 0 ? 100.0 / layers.size() : 1;
+  const double step = layers.size() > 0 ? 100.0 / layers.size() : 1;
   int i = 0;
   for ( const std::unique_ptr< QgsMapLayer > &layer : mLayers )
   {
@@ -149,7 +149,7 @@ QVariantMap QgsExportLayersInformationAlgorithm::processAlgorithm( const QVarian
     {
       if ( layer->crs() != mCrs )
       {
-        QgsCoordinateTransform transform( layer->crs(), mCrs, context.transformContext() );
+        const QgsCoordinateTransform transform( layer->crs(), mCrs, context.transformContext() );
         try
         {
           rect = transform.transformBoundingBox( rect );

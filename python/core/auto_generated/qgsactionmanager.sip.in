@@ -112,7 +112,7 @@ Writes the actions out in XML format
 Reads the actions in in XML format
 %End
 
-    QgsAction action( QUuid id );
+    QgsAction action( QUuid id ) const;
 %Docstring
 Gets an action by its id.
 

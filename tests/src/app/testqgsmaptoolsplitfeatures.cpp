@@ -115,7 +115,7 @@ void TestQgsMapToolSplitFeatures::cleanupTestCase()
 QPoint TestQgsMapToolSplitFeatures::mapToPoint( double x, double y )
 {
 
-  QgsPointXY mapPoint = mCanvas->mapSettings().mapToPixel().transform( x, y );
+  const QgsPointXY mapPoint = mCanvas->mapSettings().mapToPixel().transform( x, y );
 
   return QPoint( std::round( mapPoint.x() ), std::round( mapPoint.y() ) );
 }

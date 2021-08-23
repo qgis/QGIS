@@ -104,7 +104,7 @@ namespace QgsRayCastingUtils
 
   bool Ray3D::contains( QVector3D point ) const
   {
-    QVector3D ppVec( point - m_origin );
+    const QVector3D ppVec( point - m_origin );
     if ( ppVec.isNull() ) // point coincides with origin
       return true;
     const float dot = QVector3D::dotProduct( ppVec, m_direction );
@@ -131,20 +131,20 @@ namespace QgsRayCastingUtils
 
   QVector3D Ray3D::project( QVector3D vector ) const
   {
-    QVector3D norm = m_direction.normalized();
+    const QVector3D norm = m_direction.normalized();
     return QVector3D::dotProduct( vector, norm ) * norm;
   }
 
 
   float Ray3D::distance( QVector3D point ) const
   {
-    float t = projectedDistance( point );
+    const float t = projectedDistance( point );
     return ( point - ( m_origin + t * m_direction ) ).length();
   }
 
   QDebug operator<<( QDebug dbg, const Ray3D &ray )
   {
-    QDebugStateSaver saver( dbg );
+    const QDebugStateSaver saver( dbg );
     dbg.nospace() << "QRay3D(origin("
                   << ray.origin().x() << ", " << ray.origin().y() << ", "
                   << ray.origin().z() << ") - direction("
@@ -232,10 +232,10 @@ namespace QgsRayCastingUtils
   // copied from https://stackoverflow.com/questions/23975555/how-to-do-ray-plane-intersection
   bool rayPlaneIntersection( const Ray3D &r, const Plane3D &plane, QVector3D &pt )
   {
-    float denom = QVector3D::dotProduct( plane.normal, r.direction() );
+    const float denom = QVector3D::dotProduct( plane.normal, r.direction() );
     if ( std::abs( denom ) > 0.0001f ) // your favorite epsilon
     {
-      float t = QVector3D::dotProduct( plane.center - r.origin(), plane.normal ) / denom;
+      const float t = QVector3D::dotProduct( plane.center - r.origin(), plane.normal ) / denom;
       if ( t >= 0 )
       {
         pt = r.point( t );
@@ -342,8 +342,8 @@ namespace QgsRayCastingUtils
                                  const QRectF &relativeViewport,
                                  const Qt3DRender::QCamera *camera )
   {
-    QMatrix4x4 viewMatrix = camera->viewMatrix();
-    QMatrix4x4 projectionMatrix = camera->projectionMatrix();
+    const QMatrix4x4 viewMatrix = camera->viewMatrix();
+    const QMatrix4x4 projectionMatrix = camera->projectionMatrix();
     const QRect viewport = windowViewport( area, relativeViewport );
 
     // In GL the y is inverted compared to Qt
@@ -354,10 +354,10 @@ namespace QgsRayCastingUtils
 
   Ray3D rayForCameraCenter( const Qt3DRender::QCamera *camera )
   {
-    QMatrix4x4 inverse = QMatrix4x4( camera->projectionMatrix() * camera->viewMatrix() ).inverted();
+    const QMatrix4x4 inverse = QMatrix4x4( camera->projectionMatrix() * camera->viewMatrix() ).inverted();
 
-    QVector4D vNear( 0.0, 0.0, -1.0, 1.0 );
-    QVector4D vFar( 0.0, 0.0, 1.0, 1.0 );
+    const QVector4D vNear( 0.0, 0.0, -1.0, 1.0 );
+    const QVector4D vFar( 0.0, 0.0, 1.0, 1.0 );
     QVector4D nearPos4D = inverse * vNear;
     QVector4D farPos4D = inverse * vFar;
 
@@ -368,8 +368,8 @@ namespace QgsRayCastingUtils
     if ( qgsFloatNear( farPos4D.w(), 0, 1e-10f ) )
       farPos4D.setW( 1 );
 
-    QVector3D nearPos( ( nearPos4D / nearPos4D.w() ).toVector3D() );
-    QVector3D farPos( ( farPos4D / farPos4D.w() ).toVector3D() );
+    const QVector3D nearPos( ( nearPos4D / nearPos4D.w() ).toVector3D() );
+    const QVector3D farPos( ( farPos4D / farPos4D.w() ).toVector3D() );
 
     return QgsRayCastingUtils::Ray3D( nearPos,
                                       ( farPos - nearPos ).normalized(),

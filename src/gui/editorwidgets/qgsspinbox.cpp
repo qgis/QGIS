@@ -41,7 +41,7 @@ QgsSpinBox::QgsSpinBox( QWidget *parent )
   mLineEdit = new QgsSpinBoxLineEdit();
   setLineEdit( mLineEdit );
 
-  QSize msz = minimumSizeHint();
+  const QSize msz = minimumSizeHint();
   setMinimumSize( msz.width() + CLEAR_ICON_SIZE + 9 + frameWidth() * 2 + 2,
                   std::max( msz.height(), CLEAR_ICON_SIZE + frameWidth() * 2 + 2 ) );
 
@@ -80,7 +80,7 @@ void QgsSpinBox::paintEvent( QPaintEvent *event )
 
 void QgsSpinBox::wheelEvent( QWheelEvent *event )
 {
-  int step = singleStep();
+  const int step = singleStep();
   if ( event->modifiers() & Qt::ControlModifier )
   {
     // ctrl modifier results in finer increments - 10% of usual step
@@ -129,7 +129,7 @@ void QgsSpinBox::setClearValue( int customValue, const QString &specialValueText
 
   if ( !specialValueText.isEmpty() )
   {
-    int v = value();
+    const int v = value();
     clear();
     setSpecialValueText( specialValueText );
     setValue( v );
@@ -143,7 +143,7 @@ void QgsSpinBox::setClearValueMode( QgsSpinBox::ClearValueMode mode, const QStri
 
   if ( !specialValueText.isEmpty() )
   {
-    int v = value();
+    const int v = value();
     clear();
     setSpecialValueText( specialValueText );
     setValue( v );
@@ -186,7 +186,7 @@ int QgsSpinBox::valueFromText( const QString &text ) const
     return QSpinBox::valueFromText( text );
   }
 
-  QString trimmedText = stripped( text );
+  const QString trimmedText = stripped( text );
   if ( trimmedText.isEmpty() )
   {
     return mShowClearButton ? clearValue() : value();
@@ -199,7 +199,7 @@ QValidator::State QgsSpinBox::validate( QString &input, int &pos ) const
 {
   if ( !mExpressionsEnabled )
   {
-    QValidator::State r = QSpinBox::validate( input, pos );
+    const QValidator::State r = QSpinBox::validate( input, pos );
     return r;
   }
 

@@ -20,7 +20,7 @@
 
 void QgsAfsSharedData::clearCache()
 {
-  QMutexLocker locker( &mMutex );
+  const QMutexLocker locker( &mMutex );
   mCache.clear();
 }
 
@@ -37,8 +37,8 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
   }
 
   // Fetch 100 features at the time
-  int startId = ( id / 100 ) * 100;
-  int stopId = std::min< size_t >( startId + 100, mObjectIds.length() );
+  const int startId = ( id / 100 ) * 100;
+  const int stopId = std::min< size_t >( startId + 100, mObjectIds.length() );
   QList<quint32> objectIds;
   objectIds.reserve( stopId );
   for ( int i = startId; i < stopId; ++i )
@@ -159,9 +159,9 @@ QgsFeatureIds QgsAfsSharedData::getFeatureIdsInExtent( const QgsRectangle &exten
                                         extent, errorTitle, errorText, authcfg, headers, feedback );
 
   QgsFeatureIds ids;
-  for ( quint32 id : featuresInRect )
+  for ( const quint32 id : featuresInRect )
   {
-    int featureId = mObjectIds.indexOf( id );
+    const int featureId = mObjectIds.indexOf( id );
     if ( featureId >= 0 )
       ids.insert( featureId );
   }

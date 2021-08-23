@@ -192,11 +192,17 @@ QgsRasterDataProvider *QgsProviderMetadata::createRasterDataProvider(
   return nullptr;
 }
 
-bool QgsProviderMetadata::createMeshData(
-  const QgsMesh &,
-  const QString,
-  const QString &,
-  const QgsCoordinateReferenceSystem & ) const
+bool QgsProviderMetadata::createMeshData( const QgsMesh &,
+    const QString &,
+    const QString &,
+    const QgsCoordinateReferenceSystem & ) const
+{
+  return false;
+}
+
+bool QgsProviderMetadata::createMeshData( const QgsMesh &,
+    const QString &,
+    const QgsCoordinateReferenceSystem & ) const
 {
   return false;
 }
@@ -359,12 +365,14 @@ QgsMeshDriverMetadata::QgsMeshDriverMetadata( const QString &name,
     const QString &description,
     const MeshDriverCapabilities &capabilities,
     const QString &writeDatasetOnfileSuffix,
-    const QString &writeMeshFrameOnFileSuffix )
+    const QString &writeMeshFrameOnFileSuffix,
+    int maxVerticesPerface )
   : mName( name )
   , mDescription( description )
   , mCapabilities( capabilities )
   , mWriteDatasetOnFileSuffix( writeDatasetOnfileSuffix )
   , mWriteMeshFrameOnFileSuffix( ( writeMeshFrameOnFileSuffix ) )
+  , mMaxVerticesPerFace( maxVerticesPerface )
 {
 }
 
@@ -391,4 +399,9 @@ QString QgsMeshDriverMetadata::writeDatasetOnFileSuffix() const
 QString QgsMeshDriverMetadata::writeMeshFrameOnFileSuffix() const
 {
   return mWriteMeshFrameOnFileSuffix;
+}
+
+int QgsMeshDriverMetadata::maximumVerticesCountPerFace() const
+{
+  return mMaxVerticesPerFace;
 }

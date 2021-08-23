@@ -92,7 +92,7 @@ QVariantList QgsArcGisPortalUtils::retrieveGroupItemsOfType( const QString &cont
     const QVariantMap itemDef = item.toMap();
     const QString itemType = itemDef.value( QStringLiteral( "type" ) ).toString();
 
-    for ( int filterType : itemTypes )
+    for ( const int filterType : itemTypes )
     {
       if ( typeToString( static_cast< ItemType >( filterType ) ).compare( itemType, Qt::CaseInsensitive ) == 0 )
       {

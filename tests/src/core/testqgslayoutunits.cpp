@@ -122,13 +122,13 @@ void TestQgsLayoutUnits::encodeDecode()
 
 void TestQgsLayoutUnits::create()
 {
-  QgsLayoutMeasurement defaultUnits( 5.0 );
+  const QgsLayoutMeasurement defaultUnits( 5.0 );
   //default units should be millimeters
   QCOMPARE( defaultUnits.units(), QgsUnitTypes::LayoutMillimeters );
   QCOMPARE( defaultUnits.length(), 5.0 );
 
   //test overriding default unit
-  QgsLayoutMeasurement inches( 7.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutMeasurement inches( 7.0, QgsUnitTypes::LayoutInches );
   QCOMPARE( inches.units(), QgsUnitTypes::LayoutInches );
   QCOMPARE( inches.length(), 7.0 );
 }
@@ -145,17 +145,17 @@ void TestQgsLayoutUnits::gettersSetters()
 
 void TestQgsLayoutUnits::copyConstructor()
 {
-  QgsLayoutMeasurement source( 6.0, QgsUnitTypes::LayoutInches );
-  QgsLayoutMeasurement dest( source );
+  const QgsLayoutMeasurement source( 6.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutMeasurement dest( source );
   QCOMPARE( source, dest );
 }
 
 void TestQgsLayoutUnits::equality()
 {
-  QgsLayoutMeasurement m1( 6.0, QgsUnitTypes::LayoutInches );
-  QgsLayoutMeasurement m2( 6.0, QgsUnitTypes::LayoutInches );
-  QgsLayoutMeasurement m3( 7.0, QgsUnitTypes::LayoutInches );
-  QgsLayoutMeasurement m4( 6.0, QgsUnitTypes::LayoutPoints );
+  const QgsLayoutMeasurement m1( 6.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutMeasurement m2( 6.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutMeasurement m3( 7.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutMeasurement m4( 6.0, QgsUnitTypes::LayoutPoints );
 
   QVERIFY( m1 == m2 );
   QVERIFY( !( m1 == m3 ) );
@@ -169,7 +169,7 @@ void TestQgsLayoutUnits::equality()
 
 void TestQgsLayoutUnits::assignment()
 {
-  QgsLayoutMeasurement m1( 6.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutMeasurement m1( 6.0, QgsUnitTypes::LayoutInches );
   QgsLayoutMeasurement m2( 9.0, QgsUnitTypes::LayoutPoints );
   m2 = m1;
   QCOMPARE( m2, m1 );
@@ -178,8 +178,8 @@ void TestQgsLayoutUnits::assignment()
 void TestQgsLayoutUnits::operators()
 {
   // +
-  QgsLayoutMeasurement m1( 6.0, QgsUnitTypes::LayoutInches );
-  QgsLayoutMeasurement m2 = m1 + 3.0;
+  const QgsLayoutMeasurement m1( 6.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutMeasurement m2 = m1 + 3.0;
   QCOMPARE( m2.units(), m1.units() );
   QCOMPARE( m2.length(), 9.0 );
 
@@ -190,7 +190,7 @@ void TestQgsLayoutUnits::operators()
   QCOMPARE( m4.length(), 8.0 );
 
   // -
-  QgsLayoutMeasurement m3 = m1 - 3.0;
+  const QgsLayoutMeasurement m3 = m1 - 3.0;
   QCOMPARE( m3.units(), m1.units() );
   QCOMPARE( m3.length(), 3.0 );
 
@@ -201,7 +201,7 @@ void TestQgsLayoutUnits::operators()
   QCOMPARE( m5.length(), 4.0 );
 
   // *
-  QgsLayoutMeasurement m6 = m1 * 3.0;
+  const QgsLayoutMeasurement m6 = m1 * 3.0;
   QCOMPARE( m6.units(), m1.units() );
   QCOMPARE( m6.length(), 18.0 );
 
@@ -212,7 +212,7 @@ void TestQgsLayoutUnits::operators()
   QCOMPARE( m7.length(), 12.0 );
 
   // /
-  QgsLayoutMeasurement m8 = m1 / 3.0;
+  const QgsLayoutMeasurement m8 = m1 / 3.0;
   QCOMPARE( m8.units(), m1.units() );
   QCOMPARE( m8.length(), 2.0 );
 
@@ -231,7 +231,7 @@ void TestQgsLayoutUnits::unitTypes()
 
 void TestQgsLayoutUnits::measurementEncodeDecode()
 {
-  QgsLayoutMeasurement original( 6.0, QgsUnitTypes::LayoutPixels );
+  const QgsLayoutMeasurement original( 6.0, QgsUnitTypes::LayoutPixels );
   QgsLayoutMeasurement result = QgsLayoutMeasurement::decodeMeasurement( original.encodeMeasurement() );
   QCOMPARE( original, result );
 
@@ -242,26 +242,26 @@ void TestQgsLayoutUnits::measurementEncodeDecode()
 
 void TestQgsLayoutUnits::createSize()
 {
-  QgsLayoutSize defaultUnits( 5.0, 6.0 );
+  const QgsLayoutSize defaultUnits( 5.0, 6.0 );
   //default units should be millimeters
   QCOMPARE( defaultUnits.units(), QgsUnitTypes::LayoutMillimeters );
   QCOMPARE( defaultUnits.width(), 5.0 );
   QCOMPARE( defaultUnits.height(), 6.0 );
 
   //test overriding default unit
-  QgsLayoutSize inches( 7.0, 8.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutSize inches( 7.0, 8.0, QgsUnitTypes::LayoutInches );
   QCOMPARE( inches.units(), QgsUnitTypes::LayoutInches );
   QCOMPARE( inches.width(), 7.0 );
   QCOMPARE( inches.height(), 8.0 );
 
   //test empty constructor
-  QgsLayoutSize empty( QgsUnitTypes::LayoutPixels );
+  const QgsLayoutSize empty( QgsUnitTypes::LayoutPixels );
   QCOMPARE( empty.units(), QgsUnitTypes::LayoutPixels );
   QCOMPARE( empty.width(), 0.0 );
   QCOMPARE( empty.height(), 0.0 );
 
   //test constructing from QSizeF
-  QgsLayoutSize fromQSizeF( QSizeF( 17.0, 18.0 ), QgsUnitTypes::LayoutInches );
+  const QgsLayoutSize fromQSizeF( QSizeF( 17.0, 18.0 ), QgsUnitTypes::LayoutInches );
   QCOMPARE( fromQSizeF.units(), QgsUnitTypes::LayoutInches );
   QCOMPARE( fromQSizeF.width(), 17.0 );
   QCOMPARE( fromQSizeF.height(), 18.0 );
@@ -290,17 +290,17 @@ void TestQgsLayoutUnits::sizeGettersSetters()
 
 void TestQgsLayoutUnits::sizeCopyConstructor()
 {
-  QgsLayoutSize source( 6.0, 7.0, QgsUnitTypes::LayoutInches );
-  QgsLayoutSize dest( source );
+  const QgsLayoutSize source( 6.0, 7.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutSize dest( source );
   QCOMPARE( source, dest );
 }
 
 void TestQgsLayoutUnits::sizeEquality()
 {
-  QgsLayoutSize s1( 6.0, 7.0, QgsUnitTypes::LayoutInches );
-  QgsLayoutSize s2( 6.0, 7.0, QgsUnitTypes::LayoutInches );
-  QgsLayoutSize s3( 7.0, 8.0, QgsUnitTypes::LayoutInches );
-  QgsLayoutSize s4( 6.0, 7.0, QgsUnitTypes::LayoutPoints );
+  const QgsLayoutSize s1( 6.0, 7.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutSize s2( 6.0, 7.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutSize s3( 7.0, 8.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutSize s4( 6.0, 7.0, QgsUnitTypes::LayoutPoints );
 
   QVERIFY( s1 == s2 );
   QVERIFY( !( s1 == s3 ) );
@@ -314,7 +314,7 @@ void TestQgsLayoutUnits::sizeEquality()
 
 void TestQgsLayoutUnits::sizeAssignment()
 {
-  QgsLayoutSize s1( 6.0, 7.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutSize s1( 6.0, 7.0, QgsUnitTypes::LayoutInches );
   QgsLayoutSize s2( 9.0, 10.0, QgsUnitTypes::LayoutPoints );
   s2 = s1;
   QCOMPARE( s2, s1 );
@@ -322,10 +322,10 @@ void TestQgsLayoutUnits::sizeAssignment()
 
 void TestQgsLayoutUnits::sizeOperators()
 {
-  QgsLayoutSize s1( 6.0, 12.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutSize s1( 6.0, 12.0, QgsUnitTypes::LayoutInches );
 
   // *
-  QgsLayoutSize s2 = s1 * 3.0;
+  const QgsLayoutSize s2 = s1 * 3.0;
   QCOMPARE( s2.units(), s1.units() );
   QCOMPARE( s2.width(), 18.0 );
   QCOMPARE( s2.height(), 36.0 );
@@ -338,7 +338,7 @@ void TestQgsLayoutUnits::sizeOperators()
   QCOMPARE( s3.height(), 24.0 );
 
   // /
-  QgsLayoutSize s4 = s1 / 3.0;
+  const QgsLayoutSize s4 = s1 / 3.0;
   QCOMPARE( s4.units(), s1.units() );
   QCOMPARE( s4.width(), 2.0 );
   QCOMPARE( s4.height(), 4.0 );
@@ -357,21 +357,21 @@ void TestQgsLayoutUnits::isEmpty()
   QVERIFY( !size.isEmpty() );
   size.setSize( 0, 0 );
   QVERIFY( size.isEmpty() );
-  QgsLayoutSize size2( QgsUnitTypes::LayoutMillimeters ); //test empty constructor
+  const QgsLayoutSize size2( QgsUnitTypes::LayoutMillimeters ); //test empty constructor
   QVERIFY( size2.isEmpty() );
 }
 
 void TestQgsLayoutUnits::toQSizeF()
 {
-  QgsLayoutSize size( 6.0, 12.0, QgsUnitTypes::LayoutInches );
-  QSizeF converted = size.toQSizeF();
+  const QgsLayoutSize size( 6.0, 12.0, QgsUnitTypes::LayoutInches );
+  const QSizeF converted = size.toQSizeF();
   QCOMPARE( converted.width(), size.width() );
   QCOMPARE( converted.height(), size.height() );
 }
 
 void TestQgsLayoutUnits::sizeEncodeDecode()
 {
-  QgsLayoutSize original( 6.0, 12.0, QgsUnitTypes::LayoutPoints );
+  const QgsLayoutSize original( 6.0, 12.0, QgsUnitTypes::LayoutPoints );
   QgsLayoutSize result = QgsLayoutSize::decodeSize( original.encodeSize() );
   QCOMPARE( original, result );
 
@@ -382,26 +382,26 @@ void TestQgsLayoutUnits::sizeEncodeDecode()
 
 void TestQgsLayoutUnits::createPoint()
 {
-  QgsLayoutPoint defaultUnits( 5.0, 6.0 );
+  const QgsLayoutPoint defaultUnits( 5.0, 6.0 );
   //default units should be millimeters
   QCOMPARE( defaultUnits.units(), QgsUnitTypes::LayoutMillimeters );
   QCOMPARE( defaultUnits.x(), 5.0 );
   QCOMPARE( defaultUnits.y(), 6.0 );
 
   //test overriding default unit
-  QgsLayoutPoint inches( 7.0, 8.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutPoint inches( 7.0, 8.0, QgsUnitTypes::LayoutInches );
   QCOMPARE( inches.units(), QgsUnitTypes::LayoutInches );
   QCOMPARE( inches.x(), 7.0 );
   QCOMPARE( inches.y(), 8.0 );
 
   //test empty constructor
-  QgsLayoutPoint empty( QgsUnitTypes::LayoutPixels );
+  const QgsLayoutPoint empty( QgsUnitTypes::LayoutPixels );
   QCOMPARE( empty.units(), QgsUnitTypes::LayoutPixels );
   QCOMPARE( empty.x(), 0.0 );
   QCOMPARE( empty.y(), 0.0 );
 
   //test constructing from QPointF
-  QgsLayoutPoint fromQPointF( QPointF( 17.0, 18.0 ), QgsUnitTypes::LayoutInches );
+  const QgsLayoutPoint fromQPointF( QPointF( 17.0, 18.0 ), QgsUnitTypes::LayoutInches );
   QCOMPARE( fromQPointF.units(), QgsUnitTypes::LayoutInches );
   QCOMPARE( fromQPointF.x(), 17.0 );
   QCOMPARE( fromQPointF.y(), 18.0 );
@@ -430,17 +430,17 @@ void TestQgsLayoutUnits::pointGettersSetters()
 
 void TestQgsLayoutUnits::pointCopyConstructor()
 {
-  QgsLayoutPoint source( 6.0, 7.0, QgsUnitTypes::LayoutInches );
-  QgsLayoutPoint dest( source );
+  const QgsLayoutPoint source( 6.0, 7.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutPoint dest( source );
   QCOMPARE( source, dest );
 }
 
 void TestQgsLayoutUnits::pointEquality()
 {
-  QgsLayoutPoint p1( 6.0, 7.0, QgsUnitTypes::LayoutInches );
-  QgsLayoutPoint p2( 6.0, 7.0, QgsUnitTypes::LayoutInches );
-  QgsLayoutPoint p3( 7.0, 8.0, QgsUnitTypes::LayoutInches );
-  QgsLayoutPoint p4( 6.0, 7.0, QgsUnitTypes::LayoutPoints );
+  const QgsLayoutPoint p1( 6.0, 7.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutPoint p2( 6.0, 7.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutPoint p3( 7.0, 8.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutPoint p4( 6.0, 7.0, QgsUnitTypes::LayoutPoints );
 
   QVERIFY( p1 == p2 );
   QVERIFY( !( p1 == p3 ) );
@@ -454,7 +454,7 @@ void TestQgsLayoutUnits::pointEquality()
 
 void TestQgsLayoutUnits::pointAssignment()
 {
-  QgsLayoutPoint p1( 6.0, 7.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutPoint p1( 6.0, 7.0, QgsUnitTypes::LayoutInches );
   QgsLayoutPoint p2( 9.0, 10.0, QgsUnitTypes::LayoutPoints );
   p2 = p1;
   QCOMPARE( p2, p1 );
@@ -462,10 +462,10 @@ void TestQgsLayoutUnits::pointAssignment()
 
 void TestQgsLayoutUnits::pointOperators()
 {
-  QgsLayoutPoint p1( 6.0, 12.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutPoint p1( 6.0, 12.0, QgsUnitTypes::LayoutInches );
 
   // *
-  QgsLayoutPoint p2 = p1 * 3.0;
+  const QgsLayoutPoint p2 = p1 * 3.0;
   QCOMPARE( p2.units(), p1.units() );
   QCOMPARE( p2.x(), 18.0 );
   QCOMPARE( p2.y(), 36.0 );
@@ -478,7 +478,7 @@ void TestQgsLayoutUnits::pointOperators()
   QCOMPARE( p3.y(), 24.0 );
 
   // /
-  QgsLayoutPoint p4 = p1 / 3.0;
+  const QgsLayoutPoint p4 = p1 / 3.0;
   QCOMPARE( p4.units(), p1.units() );
   QCOMPARE( p4.x(), 2.0 );
   QCOMPARE( p4.y(), 4.0 );
@@ -497,21 +497,21 @@ void TestQgsLayoutUnits::isNull()
   QVERIFY( !point.isNull() );
   point.setPoint( 0, 0 );
   QVERIFY( point.isNull() );
-  QgsLayoutPoint point2( QgsUnitTypes::LayoutMillimeters ); //test empty constructor
+  const QgsLayoutPoint point2( QgsUnitTypes::LayoutMillimeters ); //test empty constructor
   QVERIFY( point2.isNull() );
 }
 
 void TestQgsLayoutUnits::toQPointF()
 {
-  QgsLayoutPoint point( 6.0, 12.0, QgsUnitTypes::LayoutInches );
-  QPointF converted = point.toQPointF();
+  const QgsLayoutPoint point( 6.0, 12.0, QgsUnitTypes::LayoutInches );
+  const QPointF converted = point.toQPointF();
   QCOMPARE( converted.x(), point.x() );
   QCOMPARE( converted.y(), point.y() );
 }
 
 void TestQgsLayoutUnits::pointEncodeDecode()
 {
-  QgsLayoutPoint original( 6.0, 12.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutPoint original( 6.0, 12.0, QgsUnitTypes::LayoutInches );
   QgsLayoutPoint result = QgsLayoutPoint::decodePoint( original.encodePoint() );
   QCOMPARE( original, result );
 
@@ -531,28 +531,28 @@ void TestQgsLayoutUnits::converterCopy()
 {
   QgsLayoutMeasurementConverter source;
   source.setDpi( 96.0 );
-  QgsLayoutMeasurementConverter copy( source );
+  const QgsLayoutMeasurementConverter copy( source );
   QCOMPARE( copy.dpi(), source.dpi() );
 }
 
 void TestQgsLayoutUnits::conversionToMM()
 {
-  QgsLayoutMeasurement measurementInMillimeters( 1.0, QgsUnitTypes::LayoutMillimeters );
-  QgsLayoutMeasurement measurementInCentimeters( 1.0, QgsUnitTypes::LayoutCentimeters );
-  QgsLayoutMeasurement measurementInMeters( 1.0, QgsUnitTypes::LayoutMeters );
-  QgsLayoutMeasurement measurementInInches( 1.0, QgsUnitTypes::LayoutInches );
-  QgsLayoutMeasurement measurementInFeet( 1.0, QgsUnitTypes::LayoutFeet );
-  QgsLayoutMeasurement measurementInPoints( 1.0, QgsUnitTypes::LayoutPoints );
-  QgsLayoutMeasurement measurementInPicas( 1.0, QgsUnitTypes::LayoutPicas );
+  const QgsLayoutMeasurement measurementInMillimeters( 1.0, QgsUnitTypes::LayoutMillimeters );
+  const QgsLayoutMeasurement measurementInCentimeters( 1.0, QgsUnitTypes::LayoutCentimeters );
+  const QgsLayoutMeasurement measurementInMeters( 1.0, QgsUnitTypes::LayoutMeters );
+  const QgsLayoutMeasurement measurementInInches( 1.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutMeasurement measurementInFeet( 1.0, QgsUnitTypes::LayoutFeet );
+  const QgsLayoutMeasurement measurementInPoints( 1.0, QgsUnitTypes::LayoutPoints );
+  const QgsLayoutMeasurement measurementInPicas( 1.0, QgsUnitTypes::LayoutPicas );
 
-  QgsLayoutMeasurementConverter converter;
-  QgsLayoutMeasurement convertedFromMillimeters = converter.convert( measurementInMillimeters, QgsUnitTypes::LayoutMillimeters );
-  QgsLayoutMeasurement convertedFromCentimeters = converter.convert( measurementInCentimeters, QgsUnitTypes::LayoutMillimeters );
-  QgsLayoutMeasurement convertedFromMeters = converter.convert( measurementInMeters, QgsUnitTypes::LayoutMillimeters );
-  QgsLayoutMeasurement convertedFromInches = converter.convert( measurementInInches, QgsUnitTypes::LayoutMillimeters );
-  QgsLayoutMeasurement convertedFromFeet = converter.convert( measurementInFeet, QgsUnitTypes::LayoutMillimeters );
-  QgsLayoutMeasurement convertedFromPoints = converter.convert( measurementInPoints, QgsUnitTypes::LayoutMillimeters );
-  QgsLayoutMeasurement convertedFromPicas = converter.convert( measurementInPicas, QgsUnitTypes::LayoutMillimeters );
+  const QgsLayoutMeasurementConverter converter;
+  const QgsLayoutMeasurement convertedFromMillimeters = converter.convert( measurementInMillimeters, QgsUnitTypes::LayoutMillimeters );
+  const QgsLayoutMeasurement convertedFromCentimeters = converter.convert( measurementInCentimeters, QgsUnitTypes::LayoutMillimeters );
+  const QgsLayoutMeasurement convertedFromMeters = converter.convert( measurementInMeters, QgsUnitTypes::LayoutMillimeters );
+  const QgsLayoutMeasurement convertedFromInches = converter.convert( measurementInInches, QgsUnitTypes::LayoutMillimeters );
+  const QgsLayoutMeasurement convertedFromFeet = converter.convert( measurementInFeet, QgsUnitTypes::LayoutMillimeters );
+  const QgsLayoutMeasurement convertedFromPoints = converter.convert( measurementInPoints, QgsUnitTypes::LayoutMillimeters );
+  const QgsLayoutMeasurement convertedFromPicas = converter.convert( measurementInPicas, QgsUnitTypes::LayoutMillimeters );
 
   QCOMPARE( convertedFromMillimeters.units(), QgsUnitTypes::LayoutMillimeters );
   QCOMPARE( convertedFromCentimeters.units(), QgsUnitTypes::LayoutMillimeters );
@@ -573,22 +573,22 @@ void TestQgsLayoutUnits::conversionToMM()
 
 void TestQgsLayoutUnits::conversionToCM()
 {
-  QgsLayoutMeasurement measurementInMillimeters( 1.0, QgsUnitTypes::LayoutMillimeters );
-  QgsLayoutMeasurement measurementInCentimeters( 1.0, QgsUnitTypes::LayoutCentimeters );
-  QgsLayoutMeasurement measurementInMeters( 1.0, QgsUnitTypes::LayoutMeters );
-  QgsLayoutMeasurement measurementInInches( 1.0, QgsUnitTypes::LayoutInches );
-  QgsLayoutMeasurement measurementInFeet( 1.0, QgsUnitTypes::LayoutFeet );
-  QgsLayoutMeasurement measurementInPoints( 1.0, QgsUnitTypes::LayoutPoints );
-  QgsLayoutMeasurement measurementInPicas( 1.0, QgsUnitTypes::LayoutPicas );
+  const QgsLayoutMeasurement measurementInMillimeters( 1.0, QgsUnitTypes::LayoutMillimeters );
+  const QgsLayoutMeasurement measurementInCentimeters( 1.0, QgsUnitTypes::LayoutCentimeters );
+  const QgsLayoutMeasurement measurementInMeters( 1.0, QgsUnitTypes::LayoutMeters );
+  const QgsLayoutMeasurement measurementInInches( 1.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutMeasurement measurementInFeet( 1.0, QgsUnitTypes::LayoutFeet );
+  const QgsLayoutMeasurement measurementInPoints( 1.0, QgsUnitTypes::LayoutPoints );
+  const QgsLayoutMeasurement measurementInPicas( 1.0, QgsUnitTypes::LayoutPicas );
 
-  QgsLayoutMeasurementConverter converter;
-  QgsLayoutMeasurement convertedFromMillimeters = converter.convert( measurementInMillimeters, QgsUnitTypes::LayoutCentimeters );
-  QgsLayoutMeasurement convertedFromCentimeters = converter.convert( measurementInCentimeters, QgsUnitTypes::LayoutCentimeters );
-  QgsLayoutMeasurement convertedFromMeters = converter.convert( measurementInMeters, QgsUnitTypes::LayoutCentimeters );
-  QgsLayoutMeasurement convertedFromInches = converter.convert( measurementInInches, QgsUnitTypes::LayoutCentimeters );
-  QgsLayoutMeasurement convertedFromFeet = converter.convert( measurementInFeet, QgsUnitTypes::LayoutCentimeters );
-  QgsLayoutMeasurement convertedFromPoints = converter.convert( measurementInPoints, QgsUnitTypes::LayoutCentimeters );
-  QgsLayoutMeasurement convertedFromPicas = converter.convert( measurementInPicas, QgsUnitTypes::LayoutCentimeters );
+  const QgsLayoutMeasurementConverter converter;
+  const QgsLayoutMeasurement convertedFromMillimeters = converter.convert( measurementInMillimeters, QgsUnitTypes::LayoutCentimeters );
+  const QgsLayoutMeasurement convertedFromCentimeters = converter.convert( measurementInCentimeters, QgsUnitTypes::LayoutCentimeters );
+  const QgsLayoutMeasurement convertedFromMeters = converter.convert( measurementInMeters, QgsUnitTypes::LayoutCentimeters );
+  const QgsLayoutMeasurement convertedFromInches = converter.convert( measurementInInches, QgsUnitTypes::LayoutCentimeters );
+  const QgsLayoutMeasurement convertedFromFeet = converter.convert( measurementInFeet, QgsUnitTypes::LayoutCentimeters );
+  const QgsLayoutMeasurement convertedFromPoints = converter.convert( measurementInPoints, QgsUnitTypes::LayoutCentimeters );
+  const QgsLayoutMeasurement convertedFromPicas = converter.convert( measurementInPicas, QgsUnitTypes::LayoutCentimeters );
 
   QCOMPARE( convertedFromMillimeters.units(), QgsUnitTypes::LayoutCentimeters );
   QCOMPARE( convertedFromCentimeters.units(), QgsUnitTypes::LayoutCentimeters );
@@ -609,22 +609,22 @@ void TestQgsLayoutUnits::conversionToCM()
 
 void TestQgsLayoutUnits::conversionToM()
 {
-  QgsLayoutMeasurement measurementInMillimeters( 1.0, QgsUnitTypes::LayoutMillimeters );
-  QgsLayoutMeasurement measurementInCentimeters( 1.0, QgsUnitTypes::LayoutCentimeters );
-  QgsLayoutMeasurement measurementInMeters( 1.0, QgsUnitTypes::LayoutMeters );
-  QgsLayoutMeasurement measurementInInches( 1.0, QgsUnitTypes::LayoutInches );
-  QgsLayoutMeasurement measurementInFeet( 1.0, QgsUnitTypes::LayoutFeet );
-  QgsLayoutMeasurement measurementInPoints( 1.0, QgsUnitTypes::LayoutPoints );
-  QgsLayoutMeasurement measurementInPicas( 1.0, QgsUnitTypes::LayoutPicas );
+  const QgsLayoutMeasurement measurementInMillimeters( 1.0, QgsUnitTypes::LayoutMillimeters );
+  const QgsLayoutMeasurement measurementInCentimeters( 1.0, QgsUnitTypes::LayoutCentimeters );
+  const QgsLayoutMeasurement measurementInMeters( 1.0, QgsUnitTypes::LayoutMeters );
+  const QgsLayoutMeasurement measurementInInches( 1.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutMeasurement measurementInFeet( 1.0, QgsUnitTypes::LayoutFeet );
+  const QgsLayoutMeasurement measurementInPoints( 1.0, QgsUnitTypes::LayoutPoints );
+  const QgsLayoutMeasurement measurementInPicas( 1.0, QgsUnitTypes::LayoutPicas );
 
-  QgsLayoutMeasurementConverter converter;
-  QgsLayoutMeasurement convertedFromMillimeters = converter.convert( measurementInMillimeters, QgsUnitTypes::LayoutMeters );
-  QgsLayoutMeasurement convertedFromCentimeters = converter.convert( measurementInCentimeters, QgsUnitTypes::LayoutMeters );
-  QgsLayoutMeasurement convertedFromMeters = converter.convert( measurementInMeters, QgsUnitTypes::LayoutMeters );
-  QgsLayoutMeasurement convertedFromInches = converter.convert( measurementInInches, QgsUnitTypes::LayoutMeters );
-  QgsLayoutMeasurement convertedFromFeet = converter.convert( measurementInFeet, QgsUnitTypes::LayoutMeters );
-  QgsLayoutMeasurement convertedFromPoints = converter.convert( measurementInPoints, QgsUnitTypes::LayoutMeters );
-  QgsLayoutMeasurement convertedFromPicas = converter.convert( measurementInPicas, QgsUnitTypes::LayoutMeters );
+  const QgsLayoutMeasurementConverter converter;
+  const QgsLayoutMeasurement convertedFromMillimeters = converter.convert( measurementInMillimeters, QgsUnitTypes::LayoutMeters );
+  const QgsLayoutMeasurement convertedFromCentimeters = converter.convert( measurementInCentimeters, QgsUnitTypes::LayoutMeters );
+  const QgsLayoutMeasurement convertedFromMeters = converter.convert( measurementInMeters, QgsUnitTypes::LayoutMeters );
+  const QgsLayoutMeasurement convertedFromInches = converter.convert( measurementInInches, QgsUnitTypes::LayoutMeters );
+  const QgsLayoutMeasurement convertedFromFeet = converter.convert( measurementInFeet, QgsUnitTypes::LayoutMeters );
+  const QgsLayoutMeasurement convertedFromPoints = converter.convert( measurementInPoints, QgsUnitTypes::LayoutMeters );
+  const QgsLayoutMeasurement convertedFromPicas = converter.convert( measurementInPicas, QgsUnitTypes::LayoutMeters );
 
   QCOMPARE( convertedFromMillimeters.units(), QgsUnitTypes::LayoutMeters );
   QCOMPARE( convertedFromCentimeters.units(), QgsUnitTypes::LayoutMeters );
@@ -645,22 +645,22 @@ void TestQgsLayoutUnits::conversionToM()
 
 void TestQgsLayoutUnits::conversionToInches()
 {
-  QgsLayoutMeasurement measurementInMillimeters( 1.0, QgsUnitTypes::LayoutMillimeters );
-  QgsLayoutMeasurement measurementInCentimeters( 1.0, QgsUnitTypes::LayoutCentimeters );
-  QgsLayoutMeasurement measurementInMeters( 1.0, QgsUnitTypes::LayoutMeters );
-  QgsLayoutMeasurement measurementInInches( 1.0, QgsUnitTypes::LayoutInches );
-  QgsLayoutMeasurement measurementInFeet( 1.0, QgsUnitTypes::LayoutFeet );
-  QgsLayoutMeasurement measurementInPoints( 1.0, QgsUnitTypes::LayoutPoints );
-  QgsLayoutMeasurement measurementInPicas( 1.0, QgsUnitTypes::LayoutPicas );
+  const QgsLayoutMeasurement measurementInMillimeters( 1.0, QgsUnitTypes::LayoutMillimeters );
+  const QgsLayoutMeasurement measurementInCentimeters( 1.0, QgsUnitTypes::LayoutCentimeters );
+  const QgsLayoutMeasurement measurementInMeters( 1.0, QgsUnitTypes::LayoutMeters );
+  const QgsLayoutMeasurement measurementInInches( 1.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutMeasurement measurementInFeet( 1.0, QgsUnitTypes::LayoutFeet );
+  const QgsLayoutMeasurement measurementInPoints( 1.0, QgsUnitTypes::LayoutPoints );
+  const QgsLayoutMeasurement measurementInPicas( 1.0, QgsUnitTypes::LayoutPicas );
 
-  QgsLayoutMeasurementConverter converter;
-  QgsLayoutMeasurement convertedFromMillimeters = converter.convert( measurementInMillimeters, QgsUnitTypes::LayoutInches );
-  QgsLayoutMeasurement convertedFromCentimeters = converter.convert( measurementInCentimeters, QgsUnitTypes::LayoutInches );
-  QgsLayoutMeasurement convertedFromMeters = converter.convert( measurementInMeters, QgsUnitTypes::LayoutInches );
-  QgsLayoutMeasurement convertedFromInches = converter.convert( measurementInInches, QgsUnitTypes::LayoutInches );
-  QgsLayoutMeasurement convertedFromFeet = converter.convert( measurementInFeet, QgsUnitTypes::LayoutInches );
-  QgsLayoutMeasurement convertedFromPoints = converter.convert( measurementInPoints, QgsUnitTypes::LayoutInches );
-  QgsLayoutMeasurement convertedFromPicas = converter.convert( measurementInPicas, QgsUnitTypes::LayoutInches );
+  const QgsLayoutMeasurementConverter converter;
+  const QgsLayoutMeasurement convertedFromMillimeters = converter.convert( measurementInMillimeters, QgsUnitTypes::LayoutInches );
+  const QgsLayoutMeasurement convertedFromCentimeters = converter.convert( measurementInCentimeters, QgsUnitTypes::LayoutInches );
+  const QgsLayoutMeasurement convertedFromMeters = converter.convert( measurementInMeters, QgsUnitTypes::LayoutInches );
+  const QgsLayoutMeasurement convertedFromInches = converter.convert( measurementInInches, QgsUnitTypes::LayoutInches );
+  const QgsLayoutMeasurement convertedFromFeet = converter.convert( measurementInFeet, QgsUnitTypes::LayoutInches );
+  const QgsLayoutMeasurement convertedFromPoints = converter.convert( measurementInPoints, QgsUnitTypes::LayoutInches );
+  const QgsLayoutMeasurement convertedFromPicas = converter.convert( measurementInPicas, QgsUnitTypes::LayoutInches );
 
   QCOMPARE( convertedFromMillimeters.units(), QgsUnitTypes::LayoutInches );
   QCOMPARE( convertedFromCentimeters.units(), QgsUnitTypes::LayoutInches );
@@ -681,22 +681,22 @@ void TestQgsLayoutUnits::conversionToInches()
 
 void TestQgsLayoutUnits::conversionToFeet()
 {
-  QgsLayoutMeasurement measurementInMillimeters( 1.0, QgsUnitTypes::LayoutMillimeters );
-  QgsLayoutMeasurement measurementInCentimeters( 1.0, QgsUnitTypes::LayoutCentimeters );
-  QgsLayoutMeasurement measurementInMeters( 1.0, QgsUnitTypes::LayoutMeters );
-  QgsLayoutMeasurement measurementInInches( 1.0, QgsUnitTypes::LayoutInches );
-  QgsLayoutMeasurement measurementInFeet( 1.0, QgsUnitTypes::LayoutFeet );
-  QgsLayoutMeasurement measurementInPoints( 1.0, QgsUnitTypes::LayoutPoints );
-  QgsLayoutMeasurement measurementInPicas( 1.0, QgsUnitTypes::LayoutPicas );
+  const QgsLayoutMeasurement measurementInMillimeters( 1.0, QgsUnitTypes::LayoutMillimeters );
+  const QgsLayoutMeasurement measurementInCentimeters( 1.0, QgsUnitTypes::LayoutCentimeters );
+  const QgsLayoutMeasurement measurementInMeters( 1.0, QgsUnitTypes::LayoutMeters );
+  const QgsLayoutMeasurement measurementInInches( 1.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutMeasurement measurementInFeet( 1.0, QgsUnitTypes::LayoutFeet );
+  const QgsLayoutMeasurement measurementInPoints( 1.0, QgsUnitTypes::LayoutPoints );
+  const QgsLayoutMeasurement measurementInPicas( 1.0, QgsUnitTypes::LayoutPicas );
 
-  QgsLayoutMeasurementConverter converter;
-  QgsLayoutMeasurement convertedFromMillimeters = converter.convert( measurementInMillimeters, QgsUnitTypes::LayoutFeet );
-  QgsLayoutMeasurement convertedFromCentimeters = converter.convert( measurementInCentimeters, QgsUnitTypes::LayoutFeet );
-  QgsLayoutMeasurement convertedFromMeters = converter.convert( measurementInMeters, QgsUnitTypes::LayoutFeet );
-  QgsLayoutMeasurement convertedFromInches = converter.convert( measurementInInches, QgsUnitTypes::LayoutFeet );
-  QgsLayoutMeasurement convertedFromFeet = converter.convert( measurementInFeet, QgsUnitTypes::LayoutFeet );
-  QgsLayoutMeasurement convertedFromPoints = converter.convert( measurementInPoints, QgsUnitTypes::LayoutFeet );
-  QgsLayoutMeasurement convertedFromPicas = converter.convert( measurementInPicas, QgsUnitTypes::LayoutFeet );
+  const QgsLayoutMeasurementConverter converter;
+  const QgsLayoutMeasurement convertedFromMillimeters = converter.convert( measurementInMillimeters, QgsUnitTypes::LayoutFeet );
+  const QgsLayoutMeasurement convertedFromCentimeters = converter.convert( measurementInCentimeters, QgsUnitTypes::LayoutFeet );
+  const QgsLayoutMeasurement convertedFromMeters = converter.convert( measurementInMeters, QgsUnitTypes::LayoutFeet );
+  const QgsLayoutMeasurement convertedFromInches = converter.convert( measurementInInches, QgsUnitTypes::LayoutFeet );
+  const QgsLayoutMeasurement convertedFromFeet = converter.convert( measurementInFeet, QgsUnitTypes::LayoutFeet );
+  const QgsLayoutMeasurement convertedFromPoints = converter.convert( measurementInPoints, QgsUnitTypes::LayoutFeet );
+  const QgsLayoutMeasurement convertedFromPicas = converter.convert( measurementInPicas, QgsUnitTypes::LayoutFeet );
 
   QCOMPARE( convertedFromMillimeters.units(), QgsUnitTypes::LayoutFeet );
   QCOMPARE( convertedFromCentimeters.units(), QgsUnitTypes::LayoutFeet );
@@ -717,22 +717,22 @@ void TestQgsLayoutUnits::conversionToFeet()
 
 void TestQgsLayoutUnits::conversionToPoints()
 {
-  QgsLayoutMeasurement measurementInMillimeters( 1.0, QgsUnitTypes::LayoutMillimeters );
-  QgsLayoutMeasurement measurementInCentimeters( 1.0, QgsUnitTypes::LayoutCentimeters );
-  QgsLayoutMeasurement measurementInMeters( 1.0, QgsUnitTypes::LayoutMeters );
-  QgsLayoutMeasurement measurementInInches( 1.0, QgsUnitTypes::LayoutInches );
-  QgsLayoutMeasurement measurementInFeet( 1.0, QgsUnitTypes::LayoutFeet );
-  QgsLayoutMeasurement measurementInPoints( 1.0, QgsUnitTypes::LayoutPoints );
-  QgsLayoutMeasurement measurementInPicas( 1.0, QgsUnitTypes::LayoutPicas );
+  const QgsLayoutMeasurement measurementInMillimeters( 1.0, QgsUnitTypes::LayoutMillimeters );
+  const QgsLayoutMeasurement measurementInCentimeters( 1.0, QgsUnitTypes::LayoutCentimeters );
+  const QgsLayoutMeasurement measurementInMeters( 1.0, QgsUnitTypes::LayoutMeters );
+  const QgsLayoutMeasurement measurementInInches( 1.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutMeasurement measurementInFeet( 1.0, QgsUnitTypes::LayoutFeet );
+  const QgsLayoutMeasurement measurementInPoints( 1.0, QgsUnitTypes::LayoutPoints );
+  const QgsLayoutMeasurement measurementInPicas( 1.0, QgsUnitTypes::LayoutPicas );
 
-  QgsLayoutMeasurementConverter converter;
-  QgsLayoutMeasurement convertedFromMillimeters = converter.convert( measurementInMillimeters, QgsUnitTypes::LayoutPoints );
-  QgsLayoutMeasurement convertedFromCentimeters = converter.convert( measurementInCentimeters, QgsUnitTypes::LayoutPoints );
-  QgsLayoutMeasurement convertedFromMeters = converter.convert( measurementInMeters, QgsUnitTypes::LayoutPoints );
-  QgsLayoutMeasurement convertedFromInches = converter.convert( measurementInInches, QgsUnitTypes::LayoutPoints );
-  QgsLayoutMeasurement convertedFromFeet = converter.convert( measurementInFeet, QgsUnitTypes::LayoutPoints );
-  QgsLayoutMeasurement convertedFromPoints = converter.convert( measurementInPoints, QgsUnitTypes::LayoutPoints );
-  QgsLayoutMeasurement convertedFromPicas = converter.convert( measurementInPicas, QgsUnitTypes::LayoutPoints );
+  const QgsLayoutMeasurementConverter converter;
+  const QgsLayoutMeasurement convertedFromMillimeters = converter.convert( measurementInMillimeters, QgsUnitTypes::LayoutPoints );
+  const QgsLayoutMeasurement convertedFromCentimeters = converter.convert( measurementInCentimeters, QgsUnitTypes::LayoutPoints );
+  const QgsLayoutMeasurement convertedFromMeters = converter.convert( measurementInMeters, QgsUnitTypes::LayoutPoints );
+  const QgsLayoutMeasurement convertedFromInches = converter.convert( measurementInInches, QgsUnitTypes::LayoutPoints );
+  const QgsLayoutMeasurement convertedFromFeet = converter.convert( measurementInFeet, QgsUnitTypes::LayoutPoints );
+  const QgsLayoutMeasurement convertedFromPoints = converter.convert( measurementInPoints, QgsUnitTypes::LayoutPoints );
+  const QgsLayoutMeasurement convertedFromPicas = converter.convert( measurementInPicas, QgsUnitTypes::LayoutPoints );
 
   QCOMPARE( convertedFromMillimeters.units(), QgsUnitTypes::LayoutPoints );
   QCOMPARE( convertedFromCentimeters.units(), QgsUnitTypes::LayoutPoints );
@@ -753,22 +753,22 @@ void TestQgsLayoutUnits::conversionToPoints()
 
 void TestQgsLayoutUnits::conversionToPicas()
 {
-  QgsLayoutMeasurement measurementInMillimeters( 1.0, QgsUnitTypes::LayoutMillimeters );
-  QgsLayoutMeasurement measurementInCentimeters( 1.0, QgsUnitTypes::LayoutCentimeters );
-  QgsLayoutMeasurement measurementInMeters( 1.0, QgsUnitTypes::LayoutMeters );
-  QgsLayoutMeasurement measurementInInches( 1.0, QgsUnitTypes::LayoutInches );
-  QgsLayoutMeasurement measurementInFeet( 1.0, QgsUnitTypes::LayoutFeet );
-  QgsLayoutMeasurement measurementInPoints( 1.0, QgsUnitTypes::LayoutPoints );
-  QgsLayoutMeasurement measurementInPicas( 1.0, QgsUnitTypes::LayoutPicas );
+  const QgsLayoutMeasurement measurementInMillimeters( 1.0, QgsUnitTypes::LayoutMillimeters );
+  const QgsLayoutMeasurement measurementInCentimeters( 1.0, QgsUnitTypes::LayoutCentimeters );
+  const QgsLayoutMeasurement measurementInMeters( 1.0, QgsUnitTypes::LayoutMeters );
+  const QgsLayoutMeasurement measurementInInches( 1.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutMeasurement measurementInFeet( 1.0, QgsUnitTypes::LayoutFeet );
+  const QgsLayoutMeasurement measurementInPoints( 1.0, QgsUnitTypes::LayoutPoints );
+  const QgsLayoutMeasurement measurementInPicas( 1.0, QgsUnitTypes::LayoutPicas );
 
-  QgsLayoutMeasurementConverter converter;
-  QgsLayoutMeasurement convertedFromMillimeters = converter.convert( measurementInMillimeters, QgsUnitTypes::LayoutPicas );
-  QgsLayoutMeasurement convertedFromCentimeters = converter.convert( measurementInCentimeters, QgsUnitTypes::LayoutPicas );
-  QgsLayoutMeasurement convertedFromMeters = converter.convert( measurementInMeters, QgsUnitTypes::LayoutPicas );
-  QgsLayoutMeasurement convertedFromInches = converter.convert( measurementInInches, QgsUnitTypes::LayoutPicas );
-  QgsLayoutMeasurement convertedFromFeet = converter.convert( measurementInFeet, QgsUnitTypes::LayoutPicas );
-  QgsLayoutMeasurement convertedFromPoints = converter.convert( measurementInPoints, QgsUnitTypes::LayoutPicas );
-  QgsLayoutMeasurement convertedFromPicas = converter.convert( measurementInPicas, QgsUnitTypes::LayoutPicas );
+  const QgsLayoutMeasurementConverter converter;
+  const QgsLayoutMeasurement convertedFromMillimeters = converter.convert( measurementInMillimeters, QgsUnitTypes::LayoutPicas );
+  const QgsLayoutMeasurement convertedFromCentimeters = converter.convert( measurementInCentimeters, QgsUnitTypes::LayoutPicas );
+  const QgsLayoutMeasurement convertedFromMeters = converter.convert( measurementInMeters, QgsUnitTypes::LayoutPicas );
+  const QgsLayoutMeasurement convertedFromInches = converter.convert( measurementInInches, QgsUnitTypes::LayoutPicas );
+  const QgsLayoutMeasurement convertedFromFeet = converter.convert( measurementInFeet, QgsUnitTypes::LayoutPicas );
+  const QgsLayoutMeasurement convertedFromPoints = converter.convert( measurementInPoints, QgsUnitTypes::LayoutPicas );
+  const QgsLayoutMeasurement convertedFromPicas = converter.convert( measurementInPicas, QgsUnitTypes::LayoutPicas );
 
   QCOMPARE( convertedFromMillimeters.units(), QgsUnitTypes::LayoutPicas );
   QCOMPARE( convertedFromCentimeters.units(), QgsUnitTypes::LayoutPicas );
@@ -796,7 +796,7 @@ void TestQgsLayoutUnits::converterGettersSetters()
 
 void TestQgsLayoutUnits::conversionFromPixels()
 {
-  QgsLayoutMeasurement measurementInPixels( 300.0, QgsUnitTypes::LayoutPixels );
+  const QgsLayoutMeasurement measurementInPixels( 300.0, QgsUnitTypes::LayoutPixels );
 
   QgsLayoutMeasurementConverter converter;
   //try initially with 300 dpi
@@ -820,8 +820,8 @@ void TestQgsLayoutUnits::conversionFromPixels()
 
 void TestQgsLayoutUnits::conversionToPixels()
 {
-  QgsLayoutMeasurement measurementInInches( 1.0, QgsUnitTypes::LayoutInches );
-  QgsLayoutMeasurement measurementInMM( 1.0, QgsUnitTypes::LayoutMillimeters );
+  const QgsLayoutMeasurement measurementInInches( 1.0, QgsUnitTypes::LayoutInches );
+  const QgsLayoutMeasurement measurementInMM( 1.0, QgsUnitTypes::LayoutMillimeters );
 
   QgsLayoutMeasurementConverter converter;
   //try initially with 300 dpi
@@ -845,7 +845,7 @@ void TestQgsLayoutUnits::conversionToPixels()
 
 void TestQgsLayoutUnits::sizeConversion()
 {
-  QgsLayoutSize sizeInMM( 1.0, 2.0, QgsUnitTypes::LayoutMillimeters );
+  const QgsLayoutSize sizeInMM( 1.0, 2.0, QgsUnitTypes::LayoutMillimeters );
   QgsLayoutMeasurementConverter converter;
 
   //test conversion to same units
@@ -854,12 +854,12 @@ void TestQgsLayoutUnits::sizeConversion()
 
   //convert to other units
   convertedSize = converter.convert( sizeInMM, QgsUnitTypes::LayoutCentimeters );
-  QgsLayoutSize expectedSize( 0.1, 0.2, QgsUnitTypes::LayoutCentimeters );
+  const QgsLayoutSize expectedSize( 0.1, 0.2, QgsUnitTypes::LayoutCentimeters );
   QCOMPARE( convertedSize, expectedSize );
 
   //pixel conversion
   converter.setDpi( 96.0 );
-  QgsLayoutSize convertedToInches = converter.convert( QgsLayoutSize( 96, 192, QgsUnitTypes::LayoutPixels ), QgsUnitTypes::LayoutInches );
+  const QgsLayoutSize convertedToInches = converter.convert( QgsLayoutSize( 96, 192, QgsUnitTypes::LayoutPixels ), QgsUnitTypes::LayoutInches );
   QCOMPARE( convertedToInches.width(), 1.0 );
   QCOMPARE( convertedToInches.height(), 2.0 );
   QCOMPARE( convertedToInches.units(), QgsUnitTypes::LayoutInches );
@@ -867,7 +867,7 @@ void TestQgsLayoutUnits::sizeConversion()
 
 void TestQgsLayoutUnits::pointConversion()
 {
-  QgsLayoutPoint pointInMM( 1.0, 2.0, QgsUnitTypes::LayoutMillimeters );
+  const QgsLayoutPoint pointInMM( 1.0, 2.0, QgsUnitTypes::LayoutMillimeters );
   QgsLayoutMeasurementConverter converter;
 
   //test conversion to same units
@@ -876,12 +876,12 @@ void TestQgsLayoutUnits::pointConversion()
 
   //convert to other units
   convertedPoint = converter.convert( pointInMM, QgsUnitTypes::LayoutCentimeters );
-  QgsLayoutPoint expectedPoint( 0.1, 0.2, QgsUnitTypes::LayoutCentimeters );
+  const QgsLayoutPoint expectedPoint( 0.1, 0.2, QgsUnitTypes::LayoutCentimeters );
   QCOMPARE( convertedPoint, expectedPoint );
 
   //pixel conversion
   converter.setDpi( 96.0 );
-  QgsLayoutPoint convertedToInches = converter.convert( QgsLayoutPoint( 96, 192, QgsUnitTypes::LayoutPixels ), QgsUnitTypes::LayoutInches );
+  const QgsLayoutPoint convertedToInches = converter.convert( QgsLayoutPoint( 96, 192, QgsUnitTypes::LayoutPixels ), QgsUnitTypes::LayoutInches );
   QCOMPARE( convertedToInches.x(), 1.0 );
   QCOMPARE( convertedToInches.y(), 2.0 );
   QCOMPARE( convertedToInches.units(), QgsUnitTypes::LayoutInches );

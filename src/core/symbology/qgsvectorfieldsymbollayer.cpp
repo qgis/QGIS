@@ -219,7 +219,7 @@ void QgsVectorFieldSymbolLayer::startRender( QgsSymbolRenderContext &context )
     mLineSymbol->startRender( context.renderContext(), context.fields() );
   }
 
-  QgsFields fields = context.fields();
+  const QgsFields fields = context.fields();
   if ( !fields.isEmpty() )
   {
     mXIndex = fields.lookupField( mXAttribute );

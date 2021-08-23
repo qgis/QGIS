@@ -146,7 +146,7 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
   if ( mFeedback )
     connect( mFeedback, &QgsFeedback::canceled, this, &QgsBlockingNetworkRequest::abort );
 
-  std::function<void()> downloaderFunction = [ this, request, &waitConditionMutex, &authRequestBufferNotEmpty, &threadFinished, &success, requestMadeFromMainThread ]()
+  const std::function<void()> downloaderFunction = [ this, request, &waitConditionMutex, &authRequestBufferNotEmpty, &threadFinished, &success, requestMadeFromMainThread ]()
   {
     // this function will always be run in worker threads -- either the blocking call is being made in a worker thread,
     // or the blocking call has been made from the main thread and we've fired up a new thread for this function
@@ -279,7 +279,7 @@ void QgsBlockingNetworkRequest::replyProgress( qint64 bytesReceived, qint64 byte
   {
     if ( mReply->error() == QNetworkReply::NoError )
     {
-      QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
+      const QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
       if ( !redirect.isNull() )
       {
         // We don't want to emit downloadProgress() for a redirect
@@ -299,7 +299,7 @@ void QgsBlockingNetworkRequest::replyFinished()
     if ( mReply->error() == QNetworkReply::NoError && ( !mFeedback || !mFeedback->isCanceled() ) )
     {
       QgsDebugMsgLevel( QStringLiteral( "reply OK" ), 2 );
-      QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
+      const QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
       if ( !redirect.isNull() )
       {
         QgsDebugMsgLevel( QStringLiteral( "Request redirected." ), 2 );
@@ -385,7 +385,7 @@ void QgsBlockingNetworkRequest::replyFinished()
         }
 
 #ifdef QGISDEBUG
-        bool fromCache = mReply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool();
+        const bool fromCache = mReply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool();
         QgsDebugMsgLevel( QStringLiteral( "Reply was cached: %1" ).arg( fromCache ), 2 );
 #endif
 

@@ -83,10 +83,10 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer(
 void QgsMeshLayerRenderer::copyTriangularMeshes( QgsMeshLayer *layer, QgsRenderContext &context )
 {
   // handle level of details of mesh
-  QgsMeshSimplificationSettings simplificationSettings = layer->meshSimplificationSettings();
+  const QgsMeshSimplificationSettings simplificationSettings = layer->meshSimplificationSettings();
   if ( simplificationSettings.isEnabled() )
   {
-    double triangleSize = simplificationSettings.meshResolution() * context.mapToPixel().mapUnitsPerPixel();
+    const double triangleSize = simplificationSettings.meshResolution() * context.mapToPixel().mapUnitsPerPixel();
     mTriangularMesh = *( layer->triangularMesh( triangleSize ) );
     mIsMeshSimplificationActive = true;
   }
@@ -104,12 +104,12 @@ QgsFeedback *QgsMeshLayerRenderer::feedback() const
 void QgsMeshLayerRenderer::calculateOutputSize()
 {
   // figure out image size
-  QgsRenderContext &context = *renderContext();
+  const QgsRenderContext &context = *renderContext();
   const QgsRectangle extent = context.mapExtent();
   const QgsMapToPixel mapToPixel = context.mapToPixel();
   const QgsRectangle screenBBox = QgsMeshLayerUtils::boundingBoxToScreenRectangle( mapToPixel, extent );
-  int width = int( screenBBox.width() );
-  int height = int( screenBBox.height() );
+  const int width = int( screenBBox.width() );
+  const int height = int( screenBBox.height() );
   mOutputSize = QSize( width, height );
 }
 
@@ -147,11 +147,11 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
 
     // populate scalar values
     const int count = QgsMeshLayerUtils::datasetValuesCount( &mNativeMesh, mScalarDataType );
-    QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues(
-                              layer,
-                              datasetIndex,
-                              0,
-                              count );
+    const QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues(
+                                    layer,
+                                    datasetIndex,
+                                    0,
+                                    count );
 
     if ( vals.isValid() )
     {
@@ -245,7 +245,7 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
   {
     const QgsMeshDatasetGroupMetadata metadata = layer->datasetGroupMetadata( datasetIndex );
 
-    bool isScalar = metadata.isScalar();
+    const bool isScalar = metadata.isScalar();
     if ( isScalar )
     {
       QgsDebugMsg( QStringLiteral( "Dataset has no vector values" ) );
@@ -257,7 +257,7 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
       mVectorDatasetGroupMagMinimum = metadata.minimum();
       mVectorDatasetGroupMagMaximum = metadata.maximum();
 
-      int count = QgsMeshLayerUtils::datasetValuesCount( &mNativeMesh, mVectorDataType );
+      const int count = QgsMeshLayerUtils::datasetValuesCount( &mNativeMesh, mVectorDataType );
       mVectorDatasetValues = QgsMeshLayerUtils::datasetValues(
                                layer,
                                datasetIndex,
@@ -291,7 +291,7 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
 bool QgsMeshLayerRenderer::render()
 {
   mReadyToCompose = false;
-  QgsScopedQPainterState painterState( renderContext()->painter() );
+  const QgsScopedQPainterState painterState( renderContext()->painter() );
   if ( !mClippingRegions.empty() )
   {
     bool needsPainterClipPath = false;
@@ -363,7 +363,7 @@ static QPainter *_painterForMeshFrame( QgsRenderContext &context, const QgsMeshR
   pen.setCapStyle( Qt::FlatCap );
   pen.setJoinStyle( Qt::MiterJoin );
 
-  double penWidth = context.convertToPainterUnits( settings.lineWidth(), settings.lineWidthUnit() );
+  const double penWidth = context.convertToPainterUnits( settings.lineWidth(), settings.lineWidthUnit() );
   pen.setWidthF( penWidth );
   pen.setColor( settings.color() );
   painter->setPen( pen );
@@ -462,7 +462,7 @@ void QgsMeshLayerRenderer::renderScalarDataset()
   if ( std::isnan( mScalarDatasetMinimum ) || std::isnan( mScalarDatasetMaximum ) )
     return; // only NODATA values
 
-  int groupIndex = mRendererSettings.activeScalarDatasetGroup();
+  const int groupIndex = mRendererSettings.activeScalarDatasetGroup();
   if ( groupIndex < 0 )
     return; // no shader
 
@@ -561,14 +561,14 @@ void QgsMeshLayerRenderer::renderScalarDatasetOnFaces( const QgsMeshRendererScal
   renderer.setOpacity( scalarSettings.opacity() );
 
   std::unique_ptr<QgsRasterBlock> bl( renderer.block( 0, context.mapExtent(), mOutputSize.width(), mOutputSize.height(), mFeedback.get() ) );
-  QImage img = bl->image();
+  const QImage img = bl->image();
 
   context.painter()->drawImage( 0, 0, img );
 }
 
 void QgsMeshLayerRenderer::renderVectorDataset()
 {
-  int groupIndex = mRendererSettings.activeVectorDatasetGroup();
+  const int groupIndex = mRendererSettings.activeVectorDatasetGroup();
   if ( groupIndex < 0 )
     return;
 

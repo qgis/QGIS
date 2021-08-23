@@ -558,7 +558,7 @@ QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupTreeItem::childFromDatasetGroupI
   if ( mDatasetGroupIndexToChild.empty() )
     return nullptr;
 
-  QMap<int, QgsMeshDatasetGroupTreeItem *>::iterator it = mDatasetGroupIndexToChild.find( index );
+  const QMap<int, QgsMeshDatasetGroupTreeItem *>::iterator it = mDatasetGroupIndexToChild.find( index );
 
   if ( it != mDatasetGroupIndexToChild.end() )
     return it.value();
@@ -701,14 +701,14 @@ QDomElement QgsMeshDatasetGroupTreeItem::writeXml( QDomDocument &doc, const QgsR
   itemElement.setAttribute( QStringLiteral( "dataset-group-type" ), mDatasetGroupType );
   itemElement.setAttribute( QStringLiteral( "description" ), mDescription );
 
-  for ( int index : mDatasetGroupDependentOn )
+  for ( const int index : mDatasetGroupDependentOn )
   {
     QDomElement dependOnElement = doc.createElement( QStringLiteral( "dependent-on-item" ) );
     dependOnElement.setAttribute( QStringLiteral( "dataset-index" ), index );
     itemElement.appendChild( dependOnElement );
   }
 
-  for ( int index : mDatasetGroupDependencies )
+  for ( const int index : mDatasetGroupDependencies )
   {
     QDomElement dependencieElement = doc.createElement( QStringLiteral( "dependency-item" ) );
     dependencieElement.setAttribute( QStringLiteral( "dataset-index" ), index );
@@ -725,7 +725,7 @@ QList<int> QgsMeshDatasetGroupTreeItem::groupIndexDependencies() const
 {
   QList<int> dependencies;
   QgsMeshDatasetGroupTreeItem *root = rootItem();
-  for ( int index : mDatasetGroupDependencies )
+  for ( const int index : mDatasetGroupDependencies )
   {
     if ( !dependencies.contains( index ) )
       dependencies.append( index );
@@ -774,7 +774,7 @@ QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupTreeItem::rootItem() const
 void QgsMeshDatasetGroupTreeItem::freeAsDependency()
 {
   QgsMeshDatasetGroupTreeItem *root = rootItem();
-  for ( int index : mDatasetGroupDependentOn )
+  for ( const int index : mDatasetGroupDependentOn )
   {
     QgsMeshDatasetGroupTreeItem *item = root->childFromDatasetGroupIndex( index );
     if ( item )
@@ -785,7 +785,7 @@ void QgsMeshDatasetGroupTreeItem::freeAsDependency()
 void QgsMeshDatasetGroupTreeItem::freeFromDependencies()
 {
   QgsMeshDatasetGroupTreeItem *root = rootItem();
-  for ( int index : mDatasetGroupDependencies )
+  for ( const int index : mDatasetGroupDependencies )
   {
     QgsMeshDatasetGroupTreeItem *item = root->childFromDatasetGroupIndex( index );
     if ( item )
@@ -818,11 +818,11 @@ QgsMeshDataBlock QgsMeshMemoryDataset::datasetValues( bool isScalar, int valueIn
   QVector<double> buf( isScalar ? count : 2 * count );
   for ( int i = 0; i < count; ++i )
   {
-    int idx = valueIndex + i;
+    const int idx = valueIndex + i;
     if ( ( idx < 0 ) || ( idx >= values.size() ) )
       return ret;
 
-    QgsMeshDatasetValue val = values[ valueIndex + i ];
+    const QgsMeshDatasetValue val = values[ valueIndex + i ];
     if ( isScalar )
       buf[i] = val.x();
     else
@@ -865,7 +865,7 @@ void QgsMeshMemoryDataset::calculateMinMax()
   bool firstIteration = true;
   for ( int i = 0; i < values.size(); ++i )
   {
-    double v = values[i].scalar();
+    const double v = values[i].scalar();
 
     if ( std::isnan( v ) )
       continue;
@@ -978,7 +978,7 @@ void QgsMeshDatasetGroup::calculateStatistic()
   double min = std::numeric_limits<double>::max();
   double max = std::numeric_limits<double>::min();
 
-  int count = datasetCount();
+  const int count = datasetCount();
   for ( int i = 0; i < count; ++i )
   {
     const QgsMeshDatasetMetadata &meta = datasetMetadata( i );
@@ -1116,7 +1116,7 @@ QgsMeshDatasetMetadata QgsMeshVerticesElevationDataset::metadata() const
   if ( mMesh )
     for ( int i = 0; i < mMesh->vertexCount(); ++i )
     {
-      double z = mMesh->vertex( i ).z();
+      const double z = mMesh->vertex( i ).z();
       if ( min > z )
         min = z;
       if ( max < z )

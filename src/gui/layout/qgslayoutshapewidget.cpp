@@ -167,7 +167,7 @@ void QgsLayoutShapeWidget::mShapeComboBox_currentIndexChanged( const QString & )
   }
 
   mShape->layout()->undoStack()->beginCommand( mShape, tr( "Change Shape Type" ) );
-  QgsLayoutItemShape::Shape shape = static_cast< QgsLayoutItemShape::Shape >( mShapeComboBox->currentData().toInt() );
+  const QgsLayoutItemShape::Shape shape = static_cast< QgsLayoutItemShape::Shape >( mShapeComboBox->currentData().toInt() );
   mShape->setShapeType( shape );
   toggleRadiusSpin( shape );
   mShape->update();

@@ -83,8 +83,8 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
     }
   }
 
-  bool firstLayers = mAutoSetupOnFirstLayer && !mHasLayersLoaded && currentSpatialLayerCount != 0;
-  bool firstValidLayers = mAutoSetupOnFirstLayer && !mHasValidLayersLoaded && currentValidSpatialLayerCount != 0;
+  const bool firstLayers = mAutoSetupOnFirstLayer && !mHasLayersLoaded && currentSpatialLayerCount != 0;
+  const bool firstValidLayers = mAutoSetupOnFirstLayer && !mHasValidLayersLoaded && currentValidSpatialLayerCount != 0;
 
   mCanvas->setLayers( canvasLayers );
   if ( mOverviewCanvas )

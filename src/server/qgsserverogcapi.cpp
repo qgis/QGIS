@@ -81,7 +81,7 @@ QUrl QgsServerOgcApi::sanitizeUrl( const QUrl &url )
 void QgsServerOgcApi::executeRequest( const QgsServerApiContext &context ) const
 {
   // Get url
-  auto path { sanitizeUrl( context.request()->url() ).path() };
+  const auto path { sanitizeUrl( context.request()->url() ).path() };
   // Find matching handler
   auto hasMatch { false };
   for ( const auto &handler : mHandlers )
@@ -123,7 +123,7 @@ const QHash<QgsServerOgcApi::ContentType, QList<QgsServerOgcApi::ContentType> > 
 
 std::string QgsServerOgcApi::relToString( const Rel &rel )
 {
-  static QMetaEnum metaEnum = QMetaEnum::fromType<QgsServerOgcApi::Rel>();
+  static const QMetaEnum metaEnum = QMetaEnum::fromType<QgsServerOgcApi::Rel>();
   std::string val { metaEnum.valueToKey( rel ) };
   std::replace( val.begin(), val.end(), '_', '-' );
   return val;
@@ -131,14 +131,14 @@ std::string QgsServerOgcApi::relToString( const Rel &rel )
 
 QString QgsServerOgcApi::contentTypeToString( const ContentType &ct )
 {
-  static QMetaEnum metaEnum = QMetaEnum::fromType<ContentType>();
+  static const QMetaEnum metaEnum = QMetaEnum::fromType<ContentType>();
   QString result { metaEnum.valueToKey( ct ) };
   return result.replace( '_', '-' );
 }
 
 std::string QgsServerOgcApi::contentTypeToStdString( const ContentType &ct )
 {
-  static QMetaEnum metaEnum = QMetaEnum::fromType<ContentType>();
+  static const QMetaEnum metaEnum = QMetaEnum::fromType<ContentType>();
   return metaEnum.valueToKey( ct );
 }
 

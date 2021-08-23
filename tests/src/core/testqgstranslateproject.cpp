@@ -107,7 +107,7 @@ void TestQgsTranslateProject::createTsFile()
 
   tsFile.open( QIODevice::ReadWrite );
 
-  QString tsFileContent( tsFile.readAll() );
+  const QString tsFileContent( tsFile.readAll() );
 
   //LAYER NAMES
   //lines
@@ -209,7 +209,7 @@ void TestQgsTranslateProject::translateProject()
   QCOMPARE( points_fields.field( QStringLiteral( "Staff" ) ).alias(), QStringLiteral( "Mitarbeiter" ) );
 
   //FORMCONTAINERS
-  QList<QgsAttributeEditorElement *> elements = points_layer->editFormConfig().invisibleRootContainer()->children();
+  const QList<QgsAttributeEditorElement *> elements = points_layer->editFormConfig().invisibleRootContainer()->children();
   QList<QgsAttributeEditorContainer *> containers;
   for ( QgsAttributeEditorElement *element : elements )
   {
@@ -236,7 +236,7 @@ void TestQgsTranslateProject::translateProject()
 
   QString deProjectFileName( TEST_DATA_DIR );
   deProjectFileName = deProjectFileName + "/project_translation/points_translation_de.qgs";
-  QFile deProjectFile( deProjectFileName );
+  const QFile deProjectFile( deProjectFileName );
   QVERIFY( deProjectFile.exists() );
 }
 

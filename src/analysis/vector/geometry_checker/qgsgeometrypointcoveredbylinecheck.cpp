@@ -23,8 +23,8 @@ void QgsGeometryPointCoveredByLineCheck::collectErrors( const QMap<QString, QgsF
 {
   Q_UNUSED( messages )
 
-  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext, true );
+  const QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
+  const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext, true );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
     const QgsAbstractGeometry *geom = layerFeature.geometry().constGet();
@@ -38,9 +38,9 @@ void QgsGeometryPointCoveredByLineCheck::collectErrors( const QMap<QString, QgsF
       }
       // Check that point lies on a line
       bool touches = false;
-      QgsRectangle rect( point->x() - mContext->tolerance, point->y() - mContext->tolerance,
-                         point->x() + mContext->tolerance, point->y() + mContext->tolerance );
-      QgsGeometryCheckerUtils::LayerFeatures checkFeatures( featurePools, featureIds.keys(), rect, {QgsWkbTypes::LineGeometry}, mContext );
+      const QgsRectangle rect( point->x() - mContext->tolerance, point->y() - mContext->tolerance,
+                               point->x() + mContext->tolerance, point->y() + mContext->tolerance );
+      const QgsGeometryCheckerUtils::LayerFeatures checkFeatures( featurePools, featureIds.keys(), rect, {QgsWkbTypes::LineGeometry}, mContext );
       for ( const QgsGeometryCheckerUtils::LayerFeature &checkFeature : checkFeatures )
       {
         const QgsAbstractGeometry *testGeom = checkFeature.geometry().constGet();
@@ -87,7 +87,7 @@ void QgsGeometryPointCoveredByLineCheck::fixError( const QMap<QString, QgsFeatur
 
 QStringList QgsGeometryPointCoveredByLineCheck::resolutionMethods() const
 {
-  static QStringList methods = QStringList() << tr( "No action" );
+  static const QStringList methods = QStringList() << tr( "No action" );
   return methods;
 }
 

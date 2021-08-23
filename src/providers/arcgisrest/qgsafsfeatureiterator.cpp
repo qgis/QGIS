@@ -128,7 +128,7 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
 
   if ( mDeferredFeaturesInFilterRectCheck )
   {
-    QgsFeatureIds featuresInRect = mSource->sharedData()->getFeatureIdsInExtent( mFilterRect, mInterruptionChecker );
+    const QgsFeatureIds featuresInRect = mSource->sharedData()->getFeatureIdsInExtent( mFilterRect, mInterruptionChecker );
     if ( !mFeatureIdList.isEmpty() )
     {
       QgsFeatureIds requestIds = qgis::listToSet( mFeatureIdList );

@@ -94,7 +94,7 @@ void QgsGpsDeviceOptionsWidget::apply()
 {
   QStringList deviceNames;
   QgsSettings settings;
-  QString devPath = QStringLiteral( "babelDevices/%1" );
+  const QString devPath = QStringLiteral( "babelDevices/%1" );
   settings.remove( QStringLiteral( "babelDevices" ), QgsSettings::Gps );
 
   for ( auto iter = mDevices.constBegin(); iter != mDevices.constEnd(); ++iter )
@@ -133,7 +133,7 @@ void QgsGpsDeviceOptionsWidget::removeCurrentDevice()
                              tr( "Are you sure that you want to delete this device?" ),
                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
   {
-    auto iter = mDevices.find( mListDevices->currentItem()->text() );
+    const auto iter = mDevices.find( mListDevices->currentItem()->text() );
     if ( iter != mDevices.end() )
     {
       mDevices.erase( iter );
@@ -183,7 +183,7 @@ void QgsGpsDeviceOptionsWidget::selectedDeviceChanged( QListWidgetItem *current 
 {
   if ( mListDevices->count() > 0 )
   {
-    QString devName = current->text();
+    const QString devName = current->text();
 
     mBlockStoringChanges = true;
     leDeviceName->setText( devName );

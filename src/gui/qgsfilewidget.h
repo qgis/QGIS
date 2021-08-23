@@ -20,14 +20,16 @@
 class QLabel;
 class QToolButton;
 class QVariant;
-class QgsFileDropEdit;
 class QHBoxLayout;
+class QgsFileDropEdit;
+
 #include <QWidget>
 #include <QFileDialog>
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgshighlightablelineedit.h"
+
 
 /**
  * \ingroup gui
@@ -296,9 +298,29 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     void openFileDialog();
     void textEdited( const QString &path );
     void editLink();
+    void fileDropped( const QString &filePath );
 
-  private:
-    void updateLayout();
+  protected:
+
+    /**
+     * Update buttons visibility
+     */
+    virtual void updateLayout();
+
+    /**
+     * Called whenever user select \a fileNames from dialog
+     */
+    virtual void setSelectedFileNames( QStringList fileNames );
+
+    /**
+     * Returns true if \a path is a multifiles
+     */
+    static bool isMultiFiles( const QString &path );
+
+    /**
+     * Update filePath according to \a filePaths list
+     */
+    void setFilePaths( const QStringList &filePaths );
 
     QString mFilePath;
     bool mButtonVisible = true;
@@ -328,6 +350,8 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     QString relativePath( const QString &filePath, bool removeRelative ) const;
 
     friend class TestQgsFileWidget;
+    friend class TestQgsExternalStorageFileWidget;
+    friend class TestQgsExternalResourceWidgetWrapper;
 };
 
 ///@cond PRIVATE
@@ -355,6 +379,13 @@ class GUI_EXPORT QgsFileDropEdit: public QgsHighlightableLineEdit
     void setStorageMode( QgsFileWidget::StorageMode storageMode ) { mStorageMode = storageMode; }
 
     void setFilters( const QString &filters );
+
+  signals:
+
+    /**
+     * Emitted when the file \a filePath is droppen onto the line edit.
+     */
+    void fileDropped( const QString &filePath );
 
   protected:
 

@@ -74,7 +74,7 @@ QVariantMap QgsArcGisRestQueryUtils::getObjects( const QString &layerurl, const 
     QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders, QgsFeedback *feedback )
 {
   QStringList ids;
-  for ( int id : objectIds )
+  for ( const int id : objectIds )
   {
     ids.append( QString::number( id ) );
   }
@@ -82,7 +82,7 @@ QVariantMap QgsArcGisRestQueryUtils::getObjects( const QString &layerurl, const 
   QUrlQuery query( queryUrl );
   query.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
   query.addQueryItem( QStringLiteral( "objectIds" ), ids.join( QLatin1Char( ',' ) ) );
-  QString wkid = crs.indexOf( QLatin1Char( ':' ) ) >= 0 ? crs.split( ':' )[1] : QString();
+  const QString wkid = crs.indexOf( QLatin1Char( ':' ) ) >= 0 ? crs.split( ':' )[1] : QString();
   query.addQueryItem( QStringLiteral( "inSR" ), wkid );
   query.addQueryItem( QStringLiteral( "outSR" ), wkid );
 
@@ -141,7 +141,7 @@ QList<quint32> QgsArcGisRestQueryUtils::getObjectIdsByExtent( const QString &lay
 
 QByteArray QgsArcGisRestQueryUtils::queryService( const QUrl &u, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders, QgsFeedback *feedback, QString *contentType )
 {
-  QUrl url = parseUrl( u );
+  const QUrl url = parseUrl( u );
 
   QNetworkRequest request( url );
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisRestUtils" ) );
@@ -174,7 +174,7 @@ QByteArray QgsArcGisRestQueryUtils::queryService( const QUrl &u, const QString &
 
 QVariantMap QgsArcGisRestQueryUtils::queryServiceJSON( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders, QgsFeedback *feedback )
 {
-  QByteArray reply = queryService( url, authcfg, errorTitle, errorText, requestHeaders, feedback );
+  const QByteArray reply = queryService( url, authcfg, errorTitle, errorText, requestHeaders, feedback );
   if ( !errorTitle.isEmpty() )
   {
     return QVariantMap();
@@ -184,7 +184,7 @@ QVariantMap QgsArcGisRestQueryUtils::queryServiceJSON( const QUrl &url, const QS
 
   // Parse data
   QJsonParseError err;
-  QJsonDocument doc = QJsonDocument::fromJson( reply, &err );
+  const QJsonDocument doc = QJsonDocument::fromJson( reply, &err );
   if ( doc.isNull() )
   {
     errorTitle = QStringLiteral( "Parsing error" );
@@ -304,7 +304,7 @@ void QgsArcGisRestQueryUtils::visitServiceItems( const std::function<void ( cons
     const ServiceTypeFilter type = serviceType == QLatin1String( "FeatureServer" ) ? Vector : Raster;
 
     const QString serviceName = serviceMap.value( QStringLiteral( "name" ) ).toString();
-    QString displayName = serviceName.split( '/' ).last();
+    const QString displayName = serviceName.split( '/' ).last();
     if ( !baseChecked )
     {
       adjustBaseUrl( base, serviceName );
@@ -476,7 +476,7 @@ void QgsArcGisAsyncQuery::handleReply()
   }
 
   // Handle HTTP redirects
-  QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
+  const QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
   if ( !redirect.isNull() )
   {
     QNetworkRequest request = mReply->request();
@@ -543,8 +543,8 @@ void QgsArcGisAsyncParallelQuery::start( const QVector<QUrl> &urls, QVector<QByt
 void QgsArcGisAsyncParallelQuery::handleReply()
 {
   QNetworkReply *reply = qobject_cast<QNetworkReply *>( QObject::sender() );
-  QVariant redirect = reply->attribute( QNetworkRequest::RedirectionTargetAttribute );
-  int idx = reply->property( "idx" ).toInt();
+  const QVariant redirect = reply->attribute( QNetworkRequest::RedirectionTargetAttribute );
+  const int idx = reply->property( "idx" ).toInt();
   reply->deleteLater();
   if ( reply->error() != QNetworkReply::NoError )
   {

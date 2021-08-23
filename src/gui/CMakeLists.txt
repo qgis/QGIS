@@ -145,6 +145,7 @@ set(QGIS_GUI_SRCS
   editorwidgets/qgscheckboxwidgetfactory.cpp
   editorwidgets/qgsclassificationwidgetwrapper.cpp
   editorwidgets/qgsclassificationwidgetwrapperfactory.cpp
+  editorwidgets/qgsactionwidgetwrapper.cpp
   editorwidgets/qgscolorwidgetwrapper.cpp
   editorwidgets/qgscolorwidgetfactory.cpp
   editorwidgets/qgsdatetimeedit.cpp
@@ -465,6 +466,7 @@ set(QGIS_GUI_SRCS
   qgsfieldvalueslineedit.cpp
   qgsfilecontentsourcelineedit.cpp
   qgsfilewidget.cpp
+  qgsexternalstoragefilewidget.cpp
   qgsfilterlineedit.cpp
   qgsfindfilesbypatternwidget.cpp
   qgsfloatingwidget.cpp
@@ -715,6 +717,7 @@ set(QGIS_GUI_HDRS
   qgsfilecontentsourcelineedit.h
   qgsfiledownloaderdialog.h
   qgsfilewidget.h
+  qgsexternalstoragefilewidget.h
   qgsfilterlineedit.h
   qgsfindfilesbypatternwidget.h
   qgsfloatingwidget.h
@@ -940,6 +943,7 @@ set(QGIS_GUI_HDRS
   editorwidgets/core/qgseditorwidgetwrapper.h
   editorwidgets/core/qgssearchwidgetwrapper.h
   editorwidgets/core/qgswidgetwrapper.h
+  editorwidgets/qgsactionwidgetwrapper.h
   editorwidgets/qgsbinarywidgetfactory.h
   editorwidgets/qgsbinarywidgetwrapper.h
   editorwidgets/qgscheckboxconfigdlg.h
@@ -1405,6 +1409,12 @@ target_include_directories(qgis_gui SYSTEM PRIVATE
   ${QT_QTUITOOLS_INCLUDE_DIR}
 )
 
+if (WITH_QT6)
+  target_include_directories(qgis_gui SYSTEM PRIVATE
+    ${${QT_VERSION_BASE}Svg_INCLUDE_DIRS}
+  )
+endif()
+
 target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/attributeformconfig
@@ -1506,6 +1516,13 @@ target_link_libraries(qgis_gui
   ${QSCINTILLA_LIBRARY}
   ${QT_VERSION_BASE}::QuickWidgets
 )
+
+if (WITH_QT6)
+  find_package(Qt6 COMPONENTS SvgWidgets REQUIRED)
+  target_link_libraries(qgis_gui
+    Qt6::SvgWidgets
+  )
+endif()
 
 if (FORCE_STATIC_LIBS)
   target_link_libraries(qgis_gui

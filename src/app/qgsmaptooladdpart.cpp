@@ -94,7 +94,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     case CapturePoint:
     {
       QgsPoint layerPoint;
-      QgsPointXY mapPoint = e->mapPoint();
+      const QgsPointXY mapPoint = e->mapPoint();
 
       if ( nextPoint( QgsPoint( mapPoint ), layerPoint ) != 0 )
       {
@@ -113,7 +113,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       //add point to list and to rubber band
       if ( e->button() == Qt::LeftButton )
       {
-        int error = addVertex( e->mapPoint(), e->mapPointMatch() );
+        const int error = addVertex( e->mapPoint(), e->mapPointMatch() );
         if ( error == 1 )
         {
           QgsDebugMsg( QStringLiteral( "current layer is not a vector layer" ) );
@@ -146,8 +146,8 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       //does compoundcurve contain circular strings?
       //does provider support circular strings?
-      bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
-      bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
+      const bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
+      const bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
 
       QgsCurve *curveToAdd = nullptr;
       if ( hasCurvedSegments && providerSupportsCurvedSegments )
@@ -218,7 +218,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       emit messageDiscarded();
 
       //add points to other features to keep topology up-to-date
-      bool topologicalEditing = QgsProject::instance()->topologicalEditing();
+      const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
       if ( topologicalEditing )
       {
         addTopologicalPoints( pointsZM() );
@@ -289,7 +289,7 @@ bool QgsMapToolAddPart::checkSelection()
   }
 
   //inform user at the begin of the digitizing action that the island tool only works if exactly one feature is selected
-  int nSelectedFeatures = vlayer->selectedFeatureCount();
+  const int nSelectedFeatures = vlayer->selectedFeatureCount();
   QString selectionErrorMsg;
   if ( nSelectedFeatures < 1 )
   {

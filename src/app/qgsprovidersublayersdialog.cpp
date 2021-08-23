@@ -47,7 +47,7 @@ QVariant QgsProviderSublayerDialogModel::data( const QModelIndex &index, int rol
   {
     const QgsProviderSublayerDetails details = mSublayers.at( index.row() );
 
-    if ( details.type() == QgsMapLayerType::VectorLayer && details.wkbType() == QgsWkbTypes::Unknown )
+    if ( details.type() == QgsMapLayerType::VectorLayer && details.wkbType() == QgsWkbTypes::Unknown && !mGeometryTypesResolved )
     {
       switch ( role )
       {
@@ -83,13 +83,19 @@ Qt::ItemFlags QgsProviderSublayerDialogModel::flags( const QModelIndex &index ) 
   {
     const QgsProviderSublayerDetails details = mSublayers.at( index.row() );
 
-    if ( details.type() == QgsMapLayerType::VectorLayer && details.wkbType() == QgsWkbTypes::Unknown )
+    if ( details.type() == QgsMapLayerType::VectorLayer && details.wkbType() == QgsWkbTypes::Unknown && !mGeometryTypesResolved )
     {
       // unknown geometry item can't be selected
       return Qt::ItemFlags();
     }
   }
   return QgsProviderSublayerModel::flags( index );
+}
+
+void QgsProviderSublayerDialogModel::setGeometryTypesResolved( bool resolved )
+{
+  mGeometryTypesResolved = resolved;
+  emit dataChanged( index( 0, 0 ), index( rowCount( QModelIndex() ), columnCount() ) );
 }
 
 QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, const QString &filePath, const QList<QgsProviderSublayerDetails> initialDetails, const QList<QgsMapLayerType> &acceptableTypes, QWidget *parent, Qt::WindowFlags fl )
@@ -112,7 +118,7 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   connect( mLblFilePath, &QLabel::linkActivated, this, [ = ]( const QString & link )
   {
     const QUrl url( link );
-    QFileInfo file( url.toLocalFile() );
+    const QFileInfo file( url.toLocalFile() );
     if ( file.exists() && !file.isDir() )
       QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
     else
@@ -125,12 +131,12 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   mProxyModel->setSourceModel( mModel );
   mLayersTree->setModel( mProxyModel );
 
-  QgsSettings settings;
+  const QgsSettings settings;
   const bool addToGroup = settings.value( QStringLiteral( "/qgis/openSublayersInGroup" ), false ).toBool();
   mCbxAddToGroup->setChecked( addToGroup );
 
   // resize columns
-  QByteArray ba = settings.value( "/Windows/SubLayers/headerState" ).toByteArray();
+  const QByteArray ba = settings.value( "/Windows/SubLayers/headerState" ).toByteArray();
   if ( !ba.isNull() )
   {
     mLayersTree->header()->restoreState( ba );
@@ -155,6 +161,7 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
       } ), res.end() );
 
       mModel->setSublayerDetails( res );
+      mModel->setGeometryTypesResolved( true );
       mTask = nullptr;
       selectAll();
     } );
@@ -242,7 +249,7 @@ QString QgsProviderSublayersDialog::groupName() const
 
   QString res = QgsProviderUtils::suggestLayerNameFromFilePath( mFilePath );
 
-  QgsSettings settings;
+  const QgsSettings settings;
   if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
   {
     res = QgsMapLayer::formatLayerName( res );

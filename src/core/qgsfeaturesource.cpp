@@ -63,7 +63,7 @@ QVariant QgsFeatureSource::minimumValue( int fieldIndex ) const
   QgsFeature f;
   while ( it.nextFeature( f ) )
   {
-    QVariant v = f.attribute( fieldIndex );
+    const QVariant v = f.attribute( fieldIndex );
     if ( !v.isNull() && ( qgsVariantLessThan( v, min ) || min.isNull() ) )
     {
       min = v;
@@ -86,7 +86,7 @@ QVariant QgsFeatureSource::maximumValue( int fieldIndex ) const
   QgsFeature f;
   while ( it.nextFeature( f ) )
   {
-    QVariant v = f.attribute( fieldIndex );
+    const QVariant v = f.attribute( fieldIndex );
     if ( !v.isNull() && ( qgsVariantGreaterThan( v, max ) || max.isNull() ) )
     {
       max = v;
@@ -131,10 +131,10 @@ QgsFeatureIds QgsFeatureSource::allFeatureIds() const
 
 QgsVectorLayer *QgsFeatureSource::materialize( const QgsFeatureRequest &request, QgsFeedback *feedback )
 {
-  QgsWkbTypes::Type outWkbType = ( request.flags() & QgsFeatureRequest::NoGeometry ) ? QgsWkbTypes::NoGeometry : wkbType();
-  QgsCoordinateReferenceSystem crs = request.destinationCrs().isValid() ? request.destinationCrs() : sourceCrs();
+  const QgsWkbTypes::Type outWkbType = ( request.flags() & QgsFeatureRequest::NoGeometry ) ? QgsWkbTypes::NoGeometry : wkbType();
+  const QgsCoordinateReferenceSystem crs = request.destinationCrs().isValid() ? request.destinationCrs() : sourceCrs();
 
-  QgsAttributeList requestedAttrs = request.subsetOfAttributes();
+  const QgsAttributeList requestedAttrs = request.subsetOfAttributes();
 
   QgsFields outFields;
   if ( request.flags() & QgsFeatureRequest::SubsetOfAttributes )
@@ -160,7 +160,7 @@ QgsVectorLayer *QgsFeatureSource::materialize( const QgsFeatureRequest &request,
         crs ) );
   QgsFeature f;
   QgsFeatureIterator it = getFeatures( request );
-  int fieldCount = fields().count();
+  const int fieldCount = fields().count();
   while ( it.nextFeature( f ) )
   {
     if ( feedback && feedback->isCanceled() )

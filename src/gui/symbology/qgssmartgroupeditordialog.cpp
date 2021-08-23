@@ -170,7 +170,7 @@ void QgsSmartGroupEditorDialog::setConditionMap( const QgsSmartConditionMap &map
   const auto constConstraints = constraints;
   for ( const QString &constr : constConstraints )
   {
-    QStringList params = map.values( constr );
+    const QStringList params = map.values( constr );
     const auto constParams = params;
     for ( const QString &param : constParams )
     {

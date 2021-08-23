@@ -135,7 +135,7 @@ class CORE_EXPORT QgsActionManager: public QObject
      *
      * \since QGIS 3.0
      */
-    QgsAction action( QUuid id );
+    QgsAction action( QUuid id ) const;
 
     /**
      * Each scope can have a default action. This will be saved in the project

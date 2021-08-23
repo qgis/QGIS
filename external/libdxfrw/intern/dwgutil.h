@@ -15,87 +15,69 @@
 
 #include "../drw_base.h"
 
-namespace DRW
-{
-  std::string toHexStr( int n );
+namespace DRW {
+std::string toHexStr(int n);
 }
 
-class dwgRSCodec
-{
-  public:
-    dwgRSCodec() {}
-
-    static void decode239I( duint8 *in, duint8 *out, duint32 blk );
-    static void decode251I( duint8 *in, duint8 *out, duint32 blk );
+class dwgRSCodec {
+public:
+    dwgRSCodec()=default;
+    static void decode239I(duint8 *in, duint8 *out, duint32 blk);
+    static void decode251I(duint8 *in, duint8 *out, duint32 blk);
 };
 
-class dwgCompressor
-{
-  public:
-    dwgCompressor()
-      : bufC( nullptr )
-      , bufD( nullptr )
-      , sizeC( 0 )
-      , sizeD( 0 )
-      , pos( 0 )
-      , rpos( 0 )
-    {}
+class dwgCompressor {
+public:
+    dwgCompressor()=default;
 
-    void decompress18( duint8 *cbuf, duint8 *dbuf, duint32 csize, duint32 dsize );
-    static void decrypt18Hdr( duint8 *buf, duint32 size, duint32 offset );
-//  static void decrypt18Data(duint8 *buf, duint32 size, duint32 offset);
-    static void decompress21( duint8 *cbuf, duint8 *dbuf, duint32 csize, duint32 dsize );
+    void decompress18(duint8 *cbuf, duint8 *dbuf, duint32 csize, duint32 dsize);
+    static void decrypt18Hdr(duint8 *buf, duint32 size, duint32 offset);
+//    static void decrypt18Data(duint8 *buf, duint32 size, duint32 offset);
+    static void decompress21(duint8 *cbuf, duint8 *dbuf, duint32 csize, duint32 dsize);
 
-  private:
+private:
     duint32 litLength18();
-    static duint32 litLength21( duint8 *cbuf, duint8 oc, duint32 *si );
-    static void copyCompBytes21( duint8 *cbuf, duint8 *dbuf, duint32 l, duint32 si, duint32 di );
-    static void readInstructions21( duint8 *cbuf, duint32 *si, duint8 *oc, duint32 *so, duint32 *l );
+    static duint32 litLength21(duint8 *cbuf, duint8 oc, duint32 *si);
+    static void copyCompBytes21(duint8 *cbuf, duint8 *dbuf, duint32 l, duint32 si, duint32 di);
+    static void readInstructions21(duint8 *cbuf, duint32 *si, duint8 *oc, duint32 *so, duint32 *l);
 
     duint32 longCompressionOffset();
     duint32 long20CompressionOffset();
-    duint32 twoByteOffset( duint32 *ll );
+    duint32 twoByteOffset(duint32 *ll);
 
-    duint8 *bufC = nullptr;
-    duint8 *bufD = nullptr;
-    duint32 sizeC;
-    duint32 sizeD;
-    duint32 pos;
-    duint32 rpos;
+    duint8 *bufC{nullptr};
+    duint32 sizeC{0};
+    duint32 pos{0};
 
 };
 
-class secEnum
-{
-  public:
-    enum DWGSection
-    {
-      UNKNOWNS,        //!< UNKNOWN section.
-      FILEHEADER,      //!< File Header (in R3-R15
-      HEADER,          //!< AcDb:Header
-      CLASSES,         //!< AcDb:Classes
-      SUMMARYINFO,     //!< AcDb:SummaryInfo
-      PREVIEW,         //!< AcDb:Preview
-      VBAPROY,         //!< AcDb:VBAProject
-      APPINFO,         //!< AcDb:AppInfo
-      FILEDEP,         //!< AcDb:FileDepList
-      REVHISTORY,      //!< AcDb:RevHistory
-      SECURITY,        //!< AcDb:Security
-      OBJECTS,         //!< AcDb:AcDbObjects
-      OBJFREESPACE,    //!< AcDb:ObjFreeSpace
-      TEMPLATE,        //!< AcDb:Template
-      HANDLES,         //!< AcDb:Handles
-      PROTOTYPE,       //!< AcDb:AcDsPrototype_1b
-      AUXHEADER,       //!< AcDb:AuxHeader, in (R13-R15) second file header
-      SIGNATURE,       //!< AcDb:Signature
-      APPINFOHISTORY,  //!< AcDb:AppInfoHistory (in ac1021 may be a renamed section?
-      EXTEDATA,        //!< Extended Entity Data
-      PROXYGRAPHICS    //!< PROXY ENTITY GRAPHICS
+class secEnum {
+public:
+    enum DWGSection {
+        UNKNOWNS,      /*!< UNKNOWN section. */
+        FILEHEADER,    /*!< File Header (in R3-R15*/
+        HEADER,        /*!< AcDb:Header */
+        CLASSES,       /*!< AcDb:Classes */
+        SUMMARYINFO,    /*!< AcDb:SummaryInfo */
+        PREVIEW,       /*!< AcDb:Preview */
+        VBAPROY,       /*!< AcDb:VBAProject */
+        APPINFO,       /*!< AcDb:AppInfo */
+        FILEDEP,       /*!< AcDb:FileDepList */
+        REVHISTORY,    /*!< AcDb:RevHistory */
+        SECURITY,      /*!< AcDb:Security */
+        OBJECTS,       /*!< AcDb:AcDbObjects */
+        OBJFREESPACE,  /*!< AcDb:ObjFreeSpace */
+        TEMPLATE,      /*!< AcDb:Template */
+        HANDLES,       /*!< AcDb:Handles */
+        PROTOTYPE,     /*!< AcDb:AcDsPrototype_1b */
+        AUXHEADER,     /*!< AcDb:AuxHeader, in (R13-R15) second file header */
+        SIGNATURE,     /*!< AcDb:Signature */
+        APPINFOHISTORY,     /*!< AcDb:AppInfoHistory (in ac1021 may be a renamed section?*/
+        EXTEDATA,      /*!< Extended Entity Data */
+        PROXYGRAPHICS /*!< PROXY ENTITY GRAPHICS */
     };
 
-    secEnum() {}
-
-    static DWGSection getEnum( std::string nameSec );
+    static DWGSection getEnum(const std::string &nameSec);
 };
 
 #endif // DWGUTIL_H

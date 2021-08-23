@@ -140,11 +140,11 @@ void QgsAbstractFileContentSourceLineEdit::setSource( const QString &source )
 void QgsAbstractFileContentSourceLineEdit::selectFile()
 {
   QgsSettings s;
-  QString file = QFileDialog::getOpenFileName( nullptr,
-                 selectFileTitle(),
-                 defaultPath(),
-                 fileFilter() );
-  QFileInfo fi( file );
+  const QString file = QFileDialog::getOpenFileName( nullptr,
+                       selectFileTitle(),
+                       defaultPath(),
+                       fileFilter() );
+  const QFileInfo fi( file );
   if ( file.isEmpty() || !fi.exists() || file == source() )
   {
     return;
@@ -174,11 +174,11 @@ void QgsAbstractFileContentSourceLineEdit::selectUrl()
 void QgsAbstractFileContentSourceLineEdit::embedFile()
 {
   QgsSettings s;
-  QString file = QFileDialog::getOpenFileName( nullptr,
-                 embedFileTitle(),
-                 defaultPath(),
-                 fileFilter() );
-  QFileInfo fi( file );
+  const QString file = QFileDialog::getOpenFileName( nullptr,
+                       embedFileTitle(),
+                       defaultPath(),
+                       fileFilter() );
+  const QFileInfo fi( file );
   if ( file.isEmpty() || !fi.exists() )
   {
     return;
@@ -193,8 +193,8 @@ void QgsAbstractFileContentSourceLineEdit::embedFile()
     return;
   }
 
-  QByteArray blob = fileSource.readAll();
-  QByteArray encoded = blob.toBase64();
+  const QByteArray blob = fileSource.readAll();
+  const QByteArray encoded = blob.toBase64();
 
   QString path( encoded );
   path.prepend( QLatin1String( "base64:" ) );
@@ -213,21 +213,21 @@ void QgsAbstractFileContentSourceLineEdit::embedFile()
 void QgsAbstractFileContentSourceLineEdit::extractFile()
 {
   QgsSettings s;
-  QString file = QFileDialog::getSaveFileName( nullptr,
-                 extractFileTitle(),
-                 defaultPath(),
-                 fileFilter() );
+  const QString file = QFileDialog::getSaveFileName( nullptr,
+                       extractFileTitle(),
+                       defaultPath(),
+                       fileFilter() );
   if ( file.isEmpty() )
   {
     return;
   }
 
-  QFileInfo fi( file );
+  const QFileInfo fi( file );
   s.setValue( settingsKey(), fi.absolutePath() );
 
   // decode current base64 embedded file
-  QByteArray base64 = mBase64.mid( 7 ).toLocal8Bit(); // strip 'base64:' prefix
-  QByteArray decoded = QByteArray::fromBase64( base64, QByteArray::OmitTrailingEquals );
+  const QByteArray base64 = mBase64.mid( 7 ).toLocal8Bit(); // strip 'base64:' prefix
+  const QByteArray decoded = QByteArray::fromBase64( base64, QByteArray::OmitTrailingEquals );
 
   QFile fileOut( file );
   fileOut.open( QIODevice::WriteOnly );
@@ -249,7 +249,7 @@ void QgsAbstractFileContentSourceLineEdit::mFileLineEdit_textEdited( const QStri
   mMode = ModeFile;
   if ( !text.isEmpty() && !QFileInfo::exists( text ) )
   {
-    QUrl url( text );
+    const QUrl url( text );
     if ( !url.isValid() )
     {
       return;

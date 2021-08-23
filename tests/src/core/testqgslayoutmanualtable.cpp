@@ -73,7 +73,7 @@ void TestQgsLayoutManualTable::initTestCase()
 
 void TestQgsLayoutManualTable::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -96,7 +96,7 @@ void TestQgsLayoutManualTable::compareTable( QgsLayoutItemManualTable *table, co
 {
   //retrieve rows and check
   QgsLayoutTableContents tableContents;
-  bool result = table->getTableContents( tableContents );
+  const bool result = table->getTableContents( tableContents );
   QCOMPARE( result, true );
 
   QgsLayoutTableContents::const_iterator resultIt = tableContents.constBegin();
@@ -247,7 +247,7 @@ void TestQgsLayoutManualTable::setContents()
 
   //write to XML
   QDomImplementation DomImplementation;
-  QDomDocumentType documentType =
+  const QDomDocumentType documentType =
     DomImplementation.createDocumentType(
       QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
@@ -274,7 +274,7 @@ void TestQgsLayoutManualTable::setContents()
 
 void TestQgsLayoutManualTable::scopeForCell()
 {
-  QVector<QStringList> expectedRows;
+  const QVector<QStringList> expectedRows;
 
   QgsPrintLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -315,7 +315,7 @@ void TestQgsLayoutManualTable::expressionContents()
 
   //write to XML
   QDomImplementation DomImplementation;
-  QDomDocumentType documentType =
+  const QDomDocumentType documentType =
     DomImplementation.createDocumentType(
       QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
@@ -334,16 +334,16 @@ void TestQgsLayoutManualTable::cellStyles()
   l.initializeDefaults();
   QgsLayoutItemManualTable *table = new QgsLayoutItemManualTable( &l );
 
-  QgsTableCell c11;
+  const QgsTableCell c11;
   QgsTableCell c12;
   c12.setBackgroundColor( QColor( 255, 0, 0 ) );
   QgsTableCell c13;
   c13.setForegroundColor( QColor( 0, 255, 0 ) );
-  QgsTableCell c21;
+  const QgsTableCell c21;
   QgsTableCell c22;
   c22.setBackgroundColor( QColor( 255, 255, 0 ) );
   c22.setForegroundColor( QColor( 255, 0, 255 ) );
-  QgsTableCell c23;
+  const QgsTableCell c23;
 
   table->setBackgroundColor( QColor() );
   table->setTableContents( QgsTableContents() << ( QgsTableRow() << c11 << c12 << c13 )
@@ -411,7 +411,7 @@ void TestQgsLayoutManualTable::rowHeight()
   table->setRowHeights( QList< double >() << 0 << 40.0 );
   QgsLayoutChecker checker( QStringLiteral( "manualtable_rowheight" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "layout_manual_table" ) );
-  bool result = checker.testLayout( mReport );
+  const bool result = checker.testLayout( mReport );
   QVERIFY( result );
 }
 
@@ -439,7 +439,7 @@ void TestQgsLayoutManualTable::columnWidth()
   table->setColumnWidths( QList< double >() << 0 << 10.0 << 30.0 );
   QgsLayoutChecker checker( QStringLiteral( "manualtable_columnwidth" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "layout_manual_table" ) );
-  bool result = checker.testLayout( mReport );
+  const bool result = checker.testLayout( mReport );
   QVERIFY( result );
 }
 
@@ -473,7 +473,7 @@ void TestQgsLayoutManualTable::headers()
 
   QgsLayoutChecker checker( QStringLiteral( "manualtable_headers" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "layout_manual_table" ) );
-  bool result = checker.testLayout( mReport );
+  const bool result = checker.testLayout( mReport );
   QVERIFY( result );
 }
 
@@ -525,7 +525,7 @@ void TestQgsLayoutManualTable::cellTextFormat()
   table->setColumnWidths( QList< double >() << 0 << 0.0 << 30.0 );
   QgsLayoutChecker checker( QStringLiteral( "manualtable_textformat" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "layout_manual_table" ) );
-  bool result = checker.testLayout( mReport );
+  const bool result = checker.testLayout( mReport );
   QVERIFY( result );
 }
 
@@ -565,7 +565,7 @@ void TestQgsLayoutManualTable::cellTextAlignment()
   table->setColumnWidths( QList< double >() << 0 << 0.0 << 30.0 );
   QgsLayoutChecker checker( QStringLiteral( "manualtable_textalign" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "layout_manual_table" ) );
-  bool result = checker.testLayout( mReport );
+  const bool result = checker.testLayout( mReport );
   QVERIFY( result );
 }
 

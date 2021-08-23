@@ -126,7 +126,7 @@ QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const
   //
   populateLayerTypes();
   // update layer type combo box
-  int idx = cboLayerType->findData( mLayer->layerType() );
+  const int idx = cboLayerType->findData( mLayer->layerType() );
   cboLayerType->setCurrentIndex( idx );
 
   connect( mEnabledCheckBox, &QAbstractButton::toggled, mEnabledDDBtn, &QWidget::setEnabled );
@@ -174,7 +174,7 @@ void QgsLayerPropertiesWidget::setDockMode( bool dockMode )
 
 void QgsLayerPropertiesWidget::populateLayerTypes()
 {
-  QStringList symbolLayerIds = QgsApplication::symbolLayerRegistry()->symbolLayersForType( mSymbol->type() );
+  const QStringList symbolLayerIds = QgsApplication::symbolLayerRegistry()->symbolLayersForType( mSymbol->type() );
 
   const auto constSymbolLayerIds = symbolLayerIds;
   for ( const QString &symbolLayerId : constSymbolLayerIds )
@@ -182,15 +182,15 @@ void QgsLayerPropertiesWidget::populateLayerTypes()
 
   if ( mSymbol->type() == Qgis::SymbolType::Fill )
   {
-    QStringList lineLayerIds = QgsApplication::symbolLayerRegistry()->symbolLayersForType( Qgis::SymbolType::Line );
+    const QStringList lineLayerIds = QgsApplication::symbolLayerRegistry()->symbolLayersForType( Qgis::SymbolType::Line );
     const auto constLineLayerIds = lineLayerIds;
     for ( const QString &lineLayerId : constLineLayerIds )
     {
       QgsSymbolLayerAbstractMetadata *layerInfo = QgsApplication::symbolLayerRegistry()->symbolLayerMetadata( lineLayerId );
       if ( layerInfo->type() != Qgis::SymbolType::Hybrid )
       {
-        QString visibleName = layerInfo->visibleName();
-        QString name = tr( "Outline: %1" ).arg( visibleName );
+        const QString visibleName = layerInfo->visibleName();
+        const QString name = tr( "Outline: %1" ).arg( visibleName );
         cboLayerType->addItem( name, lineLayerId );
       }
     }
@@ -209,7 +209,7 @@ void QgsLayerPropertiesWidget::updateSymbolLayerWidget( QgsSymbolLayer *layer )
 
   QgsSymbolLayerRegistry *pReg = QgsApplication::symbolLayerRegistry();
 
-  QString layerType = layer->layerType();
+  const QString layerType = layer->layerType();
   QgsSymbolLayerAbstractMetadata *am = pReg->symbolLayerMetadata( layerType );
   if ( am )
   {
@@ -304,7 +304,7 @@ void QgsLayerPropertiesWidget::registerDataDefinedButton( QgsPropertyOverrideBut
 void QgsLayerPropertiesWidget::updateProperty()
 {
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  QgsSymbolLayer::Property key = static_cast<  QgsSymbolLayer::Property >( button->propertyKey() );
+  const QgsSymbolLayer::Property key = static_cast<  QgsSymbolLayer::Property >( button->propertyKey() );
   mLayer->setDataDefinedProperty( key, button->toProperty() );
   emit changed();
 }
@@ -314,7 +314,7 @@ void QgsLayerPropertiesWidget::layerTypeChanged()
   QgsSymbolLayer *layer = mLayer;
   if ( !layer )
     return;
-  QString newLayerType = cboLayerType->currentData().toString();
+  const QString newLayerType = cboLayerType->currentData().toString();
   if ( layer->layerType() == newLayerType )
     return;
 

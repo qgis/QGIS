@@ -60,9 +60,9 @@ void QgsMapToolMoveLabel::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( mLabelRubberBand )
   {
-    QgsPointXY pointMapCoords = e->mapPoint();
-    double offsetX = pointMapCoords.x() - mStartPointMapCoords.x();
-    double offsetY = pointMapCoords.y() - mStartPointMapCoords.y();
+    const QgsPointXY pointMapCoords = e->mapPoint();
+    const double offsetX = pointMapCoords.x() - mStartPointMapCoords.x();
+    const double offsetY = pointMapCoords.y() - mStartPointMapCoords.y();
     mLabelRubberBand->setTranslationOffset( offsetX, offsetY );
     mLabelRubberBand->updatePosition();
     mLabelRubberBand->update();
@@ -273,8 +273,8 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         }
         const QgsFeatureId featureId = !isCalloutMove ? mCurrentLabel.pos.featureId : mCurrentCallout.featureId;
 
-        double xdiff = releaseCoords.x() - mStartPointMapCoords.x();
-        double ydiff = releaseCoords.y() - mStartPointMapCoords.y();
+        const double xdiff = releaseCoords.x() - mStartPointMapCoords.x();
+        const double ydiff = releaseCoords.y() - mStartPointMapCoords.y();
 
         int xCol = -1;
         int  yCol = -1;
@@ -304,7 +304,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         {
           //transform to map crs first, because xdiff,ydiff are in map coordinates
           const QgsMapSettings &ms = mCanvas->mapSettings();
-          QgsPointXY transformedPoint = ms.layerToMapCoordinates( vlayer, QgsPointXY( xPosOrig, yPosOrig ) );
+          const QgsPointXY transformedPoint = ms.layerToMapCoordinates( vlayer, QgsPointXY( xPosOrig, yPosOrig ) );
           xPosOrig = transformedPoint.x();
           yPosOrig = transformedPoint.y();
           xPosNew = xPosOrig + xdiff;
@@ -315,7 +315,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         if ( mCanvas )
         {
           const QgsMapSettings &s = mCanvas->mapSettings();
-          QgsPointXY transformedPoint = s.mapToLayerCoordinates( vlayer, QgsPointXY( xPosNew, yPosNew ) );
+          const QgsPointXY transformedPoint = s.mapToLayerCoordinates( vlayer, QgsPointXY( xPosNew, yPosNew ) );
           xPosNew = transformedPoint.x();
           yPosNew = transformedPoint.y();
         }
@@ -382,7 +382,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
           int rCol;
           if ( currentLabelDataDefinedRotation( defRot, rSuccess, rCol ) )
           {
-            double labelRot = mCurrentLabel.pos.rotation * 180 / M_PI;
+            const double labelRot = mCurrentLabel.pos.rotation * 180 / M_PI;
             vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, rCol, labelRot );
           }
         }
@@ -524,7 +524,7 @@ bool QgsMapToolMoveLabel::canModifyCallout( const QgsCalloutPosition &pos, bool 
     if ( !callout->dataDefinedProperties().isActive( p ) )
       return QString();
 
-    QgsProperty prop = callout->dataDefinedProperties().property( p );
+    const QgsProperty prop = callout->dataDefinedProperties().property( p );
     if ( prop.propertyType() != QgsProperty::FieldBasedProperty )
       return QString();
 
@@ -550,7 +550,7 @@ bool QgsMapToolMoveLabel::canModifyCallout( const QgsCalloutPosition &pos, bool 
 bool QgsMapToolMoveLabel::currentCalloutDataDefinedPosition( double &x, bool &xSuccess, double &y, bool &ySuccess, int &xCol, int &yCol )
 {
   QgsVectorLayer *vlayer =  QgsProject::instance()->mapLayer<QgsVectorLayer *>( mCurrentCallout.layerID );
-  QgsFeatureId featureId = mCurrentCallout.featureId;
+  const QgsFeatureId featureId = mCurrentCallout.featureId;
 
   xSuccess = false;
   ySuccess = false;
@@ -571,7 +571,7 @@ bool QgsMapToolMoveLabel::currentCalloutDataDefinedPosition( double &x, bool &xS
     return false;
   }
 
-  QgsAttributes attributes = f.attributes();
+  const QgsAttributes attributes = f.attributes();
   if ( !attributes.at( xCol ).isNull() )
     x = attributes.at( xCol ).toDouble( &xSuccess );
   if ( !attributes.at( yCol ).isNull() )
@@ -584,7 +584,7 @@ QgsPointXY QgsMapToolMoveLabel::snapCalloutPointToCommonAngle( const QgsPointXY 
 {
   const int index = mCurrentCalloutMoveOrigin ? 0 : 1;
 
-  QgsPointXY start = *mCalloutMoveRubberBand->getPoint( 0, index == 0 ? 1 : 0 );
+  const QgsPointXY start = *mCalloutMoveRubberBand->getPoint( 0, index == 0 ? 1 : 0 );
   const double cursorDistance = start.distance( mapPoint );
 
   // snap to common angles (15 degree increments)

@@ -59,13 +59,13 @@ QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanva
   }
   mDrawDecorations->setText( tr( "Draw active decorations: %1" ).arg( !activeDecorations.isEmpty() ? activeDecorations : tr( "none" ) ) );
 
-  QgsSettings settings;
+  const QgsSettings settings;
 
   const QString templateText = settings.value( QStringLiteral( "ExportAnimation/fileNameTemplate" ),
                                QStringLiteral( "%1####.png" ).arg( QgsProject::instance()->baseName() )
                                , QgsSettings::App ).toString();
   mTemplateLineEdit->setText( templateText );
-  QRegExp rx( QStringLiteral( "\\w+#+\\.{1}\\w+" ) ); //e.g. anyprefix#####.png
+  const QRegExp rx( QStringLiteral( "\\w+#+\\.{1}\\w+" ) ); //e.g. anyprefix#####.png
   QValidator *validator = new QRegExpValidator( rx, this );
   mTemplateLineEdit->setValidator( validator );
 
@@ -87,7 +87,7 @@ QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanva
     settings.setValue( QStringLiteral( "ExportAnimation/lastDir" ), mOutputDirFileWidget->filePath(), QgsSettings::App );
   } );
 
-  for ( QgsUnitTypes::TemporalUnit u :
+  for ( const QgsUnitTypes::TemporalUnit u :
         {
           QgsUnitTypes::TemporalMilliseconds,
           QgsUnitTypes::TemporalSeconds,
@@ -131,8 +131,8 @@ QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanva
 
 void QgsAnimationExportDialog::updateOutputWidth( int width )
 {
-  double scale = static_cast<double>( width ) / mSize.width();
-  double adjustment = ( ( mExtent.width() * scale ) - mExtent.width() ) / 2;
+  const double scale = static_cast<double>( width ) / mSize.width();
+  const double adjustment = ( ( mExtent.width() * scale ) - mExtent.width() ) / 2;
 
   mSize.setWidth( width );
 
@@ -141,9 +141,9 @@ void QgsAnimationExportDialog::updateOutputWidth( int width )
 
   if ( mLockAspectRatio->locked() )
   {
-    int height = width * mExtentGroupBox->ratio().height() / mExtentGroupBox->ratio().width();
-    double scale = static_cast<double>( height ) / mSize.height();
-    double adjustment = ( ( mExtent.height() * scale ) - mExtent.height() ) / 2;
+    const int height = width * mExtentGroupBox->ratio().height() / mExtentGroupBox->ratio().width();
+    const double scale = static_cast<double>( height ) / mSize.height();
+    const double adjustment = ( ( mExtent.height() * scale ) - mExtent.height() ) / 2;
 
     whileBlocking( mOutputHeightSpinBox )->setValue( height );
     mSize.setHeight( height );
@@ -157,8 +157,8 @@ void QgsAnimationExportDialog::updateOutputWidth( int width )
 
 void QgsAnimationExportDialog::updateOutputHeight( int height )
 {
-  double scale = static_cast<double>( height ) / mSize.height();
-  double adjustment = ( ( mExtent.height() * scale ) - mExtent.height() ) / 2;
+  const double scale = static_cast<double>( height ) / mSize.height();
+  const double adjustment = ( ( mExtent.height() * scale ) - mExtent.height() ) / 2;
 
   mSize.setHeight( height );
 
@@ -167,9 +167,9 @@ void QgsAnimationExportDialog::updateOutputHeight( int height )
 
   if ( mLockAspectRatio->locked() )
   {
-    int width = height * mExtentGroupBox->ratio().width() / mExtentGroupBox->ratio().height();
-    double scale = static_cast<double>( width ) / mSize.width();
-    double adjustment = ( ( mExtent.width() * scale ) - mExtent.width() ) / 2;
+    const int width = height * mExtentGroupBox->ratio().width() / mExtentGroupBox->ratio().height();
+    const double scale = static_cast<double>( width ) / mSize.width();
+    const double adjustment = ( ( mExtent.width() * scale ) - mExtent.width() ) / 2;
 
     whileBlocking( mOutputWidthSpinBox )->setValue( width );
     mSize.setWidth( width );
@@ -232,7 +232,7 @@ QgsInterval QgsAnimationExportDialog::frameInterval() const
 
 void QgsAnimationExportDialog::applyMapSettings( QgsMapSettings &mapSettings )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
 
   mapSettings.setFlag( QgsMapSettings::Antialiasing, settings.value( QStringLiteral( "qgis/enable_anti_aliasing" ), true ).toBool() );
   mapSettings.setFlag( QgsMapSettings::DrawEditingInfo, false );

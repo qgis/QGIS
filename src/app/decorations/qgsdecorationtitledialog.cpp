@@ -52,7 +52,7 @@ QgsDecorationTitleDialog::QgsDecorationTitleDialog( QgsDecorationTitle &deco, QW
   txtTitleText->setAcceptRichText( false );
   if ( !mDeco.enabled() && mDeco.mLabelText.isEmpty() )
   {
-    QString defaultString = QgsProject::instance()->metadata().title();
+    const QString defaultString = QgsProject::instance()->metadata().title();
     txtTitleText->setPlainText( defaultString );
   }
   else
@@ -117,7 +117,7 @@ void QgsDecorationTitleDialog::mInsertExpressionButton_clicked()
   exprDlg.setWindowTitle( QObject::tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
-    QString expression = exprDlg.expressionText();
+    const QString expression = exprDlg.expressionText();
     if ( !expression.isEmpty() )
     {
       txtTitleText->insertPlainText( "[%" + expression + "%]" );

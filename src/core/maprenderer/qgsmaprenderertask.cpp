@@ -205,8 +205,8 @@ bool QgsMapRendererTask::run()
 #else
       printer.setPageOrientation( QPageLayout::Orientation::Portrait );
       // paper size needs to be given in millimeters in order to be able to set a resolution to pass onto the map renderer
-      QSizeF outputSize = mMapSettings.outputSize();
-      QPageSize pageSize( outputSize  * 25.4 / mMapSettings.outputDpi(), QPageSize::Unit::Millimeter );
+      const QSizeF outputSize = mMapSettings.outputSize();
+      const QPageSize pageSize( outputSize  * 25.4 / mMapSettings.outputDpi(), QPageSize::Unit::Millimeter );
       printer.setPageSize( pageSize );
       printer.setPageMargins( QMarginsF( 0, 0, 0, 0 ) );
 #endif
@@ -283,7 +283,7 @@ bool QgsMapRendererTask::run()
       continue;
     }
 
-    QgsScopedQPainterState painterState( context.painter() );
+    const QgsScopedQPainterState painterState( context.painter() );
     context.setPainterFlagsUsingContext();
 
     double itemX, itemY;
@@ -314,7 +314,7 @@ bool QgsMapRendererTask::run()
       {
         QPainter pp;
         pp.begin( mPrinter.get() );
-        QRectF rect( 0, 0, mImage.width(), mImage.height() );
+        const QRectF rect( 0, 0, mImage.width(), mImage.height() );
         pp.drawImage( rect, mImage, rect );
         pp.end();
       }
@@ -322,7 +322,7 @@ bool QgsMapRendererTask::run()
       if ( mSaveWorldFile || mExportMetadata )
       {
         CPLSetThreadLocalConfigOption( "GDAL_PDF_DPI", QString::number( mMapSettings.outputDpi() ).toLocal8Bit().constData() );
-        gdal::dataset_unique_ptr outputDS( GDALOpen( mFileName.toLocal8Bit().constData(), GA_Update ) );
+        const gdal::dataset_unique_ptr outputDS( GDALOpen( mFileName.toLocal8Bit().constData(), GA_Update ) );
         if ( outputDS )
         {
           if ( mSaveWorldFile )
@@ -350,8 +350,8 @@ bool QgsMapRendererTask::run()
                 int offsetFromUtc = creationDateTime.timeZone().offsetFromUtc( creationDateTime );
                 creationDateString += ( offsetFromUtc >= 0 ) ? '+' : '-';
                 offsetFromUtc = std::abs( offsetFromUtc );
-                int offsetHours = offsetFromUtc / 3600;
-                int offsetMins = ( offsetFromUtc % 3600 ) / 60;
+                const int offsetHours = offsetFromUtc / 3600;
+                const int offsetMins = ( offsetFromUtc % 3600 ) / 60;
                 creationDateString += QStringLiteral( "%1'%2'" ).arg( offsetHours ).arg( offsetMins );
               }
             }
@@ -383,7 +383,7 @@ bool QgsMapRendererTask::run()
     }
     else if ( mFileFormat != QLatin1String( "PDF" ) )
     {
-      bool success = mImage.save( mFileName, mFileFormat.toLocal8Bit().data() );
+      const bool success = mImage.save( mFileName, mFileFormat.toLocal8Bit().data() );
       if ( !success )
       {
         mError = ImageSaveFail;
@@ -392,14 +392,14 @@ bool QgsMapRendererTask::run()
 
       if ( mSaveWorldFile )
       {
-        QFileInfo info  = QFileInfo( mFileName );
+        const QFileInfo info  = QFileInfo( mFileName );
 
         // build the world file name
-        QString outputSuffix = info.suffix();
+        const QString outputSuffix = info.suffix();
         bool skipWorldFile = false;
         if ( outputSuffix == QLatin1String( "tif" ) || outputSuffix == QLatin1String( "tiff" ) )
         {
-          gdal::dataset_unique_ptr outputDS( GDALOpen( mFileName.toLocal8Bit().constData(), GA_Update ) );
+          const gdal::dataset_unique_ptr outputDS( GDALOpen( mFileName.toLocal8Bit().constData(), GA_Update ) );
           if ( outputDS )
           {
             skipWorldFile = true;
@@ -417,8 +417,8 @@ bool QgsMapRendererTask::run()
 
         if ( !skipWorldFile )
         {
-          QString worldFileName = info.absolutePath() + '/' + info.completeBaseName() + '.'
-                                  + outputSuffix.at( 0 ) + outputSuffix.at( info.suffix().size() - 1 ) + 'w';
+          const QString worldFileName = info.absolutePath() + '/' + info.completeBaseName() + '.'
+                                        + outputSuffix.at( 0 ) + outputSuffix.at( info.suffix().size() - 1 ) + 'w';
           QFile worldFile( worldFileName );
 
           if ( worldFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) ) //don't use QIODevice::Text
@@ -490,8 +490,8 @@ void QgsMapRendererTask::prepare()
 #else
     mPrinter->setPageOrientation( QPageLayout::Orientation::Portrait );
     // paper size needs to be given in millimeters in order to be able to set a resolution to pass onto the map renderer
-    QSizeF outputSize = mMapSettings.outputSize();
-    QPageSize pageSize( outputSize  * 25.4 / mMapSettings.outputDpi(), QPageSize::Unit::Millimeter );
+    const QSizeF outputSize = mMapSettings.outputSize();
+    const QPageSize pageSize( outputSize  * 25.4 / mMapSettings.outputDpi(), QPageSize::Unit::Millimeter );
     mPrinter->setPageSize( pageSize );
     mPrinter->setPageMargins( QMarginsF( 0, 0, 0, 0 ) );
 #endif

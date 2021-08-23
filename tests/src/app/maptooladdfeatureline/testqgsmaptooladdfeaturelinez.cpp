@@ -229,7 +229,7 @@ void TestQgsMapToolAddFeatureLineZ::testTopologicalEditingZ()
   QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
-  bool topologicalEditing = cfg.project()->topologicalEditing();
+  const bool topologicalEditing = cfg.project()->topologicalEditing();
   cfg.project()->setTopologicalEditing( true );
 
   cfg.setMode( QgsSnappingConfig::AllLayers );
@@ -243,7 +243,7 @@ void TestQgsMapToolAddFeatureLineZ::testTopologicalEditingZ()
   utils.mouseClick( 7.25, 6.5, Qt::LeftButton );
   utils.mouseClick( 7.5, 6.5, Qt::LeftButton );
   utils.mouseClick( 8, 6.5, Qt::RightButton );
-  QgsFeatureId newFid = utils.newFeatureId( oldFids );
+  const QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
   QString wkt = "LineStringZ (6 6.5 5, 6.25 6.5 333, 6.75 6.5 333, 7.25 6.5 333, 7.5 6.5 333)";
   QCOMPARE( mLayerTopoZ->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );

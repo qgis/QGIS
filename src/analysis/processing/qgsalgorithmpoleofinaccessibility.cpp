@@ -131,7 +131,7 @@ QgsFeatureList QgsPoleOfInaccessibilityAlgorithm::processFeature( const QgsFeatu
       tolerance = mToleranceProperty.valueAsDouble( context.expressionContext(), tolerance );
 
     double distance;
-    QgsGeometry outputGeom = outFeature.geometry().poleOfInaccessibility( tolerance, &distance );
+    const QgsGeometry outputGeom = outFeature.geometry().poleOfInaccessibility( tolerance, &distance );
     if ( outputGeom.isNull() )
     {
       throw QgsProcessingException( QObject::tr( "Error calculating pole of inaccessibility" ) );

@@ -89,7 +89,7 @@ void TestQgsGpsInformationWidget::initTestCase()
 
   QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog.setValue( true );
 
-  QString tempPath = QDir::tempPath() + QStringLiteral( "/gps_timestamp.gpkg" );
+  const QString tempPath = QDir::tempPath() + QStringLiteral( "/gps_timestamp.gpkg" );
   QFile::copy( TEST_DATA_DIR + QStringLiteral( "/gps_timestamp.gpkg" ), tempPath );
   tempGpkgLayerPointString = new QgsVectorLayer( QStringLiteral( "%1|layername=points" ).arg( tempPath ),
       QStringLiteral( "vl4" ) );
@@ -139,7 +139,7 @@ QDateTime TestQgsGpsInformationWidget::_testWrite( QgsVectorLayer *vlayer, QgsGp
   widget->mBtnCloseFeature_clicked();
   const auto fids { vlayer->allFeatureIds() };
   const auto fid { std::min_element( fids.begin(), fids.end() ) };
-  QgsFeature f { vlayer->getFeature( *fid ) };
+  const QgsFeature f { vlayer->getFeature( *fid ) };
   if ( commit )
     vlayer->commitChanges();
   else
@@ -204,8 +204,8 @@ void TestQgsGpsInformationWidget::testTimestamp()
 
   QDateTime dateTime( QDate( 2019, 6, 19 ), QTime( 12, 27, 34, 543 ) );
   dateTime.setTimeSpec( Qt::TimeSpec::UTC );
-  QDateTime tzTime( dateTime.toTimeZone( QTimeZone( QStringLiteral( "Asia/Colombo" ).toUtf8() ) ) );
-  QDateTime localTime( dateTime.toLocalTime() );
+  const QDateTime tzTime( dateTime.toTimeZone( QTimeZone( QStringLiteral( "Asia/Colombo" ).toUtf8() ) ) );
+  const QDateTime localTime( dateTime.toLocalTime() );
 
   ///////////////////////////////////////////
   // Test datetime layer
@@ -259,8 +259,8 @@ void TestQgsGpsInformationWidget::testTimestampWrite()
   std::unique_ptr<QgsGpsInformationWidget> widget = prepareWidget();
   QDateTime dateTime( QDate( 2019, 6, 19 ), QTime( 12, 27, 34, 543 ) );
   dateTime.setTimeSpec( Qt::TimeSpec::UTC );
-  QDateTime tzTime( dateTime.toTimeZone( QTimeZone( QStringLiteral( "Asia/Colombo" ).toUtf8() ) ) );
-  QDateTime localTime( dateTime.toLocalTime() );
+  const QDateTime tzTime( dateTime.toTimeZone( QTimeZone( QStringLiteral( "Asia/Colombo" ).toUtf8() ) ) );
+  const QDateTime localTime( dateTime.toLocalTime() );
 
   // Test write on datetime field
   QCOMPARE( _testWrite( tempLayerDateTime, widget.get(), QStringLiteral( "datetimef" ),  Qt::TimeSpec::UTC ), dateTime );

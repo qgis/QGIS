@@ -36,7 +36,7 @@ bool QgsDatumTransformDialog::run( const QgsCoordinateReferenceSystem &sourceCrs
   if ( sourceCrs == destinationCrs )
     return true;
 
-  QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
+  const QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
   if ( context.hasTransform( sourceCrs, destinationCrs ) )
   {
     return true;
@@ -163,14 +163,14 @@ void QgsDatumTransformDialog::accept()
 
     const TransformInfo dt = selectedDatumTransform();
 
-    QString srcAuthId = dt.sourceCrs.authid();
-    QString destAuthId = dt.destinationCrs.authid();
-    int sourceDatumTransform = dt.sourceTransformId;
+    const QString srcAuthId = dt.sourceCrs.authid();
+    const QString destAuthId = dt.destinationCrs.authid();
+    const int sourceDatumTransform = dt.sourceTransformId;
     QString sourceDatumProj;
     Q_NOWARN_DEPRECATED_PUSH
     if ( sourceDatumTransform >= 0 )
       sourceDatumProj = QgsDatumTransform::datumTransformToProj( sourceDatumTransform );
-    int destinationDatumTransform = dt.destinationTransformId;
+    const int destinationDatumTransform = dt.destinationTransformId;
     QString destinationDatumProj;
     if ( destinationDatumTransform >= 0 )
       destinationDatumProj = QgsDatumTransform::datumTransformToProj( destinationDatumTransform );
@@ -206,7 +206,7 @@ QgsDatumTransformDialog::TransformInfo QgsDatumTransformDialog::defaultDatumTran
   TransformInfo preferred;
   preferred.sourceCrs = mCoordinateOperationsWidget->sourceCrs();
   preferred.destinationCrs = mCoordinateOperationsWidget->destinationCrs();
-  QgsCoordinateOperationWidget::OperationDetails defaultOp = mCoordinateOperationsWidget->defaultOperation();
+  const QgsCoordinateOperationWidget::OperationDetails defaultOp = mCoordinateOperationsWidget->defaultOperation();
   preferred.sourceTransformId = defaultOp.sourceTransformId;
   preferred.destinationTransformId = defaultOp.destinationTransformId;
   preferred.proj = defaultOp.proj;
@@ -231,7 +231,7 @@ void QgsDatumTransformDialog::applyDefaultTransform()
 
 QgsDatumTransformDialog::TransformInfo QgsDatumTransformDialog::selectedDatumTransform()
 {
-  QgsCoordinateOperationWidget::OperationDetails selected = mCoordinateOperationsWidget->selectedOperation();
+  const QgsCoordinateOperationWidget::OperationDetails selected = mCoordinateOperationsWidget->selectedOperation();
   TransformInfo sdt;
   sdt.sourceCrs = mCoordinateOperationsWidget->sourceCrs();
   sdt.destinationCrs = mCoordinateOperationsWidget->destinationCrs();

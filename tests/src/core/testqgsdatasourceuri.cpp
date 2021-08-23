@@ -210,7 +210,7 @@ void TestQgsDataSourceUri::checkparser()
   QFETCH( QString, myparam );
   QFETCH( QString, schema );
 
-  QgsDataSourceUri ds( uri );
+  const QgsDataSourceUri ds( uri );
   QCOMPARE( ds.table(), table );
   QCOMPARE( ds.geometryColumn(), geometrycolumn );
   QCOMPARE( ds.keyColumn(), key );
@@ -249,7 +249,7 @@ void TestQgsDataSourceUri::checkAuthParams()
   QCOMPARE( uri.param( QStringLiteral( "authcfg" ) ), QStringLiteral( "syl" ) );
 
   // round trip through encodedUri should not lose username/password/authcfg
-  QByteArray encoded = uri.encodedUri();
+  const QByteArray encoded = uri.encodedUri();
   QgsDataSourceUri uri2;
   uri2.setEncodedUri( encoded );
 

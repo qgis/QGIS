@@ -40,12 +40,12 @@ QgsScaleComboBox::QgsScaleComboBox( QWidget *parent )
 void QgsScaleComboBox::updateScales( const QStringList &scales )
 {
   QStringList myScalesList;
-  QString oldScale = currentText();
+  const QString oldScale = currentText();
 
   if ( scales.isEmpty() )
   {
-    QgsSettings settings;
-    QString myScales = settings.value( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() ).toString();
+    const QgsSettings settings;
+    const QString myScales = settings.value( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() ).toString();
     if ( !myScales.isEmpty() )
     {
       myScalesList = myScales.split( ',' );
@@ -92,7 +92,7 @@ void QgsScaleComboBox::showPopup()
   bool ok;
   int idx = 0;
   int min = 999999;
-  long currScale = parts.at( 1 ).toLong( &ok );
+  const long currScale = parts.at( 1 ).toLong( &ok );
   long nextScale, delta;
   for ( int i = 0; i < count(); i++ )
   {
@@ -119,7 +119,7 @@ QString QgsScaleComboBox::scaleString() const
 
 bool QgsScaleComboBox::setScaleString( const QString &string )
 {
-  double oldScale = mScale;
+  const double oldScale = mScale;
   if ( mAllowNull && string.trimmed().isEmpty() )
   {
     mScale = std::numeric_limits< double >::quiet_NaN();
@@ -178,8 +178,8 @@ void QgsScaleComboBox::fixupScale()
     return;
   }
 
-  QStringList txtList = currentText().split( ':' );
-  bool userSetScale = txtList.size() != 2;
+  const QStringList txtList = currentText().split( ':' );
+  const bool userSetScale = txtList.size() != 2;
 
   bool ok;
   double newScale = toDouble( currentText(), &ok );
@@ -225,7 +225,7 @@ double QgsScaleComboBox::toDouble( const QString &scaleString, bool *returnOk )
   bool ok = false;
   QString scaleTxt( scaleString );
 
-  double denominator = qgsPermissiveToDouble( scaleTxt, ok );
+  const double denominator = qgsPermissiveToDouble( scaleTxt, ok );
   double scale = !qgsDoubleNear( denominator, 0.0 ) ? 1.0 / denominator : 0.0;
   if ( ok )
   {
@@ -241,8 +241,8 @@ double QgsScaleComboBox::toDouble( const QString &scaleString, bool *returnOk )
     {
       bool okX = false;
       bool okY = false;
-      int x = qgsPermissiveToInt( txtList[ 0 ], okX );
-      int y = qgsPermissiveToInt( txtList[ 1 ], okY );
+      const int x = qgsPermissiveToInt( txtList[ 0 ], okX );
+      const int y = qgsPermissiveToInt( txtList[ 1 ], okY );
       if ( okX && okY && x != 0 )
       {
         // Scale is fraction of x and y

@@ -104,7 +104,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   mCommonAngleActions = QMap<QAction *, double>();
   QList< QPair< double, QString > > commonAngles;
   QString menuText;
-  QList<double> anglesDouble( { 0.0, 5.0, 10.0, 15.0, 18.0, 22.5, 30.0, 45.0, 90.0} );
+  const QList<double> anglesDouble( { 0.0, 5.0, 10.0, 15.0, 18.0, 22.5, 30.0, 45.0, 90.0} );
   for ( QList<double>::const_iterator it = anglesDouble.constBegin(); it != anglesDouble.constEnd(); ++it )
   {
     if ( *it == 0 )
@@ -333,7 +333,7 @@ void QgsAdvancedDigitizingDockWidget::setConstructionMode( bool enabled )
 void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction *action )
 {
   // common angles
-  QMap<QAction *, double>::const_iterator ica = mCommonAngleActions.constFind( action );
+  const QMap<QAction *, double>::const_iterator ica = mCommonAngleActions.constFind( action );
   if ( ica != mCommonAngleActions.constEnd() )
   {
     ica.key()->setChecked( true );
@@ -430,7 +430,7 @@ double QgsAdvancedDigitizingDockWidget::parseUserInput( const QString &inputValu
   {
     // try to evaluate expression
     QgsExpression expr( inputValue );
-    QVariant result = expr.evaluate();
+    const QVariant result = expr.evaluate();
     if ( expr.hasEvalError() )
       ok = false;
     else
@@ -450,7 +450,7 @@ void QgsAdvancedDigitizingDockWidget::updateConstraintValue( CadConstraint *cons
     return;
 
   bool ok;
-  double value = parseUserInput( textValue, ok );
+  const double value = parseUserInput( textValue, ok );
   if ( !ok )
     return;
 
@@ -469,11 +469,11 @@ void QgsAdvancedDigitizingDockWidget::lockConstraint( bool activate /* default t
 
   if ( activate )
   {
-    QString textValue = constraint->lineEdit()->text();
+    const QString textValue = constraint->lineEdit()->text();
     if ( !textValue.isEmpty() )
     {
       bool ok;
-      double value = parseUserInput( textValue, ok );
+      const double value = parseUserInput( textValue, ok );
       if ( ok )
       {
         constraint->setValue( value );
@@ -570,14 +570,14 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
     return;
   }
 
-  bool snappingEnabled = QgsProject::instance()->snappingConfig().enabled();
+  const bool snappingEnabled = QgsProject::instance()->snappingConfig().enabled();
 
   // update the UI according to new capacities
   // still keep the old to compare
 
-  bool relativeAngle = mCadEnabled && newCapacities.testFlag( RelativeAngle );
-  bool absoluteAngle = mCadEnabled && newCapacities.testFlag( AbsoluteAngle );
-  bool relativeCoordinates = mCadEnabled && newCapacities.testFlag( RelativeCoordinates );
+  const bool relativeAngle = mCadEnabled && newCapacities.testFlag( RelativeAngle );
+  const bool absoluteAngle = mCadEnabled && newCapacities.testFlag( AbsoluteAngle );
+  const bool relativeCoordinates = mCadEnabled && newCapacities.testFlag( RelativeCoordinates );
 
   mPerpendicularAction->setEnabled( absoluteAngle && snappingEnabled );
   mParallelAction->setEnabled( absoluteAngle && snappingEnabled );
@@ -662,9 +662,9 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   context.commonAngleConstraint.relative = context.angleConstraint.relative;
   context.commonAngleConstraint.value = mCommonAngleConstraint;
 
-  QgsCadUtils::AlignMapPointOutput output = QgsCadUtils::alignMapPoint( e->originalMapPoint(), context );
+  const QgsCadUtils::AlignMapPointOutput output = QgsCadUtils::alignMapPoint( e->originalMapPoint(), context );
 
-  bool res = output.valid;
+  const bool res = output.valid;
   QgsPointXY point = output.finalMapPoint;
   mSnappedSegment.clear();
   if ( output.snapMatch.hasEdge() )
@@ -731,8 +731,8 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
 void QgsAdvancedDigitizingDockWidget::updateUnlockedConstraintValues( const QgsPointXY &point )
 {
   bool previousPointExist, penulPointExist;
-  QgsPointXY previousPt = previousPoint( &previousPointExist );
-  QgsPointXY penultimatePt = penultimatePoint( &penulPointExist );
+  const QgsPointXY previousPt = previousPoint( &previousPointExist );
+  const QgsPointXY penultimatePt = penultimatePoint( &penulPointExist );
 
   // --- angle
   if ( !mAngleConstraint->isLocked() && previousPointExist )
@@ -791,7 +791,7 @@ QList<QgsPointXY> QgsAdvancedDigitizingDockWidget::snapSegmentToAllLayers( const
 
   QgsSnappingUtils *snappingUtils = mMapCanvas->snappingUtils();
 
-  QgsSnappingConfig canvasConfig = snappingUtils->config();
+  const QgsSnappingConfig canvasConfig = snappingUtils->config();
   QgsSnappingConfig localConfig = snappingUtils->config();
 
   localConfig.setMode( QgsSnappingConfig::AllLayers );
@@ -824,8 +824,8 @@ bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent *e, CadCo
   }
 
   bool previousPointExist, penulPointExist, snappedSegmentExist;
-  QgsPointXY previousPt = previousPoint( &previousPointExist );
-  QgsPointXY penultimatePt = penultimatePoint( &penulPointExist );
+  const QgsPointXY previousPt = previousPoint( &previousPointExist );
+  const QgsPointXY penultimatePt = penultimatePoint( &penulPointExist );
   mSnappedSegment = snapSegmentToAllLayers( e->originalMapPoint(), &snappedSegmentExist );
 
   if ( !previousPointExist || !snappedSegmentExist )
@@ -961,7 +961,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
   // ShortcutOverride events, we have to take care that we don't trigger the handling for BOTH
   // these event types for a single key press. I.e. pressing "A" may first call trigger a
   // ShortcutOverride event (sometimes, not always!) followed immediately by a KeyPress event.
-  QEvent::Type type = e->type();
+  const QEvent::Type type = e->type();
   switch ( e->key() )
   {
     case Qt::Key_X:
@@ -1093,8 +1093,8 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
     {
       if ( type == QEvent::KeyPress )
       {
-        bool parallel = mParallelAction->isChecked();
-        bool perpendicular = mPerpendicularAction->isChecked();
+        const bool parallel = mParallelAction->isChecked();
+        const bool perpendicular = mPerpendicularAction->isChecked();
 
         if ( !parallel && !perpendicular )
         {
@@ -1188,7 +1188,7 @@ void QgsAdvancedDigitizingDockWidget::removePreviousPoint()
   if ( !pointsCount() )
     return;
 
-  int i = pointsCount() > 1 ? 1 : 0;
+  const int i = pointsCount() > 1 ? 1 : 0;
   mCadPointList.removeAt( i );
   updateCapacity();
   updateCadPaintItem();

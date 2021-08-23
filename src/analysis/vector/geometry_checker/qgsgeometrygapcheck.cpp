@@ -71,8 +71,8 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
 
     while ( iterator.nextFeature( feature ) )
     {
-      QgsGeometry geom = feature.geometry();
-      QgsGeometry gg = geom.buffer( mAllowedGapsBuffer, 20 );
+      const QgsGeometry geom = feature.geometry();
+      const QgsGeometry gg = geom.buffer( mAllowedGapsBuffer, 20 );
       allowedGaps.append( gg );
     }
 
@@ -86,7 +86,7 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
   }
 
   QVector<QgsGeometry> geomList;
-  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
+  const QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
   const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), nullptr, mContext, true );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
@@ -108,7 +108,7 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
 
   // Create union of geometry
   QString errMsg;
-  std::unique_ptr<QgsAbstractGeometry> unionGeom( geomEngine->combine( geomList, &errMsg ) );
+  const std::unique_ptr<QgsAbstractGeometry> unionGeom( geomEngine->combine( geomList, &errMsg ) );
   if ( !unionGeom )
   {
     messages.append( tr( "Gap check: %1" ).arg( errMsg ) );
@@ -187,22 +187,22 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
     }
 
     // Add error
-    double area = gapGeom->area();
-    QgsRectangle gapBbox = gapGeom->boundingBox();
+    const double area = gapGeom->area();
+    const QgsRectangle gapBbox = gapGeom->boundingBox();
     errors.append( new QgsGeometryGapCheckError( this, QString(), QgsGeometry( gapGeom->clone() ), neighboringIds, area, gapBbox, gapAreaBBox ) );
   }
 }
 
 void QgsGeometryGapCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
-  QMetaEnum metaEnum = QMetaEnum::fromType<QgsGeometryGapCheck::ResolutionMethod>();
+  const QMetaEnum metaEnum = QMetaEnum::fromType<QgsGeometryGapCheck::ResolutionMethod>();
   if ( !metaEnum.isValid() || !metaEnum.valueToKey( method ) )
   {
     error->setFixFailed( tr( "Unknown method" ) );
   }
   else
   {
-    ResolutionMethod methodValue = static_cast<ResolutionMethod>( method );
+    const ResolutionMethod methodValue = static_cast<ResolutionMethod>( method );
     switch ( methodValue )
     {
       case NoChange:
@@ -234,7 +234,7 @@ void QgsGeometryGapCheck::fixError( const QMap<QString, QgsFeaturePool *> &featu
           }
           else
           {
-            QgsFeature feature = QgsVectorLayerUtils::createFeature( layer, error->geometry() );
+            const QgsFeature feature = QgsVectorLayerUtils::createFeature( layer, error->geometry() );
             QgsFeatureList features = QgsVectorLayerUtils::makeFeatureCompatible( feature, layer );
             if ( !layer->addFeatures( features ) )
             {
@@ -314,12 +314,12 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
   {
     QgsFeaturePool *featurePool = featurePools.value( layerId );
     std::unique_ptr<QgsAbstractGeometry> errLayerGeom( errGeometry->clone() );
-    QgsCoordinateTransform ct( featurePool->crs(), mContext->mapCrs, mContext->transformContext );
+    const QgsCoordinateTransform ct( featurePool->crs(), mContext->mapCrs, mContext->transformContext );
     errLayerGeom->transform( ct, QgsCoordinateTransform::ReverseTransform );
 
     const auto featureIds = err->neighbors().value( layerId );
 
-    for ( QgsFeatureId testId : featureIds )
+    for ( const QgsFeatureId testId : featureIds )
     {
       QgsFeature feature;
       if ( !featurePool->getFeature( testId, feature ) )
@@ -377,7 +377,7 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
     QgsVertexIterator vit = neighbour.geometry().vertices();
     while ( vit.hasNext() )
     {
-      QgsPoint pt = vit.next();
+      const QgsPoint pt = vit.next();
       QgsFeature f;
       f.setId( id ); // required for SpatialIndex to return the correct result
       f.setGeometry( QgsGeometry( pt.clone() ) );
@@ -391,8 +391,8 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
   QgsVertexIterator iterator = errGeometry->vertices();
   while ( iterator.hasNext() )
   {
-    QgsPoint pt = iterator.next();
-    QgsGeometry closestGeom = neighbourVerticesIndex.geometry( neighbourVerticesIndex.nearestNeighbor( QgsPointXY( pt ) ).first() );
+    const QgsPoint pt = iterator.next();
+    const QgsGeometry closestGeom = neighbourVerticesIndex.geometry( neighbourVerticesIndex.nearestNeighbor( QgsPointXY( pt ) ).first() );
     if ( !closestGeom.isEmpty() )
     {
       snappedRing.append( QgsPoint( closestGeom.vertexAt( 0 ) ) );
@@ -405,7 +405,7 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
   // Merge geometries
   QgsFeaturePool *featurePool = featurePools[ mergeLayerId ];
   std::unique_ptr<QgsAbstractGeometry> errLayerGeom( snappedErrGeom->clone() );
-  QgsCoordinateTransform ct( featurePool->crs(), mContext->mapCrs, mContext->transformContext );
+  const QgsCoordinateTransform ct( featurePool->crs(), mContext->mapCrs, mContext->transformContext );
   errLayerGeom->transform( ct, QgsCoordinateTransform::ReverseTransform );
   const QgsGeometry mergeFeatureGeom = mergeFeature.geometry();
   const QgsAbstractGeometry *mergeGeom = mergeFeatureGeom.constGet();

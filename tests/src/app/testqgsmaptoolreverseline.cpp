@@ -86,8 +86,8 @@ void TestQgsMapToolReverseLine::testReverseCurve()
   std::unique_ptr< QgsMapToolReverseLine > tool( new QgsMapToolReverseLine( mCanvas ) );
 
   memoryLayer->startEditing();
-  QgsPointXY mapPoint = mCanvas->getCoordinateTransform()->transform( 5, 5 );
-  std::unique_ptr< QgsMapMouseEvent > event( new QgsMapMouseEvent(
+  const QgsPointXY mapPoint = mCanvas->getCoordinateTransform()->transform( 5, 5 );
+  const std::unique_ptr< QgsMapMouseEvent > event( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseButtonRelease,
         QPoint( mapPoint.x(), mapPoint.y() )
@@ -95,9 +95,9 @@ void TestQgsMapToolReverseLine::testReverseCurve()
   // trigger mouseRelease handler
   tool->canvasPressEvent( event.get() );
   tool->canvasReleaseEvent( event.get() );
-  QgsFeature f = memoryLayer->getFeature( 1 );
+  const QgsFeature f = memoryLayer->getFeature( 1 );
 
-  QString wkt = "CircularString (5 5, 10 10)";
+  const QString wkt = "CircularString (5 5, 10 10)";
   QCOMPARE( f.geometry().asWkt(), wkt );
   memoryLayer->rollBack();
 
@@ -121,8 +121,8 @@ void TestQgsMapToolReverseLine::testReverseLineString()
 
   std::unique_ptr< QgsMapToolReverseLine > tool( new QgsMapToolReverseLine( mCanvas ) );
   memoryLayer->startEditing();
-  QgsPointXY mapPoint = mCanvas->getCoordinateTransform()->transform( 6, 6 );
-  std::unique_ptr< QgsMapMouseEvent > event( new QgsMapMouseEvent(
+  const QgsPointXY mapPoint = mCanvas->getCoordinateTransform()->transform( 6, 6 );
+  const std::unique_ptr< QgsMapMouseEvent > event( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseButtonRelease,
         QPoint( mapPoint.x(), mapPoint.y() )
@@ -131,9 +131,9 @@ void TestQgsMapToolReverseLine::testReverseLineString()
   tool->canvasPressEvent( event.get() );
   tool->canvasReleaseEvent( event.get() );
 
-  QgsFeature f = memoryLayer->getFeature( 1 );
+  const QgsFeature f = memoryLayer->getFeature( 1 );
 
-  QString wkt = "LineStringZ (5 5 5, 10 10 10, 0 0 0)";
+  const QString wkt = "LineStringZ (5 5 5, 10 10 10, 0 0 0)";
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   memoryLayer->rollBack();

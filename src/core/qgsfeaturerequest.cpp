@@ -255,7 +255,7 @@ QgsFeatureRequest &QgsFeatureRequest::setSubsetOfAttributes( const QStringList &
   const auto constAttrNames = attrNames;
   for ( const QString &attrName : constAttrNames )
   {
-    int attrNum = fields.lookupField( attrName );
+    const int attrNum = fields.lookupField( attrName );
     if ( attrNum != -1 && !mAttrs.contains( attrNum ) )
       mAttrs.append( attrNum );
   }
@@ -277,7 +277,7 @@ QgsFeatureRequest &QgsFeatureRequest::setSubsetOfAttributes( const QSet<QString>
   const auto constAttrNames = attrNames;
   for ( const QString &attrName : constAttrNames )
   {
-    int attrNum = fields.lookupField( attrName );
+    const int attrNum = fields.lookupField( attrName );
     if ( attrNum != -1 && !mAttrs.contains( attrNum ) )
       mAttrs.append( attrNum );
   }
@@ -544,14 +544,14 @@ void QgsFeatureRequest::OrderBy::load( const QDomElement &elem )
 {
   clear();
 
-  QDomNodeList clauses = elem.childNodes();
+  const QDomNodeList clauses = elem.childNodes();
 
   for ( int i = 0; i < clauses.size(); ++i )
   {
-    QDomElement clauseElem = clauses.at( i ).toElement();
-    QString expression = clauseElem.text();
-    bool asc = clauseElem.attribute( QStringLiteral( "asc" ) ).toInt() != 0;
-    bool nullsFirst  = clauseElem.attribute( QStringLiteral( "nullsFirst" ) ).toInt() != 0;
+    const QDomElement clauseElem = clauses.at( i ).toElement();
+    const QString expression = clauseElem.text();
+    const bool asc = clauseElem.attribute( QStringLiteral( "asc" ) ).toInt() != 0;
+    const bool nullsFirst  = clauseElem.attribute( QStringLiteral( "nullsFirst" ) ).toInt() != 0;
 
     append( OrderByClause( expression, asc, nullsFirst ) );
   }
@@ -580,7 +580,7 @@ QSet<int> QgsFeatureRequest::OrderBy::usedAttributeIndices( const QgsFields &fie
     const auto referencedColumns = clause.expression().referencedColumns();
     for ( const QString &fieldName : referencedColumns )
     {
-      int idx = fields.lookupField( fieldName );
+      const int idx = fields.lookupField( fieldName );
       if ( idx >= 0 )
       {
         usedAttributeIdx.insert( idx );

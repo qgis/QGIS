@@ -694,6 +694,31 @@ class CORE_EXPORT Qgis
     Q_ENUM( SpatialFilterType )
 
     /**
+     * File operation flags.
+     *
+     * \since QGIS 3.22
+     */
+    enum class FileOperationFlag : int
+    {
+      IncludeMetadataFile = 1 << 0, //!< Indicates that any associated .qmd metadata file should be included with the operation
+      IncludeStyleFile = 1 << 1, //!< Indicates that any associated .qml styling file should be included with the operation
+    };
+    Q_DECLARE_FLAGS( FileOperationFlags, FileOperationFlag )
+    Q_ENUM( FileOperationFlag )
+
+    /**
+     * Generic map layer properties.
+     *
+     * \since QGIS 3.22
+     */
+    enum class MapLayerProperty : int
+    {
+      UsersCannotToggleEditing = 1 << 0, //!< Indicates that users are not allowed to toggle editing for this layer. Note that this does not imply that the layer is non-editable (see isEditable(), supportsEditing() ), rather that the editable status of the layer cannot be changed by users manually. Since QGIS 3.22.
+    };
+    Q_DECLARE_FLAGS( MapLayerProperties, MapLayerProperty )
+    Q_ENUM( MapLayerProperty )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */
@@ -815,6 +840,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SqlLayerDefinitionCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelFormatCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelCommandFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::GeometryValidityFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::FileOperationFlags )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.
@@ -977,8 +1003,8 @@ inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
   // has to be considered (maybe TODO)
   // Is there a better way?
   int aexp, bexp;
-  double ar = std::frexp( a, &aexp );
-  double br = std::frexp( b, &bexp );
+  const double ar = std::frexp( a, &aexp );
+  const double br = std::frexp( b, &bexp );
 
   return aexp == bexp &&
          std::round( ar * std::pow( 10.0, significantDigits ) ) == std::round( br * std::pow( 10.0, significantDigits ) );
@@ -991,8 +1017,8 @@ inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
  */
 inline double qgsRound( double number, int places )
 {
-  double m = ( number < 0.0 ) ? -1.0 : 1.0;
-  double scaleFactor = std::pow( 10.0, places );
+  const double m = ( number < 0.0 ) ? -1.0 : 1.0;
+  const double scaleFactor = std::pow( 10.0, places );
   return ( std::round( number * m * scaleFactor ) / scaleFactor ) * m;
 }
 
@@ -1065,7 +1091,7 @@ namespace qgis
  */
 template<class T> const QMap<T, QString> qgsEnumMap() SIP_SKIP
 {
-  QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+  const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
   Q_ASSERT( metaEnum.isValid() );
   QMap<T, QString> enumMap;
   for ( int idx = 0; idx < metaEnum.keyCount(); ++idx )
@@ -1082,7 +1108,7 @@ template<class T> const QMap<T, QString> qgsEnumMap() SIP_SKIP
  */
 template<class T> QString qgsEnumValueToKey( const T &value ) SIP_SKIP
 {
-  QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+  const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
   Q_ASSERT( metaEnum.isValid() );
   return QString::fromUtf8( metaEnum.valueToKey( static_cast<int>( value ) ) );
 }
@@ -1095,7 +1121,7 @@ template<class T> QString qgsEnumValueToKey( const T &value ) SIP_SKIP
  */
 template<class T> T qgsEnumKeyToValue( const QString &key, const T &defaultValue, bool tryValueAsKey = true ) SIP_SKIP
 {
-  QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+  const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
   Q_ASSERT( metaEnum.isValid() );
   bool ok = false;
   T v = static_cast<T>( metaEnum.keyToValue( key.toUtf8().data(), &ok ) );
@@ -1109,7 +1135,7 @@ template<class T> T qgsEnumKeyToValue( const QString &key, const T &defaultValue
     if ( tryValueAsKey )
     {
       bool canConvert = false;
-      int intValue = key.toInt( &canConvert );
+      const int intValue = key.toInt( &canConvert );
       if ( canConvert && metaEnum.valueToKey( intValue ) )
       {
         return static_cast<T>( intValue );
@@ -1125,7 +1151,7 @@ template<class T> T qgsEnumKeyToValue( const QString &key, const T &defaultValue
  */
 template<class T> QString qgsFlagValueToKeys( const T &value ) SIP_SKIP
 {
-  QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+  const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
   Q_ASSERT( metaEnum.isValid() );
   return QString::fromUtf8( metaEnum.valueToKeys( static_cast<int>( value ) ) );
 }
@@ -1137,7 +1163,7 @@ template<class T> QString qgsFlagValueToKeys( const T &value ) SIP_SKIP
  */
 template<class T> T qgsFlagKeysToValue( const QString &keys, const T &defaultValue ) SIP_SKIP
 {
-  QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+  const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
   Q_ASSERT( metaEnum.isValid() );
   bool ok = false;
   T v = static_cast<T>( metaEnum.keysToValue( keys.toUtf8().constData(), &ok ) );

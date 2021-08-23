@@ -59,7 +59,7 @@ void TestQgsLayoutMapOverview::initTestCase()
   QgsApplication::initQgis();
 
   //create maplayers from testdata and add to layer registry
-  QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/rgb256x256.png" );
+  const QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/rgb256x256.png" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                      rasterFileInfo.completeBaseName() );
   QgsMultiBandColorRenderer *rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 1, 2, 3 );
@@ -71,7 +71,7 @@ void TestQgsLayoutMapOverview::cleanupTestCase()
 {
   delete mRasterLayer;
 
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -123,7 +123,7 @@ void TestQgsLayoutMapOverview::overviewMap()
   QgsLayoutChecker checker( QStringLiteral( "composermap_overview" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapoverview" ) );
 
-  bool testResult = checker.testLayout( mReport, 0, 0 );
+  const bool testResult = checker.testLayout( mReport, 0, 0 );
   QVERIFY( testResult );
 }
 
@@ -149,7 +149,7 @@ void TestQgsLayoutMapOverview::overviewMapRotated()
   QgsLayoutChecker checker( QStringLiteral( "composermap_overview_rotated" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapoverview" ) );
 
-  bool testResult = checker.testLayout( mReport, 0, 600 );
+  const bool testResult = checker.testLayout( mReport, 0, 600 );
   QVERIFY( testResult );
 }
 
@@ -175,7 +175,7 @@ void TestQgsLayoutMapOverview::overviewMapRotated2()
   QgsLayoutChecker checker( QStringLiteral( "composermap_overview_rotated2" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapoverview" ) );
 
-  bool testResult = checker.testLayout( mReport, 0, 600 );
+  const bool testResult = checker.testLayout( mReport, 0, 600 );
   QVERIFY( testResult );
 }
 
@@ -202,7 +202,7 @@ void TestQgsLayoutMapOverview::overviewMapBlending()
   QgsLayoutChecker checker( QStringLiteral( "composermap_overview_blending" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapoverview" ) );
 
-  bool testResult = checker.testLayout( mReport, 0, 0 );
+  const bool testResult = checker.testLayout( mReport, 0, 0 );
   QVERIFY( testResult );
 }
 
@@ -229,7 +229,7 @@ void TestQgsLayoutMapOverview::overviewMapInvert()
   QgsLayoutChecker checker( QStringLiteral( "composermap_overview_invert" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapoverview" ) );
 
-  bool testResult = checker.testLayout( mReport, 0, 0 );
+  const bool testResult = checker.testLayout( mReport, 0, 0 );
   QVERIFY( testResult );
 }
 
@@ -256,7 +256,7 @@ void TestQgsLayoutMapOverview::overviewMapCenter()
   QgsLayoutChecker checker( QStringLiteral( "composermap_overview_center" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapoverview" ) );
 
-  bool testResult = checker.testLayout( mReport, 0, 0 );
+  const bool testResult = checker.testLayout( mReport, 0, 0 );
   QVERIFY( testResult );
 }
 
@@ -286,7 +286,7 @@ void TestQgsLayoutMapOverview::overviewReprojected()
   QgsLayoutChecker checker( QStringLiteral( "composermap_overview_reprojected" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_mapoverview" ) );
 
-  bool testResult = checker.testLayout( mReport, 0, 0 );
+  const bool testResult = checker.testLayout( mReport, 0, 0 );
   QVERIFY( testResult );
 }
 

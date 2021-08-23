@@ -97,7 +97,7 @@ bool QgsGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY> &so
   }
   if ( mRasterChangeCoords.hasCrs() )
   {
-    QVector<QgsPointXY> pixelCoordsCorrect = mRasterChangeCoords.getPixelCoords( sourceCoordinates );
+    const QVector<QgsPointXY> pixelCoordsCorrect = mRasterChangeCoords.getPixelCoords( sourceCoordinates );
     mParametersInitialized = mGeorefTransformImplementation->updateParametersFromGcps( sourceCoordinates, pixelCoordsCorrect, invertYAxis );
   }
   else
@@ -130,13 +130,13 @@ void *QgsGeorefTransform::GDALTransformerArgs() const
 bool QgsGeorefTransform::transformRasterToWorld( const QgsPointXY &raster, QgsPointXY &world )
 {
   // flip y coordinate due to different CS orientation
-  QgsPointXY raster_flipped( raster.x(), -raster.y() );
+  const QgsPointXY raster_flipped( raster.x(), -raster.y() );
   return gdal_transform( raster_flipped, world, 0 );
 }
 
 bool QgsGeorefTransform::transformWorldToRaster( const QgsPointXY &world, QgsPointXY &raster )
 {
-  bool success = gdal_transform( world, raster, 1 );
+  const bool success = gdal_transform( world, raster, 1 );
   // flip y coordinate due to different CS orientation
   raster.setY( -raster.y() );
   return success;

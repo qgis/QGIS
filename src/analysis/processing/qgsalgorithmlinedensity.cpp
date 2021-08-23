@@ -95,8 +95,8 @@ bool QgsLineDensityAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Q
   mDa.setSourceCrs( mCrs, context.transformContext() );
 
   //get cell midpoint from top left cell
-  QgsPoint firstCellMidpoint = QgsPoint( mExtent.xMinimum() + ( mPixelSize / 2 ), mExtent.yMaximum() - ( mPixelSize / 2 ) );
-  QgsCircle searchCircle = QgsCircle( firstCellMidpoint, mSearchRadius );
+  const QgsPoint firstCellMidpoint = QgsPoint( mExtent.xMinimum() + ( mPixelSize / 2 ), mExtent.yMaximum() - ( mPixelSize / 2 ) );
+  const QgsCircle searchCircle = QgsCircle( firstCellMidpoint, mSearchRadius );
   mSearchGeometry = QgsGeometry( searchCircle.toPolygon() );
 
   return true;
@@ -106,8 +106,8 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
 {
   mIndex = QgsSpatialIndex( QgsSpatialIndex::FlagStoreFeatureGeometries );
 
-  QStringList weightName = QStringList( mWeightField );
-  QgsFields attrFields = mSource->fields();
+  const QStringList weightName = QStringList( mWeightField );
+  const QgsFields attrFields = mSource->fields();
 
   QgsFeatureRequest r = QgsFeatureRequest();
   r.setSubsetOfAttributes( weightName, attrFields );
@@ -121,21 +121,21 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
     //only populate hash if weight field is given
     if ( !mWeightField.isEmpty() )
     {
-      double analysisWeight = f.attribute( mWeightField ).toDouble();
+      const double analysisWeight = f.attribute( mWeightField ).toDouble();
       mFeatureWeights.insert( f.id(), analysisWeight );
     }
   }
 
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  QFileInfo fi( outputFile );
+  const QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
 
-  int rows = std::max( std::ceil( mExtent.height() / mPixelSize ), 1.0 );
-  int cols = std::max( std::ceil( mExtent.width() / mPixelSize ), 1.0 );
+  const int rows = std::max( std::ceil( mExtent.height() / mPixelSize ), 1.0 );
+  const int cols = std::max( std::ceil( mExtent.width() / mPixelSize ), 1.0 );
 
   //build new raster extent based on number of columns and cellsize
   //this prevents output cellsize being calculated too small
-  QgsRectangle rasterExtent = QgsRectangle( mExtent.xMinimum(), mExtent.yMaximum() - ( rows * mPixelSize ), mExtent.xMinimum() + ( cols * mPixelSize ), mExtent.yMaximum() );
+  const QgsRectangle rasterExtent = QgsRectangle( mExtent.xMinimum(), mExtent.yMaximum() - ( rows * mPixelSize ), mExtent.xMinimum() + ( cols * mPixelSize ), mExtent.yMaximum() );
 
   QgsRasterFileWriter writer = QgsRasterFileWriter( outputFile );
   writer.setOutputProviderKey( QStringLiteral( "gdal" ) );
@@ -148,7 +148,7 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
 
   provider->setNoDataValue( 1, -9999 );
 
-  qgssize totalCellcnt = static_cast<qgssize>( rows ) * cols;
+  const qgssize totalCellcnt = static_cast<qgssize>( rows ) * cols;
   int cellcnt = 0;
 
   std::unique_ptr< QgsRasterBlock > rasterDataLine = std::make_unique< QgsRasterBlock >( Qgis::DataType::Float32, cols, 1 );
@@ -173,13 +173,13 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
         engine->prepareGeometry();
 
         double absDensity = 0;
-        for ( QgsFeatureId id : fids )
+        for ( const QgsFeatureId id : fids )
         {
-          QgsGeometry lineGeom = mIndex.geometry( id );
+          const QgsGeometry lineGeom = mIndex.geometry( id );
 
           if ( engine->intersects( lineGeom.constGet() ) )
           {
-            double analysisLineLength =  mDa.measureLength( QgsGeometry( engine->intersection( mIndex.geometry( id ).constGet() ) ) );
+            const double analysisLineLength =  mDa.measureLength( QgsGeometry( engine->intersection( mIndex.geometry( id ).constGet() ) ) );
             double weight = 1;
 
             if ( !mWeightField.isEmpty() )
@@ -195,7 +195,7 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
         if ( absDensity > 0 )
         {
           //only calculate ellipsoidal area if abs density is greater 0
-          double analysisSearchGeometryArea = mDa.measureArea( mSearchGeometry );
+          const double analysisSearchGeometryArea = mDa.measureArea( mSearchGeometry );
           lineDensity = absDensity / analysisSearchGeometryArea;
         }
         rasterDataLine->setValue( 0, col, lineDensity );

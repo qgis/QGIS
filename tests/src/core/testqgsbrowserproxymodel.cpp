@@ -318,9 +318,9 @@ void TestQgsBrowserProxyModel::testShowLayers()
   QgsLayerItem *childItem1 = new QgsLayerItem( nullptr, QStringLiteral( "Child1" ), QStringLiteral( "child1" ), QString(), Qgis::BrowserLayerType::Vector, QString() );
   containerItem1->addChildItem( childItem1, true );
   QCOMPARE( proxy.rowCount(), 1 );
-  auto root1Index = proxy.index( 0, 0 );
+  const auto root1Index = proxy.index( 0, 0 );
   QVERIFY( root1Index.isValid() );
-  auto container1Index = proxy.index( 0, 0, root1Index );
+  const auto container1Index = proxy.index( 0, 0, root1Index );
   QVERIFY( container1Index.isValid() );
   QVERIFY( proxy.hasChildren( container1Index ) );
 

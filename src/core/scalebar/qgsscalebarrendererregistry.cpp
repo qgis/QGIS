@@ -57,7 +57,7 @@ QStringList QgsScaleBarRendererRegistry::sortedRendererList() const
       return false;
     else
     {
-      int res = QString::localeAwareCompare( visibleName( a ), visibleName( b ) );
+      const int res = QString::localeAwareCompare( visibleName( a ), visibleName( b ) );
       if ( res < 0 )
         return true;
       else if ( res > 0 )

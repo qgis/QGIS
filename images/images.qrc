@@ -923,6 +923,7 @@
         <file>themes/default/mIconFolderHomeParams.svg</file>
         <file>themes/default/mActionMeasureBearing.svg</file>
         <file>themes/default/mActionMeshDigitizing.svg</file>
+        <file>themes/default/mActionMeshSelectPolygon.svg</file>
         <file>themes/default/mActionNewMeshLayer.svg</file>
         <file>themes/default/mIconGeometryCollectionLayer.svg</file>
         <file>themes/default/mIconGps.svg</file>

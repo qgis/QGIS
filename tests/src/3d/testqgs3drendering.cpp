@@ -112,7 +112,7 @@ void TestQgs3DRendering::initTestCase()
 
   mProject.reset( new QgsProject );
 
-  QString dataDir( TEST_DATA_DIR );
+  const QString dataDir( TEST_DATA_DIR );
   mLayerDtm = new QgsRasterLayer( dataDir + "/3d/dtm.tif", "dtm", "gdal" );
   QVERIFY( mLayerDtm->isValid() );
   mProject->addMapLayer( mLayerDtm );
@@ -209,7 +209,7 @@ void TestQgs3DRendering::cleanupTestCase()
 {
   mProject.reset();
 
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -223,12 +223,12 @@ void TestQgs3DRendering::cleanupTestCase()
 
 void TestQgs3DRendering::testFlatTerrain()
 {
-  QgsRectangle fullExtent = mLayerDtm->extent();
+  const QgsRectangle fullExtent = mLayerDtm->extent();
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
-  map->setTerrainLayers( QList<QgsMapLayer *>() << mLayerRgb );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerRgb );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs() );
@@ -268,12 +268,12 @@ void TestQgs3DRendering::testFlatTerrain()
 
 void TestQgs3DRendering::testDemTerrain()
 {
-  QgsRectangle fullExtent = mLayerDtm->extent();
+  const QgsRectangle fullExtent = mLayerDtm->extent();
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
-  map->setTerrainLayers( QList<QgsMapLayer *>() << mLayerRgb );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerRgb );
 
   QgsDemTerrainGenerator *demTerrain = new QgsDemTerrainGenerator;
   demTerrain->setLayer( mLayerDtm );
@@ -298,7 +298,7 @@ void TestQgs3DRendering::testDemTerrain()
 
 void TestQgs3DRendering::testTerrainShading()
 {
-  QgsRectangle fullExtent = mLayerDtm->extent();
+  const QgsRectangle fullExtent = mLayerDtm->extent();
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
@@ -343,7 +343,7 @@ void TestQgs3DRendering::testMeshTerrain()
   if ( !QgsTest::runFlakyTests() )
     QSKIP( "This test is flaky and disabled on CI" );
 
-  QgsRectangle fullExtent = mLayerMeshTerrain->extent();
+  const QgsRectangle fullExtent = mLayerMeshTerrain->extent();
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
@@ -374,13 +374,12 @@ void TestQgs3DRendering::testMeshTerrain()
 
 void TestQgs3DRendering::testExtrudedPolygons()
 {
-  QgsRectangle fullExtent = mLayerDtm->extent();
+  const QgsRectangle fullExtent = mLayerDtm->extent();
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
-  map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings );
-  map->setTerrainLayers( QList<QgsMapLayer *>() << mLayerRgb );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
@@ -427,13 +426,12 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefined()
   QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
   mLayerBuildings->setRenderer3D( renderer3d );
 
-  QgsRectangle fullExtent = mLayerDtm->extent();
+  const QgsRectangle fullExtent = mLayerDtm->extent();
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
-  map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings );
-  map->setTerrainLayers( QList<QgsMapLayer *>() << mLayerRgb );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
@@ -461,7 +459,7 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefined()
 
 void TestQgs3DRendering::testPolygonsEdges()
 {
-  QgsRectangle fullExtent = mLayerDtm->extent();
+  const QgsRectangle fullExtent = mLayerDtm->extent();
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
@@ -514,7 +512,7 @@ void TestQgs3DRendering::testPolygonsEdges()
 
 void TestQgs3DRendering::testLineRendering()
 {
-  QgsRectangle fullExtent( 0, 0, 1000, 1000 );
+  const QgsRectangle fullExtent( 0, 0, 1000, 1000 );
 
   QgsVectorLayer *layerLines = new QgsVectorLayer( "LineString?crs=EPSG:27700", "lines", "memory" );
 
@@ -572,7 +570,7 @@ void TestQgs3DRendering::testLineRendering()
 void TestQgs3DRendering::testLineRenderingCurved()
 {
   // test rendering of compound curve lines works
-  QgsRectangle fullExtent( 0, 0, 1000, 1000 );
+  const QgsRectangle fullExtent( 0, 0, 1000, 1000 );
 
   QgsVectorLayer *layerLines = new QgsVectorLayer( "CompoundCurve?crs=EPSG:27700", "lines", "memory" );
 
@@ -628,7 +626,7 @@ void TestQgs3DRendering::testLineRenderingCurved()
 
 void TestQgs3DRendering::testBufferedLineRendering()
 {
-  QgsRectangle fullExtent = mLayerDtm->extent();
+  const QgsRectangle fullExtent = mLayerDtm->extent();
 
   QgsVectorLayer *layerLines = new QgsVectorLayer( QString( TEST_DATA_DIR ) + "/3d/lines.shp", "lines", "ogr" );
   QVERIFY( layerLines->isValid() );
@@ -674,7 +672,7 @@ void TestQgs3DRendering::testBufferedLineRendering()
 
 void TestQgs3DRendering::testBufferedLineRenderingWidth()
 {
-  QgsRectangle fullExtent = mLayerDtm->extent();
+  const QgsRectangle fullExtent = mLayerDtm->extent();
 
   QgsVectorLayer *layerLines = new QgsVectorLayer( QString( TEST_DATA_DIR ) + "/3d/lines.shp", "lines", "ogr" );
   QVERIFY( layerLines->isValid() );
@@ -721,12 +719,12 @@ void TestQgs3DRendering::testBufferedLineRenderingWidth()
 
 void TestQgs3DRendering::testMapTheme()
 {
-  QgsRectangle fullExtent = mLayerDtm->extent();
+  const QgsRectangle fullExtent = mLayerDtm->extent();
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
-  map->setTerrainLayers( QList<QgsMapLayer *>() << mLayerRgb );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerDtm );
 
   // set theme - this should override what we set in setLayers()
   map->setMapThemeCollection( mProject->mapThemeCollection() );
@@ -755,13 +753,12 @@ void TestQgs3DRendering::testMapTheme()
 
 void TestQgs3DRendering::testMesh()
 {
-  QgsRectangle fullExtent = mLayerMeshDataset->extent();
+  const QgsRectangle fullExtent = mLayerMeshDataset->extent();
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
   map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
-  map->setTerrainLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
@@ -788,7 +785,7 @@ void TestQgs3DRendering::testMesh()
 
 void TestQgs3DRendering::testMesh_datasetOnFaces()
 {
-  QgsRectangle fullExtent = mLayerMeshDataset->extent();
+  const QgsRectangle fullExtent = mLayerMeshDataset->extent();
 
   QgsMesh3DSymbol *symbolMesh3d = new QgsMesh3DSymbol;
   symbolMesh3d->setVerticalDatasetGroupIndex( 3 );
@@ -803,7 +800,6 @@ void TestQgs3DRendering::testMesh_datasetOnFaces()
   map->setCrs( mProject->crs() );
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
   map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
-  map->setTerrainLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
@@ -844,7 +840,7 @@ void TestQgs3DRendering::testMeshSimplified()
   settings.setActiveVectorDatasetGroup( 6 );
   mLayerMeshSimplified->setRendererSettings( settings );
 
-  QgsRectangle fullExtent = mLayerMeshSimplified->extent();
+  const QgsRectangle fullExtent = mLayerMeshSimplified->extent();
   mLayerMeshSimplified->setMeshSimplificationSettings( simplificationSettings );
   mLayerMeshSimplified->temporalProperties()->setIsActive( false );
   mLayerMeshSimplified->setStaticScalarDatasetIndex( QgsMeshDatasetIndex( 16, 5 ) );
@@ -918,7 +914,7 @@ void TestQgs3DRendering::testRuleBasedRenderer()
   QgsRuleBased3DRenderer *renderer3d = new QgsRuleBased3DRenderer( root );
   mLayerBuildings->setRenderer3D( renderer3d );
 
-  QgsRectangle fullExtent = mLayerDtm->extent();
+  const QgsRectangle fullExtent = mLayerDtm->extent();
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
@@ -954,27 +950,26 @@ void TestQgs3DRendering::testRuleBasedRenderer()
 bool TestQgs3DRendering::renderCheck( const QString &testName, QImage &image, int mismatchCount )
 {
   mReport += "<h2>" + testName + "</h2>\n";
-  QString myTmpDir = QDir::tempPath() + '/';
-  QString myFileName = myTmpDir + testName + ".png";
+  const QString myTmpDir = QDir::tempPath() + '/';
+  const QString myFileName = myTmpDir + testName + ".png";
   image.save( myFileName, "PNG" );
   QgsMultiRenderChecker myChecker;
   myChecker.setControlPathPrefix( QStringLiteral( "3d" ) );
   myChecker.setControlName( "expected_" + testName );
   myChecker.setRenderedImage( myFileName );
   myChecker.setColorTolerance( 2 );  // color tolerance < 2 was failing polygon3d_extrusion test
-  bool myResultFlag = myChecker.runTest( testName, mismatchCount );
+  const bool myResultFlag = myChecker.runTest( testName, mismatchCount );
   mReport += myChecker.report();
   return myResultFlag;
 }
 
 void TestQgs3DRendering::testAnimationExport()
 {
-  QgsRectangle fullExtent = mLayerDtm->extent();
+  const QgsRectangle fullExtent = mLayerDtm->extent();
 
   Qgs3DMapSettings map;
   map.setCrs( mProject->crs() );
   map.setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
-  map.setTerrainLayers( QList<QgsMapLayer *>() << mLayerRgb );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map.crs() );
@@ -992,18 +987,18 @@ void TestQgs3DRendering::testAnimationExport()
   keyframes << kf2;
   animSettings.setKeyframes( keyframes );
 
-  QString dir = QDir::temp().path();
+  const QString dir = QDir::temp().path();
   QString error;
 
-  bool success = Qgs3DUtils::exportAnimation(
-                   animSettings,
-                   map,
-                   1,
-                   dir,
-                   "test3danimation###.png",
-                   QSize( 600, 400 ),
-                   error,
-                   nullptr );
+  const bool success = Qgs3DUtils::exportAnimation(
+                         animSettings,
+                         map,
+                         1,
+                         dir,
+                         "test3danimation###.png",
+                         QSize( 600, 400 ),
+                         error,
+                         nullptr );
 
   QVERIFY( success );
   QVERIFY( QFileInfo::exists( ( QDir( dir ).filePath( QStringLiteral( "test3danimation001.png" ) ) ) ) );
@@ -1011,7 +1006,7 @@ void TestQgs3DRendering::testAnimationExport()
 
 void TestQgs3DRendering::testBillboardRendering()
 {
-  QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
+  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
 
   std::unique_ptr<QgsVectorLayer> layerPointsZ( new QgsVectorLayer( "PointZ?crs=EPSG:27700", "points Z", "memory" ) );
 

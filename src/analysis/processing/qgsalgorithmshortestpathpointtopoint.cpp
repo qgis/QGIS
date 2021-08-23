@@ -70,8 +70,8 @@ QVariantMap QgsShortestPathPointToPointAlgorithm::processAlgorithm( const QVaria
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  QgsPointXY startPoint = parameterAsPoint( parameters, QStringLiteral( "START_POINT" ), context, mNetwork->sourceCrs() );
-  QgsPointXY endPoint = parameterAsPoint( parameters, QStringLiteral( "END_POINT" ), context, mNetwork->sourceCrs() );
+  const QgsPointXY startPoint = parameterAsPoint( parameters, QStringLiteral( "START_POINT" ), context, mNetwork->sourceCrs() );
+  const QgsPointXY endPoint = parameterAsPoint( parameters, QStringLiteral( "END_POINT" ), context, mNetwork->sourceCrs() );
 
   feedback->pushInfo( QObject::tr( "Building graph…" ) );
   QVector< QgsPointXY > points;
@@ -81,7 +81,7 @@ QVariantMap QgsShortestPathPointToPointAlgorithm::processAlgorithm( const QVaria
 
   feedback->pushInfo( QObject::tr( "Calculating shortest path…" ) );
   std::unique_ptr< QgsGraph > graph( mBuilder->takeGraph() );
-  int idxStart = graph->findVertex( snappedPoints[0] );
+  const int idxStart = graph->findVertex( snappedPoints[0] );
   int idxEnd = graph->findVertex( snappedPoints[1] );
 
   QVector< int > tree;
@@ -95,7 +95,7 @@ QVariantMap QgsShortestPathPointToPointAlgorithm::processAlgorithm( const QVaria
 
   QVector<QgsPointXY> route;
   route.push_front( graph->vertex( idxEnd ).point() );
-  double cost = costs.at( idxEnd );
+  const double cost = costs.at( idxEnd );
   while ( idxEnd != idxStart )
   {
     idxEnd = graph->edge( tree.at( idxEnd ) ).fromVertex();
@@ -103,7 +103,7 @@ QVariantMap QgsShortestPathPointToPointAlgorithm::processAlgorithm( const QVaria
   }
 
   feedback->pushInfo( QObject::tr( "Writing results…" ) );
-  QgsGeometry geom = QgsGeometry::fromPolylineXY( route );
+  const QgsGeometry geom = QgsGeometry::fromPolylineXY( route );
   QgsFeature feat;
   feat.setFields( fields );
   QgsAttributes attributes;

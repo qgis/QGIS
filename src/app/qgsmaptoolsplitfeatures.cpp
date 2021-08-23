@@ -68,14 +68,14 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     //If we snap the first point on a vertex of a line layer, we directly split the feature at this point
     if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry && pointsZM().isEmpty() )
     {
-      QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Vertex );
+      const QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Vertex );
       if ( m.isValid() )
       {
         split = true;
       }
     }
 
-    int error = addVertex( e->mapPoint(), e->mapPointMatch() );
+    const int error = addVertex( e->mapPoint(), e->mapPointMatch() );
     if ( error == 1 )
     {
       //current layer is not a vector layer
@@ -103,10 +103,10 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     deleteTempRubberBand();
 
     //bring up dialog if a split was not possible (polygon) or only done once (line)
-    bool topologicalEditing = QgsProject::instance()->topologicalEditing();
+    const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
     QgsPointSequence topologyTestPoints;
     vlayer->beginEditCommand( tr( "Features split" ) );
-    Qgis::GeometryOperationResult returnCode = vlayer->splitFeatures( captureCurve(), topologyTestPoints, true, topologicalEditing );
+    const Qgis::GeometryOperationResult returnCode = vlayer->splitFeatures( captureCurve(), topologyTestPoints, true, topologicalEditing );
     if ( returnCode == Qgis::GeometryOperationResult::Success )
     {
       vlayer->endEditCommand();
@@ -123,7 +123,7 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
              ! topologyTestPoints.isEmpty() )
         {
           //check if we need to add topological points to other layers
-          QList<QgsVectorLayer *> editableLayers;
+          const QList<QgsVectorLayer *> editableLayers;
           const auto layers = canvas()->layers();
           for ( QgsMapLayer *layer : layers )
           {
@@ -136,7 +136,7 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
                    vectorLayer->geometryType() == QgsWkbTypes::PolygonGeometry ) )
             {
               vectorLayer->beginEditCommand( tr( "Topological points from Features split" ) );
-              int returnValue = vectorLayer->addTopologicalPoints( topologyTestPoints );
+              const int returnValue = vectorLayer->addTopologicalPoints( topologyTestPoints );
               if ( returnValue == 0 )
               {
                 vectorLayer->endEditCommand();

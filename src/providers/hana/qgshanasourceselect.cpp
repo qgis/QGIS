@@ -44,7 +44,7 @@ QWidget *QgsHanaSourceSelectDelegate::createEditor(
 {
   Q_UNUSED( option );
 
-  QString tableName = index.sibling( index.row(), QgsHanaTableModel::DbtmTable ).data( Qt::DisplayRole ).toString();
+  const QString tableName = index.sibling( index.row(), QgsHanaTableModel::DbtmTable ).data( Qt::DisplayRole ).toString();
   if ( tableName.isEmpty() )
     return nullptr;
 
@@ -56,7 +56,7 @@ QWidget *QgsHanaSourceSelectDelegate::createEditor(
   if ( index.column() == QgsHanaTableModel::DbtmGeomType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
-    for ( QgsWkbTypes::Type type :
+    for ( const QgsWkbTypes::Type type :
           QList<QgsWkbTypes::Type>()
           << QgsWkbTypes::Point
           << QgsWkbTypes::LineString
@@ -118,7 +118,7 @@ void QgsHanaSourceSelectDelegate::setModelData(
   {
     if ( index.column() == QgsHanaTableModel::DbtmGeomType )
     {
-      QgsWkbTypes::Type type = static_cast<QgsWkbTypes::Type>( cb->currentData().toInt() );
+      const QgsWkbTypes::Type type = static_cast<QgsWkbTypes::Type>( cb->currentData().toInt() );
 
       model->setData( index, QgsHanaTableModel::iconForWkbType( type ), Qt::DecorationRole );
       model->setData( index, type != QgsWkbTypes::Unknown ? QgsWkbTypes::displayString( type ) : tr( "Select…" ) );
@@ -264,7 +264,7 @@ QgsHanaSourceSelect::QgsHanaSourceSelect(
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged,
            this, &QgsHanaSourceSelect::treeWidgetSelectionChanged );
 
-  QgsSettings settings;
+  const QgsSettings settings;
   mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "qgis/addHanaDC" ), false ).toBool() ?
                                      QAbstractItemView::ExtendedSelection : QAbstractItemView::MultiSelection );
 
@@ -308,8 +308,8 @@ void QgsHanaSourceSelect::btnNew_clicked()
 // Slot for deleting an existing connection
 void QgsHanaSourceSelect::btnDelete_clicked()
 {
-  QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                .arg( cmbConnections->currentText() );
+  const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
+                      .arg( cmbConnections->currentText() );
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No ) )
     return;
 
@@ -332,8 +332,8 @@ void QgsHanaSourceSelect::btnSave_clicked()
 
 void QgsHanaSourceSelect::btnLoad_clicked()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ),
-                     QDir::homePath(), tr( "XML files (*.xml *XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ),
+                           QDir::homePath(), tr( "XML files (*.xml *XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -388,7 +388,7 @@ void QgsHanaSourceSelect::mTablesTreeView_clicked( const QModelIndex &index )
 
 void QgsHanaSourceSelect::mTablesTreeView_doubleClicked( const QModelIndex &index )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
   if ( settings.value( QStringLiteral( "qgis/addHANADC" ), false ).toBool() )
     addButtonClicked();
   else
@@ -518,7 +518,7 @@ void QgsHanaSourceSelect::addButtonClicked()
     if ( idx.column() != QgsHanaTableModel::DbtmTable )
       continue;
 
-    QString uri = mTableModel.layerURI( mProxyModel.mapToSource( idx ), mConnectionName, mConnectionInfo );
+    const QString uri = mTableModel.layerURI( mProxyModel.mapToSource( idx ), mConnectionName, mConnectionInfo );
     if ( uri.isNull() )
       continue;
 
@@ -550,7 +550,7 @@ void QgsHanaSourceSelect::btnConnect_clicked()
 
   const QString connName = cmbConnections->currentText();
 
-  QModelIndex rootItemIndex = mTableModel.indexFromItem( mTableModel.invisibleRootItem() );
+  const QModelIndex rootItemIndex = mTableModel.indexFromItem( mTableModel.invisibleRootItem() );
   mTableModel.removeRows( 0, mTableModel.rowCount( rootItemIndex ), rootItemIndex );
 
   QgsHanaSettings settings( connName, true );
@@ -559,7 +559,7 @@ void QgsHanaSourceSelect::btnConnect_clicked()
   const QgsDataSourceUri uri = settings.toDataSourceUri();
   bool canceled = false;
 
-  std::unique_ptr<QgsHanaConnection> conn( QgsHanaConnection::createConnection( uri, &canceled, nullptr ) );
+  const std::unique_ptr<QgsHanaConnection> conn( QgsHanaConnection::createConnection( uri, &canceled, nullptr ) );
   if ( !conn )
   {
     if ( !canceled )
@@ -602,7 +602,7 @@ void QgsHanaSourceSelect::finishList()
 
 void QgsHanaSourceSelect::columnThreadFinished()
 {
-  QString errorMsg = mColumnTypeThread->errorMessage();
+  const QString errorMsg = mColumnTypeThread->errorMessage();
   mColumnTypeThread.reset( nullptr );
   QgsProxyProgressTask *task = mColumnTypeTask.release();
   task->finalize( errorMsg.isEmpty() );
@@ -627,15 +627,15 @@ void QgsHanaSourceSelect::setSql( const QModelIndex &index )
     return;
   }
 
-  QModelIndex idx = mProxyModel.mapToSource( index );
-  QString uri = mTableModel.layerURI( idx, mConnectionName, mConnectionInfo );
+  const QModelIndex idx = mProxyModel.mapToSource( index );
+  const QString uri = mTableModel.layerURI( idx, mConnectionName, mConnectionInfo );
   if ( uri.isNull() )
   {
     QgsDebugMsg( "no uri" );
     return;
   }
 
-  QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsHanaTableModel::DbtmTable ) )->text();
+  const QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsHanaTableModel::DbtmTable ) )->text();
 
   QgsVectorLayer vlayer( uri, tableName, QStringLiteral( "hana" ) );
   if ( !vlayer.isValid() )
@@ -658,7 +658,7 @@ QString QgsHanaSourceSelect::fullDescription(
 
 void QgsHanaSourceSelect::setConnectionListPosition()
 {
-  QString selectedConnName = QgsHanaSettings::getSelectedConnection();
+  const QString selectedConnName = QgsHanaSettings::getSelectedConnection();
   cmbConnections->setCurrentIndex( cmbConnections->findText( selectedConnName ) );
   if ( cmbConnections->currentIndex() < 0 )
     cmbConnections->setCurrentIndex( selectedConnName.isNull() ? 0 : cmbConnections->count() - 1 );

@@ -103,7 +103,7 @@ void TestQgsLayoutPicture::cleanupTestCase()
   delete mPicture;
   delete mLayout;
 
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -456,7 +456,7 @@ void TestQgsLayoutPicture::pictureExpression()
   //test picture source via expression
   mLayout->addLayoutItem( mPicture );
 
-  QString expr = QStringLiteral( "'%1' || '/sample_svg.svg'" ).arg( TEST_DATA_DIR );
+  const QString expr = QStringLiteral( "'%1' || '/sample_svg.svg'" ).arg( TEST_DATA_DIR );
   mPicture->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromExpression( expr ) );
   mPicture->refreshPicture();
   QVERIFY( !mPicture->isMissingImage() );
@@ -474,7 +474,7 @@ void TestQgsLayoutPicture::pictureInvalidExpression()
   //test picture source via bad expression
   mLayout->addLayoutItem( mPicture );
 
-  QString expr = QStringLiteral( "bad expression" );
+  const QString expr = QStringLiteral( "bad expression" );
   mPicture->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromExpression( expr ) );
   mPicture->refreshPicture();
   QVERIFY( mPicture->isMissingImage() );

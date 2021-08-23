@@ -53,7 +53,7 @@ void QgsGdalItemGuiProvider::onDeletePostgresRasterLayer( QgsDataItemGuiContext 
   QVariantMap data = s->data().toMap();
   const QString uri = data[QStringLiteral( "uri" )].toString();
   const QString path = data[QStringLiteral( "path" )].toString();
-  QPointer< QgsDataItem > parent = data[QStringLiteral( "parentItem" )].value<QPointer< QgsDataItem >>();
+  const QPointer< QgsDataItem > parent = data[QStringLiteral( "parentItem" )].value<QPointer< QgsDataItem >>();
 
   const QString title = tr( "Delete Table" );
 

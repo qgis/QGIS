@@ -6562,7 +6562,47 @@ void QgisApp::newGpxLayer()
 void QgisApp::showRasterCalculator()
 {
   QgsRasterCalcDialog d( qobject_cast<QgsRasterLayer *>( activeLayer() ), this );
-  if ( d.exec() == QDialog::Accepted )
+  if ( d.exec() != QDialog::Accepted )
+  {
+    return;
+  }
+  if ( d.useVirtualProvider() )
+  {
+    QgsRasterDataProvider::VirtualRasterParameters virtualCalcParams;
+    virtualCalcParams.crs = d.outputCrs();
+    virtualCalcParams.extent = d.outputRectangle();
+    virtualCalcParams.width = d.numberOfColumns();
+    virtualCalcParams.height = d.numberOfRows();
+    virtualCalcParams.formula = d.formulaString();
+
+    QString errorString;
+    std::unique_ptr< QgsRasterCalcNode > calcNodeApp( QgsRasterCalcNode::parseRasterCalcString( d.formulaString(), errorString ) );
+    if ( !calcNodeApp )
+    {
+      return;
+    }
+    QStringList rLayerDictionaryRef = calcNodeApp->cleanRasterReferences();
+    QSet<QPair<QString, QString>> uniqueRasterUriTmp;
+
+    for ( const auto &r : QgsRasterCalculatorEntry::rasterEntries() )
+    {
+      if ( ( ! rLayerDictionaryRef.contains( r.ref ) ) ||
+           uniqueRasterUriTmp.contains( QPair( r.raster->source(), r.ref.mid( 0, r.ref.lastIndexOf( "@" ) ) ) ) ) continue;
+      uniqueRasterUriTmp.insert( QPair( r.raster->source(), r.ref.mid( 0, r.ref.lastIndexOf( "@" ) ) ) );
+
+      QgsRasterDataProvider::VirtualRasterInputLayers projectRLayer;
+      projectRLayer.name = r.ref.mid( 0, r.ref.lastIndexOf( "@" ) );
+      projectRLayer.provider = r.raster->dataProvider()->name();
+      projectRLayer.uri = r.raster->source();
+
+      virtualCalcParams.rInputLayers.append( projectRLayer );
+    }
+
+    addRasterLayer( QgsRasterDataProvider::encodeVirtualRasterProviderUri( virtualCalcParams ),
+                    d.virtualLayerName().isEmpty() ? d.formulaString() : d.virtualLayerName(),
+                    QStringLiteral( "virtualraster" ) );
+  }
+  else
   {
     //invoke analysis library
     QgsRasterCalculator rc( d.formulaString(),
@@ -6589,7 +6629,7 @@ void QgisApp::showRasterCalculator()
       case QgsRasterCalculator::Success:
         if ( d.addLayerToProject() )
         {
-          addRasterLayer( d.outputFile(), QFileInfo( d.outputFile() ).completeBaseName(), QString() );
+          addRasterLayer( d.outputFile(), QFileInfo( d.outputFile() ).completeBaseName(), QStringLiteral( "gdal" ) );
         }
         visibleMessageBar()->pushMessage( tr( "Raster calculator" ),
                                           tr( "Calculation complete." ),
@@ -11428,7 +11468,7 @@ void QgisApp::saveAllEdits( bool verifyAction )
       return;
   }
 
-  const auto layers = editableLayers( true );
+  const auto layers = editableLayers( true, true );
   for ( QgsMapLayer *layer : layers )
   {
     saveEdits( layer, true, false );
@@ -11456,7 +11496,7 @@ void QgisApp::rollbackAllEdits( bool verifyAction )
       return;
   }
 
-  const auto layers = editableLayers( true );
+  const auto layers = editableLayers( true, true );
   for ( QgsMapLayer *layer : layers )
   {
     cancelEdits( layer, true, false );
@@ -11484,7 +11524,7 @@ void QgisApp::cancelAllEdits( bool verifyAction )
       return;
   }
 
-  const auto layers = editableLayers();
+  const auto layers = editableLayers( false, true );
   for ( QgsMapLayer *layer : layers )
   {
     cancelEdits( layer, false, false );
@@ -11555,16 +11595,16 @@ void QgisApp::updateLayerModifiedActions()
   mActionRollbackEdits->setEnabled( QgsLayerTreeUtils::layersModified( selectedLayerNodes ) );
   mActionCancelEdits->setEnabled( QgsLayerTreeUtils::layersEditable( selectedLayerNodes ) );
 
-  bool hasEditLayers = !editableLayers().isEmpty();
+  bool hasEditLayers = !editableLayers( false, true ).isEmpty();
   mActionAllEdits->setEnabled( hasEditLayers );
   mActionCancelAllEdits->setEnabled( hasEditLayers );
 
-  bool hasModifiedLayers = !editableLayers( true ).isEmpty();
+  bool hasModifiedLayers = !editableLayers( true, true ).isEmpty();
   mActionSaveAllEdits->setEnabled( hasModifiedLayers );
   mActionRollbackAllEdits->setEnabled( hasModifiedLayers );
 }
 
-QList<QgsMapLayer *> QgisApp::editableLayers( bool modified ) const
+QList<QgsMapLayer *> QgisApp::editableLayers( bool modified, bool ignoreLayersWhichCannotBeToggled ) const
 {
   QList<QgsMapLayer *> editLayers;
   // use legend layers (instead of registry) so QList mirrors its order
@@ -11575,7 +11615,7 @@ QList<QgsMapLayer *> QgisApp::editableLayers( bool modified ) const
     if ( !layer )
       continue;
 
-    if ( layer->isEditable() && ( !modified || layer->isModified() ) )
+    if ( layer->isEditable() && ( !modified || layer->isModified() ) && ( !ignoreLayersWhichCannotBeToggled || !( layer->properties() & Qgis::MapLayerProperty::UsersCannotToggleEditing ) ) )
       editLayers << layer;
   }
   return editLayers;
@@ -13473,7 +13513,7 @@ void QgisApp::new3DMapCanvas()
     map->setSelectionColor( mMapCanvas->selectionColor() );
     map->setBackgroundColor( mMapCanvas->canvasColor() );
     map->setLayers( mMapCanvas->layers() );
-    map->setTerrainLayers( mMapCanvas->layers() );
+//    map->setTerrainLayers( mMapCanvas->layers() );
     map->setTemporalRange( mMapCanvas->temporalRange() );
 
     const QgsCameraController::NavigationMode defaultNavMode = settings.enumValue( QStringLiteral( "map3d/defaultNavigation" ), QgsCameraController::TerrainBasedNavigation, QgsSettings::App );
@@ -15610,9 +15650,79 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       break;
 
     case QgsMapLayerType::PluginLayer:
-    case QgsMapLayerType::AnnotationLayer:
       break;
 
+    case QgsMapLayerType::AnnotationLayer:
+    {
+      mActionLocalHistogramStretch->setEnabled( false );
+      mActionFullHistogramStretch->setEnabled( false );
+      mActionLocalCumulativeCutStretch->setEnabled( false );
+      mActionFullCumulativeCutStretch->setEnabled( false );
+      mActionIncreaseBrightness->setEnabled( false );
+      mActionDecreaseBrightness->setEnabled( false );
+      mActionIncreaseContrast->setEnabled( false );
+      mActionDecreaseContrast->setEnabled( false );
+      mActionIncreaseGamma->setEnabled( false );
+      mActionDecreaseGamma->setEnabled( false );
+      mActionLayerSubsetString->setEnabled( false );
+      mActionFeatureAction->setEnabled( false );
+      mActionSelectFeatures->setEnabled( false );
+      mActionSelectPolygon->setEnabled( false );
+      mActionSelectFreehand->setEnabled( false );
+      mActionSelectRadius->setEnabled( false );
+      mActionZoomActualSize->setEnabled( false );
+      mActionZoomToLayer->setEnabled( true );
+      mActionOpenTable->setEnabled( false );
+      mMenuFilterTable->setEnabled( false );
+      mActionOpenTableSelected->setEnabled( false );
+      mActionOpenTableVisible->setEnabled( false );
+      mActionOpenTableEdited->setEnabled( false );
+      mActionSelectAll->setEnabled( false );
+      mActionReselect->setEnabled( false );
+      mActionInvertSelection->setEnabled( false );
+      mActionSelectByExpression->setEnabled( false );
+      mActionSelectByForm->setEnabled( false );
+      mActionOpenFieldCalc->setEnabled( false );
+      mActionSaveLayerEdits->setEnabled( false );
+      mUndoDock->widget()->setEnabled( false );
+      mActionSaveLayerDefinition->setEnabled( false );
+      mActionLayerSaveAs->setEnabled( false );
+      mActionAddFeature->setEnabled( false );
+      mActionCircularStringCurvePoint->setEnabled( false );
+      mActionCircularStringRadius->setEnabled( false );
+      mActionDeleteSelected->setEnabled( false );
+      mActionAddRing->setEnabled( false );
+      mActionFillRing->setEnabled( false );
+      mActionAddPart->setEnabled( false );
+      mActionVertexTool->setEnabled( false );
+      mActionVertexToolActiveLayer->setEnabled( false );
+      mActionMoveFeature->setEnabled( false );
+      mActionMoveFeatureCopy->setEnabled( false );
+      mActionRotateFeature->setEnabled( false );
+      mActionScaleFeature->setEnabled( false );
+      mActionOffsetCurve->setEnabled( false );
+      mActionCopyFeatures->setEnabled( false );
+      mActionCutFeatures->setEnabled( false );
+      mActionPasteFeatures->setEnabled( false );
+      mActionRotatePointSymbols->setEnabled( false );
+      mActionOffsetPointSymbol->setEnabled( false );
+      mActionDeletePart->setEnabled( false );
+      mActionDeleteRing->setEnabled( false );
+      mActionSimplifyFeature->setEnabled( false );
+      mActionReshapeFeatures->setEnabled( false );
+      mActionSplitFeatures->setEnabled( false );
+      mActionSplitParts->setEnabled( false );
+      mActionLabeling->setEnabled( false );
+      mActionDiagramProperties->setEnabled( false );
+      mActionIdentify->setEnabled( true );
+      enableDigitizeTechniqueActions( false );
+      mActionToggleEditing->setEnabled( false );
+      mActionToggleEditing->setChecked( true ); // always editable
+      mActionUndo->setEnabled( false );
+      mActionRedo->setEnabled( false );
+      updateUndoActions();
+      break;
+    }
   }
 
   refreshFeatureActions();

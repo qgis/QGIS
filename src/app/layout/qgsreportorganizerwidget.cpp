@@ -72,7 +72,7 @@ QgsReportOrganizerWidget::QgsReportOrganizerWidget( QWidget *parent, QgsLayoutDe
   mButtonRemoveSection->setEnabled( false ); //disable until section clicked
 
   // initially select report section
-  QModelIndex reportIndex = mSectionModel->indexForSection( report );
+  const QModelIndex reportIndex = mSectionModel->indexForSection( report );
   mViewSections->setCurrentIndex( reportIndex );
 }
 
@@ -91,7 +91,7 @@ void QgsReportOrganizerWidget::addLayoutSection()
   std::unique_ptr< QgsReportSectionLayout > section = std::make_unique< QgsReportSectionLayout >();
   QgsAbstractReportSection *newSection = section.get();
   mSectionModel->addSection( mViewSections->currentIndex(), std::move( section ) );
-  QModelIndex newIndex = mSectionModel->indexForSection( newSection );
+  const QModelIndex newIndex = mSectionModel->indexForSection( newSection );
   mViewSections->setCurrentIndex( newIndex );
 }
 
@@ -100,7 +100,7 @@ void QgsReportOrganizerWidget::addFieldGroupSection()
   std::unique_ptr< QgsReportSectionFieldGroup > section = std::make_unique< QgsReportSectionFieldGroup >();
   QgsAbstractReportSection *newSection = section.get();
   mSectionModel->addSection( mViewSections->currentIndex(), std::move( section ) );
-  QModelIndex newIndex = mSectionModel->indexForSection( newSection );
+  const QModelIndex newIndex = mSectionModel->indexForSection( newSection );
   mViewSections->setCurrentIndex( newIndex );
 }
 
@@ -110,9 +110,9 @@ void QgsReportOrganizerWidget::removeSection()
   if ( !section || dynamic_cast< QgsReport * >( section ) )
     return; //report cannot be removed
 
-  int res = QMessageBox::question( this, tr( "Remove Section" ),
-                                   tr( "Are you sure you want to remove the report section?" ),
-                                   QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+  const int res = QMessageBox::question( this, tr( "Remove Section" ),
+                                         tr( "Are you sure you want to remove the report section?" ),
+                                         QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
   if ( res == QMessageBox::No )
     return;
 

@@ -22,8 +22,8 @@
 void QgsGeometryDangleCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
   Q_UNUSED( messages )
-  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext );
+  const QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
+  const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
     const QgsAbstractGeometry *geom = layerFeature.geometry().constGet();
@@ -36,7 +36,7 @@ void QgsGeometryDangleCheck::collectErrors( const QMap<QString, QgsFeaturePool *
         continue;
       }
       // Check that start and end node lie on a line
-      int nVerts = geom->vertexCount( iPart, 0 );
+      const int nVerts = geom->vertexCount( iPart, 0 );
       const QgsPoint &p1 = geom->vertexAt( QgsVertexId( iPart, 0, 0 ) );
       const QgsPoint &p2 = geom->vertexAt( QgsVertexId( iPart, 0, nVerts - 1 ) );
 
@@ -50,7 +50,7 @@ void QgsGeometryDangleCheck::collectErrors( const QMap<QString, QgsFeaturePool *
       }
 
       // Check whether endpoints line on another line in the layer
-      QgsGeometryCheckerUtils::LayerFeatures checkFeatures( featurePools, QList<QString>() << layerFeature.layer()->id(), line->boundingBox(), {QgsWkbTypes::LineGeometry}, mContext );
+      const QgsGeometryCheckerUtils::LayerFeatures checkFeatures( featurePools, QList<QString>() << layerFeature.layer()->id(), line->boundingBox(), {QgsWkbTypes::LineGeometry}, mContext );
       for ( const QgsGeometryCheckerUtils::LayerFeature &checkFeature : checkFeatures )
       {
         const QgsAbstractGeometry *testGeom = checkFeature.geometry().constGet();
@@ -110,7 +110,7 @@ void QgsGeometryDangleCheck::fixError( const QMap<QString, QgsFeaturePool *> &fe
 
 QStringList QgsGeometryDangleCheck::resolutionMethods() const
 {
-  static QStringList methods = QStringList() << tr( "No action" );
+  static const QStringList methods = QStringList() << tr( "No action" );
   return methods;
 }
 

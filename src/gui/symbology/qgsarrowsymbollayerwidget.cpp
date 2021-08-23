@@ -182,9 +182,9 @@ void QgsArrowSymbolLayerWidget::mHeadTypeCombo_currentIndexChanged( int idx )
   if ( !mLayer )
     return;
 
-  QgsArrowSymbolLayer::HeadType t = static_cast<QgsArrowSymbolLayer::HeadType>( idx );
+  const QgsArrowSymbolLayer::HeadType t = static_cast<QgsArrowSymbolLayer::HeadType>( idx );
   mLayer->setHeadType( t );
-  bool isSingle = t == QgsArrowSymbolLayer::HeadSingle || t == QgsArrowSymbolLayer::HeadReversed;
+  const bool isSingle = t == QgsArrowSymbolLayer::HeadSingle || t == QgsArrowSymbolLayer::HeadReversed;
   mArrowStartWidthDDBtn->setEnabled( isSingle );
   mArrowStartWidthSpin->setEnabled( isSingle );
   mArrowStartWidthUnitWidget->setEnabled( isSingle );
@@ -196,7 +196,7 @@ void QgsArrowSymbolLayerWidget::mArrowTypeCombo_currentIndexChanged( int idx )
   if ( !mLayer )
     return;
 
-  QgsArrowSymbolLayer::ArrowType t = static_cast<QgsArrowSymbolLayer::ArrowType>( idx );
+  const QgsArrowSymbolLayer::ArrowType t = static_cast<QgsArrowSymbolLayer::ArrowType>( idx );
   mLayer->setArrowType( t );
   emit changed();
 }

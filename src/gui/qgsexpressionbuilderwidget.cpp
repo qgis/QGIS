@@ -251,7 +251,7 @@ QgsExpressionBuilderWidget::~QgsExpressionBuilderWidget()
   delete mExpressionTreeMenuProvider;
 }
 
-void QgsExpressionBuilderWidget::init( const QgsExpressionContext &context, const QString &recentCollection, const Flags &flags )
+void QgsExpressionBuilderWidget::init( const QgsExpressionContext &context, const QString &recentCollection, QgsExpressionBuilderWidget::Flags flags )
 {
   setExpressionContext( context );
 
@@ -262,13 +262,13 @@ void QgsExpressionBuilderWidget::init( const QgsExpressionContext &context, cons
     mExpressionTreeView->loadUserExpressions();
 }
 
-void QgsExpressionBuilderWidget::initWithLayer( QgsVectorLayer *layer, const QgsExpressionContext &context, const QString &recentCollection, const Flags &flags )
+void QgsExpressionBuilderWidget::initWithLayer( QgsVectorLayer *layer, const QgsExpressionContext &context, const QString &recentCollection, QgsExpressionBuilderWidget::Flags flags )
 {
   init( context, recentCollection, flags );
   setLayer( layer );
 }
 
-void QgsExpressionBuilderWidget::initWithFields( const QgsFields &fields, const QgsExpressionContext &context, const QString &recentCollection, const Flags &flags )
+void QgsExpressionBuilderWidget::initWithFields( const QgsFields &fields, const QgsExpressionContext &context, const QString &recentCollection, QgsExpressionBuilderWidget::Flags flags )
 {
   init( context, recentCollection, flags );
   mExpressionTreeView->loadFieldNames( fields );
@@ -402,10 +402,10 @@ void QgsExpressionBuilderWidget::updateFunctionFileList( const QString &path )
   if ( cmbFileNames->count() == 0 )
   {
     // Create default sample entry.
-    newFunctionFile( "default" );
+    newFunctionFile( QStringLiteral( "default" ) );
     txtPython->setText( QStringLiteral( "'''\n#Sample custom function file\n"
                                         "#(uncomment to use and customize or Add button to create a new file) \n%1 \n '''" ).arg( txtPython->text() ) );
-    saveFunctionFile( "default" );
+    saveFunctionFile( QStringLiteral( "default" ) );
   }
 }
 
@@ -598,7 +598,7 @@ void QgsExpressionBuilderWidget::loadUserExpressions( )
   mExpressionTreeView->loadUserExpressions();
 }
 
-void QgsExpressionBuilderWidget::saveToUserExpressions( const QString &label, const QString expression, const QString &helpText )
+void QgsExpressionBuilderWidget::saveToUserExpressions( const QString &label, const QString &expression, const QString &helpText )
 {
   mExpressionTreeView->saveToUserExpressions( label, expression, helpText );
 }
@@ -685,7 +685,7 @@ void QgsExpressionBuilderWidget::showEvent( QShowEvent *e )
   txtExpressionString->setFocus();
 }
 
-void QgsExpressionBuilderWidget::createErrorMarkers( QList<QgsExpression::ParserError> errors )
+void QgsExpressionBuilderWidget::createErrorMarkers( const QList<QgsExpression::ParserError> &errors )
 {
   clearErrors();
   for ( const QgsExpression::ParserError &error : errors )
@@ -769,7 +769,8 @@ void QgsExpressionBuilderWidget::createMarkers( const QgsExpressionNode *inNode 
     case QgsExpressionNode::NodeType::ntCondition:
     {
       const QgsExpressionNodeCondition *node = static_cast<const QgsExpressionNodeCondition *>( inNode );
-      for ( QgsExpressionNodeCondition::WhenThen *cond : node->conditions() )
+      const QList<QgsExpressionNodeCondition::WhenThen *> conditions = node->conditions();
+      for ( QgsExpressionNodeCondition::WhenThen *cond : conditions )
       {
         createMarkers( cond->whenExp() );
         createMarkers( cond->thenExp() );
@@ -912,7 +913,7 @@ void QgsExpressionBuilderWidget::storeCurrentUserExpression()
   QgsExpressionStoreDialog dlg { expression, expression, QString( ), mExpressionTreeView->userExpressionLabels() };
   if ( dlg.exec() == QDialog::DialogCode::Accepted )
   {
-    mExpressionTreeView->saveToUserExpressions( dlg.label(), dlg.expression(), dlg.helpText() );
+    mExpressionTreeView->saveToUserExpressions( dlg.label().simplified(), dlg.expression(), dlg.helpText() );
   }
 }
 
@@ -931,17 +932,17 @@ void QgsExpressionBuilderWidget::editSelectedUserExpression()
 
   QgsSettings settings;
   QString helpText = settings.value( QStringLiteral( "user/%1/helpText" ).arg( item->text() ), "", QgsSettings::Section::Expressions ).toString();
-  QgsExpressionStoreDialog dlg { item->text(), item->getExpressionText(), helpText };
+  QgsExpressionStoreDialog dlg { item->text(), item->getExpressionText(), helpText, mExpressionTreeView->userExpressionLabels() };
 
   if ( dlg.exec() == QDialog::DialogCode::Accepted )
   {
     // label has changed removed the old one before adding the new one
-    if ( dlg.label() != item->text() )
+    if ( dlg.isLabelModified() )
     {
       mExpressionTreeView->removeFromUserExpressions( item->text() );
     }
 
-    mExpressionTreeView->saveToUserExpressions( dlg.label(), dlg.expression(), dlg.helpText() );
+    mExpressionTreeView->saveToUserExpressions( dlg.label().simplified(), dlg.expression(), dlg.helpText() );
   }
 }
 
@@ -1123,7 +1124,7 @@ QMenu *QgsExpressionBuilderWidget::ExpressionTreeMenuProvider::createContextMenu
 
     if ( formatterCanProvideAvailableValues( layer, item->data( QgsExpressionItem::ITEM_NAME_ROLE ).toString() ) )
     {
-      menu->addAction( tr( "Load First 10 Unique Used Values" ), mExpressionBuilderWidget, SLOT( loadSampleUsedValues() ) );
+      menu->addAction( tr( "Load First 10 Unique Used Values" ), mExpressionBuilderWidget, &QgsExpressionBuilderWidget::loadSampleUsedValues );
       menu->addAction( tr( "Load All Unique Used Values" ), mExpressionBuilderWidget, &QgsExpressionBuilderWidget::loadAllUsedValues );
     }
   }

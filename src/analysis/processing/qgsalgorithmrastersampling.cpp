@@ -89,19 +89,19 @@ QVariantMap QgsRasterSamplingAlgorithm::processAlgorithm( const QVariantMap &par
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  QString fieldPrefix = parameterAsString( parameters, QStringLiteral( "COLUMN_PREFIX" ), context );
+  const QString fieldPrefix = parameterAsString( parameters, QStringLiteral( "COLUMN_PREFIX" ), context );
   QgsFields newFields;
   QgsAttributes emptySampleAttributes;
   for ( int band = 1; band <= mBandCount; band++ )
   {
-    Qgis::DataType dataType = mDataProvider->dataType( band );
-    bool intSafe = ( dataType == Qgis::DataType::Byte || dataType == Qgis::DataType::UInt16 || dataType == Qgis::DataType::Int16 || dataType == Qgis::DataType::UInt32 ||
-                     dataType == Qgis::DataType::Int32 || dataType == Qgis::DataType::CInt16 || dataType == Qgis::DataType::CInt32 );
+    const Qgis::DataType dataType = mDataProvider->dataType( band );
+    const bool intSafe = ( dataType == Qgis::DataType::Byte || dataType == Qgis::DataType::UInt16 || dataType == Qgis::DataType::Int16 || dataType == Qgis::DataType::UInt32 ||
+                           dataType == Qgis::DataType::Int32 || dataType == Qgis::DataType::CInt16 || dataType == Qgis::DataType::CInt32 );
 
     newFields.append( QgsField( QStringLiteral( "%1%2" ).arg( fieldPrefix, QString::number( band ) ), intSafe ? QVariant::Int : QVariant::Double ) );
     emptySampleAttributes += QVariant();
   }
-  QgsFields fields = QgsProcessingUtils::combineFields( source->fields(), newFields );
+  const QgsFields fields = QgsProcessingUtils::combineFields( source->fields(), newFields );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields,
@@ -113,7 +113,7 @@ QVariantMap QgsRasterSamplingAlgorithm::processAlgorithm( const QVariantMap &par
   const double step = count > 0 ? 100.0 / count : 1;
   long current = 0;
 
-  QgsCoordinateTransform ct( source->sourceCrs(), mCrs, context.transformContext() );
+  const QgsCoordinateTransform ct( source->sourceCrs(), mCrs, context.transformContext() );
   QgsFeatureIterator it = source->getFeatures( QgsFeatureRequest() );
   QgsFeature feature;
   while ( it.nextFeature( feature ) )
@@ -165,7 +165,7 @@ QVariantMap QgsRasterSamplingAlgorithm::processAlgorithm( const QVariantMap &par
     for ( int band = 1; band <= mBandCount; band ++ )
     {
       bool ok = false;
-      double value = mDataProvider->sample( point, band, &ok );
+      const double value = mDataProvider->sample( point, band, &ok );
       attributes += ok ? value : QVariant();
     }
     outputFeature.setAttributes( attributes );

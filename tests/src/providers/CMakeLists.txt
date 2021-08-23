@@ -10,6 +10,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/providers/postgres
   ${CMAKE_SOURCE_DIR}/src/providers/mdal
   ${CMAKE_SOURCE_DIR}/src/providers/ogr
+  ${CMAKE_SOURCE_DIR}/src/providers/virtualraster
   ${CMAKE_SOURCE_DIR}/src/test
 )
 include_directories(SYSTEM
@@ -40,6 +41,9 @@ add_qgis_test(testqgspostgresconn.cpp MODULE provider LINKEDLIBRARIES provider_p
 
 if (NOT FORCE_STATIC_PROVIDERS)
   add_qgis_test(testqgsmdalprovider.cpp MODULE provider LINKEDLIBRARIES qgis_core)
+  if (WITH_ANALYSIS)
+    add_qgis_test(testqgsvirtualrasterprovider.cpp MODULE provider LINKEDLIBRARIES qgis_core qgis_analysis)
+  endif()
 endif()
 
 if (WITH_EPT)

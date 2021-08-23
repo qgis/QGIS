@@ -100,7 +100,7 @@ QgsFeatureList QgsRotateFeaturesAlgorithm::processFeature( const QgsFeature &fea
     mTransformedAnchor = true;
     if ( mAnchorCrs != sourceCrs() )
     {
-      QgsCoordinateTransform ct( mAnchorCrs, sourceCrs(), context.transformContext() );
+      const QgsCoordinateTransform ct( mAnchorCrs, sourceCrs(), context.transformContext() );
       try
       {
         mAnchor = ct.transform( mAnchor );
@@ -128,7 +128,7 @@ QgsFeatureList QgsRotateFeaturesAlgorithm::processFeature( const QgsFeature &fea
     }
     else
     {
-      QgsGeometry centroid = geometry.centroid();
+      const QgsGeometry centroid = geometry.centroid();
       if ( !centroid.isNull() )
       {
         geometry.rotate( angle, centroid.asPoint() );

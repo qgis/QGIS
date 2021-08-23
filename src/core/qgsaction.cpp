@@ -64,11 +64,11 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
   QgsExpressionContext context( expressionContext );
   context << scope;
 
-  QString expandedAction = QgsExpression::replaceExpressionText( mCommand, &context );
+  const QString expandedAction = QgsExpression::replaceExpressionText( mCommand, &context );
 
   if ( mType == QgsAction::OpenUrl )
   {
-    QFileInfo finfo( expandedAction );
+    const QFileInfo finfo( expandedAction );
     if ( finfo.exists() && finfo.isFile() )
       QDesktopServices::openUrl( QUrl::fromLocalFile( expandedAction ) );
     else
@@ -100,7 +100,7 @@ void QgsAction::setActionScopes( const QSet<QString> &actionScopes )
 void QgsAction::readXml( const QDomNode &actionNode )
 {
   QDomElement actionElement = actionNode.toElement();
-  QDomNodeList actionScopeNodes = actionElement.elementsByTagName( QStringLiteral( "actionScope" ) );
+  const QDomNodeList actionScopeNodes = actionElement.elementsByTagName( QStringLiteral( "actionScope" ) );
 
   if ( actionScopeNodes.isEmpty() )
   {
@@ -113,7 +113,7 @@ void QgsAction::readXml( const QDomNode &actionNode )
   {
     for ( int j = 0; j < actionScopeNodes.length(); ++j )
     {
-      QDomElement actionScopeElem = actionScopeNodes.item( j ).toElement();
+      const QDomElement actionScopeElem = actionScopeNodes.item( j ).toElement();
       mActionScopes << actionScopeElem.attribute( QStringLiteral( "id" ) );
     }
   }

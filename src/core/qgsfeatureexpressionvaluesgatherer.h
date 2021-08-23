@@ -111,7 +111,7 @@ class QgsFeatureExpressionValuesGatherer: public QThread
 
         mEntries.append( Entry( attributes, expressionValue, feature ) );
 
-        QMutexLocker locker( &mCancelMutex );
+        const QMutexLocker locker( &mCancelMutex );
         if ( mWasCanceled )
           return;
       }
@@ -120,14 +120,14 @@ class QgsFeatureExpressionValuesGatherer: public QThread
     //! Informs the gatherer to immediately stop collecting values
     void stop()
     {
-      QMutexLocker locker( &mCancelMutex );
+      const QMutexLocker locker( &mCancelMutex );
       mWasCanceled = true;
     }
 
     //! Returns TRUE if collection was canceled before completion
     bool wasCanceled() const
     {
-      QMutexLocker locker( &mCancelMutex );
+      const QMutexLocker locker( &mCancelMutex );
       return mWasCanceled;
     }
 

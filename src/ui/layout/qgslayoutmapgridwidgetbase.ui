@@ -190,9 +190,6 @@
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="mGridTypeLabel_2">
-            <property name="accessibleName">
-             <string extracomment="Hello translotor"/>
-            </property>
             <property name="text">
              <string>Grid type</string>
             </property>
@@ -229,7 +226,7 @@
                  <number>12</number>
                 </property>
                 <property name="maximum">
-                 <double>9999999.000000000000000</double>
+                 <double>10000000000000.000000000000000</double>
                 </property>
                 <property name="showClearButton" stdset="0">
                  <bool>true</bool>
@@ -252,7 +249,7 @@
                  <number>12</number>
                 </property>
                 <property name="maximum">
-                 <double>9999999.000000000000000</double>
+                 <double>10000000000000.000000000000000</double>
                 </property>
                </widget>
               </item>
@@ -407,8 +404,11 @@
               <property name="decimals">
                <number>12</number>
               </property>
+              <property name="minimum">
+               <double>-10000000000000.000000000000000</double>
+              </property>
               <property name="maximum">
-               <double>9999999.000000000000000</double>
+               <double>10000000000000.000000000000000</double>
               </property>
              </widget>
             </item>
@@ -420,8 +420,11 @@
               <property name="decimals">
                <number>12</number>
               </property>
+              <property name="minimum">
+               <double>-10000000000000.000000000000000</double>
+              </property>
               <property name="maximum">
-               <double>9999999.000000000000000</double>
+               <double>10000000000000.000000000000000</double>
               </property>
              </widget>
             </item>

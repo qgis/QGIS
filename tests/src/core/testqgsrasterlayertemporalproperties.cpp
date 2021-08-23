@@ -72,8 +72,8 @@ void TestQgsRasterLayerTemporalProperties::cleanupTestCase()
 void TestQgsRasterLayerTemporalProperties::checkSettingTemporalRange()
 {
   QgsRasterLayerTemporalProperties temporalProperties;
-  QgsDateTimeRange dateTimeRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ),
-                                   QDateTime( QDate( 2020, 12, 31 ), QTime( 0, 0, 0 ) ) );
+  const QgsDateTimeRange dateTimeRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ),
+                                         QDateTime( QDate( 2020, 12, 31 ), QTime( 0, 0, 0 ) ) );
 
   temporalProperties.setFixedTemporalRange( dateTimeRange );
 
@@ -85,7 +85,7 @@ void TestQgsRasterLayerTemporalProperties::testReadWrite()
   QgsRasterLayerTemporalProperties temporalProperties;
 
   QDomImplementation DomImplementation;
-  QDomDocumentType documentType =
+  const QDomDocumentType documentType =
     DomImplementation.createDocumentType(
       QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );

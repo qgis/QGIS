@@ -58,8 +58,8 @@ QgsLayoutSize QgsLayoutMeasurementConverter::convert( const QgsLayoutSize &size,
 
   QgsLayoutSize result( size );
   result.setUnits( targetUnits );
-  QgsLayoutMeasurement width = QgsLayoutMeasurement( size.width(), size.units() );
-  QgsLayoutMeasurement height = QgsLayoutMeasurement( size.height(), size.units() );
+  const QgsLayoutMeasurement width = QgsLayoutMeasurement( size.width(), size.units() );
+  const QgsLayoutMeasurement height = QgsLayoutMeasurement( size.height(), size.units() );
   switch ( targetUnits )
   {
     case QgsUnitTypes::LayoutMillimeters:
@@ -99,8 +99,8 @@ QgsLayoutPoint QgsLayoutMeasurementConverter::convert( const QgsLayoutPoint &poi
 
   QgsLayoutPoint result( point );
   result.setUnits( targetUnits );
-  QgsLayoutMeasurement x = QgsLayoutMeasurement( point.x(), point.units() );
-  QgsLayoutMeasurement y = QgsLayoutMeasurement( point.y(), point.units() );
+  const QgsLayoutMeasurement x = QgsLayoutMeasurement( point.x(), point.units() );
+  const QgsLayoutMeasurement y = QgsLayoutMeasurement( point.y(), point.units() );
   switch ( targetUnits )
   {
     case QgsUnitTypes::LayoutMillimeters:

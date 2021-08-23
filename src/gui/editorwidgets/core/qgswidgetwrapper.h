@@ -76,7 +76,8 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     enum Property
     {
       RootPath = 0, //!< Root path for external resource
-      DocumentViewerContent //!< Document type for external resource
+      DocumentViewerContent, //!< Document type for external resource
+      StorageUrl //!< Storage URL for external resource
     };
 
     /**

@@ -354,7 +354,7 @@ void TestVectorLayerJoinBuffer::testJoinDetectCycle()
   joinInfo2.setJoinFieldName( QStringLiteral( "id_a" ) );
   joinInfo2.setUsingMemoryCache( true );
   joinInfo2.setPrefix( QStringLiteral( "A_" ) );
-  bool res = vlB->addJoin( joinInfo2 );
+  const bool res = vlB->addJoin( joinInfo2 );
 
   QVERIFY( !res );
 
@@ -398,7 +398,7 @@ void TestVectorLayerJoinBuffer::testJoinSubset()
   joinInfo.setJoinFieldName( QStringLiteral( "id_x" ) );
   joinInfo.setUsingMemoryCache( memoryCache );
   joinInfo.setPrefix( QStringLiteral( "X_" ) );
-  bool res = vlA->addJoin( joinInfo );
+  const bool res = vlA->addJoin( joinInfo );
   QVERIFY( res );
 
   QCOMPARE( vlA->fields().count(), 3 ); // id_a, X_value_x1, X_value_x2
@@ -506,7 +506,7 @@ void TestVectorLayerJoinBuffer::testJoinLayerDefinitionFile()
   QVERIFY( r );
 
   // Generate QLR
-  QDomDocument qlrDoc( QStringLiteral( "qgis-layer-definition" ) );
+  const QDomDocument qlrDoc( QStringLiteral( "qgis-layer-definition" ) );
   QString errorMessage;
   r = QgsLayerDefinition::exportLayerDefinition( qlrDoc, mProject.layerTreeRoot()->children(), errorMessage, QgsReadWriteContext() );
   QVERIFY2( r, errorMessage.toUtf8().constData() );
@@ -520,7 +520,7 @@ void TestVectorLayerJoinBuffer::testJoinLayerDefinitionFile()
   QVERIFY2( r, errorMessage.toUtf8().constData() );
 
   // Get layer
-  QList<QgsMapLayer *> mapLayers = mProject.mapLayersByName( QStringLiteral( "layerB" ) );
+  const QList<QgsMapLayer *> mapLayers = mProject.mapLayersByName( QStringLiteral( "layerB" ) );
   QCOMPARE( mapLayers.count(), 1 );
 
   QgsVectorLayer *vLayer = dynamic_cast<QgsVectorLayer *>( mapLayers.value( 0 ) );
@@ -705,7 +705,7 @@ void TestVectorLayerJoinBuffer::testSignals()
   QVERIFY( !fA2.attribute( "B_value_b" ).isValid() );
 
   // change value in join target layer, check for signals
-  QSignalSpy spy( vlA, &QgsVectorLayer::attributeValueChanged );
+  const QSignalSpy spy( vlA, &QgsVectorLayer::attributeValueChanged );
   vlA->startEditing();
   vlB->startEditing();
   // adds new feature to second layer

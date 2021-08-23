@@ -95,8 +95,8 @@ void QgsMssqlGeomColumnTypeThread::run()
 
         while ( q.next() )
         {
-          QString type = q.value( 0 ).toString().toUpper();
-          QString srid = q.value( 1 ).toString();
+          const QString type = q.value( 0 ).toString().toUpper();
+          const QString srid = q.value( 1 ).toString();
 
           if ( type.isEmpty() )
             continue;

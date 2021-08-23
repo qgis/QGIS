@@ -80,10 +80,10 @@ void TestQgsGeometryImport::pointWkt()
   QFETCH( double, x );
   QFETCH( double, y );
 
-  QgsGeometry geom = QgsGeometry::fromWkt( wktString );
+  const QgsGeometry geom = QgsGeometry::fromWkt( wktString );
 
   QCOMPARE( geom.wkbType(), QgsWkbTypes::Point );
-  QgsPointXY point = geom.asPoint();
+  const QgsPointXY point = geom.asPoint();
 
   QGSCOMPARENEAR( point.x(), x, 4 * std::numeric_limits<double>::epsilon() );
   QGSCOMPARENEAR( point.y(), y, 4 * std::numeric_limits<double>::epsilon() );
@@ -103,14 +103,14 @@ void TestQgsGeometryImport::pointWkb()
   QFETCH( double, y );
 
   //create wkb
-  char byteOrder = QgsApplication::endian();
+  const char byteOrder = QgsApplication::endian();
   unsigned char *geomPtr = new unsigned char[21];
   QgsWkbPtr wkb( geomPtr, 21 );
   wkb << byteOrder << QgsWkbTypes::Point << x << y;
 
   QgsGeometry geom;
   geom.fromWkb( geomPtr, 21 );
-  QgsPointXY point = geom.asPoint();
+  const QgsPointXY point = geom.asPoint();
 
   QCOMPARE( geom.wkbType(), QgsWkbTypes::Point );
   QGSCOMPARENEAR( point.x(), x, 4 * std::numeric_limits<double>::epsilon() );
@@ -135,10 +135,10 @@ void TestQgsGeometryImport::pointGeos()
   GEOSCoordSeq_setY_r( geos, coord, 0, y );
   GEOSGeometry *geosPt = GEOSGeom_createPoint_r( geos, coord );
 
-  QgsGeometry geom = QgsGeos::geometryFromGeos( geosPt );
+  const QgsGeometry geom = QgsGeos::geometryFromGeos( geosPt );
   QVERIFY( geom.wkbType() == QgsWkbTypes::Point );
 
-  QgsPointXY geomPt = geom.asPoint();
+  const QgsPointXY geomPt = geom.asPoint();
 
   QGSCOMPARENEAR( x, geomPt.x(), 4 * std::numeric_limits<double>::epsilon() );
   QGSCOMPARENEAR( y, geomPt.y(), 4 * std::numeric_limits<double>::epsilon() );
@@ -160,10 +160,10 @@ void TestQgsGeometryImport::linestringWkt()
   QFETCH( QString, wktString );
   QFETCH( QVariantList, line );
 
-  QgsGeometry geom = QgsGeometry::fromWkt( wktString );
+  const QgsGeometry geom = QgsGeometry::fromWkt( wktString );
   QCOMPARE( geom.wkbType(), QgsWkbTypes::LineString );
 
-  QgsPolylineXY polyLine = geom.asPolyline();
+  const QgsPolylineXY polyLine = geom.asPolyline();
   QVERIFY( compareLineStrings( polyLine, line ) );
 }
 
@@ -179,15 +179,15 @@ void TestQgsGeometryImport::linestringWkb()
 {
   QFETCH( QVariantList, line );
 
-  char byteOrder = QgsApplication::endian();
-  int wkbSize = 1 + 2 * sizeof( int ) + line.size() * 2 * sizeof( double );
+  const char byteOrder = QgsApplication::endian();
+  const int wkbSize = 1 + 2 * sizeof( int ) + line.size() * 2 * sizeof( double );
   unsigned char *geomPtr = new unsigned char[wkbSize];
   QgsWkbPtr wkb( geomPtr, wkbSize );
   wkb << byteOrder << QgsWkbTypes::LineString << line.size();
 
   for ( int i = 0; i < line.size(); ++i )
   {
-    QPointF linePt = line.at( i ).toPointF();
+    const QPointF linePt = line.at( i ).toPointF();
     wkb << linePt.x() << linePt.y();
   }
 
@@ -195,7 +195,7 @@ void TestQgsGeometryImport::linestringWkb()
   geom.fromWkb( geomPtr, wkbSize );
 
   QVERIFY( geom.wkbType() == QgsWkbTypes::LineString );
-  QgsPolylineXY polyline = geom.asPolyline();
+  const QgsPolylineXY polyline = geom.asPolyline();
   QVERIFY( compareLineStrings( polyline, line ) );
 }
 
@@ -215,22 +215,22 @@ void TestQgsGeometryImport::linestringGeos()
   GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geos, line.count(), 2 );
   for ( int i = 0; i < line.count(); i++ )
   {
-    QPointF pt = line.at( i ).toPointF();
+    const QPointF pt = line.at( i ).toPointF();
     GEOSCoordSeq_setX_r( geos, coord, i, pt.x() );
     GEOSCoordSeq_setY_r( geos, coord, i, pt.y() );
   }
   GEOSGeometry *geosLine = GEOSGeom_createLineString_r( geos, coord );
-  QgsGeometry geom = QgsGeos::geometryFromGeos( geosLine );
+  const QgsGeometry geom = QgsGeos::geometryFromGeos( geosLine );
   QVERIFY( geom.wkbType() == QgsWkbTypes::LineString );
 
-  QgsPolylineXY polyline = geom.asPolyline();
+  const QgsPolylineXY polyline = geom.asPolyline();
   QVERIFY( compareLineStrings( polyline, line ) );
 }
 
 
 bool TestQgsGeometryImport::compareLineStrings( const QgsPolylineXY &polyline, QVariantList &line )
 {
-  bool sizeEqual = ( polyline.size() == line.size() );
+  const bool sizeEqual = ( polyline.size() == line.size() );
   if ( !sizeEqual )
   {
     return false;
@@ -239,7 +239,7 @@ bool TestQgsGeometryImport::compareLineStrings( const QgsPolylineXY &polyline, Q
   for ( int i = 0; i < polyline.size(); ++i )
   {
     const QgsPointXY &polylinePt = polyline.at( i );
-    QPointF linePt = line.at( i ).toPointF();
+    const QPointF linePt = line.at( i ).toPointF();
     if ( !qgsDoubleNear( polylinePt.x(), linePt.x() ) || !qgsDoubleNear( polylinePt.y(), linePt.y() ) )
     {
       return false;
@@ -272,7 +272,7 @@ void TestQgsGeometryImport::delimiters()
   QFETCH( QString, input );
   QFETCH( QString, expected );
 
-  QgsGeometry gInput = QgsGeometry::fromWkt( input );
+  const QgsGeometry gInput = QgsGeometry::fromWkt( input );
   QCOMPARE( gInput.asWkt(), expected );
 }
 

@@ -34,7 +34,7 @@ bool QgsTransactionGroup::addLayer( QgsVectorLayer *layer )
   if ( !QgsTransaction::supportsTransaction( layer ) )
     return false;
 
-  QString connString = QgsTransaction::connectionString( layer->source() );
+  const QString connString = QgsTransaction::connectionString( layer->source() );
   if ( mConnString.isEmpty() )
   {
     mConnString = connString;

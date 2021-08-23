@@ -112,6 +112,7 @@ set(QGIS_CORE_SRCS
   diagram/qgstextdiagram.cpp
 
   editform/qgseditformconfig.cpp
+  editform/qgsattributeeditoraction.cpp
   editform/qgsattributeeditorelement.cpp
   editform/qgsattributeeditorcontainer.cpp
   editform/qgsattributeeditorfield.cpp
@@ -1204,6 +1205,7 @@ set(QGIS_CORE_HDRS
   dxf/qgsdxfexport.h
 
   editform/qgseditformconfig.h
+  editform/qgsattributeeditoraction.h
   editform/qgsattributeeditorelement.h
   editform/qgsattributeeditorcontainer.h
   editform/qgsattributeeditorfield.h

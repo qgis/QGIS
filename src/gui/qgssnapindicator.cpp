@@ -72,7 +72,7 @@ void QgsSnapIndicator::setMatch( const QgsPointLocator::Match &match )
       mSnappingMarker->setPenWidth( QgsGuiUtils::scaleIconSize( 3 ) );
     }
 
-    QColor color = QgsSettingsRegistryCore::settingsDigitizingSnapColor.value();
+    const QColor color = QgsSettingsRegistryCore::settingsDigitizingSnapColor.value();
     mSnappingMarker->setColor( color );
 
     int iconType;
@@ -111,10 +111,10 @@ void QgsSnapIndicator::setMatch( const QgsPointLocator::Match &match )
     // tooltip
     if ( QgsSettingsRegistryCore::settingsDigitizingSnapTooltip.value() )
     {
-      QPoint ptCanvas = mSnappingMarker->toCanvasCoordinates( match.point() ).toPoint();
-      QPoint ptGlobal = mCanvas->mapToGlobal( ptCanvas );
-      QRect rect( ptCanvas.x(), ptCanvas.y(), 1, 1 );  // area where is the tooltip valid
-      QString layerName = match.layer() ? match.layer()->name() : QString();
+      const QPoint ptCanvas = mSnappingMarker->toCanvasCoordinates( match.point() ).toPoint();
+      const QPoint ptGlobal = mCanvas->mapToGlobal( ptCanvas );
+      const QRect rect( ptCanvas.x(), ptCanvas.y(), 1, 1 );  // area where is the tooltip valid
+      const QString layerName = match.layer() ? match.layer()->name() : QString();
       QToolTip::showText( ptGlobal, layerName, mCanvas, rect );
     }
   }

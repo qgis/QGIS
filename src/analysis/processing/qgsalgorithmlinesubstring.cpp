@@ -149,7 +149,7 @@ QgsFeatureList QgsLineSubstringAlgorithm::processFeature( const QgsFeature &feat
     if ( curve )
     {
       std::unique_ptr< QgsCurve > substring( curve->curveSubstring( startDistance, endDistance ) );
-      QgsGeometry result( std::move( substring ) );
+      const QgsGeometry result( std::move( substring ) );
       f.setGeometry( result );
     }
     else

@@ -82,7 +82,7 @@ void QgsTextPreview::updateContext()
 {
   if ( mScale >= 0 )
   {
-    QgsMapToPixel newCoordXForm = QgsMapToPixel::fromScale( mScale, mMapUnits, QgsApplication::desktop()->logicalDpiX() );
+    const QgsMapToPixel newCoordXForm = QgsMapToPixel::fromScale( mScale, mMapUnits, QgsApplication::desktop()->logicalDpiX() );
     mContext.setMapToPixel( newCoordXForm );
   }
   update();

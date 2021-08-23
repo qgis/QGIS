@@ -47,7 +47,7 @@ Qt::ItemFlags QgsBrowserGuiModel::flags( const QModelIndex &index ) const
   }
 
   Q_NOWARN_DEPRECATED_PUSH
-  bool legacyAcceptDrop = ptr->acceptDrop();
+  const bool legacyAcceptDrop = ptr->acceptDrop();
   Q_NOWARN_DEPRECATED_POP
 
   if ( legacyAcceptDrop )
@@ -79,7 +79,7 @@ bool QgsBrowserGuiModel::dropMimeData( const QMimeData *data, Qt::DropAction act
   }
 
   Q_NOWARN_DEPRECATED_PUSH
-  bool legacyAcceptDrop = destItem->acceptDrop();
+  const bool legacyAcceptDrop = destItem->acceptDrop();
   Q_NOWARN_DEPRECATED_POP
 
   // legacy support for data items
@@ -113,7 +113,8 @@ bool QgsBrowserGuiModel::setData( const QModelIndex &index, const QVariant &valu
     return false;
   }
 
-  if ( !( item->capabilities2() & Qgis::BrowserItemCapability::Rename ) )
+  if ( !( item->capabilities2() & Qgis::BrowserItemCapability::Rename )
+       && !( item->capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile ) )
     return false;
 
   switch ( role )

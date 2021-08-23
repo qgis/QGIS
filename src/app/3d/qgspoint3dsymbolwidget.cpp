@@ -97,7 +97,7 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
   cboAltClamping->setCurrentIndex( static_cast<int>( pointSymbol->altitudeClamping() ) );
 
   QVariantMap vm = pointSymbol->shapeProperties();
-  int index = cboShape->findData( pointSymbol->shape() );
+  const int index = cboShape->findData( pointSymbol->shape() );
   cboShape->setCurrentIndex( index != -1 ? index : 1 );  // use cylinder by default if shape is not set
   QgsMaterialSettingsRenderingTechnique technique = QgsMaterialSettingsRenderingTechnique::InstancedPoints;
   bool forceNullMaterial = false;
@@ -157,17 +157,17 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
   // see https://math.stackexchange.com/questions/237369/given-this-transformation-matrix-how-do-i-decompose-it-into-translation-rotati
   QMatrix4x4 m = pointSymbol->transform();
   float *md = m.data();  // returns data in column-major order
-  float sx = QVector3D( md[0], md[1], md[2] ).length();
-  float sy = QVector3D( md[4], md[5], md[6] ).length();
-  float sz = QVector3D( md[8], md[9], md[10] ).length();
+  const float sx = QVector3D( md[0], md[1], md[2] ).length();
+  const float sy = QVector3D( md[4], md[5], md[6] ).length();
+  const float sz = QVector3D( md[8], md[9], md[10] ).length();
   float rd[9] =
   {
     md[0] / sx, md[4] / sy, md[8] / sz,
     md[1] / sx, md[5] / sy, md[9] / sz,
     md[2] / sx, md[6] / sy, md[10] / sz,
   };
-  QMatrix3x3 rot3x3( rd ); // takes data in row-major order
-  QVector3D rot = QQuaternion::fromRotationMatrix( rot3x3 ).toEulerAngles();
+  const QMatrix3x3 rot3x3( rd ); // takes data in row-major order
+  const QVector3D rot = QQuaternion::fromRotationMatrix( rot3x3 ).toEulerAngles();
 
   spinBillboardHeight->setValue( md[13] );
   spinTX->setValue( md[12] );
@@ -218,9 +218,9 @@ QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
       break;
   }
 
-  QQuaternion rot( QQuaternion::fromEulerAngles( spinRX->value(), spinRY->value(), spinRZ->value() ) );
-  QVector3D sca( spinSX->value(), spinSY->value(), spinSZ->value() );
-  QVector3D tra( spinTX->value(), spinTY->value(), spinTZ->value() );
+  const QQuaternion rot( QQuaternion::fromEulerAngles( spinRX->value(), spinRY->value(), spinRZ->value() ) );
+  const QVector3D sca( spinSX->value(), spinSY->value(), spinSZ->value() );
+  const QVector3D tra( spinTX->value(), spinTY->value(), spinTZ->value() );
 
   QMatrix4x4 tr;
   tr.translate( tra );

@@ -10,198 +10,143 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.    **
 ******************************************************************************/
 
+#include <iostream>
+#include <iomanip>
 #include "drw_dbg.h"
 
-#include "qgslogger.h"
+DRW_dbg *DRW_dbg::instance{nullptr};
 
+/*********private clases*************/
 
-#include <QTextStream>
-#include <QStringList>
-
-DRW_dbg *DRW_dbg::instance = nullptr;
-
-/*********private classes*************/
-class print_none
-{
-  public:
-    virtual void printS( std::string s ) {( void )s;}
-    virtual void printI( long long int i ) {( void )i;}
-    virtual void printUI( long long unsigned int i ) {( void )i;}
-    virtual void printD( double d ) {( void )d;}
-    virtual void printH( long long int i ) {( void )i;}
-    virtual void printB( int i ) {( void )i;}
-    virtual void printHL( int c, int s, int h ) {( void )c; ( void )s; ( void )h;}
-    virtual void printPT( double x, double y, double z ) {( void )x; ( void )y; ( void )z;}
-    print_none() {}
-    virtual ~print_none() = default;
-};
-
-class print_debug : public print_none
-{
-  public:
-    virtual void printS( std::string s );
-    virtual void printI( long long int i );
-    virtual void printUI( long long unsigned int i );
-    virtual void printD( double d );
-    virtual void printH( long long int i );
-    virtual void printB( int i );
-    virtual void printHL( int c, int s, int h );
-    virtual void printPT( double x, double y, double z );
-    print_debug();
-    virtual ~print_debug() { QgsDebugMsgLevel( mBuf, 5 ); }
-  private:
-    QString mBuf;
-    QTextStream mTS;
-    void flush();
+class print_debug : public DRW::DebugPrinter {
+public:
+    void printS(const std::string& s, const char *file, const char *function, int line) override;
+    void printI(long long int i, const char *file, const char *function, int line) override;
+    void printUI(long long unsigned int i, const char *file, const char *function, int line) override;
+    void printD(double d, const char *file, const char *function, int line) override;
+    void printH(long long int i, const char *file, const char *function, int line) override;
+    void printB(int i, const char *file, const char *function, int line) override;
+    void printHL(int c, int s, int h, const char *file, const char *function, int line) override;
+    void printPT(double x, double y, double z, const char *file, const char *function, int line) override;
+private:
+    std::ios_base::fmtflags flags{std::cerr.flags()};
 };
 
 /********* debug class *************/
-DRW_dbg *DRW_dbg::getInstance()
-{
-  if ( !instance )
-  {
-    instance = new DRW_dbg;
-  }
-  return instance;
+DRW_dbg *DRW_dbg::getInstance(){
+    if (!instance){
+        instance = new DRW_dbg;
+    }
+    return instance;
 }
 
-DRW_dbg::DRW_dbg()
-{
-  level = none;
-  prClass = new print_none;
+DRW_dbg::DRW_dbg(){
+    debugPrinter.reset(new print_debug);
+    currentPrinter = &silentDebug;
 }
 
-void DRW_dbg::setLevel( LEVEL lvl )
+void DRW_dbg::setCustomDebugPrinter(std::unique_ptr<DRW::DebugPrinter> printer)
 {
-  level = lvl;
-  delete prClass;
-  switch ( level )
-  {
-    case debug:
-      prClass = new print_debug;
-      break;
-    default:
-      prClass = new print_none;
-  }
+    debugPrinter = std::move( printer );
+    if (level == Level::Debug){
+        currentPrinter = debugPrinter.get();
+    }
 }
 
-DRW_dbg::LEVEL DRW_dbg::getLevel()
-{
-  return level;
+void DRW_dbg::setLevel(Level lvl){
+    level = lvl;
+    switch (level){
+    case Level::Debug:
+        currentPrinter = debugPrinter.get();
+        break;
+    case Level::None:
+        currentPrinter = &silentDebug;
+        break;
+    }
 }
 
-void DRW_dbg::print( std::string s )
-{
-  prClass->printS( s );
+DRW_dbg::Level DRW_dbg::getLevel(){
+    return level;
 }
 
-void DRW_dbg::print( int i )
-{
-  prClass->printI( i );
+void DRW_dbg::print(const std::string &s, const char *file, const char *function, int line){
+    currentPrinter->printS(s,file,function,line);
 }
 
-void DRW_dbg::print( unsigned int i )
-{
-  prClass->printUI( i );
+void DRW_dbg::print(int i, const char *file, const char *function, int line){
+    currentPrinter->printI(i,file,function,line);
 }
 
-void DRW_dbg::print( long long int i )
-{
-  prClass->printI( i );
+void DRW_dbg::print(unsigned int i, const char *file, const char *function, int line){
+    currentPrinter->printUI(i,file,function,line);
 }
 
-void DRW_dbg::print( long unsigned int i )
-{
-  prClass->printUI( i );
+void DRW_dbg::print(long long int i, const char *file, const char *function, int line){
+    currentPrinter->printI(i,file,function,line);
 }
 
-void DRW_dbg::print( long long unsigned int i )
-{
-  prClass->printUI( i );
+void DRW_dbg::print(long unsigned int i, const char *file, const char *function, int line){
+    currentPrinter->printUI(i,file,function,line);
 }
 
-void DRW_dbg::print( double d )
-{
-  prClass->printD( d );
+void DRW_dbg::print(long long unsigned int i, const char *file, const char *function, int line){
+    currentPrinter->printUI(i,file,function,line);
 }
 
-void DRW_dbg::printH( long long int i )
-{
-  prClass->printH( i );
+void DRW_dbg::print(double d, const char *file, const char *function, int line){
+    currentPrinter->printD(d,file,function,line);
 }
 
-void DRW_dbg::printB( int i )
-{
-  prClass->printB( i );
-}
-void DRW_dbg::printHL( int c, int s, int h )
-{
-  prClass->printHL( c, s, h );
+void DRW_dbg::printH(long long int i, const char *file, const char *function, int line){
+    currentPrinter->printH(i,file,function,line);
 }
 
-void DRW_dbg::printPT( double x, double y, double z )
-{
-  prClass->printPT( x, y, z );
+void DRW_dbg::printB(int i, const char *file, const char *function, int line){
+    currentPrinter->printB(i,file,function,line);
+}
+void DRW_dbg::printHL(int c, int s, int h, const char *file, const char *function, int line){
+    currentPrinter->printHL(c, s, h,file,function,line);
 }
 
-print_debug::print_debug() : mTS( &mBuf )
-{
+void DRW_dbg::printPT(double x, double y, double z, const char *file, const char *function, int line){
+    currentPrinter->printPT(x, y, z,file,function,line);
 }
 
-void print_debug::flush()
-{
-  QStringList lines = mBuf.split( '\n' );
-  for ( int i = 0; i < lines.size() - 1; i++ )
-  {
-    QgsDebugMsgLevel( lines[i], 4 );
-  }
-  mBuf = lines.last();
+void print_debug::printS(const std::string& s, const char *, const char *, int ){
+    std::cerr << s;
 }
 
-void print_debug::printS( std::string s )
-{
-  mTS << QString::fromStdString( s );
-  flush();
+void print_debug::printI(long long int i, const char *, const char *, int ){
+    std::cerr << i;
 }
 
-void print_debug::printI( long long int i )
-{
-  mTS << i;
-  flush();
+void print_debug::printUI(long long unsigned int i, const char *, const char *, int ){
+    std::cerr << i;
 }
 
-void print_debug::printUI( long long unsigned int i )
-{
-  mTS << i;
-  flush();
+void print_debug::printD(double d, const char *, const char *, int ){
+    std::cerr << std::fixed << d;
 }
 
-void print_debug::printD( double d )
-{
-  mTS << QStringLiteral( "%1 " ).arg( d, 0, 'g' );
-  flush();
+void print_debug::printH(long long i, const char *, const char *, int ){
+    std::cerr << "0x" << std::setw(2) << std::setfill('0');
+    std::cerr << std::hex << i;
+    std::cerr.flags(flags);
 }
 
-void print_debug::printH( long long  i )
-{
-  mTS << QStringLiteral( "0x%1" ).arg( i, 0, 16 );
-  flush();
+void print_debug::printB(int i, const char *, const char *, int ){
+    std::cerr << std::setw(8) << std::setfill('0');
+    std::cerr << std::setbase(2) << i;
+    std::cerr.flags(flags);
 }
 
-void print_debug::printB( int i )
-{
-  mTS << QStringLiteral( "0%1" ).arg( i, 0, 8 );
-  flush();
+void print_debug::printHL(int c, int s, int h, const char *, const char *, int ){
+    std::cerr << c << '.' << s << '.';
+    std::cerr << "0x" << std::setw(2) << std::setfill('0');
+    std::cerr << std::hex << h;
+    std::cerr.flags(flags);
 }
 
-void print_debug::printHL( int c, int s, int h )
-{
-  mTS << QStringLiteral( "%1.%2 0x%3" ).arg( c ).arg( s ).arg( h, 0, 16 );
-  flush();
-}
-
-void print_debug::printPT( double x, double y, double z )
-{
-  mTS << QStringLiteral( "x:%1 y:%2 z:%3" ).arg( x, 0, 'g' ).arg( y, 0, 'g' ).arg( z, 0, 'g' );
-  flush();
+void print_debug::printPT(double x, double y, double z, const char *, const char *, int ){
+    std::cerr << std::fixed << "x: " << x << ", y: " << y << ", z: "<< z;
 }

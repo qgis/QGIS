@@ -46,7 +46,7 @@ QgsLocatorOptionsWidget::QgsLocatorOptionsWidget( QgsLocatorWidget *locator, QWi
   // add the config button
   for ( int row = 0; row < mModel->rowCount(); ++row )
   {
-    QModelIndex index = mModel->index( row, QgsLocatorFiltersModel::Config );
+    const QModelIndex index = mModel->index( row, QgsLocatorFiltersModel::Config );
     QWidget *bt = mModel->configButton( index, this );
     if ( bt )
     {
@@ -65,7 +65,7 @@ void QgsLocatorOptionsWidget::dataChanged( const QModelIndex &topLeft, const QMo
 {
   for ( int row = topLeft.row(); row < bottomRight.row(); ++row )
   {
-    QModelIndex index = mModel->index( row, QgsLocatorFiltersModel::Config );
+    const QModelIndex index = mModel->index( row, QgsLocatorFiltersModel::Config );
     if ( !indexWidget( index ) )
     {
       QWidget *bt = mModel->configButton( index, this );
@@ -223,7 +223,7 @@ bool QgsLocatorFiltersModel::setData( const QModelIndex &index, const QVariant &
 
         case Prefix:
         {
-          QString prefix = value.toString();
+          const QString prefix = value.toString();
           if ( !prefix.isEmpty() )
           {
             mPrefixes.insert( filterForIndex( index ), prefix );
@@ -242,7 +242,7 @@ bool QgsLocatorFiltersModel::setData( const QModelIndex &index, const QVariant &
 
     case Qt::CheckStateRole:
     {
-      bool checked = static_cast< Qt::CheckState >( value.toInt() ) == Qt::Checked;
+      const bool checked = static_cast< Qt::CheckState >( value.toInt() ) == Qt::Checked;
       switch ( index.column() )
       {
         case Name:
@@ -326,7 +326,7 @@ void QgsLocatorFiltersModel::commitChanges()
   for ( ; itp != mPrefixes.constEnd(); ++itp )
   {
     QgsLocatorFilter *filter = itp.key();
-    QString activePrefix = itp.value();
+    const QString activePrefix = itp.value();
     if ( !activePrefix.isEmpty() && activePrefix != filter->prefix() )
     {
       filter->setActivePrefix( activePrefix );

@@ -197,6 +197,12 @@ class CORE_EXPORT QgsAggregateCalculator
     static Aggregate stringToAggregate( const QString &string, bool *ok = nullptr );
 
     /**
+     * Returns the friendly display name for a \a aggregate.
+     * \since QGIS 3.22
+     */
+    static QString displayName( Aggregate aggregate );
+
+    /**
      * Structured information for available aggregates.
      *
      * \since QGIS 3.2
@@ -242,10 +248,10 @@ class CORE_EXPORT QgsAggregateCalculator
     static QVariant calculateArrayAggregate( QgsFeatureIterator &fit, int attr, QgsExpression *expression,
         QgsExpressionContext *context );
 
-    static QVariant calculate( Aggregate aggregate, QgsFeatureIterator &fit, QVariant::Type resultType,
+    static QVariant calculate( Aggregate aggregate, QgsFeatureIterator &fit, QVariant::Type resultType, int userType,
                                int attr, QgsExpression *expression,
                                const QString &delimiter,
-                               QgsExpressionContext *context, bool *ok = nullptr );
+                               QgsExpressionContext *context, bool *ok = nullptr, QString *error = nullptr );
     static QVariant concatenateStrings( QgsFeatureIterator &fit, int attr, QgsExpression *expression,
                                         QgsExpressionContext *context, const QString &delimiter, bool unique = false );
 

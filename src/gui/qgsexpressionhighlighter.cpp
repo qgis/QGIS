@@ -65,12 +65,12 @@ void QgsExpressionHighlighter::highlightBlock( const QString &text )
   const auto constHighlightingRules = highlightingRules;
   for ( const HighlightingRule &rule : constHighlightingRules )
   {
-    QRegularExpression expression( rule.pattern );
+    const QRegularExpression expression( rule.pattern );
     QRegularExpressionMatch match = expression.match( text );
     while ( match.hasMatch() )
     {
-      int index = match.capturedStart();
-      int length = match.capturedLength();
+      const int index = match.capturedStart();
+      const int length = match.capturedLength();
       if ( length == 0 )
         break; // avoid infinite loops
       setFormat( index, length, rule.format );

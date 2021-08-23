@@ -111,7 +111,8 @@ void QgsAttributeActionDialog::insertRow( int row, const QgsAction &action )
 
   // Type
   item = new QTableWidgetItem( textForType( action.type() ) );
-  item->setData( Qt::UserRole, action.type() );
+  item->setData( Role::ActionType, action.type() );
+  item->setData( Role::ActionId, action.id() );
   item->setFlags( item->flags() & ~Qt::ItemIsEditable );
   mAttributeActionTable->setItem( row, Type, item );
 
@@ -142,7 +143,7 @@ void QgsAttributeActionDialog::insertRow( int row, const QgsAction &action )
   mAttributeActionTable->setItem( row, ActionScopes, item );
 
   // Icon
-  QIcon icon = action.icon();
+  const QIcon icon = action.icon();
   QTableWidgetItem *headerItem = new QTableWidgetItem( icon, QString() );
   headerItem->setData( Qt::UserRole, action.iconPath() );
   mAttributeActionTable->setVerticalHeaderItem( row, headerItem );
@@ -210,7 +211,7 @@ void QgsAttributeActionDialog::moveDown()
 
 void QgsAttributeActionDialog::swapRows( int row1, int row2 )
 {
-  int colCount = mAttributeActionTable->columnCount();
+  const int colCount = mAttributeActionTable->columnCount();
   for ( int col = 0; col < colCount; col++ )
   {
     QTableWidgetItem *item = mAttributeActionTable->takeItem( row1, col );
@@ -224,7 +225,9 @@ void QgsAttributeActionDialog::swapRows( int row1, int row2 )
 
 QgsAction QgsAttributeActionDialog::rowToAction( int row ) const
 {
-  QgsAction action( static_cast<QgsAction::ActionType>( mAttributeActionTable->item( row, Type )->data( Qt::UserRole ).toInt() ),
+  const QUuid id { mAttributeActionTable->item( row, Type )->data( Role::ActionId ).toUuid() };
+  QgsAction action( id,
+                    static_cast<QgsAction::ActionType>( mAttributeActionTable->item( row, Type )->data( Role::ActionType ).toInt() ),
                     mAttributeActionTable->item( row, Description )->text(),
                     mAttributeActionTable->item( row, ActionText )->data( Qt::UserRole ).toString(),
                     mAttributeActionTable->verticalHeaderItem( row )->data( Qt::UserRole ).toString(),
@@ -278,14 +281,14 @@ void QgsAttributeActionDialog::remove()
 void QgsAttributeActionDialog::insert()
 {
   // Add the action details as a new row in the table.
-  int pos = mAttributeActionTable->rowCount();
+  const int pos = mAttributeActionTable->rowCount();
 
   QgsAttributeActionPropertiesDialog dlg( mLayer, this );
   dlg.setWindowTitle( tr( "Add New Action" ) );
 
   if ( dlg.exec() )
   {
-    QString name = uniqueName( dlg.description() );
+    const QString name = uniqueName( dlg.description() );
 
     insertRow( pos, dlg.type(), name, dlg.actionText(), dlg.iconPath(), dlg.capture(), dlg.shortTitle(), dlg.actionScopes(), dlg.notificationMessage(), dlg.isEnabledOnlyWhenEditable() );
   }
@@ -294,11 +297,11 @@ void QgsAttributeActionDialog::insert()
 void QgsAttributeActionDialog::updateButtons()
 {
   QList<QTableWidgetItem *> selection = mAttributeActionTable->selectedItems();
-  bool hasSelection = !selection.isEmpty();
+  const bool hasSelection = !selection.isEmpty();
 
   if ( hasSelection )
   {
-    int row = selection.first()->row();
+    const int row = selection.first()->row();
     mMoveUpButton->setEnabled( row >= 1 );
     mMoveDownButton->setEnabled( row >= 0 && row < mAttributeActionTable->rowCount() - 1 );
   }
@@ -328,10 +331,10 @@ void QgsAttributeActionDialog::addDefaultActions()
 
 void QgsAttributeActionDialog::itemDoubleClicked( QTableWidgetItem *item )
 {
-  int row = item->row();
+  const int row = item->row();
 
   QgsAttributeActionPropertiesDialog actionProperties(
-    static_cast<QgsAction::ActionType>( mAttributeActionTable->item( row, Type )->data( Qt::UserRole ).toInt() ),
+    static_cast<QgsAction::ActionType>( mAttributeActionTable->item( row, Type )->data( Role::ActionType ).toInt() ),
     mAttributeActionTable->item( row, Description )->text(),
     mAttributeActionTable->item( row, ShortTitle )->text(),
     mAttributeActionTable->verticalHeaderItem( row )->data( Qt::UserRole ).toString(),
@@ -347,7 +350,7 @@ void QgsAttributeActionDialog::itemDoubleClicked( QTableWidgetItem *item )
 
   if ( actionProperties.exec() )
   {
-    mAttributeActionTable->item( row, Type )->setData( Qt::UserRole, actionProperties.type() );
+    mAttributeActionTable->item( row, Type )->setData( Role::ActionType, actionProperties.type() );
     mAttributeActionTable->item( row, Type )->setText( textForType( actionProperties.type() ) );
     mAttributeActionTable->item( row, Description )->setText( actionProperties.description() );
     mAttributeActionTable->item( row, ShortTitle )->setText( actionProperties.shortTitle() );
@@ -373,7 +376,7 @@ QString QgsAttributeActionDialog::uniqueName( QString name )
   // Make sure that the given name is unique, adding a numerical
   // suffix if necessary.
 
-  int pos = mAttributeActionTable->rowCount();
+  const int pos = mAttributeActionTable->rowCount();
   bool unique = true;
 
   for ( int i = 0; i < pos; ++i )
@@ -388,7 +391,7 @@ QString QgsAttributeActionDialog::uniqueName( QString name )
     QString new_name;
     while ( !unique )
     {
-      QString suffix = QString::number( suffix_num );
+      const QString suffix = QString::number( suffix_num );
       new_name = name + '_' + suffix;
       unique = true;
       for ( int i = 0; i < pos; ++i )

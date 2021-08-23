@@ -118,10 +118,10 @@ QgsPoint *QgsPoint::snappedToGrid( double hSpacing, double vSpacing, double dSpa
   };
 
   // Get the new values
-  auto x = gridifyValue( mX, hSpacing );
-  auto y = gridifyValue( mY, vSpacing );
-  auto z = gridifyValue( mZ, dSpacing, QgsWkbTypes::hasZ( mWkbType ) );
-  auto m = gridifyValue( mM, mSpacing, QgsWkbTypes::hasM( mWkbType ) );
+  const auto x = gridifyValue( mX, hSpacing );
+  const auto y = gridifyValue( mY, vSpacing );
+  const auto z = gridifyValue( mZ, dSpacing, QgsWkbTypes::hasZ( mWkbType ) );
+  const auto m = gridifyValue( mM, mSpacing, QgsWkbTypes::hasM( mWkbType ) );
 
   // return the new object
   return new QgsPoint( mWkbType, x, y, z, m );
@@ -134,7 +134,7 @@ bool QgsPoint::removeDuplicateNodes( double, bool )
 
 bool QgsPoint::fromWkb( QgsConstWkbPtr &wkbPtr )
 {
-  QgsWkbTypes::Type type = wkbPtr.readHeader();
+  const QgsWkbTypes::Type type = wkbPtr.readHeader();
   if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::Point )
   {
     clear();
@@ -177,7 +177,7 @@ bool QgsPoint::fromWkt( const QString &wkt )
        secondWithoutParentheses.isEmpty() )
     return true;
 
-  QRegularExpression rx( QStringLiteral( "\\s" ) );
+  const QRegularExpression rx( QStringLiteral( "\\s" ) );
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList coordinates = parts.second.split( rx, QString::SkipEmptyParts );
 #else
@@ -195,7 +195,7 @@ bool QgsPoint::fromWkt( const QString &wkt )
   // True
   // p.asWkt()
   // 'Point (0 -1.43209999999999993)'
-  QRegularExpression rxIsNumber( QStringLiteral( "^[+-]?(\\d\\.?\\d*[Ee][+\\-]?\\d+|(\\d+\\.\\d*|\\d*\\.\\d+)|\\d+)$" ) );
+  const QRegularExpression rxIsNumber( QStringLiteral( "^[+-]?(\\d\\.?\\d*[Ee][+\\-]?\\d+|(\\d+\\.\\d*|\\d*\\.\\d+)|\\d+)$" ) );
   if ( coordinates.filter( rxIsNumber ).size() != coordinates.size() )
     return false;
 
@@ -286,9 +286,9 @@ QDomElement QgsPoint::asGml2( QDomDocument &doc, int precision, const QString &n
   QDomElement elemCoordinates = doc.createElementNS( ns, QStringLiteral( "coordinates" ) );
 
   // coordinate separator
-  QString cs = QStringLiteral( "," );
+  const QString cs = QStringLiteral( "," );
   // tuple separator
-  QString ts = QStringLiteral( " " );
+  const QString ts = QStringLiteral( " " );
 
   elemCoordinates.setAttribute( QStringLiteral( "cs" ), cs );
   elemCoordinates.setAttribute( QStringLiteral( "ts" ), ts );
@@ -667,7 +667,7 @@ void QgsPoint::filterVertices( const std::function<bool ( const QgsPoint & )> & 
 
 void QgsPoint::transformVertices( const std::function<QgsPoint( const QgsPoint & )> &transform )
 {
-  QgsPoint res = transform( *this );
+  const QgsPoint res = transform( *this );
   mX = res.x();
   mY = res.y();
   if ( is3D() )
@@ -715,19 +715,19 @@ double QgsPoint::distanceSquared3D( const QgsPoint &other ) const
 
 double QgsPoint::azimuth( const QgsPoint &other ) const
 {
-  double dx = other.x() - mX;
-  double dy = other.y() - mY;
+  const double dx = other.x() - mX;
+  const double dy = other.y() - mY;
   return ( std::atan2( dx, dy ) * 180.0 / M_PI );
 }
 
 double QgsPoint::inclination( const QgsPoint &other ) const
 {
-  double distance = distance3D( other );
+  const double distance = distance3D( other );
   if ( qgsDoubleNear( distance, 0.0 ) )
   {
     return 90.0;
   }
-  double dz = other.z() - mZ;
+  const double dz = other.z() - mZ;
 
   return ( std::acos( dz / distance ) * 180.0 / M_PI );
 }
@@ -735,7 +735,7 @@ double QgsPoint::inclination( const QgsPoint &other ) const
 QgsPoint QgsPoint::project( double distance, double azimuth, double inclination ) const
 {
   QgsWkbTypes::Type pType = mWkbType;
-  double radsXy = azimuth * M_PI / 180.0;
+  const double radsXy = azimuth * M_PI / 180.0;
   double dx = 0.0, dy = 0.0, dz = 0.0;
 
   inclination = std::fmod( inclination, 360.0 );
@@ -750,7 +750,7 @@ QgsPoint QgsPoint::project( double distance, double azimuth, double inclination 
   }
   else
   {
-    double radsZ = inclination * M_PI / 180.0;
+    const double radsZ = inclination * M_PI / 180.0;
     dx = distance * std::sin( radsZ ) * std::sin( radsXy );
     dy = distance * std::sin( radsZ ) * std::cos( radsXy );
     dz = distance * std::cos( radsZ );
@@ -797,7 +797,7 @@ QgsPoint QgsPoint::childPoint( int index ) const
 
 QgsPoint *QgsPoint::createEmptyWithSameType() const
 {
-  double nan = std::numeric_limits<double>::quiet_NaN();
+  const double nan = std::numeric_limits<double>::quiet_NaN();
   return new QgsPoint( nan, nan, nan, nan, mWkbType );
 }
 

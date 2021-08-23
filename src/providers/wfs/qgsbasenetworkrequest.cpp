@@ -78,7 +78,7 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
 #endif
 
     // For REST API using URL subpaths, normalize the subpaths
-    int afterEndpointStartPos = modifiedUrlString.indexOf( "fake_qgis_http_endpoint" ) + strlen( "fake_qgis_http_endpoint" );
+    const int afterEndpointStartPos = modifiedUrlString.indexOf( "fake_qgis_http_endpoint" ) + strlen( "fake_qgis_http_endpoint" );
     QString afterEndpointStart = modifiedUrlString.mid( afterEndpointStartPos );
     afterEndpointStart.replace( QLatin1String( "/" ), QLatin1String( "_" ) );
     modifiedUrlString = modifiedUrlString.mid( 0, afterEndpointStartPos ) + afterEndpointStart;
@@ -94,7 +94,7 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
         modifiedUrlString += QStringLiteral( "?Accept=" ) + acceptHeader;
       }
     }
-    auto posQuotationMark = modifiedUrlString.indexOf( '?' );
+    const auto posQuotationMark = modifiedUrlString.indexOf( '?' );
     if ( posQuotationMark > 0 )
     {
       QString args = modifiedUrlString.mid( posQuotationMark );
@@ -159,7 +159,7 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
   bool threadFinished = false;
   bool success = false;
 
-  std::function<void()> downloaderFunction = [ this, request, synchronous, &waitConditionMutex, &waitCondition, &threadFinished, &success ]()
+  const std::function<void()> downloaderFunction = [ this, request, synchronous, &waitConditionMutex, &waitCondition, &threadFinished, &success ]()
   {
     if ( QThread::currentThread() != QApplication::instance()->thread() )
       QgsNetworkAccessManager::instance( Qt::DirectConnection );
@@ -331,7 +331,7 @@ void QgsBaseNetworkRequest::replyProgress( qint64 bytesReceived, qint64 bytesTot
   {
     if ( mReply->error() == QNetworkReply::NoError )
     {
-      QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
+      const QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
       if ( !redirect.isNull() )
       {
         // We don't want to emit downloadProgress() for a redirect
@@ -350,7 +350,7 @@ void QgsBaseNetworkRequest::replyFinished()
     if ( mReply->error() == QNetworkReply::NoError )
     {
       QgsDebugMsgLevel( QStringLiteral( "reply OK" ), 4 );
-      QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
+      const QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
       if ( !redirect.isNull() )
       {
         QgsDebugMsgLevel( QStringLiteral( "Request redirected." ), 4 );
@@ -431,7 +431,7 @@ void QgsBaseNetworkRequest::replyFinished()
         }
 
 #ifdef QGISDEBUG
-        bool fromCache = mReply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool();
+        const bool fromCache = mReply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool();
         QgsDebugMsgLevel( QStringLiteral( "Reply was cached: %1" ).arg( fromCache ), 4 );
 #endif
 
@@ -448,15 +448,15 @@ void QgsBaseNetworkRequest::replyFinished()
     else
     {
       mErrorMessage = errorMessageWithReason( mReply->errorString() );
-      QString replyContent = mReply->readAll();
+      const QString replyContent = mReply->readAll();
       QDomDocument exceptionDoc;
       QString errorMsg;
       if ( exceptionDoc.setContent( replyContent, true, &errorMsg ) )
       {
-        QDomElement exceptionElem = exceptionDoc.documentElement();
+        const QDomElement exceptionElem = exceptionDoc.documentElement();
         if ( !exceptionElem.isNull() && exceptionElem.tagName() == QLatin1String( "ExceptionReport" ) )
         {
-          QDomElement exception = exceptionElem.firstChildElement( QStringLiteral( "Exception" ) );
+          const QDomElement exception = exceptionElem.firstChildElement( QStringLiteral( "Exception" ) );
           mErrorMessage = tr( "WFS exception report (code=%1 text=%2)" )
                           .arg( exception.attribute( QStringLiteral( "exceptionCode" ), tr( "missing" ) ),
                                 exception.firstChildElement( QStringLiteral( "ExceptionText" ) ).text() );

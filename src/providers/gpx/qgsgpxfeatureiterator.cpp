@@ -210,7 +210,7 @@ bool QgsGPXFeatureIterator::readFid( QgsFeature &feature )
     return false;
 
   mFetchedFid = true;
-  QgsFeatureId fid = mRequest.filterFid();
+  const QgsFeatureId fid = mRequest.filterFid();
 
   if ( mSource->mFeatureType == QgsGPXProvider::WaypointType )
   {
@@ -467,7 +467,7 @@ void QgsGPXFeatureIterator::readAttributes( QgsFeature &feature, const QgsTrack 
 
 QgsGeometry *QgsGPXFeatureIterator::readWaypointGeometry( const QgsWaypoint &wpt )
 {
-  int size = 1 + sizeof( int ) + 2 * sizeof( double );
+  const int size = 1 + sizeof( int ) + 2 * sizeof( double );
   unsigned char *geo = new unsigned char[size];
 
   QgsWkbPtr wkbPtr( geo, size );
@@ -482,7 +482,7 @@ QgsGeometry *QgsGPXFeatureIterator::readWaypointGeometry( const QgsWaypoint &wpt
 QgsGeometry *QgsGPXFeatureIterator::readRouteGeometry( const QgsRoute &rte )
 {
   // some wkb voodoo
-  int size = 1 + 2 * sizeof( int ) + 2 * sizeof( double ) * rte.points.size();
+  const int size = 1 + 2 * sizeof( int ) + 2 * sizeof( double ) * rte.points.size();
   unsigned char *geo = new unsigned char[size];
 
   QgsWkbPtr wkbPtr( geo, size );
@@ -519,7 +519,7 @@ QgsGeometry *QgsGPXFeatureIterator::readTrackGeometry( const QgsTrack &trk )
   //QgsDebugMsg( "GPX feature track total points: " + QString::number( totalPoints ) );
 
   // some wkb voodoo
-  int size = 1 + 2 * sizeof( int ) + 2 * sizeof( double ) * totalPoints;
+  const int size = 1 + 2 * sizeof( int ) + 2 * sizeof( double ) * totalPoints;
   unsigned char *geo = new unsigned char[size];
   if ( !geo )
   {
@@ -532,7 +532,7 @@ QgsGeometry *QgsGPXFeatureIterator::readTrackGeometry( const QgsTrack &trk )
 
   for ( int k = 0; k < trk.segments.size(); k++ )
   {
-    int nPoints = trk.segments[k].points.size();
+    const int nPoints = trk.segments[k].points.size();
     for ( int i = 0; i < nPoints; ++i )
     {
       wkbPtr << trk.segments[k].points[i].lon << trk.segments[k].points[i].lat;

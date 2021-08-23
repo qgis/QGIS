@@ -84,11 +84,11 @@ void TestQgsOfflineEditing::cleanupTestCase()
 
 void TestQgsOfflineEditing::init()
 {
-  QString myFileName( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QString myTempDirName = tempDir.path();
+  const QString myFileName( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString myTempDirName = tempDir.path();
   QFile::copy( myFileName + "/points.geojson", myTempDirName + "/points.geojson" );
-  QString myTempFileName = myTempDirName + "/points.geojson";
-  QFileInfo myMapFileInfo( myTempFileName );
+  const QString myTempFileName = myTempDirName + "/points.geojson";
+  const QFileInfo myMapFileInfo( myTempFileName );
   mpLayer = new QgsVectorLayer( myMapFileInfo.filePath(),
                                 myMapFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QgsProject::instance()->addMapLayer( mpLayer );
@@ -100,8 +100,8 @@ void TestQgsOfflineEditing::init()
 
   //same with gpkg
   QFile::copy( myFileName + "/points_gpkg.gpkg", myTempDirName + "/points_gpkg.gpkg" );
-  QString myTempFileNameGpgk = myTempDirName + "/points_gpkg.gpkg";
-  QFileInfo myMapFileInfoGpkg( myTempFileNameGpgk );
+  const QString myTempFileNameGpgk = myTempDirName + "/points_gpkg.gpkg";
+  const QFileInfo myMapFileInfoGpkg( myTempFileNameGpgk );
   gpkgLayer = new QgsVectorLayer( myMapFileInfoGpkg.filePath() + "|layername=points_gpkg", "points_gpkg", QStringLiteral( "ogr" ) );
 
   QgsProject::instance()->addMapLayer( gpkgLayer );
@@ -161,7 +161,7 @@ void TestQgsOfflineEditing::createSpatialiteAndSynchronizeBack()
   else
     mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::SpatiaLite, suffix_input );
 
-  QString layerName = QStringLiteral( "points%1" ).arg( suffix_result );
+  const QString layerName = QStringLiteral( "points%1" ).arg( suffix_result );
 
   mpLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayersByName( layerName ).first() );
   QCOMPARE( mpLayer->name(), layerName );
@@ -215,7 +215,7 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
   else
     mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::GPKG, suffix_input );
 
-  QString layerName = QStringLiteral( "points%1" ).arg( suffix_result );
+  const QString layerName = QStringLiteral( "points%1" ).arg( suffix_result );
   mpLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayersByName( layerName ).first() );
   QCOMPARE( mpLayer->name(), layerName );
   QCOMPARE( mpLayer->featureCount(), numberOfFeatures );
@@ -264,7 +264,7 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
   QCOMPARE( layerTreelayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt(), 0 );
 
   //get last feature
-  QgsFeature f = mpLayer->getFeature( mpLayer->dataProvider()->featureCount() - 1 );
+  const QgsFeature f = mpLayer->getFeature( mpLayer->dataProvider()->featureCount() - 1 );
   qDebug() << "FID:" << f.id() << "Class:" << f.attribute( "Class" ).toString();
   QCOMPARE( f.attribute( QStringLiteral( "Class" ) ).toString(), QStringLiteral( "Superjet" ) );
   QCOMPARE( f.attribute( QStringLiteral( "StaffNames" ) ).toStringList(), QStringList() << QStringLiteral( "Sebastien" ) << QStringLiteral( "Naomi" ) << QStringLiteral( "And, many, more" ) );

@@ -29,7 +29,7 @@
 
 QgsPostgresRasterSharedData::~QgsPostgresRasterSharedData()
 {
-  for ( auto idx : mSpatialIndexes )
+  for ( const auto &idx : mSpatialIndexes )
   {
     delete idx.second;
   }
@@ -37,7 +37,7 @@ QgsPostgresRasterSharedData::~QgsPostgresRasterSharedData()
 
 QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( const QgsPostgresRasterSharedData::TilesRequest &request )
 {
-  QMutexLocker locker( &mMutex );
+  const QMutexLocker locker( &mMutex );
 
   const QString cacheKey { keyFromRequest( request ) };
 
@@ -180,7 +180,7 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
 
 void QgsPostgresRasterSharedData::invalidateCache()
 {
-  QMutexLocker locker( &mMutex );
+  const QMutexLocker locker( &mMutex );
   mSpatialIndexes.clear();
   mTiles.clear();
   mLoadedIndexBounds.clear();

@@ -401,16 +401,24 @@ void QgsLocatorResultsView::recalculateSize()
 
 void QgsLocatorResultsView::selectNextResult()
 {
+  const int rowCount = model()->rowCount( QModelIndex() );
+  if ( rowCount == 0 )
+    return;
+
   int nextRow = currentIndex().row() + 1;
-  nextRow = nextRow % model()->rowCount( QModelIndex() );
+  nextRow = nextRow % rowCount;
   setCurrentIndex( model()->index( nextRow, 0 ) );
 }
 
 void QgsLocatorResultsView::selectPreviousResult()
 {
+  const int rowCount = model()->rowCount( QModelIndex() );
+  if ( rowCount == 0 )
+    return;
+
   int previousRow = currentIndex().row() - 1;
   if ( previousRow < 0 )
-    previousRow = model()->rowCount( QModelIndex() ) - 1;
+    previousRow = rowCount - 1;
   setCurrentIndex( model()->index( previousRow, 0 ) );
 }
 

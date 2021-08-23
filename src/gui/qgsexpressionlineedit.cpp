@@ -55,7 +55,7 @@ void QgsExpressionLineEdit::setExpressionDialogTitle( const QString &title )
 
 void QgsExpressionLineEdit::setMultiLine( bool multiLine )
 {
-  QString exp = expression();
+  const QString exp = expression();
 
   if ( multiLine && !mCodeEditor )
   {
@@ -160,9 +160,9 @@ void QgsExpressionLineEdit::setExpression( const QString &newExpression )
 
 void QgsExpressionLineEdit::editExpression()
 {
-  QString currentExpression = expression();
+  const QString currentExpression = expression();
 
-  QgsExpressionContext context = mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : mExpressionContext;
+  const QgsExpressionContext context = mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : mExpressionContext;
 
   QgsExpressionBuilderDialog dlg( mLayer, currentExpression, this, QStringLiteral( "generic" ), context );
   dlg.setExpectedOutputFormat( mExpectedOutputFormat );
@@ -174,7 +174,7 @@ void QgsExpressionLineEdit::editExpression()
 
   if ( dlg.exec() )
   {
-    QString newExpression = dlg.expressionText();
+    const QString newExpression = dlg.expressionText();
     setExpression( newExpression );
   }
 }

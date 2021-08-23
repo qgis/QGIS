@@ -53,13 +53,13 @@ void QgsLayoutNorthArrowHandler::updateMapRotation()
 
     case TrueNorth:
     {
-      QgsPointXY center = mRotationMap->extent().center();
-      QgsCoordinateReferenceSystem crs = mRotationMap->crs();
-      QgsCoordinateTransformContext transformContext = mRotationMap->layout()->project()->transformContext();
+      const QgsPointXY center = mRotationMap->extent().center();
+      const QgsCoordinateReferenceSystem crs = mRotationMap->crs();
+      const QgsCoordinateTransformContext transformContext = mRotationMap->layout()->project()->transformContext();
 
       try
       {
-        double bearing = QgsBearingUtils::bearingTrueNorth( crs, transformContext, center );
+        const double bearing = QgsBearingUtils::bearingTrueNorth( crs, transformContext, center );
         rotation += bearing;
       }
       catch ( QgsException &e )

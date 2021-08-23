@@ -53,7 +53,7 @@ const QgsFetchedContent *QgsNetworkContentFetcherRegistry::fetch( const QString 
 QFile *QgsNetworkContentFetcherRegistry::localFile( const QString &filePathOrUrl )
 {
   QFile *file = nullptr;
-  QString path = filePathOrUrl;
+  const QString path = filePathOrUrl;
 
   if ( !QUrl::fromUserInput( filePathOrUrl ).isLocalFile() )
   {

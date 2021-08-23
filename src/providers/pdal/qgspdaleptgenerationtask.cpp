@@ -64,7 +64,7 @@ void QgsPdalEptGenerationTask::cleanTemp()
 
 bool QgsPdalEptGenerationTask::runUntwine()
 {
-  QFileInfo executable( mUntwineExecutableBinary );
+  const QFileInfo executable( mUntwineExecutableBinary );
   if ( !executable.isExecutable() )
   {
     QgsMessageLog::logMessage( tr( "Untwine executable not found %1" ).arg( mUntwineExecutableBinary ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Critical );
@@ -82,16 +82,16 @@ bool QgsPdalEptGenerationTask::runUntwine()
   // we can use them to set automatically set valid range for the data without having to scan the points again.
   options.push_back( { "stats", std::string() } );
 
-  std::vector<std::string> files = {mFile.toStdString()};
+  const std::vector<std::string> files = {mFile.toStdString()};
   untwineProcess.start( files, mOutputDir.toStdString(), options );
-  int lastPercent = 0;
+  const int lastPercent = 0;
   while ( true )
   {
     QThread::msleep( 100 );
-    int percent = untwineProcess.progressPercent();
+    const int percent = untwineProcess.progressPercent();
     if ( lastPercent != percent )
     {
-      QString message = QString::fromStdString( untwineProcess.progressMessage() );
+      const QString message = QString::fromStdString( untwineProcess.progressMessage() );
       if ( !message.isEmpty() )
         QgsMessageLog::logMessage( message, QObject::tr( "Point clouds" ), Qgis::MessageLevel::Info );
 
@@ -143,7 +143,7 @@ QString QgsPdalEptGenerationTask::outputDir() const
 
 bool QgsPdalEptGenerationTask::prepareOutputDir()
 {
-  QFileInfo fi( mOutputDir + "/ept.json" );
+  const QFileInfo fi( mOutputDir + "/ept.json" );
   if ( fi.exists() )
   {
     QgsMessageLog::logMessage( tr( "File %1 is already indexed" ).arg( mFile ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Info );
@@ -169,7 +169,7 @@ bool QgsPdalEptGenerationTask::prepareOutputDir()
     }
     else
     {
-      bool success = QDir().mkdir( mOutputDir );
+      const bool success = QDir().mkdir( mOutputDir );
       if ( success )
       {
         QgsMessageLog::logMessage( tr( "Created output directory %1" ).arg( mOutputDir ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Info );

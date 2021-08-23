@@ -80,7 +80,7 @@ void TestQgsFields::cleanup()
 
 void TestQgsFields::create()
 {
-  QgsFields fields;
+  const QgsFields fields;
   QCOMPARE( fields.count(), 0 );
 }
 
@@ -88,14 +88,14 @@ void TestQgsFields::copy()
 {
   QgsFields original;
   //add field
-  QgsField field( QStringLiteral( "testfield" ) );
+  const QgsField field( QStringLiteral( "testfield" ) );
   original.append( field );
   QCOMPARE( original.count(), 1 );
   QgsFields copy( original );
   QCOMPARE( copy.count(), 1 );
   QVERIFY( copy == original );
 
-  QgsField copyfield( QStringLiteral( "copyfield" ) );
+  const QgsField copyfield( QStringLiteral( "copyfield" ) );
   copy.append( copyfield );
   QCOMPARE( copy.count(), 2 );
   QCOMPARE( original.count(), 1 );
@@ -106,14 +106,14 @@ void TestQgsFields::assignment()
 {
   QgsFields original;
   //add field
-  QgsField field( QStringLiteral( "testfield" ) );
+  const QgsField field( QStringLiteral( "testfield" ) );
   original.append( field );
 
   QgsFields copy;
   copy = original;
   QVERIFY( copy == original );
 
-  QgsField copyfield( QStringLiteral( "copyfield" ) );
+  const QgsField copyfield( QStringLiteral( "copyfield" ) );
   copy.append( copyfield );
   QCOMPARE( original.count(), 1 );
   QCOMPARE( copy.count(), 2 );
@@ -140,7 +140,7 @@ void TestQgsFields::equality()
   QVERIFY( !( fields1 != fields2 ) );
 
   //make a change and retest
-  QgsField field3;
+  const QgsField field3;
   fields2.append( field3 );
   QVERIFY( !( fields1 == fields2 ) );
   QVERIFY( fields1 != fields2 );
@@ -157,17 +157,17 @@ void TestQgsFields::asVariant()
   original.append( field2 );
 
   //convert to and from a QVariant
-  QVariant var = QVariant::fromValue( original );
+  const QVariant var = QVariant::fromValue( original );
   QVERIFY( var.isValid() );
 
-  QgsFields fromVar = qvariant_cast<QgsFields>( var );
+  const QgsFields fromVar = qvariant_cast<QgsFields>( var );
   QCOMPARE( fromVar, original );
 }
 
 void TestQgsFields::clear()
 {
   QgsFields original;
-  QgsField field( QStringLiteral( "testfield" ) );
+  const QgsField field( QStringLiteral( "testfield" ) );
   original.append( field );
   QCOMPARE( original.count(), 1 );
   QgsFields copy( original );
@@ -180,7 +180,7 @@ void TestQgsFields::clear()
 void TestQgsFields::exists()
 {
   QgsFields fields;
-  QgsField field( QStringLiteral( "testfield" ) );
+  const QgsField field( QStringLiteral( "testfield" ) );
   fields.append( field );
 
   QVERIFY( !fields.exists( -1 ) );
@@ -194,12 +194,12 @@ void TestQgsFields::count()
   QCOMPARE( fields.count(), 0 );
   QCOMPARE( fields.size(), 0 );
 
-  QgsField field( QStringLiteral( "testfield" ) );
+  const QgsField field( QStringLiteral( "testfield" ) );
   fields.append( field );
   QCOMPARE( fields.count(), 1 );
   QCOMPARE( fields.size(), 1 );
 
-  QgsField field2( QStringLiteral( "testfield2" ) );
+  const QgsField field2( QStringLiteral( "testfield2" ) );
   fields.append( field2 );
   QCOMPARE( fields.count(), 2 );
   QCOMPARE( fields.size(), 2 );
@@ -210,7 +210,7 @@ void TestQgsFields::isEmpty()
   QgsFields fields;
   QVERIFY( fields.isEmpty() );
 
-  QgsField field( QStringLiteral( "testfield" ) );
+  const QgsField field( QStringLiteral( "testfield" ) );
   fields.append( field );
   QVERIFY( !fields.isEmpty() );
 }
@@ -222,9 +222,9 @@ void TestQgsFields::remove()
   //test for no crash
   fields.remove( 1 );
 
-  QgsField field( QStringLiteral( "testfield" ) );
+  const QgsField field( QStringLiteral( "testfield" ) );
   fields.append( field );
-  QgsField field2( QStringLiteral( "testfield2" ) );
+  const QgsField field2( QStringLiteral( "testfield2" ) );
   fields.append( field2 );
 
   //test for no crash
@@ -244,11 +244,11 @@ void TestQgsFields::rename()
 
   QVERIFY( !fields.rename( 1, "name" ) );
 
-  QgsField field( QStringLiteral( "testfield" ) );
+  const QgsField field( QStringLiteral( "testfield" ) );
   fields.append( field );
   QVERIFY( !fields.rename( 0, "" ) );
 
-  QgsField field2( QStringLiteral( "testfield2" ) );
+  const QgsField field2( QStringLiteral( "testfield2" ) );
   fields.append( field2 );
   QVERIFY( !fields.rename( 0, "testfield2" ) );
 
@@ -260,15 +260,15 @@ void TestQgsFields::rename()
 void TestQgsFields::extend()
 {
   QgsFields destination;
-  QgsField field( QStringLiteral( "testfield" ) );
+  const QgsField field( QStringLiteral( "testfield" ) );
   destination.append( field );
-  QgsField field2( QStringLiteral( "testfield2" ) );
+  const QgsField field2( QStringLiteral( "testfield2" ) );
   destination.append( field2 );
 
   QgsFields source;
-  QgsField field3( QStringLiteral( "testfield3" ) );
+  const QgsField field3( QStringLiteral( "testfield3" ) );
   source.append( field3, QgsFields::OriginJoin, 5 );
-  QgsField field4( QStringLiteral( "testfield4" ) );
+  const QgsField field4( QStringLiteral( "testfield4" ) );
   source.append( field4 );
 
   QCOMPARE( destination.count(), 2 );
@@ -281,9 +281,9 @@ void TestQgsFields::extend()
 void TestQgsFields::byIndex()
 {
   QgsFields fields;
-  QgsField field( QStringLiteral( "testfield" ) );
+  const QgsField field( QStringLiteral( "testfield" ) );
   fields.append( field );
-  QgsField field2( QStringLiteral( "testfield2" ) );
+  const QgsField field2( QStringLiteral( "testfield2" ) );
   fields.append( field2 );
 
   QCOMPARE( fields[0], field );
@@ -301,9 +301,9 @@ void TestQgsFields::byIndex()
 void TestQgsFields::byName()
 {
   QgsFields fields;
-  QgsField field( QStringLiteral( "testfield" ) );
+  const QgsField field( QStringLiteral( "testfield" ) );
   fields.append( field );
-  QgsField field2( QStringLiteral( "testfield2" ) );
+  const QgsField field2( QStringLiteral( "testfield2" ) );
   fields.append( field2 );
 
   QCOMPARE( fields.field( "testfield" ), field );
@@ -313,9 +313,9 @@ void TestQgsFields::byName()
 void TestQgsFields::fieldOrigin()
 {
   QgsFields fields;
-  QgsField field( QStringLiteral( "testfield" ) );
+  const QgsField field( QStringLiteral( "testfield" ) );
   fields.append( field, QgsFields::OriginJoin );
-  QgsField field2( QStringLiteral( "testfield2" ) );
+  const QgsField field2( QStringLiteral( "testfield2" ) );
   fields.append( field2, QgsFields::OriginExpression );
 
   QCOMPARE( fields.fieldOrigin( 0 ), QgsFields::OriginJoin );
@@ -326,20 +326,20 @@ void TestQgsFields::fieldOrigin()
 void TestQgsFields::fieldOriginIndex()
 {
   QgsFields fields;
-  QgsField field( QStringLiteral( "testfield" ) );
+  const QgsField field( QStringLiteral( "testfield" ) );
   fields.append( field, QgsFields::OriginProvider, 5 );
   QCOMPARE( fields.fieldOriginIndex( 0 ), 5 );
 
-  QgsField field2( QStringLiteral( "testfield2" ) );
+  const QgsField field2( QStringLiteral( "testfield2" ) );
   fields.append( field2, QgsFields::OriginProvider, 10 );
   QCOMPARE( fields.fieldOriginIndex( 1 ), 10 );
 
-  QgsField field3( QStringLiteral( "testfield3" ) );
+  const QgsField field3( QStringLiteral( "testfield3" ) );
   //field origin index not specified with OriginProvider, should be automatic
   fields.append( field3, QgsFields::OriginProvider );
   QCOMPARE( fields.fieldOriginIndex( 2 ), 2 );
 
-  QgsField field4( QStringLiteral( "testfield4" ) );
+  const QgsField field4( QStringLiteral( "testfield4" ) );
   //field origin index not specified with other than OriginProvider, should remain -1
   fields.append( field4, QgsFields::OriginEdit );
   QCOMPARE( fields.fieldOriginIndex( 3 ), -1 );
@@ -351,7 +351,7 @@ void TestQgsFields::indexFromName()
   QgsField field( QStringLiteral( "testfield" ) );
   field.setAlias( QStringLiteral( "testfieldAlias" ) );
   fields.append( field );
-  QgsField field2( QStringLiteral( "testfield2" ) );
+  const QgsField field2( QStringLiteral( "testfield2" ) );
   fields.append( field2 );
   QgsField field3( QStringLiteral( "testfield3" ) );
   field3.setAlias( QString() );
@@ -372,7 +372,7 @@ void TestQgsFields::indexFromName()
   QCOMPARE( fields.lookupField( QString( "teStFiEld2" ) ), 1 );
 
   //test that fieldNameIndex prefers exact case matches over case insensitive matches
-  QgsField sameNameDifferentCase( QStringLiteral( "teStFielD" ) );  //#spellok
+  const QgsField sameNameDifferentCase( QStringLiteral( "teStFielD" ) );  //#spellok
   fields.append( sameNameDifferentCase );
   QCOMPARE( fields.lookupField( QString( "teStFielD" ) ), 3 );  //#spellok
 
@@ -388,11 +388,11 @@ void TestQgsFields::toList()
   QList<QgsField> list = fields.toList();
   QVERIFY( list.isEmpty() );
 
-  QgsField field( QStringLiteral( "testfield" ) );
+  const QgsField field( QStringLiteral( "testfield" ) );
   fields.append( field );
-  QgsField field2( QStringLiteral( "testfield2" ) );
+  const QgsField field2( QStringLiteral( "testfield2" ) );
   fields.append( field2 );
-  QgsField field3( QStringLiteral( "testfield3" ) );
+  const QgsField field3( QStringLiteral( "testfield3" ) );
   fields.append( field3 );
 
   list = fields.toList();
@@ -407,11 +407,11 @@ void TestQgsFields::allAttrsList()
   QgsAttributeList attrList = fields.allAttributesList();
   QVERIFY( attrList.isEmpty() );
 
-  QgsField field( QStringLiteral( "testfield" ) );
+  const QgsField field( QStringLiteral( "testfield" ) );
   fields.append( field );
-  QgsField field2( QStringLiteral( "testfield2" ) );
+  const QgsField field2( QStringLiteral( "testfield2" ) );
   fields.append( field2 );
-  QgsField field3( QStringLiteral( "testfield3" ) );
+  const QgsField field3( QStringLiteral( "testfield3" ) );
   fields.append( field3 );
 
   attrList = fields.allAttributesList();
@@ -423,16 +423,16 @@ void TestQgsFields::allAttrsList()
 void TestQgsFields::appendExpressionField()
 {
   QgsFields fields;
-  QgsField field( QStringLiteral( "testfield" ) );
+  const QgsField field( QStringLiteral( "testfield" ) );
   fields.append( field );
-  QgsField field2( QStringLiteral( "testfield2" ) );
+  const QgsField field2( QStringLiteral( "testfield2" ) );
   fields.append( field2 );
 
-  QgsField dupeName( QStringLiteral( "testfield" ) );
+  const QgsField dupeName( QStringLiteral( "testfield" ) );
   QVERIFY( !fields.appendExpressionField( dupeName, 1 ) );
 
   //good name
-  QgsField exprField( QStringLiteral( "expression" ) );
+  const QgsField exprField( QStringLiteral( "expression" ) );
   QVERIFY( fields.appendExpressionField( exprField, 5 ) );
   QCOMPARE( fields.count(), 3 );
   QCOMPARE( fields.fieldOrigin( 2 ), QgsFields::OriginExpression );
@@ -485,31 +485,31 @@ void TestQgsFields::field()
   original.setPrecision( 2 );
 
   //test constructors for QgsFields::Field
-  QgsFields::Field fieldConstructor1( original, QgsFields::OriginJoin, 5 );
+  const QgsFields::Field fieldConstructor1( original, QgsFields::OriginJoin, 5 );
   QCOMPARE( fieldConstructor1.field, original );
   QCOMPARE( fieldConstructor1.origin, QgsFields::OriginJoin );
   QCOMPARE( fieldConstructor1.originIndex, 5 );
 
-  QgsFields::Field fieldConstructor2;
+  const QgsFields::Field fieldConstructor2;
   QCOMPARE( fieldConstructor2.origin, QgsFields::OriginUnknown );
   QCOMPARE( fieldConstructor2.originIndex, -1 );
 
   //test equality operators
-  QgsFields::Field field1( original, QgsFields::OriginJoin, 5 );
-  QgsFields::Field field2( original, QgsFields::OriginJoin, 5 );
+  const QgsFields::Field field1( original, QgsFields::OriginJoin, 5 );
+  const QgsFields::Field field2( original, QgsFields::OriginJoin, 5 );
   QVERIFY( field1 == field2 );
-  QgsFields::Field field3( original, QgsFields::OriginEdit, 5 );
+  const QgsFields::Field field3( original, QgsFields::OriginEdit, 5 );
   QVERIFY( field1 != field3 );
-  QgsFields::Field field4( original, QgsFields::OriginJoin, 6 );
+  const QgsFields::Field field4( original, QgsFields::OriginJoin, 6 );
   QVERIFY( field1 != field4 );
 }
 
 void TestQgsFields::qforeach()
 {
   QgsFields fields;
-  QgsField field( QStringLiteral( "1" ) );
+  const QgsField field( QStringLiteral( "1" ) );
   fields.append( field );
-  QgsField field2( QStringLiteral( "2" ) );
+  const QgsField field2( QStringLiteral( "2" ) );
   fields.append( field2 );
 
   int i = 0;
@@ -527,9 +527,9 @@ void TestQgsFields::iterator()
   //test with empty fields
   QCOMPARE( fields.begin(), fields.end() );
 
-  QgsField field( QStringLiteral( "1" ) );
+  const QgsField field( QStringLiteral( "1" ) );
   fields.append( field );
-  QgsField field2( QStringLiteral( "2" ) );
+  const QgsField field2( QStringLiteral( "2" ) );
   fields.append( field2 );
 
   QgsFields::iterator it = fields.begin();
@@ -575,9 +575,9 @@ void TestQgsFields::constIterator()
     QVERIFY( false );
   }
 
-  QgsField field( QString( QStringLiteral( "1" ) ) );
+  const QgsField field( QString( QStringLiteral( "1" ) ) );
   fields.append( field );
-  QgsField field2( QString( QStringLiteral( "2" ) ) );
+  const QgsField field2( QString( QStringLiteral( "2" ) ) );
   fields.append( field2 );
 
   const QgsFields constFields( fields );

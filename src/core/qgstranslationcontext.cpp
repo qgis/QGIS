@@ -65,7 +65,7 @@ void QgsTranslationContext::writeTsFile( const QString &locale )
     tsElement.appendChild( contextElement );
 
     QDomElement nameElement = doc.createElement( QStringLiteral( "name" ) );
-    QDomText nameText = doc.createTextNode( translatableObject.context );
+    const QDomText nameText = doc.createTextNode( translatableObject.context );
     nameElement.appendChild( nameText );
     contextElement.appendChild( nameElement );
 
@@ -73,7 +73,7 @@ void QgsTranslationContext::writeTsFile( const QString &locale )
     contextElement.appendChild( messageElement );
 
     QDomElement sourceElement = doc.createElement( QStringLiteral( "source" ) );
-    QDomText sourceText = doc.createTextNode( translatableObject.source );
+    const QDomText sourceText = doc.createTextNode( translatableObject.source );
     sourceElement.appendChild( sourceText );
     messageElement.appendChild( sourceElement );
 

@@ -318,11 +318,11 @@ bool GeomFunction::containsCandidate( const GEOSPreparedGeometry *geom, double x
 #endif
     if ( !qgsDoubleNear( alpha, 0.0 ) )
     {
-      double beta = alpha + M_PI_2;
-      double dx1 = std::cos( alpha ) * width;
-      double dy1 = std::sin( alpha ) * width;
-      double dx2 = std::cos( beta ) * height;
-      double dy2 = std::sin( beta ) * height;
+      const double beta = alpha + M_PI_2;
+      const double dx1 = std::cos( alpha ) * width;
+      const double dy1 = std::sin( alpha ) * width;
+      const double dx2 = std::cos( beta ) * height;
+      const double dy2 = std::sin( beta ) * height;
 #if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
       GEOSCoordSeq_setXY_r( geosctxt, coord, 1, x  + dx1, y + dy1 );
       GEOSCoordSeq_setXY_r( geosctxt, coord, 2, x + dx1 + dx2, y + dy1 + dy2 );
@@ -360,7 +360,7 @@ bool GeomFunction::containsCandidate( const GEOSPreparedGeometry *geom, double x
 #endif
 
     geos::unique_ptr bboxGeos( GEOSGeom_createLinearRing_r( geosctxt, coord ) );
-    bool result = ( GEOSPreparedContainsProperly_r( geosctxt, geom, bboxGeos.get() ) == 1 );
+    const bool result = ( GEOSPreparedContainsProperly_r( geosctxt, geom, bboxGeos.get() ) == 1 );
     return result;
   }
   catch ( GEOSException &e )
@@ -393,14 +393,14 @@ void GeomFunction::findLineCircleIntersection( double cx, double cy, double radi
     radius *= multiplier;
   }
 
-  double dx = x2 - x1;
-  double dy = y2 - y1;
+  const double dx = x2 - x1;
+  const double dy = y2 - y1;
 
-  double A = dx * dx + dy * dy;
-  double B = 2 * ( dx * ( x1 - cx ) + dy * ( y1 - cy ) );
-  double C = ( x1 - cx ) * ( x1 - cx ) + ( y1 - cy ) * ( y1 - cy ) - radius * radius;
+  const double A = dx * dx + dy * dy;
+  const double B = 2 * ( dx * ( x1 - cx ) + dy * ( y1 - cy ) );
+  const double C = ( x1 - cx ) * ( x1 - cx ) + ( y1 - cy ) * ( y1 - cy ) - radius * radius;
 
-  double det = B * B - 4 * A * C;
+  const double det = B * B - 4 * A * C;
   if ( A <= 0.000000000001 || det < 0 )
     // Should never happen, No real solutions.
     return;
@@ -408,7 +408,7 @@ void GeomFunction::findLineCircleIntersection( double cx, double cy, double radi
   if ( qgsDoubleNear( det, 0.0 ) )
   {
     // Could potentially happen.... One solution.
-    double t = -B / ( 2 * A );
+    const double t = -B / ( 2 * A );
     xRes = x1 + t * dx;
     yRes = y1 + t * dy;
   }
@@ -417,7 +417,7 @@ void GeomFunction::findLineCircleIntersection( double cx, double cy, double radi
     // Two solutions.
     // Always use the 1st one
     // We only really have one solution here, as we know the line segment will start in the circle and end outside
-    double t = ( -B + std::sqrt( det ) ) / ( 2 * A );
+    const double t = ( -B + std::sqrt( det ) ) / ( 2 * A );
     xRes = x1 + t * dx;
     yRes = y1 + t * dy;
   }

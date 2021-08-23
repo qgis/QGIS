@@ -254,7 +254,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         icon = legendIconEmbeddedInParent( nodeLayer );
       }
 
-      if ( layer->isEditable() && testFlag( UseTextFormatting ) )
+      if ( !icon.isNull() && layer->isEditable() && testFlag( UseTextFormatting ) )
       {
         const int iconSize = scaleIconSize( 16 );
         QPixmap pixmap( icon.pixmap( iconSize, iconSize ) );

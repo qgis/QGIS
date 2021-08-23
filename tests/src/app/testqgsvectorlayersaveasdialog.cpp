@@ -80,7 +80,7 @@ void TestQgsVectorLayerSaveAsDialog::testAttributesAsDisplayedValues()
   // Set a widget
   tempLayer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "ValueRelation" ), QVariantMap() ) );
 
-  QgsVectorLayerSaveAsDialog d( tempLayer.get() );
+  const QgsVectorLayerSaveAsDialog d( tempLayer.get() );
 
   QPushButton *mDeselectAllAttributes = d.findChild<QPushButton *>( QStringLiteral( "mDeselectAllAttributes" ) );
   QTest::mouseClick( mDeselectAllAttributes, Qt::LeftButton );

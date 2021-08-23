@@ -217,12 +217,6 @@
    </item>
    <item row="3" column="0">
     <widget class="QgsPictureSourceLineEditBase" name="mSourceLineEdit" native="true">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>20</height>
-      </size>
-     </property>
      <property name="focusPolicy">
       <enum>Qt::StrongFocus</enum>
      </property>

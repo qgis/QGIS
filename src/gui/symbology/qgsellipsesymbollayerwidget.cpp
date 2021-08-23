@@ -70,9 +70,9 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( QgsVectorLayer *vl, QW
   mShapeListWidget->setGridSize( QSize( size * 1.2, size * 1.2 ) );
   mShapeListWidget->setIconSize( QSize( size, size ) );
 
-  double markerSize = size * 0.8;
+  const double markerSize = size * 0.8;
   const auto shapes = QgsEllipseSymbolLayer::availableShapes();
-  for ( QgsEllipseSymbolLayer::Shape shape : shapes )
+  for ( const QgsEllipseSymbolLayer::Shape shape : shapes )
   {
     QgsEllipseSymbolLayer *lyr = new QgsEllipseSymbolLayer();
     lyr->setSymbolWidthUnit( QgsUnitTypes::RenderPixels );
@@ -82,7 +82,7 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( QgsVectorLayer *vl, QW
     lyr->setFillColor( QColor( 200, 200, 200 ) );
     lyr->setSymbolWidth( markerSize );
     lyr->setSymbolHeight( markerSize * 0.75 );
-    QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, QgsUnitTypes::RenderPixels, QSize( size, size ) );
+    const QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, QgsUnitTypes::RenderPixels, QSize( size, size ) );
     QListWidgetItem *item = new QListWidgetItem( icon, QString(), mShapeListWidget );
     item->setData( Qt::UserRole, static_cast< int >( shape ) );
     item->setToolTip( QgsEllipseSymbolLayer::encodeShape( shape ) );
@@ -113,7 +113,7 @@ void QgsEllipseSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   btnChangeColorStroke->setColor( mLayer->strokeColor() );
   btnChangeColorFill->setColor( mLayer->fillColor() );
 
-  QgsEllipseSymbolLayer::Shape shape = mLayer->shape();
+  const QgsEllipseSymbolLayer::Shape shape = mLayer->shape();
   for ( int i = 0; i < mShapeListWidget->count(); ++i )
   {
     if ( static_cast< QgsEllipseSymbolLayer::Shape >( mShapeListWidget->item( i )->data( Qt::UserRole ).toInt() ) == shape )
@@ -134,7 +134,7 @@ void QgsEllipseSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mSymbolHeightUnitWidget->setMapUnitScale( mLayer->symbolHeightMapUnitScale() );
   mOffsetUnitWidget->setUnit( mLayer->offsetUnit() );
   mOffsetUnitWidget->setMapUnitScale( mLayer->offsetMapUnitScale() );
-  QPointF offsetPt = mLayer->offset();
+  const QPointF offsetPt = mLayer->offset();
   spinOffsetX->setValue( offsetPt.x() );
   spinOffsetY->setValue( offsetPt.y() );
   mHorizontalAnchorComboBox->setCurrentIndex( mLayer->horizontalAnchorPoint() );

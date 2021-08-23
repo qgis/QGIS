@@ -93,8 +93,8 @@ void QgsCalloutWidget::createAuxiliaryField()
     return;
 
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  QgsCallout::Property key = static_cast<  QgsCallout::Property >( button->propertyKey() );
-  QgsPropertyDefinition def = QgsCallout::propertyDefinitions()[key];
+  const QgsCallout::Property key = static_cast<  QgsCallout::Property >( button->propertyKey() );
+  const QgsPropertyDefinition def = QgsCallout::propertyDefinitions()[key];
 
   // create property in auxiliary storage if necessary
   if ( !mVectorLayer->auxiliaryLayer()->exists( def ) )
@@ -117,7 +117,7 @@ void QgsCalloutWidget::createAuxiliaryField()
 void QgsCalloutWidget::updateDataDefinedProperty()
 {
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  QgsCallout::Property key = static_cast<  QgsCallout::Property >( button->propertyKey() );
+  const QgsCallout::Property key = static_cast<  QgsCallout::Property >( button->propertyKey() );
   callout()->dataDefinedProperties().setProperty( key, button->toProperty() );
   emit changed();
 }
@@ -232,7 +232,7 @@ void QgsSimpleLineCalloutWidget::setCallout( QgsCallout *callout )
 
 void QgsSimpleLineCalloutWidget::setGeometryType( QgsWkbTypes::GeometryType type )
 {
-  bool isPolygon = type == QgsWkbTypes::PolygonGeometry;
+  const bool isPolygon = type == QgsWkbTypes::PolygonGeometry;
   mAnchorPointLbl->setEnabled( isPolygon );
   mAnchorPointLbl->setVisible( isPolygon );
   mAnchorPointComboBox->setEnabled( isPolygon );
@@ -459,7 +459,7 @@ void QgsCurvedLineCalloutWidget::setCallout( QgsCallout *callout )
 
 void QgsCurvedLineCalloutWidget::setGeometryType( QgsWkbTypes::GeometryType type )
 {
-  bool isPolygon = type == QgsWkbTypes::PolygonGeometry;
+  const bool isPolygon = type == QgsWkbTypes::PolygonGeometry;
   mAnchorPointLbl->setEnabled( isPolygon );
   mAnchorPointLbl->setVisible( isPolygon );
   mAnchorPointComboBox->setEnabled( isPolygon );
@@ -699,7 +699,7 @@ void QgsBalloonCalloutWidget::setCallout( QgsCallout *callout )
 
 void QgsBalloonCalloutWidget::setGeometryType( QgsWkbTypes::GeometryType type )
 {
-  bool isPolygon = type == QgsWkbTypes::PolygonGeometry;
+  const bool isPolygon = type == QgsWkbTypes::PolygonGeometry;
   mAnchorPointLbl->setEnabled( isPolygon );
   mAnchorPointLbl->setVisible( isPolygon );
   mAnchorPointComboBox->setEnabled( isPolygon );

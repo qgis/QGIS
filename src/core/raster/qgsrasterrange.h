@@ -130,7 +130,7 @@ class CORE_EXPORT QgsRasterRange
      */
     static bool contains( double value, const QgsRasterRangeList &rangeList )
     {
-      for ( QgsRasterRange range : rangeList )
+      for ( const QgsRasterRange &range : rangeList )
       {
         if ( range.contains( value ) )
         {

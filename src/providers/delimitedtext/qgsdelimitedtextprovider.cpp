@@ -87,7 +87,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
   const QUrlQuery query( url );
   if ( query.hasQueryItem( QStringLiteral( "geomType" ) ) )
   {
-    QString gtype = query.queryItemValue( QStringLiteral( "geomType" ) ).toLower();
+    const QString gtype = query.queryItemValue( QStringLiteral( "geomType" ) ).toLower();
     if ( gtype == QLatin1String( "point" ) ) mGeometryType = QgsWkbTypes::PointGeometry;
     else if ( gtype == QLatin1String( "line" ) ) mGeometryType = QgsWkbTypes::LineGeometry;
     else if ( gtype == QLatin1String( "polygon" ) ) mGeometryType = QgsWkbTypes::PolygonGeometry;
@@ -320,12 +320,12 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
   // Initiallize indexes
 
   resetIndexes();
-  bool buildSpatialIndex = buildIndexes && nullptr != mSpatialIndex;
+  const bool buildSpatialIndex = buildIndexes && nullptr != mSpatialIndex;
 
   // No point building a subset index if there is no geometry, as all
   // records will be included.
 
-  bool buildSubsetIndex = buildIndexes && mBuildSubsetIndex && mGeomRep != GeomNone;
+  const bool buildSubsetIndex = buildIndexes && mBuildSubsetIndex && mGeomRep != GeomNone;
 
   if ( ! mFile->isValid() )
   {
@@ -415,7 +415,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
   while ( true )
   {
-    QgsDelimitedTextFile::Status status = mFile->nextRecord( parts );
+    const QgsDelimitedTextFile::Status status = mFile->nextRecord( parts );
     if ( status == QgsDelimitedTextFile::RecordEOF )
       break;
     if ( status != QgsDelimitedTextFile::RecordOk )
@@ -454,7 +454,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
         if ( !geom.isNull() )
         {
-          QgsWkbTypes::Type type = geom.wkbType();
+          const QgsWkbTypes::Type type = geom.wkbType();
           if ( type != QgsWkbTypes::NoGeometry )
           {
             if ( mGeometryType == QgsWkbTypes::UnknownGeometry || geom.type() == mGeometryType )
@@ -472,7 +472,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
                 mNumberFeatures++;
                 if ( geom.isMultipart() )
                   mWkbType = type;
-                QgsRectangle bbox( geom.boundingBox() );
+                const QgsRectangle bbox( geom.boundingBox() );
                 mExtent.combineExtentWith( bbox );
               }
               if ( buildSpatialIndex )
@@ -518,7 +518,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
       else
       {
         QgsPoint pt;
-        bool ok = pointFromXY( sX, sY, pt, mDecimalPoint, mXyDms );
+        const bool ok = pointFromXY( sX, sY, pt, mDecimalPoint, mXyDms );
 
         if ( ok )
         {
@@ -648,14 +648,14 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
       if ( couldBeDate[i] && !couldBeDateTime[i] )
       {
-        QDate d = QDate::fromString( value, Qt::ISODate );
+        const QDate d = QDate::fromString( value, Qt::ISODate );
         couldBeDate[i] = d.isValid();
       }
 
       if ( couldBeTime[i] && !couldBeDateTime[i] )
       {
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
-        QTime t = QTime::fromString( value );
+        const QTime t = QTime::fromString( value );
         couldBeTime[i] = t.isValid();
 #else
         // Accept 12:34, 12:34:56 or 12:34:56.789
@@ -831,8 +831,8 @@ void QgsDelimitedTextProvider::rescanFile() const
   mRescanRequired = false;
   resetIndexes();
 
-  bool buildSpatialIndex = nullptr != mSpatialIndex;
-  bool buildSubsetIndex = mBuildSubsetIndex && ( mSubsetExpression || mGeomRep != GeomNone );
+  const bool buildSpatialIndex = nullptr != mSpatialIndex;
+  const bool buildSubsetIndex = mBuildSubsetIndex && ( mSubsetExpression || mGeomRep != GeomNone );
 
   // In case file has been rewritten check that it is still valid
 
@@ -902,7 +902,7 @@ void QgsDelimitedTextProvider::rescanFile() const
       }
       else
       {
-        QgsRectangle bbox( f.geometry().boundingBox() );
+        const QgsRectangle bbox( f.geometry().boundingBox() );
         mExtent.combineExtentWith( bbox );
       }
       if ( buildSpatialIndex )
@@ -1046,7 +1046,7 @@ void QgsDelimitedTextProvider::reportErrors( const QStringList &messages, bool s
 {
   if ( !mInvalidLines.isEmpty() || ! messages.isEmpty() )
   {
-    QString tag( QStringLiteral( "DelimitedText" ) );
+    const QString tag( QStringLiteral( "DelimitedText" ) );
     QgsMessageLog::logMessage( tr( "Errors in file %1" ).arg( mFile->fileName() ), tag );
     const auto constMessages = messages;
     for ( const QString &message : constMessages )
@@ -1091,7 +1091,7 @@ void QgsDelimitedTextProvider::reportErrors( const QStringList &messages, bool s
 
 bool QgsDelimitedTextProvider::setSubsetString( const QString &subset, bool updateFeatureCount )
 {
-  QString nonNullSubset = subset.isNull() ? QString() : subset;
+  const QString nonNullSubset = subset.isNull() ? QString() : subset;
 
   // If not changing string, then all OK, nothing to do
   if ( nonNullSubset == mSubsetString )
@@ -1113,7 +1113,7 @@ bool QgsDelimitedTextProvider::setSubsetString( const QString &subset, bool upda
     }
     else
     {
-      QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( QgsFeature(), fields() );
+      const QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( QgsFeature(), fields() );
       expression->prepare( &context );
       if ( expression->hasEvalError() )
       {
@@ -1124,7 +1124,7 @@ bool QgsDelimitedTextProvider::setSubsetString( const QString &subset, bool upda
     {
       valid = false;
       expression.reset();
-      QString tag( QStringLiteral( "DelimitedText" ) );
+      const QString tag( QStringLiteral( "DelimitedText" ) );
       QgsMessageLog::logMessage( tr( "Invalid subset string %1 for %2" ).arg( nonNullSubset, mFile->fileName() ), tag );
     }
   }
@@ -1133,7 +1133,7 @@ bool QgsDelimitedTextProvider::setSubsetString( const QString &subset, bool upda
 
   if ( valid )
   {
-    QString previousSubset = mSubsetString;
+    const QString previousSubset = mSubsetString;
     mSubsetString = nonNullSubset;
     mSubsetExpression = std::move( expression );
 
@@ -1297,7 +1297,7 @@ QString QgsDelimitedTextProviderMetadata::encodeUri( const QVariantMap &parts ) 
   QUrlQuery queryItems;
   for ( const auto &option : openOptions )
   {
-    int separator = option.indexOf( '=' );
+    const int separator = option.indexOf( '=' );
     if ( separator >= 0 )
     {
       queryItems.addQueryItem( option.mid( 0, separator ), option.mid( separator + 1 ) );

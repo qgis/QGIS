@@ -149,7 +149,7 @@ QVariant QgsMeshDatasetListModel::data( const QModelIndex &index, int role ) con
     }
     else
     {
-      QgsInterval time = mLayer->datasetRelativeTime( QgsMeshDatasetIndex( mDatasetGroup, index.row() - 1 ) );
+      const QgsInterval time = mLayer->datasetRelativeTime( QgsMeshDatasetIndex( mDatasetGroup, index.row() - 1 ) );
       return mLayer->formatTime( time.hours() );
     }
   }

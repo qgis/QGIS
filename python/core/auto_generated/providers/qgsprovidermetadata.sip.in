@@ -66,7 +66,8 @@ Constructs driver metadata with selected capabilities
                            const QString &description,
                            const MeshDriverCapabilities &capabilities,
                            const QString &writeDatasetOnFileSuffix,
-                           const QString &writeMeshFrameOnFileSuffix );
+                           const QString &writeMeshFrameOnFileSuffix,
+                           int maxVerticesPerface );
 %Docstring
 Constructs driver metadata with selected capabilities
 
@@ -75,6 +76,7 @@ Constructs driver metadata with selected capabilities
 :param capabilities: driver's capabilities
 :param writeDatasetOnFileSuffix: suffix used to write datasets on file
 :param writeMeshFrameOnFileSuffix: suffix used to write mesh frame on file
+:param maxVerticesPerface: maximum vertices count per face supported by the driver
 
 .. versionadded:: 3.22
 %End
@@ -102,6 +104,13 @@ Returns the suffix used to write datasets on file
     QString writeMeshFrameOnFileSuffix() const;
 %Docstring
 Returns the suffix used to write mesh on file
+
+.. versionadded:: 3.22
+%End
+
+    int maximumVerticesCountPerFace() const;
+%Docstring
+Returns the maximum number of vertices per face supported by the driver
 
 .. versionadded:: 3.22
 %End
@@ -387,13 +396,23 @@ Creates a new instance of the raster data provider.
 
     virtual bool createMeshData(
       const QgsMesh &mesh,
-      const QString uri,
+      const QString &fileName,
       const QString &driverName,
       const QgsCoordinateReferenceSystem &crs ) const;
 %Docstring
-Creates mesh data source, that is the mesh frame stored in file, memory or with other way (depending of the provider)
+Creates mesh data source from a file name ``fileName`` and a driver ``driverName``, that is the mesh frame stored in file, memory or with other way (depending of the provider)
 
 .. versionadded:: 3.16
+%End
+
+    virtual bool createMeshData(
+      const QgsMesh &mesh,
+      const QString &uri,
+      const QgsCoordinateReferenceSystem &crs ) const;
+%Docstring
+Creates mesh data source from an ``uri``, that is the mesh frame stored in file, memory or with other way (depending of the provider)
+
+.. versionadded:: 3.22
 %End
 
     virtual QList<QPair<QString, QString> > pyramidResamplingMethods();

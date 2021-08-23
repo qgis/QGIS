@@ -70,7 +70,7 @@ void QgsMapToolAddRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   //add point to list and to rubber band
   if ( e->button() == Qt::LeftButton )
   {
-    int error = addVertex( e->mapPoint(), e->mapPointMatch() );
+    const int error = addVertex( e->mapPoint(), e->mapPointMatch() );
     if ( error == 1 )
     {
       //current layer is not a vector layer
@@ -98,8 +98,8 @@ void QgsMapToolAddRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
     //does compoundcurve contain circular strings?
     //does provider support circular strings?
-    bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
-    bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
+    const bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
+    const bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
 
     QgsCurve *curveToAdd = nullptr;
     if ( hasCurvedSegments && providerSupportsCurvedSegments )
@@ -111,7 +111,7 @@ void QgsMapToolAddRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       curveToAdd = captureCurve()->curveToLine();
     }
 
-    Qgis::GeometryOperationResult addRingReturnCode = vlayer->addRing( curveToAdd );
+    const Qgis::GeometryOperationResult addRingReturnCode = vlayer->addRing( curveToAdd );
     QString errorMessage;
     switch ( addRingReturnCode )
     {

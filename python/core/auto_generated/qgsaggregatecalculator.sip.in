@@ -164,6 +164,13 @@ Converts a string to a aggregate type.
 :return: aggregate type
 %End
 
+    static QString displayName( Aggregate aggregate );
+%Docstring
+Returns the friendly display name for a ``aggregate``.
+
+.. versionadded:: 3.22
+%End
+
     static QList< QgsAggregateCalculator::AggregateInfo > aggregates();
 %Docstring
 Structured information for available aggregates.

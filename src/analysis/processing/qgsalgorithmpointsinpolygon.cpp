@@ -206,7 +206,7 @@ QgsFeatureList QgsPointsInPolygonAlgorithm::processFeature( const QgsFeature &fe
         if ( mWeightFieldIndex >= 0 )
         {
           const QVariant weight = pointFeature.attribute( mWeightFieldIndex );
-          double pointWeight = weight.toDouble( &ok );
+          const double pointWeight = weight.toDouble( &ok );
           // Ignore fields with non-numeric values
           if ( ok )
             count += pointWeight;

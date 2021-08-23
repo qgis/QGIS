@@ -23,7 +23,7 @@ double Vector3D::getLength() const
 
 void Vector3D::standardise()
 {
-  double length = getLength();
+  const double length = getLength();
   setX( getX() / length );
   setY( getY() / length );
   setZ( getZ() / length );

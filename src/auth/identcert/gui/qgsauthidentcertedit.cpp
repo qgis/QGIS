@@ -33,7 +33,7 @@ QgsAuthIdentCertEdit::QgsAuthIdentCertEdit( QWidget *parent )
 
 bool QgsAuthIdentCertEdit::validateConfig()
 {
-  bool curvalid = cmbIdentityCert->currentIndex() != 0;
+  const bool curvalid = cmbIdentityCert->currentIndex() != 0;
   if ( mValid != curvalid )
   {
     mValid = curvalid;
@@ -55,7 +55,7 @@ void QgsAuthIdentCertEdit::loadConfig( const QgsStringMap &configmap )
   clearConfig();
 
   mConfigMap = configmap;
-  int indx = cmbIdentityCert->findData( configmap.value( QStringLiteral( "certid" ) ) );
+  const int indx = cmbIdentityCert->findData( configmap.value( QStringLiteral( "certid" ) ) );
   cmbIdentityCert->setCurrentIndex( indx == -1 ? 0 : indx );
 
   validateConfig();

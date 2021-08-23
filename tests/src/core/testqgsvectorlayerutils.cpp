@@ -86,7 +86,7 @@ void TestQgsVectorLayerUtils::testGetFeatureSource()
   f1.setAttribute( QStringLiteral( "col1" ), 10 );
   vl->addFeature( f1 );
 
-  QPointer<QgsVectorLayer> vlPtr( vl.get() );
+  const QPointer<QgsVectorLayer> vlPtr( vl.get() );
 
   QgsFeature feat;
   QgsVectorLayerUtils::getFeatureSource( vlPtr )->getFeatures().nextFeature( feat );

@@ -2340,7 +2340,7 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
   // TODO: add support for multiple
   QString geometryColumnName;
   OGRwkbGeometryType layerGeomType = wkbUnknown;
-  const bool slowGeomTypeRetrieval = driverName == QLatin1String( "OAPIF" ) || driverName == QLatin1String( "WFS3" ) || driverName == QLatin1String( "PGeo" );
+  const bool slowGeomTypeRetrieval = driverName == QLatin1String( "OAPIF" ) || driverName == QLatin1String( "WFS3" );
   if ( !slowGeomTypeRetrieval )
   {
     QgsOgrFeatureDefn &fdef = layer->GetLayerDefn();
@@ -2480,7 +2480,10 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
       details.setProviderKey( QStringLiteral( "ogr" ) );
       details.setDriverName( driverName );
 
-      if ( fCount.size() > 1 )
+      // if we had to iterate through the table to find geometry types, make sure to include these
+      // in the uri for the sublayers (otherwise we'll be forced to re-do this iteration whenever
+      // the uri from the sublayer is used to construct an actual vector layer)
+      if ( details.wkbType() != QgsWkbTypes::Unknown )
         parts.insert( QStringLiteral( "geometryType" ), ogrWkbGeometryTypeName( countIt.key() ) );
       else
         parts.remove( QStringLiteral( "geometryType" ) );

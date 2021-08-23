@@ -372,5 +372,6 @@ void QgsTextEditWrapper::setHint( const QString &hintText )
     mPlaceholderText = hintText;
   }
 
-  mLineEdit->setPlaceholderText( mPlaceholderText );
+  if ( mLineEdit )
+    mLineEdit->setPlaceholderText( mPlaceholderText );
 }

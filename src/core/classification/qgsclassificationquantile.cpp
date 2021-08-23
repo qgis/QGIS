@@ -69,7 +69,7 @@ QList<double> QgsClassificationQuantile::calculateBreaks( double &minimum, doubl
   if ( _values.isEmpty() )
     return QList<double>();
 
-  int n = _values.count();
+  const int n = _values.count();
   double Xq = n > 0 ? _values[0] : 0.0;
 
   breaks.reserve( nclasses );
@@ -77,11 +77,11 @@ QList<double> QgsClassificationQuantile::calculateBreaks( double &minimum, doubl
   {
     if ( n > 1 )
     {
-      double q = i  / static_cast< double >( nclasses );
-      double a = q * ( n - 1 );
-      int aa = static_cast<  int >( a );
+      const double q = i  / static_cast< double >( nclasses );
+      const double a = q * ( n - 1 );
+      const int aa = static_cast<  int >( a );
 
-      double r = a - aa;
+      const double r = a - aa;
       Xq = ( 1 - r ) * _values[aa] + r * _values[aa + 1];
     }
     breaks.append( Xq );
