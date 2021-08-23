@@ -194,5 +194,18 @@ df -h
 
 python3 /root/QGIS/.ci/ctest2ci.py xvfb-run ctest -V $CTEST_OPTIONS -E "${EXCLUDE_TESTS}" -S /root/QGIS/.ci/config_test.ctest --output-on-failure
 
+# cd /root/QGIS || :
+# pwd
+# ls -la
+# cd build || :
+TESTCOUNT=0
+while :
+do
+  python3 /root/QGIS/.ci/ctest2ci.py xvfb-run ctest -V -R test_core_networkaccessmanager -S /root/QGIS/.ci/config_test.ctest || :
+  if [[ $(( TESTCOUNT++ )) -eq 40 ]]; then
+    break
+  fi
+done
+
 echo "Print disk space"
 df -h
