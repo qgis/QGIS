@@ -201,7 +201,7 @@ python3 /root/QGIS/.ci/ctest2ci.py xvfb-run ctest -V $CTEST_OPTIONS -E "${EXCLUD
 TESTCOUNT=0
 while :
 do
-  python3 /root/QGIS/.ci/ctest2ci.py xvfb-run ctest -V -R test_core_networkaccessmanager -S /root/QGIS/.ci/config_test.ctest || :
+  python3 /root/QGIS/.ci/ctest2ci.py xvfb-run ctest -V -R test_core_networkaccessmanager -S /root/QGIS/.ci/config_test.ctest --output-on-failure
   if [[ $(( TESTCOUNT++ )) -eq 40 ]]; then
     break
   fi

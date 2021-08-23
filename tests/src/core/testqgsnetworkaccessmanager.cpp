@@ -784,7 +784,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   connect( QgsNetworkAccessManager::instance(), qOverload< QgsNetworkReplyContent >( &QgsNetworkAccessManager::finished ), &context, [&]( const QgsNetworkReplyContent & reply )
   {
     QWARN( ( lastTest + QStringLiteral( "finished --->>>" ) ).toLatin1().data() );
-    QWARN( reply.errorString().toLatin1().data() );
+    QWARN( ( lastTest + QStringLiteral( " errorString: " ) + reply.errorString() ).toLatin1().data() );
     QCOMPARE( reply.error(), expectedError );
     QCOMPARE( reply.requestId(), requestId );
     QCOMPARE( reply.request().url(), u );
