@@ -10,6 +10,7 @@
 
 
 
+
 class QgsRasterCalcNode
 {
 %Docstring(signature="appended")

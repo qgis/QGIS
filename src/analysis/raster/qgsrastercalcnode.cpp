@@ -16,8 +16,6 @@
 #include "qgsrasterblock.h"
 #include "qgsrastermatrix.h"
 
-#include <QDebug>
-
 QgsRasterCalcNode::QgsRasterCalcNode( double number )
   : mNumber( number )
 {
@@ -38,11 +36,10 @@ QgsRasterCalcNode::QgsRasterCalcNode( Operator op, QgsRasterCalcNode *left, QgsR
 {
 }
 
-//for conditional statement and other functions
 QgsRasterCalcNode::QgsRasterCalcNode( QString functionName, QVector <QgsRasterCalcNode *> functionArgs )
-  : mFunctionName( functionName )
+  : mType( tFunct )
+  , mFunctionName( functionName )
   , mFunctionArgs( functionArgs )
-  , mType( tFunct )
 {
 }
 
@@ -387,6 +384,15 @@ QString QgsRasterCalcNode::toString( bool cStyle ) const
       break;
     case tMatrix:
       break;
+    case tFunct:
+      if ( mFunctionName == "if" )
+      {
+        QString argOne = mFunctionArgs.at( 0 )->toString();
+        QString argTwo = mFunctionArgs.at( 1 )->toString();
+        QString argThree = mFunctionArgs.at( 2 )->toString();
+        result = QStringLiteral( "if( %1 , %2 , %3 )" ).arg( argOne ).arg( argTwo ).arg( argThree );
+      }
+      break;
   }
   return result;
 }
@@ -400,6 +406,10 @@ QList<const QgsRasterCalcNode *> QgsRasterCalcNode::findNodes( const QgsRasterCa
     nodeList.append( mLeft->findNodes( type ) );
   if ( mRight )
     nodeList.append( mRight->findNodes( type ) );
+
+  for ( QgsRasterCalcNode *node : mFunctionArgs )
+    nodeList.append( node->findNodes( type ) );
+
   return nodeList;
 }
 
@@ -428,11 +438,8 @@ QgsRasterMatrix QgsRasterCalcNode::evaluation( const QVector<QgsRasterMatrix *> 
     bool isSecondCOptionNumber = matrixVector.at( 2 )->isNumber();
     double noDataValueCondition = matrixVector.at( 0 )->nodataValue();
 
-    //if ( matrixVector.at( 0 )->isNumber() ) return result;
-
     for ( int i = 0; i < nEntries; ++i )
     {
-      //dataResult.get()[i] = condition.get()[i] != 0  ? firstOption[0] : secondOption[0] ;
       if ( condition[i] == noDataValueCondition )
       {
         dataResultRawPtr[i] = result.nodataValue();

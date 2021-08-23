@@ -1044,9 +1044,50 @@ void TestQgsRasterCalculator::parseFunctTypeString()
   QVERIFY( ! errorString.isEmpty() );
 
   errorString = QString();
-  node = QgsRasterCalcNode::parseRasterCalcString( QStringLiteral( "if(\"raster@1\">10,100,5)" ), errorString );
+  node = QgsRasterCalcNode::parseRasterCalcString( QStringLiteral( "if(\"raster@1\">5,100,5)" ), errorString );
   QVERIFY( node );
   QVERIFY( errorString.isEmpty() );
+  QVERIFY( node->findNodes( QgsRasterCalcNode::Type::tRasterRef ).length() == 1 );
+
+  //test case sensitivity (instead of "if", use "IF")
+  errorString = QString();
+  node = QgsRasterCalcNode::parseRasterCalcString( QStringLiteral( "IF(\"raster@1\">5,100,5)" ), errorString );
+  QVERIFY( node );
+  QVERIFY( errorString.isEmpty() );
+  QVERIFY( node->findNodes( QgsRasterCalcNode::Type::tRasterRef ).length() == 1 );
+
+  QgsRasterCalculatorEntry entry1;
+  entry1.bandNumber = 1;
+  entry1.raster = mpLandsatRasterLayer;
+  entry1.ref = QStringLiteral( "landsat@1" );
+
+  QVector<QgsRasterCalculatorEntry> entries;
+  entries << entry1;
+
+  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:32633" ) );
+  QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
+
+  QTemporaryFile tmpFile;
+  tmpFile.open(); // fileName is not available until open
+  QString tmpName = tmpFile.fileName();
+  tmpFile.close();
+
+  QgsRasterCalculator rc( QStringLiteral( "if(\"landsat@1\">126,100.0,5.0)" ),
+                          tmpName,
+                          QStringLiteral( "GTiff" ),
+                          extent, crs, 2, 3, entries,
+                          QgsProject::instance()->transformContext() );
+  QCOMPARE( static_cast< int >( rc.processCalculation() ), 0 );
+
+  //open output file and check results
+  QgsRasterLayer *result = new QgsRasterLayer( tmpName, QStringLiteral( "result" ) );
+  QCOMPARE( result->width(), 2 );
+  QCOMPARE( result->height(), 3 );
+  QgsRasterBlock *block = result->dataProvider()->block( 1, extent, 2, 3 );
+
+  //QCOMPARE( block->value( 0, 0 ), 100.0 );
+  delete result;
+  delete block;
 
 }
 

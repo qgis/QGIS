@@ -73,6 +73,7 @@ QgsRasterCalcDialog::QgsRasterCalcDialog( QgsRasterLayer *rasterLayer, QWidget *
   connect( mMinButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mMinButton_clicked );
   connect( mMaxButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mMaxButton_clicked );
   connect( mOrButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mOrButton_clicked );
+  connect( mConditionalStatButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mConditionalStatButton_clicked );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsRasterCalcDialog::showHelp );
 
   if ( rasterLayer && rasterLayer->dataProvider() && rasterLayer->providerType() == QLatin1String( "gdal" ) )
@@ -490,6 +491,11 @@ void QgsRasterCalcDialog::mMinButton_clicked()
 void QgsRasterCalcDialog::mMaxButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( QStringLiteral( " MAX ( " ) );
+}
+
+void QgsRasterCalcDialog::mConditionalStatButton_clicked()
+{
+  mExpressionTextEdit->insertPlainText( QStringLiteral( " if ( " ) );
 }
 
 QString QgsRasterCalcDialog::quoteBandEntry( const QString &layerName )

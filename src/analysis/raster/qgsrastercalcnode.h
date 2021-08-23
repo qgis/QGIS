@@ -24,7 +24,7 @@
 #include "qgis.h"
 #include <QString>
 #include "qgis_analysis.h"
-//by me
+
 #include <QVector>
 
 class QgsRasterBlock;
@@ -149,7 +149,7 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     QString mRasterName;
     QgsRasterMatrix *mMatrix = nullptr;
     Operator mOperator = opNONE;
-    //added for the conditional stat
+    //added for the conditional statement
     QString mFunctionName;
     QVector <QgsRasterCalcNode *> mFunctionArgs;
 

@@ -94,6 +94,7 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     void mAbsButton_clicked();
     void mMinButton_clicked();
     void mMaxButton_clicked();
+    void mConditionalStatButton_clicked();
 
   private:
     //! Sets the extent and size of the output
