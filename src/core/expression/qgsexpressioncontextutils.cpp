@@ -985,9 +985,9 @@ class CurrentVertexZValueExpressionFunction: public QgsScopedExpressionFunction
 {
   public:
     CurrentVertexZValueExpressionFunction():
-      QgsScopedExpressionFunction( "$vertex_Z_value",
+      QgsScopedExpressionFunction( "$vertex_z",
                                    0,
-                                   QObject::tr( "Mesh" ),
+                                   QObject::tr( "Meshes" ),
                                    QObject::tr( "return the z value of the current vertex" ), false )
     {}
 
@@ -1026,7 +1026,7 @@ class CurrentVertexExpressionFunction: public QgsScopedExpressionFunction
     CurrentVertexExpressionFunction():
       QgsScopedExpressionFunction( "$vertex_as_point",
                                    0,
-                                   QObject::tr( "Mesh" ),
+                                   QObject::tr( "Meshes" ),
                                    QObject::tr( "return the vertex as a point geometry" ), false )
     {}
 
@@ -1066,7 +1066,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::meshExpressionScope()
 
   std::unique_ptr<QgsExpressionContextScope> scope = std::make_unique<QgsExpressionContextScope>();
   scope->addFunction( "$vertex_as_point", new CurrentVertexExpressionFunction );
-  scope->addFunction( "$vertex_Z_value", new CurrentVertexZValueExpressionFunction );
+  scope->addFunction( "$vertex_z", new CurrentVertexZValueExpressionFunction );
 
   return scope.release();
 }

@@ -270,7 +270,7 @@ class TestQgsExpression: public QObject
       context.lastScope()->setVariable( QStringLiteral( "_vertex_index" ), 2 );
       context.lastScope()->setVariable( QStringLiteral( "_mesh_layer" ), QVariant::fromValue( mMeshLayer ) );
 
-      QgsExpression expression( QStringLiteral( "$vertex_Z_value" ) );
+      QgsExpression expression( QStringLiteral( "$vertex_z" ) );
       QCOMPARE( expression.evaluate( &context ).toDouble(), 800.0 );
 
       expression = QgsExpression( QStringLiteral( "$vertex_as_point" ) );

@@ -1714,7 +1714,7 @@ void TestQgsMeshLayer::testSelectByExpression()
   mMdalLayer->updateTriangularMesh();
   QgsExpressionContext expressionContext;
 
-  QList<int> selectedVerticesIndexes = mMdalLayer->selectVerticesByExpression( QStringLiteral( " $vertex_Z_value > 30" ) );
+  QList<int> selectedVerticesIndexes = mMdalLayer->selectVerticesByExpression( QStringLiteral( " $vertex_z > 30" ) );
   QCOMPARE( selectedVerticesIndexes, QList( {2, 3} ) );
 
   selectedVerticesIndexes = mMdalLayer->selectVerticesByExpression( QStringLiteral( " x($vertex_as_point) > 1500" ) );
