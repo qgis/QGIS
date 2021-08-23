@@ -56,13 +56,6 @@ uses a data provider which does not specify paths in a layer URI.
 .. versionadded:: 3.22
 %End
 
-    static QString generalHtmlMetadata( const QgsMapLayer *layer );
-%Docstring
-Returns an HTML-formatted string containing generic metadata information for a given ``layer``.
-
-.. versionadded:: 3.22
-%End
-
 
 };
 

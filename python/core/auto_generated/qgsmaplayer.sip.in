@@ -1960,6 +1960,7 @@ this method is now deprecated and always return ``False``, because circular depe
 
 
 
+
 };
 
 QFlags<QgsMapLayer::LayerFlag> operator|(QgsMapLayer::LayerFlag f1, QFlags<QgsMapLayer::LayerFlag> f2);

@@ -25,10 +25,6 @@
 #include "qgsreferencedgeometry.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
-#include "qgsfileutils.h"
-
-#include <QLocale>
-#include <QUrl>
 
 QgsRectangle QgsMapLayerUtils::combinedExtent( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext )
 {
@@ -139,68 +135,4 @@ bool QgsMapLayerUtils::updateLayerSourcePath( QgsMapLayer *layer, const QString 
   const QString newUri = QgsProviderRegistry::instance()->encodeUri( layer->providerType(), parts );
   layer->setDataSource( newUri, layer->name(), layer->providerType() );
   return true;
-}
-
-QString QgsMapLayerUtils::generalHtmlMetadata( const QgsMapLayer *layer )
-{
-  QString metadata;
-
-  // name
-  metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + QObject::tr( "Name" ) + QStringLiteral( "</td><td>" ) + layer->name() + QStringLiteral( "</td></tr>\n" );
-
-  // local path
-  QVariantMap uriComponents = QgsProviderRegistry::instance()->decodeUri( layer->dataProvider()->name(), layer->publicSource() );
-  QString path;
-  bool isLocalPath = false;
-  if ( uriComponents.contains( QStringLiteral( "path" ) ) )
-  {
-    path = uriComponents[QStringLiteral( "path" )].toString();
-    QFileInfo fi( path );
-    if ( fi.exists() )
-    {
-      isLocalPath = true;
-      metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + QObject::tr( "Path" ) + QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( path ).toString(), QDir::toNativeSeparators( path ) ) ) + QStringLiteral( "</td></tr>\n" );
-
-      qint64 fileSize = fi.size();
-      QDateTime lastModified = fi.lastModified();
-      QString lastModifiedFileName;
-      QSet<QString> sidecarFiles = QgsFileUtils::sidecarFilesForPath( path );
-      if ( fi.isFile() )
-      {
-        if ( !sidecarFiles.isEmpty() )
-        {
-          lastModifiedFileName = fi.fileName();
-          QStringList sidecarFileNames;
-          for ( const QString &sidecarFile : sidecarFiles )
-          {
-            QFileInfo sidecarFi( sidecarFile );
-            fileSize += sidecarFi.size();
-            if ( sidecarFi.lastModified() > lastModified )
-            {
-              lastModified = sidecarFi.lastModified();
-              lastModifiedFileName = sidecarFi.fileName();
-            }
-            sidecarFileNames << sidecarFi.fileName();
-          }
-          metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + ( sidecarFiles.size() > 1 ? QObject::tr( "Sidecar files" ) : QObject::tr( "Sidecar file" ) ) + QStringLiteral( "</td><td>%1" ).arg( sidecarFileNames.join( QLatin1String( ", " ) ) ) + QStringLiteral( "</td></tr>\n" );
-        }
-        metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + ( !sidecarFiles.isEmpty() ? QObject::tr( "Total size" ) : QObject::tr( "Size" ) ) + QStringLiteral( "</td><td>%1" ).arg( QgsFileUtils::representFileSize( fileSize ) ) + QStringLiteral( "</td></tr>\n" );
-      }
-      metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + QObject::tr( "Last modified" ) + QStringLiteral( "</td><td>%1" ).arg( QLocale().toString( fi.lastModified() ) ) + ( !lastModifiedFileName.isEmpty() ? QStringLiteral( " (%1)" ).arg( lastModifiedFileName ) : "" ) + QStringLiteral( "</td></tr>\n" );
-    }
-  }
-  if ( uriComponents.contains( QStringLiteral( "url" ) ) )
-  {
-    const QString url = uriComponents[QStringLiteral( "url" )].toString();
-    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + QObject::tr( "URL" ) + QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl( url ).toString(), url ) ) + QStringLiteral( "</td></tr>\n" );
-  }
-
-  // data source
-  if ( layer->publicSource() != path || !isLocalPath )
-    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + QObject::tr( "Source" ) + QStringLiteral( "</td><td>%1" ).arg( layer->publicSource() != path ? layer->publicSource() : path ) + QStringLiteral( "</td></tr>\n" );
-
-  // provider
-  metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + QObject::tr( "Provider" ) + QStringLiteral( "</td><td>%1" ).arg( layer->dataProvider()->name() ) + QStringLiteral( "</td></tr>\n" );
-
-  return metadata;
 }
