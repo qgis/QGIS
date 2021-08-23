@@ -32,6 +32,8 @@
 #include "qgsmaplayerlegend.h"
 #include "qgsxmlutils.h"
 #include "qgsmaplayerfactory.h"
+#include "qgsmaplayerutils.h"
+
 #include <QUrl>
 
 QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
