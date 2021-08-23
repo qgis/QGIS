@@ -55,7 +55,7 @@ void QgsPolygonizeAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
                 QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorLine ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "KEEP_FIELDS" ),
-                QObject::tr( "Keep fields from the input layer" ), false, true ) );
+                QObject::tr( "Keep (empty) fields from the input layer" ), false, true ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ),
                 QObject::tr( "Polygons" ), QgsProcessing::TypeVectorPolygon ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "NUM_POLYGONS" ), QObject::tr( "Number of polygons" ) ) );
