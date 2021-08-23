@@ -37,7 +37,7 @@ QgsRasterCalcNode::QgsRasterCalcNode( Operator op, QgsRasterCalcNode *left, QgsR
 }
 
 QgsRasterCalcNode::QgsRasterCalcNode( QString functionName, QVector <QgsRasterCalcNode *> functionArgs )
-  : mType( tFunct )
+  : mType( tFuncttion )
   , mFunctionName( functionName )
   , mFunctionArgs( functionArgs )
 {
@@ -215,7 +215,7 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData,
     result.setData( mMatrix->nColumns(), mMatrix->nRows(), data, result.nodataValue() );
     return true;
   }
-  else if ( mType == tFunct )
+  else if ( mType == tFuncttion )
   {
     QVector <QgsRasterMatrix *> matrixContainer;
     for ( int i = 0; i < mFunctionArgs.size(); ++i )
@@ -227,9 +227,7 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData,
       }
       matrixContainer.append( singleMatrix.release() );
     }
-
-    //result = evaluation( matrixContainer, result );
-    evaluation( matrixContainer, result );
+    evaluateFunction( matrixContainer, result );
     return true;
   }
   return false;
@@ -384,7 +382,7 @@ QString QgsRasterCalcNode::toString( bool cStyle ) const
       break;
     case tMatrix:
       break;
-    case tFunct:
+    case tFuncttion:
       if ( mFunctionName == "if" )
       {
         QString argOne = mFunctionArgs.at( 0 )->toString();
@@ -419,7 +417,7 @@ QgsRasterCalcNode *QgsRasterCalcNode::parseRasterCalcString( const QString &str,
   return localParseRasterCalcString( str, parserErrorMsg );
 }
 
-QgsRasterMatrix QgsRasterCalcNode::evaluation( const QVector<QgsRasterMatrix *> &matrixVector, QgsRasterMatrix &result ) const
+QgsRasterMatrix QgsRasterCalcNode::evaluateFunction( const QVector<QgsRasterMatrix *> &matrixVector, QgsRasterMatrix &result ) const
 {
 
   if ( mFunctionName == "if" )

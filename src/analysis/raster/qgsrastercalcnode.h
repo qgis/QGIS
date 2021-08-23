@@ -45,7 +45,7 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
       tNumber,
       tRasterRef,
       tMatrix,
-      tFunct
+      tFuncttion
     };
 
     //! possible operators
@@ -77,7 +77,7 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
       opABS,
       opMAX,
       opMIN,
-      opNONE
+      opNONE,
     };
 
     /**
@@ -130,17 +130,16 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
 
     static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) SIP_FACTORY;
 
-    /**
-     * Calculates result of raster calculation when tFunct type is used
-     * \since QGIS 3.22
-     */
-    QgsRasterMatrix evaluation( const QVector<QgsRasterMatrix *> &matrixVector, QgsRasterMatrix &result ) const;
-
-
   private:
 #ifdef SIP_RUN
     QgsRasterCalcNode( const QgsRasterCalcNode &rh );
 #endif
+
+    /**
+     * Calculates result of raster calculation when tFunct type is used
+     * \since QGIS 3.22
+     */
+    QgsRasterMatrix evaluateFunction( const QVector<QgsRasterMatrix *> &matrixVector, QgsRasterMatrix &result ) const;
 
     Type mType = tNumber;
     QgsRasterCalcNode *mLeft = nullptr;

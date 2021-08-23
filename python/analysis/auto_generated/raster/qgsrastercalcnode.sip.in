@@ -27,7 +27,7 @@ Represents a node in a raster calculator.
       tNumber,
       tRasterRef,
       tMatrix,
-      tFunct
+      tFuncttion
     };
 
     enum Operator
@@ -58,7 +58,7 @@ Represents a node in a raster calculator.
       opABS,
       opMAX,
       opMIN,
-      opNONE
+      opNONE,
     };
 
     QgsRasterCalcNode();
@@ -103,14 +103,6 @@ Returns a list of nodes of a specific ``type``
 %End
 
     static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) /Factory/;
-
-    QgsRasterMatrix evaluation( const QVector<QgsRasterMatrix *> &matrixVector, QgsRasterMatrix &result ) const;
-%Docstring
-Calculates result of raster calculation when tFunct type is used
-
-.. versionadded:: 3.22
-%End
-
 
   private:
     QgsRasterCalcNode( const QgsRasterCalcNode &rh );
