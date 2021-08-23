@@ -486,6 +486,16 @@ Returns the visible area as a polygon (may be rotated)
 
 .. versionadded:: 2.8
 %End
+
+    QPolygonF visiblePolygonWithBuffer() const;
+%Docstring
+Returns the visible area as a polygon (may be rotated) with extent buffer included
+
+.. seealso:: :py:func:`extentBuffer`
+
+.. versionadded:: 3.20
+%End
+
     double mapUnitsPerPixel() const;
 %Docstring
 Returns the distance in geographical coordinates that equals to one pixel in the map
