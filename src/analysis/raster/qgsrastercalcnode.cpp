@@ -453,8 +453,6 @@ QgsRasterMatrix QgsRasterCalcNode::evaluateFunction( const QVector<QgsRasterMatr
 
     result.setData( nCols, nRows, dataResult.release(), result.nodataValue() );
   }
-
   return result;
-
 }
 
