@@ -660,6 +660,14 @@ An empty attributes list indicates that no attributes will be fetched.
 To revert a call to setSubsetOfAttributes and fetch all available attributes,
 the SubsetOfAttributes flag should be removed from the request.
 
+.. note::
+
+   This is intended as hint to data providers for optimising feature retrieval. Depending
+   on the provider, it may be trivial for the provider to always return all attributes instead of
+   the requested subset, or actually result in slower retrieval when the attributes are filtered out.
+   In these cases the provider may ignore this hint and return all attributes regardless of the
+   requested attributes.
+
 .. seealso:: :py:func:`subsetOfAttributes`
 
 .. seealso:: :py:func:`setNoAttributes`
@@ -672,7 +680,15 @@ Set that no attributes will be fetched.
 To revert a call to setNoAttributes and fetch all or some available attributes,
 the SubsetOfAttributes flag should be removed from the request.
 
+.. note::
+
+   This is intended as hint to data providers for optimising feature retrieval. Depending
+   on the provider, it may be trivial for the provider to always return all attributes instead of
+   removing them. In these cases the provider may ignore this hint and return all attributes
+   regardless of whether this method has been called.
+
 .. seealso:: :py:func:`setSubsetOfAttributes`
+
 
 .. versionadded:: 3.4
 %End
@@ -683,6 +699,14 @@ Returns the subset of attributes which at least need to be fetched.
 
 :return: A list of attributes to be fetched
 
+.. note::
+
+   This is intended as hint to data providers for optimising feature retrieval. Depending
+   on the provider, it may be trivial for the provider to always return all attributes instead of
+   the requested subset, or actually result in slower retrieval when the attributes are filtered out.
+   In these cases the provider may ignore this hint and return all attributes regardless of the
+   requested attributes.
+
 .. seealso:: :py:func:`setSubsetOfAttributes`
 
 .. seealso:: :py:func:`setNoAttributes`
@@ -692,12 +716,28 @@ Returns the subset of attributes which at least need to be fetched.
 %Docstring
 Sets a subset of attributes by names that will be fetched.
 
+.. note::
+
+   This is intended as hint to data providers for optimising feature retrieval. Depending
+   on the provider, it may be trivial for the provider to always return all attributes instead of
+   the requested subset, or actually result in slower retrieval when the attributes are filtered out.
+   In these cases the provider may ignore this hint and return all attributes regardless of the
+   requested attributes.
+
 .. seealso:: :py:func:`subsetOfAttributes`
 %End
 
     QgsFeatureRequest &setSubsetOfAttributes( const QSet<QString> &attrNames, const QgsFields &fields );
 %Docstring
 Sets a subset of attributes by names that will be fetched.
+
+.. note::
+
+   This is intended as hint to data providers for optimising feature retrieval. Depending
+   on the provider, it may be trivial for the provider to always return all attributes instead of
+   the requested subset, or actually result in slower retrieval when the attributes are filtered out.
+   In these cases the provider may ignore this hint and return all attributes regardless of the
+   requested attributes.
 
 .. seealso:: :py:func:`subsetOfAttributes`
 %End
