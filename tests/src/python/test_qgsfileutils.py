@@ -189,6 +189,16 @@ class TestQgsFileUtils(unittest.TestCase):
         files = QgsFileUtils.findFile(filename, os.path.join(nest, 'nest2'), 2, 4)
         self.assertEqual(files[0], os.path.join(nest, filename).replace(os.sep, '/'))
 
+    def test_represent_file_size(self):
+        """
+        Test QgsFileUtils.representFileSize
+        """
+
+        self.assertEqual(QgsFileUtils.representFileSize(1023), '1023 B')
+        self.assertEqual(QgsFileUtils.representFileSize(1024), '1 KB')
+        self.assertEqual(QgsFileUtils.representFileSize(1048576), '1.00 MB')
+        self.assertEqual(QgsFileUtils.representFileSize(9876543210), '9.20 GB')
+
     def test_sidecar_files_for_path(self):
         """
         Test QgsFileUtils.sidecarFilesForPath
