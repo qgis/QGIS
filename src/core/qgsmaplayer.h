@@ -1985,6 +1985,19 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString crsHtmlMetadata() const;
 #endif
 
+#ifndef SIP_RUN
+
+    /**
+     * Returns an HTML fragment containing general  metadata information, for use
+     * in the htmlMetadata() method.
+     *
+     * \note Not available in Python bindings.
+     *
+     * \since QGIS 3.22
+     */
+    QString generalHtmlMetadata() const;
+#endif
+
   private:
 
     virtual QString baseURI( PropertyType type ) const;
