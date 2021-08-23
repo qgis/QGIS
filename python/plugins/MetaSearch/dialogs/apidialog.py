@@ -27,10 +27,10 @@ from qgis.PyQt.QtWidgets import QDialog
 
 from MetaSearch.util import get_ui_class
 
-BASE_CLASS = get_ui_class('xmldialog.ui')
+BASE_CLASS = get_ui_class('apidialog.ui')
 
 
-class XMLDialog(QDialog, BASE_CLASS):
+class APIRequestResponseDialog(QDialog, BASE_CLASS):
     """Raw XML Dialogue"""
 
     def __init__(self):

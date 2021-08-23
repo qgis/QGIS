@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="{{ language }}">
+    <head>
+        <meta charset="utf-8"/>
+        <title>{{ gettext('Service Metadata') }}</title>
+        <style type="text/css">
+            body,h3, h4 {
+                background-color: #ffffff;
+                font-family: arial, verdana, sans-serif;
+                text-align: left;
+                float: left;
+            }
+            header {
+                display: inline-block;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h3>{{ gettext('Service Metadata') }}</h3>
+        </header>
+        <section id="service-metadata">
+            <h4>{{ gettext('Service Identification') }}</h4>
+            <table>
+                <tr>
+                    <td>{{ gettext('Title') }}</td>
+                    <td>{{ obj.title }}</td>
+                </tr>
+                <tr>
+                    <td>{{ gettext('Abstract') }}</td>
+                    <td>{{ obj.description or obj['title'] }}</td>
+                </tr>
+                <tr>
+                    <td>{{ gettext('Service URL') }}</td>
+                    <td><a href="{{ obj.url }}">{{ obj.url}}</a></td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="collections">
+            <h4>{{ gettext('Collections') }}</h4>
+            {% for j in obj.collections()['collections'] %}
+                {% if j.id in obj.records() %}
+                    <p><b>{{ j.title }}</b><br/>{{ j.description }}</p>
+                {% endif %}
+            {% endfor %}
+        </section>
+
+        <section id="conformance">
+            <h4>{{ gettext('Conformance') }}</h4>
+            <ul>
+            {% for i in obj.conformance()['conformsTo'] %}
+                <li><a href="{{ i }}">{{ i }}</a></li>
+            {% endfor %}   
+            </ul>
+        </section>
+
+        <section id="links">
+            <h4>{{ gettext('Links') }}</h4>
+            <ul>
+                {% for link in obj.links %}
+                    <li><a href="{{ link['href'] }}">{{ link['title'] }}</a></li>
+                {% endfor %}
+            </ul>
+        </section>
+    </body>
+</html>
