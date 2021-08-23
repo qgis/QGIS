@@ -5128,10 +5128,16 @@ QString QgsVectorLayer::htmlMetadata() const
   myMetadata += QgsMapLayerUtils::generalHtmlMetadata( this );
 
   // storage type
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Storage" ) + QStringLiteral( "</td><td>" ) + storageType() + QStringLiteral( "</td></tr>\n" );
+  if ( !storageType().isEmpty() )
+  {
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Storage" ) + QStringLiteral( "</td><td>" ) + storageType() + QStringLiteral( "</td></tr>\n" );
+  }
 
   // comment
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Comment" ) + QStringLiteral( "</td><td>" ) + dataComment() + QStringLiteral( "</td></tr>\n" );
+  if ( !dataComment().isEmpty() )
+  {
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Comment" ) + QStringLiteral( "</td><td>" ) + dataComment() + QStringLiteral( "</td></tr>\n" );
+  }
 
   // encoding
   const QgsVectorDataProvider *provider = dataProvider();
