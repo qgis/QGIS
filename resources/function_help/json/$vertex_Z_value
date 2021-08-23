@@ -1,0 +1,8 @@
+{
+  "name": "$vertex_Z_value",
+  "type": "function",
+  "groups": ["Mesh"],
+  "description": "Returns the Z value of the current mesh vertex.",
+  "examples": [ { "expression":"$vertex_Z_value", "returns":"42"}
+  ]
+}

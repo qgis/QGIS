@@ -1,8 +1,8 @@
 {
-  "name": "$vertex_Z_value",
+  "name": "$x",
   "type": "function",
-  "groups": ["Mesh"],
-  "description": "Returns the Z value of the current mesh vertex.",
-  "examples": [ { "expression":"$vertex_Z_value", "returns":"42"}
+  "groups": ["GeometryGroup"],
+  "description": "Returns the x coordinate of the current point feature. If the feature is a multipoint feature, then the x-coordinate of the first point will be returned.",
+  "examples": [ { "expression":"$x", "returns":"42"}
   ]
 }
