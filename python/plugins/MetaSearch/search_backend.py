@@ -81,7 +81,7 @@ class CSW202Search(SearchBase):
         self.record_info_template = 'record_metadata_dc.html'
         self.constraints = []
 
-        self.conn = CatalogueServiceWeb(self.url, timeout=self.timeout,
+        self.conn = CatalogueServiceWeb(self.url, timeout=self.timeout,  # spellok
                                         username=self.username,
                                         password=self.password,
                                         auth=self.auth)
@@ -161,7 +161,7 @@ class OARecSearch(SearchBase):
         self.base_url = None
         self.record_collection = None
 
-        if '/collections/' in self.url:  # catalogue is a collection
+        if '/collections/' in self.url:  # catalog is a collection
             self.base_url, self.record_collection = self.url.split('/collections/')  # noqa
             self.conn = Records(
                 self.base_url, timeout=self.timeout, auth=self.auth)
