@@ -70,6 +70,13 @@ class CORE_EXPORT QgsMapLayerUtils
      */
     static bool updateLayerSourcePath( QgsMapLayer *layer, const QString &newPath );
 
+    /**
+     * Returns an HTML-formatted string containing generic metadata information for a given \a layer.
+     *
+     * \since QGIS 3.22
+     */
+    static QString generalHtmlMetadata( const QgsMapLayer *layer );
+
 
 };
 
