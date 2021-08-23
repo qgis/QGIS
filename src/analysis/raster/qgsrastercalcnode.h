@@ -152,8 +152,6 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     //added for the conditional statement
     QString mFunctionName;
     QVector <QgsRasterCalcNode *> mFunctionArgs;
-
-
 };
 
 

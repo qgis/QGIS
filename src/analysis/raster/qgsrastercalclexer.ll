@@ -73,6 +73,8 @@ raster_band_ref_quoted  \"(\\.|[^"])*\"
 "<=" { return LE; }
 ">=" { return GE; }
 
+"if" { return IF; }
+
 [=><+-/*^] { return yytext[0]; }
 
 

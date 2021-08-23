@@ -1052,6 +1052,15 @@ void TestQgsRasterCalculator::parseFunctTypeString()
   //test case sensitivity (instead of "if", use "IF")
   errorString = QString();
   node = QgsRasterCalcNode::parseRasterCalcString( QStringLiteral( "IF(\"raster@1\">5,100,5)" ), errorString );
+
+  QVERIFY( node );
+  QVERIFY( errorString.isEmpty() );
+  QVERIFY( node->findNodes( QgsRasterCalcNode::Type::tRasterRef ).length() == 1 );
+
+  //test case sensitivity (instead of "if", use "If")
+  errorString = QString();
+  node = QgsRasterCalcNode::parseRasterCalcString( QStringLiteral( "If(\"raster@1\">5,100,5)" ), errorString );
+
   QVERIFY( node );
   QVERIFY( errorString.isEmpty() );
   QVERIFY( node->findNodes( QgsRasterCalcNode::Type::tRasterRef ).length() == 1 );
