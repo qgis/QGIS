@@ -106,7 +106,7 @@ Returns a list of nodes of a specific ``type``
 
     QgsRasterMatrix evaluation( const QVector<QgsRasterMatrix *> &matrixVector, QgsRasterMatrix &result ) const;
 %Docstring
-
+Calculates result of raster calculation when tFunct type is used
 
 .. versionadded:: 3.22
 %End

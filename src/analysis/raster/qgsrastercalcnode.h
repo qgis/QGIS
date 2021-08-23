@@ -131,7 +131,7 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) SIP_FACTORY;
 
     /**
-     *
+     * Calculates result of raster calculation when tFunct type is used
      * \since QGIS 3.22
      */
     QgsRasterMatrix evaluation( const QVector<QgsRasterMatrix *> &matrixVector, QgsRasterMatrix &result ) const;
