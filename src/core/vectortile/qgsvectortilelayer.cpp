@@ -595,20 +595,28 @@ QString QgsVectorTileLayer::htmlMetadata() const
   QString info = QStringLiteral( "<html><head></head>\n<body>\n" );
 
   info += QStringLiteral( "<h1>" ) + tr( "Information from provider" ) + QStringLiteral( "</h1>\n<hr>\n" ) %
-          QStringLiteral( "<table class=\"list-view\">\n" ) %
+          QStringLiteral( "<table class=\"list-view\">\n" );
 
-          // name
-          QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Name" ) % QStringLiteral( "</td><td>" ) % name() % QStringLiteral( "</td></tr>\n" );
+  // name
+  info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Name" ) % QStringLiteral( "</td><td>" ) % name() % QStringLiteral( "</td></tr>\n" );
 
-  info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "URI" ) % QStringLiteral( "</td><td>" ) % source() % QStringLiteral( "</td></tr>\n" );
-  info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Source type" ) % QStringLiteral( "</td><td>" ) % sourceType() % QStringLiteral( "</td></tr>\n" );
-
+  // local path
   const QString url = sourcePath();
-  info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Source path" ) % QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl( url ).toString(), sourcePath() ) ) + QStringLiteral( "</td></tr>\n" );
+  info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Path" ) % QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl( url ).toString(), sourcePath() ) ) + QStringLiteral( "</td></tr>\n" );
+
+  // data source
+  info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Source" ) % QStringLiteral( "</td><td>" ) % source() % QStringLiteral( "</td></tr>\n" );
+
+  info += QLatin1String( "</table>\n<br>" );
+
+  info += QStringLiteral( "<h1>" ) + tr( "Information from provider" ) + QStringLiteral( "</h1>\n<hr>\n" ) %
+          QStringLiteral( "<table class=\"list-view\">\n" );
+
+  info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Source type" ) % QStringLiteral( "</td><td>" ) % sourceType() % QStringLiteral( "</td></tr>\n" );
 
   info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Zoom levels" ) % QStringLiteral( "</td><td>" ) % QStringLiteral( "%1 - %2" ).arg( sourceMinZoom() ).arg( sourceMaxZoom() ) % QStringLiteral( "</td></tr>\n" );
 
-  info += QLatin1String( "</table>\n<br><br>" );
+  info += QLatin1String( "</table>\n<br>" );
 
   // CRS
   info += crsHtmlMetadata();
@@ -616,17 +624,17 @@ QString QgsVectorTileLayer::htmlMetadata() const
   // Identification section
   info += QStringLiteral( "<h1>" ) % tr( "Identification" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
           htmlFormatter.identificationSectionHtml() %
-          QStringLiteral( "<br><br>\n" ) %
+          QStringLiteral( "<br>\n" ) %
 
           // extent section
           QStringLiteral( "<h1>" ) % tr( "Extent" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
           htmlFormatter.extentSectionHtml( ) %
-          QStringLiteral( "<br><br>\n" ) %
+          QStringLiteral( "<br>\n" ) %
 
           // Start the Access section
           QStringLiteral( "<h1>" ) % tr( "Access" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
           htmlFormatter.accessSectionHtml( ) %
-          QStringLiteral( "<br><br>\n" ) %
+          QStringLiteral( "<br>\n" ) %
 
 
           // Start the contacts section
@@ -637,12 +645,12 @@ QString QgsVectorTileLayer::htmlMetadata() const
           // Start the links section
           QStringLiteral( "<h1>" ) % tr( "References" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
           htmlFormatter.linksSectionHtml( ) %
-          QStringLiteral( "<br><br>\n" ) %
+          QStringLiteral( "<br>\n" ) %
 
           // Start the history section
           QStringLiteral( "<h1>" ) % tr( "History" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
           htmlFormatter.historySectionHtml( ) %
-          QStringLiteral( "<br><br>\n" ) %
+          QStringLiteral( "<br>\n" ) %
 
           QStringLiteral( "\n</body>\n</html>\n" );
 
