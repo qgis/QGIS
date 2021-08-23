@@ -132,7 +132,7 @@ class QgsNearestNeighborComparator : public INearestNeighborComparator
       // point doing this more expensive calculation, since we can't possibly use this feature anyway!)
       if ( mGeometries && ( mMaxDistance <= 0.0 || dist <= mMaxDistance ) )
       {
-        QgsGeometry other = mGeometries->value( data.getIdentifier() );
+        const QgsGeometry other = mGeometries->value( data.getIdentifier() );
         dist = other.distance( mGeom );
       }
 
@@ -211,7 +211,7 @@ class QgsFeatureIteratorDataStream : public IDataStream
       {
         if ( mCallback )
         {
-          bool res = ( *mCallback )( f );
+          const bool res = ( *mCallback )( f );
           if ( !res )
           {
             mNextData = nullptr;
@@ -280,14 +280,14 @@ class QgsSpatialIndexData : public QSharedData
       , mFlags( other.mFlags )
       , mGeometries( other.mGeometries )
     {
-      QMutexLocker locker( &other.mMutex );
+      const QMutexLocker locker( &other.mMutex );
 
       initTree();
 
       // copy R-tree data one by one (is there a faster way??)
       double low[]  = { std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest() };
       double high[] = { std::numeric_limits<double>::max(), std::numeric_limits<double>::max() };
-      SpatialIndex::Region query( low, high, 2 );
+      const SpatialIndex::Region query( low, high, 2 );
       QgsSpatialIndexCopyVisitor visitor( mRTree );
       other.mRTree->intersectsWithQuery( query, visitor );
     }
@@ -306,11 +306,11 @@ class QgsSpatialIndexData : public QSharedData
       mStorage = StorageManager::createNewMemoryStorageManager();
 
       // R-Tree parameters
-      double fillFactor = 0.7;
-      unsigned long indexCapacity = 10;
-      unsigned long leafCapacity = 10;
-      unsigned long dimension = 2;
-      RTree::RTreeVariant variant = RTree::RV_RSTAR;
+      const double fillFactor = 0.7;
+      const unsigned long indexCapacity = 10;
+      const unsigned long leafCapacity = 10;
+      const unsigned long dimension = 2;
+      const RTree::RTreeVariant variant = RTree::RV_RSTAR;
 
       // create R-tree
       SpatialIndex::id_type indexId;
@@ -415,7 +415,7 @@ bool QgsSpatialIndex::addFeature( QgsFeature &feature, QgsFeatureSink::Flags )
   {
     if ( d->mFlags & QgsSpatialIndex::FlagStoreFeatureGeometries )
     {
-      QMutexLocker locker( &d->mMutex );
+      const QMutexLocker locker( &d->mMutex );
       d->mGeometries.insert( feature.id(), feature.geometry() );
     }
     return true;
@@ -447,9 +447,9 @@ bool QgsSpatialIndex::insertFeature( QgsFeatureId id, const QgsRectangle &bounds
 
 bool QgsSpatialIndex::addFeature( QgsFeatureId id, const QgsRectangle &bounds )
 {
-  SpatialIndex::Region r( QgsSpatialIndexUtils::rectangleToRegion( bounds ) );
+  const SpatialIndex::Region r( QgsSpatialIndexUtils::rectangleToRegion( bounds ) );
 
-  QMutexLocker locker( &d->mMutex );
+  const QMutexLocker locker( &d->mMutex );
 
   // TODO: handle possible exceptions correctly
   try
@@ -482,7 +482,7 @@ bool QgsSpatialIndex::deleteFeature( const QgsFeature &f )
   if ( !featureInfo( f, r, id ) )
     return false;
 
-  QMutexLocker locker( &d->mMutex );
+  const QMutexLocker locker( &d->mMutex );
   // TODO: handle exceptions
   if ( d->mFlags & QgsSpatialIndex::FlagStoreFeatureGeometries )
     d->mGeometries.remove( f.id() );
@@ -494,9 +494,9 @@ QList<QgsFeatureId> QgsSpatialIndex::intersects( const QgsRectangle &rect ) cons
   QList<QgsFeatureId> list;
   QgisVisitor visitor( list );
 
-  SpatialIndex::Region r = QgsSpatialIndexUtils::rectangleToRegion( rect );
+  const SpatialIndex::Region r = QgsSpatialIndexUtils::rectangleToRegion( rect );
 
-  QMutexLocker locker( &d->mMutex );
+  const QMutexLocker locker( &d->mMutex );
   d->mRTree->intersectsWithQuery( r, visitor );
 
   return list;
@@ -508,9 +508,9 @@ QList<QgsFeatureId> QgsSpatialIndex::nearestNeighbor( const QgsPointXY &point, c
   QgisVisitor visitor( list );
 
   double pt[2] = { point.x(), point.y() };
-  Point p( pt, 2 );
+  const Point p( pt, 2 );
 
-  QMutexLocker locker( &d->mMutex );
+  const QMutexLocker locker( &d->mMutex );
   QgsNearestNeighborComparator nnc( ( d->mFlags & QgsSpatialIndex::FlagStoreFeatureGeometries ) ? &d->mGeometries : nullptr,
                                     point, maxDistance );
   d->mRTree->nearestNeighborQuery( neighbors, p, visitor, nnc );
@@ -533,9 +533,9 @@ QList<QgsFeatureId> QgsSpatialIndex::nearestNeighbor( const QgsGeometry &geometr
   QList<QgsFeatureId> list;
   QgisVisitor visitor( list );
 
-  SpatialIndex::Region r = QgsSpatialIndexUtils::rectangleToRegion( geometry.boundingBox() );
+  const SpatialIndex::Region r = QgsSpatialIndexUtils::rectangleToRegion( geometry.boundingBox() );
 
-  QMutexLocker locker( &d->mMutex );
+  const QMutexLocker locker( &d->mMutex );
   QgsNearestNeighborComparator nnc( ( d->mFlags & QgsSpatialIndex::FlagStoreFeatureGeometries ) ? &d->mGeometries : nullptr,
                                     geometry, maxDistance );
   d->mRTree->nearestNeighborQuery( neighbors, r, visitor, nnc );
@@ -555,7 +555,7 @@ QList<QgsFeatureId> QgsSpatialIndex::nearestNeighbor( const QgsGeometry &geometr
 
 QgsGeometry QgsSpatialIndex::geometry( QgsFeatureId id ) const
 {
-  QMutexLocker locker( &d->mMutex );
+  const QMutexLocker locker( &d->mMutex );
   return d->mGeometries.value( id );
 }
 

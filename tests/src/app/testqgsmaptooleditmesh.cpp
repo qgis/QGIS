@@ -58,12 +58,12 @@ void TestQgsMapToolEditMesh::initTestCase()
 
 void TestQgsMapToolEditMesh::init()
 {
-  QString uri = QString( mDataDir + "/quad_flower.2dm" );
+  const QString uri = QString( mDataDir + "/quad_flower.2dm" );
   meshLayerQuadFlower.reset( new QgsMeshLayer( uri, "Quad Flower", "mdal" ) );
   QVERIFY( meshLayerQuadFlower );
   QCOMPARE( meshLayerQuadFlower->datasetGroupCount(), 1 );
 
-  QgsCoordinateTransform transform;
+  const QgsCoordinateTransform transform;
   meshLayerQuadFlower->startFrameEditing( transform );
 
   canvas->setLayers( QList<QgsMapLayer *>() << meshLayerQuadFlower.get() );
@@ -71,9 +71,9 @@ void TestQgsMapToolEditMesh::init()
 
 void TestQgsMapToolEditMesh::editMesh()
 {
-  double offsetInMapUnits = 15 * canvas->mapSettings().mapUnitsPerPixel();
+  const double offsetInMapUnits = 15 * canvas->mapSettings().mapUnitsPerPixel();
 
-  QgsCoordinateTransform transform;
+  const QgsCoordinateTransform transform;
   QVERIFY( meshLayerQuadFlower->meshEditor() );
 
   TestQgsMapToolAdvancedDigitizingUtils tool( editMeshMapTool );
@@ -191,15 +191,15 @@ void TestQgsMapToolEditMesh::editMesh()
   QCOMPARE( meshLayerQuadFlower->datasetValue( QgsMeshDatasetIndex( 0, 0 ), QgsPointXY( 2500, 3250 ) ).x(), 1500 );
 
   //Selection
-  // from left to right
+  // completely included
   tool.mouseMove( 1200, 3600 );
   tool.mousePress( 1200, 3600, Qt::LeftButton );
   tool.mouseMove( 2700, 2250 );
-  tool.mouseRelease( 2700, 2250, Qt::LeftButton );
+  tool.mouseRelease( 2700, 2250, Qt::LeftButton, Qt::AltModifier );
   QCOMPARE( editMeshMapTool->mSelectedVertices.count(), 5 );
   QCOMPARE( editMeshMapTool->mSelectedFaces.count(), 1 );
 
-  // from left to right
+  // touched
   tool.mouseMove( 2700, 2250 );
   tool.mousePress( 2700, 2250, Qt::LeftButton );
   tool.mouseMove( 1200, 3600 );
@@ -280,9 +280,43 @@ void TestQgsMapToolEditMesh::editMesh()
   tool.mouseClick( 1500, 3324, Qt::LeftButton );
   centroid = meshLayerQuadFlower->snapOnElement( QgsMesh::Face, QgsPointXY( 1100, 3050 ), 10 );
   QVERIFY( centroid.compare( QgsPointXY( 1500, 3100 ), 1e-2 ) );
+
+  tool.keyClick( Qt::Key_Escape );
+
+  QCOMPARE( editMeshMapTool->mSelectedVertices.count(), 0 );
+  QCOMPARE( editMeshMapTool->mSelectedFaces.count(), 0 );
+
+  // Selection by polygon
+  editMeshMapTool->mActionSelectByPolygon->trigger();
+
+  // touched
+  tool.mouseClick( 3500, 3250, Qt::LeftButton );
+  tool.mouseClick( 2750, 3250, Qt::LeftButton );
+  tool.mouseClick( 1750, 2500, Qt::LeftButton );
+  tool.mouseClick( 2500, 2000, Qt::LeftButton );
+  tool.mouseClick( 3000, 2000, Qt::LeftButton );
+  tool.mouseClick( 3000, 2000, Qt::RightButton );
+
+  QCOMPARE( editMeshMapTool->mSelectedVertices.count(), 5 );
+  QCOMPARE( editMeshMapTool->mSelectedFaces.count(), 3 );
+
+  // completely included
+  tool.mouseClick( 2750, 3250, Qt::LeftButton );
+  tool.mouseClick( 3500, 3250, Qt::LeftButton );
+  tool.mouseClick( 3000, 2000, Qt::LeftButton );
+  tool.mouseClick( 2500, 2000, Qt::LeftButton );
+  tool.mouseClick( 1750, 2500, Qt::LeftButton );
+  tool.mouseClick( 1750, 2500, Qt::RightButton, Qt::AltModifier );
+
+  QCOMPARE( editMeshMapTool->mSelectedVertices.count(), 1 );
+  QCOMPARE( editMeshMapTool->mSelectedFaces.count(), 0 );
+
+  tool.keyClick( Qt::Key_Escape );
+  tool.keyClick( Qt::Key_Escape );
+
+  QCOMPARE( editMeshMapTool->mSelectedVertices.count(), 0 );
+  QCOMPARE( editMeshMapTool->mSelectedFaces.count(), 0 );
 }
-
-
 
 QGSTEST_MAIN( TestQgsMapToolEditMesh )
 #include "testqgsmaptooleditmesh.moc"

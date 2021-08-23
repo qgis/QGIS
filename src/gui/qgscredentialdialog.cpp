@@ -92,7 +92,7 @@ QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
   {
     const QString realm { labelRealm->text() };
     {
-      QMutexLocker locker( &sIgnoredConnectionsCacheMutex );
+      const QMutexLocker locker( &sIgnoredConnectionsCacheMutex );
       // Insert the realm in the cache of ignored connections
       sIgnoredConnectionsCache->insert( realm );
     }
@@ -101,7 +101,7 @@ QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
       QTimer::singleShot( 10000, nullptr, [ = ]()
       {
         QgsDebugMsgLevel( QStringLiteral( "Removing ignored connection from cache: %1" ).arg( realm ), 4 );
-        QMutexLocker locker( &sIgnoredConnectionsCacheMutex );
+        const QMutexLocker locker( &sIgnoredConnectionsCacheMutex );
         sIgnoredConnectionsCache->remove( realm );
       } );
     }
@@ -135,7 +135,7 @@ void QgsCredentialDialog::requestCredentials( const QString &realm, QString *use
   Q_ASSERT( qApp->thread() == thread() && thread() == QThread::currentThread() );
   QgsDebugMsgLevel( QStringLiteral( "Entering." ), 4 );
   {
-    QMutexLocker locker( &sIgnoredConnectionsCacheMutex );
+    const QMutexLocker locker( &sIgnoredConnectionsCacheMutex );
     if ( sIgnoredConnectionsCache->contains( realm ) )
     {
       QgsDebugMsg( QStringLiteral( "Skipping ignored connection: " ) + realm );
@@ -200,7 +200,7 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString *password, b
   mIgnoreButton->hide();
   leMasterPass->setFocus();
 
-  QString titletxt( stored ? tr( "Enter CURRENT master authentication password" ) : tr( "Set NEW master authentication password" ) );
+  const QString titletxt( stored ? tr( "Enter CURRENT master authentication password" ) : tr( "Set NEW master authentication password" ) );
   lblPasswordTitle->setText( titletxt );
 
   chkbxPasswordHelperEnable->setChecked( QgsApplication::authManager()->passwordHelperEnabled() );
@@ -330,7 +330,7 @@ void QgsCredentialDialog::leMasterPassVerify_textChanged( const QString &pass )
     leMasterPassVerify->setStyleSheet( QString() );
 
     // empty password disallowed
-    bool passok = !pass.isEmpty() && ( leMasterPass->text() == leMasterPassVerify->text() );
+    const bool passok = !pass.isEmpty() && ( leMasterPass->text() == leMasterPassVerify->text() );
     mOkButton->setEnabled( passok );
     if ( !passok )
     {

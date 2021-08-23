@@ -34,7 +34,7 @@ QVector<QgsDataItem *> QgsVectorTileRootItem::createChildren()
   const auto connectionList = QgsVectorTileProviderConnection::connectionList();
   for ( const QString &connName : connectionList )
   {
-    QString uri = QgsVectorTileProviderConnection::encodedLayerUri( QgsVectorTileProviderConnection::connection( connName ) );
+    const QString uri = QgsVectorTileProviderConnection::encodedLayerUri( QgsVectorTileProviderConnection::connection( connName ) );
     QgsDataItem *conn = new QgsVectorTileLayerItem( this, connName, mPath + '/' + connName, uri );
     connections.append( conn );
   }

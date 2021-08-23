@@ -107,7 +107,7 @@ void QgsRasterShader::writeXml( QDomDocument &doc, QDomElement &parent, const Qg
 void QgsRasterShader::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   //only colorrampshader
-  QDomElement colorRampShaderElem = elem.firstChildElement( QStringLiteral( "colorrampshader" ) );
+  const QDomElement colorRampShaderElem = elem.firstChildElement( QStringLiteral( "colorrampshader" ) );
   if ( !colorRampShaderElem.isNull() )
   {
     QgsColorRampShader *colorRampShader = new QgsColorRampShader();

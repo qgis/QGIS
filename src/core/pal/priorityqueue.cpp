@@ -84,7 +84,7 @@ int PriorityQueue::getBest()
   if ( size <= 0 )
     throw InternalException::Empty();
 
-  int return_value = heap[0];
+  const int return_value = heap[0];
 
   size--;
 
@@ -135,7 +135,7 @@ void PriorityQueue::remove( int key )
 {
   if ( key < 0 || key > maxId )
     return;
-  int i = pos[key];
+  const int i = pos[key];
 
   if ( i >= 0 )
   {
@@ -255,7 +255,7 @@ void PriorityQueue::setPriority( int key, double new_p )
   if ( key < 0 || key > maxId )
     return;
 
-  int i = pos[key];
+  const int i = pos[key];
 
   if ( i < 0 )
   {
@@ -276,7 +276,7 @@ void PriorityQueue::decreaseKey( int key )
   if ( key < 0 || key > maxId )
     return;
 
-  int i = pos[key];
+  const int i = pos[key];
 
   if ( i < 0 )
     return;

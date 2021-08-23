@@ -127,7 +127,7 @@ struct QgsPostgresLayerProperty
   {
     QString typeString;
     const auto constTypes = types;
-    for ( QgsWkbTypes::Type type : constTypes )
+    for ( const QgsWkbTypes::Type type : constTypes )
     {
       if ( !typeString.isEmpty() )
         typeString += '|';
@@ -135,7 +135,7 @@ struct QgsPostgresLayerProperty
     }
     QString sridString;
     const auto constSrids = srids;
-    for ( int srid : constSrids )
+    for ( const int srid : constSrids )
     {
       if ( !sridString.isEmpty() )
         sridString += '|';

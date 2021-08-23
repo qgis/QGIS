@@ -39,18 +39,18 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
 
   // Use visible polygon rather than extent to properly handle rotated maps
   QPolygonF mapPoly = mMapCanvas->mapSettings().visiblePolygon();
-  double canvasWidth = QLineF( mapPoly[0], mapPoly[1] ).length();
-  double canvasHeight = QLineF( mapPoly[0], mapPoly[3] ).length();
-  QgsRectangle mapRect = QgsRectangle( mapPoly[0],
-                                       QgsPointXY(
-                                         mapPoly[0].x() + canvasWidth,
-                                         mapPoly[0].y() - canvasHeight
-                                       )
-                                     );
+  const double canvasWidth = QLineF( mapPoly[0], mapPoly[1] ).length();
+  const double canvasHeight = QLineF( mapPoly[0], mapPoly[3] ).length();
+  const QgsRectangle mapRect = QgsRectangle( mapPoly[0],
+                               QgsPointXY(
+                                 mapPoly[0].x() + canvasWidth,
+                                 mapPoly[0].y() - canvasHeight
+                               )
+                                           );
   if ( rect() != mapRect )
     setRect( mapRect );
 
-  int nPoints = mAdvancedDigitizingDockWidget->pointsCount();
+  const int nPoints = mAdvancedDigitizingDockWidget->pointsCount();
   if ( !nPoints )
     return;
 
@@ -167,7 +167,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
   if ( nPoints > 1 && mAdvancedDigitizingDockWidget->constraintDistance()->isLocked() )
   {
     painter->setPen( mLockedPen );
-    double r = mAdvancedDigitizingDockWidget->constraintDistance()->value() / mupp;
+    const double r = mAdvancedDigitizingDockWidget->constraintDistance()->value() / mupp;
     painter->drawEllipse( prevPointPix, r, r );
   }
 

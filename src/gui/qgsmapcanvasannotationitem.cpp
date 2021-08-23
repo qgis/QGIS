@@ -63,7 +63,7 @@ void QgsMapCanvasAnnotationItem::updatePosition()
 
   if ( mAnnotation->hasFixedMapPosition() )
   {
-    QgsCoordinateTransform t( mAnnotation->mapPositionCrs(), mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+    const QgsCoordinateTransform t( mAnnotation->mapPositionCrs(), mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
     QgsPointXY coord = mAnnotation->mapPosition();
     try
     {
@@ -77,8 +77,8 @@ void QgsMapCanvasAnnotationItem::updatePosition()
   {
     //relative position
 
-    double x = mAnnotation->relativePosition().x() * mMapCanvas->width();
-    double y = mAnnotation->relativePosition().y() * mMapCanvas->height();
+    const double x = mAnnotation->relativePosition().x() * mMapCanvas->width();
+    const double y = mAnnotation->relativePosition().y() * mMapCanvas->height();
     setPos( x, y );
   }
   updateBoundingRect();
@@ -93,9 +93,9 @@ void QgsMapCanvasAnnotationItem::updateBoundingRect()
 {
   prepareGeometryChange();
 
-  QgsRenderContext rc = QgsRenderContext::fromQPainter( nullptr );
-  double fillSymbolBleed = mAnnotation && mAnnotation->fillSymbol() ?
-                           QgsSymbolLayerUtils::estimateMaxSymbolBleed( mAnnotation->fillSymbol(), rc ) : 0;
+  const QgsRenderContext rc = QgsRenderContext::fromQPainter( nullptr );
+  const double fillSymbolBleed = mAnnotation && mAnnotation->fillSymbol() ?
+                                 QgsSymbolLayerUtils::estimateMaxSymbolBleed( mAnnotation->fillSymbol(), rc ) : 0;
 
   const double mmToPixelScale = mMapCanvas->logicalDpiX() / 25.4;
 
@@ -113,16 +113,16 @@ void QgsMapCanvasAnnotationItem::updateBoundingRect()
       halfSymbolSize = scaledSymbolSize() / 2.0;
     }
 
-    QPointF offset = mAnnotation ? QPointF( mAnnotation->frameOffsetFromReferencePointMm().x() * mmToPixelScale,
-                                            mAnnotation->frameOffsetFromReferencePointMm().y() * mmToPixelScale ) : QPointF( 0, 0 );
+    const QPointF offset = mAnnotation ? QPointF( mAnnotation->frameOffsetFromReferencePointMm().x() * mmToPixelScale,
+                           mAnnotation->frameOffsetFromReferencePointMm().y() * mmToPixelScale ) : QPointF( 0, 0 );
 
-    QSizeF frameSize = mAnnotation ? QSizeF( mAnnotation->frameSizeMm().width() * mmToPixelScale,
-                       mAnnotation->frameSizeMm().height() * mmToPixelScale ) : QSizeF( 0.0, 0.0 );
+    const QSizeF frameSize = mAnnotation ? QSizeF( mAnnotation->frameSizeMm().width() * mmToPixelScale,
+                             mAnnotation->frameSizeMm().height() * mmToPixelScale ) : QSizeF( 0.0, 0.0 );
 
-    double xMinPos = std::min( -halfSymbolSize, offset.x() - fillSymbolBleed );
-    double xMaxPos = std::max( halfSymbolSize, offset.x() + frameSize.width() + fillSymbolBleed );
-    double yMinPos = std::min( -halfSymbolSize, offset.y() - fillSymbolBleed );
-    double yMaxPos = std::max( halfSymbolSize, offset.y() + frameSize.height() + fillSymbolBleed );
+    const double xMinPos = std::min( -halfSymbolSize, offset.x() - fillSymbolBleed );
+    const double xMaxPos = std::max( halfSymbolSize, offset.x() + frameSize.width() + fillSymbolBleed );
+    const double yMinPos = std::min( -halfSymbolSize, offset.y() - fillSymbolBleed );
+    const double yMaxPos = std::max( halfSymbolSize, offset.y() + frameSize.height() + fillSymbolBleed );
     mBoundingRect = QRectF( xMinPos, yMinPos, xMaxPos - xMinPos, yMaxPos - yMinPos );
   }
 }
@@ -154,12 +154,12 @@ void QgsMapCanvasAnnotationItem::setFeatureForMapPosition()
   if ( !vectorLayer )
     return;
 
-  double halfIdentifyWidth = QgsMapTool::searchRadiusMU( mMapCanvas );
+  const double halfIdentifyWidth = QgsMapTool::searchRadiusMU( mMapCanvas );
   QgsPointXY mapPosition = mAnnotation->mapPosition();
 
   try
   {
-    QgsCoordinateTransform ct( mAnnotation->mapPositionCrs(), mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+    const QgsCoordinateTransform ct( mAnnotation->mapPositionCrs(), mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
     if ( ct.isValid() )
       mapPosition = ct.transform( mapPosition );
   }
@@ -192,7 +192,7 @@ void QgsMapCanvasAnnotationItem::drawSelectionBoxes( QPainter *p ) const
     return;
   }
 
-  double handlerSize = 10;
+  const double handlerSize = 10;
   p->setPen( Qt::NoPen );
   p->setBrush( QColor( 200, 200, 210, 120 ) );
   p->drawRect( QRectF( mBoundingRect.left(), mBoundingRect.top(), handlerSize, handlerSize ) );
@@ -203,9 +203,9 @@ void QgsMapCanvasAnnotationItem::drawSelectionBoxes( QPainter *p ) const
 
 QgsMapCanvasAnnotationItem::MouseMoveAction QgsMapCanvasAnnotationItem::moveActionForPosition( QPointF pos ) const
 {
-  QPointF itemPos = mapFromScene( pos );
+  const QPointF itemPos = mapFromScene( pos );
 
-  int cursorSensitivity = 7;
+  const int cursorSensitivity = 7;
 
   if ( mAnnotation && mAnnotation->hasFixedMapPosition() &&
        std::fabs( itemPos.x() ) < cursorSensitivity && std::fabs( itemPos.y() ) < cursorSensitivity ) //move map point if position is close to the origin
@@ -215,8 +215,8 @@ QgsMapCanvasAnnotationItem::MouseMoveAction QgsMapCanvasAnnotationItem::moveActi
 
   const double mmToPixelScale = mMapCanvas->logicalDpiX() / 25.4;
 
-  QPointF offset = mAnnotation && mAnnotation->hasFixedMapPosition() ? mAnnotation->frameOffsetFromReferencePointMm() * mmToPixelScale : QPointF( 0, 0 );
-  QSizeF frameSize = mAnnotation ? mAnnotation->frameSizeMm() * mmToPixelScale : QSizeF( 0, 0 );
+  const QPointF offset = mAnnotation && mAnnotation->hasFixedMapPosition() ? mAnnotation->frameOffsetFromReferencePointMm() * mmToPixelScale : QPointF( 0, 0 );
+  const QSizeF frameSize = mAnnotation ? mAnnotation->frameSizeMm() * mmToPixelScale : QSizeF( 0, 0 );
 
   bool left, right, up, down;
   left = std::fabs( itemPos.x() - offset.x() ) < cursorSensitivity;
@@ -304,7 +304,7 @@ double QgsMapCanvasAnnotationItem::scaledSymbolSize() const
     return mAnnotation->markerSymbol()->size();
   }
 
-  double dpmm = mMapCanvas->logicalDpiX() / 25.4;
+  const double dpmm = mMapCanvas->logicalDpiX() / 25.4;
   return dpmm * mAnnotation->markerSymbol()->size();
 }
 

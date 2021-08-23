@@ -22,11 +22,6 @@
 #include "qgscoordinatetransform.h"
 #include "qgsfields.h"
 
-#ifndef SIP_RUN
-#include <json_fwd.hpp>
-using namespace nlohmann;
-#endif
-
 #include <QPointer>
 #include <QJsonObject>
 

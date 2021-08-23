@@ -93,16 +93,16 @@ void QgsGeometrySelfIntersectionCheck::fixError( const QMap<QString, QgsFeatureP
   const QgsGeometryUtils::SelfIntersection &inter = static_cast<const QgsGeometrySelfIntersectionCheckError *>( singleError->singleError() )->intersection();
   // Check if error still applies
   bool ringIsClosed = false;
-  int nVerts = QgsGeometryCheckerUtils::polyLineSize( geom, vidx.part, vidx.ring, &ringIsClosed );
+  const int nVerts = QgsGeometryCheckerUtils::polyLineSize( geom, vidx.part, vidx.ring, &ringIsClosed );
   if ( nVerts == 0 || inter.segment1 >= nVerts || inter.segment2 >= nVerts )
   {
     error->setObsolete();
     return;
   }
-  QgsPoint p1 = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, inter.segment1 ) );
-  QgsPoint q1 = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, inter.segment2 ) );
-  QgsPoint p2 = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( inter.segment1 + 1 ) % nVerts ) );
-  QgsPoint q2 = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( inter.segment2 + 1 ) % nVerts ) );
+  const QgsPoint p1 = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, inter.segment1 ) );
+  const QgsPoint q1 = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, inter.segment2 ) );
+  const QgsPoint p2 = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( inter.segment1 + 1 ) % nVerts ) );
+  const QgsPoint q2 = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( inter.segment2 + 1 ) % nVerts ) );
   QgsPoint s;
   bool intersection = false;
   if ( !QgsGeometryUtils::segmentIntersection( p1, p2, q1, q2, s, intersection, mContext->tolerance ) )
@@ -309,10 +309,10 @@ void QgsGeometrySelfIntersectionCheck::fixError( const QMap<QString, QgsFeatureP
 
 QStringList QgsGeometrySelfIntersectionCheck::resolutionMethods() const
 {
-  static QStringList methods = QStringList()
-                               << tr( "Split feature into a multi-object feature" )
-                               << tr( "Split feature into multiple single-object features" )
-                               << tr( "No action" );
+  static const QStringList methods = QStringList()
+                                     << tr( "Split feature into a multi-object feature" )
+                                     << tr( "Split feature into multiple single-object features" )
+                                     << tr( "No action" );
   return methods;
 }
 

@@ -43,9 +43,9 @@ QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent, con
     return nullptr;
   }
 
-  QgsWkbTypes::Type geometrytype = dialog.selectedType();
-  QgsFields fields = dialog.fields();
-  QString name = dialog.layerName().isEmpty() ? tr( "New scratch layer" ) : dialog.layerName();
+  const QgsWkbTypes::Type geometrytype = dialog.selectedType();
+  const QgsFields fields = dialog.fields();
+  const QString name = dialog.layerName().isEmpty() ? tr( "New scratch layer" ) : dialog.layerName();
   QgsVectorLayer *newLayer = QgsMemoryProviderUtils::createMemoryLayer( name, fields, geometrytype, dialog.crs() );
   return newLayer;
 }
@@ -129,15 +129,15 @@ QgsWkbTypes::Type QgsNewMemoryLayerDialog::selectedType() const
 
 void QgsNewMemoryLayerDialog::geometryTypeChanged( int )
 {
-  QgsWkbTypes::Type geomType = static_cast<QgsWkbTypes::Type>
-                               ( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
+  const QgsWkbTypes::Type geomType = static_cast<QgsWkbTypes::Type>
+                                     ( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
 
-  bool isSpatial = geomType != QgsWkbTypes::NoGeometry;
+  const bool isSpatial = geomType != QgsWkbTypes::NoGeometry;
   mGeometryWithZCheckBox->setEnabled( isSpatial );
   mGeometryWithMCheckBox->setEnabled( isSpatial );
   mCrsSelector->setEnabled( isSpatial );
 
-  bool ok = ( !mNameLineEdit->text().isEmpty() && mGeometryTypeBox->currentIndex() != -1 );
+  const bool ok = ( !mNameLineEdit->text().isEmpty() && mGeometryTypeBox->currentIndex() != -1 );
   mOkButton->setEnabled( ok );
 }
 
@@ -236,10 +236,10 @@ QgsFields QgsNewMemoryLayerDialog::fields() const
   QTreeWidgetItemIterator it( mAttributeView );
   while ( *it )
   {
-    QString name( ( *it )->text( 0 ) );
-    QString typeName( ( *it )->text( 1 ) );
-    int width = ( *it )->text( 2 ).toInt();
-    int precision = ( *it )->text( 3 ).toInt();
+    const QString name( ( *it )->text( 0 ) );
+    const QString typeName( ( *it )->text( 1 ) );
+    const int width = ( *it )->text( 2 ).toInt();
+    const int precision = ( *it )->text( 3 ).toInt();
     QVariant::Type fieldType = QVariant::Invalid;
     if ( typeName == QLatin1String( "string" ) )
       fieldType = QVariant::String;
@@ -256,7 +256,7 @@ QgsFields QgsNewMemoryLayerDialog::fields() const
     else if ( typeName == QLatin1String( "datetime" ) )
       fieldType = QVariant::DateTime;
 
-    QgsField field = QgsField( name, fieldType, typeName, width, precision );
+    const QgsField field = QgsField( name, fieldType, typeName, width, precision );
     fields.append( field );
     ++it;
   }
@@ -268,10 +268,10 @@ void QgsNewMemoryLayerDialog::mAddAttributeButton_clicked()
 {
   if ( !mFieldNameEdit->text().isEmpty() )
   {
-    QString fieldName = mFieldNameEdit->text();
-    QString fieldType = mTypeBox->currentData( Qt::UserRole ).toString();
-    QString width = mWidth->text();
-    QString precision = mPrecision->text();
+    const QString fieldName = mFieldNameEdit->text();
+    const QString fieldType = mTypeBox->currentData( Qt::UserRole ).toString();
+    const QString width = mWidth->text();
+    const QString precision = mPrecision->text();
     mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << fieldName << fieldType << width << precision ) );
 
     mFieldNameEdit->clear();

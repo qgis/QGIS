@@ -49,7 +49,7 @@ QgsMessageLogConsole::QgsMessageLogConsole()
 
 void QgsMessageLogConsole::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level )
 {
-  QString formattedMessage = formatLogMessage( message, tag, level );
+  const QString formattedMessage = formatLogMessage( message, tag, level );
   QTextStream cerr( stderr );
   cerr << formattedMessage;
 }

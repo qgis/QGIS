@@ -176,7 +176,7 @@ bool QgsProcessingProvider::isSupportedOutputValue( const QVariant &outputValue,
   }
   else if ( parameter->type() == QgsProcessingParameterRasterDestination::typeName() )
   {
-    QFileInfo fi( outputPath );
+    const QFileInfo fi( outputPath );
     const QString extension = fi.completeSuffix();
     if ( !supportedOutputRasterLayerExtensions().contains( extension, Qt::CaseInsensitive ) )
     {

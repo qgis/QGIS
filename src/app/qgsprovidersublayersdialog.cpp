@@ -47,7 +47,7 @@ QVariant QgsProviderSublayerDialogModel::data( const QModelIndex &index, int rol
   {
     const QgsProviderSublayerDetails details = mSublayers.at( index.row() );
 
-    if ( details.type() == QgsMapLayerType::VectorLayer && details.wkbType() == QgsWkbTypes::Unknown )
+    if ( details.type() == QgsMapLayerType::VectorLayer && details.wkbType() == QgsWkbTypes::Unknown && !mGeometryTypesResolved )
     {
       switch ( role )
       {
@@ -83,13 +83,19 @@ Qt::ItemFlags QgsProviderSublayerDialogModel::flags( const QModelIndex &index ) 
   {
     const QgsProviderSublayerDetails details = mSublayers.at( index.row() );
 
-    if ( details.type() == QgsMapLayerType::VectorLayer && details.wkbType() == QgsWkbTypes::Unknown )
+    if ( details.type() == QgsMapLayerType::VectorLayer && details.wkbType() == QgsWkbTypes::Unknown && !mGeometryTypesResolved )
     {
       // unknown geometry item can't be selected
       return Qt::ItemFlags();
     }
   }
   return QgsProviderSublayerModel::flags( index );
+}
+
+void QgsProviderSublayerDialogModel::setGeometryTypesResolved( bool resolved )
+{
+  mGeometryTypesResolved = resolved;
+  emit dataChanged( index( 0, 0 ), index( rowCount( QModelIndex() ), columnCount() ) );
 }
 
 QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, const QString &filePath, const QList<QgsProviderSublayerDetails> initialDetails, const QList<QgsMapLayerType> &acceptableTypes, QWidget *parent, Qt::WindowFlags fl )
@@ -112,7 +118,7 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   connect( mLblFilePath, &QLabel::linkActivated, this, [ = ]( const QString & link )
   {
     const QUrl url( link );
-    QFileInfo file( url.toLocalFile() );
+    const QFileInfo file( url.toLocalFile() );
     if ( file.exists() && !file.isDir() )
       QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
     else
@@ -125,12 +131,12 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   mProxyModel->setSourceModel( mModel );
   mLayersTree->setModel( mProxyModel );
 
-  QgsSettings settings;
+  const QgsSettings settings;
   const bool addToGroup = settings.value( QStringLiteral( "/qgis/openSublayersInGroup" ), false ).toBool();
   mCbxAddToGroup->setChecked( addToGroup );
 
   // resize columns
-  QByteArray ba = settings.value( "/Windows/SubLayers/headerState" ).toByteArray();
+  const QByteArray ba = settings.value( "/Windows/SubLayers/headerState" ).toByteArray();
   if ( !ba.isNull() )
   {
     mLayersTree->header()->restoreState( ba );
@@ -155,25 +161,14 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
       } ), res.end() );
 
       mModel->setSublayerDetails( res );
+      mModel->setGeometryTypesResolved( true );
       mTask = nullptr;
+      selectAll();
     } );
     QgsApplication::taskManager()->addTask( mTask.data() );
   }
 
-  connect( mBtnSelectAll, &QAbstractButton::pressed, this, [ = ]
-  {
-    mLayersTree->selectionModel()->clear();
-    for ( int row = 0; row < mProxyModel->rowCount(); ++row )
-    {
-      const QModelIndex index = mProxyModel->index( row, 0 );
-      if ( !mProxyModel->data( index, static_cast< int >( QgsProviderSublayerModel::Role::IsNonLayerItem ) ).toBool() )
-      {
-        mLayersTree->selectionModel()->select( QItemSelection( mLayersTree->model()->index( index.row(), 0, index.parent() ),
-                                               mLayersTree->model()->index( index.row(), mLayersTree->model()->columnCount() - 1, index.parent() ) ),
-                                               QItemSelectionModel::Select );
-      }
-    }
-  } );
+  connect( mBtnSelectAll, &QAbstractButton::pressed, this, &QgsProviderSublayersDialog::selectAll );
   connect( mBtnDeselectAll, &QAbstractButton::pressed, this, [ = ] { mLayersTree->selectionModel()->clear(); } );
   connect( mLayersTree->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsProviderSublayersDialog::treeSelectionChanged );
   connect( mSearchLineEdit, &QgsFilterLineEdit::textChanged, mProxyModel, &QgsProviderSublayerProxyModel::setFilterString );
@@ -194,6 +189,7 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
   mButtonBox->button( QDialogButtonBox::Ok )->setText( tr( "Add Layers" ) );
 
+  selectAll();
 }
 
 void QgsProviderSublayersDialog::setNonLayerItems( const QList<QgsProviderSublayerModel::NonLayerItem> &items )
@@ -253,7 +249,7 @@ QString QgsProviderSublayersDialog::groupName() const
 
   QString res = QgsProviderUtils::suggestLayerNameFromFilePath( mFilePath );
 
-  QgsSettings settings;
+  const QgsSettings settings;
   if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
   {
     res = QgsMapLayer::formatLayerName( res );
@@ -324,4 +320,19 @@ void QgsProviderSublayersDialog::treeSelectionChanged( const QItemSelection &sel
 
   mCbxAddToGroup->setEnabled( !selectedANonLayerItem );
   mButtonBox->button( QDialogButtonBox::Ok )->setText( selectedANonLayerItem ? tr( "Open" ) : tr( "Add Layers" ) );
+}
+
+void QgsProviderSublayersDialog::selectAll()
+{
+  mLayersTree->selectionModel()->clear();
+  for ( int row = 0; row < mProxyModel->rowCount(); ++row )
+  {
+    const QModelIndex index = mProxyModel->index( row, 0 );
+    if ( !mProxyModel->data( index, static_cast< int >( QgsProviderSublayerModel::Role::IsNonLayerItem ) ).toBool() )
+    {
+      mLayersTree->selectionModel()->select( QItemSelection( mLayersTree->model()->index( index.row(), 0, index.parent() ),
+                                             mLayersTree->model()->index( index.row(), mLayersTree->model()->columnCount() - 1, index.parent() ) ),
+                                             QItemSelectionModel::Select );
+    }
+  }
 }

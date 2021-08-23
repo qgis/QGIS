@@ -49,6 +49,7 @@
 #include "qgsalgorithmdetectdatasetchanges.h"
 #include "qgsalgorithmdifference.h"
 #include "qgsalgorithmdissolve.h"
+#include "qgsalgorithmdistancewithin.h"
 #include "qgsalgorithmdrape.h"
 #include "qgsalgorithmdropfields.h"
 #include "qgsalgorithmdropgeometry.h"
@@ -250,7 +251,7 @@ bool QgsNativeAlgorithms::supportsNonFileBasedOutput() const
 
 void QgsNativeAlgorithms::loadAlgorithms()
 {
-  QgsScopedRuntimeProfile profile( QObject::tr( "QGIS native provider" ) );
+  const QgsScopedRuntimeProfile profile( QObject::tr( "QGIS native provider" ) );
   addAlgorithm( new QgsAddIncrementalFieldAlgorithm() );
   addAlgorithm( new QgsAddTableFieldAlgorithm() );
   addAlgorithm( new QgsAddXYFieldsAlgorithm() );
@@ -316,6 +317,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsExtractMValuesAlgorithm() );
   addAlgorithm( new QgsExtractVerticesAlgorithm() );
   addAlgorithm( new QgsExtractSpecificVerticesAlgorithm() );
+  addAlgorithm( new QgsExtractWithinDistanceAlgorithm() );
   addAlgorithm( new QgsExtractZValuesAlgorithm() );
   addAlgorithm( new QgsFieldCalculatorAlgorithm() );
   addAlgorithm( new QgsFileDownloaderAlgorithm() );
@@ -442,6 +444,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSegmentizeByMaximumAngleAlgorithm() );
   addAlgorithm( new QgsSegmentizeByMaximumDistanceAlgorithm() );
   addAlgorithm( new QgsSelectByLocationAlgorithm() );
+  addAlgorithm( new QgsSelectWithinDistanceAlgorithm() );
   addAlgorithm( new QgsServiceAreaFromLayerAlgorithm() );
   addAlgorithm( new QgsServiceAreaFromPointAlgorithm() );
   addAlgorithm( new QgsSetLayerEncodingAlgorithm() );

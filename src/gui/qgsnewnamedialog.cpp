@@ -41,7 +41,7 @@ QgsNewNameDialog::QgsNewNameDialog( const QString &source,
   layout()->setSpacing( 6 );
   mOkString = buttonBox()->button( QDialogButtonBox::Ok )->text();
   QString hintString;
-  QString nameDesc = mExtensions.isEmpty() ? tr( "name" ) : tr( "base name" );
+  const QString nameDesc = mExtensions.isEmpty() ? tr( "name" ) : tr( "base name" );
   if ( source.isEmpty() )
   {
     hintString = tr( "Enter new %1" ).arg( nameDesc );
@@ -140,7 +140,7 @@ void QgsNewNameDialog::nameChanged()
   okButton->setText( mOkString );
   okButton->setEnabled( true );
 
-  QString newName = name();
+  const QString newName = name();
 
   if ( newName.length() == 0 || ( !mRegularExpression.pattern().isEmpty() && !mRegularExpression.match( newName ).hasMatch() ) )
   {
@@ -149,19 +149,19 @@ void QgsNewNameDialog::nameChanged()
     return;
   }
 
-  QStringList newNames = fullNames( newName, mExtensions );
+  const QStringList newNames = fullNames( newName, mExtensions );
   if ( !mExtensions.isEmpty() )
   {
     namesString += ' ' + newNames.join( QLatin1String( ", " ) );
     mNamesLabel->setText( namesString );
   }
 
-  QStringList conflicts = matching( newNames, mExiting, mCaseSensitivity );
+  const QStringList conflicts = matching( newNames, mExiting, mCaseSensitivity );
 
   if ( !conflicts.isEmpty() )
   {
-    QString warning = !mConflictingNameWarning.isEmpty() ? mConflictingNameWarning
-                      : tr( "%n Name(s) %1 exists", nullptr, conflicts.size() ).arg( conflicts.join( QLatin1String( ", " ) ) );
+    const QString warning = !mConflictingNameWarning.isEmpty() ? mConflictingNameWarning
+                            : tr( "%n Name(s) %1 exists", nullptr, conflicts.size() ).arg( conflicts.join( QLatin1String( ", " ) ) );
     mErrorLabel->setText( highlightText( warning ) );
     if ( mOverwriteEnabled )
     {
@@ -219,7 +219,7 @@ QStringList QgsNewNameDialog::matching( const QStringList &newNames, const QStri
 bool QgsNewNameDialog::exists( const QString &name, const QStringList &extensions,
                                const QStringList &existing, Qt::CaseSensitivity cs )
 {
-  QStringList newNames = fullNames( name, extensions );
-  QStringList conflicts = matching( newNames, existing, cs );
+  const QStringList newNames = fullNames( name, extensions );
+  const QStringList conflicts = matching( newNames, existing, cs );
   return !conflicts.isEmpty();
 }

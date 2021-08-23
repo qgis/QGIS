@@ -80,7 +80,7 @@ void TestQgsClipper::basic()
 
 bool TestQgsClipper::checkBoundingBox( const QPolygonF &polygon, const QgsRectangle &clipRect )
 {
-  QgsRectangle bBox( polygon.boundingRect() );
+  const QgsRectangle bBox( polygon.boundingRect() );
 
   return clipRect.contains( bBox );
 }

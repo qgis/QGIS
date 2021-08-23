@@ -98,7 +98,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
           Container, //!< Container for the form
           QmlWidget,
           HtmlWidget,
-          WidgetType //!< In the widget tree, the type of widget
+          WidgetType, //!< In the widget tree, the type of widget
+          Action //!< Layer action
         };
 
         //do we need that

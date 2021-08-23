@@ -46,13 +46,13 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
   const QList<QPair<QString, QString> > items = QUrlQuery( url ).queryItems( QUrl::FullyEncoded );
   for ( int i = 0; i < items.size(); i++ )
   {
-    QString key = items.at( i ).first;
-    QString value = items.at( i ).second;
+    const QString key = items.at( i ).first;
+    const QString value = items.at( i ).second;
     if ( key == QLatin1String( "layer_ref" ) )
     {
       layerIdx++;
       // layer id, with optional layer_name
-      int pos = value.indexOf( ':' );
+      const int pos = value.indexOf( ':' );
       QString layerId, vlayerName;
       if ( pos == -1 )
       {
@@ -71,7 +71,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
     {
       layerIdx++;
       // syntax: layer=provider:url_encoded_source_URI(:name(:encoding)?)?
-      int pos = value.indexOf( ':' );
+      const int pos = value.indexOf( ':' );
       if ( pos != -1 )
       {
         QString providerKey, source, vlayerName, encoding = QStringLiteral( "UTF-8" );
@@ -83,7 +83,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
         if ( pos2 != -1 )
         {
           source = QUrl::fromPercentEncoding( value.mid( pos + 1, pos2 - pos - 1 ).toUtf8() );
-          int pos3 = value.indexOf( ':', pos2 + 1 );
+          const int pos3 = value.indexOf( ':', pos2 + 1 );
           if ( pos3 != -1 )
           {
             vlayerName = QUrl::fromPercentEncoding( value.mid( pos2 + 1, pos3 - pos2 - 1 ).toUtf8() );
@@ -107,8 +107,8 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
     {
       // geometry field definition, optional
       // geometry_column(:wkb_type:srid)?
-      QRegularExpression reGeom( "(" + columnNameRx + ")(?::([a-zA-Z0-9]+):(\\d+))?" );
-      QRegularExpressionMatch match = reGeom.match( value );
+      const QRegularExpression reGeom( "(" + columnNameRx + ")(?::([a-zA-Z0-9]+):(\\d+))?" );
+      const QRegularExpressionMatch match = reGeom.match( value );
       if ( match.hasMatch() )
       {
         def.setGeometryField( match.captured( 1 ) );
@@ -142,11 +142,11 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
     {
       // field_name:type (int, real, text)
       const QRegularExpression reField( "(" + columnNameRx + "):(int|real|text)" );
-      QRegularExpressionMatch match = reField.match( value );
+      const QRegularExpressionMatch match = reField.match( value );
       if ( match.hasMatch() )
       {
-        QString fieldName( match.captured( 1 ) );
-        QString fieldType( match.captured( 2 ) );
+        const QString fieldName( match.captured( 1 ) );
+        const QString fieldType( match.captured( 2 ) );
         if ( fieldType == QLatin1String( "int" ) )
         {
           fields.append( QgsField( fieldName, QVariant::LongLong, fieldType ) );

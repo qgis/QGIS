@@ -46,15 +46,15 @@ void TestQgsVectorLayerFeaturePool::cleanupTestCase()
 
 void TestQgsVectorLayerFeaturePool::getFeatures()
 {
-  std::unique_ptr<QgsVectorLayer> vl = createPopulatedLayer();
+  const std::unique_ptr<QgsVectorLayer> vl = createPopulatedLayer();
   QgsVectorLayerFeaturePool pool( vl.get() );
 
-  QgsFeatureIds ids1 = pool.getFeatures( QgsFeatureRequest().setFilterRect( QgsRectangle( 0, 0, 10, 10 ) ) );
+  const QgsFeatureIds ids1 = pool.getFeatures( QgsFeatureRequest().setFilterRect( QgsRectangle( 0, 0, 10, 10 ) ) );
 
   // One feature is within the requested area
   QCOMPARE( ids1.size(), 1 );
 
-  QgsFeatureIds ids2 = pool.getIntersects( QgsRectangle( 0, 0, 10, 10 ) );
+  const QgsFeatureIds ids2 = pool.getIntersects( QgsRectangle( 0, 0, 10, 10 ) );
   // Also one within the spatial index
   QCOMPARE( ids2.size(), 1 );
 }
@@ -64,12 +64,12 @@ void TestQgsVectorLayerFeaturePool::addFeature()
   std::unique_ptr<QgsVectorLayer> vl = createPopulatedLayer();
   QgsVectorLayerFeaturePool pool( vl.get() );
 
-  QgsFeatureIds ids1 = pool.getFeatures( QgsFeatureRequest().setFilterRect( QgsRectangle( 0, 0, 10, 10 ) ) );
+  const QgsFeatureIds ids1 = pool.getFeatures( QgsFeatureRequest().setFilterRect( QgsRectangle( 0, 0, 10, 10 ) ) );
 
   // One feature is within the requested area
   QCOMPARE( ids1.size(), 1 );
 
-  QgsFeatureIds ids2 = pool.getIntersects( QgsRectangle( 0, 0, 10, 10 ) );
+  const QgsFeatureIds ids2 = pool.getIntersects( QgsRectangle( 0, 0, 10, 10 ) );
   // Also one within the spatial index
   QCOMPARE( ids2.size(), 1 );
 
@@ -81,7 +81,7 @@ void TestQgsVectorLayerFeaturePool::addFeature()
 
   pool.addFeature( feature );
 
-  QgsFeatureIds ids3 = pool.getIntersects( QgsRectangle( 0, 0, 10, 10 ) );
+  const QgsFeatureIds ids3 = pool.getIntersects( QgsRectangle( 0, 0, 10, 10 ) );
 
   // Two features within the requested area
   QCOMPARE( ids3.size(), 2 );
@@ -93,12 +93,12 @@ void TestQgsVectorLayerFeaturePool::deleteFeature()
 
   QgsVectorLayerFeaturePool pool( vl.get() );
 
-  QgsFeatureIds ids1 = pool.getFeatures( QgsFeatureRequest().setFilterRect( QgsRectangle( 0, 0, 10, 10 ) ) );
+  const QgsFeatureIds ids1 = pool.getFeatures( QgsFeatureRequest().setFilterRect( QgsRectangle( 0, 0, 10, 10 ) ) );
 
   // One feature is within the requested area
   QCOMPARE( ids1.size(), 1 );
 
-  QgsFeatureIds ids2 = pool.getIntersects( QgsRectangle( 0, 0, 10, 10 ) );
+  const QgsFeatureIds ids2 = pool.getIntersects( QgsRectangle( 0, 0, 10, 10 ) );
   // Also one within the spatial index
   QCOMPARE( ids2.size(), 1 );
 
@@ -106,7 +106,7 @@ void TestQgsVectorLayerFeaturePool::deleteFeature()
   // Delete a feature outside the AOI (0, 0, 10, 10)
   pool.deleteFeature( 2 );
 
-  QgsFeatureIds ids3 = pool.getIntersects( QgsRectangle( 0, 0, 10, 10 ) );
+  const QgsFeatureIds ids3 = pool.getIntersects( QgsRectangle( 0, 0, 10, 10 ) );
 
   // Still 1 feature
   QCOMPARE( ids3.size(), 1 );
@@ -114,7 +114,7 @@ void TestQgsVectorLayerFeaturePool::deleteFeature()
   // Delete a feature inside the AOI (0, 0, 10, 10)
   pool.deleteFeature( 1 );
 
-  QgsFeatureIds ids4 = pool.getIntersects( QgsRectangle( 0, 0, 10, 10 ) );
+  const QgsFeatureIds ids4 = pool.getIntersects( QgsRectangle( 0, 0, 10, 10 ) );
 
   // No more features here
   QCOMPARE( ids4.size(), 0 );
@@ -127,11 +127,11 @@ void TestQgsVectorLayerFeaturePool::changeGeometry()
   QgsVectorLayerFeaturePool pool( vl.get() );
 
   // One feature is within the requested area
-  QgsFeatureIds ids1 = pool.getFeatures( QgsFeatureRequest().setFilterRect( QgsRectangle( 0, 0, 10, 10 ) ) );
+  const QgsFeatureIds ids1 = pool.getFeatures( QgsFeatureRequest().setFilterRect( QgsRectangle( 0, 0, 10, 10 ) ) );
   QCOMPARE( ids1.size(), 1 );
 
   // Also one when using the spatial index
-  QgsFeatureIds ids2 = pool.getIntersects( QgsRectangle( 0, 0, 10, 10 ) );
+  const QgsFeatureIds ids2 = pool.getIntersects( QgsRectangle( 0, 0, 10, 10 ) );
   QCOMPARE( ids2.size(), 1 );
 
   vl->startEditing();
@@ -143,15 +143,15 @@ void TestQgsVectorLayerFeaturePool::changeGeometry()
   vl->updateFeature( feat );
 
   // Still working on the cached data
-  QgsFeatureIds ids3 = pool.getIntersects( QgsRectangle( 0, 0, 10, 10 ) );
+  const QgsFeatureIds ids3 = pool.getIntersects( QgsRectangle( 0, 0, 10, 10 ) );
   QCOMPARE( ids3.size(), 1 );
 
   // Repopulate the cache
-  QgsFeatureIds ids4 = pool.getFeatures( QgsFeatureRequest().setFilterRect( QgsRectangle( 0, 0, 10, 10 ) ) );
+  const QgsFeatureIds ids4 = pool.getFeatures( QgsFeatureRequest().setFilterRect( QgsRectangle( 0, 0, 10, 10 ) ) );
   QCOMPARE( ids4.size(), 0 );
 
   // Still working on the cached data
-  QgsFeatureIds ids5 = pool.getIntersects( QgsRectangle( 0, 0, 10, 10 ) );
+  const QgsFeatureIds ids5 = pool.getIntersects( QgsRectangle( 0, 0, 10, 10 ) );
   QCOMPARE( ids5.size(), 0 );
 
   // Update a feature to be inside the AOI
@@ -159,11 +159,11 @@ void TestQgsVectorLayerFeaturePool::changeGeometry()
   vl->updateFeature( feat );
 
   // Still cached
-  QgsFeatureIds ids6 = pool.getIntersects( QgsRectangle( 0, 0, 10, 10 ) );
+  const QgsFeatureIds ids6 = pool.getIntersects( QgsRectangle( 0, 0, 10, 10 ) );
   QCOMPARE( ids6.size(), 0 );
 
   // One in there again
-  QgsFeatureIds ids7 = pool.getFeatures( QgsFeatureRequest().setFilterRect( QgsRectangle( 0, 0, 10, 10 ) ) );
+  const QgsFeatureIds ids7 = pool.getFeatures( QgsFeatureRequest().setFilterRect( QgsRectangle( 0, 0, 10, 10 ) ) );
   QCOMPARE( ids7.size(), 1 );
 }
 

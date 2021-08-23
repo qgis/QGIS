@@ -53,7 +53,7 @@ void TestQgsRuntimeProfiler::testGroups()
   QVERIFY( profiler.groups().isEmpty() );
   QVERIFY( !profiler.groupIsActive( QStringLiteral( "xxx" ) ) );
 
-  QSignalSpy spy( &profiler, &QgsRuntimeProfiler::groupAdded );
+  const QSignalSpy spy( &profiler, &QgsRuntimeProfiler::groupAdded );
   profiler.start( QStringLiteral( "task 1" ), QStringLiteral( "group 1" ) );
 
   QCOMPARE( profiler.groups().count(), 1 );
@@ -101,7 +101,7 @@ class ProfileInThread : public QThread
 
     void run() override
     {
-      QgsScopedRuntimeProfile profile( QStringLiteral( "in thread" ), QStringLiteral( "bg" ) );
+      const QgsScopedRuntimeProfile profile( QStringLiteral( "in thread" ), QStringLiteral( "bg" ) );
       QVERIFY( mMainProfiler != QgsApplication::profiler() );
     }
 
@@ -119,7 +119,7 @@ void TestQgsRuntimeProfiler::threading()
 
   QThread *thread = new ProfileInThread( QgsApplication::profiler() );
   {
-    QgsScopedRuntimeProfile profile( QStringLiteral( "launch thread" ), QStringLiteral( "main" ) );
+    const QgsScopedRuntimeProfile profile( QStringLiteral( "launch thread" ), QStringLiteral( "main" ) );
 
     QSignalSpy  spy( QgsApplication::profiler(), &QgsRuntimeProfiler::groupAdded );
     thread->start();
@@ -131,7 +131,7 @@ void TestQgsRuntimeProfiler::threading()
   }
 
   QCOMPARE( QgsApplication::profiler()->rowCount(), 2 );
-  int row1 = QgsApplication::profiler()->data( QgsApplication::profiler()->index( 0, 0 ) ).toString() == QLatin1String( "launch thread" ) ? 0 : 1;
+  const int row1 = QgsApplication::profiler()->data( QgsApplication::profiler()->index( 0, 0 ) ).toString() == QLatin1String( "launch thread" ) ? 0 : 1;
   QCOMPARE( QgsApplication::profiler()->data( QgsApplication::profiler()->index( row1, 0 ) ).toString(), QStringLiteral( "launch thread" ) );
   QCOMPARE( QgsApplication::profiler()->data( QgsApplication::profiler()->index( row1, 0 ), QgsRuntimeProfilerNode::Group ).toString(), QStringLiteral( "main" ) );
   QCOMPARE( QgsApplication::profiler()->data( QgsApplication::profiler()->index( row1 == 0 ? 1 : 0, 0 ) ).toString(), QStringLiteral( "in thread" ) );

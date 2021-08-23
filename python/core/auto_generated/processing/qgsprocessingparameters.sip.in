@@ -321,6 +321,8 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterMeshDatasetGroups;
     else if ( sipCpp->type() == QgsProcessingParameterMeshDatasetTime::typeName() )
       sipType = sipType_QgsProcessingParameterMeshDatasetTime;
+    else if ( sipCpp->type() == QgsProcessingParameterPointCloudLayer::typeName() )
+      sipType = sipType_QgsProcessingParameterPointCloudLayer;
     else
       sipType = nullptr;
 %End
@@ -1194,7 +1196,6 @@ need to handle deletion of the returned layer.
 .. versionadded:: 3.6
 %End
 
-
     static QgsCoordinateReferenceSystem parameterAsCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a coordinate reference system.
@@ -1514,6 +1515,29 @@ Evaluates the parameter with matching ``definition`` and ``value`` to a database
 
 .. versionadded:: 3.14
 %End
+
+    static QgsPointCloudLayer *parameterAsPointCloudLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a point cloud layer.
+
+Layers will either be taken from ``context``'s active project, or loaded from external
+sources and stored temporarily in the ``context``. In either case, callers do not
+need to handle deletion of the returned layer.
+
+.. versionadded:: 3.22
+%End
+
+    static QgsPointCloudLayer *parameterAsPointCloudLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a point cloud layer.
+
+Layers will either be taken from ``context``'s active project, or loaded from external
+sources and stored temporarily in the ``context``. In either case, callers do not
+need to handle deletion of the returned layer.
+
+.. versionadded:: 3.22
+%End
+
 
     static QgsProcessingParameterDefinition *parameterFromVariantMap( const QVariantMap &map ) /Factory/;
 %Docstring
@@ -4442,6 +4466,46 @@ a new (non-existing) tables.
 .. seealso:: :py:func:`allowNewTableNames`
 %End
 
+};
+
+
+class QgsProcessingParameterPointCloudLayer : QgsProcessingParameterDefinition, QgsFileFilterGenerator
+{
+%Docstring(signature="appended")
+A point cloud layer parameter for processing algorithms.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterPointCloudLayer( const QString &name, const QString &description = QString(),
+                                           const QVariant &defaultValue = QVariant(), bool optional = false );
+%Docstring
+Constructor for QgsProcessingParameterPointCloudLayer.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
+    virtual QString type() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString createFileFilter() const;
+
+
+    static QgsProcessingParameterPointCloudLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
+%End
 };
 
 

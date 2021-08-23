@@ -198,7 +198,7 @@ class CORE_EXPORT QgsConstWkbPtr
     template<typename T> void endian_swap( T &value ) const SIP_SKIP
     {
       char *data = reinterpret_cast<char *>( &value );
-      std::size_t n = sizeof( value );
+      const std::size_t n = sizeof( value );
       for ( std::size_t i = 0, m = n / 2; i < m; ++i )
       {
         std::swap( data[i], data[n - 1 - i] );

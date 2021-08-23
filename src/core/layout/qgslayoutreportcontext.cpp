@@ -50,7 +50,7 @@ QgsGeometry QgsLayoutReportContext::currentGeometry( const QgsCoordinateReferenc
     return mFeature.geometry();
   }
 
-  auto it = mGeometryCache.constFind( crs.srsid() );
+  const auto it = mGeometryCache.constFind( crs.srsid() );
   if ( it != mGeometryCache.constEnd() )
   {
     // we have it in cache, return it

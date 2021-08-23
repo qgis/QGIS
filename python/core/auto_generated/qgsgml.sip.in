@@ -39,7 +39,6 @@ request is finished
                      const QString &authcfg = QString() ) /PyName=getFeaturesUri/;
 %Docstring
 Does the Http GET request to the wfs server
-Supports only UTF-8, UTF-16, ISO-8859-1, ISO-8859-1 XML encodings.
 
 :param uri: GML URL
 :param wkbType: wkbType to retrieve
@@ -58,7 +57,6 @@ Supports only UTF-8, UTF-16, ISO-8859-1, ISO-8859-1 XML encodings.
     int getFeatures( const QByteArray &data, QgsWkbTypes::Type *wkbType, QgsRectangle *extent = 0 );
 %Docstring
 Read from GML data. Constructor uri param is ignored
-Supports only UTF-8, UTF-16, ISO-8859-1, ISO-8859-1 XML encodings.
 %End
 
     QMap<QgsFeatureId, QgsFeature * > featuresMap() const;

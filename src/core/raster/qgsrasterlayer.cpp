@@ -129,7 +129,7 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   setProviderType( providerKey );
 
-  QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
+  const QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
   QgsDataProvider::ReadFlags providerFlags = QgsDataProvider::ReadFlags();
   if ( options.loadDefaultStyle )
   {
@@ -181,7 +181,7 @@ QgsRasterLayer *QgsRasterLayer::clone() const
 
 bool QgsRasterLayer::isValidRasterFileName( const QString &fileNameQString, QString &retErrMsg )
 {
-  bool myIsValid = QgsGdalProvider::isValidRasterFileName( fileNameQString, retErrMsg );
+  const bool myIsValid = QgsGdalProvider::isValidRasterFileName( fileNameQString, retErrMsg );
   return myIsValid;
 }
 
@@ -196,7 +196,7 @@ QDateTime QgsRasterLayer::lastModified( QString const &name )
   QgsDebugMsgLevel( "name=" + name, 4 );
   QDateTime t;
 
-  QFileInfo fi( name );
+  const QFileInfo fi( name );
 
   // Is it file?
   if ( !fi.exists() )
@@ -280,7 +280,7 @@ void QgsRasterLayer::draw( QPainter *theQPainter,
 
   QgsRasterProjector *projector = mPipe->projector();
   bool restoreOldResamplingStage = false;
-  Qgis::RasterResamplingStage oldResamplingState = resamplingStage();
+  const Qgis::RasterResamplingStage oldResamplingState = resamplingStage();
   // TODO add a method to interface to get provider and get provider
   // params in QgsRasterProjector
 
@@ -322,7 +322,7 @@ QString QgsRasterLayer::htmlMetadata() const
   if ( !mDataProvider )
     return QString();
 
-  QgsLayerMetadataFormatter htmlFormatter( metadata() );
+  const QgsLayerMetadataFormatter htmlFormatter( metadata() );
   QString myMetadata = QStringLiteral( "<html><head></head>\n<body>\n" );
 
   // Begin Provider section
@@ -475,7 +475,7 @@ QString QgsRasterLayer::htmlMetadata() const
 
     if ( provider->hasStatistics( i, QgsRasterBandStats::Min | QgsRasterBandStats::Max, provider->extent(), SAMPLE_SIZE ) )
     {
-      QgsRasterBandStats myRasterBandStats = provider->bandStatistics( i, QgsRasterBandStats::Min | QgsRasterBandStats::Max, provider->extent(), SAMPLE_SIZE );
+      const QgsRasterBandStats myRasterBandStats = provider->bandStatistics( i, QgsRasterBandStats::Min | QgsRasterBandStats::Max, provider->extent(), SAMPLE_SIZE );
       myMetadata += QStringLiteral( "<td>" ) % QString::number( myRasterBandStats.minimumValue, 'f', 10 ) % QStringLiteral( "</td>" ) %
                     QStringLiteral( "<td>" ) % QString::number( myRasterBandStats.maximumValue, 'f', 10 ) % QStringLiteral( "</td>" );
     }
@@ -521,14 +521,14 @@ QPixmap QgsRasterLayer::paletteAsPixmap( int bandNumber )
   {
     QgsDebugMsgLevel( QStringLiteral( "....found paletted image" ), 4 );
     QgsColorRampShader myShader;
-    QList<QgsColorRampShader::ColorRampItem> myColorRampItemList = mDataProvider->colorTable( bandNumber );
+    const QList<QgsColorRampShader::ColorRampItem> myColorRampItemList = mDataProvider->colorTable( bandNumber );
     if ( !myColorRampItemList.isEmpty() )
     {
       QgsDebugMsgLevel( QStringLiteral( "....got color ramp item list" ), 4 );
       myShader.setColorRampItemList( myColorRampItemList );
       myShader.setColorRampType( QgsColorRampShader::Discrete );
       // Draw image
-      int mySize = 100;
+      const int mySize = 100;
       QPixmap myPalettePixmap( mySize, mySize );
       QPainter myQPainter( &myPalettePixmap );
 
@@ -536,7 +536,7 @@ QPixmap QgsRasterLayer::paletteAsPixmap( int bandNumber )
       myQImage.fill( 0 );
       myPalettePixmap.fill();
 
-      double myStep = ( static_cast< double >( myColorRampItemList.size() ) - 1 ) / static_cast< double >( mySize * mySize );
+      const double myStep = ( static_cast< double >( myColorRampItemList.size() ) - 1 ) / static_cast< double >( mySize * mySize );
       double myValue = 0.0;
       for ( int myRow = 0; myRow < mySize; myRow++ )
       {
@@ -553,13 +553,13 @@ QPixmap QgsRasterLayer::paletteAsPixmap( int bandNumber )
       myQPainter.drawImage( 0, 0, myQImage );
       return myPalettePixmap;
     }
-    QPixmap myNullPixmap;
+    const QPixmap myNullPixmap;
     return myNullPixmap;
   }
   else
   {
     //invalid layer  was requested
-    QPixmap myNullPixmap;
+    const QPixmap myNullPixmap;
     return myNullPixmap;
   }
 }
@@ -753,7 +753,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   {
     setRendererForDrawingStyle( QgsRaster::SingleBandPseudoColor );
     // Load color table
-    QList<QgsColorRampShader::ColorRampItem> colorTable = mDataProvider->colorTable( 1 );
+    const QList<QgsColorRampShader::ColorRampItem> colorTable = mDataProvider->colorTable( 1 );
     QgsSingleBandPseudoColorRenderer *r = dynamic_cast<QgsSingleBandPseudoColorRenderer *>( renderer() );
     if ( r )
     {
@@ -802,7 +802,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
 
   if ( mDataProvider->providerCapabilities() & QgsRasterDataProvider::ProviderHintBenefitsFromResampling )
   {
-    QgsSettings settings;
+    const QgsSettings settings;
     QString resampling = settings.value( QStringLiteral( "/Raster/defaultZoomedInResampling" ), QStringLiteral( "nearest neighbour" ) ).toString();
     if ( resampling == QLatin1String( "bilinear" ) )
     {
@@ -841,7 +841,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   mPipe->set( projector );
 
   // Set default identify format - use the richest format available
-  int capabilities = mDataProvider->capabilities();
+  const int capabilities = mDataProvider->capabilities();
   QgsRaster::IdentifyFormat identifyFormat = QgsRaster::IdentifyFormatUndefined;
   if ( capabilities & QgsRasterInterface::IdentifyHtml )
   {
@@ -885,7 +885,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
 void QgsRasterLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
     const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
-  bool hadRenderer( renderer() );
+  const bool hadRenderer( renderer() );
 
   QDomImplementation domImplementation;
   QDomDocumentType documentType;
@@ -906,7 +906,7 @@ void QgsRasterLayer::setDataSourcePrivate( const QString &dataSource, const QStr
     QDomDocument doc = QDomDocument( documentType );
     QDomElement styleElem = doc.createElement( QStringLiteral( "qgis" ) );
     styleElem.setAttribute( QStringLiteral( "version" ), Qgis::version() );
-    QgsReadWriteContext writeContext;
+    const QgsReadWriteContext writeContext;
     if ( ! writeSymbology( styleElem, doc, errorMsg, writeContext ) )
     {
       QgsDebugMsg( QStringLiteral( "Could not store symbology for layer %1: %2" )
@@ -1064,7 +1064,7 @@ void QgsRasterLayer::computeMinMax( int band,
   }
   else if ( limits == QgsRasterMinMaxOrigin::StdDev )
   {
-    QgsRasterBandStats myRasterBandStats = mDataProvider->bandStatistics( band, QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev, extent, sampleSize );
+    const QgsRasterBandStats myRasterBandStats = mDataProvider->bandStatistics( band, QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev, extent, sampleSize );
     min = myRasterBandStats.mean - ( mmo.stdDevFactor() * myRasterBandStats.stdDev );
     max = myRasterBandStats.mean + ( mmo.stdDevFactor() * myRasterBandStats.stdDev );
   }
@@ -1119,7 +1119,7 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
   QgsSingleBandGrayRenderer *myGrayRenderer = nullptr;
   QgsSingleBandPseudoColorRenderer *myPseudoColorRenderer = nullptr;
   QgsMultiBandColorRenderer *myMultiBandRenderer = nullptr;
-  QString rendererType  = rasterRenderer->type();
+  const QString rendererType  = rasterRenderer->type();
   if ( rendererType == QLatin1String( "singlebandgray" ) )
   {
     myGrayRenderer = dynamic_cast<QgsSingleBandGrayRenderer *>( rasterRenderer );
@@ -1159,11 +1159,11 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
   }
 
   const auto constMyBands = myBands;
-  for ( int myBand : constMyBands )
+  for ( const int myBand : constMyBands )
   {
     if ( myBand != -1 )
     {
-      Qgis::DataType myType = static_cast< Qgis::DataType >( mDataProvider->dataType( myBand ) );
+      const Qgis::DataType myType = static_cast< Qgis::DataType >( mDataProvider->dataType( myBand ) );
       std::unique_ptr<QgsContrastEnhancement> myEnhancement( new QgsContrastEnhancement( static_cast< Qgis::DataType >( myType ) ) );
       myEnhancement->setContrastEnhancementAlgorithm( algorithm, generateLookupTableFlag );
 
@@ -1407,7 +1407,7 @@ bool QgsRasterLayer::setSubsetString( const QString &subset )
   if ( subset == mDataProvider->subsetString() )
     return true;
 
-  bool res = mDataProvider->setSubsetString( subset );
+  const bool res = mDataProvider->setSubsetString( subset );
 
   // get the updated data source string from the provider
   mDataSource = mDataProvider->dataSourceUri();
@@ -1426,7 +1426,7 @@ bool QgsRasterLayer::defaultContrastEnhancementSettings(
   QgsContrastEnhancement::ContrastEnhancementAlgorithm &myAlgorithm,
   QgsRasterMinMaxOrigin::Limits &myLimits ) const
 {
-  QgsSettings mySettings;
+  const QgsSettings mySettings;
 
   QString key;
   QString defaultAlg;
@@ -1470,12 +1470,12 @@ bool QgsRasterLayer::defaultContrastEnhancementSettings(
   }
   QgsDebugMsgLevel( "key = " + key, 4 );
 
-  QString myAlgorithmString = mySettings.value( "/Raster/defaultContrastEnhancementAlgorithm/" + key, defaultAlg ).toString();
+  const QString myAlgorithmString = mySettings.value( "/Raster/defaultContrastEnhancementAlgorithm/" + key, defaultAlg ).toString();
   QgsDebugMsgLevel( "myAlgorithmString = " + myAlgorithmString, 4 );
 
   myAlgorithm = QgsContrastEnhancement::contrastEnhancementAlgorithmFromString( myAlgorithmString );
 
-  QString myLimitsString = mySettings.value( "/Raster/defaultContrastEnhancementLimits/" + key, defaultLimits ).toString();
+  const QString myLimitsString = mySettings.value( "/Raster/defaultContrastEnhancementLimits/" + key, defaultLimits ).toString();
   QgsDebugMsgLevel( "myLimitsString = " + myLimitsString, 4 );
   myLimits = QgsRasterMinMaxOrigin::limitsFromString( myLimitsString );
 
@@ -1551,7 +1551,7 @@ bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
     QDomElement constraintElem = doc.createElement( QStringLiteral( "sld:LayerFeatureConstraints" ) );
     node.appendChild( constraintElem );
 
-    QDomElement featureTypeConstraintElem = doc.createElement( QStringLiteral( "sld:FeatureTypeConstraint" ) );
+    const QDomElement featureTypeConstraintElem = doc.createElement( QStringLiteral( "sld:FeatureTypeConstraint" ) );
     constraintElem.appendChild( featureTypeConstraintElem );
 
     QDomElement userStyleElem = doc.createElement( QStringLiteral( "sld:UserStyle" ) );
@@ -1618,7 +1618,7 @@ bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
     // inject raster layer parameters in RasterSymbolizer tag because
     // they belongs to rasterlayer and not to the renderer => avoid to
     // pass many parameters value via localProps
-    QDomNodeList elements = typeStyleRuleElem.elementsByTagName( QStringLiteral( "sld:RasterSymbolizer" ) );
+    const QDomNodeList elements = typeStyleRuleElem.elementsByTagName( QStringLiteral( "sld:RasterSymbolizer" ) );
     if ( elements.size() != 0 )
     {
       // there SHOULD be only one
@@ -1678,8 +1678,8 @@ bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
         if ( hueSaturationFilter()->saturation() != 0 )
         {
           // normlize value [-100:100] -> [0:1]
-          int s = hueSaturationFilter()->saturation();
-          double sF = ( s - ( -100.0 ) ) / ( 100.0 - ( -100.0 ) );
+          const int s = hueSaturationFilter()->saturation();
+          const double sF = ( s - ( -100.0 ) ) / ( 100.0 - ( -100.0 ) );
           vendorOptionWriter( QStringLiteral( "saturation" ), QString::number( sF ) );
         }
       }
@@ -1688,8 +1688,8 @@ bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
       if ( brightnessFilter()->brightness() != 0 )
       {
         // normalize value [-255:255] -> [0:1]
-        int b = brightnessFilter()->brightness();
-        double bF = ( b - ( -255.0 ) ) / ( 255.0 - ( -255.0 ) );
+        const int b = brightnessFilter()->brightness();
+        const double bF = ( b - ( -255.0 ) ) / ( 255.0 - ( -255.0 ) );
         vendorOptionWriter( QStringLiteral( "brightness" ), QString::number( bF ) );
       }
 
@@ -1697,8 +1697,8 @@ bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
       if ( brightnessFilter()->contrast() != 0 )
       {
         // normlize value [-100:100] -> [0:1]
-        int c = brightnessFilter()->contrast();
-        double cF = ( c - ( -100.0 ) ) / ( 100.0 - ( -100.0 ) );
+        const int c = brightnessFilter()->contrast();
+        const double cF = ( c - ( -100.0 ) ) / ( 100.0 - ( -100.0 ) );
         vendorOptionWriter( QStringLiteral( "contrast" ), QString::number( cF ) );
       }
 
@@ -1822,7 +1822,7 @@ QImage QgsRasterLayer::previewAsImage( QSize size, const QColor &bgColor, QImage
   double mapUnitsPerPixel;
   double x = 0.0;
   double y = 0.0;
-  QgsRectangle extent = mDataProvider->extent();
+  const QgsRectangle extent = mDataProvider->extent();
   if ( extent.width() / extent.height() >= static_cast< double >( image.width() ) / image.height() )
   {
     mapUnitsPerPixel = extent.width() / image.width();
@@ -1877,7 +1877,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
 
   QDomElement rasterRendererElem;
 
-  QDomElement layerElement = layer_node.toElement();
+  const QDomElement layerElement = layer_node.toElement();
   readCommonStyle( layerElement, context, categories );
 
   // pipe element was introduced in the end of 1.9 development when there were
@@ -1909,7 +1909,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
 
   if ( !rasterRendererElem.isNull() )
   {
-    QString rendererType = rasterRendererElem.attribute( QStringLiteral( "type" ) );
+    const QString rendererType = rasterRendererElem.attribute( QStringLiteral( "type" ) );
     QgsRasterRendererRegistryEntry rendererEntry;
     if ( QgsApplication::rasterRendererRegistry()->rendererData( rendererType, rendererEntry ) )
     {
@@ -1923,7 +1923,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
   mPipe->set( brightnessFilter );
 
   //brightness coefficient
-  QDomElement brightnessElem = pipeNode.firstChildElement( QStringLiteral( "brightnesscontrast" ) );
+  const QDomElement brightnessElem = pipeNode.firstChildElement( QStringLiteral( "brightnesscontrast" ) );
   if ( !brightnessElem.isNull() )
   {
     brightnessFilter->readXml( brightnessElem );
@@ -1934,7 +1934,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
   mPipe->set( hueSaturationFilter );
 
   //saturation coefficient
-  QDomElement hueSaturationElem = pipeNode.firstChildElement( QStringLiteral( "huesaturation" ) );
+  const QDomElement hueSaturationElem = pipeNode.firstChildElement( QStringLiteral( "huesaturation" ) );
   if ( !hueSaturationElem.isNull() )
   {
     hueSaturationFilter->readXml( hueSaturationElem );
@@ -1945,7 +1945,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
   mPipe->set( resampleFilter );
 
   //max oversampling
-  QDomElement resampleElem = pipeNode.firstChildElement( QStringLiteral( "rasterresampler" ) );
+  const QDomElement resampleElem = pipeNode.firstChildElement( QStringLiteral( "rasterresampler" ) );
   if ( !resampleElem.isNull() )
   {
     resampleFilter->readXml( resampleElem );
@@ -1954,7 +1954,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
   //provider
   if ( mDataProvider )
   {
-    QDomElement providerElem = pipeNode.firstChildElement( QStringLiteral( "provider" ) );
+    const QDomElement providerElem = pipeNode.firstChildElement( QStringLiteral( "provider" ) );
     if ( !providerElem.isNull() )
     {
       mDataProvider->readXml( providerElem );
@@ -1962,10 +1962,10 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
   }
 
   // Resampling stage
-  QDomNode resamplingStageElement = pipeNode.namedItem( QStringLiteral( "resamplingStage" ) );
+  const QDomNode resamplingStageElement = pipeNode.namedItem( QStringLiteral( "resamplingStage" ) );
   if ( !resamplingStageElement.isNull() )
   {
-    QDomElement e = resamplingStageElement.toElement();
+    const QDomElement e = resamplingStageElement.toElement();
     if ( e.text() == QLatin1String( "provider" ) )
       setResamplingStage( Qgis::RasterResamplingStage::Provider );
     else if ( e.text() == QLatin1String( "resamplingFilter" ) )
@@ -1973,14 +1973,14 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
   }
 
   // get and set the blend mode if it exists
-  QDomNode blendModeNode = layer_node.namedItem( QStringLiteral( "blendMode" ) );
+  const QDomNode blendModeNode = layer_node.namedItem( QStringLiteral( "blendMode" ) );
   if ( !blendModeNode.isNull() )
   {
-    QDomElement e = blendModeNode.toElement();
+    const QDomElement e = blendModeNode.toElement();
     setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( e.text().toInt() ) ) );
   }
 
-  QDomElement elemDataDefinedProperties = layer_node.firstChildElement( QStringLiteral( "pipe-data-defined-properties" ) );
+  const QDomElement elemDataDefinedProperties = layer_node.firstChildElement( QStringLiteral( "pipe-data-defined-properties" ) );
   if ( !elemDataDefinedProperties.isNull() )
     mPipe->dataDefinedProperties().readXml( elemDataDefinedProperties, QgsRasterPipe::propertyDefinitions() );
 
@@ -2000,7 +2000,7 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   // Make sure to read the file first so stats etc are initialized properly!
 
   //process provider key
-  QDomNode pkeyNode = layer_node.namedItem( QStringLiteral( "provider" ) );
+  const QDomNode pkeyNode = layer_node.namedItem( QStringLiteral( "provider" ) );
 
   if ( pkeyNode.isNull() )
   {
@@ -2008,7 +2008,7 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   }
   else
   {
-    QDomElement pkeyElt = pkeyNode.toElement();
+    const QDomElement pkeyElt = pkeyNode.toElement();
     mProviderKey = pkeyElt.text();
     if ( mProviderKey.isEmpty() )
     {
@@ -2022,7 +2022,7 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
 
   // Collect provider-specific information
 
-  QDomNode rpNode = layer_node.namedItem( QStringLiteral( "rasterproperties" ) );
+  const QDomNode rpNode = layer_node.namedItem( QStringLiteral( "rasterproperties" ) );
 
   if ( mProviderKey == QLatin1String( "wms" ) )
   {
@@ -2060,7 +2060,7 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
 
   if ( !( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) )
   {
-    QgsDataProvider::ProviderOptions providerOptions { context.transformContext() };
+    const QgsDataProvider::ProviderOptions providerOptions { context.transformContext() };
     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
     if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
     {
@@ -2100,7 +2100,7 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   }
 
   QString error;
-  bool res = readSymbology( layer_node, error, context );
+  const bool res = readSymbology( layer_node, error, context );
 
   // old wms settings we need to correct
   if ( res && mProviderKey == QLatin1String( "wms" ) && ( !renderer() || renderer()->type() != QLatin1String( "singlebandcolordata" ) ) )
@@ -2131,29 +2131,29 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
 #endif
 
   // Load user no data value
-  QDomElement noDataElement = layer_node.firstChildElement( QStringLiteral( "noData" ) );
+  const QDomElement noDataElement = layer_node.firstChildElement( QStringLiteral( "noData" ) );
 
-  QDomNodeList noDataBandList = noDataElement.elementsByTagName( QStringLiteral( "noDataList" ) );
+  const QDomNodeList noDataBandList = noDataElement.elementsByTagName( QStringLiteral( "noDataList" ) );
 
   for ( int i = 0; i < noDataBandList.size(); ++i )
   {
-    QDomElement bandElement = noDataBandList.at( i ).toElement();
+    const QDomElement bandElement = noDataBandList.at( i ).toElement();
     bool ok;
-    int bandNo = bandElement.attribute( QStringLiteral( "bandNo" ) ).toInt( &ok );
+    const int bandNo = bandElement.attribute( QStringLiteral( "bandNo" ) ).toInt( &ok );
     QgsDebugMsgLevel( QStringLiteral( "bandNo = %1" ).arg( bandNo ), 4 );
     if ( ok && ( bandNo > 0 ) && ( bandNo <= mDataProvider->bandCount() ) )
     {
       mDataProvider->setUseSourceNoDataValue( bandNo, bandElement.attribute( QStringLiteral( "useSrcNoData" ) ).toInt() );
       QgsRasterRangeList myNoDataRangeList;
 
-      QDomNodeList rangeList = bandElement.elementsByTagName( QStringLiteral( "noDataRange" ) );
+      const QDomNodeList rangeList = bandElement.elementsByTagName( QStringLiteral( "noDataRange" ) );
 
       myNoDataRangeList.reserve( rangeList.size() );
       for ( int j = 0; j < rangeList.size(); ++j )
       {
-        QDomElement rangeElement = rangeList.at( j ).toElement();
-        QgsRasterRange myNoDataRange( rangeElement.attribute( QStringLiteral( "min" ) ).toDouble(),
-                                      rangeElement.attribute( QStringLiteral( "max" ) ).toDouble() );
+        const QDomElement rangeElement = rangeList.at( j ).toElement();
+        const QgsRasterRange myNoDataRange( rangeElement.attribute( QStringLiteral( "min" ) ).toDouble(),
+                                            rangeElement.attribute( QStringLiteral( "max" ) ).toDouble() );
         QgsDebugMsgLevel( QStringLiteral( "min = %1 %2" ).arg( rangeElement.attribute( "min" ) ).arg( myNoDataRange.min() ), 4 );
         myNoDataRangeList << myNoDataRange;
       }
@@ -2191,7 +2191,7 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
   layer_node.appendChild( elemDataDefinedProperties );
 
   QDomElement resamplingStageElement = document.createElement( QStringLiteral( "resamplingStage" ) );
-  QDomText resamplingStageText = document.createTextNode( resamplingStage() == Qgis::RasterResamplingStage::Provider ? QStringLiteral( "provider" ) : QStringLiteral( "resamplingFilter" ) );
+  const QDomText resamplingStageText = document.createTextNode( resamplingStage() == Qgis::RasterResamplingStage::Provider ? QStringLiteral( "provider" ) : QStringLiteral( "resamplingFilter" ) );
   resamplingStageElement.appendChild( resamplingStageText );
   pipeElement.appendChild( resamplingStageElement );
 
@@ -2206,7 +2206,7 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
 
   // add blend mode node
   QDomElement blendModeElement  = document.createElement( QStringLiteral( "blendMode" ) );
-  QDomText blendModeText = document.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
+  const QDomText blendModeText = document.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
   blendModeElement.appendChild( blendModeText );
   layer_node.appendChild( blendModeElement );
 
@@ -2245,7 +2245,7 @@ bool QgsRasterLayer::writeXml( QDomNode &layer_node,
   // add provider node
 
   QDomElement provider  = document.createElement( QStringLiteral( "provider" ) );
-  QDomText providerText = document.createTextNode( mProviderKey );
+  const QDomText providerText = document.createTextNode( mProviderKey );
   provider.appendChild( providerText );
   layer_node.appendChild( provider );
 
@@ -2259,7 +2259,7 @@ bool QgsRasterLayer::writeXml( QDomNode &layer_node,
     noDataRangeList.setAttribute( QStringLiteral( "useSrcNoData" ), mDataProvider->useSourceNoDataValue( bandNo ) );
 
     const auto constUserNoDataValues = mDataProvider->userNoDataValues( bandNo );
-    for ( QgsRasterRange range : constUserNoDataValues )
+    for ( const QgsRasterRange range : constUserNoDataValues )
     {
       QDomElement noDataRange = document.createElement( QStringLiteral( "noDataRange" ) );
 
@@ -2391,11 +2391,11 @@ QString QgsRasterLayer::encodedSource( const QString &source, const QgsReadWrite
     // handle relative paths to XYZ tiles
     QgsDataSourceUri uri;
     uri.setEncodedUri( src );
-    QUrl srcUrl( uri.param( QStringLiteral( "url" ) ) );
+    const QUrl srcUrl( uri.param( QStringLiteral( "url" ) ) );
     if ( srcUrl.isLocalFile() )
     {
       // relative path will become "file:./x.txt"
-      QString relSrcUrl = context.pathResolver().writePath( srcUrl.toLocalFile() );
+      const QString relSrcUrl = context.pathResolver().writePath( srcUrl.toLocalFile() );
       uri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
       uri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( relSrcUrl ).toString() );
       src = uri.encodedUri();
@@ -2445,11 +2445,11 @@ QString QgsRasterLayer::decodedSource( const QString &source, const QString &pro
       QgsDataSourceUri uri;
       if ( !src.startsWith( QLatin1String( "http:" ) ) )
       {
-        QStringList parts = src.split( ',' );
+        const QStringList parts = src.split( ',' );
         QStringListIterator iter( parts );
         while ( iter.hasNext() )
         {
-          QString item = iter.next();
+          const QString item = iter.next();
           if ( item.startsWith( QLatin1String( "username=" ) ) )
           {
             uri.setUsername( item.mid( 9 ) );
@@ -2505,10 +2505,10 @@ QString QgsRasterLayer::decodedSource( const QString &source, const QString &pro
     // handle relative paths to XYZ tiles
     QgsDataSourceUri uri;
     uri.setEncodedUri( src );
-    QUrl srcUrl( uri.param( QStringLiteral( "url" ) ) );
+    const QUrl srcUrl( uri.param( QStringLiteral( "url" ) ) );
     if ( srcUrl.isLocalFile() )  // file-based URL? convert to relative path
     {
-      QString absSrcUrl = context.pathResolver().readPath( srcUrl.toLocalFile() );
+      const QString absSrcUrl = context.pathResolver().readPath( srcUrl.toLocalFile() );
       uri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
       uri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( absSrcUrl ).toString() );
       src = uri.encodedUri();
@@ -2646,7 +2646,7 @@ bool QgsRasterLayer::update()
     QgsDebugMsgLevel( QStringLiteral( "reload data" ), 4 );
     closeDataProvider();
     init();
-    QgsDataProvider::ProviderOptions providerOptions;
+    const QgsDataProvider::ProviderOptions providerOptions;
     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
     if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
     {

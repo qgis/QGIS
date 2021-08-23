@@ -188,7 +188,7 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth ) )
   {
     context.setOriginalValueVariable( mStrokeWidth );
-    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext() );
+    const QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext() );
     if ( !exprVal.isNull() )
     {
       double width = exprVal.toDouble( &ok );
@@ -204,7 +204,7 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeStyle ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenStyle( mStrokeStyle ) );
-    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyStrokeStyle, context.renderContext().expressionContext() );
+    const QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyStrokeStyle, context.renderContext().expressionContext() );
     if ( !exprVal.isNull() )
     {
       mPen.setStyle( QgsSymbolLayerUtils::decodePenStyle( exprVal.toString() ) );
@@ -215,7 +215,7 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyJoinStyle ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle ) );
-    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyJoinStyle, context.renderContext().expressionContext() );
+    const QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyJoinStyle, context.renderContext().expressionContext() );
     if ( !exprVal.isNull() )
     {
       mPen.setJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( exprVal.toString() ) );
@@ -226,7 +226,7 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyCapStyle ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle ) );
-    QString style = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyCapStyle, context.renderContext().expressionContext(), QString(), &ok );
+    const QString style = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyCapStyle, context.renderContext().expressionContext(), QString(), &ok );
     if ( ok )
     {
       mPen.setCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( style ) );
@@ -254,7 +254,7 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyWidth ) || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyHeight ) || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyName ) )
   {
     context.setOriginalValueVariable( encodeShape( shape ) );
-    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyName, context.renderContext().expressionContext() );
+    const QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyName, context.renderContext().expressionContext() );
     if ( !exprVal.isNull() )
     {
       shape = decodeShape( exprVal.toString() );
@@ -308,7 +308,7 @@ void QgsEllipseSymbolLayer::calculateOffsetAndRotation( QgsSymbolRenderContext &
   offset = QPointF( offsetX, offsetY );
 
 //priority for rotation: 1. data defined symbol level, 2. symbol layer rotation (mAngle)
-  bool ok = true;
+  const bool ok = true;
   angle = mAngle + mLineAngle;
   bool usingDataDefinedRotation = false;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyAngle ) )
@@ -428,12 +428,12 @@ void QgsEllipseSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &elem
   QDomElement graphicElem = doc.createElement( QStringLiteral( "se:Graphic" ) );
   element.appendChild( graphicElem );
 
-  double strokeWidth = QgsSymbolLayerUtils::rescaleUom( mStrokeWidth, mStrokeWidthUnit, props );
-  double symbolWidth = QgsSymbolLayerUtils::rescaleUom( mSymbolWidth, mSymbolWidthUnit, props );
+  const double strokeWidth = QgsSymbolLayerUtils::rescaleUom( mStrokeWidth, mStrokeWidthUnit, props );
+  const double symbolWidth = QgsSymbolLayerUtils::rescaleUom( mSymbolWidth, mSymbolWidthUnit, props );
   QgsSymbolLayerUtils::wellKnownMarkerToSld( doc, graphicElem, encodeShape( mShape ), mColor, mStrokeColor, mStrokeStyle, strokeWidth, symbolWidth );
 
   // <Rotation>
-  QgsProperty ddRotation = mDataDefinedProperties.property( QgsSymbolLayer::PropertyAngle );
+  const QgsProperty ddRotation = mDataDefinedProperties.property( QgsSymbolLayer::PropertyAngle );
 
   QString angleFunc = props.value( QStringLiteral( "angle" ), QString() ).toString();
   if ( angleFunc.isEmpty() )  // symbol has no angle set
@@ -455,7 +455,7 @@ void QgsEllipseSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &elem
   {
     // both the symbol and the symbol layer have angle value set
     bool ok;
-    double angle = angleFunc.toDouble( &ok );
+    const double angle = angleFunc.toDouble( &ok );
     if ( !ok )
     {
       // its a string (probably a property name or a function)
@@ -470,12 +470,12 @@ void QgsEllipseSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &elem
   QgsSymbolLayerUtils::createRotationElement( doc, graphicElem, angleFunc );
 
   // <Displacement>
-  QPointF offset = QgsSymbolLayerUtils::rescaleUom( mOffset, mOffsetUnit, props );
+  const QPointF offset = QgsSymbolLayerUtils::rescaleUom( mOffset, mOffsetUnit, props );
   QgsSymbolLayerUtils::createDisplacementElement( doc, graphicElem, offset );
 
   // store w/h factor in a <VendorOption>
-  double widthHeightFactor = mSymbolWidth / mSymbolHeight;
-  QDomElement factorElem = QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "widthHeightFactor" ), QString::number( widthHeightFactor ) );
+  const double widthHeightFactor = mSymbolWidth / mSymbolHeight;
+  const QDomElement factorElem = QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "widthHeightFactor" ), QString::number( widthHeightFactor ) );
   graphicElem.appendChild( factorElem );
 }
 
@@ -499,7 +499,7 @@ QgsSymbolLayer *QgsEllipseSymbolLayer::createFromSld( QDomElement &element )
     if ( it.key() == QLatin1String( "widthHeightFactor" ) )
     {
       bool ok;
-      double v = it.value().toDouble( &ok );
+      const double v = it.value().toDouble( &ok );
       if ( ok && !qgsDoubleNear( v, 0.0 ) && v > 0 )
         widthHeightFactor = v;
     }
@@ -508,7 +508,7 @@ QgsSymbolLayer *QgsEllipseSymbolLayer::createFromSld( QDomElement &element )
   if ( !QgsSymbolLayerUtils::wellKnownMarkerFromSld( graphicElem, name, fillColor, strokeColor, strokeStyle, strokeWidth, size ) )
     return nullptr;
 
-  QString uom = element.attribute( QStringLiteral( "uom" ) );
+  const QString uom = element.attribute( QStringLiteral( "uom" ) );
   size = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, size );
   strokeWidth = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, strokeWidth );
 
@@ -517,7 +517,7 @@ QgsSymbolLayer *QgsEllipseSymbolLayer::createFromSld( QDomElement &element )
   if ( QgsSymbolLayerUtils::rotationFromSldElement( graphicElem, angleFunc ) )
   {
     bool ok;
-    double d = angleFunc.toDouble( &ok );
+    const double d = angleFunc.toDouble( &ok );
     if ( ok )
       angle = d;
   }
@@ -606,7 +606,7 @@ void QgsEllipseSymbolLayer::preparePath( const QgsEllipseSymbolLayer::Shape &sha
 {
   mPainterPath = QPainterPath();
 
-  QSizeF size = calculateSize( context, scaledWidth, scaledHeight );
+  const QSizeF size = calculateSize( context, scaledWidth, scaledHeight );
 
   switch ( shape )
   {
@@ -731,7 +731,7 @@ void QgsEllipseSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 
 QgsUnitTypes::RenderUnit QgsEllipseSymbolLayer::outputUnit() const
 {
-  QgsUnitTypes::RenderUnit unit = QgsMarkerSymbolLayer::outputUnit();
+  const QgsUnitTypes::RenderUnit unit = QgsMarkerSymbolLayer::outputUnit();
   if ( mSymbolWidthUnit != unit || mSymbolHeightUnit != unit || mStrokeWidthUnit != unit )
   {
     return QgsUnitTypes::RenderUnknownUnit;
@@ -768,7 +768,7 @@ QgsMapUnitScale QgsEllipseSymbolLayer::mapUnitScale() const
 
 QRectF QgsEllipseSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &context )
 {
-  QSizeF size = calculateSize( context );
+  const QSizeF size = calculateSize( context );
 
   bool hasDataDefinedRotation = false;
   QPointF offset;
@@ -787,12 +787,12 @@ QRectF QgsEllipseSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &con
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth ) )
   {
     context.setOriginalValueVariable( mStrokeWidth );
-    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext() );
+    const QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext() );
 
     if ( !exprVal.isNull() )
     {
       bool ok;
-      double strokeWidth = exprVal.toDouble( &ok );
+      const double strokeWidth = exprVal.toDouble( &ok );
       if ( ok )
       {
         penWidth = strokeWidth;
@@ -804,7 +804,7 @@ QRectF QgsEllipseSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &con
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeStyle ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenStyle( mStrokeStyle ) );
-    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyStrokeStyle, context.renderContext().expressionContext() );
+    const QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyStrokeStyle, context.renderContext().expressionContext() );
     if ( !exprVal.isNull() && exprVal.toString() == QLatin1String( "no" ) )
     {
       penWidth = 0.0;
@@ -919,8 +919,8 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFact
   if ( !qgsDoubleNear( rotation, 0.0 ) )
     t.rotate( rotation );
 
-  double halfWidth = symbolWidth / 2.0;
-  double halfHeight = symbolHeight / 2.0;
+  const double halfWidth = symbolWidth / 2.0;
+  const double halfHeight = symbolHeight / 2.0;
 
   switch ( shape )
   {
@@ -928,19 +928,19 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFact
     {
       if ( qgsDoubleNear( halfWidth, halfHeight ) )
       {
-        QgsPoint pt( t.map( QPointF( 0, 0 ) ) );
+        const QgsPoint pt( t.map( QPointF( 0, 0 ) ) );
         e.writeFilledCircle( layerName, oc, pt, halfWidth );
       }
       else
       {
         QgsPointSequence line;
 
-        double stepsize = 2 * M_PI / 40;
+        const double stepsize = 2 * M_PI / 40;
         for ( int i = 0; i < 39; ++i )
         {
-          double angle = stepsize * i;
-          double x = halfWidth * std::cos( angle );
-          double y = halfHeight * std::sin( angle );
+          const double angle = stepsize * i;
+          const double x = halfWidth * std::cos( angle );
+          const double y = halfHeight * std::sin( angle );
           line << QgsPoint( t.map( QPointF( x, y ) ) );
         }
         //close ellipse with first point
@@ -1016,7 +1016,7 @@ QgsEllipseSymbolLayer::Shape QgsEllipseSymbolLayer::decodeShape( const QString &
 {
   if ( ok )
     *ok = true;
-  QString cleaned = name.toLower().trimmed();
+  const QString cleaned = name.toLower().trimmed();
 
   if ( cleaned == QLatin1String( "circle" ) )
     return Circle;

@@ -85,7 +85,7 @@ void QgsTileScaleWidget::scaleChanged( double scale )
   if ( mResolutions.isEmpty() )
     return;
 
-  double mupp = mMapCanvas->mapUnitsPerPixel();
+  const double mupp = mMapCanvas->mapUnitsPerPixel();
   QgsDebugMsgLevel( QStringLiteral( "resolution changed to %1" ).arg( mupp ), 2 );
 
   int i;
@@ -176,7 +176,7 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
 
   connect( dock, &QDockWidget::visibilityChanged, tws, &QgsTileScaleWidget::scaleEnabled );
 
-  QgsSettings settings;
+  const QgsSettings settings;
   dock->setVisible( settings.value( QStringLiteral( "UI/tileScaleEnabled" ), false ).toBool() );
 }
 

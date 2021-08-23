@@ -140,7 +140,7 @@ QgsFeatureList QgsTaperedBufferAlgorithm::processFeature( const QgsFeature &feat
   if ( mDynamicEndWidth )
     endWidth = mEndWidthProperty.valueAsDouble( context.expressionContext(), endWidth );
 
-  QgsGeometry outputGeometry = feature.geometry().taperedBuffer( startWidth, endWidth, segments );
+  const QgsGeometry outputGeometry = feature.geometry().taperedBuffer( startWidth, endWidth, segments );
   if ( outputGeometry.isNull() )
   {
     feedback->reportError( QObject::tr( "Error buffering geometry %1: %2" ).arg( feature.id() ).arg( outputGeometry.lastError() ) );
@@ -240,7 +240,7 @@ QgsFeatureList QgsVariableWidthBufferByMAlgorithm::processFeature( const QgsFeat
   if ( mDynamicSegments )
     segments = mSegmentsProperty.valueAsInt( context.expressionContext(), segments );
 
-  QgsGeometry outputGeometry = feature.geometry().variableWidthBufferByM( segments );
+  const QgsGeometry outputGeometry = feature.geometry().variableWidthBufferByM( segments );
   if ( outputGeometry.isNull() )
   {
     feedback->reportError( QObject::tr( "Error buffering geometry %1: %2" ).arg( feature.id() ).arg( outputGeometry.lastError() ) );

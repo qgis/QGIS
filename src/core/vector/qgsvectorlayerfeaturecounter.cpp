@@ -38,7 +38,7 @@ bool QgsVectorLayerFeatureCounter::run()
 {
   mSymbolFeatureCountMap.clear();
   mSymbolFeatureIdMap.clear();
-  QgsLegendSymbolList symbolList = mRenderer->legendSymbolItems();
+  const QgsLegendSymbolList symbolList = mRenderer->legendSymbolItems();
   QgsLegendSymbolList::const_iterator symbolIt = symbolList.constBegin();
 
   for ( ; symbolIt != symbolList.constEnd(); ++symbolIt )
@@ -87,7 +87,7 @@ bool QgsVectorLayerFeatureCounter::run()
       }
       ++featuresCounted;
 
-      double p = ( static_cast< double >( featuresCounted ) / mFeatureCount ) * 100;
+      const double p = ( static_cast< double >( featuresCounted ) / mFeatureCount ) * 100;
       if ( p - progress > 1 )
       {
         progress = p;

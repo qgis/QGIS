@@ -94,13 +94,13 @@ void TestQgsAuthCrypto::cleanupTestCase()
 
 void TestQgsAuthCrypto::testEncrypt()
 {
-  QString res = QgsAuthCrypto::encrypt( PASS, CIV, TEXT );
+  const QString res = QgsAuthCrypto::encrypt( PASS, CIV, TEXT );
   QCOMPARE( res, CRYPT );
 }
 
 void TestQgsAuthCrypto::testDecrypt()
 {
-  QString res = QgsAuthCrypto::decrypt( PASS, CIV, CRYPT );
+  const QString res = QgsAuthCrypto::decrypt( PASS, CIV, CRYPT );
   QCOMPARE( res, TEXT );
 }
 

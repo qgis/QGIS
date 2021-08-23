@@ -53,7 +53,7 @@ class TestPyQgsExternalStorageSimpleCopy(TestPyQgsExternalStorageBase, unittest.
         cls.temp_dir = None
 
     def testStoreMissingAuth(self):
-        """Override this one because there is authentification for SimpleCopy external storage"""
+        """Override this one because there is authentication for SimpleCopy external storage"""
         pass
 
 

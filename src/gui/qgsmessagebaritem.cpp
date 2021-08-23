@@ -287,7 +287,7 @@ void QgsMessageBarItem::dismiss()
 
 void QgsMessageBarItem::urlClicked( const QUrl &url )
 {
-  QFileInfo file( url.toLocalFile() );
+  const QFileInfo file( url.toLocalFile() );
   if ( file.exists() && !file.isDir() )
     QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
   else

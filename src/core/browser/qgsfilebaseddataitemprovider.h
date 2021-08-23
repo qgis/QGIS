@@ -51,8 +51,9 @@ class CORE_EXPORT QgsProviderSublayerItem final: public QgsLayerItem
      * \param parent parent item
      * \param name data item name (this should match either the layer's name or the filename of a single-layer file)
      * \param details sublayer details
+     * \param filePath path to file (for sublayer items which directly represent a file)
      */
-    QgsProviderSublayerItem( QgsDataItem *parent, const QString &name, const QgsProviderSublayerDetails &details );
+    QgsProviderSublayerItem( QgsDataItem *parent, const QString &name, const QgsProviderSublayerDetails &details, const QString &filePath );
     QString layerName() const override;
     QVector<QgsDataItem *> createChildren() override;
 

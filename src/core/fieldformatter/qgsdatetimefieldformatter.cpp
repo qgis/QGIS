@@ -51,9 +51,16 @@ QString QgsDateTimeFieldFormatter::representValue( QgsVectorLayer *layer, int fi
   const QString displayFormat = config.value( QStringLiteral( "display_format" ), defaultFormat( field.type() ) ).toString();
 
   QDateTime date;
-  if ( static_cast<QMetaType::Type>( value.type() ) == QMetaType::QDate || static_cast<QMetaType::Type>( value.type() ) == QMetaType::QDateTime )
+  bool showTimeZone = false;
+  if ( static_cast<QMetaType::Type>( value.type() ) == QMetaType::QDate )
   {
     date = value.toDateTime();
+  }
+  else if ( static_cast<QMetaType::Type>( value.type() ) == QMetaType::QDateTime )
+  {
+    date = value.toDateTime();
+    // we always show time zones for datetime values
+    showTimeZone = true;
   }
   else
   {
@@ -69,7 +76,15 @@ QString QgsDateTimeFieldFormatter::representValue( QgsVectorLayer *layer, int fi
 
   if ( date.isValid() )
   {
-    result = date.toString( displayFormat );
+    if ( showTimeZone && displayFormat == QgsDateTimeFieldFormatter::DATETIME_FORMAT )
+    {
+      // using default display format for datetimes, so ensure we include the timezone
+      result = QStringLiteral( "%1 (%2)" ).arg( date.toString( displayFormat ), date.timeZoneAbbreviation() );
+    }
+    else
+    {
+      result = date.toString( displayFormat );
+    }
   }
   else
   {
@@ -85,10 +100,8 @@ QString QgsDateTimeFieldFormatter::defaultFormat( QVariant::Type type )
   {
     case QVariant::DateTime:
       return QgsDateTimeFieldFormatter::DATETIME_FORMAT;
-      break;
     case QVariant::Time:
       return QgsDateTimeFieldFormatter::TIME_FORMAT;
-      break;
     default:
       return QgsDateTimeFieldFormatter::DATE_FORMAT;
   }

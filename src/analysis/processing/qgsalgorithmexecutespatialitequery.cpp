@@ -92,7 +92,7 @@ QVariantMap QgsExecuteSpatialiteQueryAlgorithm::processAlgorithm( const QVariant
     throw QgsProcessingException( QObject::tr( "Could not connect to %1" ).arg( uri.uri() ) );
   }
 
-  QString sql = parameterAsString( parameters, QStringLiteral( "SQL" ), context ).replace( '\n', ' ' );
+  const QString sql = parameterAsString( parameters, QStringLiteral( "SQL" ), context ).replace( '\n', ' ' );
   try
   {
     conn->executeSql( sql );

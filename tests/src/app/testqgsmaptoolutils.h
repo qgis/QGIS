@@ -54,14 +54,14 @@ class TestQgsMapToolAdvancedDigitizingUtils
     QgsFeatureId newFeatureId( QSet<QgsFeatureId> oldFids = QSet<QgsFeatureId>() )
     {
       QSet<QgsFeatureId> newFids = existingFeatureIds();
-      QSet<QgsFeatureId> diffFids = newFids.subtract( oldFids );
+      const QSet<QgsFeatureId> diffFids = newFids.subtract( oldFids );
       Q_ASSERT( diffFids.count() == 1 );
       return *diffFids.constBegin();
     }
 
     QPoint mapToScreen( double mapX, double mapY )
     {
-      QgsPointXY pt = mMapTool->canvas()->mapSettings().mapToPixel().transform( mapX, mapY );
+      const QgsPointXY pt = mMapTool->canvas()->mapSettings().mapToPixel().transform( mapX, mapY );
       return QPoint( std::round( pt.x() ), std::round( pt.y() ) );
     }
 
@@ -155,14 +155,14 @@ class TestQgsMapToolUtils
     QgsFeatureId newFeatureId( QSet<QgsFeatureId> oldFids = QSet<QgsFeatureId>() )
     {
       QSet<QgsFeatureId> newFids = existingFeatureIds();
-      QSet<QgsFeatureId> diffFids = newFids.subtract( oldFids );
+      const QSet<QgsFeatureId> diffFids = newFids.subtract( oldFids );
       Q_ASSERT( diffFids.count() == 1 );
       return *diffFids.constBegin();
     }
 
     QPoint mapToScreen( double mapX, double mapY )
     {
-      QgsPointXY pt = mMapTool->canvas()->mapSettings().mapToPixel().transform( mapX, mapY );
+      const QgsPointXY pt = mMapTool->canvas()->mapSettings().mapToPixel().transform( mapX, mapY );
       return QPoint( std::round( pt.x() ), std::round( pt.y() ) );
     }
 

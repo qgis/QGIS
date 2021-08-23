@@ -58,7 +58,7 @@ void QgsLimitedRandomColorRampWidget::updatePreview()
 {
   mRamp.updateColors();
 
-  QSize size( 300, 40 );
+  const QSize size( 300, 40 );
   lblPreview->setPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( &mRamp, size ) );
 }
 

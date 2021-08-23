@@ -73,7 +73,7 @@ QgsGeoPackageProjectStorageDialog::QgsGeoPackageProjectStorageDialog( bool savin
   const auto &connList { QgsOgrDbConnection::connectionList( QStringLiteral( "GPKG" ) ) };
   for ( const auto &connName : connList )
   {
-    QgsOgrDbConnection conn { connName, QStringLiteral( "GPKG" ) };
+    const QgsOgrDbConnection conn { connName, QStringLiteral( "GPKG" ) };
     mCboConnection->addItem( connName, conn.path() );
     mCboConnection->setItemData( mCboConnection->findText( connName ), conn.path(), Qt::ItemDataRole::ToolTipRole );
   }
@@ -86,7 +86,7 @@ QgsGeoPackageProjectStorageDialog::QgsGeoPackageProjectStorageDialog( bool savin
   connect( mCboConnection, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsGeoPackageProjectStorageDialog::populateProjects );
 
   // If possible, set the item currently displayed database
-  QString toSelect = QgsOgrDbConnection::selectedConnection( QStringLiteral( "GPKG" ) );
+  const QString toSelect = QgsOgrDbConnection::selectedConnection( QStringLiteral( "GPKG" ) );
   mCboConnection->setCurrentIndex( mCboConnection->findText( toSelect ) );
 
 }
@@ -107,7 +107,7 @@ void QgsGeoPackageProjectStorageDialog::populateProjects()
 {
   mCboProject->clear();
 
-  QString uri = currentProjectUri();
+  const QString uri = currentProjectUri();
   QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( QStringLiteral( "geopackage" ) );
   Q_ASSERT( storage );
   const auto projects { storage->listProjects( uri ) };
@@ -130,9 +130,9 @@ void QgsGeoPackageProjectStorageDialog::onOK()
     // Check if this is an overwrite of an existing project
     if ( mCboProject->currentData().toBool() )
     {
-      int res = QMessageBox::question( this, tr( "Overwrite project" ),
-                                       tr( "A project with the same name already exists. Would you like to overwrite it?" ),
-                                       QMessageBox::Yes | QMessageBox::No );
+      const int res = QMessageBox::question( this, tr( "Overwrite project" ),
+                                             tr( "A project with the same name already exists. Would you like to overwrite it?" ),
+                                             QMessageBox::Yes | QMessageBox::No );
       if ( res != QMessageBox::Yes )
         return;
     }
@@ -148,9 +148,9 @@ void QgsGeoPackageProjectStorageDialog::projectChanged()
 
 void QgsGeoPackageProjectStorageDialog::removeProject()
 {
-  int res = QMessageBox::question( this, tr( "Remove project" ),
-                                   tr( "Do you really want to remove the project \"%1\"?" ).arg( mCboProject->currentText() ),
-                                   QMessageBox::Yes | QMessageBox::No );
+  const int res = QMessageBox::question( this, tr( "Remove project" ),
+                                         tr( "Do you really want to remove the project \"%1\"?" ).arg( mCboProject->currentText() ),
+                                         QMessageBox::Yes | QMessageBox::No );
   if ( res != QMessageBox::Yes )
     return;
 

@@ -42,9 +42,9 @@ const std::vector<cl::Device> QgsOpenClUtils::devices()
   std::vector<cl::Platform> platforms;
   cl::Platform::get( &platforms );
   std::vector<cl::Device> existingDevices;
-  for ( auto &p : platforms )
+  for ( const auto &p : platforms )
   {
-    std::string platver = p.getInfo<CL_PLATFORM_VERSION>();
+    const std::string platver = p.getInfo<CL_PLATFORM_VERSION>();
     QgsMessageLog::logMessage( QObject::tr( "Found OpenCL platform %1: %2" )
                                .arg( QString::fromStdString( platver ),
                                      QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ),
@@ -242,7 +242,7 @@ QString QgsOpenClUtils::deviceInfo( const Info infoType, cl::Device device )
         return QString::number( device.getInfo<CL_DEVICE_IMAGE2D_MAX_WIDTH>() );
       case Info::Type:
       {
-        unsigned long type( device.getInfo<CL_DEVICE_TYPE>() );
+        const unsigned long type( device.getInfo<CL_DEVICE_TYPE>() );
         int mappedType;
         switch ( type )
         {
@@ -255,7 +255,7 @@ QString QgsOpenClUtils::deviceInfo( const Info infoType, cl::Device device )
           default:
             mappedType = QgsOpenClUtils::HardwareType::Other;
         }
-        QMetaEnum metaEnum = QMetaEnum::fromType<QgsOpenClUtils::HardwareType>();
+        const QMetaEnum metaEnum = QMetaEnum::fromType<QgsOpenClUtils::HardwareType>();
         return metaEnum.valueToKey( mappedType );
       }
       case Info::Name:
@@ -289,7 +289,7 @@ QString QgsOpenClUtils::activePlatformVersion()
   QString version;
   if ( cl::Platform::getDefault()() )
   {
-    std::string platver = cl::Platform::getDefault().getInfo<CL_PLATFORM_VERSION>();
+    const std::string platver = cl::Platform::getDefault().getInfo<CL_PLATFORM_VERSION>();
     if ( platver.find( "OpenCL " ) != std::string::npos )
     {
       version = QString::fromStdString( platver.substr( 7 ) ).split( ' ' ).first();
@@ -331,11 +331,11 @@ bool QgsOpenClUtils::activate( const QString &preferredDeviceId )
     cl::Platform plat;
     cl::Device dev;
     bool deviceFound = false;
-    for ( auto &p : platforms )
+    for ( const auto &p : platforms )
     {
       if ( deviceFound )
         break;
-      std::string platver = p.getInfo<CL_PLATFORM_VERSION>();
+      const std::string platver = p.getInfo<CL_PLATFORM_VERSION>();
       QgsDebugMsg( QStringLiteral( "Found OpenCL platform %1: %2" ).arg( QString::fromStdString( platver ), QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ) );
       if ( platver.find( "OpenCL " ) != std::string::npos )
       {
@@ -411,7 +411,7 @@ bool QgsOpenClUtils::activate( const QString &preferredDeviceId )
     }
     else
     {
-      cl::Platform newP = cl::Platform::setDefault( plat );
+      const cl::Platform newP = cl::Platform::setDefault( plat );
       if ( newP != plat )
       {
         QgsMessageLog::logMessage( QObject::tr( "Error setting default platform." ),
@@ -506,7 +506,7 @@ QString QgsOpenClUtils::sourceFromPath( const QString &path )
 
 QString QgsOpenClUtils::sourceFromBaseName( const QString &baseName )
 {
-  QString path = QStringLiteral( "%1/%2.cl" ).arg( sourcePath(), baseName );
+  const QString path = QStringLiteral( "%1/%2.cl" ).arg( sourcePath(), baseName );
   return sourceFromPath( path );
 }
 
@@ -629,7 +629,7 @@ cl::CommandQueue QgsOpenClUtils::commandQueue()
   else  // legacy
   {
     cl::Device device( QgsOpenClUtils::activeDevice() );
-    cl_command_queue_properties properties = 0;
+    const cl_command_queue_properties properties = 0;
     Q_NOWARN_DEPRECATED_PUSH
     cl_command_queue queue = clCreateCommandQueue( context(), device(),  properties, nullptr );
     Q_NOWARN_DEPRECATED_POP
@@ -666,7 +666,7 @@ cl::Program QgsOpenClUtils::buildProgram( const QString &source, QgsOpenClUtils:
     // OpenCL version for compatibility with older hardware, but it's up to
     // llvm to support latest CL versions
     bool ok;
-    float version( QgsOpenClUtils::activePlatformVersion().toFloat( &ok ) );
+    const float version( QgsOpenClUtils::activePlatformVersion().toFloat( &ok ) );
     if ( ok && version < 2.0f )
     {
       program.build( QStringLiteral( "-cl-std=CL%1 -I\"%2\"" )
@@ -684,16 +684,16 @@ cl::Program QgsOpenClUtils::buildProgram( const QString &source, QgsOpenClUtils:
     QString build_log( buildLog( e ) );
     if ( build_log.isEmpty() )
       build_log = QObject::tr( "Build logs not available!" );
-    QString err = QObject::tr( "Error building OpenCL program: %1" )
-                  .arg( build_log );
+    const QString err = QObject::tr( "Error building OpenCL program: %1" )
+                        .arg( build_log );
     QgsMessageLog::logMessage( err, LOGMESSAGE_TAG, Qgis::MessageLevel::Critical );
     if ( exceptionBehavior == Throw )
       throw e;
   }
   catch ( cl::Error &e )
   {
-    QString err = QObject::tr( "Error %1 building OpenCL program in %2" )
-                  .arg( errorText( e.err() ), QString::fromStdString( e.what() ) );
+    const QString err = QObject::tr( "Error %1 building OpenCL program in %2" )
+                        .arg( errorText( e.err() ), QString::fromStdString( e.what() ) );
     QgsMessageLog::logMessage( err, LOGMESSAGE_TAG, Qgis::MessageLevel::Critical );
     throw e;
   }

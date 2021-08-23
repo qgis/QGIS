@@ -3611,7 +3611,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
     details.setProviderKey( QStringLiteral( "gdal" ) );
     details.setUri( uri );
     details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( path ) );
-    if ( QgsGdalUtils::SUPPORTED_DB_LAYERS_EXTENSIONS.contains( suffix ) )
+    if ( QgsGdalUtils::multiLayerFileExtensions().contains( suffix ) )
     {
       // uri may contain sublayers, but query flags prevent us from examining them
       details.setSkippedContainerScan( true );
@@ -3702,9 +3702,111 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
   }
 }
 
+QStringList QgsGdalProviderMetadata::sidecarFilesForUri( const QString &uri ) const
+{
+  const QVariantMap uriParts = decodeUri( uri );
+  const QString path = uriParts.value( QStringLiteral( "path" ) ).toString();
+
+  if ( path.isEmpty() )
+    return {};
+
+  const QFileInfo fileInfo( path );
+  const QString suffix = fileInfo.suffix();
+
+  static QMap< QString, QStringList > sExtensions
+  {
+    {
+      QStringLiteral( "jpg" ), {
+        QStringLiteral( "jpw" ),
+        QStringLiteral( "jgw" ),
+        QStringLiteral( "jpgw" ),
+        QStringLiteral( "jpegw" ),
+      }
+    },
+    {
+      QStringLiteral( "img" ), {
+        QStringLiteral( "ige" ),
+      }
+    },
+    {
+      QStringLiteral( "sid" ), {
+        QStringLiteral( "j2w" ),
+      }
+    },
+    {
+      QStringLiteral( "tif" ), {
+        QStringLiteral( "tifw" ),
+        QStringLiteral( "tfw" ),
+      }
+    },
+    {
+      QStringLiteral( "bil" ), {
+        QStringLiteral( "bilw" ),
+        QStringLiteral( "blw" ),
+      }
+    },
+    {
+      QStringLiteral( "raster" ), {
+        QStringLiteral( "rasterw" ),
+      }
+    },
+    {
+      QStringLiteral( "bt" ), {
+        QStringLiteral( "btw" ),
+      }
+    },
+    {
+      QStringLiteral( "rst" ), {
+        QStringLiteral( "rdc" ),
+        QStringLiteral( "smp" ),
+        QStringLiteral( "ref" ),
+        QStringLiteral( "vct" ),
+        QStringLiteral( "vdc" ),
+        QStringLiteral( "avl" ),
+      }
+    },
+    {
+      QStringLiteral( "sdat" ), {
+        QStringLiteral( "sgrd" ),
+        QStringLiteral( "mgrd" ),
+        QStringLiteral( "prj" ),
+      }
+    }
+  };
+
+
+  QStringList res;
+  // format specific sidecars
+  for ( auto it = sExtensions.constBegin(); it != sExtensions.constEnd(); ++it )
+  {
+    if ( suffix.compare( it.key(), Qt::CaseInsensitive ) == 0 )
+    {
+      for ( const QString &ext : it.value() )
+      {
+        res.append( fileInfo.dir().filePath( fileInfo.completeBaseName() + '.' + ext ) );
+      }
+    }
+  }
+
+  // sidecars which could be present for any file
+  for ( const QString &ext :
+        {
+          QStringLiteral( "aux.xml" ),
+          QStringLiteral( "vat.dbf" ),
+          QStringLiteral( "ovr" ),
+          QStringLiteral( "wld" ),
+        } )
+  {
+    res.append( fileInfo.dir().filePath( fileInfo.completeBaseName() + '.' + ext ) );
+    res.append( path + '.' + ext );
+  }
+  return res;
+}
+
 QgsGdalProviderMetadata::QgsGdalProviderMetadata():
   QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
 {
 }
 
 ///@endcond
+

@@ -1146,7 +1146,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
       details.setProviderKey( QStringLiteral( "ogr" ) );
       details.setUri( uri );
       details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( path ) );
-      if ( QgsGdalUtils::SUPPORTED_DB_LAYERS_EXTENSIONS.contains( suffix ) )
+      if ( QgsGdalUtils::multiLayerFileExtensions().contains( suffix ) )
       {
         // uri may contain sublayers, but query flags prevent us from examining them
         details.setSkippedContainerScan( true );
@@ -1210,6 +1210,9 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
       if ( feedback && feedback->isCanceled() )
         break;
 
+      if ( originalUriLayerIdWasSpecified && i != uriLayerId )
+        continue;
+
       QString errCause;
       QgsOgrLayerUniquePtr layer;
 
@@ -1227,7 +1230,15 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
           continue;
       }
 
-      res << QgsOgrProviderUtils::querySubLayerList( i, i == 0 ? firstLayer.get() : layer.get(), driverName, flags, false, uri, false, feedback );
+      QgsOgrLayer *sublayer = i == 0 ? firstLayer.get() : layer.get();
+      if ( !sublayer )
+        continue;
+
+      const QString layerName = QString::fromUtf8( sublayer->name() );
+      if ( !originalUriLayerName.isEmpty() && layerName != originalUriLayerName )
+        continue;
+
+      res << QgsOgrProviderUtils::querySubLayerList( i, sublayer, driverName, flags, false, uri, false, feedback );
     }
   }
 
@@ -1294,6 +1305,80 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
     } ), res.end() );
   }
 
+  return res;
+}
+
+QStringList QgsOgrProviderMetadata::sidecarFilesForUri( const QString &uri ) const
+{
+  const QVariantMap uriParts = decodeUri( uri );
+  const QString path = uriParts.value( QStringLiteral( "path" ) ).toString();
+
+  if ( path.isEmpty() )
+    return {};
+
+  const QFileInfo fileInfo( path );
+  const QString suffix = fileInfo.suffix();
+
+  static QMap< QString, QStringList > sExtensions
+  {
+    {
+      QStringLiteral( "shp" ), {
+        QStringLiteral( "shx" ),
+        QStringLiteral( "dbf" ),
+        QStringLiteral( "sbn" ),
+        QStringLiteral( "sbx" ),
+        QStringLiteral( "prj" ),
+        QStringLiteral( "idm" ),
+        QStringLiteral( "ind" ),
+        QStringLiteral( "qix" ),
+        QStringLiteral( "cpg" ),
+        QStringLiteral( "qpj" ),
+        QStringLiteral( "shp.xml" ),
+      }
+    },
+    {
+      QStringLiteral( "tab" ), {
+        QStringLiteral( "dat" ),
+        QStringLiteral( "id" ),
+        QStringLiteral( "map" ),
+        QStringLiteral( "ind" ),
+        QStringLiteral( "tda" ),
+        QStringLiteral( "tin" ),
+        QStringLiteral( "tma" ),
+        QStringLiteral( "lda" ),
+        QStringLiteral( "lin" ),
+        QStringLiteral( "lma" ),
+      }
+    },
+    {
+      QStringLiteral( "mif" ), {
+        QStringLiteral( "mid" ),
+      }
+    },
+    {
+      QStringLiteral( "gml" ), {
+        QStringLiteral( "gfs" ),
+        QStringLiteral( "xsd" ),
+      }
+    },
+    {
+      QStringLiteral( "csv" ), {
+        QStringLiteral( "csvt" ),
+      }
+    },
+  };
+
+  QStringList res;
+  for ( auto it = sExtensions.constBegin(); it != sExtensions.constEnd(); ++it )
+  {
+    if ( suffix.compare( it.key(), Qt::CaseInsensitive ) == 0 )
+    {
+      for ( const QString &ext : it.value() )
+      {
+        res.append( fileInfo.dir().filePath( fileInfo.completeBaseName() + '.' + ext ) );
+      }
+    }
+  }
   return res;
 }
 

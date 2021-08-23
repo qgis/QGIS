@@ -18,6 +18,7 @@
 #include "qgsattributeforminterface.h"
 #include "qgsattributeformlegacyinterface.h"
 #include "qgsattributeformrelationeditorwidget.h"
+#include "qgsattributeeditoraction.h"
 #include "qgsattributeeditorcontainer.h"
 #include "qgsattributeeditorfield.h"
 #include "qgsattributeeditorrelation.h"
@@ -42,6 +43,7 @@
 #include "qgsscrollarea.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsactionwidgetwrapper.h"
 #include "qgsqmlwidgetwrapper.h"
 #include "qgshtmlwidgetwrapper.h"
 #include "qgsapplication.h"
@@ -923,7 +925,8 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariant
 
       signalEmitted = true;
 
-      updateJoinedFields( *eww );
+      if ( mValuesInitialized )
+        updateJoinedFields( *eww );
 
       break;
     }
@@ -1346,6 +1349,7 @@ void QgsAttributeForm::synchronizeState()
 
   for ( QgsWidgetWrapper *ww : std::as_const( mWidgets ) )
   {
+
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( eww )
     {
@@ -1361,7 +1365,13 @@ void QgsAttributeForm::synchronizeState()
 
       updateIcon( eww );
     }
+    else  // handle QgsWidgetWrapper different than QgsEditorWidgetWrapper
+    {
+      ww->setEnabled( isEditable );
+    }
+
   }
+
 
   if ( mMode != QgsAttributeEditorContext::SearchMode )
   {
@@ -1911,7 +1921,9 @@ void QgsAttributeForm::initPython()
           {
             // Read it into a string
             QTextStream inf( inputFile );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
             inf.setCodec( "UTF-8" );
+#endif
             initCode = inf.readAll();
             inputFile->close();
           }
@@ -2005,6 +2017,23 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
   switch ( widgetDef->type() )
   {
+    case QgsAttributeEditorElement::AeTypeAction:
+    {
+      const QgsAttributeEditorAction *elementDef = dynamic_cast<const QgsAttributeEditorAction *>( widgetDef );
+      if ( !elementDef )
+        break;
+
+      QgsActionWidgetWrapper *actionWrapper = new QgsActionWidgetWrapper( mLayer, nullptr, this );
+      actionWrapper->setAction( elementDef->action( vl ) );
+      context.setAttributeFormMode( mMode );
+      actionWrapper->setContext( context );
+      mWidgets.append( actionWrapper );
+      newWidgetInfo.widget = actionWrapper->widget();
+      newWidgetInfo.showLabel = false;
+
+      break;
+    }
+
     case QgsAttributeEditorElement::AeTypeField:
     {
       const QgsAttributeEditorField *fieldDef = dynamic_cast<const QgsAttributeEditorField *>( widgetDef );
@@ -2094,22 +2123,14 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       {
         myContainer = new QWidget();
 
-        if ( context.formMode() != QgsAttributeEditorContext::Embed )
-        {
-          QgsScrollArea *scrollArea = new QgsScrollArea( parent );
+        QgsScrollArea *scrollArea = new QgsScrollArea( parent );
 
-          scrollArea->setWidget( myContainer );
-          scrollArea->setWidgetResizable( true );
-          scrollArea->setFrameShape( QFrame::NoFrame );
-          widgetName = QStringLiteral( "QScrollArea QWidget" );
+        scrollArea->setWidget( myContainer );
+        scrollArea->setWidgetResizable( true );
+        scrollArea->setFrameShape( QFrame::NoFrame );
+        widgetName = QStringLiteral( "QScrollArea QWidget" );
 
-          newWidgetInfo.widget = scrollArea;
-        }
-        else
-        {
-          newWidgetInfo.widget = myContainer;
-          widgetName = QStringLiteral( "QWidget" );
-        }
+        newWidgetInfo.widget = scrollArea;
       }
 
       if ( container->backgroundColor().isValid() )

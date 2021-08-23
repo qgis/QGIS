@@ -112,7 +112,7 @@ void QgsExtentWidget::setOutputCrs( const QgsCoordinateReferenceSystem &outputCr
   mHasFixedOutputCrs = true;
   if ( mOutputCrs != outputCrs )
   {
-    bool prevExtentEnabled = mIsValid;
+    const bool prevExtentEnabled = mIsValid;
     switch ( mExtentState )
     {
       case CurrentExtent:
@@ -138,8 +138,8 @@ void QgsExtentWidget::setOutputCrs( const QgsCoordinateReferenceSystem &outputCr
       case UserExtent:
         try
         {
-          QgsCoordinateTransform ct( mOutputCrs, outputCrs, QgsProject::instance() );
-          QgsRectangle extent = ct.transformBoundingBox( outputExtent() );
+          const QgsCoordinateTransform ct( mOutputCrs, outputCrs, QgsProject::instance() );
+          const QgsRectangle extent = ct.transformBoundingBox( outputExtent() );
           mOutputCrs = outputCrs;
           setOutputExtentFromUser( extent, outputCrs );
         }
@@ -174,7 +174,7 @@ void QgsExtentWidget::setOutputExtent( const QgsRectangle &r, const QgsCoordinat
     {
       try
       {
-        QgsCoordinateTransform ct( srcCrs, mOutputCrs, QgsProject::instance() );
+        const QgsCoordinateTransform ct( srcCrs, mOutputCrs, QgsProject::instance() );
         extent = ct.transformBoundingBox( r );
       }
       catch ( QgsCsException & )
@@ -260,7 +260,7 @@ void QgsExtentWidget::setOutputExtentFromCondensedLineEdit()
 
 void QgsExtentWidget::clear()
 {
-  bool prevWasNull = mIsValid;
+  const bool prevWasNull = mIsValid;
 
   whileBlocking( mXMinLineEdit )->clear();
   whileBlocking( mXMaxLineEdit )->clear();
@@ -305,12 +305,12 @@ void QgsExtentWidget::layerMenuAboutToShow()
   mLayerMenu->clear();
   for ( int i = 0; i < mMapLayerModel->rowCount(); ++i )
   {
-    QModelIndex index = mMapLayerModel->index( i, 0 );
-    QIcon icon = qvariant_cast<QIcon>( mMapLayerModel->data( index, Qt::DecorationRole ) );
-    QString text = mMapLayerModel->data( index, Qt::DisplayRole ).toString();
+    const QModelIndex index = mMapLayerModel->index( i, 0 );
+    const QIcon icon = qvariant_cast<QIcon>( mMapLayerModel->data( index, Qt::DecorationRole ) );
+    const QString text = mMapLayerModel->data( index, Qt::DisplayRole ).toString();
     QAction *act = new QAction( icon, text, mLayerMenu );
     act->setToolTip( mMapLayerModel->data( index, Qt::ToolTipRole ).toString() );
-    QString layerId = mMapLayerModel->data( index, QgsMapLayerModel::LayerIdRole ).toString();
+    const QString layerId = mMapLayerModel->data( index, QgsMapLayerModel::LayerIdRole ).toString();
     if ( mExtentState == ProjectLayerExtent && mExtentLayer && mExtentLayer->id() == layerId )
     {
       act->setCheckable( true );

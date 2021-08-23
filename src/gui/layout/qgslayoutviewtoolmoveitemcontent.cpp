@@ -80,8 +80,8 @@ void QgsLayoutViewToolMoveItemContent::layoutReleaseEvent( QgsLayoutViewMouseEve
   //update item preview
   mMoveContentItem->setMoveContentPreviewOffset( 0, 0 );
 
-  double moveX = event->layoutPoint().x() - mMoveContentStartPos.x();
-  double moveY = event->layoutPoint().y() - mMoveContentStartPos.y();
+  const double moveX = event->layoutPoint().x() - mMoveContentStartPos.x();
+  const double moveY = event->layoutPoint().y() - mMoveContentStartPos.y();
 
   mMoveContentItem->layout()->undoStack()->beginCommand( mMoveContentItem, tr( "Move Item Content" ) );
   mMoveContentItem->moveContent( -moveX, -moveY );
@@ -97,7 +97,7 @@ void QgsLayoutViewToolMoveItemContent::wheelEvent( QWheelEvent *event )
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
   QPointF scenePoint = view()->mapToScene( event->pos().x(), event->pos().y() );
 #else
-  QPointF scenePoint = view()->mapToScene( event->position().x(), event->position().y() );
+  const QPointF scenePoint = view()->mapToScene( event->position().x(), event->position().y() );
 #endif
 
   //select topmost item at position of event
@@ -105,7 +105,7 @@ void QgsLayoutViewToolMoveItemContent::wheelEvent( QWheelEvent *event )
   if ( !item || !item->isSelected() )
     return;
 
-  QgsSettings settings;
+  const QgsSettings settings;
   double zoomFactor = settings.value( QStringLiteral( "qgis/zoom_factor" ), 2.0 ).toDouble();
 
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
@@ -118,10 +118,10 @@ void QgsLayoutViewToolMoveItemContent::wheelEvent( QWheelEvent *event )
   }
 
   //calculate zoom scale factor
-  bool zoomIn = event->angleDelta().y() > 0;
-  double scaleFactor = ( zoomIn ? zoomFactor : 1 / zoomFactor );
+  const bool zoomIn = event->angleDelta().y() > 0;
+  const double scaleFactor = ( zoomIn ? zoomFactor : 1 / zoomFactor );
 
-  QPointF itemPoint = item->mapFromScene( scenePoint );
+  const QPointF itemPoint = item->mapFromScene( scenePoint );
   item->layout()->undoStack()->beginCommand( item, tr( "Zoom Item Content" ), QgsLayoutItem::UndoZoomContent );
   item->zoomContent( scaleFactor, itemPoint );
   item->layout()->undoStack()->endCommand();

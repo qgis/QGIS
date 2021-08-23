@@ -103,8 +103,8 @@ void TestQgsMapToolReshape::initTestCase()
   QVERIFY( mLayerTopo->isValid() );
 
   mLayerLineZ->startEditing();
-  QString wkt1 = "LineStringZ (0 0 0, 1 1 0, 1 2 0)";
-  QString wkt2 = "LineStringZ (2 1 5, 3 3 5)";
+  const QString wkt1 = "LineStringZ (0 0 0, 1 1 0, 1 2 0)";
+  const QString wkt2 = "LineStringZ (2 1 5, 3 3 5)";
   QgsFeature f1;
   f1.setGeometry( QgsGeometry::fromWkt( wkt1 ) );
   QgsFeature f2;
@@ -118,10 +118,10 @@ void TestQgsMapToolReshape::initTestCase()
   QCOMPARE( mLayerLineZ->getFeature( 2 ).geometry().asWkt(), wkt2 );
 
   mLayerPointZ->startEditing();
-  QString wkt3 = "PointZ (5 5 5)";
+  const QString wkt3 = "PointZ (5 5 5)";
   QgsFeature f3;
   f3.setGeometry( QgsGeometry::fromWkt( wkt3 ) );
-  QString wkt4 = "PointZ (6 6 6)";
+  const QString wkt4 = "PointZ (6 6 6)";
   QgsFeature f4;
   f4.setGeometry( QgsGeometry::fromWkt( wkt4 ) );
 
@@ -133,7 +133,7 @@ void TestQgsMapToolReshape::initTestCase()
   QCOMPARE( mLayerPointZ->getFeature( 2 ).geometry().asWkt(), wkt4 );
 
   mLayerPolygonZ->startEditing();
-  QString wkt5 = "PolygonZ ((7 5 4, 3 2 1, 0 1 2, 7 5 4))";
+  const QString wkt5 = "PolygonZ ((7 5 4, 3 2 1, 0 1 2, 7 5 4))";
   QgsFeature f5;
   f5.setGeometry( QgsGeometry::fromWkt( wkt5 ) );
   QgsFeatureList flistPolygon;
@@ -143,10 +143,10 @@ void TestQgsMapToolReshape::initTestCase()
   QCOMPARE( mLayerPolygonZ->getFeature( 1 ).geometry().asWkt(), wkt5 );
 
   mLayerTopo->startEditing();
-  QString wkt6 = "Polygon ((0 0, 4 0, 4 4, 0 4))";
+  const QString wkt6 = "Polygon ((0 0, 4 0, 4 4, 0 4))";
   QgsFeature f6;
   f6.setGeometry( QgsGeometry::fromWkt( wkt6 ) );
-  QString wkt7 = "Polygon ((7 0, 8 0, 8 4, 7 4))";
+  const QString wkt7 = "Polygon ((7 0, 8 0, 8 4, 7 4))";
   QgsFeature f7;
   f7.setGeometry( QgsGeometry::fromWkt( wkt7 ) );
   QgsFeatureList flistTopo;
@@ -198,7 +198,7 @@ void TestQgsMapToolReshape::testReshapeZ()
   utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 2, 1, Qt::RightButton );
 
-  QString wkt = "LineStringZ (0 0 0, 1 1 0, 1 2 0, 2 1 5)";
+  const QString wkt = "LineStringZ (0 0 0, 1 1 0, 1 2 0, 2 1 5)";
   QCOMPARE( mLayerLineZ->getFeature( 1 ).geometry().asWkt(), wkt );
 
   // snap on a pointz layer
@@ -207,7 +207,7 @@ void TestQgsMapToolReshape::testReshapeZ()
   utils.mouseClick( 6, 6, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 6, 6, Qt::RightButton );
 
-  QString wkt2 = "LineStringZ (0 0 0, 1 1 0, 1 2 0, 2 1 5, 5 5 5, 6 6 6)";
+  const QString wkt2 = "LineStringZ (0 0 0, 1 1 0, 1 2 0, 2 1 5, 5 5 5, 6 6 6)";
   QCOMPARE( mLayerLineZ->getFeature( 1 ).geometry().asWkt(), wkt2 );
 
   // snap on a polygonz layer
@@ -216,7 +216,7 @@ void TestQgsMapToolReshape::testReshapeZ()
   utils.mouseClick( 3, 2, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 3, 2, Qt::RightButton );
 
-  QString wkt3 = "LineStringZ (0 0 0, 1 1 0, 1 2 0, 2 1 5, 5 5 5, 6 6 6, 7 5 4, 3 2 1)";
+  const QString wkt3 = "LineStringZ (0 0 0, 1 1 0, 1 2 0, 2 1 5, 5 5 5, 6 6 6, 7 5 4, 3 2 1)";
   QCOMPARE( mLayerLineZ->getFeature( 1 ).geometry().asWkt(), wkt3 );
   mLayerLineZ->undoStack()->undo();
 
@@ -227,7 +227,7 @@ void TestQgsMapToolReshape::testTopologicalEditing()
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerTopo );
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerTopo );
 
-  bool topologicalEditing = QgsProject::instance()->topologicalEditing();
+  const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
   QgsProject::instance()->setTopologicalEditing( true );
   mCanvas->setCurrentLayer( mLayerTopo );
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
@@ -240,8 +240,8 @@ void TestQgsMapToolReshape::testTopologicalEditing()
   utils.mouseClick( 4, 0, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 4, 0, Qt::RightButton );
 
-  QString wkt = "Polygon ((4 0, 8 2, 4 4, 0 4, 0 0, 4 0))";
-  QString wkt2 = "Polygon ((7 0, 8 0, 8 2, 8 4, 7 4))";
+  const QString wkt = "Polygon ((4 0, 8 2, 4 4, 0 4, 0 0, 4 0))";
+  const QString wkt2 = "Polygon ((7 0, 8 0, 8 2, 8 4, 7 4))";
 
   QCOMPARE( mLayerTopo->getFeature( 1 ).geometry().asWkt(), wkt );
   QCOMPARE( mLayerTopo->getFeature( 2 ).geometry().asWkt(), wkt2 );
@@ -257,12 +257,12 @@ void TestQgsMapToolReshape::reshapeWithBindingLine()
   std::unique_ptr<QgsVectorLayer> vl;
   vl.reset( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:4326&field=name:string(20)" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
 
-  QgsGeometry g0 = QgsGeometry::fromWkt( "LineString (0 0, 1 1, 1 2)" );
+  const QgsGeometry g0 = QgsGeometry::fromWkt( "LineString (0 0, 1 1, 1 2)" );
   QgsFeature f0;
   f0.setGeometry( g0 );
   f0.setAttribute( 0, "polyline0" );
 
-  QgsGeometry g1 = QgsGeometry::fromWkt( "LineString (2 1, 3 2, 3 3, 2 2)" );
+  const QgsGeometry g1 = QgsGeometry::fromWkt( "LineString (2 1, 3 2, 3 3, 2 2)" );
   QgsFeature f1;
   f1.setGeometry( g1 );
   f1.setAttribute( 0, "polyline1" );
@@ -273,7 +273,7 @@ void TestQgsMapToolReshape::reshapeWithBindingLine()
   QList<QgsMapLayer *> layers;
   layers.append( vl.get() );
 
-  QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:4326" ) );
+  const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:4326" ) );
   mQgisApp->mapCanvas()->setDestinationCrs( srs );
   mQgisApp->mapCanvas()->setLayers( layers );
   mQgisApp->mapCanvas()->setCurrentLayer( vl.get() );
@@ -282,7 +282,7 @@ void TestQgsMapToolReshape::reshapeWithBindingLine()
   QgsLineString cl0;
   cl0.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 2, 1 ) );
 
-  QgsCompoundCurve curve0( *cl0.toCurveType() );
+  const QgsCompoundCurve curve0( *cl0.toCurveType() );
 
   QgsMapToolReshape tool0( mQgisApp->mapCanvas() );
   tool0.addCurve( curve0.clone() );
@@ -302,7 +302,7 @@ void TestQgsMapToolReshape::reshapeWithBindingLine()
   QgsLineString cl1;
   cl1.setPoints( QgsPointSequence() << QgsPoint( 2, 1 ) << QgsPoint( 1, 2 ) );
 
-  QgsCompoundCurve curve1( *cl1.toCurveType() );
+  const QgsCompoundCurve curve1( *cl1.toCurveType() );
 
   QgsMapToolReshape tool1( mQgisApp->mapCanvas() );
   tool1.addCurve( curve1.clone() );

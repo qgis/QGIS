@@ -115,15 +115,15 @@ QString QgsAttributeFormWidget::currentFilterExpression() const
   if ( mSearchWidgetToolButton->activeFlags() & QgsSearchWidgetWrapper::Between )
   {
     // special case: Between search
-    QString filter1 = mSearchWidgets.at( 0 )->createExpression( QgsSearchWidgetWrapper::GreaterThanOrEqualTo );
-    QString filter2 = mSearchWidgets.at( 1 )->createExpression( QgsSearchWidgetWrapper::LessThanOrEqualTo );
+    const QString filter1 = mSearchWidgets.at( 0 )->createExpression( QgsSearchWidgetWrapper::GreaterThanOrEqualTo );
+    const QString filter2 = mSearchWidgets.at( 1 )->createExpression( QgsSearchWidgetWrapper::LessThanOrEqualTo );
     return QStringLiteral( "%1 AND %2" ).arg( filter1, filter2 );
   }
   else if ( mSearchWidgetToolButton->activeFlags() & QgsSearchWidgetWrapper::IsNotBetween )
   {
     // special case: Is Not Between search
-    QString filter1 = mSearchWidgets.at( 0 )->createExpression( QgsSearchWidgetWrapper::LessThan );
-    QString filter2 = mSearchWidgets.at( 1 )->createExpression( QgsSearchWidgetWrapper::GreaterThan );
+    const QString filter1 = mSearchWidgets.at( 0 )->createExpression( QgsSearchWidgetWrapper::LessThan );
+    const QString filter2 = mSearchWidgets.at( 1 )->createExpression( QgsSearchWidgetWrapper::GreaterThan );
     return QStringLiteral( "%1 OR %2" ).arg( filter1, filter2 );
   }
 

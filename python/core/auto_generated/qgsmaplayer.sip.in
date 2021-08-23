@@ -140,6 +140,8 @@ Returns the flags for this layer.
    For instance, even if the Removable flag is not set, the layer can still be removed with the API
    but the action will not be listed in the legend menu.
 
+.. seealso:: :py:func:`properties`
+
 .. versionadded:: 3.4
 %End
 
@@ -153,7 +155,22 @@ Returns the flags for this layer.
    For instance, even if the Removable flag is not set, the layer can still be removed with the API
    but the action will not be listed in the legend menu.
 
+.. seealso:: :py:func:`properties`
+
 .. versionadded:: 3.4
+%End
+
+    virtual Qgis::MapLayerProperties properties() const;
+%Docstring
+Returns the map layer properties of this layer.
+
+.. note::
+
+   :py:func:`~QgsMapLayer.properties` differ from :py:func:`~QgsMapLayer.flags` in that :py:func:`~QgsMapLayer.flags` are user settable, and reflect options that
+   users can enable for map layers. In contrast :py:func:`~QgsMapLayer.properties` are reflections of inherent capabilities
+   for the layer, which cannot be directly changed by users.
+
+.. versionadded:: 3.22
 %End
 
     static QString extensionPropertyType( PropertyType type );

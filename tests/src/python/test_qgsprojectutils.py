@@ -62,6 +62,63 @@ class TestQgsProjectUtils(unittest.TestCase):
         self.assertCountEqual(QgsProjectUtils.layersMatchingPath(p, unitTestDataPath() + '/points.shp'), [layer1])
         self.assertCountEqual(QgsProjectUtils.layersMatchingPath(p, unitTestDataPath() + '/mixed_layers.gpkg'), [gpkg1, gpkg2, rl])
 
+    def test_updateLayerPath(self):
+        """
+        Test QgsProjectUtils.updateLayerPath
+        """
+        self.assertFalse(QgsProjectUtils.updateLayerPath(None, '', ''))
+        self.assertFalse(QgsProjectUtils.updateLayerPath(None, 'aaaaa', 'bbbb'))
+        p = QgsProject()
+        self.assertFalse(QgsProjectUtils.updateLayerPath(p, 'aaaaa', 'bbbb'))
+
+        # add some layers to a project
+        # shapefile
+        layer1 = QgsVectorLayer(unitTestDataPath() + '/points.shp', 'l1')
+        self.assertTrue(layer1.isValid())
+        p.addMapLayer(layer1)
+
+        gpkg1 = QgsVectorLayer(unitTestDataPath() + '/mixed_layers.gpkg|layername=lines', 'l1')
+        self.assertTrue(gpkg1.isValid())
+        p.addMapLayer(gpkg1)
+
+        gpkg2 = QgsVectorLayer(unitTestDataPath() + '/mixed_layers.gpkg|layername=points', 'l1')
+        self.assertTrue(gpkg2.isValid())
+        p.addMapLayer(gpkg2)
+
+        # raster layer from gpkg
+        rl = QgsRasterLayer(f'GPKG:{unitTestDataPath()}/mixed_layers.gpkg:band1')
+        self.assertTrue(rl.isValid())
+        p.addMapLayer(rl)
+
+        memory_layer = QgsVectorLayer("Point?field=x:string", 'my layer', "memory")
+        old_memory_source = memory_layer.source()
+        p.addMapLayer(memory_layer)
+
+        self.assertFalse(QgsProjectUtils.updateLayerPath(p, '', ''))
+        self.assertFalse(QgsProjectUtils.updateLayerPath(p, 'aaa', 'bbb'))
+
+        # replace shapefile path
+        self.assertTrue(QgsProjectUtils.updateLayerPath(p, unitTestDataPath() + '/points.shp', unitTestDataPath() + '/points22.shp'))
+        self.assertEqual(layer1.source(), unitTestDataPath() + '/points22.shp')
+        self.assertEqual(gpkg1.source(), unitTestDataPath() + '/mixed_layers.gpkg|layername=lines')
+        self.assertEqual(gpkg2.source(), unitTestDataPath() + '/mixed_layers.gpkg|layername=points')
+        self.assertEqual(rl.source(), f'GPKG:{unitTestDataPath()}/mixed_layers.gpkg:band1')
+        self.assertEqual(memory_layer.source(), old_memory_source)
+        # should return false if we call again, no more matching paths
+        self.assertFalse(QgsProjectUtils.updateLayerPath(p, unitTestDataPath() + '/points.shp',
+                                                         unitTestDataPath() + '/points22.shp'))
+
+        # replace geopackage path
+        self.assertTrue(QgsProjectUtils.updateLayerPath(p, unitTestDataPath() + '/mixed_layers.gpkg', unitTestDataPath() + '/mixed_layers22.gpkg'))
+        self.assertEqual(layer1.source(), unitTestDataPath() + '/points22.shp')
+        self.assertEqual(gpkg1.source(), unitTestDataPath() + '/mixed_layers22.gpkg|layername=lines')
+        self.assertEqual(gpkg2.source(), unitTestDataPath() + '/mixed_layers22.gpkg|layername=points')
+        self.assertEqual(rl.source(), f'GPKG:{unitTestDataPath()}/mixed_layers22.gpkg:band1')
+        self.assertEqual(memory_layer.source(), old_memory_source)
+        # should return false if we call again, no more matching paths
+        self.assertFalse(QgsProjectUtils.updateLayerPath(p, unitTestDataPath() + '/mixed_layers.gpkg',
+                                                         unitTestDataPath() + '/mixed_layers22.gpkg'))
+
 
 if __name__ == '__main__':
     unittest.main()

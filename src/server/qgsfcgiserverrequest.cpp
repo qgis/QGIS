@@ -114,7 +114,7 @@ QgsFcgiServerRequest::QgsFcgiServerRequest()
   }
 
   // Output debug infos
-  Qgis::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();
+  const Qgis::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();
   if ( logLevel <= Qgis::MessageLevel::Info )
   {
     printRequestInfos( url );

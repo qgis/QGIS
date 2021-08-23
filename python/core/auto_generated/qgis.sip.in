@@ -385,6 +385,80 @@ The development version
       Track,
     };
 
+    enum class GeometryOperationResult
+      {
+      Success,
+      NothingHappened,
+      InvalidBaseGeometry,
+      InvalidInputGeometryType,
+      SelectionIsEmpty,
+      SelectionIsGreaterThanOne,
+      GeometryEngineError,
+      LayerNotEditable,
+      AddPartSelectedGeometryNotFound,
+      AddPartNotMultiGeometry,
+      AddRingNotClosed,
+      AddRingNotValid,
+      AddRingCrossesExistingRings,
+      AddRingNotInExistingFeature,
+      SplitCannotSplitPoint,
+    };
+
+    enum class GeometryValidityFlag
+      {
+      AllowSelfTouchingHoles,
+    };
+    typedef QFlags<Qgis::GeometryValidityFlag> GeometryValidityFlags;
+
+
+    enum class GeometryValidationEngine
+      {
+      QgisInternal,
+      Geos,
+    };
+
+    enum class BufferSide
+      {
+      Left,
+      Right,
+    };
+
+    enum class EndCapStyle
+      {
+      Round,
+      Flat,
+      Square,
+    };
+
+    enum class JoinStyle
+      {
+      Round,
+      Miter,
+      Bevel,
+    };
+
+    enum class SpatialFilterType
+    {
+      NoFilter,
+      BoundingBox,
+      DistanceWithin,
+    };
+
+    enum class FileOperationFlag
+    {
+      IncludeMetadataFile,
+      IncludeStyleFile,
+    };
+    typedef QFlags<Qgis::FileOperationFlag> FileOperationFlags;
+
+
+    enum class MapLayerProperty
+    {
+      UsersCannotToggleEditing,
+    };
+    typedef QFlags<Qgis::MapLayerProperty> MapLayerProperties;
+
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -465,6 +539,10 @@ QFlags<Qgis::SqlLayerDefinitionCapability> operator|(Qgis::SqlLayerDefinitionCap
 QFlags<Qgis::BabelFormatCapability> operator|(Qgis::BabelFormatCapability f1, QFlags<Qgis::BabelFormatCapability> f2);
 
 QFlags<Qgis::BabelCommandFlag> operator|(Qgis::BabelCommandFlag f1, QFlags<Qgis::BabelCommandFlag> f2);
+
+QFlags<Qgis::GeometryValidityFlag> operator|(Qgis::GeometryValidityFlag f1, QFlags<Qgis::GeometryValidityFlag> f2);
+
+QFlags<Qgis::FileOperationFlag> operator|(Qgis::FileOperationFlag f1, QFlags<Qgis::FileOperationFlag> f2);
 
 
 

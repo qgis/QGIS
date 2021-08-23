@@ -58,16 +58,16 @@ jobs:
             patch-qt-3d: false
             LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
 
-          # - distro-version: 'rawhide'
-          #   qt-version: 6
-          #   run-tests: false
-          #   docker-tag-suffix: ''
-          #   with-qt6: ON
-          #   with-qt5: OFF
-          #   with-3d: OFF
-          #   with-quick: OFF
-          #   patch-qt-3d: false
-          #   LD_PRELOAD: ''
+          - distro-version: '34'
+            qt-version: 6
+            run-tests: true
+            docker-tag-suffix: ''
+            with-qt6: ON
+            with-qt5: OFF
+            with-3d: OFF
+            with-quick: OFF
+            patch-qt-3d: false
+            LD_PRELOAD: ''
 
 
       fail-fast: false
@@ -93,11 +93,13 @@ jobs:
           CTEST_BUILD_NAME=$( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo "PR${GITHUB_PR_NUMBER}" || echo ${GITHUB_REF##*/} )"_${GITHUB_SHA}"
           echo "DOCKER_TAG=${DOCKER_TAG}" >> $GITHUB_ENV
           echo "CTEST_BUILD_NAME=${CTEST_BUILD_NAME}" >> $GITHUB_ENV
+          echo "QT_VERSION=${{ matrix.qt-version }}" >> $GITHUB_ENV
 
       - name: Print vars
         run: |
           echo DOCKER_TAG: ${DOCKER_TAG}
           echo CTEST_BUILD_NAME: ${CTEST_BUILD_NAME}
+          echo QT_VERSION: ${QT_VERSION}
 
       - name: Build Docker Container with Build Environment
         id: docker-build
@@ -106,7 +108,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: docker.pkg.github.com
-          image_name: qgis3-qt6-build-deps
+          image_name: qgis3-build-deps-${{ matrix.distro-version }}
           dockerfile: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
           build_extra_args: "--build-arg=DISTRO_VERSION=${{ matrix.distro-version }}"
           push_git_tag: true
@@ -298,19 +300,12 @@ jobs:
             test-batch: ORACLE
             docker-target: binary-for-oracle
 
-          # - distro-version: rawhide
-          #   qt-version: 6
-          #   test-batch: ALL_BUT_PROVIDERS
-          #   docker-target: single
+          - distro-version: '34'
+            qt-version: 6
+            test-batch: ALL_BUT_PROVIDERS
+            docker-target: single
 
       fail-fast: false
-
-    services:
-      # Run httpbin container for QgsNetwor* tests
-      httpbin:
-        image: kennethreitz/httpbin:latest
-        ports:
-          - 8082:80
 
     steps:
 
@@ -331,6 +326,7 @@ jobs:
           # Be aware that these instructions are duplicated in build job
           CTEST_BUILD_NAME=$( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo "PR${GITHUB_PR_NUMBER}" || echo ${GITHUB_REF##*/} )"_${GITHUB_SHA}_${{ matrix.test-batch }}"
           echo "CTEST_BUILD_NAME=${CTEST_BUILD_NAME}" >> $GITHUB_ENV
+          echo "QT_VERSION=${{ matrix.qt-version }}" >> $GITHUB_ENV
 
       - name: Print vars
         run: |
@@ -383,7 +379,6 @@ jobs:
         id: tests
         env:
           TEST_BATCH: ${{matrix.test-batch}}
-          QGIS_HTTPBIN_HOST: "localhost:8082"
         run: |
           DOCKERFILE=$( ( [[ ${{ matrix.test-batch }} == "ORACLE"   ]] && echo "docker-compose-testing-oracle.yml" ) \
                      || ( [[ ${{ matrix.test-batch }} == "POSTGRES" ]] && echo "docker-compose-testing-postgres.yml" ) \

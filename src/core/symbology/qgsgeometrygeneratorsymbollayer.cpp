@@ -222,10 +222,10 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context )
 
   if ( context.feature() )
   {
-    QgsExpressionContext &expressionContext = context.renderContext().expressionContext();
+    const QgsExpressionContext &expressionContext = context.renderContext().expressionContext();
 
     QgsFeature f = expressionContext.feature();
-    QgsGeometry geom = mExpression->evaluate( &expressionContext ).value<QgsGeometry>();
+    const QgsGeometry geom = mExpression->evaluate( &expressionContext ).value<QgsGeometry>();
     f.setGeometry( geom );
 
     QgsExpressionContextScope *subSymbolExpressionContextScope = mSymbol->symbolRenderContext()->expressionContextScope();

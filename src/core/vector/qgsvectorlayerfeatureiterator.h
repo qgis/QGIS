@@ -270,6 +270,10 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     QgsRectangle mFilterRect;
     QgsCoordinateTransform mTransform;
 
+    QgsGeometry mDistanceWithinGeom;
+    std::unique_ptr< QgsGeometryEngine > mDistanceWithinEngine;
+    double mDistanceWithin = 0;
+
     // only related to editing
     QSet<QgsFeatureId> mFetchConsidered;
     QgsGeometryMap::ConstIterator mFetchChangedGeomIt;

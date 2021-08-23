@@ -245,7 +245,7 @@ void TestQgsStatisticSummary::individualStatCalculations()
   values << 4 << 4 << 2 << 3 << 3 << 3 << 5 << 5 << 8 << 8;
 
   QFETCH( int, statInt );
-  QgsStatisticalSummary::Statistic stat = ( QgsStatisticalSummary::Statistic ) statInt;
+  const QgsStatisticalSummary::Statistic stat = ( QgsStatisticalSummary::Statistic ) statInt;
   QFETCH( double, expected );
 
   //start with a summary which calculates NO statistics

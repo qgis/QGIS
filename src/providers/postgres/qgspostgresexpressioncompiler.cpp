@@ -178,7 +178,7 @@ QString QgsPostgresExpressionCompiler::castToText( const QString &value ) const
 
 QgsSqlExpressionCompiler::Result QgsPostgresExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
 {
-  QgsSqlExpressionCompiler::Result staticRes = replaceNodeByStaticCachedValueIfPossible( node, result );
+  const QgsSqlExpressionCompiler::Result staticRes = replaceNodeByStaticCachedValueIfPossible( node, result );
   if ( staticRes != Fail )
     return staticRes;
 

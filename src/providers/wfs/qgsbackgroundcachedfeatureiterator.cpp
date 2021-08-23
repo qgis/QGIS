@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgswfsutils.h" // for isCompatibleType()
+#include "qgsgeometryengine.h"
 
 #include <QDataStream>
 #include <QDir>
@@ -301,6 +302,23 @@ QgsBackgroundCachedFeatureIterator::QgsBackgroundCachedFeatureIterator(
     return;
   }
 
+  // prepare spatial filter geometries for optimal speed
+  switch ( mRequest.spatialFilterType() )
+  {
+    case Qgis::SpatialFilterType::NoFilter:
+    case Qgis::SpatialFilterType::BoundingBox:
+      break;
+
+    case Qgis::SpatialFilterType::DistanceWithin:
+      if ( !mRequest.referenceGeometry().isEmpty() )
+      {
+        mDistanceWithinGeom = mRequest.referenceGeometry();
+        mDistanceWithinEngine.reset( QgsGeometry::createGeometryEngine( mDistanceWithinGeom.constGet() ) );
+        mDistanceWithinEngine->prepareGeometry();
+      }
+      break;
+  }
+
   // Configurable for the purpose of unit tests
   QString threshold( getenv( "QGIS_WFS_ITERATOR_TRANSFER_THRESHOLD" ) );
   if ( !threshold.isEmpty() )
@@ -425,6 +443,7 @@ void QgsBackgroundCachedFeatureIterator::fillRequestCache( QgsFeatureRequest req
   requestCache.setFilterRect( mFilterRect );
 
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) ||
+       ( mRequest.spatialFilterType() == Qgis::SpatialFilterType::DistanceWithin ) ||
        ( mRequest.filterType() == QgsFeatureRequest::FilterExpression && mRequest.filterExpression()->needsGeometry() ) )
   {
     mFetchGeometry = true;
@@ -671,6 +690,9 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
     copyFeature( cachedFeature, f, true );
     geometryToDestinationCrs( f, mTransform );
 
+    if ( mDistanceWithinEngine && mDistanceWithinEngine->distance( f.geometry().constGet() ) > mRequest.distanceWithin() )
+      continue;
+
     // Retrieve the user-visible id from the Spatialite cache database Id
     QgsFeatureId userVisibleId;
     if ( mShared->getUserVisibleIdFromSpatialiteId( cachedFeature.id(), userVisibleId ) )
@@ -767,6 +789,12 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
         }
 
         copyFeature( feat, f, false );
+
+        geometryToDestinationCrs( f, mTransform );
+
+        if ( mDistanceWithinEngine && mDistanceWithinEngine->distance( f.geometry().constGet() ) > mRequest.distanceWithin() )
+          continue;
+
         return true;
       }
 

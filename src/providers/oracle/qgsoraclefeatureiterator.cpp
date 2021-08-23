@@ -24,6 +24,7 @@
 #include "qgsgeometry.h"
 #include "qgssettings.h"
 #include "qgsexception.h"
+#include "qgsgeometryengine.h"
 
 #include <QObject>
 
@@ -60,6 +61,23 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
     return;
   }
 
+  // prepare spatial filter geometries for optimal speed
+  switch ( mRequest.spatialFilterType() )
+  {
+    case Qgis::SpatialFilterType::NoFilter:
+    case Qgis::SpatialFilterType::BoundingBox:
+      break;
+
+    case Qgis::SpatialFilterType::DistanceWithin:
+      if ( !mRequest.referenceGeometry().isEmpty() )
+      {
+        mDistanceWithinGeom = mRequest.referenceGeometry();
+        mDistanceWithinEngine.reset( QgsGeometry::createGeometryEngine( mDistanceWithinGeom.constGet() ) );
+        mDistanceWithinEngine->prepareGeometry();
+      }
+      break;
+  }
+
   QVariantList args;
   mQry = QSqlQuery( *mConnection );
 
@@ -90,13 +108,14 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
   else
     mAttributeList = mSource->mFields.allAttributesList();
 
-  bool limitAtProvider = ( mRequest.limit() >= 0 );
+  bool limitAtProvider = ( mRequest.limit() >= 0 ) && mRequest.spatialFilterType() != Qgis::SpatialFilterType::DistanceWithin;
   QString whereClause;
 
   if ( !mSource->mGeometryColumn.isNull() )
   {
     // fetch geometry if requested
-    mFetchGeometry = ( mRequest.flags() & QgsFeatureRequest::NoGeometry ) == 0;
+    mFetchGeometry = ( mRequest.flags() & QgsFeatureRequest::NoGeometry ) == 0
+                     || mRequest.spatialFilterType() == Qgis::SpatialFilterType::DistanceWithin;
     if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression && mRequest.filterExpression()->needsGeometry() )
     {
       mFetchGeometry = true;
@@ -117,7 +136,8 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
 
         args << ( mSource->mSrid < 1 ? QVariant( QVariant::Int ) : mSource->mSrid ) << mFilterRect.xMinimum() << mFilterRect.yMinimum() << mFilterRect.xMaximum() << mFilterRect.yMaximum();
 
-        if ( ( mRequest.flags() & QgsFeatureRequest::ExactIntersect ) != 0 )
+        if ( ( mRequest.flags() & QgsFeatureRequest::ExactIntersect ) != 0
+             && mRequest.spatialFilterType() == Qgis::SpatialFilterType::BoundingBox )
         {
           // sdo_relate requires Spatial
           if ( mConnection->hasSpatial() )
@@ -419,10 +439,14 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
       col++;
     }
 
+    geometryToDestinationCrs( feature, mTransform );
+    if ( mDistanceWithinEngine && mDistanceWithinEngine->distance( feature.geometry().constGet() ) > mRequest.distanceWithin() )
+    {
+      continue;
+    }
+
     feature.setValid( true );
     feature.setFields( mSource->mFields ); // allow name-based attribute lookups
-
-    geometryToDestinationCrs( feature, mTransform );
 
     return true;
   }

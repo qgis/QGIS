@@ -210,6 +210,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \note Flags are options specified by the user used for the UI but are not preventing any API call.
      * For instance, even if the Removable flag is not set, the layer can still be removed with the API
      * but the action will not be listed in the legend menu.
+     *
+     * \see properties()
+     *
      * \since QGIS 3.4
      */
     QgsMapLayer::LayerFlags flags() const;
@@ -219,9 +222,23 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \note Flags are options specified by the user used for the UI but are not preventing any API call.
      * For instance, even if the Removable flag is not set, the layer can still be removed with the API
      * but the action will not be listed in the legend menu.
+     *
+     * \see properties()
+     *
      * \since QGIS 3.4
      */
     void setFlags( QgsMapLayer::LayerFlags flags );
+
+    /**
+     * Returns the map layer properties of this layer.
+     *
+     * \note properties() differ from flags() in that flags() are user settable, and reflect options that
+     * users can enable for map layers. In contrast properties() are reflections of inherent capabilities
+     * for the layer, which cannot be directly changed by users.
+     *
+     * \since QGIS 3.22
+     */
+    virtual Qgis::MapLayerProperties properties() const;
 
     /**
      * Returns the extension of a Property.
@@ -691,7 +708,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     template <class T>
     T customEnumProperty( const QString &key, const T &defaultValue )
     {
-      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( metaEnum.isValid() );
       if ( !metaEnum.isValid() )
       {
@@ -743,7 +760,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     template <class T>
     void setCustomEnumProperty( const QString &key, const T &value )
     {
-      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( metaEnum.isValid() );
       if ( metaEnum.isValid() )
       {
@@ -769,7 +786,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     template <class T>
     T customFlagProperty( const QString &key, const T &defaultValue )
     {
-      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( metaEnum.isValid() );
       if ( !metaEnum.isValid() )
       {
@@ -789,15 +806,15 @@ class CORE_EXPORT QgsMapLayer : public QObject
       if ( !ok )
       {
         // if failed, try to read as int
-        int intValue = customProperty( key, static_cast<int>( defaultValue ) ).toInt( &ok );
+        const int intValue = customProperty( key, static_cast<int>( defaultValue ) ).toInt( &ok );
         if ( metaEnum.isValid() )
         {
           if ( ok )
           {
             // check that the int value does correspond to a flag
             // see https://stackoverflow.com/a/68495949/1548052
-            QByteArray keys = metaEnum.valueToKeys( intValue );
-            int intValueCheck = metaEnum.keysToValue( keys );
+            const QByteArray keys = metaEnum.valueToKeys( intValue );
+            const int intValueCheck = metaEnum.keysToValue( keys );
             if ( intValue != intValueCheck )
             {
               v = defaultValue;
@@ -833,7 +850,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     template <class T>
     void setCustomFlagProperty( const QString &key, const T &value )
     {
-      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( metaEnum.isValid() );
       if ( metaEnum.isValid() )
       {

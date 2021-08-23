@@ -66,7 +66,7 @@ QgsCurveEditorWidget::QgsCurveEditorWidget( QWidget *parent, const QgsCurveTrans
 
   // add a grid
   QwtPlotGrid *grid = new QwtPlotGrid();
-  QwtScaleDiv gridDiv( 0.0, 1.0, QList<double>(), QList<double>(), QList<double>() << 0.2 << 0.4 << 0.6 << 0.8 );
+  const QwtScaleDiv gridDiv( 0.0, 1.0, QList<double>(), QList<double>(), QList<double>() << 0.2 << 0.4 << 0.6 << 0.8 );
   grid->setXDiv( gridDiv );
   grid->setYDiv( gridDiv );
   grid->setPen( QPen( QColor( 0, 0, 0, 50 ) ) );
@@ -116,7 +116,7 @@ void QgsCurveEditorWidget::setHistogramSource( const QgsVectorLayer *layer, cons
     } );
   }
 
-  bool changed = mGatherer->layer() != layer || mGatherer->expression() != expression;
+  const bool changed = mGatherer->layer() != layer || mGatherer->expression() != expression;
   if ( changed )
   {
     mGatherer->setExpression( expression );
@@ -185,11 +185,11 @@ int QgsCurveEditorWidget::findNearestControlPoint( QPointF point ) const
   double minDist = 3.0 / mPlot->width();
   int currentPlotMarkerIndex = -1;
 
-  QList< QgsPointXY > controlPoints = mCurve.controlPoints();
+  const QList< QgsPointXY > controlPoints = mCurve.controlPoints();
 
   for ( int i = 0; i < controlPoints.count(); ++i )
   {
-    QgsPointXY currentPoint = controlPoints.at( i );
+    const QgsPointXY currentPoint = controlPoints.at( i );
     double currentDist;
     currentDist = std::pow( point.x() - currentPoint.x(), 2.0 ) + std::pow( point.y() - currentPoint.y(), 2.0 );
     if ( currentDist < minDist )
@@ -247,9 +247,9 @@ void QgsCurveEditorWidget::plotMouseMove( QPointF point )
 
 void QgsCurveEditorWidget::addPlotMarker( double x, double y, bool isSelected )
 {
-  QColor borderColor( 0, 0, 0 );
+  const QColor borderColor( 0, 0, 0 );
 
-  QColor brushColor = isSelected ? borderColor : QColor( 255, 255, 255, 0 );
+  const QColor brushColor = isSelected ? borderColor : QColor( 255, 255, 255, 0 );
 
   QwtPlotMarker *marker = new QwtPlotMarker();
   marker->setSymbol( new QwtSymbol( QwtSymbol::Ellipse,  QBrush( brushColor ), QPen( borderColor, isSelected ? 2 : 1 ), QSize( 8, 8 ) ) );
@@ -265,18 +265,18 @@ void QgsCurveEditorWidget::updateHistogram()
     return;
 
   //draw histogram
-  QBrush histoBrush( QColor( 0, 0, 0, 70 ) );
+  const QBrush histoBrush( QColor( 0, 0, 0, 70 ) );
 
   delete mPlotHistogram;
   mPlotHistogram = createPlotHistogram( histoBrush );
   QVector<QwtIntervalSample> dataHisto;
 
-  int bins = 40;
+  const int bins = 40;
   QList<double> edges = mHistogram->binEdges( bins );
-  QList<int> counts = mHistogram->counts( bins );
+  const QList<int> counts = mHistogram->counts( bins );
 
   // scale counts to 0->1
-  double max = *std::max_element( counts.constBegin(), counts.constEnd() );
+  const double max = *std::max_element( counts.constBegin(), counts.constEnd() );
 
   // scale bin edges to fit in 0->1 range
   if ( !qgsDoubleNear( mMinValueRange, mMaxValueRange ) )
@@ -287,9 +287,9 @@ void QgsCurveEditorWidget::updateHistogram()
 
   for ( int bin = 0; bin < bins; ++bin )
   {
-    double binValue = counts.at( bin ) / max;
+    const double binValue = counts.at( bin ) / max;
 
-    double upperEdge = edges.at( bin + 1 );
+    const double upperEdge = edges.at( bin + 1 );
 
     dataHisto << QwtIntervalSample( binValue, edges.at( bin ), upperEdge );
   }
@@ -329,7 +329,7 @@ void QgsCurveEditorWidget::updatePlot()
     x << p;
   }
   std::sort( x.begin(), x.end() );
-  QVector< double > y = mCurve.y( x );
+  const QVector< double > y = mCurve.y( x );
 
   for ( int j = 0; j < x.count(); ++j )
   {

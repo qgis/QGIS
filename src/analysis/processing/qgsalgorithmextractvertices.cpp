@@ -122,7 +122,7 @@ QgsFeatureList QgsExtractVerticesAlgorithm::processFeature( const QgsFeature &fe
   QgsFeatureList outputFeatures;
 
   QgsFeature f = feature;
-  QgsGeometry inputGeom = f.geometry();
+  const QgsGeometry inputGeom = f.geometry();
   if ( inputGeom.isNull() )
   {
     QgsAttributes attrs = f.attributes();
@@ -146,8 +146,8 @@ QgsFeatureList QgsExtractVerticesAlgorithm::processFeature( const QgsFeature &fe
     int vertexPos = 0;
     while ( vi != inputGeom.constGet()->vertices_end() )
     {
-      QgsVertexId vertexId = vi.vertexId();
-      double angle = inputGeom.constGet()->vertexAngle( vertexId ) * 180 / M_PI;
+      const QgsVertexId vertexId = vi.vertexId();
+      const double angle = inputGeom.constGet()->vertexAngle( vertexId ) * 180 / M_PI;
       QgsAttributes attrs = f.attributes();
       attrs << vertexPos
             << vertexId.part;
@@ -167,7 +167,7 @@ QgsFeatureList QgsExtractVerticesAlgorithm::processFeature( const QgsFeature &fe
       vertexPos++;
 
       // calculate distance to next vertex
-      double distanceToNext = inputGeom.constGet()->segmentLength( vertexId );
+      const double distanceToNext = inputGeom.constGet()->segmentLength( vertexId );
       cumulativeDistance += distanceToNext;
     }
   }

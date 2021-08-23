@@ -128,8 +128,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void apply();
     //! \brief Called when cancel button is pressed
     void onCancel();
-    //! \brief Slot to update layer display name as original is edited.
-    void mLayerOrigNameLineEd_textEdited( const QString &text );
     //! \brief this slot asks the rasterlayer to construct pyramids
     void buttonBuildPyramids_clicked();
     //! \brief slot executed when user presses "Add Values From Display" button on the transparency page

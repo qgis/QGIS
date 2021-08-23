@@ -22,36 +22,17 @@
 #include "gdal.h"
 #include "gdalwarper.h"
 #include "cpl_string.h"
+#include "qgsapplication.h"
 
 #include <QNetworkProxy>
 #include <QString>
 #include <QImage>
 #include <QFileInfo>
-
-// File extensions for formats supported by GDAL which may contain multiple layers
-// and should be treated as a potential layer container
-const QStringList QgsGdalUtils::SUPPORTED_DB_LAYERS_EXTENSIONS
-{
-  QStringLiteral( "gpkg" ),
-  QStringLiteral( "sqlite" ),
-  QStringLiteral( "db" ),
-  QStringLiteral( "gdb" ),
-  QStringLiteral( "kml" ),
-  QStringLiteral( "kmz" ),
-  QStringLiteral( "osm" ),
-  QStringLiteral( "mdb" ),
-  QStringLiteral( "accdb" ),
-  QStringLiteral( "xls" ),
-  QStringLiteral( "xlsx" ),
-  QStringLiteral( "gpx" ),
-  QStringLiteral( "pdf" ),
-  QStringLiteral( "pbf" ),
-  QStringLiteral( "nc" ),
-  QStringLiteral( "shp.zip" ) };
+#include <mutex>
 
 bool QgsGdalUtils::supportsRasterCreate( GDALDriverH driver )
 {
-  QString driverShortName = GDALGetDriverShortName( driver );
+  const QString driverShortName = GDALGetDriverShortName( driver );
   if ( driverShortName == QLatin1String( "SQLite" ) )
   {
     // it supports Create() but only for vector side
@@ -77,8 +58,8 @@ gdal::dataset_unique_ptr QgsGdalUtils::createMultiBandMemoryDataset( GDALDataTyp
 
   gdal::dataset_unique_ptr hSrcDS( GDALCreate( hDriverMem, "", width, height, bands, dataType, nullptr ) );
 
-  double cellSizeX = extent.width() / width;
-  double cellSizeY = extent.height() / height;
+  const double cellSizeX = extent.width() / width;
+  const double cellSizeY = extent.height() / height;
   double geoTransform[6];
   geoTransform[0] = extent.xMinimum();
   geoTransform[1] = cellSizeX;
@@ -94,8 +75,8 @@ gdal::dataset_unique_ptr QgsGdalUtils::createMultiBandMemoryDataset( GDALDataTyp
 
 gdal::dataset_unique_ptr QgsGdalUtils::createSingleBandTiffDataset( const QString &filename, GDALDataType dataType, const QgsRectangle &extent, int width, int height, const QgsCoordinateReferenceSystem &crs )
 {
-  double cellSizeX = extent.width() / width;
-  double cellSizeY = extent.height() / height;
+  const double cellSizeX = extent.width() / width;
+  const double cellSizeY = extent.height() / height;
   double geoTransform[6];
   geoTransform[0] = extent.xMinimum();
   geoTransform[1] = cellSizeX;
@@ -206,7 +187,7 @@ bool QgsGdalUtils::resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH h
 
 QImage QgsGdalUtils::resampleImage( const QImage &image, QSize outputSize, GDALRIOResampleAlg resampleAlg )
 {
-  gdal::dataset_unique_ptr srcDS = QgsGdalUtils::imageToMemoryDataset( image );
+  const gdal::dataset_unique_ptr srcDS = QgsGdalUtils::imageToMemoryDataset( image );
   if ( !srcDS )
     return QImage();
 
@@ -303,7 +284,7 @@ QString QgsGdalUtils::validateCreationOptionsFormat( const QStringList &createOp
 
   char **papszOptions = papszFromStringList( createOptions );
   // get error string?
-  int ok = GDALValidateCreationOptions( myGdalDriver, papszOptions );
+  const int ok = GDALValidateCreationOptions( myGdalDriver, papszOptions );
   CSLDestroy( papszOptions );
 
   if ( !ok )
@@ -496,7 +477,7 @@ void QgsGdalUtils::setupProxy()
   // given the limited cost of checking them on every provider instantiation
   // we can do it here so that new settings are applied whenever a new layer
   // is created.
-  QgsSettings settings;
+  const QgsSettings settings;
   // Check that proxy is enabled
   if ( settings.value( QStringLiteral( "proxy/proxyEnabled" ), false ).toBool() )
   {
@@ -504,16 +485,16 @@ void QgsGdalUtils::setupProxy()
     QList<QNetworkProxy> proxies( QgsNetworkAccessManager::instance()->proxyFactory()->queryProxy( ) );
     if ( ! proxies.isEmpty() )
     {
-      QNetworkProxy proxy( proxies.first() );
+      const QNetworkProxy proxy( proxies.first() );
       // TODO/FIXME: check excludes (the GDAL config options are global, we need a per-connection config option)
       //QStringList excludes;
       //excludes = settings.value( QStringLiteral( "proxy/proxyExcludedUrls" ), "" ).toStringList();
 
-      QString proxyHost( proxy.hostName() );
-      qint16 proxyPort( proxy.port() );
+      const QString proxyHost( proxy.hostName() );
+      const qint16 proxyPort( proxy.port() );
 
-      QString proxyUser( proxy.user() );
-      QString proxyPassword( proxy.password() );
+      const QString proxyUser( proxy.user() );
+      const QString proxyPassword( proxy.password() );
 
       if ( ! proxyHost.isEmpty() )
       {
@@ -547,7 +528,7 @@ bool QgsGdalUtils::pathIsCheapToOpen( const QString &path, int smallFileSizeLimi
     return false;
 
   const QString suffix = info.suffix().toLower();
-  static QStringList sFileSizeDependentExtensions
+  static const QStringList sFileSizeDependentExtensions
   {
     QStringLiteral( "xlsx" ),
     QStringLiteral( "ods" ),
@@ -562,6 +543,90 @@ bool QgsGdalUtils::pathIsCheapToOpen( const QString &path, int smallFileSizeLimi
   // treat all other formats as expensive.
   // TODO -- flag formats which only require a quick header parse as cheap
   return false;
+}
+
+QStringList QgsGdalUtils::multiLayerFileExtensions()
+{
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
+  // get supported extensions
+  static std::once_flag initialized;
+  static QStringList SUPPORTED_DB_LAYERS_EXTENSIONS;
+  std::call_once( initialized, [ = ]
+  {
+    // iterate through all of the supported drivers, adding the corresponding file extensions for
+    // types which advertise multilayer support
+    GDALDriverH driver = nullptr;
+
+    QSet< QString > extensions;
+
+    for ( int i = 0; i < GDALGetDriverCount(); ++i )
+    {
+      driver = GDALGetDriver( i );
+      if ( !driver )
+      {
+        QgsLogger::warning( "unable to get driver " + QString::number( i ) );
+        continue;
+      }
+
+      bool isMultiLayer = false;
+      if ( QString( GDALGetMetadataItem( driver, GDAL_DCAP_RASTER, nullptr ) ) == QLatin1String( "YES" ) )
+      {
+        if ( GDALGetMetadataItem( driver, GDAL_DMD_SUBDATASETS, nullptr ) != nullptr )
+        {
+          isMultiLayer = true;
+        }
+      }
+      if ( !isMultiLayer && QString( GDALGetMetadataItem( driver, GDAL_DCAP_VECTOR, nullptr ) ) == QLatin1String( "YES" ) )
+      {
+        if ( GDALGetMetadataItem( driver, GDAL_DCAP_MULTIPLE_VECTOR_LAYERS, nullptr ) != nullptr )
+        {
+          isMultiLayer = true;
+        }
+      }
+
+      if ( !isMultiLayer )
+        continue;
+
+      const QString driverExtensions = GDALGetMetadataItem( driver, GDAL_DMD_EXTENSIONS, "" );
+      if ( driverExtensions.isEmpty() )
+        continue;
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+      const QStringList splitExtensions = driverExtensions.split( ' ', QString::SkipEmptyParts );
+#else
+      const QStringList splitExtensions = driverExtensions.split( ' ', Qt::SkipEmptyParts );
+#endif
+
+      for ( const QString &ext : splitExtensions )
+        extensions.insert( ext );
+    }
+
+    SUPPORTED_DB_LAYERS_EXTENSIONS = qgis::setToList( extensions );
+  } );
+  return SUPPORTED_DB_LAYERS_EXTENSIONS;
+
+#else
+  static const QStringList SUPPORTED_DB_LAYERS_EXTENSIONS
+  {
+    QStringLiteral( "gpkg" ),
+    QStringLiteral( "sqlite" ),
+    QStringLiteral( "db" ),
+    QStringLiteral( "gdb" ),
+    QStringLiteral( "kml" ),
+    QStringLiteral( "kmz" ),
+    QStringLiteral( "osm" ),
+    QStringLiteral( "mdb" ),
+    QStringLiteral( "accdb" ),
+    QStringLiteral( "xls" ),
+    QStringLiteral( "xlsx" ),
+    QStringLiteral( "ods" ),
+    QStringLiteral( "gpx" ),
+    QStringLiteral( "pdf" ),
+    QStringLiteral( "pbf" ),
+    QStringLiteral( "nc" ),
+    QStringLiteral( "shp.zip" ) };
+  return SUPPORTED_DB_LAYERS_EXTENSIONS;
+#endif
 }
 
 bool QgsGdalUtils::vrtMatchesLayerType( const QString &vrtPath, QgsMapLayerType type )

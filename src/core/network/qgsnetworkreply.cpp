@@ -22,7 +22,7 @@ QgsNetworkReplyContent::QgsNetworkReplyContent( QNetworkReply *reply )
   , mRawHeaderPairs( reply->rawHeaderPairs() )
   , mRequest( reply->request() )
 {
-  int maxAttribute = static_cast< int >( QNetworkRequest::Http2DirectAttribute );
+  const int maxAttribute = static_cast< int >( QNetworkRequest::Http2DirectAttribute );
   for ( int i = 0; i <= maxAttribute; ++i )
   {
     if ( reply->attribute( static_cast< QNetworkRequest::Attribute>( i ) ).isValid() )
@@ -30,7 +30,7 @@ QgsNetworkReplyContent::QgsNetworkReplyContent( QNetworkReply *reply )
   }
 
   bool ok = false;
-  int requestId = reply->property( "requestId" ).toInt( &ok );
+  const int requestId = reply->property( "requestId" ).toInt( &ok );
   if ( ok )
     mRequestId = requestId;
 }

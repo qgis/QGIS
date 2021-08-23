@@ -52,7 +52,7 @@ QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPoint
   mToolEmitPoint = new QgsGeorefMapToolEmitPoint( qgisCanvas );
   mToolEmitPoint->setButton( mPointFromCanvasPushButton );
 
-  QgsSettings settings;
+  const QgsSettings settings;
   mMinimizeWindowCheckBox->setChecked( settings.value( QStringLiteral( "/Plugin-GeoReferencer/Config/Minimize" ), QStringLiteral( "1" ) ).toBool() );
 
   connect( mPointFromCanvasPushButton, &QAbstractButton::clicked, this, &QgsMapCoordsDialog::setToolEmitPoint );
@@ -82,7 +82,7 @@ QgsMapCoordsDialog::~QgsMapCoordsDialog()
 
 void QgsMapCoordsDialog::updateOK()
 {
-  bool enable = ( leXCoord->text().size() != 0 && leYCoord->text().size() != 0 );
+  const bool enable = ( leXCoord->text().size() != 0 && leYCoord->text().size() != 0 );
   QPushButton *okPushButton = buttonBox->button( QDialogButtonBox::Ok );
   okPushButton->setEnabled( enable );
 }
@@ -112,7 +112,7 @@ void QgsMapCoordsDialog::maybeSetXY( const QgsPointXY &xy, Qt::MouseButton butto
   // Only LeftButton should set point
   if ( Qt::LeftButton == button )
   {
-    QgsPointXY mapCoordPoint = xy;
+    const QgsPointXY mapCoordPoint = xy;
 
     leXCoord->clear();
     leYCoord->clear();
@@ -167,7 +167,7 @@ void QgsMapCoordsDialog::setToolEmitPoint( bool isEnable )
 
 double QgsMapCoordsDialog::dmsToDD( const QString &dms )
 {
-  QStringList list = dms.split( ' ' );
+  const QStringList list = dms.split( ' ' );
   QString tmpStr = list.at( 0 );
   double res = std::fabs( tmpStr.toDouble() );
 
@@ -198,7 +198,7 @@ void QgsGeorefMapToolEmitPoint::canvasMoveEvent( QgsMapMouseEvent *e )
 
 void QgsGeorefMapToolEmitPoint::canvasPressEvent( QgsMapMouseEvent *e )
 {
-  QgsPointLocator::Match m = mapPointMatch( e );
+  const QgsPointLocator::Match m = mapPointMatch( e );
   emit canvasClicked( m.isValid() ? m.point() : toMapCoordinates( e->pos() ), e->button() );
 }
 
@@ -217,6 +217,6 @@ void QgsGeorefMapToolEmitPoint::deactivate()
 
 QgsPointLocator::Match QgsGeorefMapToolEmitPoint::mapPointMatch( QMouseEvent *e )
 {
-  QgsPointXY pnt = toMapCoordinates( e->pos() );
+  const QgsPointXY pnt = toMapCoordinates( e->pos() );
   return canvas()->snappingUtils()->snapToMap( pnt );
 }

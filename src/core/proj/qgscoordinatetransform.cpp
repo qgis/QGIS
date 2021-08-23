@@ -366,7 +366,7 @@ void QgsCoordinateTransform::transformPolygon( QPolygonF &poly, TransformDirecti
   }
 
   //create x, y arrays
-  int nVertices = poly.size();
+  const int nVertices = poly.size();
 
   QVector<double> x( nVertices );
   QVector<double> y( nVertices );
@@ -455,7 +455,7 @@ void QgsCoordinateTransform::transformInPlace(
   try
   {
     //copy everything to double vectors since proj needs double
-    int vectorSize = x.size();
+    const int vectorSize = x.size();
     QVector<double> xd( x.size() );
     QVector<double> yd( y.size() );
     QVector<double> zd( z.size() );
@@ -511,7 +511,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
 
   if ( rect.isEmpty() )
   {
-    QgsPointXY p = transform( rect.xMinimum(), rect.yMinimum(), direction );
+    const QgsPointXY p = transform( rect.xMinimum(), rect.yMinimum(), direction );
     return QgsRectangle( p, p );
   }
 
@@ -520,9 +520,9 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   // even with 1000 points it takes < 1ms.
   // TODO: how to effectively and precisely reproject bounding box?
   const int nPoints = 1000;
-  double d = std::sqrt( ( rect.width() * rect.height() ) / std::pow( std::sqrt( static_cast< double >( nPoints ) ) - 1, 2.0 ) );
-  int nXPoints = std::min( static_cast< int >( std::ceil( rect.width() / d ) ) + 1, 1000 );
-  int nYPoints = std::min( static_cast< int >( std::ceil( rect.height() / d ) ) + 1, 1000 );
+  const double d = std::sqrt( ( rect.width() * rect.height() ) / std::pow( std::sqrt( static_cast< double >( nPoints ) ) - 1, 2.0 ) );
+  const int nXPoints = std::min( static_cast< int >( std::ceil( rect.width() / d ) ) + 1, 1000 );
+  const int nYPoints = std::min( static_cast< int >( std::ceil( rect.height() / d ) ) + 1, 1000 );
 
   QgsRectangle bb_rect;
   bb_rect.setMinimal();
@@ -537,8 +537,8 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
 
   // Populate the vectors
 
-  double dx = rect.width()  / static_cast< double >( nXPoints - 1 );
-  double dy = rect.height() / static_cast< double >( nYPoints - 1 );
+  const double dx = rect.width()  / static_cast< double >( nXPoints - 1 );
+  const double dy = rect.height() / static_cast< double >( nYPoints - 1 );
 
   double pointY = rect.yMinimum();
 
@@ -785,14 +785,14 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
       }
     }
 
-    QString dir = ( direction == ForwardTransform ) ? QObject::tr( "forward transform" ) : QObject::tr( "inverse transform" );
+    const QString dir = ( direction == ForwardTransform ) ? QObject::tr( "forward transform" ) : QObject::tr( "inverse transform" );
 
-    QString msg = QObject::tr( "%1 of\n"
-                               "%2"
-                               "Error: %3" )
-                  .arg( dir,
-                        points,
-                        projResult < 0 ? QString::fromUtf8( proj_errno_string( projResult ) ) : QObject::tr( "Fallback transform failed" ) );
+    const QString msg = QObject::tr( "%1 of\n"
+                                     "%2"
+                                     "Error: %3" )
+                        .arg( dir,
+                              points,
+                              projResult < 0 ? QString::fromUtf8( proj_errno_string( projResult ) ) : QObject::tr( "Fallback transform failed" ) );
 
 
     // don't flood console with thousands of duplicate transform error messages
@@ -906,9 +906,9 @@ bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &s
        )
     {
       // need to save, and then restore the context... we don't want this to be cached or to use the values from the cache
-      QgsCoordinateTransformContext context = mContext;
+      const QgsCoordinateTransformContext context = mContext;
 #ifdef QGISDEBUG
-      bool hasContext = mHasContext;
+      const bool hasContext = mHasContext;
 #endif
       *this = *valIt;
       locker.unlock();
@@ -937,7 +937,7 @@ void QgsCoordinateTransform::addToCache()
   if ( sourceKey.isEmpty() || destKey.isEmpty() )
     return;
 
-  QgsReadWriteLocker locker( sCacheLock, QgsReadWriteLocker::Write );
+  const QgsReadWriteLocker locker( sCacheLock, QgsReadWriteLocker::Write );
   if ( sDisableCache )
     return;
 
@@ -976,7 +976,7 @@ void QgsCoordinateTransform::setDestinationDatumTransformId( int dt )
 
 void QgsCoordinateTransform::invalidateCache( bool disableCache )
 {
-  QgsReadWriteLocker locker( sCacheLock, QgsReadWriteLocker::Write );
+  const QgsReadWriteLocker locker( sCacheLock, QgsReadWriteLocker::Write );
   if ( sDisableCache )
     return;
 
@@ -997,7 +997,7 @@ void QgsCoordinateTransform::removeFromCacheObjectsBelongingToCurrentThread( voi
   if ( sDisableCache )
     return;
 
-  QgsReadWriteLocker locker( sCacheLock, QgsReadWriteLocker::Write );
+  const QgsReadWriteLocker locker( sCacheLock, QgsReadWriteLocker::Write );
   // cppcheck-suppress identicalConditionAfterEarlyExit
   if ( sDisableCache )
     return;
@@ -1014,12 +1014,12 @@ void QgsCoordinateTransform::removeFromCacheObjectsBelongingToCurrentThread( voi
 
 double QgsCoordinateTransform::scaleFactor( const QgsRectangle &ReferenceExtent ) const
 {
-  QgsPointXY source1( ReferenceExtent.xMinimum(), ReferenceExtent.yMinimum() );
-  QgsPointXY source2( ReferenceExtent.xMaximum(), ReferenceExtent.yMaximum() );
-  double distSourceUnits = std::sqrt( source1.sqrDist( source2 ) );
-  QgsPointXY dest1 = transform( source1 );
-  QgsPointXY dest2 = transform( source2 );
-  double distDestUnits = std::sqrt( dest1.sqrDist( dest2 ) );
+  const QgsPointXY source1( ReferenceExtent.xMinimum(), ReferenceExtent.yMinimum() );
+  const QgsPointXY source2( ReferenceExtent.xMaximum(), ReferenceExtent.yMaximum() );
+  const double distSourceUnits = std::sqrt( source1.sqrDist( source2 ) );
+  const QgsPointXY dest1 = transform( source1 );
+  const QgsPointXY dest2 = transform( source2 );
+  const double distDestUnits = std::sqrt( dest1.sqrDist( dest2 ) );
   return distDestUnits / distSourceUnits;
 }
 

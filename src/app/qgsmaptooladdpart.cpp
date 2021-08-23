@@ -88,13 +88,13 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  QgsGeometry::OperationResult errorCode = QgsGeometry::Success;
+  Qgis::GeometryOperationResult errorCode = Qgis::GeometryOperationResult::Success;
   switch ( mode() )
   {
     case CapturePoint:
     {
       QgsPoint layerPoint;
-      QgsPointXY mapPoint = e->mapPoint();
+      const QgsPointXY mapPoint = e->mapPoint();
 
       if ( nextPoint( QgsPoint( mapPoint ), layerPoint ) != 0 )
       {
@@ -113,7 +113,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       //add point to list and to rubber band
       if ( e->button() == Qt::LeftButton )
       {
-        int error = addVertex( e->mapPoint(), e->mapPointMatch() );
+        const int error = addVertex( e->mapPoint(), e->mapPointMatch() );
         if ( error == 1 )
         {
           QgsDebugMsg( QStringLiteral( "current layer is not a vector layer" ) );
@@ -146,8 +146,8 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       //does compoundcurve contain circular strings?
       //does provider support circular strings?
-      bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
-      bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
+      const bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
+      const bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
 
       QgsCurve *curveToAdd = nullptr;
       if ( hasCurvedSegments && providerSupportsCurvedSegments )
@@ -205,20 +205,20 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     break;
     default:
       Q_ASSERT( !"invalid capture mode" );
-      errorCode = QgsGeometry::OperationResult::AddPartSelectedGeometryNotFound;
+      errorCode = Qgis::GeometryOperationResult::AddPartSelectedGeometryNotFound;
       break;
   }
 
   QString errorMessage;
   switch ( errorCode )
   {
-    case QgsGeometry::OperationResult::Success:
+    case Qgis::GeometryOperationResult::Success:
     {
       // remove previous message
       emit messageDiscarded();
 
       //add points to other features to keep topology up-to-date
-      bool topologicalEditing = QgsProject::instance()->topologicalEditing();
+      const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
       if ( topologicalEditing )
       {
         addTopologicalPoints( pointsZM() );
@@ -231,41 +231,41 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       return;
     }
 
-    case QgsGeometry::OperationResult::InvalidInputGeometryType:
+    case Qgis::GeometryOperationResult::InvalidInputGeometryType:
       errorMessage = tr( "New part's geometry is empty or invalid." );
       break;
 
-    case QgsGeometry::OperationResult::AddPartNotMultiGeometry:
+    case Qgis::GeometryOperationResult::AddPartNotMultiGeometry:
       errorMessage = tr( "Selected feature is not multi part." );
       break;
 
-    case QgsGeometry::OperationResult::SelectionIsEmpty:
+    case Qgis::GeometryOperationResult::SelectionIsEmpty:
       errorMessage = tr( "No feature selected. Please select a feature with the selection tool or in the attribute table." );
       break;
 
-    case QgsGeometry::OperationResult::SelectionIsGreaterThanOne:
+    case Qgis::GeometryOperationResult::SelectionIsGreaterThanOne:
       errorMessage = tr( "Several features are selected. Please select only one feature to which an island should be added." );
       break;
 
-    case QgsGeometry::OperationResult::AddPartSelectedGeometryNotFound:
+    case Qgis::GeometryOperationResult::AddPartSelectedGeometryNotFound:
       errorMessage = tr( "Selected geometry could not be found." );
       break;
 
-    case QgsGeometry::OperationResult::InvalidBaseGeometry:
+    case Qgis::GeometryOperationResult::InvalidBaseGeometry:
       errorMessage = tr( "Base geometry is not valid." );
       break;
 
-    case QgsGeometry::OperationResult::AddRingCrossesExistingRings:
-    case QgsGeometry::OperationResult::AddRingNotClosed:
-    case QgsGeometry::OperationResult::AddRingNotInExistingFeature:
-    case QgsGeometry::OperationResult::AddRingNotValid:
-    case QgsGeometry::OperationResult::GeometryEngineError:
-    case QgsGeometry::OperationResult::LayerNotEditable:
-    case QgsGeometry::OperationResult::NothingHappened:
-    case QgsGeometry::OperationResult::SplitCannotSplitPoint:
+    case Qgis::GeometryOperationResult::AddRingCrossesExistingRings:
+    case Qgis::GeometryOperationResult::AddRingNotClosed:
+    case Qgis::GeometryOperationResult::AddRingNotInExistingFeature:
+    case Qgis::GeometryOperationResult::AddRingNotValid:
+    case Qgis::GeometryOperationResult::GeometryEngineError:
+    case Qgis::GeometryOperationResult::LayerNotEditable:
+    case Qgis::GeometryOperationResult::NothingHappened:
+    case Qgis::GeometryOperationResult::SplitCannotSplitPoint:
       // Should not reach here
       // Other OperationResults should not be returned by addPart
-      errorMessage = tr( "Unexpected OperationResult: %1" ).arg( errorCode );
+      errorMessage = tr( "Unexpected OperationResult: %1" ).arg( qgsEnumValueToKey( errorCode ) );
   }
 
   emit messageEmitted( errorMessage, Qgis::MessageLevel::Warning );
@@ -289,7 +289,7 @@ bool QgsMapToolAddPart::checkSelection()
   }
 
   //inform user at the begin of the digitizing action that the island tool only works if exactly one feature is selected
-  int nSelectedFeatures = vlayer->selectedFeatureCount();
+  const int nSelectedFeatures = vlayer->selectedFeatureCount();
   QString selectionErrorMsg;
   if ( nSelectedFeatures < 1 )
   {

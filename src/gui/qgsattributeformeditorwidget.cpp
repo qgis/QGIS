@@ -229,7 +229,7 @@ void QgsAttributeFormEditorWidget::onAggregateChanged()
 void QgsAttributeFormEditorWidget::updateWidgets()
 {
   //first update the tool buttons
-  bool hasMultiEditButton = ( editPage()->layout()->indexOf( mMultiEditButton ) >= 0 );
+  const bool hasMultiEditButton = ( editPage()->layout()->indexOf( mMultiEditButton ) >= 0 );
 
   bool shouldShowMultiEditButton = false;
   switch ( mode() )

@@ -38,7 +38,7 @@ bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer *layer, const QgsAttribu
   f->setGeometry( defaultGeometry );
   QgsFeatureAction a( tr( "Add feature" ), *f, layer );
   a.setForceSuppressFormPopup( forceSuppressFormPopup() );
-  bool added = a.addFeature( defaultValues );
+  const bool added = a.addFeature( defaultValues );
   if ( !feat )
     delete f;
 
@@ -52,7 +52,7 @@ bool QgsGuiVectorLayerTools::startEditing( QgsVectorLayer *layer ) const
     return false;
   }
 
-  bool res = true;
+  const bool res = true;
 
   if ( !layer->isEditable() && !layer->readOnly() )
   {

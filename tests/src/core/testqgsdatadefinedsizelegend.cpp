@@ -33,7 +33,7 @@ static bool _verifyImage( const QString &testName, QString &report )
   checker.setControlName( "expected_" + testName );
   checker.setRenderedImage( _fileNameForTest( testName ) );
   checker.setSizeTolerance( 3, 3 );
-  bool equal = checker.compareImages( testName, 500 );
+  const bool equal = checker.compareImages( testName, 500 );
   report += checker.report();
   return equal;
 }
@@ -82,7 +82,7 @@ void TestQgsDataDefinedSizeLegend::initTestCase()
 
 void TestQgsDataDefinedSizeLegend::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -115,13 +115,13 @@ void TestQgsDataDefinedSizeLegend::testBasic()
 
   QgsRenderContext context( _createRenderContext( 100, 96, 100 ) );
 
-  QImage imgBottom = settings.collapsedLegendImage( context, Qt::white, 1 );
+  const QImage imgBottom = settings.collapsedLegendImage( context, Qt::white, 1 );
   imgBottom.save( _fileNameForTest( QStringLiteral( "basic_bottom" ) ) );
   QVERIFY( _verifyImage( "basic_bottom", mReport ) );
 
   settings.setVerticalAlignment( QgsDataDefinedSizeLegend::AlignCenter );
 
-  QImage imgCenter = settings.collapsedLegendImage( context, Qt::white, 1 );
+  const QImage imgCenter = settings.collapsedLegendImage( context, Qt::white, 1 );
   imgCenter.save( _fileNameForTest( QStringLiteral( "basic_center" ) ) );
   QVERIFY( _verifyImage( "basic_center", mReport ) );
 }
@@ -150,7 +150,7 @@ void TestQgsDataDefinedSizeLegend::testCrowded()
 
   QgsRenderContext context( _createRenderContext( 100, 96, 100 ) );
 
-  QImage img = settings.collapsedLegendImage( context, Qt::white, 1 );
+  const QImage img = settings.collapsedLegendImage( context, Qt::white, 1 );
   img.save( _fileNameForTest( QStringLiteral( "crowded" ) ) );
 
   QVERIFY( _verifyImage( "crowded", mReport ) );

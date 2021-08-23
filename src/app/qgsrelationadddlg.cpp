@@ -80,7 +80,7 @@ void QgsRelationAddDlg::addFieldsRow()
 {
   QgsFieldComboBox *referencedField = new QgsFieldComboBox( this );
   QgsFieldComboBox *referencingField = new QgsFieldComboBox( this );
-  int index = mFieldsMappingTable->rowCount();
+  const int index = mFieldsMappingTable->rowCount();
 
   referencedField->setLayer( mReferencedLayerCombobox->currentLayer() );
   referencingField->setLayer( mReferencingLayerCombobox->currentLayer() );
@@ -122,17 +122,17 @@ void QgsRelationAddDlg::removeFieldsRow()
 
 void QgsRelationAddDlg::updateFieldsMappingButtons()
 {
-  int rowsCount = mFieldsMappingTable->rowCount();
-  int selectedRowsCount = mFieldsMappingTable->selectionModel()->selectedRows().count();
-  bool isLayersRowSelected = mFieldsMappingTable->selectionModel()->isRowSelected( 0, QModelIndex() );
-  bool isRemoveButtonEnabled = !isLayersRowSelected && selectedRowsCount <= rowsCount - 2;
+  const int rowsCount = mFieldsMappingTable->rowCount();
+  const int selectedRowsCount = mFieldsMappingTable->selectionModel()->selectedRows().count();
+  const bool isLayersRowSelected = mFieldsMappingTable->selectionModel()->isRowSelected( 0, QModelIndex() );
+  const bool isRemoveButtonEnabled = !isLayersRowSelected && selectedRowsCount <= rowsCount - 2;
 
   mFieldsMappingRemoveButton->setEnabled( isRemoveButtonEnabled );
 }
 
 void QgsRelationAddDlg::updateFieldsMappingHeaders()
 {
-  int rowsCount = mFieldsMappingTable->rowCount();
+  const int rowsCount = mFieldsMappingTable->rowCount();
   QStringList verticalHeaderLabels( {tr( "Layer" )} );
 
   for ( int i = 0; i < rowsCount; i++ )
@@ -160,8 +160,8 @@ QList< QPair< QString, QString > > QgsRelationAddDlg::references()
     if ( i == 0 )
       continue;
 
-    QString referencedField = static_cast<QgsFieldComboBox *>( mFieldsMappingTable->cellWidget( i, 0 ) )->currentField();
-    QString referencingField = static_cast<QgsFieldComboBox *>( mFieldsMappingTable->cellWidget( i, 1 ) )->currentField();
+    const QString referencedField = static_cast<QgsFieldComboBox *>( mFieldsMappingTable->cellWidget( i, 0 ) )->currentField();
+    const QString referencingField = static_cast<QgsFieldComboBox *>( mFieldsMappingTable->cellWidget( i, 1 ) )->currentField();
     references << qMakePair( referencingField, referencedField );
   }
 

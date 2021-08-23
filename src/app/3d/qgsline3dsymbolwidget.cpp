@@ -85,7 +85,7 @@ QString QgsLine3DSymbolWidget::symbolType() const
 
 void QgsLine3DSymbolWidget::updateGuiState()
 {
-  bool simple = chkSimpleLines->isChecked();
+  const bool simple = chkSimpleLines->isChecked();
   spinExtrusion->setEnabled( !simple );
   widgetMaterial->setTechnique( chkSimpleLines->isChecked() ? QgsMaterialSettingsRenderingTechnique::Lines
                                 : QgsMaterialSettingsRenderingTechnique::Triangles );

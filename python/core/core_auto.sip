@@ -250,6 +250,7 @@
 %Include auto_generated/diagram/qgstextdiagram.sip
 %Include auto_generated/dxf/qgsdxfexport.sip
 %Include auto_generated/editform/qgseditformconfig.sip
+%Include auto_generated/editform/qgsattributeeditoraction.sip
 %Include auto_generated/editform/qgsattributeeditorelement.sip
 %Include auto_generated/editform/qgsattributeeditorcontainer.sip
 %Include auto_generated/editform/qgsattributeeditorfield.sip

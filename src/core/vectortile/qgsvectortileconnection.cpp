@@ -180,7 +180,7 @@ void QgsVectorTileProviderConnection::addConnection( const QString &name, QgsVec
 
 QString QgsVectorTileProviderConnection::selectedConnection()
 {
-  QgsSettings settings;
+  const QgsSettings settings;
   return settings.value( QStringLiteral( "qgis/connections-vector-tile/selected" ) ).toString();
 }
 

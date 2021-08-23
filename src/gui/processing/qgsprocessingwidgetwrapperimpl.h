@@ -2256,6 +2256,34 @@ class GUI_EXPORT QgsProcessingFolderDestinationWidgetWrapper : public QgsProcess
 
 };
 
+class GUI_EXPORT QgsProcessingPointCloudLayerWidgetWrapper : public QgsProcessingMapLayerWidgetWrapper
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProcessingPointCloudLayerWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
+        QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+
+    // QgsProcessingParameterWidgetFactoryInterface
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
+    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
+      QgsProcessingContext &context,
+      const QgsProcessingParameterWidgetContext &widgetContext,
+      const QgsProcessingParameterDefinition *definition = nullptr,
+      const QgsProcessingAlgorithm *algorithm = nullptr ) override;
+
+  protected:
+    QStringList compatibleParameterTypes() const override;
+
+    QStringList compatibleOutputTypes() const override;
+
+    QString modelerExpressionFormatString() const override;
+
+};
+
+
 ///@endcond PRIVATE
 
 #endif // QGSPROCESSINGWIDGETWRAPPERIMPL_H

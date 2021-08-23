@@ -104,7 +104,7 @@ QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer, QWidg
   repopulateTimeCombos();
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 
-  QgsSettings settings;
+  const QgsSettings settings;
   mOutputDatasetFileWidget->setStorageMode( QgsFileWidget::SaveFile );
   mOutputDatasetFileWidget->setDialogTitle( tr( "Enter mesh dataset file" ) );
   mOutputDatasetFileWidget->setDefaultRoot( settings.value( QStringLiteral( "/MeshCalculator/lastOutputDir" ), QDir::homePath() ).toString() );
@@ -130,7 +130,7 @@ QgsMeshLayer *QgsMeshCalculatorDialog::meshLayer() const
 
 QString QgsMeshCalculatorDialog::outputFile() const
 {
-  QString ret = mOutputDatasetFileWidget->filePath();
+  const QString ret = mOutputDatasetFileWidget->filePath();
   return controlSuffix( ret );
 }
 
@@ -174,7 +174,7 @@ QgsGeometry QgsMeshCalculatorDialog::maskGeometry( QgsVectorLayer *layer ) const
   {
     geometries.push_back( feat.geometry() );
   }
-  QgsGeometry ret = QgsGeometry::unaryUnion( geometries ) ;
+  const QgsGeometry ret = QgsGeometry::unaryUnion( geometries ) ;
   return ret;
 }
 
@@ -299,15 +299,15 @@ void QgsMeshCalculatorDialog::updateInfoMessage()
   QgsMeshDriverMetadata::MeshDriverCapability requiredCapability;
 
   // expression is valid
-  QgsMeshCalculator::Result result = QgsMeshCalculator::expressionIsValid(
-                                       formulaString(),
-                                       meshLayer(),
-                                       requiredCapability
-                                     );
-  bool expressionValid = result == QgsMeshCalculator::Success;
+  const QgsMeshCalculator::Result result = QgsMeshCalculator::expressionIsValid(
+        formulaString(),
+        meshLayer(),
+        requiredCapability
+      );
+  const bool expressionValid = result == QgsMeshCalculator::Success;
 
   // selected driver is appropriate
-  bool notInFile = !mOutputOnFileRadioButton->isChecked();
+  const bool notInFile = !mOutputOnFileRadioButton->isChecked();
   bool driverValid = false;
   if ( expressionValid )
   {
@@ -334,7 +334,7 @@ void QgsMeshCalculatorDialog::updateInfoMessage()
   }
 
   // group name
-  bool groupNameValid = !groupName().isEmpty() && !mVariableNames.contains( groupName() );
+  const bool groupNameValid = !groupName().isEmpty() && !mVariableNames.contains( groupName() );
 
   if ( expressionValid &&
        ( notInFile || ( driverValid && filePathValid ) )  &&
@@ -366,7 +366,7 @@ void QgsMeshCalculatorDialog::onOutputRadioButtonChange()
 
 void QgsMeshCalculatorDialog::onOutputFormatChange()
 {
-  QString suffix = currentOutputSuffix();
+  const QString suffix = currentOutputSuffix();
   if ( !suffix.isEmpty() )
   {
     QString filter = mOutputFormatComboBox->currentText();
@@ -530,15 +530,15 @@ QString QgsMeshCalculatorDialog::controlSuffix( const QString &fileName ) const
   if ( fileName.isEmpty() )
     return fileName;
 
-  QFileInfo fileInfo( fileName );
+  const QFileInfo fileInfo( fileName );
 
-  QString appropriateSuffix = currentOutputSuffix();
+  const QString appropriateSuffix = currentOutputSuffix();
 
-  QString existingSuffix = fileInfo.suffix();
+  const QString existingSuffix = fileInfo.suffix();
   if ( !( existingSuffix.isEmpty() && appropriateSuffix.isEmpty() )
        && existingSuffix != appropriateSuffix )
   {
-    int pos = fileName.lastIndexOf( '.' );
+    const int pos = fileName.lastIndexOf( '.' );
     QString ret = fileName.left( pos + 1 );
     ret.append( appropriateSuffix );
 
@@ -550,7 +550,7 @@ QString QgsMeshCalculatorDialog::controlSuffix( const QString &fileName ) const
 
 QString QgsMeshCalculatorDialog::currentOutputSuffix() const
 {
-  QString currentDriver = mOutputFormatComboBox->currentData().toString();
+  const QString currentDriver = mOutputFormatComboBox->currentData().toString();
   QString suffix;
   if ( mMeshDrivers.contains( currentDriver ) )
     suffix = mMeshDrivers[currentDriver].writeDatasetOnFileSuffix();
@@ -608,7 +608,7 @@ void QgsMeshCalculatorDialog::useAllTimesFromLayer()
 
 QString QgsMeshCalculatorDialog::currentDatasetGroup() const
 {
-  QModelIndex index = mDatasetsListWidget->currentIndex();
+  const QModelIndex index = mDatasetsListWidget->currentIndex();
 
   if ( !index.isValid() )
     return QString();
@@ -638,18 +638,18 @@ void QgsMeshCalculatorDialog::setTimesByDatasetGroupName( const QString group )
   if ( groupIndex < 0 )
     return; //not found
 
-  int datasetCount = dp->datasetCount( groupIndex );
+  const int datasetCount = dp->datasetCount( groupIndex );
   if ( datasetCount < 1 )
     return; // group without datasets
 
 
   // find maximum and minimum time in this group
-  double minTime = dp->datasetMetadata( QgsMeshDatasetIndex( groupIndex, 0 ) ).time();
+  const double minTime = dp->datasetMetadata( QgsMeshDatasetIndex( groupIndex, 0 ) ).time();
   int idx = mStartTimeComboBox->findData( minTime );
   if ( idx >= 0 )
     mStartTimeComboBox->setCurrentIndex( idx );
 
-  double maxTime = dp->datasetMetadata( QgsMeshDatasetIndex( groupIndex, datasetCount - 1 ) ).time();
+  const double maxTime = dp->datasetMetadata( QgsMeshDatasetIndex( groupIndex, datasetCount - 1 ) ).time();
   idx = mEndTimeComboBox->findData( maxTime );
   if ( idx >= 0 )
     mEndTimeComboBox->setCurrentIndex( idx );

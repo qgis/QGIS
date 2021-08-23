@@ -58,7 +58,6 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mCameraNavigationMode( other.mCameraNavigationMode )
   , mCameraMovementSpeed( other.mCameraMovementSpeed )
   , mLayers( other.mLayers )
-  , mTerrainLayers( other.mTerrainLayers )
   , mRenderers() // initialized in body
   , mTransformContext( other.mTransformContext )
   , mPathResolver( other.mPathResolver )
@@ -180,23 +179,6 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
     elemMapLayer = elemMapLayer.nextSiblingElement( QStringLiteral( "layer" ) );
   }
   mLayers = mapLayers;  // needs to resolve refs afterwards
-
-  QDomElement elemTerrainLayers = elemTerrain.firstChildElement( QStringLiteral( "terrainLayers" ) );
-  if ( elemTerrainLayers.isNull() )
-  {
-    mTerrainLayers = mLayers;
-  }
-  else
-  {
-    QDomElement elemTerrainMapLayer = elemTerrainLayers.firstChildElement( QStringLiteral( "layer" ) );
-    QList<QgsMapLayerRef> terrainMapLayers;
-    while ( !elemTerrainMapLayer.isNull() )
-    {
-      terrainMapLayers << QgsMapLayerRef( elemTerrainMapLayer.attribute( QStringLiteral( "id" ) ) );
-      elemTerrainMapLayer = elemTerrainMapLayer.nextSiblingElement( QStringLiteral( "layer" ) );
-    }
-    mTerrainLayers = mapLayers;  // needs to resolve refs afterwards
-  }
 
   QDomElement elemTerrainGenerator = elemTerrain.firstChildElement( QStringLiteral( "generator" ) );
   QString terrainGenType = elemTerrainGenerator.attribute( QStringLiteral( "type" ) );
@@ -364,15 +346,6 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   }
   elemTerrain.appendChild( elemMapLayers );
 
-  QDomElement elemTerrainMapLayers = doc.createElement( QStringLiteral( "terrainLayers" ) );
-  for ( const QgsMapLayerRef &layerRef : mTerrainLayers )
-  {
-    QDomElement elemMapLayer = doc.createElement( QStringLiteral( "layer" ) );
-    elemMapLayer.setAttribute( QStringLiteral( "id" ), layerRef.layerId );
-    elemTerrainMapLayers.appendChild( elemMapLayer );
-  }
-  elemTerrain.appendChild( elemTerrainMapLayers );
-
   QDomElement elemTerrainGenerator = doc.createElement( QStringLiteral( "generator" ) );
   elemTerrainGenerator.setAttribute( QStringLiteral( "type" ), QgsTerrainGenerator::typeToString( mTerrainGenerator->type() ) );
   mTerrainGenerator->writeXml( elemTerrainGenerator );
@@ -434,11 +407,6 @@ void Qgs3DMapSettings::resolveReferences( const QgsProject &project )
   for ( int i = 0; i < mLayers.count(); ++i )
   {
     QgsMapLayerRef &layerRef = mLayers[i];
-    layerRef.setLayer( project.mapLayer( layerRef.layerId ) );
-  }
-  for ( int i = 0; i < mTerrainLayers.count(); ++i )
-  {
-    QgsMapLayerRef &layerRef = mTerrainLayers[i];
     layerRef.setLayer( project.mapLayer( layerRef.layerId ) );
   }
 
@@ -539,34 +507,6 @@ QList<QgsMapLayer *> Qgs3DMapSettings::layers() const
   QList<QgsMapLayer *> lst;
   lst.reserve( mLayers.count() );
   for ( const QgsMapLayerRef &layerRef : mLayers )
-  {
-    if ( layerRef.layer )
-      lst.append( layerRef.layer );
-  }
-  return lst;
-}
-
-void Qgs3DMapSettings::setTerrainLayers( const QList<QgsMapLayer *> &layers )
-{
-  QList<QgsMapLayerRef> lst;
-  lst.reserve( layers.count() );
-  for ( QgsMapLayer *layer : layers )
-  {
-    lst.append( layer );
-  }
-
-  if ( mTerrainLayers == lst )
-    return;
-
-  mTerrainLayers = lst;
-  emit terrainLayersChanged();
-}
-
-QList<QgsMapLayer *> Qgs3DMapSettings::terrainLayers() const
-{
-  QList<QgsMapLayer *> lst;
-  lst.reserve( mTerrainLayers.count() );
-  for ( const QgsMapLayerRef &layerRef : mTerrainLayers )
   {
     if ( layerRef.layer )
       lst.append( layerRef.layer );

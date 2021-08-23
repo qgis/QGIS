@@ -47,8 +47,8 @@ QgsRasterPyramidsOptionsWidget::QgsRasterPyramidsOptionsWidget( QWidget *parent,
 
 void QgsRasterPyramidsOptionsWidget::updateUi()
 {
-  QgsSettings mySettings;
-  QString prefix = mProvider + "/driverOptions/_pyramids/";
+  const QgsSettings mySettings;
+  const QString prefix = mProvider + "/driverOptions/_pyramids/";
   QString tmpStr;
 
   // keep it in sync with qgsrasterlayerproperties.cpp
@@ -67,8 +67,8 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
   {
     cboResamplingMethod->addItem( method.second, method.first );
   }
-  QString defaultMethod = mySettings.value( prefix + "resampling", "AVERAGE" ).toString();
-  int idx = cboResamplingMethod->findData( defaultMethod );
+  const QString defaultMethod = mySettings.value( prefix + "resampling", "AVERAGE" ).toString();
+  const int idx = cboResamplingMethod->findData( defaultMethod );
   cboResamplingMethod->setCurrentIndex( idx );
 
   // validate string, only space-separated positive integers are allowed
@@ -84,7 +84,7 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
     overviewList << 2 << 4 << 8 << 16 << 32 << 64;
     mOverviewCheckBoxes.clear();
     const auto constOverviewList = overviewList;
-    for ( int i : constOverviewList )
+    for ( const int i : constOverviewList )
     {
       mOverviewCheckBoxes[ i ] = new QCheckBox( QString::number( i ), this );
       connect( mOverviewCheckBoxes[ i ], &QCheckBox::toggled,
@@ -128,7 +128,7 @@ QString QgsRasterPyramidsOptionsWidget::resamplingMethod() const
 void QgsRasterPyramidsOptionsWidget::apply()
 {
   QgsSettings mySettings;
-  QString prefix = mProvider + "/driverOptions/_pyramids/";
+  const QString prefix = mProvider + "/driverOptions/_pyramids/";
   QString tmpStr;
 
   // mySettings.setValue( prefix + "internal", cbxPyramidsInternal->isChecked() );
@@ -209,7 +209,7 @@ void QgsRasterPyramidsOptionsWidget::setOverviewList()
     for ( const QString &lev : constSplit )
     {
       QgsDebugMsg( "lev= " + lev );
-      int tmpInt = lev.toInt();
+      const int tmpInt = lev.toInt();
       if ( tmpInt > 0 )
       {
         QgsDebugMsg( "tmpInt= " + QString::number( tmpInt ) );

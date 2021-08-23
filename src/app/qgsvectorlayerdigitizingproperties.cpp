@@ -40,8 +40,8 @@ QgsVectorLayerDigitizingPropertiesPage::QgsVectorLayerDigitizingPropertiesPage( 
     mGeometryPrecisionLineEdit->setEnabled( true );
     mGeometryPrecisionLineEdit->setValidator( new QDoubleValidator( mGeometryPrecisionLineEdit ) );
 
-    double precision( vlayer->geometryOptions()->geometryPrecision() );
-    bool ok = true;
+    const double precision( vlayer->geometryOptions()->geometryPrecision() );
+    const bool ok = true;
     QString precisionStr( QLocale().toString( precision, ok ) );
     if ( precision == 0.0 || ! ok )
       precisionStr = QString();

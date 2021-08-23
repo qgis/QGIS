@@ -52,7 +52,7 @@
 Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   : QgsDockWidget( parent )
 {
-  QgsSettings setting;
+  const QgsSettings setting;
   setAttribute( Qt::WA_DeleteOnClose );  // removes the dock widget from main window when
 
   QWidget *contentsWidget = new QWidget( this );
@@ -218,7 +218,7 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
 
 void Qgs3DMapCanvasDockWidget::saveAsImage()
 {
-  QPair< QString, QString> fileNameAndFilter = QgsGuiUtils::getSaveAsImageName( this, tr( "Choose a file name to save the 3D map canvas to an image" ) );
+  const QPair< QString, QString> fileNameAndFilter = QgsGuiUtils::getSaveAsImageName( this, tr( "Choose a file name to save the 3D map canvas to an image" ) );
   if ( !fileNameAndFilter.first.isEmpty() )
   {
     mCanvas->saveAsImage( fileNameAndFilter.first, fileNameAndFilter.second );
@@ -325,18 +325,18 @@ void Qgs3DMapCanvasDockWidget::configure()
 
   auto applyConfig = [ = ]()
   {
-    QgsVector3D oldOrigin = map->origin();
-    QgsCoordinateReferenceSystem oldCrs = map->crs();
-    QgsCameraPose oldCameraPose = mCanvas->cameraController()->cameraPose();
-    QgsVector3D oldLookingAt = oldCameraPose.centerPoint();
+    const QgsVector3D oldOrigin = map->origin();
+    const QgsCoordinateReferenceSystem oldCrs = map->crs();
+    const QgsCameraPose oldCameraPose = mCanvas->cameraController()->cameraPose();
+    const QgsVector3D oldLookingAt = oldCameraPose.centerPoint();
 
     // update map
     w->apply();
 
-    QgsVector3D p = Qgs3DUtils::transformWorldCoordinates(
-                      oldLookingAt,
-                      oldOrigin, oldCrs,
-                      map->origin(), map->crs(), QgsProject::instance()->transformContext() );
+    const QgsVector3D p = Qgs3DUtils::transformWorldCoordinates(
+                            oldLookingAt,
+                            oldOrigin, oldCrs,
+                            map->origin(), map->crs(), QgsProject::instance()->transformContext() );
 
     if ( p != oldLookingAt )
     {
@@ -403,7 +403,6 @@ void Qgs3DMapCanvasDockWidget::exportScene()
 void Qgs3DMapCanvasDockWidget::onMainCanvasLayersChanged()
 {
   mCanvas->map()->setLayers( mMainCanvas->layers() );
-  mCanvas->map()->setTerrainLayers( mMainCanvas->layers() );
 }
 
 void Qgs3DMapCanvasDockWidget::onMainCanvasColorChanged()
@@ -413,7 +412,7 @@ void Qgs3DMapCanvasDockWidget::onMainCanvasColorChanged()
 
 void Qgs3DMapCanvasDockWidget::onTotalPendingJobsCountChanged()
 {
-  int count = mCanvas->scene() ? mCanvas->scene()->totalPendingJobsCount() : 0;
+  const int count = mCanvas->scene() ? mCanvas->scene()->totalPendingJobsCount() : 0;
   mProgressPendingJobs->setVisible( count );
   mLabelPendingJobs->setVisible( count );
   if ( count )
@@ -437,7 +436,7 @@ void Qgs3DMapCanvasDockWidget::mapThemeMenuAboutToShow()
   qDeleteAll( mMapThemeMenuPresetActions );
   mMapThemeMenuPresetActions.clear();
 
-  QString currentTheme = mCanvas->map()->terrainMapTheme();
+  const QString currentTheme = mCanvas->map()->terrainMapTheme();
 
   QAction *actionFollowMain = new QAction( tr( "(none)" ), mMapThemeMenu );
   actionFollowMain->setCheckable( true );

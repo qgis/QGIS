@@ -47,7 +47,7 @@ double QgsCurrencyNumericFormat::suggestSampleValue() const
 
 QString QgsCurrencyNumericFormat::formatDouble( double value, const QgsNumericFormatContext &context ) const
 {
-  QString res = QgsBasicNumericFormat::formatDouble( value, context );
+  const QString res = QgsBasicNumericFormat::formatDouble( value, context );
   if ( value < 0 || ( value > 0 && showPlusSign() ) )
     return res.at( 0 ) + mPrefix + res.mid( 1 ) + mSuffix;
   else

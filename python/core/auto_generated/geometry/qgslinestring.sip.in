@@ -585,7 +585,7 @@ segment in the line.
     virtual bool isEmpty() const /HoldGIL/;
 
     int indexOf( const QgsPoint &point ) const final;
-    virtual bool isValid( QString &error /Out/, int flags = 0 ) const;
+    virtual bool isValid( QString &error /Out/, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
 
     virtual QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
 

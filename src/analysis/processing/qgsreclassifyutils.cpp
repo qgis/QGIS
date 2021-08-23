@@ -65,15 +65,15 @@ void QgsReclassifyUtils::reclassify( const QVector<QgsReclassifyUtils::RasterCla
                                      QgsRasterDataProvider *destinationRaster, double destNoDataValue, bool useNoDataForMissingValues,
                                      QgsProcessingFeedback *feedback )
 {
-  int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
+  const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
+  const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
 
   QgsRasterIterator iter( sourceRaster );
   iter.startRasterRead( band, sourceWidthPixels, sourceHeightPixels, extent );
 
-  int nbBlocksWidth = static_cast< int >( std::ceil( 1.0 * sourceWidthPixels / maxWidth ) );
-  int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * sourceHeightPixels / maxHeight ) );
-  int nbBlocks = nbBlocksWidth * nbBlocksHeight;
+  const int nbBlocksWidth = static_cast< int >( std::ceil( 1.0 * sourceWidthPixels / maxWidth ) );
+  const int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * sourceHeightPixels / maxHeight ) );
+  const int nbBlocks = nbBlocksWidth * nbBlocksHeight;
 
   int iterLeft = 0;
   int iterTop = 0;
@@ -102,7 +102,7 @@ void QgsReclassifyUtils::reclassify( const QVector<QgsReclassifyUtils::RasterCla
           reclassifiedBlock->setValue( row, column, destNoDataValue );
         else
         {
-          double newValue = reclassifyValue( classes, value, reclassed );
+          const double newValue = reclassifyValue( classes, value, reclassed );
           if ( reclassed )
             reclassifiedBlock->setValue( row, column, newValue );
           else

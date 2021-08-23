@@ -117,6 +117,9 @@ class QgsOgrFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<Q
      * a transaction for SQLITE-based layers */
     bool mAllowResetReading = true;
 
+    QgsGeometry mDistanceWithinGeom;
+    std::unique_ptr< QgsGeometryEngine > mDistanceWithinEngine;
+
     bool fetchFeatureWithId( QgsFeatureId id, QgsFeature &feature ) const;
 
     void resetReading();

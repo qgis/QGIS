@@ -46,9 +46,9 @@ void QgsMapRendererAbstractCustomPainterJob::preparePainter( QPainter *painter, 
 
 #ifndef QT_NO_DEBUG
   QPaintDevice *paintDevice = painter->device();
-  QString errMsg = QStringLiteral( "pre-set DPI not equal to painter's DPI (%1 vs %2)" )
-                   .arg( paintDevice->logicalDpiX() )
-                   .arg( mSettings.outputDpi() * mSettings.devicePixelRatio() );
+  const QString errMsg = QStringLiteral( "pre-set DPI not equal to painter's DPI (%1 vs %2)" )
+                         .arg( paintDevice->logicalDpiX() )
+                         .arg( mSettings.outputDpi() * mSettings.devicePixelRatio() );
   Q_ASSERT_X( qgsDoubleNear( paintDevice->logicalDpiX(), mSettings.outputDpi() * mSettings.devicePixelRatio(), 1.0 ),
               "Job::startRender()", errMsg.toLatin1().data() );
 #endif
@@ -103,7 +103,7 @@ void QgsMapRendererCustomPainterJob::startPrivate()
     mLabelingEngineV2->setMapSettings( mSettings );
   }
 
-  bool canUseLabelCache = prepareLabelCache();
+  const bool canUseLabelCache = prepareLabelCache();
   mLayerJobs = prepareJobs( mPainter, mLabelingEngineV2.get() );
   mLabelJob = prepareLabelingJob( mPainter, mLabelingEngineV2.get(), canUseLabelCache );
   mSecondPassLayerJobs = prepareSecondPassJobs( mLayerJobs, mLabelJob );
@@ -284,7 +284,7 @@ void QgsMapRendererCustomPainterJob::staticRender( QgsMapRendererCustomPainterJo
 
 void QgsMapRendererCustomPainterJob::doRender()
 {
-  bool hasSecondPass = ! mSecondPassLayerJobs.empty();
+  const bool hasSecondPass = ! mSecondPassLayerJobs.empty();
   QgsDebugMsgLevel( QStringLiteral( "Starting to render layer stack." ), 5 );
   QElapsedTimer renderTime;
   renderTime.start();
@@ -391,7 +391,7 @@ void QgsMapRendererCustomPainterJob::doRender()
 
     composeSecondPass( mSecondPassLayerJobs, mLabelJob );
 
-    QImage finalImage = composeImage( mSettings, mLayerJobs, mLabelJob );
+    const QImage finalImage = composeImage( mSettings, mLayerJobs, mLabelJob );
 
     mPainter->setCompositionMode( QPainter::CompositionMode_SourceOver );
     mPainter->setOpacity( 1.0 );

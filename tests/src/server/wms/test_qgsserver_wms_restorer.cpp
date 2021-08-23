@@ -53,8 +53,8 @@ void TestQgsServerWmsRestorer::restorer_layer()
   project.read( filename );
 
   // init wms parameters
-  QUrlQuery query;
-  QgsWms::QgsWmsParameters parameters( query );
+  const QUrlQuery query;
+  const QgsWms::QgsWmsParameters parameters( query );
 
   // init context
   QgsCapabilitiesCache cache;

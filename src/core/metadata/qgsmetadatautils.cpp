@@ -209,7 +209,7 @@ QgsLayerMetadata QgsMetadataUtils::convertFromEsri( const QDomDocument &document
           const QString enddateString = enddate.text();
           QDateTime begin;
           QDateTime end;
-          for ( QString format : { "yyyy-MM-dd", "dd/MM/yyyy" } )
+          for ( const QString format : { "yyyy-MM-dd", "dd/MM/yyyy" } )
           {
             if ( !begin.isValid() )
               begin = QDateTime::fromString( begdateString, format );

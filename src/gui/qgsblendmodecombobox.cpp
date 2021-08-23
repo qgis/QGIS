@@ -56,7 +56,7 @@ void QgsBlendModeComboBox::updateModes()
   blockSignals( true );
   clear();
 
-  QStringList myBlendModesList = blendModesList();
+  const QStringList myBlendModesList = blendModesList();
   QStringList::const_iterator blendModeIt = myBlendModesList.constBegin();
 
   mBlendModeToListIndex.resize( myBlendModesList.count() );

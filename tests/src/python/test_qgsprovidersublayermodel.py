@@ -380,6 +380,11 @@ class TestQgsProviderSublayerModel(unittest.TestCase):
         self.assertEqual(proxy.rowCount(QModelIndex()), 1)
         self.assertEqual(proxy.data(proxy.index(0, 0), Qt.DisplayRole), 'item name 1')
 
+        # should also allow filtering by vector layer wkb type strings
+        proxy.setFilterString('LineSTRING')
+        self.assertEqual(proxy.rowCount(QModelIndex()), 1)
+        self.assertEqual(proxy.data(proxy.index(0, 0), Qt.DisplayRole), 'another layer 2')
+
         proxy.setFilterString('')
         self.assertEqual(proxy.rowCount(QModelIndex()), 3)
         self.assertEqual(proxy.data(proxy.index(0, 0), Qt.DisplayRole), 'item name 1')

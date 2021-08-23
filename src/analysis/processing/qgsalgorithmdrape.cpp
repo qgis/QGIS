@@ -209,7 +209,7 @@ bool QgsDrapeToZAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 
 QgsWkbTypes::Type QgsDrapeToZAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
 {
-  QgsWkbTypes::Type wkb = inputWkbType;
+  const QgsWkbTypes::Type wkb = inputWkbType;
   return QgsWkbTypes::addZ( wkb );
 }
 
@@ -272,7 +272,7 @@ bool QgsDrapeToMAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 
 QgsWkbTypes::Type QgsDrapeToMAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
 {
-  QgsWkbTypes::Type wkb = inputWkbType;
+  const QgsWkbTypes::Type wkb = inputWkbType;
   return QgsWkbTypes::addM( wkb );
 }
 

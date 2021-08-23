@@ -31,6 +31,12 @@ and registered in :py:class:`QgsExternalStorageRegistry`.
 Unique identifier of the external storage type.
 %End
 
+    virtual QString displayName() const = 0;
+%Docstring
+Returns the translated external storage name, which should be used for any
+user-visible display of the external storage name.
+%End
+
     QgsExternalStorageStoredContent *store( const QString &filePath, const QString &url, const QString &authCfg = QString(), Qgis::ActionStart storingMode = Qgis::ActionStart::Deferred ) const /Factory/;
 %Docstring
 Stores file ``filePath`` to the ``url`` for this project external storage.
@@ -102,7 +108,7 @@ Returns content status
 
     const QString &errorString() const;
 %Docstring
-Returns error textual description if an error occured and :py:func:`~QgsExternalStorageContent.status` returns Failed
+Returns error textual description if an error occurred and :py:func:`~QgsExternalStorageContent.status` returns Failed
 %End
 
   public slots:

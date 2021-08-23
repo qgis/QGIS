@@ -19,35 +19,31 @@
 #include "dwgbuffer.h"
 #include "dwgreader18.h"
 
-class dwgReader27 : public dwgReader18
-{
-  public:
-    dwgReader27( std::ifstream *stream, dwgR *p ): dwgReader18( stream, p ) { }
-    bool readFileHeader();
-    bool readDwgHeader( DRW_Header &hdr );
-    bool readDwgClasses();
+class dwgReader27 : public dwgReader18 {
+public:
+    dwgReader27(std::ifstream *stream, dwgR *p):dwgReader18(stream, p){ }
+    bool readFileHeader() override;
+    bool readDwgHeader(DRW_Header& hdr) override;
+    bool readDwgClasses() override;
 //    bool readDwgHandles(){return false;}
 //    bool readDwgTables(){return false;}
-    bool readDwgBlocks( DRW_Interface &intfa )
-    {
-      bool ret = true;
-      dwgBuffer dataBuf( objData, uncompSize, &decoder );
-      ret = dwgReader::readDwgBlocks( intfa, &dataBuf );
-      return ret;
+    bool readDwgBlocks(DRW_Interface& intfa) override {
+        bool ret = true;
+        dwgBuffer dataBuf(objData.get(), uncompSize, &decoder);
+        ret = dwgReader::readDwgBlocks(intfa, &dataBuf);
+        return ret;
     }
-    virtual bool readDwgEntities( DRW_Interface &intfa )
-    {
-      bool ret = true;
-      dwgBuffer dataBuf( objData, uncompSize, &decoder );
-      ret = dwgReader::readDwgEntities( intfa, &dataBuf );
-      return ret;
+    bool readDwgEntities(DRW_Interface& intfa) override {
+        bool ret = true;
+        dwgBuffer dataBuf(objData.get(), uncompSize, &decoder);
+        ret = dwgReader::readDwgEntities(intfa, &dataBuf);
+        return ret;
     }
-    virtual bool readDwgObjects( DRW_Interface &intfa )
-    {
-      bool ret = true;
-      dwgBuffer dataBuf( objData, uncompSize, &decoder );
-      ret = dwgReader::readDwgObjects( intfa, &dataBuf );
-      return ret;
+    bool readDwgObjects(DRW_Interface& intfa) override {
+        bool ret = true;
+        dwgBuffer dataBuf(objData.get(), uncompSize, &decoder);
+        ret = dwgReader::readDwgObjects(intfa, &dataBuf);
+        return ret;
     }
 //    bool readDwgEntity(objHandle& obj, DRW_Interface& intfa){
 //        DRW_UNUSED(obj);

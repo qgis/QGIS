@@ -48,6 +48,12 @@ class CORE_EXPORT QgsExternalStorage
     virtual QString type() const = 0;
 
     /**
+     * Returns the translated external storage name, which should be used for any
+     * user-visible display of the external storage name.
+     */
+    virtual QString displayName() const = 0;
+
+    /**
      * Stores file \a filePath to the \a url for this project external storage.
      * Storing process is run in background.
      * Returns a QgsExternalStorageStoredContent to follow the status of the stored resource.
@@ -114,7 +120,7 @@ class CORE_EXPORT QgsExternalStorageContent : public QObject
     Qgis::ContentStatus status() const;
 
     /**
-     * Returns error textual description if an error occured and status() returns Failed
+     * Returns error textual description if an error occurred and status() returns Failed
      */
     const QString &errorString() const;
 

@@ -100,11 +100,36 @@ namespace DRW
     BAD_READ_OBJECTS      //!< Error in objects read process.
   };
 
-  enum DBG_LEVEL
-  {
-    none,
-    debug
+  enum class DebugLevel {
+      None,
+      Debug
   };
+
+  /**
+   * Interface for debug printers.
+   *
+   * The base class is silent and ignores all debugging.
+   */
+  class DebugPrinter {
+  public:
+      virtual void printS(const std::string &s, const char *file, const char *function, int line){(void)s;(void)file;(void)function;(void)line;}
+      virtual void printI(long long int i, const char *file, const char *function, int line){(void)i;(void)file;(void)function;(void)line;}
+      virtual void printUI(long long unsigned int i, const char *file, const char *function, int line){(void)i;(void)file;(void)function;(void)line;}
+      virtual void printD(double d, const char *file, const char *function, int line){(void)d;(void)file;(void)function;(void)line;}
+      virtual void printH(long long int i, const char *file, const char *function, int line){(void)i;(void)file;(void)function;(void)line;}
+      virtual void printB(int i, const char *file, const char *function, int line){(void)i;(void)file;(void)function;(void)line;}
+      virtual void printHL(int c, int s, int h, const char *file, const char *function, int line){(void)c;(void)s;(void)h;(void)file;(void)function;(void)line;}
+      virtual void printPT(double x, double y, double z, const char *file, const char *function, int line){(void)x;(void)y;(void)z;(void)file;(void)function;(void)line;}
+      DebugPrinter()=default;
+      virtual ~DebugPrinter();
+  };
+
+  /**
+   * Sets a custom debug printer to use when outputting debug messages.
+   *
+   * Ownership of `printer` is transferred.
+   */
+  void setCustomDebugPrinter( DebugPrinter* printer );
 
   //! Special codes for colors
   enum ColorCodes

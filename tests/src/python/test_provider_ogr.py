@@ -1649,7 +1649,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].layerNumber(), 0)
         self.assertEqual(res[0].name(), "multipatch")
         self.assertEqual(res[0].description(), '')
-        self.assertEqual(res[0].uri(), TEST_DATA_DIR + "/multipatch.shp")
+        self.assertEqual(res[0].uri(), TEST_DATA_DIR + "/multipatch.shp|geometrytype=Polygon")
         self.assertEqual(res[0].providerKey(), "ogr")
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(res[0].wkbType(), QgsWkbTypes.Polygon)
@@ -1853,6 +1853,42 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[2].geometryColumnName(), '')
         self.assertEqual(res[2].driverName(), 'MapInfo File')
         vl = res[2].toLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Polygon)
+
+        # a layer which reports unknown geometry type and requires a full table scan to resolve, but which only
+        # contains a single type of geometry
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, "mapinfo", "fill_styles.TAB"),
+                                      Qgis.SublayerQueryFlag.ResolveGeometryType)
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "fill_styles")
+        self.assertEqual(res[0].description(), "")
+        self.assertEqual(res[0].uri(), "{}/mapinfo/fill_styles.TAB|geometrytype=Polygon".format(TEST_DATA_DIR))
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertEqual(res[0].featureCount(), 49)
+        self.assertEqual(res[0].wkbType(), QgsWkbTypes.Polygon)
+        self.assertEqual(res[0].geometryColumnName(), '')
+        self.assertEqual(res[0].driverName(), 'MapInfo File')
+        vl = res[0].toLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Polygon)
+
+        # same, but don't resolve geometry types
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, "mapinfo", "fill_styles.TAB"))
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "fill_styles")
+        self.assertEqual(res[0].description(), "")
+        self.assertEqual(res[0].uri(), "{}/mapinfo/fill_styles.TAB".format(TEST_DATA_DIR))
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertEqual(res[0].featureCount(), Qgis.FeatureCountState.Uncounted)
+        self.assertEqual(res[0].wkbType(), QgsWkbTypes.Unknown)
+        self.assertEqual(res[0].geometryColumnName(), '')
+        self.assertEqual(res[0].driverName(), 'MapInfo File')
+        vl = res[0].toLayer(options)
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Polygon)
 
@@ -2126,6 +2162,29 @@ class PyQgsOGRProvider(unittest.TestCase):
         # raster vrt
         res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, "/raster/hub13263.vrt"), Qgis.SublayerQueryFlag.FastScan)
         self.assertEqual(len(res), 0)
+
+    def test_provider_sidecar_files_for_uri(self):
+        """
+        Test retrieving sidecar files for uris
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+
+        self.assertEqual(metadata.sidecarFilesForUri(''), [])
+        self.assertEqual(metadata.sidecarFilesForUri('/home/me/not special.doc'), [])
+        self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.shp'),
+                         ['/home/me/special.shx', '/home/me/special.dbf', '/home/me/special.sbn',
+                          '/home/me/special.sbx', '/home/me/special.prj', '/home/me/special.idm',
+                          '/home/me/special.ind', '/home/me/special.qix', '/home/me/special.cpg',
+                          '/home/me/special.qpj', '/home/me/special.shp.xml'])
+        self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.tab'),
+                         ['/home/me/special.dat', '/home/me/special.id', '/home/me/special.map', '/home/me/special.ind',
+                          '/home/me/special.tda', '/home/me/special.tin', '/home/me/special.tma',
+                          '/home/me/special.lda', '/home/me/special.lin', '/home/me/special.lma'])
+        self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.mif'),
+                         ['/home/me/special.mid'])
+        self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.gml'),
+                         ['/home/me/special.gfs', '/home/me/special.xsd'])
+        self.assertEqual(metadata.sidecarFilesForUri('/home/me/special.csv'), ['/home/me/special.csvt'])
 
 
 if __name__ == '__main__':

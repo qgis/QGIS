@@ -100,7 +100,7 @@ bool QgsLayoutMapExtentToLayerAlgorithm::prepareAlgorithm( const QVariantMap &pa
   else
     layout->layoutItems( maps );
 
-  QgsCoordinateReferenceSystem overrideCrs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
+  const QgsCoordinateReferenceSystem overrideCrs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
 
   mFeatures.reserve( maps.size() );
   for ( QgsLayoutItemMap *map : maps )
