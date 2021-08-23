@@ -97,7 +97,7 @@ class CSW202Search(SearchBase):
         if bbox and bbox != ['-180', '-90', '180', '90']:
             minx, miny, maxx, maxy = bbox
             self.constraints.append(BBox([miny, minx, maxy, maxx],
-                                    crs='urn:ogc:def:crs:EPSG::4326'))
+                                         crs='urn:ogc:def:crs:EPSG::4326'))
 
         # keywords
         if keywords:
@@ -215,7 +215,7 @@ class OARecSearch(SearchBase):
                 bbox2 = rec['properties']['extent']['spatial']['bbox'][0]
                 if bbox2:
                     rec1['bbox'] = bbox_list_to_dict(bbox2)
-            except KeyError as err:
+            except KeyError:
                 pass
 
             recs.append(rec1)
