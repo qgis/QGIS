@@ -80,6 +80,13 @@ class CORE_EXPORT QgsAnnotationItem
     virtual ~QgsAnnotationItem() = default;
 
     /**
+     * Returns item flags.
+     *
+     * \since QGIS 3.22
+     */
+    virtual Qgis::AnnotationItemFlags flags() const;
+
+    /**
      * Returns a clone of the item. Ownership is transferred to the caller.
      */
     virtual QgsAnnotationItem *clone() = 0 SIP_FACTORY;
