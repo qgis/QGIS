@@ -203,7 +203,8 @@ ping -c 2 httpbin || :
 TESTCOUNT=0
 while :
 do
-  python3 /root/QGIS/.ci/ctest2ci.py xvfb-run ctest -V -R test_core_networkaccessmanager -S /root/QGIS/.ci/config_test.ctest --output-on-failure
+  echo "Test # $TESTCOUNT"
+  python3 /root/QGIS/.ci/ctest2ci.py xvfb-run ctest -V -R test_core_networkaccessmanager -S /root/QGIS/.ci/config_test.ctest --output-on-failure || :
   if [[ $(( TESTCOUNT++ )) -eq 40 ]]; then
     break
   fi
