@@ -756,6 +756,8 @@ void TestQgsNetworkAccessManager::testSslErrorHandler()
 
 void TestQgsNetworkAccessManager::testAuthRequestHandler()
 {
+  if ( QgsTest::isCIRun() )
+    QSKIP( "Skip remote test, looks like problem with httpbin" );
   // initially this request should fail -- we aren't providing the username and password required
   QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< TestAuthRequestHandler >( QString(), QString() ) );
 
