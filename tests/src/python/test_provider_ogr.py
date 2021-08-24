@@ -2045,6 +2045,24 @@ class PyQgsOGRProvider(unittest.TestCase):
                                 'driverName': 'SQLite',
                                 'geomColName': ''}])
 
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 4, 0), "GDAL 3.4 required")
+    def test_provider_sublayer_details_hierarchy(self):
+        """
+        Test retrieving sublayer details from a datasource with a hierarchy of layers
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, 'featuredataset.gdb'))
+        self.assertEqual(len(res), 4)
+        self.assertEqual(res[0].name(), 'fd1_lyr1')
+        self.assertEqual(res[0].path(), ['fd1'])
+        self.assertEqual(res[1].name(), 'fd1_lyr2')
+        self.assertEqual(res[1].path(), ['fd1'])
+        self.assertEqual(res[2].name(), 'standalone')
+        self.assertEqual(res[2].path(), [])
+        self.assertEqual(res[3].name(), 'fd2_lyr')
+        self.assertEqual(res[3].path(), ['fd2'])
+
     def test_provider_sublayer_details_fast_scan(self):
         """
         Test retrieving sublayer details from data provider metadata, using fast scan
