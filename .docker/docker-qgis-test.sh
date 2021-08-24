@@ -198,7 +198,7 @@ python3 /root/QGIS/.ci/ctest2ci.py xvfb-run ctest -V $CTEST_OPTIONS -E "${EXCLUD
 # pwd
 # ls -la
 # cd build || :
-tc qdisc add dev eth0 root netem delay 100ms || :
+tc qdisc add dev eth0 root netem delay 500ms || :
 ping -c 2 httpbin || :
 TESTCOUNT=0
 while :
