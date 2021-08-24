@@ -1323,6 +1323,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
       if ( char **vectorLayerNames = GDALGroupGetVectorLayerNames( group, nullptr ) )
       {
         const QStringList layers = QgsOgrUtils::cStringListToQStringList( vectorLayerNames );
+        CSLDestroy( vectorLayerNames );
         // attach path to matching layers
         for ( const QString &layer : layers )
         {
@@ -1346,6 +1347,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
             GDALGroupRelease( subgroup );
           }
         }
+        CSLDestroy( subgroupNames );
       }
     };
 
