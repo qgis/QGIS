@@ -20,6 +20,7 @@
 #include "qgis_sip.h"
 
 #include "qgsrectangle.h"
+#include "qgscoordinatereferencesystem.h"
 
 /**
  * \ingroup core
@@ -104,7 +105,18 @@ class CORE_EXPORT QgsTileMatrix
   public:
 
     //! Returns a tile matrix for the usual web mercator
-    static QgsTileMatrix fromWebMercator( int mZoomLevel );
+    static QgsTileMatrix fromWebMercator( int zoomLevel );
+
+    //! Returns a tile matrix for a specific CRS, top left point, zoom level 0 dimension in CRS units
+    static QgsTileMatrix fromCustomDef( int zoomLevel, const QgsCoordinateReferenceSystem &crs,
+                                        const QgsPointXY &z0TopLeftPoint, double z0Dimension,
+                                        int z0MatrixWidth = 1, int z0MatrixHeight = 1 );
+
+    //! Returns a tile matrix based on another one
+    static QgsTileMatrix fromTileMatrix( const int &zoomLevel, const QgsTileMatrix &tileMatrix );
+
+    //! Returns the authority identifier for the CRS of the tile matrix
+    QgsCoordinateReferenceSystem crs() const { return mCrs; }
 
     //! Returns zoom level of the tile matrix
     int zoomLevel() const { return mZoomLevel; }
@@ -133,9 +145,14 @@ class CORE_EXPORT QgsTileMatrix
     //! Returns row/column coordinates (floating point number) from the given point in map coordinates
     QPointF mapToTileCoordinates( const QgsPointXY &mapPoint ) const;
 
+    //! Returns the root status of the tile matrix (zoom level == 0)
+    bool isRootTileMatrix() const { return mZoomLevel == 0; }
+
   private:
+    //! Crs associated with the tile matrix
+    QgsCoordinateReferenceSystem mCrs;
     //! Zoom level index associated with the tile matrix
-    int mZoomLevel;
+    int mZoomLevel = -1;
     //! Number of columns of the tile matrix
     int mMatrixWidth;
     //! Number of rows of the tile matrix
