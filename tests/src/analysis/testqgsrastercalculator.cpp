@@ -69,7 +69,7 @@ class TestQgsRasterCalculator : public QObject
 
     void testStatistics();
 
-    void parseFunctionTypeString(); //test the parsing of the formule for the tFuncion type
+    void parseFunctionTypeString(); //test the parsing of the formule for the tFunction type
     void testFunctionTypeWithLayer(); //test of conditional statement
 
   private:
