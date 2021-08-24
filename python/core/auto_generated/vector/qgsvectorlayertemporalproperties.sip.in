@@ -76,8 +76,8 @@ The ``enabled`` argument specifies whether the temporal properties are initially
 
     enum LimitMode
     {
-        ModeIncludeBeginExcludeEnd,
-        ModeIncludeBeginIncludeEnd,
+      ModeIncludeBeginExcludeEnd,
+      ModeIncludeBeginIncludeEnd,
     };
 
     TemporalMode mode() const;
