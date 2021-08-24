@@ -192,13 +192,13 @@ echo "List of skipped tests: $EXCLUDE_TESTS"
 echo "Print disk space"
 df -h
 
-python3 /root/QGIS/.ci/ctest2ci.py xvfb-run ctest -V $CTEST_OPTIONS -E "${EXCLUDE_TESTS}" -S /root/QGIS/.ci/config_test.ctest --output-on-failure
+python3 /root/QGIS/.ci/ctest2ci.py xvfb-run ctest -V $CTEST_OPTIONS -E "${EXCLUDE_TESTS}" -S /root/QGIS/.ci/config_test.ctest --output-on-failure || :
 
 # cd /root/QGIS || :
 # pwd
 # ls -la
 # cd build || :
-#tc qdisc add dev eth0 root netem delay 500ms || :
+tc qdisc add dev eth0 root netem delay 250ms || :
 #ping -c 2 httpbin || :
 TESTCOUNT=0
 TESTCOUNTFAIL=0
@@ -207,7 +207,7 @@ do
   echo "Test # $TESTCOUNT"
   python3 /root/QGIS/.ci/ctest2ci.py xvfb-run ctest -V -R test_core_networkaccessmanager -S /root/QGIS/.ci/config_test.ctest --output-on-failure \
     || echo $(( TESTCOUNTFAIL++ ))
-  if [[ $(( TESTCOUNT++ )) -eq 40 ]]; then
+  if [[ $(( TESTCOUNT++ )) -eq 100 ]]; then
     break
   fi
 done
