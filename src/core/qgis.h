@@ -732,6 +732,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( MapLayerProperty )
 
     /**
+     * Flags for annotation items.
+     *
+     * \since QGIS 3.22
+     */
+    enum class AnnotationItemFlag : int
+    {
+      ScaleDependentBoundingBox = 1 << 0, //!< Item's bounding box will vary depending on map scale
+    };
+    Q_DECLARE_FLAGS( AnnotationItemFlags, AnnotationItemFlag )
+    Q_ENUM( AnnotationItemFlag )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */
@@ -855,6 +867,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelFormatCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelCommandFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::GeometryValidityFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::FileOperationFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AnnotationItemFlags )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

@@ -26,6 +26,11 @@ QgsAnnotationPointTextItem::QgsAnnotationPointTextItem( const QString &text, Qgs
 
 }
 
+Qgis::AnnotationItemFlags QgsAnnotationPointTextItem::flags() const
+{
+  return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox;
+}
+
 QgsAnnotationPointTextItem::~QgsAnnotationPointTextItem() = default;
 
 QString QgsAnnotationPointTextItem::type() const
