@@ -221,7 +221,7 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
       // when QThreadPool::globalInstance()->waitForDone()
       // is called at process termination
       connect( qApp, &QCoreApplication::aboutToQuit, &loop, &QEventLoop::quit, Qt::DirectConnection );
-      connect( this, &QgsBlockingNetworkRequest::downloadFinished, &loop, &QEventLoop::quit, Qt::DirectConnection );
+      connect( this, &QgsBlockingNetworkRequest::finished, &loop, &QEventLoop::quit, Qt::DirectConnection );
       loop.exec();
     }
 
@@ -343,7 +343,10 @@ void QgsBlockingNetworkRequest::replyFinished()
             mErrorMessage = errorMessageFailedAuth();
             mErrorCode = NetworkError;
             QgsMessageLog::logMessage( mErrorMessage, tr( "Network" ) );
+            emit finished();
+            Q_NOWARN_DEPRECATED_PUSH
             emit downloadFinished();
+            Q_NOWARN_DEPRECATED_POP
             return;
           }
 
@@ -366,7 +369,10 @@ void QgsBlockingNetworkRequest::replyFinished()
             mErrorMessage = errorMessageFailedAuth();
             mErrorCode = NetworkError;
             QgsMessageLog::logMessage( mErrorMessage, tr( "Network" ) );
+            emit finished();
+            Q_NOWARN_DEPRECATED_PUSH
             emit downloadFinished();
+            Q_NOWARN_DEPRECATED_POP
             return;
           }
 
@@ -443,7 +449,10 @@ void QgsBlockingNetworkRequest::replyFinished()
     mReply = nullptr;
   }
 
+  emit finished();
+  Q_NOWARN_DEPRECATED_PUSH
   emit downloadFinished();
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QString QgsBlockingNetworkRequest::errorMessageFailedAuth()

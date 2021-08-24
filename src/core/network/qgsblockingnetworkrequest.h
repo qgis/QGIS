@@ -220,14 +220,20 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
 
     /**
      * Emitted once a request has finished downloading.
+     * \deprecated Use the finished() signal instead.
      */
-    void downloadFinished();
+    Q_DECL_DEPRECATED void downloadFinished() SIP_DEPRECATED;
 
     /**
      * Emitted when when data are sent during a request.
      * \since QGIS 3.22
      */
     void uploadProgress( qint64, qint64 );
+
+    /**
+     * Emitted once a request has finished.
+     */
+    void finished();
 
   private slots:
     void replyProgress( qint64, qint64 );

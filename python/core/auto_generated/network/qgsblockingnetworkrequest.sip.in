@@ -207,9 +207,12 @@ Aborts the network request immediately.
 Emitted when when data arrives during a request.
 %End
 
-    void downloadFinished();
+ void downloadFinished() /Deprecated/;
 %Docstring
 Emitted once a request has finished downloading.
+
+.. deprecated::
+   Use the :py:func:`~QgsBlockingNetworkRequest.finished` signal instead.
 %End
 
     void uploadProgress( qint64, qint64 );
@@ -217,6 +220,11 @@ Emitted once a request has finished downloading.
 Emitted when when data are sent during a request.
 
 .. versionadded:: 3.22
+%End
+
+    void finished();
+%Docstring
+Emitted once a request has finished.
 %End
 
 };

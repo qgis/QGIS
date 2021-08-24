@@ -39,7 +39,7 @@ class TestQgsBlockingNetworkRequest(unittest.TestCase):
 
     def testFetchEmptyUrl(self):
         request = QgsBlockingNetworkRequest()
-        spy = QSignalSpy(request.downloadFinished)
+        spy = QSignalSpy(request.finished)
         err = request.get(QNetworkRequest(QUrl()))
         self.assertEqual(len(spy), 1)
         self.assertEqual(err, QgsBlockingNetworkRequest.ServerExceptionError)
@@ -49,7 +49,7 @@ class TestQgsBlockingNetworkRequest(unittest.TestCase):
 
     def testFetchBadUrl(self):
         request = QgsBlockingNetworkRequest()
-        spy = QSignalSpy(request.downloadFinished)
+        spy = QSignalSpy(request.finished)
         err = request.get(QNetworkRequest(QUrl('http://x')))
         self.assertEqual(len(spy), 1)
         self.assertEqual(err, QgsBlockingNetworkRequest.ServerExceptionError)
@@ -59,7 +59,7 @@ class TestQgsBlockingNetworkRequest(unittest.TestCase):
 
     def testFetchBadUrl2(self):
         request = QgsBlockingNetworkRequest()
-        spy = QSignalSpy(request.downloadFinished)
+        spy = QSignalSpy(request.finished)
 
         handler = mockedwebserver.SequentialHandler()
         handler.add('GET', '/ffff', 404, {}, '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"\n        "http://www.w3.org/TR/html4/strict.dtd">\n<html>\n    <head>\n        <meta http-equiv="Content-Type" content="text/html;charset=utf-8">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: HTTPStatus.NOT_FOUND - Nothing matches the given URI.</p>\n    </body>\n</html>\n')
@@ -74,7 +74,7 @@ class TestQgsBlockingNetworkRequest(unittest.TestCase):
 
     def testGet(self):
         request = QgsBlockingNetworkRequest()
-        spy = QSignalSpy(request.downloadFinished)
+        spy = QSignalSpy(request.finished)
         handler = mockedwebserver.SequentialHandler()
         handler.add('GET', '/test.html', 200, {'Content-type': 'text/html'}, '<html></html>\n')
         with mockedwebserver.install_http_handler(handler):
@@ -97,7 +97,7 @@ class TestQgsBlockingNetworkRequest(unittest.TestCase):
 
     def testHead(self):
         request = QgsBlockingNetworkRequest()
-        spy = QSignalSpy(request.downloadFinished)
+        spy = QSignalSpy(request.finished)
         handler = mockedwebserver.SequentialHandler()
         handler.add('HEAD', '/test.html', 200, {'Content-type': 'text/html'})
         with mockedwebserver.install_http_handler(handler):
@@ -108,7 +108,7 @@ class TestQgsBlockingNetworkRequest(unittest.TestCase):
 
     def testPost(self):
         request = QgsBlockingNetworkRequest()
-        spy = QSignalSpy(request.downloadFinished)
+        spy = QSignalSpy(request.finished)
         handler = mockedwebserver.SequentialHandler()
         handler.add('POST', '/test.html', 200, expected_body=b"foo")
         with mockedwebserver.install_http_handler(handler):
@@ -120,19 +120,20 @@ class TestQgsBlockingNetworkRequest(unittest.TestCase):
 
     def testPut(self):
         request = QgsBlockingNetworkRequest()
-        spy = QSignalSpy(request.downloadFinished)
+        spy = QSignalSpy(request.finished)
         handler = mockedwebserver.SequentialHandler()
         handler.add('PUT', '/test.html', 200, expected_body=b"foo")
         with mockedwebserver.install_http_handler(handler):
             req = QNetworkRequest(QUrl('http://localhost:' + str(TestQgsBlockingNetworkRequest.port) + '/test.html'))
             req.setHeader(QNetworkRequest.ContentTypeHeader, 'text/plain')
             err = request.put(req, b"foo")
+        self.assertEqual(len(spy), 1)
         self.assertEqual(err, QgsBlockingNetworkRequest.NoError)
         self.assertEqual(request.errorMessage(), '')
 
     def testDelete(self):
         request = QgsBlockingNetworkRequest()
-        spy = QSignalSpy(request.downloadFinished)
+        spy = QSignalSpy(request.finished)
         handler = mockedwebserver.SequentialHandler()
         handler.add('DELETE', '/test.html', 200)
         with mockedwebserver.install_http_handler(handler):
