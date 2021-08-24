@@ -1157,7 +1157,6 @@ QList<int> QgsMeshLayer::selectVerticesByExpression( const QString &expressionSt
 
   std::unique_ptr<QgsExpressionContextScope> expScope( QgsExpressionContextUtils::meshExpressionScope() );
 
-
   context.appendScope( expScope.release() );
   context.lastScope()->setVariable( QStringLiteral( "_mesh_layer" ), QVariant::fromValue( this ) );
 
@@ -1165,7 +1164,7 @@ QList<int> QgsMeshLayer::selectVerticesByExpression( const QString &expressionSt
 
   for ( int i = 0; i < mNativeMesh->vertexCount(); ++i )
   {
-    context.lastScope()->setVariable( QStringLiteral( "_vertex_index" ), i, false );
+    context.lastScope()->setVariable( QStringLiteral( "_mesh_vertex_index" ), i, false );
 
     if ( expression.evaluate( &context ).toBool() )
       ret.append( i );

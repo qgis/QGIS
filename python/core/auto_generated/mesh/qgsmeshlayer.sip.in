@@ -666,6 +666,8 @@ Returns a list of vertex indexes that meet the condition defined by ``expression
 
 To express the relation with a vertex, the expression can be defined with function returning value
 linked to the current vertex, like " $vertex_Z_value ", "$vertex_as_point"
+
+.. versionadded:: 3.22
 %End
 
     QgsMeshDatasetGroupTreeItem *datasetGroupTreeRootItem() const;

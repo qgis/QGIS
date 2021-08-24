@@ -676,6 +676,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      * To express the relation with a vertex, the expression can be defined with function returning value
      * linked to the current vertex, like " $vertex_Z_value ", "$vertex_as_point"
      *
+     * \since QGIS 3.22
      */
     QList<int> selectVerticesByExpression( const QString &expression, const QgsExpressionContext &expressionContext = QgsExpressionContext() );
 

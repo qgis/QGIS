@@ -987,8 +987,7 @@ class CurrentVertexZValueExpressionFunction: public QgsScopedExpressionFunction
     CurrentVertexZValueExpressionFunction():
       QgsScopedExpressionFunction( "$vertex_z",
                                    0,
-                                   QObject::tr( "Meshes" ),
-                                   QObject::tr( "return the z value of the current vertex" ), false )
+                                   QStringLiteral( "Meshes" ) )
     {}
 
     QgsScopedExpressionFunction *clone() const override {return new CurrentVertexZValueExpressionFunction();}
@@ -998,10 +997,10 @@ class CurrentVertexZValueExpressionFunction: public QgsScopedExpressionFunction
       if ( !context )
         return QVariant();
 
-      if ( !context->hasVariable( QStringLiteral( "_vertex_index" ) ) || !context->hasVariable( QStringLiteral( "_mesh_layer" ) ) )
+      if ( !context->hasVariable( QStringLiteral( "_mesh_vertex_index" ) ) || !context->hasVariable( QStringLiteral( "_mesh_layer" ) ) )
         return QVariant();
 
-      int vertexIndex = context->variable( QStringLiteral( "_vertex_index" ) ).toInt();
+      int vertexIndex = context->variable( QStringLiteral( "_mesh_vertex_index" ) ).toInt();
 
       QgsMeshLayer *layer = qobject_cast<QgsMeshLayer *>( qvariant_cast<QgsMapLayer *>( context->variable( QStringLiteral( "_mesh_layer" ) ) ) );
       if ( !layer || !layer->nativeMesh() || layer->nativeMesh()->vertexCount() <= vertexIndex )
@@ -1026,8 +1025,7 @@ class CurrentVertexExpressionFunction: public QgsScopedExpressionFunction
     CurrentVertexExpressionFunction():
       QgsScopedExpressionFunction( "$vertex_as_point",
                                    0,
-                                   QObject::tr( "Meshes" ),
-                                   QObject::tr( "return the vertex as a point geometry" ), false )
+                                   QStringLiteral( "Meshes" ) )
     {}
 
     QgsScopedExpressionFunction *clone() const override {return new CurrentVertexExpressionFunction();}
@@ -1037,10 +1035,10 @@ class CurrentVertexExpressionFunction: public QgsScopedExpressionFunction
       if ( !context )
         return QVariant();
 
-      if ( !context->hasVariable( QStringLiteral( "_vertex_index" ) ) || !context->hasVariable( QStringLiteral( "_mesh_layer" ) ) )
+      if ( !context->hasVariable( QStringLiteral( "_mesh_vertex_index" ) ) || !context->hasVariable( QStringLiteral( "_mesh_layer" ) ) )
         return QVariant();
 
-      int vertexIndex = context->variable( QStringLiteral( "_vertex_index" ) ).toInt();
+      int vertexIndex = context->variable( QStringLiteral( "_mesh_vertex_index" ) ).toInt();
 
       QgsMeshLayer *layer = qobject_cast<QgsMeshLayer *>( qvariant_cast<QgsMapLayer *>( context->variable( QStringLiteral( "_mesh_layer" ) ) ) );
       if ( !layer || !layer->nativeMesh() || layer->nativeMesh()->vertexCount() <= vertexIndex )

@@ -267,7 +267,7 @@ class TestQgsExpression: public QObject
     {
       QgsExpressionContext context;
       context.appendScope( QgsExpressionContextUtils::meshExpressionScope() );
-      context.lastScope()->setVariable( QStringLiteral( "_vertex_index" ), 2 );
+      context.lastScope()->setVariable( QStringLiteral( "_mesh_vertex_index" ), 2 );
       context.lastScope()->setVariable( QStringLiteral( "_mesh_layer" ), QVariant::fromValue( mMeshLayer ) );
 
       QgsExpression expression( QStringLiteral( "$vertex_z" ) );
