@@ -37,7 +37,7 @@ QgsRasterCalcNode::QgsRasterCalcNode( Operator op, QgsRasterCalcNode *left, QgsR
 }
 
 QgsRasterCalcNode::QgsRasterCalcNode( QString functionName, QVector <QgsRasterCalcNode *> functionArgs )
-  : mType( tFuncttion )
+  : mType( tFunction )
   , mFunctionName( functionName )
   , mFunctionArgs( functionArgs )
 {
@@ -215,7 +215,7 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData,
     result.setData( mMatrix->nColumns(), mMatrix->nRows(), data, result.nodataValue() );
     return true;
   }
-  else if ( mType == tFuncttion )
+  else if ( mType == tFunction )
   {
     QVector <QgsRasterMatrix *> matrixContainer;
     for ( int i = 0; i < mFunctionArgs.size(); ++i )
@@ -382,7 +382,7 @@ QString QgsRasterCalcNode::toString( bool cStyle ) const
       break;
     case tMatrix:
       break;
-    case tFuncttion:
+    case tFunction:
       if ( mFunctionName == "if" )
       {
         QString argOne = mFunctionArgs.at( 0 )->toString();

@@ -27,7 +27,7 @@ Represents a node in a raster calculator.
       tNumber,
       tRasterRef,
       tMatrix,
-      tFuncttion
+      tFunction
     };
 
     enum Operator
@@ -71,7 +71,7 @@ Constructor for QgsRasterCalcNode.
     QgsRasterCalcNode( Operator op, QgsRasterCalcNode *left, QgsRasterCalcNode *right );
     QgsRasterCalcNode( QString functionName, QVector <QgsRasterCalcNode *> functionArgs );
 %Docstring
-Constructor for the tFunct type
+Constructor for the tFunction type
 %End
     QgsRasterCalcNode( const QString &rasterName );
     ~QgsRasterCalcNode();
