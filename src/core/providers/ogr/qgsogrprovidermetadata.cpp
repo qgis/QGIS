@@ -31,6 +31,7 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsproviderutils.h"
 #include "qgsgdalutils.h"
 
+#include <gdal.h>
 #include <QFileInfo>
 #include <QFile>
 #include <QDir>
@@ -1304,6 +1305,54 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
       return sublayer.wkbType() != originalGeometryTypeFilter;
     } ), res.end() );
   }
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+  QMutex *mutex = nullptr;
+#else
+  QRecursiveMutex *mutex = nullptr;
+#endif
+  GDALDatasetH hDS = firstLayer->getDatasetHandleAndMutex( mutex );
+  QMutexLocker locker( mutex );
+  if ( GDALGroupH rootGroup = GDALDatasetGetRootGroup( hDS ) )
+  {
+    std::function< void( GDALGroupH, const QStringList & ) > recurseGroup;
+    recurseGroup = [&recurseGroup, &res]( GDALGroupH group, const QStringList & currentPath )
+    {
+      if ( char **vectorLayerNames = GDALGroupGetVectorLayerNames( group, nullptr ) )
+      {
+        const QStringList layers = QgsOgrUtils::cStringListToQStringList( vectorLayerNames );
+        // attach path to matching layers
+        for ( const QString &layer : layers )
+        {
+          for ( int i = 0; i < res.size(); ++i )
+          {
+            if ( res.at( i ).name() == layer )
+            {
+              res[i].setPath( currentPath );
+            }
+          }
+        }
+      }
+
+      if ( char **subgroupNames = GDALGroupGetGroupNames( group, nullptr ) )
+      {
+        for ( int i = 0; subgroupNames[i]; ++i )
+        {
+          if ( GDALGroupH subgroup = GDALGroupOpenGroup( group, subgroupNames[i], nullptr ) )
+          {
+            recurseGroup( subgroup, QStringList( currentPath ) << QString::fromUtf8( subgroupNames[i] ) );
+            GDALGroupRelease( subgroup );
+          }
+        }
+      }
+    };
+
+    recurseGroup( rootGroup, {} );
+    GDALGroupRelease( rootGroup );
+  }
+#endif
 
   return res;
 }
