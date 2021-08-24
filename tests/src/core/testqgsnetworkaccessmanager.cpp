@@ -756,8 +756,8 @@ void TestQgsNetworkAccessManager::testSslErrorHandler()
 
 void TestQgsNetworkAccessManager::testAuthRequestHandler()
 {
-  if ( QgsTest::isCIRun() )
-    QSKIP( "Skip remote test, looks like problem with httpbin" );
+  //if ( QgsTest::isCIRun() )
+  //  QSKIP( "Skip remote test, looks like problem with httpbin" );
   // initially this request should fail -- we aren't providing the username and password required
   QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< TestAuthRequestHandler >( QString(), QString() ) );
 
@@ -811,6 +811,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
     gotAuthDetailsAdded = true;
   } );
 
+  QThread::sleep(2);
   lastTest = QStringLiteral( "TEST_01 initially this request should fail -- we aren't providing the username and password required --->>> " );
   expectedError = QNetworkReply::AuthenticationRequiredError;
   QgsNetworkAccessManager::instance()->get( QNetworkRequest( u ) );
@@ -823,6 +824,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   QVERIFY( gotRequestAboutToBeCreatedSignal );
 
   // blocking request
+  QThread::sleep(2);
   lastTest = QStringLiteral( "TEST_02 blocking request --->>> " );
   hash = QUuid::createUuid().toString().mid( 1, 10 );
   u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
@@ -842,6 +844,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   QCOMPARE( rep.requestId(), requestId );
 
   // now try in a thread
+  QThread::sleep(2);
   lastTest = QStringLiteral( "TEST_03 now try in a thread --->>> " );
   loaded = false;
   gotAuthRequest = false;
@@ -864,6 +867,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   thread->deleteLater();
 
   // blocking request in a thread
+  QThread::sleep(2);
   lastTest = QStringLiteral( "TEST_04 blocking request in a thread --->>> " );
   loaded = false;
   gotAuthRequest = false;
@@ -884,6 +888,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   blockingThread->deleteLater();
 
   // try with username and password specified
+  QThread::sleep(2);
   lastTest = QStringLiteral( "TEST_05 try with username and password specified --->>> " );
   hash = QUuid::createUuid().toString().mid( 1, 10 );
   u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
@@ -904,6 +909,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   }
 
   // blocking request
+  QThread::sleep(2);
   lastTest = QStringLiteral( "TEST_06 blocking request --->>> " );
   loaded = false;
   gotAuthRequest = false;
@@ -924,6 +930,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   QCOMPARE( rep.requestId(), requestId );
 
   // correct username and password, in a thread
+  QThread::sleep(2);
   lastTest = QStringLiteral( "TEST_07 correct username and password, in a thread --->>> " );
   hash = QUuid::createUuid().toString().mid( 1, 10 );
   QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< TestAuthRequestHandler >( QStringLiteral( "me2" ), hash ) );
@@ -949,6 +956,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
 
 
   // blocking request in worker thread
+  QThread::sleep(2);
   lastTest = QStringLiteral( "TEST_08 blocking request in worker thread --->>> " );
   hash = QUuid::createUuid().toString().mid( 1, 10 );
   QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< TestAuthRequestHandler >( QStringLiteral( "me2" ), hash ) );
