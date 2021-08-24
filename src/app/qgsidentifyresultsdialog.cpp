@@ -707,8 +707,8 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
     if ( fields.fieldOrigin( i ) == QgsFields::OriginProvider && vlayer->dataProvider() )
       defVal = vlayer->dataProvider()->defaultValueClause( fields.fieldOriginIndex( i ) );
 
-    QString value = defVal == attrs.at( i ) ? defVal : fields.at( i ).displayString( attrs.at( i ) );
-    QgsTreeWidgetItem *attrItem = new QgsTreeWidgetItem( QStringList() << QString::number( i ) << value );
+    const QString originalValue = defVal == attrs.at( i ) ? defVal : fields.at( i ).displayString( attrs.at( i ) );
+    QgsTreeWidgetItem *attrItem = new QgsTreeWidgetItem( QStringList() << QString::number( i ) << originalValue );
     featItem->addChild( attrItem );
 
     attrItem->setData( 0, Qt::DisplayRole, vlayer->attributeDisplayName( i ) );
@@ -716,16 +716,16 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
     attrItem->setData( 0, Qt::UserRole, fields.at( i ).name() );
     attrItem->setData( 0, Qt::UserRole + 1, i );
 
-    attrItem->setData( 1, Qt::UserRole, value );
+    attrItem->setData( 1, Qt::UserRole, originalValue );
 
-    value = representValue( vlayer, setup, fields.at( i ).name(), attrs.at( i ) );
-    attrItem->setSortData( 1, value );
-    attrItem->setToolTip( 1, value );
+    const QString representedValue = representValue( vlayer, setup, fields.at( i ).name(), attrs.at( i ) );
+    attrItem->setSortData( 1, representedValue );
+    attrItem->setToolTip( 1, representedValue );
 
     if ( setup.type() == QLatin1String( "JsonEdit" ) )
     {
       QgsJsonEditWidget *jsonEditWidget = new QgsJsonEditWidget();
-      jsonEditWidget->setJsonText( value );
+      jsonEditWidget->setJsonText( representedValue );
       jsonEditWidget->setView( static_cast<QgsJsonEditWidget::View>( setup.config().value( QStringLiteral( "DefaultView" ) ).toInt() ) );
       jsonEditWidget->setFormatJsonMode( static_cast<QgsJsonEditWidget::FormatJson>( setup.config().value( QStringLiteral( "FormatJson" ) ).toInt() ) );
       jsonEditWidget->setControlsVisible( false );
@@ -736,7 +736,7 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
     else
     {
       bool foundLinks = false;
-      const QString links = QgsStringUtils::insertLinks( value, &foundLinks );
+      const QString links = QgsStringUtils::insertLinks( representedValue, &foundLinks );
       if ( foundLinks )
       {
         QLabel *valueLabel = new QLabel( links );
@@ -747,7 +747,7 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
       }
       else
       {
-        attrItem->setData( 1, Qt::DisplayRole, value );
+        attrItem->setData( 1, Qt::DisplayRole, representedValue );
         QTreeWidget *tw = attrItem->treeWidget();
         tw->setItemWidget( attrItem, 1, nullptr );
       }
@@ -757,8 +757,8 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
     {
       featItem->setText( 0, attrItem->text( 0 ) );
       featItem->setToolTip( 0, attrItem->text( 0 ) );
-      featItem->setText( 1, attrItem->text( 1 ) );
-      featItem->setToolTip( 1, attrItem->text( 1 ) );
+      featItem->setText( 1, representedValue );
+      featItem->setToolTip( 1, representedValue );
       featureLabeled = true;
     }
   }
