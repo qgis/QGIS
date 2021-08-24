@@ -27,6 +27,7 @@
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
+#include "qgsmeshlayer.h"
 
 #include <QThread>
 #include <QLocale>
@@ -403,6 +404,11 @@ class QgsExpressionUtils
     static QgsRasterLayer *getRasterLayer( const QVariant &value, QgsExpression *e )
     {
       return qobject_cast<QgsRasterLayer *>( getMapLayer( value, e ) );
+    }
+
+    static QgsMeshLayer *getMeshLayer( const QVariant &value, QgsExpression *e )
+    {
+      return qobject_cast<QgsMeshLayer *>( getMapLayer( value, e ) );
     }
 
     static QVariantList getListValue( const QVariant &value, QgsExpression *parent )

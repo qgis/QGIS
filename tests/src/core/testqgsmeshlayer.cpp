@@ -97,6 +97,8 @@ class TestQgsMeshLayer : public QObject
 
     void testMdalProviderQuerySublayers();
     void testMdalProviderQuerySublayersFastScan();
+
+    void testSelectByExpression();
 };
 
 QString TestQgsMeshLayer::readFile( const QString &fname ) const
@@ -1705,6 +1707,19 @@ void TestQgsMeshLayer::testMdalProviderQuerySublayersFastScan()
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
   QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
   QVERIFY( res.at( 0 ).skippedContainerScan() );
+}
+
+void TestQgsMeshLayer::testSelectByExpression()
+{
+  mMdalLayer->updateTriangularMesh();
+  QgsExpressionContext expressionContext;
+
+  QList<int> selectedVerticesIndexes = mMdalLayer->selectVerticesByExpression( QStringLiteral( " $vertex_z > 30" ) );
+  QCOMPARE( selectedVerticesIndexes, QList( {2, 3} ) );
+
+  selectedVerticesIndexes = mMdalLayer->selectVerticesByExpression( QStringLiteral( " x($vertex_as_point) > 1500" ) );
+  QCOMPARE( selectedVerticesIndexes.count(), 3 );
+  QCOMPARE( selectedVerticesIndexes, QList( {1, 2, 3} ) );
 }
 
 void TestQgsMeshLayer::test_temporal()

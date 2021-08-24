@@ -671,6 +671,16 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QgsPointXY snapOnElement( QgsMesh::ElementType elementType, const QgsPointXY &point, double searchRadius );
 
     /**
+     * Returns a list of vertex indexes that meet the condition defined by \a expression with the context \a expressionContext
+     *
+     * To express the relation with a vertex, the expression can be defined with function returning value
+     * linked to the current vertex, like " $vertex_z ", "$vertex_as_point"
+     *
+     * \since QGIS 3.22
+     */
+    QList<int> selectVerticesByExpression( const QString &expression, const QgsExpressionContext &expressionContext = QgsExpressionContext() );
+
+    /**
       * Returns the root items of the dataset group tree item
       *
       * \return the root item

@@ -660,6 +660,16 @@ The returned position is in map coordinates.
 .. versionadded:: 3.14
 %End
 
+    QList<int> selectVerticesByExpression( const QString &expression, const QgsExpressionContext &expressionContext = QgsExpressionContext() );
+%Docstring
+Returns a list of vertex indexes that meet the condition defined by ``expression`` with the context ``expressionContext``
+
+To express the relation with a vertex, the expression can be defined with function returning value
+linked to the current vertex, like " $vertex_z ", "$vertex_as_point"
+
+.. versionadded:: 3.22
+%End
+
     QgsMeshDatasetGroupTreeItem *datasetGroupTreeRootItem() const;
 %Docstring
 Returns the root items of the dataset group tree item

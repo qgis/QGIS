@@ -65,6 +65,7 @@ class TestQgsExpression: public QObject
     QgsVectorLayer *mChildLayer2 = nullptr; // relation with composite keys
     QgsVectorLayer *mChildLayer = nullptr;
     QgsRasterLayer *mRasterLayer = nullptr;
+    QgsMeshLayer *mMeshLayer = nullptr;
 
   private slots:
 
@@ -122,6 +123,11 @@ class TestQgsExpression: public QObject
       mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                          rasterFileInfo.completeBaseName() );
       QgsProject::instance()->addMapLayer( mRasterLayer );
+
+      QString meshFileName = testDataDir + "/mesh/quad_flower.2dm";
+      mMeshLayer = new QgsMeshLayer( meshFileName, "mesh layer", "mdal" );
+      mMeshLayer->updateTriangularMesh();
+      QgsProject::instance()->addMapLayer( mMeshLayer );
 
       // test memory layer for get_feature tests
       mMemoryLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:string" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
@@ -255,6 +261,23 @@ class TestQgsExpression: public QObject
       rel_ck.addFieldPair( QStringLiteral( "name" ), QStringLiteral( "col4" ) );
       QVERIFY( rel_ck.isValid() );
       QgsProject::instance()->relationManager()->addRelation( rel_ck );
+    }
+
+    void evalMeshElement()
+    {
+      QgsExpressionContext context;
+      context.appendScope( QgsExpressionContextUtils::meshExpressionScope() );
+      context.lastScope()->setVariable( QStringLiteral( "_mesh_vertex_index" ), 2 );
+      context.lastScope()->setVariable( QStringLiteral( "_mesh_layer" ), QVariant::fromValue( mMeshLayer ) );
+
+      QgsExpression expression( QStringLiteral( "$vertex_z" ) );
+      QCOMPARE( expression.evaluate( &context ).toDouble(), 800.0 );
+
+      expression = QgsExpression( QStringLiteral( "$vertex_as_point" ) );
+      QVariant out = expression.evaluate( &context );
+      QgsGeometry outGeom = out.value<QgsGeometry>();
+      QgsGeometry geom( new QgsPoint( 2500, 2500, 800 ) );
+      QCOMPARE( geom.equals( outGeom ), true );
     }
 
     void cleanupTestCase()
