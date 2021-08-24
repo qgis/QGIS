@@ -47,11 +47,11 @@ QgsMapSettings::QgsMapSettings()
 
 void QgsMapSettings::setMagnificationFactor( double factor, const QgsPointXY *center )
 {
-  double ratio = mMagnificationFactor / factor;
+  const double ratio = mMagnificationFactor / factor;
 
   mMagnificationFactor = factor;
 
-  double rot = rotation();
+  const double rot = rotation();
   setRotation( 0.0 );
 
   QgsRectangle ext = visibleExtent();
@@ -117,7 +117,7 @@ void QgsMapSettings::setRotation( double degrees )
 
 void QgsMapSettings::updateDerived()
 {
-  QgsRectangle extent = mExtent;
+  const QgsRectangle extent = mExtent;
 
   if ( extent.isEmpty() || !extent.isFinite() )
   {
@@ -143,11 +143,11 @@ void QgsMapSettings::updateDerived()
   {
     // Use abs() on the extent to avoid the case where the extent is
     // symmetrical about 0.
-    double xMean = ( std::fabs( extent.xMinimum() ) + std::fabs( extent.xMaximum() ) ) * 0.5;
-    double yMean = ( std::fabs( extent.yMinimum() ) + std::fabs( extent.yMaximum() ) ) * 0.5;
+    const double xMean = ( std::fabs( extent.xMinimum() ) + std::fabs( extent.xMaximum() ) ) * 0.5;
+    const double yMean = ( std::fabs( extent.yMinimum() ) + std::fabs( extent.yMaximum() ) ) * 0.5;
 
-    double xRange = extent.width() / xMean;
-    double yRange = extent.height() / yMean;
+    const double xRange = extent.width() / xMean;
+    const double yRange = extent.height() / yMean;
 
     static const double MIN_PROPORTION = 1e-12;
     if ( xRange < MIN_PROPORTION || yRange < MIN_PROPORTION )
@@ -157,8 +157,8 @@ void QgsMapSettings::updateDerived()
     }
   }
 
-  double myHeight = mSize.height();
-  double myWidth = mSize.width();
+  const double myHeight = mSize.height();
+  const double myWidth = mSize.width();
 
   if ( !myWidth || !myHeight )
   {
@@ -167,8 +167,8 @@ void QgsMapSettings::updateDerived()
   }
 
   // calculate the translation and scaling parameters
-  double mapUnitsPerPixelY = mExtent.height() / myHeight;
-  double mapUnitsPerPixelX = mExtent.width() / myWidth;
+  const double mapUnitsPerPixelY = mExtent.height() / myHeight;
+  const double mapUnitsPerPixelX = mExtent.width() / myWidth;
   mMapUnitsPerPixel = mapUnitsPerPixelY > mapUnitsPerPixelX ? mapUnitsPerPixelY : mapUnitsPerPixelX;
 
   // calculate the actual extent of the mapCanvas
@@ -208,10 +208,10 @@ void QgsMapSettings::updateDerived()
 #if 1 // set visible extent taking rotation in consideration
   if ( mRotation )
   {
-    QgsPointXY p1 = mMapToPixel.toMapCoordinates( QPoint( 0, 0 ) );
-    QgsPointXY p2 = mMapToPixel.toMapCoordinates( QPoint( 0, myHeight ) );
-    QgsPointXY p3 = mMapToPixel.toMapCoordinates( QPoint( myWidth, 0 ) );
-    QgsPointXY p4 = mMapToPixel.toMapCoordinates( QPoint( myWidth, myHeight ) );
+    const QgsPointXY p1 = mMapToPixel.toMapCoordinates( QPoint( 0, 0 ) );
+    const QgsPointXY p2 = mMapToPixel.toMapCoordinates( QPoint( 0, myHeight ) );
+    const QgsPointXY p3 = mMapToPixel.toMapCoordinates( QPoint( myWidth, 0 ) );
+    const QgsPointXY p4 = mMapToPixel.toMapCoordinates( QPoint( myWidth, myHeight ) );
     dxmin = std::min( p1.x(), std::min( p2.x(), std::min( p3.x(), p4.x() ) ) );
     dymin = std::min( p1.y(), std::min( p2.y(), std::min( p3.y(), p4.y() ) ) );
     dxmax = std::max( p1.x(), std::max( p2.x(), std::max( p3.x(), p4.x() ) ) );
@@ -334,7 +334,7 @@ QgsCoordinateReferenceSystem QgsMapSettings::destinationCrs() const
 
 bool QgsMapSettings::setEllipsoid( const QString &ellipsoid )
 {
-  QgsEllipsoidUtils::EllipsoidParameters params = QgsEllipsoidUtils::ellipsoidParameters( ellipsoid );
+  const QgsEllipsoidUtils::EllipsoidParameters params = QgsEllipsoidUtils::ellipsoidParameters( ellipsoid );
   if ( !params.valid )
   {
     return false;
@@ -442,24 +442,24 @@ QgsRectangle QgsMapSettings::computeExtentForScale( const QgsPointXY &center, do
   const double outputWidthInInches = outputSize().width() / outputDpi();
 
   // Desired visible width (honouring scale)
-  double scaledWidthInInches = outputWidthInInches * scale;
+  const double scaledWidthInInches = outputWidthInInches * scale;
 
   if ( mapUnits() == QgsUnitTypes::DistanceDegrees )
   {
     // Start with some fraction of the current extent around the center
-    double delta = mExtent.width() / 100.;
+    const double delta = mExtent.width() / 100.;
     QgsRectangle ext( center.x() - delta, center.y() - delta, center.x() + delta, center.y() + delta );
     // Get scale at extent, and then scale extent to the desired scale
-    double testScale = mScaleCalculator.calculate( ext, outputSize().width() );
+    const double testScale = mScaleCalculator.calculate( ext, outputSize().width() );
     ext.scale( scale / testScale );
     return ext;
   }
   else
   {
     // Conversion from inches to mapUnits  - this is safe to use, because we know here that the map units AREN'T in degrees
-    double conversionFactor = QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceFeet, mapUnits() ) / 12;
+    const double conversionFactor = QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceFeet, mapUnits() ) / 12;
 
-    double delta = 0.5 * scaledWidthInInches * conversionFactor;
+    const double delta = 0.5 * scaledWidthInInches * conversionFactor;
     return QgsRectangle( center.x() - delta, center.y() - delta, center.x() + delta, center.y() + delta );
   }
 }
@@ -529,7 +529,7 @@ QgsPointXY QgsMapSettings::layerToMapCoordinates( const QgsMapLayer *layer, QgsP
 {
   try
   {
-    QgsCoordinateTransform ct = layerTransform( layer );
+    const QgsCoordinateTransform ct = layerTransform( layer );
     if ( ct.isValid() )
       point = ct.transform( point, QgsCoordinateTransform::ForwardTransform );
   }
@@ -549,7 +549,7 @@ QgsPoint QgsMapSettings::layerToMapCoordinates( const QgsMapLayer *layer, const 
 
   try
   {
-    QgsCoordinateTransform ct = layerTransform( layer );
+    const QgsCoordinateTransform ct = layerTransform( layer );
     if ( ct.isValid() )
       ct.transformInPlace( x, y, z, QgsCoordinateTransform::ForwardTransform );
   }
@@ -566,7 +566,7 @@ QgsRectangle QgsMapSettings::layerToMapCoordinates( const QgsMapLayer *layer, Qg
 {
   try
   {
-    QgsCoordinateTransform ct = layerTransform( layer );
+    const QgsCoordinateTransform ct = layerTransform( layer );
     if ( ct.isValid() )
       rect = ct.transform( rect, QgsCoordinateTransform::ForwardTransform );
   }
@@ -583,7 +583,7 @@ QgsPointXY QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, QgsP
 {
   try
   {
-    QgsCoordinateTransform ct = layerTransform( layer );
+    const QgsCoordinateTransform ct = layerTransform( layer );
     if ( ct.isValid() )
       point = ct.transform( point, QgsCoordinateTransform::ReverseTransform );
   }
@@ -603,7 +603,7 @@ QgsPoint QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, const 
 
   try
   {
-    QgsCoordinateTransform ct = layerTransform( layer );
+    const QgsCoordinateTransform ct = layerTransform( layer );
     if ( ct.isValid() )
       ct.transformInPlace( x, y, z, QgsCoordinateTransform::ReverseTransform );
   }
@@ -620,7 +620,7 @@ QgsRectangle QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, Qg
 {
   try
   {
-    QgsCoordinateTransform ct = layerTransform( layer );
+    const QgsCoordinateTransform ct = layerTransform( layer );
     if ( ct.isValid() )
       rect = ct.transform( rect, QgsCoordinateTransform::ReverseTransform );
   }
@@ -657,7 +657,7 @@ QgsRectangle QgsMapSettings::fullExtent() const
 
       // Layer extents are stored in the coordinate system (CS) of the
       // layer. The extent must be projected to the canvas CS
-      QgsRectangle extent = layerExtentToOutputExtent( lyr, lyr->extent() );
+      const QgsRectangle extent = layerExtentToOutputExtent( lyr, lyr->extent() );
 
       QgsDebugMsgLevel( "Output extent: " + extent.toString(), 5 );
       fullExtent.combineExtentWith( extent );
@@ -678,12 +678,12 @@ QgsRectangle QgsMapSettings::fullExtent() const
     else
     {
       const double padFactor = 1e-8;
-      double widthPad = fullExtent.xMinimum() * padFactor;
-      double heightPad = fullExtent.yMinimum() * padFactor;
-      double xmin = fullExtent.xMinimum() - widthPad;
-      double xmax = fullExtent.xMaximum() + widthPad;
-      double ymin = fullExtent.yMinimum() - heightPad;
-      double ymax = fullExtent.yMaximum() + heightPad;
+      const double widthPad = fullExtent.xMinimum() * padFactor;
+      const double heightPad = fullExtent.yMinimum() * padFactor;
+      const double xmin = fullExtent.xMinimum() - widthPad;
+      const double xmax = fullExtent.xMaximum() + widthPad;
+      const double ymin = fullExtent.yMinimum() - heightPad;
+      const double ymax = fullExtent.yMaximum() + heightPad;
       fullExtent.set( xmin, ymin, xmax, ymax );
     }
   }
@@ -697,7 +697,7 @@ void QgsMapSettings::readXml( QDomNode &node )
 {
   // set destination CRS
   QgsCoordinateReferenceSystem srs;
-  QDomNode srsNode = node.namedItem( QStringLiteral( "destinationsrs" ) );
+  const QDomNode srsNode = node.namedItem( QStringLiteral( "destinationsrs" ) );
   if ( !srsNode.isNull() )
   {
     srs.readXml( srsNode );
@@ -705,21 +705,21 @@ void QgsMapSettings::readXml( QDomNode &node )
   setDestinationCrs( srs );
 
   // set extent
-  QDomNode extentNode = node.namedItem( QStringLiteral( "extent" ) );
-  QgsRectangle aoi = QgsXmlUtils::readRectangle( extentNode.toElement() );
+  const QDomNode extentNode = node.namedItem( QStringLiteral( "extent" ) );
+  const QgsRectangle aoi = QgsXmlUtils::readRectangle( extentNode.toElement() );
   setExtent( aoi );
 
   // set rotation
-  QDomNode rotationNode = node.namedItem( QStringLiteral( "rotation" ) );
-  QString rotationVal = rotationNode.toElement().text();
+  const QDomNode rotationNode = node.namedItem( QStringLiteral( "rotation" ) );
+  const QString rotationVal = rotationNode.toElement().text();
   if ( ! rotationVal.isEmpty() )
   {
-    double rot = rotationVal.toDouble();
+    const double rot = rotationVal.toDouble();
     setRotation( rot );
   }
 
   //render map tile
-  QDomElement renderMapTileElem = node.firstChildElement( QStringLiteral( "rendermaptile" ) );
+  const QDomElement renderMapTileElem = node.firstChildElement( QStringLiteral( "rendermaptile" ) );
   if ( !renderMapTileElem.isNull() )
   {
     setFlag( QgsMapSettings::RenderMapTile, renderMapTileElem.text() == QLatin1String( "1" ) );
@@ -753,7 +753,7 @@ void QgsMapSettings::writeXml( QDomNode &node, QDomDocument &doc )
 
   //render map tile
   QDomElement renderMapTileElem = doc.createElement( QStringLiteral( "rendermaptile" ) );
-  QDomText renderMapTileText = doc.createTextNode( testFlag( QgsMapSettings::RenderMapTile ) ? "1" : "0" );
+  const QDomText renderMapTileText = doc.createTextNode( testFlag( QgsMapSettings::RenderMapTile ) ? "1" : "0" );
   renderMapTileElem.appendChild( renderMapTileText );
   node.appendChild( renderMapTileElem );
 }

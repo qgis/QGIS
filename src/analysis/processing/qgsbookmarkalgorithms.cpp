@@ -148,7 +148,8 @@ QVariantMap QgsBookmarksToLayerAlgorithm::processAlgorithm( const QVariantMap &p
 
     feat.setGeometry( geom );
 
-    sink->addFeature( feat, QgsFeatureSink::FastInsert );
+    if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
     feedback->setProgress( current++ * step );
   }

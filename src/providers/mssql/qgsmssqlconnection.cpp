@@ -81,7 +81,7 @@ QSqlDatabase QgsMssqlConnection::getDatabase( const QString &service, const QStr
       // QSqlDatabase::removeDatabase is thread safe, so this is ok to do.
       QObject::connect( QThread::currentThread(), &QThread::finished, QThread::currentThread(), [threadSafeConnectionName]
       {
-        QMutexLocker locker( &sMutex );
+        const QMutexLocker locker( &sMutex );
         QSqlDatabase::removeDatabase( threadSafeConnectionName );
       }, Qt::DirectConnection );
     }
@@ -161,7 +161,7 @@ bool QgsMssqlConnection::openDatabase( QSqlDatabase &db )
 
 bool QgsMssqlConnection::geometryColumnsOnly( const QString &name )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
   return settings.value( "/MSSQL/connections/" + name + "/geometryColumnsOnly", false ).toBool();
 }
 
@@ -173,7 +173,7 @@ void QgsMssqlConnection::setGeometryColumnsOnly( const QString &name, bool enabl
 
 bool QgsMssqlConnection::extentInGeometryColumns( const QString &name )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
   return settings.value( "/MSSQL/connections/" + name + "/extentInGeometryColumns", false ).toBool();
 }
 
@@ -185,7 +185,7 @@ void QgsMssqlConnection::setExtentInGeometryColumns( const QString &name, bool e
 
 bool QgsMssqlConnection::primaryKeyInGeometryColumns( const QString &name )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
   return settings.value( "/MSSQL/connections/" + name + "/primaryKeyInGeometryColumns", false ).toBool();
 }
 
@@ -197,7 +197,7 @@ void QgsMssqlConnection::setPrimaryKeyInGeometryColumns( const QString &name, bo
 
 bool QgsMssqlConnection::allowGeometrylessTables( const QString &name )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
   return settings.value( "/MSSQL/connections/" + name + "/allowGeometrylessTables", false ).toBool();
 }
 
@@ -209,7 +209,7 @@ void QgsMssqlConnection::setAllowGeometrylessTables( const QString &name, bool e
 
 bool QgsMssqlConnection::useEstimatedMetadata( const QString &name )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
   return settings.value( "/MSSQL/connections/" + name + "/estimatedMetadata", false ).toBool();
 }
 
@@ -221,7 +221,7 @@ void QgsMssqlConnection::setUseEstimatedMetadata( const QString &name, bool enab
 
 bool QgsMssqlConnection::isInvalidGeometryHandlingDisabled( const QString &name )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
   return settings.value( "/MSSQL/connections/" + name + "/disableInvalidGeometryHandling", false ).toBool();
 }
 
@@ -233,7 +233,7 @@ void QgsMssqlConnection::setInvalidGeometryHandlingDisabled( const QString &name
 
 bool QgsMssqlConnection::dropView( const QString &uri, QString *errorMessage )
 {
-  QgsDataSourceUri dsUri( uri );
+  const QgsDataSourceUri dsUri( uri );
 
   // connect to database
   QSqlDatabase db = getDatabase( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
@@ -260,7 +260,7 @@ bool QgsMssqlConnection::dropView( const QString &uri, QString *errorMessage )
 
 bool QgsMssqlConnection::dropTable( const QString &uri, QString *errorMessage )
 {
-  QgsDataSourceUri dsUri( uri );
+  const QgsDataSourceUri dsUri( uri );
 
   // connect to database
   QSqlDatabase db = getDatabase( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
@@ -292,7 +292,7 @@ bool QgsMssqlConnection::dropTable( const QString &uri, QString *errorMessage )
 
 bool QgsMssqlConnection::truncateTable( const QString &uri, QString *errorMessage )
 {
-  QgsDataSourceUri dsUri( uri );
+  const QgsDataSourceUri dsUri( uri );
 
   // connect to database
   QSqlDatabase db = getDatabase( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
@@ -321,7 +321,7 @@ bool QgsMssqlConnection::truncateTable( const QString &uri, QString *errorMessag
 
 bool QgsMssqlConnection::createSchema( const QString &uri, const QString &schemaName, QString *errorMessage )
 {
-  QgsDataSourceUri dsUri( uri );
+  const QgsDataSourceUri dsUri( uri );
 
   // connect to database
   QSqlDatabase db = getDatabase( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
@@ -348,7 +348,7 @@ bool QgsMssqlConnection::createSchema( const QString &uri, const QString &schema
 
 QStringList QgsMssqlConnection::schemas( const QString &uri, QString *errorMessage )
 {
-  QgsDataSourceUri dsUri( uri );
+  const QgsDataSourceUri dsUri( uri );
 
 // connect to database
   QSqlDatabase db = getDatabase( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
@@ -388,7 +388,7 @@ QStringList QgsMssqlConnection::schemas( QSqlDatabase &dataBase, QString *errorM
 
 bool QgsMssqlConnection::isSystemSchema( const QString &schema )
 {
-  static QSet< QString > sSystemSchemas
+  static const QSet< QString > sSystemSchemas
   {
     QStringLiteral( "db_owner" ),
     QStringLiteral( "db_securityadmin" ),
@@ -408,7 +408,7 @@ bool QgsMssqlConnection::isSystemSchema( const QString &schema )
 
 QgsDataSourceUri QgsMssqlConnection::connUri( const QString &connName )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
 
   const QString key = "/MSSQL/connections/" + connName;
 
@@ -457,7 +457,7 @@ QgsDataSourceUri QgsMssqlConnection::connUri( const QString &connName )
     }
   }
 
-  QStringList excludedSchemas = QgsMssqlConnection::excludedSchemasList( connName );
+  const QStringList excludedSchemas = QgsMssqlConnection::excludedSchemasList( connName );
   if ( !excludedSchemas.isEmpty() )
     uri.setParam( QStringLiteral( "excludedSchemas" ), excludedSchemas.join( ',' ) );
 
@@ -503,20 +503,20 @@ QList<QgsVectorDataProvider::NativeType> QgsMssqlConnection::nativeTypes()
 
 QStringList QgsMssqlConnection::excludedSchemasList( const QString &connName )
 {
-  QgsSettings settings;
-  QString databaseName = settings.value( QStringLiteral( "/MSSQL/connections/" ) + connName + QStringLiteral( "/database" ) ).toString();
+  const QgsSettings settings;
+  const QString databaseName = settings.value( QStringLiteral( "/MSSQL/connections/" ) + connName + QStringLiteral( "/database" ) ).toString();
 
   return excludedSchemasList( connName, databaseName );
 }
 
 QStringList QgsMssqlConnection::excludedSchemasList( const QString &connName, const QString &database )
 {
-  QgsSettings settings;
-  bool schemaFilteringEnabled = settings.value( QStringLiteral( "/MSSQL/connections/" ) + connName + QStringLiteral( "/schemasFiltering" ) ).toBool();
+  const QgsSettings settings;
+  const bool schemaFilteringEnabled = settings.value( QStringLiteral( "/MSSQL/connections/" ) + connName + QStringLiteral( "/schemasFiltering" ) ).toBool();
 
   if ( schemaFilteringEnabled )
   {
-    QVariant schemaSettingsVariant = settings.value( QStringLiteral( "/MSSQL/connections/" ) + connName + QStringLiteral( "/excludedSchemas" ) );
+    const QVariant schemaSettingsVariant = settings.value( QStringLiteral( "/MSSQL/connections/" ) + connName + QStringLiteral( "/excludedSchemas" ) );
 
     if ( schemaSettingsVariant.type() == QVariant::Map )
     {
@@ -531,9 +531,9 @@ QStringList QgsMssqlConnection::excludedSchemasList( const QString &connName, co
 
 void QgsMssqlConnection::setExcludedSchemasList( const QString &connName, const QStringList &excludedSchemas )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
 
-  QString currentDatabaseName = settings.value( QStringLiteral( "/MSSQL/connections/" ) + connName + QStringLiteral( "/database" ) ).toString();
+  const QString currentDatabaseName = settings.value( QStringLiteral( "/MSSQL/connections/" ) + connName + QStringLiteral( "/database" ) ).toString();
   setExcludedSchemasList( connName, currentDatabaseName, excludedSchemas );
 }
 
@@ -542,7 +542,7 @@ void QgsMssqlConnection::setExcludedSchemasList( const QString &connName, const 
   QgsSettings settings;
   settings.setValue( QStringLiteral( "/MSSQL/connections/" ) + connName + QStringLiteral( "/schemasFiltering" ), excludedSchemas.isEmpty() ? 0 : 1 );
 
-  QVariant schemaSettingsVariant = settings.value( QStringLiteral( "/MSSQL/connections/" ) + connName + QStringLiteral( "/excludedSchemas" ) );
+  const QVariant schemaSettingsVariant = settings.value( QStringLiteral( "/MSSQL/connections/" ) + connName + QStringLiteral( "/excludedSchemas" ) );
   QVariantMap schemaSettings = schemaSettingsVariant.toMap();
   schemaSettings.insert( database, excludedSchemas );
   settings.setValue( QStringLiteral( "/MSSQL/connections/" ) + connName + QStringLiteral( "/excludedSchemas" ), schemaSettings );

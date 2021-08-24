@@ -67,7 +67,7 @@ void QgsMapToolReverseLine::canvasPressEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  QgsGeometry geomPart = partUnderPoint( e->pos(), mPressedFid, mPressedPartNum );
+  const QgsGeometry geomPart = partUnderPoint( e->pos(), mPressedFid, mPressedPartNum );
 
   if ( mPressedFid != -1 )
   {
@@ -134,19 +134,19 @@ void QgsMapToolReverseLine::canvasReleaseEvent( QgsMapMouseEvent *e )
 QgsGeometry QgsMapToolReverseLine::partUnderPoint( QPoint point, QgsFeatureId &fid, int &partNum )
 {
   QgsFeature f;
-  QgsGeometry geomPart;
+  const QgsGeometry geomPart;
 
   switch ( vlayer->geometryType() )
   {
     case QgsWkbTypes::LineGeometry:
     {
-      QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToCurrentLayer( point, QgsPointLocator::Types( QgsPointLocator::Vertex | QgsPointLocator::Edge ) );
+      const QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToCurrentLayer( point, QgsPointLocator::Types( QgsPointLocator::Vertex | QgsPointLocator::Edge ) );
       if ( !match.isValid() )
         return geomPart;
 
       int snapVertex = match.vertexIndex();
       vlayer->getFeatures( QgsFeatureRequest().setFilterFid( match.featureId() ) ).nextFeature( f );
-      QgsGeometry g = f.geometry();
+      const QgsGeometry g = f.geometry();
       if ( !g.isMultipart() )
       {
         fid = match.featureId();

@@ -356,3 +356,13 @@ QgsOptionsPageWidget *QgsCodeEditorOptionsFactory::createWidget( QWidget *parent
 {
   return new QgsCodeEditorOptionsWidget( parent );
 }
+
+QStringList QgsCodeEditorOptionsFactory::path() const
+{
+  return {QStringLiteral( "ide" ) };
+}
+
+QString QgsCodeEditorOptionsFactory::pagePositionHint() const
+{
+  return QStringLiteral( "consoleOptions" );
+}

@@ -36,6 +36,7 @@ from qgis.core import (
     QgsFeedback,
     QgsApplication,
     QgsTask,
+    QgsMapLayerUtils,
     Qgis,
 )
 from qgis.PyQt import QtCore
@@ -560,6 +561,11 @@ class TestPyQgsProviderConnectionBase():
         self.assertTrue(vl.isValid())
         self.assertTrue(vl.isSpatial())
         self.assertEqual(vl.name(), options.layerName)
+
+        # Test that a database connection can be retrieved from an existing layer
+        vlconn = QgsMapLayerUtils.databaseConnection(vl)
+        self.assertIsNotNone(vlconn)
+        self.assertEqual(vlconn.uri(), conn.uri())
 
         # Some providers can also create SQL layer without an explicit PK
         if sql_layer_capabilities & Qgis.SqlLayerDefinitionCapability.PrimaryKeys:

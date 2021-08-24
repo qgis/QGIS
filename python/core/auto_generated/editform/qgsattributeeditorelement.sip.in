@@ -35,6 +35,9 @@ layer.
       case QgsAttributeEditorElement::AeTypeRelation:
         sipType = sipType_QgsAttributeEditorRelation;
         break;
+      case QgsAttributeEditorElement::AeTypeAction:
+        sipType = sipType_QgsAttributeEditorAction;
+        break;
       default:
         sipType = nullptr;
         break;
@@ -48,7 +51,8 @@ layer.
       AeTypeRelation,
       AeTypeInvalid,
       AeTypeQmlElement,
-      AeTypeHtmlElement
+      AeTypeHtmlElement,
+      AeTypeAction
     };
 
     QgsAttributeEditorElement( AttributeEditorType type, const QString &name, QgsAttributeEditorElement *parent = 0 );

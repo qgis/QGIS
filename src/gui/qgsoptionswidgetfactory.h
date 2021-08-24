@@ -149,6 +149,17 @@ class GUI_EXPORT QgsOptionsWidgetFactory : public QObject
     virtual QString pagePositionHint() const { return QString(); }
 
     /**
+     * Returns the path to place the widget page at, for options dialogs
+     * which are structured using a tree view.
+     *
+     * A factory which returns "Code", "Javascript" would have its widget placed
+     * in a group named "Javascript", contained in a parent group named "Code".
+     *
+     * \since QGIS 3.22
+     */
+    virtual QStringList path() const { return QStringList(); }
+
+    /**
      * \brief Factory function to create the widget on demand as needed by the options dialog.
      * \param parent The parent of the widget.
      * \returns A new widget to show as a page in the options dialog.

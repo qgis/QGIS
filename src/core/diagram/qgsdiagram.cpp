@@ -67,7 +67,7 @@ QFont QgsDiagram::scaledFont( const QgsDiagramSettings &s, const QgsRenderContex
   QFont f = s.font;
   if ( s.sizeType == QgsUnitTypes::RenderMapUnits )
   {
-    int pixelsize = s.font.pointSizeF() / c.mapToPixel().mapUnitsPerPixel();
+    const int pixelsize = s.font.pointSizeF() / c.mapToPixel().mapUnitsPerPixel();
     f.setPixelSize( pixelsize > 0 ? pixelsize : 1 );
   }
   else
@@ -93,7 +93,7 @@ QSizeF QgsDiagram::sizeForValue( double value, const QgsDiagramSettings &s, cons
   }
 
   //interpolate size
-  double scaledRatio = ( scaledValue - scaledLowerValue ) / ( scaledUpperValue - scaledLowerValue );
+  const double scaledRatio = ( scaledValue - scaledLowerValue ) / ( scaledUpperValue - scaledLowerValue );
 
   QSizeF size = QSizeF( is.upperSize.width() * scaledRatio + is.lowerSize.width() * ( 1 - scaledRatio ),
                         is.upperSize.height() * scaledRatio + is.lowerSize.height() * ( 1 - scaledRatio ) );

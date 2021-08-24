@@ -8,7 +8,7 @@
     <x>0</x>
     <y>0</y>
     <width>481</width>
-    <height>690</height>
+    <height>803</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -46,13 +46,101 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>481</width>
-        <height>690</height>
+        <width>467</width>
+        <height>835</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
-        <widget class="QGroupBox" name="groupBox">
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>Type</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QComboBox" name="mStorageType">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;Way of dealing with attachment file&lt;p&gt;&quot;Select existing file&quot; allows you to pick an existing file from the file system or set an existing URL external resource.&lt;/p&gt;&lt;p&gt;Other items allows you to pick a local resource and store it on an external storage system. You cannot use relative path in this mode and you can only pick file and not directory.&lt;/p&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="mExternalStorageGroupBox">
+         <property name="title">
+          <string>External storage</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_7">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QLabel" name="label_5">
+              <property name="text">
+               <string>Store URL</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="mStorageUrl">
+              <property name="toolTip">
+               <string>Url used to store file selected from the attachment widget.</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="mStorageUrlExpression">
+              <property name="toolTip">
+               <string>Url used to store file selected from the attachment widget.</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsPropertyOverrideButton" name="mStorageUrlPropertyOverrideButton">
+              <property name="text">
+               <string>…</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="mAuthGroupBox">
+            <property name="title">
+             <string>Authentication</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_6">
+             <property name="leftMargin">
+              <number>6</number>
+             </property>
+             <property name="topMargin">
+              <number>6</number>
+             </property>
+             <property name="rightMargin">
+              <number>6</number>
+             </property>
+             <property name="bottomMargin">
+              <number>6</number>
+             </property>
+             <item>
+              <widget class="QgsAuthSettingsWidget" name="mAuthSettingsProtocol" native="true">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="mPathGroupBox">
          <property name="title">
           <string>Path</string>
          </property>
@@ -198,7 +286,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="mStorageGroupBox">
+        <widget class="QGroupBox" name="mStorageModeGroupBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
            <horstretch>0</horstretch>
@@ -479,6 +567,11 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
@@ -490,9 +583,10 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
+   <class>QgsAuthSettingsWidget</class>
+   <extends>QWidget</extends>
+   <header>auth/qgsauthsettingswidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

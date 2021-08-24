@@ -56,6 +56,13 @@ class CORE_EXPORT QgsIconUtils
     static QIcon iconPolygon();
 
     /**
+     * Returns an icon representing geometry collections.
+     *
+     * \since QGIS 3.22
+     */
+    static QIcon iconGeometryCollection();
+
+    /**
      * Returns an icon representing non-spatial layers (tables).
      */
     static QIcon iconTable();

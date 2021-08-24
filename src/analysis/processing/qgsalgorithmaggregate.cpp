@@ -163,7 +163,7 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
     // upgrade group by value to a list, so that we get correct behavior with the QHash
     const QVariantList key = groupByValue.type() == QVariant::List ? groupByValue.toList() : ( QVariantList() << groupByValue );
 
-    auto groupIt = groups.find( key );
+    const auto groupIt = groups.find( key );
     if ( groupIt == groups.end() )
     {
       QString id = QStringLiteral( "memory:" );
@@ -173,7 +173,8 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
                                               mSource->wkbType(),
                                               mSource->sourceCrs() ) );
 
-      sink->addFeature( feature, QgsFeatureSink::FastInsert );
+      if ( !sink->addFeature( feature, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QString() ) );
 
       QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( id, context );
 
@@ -189,7 +190,8 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
     }
     else
     {
-      groupIt->sink->addFeature( feature, QgsFeatureSink::FastInsert );
+      if ( !groupIt->sink->addFeature( feature, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( groupIt->sink, parameters, QString() ) );
       groupIt->lastFeature = feature;
     }
 
@@ -214,7 +216,7 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
   current = 0;
   for ( const QVariantList &key : keys )
   {
-    Group &group = groups[ key ];
+    const Group &group = groups[ key ];
 
     QgsExpressionContext exprContext = createExpressionContext( parameters, context );
     exprContext.appendScope( QgsExpressionContextUtils::layerScope( group.layer ) );
@@ -266,7 +268,8 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
     QgsFeature outFeat;
     outFeat.setGeometry( geometry );
     outFeat.setAttributes( attributes );
-    sink->addFeature( outFeat, QgsFeatureSink::FastInsert );
+    if ( !sink->addFeature( outFeat, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
     current++;
     feedback->setProgress( 50 + current * progressStep );

@@ -129,7 +129,7 @@ QgsFeatureList QgsBatchGeocodeAlgorithm::processFeature( const QgsFeature &featu
     return QgsFeatureList() << f;
   }
 
-  QgsGeocoderContext geocodeContext( context.transformContext() );
+  const QgsGeocoderContext geocodeContext( context.transformContext() );
   const QList< QgsGeocoderResult > results = mGeocoder->geocodeString( address, geocodeContext, feedback );
   if ( results.empty() )
   {
@@ -166,7 +166,7 @@ QgsFeatureList QgsBatchGeocodeAlgorithm::processFeature( const QgsFeature &featu
     }
   }
 
-  QgsCoordinateTransform transform = QgsCoordinateTransform( results.at( 0 ).crs(), mOutputCrs, context.transformContext() );
+  const QgsCoordinateTransform transform = QgsCoordinateTransform( results.at( 0 ).crs(), mOutputCrs, context.transformContext() );
   QgsGeometry g = results.at( 0 ).geometry();
   try
   {

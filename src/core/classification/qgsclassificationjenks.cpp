@@ -117,7 +117,7 @@ QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &
     sample = values.toVector();
   }
 
-  int n = sample.size();
+  const int n = sample.size();
 
   // sort the sample values
   std::sort( sample.begin(), sample.end() );
@@ -152,16 +152,16 @@ QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &
 
     for ( int m = 1; m <= l; m++ )
     {
-      int i3 = l - m + 1;
+      const int i3 = l - m + 1;
 
-      double val = sample[ i3 - 1 ];
+      const double val = sample[ i3 - 1 ];
 
       s2 += val * val;
       s1 += val;
       w++;
 
       v = s2 - ( s1 * s1 ) / static_cast< double >( w );
-      int i4 = i3 - 1;
+      const int i4 = i3 - 1;
       if ( i4 != 0 )
       {
         for ( int j = 2; j <= nclasses; j++ )
@@ -183,7 +183,7 @@ QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &
 
   for ( int j = nclasses, k = n; j >= 2; j-- )
   {
-    int id = matrixOne[k][j] - 1;
+    const int id = matrixOne[k][j] - 1;
     breaks[j - 2] = sample[id];
     k = matrixOne[k][j] - 1;
   }

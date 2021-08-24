@@ -218,7 +218,7 @@ QDBusArgument &operator<<( QDBusArgument &arg, const QImage &image )
   arg << i.height();
   arg << i.bytesPerLine();
   arg << i.hasAlphaChannel();
-  int channels = i.isGrayscale() ? 1 : ( i.hasAlphaChannel() ? 4 : 3 );
+  const int channels = i.isGrayscale() ? 1 : ( i.hasAlphaChannel() ? 4 : 3 );
   arg << i.depth() / channels;
   arg << channels;
   arg << QByteArray( reinterpret_cast<const char *>( i.bits() ), i.sizeInBytes() );
@@ -273,7 +273,7 @@ QgsNative::NotificationResult QgsLinuxNative::showDesktopNotification( const QSt
   argumentList << hints;  // hints
   argumentList << -1; // timeout in ms "If -1, the notification's expiration time is dependent on the notification server's settings, and may vary for the type of notification."
 
-  QDBusMessage reply = iface.callWithArgumentList( QDBus::AutoDetect, QStringLiteral( "Notify" ), argumentList );
+  const QDBusMessage reply = iface.callWithArgumentList( QDBus::AutoDetect, QStringLiteral( "Notify" ), argumentList );
   if ( reply.type() == QDBusMessage::ErrorMessage )
   {
     qDebug() << "D-Bus Error:" << reply.errorMessage();

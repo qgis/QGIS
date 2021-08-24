@@ -130,7 +130,7 @@ void QgsDecorationGridDialog::updateDecoFromGui()
   mDeco.setTextFormat( mAnnotationFontButton->textFormat() );
   mDeco.setAnnotationFrameDistance( mDistanceToMapFrameSpinBox->value() );
   mDeco.setShowGridAnnotation( mDrawAnnotationCheckBox->isChecked() );
-  QString text = mAnnotationDirectionComboBox->currentText();
+  const QString text = mAnnotationDirectionComboBox->currentText();
   if ( text == tr( "Horizontal" ) )
   {
     mDeco.setGridAnnotationDirection( QgsDecorationGrid::Horizontal );

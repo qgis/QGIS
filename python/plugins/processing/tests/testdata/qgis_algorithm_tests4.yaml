@@ -878,6 +878,23 @@ tests:
         name: expected/dbscan_multiple_clusters.gml
         type: vector
 
+  - algorithm: native:stdbscanclustering
+    name: ST-DBScan multiple clusters
+    params:
+      DATETIME_FIELD: date
+      DBSCAN*: false
+      EPS: 5.0
+      EPS2: 1000.0
+      FIELD_NAME: CLUSTER_ID
+      INPUT:
+        name: custom/points_with_date.shp
+        type: vector
+      MIN_SIZE: 1
+    results:
+      OUTPUT:
+        name: expected/stdbscan_multiple_clusters.gml
+        type: vector
+
   - algorithm: qgis:rastersampling
     name: Single band raster
     params:
@@ -2708,5 +2725,64 @@ tests:
         name: expected/retain_fields_three.gml
         type: vector
 
+  - algorithm: native:extractwithindistance
+    name: Points within distance
+    params:
+      DISTANCE: 0.8
+      INPUT:
+        name: points.gml|layername=points
+        type: vector
+      REFERENCE:
+        name: lines.gml|layername=lines
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/points_within_distance.gml
+        type: vector
+
+  - algorithm: native:extractwithindistance
+    name: Lines within distance
+    params:
+      DISTANCE: 0.8
+      INPUT:
+        name: lines.gml|layername=lines
+        type: vector
+      REFERENCE:
+        name: points.gml|layername=points
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/lines_within_distance.gml
+        type: vector
+
+  - algorithm: native:extractwithindistance
+    name: Points within distance reprojected
+    params:
+      DISTANCE: 0.7
+      INPUT:
+        name: points.gml|layername=points
+        type: vector
+      REFERENCE:
+        name: custom/snap_lines_3857.shp
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/points_within_distance_transform.gml
+        type: vector
+
+  - algorithm: native:extractwithindistance
+    name: Lines within distance reprojected
+    params:
+      DISTANCE: 50000.0
+      INPUT:
+        name: custom/snap_lines_3857.shp
+        type: vector
+      REFERENCE:
+        name: points.gml|layername=points
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/lines_within_distance_transform.gml
+        type: vector
 
 # See ../README.md for a description of the file format

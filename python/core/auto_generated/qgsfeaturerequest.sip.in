@@ -15,17 +15,18 @@ class QgsFeatureRequest
 %Docstring(signature="appended")
 This class wraps a request for features to a vector layer (or directly its vector data provider).
 
-The request may apply a filter to fetch only a particular subset of features. Currently supported filters:
+The request may apply an attribute/ID filter to fetch only a particular subset of features. Currently supported filters:
 
 - no filter - all features are returned
 - feature id - only feature that matches given feature id is returned
 - feature ids - only features that match any of the given feature ids are returned
 - filter expression - only features that match the given filter expression are returned
 
-Additionally a spatial rectangle can be set in combination:
-Only features that intersect given rectangle should be fetched. For the sake of speed,
-the intersection is often done only using feature's bounding box. There is a flag
-ExactIntersect that makes sure that only intersecting features will be returned.
+Additionally a spatial filter can be set in combination with the attribute/ID filter. Supported
+spatial filters are:
+
+- Qgis.SpatialFilterType.BoundingBox: Only features that intersect a given rectangle will be fetched. For the sake of speed, the intersection is often done only using feature's bounding box. There is a flag ExactIntersect that makes sure that only intersecting features will be returned.
+- Qgis.SpatialFilterType.DistanceWithin: Only features within a specified distance of a reference geometry will be fetched.
 
 For efficiency, it is also possible to tell provider that some data is not required:
 
@@ -52,8 +53,12 @@ Examples:
        QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
        # fetch only features from particular extent
        QgsFeatureRequest().setFilterRect(QgsRectangle(0,0,1,1))
+       # fetch only features from particular extent, where the 'type' attribute is equal to 'road':
+       QgsFeatureRequest().setFilterRect(QgsRectangle(0,0,1,1)).setFilterExpression('"type"=\'road\'')
        # fetch only one feature
        QgsFeatureRequest().setFilterFid(45)
+       # fetch features within 50 map units of a linestring geometry
+       QgsFeatureRequest().setDistanceWithin(QgsGeometry.fromWkt('LineString(0 0, 10 0, 12 1)'), 50)
 %End
 
 %TypeHeaderCode
@@ -301,11 +306,38 @@ construct a request with a filter expression
 copy constructor
 %End
 
+    ~QgsFeatureRequest();
+
     FilterType filterType() const;
 %Docstring
-Returns the filter type which is currently set on this request
+Returns the attribute/ID filter type which is currently set on this request.
 
-:return: Filter type
+This type will automatically be set to the appropriate value whenever :py:func:`~QgsFeatureRequest.setFilterFid`,
+:py:func:`~QgsFeatureRequest.setFilterFids`, :py:func:`~QgsFeatureRequest.setFilterExpression` or :py:func:`~QgsFeatureRequest.disableFilter` are called.
+
+.. note::
+
+   A feature request may have both an attribute/ID filter AND a spatial filter
+   set. See :py:func:`~QgsFeatureRequest.spatialFilterType` to retrieve the spatial filter.
+
+.. seealso:: :py:func:`spatialFilterType`
+%End
+
+    Qgis::SpatialFilterType spatialFilterType() const;
+%Docstring
+Returns the spatial filter type which is currently set on this request.
+
+This type will automatically be set to the appropriate value whenever :py:func:`~QgsFeatureRequest.setFilterRect`,
+or :py:func:`~QgsFeatureRequest.setDistanceWithin` are called.
+
+.. note::
+
+   A feature request may have both an attribute/ID filter AND a spatial filter
+   set. See :py:func:`~QgsFeatureRequest.filterType` to retrieve the attribute/ID filter.
+
+.. seealso:: :py:func:`filterType`
+
+.. versionadded:: 3.22
 %End
 
     QgsFeatureRequest &setFilterRect( const QgsRectangle &rectangle );
@@ -316,13 +348,21 @@ When a destination CRS is set using :py:func:`~QgsFeatureRequest.setDestinationC
 is expected to be in the same CRS as the :py:func:`~QgsFeatureRequest.destinationCrs`. Otherwise, ``rectangle``
 should use the same CRS as the source layer/provider.
 
+Calling this method will automatically set :py:func:`~QgsFeatureRequest.spatialFilterType` to Qgis.SpatialFilterType.BoundingBox.
+If ``rectangle`` is a null rectangle then :py:func:`~QgsFeatureRequest.spatialFilterType` will be reset to Qgis.SpatialFilterType.NoFilter.
+
 .. seealso:: :py:func:`filterRect`
 %End
 
-    const QgsRectangle &filterRect() const;
+    QgsRectangle filterRect() const;
 %Docstring
 Returns the rectangle from which features will be taken. If the returned
 rectangle is null, then no filter rectangle is set.
+
+If :py:func:`~QgsFeatureRequest.spatialFilterType` is Qgis.SpatialFilterType.BoundingBox then only
+features from within this bounding box will be fetched. If :py:func:`~QgsFeatureRequest.spatialFilterType`
+is Qgis.SpatialFilterType.DistanceWithin then the returned rectangle
+represents the bounding box of the :py:func:`~QgsFeatureRequest.referenceGeometry` extended by :py:func:`~QgsFeatureRequest.distanceWithin`.
 
 When a destination CRS is set using :py:func:`~QgsFeatureRequest.setDestinationCrs`, the rectangle
 will be in the same CRS as the :py:func:`~QgsFeatureRequest.destinationCrs`. Otherwise, the rectangle
@@ -331,22 +371,93 @@ will use the same CRS as the source layer/provider.
 .. seealso:: :py:func:`setFilterRect`
 %End
 
+    QgsFeatureRequest &setDistanceWithin( const QgsGeometry &geometry, double distance );
+%Docstring
+Sets a reference ``geometry`` and a maximum ``distance`` from this geometry to retrieve
+features within.
+
+When a destination CRS is set using :py:func:`~QgsFeatureRequest.setDestinationCrs`, ``geometry``
+is expected to be in the same CRS as the :py:func:`~QgsFeatureRequest.destinationCrs` and ``distance`` is in
+the spatial units of the :py:func:`~QgsFeatureRequest.destinationCrs`. Otherwise, ``geometry``
+should use the same CRS as the source layer/provider and ``distance``
+should use the spatial units as this same CRS.
+
+Calling this method will automatically set :py:func:`~QgsFeatureRequest.spatialFilterType` to Qgis.SpatialFilterType.DistanceWithin.
+
+.. seealso:: :py:func:`filterRect`
+
+.. versionadded:: 3.22
+%End
+
+    QgsGeometry referenceGeometry() const;
+%Docstring
+Returns the reference geometry used for spatial filtering of features.
+
+When :py:func:`~QgsFeatureRequest.spatialFilterType` is Qgis.SpatialFilterType.DistanceWithin then only
+features within :py:func:`~QgsFeatureRequest.distanceWithin` units of the reference geometry will be
+fetched.
+
+When a destination CRS is set using :py:func:`~QgsFeatureRequest.setDestinationCrs`, the geometry
+will be in the same CRS as the :py:func:`~QgsFeatureRequest.destinationCrs`. Otherwise, the geometry
+will use the same CRS as the source layer/provider.
+
+.. seealso:: :py:func:`setDistanceWithin`
+
+.. versionadded:: 3.22
+%End
+
+    double distanceWithin() const;
+%Docstring
+Returns the maximum distance from the :py:func:`~QgsFeatureRequest.referenceGeometry` of fetched
+features, if :py:func:`~QgsFeatureRequest.spatialFilterType` is Qgis.SpatialFilterType.DistanceWithin.
+
+When a destination CRS is set using :py:func:`~QgsFeatureRequest.setDestinationCrs`, the distance
+will be in the spatial units of :py:func:`~QgsFeatureRequest.destinationCrs`. Otherwise, the distance
+will use the same units as the CRS of the source layer/provider.
+
+.. seealso:: :py:func:`setDistanceWithin`
+
+.. versionadded:: 3.22
+%End
+
     QgsFeatureRequest &setFilterFid( QgsFeatureId fid );
 %Docstring
-Sets feature ID that should be fetched.
+Sets the feature ID that should be fetched.
+
+Calling this method will automatically set :py:func:`~QgsFeatureRequest.filterType` to QgsFeatureRequest.FilterFid.
+
+.. seealso:: :py:func:`filterFid`
+
+.. seealso:: :py:func:`setFilterFids`
 %End
+
     QgsFeatureId filterFid() const;
 %Docstring
-Gets the feature ID that should be fetched.
+Returns the feature ID that should be fetched.
+
+.. seealso:: :py:func:`setFilterFid`
+
+.. seealso:: :py:func:`filterFids`
 %End
 
     QgsFeatureRequest &setFilterFids( const QgsFeatureIds &fids );
 %Docstring
-Sets feature IDs that should be fetched.
+Sets the feature IDs that should be fetched.
+
+Calling this method will automatically set :py:func:`~QgsFeatureRequest.filterType` to QgsFeatureRequest.FilterFids.
+
+.. seealso:: :py:func:`filterFids`
+
+.. seealso:: :py:func:`setFilterFid`
 %End
+
     const QgsFeatureIds &filterFids() const;
 %Docstring
-Gets feature IDs that should be fetched.
+Returns the feature IDs that should be fetched.
+
+.. seealso:: :py:func:`setFilterFids`
+
+.. seealso:: :py:func:`filterFid`
 %End
 
     QgsFeatureRequest &setInvalidGeometryCheck( InvalidGeometryCheck check );
@@ -400,9 +511,11 @@ called using the feature with invalid geometry as a parameter.
 
     QgsFeatureRequest &setFilterExpression( const QString &expression );
 %Docstring
-Set the filter expression. {:py:class:`QgsExpression`}
+Set the filter ``expression``. {:py:class:`QgsExpression`}
 
 :param expression: expression string
+
+Calling this method will automatically set :py:func:`~QgsFeatureRequest.filterType` to QgsFeatureRequest.FilterExpression.
 
 .. seealso:: :py:func:`filterExpression`
 
@@ -411,7 +524,7 @@ Set the filter expression. {:py:class:`QgsExpression`}
 
     QgsExpression *filterExpression() const;
 %Docstring
-Returns the filter expression if set.
+Returns the filter expression (if set).
 
 .. seealso:: :py:func:`setFilterExpression`
 
@@ -423,6 +536,8 @@ Returns the filter expression if set.
 Modifies the existing filter expression to add an additional expression filter. The
 filter expressions are combined using AND, so only features matching both
 the existing expression and the additional expression will be returned.
+
+Calling this method will automatically set :py:func:`~QgsFeatureRequest.filterType` to QgsFeatureRequest.FilterExpression.
 
 .. versionadded:: 2.14
 %End
@@ -451,10 +566,16 @@ Sets the expression context used to evaluate filter expressions.
 
     QgsFeatureRequest &disableFilter();
 %Docstring
-Disables filter conditions.
-The spatial filter (filterRect) will be kept in place.
+Disables any attribute/ID filtering.
+
+Calling this method will automatically set :py:func:`~QgsFeatureRequest.filterType` to QgsFeatureRequest.FilterNone.
+
+.. note::
+
+   Spatial filters will be left in place.
 
 :return: The object the method is called on for chaining
+
 
 .. versionadded:: 2.12
 %End
@@ -519,9 +640,17 @@ Returns the maximum number of features to request, or -1 if no limit set.
 
     QgsFeatureRequest &setFlags( QgsFeatureRequest::Flags flags );
 %Docstring
-Sets flags that affect how features will be fetched
+Sets ``flags`` that affect how features will be fetched.
+
+.. seealso:: :py:func:`flags`
 %End
-    const Flags &flags() const;
+
+    Flags flags() const;
+%Docstring
+Returns the flags which affect how features are fetched.
+
+.. seealso:: :py:func:`setFlags`
+%End
 
     QgsFeatureRequest &setSubsetOfAttributes( const QgsAttributeList &attrs );
 %Docstring
@@ -530,44 +659,63 @@ Set a subset of attributes that will be fetched.
 An empty attributes list indicates that no attributes will be fetched.
 To revert a call to setSubsetOfAttributes and fetch all available attributes,
 the SubsetOfAttributes flag should be removed from the request.
+
+.. seealso:: :py:func:`subsetOfAttributes`
+
+.. seealso:: :py:func:`setNoAttributes`
 %End
 
     QgsFeatureRequest &setNoAttributes();
 %Docstring
 Set that no attributes will be fetched.
+
 To revert a call to setNoAttributes and fetch all or some available attributes,
 the SubsetOfAttributes flag should be removed from the request.
+
+.. seealso:: :py:func:`setSubsetOfAttributes`
 
 .. versionadded:: 3.4
 %End
 
     QgsAttributeList subsetOfAttributes() const;
 %Docstring
-Returns the subset of attributes which at least need to be fetched
+Returns the subset of attributes which at least need to be fetched.
 
 :return: A list of attributes to be fetched
+
+.. seealso:: :py:func:`setSubsetOfAttributes`
+
+.. seealso:: :py:func:`setNoAttributes`
 %End
 
     QgsFeatureRequest &setSubsetOfAttributes( const QStringList &attrNames, const QgsFields &fields );
 %Docstring
-Sets a subset of attributes by names that will be fetched
+Sets a subset of attributes by names that will be fetched.
+
+.. seealso:: :py:func:`subsetOfAttributes`
 %End
 
     QgsFeatureRequest &setSubsetOfAttributes( const QSet<QString> &attrNames, const QgsFields &fields );
 %Docstring
-Sets a subset of attributes by names that will be fetched
+Sets a subset of attributes by names that will be fetched.
+
+.. seealso:: :py:func:`subsetOfAttributes`
 %End
 
     QgsFeatureRequest &setSimplifyMethod( const QgsSimplifyMethod &simplifyMethod );
 %Docstring
-Set a simplification method for geometries that will be fetched
+Set a simplification method for geometries that will be fetched.
+
+.. seealso:: :py:func:`simplifyMethod`
 
 .. versionadded:: 2.2
 %End
 
     const QgsSimplifyMethod &simplifyMethod() const;
 %Docstring
-Gets simplification method for geometries that will be fetched
+Returns the simplification method for geometries that will be fetched.
+
+.. seealso:: :py:func:`setSimplifyMethod`
 
 .. versionadded:: 2.2
 %End
@@ -606,8 +754,8 @@ system to this desired reference system. If ``crs`` is an invalid
 and all features will be left with their original geometry.
 
 When a ``crs`` is set using :py:func:`~QgsFeatureRequest.setDestinationCrs`, then any :py:func:`~QgsFeatureRequest.filterRect`
-set on the request is expected to be in the same CRS as the destination
-CRS.
+or :py:func:`~QgsFeatureRequest.referenceGeometry` set on the request is expected to be in the
+same CRS as the destination CRS.
 
 The feature geometry transformation to the destination CRS is performed
 after all filter expressions are tested and any virtual fields are
@@ -703,6 +851,8 @@ feature is returned. A negative value (which is set by default) will wait foreve
 
    Only works if the provider supports this option.
 
+.. seealso:: :py:func:`setTimeout`
+
 .. versionadded:: 3.4
 %End
 
@@ -714,6 +864,8 @@ feature is returned. A negative value (which is set by default) will wait foreve
 .. note::
 
    Only works if the provider supports this option.
+
+.. seealso:: :py:func:`timeout`
 
 .. versionadded:: 3.4
 %End
@@ -729,6 +881,8 @@ connections to avoid deadlocks.
 For example, this should be set on requests that are issued from an
 expression function.
 
+.. seealso:: :py:func:`setRequestMayBeNested`
+
 .. versionadded:: 3.4
 %End
 
@@ -742,6 +896,8 @@ connections to avoid deadlocks.
 
 For example, this should be set on requests that are issued from an
 expression function.
+
+.. seealso:: :py:func:`requestMayBeNested`
 
 .. versionadded:: 3.4
 %End
@@ -770,6 +926,13 @@ if it should be canceled, if set.
 %End
 
   protected:
+
+
+
+
+
+
+
 };
 
 QFlags<QgsFeatureRequest::Flag> operator|(QgsFeatureRequest::Flag f1, QFlags<QgsFeatureRequest::Flag> f2);

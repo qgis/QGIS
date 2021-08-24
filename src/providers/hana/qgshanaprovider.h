@@ -21,9 +21,6 @@
 #include "qgsprovidermetadata.h"
 #include "qgshanaconnection.h"
 #include "qgshanaprimarykeys.h"
-#ifdef HAVE_GUI
-#include "qgsproviderguimetadata.h"
-#endif
 #include "qgsvectordataprovider.h"
 
 #include <QVersionNumber>

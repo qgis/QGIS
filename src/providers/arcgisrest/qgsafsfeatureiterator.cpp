@@ -20,6 +20,7 @@
 #include "qgsexception.h"
 #include "qgsarcgisrestutils.h"
 #include "qgsfeedback.h"
+#include "qgsgeometryengine.h"
 
 QgsAfsFeatureSource::QgsAfsFeatureSource( const std::shared_ptr<QgsAfsSharedData> &sharedData )
   : mSharedData( sharedData )
@@ -83,6 +84,23 @@ QgsAfsFeatureIterator::QgsAfsFeatureIterator( QgsAfsFeatureSource *source, bool 
     mDeferredFeaturesInFilterRectCheck = true;
   }
 
+  // prepare spatial filter geometries for optimal speed
+  switch ( mRequest.spatialFilterType() )
+  {
+    case Qgis::SpatialFilterType::NoFilter:
+    case Qgis::SpatialFilterType::BoundingBox:
+      break;
+
+    case Qgis::SpatialFilterType::DistanceWithin:
+      if ( !mRequest.referenceGeometry().isEmpty() )
+      {
+        mDistanceWithinGeom = mRequest.referenceGeometry();
+        mDistanceWithinEngine.reset( QgsGeometry::createGeometryEngine( mDistanceWithinGeom.constGet() ) );
+        mDistanceWithinEngine->prepareGeometry();
+      }
+      break;
+  }
+
   mFeatureIdList = qgis::setToList( requestIds );
   std::sort( mFeatureIdList.begin(), mFeatureIdList.end() );
   mRemainingFeatureIds = mFeatureIdList;
@@ -110,7 +128,7 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
 
   if ( mDeferredFeaturesInFilterRectCheck )
   {
-    QgsFeatureIds featuresInRect = mSource->sharedData()->getFeatureIdsInExtent( mFilterRect, mInterruptionChecker );
+    const QgsFeatureIds featuresInRect = mSource->sharedData()->getFeatureIdsInExtent( mFilterRect, mInterruptionChecker );
     if ( !mFeatureIdList.isEmpty() )
     {
       QgsFeatureIds requestIds = qgis::listToSet( mFeatureIdList );
@@ -156,7 +174,12 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
         return false;
 
       geometryToDestinationCrs( f, mTransform );
+      if ( mDistanceWithinEngine && mDistanceWithinEngine->distance( f.geometry().constGet() ) > mRequest.distanceWithin() )
+      {
+        result = false;
+      }
       f.setValid( result );
+
       mRemainingFeatureIds.removeAll( f.id() );
       return result;
     }
@@ -191,7 +214,7 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
             success = false;
           else
           {
-            if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+            if ( mRequest.spatialFilterType() == Qgis::SpatialFilterType::BoundingBox && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
             {
               // exact intersection check requested
               if ( !f.geometry().intersects( mFilterRect ) )
@@ -209,8 +232,13 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
         if ( !success )
           continue;
         geometryToDestinationCrs( f, mTransform );
-        f.setValid( true );
-        return true;
+
+        bool result = true;
+        if ( mDistanceWithinEngine && mDistanceWithinEngine->distance( f.geometry().constGet() ) > mRequest.distanceWithin() )
+          result = false;
+
+        if ( result )
+          return true;
       }
       return false;
     }

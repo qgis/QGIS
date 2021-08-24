@@ -27,6 +27,7 @@
 %Include auto_generated/qgsconditionalstyle.sip
 %Include auto_generated/qgsconnectionregistry.sip
 %Include auto_generated/qgscoordinateformatter.sip
+%Include auto_generated/qgscopyfiletask.sip
 %Include auto_generated/qgscredentials.sip
 %Include auto_generated/qgsdartmeasurement.sip
 %Include auto_generated/qgsdatabaseschemamodel.sip
@@ -249,12 +250,15 @@
 %Include auto_generated/diagram/qgstextdiagram.sip
 %Include auto_generated/dxf/qgsdxfexport.sip
 %Include auto_generated/editform/qgseditformconfig.sip
+%Include auto_generated/editform/qgsattributeeditoraction.sip
 %Include auto_generated/editform/qgsattributeeditorelement.sip
 %Include auto_generated/editform/qgsattributeeditorcontainer.sip
 %Include auto_generated/editform/qgsattributeeditorfield.sip
 %Include auto_generated/editform/qgsattributeeditorrelation.sip
 %Include auto_generated/editform/qgsattributeeditorhtmlelement.sip
 %Include auto_generated/editform/qgsattributeeditorqmlelement.sip
+%Include auto_generated/externalstorage/qgsexternalstorage.sip
+%Include auto_generated/externalstorage/qgsexternalstorageregistry.sip
 %Include auto_generated/effects/qgsblureffect.sip
 %Include auto_generated/effects/qgscoloreffect.sip
 %Include auto_generated/effects/qgseffectstack.sip
@@ -317,6 +321,9 @@
 %Include auto_generated/geometry/qgswkbptr.sip
 %Include auto_generated/geometry/qgswkbtypes.sip
 %Include auto_generated/geometry/qgsray3d.sip
+%Include auto_generated/gps/qgsbabelformat.sip
+%Include auto_generated/gps/qgsbabelformatregistry.sip
+%Include auto_generated/gps/qgsbabelgpsdevice.sip
 %Include auto_generated/gps/qgsgpsconnection.sip
 %Include auto_generated/gps/qgsgpsdconnection.sip
 %Include auto_generated/gps/qgsgpsdetector.sip
@@ -509,6 +516,7 @@
 %Include auto_generated/project/qgsprojectstorageregistry.sip
 %Include auto_generated/project/qgsprojecttimesettings.sip
 %Include auto_generated/project/qgsprojecttranslator.sip
+%Include auto_generated/project/qgsprojectutils.sip
 %Include auto_generated/project/qgsprojectversion.sip
 %Include auto_generated/project/qgsprojectviewsettings.sip
 %Include auto_generated/providers/qgsabstractdatabaseproviderconnection.sip

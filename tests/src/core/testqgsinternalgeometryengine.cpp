@@ -146,7 +146,7 @@ void TestQgsInternalGeometryEngine::testLineSegmentDistanceComparer()
   QFETCH( QgsPointXY, c );
   QFETCH( QgsPointXY, d );
 
-  QgsLineSegmentDistanceComparer cmp( origin );
+  const QgsLineSegmentDistanceComparer cmp( origin );
   QVERIFY( cmp( QgsLineSegment2D( a, b ), QgsLineSegment2D( c, d ) ) );
   QVERIFY( cmp( QgsLineSegment2D( b, a ), QgsLineSegment2D( c, d ) ) );
   QVERIFY( cmp( QgsLineSegment2D( a, b ), QgsLineSegment2D( d, c ) ) );
@@ -157,7 +157,7 @@ void TestQgsInternalGeometryEngine::testLineSegmentDistanceComparer()
   QVERIFY( !cmp( QgsLineSegment2D( c, d ), QgsLineSegment2D( b, a ) ) );
   QVERIFY( !cmp( QgsLineSegment2D( d, c ), QgsLineSegment2D( b, a ) ) );
 
-  QgsLineSegmentDistanceComparer comp( QgsPointXY( 3, 5 ) );
+  const QgsLineSegmentDistanceComparer comp( QgsPointXY( 3, 5 ) );
 
   QVERIFY( !comp( QgsLineSegment2D( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ) ),
                   QgsLineSegment2D( QgsPointXY( 5, 6 ), QgsPointXY( 8, 9 ) ) ) );
@@ -173,7 +173,7 @@ void TestQgsInternalGeometryEngine::testLineSegmentDistanceComparer()
 
 void TestQgsInternalGeometryEngine::clockwiseAngleComparer()
 {
-  QgsClockwiseAngleComparer cmp( QgsPointXY( 0, 0 ) );
+  const QgsClockwiseAngleComparer cmp( QgsPointXY( 0, 0 ) );
   QVERIFY( cmp( QgsPointXY( 0, 1 ), QgsPointXY( 1, 1 ) ) );
   QVERIFY( !cmp( QgsPointXY( 1, 1 ), QgsPointXY( 0, 1 ) ) );
 

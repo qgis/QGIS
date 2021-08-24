@@ -25,6 +25,7 @@ class QgsMapLayer;
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
 class QgsCoordinateTransformContext;
+class QgsAbstractDatabaseProviderConnection;
 
 /**
  * \ingroup core
@@ -42,6 +43,33 @@ class CORE_EXPORT QgsMapLayerUtils
      * The \a crs argument specifies the desired coordinate reference system for the combined extent.
      */
     static QgsRectangle combinedExtent( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext );
+
+    /**
+     * Creates and returns the (possibly NULLPTR) database connection for a \a layer.
+     * Ownership is transferred to the caller.
+     * \since QGIS 3.22
+     */
+    static QgsAbstractDatabaseProviderConnection *databaseConnection( const QgsMapLayer *layer ) SIP_FACTORY;
+
+    /**
+     * Returns TRUE if the source of the specified \a layer matches the given \a path.
+     *
+     * This method can be used to test whether a layer is associated with a file path.
+     *
+     * \since QGIS 3.22
+     */
+    static bool layerSourceMatchesPath( const QgsMapLayer *layer, const QString &path );
+
+    /**
+     * Updates a \a layer's data source, replacing its data source with a path referring to \a newPath.
+     *
+     * Returns TRUE if the layer was updated, or FALSE if the layer was not updated (e.g. it
+     * uses a data provider which does not specify paths in a layer URI.
+     *
+     * \since QGIS 3.22
+     */
+    static bool updateLayerSourcePath( QgsMapLayer *layer, const QString &newPath );
+
 
 };
 

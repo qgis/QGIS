@@ -21,8 +21,8 @@
 
 void QgsGeometryPointInPolygonCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
-  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext, true );
+  const QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
+  const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext, true );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
     const QgsAbstractGeometry *geom = layerFeature.geometry().constGet();
@@ -38,9 +38,9 @@ void QgsGeometryPointInPolygonCheck::collectErrors( const QMap<QString, QgsFeatu
       int nInside = 0;
 
       // Check whether point is contained by a fully contained by a polygon
-      QgsRectangle rect( point->x() - mContext->tolerance, point->y() - mContext->tolerance,
-                         point->x() + mContext->tolerance, point->y() + mContext->tolerance );
-      QgsGeometryCheckerUtils::LayerFeatures checkFeatures( featurePools, featureIds.keys(), rect, {QgsWkbTypes::PolygonGeometry}, mContext );
+      const QgsRectangle rect( point->x() - mContext->tolerance, point->y() - mContext->tolerance,
+                               point->x() + mContext->tolerance, point->y() + mContext->tolerance );
+      const QgsGeometryCheckerUtils::LayerFeatures checkFeatures( featurePools, featureIds.keys(), rect, {QgsWkbTypes::PolygonGeometry}, mContext );
       for ( const QgsGeometryCheckerUtils::LayerFeature &checkFeature : checkFeatures )
       {
         ++nTested;
@@ -80,7 +80,7 @@ void QgsGeometryPointInPolygonCheck::fixError( const QMap<QString, QgsFeaturePoo
 
 QStringList QgsGeometryPointInPolygonCheck::resolutionMethods() const
 {
-  static QStringList methods = QStringList() << tr( "No action" );
+  static const QStringList methods = QStringList() << tr( "No action" );
   return methods;
 }
 

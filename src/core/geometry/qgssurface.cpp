@@ -21,7 +21,7 @@
 #include "qgsgeos.h"
 #include <memory>
 
-bool QgsSurface::isValid( QString &error, int flags ) const
+bool QgsSurface::isValid( QString &error, Qgis::GeometryValidityFlags flags ) const
 {
   if ( flags == 0 && mHasCachedValidity )
   {
@@ -30,8 +30,8 @@ bool QgsSurface::isValid( QString &error, int flags ) const
     return error.isEmpty();
   }
 
-  QgsGeos geos( this );
-  bool res = geos.isValid( &error, flags & QgsGeometry::FlagAllowSelfTouchingHoles, nullptr );
+  const QgsGeos geos( this );
+  const bool res = geos.isValid( &error, flags & Qgis::GeometryValidityFlag::AllowSelfTouchingHoles, nullptr );
   if ( flags == 0 )
   {
     mValidityFailureReason = !res ? error : QString();

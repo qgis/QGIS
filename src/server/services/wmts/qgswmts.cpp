@@ -63,7 +63,7 @@ namespace QgsWmts
         }
 
         // Get the request
-        QString req = params.value( QgsServerParameter::name( QgsServerParameter::REQUEST ) );
+        const QString req = params.value( QgsServerParameter::name( QgsServerParameter::REQUEST ) );
         if ( req.isEmpty() )
         {
           throw QgsServiceException( QStringLiteral( "OperationNotSupported" ),

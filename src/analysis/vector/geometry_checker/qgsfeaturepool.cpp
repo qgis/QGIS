@@ -101,7 +101,7 @@ QgsFeatureIds QgsFeaturePool::allFeatureIds() const
 
 QgsFeatureIds QgsFeaturePool::getIntersects( const QgsRectangle &rect ) const
 {
-  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Read );
+  const QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Read );
   QgsFeatureIds ids = qgis::listToSet( mIndex.intersects( rect ) );
   return ids;
 }
@@ -159,7 +159,7 @@ void QgsFeaturePool::setFeatureIds( const QgsFeatureIds &ids )
 
 bool QgsFeaturePool::isFeatureCached( QgsFeatureId fid )
 {
-  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Read );
+  const QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Read );
   return mFeatureCache.contains( fid );
 }
 

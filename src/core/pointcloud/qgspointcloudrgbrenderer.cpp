@@ -59,7 +59,7 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
   const QgsRectangle visibleExtent = context.renderContext().extent();
 
   const char *ptr = block->data();
-  int count = block->pointCount();
+  const int count = block->pointCount();
   const QgsPointCloudAttributeCollection request = block->attributes();
 
   const std::size_t recordSize = request.pointRecordSize();
@@ -177,7 +177,7 @@ QgsPointCloudRenderer *QgsPointCloudRgbRenderer::create( QDomElement &element, c
 
   //contrast enhancements
   QgsContrastEnhancement *redContrastEnhancement = nullptr;
-  QDomElement redContrastElem = element.firstChildElement( QStringLiteral( "redContrastEnhancement" ) );
+  const QDomElement redContrastElem = element.firstChildElement( QStringLiteral( "redContrastEnhancement" ) );
   if ( !redContrastElem.isNull() )
   {
     redContrastEnhancement = new QgsContrastEnhancement( Qgis::DataType::UnknownDataType );
@@ -186,7 +186,7 @@ QgsPointCloudRenderer *QgsPointCloudRgbRenderer::create( QDomElement &element, c
   }
 
   QgsContrastEnhancement *greenContrastEnhancement = nullptr;
-  QDomElement greenContrastElem = element.firstChildElement( QStringLiteral( "greenContrastEnhancement" ) );
+  const QDomElement greenContrastElem = element.firstChildElement( QStringLiteral( "greenContrastEnhancement" ) );
   if ( !greenContrastElem.isNull() )
   {
     greenContrastEnhancement = new QgsContrastEnhancement( Qgis::DataType::UnknownDataType );
@@ -195,7 +195,7 @@ QgsPointCloudRenderer *QgsPointCloudRgbRenderer::create( QDomElement &element, c
   }
 
   QgsContrastEnhancement *blueContrastEnhancement = nullptr;
-  QDomElement blueContrastElem = element.firstChildElement( QStringLiteral( "blueContrastEnhancement" ) );
+  const QDomElement blueContrastElem = element.firstChildElement( QStringLiteral( "blueContrastEnhancement" ) );
   if ( !blueContrastElem.isNull() )
   {
     blueContrastEnhancement = new QgsContrastEnhancement( Qgis::DataType::UnknownDataType );

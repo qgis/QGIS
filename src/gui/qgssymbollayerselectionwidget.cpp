@@ -82,7 +82,7 @@ void QgsSymbolLayerSelectionWidget::setLayer( const QgsVectorLayer *layer )
           indexPath.append( idx );
 
           QTreeWidgetItem *slItem = new QTreeWidgetItem();
-          QIcon slIcon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, QgsUnitTypes::RenderMillimeters, QSize( iconSize, iconSize ) );
+          const QIcon slIcon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, QgsUnitTypes::RenderMillimeters, QSize( iconSize, iconSize ) );
           slItem->setData( 0, Qt::UserRole, idx );
           slItem->setIcon( 0, slIcon );
           auto flags = slItem->flags();
@@ -120,7 +120,7 @@ void QgsSymbolLayerSelectionWidget::setLayer( const QgsVectorLayer *layer )
 
         // either leaf.description or mCurrentDescription is defined
         QTreeWidgetItem *symbolItem = new QTreeWidgetItem( QStringList() << ( mCurrentDescription + leaf.description ) );
-        QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, QSize( iconSize, iconSize ) );
+        const QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, QSize( iconSize, iconSize ) );
         symbolItem->setData( 0, Qt::UserRole, mCurrentIdentifier );
         symbolItem->setIcon( 0, icon );
         mLayerItem->addChild( symbolItem );
@@ -172,7 +172,7 @@ void QgsSymbolLayerSelectionWidget::setSelection( const QSet<QgsSymbolLayerId> &
   // apply selection passed in parameter
   for ( const QgsSymbolLayerId &lid : sel )
   {
-    auto it = mItems.find( lid );
+    const auto it = mItems.find( lid );
     if ( it != mItems.end() )
       ( *it )->setCheckState( 0, Qt::Checked );
   }

@@ -99,12 +99,12 @@ void TestQgsAttributeTable::testFieldCalculation()
   f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
   QgsPolylineXY line3111;
   line3111 << QgsPointXY( 2484588, 2425722 ) << QgsPointXY( 2482767, 2398853 );
-  QgsGeometry line3111G = QgsGeometry::fromPolylineXY( line3111 ) ;
+  const QgsGeometry line3111G = QgsGeometry::fromPolylineXY( line3111 ) ;
   f1.setGeometry( line3111G );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
   // set project CRS and ellipsoid
-  QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
+  const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceMeters );
@@ -149,12 +149,12 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   polygonRing3111 << QgsPointXY( 2484588, 2425722 ) << QgsPointXY( 2482767, 2398853 ) << QgsPointXY( 2520109, 2397715 ) << QgsPointXY( 2520792, 2425494 ) << QgsPointXY( 2484588, 2425722 );
   QgsPolygonXY polygon3111;
   polygon3111 << polygonRing3111;
-  QgsGeometry polygon3111G = QgsGeometry::fromPolygonXY( polygon3111 );
+  const QgsGeometry polygon3111G = QgsGeometry::fromPolygonXY( polygon3111 );
   f1.setGeometry( polygon3111G );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
   // set project CRS and ellipsoid
-  QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
+  const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
   QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMeters );
@@ -186,7 +186,7 @@ void TestQgsAttributeTable::testFieldCalculationArea()
 
 void TestQgsAttributeTable::testNoGeom()
 {
-  QgsSettings s;
+  const QgsSettings s;
 
   //test that by default the attribute table DOESN'T fetch geometries (because performance)
   std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
@@ -262,9 +262,9 @@ void TestQgsAttributeTable::testSelected()
   std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
 
-  QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
-  QgsFeature f2( tempLayer->dataProvider()->fields(), 2 );
-  QgsFeature f3( tempLayer->dataProvider()->fields(), 3 );
+  const QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
+  const QgsFeature f2( tempLayer->dataProvider()->fields(), 2 );
+  const QgsFeature f3( tempLayer->dataProvider()->fields(), 3 );
   QVERIFY( tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 ) );
 
   std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowSelected ) );
@@ -296,9 +296,9 @@ void TestQgsAttributeTable::testEdited()
   std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
 
-  QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
-  QgsFeature f2( tempLayer->dataProvider()->fields(), 2 );
-  QgsFeature f3( tempLayer->dataProvider()->fields(), 3 );
+  const QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
+  const QgsFeature f2( tempLayer->dataProvider()->fields(), 2 );
+  const QgsFeature f3( tempLayer->dataProvider()->fields(), 3 );
   QVERIFY( tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 ) );
 
   std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowEdited ) );
@@ -414,7 +414,7 @@ void TestQgsAttributeTable::testSortByDisplayExpression()
 void TestQgsAttributeTable::testRegression15974()
 {
   // Test duplicated rows in attribute table + two crashes.
-  QString path = QDir::tempPath() + "/testshp15974.shp";
+  const QString path = QDir::tempPath() + "/testshp15974.shp";
   std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "polygon?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
   QgsVectorFileWriter::SaveVectorOptions saveOptions;
@@ -600,7 +600,7 @@ void TestQgsAttributeTable::testCopySelectedRows()
   QVERIFY( !clipboard->isEmpty() );
   QCOMPARE( clipboard->fields().names(), QStringList() << "pk" << "col1" << "col2" );
 
-  QgsFeatureList features = clipboard->copyOf();
+  const QgsFeatureList features = clipboard->copyOf();
   QCOMPARE( features.count(), 2 );
   QCOMPARE( features.at( 0 ).attribute( 0 ), 1 );
   QCOMPARE( features.at( 0 ).attribute( "col1" ), 2 );

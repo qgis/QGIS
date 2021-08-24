@@ -41,6 +41,7 @@
 #include "qgscolorschemeregistry.h"
 #include "qgspainteffectregistry.h"
 #include "qgsprojectstorageregistry.h"
+#include "qgsexternalstorageregistry.h"
 #include "qgsrasterrendererregistry.h"
 #include "qgsrendererregistry.h"
 #include "qgspointcloudrendererregistry.h"
@@ -75,6 +76,7 @@
 #include "qgsfeaturestore.h"
 #include "qgslocator.h"
 #include "qgsreadwritelocker.h"
+#include "qgsbabelformatregistry.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -2347,6 +2349,11 @@ QgsGpsConnectionRegistry *QgsApplication::gpsConnectionRegistry()
   return members()->mGpsConnectionRegistry;
 }
 
+QgsBabelFormatRegistry *QgsApplication::gpsBabelFormatRegistry()
+{
+  return members()->mGpsBabelFormatRegistry;
+}
+
 QgsPluginLayerRegistry *QgsApplication::pluginLayerRegistry()
 {
   return members()->mPluginLayerRegistry;
@@ -2424,7 +2431,12 @@ QgsScaleBarRendererRegistry *QgsApplication::scaleBarRendererRegistry()
 
 QgsProjectStorageRegistry *QgsApplication::projectStorageRegistry()
 {
-  return members()->mProjectStorageRegistry;
+  return members()->mProjectStorageRegistry.get();
+}
+
+QgsExternalStorageRegistry *QgsApplication::externalStorageRegistry()
+{
+  return members()->mExternalStorageRegistry;
 }
 
 QgsLocalizedDataPathRegistry *QgsApplication::localizedDataPathRegistry()
@@ -2527,6 +2539,11 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     profiler->end();
   }
   {
+    profiler->start( tr( "Setup GPSBabel format registry" ) );
+    mGpsBabelFormatRegistry = new QgsBabelFormatRegistry();
+    profiler->end();
+  }
+  {
     profiler->start( tr( "Setup plugin layer registry" ) );
     mPluginLayerRegistry = new QgsPluginLayerRegistry();
     profiler->end();
@@ -2566,7 +2583,12 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   }
   {
     profiler->start( tr( "Setup project storage registry" ) );
-    mProjectStorageRegistry = new QgsProjectStorageRegistry();
+    mProjectStorageRegistry.reset( new QgsProjectStorageRegistry() );
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup external storage registry" ) );
+    mExternalStorageRegistry = new QgsExternalStorageRegistry();
     profiler->end();
   }
   {
@@ -2614,11 +2636,11 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mColorSchemeRegistry;
   delete mFieldFormatterRegistry;
   delete mGpsConnectionRegistry;
+  delete mGpsBabelFormatRegistry;
   delete mMessageLog;
   delete mPaintEffectRegistry;
   delete mPluginLayerRegistry;
   delete mProcessingRegistry;
-  delete mProjectStorageRegistry;
   delete mPageSizeRegistry;
   delete mAnnotationItemRegistry;
   delete mLayoutItemRegistry;

@@ -81,7 +81,7 @@ void QgsZonalStatisticsAlgorithm::initAlgorithm( const QVariantMap & )
 {
   QStringList statChoices;
   statChoices.reserve( STATS.size() );
-  for ( QgsZonalStatistics::Statistic stat : STATS )
+  for ( const QgsZonalStatistics::Statistic stat : STATS )
   {
     statChoices << QgsZonalStatistics::displayName( stat );
   }
@@ -119,7 +119,7 @@ bool QgsZonalStatisticsAlgorithm::prepareAlgorithm( const QVariantMap &parameter
 
   const QList< int > stats = parameterAsEnums( parameters, QStringLiteral( "STATISTICS" ), context );
   mStats = QgsZonalStatistics::Statistics();
-  for ( int s : stats )
+  for ( const int s : stats )
   {
     mStats |= STATS.at( s );
   }

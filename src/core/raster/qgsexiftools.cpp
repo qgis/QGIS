@@ -26,7 +26,7 @@
 
 double readRationale( const Exiv2::Value &value, long n = 0 )
 {
-  Exiv2::Rational rational = value.toRational( n );
+  const Exiv2::Rational rational = value.toRational( n );
   return static_cast< double >( rational.first ) / rational.second;
 };
 
@@ -113,7 +113,7 @@ QVariant decodeExifData( const QString &key, Exiv2::ExifData::const_iterator &it
 
       case Exiv2::date:
       {
-        Exiv2::DateValue::Date date = static_cast< const Exiv2::DateValue *>( &it->value() )->getDate();
+        const Exiv2::DateValue::Date date = static_cast< const Exiv2::DateValue *>( &it->value() )->getDate();
         val = QVariant::fromValue( QDate::fromString( QStringLiteral( "%1-%2-%3" ).arg( date.year )
                                    .arg( QString::number( date.month ).rightJustified( 2, '0' ) )
                                    .arg( QString::number( date.day ).rightJustified( 2, '0' ) ), QLatin1String( "yyyy-MM-dd" ) ) );
@@ -122,7 +122,7 @@ QVariant decodeExifData( const QString &key, Exiv2::ExifData::const_iterator &it
 
       case Exiv2::time:
       {
-        Exiv2::TimeValue::Time time = static_cast< const Exiv2::TimeValue *>( &it->value() )->getTime();
+        const Exiv2::TimeValue::Time time = static_cast< const Exiv2::TimeValue *>( &it->value() )->getTime();
         val = QVariant::fromValue( QTime::fromString( QStringLiteral( "%1:%2:%3" ).arg( QString::number( time.hour ).rightJustified( 2, '0' ) )
                                    .arg( QString::number( time.minute ).rightJustified( 2, '0' ) )
                                    .arg( QString::number( time.second ).rightJustified( 2, '0' ) ), QLatin1String( "hh:mm:ss" ) ) );
@@ -160,12 +160,12 @@ QVariant decodeExifData( const QString &key, Exiv2::ExifData::const_iterator &it
 
 QString doubleToExifCoordinateString( const double val )
 {
-  double d = std::abs( val );
-  int degrees = static_cast< int >( std::floor( d ) );
-  double m = 60 * ( d - degrees );
-  int minutes = static_cast< int >( std::floor( m ) );
-  double s = 60 * ( m - minutes );
-  int seconds = static_cast< int >( std::floor( s * 1000 ) );
+  const double d = std::abs( val );
+  const int degrees = static_cast< int >( std::floor( d ) );
+  const double m = 60 * ( d - degrees );
+  const int minutes = static_cast< int >( std::floor( m ) );
+  const double s = 60 * ( m - minutes );
+  const int seconds = static_cast< int >( std::floor( s * 1000 ) );
   return QStringLiteral( "%1/1 %2/1 %3/1000" ).arg( degrees ).arg( minutes ).arg( seconds );
 }
 
@@ -215,7 +215,7 @@ QVariantMap QgsExifTools::readTags( const QString &imagePath )
     }
 
     QVariantMap res;
-    Exiv2::ExifData::const_iterator end = exifData.end();
+    const Exiv2::ExifData::const_iterator end = exifData.end();
     for ( Exiv2::ExifData::const_iterator i = exifData.begin(); i != end; ++i )
     {
       const QString key = QString::fromStdString( i->key() );
@@ -253,10 +253,10 @@ QgsPoint QgsExifTools::getGeoTag( const QString &imagePath, bool &ok )
     if ( exifData.empty() )
       return QgsPoint();
 
-    Exiv2::ExifData::iterator itLatRef = exifData.findKey( Exiv2::ExifKey( "Exif.GPSInfo.GPSLatitudeRef" ) );
-    Exiv2::ExifData::iterator itLatVal = exifData.findKey( Exiv2::ExifKey( "Exif.GPSInfo.GPSLatitude" ) );
-    Exiv2::ExifData::iterator itLonRef = exifData.findKey( Exiv2::ExifKey( "Exif.GPSInfo.GPSLongitudeRef" ) );
-    Exiv2::ExifData::iterator itLonVal = exifData.findKey( Exiv2::ExifKey( "Exif.GPSInfo.GPSLongitude" ) );
+    const Exiv2::ExifData::iterator itLatRef = exifData.findKey( Exiv2::ExifKey( "Exif.GPSInfo.GPSLatitudeRef" ) );
+    const Exiv2::ExifData::iterator itLatVal = exifData.findKey( Exiv2::ExifKey( "Exif.GPSInfo.GPSLatitude" ) );
+    const Exiv2::ExifData::iterator itLonRef = exifData.findKey( Exiv2::ExifKey( "Exif.GPSInfo.GPSLongitudeRef" ) );
+    const Exiv2::ExifData::iterator itLonVal = exifData.findKey( Exiv2::ExifKey( "Exif.GPSInfo.GPSLongitude" ) );
 
     if ( itLatRef == exifData.end() || itLatVal == exifData.end() ||
          itLonRef == exifData.end() || itLonVal == exifData.end() )
@@ -278,8 +278,8 @@ QgsPoint QgsExifTools::getGeoTag( const QString &imagePath, bool &ok )
 
     ok = true;
 
-    Exiv2::ExifData::iterator itElevVal = exifData.findKey( Exiv2::ExifKey( "Exif.GPSInfo.GPSAltitude" ) );
-    Exiv2::ExifData::iterator itElevRefVal = exifData.findKey( Exiv2::ExifKey( "Exif.GPSInfo.GPSAltitudeRef" ) );
+    const Exiv2::ExifData::iterator itElevVal = exifData.findKey( Exiv2::ExifKey( "Exif.GPSInfo.GPSAltitude" ) );
+    const Exiv2::ExifData::iterator itElevRefVal = exifData.findKey( Exiv2::ExifKey( "Exif.GPSInfo.GPSAltitudeRef" ) );
     if ( itElevVal != exifData.end() )
     {
       double elev = readRationale( itElevVal->value() );

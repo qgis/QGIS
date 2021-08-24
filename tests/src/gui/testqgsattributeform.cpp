@@ -91,7 +91,7 @@ void TestQgsAttributeForm::cleanup()
 void TestQgsAttributeForm::testFieldConstraint()
 {
   // make a temporary vector layer
-  QString def = QStringLiteral( "Point?field=col0:integer" );
+  const QString def = QStringLiteral( "Point?field=col0:integer" );
   QgsVectorLayer *layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
   layer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "TextEdit" ), QVariantMap() ) );
 
@@ -104,9 +104,9 @@ void TestQgsAttributeForm::testFieldConstraint()
   form.setFeature( ft );
 
   // testing stuff
-  QString validLabel = QStringLiteral( "<font color=\"#259B24\">%1</font>" ).arg( QChar( 0x2714 ) );
-  QString invalidLabel = QStringLiteral( "<font color=\"#FF9800\">%1</font>" ).arg( QChar( 0x2718 ) );
-  QString warningLabel = QStringLiteral( "<font color=\"#FFC107\">%1</font>" ).arg( QChar( 0x2718 ) );
+  const QString validLabel = QStringLiteral( "<font color=\"#259B24\">%1</font>" ).arg( QChar( 0x2714 ) );
+  const QString invalidLabel = QStringLiteral( "<font color=\"#FF9800\">%1</font>" ).arg( QChar( 0x2718 ) );
+  const QString warningLabel = QStringLiteral( "<font color=\"#FFC107\">%1</font>" ).arg( QChar( 0x2718 ) );
 
   // set constraint
   layer->setConstraintExpression( 0, QString() );
@@ -167,7 +167,7 @@ void TestQgsAttributeForm::testFieldConstraint()
 void TestQgsAttributeForm::testFieldMultiConstraints()
 {
   // make a temporary layer to check through
-  QString def = QStringLiteral( "Point?field=col0:integer&field=col1:integer&field=col2:integer&field=col3:integer" );
+  const QString def = QStringLiteral( "Point?field=col0:integer&field=col1:integer&field=col2:integer&field=col3:integer" );
   QgsVectorLayer *layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
 
   // add features to the vector layer
@@ -188,9 +188,9 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
   form.setFeature( ft );
 
   // testing stuff
-  QSignalSpy spy( &form, SIGNAL( attributeChanged( QString, QVariant ) ) );
-  QString val = QStringLiteral( "<font color=\"#259B24\">%1</font>" ).arg( QChar( 0x2714 ) );
-  QString inv = QStringLiteral( "<font color=\"#FF9800\">%1</font>" ).arg( QChar( 0x2718 ) );
+  const QSignalSpy spy( &form, SIGNAL( attributeChanged( QString, QVariant ) ) );
+  const QString val = QStringLiteral( "<font color=\"#259B24\">%1</font>" ).arg( QChar( 0x2714 ) );
+  const QString inv = QStringLiteral( "<font color=\"#FF9800\">%1</font>" ).arg( QChar( 0x2718 ) );
 
   // get wrappers for each widget
   QgsEditorWidgetWrapper *ww0, *ww1, *ww2, *ww3;
@@ -242,7 +242,7 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
 void TestQgsAttributeForm::testOKButtonStatus()
 {
   // make a temporary vector layer
-  QString def = QStringLiteral( "Point?field=col0:integer" );
+  const QString def = QStringLiteral( "Point?field=col0:integer" );
   QgsVectorLayer *layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
 
   // add a feature to the vector layer
@@ -264,9 +264,9 @@ void TestQgsAttributeForm::testOKButtonStatus()
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[0] );
 
   // testing stuff
-  QSignalSpy spy1( &form, SIGNAL( attributeChanged( QString, QVariant ) ) );
-  QSignalSpy spy2( layer, SIGNAL( editingStarted() ) );
-  QSignalSpy spy3( layer, SIGNAL( editingStopped() ) );
+  const QSignalSpy spy1( &form, SIGNAL( attributeChanged( QString, QVariant ) ) );
+  const QSignalSpy spy2( layer, SIGNAL( editingStarted() ) );
+  const QSignalSpy spy3( layer, SIGNAL( editingStopped() ) );
 
   // no constraint but layer not editable : OK button disabled
   QCOMPARE( layer->isEditable(), false );
@@ -321,13 +321,13 @@ void TestQgsAttributeForm::testOKButtonStatus()
 void TestQgsAttributeForm::testDynamicForm()
 {
   // make temporary layers
-  QString defA = QStringLiteral( "Point?field=id_a:integer" );
+  const QString defA = QStringLiteral( "Point?field=id_a:integer" );
   QgsVectorLayer *layerA = new QgsVectorLayer( defA, QStringLiteral( "layerA" ), QStringLiteral( "memory" ) );
 
-  QString defB = QStringLiteral( "Point?field=id_b:integer&field=col0:integer" );
+  const QString defB = QStringLiteral( "Point?field=id_b:integer&field=col0:integer" );
   QgsVectorLayer *layerB = new QgsVectorLayer( defB, QStringLiteral( "layerB" ), QStringLiteral( "memory" ) );
 
-  QString defC = QStringLiteral( "Point?field=id_c:integer&field=col0:integer" );
+  const QString defC = QStringLiteral( "Point?field=id_c:integer&field=col0:integer" );
   QgsVectorLayer *layerC = new QgsVectorLayer( defC, QStringLiteral( "layerC" ), QStringLiteral( "memory" ) );
 
   // join configuration
@@ -452,14 +452,14 @@ void TestQgsAttributeForm::testDynamicForm()
 
 void TestQgsAttributeForm::testConstraintsOnJoinedFields()
 {
-  QString validLabel = QStringLiteral( "<font color=\"#259B24\">%1</font>" ).arg( QChar( 0x2714 ) );
-  QString warningLabel = QStringLiteral( "<font color=\"#FFC107\">%1</font>" ).arg( QChar( 0x2718 ) );
+  const QString validLabel = QStringLiteral( "<font color=\"#259B24\">%1</font>" ).arg( QChar( 0x2714 ) );
+  const QString warningLabel = QStringLiteral( "<font color=\"#FFC107\">%1</font>" ).arg( QChar( 0x2718 ) );
 
   // make temporary layers
-  QString defA = QStringLiteral( "Point?field=id_a:integer" );
+  const QString defA = QStringLiteral( "Point?field=id_a:integer" );
   QgsVectorLayer *layerA = new QgsVectorLayer( defA, QStringLiteral( "layerA" ), QStringLiteral( "memory" ) );
 
-  QString defB = QStringLiteral( "Point?field=id_b:integer&field=col0:integer" );
+  const QString defB = QStringLiteral( "Point?field=id_b:integer&field=col0:integer" );
   QgsVectorLayer *layerB = new QgsVectorLayer( defB, QStringLiteral( "layerB" ), QStringLiteral( "memory" ) );
 
   // set constraints on joined layer
@@ -521,13 +521,13 @@ void TestQgsAttributeForm::testConstraintsOnJoinedFields()
 void TestQgsAttributeForm::testEditableJoin()
 {
   // make temporary layers
-  QString defA = QStringLiteral( "Point?field=id_a:integer" );
+  const QString defA = QStringLiteral( "Point?field=id_a:integer" );
   QgsVectorLayer *layerA = new QgsVectorLayer( defA, QStringLiteral( "layerA" ), QStringLiteral( "memory" ) );
 
-  QString defB = QStringLiteral( "Point?field=id_b:integer&field=col0:integer" );
+  const QString defB = QStringLiteral( "Point?field=id_b:integer&field=col0:integer" );
   QgsVectorLayer *layerB = new QgsVectorLayer( defB, QStringLiteral( "layerB" ), QStringLiteral( "memory" ) );
 
-  QString defC = QStringLiteral( "Point?field=id_c:integer&field=col0:integer" );
+  const QString defC = QStringLiteral( "Point?field=id_c:integer&field=col0:integer" );
   QgsVectorLayer *layerC = new QgsVectorLayer( defC, QStringLiteral( "layerC" ), QStringLiteral( "memory" ) );
 
   // join configuration
@@ -655,13 +655,13 @@ void TestQgsAttributeForm::testEditableJoin()
 void TestQgsAttributeForm::testUpsertOnEdit()
 {
   // make temporary layers
-  QString defA = QStringLiteral( "Point?field=id_a:integer" );
+  const QString defA = QStringLiteral( "Point?field=id_a:integer" );
   QgsVectorLayer *layerA = new QgsVectorLayer( defA, QStringLiteral( "layerA" ), QStringLiteral( "memory" ) );
 
-  QString defB = QStringLiteral( "Point?field=id_b:integer&field=col0:integer" );
+  const QString defB = QStringLiteral( "Point?field=id_b:integer&field=col0:integer" );
   QgsVectorLayer *layerB = new QgsVectorLayer( defB, QStringLiteral( "layerB" ), QStringLiteral( "memory" ) );
 
-  QString defC = QStringLiteral( "Point?field=id_c:integer&field=col0:integer" );
+  const QString defC = QStringLiteral( "Point?field=id_c:integer&field=col0:integer" );
   QgsVectorLayer *layerC = new QgsVectorLayer( defC, QStringLiteral( "layerC" ), QStringLiteral( "memory" ) );
 
   // join configuration
@@ -884,7 +884,7 @@ void TestQgsAttributeForm::testUpsertOnEdit()
 
 void TestQgsAttributeForm::testFixAttributeForm()
 {
-  QString def = QStringLiteral( "Point?field=id:integer&field=col1:integer" );
+  const QString def = QStringLiteral( "Point?field=id:integer&field=col1:integer" );
   QgsVectorLayer *layer = new QgsVectorLayer( def, QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
 
   QVERIFY( layer );
@@ -926,7 +926,7 @@ void TestQgsAttributeForm::testAttributeFormInterface()
   // correctly emitted with correct parameters
 
   // make a temporary vector layer
-  QString def = QStringLiteral( "Point?field=col0:integer" );
+  const QString def = QStringLiteral( "Point?field=col0:integer" );
   QgsVectorLayer *layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
   layer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "TextEdit" ), QVariantMap() ) );
 
@@ -972,7 +972,7 @@ void TestQgsAttributeForm::testAttributeFormInterface()
 void TestQgsAttributeForm::testDefaultValueUpdate()
 {
   // make a temporary layer to check through
-  QString def = QStringLiteral( "Point?field=col0:integer&field=col1:integer&field=col2:integer&field=col3:integer" );
+  const QString def = QStringLiteral( "Point?field=col0:integer&field=col1:integer&field=col2:integer&field=col3:integer" );
   QgsVectorLayer *layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
 
   //set defaultValueDefinitions
@@ -1034,7 +1034,7 @@ void TestQgsAttributeForm::testDefaultValueUpdate()
 void TestQgsAttributeForm::testDefaultValueUpdateRecursion()
 {
   // make a temporary layer to check through
-  QString def = QStringLiteral( "Point?field=col0:integer&field=col1:integer&field=col2:integer&field=col3:integer" );
+  const QString def = QStringLiteral( "Point?field=col0:integer&field=col1:integer&field=col2:integer&field=col3:integer" );
   QgsVectorLayer *layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
 
   //let's make a recursion
@@ -1114,7 +1114,7 @@ void TestQgsAttributeForm::testSameFieldSync()
   // and there is no issues when editing
 
   // make a temporary vector layer
-  QString def = QStringLiteral( "Point?field=col0:integer" );
+  const QString def = QStringLiteral( "Point?field=col0:integer" );
   QgsVectorLayer *layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
   layer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "TextEdit" ), QVariantMap() ) );
 
@@ -1152,14 +1152,14 @@ void TestQgsAttributeForm::testSameFieldSync()
 void TestQgsAttributeForm::testZeroDoubles()
 {
   // See issue GH #34118
-  QString def = QStringLiteral( "Point?field=col0:double" );
+  const QString def = QStringLiteral( "Point?field=col0:double" );
   QgsVectorLayer layer { def, QStringLiteral( "test" ), QStringLiteral( "memory" ) };
   layer.setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "TextEdit" ), QVariantMap() ) );
   QgsFeature ft( layer.dataProvider()->fields(), 1 );
   ft.setAttribute( QStringLiteral( "col0" ), 0.0 );
   QgsAttributeForm form( &layer );
   form.setFeature( ft );
-  QList<QLineEdit *> les = form.findChildren<QLineEdit *>( "col0" );
+  const QList<QLineEdit *> les = form.findChildren<QLineEdit *>( "col0" );
   QCOMPARE( les.count(), 1 );
   QCOMPARE( les.at( 0 )->text(), QStringLiteral( "0" ) );
 }

@@ -43,8 +43,8 @@ bool QgsCurve::isClosed2D() const
     return false;
 
   //don't consider M-coordinates when testing closedness
-  QgsPoint start = startPoint();
-  QgsPoint end = endPoint();
+  const QgsPoint start = startPoint();
+  const QgsPoint end = endPoint();
 
   return qgsDoubleNear( start.x(), end.x() ) &&
          qgsDoubleNear( start.y(), end.y() );
@@ -54,8 +54,8 @@ bool QgsCurve::isClosed() const
   bool closed = isClosed2D();
   if ( is3D() && closed )
   {
-    QgsPoint start = startPoint();
-    QgsPoint end = endPoint();
+    const QgsPoint start = startPoint();
+    const QgsPoint end = endPoint();
     closed &= qgsDoubleNear( start.z(), end.z() ) || ( std::isnan( start.z() ) && std::isnan( end.z() ) );
   }
   return closed;
@@ -110,7 +110,7 @@ bool QgsCurve::nextVertex( QgsVertexId &id, QgsPoint &vertex ) const
 
 void QgsCurve::adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex, QgsVertexId &nextVertex ) const
 {
-  int n = numPoints();
+  const int n = numPoints();
   if ( vertex.vertex < 0 || vertex.vertex >= n )
   {
     previousVertex = QgsVertexId();
@@ -243,7 +243,7 @@ QgsRectangle QgsCurve::boundingBox() const
   return mBoundingBox;
 }
 
-bool QgsCurve::isValid( QString &error, int flags ) const
+bool QgsCurve::isValid( QString &error, Qgis::GeometryValidityFlags flags ) const
 {
   if ( flags == 0 && mHasCachedValidity )
   {
@@ -252,8 +252,8 @@ bool QgsCurve::isValid( QString &error, int flags ) const
     return error.isEmpty();
   }
 
-  QgsGeos geos( this );
-  bool res = geos.isValid( &error, flags & QgsGeometry::FlagAllowSelfTouchingHoles, nullptr );
+  const QgsGeos geos( this );
+  const bool res = geos.isValid( &error, flags & Qgis::GeometryValidityFlag::AllowSelfTouchingHoles, nullptr );
   if ( flags == 0 )
   {
     mValidityFailureReason = !res ? error : QString();
@@ -275,7 +275,7 @@ double QgsCurve::straightDistance2d() const
 
 double QgsCurve::sinuosity() const
 {
-  double d = straightDistance2d();
+  const double d = straightDistance2d();
   if ( qgsDoubleNear( d, 0.0 ) )
     return std::numeric_limits<double>::quiet_NaN();
 
@@ -306,7 +306,7 @@ QgsPoint QgsCurve::childPoint( int index ) const
 {
   QgsPoint point;
   QgsVertexId::VertexType type;
-  bool res = pointAt( index, point, type );
+  const bool res = pointAt( index, point, type );
   Q_ASSERT( res );
   Q_UNUSED( res )
   return point;
@@ -316,13 +316,13 @@ bool QgsCurve::snapToGridPrivate( double hSpacing, double vSpacing, double dSpac
                                   const QVector<double> &srcX, const QVector<double> &srcY, const QVector<double> &srcZ, const QVector<double> &srcM,
                                   QVector<double> &outX, QVector<double> &outY, QVector<double> &outZ, QVector<double> &outM ) const
 {
-  int length = numPoints();
+  const int length = numPoints();
 
   if ( length <= 0 )
     return false;
 
-  bool hasZ = is3D();
-  bool hasM = isMeasure();
+  const bool hasZ = is3D();
+  const bool hasM = isMeasure();
 
   // helper functions
   auto roundVertex = [hSpacing, vSpacing, dSpacing, mSpacing, hasZ, hasM, &srcX, &srcY, &srcZ, &srcM]( QgsPoint & out, int i )
@@ -377,7 +377,7 @@ bool QgsCurve::snapToGridPrivate( double hSpacing, double vSpacing, double dSpac
   };
 
   // temporary values
-  QgsWkbTypes::Type pointType = QgsWkbTypes::zmType( QgsWkbTypes::Point, hasZ, hasM );
+  const QgsWkbTypes::Type pointType = QgsWkbTypes::zmType( QgsWkbTypes::Point, hasZ, hasM );
   QgsPoint last( pointType );
   QgsPoint current( pointType );
 

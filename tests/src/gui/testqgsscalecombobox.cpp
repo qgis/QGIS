@@ -94,7 +94,7 @@ void TestQgsScaleComboBox::basic()
   // Testing conversion from number to "1:x,000" with wonky separators
   //(e.g., four digits between thousands, which should be fixed automatically)
   str = QStringLiteral( "1%010000%01000" ).arg( QLocale().groupSeparator() );
-  QString fixedStr = QStringLiteral( "10%01000%01000" ).arg( QLocale().groupSeparator() );
+  const QString fixedStr = QStringLiteral( "10%01000%01000" ).arg( QLocale().groupSeparator() );
   enterScale( str );
   QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( fixedStr ) );
   QCOMPARE( s->scale(), 10000000.0 );
@@ -128,8 +128,8 @@ void TestQgsScaleComboBox::slot_test()
 {
   QLineEdit *l = s->lineEdit();
 
-  QSignalSpy spyScaleChanged( s, SIGNAL( scaleChanged( double ) ) );
-  QSignalSpy spyFixup( l, SIGNAL( editingFinished() ) );
+  const QSignalSpy spyScaleChanged( s, SIGNAL( scaleChanged( double ) ) );
+  const QSignalSpy spyFixup( l, SIGNAL( editingFinished() ) );
 
   enterScale( 0.02 );
   QCOMPARE( spyFixup.count(), 2 ); // Qt emits twice!?
@@ -197,7 +197,7 @@ void TestQgsScaleComboBox::allowNull()
   QCOMPARE( s->scale(), 50.0 );
   QVERIFY( !s->isNull() );
 
-  QSignalSpy spyScaleChanged( s, &QgsScaleComboBox::scaleChanged );
+  const QSignalSpy spyScaleChanged( s, &QgsScaleComboBox::scaleChanged );
   s->setAllowNull( true );
   QVERIFY( s->allowNull() );
 
@@ -275,7 +275,7 @@ void TestQgsScaleComboBox::testLocale()
 
   QLocale::setDefault( QLocale::German );
   QCOMPARE( s->toString( 1e8 ), QString( "1:100.000.000" ) );
-  QLocale customGerman( QLocale::German );
+  const QLocale customGerman( QLocale::German );
   customFrench.setNumberOptions( QLocale::NumberOption::OmitGroupSeparator );
   QLocale::setDefault( customFrench );
   QCOMPARE( s->toString( 1e8 ), QString( "1:100000000" ) );

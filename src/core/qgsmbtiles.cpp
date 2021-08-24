@@ -34,8 +34,8 @@ bool QgsMbTiles::open()
   if ( mDatabase )
     return true;  // already opened
 
-  sqlite3_database_unique_ptr database;
-  int result = mDatabase.open_v2( mFilename, SQLITE_OPEN_READONLY, nullptr );
+  const sqlite3_database_unique_ptr database;
+  const int result = mDatabase.open_v2( mFilename, SQLITE_OPEN_READONLY, nullptr );
   if ( result != SQLITE_OK )
   {
     QgsDebugMsg( QStringLiteral( "Can't open MBTiles database: %1" ).arg( database.errorMessage() ) );
@@ -57,7 +57,7 @@ bool QgsMbTiles::create()
   if ( QFile::exists( mFilename ) )
     return false;
 
-  sqlite3_database_unique_ptr database;
+  const sqlite3_database_unique_ptr database;
   int result = mDatabase.open_v2( mFilename, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr );
   if ( result != SQLITE_OK )
   {
@@ -65,10 +65,10 @@ bool QgsMbTiles::create()
     return false;
   }
 
-  QString sql = \
-                "CREATE TABLE metadata (name text, value text);" \
-                "CREATE TABLE tiles (zoom_level integer, tile_column integer, tile_row integer, tile_data blob);" \
-                "CREATE UNIQUE INDEX tile_index on tiles (zoom_level, tile_column, tile_row);";
+  const QString sql = \
+                      "CREATE TABLE metadata (name text, value text);" \
+                      "CREATE TABLE tiles (zoom_level integer, tile_column integer, tile_row integer, tile_data blob);" \
+                      "CREATE UNIQUE INDEX tile_index on tiles (zoom_level, tile_column, tile_row);";
   QString errorMessage;
   result = mDatabase.exec( sql, errorMessage );
   if ( result != SQLITE_OK )
@@ -89,7 +89,7 @@ QString QgsMbTiles::metadataValue( const QString &key )
   }
 
   int result;
-  QString sql = QStringLiteral( "select value from metadata where name='%1'" ).arg( key );
+  const QString sql = QStringLiteral( "select value from metadata where name='%1'" ).arg( key );
   sqlite3_statement_unique_ptr preparedStatement = mDatabase.prepare( sql, result );
   if ( result != SQLITE_OK )
   {
@@ -115,7 +115,7 @@ void QgsMbTiles::setMetadataValue( const QString &key, const QString &value )
   }
 
   int result;
-  QString sql = QStringLiteral( "insert into metadata values (%1, %2)" ).arg( QgsSqliteUtils::quotedValue( key ), QgsSqliteUtils::quotedValue( value ) );
+  const QString sql = QStringLiteral( "insert into metadata values (%1, %2)" ).arg( QgsSqliteUtils::quotedValue( key ), QgsSqliteUtils::quotedValue( value ) );
   sqlite3_statement_unique_ptr preparedStatement = mDatabase.prepare( sql, result );
   if ( result != SQLITE_OK )
   {
@@ -132,7 +132,7 @@ void QgsMbTiles::setMetadataValue( const QString &key, const QString &value )
 
 QgsRectangle QgsMbTiles::extent()
 {
-  QString boundsStr = metadataValue( "bounds" );
+  const QString boundsStr = metadataValue( "bounds" );
   if ( boundsStr.isEmpty() )
     return QgsRectangle();
   QStringList boundsArray = boundsStr.split( ',' );
@@ -152,7 +152,7 @@ QByteArray QgsMbTiles::tileData( int z, int x, int y )
   }
 
   int result;
-  QString sql = QStringLiteral( "select tile_data from tiles where zoom_level=%1 and tile_column=%2 and tile_row=%3" ).arg( z ).arg( x ).arg( y );
+  const QString sql = QStringLiteral( "select tile_data from tiles where zoom_level=%1 and tile_column=%2 and tile_row=%3" ).arg( z ).arg( x ).arg( y );
   sqlite3_statement_unique_ptr preparedStatement = mDatabase.prepare( sql, result );
   if ( result != SQLITE_OK )
   {
@@ -172,7 +172,7 @@ QByteArray QgsMbTiles::tileData( int z, int x, int y )
 QImage QgsMbTiles::tileDataAsImage( int z, int x, int y )
 {
   QImage tileImage;
-  QByteArray tileBlob = tileData( z, x, y );
+  const QByteArray tileBlob = tileData( z, x, y );
   if ( !tileImage.loadFromData( tileBlob ) )
   {
     QgsDebugMsg( QStringLiteral( "MBTile data failed to load: z=%1 x=%2 y=%3" ).arg( z ).arg( x ).arg( y ) );
@@ -190,7 +190,7 @@ void QgsMbTiles::setTileData( int z, int x, int y, const QByteArray &data )
   }
 
   int result;
-  QString sql = QStringLiteral( "insert into tiles values (%1, %2, %3, ?)" ).arg( z ).arg( x ).arg( y );
+  const QString sql = QStringLiteral( "insert into tiles values (%1, %2, %3, ?)" ).arg( z ).arg( x ).arg( y );
   sqlite3_statement_unique_ptr preparedStatement = mDatabase.prepare( sql, result );
   if ( result != SQLITE_OK )
   {
@@ -231,7 +231,7 @@ bool QgsMbTiles::decodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut )
   while ( ret != Z_STREAM_END ) // done when inflate() says it's done
   {
     // prepare next chunk
-    uint bytesToProcess = std::min( CHUNK, bytesInLeft );
+    const uint bytesToProcess = std::min( CHUNK, bytesInLeft );
     strm.next_in = bytesInPtr;
     strm.avail_in = bytesToProcess;
     bytesInPtr += bytesToProcess;
@@ -252,7 +252,7 @@ bool QgsMbTiles::decodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut )
         inflateEnd( &strm );
         return false;
       }
-      unsigned have = CHUNK - strm.avail_out;
+      const unsigned have = CHUNK - strm.avail_out;
       bytesOut.append( QByteArray::fromRawData( reinterpret_cast<const char *>( out ), static_cast<int>( have ) ) );
     }
     while ( strm.avail_out == 0 );
@@ -266,7 +266,7 @@ bool QgsMbTiles::decodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut )
 bool QgsMbTiles::encodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut )
 {
   unsigned char *bytesInPtr = reinterpret_cast<unsigned char *>( const_cast<char *>( bytesIn.constData() ) );
-  uint bytesInLeft = static_cast<uint>( bytesIn.count() );
+  const uint bytesInLeft = static_cast<uint>( bytesIn.count() );
 
   const uint CHUNK = 16384;
   unsigned char out[CHUNK];
@@ -294,7 +294,7 @@ bool QgsMbTiles::encodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut )
     ret = deflate( &strm, Z_FINISH );  // no bad return value
     Q_ASSERT( ret != Z_STREAM_ERROR ); // state not clobbered
 
-    unsigned have = CHUNK - strm.avail_out;
+    const unsigned have = CHUNK - strm.avail_out;
     bytesOut.append( QByteArray::fromRawData( reinterpret_cast<const char *>( out ), static_cast<int>( have ) ) );
   }
   while ( strm.avail_out == 0 );

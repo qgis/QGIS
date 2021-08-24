@@ -71,7 +71,7 @@ void QgsVariantDelegate::paint( QPainter *painter,
 {
   if ( index.column() == 2 )
   {
-    QVariant value = index.model()->data( index, Qt::UserRole );
+    const QVariant value = index.model()->data( index, Qt::UserRole );
     if ( !isSupportedType( QgsVariantDelegate::type( value ) ) )
     {
       QStyleOptionViewItem myOption = option;
@@ -92,7 +92,7 @@ QWidget *QgsVariantDelegate::createEditor( QWidget *parent,
   if ( index.column() != 2 )
     return nullptr;
 
-  QVariant originalValue = index.model()->data( index, Qt::UserRole );
+  const QVariant originalValue = index.model()->data( index, Qt::UserRole );
   if ( !isSupportedType( QgsVariantDelegate::type( originalValue ) ) )
     return nullptr;
 
@@ -164,7 +164,7 @@ QWidget *QgsVariantDelegate::createEditor( QWidget *parent,
 void QgsVariantDelegate::setEditorData( QWidget *editor,
                                         const QModelIndex &index ) const
 {
-  QVariant value = index.model()->data( index, Qt::UserRole );
+  const QVariant value = index.model()->data( index, Qt::UserRole );
 
   if ( QComboBox *comboBox = qobject_cast<QComboBox * >( editor ) )
   {
@@ -179,7 +179,7 @@ void QgsVariantDelegate::setEditorData( QWidget *editor,
 void QgsVariantDelegate::setModelData( QWidget *editor, QAbstractItemModel *model,
                                        const QModelIndex &index ) const
 {
-  QVariant originalValue = index.model()->data( index, Qt::UserRole );
+  const QVariant originalValue = index.model()->data( index, Qt::UserRole );
   QVariant value;
 
   if ( QComboBox *comboBox = qobject_cast<QComboBox * >( editor ) )
@@ -214,7 +214,7 @@ void QgsVariantDelegate::setModelData( QWidget *editor, QAbstractItemModel *mode
         break;
       case QVariant::Date:
       {
-        QDate date = QDate::fromString( text, Qt::ISODate );
+        const QDate date = QDate::fromString( text, Qt::ISODate );
         if ( !date.isValid() )
           return;
         value = date;
@@ -222,7 +222,7 @@ void QgsVariantDelegate::setModelData( QWidget *editor, QAbstractItemModel *mode
       break;
       case QVariant::DateTime:
       {
-        QDateTime dateTime = QDateTime::fromString( text, Qt::ISODate );
+        const QDateTime dateTime = QDateTime::fromString( text, Qt::ISODate );
         if ( !dateTime.isValid() )
           return;
         value = dateTime;
@@ -246,7 +246,7 @@ void QgsVariantDelegate::setModelData( QWidget *editor, QAbstractItemModel *mode
         break;
       case QVariant::Time:
       {
-        QTime time = QTime::fromString( text, Qt::ISODate );
+        const QTime time = QTime::fromString( text, Qt::ISODate );
         if ( !time.isValid() )
           return;
         value = time;
@@ -305,7 +305,7 @@ QString QgsVariantDelegate::displayText( const QVariant &value )
       return value.toString();
     case QVariant::Color:
     {
-      QColor color = qvariant_cast<QColor>( value );
+      const QColor color = qvariant_cast<QColor>( value );
       return QStringLiteral( "(%1,%2,%3,%4)" )
              .arg( color.red() ).arg( color.green() )
              .arg( color.blue() ).arg( color.alpha() );
@@ -318,19 +318,19 @@ QString QgsVariantDelegate::displayText( const QVariant &value )
       return QStringLiteral( "<Invalid>" );
     case QVariant::Point:
     {
-      QPoint point = value.toPoint();
+      const QPoint point = value.toPoint();
       return QStringLiteral( "(%1,%2)" ).arg( point.x() ).arg( point.y() );
     }
     case QVariant::Rect:
     {
-      QRect rect = value.toRect();
+      const QRect rect = value.toRect();
       return QStringLiteral( "(%1,%2,%3,%4)" )
              .arg( rect.x() ).arg( rect.y() )
              .arg( rect.width() ).arg( rect.height() );
     }
     case QVariant::Size:
     {
-      QSize size = value.toSize();
+      const QSize size = value.toSize();
       return QStringLiteral( "(%1,%2)" ).arg( size.width() ).arg( size.height() );
     }
     case QVariant::StringList:
@@ -349,7 +349,7 @@ QVariant::Type QgsVariantDelegate::type( const QVariant &value )
 {
   if ( value.type() == QVariant::String )
   {
-    QString str = value.toString();
+    const QString str = value.toString();
     QRegExp regExp;
     bool ok;
 

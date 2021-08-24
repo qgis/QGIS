@@ -131,8 +131,12 @@ QVariant QgsDatabaseTableModel::data( const QModelIndex &index, int role ) const
           {
             return QgsIconUtils::iconLine();
           }
-          default:
-            break;
+          case QgsWkbTypes::UnknownGeometry:
+          {
+            return QgsIconUtils::iconGeometryCollection();
+          }
+          case QgsWkbTypes::NullGeometry:
+            return QgsIconUtils::iconTable();
         }
 
         return QgsIconUtils::iconTable();
@@ -200,7 +204,7 @@ void QgsDatabaseTableModel::refresh()
   {
     if ( !newTables.contains( oldTable ) )
     {
-      int r = mTables.indexOf( oldTable );
+      const int r = mTables.indexOf( oldTable );
       beginRemoveRows( QModelIndex(), r + ( mAllowEmpty ? 1 : 0 ), r + ( mAllowEmpty ? 1 : 0 ) );
       mTables.removeAt( r );
       endRemoveRows();

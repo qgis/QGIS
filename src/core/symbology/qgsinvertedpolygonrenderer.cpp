@@ -89,7 +89,7 @@ QDomElement QgsInvertedPolygonRenderer::save( QDomDocument &doc, const QgsReadWr
 
   if ( mSubRenderer )
   {
-    QDomElement embeddedRendererElem = mSubRenderer->save( doc, context );
+    const QDomElement embeddedRendererElem = mSubRenderer->save( doc, context );
     rendererElem.appendChild( embeddedRendererElem );
   }
 

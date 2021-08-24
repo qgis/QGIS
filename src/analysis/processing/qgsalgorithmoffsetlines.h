@@ -58,7 +58,7 @@ class QgsOffsetLinesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QgsProperty mOffsetProperty;
 
     int mSegments = 8;
-    QgsGeometry::JoinStyle mJoinStyle = QgsGeometry::JoinStyleRound;
+    Qgis::JoinStyle mJoinStyle = Qgis::JoinStyle::Round;
     double mMiterLimit = 2;
 
 

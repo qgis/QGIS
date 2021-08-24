@@ -81,10 +81,10 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
     // Rotation will be handled by QPainter later
     // TODO: provide a method of QgsMapToPixel to fetch map center
     //       in geographical units
-    QgsPointXY center = mapToPixel.toMapCoordinates(
-                          static_cast<int>( mapToPixel.mapWidth() / 2.0 ),
-                          static_cast<int>( mapToPixel.mapHeight() / 2.0 )
-                        );
+    const QgsPointXY center = mapToPixel.toMapCoordinates(
+                                static_cast<int>( mapToPixel.mapWidth() / 2.0 ),
+                                static_cast<int>( mapToPixel.mapHeight() / 2.0 )
+                              );
     mapToPixel.setMapRotation( 0, center.x(), center.y() );
   }
 
@@ -309,7 +309,7 @@ bool QgsRasterLayerRenderer::render()
   // procedure to use :
   //
 
-  QgsScopedQPainterState painterSate( renderContext()->painter() );
+  const QgsScopedQPainterState painterSate( renderContext()->painter() );
   if ( !mClippingRegions.empty() )
   {
     bool needsPainterClipPath = false;
@@ -320,7 +320,7 @@ bool QgsRasterLayerRenderer::render()
 
   QgsRasterProjector *projector = mPipe->projector();
   bool restoreOldResamplingStage = false;
-  Qgis::RasterResamplingStage oldResamplingState = mPipe->resamplingStage();
+  const Qgis::RasterResamplingStage oldResamplingState = mPipe->resamplingStage();
 
   // TODO add a method to interface to get provider and get provider
   // params in QgsRasterProjector

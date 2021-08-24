@@ -140,9 +140,13 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
     virtual QString textLog() const;
 
   private:
+
+    void log( const QString &htmlMessage, const QString &textMessage );
+
     bool mLogFeedback = true;
     QString mHtmlLog;
     QString mTextLog;
+    int mMessageLoggedCount = 0;
 
 };
 
@@ -196,6 +200,7 @@ class CORE_EXPORT QgsProcessingMultiStepFeedback : public QgsProcessingFeedback
     int mChildSteps = 0;
     int mCurrentStep = 0;
     QgsProcessingFeedback *mFeedback = nullptr;
+
 };
 
 #endif // QGSPROCESSINGFEEDBACK_H

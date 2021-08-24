@@ -51,7 +51,7 @@ class QgsDb2ProviderGuiMetadata: public QgsProviderGuiMetadata
     {
       QList<QgsDataItemGuiProvider *> providers;
 
-      QgsSettings settings;
+      const QgsSettings settings;
       if ( settings.value( QStringLiteral( "showDeprecated" ), false, QgsSettings::Providers ).toBool() )
       {
         providers << new QgsDb2DataItemGuiProvider;
@@ -62,7 +62,7 @@ class QgsDb2ProviderGuiMetadata: public QgsProviderGuiMetadata
     QList<QgsSourceSelectProvider *> sourceSelectProviders() override
     {
       QList<QgsSourceSelectProvider *> providers;
-      QgsSettings settings;
+      const QgsSettings settings;
       if ( settings.value( QStringLiteral( "showDeprecated" ), false, QgsSettings::Providers ).toBool() )
       {
         providers << new QgsDb2SourceSelectProvider;

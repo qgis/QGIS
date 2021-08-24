@@ -281,13 +281,13 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *p
     return;
 
   const char *ptr = block->data();
-  int count = block->pointCount();
+  const int count = block->pointCount();
   const std::size_t recordSize = attributes.pointRecordSize();
   const QgsVector3D blockScale = block->scale();
   const QgsVector3D blockOffset = block->offset();
   const double zValueScale = context.zValueScale();
   const double zValueOffset = context.zValueFixedOffset();
-  QgsCoordinateTransform coordinateTransform = context.coordinateTransform();
+  const QgsCoordinateTransform coordinateTransform = context.coordinateTransform();
   bool alreadyPrintedDebug = false;
 
   for ( int i = 0; i < count; ++i )
@@ -295,9 +295,9 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *p
     if ( context.isCanceled() )
       break;
 
-    qint32 ix = *( qint32 * )( ptr + i * recordSize + 0 );
-    qint32 iy = *( qint32 * )( ptr + i * recordSize + 4 );
-    qint32 iz = *( qint32 * )( ptr + i * recordSize + 8 );
+    const qint32 ix = *( qint32 * )( ptr + i * recordSize + 0 );
+    const qint32 iy = *( qint32 * )( ptr + i * recordSize + 4 );
+    const qint32 iz = *( qint32 * )( ptr + i * recordSize + 8 );
 
     double x = blockOffset.x() + blockScale.x() * ix;
     double y = blockOffset.y() + blockScale.y() * iy;
@@ -314,8 +314,8 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *p
         alreadyPrintedDebug = true;
       }
     }
-    QgsVector3D point( x, y, z );
-    QgsVector3D p = context.map().mapToWorldCoordinates( QgsVector3D( x, y, z ) );
+    const QgsVector3D point( x, y, z );
+    const QgsVector3D p = context.map().mapToWorldCoordinates( QgsVector3D( x, y, z ) );
     outNormal.positions.push_back( QVector3D( p.x(), p.y(), p.z() ) );
   }
 }
@@ -360,14 +360,14 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
   int attributeOffset = 0;
   const double zValueScale = context.zValueScale();
   const double zValueOffset = context.zValueFixedOffset();
-  QgsCoordinateTransform coordinateTransform = context.coordinateTransform();
+  const QgsCoordinateTransform coordinateTransform = context.coordinateTransform();
   bool alreadyPrintedDebug = false;
 
   QgsColorRampPointCloud3DSymbol *symbol = dynamic_cast<QgsColorRampPointCloud3DSymbol *>( context.symbol() );
   if ( symbol )
   {
     int offset = 0;
-    QgsPointCloudAttributeCollection collection = context.attributes();
+    const QgsPointCloudAttributeCollection collection = context.attributes();
 
     if ( symbol->attribute() == QLatin1String( "X" ) )
     {
@@ -404,7 +404,7 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
     return;
 
   const char *ptr = block->data();
-  int count = block->pointCount();
+  const int count = block->pointCount();
   const std::size_t recordSize = attributes.pointRecordSize();
 
   const QgsVector3D blockScale = block->scale();
@@ -415,9 +415,9 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
     if ( context.isCanceled() )
       break;
 
-    qint32 ix = *( qint32 * )( ptr + i * recordSize + xOffset );
-    qint32 iy = *( qint32 * )( ptr + i * recordSize + yOffset );
-    qint32 iz = *( qint32 * )( ptr + i * recordSize + zOffset );
+    const qint32 ix = *( qint32 * )( ptr + i * recordSize + xOffset );
+    const qint32 iy = *( qint32 * )( ptr + i * recordSize + yOffset );
+    const qint32 iz = *( qint32 * )( ptr + i * recordSize + zOffset );
 
     double x = blockOffset.x() + blockScale.x() * ix;
     double y = blockOffset.y() + blockScale.y() * iy;
@@ -509,14 +509,14 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
     return;
 
   const char *ptr = block->data();
-  int count = block->pointCount();
+  const int count = block->pointCount();
   const std::size_t recordSize = attributes.pointRecordSize();
 
   const QgsVector3D blockScale = block->scale();
   const QgsVector3D blockOffset = block->offset();
   const double zValueScale = context.zValueScale();
   const double zValueOffset = context.zValueFixedOffset();
-  QgsCoordinateTransform coordinateTransform = context.coordinateTransform();
+  const QgsCoordinateTransform coordinateTransform = context.coordinateTransform();
   bool alreadyPrintedDebug = false;
 
   QgsContrastEnhancement *redContrastEnhancement = symbol->redContrastEnhancement();
@@ -535,9 +535,9 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
     if ( context.isCanceled() )
       break;
 
-    qint32 ix = *( qint32 * )( ptr + i * recordSize + 0 );
-    qint32 iy = *( qint32 * )( ptr + i * recordSize + 4 );
-    qint32 iz = *( qint32 * )( ptr + i * recordSize + 8 );
+    const qint32 ix = *( qint32 * )( ptr + i * recordSize + 0 );
+    const qint32 iy = *( qint32 * )( ptr + i * recordSize + 4 );
+    const qint32 iz = *( qint32 * )( ptr + i * recordSize + 8 );
     double x = blockOffset.x() + blockScale.x() * ix;
     double y = blockOffset.y() + blockScale.y() * iy;
     double z = ( blockOffset.z() + blockScale.z() * iz ) * zValueScale + zValueOffset;
@@ -553,8 +553,8 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
         alreadyPrintedDebug = true;
       }
     }
-    QgsVector3D point( x, y, z );
-    QgsVector3D p = context.map().mapToWorldCoordinates( point );
+    const QgsVector3D point( x, y, z );
+    const QgsVector3D p = context.map().mapToWorldCoordinates( point );
 
     QVector3D color( 0.0f, 0.0f, 0.0f );
 
@@ -635,7 +635,7 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
   if ( symbol )
   {
     int offset = 0;
-    QgsPointCloudAttributeCollection collection = context.attributes();
+    const QgsPointCloudAttributeCollection collection = context.attributes();
 
     if ( symbol->attribute() == QLatin1String( "X" ) )
     {
@@ -672,25 +672,25 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
     return;
 
   const char *ptr = block->data();
-  int count = block->pointCount();
+  const int count = block->pointCount();
   const std::size_t recordSize = attributes.pointRecordSize();
 
   const QgsVector3D blockScale = block->scale();
   const QgsVector3D blockOffset = block->offset();
   const double zValueScale = context.zValueScale();
   const double zValueOffset = context.zValueFixedOffset();
-  QgsCoordinateTransform coordinateTransform = context.coordinateTransform();
+  const QgsCoordinateTransform coordinateTransform = context.coordinateTransform();
   bool alreadyPrintedDebug = false;
 
-  QSet<int> filteredOutValues = context.getFilteredOutValues();
+  const QSet<int> filteredOutValues = context.getFilteredOutValues();
   for ( int i = 0; i < count; ++i )
   {
     if ( context.isCanceled() )
       break;
 
-    qint32 ix = *( qint32 * )( ptr + i * recordSize + xOffset );
-    qint32 iy = *( qint32 * )( ptr + i * recordSize + yOffset );
-    qint32 iz = *( qint32 * )( ptr + i * recordSize + zOffset );
+    const qint32 ix = *( qint32 * )( ptr + i * recordSize + xOffset );
+    const qint32 iy = *( qint32 * )( ptr + i * recordSize + yOffset );
+    const qint32 iz = *( qint32 * )( ptr + i * recordSize + zOffset );
 
     double x = blockOffset.x() + blockScale.x() * ix;
     double y = blockOffset.y() + blockScale.y() * iy;
@@ -707,8 +707,8 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
         alreadyPrintedDebug = true;
       }
     }
-    QgsVector3D point( x, y, z );
-    QgsVector3D p = context.map().mapToWorldCoordinates( point );
+    const QgsVector3D point( x, y, z );
+    const QgsVector3D p = context.map().mapToWorldCoordinates( point );
     float iParam = 0.0f;
     if ( attrIsX )
       iParam = x;

@@ -70,7 +70,7 @@ QgsSearchWidgetWrapper::FilterFlags QgsDateTimeSearchWidgetWrapper::defaultFlags
 
 QString QgsDateTimeSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const
 {
-  QString fieldName = createFieldIdentifier();
+  const QString fieldName = createFieldIdentifier();
 
   //clear any unsupported flags
   flags &= supportedFlags();
@@ -79,7 +79,7 @@ QString QgsDateTimeSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper
   if ( flags & IsNotNull )
     return fieldName + " IS NOT NULL";
 
-  QVariant v = value();
+  const QVariant v = value();
   if ( !v.isValid() )
     return QString();
 
@@ -123,12 +123,12 @@ bool QgsDateTimeSearchWidgetWrapper::valid() const
 void QgsDateTimeSearchWidgetWrapper::setExpression( const QString &expression )
 {
   QString exp = expression;
-  QString fieldName = layer()->fields().at( mFieldIdx ).name();
+  const QString fieldName = layer()->fields().at( mFieldIdx ).name();
 
-  QString str = QStringLiteral( "%1 = '%3'" )
-                .arg( QgsExpression::quotedColumnRef( fieldName ),
-                      exp.replace( '\'', QLatin1String( "''" ) )
-                    );
+  const QString str = QStringLiteral( "%1 = '%3'" )
+                      .arg( QgsExpression::quotedColumnRef( fieldName ),
+                            exp.replace( '\'', QLatin1String( "''" ) )
+                          );
   mExpression = str;
 }
 
@@ -136,7 +136,7 @@ void QgsDateTimeSearchWidgetWrapper::dateTimeChanged( const QDateTime &dt )
 {
   if ( mDateTimeEdit )
   {
-    QString exp = value().toString();
+    const QString exp = value().toString();
     setExpression( exp );
     if ( dt.isValid() && !dt.isNull() )
       emit valueChanged();

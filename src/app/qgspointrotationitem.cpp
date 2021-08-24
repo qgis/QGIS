@@ -76,7 +76,7 @@ void QgsPointRotationItem::paint( QPainter *painter )
   QPen bufferPen;
   bufferPen.setColor( Qt::white );
   bufferPen.setWidthF( QgsGuiUtils::scaleIconSize( 4 ) );
-  QFontMetricsF fm( mFont );
+  const QFontMetricsF fm( mFont );
   QPainterPath label;
   label.addText( mPixmap.width(), mPixmap.height() / 2.0 + fm.height() / 2.0, mFont, QLocale().toString( mRotation ) );
   painter->setPen( bufferPen );
@@ -91,19 +91,19 @@ void QgsPointRotationItem::paint( QPainter *painter )
 
 void QgsPointRotationItem::setPointLocation( const QgsPointXY &p )
 {
-  QPointF transformedPoint = toCanvasCoordinates( p );
+  const QPointF transformedPoint = toCanvasCoordinates( p );
   setPos( transformedPoint.x() - mPixmap.width() / 2.0, transformedPoint.y() - mPixmap.height() / 2.0 );
 }
 
 void QgsPointRotationItem::setSymbol( const QImage &symbolImage )
 {
   mPixmap = QPixmap::fromImage( symbolImage );
-  QFontMetricsF fm( mFont );
+  const QFontMetricsF fm( mFont );
 
   //set item size
   mItemSize.setWidth( mPixmap.width() + fm.horizontalAdvance( QStringLiteral( "360" ) ) );
   const double pixmapHeight = mPixmap.height();
-  double fontHeight = fm.height();
+  const double fontHeight = fm.height();
   if ( pixmapHeight >= fontHeight )
   {
     mItemSize.setHeight( mPixmap.height() );

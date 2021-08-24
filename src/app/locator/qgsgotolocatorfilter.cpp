@@ -46,7 +46,7 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
   double posX = 0.0;
   double posY = 0.0;
   bool posIsDms = false;
-  QLocale locale;
+  const QLocale locale;
 
   // Coordinates such as 106.8468,-6.3804
   QRegularExpression separatorRx( QStringLiteral( "^([0-9\\-\\%1\\%2]*)[\\s%3]*([0-9\\-\\%1\\%2]*)$" ).arg( locale.decimalPoint(),
@@ -90,10 +90,10 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
   if ( okX && okY )
   {
     QVariantMap data;
-    QgsPointXY point( posX, posY );
+    const QgsPointXY point( posX, posY );
     data.insert( QStringLiteral( "point" ), point );
 
-    bool withinWgs84 = wgs84Crs.bounds().contains( point );
+    const bool withinWgs84 = wgs84Crs.bounds().contains( point );
     if ( !posIsDms && currentCrs != wgs84Crs )
     {
       QgsLocatorResult result;
@@ -108,7 +108,7 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
     {
       if ( currentCrs != wgs84Crs )
       {
-        QgsCoordinateTransform transform( wgs84Crs, currentCrs, QgsProject::instance()->transformContext() );
+        const QgsCoordinateTransform transform( wgs84Crs, currentCrs, QgsProject::instance()->transformContext() );
         QgsPointXY transformedPoint;
         try
         {
@@ -156,7 +156,7 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
   scales[20] = 1000;
   scales[21] = 282;
 
-  QUrl url( string );
+  const QUrl url( string );
   if ( url.isValid() )
   {
     double scale = 0.0;
@@ -168,12 +168,12 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
     if ( url.hasFragment() )
     {
       // Check for OSM/Leaflet/OpenLayers pattern (e.g. http://www.openstreetmap.org/#map=6/46.423/4.746)
-      QStringList fragments = url.fragment().split( '&' );
+      const QStringList fragments = url.fragment().split( '&' );
       for ( const QString &fragment : fragments )
       {
         if ( fragment.startsWith( QLatin1String( "map=" ) ) )
         {
-          QStringList params = fragment.mid( 4 ).split( '/' );
+          const QStringList params = fragment.mid( 4 ).split( '/' );
           if ( params.size() >= 3 )
           {
             if ( scales.contains( params.at( 0 ).toInt() ) )
@@ -190,11 +190,11 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
 
     if ( !okX && !okY )
     {
-      QRegularExpression locationRx( QStringLiteral( "google.*\\/@([0-9\\-\\.\\,]*)(z|m|a)" ) );
+      const QRegularExpression locationRx( QStringLiteral( "google.*\\/@([0-9\\-\\.\\,]*)(z|m|a)" ) );
       match = locationRx.match( string );
       if ( match.hasMatch() )
       {
-        QStringList params = match.captured( 1 ).split( ',' );
+        const QStringList params = match.captured( 1 ).split( ',' );
         if ( params.size() == 3 )
         {
           posX = params.at( 1 ).toDouble( &okX );
@@ -224,24 +224,24 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
     if ( okX && okY )
     {
       QVariantMap data;
-      QgsPointXY point( posX, posY );
+      const QgsPointXY point( posX, posY );
       QgsPointXY dataPoint = point;
-      bool withinWgs84 = wgs84Crs.bounds().contains( point );
+      const bool withinWgs84 = wgs84Crs.bounds().contains( point );
       if ( withinWgs84 && currentCrs != wgs84Crs )
       {
-        QgsCoordinateTransform transform( wgs84Crs, currentCrs, QgsProject::instance()->transformContext() );
+        const QgsCoordinateTransform transform( wgs84Crs, currentCrs, QgsProject::instance()->transformContext() );
         dataPoint = transform.transform( point );
       }
       data.insert( QStringLiteral( "point" ), dataPoint );
 
       if ( meters > 0 )
       {
-        QSize outputSize = QgisApp::instance()->mapCanvas()->mapSettings().outputSize();
+        const QSize outputSize = QgisApp::instance()->mapCanvas()->mapSettings().outputSize();
         QgsDistanceArea da;
         da.setSourceCrs( currentCrs, QgsProject::instance()->transformContext() );
         da.setEllipsoid( QgsProject::instance()->ellipsoid() );
-        double height = da.measureLineProjected( dataPoint, meters );
-        double width = outputSize.width() * ( height / outputSize.height() );
+        const double height = da.measureLineProjected( dataPoint, meters );
+        const double width = outputSize.width() * ( height / outputSize.height() );
 
         QgsRectangle extent;
         extent.setYMinimum( dataPoint.y() -  height / 2.0 );
@@ -277,7 +277,7 @@ void QgsGotoLocatorFilter::triggerResult( const QgsLocatorResult &result )
   QgsMapCanvas *mapCanvas = QgisApp::instance()->mapCanvas();
 
   QVariantMap data = result.userData.toMap();
-  QgsPointXY point = data[QStringLiteral( "point" )].value<QgsPointXY>();
+  const QgsPointXY point = data[QStringLiteral( "point" )].value<QgsPointXY>();
   mapCanvas->setCenter( point );
   if ( data.contains( QStringLiteral( "scale" ) ) )
   {

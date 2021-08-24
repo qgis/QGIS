@@ -73,7 +73,7 @@ class TestQgsMesh3dAveraging: public QObject
 
 void TestQgsMesh3dAveraging::compare( const QgsMesh3dAveragingMethod *method, double expected, bool valid )
 {
-  QgsMeshDataBlock block = method->calculate( scalarBlock );
+  const QgsMeshDataBlock block = method->calculate( scalarBlock );
   if ( !valid )
   {
     QVERIFY( !block.isValid() );
@@ -82,7 +82,7 @@ void TestQgsMesh3dAveraging::compare( const QgsMesh3dAveragingMethod *method, do
   QVERIFY( block.isValid() );
   QVERIFY( block.count() == 2 );
 
-  QgsMeshDataBlock blockVec = method->calculate( vectorBlock );
+  const QgsMeshDataBlock blockVec = method->calculate( vectorBlock );
   QVERIFY( blockVec.isValid() );
   QVERIFY( blockVec.count() == 2 );
 
@@ -108,19 +108,19 @@ void TestQgsMesh3dAveraging::initTestCase()
 {
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ); //defined in CmakeLists.txt
 
-  QVector<int> faceToVolumeIndex = { 0, 4 };
+  const QVector<int> faceToVolumeIndex = { 0, 4 };
 
   // so intervals are { 1, 0.5, 1.5, 1 }
-  QVector<double> verticalLevels = { -1.0, -2.0, -2.5, -4.0, -5.0,
-                                     -1.0, -2.0, -2.5, -4.0, -5.0
-                                   };
+  const QVector<double> verticalLevels = { -1.0, -2.0, -2.5, -4.0, -5.0,
+                                           -1.0, -2.0, -2.5, -4.0, -5.0
+                                         };
 
-  QVector<int> verticalLevelsCount = { 4, 4 };
+  const QVector<int> verticalLevelsCount = { 4, 4 };
 
   scalarBlock = QgsMesh3dDataBlock( 2, false );
-  QVector<double> values = { 1, 2, std::numeric_limits<double>::quiet_NaN(), 4,
-                             1, 2, std::numeric_limits<double>::quiet_NaN(), 4
-                           };
+  const QVector<double> values = { 1, 2, std::numeric_limits<double>::quiet_NaN(), 4,
+                                   1, 2, std::numeric_limits<double>::quiet_NaN(), 4
+                                 };
 
   scalarBlock.setFaceToVolumeIndex( faceToVolumeIndex );
   scalarBlock.setVerticalLevelsCount( verticalLevelsCount );
@@ -129,9 +129,9 @@ void TestQgsMesh3dAveraging::initTestCase()
   scalarBlock.setValid( true );
 
   vectorBlock = QgsMesh3dDataBlock( 2, true );
-  QVector<double> valuesVec = { 1, 1, 2, 2, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), 4, 4,
-                                1, 1, 2, 2, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), 4, 4
-                              };
+  const QVector<double> valuesVec = { 1, 1, 2, 2, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), 4, 4,
+                                      1, 1, 2, 2, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), 4, 4
+                                    };
   vectorBlock.setFaceToVolumeIndex( faceToVolumeIndex );
   vectorBlock.setVerticalLevelsCount( verticalLevelsCount );
   vectorBlock.setVerticalLevels( verticalLevels );
@@ -334,19 +334,19 @@ void TestQgsMesh3dAveraging::testMeshElevationAveragingMethodVariableMesh()
   // Test the situation when the number of vertical levels is different for
   // each face and also that for face 1 the vertical levels are outside of
   // requested elevation range
-  QVector<int> faceToVolumeIndex = { 0, 4, 7 };
-  QVector<double> verticalLevels = { -1.0, -2.0, -3.0, -4.0, -5.0,
-                                     -1.0, -1.1, -1.3, -1.5,
-                                     -1.0, -2.0, -3.0, -4.0, -5.0, -6.0
-                                   };
+  const QVector<int> faceToVolumeIndex = { 0, 4, 7 };
+  const QVector<double> verticalLevels = { -1.0, -2.0, -3.0, -4.0, -5.0,
+                                           -1.0, -1.1, -1.3, -1.5,
+                                           -1.0, -2.0, -3.0, -4.0, -5.0, -6.0
+                                         };
 
-  QVector<int> verticalLevelsCount = { 4, 3, 5 };
+  const QVector<int> verticalLevelsCount = { 4, 3, 5 };
 
   QgsMesh3dDataBlock scalarBlock2( 3, false );
-  QVector<double> values = { 1, 2, 3, 4,
-                             0, 0, 0,
-                             100, 200, 300, 400, 500
-                           };
+  const QVector<double> values = { 1, 2, 3, 4,
+                                   0, 0, 0,
+                                   100, 200, 300, 400, 500
+                                 };
 
   scalarBlock2.setFaceToVolumeIndex( faceToVolumeIndex );
   scalarBlock2.setVerticalLevelsCount( verticalLevelsCount );
@@ -354,8 +354,8 @@ void TestQgsMesh3dAveraging::testMeshElevationAveragingMethodVariableMesh()
   scalarBlock2.setValues( values );
   scalarBlock2.setValid( true );
 
-  QgsMeshElevationAveragingMethod method( -2.0, -6.0 );
-  QgsMeshDataBlock block = method.calculate( scalarBlock2 );
+  const QgsMeshElevationAveragingMethod method( -2.0, -6.0 );
+  const QgsMeshDataBlock block = method.calculate( scalarBlock2 );
   QVERIFY( block.isValid() );
   QVERIFY( block.count() == 3 );
 

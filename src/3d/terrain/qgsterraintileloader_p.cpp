@@ -48,8 +48,8 @@ QgsTerrainTileLoader::QgsTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkN
   }
 #endif
 
-  QgsChunkNodeId nodeId = node->tileId();
-  QgsRectangle extentTerrainCrs = map.terrainGenerator()->tilingScheme().tileToExtent( nodeId );
+  const QgsChunkNodeId nodeId = node->tileId();
+  const QgsRectangle extentTerrainCrs = map.terrainGenerator()->tilingScheme().tileToExtent( nodeId );
   mExtentMapCrs = terrain->terrainToMapTransform().transformBoundingBox( extentTerrainCrs );
   mTileDebugText = nodeId.text();
 }

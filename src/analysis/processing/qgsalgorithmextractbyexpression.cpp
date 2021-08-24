@@ -75,7 +75,7 @@ QVariantMap QgsExtractByExpressionAlgorithm::processAlgorithm( const QVariantMap
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  QString expressionString = parameterAsExpression( parameters, QStringLiteral( "EXPRESSION" ), context );
+  const QString expressionString = parameterAsExpression( parameters, QStringLiteral( "EXPRESSION" ), context );
 
   QString matchingSinkId;
   std::unique_ptr< QgsFeatureSink > matchingSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, matchingSinkId, source->fields(),
@@ -95,9 +95,9 @@ QVariantMap QgsExtractByExpressionAlgorithm::processAlgorithm( const QVariantMap
 
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context, source.get() );
 
-  long count = source->featureCount();
+  const long count = source->featureCount();
 
-  double step = count > 0 ? 100.0 / count : 1;
+  const double step = count > 0 ? 100.0 / count : 1;
   int current = 0;
 
   if ( !nonMatchingSink )
@@ -116,7 +116,8 @@ QVariantMap QgsExtractByExpressionAlgorithm::processAlgorithm( const QVariantMap
         break;
       }
 
-      matchingSink->addFeature( f, QgsFeatureSink::FastInsert );
+      if ( !matchingSink->addFeature( f, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( matchingSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
       feedback->setProgress( current * step );
       current++;
@@ -140,11 +141,13 @@ QVariantMap QgsExtractByExpressionAlgorithm::processAlgorithm( const QVariantMap
       expressionContext.setFeature( f );
       if ( expression.evaluate( &expressionContext ).toBool() )
       {
-        matchingSink->addFeature( f, QgsFeatureSink::FastInsert );
+        if ( !matchingSink->addFeature( f, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( matchingSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
       }
       else
       {
-        nonMatchingSink->addFeature( f, QgsFeatureSink::FastInsert );
+        if ( !nonMatchingSink->addFeature( f, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( nonMatchingSink.get(), parameters, QStringLiteral( "FAIL_OUTPUT" ) ) );
       }
 
       feedback->setProgress( current * step );

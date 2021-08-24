@@ -88,14 +88,14 @@ void TestQgsEllipseMarkerSymbol::initTestCase()
   QgsApplication::showSettings();
 
   //create some objects that will be used in all tests...
-  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + '/';
 
   //
   //create a poly layer that will be used in all tests...
   //
-  QString pointFileName = mTestDataDir + "points.shp";
-  QFileInfo pointFileInfo( pointFileName );
+  const QString pointFileName = mTestDataDir + "points.shp";
+  const QFileInfo pointFileInfo( pointFileName );
   mpPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(),
                                       pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
@@ -116,7 +116,7 @@ void TestQgsEllipseMarkerSymbol::initTestCase()
 }
 void TestQgsEllipseMarkerSymbol::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -241,7 +241,7 @@ void TestQgsEllipseMarkerSymbol::bounds()
   mEllipseMarkerLayer->setStrokeWidth( 0.5 );
 
   mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, true );
-  bool result = imageCheck( QStringLiteral( "ellipsemarker_bounds" ) );
+  const bool result = imageCheck( QStringLiteral( "ellipsemarker_bounds" ) );
   mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, false );
   QVERIFY( result );
 }
@@ -258,7 +258,7 @@ void TestQgsEllipseMarkerSymbol::opacityWithDataDefinedColor()
   mEllipseMarkerLayer->setStrokeWidth( 0.5 );
   mMarkerSymbol->setOpacity( 0.5 );
 
-  bool result = imageCheck( QStringLiteral( "ellipsemarker_opacityddcolor" ) );
+  const bool result = imageCheck( QStringLiteral( "ellipsemarker_opacityddcolor" ) );
   mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty() );
   mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty() );
   mMarkerSymbol->setOpacity( 1.0 );
@@ -277,7 +277,7 @@ void TestQgsEllipseMarkerSymbol::dataDefinedOpacity()
   mEllipseMarkerLayer->setStrokeWidth( 0.5 );
   mMarkerSymbol->setDataDefinedProperty( QgsSymbol::PropertyOpacity, QgsProperty::fromExpression( QStringLiteral( "if(\"Heading\" > 100, 25, 50)" ) ) );
 
-  bool result = imageCheck( QStringLiteral( "ellipsemarker_ddopacity" ) );
+  const bool result = imageCheck( QStringLiteral( "ellipsemarker_ddopacity" ) );
   mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty() );
   mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty() );
   mMarkerSymbol->setDataDefinedProperty( QgsSymbol::PropertyOpacity, QgsProperty() );
@@ -299,7 +299,7 @@ bool TestQgsEllipseMarkerSymbol::imageCheck( const QString &testType )
   myChecker.setControlPathPrefix( QStringLiteral( "symbol_ellipsemarker" ) );
   myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( mMapSettings );
-  bool myResultFlag = myChecker.runTest( testType );
+  const bool myResultFlag = myChecker.runTest( testType );
   mReport += myChecker.report();
   return myResultFlag;
 }

@@ -117,7 +117,7 @@ void QgsHollowScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleB
     if ( i == positions.size() - 1 )
       maxX = thisX + thisWidth;
 
-    QRectF segmentRect( thisX, barTopPosition, thisWidth, barHeight );
+    const QRectF segmentRect( thisX, barTopPosition, thisWidth, barHeight );
     currentSymbol->renderPolygon( QPolygonF()
                                   << segmentRect.topLeft()
                                   << segmentRect.topRight()

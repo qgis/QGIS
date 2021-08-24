@@ -62,7 +62,7 @@ void QgsLayerTreeLocatorFilter::fetchResults( const QString &string, const QgsLo
 
 void QgsLayerTreeLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
-  QString layerId = result.userData.toString();
+  const QString layerId = result.userData.toString();
   QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerId );
   QgisApp::instance()->setActiveLayer( layer );
 }

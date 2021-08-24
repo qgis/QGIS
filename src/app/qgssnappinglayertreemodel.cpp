@@ -72,7 +72,7 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
     mTypeButton->setPopupMode( QToolButton::InstantPopup );
     SnapTypeMenu *typeMenu = new SnapTypeMenu( tr( "Set Snapping Mode" ), parent );
 
-    for ( QgsSnappingConfig::SnappingTypes type :
+    for ( const QgsSnappingConfig::SnappingTypes type :
           {
             QgsSnappingConfig::VertexFlag,
             QgsSnappingConfig::SegmentFlag,
@@ -97,17 +97,17 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
   {
     QDoubleSpinBox *w = new QDoubleSpinBox( parent );
     w->setMaximum( 99999999.990000 );
-    QVariant val = index.model()->data( index.model()->sibling( index.row(), QgsSnappingLayerTreeModel::UnitsColumn, index ), Qt::UserRole );
+    const QVariant val = index.model()->data( index.model()->sibling( index.row(), QgsSnappingLayerTreeModel::UnitsColumn, index ), Qt::UserRole );
     if ( val.isValid() )
     {
-      QgsTolerance::UnitType units = static_cast<QgsTolerance::UnitType>( val.toInt() );
+      const QgsTolerance::UnitType units = static_cast<QgsTolerance::UnitType>( val.toInt() );
       if ( units == QgsTolerance::Pixels )
       {
         w->setDecimals( 0 );
       }
       else
       {
-        QgsUnitTypes::DistanceUnitType type = QgsUnitTypes::unitType( mCanvas->mapUnits() );
+        const QgsUnitTypes::DistanceUnitType type = QgsUnitTypes::unitType( mCanvas->mapUnits() );
         w->setDecimals( type == QgsUnitTypes::Standard ? 2 : 5 );
       }
     }
@@ -152,13 +152,13 @@ void QgsSnappingLayerDelegate::onScaleChanged()
 
 void QgsSnappingLayerDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
-  QVariant val = index.model()->data( index, Qt::UserRole );
+  const QVariant val = index.model()->data( index, Qt::UserRole );
   if ( !val.isValid() )
     return;
 
   if ( index.column() == QgsSnappingLayerTreeModel::TypeColumn )
   {
-    QgsSnappingConfig::SnappingTypeFlag type = static_cast<QgsSnappingConfig::SnappingTypeFlag>( val.toInt() );
+    const QgsSnappingConfig::SnappingTypeFlag type = static_cast<QgsSnappingConfig::SnappingTypeFlag>( val.toInt() );
     QToolButton *tb = qobject_cast<QToolButton *>( editor );
     if ( tb )
     {
@@ -179,7 +179,7 @@ void QgsSnappingLayerDelegate::setEditorData( QWidget *editor, const QModelIndex
   }
   else if ( index.column() == QgsSnappingLayerTreeModel::UnitsColumn )
   {
-    QgsTolerance::UnitType units = static_cast<QgsTolerance::UnitType>( val.toInt() );
+    const QgsTolerance::UnitType units = static_cast<QgsTolerance::UnitType>( val.toInt() );
     QComboBox *w = qobject_cast<QComboBox *>( editor );
     if ( w )
     {
@@ -345,7 +345,7 @@ QModelIndex QgsSnappingLayerTreeModel::parent( const QModelIndex &child ) const
 
 QModelIndex QgsSnappingLayerTreeModel::sibling( int row, int column, const QModelIndex &idx ) const
 {
-  QModelIndex parent = idx.parent();
+  const QModelIndex parent = idx.parent();
   return index( row, column, parent );
 }
 
@@ -417,7 +417,7 @@ void QgsSnappingLayerTreeModel::hasRowchanged( QgsLayerTreeNode *node, const QHa
   }
   else
   {
-    QModelIndex idx = mapFromSource( mLayerTreeModel->node2index( node ) );
+    const QModelIndex idx = mapFromSource( mLayerTreeModel->node2index( node ) );
     QgsVectorLayer *vl = vectorLayer( idx );
     if ( !vl )
     {
@@ -531,7 +531,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
         int n;
         for ( n = 0; !hasChecked || !hasUnchecked; n++ )
         {
-          QVariant v = data( index( n, LayerColumn, idx ), role );
+          const QVariant v = data( index( n, LayerColumn, idx ), role );
           if ( !v.isValid() )
             break;
 
@@ -596,7 +596,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
           QString modes;
           int activeTypes = 0;
 
-          QMetaEnum snappingTypeEnum = QMetaEnum::fromType<QgsSnappingConfig::SnappingTypeFlag>();
+          const QMetaEnum snappingTypeEnum = QMetaEnum::fromType<QgsSnappingConfig::SnappingTypeFlag>();
           for ( int i = 0; i < snappingTypeEnum.keyCount(); ++i )
           {
             if ( ls.typeFlag() & snappingTypeEnum.value( i ) )
@@ -726,7 +726,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
       int i = 0;
       for ( i = 0; ; i++ )
       {
-        QModelIndex child = QgsSnappingLayerTreeModel::index( i, LayerColumn, index );
+        const QModelIndex child = QgsSnappingLayerTreeModel::index( i, LayerColumn, index );
         if ( !child.isValid() )
           break;
 

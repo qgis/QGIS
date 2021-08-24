@@ -36,7 +36,7 @@ QStringList QgsFeatureFilterProviderGroup::layerAttributes( const QgsVectorLayer
   QStringList allowedAttributes { attributes };
   for ( const QgsFeatureFilterProvider *provider : mProviders )
   {
-    QgsFeatureRequest temp;
+    const QgsFeatureRequest temp;
     allowedAttributes = provider->layerAttributes( layer, allowedAttributes );
   }
   return allowedAttributes;

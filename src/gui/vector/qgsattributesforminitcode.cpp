@@ -29,7 +29,7 @@ QgsAttributesFormInitCode::QgsAttributesFormInitCode()
   mInitCodeSourceComboBox->addItem( tr( "Provide Code in this Dialog" ) );
   mInitCodeSourceComboBox->addItem( tr( "Load from the Environment" ) );
 
-  QgsSettings settings;
+  const QgsSettings settings;
   mInitFileWidget->setDefaultRoot( settings.value( QStringLiteral( "style/lastInitFilePathDir" ), "." ).toString() );
   mInitFileWidget->setDialogTitle( tr( "Select Python File" ) );
   mInitFileWidget->setFilter( tr( "Python files (*.py *.PY)" ) );

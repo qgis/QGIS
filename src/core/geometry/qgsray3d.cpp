@@ -46,10 +46,10 @@ bool QgsRay3D::isInFront( const QVector3D &point ) const
 double QgsRay3D::angleToPoint( const QVector3D &point ) const
 {
   // project point onto the ray
-  QVector3D projPoint = projectedPoint( point );
+  const QVector3D projPoint = projectedPoint( point );
 
   // calculate the angle between the point and the projected point
-  QVector3D v1 = projPoint - mOrigin ;
-  QVector3D v2 = point - projPoint;
+  const QVector3D v1 = projPoint - mOrigin ;
+  const QVector3D v2 = point - projPoint;
   return qRadiansToDegrees( std::atan2( v2.length(), v1.length() ) );
 }

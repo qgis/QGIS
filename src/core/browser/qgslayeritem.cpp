@@ -180,9 +180,8 @@ QString QgsLayerItem::iconName( Qgis::BrowserLayerType layerType )
       return QStringLiteral( "/mIconLineLayer.svg" );
     case Qgis::BrowserLayerType::Polygon:
       return QStringLiteral( "/mIconPolygonLayer.svg" );
-    // TODO add a new icon for generic Vector layers
     case Qgis::BrowserLayerType::Vector :
-      return QStringLiteral( "/mIconVector.svg" );
+      return QStringLiteral( "/mIconGeometryCollectionLayer.svg" );
     case Qgis::BrowserLayerType::TableLayer:
     case Qgis::BrowserLayerType::Table:
       return QStringLiteral( "/mIconTableLayer.svg" );
@@ -277,5 +276,11 @@ QgsMimeDataUtils::UriList QgsLayerItem::mimeUris() const
   u.uri = uri();
   u.supportedCrs = supportedCrs();
   u.supportedFormats = supportedFormats();
+
+  if ( capabilities2() & Qgis::BrowserItemCapability::ItemRepresentsFile )
+  {
+    u.filePath = path();
+  }
+
   return { u };
 }

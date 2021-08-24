@@ -136,10 +136,10 @@ void QgsResamplingUtils::refreshWidgetsFromLayer()
 
 void QgsResamplingUtils::refreshLayerFromWidgets()
 {
-  QgsRasterDataProvider::ResamplingMethod zoomedInMethod =
+  const QgsRasterDataProvider::ResamplingMethod zoomedInMethod =
     static_cast< QgsRasterDataProvider::ResamplingMethod >(
       mZoomedInResamplingComboBox->itemData( mZoomedInResamplingComboBox->currentIndex() ).toInt() );
-  QgsRasterDataProvider::ResamplingMethod zoomedOutMethod =
+  const QgsRasterDataProvider::ResamplingMethod zoomedOutMethod =
     static_cast< QgsRasterDataProvider::ResamplingMethod >(
       mZoomedOutResamplingComboBox->itemData( mZoomedOutResamplingComboBox->currentIndex() ).toInt() );
 
@@ -237,7 +237,7 @@ void QgsResamplingUtils::removeExtraEarlyResamplingMethodsFromCombos()
 
   for ( QComboBox *combo : {mZoomedInResamplingComboBox, mZoomedOutResamplingComboBox } )
   {
-    for ( QgsRasterDataProvider::ResamplingMethod method :
+    for ( const QgsRasterDataProvider::ResamplingMethod method :
           {
             QgsRasterDataProvider::ResamplingMethod::CubicSpline,
             QgsRasterDataProvider::ResamplingMethod::Lanczos,

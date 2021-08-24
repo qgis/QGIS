@@ -38,6 +38,12 @@ once, e.g. while reordering items with drag and drop.
 Constructor for QgsLayerTreeLayer using weak references to layer ID, ``name``, public ``source``, and ``provider`` key.
 %End
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsLayerTreeLayer: %1>" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
     QString layerId() const;
 %Docstring
 Returns the ID for the map layer associated with this node.

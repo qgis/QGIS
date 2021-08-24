@@ -94,7 +94,7 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   mFileEncoding->addItems( QgsVectorDataProvider::availableEncodings() );
 
   // Use default encoding if none supplied
-  QString enc = QgsSettings().value( QStringLiteral( "/UI/encoding" ), "System" ).toString();
+  const QString enc = QgsSettings().value( QStringLiteral( "/UI/encoding" ), "System" ).toString();
 
   // The specified decoding is added if not existing already, and then set current.
   // This should select it.
@@ -134,12 +134,12 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   mFileName->setFilter( QgsVectorFileWriter::filterForDriver( mFileFormatComboBox->currentData( Qt::UserRole ).toString() ) );
   mFileName->setConfirmOverwrite( false );
   mFileName->setDialogTitle( tr( "Save Layer As" ) );
-  QgsSettings settings;
+  const QgsSettings settings;
   mFileName->setDefaultRoot( settings.value( QStringLiteral( "UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString() );
   connect( mFileName, &QgsFileWidget::fileChanged, this, [ = ]
   {
     QgsSettings settings;
-    QFileInfo tmplFileInfo( mFileName->filePath() );
+    const QFileInfo tmplFileInfo( mFileName->filePath() );
     settings.setValue( QStringLiteral( "UI/lastVectorFileFilterDir" ), tmplFileInfo.absolutePath() );
     checkOk();
   } );
@@ -216,11 +216,11 @@ void QgsNewVectorLayerDialog::setCrs( const QgsCoordinateReferenceSystem &crs )
 
 void QgsNewVectorLayerDialog::mAddAttributeButton_clicked()
 {
-  QString myName = mNameEdit->text();
-  QString myWidth = mWidth->text();
-  QString myPrecision = mPrecision->isEnabled() ? mPrecision->text() : QString();
+  const QString myName = mNameEdit->text();
+  const QString myWidth = mWidth->text();
+  const QString myPrecision = mPrecision->isEnabled() ? mPrecision->text() : QString();
   //use userrole to avoid translated type string
-  QString myType = mTypeBox->currentData( Qt::UserRole ).toString();
+  const QString myType = mTypeBox->currentData( Qt::UserRole ).toString();
   mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << myName << myType << myWidth << myPrecision ) );
   checkOk();
   mNameEdit->clear();
@@ -238,7 +238,7 @@ void QgsNewVectorLayerDialog::attributes( QList< QPair<QString, QString> > &at )
   while ( *it )
   {
     QTreeWidgetItem *item = *it;
-    QString type = QStringLiteral( "%1;%2;%3" ).arg( item->text( 1 ), item->text( 2 ), item->text( 3 ) );
+    const QString type = QStringLiteral( "%1;%2;%3" ).arg( item->text( 1 ), item->text( 2 ), item->text( 3 ) );
     at.push_back( qMakePair( item->text( 0 ), type ) );
     QgsDebugMsg( QStringLiteral( "appending %1//%2" ).arg( item->text( 0 ), type ) );
     ++it;
@@ -279,7 +279,7 @@ void QgsNewVectorLayerDialog::setFilename( const QString &filename )
 
 void QgsNewVectorLayerDialog::checkOk()
 {
-  bool ok = ( !mFileName->filePath().isEmpty() && mAttributeView->topLevelItemCount() > 0 && mGeometryTypeBox->currentIndex() != -1 );
+  const bool ok = ( !mFileName->filePath().isEmpty() && mAttributeView->topLevelItemCount() > 0 && mGeometryTypeBox->currentIndex() != -1 );
   mOkButton->setEnabled( ok );
 }
 
@@ -309,9 +309,9 @@ QString QgsNewVectorLayerDialog::execAndCreateLayer( QString &errorMessage, QWid
        QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel ) != QMessageBox::Yes )
     return QString();
 
-  QgsWkbTypes::Type geometrytype = geomDialog.selectedType();
-  QString fileformat = geomDialog.selectedFileFormat();
-  QString enc = geomDialog.selectedFileEncoding();
+  const QgsWkbTypes::Type geometrytype = geomDialog.selectedType();
+  const QString fileformat = geomDialog.selectedFileFormat();
+  const QString enc = geomDialog.selectedFileEncoding();
   QgsDebugMsg( QStringLiteral( "New file format will be: %1" ).arg( fileformat ) );
 
   QList< QPair<QString, QString> > attributes;
@@ -335,8 +335,8 @@ QString QgsNewVectorLayerDialog::execAndCreateLayer( QString &errorMessage, QWid
   //try to create the new layer with OGRProvider instead of QgsVectorFileWriter
   if ( geometrytype != QgsWkbTypes::Unknown )
   {
-    QgsCoordinateReferenceSystem srs = geomDialog.crs();
-    bool success = QgsOgrProviderUtils::createEmptyDataSource( fileName, fileformat, enc, geometrytype, attributes, srs, errorMessage );
+    const QgsCoordinateReferenceSystem srs = geomDialog.crs();
+    const bool success = QgsOgrProviderUtils::createEmptyDataSource( fileName, fileformat, enc, geometrytype, attributes, srs, errorMessage );
     if ( !success )
     {
       return QString();

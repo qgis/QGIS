@@ -45,6 +45,14 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     QgsLayerTreeGroup( const QgsLayerTreeGroup &other );
 #endif
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsLayerTreeGroup: %1>" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
     /**
      * Returns the group's name.
      */

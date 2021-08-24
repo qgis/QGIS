@@ -1363,6 +1363,24 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool removeAttachedFile( const QString &path );
 
     /**
+     * Returns an identifier for an attachment file path
+     * An attachment identifier is a string which does not depend on the project archive
+     * storage location.
+     * \param attachedFile An attachment file path
+     * \return An identifier for the attached file
+     * \since QGIS 3.22
+     */
+    QString attachmentIdentifier( const QString &attachedFile ) const;
+
+    /**
+     * Resolves an attachment identifier to a attachment file path
+     * \param identifier An attachment identifier
+     * \return The attachment file path, or an empty string if the identifier is invalid
+     * \since QGIS 3.22
+     */
+    QString resolveAttachmentIdentifier( const QString &identifier ) const;
+
+    /**
      * Returns a reference to the project's metadata store.
      * \see setMetadata()
      * \see metadataChanged()

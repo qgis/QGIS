@@ -34,7 +34,7 @@ QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( bool _withNormals,
 {
   mVertexBuffer = new Qt3DRender::QBuffer( this );
 
-  QgsTessellator tmpTess( 0, 0, mWithNormals, false, false, false, mAddTextureCoords );
+  const QgsTessellator tmpTess( 0, 0, mWithNormals, false, false, false, mAddTextureCoords );
   const int stride = tmpTess.stride();
 
   mPositionAttribute = new Qt3DRender::QAttribute( this );
@@ -83,19 +83,19 @@ void QgsTessellatedPolygonGeometry::setPolygons( const QList<QgsPolygon *> &poly
   for ( int i = 0; i < polygons.count(); ++i )
   {
     Q_ASSERT( tessellator.dataVerticesCount() % 3 == 0 );
-    uint startingTriangleIndex = static_cast<uint>( tessellator.dataVerticesCount() / 3 );
+    const uint startingTriangleIndex = static_cast<uint>( tessellator.dataVerticesCount() / 3 );
     mTriangleIndexStartingIndices.append( startingTriangleIndex );
     mTriangleIndexFids.append( featureIds[i] );
 
     QgsPolygon *polygon = polygons.at( i );
-    float extr = extrusionHeightPerPolygon.isEmpty() ? extrusionHeight : extrusionHeightPerPolygon.at( i );
+    const float extr = extrusionHeightPerPolygon.isEmpty() ? extrusionHeight : extrusionHeightPerPolygon.at( i );
     tessellator.addPolygon( *polygon, extr );
   }
 
   qDeleteAll( polygons );
 
-  QByteArray data( ( const char * )tessellator.data().constData(), tessellator.data().count() * sizeof( float ) );
-  int nVerts = data.count() / tessellator.stride();
+  const QByteArray data( ( const char * )tessellator.data().constData(), tessellator.data().count() * sizeof( float ) );
+  const int nVerts = data.count() / tessellator.stride();
 
   mVertexBuffer->setData( data );
   mPositionAttribute->setCount( nVerts );
@@ -130,8 +130,8 @@ static int binary_search( uint v, const uint *data, int count )
 
   while ( idx0 != idx1 )
   {
-    int idxPivot = ( idx0 + idx1 ) / 2;
-    uint pivot = data[idxPivot];
+    const int idxPivot = ( idx0 + idx1 ) / 2;
+    const uint pivot = data[idxPivot];
     if ( pivot <= v )
     {
       if ( data[idxPivot + 1] > v )
@@ -148,6 +148,6 @@ static int binary_search( uint v, const uint *data, int count )
 
 QgsFeatureId QgsTessellatedPolygonGeometry::triangleIndexToFeatureId( uint triangleIndex ) const
 {
-  int i = binary_search( triangleIndex, mTriangleIndexStartingIndices.constData(), mTriangleIndexStartingIndices.count() );
+  const int i = binary_search( triangleIndex, mTriangleIndexStartingIndices.constData(), mTriangleIndexStartingIndices.count() );
   return i != -1 ? mTriangleIndexFids[i] : FID_NULL;
 }

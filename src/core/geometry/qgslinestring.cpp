@@ -343,7 +343,7 @@ int QgsLineString::indexOf( const QgsPoint &point ) const
   return -1;
 }
 
-bool QgsLineString::isValid( QString &error, int flags ) const
+bool QgsLineString::isValid( QString &error, Qgis::GeometryValidityFlags flags ) const
 {
   if ( !isEmpty() && ( numPoints() < 2 ) )
   {

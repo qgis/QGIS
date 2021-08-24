@@ -105,6 +105,14 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
 
     ~QgsLayerTreeNode() override;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsLayerTreeNode: %1>" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
     //! Find out about type of the node. It is usually shorter to use convenience functions from QgsLayerTree namespace for that
     NodeType nodeType() const { return mNodeType; }
     //! Gets pointer to the parent. If parent is NULLPTR, the node is a root node

@@ -221,7 +221,7 @@ int QgsMessageBar::defaultMessageTimeout( Qgis::MessageLevel level )
     case Qgis::MessageLevel::Info:
     case Qgis::MessageLevel::NoLevel:
     {
-      QgsSettings settings;
+      const QgsSettings settings;
       return settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
     }
 
@@ -278,7 +278,7 @@ void QgsMessageBar::showItem( QgsMessageBarItem *item )
 
 void QgsMessageBar::removeLowestPriorityOldestItem()
 {
-  for ( Qgis::MessageLevel level : { Qgis::MessageLevel::Success, Qgis::MessageLevel::Info, Qgis::MessageLevel::Warning, Qgis::MessageLevel::Critical } )
+  for ( const Qgis::MessageLevel level : { Qgis::MessageLevel::Success, Qgis::MessageLevel::Info, Qgis::MessageLevel::Warning, Qgis::MessageLevel::Critical } )
   {
     for ( int i = mItems.size() - 1; i >= 0; --i )
     {

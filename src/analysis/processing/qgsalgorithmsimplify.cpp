@@ -105,7 +105,7 @@ QgsFeatureList QgsSimplifyAlgorithm::processFeature( const QgsFeature &feature, 
   QgsFeature f = feature;
   if ( f.hasGeometry() )
   {
-    QgsGeometry inputGeometry = f.geometry();
+    const QgsGeometry inputGeometry = f.geometry();
     QgsGeometry outputGeometry;
     if ( mMethod == QgsMapToPixelSimplifier::Distance )
     {
@@ -122,8 +122,8 @@ QgsFeatureList QgsSimplifyAlgorithm::processFeature( const QgsFeature &feature, 
       }
       else
       {
-        double tolerance = mToleranceProperty.valueAsDouble( context.expressionContext(), mTolerance );
-        QgsMapToPixelSimplifier simplifier( QgsMapToPixelSimplifier::SimplifyGeometry, tolerance, mMethod );
+        const double tolerance = mToleranceProperty.valueAsDouble( context.expressionContext(), mTolerance );
+        const QgsMapToPixelSimplifier simplifier( QgsMapToPixelSimplifier::SimplifyGeometry, tolerance, mMethod );
         outputGeometry = simplifier.simplify( inputGeometry );
       }
     }

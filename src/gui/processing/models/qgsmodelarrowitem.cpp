@@ -115,7 +115,7 @@ void QgsModelArrowItem::paint( QPainter *painter, const QStyleOptionGraphicsItem
 
 void QgsModelArrowItem::drawArrowHead( QPainter *painter, const QPointF &position, const QPointF &vector )
 {
-  float angle = atan2( vector.y(), vector.x() ) * 180.0 / M_PI;
+  const float angle = atan2( vector.y(), vector.x() ) * 180.0 / M_PI;
   painter->translate( position );
   painter->rotate( angle );
   QPolygonF arrowHead;

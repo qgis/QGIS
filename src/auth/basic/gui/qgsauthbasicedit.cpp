@@ -28,7 +28,7 @@ QgsAuthBasicEdit::QgsAuthBasicEdit( QWidget *parent )
 
 bool QgsAuthBasicEdit::validateConfig()
 {
-  bool curvalid = !leUsername->text().isEmpty();
+  const bool curvalid = !leUsername->text().isEmpty();
   if ( mValid != curvalid )
   {
     mValid = curvalid;

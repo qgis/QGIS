@@ -16,7 +16,6 @@ email                : nyall dot dawson at gmail dot com
 
 #include "qgsogrprovidermetadata.h"
 #include "qgsogrprovider.h"
-#include "qgsogrdataitems.h"
 #include "qgsgeopackagedataitems.h"
 #include "qgssettings.h"
 #include "qgsmessagelog.h"
@@ -29,6 +28,8 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsogrdbconnection.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgszipitem.h"
+#include "qgsproviderutils.h"
+#include "qgsgdalutils.h"
 
 #include <QFileInfo>
 #include <QFile>
@@ -221,7 +222,6 @@ QString QgsOgrProviderMetadata::encodeUri( const QVariantMap &parts ) const
 QList<QgsDataItemProvider *> QgsOgrProviderMetadata::dataItemProviders() const
 {
   QList< QgsDataItemProvider * > providers;
-  providers << new QgsOgrDataItemProvider;
   providers << new QgsGeoPackageDataItemProvider;
   return providers;
 }
@@ -1098,12 +1098,80 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
     }
   }
 
+  const QString path = uriParts.value( QStringLiteral( "path" ) ).toString();
+  const QFileInfo pathInfo( path );
+  if ( ( flags & Qgis::SublayerQueryFlag::FastScan ) && ( pathInfo.isFile() || pathInfo.isDir() ) )
+  {
+    // fast scan, so we don't actually try to open the dataset and instead just check the extension alone
+    const QStringList fileExtensions = QgsOgrProviderUtils::fileExtensions();
+    const QStringList dirExtensions = QgsOgrProviderUtils::directoryExtensions();
+
+    const QString suffix = pathInfo.suffix().toLower();
+
+    // allow only normal files or supported directories to continue
+    const bool isOgrSupportedDirectory = pathInfo.isDir() && dirExtensions.contains( suffix );
+    if ( !isOgrSupportedDirectory && !pathInfo.isFile() )
+      return {};
+
+    if ( !fileExtensions.contains( suffix ) && !dirExtensions.contains( suffix ) )
+    {
+      bool matches = false;
+      const QStringList wildcards = QgsOgrProviderUtils::wildcards();
+      for ( const QString &wildcard : wildcards )
+      {
+        const QRegularExpression rx( QRegularExpression::wildcardToRegularExpression( wildcard ), QRegularExpression::CaseInsensitiveOption );
+        if ( rx.match( pathInfo.fileName() ).hasMatch() )
+        {
+          matches = true;
+          break;
+        }
+      }
+      if ( !matches )
+        return {};
+    }
+
+    // if file is trivial to read then there's no need to rely on
+    // the extension only scan here -- avoiding it always gives us the correct data type
+    // and sublayer visibility
+    if ( !QgsGdalUtils::pathIsCheapToOpen( path ) )
+    {
+      // if this is a VRT file make sure it is vector VRT
+      if ( suffix == QLatin1String( "vrt" ) && !QgsGdalUtils::vrtMatchesLayerType( path, QgsMapLayerType::VectorLayer ) )
+      {
+        return {};
+      }
+
+      QgsProviderSublayerDetails details;
+      details.setType( QgsMapLayerType::VectorLayer );
+      details.setProviderKey( QStringLiteral( "ogr" ) );
+      details.setUri( uri );
+      details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( path ) );
+      if ( QgsGdalUtils::multiLayerFileExtensions().contains( suffix ) )
+      {
+        // uri may contain sublayers, but query flags prevent us from examining them
+        details.setSkippedContainerScan( true );
+      }
+      return {details};
+    }
+  }
+
   const QString originalUriLayerName = uriParts.value( QStringLiteral( "layerName" ) ).toString();
   int layerId = 0;
   bool originalUriLayerIdWasSpecified = false;
   const int uriLayerId = uriParts.value( QStringLiteral( "layerId" ) ).toInt( &originalUriLayerIdWasSpecified );
   if ( originalUriLayerIdWasSpecified )
     layerId = uriLayerId;
+
+  QgsWkbTypes::Type originalGeometryTypeFilter = QgsWkbTypes::Unknown;
+  bool originalUriGeometryTypeWasSpecified = false;
+  const QString originalGeometryTypeString = uriParts.value( QStringLiteral( "geometryType" ) ).toString();
+  if ( !originalGeometryTypeString.isEmpty() )
+  {
+    originalGeometryTypeFilter = QgsOgrUtils::ogrGeometryTypeToQgsWkbType(
+                                   QgsOgrProviderUtils::ogrWkbGeometryTypeFromName( originalGeometryTypeString )
+                                 );
+    originalUriGeometryTypeWasSpecified = true;
+  }
 
   QString errCause;
 
@@ -1114,7 +1182,11 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
     firstLayerUriParts.insert( QStringLiteral( "vsiSuffix" ), uriParts.value( QStringLiteral( "vsiSuffix" ) ) );
   firstLayerUriParts.insert( QStringLiteral( "path" ), uriParts.value( QStringLiteral( "path" ) ) );
 
+  CPLPushErrorHandler( CPLQuietErrorHandler );
+  CPLErrorReset();
   QgsOgrLayerUniquePtr firstLayer = QgsOgrProviderUtils::getLayer( encodeUri( firstLayerUriParts ), false, options, layerId, errCause, true );
+  CPLPopErrorHandler();
+
   if ( !firstLayer )
     return {};
 
@@ -1138,6 +1210,9 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
       if ( feedback && feedback->isCanceled() )
         break;
 
+      if ( originalUriLayerIdWasSpecified && i != uriLayerId )
+        continue;
+
       QString errCause;
       QgsOgrLayerUniquePtr layer;
 
@@ -1155,7 +1230,15 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
           continue;
       }
 
-      res << QgsOgrProviderUtils::querySubLayerList( i, i == 0 ? firstLayer.get() : layer.get(), driverName, flags, false, uri, false, feedback );
+      QgsOgrLayer *sublayer = i == 0 ? firstLayer.get() : layer.get();
+      if ( !sublayer )
+        continue;
+
+      const QString layerName = QString::fromUtf8( sublayer->name() );
+      if ( !originalUriLayerName.isEmpty() && layerName != originalUriLayerName )
+        continue;
+
+      res << QgsOgrProviderUtils::querySubLayerList( i, sublayer, driverName, flags, false, uri, false, feedback );
     }
   }
 
@@ -1165,6 +1248,13 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
   for ( int i = 0; i < res.count(); ++i )
   {
     QVariantMap parts = decodeUri( res.at( i ).uri() );
+    if ( originalUriGeometryTypeWasSpecified && res.at( i ).wkbType() == QgsWkbTypes::Unknown )
+    {
+      res[ i ].setWkbType( originalGeometryTypeFilter );
+      parts.insert( QStringLiteral( "geometryType" ), originalGeometryTypeString );
+      res[i].setUri( encodeUri( parts ) );
+    }
+
     if ( !parts.value( QStringLiteral( "layerName" ) ).toString().isEmpty() ||
          !parts.value( QStringLiteral( "layerId" ) ).toString().isEmpty() )
       continue;
@@ -1199,13 +1289,96 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
 
   if ( originalUriLayerIdWasSpecified )
   {
-    // remove non-matching, unwanted layers
+    // remove non-matching, unwanted layers by layer id
     res.erase( std::remove_if( res.begin(), res.end(), [ = ]( const QgsProviderSublayerDetails & sublayer )
     {
       return sublayer.layerNumber() != uriLayerId;
     } ), res.end() );
   }
 
+  if ( originalUriGeometryTypeWasSpecified )
+  {
+    // remove non-matching, unwanted layers by geometry type
+    res.erase( std::remove_if( res.begin(), res.end(), [ = ]( const QgsProviderSublayerDetails & sublayer )
+    {
+      return sublayer.wkbType() != originalGeometryTypeFilter;
+    } ), res.end() );
+  }
+
+  return res;
+}
+
+QStringList QgsOgrProviderMetadata::sidecarFilesForUri( const QString &uri ) const
+{
+  const QVariantMap uriParts = decodeUri( uri );
+  const QString path = uriParts.value( QStringLiteral( "path" ) ).toString();
+
+  if ( path.isEmpty() )
+    return {};
+
+  const QFileInfo fileInfo( path );
+  const QString suffix = fileInfo.suffix();
+
+  static QMap< QString, QStringList > sExtensions
+  {
+    {
+      QStringLiteral( "shp" ), {
+        QStringLiteral( "shx" ),
+        QStringLiteral( "dbf" ),
+        QStringLiteral( "sbn" ),
+        QStringLiteral( "sbx" ),
+        QStringLiteral( "prj" ),
+        QStringLiteral( "idm" ),
+        QStringLiteral( "ind" ),
+        QStringLiteral( "qix" ),
+        QStringLiteral( "cpg" ),
+        QStringLiteral( "qpj" ),
+        QStringLiteral( "shp.xml" ),
+      }
+    },
+    {
+      QStringLiteral( "tab" ), {
+        QStringLiteral( "dat" ),
+        QStringLiteral( "id" ),
+        QStringLiteral( "map" ),
+        QStringLiteral( "ind" ),
+        QStringLiteral( "tda" ),
+        QStringLiteral( "tin" ),
+        QStringLiteral( "tma" ),
+        QStringLiteral( "lda" ),
+        QStringLiteral( "lin" ),
+        QStringLiteral( "lma" ),
+      }
+    },
+    {
+      QStringLiteral( "mif" ), {
+        QStringLiteral( "mid" ),
+      }
+    },
+    {
+      QStringLiteral( "gml" ), {
+        QStringLiteral( "gfs" ),
+        QStringLiteral( "xsd" ),
+      }
+    },
+    {
+      QStringLiteral( "csv" ), {
+        QStringLiteral( "csvt" ),
+      }
+    },
+  };
+
+  QStringList res;
+  for ( auto it = sExtensions.constBegin(); it != sExtensions.constEnd(); ++it )
+  {
+    if ( suffix.compare( it.key(), Qt::CaseInsensitive ) == 0 )
+    {
+      for ( const QString &ext : it.value() )
+      {
+        res.append( fileInfo.dir().filePath( fileInfo.completeBaseName() + '.' + ext ) );
+      }
+    }
+  }
   return res;
 }
 

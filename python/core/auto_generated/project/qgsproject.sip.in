@@ -1298,6 +1298,30 @@ Removes the attached file
 .. versionadded:: 3.22
 %End
 
+    QString attachmentIdentifier( const QString &attachedFile ) const;
+%Docstring
+Returns an identifier for an attachment file path
+An attachment identifier is a string which does not depend on the project archive
+storage location.
+
+:param attachedFile: An attachment file path
+
+:return: An identifier for the attached file
+
+.. versionadded:: 3.22
+%End
+
+    QString resolveAttachmentIdentifier( const QString &identifier ) const;
+%Docstring
+Resolves an attachment identifier to a attachment file path
+
+:param identifier: An attachment identifier
+
+:return: The attachment file path, or an empty string if the identifier is invalid
+
+.. versionadded:: 3.22
+%End
+
     const QgsProjectMetadata &metadata() const;
 %Docstring
 Returns a reference to the project's metadata store.

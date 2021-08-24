@@ -66,7 +66,8 @@ Constructs driver metadata with selected capabilities
                            const QString &description,
                            const MeshDriverCapabilities &capabilities,
                            const QString &writeDatasetOnFileSuffix,
-                           const QString &writeMeshFrameOnFileSuffix );
+                           const QString &writeMeshFrameOnFileSuffix,
+                           int maxVerticesPerface );
 %Docstring
 Constructs driver metadata with selected capabilities
 
@@ -75,6 +76,7 @@ Constructs driver metadata with selected capabilities
 :param capabilities: driver's capabilities
 :param writeDatasetOnFileSuffix: suffix used to write datasets on file
 :param writeMeshFrameOnFileSuffix: suffix used to write mesh frame on file
+:param maxVerticesPerface: maximum vertices count per face supported by the driver
 
 .. versionadded:: 3.22
 %End
@@ -102,6 +104,13 @@ Returns the suffix used to write datasets on file
     QString writeMeshFrameOnFileSuffix() const;
 %Docstring
 Returns the suffix used to write mesh on file
+
+.. versionadded:: 3.22
+%End
+
+    int maximumVerticesCountPerFace() const;
+%Docstring
+Returns the maximum number of vertices per face supported by the driver
 
 .. versionadded:: 3.22
 %End
@@ -295,6 +304,31 @@ The default method returns ``False`` for all URIs.
 .. versionadded:: 3.18
 %End
 
+    virtual QStringList sidecarFilesForUri( const QString &uri ) const;
+%Docstring
+Given a ``uri``, returns any sidecar files which are associated with the URI and this
+provider.
+
+In this context a sidecar file is defined as a file which shares the same base filename
+as a dataset, but which differs in file extension. It defines the list of additional
+files which must be renamed or deleted alongside the main file associated with the
+dataset in order to completely rename/delete the dataset.
+
+For instance, the OGR provider would return the corresponding .dbf, .idx, etc files for a
+uri pointing at a .shp file.
+
+Implementations should files any files which MAY exist for the URI, and it is up to the caller
+to filter these to only existing files if required.
+
+.. note::
+
+   Some file formats consist of a set of static file names, such as ESRI aigrid datasets
+   which consist of a folder with files with the names "hdr.adf", "prj.adf", etc. These statically
+   named files are NOT considered as sidecar files.
+
+.. versionadded:: 3.22
+%End
+
     virtual QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = 0 ) const;
 %Docstring
 Queries the specified ``uri`` and returns a list of any valid sublayers found in the dataset which can be handled by this provider.
@@ -362,13 +396,23 @@ Creates a new instance of the raster data provider.
 
     virtual bool createMeshData(
       const QgsMesh &mesh,
-      const QString uri,
+      const QString &fileName,
       const QString &driverName,
       const QgsCoordinateReferenceSystem &crs ) const;
 %Docstring
-Creates mesh data source, that is the mesh frame stored in file, memory or with other way (depending of the provider)
+Creates mesh data source from a file name ``fileName`` and a driver ``driverName``, that is the mesh frame stored in file, memory or with other way (depending of the provider)
 
 .. versionadded:: 3.16
+%End
+
+    virtual bool createMeshData(
+      const QgsMesh &mesh,
+      const QString &uri,
+      const QgsCoordinateReferenceSystem &crs ) const;
+%Docstring
+Creates mesh data source from an ``uri``, that is the mesh frame stored in file, memory or with other way (depending of the provider)
+
+.. versionadded:: 3.22
 %End
 
     virtual QList<QPair<QString, QString> > pyramidResamplingMethods();

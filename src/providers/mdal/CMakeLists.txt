@@ -1,6 +1,5 @@
 set(MDAL_SRCS
   qgsmdalprovider.cpp
-  qgsmdaldataitems.cpp
 )
 
 if (WITH_GUI)

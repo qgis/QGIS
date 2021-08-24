@@ -143,6 +143,22 @@ class CORE_EXPORT QgsProviderSublayerDetails
     void setDescription( const QString &description ) { mDescription = description; }
 
     /**
+     * Returns the layer's driver name.
+     *
+     * This is supported only for providers which handle multiple drivers.
+     *
+     * \see setDriverName()
+     */
+    QString driverName() const { return mDriverName; }
+
+    /**
+     * Sets the layer's \a driver name.
+     *
+     * \see driverName()
+     */
+    void setDriverName( const QString &driver ) { mDriverName = driver; }
+
+    /**
      * Returns the path to the sublayer.
      *
      * This is an internal path, relative to the dataset itself. It can be used to encapsulate
@@ -234,6 +250,22 @@ class CORE_EXPORT QgsProviderSublayerDetails
      */
     void setLayerNumber( int number ) { mLayerNumber = number; }
 
+    /**
+     * Set to TRUE if the layer is a potential dataset container and an in-depth scan
+     * of its contents was skipped.
+     *
+     * \see skippedContainerScan();
+     */
+    void setSkippedContainerScan( bool skipped ) { mSkippedContainerScan = skipped; }
+
+    /**
+     * Returns TRUE if the layer is a potential dataset container and an in-depth scan
+     * of its contents was skipped.
+     *
+     * \see setSkippedContainerScan();
+     */
+    bool skippedContainerScan() const { return mSkippedContainerScan; }
+
     // TODO c++20 - replace with = default
     bool operator==( const QgsProviderSublayerDetails &other ) const;
     bool operator!=( const QgsProviderSublayerDetails &other ) const;
@@ -250,6 +282,8 @@ class CORE_EXPORT QgsProviderSublayerDetails
     QString mGeometryColumnName;
     QStringList mPath;
     QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
+    QString mDriverName;
+    bool mSkippedContainerScan = false;
 
 };
 

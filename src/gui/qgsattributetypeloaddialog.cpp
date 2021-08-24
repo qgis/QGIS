@@ -120,8 +120,8 @@ void QgsAttributeTypeLoadDialog::createPreview( int fieldIndex, bool full )
     //when nothing is selected there is no reason for preview
     return;
   }
-  int idx = keyComboBox->currentData().toInt();
-  int idx2 = valueComboBox->currentData().toInt();
+  const int idx = keyComboBox->currentData().toInt();
+  const int idx2 = valueComboBox->currentData().toInt();
   QgsMapLayer *dataLayer = QgsProject::instance()->mapLayer( layerComboBox->currentData().toString() );
   QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
   if ( !vLayer )
@@ -137,8 +137,8 @@ void QgsAttributeTypeLoadDialog::createPreview( int fieldIndex, bool full )
   QMap<QString, QVariant> valueMap;
   while ( fit.nextFeature( f ) )
   {
-    QVariant val1 = f.attribute( idx );
-    QVariant val2 = f.attribute( idx2 );
+    const QVariant val1 = f.attribute( idx );
+    const QVariant val2 = f.attribute( idx2 );
     if ( val1.isValid() && !val1.isNull() && !val1.toString().isEmpty()
          && val2.isValid() && !val2.isNull() && !val2.toString().isEmpty() )
     {
@@ -169,8 +169,8 @@ bool QgsAttributeTypeLoadDialog::insertNull()
 void QgsAttributeTypeLoadDialog::loadDataToValueMap()
 {
   mValueMap.clear();
-  int idx = keyComboBox->currentData().toInt();
-  int idx2 = valueComboBox->currentData().toInt();
+  const int idx = keyComboBox->currentData().toInt();
+  const int idx2 = valueComboBox->currentData().toInt();
   QgsMapLayer *dataLayer = QgsProject::instance()->mapLayer( layerComboBox->currentData().toString() );
   QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
   if ( !vLayer )
@@ -185,7 +185,7 @@ void QgsAttributeTypeLoadDialog::loadDataToValueMap()
   QgsFeature f;
   while ( fit.nextFeature( f ) )
   {
-    QVariant val = f.attribute( idx );
+    const QVariant val = f.attribute( idx );
     if ( val.isValid() && !val.isNull() && !val.toString().isEmpty() )
     {
       mValueMap.insert( f.attribute( idx2 ).toString(), val );

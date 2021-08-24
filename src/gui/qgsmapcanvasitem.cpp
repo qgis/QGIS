@@ -83,7 +83,7 @@ void QgsMapCanvasItem::setRect( const QgsRectangle &rect, bool resetRotation )
     // and size (rect size / map units per pixel)
     r.setTopLeft( toCanvasCoordinates( QPointF( mRect.xMinimum(), mRect.yMaximum() ) ) );
     const QgsMapToPixel *m2p = mMapCanvas->getCoordinateTransform();
-    double res = m2p->mapUnitsPerPixel();
+    const double res = m2p->mapUnitsPerPixel();
     r.setSize( QSizeF( mRect.width() / res, mRect.height() / res ) );
   }
 

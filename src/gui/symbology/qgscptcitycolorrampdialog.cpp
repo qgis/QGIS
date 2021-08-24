@@ -54,7 +54,7 @@ QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( const QgsCptCityColorRamp 
 
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 
-  QgsSettings settings;
+  const QgsSettings settings;
   mSplitter->setSizes( QList<int>() << 250 << 550 );
   mSplitter->restoreState( settings.value( QStringLiteral( "Windows/CptCityColorRampV2Dialog/splitter" ) ).toByteArray() );
 
@@ -72,18 +72,18 @@ QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( const QgsCptCityColorRamp 
     QTextEdit *edit = new QTextEdit( nullptr );
     edit->setReadOnly( true );
     // not sure if we want this long string to be translated
-    QString helpText = tr( "Error - cpt-city gradient files not found.\n\n"
-                           "You have two means of installing them:\n\n"
-                           "1) Install the \"Color Ramp Manager\" python plugin "
-                           "(you must enable Experimental plugins in the plugin manager) "
-                           "and use it to download latest cpt-city package.\n"
-                           "You can install the entire cpt-city archive or a selection for QGIS.\n\n"
-                           "2) Download the complete archive (in svg format) "
-                           "and unzip it to your QGIS settings directory [%1] .\n\n"
-                           "This file can be found at [%2]\nand current file is [%3]"
-                         ).arg( QgsApplication::qgisSettingsDirPath(),
-                                QStringLiteral( "http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/" ),
-                                QStringLiteral( "http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/cpt-city-svg-2.07.zip" ) );
+    const QString helpText = tr( "Error - cpt-city gradient files not found.\n\n"
+                                 "You have two means of installing them:\n\n"
+                                 "1) Install the \"Color Ramp Manager\" python plugin "
+                                 "(you must enable Experimental plugins in the plugin manager) "
+                                 "and use it to download latest cpt-city package.\n"
+                                 "You can install the entire cpt-city archive or a selection for QGIS.\n\n"
+                                 "2) Download the complete archive (in svg format) "
+                                 "and unzip it to your QGIS settings directory [%1] .\n\n"
+                                 "This file can be found at [%2]\nand current file is [%3]"
+                               ).arg( QgsApplication::qgisSettingsDirPath(),
+                                      QStringLiteral( "http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/" ),
+                                      QStringLiteral( "http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/cpt-city-svg-2.07.zip" ) );
     edit->setText( helpText );
     mStackedWidget->addWidget( edit );
     mStackedWidget->setCurrentIndex( 1 );
@@ -137,7 +137,7 @@ void QgsCptCityColorRampDialog::setRamp( const QgsCptCityColorRamp &ramp )
 
 void QgsCptCityColorRampDialog::populateVariants()
 {
-  QStringList variantList = mRamp.variantList();
+  const QStringList variantList = mRamp.variantList();
 
   QgsDebugMsg( QStringLiteral( "ramp %1%2 has %3 variants" ).arg( mRamp.schemeName(), mRamp.variantName() ).arg( variantList.count() ) );
 
@@ -153,11 +153,11 @@ void QgsCptCityColorRampDialog::populateVariants()
   else
   {
     // populate variant combobox
-    QString oldVariant = cboVariantName->currentText();
+    const QString oldVariant = cboVariantName->currentText();
     QgsCptCityColorRamp ramp( mRamp.schemeName(), mRamp.variantList(), QString() );
     QPixmap blankPixmap( cboVariantName->iconSize() );
     blankPixmap.fill( Qt::white );
-    QIcon blankIcon( blankPixmap );
+    const QIcon blankIcon( blankPixmap );
     int index;
 
     const auto constVariantList = variantList;
@@ -383,7 +383,7 @@ void QgsCptCityColorRampDialog::pbtnLicenseDetails_pressed()
 
 void QgsCptCityColorRampDialog::updatePreview( bool clear )
 {
-  QSize size = lblPreview->size();
+  const QSize size = lblPreview->size();
 
   if ( clear || mRamp.schemeName().isEmpty() )
   {
@@ -403,7 +403,7 @@ void QgsCptCityColorRampDialog::updatePreview( bool clear )
   // update pixmap
   // TODO draw checker-board/transparent background
   // for transparent, add  [ pixmap.fill( Qt::transparent ); ] to QgsSymbolLayerUtils::colorRampPreviewPixmap
-  QPixmap pixmap = QgsSymbolLayerUtils::colorRampPreviewPixmap( &mRamp, size );
+  const QPixmap pixmap = QgsSymbolLayerUtils::colorRampPreviewPixmap( &mRamp, size );
   lblPreview->setPixmap( pixmap );
 
   // add copyright information from COPYING.xml file
@@ -460,10 +460,10 @@ void QgsCptCityColorRampDialog::onFinished()
 void QgsCptCityColorRampDialog::showHelp()
 {
   // show error message to use color ramp manager to get more gradients
-  QString helpText = tr( "You can download a more complete set of cpt-city gradients "
-                         "by installing the \"Color Ramp Manager\" plugin "
-                         "(you must enable Experimental plugins in the plugin manager).\n\n"
-                       );
+  const QString helpText = tr( "You can download a more complete set of cpt-city gradients "
+                               "by installing the \"Color Ramp Manager\" plugin "
+                               "(you must enable Experimental plugins in the plugin manager).\n\n"
+                             );
   QMessageBox *msg = new QMessageBox( this );
   msg->setWindowTitle( tr( "Download More Cpt-city Gradients" ) );
   msg->setText( helpText );
@@ -550,12 +550,12 @@ void QgsCptCityColorRampDialog::updateListWidget( QgsCptCityDataItem *item )
 // perhaps a future version of the cpt-city svg gradients will have them by default
 bool QgsCptCityColorRampDialog::eventFilter( QObject *obj, QEvent *event )
 {
-  QSize size = lblPreview->size();
+  const QSize size = lblPreview->size();
 
   if ( event->type() == QEvent::MouseButtonPress )
   {
     // create preview from svg file if supported - depends on file versions
-    QPixmap pixmap( mRamp.fileName() );
+    const QPixmap pixmap( mRamp.fileName() );
     if ( ! pixmap.isNull() )
       lblPreview->setPixmap( pixmap.scaled( size ) );
     return true;
@@ -563,7 +563,7 @@ bool QgsCptCityColorRampDialog::eventFilter( QObject *obj, QEvent *event )
   else if ( event->type() == QEvent::MouseButtonRelease )
   {
     // restore preview
-    QPixmap pixmap = QgsSymbolLayerUtils::colorRampPreviewPixmap( &mRamp, size );
+    const QPixmap pixmap = QgsSymbolLayerUtils::colorRampPreviewPixmap( &mRamp, size );
     lblPreview->setPixmap( pixmap );
     return true;
   }
@@ -593,7 +593,7 @@ bool QgsCptCityColorRampDialog::updateRamp()
   }
 
   // search for item in model
-  QModelIndex modelIndex = mModel->findPath( mRamp.schemeName() );
+  const QModelIndex modelIndex = mModel->findPath( mRamp.schemeName() );
   if ( modelIndex == QModelIndex() )
   {
     return false;
@@ -612,8 +612,8 @@ bool QgsCptCityColorRampDialog::updateRamp()
   // found child, update tree
   QgsDebugMsg( QStringLiteral( "found item %1" ).arg( mRamp.schemeName() ) );
   lblSchemeName->setText( QFileInfo( mRamp.schemeName() ).fileName() );
-  QModelIndex parentIndex = modelIndex.parent();
-  QModelIndex selIndex = mTreeFilter->mapFromSource( parentIndex );
+  const QModelIndex parentIndex = modelIndex.parent();
+  const QModelIndex selIndex = mTreeFilter->mapFromSource( parentIndex );
 
   // QgsDebugMsg(QString("parent row=%1 path=%2 parentRow=%3").arg(parentIndex.row()).arg(mModel->dataItem( parentIndex )->path()).arg(parentIndex.parent().row()));
   mTreeView->setCurrentIndex( selIndex );
@@ -644,10 +644,10 @@ bool QgsCptCityColorRampDialog::updateRamp()
 
 void QgsCptCityColorRampDialog::showAll()
 {
-  QModelIndex modelIndex = mModel->findPath( QString() );
+  const QModelIndex modelIndex = mModel->findPath( QString() );
   if ( modelIndex != QModelIndex() )
   {
-    QModelIndex selIndex = mTreeFilter->mapFromSource( modelIndex );
+    const QModelIndex selIndex = mTreeFilter->mapFromSource( modelIndex );
     mTreeView->setCurrentIndex( selIndex );
     mTreeView->setExpanded( selIndex, true );
     mTreeView->scrollTo( selIndex, QAbstractItemView::PositionAtCenter );

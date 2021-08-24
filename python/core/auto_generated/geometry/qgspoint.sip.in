@@ -54,15 +54,15 @@ based on the following rules:
        pt.asWkt() # Point(43.4 5.3)
 
        pt_z = QgsPoint(120, 343, 77)
-       pt.asWkt() # PointZ(120 343 77)
+       pt_z.asWkt() # PointZ(120 343 77)
 
        pt_m = QgsPoint(33, 88, m=5)
        pt_m.m() # 5
-       pt_m.wkbType() # QgsWkbTypes.PointM
+       pt_m.wkbType() # 2001 (QgsWkbTypes.PointM)
 
        pt = QgsPoint(30, 40, wkbType=QgsWkbTypes.PointZ)
        pt.z() # nan
-       pt.wkbType() # QgsWkbTypes.PointZ
+       pt.wkbType() # 1001 (QgsWkbTypes.PointZ)
 %End
 %MethodCode
     if ( sipCanConvertToType( a0, sipType_QgsPointXY, SIP_NOT_NONE ) && a1 == Py_None && a2 == Py_None && a3 == Py_None && a4 == Py_None )
@@ -342,8 +342,8 @@ Example
        pr = p.project ( 1, 0, 90 )
        # pr is a 2D point: 'Point (1 3)'
        pr = p.project (1, 0, 0 )
-       # pr is a 3D point: 'PointZ (1 2 1)'
-       p = QgsPoint( QgsWkbTypes.PointZ, 1, 2, 2 ) # 3D point
+       # pr is a 3D point: 'PointZ (1 2 nan)'
+       p = QgsPoint( 1, 2, 2, wkbType=QgsWkbTypes.PointZ ) # 3D point
        pr = p.project ( 1, 0 )
        # pr is a 3D point: 'PointZ (1 3 2)'
        pr = p.project ( 1, 0, 90 )
@@ -413,7 +413,7 @@ Example
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
-    virtual bool isValid( QString &error /Out/, int flags = 0 ) const /HoldGIL/;
+    virtual bool isValid( QString &error /Out/, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const /HoldGIL/;
 
 
     virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex );

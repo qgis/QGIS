@@ -19,6 +19,9 @@
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
 #include "qgsreferencedgeometry.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
@@ -71,16 +74,65 @@ QgsRectangle QgsMapLayerUtils::combinedExtent( const QList<QgsMapLayer *> &layer
     else
     {
       const double padFactor = 1e-8;
-      double widthPad = fullExtent.xMinimum() * padFactor;
-      double heightPad = fullExtent.yMinimum() * padFactor;
-      double xmin = fullExtent.xMinimum() - widthPad;
-      double xmax = fullExtent.xMaximum() + widthPad;
-      double ymin = fullExtent.yMinimum() - heightPad;
-      double ymax = fullExtent.yMaximum() + heightPad;
+      const double widthPad = fullExtent.xMinimum() * padFactor;
+      const double heightPad = fullExtent.yMinimum() * padFactor;
+      const double xmin = fullExtent.xMinimum() - widthPad;
+      const double xmax = fullExtent.xMaximum() + widthPad;
+      const double ymin = fullExtent.yMinimum() - heightPad;
+      const double ymax = fullExtent.yMaximum() + heightPad;
       fullExtent.set( xmin, ymin, xmax, ymax );
     }
   }
 
   QgsDebugMsgLevel( "Full extent: " + fullExtent.toString(), 5 );
   return fullExtent;
+}
+
+QgsAbstractDatabaseProviderConnection *QgsMapLayerUtils::databaseConnection( const QgsMapLayer *layer )
+{
+  if ( ! layer || ! layer->dataProvider() )
+  {
+    return nullptr;
+  }
+
+  try
+  {
+    QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( layer->dataProvider()->name() );
+    if ( ! providerMetadata )
+    {
+      return nullptr;
+    }
+
+    std::unique_ptr< QgsAbstractDatabaseProviderConnection > conn { static_cast<QgsAbstractDatabaseProviderConnection *>( providerMetadata->createConnection( layer->source(), {} ) ) };
+    return conn.release();
+  }
+  catch ( const QgsProviderConnectionException &ex )
+  {
+    QgsDebugMsg( QStringLiteral( "Error retrieving database connection for layer %1: %2" ).arg( layer->name(), ex.what() ) );
+    return nullptr;
+  }
+}
+
+bool QgsMapLayerUtils::layerSourceMatchesPath( const QgsMapLayer *layer, const QString &path )
+{
+  if ( !layer || path.isEmpty() )
+    return false;
+
+  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->source() );
+  return parts.value( QStringLiteral( "path" ) ).toString() == path;
+}
+
+bool QgsMapLayerUtils::updateLayerSourcePath( QgsMapLayer *layer, const QString &newPath )
+{
+  if ( !layer || newPath.isEmpty() )
+    return false;
+
+  QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->source() );
+  if ( !parts.contains( QStringLiteral( "path" ) ) )
+    return false;
+
+  parts.insert( QStringLiteral( "path" ), newPath );
+  const QString newUri = QgsProviderRegistry::instance()->encodeUri( layer->providerType(), parts );
+  layer->setDataSource( newUri, layer->name(), layer->providerType() );
+  return true;
 }

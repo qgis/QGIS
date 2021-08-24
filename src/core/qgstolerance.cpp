@@ -26,13 +26,13 @@
 // this is of course only an approximation
 double _ratioMU2LU( const QgsMapSettings &mapSettings, QgsMapLayer *layer )
 {
-  double distMU = mapSettings.mapUnitsPerPixel();
-  QgsPointXY ptMapCenterMU = mapSettings.visibleExtent().center();
-  QgsPointXY ptMapCenterRightMU( ptMapCenterMU.x() + distMU, ptMapCenterMU.y() );
-  QgsPointXY ptMapCenterLU = mapSettings.mapToLayerCoordinates( layer, ptMapCenterMU );
-  QgsPointXY ptMapCenterRightLU = mapSettings.mapToLayerCoordinates( layer, ptMapCenterRightMU );
-  double distLU = std::sqrt( ptMapCenterLU.sqrDist( ptMapCenterRightLU ) );
-  double ratio = distMU / distLU;
+  const double distMU = mapSettings.mapUnitsPerPixel();
+  const QgsPointXY ptMapCenterMU = mapSettings.visibleExtent().center();
+  const QgsPointXY ptMapCenterRightMU( ptMapCenterMU.x() + distMU, ptMapCenterMU.y() );
+  const QgsPointXY ptMapCenterLU = mapSettings.mapToLayerCoordinates( layer, ptMapCenterMU );
+  const QgsPointXY ptMapCenterRightLU = mapSettings.mapToLayerCoordinates( layer, ptMapCenterRightMU );
+  const double distLU = std::sqrt( ptMapCenterLU.sqrDist( ptMapCenterRightLU ) );
+  const double ratio = distMU / distLU;
   return ratio;
 }
 
@@ -60,7 +60,7 @@ double QgsTolerance::toleranceInMapUnits( double tolerance, QgsMapLayer *layer, 
   }
   else if ( units == Pixels )
   {
-    double layerUnitsPerPixel = computeMapUnitPerPixel( layer, mapSettings );
+    const double layerUnitsPerPixel = computeMapUnitPerPixel( layer, mapSettings );
     return tolerance * layerUnitsPerPixel;
   }
   else // ProjectUnits
@@ -72,7 +72,7 @@ double QgsTolerance::toleranceInMapUnits( double tolerance, QgsMapLayer *layer, 
 
 double QgsTolerance::vertexSearchRadius( const QgsMapSettings &mapSettings )
 {
-  double tolerance = QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEdit.value();
+  const double tolerance = QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEdit.value();
   UnitType units = QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEditUnit.value();
   if ( units == LayerUnits )
     units = ProjectUnits;
@@ -81,15 +81,15 @@ double QgsTolerance::vertexSearchRadius( const QgsMapSettings &mapSettings )
 
 double QgsTolerance::vertexSearchRadius( QgsMapLayer *layer, const QgsMapSettings &mapSettings )
 {
-  double tolerance = QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEdit.value();
-  UnitType units = QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEditUnit.value();
+  const double tolerance = QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEdit.value();
+  const UnitType units = QgsSettingsRegistryCore::settingsDigitizingSearchRadiusVertexEditUnit.value();
   return toleranceInMapUnits( tolerance, layer, mapSettings, units );
 }
 
 double QgsTolerance::defaultTolerance( QgsMapLayer *layer, const QgsMapSettings &mapSettings )
 {
-  double tolerance = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance.value();
-  UnitType units = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit.value();
+  const double tolerance = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance.value();
+  const UnitType units = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit.value();
   return toleranceInMapUnits( tolerance, layer, mapSettings, units );
 }
 
@@ -99,12 +99,12 @@ double QgsTolerance::computeMapUnitPerPixel( QgsMapLayer *layer, const QgsMapSet
   // the layer is projected. Find out how many pixels are in one map unit - either horizontal and vertical direction
   // this check might not work correctly in some cases
   // (on a large area the pixels projected around "0,0" can have different properties from the actual point)
-  QgsPointXY p1 = toLayerCoordinates( layer, mapSettings, QPoint( 0, 1 ) );
-  QgsPointXY p2 = toLayerCoordinates( layer, mapSettings, QPoint( 0, 2 ) );
-  QgsPointXY p3 = toLayerCoordinates( layer, mapSettings, QPoint( 1, 0 ) );
-  QgsPointXY p4 = toLayerCoordinates( layer, mapSettings, QPoint( 2, 0 ) );
-  double x = p1.sqrDist( p2 );
-  double y = p3.sqrDist( p4 );
+  const QgsPointXY p1 = toLayerCoordinates( layer, mapSettings, QPoint( 0, 1 ) );
+  const QgsPointXY p2 = toLayerCoordinates( layer, mapSettings, QPoint( 0, 2 ) );
+  const QgsPointXY p3 = toLayerCoordinates( layer, mapSettings, QPoint( 1, 0 ) );
+  const QgsPointXY p4 = toLayerCoordinates( layer, mapSettings, QPoint( 2, 0 ) );
+  const double x = p1.sqrDist( p2 );
+  const double y = p3.sqrDist( p4 );
   if ( x > y )
   {
     return std::sqrt( x );
@@ -118,6 +118,6 @@ double QgsTolerance::computeMapUnitPerPixel( QgsMapLayer *layer, const QgsMapSet
 
 QgsPointXY QgsTolerance::toLayerCoordinates( QgsMapLayer *layer, const QgsMapSettings &mapSettings, QPoint point )
 {
-  QgsPointXY pt = mapSettings.mapToPixel().toMapCoordinates( point );
+  const QgsPointXY pt = mapSettings.mapToPixel().toMapCoordinates( point );
   return mapSettings.mapToLayerCoordinates( layer, pt );
 }

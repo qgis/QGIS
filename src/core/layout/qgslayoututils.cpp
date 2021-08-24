@@ -512,11 +512,12 @@ double QgsLayoutUtils::mmToPoints( const double mmSize )
 
 QVector< double > QgsLayoutUtils::predefinedScales( const QgsLayout *layout )
 {
+  QgsProject *lProject = layout->project();
   QVector< double > mapScales;
-  if ( layout->project() )
-    mapScales = layout->project()->viewSettings()->mapScales();
+  if ( lProject )
+    mapScales = lProject->viewSettings()->mapScales();
 
-  bool hasProjectScales( layout->project()->viewSettings()->useProjectScales() );
+  bool hasProjectScales( lProject ? lProject->viewSettings()->useProjectScales() : false );
   if ( !hasProjectScales || mapScales.isEmpty() )
   {
     // default to global map tool scales

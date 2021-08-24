@@ -325,9 +325,9 @@ void QgsClassificationMethod::makeBreaksSymmetric( QList<double> &breaks, double
     }
   }
   // remove symmetry point
-  if ( astride ) // && breaks.indexOf( symmetryPoint ) != -1) // if symmetryPoint is found
+  if ( astride )
   {
-    breaks.removeAt( breaks.indexOf( symmetryPoint ) );
+    breaks.removeAll( symmetryPoint );
   }
 }
 

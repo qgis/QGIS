@@ -46,7 +46,7 @@ QgsMapToolCircle2TangentsPoint::~QgsMapToolCircle2TangentsPoint()
 void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
 
-  QgsPoint mapPoint( e->mapPoint() );
+  const QgsPoint mapPoint( e->mapPoint() );
 
   if ( !currentVectorLayer() )
   {
@@ -58,7 +58,7 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
   }
 
   EdgesOnlyFilter filter;
-  QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToMap( mapPoint, &filter );
+  const QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToMap( mapPoint, &filter );
 
   QgsPointXY p1, p2;
 
@@ -110,12 +110,12 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
 
 void QgsMapToolCircle2TangentsPoint::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint( e->mapPoint() );
+  const QgsPoint mapPoint( e->mapPoint() );
 
   mSnapIndicator->setMatch( e->mapPointMatch() );
 
   EdgesOnlyFilter filter;
-  QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToMap( mapPoint, &filter );
+  const QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToMap( mapPoint, &filter );
 
   if ( mPoints.size() < 2 * 2 )
   {
@@ -173,13 +173,13 @@ void QgsMapToolCircle2TangentsPoint::getPossibleCenter( )
     l2->addVertex( mPoints.at( 3 ) );
 
     /* use magic default values (8, QgsGeometry::JoinStyleBevel, 5), is useless for segments */
-    QgsGeometry line1 = QgsGeometry( l1.release() );
-    QgsGeometry line1m = line1.offsetCurve( - mRadius, 8, QgsGeometry::JoinStyleBevel, 5 );
-    QgsGeometry line1p = line1.offsetCurve( + mRadius, 8, QgsGeometry::JoinStyleBevel, 5 );
+    const QgsGeometry line1 = QgsGeometry( l1.release() );
+    const QgsGeometry line1m = line1.offsetCurve( - mRadius, 8, Qgis::JoinStyle::Bevel, 5 );
+    const QgsGeometry line1p = line1.offsetCurve( + mRadius, 8, Qgis::JoinStyle::Bevel, 5 );
 
-    QgsGeometry line2 = QgsGeometry( l2.release() );
-    QgsGeometry line2m = line2.offsetCurve( - mRadius, 8, QgsGeometry::JoinStyleBevel, 5 );
-    QgsGeometry line2p = line2.offsetCurve( + mRadius, 8, QgsGeometry::JoinStyleBevel, 5 );
+    const QgsGeometry line2 = QgsGeometry( l2.release() );
+    const QgsGeometry line2m = line2.offsetCurve( - mRadius, 8, Qgis::JoinStyle::Bevel, 5 );
+    const QgsGeometry line2p = line2.offsetCurve( + mRadius, 8, Qgis::JoinStyle::Bevel, 5 );
 
     bool isIntersect = false;
     QgsPoint inter;
@@ -230,7 +230,7 @@ void QgsMapToolCircle2TangentsPoint::radiusSpinBoxChanged( double radius )
   mRubberBands.clear();
   if ( mPoints.size() == 4 )
   {
-    std::unique_ptr<QgsMultiPolygon> rb( new QgsMultiPolygon() );
+    const std::unique_ptr<QgsMultiPolygon> rb( new QgsMultiPolygon() );
     for ( int i = 0; i < mCenters.size(); ++i )
     {
       std::unique_ptr<QgsGeometryRubberBand> tempRB( createGeometryRubberBand( QgsWkbTypes::PointGeometry, true ) );

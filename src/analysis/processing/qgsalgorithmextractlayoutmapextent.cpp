@@ -100,7 +100,7 @@ bool QgsLayoutMapExtentToLayerAlgorithm::prepareAlgorithm( const QVariantMap &pa
   else
     layout->layoutItems( maps );
 
-  QgsCoordinateReferenceSystem overrideCrs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
+  const QgsCoordinateReferenceSystem overrideCrs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
 
   mFeatures.reserve( maps.size() );
   for ( QgsLayoutItemMap *map : maps )
@@ -151,7 +151,10 @@ QVariantMap QgsLayoutMapExtentToLayerAlgorithm::processAlgorithm( const QVariant
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   for ( QgsFeature &f : mFeatures )
-    sink->addFeature( f, QgsFeatureSink::FastInsert );
+  {
+    if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+  }
 
   feedback->setProgress( 100 );
 

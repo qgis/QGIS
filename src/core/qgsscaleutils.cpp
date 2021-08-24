@@ -68,7 +68,7 @@ bool QgsScaleUtils::loadScaleList( const QString &fileName, QStringList &scales,
     return false;
   }
 
-  QDomElement root = doc.documentElement();
+  const QDomElement root = doc.documentElement();
   if ( root.tagName() != QLatin1String( "qgsScales" ) )
   {
     errorMessage = QStringLiteral( "The file is not an scales exchange file." );

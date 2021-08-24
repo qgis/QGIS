@@ -188,15 +188,15 @@ geos::unique_ptr QgsGeos::asGeos( const QgsGeometry &geometry, double precision 
   return asGeos( geometry.constGet(), precision );
 }
 
-QgsGeometry::OperationResult QgsGeos::addPart( QgsGeometry &geometry, GEOSGeometry *newPart )
+Qgis::GeometryOperationResult QgsGeos::addPart( QgsGeometry &geometry, GEOSGeometry *newPart )
 {
   if ( geometry.isNull() )
   {
-    return QgsGeometry::InvalidBaseGeometry;
+    return Qgis::GeometryOperationResult::InvalidBaseGeometry;
   }
   if ( !newPart )
   {
-    return QgsGeometry::AddPartNotMultiGeometry;
+    return Qgis::GeometryOperationResult::AddPartNotMultiGeometry;
   }
 
   std::unique_ptr< QgsAbstractGeometry > geom = fromGeos( newPart );
@@ -1641,7 +1641,7 @@ QgsAbstractGeometry *QgsGeos::buffer( double distance, int segments, QString *er
   return fromGeos( geos.get() ).release();
 }
 
-QgsAbstractGeometry *QgsGeos::buffer( double distance, int segments, int endCapStyle, int joinStyle, double miterLimit, QString *errorMsg ) const
+QgsAbstractGeometry *QgsGeos::buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg ) const
 {
   if ( !mGeos )
   {
@@ -1651,7 +1651,7 @@ QgsAbstractGeometry *QgsGeos::buffer( double distance, int segments, int endCapS
   geos::unique_ptr geos;
   try
   {
-    geos.reset( GEOSBufferWithStyle_r( geosinit()->ctxt, mGeos.get(), distance, segments, endCapStyle, joinStyle, miterLimit ) );
+    geos.reset( GEOSBufferWithStyle_r( geosinit()->ctxt, mGeos.get(), distance, segments, static_cast< int >( endCapStyle ), static_cast< int >( joinStyle ), miterLimit ) );
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
   return fromGeos( geos.get() ).release();
@@ -2126,7 +2126,7 @@ geos::unique_ptr QgsGeos::createGeosPolygon( const QgsAbstractGeometry *poly, do
   return geosPolygon;
 }
 
-QgsAbstractGeometry *QgsGeos::offsetCurve( double distance, int segments, int joinStyle, double miterLimit, QString *errorMsg ) const
+QgsAbstractGeometry *QgsGeos::offsetCurve( double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg ) const
 {
   if ( !mGeos )
     return nullptr;
@@ -2134,14 +2134,14 @@ QgsAbstractGeometry *QgsGeos::offsetCurve( double distance, int segments, int jo
   geos::unique_ptr offset;
   try
   {
-    offset.reset( GEOSOffsetCurve_r( geosinit()->ctxt, mGeos.get(), distance, segments, joinStyle, miterLimit ) );
+    offset.reset( GEOSOffsetCurve_r( geosinit()->ctxt, mGeos.get(), distance, segments, static_cast< int >( joinStyle ), miterLimit ) );
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
   std::unique_ptr< QgsAbstractGeometry > offsetGeom = fromGeos( offset.get() );
   return offsetGeom.release();
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeos::singleSidedBuffer( double distance, int segments, int side, int joinStyle, double miterLimit, QString *errorMsg ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::singleSidedBuffer( double distance, int segments, Qgis::BufferSide side, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg ) const
 {
   if ( !mGeos )
   {
@@ -2154,10 +2154,10 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::singleSidedBuffer( double distance
     geos::buffer_params_unique_ptr bp( GEOSBufferParams_create_r( geosinit()->ctxt ) );
     GEOSBufferParams_setSingleSided_r( geosinit()->ctxt, bp.get(), 1 );
     GEOSBufferParams_setQuadrantSegments_r( geosinit()->ctxt, bp.get(), segments );
-    GEOSBufferParams_setJoinStyle_r( geosinit()->ctxt, bp.get(), joinStyle );
+    GEOSBufferParams_setJoinStyle_r( geosinit()->ctxt, bp.get(), static_cast< int >( joinStyle ) );
     GEOSBufferParams_setMitreLimit_r( geosinit()->ctxt, bp.get(), miterLimit );  //#spellok
 
-    if ( side == 1 )
+    if ( side == Qgis::BufferSide::Right )
     {
       distance = -distance;
     }

@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsFileWidget : QWidget
 {
 %Docstring(signature="appended")
@@ -48,42 +50,51 @@ QgsFileWidget creates a widget for selecting a file or a folder.
 
     QString filePath();
 %Docstring
-Returns the current file path(s)
-when multiple files are selected, they are quoted and separated
+Returns the current file path(s).
+
+When multiple files are selected they are quoted and separated
 by a single space (for example: '"/path/foo" "path/bar"')
+
+.. seealso:: :py:func:`setFilePath`
 
 .. seealso:: :py:func:`splitFilePaths`
 %End
 
     static QStringList splitFilePaths( const QString &path );
 %Docstring
-Split the the quoted and space separated ``path`` and returns a QString list
+Split the the quoted and space separated ``path`` and returns a list of strings.
 
 .. seealso:: :py:func:`filePath`
 %End
 
-    void setFilePath( QString path );
+    void setFilePath( const QString &path );
 %Docstring
-Sets the file path
+Sets the current file ``path``.
+
+.. seealso:: :py:func:`filePath`
 %End
 
     void setReadOnly( bool readOnly );
 %Docstring
-defines if the widget is readonly
+Sets whether the widget should be read only.
 %End
 
     QString dialogTitle() const;
 %Docstring
-returns the open file dialog title
+Returns the open file dialog title.
+
+.. seealso:: :py:func:`setDialogTitle`
 %End
 
     void setDialogTitle( const QString &title );
 %Docstring
-setDialogTitle defines the open file dialog title
+Sets the ``title`` to use for the open file dialog.
 
 .. note::
 
-   if not defined, the title is "Select a file" or "Select a directory" or "Select one or more files" depending on the configuration.
+   If not defined, the title is "Select a file" or "Select a directory" or "Select one or more files" depending on the configuration.
+
+.. seealso:: :py:func:`dialogTitle`
 %End
 
     QString filter() const;
@@ -100,14 +111,21 @@ setFilter sets the filter used by the model to filters. The filter is used to sp
 
     QFileDialog::Options options() const;
 %Docstring
-Returns additional options used for QFileDialog
+Returns the additional options used for QFileDialog.
+
+.. seealso:: :py:func:`setOptions`
 
 .. versionadded:: 3.14
 %End
 
     void setOptions( QFileDialog::Options options );
 %Docstring
-setOptions sets additional options used for QFileDialog. These options affect the look and feel of the QFileDialog
+Set additional options used for QFileDialog.
+
+These options affect the look and feel of the QFileDialog shown when a user is interactively browsing
+for paths.
+
+.. seealso:: :py:func:`options`
 
 .. versionadded:: 3.14
 %End
@@ -115,78 +133,117 @@ setOptions sets additional options used for QFileDialog. These options affect th
     void setSelectedFilter( const QString &selectedFilter );
 %Docstring
 Sets the selected filter when the file dialog opens.
+
+.. seealso:: :py:func:`selectedFilter`
 %End
 
     QString selectedFilter() const;
 %Docstring
 Returns the selected filter from the last opened file dialog.
+
+.. seealso:: :py:func:`setSelectedFilter`
 %End
 
     void setConfirmOverwrite( bool confirmOverwrite );
 %Docstring
 Sets whether a confirmation to overwrite an existing file will appear.
+
 By default, a confirmation will appear.
 
 :param confirmOverwrite: If set to ``True``, an overwrite confirmation will be shown
+
+.. seealso:: :py:func:`confirmOverwrite`
 %End
 
     bool confirmOverwrite() const;
 %Docstring
-Returns whether a confirmation will be shown when overwriting an existing file
+Returns whether a confirmation will be shown when overwriting an existing file.
+
+.. seealso:: :py:func:`setConfirmOverwrite`
 %End
 
     bool fileWidgetButtonVisible() const;
 %Docstring
-determines if the tool button is shown
+Returns ``True`` if the tool button is shown.
+
+.. seealso:: :py:func:`setFileWidgetButtonVisible`
 %End
+
     void setFileWidgetButtonVisible( bool visible );
 %Docstring
-determines if the tool button is shown
+Sets whether the tool button is ``visible``.
+
+.. seealso:: :py:func:`fileWidgetButtonVisible`
 %End
 
     bool useLink() const;
 %Docstring
-determines if the file path will be shown as a link
+Returns ``True`` if the file path will be shown as a link.
+
+.. seealso:: :py:func:`setUseLink`
 %End
+
     void setUseLink( bool useLink );
 %Docstring
-determines if the file path will be shown as a link
+Sets whether the file path will be shown as a link.
+
+.. seealso:: :py:func:`useLink`
 %End
 
     bool fullUrl() const;
 %Docstring
-returns if the links shows the full path or not
+Returns ``True`` if the links shown use the full path.
+
+.. seealso:: :py:func:`setFullUrl`
 %End
+
     void setFullUrl( bool fullUrl );
 %Docstring
-determines if the links shows the full path or not
+Sets whether links shown use the full path.
+
+.. seealso:: :py:func:`fullUrl`
 %End
 
     QString defaultRoot() const;
 %Docstring
-returns the default root path
+Returns the default root path.
+
+.. seealso:: :py:func:`setDefaultRoot`
 %End
+
     void setDefaultRoot( const QString &defaultRoot );
 %Docstring
-determines the default root path used as the first shown location when picking a file and used if the RelativeStorage is RelativeDefaultPath
+Returns the default root path used as the first shown location when picking a file and used if the RelativeStorage is RelativeDefaultPath.
+
+.. seealso:: :py:func:`defaultRoot`
 %End
 
     QgsFileWidget::StorageMode storageMode() const;
 %Docstring
-returns the storage mode (i.e. file or directory)
+Returns the widget's storage mode (i.e. file or directory).
+
+.. seealso:: :py:func:`setStorageMode`
 %End
+
     void setStorageMode( QgsFileWidget::StorageMode storageMode );
 %Docstring
-determines the storage mode (i.e. file or directory)
+Sets the widget's storage mode (i.e. file or directory).
+
+.. seealso:: :py:func:`storageMode`
 %End
 
     QgsFileWidget::RelativeStorage relativeStorage() const;
 %Docstring
-returns if the relative path is with respect to the project path or the default path
+Returns if the relative path is with respect to the project path or the default path.
+
+.. seealso:: :py:func:`setRelativeStorage`
 %End
+
     void setRelativeStorage( QgsFileWidget::RelativeStorage relativeStorage );
 %Docstring
-determines if the relative path is with respect to the project path or the default path
+Sets whether the relative path is with respect to the project path or the default path.
+
+.. seealso:: :py:func:`relativeStorage`
 %End
 
     QgsFilterLineEdit *lineEdit();
@@ -202,6 +259,40 @@ the appearance and behavior of the line edit portion of the widget.
     void fileChanged( const QString &path );
 %Docstring
 Emitted whenever the current file or directory ``path`` is changed.
+%End
+
+  protected:
+
+    virtual void updateLayout();
+%Docstring
+Update buttons visibility
+%End
+
+    virtual void setSelectedFileNames( QStringList fileNames );
+%Docstring
+Called whenever user select ``fileNames`` from dialog
+%End
+
+    static bool isMultiFiles( const QString &path );
+%Docstring
+Returns true if ``path`` is a multifiles
+%End
+
+    void setFilePaths( const QStringList &filePaths );
+%Docstring
+Update filePath according to ``filePaths`` list
+%End
+
+
+
+    QString toUrl( const QString &path ) const;
+%Docstring
+returns a HTML code with a link to the given file path
+%End
+
+    QString relativePath( const QString &filePath, bool removeRelative ) const;
+%Docstring
+Returns a filePath with relative path options applied (or not) !
 %End
 
 };

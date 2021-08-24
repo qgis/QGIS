@@ -706,7 +706,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \param modified whether to return only layers that have been modified
      * \returns list of layers in legend order, or empty list
     */
-    QList<QgsMapLayer *> editableLayers( bool modified = false ) const;
+    QList<QgsMapLayer *> editableLayers( bool modified = false, bool ignoreLayersWhichCannotBeToggled = false ) const;
 
     //! emit initializationCompleted signal
     void completeInitialization();
@@ -1202,7 +1202,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Settings pages section
      */
     //! Gets map of option pages
-    QMap<QString, int> optionsPagesMap();
+    QMap<QString, QString> optionsPagesMap();
     //! Gets map of project property pages
     QMap< QString, QString > projectPropertiesPagesMap();
     //! Gets map of setting pages
@@ -1576,6 +1576,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Create a new empty mesh layer
     void newMeshLayer();
+
+    //! Create a new empty GPX layer
+    void newGpxLayer();
 
     //! Create a new print layout
     void newPrintLayout();
@@ -2670,6 +2673,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsScopedDevToolWidgetFactory mStartupProfilerWidgetFactory;
 
     QgsScopedOptionsWidgetFactory mCodeEditorWidgetFactory;
+    QgsScopedOptionsWidgetFactory mBabelGpsDevicesWidgetFactory;
     QgsScopedOptionsWidgetFactory m3DOptionsWidgetFactory;
 
     class QgsCanvasRefreshBlocker

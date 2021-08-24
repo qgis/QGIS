@@ -31,7 +31,7 @@ void QgsLeastSquares::linear( const QVector<QgsPointXY> &sourceCoordinates,
                               const QVector<QgsPointXY> &destinationCoordinates,
                               QgsPointXY &origin, double &pixelXSize, double &pixelYSize )
 {
-  int n = destinationCoordinates.size();
+  const int n = destinationCoordinates.size();
   if ( n < 2 )
   {
     throw std::domain_error( QObject::tr( "Fit to a linear transform requires at least 2 points." ).toLocal8Bit().constData() );
@@ -50,13 +50,13 @@ void QgsLeastSquares::linear( const QVector<QgsPointXY> &sourceCoordinates,
     sumMy += destinationCoordinates.at( i ).y();
   }
 
-  double deltaX = n * sumPx2 - std::pow( sumPx, 2 );
-  double deltaY = n * sumPy2 - std::pow( sumPy, 2 );
+  const double deltaX = n * sumPx2 - std::pow( sumPx, 2 );
+  const double deltaY = n * sumPy2 - std::pow( sumPy, 2 );
 
-  double aX = ( sumPx2 * sumMx - sumPx * sumPxMx ) / deltaX;
-  double aY = ( sumPy2 * sumMy - sumPy * sumPyMy ) / deltaY;
-  double bX = ( n * sumPxMx - sumPx * sumMx ) / deltaX;
-  double bY = ( n * sumPyMy - sumPy * sumMy ) / deltaY;
+  const double aX = ( sumPx2 * sumMx - sumPx * sumPxMx ) / deltaX;
+  const double aY = ( sumPy2 * sumMy - sumPy * sumPyMy ) / deltaY;
+  const double bX = ( n * sumPxMx - sumPx * sumMx ) / deltaX;
+  const double bY = ( n * sumPyMy - sumPy * sumMy ) / deltaY;
 
   origin.setX( aX );
   origin.setY( aY );
@@ -79,7 +79,7 @@ void QgsLeastSquares::helmert( const QVector<QgsPointXY> &sourceCoordinates,
   ( void )rotation;
   throw QgsNotSupportedException( QStringLiteral( "Calculating a helmert transformation requires a QGIS build based GSL" ) );
 #else
-  int n = destinationCoordinates.size();
+  const int n = destinationCoordinates.size();
   if ( n < 2 )
   {
     throw std::domain_error( QObject::tr( "Fit to a Helmert transform requires at least 2 points." ).toLocal8Bit().constData() );
@@ -124,7 +124,7 @@ void QgsLeastSquares::helmert( const QVector<QgsPointXY> &sourceCoordinates,
 
   // we want to solve the equation M*x = b, where x = [a b x0 y0]
   gsl_matrix_view M = gsl_matrix_view_array( MData, 4, 4 );
-  gsl_vector_view b = gsl_vector_view_array( bData, 4 );
+  const gsl_vector_view b = gsl_vector_view_array( bData, 4 );
   gsl_vector *x = gsl_vector_alloc( 4 );
   gsl_permutation *p = gsl_permutation_alloc( 4 );
   int s;
@@ -217,14 +217,14 @@ void normalizeCoordinates( const QVector<QgsPointXY> &coords, QVector<QgsPointXY
   double meanDist = 0.0;
   for ( int i = 0; i < coords.size(); i++ )
   {
-    double X = ( coords[i].x() - cogX );
-    double Y = ( coords[i].y() - cogY );
+    const double X = ( coords[i].x() - cogX );
+    const double Y = ( coords[i].y() - cogY );
     meanDist += std::sqrt( X * X + Y * Y );
   }
   meanDist *= 1.0 / coords.size();
 
-  double OOD = meanDist * M_SQRT1_2;
-  double D   = 1.0 / OOD;
+  const double OOD = meanDist * M_SQRT1_2;
+  const double D   = 1.0 / OOD;
   normalizedCoords.resize( coords.size() );
   for ( int i = 0; i < coords.size(); i++ )
   {
@@ -281,8 +281,8 @@ void QgsLeastSquares::projective( const QVector<QgsPointXY> &sourceCoordinates,
 
   // GSL does not support a full SVD, so we artificially add a linear dependent row
   // to the matrix in case the system is underconstrained.
-  uint m = std::max( 9u, ( uint )destinationCoordinatesNormalized.size() * 2u );
-  uint n = 9;
+  const uint m = std::max( 9u, ( uint )destinationCoordinatesNormalized.size() * 2u );
+  const uint n = 9;
   gsl_matrix *S = gsl_matrix_alloc( m, n );
 
   for ( int i = 0; i < destinationCoordinatesNormalized.size(); i++ )
@@ -347,8 +347,8 @@ void QgsLeastSquares::projective( const QVector<QgsPointXY> &sourceCoordinates,
   gsl_matrix *prodMatrix = gsl_matrix_alloc( 3, 3 );
 
   gsl_matrix_view Hmatrix = gsl_matrix_view_array( H, 3, 3 );
-  gsl_matrix_view normSourceMatrix = gsl_matrix_view_array( normSource, 3, 3 );
-  gsl_matrix_view denormDestMatrix = gsl_matrix_view_array( denormDest, 3, 3 );
+  const gsl_matrix_view normSourceMatrix = gsl_matrix_view_array( normSource, 3, 3 );
+  const gsl_matrix_view denormDestMatrix = gsl_matrix_view_array( denormDest, 3, 3 );
 
   // Change coordinate frame of image and pre-image from normalized to destination and source coordinates.
   // H' = denormalizeMapCoords*H*normalizePixelCoords

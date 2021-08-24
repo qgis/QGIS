@@ -67,6 +67,20 @@ The list order defines the order of appearance.
     bool isEmpty() const;
 %Docstring
 Returns ``True`` if the configuration is empty, ie it contains no columns.
+
+.. seealso:: :py:func:`size`
+%End
+
+    int size() const;
+%Docstring
+Returns the number of columns in the configuration.
+
+.. versionadded:: 3.22
+%End
+
+    int __len__() const;
+%MethodCode
+    sipRes = sipCpp->size();
 %End
 
     int mapVisibleColumnToIndex( int visibleColumn ) const;
@@ -132,14 +146,31 @@ Gets the expression used for sorting.
 Set the sort expression used for sorting.
 %End
 
+
     int columnWidth( int column ) const;
 %Docstring
 Returns the width of a column, or -1 if column should use default width.
 
 :param column: column index
 
+:raises IndexError: if the column is not found
+
 .. seealso:: :py:func:`setColumnWidth`
 %End
+%MethodCode
+    {
+      if ( a0 < 0 || a0 >= sipCpp->size() )
+      {
+        PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+        sipIsErr = 1;
+      }
+      else
+      {
+        return PyLong_FromLong( sipCpp->columnWidth( a0 ) );
+      }
+    }
+%End
+
 
     void setColumnWidth( int column, int width );
 %Docstring
@@ -148,8 +179,22 @@ Sets the width of a column.
 :param column: column index
 :param width: column width in pixels, or -1 if column should use default width
 
+:raises IndexError: if the column is not found
+
 .. seealso:: :py:func:`columnWidth`
 %End
+%MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->size() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp->setColumnWidth( a0, a1 );
+    }
+%End
+
 
     bool columnHidden( int column ) const;
 %Docstring
@@ -157,8 +202,24 @@ Returns ``True`` if the specified column is hidden.
 
 :param column: column index
 
+:raises IndexError: if the column is not found
+
 .. seealso:: :py:func:`setColumnHidden`
 %End
+%MethodCode
+    {
+      if ( a0 < 0 || a0 >= sipCpp->size() )
+      {
+        PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+        sipIsErr = 1;
+      }
+      else
+      {
+        return PyBool_FromLong( sipCpp->columnHidden( a0 ) );
+      }
+    }
+%End
+
 
     void setColumnHidden( int column, bool hidden );
 %Docstring
@@ -167,7 +228,20 @@ Sets whether the specified column should be hidden.
 :param column: column index
 :param hidden: set to ``True`` to hide column
 
+:raises IndexError: if the column is not found
+
 .. seealso:: :py:func:`columnHidden`
+%End
+%MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->size() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp->setColumnHidden( a0, a1 );
+    }
 %End
 
     Qt::SortOrder sortOrder() const;

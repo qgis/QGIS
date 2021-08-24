@@ -409,6 +409,9 @@
       <attribute name="title">
        <string/>
       </attribute>
+      <attribute name="toolTip">
+       <string>Stacked mesh averaging method</string>
+      </attribute>
       <layout class="QVBoxLayout" name="verticalLayout">
        <property name="leftMargin">
         <number>0</number>

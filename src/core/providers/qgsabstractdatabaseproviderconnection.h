@@ -247,6 +247,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       QString geometryColumn;
       //! If SelectAtId is disabled (default is false), not all data providers support this feature: check support with SqlLayerDefinitionCapability::SelectAtId capability
       bool disableSelectAtId = false;
+
     };
 
     /**
@@ -675,6 +676,15 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \since QGIS 3.22
      */
     virtual QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const SIP_THROW( QgsProviderConnectionException ) SIP_FACTORY;
+
+    /**
+     * Returns the SQL layer options from a \a layerSource.
+     *
+     * \note the default implementation returns a default constructed option object.
+     * \throws QgsProviderConnectionException if any errors are encountered or if SQL layer creation is not supported.
+     * \since QGIS 3.22
+     */
+    virtual SqlVectorLayerOptions sqlOptions( const QString &layerSource ) SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Executes raw \a sql and returns the (possibly empty) query results, optionally \a feedback can be provided.

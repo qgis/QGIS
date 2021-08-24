@@ -179,8 +179,8 @@ int QgsRangeSlider::pick( const QPoint &pt ) const
 
 int QgsRangeSlider::pixelPosToRangeValue( int pos ) const
 {
-  QRect gr = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderGroove, this );
-  QRect sr = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderHandle, this );
+  const QRect gr = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderGroove, this );
+  const QRect sr = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderHandle, this );
   int sliderMin, sliderMax, sliderLength;
   if ( mStyleOption.orientation == Qt::Horizontal )
   {
@@ -223,12 +223,12 @@ bool QgsRangeSlider::newHoverControl( const QPoint &pos )
   mStyleOption.subControls = QStyle::SC_All;
 
   mStyleOption.sliderPosition = unFlippedSliderPosition( mLowerValue );
-  QRect lowerHandleRect = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderHandle, this );
+  const QRect lowerHandleRect = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderHandle, this );
   mStyleOption.sliderPosition = unFlippedSliderPosition( mUpperValue );
-  QRect upperHandleRect = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderHandle, this );
+  const QRect upperHandleRect = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderHandle, this );
 
-  QRect grooveRect = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderGroove, this );
-  QRect tickmarksRect = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderTickmarks, this );
+  const QRect grooveRect = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderGroove, this );
+  const QRect tickmarksRect = style()->subControlRect( QStyle::CC_Slider, &mStyleOption, QStyle::SC_SliderTickmarks, this );
   if ( lowerHandleRect.contains( pos ) )
   {
     mHoverRect = lowerHandleRect;
@@ -323,7 +323,7 @@ void QgsRangeSlider::applyStep( int step )
   {
     case Lower:
     {
-      int newLowerValue = std::min( mUpperValue, std::min( mStyleOption.maximum, std::max( mStyleOption.minimum, mLowerValue + step ) ) );
+      const int newLowerValue = std::min( mUpperValue, std::min( mStyleOption.maximum, std::max( mStyleOption.minimum, mLowerValue + step ) ) );
       if ( newLowerValue != mLowerValue )
       {
         mLowerValue = newLowerValue;
@@ -335,7 +335,7 @@ void QgsRangeSlider::applyStep( int step )
 
     case Upper:
     {
-      int newUpperValue = std::max( mLowerValue, std::min( mStyleOption.maximum, std::max( mStyleOption.minimum, mUpperValue + step ) ) );
+      const int newUpperValue = std::max( mLowerValue, std::min( mStyleOption.maximum, std::max( mStyleOption.minimum, mUpperValue + step ) ) );
       if ( newUpperValue != mUpperValue )
       {
         mUpperValue = newUpperValue;
@@ -349,8 +349,8 @@ void QgsRangeSlider::applyStep( int step )
     {
       if ( step < 0 )
       {
-        int previousWidth = mUpperValue - mLowerValue;
-        int newLowerValue = std::min( mUpperValue, std::min( mStyleOption.maximum, std::max( mStyleOption.minimum, mLowerValue + step ) ) );
+        const int previousWidth = mUpperValue - mLowerValue;
+        const int newLowerValue = std::min( mUpperValue, std::min( mStyleOption.maximum, std::max( mStyleOption.minimum, mLowerValue + step ) ) );
         if ( newLowerValue != mLowerValue )
         {
           mLowerValue = newLowerValue;
@@ -361,8 +361,8 @@ void QgsRangeSlider::applyStep( int step )
       }
       else
       {
-        int previousWidth = mUpperValue - mLowerValue;
-        int newUpperValue = std::max( mLowerValue, std::min( mStyleOption.maximum, std::max( mStyleOption.minimum, mUpperValue + step ) ) );
+        const int previousWidth = mUpperValue - mLowerValue;
+        const int newUpperValue = std::max( mLowerValue, std::min( mStyleOption.maximum, std::max( mStyleOption.minimum, mUpperValue + step ) ) );
         if ( newUpperValue != mUpperValue )
         {
           mUpperValue = newUpperValue;
@@ -670,7 +670,7 @@ void QgsRangeSlider::mouseMoveEvent( QMouseEvent *event )
       if ( delta > 0 )
       {
         // move range up
-        int maxDelta = mStyleOption.maximum - mPreDragUpperValue;
+        const int maxDelta = mStyleOption.maximum - mPreDragUpperValue;
         delta = std::min( maxDelta, delta );
         mLowerValue = mPreDragLowerValue + delta;
         mUpperValue = mPreDragUpperValue + delta;
@@ -680,7 +680,7 @@ void QgsRangeSlider::mouseMoveEvent( QMouseEvent *event )
       {
         // move range down
         delta = -delta;
-        int maxDelta = mPreDragLowerValue - mStyleOption.minimum ;
+        const int maxDelta = mPreDragLowerValue - mStyleOption.minimum ;
         delta = std::min( maxDelta, delta );
         mLowerValue = mPreDragLowerValue - delta;
         mUpperValue = mPreDragUpperValue - delta;
@@ -1053,7 +1053,7 @@ QSize QgsRangeSlider::sizeHint() const
 QSize QgsRangeSlider::minimumSizeHint() const
 {
   QSize s = sizeHint();
-  int length = style()->pixelMetric( QStyle::PM_SliderLength, &mStyleOption, this );
+  const int length = style()->pixelMetric( QStyle::PM_SliderLength, &mStyleOption, this );
   if ( mStyleOption.orientation == Qt::Horizontal )
     s.setWidth( length );
   else

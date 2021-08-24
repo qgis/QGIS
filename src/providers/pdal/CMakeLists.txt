@@ -9,14 +9,12 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
 set(PDAL_SRCS
-  qgspdaldataitems.cpp
   qgspdalprovider.cpp
   qgspdaleptgenerationtask.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/api/QgisUntwine.cpp
 )
 
 set(PDAL_HDRS
-  qgspdaldataitems.h
   qgspdalprovider.h
   qgspdaleptgenerationtask.h
   ${CMAKE_SOURCE_DIR}/external/untwine/api/QgisUntwine.hpp
@@ -25,12 +23,10 @@ set(PDAL_HDRS
 if (WITH_GUI)
   set(PDAL_GUI_SRCS
     qgspdalprovidergui.cpp
-    qgspdaldataitemguiprovider.cpp
   )
 
   set(PDAL_GUI_HDRS
     qgspdalprovidergui.h
-    qgspdaldataitemguiprovider.h
   )
 endif()
 
@@ -130,12 +126,12 @@ target_link_libraries (provider_pdal
 if (WITH_GUI)
   target_link_libraries (provider_pdal
     ${PDAL_LIBRARIES}
-    ${Qt5Xml_LIBRARIES}
-    ${Qt5Core_LIBRARIES}
-    ${Qt5Svg_LIBRARIES}
-    ${Qt5Network_LIBRARIES}
-    ${Qt5Sql_LIBRARIES}
-    ${Qt5Concurrent_LIBRARIES}
+    ${QT_VERSION_BASE}::Xml
+    ${QT_VERSION_BASE}::Core
+    ${QT_VERSION_BASE}::Svg
+    ${QT_VERSION_BASE}::Network
+    ${QT_VERSION_BASE}::Sql
+    ${QT_VERSION_BASE}::Concurrent
     qgis_gui
   )
   add_dependencies(provider_pdal ui)
@@ -149,12 +145,12 @@ target_compile_features(provider_pdal_a PRIVATE cxx_std_17)
 
 target_link_libraries (provider_pdal_a
   ${PDAL_LIBRARIES}
-  ${Qt5Xml_LIBRARIES}
-  ${Qt5Core_LIBRARIES}
-  ${Qt5Svg_LIBRARIES}
-  ${Qt5Network_LIBRARIES}
-  ${Qt5Sql_LIBRARIES}
-  ${Qt5Concurrent_LIBRARIES}
+  ${QT_VERSION_BASE}::Xml
+  ${QT_VERSION_BASE}::Core
+  ${QT_VERSION_BASE}::Svg
+  ${QT_VERSION_BASE}::Network
+  ${QT_VERSION_BASE}::Sql
+  ${QT_VERSION_BASE}::Concurrent
   qgis_core
 )
 
@@ -166,12 +162,12 @@ if (WITH_GUI)
 
   target_link_libraries (provider_pdal_gui_a
     ${PDAL_LIBRARIES}
-    ${Qt5Xml_LIBRARIES}
-    ${Qt5Core_LIBRARIES}
-    ${Qt5Svg_LIBRARIES}
-    ${Qt5Network_LIBRARIES}
-    ${Qt5Sql_LIBRARIES}
-    ${Qt5Concurrent_LIBRARIES}
+    ${QT_VERSION_BASE}::Xml
+    ${QT_VERSION_BASE}::Core
+    ${QT_VERSION_BASE}::Svg
+    ${QT_VERSION_BASE}::Network
+    ${QT_VERSION_BASE}::Sql
+    ${QT_VERSION_BASE}::Concurrent
     qgis_gui
   )
   add_dependencies(provider_pdal_gui_a ui)

@@ -295,6 +295,15 @@ class CORE_EXPORT QgsOgrUtils
     static QgsCoordinateReferenceSystem OGRSpatialReferenceToCrs( OGRSpatialReferenceH srs );
 
     /**
+     * Returns a OGRSpatialReferenceH corresponding to the specified \a crs object.
+     *
+     * \note Caller must release the returned object with OSRRelease.
+     *
+     * \since QGIS 3.22
+     */
+    static OGRSpatialReferenceH crsToOGRSpatialReference( const QgsCoordinateReferenceSystem &crs );
+
+    /**
      * Reads the encoding of the shapefile at the specified \a path (where \a path is the
      * location of the ".shp" file).
      *

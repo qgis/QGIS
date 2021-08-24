@@ -22,7 +22,7 @@ QString QgsWFSUtils::removeNamespacePrefix( const QString &tname )
   QString name( tname );
   if ( name.contains( ':' ) )
   {
-    QStringList splitList = name.split( ':' );
+    const QStringList splitList = name.split( ':' );
     if ( splitList.size() > 1 )
     {
       name = splitList.at( 1 );
@@ -33,7 +33,7 @@ QString QgsWFSUtils::removeNamespacePrefix( const QString &tname )
 
 QString QgsWFSUtils::nameSpacePrefix( const QString &tname )
 {
-  QStringList splitList = tname.split( ':' );
+  const QStringList splitList = tname.split( ':' );
   if ( splitList.size() < 2 )
   {
     return QString();

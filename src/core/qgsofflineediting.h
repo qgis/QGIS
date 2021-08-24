@@ -71,8 +71,12 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     //! Returns TRUE if current project is offline
     bool isOfflineProject() const;
 
-    //! Synchronize to remote layers
-    void synchronize();
+
+    /**
+     * Synchronize to remote layers
+     * \param useTransaction enforce the remote layer modifications with the same source to be in a transaction group
+     */
+    void synchronize( bool useTransaction = false );
 
   signals:
 
@@ -118,7 +122,7 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     bool createOfflineDb( const QString &offlineDbPath, ContainerType containerType = SpatiaLite );
     void createLoggingTables( sqlite3 *db );
 
-    QgsVectorLayer *copyVectorLayer( QgsVectorLayer *layer, sqlite3 *db, const QString &offlineDbPath, bool onlySelected, ContainerType containerType = SpatiaLite, const QString &layerNameSuffix = QStringLiteral( " (offline)" ) );
+    void convertToOfflineLayer( QgsVectorLayer *layer, sqlite3 *db, const QString &offlineDbPath, bool onlySelected, ContainerType containerType = SpatiaLite, const QString &layerNameSuffix = QStringLiteral( " (offline)" ) );
 
     void applyAttributesAdded( QgsVectorLayer *remoteLayer, sqlite3 *db, int layerId, int commitNo );
     void applyFeaturesAdded( QgsVectorLayer *offlineLayer, QgsVectorLayer *remoteLayer, sqlite3 *db, int layerId );
@@ -126,22 +130,11 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     void applyAttributeValueChanges( QgsVectorLayer *offlineLayer, QgsVectorLayer *remoteLayer, sqlite3 *db, int layerId, int commitNo );
     void applyGeometryChanges( QgsVectorLayer *remoteLayer, sqlite3 *db, int layerId, int commitNo );
     void updateFidLookup( QgsVectorLayer *remoteLayer, sqlite3 *db, int layerId );
-    void copySymbology( QgsVectorLayer *sourceLayer, QgsVectorLayer *targetLayer );
 
     /**
-     * Updates all relations that reference or are referenced by the source layer to the targetLayer.
+     * Returns the layer pk attribute index. If the pk is composite, return -1.
      */
-    void updateRelations( QgsVectorLayer *sourceLayer, QgsVectorLayer *targetLayer );
-
-    /**
-     * Update all map themes that affect the source layer.
-     */
-    void updateMapThemes( QgsVectorLayer *sourceLayer, QgsVectorLayer *targetLayer );
-
-    /**
-     * Preserve the layer order
-     */
-    void updateLayerOrder( QgsVectorLayer *sourceLayer, QgsVectorLayer *targetLayer );
+    int getLayerPkIdx( const QgsVectorLayer *layer ) const;
 
     QMap<int, int> attributeLookup( QgsVectorLayer *offlineLayer, QgsVectorLayer *remoteLayer );
 
@@ -151,14 +144,16 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     int getOrCreateLayerId( sqlite3 *db, const QString &qgisLayerId );
     int getCommitNo( sqlite3 *db );
     void increaseCommitNo( sqlite3 *db );
-    void addFidLookup( sqlite3 *db, int layerId, QgsFeatureId offlineFid, QgsFeatureId remoteFid );
-    QgsFeatureId remoteFid( sqlite3 *db, int layerId, QgsFeatureId offlineFid );
+    void addFidLookup( sqlite3 *db, int layerId, QgsFeatureId offlineFid, QgsFeatureId remoteFid, const QString &remotePk );
+    QgsFeatureId remoteFid( sqlite3 *db, int layerId, QgsFeatureId offlineFid, QgsVectorLayer *remoteLayer );
     QgsFeatureId offlineFid( sqlite3 *db, int layerId, QgsFeatureId remoteFid );
     bool isAddedFeature( sqlite3 *db, int layerId, QgsFeatureId fid );
 
     int sqlExec( sqlite3 *db, const QString &sql );
     int sqlQueryInt( sqlite3 *db, const QString &sql, int defaultValue );
+    QString sqlQueryStr( sqlite3 *db, const QString &sql, QString &defaultValue );
     QList<int> sqlQueryInts( sqlite3 *db, const QString &sql );
+    QString sqlEscape( QString value ) const;
 
     QList<QgsField> sqlQueryAttributesAdded( sqlite3 *db, const QString &sql );
     QgsFeatureIds sqlQueryFeaturesRemoved( sqlite3 *db, const QString &sql );
@@ -181,7 +176,7 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     GeometryChanges sqlQueryGeometryChanges( sqlite3 *db, const QString &sql );
 
   private slots:
-    void layerAdded( QgsMapLayer *layer );
+    void setupLayer( QgsMapLayer *layer );
     void committedAttributesAdded( const QString &qgisLayerId, const QList<QgsField> &addedAttributes );
     void committedFeaturesAdded( const QString &qgisLayerId, const QgsFeatureList &addedFeatures );
     void committedFeaturesRemoved( const QString &qgisLayerId, const QgsFeatureIds &deletedFeatureIds );

@@ -89,7 +89,7 @@ void TestQgsTemporalRangeObject::checkSettingTemporal()
 
 void TestQgsTemporalRangeObject::checkSettingTemporalRange()
 {
-  QgsDateTimeRange dateTimeRange = QgsDateTimeRange();
+  const QgsDateTimeRange dateTimeRange = QgsDateTimeRange();
 
   temporalObject->setTemporalRange( dateTimeRange );
 

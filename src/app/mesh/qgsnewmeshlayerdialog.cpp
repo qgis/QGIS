@@ -46,15 +46,15 @@ QgsNewMeshLayerDialog::QgsNewMeshLayerDialog( QWidget *parent, Qt::WindowFlags f
   for ( const QgsMeshDriverMetadata &driverMeta : driverList )
     if ( driverMeta.capabilities() & QgsMeshDriverMetadata::CanWriteMeshData )
     {
-      QString description = driverMeta.description();
-      QString driverName = driverMeta.name();
-      QString suffix = driverMeta.writeMeshFrameOnFileSuffix();
+      const QString description = driverMeta.description();
+      const QString driverName = driverMeta.name();
+      const QString suffix = driverMeta.writeMeshFrameOnFileSuffix();
       mFormatComboBox->addItem( description, driverName );
       mDriverSuffixes.insert( driverMeta.name(), suffix );
       mDriverFileFilters.insert( driverMeta.name(), tr( "%1" ).arg( description ) + QStringLiteral( " (*." ) + suffix + ')' );
     }
 
-  QStringList filters = mDriverFileFilters.values();
+  const QStringList filters = mDriverFileFilters.values();
   mFormatComboBox->setCurrentIndex( -1 );
   mFileWidget->setStorageMode( QgsFileWidget::SaveFile );
   mFileWidget->setFilter( filters.join( QStringLiteral( ";;" ) ) );
@@ -63,7 +63,7 @@ QgsNewMeshLayerDialog::QgsNewMeshLayerDialog( QWidget *parent, Qt::WindowFlags f
   connect( mFormatComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
            this, &QgsNewMeshLayerDialog::onFormatChanged );
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsNewMeshLayerDialog::onFilePathChanged );
-  connect( mEmptyMeshRadioButton, &QRadioButton::toggled, this, &QgsNewMeshLayerDialog::updateDialog );
+  connect( mInitializeMeshGroupBox, &QGroupBox::toggled, this, &QgsNewMeshLayerDialog::updateDialog );
   connect( mMeshFileRadioButton, &QRadioButton::toggled, this, &QgsNewMeshLayerDialog::updateDialog );
   connect( mMeshFromFileWidget, &QgsFileWidget::fileChanged, this, &QgsNewMeshLayerDialog::updateDialog );
   connect( mMeshProjectComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsNewMeshLayerDialog::updateDialog );
@@ -107,7 +107,7 @@ void QgsNewMeshLayerDialog::updateSourceMeshframe()
 {
   mMeshProjectComboBox->setEnabled( false );
   mMeshFromFileWidget->setEnabled( false );
-  if ( mEmptyMeshRadioButton->isChecked() )
+  if ( !mInitializeMeshGroupBox->isChecked() )
   {
     mSourceMeshFromFile.reset();
     mSourceMeshFrameReady = true;
@@ -144,20 +144,20 @@ void QgsNewMeshLayerDialog::updateSourceMeshframe()
 
 void QgsNewMeshLayerDialog::onFormatChanged()
 {
-  QString currentDriverName = mFormatComboBox->currentData().toString();
+  const QString currentDriverName = mFormatComboBox->currentData().toString();
   if ( currentDriverName.isEmpty() )
     return;
 
-  QString currentFilter = mDriverFileFilters.value( currentDriverName );
+  const QString currentFilter = mDriverFileFilters.value( currentDriverName );
   mFileWidget->setSelectedFilter( currentFilter );
 
-  QString newSuffix = mDriverSuffixes.value( currentDriverName );
+  const QString newSuffix = mDriverSuffixes.value( currentDriverName );
 
   QString currentFilePath = mFileWidget->filePath();
   if ( currentFilePath.isEmpty() )
     return;
-  QFileInfo fileInfo( currentFilePath );
-  QString currentSuffix = fileInfo.suffix();
+  const QFileInfo fileInfo( currentFilePath );
+  const QString currentSuffix = fileInfo.suffix();
 
   if ( !currentSuffix.isEmpty() )
     currentFilePath =  currentFilePath.mid( 0, currentFilePath.lastIndexOf( '.' ) );
@@ -174,10 +174,10 @@ void QgsNewMeshLayerDialog::onFormatChanged()
 
 void QgsNewMeshLayerDialog::onFilePathChanged()
 {
-  QFileInfo fileInfo( mFileWidget->filePath() );
+  const QFileInfo fileInfo( mFileWidget->filePath() );
   const QString &currentSuffix = fileInfo.suffix();
 
-  QStringList drivers = mDriverSuffixes.keys();
+  const QStringList drivers = mDriverSuffixes.keys();
   for ( const QString &driverName : drivers )
   {
     if ( mDriverSuffixes.value( driverName ) == currentSuffix )
@@ -214,15 +214,15 @@ void QgsNewMeshLayerDialog::updateSourceMeshInformation()
 bool QgsNewMeshLayerDialog::apply()
 {
   bool result = false;
-  QString fileName = mFileWidget->filePath();
-  QString format = mFormatComboBox->currentData().toString();
+  const QString fileName = mFileWidget->filePath();
+  const QString format = mFormatComboBox->currentData().toString();
 
   QgsMesh mesh;
   QgsCoordinateReferenceSystem crs;
 
   QgsMeshLayer *source = nullptr;
 
-  if ( mEmptyMeshRadioButton->isChecked() )
+  if ( !mInitializeMeshGroupBox->isChecked() )
   {
     crs = mProjectionSelectionWidget->crs();
   }
@@ -247,7 +247,17 @@ bool QgsNewMeshLayerDialog::apply()
     result = providerMetadata->createMeshData( mesh, fileName, format, crs );
     if ( result )
     {
-      std::unique_ptr<QgsMeshLayer> newMeshLayer = std::make_unique<QgsMeshLayer>( fileName, mLayerNameLineEdit->text(), QStringLiteral( "mdal" ) );
+      QString layerName = mLayerNameLineEdit->text();
+      if ( layerName.isEmpty() )
+      {
+        layerName = fileName;
+        QFileInfo fileInfo( fileName );
+        layerName = fileInfo.baseName();
+      }
+      std::unique_ptr<QgsMeshLayer> newMeshLayer = std::make_unique<QgsMeshLayer>( fileName, layerName, QStringLiteral( "mdal" ) );
+
+      if ( newMeshLayer->crs() != crs )
+        newMeshLayer->setCrs( crs );
 
       if ( newMeshLayer->isValid() )
         QgsProject::instance()->addMapLayer( newMeshLayer.release(), true, true );

@@ -72,7 +72,7 @@ QString QgsError::message( QgsErrorMessage::Format format ) const
 #ifdef QGISDEBUG
     QString file;
 #ifndef _MSC_VER
-    int sPrefixLength = strlen( CMAKE_SOURCE_DIR ) + 1;
+    const int sPrefixLength = strlen( CMAKE_SOURCE_DIR ) + 1;
     file = m.file().mid( sPrefixLength );
 #else
     file = m.file();
@@ -110,10 +110,10 @@ QString QgsError::message( QgsErrorMessage::Format format ) const
     {
       str += "<p><b>" + m.tag() + ":</b> " + m.message();
 #ifdef QGISDEBUG
-      QString location = QStringLiteral( "%1 : %2 : %3" ).arg( file ).arg( m.line() ).arg( m.function() );
+      const QString location = QStringLiteral( "%1 : %2 : %3" ).arg( file ).arg( m.line() ).arg( m.function() );
       if ( !srcUrl.isEmpty() )
       {
-        QString url = QStringLiteral( "%1/%2#L%3" ).arg( srcUrl, file ).arg( m.line() );
+        const QString url = QStringLiteral( "%1/%2#L%3" ).arg( srcUrl, file ).arg( m.line() );
         str += QStringLiteral( "<br>(<a href='%1'>%2</a>)" ).arg( url, location );
       }
       else

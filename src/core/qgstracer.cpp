@@ -660,14 +660,14 @@ void QgsTracer::setOffset( double offset )
 void QgsTracer::offsetParameters( int &quadSegments, int &joinStyle, double &miterLimit )
 {
   quadSegments = mOffsetSegments;
-  joinStyle = mOffsetJoinStyle;
+  joinStyle = static_cast< int >( mOffsetJoinStyle );
   miterLimit = mOffsetMiterLimit;
 }
 
 void QgsTracer::setOffsetParameters( int quadSegments, int joinStyle, double miterLimit )
 {
   mOffsetSegments = quadSegments;
-  mOffsetJoinStyle = joinStyle;
+  mOffsetJoinStyle = static_cast< Qgis::JoinStyle >( joinStyle );
   mOffsetMiterLimit = miterLimit;
 }
 

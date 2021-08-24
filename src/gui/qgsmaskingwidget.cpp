@@ -42,7 +42,7 @@ QgsMaskingWidget::QgsMaskingWidget( QWidget *parent ) :
 void QgsMaskingWidget::onSelectionChanged()
 {
   // display message if configuration is not consistent
-  bool printMessage = mMaskTargetsWidget->selection().empty() != mMaskSourcesWidget->selection().empty();
+  const bool printMessage = mMaskTargetsWidget->selection().empty() != mMaskSourcesWidget->selection().empty();
 
   if ( mMessageBarItem && !printMessage )
   {
@@ -127,14 +127,14 @@ void QgsMaskingWidget::populate()
   QgsMaskSourceSelectionWidget::MaskSource source;
   for ( auto layerIt = layers.begin(); layerIt != layers.end(); layerIt++ )
   {
-    QString layerId = layerIt.key();
+    const QString layerId = layerIt.key();
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layerIt.value() );
     if ( ! vl )
       continue;
 
     // collect symbol layer masks
-    QList<QPair<QgsSymbolLayerId, QList<QgsSymbolLayerReference>>> slMasks = symbolLayerMasks( vl );
-    for ( auto p : slMasks )
+    const QList<QPair<QgsSymbolLayerId, QList<QgsSymbolLayerReference>>> slMasks = symbolLayerMasks( vl );
+    for ( const QPair<QgsSymbolLayerId, QList<QgsSymbolLayerReference>> &p : slMasks )
     {
       const QgsSymbolLayerId &sourceSymbolLayerId = p.first;
       for ( const QgsSymbolLayerReference &ref : p.second )
@@ -199,7 +199,7 @@ void QgsMaskingWidget::apply()
       {
         QgsMaskMarkerSymbolLayer *maskSl = const_cast<QgsMaskMarkerSymbolLayer *>( static_cast<const QgsMaskMarkerSymbolLayer *>( sl ) );
 
-        QgsSymbolLayerReferenceList masks = maskSl->masks();
+        const QgsSymbolLayerReferenceList masks = maskSl->masks();
         QgsSymbolLayerReferenceList newMasks;
         for ( const QgsSymbolLayerReference &ref : masks )
         {
@@ -230,14 +230,14 @@ void QgsMaskingWidget::apply()
     // Now reset label masks
     if ( ! vl->labeling() )
       continue;
-    for ( QString labelProvider : vl->labeling()->subProviders() )
+    for ( const QString &labelProvider : vl->labeling()->subProviders() )
     {
       // clear symbol layers
       QgsPalLayerSettings settings = vl->labeling()->settings( labelProvider );
       QgsTextFormat format = settings.format();
       if ( ! format.mask().enabled() )
         continue;
-      QgsSymbolLayerReferenceList masks = format.mask().maskedSymbolLayers();
+      const QgsSymbolLayerReferenceList masks = format.mask().maskedSymbolLayers();
       QgsSymbolLayerReferenceList newMasks;
       for ( const QgsSymbolLayerReference &ref : masks )
       {
@@ -269,7 +269,7 @@ void QgsMaskingWidget::apply()
   // trigger refresh of the current layer
   mLayer->triggerRepaint();
   // trigger refresh of dependent layers (i.e. mask source layers)
-  for ( QString layerId : layersToRefresh )
+  for ( const QString &layerId : layersToRefresh )
   {
     QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerId );
     layer->triggerRepaint();

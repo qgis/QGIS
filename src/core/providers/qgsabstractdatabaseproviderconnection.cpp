@@ -48,12 +48,14 @@ Qgis::SqlLayerDefinitionCapabilities QgsAbstractDatabaseProviderConnection::sqlL
   return mSqlLayerDefinitionCapabilities;
 }
 
+
 QString QgsAbstractDatabaseProviderConnection::tableUri( const QString &schema, const QString &name ) const
 {
   Q_UNUSED( schema )
   Q_UNUSED( name )
   throw QgsProviderConnectionException( QObject::tr( "Operation 'tableUri' is not supported" ) );
 }
+
 
 ///@cond PRIVATE
 void QgsAbstractDatabaseProviderConnection::checkCapability( QgsAbstractDatabaseProviderConnection::Capability capability ) const
@@ -1036,6 +1038,13 @@ void QgsAbstractDatabaseProviderConnection::renameVectorTable( const QString &, 
   checkCapability( Capability::RenameVectorTable );
 }
 
+
+QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsAbstractDatabaseProviderConnection::sqlOptions( const QString & )
+{
+  checkCapability( Capability::SqlLayers );
+  return SqlVectorLayerOptions();
+}
+
 void QgsAbstractDatabaseProviderConnection::renameRasterTable( const QString &, const QString &, const QString & ) const
 {
   checkCapability( Capability::RenameRasterTable );
@@ -1507,5 +1516,5 @@ long long QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterato
   return rowCountPrivate();
 }
 
-
 ///@endcond private
+

@@ -281,6 +281,17 @@ links.
 .. versionadded:: 3.0
 %End
 
+    static bool isUrl( const QString &string );
+%Docstring
+Returns whether the string is a URL (http,https,ftp,file)
+
+:param string: the string to check
+
+:return: whether the string is an URL
+
+.. versionadded:: 3.22
+%End
+
     static QString wordWrap( const QString &string, int length, bool useMaxLineLength = true, const QString &customDelimiter = QString() );
 %Docstring
 Automatically wraps a ``string`` by inserting new line characters at appropriate locations in the string.

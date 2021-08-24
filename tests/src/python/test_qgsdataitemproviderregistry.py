@@ -47,7 +47,7 @@ class TestQgsDataItemProviderRegistry(unittest.TestCase):
         registry = QgsDataItemProviderRegistry()
         initial_providers = registry.providers()
         self.assertTrue(initial_providers)  # we expect a bunch of default providers
-        self.assertTrue([p.name() for p in initial_providers if p.name() == 'GDAL'])
+        self.assertTrue([p.name() for p in initial_providers if p.name() == 'files'])
 
         # add a new provider
         p1 = TestProvider('p1')

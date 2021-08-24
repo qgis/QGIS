@@ -59,14 +59,14 @@ static void buildSnapIndex( QgsFeatureIterator &fi, QgsSpatialIndex &index, QVec
     if ( feedback->isCanceled() )
       break;
 
-    QgsGeometry g = f.geometry();
+    const QgsGeometry g = f.geometry();
 
     for ( auto it = g.vertices_begin(); it != g.vertices_end(); ++it )
     {
-      QgsPoint pt = *it;
-      QgsRectangle rect( pt.x(), pt.y(), pt.x(), pt.y() );
+      const QgsPoint pt = *it;
+      const QgsRectangle rect( pt.x(), pt.y(), pt.x(), pt.y() );
 
-      QList<QgsFeatureId> ids = index.intersects( rect );
+      const QList<QgsFeatureId> ids = index.intersects( rect );
       if ( ids.isEmpty() )
       {
         // add to tree and to structure
@@ -89,7 +89,7 @@ static void buildSnapIndex( QgsFeatureIterator &fi, QgsSpatialIndex &index, QVec
 
 static void assignAnchors( QgsSpatialIndex &index, QVector<AnchorPoint> &pnts, double thresh )
 {
-  double thresh2 = thresh * thresh;
+  const double thresh2 = thresh * thresh;
   int nanchors = 0, ntosnap = 0;
   for ( int point = 0; point < pnts.count(); ++point )
   {
@@ -101,17 +101,17 @@ static void assignAnchors( QgsSpatialIndex &index, QVector<AnchorPoint> &pnts, d
 
     // Find points in threshold
     double x = pnts[point].x, y = pnts[point].y;
-    QgsRectangle rect( x - thresh, y - thresh, x + thresh, y + thresh );
+    const QgsRectangle rect( x - thresh, y - thresh, x + thresh, y + thresh );
 
     const QList<QgsFeatureId> ids = index.intersects( rect );
-    for ( QgsFeatureId pointb : ids )
+    for ( const QgsFeatureId pointb : ids )
     {
       if ( pointb == point )
         continue;
 
-      double dx = pnts[pointb].x - pnts[point].x;
-      double dy = pnts[pointb].y - pnts[point].y;
-      double dist2 = dx * dx + dy * dy;
+      const double dx = pnts[pointb].x - pnts[point].x;
+      const double dy = pnts[pointb].y - pnts[point].y;
+      const double dist2 = dx * dx + dy * dy;
       if ( dist2 > thresh2 )
         continue;   // outside threshold
 
@@ -124,9 +124,9 @@ static void assignAnchors( QgsSpatialIndex &index, QVector<AnchorPoint> &pnts, d
       else if ( pnts[pointb].anchor >= 0 )
       {
         // check distance to previously assigned anchor
-        double dx2 = pnts[pnts[pointb].anchor].x - pnts[pointb].x;
-        double dy2 = pnts[pnts[pointb].anchor].y - pnts[pointb].y;
-        double dist2_a = dx2 * dx2 + dy2 * dy2;
+        const double dx2 = pnts[pnts[pointb].anchor].x - pnts[pointb].x;
+        const double dy2 = pnts[pnts[pointb].anchor].y - pnts[pointb].y;
+        const double dist2_a = dx2 * dx2 + dy2 * dy2;
         if ( dist2 < dist2_a )
           pnts[pointb].anchor = point;   // replace old anchor
       }
@@ -141,8 +141,8 @@ static bool snapPoint( QgsPoint *pt, QgsSpatialIndex &index, QVector<AnchorPoint
   QList<QgsFeatureId> fids = index.intersects( QgsRectangle( pt->x(), pt->y(), pt->x(), pt->y() ) );
   Q_ASSERT( fids.count() == 1 );
 
-  int spoint = fids[0];
-  int anchor = pnts[spoint].anchor;
+  const int spoint = fids[0];
+  const int anchor = pnts[spoint].anchor;
 
   if ( anchor >= 0 )
   {
@@ -160,23 +160,23 @@ static bool snapLineString( QgsLineString *linestring, QgsSpatialIndex &index, Q
 {
   QVector<QgsPoint> newPoints;
   QVector<int> anchors;  // indexes of anchors for vertices
-  double thresh2 = thresh * thresh;
+  const double thresh2 = thresh * thresh;
   double minDistX, minDistY;   // coordinates of the closest point on the segment line
   bool changed = false;
 
   // snap vertices
   for ( int v = 0; v < linestring->numPoints(); v++ )
   {
-    double x = linestring->xAt( v );
-    double y = linestring->yAt( v );
-    QgsRectangle rect( x, y, x, y );
+    const double x = linestring->xAt( v );
+    const double y = linestring->yAt( v );
+    const QgsRectangle rect( x, y, x, y );
 
     // Find point ( should always find one point )
     QList<QgsFeatureId> fids = index.intersects( rect );
     Q_ASSERT( fids.count() == 1 );
 
-    int spoint = fids.first();
-    int anchor = pnts[spoint].anchor;
+    const int spoint = fids.first();
+    const int anchor = pnts[spoint].anchor;
     if ( anchor >= 0 )
     {
       // to be snapped
@@ -194,10 +194,10 @@ static bool snapLineString( QgsLineString *linestring, QgsSpatialIndex &index, Q
   // Snap all segments to anchors in threshold
   for ( int v = 0; v < linestring->numPoints() - 1; v++ )
   {
-    double x1 = linestring->xAt( v );
-    double x2 = linestring->xAt( v + 1 );
-    double y1 = linestring->yAt( v );
-    double y2 = linestring->yAt( v + 1 );
+    const double x1 = linestring->xAt( v );
+    const double x2 = linestring->xAt( v + 1 );
+    const double y1 = linestring->yAt( v );
+    const double y2 = linestring->yAt( v + 1 );
 
     newPoints << linestring->pointN( v );
 
@@ -208,7 +208,7 @@ static bool snapLineString( QgsLineString *linestring, QgsSpatialIndex &index, Q
     if ( ymin > ymax )
       std::swap( ymin, ymax );
 
-    QgsRectangle rect( xmin - thresh, ymin - thresh, xmax + thresh, ymax + thresh );
+    const QgsRectangle rect( xmin - thresh, ymin - thresh, xmax + thresh, ymax + thresh );
 
     // Find points
     const QList<QgsFeatureId> fids = index.intersects( rect );
@@ -216,9 +216,9 @@ static bool snapLineString( QgsLineString *linestring, QgsSpatialIndex &index, Q
     QVector<AnchorAlongSegment> newVerticesAlongSegment;
 
     // Snap to anchor in threshold different from end points
-    for ( QgsFeatureId fid : fids )
+    for ( const QgsFeatureId fid : fids )
     {
-      int spoint = fid;
+      const int spoint = fid;
 
       if ( spoint == anchors[v] || spoint == anchors[v + 1] )
         continue; // end point
@@ -226,11 +226,11 @@ static bool snapLineString( QgsLineString *linestring, QgsSpatialIndex &index, Q
         continue; // point is not anchor
 
       // Check the distance
-      double dist2 = QgsGeometryUtils::sqrDistToLine( pnts[spoint].x, pnts[spoint].y, x1, y1, x2, y2, minDistX, minDistY, 0 );
+      const double dist2 = QgsGeometryUtils::sqrDistToLine( pnts[spoint].x, pnts[spoint].y, x1, y1, x2, y2, minDistX, minDistY, 0 );
       // skip points that are behind segment's endpoints or extremely close to them
       double dx1 = minDistX - x1, dx2 = minDistX - x2;
       double dy1 = minDistY - y1, dy2 = minDistY - y2;
-      bool isOnSegment = !qgsDoubleNear( dx1 * dx1 + dy1 * dy1, 0 ) && !qgsDoubleNear( dx2 * dx2 + dy2 * dy2, 0 );
+      const bool isOnSegment = !qgsDoubleNear( dx1 * dx1 + dy1 * dy1, 0 ) && !qgsDoubleNear( dx2 * dx2 + dy2 * dy2, 0 );
       if ( isOnSegment && dist2 <= thresh2 )
       {
         // an anchor is in the threshold
@@ -252,7 +252,7 @@ static bool snapLineString( QgsLineString *linestring, QgsSpatialIndex &index, Q
       // insert new vertices
       for ( int i = 0; i < newVerticesAlongSegment.count(); i++ )
       {
-        int anchor = newVerticesAlongSegment[i].anchor;
+        const int anchor = newVerticesAlongSegment[i].anchor;
         newPoints << QgsPoint( pnts[anchor].x, pnts[anchor].y, 0 );
       }
       changed = true;
@@ -306,7 +306,7 @@ int QgsGeometrySnapperSingleSource::run( const QgsFeatureSource &source, QgsFeat
   // the logic here comes from GRASS implementation of Vect_snap_lines_list()
 
   long long count = 0;
-  long long totalCount = source.featureCount() * 2;
+  const long long totalCount = source.featureCount() * 2;
 
   // step 1: record all point locations in a spatial index + extra data structure to keep
   // reference to which other point they have been snapped to (in the next phase).

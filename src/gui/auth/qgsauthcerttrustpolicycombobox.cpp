@@ -40,8 +40,8 @@ QgsAuthCertTrustPolicyComboBox::QgsAuthCertTrustPolicyComboBox( QWidget *parent,
 
   for ( int i = 0; i < policies.size(); i++ )
   {
-    QgsAuthCertUtils::CertTrustPolicy polcy = policies.at( i ).first;
-    QString name = policies.at( i ).second;
+    const QgsAuthCertUtils::CertTrustPolicy polcy = policies.at( i ).first;
+    const QString name = policies.at( i ).second;
     addItem( name, QVariant( static_cast<int>( polcy ) ) );
   }
 
@@ -76,19 +76,19 @@ QgsAuthCertUtils::CertTrustPolicy QgsAuthCertTrustPolicyComboBox::trustPolicyFor
 
 void QgsAuthCertTrustPolicyComboBox::setTrustPolicy( QgsAuthCertUtils::CertTrustPolicy policy )
 {
-  int idx = findData( QVariant( static_cast<int>( policy ) ) );
+  const int idx = findData( QVariant( static_cast<int>( policy ) ) );
   setCurrentIndex( idx == -1 ? 0 : idx );
 }
 
 void QgsAuthCertTrustPolicyComboBox::setDefaultTrustPolicy( QgsAuthCertUtils::CertTrustPolicy defaultpolicy )
 {
-  int idx = findData( QVariant( static_cast<int>( QgsAuthCertUtils::DefaultTrust ) ) );
+  const int idx = findData( QVariant( static_cast<int>( QgsAuthCertUtils::DefaultTrust ) ) );
   setItemText( idx, defaultTrustText( defaultpolicy ) );
 }
 
 void QgsAuthCertTrustPolicyComboBox::highlightCurrentIndex( int indx )
 {
-  QgsAuthCertUtils::CertTrustPolicy policy = ( QgsAuthCertUtils::CertTrustPolicy )itemData( indx ).toInt();
+  const QgsAuthCertUtils::CertTrustPolicy policy = ( QgsAuthCertUtils::CertTrustPolicy )itemData( indx ).toInt();
   QString ss;
 
   // TODO: why are these widget state selectors backwards?
