@@ -2213,12 +2213,12 @@ QString QgsMapLayer::generalHtmlMetadata() const
         isLocalPath = true;
         metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Path" ) + QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( path ).toString(), QDir::toNativeSeparators( path ) ) ) + QStringLiteral( "</td></tr>\n" );
 
-        qint64 fileSize = fi.size();
         QDateTime lastModified = fi.lastModified();
         QString lastModifiedFileName;
         QSet<QString> sidecarFiles = QgsFileUtils::sidecarFilesForPath( path );
         if ( fi.isFile() )
         {
+          qint64 fileSize = fi.size();
           if ( !sidecarFiles.isEmpty() )
           {
             lastModifiedFileName = fi.fileName();
@@ -2238,7 +2238,7 @@ QString QgsMapLayer::generalHtmlMetadata() const
           }
           metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + ( !sidecarFiles.isEmpty() ? tr( "Total size" ) : tr( "Size" ) ) + QStringLiteral( "</td><td>%1" ).arg( QgsFileUtils::representFileSize( fileSize ) ) + QStringLiteral( "</td></tr>\n" );
         }
-        metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Last modified" ) + QStringLiteral( "</td><td>%1" ).arg( QLocale().toString( fi.lastModified() ) ) + ( !lastModifiedFileName.isEmpty() ? QStringLiteral( " (%1)" ).arg( lastModifiedFileName ) : "" ) + QStringLiteral( "</td></tr>\n" );
+        metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Last modified" ) + QStringLiteral( "</td><td>%1" ).arg( QLocale().toString( fi.lastModified() ) ) + ( !lastModifiedFileName.isEmpty() ? QStringLiteral( " (%1)" ).arg( lastModifiedFileName ) : QString() ) + QStringLiteral( "</td></tr>\n" );
       }
     }
     if ( uriComponents.contains( QStringLiteral( "url" ) ) )
