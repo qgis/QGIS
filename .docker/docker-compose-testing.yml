@@ -24,9 +24,8 @@ services:
     volumes:
       - ${GH_WORKSPACE}:/root/QGIS
     links:
-      - webdav
     #  - mssql
-    links:
+      - webdav
       - httpbin
     env_file:
       - docker-variables.env
