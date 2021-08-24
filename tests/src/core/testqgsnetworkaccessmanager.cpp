@@ -819,7 +819,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   }
 
   QVERIFY( gotRequestAboutToBeCreatedSignal );
-/*
+
   // blocking request
   lastTest = QStringLiteral( "TEST_02 blocking request --->>> " );
   hash = QUuid::createUuid().toString().mid( 1, 10 );
@@ -838,7 +838,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   }
   QVERIFY( gotRequestAboutToBeCreatedSignal );
   QCOMPARE( rep.requestId(), requestId );
-*/
+
   // now try in a thread
   lastTest = QStringLiteral( "TEST_03 now try in a thread --->>> " );
   loaded = false;
@@ -900,7 +900,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   {
     qApp->processEvents();
   }
-/*
+
   // blocking request
   lastTest = QStringLiteral( "TEST_06 blocking request --->>> " );
   loaded = false;
@@ -920,7 +920,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   }
   QVERIFY( gotRequestAboutToBeCreatedSignal );
   QCOMPARE( rep.requestId(), requestId );
-*/
+
   // correct username and password, in a thread
   lastTest = QStringLiteral( "TEST_07 correct username and password, in a thread --->>> " );
   hash = QUuid::createUuid().toString().mid( 1, 10 );
