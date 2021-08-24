@@ -99,6 +99,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
     QgsVectorLayerTemporalContext temporalContext;
     temporalContext.setLayer( layer );
     mTemporalFilter = qobject_cast< const QgsVectorLayerTemporalProperties * >( layer->temporalProperties() )->createFilterString( temporalContext, context.temporalRange() );
+    qDebug() << "Rendering with Temporal Filter: " << mTemporalFilter;
   }
 
   // if there's already a simplification method specified via the context, we respect that. Otherwise, we fall back
