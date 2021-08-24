@@ -674,7 +674,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      * Returns a list of vertex indexes that meet the condition defined by \a expression with the context \a expressionContext
      *
      * To express the relation with a vertex, the expression can be defined with function returning value
-     * linked to the current vertex, like " $vertex_Z_value ", "$vertex_as_point"
+     * linked to the current vertex, like " $vertex_z ", "$vertex_as_point"
      *
      * \since QGIS 3.22
      */
