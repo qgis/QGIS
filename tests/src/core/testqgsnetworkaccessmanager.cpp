@@ -759,6 +759,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   //if ( QgsTest::isCIRun() )
   //  QSKIP( "Skip remote test, looks like problem with httpbin" );
   // initially this request should fail -- we aren't providing the username and password required
+  QgsNetworkAccessManager::setTimeout( 5000 );
   QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< TestAuthRequestHandler >( QString(), QString() ) );
 
   const QObject context;
@@ -837,10 +838,10 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   QgsNetworkReplyContent rep = QgsNetworkAccessManager::blockingGet( req );
   QWARN( ( lastTest + QStringLiteral( " ? finished ? " ) ).toLatin1().data() );
   QVERIFY( rep.content().isEmpty() );
-  //while ( !loaded )
-  //{
-  //  qApp->processEvents();
-  //}
+  while ( !loaded )
+  {
+    qApp->processEvents();
+  }
   QVERIFY( gotRequestAboutToBeCreatedSignal );
   QCOMPARE( rep.requestId(), requestId );
 
@@ -924,10 +925,10 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   rep = QgsNetworkAccessManager::blockingGet( req );
   QWARN( ( lastTest + QStringLiteral( " ? finished ? " ) ).toLatin1().data() );
   QVERIFY( rep.content().contains( "\"user\": \"me\"" ) );
-  //while ( !loaded )
-  //{
-  //  qApp->processEvents();
-  //}
+  while ( !loaded )
+  {
+    qApp->processEvents();
+  }
   QVERIFY( gotRequestAboutToBeCreatedSignal );
   QCOMPARE( rep.requestId(), requestId );
 
