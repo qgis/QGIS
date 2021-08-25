@@ -204,6 +204,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   tableViewMetadataUrl->setSelectionMode( QAbstractItemView::SingleSelection );
   tableViewMetadataUrl->setSelectionBehavior( QAbstractItemView::SelectRows );
   tableViewMetadataUrl->horizontalHeader()->setStretchLastSection( true );
+  tableViewMetadataUrl->horizontalHeader()->setSectionResizeMode( QHeaderView::Stretch );
 
   mMetadataUrlModel = new QStandardItemModel( tableViewMetadataUrl );
   mMetadataUrlModel->clear();

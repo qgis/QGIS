@@ -24,41 +24,54 @@ app = start_app()
 
 class TestQgsMapLayerServerConfig(unittest.TestCase):
 
-    def test_false(self):
-        self.assertTrue(False)
-
     def test_deprecated_function(self):
-        """ Test deprecated function about metadata url. """
+        """ Test deprecated function about metadata url in QgsMapLayer. """
+        # Remove in QGIS 4.0
         layer = QgsVectorLayer('Point?field=fldtxt:string', 'layer_1', 'memory')
 
-        self.assertEqual("", layer.serverProperties().metadataUrls()[0].url)
-        self.assertEqual("", layer.serverProperties().metadataUrls()[0].format)
-        self.assertEqual("", layer.serverProperties().metadataUrls()[0].type)
+        self.assertEqual("", layer.metadataUrl())
+        self.assertEqual("", layer.metadataUrlType())
+        self.assertEqual("", layer.metadataUrlFormat())
 
-        layer.setMetadataUrl("https://my.url")
-
-        self.assertEqual("https://my.url", layer.serverProperties().metadataUrls()[0].url)
-        self.assertEqual("", layer.serverProperties().metadataUrls()[0].format)
-        self.assertEqual("", layer.serverProperties().metadataUrls()[0].type)
+        self.assertEqual(0, len(layer.serverProperties().metadataUrls()))
 
         layer.setMetadataUrl("https://my.other.url")
         layer.setMetadataUrlFormat("text/xml")
         layer.setMetadataUrlType("FGDC")
 
+        self.assertEqual(1, len(layer.serverProperties().metadataUrls()))
+
+        # Access from server properties
         self.assertEqual("https://my.other.url", layer.serverProperties().metadataUrls()[0].url)
         self.assertEqual("text/xml", layer.serverProperties().metadataUrls()[0].format)
         self.assertEqual("FGDC", layer.serverProperties().metadataUrls()[0].type)
 
+        # Access from QgsMapLayer
+        self.assertEqual("https://my.other.url", layer.metadataUrl())
+        self.assertEqual("text/xml", layer.metadataUrlFormat())
+        self.assertEqual("FGDC", layer.metadataUrlType())
+
     def test_read_write(self):
         """ Test read write the structure about metadata url. """
         layer = QgsVectorLayer('Point?field=fldtxt:string', 'layer_1', 'memory')
-        server_properties = QgsMapLayerServerProperties(layer)
-        self.assertListEqual([], server_properties.metadataUrl())
 
         url = QgsMapLayerServerProperties.MetadataUrl("https://my.url", "FGDC", "text/xml")
-        server_properties.addMetadataUrl(url)
-        layer.setServerProperties(server_properties)
-        self.assertEqual("https://m.url", layer.serverProperties().metadataUrls()[0].url)
+
+        self.assertEqual("https://my.url", url.url)
+        self.assertEqual("text/xml", url.format)
+        self.assertEqual("FGDC", url.type)
+
+        layer.serverProperties().addMetadataUrl(url)
+
+        self.assertEqual(1, len(layer.serverProperties().metadataUrls()))
+        self.assertEqual("https://my.url", layer.serverProperties().metadataUrls()[0].url)
+
+        replace_url = QgsMapLayerServerProperties.MetadataUrl("new.url", "FGDC", "text/xml")
+        properties = layer.serverProperties()
+        properties.setMetadataUrls([replace_url])
+
+        self.assertEqual(1, len(layer.serverProperties().metadataUrls()))
+        self.assertEqual("new.url", layer.serverProperties().metadataUrls()[0].url)
 
     def test_metadata_url(self):
         """ Test the metadata url struct. """
@@ -67,5 +80,12 @@ class TestQgsMapLayerServerConfig(unittest.TestCase):
         other = QgsMapLayerServerProperties.MetadataUrl("https://my.url", "FGDC", "text/html")
         self.assertFalse(url == other)
 
+        other = QgsMapLayerServerProperties.MetadataUrl("https://url", "FGDC", "text/xml")
+        self.assertFalse(url == other)
+
         other = QgsMapLayerServerProperties.MetadataUrl("https://my.url", "FGDC", "text/xml")
         self.assertTrue(url == other)
+
+
+if __name__ == '__main__':
+    unittest.main()

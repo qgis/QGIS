@@ -71,7 +71,7 @@ Add a metadataUrl for the layer
 %End
     virtual const QgsMapLayer *layer() const = 0;
 %Docstring
-Get parent layer
+Gets the parent layer
 %End
 
   protected:
@@ -168,7 +168,7 @@ Removes a QGIS Server WMS Dimension
 %Docstring
 Set WMS Dimensions
 
-:param the: new dimensions that replace the current ones.
+:param dimensions: the new dimensions that replace the current ones.
 %End
 
     const QList<QgsServerWmsDimensionProperties::WmsDimensionInfo> wmsDimensions() const;
@@ -180,7 +180,7 @@ Returns the QGIS Server WMS Dimension list.
 
     virtual const QgsMapLayer *layer() const = 0;
 %Docstring
-Get parent layer
+Gets the parent layer
 %End
 
   protected:
@@ -245,7 +245,7 @@ Reset properties to default
 
     virtual const QgsMapLayer *layer() const;
 %Docstring
-Get Parent layer
+Gets the parent layer
 %End
 };
 

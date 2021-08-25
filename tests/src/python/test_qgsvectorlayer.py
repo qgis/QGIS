@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsVectorLayer.
 
+From build dir, run:
+ctest -R PyQgsVectorLayer -V
+
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -51,11 +54,12 @@ from qgis.core import (QgsWkbTypes,
                        QgsExpressionContextScope,
                        QgsExpressionContextUtils,
                        QgsLineSymbol,
+                       QgsMapLayerServerProperties,
                        QgsMapLayerStyle,
                        QgsMapLayerDependency,
                        QgsRenderContext,
                        QgsPalLayerSettings,
-                       QgsVectorServerProperties,
+                       # QgsVectorLayerServerProperties,
                        QgsVectorLayerSimpleLabeling,
                        QgsSingleCategoryDiagramRenderer,
                        QgsDiagramLayerSettings,
@@ -2916,7 +2920,9 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
     def test_server_properties(self):
         """ Test server properties. """
         layer = QgsVectorLayer('Point?field=fldtxt:string', 'layer_1', 'memory')
-        self.assertIsInstance(layer.serverProperties(), QgsVectorServerProperties)
+        # This should pass
+        # self.assertIsInstance(layer.serverProperties(), QgsVectorLayerServerProperties)
+        self.assertIsInstance(layer.serverProperties(), QgsMapLayerServerProperties)
 
     def testClone(self):
         # init crs

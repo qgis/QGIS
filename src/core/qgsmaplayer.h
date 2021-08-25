@@ -435,7 +435,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \see serverProperties()
      * \deprecated since QGIS 3.22
      */
-    void setMetadataUrl( const QString &metaUrl );
+    Q_DECL_DEPRECATED void setMetadataUrl( const QString &metaUrl ) SIP_DEPRECATED;
 
     /**
      * Returns the metadata URL of the layer
@@ -446,7 +446,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \see serverProperties()
      * \deprecated since QGIS 3.22
      */
-    QString metadataUrl() const;
+    Q_DECL_DEPRECATED QString metadataUrl() const SIP_DEPRECATED;
 
     /**
      * Set the metadata type of the layer
@@ -457,7 +457,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \see serverProperties()
      * \deprecated since QGIS 3.22
      */
-    void setMetadataUrlType( const QString &metaUrlType );
+    Q_DECL_DEPRECATED void setMetadataUrlType( const QString &metaUrlType ) SIP_DEPRECATED;
 
     /**
      * Returns the metadata type of the layer
@@ -468,7 +468,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \see serverProperties()
      * \deprecated since QGIS 3.22
      */
-    QString metadataUrlType() const;
+    Q_DECL_DEPRECATED QString metadataUrlType() const SIP_DEPRECATED;
 
     /**
      * Sets the metadata format of the layer
@@ -478,7 +478,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \see serverProperties()
      * \deprecated since QGIS 3.22
      */
-    void setMetadataUrlFormat( const QString &metaUrlFormat );
+    Q_DECL_DEPRECATED void setMetadataUrlFormat( const QString &metaUrlFormat ) SIP_DEPRECATED;
 
     /**
      * Returns the metadata format of the layer
@@ -489,7 +489,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \see serverProperties()
      * \deprecated since QGIS 3.22
      */
-    QString metadataUrlFormat() const;
+    Q_DECL_DEPRECATED QString metadataUrlFormat() const SIP_DEPRECATED;
 
     /**
      * Set the blending mode used for rendering a layer.

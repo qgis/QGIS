@@ -101,7 +101,7 @@ class CORE_EXPORT QgsServerMetadataUrlProperties
      */
     void addMetadataUrl( const QgsServerMetadataUrlProperties::MetadataUrl &metaUrl ) { mMetadataUrls << metaUrl; };
 
-    //! Get parent layer
+    //! Gets the parent layer
     virtual const QgsMapLayer *layer() const = 0;
 
   protected:
@@ -221,7 +221,7 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
     /**
      * Set WMS Dimensions
      *
-     * \param the new dimensions that replace the current ones.
+     * \param dimensions the new dimensions that replace the current ones.
      */
     void setWmsDimensions( const QList<QgsServerWmsDimensionProperties::WmsDimensionInfo> &dimensions );
 
@@ -231,7 +231,7 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
      */
     const QList<QgsServerWmsDimensionProperties::WmsDimensionInfo> wmsDimensions() const;
 
-    //! Get parent layer
+    //! Gets the parent layer
     virtual const QgsMapLayer *layer() const = 0;
 
   protected:
@@ -307,7 +307,7 @@ class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProper
      */
     void reset();
 
-    //! Get Parent layer
+    //! Gets the parent layer
     const QgsMapLayer *layer() const override { return mLayer; };
 
   private:

@@ -2249,6 +2249,8 @@ bool QgsRasterLayer::writeXml( QDomNode &layer_node,
 
   writeStyleManager( layer_node, document );
 
+  serverProperties()->writeXml( layer_node, document );
+
   //write out the symbology
   QString errorMsg;
   return writeSymbology( layer_node, document, errorMsg, context );

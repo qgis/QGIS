@@ -228,17 +228,19 @@ QString QgsMapLayer::metadataUrl() const
 
 void QgsMapLayer::setMetadataUrlType( const QString &metaUrlType )
 {
-  if ( mServerProperties->metadataUrls().isEmpty() )
+  QList<QgsMapLayerServerProperties::MetadataUrl> urls = mServerProperties->metadataUrls();
+  if ( urls.isEmpty() )
   {
     QgsMapLayerServerProperties::MetadataUrl newItem( QLatin1String(), metaUrlType, QLatin1String() );
-    mServerProperties->metadataUrls().insert( 0, newItem );
+    urls.insert( 0, newItem );
   }
   else
   {
-    QgsMapLayerServerProperties::MetadataUrl old = mServerProperties->metadataUrls().takeAt( 0 );
+    QgsMapLayerServerProperties::MetadataUrl old = urls.takeFirst();
     QgsMapLayerServerProperties::MetadataUrl newItem( old.url, metaUrlType, old.format );
-    mServerProperties->metadataUrls().insert( 0, newItem );
+    urls.insert( 0, newItem );
   }
+  mServerProperties->setMetadataUrls( urls );
 }
 
 QString QgsMapLayer::metadataUrlType() const
@@ -255,17 +257,19 @@ QString QgsMapLayer::metadataUrlType() const
 
 void QgsMapLayer::setMetadataUrlFormat( const QString &metaUrlFormat )
 {
-  if ( mServerProperties->metadataUrls().isEmpty() )
+  QList<QgsMapLayerServerProperties::MetadataUrl> urls = mServerProperties->metadataUrls();
+  if ( urls.isEmpty() )
   {
     QgsMapLayerServerProperties::MetadataUrl newItem( QLatin1String(), QLatin1String(), metaUrlFormat );
-    mServerProperties->metadataUrls().insert( 0, newItem );
+    urls.insert( 0, newItem );
   }
   else
   {
-    QgsMapLayerServerProperties::MetadataUrl old = mServerProperties->metadataUrls().takeAt( 0 );
+    QgsMapLayerServerProperties::MetadataUrl old = urls.takeAt( 0 );
     QgsMapLayerServerProperties::MetadataUrl newItem( old.url, old.type, metaUrlFormat );
-    mServerProperties->metadataUrls().insert( 0, newItem );
+    urls.insert( 0, newItem );
   }
+  mServerProperties->setMetadataUrls( urls );
 }
 
 QString QgsMapLayer::metadataUrlFormat() const
@@ -468,18 +472,22 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
     mAttributionUrl = attribElem.attribute( QStringLiteral( "href" ), QString() );
   }
 
-  //metadataUrl, keep for legacy QGIS project < 3.22
-  QDomElement metaUrlElem = layerElement.firstChildElement( QStringLiteral( "metadataUrl" ) );
-  if ( !metaUrlElem.isNull() )
-  {
-    QString url = metaUrlElem.text();
-    QString type = metaUrlElem.attribute( QStringLiteral( "type" ), QString() );
-    QString format = metaUrlElem.attribute( QStringLiteral( "format" ), QString() );
-    QgsMapLayerServerProperties::MetadataUrl newItem( url, type, format );
-    serverProperties()->metadataUrls().insert( 0, newItem );
-  }
-
   serverProperties()->readXml( layerElement );
+
+  if ( serverProperties()->metadataUrls().isEmpty() )
+  {
+    // metadataUrl is still empty, maybe it's a QGIS Project < 3.22
+    // keep for legacy
+    QDomElement metaUrlElem = layerElement.firstChildElement( QStringLiteral( "metadataUrl" ) );
+    if ( !metaUrlElem.isNull() )
+    {
+      QString url = metaUrlElem.text();
+      QString type = metaUrlElem.attribute( QStringLiteral( "type" ), QString() );
+      QString format = metaUrlElem.attribute( QStringLiteral( "format" ), QString() );
+      QgsMapLayerServerProperties::MetadataUrl newItem( url, type, format );
+      mServerProperties->setMetadataUrls( QList<QgsMapLayerServerProperties::MetadataUrl>() << newItem );
+    }
+  }
 
   // mMetadata.readFromLayer( this );
   const QDomElement metadataElem = layerElement.firstChildElement( QStringLiteral( "resourceMetadata" ) );
@@ -599,8 +607,8 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
     layerElement.appendChild( layerKeywordList );
   }
 
-  // layer metadataUrl
-  QString aDataUrl = dataUrl();
+  // layer dataUrl
+  const QString aDataUrl = dataUrl();
   if ( !aDataUrl.isEmpty() )
   {
     QDomElement layerDataUrl = document.createElement( QStringLiteral( "dataUrl" ) );

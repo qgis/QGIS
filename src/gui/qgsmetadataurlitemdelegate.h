@@ -20,13 +20,15 @@
 
 #include <QStyledItemDelegate>
 
+#define SIP_NO_FILE
+
 ///@cond PRIVATE
 
 /**
  * \ingroup gui
  * \class MetadataUrlItemDelegate
  * \brief Special delegate for the metadata url view.
- * \since QGIS 3.20
+ * \since QGIS 3.22
  */
 class MetadataUrlItemDelegate : public QStyledItemDelegate
 {

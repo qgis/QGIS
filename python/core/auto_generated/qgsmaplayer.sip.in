@@ -382,7 +382,7 @@ Returns QGIS Server Properties for the map layer
 
 .. versionadded:: 3.22
 %End
-    void setMetadataUrl( const QString &metaUrl );
+ void setMetadataUrl( const QString &metaUrl ) /Deprecated/;
 %Docstring
 Sets the metadata URL of the layer
 used by QGIS Server in GetCapabilities request.
@@ -394,7 +394,7 @@ Since QGIS 3.22, it edits the first metadata URL link.
 .. deprecated:: QGIS 3.22
 %End
 
-    QString metadataUrl() const;
+ QString metadataUrl() const /Deprecated/;
 %Docstring
 Returns the metadata URL of the layer
 used by QGIS Server in GetCapabilities request.
@@ -408,7 +408,7 @@ Since QGIS 3.22, it returns the first metadata URL link.
 .. deprecated:: QGIS 3.22
 %End
 
-    void setMetadataUrlType( const QString &metaUrlType );
+ void setMetadataUrlType( const QString &metaUrlType ) /Deprecated/;
 %Docstring
 Set the metadata type of the layer
 used by QGIS Server in GetCapabilities request
@@ -422,7 +422,7 @@ Since QGIS 3.22, it edits the first metadata URL type.
 .. deprecated:: QGIS 3.22
 %End
 
-    QString metadataUrlType() const;
+ QString metadataUrlType() const /Deprecated/;
 %Docstring
 Returns the metadata type of the layer
 used by QGIS Server in GetCapabilities request.
@@ -436,7 +436,7 @@ Since QGIS 3.22, it returns the first metadata URL type.
 .. deprecated:: QGIS 3.22
 %End
 
-    void setMetadataUrlFormat( const QString &metaUrlFormat );
+ void setMetadataUrlFormat( const QString &metaUrlFormat ) /Deprecated/;
 %Docstring
 Sets the metadata format of the layer
 used by QGIS Server in GetCapabilities request.
@@ -448,7 +448,7 @@ Since QGIS 3.22, it edits the first metadata URL format.
 .. deprecated:: QGIS 3.22
 %End
 
-    QString metadataUrlFormat() const;
+ QString metadataUrlFormat() const /Deprecated/;
 %Docstring
 Returns the metadata format of the layer
 used by QGIS Server in GetCapabilities request.
