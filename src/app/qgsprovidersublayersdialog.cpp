@@ -163,7 +163,7 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   if ( QgsProviderUtils::sublayerDetailsAreIncomplete( initialDetails ) )
   {
     // initial details are incomplete, so fire up a task in the background to fully populate the model...
-    mTask = new QgsProviderSublayerTask( uri );
+    mTask = new QgsProviderSublayerTask( uri, true );
     connect( mTask.data(), &QgsProviderSublayerTask::taskCompleted, this, [ = ]
     {
       QList< QgsProviderSublayerDetails > res = mTask->results();
