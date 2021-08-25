@@ -1112,9 +1112,14 @@ void QgsOgrProvider::loadMetadata()
         }
       }
     }
-    else if ( ( mGDALDriverName == QLatin1String( "FileGDB" ) || mGDALDriverName == QLatin1String( "OpenFileGDB" ) ) )
+    else if ( mGDALDriverName == QLatin1String( "FileGDB" )
+              || mGDALDriverName == QLatin1String( "OpenFileGDB" )
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
+              || mGDALDriverName == QLatin1String( "PGeo" ) // supported on GDAL 3.4+ only
+#endif
+            )
     {
-      // read ESRI FileGeodatabase layer metadata
+      // read ESRI FileGeodatabase/Personal Geodatabase layer metadata
 
       // important -- this ONLY works if the layer name is NOT quoted!!
       QByteArray sql = "GetLayerMetadata " + mOgrOrigLayer->name();
