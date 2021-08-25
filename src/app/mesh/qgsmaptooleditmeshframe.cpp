@@ -1156,7 +1156,7 @@ void QgsMapToolEditMeshFrame::addNewSelectedVertex( int vertexIndex )
   mSelectedVerticesMarker[vertexIndex] = marker;
 }
 
-void QgsMapToolEditMeshFrame::removeVertexFromSelection( int vertexIndex )
+void QgsMapToolEditMeshFrame::removeFromSelection( int vertexIndex )
 {
   mSelectedVertices.remove( vertexIndex );
   delete mSelectedVerticesMarker.value( vertexIndex );
@@ -1199,7 +1199,7 @@ void QgsMapToolEditMeshFrame::setSelectedVertices( const QList<int> newSelectedV
   {
     bool contained = mSelectedVertices.contains( vertexIndex );
     if ( contained &&  removeVertices )
-      removeVertexFromSelection( vertexIndex );
+      removeFromSelection( vertexIndex );
     else if ( ! removeVertices && !contained )
       addNewSelectedVertex( vertexIndex );
   }
@@ -1239,10 +1239,10 @@ void QgsMapToolEditMeshFrame::setSelectedFaces( const QList<int> newSelectedFace
       {
         const QList<int> facesAround = mCurrentEditor->topologicalMesh().facesAroundVertex( vertexIndex );
         bool keepVertex = false;
-        for ( const int surroudingFaceIndex : facesAround )
-          keepVertex |= !facesToTreat.contains( surroudingFaceIndex ) && isFaceSelected( surroudingFaceIndex );
+        for ( const int faceAroundIndex : facesAround )
+          keepVertex |= !facesToTreat.contains( faceAroundIndex ) && isFaceSelected( faceAroundIndex );
         if ( !keepVertex )
-          removeVertexFromSelection( vertexIndex );
+          removeFromSelection( vertexIndex );
       }
       else if ( !removeFaces && !vertexContained )
         addNewSelectedVertex( vertexIndex );

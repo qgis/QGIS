@@ -164,7 +164,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     // selection methods
     void select( const QgsPointXY &mapPoint, Qt::KeyboardModifiers modifiers, double tolerance );
     void addNewSelectedVertex( int vertexIndex );
-    void removeVertexFromSelection( int vertexIndex );
+    void removeFromSelection( int vertexIndex );
     bool isFaceSelected( int faceIndex );
     void setSelectedVertices( const QList<int> newSelectedVertices,  Qgis::SelectBehavior behavior );
     void setSelectedFaces( const QList<int> newSelectedFaces,  Qgis::SelectBehavior behavior );
