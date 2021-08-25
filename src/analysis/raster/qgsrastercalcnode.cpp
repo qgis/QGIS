@@ -458,6 +458,12 @@ QgsRasterMatrix QgsRasterCalcNode::evaluateFunction( const QVector<QgsRasterMatr
 
   if ( mFunctionName == "if" )
   {
+    //scalar condition
+    if ( matrixVector.at( 0 )->isNumber() )
+    {
+      result = ( matrixVector.at( 0 )->data() ? * matrixVector.at( 1 ) : * matrixVector.at( 2 ) );
+      return result;
+    }
     int nCols = matrixVector.at( 0 )->nColumns();
     int nRows = matrixVector.at( 0 )->nRows();
     int nEntries = nCols * nRows;

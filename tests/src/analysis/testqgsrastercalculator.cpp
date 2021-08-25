@@ -994,6 +994,47 @@ void TestQgsRasterCalculator::testFunctionTypeWithLayer()
   QCOMPARE( block->value( 2, 0 ), 266.0 );
   QCOMPARE( block->value( 2, 1 ), -13.0 );
 
+  // Test with scalar (always true) as condition, one raster first option and number as second option
+  // if ( 5 > 4, landsat@1 + landsat@2 , 0 )
+  QgsRasterCalculator rc4( QStringLiteral( " if( 5>4 , \"landsat@1\" + \"landsat@2\" , 0 ) " ),
+                           tmpName,
+                           QStringLiteral( "GTiff" ),
+                           extent, crs, 2, 3, entries,
+                           QgsProject::instance()->transformContext() );
+  QCOMPARE( static_cast< int >( rc4.processCalculation() ), 0 );
+
+  //open output file and check results
+  result = new QgsRasterLayer( tmpName, QStringLiteral( "result" ) );
+  QCOMPARE( result->width(), 2 );
+  QCOMPARE( result->height(), 3 );
+  block = result->dataProvider()->block( 1, extent, 2, 3 );
+  QCOMPARE( block->value( 0, 0 ), 265.0 );
+  QCOMPARE( block->value( 0, 1 ), 263.0 );
+  QCOMPARE( block->value( 1, 0 ), 263.0 );
+  QCOMPARE( block->value( 1, 1 ), 264.0 );
+  QCOMPARE( block->value( 2, 0 ), 266.0 );
+  QCOMPARE( block->value( 2, 1 ), 261.0 );
+
+  // Test with scalar (always false) as condition, one raster first option and number as second option
+  // if ( 4 > 5, landsat@1 + landsat@2 , 0 )
+  QgsRasterCalculator rc5( QStringLiteral( " if( 4>5 , \"landsat@1\" + \"landsat@2\" , 0 ) " ),
+                           tmpName,
+                           QStringLiteral( "GTiff" ),
+                           extent, crs, 2, 3, entries,
+                           QgsProject::instance()->transformContext() );
+  QCOMPARE( static_cast< int >( rc5.processCalculation() ), 0 );
+
+  //open output file and check results
+  result = new QgsRasterLayer( tmpName, QStringLiteral( "result" ) );
+  QCOMPARE( result->width(), 2 );
+  QCOMPARE( result->height(), 3 );
+  block = result->dataProvider()->block( 1, extent, 2, 3 );
+  QCOMPARE( block->value( 0, 0 ), 0.0 );
+  QCOMPARE( block->value( 0, 1 ), 0.0 );
+  QCOMPARE( block->value( 1, 0 ), 0.0 );
+  QCOMPARE( block->value( 1, 1 ), 0.0 );
+  QCOMPARE( block->value( 2, 0 ), 0.0 );
+  QCOMPARE( block->value( 2, 1 ), 0.0 );
   delete result;
   delete block;
 }
