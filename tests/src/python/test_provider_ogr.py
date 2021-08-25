@@ -2045,6 +2045,49 @@ class PyQgsOGRProvider(unittest.TestCase):
                                 'driverName': 'SQLite',
                                 'geomColName': ''}])
 
+        # sqlite
+        res = metadata.querySublayers(
+            os.path.join(TEST_DATA_DIR, "valuerelation_widget_wrapper_test.spatialite.sqlite"))
+        self.assertCountEqual([{'name': r.name(),
+                                'systemTable': bool(r.flags() & Qgis.SublayerFlag.SystemTable)} for r in res],
+                              [{'name': 'authors', 'systemTable': False},
+                               {'name': 'json', 'systemTable': False}])
+
+        # retrieve system tables
+        res = metadata.querySublayers(
+            os.path.join(TEST_DATA_DIR, "valuerelation_widget_wrapper_test.spatialite.sqlite"),
+            Qgis.SublayerQueryFlag.IncludeSystemTables)
+        self.assertCountEqual([{'name': r.name(),
+                                'systemTable': bool(r.flags() & Qgis.SublayerFlag.SystemTable)} for r in res],
+                              [{'name': 'ElementaryGeometries', 'systemTable': True},
+                               {'name': 'SpatialIndex', 'systemTable': True},
+                               {'name': 'authors', 'systemTable': False},
+                               {'name': 'geom_cols_ref_sys', 'systemTable': True},
+                               {'name': 'geometry_columns', 'systemTable': True},
+                               {'name': 'geometry_columns_auth', 'systemTable': True},
+                               {'name': 'geometry_columns_field_infos', 'systemTable': True},
+                               {'name': 'geometry_columns_statistics', 'systemTable': True},
+                               {'name': 'geometry_columns_time', 'systemTable': True},
+                               {'name': 'json', 'systemTable': False},
+                               {'name': 'spatial_ref_sys', 'systemTable': True},
+                               {'name': 'spatial_ref_sys_all', 'systemTable': True},
+                               {'name': 'spatial_ref_sys_aux', 'systemTable': True},
+                               {'name': 'spatialite_history', 'systemTable': True},
+                               {'name': 'sql_statements_log', 'systemTable': True},
+                               {'name': 'sqlite_sequence', 'systemTable': True},
+                               {'name': 'vector_layers', 'systemTable': True},
+                               {'name': 'vector_layers_auth', 'systemTable': True},
+                               {'name': 'vector_layers_field_infos', 'systemTable': True},
+                               {'name': 'vector_layers_statistics', 'systemTable': True},
+                               {'name': 'views_geometry_columns', 'systemTable': True},
+                               {'name': 'views_geometry_columns_auth', 'systemTable': True},
+                               {'name': 'views_geometry_columns_field_infos', 'systemTable': True},
+                               {'name': 'views_geometry_columns_statistics', 'systemTable': True},
+                               {'name': 'virts_geometry_columns', 'systemTable': True},
+                               {'name': 'virts_geometry_columns_auth', 'systemTable': True},
+                               {'name': 'virts_geometry_columns_field_infos', 'systemTable': True},
+                               {'name': 'virts_geometry_columns_statistics', 'systemTable': True}])
+
     @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 4, 0), "GDAL 3.4 required")
     def test_provider_sublayer_details_hierarchy(self):
         """

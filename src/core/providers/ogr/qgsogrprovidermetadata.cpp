@@ -1198,7 +1198,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
   QList<QgsProviderSublayerDetails> res;
   if ( layerCount == 1 )
   {
-    res << QgsOgrProviderUtils::querySubLayerList( 0, firstLayer.get(), driverName, flags, false, uri, true, feedback );
+    res << QgsOgrProviderUtils::querySubLayerList( 0, firstLayer.get(), driverName, flags, uri, true, feedback );
   }
   else
   {
@@ -1239,7 +1239,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
       if ( !originalUriLayerName.isEmpty() && layerName != originalUriLayerName )
         continue;
 
-      res << QgsOgrProviderUtils::querySubLayerList( i, sublayer, driverName, flags, false, uri, false, feedback );
+      res << QgsOgrProviderUtils::querySubLayerList( i, sublayer, driverName, flags, uri, false, feedback );
     }
   }
 

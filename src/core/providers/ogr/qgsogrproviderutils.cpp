@@ -2313,26 +2313,27 @@ bool QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( const QString &d
          !( updateMode && dsName.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) );
 }
 
-QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int i, QgsOgrLayer *layer, const QString &driverName, Qgis::SublayerQueryFlags flags, bool isSubLayer, const QString &baseUri, bool hasSingleLayerOnly, QgsFeedback *feedback )
+QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int i, QgsOgrLayer *layer, const QString &driverName, Qgis::SublayerQueryFlags flags, const QString &baseUri, bool hasSingleLayerOnly, QgsFeedback *feedback )
 {
   const QString layerName = QString::fromUtf8( layer->name() );
 
-  if ( !isSubLayer && ( layerName == QLatin1String( "layer_styles" ) ||
-                        layerName == QLatin1String( "qgis_projects" ) ) )
-  {
-    // Ignore layer_styles (coming from QGIS styling support) and
-    // qgis_projects (coming from http://plugins.qgis.org/plugins/QgisGeopackage/)
-    return {};
-  }
-
-  QStringList skippedLayerNames;
+  QStringList privateLayerNames { QStringLiteral( "layer_styles" ),
+                                  QStringLiteral( "qgis_projects" )};
   if ( driverName == QLatin1String( "SQLite" ) )
   {
-    skippedLayerNames = QgsSqliteUtils::systemTables();
+    privateLayerNames.append( QgsSqliteUtils::systemTables() );
   }
+
+  Qgis::SublayerFlags layerFlags;
   if ( ( driverName == QLatin1String( "SQLite" ) && layerName.contains( QRegularExpression( QStringLiteral( "idx_.*_geom(etry)?($|_.*)" ), QRegularExpression::PatternOption::CaseInsensitiveOption ) ) )
-       || skippedLayerNames.contains( layerName ) )
+       || privateLayerNames.contains( layerName ) )
   {
+    layerFlags |= Qgis::SublayerFlag::SystemTable;
+  }
+
+  if ( !( flags & Qgis::SublayerQueryFlag::IncludeSystemTables ) && ( layerFlags & Qgis::SublayerFlag::SystemTable ) )
+  {
+    // layer is a system table, and we are not scanning for them
     return {};
   }
 
@@ -2389,6 +2390,7 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
     details.setDescription( longDescription );
     details.setProviderKey( QStringLiteral( "ogr" ) );
     details.setDriverName( driverName );
+    details.setFlags( layerFlags );
 
     const QString uri = QgsOgrProviderMetadata().encodeUri( parts );
     details.setUri( uri );
@@ -2479,6 +2481,7 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
       details.setDescription( longDescription );
       details.setProviderKey( QStringLiteral( "ogr" ) );
       details.setDriverName( driverName );
+      details.setFlags( layerFlags );
 
       // if we had to iterate through the table to find geometry types, make sure to include these
       // in the uri for the sublayers (otherwise we'll be forced to re-do this iteration whenever

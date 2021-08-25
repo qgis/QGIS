@@ -599,9 +599,14 @@ QStringList subLayerDetailsToStringList( const QList< QgsProviderSublayerDetails
 QStringList QgsOgrProvider::subLayers() const
 {
   const bool withFeatureCount = ( mReadFlags & QgsDataProvider::SkipFeatureCount ) == 0;
-  return subLayerDetailsToStringList( _subLayers( withFeatureCount
-                                      ? ( Qgis::SublayerQueryFlag::CountFeatures | Qgis::SublayerQueryFlag::ResolveGeometryType )
-                                      : Qgis::SublayerQueryFlag::ResolveGeometryType ) );
+
+  Qgis::SublayerQueryFlags flags = withFeatureCount
+                                   ? ( Qgis::SublayerQueryFlag::CountFeatures | Qgis::SublayerQueryFlag::ResolveGeometryType )
+                                   : Qgis::SublayerQueryFlag::ResolveGeometryType;
+  if ( mIsSubLayer )
+    flags |= Qgis::SublayerQueryFlag::IncludeSystemTables;
+
+  return subLayerDetailsToStringList( _subLayers( flags ) );
 }
 
 QgsLayerMetadata QgsOgrProvider::layerMetadata() const
@@ -625,7 +630,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProvider::_subLayers( Qgis::SublayerQuer
   const size_t totalLayerCount = layerCount();
   if ( mOgrLayer && ( mIsSubLayer || totalLayerCount == 1 ) )
   {
-    mSubLayerList << QgsOgrProviderUtils::querySubLayerList( mLayerIndex, mOgrLayer, mGDALDriverName, flags, mIsSubLayer, dataSourceUri(), totalLayerCount == 1 );
+    mSubLayerList << QgsOgrProviderUtils::querySubLayerList( mLayerIndex, mOgrLayer, mGDALDriverName, flags, dataSourceUri(), totalLayerCount == 1 );
   }
   else
   {
@@ -648,13 +653,14 @@ QList<QgsProviderSublayerDetails> QgsOgrProvider::_subLayers( Qgis::SublayerQuer
       if ( !layer )
         continue;
 
-      mSubLayerList << QgsOgrProviderUtils::querySubLayerList( i, layer.get(), mGDALDriverName, flags, mIsSubLayer, dataSourceUri(), totalLayerCount == 1 );
+      mSubLayerList << QgsOgrProviderUtils::querySubLayerList( i, layer.get(), mGDALDriverName, flags, dataSourceUri(), totalLayerCount == 1 );
       if ( firstLayer == nullptr )
       {
         firstLayer = std::move( layer );
       }
     }
   }
+
   return mSubLayerList;
 }
 
