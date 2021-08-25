@@ -111,17 +111,6 @@ QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
 
   setGuiElementValues();
 
-  switch ( mPicture->mode() )
-  {
-    case QgsLayoutItemPicture::FormatSVG:
-    case QgsLayoutItemPicture::FormatUnknown:
-      mRadioSVG->setChecked( true );
-      break;
-    case QgsLayoutItemPicture::FormatRaster:
-      mRadioRaster->setChecked( true );
-      break;
-  }
-
   connect( mPicture, &QgsLayoutObject::changed, this, &QgsLayoutPictureWidget::setGuiElementValues );
   connect( mPicture, &QgsLayoutItemPicture::pictureRotationChanged, this, &QgsLayoutPictureWidget::setPicRotationSpinValue );
 
@@ -328,6 +317,17 @@ void QgsLayoutPictureWidget::setGuiElementValues()
     else
     {
       mAnchorPointComboBox->setEnabled( false );
+    }
+
+    switch ( mPicture->mode() )
+    {
+      case QgsLayoutItemPicture::FormatSVG:
+      case QgsLayoutItemPicture::FormatUnknown:
+        mRadioSVG->setChecked( true );
+        break;
+      case QgsLayoutItemPicture::FormatRaster:
+        mRadioRaster->setChecked( true );
+        break;
     }
 
     mSvgSelectorWidget->setSvgPath( mPicture->picturePath() );
