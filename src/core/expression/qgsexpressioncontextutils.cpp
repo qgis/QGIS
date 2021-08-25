@@ -34,6 +34,7 @@
 #include "qgsmaplayerlistutils.h"
 #include "qgsprojoperation.h"
 #include "qgsmarkersymbol.h"
+#include "qgstriangularmesh.h"
 
 QgsExpressionContextScope *QgsExpressionContextUtils::globalScope()
 {
@@ -1133,18 +1134,79 @@ class CurrentVertexExpressionFunction: public QgsScopedExpressionFunction
     }
 };
 
-QgsExpressionContextScope *QgsExpressionContextUtils::meshExpressionScope()
+class CurrentFaceAreaExpressionFunction: public QgsScopedExpressionFunction
 {
   QgsExpression::registerFunction( new CurrentVertexExpressionFunction, true );
-  QgsExpression::registerFunction( new CurrentVertexXValueExpressionFunction, true );
-  QgsExpression::registerFunction( new CurrentVertexYValueExpressionFunction, true );
   QgsExpression::registerFunction( new CurrentVertexZValueExpressionFunction, true );
 
+    QgsScopedExpressionFunction *clone() const override {return new CurrentFaceAreaExpressionFunction();}
+
+    QVariant func( const QVariantList &, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * ) override
+    {
+      if ( !context )
+        return QVariant();
+
+      if ( !context->hasVariable( QStringLiteral( "_mesh_face_index" ) ) || !context->hasVariable( QStringLiteral( "_mesh_layer" ) ) )
+        return QVariant();
+
+      int faceIndex = context->variable( QStringLiteral( "_mesh_face_index" ) ).toInt();
+
+      QgsMeshLayer *layer = qobject_cast<QgsMeshLayer *>( qvariant_cast<QgsMapLayer *>( context->variable( QStringLiteral( "_mesh_layer" ) ) ) );
+      if ( !layer || !layer->nativeMesh() || layer->nativeMesh()->faceCount() <= faceIndex )
+        return QVariant();
+
+      const QgsMeshFace &face = layer->nativeMesh()->face( faceIndex );
+      if ( !face.isEmpty() )
+      {
+        QgsDistanceArea *calc = parent->geomCalculator();
+        QgsGeometry geom = QgsMeshUtils::toGeometry( layer->nativeMesh()->face( faceIndex ), layer->nativeMesh()->vertices );
+        if ( calc )
+        {
+          double area = calc->measureArea( geom );
+          area = calc->convertAreaMeasurement( area, parent->areaUnits() );
+          return QVariant( area );
+        }
+        else
+        {
+          return QVariant( geom.area() );
+        }
+      }
+      else
+        return QVariant();
+    }
+
+    bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override
+    {
+      return false;
+    }
+};
+
+
+QgsExpressionContextScope *QgsExpressionContextUtils::meshExpressionScope( QgsMesh::ElementType elementType )
+{
   std::unique_ptr<QgsExpressionContextScope> scope = std::make_unique<QgsExpressionContextScope>();
-  scope->addFunction( "$vertex_as_point", new CurrentVertexExpressionFunction );
-  scope->addFunction( "$vertex_x", new CurrentVertexXValueExpressionFunction );
   scope->addFunction( "$vertex_y", new CurrentVertexYValueExpressionFunction );
   scope->addFunction( "$vertex_z", new CurrentVertexZValueExpressionFunction );
+
+  switch ( elementType )
+  {
+    case QgsMesh::Vertex:
+    {
+      QgsExpression::registerFunction( new CurrentVertexExpressionFunction, true );
+      QgsExpression::registerFunction( new CurrentVertexZValueExpressionFunction, true );
+      scope->addFunction( "$vertex_as_point", new CurrentVertexExpressionFunction );
+      scope->addFunction( "$vertex_z", new CurrentVertexZValueExpressionFunction );
+    }
+    break;
+    case QgsMesh::Face:
+    {
+      QgsExpression::registerFunction( new CurrentFaceAreaExpressionFunction, true );
+      scope->addFunction( "$face_area", new CurrentFaceAreaExpressionFunction );
+    }
+    break;
+    case QgsMesh::Edge:
+      break;
+  }
 
   return scope.release();
 }

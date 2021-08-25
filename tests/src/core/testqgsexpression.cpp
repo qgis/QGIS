@@ -266,7 +266,7 @@ class TestQgsExpression: public QObject
     void evalMeshElement()
     {
       QgsExpressionContext context;
-      context.appendScope( QgsExpressionContextUtils::meshExpressionScope() );
+      context.appendScope( QgsExpressionContextUtils::meshExpressionScope( QgsMesh::Vertex ) );
       context.lastScope()->setVariable( QStringLiteral( "_mesh_vertex_index" ), 2 );
       context.lastScope()->setVariable( QStringLiteral( "_mesh_layer" ), QVariant::fromValue( mMeshLayer ) );
 
@@ -278,6 +278,12 @@ class TestQgsExpression: public QObject
       QgsGeometry outGeom = out.value<QgsGeometry>();
       QgsGeometry geom( new QgsPoint( 2500, 2500, 800 ) );
       QCOMPARE( geom.equals( outGeom ), true );
+
+      context.appendScope( QgsExpressionContextUtils::meshExpressionScope( QgsMesh::Face ) );
+      context.lastScope()->setVariable( QStringLiteral( "_mesh_face_index" ), 2 );
+      expression = QgsExpression( QStringLiteral( "$face_area" ) );
+      double area = expression.evaluate( &context ).toDouble();
+      QCOMPARE( area, 250000 );
     }
 
     void cleanupTestCase()

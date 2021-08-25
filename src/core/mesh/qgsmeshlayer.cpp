@@ -1139,7 +1139,7 @@ QgsPointXY QgsMeshLayer::snapOnElement( QgsMesh::ElementType elementType, const 
   return QgsPointXY(); // avoid warnings
 }
 
-QList<int> QgsMeshLayer::selectVerticesByExpression( const QString &expressionString, const QgsExpressionContext &expressionContext )
+QList<int> QgsMeshLayer::selectVerticesByExpression( QgsExpression expression )
 {
   if ( !mNativeMesh )
   {
@@ -1152,11 +1152,8 @@ QList<int> QgsMeshLayer::selectVerticesByExpression( const QString &expressionSt
   if ( !mNativeMesh )
     return ret;
 
-  QgsExpression expression( expressionString );
-  QgsExpressionContext context = expressionContext;
-
-  std::unique_ptr<QgsExpressionContextScope> expScope( QgsExpressionContextUtils::meshExpressionScope() );
-
+  QgsExpressionContext context;
+  std::unique_ptr<QgsExpressionContextScope> expScope( QgsExpressionContextUtils::meshExpressionScope( QgsMesh::Vertex ) );
   context.appendScope( expScope.release() );
   context.lastScope()->setVariable( QStringLiteral( "_mesh_layer" ), QVariant::fromValue( this ) );
 
@@ -1165,6 +1162,37 @@ QList<int> QgsMeshLayer::selectVerticesByExpression( const QString &expressionSt
   for ( int i = 0; i < mNativeMesh->vertexCount(); ++i )
   {
     context.lastScope()->setVariable( QStringLiteral( "_mesh_vertex_index" ), i, false );
+
+    if ( expression.evaluate( &context ).toBool() )
+      ret.append( i );
+  }
+
+  return ret;
+}
+
+QList<int> QgsMeshLayer::selectFacesByExpression( QgsExpression expression )
+{
+  if ( !mNativeMesh )
+  {
+    // lazy loading of mesh data
+    fillNativeMesh();
+  }
+
+  QList<int> ret;
+
+  if ( !mNativeMesh )
+    return ret;
+
+  QgsExpressionContext context;
+  std::unique_ptr<QgsExpressionContextScope> expScope( QgsExpressionContextUtils::meshExpressionScope( QgsMesh::Face ) );
+  context.appendScope( expScope.release() );
+  context.lastScope()->setVariable( QStringLiteral( "_mesh_layer" ), QVariant::fromValue( this ) );
+
+  expression.prepare( &context );
+
+  for ( int i = 0; i < mNativeMesh->faceCount(); ++i )
+  {
+    context.lastScope()->setVariable( QStringLiteral( "_mesh_face_index" ), i, false );
 
     if ( expression.evaluate( &context ).toBool() )
       ret.append( i );

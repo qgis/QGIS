@@ -1712,14 +1712,25 @@ void TestQgsMeshLayer::testMdalProviderQuerySublayersFastScan()
 void TestQgsMeshLayer::testSelectByExpression()
 {
   mMdalLayer->updateTriangularMesh();
-  QgsExpressionContext expressionContext;
+  QgsExpression expression( QStringLiteral( " $vertex_z > 30" ) );
 
-  QList<int> selectedVerticesIndexes = mMdalLayer->selectVerticesByExpression( QStringLiteral( " $vertex_z > 30" ) );
+  QList<int> selectedVerticesIndexes = mMdalLayer->selectVerticesByExpression( expression );
   QCOMPARE( selectedVerticesIndexes, QList( {2, 3} ) );
 
-  selectedVerticesIndexes = mMdalLayer->selectVerticesByExpression( QStringLiteral( " x($vertex_as_point) > 1500" ) );
+  expression = QgsExpression( QStringLiteral( " x($vertex_as_point) > 1500" ) );
+  selectedVerticesIndexes = mMdalLayer->selectVerticesByExpression( expression );
   QCOMPARE( selectedVerticesIndexes.count(), 3 );
   QCOMPARE( selectedVerticesIndexes, QList( {1, 2, 3} ) );
+
+
+  expression = QgsExpression( QStringLiteral( " $face_area > 900000" ) );
+  QList<int> selectedFacesIndexes = mMdalLayer->selectFacesByExpression( expression );
+  QCOMPARE( selectedFacesIndexes.count(), 1 );
+  QCOMPARE( selectedFacesIndexes, QList( {0} ) );
+
+  expression = QgsExpression( QStringLiteral( " $face_area > 1100000" ) );
+  selectedFacesIndexes = mMdalLayer->selectFacesByExpression( expression );
+  QCOMPARE( selectedFacesIndexes.count(), 0 );
 }
 
 void TestQgsMeshLayer::test_temporal()
