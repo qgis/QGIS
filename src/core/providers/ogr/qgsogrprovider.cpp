@@ -609,11 +609,6 @@ QgsLayerMetadata QgsOgrProvider::layerMetadata() const
   return mLayerMetadata;
 }
 
-QStringList QgsOgrProvider::subLayersWithoutFeatureCount() const
-{
-  return subLayerDetailsToStringList( _subLayers( Qgis::SublayerQueryFlag::ResolveGeometryType ) );
-}
-
 QList<QgsProviderSublayerDetails> QgsOgrProvider::_subLayers( Qgis::SublayerQueryFlags flags ) const
 {
   QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
