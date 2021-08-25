@@ -184,6 +184,7 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   connect( mBtnDeselectAll, &QAbstractButton::pressed, this, [ = ] { mLayersTree->selectionModel()->clear(); } );
   connect( mLayersTree->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsProviderSublayersDialog::treeSelectionChanged );
   connect( mSearchLineEdit, &QgsFilterLineEdit::textChanged, mProxyModel, &QgsProviderSublayerProxyModel::setFilterString );
+  connect( mCheckShowSystem, &QCheckBox::toggled, mProxyModel, &QgsProviderSublayerProxyModel::setIncludeSystemTables );
   connect( mLayersTree, &QTreeView::doubleClicked, this, [ = ]( const QModelIndex & index )
   {
     mLayersTree->selectionModel()->select( QItemSelection( mLayersTree->model()->index( index.row(), 0, index.parent() ),

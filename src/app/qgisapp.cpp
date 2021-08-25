@@ -5516,7 +5516,7 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layers, const QString &
       qApp->processEvents();
     }
 
-    QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->querySublayers( uri );
+    QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->querySublayers( uri, Qgis::SublayerQueryFlag::IncludeSystemTables );
     // filter out non-vector sublayers
     sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), []( const QgsProviderSublayerDetails & sublayer )
     {
@@ -5901,7 +5901,7 @@ QgsPointCloudLayer *QgisApp::addPointCloudLayerPrivate( const QString &uri, cons
 bool QgisApp::askUserForZipItemLayers( const QString &path, const QList< QgsMapLayerType > &acceptableTypes )
 {
   // query sublayers
-  QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->querySublayers( path );
+  QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->querySublayers( path, Qgis::SublayerQueryFlag::IncludeSystemTables );
 
   // filter out non-matching sublayers
   sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), [acceptableTypes]( const QgsProviderSublayerDetails & sublayer )
@@ -7478,7 +7478,7 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
   }
 
   // query sublayers
-  QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->querySublayers( fileName );
+  QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->querySublayers( fileName, Qgis::SublayerQueryFlag::IncludeSystemTables );
 
   if ( !sublayers.empty() || !nonLayerItems.empty() )
   {
@@ -13222,7 +13222,7 @@ T *QgisApp::addLayerPrivate( QgsMapLayerType type, const QString &uri, const QSt
   {
     // query sublayers
     QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->providerMetadata( providerKey ) ?
-        QgsProviderRegistry::instance()->providerMetadata( providerKey )->querySublayers( updatedUri )
+        QgsProviderRegistry::instance()->providerMetadata( providerKey )->querySublayers( updatedUri, Qgis::SublayerQueryFlag::IncludeSystemTables )
         : QgsProviderRegistry::instance()->querySublayers( updatedUri );
 
     // filter out non-matching sublayers
