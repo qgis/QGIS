@@ -13181,7 +13181,7 @@ void QgisApp::showLayoutManager()
 
 QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const QString &name, const QString &providerKey )
 {
-  return addLayerPrivate< QgsVectorLayer >( QgsMapLayerType::VectorLayer, vectorLayerPath, name, providerKey, true );
+  return addLayerPrivate< QgsVectorLayer >( QgsMapLayerType::VectorLayer, vectorLayerPath, name, !providerKey.isEmpty() ? providerKey : QLatin1String( "ogr" ), true );
 }
 
 template<typename T>
@@ -15779,7 +15779,7 @@ void QgisApp::renameView()
 
 QgsRasterLayer *QgisApp::addRasterLayer( QString const &uri, QString const &baseName, QString const &providerKey )
 {
-  return addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, uri, baseName, providerKey, true );
+  return addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, uri, baseName, !providerKey.isEmpty() ? providerKey : QLatin1String( "gdal" ), true );
 }
 
 bool QgisApp::addRasterLayers( QStringList const &files, bool guiWarning )
