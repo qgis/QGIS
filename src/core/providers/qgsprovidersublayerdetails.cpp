@@ -30,6 +30,7 @@ bool QgsProviderSublayerDetails::operator==( const QgsProviderSublayerDetails &o
 {
   return mProviderKey == other.mProviderKey
          && mType == other.mType
+         && mFlags == other.mFlags
          && mUri == other.mUri
          && mLayerNumber == other.mLayerNumber
          && mName == other.mName

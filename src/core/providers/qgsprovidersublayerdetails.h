@@ -143,6 +143,20 @@ class CORE_EXPORT QgsProviderSublayerDetails
     void setDescription( const QString &description ) { mDescription = description; }
 
     /**
+     * Returns the layer's flags, which indicate properties of the layer.
+     *
+     * \see setFlags()
+     */
+    Qgis::SublayerFlags flags() const { return mFlags; }
+
+    /**
+     * Sets the layer's \a flags, which indicate properties of the layer.
+     *
+     * \see flags()
+     */
+    void setFlags( Qgis::SublayerFlags newFlags ) { mFlags = newFlags; }
+
+    /**
      * Returns the layer's driver name.
      *
      * This is supported only for providers which handle multiple drivers.
@@ -284,6 +298,7 @@ class CORE_EXPORT QgsProviderSublayerDetails
     QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
     QString mDriverName;
     bool mSkippedContainerScan = false;
+    Qgis::SublayerFlags mFlags = Qgis::SublayerFlags();
 
 };
 
