@@ -21,9 +21,10 @@
 #include "qgsprovidersublayerdetails.h"
 #include "qgsreadwritelocker.h"
 
-QgsProviderSublayerTask::QgsProviderSublayerTask( const QString &uri )
+QgsProviderSublayerTask::QgsProviderSublayerTask( const QString &uri, bool includeSystemTables )
   : QgsTask( tr( "Retrieving layers" ), QgsTask::CanCancel | QgsTask::CancelWithoutPrompt )
   , mUri( uri )
+  , mIncludeSystemTables( includeSystemTables )
 {
 }
 
@@ -39,7 +40,11 @@ bool QgsProviderSublayerTask::run()
 {
   mFeedback = std::make_unique< QgsFeedback >();
 
-  const QList<QgsProviderSublayerDetails> res = QgsProviderRegistry::instance()->querySublayers( mUri, Qgis::SublayerQueryFlag::ResolveGeometryType | Qgis::SublayerQueryFlag::CountFeatures, mFeedback.get() );
+  Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlag::ResolveGeometryType | Qgis::SublayerQueryFlag::CountFeatures;
+  if ( mIncludeSystemTables )
+    flags |= Qgis::SublayerQueryFlag::IncludeSystemTables;
+
+  const QList<QgsProviderSublayerDetails> res = QgsProviderRegistry::instance()->querySublayers( mUri, flags, mFeedback.get() );
 
   const QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Write );
   mResults = res;
