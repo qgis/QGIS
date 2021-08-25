@@ -943,7 +943,6 @@ void TestQgsNetworkAccessManager::testAuthRequestHandlerBlockingMain()
   //if ( QgsTest::isCIRun() )
   //  QSKIP( "Skip remote test, looks like problem with httpbin" );
   // initially this request should fail -- we aren't providing the username and password required
-  QgsNetworkAccessManager::setTimeout( 5000 );
   QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< TestAuthRequestHandler >( QString(), QString() ) );
 
   const QObject context;
@@ -951,11 +950,12 @@ void TestQgsNetworkAccessManager::testAuthRequestHandlerBlockingMain()
   bool gotRequestAboutToBeCreatedSignal = false;
   bool gotAuthRequest = false;
   bool gotAuthDetailsAdded = false;
+  QString thisTestHttpBinHost = QStringLiteral( "httpbin.org" );
   QString hash = QUuid::createUuid().toString().mid( 1, 10 );
   QString expectedUser;
   QString expectedPassword;
   int requestId = -1;
-  QUrl u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
+  QUrl u =  QUrl( QStringLiteral( "http://" ) + thisTestHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
   QNetworkReply::NetworkError expectedError = QNetworkReply::AuthenticationRequiredError;
   QString lastTest = QStringLiteral( "NONE --->>>" );
 
@@ -999,7 +999,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandlerBlockingMain()
   // blocking request
   lastTest = QStringLiteral( "TEST_02 blocking request --->>> " );
   hash = QUuid::createUuid().toString().mid( 1, 10 );
-  u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
+  u =  QUrl( QStringLiteral( "http://" ) + thisTestHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
   loaded = false;
   gotAuthRequest = false;
   gotRequestAboutToBeCreatedSignal = false;
@@ -1009,12 +1009,12 @@ void TestQgsNetworkAccessManager::testAuthRequestHandlerBlockingMain()
   QWARN( ( lastTest + QStringLiteral( " QgsNetworkAccessManager::blockingGet( req ) STARTED " ) ).toLatin1().data() );
   QgsNetworkReplyContent rep = QgsNetworkAccessManager::blockingGet( req );
   QWARN( ( lastTest + QStringLiteral( " QgsNetworkAccessManager::blockingGet( req ) FINISHED " ) ).toLatin1().data() );
-  QVERIFY( rep.content().isEmpty() );
   while ( !loaded )
   {
     qApp->processEvents();
   }
   QVERIFY( gotRequestAboutToBeCreatedSignal );
+  QVERIFY( rep.content().isEmpty() );
   QCOMPARE( rep.requestId(), requestId );
 
   // blocking request
@@ -1028,17 +1028,17 @@ void TestQgsNetworkAccessManager::testAuthRequestHandlerBlockingMain()
   hash = QUuid::createUuid().toString().mid( 1, 10 );
   expectedPassword = hash;
   QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< TestAuthRequestHandler >( QStringLiteral( "me" ), hash ) );
-  u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
+  u =  QUrl( QStringLiteral( "http://" ) + thisTestHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
   req = QNetworkRequest{ u };
   QWARN( ( lastTest + QStringLiteral( " QgsNetworkAccessManager::blockingGet( req ) STARTED " ) ).toLatin1().data() );
   rep = QgsNetworkAccessManager::blockingGet( req );
   QWARN( ( lastTest + QStringLiteral( " QgsNetworkAccessManager::blockingGet( req ) FINISHED " ) ).toLatin1().data() );
-  QVERIFY( rep.content().contains( "\"user\": \"me\"" ) );
   while ( !loaded )
   {
     qApp->processEvents();
   }
   QVERIFY( gotRequestAboutToBeCreatedSignal );
+  QVERIFY( rep.content().contains( "\"user\": \"me\"" ) );
   QCOMPARE( rep.requestId(), requestId );
 
   QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< QgsNetworkAuthenticationHandler >() );
