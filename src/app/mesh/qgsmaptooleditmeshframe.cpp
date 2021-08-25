@@ -1156,7 +1156,7 @@ void QgsMapToolEditMeshFrame::addNewSelectedVertex( int vertexIndex )
   mSelectedVerticesMarker[vertexIndex] = marker;
 }
 
-void QgsMapToolEditMeshFrame::removeSelectedVertex( int vertexIndex )
+void QgsMapToolEditMeshFrame::removeVertexFromSelection( int vertexIndex )
 {
   mSelectedVertices.remove( vertexIndex );
   delete mSelectedVerticesMarker.value( vertexIndex );
@@ -1199,7 +1199,7 @@ void QgsMapToolEditMeshFrame::setSelectedVertices( const QList<int> newSelectedV
   {
     bool contained = mSelectedVertices.contains( vertexIndex );
     if ( contained &&  removeVertices )
-      removeSelectedVertex( vertexIndex );
+      removeVertexFromSelection( vertexIndex );
     else if ( ! removeVertices && !contained )
       addNewSelectedVertex( vertexIndex );
   }
@@ -1237,12 +1237,12 @@ void QgsMapToolEditMeshFrame::setSelectedFaces( const QList<int> newSelectedFace
       bool vertexContained = mSelectedVertices.contains( vertexIndex );
       if ( vertexContained && removeFaces )
       {
-        const QList<int> surroundingFaces = mCurrentEditor->topologicalMesh().facesAroundVertex( vertexIndex );
+        const QList<int> facesAround = mCurrentEditor->topologicalMesh().facesAroundVertex( vertexIndex );
         bool keepVertex = false;
-        for ( const int surroudingFaceIndex : surroundingFaces )
+        for ( const int surroudingFaceIndex : facesAround )
           keepVertex |= !facesToTreat.contains( surroudingFaceIndex ) && isFaceSelected( surroudingFaceIndex );
         if ( !keepVertex )
-          removeSelectedVertex( vertexIndex );
+          removeVertexFromSelection( vertexIndex );
       }
       else if ( !removeFaces && !vertexContained )
         addNewSelectedVertex( vertexIndex );
@@ -2140,7 +2140,7 @@ int QgsMapToolEditMeshFrame::closeVertex( const QgsPointXY &mapPoint ) const
 }
 
 
-void QgsMapToolEditMeshFrame::selectByExpresssion( const QString &textExpression, Qgis::SelectBehavior behavior, QgsMesh::ElementType elementType )
+void QgsMapToolEditMeshFrame::selectByExpression( const QString &textExpression, Qgis::SelectBehavior behavior, QgsMesh::ElementType elementType )
 {
   if ( !mCurrentEditor || !mCurrentLayer )
     return;
@@ -2162,7 +2162,7 @@ void QgsMapToolEditMeshFrame::selectByExpresssion( const QString &textExpression
       setSelectedFaces( mCurrentLayer->selectFacesByExpression( expression ), behavior );
       break;
     case QgsMesh::Edge:
-      //not suported
+      //not supported
       break;
   }
 }
@@ -2178,6 +2178,6 @@ void QgsMapToolEditMeshFrame::showSelectByExpressionDialog()
   QgsMeshSelectByExpressionDialog *dialog = new QgsMeshSelectByExpressionDialog( canvas() );
   dialog->setAttribute( Qt::WA_DeleteOnClose );
   dialog->show();
-  connect( dialog, &QgsMeshSelectByExpressionDialog::select, this, &QgsMapToolEditMeshFrame::selectByExpresssion );
+  connect( dialog, &QgsMeshSelectByExpressionDialog::select, this, &QgsMapToolEditMeshFrame::selectByExpression );
   connect( dialog, &QgsMeshSelectByExpressionDialog::zoomToSelected, this, &QgsMapToolEditMeshFrame::onZoomToSelected );
 }

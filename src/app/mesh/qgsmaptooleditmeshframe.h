@@ -107,7 +107,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void triggerTransformCoordinatesDockWidget( bool checked );
 
     void showSelectByExpressionDialog();
-    void selectByExpresssion( const QString &textExpression, Qgis::SelectBehavior behavior, QgsMesh::ElementType elementType );
+    void selectByExpression( const QString &textExpression, Qgis::SelectBehavior behavior, QgsMesh::ElementType elementType );
     void onZoomToSelected();
 
   private:
@@ -164,7 +164,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     // selection methods
     void select( const QgsPointXY &mapPoint, Qt::KeyboardModifiers modifiers, double tolerance );
     void addNewSelectedVertex( int vertexIndex );
-    void removeSelectedVertex( int vertexIndex );
+    void removeVertexFromSelection( int vertexIndex );
     bool isFaceSelected( int faceIndex );
     void setSelectedVertices( const QList<int> newSelectedVertices,  Qgis::SelectBehavior behavior );
     void setSelectedFaces( const QList<int> newSelectedFaces,  Qgis::SelectBehavior behavior );
