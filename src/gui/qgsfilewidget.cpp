@@ -176,7 +176,7 @@ void QgsFileWidget::editLink()
 
 void QgsFileWidget::fileDropped( const QString &filePath )
 {
-  setSelectedFileNames( QStringList() << filePath );
+  setFilePath( relativePath( filePath, true ) );
   mLineEdit->selectAll();
   mLineEdit->setFocus( Qt::MouseFocusReason );
 }
