@@ -32,7 +32,8 @@ FetchedContent holds useful information about a network content being fetched
       Failed
     };
 
-    explicit QgsFetchedContent( const QString &url, QTemporaryFile *file = 0, ContentStatus status = NotStarted );
+    explicit QgsFetchedContent( const QString &url, QTemporaryFile *file = 0, ContentStatus status = NotStarted,
+                                const QString &authConfig = QString() );
 %Docstring
 Constructs a FetchedContent with pointer to the downloaded file and status of the download
 %End
@@ -56,6 +57,11 @@ Returns the status of the download
 Returns the potential error of the download
 %End
 
+    QString authConfig() const;
+%Docstring
+Returns the authentication configuration id use for this fetched content
+%End
+
   public slots:
 
     void download( bool redownload = false );
@@ -74,6 +80,14 @@ Cancel the download operation.
     void fetched();
 %Docstring
 Emitted when the file is fetched and accessible
+%End
+
+    void errorOccurred( QNetworkReply::NetworkError code, const QString &errorMsg );
+%Docstring
+Emitted when an error with ``code`` error occurred while processing the request
+``errorMsg`` is a textual description of the error
+
+.. versionadded:: 3.22
 %End
 
 };
@@ -103,12 +117,13 @@ Create the registry for temporary downloaded files
 
     ~QgsNetworkContentFetcherRegistry();
 
-    const QgsFetchedContent *fetch( const QString &url, Qgis::ActionStart fetchingMode = Qgis::ActionStart::Deferred );
+    QgsFetchedContent *fetch( const QString &url, Qgis::ActionStart fetchingMode = Qgis::ActionStart::Deferred, const QString &authConfig = QString() );
 %Docstring
 Initialize a download for the given URL
 
 :param url: the URL to be fetched
 :param fetchingMode: defines if the download will start immediately or shall be manually triggered
+:param authConfig: authentication configuration id to be used while fetching
 
 .. note::
 
