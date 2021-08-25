@@ -835,11 +835,12 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
 
   QNetworkRequest req{ u };
   QgsNetworkReplyContent rep = QgsNetworkAccessManager::blockingGet( req );
+  QWARN( ( lastTest + QStringLiteral( " ? finished ? " ) ).toLatin1().data() );
   QVERIFY( rep.content().isEmpty() );
-  while ( !loaded )
-  {
-    qApp->processEvents();
-  }
+  //while ( !loaded )
+  //{
+  //  qApp->processEvents();
+  //}
   QVERIFY( gotRequestAboutToBeCreatedSignal );
   QCOMPARE( rep.requestId(), requestId );
 
@@ -921,11 +922,12 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
   req = QNetworkRequest{ u };
   rep = QgsNetworkAccessManager::blockingGet( req );
+  QWARN( ( lastTest + QStringLiteral( " ? finished ? " ) ).toLatin1().data() );
   QVERIFY( rep.content().contains( "\"user\": \"me\"" ) );
-  while ( !loaded )
-  {
-    qApp->processEvents();
-  }
+  //while ( !loaded )
+  //{
+  //  qApp->processEvents();
+  //}
   QVERIFY( gotRequestAboutToBeCreatedSignal );
   QCOMPARE( rep.requestId(), requestId );
 
