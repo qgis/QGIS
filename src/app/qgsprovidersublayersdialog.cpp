@@ -67,6 +67,18 @@ QVariant QgsProviderSublayerDialogModel::data( const QModelIndex &index, int rol
         }
       }
     }
+    else if ( details.flags() & Qgis::SublayerFlag::SystemTable )
+    {
+      switch ( role )
+      {
+        case Qt::FontRole:
+        {
+          QFont f =  QgsProviderSublayerModel::data( index, role ).value< QFont >();
+          f.setItalic( true );
+          return f;
+        }
+      }
+    }
   }
   return QgsProviderSublayerModel::data( index, role );
 }
