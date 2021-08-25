@@ -163,6 +163,7 @@ void QgsMapToolEditMeshFrame::activateWithState( State state )
   if ( mCanvas->mapTool() != this )
   {
     mCanvas->setMapTool( this );
+    mCanvas->setFocus();
     onEditingStarted();
   }
   mCurrentState = state;
@@ -176,7 +177,7 @@ void QgsMapToolEditMeshFrame::backToDigitizing()
 
 QgsMapToolEditMeshFrame::~QgsMapToolEditMeshFrame()
 {
-  deleteZvalueWidget();
+  deleteZValueWidget();
 }
 
 QList<QAction *> QgsMapToolEditMeshFrame::actions() const
@@ -312,7 +313,7 @@ void QgsMapToolEditMeshFrame::deactivate()
 {
   clearSelection();
   clearCanvasHelpers();
-  mZValueWidget->hide();
+  deleteZValueWidget();
   qDeleteAll( mFreeVertexMarker );
   mFreeVertexMarker.clear();
 
@@ -354,15 +355,13 @@ void QgsMapToolEditMeshFrame::clearAll()
   mSelectedFacesRubberband->deleteLater();
   mSelectedFacesRubberband = nullptr;
 
-  deleteZvalueWidget();
+  deleteZValueWidget();
 }
 
 void QgsMapToolEditMeshFrame::activate()
 {
   QgsMapToolAdvancedDigitizing::activate();
-  if ( mZValueWidget )
-    mZValueWidget->show();
-  updateFreeVertices();
+  createZValueWidget();
 }
 
 bool QgsMapToolEditMeshFrame::populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEvent *event )
@@ -1865,17 +1864,16 @@ bool QgsMapToolEditMeshFrame::faceCanBeInteractive( int faceIndex ) const
 void QgsMapToolEditMeshFrame::createZValueWidget()
 {
   if ( !mCanvas )
-  {
     return;
-  }
 
-  deleteZvalueWidget();
+  deleteZValueWidget();
 
   mZValueWidget = new QgsZValueWidget( tr( "Vertex Z value:" ) );
+  mZValueWidget->setDefaultValue( mOrdinaryZValue );
   QgisApp::instance()->addUserInputWidget( mZValueWidget );
 }
 
-void QgsMapToolEditMeshFrame::deleteZvalueWidget()
+void QgsMapToolEditMeshFrame::deleteZValueWidget()
 {
   if ( mZValueWidget )
   {
