@@ -251,6 +251,7 @@ set(QGIS_APP_SRCS
   mesh/qgsnewmeshlayerdialog.cpp
   mesh/qgsmaptooleditmeshframe.cpp
   mesh/qgsmeshtransformcoordinatesdockwidget.cpp
+  mesh/qgsmeshselectbyexpressiondialog.cpp
 )
 
 if (WITH_SPATIALITE)

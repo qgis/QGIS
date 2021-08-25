@@ -18,6 +18,7 @@
 
 #include <QWidget>
 #include <QPointer>
+#include <QDialog>
 
 #include "qgis_app.h"
 #include "qgsmaptooladvanceddigitizing.h"
@@ -32,6 +33,10 @@ class QgsVertexMarker;
 class QgsDoubleSpinBox;
 class QgsSnapIndicator;
 class QgsMeshTransformCoordinatesDockWidget;
+
+
+class QgsExpressionBuilderWidget;
+class QgsMeshSelectByExpressionDialog;
 
 
 class APP_EXPORT QgsZValueWidget : public QWidget
@@ -49,7 +54,7 @@ class APP_EXPORT QgsZValueWidget : public QWidget
     void setZValue( double z );
 
     /**
-     *  Sets the current value of the widget and set it as the default one ,
+     *  Sets the current value of the widget and set it as the default one,
      *  that is the value that is retrieve if the z value spin box is cleared
      */
     void setDefaultValue( double z );
@@ -101,6 +106,10 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 
     void triggerTransformCoordinatesDockWidget( bool checked );
 
+    void showSelectByExpressionDialog();
+    void selectByExpresssion( const QString &textExpression, Qgis::SelectBehavior behavior, QgsMesh::ElementType elementType );
+    void onZoomToSelected();
+
   private:
 
     enum State
@@ -130,9 +139,8 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     bool faceCanBeInteractive( int faceIndex ) const;
 
     void createZValueWidget();
-    void deleteZvalueWidget();
+    void deleteZValueWidget();
 
-    void clearSelection();
     void clearCanvasHelpers();
     void clearEdgeHelpers();
 
@@ -155,12 +163,16 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 
     // selection methods
     void select( const QgsPointXY &mapPoint, Qt::KeyboardModifiers modifiers, double tolerance );
-    void setSelectedVertices( const QList<int> newSelectedVertex,  Qt::KeyboardModifiers modifiers );
-    void clearSelectedvertex();
+    void addNewSelectedVertex( int vertexIndex );
+    void removeSelectedVertex( int vertexIndex );
+    bool isFaceSelected( int faceIndex );
+    void setSelectedVertices( const QList<int> newSelectedVertices,  Qgis::SelectBehavior behavior );
+    void setSelectedFaces( const QList<int> newSelectedFaces,  Qgis::SelectBehavior behavior );
     void selectInGeometry( const QgsGeometry &geometry,  Qt::KeyboardModifiers modifiers );
     void applyZValueOnSelectedVertices();
     void prepareSelection();
     void updateSelectecVerticesMarker();
+    void clearSelection();
 
     void setMovingRubberBandValidity( bool valid );
 
@@ -176,7 +188,6 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     State mCurrentState = Digitizing;
     bool mLeftButtonPressed = false;
     bool mKeepSelectionOnEdit = false;
-
 
     QPointer<QgsMeshLayer> mCurrentLayer = nullptr; //not own
     QPointer<QgsMeshEditor> mCurrentEditor = nullptr; // own by mesh layer
@@ -211,6 +222,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 
     //! members for selection of vertices/faces
     QMap<int, SelectedVertexData> mSelectedVertices;
+    QgsRectangle mSelectedMapExtent;
     QSet<int> mSelectedFaces;
     QSet<int> mConcernedFaceBySelection;
     QgsVertexMarker *mSelectFaceMarker = nullptr; //own by map canvas
@@ -240,6 +252,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     //! members for split face
     int mSplittableFaceCount = 0;
 
+    // assiociated widget
     QgsZValueWidget *mZValueWidget = nullptr; //own by QgsUserInputWidget instance
 
     QgsMeshTransformCoordinatesDockWidget *mTransformDockWidget = nullptr; //own by the application
@@ -256,6 +269,8 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QAction *mActionSelectByPolygon = nullptr;
 
     QAction *mActionTransformCoordinates = nullptr;
+
+    QAction *mActionSelectByExpression = nullptr;
 
     friend class TestQgsMapToolEditMesh;
 };
