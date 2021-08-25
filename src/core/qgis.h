@@ -413,9 +413,22 @@ class CORE_EXPORT Qgis
       FastScan = 1 << 0, //!< Indicates that the provider must scan for sublayers using the fastest possible approach -- e.g. by first checking that a uri has an extension which is known to be readable by the provider
       ResolveGeometryType = 1 << 1, //!< Attempt to resolve the geometry type for vector sublayers
       CountFeatures = 1 << 2, //!< Count features in vector sublayers
+      IncludeSystemTables = 1 << 3, //!< Include system or internal tables (these are not included by default)
     };
     Q_DECLARE_FLAGS( SublayerQueryFlags, SublayerQueryFlag )
     Q_ENUM( SublayerQueryFlag )
+
+    /**
+     * Flags which reflect the properties of sublayers in a dataset.
+     *
+     * \since QGIS 3.22
+     */
+    enum class SublayerFlag : int
+    {
+      SystemTable = 1 << 0, //!< Sublayer is a system or internal table, which should be hidden by default
+    };
+    Q_DECLARE_FLAGS( SublayerFlags, SublayerFlag )
+    Q_ENUM( SublayerFlag )
 
     /**
      * Raster pipe interface roles.
@@ -836,6 +849,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolPreviewFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BrowserItemCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerQueryFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SqlLayerDefinitionCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelFormatCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelCommandFlags )
