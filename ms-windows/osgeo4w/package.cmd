@@ -305,7 +305,6 @@ for %%i in (%packages%) do (
   "apps/%PACKAGENAME%/plugins/provider_postgresraster.dll" ^
   "apps/%PACKAGENAME%/plugins/provider_spatialite.dll" ^
   "apps/%PACKAGENAME%/plugins/provider_virtuallayer.dll" ^
-  "apps/%PACKAGENAME%/plugins/provider_virtualraster.dll" ^
   "apps/%PACKAGENAME%/plugins/provider_wcs.dll" ^
   "apps/%PACKAGENAME%/plugins/provider_wfs.dll" ^
   "apps/%PACKAGENAME%/plugins/provider_wms.dll" ^
