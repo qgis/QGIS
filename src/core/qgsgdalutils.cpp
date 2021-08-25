@@ -623,6 +623,7 @@ QStringList QgsGdalUtils::multiLayerFileExtensions()
     QStringLiteral( "gpx" ),
     QStringLiteral( "pdf" ),
     QStringLiteral( "pbf" ),
+    QStringLiteral( "vrt" ),
     QStringLiteral( "nc" ),
     QStringLiteral( "shp.zip" ) };
   return SUPPORTED_DB_LAYERS_EXTENSIONS;

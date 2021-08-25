@@ -2175,7 +2175,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].uri(), os.path.join(TEST_DATA_DIR, "vector_vrt.vrt"))
         self.assertEqual(res[0].providerKey(), "ogr")
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
-        self.assertFalse(res[0].skippedContainerScan())
+        self.assertTrue(res[0].skippedContainerScan())
 
         # raster vrt
         res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, "/raster/hub13263.vrt"), Qgis.SublayerQueryFlag.FastScan)
