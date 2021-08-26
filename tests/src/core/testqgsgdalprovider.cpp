@@ -676,7 +676,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayersFastScan()
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( TEST_DATA_DIR ) + "/raster/hub13263.vrt" );
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
   QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
-  QVERIFY( !res.at( 0 ).skippedContainerScan() );
+  QVERIFY( res.at( 0 ).skippedContainerScan() );
 }
 
 QGSTEST_MAIN( TestQgsGdalProvider )
