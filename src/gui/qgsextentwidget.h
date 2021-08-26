@@ -75,6 +75,8 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
      */
     explicit QgsExtentWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, WidgetStyle style = CondensedStyle );
 
+    ~QgsExtentWidget() override;
+
     /**
      * Sets the original extent and coordinate reference system for the widget. This should be called as part of initialization.
      * \see originalExtent()
@@ -243,6 +245,7 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
     void layerMenuAboutToShow();
 
     void extentDrawn( const QgsRectangle &extent );
+    void mapToolDeactivated();
 
   private:
     void setOutputExtent( const QgsRectangle &r, const QgsCoordinateReferenceSystem &srcCrs, QgsExtentWidget::ExtentState state );
