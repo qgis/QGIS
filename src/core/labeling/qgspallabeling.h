@@ -633,10 +633,18 @@ class CORE_EXPORT QgsPalLayerSettings
     //! True if label rotation should be preserved during label pin/unpin operations.
     bool preserveRotation = true;
 
-    //! Unit for rotation of labels.
+    /**
+     * Unit for rotation of labels.
+     * \see setRotationUnit()
+     * \since QGIS 3.22
+     */
     QgsUnitTypes::AngleUnit rotationUnit() const;
 
-    //! Set unit for rotation of labels.
+    /**
+      * Set unit for rotation of labels.
+      * \see rotationUnit()
+      * \since QGIS 3.22
+      */
     void setRotationUnit( QgsUnitTypes::AngleUnit angleUnit );
 
     /**
