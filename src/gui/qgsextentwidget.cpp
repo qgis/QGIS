@@ -89,6 +89,17 @@ QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
   setAcceptDrops( true );
 }
 
+QgsExtentWidget::~QgsExtentWidget()
+{
+  if ( mMapToolExtent )
+  {
+    // disconnect from deactivated signal -- this will be called when the map tool is being destroyed,
+    // and we don't want to act on that anymore (the mapToolDeactivated slot tries to show the widget again, but
+    // that's being destroyed!)
+    disconnect( mMapToolExtent.get(), &QgsMapToolExtent::deactivated, this, &QgsExtentWidget::mapToolDeactivated );
+  }
+}
+
 void QgsExtentWidget::setOriginalExtent( const QgsRectangle &originalExtent, const QgsCoordinateReferenceSystem &originalCrs )
 {
   mOriginalExtent = originalExtent;
@@ -393,11 +404,7 @@ void QgsExtentWidget::setOutputExtentFromDrawOnCanvas()
     {
       mMapToolExtent.reset( new QgsMapToolExtent( mCanvas ) );
       connect( mMapToolExtent.get(), &QgsMapToolExtent::extentChanged, this, &QgsExtentWidget::extentDrawn );
-      connect( mMapToolExtent.get(), &QgsMapTool::deactivated, this, [ = ]
-      {
-        emit toggleDialogVisibility( true );
-        mMapToolPrevious = nullptr;
-      } );
+      connect( mMapToolExtent.get(), &QgsMapTool::deactivated, this, &QgsExtentWidget::mapToolDeactivated );
     }
     mMapToolExtent->setRatio( mRatio );
     mCanvas->setMapTool( mMapToolExtent.get() );
@@ -410,6 +417,12 @@ void QgsExtentWidget::extentDrawn( const QgsRectangle &extent )
 {
   setOutputExtent( extent, mCanvas->mapSettings().destinationCrs(), DrawOnCanvas );
   mCanvas->setMapTool( mMapToolPrevious );
+  emit toggleDialogVisibility( true );
+  mMapToolPrevious = nullptr;
+}
+
+void QgsExtentWidget::mapToolDeactivated()
+{
   emit toggleDialogVisibility( true );
   mMapToolPrevious = nullptr;
 }

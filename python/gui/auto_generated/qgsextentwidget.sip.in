@@ -52,6 +52,8 @@ When using the widget, make sure to call :py:func:`~setOriginalExtent`, :py:func
 Constructor for QgsExtentWidget.
 %End
 
+    ~QgsExtentWidget();
+
     void setOriginalExtent( const QgsRectangle &originalExtent, const QgsCoordinateReferenceSystem &originalCrs );
 %Docstring
 Sets the original extent and coordinate reference system for the widget. This should be called as part of initialization.
