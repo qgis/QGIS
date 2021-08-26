@@ -858,7 +858,9 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   gotAuthDetailsAdded = false;
 
   QNetworkRequest req{ u };
+  QWARN( ( QStringLiteral( " QgsNetworkAccessManager::blockingGet( req ) STARTED " ) ).toLatin1().data() );
   QgsNetworkReplyContent rep = QgsNetworkAccessManager::blockingGet( req );
+  QWARN( ( QStringLiteral( " QgsNetworkAccessManager::blockingGet( req ) FINISHED " ) ).toLatin1().data() );
   QVERIFY( rep.content().isEmpty() );
   while ( !loaded || !gotAuthRequest || !gotRequestAboutToBeCreatedSignal || !gotAuthDetailsAdded )
   {
@@ -941,7 +943,9 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< TestAuthRequestHandler >( QStringLiteral( "me" ), hash ) );
   u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
   req = QNetworkRequest{ u };
+  QWARN( ( QStringLiteral( " QgsNetworkAccessManager::blockingGet( req ) STARTED " ) ).toLatin1().data() );
   rep = QgsNetworkAccessManager::blockingGet( req );
+  QWARN( ( QStringLiteral( " QgsNetworkAccessManager::blockingGet( req ) FINISHED " ) ).toLatin1().data() );
   QVERIFY( rep.content().contains( "\"user\": \"me\"" ) );
   while ( !loaded || !gotAuthRequest || !gotRequestAboutToBeCreatedSignal || !gotAuthDetailsAdded )
   {
