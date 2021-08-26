@@ -277,7 +277,7 @@ void TestQgsNetworkAccessManager::fetchEmptyUrl()
 
   thread->start();
 
-  while ( !loaded )
+  while ( !loaded || !gotRequestAboutToBeCreatedSignal )
   {
     qApp->processEvents();
   }
@@ -293,7 +293,7 @@ void TestQgsNetworkAccessManager::fetchEmptyUrl()
 
   BackgroundBlockingRequest *blockingThread = new BackgroundBlockingRequest( QNetworkRequest( QUrl() ), QNetworkAccessManager::GetOperation, QNetworkReply::ProtocolUnknownError );
   blockingThread->start();
-  while ( !loaded )
+  while ( !loaded || !gotRequestAboutToBeCreatedSignal )
   {
     qApp->processEvents();
   }
@@ -341,7 +341,7 @@ void TestQgsNetworkAccessManager::fetchBadUrl()
   QNetworkRequest req{ QUrl( QStringLiteral( "http://x" ) ) };
   const QgsNetworkReplyContent rep = QgsNetworkAccessManager::blockingGet( req );
   QCOMPARE( rep.errorString(), QStringLiteral( "Host x not found" ) );
-  while ( !loaded )
+  while ( !loaded || !gotRequestAboutToBeCreatedSignal )
   {
     qApp->processEvents();
   }
@@ -370,7 +370,7 @@ void TestQgsNetworkAccessManager::fetchBadUrl()
 
   BackgroundBlockingRequest *blockingThread = new BackgroundBlockingRequest( QNetworkRequest( QUrl( QStringLiteral( "http://x" ) ) ), QNetworkAccessManager::GetOperation, QNetworkReply::HostNotFoundError );
   blockingThread->start();
-  while ( !loaded )
+  while ( !loaded || !gotRequestAboutToBeCreatedSignal )
   {
     qApp->processEvents();
   }
@@ -424,7 +424,7 @@ void TestQgsNetworkAccessManager::fetchEncodedContent()
   // blocking request
   const QgsNetworkReplyContent rep = QgsNetworkAccessManager::blockingGet( r );
   QVERIFY( rep.content().contains( "<title>test</title>" ) );
-  while ( !loaded )
+  while ( !loaded || !gotRequestAboutToBeCreatedSignal )
   {
     qApp->processEvents();
   }
@@ -453,7 +453,7 @@ void TestQgsNetworkAccessManager::fetchEncodedContent()
 
   BackgroundBlockingRequest *blockingThread = new BackgroundBlockingRequest( r, QNetworkAccessManager::GetOperation, QNetworkReply::NoError, QByteArray(),  "<title>test</title>" );
   blockingThread->start();
-  while ( !loaded )
+  while ( !loaded || !gotRequestAboutToBeCreatedSignal )
   {
     qApp->processEvents();
   }
@@ -526,7 +526,7 @@ void TestQgsNetworkAccessManager::fetchPost()
 
   thread->start();
 
-  while ( !loaded )
+  while ( !loaded || !gotRequestAboutToBeCreatedSignal )
   {
     qApp->processEvents();
   }
@@ -545,7 +545,7 @@ void TestQgsNetworkAccessManager::fetchPost()
   req.setHeader( QNetworkRequest::ContentTypeHeader, QStringLiteral( "application/x-www-form-urlencoded" ) );
   BackgroundBlockingRequest *blockingThread = new BackgroundBlockingRequest( req, QNetworkAccessManager::PostOperation, QNetworkReply::NoError, QByteArray( "a=b&c=d" ),  "\"a\": \"b\"" );
   blockingThread->start();
-  while ( !loaded )
+  while ( !loaded || !gotRequestAboutToBeCreatedSignal )
   {
     qApp->processEvents();
   }
@@ -823,7 +823,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   QNetworkRequest req{ u };
   QgsNetworkReplyContent rep = QgsNetworkAccessManager::blockingGet( req );
   QVERIFY( rep.content().isEmpty() );
-  while ( !loaded )
+  while ( !loaded || !gotAuthRequest || !gotRequestAboutToBeCreatedSignal || !gotAuthDetailsAdded )
   {
     qApp->processEvents();
   }
