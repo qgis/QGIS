@@ -26,3 +26,5 @@ services:
       - LANG=C.UTF-8
       - LC_ALL=en_US.UTF-8
       - QGIS_HTTPBIN_HOST=httpbin
+    cap_add:
+      - NET_ADMIN
