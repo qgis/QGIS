@@ -175,7 +175,17 @@ EOT
 
 fi
 
+#######################################
+# Wait for WebDAV container to be ready
+#######################################
 
+echo "Wait for webdav to be ready..."
+while ! curl -f -X GET -u qgis:myPasswd! http://$QGIS_WEBDAV_HOST:$QGIS_WEBDAV_PORT/webdav_tests/ &> /dev/null;
+do
+  sleep 1
+  printf "."
+done
+echo "done"
 
 ###########
 # Run tests
