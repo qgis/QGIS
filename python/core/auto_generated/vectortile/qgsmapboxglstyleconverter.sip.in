@@ -347,7 +347,7 @@ Parses a numeric value which is interpolated by zoom range.
          - defaultNumber: storage for a reasonable "default" number representing the overall property.
 %End
 
-    static QgsProperty parseInterpolateOpacityByZoom( const QVariantMap &json, int maxOpacity );
+    static QgsProperty parseInterpolateOpacityByZoom( const QVariantMap &json, int maxOpacity, QgsMapBoxGlStyleConversionContext &context );
 %Docstring
 Interpolates opacity with either :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or :py:func:`~QgsMapBoxGlStyleConverter.scale_exp` (depending on base value).
 For ``json`` with intermediate stops it uses :py:func:`~QgsMapBoxGlStyleConverter.parseOpacityStops` function.
@@ -358,7 +358,7 @@ It uses QGIS :py:func:`~QgsMapBoxGlStyleConverter.set_color_part` function to se
    This is private API only, and may change in future QGIS versions
 %End
 
-    static QString parseOpacityStops( double base, const QVariantList &stops, int maxOpacity );
+    static QString parseOpacityStops( double base, const QVariantList &stops, int maxOpacity, QgsMapBoxGlStyleConversionContext &context );
 %Docstring
 Takes values from stops and uses either :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or :py:func:`~QgsMapBoxGlStyleConverter.scale_exp` functions
 to interpolate alpha component of color.
@@ -487,7 +487,7 @@ Takes a QColor object and returns HSLA components in required format for QGIS :p
    This is private API only, and may change in future QGIS versions
 %End
 
-    static QString interpolateExpression( double zoomMin, double zoomMax, double valueMin, double valueMax, double base, double multiplier = 1 );
+    static QString interpolateExpression( double zoomMin, double zoomMax, QVariant valueMin, QVariant valueMax, double base, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1 );
 %Docstring
 Generates an interpolation for values between ``valueMin`` and ``valueMax``, scaled between the
 ranges ``zoomMin`` to ``zoomMax``.
