@@ -156,8 +156,6 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void prepareSelection();
     void updateSelectecVerticesMarker();
 
-    bool testBorderMovingFace( const QgsMeshFace &borderMovingfaces, const QgsVector &translation ) const;
-
     // members
     struct SelectedVertexData
     {

@@ -549,6 +549,8 @@ void QgsMapToolEditMeshFrame::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       faceGeom.translate( translation.x(), translation.y() );
       mMovingFacesRubberband->setToGeometry( faceGeom );
 
+      QSet<int> borderMovingFace;
+
       mIsMovingAllowed = true;
       for ( QMap<int, SelectedVertexData>::const_iterator it = mSelectedVertices.constBegin(); it != mSelectedVertices.constEnd(); ++it )
       {
@@ -559,8 +561,9 @@ void QgsMapToolEditMeshFrame::cadCanvasMoveEvent( QgsMapMouseEvent *e )
           const QgsPointXY point2 = mapVertexXY( vertexData.meshFixedEdges.at( i ).second );
           QgsGeometry edge( new QgsLineString( {point1, point2} ) );
           mMovingEdgesRubberband->addGeometry( edge );
-          if ( mIsMovingAllowed )
-            mIsMovingAllowed &= testBorderMovingFace( nativeFace( vertexData.meshFixedEdges.at( i ).first ), translation );
+          int associateFace = vertexData.meshFixedEdges.at( i ).first;
+          if ( associateFace != -1 )
+            borderMovingFace.insert( associateFace );
         }
 
         for ( int i = 0; i < vertexData.borderEdges.count(); ++i )
@@ -570,6 +573,23 @@ void QgsMapToolEditMeshFrame::cadCanvasMoveEvent( QgsMapMouseEvent *e )
           mMovingEdgesRubberband->addGeometry( edge );
         }
       }
+
+      const QgsMeshVertex &mapPointInNativeCoordinate =
+        mCurrentLayer->triangularMesh()->triangularToNativeCoordinates( QgsMeshVertex( mapPoint.x(), mapPoint.y() ) );
+      const QgsMeshVertex &startingPointInNativeCoordinate =
+        mCurrentLayer->triangularMesh()->triangularToNativeCoordinates( QgsMeshVertex( mStartMovingPoint.x(), mStartMovingPoint.y() ) );
+      const QgsVector &translationInLayerCoordinate = mapPointInNativeCoordinate - startingPointInNativeCoordinate;
+
+      auto transformFunction = [translationInLayerCoordinate, this ]( int vi )-> const QgsMeshVertex
+      {
+        if ( mSelectedVertices.contains( vi ) )
+          return mCurrentLayer->nativeMesh()->vertex( vi ) + translationInLayerCoordinate;
+        else
+          return mCurrentLayer->nativeMesh()->vertex( vi );
+      };
+
+      // we test only the faces taht are deformed on the border, moving and not deformed faces are tested later
+      mIsMovingAllowed = mCurrentEditor->canBeTransformed( qgis::setToList( borderMovingFace ), transformFunction );
 
       if ( mIsMovingAllowed )
       {
@@ -740,11 +760,17 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         const QList<int> verticesIndexes = mSelectedVertices.keys();
         QList<QgsPointXY> newPosition;
         newPosition.reserve( verticesIndexes.count() );
-        QgsVector translation = e->mapPoint() - mStartMovingPoint;
+
+        const QgsMeshVertex &mapPointInNativeCoordinate =
+          mCurrentLayer->triangularMesh()->triangularToNativeCoordinates( QgsMeshVertex( mapPoint.x(), mapPoint.y() ) );
+        const QgsMeshVertex &startingPointInNativeCoordinate =
+          mCurrentLayer->triangularMesh()->triangularToNativeCoordinates( QgsMeshVertex( mStartMovingPoint.x(), mStartMovingPoint.y() ) );
+        const QgsVector &translationInLayerCoordinate = mapPointInNativeCoordinate - startingPointInNativeCoordinate;
+
+        const QgsMesh &mesh = *mCurrentLayer->nativeMesh();
         for ( int i = 0; i < verticesIndexes.count(); ++i )
-        {
-          newPosition.append( mapVertexXY( verticesIndexes.at( i ) ) + translation );
-        }
+          newPosition.append( QgsPointXY( mesh.vertex( verticesIndexes.at( i ) ) ) + translationInLayerCoordinate );
+
         mKeepSelectionOnEdit = true;
         mCurrentEditor->changeXYValues( mSelectedVertices.keys(), newPosition );
       }
@@ -801,92 +827,6 @@ void QgsMapToolEditMeshFrame::select( const QgsPointXY &mapPoint, Qt::KeyboardMo
   }
   else
     setSelectedVertices( QList<int>(),  modifiers );
-}
-
-bool QgsMapToolEditMeshFrame::testBorderMovingFace( const QgsMeshFace &borderMovingfaces, const QgsVector &translation ) const
-{
-  int faceSize = borderMovingfaces.count();
-  QgsPolygonXY polygon;
-  QVector<QgsPointXY> points( faceSize );
-  for ( int i = 0; i < faceSize; ++i )
-  {
-    int ip0 =  borderMovingfaces[i];
-    int ip1 = borderMovingfaces[( i + 1 ) % faceSize];
-    int ip2 = borderMovingfaces[( i + 2 ) % faceSize];
-
-    QgsPointXY p0 = mCurrentLayer->nativeMesh()->vertices.at( ip0 ) + ( mSelectedVertices.contains( ip0 ) ? translation : QgsVector( 0, 0 ) );
-    QgsPointXY p1 = mCurrentLayer->nativeMesh()->vertices.at( ip1 ) + ( mSelectedVertices.contains( ip1 ) ? translation : QgsVector( 0, 0 ) );
-    QgsPointXY p2 = mCurrentLayer->nativeMesh()->vertices.at( ip2 ) + ( mSelectedVertices.contains( ip2 ) ? translation : QgsVector( 0, 0 ) );
-
-    double ux = p0.x() - p1.x();
-    double uy = p0.y() - p1.y();
-    double vx = p2.x() - p1.x();
-    double vy = p2.y() - p1.y();
-
-    double crossProduct = ux * vy - uy * vx;
-    if ( crossProduct >= 0 ) //if cross product>0, we have two edges clockwise
-      return false;
-    points[i] = p0;
-  }
-  polygon.append( points );
-
-  const QgsGeometry &deformedFace = QgsGeometry::fromPolygonXY( polygon );
-
-  // now test if the deformed face contain something else
-  QList<int> otherFaceIndexes = mCurrentLayer->triangularMesh()->nativeFaceIndexForRectangle( deformedFace.boundingBox() );
-  {
-    for ( const int otherFaceIndex : otherFaceIndexes )
-    {
-      if ( mConcernedFaceBySelection.contains( otherFaceIndex ) )
-        continue;
-
-      const QgsMeshFace &otherFace = nativeFace( otherFaceIndex );
-      int existingFaceSize = otherFace.count();
-      bool shareVertex = false;
-      for ( int i = 0; i < existingFaceSize; ++i )
-      {
-        if ( borderMovingfaces.contains( otherFace.at( i ) ) )
-        {
-          shareVertex = true;
-          break;
-        }
-      }
-      if ( shareVertex )
-      {
-        //only test the edge that not contain a shared vertex
-        for ( int i = 0; i < existingFaceSize; ++i )
-        {
-          int index1 = otherFace.at( i );
-          int index2 = otherFace.at( ( i + 1 ) % existingFaceSize );
-          if ( ! borderMovingfaces.contains( index1 )  && !borderMovingfaces.contains( index2 ) )
-          {
-            const QgsPointXY &v1 = mapVertexXY( index1 );
-            const QgsPointXY &v2 = mapVertexXY( index2 );
-            QgsGeometry edgeGeom = QgsGeometry::fromPolylineXY( { v1, v2} );
-            if ( deformedFace.intersects( edgeGeom ) )
-              return false;
-          }
-        }
-      }
-      else
-      {
-        const QgsGeometry existingFaceGeom( new QgsPolygon( new QgsLineString( nativeFaceGeometry( otherFaceIndex ) ) ) );
-        if ( deformedFace.intersects( existingFaceGeom ) )
-          return false;
-      }
-    }
-  }
-
-  //finish with free vertices...
-  const QList<int> freeVerticesIndex = mCurrentEditor->freeVerticesIndexes();
-  for ( const int vertexIndex : freeVerticesIndex )
-  {
-    const QgsPointXY &mapPoint = mapVertexXY( vertexIndex );
-    if ( deformedFace.contains( &mapPoint ) )
-      return false;
-  }
-
-  return true;
 }
 
 void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )

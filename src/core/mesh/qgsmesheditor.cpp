@@ -358,7 +358,7 @@ QVector<QgsMeshFace> QgsMeshEditor::prepareFaces( const QVector<QgsMeshFace> &fa
       break;
     }
 
-    error = mTopologicalMesh.counterClockWiseFaces( face, mMesh );
+    error = mTopologicalMesh.counterClockwiseFaces( face, mMesh );
     if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
       break;
   }
@@ -462,6 +462,96 @@ QgsMeshEditingError QgsMeshEditor::removeVertices( const QList<int> &verticesToR
 void QgsMeshEditor::changeZValues( const QList<int> &verticesIndexes, const QList<double> &newZValues )
 {
   mUndoStack->push( new QgsMeshLayerUndoCommandChangeZValue( this, verticesIndexes, newZValues ) );
+}
+
+bool QgsMeshEditor::canBeTransformed( const QList<int> &transformedFaces, const std::function<const QgsMeshVertex( int )> &transformFunction ) const
+{
+  for ( const int faceIndex : transformedFaces )
+  {
+    const QgsMeshFace &face = mMesh->face( faceIndex );
+    int faceSize = face.count();
+    QgsPolygonXY polygon;
+    QVector<QgsPointXY> points( faceSize );
+    for ( int i = 0; i < faceSize; ++i )
+    {
+      int ip0 =  face[i];
+      int ip1 = face[( i + 1 ) % faceSize];
+      int ip2 = face[( i + 2 ) % faceSize];
+
+      QgsMeshVertex p0 = transformFunction( ip0 );
+      QgsMeshVertex p1 = transformFunction( ip1 );
+      QgsMeshVertex p2 = transformFunction( ip2 );
+
+
+      double ux = p0.x() - p1.x();
+      double uy = p0.y() - p1.y();
+      double vx = p2.x() - p1.x();
+      double vy = p2.y() - p1.y();
+
+      double crossProduct = ux * vy - uy * vx;
+      if ( crossProduct >= 0 ) //if cross product>0, we have two edges clockwise
+        return false;
+      points[i] = p0;
+    }
+    polygon.append( points );
+
+    const QgsGeometry &deformedFace = QgsGeometry::fromPolygonXY( polygon );
+
+    // now test if the deformed face contain something else
+    QList<int> otherFaceIndexes = mTriangularMesh->nativeFaceIndexForRectangle( deformedFace.boundingBox() );
+
+    for ( const int otherFaceIndex : otherFaceIndexes )
+    {
+      const QgsMeshFace &otherFace = mMesh->face( otherFaceIndex );
+      int existingFaceSize = otherFace.count();
+      bool shareVertex = false;
+      for ( int i = 0; i < existingFaceSize; ++i )
+      {
+        if ( face.contains( otherFace.at( i ) ) )
+        {
+          shareVertex = true;
+          break;
+        }
+      }
+      if ( shareVertex )
+      {
+        //only test the edge that not contain a shared vertex
+        for ( int i = 0; i < existingFaceSize; ++i )
+        {
+          int index1 = otherFace.at( i );
+          int index2 = otherFace.at( ( i + 1 ) % existingFaceSize );
+          if ( ! face.contains( index1 )  && !face.contains( index2 ) )
+          {
+            const QgsPointXY &v1 = transformFunction( index1 );
+            const QgsPointXY &v2 =  transformFunction( index2 );
+            QgsGeometry edgeGeom = QgsGeometry::fromPolylineXY( { v1, v2} );
+            if ( deformedFace.intersects( edgeGeom ) )
+              return false;
+          }
+        }
+      }
+      else
+      {
+        QVector<QgsPointXY> otherPoints( existingFaceSize );
+        for ( int i = 0; i < existingFaceSize; ++i )
+          otherPoints[i] = transformFunction( otherFace.at( i ) );
+        const QgsGeometry existingFaceGeom = QgsGeometry::fromPolygonXY( {otherPoints } );
+        if ( deformedFace.intersects( existingFaceGeom ) )
+          return false;
+      }
+    }
+
+    //finish with free vertices...
+    const QList<int> freeVerticesIndex = freeVerticesIndexes();
+    for ( const int vertexIndex : freeVerticesIndex )
+    {
+      const QgsPointXY &mapPoint = transformFunction( vertexIndex ); //free vertices can be transformed
+      if ( deformedFace.contains( &mapPoint ) )
+        return false;
+    }
+  }
+
+  return true;
 }
 
 void QgsMeshEditor::changeXYValues( const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues )
@@ -626,7 +716,7 @@ bool QgsMeshEditor::isModified() const
   return false;
 }
 
-QList<int> QgsMeshEditor::freeVerticesIndexes()
+QList<int> QgsMeshEditor::freeVerticesIndexes() const
 {
   return mTopologicalMesh.freeVerticesIndexes();
 }

@@ -285,8 +285,8 @@ class CORE_EXPORT QgsTopologicalMesh
     //! Reverses the changes
     void reverseChanges( const Changes &changes );
 
-    //! Checks the topology of the face and sets it counter clock wise if necessary
-    static QgsMeshEditingError counterClockWiseFaces( QgsMeshFace &face, QgsMesh *mesh );
+    //! Checks the topology of the face and sets it counter clockwise if necessary
+    static QgsMeshEditingError counterClockwiseFaces( QgsMeshFace &face, QgsMesh *mesh );
 
     /**
      * Reindexes faces and vertices, after this operation, the topological
