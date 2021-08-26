@@ -397,11 +397,19 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
     QgsUnitTypes::AngleUnit rotationUnit() const;
 %Docstring
 Unit for rotation of labels.
+
+.. seealso:: :py:func:`setRotationUnit`
+
+.. versionadded:: 3.22
 %End
 
     void setRotationUnit( QgsUnitTypes::AngleUnit angleUnit );
 %Docstring
 Set unit for rotation of labels.
+
+.. seealso:: :py:func:`rotationUnit`
+
+.. versionadded:: 3.22
 %End
 
     double maxCurvedCharAngleIn;

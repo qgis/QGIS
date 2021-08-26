@@ -161,6 +161,12 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
         {
           mCurrentRotation = 0;
         }
+
+        // Convert to degree
+        mCurrentRotation = mCurrentRotation
+                           * QgsUnitTypes::fromUnitToUnitFactor( mCurrentLabel.settings.rotationUnit(),
+                               QgsUnitTypes::AngleDegrees );
+
         mStartRotation = mCurrentRotation;
         createRubberBands();
 
@@ -209,11 +215,15 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
           return;
         }
 
-        const double rotation = mCtrlPressed ? roundTo15Degrees( mCurrentRotation ) : mCurrentRotation;
-        if ( qgsDoubleNear( rotation, mStartRotation ) ) //mouse button pressed / released, but no rotation
+        const double rotationDegree = mCtrlPressed ? roundTo15Degrees( mCurrentRotation ) : mCurrentRotation;
+        if ( qgsDoubleNear( rotationDegree, mStartRotation ) ) //mouse button pressed / released, but no rotation
         {
           return;
         }
+
+        // Convert back to settings unit
+        const double rotation = rotationDegree * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleDegrees,
+                                mCurrentLabel.settings.rotationUnit() );
 
         vlayer->beginEditCommand( tr( "Rotated label" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
         if ( !vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, rotationCol, rotation ) )
