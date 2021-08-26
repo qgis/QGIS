@@ -193,7 +193,17 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
           return;
 
         if ( !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol ) )
+        {
+          QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, mCurrentLabel.settings, vlayer );
+          QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, mCurrentLabel.settings, vlayer );
+          if ( xCol < 0 && yCol < 0 )
+            QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "The label X/Y columns “%1” and “%2” do not exist in the layer" ).arg( xColName, yColName ) );
+          else if ( xCol < 0 )
+            QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "The label X column “%1” does not exist in the layer" ).arg( xColName ) );
+          else if ( yCol < 0 )
+            QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "The label Y column “%1” does not exist in the layer" ).arg( yColName ) );
           return;
+        }
 
         xCol = indexes[ QgsPalLayerSettings::PositionX ];
         yCol = indexes[ QgsPalLayerSettings::PositionY ];
