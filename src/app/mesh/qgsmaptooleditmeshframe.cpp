@@ -123,7 +123,7 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
 
   connect( mActionDelaunayTriangulation, &QAction::triggered, this, [this]
   {
-    if ( mCurrentEditor && mSelectedVertices.count() > 3 )
+    if ( mCurrentEditor && mSelectedVertices.count() >= 3 )
     {
       QgsMeshEditingDelaunayTriangulation triangulation;
       triangulation.setInputVertices( mSelectedVertices.keys() );
