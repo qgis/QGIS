@@ -755,6 +755,15 @@ void TestQgsNetworkAccessManager::testSslErrorHandler()
 
 void TestQgsNetworkAccessManager::testAuthRequestHandler()
 {
+  auto waitProcessEvents = [ ]( )
+  {
+    int ii = 100000;
+    while ( ii-- )
+    {
+      qApp->processEvents();
+    }
+  };
+
   // initially this request should fail -- we aren't providing the username and password required
   QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< TestAuthRequestHandler >( QString(), QString() ) );
 
@@ -809,7 +818,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   {
     qApp->processEvents();
   }
-
+  waitProcessEvents();
   QVERIFY( gotRequestAboutToBeCreatedSignal );
 
   // blocking request
@@ -827,6 +836,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   {
     qApp->processEvents();
   }
+  waitProcessEvents();
   QVERIFY( gotRequestAboutToBeCreatedSignal );
   QCOMPARE( rep.requestId(), requestId );
 
@@ -846,6 +856,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   {
     qApp->processEvents();
   }
+  waitProcessEvents();
   QVERIFY( gotRequestAboutToBeCreatedSignal );
   thread->exit();
   thread->wait();
@@ -866,6 +877,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   {
     qApp->processEvents();
   }
+  waitProcessEvents();
   QVERIFY( gotRequestAboutToBeCreatedSignal );
   blockingThread->exit();
   blockingThread->wait();
@@ -889,6 +901,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   {
     qApp->processEvents();
   }
+  waitProcessEvents();
 
   // blocking request
   loaded = false;
@@ -906,6 +919,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   {
     qApp->processEvents();
   }
+  waitProcessEvents();
   QVERIFY( gotRequestAboutToBeCreatedSignal );
   QCOMPARE( rep.requestId(), requestId );
 
@@ -927,6 +941,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   {
     qApp->processEvents();
   }
+  waitProcessEvents();
   QVERIFY( gotRequestAboutToBeCreatedSignal );
   thread->exit();
   thread->wait();
@@ -951,6 +966,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   {
     qApp->processEvents();
   }
+  waitProcessEvents();
   QVERIFY( gotRequestAboutToBeCreatedSignal );
   blockingThread->exit();
   blockingThread->wait();
