@@ -158,6 +158,7 @@ class TestQgsNetworkAccessManager : public QObject
     void fetchBadSsl();
     void testSslErrorHandler();
     void testAuthRequestHandler();
+    void testAuthRequestHandlerBlockingGet();
     void fetchTimeout();
     void testCookieManagement();
     void testProxyExcludeList();
@@ -234,11 +235,11 @@ void TestQgsNetworkAccessManager::fetchEmptyUrl()
   int requestId = -1;
   connect( QgsNetworkAccessManager::instance(), qOverload< QgsNetworkRequestParameters >( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( const QgsNetworkRequestParameters & params )
   {
-    gotRequestAboutToBeCreatedSignal = true;
     requestId = params.requestId();
     QVERIFY( requestId > 0 );
     QCOMPARE( params.operation(), QNetworkAccessManager::GetOperation );
     QCOMPARE( params.request().url(), QUrl() );
+    gotRequestAboutToBeCreatedSignal = true;
   } );
   connect( QgsNetworkAccessManager::instance(), qOverload< QgsNetworkReplyContent >( &QgsNetworkAccessManager::finished ), &context, [&]( const QgsNetworkReplyContent & reply )
   {
@@ -249,7 +250,7 @@ void TestQgsNetworkAccessManager::fetchEmptyUrl()
   } );
   QgsNetworkAccessManager::instance()->get( QNetworkRequest( QUrl() ) );
 
-  while ( !loaded )
+  while ( !loaded || !gotRequestAboutToBeCreatedSignal )
   {
     qApp->processEvents();
   }
@@ -263,7 +264,7 @@ void TestQgsNetworkAccessManager::fetchEmptyUrl()
   QNetworkRequest req{ QUrl() };
   const QgsNetworkReplyContent rep = QgsNetworkAccessManager::blockingGet( req );
   QCOMPARE( rep.errorString(), QStringLiteral( "Protocol \"\" is unknown" ) );
-  while ( !loaded )
+  while ( !loaded || !gotRequestAboutToBeCreatedSignal )
   {
     qApp->processEvents();
   }
@@ -277,7 +278,7 @@ void TestQgsNetworkAccessManager::fetchEmptyUrl()
 
   thread->start();
 
-  while ( !loaded )
+  while ( !loaded || !gotRequestAboutToBeCreatedSignal )
   {
     qApp->processEvents();
   }
@@ -293,7 +294,7 @@ void TestQgsNetworkAccessManager::fetchEmptyUrl()
 
   BackgroundBlockingRequest *blockingThread = new BackgroundBlockingRequest( QNetworkRequest( QUrl() ), QNetworkAccessManager::GetOperation, QNetworkReply::ProtocolUnknownError );
   blockingThread->start();
-  while ( !loaded )
+  while ( !loaded || !gotRequestAboutToBeCreatedSignal )
   {
     qApp->processEvents();
   }
@@ -312,11 +313,11 @@ void TestQgsNetworkAccessManager::fetchBadUrl()
   int requestId = -1;
   connect( QgsNetworkAccessManager::instance(), qOverload< QgsNetworkRequestParameters >( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( const QgsNetworkRequestParameters & params )
   {
-    gotRequestAboutToBeCreatedSignal = true;
     requestId = params.requestId();
     QVERIFY( requestId > 0 );
     QCOMPARE( params.operation(), QNetworkAccessManager::GetOperation );
     QCOMPARE( params.request().url(), QUrl( QStringLiteral( "http://x" ) ) );
+    gotRequestAboutToBeCreatedSignal = true;
   } );
   connect( QgsNetworkAccessManager::instance(), qOverload< QgsNetworkReplyContent >( &QgsNetworkAccessManager::finished ), &context, [&]( const QgsNetworkReplyContent & reply )
   {
@@ -328,7 +329,7 @@ void TestQgsNetworkAccessManager::fetchBadUrl()
   } );
   QgsNetworkAccessManager::instance()->get( QNetworkRequest( QUrl( QStringLiteral( "http://x" ) ) ) );
 
-  while ( !loaded )
+  while ( !loaded || !gotRequestAboutToBeCreatedSignal )
   {
     qApp->processEvents();
   }
@@ -341,7 +342,7 @@ void TestQgsNetworkAccessManager::fetchBadUrl()
   QNetworkRequest req{ QUrl( QStringLiteral( "http://x" ) ) };
   const QgsNetworkReplyContent rep = QgsNetworkAccessManager::blockingGet( req );
   QCOMPARE( rep.errorString(), QStringLiteral( "Host x not found" ) );
-  while ( !loaded )
+  while ( !loaded || !gotRequestAboutToBeCreatedSignal )
   {
     qApp->processEvents();
   }
@@ -355,7 +356,7 @@ void TestQgsNetworkAccessManager::fetchBadUrl()
 
   thread->start();
 
-  while ( !loaded )
+  while ( !loaded || !gotRequestAboutToBeCreatedSignal )
   {
     qApp->processEvents();
   }
@@ -370,7 +371,7 @@ void TestQgsNetworkAccessManager::fetchBadUrl()
 
   BackgroundBlockingRequest *blockingThread = new BackgroundBlockingRequest( QNetworkRequest( QUrl( QStringLiteral( "http://x" ) ) ), QNetworkAccessManager::GetOperation, QNetworkReply::HostNotFoundError );
   blockingThread->start();
-  while ( !loaded )
+  while ( !loaded || !gotRequestAboutToBeCreatedSignal )
   {
     qApp->processEvents();
   }
@@ -391,13 +392,13 @@ void TestQgsNetworkAccessManager::fetchEncodedContent()
   QUrl u =  QUrl::fromLocalFile( QStringLiteral( TEST_DATA_DIR ) + '/' +  "encoded_html.html" );
   connect( QgsNetworkAccessManager::instance(), qOverload< QgsNetworkRequestParameters >( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( const QgsNetworkRequestParameters & params )
   {
-    gotRequestAboutToBeCreatedSignal = true;
     requestId = params.requestId();
     QVERIFY( requestId > 0 );
     QCOMPARE( params.operation(), QNetworkAccessManager::GetOperation );
     QCOMPARE( params.request().url(), u );
     QCOMPARE( params.initiatorClassName(), QStringLiteral( "myTestClass" ) );
     QCOMPARE( params.initiatorRequestId().toInt(), 55 );
+    gotRequestAboutToBeCreatedSignal = true;
   } );
   connect( QgsNetworkAccessManager::instance(), qOverload< QgsNetworkReplyContent >( &QgsNetworkAccessManager::finished ), &context, [&]( const QgsNetworkReplyContent & reply )
   {
@@ -412,7 +413,7 @@ void TestQgsNetworkAccessManager::fetchEncodedContent()
   r.setAttribute( static_cast< QNetworkRequest::Attribute >( QgsNetworkRequestParameters::AttributeInitiatorRequestId ), 55 );
   QgsNetworkAccessManager::instance()->get( r );
 
-  while ( !loaded )
+  while ( !loaded || !gotRequestAboutToBeCreatedSignal )
   {
     qApp->processEvents();
   }
@@ -424,7 +425,7 @@ void TestQgsNetworkAccessManager::fetchEncodedContent()
   // blocking request
   const QgsNetworkReplyContent rep = QgsNetworkAccessManager::blockingGet( r );
   QVERIFY( rep.content().contains( "<title>test</title>" ) );
-  while ( !loaded )
+  while ( !loaded || !gotRequestAboutToBeCreatedSignal )
   {
     qApp->processEvents();
   }
@@ -438,7 +439,7 @@ void TestQgsNetworkAccessManager::fetchEncodedContent()
 
   thread->start();
 
-  while ( !loaded )
+  while ( !loaded || !gotRequestAboutToBeCreatedSignal )
   {
     qApp->processEvents();
   }
@@ -453,7 +454,7 @@ void TestQgsNetworkAccessManager::fetchEncodedContent()
 
   BackgroundBlockingRequest *blockingThread = new BackgroundBlockingRequest( r, QNetworkAccessManager::GetOperation, QNetworkReply::NoError, QByteArray(),  "<title>test</title>" );
   blockingThread->start();
-  while ( !loaded )
+  while ( !loaded || !gotRequestAboutToBeCreatedSignal )
   {
     qApp->processEvents();
   }
@@ -477,12 +478,12 @@ void TestQgsNetworkAccessManager::fetchPost()
 
   connect( QgsNetworkAccessManager::instance(), qOverload< QgsNetworkRequestParameters >( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( const QgsNetworkRequestParameters & params )
   {
-    gotRequestAboutToBeCreatedSignal = true;
     requestId = params.requestId();
     QVERIFY( requestId > 0 );
     QCOMPARE( params.operation(), QNetworkAccessManager::PostOperation );
     QCOMPARE( params.request().url(), u );
     QCOMPARE( params.content(), QByteArray( "a=b&c=d" ) );
+    gotRequestAboutToBeCreatedSignal = true;
   } );
   connect( QgsNetworkAccessManager::instance(), qOverload< QgsNetworkReplyContent >( &QgsNetworkAccessManager::finished ), &context, [&]( const QgsNetworkReplyContent & reply )
   {
@@ -494,8 +495,7 @@ void TestQgsNetworkAccessManager::fetchPost()
   } );
 
   QNetworkReply *reply = QgsNetworkAccessManager::instance()->post( req, QByteArray( "a=b&c=d" ) );
-
-  while ( !loaded )
+  while ( !loaded || !gotRequestAboutToBeCreatedSignal )
   {
     qApp->processEvents();
   }
@@ -512,7 +512,7 @@ void TestQgsNetworkAccessManager::fetchPost()
   const QgsNetworkReplyContent rep = QgsNetworkAccessManager::blockingPost( req, QByteArray( "a=b&c=d" ) );
   QVERIFY( rep.content().contains( "\"a\": \"b\"" ) );
   QVERIFY( rep.content().contains( "\"c\": \"d\"" ) );
-  while ( !loaded )
+  while ( !loaded || !gotRequestAboutToBeCreatedSignal )
   {
     qApp->processEvents();
   }
@@ -527,7 +527,7 @@ void TestQgsNetworkAccessManager::fetchPost()
 
   thread->start();
 
-  while ( !loaded )
+  while ( !loaded || !gotRequestAboutToBeCreatedSignal )
   {
     qApp->processEvents();
   }
@@ -546,7 +546,7 @@ void TestQgsNetworkAccessManager::fetchPost()
   req.setHeader( QNetworkRequest::ContentTypeHeader, QStringLiteral( "application/x-www-form-urlencoded" ) );
   BackgroundBlockingRequest *blockingThread = new BackgroundBlockingRequest( req, QNetworkAccessManager::PostOperation, QNetworkReply::NoError, QByteArray( "a=b&c=d" ),  "\"a\": \"b\"" );
   blockingThread->start();
-  while ( !loaded )
+  while ( !loaded || !gotRequestAboutToBeCreatedSignal )
   {
     qApp->processEvents();
   }
@@ -568,11 +568,11 @@ void TestQgsNetworkAccessManager::fetchBadSsl()
   QUrl u =  QUrl( QStringLiteral( "https://expired.badssl.com" ) );
   connect( QgsNetworkAccessManager::instance(), qOverload< QgsNetworkRequestParameters >( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( const QgsNetworkRequestParameters & params )
   {
-    gotRequestAboutToBeCreatedSignal = true;
     requestId = params.requestId();
     QVERIFY( requestId > 0 );
     QCOMPARE( params.operation(), QNetworkAccessManager::GetOperation );
     QCOMPARE( params.request().url(), u );
+    gotRequestAboutToBeCreatedSignal = true;
   } );
   connect( QgsNetworkAccessManager::instance(), qOverload< QgsNetworkReplyContent >( &QgsNetworkAccessManager::finished ), &context, [&]( const QgsNetworkReplyContent & reply )
   {
@@ -642,7 +642,7 @@ void TestQgsNetworkAccessManager::fetchBadSsl()
   gotRequestEncounteredSslError = false;
   BackgroundBlockingRequest *blockingThread = new BackgroundBlockingRequest( req, QNetworkAccessManager::GetOperation, QNetworkReply::SslHandshakeFailedError );
   blockingThread->start();
-  while ( !loaded )
+  while ( !loaded || !gotSslError || !gotRequestAboutToBeCreatedSignal || !gotRequestEncounteredSslError )
   {
     qApp->processEvents();
   }
@@ -667,11 +667,11 @@ void TestQgsNetworkAccessManager::testSslErrorHandler()
   QUrl u =  QUrl( QStringLiteral( "https://self-signed.badssl.com/" ) );
   connect( QgsNetworkAccessManager::instance(), qOverload< QgsNetworkRequestParameters >( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( const QgsNetworkRequestParameters & params )
   {
-    gotRequestAboutToBeCreatedSignal = true;
     requestId = params.requestId();
     QVERIFY( requestId > 0 );
     QCOMPARE( params.operation(), QNetworkAccessManager::GetOperation );
     QCOMPARE( params.request().url(), u );
+    gotRequestAboutToBeCreatedSignal = true;
   } );
   connect( QgsNetworkAccessManager::instance(), qOverload< QgsNetworkReplyContent >( &QgsNetworkAccessManager::finished ), &context, [&]( const QgsNetworkReplyContent & reply )
   {
@@ -742,7 +742,7 @@ void TestQgsNetworkAccessManager::testSslErrorHandler()
   gotRequestEncounteredSslError = false;
   BackgroundBlockingRequest *blockingThread = new BackgroundBlockingRequest( req, QNetworkAccessManager::GetOperation, QNetworkReply::NoError, QByteArray(), "<!DOCTYPE html>" );
   blockingThread->start();
-  while ( !loaded )
+  while ( !loaded || !gotSslError || !gotRequestAboutToBeCreatedSignal || !gotRequestEncounteredSslError )
   {
     qApp->processEvents();
   }
@@ -757,6 +757,7 @@ void TestQgsNetworkAccessManager::testSslErrorHandler()
 void TestQgsNetworkAccessManager::testAuthRequestHandler()
 {
   // initially this request should fail -- we aren't providing the username and password required
+  QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< QgsNetworkAuthenticationHandler >() );
   QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< TestAuthRequestHandler >( QString(), QString() ) );
 
   const QObject context;
@@ -767,39 +768,63 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   QString hash = QUuid::createUuid().toString().mid( 1, 10 );
   QString expectedUser;
   QString expectedPassword;
-  int requestId = -1;
   QUrl u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
   QNetworkReply::NetworkError expectedError = QNetworkReply::NoError;
+  QgsNetworkRequestParameters checkParams;
+  QgsNetworkReplyContent checkReply;
+  int checkAuthRequestIdA;
+  int checkAuthRequestIdB;
+  QString checkRealmA;
+  QString checkRealmB;
+  QString checkUser;
+  QString checkPassword;
+  auto checkSignalValues = [ & ]( )
+  {
+    // check requestAboutToBeCreated
+    int requestId = checkParams.requestId();
+    QVERIFY( requestId > 0 );
+    QCOMPARE( checkParams.operation(), QNetworkAccessManager::GetOperation );
+    QCOMPARE( checkParams.request().url(), u );
+    // check finished
+    QCOMPARE( checkReply.error(), expectedError );
+    QCOMPARE( checkReply.requestId(), requestId );
+    QCOMPARE( checkReply.request().url(), u );
+    // check requestRequiresAuth
+    QCOMPARE( checkAuthRequestIdA, requestId );
+    QCOMPARE( checkRealmA, QStringLiteral( "Fake Realm" ) );
+    // check requestAuthDetailsAdded
+    QCOMPARE( checkAuthRequestIdB, requestId );
+    QCOMPARE( checkRealmB, QStringLiteral( "Fake Realm" ) );
+    QCOMPARE( checkUser, expectedUser );
+    QCOMPARE( checkPassword, expectedPassword );
+    QWARN( ( QStringLiteral( "checkParams.request().url(): " ) + checkParams.request().url().toString() ).toLatin1().data() );
+  };
+
 
   connect( QgsNetworkAccessManager::instance(), qOverload< QgsNetworkRequestParameters >( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( const QgsNetworkRequestParameters & params )
   {
+    checkParams = params;
     gotRequestAboutToBeCreatedSignal = true;
-    requestId = params.requestId();
-    QVERIFY( requestId > 0 );
-    QCOMPARE( params.operation(), QNetworkAccessManager::GetOperation );
-    QCOMPARE( params.request().url(), u );
   } );
   connect( QgsNetworkAccessManager::instance(), qOverload< QgsNetworkReplyContent >( &QgsNetworkAccessManager::finished ), &context, [&]( const QgsNetworkReplyContent & reply )
   {
-    QCOMPARE( reply.error(), expectedError );
-    QCOMPARE( reply.requestId(), requestId );
-    QCOMPARE( reply.request().url(), u );
+    checkReply = reply;
     loaded = true;
   } );
 
   connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::requestRequiresAuth, &context, [&]( int authRequestId, const QString & realm )
   {
-    QCOMPARE( authRequestId, requestId );
-    QCOMPARE( realm, QStringLiteral( "Fake Realm" ) );
+    checkAuthRequestIdA = authRequestId;
+    checkRealmA = realm;
     gotAuthRequest = true;
   } );
 
   connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::requestAuthDetailsAdded, &context, [&]( int authRequestId, const QString & realm, const QString & user, const QString & password )
   {
-    QCOMPARE( authRequestId, requestId );
-    QCOMPARE( realm, QStringLiteral( "Fake Realm" ) );
-    QCOMPARE( user, expectedUser );
-    QCOMPARE( password, expectedPassword );
+    checkAuthRequestIdB = authRequestId;
+    checkRealmB = realm;
+    checkUser = user;
+    checkPassword = password;
     gotAuthDetailsAdded = true;
   } );
 
@@ -810,26 +835,10 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   {
     qApp->processEvents();
   }
-
+  checkSignalValues();
   QVERIFY( gotRequestAboutToBeCreatedSignal );
-
-  // blocking request
-  hash = QUuid::createUuid().toString().mid( 1, 10 );
-  u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
-  loaded = false;
-  gotAuthRequest = false;
-  gotRequestAboutToBeCreatedSignal = false;
-  gotAuthDetailsAdded = false;
 
   QNetworkRequest req{ u };
-  QgsNetworkReplyContent rep = QgsNetworkAccessManager::blockingGet( req );
-  QVERIFY( rep.content().isEmpty() );
-  while ( !loaded )
-  {
-    qApp->processEvents();
-  }
-  QVERIFY( gotRequestAboutToBeCreatedSignal );
-  QCOMPARE( rep.requestId(), requestId );
 
   // now try in a thread
   loaded = false;
@@ -847,13 +856,13 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   {
     qApp->processEvents();
   }
+  checkSignalValues();
   QVERIFY( gotRequestAboutToBeCreatedSignal );
   thread->exit();
   thread->wait();
   thread->deleteLater();
 
   // blocking request in a thread
-
   loaded = false;
   gotAuthRequest = false;
   gotRequestAboutToBeCreatedSignal = false;
@@ -863,10 +872,11 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   req = QNetworkRequest( u );
   BackgroundBlockingRequest *blockingThread = new BackgroundBlockingRequest( req, QNetworkAccessManager::GetOperation, expectedError );
   blockingThread->start();
-  while ( !loaded )
+  while ( !loaded || !gotAuthRequest || !gotRequestAboutToBeCreatedSignal || !gotAuthDetailsAdded )
   {
     qApp->processEvents();
   }
+  checkSignalValues();
   QVERIFY( gotRequestAboutToBeCreatedSignal );
   blockingThread->exit();
   blockingThread->wait();
@@ -890,25 +900,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   {
     qApp->processEvents();
   }
-
-  // blocking request
-  loaded = false;
-  gotAuthRequest = false;
-  gotRequestAboutToBeCreatedSignal = false;
-  gotAuthDetailsAdded = false;
-  hash = QUuid::createUuid().toString().mid( 1, 10 );
-  expectedPassword = hash;
-  QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< TestAuthRequestHandler >( QStringLiteral( "me" ), hash ) );
-  u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
-  req = QNetworkRequest{ u };
-  rep = QgsNetworkAccessManager::blockingGet( req );
-  QVERIFY( rep.content().contains( "\"user\": \"me\"" ) );
-  while ( !loaded )
-  {
-    qApp->processEvents();
-  }
-  QVERIFY( gotRequestAboutToBeCreatedSignal );
-  QCOMPARE( rep.requestId(), requestId );
+  checkSignalValues();
 
   // correct username and password, in a thread
   hash = QUuid::createUuid().toString().mid( 1, 10 );
@@ -928,6 +920,7 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   {
     qApp->processEvents();
   }
+  checkSignalValues();
   QVERIFY( gotRequestAboutToBeCreatedSignal );
   thread->exit();
   thread->wait();
@@ -948,14 +941,139 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   req = QNetworkRequest{ u };
   blockingThread = new BackgroundBlockingRequest( req, QNetworkAccessManager::GetOperation, QNetworkReply::NoError, QByteArray(),  "\"user\": \"me2\"" );
   blockingThread->start();
-  while ( !loaded )
+  while ( !loaded || !gotAuthRequest || !gotRequestAboutToBeCreatedSignal || !gotAuthDetailsAdded )
   {
     qApp->processEvents();
   }
+  checkSignalValues();
   QVERIFY( gotRequestAboutToBeCreatedSignal );
   blockingThread->exit();
   blockingThread->wait();
   blockingThread->deleteLater();
+
+  QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< QgsNetworkAuthenticationHandler >() );
+}
+
+void TestQgsNetworkAccessManager::testAuthRequestHandlerBlockingGet()
+{
+  // initially this request should fail -- we aren't providing the username and password required
+  QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< QgsNetworkAuthenticationHandler >() );
+  QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< TestAuthRequestHandler >( QString(), QString() ) );
+
+  const QObject context;
+  bool loaded = false;
+  bool gotRequestAboutToBeCreatedSignal = false;
+  bool gotAuthRequest = false;
+  bool gotAuthDetailsAdded = false;
+  QString hash = QUuid::createUuid().toString().mid( 1, 10 );
+  QString expectedUser;
+  QString expectedPassword;
+  QUrl u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
+  QNetworkReply::NetworkError expectedError = QNetworkReply::NoError;
+  QgsNetworkRequestParameters checkParams;
+  QgsNetworkReplyContent checkReply;
+  int checkAuthRequestIdA;
+  int checkAuthRequestIdB;
+  QString checkRealmA;
+  QString checkRealmB;
+  QString checkUser;
+  QString checkPassword;
+  auto checkSignalValues = [ & ]( )
+  {
+    // check requestAboutToBeCreated
+    int requestId = checkParams.requestId();
+    QVERIFY( requestId > 0 );
+    QCOMPARE( checkParams.operation(), QNetworkAccessManager::GetOperation );
+    QCOMPARE( checkParams.request().url(), u );
+    // check finished
+    QCOMPARE( checkReply.error(), expectedError );
+    QCOMPARE( checkReply.requestId(), requestId );
+    QCOMPARE( checkReply.request().url(), u );
+    // check requestRequiresAuth
+    QCOMPARE( checkAuthRequestIdA, requestId );
+    QCOMPARE( checkRealmA, QStringLiteral( "Fake Realm" ) );
+    // check requestAuthDetailsAdded
+    QCOMPARE( checkAuthRequestIdB, requestId );
+    QCOMPARE( checkRealmB, QStringLiteral( "Fake Realm" ) );
+    QCOMPARE( checkUser, expectedUser );
+    QCOMPARE( checkPassword, expectedPassword );
+    QWARN( ( QStringLiteral( "checkParams.request().url(): " ) + checkParams.request().url().toString() ).toLatin1().data() );
+  };
+
+
+  connect( QgsNetworkAccessManager::instance(), qOverload< QgsNetworkRequestParameters >( &QgsNetworkAccessManager::requestAboutToBeCreated ), &context, [&]( const QgsNetworkRequestParameters & params )
+  {
+    checkParams = params;
+    gotRequestAboutToBeCreatedSignal = true;
+  } );
+  connect( QgsNetworkAccessManager::instance(), qOverload< QgsNetworkReplyContent >( &QgsNetworkAccessManager::finished ), &context, [&]( const QgsNetworkReplyContent & reply )
+  {
+    checkReply = reply;
+    loaded = true;
+  } );
+
+  connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::requestRequiresAuth, &context, [&]( int authRequestId, const QString & realm )
+  {
+    checkAuthRequestIdA = authRequestId;
+    checkRealmA = realm;
+    gotAuthRequest = true;
+  } );
+
+  connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::requestAuthDetailsAdded, &context, [&]( int authRequestId, const QString & realm, const QString & user, const QString & password )
+  {
+    checkAuthRequestIdB = authRequestId;
+    checkRealmB = realm;
+    checkUser = user;
+    checkPassword = password;
+    gotAuthDetailsAdded = true;
+  } );
+
+  expectedError = QNetworkReply::AuthenticationRequiredError;
+
+  // blocking request
+  hash = QUuid::createUuid().toString().mid( 1, 10 );
+  u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
+  loaded = false;
+  gotAuthRequest = false;
+  gotRequestAboutToBeCreatedSignal = false;
+  gotAuthDetailsAdded = false;
+
+  QNetworkRequest req{ u };
+  QWARN( ( QStringLiteral( " QgsNetworkAccessManager::blockingGet( req ) STARTED " ) ).toLatin1().data() );
+  QgsNetworkReplyContent rep = QgsNetworkAccessManager::blockingGet( req );
+  QWARN( ( QStringLiteral( " QgsNetworkAccessManager::blockingGet( req ) FINISHED " ) ).toLatin1().data() );
+  QVERIFY( rep.content().isEmpty() );
+  while ( !loaded || !gotAuthRequest || !gotRequestAboutToBeCreatedSignal || !gotAuthDetailsAdded )
+  {
+    qApp->processEvents();
+  }
+  checkSignalValues();
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+  QCOMPARE( rep.requestId(), checkParams.requestId() );
+
+  // blocking request
+  loaded = false;
+  gotAuthRequest = false;
+  gotRequestAboutToBeCreatedSignal = false;
+  gotAuthDetailsAdded = false;
+  hash = QUuid::createUuid().toString().mid( 1, 10 );
+  expectedError = QNetworkReply::NoError;
+  expectedUser = QStringLiteral( "me" );
+  expectedPassword = hash;
+  QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< TestAuthRequestHandler >( QStringLiteral( "me" ), hash ) );
+  u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
+  req = QNetworkRequest{ u };
+  QWARN( ( QStringLiteral( " QgsNetworkAccessManager::blockingGet( req ) STARTED " ) ).toLatin1().data() );
+  rep = QgsNetworkAccessManager::blockingGet( req );
+  QWARN( ( QStringLiteral( " QgsNetworkAccessManager::blockingGet( req ) FINISHED " ) ).toLatin1().data() );
+  QVERIFY( rep.content().contains( "\"user\": \"me\"" ) );
+  while ( !loaded || !gotAuthRequest || !gotRequestAboutToBeCreatedSignal || !gotAuthDetailsAdded )
+  {
+    qApp->processEvents();
+  }
+  checkSignalValues();
+  QVERIFY( gotRequestAboutToBeCreatedSignal );
+  QCOMPARE( rep.requestId(), checkParams.requestId() );
 
   QgsNetworkAccessManager::instance()->setAuthHandler( std::make_unique< QgsNetworkAuthenticationHandler >() );
 }
