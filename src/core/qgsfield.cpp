@@ -312,7 +312,7 @@ QString QgsField::displayString( const QVariant &v ) const
       }
     }
     // Default for doubles with precision
-    else if ( d->type == QVariant::Double && d->precision > 0 )
+    else if ( d->precision > 0 )
     {
       if ( -1 < v.toDouble() && v.toDouble() < 1 )
       {
