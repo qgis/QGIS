@@ -966,6 +966,7 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
   CPLErrorReset();
 
   char **papszOpenOptions = CSLDuplicate( papszOpenOptionsIn );
+  papszOpenOptions = CSLAddString( papszOpenOptions, "LIST_ALL_TABLES=YES" );
 
   QString filePath( QString::fromUtf8( pszPath ) );
 
