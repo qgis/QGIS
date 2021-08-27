@@ -568,7 +568,7 @@ QString QgsVectorLayerTemporalProperties::createFilterString( QgsVectorLayerTemp
       if ( !mStartExpression.isEmpty() && !mEndExpression.isEmpty() )
       {
         return QStringLiteral( "((%1) %2 %3) AND ((%4) > %5)" ).arg( mStartExpression,
-               filterRange.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
+               ( filterRange.includeEnd() or limitMode() == QgsVectorLayerTemporalProperties::ModeIncludeBeginIncludeEnd ) ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
                dateTimeExpressionLiteral( filterRange.end() ),
                mEndExpression,
                dateTimeExpressionLiteral( filterRange.begin() ) );
