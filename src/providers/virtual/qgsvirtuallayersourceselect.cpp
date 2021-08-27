@@ -42,6 +42,7 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
 {
   setupUi( this );
   setupButtons( buttonBox );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVirtualLayerSourceSelect::showHelp );
 
   mQueryEdit->setLineNumbersVisible( true );
 
@@ -418,4 +419,9 @@ void QgsVirtualLayerSourceSelect::addButtonClicked()
   {
     accept();
   }
+}
+
+void QgsVirtualLayerSourceSelect::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-virtual-layers" ) );
 }
