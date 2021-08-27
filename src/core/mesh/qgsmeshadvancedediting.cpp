@@ -19,6 +19,10 @@
 #include "qgsmesheditor.h"
 #include "poly2tri.h"
 
+#include "qgsmeshlayer.h"
+#include "qgsexpression.h"
+#include "qgsexpressioncontextutils.h"
+
 QgsMeshAdvancedEditing::QgsMeshAdvancedEditing() = default;
 
 QgsMeshAdvancedEditing::~QgsMeshAdvancedEditing() = default;
@@ -591,3 +595,159 @@ bool QgsMeshEditRefineFaces::createNewBorderFaces( QgsMeshEditor *meshEditor,
 
   return true;
 }
+
+bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer )
+{
+  if ( !layer || !layer->meshEditor() || !layer->nativeMesh() )
+    return false;
+
+  if ( mInputVertices.isEmpty() )
+    return false;
+
+  const QgsMesh mesh = *layer->nativeMesh();
+  QSet<int> concernedFaces;
+  QHash<int, int> changingVertexMap;
+
+  std::unique_ptr<QgsExpressionContextScope> expScope( QgsExpressionContextUtils::meshExpressionScope() );
+  QgsExpressionContext context;
+  context.appendScope( expScope.release() );
+  context.lastScope()->setVariable( QStringLiteral( "_mesh_layer" ), QVariant::fromValue( layer ) );
+
+  QVector<QgsMeshVertex> newVertices;
+  newVertices.reserve( mInputVertices.count() );
+
+  int inputCount = mInputVertices.count();
+  mChangeCoordinateVerticesIndexes = mInputVertices;
+
+  bool calcX = !mExpressionX.isEmpty();
+  bool calcY = !mExpressionY.isEmpty();
+  bool calcZ = !mExpressionZ.isEmpty();
+  QgsExpression expressionX;
+  if ( calcX )
+  {
+    expressionX = QgsExpression( mExpressionX );
+    expressionX.prepare( &context );
+  }
+
+  QgsExpression expressionY;
+  if ( calcY )
+  {
+    expressionY = QgsExpression( mExpressionY );
+    expressionY.prepare( &context );
+  }
+
+  if ( calcX || calcY )
+  {
+    mNewXYValues.reserve( inputCount );
+    mOldXYValues.reserve( inputCount );
+  }
+
+  QgsExpression expressionZ;
+  if ( calcZ )
+  {
+    expressionZ = QgsExpression( mExpressionZ );
+    expressionZ.prepare( &context );
+    mNewZValues.reserve( inputCount );
+    mOldZValues.reserve( inputCount );
+  }
+
+  int i = 0;
+  for ( const int vertexIndex : std::as_const( mInputVertices ) )
+  {
+    context.lastScope()->setVariable( QStringLiteral( "_mesh_vertex_index" ), vertexIndex, false );
+
+    changingVertexMap[vertexIndex] = i;
+    ++i;
+    QVariant xvar = expressionX.evaluate( &context );
+    QVariant yvar = expressionY.evaluate( &context );
+    QVariant zvar = expressionZ.evaluate( &context );
+
+    const QgsMeshVertex &vert = mesh.vertex( vertexIndex );
+
+    if ( calcX || calcY )
+    {
+      mOldXYValues.append( QgsPointXY( vert ) );
+      mNewXYValues.append( QgsPointXY( vert ) );
+    }
+
+    bool ok = false;
+    if ( calcX )
+    {
+      if ( xvar.isValid() )
+      {
+        double x = xvar.toDouble( &ok );
+        if ( ok )
+        {
+          mNewXYValues.last().setX( x );
+        }
+        else
+          return false;
+      }
+      else
+      {
+        return false;
+      }
+    }
+
+    if ( calcY )
+    {
+      if ( yvar.isValid() )
+      {
+        double y = yvar.toDouble( &ok );
+        if ( ok )
+        {
+          mNewXYValues.last().setY( y );
+        }
+        else
+          return false;
+      }
+      else
+        return false;
+    }
+
+    if ( calcZ )
+    {
+      if ( zvar.isValid() )
+      {
+        double z = zvar.toDouble( &ok );
+        if ( ok )
+        {
+          mNewZValues.append( z );
+          mOldZValues.append( vert.z() );
+        }
+        else
+          return false;
+      }
+      else
+        return false;
+    }
+
+    QList<int> facesAround = layer->meshEditor()->topologicalMesh().facesAroundVertex( vertexIndex );
+    concernedFaces.unite( qgis::listToSet( facesAround ) );
+  }
+
+  auto transformFunction = [this, changingVertexMap, layer ]( int vi )-> const QgsMeshVertex
+  {
+    int pos = changingVertexMap.value( vi, -1 );
+    if ( pos > -1 )
+      return QgsMeshVertex( mNewXYValues.at( pos ) );
+    else
+      return layer->nativeMesh()->vertex( vi );
+  };
+
+  return layer->meshEditor()->canBeTransformed( qgis::setToList( concernedFaces ), transformFunction );
+}
+
+void QgsMeshTransformVerticesByExpression::setExpressions( const QString &expressionX, const QString &expressionY, const QString &expressionZ )
+{
+  mExpressionX = expressionX;
+  mExpressionY = expressionY;
+  mExpressionZ = expressionZ;
+}
+
+QgsTopologicalMesh::Changes QgsMeshTransformVerticesByExpression::apply( QgsMeshEditor *meshEditor )
+{
+  meshEditor->topologicalMesh().applyChanges( *this );
+  return *this;
+}
+

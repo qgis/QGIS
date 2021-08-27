@@ -1019,6 +1019,82 @@ class CurrentVertexZValueExpressionFunction: public QgsScopedExpressionFunction
     }
 };
 
+class CurrentVertexXValueExpressionFunction: public QgsScopedExpressionFunction
+{
+  public:
+    CurrentVertexXValueExpressionFunction():
+      QgsScopedExpressionFunction( "$vertex_x",
+                                   0,
+                                   QStringLiteral( "Meshes" ) )
+    {}
+
+    QgsScopedExpressionFunction *clone() const override {return new CurrentVertexXValueExpressionFunction();}
+
+    QVariant func( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * ) override
+    {
+      if ( !context )
+        return QVariant();
+
+      if ( !context->hasVariable( QStringLiteral( "_mesh_vertex_index" ) ) || !context->hasVariable( QStringLiteral( "_mesh_layer" ) ) )
+        return QVariant();
+
+      int vertexIndex = context->variable( QStringLiteral( "_mesh_vertex_index" ) ).toInt();
+
+      QgsMeshLayer *layer = qobject_cast<QgsMeshLayer *>( qvariant_cast<QgsMapLayer *>( context->variable( QStringLiteral( "_mesh_layer" ) ) ) );
+      if ( !layer || !layer->nativeMesh() || layer->nativeMesh()->vertexCount() <= vertexIndex )
+        return QVariant();
+
+      const QgsMeshVertex &vertex = layer->nativeMesh()->vertex( vertexIndex );
+      if ( !vertex.isEmpty() )
+        return vertex.x();
+      else
+        return QVariant();
+    }
+
+    bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override
+    {
+      return false;
+    }
+};
+
+class CurrentVertexYValueExpressionFunction: public QgsScopedExpressionFunction
+{
+  public:
+    CurrentVertexYValueExpressionFunction():
+      QgsScopedExpressionFunction( "$vertex_y",
+                                   0,
+                                   QStringLiteral( "Meshes" ) )
+    {}
+
+    QgsScopedExpressionFunction *clone() const override {return new CurrentVertexYValueExpressionFunction();}
+
+    QVariant func( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * ) override
+    {
+      if ( !context )
+        return QVariant();
+
+      if ( !context->hasVariable( QStringLiteral( "_mesh_vertex_index" ) ) || !context->hasVariable( QStringLiteral( "_mesh_layer" ) ) )
+        return QVariant();
+
+      int vertexIndex = context->variable( QStringLiteral( "_mesh_vertex_index" ) ).toInt();
+
+      QgsMeshLayer *layer = qobject_cast<QgsMeshLayer *>( qvariant_cast<QgsMapLayer *>( context->variable( QStringLiteral( "_mesh_layer" ) ) ) );
+      if ( !layer || !layer->nativeMesh() || layer->nativeMesh()->vertexCount() <= vertexIndex )
+        return QVariant();
+
+      const QgsMeshVertex &vertex = layer->nativeMesh()->vertex( vertexIndex );
+      if ( !vertex.isEmpty() )
+        return vertex.y();
+      else
+        return QVariant();
+    }
+
+    bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override
+    {
+      return false;
+    }
+};
+
 class CurrentVertexExpressionFunction: public QgsScopedExpressionFunction
 {
   public:
@@ -1060,10 +1136,14 @@ class CurrentVertexExpressionFunction: public QgsScopedExpressionFunction
 QgsExpressionContextScope *QgsExpressionContextUtils::meshExpressionScope()
 {
   QgsExpression::registerFunction( new CurrentVertexExpressionFunction, true );
+  QgsExpression::registerFunction( new CurrentVertexXValueExpressionFunction, true );
+  QgsExpression::registerFunction( new CurrentVertexYValueExpressionFunction, true );
   QgsExpression::registerFunction( new CurrentVertexZValueExpressionFunction, true );
 
   std::unique_ptr<QgsExpressionContextScope> scope = std::make_unique<QgsExpressionContextScope>();
   scope->addFunction( "$vertex_as_point", new CurrentVertexExpressionFunction );
+  scope->addFunction( "$vertex_x", new CurrentVertexXValueExpressionFunction );
+  scope->addFunction( "$vertex_y", new CurrentVertexYValueExpressionFunction );
   scope->addFunction( "$vertex_z", new CurrentVertexZValueExpressionFunction );
 
   return scope.release();
