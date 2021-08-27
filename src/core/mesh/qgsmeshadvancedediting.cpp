@@ -653,13 +653,13 @@ bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer )
 
   for ( int i = 0; i < mInputVertices.count(); ++i )
   {
-    int vertexIndex = mInputVertices.at( i );
+    const int vertexIndex = mInputVertices.at( i );
     context.lastScope()->setVariable( QStringLiteral( "_mesh_vertex_index" ), vertexIndex, false );
 
     mChangingVertexMap[vertexIndex] = i;
-    QVariant xvar = expressionX.evaluate( &context );
-    QVariant yvar = expressionY.evaluate( &context );
-    QVariant zvar = expressionZ.evaluate( &context );
+    const QVariant xvar = expressionX.evaluate( &context );
+    const QVariant yvar = expressionY.evaluate( &context );
+    const QVariant zvar = expressionZ.evaluate( &context );
 
     const QgsMeshVertex &vert = mesh.vertex( vertexIndex );
 
@@ -668,7 +668,7 @@ bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer )
       mOldXYValues.append( QgsPointXY( vert ) );
       mNewXYValues.append( QgsPointXY( vert ) );
 
-      QList<int> facesAround = layer->meshEditor()->topologicalMesh().facesAroundVertex( vertexIndex );
+      const QList<int> facesAround = layer->meshEditor()->topologicalMesh().facesAroundVertex( vertexIndex );
       concernedFaces.unite( qgis::listToSet( facesAround ) );
     }
 

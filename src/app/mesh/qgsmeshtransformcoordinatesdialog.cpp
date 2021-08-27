@@ -70,6 +70,23 @@ void QgsMeshTransformCoordinatesDialog::setInput( QgsMeshLayer *layer, const QLi
   mInputVertices = vertexIndexes;
   mIsCalculated = false;
   mIsResultValid = false;
+  if ( !mInputLayer )
+    mLabelInformation->setText( tr( "No active mesh layer" ) );
+  else
+  {
+    if ( !mInputLayer->isEditable() )
+      mLabelInformation->setText( tr( "Mesh layer \"%1\" not in edit mode" ).arg( mInputLayer->name() ) );
+    else
+    {
+      if ( mInputVertices.count() == 0 )
+        mLabelInformation->setText( tr( "No vertex selected for mesh \"%1\"" ).arg( mInputLayer->name() ) );
+      else if ( mInputVertices.count() == 1 )
+        mLabelInformation->setText( tr( "1 vertex of mesh layer \"%1\" to transform" ).arg( mInputLayer->name() ) );
+      else
+        mLabelInformation->setText( tr( "%1 vertices of mesh layer \"%2\" to transform" ).
+                                    arg( QString::number( mInputVertices.count() ), mInputLayer->name() ) );
+    }
+  }
   updateButton();
   emit calculationUpdated();
 }
@@ -102,6 +119,7 @@ void QgsMeshTransformCoordinatesDialog::updateButton()
   bool isCalculable = mInputLayer && !mInputVertices.isEmpty();
   if ( isCalculable )
   {
+    isCalculable = false;
     for ( const QCheckBox *cb : std::as_const( mCheckBoxes ) )
       isCalculable |= cb->isChecked();
 

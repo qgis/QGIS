@@ -984,6 +984,9 @@ void QgsMapToolEditMeshFrame::setCurrentLayer( QgsMapLayer *layer )
   if ( mCurrentLayer == meshLayer && mCurrentEditor != nullptr )
     return;
 
+  if ( mIsInitialized )
+    clearSelection(); //TODO later: implement a mechanism to retrieve selection if the layer is again selected
+
   if ( mCurrentLayer )
   {
     disconnect( mCurrentLayer, &QgsMeshLayer::editingStarted, this, &QgsMapToolEditMeshFrame::onEditingStarted );
@@ -1226,6 +1229,9 @@ void QgsMapToolEditMeshFrame::showTransformCoordinatesDialog()
     mMovingFacesRubberband->reset( QgsWkbTypes::PolygonGeometry );
     mMovingEdgesRubberband->reset( QgsWkbTypes::LineGeometry );
     setMovingRubberBandValidity( dialog->isResultValid() );
+
+    if ( !mCurrentLayer || !mCurrentEditor )
+      return;
 
     QList<int> faceList = qgis::setToList( mSelectedFaces );
     QgsGeometry faceGeometrie;
