@@ -171,7 +171,7 @@ class CORE_EXPORT QgsMeshTransformVerticesByExpression : public QgsMeshAdvancedE
     bool calculate( QgsMeshLayer *layer );
 
     /**
-     * Returns the transformed vertex from its index \a vertexIndex for the mesh \layer
+     * Returns the transformed vertex from its index \a vertexIndex for the mesh \a layer
      *
      * If \a layer is not the same than the one used to make the calculation, this will create an undefined behavior
      */

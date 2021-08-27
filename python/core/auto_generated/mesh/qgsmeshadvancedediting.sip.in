@@ -139,7 +139,7 @@ The mesh layer must be in edit mode.
 
     QgsMeshVertex transformedVertices( QgsMeshLayer *layer, int vertexIndex ) const;
 %Docstring
-Returns the transformed vertex from its index ``vertexIndex`` for the mesh \layer
+Returns the transformed vertex from its index ``vertexIndex`` for the mesh ``layer``
 
 If ``layer`` is not the same than the one used to make the calculation, this will create an undefined behavior
 %End
