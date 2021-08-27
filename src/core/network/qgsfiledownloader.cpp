@@ -25,9 +25,11 @@
 #include <QSslError>
 #endif
 
-QgsFileDownloader::QgsFileDownloader( const QUrl &url, const QString &outputFileName, const QString &authcfg, bool delayStart )
+QgsFileDownloader::QgsFileDownloader( const QUrl &url, const QString &outputFileName, const QString &authcfg, bool delayStart, Qgis::HttpMethod httpMethod, const QByteArray &data )
   : mUrl( url )
   , mDownloadCanceled( false )
+  , mHttpMethod( httpMethod )
+  , mData( data )
 {
   mFile.setFileName( outputFileName );
   mAuthCfg = authcfg;
@@ -65,7 +67,20 @@ void QgsFileDownloader::startDownload()
     mReply->deleteLater();
   }
 
-  mReply = nam->get( request );
+  switch ( mHttpMethod )
+  {
+    case Qgis::HttpMethod::Get:
+    {
+      mReply = nam->get( request );
+      break;
+    }
+    case Qgis::HttpMethod::Post:
+    {
+      mReply = nam->post( request, mData );
+      break;
+    }
+  }
+
   if ( !mAuthCfg.isEmpty() )
   {
     QgsApplication::authManager()->updateNetworkReply( mReply, mAuthCfg );

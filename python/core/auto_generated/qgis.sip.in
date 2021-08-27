@@ -211,6 +211,12 @@ The development version
       AlwaysMonitor,
     };
 
+    enum HttpMethod
+    {
+      Get,
+      Post
+    };
+
     enum class VectorExportResult
       {
       Success,
