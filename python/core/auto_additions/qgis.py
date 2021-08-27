@@ -276,6 +276,7 @@ Qgis.BrowserDirectoryMonitoring.AlwaysMonitor.__doc__ = "Always monitor the dire
 Qgis.BrowserDirectoryMonitoring.__doc__ = 'Browser directory item monitoring switches.\n\n.. versionadded:: 3.20\n\n' + '* ``Default``: ' + Qgis.BrowserDirectoryMonitoring.Default.__doc__ + '\n' + '* ``NeverMonitor``: ' + Qgis.BrowserDirectoryMonitoring.NeverMonitor.__doc__ + '\n' + '* ``AlwaysMonitor``: ' + Qgis.BrowserDirectoryMonitoring.AlwaysMonitor.__doc__
 # --
 Qgis.BrowserDirectoryMonitoring.baseClass = Qgis
+Qgis.HttpMethod.baseClass = Qgis
 QgsVectorLayerExporter.ExportError = Qgis.VectorExportResult
 # monkey patching scoped based enum
 QgsVectorLayerExporter.NoError = Qgis.VectorExportResult.Success

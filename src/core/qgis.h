@@ -310,6 +310,17 @@ class CORE_EXPORT Qgis
     Q_ENUM( BrowserDirectoryMonitoring )
 
     /**
+     * Different methods of HTTP requests
+     * \since 3.22
+     */
+    enum HttpMethod
+    {
+      Get = 0, //!< GET method
+      Post = 1 //!< POST method
+    };
+    Q_ENUM( HttpMethod )
+
+    /**
      * Vector layer export result codes.
      *
      * \since QGIS 3.20
