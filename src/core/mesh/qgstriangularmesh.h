@@ -189,10 +189,10 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
 
     /**
      * Returns simplified meshes.
-     * The first simplified mesh is simplified with a goal of a number of triangles equals to the
-     * number of triangles of the base mesh divised by the reduction factor. For the following mesh the same reduction factor is used with
-     * the prededent goal of number of triangles.
-     * There are as many simplified meshes as necessary to have a the minimum triangles count on the last simplified mesh.
+     * The first simplified mesh is simplified with a goal of a number of triangles equal to the
+     * number of triangles of the base mesh divided by the reduction factor. For the following mesh the same reduction factor is used with
+     * the preceding goal of number of triangles.
+     * There are as many simplified meshes as necessary to have the minimum triangles count on the last simplified mesh.
      *
      * The caller has to take the ownership of returned meshes.
      *
@@ -234,7 +234,7 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
     QgsRectangle extent() const;
 
     /**
-     * Returns whether the mesh contains at mesh elements of given type
+     * Returns whether the mesh contains mesh elements of given type
      *  \since QGIS 3.14
      */
     bool contains( const QgsMesh::ElementType &type ) const;
