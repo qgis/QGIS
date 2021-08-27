@@ -158,7 +158,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
      *
      * The transform function takes a vertex index in parameter and return a QgsMeshVertex object with transformed coordinates.
      */
-    bool canBeTransformed( const QList<int> &transformedFaces, const std::function<const QgsMeshVertex( int )> &transformFunction ) const;
+    bool canBeTransformed( const QList<int> &transformedFaces, const std::function<const QgsMeshVertex( int )> &transformFunction ) const; SIP_SKIP
 
     /**
      * Changes the (X,Y) coordinates values of the vertices with indexes in \a vertices indexes with the values in \a newValues.

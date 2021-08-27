@@ -132,13 +132,14 @@ class CORE_EXPORT QgsMeshEditRefineFaces : public QgsMeshAdvancedEditing
  *
  * Each coordinates are associated with an expression that can be defined with function
  * returning the current coordinates (see setExpressions()):
+ *
  * - $vertex_x
  * - $vertex_y
  * - $vertex_z
  *
  * Example:
- * Transposing a mesh and translate follwing axe X with a distance of 50 and increase the level of the mesh
- * with an heigh of 80 when previous X coordinate is under 100 and de crease the level of 150 when X is under 100:
+ * Transposing a mesh and translate following axe X with a distance of 50 and increase the level of the mesh
+ * with an height of 80 when previous X coordinate is under 100 and de crease the level of 150 when X is under 100:
  *
  * expressionX: "$vertex_y + 50"
  * expressionY: "$vertex_x"
@@ -152,8 +153,6 @@ class CORE_EXPORT QgsMeshTransformVerticesByExpression : public QgsMeshAdvancedE
 
     //! Constructor
     QgsMeshTransformVerticesByExpression() = default;
-
-    QgsTopologicalMesh::Changes apply( QgsMeshEditor *meshEditor ) override;
 
     /**
      * Sets the expressions for the coordinates transformation.
@@ -172,7 +171,7 @@ class CORE_EXPORT QgsMeshTransformVerticesByExpression : public QgsMeshAdvancedE
     bool calculate( QgsMeshLayer *layer );
 
     /**
-     * Returns the transformed vertex from its index \vertexIndex for the mesh \layer
+     * Returns the transformed vertex from its index \a vertexIndex for the mesh \layer
      *
      * If \a layer is not the same than the one used to make the calculation, this will create an undefined behavior
      */
@@ -183,6 +182,8 @@ class CORE_EXPORT QgsMeshTransformVerticesByExpression : public QgsMeshAdvancedE
     QString mExpressionY;
     QString mExpressionZ;
     QHash<int, int> mChangingVertexMap;
+
+    QgsTopologicalMesh::Changes apply( QgsMeshEditor *meshEditor ) override;
 
     friend class TestQgsMeshEditor;
 };

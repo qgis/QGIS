@@ -593,7 +593,7 @@ void QgsMapToolEditMeshFrame::cadCanvasMoveEvent( QgsMapMouseEvent *e )
           return mCurrentLayer->nativeMesh()->vertex( vi );
       };
 
-      // we test only the faces taht are deformed on the border, moving and not deformed faces are tested later
+      // we test only the faces that are deformed on the border, moving and not deformed faces are tested later
       mIsMovingAllowed = mCurrentEditor->canBeTransformed( qgis::setToList( borderMovingFace ), transformFunction );
 
       if ( mIsMovingAllowed )
