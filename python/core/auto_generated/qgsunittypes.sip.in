@@ -589,6 +589,15 @@ Returns an angle formatted as a friendly string.
 :return: formatted angle string
 %End
 
+    static QString formatAngle( double angle, QgsUnitTypes::AngleUnit unit );
+%Docstring
+Returns an angle formatted as a friendly string.
+
+:param angle: angle to format
+:param unit: unit of angle
+
+:return: formatted angle string
+%End
 
     static QgsUnitTypes::DistanceValue scaledDistance( double distance, QgsUnitTypes::DistanceUnit unit, int decimals, bool keepBaseUnit = false );
 %Docstring

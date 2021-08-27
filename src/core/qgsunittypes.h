@@ -563,6 +563,13 @@ class CORE_EXPORT QgsUnitTypes
      */
     Q_INVOKABLE static QString formatAngle( double angle, int decimals, QgsUnitTypes::AngleUnit unit );
 
+    /**
+     * Returns an angle formatted as a friendly string.
+     * \param angle angle to format
+     * \param unit unit of angle
+     * \returns formatted angle string
+     */
+    Q_INVOKABLE static QString formatAngle( double angle, QgsUnitTypes::AngleUnit unit );
 
     /**
      * Will convert a \a distance with a given \a unit to a distance value which is nice to display.

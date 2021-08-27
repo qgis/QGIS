@@ -21,8 +21,6 @@
 
 QgsPointRotationItem::QgsPointRotationItem( QgsMapCanvas *canvas )
   : QgsMapCanvasItem( canvas )
-  , mOrientation( Clockwise )
-  , mRotation( 0.0 )
 {
   //setup font
   mFont.setPointSize( 12 );
@@ -78,7 +76,13 @@ void QgsPointRotationItem::paint( QPainter *painter )
   bufferPen.setWidthF( QgsGuiUtils::scaleIconSize( 4 ) );
   const QFontMetricsF fm( mFont );
   QPainterPath label;
-  label.addText( mPixmap.width(), mPixmap.height() / 2.0 + fm.height() / 2.0, mFont, QLocale().toString( mRotation ) );
+  const double rotationText = mRotation * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleDegrees,
+                              mRotationUnit );
+  label.addText( mPixmap.width(),
+                 mPixmap.height() / 2.0 + fm.height() / 2.0,
+                 mFont,
+                 QgsUnitTypes::formatAngle( rotationText,
+                     mRotationUnit ) );
   painter->setPen( bufferPen );
   painter->setBrush( Qt::NoBrush );
   painter->drawPath( label );
@@ -95,13 +99,18 @@ void QgsPointRotationItem::setPointLocation( const QgsPointXY &p )
   setPos( transformedPoint.x() - mPixmap.width() / 2.0, transformedPoint.y() - mPixmap.height() / 2.0 );
 }
 
+void QgsPointRotationItem::setRotationUnit( const QgsUnitTypes::AngleUnit &rotationUnit )
+{
+  mRotationUnit = rotationUnit;
+}
+
 void QgsPointRotationItem::setSymbol( const QImage &symbolImage )
 {
   mPixmap = QPixmap::fromImage( symbolImage );
   const QFontMetricsF fm( mFont );
 
-  //set item size
-  mItemSize.setWidth( mPixmap.width() + fm.horizontalAdvance( QStringLiteral( "360" ) ) );
+  //set item size: 6283 millirad arcseconds = 360°
+  mItemSize.setWidth( mPixmap.width() + fm.horizontalAdvance( QStringLiteral( "6283 millirad" ) ) );
   const double pixmapHeight = mPixmap.height();
   const double fontHeight = fm.height();
   if ( pixmapHeight >= fontHeight )

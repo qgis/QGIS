@@ -2572,6 +2572,52 @@ QString QgsUnitTypes::formatAngle( double angle, int decimals, QgsUnitTypes::Ang
   return QStringLiteral( "%L1%2" ).arg( angle, 0, 'f', decimals ).arg( unitLabel );
 }
 
+QString QgsUnitTypes::formatAngle( double angle, AngleUnit unit )
+{
+  QString unitLabel;
+  int decimals = 0;
+
+  switch ( unit )
+  {
+    case AngleDegrees:
+      unitLabel = QObject::tr( "°", "angle" );
+      decimals = 0;
+      break;
+    case AngleRadians:
+      unitLabel = QObject::tr( " rad", "angle" );
+      decimals = 2;
+      break;
+    case AngleGon:
+      unitLabel = QObject::tr( " gon", "angle" );
+      decimals = 0;
+      break;
+    case AngleMinutesOfArc:
+      unitLabel = QObject::tr( "′", "angle minutes" );
+      decimals = 0;
+      break;
+    case AngleSecondsOfArc:
+      unitLabel = QObject::tr( "″", "angle seconds" );
+      decimals = 0;
+      break;
+    case AngleTurn:
+      unitLabel = QObject::tr( " tr", "angle turn" );
+      decimals = 3;
+      break;
+    case AngleMilliradiansSI:
+      unitLabel = QObject::tr( " millirad", "angular mil SI" );
+      decimals = 0;
+      break;
+    case AngleMilNATO:
+      unitLabel = QObject::tr( " mil", "angular mil NATO" );
+      decimals = 0;
+      break;
+    case AngleUnknownUnit:
+      break;
+  }
+
+  return QStringLiteral( "%L1%2" ).arg( angle, 0, 'f', decimals ).arg( unitLabel );
+}
+
 
 QgsUnitTypes::DistanceValue QgsUnitTypes::scaledDistance( double distance, QgsUnitTypes::DistanceUnit unit, int decimals, bool keepBaseUnit )
 {
