@@ -21,6 +21,7 @@ email                : hugo dot mercier at oslandia dot com
 
 #include "ui_qgsvirtuallayersourceselectbase.h"
 #include "qgis.h"
+#include "qgshelp.h"
 #include "qgsguiutils.h"
 #include "qgsvirtuallayerdefinition.h"
 #include "qgsproviderregistry.h"
@@ -43,6 +44,7 @@ class QgsVirtualLayerSourceSelect : public QgsAbstractDataSourceWidget, private 
     void refresh() override;
     void addButtonClicked() override;
 
+
   private slots:
     void testQuery();
     void browseCRS();
@@ -52,6 +54,7 @@ class QgsVirtualLayerSourceSelect : public QgsAbstractDataSourceWidget, private 
     void importLayer();
     void tableRowChanged( const QModelIndex &current, const QModelIndex &previous );
     void updateLayersList();
+    void showHelp();
 
 
   private:
