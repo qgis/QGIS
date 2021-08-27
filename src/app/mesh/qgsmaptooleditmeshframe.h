@@ -76,6 +76,9 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     bool populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEvent *event ) override;
     Flags flags() const override;
 
+  signals:
+    void selectionChange( QgsMeshLayer *meshLayer, const QList<int> verticesIndex );
+
   protected:
     void cadCanvasPressEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
@@ -94,6 +97,8 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void removeSelectedVerticesFromMesh( bool fillHole );
     void removeFacesFromMesh();
     void splitSelectedFaces();
+
+    void showTransformCoordinatesDialog();
 
   private:
 
@@ -155,6 +160,8 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void applyZValueOnSelectedVertices();
     void prepareSelection();
     void updateSelectecVerticesMarker();
+
+    void setMovingRubberBandValidity( bool valid );
 
     // members
     struct SelectedVertexData
@@ -244,6 +251,8 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 
     QAction *mActionDigitizing = nullptr;
     QAction *mActionSelectByPolygon = nullptr;
+
+    QAction *mActionTransformCoordinates = nullptr;
 
     friend class TestQgsMapToolEditMesh;
 };

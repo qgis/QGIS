@@ -153,6 +153,8 @@ class CORE_EXPORT QgsMeshTransformVerticesByExpression : public QgsMeshAdvancedE
     //! Constructor
     QgsMeshTransformVerticesByExpression() = default;
 
+    QgsTopologicalMesh::Changes apply( QgsMeshEditor *meshEditor ) override;
+
     /**
      * Sets the expressions for the coordinates transformation.
      *
@@ -169,12 +171,18 @@ class CORE_EXPORT QgsMeshTransformVerticesByExpression : public QgsMeshAdvancedE
      */
     bool calculate( QgsMeshLayer *layer );
 
-    QgsTopologicalMesh::Changes apply( QgsMeshEditor *meshEditor ) override;
+    /**
+     * Returns the transformed vertex from its index \vertexIndex for the mesh \layer
+     *
+     * If \a layer is not the same than the one used to make the calculation, this will create an undefined behavior
+     */
+    QgsMeshVertex transformedVertices( QgsMeshLayer *layer, int vertexIndex ) const;
 
   private:
     QString mExpressionX;
     QString mExpressionY;
     QString mExpressionZ;
+    QHash<int, int> mChangingVertexMap;
 
     friend class TestQgsMeshEditor;
 };

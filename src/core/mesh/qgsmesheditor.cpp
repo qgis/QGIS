@@ -257,8 +257,6 @@ void QgsMeshEditor::applyEditOnTriangularMesh( QgsMeshEditor::Edit &edit, const 
 void QgsMeshEditor::applyAdvancedEdit( QgsMeshEditor::Edit &edit, QgsMeshAdvancedEditing *editing )
 {
   applyEditOnTriangularMesh( edit, editing->apply( this ) );
-
-  emit meshEdited();
 }
 
 bool QgsMeshEditor::checkConsistency() const
