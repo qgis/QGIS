@@ -155,28 +155,23 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
     QgsPoint savePoint; //point in layer coordinates
     bool isMatchPointZ = false;
+    bool isMatchPointM = false;
     try
     {
       QgsPoint fetchPoint;
       int res;
       res = fetchLayerPoint( e->mapPointMatch(), fetchPoint );
-      if ( QgsWkbTypes::hasZ( fetchPoint.wkbType() ) )
-        isMatchPointZ = true;
+      isMatchPointZ = QgsWkbTypes::hasZ( fetchPoint.wkbType() );
+      isMatchPointM = QgsWkbTypes::hasM( fetchPoint.wkbType() );
 
       if ( res == 0 )
       {
-        if ( isMatchPointZ )
-          savePoint = fetchPoint;
-        else
-          savePoint = QgsPoint( fetchPoint.x(), fetchPoint.y() );
+        savePoint = QgsPoint( layerWKBType, fetchPoint.x(), fetchPoint.y(), fetchPoint.z(), fetchPoint.m() );
       }
       else
       {
         const QgsPointXY layerPoint = toLayerCoordinates( vlayer, e->mapPoint() );
-        if ( isMatchPointZ )
-          savePoint = QgsPoint( QgsWkbTypes::PointZ, layerPoint.x(), layerPoint.y(), fetchPoint.z() );
-        else
-          savePoint = QgsPoint( layerPoint.x(), layerPoint.y() );
+        savePoint = QgsPoint( layerWKBType, layerPoint.x(), layerPoint.y(), fetchPoint.z(), fetchPoint.m() );
       }
     }
     catch ( QgsCsException &cse )
@@ -194,33 +189,24 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       QgsFeature f( vlayer->fields() );
 
       QgsGeometry g;
-      if ( layerWKBType == QgsWkbTypes::Point )
-      {
-        g = QgsGeometry( std::make_unique<QgsPoint>( savePoint ) );
-      }
-      else if ( !QgsWkbTypes::isMultiType( layerWKBType ) && QgsWkbTypes::hasZ( layerWKBType ) )
-      {
-        g = QgsGeometry( std::make_unique<QgsPoint>( savePoint.x(), savePoint.y(), isMatchPointZ ? savePoint.z() : defaultZValue() ) );
-      }
-      else if ( QgsWkbTypes::isMultiType( layerWKBType ) && !QgsWkbTypes::hasZ( layerWKBType ) )
-      {
-        g = QgsGeometry::fromMultiPointXY( QgsMultiPointXY() << savePoint );
-      }
-      else if ( QgsWkbTypes::isMultiType( layerWKBType ) && QgsWkbTypes::hasZ( layerWKBType ) )
-      {
-        QgsMultiPoint *mp = new QgsMultiPoint();
-        mp->addGeometry( new QgsPoint( QgsWkbTypes::PointZ, savePoint.x(), savePoint.y(), isMatchPointZ ? savePoint.z() : defaultZValue() ) );
-        g.set( mp );
-      }
-      else
+      const QgsPoint result( layerWKBType, savePoint.x(), savePoint.y(), isMatchPointZ ? savePoint.z() : defaultZValue(), isMatchPointM ? savePoint.m() : defaultMValue() );
+      if ( mCheckGeometryType == false )
       {
         // if layer supports more types (mCheckGeometryType is false)
         g = QgsGeometry( std::make_unique<QgsPoint>( savePoint ) );
       }
-
-      if ( QgsWkbTypes::hasM( layerWKBType ) )
+      else
       {
-        g.get()->addMValue( defaultMValue() );
+        if ( !QgsWkbTypes::isMultiType( layerWKBType ) )
+        {
+          g = QgsGeometry( std::make_unique<QgsPoint>( result ) );
+        }
+        else
+        {
+          QgsMultiPoint *mp = new QgsMultiPoint();
+          mp->addGeometry( new QgsPoint( result ) );
+          g.set( mp );
+        }
       }
 
       f.setGeometry( g );
