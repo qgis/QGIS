@@ -468,7 +468,7 @@ bool QgsMeshEditor::canBeTransformed( const QList<int> &transformedFaces, const 
   {
     const QgsMeshFace &face = mMesh->face( faceIndex );
     int faceSize = face.count();
-    QgsPolygonXY polygon;
+    QVector<QgsPointXY> pointsInTriangularMeshCoordinate( faceSize );
     QVector<QgsPointXY> points( faceSize );
     for ( int i = 0; i < faceSize; ++i )
     {
@@ -480,7 +480,6 @@ bool QgsMeshEditor::canBeTransformed( const QList<int> &transformedFaces, const 
       QgsMeshVertex p1 = transformFunction( ip1 );
       QgsMeshVertex p2 = transformFunction( ip2 );
 
-
       double ux = p0.x() - p1.x();
       double uy = p0.y() - p1.y();
       double vx = p2.x() - p1.x();
@@ -489,14 +488,15 @@ bool QgsMeshEditor::canBeTransformed( const QList<int> &transformedFaces, const 
       double crossProduct = ux * vy - uy * vx;
       if ( crossProduct >= 0 ) //if cross product>0, we have two edges clockwise
         return false;
+      pointsInTriangularMeshCoordinate[i] = mTriangularMesh->nativeToTriangularCoordinates( p0 );
       points[i] = p0;
     }
-    polygon.append( points );
 
-    const QgsGeometry &deformedFace = QgsGeometry::fromPolygonXY( polygon );
+    const QgsGeometry &deformedFace = QgsGeometry::fromPolygonXY( {points} );
 
-    // now test if the deformed face contain something else
-    QList<int> otherFaceIndexes = mTriangularMesh->nativeFaceIndexForRectangle( deformedFace.boundingBox() );
+    // now test if the deformed face contain something else (search canditate <ith the
+    QList<int> otherFaceIndexes =
+      mTriangularMesh->nativeFaceIndexForRectangle( QgsGeometry::fromPolygonXY( {pointsInTriangularMeshCoordinate} ).boundingBox() );
 
     for ( const int otherFaceIndex : otherFaceIndexes )
     {
