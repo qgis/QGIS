@@ -196,19 +196,22 @@ void QgsNewMeshLayerDialog::updateSourceMeshInformation()
 
   mInformationTextBrowser->clear();
   mInformationTextBrowser->document()->setDefaultStyleSheet( myStyle );
-  if ( mMeshProjectRadioButton->isChecked() )
+  if ( mInitializeMeshGroupBox->isChecked() )
   {
-    if ( mMeshProjectComboBox->currentLayer() )
-      mInformationTextBrowser->setHtml( mMeshProjectComboBox->currentLayer()->htmlMetadata() );
-  }
+    if ( mMeshProjectRadioButton->isChecked() )
+    {
+      if ( mMeshProjectComboBox->currentLayer() )
+        mInformationTextBrowser->setHtml( mMeshProjectComboBox->currentLayer()->htmlMetadata() );
+    }
 
-  if ( mMeshFileRadioButton->isChecked() )
-  {
-    if ( mSourceMeshFromFile )
-      mInformationTextBrowser->setHtml( mSourceMeshFromFile->htmlMetadata() );
-  }
+    if ( mMeshFileRadioButton->isChecked() )
+    {
+      if ( mSourceMeshFromFile )
+        mInformationTextBrowser->setHtml( mSourceMeshFromFile->htmlMetadata() );
+    }
 
-  mInformationTextBrowser->setOpenLinks( false );
+    mInformationTextBrowser->setOpenLinks( false );
+  }
 };
 
 bool QgsNewMeshLayerDialog::apply()
