@@ -159,6 +159,46 @@ void QgsStatisticalSummaryDockWidget::refreshStatistics()
   {
     mFieldType = fieldType( mFieldExpressionWidget->currentField() );
   }
+  else
+  {
+    QgsExpressionContext context;
+    context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+    QgsExpression expression( mFieldExpressionWidget->expression() );
+    QgsFeatureRequest request = QgsFeatureRequest();
+    request.setFlags( ( expression.needsGeometry() ) ?
+                      QgsFeatureRequest::NoFlags :
+                      QgsFeatureRequest::NoGeometry );
+    request.setLimit( 10 );
+    request.setExpressionContext( context );
+
+
+    QgsFeature f;
+    QgsFeatureIterator it = mSelectedOnlyCheckBox->isChecked() ? mLayer->getSelectedFeatures( request ) : mLayer->getFeatures( request );
+    bool hasFeature = it.nextFeature( f );
+    while ( hasFeature )
+    {
+      context.setFeature( f );
+      const QVariant v = expression.evaluate( &context );
+      if ( !v.isNull() )
+      {
+        switch ( v.type() )
+        {
+          case QVariant::String:
+            mFieldType = DataType::String;
+            break;
+          case QVariant::Date:
+          case QVariant::DateTime:
+            mFieldType = DataType::DateTime;
+            break;
+          default:
+            mFieldType = DataType::Numeric;
+            break;
+        }
+        break;
+      }
+      hasFeature = it.nextFeature( f );
+    }
+  }
 
   if ( mFieldType != mPreviousFieldType )
   {
