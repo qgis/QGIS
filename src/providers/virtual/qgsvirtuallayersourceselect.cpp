@@ -178,7 +178,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerSourceSelect::getVirtualLayerDef()
   {
     def.setQuery( mQueryEdit->text() );
   }
-  if ( ! mUIDField->text().isEmpty() )
+  if ( mUIDColumnNameChck->isChecked() && ! mUIDField->text().isEmpty() )
   {
     def.setUid( mUIDField->text() );
   }
@@ -207,7 +207,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerSourceSelect::getVirtualLayerDef()
   return def;
 }
 
-void QgsVirtualLayerSourceSelect::testQuery()
+bool QgsVirtualLayerSourceSelect::preFlight()
 {
   const QgsVirtualLayerDefinition def = getVirtualLayerDef();
   // If the definition is empty just do nothing.
@@ -220,7 +220,11 @@ void QgsVirtualLayerSourceSelect::testQuery()
     if ( vl->isValid() )
     {
       const QStringList fieldNames = vl->fields().names();
-      if ( !mUIDField->text().isEmpty() && !vl->fields().names().contains( mUIDField->text() ) )
+      if ( mUIDColumnNameChck->isChecked() && mUIDField->text().isEmpty() )
+      {
+        QMessageBox::warning( nullptr, tr( "Test Virtual Layer " ), tr( "Checkbox 'Unique identifier column' is checked, but no field given" ) );
+      }
+      else if ( mUIDColumnNameChck->isChecked() && !mUIDField->text().isEmpty() && !vl->fields().names().contains( mUIDField->text() ) )
       {
         QStringList bulletedFieldNames;
         for ( const QString &fieldName : fieldNames )
@@ -230,12 +234,23 @@ void QgsVirtualLayerSourceSelect::testQuery()
         QMessageBox::warning( nullptr, tr( "Test Virtual Layer " ), tr( "The unique identifier field <b>%1</b> was not found in list of fields:<ul>%2</ul>" ).arg( mUIDField->text(), bulletedFieldNames.join( ' ' ) ) );
       }
       else
-        QMessageBox::information( nullptr, tr( "Test Virtual Layer" ), tr( "No error" ) );
+      {
+        return true;
+      }
     }
     else
     {
       QMessageBox::critical( nullptr, tr( "Test Virtual Layer" ), vl->dataProvider()->error().summary() );
     }
+  }
+  return false;
+}
+
+void QgsVirtualLayerSourceSelect::testQuery()
+{
+  if ( preFlight() )
+  {
+    QMessageBox::information( nullptr, tr( "Test Virtual Layer" ), tr( "No error" ) );
   }
 }
 
@@ -378,6 +393,11 @@ void QgsVirtualLayerSourceSelect::importLayer()
 
 void QgsVirtualLayerSourceSelect::addButtonClicked()
 {
+  if ( ! preFlight() )
+  {
+    return;
+  }
+
   QString layerName = QStringLiteral( "virtual_layer" );
   QString id;
   bool replace = false;
