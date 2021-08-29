@@ -235,6 +235,19 @@ bool QgsVirtualLayerSourceSelect::preFlight()
       }
       else
       {
+        if ( mGeometryRadio->isChecked() && mCRS->text().isEmpty() )
+        {
+          // warning when the geometryRadio is checked, but the user did not set a proper crs
+          // old implementation did NOT set a crs then...
+          if ( QMessageBox::Yes == QMessageBox::question( nullptr, tr( "Test Virtual Layer " ), tr( "No CRS defined, are you sure you want to create a layer without a crs?" ), QMessageBox::Yes | QMessageBox::No ) )
+          {
+            return true;
+          }
+          else
+          {
+            return false;
+          }
+        }
         return true;
       }
     }
