@@ -1191,6 +1191,14 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
   if ( !firstLayer )
     return {};
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+  QMutex *mutex = nullptr;
+#else
+  QRecursiveMutex *mutex = nullptr;
+#endif
+  GDALDatasetH hDS = firstLayer->getDatasetHandleAndMutex( mutex );
+  QMutexLocker locker( mutex );
+
   const QString driverName = firstLayer->driverName();
 
   const int layerCount = firstLayer->GetLayerCount();
@@ -1198,7 +1206,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
   QList<QgsProviderSublayerDetails> res;
   if ( layerCount == 1 )
   {
-    res << QgsOgrProviderUtils::querySubLayerList( 0, firstLayer.get(), driverName, flags, uri, true, feedback );
+    res << QgsOgrProviderUtils::querySubLayerList( 0, firstLayer.get(), hDS, driverName, flags, uri, true, feedback );
   }
   else
   {
@@ -1239,7 +1247,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
       if ( !originalUriLayerName.isEmpty() && layerName != originalUriLayerName )
         continue;
 
-      res << QgsOgrProviderUtils::querySubLayerList( i, sublayer, driverName, flags, uri, false, feedback );
+      res << QgsOgrProviderUtils::querySubLayerList( i, sublayer, hDS, driverName, flags, uri, false, feedback );
     }
   }
 
@@ -1307,14 +1315,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
   }
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  QMutex *mutex = nullptr;
-#else
-  QRecursiveMutex *mutex = nullptr;
-#endif
-  GDALDatasetH hDS = firstLayer->getDatasetHandleAndMutex( mutex );
-  QMutexLocker locker( mutex );
+  // retrieve layer paths
   if ( GDALGroupH rootGroup = GDALDatasetGetRootGroup( hDS ) )
   {
     std::function< void( GDALGroupH, const QStringList & ) > recurseGroup;

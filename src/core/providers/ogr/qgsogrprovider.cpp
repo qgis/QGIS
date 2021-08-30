@@ -630,7 +630,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProvider::_subLayers( Qgis::SublayerQuer
   const size_t totalLayerCount = layerCount();
   if ( mOgrLayer && ( mIsSubLayer || totalLayerCount == 1 ) )
   {
-    mSubLayerList << QgsOgrProviderUtils::querySubLayerList( mLayerIndex, mOgrLayer, mGDALDriverName, flags, dataSourceUri(), totalLayerCount == 1 );
+    mSubLayerList << QgsOgrProviderUtils::querySubLayerList( mLayerIndex, mOgrLayer, nullptr, mGDALDriverName, flags, dataSourceUri(), totalLayerCount == 1 );
   }
   else
   {
@@ -653,7 +653,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProvider::_subLayers( Qgis::SublayerQuer
       if ( !layer )
         continue;
 
-      mSubLayerList << QgsOgrProviderUtils::querySubLayerList( i, layer.get(), mGDALDriverName, flags, dataSourceUri(), totalLayerCount == 1 );
+      mSubLayerList << QgsOgrProviderUtils::querySubLayerList( i, layer.get(), nullptr, mGDALDriverName, flags, dataSourceUri(), totalLayerCount == 1 );
       if ( firstLayer == nullptr )
       {
         firstLayer = std::move( layer );

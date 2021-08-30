@@ -2313,7 +2313,7 @@ bool QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( const QString &d
          !( updateMode && dsName.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) );
 }
 
-QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int i, QgsOgrLayer *layer, const QString &driverName, Qgis::SublayerQueryFlags flags, const QString &baseUri, bool hasSingleLayerOnly, QgsFeedback *feedback )
+QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int i, QgsOgrLayer *layer, GDALDatasetH hDS, const QString &driverName, Qgis::SublayerQueryFlags flags, const QString &baseUri, bool hasSingleLayerOnly, QgsFeedback *feedback )
 {
   const QString layerName = QString::fromUtf8( layer->name() );
 
@@ -2330,6 +2330,16 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
   {
     layerFlags |= Qgis::SublayerFlag::SystemTable;
   }
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
+  // mark private layers, using GDAL API
+  if ( hDS && GDALDatasetIsLayerPrivate( hDS, i ) )
+  {
+    layerFlags |= Qgis::SublayerFlag::SystemTable;
+  }
+#else
+  ( void )hDS;
+#endif
 
   if ( !( flags & Qgis::SublayerQueryFlag::IncludeSystemTables ) && ( layerFlags & Qgis::SublayerFlag::SystemTable ) )
   {
