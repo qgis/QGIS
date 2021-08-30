@@ -131,6 +131,15 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
   }
 }
 
+void QgsMapToolOffsetCurve::applyOffsetFromWidget( double offset, Qt::KeyboardModifiers modifiers )
+{
+  if ( mSourceLayer && !mOriginalGeometry.isNull() && !qgsDoubleNear( offset, 0 ) )
+  {
+    mGeometryModified = true;
+    applyOffset( offset, modifiers );
+  }
+}
+
 void QgsMapToolOffsetCurve::applyOffset( double offset, Qt::KeyboardModifiers modifiers )
 {
   if ( !mSourceLayer || offset == 0.0 )
@@ -579,7 +588,7 @@ void QgsMapToolOffsetCurve::createUserInputWidget()
   mUserInputWidget->setFocus( Qt::TabFocusReason );
 
   connect( mUserInputWidget, &QgsOffsetUserWidget::offsetChanged, this, &QgsMapToolOffsetCurve::updateGeometryAndRubberBand );
-  connect( mUserInputWidget, &QgsOffsetUserWidget::offsetEditingFinished, this, &QgsMapToolOffsetCurve::applyOffset );
+  connect( mUserInputWidget, &QgsOffsetUserWidget::offsetEditingFinished, this, &QgsMapToolOffsetCurve::applyOffsetFromWidget );
   connect( mUserInputWidget, &QgsOffsetUserWidget::offsetEditingCanceled, this, &QgsMapToolOffsetCurve::cancel );
 
   connect( mUserInputWidget, &QgsOffsetUserWidget::offsetConfigChanged, this, [ = ] {updateGeometryAndRubberBand( mUserInputWidget->offset() );} );
@@ -590,7 +599,7 @@ void QgsMapToolOffsetCurve::deleteUserInputWidget()
   if ( mUserInputWidget )
   {
     disconnect( mUserInputWidget, &QgsOffsetUserWidget::offsetChanged, this, &QgsMapToolOffsetCurve::updateGeometryAndRubberBand );
-    disconnect( mUserInputWidget, &QgsOffsetUserWidget::offsetEditingFinished, this, &QgsMapToolOffsetCurve::applyOffset );
+    disconnect( mUserInputWidget, &QgsOffsetUserWidget::offsetEditingFinished, this, &QgsMapToolOffsetCurve::applyOffsetFromWidget );
     disconnect( mUserInputWidget, &QgsOffsetUserWidget::offsetEditingCanceled, this, &QgsMapToolOffsetCurve::cancel );
     mUserInputWidget->releaseKeyboard();
     mUserInputWidget->deleteLater();
