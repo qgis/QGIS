@@ -37,4 +37,33 @@ QgsExpressionUtils::TVL QgsExpressionUtils::NOT[3] = { True, False, Unknown };
 
 ///@endcond
 
+std::tuple<QVariant::Type, int> QgsExpressionUtils::determineResultType( const QString &expression, const QgsVectorLayer *layer, QgsFeatureRequest request, QgsExpressionContext context, bool *foundFeatures )
+{
+  QgsExpression exp( expression );
+  request.setFlags( ( exp.needsGeometry() ) ?
+                    QgsFeatureRequest::NoFlags :
+                    QgsFeatureRequest::NoGeometry );
+  request.setLimit( 10 );
+  request.setExpressionContext( context );
+
+  QVariant value;
+  QgsFeature f;
+  QgsFeatureIterator it = layer->getFeatures( request );
+  bool hasFeature = it.nextFeature( f );
+  if ( foundFeatures )
+    *foundFeatures = hasFeature;
+  while ( hasFeature )
+  {
+    context.setFeature( f );
+    const QVariant value = exp.evaluate( &context );
+    if ( !value.isNull() )
+    {
+      return std::make_tuple( value.type(), value.userType() );
+    }
+    hasFeature = it.nextFeature( f );
+  }
+  value = QVariant();
+  return std::make_tuple( value.type(), value.userType() );
+}
+
 

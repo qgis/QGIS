@@ -38,13 +38,19 @@
 #define FEAT_FROM_CONTEXT(c, f) if ( !(c) || !( c )->hasFeature() ) return QVariant(); \
   QgsFeature f = ( c )->feature();
 
-///////////////////////////////////////////////
-// three-value logic
+/**
+ * \ingroup core
+ * \class QgsExpressionUtils
+ * \brief A set of expression-related functions
+ * \since QGIS 3.22
+ */
 
-/// @cond PRIVATE
-class QgsExpressionUtils
+class CORE_EXPORT QgsExpressionUtils
 {
   public:
+/// @cond PRIVATE
+///////////////////////////////////////////////
+// three-value logic
     enum TVL
     {
       False,
@@ -491,8 +497,20 @@ class QgsExpressionUtils
         return value.toString();
       }
     }
+/// @endcond
+
+    /**
+     * Returns a value type and user type for a given expression.
+     * \param expression An expression string.
+     * \param layer A vector layer from which the expression will be executed against.
+     * \param request A feature request object.
+     * \param context An expression context object.
+     * \param foundFeatures An optional boolean parameter that will be set when features are found.
+     * \since QGIS 3.22
+     */
+    static std::tuple<QVariant::Type, int> determineResultType( const QString &expression, const QgsVectorLayer *layer, QgsFeatureRequest request = QgsFeatureRequest(), QgsExpressionContext context = QgsExpressionContext(), bool *foundFeatures = nullptr );
+
 };
 
-/// @endcond
 
 #endif // QGSEXPRESSIONUTILS_H

@@ -15,6 +15,7 @@
 
 #include "qgisapp.h"
 #include "qgsclipboard.h"
+#include "qgsexpressionutils.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
@@ -163,40 +164,23 @@ void QgsStatisticalSummaryDockWidget::refreshStatistics()
   {
     QgsExpressionContext context;
     context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
-    QgsExpression expression( mFieldExpressionWidget->expression() );
-    QgsFeatureRequest request = QgsFeatureRequest();
-    request.setFlags( ( expression.needsGeometry() ) ?
-                      QgsFeatureRequest::NoFlags :
-                      QgsFeatureRequest::NoGeometry );
-    request.setLimit( 10 );
-    request.setExpressionContext( context );
+    QgsFeatureRequest request;
+    if ( mSelectedOnlyCheckBox->isChecked() )
+      request.setFilterFids( mLayer->selectedFeatureIds() );
 
-
-    QgsFeature f;
-    QgsFeatureIterator it = mSelectedOnlyCheckBox->isChecked() ? mLayer->getSelectedFeatures( request ) : mLayer->getFeatures( request );
-    bool hasFeature = it.nextFeature( f );
-    while ( hasFeature )
+    std::tuple<QVariant::Type, int> returnType = QgsExpressionUtils::determineResultType( mFieldExpressionWidget->expression(), mLayer, request, context );
+    switch ( std::get<0>( returnType ) )
     {
-      context.setFeature( f );
-      const QVariant v = expression.evaluate( &context );
-      if ( !v.isNull() )
-      {
-        switch ( v.type() )
-        {
-          case QVariant::String:
-            mFieldType = DataType::String;
-            break;
-          case QVariant::Date:
-          case QVariant::DateTime:
-            mFieldType = DataType::DateTime;
-            break;
-          default:
-            mFieldType = DataType::Numeric;
-            break;
-        }
+      case QVariant::String:
+        mFieldType = DataType::String;
         break;
-      }
-      hasFeature = it.nextFeature( f );
+      case QVariant::Date:
+      case QVariant::DateTime:
+        mFieldType = DataType::DateTime;
+        break;
+      default:
+        mFieldType = DataType::Numeric;
+        break;
     }
   }
 
