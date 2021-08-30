@@ -21,6 +21,7 @@
 #include "qgsproject.h"
 #include "qgsmaplayerrenderer.h"
 #include "qgsmaplayerlistutils.h"
+#include "qgsrendereditemresults.h"
 
 QgsMapRendererStagedRenderJob::QgsMapRendererStagedRenderJob( const QgsMapSettings &settings, Flags flags )
   : QgsMapRendererAbstractCustomPainterJob( settings )

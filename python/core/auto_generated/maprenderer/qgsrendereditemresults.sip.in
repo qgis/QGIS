@@ -1,0 +1,53 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/maprenderer/qgsrendereditemresults.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsRenderedItemResults
+{
+%Docstring(signature="appended")
+Stores collated details of rendered items during a map rendering operation.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsrendereditemresults.h"
+%End
+  public:
+    QgsRenderedItemResults();
+    ~QgsRenderedItemResults();
+
+
+    QList< QgsRenderedItemDetails * > renderedItems() const;
+%Docstring
+Returns a list of all rendered items.
+%End
+
+    QList<const QgsRenderedAnnotationItemDetails *> renderedAnnotationItemsInBounds( const QgsRectangle &bounds ) const;
+%Docstring
+Returns a list with details of the rendered annotation items within the specified ``bounds``.
+
+.. versionadded:: 3.22
+%End
+
+
+  private:
+    QgsRenderedItemResults( const QgsRenderedItemResults & );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/maprenderer/qgsrendereditemresults.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

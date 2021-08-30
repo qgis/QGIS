@@ -70,6 +70,7 @@ class QgsSnappingUtils;
 class QgsRubberBand;
 class QgsMapCanvasAnnotationItem;
 class QgsReferencedRectangle;
+class QgsRenderedItemResults;
 
 class QgsTemporalController;
 
@@ -169,6 +170,17 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * \since QGIS 2.4
      */
     const QgsLabelingResults *labelingResults( bool allowOutdatedResults = true ) const;
+
+    /**
+     * Gets access to the rendered item results (may be NULLPTR), which includes the results of rendering
+     * annotation items in the canvas map.
+     *
+     * If the \a allowOutdatedResults flag is FALSE then outdated rendered item results (e.g.
+     * as a result of an ongoing canvas render) will not be returned, and instead NULLPTR will be returned.
+     *
+     * \since QGIS 3.22
+     */
+    const QgsRenderedItemResults *renderedItemResults( bool allowOutdatedResults = true ) const;
 
     /**
      * Set whether to cache images of rendered layers
@@ -1300,6 +1312,19 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
 
     //! TRUE if the labeling results stored in mLabelingResults are outdated (e.g. as a result of an ongoing canvas render)
     bool mLabelingResultsOutdated = false;
+
+    /**
+     * Rendered results from the recently rendered map.
+     * \since QGIS 3.22
+     */
+    std::unique_ptr< QgsRenderedItemResults > mRenderedItemResults;
+
+    /**
+     * TRUE if the rendered item results stored in mRenderedItemResults are outdated (e.g. as a result of an ongoing canvas render)
+     *
+     * \since QGIS 3.22
+     */
+    bool mRenderedItemResultsOutdated = false;
 
     //! Whether layers are rendered sequentially or in parallel
     bool mUseParallelRendering = false;

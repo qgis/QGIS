@@ -92,6 +92,7 @@ email                : sherman at mrcc.com
 #include "qgslabelingresults.h"
 #include "qgsmaplayerutils.h"
 #include "qgssettingsregistrygui.h"
+#include "qgsrendereditemresults.h"
 
 /**
  * \ingroup gui
@@ -472,6 +473,14 @@ const QgsLabelingResults *QgsMapCanvas::labelingResults( bool allowOutdatedResul
   return mLabelingResults.get();
 }
 
+const QgsRenderedItemResults *QgsMapCanvas::renderedItemResults( bool allowOutdatedResults ) const
+{
+  if ( !allowOutdatedResults && mRenderedItemResultsOutdated )
+    return nullptr;
+
+  return mRenderedItemResults.get();
+}
+
 void QgsMapCanvas::setCachingEnabled( bool enabled )
 {
   if ( enabled == isCachingEnabled() )
@@ -583,6 +592,7 @@ void QgsMapCanvas::refresh()
   mRefreshTimer->start( 1 );
 
   mLabelingResultsOutdated = true;
+  mRenderedItemResultsOutdated = true;
 }
 
 void QgsMapCanvas::refreshMap()
@@ -696,6 +706,9 @@ void QgsMapCanvas::rendererJobFinished()
       mLabelingResults.reset( mJob->takeLabelingResults() );
     }
     mLabelingResultsOutdated = false;
+
+    mRenderedItemResults.reset( mJob->takeRenderedItemResults() );
+    mRenderedItemResultsOutdated = false;
 
     QImage img = mJob->renderedImage();
 
