@@ -152,6 +152,9 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     const QgsDataProvider *dataProvider() const override SIP_SKIP;
 
   private:
+
+    QStringList queryIndex( const QgsRectangle &bounds, QgsFeedback *feedback = nullptr ) const;
+
     QMap<QString, QgsAnnotationItem *> mItems;
     QgsCoordinateTransformContext mTransformContext;
 
@@ -159,8 +162,6 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     QSet< QString > mNonIndexedItems;
 
     QgsDataProvider *mDataProvider = nullptr;
-
-    QStringList queryIndex( const QgsRectangle &bounds, QgsFeedback *feedback = nullptr ) const;
 
     friend class QgsAnnotationLayerRenderer;
 
