@@ -148,6 +148,8 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) override;
     bool isEditable() const override;
     bool supportsEditing() const override;
+    QgsDataProvider *dataProvider() override;
+    const QgsDataProvider *dataProvider() const override SIP_SKIP;
 
   private:
     QMap<QString, QgsAnnotationItem *> mItems;
@@ -156,10 +158,37 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     std::unique_ptr< QgsAnnotationLayerSpatialIndex > mSpatialIndex;
     QSet< QString > mNonIndexedItems;
 
+    QgsDataProvider *mDataProvider = nullptr;
+
     QStringList queryIndex( const QgsRectangle &bounds, QgsFeedback *feedback = nullptr ) const;
 
     friend class QgsAnnotationLayerRenderer;
 
 };
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+
+/**
+ * A minimal data provider for annotation layers.
+ *
+ * \since QGIS 3.22
+ */
+class QgsAnnotationLayerDataProvider : public QgsDataProvider
+{
+    Q_OBJECT
+
+  public:
+    QgsAnnotationLayerDataProvider( const QgsDataProvider::ProviderOptions &providerOptions,
+                                    QgsDataProvider::ReadFlags flags );
+    QgsCoordinateReferenceSystem crs() const override;
+    QString name() const override;
+    QString description() const override;
+    QgsRectangle extent() const override;
+    bool isValid() const override;
+
+};
+///@endcond
+#endif
 
 #endif // QGSANNOTATIONLAYER_H
