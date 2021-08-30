@@ -23,6 +23,7 @@
 
 class QgsFeedback;
 class QgsRenderContext;
+class QgsRenderedItemDetails;
 
 /**
  * \ingroup core
@@ -62,7 +63,7 @@ class CORE_EXPORT QgsMapLayerRenderer
       , mContext( context )
     {}
 
-    virtual ~QgsMapLayerRenderer() = default;
+    virtual ~QgsMapLayerRenderer();
 
     /**
      * Do the rendering (based on data stored in the class).
@@ -137,6 +138,16 @@ class CORE_EXPORT QgsMapLayerRenderer
      */
     virtual void setLayerRenderingTimeHint( int time ) SIP_SKIP { Q_UNUSED( time ) }
 
+    /**
+     * Takes the list of rendered item details from the renderer.
+     *
+     * Ownership of items is transferred to the caller.
+     *
+     * \see appendRenderedItemDetails()
+     * \since QGIS 3.22
+     */
+    QList< QgsRenderedItemDetails * > takeRenderedItemDetails() SIP_TRANSFERBACK;
+
   protected:
     QStringList mErrors;
     QString mLayerID;
@@ -169,6 +180,18 @@ class CORE_EXPORT QgsMapLayerRenderer
      */
     static constexpr int MAX_TIME_TO_USE_CACHED_PREVIEW_IMAGE = 3000 SIP_SKIP;
 
+    /**
+     * Appends the \a details of a rendered item to the renderer.
+     *
+     * Rendered item details can be retrieved by calling takeRenderedItemDetails().
+     *
+     * Ownership of \a details is transferred to the renderer.
+     *
+     * \see takeRenderedItemDetails()
+     * \since QGIS 3.22
+     */
+    void appendRenderedItemDetails( QgsRenderedItemDetails *details SIP_TRANSFER );
+
   private:
 
     // TODO QGIS 4.0 - make reference instead of pointer!
@@ -179,6 +202,8 @@ class CORE_EXPORT QgsMapLayerRenderer
      * \since QGIS 3.10
      */
     QgsRenderContext *mContext = nullptr;
+
+    QList<QgsRenderedItemDetails *> mRenderedItemDetails;
 };
 
 #endif // QGSMAPLAYERRENDERER_H

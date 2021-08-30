@@ -17,6 +17,7 @@
 #include "qgsannotationlayerrenderer.h"
 #include "qgsannotationlayer.h"
 #include "qgsfeedback.h"
+#include "qgsrenderedannotationitemdetails.h"
 
 QgsAnnotationLayerRenderer::QgsAnnotationLayerRenderer( QgsAnnotationLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
@@ -39,15 +40,18 @@ QgsAnnotationLayerRenderer::QgsAnnotationLayerRenderer( QgsAnnotationLayer *laye
 
   mItems.reserve( items.size() );
   std::transform( items.begin(), items.end(), std::back_inserter( mItems ),
-                  [layer]( const QString & id ) -> QgsAnnotationItem* { return layer->item( id )->clone(); } );
+                  [layer]( const QString & id ) ->std::pair< QString, std::unique_ptr< QgsAnnotationItem > >
+  {
+    return std::make_pair( id, std::unique_ptr< QgsAnnotationItem >( layer->item( id )->clone() ) );
+  } );
 
-  std::sort( mItems.begin(), mItems.end(), []( QgsAnnotationItem * a, QgsAnnotationItem * b ) { return a->zIndex() < b->zIndex(); } );  //clazy:exclude=detaching-member
+  std::sort( mItems.begin(), mItems.end(), [](
+               const std::pair< QString, std::unique_ptr< QgsAnnotationItem > > &a,
+               const std::pair< QString, std::unique_ptr< QgsAnnotationItem > > &b )
+  { return a.second->zIndex() < b.second->zIndex(); } );
 }
 
-QgsAnnotationLayerRenderer::~QgsAnnotationLayerRenderer()
-{
-  qDeleteAll( mItems );
-}
+QgsAnnotationLayerRenderer::~QgsAnnotationLayerRenderer() = default;
 
 QgsFeedback *QgsAnnotationLayerRenderer::feedback() const
 {
@@ -59,7 +63,7 @@ bool QgsAnnotationLayerRenderer::render()
   QgsRenderContext &context = *renderContext();
 
   bool canceled = false;
-  for ( QgsAnnotationItem *item : std::as_const( mItems ) )
+  for ( const std::pair< QString, std::unique_ptr< QgsAnnotationItem > > &item : std::as_const( mItems ) )
   {
     if ( mFeedback->isCanceled() )
     {
@@ -67,7 +71,14 @@ bool QgsAnnotationLayerRenderer::render()
       break;
     }
 
-    item->render( context, mFeedback.get() );
+    const QgsRectangle bounds = item.second->boundingBox( context );
+    if ( bounds.intersects( context.extent() ) )
+    {
+      item.second->render( context, mFeedback.get() );
+      std::unique_ptr< QgsRenderedAnnotationItemDetails > details = std::make_unique< QgsRenderedAnnotationItemDetails >( mLayerID, item.first );
+      details->setBoundingBox( bounds );
+      appendRenderedItemDetails( details.release() );
+    }
   }
   return !canceled;
 }

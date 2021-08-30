@@ -110,10 +110,34 @@ least partially) some data
 %End
 
 
+    QList< QgsRenderedItemDetails * > takeRenderedItemDetails() /TransferBack/;
+%Docstring
+Takes the list of rendered item details from the renderer.
+
+Ownership of items is transferred to the caller.
+
+.. seealso:: :py:func:`appendRenderedItemDetails`
+
+.. versionadded:: 3.22
+%End
+
   protected:
 
 
 
+
+    void appendRenderedItemDetails( QgsRenderedItemDetails *details /Transfer/ );
+%Docstring
+Appends the ``details`` of a rendered item to the renderer.
+
+Rendered item details can be retrieved by calling :py:func:`~QgsMapLayerRenderer.takeRenderedItemDetails`.
+
+Ownership of ``details`` is transferred to the renderer.
+
+.. seealso:: :py:func:`takeRenderedItemDetails`
+
+.. versionadded:: 3.22
+%End
 
 };
 

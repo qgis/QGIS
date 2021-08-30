@@ -184,6 +184,7 @@ set(QGIS_CORE_SRCS
   annotations/qgsannotationpointtextitem.cpp
   annotations/qgsannotationpolygonitem.cpp
   annotations/qgshtmlannotation.cpp
+  annotations/qgsrenderedannotationitemdetails.cpp
   annotations/qgssvgannotation.cpp
   annotations/qgstextannotation.cpp
 
@@ -397,6 +398,7 @@ set(QGIS_CORE_SRCS
   qgsmaplayerlegend.cpp
   qgsmaplayermodel.cpp
   qgsmaplayerproxymodel.cpp
+  qgsmaplayerrenderer.cpp
   qgsmaplayerstore.cpp
   qgsmaplayerstyle.cpp
   qgsmaplayerstylemanager.cpp
@@ -448,6 +450,7 @@ set(QGIS_CORE_SRCS
   qgsremappingproxyfeaturesink.cpp
   qgsrenderchecker.cpp
   qgsrendercontext.cpp
+  qgsrendereditemdetails.cpp
   qgsrunprocess.cpp
   qgsruntimeprofiler.cpp
   qgsscalecalculator.cpp
@@ -588,6 +591,7 @@ set(QGIS_CORE_SRCS
   maprenderer/qgsmaprenderersequentialjob.cpp
   maprenderer/qgsmaprendererstagedrenderjob.cpp
   maprenderer/qgsmaprenderertask.cpp
+  maprenderer/qgsrendereditemresults.cpp
 
   pal/costcalculator.cpp
   pal/feature.cpp
@@ -1084,6 +1088,7 @@ set(QGIS_CORE_HDRS
   qgsrenderchecker.h
   qgsrendercontext.h
   qgsrenderedfeaturehandlerinterface.h
+  qgsrendereditemdetails.h
   qgsrunprocess.h
   qgsruntimeprofiler.h
   qgsscalecalculator.h
@@ -1158,6 +1163,7 @@ set(QGIS_CORE_HDRS
   annotations/qgsannotationpolygonitem.h
   annotations/qgsannotationregistry.h
   annotations/qgshtmlannotation.h
+  annotations/qgsrenderedannotationitemdetails.h
   annotations/qgssvgannotation.h
   annotations/qgstextannotation.h
 
@@ -1404,6 +1410,7 @@ set(QGIS_CORE_HDRS
   maprenderer/qgsmaprenderersequentialjob.h
   maprenderer/qgsmaprendererstagedrenderjob.h
   maprenderer/qgsmaprenderertask.h
+  maprenderer/qgsrendereditemresults.h
 
   mesh/qgsmesh3daveraging.h
   mesh/qgsmesheditor.h

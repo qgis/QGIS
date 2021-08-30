@@ -49,6 +49,8 @@ The following subclasses are available:
 
     QgsMapRendererJob( const QgsMapSettings &settings );
 
+    ~QgsMapRendererJob();
+
     void start();
 %Docstring
 Start the rendering job and immediately return.
@@ -95,6 +97,15 @@ Gets pointer to internal labeling engine (in order to get access to the results)
 This should not be used if cached labeling was redrawn - see :py:func:`~QgsMapRendererJob.usedCachedLabels`.
 
 .. seealso:: :py:func:`usedCachedLabels`
+%End
+
+    QgsRenderedItemResults *takeRenderedItemResults() /Transfer/;
+%Docstring
+Takes the rendered item results from the map render job and returns them.
+
+Ownership is transferred to the caller.
+
+.. versionadded:: 3.22
 %End
 
     void setFeatureFilterProvider( const QgsFeatureFilterProvider *f );
@@ -175,6 +186,7 @@ emitted when asynchronous rendering is finished (or canceled).
 %End
 
   protected:
+
 
 
 
