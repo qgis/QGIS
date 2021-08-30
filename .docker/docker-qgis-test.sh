@@ -193,7 +193,6 @@ if [ $# -eq 0 ] || [ $1 = "ALL_BUT_PROVIDERS" ] || [ $1 = "ALL" ] ; then
   done
   if [[ ${COUNT} -eq 41 ]]; then
     echo "Error: WebDAV docker timeout!!!"
-    exit 1
   else
     echo "done"
   fi
