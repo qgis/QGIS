@@ -1232,6 +1232,7 @@ set(QGIS_CORE_HDRS
   expression/qgsexpressionfunction.h
   expression/qgsexpressionnode.h
   expression/qgsexpressionnodeimpl.h
+  expression/qgsexpressionutils.h
 
   fieldformatter/qgscheckboxfieldformatter.h
   fieldformatter/qgsdatetimefieldformatter.h

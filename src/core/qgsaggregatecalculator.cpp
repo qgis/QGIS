@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsaggregatecalculator.h"
+#include "qgsexpressionutils.h"
 #include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfeatureiterator.h"
@@ -116,39 +117,19 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
     }
     else
     {
-      // evaluate first feature, check result type
-      QgsFeatureRequest testRequest( request );
-      testRequest.setLimit( 10 );
-      QgsFeature f;
-      QgsFeatureIterator fit = mLayer->getFeatures( testRequest );
-      if ( !fit.nextFeature( f ) )
+      // check expression result type
+      bool foundFeatures = false;
+      std::tuple<QVariant::Type, int> returnType = QgsExpressionUtils::determineResultType( fieldOrExpression, mLayer, request, *context, &foundFeatures );
+      if ( !foundFeatures )
       {
-        //no matching features
         if ( ok )
           *ok = true;
         return defaultValue( aggregate );
       }
 
-      bool hasFeature = true;
-      bool foundType = false;
-      while ( hasFeature && !foundType )
-      {
-        if ( context )
-          context->setFeature( f );
-        const QVariant v = expression->evaluate( context );
-        if ( !v.isNull() )
-        {
-          resultType = v.type();
-          userType = v.userType();
-          foundType = true;
-        }
-        else
-        {
-          hasFeature = fit.nextFeature( f );
-        }
-      }
-
-      if ( !foundType )
+      resultType = std::get<0>( returnType );
+      userType = std::get<1>( returnType );
+      if ( resultType == QVariant::Invalid )
       {
         QVariant v;
         switch ( aggregate )
