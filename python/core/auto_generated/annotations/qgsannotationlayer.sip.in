@@ -132,8 +132,11 @@ The optional ``feedback`` argument can be used to cancel the search early.
 
     virtual bool supportsEditing() const;
 
+    virtual QgsDataProvider *dataProvider();
+
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

@@ -103,12 +103,14 @@ QgsAnnotationLayer::QgsAnnotationLayer( const QString &name, const LayerOptions 
 {
   mShouldValidateCrs = false;
   mValid = true;
+  mDataProvider = new QgsAnnotationLayerDataProvider( QgsDataProvider::ProviderOptions(), QgsDataProvider::ReadFlags() );
 }
 
 QgsAnnotationLayer::~QgsAnnotationLayer()
 {
   emit willBeDeleted();
   qDeleteAll( mItems );
+  delete mDataProvider;
 }
 
 void QgsAnnotationLayer::reset()
@@ -385,3 +387,50 @@ bool QgsAnnotationLayer::supportsEditing() const
 {
   return true;
 }
+
+QgsDataProvider *QgsAnnotationLayer::dataProvider()
+{
+  return mDataProvider;
+}
+
+const QgsDataProvider *QgsAnnotationLayer::dataProvider() const
+{
+  return mDataProvider;
+}
+
+
+//
+// QgsAnnotationLayerDataProvider
+//
+///@cond PRIVATE
+QgsAnnotationLayerDataProvider::QgsAnnotationLayerDataProvider(
+  const ProviderOptions &options,
+  QgsDataProvider::ReadFlags flags )
+  : QgsDataProvider( QString(), options, flags )
+{}
+
+QgsCoordinateReferenceSystem QgsAnnotationLayerDataProvider::crs() const
+{
+  return QgsCoordinateReferenceSystem();
+}
+
+QString QgsAnnotationLayerDataProvider::name() const
+{
+  return QStringLiteral( "annotation" );
+}
+
+QString QgsAnnotationLayerDataProvider::description() const
+{
+  return QString();
+}
+
+QgsRectangle QgsAnnotationLayerDataProvider::extent() const
+{
+  return QgsRectangle();
+}
+
+bool QgsAnnotationLayerDataProvider::isValid() const
+{
+  return true;
+}
+///@endcond
