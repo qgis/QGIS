@@ -260,7 +260,7 @@ class CORE_EXPORT QgsOgrProviderUtils
         bool updateMode,
         const QString &dsName );
 
-    static QList<QgsProviderSublayerDetails> querySubLayerList( int i, QgsOgrLayer *layer, const QString &driverName, Qgis::SublayerQueryFlags flags,
+    static QList<QgsProviderSublayerDetails> querySubLayerList( int i, QgsOgrLayer *layer, GDALDatasetH hDS, const QString &driverName, Qgis::SublayerQueryFlags flags,
         const QString &baseUri, bool hasSingleLayerOnly, QgsFeedback *feedback = nullptr );
 
     /**
