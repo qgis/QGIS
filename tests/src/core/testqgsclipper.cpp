@@ -34,13 +34,54 @@ class TestQgsClipper: public QObject
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
     void basic();
+    void basicWithZ();
+
   private:
     bool checkBoundingBox( const QPolygonF &polygon, const QgsRectangle &clipRect );
+    bool checkBoundingBox( const QgsLineString &polygon, const QgsBox3d &clipRect );
 };
 
 void TestQgsClipper::initTestCase()
 {
 
+}
+
+void TestQgsClipper::basicWithZ()
+{
+  // QgsClipper is static only
+
+  QgsLineString polygon;
+  polygon.addVertex( QgsPoint( 10.4, 20.5, 10.3 ) );
+  polygon.addVertex( QgsPoint( 20.2, 30.2, 20.3 ) );
+
+  QgsBox3d clipRect( 10, 10, 10, 25, 30, 20 );
+
+  QgsClipper::trimPolygon( polygon, clipRect );
+
+  // Check nothing sticks out.
+  QVERIFY( checkBoundingBox( polygon, clipRect ) );
+  // Check that it didn't clip too much
+  QgsBox3d clipRectInner( clipRect );
+  clipRectInner.scale( 0.999 );
+  QVERIFY( ! checkBoundingBox( polygon, clipRectInner ) );
+
+  // A more complex example
+  polygon.clear();
+  polygon.addVertex( QgsPoint( 1.0, 9.0, 1.0 ) );
+  polygon.addVertex( QgsPoint( 11.0, 11.0, 11.0 ) );
+  polygon.addVertex( QgsPoint( 9.0, 1.0, 9.0 ) );
+  clipRect = QgsBox3d( 0.0, 0.0, 0.0, 10.0, 10.0, 10.0 );
+
+  QgsClipper::trimPolygon( polygon, clipRect );
+
+  // We should have 5 vertices now?
+  QCOMPARE( polygon.numPoints(), 5 );
+  // Check nothing sticks out.
+  QVERIFY( checkBoundingBox( polygon, clipRect ) );
+  // Check that it didn't clip too much
+  clipRectInner = clipRect;
+  clipRectInner.scale( 0.999 );
+  QVERIFY( ! checkBoundingBox( polygon, clipRectInner ) );
 }
 
 void TestQgsClipper::basic()
@@ -76,6 +117,11 @@ void TestQgsClipper::basic()
   clipRectInner = clipRect;
   clipRectInner.scale( 0.999 );
   QVERIFY( ! checkBoundingBox( polygon, clipRectInner ) );
+}
+
+bool TestQgsClipper::checkBoundingBox( const QgsLineString &polygon, const QgsBox3d &clipRect )
+{
+  return clipRect.contains( polygon.calculateBoundingBox3d() );
 }
 
 bool TestQgsClipper::checkBoundingBox( const QPolygonF &polygon, const QgsRectangle &clipRect )

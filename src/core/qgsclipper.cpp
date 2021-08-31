@@ -18,7 +18,6 @@
 
 #include "qgsclipper.h"
 #include "qgsgeometry.h"
-#include "qgscurve.h"
 #include "qgslogger.h"
 
 // Where has all the code gone?
@@ -38,9 +37,68 @@ const double QgsClipper::MIN_Y = -16000;
 
 const double QgsClipper::SMALL_NUM = 1e-12;
 
-QPolygonF QgsClipper::clippedLine( const QgsCurve &curve, const QgsRectangle &clipExtent )
+QgsLineString QgsClipper::clipped3dLine( const QgsCurve &curve, const QgsBox3d &clipExtent )
 {
-  return clippedLine( curve.asQPolygonF(), clipExtent );
+  const int nPoints = curve.numPoints();
+
+  double p0x, p0y, p0z, p1x = 0.0, p1y = 0.0, p1z = 0.0; //original coordinates
+  double p1x_c, p1y_c, p1z_c; //clipped end coordinates
+  double lastClipX = 0.0, lastClipY = 0., lastClipZ = 0.0; //last successfully clipped coords
+
+  QgsLineString line;
+
+  QgsPoint curPoint;
+  QgsVertexId::VertexType type;
+  for ( int i = 0; i < nPoints; ++i )
+  {
+    curve.pointAt( i, curPoint, type );
+    if ( i == 0 )
+    {
+      p1x = curPoint.x();
+      p1y = curPoint.y();
+      p1z = curPoint.z();
+    }
+    else
+    {
+      p0x = p1x;
+      p0y = p1y;
+      p0z = p1z;
+
+      p1x = curPoint.x();
+      p1y = curPoint.y();
+      p1z = curPoint.z();
+
+      p1x_c = p1x;
+      p1y_c = p1y;
+      p1z_c = p1z;
+
+      // TODO: should be in 3D
+      if ( clipLineSegment( clipExtent, p0x, p0y, p0z, p1x_c, p1y_c, p1z_c ) )
+      {
+        bool newLine = !line.isEmpty() && ( !qgsDoubleNear( p0x, lastClipX )
+                                            || !qgsDoubleNear( p0y, lastClipY )
+                                            || !qgsDoubleNear( p0z, lastClipZ ) );
+        if ( newLine )
+        {
+          //add edge points to connect old and new line
+          // TODO: should be (really) in 3D
+          connectSeparatedLines( lastClipX, lastClipY, lastClipZ, p0x, p0y, p0z, clipExtent, line );
+        }
+        if ( line.numPoints() == 0 || newLine )
+        {
+          //add first point
+          line.addVertex( QgsPoint( p0x, p0y, p0z ) );
+        }
+
+        //add second point
+        lastClipX = p1x_c;
+        lastClipY = p1y_c;
+        lastClipZ = p1z_c;
+        line.addVertex( QgsPoint( p1x_c,  p1y_c,  p1z_c ) );
+      }
+    }
+  }
+  return line;
 }
 
 QPolygonF QgsClipper::clippedLine( const QPolygonF &curve, const QgsRectangle &clipExtent )
@@ -74,7 +132,7 @@ QPolygonF QgsClipper::clippedLine( const QPolygonF &curve, const QgsRectangle &c
       p1x_c = p1x;
       p1y_c = p1y;
       if ( clipLineSegment( clipExtent.xMinimum(), clipExtent.xMaximum(), clipExtent.yMinimum(), clipExtent.yMaximum(),
-                            p0x, p0y, p1x_c,  p1y_c ) )
+                            p0x, p0y, p1x_c, p1y_c ) )
       {
         const bool newLine = !line.isEmpty() && ( !qgsDoubleNear( p0x, lastClipX ) || !qgsDoubleNear( p0y, lastClipY ) );
         if ( newLine )
@@ -196,3 +254,105 @@ void QgsClipper::connectSeparatedLines( double x0, double y0, double x1, double 
     }
   }
 }
+
+void QgsClipper::connectSeparatedLines( double x0, double y0, double z0, double x1, double y1, double z1,
+                                        const QgsBox3d &clipRect, QgsLineString &pts )
+{
+  // TODO: really relevant and sufficient?
+  double meanZ = ( z0 + z1 ) / 2.0;
+
+  //test the different edge combinations...
+  if ( qgsDoubleNear( x0, clipRect.xMinimum() ) )
+  {
+    if ( qgsDoubleNear( x1, clipRect.xMinimum() ) )
+    {
+      return;
+    }
+    else if ( qgsDoubleNear( y1, clipRect.yMaximum() ) )
+    {
+      pts.addVertex( QgsPoint( clipRect.xMinimum(), clipRect.yMaximum(), meanZ ) );
+      return;
+    }
+    else if ( qgsDoubleNear( x1, clipRect.xMaximum() ) )
+    {
+      pts.addVertex( QgsPoint( clipRect.xMinimum(), clipRect.yMaximum(), meanZ ) );
+      pts.addVertex( QgsPoint( clipRect.xMaximum(), clipRect.yMaximum(), meanZ ) );
+      return;
+    }
+    else if ( qgsDoubleNear( y1, clipRect.yMinimum() ) )
+    {
+      pts.addVertex( QgsPoint( clipRect.xMinimum(), clipRect.yMinimum(), meanZ ) );
+      return;
+    }
+  }
+  else if ( qgsDoubleNear( y0, clipRect.yMaximum() ) )
+  {
+    if ( qgsDoubleNear( y1, clipRect.yMaximum() ) )
+    {
+      return;
+    }
+    else if ( qgsDoubleNear( x1, clipRect.xMaximum() ) )
+    {
+      pts.addVertex( QgsPoint( clipRect.xMaximum(), clipRect.yMaximum(), meanZ ) );
+      return;
+    }
+    else if ( qgsDoubleNear( y1, clipRect.yMinimum() ) )
+    {
+      pts.addVertex( QgsPoint( clipRect.xMaximum(), clipRect.yMaximum(), meanZ ) );
+      pts.addVertex( QgsPoint( clipRect.xMaximum(), clipRect.yMinimum(), meanZ ) );
+      return;
+    }
+    else if ( qgsDoubleNear( x1, clipRect.xMinimum() ) )
+    {
+      pts.addVertex( QgsPoint( clipRect.xMinimum(), clipRect.yMaximum(), meanZ ) );
+      return;
+    }
+  }
+  else if ( qgsDoubleNear( x0, clipRect.xMaximum() ) )
+  {
+    if ( qgsDoubleNear( x1, clipRect.xMaximum() ) )
+    {
+      return;
+    }
+    else if ( qgsDoubleNear( y1, clipRect.yMinimum() ) )
+    {
+      pts.addVertex( QgsPoint( clipRect.xMaximum(), clipRect.yMinimum(), meanZ ) );
+      return;
+    }
+    else if ( qgsDoubleNear( x1, clipRect.xMinimum() ) )
+    {
+      pts.addVertex( QgsPoint( clipRect.xMaximum(), clipRect.yMinimum(), meanZ ) );
+      pts.addVertex( QgsPoint( clipRect.xMinimum(), clipRect.yMinimum(), meanZ ) );
+      return;
+    }
+    else if ( qgsDoubleNear( y1, clipRect.yMaximum() ) )
+    {
+      pts.addVertex( QgsPoint( clipRect.xMaximum(), clipRect.yMaximum(), meanZ ) );
+      return;
+    }
+  }
+  else if ( qgsDoubleNear( y0, clipRect.yMinimum() ) )
+  {
+    if ( qgsDoubleNear( y1, clipRect.yMinimum() ) )
+    {
+      return;
+    }
+    else if ( qgsDoubleNear( x1, clipRect.xMinimum() ) )
+    {
+      pts.addVertex( QgsPoint( clipRect.xMinimum(), clipRect.yMinimum(), meanZ ) );
+      return;
+    }
+    else if ( qgsDoubleNear( y1, clipRect.yMaximum() ) )
+    {
+      pts.addVertex( QgsPoint( clipRect.xMinimum(), clipRect.yMinimum(), meanZ ) );
+      pts.addVertex( QgsPoint( clipRect.xMinimum(), clipRect.yMaximum(), meanZ ) );
+      return;
+    }
+    else if ( qgsDoubleNear( x1, clipRect.xMaximum() ) )
+    {
+      pts.addVertex( QgsPoint( clipRect.xMaximum(), clipRect.yMinimum(), meanZ ) );
+      return;
+    }
+  }
+}
+

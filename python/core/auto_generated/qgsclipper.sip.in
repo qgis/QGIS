@@ -11,6 +11,7 @@
 
 
 
+
 %Feature ARM // Some parts are not available in sip bindings on ARM because of qreal double vs. float issues
 
 
@@ -45,7 +46,9 @@ magnitude of the screen coordinates (+/- 32768, i.e. 16 bit integer).
       XMax,
       XMin,
       YMax,
-      YMin
+      YMin,
+      ZMax,
+      ZMin
     };
 
 %If (!ARM) // Not available on ARM sip bindings because of qreal issues
@@ -68,19 +71,28 @@ an open shape (linestring).
 
     static void trimPolygon( QPolygonF &pts, const QgsRectangle &clipRect );
 
-    static QPolygonF clippedLine( const QgsCurve &curve, const QgsRectangle &clipExtent );
+    static void trimPolygon( QgsLineString &pts, const QgsBox3d &clipRect );
+
+    static QgsLineString clipped3dLine( const QgsCurve &curve, const QgsBox3d &clipExtent );
 %Docstring
-Takes a linestring and clips it to clipExtent
+Takes a ``curve`` with 3D coordinates and clips it to clipExtent
 
 :param curve: the linestring
 :param clipExtent: clipping bounds
 
 :return: clipped line coordinates
+
+.. versionadded:: 3.21
 %End
 
     static QPolygonF clippedLine( const QPolygonF &curve, const QgsRectangle &clipExtent );
 %Docstring
-Takes a ``curve`` and clips it to clipExtent.
+Takes a 2D ``curve`` and clips it to clipExtent.
+
+:param curve: the linestring
+:param clipExtent: clipping bounds
+
+:return: clipped line coordinates
 
 .. versionadded:: 3.16
 %End
@@ -106,6 +118,7 @@ An implementation of the 'Fast clipping' algorithm (Sobkow et al. 1987, Computer
 %End
 
 };
+
 
 
 
