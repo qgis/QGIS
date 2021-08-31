@@ -51,6 +51,8 @@ Creates a new text at point annotation item.
 
     virtual QgsRectangle boundingBox( QgsRenderContext &context ) const;
 
+    virtual QList< QgsAnnotationItemNode > nodes() const;
+
 
     QgsPointXY point() const;
 %Docstring

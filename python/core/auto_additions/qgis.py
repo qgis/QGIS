@@ -656,3 +656,8 @@ Qgis.AnnotationItemFlag.ScaleDependentBoundingBox.__doc__ = "Item's bounding box
 Qgis.AnnotationItemFlag.__doc__ = 'Flags for annotation items.\n\n.. versionadded:: 3.22\n\n' + '* ``ScaleDependentBoundingBox``: ' + Qgis.AnnotationItemFlag.ScaleDependentBoundingBox.__doc__
 # --
 Qgis.AnnotationItemFlag.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.AnnotationItemNodeType.VertexHandle.__doc__ = "Node is a handle for manipulating vertices"
+Qgis.AnnotationItemNodeType.__doc__ = 'Annotation item node types.\n\n.. versionadded:: 3.22\n\n' + '* ``VertexHandle``: ' + Qgis.AnnotationItemNodeType.VertexHandle.__doc__
+# --
+Qgis.AnnotationItemNodeType.baseClass = Qgis

@@ -37,6 +37,8 @@ Constructor for QgsAnnotationMarkerItem, at the specified ``point``.
 
     virtual Qgis::AnnotationItemFlags flags() const;
 
+    virtual QList< QgsAnnotationItemNode > nodes() const;
+
 
     static QgsAnnotationMarkerItem *create() /Factory/;
 %Docstring

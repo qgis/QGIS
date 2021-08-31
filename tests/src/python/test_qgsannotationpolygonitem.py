@@ -33,7 +33,10 @@ from qgis.core import (QgsMapSettings,
                        QgsLineString,
                        QgsPolygon,
                        QgsCurvePolygon,
-                       QgsCircularString
+                       QgsCircularString,
+                       QgsAnnotationItemNode,
+                       Qgis,
+                       QgsPointXY
                        )
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -68,6 +71,16 @@ class TestQgsAnnotationPolygonItem(unittest.TestCase):
 
         item.setSymbol(QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black'}))
         self.assertEqual(item.symbol()[0].color(), QColor(200, 100, 100))
+
+    def test_nodes(self):
+        """
+        Test nodes for item
+        """
+        item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
+        # nodes shouldn't form a closed ring
+        self.assertEqual(item.nodes(), [QgsAnnotationItemNode(QgsPointXY(12, 13), Qgis.AnnotationItemNodeType.VertexHandle),
+                                        QgsAnnotationItemNode(QgsPointXY(14, 13), Qgis.AnnotationItemNodeType.VertexHandle),
+                                        QgsAnnotationItemNode(QgsPointXY(14, 15), Qgis.AnnotationItemNodeType.VertexHandle)])
 
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")

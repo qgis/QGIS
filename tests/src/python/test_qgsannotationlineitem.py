@@ -31,7 +31,10 @@ from qgis.core import (QgsMapSettings,
                        QgsAnnotationLineItem,
                        QgsRectangle,
                        QgsLineString,
-                       QgsCircularString
+                       QgsCircularString,
+                       QgsAnnotationItemNode,
+                       QgsPointXY,
+                       Qgis
                        )
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -66,6 +69,15 @@ class TestQgsAnnotationLineItem(unittest.TestCase):
 
         item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
         self.assertEqual(item.symbol()[0].color(), QColor(255, 255, 0))
+
+    def test_nodes(self):
+        """
+        Test nodes for item
+        """
+        item = QgsAnnotationLineItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]))
+        self.assertEqual(item.nodes(), [QgsAnnotationItemNode(QgsPointXY(12, 13), Qgis.AnnotationItemNodeType.VertexHandle),
+                                        QgsAnnotationItemNode(QgsPointXY(14, 13), Qgis.AnnotationItemNodeType.VertexHandle),
+                                        QgsAnnotationItemNode(QgsPointXY(14, 15), Qgis.AnnotationItemNodeType.VertexHandle)])
 
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")

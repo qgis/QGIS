@@ -17,6 +17,7 @@
 
 #include "qgsannotationpointtextitem.h"
 #include "qgstextrenderer.h"
+#include "qgsannotationitemnode.h"
 
 QgsAnnotationPointTextItem::QgsAnnotationPointTextItem( const QString &text, QgsPointXY point )
   : QgsAnnotationItem()
@@ -126,6 +127,11 @@ QgsRectangle QgsAnnotationPointTextItem::boundingBox( QgsRenderContext &context 
   const double heightInMapUnits = context.convertToMapUnits( heightInPixels, QgsUnitTypes::RenderPixels );
 
   return QgsRectangle( mPoint.x(), mPoint.y(), mPoint.x() + widthInMapUnits, mPoint.y() + heightInMapUnits );
+}
+
+QList<QgsAnnotationItemNode> QgsAnnotationPointTextItem::nodes() const
+{
+  return { QgsAnnotationItemNode( mPoint, Qgis::AnnotationItemNodeType::VertexHandle )};
 }
 
 QgsTextFormat QgsAnnotationPointTextItem::format() const

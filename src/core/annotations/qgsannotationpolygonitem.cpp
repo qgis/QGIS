@@ -20,6 +20,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgssurface.h"
 #include "qgsfillsymbol.h"
+#include "qgsannotationitemnode.h"
 
 QgsAnnotationPolygonItem::QgsAnnotationPolygonItem( QgsCurvePolygon *polygon )
   : QgsAnnotationItem()
@@ -92,6 +93,33 @@ bool QgsAnnotationPolygonItem::writeXml( QDomElement &element, QDomDocument &doc
   element.appendChild( QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "lineSymbol" ), mSymbol.get(), document, context ) );
 
   return true;
+}
+
+QList<QgsAnnotationItemNode> QgsAnnotationPolygonItem::nodes() const
+{
+  QList< QgsAnnotationItemNode > res;
+
+  auto processRing  = [&res]( const QgsCurve * ring )
+  {
+    // we don't want a duplicate node for the closed ring vertex
+    const int count = ring->isClosed() ? ring->numPoints() - 1 : ring->numPoints();
+    res.reserve( res.size() + count );
+    for ( int i = 0; i < count; ++i )
+    {
+      res << QgsAnnotationItemNode( QgsPointXY( ring->xAt( i ), ring->yAt( i ) ), Qgis::AnnotationItemNodeType::VertexHandle );
+    }
+  };
+
+  if ( const QgsCurve *ring = mPolygon->exteriorRing() )
+  {
+    processRing( ring );
+  }
+  for ( int i = 0; i < mPolygon->numInteriorRings(); ++i )
+  {
+    processRing( mPolygon->interiorRing( i ) );
+  }
+
+  return res;
 }
 
 QgsAnnotationPolygonItem *QgsAnnotationPolygonItem::create()

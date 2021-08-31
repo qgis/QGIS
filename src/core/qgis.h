@@ -744,6 +744,17 @@ class CORE_EXPORT Qgis
     Q_ENUM( AnnotationItemFlag )
 
     /**
+     * Annotation item node types.
+     *
+     * \since QGIS 3.22
+     */
+    enum class AnnotationItemNodeType : int
+    {
+      VertexHandle, //!< Node is a handle for manipulating vertices
+    };
+    Q_ENUM( AnnotationItemNodeType )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */
