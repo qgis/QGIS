@@ -34,6 +34,7 @@
 #include <QDomDocument>
 #include <QJsonObject>
 
+#include "qgsbox3d.h"
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -575,8 +576,14 @@ bool QgsLineString::fromWkb( QgsConstWkbPtr &wkbPtr )
 
 QgsRectangle QgsLineString::calculateBoundingBox() const
 {
+  QgsBox3d b = calculateBoundingBox3d();
+  return QgsRectangle( b.xMinimum(), b.yMinimum(), b.xMaximum(), b.yMaximum(), false );
+}
+
+QgsBox3d QgsLineString::calculateBoundingBox3d() const
+{
   if ( mX.empty() )
-    return QgsRectangle();
+    return QgsBox3d();
 
   auto result = std::minmax_element( mX.begin(), mX.end() );
   const double xmin = *result.first;
@@ -584,7 +591,19 @@ QgsRectangle QgsLineString::calculateBoundingBox() const
   result = std::minmax_element( mY.begin(), mY.end() );
   const double ymin = *result.first;
   const double ymax = *result.second;
-  return QgsRectangle( xmin, ymin, xmax, ymax, false );
+
+  if ( is3D() )
+  {
+    result = std::minmax_element( mZ.begin(), mZ.end() );
+    const double zmin = *result.first;
+    const double zmax = *result.second;
+    return QgsBox3d( xmin, ymin, zmin, xmax, ymax, zmax );
+  }
+  else
+  {
+    // TODO Nan or Inf?
+    return QgsBox3d( xmin, ymin, -HUGE_VAL, xmax, ymax, HUGE_VAL );
+  }
 }
 
 void QgsLineString::scroll( int index )
