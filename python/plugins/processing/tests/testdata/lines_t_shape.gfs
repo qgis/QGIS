@@ -1,0 +1,16 @@
+<GMLFeatureClassList>
+  <GMLFeatureClass>
+    <Name>lines_t_shape</Name>
+    <ElementPath>lines_t_shape</ElementPath>
+    <!--MULTILINESTRING-->
+    <GeometryType>5</GeometryType>
+    <SRSName>urn:ogc:def:crs:EPSG::4326</SRSName>
+    <DatasetSpecificInfo>
+      <FeatureCount>3</FeatureCount>
+      <ExtentXMin>0.75573</ExtentXMin>
+      <ExtentXMax>8.21641</ExtentXMax>
+      <ExtentYMin>-2.33190</ExtentYMin>
+      <ExtentYMax>5.12878</ExtentYMax>
+    </DatasetSpecificInfo>
+  </GMLFeatureClass>
+</GMLFeatureClassList>

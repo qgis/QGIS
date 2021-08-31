@@ -103,7 +103,8 @@ bool QgsSnapIndex::SegmentSnapItem::getProjection( const QgsPoint &p, QgsPoint &
 
 bool QgsSnapIndex::SegmentSnapItem::withinDistance( const QgsPoint &p, const double tolerance )
 {
-  const double distance = QgsGeometryUtils::sqrDistToLine( p.x(), p.y(), idxFrom->point().x(), idxFrom->point().y(), idxTo->point().x(), idxTo->point().y() );
+  double minDistX, minDistY;
+  const double distance = QgsGeometryUtils::sqrDistToLine( p.x(), p.y(), idxFrom->point().x(), idxFrom->point().y(), idxTo->point().x(), idxTo->point().y(), minDistX, minDistY, 4 * std::numeric_limits<double>::epsilon() );
   return distance <= tolerance;
 }
 
