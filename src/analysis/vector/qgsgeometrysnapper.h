@@ -227,9 +227,6 @@ class QgsSnapIndex
     SnapItem *getSnapItem( const QgsPoint &pos, const double tolerance, PointSnapItem **pSnapPoint = nullptr, SegmentSnapItem **pSnapSegment = nullptr, bool endPointOnly = false ) const;
 
   private:
-    typedef QList<SnapItem *> Cell;
-    typedef QPair<QgsPoint, QgsPoint> Segment;
-
     QList<CoordIdx *> mCoordIdxs;
     QList<SnapItem *> mSnapItems;
 

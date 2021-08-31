@@ -24,7 +24,6 @@
 #include "qgssurface.h"
 #include "qgsmultisurface.h"
 #include "qgscurve.h"
-#include "qgsgeos.h"
 #include "qgslinestring.h"
 
 #include <QtConcurrentMap>
@@ -104,94 +103,9 @@ bool QgsSnapIndex::SegmentSnapItem::getProjection( const QgsPoint &p, QgsPoint &
 
 bool QgsSnapIndex::SegmentSnapItem::withinDistance( const QgsPoint &p, const double tolerance )
 {
-  QgsLineString line( idxFrom->point(), idxTo->point() );
-  QgsGeos geos( &line );
-  return geos.distance( &p ) <= tolerance;
+  const double distance = QgsGeometryUtils::sqrDistToLine( p.x(), p.y(), idxFrom->point().x(), idxFrom->point().y(), idxTo->point().x(), idxTo->point().y() );
+  return distance <= tolerance;
 }
-
-///////////////////////////////////////////////////////////////////////////////
-
-class Raytracer
-{
-    // Raytrace on an integer, unit-width 2D grid with floating point coordinates
-    // See http://playtechs.blogspot.ch/2007/03/raytracing-on-grid.html
-  public:
-    Raytracer( float x0, float y0, float x1, float y1 )
-      : m_dx( std::fabs( x1 - x0 ) )
-      , m_dy( std::fabs( y1 - y0 ) )
-      , m_x( std::floor( x0 ) )
-      , m_y( std::floor( y0 ) )
-      , m_n( 1 )
-    {
-      if ( m_dx == 0. )
-      {
-        m_xInc = 0.;
-        m_error = std::numeric_limits<float>::infinity();
-      }
-      else if ( x1 > x0 )
-      {
-        m_xInc = 1;
-        m_n += int( std::floor( x1 ) ) - m_x;
-        m_error = ( std::floor( x0 ) + 1 - x0 ) * m_dy;
-      }
-      else
-      {
-        m_xInc = -1;
-        m_n += m_x - int( std::floor( x1 ) );
-        m_error = ( x0 - std::floor( x0 ) ) * m_dy;
-      }
-      if ( m_dy == 0. )
-      {
-        m_yInc = 0.;
-        m_error = -std::numeric_limits<float>::infinity();
-      }
-      else if ( y1 > y0 )
-      {
-        m_yInc = 1;
-        m_n += int( std::floor( y1 ) ) - m_y;
-        m_error -= ( std::floor( y0 ) + 1 - y0 ) * m_dx;
-      }
-      else
-      {
-        m_yInc = -1;
-        m_n += m_y - int( std::floor( y1 ) );
-        m_error -= ( y0 - std::floor( y0 ) ) * m_dx;
-      }
-    }
-    int curCol() const { return m_x; }
-    int curRow() const { return m_y; }
-    void next()
-    {
-      if ( m_error > 0 )
-      {
-        m_y += m_yInc;
-        m_error -= m_dx;
-      }
-      else if ( m_error < 0 )
-      {
-        m_x += m_xInc;
-        m_error += m_dy;
-      }
-      else
-      {
-        m_x += m_xInc;
-        m_y += m_yInc;
-        m_error += m_dx;
-        m_error -= m_dy;
-        --m_n;
-      }
-      --m_n;
-    }
-
-    bool isValid() const { return m_n > 0; }
-
-  private:
-    float m_dx, m_dy;
-    int m_x, m_y;
-    int m_xInc, m_yInc;
-    float m_error;
-    int m_n;
-};
 
 ///////////////////////////////////////////////////////////////////////////////
 
