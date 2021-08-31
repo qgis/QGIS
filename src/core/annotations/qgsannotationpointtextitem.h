@@ -54,6 +54,7 @@ class CORE_EXPORT QgsAnnotationPointTextItem : public QgsAnnotationItem
     QgsAnnotationPointTextItem *clone() override SIP_FACTORY;
     QgsRectangle boundingBox() const override;
     QgsRectangle boundingBox( QgsRenderContext &context ) const override;
+    QList< QgsAnnotationItemNode > nodes() const override;
 
     /**
      * Returns the point location of the text.

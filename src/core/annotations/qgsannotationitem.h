@@ -28,6 +28,7 @@ class QgsFeedback;
 class QgsMarkerSymbol;
 class QgsLineSymbol;
 class QgsFillSymbol;
+class QgsAnnotationItemNode;
 
 /**
  * \ingroup core
@@ -139,6 +140,13 @@ class CORE_EXPORT QgsAnnotationItem
      * \see zIndex()
      */
     void setZIndex( int index ) { mZIndex = index; }
+
+    /**
+     * Returns the nodes for the item, used for editing the item.
+     *
+     * \since QGIS 3.22
+     */
+    virtual QList< QgsAnnotationItemNode > nodes() const;
 
   private:
 

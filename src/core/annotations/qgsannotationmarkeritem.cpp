@@ -19,6 +19,7 @@
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgsmarkersymbol.h"
+#include "qgsannotationitemnode.h"
 
 QgsAnnotationMarkerItem::QgsAnnotationMarkerItem( const QgsPoint &point )
   : QgsAnnotationItem()
@@ -71,6 +72,11 @@ Qgis::AnnotationItemFlags QgsAnnotationMarkerItem::flags() const
 {
   // in truth this should depend on whether the marker symbol is scale dependent or not!
   return Qgis::AnnotationItemFlag::ScaleDependentBoundingBox;
+}
+
+QList<QgsAnnotationItemNode> QgsAnnotationMarkerItem::nodes() const
+{
+  return { QgsAnnotationItemNode( mPoint, Qgis::AnnotationItemNodeType::VertexHandle )};
 }
 
 QgsAnnotationMarkerItem *QgsAnnotationMarkerItem::create()

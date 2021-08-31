@@ -114,6 +114,13 @@ are rendered in the layer.
 .. seealso:: :py:func:`zIndex`
 %End
 
+    virtual QList< QgsAnnotationItemNode > nodes() const;
+%Docstring
+Returns the nodes for the item, used for editing the item.
+
+.. versionadded:: 3.22
+%End
+
   private:
     QgsAnnotationItem( const QgsAnnotationItem &other );
 };

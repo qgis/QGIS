@@ -1153,6 +1153,7 @@ set(QGIS_CORE_HDRS
 
   annotations/qgsannotation.h
   annotations/qgsannotationitem.h
+  annotations/qgsannotationitemnode.h
   annotations/qgsannotationitemregistry.h
   annotations/qgsannotationlayer.h
   annotations/qgsannotationlayerrenderer.h

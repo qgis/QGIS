@@ -16,8 +16,14 @@
  ***************************************************************************/
 
 #include "qgsannotationitem.h"
+#include "qgsannotationitemnode.h"
 
 Qgis::AnnotationItemFlags QgsAnnotationItem::flags() const
 {
   return Qgis::AnnotationItemFlags();
+}
+
+QList<QgsAnnotationItemNode> QgsAnnotationItem::nodes() const
+{
+  return {};
 }

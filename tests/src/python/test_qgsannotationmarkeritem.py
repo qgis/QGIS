@@ -29,7 +29,10 @@ from qgis.core import (QgsMapSettings,
                        QgsReadWriteContext,
                        QgsRenderContext,
                        QgsAnnotationMarkerItem,
-                       QgsRectangle
+                       QgsRectangle,
+                       QgsAnnotationItemNode,
+                       Qgis,
+                       QgsPointXY
                        )
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -66,6 +69,13 @@ class TestQgsAnnotationMarkerItem(unittest.TestCase):
 
         item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '3', 'outline_color': 'black'}))
         self.assertEqual(item.symbol()[0].color(), QColor(100, 200, 200))
+
+    def test_nodes(self):
+        """
+        Test nodes for item
+        """
+        item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
+        self.assertEqual(item.nodes(), [QgsAnnotationItemNode(QgsPointXY(12, 13), Qgis.AnnotationItemNodeType.VertexHandle)])
 
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")
