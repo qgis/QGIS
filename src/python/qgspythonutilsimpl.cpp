@@ -623,7 +623,7 @@ QStringList QgsPythonUtilsImpl::extraPluginsPaths() const
 
 QStringList QgsPythonUtilsImpl::pluginList()
 {
-  runString( QStringLiteral( "qgis.utils.updateAvailablePlugins()" ) );
+  runString( QStringLiteral( "qgis.utils.updateAvailablePlugins(sort_by_dependencies=True)" ) );
 
   QString output;
   evalString( QStringLiteral( "'\\n'.join(qgis.utils.available_plugins)" ), output );

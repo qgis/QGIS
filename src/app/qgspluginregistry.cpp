@@ -561,6 +561,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
     // check for python plugins system-wide
     const QStringList pluginList = mPythonUtils->pluginList();
     QgsDebugMsgLevel( QStringLiteral( "Loading python plugins" ), 2 );
+    QgsDebugMsg( QStringLiteral( "Python plugins will be loaded in the following order: " ) + pluginList.join( "," ) );
 
     QStringList corePlugins = QStringList();
     corePlugins << QStringLiteral( "GdalTools" );
