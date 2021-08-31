@@ -28,7 +28,8 @@
 #include <QDomDocument>
 #include <QFileDialog>
 #include <QTextStream>
-#include <QDebug>
+#include <QMenu>
+#include <QAction>
 
 QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget *parent, QgsShortcutsManager *manager )
   : QDialog( parent )
@@ -36,6 +37,18 @@ QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget *parent, QgsSh
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
+
+  mSaveMenu = new QMenu( this );
+  mSaveUserShortcuts = new QAction( tr( "Save User Shortcuts…" ), this );
+  mSaveMenu->addAction( mSaveUserShortcuts );
+  connect( mSaveUserShortcuts, &QAction::triggered, this, [this] { saveShortcuts( false ); } );
+
+  mSaveAllShortcuts = new QAction( tr( "Save All Shportcuts…" ), this );
+  mSaveMenu->addAction( mSaveAllShortcuts );
+  connect( mSaveAllShortcuts, &QAction::triggered, this, [this] { saveShortcuts(); } );
+
+  btnSaveShortcuts->setMenu( mSaveMenu );
+
   connect( mLeFilter, &QgsFilterLineEdit::textChanged, this, &QgsConfigureShortcutsDialog::mLeFilter_textChanged );
 
   if ( !mManager )
@@ -45,7 +58,6 @@ QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget *parent, QgsSh
   connect( btnChangeShortcut, &QAbstractButton::clicked, this, &QgsConfigureShortcutsDialog::changeShortcut );
   connect( btnResetShortcut, &QAbstractButton::clicked, this, &QgsConfigureShortcutsDialog::resetShortcut );
   connect( btnSetNoShortcut, &QAbstractButton::clicked, this, &QgsConfigureShortcutsDialog::setNoShortcut );
-  connect( btnSaveShortcuts, &QAbstractButton::clicked, this, &QgsConfigureShortcutsDialog::saveShortcuts );
   connect( btnLoadShortcuts, &QAbstractButton::clicked, this, &QgsConfigureShortcutsDialog::loadShortcuts );
 
   connect( treeActions, &QTreeWidget::currentItemChanged,
@@ -107,7 +119,7 @@ void QgsConfigureShortcutsDialog::populateActions()
   actionChanged( treeActions->currentItem(), nullptr );
 }
 
-void QgsConfigureShortcutsDialog::saveShortcuts()
+void QgsConfigureShortcutsDialog::saveShortcuts( bool saveAll )
 {
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Save Shortcuts" ), QDir::homePath(),
                      tr( "XML file" ) + " (*.xml);;" + tr( "All files" ) + " (*)" );
@@ -139,18 +151,42 @@ void QgsConfigureShortcutsDialog::saveShortcuts()
   root.setAttribute( QStringLiteral( "locale" ), settings.value( QgsApplication::settingsLocaleUserLocale.key(), "en_US" ).toString() );
   doc.appendChild( root );
 
-  settings.beginGroup( mManager->settingsPath() );
-  QStringList keys = settings.childKeys();
-
-  QString actionText;
-  QString actionShortcut;
-
-  for ( int i = 0; i < keys.count(); ++i )
+  const QList<QObject *> objects = mManager->listAll();
+  for ( QObject *obj : objects )
   {
-    actionText = keys[ i ];
-    actionShortcut = settings.value( actionText, "" ).toString();
+    QString actionText;
+    QString actionShortcut;
+    QKeySequence sequence;
 
-    QDomElement el = doc.createElement( QStringLiteral( "act" ) );
+    if ( QAction *action = qobject_cast< QAction * >( obj ) )
+    {
+      actionText = action->text().remove( '&' );
+      actionShortcut = action->shortcut().toString( QKeySequence::NativeText );
+      sequence = mManager->defaultKeySequence( action );
+    }
+    else if ( QShortcut *shortcut = qobject_cast< QShortcut * >( obj ) )
+    {
+      actionText = shortcut->whatsThis();
+      actionShortcut = shortcut->key().toString( QKeySequence::NativeText );
+      sequence = mManager->defaultKeySequence( shortcut );
+    }
+    else
+    {
+      continue;
+    }
+
+    if ( actionText.isEmpty() || actionShortcut.isEmpty() )
+    {
+      continue;
+    }
+
+    // skip unchanged shortcuts if only user-definied were requested
+    if ( !saveAll && sequence == QKeySequence( actionShortcut ) )
+    {
+      continue;
+    }
+
+    QDomElement el = doc.createElement( QStringLiteral( "action" ) );
     el.setAttribute( QStringLiteral( "name" ), actionText );
     el.setAttribute( QStringLiteral( "shortcut" ), actionShortcut );
     root.appendChild( el );
