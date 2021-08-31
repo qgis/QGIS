@@ -25,6 +25,7 @@ __copyright__ = '(C) 2009, Martin Dobias'
 QGIS utilities module
 
 """
+from typing import List, Dict, Optional
 
 from qgis.PyQt.QtCore import QCoreApplication, QLocale, QThread, qDebug, QUrl
 from qgis.PyQt.QtGui import QDesktopServices
@@ -269,23 +270,110 @@ def metadataParser() -> dict:
     return plugins_metadata_parser
 
 
-def updateAvailablePlugins():
+def updateAvailablePlugins(sort_by_dependencies=False):
     """ Go through the plugin_paths list and find out what plugins are available. """
     # merge the lists
     plugins = []
     metadata_parser = {}
+    plugin_name_map = {}
     for pluginpath in plugin_paths:
-        for pluginName, parser in findPlugins(pluginpath):
+        for plugin_id, parser in findPlugins(pluginpath):
             if parser is None:
                 continue
-            if pluginName not in plugins:
-                plugins.append(pluginName)
-                metadata_parser[pluginName] = parser
+            if plugin_id not in plugins:
+                plugins.append(plugin_id)
+                metadata_parser[plugin_id] = parser
+                plugin_name_map[parser.get('general', 'name')] = plugin_id
 
-    global available_plugins
-    available_plugins = plugins
     global plugins_metadata_parser
     plugins_metadata_parser = metadata_parser
+
+    global available_plugins
+    available_plugins = _sortAvailablePlugins(plugins, plugin_name_map) if sort_by_dependencies else plugins
+
+
+def _sortAvailablePlugins(plugins: List[str], plugin_name_map: Dict[str, str]) -> List[str]:
+    """Place dependent plugins after their dependencies
+
+    1. Make a copy of plugins list to modify it.
+    2. Get a plugin dependencies dict.
+    3. Iterate plugins and leave the real work to _move_plugin()
+
+    :param list plugins: List of available plugin ids
+    :param dict plugin_name_map: Map of plugin_names and plugin_ids, because
+                                 get_plugin_deps() only returns plugin names
+    :return: List of plugins sorted by dependencies.
+    """
+    sorted_plugins = plugins.copy()
+    visited_plugins = []
+
+    deps = {}
+    for plugin in plugins:
+        deps[plugin] = [plugin_name_map.get(dep, '') for dep in get_plugin_deps(plugin)]
+
+    for plugin in plugins:
+        _move_plugin(plugin, deps, visited_plugins, sorted_plugins)
+
+    return sorted_plugins
+
+
+def _move_plugin(plugin: str, deps: Dict[str, List[str]], visited: List[str], sorted_plugins: List[str]):
+    """Use recursion to move a plugin after its dependencies in a list of
+    sorted plugins.
+
+    Notes:
+    This function modifies both visited and sorted_plugins lists.
+    This function will not get trapped in circular dependencies. We avoid a
+    maximum recursion error by calling return when revisiting a plugin.
+    Therefore, if a plugin A depends on B and B depends on A, the order will
+    work in one direction (e.g., A depends on B), but the other direction won't
+    be satisfied. After all, a circular plugin dependency should not exist.
+
+    :param str plugin: Id of the plugin that should be moved in sorted_plugins.
+    :param dict deps: Dictionary of plugin dependencies.
+    :param list visited: List of plugins already visited.
+    :param list sorted_plugins: List of plugins to be modified and sorted.
+    """
+    if plugin in visited:
+        return
+    elif plugin not in deps or not deps[plugin]:
+        visited.append(plugin)  # Plugin with no dependencies
+    else:
+        visited.append(plugin)
+
+        # First move dependencies
+        for dep in deps[plugin]:
+            _move_plugin(dep, deps, visited, sorted_plugins)
+
+        # Remove current plugin from sorted
+        # list to get dependency indices
+        max_index = sorted_plugins.index(plugin)
+        sorted_plugins.pop(max_index)
+
+        for dep in deps[plugin]:
+            idx = sorted_plugins.index(dep) + 1 if dep in sorted_plugins else -1
+            max_index = max(idx, max_index)
+
+        # Finally, insert after dependencies
+        sorted_plugins.insert(max_index, plugin)
+
+
+def get_plugin_deps(plugin_id: str) -> Dict[str, Optional[str]]:
+    result = {}
+    try:
+        parser = plugins_metadata_parser[plugin_id]
+        plugin_deps = parser.get('general', 'plugin_dependencies')
+    except (configparser.NoOptionError, configparser.NoSectionError, KeyError):
+        return result
+
+    for dep in plugin_deps.split(','):
+        if dep.find('==') > 0:
+            name, version_required = dep.split('==')
+        else:
+            name = dep
+            version_required = None
+        result[name] = version_required
+    return result
 
 
 def pluginMetadata(packageName: str, fct: str) -> str:
