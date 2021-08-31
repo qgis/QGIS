@@ -100,7 +100,7 @@ Returns the item with the specified ``id``, or ``None`` if no matching item was 
 .. versionadded:: 3.22
 %End
 
-    QStringList itemsInBounds( const QgsRectangle &bounds, const QgsRenderContext &context, QgsFeedback *feedback = 0 ) const;
+    QStringList itemsInBounds( const QgsRectangle &bounds, QgsRenderContext &context, QgsFeedback *feedback = 0 ) const;
 %Docstring
 Returns a list of the IDs of all annotation items within the specified ``bounds`` (in layer CRS), when
 rendered using the given render ``context``.

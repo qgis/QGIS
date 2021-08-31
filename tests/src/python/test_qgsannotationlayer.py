@@ -293,8 +293,8 @@ class TestQgsAnnotationLayer(unittest.TestCase):
                          QgsRectangle(12, 13, 14, 15))
         self.assertEqual([i.boundingBox() for i in item_details if i.itemId() == i2_id][0],
                          QgsRectangle(11, 13, 12, 15))
-        self.assertEqual([i.boundingBox() for i in item_details if i.itemId() == i3_id][0],
-                         QgsRectangle(12, 13, 12, 13))
+        self.assertEqual([i.boundingBox().toString(2) for i in item_details if i.itemId() == i3_id][0],
+                         '11.68,12.68 : 12.32,13.32')
 
     def testRenderWithTransform(self):
         layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
@@ -353,8 +353,8 @@ class TestQgsAnnotationLayer(unittest.TestCase):
                          QgsRectangle(11.5, 13, 12, 13.5))
         self.assertEqual([i.boundingBox() for i in item_details if i.itemId() == i2_id][0],
                          QgsRectangle(11, 13, 12, 15))
-        self.assertEqual([i.boundingBox() for i in item_details if i.itemId() == i3_id][0],
-                         QgsRectangle(12, 13, 12, 13))
+        self.assertEqual([i.boundingBox().toString(2) for i in item_details if i.itemId() == i3_id][0],
+                         '11.94,12.94 : 12.06,13.06')
 
     def test_render_via_job(self):
         """
@@ -409,8 +409,8 @@ class TestQgsAnnotationLayer(unittest.TestCase):
                          QgsRectangle(11.5, 13, 12, 13.5))
         self.assertEqual([i.boundingBox() for i in item_details if i.itemId() == i2_id][0],
                          QgsRectangle(11, 13, 12, 15))
-        self.assertEqual([i.boundingBox() for i in item_details if i.itemId() == i3_id][0],
-                         QgsRectangle(12, 13, 12, 13))
+        self.assertEqual([i.boundingBox().toString(2) for i in item_details if i.itemId() == i3_id][0],
+                         '11.53,12.53 : 12.47,13.47')
 
     def test_render_via_job_with_transform(self):
         """
@@ -460,7 +460,7 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         self.assertEqual([QgsGeometry.fromRect(i.boundingBox()).asWkt(0) for i in item_details if i.itemId() == i2_id][0],
                          'Polygon ((1224514 1459732, 1335834 1459732, 1335834 1689200, 1224514 1689200, 1224514 1459732))')
         self.assertEqual([QgsGeometry.fromRect(i.boundingBox()).asWkt(0) for i in item_details if i.itemId() == i3_id][0],
-                         'Polygon ((1335834 1459732, 1335834 1459732, 1335834 1459732, 1335834 1459732, 1335834 1459732))')
+                         'Polygon ((1325786 1449684, 1345882 1449684, 1345882 1469780, 1325786 1469780, 1325786 1449684))')
 
     def imageCheck(self, name, reference_image, image):
         TestQgsAnnotationLayer.report += "<h2>Render {}</h2>\n".format(name)

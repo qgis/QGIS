@@ -104,7 +104,7 @@ class CORE_EXPORT QgsAnnotationItem
     /**
      * Returns the bounding box of the item's geographic location, in the parent layer's coordinate reference system.
      */
-    virtual QgsRectangle boundingBox( const QgsRenderContext &context ) const { Q_UNUSED( context ) return boundingBox();}
+    virtual QgsRectangle boundingBox( QgsRenderContext &context ) const { Q_UNUSED( context ) return boundingBox();}
 
     /**
      * Renders the item to the specified render \a context.

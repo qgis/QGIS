@@ -49,7 +49,7 @@ Creates a new text at point annotation item.
 
     virtual QgsRectangle boundingBox() const;
 
-    virtual QgsRectangle boundingBox( const QgsRenderContext &context ) const;
+    virtual QgsRectangle boundingBox( QgsRenderContext &context ) const;
 
 
     QgsPointXY point() const;
