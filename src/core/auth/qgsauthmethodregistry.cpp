@@ -114,7 +114,7 @@ void QgsAuthMethodRegistry::init()
   typedef QgsAuthMethodMetadata *factory_function( );
 
 #if defined(Q_OS_WIN) || defined(__CYGWIN__)
-  mLibraryDirectory.setNameFilters( QStringList( "authmethod_*.dll" ) );
+  mLibraryDirectory.setNameFilters( QStringList( "*authmethod_*.dll" ) );
 #else
   mLibraryDirectory.setNameFilters( QStringList( QStringLiteral( "*authmethod_*.so" ) ) );
 #endif
