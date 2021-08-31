@@ -27,6 +27,7 @@
 #include "qgscompoundcurve.h"
 
 class QgsLineSegment2D;
+class QgsBox3d;
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -983,6 +984,12 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     % End
 
 #endif
+
+    /**
+     * Calculator for the minimal 3d bounding box for the geometry.
+     * \see calculateBoundingBox()
+     */
+    QgsBox3d calculateBoundingBox3d() const;
 
   protected:
 

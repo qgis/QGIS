@@ -133,3 +133,38 @@ bool QgsBox3d::operator==( const QgsBox3d &other ) const
          qgsDoubleNear( mZmin, other.mZmin ) &&
          qgsDoubleNear( mZmax, other.mZmax );
 }
+
+void QgsBox3d::scale( double scaleFactor, const QgsPoint *c )
+{
+  // scale from the center
+  double centerX, centerY, centerZ;
+  if ( c )
+  {
+    centerX = c->x();
+    centerY = c->y();
+    centerZ = c->z();
+  }
+  else
+  {
+    centerX = ( xMinimum() + xMaximum() ) / 2;
+    centerY = ( yMinimum() + yMaximum() ) / 2;
+    centerZ = ( zMinimum() + zMaximum() ) / 2;
+  }
+  scale( scaleFactor, centerX, centerY, centerZ );
+}
+
+void QgsBox3d::scale( double scaleFactor, double centerX, double centerY, double centerZ )
+{
+  double newX = ( xMaximum() - xMinimum() ) * scaleFactor * 0.5;
+  double newY = ( yMaximum() - yMinimum() ) * scaleFactor * 0.5;
+  double newZ = ( zMaximum() - zMinimum() ) * scaleFactor * 0.5;
+
+  setXMinimum( centerX - newX );
+  setXMaximum( centerX + newX );
+
+  setYMinimum( centerY - newY );
+  setYMaximum( centerY + newY );
+
+  setZMinimum( centerZ - newZ );
+  setZMaximum( centerZ + newZ );
+}
