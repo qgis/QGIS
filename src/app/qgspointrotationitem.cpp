@@ -81,8 +81,7 @@ void QgsPointRotationItem::paint( QPainter *painter )
   label.addText( mPixmap.width(),
                  mPixmap.height() / 2.0 + fm.height() / 2.0,
                  mFont,
-                 QgsUnitTypes::formatAngle( rotationText,
-                     mRotationUnit ) );
+                 QgsUnitTypes::formatAngle( rotationText, -1, mRotationUnit ) );
   painter->setPen( bufferPen );
   painter->setBrush( Qt::NoBrush );
   painter->drawPath( label );
