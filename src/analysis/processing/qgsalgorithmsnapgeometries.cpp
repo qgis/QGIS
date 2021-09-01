@@ -191,7 +191,7 @@ QVariantMap QgsSnapGeometriesAlgorithm::processAlgorithm( const QVariantMap &par
     // reversed order snapping round is required to insure geometries are snapped against all features
     snapper = QgsInternalGeometrySnapper( tolerance, mode );
     std::reverse( editedFeatureIds.begin(), editedFeatureIds.end() );
-    for ( const QgsFeatureId &fid : editedFeatureIds )
+    for ( const QgsFeatureId &fid : std::as_const( editedFeatureIds ) )
     {
       if ( feedback->isCanceled() )
         break;
@@ -208,7 +208,7 @@ QVariantMap QgsSnapGeometriesAlgorithm::processAlgorithm( const QVariantMap &par
 
     if ( !feedback->isCanceled() )
     {
-      for ( const QgsFeatureId &fid : editedFeatureIds )
+      for ( const QgsFeatureId &fid : std::as_const( editedFeatureIds ) )
       {
         QgsFeature outFeature( editedFeatures.value( fid ) );
         if ( !sink->addFeature( outFeature ) )
