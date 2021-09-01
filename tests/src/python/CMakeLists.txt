@@ -369,6 +369,7 @@ ADD_PYTHON_TEST(PyQgsSelectiveMasking test_selective_masking.py)
 ADD_PYTHON_TEST(PyQgsRelationEditorWidgetRegistry test_qgsrelationeditorwidgetregistry.py)
 ADD_PYTHON_TEST(PyQgsActionWidgetWrapper test_qgsactionwidgetwrapper.py)
 ADD_PYTHON_TEST(PyQgsAttributeEditorAction test_qgsattributeeditoraction.py)
+ADD_PYTHON_TEST(PyQgsVectorTile test_qgsvectortile.py)
 
 if (NOT WIN32)
   ADD_PYTHON_TEST(PyQgsLogger test_qgslogger.py)
