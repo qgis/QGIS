@@ -89,6 +89,9 @@ class HelpEditionDialog(BASE, WIDGET):
         s += '<p>' + self.getDescription(self.ALG_DESC) + '</p>\n'
         s += self.tr('<h2>Input parameters</h2>\n')
         for param in self.alg.parameterDefinitions():
+            if param.flags() & QgsProcessingParameterDefinition.FlagHidden or param.isDestination():
+                continue
+
             s += '<h3>' + param.description() + '</h3>\n'
             s += '<p>' + self.getDescription(param.name()) + '</p>\n'
         s += self.tr('<h2>Outputs</h2>\n')

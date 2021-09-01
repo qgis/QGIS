@@ -1042,10 +1042,12 @@ QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const Q
   s += QStringLiteral( "<p>" ) + getText( QStringLiteral( "ALG_DESC" ) ) + QStringLiteral( "</p>\n" );
 
   QString inputs;
-
   const auto parameterDefinitions = algorithm->parameterDefinitions();
   for ( const QgsProcessingParameterDefinition *def : parameterDefinitions )
   {
+    if ( def->flags() & QgsProcessingParameterDefinition::FlagHidden || def->isDestination() )
+      continue;
+
     inputs += QStringLiteral( "<h3>" ) + def->description() + QStringLiteral( "</h3>\n" );
     inputs += QStringLiteral( "<p>" ) + getText( def->name() ) + QStringLiteral( "</p>\n" );
   }
