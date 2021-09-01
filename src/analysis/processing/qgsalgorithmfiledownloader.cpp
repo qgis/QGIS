@@ -84,7 +84,7 @@ QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &par
   connect( downloader, &QgsFileDownloader::downloadError, this, [&errors, &loop]( const QStringList & e ) { errors = e; loop.exit(); } );
   connect( downloader, &QgsFileDownloader::downloadProgress, this, &QgsFileDownloaderAlgorithm::receiveProgressFromDownloader );
   connect( downloader, &QgsFileDownloader::downloadCompleted, this, [&downloadedUrl]( const QUrl url ) { downloadedUrl = url; } );
-  connect( downloader, &QgsFileDownloader::downloadExited, &loop, &QEventLoop::quit );
+  connect( downloader, &QgsFileDownloader::downloadExited, this, [&loop]() { loop.exit(); } );
   connect( &timer, &QTimer::timeout, this, &QgsFileDownloaderAlgorithm::sendProgressFeedback );
   downloader->startDownload();
   timer.start( 1000 );
