@@ -1,0 +1,8 @@
+{
+  "name": "$z",
+  "type": "function",
+  "groups": ["GeometryGroup"],
+  "description": "Returns the z value of the current point feature if it is 3D. If the feature is a multipoint feature, then the z value of the first point will be returned.",
+  "examples": [ { "expression":"$z", "returns":"123"}
+  ]
+}
