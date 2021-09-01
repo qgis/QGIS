@@ -320,6 +320,13 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     void setToCanvasRectangle( QRect rect );
 
     /**
+     * Copies the points from another rubber band.
+     *
+     * \since QGIS 3.22
+     */
+    void copyPointsFrom( const QgsRubberBand *other );
+
+    /**
      * Adds the geometry of an existing feature to a rubberband
      * This is useful for multi feature highlighting.
      * As of 2.0, this method does not change the GeometryType any more. You need to set the GeometryType

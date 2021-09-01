@@ -274,6 +274,13 @@ Sets this rubber band to a map canvas rectangle
 :param rect: rectangle in canvas coordinates
 %End
 
+    void copyPointsFrom( const QgsRubberBand *other );
+%Docstring
+Copies the points from another rubber band.
+
+.. versionadded:: 3.22
+%End
+
     void addGeometry( const QgsGeometry &geometry, QgsVectorLayer *layer, bool doUpdate = true );
 %Docstring
 Adds the geometry of an existing feature to a rubberband
