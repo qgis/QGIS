@@ -741,7 +741,6 @@ void QgsMeshTransformVerticesByExpression::setExpressions( const QString &expres
   mExpressionZ = expressionZ;
 
   mChangingVertexMap.clear();
-  clear();
 }
 
 QgsTopologicalMesh::Changes QgsMeshTransformVerticesByExpression::apply( QgsMeshEditor *meshEditor )
