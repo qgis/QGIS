@@ -85,8 +85,7 @@ class HelpEditionDialog(BASE, WIDGET):
         QDialog.accept(self)
 
     def getHtml(self):
-        s = self.tr('<h2>Algorithm description</h2>\n')
-        s += '<p>' + self.getDescription(self.ALG_DESC) + '</p>\n'
+        s = '<p>' + self.getDescription(self.ALG_DESC) + '</p>\n'
         s += self.tr('<h2>Input parameters</h2>\n')
         for param in self.alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagHidden or param.isDestination():

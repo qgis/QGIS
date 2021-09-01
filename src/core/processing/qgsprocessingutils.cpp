@@ -1038,8 +1038,8 @@ QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const Q
     return QString();
   };
 
-  QString s = QObject::tr( "<html><body><h2>Algorithm description</h2>\n" );
-  s += QStringLiteral( "<p>" ) + getText( QStringLiteral( "ALG_DESC" ) ) + QStringLiteral( "</p>\n" );
+  QString s;
+  s += QStringLiteral( "<html><body><p>" ) + getText( QStringLiteral( "ALG_DESC" ) ) + QStringLiteral( "</p>\n" );
 
   QString inputs;
   const auto parameterDefinitions = algorithm->parameterDefinitions();
