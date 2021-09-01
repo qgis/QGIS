@@ -78,7 +78,7 @@ void QgsLayoutAtlasToPdfAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SORTBY_REVERSE" ), QObject::tr( "Reverse sort order (used when a sort expression is provided)" ), false, true ) );
 
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SINGLE_FILE_EXPORT" ), QObject::tr( "Single file export when possible" ), true, true ) );
-  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "OUTPUT_FILENAME" ), QObject::tr( "Output filename" ), QString( "atlas" ), QStringLiteral( "" ), false ) );
+  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "OUTPUT_FILENAME" ), QObject::tr( "Output filename" ), QString( "atlas" ), QString(), false ) );
   addParameter( new QgsProcessingParameterFile( QStringLiteral( "OUTPUT_FOLDER" ), QObject::tr( "Output folder" ), QgsProcessingParameterFile::Folder ) );
 
   std::unique_ptr< QgsProcessingParameterMultipleLayers > layersParam = std::make_unique< QgsProcessingParameterMultipleLayers>( QStringLiteral( "LAYERS" ), QObject::tr( "Map layers to assign to unlocked map item(s)" ), QgsProcessing::TypeMapLayer, QVariant(), true );
