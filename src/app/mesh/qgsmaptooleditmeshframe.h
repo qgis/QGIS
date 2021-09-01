@@ -31,6 +31,7 @@ class QgsRubberBand;
 class QgsVertexMarker;
 class QgsDoubleSpinBox;
 class QgsSnapIndicator;
+class QgsMeshTransformCoordinatesDockWidget;
 
 
 class APP_EXPORT QgsZValueWidget : public QWidget
@@ -98,7 +99,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void removeFacesFromMesh();
     void splitSelectedFaces();
 
-    void showTransformCoordinatesDialog();
+    void triggerTransformCoordinatesDockWidget( bool checked );
 
   private:
 
@@ -240,6 +241,8 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     int mSplittableFaceCount = 0;
 
     QgsZValueWidget *mZValueWidget = nullptr; //own by QgsUserInputWidget instance
+
+    QgsMeshTransformCoordinatesDockWidget *mTransformDockWidget = nullptr; //own by the application
 
     QAction *mActionRemoveVerticesFillingHole = nullptr;
     QAction *mActionRemoveVerticesWithoutFillingHole = nullptr;

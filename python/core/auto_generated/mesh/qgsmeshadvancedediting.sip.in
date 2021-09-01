@@ -123,7 +123,7 @@ Sets the expressions for the coordinates transformation.
 
 .. note::
 
-   Expressions are optional for each coordinate, the coordinte will ot be transformed if the string is void.
+   Expressions are optional for each coordinate, the coordinate will not be transformed if the string is void.
 %End
 
     bool calculate( QgsMeshLayer *layer );
@@ -134,10 +134,10 @@ The mesh layer must be in edit mode.
 .. note::
 
    this method not apply new vertices to the mesh layer but only store the calculated transformation
-   that can be apply later with :py:func:`~QgsMeshTransformVerticesByExpression.apply`
+   that can be apply later with :py:func:`QgsMeshEditor.advancedEdit()`
 %End
 
-    QgsMeshVertex transformedVertices( QgsMeshLayer *layer, int vertexIndex ) const;
+    QgsMeshVertex transformedVertex( QgsMeshLayer *layer, int vertexIndex ) const;
 %Docstring
 Returns the transformed vertex from its index ``vertexIndex`` for the mesh ``layer``
 

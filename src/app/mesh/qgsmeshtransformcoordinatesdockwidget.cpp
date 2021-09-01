@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsmeshtransformcoordinatesdialog.cpp - QgsMeshTransformCoordinatesDialog
+  qgsmeshtransformcoordinatesdockwidget.cpp - QgsMeshTransformCoordinatesDockWidget
 
  ---------------------
  begin                : 26.8.2021
@@ -14,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmeshtransformcoordinatesdialog.h"
+#include "qgsmeshtransformcoordinatesdockwidget.h"
 
 #include "qgsgui.h"
 #include "qgsexpressioncontextutils.h"
@@ -25,8 +25,8 @@
 #include "qgsguiutils.h"
 #include "qgshelp.h"
 
-QgsMeshTransformCoordinatesDialog::QgsMeshTransformCoordinatesDialog( QWidget *parent ):
-  QDialog( parent )
+QgsMeshTransformCoordinatesDockWidget::QgsMeshTransformCoordinatesDockWidget( QWidget *parent ):
+  QgsDockWidget( parent )
 {
   setupUi( this );
 
@@ -45,42 +45,38 @@ QgsMeshTransformCoordinatesDialog::QgsMeshTransformCoordinatesDialog( QWidget *p
     mExpressionLineEdits.at( i )->setEnabled( mCheckBoxes.at( i )->isChecked() );
     connect( mCheckBoxes.at( i ), &QCheckBox::toggled, mExpressionLineEdits.at( i ), &QWidget::setEnabled );
 
-    connect( mExpressionLineEdits.at( i ), &QgsExpressionLineEdit::expressionChanged, this, &QgsMeshTransformCoordinatesDialog::updateButton );
-    connect( mCheckBoxes.at( i ), &QCheckBox::toggled, this, &QgsMeshTransformCoordinatesDialog::updateButton );
+    connect( mExpressionLineEdits.at( i ), &QgsExpressionLineEdit::expressionChanged, this, &QgsMeshTransformCoordinatesDockWidget::updateButton );
+    connect( mCheckBoxes.at( i ), &QCheckBox::toggled, this, &QgsMeshTransformCoordinatesDockWidget::updateButton );
   }
 
-  connect( mButtonPreview, &QToolButton::clicked, this, &QgsMeshTransformCoordinatesDialog::calculate );
-  connect( mButtonApply, &QPushButton::clicked, this, &QgsMeshTransformCoordinatesDialog::apply );
-  connect( mButtonClose, &QPushButton::clicked, this, &QDialog::close );
-
-  connect( mButtonHelp, &QDialogButtonBox::helpRequested, this, &QgsMeshTransformCoordinatesDialog::showHelp );
-
+  connect( mButtonPreview, &QToolButton::clicked, this, &QgsMeshTransformCoordinatesDockWidget::calculate );
+  connect( mButtonApply, &QPushButton::clicked, this, &QgsMeshTransformCoordinatesDockWidget::apply );
 }
 
-QgsExpressionContext QgsMeshTransformCoordinatesDialog::createExpressionContext() const
+QgsExpressionContext QgsMeshTransformCoordinatesDockWidget::createExpressionContext() const
 {
   return QgsExpressionContext( {QgsExpressionContextUtils::meshExpressionScope()} );
 }
 
-QgsMeshVertex QgsMeshTransformCoordinatesDialog::transformedVertex( int i )
+QgsMeshVertex QgsMeshTransformCoordinatesDockWidget::transformedVertex( int i )
 {
   if ( ! mInputLayer || !mIsCalculated )
     return QgsMeshVertex();
 
-  return mTransformVertices.transformedVertices( mInputLayer, i );
+  return mTransformVertices.transformedVertex( mInputLayer, i );
 }
 
-bool QgsMeshTransformCoordinatesDialog::isResultValid() const
+bool QgsMeshTransformCoordinatesDockWidget::isResultValid() const
 {
   return mIsResultValid;
 }
 
-bool QgsMeshTransformCoordinatesDialog::isCalculated() const
+bool QgsMeshTransformCoordinatesDockWidget::isCalculated() const
 {
   return mIsCalculated;
 }
 
-void QgsMeshTransformCoordinatesDialog::setInput( QgsMeshLayer *layer, const QList<int> &vertexIndexes )
+void QgsMeshTransformCoordinatesDockWidget::setInput( QgsMeshLayer *layer, const QList<int> &vertexIndexes )
 {
   mInputLayer = layer;
   mInputVertices = vertexIndexes;
@@ -107,7 +103,7 @@ void QgsMeshTransformCoordinatesDialog::setInput( QgsMeshLayer *layer, const QLi
   emit calculationUpdated();
 }
 
-void QgsMeshTransformCoordinatesDialog::calculate()
+void QgsMeshTransformCoordinatesDockWidget::calculate()
 {
   if ( !mInputLayer || mInputVertices.isEmpty() )
     return;
@@ -129,7 +125,7 @@ void QgsMeshTransformCoordinatesDialog::calculate()
   emit calculationUpdated();
 }
 
-void QgsMeshTransformCoordinatesDialog::updateButton()
+void QgsMeshTransformCoordinatesDockWidget::updateButton()
 {
   mButtonApply->setEnabled( false );
   bool isCalculable = mInputLayer && !mInputVertices.isEmpty();
@@ -152,7 +148,7 @@ void QgsMeshTransformCoordinatesDialog::updateButton()
   mButtonPreview->setEnabled( isCalculable );
 }
 
-void QgsMeshTransformCoordinatesDialog::apply()
+void QgsMeshTransformCoordinatesDockWidget::apply()
 {
   emit aboutToBeApplied();
   QgsTemporaryCursorOverride busyCursor( Qt::WaitCursor );
@@ -161,7 +157,3 @@ void QgsMeshTransformCoordinatesDialog::apply()
   emit applied();
 }
 
-void QgsMeshTransformCoordinatesDialog::showHelp() const
-{
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html" ) );
-}

@@ -157,7 +157,7 @@ class CORE_EXPORT QgsMeshTransformVerticesByExpression : public QgsMeshAdvancedE
     /**
      * Sets the expressions for the coordinates transformation.
      *
-     * \note Expressions are optional for each coordinate, the coordinte will ot be transformed if the string is void.
+     * \note Expressions are optional for each coordinate, the coordinate will not be transformed if the string is void.
      */
     void setExpressions( const QString &expressionX, const QString &expressionY, const QString &expressionZ );
 
@@ -166,7 +166,7 @@ class CORE_EXPORT QgsMeshTransformVerticesByExpression : public QgsMeshAdvancedE
      * The mesh layer must be in edit mode.
      *
      * \note this method not apply new vertices to the mesh layer but only store the calculated transformation
-     *       that can be apply later with apply()
+     *       that can be apply later with QgsMeshEditor::advancedEdit()
      */
     bool calculate( QgsMeshLayer *layer );
 
@@ -175,7 +175,7 @@ class CORE_EXPORT QgsMeshTransformVerticesByExpression : public QgsMeshAdvancedE
      *
      * If \a layer is not the same than the one used to make the calculation, this will create an undefined behavior
      */
-    QgsMeshVertex transformedVertices( QgsMeshLayer *layer, int vertexIndex ) const;
+    QgsMeshVertex transformedVertex( QgsMeshLayer *layer, int vertexIndex ) const;
 
   private:
     QString mExpressionX;

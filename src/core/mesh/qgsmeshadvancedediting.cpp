@@ -727,7 +727,7 @@ bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer )
 
   auto transformFunction = [this, layer ]( int vi )-> const QgsMeshVertex
   {
-    return transformedVertices( layer, vi );
+    return transformedVertex( layer, vi );
   };
 
   mNativeFacesIndexesGeometryChanged = qgis::setToList( concernedFaces );
@@ -739,6 +739,9 @@ void QgsMeshTransformVerticesByExpression::setExpressions( const QString &expres
   mExpressionX = expressionX;
   mExpressionY = expressionY;
   mExpressionZ = expressionZ;
+
+  mChangingVertexMap.clear();
+  clear();
 }
 
 QgsTopologicalMesh::Changes QgsMeshTransformVerticesByExpression::apply( QgsMeshEditor *meshEditor )
@@ -747,7 +750,7 @@ QgsTopologicalMesh::Changes QgsMeshTransformVerticesByExpression::apply( QgsMesh
   return *this;
 }
 
-QgsMeshVertex QgsMeshTransformVerticesByExpression::transformedVertices( QgsMeshLayer *layer, int vertexIndex ) const
+QgsMeshVertex QgsMeshTransformVerticesByExpression::transformedVertex( QgsMeshLayer *layer, int vertexIndex ) const
 {
   int pos = mChangingVertexMap.value( vertexIndex, -1 );
   if ( pos > -1 )

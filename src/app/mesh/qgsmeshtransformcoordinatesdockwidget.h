@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsmeshtransformcoordinatesdialog.h - QgsMeshTransformCoordinatesDialog
+  qgsmeshtransformcoordinatesdockwidget.h - QgsMeshTransformCoordinatesDockWidget
 
  ---------------------
  begin                : 26.8.2021
@@ -14,10 +14,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMESHTRANSFORMCOORDINATESDIALOG_H
-#define QGSMESHTRANSFORMCOORDINATESDIALOG_H
+#ifndef QGSMESHTRANSFORMCOORDINATESDOCKWIDGET_H
+#define QGSMESHTRANSFORMCOORDINATESDOCKWIDGET_H
 
-#include "ui_qgsmeshtransformcoordinatesdialogbase.h"
+#include "ui_qgsmeshtransformcoordinatesdockwidgetbase.h"
 
 #include "qgsexpressioncontextgenerator.h"
 #include "qgsmeshadvancedediting.h"
@@ -26,17 +26,17 @@
 class QgsMeshLayer;
 
 /**
- * \brief A Dialog widget that is used to make some geometrical transformations of mesh vertices by expression
+ * \brief A dock widget that is used to make some geometrical transformations of mesh vertices by expression
  *
  * \since QGIS 3.22
  */
-class APP_EXPORT QgsMeshTransformCoordinatesDialog: public QDialog, public QgsExpressionContextGenerator, private Ui::QgsMeshTransformCoordinatesDialogBase
+class APP_EXPORT QgsMeshTransformCoordinatesDockWidget: public QgsDockWidget, public QgsExpressionContextGenerator, private Ui::QgsMeshTransformCoordinatesDockWidgetBase
 {
     Q_OBJECT
   public:
 
     //! Constructor
-    QgsMeshTransformCoordinatesDialog( QWidget *parent );
+    QgsMeshTransformCoordinatesDockWidget( QWidget *parent );
 
     virtual QgsExpressionContext createExpressionContext() const override;
 
@@ -46,7 +46,7 @@ class APP_EXPORT QgsMeshTransformCoordinatesDialog: public QDialog, public QgsEx
     //! Returns whether the result of transformation is a valid mesh
     bool isResultValid() const;
 
-    //! Returns cxhether the calculation has been done
+    //! Returns whether the calculation has been done
     bool isCalculated() const;
 
   signals:
@@ -67,7 +67,6 @@ class APP_EXPORT QgsMeshTransformCoordinatesDialog: public QDialog, public QgsEx
     void calculate();
     void updateButton();
     void apply();
-    void showHelp() const;
 
   private:
     QgsMeshTransformVerticesByExpression mTransformVertices;
@@ -80,4 +79,4 @@ class APP_EXPORT QgsMeshTransformCoordinatesDialog: public QDialog, public QgsEx
 
 };
 
-#endif // QGSMESHTRANSFORMCOORDINATESDIALOG_H
+#endif // QGSMESHTRANSFORMCOORDINATESDOCKWIDGET_H
