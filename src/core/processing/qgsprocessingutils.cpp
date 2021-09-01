@@ -1048,8 +1048,11 @@ QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const Q
     if ( def->flags() & QgsProcessingParameterDefinition::FlagHidden || def->isDestination() )
       continue;
 
-    inputs += QStringLiteral( "<h3>" ) + def->description() + QStringLiteral( "</h3>\n" );
-    inputs += QStringLiteral( "<p>" ) + getText( def->name() ) + QStringLiteral( "</p>\n" );
+    if ( !getText( def->name() ).isEmpty() )
+    {
+      inputs += QStringLiteral( "<h3>" ) + def->description() + QStringLiteral( "</h3>\n" );
+      inputs += QStringLiteral( "<p>" ) + getText( def->name() ) + QStringLiteral( "</p>\n" );
+    }
   }
   if ( !inputs.isEmpty() )
     s += QObject::tr( "<h2>Input parameters</h2>\n" ) + inputs;
@@ -1058,8 +1061,11 @@ QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const Q
   const auto outputDefinitions = algorithm->outputDefinitions();
   for ( const QgsProcessingOutputDefinition *def : outputDefinitions )
   {
-    outputs += QStringLiteral( "<h3>" ) + def->description() + QStringLiteral( "</h3>\n" );
-    outputs += QStringLiteral( "<p>" ) + getText( def->name() ) + QStringLiteral( "</p>\n" );
+    if ( !getText( def->name() ).isEmpty() )
+    {
+      outputs += QStringLiteral( "<h3>" ) + def->description() + QStringLiteral( "</h3>\n" );
+      outputs += QStringLiteral( "<p>" ) + getText( def->name() ) + QStringLiteral( "</p>\n" );
+    }
   }
   if ( !outputs.isEmpty() )
     s += QObject::tr( "<h2>Outputs</h2>\n" ) + outputs;
