@@ -290,6 +290,13 @@ with the context.
 .. versionadded:: 3.0
 %End
 
+    void setExpressionPreviewVisible( bool isVisible );
+%Docstring
+Sets whether the expression preview is visible.
+
+.. versionadded:: 3.22
+%End
+
   public slots:
 
     void loadSampleValues();
