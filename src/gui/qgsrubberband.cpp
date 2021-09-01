@@ -149,7 +149,8 @@ void QgsRubberBand::addPoint( const QgsPointXY &p, bool doUpdate /* = true */, i
   if ( ringIndex == mPoints.at( geometryIndex ).size() )
   {
     mPoints[geometryIndex].append( QgsPolylineXY() );
-    mPoints[geometryIndex][ringIndex].append( p );
+    if ( mGeometryType != QgsWkbTypes::PointGeometry )
+      mPoints[geometryIndex][ringIndex].append( p );
   }
 
   if ( mPoints.at( geometryIndex ).at( ringIndex ).size() == 2 &&
