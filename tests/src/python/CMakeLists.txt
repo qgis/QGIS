@@ -11,6 +11,7 @@ endif()
 
 ADD_PYTHON_TEST(PyCoreAdditions test_core_additions.py)
 ADD_PYTHON_TEST(PyPythonRepr test_python_repr.py)
+ADD_PYTHON_TEST(PyPythonUtils test_python_utils.py)
 ADD_PYTHON_TEST(PyQgsActionManager test_qgsactionmanager.py)
 ADD_PYTHON_TEST(PyQgsAFSProvider test_provider_afs.py)
 ADD_PYTHON_TEST(PyQgsAggregateMappingWidget test_qgsaggregatemappingwidget.py)
