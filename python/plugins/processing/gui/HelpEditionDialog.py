@@ -86,17 +86,23 @@ class HelpEditionDialog(BASE, WIDGET):
 
     def getHtml(self):
         s = '<p>' + self.getDescription(self.ALG_DESC) + '</p>\n'
-        s += self.tr('<h2>Input parameters</h2>\n')
+        inputs = ""
         for param in self.alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagHidden or param.isDestination():
                 continue
 
-            s += '<h3>' + param.description() + '</h3>\n'
-            s += '<p>' + self.getDescription(param.name()) + '</p>\n'
-        s += self.tr('<h2>Outputs</h2>\n')
+            if self.getDescription(param.name()):
+                inputs += '<h3>' + param.description() + '</h3>\n'
+                inputs += '<p>' + self.getDescription(param.name()) + '</p>\n'
+        if inputs:
+            s += self.tr('<h2>Input parameters</h2>\n') + inputs
+        outputs = ""
         for out in self.alg.outputDefinitions():
-            s += '<h3>' + out.description() + '</h3>\n'
-            s += '<p>' + self.getDescription(out.name()) + '</p>\n'
+            if self.getDescription(param.name()):
+                outputs += '<h3>' + out.description() + '</h3>\n'
+                outputs += '<p>' + self.getDescription(out.name()) + '</p>\n'
+        if outputs:
+            s += self.tr('<h2>Outputs</h2>\n') + outputs
         return s
 
     def fillTree(self):
