@@ -239,7 +239,7 @@ QgsPoint QgsSnapIndex::getClosestSnapToPoint( const QgsPoint &startPoint, const 
   struct _GEOSQueryCallbackData callbackData;
   callbackData.list = &items;
   GEOSSTRtree_query_r( geosctxt, mSTRTree, searchDiagonal.get(), _GEOSQueryCallback, &callbackData );
-  for ( const SnapItem *item : items )
+  for ( const SnapItem *item : std::as_const( items ) )
   {
     if ( item->type == SnapSegment )
     {
