@@ -437,6 +437,14 @@ void QgsRubberBand::setToCanvasRectangle( QRect rect )
   addPoint( ul, true );
 }
 
+void QgsRubberBand::copyPointsFrom( const QgsRubberBand *other )
+{
+  reset( other->mGeometryType );
+  mPoints = other->mPoints;
+  updateRect();
+  update();
+}
+
 void QgsRubberBand::paint( QPainter *p )
 {
   if ( mPoints.isEmpty() )
