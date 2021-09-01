@@ -123,7 +123,7 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
 
   connect( mActionDelaunayTriangulation, &QAction::triggered, this, [this]
   {
-    if ( mCurrentEditor && mSelectedVertices.count() > 3 )
+    if ( mCurrentEditor && mSelectedVertices.count() >= 3 )
     {
       QgsMeshEditingDelaunayTriangulation triangulation;
       triangulation.setInputVertices( mSelectedVertices.keys() );
@@ -363,6 +363,7 @@ void QgsMapToolEditMeshFrame::activate()
   QgsMapToolAdvancedDigitizing::activate();
   if ( mZValueWidget )
     mZValueWidget->show();
+  updateFreeVertices();
 }
 
 bool QgsMapToolEditMeshFrame::populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEvent *event )
@@ -1091,16 +1092,15 @@ void QgsMapToolEditMeshFrame::setCurrentLayer( QgsMapLayer *layer )
     }
   }
 
-  if ( mCurrentEditor && !mZValueWidget )
+  if ( mCurrentEditor )
   {
-    createZValueWidget();
+    if ( !mZValueWidget )
+      createZValueWidget();
     updateFreeVertices();
   }
-
-  if ( !mCurrentEditor )
-  {
+  else
     deactivate();
-  }
+
 }
 
 void QgsMapToolEditMeshFrame::onEdit()
