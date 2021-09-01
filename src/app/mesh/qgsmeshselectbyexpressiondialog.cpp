@@ -32,7 +32,7 @@ QgsMeshSelectByExpressionDialog::QgsMeshSelectByExpressionDialog( QWidget *paren
   setWindowTitle( tr( "Select Mesh Elements by Expression" ) );
 
   QString elementText = tr( "Vertices" );
-  mActionSelect = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpressionSelect.svg" ) ), QString(), this );
+  mActionSelect = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpressionSelect.svg" ) ),  tr( "Select" ), this );
   mActionAddToSelection = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelectAdd.svg" ) ), tr( "Add to current selection" ), this );
   mActionRemoveFromSelection = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelectRemove.svg" ) ), tr( "Remove from current selection" ), this );
 
@@ -41,8 +41,8 @@ QgsMeshSelectByExpressionDialog::QgsMeshSelectByExpressionDialog( QWidget *paren
   mButtonSelect->addAction( mActionAddToSelection );
   mButtonSelect->addAction( mActionRemoveFromSelection );
 
-  mComboBoxElementType->addItem( tr( "Vertex" ), QgsMesh::Vertex );
-  mComboBoxElementType->addItem( tr( "Face" ), QgsMesh::Face );
+  mComboBoxElementType->addItem( tr( "Select by Vertices" ), QgsMesh::Vertex );
+  mComboBoxElementType->addItem( tr( "Select by Faces" ), QgsMesh::Face );
   QgsSettings settings;
   QgsMesh::ElementType elementType = QgsMesh::Vertex;
   if ( settings.contains( QStringLiteral( "/meshSelection/elementType" ) ) )
@@ -78,6 +78,8 @@ QgsMeshSelectByExpressionDialog::QgsMeshSelectByExpressionDialog( QWidget *paren
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMeshSelectByExpressionDialog::showHelp );
 
   connect( mComboBoxElementType, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsMeshSelectByExpressionDialog::onElementTypeChanged );
+
+  mExpressionBuilder->setExpressionPreviewVisible( false );
 }
 
 QString QgsMeshSelectByExpressionDialog::expression() const
@@ -100,21 +102,6 @@ void QgsMeshSelectByExpressionDialog::onElementTypeChanged() const
   QgsMesh::ElementType elementType = currentElementType() ;
   QgsSettings settings;
   settings.setValue( QStringLiteral( "/meshSelection/elementType" ), elementType );
-
-  QString currentElementText;
-  switch ( elementType )
-  {
-    case QgsMesh::Vertex:
-      currentElementText = tr( "Vertices" );
-      break;
-    case QgsMesh::Edge:
-      break;
-    case QgsMesh::Face:
-      currentElementText = tr( "Faces" );
-      break;
-  }
-
-  mActionSelect->setText( tr( "Select %1" ).arg( currentElementText ) );
 
   QgsExpressionContext expressionContext( {QgsExpressionContextUtils::meshExpressionScope( elementType )} );
   mExpressionBuilder->init( expressionContext, QStringLiteral( "mesh_vertex_selection" ), QgsExpressionBuilderWidget::LoadAll );

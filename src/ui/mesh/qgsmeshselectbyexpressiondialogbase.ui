@@ -27,47 +27,34 @@
     <number>3</number>
    </property>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QLabel" name="label">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="1" column="4">
+      <widget class="QToolButton" name="mButtonSelect">
        <property name="text">
-        <string>Element type to select</string>
+        <string>...</string>
+       </property>
+       <property name="popupMode">
+        <enum>QToolButton::MenuButtonPopup</enum>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextBesideIcon</enum>
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QComboBox" name="mComboBoxElementType"/>
+     <item row="1" column="5">
+      <widget class="QPushButton" name="mButtonClose">
+       <property name="text">
+        <string>Close</string>
+       </property>
+      </widget>
      </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="1" column="0">
-      <widget class="QDialogButtonBox" name="buttonBox">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="standardButtons">
-        <set>QDialogButtonBox::Help</set>
+     <item row="0" column="0" colspan="6">
+      <widget class="QgsExpressionBuilderWidget" name="mExpressionBuilder" native="true"/>
+     </item>
+     <item row="1" column="2">
+      <widget class="QToolButton" name="mButtonZoomToSelected">
+       <property name="text">
+        <string>Zoom to Selected</string>
        </property>
       </widget>
      </item>
@@ -84,35 +71,24 @@
        </property>
       </spacer>
      </item>
-     <item row="1" column="2">
-      <widget class="QToolButton" name="mButtonZoomToSelected">
-       <property name="text">
-        <string>Zoom to Selected</string>
+     <item row="1" column="0">
+      <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Help</set>
        </property>
       </widget>
      </item>
      <item row="1" column="3">
-      <widget class="QToolButton" name="mButtonSelect">
-       <property name="text">
-        <string>...</string>
-       </property>
-       <property name="popupMode">
-        <enum>QToolButton::MenuButtonPopup</enum>
-       </property>
-       <property name="toolButtonStyle">
-        <enum>Qt::ToolButtonTextBesideIcon</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="4">
-      <widget class="QPushButton" name="mButtonClose">
-       <property name="text">
-        <string>Close</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0" colspan="5">
-      <widget class="QgsExpressionBuilderWidget" name="mExpressionBuilder" native="true"/>
+      <widget class="QComboBox" name="mComboBoxElementType"/>
      </item>
     </layout>
    </item>
