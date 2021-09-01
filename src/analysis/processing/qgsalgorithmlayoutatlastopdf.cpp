@@ -63,7 +63,9 @@ QString QgsLayoutAtlasToPdfAlgorithm::shortHelpString() const
                       "will be overwritten. In this case, an empty filter or sort by expression will turn those "
                       "settings off.\n"
                       "When the single file export option is unchecked, each layout page will be exported to its respective "
-                      "pdf file and the output filename expression will be used to create the pdf files names. " );
+                      "pdf file and the output filename will be used as an expression to create the pdf files names. "
+                      "If the single file export is checked, the output filename input will be used as the filename for "
+                      "output file." );
 }
 
 void QgsLayoutAtlasToPdfAlgorithm::initAlgorithm( const QVariantMap & )
@@ -74,12 +76,10 @@ void QgsLayoutAtlasToPdfAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "FILTER_EXPRESSION" ), QObject::tr( "Filter expression" ), QString(), QStringLiteral( "COVERAGE_LAYER" ), true ) );
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "SORTBY_EXPRESSION" ), QObject::tr( "Sort expression" ), QString(), QStringLiteral( "COVERAGE_LAYER" ), true ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SORTBY_REVERSE" ), QObject::tr( "Reverse sort order (used when a sort expression is provided)" ), false, true ) );
+
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SINGLE_FILE_EXPORT" ), QObject::tr( "Single file export when possible" ), true, true ) );
-
-  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "OUTPUT_FILENAME_EXPRESSION" ), QObject::tr( "Output filename expression" ), QString( "'output_'||@atlas_featurenumber" ), QStringLiteral( "" ), true ) );
-
-
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "PDF file" ), QObject::tr( "PDF Format" ) + " (*.pdf *.PDF)" ) );
+  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "OUTPUT_FILENAME" ), QObject::tr( "Output filename" ), QString( "atlas" ), QStringLiteral( "" ), false ) );
+  addParameter( new QgsProcessingParameterFile( QStringLiteral( "OUTPUT_FOLDER" ), QObject::tr( "Output folder" ), QgsProcessingParameterFile::Folder ) );
 
   std::unique_ptr< QgsProcessingParameterMultipleLayers > layersParam = std::make_unique< QgsProcessingParameterMultipleLayers>( QStringLiteral( "LAYERS" ), QObject::tr( "Map layers to assign to unlocked map item(s)" ), QgsProcessing::TypeMapLayer, QVariant(), true );
   layersParam->setFlags( layersParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
@@ -210,9 +210,12 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithm::processAlgorithm( const QVariantMap &p
     }
   }
   const bool singleFile = parameterAsBool( parameters, QStringLiteral( "SINGLE_FILE_EXPORT" ), context );
-  const QString filenameExpression = parameterAsString( parameters, QStringLiteral( "OUTPUT_FILENAME_EXPRESSION" ), context );
+  const QString filename = parameterAsString( parameters, QStringLiteral( "OUTPUT_FILENAME" ), context );
 
-  const QString dest = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString destFolder = parameterAsFile( parameters, QStringLiteral( "OUTPUT_FOLDER" ), context );
+
+  const QString dest = QStringLiteral( "%1/%2.pdf" ).arg( destFolder, filename );
+
   if ( atlas->updateFeatures() )
   {
     feedback->pushInfo( QObject::tr( "Exporting %n atlas feature(s)", "", atlas->count() ) );
@@ -222,9 +225,10 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithm::processAlgorithm( const QVariantMap &p
       result = exporter.exportToPdf( atlas, dest, settings, error, feedback );
     else
     {
-      if ( !atlas->setFilenameExpression( filenameExpression, error ) )
+      if ( !atlas->setFilenameExpression( filename, error ) )
       {
-        throw QgsProcessingException( QObject::tr( "Output filename expression could not be set" ) );
+        throw QgsProcessingException( QObject::tr( "Output filename could not be set to create filenames for the files, \n"
+                                      "use a correct QGIS expression" ) );
       }
       result = exporter.exportToPdfs( atlas, dest, settings, error, feedback );
     }
@@ -265,7 +269,7 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithm::processAlgorithm( const QVariantMap &p
   feedback->setProgress( 100 );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  outputs.insert( QStringLiteral( "OUTPUT" ), destFolder );
   return outputs;
 }
 
