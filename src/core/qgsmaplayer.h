@@ -419,13 +419,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Returns QGIS Server Properties for the map layer
      * \since QGIS 3.22
      */
-    QgsMapLayerServerProperties *serverProperties() { return mServerProperties; };
+    QgsMapLayerServerProperties *serverProperties() { return mServerProperties.get(); };
 
     /**
      * Returns QGIS Server Properties const for the map layer
      * \since QGIS 3.22
      */
-    const QgsMapLayerServerProperties *serverProperties() const { return mServerProperties; } SIP_SKIP;
+    const QgsMapLayerServerProperties *serverProperties() const { return mServerProperties.get(); } SIP_SKIP;
 
     /**
      * Sets the metadata URL of the layer
@@ -2066,7 +2066,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Stores information about server properties
      */
-    QgsMapLayerServerProperties *mServerProperties = nullptr;
+    std::unique_ptr< QgsMapLayerServerProperties > mServerProperties;
 
     //! Collection of undoable operations for this layer.
     QUndoStack *mUndoStack = nullptr;

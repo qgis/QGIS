@@ -84,7 +84,7 @@ QgsMapLayer::QgsMapLayer( QgsMapLayerType type,
   : mDataSource( source )
   , mLayerName( lyrname )
   , mLayerType( type )
-  , mServerProperties( new QgsMapLayerServerProperties( this ) )
+  , mServerProperties( std::make_unique<QgsMapLayerServerProperties>( this ) )
   , mUndoStack( new QUndoStack( this ) )
   , mUndoStackStyles( new QUndoStack( this ) )
   , mStyleManager( new QgsMapLayerStyleManager( this ) )
@@ -101,7 +101,6 @@ QgsMapLayer::~QgsMapLayer()
   delete m3DRenderer;
   delete mLegend;
   delete mStyleManager;
-  delete mServerProperties;
 }
 
 void QgsMapLayer::clone( QgsMapLayer *layer ) const
@@ -135,7 +134,7 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
   layer->setCustomProperties( mCustomProperties );
   layer->setOpacity( mLayerOpacity );
   layer->setMetadata( mMetadata );
-  layer->serverProperties()->clone( mServerProperties );
+  layer->serverProperties()->clone( mServerProperties.get() );
 }
 
 QgsMapLayerType QgsMapLayer::type() const
