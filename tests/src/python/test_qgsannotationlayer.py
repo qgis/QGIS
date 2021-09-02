@@ -465,7 +465,7 @@ class TestQgsAnnotationLayer(unittest.TestCase):
             'Polygon ((1224514 1459732, 1335834 1459732, 1335834 1689200, 1224514 1689200, 1224514 1459732))')
         expected = 'Polygon ((1325786 1449684, 1345882 1449684, 1345882 1469780, 1325786 1469780, 1325786 1449684))'
         result = [QgsGeometry.fromRect(i.boundingBox()).asWkt(0) for i in item_details if i.itemId() == i3_id][0]
-        self.assertTrue(compareWkt(result, expected, tol=100), "mismatch Expected:\n{}\nGot:\n{}\n".format(expected,
+        self.assertTrue(compareWkt(result, expected, tol=1000), "mismatch Expected:\n{}\nGot:\n{}\n".format(expected,
                                                                                                            result))
 
     def imageCheck(self, name, reference_image, image):
