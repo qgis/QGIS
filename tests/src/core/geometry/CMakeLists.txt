@@ -19,9 +19,6 @@ set(TESTS
   testqgscompoundcurve.cpp
   testqgscurvepolygon.cpp
   testqgsellipse.cpp
-  testqgsgeometry.cpp
-  testqgsgeometrycollection.cpp
-  testqgsgeometryutils.cpp
   testqgslinestring.cpp
   testqgsmulticurve.cpp
   testqgsmultilinestring.cpp
@@ -38,5 +35,9 @@ set(TESTS
   )
 
 foreach(TESTSRC ${TESTS})
-  add_qgis_test(${TESTSRC} MODULE core LINKEDLIBRARIES qgis_core)
+  add_qgis_test(${TESTSRC} MODULE core_geometry LINKEDLIBRARIES qgis_core)
 endforeach(TESTSRC)
+
+add_qgis_test(testqgsgeometry.cpp MODULE core LINKEDLIBRARIES qgis_core)
+add_qgis_test(testqgsgeometrycollection.cpp MODULE core LINKEDLIBRARIES qgis_core)
+add_qgis_test(testqgsgeometryutils.cpp MODULE core LINKEDLIBRARIES qgis_core)
