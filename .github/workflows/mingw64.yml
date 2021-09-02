@@ -69,6 +69,7 @@ jobs:
         run: |
           mkdir -p ${GITHUB_WORKSPACE}/.ccache
           docker run \
+            --security-opt seccomp=unconfined \
             --env CCACHE_DIR=/QGIS/.ccache \
             -w /QGIS \
             -v ${GITHUB_WORKSPACE}:/QGIS \
