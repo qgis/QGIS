@@ -1320,6 +1320,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     std::unique_ptr< QgsRenderedItemResults > mRenderedItemResults;
 
     /**
+     * Rendered results stored from previously rendered maps
+     * \since QGIS 3.22
+     */
+    std::unique_ptr< QgsRenderedItemResults > mPreviousRenderedItemResults;
+
+    /**
      * TRUE if the rendered item results stored in mRenderedItemResults are outdated (e.g. as a result of an ongoing canvas render)
      *
      * \since QGIS 3.22

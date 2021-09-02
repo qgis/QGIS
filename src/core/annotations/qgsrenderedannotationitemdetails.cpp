@@ -17,13 +17,8 @@
 #include "qgsrenderedannotationitemdetails.h"
 
 QgsRenderedAnnotationItemDetails::QgsRenderedAnnotationItemDetails( const QString &layerId, const QString &itemId )
-  : mLayerId( layerId )
+  : QgsRenderedItemDetails( layerId )
   , mItemId( itemId )
 {
 
-}
-
-QgsRenderedAnnotationItemDetails *QgsRenderedAnnotationItemDetails::clone() const
-{
-  return new QgsRenderedAnnotationItemDetails( *this );
 }

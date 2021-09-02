@@ -126,4 +126,35 @@ void QgsRenderedItemResults::appendResults( const QList<QgsRenderedItemDetails *
   }
 }
 
+void QgsRenderedItemResults::transferResults( QgsRenderedItemResults *other, const QStringList &layerIds )
+{
+  for ( auto it = other->mDetails.begin(); it != other->mDetails.end(); )
+  {
+    if ( layerIds.contains( ( *it )->layerId() ) )
+    {
+      if ( QgsRenderedAnnotationItemDetails *annotationDetails = dynamic_cast< QgsRenderedAnnotationItemDetails * >( ( *it ).get() ) )
+        mAnnotationItemsIndex->insert( annotationDetails, annotationDetails->boundingBox() );
+
+      mDetails.emplace_back( std::move( *it ) );
+      other->mDetails.erase( it );
+    }
+    else
+    {
+      it++;
+    }
+  }
+}
+
+void QgsRenderedItemResults::transferResults( QgsRenderedItemResults *other )
+{
+  for ( auto it = other->mDetails.begin(); it != other->mDetails.end(); ++it )
+  {
+    if ( QgsRenderedAnnotationItemDetails *annotationDetails = dynamic_cast< QgsRenderedAnnotationItemDetails * >( ( *it ).get() ) )
+      mAnnotationItemsIndex->insert( annotationDetails, annotationDetails->boundingBox() );
+
+    mDetails.emplace_back( std::move( *it ) );
+  }
+  other->mDetails.clear();
+}
+
 

@@ -33,14 +33,6 @@ Constructor for QgsRenderedAnnotationItemDetails.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    virtual QgsRenderedAnnotationItemDetails *clone() const /Factory/;
-
-
-    QString layerId() const;
-%Docstring
-Returns the layer ID of the associated map layer.
-%End
-
     QString itemId() const;
 %Docstring
 Returns the item ID of the associated annotation item.

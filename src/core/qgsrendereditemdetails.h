@@ -21,6 +21,13 @@
 #include "qgis_sip.h"
 #include "qgsrectangle.h"
 
+#ifdef SIP_RUN
+// this is needed for the "convert to subclass" code below to compile
+% ModuleHeaderCode
+#include "qgsrenderedannotationitemdetails.h"
+% End
+#endif
+
 /**
  * \ingroup core
  * \brief Base class for detailed information about a rendered item.
@@ -39,12 +46,17 @@ class CORE_EXPORT QgsRenderedItemDetails
     SIP_END
 #endif
 
+    /**
+     * Constructor for QgsRenderedItemDetails.
+     */
+    QgsRenderedItemDetails( const QString &layerId );
+
     virtual ~QgsRenderedItemDetails();
 
     /**
-     * Clones the details.
+     * Returns the layer ID of the associated map layer.
      */
-    virtual QgsRenderedItemDetails *clone() const = 0 SIP_FACTORY;
+    QString layerId() const { return mLayerId; }
 
     /**
      * Returns the bounding box of the item (in map units).
@@ -62,6 +74,7 @@ class CORE_EXPORT QgsRenderedItemDetails
 
   private:
 
+    QString mLayerId;
     QgsRectangle mBounds;
 };
 

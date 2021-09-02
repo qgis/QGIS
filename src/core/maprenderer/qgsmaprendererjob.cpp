@@ -147,6 +147,11 @@ void QgsMapRendererJob::start()
   }
 }
 
+QStringList QgsMapRendererJob::layersRedrawnFromCache() const
+{
+  return mLayersRedrawnFromCache;
+}
+
 QgsRenderedItemResults *QgsMapRendererJob::takeRenderedItemResults()
 {
   return mRenderedItemResults.release();
@@ -513,6 +518,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
       job.img->setDevicePixelRatio( static_cast<qreal>( mSettings.devicePixelRatio() ) );
       job.renderer = nullptr;
       job.context()->setPainter( nullptr );
+      mLayersRedrawnFromCache.append( ml->id() );
       continue;
     }
 

@@ -16,4 +16,10 @@
 
 #include "qgsrendereditemdetails.h"
 
+QgsRenderedItemDetails::QgsRenderedItemDetails( const QString &layerId )
+  : mLayerId( layerId )
+{
+
+}
+
 QgsRenderedItemDetails::~QgsRenderedItemDetails() = default;

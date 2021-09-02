@@ -9,6 +9,11 @@
 
 
 
+// this is needed for the "convert to subclass" code below to compile
+%ModuleHeaderCode
+#include "qgsrenderedannotationitemdetails.h"
+%End
+
 class QgsRenderedItemDetails
 {
 %Docstring(signature="appended")
@@ -29,11 +34,16 @@ Base class for detailed information about a rendered item.
       sipType = 0;
 %End
 
+    QgsRenderedItemDetails( const QString &layerId );
+%Docstring
+Constructor for QgsRenderedItemDetails.
+%End
+
     virtual ~QgsRenderedItemDetails();
 
-    virtual QgsRenderedItemDetails *clone() const = 0 /Factory/;
+    QString layerId() const;
 %Docstring
-Clones the details.
+Returns the layer ID of the associated map layer.
 %End
 
     QgsRectangle boundingBox() const;

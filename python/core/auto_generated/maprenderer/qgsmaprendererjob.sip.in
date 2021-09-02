@@ -91,6 +91,16 @@ should be retained.
 .. versionadded:: 3.0
 %End
 
+    QStringList layersRedrawnFromCache() const;
+%Docstring
+Returns a list of the layer IDs for all layers which were redrawn from cached
+images.
+
+This method should only be called after the render job is completed.
+
+.. versionadded:: 3.22
+%End
+
     virtual QgsLabelingResults *takeLabelingResults() = 0 /Transfer/;
 %Docstring
 Gets pointer to internal labeling engine (in order to get access to the results).
@@ -186,6 +196,7 @@ emitted when asynchronous rendering is finished (or canceled).
 %End
 
   protected:
+
 
 
 
