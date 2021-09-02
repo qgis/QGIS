@@ -138,6 +138,7 @@ void QgsMapRendererSequentialJob::internalFinished()
 
   mLabelingResults.reset( mInternalJob->takeLabelingResults() );
   mUsedCachedLabels = mInternalJob->usedCachedLabels();
+  mLayersRedrawnFromCache = mInternalJob->layersRedrawnFromCache();
 
   mRenderedItemResults.reset( mInternalJob->takeRenderedItemResults() );
 

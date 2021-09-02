@@ -288,6 +288,16 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
     virtual bool usedCachedLabels() const = 0;
 
     /**
+     * Returns a list of the layer IDs for all layers which were redrawn from cached
+     * images.
+     *
+     * This method should only be called after the render job is completed.
+     *
+     * \since QGIS 3.22
+     */
+    QStringList layersRedrawnFromCache() const;
+
+    /**
      * Gets pointer to internal labeling engine (in order to get access to the results).
      * This should not be used if cached labeling was redrawn - see usedCachedLabels().
      * \see usedCachedLabels()
@@ -436,6 +446,8 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
 #ifndef SIP_RUN
     std::unique_ptr< QgsRenderedItemResults > mRenderedItemResults;
 #endif
+
+    QStringList mLayersRedrawnFromCache;
 
     /**
      * Prepares the cache for storing the result of labeling. Returns FALSE if

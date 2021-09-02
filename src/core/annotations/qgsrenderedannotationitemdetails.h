@@ -43,13 +43,6 @@ class CORE_EXPORT QgsRenderedAnnotationItemDetails : public QgsRenderedItemDetai
     % End
 #endif
 
-    QgsRenderedAnnotationItemDetails *clone() const override SIP_FACTORY;
-
-    /**
-     * Returns the layer ID of the associated map layer.
-     */
-    QString layerId() const { return mLayerId; }
-
     /**
      * Returns the item ID of the associated annotation item.
      */
@@ -57,7 +50,6 @@ class CORE_EXPORT QgsRenderedAnnotationItemDetails : public QgsRenderedItemDetai
 
   private:
 
-    QString mLayerId;
     QString mItemId;
 
 };

@@ -495,11 +495,13 @@ void QgsMapCanvas::setCachingEnabled( bool enabled )
   if ( enabled )
   {
     mCache = new QgsMapRendererCache;
+    mPreviousRenderedItemResults = std::make_unique< QgsRenderedItemResults >();
   }
   else
   {
     delete mCache;
     mCache = nullptr;
+    mPreviousRenderedItemResults.reset();
   }
 }
 
@@ -512,6 +514,9 @@ void QgsMapCanvas::clearCache()
 {
   if ( mCache )
     mCache->clear();
+
+  if ( mPreviousRenderedItemResults )
+    mPreviousRenderedItemResults = std::make_unique< QgsRenderedItemResults >();
 }
 
 void QgsMapCanvas::setParallelRenderingEnabled( bool enabled )
@@ -707,7 +712,26 @@ void QgsMapCanvas::rendererJobFinished()
     }
     mLabelingResultsOutdated = false;
 
-    mRenderedItemResults.reset( mJob->takeRenderedItemResults() );
+    std::unique_ptr< QgsRenderedItemResults > renderedItemResults( mJob->takeRenderedItemResults() );
+    // if a layer was redrawn from the cached version, we should copy any existing rendered item results from that layer
+    if ( mRenderedItemResults )
+    {
+      renderedItemResults->transferResults( mRenderedItemResults.get(), mJob->layersRedrawnFromCache() );
+    }
+    if ( mPreviousRenderedItemResults )
+    {
+      // also transfer any results from previous renders which happened before this
+      renderedItemResults->transferResults( mPreviousRenderedItemResults.get(), mJob->layersRedrawnFromCache() );
+    }
+    if ( mRenderedItemResults && mPreviousRenderedItemResults )
+    {
+      // for other layers which ARE present in the most recent rendered item results BUT were not part of this render, we
+      // store the results in a temporary store in case they are later switched back on and the layer's image is taken
+      // from the cache
+      mPreviousRenderedItemResults->transferResults( mRenderedItemResults.get() );
+    }
+
+    mRenderedItemResults = std::move( renderedItemResults );
     mRenderedItemResultsOutdated = false;
 
     QImage img = mJob->renderedImage();

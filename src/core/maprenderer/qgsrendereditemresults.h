@@ -61,8 +61,6 @@ class CORE_EXPORT QgsRenderedItemResults
      */
     QList<const QgsRenderedAnnotationItemDetails *> renderedAnnotationItemsInBounds( const QgsRectangle &bounds ) const;
 
-#ifndef SIP_RUN
-
     /**
      * Appends rendered item details to the results object.
      *
@@ -70,11 +68,27 @@ class CORE_EXPORT QgsRenderedItemResults
      *
      * The render \a context argument is used to specify the render context used to render the items. It will be used
      * to transform the details to the destination map CRS.
-     *
-     * \note Not available in Python bindings.
      */
-    void appendResults( const QList< QgsRenderedItemDetails * > &results, const QgsRenderContext &context );
-#endif
+    void appendResults( const QList< QgsRenderedItemDetails * > &results SIP_TRANSFER, const QgsRenderContext &context );
+
+    /**
+     * Transfers all results from an \a other QgsRenderedItemResults object where the items
+     * have layer IDs matching the specified list.
+     *
+     * Items are removed from \a other and transferred to this object.
+     *
+     * \warning After calling this method the \a other results will be left in an undefined state.
+     */
+    void transferResults( QgsRenderedItemResults *other, const QStringList &layerIds );
+
+    /**
+     * Transfers all results from an \a other QgsRenderedItemResults object to this one.
+     *
+     * Items are removed from \a other and transferred to this object.
+     *
+     * \warning After calling this method the \a other results will be left in an undefined state.
+     */
+    void transferResults( QgsRenderedItemResults *other );
 
   private:
 #ifdef SIP_RUN
