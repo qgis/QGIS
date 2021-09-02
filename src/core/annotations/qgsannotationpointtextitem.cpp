@@ -117,7 +117,7 @@ QgsRectangle QgsAnnotationPointTextItem::boundingBox() const
   return QgsRectangle( mPoint.x(), mPoint.y(), mPoint.x(), mPoint.y() );
 }
 
-QgsRectangle QgsAnnotationPointTextItem::boundingBox( const QgsRenderContext &context ) const
+QgsRectangle QgsAnnotationPointTextItem::boundingBox( QgsRenderContext &context ) const
 {
   const double widthInPixels = QgsTextRenderer::textWidth( context, mTextFormat, mText.split( '\n' ) );
   const double heightInPixels = QgsTextRenderer::textHeight( context, mTextFormat, mText.split( '\n' ) );

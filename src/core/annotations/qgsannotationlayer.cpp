@@ -192,7 +192,7 @@ QStringList QgsAnnotationLayer::queryIndex( const QgsRectangle &bounds, QgsFeedb
   return res;
 }
 
-QStringList QgsAnnotationLayer::itemsInBounds( const QgsRectangle &bounds, const QgsRenderContext &context, QgsFeedback *feedback ) const
+QStringList QgsAnnotationLayer::itemsInBounds( const QgsRectangle &bounds, QgsRenderContext &context, QgsFeedback *feedback ) const
 {
   QStringList res = queryIndex( bounds, feedback );
   // we also have to search through any non-indexed items

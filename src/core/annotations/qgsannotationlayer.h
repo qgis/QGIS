@@ -135,7 +135,7 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
      *
      * \since QGIS 3.22
      */
-    QStringList itemsInBounds( const QgsRectangle &bounds, const QgsRenderContext &context, QgsFeedback *feedback = nullptr ) const;
+    QStringList itemsInBounds( const QgsRectangle &bounds, QgsRenderContext &context, QgsFeedback *feedback = nullptr ) const;
 
     Qgis::MapLayerProperties properties() const override;
     QgsAnnotationLayer *clone() const override SIP_FACTORY;
