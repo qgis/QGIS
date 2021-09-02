@@ -44,7 +44,7 @@ from qgis.core import (QgsMapSettings,
                        )
 from qgis.testing import start_app, unittest
 
-from utilities import unitTestDataPath
+from utilities import unitTestDataPath, compareWkt
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -293,8 +293,8 @@ class TestQgsAnnotationLayer(unittest.TestCase):
                          QgsRectangle(12, 13, 14, 15))
         self.assertEqual([i.boundingBox() for i in item_details if i.itemId() == i2_id][0],
                          QgsRectangle(11, 13, 12, 15))
-        self.assertEqual([i.boundingBox().toString(2) for i in item_details if i.itemId() == i3_id][0],
-                         '11.68,12.68 : 12.32,13.32')
+        self.assertEqual([i.boundingBox().toString(1) for i in item_details if i.itemId() == i3_id][0],
+                         '11.7,12.7 : 12.3,13.3')
 
     def testRenderWithTransform(self):
         layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
@@ -398,19 +398,21 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         self.assertEqual(len(item_details), 3)
         self.assertEqual([i.layerId() for i in item_details], [layer.id()] * 3)
         self.assertCountEqual([i.itemId() for i in item_details], [i1_id, i2_id, i3_id])
-        self.assertCountEqual([i.itemId() for i in item_results.renderedAnnotationItemsInBounds(QgsRectangle(0, 0, 1, 1))], [])
+        self.assertCountEqual(
+            [i.itemId() for i in item_results.renderedAnnotationItemsInBounds(QgsRectangle(0, 0, 1, 1))], [])
         self.assertCountEqual(
             [i.itemId() for i in item_results.renderedAnnotationItemsInBounds(QgsRectangle(10, 10, 11, 18))], [i2_id])
         self.assertCountEqual(
-            [i.itemId() for i in item_results.renderedAnnotationItemsInBounds(QgsRectangle(10, 10, 12, 18))], [i1_id, i2_id, i3_id])
+            [i.itemId() for i in item_results.renderedAnnotationItemsInBounds(QgsRectangle(10, 10, 12, 18))],
+            [i1_id, i2_id, i3_id])
 
         # bounds should be in map crs
         self.assertEqual([i.boundingBox() for i in item_details if i.itemId() == i1_id][0],
                          QgsRectangle(11.5, 13, 12, 13.5))
         self.assertEqual([i.boundingBox() for i in item_details if i.itemId() == i2_id][0],
                          QgsRectangle(11, 13, 12, 15))
-        self.assertEqual([i.boundingBox().toString(2) for i in item_details if i.itemId() == i3_id][0],
-                         '11.53,12.53 : 12.47,13.47')
+        self.assertEqual([i.boundingBox().toString(1) for i in item_details if i.itemId() == i3_id][0],
+                         '11.5,12.5 : 12.5,13.5')
 
     def test_render_via_job_with_transform(self):
         """
@@ -455,12 +457,16 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         self.assertEqual([i.layerId() for i in item_details], [layer.id()] * 3)
         self.assertCountEqual([i.itemId() for i in item_details], [i1_id, i2_id, i3_id])
         # bounds should be in map crs
-        self.assertEqual([QgsGeometry.fromRect(i.boundingBox()).asWkt(0) for i in item_details if i.itemId() == i1_id][0],
-                         'Polygon ((1280174 1459732, 1335834 1459732, 1335834 1516914, 1280174 1516914, 1280174 1459732))')
-        self.assertEqual([QgsGeometry.fromRect(i.boundingBox()).asWkt(0) for i in item_details if i.itemId() == i2_id][0],
-                         'Polygon ((1224514 1459732, 1335834 1459732, 1335834 1689200, 1224514 1689200, 1224514 1459732))')
-        self.assertEqual([QgsGeometry.fromRect(i.boundingBox()).asWkt(0) for i in item_details if i.itemId() == i3_id][0],
-                         'Polygon ((1325786 1449684, 1345882 1449684, 1345882 1469780, 1325786 1469780, 1325786 1449684))')
+        self.assertEqual(
+            [QgsGeometry.fromRect(i.boundingBox()).asWkt(0) for i in item_details if i.itemId() == i1_id][0],
+            'Polygon ((1280174 1459732, 1335834 1459732, 1335834 1516914, 1280174 1516914, 1280174 1459732))')
+        self.assertEqual(
+            [QgsGeometry.fromRect(i.boundingBox()).asWkt(0) for i in item_details if i.itemId() == i2_id][0],
+            'Polygon ((1224514 1459732, 1335834 1459732, 1335834 1689200, 1224514 1689200, 1224514 1459732))')
+        expected = 'Polygon ((1325786 1449684, 1345882 1449684, 1345882 1469780, 1325786 1469780, 1325786 1449684))'
+        result = [QgsGeometry.fromRect(i.boundingBox()).asWkt(0) for i in item_details if i.itemId() == i3_id][0]
+        self.assertTrue(compareWkt(result, expected, tol=100), "mismatch Expected:\n{}\nGot:\n{}\n".format(expected,
+                                                                                                           result))
 
     def imageCheck(self, name, reference_image, image):
         TestQgsAnnotationLayer.report += "<h2>Render {}</h2>\n".format(name)
