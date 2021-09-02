@@ -247,7 +247,7 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
         waitConditionMutex.unlock();
         break;
       }
-      authRequestBufferNotEmpty.wait( &waitConditionMutex );
+      //authRequestBufferNotEmpty.wait( &waitConditionMutex );
 
       // If the downloader thread wakes us (the main thread) up and is not yet finished
       // then it has "produced" an authentication request which we need to now "consume".
@@ -256,7 +256,7 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
       if ( !threadFinished )
       {
         waitConditionMutex.unlock();
-
+        QThread::currentThread()->usleep( 100 );
         QgsApplication::instance()->processEvents();
         // we don't need to wake up the worker thread - it will automatically be woken when
         // the auth request has been dealt with by QgsNetworkAccessManager
