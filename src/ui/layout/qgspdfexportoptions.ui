@@ -15,106 +15,118 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
-     <property name="title">
-      <string>Export Options</string>
+    <widget class="QgsScrollArea" name="scrollArea">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
      </property>
-     <layout class="QGridLayout" name="gridLayout" columnstretch="0,1">
-      <item row="4" column="0">
-       <widget class="QLabel" name="label_6">
-        <property name="text">
-         <string>Text export</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QComboBox" name="mTextRenderFormatComboBox"/>
-      </item>
-      <item row="0" column="0" colspan="2">
-       <widget class="QCheckBox" name="mForceVectorCheckBox">
-        <property name="toolTip">
-         <string>If checked, the layout will always be kept as vector objects when exported to a compatible format, even if the appearance of the resultant file does not match the layouts settings. If unchecked, some elements in the layout may be rasterized in order to keep their appearance intact.</string>
-        </property>
-        <property name="text">
-         <string>Always export as vectors</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="2">
-       <widget class="QCheckBox" name="mAppendGeoreferenceCheckbox">
-        <property name="text">
-         <string>Append georeference information</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QCheckBox" name="mIncludeMetadataCheckbox">
-        <property name="text">
-         <string>Export RDF metadata (title, author, etc.)</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Image compression</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <widget class="QComboBox" name="mComboImageCompression"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QgsCollapsibleGroupBoxBasic" name="mGeoPDFGroupBox">
-     <property name="title">
-      <string>Create Geospatial PDF (GeoPDF)</string>
-     </property>
-     <property name="checkable">
+     <property name="widgetResizable">
       <bool>true</bool>
      </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <property name="leftMargin">
-       <number>0</number>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>457</width>
+        <height>944</height>
+       </rect>
       </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QgsScrollArea" name="scrollArea">
-        <property name="frameShape">
-         <enum>QFrame::NoFrame</enum>
-        </property>
-        <property name="widgetResizable">
-         <bool>true</bool>
-        </property>
-        <widget class="QWidget" name="scrollAreaWidgetContents">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>-316</y>
-           <width>451</width>
-           <height>648</height>
-          </rect>
+      <layout class="QVBoxLayout" name="verticalLayout_6">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+         <property name="title">
+          <string>Export Options</string>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_6">
+         <layout class="QGridLayout" name="gridLayout" columnstretch="0,1">
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Text export</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QComboBox" name="mTextRenderFormatComboBox"/>
+          </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QCheckBox" name="mForceVectorCheckBox">
+            <property name="toolTip">
+             <string>If checked, the layout will always be kept as vector objects when exported to a compatible format, even if the appearance of the resultant file does not match the layouts settings. If unchecked, some elements in the layout may be rasterized in order to keep their appearance intact.</string>
+            </property>
+            <property name="text">
+             <string>Always export as vectors</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QCheckBox" name="mAppendGeoreferenceCheckbox">
+            <property name="text">
+             <string>Append georeference information</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QCheckBox" name="mIncludeMetadataCheckbox">
+            <property name="text">
+             <string>Export RDF metadata (title, author, etc.)</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Image compression</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QComboBox" name="mComboImageCompression"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="mGeoPDFGroupBox">
+         <property name="title">
+          <string>Create Geospatial PDF (GeoPDF)</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
           <item>
            <widget class="QStackedWidget" name="mGeoPDFOptionsStackedWidget">
             <property name="sizePolicy">
@@ -226,58 +238,58 @@
           </item>
          </layout>
         </widget>
-       </widget>
-      </item>
-     </layout>
+       </item>
+       <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_2">
+         <property name="title">
+          <string>Advanced Options</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0">
+          <item row="0" column="0" colspan="2">
+           <widget class="QCheckBox" name="mDisableRasterTilingCheckBox">
+            <property name="toolTip">
+             <string>Disables tiled rendering of raster layers. This setting may improve the export quality in some circumstances, at the cost of much greater memory usage during exports.</string>
+            </property>
+            <property name="text">
+             <string>Disable tiled raster layer exports</string>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="mSimplifyGeometriesCheckbox">
+            <property name="text">
+             <string>Simplify geometries to reduce output file size</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Expanding</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>6</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
     </widget>
-   </item>
-   <item>
-    <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_2">
-     <property name="title">
-      <string>Advanced Options</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0">
-      <item row="0" column="0" colspan="2">
-       <widget class="QCheckBox" name="mDisableRasterTilingCheckBox">
-        <property name="toolTip">
-         <string>Disables tiled rendering of raster layers. This setting may improve the export quality in some circumstances, at the cost of much greater memory usage during exports.</string>
-        </property>
-        <property name="text">
-         <string>Disable tiled raster layer exports</string>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QCheckBox" name="mSimplifyGeometriesCheckbox">
-        <property name="text">
-         <string>Simplify geometries to reduce output file size</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Expanding</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>6</width>
-       <height>2</height>
-      </size>
-     </property>
-    </spacer>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
@@ -293,26 +305,26 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>scrollArea</tabstop>
   <tabstop>mForceVectorCheckBox</tabstop>
   <tabstop>mAppendGeoreferenceCheckbox</tabstop>
   <tabstop>mIncludeMetadataCheckbox</tabstop>
   <tabstop>mTextRenderFormatComboBox</tabstop>
   <tabstop>mComboImageCompression</tabstop>
   <tabstop>mGeoPDFGroupBox</tabstop>
-  <tabstop>scrollArea</tabstop>
   <tabstop>mGeoPdfFormatComboBox</tabstop>
   <tabstop>mIncludeMapThemesCheck</tabstop>
   <tabstop>mThemesList</tabstop>
