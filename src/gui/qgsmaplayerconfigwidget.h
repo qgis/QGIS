@@ -127,7 +127,7 @@ class GUI_EXPORT QgsMapLayerConfigWidget : public QgsPanelWidget
      *
      * Subclasses should take care to call the base class implementation when overriding this method.
      */
-    virtual void setContext( const QgsMapLayerConfigWidgetContext &context );
+    virtual void setMapLayerConfigWidgetContext( const QgsMapLayerConfigWidgetContext &context );
 
   public slots:
 
@@ -155,7 +155,7 @@ class GUI_EXPORT QgsMapLayerConfigWidget : public QgsPanelWidget
 
     QgsMapLayer *mLayer = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
-    QgsMapLayerConfigWidgetContext mContext;
+    QgsMapLayerConfigWidgetContext mMapLayerConfigWidgetContext;
 };
 
 #endif // QGSMAPLAYERCONFIGWIDGET_H

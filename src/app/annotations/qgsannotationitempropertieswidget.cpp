@@ -50,12 +50,12 @@ void QgsAnnotationItemPropertiesWidget::syncToLayer( QgsMapLayer *layer )
     return;
 
   // check context
-  setItemId( mContext.annotationId() );
+  setItemId( mMapLayerConfigWidgetContext.annotationId() );
 }
 
-void QgsAnnotationItemPropertiesWidget::setContext( const QgsMapLayerConfigWidgetContext &context )
+void QgsAnnotationItemPropertiesWidget::setMapLayerConfigWidgetContext( const QgsMapLayerConfigWidgetContext &context )
 {
-  QgsMapLayerConfigWidget::setContext( context );
+  QgsMapLayerConfigWidget::setMapLayerConfigWidgetContext( context );
   setItemId( context.annotationId() );
 }
 
@@ -79,7 +79,7 @@ void QgsAnnotationItemPropertiesWidget::onChanged()
   // set the annotation layer's item's properties to match the widget
   std::unique_ptr< QgsAnnotationItem > newItem( mItemWidget->createItem() );
 
-  mLayer->replaceItem( mContext.annotationId(), newItem.release() );
+  mLayer->replaceItem( mMapLayerConfigWidgetContext.annotationId(), newItem.release() );
 }
 
 void QgsAnnotationItemPropertiesWidget::setItemId( const QString &itemId )

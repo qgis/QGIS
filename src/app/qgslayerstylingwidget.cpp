@@ -444,7 +444,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
     if ( panel )
     {
       panel->setDockMode( true );
-      panel->setContext( mContext );
+      panel->setMapLayerConfigWidgetContext( mContext );
       connect( panel, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
       mWidgetStack->setMainPanel( panel );
     }
