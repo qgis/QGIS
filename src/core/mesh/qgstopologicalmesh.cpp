@@ -585,7 +585,7 @@ QList<int> QgsTopologicalMesh::freeVerticesIndexes() const
 #endif
 }
 
-QgsMeshEditingError QgsTopologicalMesh::counterClockWiseFaces( QgsMeshFace &face, QgsMesh *mesh )
+QgsMeshEditingError QgsTopologicalMesh::counterClockwiseFaces( QgsMeshFace &face, QgsMesh *mesh )
 {
   // First check if the face is convex and put it counter clockwise
   // If the index are not well ordered (edges intersect), invalid face --> return false
@@ -1227,7 +1227,7 @@ QgsTopologicalMesh QgsTopologicalMesh::createTopologicalMesh( QgsMesh *mesh, int
       break;
     }
 
-    error = counterClockWiseFaces( mesh->faces[i], mesh );
+    error = counterClockwiseFaces( mesh->faces[i], mesh );
     if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
     {
       if ( error.errorType == Qgis::MeshEditingErrorType::InvalidFace || error.errorType == Qgis::MeshEditingErrorType::FlatFace )

@@ -57,6 +57,8 @@ class TestQgsMeshEditor : public QObject
 
     void refineMesh();
 
+    void transformByExpression();
+
     void particularCases();
 };
 
@@ -1677,6 +1679,133 @@ void TestQgsMeshEditor::refineMesh()
         checkRefinedFace( mesh, facesRefinement, i, 2, -1, 3, 4 );
     }
   }
+}
+
+void TestQgsMeshEditor::transformByExpression()
+{
+  std::unique_ptr<QgsMeshLayer> layer = std::make_unique<QgsMeshLayer>( mDataDir + "/quad_flower_to_edit.2dm", "mesh", "mdal" );
+
+  const QgsCoordinateTransform transform;
+  layer->startFrameEditing( transform );
+
+  QgsMeshTransformVerticesByExpression transformVertex;
+
+  transformVertex.setExpressions( QStringLiteral( "$vertex_x + 50" ), QStringLiteral( "$vertex_y - 50" ), QStringLiteral( "$vertex_z + 100" ) );
+
+  // no input set
+  QVERIFY( !transformVertex.calculate( layer.get() ) );
+
+  transformVertex.setInputVertices( {0, 1, 3, 4} );
+
+  QVERIFY( transformVertex.calculate( layer.get() ) );
+
+  QCOMPARE( transformVertex.mChangeCoordinateVerticesIndexes, QList<int>( {0, 1, 3, 4} ) );
+  QVERIFY( transformVertex.mOldXYValues.at( 0 ).compare( QgsPointXY( 1000, 2000 ), 0.1 ) );
+  QVERIFY( transformVertex.mOldXYValues.at( 1 ).compare( QgsPointXY( 2000, 2000 ), 0.1 ) );
+  QVERIFY( transformVertex.mOldXYValues.at( 2 ).compare( QgsPointXY( 2000, 3000 ), 0.1 ) );
+  QVERIFY( transformVertex.mOldXYValues.at( 3 ).compare( QgsPointXY( 1000, 3000 ), 0.1 ) );
+  QVERIFY( transformVertex.mNewXYValues.at( 0 ).compare( QgsPointXY( 1050, 1950 ), 0.1 ) );
+  QVERIFY( transformVertex.mNewXYValues.at( 1 ).compare( QgsPointXY( 2050, 1950 ), 0.1 ) );
+  QVERIFY( transformVertex.mNewXYValues.at( 2 ).compare( QgsPointXY( 2050, 2950 ), 0.1 ) );
+  QVERIFY( transformVertex.mNewXYValues.at( 3 ).compare( QgsPointXY( 1050, 2950 ), 0.1 ) );
+  QCOMPARE( transformVertex.mNewZValues.at( 0 ), 300 );
+  QCOMPARE( transformVertex.mNewZValues.at( 1 ), 300 );
+  QCOMPARE( transformVertex.mNewZValues.at( 2 ), 300 );
+  QCOMPARE( transformVertex.mNewZValues.at( 3 ), 300 );
+
+  layer->meshEditor()->advancedEdit( &transformVertex );
+
+  QgsMesh &mesh = *layer->nativeMesh();
+
+  QVERIFY( QgsPoint( 1050, 1950, 300 ).compareTo( &mesh.vertices.at( 0 ) ) == 0 );
+  QVERIFY( QgsPoint( 2050, 1950, 300 ).compareTo( &mesh.vertices.at( 1 ) )  == 0 );
+  QVERIFY( QgsPoint( 2500, 2500, 800 ).compareTo( &mesh.vertices.at( 2 ) )  == 0 );
+  QVERIFY( QgsPoint( 2050, 2950, 300 ).compareTo( &mesh.vertices.at( 3 ) )  == 0 );
+  QVERIFY( QgsPoint( 1050, 2950, 300 ).compareTo( &mesh.vertices.at( 4 ) )  == 0 );
+  QVERIFY( QgsPoint( 500, 2500, 800 ).compareTo( &mesh.vertices.at( 5 ) )  == 0 );
+  QVERIFY( QgsPoint( 1500, 1500, 800 ).compareTo( &mesh.vertices.at( 6 ) )  == 0 );
+  QVERIFY( QgsPoint( 1500, 3500, 800 ).compareTo( &mesh.vertices.at( 7 ) )  == 0 );
+
+  layer->undoStack()->undo();
+  mesh = *layer->nativeMesh();
+
+  QVERIFY( QgsPoint( 1000, 2000, 200 ).compareTo( &mesh.vertices.at( 0 ) ) == 0 );
+  QVERIFY( QgsPoint( 2000, 2000, 200 ).compareTo( &mesh.vertices.at( 1 ) )  == 0 );
+  QVERIFY( QgsPoint( 2500, 2500, 800 ).compareTo( &mesh.vertices.at( 2 ) )  == 0 );
+  QVERIFY( QgsPoint( 2000, 3000, 200 ).compareTo( &mesh.vertices.at( 3 ) )  == 0 );
+  QVERIFY( QgsPoint( 1000, 3000, 200 ).compareTo( &mesh.vertices.at( 4 ) )  == 0 );
+  QVERIFY( QgsPoint( 500, 2500, 800 ).compareTo( &mesh.vertices.at( 5 ) )  == 0 );
+  QVERIFY( QgsPoint( 1500, 1500, 800 ).compareTo( &mesh.vertices.at( 6 ) )  == 0 );
+  QVERIFY( QgsPoint( 1500, 3500, 800 ).compareTo( &mesh.vertices.at( 7 ) )  == 0 );
+
+  layer->undoStack()->redo();
+  mesh = *layer->nativeMesh();
+
+  QVERIFY( QgsPoint( 1050, 1950, 300 ).compareTo( &mesh.vertices.at( 0 ) ) == 0 );
+  QVERIFY( QgsPoint( 2050, 1950, 300 ).compareTo( &mesh.vertices.at( 1 ) )  == 0 );
+  QVERIFY( QgsPoint( 2500, 2500, 800 ).compareTo( &mesh.vertices.at( 2 ) )  == 0 );
+  QVERIFY( QgsPoint( 2050, 2950, 300 ).compareTo( &mesh.vertices.at( 3 ) )  == 0 );
+  QVERIFY( QgsPoint( 1050, 2950, 300 ).compareTo( &mesh.vertices.at( 4 ) )  == 0 );
+  QVERIFY( QgsPoint( 500, 2500, 800 ).compareTo( &mesh.vertices.at( 5 ) )  == 0 );
+  QVERIFY( QgsPoint( 1500, 1500, 800 ).compareTo( &mesh.vertices.at( 6 ) )  == 0 );
+  QVERIFY( QgsPoint( 1500, 3500, 800 ).compareTo( &mesh.vertices.at( 7 ) )  == 0 );
+
+  layer->undoStack()->undo();
+
+  // leads to an invalid mesh
+  transformVertex.clear();
+  transformVertex.setInputVertices( {1, 3} );
+  transformVertex.setExpressions( QStringLiteral( "$vertex_x -1500" ), QStringLiteral( "$vertex_y - 1500" ), QString() );
+
+  QVERIFY( !transformVertex.calculate( layer.get() ) );
+
+  // transforme with intersecting existing faces
+  transformVertex.clear();
+  transformVertex.setInputVertices( {2, 3, 7} );
+  transformVertex.setExpressions( QStringLiteral( "$vertex_x+700" ), QStringLiteral( "$vertex_y + 700" ), QString() );
+
+  QVERIFY( transformVertex.calculate( layer.get() ) );
+
+  //add a other face that will intersects transformed ones
+  layer->meshEditor()->addVertices(
+  {
+    {2000, 3500, 0},  // 8
+    {2500, 3500, 10}, // 9
+    {2500, 4000, 20}} // 10
+  , 1 );
+
+  QVERIFY( !transformVertex.calculate( layer.get() ) );
+
+  layer->meshEditor()->addFace( {8, 9, 10} );
+
+  QVERIFY( !transformVertex.calculate( layer.get() ) );
+
+  // undo adding vertices and face
+  layer->undoStack()->undo();
+  layer->undoStack()->undo();
+
+  QVERIFY( transformVertex.calculate( layer.get() ) );
+
+  // composed expression
+  transformVertex.clear();
+  transformVertex.setInputVertices( {0, 1, 2, 3, 4, 5, 6, 7} );
+  transformVertex.setExpressions( QStringLiteral( "$vertex_y + 50" ),
+                                  QStringLiteral( "-$vertex_x" ),
+                                  QStringLiteral( "if( $vertex_x <= 1500 , $vertex_z + 80 , $vertex_z - 150)" ) );
+
+  QVERIFY( transformVertex.calculate( layer.get() ) );
+  layer->meshEditor()->advancedEdit( &transformVertex );
+
+  mesh = *layer->nativeMesh();
+
+  QVERIFY( QgsPoint( 2050, -1000, 280 ).compareTo( &mesh.vertices.at( 0 ) ) == 0 );
+  QVERIFY( QgsPoint( 2050, -2000, 50 ).compareTo( &mesh.vertices.at( 1 ) )  == 0 );
+  QVERIFY( QgsPoint( 2550, -2500, 650 ).compareTo( &mesh.vertices.at( 2 ) )  == 0 );
+  QVERIFY( QgsPoint( 3050, -2000, 50 ).compareTo( &mesh.vertices.at( 3 ) )  == 0 );
+  QVERIFY( QgsPoint( 3050, -1000, 280 ).compareTo( &mesh.vertices.at( 4 ) )  == 0 );
+  QVERIFY( QgsPoint( 2550, -500, 880 ).compareTo( &mesh.vertices.at( 5 ) )  == 0 );
+  QVERIFY( QgsPoint( 1550, -1500, 880 ).compareTo( &mesh.vertices.at( 6 ) )  == 0 );
+  QVERIFY( QgsPoint( 3550, -1500, 880 ).compareTo( &mesh.vertices.at( 7 ) )  == 0 );
 }
 
 QGSTEST_MAIN( TestQgsMeshEditor )

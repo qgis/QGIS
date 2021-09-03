@@ -153,6 +153,15 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     void changeZValues( const QList<int> &verticesIndexes, const QList<double> &newValues );
 
     /**
+     * Returns TRUE if faces with index in \a transformedFaces can be transformed without obtaining topologic or geometrical errors
+     * condidering the transform function \a transformFunction
+     *
+     * The transform function takes a vertex index in parameter and return a QgsMeshVertex object with transformed coordinates.
+     * This transformation is done in layer coordinates
+     */
+    bool canBeTransformed( const QList<int> &transformedFaces, const std::function<const QgsMeshVertex( int )> &transformFunction ) const; SIP_SKIP
+
+    /**
      * Changes the (X,Y) coordinates values of the vertices with indexes in \a vertices indexes with the values in \a newValues.
      * The caller has the responsibility to check if changing the vertices coordinates does not lead to topological errors
      */
@@ -175,7 +184,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     //----------- access element methods
 
     //! Returns all the free vertices indexes
-    QList<int> freeVerticesIndexes();
+    QList<int> freeVerticesIndexes() const;
 
     //! Returns whether the vertex with index \a vertexIndex is on a boundary
     bool isVertexOnBoundary( int vertexIndex ) const;

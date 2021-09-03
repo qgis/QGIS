@@ -171,7 +171,7 @@ Returns whether the mesh has been modified
 %End
 
 
-    QList<int> freeVerticesIndexes();
+    QList<int> freeVerticesIndexes() const;
 %Docstring
 Returns all the free vertices indexes
 %End

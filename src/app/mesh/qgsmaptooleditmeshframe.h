@@ -31,6 +31,7 @@ class QgsRubberBand;
 class QgsVertexMarker;
 class QgsDoubleSpinBox;
 class QgsSnapIndicator;
+class QgsMeshTransformCoordinatesDockWidget;
 
 
 class APP_EXPORT QgsZValueWidget : public QWidget
@@ -76,6 +77,9 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     bool populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEvent *event ) override;
     Flags flags() const override;
 
+  signals:
+    void selectionChange( QgsMeshLayer *meshLayer, const QList<int> verticesIndex );
+
   protected:
     void cadCanvasPressEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
@@ -94,6 +98,8 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void removeSelectedVerticesFromMesh( bool fillHole );
     void removeFacesFromMesh();
     void splitSelectedFaces();
+
+    void triggerTransformCoordinatesDockWidget( bool checked );
 
   private:
 
@@ -156,14 +162,14 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void prepareSelection();
     void updateSelectecVerticesMarker();
 
-    bool testBorderMovingFace( const QgsMeshFace &borderMovingfaces, const QgsVector &translation ) const;
+    void setMovingRubberBandValidity( bool valid );
 
     // members
     struct SelectedVertexData
     {
       //Here edges are the indexes of the face where the following vertices (ccw) is the other extremity of the edge
-      QList<Edge> selectedEdges;
-      QList<Edge> meshFixedEdges;
+      QList<Edge> meshFixedEdges; // that have one extremity not on the selection
+      QList<Edge> borderEdges; // that are on the border of the selection
     };
 
     bool mIsInitialized = false;
@@ -223,7 +229,6 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     bool mCanMovingStart = false;
     QgsRubberBand *mMovingEdgesRubberband = nullptr; //own by map canvas
     QgsRubberBand *mMovingFacesRubberband = nullptr; //own by map canvas
-    QgsRubberBand *mMovingVerticesRubberband = nullptr; //own by map canvas
     bool mIsMovingAllowed = false;
 
     //! members for edge flip
@@ -237,6 +242,8 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 
     QgsZValueWidget *mZValueWidget = nullptr; //own by QgsUserInputWidget instance
 
+    QgsMeshTransformCoordinatesDockWidget *mTransformDockWidget = nullptr; //own by the application
+
     QAction *mActionRemoveVerticesFillingHole = nullptr;
     QAction *mActionRemoveVerticesWithoutFillingHole = nullptr;
     QAction *mActionRemoveFaces = nullptr;
@@ -247,6 +254,8 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 
     QAction *mActionDigitizing = nullptr;
     QAction *mActionSelectByPolygon = nullptr;
+
+    QAction *mActionTransformCoordinates = nullptr;
 
     friend class TestQgsMapToolEditMesh;
 };
