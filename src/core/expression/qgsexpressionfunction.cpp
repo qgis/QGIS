@@ -3650,9 +3650,20 @@ static QVariant fcnStraightDistance2d( const QVariantList &values, const QgsExpr
   return QVariant( curve->straightDistance2d() );
 }
 
+static QVariant fcnRoundness( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  const QgsCurvePolygon *poly = geom.constGet() ? qgsgeometry_cast< const QgsCurvePolygon * >( geom.constGet()->simplifiedTypeRef() ) : nullptr;
 
+  if ( !poly )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `roundness` requires a polygon geometry or a multi polygon geometry with a single part." ) );
+    return QVariant();
+  }
 
-static QVariant fcnFlipCoordinates( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+  return QVariant( poly->roundness() );
+}
+
 {
   QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   if ( geom.isNull() )
@@ -6859,6 +6870,10 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     functions << perimeterFunc;
 
     functions << new QgsStaticExpressionFunction( QStringLiteral( "perimeter" ),  QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnPerimeter, QStringLiteral( "GeometryGroup" ) );
+
+    functions << new QgsStaticExpressionFunction( QStringLiteral( "roundness" ),
+              QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+              fcnRoundness, QStringLiteral( "GeometryGroup" ) );
 
     QgsStaticExpressionFunction *xFunc = new QgsStaticExpressionFunction( QStringLiteral( "$x" ), 0, fcnX, QStringLiteral( "GeometryGroup" ), QString(), true );
     xFunc->setIsStatic( false );
