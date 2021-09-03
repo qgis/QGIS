@@ -658,6 +658,11 @@ Qgis.AnnotationItemFlag.__doc__ = 'Flags for annotation items.\n\n.. versionadde
 # --
 Qgis.AnnotationItemFlag.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.AnnotationItemGuiFlag.FlagNoCreationTools.__doc__ = "Do not show item creation tools for the item type"
+Qgis.AnnotationItemGuiFlag.__doc__ = 'Flags for controlling how an annotation item behaves in the GUI.\n\n.. versionadded:: 3.22\n\n' + '* ``FlagNoCreationTools``: ' + Qgis.AnnotationItemGuiFlag.FlagNoCreationTools.__doc__
+# --
+Qgis.AnnotationItemGuiFlag.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.AnnotationItemNodeType.VertexHandle.__doc__ = "Node is a handle for manipulating vertices"
 Qgis.AnnotationItemNodeType.__doc__ = 'Annotation item node types.\n\n.. versionadded:: 3.22\n\n' + '* ``VertexHandle``: ' + Qgis.AnnotationItemNodeType.VertexHandle.__doc__
 # --
