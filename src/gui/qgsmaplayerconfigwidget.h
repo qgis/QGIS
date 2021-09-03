@@ -44,7 +44,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetContext
     QString annotationId() const { return mAnnotationId; }
 
     /**
-     * Sets the item \id of the target annotation, when modifying
+     * Sets the item \a id of the target annotation, when modifying
      * an annotation from a QgsAnnotationLayer.
      *
      * \see annotationId()

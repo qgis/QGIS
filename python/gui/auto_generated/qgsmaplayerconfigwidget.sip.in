@@ -32,7 +32,7 @@ an annotation from a :py:class:`QgsAnnotationLayer`.
 
     void setAnnotationId( const QString &id );
 %Docstring
-Sets the item \id of the target annotation, when modifying
+Sets the item ``id`` of the target annotation, when modifying
 an annotation from a :py:class:`QgsAnnotationLayer`.
 
 .. seealso:: :py:func:`annotationId`
