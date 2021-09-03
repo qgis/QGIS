@@ -1245,6 +1245,14 @@ void QgsWmsProvider::createTileRequestsWMSC( const QgsWmtsTileMatrix *tm, const 
   {
     setQueryItem( query, QStringLiteral( "TRANSPARENT" ), QStringLiteral( "TRUE" ) );  // some servers giving error for 'true' (lowercase)
   }
+
+  // For WMSC-T layers
+  if ( temporalCapabilities() &&
+       temporalCapabilities()->hasTemporalCapabilities() )
+  {
+    addWmstParameters( query );
+  }
+
   url.setQuery( query );
 
   int i = 0;
