@@ -224,6 +224,7 @@
 %Include auto_generated/qgsvertexmarker.sip
 %Include auto_generated/qgsvscrollarea.sip
 %Include auto_generated/qgswindowmanagerinterface.sip
+%Include auto_generated/annotations/qgsmaptoolmodifyannotation.sip
 %Include auto_generated/attributetable/qgsattributetabledelegate.sip
 %Include auto_generated/attributetable/qgsattributetablefiltermodel.sip
 %Include auto_generated/attributetable/qgsattributetablemodel.sip
