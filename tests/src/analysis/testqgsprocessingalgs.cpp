@@ -103,6 +103,9 @@ class TestQgsProcessingAlgs: public QObject
     void polygonsToLines_data();
     void polygonsToLines();
 
+    void roundness_data();
+    void roundness();
+
     void createConstantRaster_data();
     void createConstantRaster();
 
@@ -1436,6 +1439,44 @@ void TestQgsProcessingAlgs::polygonsToLines()
   const QgsFeature result = runForFeature( alg, feature, QStringLiteral( "Polygon" ) );
 
   QVERIFY2( result.geometry().equals( expectedGeometry ), QStringLiteral( "Result: %1, Expected: %2" ).arg( result.geometry().asWkt(), expectedGeometry.asWkt() ).toUtf8().constData() );
+}
+
+void TestQgsProcessingAlgs::roundness_data()
+{
+  QTest::addColumn<QgsGeometry>( "sourceGeometry" );
+  QTest::addColumn<double>( "expectedAttribute" );
+
+  QTest::newRow( "Polygon" )
+      << QgsGeometry::fromWkt( "POLYGON(( 0 0, 0 1, 1 1, 1 0, 0 0 ))" )
+      << 0.785;
+
+  QTest::newRow( "Thin polygon" )
+      << QgsGeometry::fromWkt( "POLYGON(( 0 0, 0.5 0, 1 0, 0.6 0, 0 0 ))" )
+      <<  0.0;
+
+  QTest::newRow( "Circle polygon" )
+      << QgsGeometry::fromWkt( "CurvePolygon (CompoundCurve (CircularString (0 0, 0 1, 1 1, 1 0, 0 0)))" )
+      << 1.0;
+
+  QTest::newRow( "Polygon with hole" )
+      << QgsGeometry::fromWkt( "POLYGON(( 0 0, 0 3, 3 3, 3 0, 0 0), (1 1, 1 2, 2 2, 2 1, 1 1))" )
+      << 0.393;
+}
+
+void TestQgsProcessingAlgs::roundness()
+{
+  QFETCH( QgsGeometry, sourceGeometry );
+  QFETCH( double, expectedAttribute );
+
+  const std::unique_ptr< QgsProcessingFeatureBasedAlgorithm > alg( featureBasedAlg( "native:roundness" ) );
+
+  QgsFeature feature;
+  feature.setGeometry( sourceGeometry );
+
+  const QgsFeature result = runForFeature( alg, feature, QStringLiteral( "Polygon" ) );
+
+  double roundnessResult = result.attribute( QStringLiteral( "roundness" ) ).toDouble();
+  QCOMPARE( std::round( roundnessResult * 1000 ) / 1000, expectedAttribute );
 }
 
 Q_DECLARE_METATYPE( Qgis::DataType )

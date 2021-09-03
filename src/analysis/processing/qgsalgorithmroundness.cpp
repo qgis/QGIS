@@ -23,7 +23,7 @@
 
 QString QgsRoundnessAlgorithm::name() const
 {
-  return QStringLiteral( "roundess" );
+  return QStringLiteral( "roundness" );
 }
 
 QString QgsRoundnessAlgorithm::displayName() const
