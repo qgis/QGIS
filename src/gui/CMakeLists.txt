@@ -94,6 +94,8 @@ set(QGIS_GUI_SRCS
   attributetable/qgsorganizetablecolumnsdialog.cpp
   attributetable/qgsfeaturefilterwidget.cpp
 
+  annotations/qgsmaptoolmodifyannotation.cpp
+
   auth/qgsauthauthoritieseditor.cpp
   auth/qgsauthcertificateinfo.cpp
   auth/qgsauthcertificatemanager.cpp
@@ -878,6 +880,8 @@ set(QGIS_GUI_HDRS
   qgsvscrollarea.h
   qgswindowmanagerinterface.h
 
+  annotations/qgsmaptoolmodifyannotation.h
+
   attributeformconfig/qgsattributeformcontaineredit.h
   attributeformconfig/qgsattributetypedialog.h
   attributeformconfig/qgsattributewidgetedit.h
@@ -1417,6 +1421,7 @@ endif()
 
 target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/annotations
   ${CMAKE_SOURCE_DIR}/src/gui/attributeformconfig
   ${CMAKE_SOURCE_DIR}/src/gui/symbology
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable
