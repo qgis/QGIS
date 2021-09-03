@@ -700,6 +700,17 @@ void QgsLayerStylingWidget::setCurrentPage( QgsLayerStylingWidget::Page page )
   }
 }
 
+void QgsLayerStylingWidget::setAnnotationItem( QgsAnnotationLayer *layer, const QString &itemId )
+{
+  mContext.setAnnotationId( itemId );
+  setLayer( layer );
+
+  if ( QgsMapLayerConfigWidget *configWidget = qobject_cast< QgsMapLayerConfigWidget * >( mWidgetStack->mainPanel() ) )
+  {
+    configWidget->setContext( mContext );
+  }
+}
+
 void QgsLayerStylingWidget::layerAboutToBeRemoved( QgsMapLayer *layer )
 {
   if ( layer == mCurrentLayer )

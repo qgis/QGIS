@@ -104,6 +104,9 @@
 #include "qgsprovidersublayersdialog.h"
 #include "qgsmaplayerfactory.h"
 #include "qgsbrowserwidget.h"
+#include "annotations/qgsannotationitempropertieswidget.h"
+#include "qgsmaptoolmodifyannotation.h"
+#include "qgsannotationlayer.h"
 
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
@@ -1338,6 +1341,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   registerMapLayerPropertiesFactory( new QgsPointCloudLayer3DRendererWidgetFactory( this ) );
 #endif
   registerMapLayerPropertiesFactory( new QgsPointCloudElevationPropertiesWidgetFactory( this ) );
+  registerMapLayerPropertiesFactory( new QgsAnnotationItemPropertiesWidgetFactory( this ) );
 
   activateDeactivateLayerRelatedActions( nullptr ); // after members were created
 
@@ -1660,6 +1664,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   fileNewBlank(); // prepare empty project, also skips any default templates from loading
   updateCrsStatusBar();
   endProfile();
+
+  connect( qobject_cast< QgsMapToolModifyAnnotation * >( mMapTools->mapTool( QgsAppMapTools::AnnotationEdit ) ), &QgsMapToolModifyAnnotation::itemSelected,
+           mMapStyleWidget, &QgsLayerStylingWidget::setAnnotationItem );
 
   // request notification of FileOpen events (double clicking a file icon in Mac OS X Finder)
   // should come after fileNewBlank to ensure project is properly set up to receive any data source files

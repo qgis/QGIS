@@ -47,7 +47,8 @@
 #include "qgslocatorwidget.h"
 #include "qgslocator.h"
 #include "qgsmessagebar.h"
-
+#include "qgsappmaptools.h"
+#include "qgsmaptoolmodifyannotation.h"
 
 QgisAppInterface::QgisAppInterface( QgisApp *_qgis )
   : qgis( _qgis )
@@ -906,4 +907,9 @@ void QgisAppInterface::setGpsPanelConnection( QgsGpsConnection *connection )
 QList<QgsMapDecoration *> QgisAppInterface::activeDecorations()
 {
   return qgis->activeDecorations();
+}
+
+QgsMapToolModifyAnnotation *QgisAppInterface::modifyAnnotationTool()
+{
+  return qobject_cast< QgsMapToolModifyAnnotation * >( qgis->mMapTools->mapTool( QgsAppMapTools::AnnotationEdit ) );
 }

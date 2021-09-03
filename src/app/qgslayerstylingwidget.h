@@ -48,6 +48,7 @@ class QgsPointCloudLayer3DRendererWidget;
 class QgsMessageBar;
 class QgsVectorTileBasicRendererWidget;
 class QgsVectorTileBasicLabelingWidget;
+class QgsAnnotationLayer;
 
 class APP_EXPORT QgsLayerStyleManagerWidgetFactory : public QgsMapLayerConfigWidgetFactory
 {
@@ -128,6 +129,11 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
      * \param page standard page to display
      */
     void setCurrentPage( QgsLayerStylingWidget::Page page );
+
+    /**
+     * Sets an annotation item to show in the widget.
+     */
+    void setAnnotationItem( QgsAnnotationLayer *layer, const QString &itemId );
 
   private slots:
 
