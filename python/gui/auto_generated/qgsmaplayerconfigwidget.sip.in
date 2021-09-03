@@ -114,7 +114,7 @@ Reset to original (vector layer) values
 .. versionadded:: 3.14
 %End
 
-    virtual void setContext( const QgsMapLayerConfigWidgetContext &context );
+    virtual void setMapLayerConfigWidgetContext( const QgsMapLayerConfigWidgetContext &context );
 %Docstring
 Sets the ``context`` under which the widget is being shown.
 
