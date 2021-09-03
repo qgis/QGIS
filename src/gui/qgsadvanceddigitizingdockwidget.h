@@ -438,6 +438,18 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     */
     void setDistance( const QString &value, WidgetSetMode mode );
 
+    /**
+     * Convenient method to get the Z value from the line edit wiget
+     * \since QGIS 3.22
+     */
+    double getLineZ( ) const;
+
+    /**
+     * Convenient method to get the M value from the line edit wiget
+     * \since QGIS 3.22
+     */
+    double getLineM( ) const;
+
   signals:
 
     /**

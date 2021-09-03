@@ -455,6 +455,20 @@ Can be used to set constraints by external widgets.
 .. versionadded:: 3.8
 %End
 
+    double getLineZ( ) const;
+%Docstring
+Convenient method to get the Z value from the line edit wiget
+
+.. versionadded:: 3.22
+%End
+
+    double getLineM( ) const;
+%Docstring
+Convenient method to get the M value from the line edit wiget
+
+.. versionadded:: 3.22
+%End
+
   signals:
 
     void pushWarning( const QString &message );
