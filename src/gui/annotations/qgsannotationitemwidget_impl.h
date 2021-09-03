@@ -28,6 +28,10 @@ class QgsAnnotationPolygonItem;
 class QgsAnnotationLineItem;
 class QgsAnnotationMarkerItem;
 
+#define SIP_NO_FILE
+
+///@cond PRIVATE
+
 class QgsAnnotationPolygonItemWidget : public QgsAnnotationItemBaseWidget
 {
     Q_OBJECT
@@ -90,5 +94,7 @@ class QgsAnnotationMarkerItemWidget : public QgsAnnotationItemBaseWidget
     bool mBlockChangedSignal = false;
     std::unique_ptr< QgsAnnotationMarkerItem> mItem;
 };
+
+///@endcond
 
 #endif // QGSANNOTATIONITEMWIDGETIMPL_H
