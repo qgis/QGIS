@@ -56,6 +56,7 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
     void resetShortcut();
     void setNoShortcut();
     void loadShortcuts();
+    void saveShortcutsPdf();
     void mLeFilter_textChanged( const QString &text );
 
     void actionChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous );
@@ -88,6 +89,7 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
     QMenu *mSaveMenu = nullptr;
     QAction *mSaveUserShortcuts = nullptr;
     QAction *mSaveAllShortcuts = nullptr;
+    QAction *mSaveAsPdf = nullptr;
 
     bool mGettingShortcut = false;
     int mModifiers = 0, mKey = 0;
