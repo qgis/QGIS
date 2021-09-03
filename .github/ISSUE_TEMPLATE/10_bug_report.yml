@@ -1,4 +1,4 @@
-name: Bug/Crash report
+name: Bug/Crash report but not related to a third party plugin, read below for plugins
 description: Create a bug report to help us improve QGIS.
 labels:
   - 'Bug'
