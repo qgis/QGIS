@@ -70,6 +70,15 @@ Ownership of ``item`` is transferred to the layer.
 Returns the unique ID assigned to the item.
 %End
 
+    void replaceItem( const QString &id, QgsAnnotationItem *item /Transfer/ );
+%Docstring
+Replaces the existing item with matching ``id`` with a new ``item``.
+
+Ownership of ``item`` is transferred to the layer.
+
+.. versionadded:: 3.22
+%End
+
     bool removeItem( const QString &id );
 %Docstring
 Removes (and deletes) the item with matching ``id``.

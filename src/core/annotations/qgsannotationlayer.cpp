@@ -135,6 +135,32 @@ QString QgsAnnotationLayer::addItem( QgsAnnotationItem *item )
   return uuid;
 }
 
+void QgsAnnotationLayer::replaceItem( const QString &id, QgsAnnotationItem *item )
+{
+  std::unique_ptr< QgsAnnotationItem> prevItem( mItems.take( id ) );
+
+  if ( prevItem )
+  {
+    auto it = mNonIndexedItems.find( id );
+    if ( it == mNonIndexedItems.end() )
+    {
+      mSpatialIndex->remove( id, prevItem->boundingBox() );
+    }
+    else
+    {
+      mNonIndexedItems.erase( it );
+    }
+  }
+
+  mItems.insert( id, item );
+  if ( item->flags() & Qgis::AnnotationItemFlag::ScaleDependentBoundingBox )
+    mNonIndexedItems.insert( id );
+  else
+    mSpatialIndex->insert( id, item->boundingBox() );
+
+  triggerRepaint();
+}
+
 bool QgsAnnotationLayer::removeItem( const QString &id )
 {
   if ( !mItems.contains( id ) )

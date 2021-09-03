@@ -114,6 +114,25 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         layer.clear()
         self.assertEqual(len(layer.items()), 0)
 
+    def testReplaceItem(self):
+        layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+
+        polygon_item_id = layer.addItem(QgsAnnotationPolygonItem(
+            QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)]))))
+        linestring_item_id = layer.addItem(
+            QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)])))
+        marker_item_id = layer.addItem(QgsAnnotationMarkerItem(QgsPoint(12, 13)))
+
+        self.assertEqual(layer.item(polygon_item_id).geometry().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 12 13))')
+        self.assertEqual(layer.item(linestring_item_id).geometry().asWkt(), 'LineString (11 13, 12 13, 12 15)')
+        self.assertEqual(layer.item(marker_item_id).geometry().asWkt(), 'POINT(12 13)')
+
+        layer.replaceItem(linestring_item_id,
+                          QgsAnnotationLineItem(QgsLineString([QgsPoint(21, 13), QgsPoint(22, 13), QgsPoint(22, 15)])))
+        self.assertEqual(layer.item(polygon_item_id).geometry().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 12 13))')
+        self.assertEqual(layer.item(linestring_item_id).geometry().asWkt(), 'LineString (21 13, 22 13, 22 15)')
+        self.assertEqual(layer.item(marker_item_id).geometry().asWkt(), 'POINT(12 13)')
+
     def testReset(self):
         layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
         self.assertTrue(layer.isValid())

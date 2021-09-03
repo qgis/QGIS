@@ -98,6 +98,15 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     QString addItem( QgsAnnotationItem *item SIP_TRANSFER );
 
     /**
+     * Replaces the existing item with matching \a id with a new \a item.
+     *
+     * Ownership of \a item is transferred to the layer.
+     *
+     * \since QGIS 3.22
+     */
+    void replaceItem( const QString &id, QgsAnnotationItem *item SIP_TRANSFER );
+
+    /**
      * Removes (and deletes) the item with matching \a id.
      */
     bool removeItem( const QString &id );
