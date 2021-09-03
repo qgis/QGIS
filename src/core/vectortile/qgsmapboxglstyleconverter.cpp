@@ -2003,6 +2003,7 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateColorByZoom( const QVaria
     return QgsProperty();
 
   QString caseString = QStringLiteral( "CASE " );
+  QString colorComponent( "color_part(%1,'%2')" );
 
   for ( int i = 0; i < stops.length() - 1; ++i )
   {
@@ -2011,40 +2012,27 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateColorByZoom( const QVaria
     // step top zoom
     const QString tz = stops.at( i + 1 ).toList().value( 0 ).toString();
 
-    const QColor bottomColor = parseColor( stops.at( i ).toList().value( 1 ), context );
-    const QColor topColor = parseColor( stops.at( i + 1 ).toList().value( 1 ), context );
-
-    int bcHue;
-    int bcSat;
-    int bcLight;
-    int bcAlpha;
-    colorAsHslaComponents( bottomColor, bcHue, bcSat, bcLight, bcAlpha );
-    int tcHue;
-    int tcSat;
-    int tcLight;
-    int tcAlpha;
-    colorAsHslaComponents( topColor, tcHue, tcSat, tcLight, tcAlpha );
+    const QVariant bcVariant = stops.at( i ).toList().value( 1 );
+    const QVariant tcVariant = stops.at( i + 1 ).toList().value( 1 );
+    QString bottomColor = parseColorExpression( bcVariant, context );
+    QString topColor = parseColorExpression( tcVariant, context );
 
     caseString += QStringLiteral( "WHEN @vector_tile_zoom >= %1 AND @vector_tile_zoom < %2 THEN color_hsla("
                                   "%3, %4, %5, %6) " ).arg( bz, tz,
-                                      interpolateExpression( bz.toDouble(), tz.toDouble(), bcHue, tcHue, base, context ),
-                                      interpolateExpression( bz.toDouble(), tz.toDouble(), bcSat, tcSat, base, context ),
-                                      interpolateExpression( bz.toDouble(), tz.toDouble(), bcLight, tcLight, base, context ),
-                                      interpolateExpression( bz.toDouble(), tz.toDouble(), bcAlpha, tcAlpha, base, context ) );
+                                      interpolateExpression( bz.toDouble(), tz.toDouble(), colorComponent.arg( bottomColor ).arg( "hsl_hue" ), colorComponent.arg( topColor ).arg( "hsl_hue" ), base, context ),
+                                      interpolateExpression( bz.toDouble(), tz.toDouble(), colorComponent.arg( bottomColor ).arg( "hsl_saturation" ), colorComponent.arg( topColor ).arg( "hsl_saturation" ), base, context ),
+                                      interpolateExpression( bz.toDouble(), tz.toDouble(), colorComponent.arg( bottomColor ).arg( "lightness" ), colorComponent.arg( topColor ).arg( "lightness" ), base, context ),
+                                      interpolateExpression( bz.toDouble(), tz.toDouble(), colorComponent.arg( bottomColor ).arg( "alpha" ), colorComponent.arg( topColor ).arg( "alpha" ), base, context ) );
   }
 
   // top color
   const QString tz = stops.last().toList().value( 0 ).toString();
-  const QColor topColor = parseColor( stops.last().toList().value( 1 ), context );
-  int tcHue;
-  int tcSat;
-  int tcLight;
-  int tcAlpha;
-  colorAsHslaComponents( topColor, tcHue, tcSat, tcLight, tcAlpha );
+  const QVariant tcVariant = stops.last().toList().value( 1 );
+  QString topColor = parseColorExpression( tcVariant, context );
 
   caseString += QStringLiteral( "WHEN @vector_tile_zoom >= %1 THEN color_hsla(%2, %3, %4, %5) "
                                 "ELSE color_hsla(%2, %3, %4, %5) END" ).arg( tz )
-                .arg( tcHue ).arg( tcSat ).arg( tcLight ).arg( tcAlpha );
+                .arg( colorComponent.arg( topColor ).arg( "hsl_hue" ) ).arg( colorComponent.arg( topColor ).arg( "hsl_saturation" ) ).arg( colorComponent.arg( topColor ).arg( "lightness" ) ).arg( colorComponent.arg( topColor ).arg( "alpha" ) );
 
 
   if ( !stops.empty() && defaultColor )
@@ -2458,6 +2446,15 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateListByZoom( const QVarian
   return QgsProperty();
 }
 
+QString QgsMapBoxGlStyleConverter::parseColorExpression( const QVariant &colorExpression, QgsMapBoxGlStyleConversionContext &context )
+{
+  if ( ( QMetaType::Type )colorExpression.type() == QMetaType::QVariantList )
+  {
+    return parseExpression( colorExpression.toList(), context );
+  }
+  return parseValue( colorExpression, context );
+}
+
 QColor QgsMapBoxGlStyleConverter::parseColor( const QVariant &color, QgsMapBoxGlStyleConversionContext &context )
 {
   if ( color.type() != QVariant::String )
@@ -2646,7 +2643,7 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
         QStringList parts;
         for ( const QVariant &p : expression.at( 2 ).toList() )
         {
-          parts << QgsExpression::quotedValue( p );
+          parts << parseValue( p, context );
         }
 
         if ( parts.size() > 1 )
@@ -2689,9 +2686,9 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
           caseString += QStringLiteral( "WHEN (%1) " ).arg( QgsExpression::createFieldEqualityExpression( attribute, expression.at( i ) ) );
         }
 
-        caseString += QStringLiteral( "THEN %1 " ).arg( QgsExpression::quotedValue( expression.at( i + 1 ) ) );
+        caseString += QStringLiteral( "THEN %1 " ).arg( parseValue( expression.at( i + 1 ), context ) );
       }
-      caseString += QStringLiteral( "ELSE %1 END" ).arg( QgsExpression::quotedValue( expression.last() ) );
+      caseString += QStringLiteral( "ELSE %1 END" ).arg( parseValue( expression.last(), context ) );
       return caseString;
     }
   }
@@ -2924,6 +2921,8 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64( const QVariant &value
 
 QString QgsMapBoxGlStyleConverter::parseValue( const QVariant &value, QgsMapBoxGlStyleConversionContext &context )
 {
+  QColor c;
+  QString debug;
   switch ( value.type() )
   {
     case QVariant::List:
@@ -2931,7 +2930,12 @@ QString QgsMapBoxGlStyleConverter::parseValue( const QVariant &value, QgsMapBoxG
       return parseExpression( value.toList(), context );
 
     case QVariant::String:
-      return QgsExpression::quotedValue( value.toString() );
+      c = parseColor( value, context );
+      if ( !c.isValid() )
+      {
+        return QgsExpression::quotedValue( value.toString() );
+      }
+      return QString( "color_rgba(%1,%2,%3,%4)" ).arg( c.red() ).arg( c.green() ).arg( c.blue() ).arg( c.alpha() );
 
     case QVariant::Int:
     case QVariant::Double:

@@ -451,6 +451,14 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
         int maxOpacity = 255, QColor *defaultColor SIP_OUT = nullptr, double *defaultNumber SIP_OUT = nullptr );
 
     /**
+     * Converts an expression representing a color to a string (can be color string or an expression where a color is expected)
+     * \param colorExpression the color expression
+     * \param context the style conversion context
+     * @return the QGIS expression string
+     */
+    static QString parseColorExpression( const QVariant &colorExpression, QgsMapBoxGlStyleConversionContext &context );
+
+    /**
      * Parses a \a color in one of these supported formats:
      *
      * - \c \#fff or \c \#ffffff

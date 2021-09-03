@@ -457,6 +457,15 @@ Interpolates a list which starts with the interpolate function.
    This is private API only, and may change in future QGIS versions
 %End
 
+    static QString parseColorExpression( const QVariant &colorExpression, QgsMapBoxGlStyleConversionContext &context );
+%Docstring
+Converts an expression representing a color to a string (can be color string or an expression where a color is expected)
+
+:param colorExpression: the color expression
+:param context: the style conversion context
+                @return the QGIS expression string
+%End
+
     static QColor parseColor( const QVariant &color, QgsMapBoxGlStyleConversionContext &context );
 %Docstring
 Parses a ``color`` in one of these supported formats:
