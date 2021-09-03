@@ -28,6 +28,7 @@
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutitemguiregistry.h"
 #include "qgslayoutviewrubberband.h"
+#include "qgsannotationitemguiregistry.h"
 #ifdef Q_OS_MACX
 #include "qgsmacnative.h"
 #elif defined (Q_OS_WIN)
@@ -124,6 +125,11 @@ QgsLayoutItemGuiRegistry *QgsGui::layoutItemGuiRegistry()
   return instance()->mLayoutItemGuiRegistry;
 }
 
+QgsAnnotationItemGuiRegistry *QgsGui::annotationItemGuiRegistry()
+{
+  return instance()->mAnnotationItemGuiRegistry;
+}
+
 QgsProcessingGuiRegistry *QgsGui::processingGuiRegistry()
 {
   return instance()->mProcessingGuiRegistry;
@@ -196,6 +202,7 @@ QgsGui::~QgsGui()
   delete mDataItemGuiProviderRegistry;
   delete mProcessingRecentAlgorithmLog;
   delete mLayoutItemGuiRegistry;
+  delete mAnnotationItemGuiRegistry;
   delete mLayerTreeEmbeddedWidgetRegistry;
   delete mEditorWidgetRegistry;
   delete mMapLayerActionRegistry;
@@ -281,6 +288,10 @@ QgsGui::QgsGui()
   mLayerTreeEmbeddedWidgetRegistry = new QgsLayerTreeEmbeddedWidgetRegistry();
   mMapLayerActionRegistry = new QgsMapLayerActionRegistry();
   mLayoutItemGuiRegistry = new QgsLayoutItemGuiRegistry();
+
+  mAnnotationItemGuiRegistry = new QgsAnnotationItemGuiRegistry();
+  mAnnotationItemGuiRegistry->addDefaultItems();
+
   mWidgetStateHelper = new QgsWidgetStateHelper();
   mProcessingRecentAlgorithmLog = new QgsProcessingRecentAlgorithmLog();
   mProcessingGuiRegistry = new QgsProcessingGuiRegistry();

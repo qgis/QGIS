@@ -480,6 +480,13 @@ The development version
     typedef QFlags<Qgis::AnnotationItemFlag> AnnotationItemFlags;
 
 
+    enum class AnnotationItemGuiFlag
+    {
+      FlagNoCreationTools,
+    };
+    typedef QFlags<Qgis::AnnotationItemGuiFlag> AnnotationItemGuiFlags;
+
+
     enum class AnnotationItemNodeType
     {
       VertexHandle,
@@ -573,6 +580,8 @@ QFlags<Qgis::GeometryValidityFlag> operator|(Qgis::GeometryValidityFlag f1, QFla
 QFlags<Qgis::FileOperationFlag> operator|(Qgis::FileOperationFlag f1, QFlags<Qgis::FileOperationFlag> f2);
 
 QFlags<Qgis::AnnotationItemFlag> operator|(Qgis::AnnotationItemFlag f1, QFlags<Qgis::AnnotationItemFlag> f2);
+
+QFlags<Qgis::AnnotationItemGuiFlag> operator|(Qgis::AnnotationItemGuiFlag f1, QFlags<Qgis::AnnotationItemGuiFlag> f2);
 
 
 

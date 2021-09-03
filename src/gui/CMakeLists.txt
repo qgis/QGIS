@@ -94,6 +94,8 @@ set(QGIS_GUI_SRCS
   attributetable/qgsorganizetablecolumnsdialog.cpp
   attributetable/qgsfeaturefilterwidget.cpp
 
+  annotations/qgsannotationitemguiregistry.cpp
+  annotations/qgsannotationitemwidget.cpp
   annotations/qgsmaptoolmodifyannotation.cpp
 
   auth/qgsauthauthoritieseditor.cpp
@@ -880,6 +882,8 @@ set(QGIS_GUI_HDRS
   qgsvscrollarea.h
   qgswindowmanagerinterface.h
 
+  annotations/qgsannotationitemguiregistry.h
+  annotations/qgsannotationitemwidget.h
   annotations/qgsmaptoolmodifyannotation.h
 
   attributeformconfig/qgsattributeformcontaineredit.h

@@ -755,6 +755,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( AnnotationItemFlag )
 
     /**
+     * Flags for controlling how an annotation item behaves in the GUI.
+     *
+     * \since QGIS 3.22
+     */
+    enum class AnnotationItemGuiFlag : int
+    {
+      FlagNoCreationTools = 1 << 0,  //!< Do not show item creation tools for the item type
+    };
+    Q_DECLARE_FLAGS( AnnotationItemGuiFlags, AnnotationItemGuiFlag )
+    Q_ENUM( AnnotationItemGuiFlag )
+
+    /**
      * Annotation item node types.
      *
      * \since QGIS 3.22
@@ -890,6 +902,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BabelCommandFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::GeometryValidityFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::FileOperationFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AnnotationItemFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AnnotationItemGuiFlags )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.
