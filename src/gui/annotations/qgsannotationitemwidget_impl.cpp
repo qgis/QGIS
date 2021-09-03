@@ -23,6 +23,8 @@
 #include "qgsannotationlineitem.h"
 #include "qgsannotationmarkeritem.h"
 
+///@cond PRIVATE
+
 QgsAnnotationPolygonItemWidget::QgsAnnotationPolygonItemWidget( QWidget *parent )
   : QgsAnnotationItemBaseWidget( parent )
 {
@@ -204,4 +206,5 @@ bool QgsAnnotationMarkerItemWidget::setNewItem( QgsAnnotationItem *item )
   return true;
 }
 
+///@endcond PRIVATE
 
