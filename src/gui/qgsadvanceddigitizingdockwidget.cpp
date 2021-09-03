@@ -338,7 +338,7 @@ void QgsAdvancedDigitizingDockWidget::switchZM( )
     mMLabel->setEnabled( QgsWkbTypes::hasM( type ) );
     mMLineEdit->setEnabled( QgsWkbTypes::hasM( type ) );
     if ( mMLineEdit->isEnabled() )
-      mZLineEdit->setText( QLocale().toString( QgsMapToolEdit( mMapCanvas ).defaultMValue(), 'f', 6 ) );
+      mMLineEdit->setText( QLocale().toString( QgsMapToolEdit( mMapCanvas ).defaultMValue(), 'f', 6 ) );
     else
       mMLineEdit->clear();
     mLockMButton->setEnabled( QgsWkbTypes::hasM( type ) );
