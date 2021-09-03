@@ -96,6 +96,7 @@ set(QGIS_GUI_SRCS
 
   annotations/qgsannotationitemguiregistry.cpp
   annotations/qgsannotationitemwidget.cpp
+  annotations/qgsannotationitemwidget_impl.cpp
   annotations/qgsmaptoolmodifyannotation.cpp
 
   auth/qgsauthauthoritieseditor.cpp

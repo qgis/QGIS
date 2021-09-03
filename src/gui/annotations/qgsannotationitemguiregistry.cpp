@@ -18,6 +18,7 @@
 #include "qgsannotationitemregistry.h"
 #include "qgsannotationitem.h"
 
+#include "qgsannotationitemwidget_impl.h"
 
 QgsAnnotationItem *QgsAnnotationItemAbstractGuiMetadata::createItem()
 {
@@ -33,6 +34,7 @@ QgsAnnotationItemGuiRegistry::QgsAnnotationItemGuiRegistry( QObject *parent )
   : QObject( parent )
 {
 }
+
 
 QgsAnnotationItemGuiRegistry::~QgsAnnotationItemGuiRegistry()
 {
