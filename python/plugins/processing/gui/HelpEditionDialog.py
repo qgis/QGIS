@@ -95,14 +95,14 @@ class HelpEditionDialog(BASE, WIDGET):
                 inputs += '<h3>' + param.description() + '</h3>\n'
                 inputs += '<p>' + self.getDescription(param.name()) + '</p>\n'
         if inputs:
-            s += self.tr('<h2>Input parameters</h2>\n') + inputs
+            s += '<h2>' + self.tr('Input parameters') + '</h2>\n' + inputs
         outputs = ""
         for out in self.alg.outputDefinitions():
             if self.getDescription(param.name()):
                 outputs += '<h3>' + out.description() + '</h3>\n'
                 outputs += '<p>' + self.getDescription(out.name()) + '</p>\n'
         if outputs:
-            s += self.tr('<h2>Outputs</h2>\n') + outputs
+            s += '<h2>' + self.tr('Outputs') + '</h2>\n' + outputs
         s += '<br>'
         if self.getDescription(self.ALG_CREATOR):
             s += '<p align=\"right\">' + self.tr('Algorithm author') + ': ' + self.getDescription(self.ALG_CREATOR) + '</p>'
