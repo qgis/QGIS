@@ -167,6 +167,59 @@ tests:
           fields:
             fid: skip
 
+  - algorithm: grass7:v.net.alloc
+    name: v.net.alloc to centers
+    params:
+      -g: false
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_EXPORT_NOCAT : false
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_LCO: ''
+      arc_column: 'cost'
+      arc_backward_column: 'costback'
+      center_cats: '1-100000'
+      method : 1
+      input:
+        name: network.shp
+        type: vector
+      points:
+        name: network_points.shp
+        type: vector
+      threshold: 50.0
+      where: ''
+    results:
+      output:
+        name: expected/v_net_alloc_to_centers.shp
+        type: vector
+
+  - algorithm: grass7:v.net.alloc
+    name: v.net.alloc from centers (default)
+    params:
+      -g: false
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_EXPORT_NOCAT : false
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_LCO: ''
+      arc_column: 'cost'
+      arc_backward_column: 'costback'
+      center_cats: '1-100000'
+      input:
+        name: network.shp
+        type: vector
+      points:
+        name: network_points.shp
+        type: vector
+      threshold: 50.0
+      where: ''
+    results:
+      output:
+        name: expected/v_net_alloc_from_centers.shp
+        type: vector
+
   - algorithm: grass7:v.net.allpairs
     name: v.net.allpairs
     params:
