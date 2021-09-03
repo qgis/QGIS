@@ -3664,6 +3664,9 @@ static QVariant fcnRoundness( const QVariantList &values, const QgsExpressionCon
   return QVariant( poly->roundness() );
 }
 
+
+
+static QVariant fcnFlipCoordinates( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   if ( geom.isNull() )
