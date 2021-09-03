@@ -203,7 +203,7 @@ void QgsMapToolLabel::createRubberBands()
 
     //fixpoint rubber band
     QgsPointXY fixPoint;
-    if ( currentLabelRotationPoint( fixPoint, false, false ) )
+    if ( currentLabelRotationPoint( fixPoint, false ) )
     {
       if ( mCanvas )
       {
@@ -389,7 +389,7 @@ bool QgsMapToolLabel::currentLabelPreserveRotation()
   return true; // default, so there is no accidental data loss
 }
 
-bool QgsMapToolLabel::currentLabelRotationPoint( QgsPointXY &pos, bool ignoreUpsideDown, bool rotatingUnpinned )
+bool QgsMapToolLabel::currentLabelRotationPoint( QgsPointXY &pos, bool ignoreUpsideDown )
 {
   QVector<QgsPointXY> cornerPoints = mCurrentLabel.pos.cornerPoints;
   if ( cornerPoints.size() < 4 )
@@ -418,14 +418,6 @@ bool QgsMapToolLabel::currentLabelRotationPoint( QgsPointXY &pos, bool ignoreUps
   QString haliString, valiString;
   currentAlignment( haliString, valiString );
 
-  // rotate unpinned labels (i.e. no hali/vali settings) as if hali/vali was Center/Half
-  if ( rotatingUnpinned )
-  {
-    haliString = QStringLiteral( "Center" );
-    valiString = QStringLiteral( "Half" );
-  }
-
-//  QFont labelFont = labelFontCurrentFeature();
   QFontMetricsF labelFontMetrics( mCurrentLabel.pos.labelFont );
 
   // NOTE: this assumes the label corner points comprise a rectangle and that the

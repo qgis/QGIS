@@ -138,7 +138,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
      * \param ignoreUpsideDown treat label as right-side-up
      * \returns TRUE in case of success
     */
-    bool currentLabelRotationPoint( QgsPointXY &pos, bool ignoreUpsideDown = false, bool rotatingUnpinned = false );
+    bool currentLabelRotationPoint( QgsPointXY &pos, bool ignoreUpsideDown = false );
 
     //! Creates label / feature / fixpoint rubber bands for the current label position
     void createRubberBands();
