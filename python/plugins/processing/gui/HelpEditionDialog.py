@@ -103,6 +103,13 @@ class HelpEditionDialog(BASE, WIDGET):
                 outputs += '<p>' + self.getDescription(out.name()) + '</p>\n'
         if outputs:
             s += self.tr('<h2>Outputs</h2>\n') + outputs
+        s += '<br>'
+        if self.getDescription(self.ALG_CREATOR):
+            s += '<p align=\"right\">' + self.tr('Algorithm author') + ': ' + self.getDescription(self.ALG_CREATOR) + '</p>'
+        if self.getDescription(self.ALG_HELP_CREATOR):
+            s += '<p align=\"right\">' + self.tr('Help author') + ': ' + self.getDescription(self.ALG_HELP_CREATOR) + '</p>'
+        if self.getDescription(self.ALG_VERSION):
+            s += '<p align=\"right\">' + self.tr('Algorithm version') + ': ' + self.getDescription(self.ALG_VERSION) + '</p>'
         return s
 
     def fillTree(self):
@@ -123,16 +130,13 @@ class HelpEditionDialog(BASE, WIDGET):
         for out in self.alg.outputDefinitions():
             item = TreeDescriptionItem(out.description(), out.name())
             outputsItem.addChild(item)
-        item = TreeDescriptionItem(self.tr('Algorithm created by'), self.ALG_CREATOR)
+        item = TreeDescriptionItem(self.tr('Algorithm author'), self.ALG_CREATOR)
         self.tree.addTopLevelItem(item)
-        item = TreeDescriptionItem(self.tr('Algorithm help written by'),
-                                   self.ALG_HELP_CREATOR)
+        item = TreeDescriptionItem(self.tr('Help author'), self.ALG_HELP_CREATOR)
         self.tree.addTopLevelItem(item)
-        item = TreeDescriptionItem(self.tr('Algorithm version'),
-                                   self.ALG_VERSION)
+        item = TreeDescriptionItem(self.tr('Algorithm version'), self.ALG_VERSION)
         self.tree.addTopLevelItem(item)
-        item = TreeDescriptionItem(self.tr('Documentation help URL'),
-                                   self.HELP_URL)
+        item = TreeDescriptionItem(self.tr('Documentation help URL (for help button)'), self.HELP_URL)
         self.tree.addTopLevelItem(item)
 
     def changeItem(self):
