@@ -338,7 +338,7 @@ void QgsAdvancedDigitizingDockWidget::switchZM( )
     mMLabel->setEnabled( QgsWkbTypes::hasM( type ) );
     mMLineEdit->setEnabled( QgsWkbTypes::hasM( type ) );
     if ( mMLineEdit->isEnabled() )
-      mMLineEdit->setText( QLocale().toString( 0.0, 'f', 6 ) );
+      mZLineEdit->setText( QLocale().toString( QgsMapToolEdit( mMapCanvas ).defaultMValue(), 'f', 6 ) );
     else
       mMLineEdit->clear();
     mLockMButton->setEnabled( QgsWkbTypes::hasM( type ) );
@@ -862,7 +862,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   else
   {
     point.setZ( QgsMapToolEdit( mMapCanvas ).defaultZValue() );
-    point.setM( 0.0 );
+    point.setM( QgsMapToolEdit( mMapCanvas ).defaultMValue() );
   }
   // update the point list
   updateCurrentPoint( point );
@@ -955,7 +955,7 @@ void QgsAdvancedDigitizingDockWidget::updateUnlockedConstraintValues( const QgsP
     }
     else
     {
-      mMConstraint->setValue( 0.0 );
+      mMConstraint->setValue( point.m() );
     }
   }
 }
