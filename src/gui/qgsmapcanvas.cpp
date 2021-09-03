@@ -153,6 +153,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   connect( QgsProject::instance(), &QgsProject::writeProject,
            this, &QgsMapCanvas::writeProject );
 
+  connect( QgsProject::instance()->mainAnnotationLayer(), &QgsMapLayer::repaintRequested, this, &QgsMapCanvas::layerRepaintRequested );
   connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemeChanged, this, &QgsMapCanvas::mapThemeChanged );
   connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemeRenamed, this, &QgsMapCanvas::mapThemeRenamed );
   connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemesChanged, this, &QgsMapCanvas::projectThemesChanged );
