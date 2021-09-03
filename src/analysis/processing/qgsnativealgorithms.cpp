@@ -161,6 +161,7 @@
 #include "qgsalgorithmrescaleraster.h"
 #include "qgsalgorithmreverselinedirection.h"
 #include "qgsalgorithmrotate.h"
+#include "qgsalgorithmroundness.h"
 #include "qgsalgorithmroundrastervalues.h"
 #include "qgsalgorithmruggedness.h"
 #include "qgsalgorithmsavefeatures.h"
@@ -437,6 +438,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRetainTableFieldsAlgorithm() );
   addAlgorithm( new QgsReverseLineDirectionAlgorithm() );
   addAlgorithm( new QgsRotateFeaturesAlgorithm() );
+  addAlgorithm( new QgsRoundnessAlgorithm() );
   addAlgorithm( new QgsRoundRasterValuesAlgorithm() );
   addAlgorithm( new QgsRuggednessAlgorithm() );
   addAlgorithm( new QgsSaveFeaturesAlgorithm() );
