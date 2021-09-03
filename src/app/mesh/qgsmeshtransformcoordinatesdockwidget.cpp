@@ -55,7 +55,7 @@ QgsMeshTransformCoordinatesDockWidget::QgsMeshTransformCoordinatesDockWidget( QW
 
 QgsExpressionContext QgsMeshTransformCoordinatesDockWidget::createExpressionContext() const
 {
-  return QgsExpressionContext( {QgsExpressionContextUtils::meshExpressionScope()} );
+  return QgsExpressionContext( {QgsExpressionContextUtils::meshExpressionScope( QgsMesh::Vertex )} );
 }
 
 QgsMeshVertex QgsMeshTransformCoordinatesDockWidget::transformedVertex( int i )

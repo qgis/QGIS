@@ -1136,8 +1136,12 @@ class CurrentVertexExpressionFunction: public QgsScopedExpressionFunction
 
 class CurrentFaceAreaExpressionFunction: public QgsScopedExpressionFunction
 {
-  QgsExpression::registerFunction( new CurrentVertexExpressionFunction, true );
-  QgsExpression::registerFunction( new CurrentVertexZValueExpressionFunction, true );
+  public:
+    CurrentFaceAreaExpressionFunction():
+      QgsScopedExpressionFunction( "$face_area",
+                                   0,
+                                   QStringLiteral( "Meshes" ) )
+    {}
 
     QgsScopedExpressionFunction *clone() const override {return new CurrentFaceAreaExpressionFunction();}
 
@@ -1185,17 +1189,20 @@ class CurrentFaceAreaExpressionFunction: public QgsScopedExpressionFunction
 QgsExpressionContextScope *QgsExpressionContextUtils::meshExpressionScope( QgsMesh::ElementType elementType )
 {
   std::unique_ptr<QgsExpressionContextScope> scope = std::make_unique<QgsExpressionContextScope>();
-  scope->addFunction( "$vertex_y", new CurrentVertexYValueExpressionFunction );
-  scope->addFunction( "$vertex_z", new CurrentVertexZValueExpressionFunction );
 
   switch ( elementType )
   {
     case QgsMesh::Vertex:
     {
       QgsExpression::registerFunction( new CurrentVertexExpressionFunction, true );
+      QgsExpression::registerFunction( new CurrentVertexXValueExpressionFunction, true );
+      QgsExpression::registerFunction( new CurrentVertexYValueExpressionFunction, true );
       QgsExpression::registerFunction( new CurrentVertexZValueExpressionFunction, true );
       scope->addFunction( "$vertex_as_point", new CurrentVertexExpressionFunction );
       scope->addFunction( "$vertex_z", new CurrentVertexZValueExpressionFunction );
+      scope->addFunction( "$vertex_y", new CurrentVertexYValueExpressionFunction );
+      scope->addFunction( "$vertex_z", new CurrentVertexZValueExpressionFunction );
+
     }
     break;
     case QgsMesh::Face:

@@ -608,7 +608,7 @@ bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer )
   QSet<int> concernedFaces;
   mChangingVertexMap = QHash<int, int>();
 
-  std::unique_ptr<QgsExpressionContextScope> expScope( QgsExpressionContextUtils::meshExpressionScope() );
+  std::unique_ptr<QgsExpressionContextScope> expScope( QgsExpressionContextUtils::meshExpressionScope( QgsMesh::Vertex ) );
   QgsExpressionContext context;
   context.appendScope( expScope.release() );
   context.lastScope()->setVariable( QStringLiteral( "_mesh_layer" ), QVariant::fromValue( layer ) );

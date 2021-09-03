@@ -194,7 +194,7 @@ QList<QAction *> QgsMapToolEditMeshFrame::actions() const
   return  QList<QAction *>()
           << mActionDigitizing
           << mActionSelectByPolygon
-          << mActionSelectByExpression;
+          << mActionSelectByExpression
           << mActionTransformCoordinates;
 }
 
@@ -1540,13 +1540,12 @@ void QgsMapToolEditMeshFrame::prepareSelection()
     if ( vert.y() > yMax )
       yMax = vert.y();
 
-    vertexData.selectedEdges.clear();
+    vertexData.borderEdges.clear();
     vertexData.meshFixedEdges.clear();
     QgsMeshVertexCirculator circulator = mCurrentEditor->vertexCirculator( vertexIndex );
 
     if ( !circulator.isValid() )
       continue;
-
 
     circulator.goBoundaryClockwise();
     int firstface = circulator.currentFaceIndex();
