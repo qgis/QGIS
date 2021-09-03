@@ -1055,7 +1055,7 @@ QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const Q
     }
   }
   if ( !inputs.isEmpty() )
-    s += QObject::tr( "<h2>Input parameters</h2>\n" ) + inputs;
+    s += QStringLiteral( "<h2>" ) + QObject::tr( "Input parameters" ) + QStringLiteral( "</h2>\n" ) + inputs;
 
   QString outputs;
   const auto outputDefinitions = algorithm->outputDefinitions();
@@ -1068,15 +1068,15 @@ QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const Q
     }
   }
   if ( !outputs.isEmpty() )
-    s += QObject::tr( "<h2>Outputs</h2>\n" ) + outputs;
+    s += QStringLiteral( "<h2>" ) + QObject::tr( "Outputs" ) + QStringLiteral( "</h2>\n" ) + outputs;
 
   s += QLatin1String( "<br>" );
   if ( !map.value( QStringLiteral( "ALG_CREATOR" ) ).toString().isEmpty() )
-    s += QObject::tr( "<p align=\"right\">Algorithm author: %1</p>" ).arg( getText( QStringLiteral( "ALG_CREATOR" ) ) );
+    s += QStringLiteral( "<p align=\"right\">" ) + QObject::tr( "Algorithm author") + QStringLiteral( ": " ) + getText( QStringLiteral( "ALG_CREATOR" ) ) + QStringLiteral( "</p>" );
   if ( !map.value( QStringLiteral( "ALG_HELP_CREATOR" ) ).toString().isEmpty() )
-    s += QObject::tr( "<p align=\"right\">Help author: %1</p>" ).arg( getText( QStringLiteral( "ALG_HELP_CREATOR" ) ) );
+    s += QStringLiteral( "<p align=\"right\">" ) + QObject::tr( "Help author") + QStringLiteral( ": " ) + getText( QStringLiteral( "ALG_HELP_CREATOR" ) ) + QStringLiteral( "</p>" );
   if ( !map.value( QStringLiteral( "ALG_VERSION" ) ).toString().isEmpty() )
-    s += QObject::tr( "<p align=\"right\">Algorithm version: %1</p>" ).arg( getText( QStringLiteral( "ALG_VERSION" ) ) );
+    s += QStringLiteral( "<p align=\"right\">" ) + QObject::tr( "Algorithm version") + QStringLiteral( ": " ) + getText( QStringLiteral( "ALG_VERSION" ) ) + QStringLiteral( "</p>" );
 
   s += QLatin1String( "</body></html>" );
   return s;
