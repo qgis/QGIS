@@ -242,6 +242,7 @@ void QgsRendererRasterPropertiesWidget::mResetColorRenderingBtn_clicked()
   comboGrayscale->setCurrentIndex( ( int ) QgsHueSaturationFilter::GrayscaleOff );
   mColorizeCheck->setChecked( false );
   sliderColorizeStrength->setValue( 100 );
+  mInvertColorsCheck->setChecked( false );
 }
 
 void QgsRendererRasterPropertiesWidget::toggleSaturationControls( int grayscaleMode )
