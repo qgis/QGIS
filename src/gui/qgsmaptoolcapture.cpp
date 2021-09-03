@@ -486,59 +486,67 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() );
   QgsVectorLayer *sourceLayer = match.layer();
-  if ( match.isValid() && ( match.hasVertex() || match.hasLineEndpoint() || ( QgsProject::instance()->topologicalEditing() && ( match.hasEdge() || match.hasMiddleSegment() ) ) ) && sourceLayer &&
-       ( sourceLayer->crs() == vlayer->crs() ) )
+  if ( mCadDockWidget && mCadDockWidget->cadEnabled() )
   {
-    QgsFeature f;
-    QgsFeatureRequest request;
-    request.setFilterFid( match.featureId() );
-    const bool fetched = match.layer()->getFeatures( request ).nextFeature( f );
-    if ( fetched )
-    {
-      QgsVertexId vId;
-      if ( !f.geometry().vertexIdFromVertexNr( match.vertexIndex(), vId ) )
-        return 2;
-
-      const QgsGeometry geom( f.geometry() );
-      if ( QgsProject::instance()->topologicalEditing() && ( match.hasEdge() || match.hasMiddleSegment() ) )
-      {
-        QgsVertexId vId2;
-        if ( !f.geometry().vertexIdFromVertexNr( match.vertexIndex() + 1, vId2 ) )
-          return 2;
-        const QgsLineString line( geom.constGet()->vertexAt( vId ), geom.constGet()->vertexAt( vId2 ) );
-
-        layerPoint = QgsGeometryUtils::closestPoint( line,  QgsPoint( match.point() ) );
-      }
-      else
-      {
-        layerPoint = geom.constGet()->vertexAt( vId );
-        if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) && !layerPoint.is3D() )
-          layerPoint.addZValue( mCadDockWidget && mCadDockWidget->cadEnabled() ? mCadDockWidget->currentPoint().z() : defaultZValue() );
-        if ( QgsWkbTypes::hasM( vlayer->wkbType() ) && !layerPoint.isMeasure() )
-          layerPoint.addMValue( mCadDockWidget && mCadDockWidget->cadEnabled() ? mCadDockWidget->currentPoint().m() : defaultMValue() );
-      }
-
-      // ZM support depends on the target layer
-      if ( !QgsWkbTypes::hasZ( vlayer->wkbType() ) )
-      {
-        layerPoint.dropZValue();
-      }
-
-      if ( !QgsWkbTypes::hasM( vlayer->wkbType() ) )
-      {
-        layerPoint.dropMValue();
-      }
-
-      return 0;
-    }
-    else
-    {
-      return 2;
-    }
+    layerPoint = mCadDockWidget->currentPoint();
+    return 0;
   }
   else
   {
-    return 1;
+    if ( match.isValid() && ( match.hasVertex() || match.hasLineEndpoint() || ( QgsProject::instance()->topologicalEditing() && ( match.hasEdge() || match.hasMiddleSegment() ) ) ) && sourceLayer &&
+         ( sourceLayer->crs() == vlayer->crs() ) )
+    {
+      QgsFeature f;
+      QgsFeatureRequest request;
+      request.setFilterFid( match.featureId() );
+      const bool fetched = match.layer()->getFeatures( request ).nextFeature( f );
+      if ( fetched )
+      {
+        QgsVertexId vId;
+        if ( !f.geometry().vertexIdFromVertexNr( match.vertexIndex(), vId ) )
+          return 2;
+
+        const QgsGeometry geom( f.geometry() );
+        if ( QgsProject::instance()->topologicalEditing() && ( match.hasEdge() || match.hasMiddleSegment() ) )
+        {
+          QgsVertexId vId2;
+          if ( !f.geometry().vertexIdFromVertexNr( match.vertexIndex() + 1, vId2 ) )
+            return 2;
+          const QgsLineString line( geom.constGet()->vertexAt( vId ), geom.constGet()->vertexAt( vId2 ) );
+
+          layerPoint = QgsGeometryUtils::closestPoint( line,  QgsPoint( match.point() ) );
+        }
+        else
+        {
+          layerPoint = geom.constGet()->vertexAt( vId );
+          if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) && !layerPoint.is3D() )
+            layerPoint.addZValue( defaultZValue() );
+          if ( QgsWkbTypes::hasM( vlayer->wkbType() ) && !layerPoint.isMeasure() )
+            layerPoint.addMValue( defaultMValue() );
+        }
+
+        // ZM support depends on the target layer
+        if ( !QgsWkbTypes::hasZ( vlayer->wkbType() ) )
+        {
+          layerPoint.dropZValue();
+        }
+
+        if ( !QgsWkbTypes::hasM( vlayer->wkbType() ) )
+        {
+          layerPoint.dropMValue();
+        }
+
+        return 0;
+      }
+      else
+      {
+        return 2;
+      }
+    }
+    else
+    {
+      return 1;
+    }
   }
 }
 
@@ -1018,14 +1026,13 @@ QgsPoint QgsMapToolCapture::mapPoint( const QgsPointXY &point ) const
   // set z value if necessary
   if ( QgsWkbTypes::hasZ( newPoint.wkbType() ) )
   {
-    newPoint.setZ( mCadDockWidget && mCadDockWidget->cadEnabled() ? mCadDockWidget->currentPoint().z() : defaultZValue() );
+    newPoint.setZ( mCadDockWidget && mCadDockWidget->cadEnabled() ? mCadDockWidget->getLineZ() : defaultZValue() );
   }
   // set m value if necessary
   if ( QgsWkbTypes::hasM( newPoint.wkbType() ) )
   {
-    newPoint.setM( mCadDockWidget && mCadDockWidget->cadEnabled() ? mCadDockWidget->currentPoint().m() : defaultMValue() );
+    newPoint.setM( mCadDockWidget && mCadDockWidget->cadEnabled() ? mCadDockWidget->getLineM() : defaultMValue() );
   }
-
   return newPoint;
 }
 

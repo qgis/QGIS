@@ -864,6 +864,20 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
     point.setZ( QgsMapToolEdit( mMapCanvas ).defaultZValue() );
     point.setM( QgsMapToolEdit( mMapCanvas ).defaultMValue() );
   }
+
+  /*
+   * And if M or Z lock button is activated get the value of the input.
+   */
+  if ( mLockZButton->isChecked() )
+  {
+    point.setZ( mZLineEdit->text().toFloat() );
+  }
+  if ( mLockMButton->isChecked() )
+  {
+
+    point.setM( mMLineEdit->text().toFloat() );
+  }
+
   // update the point list
   updateCurrentPoint( point );
 
@@ -1546,5 +1560,15 @@ QgsPoint QgsAdvancedDigitizingDockWidget::penultimatePoint( bool *exist ) const
 
 QgsPoint QgsAdvancedDigitizingDockWidget::pointXYToPoint( const QgsPointXY &point ) const
 {
-  return QgsPoint( point.x(), point.y(), mZLineEdit->isEnabled() ? mZLineEdit->text().toFloat() : std::numeric_limits<double>::quiet_NaN(), mMLineEdit->isEnabled() ? mMLineEdit->text().toFloat() : std::numeric_limits<double>::quiet_NaN() );
+  return QgsPoint( point.x(), point.y(), getLineZ(), getLineM() );
+}
+
+double QgsAdvancedDigitizingDockWidget::getLineZ( ) const
+{
+  return mZLineEdit->isEnabled() ? mZLineEdit->text().toFloat() : std::numeric_limits<double>::quiet_NaN();
+}
+
+double QgsAdvancedDigitizingDockWidget::getLineM( ) const
+{
+  return mMLineEdit->isEnabled() ? mMLineEdit->text().toFloat() : std::numeric_limits<double>::quiet_NaN();
 }
