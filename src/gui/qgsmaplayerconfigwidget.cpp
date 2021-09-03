@@ -22,3 +22,8 @@ QgsMapLayerConfigWidget::QgsMapLayerConfigWidget( QgsMapLayer *layer, QgsMapCanv
 {
 
 }
+
+void QgsMapLayerConfigWidget::setContext( const QgsMapLayerConfigWidgetContext &context )
+{
+  mContext = context;
+}
