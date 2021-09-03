@@ -707,7 +707,7 @@ void QgsLayerStylingWidget::setAnnotationItem( QgsAnnotationLayer *layer, const 
 
   if ( QgsMapLayerConfigWidget *configWidget = qobject_cast< QgsMapLayerConfigWidget * >( mWidgetStack->mainPanel() ) )
   {
-    configWidget->setContext( mContext );
+    configWidget->setMapLayerConfigWidgetContext( mContext );
   }
 }
 
