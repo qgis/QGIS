@@ -87,7 +87,7 @@ class SERVER_EXPORT QgsServerLogger : public QgsMessageLogConsole
     QFile mLogFile;
     bool mLogStderr = false;
     QTextStream mTextStream;
-    Qgis::MessageLevel mLogLevel = Qgis::None;
+    Qgis::MessageLevel mLogLevel = Qgis::MessageLevel::NoLevel;
 };
 
 #endif // QGSSERVERLOGGER_H

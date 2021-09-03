@@ -11,7 +11,7 @@
 
 class QgsLayoutItemPicture: QgsLayoutItem
 {
-%Docstring
+%Docstring(signature="appended")
 A layout item subclass that displays SVG files or raster format images (jpg, png, ...).
 
 .. versionadded:: 3.0
@@ -283,6 +283,20 @@ the result of data defined path overrides.
 .. seealso:: :py:func:`picturePath`
 
 .. versionadded:: 3.6
+%End
+
+    QMap<QString, QgsProperty> svgDynamicParameters() const;
+%Docstring
+Returns the SVG dynamic parameters
+
+.. versionadded:: 3.20
+%End
+
+    void setSvgDynamicParameters( const QMap<QString, QgsProperty> &parameters );
+%Docstring
+Sets the SVG dynamic parameters
+
+.. versionadded:: 3.20
 %End
 
   public slots:

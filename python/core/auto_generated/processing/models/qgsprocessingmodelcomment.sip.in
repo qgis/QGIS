@@ -12,7 +12,7 @@
 
 class QgsProcessingModelComment : QgsProcessingModelComponent
 {
-%Docstring
+%Docstring(signature="appended")
 Represents a comment in a model.
 
 .. versionadded:: 3.14

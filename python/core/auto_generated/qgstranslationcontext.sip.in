@@ -12,7 +12,7 @@
 
 class QgsTranslationContext
 {
-%Docstring
+%Docstring(signature="appended")
 Used for the collecting of strings from projects for translation and creation of ts files.
 
 .. versionadded:: 3.4

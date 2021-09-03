@@ -33,9 +33,9 @@ QDomElement QgsCameraPose::writeXml( QDomDocument &doc ) const
 
 void QgsCameraPose::readXml( const QDomElement &elem )
 {
-  double x = elem.attribute( QStringLiteral( "x" ) ).toDouble();
-  double y = elem.attribute( QStringLiteral( "y" ) ).toDouble();
-  double z = elem.attribute( QStringLiteral( "z" ) ).toDouble();
+  const double x = elem.attribute( QStringLiteral( "x" ) ).toDouble();
+  const double y = elem.attribute( QStringLiteral( "y" ) ).toDouble();
+  const double z = elem.attribute( QStringLiteral( "z" ) ).toDouble();
   mCenterPoint = QgsVector3D( x, y, z );
 
   mDistanceFromCenterPoint = elem.attribute( QStringLiteral( "dist" ) ).toFloat();

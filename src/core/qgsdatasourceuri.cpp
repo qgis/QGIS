@@ -23,7 +23,7 @@
 #include "qgsapplication.h"
 
 #include <QStringList>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QUrl>
 #include <QUrlQuery>
 
@@ -52,7 +52,7 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
     while ( i < uri.length() && uri[i] != '=' && !uri[i].isSpace() )
       i++;
 
-    QString pname = uri.mid( start, i - start );
+    const QString pname = uri.mid( start, i - start );
 
     skipBlanks( uri, i );
 
@@ -73,7 +73,7 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
     }
     else
     {
-      QString pval = getValue( uri, i );
+      const QString pval = getValue( uri, i );
 
       if ( pname == QLatin1String( "table" ) )
       {
@@ -219,8 +219,8 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
 
 QString QgsDataSourceUri::removePassword( const QString &aUri )
 {
-  QRegExp regexp;
-  regexp.setMinimal( true );
+  QRegularExpression regexp;
+  regexp.setPatternOptions( QRegularExpression::InvertedGreedinessOption );
   QString safeName( aUri );
   if ( aUri.contains( QLatin1String( " password=" ) ) )
   {
@@ -414,7 +414,7 @@ QString QgsDataSourceUri::getValue( const QString &uri, int &i )
   QString pval;
   if ( i < uri.length() && ( uri[i] == '\'' || uri[i] == '"' ) )
   {
-    QChar delim = uri[i];
+    const QChar delim = uri[i];
 
     i++;
 
@@ -565,7 +565,7 @@ QString QgsDataSourceUri::uri( bool expandAuthConfig ) const
     uri += QLatin1String( " selectatid=false" );
   }
 
-  for ( QMap<QString, QString>::const_iterator it = mParams.begin(); it != mParams.end(); ++it )
+  for ( auto it = mParams.constBegin(); it != mParams.constEnd(); ++it )
   {
     if ( it.key().contains( '=' ) || it.key().contains( ' ' ) )
     {

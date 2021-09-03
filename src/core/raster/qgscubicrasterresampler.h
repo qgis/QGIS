@@ -27,8 +27,8 @@
 
 /**
  * \ingroup core
-    Cubic Raster Resampler
-*/
+ * \brief Cubic Raster Resampler.
+ */
 class CORE_EXPORT QgsCubicRasterResampler: public QgsRasterResamplerV2
 {
   public:

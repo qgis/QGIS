@@ -13,7 +13,7 @@
 
 class QgsModelDesignerFlatButtonGraphicItem : QGraphicsObject
 {
-%Docstring
+%Docstring(signature="appended")
 A flat button graphic item for use in the Processing model designer.
 
 .. warning::
@@ -78,7 +78,7 @@ Sets the ``picture`` to render for the button graphics.
 
 class QgsModelDesignerFoldButtonGraphicItem : QgsModelDesignerFlatButtonGraphicItem
 {
-%Docstring
+%Docstring(signature="appended")
 A button allowing folding or expanding component graphics in the Processing model designer.
 
 .. warning::

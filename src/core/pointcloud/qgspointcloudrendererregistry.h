@@ -35,7 +35,7 @@ class QgsPointCloudDataProvider;
 
 /**
  * \ingroup core
- * Stores metadata about one point cloud renderer class.
+ * \brief Stores metadata about one point cloud renderer class.
  *
  * \note It's necessary to implement createRenderer() function.
  *   In C++ you can use QgsPointCloudRendererMetadata convenience class.
@@ -119,7 +119,7 @@ typedef QgsPointCloudRendererWidget *( *QgsPointCloudRendererWidgetFunc )( QgsPo
 
 /**
  * \ingroup core
- * Convenience metadata class that uses static functions to create point cloud renderer and its widget.
+ * \brief Convenience metadata class that uses static functions to create point cloud renderer and its widget.
  * \since QGIS 3.18
  */
 class CORE_EXPORT QgsPointCloudRendererMetadata : public QgsPointCloudRendererAbstractMetadata

@@ -23,6 +23,8 @@
 #include "qgsproject.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgsfillsymbol.h"
+
 #include <QColorDialog>
 #include <QGraphicsScene>
 
@@ -147,7 +149,7 @@ void QgsTextAnnotationDialog::mFontColorButton_colorChanged( const QColor &color
 void QgsTextAnnotationDialog::setCurrentFontPropertiesToGui()
 {
   blockAllSignals( true );
-  QFont currentFont = mTextEdit->currentFont();
+  const QFont currentFont = mTextEdit->currentFont();
   mFontComboBox->setCurrentFont( currentFont );
   mFontSizeSpinBox->setValue( currentFont.pointSize() );
   mBoldPushButton->setChecked( currentFont.bold() );

@@ -63,7 +63,7 @@
               @ready="loadMap(project, $event)"
             >
               <l-tile-layer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
                 v-if="
                   project.capabilities.wmsOutputCrsList.includes('EPSG:3857')
                 "
@@ -178,7 +178,7 @@ export default {
         map.fitBounds(jl.getBounds());
       }
 
-      WMS.overlay(`/project/${project.id}/?`, {
+      WMS.overlay(`./project/${project.id}/?`, {
         layers: Utils.getAllLayers(project),
         transparent: true,
         format: "image/png",

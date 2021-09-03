@@ -64,8 +64,8 @@ void QgsRasterInterface::initStatistics( QgsRasterBandStats &statistics,
     // But limit by physical resolution
     if ( capabilities() & Size )
     {
-      double srcXRes = extent().width() / xSize();
-      double srcYRes = extent().height() / ySize();
+      const double srcXRes = extent().width() / xSize();
+      const double srcYRes = extent().height() / ySize();
       if ( xRes < srcXRes ) xRes = srcXRes;
       if ( yRes < srcYRes ) yRes = srcYRes;
     }
@@ -135,9 +135,9 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int bandNo,
     }
   }
 
-  QgsRectangle myExtent = myRasterBandStats.extent;
-  int myWidth = myRasterBandStats.width;
-  int myHeight = myRasterBandStats.height;
+  const QgsRectangle myExtent = myRasterBandStats.extent;
+  const int myWidth = myRasterBandStats.width;
+  const int myHeight = myRasterBandStats.height;
 
   //int myDataType = dataType( bandNo );
 
@@ -152,11 +152,11 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int bandNo,
     myYBlockSize = 500;
   }
 
-  int myNXBlocks = ( myWidth + myXBlockSize - 1 ) / myXBlockSize;
-  int myNYBlocks = ( myHeight + myYBlockSize - 1 ) / myYBlockSize;
+  const int myNXBlocks = ( myWidth + myXBlockSize - 1 ) / myXBlockSize;
+  const int myNYBlocks = ( myHeight + myYBlockSize - 1 ) / myYBlockSize;
 
-  double myXRes = myExtent.width() / myWidth;
-  double myYRes = myExtent.height() / myHeight;
+  const double myXRes = myExtent.width() / myWidth;
+  const double myYRes = myExtent.height() / myHeight;
   // TODO: progress signals
 
   // used by single pass stdev
@@ -173,22 +173,22 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int bandNo,
         return myRasterBandStats;
 
       QgsDebugMsgLevel( QStringLiteral( "myYBlock = %1 myXBlock = %2" ).arg( myYBlock ).arg( myXBlock ), 4 );
-      int myBlockWidth = std::min( myXBlockSize, myWidth - myXBlock * myXBlockSize );
-      int myBlockHeight = std::min( myYBlockSize, myHeight - myYBlock * myYBlockSize );
+      const int myBlockWidth = std::min( myXBlockSize, myWidth - myXBlock * myXBlockSize );
+      const int myBlockHeight = std::min( myYBlockSize, myHeight - myYBlock * myYBlockSize );
 
-      double xmin = myExtent.xMinimum() + myXBlock * myXBlockSize * myXRes;
-      double xmax = xmin + myBlockWidth * myXRes;
-      double ymin = myExtent.yMaximum() - myYBlock * myYBlockSize * myYRes;
-      double ymax = ymin - myBlockHeight * myYRes;
+      const double xmin = myExtent.xMinimum() + myXBlock * myXBlockSize * myXRes;
+      const double xmax = xmin + myBlockWidth * myXRes;
+      const double ymin = myExtent.yMaximum() - myYBlock * myYBlockSize * myYRes;
+      const double ymax = ymin - myBlockHeight * myYRes;
 
-      QgsRectangle myPartExtent( xmin, ymin, xmax, ymax );
+      const QgsRectangle myPartExtent( xmin, ymin, xmax, ymax );
 
       std::unique_ptr< QgsRasterBlock > blk( block( bandNo, myPartExtent, myBlockWidth, myBlockHeight, feedback ) );
 
       // Collect the histogram counts.
       for ( qgssize i = 0; i < ( static_cast< qgssize >( myBlockHeight ) ) * myBlockWidth; i++ )
       {
-        double myValue = blk->valueAndNoData( i, isNoData );
+        const double myValue = blk->valueAndNoData( i, isNoData );
         if ( isNoData )
           continue; // NULL
 
@@ -216,7 +216,7 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int bandNo,
         }
 
         // Single pass stdev
-        double myDelta = myValue - myMean;
+        const double myDelta = myValue - myMean;
         myMean += myDelta / myRasterBandStats.elementCount;
         mySumOfSquares += myDelta * ( myValue - myMean );
       }
@@ -259,13 +259,13 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
   histogram.maximum = maximum;
   histogram.includeOutOfRange = includeOutOfRange;
 
-  int mySrcDataType = sourceDataType( bandNo );
+  const Qgis::DataType mySrcDataType = sourceDataType( bandNo );
 
   if ( std::isnan( histogram.minimum ) )
   {
     // TODO: this was OK when stats/histogram were calced in provider,
     // but what TODO in other interfaces? Check for mInput for now.
-    if ( !mInput && mySrcDataType == Qgis::Byte )
+    if ( !mInput && mySrcDataType == Qgis::DataType::Byte )
     {
       histogram.minimum = 0; // see histogram() for shift for rounding
     }
@@ -274,19 +274,19 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
       // We need statistics -> avoid histogramDefaults in hasHistogram if possible
       // TODO: use approximated statistics if approximated histogram is requested
       // (theSampleSize > 0)
-      QgsRasterBandStats stats = bandStatistics( bandNo, QgsRasterBandStats::Min, boundingBox, sampleSize );
+      const QgsRasterBandStats stats = bandStatistics( bandNo, QgsRasterBandStats::Min, boundingBox, sampleSize );
       histogram.minimum = stats.minimumValue;
     }
   }
   if ( std::isnan( histogram.maximum ) )
   {
-    if ( !mInput && mySrcDataType == Qgis::Byte )
+    if ( !mInput && mySrcDataType == Qgis::DataType::Byte )
     {
       histogram.maximum = 255;
     }
     else
     {
-      QgsRasterBandStats stats = bandStatistics( bandNo, QgsRasterBandStats::Max, boundingBox, sampleSize );
+      const QgsRasterBandStats stats = bandStatistics( bandNo, QgsRasterBandStats::Max, boundingBox, sampleSize );
       histogram.maximum = stats.maximumValue;
     }
   }
@@ -311,8 +311,8 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
     // But limit by physical resolution
     if ( capabilities() & Size )
     {
-      double srcXRes = extent().width() / xSize();
-      double srcYRes = extent().height() / ySize();
+      const double srcXRes = extent().width() / xSize();
+      const double srcYRes = extent().height() / ySize();
       if ( xRes < srcXRes ) xRes = srcXRes;
       if ( yRes < srcYRes ) yRes = srcYRes;
     }
@@ -341,7 +341,7 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
   {
     // TODO: this was OK when stats/histogram were calced in provider,
     // but what TODO in other interfaces? Check for mInput for now.
-    if ( !mInput && mySrcDataType == Qgis::Byte )
+    if ( !mInput && mySrcDataType == Qgis::DataType::Byte )
     {
       myBinCount = 256; // Cannot store more values in byte
     }
@@ -356,8 +356,8 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
       // for Int16/Int32 make sure bin count <= actual range, because there is no sense in having
       // bins at fractional values
       if ( !mInput && (
-             mySrcDataType == Qgis::Int16 || mySrcDataType == Qgis::Int32 ||
-             mySrcDataType == Qgis::UInt16 || mySrcDataType == Qgis::UInt32 ) )
+             mySrcDataType == Qgis::DataType::Int16 || mySrcDataType == Qgis::DataType::Int32 ||
+             mySrcDataType == Qgis::DataType::UInt16 || mySrcDataType == Qgis::DataType::UInt32 ) )
       {
         myBinCount = std::min( static_cast<qint64>( histogram.width ) * histogram.height, static_cast<qint64>( std::ceil( histogram.maximum - histogram.minimum + 1 ) ) );
       }
@@ -424,10 +424,10 @@ QgsRasterHistogram QgsRasterInterface::histogram( int bandNo,
     }
   }
 
-  int myBinCount = myHistogram.binCount;
-  int myWidth = myHistogram.width;
-  int myHeight = myHistogram.height;
-  QgsRectangle myExtent = myHistogram.extent;
+  const int myBinCount = myHistogram.binCount;
+  const int myWidth = myHistogram.width;
+  const int myHeight = myHistogram.height;
+  const QgsRectangle myExtent = myHistogram.extent;
   myHistogram.histogramVector.resize( myBinCount );
 
   int myXBlockSize = xBlockSize();
@@ -441,24 +441,24 @@ QgsRasterHistogram QgsRasterInterface::histogram( int bandNo,
     myYBlockSize = 500;
   }
 
-  int myNXBlocks = ( myWidth + myXBlockSize - 1 ) / myXBlockSize;
-  int myNYBlocks = ( myHeight + myYBlockSize - 1 ) / myYBlockSize;
+  const int myNXBlocks = ( myWidth + myXBlockSize - 1 ) / myXBlockSize;
+  const int myNYBlocks = ( myHeight + myYBlockSize - 1 ) / myYBlockSize;
 
-  double myXRes = myExtent.width() / myWidth;
-  double myYRes = myExtent.height() / myHeight;
+  const double myXRes = myExtent.width() / myWidth;
+  const double myYRes = myExtent.height() / myHeight;
 
   double myMinimum = myHistogram.minimum;
   double myMaximum = myHistogram.maximum;
 
   // To avoid rounding errors
   // TODO: check this
-  double myerval = ( myMaximum - myMinimum ) / myHistogram.binCount;
+  const double myerval = ( myMaximum - myMinimum ) / myHistogram.binCount;
   myMinimum -= 0.1 * myerval;
   myMaximum += 0.1 * myerval;
 
   QgsDebugMsgLevel( QStringLiteral( "binCount = %1 myMinimum = %2 myMaximum = %3" ).arg( myHistogram.binCount ).arg( myMinimum ).arg( myMaximum ), 4 );
 
-  double myBinSize = ( myMaximum - myMinimum ) / myBinCount;
+  const double myBinSize = ( myMaximum - myMinimum ) / myBinCount;
 
   // TODO: progress signals
   bool isNoData = false;
@@ -469,22 +469,22 @@ QgsRasterHistogram QgsRasterInterface::histogram( int bandNo,
       if ( feedback && feedback->isCanceled() )
         return myHistogram;
 
-      int myBlockWidth = std::min( myXBlockSize, myWidth - myXBlock * myXBlockSize );
-      int myBlockHeight = std::min( myYBlockSize, myHeight - myYBlock * myYBlockSize );
+      const int myBlockWidth = std::min( myXBlockSize, myWidth - myXBlock * myXBlockSize );
+      const int myBlockHeight = std::min( myYBlockSize, myHeight - myYBlock * myYBlockSize );
 
-      double xmin = myExtent.xMinimum() + myXBlock * myXBlockSize * myXRes;
-      double xmax = xmin + myBlockWidth * myXRes;
-      double ymin = myExtent.yMaximum() - myYBlock * myYBlockSize * myYRes;
-      double ymax = ymin - myBlockHeight * myYRes;
+      const double xmin = myExtent.xMinimum() + myXBlock * myXBlockSize * myXRes;
+      const double xmax = xmin + myBlockWidth * myXRes;
+      const double ymin = myExtent.yMaximum() - myYBlock * myYBlockSize * myYRes;
+      const double ymax = ymin - myBlockHeight * myYRes;
 
-      QgsRectangle myPartExtent( xmin, ymin, xmax, ymax );
+      const QgsRectangle myPartExtent( xmin, ymin, xmax, ymax );
 
       std::unique_ptr< QgsRasterBlock > blk( block( bandNo, myPartExtent, myBlockWidth, myBlockHeight, feedback ) );
 
       // Collect the histogram counts.
       for ( qgssize i = 0; i < ( static_cast< qgssize >( myBlockHeight ) ) * myBlockWidth; i++ )
       {
-        double myValue = blk->valueAndNoData( i, isNoData );
+        const double myValue = blk->valueAndNoData( i, isNoData );
         if ( isNoData )
         {
           continue; // NULL
@@ -510,7 +510,7 @@ QgsRasterHistogram QgsRasterInterface::histogram( int bandNo,
 
 #ifdef QGISDEBUG
   QString hist;
-  for ( int i = 0; i < std::min( myHistogram.histogramVector.size(), 500 ); i++ )
+  for ( std::size_t i = 0; i < std::min< std::size_t >( myHistogram.histogramVector.size(), 500 ); i++ )
   {
     hist += QString::number( myHistogram.histogramVector.value( i ) ) + ' ';
   }
@@ -528,33 +528,33 @@ void QgsRasterInterface::cumulativeCut( int bandNo,
 {
   QgsDebugMsgLevel( QStringLiteral( "theBandNo = %1 lowerCount = %2 upperCount = %3 sampleSize = %4" ).arg( bandNo ).arg( lowerCount ).arg( upperCount ).arg( sampleSize ), 4 );
 
-  int mySrcDataType = sourceDataType( bandNo );
+  const Qgis::DataType mySrcDataType = sourceDataType( bandNo );
 
   // Init to NaN is better than histogram min/max to catch errors
   lowerValue = std::numeric_limits<double>::quiet_NaN();
   upperValue = std::numeric_limits<double>::quiet_NaN();
 
   //get band stats to specify real histogram min/max (fix #9793 Byte bands)
-  QgsRasterBandStats stats = bandStatistics( bandNo, QgsRasterBandStats::Min, extent, sampleSize );
+  const QgsRasterBandStats stats = bandStatistics( bandNo, QgsRasterBandStats::Min, extent, sampleSize );
   if ( stats.maximumValue < stats.minimumValue )
     return;
 
   // for byte bands make sure bin count == actual range
-  int myBinCount = ( mySrcDataType == Qgis::Byte ) ? int( std::ceil( stats.maximumValue - stats.minimumValue + 1 ) ) : 0;
-  QgsRasterHistogram myHistogram = histogram( bandNo, myBinCount, stats.minimumValue, stats.maximumValue, extent, sampleSize );
+  const int myBinCount = ( mySrcDataType == Qgis::DataType::Byte ) ? int( std::ceil( stats.maximumValue - stats.minimumValue + 1 ) ) : 0;
+  const QgsRasterHistogram myHistogram = histogram( bandNo, myBinCount, stats.minimumValue, stats.maximumValue, extent, sampleSize );
   //QgsRasterHistogram myHistogram = histogram( bandNo, 0, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), extent, sampleSize );
 
-  double myBinXStep = ( myHistogram.maximum - myHistogram.minimum ) / myHistogram.binCount;
+  const double myBinXStep = ( myHistogram.maximum - myHistogram.minimum ) / myHistogram.binCount;
   int myCount = 0;
-  int myMinCount = static_cast< int >( std::round( lowerCount * myHistogram.nonNullCount ) );
-  int myMaxCount = static_cast< int >( std::round( upperCount * myHistogram.nonNullCount ) );
+  const int myMinCount = static_cast< int >( std::round( lowerCount * myHistogram.nonNullCount ) );
+  const int myMaxCount = static_cast< int >( std::round( upperCount * myHistogram.nonNullCount ) );
   bool myLowerFound = false;
   QgsDebugMsgLevel( QStringLiteral( "binCount = %1 minimum = %2 maximum = %3 myBinXStep = %4" ).arg( myHistogram.binCount ).arg( myHistogram.minimum ).arg( myHistogram.maximum ).arg( myBinXStep ), 4 );
   QgsDebugMsgLevel( QStringLiteral( "myMinCount = %1 myMaxCount = %2" ).arg( myMinCount ).arg( myMaxCount ), 4 );
 
   for ( int myBin = 0; myBin < myHistogram.histogramVector.size(); myBin++ )
   {
-    int myBinValue = myHistogram.histogramVector.value( myBin );
+    const int myBinValue = myHistogram.histogramVector.value( myBin );
     myCount += myBinValue;
     if ( !myLowerFound && myCount > myMinCount )
     {
@@ -571,9 +571,9 @@ void QgsRasterInterface::cumulativeCut( int bandNo,
   }
 
   // fix integer data - round down/up
-  if ( mySrcDataType == Qgis::Byte ||
-       mySrcDataType == Qgis::Int16 || mySrcDataType == Qgis::Int32 ||
-       mySrcDataType == Qgis::UInt16 || mySrcDataType == Qgis::UInt32 )
+  if ( mySrcDataType == Qgis::DataType::Byte ||
+       mySrcDataType == Qgis::DataType::Int16 || mySrcDataType == Qgis::DataType::Int32 ||
+       mySrcDataType == Qgis::DataType::UInt16 || mySrcDataType == Qgis::DataType::UInt32 )
   {
     if ( !std::isnan( lowerValue ) )
       lowerValue = std::floor( lowerValue );
@@ -586,7 +586,7 @@ QString QgsRasterInterface::capabilitiesString() const
 {
   QStringList abilitiesList;
 
-  int abilities = capabilities();
+  const int abilities = capabilities();
 
   // Not all all capabilities are here (Size, IdentifyValue, IdentifyText,
   // IdentifyHtml, IdentifyFeature) because those are quite technical and probably
@@ -636,7 +636,7 @@ QString QgsRasterInterface::colorInterpretationName( int bandNo ) const
 QString QgsRasterInterface::displayBandName( int bandNumber ) const
 {
   QString name = generateBandName( bandNumber );
-  QString colorInterp = colorInterpretationName( bandNumber );
+  const QString colorInterp = colorInterpretationName( bandNumber );
   if ( colorInterp != QLatin1String( "Undefined" ) )
   {
     name.append( QStringLiteral( " (%1)" ).arg( colorInterp ) );

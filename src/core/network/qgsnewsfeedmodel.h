@@ -23,7 +23,7 @@
 
 /**
  * \ingroup core
- * A model for published QGIS news feeds.
+ * \brief A model for published QGIS news feeds.
  *
  * This class is designed to work with QgsNewsFeedParser, for displaying
  * feeds from a https://github.com/elpaso/qgis-feed server instance.
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsNewsFeedModel : public QAbstractItemModel
 
 /**
  * \ingroup core
- * A proxy model for use with QgsNewsFeedModel.
+ * \brief A proxy model for use with QgsNewsFeedModel.
  *
  * QgsNewsFeedProxyModel applies custom sorting to the entries in a QgsNewsFeedModel.
  *

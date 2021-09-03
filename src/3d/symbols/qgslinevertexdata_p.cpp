@@ -46,7 +46,7 @@ QByteArray QgsLineVertexData::createVertexBuffer()
   vertexBufferData.resize( vertices.size() * 3 * sizeof( float ) );
   float *rawVertexArray = reinterpret_cast<float *>( vertexBufferData.data() );
   int idx = 0;
-  for ( const auto &v : qgis::as_const( vertices ) )
+  for ( const auto &v : std::as_const( vertices ) )
   {
     rawVertexArray[idx++] = v.x();
     rawVertexArray[idx++] = v.y();
@@ -61,7 +61,7 @@ QByteArray QgsLineVertexData::createIndexBuffer()
   indexBufferData.resize( indexes.size() * sizeof( int ) );
   unsigned int *rawIndexArray = reinterpret_cast<unsigned int *>( indexBufferData.data() );
   int idx = 0;
-  for ( unsigned int indexVal : qgis::as_const( indexes ) )
+  for ( unsigned int indexVal : std::as_const( indexes ) )
   {
     rawIndexArray[idx++] = indexVal;
   }
@@ -70,18 +70,10 @@ QByteArray QgsLineVertexData::createIndexBuffer()
 
 Qt3DRender::QGeometry *QgsLineVertexData::createGeometry( Qt3DCore::QNode *parent )
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-  Qt3DRender::QBuffer *vertexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, parent );
-#else
   Qt3DRender::QBuffer *vertexBuffer = new Qt3DRender::QBuffer( parent );
-#endif
   vertexBuffer->setData( createVertexBuffer() );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-  Qt3DRender::QBuffer *indexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::IndexBuffer, parent );
-#else
   Qt3DRender::QBuffer *indexBuffer = new Qt3DRender::QBuffer( parent );
-#endif
   indexBuffer->setData( createIndexBuffer() );
 
   QgsDebugMsgLevel( QString( "vertex buffer %1 MB  index buffer %2 MB " ).arg( vertexBuffer->data().count() / 1024. / 1024. ).arg( indexBuffer->data().count() / 1024. / 1024. ), 2 );
@@ -132,7 +124,6 @@ void QgsLineVertexData::addLineString( const QgsLineString &lineString, float ex
 
   indexes << 0;  // add primitive restart
 }
-
 
 void QgsLineVertexData::addVerticalLines( const QgsLineString &lineString, float verticalLength, float extraHeightOffset )
 {

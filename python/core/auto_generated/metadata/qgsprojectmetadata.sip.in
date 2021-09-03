@@ -12,7 +12,7 @@
 
 class QgsProjectMetadata : QgsAbstractMetadataBase
 {
-%Docstring
+%Docstring(signature="appended")
 A structured metadata store for a map layer.
 
 :py:class:`QgsProjectMetadata` handles storage and management of the metadata
@@ -81,6 +81,8 @@ Sets the project's creation date/timestamp.
     virtual bool readMetadataXml( const QDomElement &metadataElement );
 
     virtual bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const;
+
+    virtual void combine( const QgsAbstractMetadataBase *other );
 
 
     bool operator==( const QgsProjectMetadata &metadataOther ) const;

@@ -14,7 +14,7 @@
 
 class QgsServerApi
 {
-%Docstring
+%Docstring(signature="appended")
 Server generic API endpoint abstract base class.
 
 .. seealso:: :py:class:`QgsServerOgcApi`
@@ -50,6 +50,7 @@ After the API has been registered to the server API registry:
        server = QgsServer()
        api = API(server.serverInterface())
        server.serverInterface().serviceRegistry().registerApi(api)
+
 
 the incoming calls with an URL path starting with the API root path
 will be routed to the first matching API and :py:func:`~executeRequest` method

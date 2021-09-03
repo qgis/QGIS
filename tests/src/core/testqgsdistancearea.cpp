@@ -93,7 +93,7 @@ void TestQgsDistanceArea::basic()
   QVERIFY( ! qFuzzyCompare( resultA, resultB ) );
 
   // Test assignment
-  std::shared_ptr<QgsDistanceArea> daC( new QgsDistanceArea );
+  const std::shared_ptr<QgsDistanceArea> daC( new QgsDistanceArea );
   *daC = daB;
   resultC = daC->measureLine( p1, p2 );
   QCOMPARE( resultB, resultC );
@@ -120,29 +120,16 @@ void TestQgsDistanceArea::cache()
   // warm cache
   QVERIFY( da.setEllipsoid( QStringLiteral( "Ganymede2000" ) ) );
   QVERIFY( da.willUseEllipsoid() );
-  // different definition under proj 6, neither is incorrect!
-#if PROJ_VERSION_MAJOR>=6
   QCOMPARE( da.ellipsoidSemiMajor(), 2632345.0 );
   QCOMPARE( da.ellipsoidSemiMinor(), 2632345.0 );
-#else
-  QCOMPARE( da.ellipsoidSemiMajor(), 2632400.0 );
-  QCOMPARE( da.ellipsoidSemiMinor(), 2632350.0 );
-  QCOMPARE( da.ellipsoidInverseFlattening(), 52648.0 );
-#endif
   QCOMPARE( da.ellipsoid(), QStringLiteral( "Ganymede2000" ) );
 
   // a second time, so ellipsoid is fetched from cache
   QgsDistanceArea da2;
   QVERIFY( da2.setEllipsoid( QStringLiteral( "Ganymede2000" ) ) );
   QVERIFY( da2.willUseEllipsoid() );
-#if PROJ_VERSION_MAJOR>=6
   QCOMPARE( da2.ellipsoidSemiMajor(), 2632345.0 );
   QCOMPARE( da2.ellipsoidSemiMinor(), 2632345.0 );
-#else
-  QCOMPARE( da2.ellipsoidSemiMajor(), 2632400.0 );
-  QCOMPARE( da2.ellipsoidSemiMinor(), 2632350.0 );
-  QCOMPARE( da2.ellipsoidInverseFlattening(), 52648.0 );
-#endif
   QCOMPARE( da2.ellipsoid(), QStringLiteral( "Ganymede2000" ) );
 
   // using parameters
@@ -192,7 +179,7 @@ void TestQgsDistanceArea::test_distances()
   myDa.setSourceCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4030" ) ), QgsProject::instance()->transformContext() );
   myDa.setEllipsoid( QStringLiteral( "WGS84" ) );
 
-  QString myFileName = QStringLiteral( TEST_DATA_DIR ) + "/GeodTest-nano.dat";
+  const QString myFileName = QStringLiteral( TEST_DATA_DIR ) + "/GeodTest-nano.dat";
 
   QFile myFile( myFileName );
   if ( ! myFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
@@ -211,9 +198,9 @@ void TestQgsDistanceArea::test_distances()
     {
       QStringList myLineList = line.split( ' ' ); // Split fields on space.
       // Create points
-      QgsPointXY p1( myLineList[1].toDouble(), myLineList[0].toDouble() );
-      QgsPointXY p2( myLineList[4].toDouble(), myLineList[3].toDouble() );
-      double result = myDa.measureLine( p1, p2 );
+      const QgsPointXY p1( myLineList[1].toDouble(), myLineList[0].toDouble() );
+      const QgsPointXY p2( myLineList[4].toDouble(), myLineList[3].toDouble() );
+      const double result = myDa.measureLine( p1, p2 );
       // QgsDebugMsg( QStringLiteral( "Distance from %1 to %2 is %3" ).arg( p1.toString( 15 ) ).arg( p2.toString( 15 ) ).arg( result, 0, 'g', 15 ) );
       // QgsDebugMsg( QStringLiteral( "Distance should be %1" ).arg( myLineList[6] ) );
       // Check result is less than 0.5mm from expected.
@@ -229,7 +216,7 @@ void TestQgsDistanceArea::regression13601()
   QgsDistanceArea calc;
   calc.setEllipsoid( QStringLiteral( "NONE" ) );
   calc.setSourceCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3148" ) ), QgsProject::instance()->transformContext() );
-  QgsGeometry geom( QgsGeometryFactory::geomFromWkt( QStringLiteral( "Polygon ((252000 1389000, 265000 1389000, 265000 1385000, 252000 1385000, 252000 1389000))" ) ).release() );
+  const QgsGeometry geom( QgsGeometryFactory::geomFromWkt( QStringLiteral( "Polygon ((252000 1389000, 265000 1389000, 265000 1385000, 252000 1385000, 252000 1389000))" ) ).release() );
   QGSCOMPARENEAR( calc.measureArea( geom ), 52000000, 0.0001 );
 }
 
@@ -241,24 +228,36 @@ void TestQgsDistanceArea::collections()
   myDa.setEllipsoid( QStringLiteral( "WGS84" ) );
 
   //collection of lines, should be sum of line length
-  QgsGeometry lines( QgsGeometryFactory::geomFromWkt( QStringLiteral( "GeometryCollection( LineString(0 36.53, 5.76 -48.16), LineString(0 25.54, 24.20 36.70) )" ) ).release() );
+  const QgsGeometry lines( QgsGeometryFactory::geomFromWkt( QStringLiteral( "GeometryCollection( LineString(0 36.53, 5.76 -48.16), LineString(0 25.54, 24.20 36.70) )" ) ).release() );
   double result = myDa.measureLength( lines );
   QGSCOMPARENEAR( result, 12006159, 1 );
   result = myDa.measureArea( lines );
   QGSCOMPARENEAR( result, 0, 4 * std::numeric_limits<double>::epsilon() );
 
   //collection of polygons
-  QgsGeometry polys( QgsGeometryFactory::geomFromWkt( QStringLiteral( "GeometryCollection( Polygon((0 36.53, 5.76 -48.16, 0 25.54, 0 36.53)), Polygon((10 20, 15 20, 15 10, 10 20)) )" ) ).release() );
+
+  const QgsGeometry poly1 = QgsGeometry::fromWkt( QStringLiteral( "Polygon((0 36.53, 5.76 -48.16, 0 25.54, 0 36.53))" ) );
+  result = myDa.measureArea( poly1 );
+  QGSCOMPARENEAR( result, 439881520607.079712, 1 );
+  result = myDa.measureLength( poly1 );
+  QGSCOMPARENEAR( result, 0, 4 * std::numeric_limits<double>::epsilon() );
+  const QgsGeometry poly2 = QgsGeometry::fromWkt( QStringLiteral( "Polygon((10 20, 15 20, 15 10, 10 20))" ) );
+  result = myDa.measureArea( poly2 );
+  QGSCOMPARENEAR( result, 290350317025.906982, 1 );
+  result = myDa.measureLength( poly2 );
+  QGSCOMPARENEAR( result, 0, 4 * std::numeric_limits<double>::epsilon() );
+
+  const QgsGeometry polys( QgsGeometryFactory::geomFromWkt( QStringLiteral( "GeometryCollection( Polygon((0 36.53, 5.76 -48.16, 0 25.54, 0 36.53)), Polygon((10 20, 15 20, 15 10, 10 20)) )" ) ).release() );
   result = myDa.measureArea( polys );
-  QGSCOMPARENEAR( result, 663136985074LL, 1 );
+  QGSCOMPARENEAR( result, 730231837632.98669, 1 );
   result = myDa.measureLength( polys );
   QGSCOMPARENEAR( result, 0, 4 * std::numeric_limits<double>::epsilon() );
 
   //mixed collection
-  QgsGeometry mixed( QgsGeometryFactory::geomFromWkt( QStringLiteral( "GeometryCollection( LineString(0 36.53, 5.76 -48.16), LineString(0 25.54, 24.20 36.70), Polygon((0 36.53, 5.76 -48.16, 0 25.54, 0 36.53)), Polygon((10 20, 15 20, 15 10, 10 20)) )" ) ).release() );
+  const QgsGeometry mixed( QgsGeometryFactory::geomFromWkt( QStringLiteral( "GeometryCollection( LineString(0 36.53, 5.76 -48.16), LineString(0 25.54, 24.20 36.70), Polygon((0 36.53, 5.76 -48.16, 0 25.54, 0 36.53)), Polygon((10 20, 15 20, 15 10, 10 20)) )" ) ).release() );
   //measure area specifically
   result = myDa.measureArea( mixed );
-  QGSCOMPARENEAR( result, 663136985075LL, 1 );
+  QGSCOMPARENEAR( result, 730231837632.98669, 1 );
   //measure length
   result = myDa.measureLength( mixed );
   QGSCOMPARENEAR( result, 12006159, 1 );
@@ -271,8 +270,8 @@ void TestQgsDistanceArea::measureUnits()
   calc.setEllipsoid( QStringLiteral( "NONE" ) );
   calc.setSourceCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:2272" ) ), QgsProject::instance()->transformContext() );
   QgsUnitTypes::DistanceUnit units;
-  QgsPointXY p1( 1341683.9854275715, 408256.9562717728 );
-  QgsPointXY p2( 1349321.7807031618, 408256.9562717728 );
+  const QgsPointXY p1( 1341683.9854275715, 408256.9562717728 );
+  const QgsPointXY p2( 1349321.7807031618, 408256.9562717728 );
 
   double result = calc.measureLine( p1, p2 );
   units = calc.lengthUnits();
@@ -321,12 +320,12 @@ void TestQgsDistanceArea::measureAreaAndUnits()
   units = da.areaUnits();
   QgsDebugMsg( QStringLiteral( "measured %1 in %2" ).arg( area ).arg( QgsUnitTypes::toString( units ) ) );
   // should always be in Meters Squared
-  QGSCOMPARENEAR( area, 36918093794.1, 0.1 );
+  QGSCOMPARENEAR( area, 36922805935.961571, 0.1 );
   QCOMPARE( units, QgsUnitTypes::AreaSquareMeters );
 
   // test converting the resultant area
   area = da.convertAreaMeasurement( area, QgsUnitTypes::AreaSquareMiles );
-  QGSCOMPARENEAR( area, 14254.155703, 0.001 );
+  QGSCOMPARENEAR( area, 14255.975071, 0.001 );
 
   // now try with a source CRS which is in feet
   ring.clear();
@@ -341,11 +340,7 @@ void TestQgsDistanceArea::measureAreaAndUnits()
   poly << ring;
   polygon = QgsGeometry::fromPolygonXY( poly );
 
-#if PROJ_VERSION_MAJOR>=6
   da.setSourceCrs( QgsCoordinateReferenceSystem( QStringLiteral( "ESRI:102635" ) ), QgsProject::instance()->transformContext() );
-#else
-  da.setSourceCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:102635" ) ), QgsProject::instance()->transformContext() );
-#endif
   da.setEllipsoid( QStringLiteral( "NONE" ) );
   // measurement should be in square feet
   area = da.measureArea( polygon );
@@ -363,13 +358,13 @@ void TestQgsDistanceArea::measureAreaAndUnits()
   area = da.measureArea( polygon );
   units = da.areaUnits();
   QgsDebugMsg( QStringLiteral( "measured %1 in %2" ).arg( area ).arg( QgsUnitTypes::toString( units ) ) );
-  QGSCOMPARENEAR( area, 185818.590966, 1.0 );
+  QGSCOMPARENEAR( area, 185825.206903, 1.0 );
   QCOMPARE( units, QgsUnitTypes::AreaSquareMeters );
 
   // test converting the resultant area
   area = da.convertAreaMeasurement( area, QgsUnitTypes::AreaSquareYards );
   QgsDebugMsg( QStringLiteral( "measured %1 in sq yrds" ).arg( area ) );
-  QGSCOMPARENEAR( area, 222237.185213, 1.0 );
+  QGSCOMPARENEAR( area, 222245.097808, 1.0 );
 }
 
 void TestQgsDistanceArea::emptyPolygon()
@@ -388,9 +383,8 @@ void TestQgsDistanceArea::regression14675()
   QgsDistanceArea calc;
   calc.setEllipsoid( QStringLiteral( "GRS80" ) );
   calc.setSourceCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:2154" ) ), QgsProject::instance()->transformContext() );
-  QgsGeometry geom( QgsGeometryFactory::geomFromWkt( QStringLiteral( "Polygon ((917593.5791854317067191 6833700.00807378999888897, 917596.43389983859378844 6833700.67099479306489229, 917599.53056440979707986 6833700.78673478215932846, 917593.5791854317067191 6833700.00807378999888897))" ) ).release() );
-  //lots of tolerance here - the formulas get quite unstable with small areas due to division by very small floats
-  QGSCOMPARENEAR( calc.measureArea( geom ), 0.833010, 0.03 );
+  const QgsGeometry geom( QgsGeometryFactory::geomFromWkt( QStringLiteral( "Polygon ((917593.5791854317067191 6833700.00807378999888897, 917596.43389983859378844 6833700.67099479306489229, 917599.53056440979707986 6833700.78673478215932846, 917593.5791854317067191 6833700.00807378999888897))" ) ).release() );
+  QGSCOMPARENEAR( calc.measureArea( geom ), 0.861747, 0.001 );
 }
 
 void TestQgsDistanceArea::regression16820()
@@ -398,9 +392,8 @@ void TestQgsDistanceArea::regression16820()
   QgsDistanceArea calc;
   calc.setEllipsoid( QStringLiteral( "WGS84" ) );
   calc.setSourceCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32634" ) ), QgsProject::instance()->transformContext() );
-  QgsGeometry geom( QgsGeometryFactory::geomFromWkt( QStringLiteral( "Polygon ((110250.54038314701756462 5084495.57398066483438015, 110243.46975068224128336 5084507.17200060561299324, 110251.23908144699817058 5084506.68309532757848501, 110251.2394439501222223 5084506.68307251576334238, 110250.54048078990308568 5084495.57553235255181789, 110250.54038314701756462 5084495.57398066483438015))" ) ).release() );
-  //lots of tolerance here - the formulas get quite unstable with small areas due to division by very small floats
-  QGSCOMPARENEAR( calc.measureArea( geom ), 43.3280029296875, 0.2 );
+  const QgsGeometry geom( QgsGeometryFactory::geomFromWkt( QStringLiteral( "Polygon ((110250.54038314701756462 5084495.57398066483438015, 110243.46975068224128336 5084507.17200060561299324, 110251.23908144699817058 5084506.68309532757848501, 110251.2394439501222223 5084506.68307251576334238, 110250.54048078990308568 5084495.57553235255181789, 110250.54038314701756462 5084495.57398066483438015))" ) ).release() );
+  QGSCOMPARENEAR( calc.measureArea( geom ), 43.201092, 0.001 );
 }
 
 QGSTEST_MAIN( TestQgsDistanceArea )

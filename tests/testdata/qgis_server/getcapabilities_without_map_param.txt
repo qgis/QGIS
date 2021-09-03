@@ -10,7 +10,7 @@ Content-Type: text/xml; charset=utf-8
   <KeywordList>
    <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
   </KeywordList>
-  <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+  <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?" xmlns:xlink="http://www.w3.org/1999/xlink"/>
   <ContactInformation>
    <ContactPersonPrimary>
     <ContactPerson>Alessandro Pasotti</ContactPerson>

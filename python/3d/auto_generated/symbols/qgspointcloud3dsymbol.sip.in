@@ -12,7 +12,7 @@
 
 class QgsPointCloud3DSymbol : QgsAbstract3DSymbol /Abstract/
 {
-%Docstring
+%Docstring(signature="appended")
 3D symbol that draws point cloud geometries as 3D objects.
 
 .. warning::
@@ -77,7 +77,7 @@ Returns the byte stride for the geometries used to for the vertex buffer
 
 class QgsSingleColorPointCloud3DSymbol : QgsPointCloud3DSymbol
 {
-%Docstring
+%Docstring(signature="appended")
 3D symbol that draws point cloud geometries as 3D objects.using one color
 
 .. warning::
@@ -128,7 +128,7 @@ Sets the color used by the renderer when using SingleColor rendering mode
 
 class QgsColorRampPointCloud3DSymbol : QgsPointCloud3DSymbol
 {
-%Docstring
+%Docstring(signature="appended")
 3D symbol that draws point cloud geometries as 3D objects.using color ramp shader
 
 .. warning::
@@ -213,7 +213,7 @@ Sets the minimum and maximum values used when classifying colors in the color ra
 
 class QgsRgbPointCloud3DSymbol : QgsPointCloud3DSymbol
 {
-%Docstring
+%Docstring(signature="appended")
 3D symbol that draws point cloud geometries as 3D objects using RGB colors in the dataset
 
 .. warning::
@@ -394,7 +394,7 @@ Ownership of ``enhancement`` is transferred.
 
 class QgsClassificationPointCloud3DSymbol : QgsPointCloud3DSymbol
 {
-%Docstring
+%Docstring(signature="appended")
 3D symbol that draws point cloud geometries as 3D objects using classification of the dataset
 
 .. warning::

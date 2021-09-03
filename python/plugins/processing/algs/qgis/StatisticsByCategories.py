@@ -104,11 +104,15 @@ class StatisticsByCategories(QgisAlgorithm):
             value_field = source.fields().at(value_field_index)
         else:
             value_field = None
-        category_field_indexes = [source.fields().lookupField(n) for n in category_field_names]
+        category_field_indexes = list()
 
         # generate output fields
         fields = QgsFields()
-        for c in category_field_indexes:
+        for field_name in category_field_names:
+            c = source.fields().lookupField(field_name)
+            if c == -1:
+                raise QgsProcessingException(self.tr('Field "{field_name}" does not exist.').format(field_name=field_name))
+            category_field_indexes.append(c)
             fields.append(source.fields().at(c))
 
         def addField(name):

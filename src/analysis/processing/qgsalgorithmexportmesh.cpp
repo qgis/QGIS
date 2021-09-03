@@ -27,6 +27,8 @@
 #include "qgsrasterfilewriter.h"
 #include "qgslinestring.h"
 
+#include <QTextStream>
+
 ///@cond PRIVATE
 
 
@@ -273,8 +275,6 @@ bool QgsExportMeshOnElement::prepareAlgorithm( const QVariantMap &parameters, Qg
     feedback->setProgressText( QObject::tr( "Preparing data" ) );
   }
 
-  QDateTime layerReferenceTime = static_cast<QgsMeshLayerTemporalProperties *>( meshLayer->temporalProperties() )->referenceTime();
-
   // Extract the date time used to export dataset values under a relative time
   QVariant parameterTimeVariant = parameters.value( QStringLiteral( "DATASET_TIME" ) );
   QgsInterval relativeTime = datasetRelativetime( parameterTimeVariant, meshLayer, context );
@@ -352,7 +352,7 @@ QVariantMap QgsExportMeshOnElement::processAlgorithm( const QVariantMap &paramet
   for ( int i = 0; i < mElementCount; ++i )
   {
     QgsAttributes attributes;
-    for ( const DataGroup &dataGroup : mDataPerGroup )
+    for ( const DataGroup &dataGroup : std::as_const( mDataPerGroup ) )
     {
       const QgsMeshDatasetValue &value = dataGroup.datasetValues.value( i );
       addAttributes( value, attributes, dataGroup.metadata.isVector(), mExportVectorOption );
@@ -367,12 +367,14 @@ QVariantMap QgsExportMeshOnElement::processAlgorithm( const QVariantMap &paramet
     catch ( QgsCsException & )
     {
       geom = meshElement( i );
-      feedback->reportError( QObject::tr( "Could not transform point to destination CRS" ) );
+      if ( feedback )
+        feedback->reportError( QObject::tr( "Could not transform point to destination CRS" ) );
     }
     feat.setGeometry( geom );
     feat.setAttributes( attributes );
 
-    sink->addFeature( feat );
+    if ( !sink->addFeature( feat ) )
+      throw QgsProcessingException( writeFeatureError( sink, parameters, QStringLiteral( "OUTPUT" ) ) );
 
     if ( feedback )
     {
@@ -414,7 +416,7 @@ QgsGeometry QgsExportMeshFacesAlgorithm::meshElement( int index ) const
   QVector<QgsPoint> vertices( face.size() );
   for ( int i = 0; i < face.size(); ++i )
     vertices[i] = mNativeMesh.vertex( face.at( i ) );
-  std::unique_ptr<QgsPolygon> polygon = qgis::make_unique<QgsPolygon>();
+  std::unique_ptr<QgsPolygon> polygon = std::make_unique<QgsPolygon>();
   polygon->setExteriorRing( new QgsLineString( vertices ) );
   return QgsGeometry( polygon.release() );
 }
@@ -590,7 +592,7 @@ QVariantMap QgsExportMeshOnGridAlgorithm::processAlgorithm( const QVariantMap &p
 
   QList<QgsMeshDatasetGroupMetadata> metaList;
   metaList.reserve( mDataPerGroup.size() );
-  for ( const DataGroup &dataGroup : mDataPerGroup )
+  for ( const DataGroup &dataGroup : std::as_const( mDataPerGroup ) )
     metaList.append( dataGroup.metadata );
   QgsFields fields = createFields( metaList, mExportVectorOption );
 
@@ -736,7 +738,8 @@ void QgsMeshRasterizeAlgorithm::initAlgorithm( const QVariantMap &configuration 
                   QStringLiteral( "DATASET_GROUPS" ),
                   QObject::tr( "Dataset groups" ),
                   QStringLiteral( "INPUT" ),
-                  supportedDataType() ) );
+                  supportedDataType(),
+                  true ) );
 
   addParameter( new QgsProcessingParameterMeshDatasetTime(
                   QStringLiteral( "DATASET_TIME" ),
@@ -823,7 +826,7 @@ QVariantMap QgsMeshRasterizeAlgorithm::processAlgorithm( const QVariantMap &para
   rasterFileWriter.setOutputFormat( outputFormat );
 
   std::unique_ptr<QgsRasterDataProvider> rasterDataProvider(
-    rasterFileWriter.createMultiBandRaster( Qgis::Float64, width, height, extent, mTransform.destinationCrs(), mDataPerGroup.count() ) );
+    rasterFileWriter.createMultiBandRaster( Qgis::DataType::Float64, width, height, extent, mTransform.destinationCrs(), mDataPerGroup.count() ) );
   rasterDataProvider->setEditable( true );
 
   for ( int i = 0; i < mDataPerGroup.count(); ++i )
@@ -833,20 +836,24 @@ QVariantMap QgsMeshRasterizeAlgorithm::processAlgorithm( const QVariantMap &para
     if ( feedback )
       QObject::connect( &rasterBlockFeedBack, &QgsFeedback::canceled, feedback, &QgsFeedback::cancel );
 
-    QgsRasterBlock *block = QgsMeshUtils::exportRasterBlock(
-                              mTriangularMesh,
-                              dataGroup.datasetValues,
-                              dataGroup.activeFaces,
-                              dataGroup.metadata.dataType(),
-                              mTransform,
-                              pixelSize,
-                              extent,
-                              &rasterBlockFeedBack );
+    if ( dataGroup.datasetValues.isValid() )
+    {
+      QgsRasterBlock *block = QgsMeshUtils::exportRasterBlock(
+                                mTriangularMesh,
+                                dataGroup.datasetValues,
+                                dataGroup.activeFaces,
+                                dataGroup.metadata.dataType(),
+                                mTransform,
+                                pixelSize,
+                                extent,
+                                &rasterBlockFeedBack );
 
+      rasterDataProvider->writeBlock( block, i + 1 );
+      rasterDataProvider->setNoDataValue( i + 1, block->noDataValue() );
+    }
+    else
+      rasterDataProvider->setNoDataValue( i + 1, std::numeric_limits<double>::quiet_NaN() );
 
-
-    rasterDataProvider->writeBlock( block, i + 1 );
-    rasterDataProvider->setNoDataValue( i + 1, block->noDataValue() );
     if ( feedback )
     {
       if ( feedback->isCanceled() )
@@ -1106,7 +1113,7 @@ QVariantMap QgsMeshContoursAlgorithm::processAlgorithm( const QVariantMap &param
     firstAttributes.append( dataGroup.metadata.name() );
     firstAttributes.append( mDateTimeString );
 
-    for ( double level : mLevels )
+    for ( double level : std::as_const( mLevels ) )
     {
       QgsGeometry line = contoursExported.exportLines( level, feedback );
       if ( feedback->isCanceled() )
@@ -1274,23 +1281,26 @@ QVariantMap QgsMeshExportCrossSection::processAlgorithm( const QVariantMap &para
 
   QString outputFileName = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
   QFile file( outputFileName );
-  if ( ! file.open( QIODevice::WriteOnly ) )
+  if ( ! file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     throw QgsProcessingException( QObject::tr( "Unable to create the outputfile" ) );
 
   QTextStream textStream( &file );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  textStream.setCodec( "UTF-8" );
+#endif
   QStringList header;
   header << QStringLiteral( "fid" ) << QStringLiteral( "x" ) << QStringLiteral( "y" ) << QObject::tr( "offset" );
-  for ( const DataGroup &datagroup : mDataPerGroup )
+  for ( const DataGroup &datagroup : std::as_const( mDataPerGroup ) )
     header << datagroup.metadata.name();
   textStream << header.join( ',' ) << QStringLiteral( "\n" );
 
-  int featCount = featureSource->featureCount();
-  int featCounter = 0;
+  long long featCount = featureSource->featureCount();
+  long long featCounter = 0;
   QgsFeatureIterator featIt = featureSource->getFeatures();
   QgsFeature feat;
   while ( featIt.nextFeature( feat ) )
   {
-    int fid = feat.id();
+    QgsFeatureId fid = feat.id();
     QgsGeometry line = feat.geometry();
     try
     {
@@ -1351,7 +1361,7 @@ QVariantMap QgsMeshExportCrossSection::processAlgorithm( const QVariantMap &para
 
     if ( feedback )
     {
-      feedback->setProgress( 100 * featCounter / featCount );
+      feedback->setProgress( 100.0 * featCounter / featCount );
       if ( feedback->isCanceled() )
         return QVariantMap();
     }
@@ -1371,7 +1381,7 @@ QString QgsMeshExportTimeSeries::name() const
 
 QString QgsMeshExportTimeSeries::displayName() const
 {
-  return QObject::tr( "Export dataset values time series values on points from mesh" );
+  return QObject::tr( "Export time series values from points of a mesh dataset" );
 }
 
 QString QgsMeshExportTimeSeries::group() const
@@ -1489,7 +1499,7 @@ bool QgsMeshExportTimeSeries::prepareAlgorithm( const QVariantMap &parameters, Q
     while ( mRelativeTimeSteps.last() < relativeEndTime.seconds() * 1000 )
       mRelativeTimeSteps.append( mRelativeTimeSteps.last() + timeStepInterval );
 
-    for ( qint64  relativeTimeStep : mRelativeTimeSteps )
+    for ( qint64  relativeTimeStep : std::as_const( mRelativeTimeSteps ) )
     {
       mTimeStepString.append( meshLayer->formatTime( relativeTimeStep / 3600.0 / 1000.0 ) );
     }
@@ -1586,25 +1596,28 @@ QVariantMap QgsMeshExportTimeSeries::processAlgorithm( const QVariantMap &parame
 
   QString outputFileName = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
   QFile file( outputFileName );
-  if ( ! file.open( QIODevice::WriteOnly ) )
+  if ( ! file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     throw QgsProcessingException( QObject::tr( "Unable to create the outputfile" ) );
 
   QTextStream textStream( &file );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  textStream.setCodec( "UTF-8" );
+#endif
   QStringList header;
   header << QStringLiteral( "fid" ) << QStringLiteral( "x" ) << QStringLiteral( "y" ) << QObject::tr( "time" );
 
-  for ( int gi : mGroupIndexes )
+  for ( int gi : std::as_const( mGroupIndexes ) )
     header << mGroupsMetadata.value( gi ).name();
 
   textStream << header.join( ',' ) << QStringLiteral( "\n" );
 
-  int featCount = featureSource->featureCount();
-  int featCounter = 0;
+  long long featCount = featureSource->featureCount();
+  long long featCounter = 0;
   QgsFeatureIterator featIt = featureSource->getFeatures();
   QgsFeature feat;
   while ( featIt.nextFeature( feat ) )
   {
-    int fid = feat.id();
+    QgsFeatureId fid = feat.id();
     QgsGeometry geom = feat.geometry();
     try
     {
@@ -1639,7 +1652,7 @@ QVariantMap QgsMeshExportTimeSeries::processAlgorithm( const QVariantMap &parame
           if ( mRelativeTimeToData.contains( timeStep ) )
           {
             const QMap<int, int> &groupToData = mRelativeTimeToData.value( timeStep );
-            for ( int groupIndex : mGroupIndexes )
+            for ( int groupIndex : std::as_const( mGroupIndexes ) )
             {
               if ( !groupToData.contains( groupIndex ) )
                 continue;
@@ -1672,7 +1685,7 @@ QVariantMap QgsMeshExportTimeSeries::processAlgorithm( const QVariantMap &parame
                  << QString::number( point.y(), 'f', coordDigits )
                  << QObject::tr( "static dataset" );
         const QMap<int, int> &groupToData = mRelativeTimeToData.value( 0 );
-        for ( int groupIndex : mGroupIndexes )
+        for ( int groupIndex : std::as_const( mGroupIndexes ) )
         {
           if ( !groupToData.contains( groupIndex ) )
             continue;
@@ -1698,7 +1711,7 @@ QVariantMap QgsMeshExportTimeSeries::processAlgorithm( const QVariantMap &parame
     featCounter++;
     if ( feedback )
     {
-      feedback->setProgress( 100 * featCounter / featCount );
+      feedback->setProgress( 100.0 * featCounter / featCount );
       if ( feedback->isCanceled() )
         return QVariantMap();
     }

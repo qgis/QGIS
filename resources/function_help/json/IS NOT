@@ -1,6 +1,7 @@
 {
   "name": "IS NOT",
   "type": "operator",
+  "groups": ["Operators"],
   "description": "Returns 1 if a is not the same as b.",
   "arguments": [
 	{"arg":"a","description":"value"},

@@ -38,7 +38,7 @@ class QgsVectorTileBasicRendererProxyModel;
 
 /**
  * \ingroup gui
- * Styling widget for basic renderer of vector tile layer
+ * \brief Styling widget for basic renderer of vector tile layer
  *
  * \since QGIS 3.14
  */

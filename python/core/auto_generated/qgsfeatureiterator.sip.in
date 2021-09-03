@@ -10,7 +10,7 @@
 
 class QgsAbstractFeatureIterator
 {
-%Docstring
+%Docstring(signature="appended")
 Internal feature iterator to be implemented within data providers
 %End
 
@@ -166,7 +166,7 @@ Setup the simplification of geometries to fetch using the specified simplify met
 template<T>
 class QgsAbstractFeatureIteratorFromSource : QgsAbstractFeatureIterator
 {
-%Docstring
+%Docstring(signature="appended")
 Helper template that cares of two things: 1. automatic deletion of source if owned by iterator, 2. notification of open/closed iterator.
 
 .. note::
@@ -193,7 +193,7 @@ to be called by from subclass in :py:func:`~QgsAbstractFeatureIteratorFromSource
 
 class QgsFeatureIterator
 {
-%Docstring
+%Docstring(signature="appended")
 Wrapper for iterator of features from vector data provider or vector layer
 %End
 
@@ -209,7 +209,7 @@ Wrapper for iterator of features from vector data provider or vector layer
 
     SIP_PYOBJECT __next__() /TypeHint="QgsFeature"/;
 %MethodCode
-    std::unique_ptr< QgsFeature > f = qgis::make_unique< QgsFeature >();
+    std::unique_ptr< QgsFeature > f = std::make_unique< QgsFeature >();
     bool result = false;
     Py_BEGIN_ALLOW_THREADS
     result = ( sipCpp->nextFeature( *f ) );

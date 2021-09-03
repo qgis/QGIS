@@ -77,7 +77,7 @@ void QgsClipboard::replaceWithCopyOf( QgsFeatureStore &featureStore )
 
 void QgsClipboard::generateClipboardText( QString &textContent, QString &htmlContent ) const
 {
-  CopyFormat format = QgsSettings().enumValue( QStringLiteral( "qgis/copyFeatureFormat" ),  AttributesWithWKT );
+  const CopyFormat format = QgsSettings().enumValue( QStringLiteral( "qgis/copyFeatureFormat" ),  AttributesWithWKT );
 
   textContent.clear();
   htmlContent.clear();
@@ -111,14 +111,14 @@ void QgsClipboard::generateClipboardText( QString &textContent, QString &htmlCon
       // then the field contents
       for ( QgsFeatureList::const_iterator it = mFeatureClipboard.constBegin(); it != mFeatureClipboard.constEnd(); ++it )
       {
-        QgsAttributes attributes = it->attributes();
+        const QgsAttributes attributes = it->attributes();
 
         // TODO: Set up Paste Transformations to specify the order in which fields are added.
         if ( format == AttributesWithWKT )
         {
           if ( it->hasGeometry() )
           {
-            QString wkt = it->geometry().asWkt();
+            const QString wkt = it->geometry().asWkt();
             textFields += wkt;
             htmlFields += QStringLiteral( "<td>%1</td>" ).arg( wkt );
           }
@@ -206,11 +206,11 @@ QgsFeatureList QgsClipboard::stringToFeatureList( const QString &string, const Q
     return features;
 
   // otherwise try to read in as WKT
-  QStringList values = string.split( '\n' );
+  const QStringList values = string.split( '\n' );
   if ( values.isEmpty() || string.isEmpty() )
     return features;
 
-  QgsFields sourceFields = retrieveFields();
+  const QgsFields sourceFields = retrieveFields();
 
   const auto constValues = values;
   for ( const QString &row : constValues )
@@ -240,7 +240,7 @@ QgsFeatureList QgsClipboard::stringToFeatureList( const QString &string, const Q
       feature.setAttribute( i - 1, fieldValues.at( i ) );
     }
 
-    QgsGeometry geometry = QgsGeometry::fromWkt( fieldValues[0] );
+    const QgsGeometry geometry = QgsGeometry::fromWkt( fieldValues[0] );
     if ( !geometry.isNull() )
     {
       feature.setGeometry( geometry );
@@ -256,7 +256,7 @@ QgsFields QgsClipboard::retrieveFields() const
   QClipboard *cb = QApplication::clipboard();
 
 #ifdef Q_OS_LINUX
-  QString string = cb->text( QClipboard::Selection );
+  const QString string = cb->text( QClipboard::Selection );
 #else
   QString string = cb->text( QClipboard::Clipboard );
 #endif
@@ -270,10 +270,10 @@ QgsFields QgsClipboard::retrieveFields() const
     }
 
     //wkt?
-    QString firstLine = string.section( '\n', 0, 0 );
+    const QString firstLine = string.section( '\n', 0, 0 );
     if ( !firstLine.isEmpty() )
     {
-      QStringList fieldNames = firstLine.split( '\t' );
+      const QStringList fieldNames = firstLine.split( '\t' );
       //wkt / text always has wkt_geom as first attribute (however values can be NULL)
       if ( fieldNames.at( 0 ) != QLatin1String( "wkt_geom" ) )
       {
@@ -282,7 +282,7 @@ QgsFields QgsClipboard::retrieveFields() const
 
       for ( int i = 0; i < fieldNames.size(); ++i )
       {
-        QString fieldName = fieldNames.at( i );
+        const QString fieldName = fieldNames.at( i );
         if ( fieldName == QLatin1String( "wkt_geom" ) )
         {
           continue;
@@ -343,7 +343,7 @@ bool QgsClipboard::isEmpty() const
 {
   QClipboard *cb = QApplication::clipboard();
 #ifdef Q_OS_LINUX
-  QString text = cb->text( QClipboard::Selection );
+  const QString text = cb->text( QClipboard::Selection );
 #else
   QString text = cb->text( QClipboard::Clipboard );
 #endif
@@ -355,7 +355,7 @@ QgsFeatureList QgsClipboard::transformedCopyOf( const QgsCoordinateReferenceSyst
   QgsFeatureList featureList = copyOf( fields );
 
   QgisApp::instance()->askUserForDatumTransform( crs(), destCRS );
-  QgsCoordinateTransform ct = QgsCoordinateTransform( crs(), destCRS, QgsProject::instance() );
+  const QgsCoordinateTransform ct = QgsCoordinateTransform( crs(), destCRS, QgsProject::instance() );
 
   QgsDebugMsg( QStringLiteral( "transforming clipboard." ) );
   for ( QgsFeatureList::iterator iter = featureList.begin(); iter != featureList.end(); ++iter )

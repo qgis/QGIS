@@ -111,6 +111,15 @@
             <property name="text">
              <string>Insert/Edit Expression…</string>
             </property>
+            <property name="popupMode">
+             <enum>QToolButton::MenuButtonPopup</enum>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextOnly</enum>
+            </property>
+            <property name="arrowType">
+             <enum>Qt::DownArrow</enum>
+            </property>
            </widget>
           </item>
           <item row="1" column="0" colspan="2">
@@ -374,6 +383,11 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
@@ -386,20 +400,15 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsFontButton</class>
    <extends>QToolButton</extends>
    <header>qgsfontbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -408,6 +417,7 @@
   <tabstop>mTextEdit</tabstop>
   <tabstop>mHtmlCheckBox</tabstop>
   <tabstop>mInsertExpressionButton</tabstop>
+  <tabstop>mDynamicTextButton</tabstop>
   <tabstop>mAppearanceGroup</tabstop>
   <tabstop>mFontButton</tabstop>
   <tabstop>mFontColorButton</tabstop>
@@ -416,6 +426,7 @@
   <tabstop>mLeftRadioButton</tabstop>
   <tabstop>mCenterRadioButton</tabstop>
   <tabstop>mRightRadioButton</tabstop>
+  <tabstop>mJustifyRadioButton</tabstop>
   <tabstop>mTopRadioButton</tabstop>
   <tabstop>mMiddleRadioButton</tabstop>
   <tabstop>mBottomRadioButton</tabstop>
@@ -423,7 +434,7 @@
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroup_2"/>
   <buttongroup name="buttonGroup"/>
+  <buttongroup name="buttonGroup_2"/>
  </buttongroups>
 </ui>

@@ -36,6 +36,8 @@ class APP_EXPORT QgsMapToolRotateLabel: public QgsMapToolLabel
 
   protected:
 
+    bool canModifyLabel( const LabelDetails &label ) override;
+
     static int roundTo15Degrees( double n );
     //! Converts azimuth value so that 0 is corresponds to East
     static double convertAzimuth( double a );

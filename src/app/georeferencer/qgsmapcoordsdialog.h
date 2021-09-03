@@ -23,8 +23,9 @@
 #include "qgsprojectionselectionwidget.h"
 #include "qgscoordinatereferencesystem.h"
 
-
 #include "ui_qgsmapcoordsdialogbase.h"
+
+class QgsGCPCanvasItem;
 
 class QPushButton;
 
@@ -84,6 +85,8 @@ class QgsMapCoordsDialog : public QDialog, private Ui::QgsMapCoordsDialogBase
     QgsGeorefMapToolEmitPoint *mToolEmitPoint = nullptr;
     QgsMapTool *mPrevMapTool = nullptr;
     QgsMapCanvas *mQgisCanvas = nullptr;
+
+    QgsGCPCanvasItem *mNewlyAddedPointItem = nullptr;
 
     QgsCoordinateReferenceSystem mRasterCrs;
 

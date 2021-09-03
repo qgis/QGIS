@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>FeaturePanel.qml</file>
     </qresource>
 </RCC>

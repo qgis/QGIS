@@ -127,7 +127,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
     alphaBlock = inputBlock;
   }
 
-  if ( !outputBlock->reset( Qgis::ARGB32_Premultiplied, width, height ) )
+  if ( !outputBlock->reset( Qgis::DataType::ARGB32_Premultiplied, width, height ) )
   {
     return outputBlock.release();
   }
@@ -175,7 +175,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
     if ( source.isEmpty() )
     {
       useOpenCL = false;
-      QgsMessageLog::logMessage( QObject::tr( "Error loading OpenCL program source from path %1" ).arg( QgsOpenClUtils::sourcePath() ), QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::Critical );
+      QgsMessageLog::logMessage( QObject::tr( "Error loading OpenCL program source from path %1" ).arg( QgsOpenClUtils::sourcePath() ), QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::MessageLevel::Critical );
     }
   }
 
@@ -232,7 +232,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
       // Buffer scanlines, 1px height, 2px wider
       // Data type for input is Float32 (4 bytes)
       // keep only three scanlines in memory at a time, make room for initial and final nodata
-      std::unique_ptr<QgsRasterBlock> scanLine = qgis::make_unique<QgsRasterBlock>( inputBlock->dataType(), scanLineWidth, 1 );
+      std::unique_ptr<QgsRasterBlock> scanLine = std::make_unique<QgsRasterBlock>( inputBlock->dataType(), scanLineWidth, 1 );
       // Note: output block is not 2px wider and it is an image
       // Prepare context and queue
       cl::Context ctx = QgsOpenClUtils::context();
@@ -357,10 +357,10 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
     catch ( cl::Error &e )
     {
       QgsMessageLog::logMessage( QObject::tr( "Error running OpenCL program: %1 - %2" ).arg( e.what( ) ).arg( QgsOpenClUtils::errorText( e.err( ) ) ),
-                                 QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::Critical );
+                                 QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::MessageLevel::Critical );
       QgsOpenClUtils::setEnabled( false );
       QgsMessageLog::logMessage( QObject::tr( "OpenCL has been disabled, you can re-enable it in the options dialog." ),
-                                 QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::Critical );
+                                 QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::MessageLevel::Critical );
     }
 
   } // End of OpenCL processing path
@@ -448,11 +448,11 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
         if ( !mMultiDirectional )
         {
           // Standard single direction hillshade
-          grayValue = qBound( 0.0, ( sin_altRadians_mul_254 -
-                                     ( derY * cos_az_mul_cos_alt_mul_z_mul_254 -
-                                       derX * sin_az_mul_cos_alt_mul_z_mul_254 ) ) /
-                              std::sqrt( 1 + square_z * ( derX * derX + derY * derY ) )
-                              , 255.0 );
+          grayValue = std::clamp( ( sin_altRadians_mul_254 -
+                                    ( derY * cos_az_mul_cos_alt_mul_z_mul_254 -
+                                      derX * sin_az_mul_cos_alt_mul_z_mul_254 ) ) /
+                                  std::sqrt( 1 + square_z * ( derX * derX + derY * derY ) ),
+                                  0.0, 255.0 );
         }
         else
         {
@@ -464,7 +464,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
           // Flat?
           if ( xx_plus_yy == 0.0 )
           {
-            grayValue = qBound( 0.0f, static_cast<float>( 1.0 + sin_altRadians_mul_254 ), 255.0f );
+            grayValue = std::clamp( static_cast<float>( 1.0 + sin_altRadians_mul_254 ), 0.0f, 255.0f );
           }
           else
           {
@@ -494,7 +494,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
                                            weight_360 * val360_mul_127 ) / xx_plus_yy ) /
                                        ( 1 + square_z * xx_plus_yy );
 
-            grayValue = qBound( 0.0f, 1.0f + cang_mul_127, 255.0f );
+            grayValue = std::clamp( 1.0f + cang_mul_127, 0.0f, 255.0f );
           }
         }
 

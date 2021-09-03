@@ -54,6 +54,9 @@ QgsLayoutManualTableWidget::QgsLayoutManualTableWidget( QgsLayoutFrame *frame )
   mContentFontToolButton->setMode( QgsFontButton::ModeTextRenderer );
   mHeaderFontToolButton->setMode( QgsFontButton::ModeTextRenderer );
 
+  mContentFontToolButton->registerExpressionContextGenerator( this );
+  mHeaderFontToolButton->registerExpressionContextGenerator( this );
+
   blockAllSignals( true );
 
   mResizeModeComboBox->addItem( tr( "Use Existing Frames" ), QgsLayoutMultiFrame::UseExistingFrames );
@@ -105,6 +108,27 @@ void QgsLayoutManualTableWidget::setMasterLayout( QgsMasterLayoutInterface *mast
 {
   if ( mItemPropertiesWidget )
     mItemPropertiesWidget->setMasterLayout( masterLayout );
+}
+
+QgsExpressionContext QgsLayoutManualTableWidget::createExpressionContext() const
+{
+  QgsExpressionContext context;
+
+  // frames include their parent multiframe's context, so prefer that if possible
+  if ( mFrame )
+    context = mFrame->createExpressionContext();
+  else if ( mTable )
+    context = mTable->createExpressionContext();
+
+  std::unique_ptr< QgsExpressionContextScope > cellScope = std::make_unique< QgsExpressionContextScope >();
+  cellScope->setVariable( QStringLiteral( "row_number" ), 1, true );
+  cellScope->setVariable( QStringLiteral( "column_number" ), 1, true );
+  context.appendScope( cellScope.release() );
+
+  context.setHighlightedVariables( { QStringLiteral( "row_number" ),
+                                     QStringLiteral( "column_number" )} );
+
+  return context;
 }
 
 bool QgsLayoutManualTableWidget::setNewItem( QgsLayoutItem *item )
@@ -169,7 +193,7 @@ void QgsLayoutManualTableWidget::setTableContents()
 
     int row = 0;
     const QList< double > rowHeights = mTable->rowHeights();
-    for ( double height : rowHeights )
+    for ( const double height : rowHeights )
     {
       mEditorDialog->setTableRowHeight( row, height );
       row++;
@@ -178,7 +202,7 @@ void QgsLayoutManualTableWidget::setTableContents()
     const QList< double > columnWidths = mTable->columnWidths();
     QVariantList headers;
     headers.reserve( columnWidths.size() );
-    for ( double width : columnWidths )
+    for ( const double width : columnWidths )
     {
       mEditorDialog->setTableColumnWidth( col, width );
       headers << ( col < mTable->headers().count() ? mTable->headers().value( col ).heading() : QVariant() );

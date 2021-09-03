@@ -32,14 +32,11 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QLocale>
+#include <QRegularExpression>
 
-//proj4 includes
-#if PROJ_VERSION_MAJOR>=6
+//proj includes
 #include "qgsprojutils.h"
 #include <proj.h>
-#else
-#include <proj_api.h>
-#endif
 
 #include "qgsogrutils.h"
 #include <ogr_srs_api.h>
@@ -92,7 +89,7 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
 
   connect( leName, &QLineEdit::textChanged, this, &QgsCustomProjectionDialog::updateListFromCurrentItem );
   connect( teParameters, &QPlainTextEdit::textChanged, this, &QgsCustomProjectionDialog::updateListFromCurrentItem );
-  connect( mFormatComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsCustomProjectionDialog::formatChanged );
+  connect( mFormatComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsCustomProjectionDialog::formatChanged );
 }
 
 void QgsCustomProjectionDialog::populateList()
@@ -261,7 +258,7 @@ void QgsCustomProjectionDialog::leNameList_currentItemChanged( QTreeWidgetItem *
 
 void QgsCustomProjectionDialog::pbnCopyCRS_clicked()
 {
-  std::unique_ptr< QgsProjectionSelectionDialog > selector = qgis::make_unique< QgsProjectionSelectionDialog >( this );
+  std::unique_ptr< QgsProjectionSelectionDialog > selector = std::make_unique< QgsProjectionSelectionDialog >( this );
   if ( selector->exec() )
   {
     QgsCoordinateReferenceSystem srs = selector->crs();
@@ -288,7 +285,7 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
 
   //Check if all CRS are valid:
   QgsCoordinateReferenceSystem crs;
-  for ( const Definition &def : qgis::as_const( mDefinitions ) )
+  for ( const Definition &def : std::as_const( mDefinitions ) )
   {
     if ( !def.wkt.isEmpty() )
       crs.createFromWkt( def.wkt );
@@ -353,7 +350,7 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
 
   //Modify the CRS changed:
   bool saveSuccess = true;
-  for ( const Definition &def : qgis::as_const( mDefinitions ) )
+  for ( const Definition &def : std::as_const( mDefinitions ) )
   {
     if ( !def.wkt.isEmpty() )
       crs.createFromWkt( def.wkt );
@@ -424,7 +421,6 @@ void QgsCustomProjectionDialog::updateListFromCurrentItem()
   item->setData( 0, FormattedWktRole, teParameters->toPlainText() );
 }
 
-#if PROJ_VERSION_MAJOR>=6
 static void proj_collecting_logger( void *user_data, int /*level*/, const char *message )
 {
   QStringList *dest = reinterpret_cast< QStringList * >( user_data );
@@ -433,13 +429,10 @@ static void proj_collecting_logger( void *user_data, int /*level*/, const char *
   dest->append( messageString );
 }
 
-#endif
-
 void QgsCustomProjectionDialog::validateCurrent()
 {
   const QString projDef = teParameters->toPlainText();
 
-#if PROJ_VERSION_MAJOR>=6
   PJ_CONTEXT *context = proj_context_create();
 
   QStringList projErrors;
@@ -497,52 +490,6 @@ void QgsCustomProjectionDialog::validateCurrent()
   proj_log_func( context, nullptr, nullptr );
   proj_context_destroy( context );
   context = nullptr;
-#else
-  switch ( static_cast< QgsCoordinateReferenceSystem::Format >( mFormatComboBox->currentData().toInt() ) )
-  {
-    case QgsCoordinateReferenceSystem::FormatWkt:
-    {
-      QByteArray ba = projDef.toLatin1();
-      const char *pWkt = ba.data();
-      OGRSpatialReferenceH crs = OSRNewSpatialReference( nullptr );
-
-      OGRErr myInputResult = OSRImportFromWkt( crs, const_cast< char ** >( & pWkt ) );
-      if ( myInputResult == OGRERR_NONE )
-      {
-        QMessageBox::information( this, tr( "Custom Coordinate Reference System" ),
-                                  tr( "This WKT projection definition is valid." ) );
-      }
-      else
-      {
-        QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
-                              tr( "This WKT projection definition is not valid." ) );
-      }
-
-      OSRDestroySpatialReference( crs );
-      break;
-    }
-    case QgsCoordinateReferenceSystem::FormatProj:
-    {
-      projCtx pContext = pj_ctx_alloc();
-      projPJ proj = pj_init_plus_ctx( pContext, projDef.toLocal8Bit().data() );
-
-      if ( proj )
-      {
-        QMessageBox::information( this, tr( "Custom Coordinate Reference System" ),
-                                  tr( "This proj projection definition is valid." ) );
-      }
-      else
-      {
-        QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
-                              tr( "This proj projection definition is not valid" ) );
-      }
-      pj_free( proj );
-      pj_ctx_free( pContext );
-      break;
-    }
-  }
-
-#endif
 }
 
 void QgsCustomProjectionDialog::formatChanged()
@@ -561,25 +508,17 @@ void QgsCustomProjectionDialog::formatChanged()
 
     case QgsCoordinateReferenceSystem::FormatWkt:
     {
-#if PROJ_VERSION_MAJOR>=6
+      PJ_CONTEXT *pjContext = QgsProjContext::get();
+      QString proj = teParameters->toPlainText();
+      proj.replace( QLatin1String( "+type=crs" ), QString() );
+      proj += QLatin1String( " +type=crs" );
+      QgsProjUtils::proj_pj_unique_ptr crs( proj_create( QgsProjContext::get(), proj.toLatin1().constData() ) );
+      if ( crs )
       {
-        PJ_CONTEXT *pjContext = QgsProjContext::get();
-        QString proj = teParameters->toPlainText();
-        proj.replace( QLatin1String( "+type=crs" ), QString() );
-        proj += QLatin1String( " +type=crs" );
-        QgsProjUtils::proj_pj_unique_ptr crs( proj_create( QgsProjContext::get(), proj.toLatin1().constData() ) );
-        if ( crs )
-        {
-          const QByteArray multiLineOption = QStringLiteral( "MULTILINE=YES" ).toLocal8Bit();
-          const char *const options[] = {multiLineOption.constData(), nullptr};
-          newFormatString = QString( proj_as_wkt( pjContext, crs.get(), PJ_WKT2_2019, options ) );
-        }
+        const QByteArray multiLineOption = QStringLiteral( "MULTILINE=YES" ).toLocal8Bit();
+        const char *const options[] = {multiLineOption.constData(), nullptr};
+        newFormatString = QString( proj_as_wkt( pjContext, crs.get(), PJ_WKT2_2019, options ) );
       }
-#else
-      crs.createFromProj( teParameters->toPlainText() );
-      if ( crs.isValid() )
-        newFormatString = crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, false );
-#endif
       break;
     }
   }
@@ -590,44 +529,14 @@ void QgsCustomProjectionDialog::formatChanged()
 void QgsCustomProjectionDialog::pbnCalculate_clicked()
 {
   // We must check the prj def is valid!
-#if PROJ_VERSION_MAJOR>=6
   PJ_CONTEXT *pContext = QgsProjContext::get();
   QString projDef = teParameters->toPlainText();
   QgsDebugMsgLevel( QStringLiteral( "Proj: %1" ).arg( projDef ), 3 );
-#else
-  if ( static_cast< QgsCoordinateReferenceSystem::Format >( mFormatComboBox->currentData().toInt() ) == QgsCoordinateReferenceSystem::FormatWkt )
-  {
-    // it's not trivial to implement, and we've gotta draw the line somewhere...
-    QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
-                          tr( "Testing WKT based CRS definitions requires Proj version 6 or later." ) );
-    return;
-  }
 
-  projCtx pContext = pj_ctx_alloc();
-  projPJ proj = pj_init_plus_ctx( pContext, teParameters->toPlainText().toLocal8Bit().data() );
-  QgsDebugMsgLevel( QStringLiteral( "Proj: %1" ).arg( teParameters->toPlainText() ), 3 );
-
-  if ( !proj )
-  {
-    QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
-                          tr( "This proj projection definition is not valid." ) );
-    projectedX->clear();
-    projectedY->clear();
-    pj_free( proj );
-    pj_ctx_free( pContext );
-    return;
-
-  }
-#endif
   // Get the WGS84 coordinates
   bool okN, okE;
   double latitude = northWGS84->text().toDouble( &okN );
   double longitude = eastWGS84->text().toDouble( &okE );
-
-#if PROJ_VERSION_MAJOR<6
-  latitude *= DEG_TO_RAD;
-  longitude *= DEG_TO_RAD;
-#endif
 
   if ( !okN || !okE )
   {
@@ -635,29 +544,9 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
                           tr( "Northing and Easting must be in decimal form." ) );
     projectedX->clear();
     projectedY->clear();
-#if PROJ_VERSION_MAJOR<6
-    pj_free( proj );
-    pj_ctx_free( pContext );
-#endif
     return;
   }
 
-#if PROJ_VERSION_MAJOR < 6
-  projPJ wgs84Proj = pj_init_plus_ctx( pContext, geoProj4().data() ); //defined in qgis.h
-
-  if ( !wgs84Proj )
-  {
-    QMessageBox::critical( this, tr( "Custom Coordinate Reference System" ),
-                           tr( "Internal Error (source projection invalid?)" ) );
-    projectedX->clear();
-    projectedY->clear();
-    pj_free( wgs84Proj );
-    pj_ctx_free( pContext );
-    return;
-  }
-#endif
-
-#if PROJ_VERSION_MAJOR>=6
   if ( static_cast< QgsCoordinateReferenceSystem::Format >( mFormatComboBox->currentData().toInt() ) == QgsCoordinateReferenceSystem::FormatProj )
     projDef = projDef + ( projDef.contains( QStringLiteral( "+type=crs" ) ) ? QString() : QStringLiteral( " +type=crs" ) );
   QgsProjUtils::proj_pj_unique_ptr res( proj_create_crs_to_crs( pContext, "EPSG:4326", projDef.toUtf8(), nullptr ) );
@@ -677,19 +566,12 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
                       nullptr, sizeof( double ), 0,
                       nullptr, sizeof( double ), 0 );
   int projResult = proj_errno( res.get() );
-#else
-  double z = 0.0;
-  int projResult = pj_transform( wgs84Proj, proj, 1, 0, &longitude, &latitude, &z );
-#endif
+
   if ( projResult != 0 )
   {
     projectedX->setText( tr( "Error" ) );
     projectedY->setText( tr( "Error" ) );
-#if PROJ_VERSION_MAJOR>=6
     QgsDebugMsg( proj_errno_string( projResult ) );
-#else
-    QgsDebugMsg( pj_strerrno( projResult ) );
-#endif
   }
   else
   {
@@ -698,39 +580,17 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
     int precision = 4;
     bool isLatLong = false;
 
-#if PROJ_VERSION_MAJOR>= 6
     isLatLong = QgsProjUtils::usesAngularUnit( projDef );
-#else
-    isLatLong = pj_is_latlong( proj );
-    if ( isLatLong )
-    {
-      latitude *= RAD_TO_DEG;
-      longitude *= RAD_TO_DEG;
-    }
-#endif
     if ( isLatLong )
     {
       precision = 7;
     }
 
-#if PROJ_VERSION_MAJOR>= 6
     tmp = QLocale().toString( longitude, 'f', precision );
     projectedX->setText( tmp );
     tmp = QLocale().toString( latitude, 'f', precision );
     projectedY->setText( tmp );
-#else
-    tmp = QLocale().toString( latitude, 'f', precision );
-    projectedX->setText( tmp );
-    tmp = QLocale().toString( longitude, 'f', precision );
-    projectedY->setText( tmp );
-#endif
   }
-
-#if PROJ_VERSION_MAJOR<6
-  pj_free( proj );
-  pj_free( wgs84Proj );
-  pj_ctx_free( pContext );
-#endif
 }
 
 void QgsCustomProjectionDialog::showHelp()

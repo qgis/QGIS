@@ -111,6 +111,13 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mFieldsList</tabstop>
+  <tabstop>mAddAttributeButton</tabstop>
+  <tabstop>mDeleteAttributeButton</tabstop>
+  <tabstop>mToggleEditingButton</tabstop>
+  <tabstop>mCalculateFieldButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

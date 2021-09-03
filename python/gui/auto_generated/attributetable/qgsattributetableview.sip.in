@@ -13,7 +13,7 @@
 
 class QgsAttributeTableView : QTableView
 {
-%Docstring
+%Docstring(signature="appended")
 Provides a table view of features of a :py:class:`QgsVectorLayer`.
 
 This can either be used as a standalone widget. :py:class:`QgsBrowser` features a reference implementation.
@@ -69,7 +69,6 @@ Returns the selected features in the attribute table in table sorted order.
 .. versionadded:: 3.4
 %End
 
-
     void scrollToFeature( const QgsFeatureId &fid, int column = -1 );
 %Docstring
 Scroll to a feature with a given ``fid``.
@@ -78,7 +77,6 @@ Optionally a ``column`` can be specified, which will also bring that column into
 
 .. versionadded:: 3.16
 %End
-
 
   protected:
 

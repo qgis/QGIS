@@ -30,7 +30,8 @@ class QgsVectorLayer;
 
 /**
  * \ingroup core
- * The QgsFieldFormatterRegistry manages registered classes of QgsFieldFormatter.
+ * \brief The QgsFieldFormatterRegistry manages registered classes of QgsFieldFormatter.
+ *
  * A reference to the QgsFieldFormatterRegistry can be obtained from
  * QgsApplication::fieldFormatterRegistry().
  *

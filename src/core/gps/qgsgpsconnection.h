@@ -36,7 +36,7 @@ class QIODevice;
 /**
  * \ingroup core
  * \class QgsSatelliteInfo
- * Encapsulates information relating to a GPS satellite.
+ * \brief Encapsulates information relating to a GPS satellite.
 */
 class CORE_EXPORT QgsSatelliteInfo
 {
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsSatelliteInfo
 /**
  * \ingroup core
  * \class QgsGpsInformation
- * Encapsulates information relating to a GPS position fix.
+ * \brief Encapsulates information relating to a GPS position fix.
 */
 class CORE_EXPORT QgsGpsInformation
 {
@@ -261,7 +261,7 @@ class CORE_EXPORT QgsGpsInformation
 
 /**
  * \ingroup core
- * Abstract base class for connection to a GPS device
+ * \brief Abstract base class for connection to a GPS device
 */
 class CORE_EXPORT QgsGpsConnection : public QObject
 {

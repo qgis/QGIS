@@ -158,21 +158,21 @@ class MinimumBoundingGeometry(QgisAlgorithm):
 
                 if type == 0:
                     # bounding boxes - calculate on the fly for efficiency
-                    if not f[field_index] in bounds_dict:
+                    if f[field_index] not in bounds_dict:
                         bounds_dict[f[field_index]] = f.geometry().boundingBox()
                     else:
                         bounds_dict[f[field_index]].combineExtentWith(f.geometry().boundingBox())
                 else:
-                    if not f[field_index] in geometry_dict:
+                    if f[field_index] not in geometry_dict:
                         geometry_dict[f[field_index]] = [f.geometry()]
                     else:
                         geometry_dict[f[field_index]].append(f.geometry())
 
                 feedback.setProgress(int(current * total))
 
+            # bounding boxes
+            current = 0
             if type == 0:
-                # bounding boxes
-                current = 0
                 total = 50.0 / len(bounds_dict) if bounds_dict else 1
                 for group, rect in bounds_dict.items():
                     if feedback.isCanceled():
@@ -188,7 +188,6 @@ class MinimumBoundingGeometry(QgisAlgorithm):
                     feedback.setProgress(50 + int(current * total))
                     current += 1
             else:
-                current = 0
                 total = 50.0 / len(geometry_dict) if geometry_dict else 1
 
                 for group, geometries in geometry_dict.items():

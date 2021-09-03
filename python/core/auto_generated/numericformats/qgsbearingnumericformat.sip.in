@@ -9,7 +9,7 @@
 
 class QgsBearingNumericFormat : QgsBasicNumericFormat
 {
-%Docstring
+%Docstring(signature="appended")
 A numeric formatter which returns a text representation of a direction/bearing.
 
 .. versionadded:: 3.12

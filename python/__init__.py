@@ -55,10 +55,14 @@ def setupenv():
 
     with open(envfile) as f:
         for line in f:
-            linedata = line.split("=")
-            name = linedata[0]
-            data = linedata[1]
-            os.environ[name] = data
+            line = line.rstrip("\n")
+            if line.startswith("#") or not line:
+                continue
+            try:
+                env_key, env_value = line.split("=", maxsplit=1)
+                os.environ[env_key] = env_value
+            except ValueError:
+                pass
 
 
 if os.name == 'nt':
@@ -66,6 +70,10 @@ if os.name == 'nt':
     # any of the QGIS modules or else it will error.
     setupenv()
 
+    if sys.version_info[0] > 3 or (sys.version_info[0] == 3 and sys.version_info[1] >= 9):
+        for p in os.getenv("PATH").split(";"):
+            if os.path.exists(p):
+                os.add_dll_directory(p)
 
 from qgis.PyQt import QtCore
 

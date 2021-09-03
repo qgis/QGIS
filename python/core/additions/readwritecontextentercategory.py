@@ -43,4 +43,4 @@ class ReadWriteContextEnterCategory():
 
     def __exit__(self, ex_type, ex_value, traceback):
         del self.popper
-        return True
+        return ex_type is None

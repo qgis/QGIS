@@ -29,6 +29,16 @@ string ResultSetMetaData::getTableName(unsigned short columnIndex)
     return getStringColAttribute(columnIndex, SQL_DESC_TABLE_NAME);
 }
 //------------------------------------------------------------------------------
+string ResultSetMetaData::getBaseTableName(unsigned short columnIndex)
+{
+    return getStringColAttribute(columnIndex, SQL_DESC_BASE_TABLE_NAME);
+}
+//------------------------------------------------------------------------------
+string ResultSetMetaData::getBaseColumnName(unsigned short columnIndex)
+{
+    return getStringColAttribute(columnIndex, SQL_DESC_BASE_COLUMN_NAME);
+}
+//------------------------------------------------------------------------------
 string ResultSetMetaData::getColumnLabel(unsigned short columnIndex)
 {
   return getStringColAttribute(columnIndex, SQL_DESC_LABEL);

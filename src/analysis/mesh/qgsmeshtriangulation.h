@@ -19,6 +19,7 @@
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmeshdataprovider.h"
+#include "qgsmeshadvancedediting.h"
 
 #include "qgis_analysis.h"
 
@@ -34,7 +35,7 @@ class QgsFeedback;
  * \ingroup analysis
  * \class QgsMeshTriangulation
  *
- * Class that handles mesh creation with Delaunay constrained triangulation
+ * \brief Class that handles mesh creation with Delaunay constrained triangulation
  *
  * \since QGIS 3.16
  */
@@ -72,6 +73,13 @@ class ANALYSIS_EXPORT QgsMeshTriangulation : public QObject
      */
     bool addBreakLines( QgsFeatureIterator &lineFeatureIterator, int valueAttribute, const QgsCoordinateTransform &transformContext, QgsFeedback *feedback = nullptr, long featureCount = 1 );
 
+    /**
+     * Adds a new vertex in the triangulation and returns the index of the new vertex
+     *
+     * \since QGIS 3.22
+     */
+    int addVertex( const QgsPoint &vertex );
+
     //! Returns the triangulated mesh
     QgsMesh triangulatedMesh( QgsFeedback *feedback = nullptr ) const;
 
@@ -96,7 +104,7 @@ class ANALYSIS_EXPORT QgsMeshTriangulation : public QObject
  * \ingroup analysis
  * \class QgsMeshZValueDataset
  *
- * Convenient class that can be used to obtain a dataset that represents the Z values of mesh vertices
+ * \brief Convenient class that can be used to obtain a dataset that represents the Z values of mesh vertices
  *
  * \since QGIS 3.16
  */
@@ -126,7 +134,7 @@ class QgsMeshZValueDataset: public QgsMeshDataset
  * \ingroup analysis
  * \class QgsMeshZValueDatasetGroup
  *
- * Convenient class that can be used to obtain a datasetgroup on vertices that represents the Z value of the mesh vertices
+ * \brief Convenient class that can be used to obtain a datasetgroup on vertices that represents the Z value of the mesh vertices
  *
  * \since QGIS 3.16
  */
@@ -154,6 +162,27 @@ class ANALYSIS_EXPORT QgsMeshZValueDatasetGroup: public QgsMeshDatasetGroup
     QgsMeshZValueDatasetGroup( const QgsMeshZValueDatasetGroup &rhs );
 #endif
     std::unique_ptr<QgsMeshZValueDataset> mDataset;
+};
+
+
+/**
+ * \ingroup analysis
+ * \class QgsMeshEditingDelaunayTriangulation
+ *
+ * \brief Class that can be used with QgsMeshEditor::advancedEdit() to add triangle faces to a mesh created by
+ * a Delaunay triangulation on provided existing vertex.
+ *
+ * \since QGIS 3.22
+ */
+class ANALYSIS_EXPORT QgsMeshEditingDelaunayTriangulation : public QgsMeshAdvancedEditing
+{
+  public:
+
+    //! Constructor
+    QgsMeshEditingDelaunayTriangulation();
+
+  private:
+    QgsTopologicalMesh::Changes apply( QgsMeshEditor *meshEditor ) override;
 };
 
 #endif // QGSMESHTRIANGULATION_H

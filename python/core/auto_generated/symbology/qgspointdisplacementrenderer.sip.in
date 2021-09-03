@@ -11,7 +11,7 @@
 
 class QgsPointDisplacementRenderer: QgsPointDistanceRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 A renderer that automatically displaces points with the same geographic location.
 %End
 

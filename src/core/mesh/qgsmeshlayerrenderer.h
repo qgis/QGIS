@@ -31,7 +31,6 @@ class QgsMeshLayer;
 #include "qgsrasterinterface.h"
 #include "qgstriangularmesh.h"
 #include "qgsmeshlayer.h"
-#include "qgssymbol.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshtracerenderer.h"
 #include "qgsmapclippingregion.h"
@@ -84,7 +83,7 @@ struct CORE_NO_EXPORT QgsMeshLayerRendererCache
 
 /**
  * \ingroup core
- * Implementation of threaded rendering for mesh layers.
+ * \brief Implementation of threaded rendering for mesh layers.
  *
  * \note not available in Python bindings
  * \since QGIS 3.2
@@ -115,6 +114,7 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     QgsPointXY fractionPoint( const QgsPointXY &p1, const QgsPointXY &p2, double fraction ) const;
     bool mIsMeshSimplificationActive = false;
     QColor colorAt( QgsColorRampShader *shader, double val ) const;
+    bool mIsEditable = false;
 
   protected:
     //! feedback class for cancellation

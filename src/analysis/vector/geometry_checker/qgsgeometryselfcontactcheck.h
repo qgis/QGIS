@@ -22,6 +22,7 @@
 
 /**
  * \ingroup analysis
+ * \brief A self contact check.
  */
 class ANALYSIS_EXPORT QgsGeometrySelfContactCheck : public QgsSingleGeometryCheck
 {

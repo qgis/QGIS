@@ -12,7 +12,7 @@
 
 class QgsNewDatabaseTableNameWidget : QgsPanelWidget
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsNewDatabaseTableNameWidget` class embeds the browser view to
 select a DB schema and a new table name.
 
@@ -138,7 +138,7 @@ Emitted when the OK/accept button is clicked.
 
 class QgsNewDatabaseTableNameDialog: QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 :py:class:`QgsNewDatabaseTableNameDialog` is a dialog which allows selection of a DB schema and a new table name.
 
 The table name is validated for uniqueness and the selected

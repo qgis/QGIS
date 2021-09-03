@@ -260,7 +260,7 @@ void QgsAggregateMappingModel::setSourceFields( const QgsFields &sourceFields )
   if ( mExpressionContextGenerator )
     mExpressionContextGenerator->setSourceFields( mSourceFields );
 
-  QStringList usedFields;
+  const QStringList usedFields;
   beginResetModel();
   mMapping.clear();
 
@@ -429,7 +429,7 @@ bool QgsAggregateMappingWidget::removeSelectedFields()
 
   std::list<int> rowsToRemove { selectedRows() };
   rowsToRemove.reverse();
-  for ( int row : rowsToRemove )
+  for ( const int row : rowsToRemove )
   {
     if ( ! model()->removeField( model()->index( row, 0, QModelIndex() ) ) )
     {
@@ -445,7 +445,7 @@ bool QgsAggregateMappingWidget::moveSelectedFieldsUp()
     return false;
 
   const std::list<int> rowsToMoveUp { selectedRows() };
-  for ( int row : rowsToMoveUp )
+  for ( const int row : rowsToMoveUp )
   {
     if ( ! model()->moveUp( model()->index( row, 0, QModelIndex() ) ) )
     {
@@ -462,7 +462,7 @@ bool QgsAggregateMappingWidget::moveSelectedFieldsDown()
 
   std::list<int> rowsToMoveDown { selectedRows() };
   rowsToMoveDown.reverse();
-  for ( int row : rowsToMoveDown )
+  for ( const int row : rowsToMoveDown )
   {
     if ( ! model()->moveDown( model()->index( row, 0, QModelIndex() ) ) )
     {
@@ -529,7 +529,7 @@ QWidget *QgsAggregateMappingWidget::AggregateDelegate::createEditor( QWidget *pa
   }
 
   connect( editor,
-           qgis::overload<int >::of( &QComboBox::currentIndexChanged ),
+           qOverload<int >( &QComboBox::currentIndexChanged ),
            this,
            [ = ]( int currentIndex )
   {
@@ -546,7 +546,7 @@ void QgsAggregateMappingWidget::AggregateDelegate::setEditorData( QWidget *edito
   if ( ! editorWidget )
     return;
 
-  const QVariant value { index.model()->data( index, Qt::EditRole ) };
+  const QVariant value = index.model()->data( index, Qt::EditRole );
   editorWidget->setCurrentIndex( editorWidget->findData( value ) );
 }
 
@@ -556,7 +556,7 @@ void QgsAggregateMappingWidget::AggregateDelegate::setModelData( QWidget *editor
   if ( ! editorWidget )
     return;
 
-  const QVariant currentValue { editorWidget->currentData( ) };
+  const QVariant currentValue = editorWidget->currentData( );
   model->setData( index, currentValue, Qt::EditRole );
 }
 
@@ -566,7 +566,8 @@ const QStringList QgsAggregateMappingWidget::AggregateDelegate::aggregates()
   static std::once_flag initialized;
   std::call_once( initialized, [ = ]( )
   {
-    sAggregates << QStringLiteral( "first_value" );
+    sAggregates << QStringLiteral( "first_value" )
+                << QStringLiteral( "last_value" );
 
     const QList<QgsExpressionFunction *> functions = QgsExpression::Functions();
     for ( const QgsExpressionFunction *function : functions )

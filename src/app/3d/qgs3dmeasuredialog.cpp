@@ -73,15 +73,15 @@ void Qgs3DMeasureDialog::saveWindowLocation()
 
 void Qgs3DMeasureDialog::restorePosition()
 {
-  QgsSettings settings;
+  const QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/3DMeasure/geometry" ) ).toByteArray() );
-  int wh = settings.value( QStringLiteral( "Windows/3DMeasure/h" ), 200 ).toInt();
+  const int wh = settings.value( QStringLiteral( "Windows/3DMeasure/h" ), 200 ).toInt();
   resize( width(), wh );
 }
 
 void Qgs3DMeasureDialog::addPoint()
 {
-  int numPoints = mTool->points().size();
+  const int numPoints = mTool->points().size();
   if ( numPoints > 1 )
   {
     if ( !mTool->done() )
@@ -101,22 +101,22 @@ void Qgs3DMeasureDialog::addPoint()
 
 double Qgs3DMeasureDialog::lastDistance()
 {
-  QgsPoint lastPoint = mTool->points().rbegin()[0];
-  QgsPoint secondLastPoint = mTool->points().rbegin()[1];
+  const QgsPoint lastPoint = mTool->points().rbegin()[0];
+  const QgsPoint secondLastPoint = mTool->points().rbegin()[1];
   return lastPoint.distance3D( secondLastPoint );
 }
 
 double Qgs3DMeasureDialog::lastVerticalDistance()
 {
-  QgsPoint lastPoint = mTool->points().rbegin()[0];
-  QgsPoint secondLastPoint = mTool->points().rbegin()[1];
+  const QgsPoint lastPoint = mTool->points().rbegin()[0];
+  const QgsPoint secondLastPoint = mTool->points().rbegin()[1];
   return lastPoint.z() - secondLastPoint.z();
 }
 
 double Qgs3DMeasureDialog::lastHorizontalDistance()
 {
-  QgsPoint lastPoint = mTool->points().rbegin()[0];
-  QgsPoint secondLastPoint = mTool->points().rbegin()[1];
+  const QgsPoint lastPoint = mTool->points().rbegin()[0];
+  const QgsPoint secondLastPoint = mTool->points().rbegin()[1];
   return lastPoint.distance( secondLastPoint );
 }
 
@@ -136,13 +136,13 @@ void Qgs3DMeasureDialog::repopulateComboBoxUnits()
 
 void Qgs3DMeasureDialog::removeLastPoint()
 {
-  int numPoints = mTool->points().size();
+  const int numPoints = mTool->points().size();
   if ( numPoints >= 1 )
   {
     // Remove final row
     delete mTable->takeTopLevelItem( mTable->topLevelItemCount() - 1 );
     // Update total distance
-    QgsLineString measureLine( mTool->points() );
+    const QgsLineString measureLine( mTool->points() );
     mTotal = measureLine.length3D();
     mHorizontalTotal = measureLine.length();
     updateTotal();
@@ -170,7 +170,7 @@ void Qgs3DMeasureDialog::closeEvent( QCloseEvent *e )
 
 void Qgs3DMeasureDialog::updateSettings()
 {
-  QgsSettings settings;
+  const QgsSettings settings;
 
   mDecimalPlaces = settings.value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
   mMapDistanceUnit = mTool->canvas()->map()->crs().mapUnits();
@@ -190,14 +190,14 @@ void Qgs3DMeasureDialog::unitsChanged( int index )
 
 double Qgs3DMeasureDialog::convertLength( double length, QgsUnitTypes::DistanceUnit toUnit ) const
 {
-  double factorUnits = QgsUnitTypes::fromUnitToUnitFactor( mMapDistanceUnit, toUnit );
+  const double factorUnits = QgsUnitTypes::fromUnitToUnitFactor( mMapDistanceUnit, toUnit );
   return length * factorUnits;
 }
 
 QString Qgs3DMeasureDialog::formatDistance( double distance ) const
 {
-  QgsSettings settings;
-  bool baseUnit = settings.value( QStringLiteral( "qgis/measure/keepbaseunit" ), true ).toBool();
+  const QgsSettings settings;
+  const bool baseUnit = settings.value( QStringLiteral( "qgis/measure/keepbaseunit" ), true ).toBool();
   return QgsUnitTypes::formatDistance( distance, mDecimalPlaces, mDisplayedDistanceUnit, baseUnit );
 }
 
@@ -264,15 +264,15 @@ void Qgs3DMeasureDialog::updateTable()
   QVector<QgsPoint>::const_iterator it;
   bool isFirstPoint = true; // first point
   QgsPoint p1, p2;
-  QVector< QgsPoint > tmpPoints = mTool->points();
+  const QVector< QgsPoint > tmpPoints = mTool->points();
   for ( it = tmpPoints.constBegin(); it != tmpPoints.constEnd(); ++it )
   {
     p2 = *it;
     if ( !isFirstPoint )
     {
-      double distance = p1.distance3D( p2 );
-      double verticalDistance = p2.z() - p1.z();
-      double horizontalDistance = p1.distance( p2 );
+      const double distance = p1.distance3D( p2 );
+      const double verticalDistance = p2.z() - p1.z();
+      const double horizontalDistance = p1.distance( p2 );
       addMeasurement( distance, verticalDistance, horizontalDistance );
     }
     p1 = p2;

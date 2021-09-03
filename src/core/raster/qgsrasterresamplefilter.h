@@ -27,7 +27,7 @@ class QDomElement;
 
 /**
  * \ingroup core
-  * Resample filter pipe for rasters.
+  * \brief Resample filter pipe for rasters.
   */
 class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
 {

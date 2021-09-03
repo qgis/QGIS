@@ -11,7 +11,7 @@
 
 class QgsFileFilterGenerator
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract interface for classes which generate a file filter string.
 
 This interface can be inherited by classes which can generate a file filter

@@ -110,6 +110,80 @@ const QgsPropertiesDefinition &QgsLayoutObject::propertyDefinitions()
   return sPropertyDefinitions;
 }
 
+bool QgsLayoutObject::propertyAssociatesWithParentMultiframe( QgsLayoutObject::DataDefinedProperty property )
+{
+  switch ( property )
+  {
+    case QgsLayoutObject::SourceUrl:
+    case QgsLayoutObject::AttributeTableSourceLayer:
+      return true;
+
+    case QgsLayoutObject::NoProperty:
+    case QgsLayoutObject::AllProperties:
+    case QgsLayoutObject::TestProperty:
+    case QgsLayoutObject::PresetPaperSize:
+    case QgsLayoutObject::PaperWidth:
+    case QgsLayoutObject::PaperHeight:
+    case QgsLayoutObject::NumPages:
+    case QgsLayoutObject::PaperOrientation:
+    case QgsLayoutObject::PageNumber:
+    case QgsLayoutObject::PositionX:
+    case QgsLayoutObject::PositionY:
+    case QgsLayoutObject::ItemWidth:
+    case QgsLayoutObject::ItemHeight:
+    case QgsLayoutObject::ItemRotation:
+    case QgsLayoutObject::Transparency:
+    case QgsLayoutObject::Opacity:
+    case QgsLayoutObject::BlendMode:
+    case QgsLayoutObject::ExcludeFromExports:
+    case QgsLayoutObject::FrameColor:
+    case QgsLayoutObject::BackgroundColor:
+    case QgsLayoutObject::MapRotation:
+    case QgsLayoutObject::MapScale:
+    case QgsLayoutObject::MapXMin:
+    case QgsLayoutObject::MapYMin:
+    case QgsLayoutObject::MapXMax:
+    case QgsLayoutObject::MapYMax:
+    case QgsLayoutObject::MapAtlasMargin:
+    case QgsLayoutObject::MapLayers:
+    case QgsLayoutObject::MapStylePreset:
+    case QgsLayoutObject::MapLabelMargin:
+    case QgsLayoutObject::MapGridEnabled:
+    case QgsLayoutObject::MapGridIntervalX:
+    case QgsLayoutObject::MapGridIntervalY:
+    case QgsLayoutObject::MapGridOffsetX:
+    case QgsLayoutObject::MapGridOffsetY:
+    case QgsLayoutObject::MapGridFrameSize:
+    case QgsLayoutObject::MapGridFrameMargin:
+    case QgsLayoutObject::MapGridLabelDistance:
+    case QgsLayoutObject::MapGridCrossSize:
+    case QgsLayoutObject::MapGridFrameLineThickness:
+    case QgsLayoutObject::MapGridAnnotationDisplayLeft:
+    case QgsLayoutObject::MapGridAnnotationDisplayRight:
+    case QgsLayoutObject::MapGridAnnotationDisplayTop:
+    case QgsLayoutObject::MapGridAnnotationDisplayBottom:
+    case QgsLayoutObject::MapGridFrameDivisionsLeft:
+    case QgsLayoutObject::MapGridFrameDivisionsRight:
+    case QgsLayoutObject::MapGridFrameDivisionsTop:
+    case QgsLayoutObject::MapGridFrameDivisionsBottom:
+    case QgsLayoutObject::PictureSource:
+    case QgsLayoutObject::PictureSvgBackgroundColor:
+    case QgsLayoutObject::PictureSvgStrokeColor:
+    case QgsLayoutObject::PictureSvgStrokeWidth:
+    case QgsLayoutObject::LegendTitle:
+    case QgsLayoutObject::LegendColumnCount:
+    case QgsLayoutObject::ScalebarFillColor:
+    case QgsLayoutObject::ScalebarFillColor2:
+    case QgsLayoutObject::ScalebarLineColor:
+    case QgsLayoutObject::ScalebarLineWidth:
+    case QgsLayoutObject::MapCrs:
+    case QgsLayoutObject::StartDateTime:
+    case QgsLayoutObject::EndDateTime:
+      return false;
+  }
+  return false;
+}
+
 QgsLayoutObject::QgsLayoutObject( QgsLayout *layout )
   : QObject( nullptr )
   , mLayout( layout )
@@ -194,14 +268,14 @@ bool QgsLayoutObject::readObjectPropertiesFromElement( const QDomElement &parent
     return false;
   }
 
-  QDomNodeList objectNodeList = parentElement.elementsByTagName( QStringLiteral( "LayoutObject" ) );
+  const QDomNodeList objectNodeList = parentElement.elementsByTagName( QStringLiteral( "LayoutObject" ) );
   if ( objectNodeList.size() < 1 )
   {
     return false;
   }
-  QDomElement objectElement = objectNodeList.at( 0 ).toElement();
+  const QDomElement objectElement = objectNodeList.at( 0 ).toElement();
 
-  QDomNode propsNode = objectElement.namedItem( QStringLiteral( "dataDefinedProperties" ) );
+  const QDomNode propsNode = objectElement.namedItem( QStringLiteral( "dataDefinedProperties" ) );
   if ( !propsNode.isNull() )
   {
     mDataDefinedProperties.readXml( propsNode.toElement(), sPropertyDefinitions );

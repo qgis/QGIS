@@ -27,7 +27,7 @@ class QWidget;
 /**
  * \ingroup gui
  * \class QgsDevToolWidgetFactory
- * Factory class for creating custom developer/debugging tool pages
+ * \brief Factory class for creating custom developer/debugging tool pages
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsDevToolWidgetFactory

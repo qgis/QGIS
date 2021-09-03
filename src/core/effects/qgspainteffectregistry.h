@@ -18,9 +18,10 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgssymbollayer.h"
 #include <QDomElement>
 #include <QDomDocument>
+#include <QMap>
+#include <QVariantMap>
 
 class QgsPaintEffect;
 class QgsPaintEffectWidget SIP_EXTERNAL;

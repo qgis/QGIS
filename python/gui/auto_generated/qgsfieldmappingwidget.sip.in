@@ -11,7 +11,7 @@
 
 class QgsFieldMappingWidget : QgsPanelWidget
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsFieldMappingWidget` class creates a mapping from one set of :py:class:`QgsFields` to another,
 for each set of "destination" fields an expression defines how to obtain the values of the
 "destination" fields.

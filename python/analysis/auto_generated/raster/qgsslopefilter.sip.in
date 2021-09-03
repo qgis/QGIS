@@ -11,7 +11,7 @@
 
 class QgsSlopeFilter: QgsDerivativeFilter
 {
-%Docstring
+%Docstring(signature="appended")
 Calculates slope values in a window of 3x3 cells based on first order derivatives in x- and y- directions.
 %End
 

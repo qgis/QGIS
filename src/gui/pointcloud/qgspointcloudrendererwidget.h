@@ -29,7 +29,7 @@ class QgsMapCanvas;
 
 /**
  * \ingroup gui
- * Base class for point cloud 2D renderer settings widgets.
+ * \brief Base class for point cloud 2D renderer settings widgets.
  *
  * \since QGIS 3.18
 */

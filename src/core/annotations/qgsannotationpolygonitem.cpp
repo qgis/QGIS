@@ -19,11 +19,13 @@
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgssurface.h"
+#include "qgsfillsymbol.h"
+#include "qgsannotationitemnode.h"
 
 QgsAnnotationPolygonItem::QgsAnnotationPolygonItem( QgsCurvePolygon *polygon )
   : QgsAnnotationItem()
   , mPolygon( polygon )
-  , mSymbol( qgis::make_unique< QgsFillSymbol >() )
+  , mSymbol( std::make_unique< QgsFillSymbol >() )
 {
 
 }
@@ -93,6 +95,33 @@ bool QgsAnnotationPolygonItem::writeXml( QDomElement &element, QDomDocument &doc
   return true;
 }
 
+QList<QgsAnnotationItemNode> QgsAnnotationPolygonItem::nodes() const
+{
+  QList< QgsAnnotationItemNode > res;
+
+  auto processRing  = [&res]( const QgsCurve * ring )
+  {
+    // we don't want a duplicate node for the closed ring vertex
+    const int count = ring->isClosed() ? ring->numPoints() - 1 : ring->numPoints();
+    res.reserve( res.size() + count );
+    for ( int i = 0; i < count; ++i )
+    {
+      res << QgsAnnotationItemNode( QgsPointXY( ring->xAt( i ), ring->yAt( i ) ), Qgis::AnnotationItemNodeType::VertexHandle );
+    }
+  };
+
+  if ( const QgsCurve *ring = mPolygon->exteriorRing() )
+  {
+    processRing( ring );
+  }
+  for ( int i = 0; i < mPolygon->numInteriorRings(); ++i )
+  {
+    processRing( mPolygon->interiorRing( i ) );
+  }
+
+  return res;
+}
+
 QgsAnnotationPolygonItem *QgsAnnotationPolygonItem::create()
 {
   return new QgsAnnotationPolygonItem( new QgsPolygon() );
@@ -116,7 +145,7 @@ bool QgsAnnotationPolygonItem::readXml( const QDomElement &element, const QgsRea
 
 QgsAnnotationPolygonItem *QgsAnnotationPolygonItem::clone()
 {
-  std::unique_ptr< QgsAnnotationPolygonItem > item = qgis::make_unique< QgsAnnotationPolygonItem >( mPolygon->clone() );
+  std::unique_ptr< QgsAnnotationPolygonItem > item = std::make_unique< QgsAnnotationPolygonItem >( mPolygon->clone() );
   item->setSymbol( mSymbol->clone() );
   item->setZIndex( zIndex() );
   return item.release();

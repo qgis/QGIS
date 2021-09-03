@@ -25,7 +25,7 @@
 /**
  * \ingroup gui
  * \class QgsLabelLineAnchorWidget
- * A widget for customising label line anchor settings.
+ * \brief A widget for customising label line anchor settings.
  * \since QGIS 3.16
  */
 class GUI_EXPORT QgsLabelLineAnchorWidget : public QgsLabelSettingsWidgetBase, private Ui::QgsLabelLineAnchorWidgetBase

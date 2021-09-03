@@ -46,7 +46,7 @@ namespace QgsWcs
     if ( !layer->shortName().isEmpty() )
       name = layer->shortName();
     name = name.replace( ' ', '_' );
-    QDomText nameText = doc.createTextNode( name );
+    const QDomText nameText = doc.createTextNode( name );
     nameElem.appendChild( nameText );
     layerElem.appendChild( nameElem );
 
@@ -57,25 +57,25 @@ namespace QgsWcs
     {
       title = layer->name();
     }
-    QDomText labelText = doc.createTextNode( title );
+    const QDomText labelText = doc.createTextNode( title );
     labelElem.appendChild( labelText );
     layerElem.appendChild( labelElem );
 
     //create description
-    QString abstract = layer->abstract();
+    const QString abstract = layer->abstract();
     if ( !abstract.isEmpty() )
     {
       QDomElement descriptionElem = doc.createElement( QStringLiteral( "description" ) );
-      QDomText descriptionText = doc.createTextNode( abstract );
+      const QDomText descriptionText = doc.createTextNode( abstract );
       descriptionElem.appendChild( descriptionText );
       layerElem.appendChild( descriptionElem );
     }
 
     //lonLatEnvelope
-    QgsCoordinateReferenceSystem layerCrs = layer->crs();
-    QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() );
-    int wgs84precision = 6;
-    QgsCoordinateTransform t( layerCrs, wgs84, project );
+    const QgsCoordinateReferenceSystem layerCrs = layer->crs();
+    const QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() );
+    const int wgs84precision = 6;
+    const QgsCoordinateTransform t( layerCrs, wgs84, project );
     //transform
     QgsRectangle BBox;
     try
@@ -90,11 +90,11 @@ namespace QgsWcs
     QDomElement lonLatElem = doc.createElement( QStringLiteral( "lonLatEnvelope" ) );
     lonLatElem.setAttribute( QStringLiteral( "srsName" ), QStringLiteral( "urn:ogc:def:crs:OGC:1.3:CRS84" ) );
     QDomElement lowerPosElem = doc.createElement( QStringLiteral( "gml:pos" ) );
-    QDomText lowerPosText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( BBox.xMinimum(), wgs84precision ), wgs84precision ) + " " + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( BBox.yMinimum(), wgs84precision ), wgs84precision ) );
+    const QDomText lowerPosText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( BBox.xMinimum(), wgs84precision ), wgs84precision ) + " " + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( BBox.yMinimum(), wgs84precision ), wgs84precision ) );
     lowerPosElem.appendChild( lowerPosText );
     lonLatElem.appendChild( lowerPosElem );
     QDomElement upperPosElem = doc.createElement( QStringLiteral( "gml:pos" ) );
-    QDomText upperPosText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( BBox.xMaximum(), wgs84precision ), wgs84precision ) + " " +  qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( BBox.yMaximum(), wgs84precision ), wgs84precision ) );
+    const QDomText upperPosText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( BBox.xMaximum(), wgs84precision ), wgs84precision ) + " " +  qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( BBox.yMaximum(), wgs84precision ), wgs84precision ) );
     upperPosElem.appendChild( upperPosText );
     lonLatElem.appendChild( upperPosElem );
     layerElem.appendChild( lonLatElem );
@@ -118,15 +118,15 @@ namespace QgsWcs
       precision = 6;
     }
     //create Envelope
-    QgsRectangle layerBBox = layer->extent();
+    const QgsRectangle layerBBox = layer->extent();
     QDomElement envelopeElem = doc.createElement( QStringLiteral( "gml:Envelope" ) );
     envelopeElem.setAttribute( QStringLiteral( "srsName" ), layerCrs.authid() );
     QDomElement lowerCornerElem = doc.createElement( QStringLiteral( "gml:pos" ) );
-    QDomText lowerCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( layerBBox.xMinimum(), precision ), wgs84precision ) + " " + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( layerBBox.yMinimum(), wgs84precision ), precision ) );
+    const QDomText lowerCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( layerBBox.xMinimum(), precision ), wgs84precision ) + " " + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( layerBBox.yMinimum(), wgs84precision ), precision ) );
     lowerCornerElem.appendChild( lowerCornerText );
     envelopeElem.appendChild( lowerCornerElem );
     QDomElement upperCornerElem = doc.createElement( QStringLiteral( "gml:pos" ) );
-    QDomText upperCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( layerBBox.xMaximum(), precision ), wgs84precision ) + " " + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( layerBBox.yMaximum(), wgs84precision ), precision ) );
+    const QDomText upperCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( layerBBox.xMaximum(), precision ), wgs84precision ) + " " + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( layerBBox.yMaximum(), wgs84precision ), precision ) );
     upperCornerElem.appendChild( upperCornerText );
     envelopeElem.appendChild( upperCornerElem );
     spatialDomainElem.appendChild( envelopeElem );
@@ -138,39 +138,39 @@ namespace QgsWcs
     QDomElement gridEnvElem = doc.createElement( QStringLiteral( "gml:GridEnvelope" ) );
     limitsElem.appendChild( gridEnvElem );
     QDomElement lowElem = doc.createElement( QStringLiteral( "gml:low" ) );
-    QDomText lowText = doc.createTextNode( QStringLiteral( "0 0" ) );
+    const QDomText lowText = doc.createTextNode( QStringLiteral( "0 0" ) );
     lowElem.appendChild( lowText );
     gridEnvElem.appendChild( lowElem );
     QDomElement highElem = doc.createElement( QStringLiteral( "gml:high" ) );
-    QDomText highText = doc.createTextNode( QString::number( layer->width() ) + " " + QString::number( layer->height() ) );
+    const QDomText highText = doc.createTextNode( QString::number( layer->width() ) + " " + QString::number( layer->height() ) );
     highElem.appendChild( highText );
     gridEnvElem.appendChild( highElem );
     spatialDomainElem.appendChild( rectGridElem );
 
     QDomElement xAxisElem = doc.createElement( QStringLiteral( "gml:axisName" ) );
-    QDomText xAxisText = doc.createTextNode( QStringLiteral( "x" ) );
+    const QDomText xAxisText = doc.createTextNode( QStringLiteral( "x" ) );
     xAxisElem.appendChild( xAxisText );
     rectGridElem.appendChild( xAxisElem );
 
     QDomElement yAxisElem = doc.createElement( QStringLiteral( "gml:axisName" ) );
-    QDomText yAxisText = doc.createTextNode( QStringLiteral( "y" ) );
+    const QDomText yAxisText = doc.createTextNode( QStringLiteral( "y" ) );
     yAxisElem.appendChild( yAxisText );
     rectGridElem.appendChild( yAxisElem );
 
     QDomElement originElem = doc.createElement( QStringLiteral( "gml:origin" ) );
     QDomElement originPosElem = doc.createElement( QStringLiteral( "gml:pos" ) );
     originElem.appendChild( originPosElem );
-    QDomText originPosText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( layerBBox.xMinimum(), precision ), precision ) + " " + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( layerBBox.yMinimum(), precision ), precision ) );
+    const QDomText originPosText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( layerBBox.xMinimum(), precision ), precision ) + " " + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( layerBBox.yMinimum(), precision ), precision ) );
     originPosElem.appendChild( originPosText );
     rectGridElem.appendChild( originElem );
 
     QDomElement xOffsetElem = doc.createElement( QStringLiteral( "gml:offsetVector" ) );
-    QDomText xOffsetText = doc.createTextNode( QString::number( layer->rasterUnitsPerPixelX() ) + " 0" );
+    const QDomText xOffsetText = doc.createTextNode( QString::number( layer->rasterUnitsPerPixelX() ) + " 0" );
     xOffsetElem.appendChild( xOffsetText );
     rectGridElem.appendChild( xOffsetElem );
 
     QDomElement yOffsetElem = doc.createElement( QStringLiteral( "gml:offsetVector" ) );
-    QDomText yOffsetText = doc.createTextNode( "0 " + QString::number( layer->rasterUnitsPerPixelY() ) );
+    const QDomText yOffsetText = doc.createTextNode( "0 " + QString::number( layer->rasterUnitsPerPixelY() ) );
     yOffsetElem.appendChild( yOffsetText );
     rectGridElem.appendChild( yOffsetElem );
 
@@ -189,12 +189,12 @@ namespace QgsWcs
     rangeSetElem.appendChild( RangeSetElem );
 
     QDomElement rsNameElem = doc.createElement( QStringLiteral( "name" ) );
-    QDomText rsNameText = doc.createTextNode( QStringLiteral( "Bands" ) );
+    const QDomText rsNameText = doc.createTextNode( QStringLiteral( "Bands" ) );
     rsNameElem.appendChild( rsNameText );
     RangeSetElem.appendChild( rsNameElem );
 
     QDomElement rsLabelElem = doc.createElement( QStringLiteral( "label" ) );
-    QDomText rsLabelText = doc.createTextNode( QStringLiteral( "Bands" ) );
+    const QDomText rsLabelText = doc.createTextNode( QStringLiteral( "Bands" ) );
     rsLabelElem.appendChild( rsLabelText );
     RangeSetElem.appendChild( rsLabelElem );
 
@@ -205,12 +205,12 @@ namespace QgsWcs
     axisDescElem.appendChild( AxisDescElem );
 
     QDomElement adNameElem = doc.createElement( QStringLiteral( "name" ) );
-    QDomText adNameText = doc.createTextNode( QStringLiteral( "bands" ) );
+    const QDomText adNameText = doc.createTextNode( QStringLiteral( "bands" ) );
     adNameElem.appendChild( adNameText );
     AxisDescElem.appendChild( adNameElem );
 
     QDomElement adLabelElem = doc.createElement( QStringLiteral( "label" ) );
-    QDomText adLablelText = doc.createTextNode( QStringLiteral( "bands" ) );
+    const QDomText adLablelText = doc.createTextNode( QStringLiteral( "bands" ) );
     adLabelElem.appendChild( adLablelText );
     AxisDescElem.appendChild( adLabelElem );
 
@@ -218,7 +218,7 @@ namespace QgsWcs
     for ( int idx = 0; idx < layer->bandCount(); ++idx )
     {
       QDomElement adValueElem = doc.createElement( QStringLiteral( "singleValue" ) );
-      QDomText adValueText = doc.createTextNode( QString::number( idx + 1 ) );
+      const QDomText adValueText = doc.createTextNode( QString::number( idx + 1 ) );
       adValueElem.appendChild( adValueText );
       adValuesElem.appendChild( adValueElem );
     }
@@ -228,11 +228,11 @@ namespace QgsWcs
     // this coverage offering and produce coverages from it.
     QDomElement sCRSElem = doc.createElement( QStringLiteral( "supportedCRSs" ) );
     QDomElement rCRSElem = doc.createElement( QStringLiteral( "requestResponseCRSs" ) );
-    QDomText rCRSText = doc.createTextNode( layerCrs.authid() );
+    const QDomText rCRSText = doc.createTextNode( layerCrs.authid() );
     rCRSElem.appendChild( rCRSText );
     sCRSElem.appendChild( rCRSElem );
     QDomElement nCRSElem = doc.createElement( QStringLiteral( "nativeCRSs" ) );
-    QDomText nCRSText = doc.createTextNode( layerCrs.authid() );
+    const QDomText nCRSText = doc.createTextNode( layerCrs.authid() );
     nCRSElem.appendChild( nCRSText );
     sCRSElem.appendChild( nCRSElem );
     layerElem.appendChild( sCRSElem );
@@ -242,7 +242,7 @@ namespace QgsWcs
     QDomElement sFormatsElem = doc.createElement( QStringLiteral( "supportedFormats" ) );
     sFormatsElem.setAttribute( QStringLiteral( "nativeFormat" ), QStringLiteral( "raw binary" ) );
     QDomElement formatsElem = doc.createElement( QStringLiteral( "formats" ) );
-    QDomText formatsText = doc.createTextNode( QStringLiteral( "GeoTIFF" ) );
+    const QDomText formatsText = doc.createTextNode( QStringLiteral( "GeoTIFF" ) );
     formatsElem.appendChild( formatsText );
     sFormatsElem.appendChild( formatsElem );
     layerElem.appendChild( sFormatsElem );
@@ -251,9 +251,9 @@ namespace QgsWcs
   }
 
 
-  QString serviceUrl( const QgsServerRequest &request, const QgsProject *project )
+  QString serviceUrl( const QgsServerRequest &request, const QgsProject *project, const QgsServerSettings &settings )
   {
-    static QSet< QString > sFilter
+    static const QSet< QString > sFilter
     {
       QStringLiteral( "REQUEST" ),
       QStringLiteral( "VERSION" ),
@@ -261,11 +261,7 @@ namespace QgsWcs
       QStringLiteral( "_DC" )
     };
 
-    QString href;
-    if ( project )
-    {
-      href = QgsServerProjectUtils::wcsServiceUrl( *project );
-    }
+    QString href = QgsServerProjectUtils::wcsServiceUrl( project ? *project : *QgsProject::instance(), request, settings );
 
     // Build default url
     if ( href.isEmpty() )
@@ -273,7 +269,8 @@ namespace QgsWcs
       QUrl url = request.originalUrl();
       QUrlQuery q( url );
 
-      for ( auto param : q.queryItems() )
+      const QList<QPair<QString, QString> > queryItems = q.queryItems();
+      for ( const QPair<QString, QString> &param : queryItems )
       {
         if ( sFilter.contains( param.first.toUpper() ) )
           q.removeAllQueryItems( param.first );

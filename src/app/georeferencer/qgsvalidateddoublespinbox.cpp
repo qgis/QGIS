@@ -21,7 +21,7 @@ QgsValidatedDoubleSpinBox::QgsValidatedDoubleSpinBox( QWidget *widget )
 
 QValidator::State QgsValidatedDoubleSpinBox::validate( QString &input, int &pos ) const
 {
-  QValidator::State state = QDoubleSpinBox::validate( input, pos );
+  const QValidator::State state = QDoubleSpinBox::validate( input, pos );
   if ( state != QValidator::Acceptable )
   {
     return state;
@@ -29,7 +29,7 @@ QValidator::State QgsValidatedDoubleSpinBox::validate( QString &input, int &pos 
 
   // A value of zero is acceptable as intermediate result,
   // but not as final entry
-  double val = valueFromText( input );
+  const double val = valueFromText( input );
   if ( val == 0.0 )
   {
     return QValidator::Intermediate;

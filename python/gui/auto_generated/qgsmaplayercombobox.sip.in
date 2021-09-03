@@ -13,7 +13,7 @@
 
 class QgsMapLayerComboBox : QComboBox
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsMapLayerComboBox` class is a combo box which displays the list of layers
 
 .. versionadded:: 2.3
@@ -68,9 +68,11 @@ Returns the list of data providers which are excluded from the combobox.
 .. versionadded:: 3.0
 %End
 
-    void setAllowEmptyLayer( bool allowEmpty );
+    void setAllowEmptyLayer( bool allowEmpty, const QString &text = QString(), const QIcon &icon = QIcon() );
 %Docstring
 Sets whether an optional empty layer ("not set") option is shown in the combo box.
+
+Since QGIS 3.20, the optional ``text`` and ``icon`` arguments allows the text and icon for the empty layer item to be set.
 
 .. seealso:: :py:func:`allowEmptyLayer`
 

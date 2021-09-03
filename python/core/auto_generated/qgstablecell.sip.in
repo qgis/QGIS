@@ -10,7 +10,7 @@
 
 class QgsTableCell
 {
-%Docstring
+%Docstring(signature="appended")
 Encapsulates the contents and formatting of a single table cell.
 
 .. versionadded:: 3.12

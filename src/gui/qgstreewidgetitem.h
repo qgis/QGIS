@@ -27,7 +27,7 @@
 /**
  * \ingroup gui
  * \class QgsTreeWidgetItem
- * QTreeWidgetItem subclass with custom handling for item sorting.
+ * \brief QTreeWidgetItem subclass with custom handling for item sorting.
  *
  * QgsTreeWidgetItem allows for items to be sorted using a specified user role, and
  * also correctly handles sorting numeric or mixed text and numeric values.
@@ -156,7 +156,7 @@ class GUI_EXPORT QgsTreeWidgetItem : public QTreeWidgetItem
 /**
  * \ingroup gui
  * \class QgsTreeWidgetItemObject
- * Custom QgsTreeWidgetItem with extra signals when item is edited.
+ * \brief Custom QgsTreeWidgetItem with extra signals when item is edited.
  * \since QGIS 3.0
  */
 class GUI_EXPORT QgsTreeWidgetItemObject: public QObject, public QgsTreeWidgetItem

@@ -36,17 +36,9 @@ QStringList QgsSpatiaLiteConnection::connectionList()
   return settings.childGroups();
 }
 
-void QgsSpatiaLiteConnection::deleteConnection( const QString &name )
-{
-  QgsSettings settings;
-  QString key = "/SpatiaLite/connections/" + name;
-  settings.remove( key + "/sqlitepath" );
-  settings.remove( key );
-}
-
 QString QgsSpatiaLiteConnection::connectionPath( const QString &name )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
   return settings.value( "/SpatiaLite/connections/" + name + "/sqlitepath" ).toString();
 }
 
@@ -56,7 +48,7 @@ QgsSpatiaLiteConnection::QgsSpatiaLiteConnection( const QString &name )
 {
   // "name" can be either a saved connection or a path to database
 
-  QgsSettings settings;
+  const QgsSettings settings;
   mPath = settings.value( QStringLiteral( "SpatiaLite/connections/%1/sqlitepath" ).arg( name ) ).toString();
   if ( mPath.isNull() )
     mPath = name; // not found in settings - probably it's a path
@@ -66,7 +58,7 @@ QgsSpatiaLiteConnection::Error QgsSpatiaLiteConnection::fetchTables( bool loadGe
 {
   mErrorMsg = QString();
 
-  QFileInfo fi( mPath );
+  const QFileInfo fi( mPath );
   if ( !fi.exists() )
     return NotExists;
 
@@ -92,7 +84,7 @@ QgsSpatiaLiteConnection::Error QgsSpatiaLiteConnection::fetchTables( bool loadGe
 
 bool QgsSpatiaLiteConnection::updateStatistics()
 {
-  QFileInfo fi( mPath );
+  const QFileInfo fi( mPath );
   if ( !fi.exists() )
     return false;
 
@@ -279,9 +271,9 @@ bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 *handle, bo
         }
       }
 
-      QString tableName = QString::fromUtf8( lyr->TableName );
+      const QString tableName = QString::fromUtf8( lyr->TableName );
       ignoreTableNames << tableName;
-      QString column = QString::fromUtf8( lyr->GeometryName );
+      const QString column = QString::fromUtf8( lyr->GeometryName );
       ignoreTableNames << QStringLiteral( "idx_%1_%2" ).arg( tableName, column )
                        << QStringLiteral( "idx_%1_%2_node" ).arg( tableName, column )
                        << QStringLiteral( "idx_%1_%2_parent" ).arg( tableName, column )
@@ -336,7 +328,7 @@ bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 *handle, bo
     {
       for ( i = 1; i <= rows; i++ )
       {
-        QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
+        const QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
         if ( !ignoreTableNames.contains( tableName, Qt::CaseInsensitive ) )
           mTables.append( TableEntry( tableName, QString(), QStringLiteral( "qgis_table" ) ) );
       }
@@ -377,9 +369,9 @@ bool QgsSpatiaLiteConnection::getTableInfo( sqlite3 *handle, bool loadGeometryle
   {
     if ( isRasterlite1Datasource( handle, results[( i * columns ) + 0] ) )
       continue;
-    QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
-    QString column = QString::fromUtf8( results[( i * columns ) + 1] );
-    QString type = results[( i * columns ) + 2];
+    const QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
+    const QString column = QString::fromUtf8( results[( i * columns ) + 1] );
+    const QString type = results[( i * columns ) + 2];
     if ( isDeclaredHidden( handle, tableName, column ) )
       continue;
 
@@ -398,9 +390,9 @@ bool QgsSpatiaLiteConnection::getTableInfo( sqlite3 *handle, bool loadGeometryle
       goto error;
     for ( i = 1; i <= rows; i++ )
     {
-      QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
-      QString column = QString::fromUtf8( results[( i * columns ) + 1] );
-      QString type = results[( i * columns ) + 2];
+      const QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
+      const QString column = QString::fromUtf8( results[( i * columns ) + 1] );
+      const QString type = results[( i * columns ) + 2];
       if ( isDeclaredHidden( handle, tableName, column ) )
         continue;
 
@@ -419,9 +411,9 @@ bool QgsSpatiaLiteConnection::getTableInfo( sqlite3 *handle, bool loadGeometryle
       goto error;
     for ( i = 1; i <= rows; i++ )
     {
-      QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
-      QString column = QString::fromUtf8( results[( i * columns ) + 1] );
-      QString type = results[( i * columns ) + 2];
+      const QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
+      const QString column = QString::fromUtf8( results[( i * columns ) + 1] );
+      const QString type = results[( i * columns ) + 2];
       if ( isDeclaredHidden( handle, tableName, column ) )
         continue;
 
@@ -441,7 +433,7 @@ bool QgsSpatiaLiteConnection::getTableInfo( sqlite3 *handle, bool loadGeometryle
       goto error;
     for ( i = 1; i <= rows; i++ )
     {
-      QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
+      const QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
       mTables.append( TableEntry( tableName, QString(), QStringLiteral( "qgis_table" ) ) );
     }
     sqlite3_free_table( results );
@@ -470,7 +462,7 @@ bool QgsSpatiaLiteConnection::checkGeometryColumnsAuth( sqlite3 *handle )
   bool exists = false;
 
   // checking the metadata tables
-  QString sql = QStringLiteral( "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'geometry_columns_auth'" );
+  const QString sql = QStringLiteral( "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'geometry_columns_auth'" );
 
   ret = sqlite3_get_table( handle, sql.toUtf8().constData(), &results, &rows, &columns, nullptr );
   if ( ret != SQLITE_OK )
@@ -504,7 +496,7 @@ bool QgsSpatiaLiteConnection::checkViewsGeometryColumns( sqlite3 *handle )
   bool exists = false;
 
   // checking the metadata tables
-  QString sql = QStringLiteral( "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'views_geometry_columns'" );
+  const QString sql = QStringLiteral( "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'views_geometry_columns'" );
 
   ret = sqlite3_get_table( handle, sql.toUtf8().constData(), &results, &rows, &columns, nullptr );
   if ( ret != SQLITE_OK )
@@ -537,7 +529,7 @@ bool QgsSpatiaLiteConnection::checkVirtsGeometryColumns( sqlite3 *handle )
   bool exists = false;
 
   // checking the metadata tables
-  QString sql = QStringLiteral( "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'virts_geometry_columns'" );
+  const QString sql = QStringLiteral( "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'virts_geometry_columns'" );
 
   ret = sqlite3_get_table( handle, sql.toUtf8().constData(), &results, &rows, &columns, nullptr );
   if ( ret != SQLITE_OK )
@@ -575,7 +567,7 @@ bool QgsSpatiaLiteConnection::isRasterlite1Datasource( sqlite3 *handle, const ch
   strncpy( table_raster, table, sizeof table_raster );
   table_raster[ sizeof table_raster - 1 ] = '\0';
 
-  size_t len = strlen( table_raster );
+  const size_t len = strlen( table_raster );
   if ( strlen( table_raster ) < 9 )
     return false;
   if ( strcmp( table_raster + len - 9, "_metadata" ) != 0 )
@@ -620,9 +612,9 @@ bool QgsSpatiaLiteConnection::isDeclaredHidden( sqlite3 *handle, const QString &
   if ( !checkGeometryColumnsAuth( handle ) )
     return false;
   // checking if some Layer has been declared as HIDDEN
-  QString sql = QString( "SELECT hidden FROM geometry_columns_auth"
-                         " WHERE f_table_name=%1 and f_geometry_column=%2" ).arg( QgsSqliteUtils::quotedString( table ),
-                             QgsSqliteUtils::quotedString( geom ) );
+  const QString sql = QString( "SELECT hidden FROM geometry_columns_auth"
+                               " WHERE f_table_name=%1 and f_geometry_column=%2" ).arg( QgsSqliteUtils::quotedString( table ),
+                                   QgsSqliteUtils::quotedString( geom ) );
 
   ret = sqlite3_get_table( handle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK )
@@ -661,8 +653,8 @@ error:
 
 static void fcnRegexp( sqlite3_context *ctx, int /*argc*/, sqlite3_value *argv[] )
 {
-  QRegularExpression re( reinterpret_cast<const char *>( sqlite3_value_text( argv[0] ) ) );
-  QString string( reinterpret_cast<const char *>( sqlite3_value_text( argv[1] ) ) );
+  const QRegularExpression re( reinterpret_cast<const char *>( sqlite3_value_text( argv[0] ) ) );
+  const QString string( reinterpret_cast<const char *>( sqlite3_value_text( argv[1] ) ) );
 
   if ( !re.isValid() )
     return sqlite3_result_error( ctx, "invalid operand", -1 );
@@ -705,7 +697,7 @@ skip:
 QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared )
 {
   //QMap < QString, QgsSqliteHandle* >&handles = QgsSqliteHandle::handles;
-  QMutexLocker locker( &sHandleMutex );
+  const QMutexLocker locker( &sHandleMutex );
 
   if ( shared && sHandles.contains( dbPath ) )
   {
@@ -757,7 +749,7 @@ void QgsSqliteHandle::closeDb( QgsSqliteHandle *&handle )
   }
   else
   {
-    QMutexLocker locker( &sHandleMutex );
+    const QMutexLocker locker( &sHandleMutex );
     QMap < QString, QgsSqliteHandle * >::iterator i;
     for ( i = sHandles.begin(); i != sHandles.end() && i.value() != handle; ++i )
       ;
@@ -777,7 +769,7 @@ void QgsSqliteHandle::closeDb( QgsSqliteHandle *&handle )
 
 void QgsSqliteHandle::closeAll()
 {
-  QMutexLocker locker( &sHandleMutex );
+  const QMutexLocker locker( &sHandleMutex );
   qDeleteAll( sHandles );
   sHandles.clear();
 }

@@ -23,8 +23,9 @@
 
 /**
  * \ingroup core
- * The action scope registry is an application wide registry that
+ * \brief The action scope registry is an application wide registry that
  * contains a list of available action scopes.
+ *
  * Some scopes are available by default, additional ones can be registered
  * at runtime by plugins or custom applications.
  *

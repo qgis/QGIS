@@ -13,7 +13,7 @@
 
 class QgsListWidget: QgsTableWidgetBase
 {
-%Docstring
+%Docstring(signature="appended")
 Widget allowing to edit a QVariantList, using a table.
 
 .. versionadded:: 3.0

@@ -26,7 +26,8 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import (QgsApplication,
+from qgis.core import (Qgis,
+                       QgsApplication,
                        QgsSettings,
                        QgsGeometry,
                        QgsFeature,
@@ -116,13 +117,13 @@ class CheckValidity(QgisAlgorithm):
         if method_param == 0:
             settings = QgsSettings()
             method = int(settings.value(settings_method_key, 0)) - 1
-            if method < 0:
-                method = 0
+            method = max(method, 0)
         else:
             method = method_param - 1
 
-        results = self.doCheck(method, parameters, context, feedback, ignore_ring_self_intersection)
-        return results
+        return self.doCheck(
+            method, parameters, context, feedback, ignore_ring_self_intersection
+        )
 
     def doCheck(self, method, parameters, context, feedback, ignore_ring_self_intersection):
         flags = QgsGeometry.FlagAllowSelfTouchingHoles if ignore_ring_self_intersection else QgsGeometry.ValidityFlags()
@@ -156,7 +157,7 @@ class CheckValidity(QgisAlgorithm):
 
             valid = True
             if not geom.isNull() and not geom.isEmpty():
-                errors = list(geom.validateGeometry(method, flags))
+                errors = list(geom.validateGeometry(Qgis.GeometryValidationEngine(method), flags))
                 if errors:
                     valid = False
                     reasons = []

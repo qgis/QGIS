@@ -31,7 +31,7 @@ class QgsGeoPdfRenderedFeatureHandler;
  * \class QgsLayoutGeoPdfExporter
  * \ingroup core
  *
- * Handles GeoPDF export specific setup, cleanup and processing steps.
+ * \brief Handles GeoPDF export specific setup, cleanup and processing steps.
  *
  * This class is a low level implementation detail only. Generally, you should use the high level interface exposed by
  * QgsLayoutExporter instead.

@@ -30,7 +30,7 @@ class QgsMapLayer;
 
 /**
  * \ingroup core
- * Stores style information (renderer, opacity, labeling, diagrams etc.) applicable to a map layer.
+ * \brief Stores style information (renderer, opacity, labeling, diagrams etc.) applicable to a map layer.
  *
  * Stored data are considered as opaque:
  *
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsMapLayerStyle
 
 /**
  * \ingroup core
- * Restore overridden layer style on destruction.
+ * \brief Restore overridden layer style on destruction.
  *
  * \since QGIS 3.2
  */

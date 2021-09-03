@@ -69,7 +69,7 @@ void QgsRenameLayerAlgorithm::initAlgorithm( const QVariantMap & )
 QVariantMap QgsRenameLayerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   QgsMapLayer *layer = parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context );
-  QString name = parameterAsString( parameters, QStringLiteral( "NAME" ), context );
+  const QString name = parameterAsString( parameters, QStringLiteral( "NAME" ), context );
 
   if ( !layer )
     throw QgsProcessingException( QObject::tr( "Invalid input layer" ) );
@@ -77,7 +77,7 @@ QVariantMap QgsRenameLayerAlgorithm::processAlgorithm( const QVariantMap &parame
   if ( name.isEmpty() )
     throw QgsProcessingException( QObject::tr( "Invalid (empty) layer name" ) );
 
-  bool parameterWasLayerName = parameters.value( QStringLiteral( "INPUT" ) ).toString() == layer->name();
+  const bool parameterWasLayerName = parameters.value( QStringLiteral( "INPUT" ) ).toString() == layer->name();
 
   layer->setName( name );
   QVariantMap results;

@@ -45,7 +45,7 @@ QList<double> QgsClassificationEqualInterval::calculateBreaks( double &minimum, 
   QList<double> breaks;
   if ( !symmetricModeEnabled() ) // normal mode
   {
-    double step = ( maximum - minimum ) / nclasses;
+    const double step = ( maximum - minimum ) / nclasses;
 
     double value = minimum;
     breaks.reserve( nclasses );
@@ -60,8 +60,8 @@ QList<double> QgsClassificationEqualInterval::calculateBreaks( double &minimum, 
   }
   else // symmetric mode
   {
-    double distBelowSymmetricValue = std::abs( minimum - symmetryPoint() );
-    double distAboveSymmetricValue = std::abs( maximum - symmetryPoint() ) ;
+    const double distBelowSymmetricValue = std::abs( minimum - symmetryPoint() );
+    const double distAboveSymmetricValue = std::abs( maximum - symmetryPoint() ) ;
 
     if ( symmetryAstride() )
     {
@@ -73,7 +73,7 @@ QList<double> QgsClassificationEqualInterval::calculateBreaks( double &minimum, 
       if ( nclasses % 2 == 1 ) // we want even number of classes
         ++nclasses;
     }
-    double step = 2 * std::min( distBelowSymmetricValue, distAboveSymmetricValue ) / nclasses;
+    const double step = 2 * std::min( distBelowSymmetricValue, distAboveSymmetricValue ) / nclasses;
 
     breaks.reserve( nclasses );
     double value = ( distBelowSymmetricValue < distAboveSymmetricValue ) ?  minimum : maximum - nclasses * step;

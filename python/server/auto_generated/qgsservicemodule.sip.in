@@ -13,7 +13,7 @@
 
 class QgsServiceModule
 {
-%Docstring
+%Docstring(signature="appended")
 Class defining the service module interface for QGIS server services
 
 This class acts as a service registrar for services.

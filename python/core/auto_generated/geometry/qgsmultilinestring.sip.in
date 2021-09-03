@@ -11,7 +11,7 @@
 
 class QgsMultiLineString: QgsMultiCurve
 {
-%Docstring
+%Docstring(signature="appended")
 Multi line string geometry collection.
 
 .. versionadded:: 2.10
@@ -33,7 +33,7 @@ Constructor for an empty multilinestring geometry.
 %Docstring
 Returns the line string with the specified ``index``.
 
-An IndexError will be raised if no line string with the specified index exists.
+:raises IndexError: if no line string with the specified index exists.
 
 .. versionadded:: 3.16
 %End

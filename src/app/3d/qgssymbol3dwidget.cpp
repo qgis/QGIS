@@ -80,7 +80,7 @@ void QgsSymbol3DWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorL
 void QgsSymbol3DWidget::setSymbolFromStyle( const QString &name )
 {
   // get new instance of symbol from style
-  std::unique_ptr< QgsAbstract3DSymbol > s( QgsStyle::defaultStyle()->symbol3D( name ) );
+  const std::unique_ptr< QgsAbstract3DSymbol > s( QgsStyle::defaultStyle()->symbol3D( name ) );
   if ( !s )
     return;
 
@@ -102,10 +102,10 @@ void QgsSymbol3DWidget::saveSymbol()
   // check if there is no symbol with same name
   if ( QgsStyle::defaultStyle()->symbol3DNames().contains( saveDlg.name() ) )
   {
-    int res = QMessageBox::warning( this, tr( "Save 3D Symbol" ),
-                                    tr( "A 3D symbol with the name '%1' already exists. Overwrite?" )
-                                    .arg( saveDlg.name() ),
-                                    QMessageBox::Yes | QMessageBox::No );
+    const int res = QMessageBox::warning( this, tr( "Save 3D Symbol" ),
+                                          tr( "A 3D symbol with the name '%1' already exists. Overwrite?" )
+                                          .arg( saveDlg.name() ),
+                                          QMessageBox::Yes | QMessageBox::No );
     if ( res != QMessageBox::Yes )
     {
       return;
@@ -113,7 +113,7 @@ void QgsSymbol3DWidget::saveSymbol()
     QgsStyle::defaultStyle()->removeEntityByName( QgsStyle::Symbol3DEntity, saveDlg.name() );
   }
 
-  QStringList symbolTags = saveDlg.tags().split( ',' );
+  const QStringList symbolTags = saveDlg.tags().split( ',' );
 
   // add new symbol to style and re-populate the list
   QgsAbstract3DSymbol *s = newSymbol.get();

@@ -27,12 +27,24 @@ class QgsMapCanvas;
 /**
  * \ingroup gui
  * \class QgsMapLayerConfigWidgetFactory
- * Factory class for creating custom map layer property pages
+ * \brief Factory class for creating custom map layer property pages
  * \since QGIS 2.16
  */
 class GUI_EXPORT QgsMapLayerConfigWidgetFactory
 {
   public:
+
+    /**
+     * Available parent pages, for factories which create a widget which is a sub-component
+     * of a standard page.
+     *
+     * \since QGIS 3.20
+     */
+    enum class ParentPage : int
+    {
+      NoParent, //!< Factory creates pages itself, not sub-components
+      Temporal, //!< Factory creates sub-components of the temporal properties page (only supported for raster layer temporal properties)
+    };
 
     //! Constructor
     QgsMapLayerConfigWidgetFactory() = default;
@@ -114,6 +126,16 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
      * \returns TRUE if this layer is supported for this widget
      */
     virtual bool supportsLayer( QgsMapLayer *layer ) const;
+
+    /**
+     * Returns the associated parent page, for factories which create sub-components of a standard page.
+     *
+     * The default implementation returns QgsMapLayerConfigWidgetFactory::ParentPage::NoParent, indicating that the
+     * factory creates top-level pages which are not subcomponents.
+     *
+     * \since QGIS 3.20
+     */
+    virtual ParentPage parentPage() const;
 
     /**
      * \brief Factory function to create the widget on demand as needed by the dock.

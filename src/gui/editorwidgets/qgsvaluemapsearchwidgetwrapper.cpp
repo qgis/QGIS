@@ -83,8 +83,8 @@ QString QgsValueMapSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper
   //clear any unsupported flags
   flags &= supportedFlags();
 
-  QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
-  QString fieldName = createFieldIdentifier();
+  const QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
+  const QString fieldName = createFieldIdentifier();
 
   if ( flags & IsNull )
     return fieldName + " IS NULL";
@@ -95,7 +95,7 @@ QString QgsValueMapSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper
   if ( mComboBox->currentIndex() == 0 )
     return QString();
 
-  QString currentKey = mComboBox->currentData().toString();
+  const QString currentKey = mComboBox->currentData().toString();
 
   switch ( fldType )
   {
@@ -151,7 +151,7 @@ void QgsValueMapSearchWidgetWrapper::initWidget( QWidget *editor )
 void QgsValueMapSearchWidgetWrapper::setExpression( const QString &expression )
 {
   QString exp = expression;
-  QString fieldName = layer()->fields().at( mFieldIdx ).name();
+  const QString fieldName = layer()->fields().at( mFieldIdx ).name();
   QString str;
 
   str = QStringLiteral( "%1 = '%2'" )

@@ -52,11 +52,12 @@ class QgsMeshTerrainTileLoader: public QgsTerrainTileLoader
 
 /**
  * \ingroup 3d
- * Implementation of terrain generator that uses the Z values of a mesh layer to build a terrain
+ * \brief Implementation of terrain generator that uses the Z values of a mesh layer to build a terrain
  * \since QGIS 3.12
  */
 class _3D_EXPORT QgsMeshTerrainGenerator: public QgsTerrainGenerator
 {
+    Q_OBJECT
   public:
     //! Creates mesh terrain generator object
     QgsMeshTerrainGenerator();
@@ -86,6 +87,9 @@ class _3D_EXPORT QgsMeshTerrainGenerator: public QgsTerrainGenerator
     void readXml( const QDomElement &elem ) override;
     float heightAt( double x, double y, const Qgs3DMapSettings & ) const override;
 
+  private slots:
+    void updateTriangularMesh();
+
   private:
     QgsMapLayerRef mLayer;
     QgsCoordinateReferenceSystem mCrs;
@@ -93,7 +97,7 @@ class _3D_EXPORT QgsMeshTerrainGenerator: public QgsTerrainGenerator
     std::unique_ptr< QgsMesh3DSymbol > mSymbol;
     QgsTriangularMesh mTriangularMesh;
 
-    void updateTriangularMesh();
+
 };
 
 #endif // QGSMESHTERRAINGENERATOR_H

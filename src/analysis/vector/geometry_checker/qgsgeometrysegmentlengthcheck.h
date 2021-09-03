@@ -22,6 +22,7 @@
 
 /**
  * \ingroup analysis
+ * \brief A segment length check.
  */
 class ANALYSIS_EXPORT QgsGeometrySegmentLengthCheck : public QgsGeometryCheck
 {

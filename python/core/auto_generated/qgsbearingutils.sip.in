@@ -12,7 +12,7 @@
 
 class QgsBearingUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Utilities for calculating bearings and directions.
 
 .. versionadded:: 2.18

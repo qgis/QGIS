@@ -13,7 +13,7 @@
 
 class QgsLayerTreeProxyModel : QSortFilterProxyModel
 {
-%Docstring
+%Docstring(signature="appended")
 
 The :py:class:`QgsLayerTreeProxyModel` class is a proxy model for :py:class:`QgsLayerTreeModel`, supports
 private layers and text filtering.
@@ -56,7 +56,7 @@ Determines if private layers are shown.
 
 class QgsLayerTreeView : QTreeView
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsLayerTreeView` class extends QTreeView and provides some additional functionality
 when working with a layer tree.
 
@@ -391,7 +391,7 @@ Emitted when a current layer is changed
 
 class QgsLayerTreeViewMenuProvider
 {
-%Docstring
+%Docstring(signature="appended")
 Implementation of this interface can be implemented to allow QgsLayerTreeView
 instance to provide custom context menus (opened upon right-click).
 

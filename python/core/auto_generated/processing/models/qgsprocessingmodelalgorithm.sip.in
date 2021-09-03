@@ -12,7 +12,7 @@
 
 class QgsProcessingModelAlgorithm : QgsProcessingAlgorithm
 {
-%Docstring
+%Docstring(signature="appended")
 Model based algorithm with processing.
 
 .. versionadded:: 3.0
@@ -457,7 +457,7 @@ sources to those with compatible data types for the parameter/outputs.
 
     class VariableDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 Definition of a expression context variable available during model execution.
 
 .. versionadded:: 3.0

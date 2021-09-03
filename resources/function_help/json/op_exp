@@ -1,6 +1,7 @@
 {
   "name": "^",
   "type": "operator",
+  "groups": ["Operators"],
   "description": "Power of two values.",
   "arguments": [
         { "arg": "a", "description": "value" },

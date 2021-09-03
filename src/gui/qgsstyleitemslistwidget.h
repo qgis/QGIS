@@ -45,7 +45,7 @@ class QgsReadOnlyStyleModel : public QgsStyleProxyModel
 /**
  * \ingroup gui
  * \class QgsStyleItemsListWidget
- * A reusable widget for showing a filtered list of entities from a QgsStyle database.
+ * \brief A reusable widget for showing a filtered list of entities from a QgsStyle database.
  * \since QGIS 3.10
  */
 class GUI_EXPORT QgsStyleItemsListWidget : public QWidget, private Ui::QgsStyleItemsListWidgetBase
@@ -86,7 +86,7 @@ class GUI_EXPORT QgsStyleItemsListWidget : public QWidget, private Ui::QgsStyleI
      *
      * \see setEntityType()
      */
-    void setSymbolType( QgsSymbol::SymbolType type );
+    void setSymbolType( Qgis::SymbolType type );
 
     /**
      * Sets the layer \a type to show in the widget. Set \a type to QgsWkbTypes::UnknownGeometry if no

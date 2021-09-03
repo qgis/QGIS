@@ -19,6 +19,7 @@
 #include "qgsreadwritecontext.h"
 #include "qgssymbollayerutils.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgslinesymbol.h"
 
 #include <gdal_alg.h>
 
@@ -53,10 +54,10 @@ QgsRasterRenderer *QgsRasterContourRenderer::create( const QDomElement &elem, Qg
   QgsRasterContourRenderer *r = new QgsRasterContourRenderer( input );
   r->readXml( elem );
 
-  int inputBand = elem.attribute( QStringLiteral( "band" ), QStringLiteral( "-1" ) ).toInt();
-  double contourInterval = elem.attribute( QStringLiteral( "contour-interval" ), QStringLiteral( "100" ) ).toDouble();
-  double contourIndexInterval = elem.attribute( QStringLiteral( "contour-index-interval" ), QStringLiteral( "0" ) ).toDouble();
-  double downscale = elem.attribute( QStringLiteral( "downscale" ), QStringLiteral( "4" ) ).toDouble();
+  const int inputBand = elem.attribute( QStringLiteral( "band" ), QStringLiteral( "-1" ) ).toInt();
+  const double contourInterval = elem.attribute( QStringLiteral( "contour-interval" ), QStringLiteral( "100" ) ).toDouble();
+  const double contourIndexInterval = elem.attribute( QStringLiteral( "contour-index-interval" ), QStringLiteral( "0" ) ).toDouble();
+  const double downscale = elem.attribute( QStringLiteral( "downscale" ), QStringLiteral( "4" ) ).toDouble();
 
   r->setInputBand( inputBand );
   r->setContourInterval( contourInterval );
@@ -70,13 +71,13 @@ QgsRasterRenderer *QgsRasterContourRenderer::create( const QDomElement &elem, Qg
     if ( symbolMap.contains( QStringLiteral( "contour" ) ) )
     {
       QgsSymbol *symbol = symbolMap.take( QStringLiteral( "contour" ) );
-      if ( symbol->type() == QgsSymbol::Line )
+      if ( symbol->type() == Qgis::SymbolType::Line )
         r->setContourSymbol( static_cast<QgsLineSymbol *>( symbol ) );
     }
     if ( symbolMap.contains( QStringLiteral( "index-contour" ) ) )
     {
       QgsSymbol *symbol = symbolMap.take( QStringLiteral( "index-contour" ) );
-      if ( symbol->type() == QgsSymbol::Line )
+      if ( symbol->type() == Qgis::SymbolType::Line )
         r->setContourIndexSymbol( static_cast<QgsLineSymbol *>( symbol ) );
     }
   }
@@ -102,7 +103,7 @@ void QgsRasterContourRenderer::writeXml( QDomDocument &doc, QDomElement &parentE
   symbols[QStringLiteral( "contour" )] = mContourSymbol.get();
   if ( mContourIndexSymbol )
     symbols[QStringLiteral( "index-contour" )] = mContourIndexSymbol.get();
-  QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, QStringLiteral( "symbols" ), doc, QgsReadWriteContext() );
+  const QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, QStringLiteral( "symbols" ), doc, QgsReadWriteContext() );
   rasterRendererElem.appendChild( symbolsElem );
 
   parentElem.appendChild( rasterRendererElem );
@@ -146,8 +147,8 @@ QgsRasterBlock *QgsRasterContourRenderer::block( int bandNo, const QgsRectangle 
     return outputBlock.release();
   }
 
-  int inputWidth = static_cast<int>( round( width / mDownscale ) );
-  int inputHeight = static_cast<int>( round( height / mDownscale ) );
+  const int inputWidth = static_cast<int>( round( width / mDownscale ) );
+  const int inputHeight = static_cast<int>( round( height / mDownscale ) );
 
   std::unique_ptr< QgsRasterBlock > inputBlock( mInput->block( mInputBand, extent, inputWidth, inputHeight, feedback ) );
   if ( !inputBlock || inputBlock->isEmpty() )
@@ -156,7 +157,7 @@ QgsRasterBlock *QgsRasterContourRenderer::block( int bandNo, const QgsRectangle 
     return outputBlock.release();
   }
 
-  if ( !inputBlock->convert( Qgis::Float64 ) ) // contouring algorithm requires double
+  if ( !inputBlock->convert( Qgis::DataType::Float64 ) ) // contouring algorithm requires double
     return outputBlock.release();
   double *scanline = reinterpret_cast<double *>( inputBlock->bits() );
 
@@ -181,7 +182,7 @@ QgsRasterBlock *QgsRasterContourRenderer::block( int bandNo, const QgsRectangle 
   if ( crData.indexSymbol )
     crData.indexSymbol->startRender( context );
 
-  double contourBase = 0.;
+  const double contourBase = 0.;
   GDALContourGeneratorH cg = GDAL_CG_Create( inputBlock->width(), inputBlock->height(),
                              inputBlock->hasNoDataValue(), inputBlock->noDataValue(),
                              mContourInterval, contourBase,
@@ -220,12 +221,12 @@ QList<QgsLayerTreeModelLegendNode *> QgsRasterContourRenderer::createLegendNodes
 {
   QList<QgsLayerTreeModelLegendNode *> nodes;
 
-  QgsLegendSymbolItem contourItem( mContourSymbol.get(), QString::number( mContourInterval ), QStringLiteral( "contour" ) );
+  const QgsLegendSymbolItem contourItem( mContourSymbol.get(), QString::number( mContourInterval ), QStringLiteral( "contour" ) );
   nodes << new QgsSymbolLegendNode( nodeLayer, contourItem );
 
   if ( mContourIndexInterval > 0 )
   {
-    QgsLegendSymbolItem indexItem( mContourIndexSymbol.get(), QString::number( mContourIndexInterval ), QStringLiteral( "index" ) );
+    const QgsLegendSymbolItem indexItem( mContourIndexSymbol.get(), QString::number( mContourIndexInterval ), QStringLiteral( "index" ) );
     nodes << new QgsSymbolLegendNode( nodeLayer, indexItem );
   }
 

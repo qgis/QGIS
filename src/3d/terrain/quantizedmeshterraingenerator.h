@@ -20,7 +20,7 @@
 
 /**
  * \ingroup 3d
- * Terrain generator using downloaded terrain tiles using quantized mesh specification
+ * \brief Terrain generator using downloaded terrain tiles using quantized mesh specification
  * \since QGIS 3.0
  */
 class QuantizedMeshTerrainGenerator : public QgsTerrainGenerator

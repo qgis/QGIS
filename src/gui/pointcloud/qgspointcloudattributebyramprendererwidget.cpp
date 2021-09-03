@@ -45,8 +45,8 @@ QgsPointCloudAttributeByRampRendererWidget::QgsPointCloudAttributeByRampRenderer
 
   connect( mAttributeComboBox, &QgsPointCloudAttributeComboBox::attributeChanged,
            this, &QgsPointCloudAttributeByRampRendererWidget::attributeChanged );
-  connect( mMinSpin, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudAttributeByRampRendererWidget::minMaxChanged );
-  connect( mMaxSpin, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudAttributeByRampRendererWidget::minMaxChanged );
+  connect( mMinSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudAttributeByRampRendererWidget::minMaxChanged );
+  connect( mMaxSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudAttributeByRampRendererWidget::minMaxChanged );
 
   connect( mScalarColorRampShaderWidget, &QgsColorRampShaderWidget::widgetChanged, this, &QgsPointCloudAttributeByRampRendererWidget::emitWidgetChanged );
   connect( mScalarRecalculateMinMaxButton, &QPushButton::clicked, this, &QgsPointCloudAttributeByRampRendererWidget::setMinMaxFromLayer );
@@ -64,7 +64,7 @@ QgsPointCloudRenderer *QgsPointCloudAttributeByRampRendererWidget::renderer()
     return nullptr;
   }
 
-  std::unique_ptr< QgsPointCloudAttributeByRampRenderer > renderer = qgis::make_unique< QgsPointCloudAttributeByRampRenderer >();
+  std::unique_ptr< QgsPointCloudAttributeByRampRenderer > renderer = std::make_unique< QgsPointCloudAttributeByRampRenderer >();
   renderer->setAttribute( mAttributeComboBox->currentAttribute() );
 
   renderer->setMinimum( mMinSpin->value() );

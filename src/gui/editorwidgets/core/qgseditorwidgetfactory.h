@@ -31,7 +31,7 @@ class QgsSearchWidgetWrapper;
 
 /**
  * \ingroup gui
- * Every attribute editor widget needs a factory, which inherits this class
+ * \brief Every attribute editor widget needs a factory, which inherits this class
  *
  * It provides metadata for the widgets such as the name (human readable), it serializes
  * the configuration to an xml structure and loads the configuration from there.

@@ -10,7 +10,7 @@
 
 class QgsProjectBadLayerHandler
 {
-%Docstring
+%Docstring(signature="appended")
 Interface for classes that handle missing layer files when reading project file.
 %End
 

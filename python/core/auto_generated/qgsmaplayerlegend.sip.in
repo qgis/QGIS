@@ -14,7 +14,7 @@
 
 class QgsMapLayerLegend : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsMapLayerLegend` class is abstract interface for implementations
 of legends for one map layer.
 
@@ -85,7 +85,7 @@ Emitted when existing items/nodes got invalid and should be replaced by new ones
 
 class QgsMapLayerLegendUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Miscellaneous utility functions for handling of map layer legend
 
 .. versionadded:: 2.6
@@ -231,7 +231,7 @@ update according to layer node's custom properties (order of items, user labels 
 
 class QgsDefaultVectorLayerLegend : QgsMapLayerLegend
 {
-%Docstring
+%Docstring(signature="appended")
 Default legend implementation for vector layers
 
 .. versionadded:: 2.6
@@ -259,6 +259,22 @@ may have extra text rendered on top. The content of labels and their style is co
 by :py:func:`~QgsDefaultVectorLayerLegend.textOnSymbolContent` and :py:func:`~QgsDefaultVectorLayerLegend.textOnSymbolTextFormat`.
 
 .. versionadded:: 3.2
+%End
+
+    bool showLabelLegend() const;
+%Docstring
+Returns whether the legend for the labeling is shown
+
+.. versionadded:: 3.20
+%End
+
+    void setShowLabelLegend( bool enabled );
+%Docstring
+Sets if a legend for the labeling should be shown
+
+:param enabled: true to show label legend entries
+
+.. versionadded:: 3.20
 %End
 
     QgsTextFormat textOnSymbolTextFormat() const;
@@ -303,7 +319,7 @@ the keys are rule keys of legend items, the values are labels to be shown.
 
 class QgsDefaultRasterLayerLegend : QgsMapLayerLegend
 {
-%Docstring
+%Docstring(signature="appended")
 Default legend implementation for raster layers
 
 .. versionadded:: 2.6
@@ -323,7 +339,7 @@ Default legend implementation for raster layers
 
 class QgsDefaultMeshLayerLegend : QgsMapLayerLegend
 {
-%Docstring
+%Docstring(signature="appended")
 Default legend implementation for mesh layers
 
 .. versionadded:: 3.4
@@ -345,7 +361,7 @@ Creates an instance for the given mesh layer
 
 class QgsDefaultPointCloudLayerLegend : QgsMapLayerLegend
 {
-%Docstring
+%Docstring(signature="appended")
 Default legend implementation for point cloud layers
 
 .. versionadded:: 3.18

@@ -10,7 +10,7 @@
 
 class QgsProxyStyle : QProxyStyle
 {
-%Docstring
+%Docstring(signature="appended")
 A QProxyStyle subclass which correctly sets the base style to match
 the QGIS application style, and handles object lifetime by correctly
 parenting to a parent widget.

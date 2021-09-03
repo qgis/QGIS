@@ -13,7 +13,7 @@
 
 class QgsRasterBandStats
 {
-%Docstring
+%Docstring(signature="appended")
 The RasterBandStats struct is a container for statistics about a single
 raster band.
 %End

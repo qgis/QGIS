@@ -25,6 +25,7 @@
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QGraphicsApiFilter>
+#include <QUrl>
 
 QString QgsGoochMaterialSettings::type() const
 {
@@ -134,10 +135,10 @@ void QgsGoochMaterialSettings::addParametersToEffect( Qt3DRender::QEffect * ) co
 QByteArray QgsGoochMaterialSettings::dataDefinedVertexColorsAsByte( const QgsExpressionContext &expressionContext ) const
 {
 
-  QColor diffuse = dataDefinedProperties().valueAsColor( Diffuse, expressionContext, mDiffuse );
-  QColor warm = dataDefinedProperties().valueAsColor( Warm, expressionContext, mWarm );
-  QColor cool = dataDefinedProperties().valueAsColor( Cool, expressionContext, mCool );
-  QColor specular = dataDefinedProperties().valueAsColor( Specular, expressionContext, mSpecular );
+  const QColor diffuse = dataDefinedProperties().valueAsColor( Diffuse, expressionContext, mDiffuse );
+  const QColor warm = dataDefinedProperties().valueAsColor( Warm, expressionContext, mWarm );
+  const QColor cool = dataDefinedProperties().valueAsColor( Cool, expressionContext, mCool );
+  const QColor specular = dataDefinedProperties().valueAsColor( Specular, expressionContext, mSpecular );
 
 
   QByteArray array;
@@ -170,11 +171,7 @@ int QgsGoochMaterialSettings::dataDefinedByteStride() const
 
 void QgsGoochMaterialSettings::applyDataDefinedToGeometry( Qt3DRender::QGeometry *geometry, int vertexCount, const QByteArray &data ) const
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-  Qt3DRender::QBuffer *dataBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, geometry );
-#else
   Qt3DRender::QBuffer *dataBuffer = new Qt3DRender::QBuffer( geometry );
-#endif
 
   Qt3DRender::QAttribute *diffuseAttribute = new Qt3DRender::QAttribute( geometry );
   diffuseAttribute->setName( QStringLiteral( "dataDefinedDiffuseColor" ) );
@@ -245,9 +242,9 @@ Qt3DRender::QMaterial *QgsGoochMaterialSettings::dataDefinedMaterial() const
   Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram();
 
   //Load shader programs
-  QUrl urlVert( QStringLiteral( "qrc:/shaders/goochDataDefined.vert" ) );
+  const QUrl urlVert( QStringLiteral( "qrc:/shaders/goochDataDefined.vert" ) );
   shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, shaderProgram->loadSource( urlVert ) );
-  QUrl urlFrag( QStringLiteral( "qrc:/shaders/goochDataDefined.frag" ) );
+  const QUrl urlFrag( QStringLiteral( "qrc:/shaders/goochDataDefined.frag" ) );
   shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Fragment, shaderProgram->loadSource( urlFrag ) );
 
   renderPass->setShaderProgram( shaderProgram );

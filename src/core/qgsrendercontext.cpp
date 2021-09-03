@@ -51,7 +51,9 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mMapToPixel( rh.mMapToPixel )
   , mRenderingStopped( rh.mRenderingStopped )
   , mScaleFactor( rh.mScaleFactor )
+  , mDpiTarget( rh.mDpiTarget )
   , mRendererScale( rh.mRendererScale )
+  , mSymbologyReferenceScale( rh.mSymbologyReferenceScale )
   , mLabelingEngine( rh.mLabelingEngine )
   , mSelectionColor( rh.mSelectionColor )
   , mVectorSimplifyMethod( rh.mVectorSimplifyMethod )
@@ -88,7 +90,9 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mMapToPixel = rh.mMapToPixel;
   mRenderingStopped = rh.mRenderingStopped;
   mScaleFactor = rh.mScaleFactor;
+  mDpiTarget = rh.mDpiTarget;
   mRendererScale = rh.mRendererScale;
+  mSymbologyReferenceScale = rh.mSymbologyReferenceScale;
   mLabelingEngine = rh.mLabelingEngine;
   mSelectionColor = rh.mSelectionColor;
   mVectorSimplifyMethod = rh.mVectorSimplifyMethod;
@@ -220,6 +224,7 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setFlag( LosslessImageRendering, mapSettings.testFlag( QgsMapSettings::LosslessImageRendering ) );
   ctx.setFlag( Render3DMap, mapSettings.testFlag( QgsMapSettings::Render3DMap ) );
   ctx.setScaleFactor( mapSettings.outputDpi() / 25.4 ); // = pixels per mm
+  ctx.setDpiTarget( mapSettings.dpiTarget() >= 0.0 ? mapSettings.dpiTarget() : -1.0 );
   ctx.setRendererScale( mapSettings.scale() );
   ctx.setExpressionContext( mapSettings.expressionContext() );
   ctx.setSegmentationTolerance( mapSettings.segmentationTolerance() );
@@ -345,7 +350,7 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
     }
     case QgsUnitTypes::RenderMapUnits:
     {
-      double mup = scale.computeMapUnitsPerPixel( *this );
+      const double mup = scale.computeMapUnitsPerPixel( *this );
       if ( mup > 0 )
       {
         conversionFactor = 1.0 / mup;
@@ -378,12 +383,17 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
       convertedSize = std::min( convertedSize, scale.maxSizeMM * mScaleFactor );
   }
 
+  const double symbologyReferenceScaleFactor = mSymbologyReferenceScale > 0 ? mSymbologyReferenceScale / mRendererScale : 1;
+  convertedSize *= symbologyReferenceScaleFactor;
+
   return convertedSize;
 }
 
 double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale ) const
 {
-  double mup = mMapToPixel.mapUnitsPerPixel();
+  const double mup = mMapToPixel.mapUnitsPerPixel();
+
+  const double symbologyReferenceScaleFactor = mSymbologyReferenceScale > 0 ? mSymbologyReferenceScale / mRendererScale : 1;
 
   switch ( unit )
   {
@@ -422,19 +432,19 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
     }
     case QgsUnitTypes::RenderMillimeters:
     {
-      return size * mScaleFactor * mup;
+      return size * mScaleFactor * mup / symbologyReferenceScaleFactor;
     }
     case QgsUnitTypes::RenderPoints:
     {
-      return size * mScaleFactor * mup / POINTS_TO_MM;
+      return size * mScaleFactor * mup / POINTS_TO_MM / symbologyReferenceScaleFactor;
     }
     case QgsUnitTypes::RenderInches:
     {
-      return size * mScaleFactor * mup * INCH_TO_MM;
+      return size * mScaleFactor * mup * INCH_TO_MM / symbologyReferenceScaleFactor;
     }
     case QgsUnitTypes::RenderPixels:
     {
-      return size * mup;
+      return size * mup / symbologyReferenceScaleFactor;
     }
 
     case QgsUnitTypes::RenderUnknownUnit:
@@ -447,7 +457,8 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
 
 double QgsRenderContext::convertFromMapUnits( double sizeInMapUnits, QgsUnitTypes::RenderUnit outputUnit ) const
 {
-  double mup = mMapToPixel.mapUnitsPerPixel();
+  const double mup = mMapToPixel.mapUnitsPerPixel();
+  const double symbologyReferenceScaleFactor = mSymbologyReferenceScale > 0 ? mSymbologyReferenceScale / mRendererScale : 1;
 
   switch ( outputUnit )
   {
@@ -461,19 +472,19 @@ double QgsRenderContext::convertFromMapUnits( double sizeInMapUnits, QgsUnitType
     }
     case QgsUnitTypes::RenderMillimeters:
     {
-      return sizeInMapUnits / ( mScaleFactor * mup );
+      return sizeInMapUnits / ( mScaleFactor * mup ) * symbologyReferenceScaleFactor;
     }
     case QgsUnitTypes::RenderPoints:
     {
-      return sizeInMapUnits / ( mScaleFactor * mup / POINTS_TO_MM );
+      return sizeInMapUnits / ( mScaleFactor * mup / POINTS_TO_MM ) * symbologyReferenceScaleFactor;
     }
     case QgsUnitTypes::RenderInches:
     {
-      return sizeInMapUnits / ( mScaleFactor * mup * INCH_TO_MM );
+      return sizeInMapUnits / ( mScaleFactor * mup * INCH_TO_MM ) * symbologyReferenceScaleFactor;
     }
     case QgsUnitTypes::RenderPixels:
     {
-      return sizeInMapUnits / mup;
+      return sizeInMapUnits / mup * symbologyReferenceScaleFactor;
     }
 
     case QgsUnitTypes::RenderUnknownUnit:

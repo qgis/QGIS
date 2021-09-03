@@ -12,7 +12,7 @@
 
 class QgsSymbolWidgetContext
 {
-%Docstring
+%Docstring(signature="appended")
 Contains settings which reflect the context in which a symbol (or renderer) widget is shown, e.g., the
 map canvas and relevant expression contexts.
 
@@ -119,7 +119,7 @@ Ownership is transferred to the caller.
 .. versionadded:: 3.0
 %End
 
-    QgsSymbol::SymbolType symbolType() const;
+    Qgis::SymbolType symbolType() const;
 %Docstring
 Returns the associated symbol type, if the widget is being shown as a subcomponent
 of a parent symbol configuration widget.
@@ -129,7 +129,7 @@ of a parent symbol configuration widget.
 .. versionadded:: 3.18
 %End
 
-    void setSymbolType( QgsSymbol::SymbolType type );
+    void setSymbolType( Qgis::SymbolType type );
 %Docstring
 Sets the associated symbol ``type``, if the widget is being shown as a subcomponent
 of a parent symbol configuration widget.

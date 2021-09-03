@@ -11,10 +11,9 @@
 
 
 
-
 class QgsPointCloudLayer3DRenderer : QgsAbstract3DRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 3D renderer that renders all points from a point cloud layer
 
 .. versionadded:: 3.18

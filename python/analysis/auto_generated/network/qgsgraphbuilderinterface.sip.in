@@ -16,7 +16,7 @@
 
 class QgsGraphBuilderInterface
 {
-%Docstring
+%Docstring(signature="appended")
 Determine interface for creating a graph. Contains the settings of the graph.
 :py:class:`QgsGraphBuilder` and :py:class:`QgsGraphDirector` both use a "builder" design pattern
 %End

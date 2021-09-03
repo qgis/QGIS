@@ -14,7 +14,7 @@ typedef QList< QPair< QColor, QString > > QgsNamedColorList;
 
 class QgsColorScheme
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for color schemes
 
 A color scheme for display in :py:class:`QgsColorButton`. Color schemes return lists
@@ -124,7 +124,7 @@ QFlags<QgsColorScheme::SchemeFlag> operator|(QgsColorScheme::SchemeFlag f1, QFla
 
 class QgsGplColorScheme : QgsColorScheme
 {
-%Docstring
+%Docstring(signature="appended")
 A color scheme which stores its colors in a gpl palette file.
 
 .. versionadded:: 2.5
@@ -159,7 +159,7 @@ Returns the file path for the associated gpl palette file
 
 class QgsUserColorScheme : QgsGplColorScheme
 {
-%Docstring
+%Docstring(signature="appended")
 A color scheme which stores its colors in a gpl palette file within the "palettes"
 subfolder off the user's QGIS settings folder.
 
@@ -224,7 +224,7 @@ Sets whether a this scheme should be shown in color button menus.
 
 class QgsRecentColorScheme : QgsColorScheme
 {
-%Docstring
+%Docstring(signature="appended")
 A color scheme which contains the most recently used colors.
 
 .. versionadded:: 2.5
@@ -273,7 +273,7 @@ Returns the most recently used color.
 
 class QgsCustomColorScheme : QgsColorScheme
 {
-%Docstring
+%Docstring(signature="appended")
 A color scheme which contains custom colors set through QGIS app options dialog.
 
 .. versionadded:: 2.5
@@ -307,7 +307,7 @@ Constructor for QgsCustomColorScheme.
 
 class QgsProjectColorScheme : QgsColorScheme
 {
-%Docstring
+%Docstring(signature="appended")
 A color scheme which contains project specific colors set through project properties dialog.
 
 .. versionadded:: 2.5

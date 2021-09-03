@@ -178,13 +178,13 @@ bool QgsGenericNumericTransformer::loadVariant( const QVariant &transformer )
 double QgsGenericNumericTransformer::value( double input ) const
 {
   if ( qgsDoubleNear( mMaxValue, mMinValue ) )
-    return qBound( mMinOutput, input, mMaxOutput );
+    return std::clamp( input, mMinOutput, mMaxOutput );
 
   input = transformNumeric( input );
   if ( qgsDoubleNear( mExponent, 1.0 ) )
-    return mMinOutput + ( qBound( mMinValue, input, mMaxValue ) - mMinValue ) * ( mMaxOutput - mMinOutput ) / ( mMaxValue - mMinValue );
+    return mMinOutput + ( std::clamp( input, mMinValue, mMaxValue ) - mMinValue ) * ( mMaxOutput - mMinOutput ) / ( mMaxValue - mMinValue );
   else
-    return mMinOutput + std::pow( qBound( mMinValue, input, mMaxValue ) - mMinValue, mExponent ) * ( mMaxOutput - mMinOutput ) / std::pow( mMaxValue - mMinValue, mExponent );
+    return mMinOutput + std::pow( std::clamp( input, mMinValue, mMaxValue ) - mMinValue, mExponent ) * ( mMaxOutput - mMinOutput ) / std::pow( mMaxValue - mMinValue, mExponent );
 }
 
 QVariant QgsGenericNumericTransformer::transform( const QgsExpressionContext &context, const QVariant &v ) const
@@ -360,12 +360,12 @@ double QgsSizeScaleTransformer::size( double value ) const
   switch ( mType )
   {
     case Linear:
-      return mMinSize + ( qBound( mMinValue, value, mMaxValue ) - mMinValue ) * ( mMaxSize - mMinSize ) / ( mMaxValue - mMinValue );
+      return mMinSize + ( std::clamp( value, mMinValue, mMaxValue ) - mMinValue ) * ( mMaxSize - mMinSize ) / ( mMaxValue - mMinValue );
 
     case Area:
     case Flannery:
     case Exponential:
-      return mMinSize + std::pow( qBound( mMinValue, value, mMaxValue ) - mMinValue, mExponent ) * ( mMaxSize - mMinSize ) / std::pow( mMaxValue - mMinValue, mExponent );
+      return mMinSize + std::pow( std::clamp( value, mMinValue, mMaxValue ) - mMinValue, mExponent ) * ( mMaxSize - mMinSize ) / std::pow( mMaxValue - mMinValue, mExponent );
 
   }
   return 0;
@@ -631,7 +631,7 @@ QString QgsColorRampTransformer::toExpression( const QString &baseExpression ) c
 QColor QgsColorRampTransformer::color( double value ) const
 {
   value = transformNumeric( value );
-  double scaledVal = qBound( 0.0, ( value - mMinValue ) / ( mMaxValue - mMinValue ), 1.0 );
+  double scaledVal = std::clamp( ( value - mMinValue ) / ( mMaxValue - mMinValue ), 0.0, 1.0 );
 
   if ( !mGradientRamp )
     return mNullColor;
@@ -708,8 +708,8 @@ void QgsCurveTransform::setControlPoints( const QList<QgsPointXY> &points )
   std::sort( mControlPoints.begin(), mControlPoints.end(), sortByX );
   for ( int i = 0; i < mControlPoints.count(); ++i )
   {
-    mControlPoints[ i ] = QgsPointXY( qBound( 0.0, mControlPoints.at( i ).x(), 1.0 ),
-                                      qBound( 0.0, mControlPoints.at( i ).y(), 1.0 ) );
+    mControlPoints[ i ] = QgsPointXY( std::clamp( mControlPoints.at( i ).x(), 0.0, 1.0 ),
+                                      std::clamp( mControlPoints.at( i ).y(), 0.0, 1.0 ) );
   }
   calcSecondDerivativeArray();
 }
@@ -747,27 +747,27 @@ double QgsCurveTransform::y( double x ) const
 {
   int n = mControlPoints.count();
   if ( n < 2 )
-    return qBound( 0.0, x, 1.0 ); // invalid
+    return std::clamp( x,  0.0, 1.0 ); // invalid
   else if ( n < 3 )
   {
     // linear
     if ( x <= mControlPoints.at( 0 ).x() )
-      return qBound( 0.0, mControlPoints.at( 0 ).y(), 1.0 );
+      return std::clamp( mControlPoints.at( 0 ).y(), 0.0, 1.0 );
     else if ( x >= mControlPoints.at( n - 1 ).x() )
-      return qBound( 0.0, mControlPoints.at( 1 ).y(), 1.0 );
+      return std::clamp( mControlPoints.at( 1 ).y(), 0.0, 1.0 );
     else
     {
       double dx = mControlPoints.at( 1 ).x() - mControlPoints.at( 0 ).x();
       double dy = mControlPoints.at( 1 ).y() - mControlPoints.at( 0 ).y();
-      return qBound( 0.0, ( x - mControlPoints.at( 0 ).x() ) * ( dy / dx ) + mControlPoints.at( 0 ).y(), 1.0 );
+      return std::clamp( ( x - mControlPoints.at( 0 ).x() ) * ( dy / dx ) + mControlPoints.at( 0 ).y(), 0.0,  1.0 );
     }
   }
 
   // safety check
   if ( x <= mControlPoints.at( 0 ).x() )
-    return qBound( 0.0, mControlPoints.at( 0 ).y(), 1.0 );
+    return std::clamp( mControlPoints.at( 0 ).y(), 0.0, 1.0 );
   if ( x >= mControlPoints.at( n - 1 ).x() )
-    return qBound( 0.0, mControlPoints.at( n - 1 ).y(), 1.0 );
+    return std::clamp( mControlPoints.at( n - 1 ).y(), 0.0, 1.0 );
 
   // find corresponding segment
   QList<QgsPointXY>::const_iterator pointIt = mControlPoints.constBegin();
@@ -785,8 +785,8 @@ double QgsCurveTransform::y( double x ) const
 
       double a = 1 - t;
 
-      return qBound( 0.0, a * currentControlPoint.y() + t * nextControlPoint.y() + ( h * h / 6 ) * ( ( a * a * a - a ) * mSecondDerivativeArray[i] + ( t * t * t - t ) * mSecondDerivativeArray[i + 1] ),
-                     1.0 );
+      return std::clamp( a * currentControlPoint.y() + t * nextControlPoint.y() + ( h * h / 6 ) * ( ( a * a * a - a ) * mSecondDerivativeArray[i] + ( t * t * t - t ) * mSecondDerivativeArray[i + 1] ),
+                         0.0, 1.0 );
     }
 
     ++pointIt;
@@ -798,7 +798,7 @@ double QgsCurveTransform::y( double x ) const
   }
 
   //should not happen
-  return qBound( 0.0, x, 1.0 );
+  return std::clamp( x, 0.0, 1.0 );
 }
 
 // this code is adapted from https://github.com/OpenFibers/Photoshop-Curves
@@ -831,7 +831,7 @@ QVector<double> QgsCurveTransform::y( const QVector<double> &x ) const
   // safety check
   while ( currentX <= currentControlPoint.x() )
   {
-    result << qBound( 0.0, currentControlPoint.y(), 1.0 );
+    result << std::clamp( currentControlPoint.y(), 0.0, 1.0 );
     xIndex++;
     currentX = x.at( xIndex );
   }
@@ -847,7 +847,7 @@ QVector<double> QgsCurveTransform::y( const QVector<double> &x ) const
 
       double a = 1 - t;
 
-      result << qBound( 0.0, a * currentControlPoint.y() + t * nextControlPoint.y() + ( h * h / 6 ) * ( ( a * a * a - a )*mSecondDerivativeArray[i] + ( t * t * t - t )*mSecondDerivativeArray[i + 1] ), 1.0 );
+      result << std::clamp( a * currentControlPoint.y() + t * nextControlPoint.y() + ( h * h / 6 ) * ( ( a * a * a - a )*mSecondDerivativeArray[i] + ( t * t * t - t )*mSecondDerivativeArray[i + 1] ), 0.0, 1.0 );
       xIndex++;
       if ( xIndex == x.count() )
         return result;
@@ -866,7 +866,7 @@ QVector<double> QgsCurveTransform::y( const QVector<double> &x ) const
   // safety check
   while ( xIndex < x.count() )
   {
-    result << qBound( 0.0, nextControlPoint.y(), 1.0 );
+    result << std::clamp( nextControlPoint.y(), 0.0, 1.0 );
     xIndex++;
   }
 

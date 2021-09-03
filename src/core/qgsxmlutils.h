@@ -30,7 +30,7 @@ class QgsRectangle;
 
 /**
  * \ingroup core
- * Assorted helper methods for reading and writing chunks of XML
+ * \brief Assorted helper methods for reading and writing chunks of XML
  */
 class CORE_EXPORT QgsXmlUtils
 {
@@ -59,7 +59,14 @@ class CORE_EXPORT QgsXmlUtils
      */
     static QDomElement writeMapUnits( QgsUnitTypes::DistanceUnit units, QDomDocument &doc );
 
-    static QDomElement writeRectangle( const QgsRectangle &rect, QDomDocument &doc );
+    /**
+     * Encodes a rectangle to a DOM element.
+     * \param rect rectangle to encode
+     * \param doc DOM document
+     * \param elementName name of the DOM element
+     * \returns element containing encoded rectangle
+     */
+    static QDomElement writeRectangle( const QgsRectangle &rect, QDomDocument &doc, const QString &elementName = QStringLiteral( "extent" ) );
 
     /**
      * Write a QVariant to a QDomElement.
@@ -93,12 +100,12 @@ class CORE_EXPORT QgsXmlUtils
     {
       T value = defaultValue;
       // Get source categories
-      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
-      QString sourceCategoriesStr( element.attribute( attributeName, metaEnum.valueToKeys( static_cast<int>( defaultValue ) ) ) );
+      const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      const QString sourceCategoriesStr( element.attribute( attributeName, metaEnum.valueToKeys( static_cast<int>( defaultValue ) ) ) );
       if ( metaEnum.isValid() )
       {
         bool ok = false;
-        int newValue = metaEnum.keysToValue( sourceCategoriesStr.toUtf8().constData(), &ok );
+        const int newValue = metaEnum.keysToValue( sourceCategoriesStr.toUtf8().constData(), &ok );
         if ( ok )
           value = static_cast<T>( newValue );
       }

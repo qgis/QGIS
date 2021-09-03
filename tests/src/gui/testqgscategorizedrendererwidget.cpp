@@ -23,6 +23,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsfeature.h"
 #include "qgsvectordataprovider.h"
+#include "qgssymbol.h"
 
 #include <memory>
 
@@ -61,7 +62,7 @@ void TestQgsCategorizedRendererWidget::cleanup()
 
 void TestQgsCategorizedRendererWidget::testAddMissingCategories()
 {
-  std::unique_ptr< QgsVectorLayer > vl = qgis::make_unique< QgsVectorLayer >( "Point?crs=EPSG:4326&field=idx:integer&field=name:string", QString(), QStringLiteral( "memory" ) );
+  std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( "Point?crs=EPSG:4326&field=idx:integer&field=name:string", QString(), QStringLiteral( "memory" ) );
   QVERIFY( vl->isValid() );
 
   QgsFeature f;
@@ -77,7 +78,7 @@ void TestQgsCategorizedRendererWidget::testAddMissingCategories()
   QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer( QStringLiteral( "name" ) );
   vl->setRenderer( renderer );
 
-  std::unique_ptr< QgsCategorizedSymbolRendererWidget > widget = qgis::make_unique< QgsCategorizedSymbolRendererWidget >( vl.get(), nullptr, renderer );
+  std::unique_ptr< QgsCategorizedSymbolRendererWidget > widget = std::make_unique< QgsCategorizedSymbolRendererWidget >( vl.get(), nullptr, renderer );
   QVERIFY( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().isEmpty() );
 
   widget->addCategories();
@@ -104,7 +105,7 @@ void TestQgsCategorizedRendererWidget::testAddMissingCategories()
 
   vl->setRenderer( renderer );
 
-  widget = qgis::make_unique< QgsCategorizedSymbolRendererWidget >( vl.get(), nullptr, renderer );
+  widget = std::make_unique< QgsCategorizedSymbolRendererWidget >( vl.get(), nullptr, renderer );
   QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().count(), 2 );
 
   // values inside list categories should not be re-added
@@ -122,7 +123,7 @@ void TestQgsCategorizedRendererWidget::merge()
 {
   // test merging categories
 
-  std::unique_ptr< QgsVectorLayer > vl = qgis::make_unique< QgsVectorLayer >( "Point?crs=EPSG:4326&field=idx:integer&field=name:string", QString(), QStringLiteral( "memory" ) );
+  std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( "Point?crs=EPSG:4326&field=idx:integer&field=name:string", QString(), QStringLiteral( "memory" ) );
   QVERIFY( vl->isValid() );
 
   QgsFeature f;
@@ -140,7 +141,7 @@ void TestQgsCategorizedRendererWidget::merge()
   QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer( QStringLiteral( "name" ) );
   vl->setRenderer( renderer );
 
-  std::unique_ptr< QgsCategorizedSymbolRendererWidget > widget = qgis::make_unique< QgsCategorizedSymbolRendererWidget >( vl.get(), nullptr, renderer );
+  std::unique_ptr< QgsCategorizedSymbolRendererWidget > widget = std::make_unique< QgsCategorizedSymbolRendererWidget >( vl.get(), nullptr, renderer );
   widget->addCategories();
   QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().count(), 6 );
   QCOMPARE( static_cast< QgsCategorizedSymbolRenderer * >( widget->renderer() )->categories().at( 0 ).value().toString(), QStringLiteral( "a" ) );
@@ -266,7 +267,7 @@ void TestQgsCategorizedRendererWidget::merge()
 
 void TestQgsCategorizedRendererWidget::model()
 {
-  std::unique_ptr< QgsVectorLayer > vl = qgis::make_unique< QgsVectorLayer >( "Point?crs=EPSG:4326&field=idx:integer&field=name:string", QString(), QStringLiteral( "memory" ) );
+  std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( "Point?crs=EPSG:4326&field=idx:integer&field=name:string", QString(), QStringLiteral( "memory" ) );
   QVERIFY( vl->isValid() );
 
   QgsFeature f;
@@ -289,7 +290,7 @@ void TestQgsCategorizedRendererWidget::model()
 
   vl->setRenderer( renderer );
 
-  std::unique_ptr< QgsCategorizedSymbolRendererWidget > widget = qgis::make_unique< QgsCategorizedSymbolRendererWidget >( vl.get(), nullptr, renderer );
+  std::unique_ptr< QgsCategorizedSymbolRendererWidget > widget = std::make_unique< QgsCategorizedSymbolRendererWidget >( vl.get(), nullptr, renderer );
   QgsCategorizedSymbolRendererModel *model = widget->mModel;
   QCOMPARE( model->rowCount(), 3 );
   QCOMPARE( model->data( model->index( 0, 1 ), Qt::DisplayRole ).toString(), QStringLiteral( "b" ) );

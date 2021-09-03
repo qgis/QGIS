@@ -271,7 +271,7 @@ void QgsModelViewToolSelect::modelReleaseEvent( QgsModelViewMouseEvent *event )
     itemList = scene()->items( rect.center(), selectionMode );
   else
     itemList = scene()->items( rect, selectionMode );
-  for ( QGraphicsItem *item : qgis::as_const( itemList ) )
+  for ( QGraphicsItem *item : std::as_const( itemList ) )
   {
     if ( QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
     {

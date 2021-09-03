@@ -28,10 +28,11 @@ class QgsFeedback;
 class QgsMarkerSymbol;
 class QgsLineSymbol;
 class QgsFillSymbol;
+class QgsAnnotationItemNode;
 
 /**
  * \ingroup core
- * Abstract base class for annotation items which are drawn with QgsAnnotationLayers.
+ * \brief Abstract base class for annotation items which are drawn with QgsAnnotationLayers.
  *
  * \since QGIS 3.16
  */
@@ -80,6 +81,13 @@ class CORE_EXPORT QgsAnnotationItem
     virtual ~QgsAnnotationItem() = default;
 
     /**
+     * Returns item flags.
+     *
+     * \since QGIS 3.22
+     */
+    virtual Qgis::AnnotationItemFlags flags() const;
+
+    /**
      * Returns a clone of the item. Ownership is transferred to the caller.
      */
     virtual QgsAnnotationItem *clone() = 0 SIP_FACTORY;
@@ -93,6 +101,11 @@ class CORE_EXPORT QgsAnnotationItem
      * Returns the bounding box of the item's geographic location, in the parent layer's coordinate reference system.
      */
     virtual QgsRectangle boundingBox() const = 0;
+
+    /**
+     * Returns the bounding box of the item's geographic location, in the parent layer's coordinate reference system.
+     */
+    virtual QgsRectangle boundingBox( QgsRenderContext &context ) const { Q_UNUSED( context ) return boundingBox();}
 
     /**
      * Renders the item to the specified render \a context.
@@ -127,6 +140,13 @@ class CORE_EXPORT QgsAnnotationItem
      * \see zIndex()
      */
     void setZIndex( int index ) { mZIndex = index; }
+
+    /**
+     * Returns the nodes for the item, used for editing the item.
+     *
+     * \since QGIS 3.22
+     */
+    virtual QList< QgsAnnotationItemNode > nodes() const;
 
   private:
 

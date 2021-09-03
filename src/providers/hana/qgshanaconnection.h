@@ -24,11 +24,30 @@
 #include "qgslogger.h"
 #include "qgsvectordataprovider.h"
 
-#include <QMap>
-
 #include "odbc/Forwards.h"
 
-class QgsField;
+struct AttributeField
+{
+  QString schemaName;
+  QString tableName;
+  QString name;
+  short type = 0;
+  int srid = -1;
+  QString typeName;
+  int size = 0;
+  int precision = 0;
+  bool isAutoIncrement = false;
+  bool isNullable = false;
+  bool isSigned = false;
+  bool isUnique = false;
+  QString comment;
+
+  bool isGeometry() const { return type == 29812; /* ST_GEOMETRY, ST_POINT */ }
+
+  QgsField toQgsField() const;
+};
+
+using AttributeFields = QVector<AttributeField>;
 
 class QgsHanaConnection : public QObject
 {
@@ -59,17 +78,23 @@ class QgsHanaConnection : public QObject
     QVector<QgsHanaLayerProperty> getLayers(
       const QString &schemaName,
       bool allowGeometrylessTables,
-      bool userTablesOnly = true );
+      bool userTablesOnly = true,
+      const std::function<bool( const QgsHanaLayerProperty &layer )> &layerFilter = nullptr );
     QVector<QgsHanaLayerProperty> getLayersFull(
       const QString &schemaName,
       bool allowGeometrylessTables,
-      bool userTablesOnly = true );
+      bool userTablesOnly = true,
+      const std::function<bool( const QgsHanaLayerProperty &layer )> &layerFilter = nullptr );
     void readLayerInfo( QgsHanaLayerProperty &layerProperty );
+    void readQueryFields( const QString &schemaName, const QString &sql, const std::function<void( const AttributeField &field )> &callback );
+    void readTableFields( const QString &schemaName, const QString &tableName, const std::function<void( const AttributeField &field )> &callback );
     QVector<QgsHanaSchemaProperty> getSchemas( const QString &ownerName );
     QStringList getLayerPrimaryKey( const QString &schemaName, const QString &tableName );
+    QgsWkbTypes::Type getColumnGeometryType( const QString &querySource, const QString &columnName );
     QgsWkbTypes::Type getColumnGeometryType( const QString &schemaName, const QString &tableName, const QString &columnName );
     QString getColumnDataType( const QString &schemaName, const QString &tableName, const QString &columnName );
     int getColumnSrid( const QString &schemaName, const QString &tableName, const QString &columnName );
+    int getColumnSrid( const QString &sql, const QString &columnName );
     QgsHanaResultSetRef getColumns( const QString &schemaName, const QString &tableName, const QString &fieldName );
     bool isTable( const QString &schemaName, const QString &tableName );
 

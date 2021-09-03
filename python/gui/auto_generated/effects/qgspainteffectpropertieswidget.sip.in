@@ -13,7 +13,7 @@
 
 class QgsPaintEffectPropertiesWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget which modifies the properties of a :py:class:`QgsPaintEffect`
 
 .. versionadded:: 2.9

@@ -59,6 +59,7 @@ class CORE_EXPORT QgsRendererCategory
      */
     QgsRendererCategory( const QgsRendererCategory &cat );
     QgsRendererCategory &operator=( QgsRendererCategory cat );
+    ~QgsRendererCategory();
 
     /**
      * Returns the value corresponding to this category.
@@ -379,11 +380,14 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     QString legendClassificationAttribute() const override { return classAttribute(); }
 
     /**
-     * creates a QgsCategorizedSymbolRenderer from an existing renderer.
+     * Creates a new QgsCategorizedSymbolRenderer from an existing \a renderer.
+     *
+     * Since QGIS 3.20, the optional \a layer parameter is required for conversions of some renderer types.
+     *
      * \returns a new renderer if the conversion was possible, otherwise NULLPTR.
      * \since QGIS 2.5
      */
-    static QgsCategorizedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
+    static QgsCategorizedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer, QgsVectorLayer *layer = nullptr ) SIP_FACTORY;
 
     /**
      * Configures appearance of legend when renderer is configured to use data-defined size for marker symbols.
@@ -421,7 +425,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
      *
      * \since QGIS 3.4
      */
-    int matchToSymbols( QgsStyle *style, QgsSymbol::SymbolType type,
+    int matchToSymbols( QgsStyle *style, Qgis::SymbolType type,
                         QVariantList &unmatchedCategories SIP_OUT, QStringList &unmatchedSymbols SIP_OUT, bool caseSensitive = true, bool useTolerantMatch = false );
 
 

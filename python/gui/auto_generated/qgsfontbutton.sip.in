@@ -12,7 +12,7 @@
 
 class QgsFontButton : QToolButton
 {
-%Docstring
+%Docstring(signature="appended")
 A button for customizing :py:class:`QgsTextFormat` settings.
 
 The button will open a detailed text format settings dialog when clicked. An attached drop-down

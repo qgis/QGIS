@@ -12,73 +12,11 @@
 
 
 
-class QgsLabelPosition
-{
-
-%TypeHeaderCode
-#include "qgspallabeling.h"
-%End
-  public:
-
-    QgsLabelPosition( QgsFeatureId id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont, bool upside_down, bool diagram = false, bool pinned = false, const QString &providerId = QString(),
-                      const QgsGeometry &labelGeometry = QgsGeometry(), bool isUnplaced = false );
-%Docstring
-Constructor for QgsLabelPosition.
-
-:param id: associated feature ID
-:param r: label rotation in degrees clockwise
-:param corners: corner points of label bounding box, in map units
-:param rect: label bounding box, in map units
-:param w: width of label, in map units
-:param h: height of label, in map units
-:param layer: ID of associated map layer
-:param labeltext: text rendered for label
-:param labelfont: font used to render label
-:param upside_down: ``True`` if label is upside down
-:param diagram: ``True`` if label is a diagram
-:param pinned: ``True`` if label has pinned placement
-:param providerId: ID of associated label provider
-:param labelGeometry: polygon geometry of label boundary
-:param isUnplaced: set to ``True`` if label was unplaced (e.g. due to collisions with other labels)
-%End
-
-    QgsLabelPosition();
-%Docstring
-Constructor for QgsLabelPosition
-%End
-
-    QgsFeatureId featureId;
-
-    double rotation;
-
-    QVector< QgsPointXY > cornerPoints;
-    QgsRectangle labelRect;
-
-    QgsGeometry labelGeometry;
-
-    double width;
-
-    double height;
-
-    QString layerID;
-
-    QString labelText;
-
-    QFont labelFont;
-
-    bool upsideDown;
-
-    bool isDiagram;
-
-    bool isPinned;
-
-    QString providerID;
-
-    bool isUnplaced;
-};
-
 class QgsPalLayerSettings
 {
+%Docstring(signature="appended")
+Contains settings for how a map layer will be labeled.
+%End
 
 %TypeHeaderCode
 #include "qgspallabeling.h"
@@ -293,6 +231,7 @@ class QgsPalLayerSettings
       LabelAllParts,
       PolygonLabelOutside,
       LineAnchorPercent,
+      LineAnchorClipping,
 
       // rendering
       ScaleVisibility,
@@ -351,6 +290,14 @@ Finalises the label settings after use.
 This must be called after a call to :py:func:`~QgsPalLayerSettings.startRender`, in order to gracefully clean up symbols.
 
 .. versionadded:: 3.10
+%End
+
+    bool containsAdvancedEffects() const;
+%Docstring
+Returns ``True`` if any component of the label settings requires advanced effects
+such as blend modes, which require output in raster formats to be fully respected.
+
+.. versionadded:: 3.20
 %End
 
     static const QgsPropertiesDefinition &propertyDefinitions();
@@ -535,6 +482,20 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
 
     QgsWkbTypes::GeometryType layerType;
 
+    void setLegendString( const QString &legendString );
+%Docstring
+setLegendString
+
+:param legendString: the string to show in the legend and preview
+%End
+
+    QString legendString() const;
+%Docstring
+legendString
+
+:return: the string to show in the legend and in the preview icon
+%End
+
     void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = 0, QgsRenderContext *context = 0, double *rotatedLabelX /Out/ = 0, double *rotatedLabelY /Out/ = 0 );
 %Docstring
 Calculates the space required to render the provided ``text`` in map units.
@@ -543,17 +504,20 @@ If the text orientation is set to rotation-based, the spaced taken to render
 vertically oriented text will be written to ``rotatedLabelX`` and ``rotatedLabelY`` .
 %End
 
-    void registerFeature( const QgsFeature &f, QgsRenderContext &context  );
-
+    void registerFeature( const QgsFeature &f, QgsRenderContext &context );
 %Docstring
-Register a feature for labeling.
+Registers a feature for labeling.
 
 :param f: feature to label
 :param context: render context. The :py:class:`QgsExpressionContext` contained within the render context
                 must have already had the feature and fields sets prior to calling this method.
-:param labelFeature: if using :py:class:`QgsLabelingEngine`, this will receive the label feature. Not available
-                     in Python bindings.
+
+.. warning::
+
+   This method is designed for use by PyQGIS clients only. C++ code should use the
+   variant with additional arguments.
 %End
+
 
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 %Docstring
@@ -707,6 +671,24 @@ Returns a pixmap preview for label ``settings``.
 .. versionadded:: 3.10
 %End
 
+    Qgis::UnplacedLabelVisibility unplacedVisibility() const;
+%Docstring
+Returns the layer's unplaced label visibility.
+
+.. seealso:: :py:func:`setUnplacedVisibility`
+
+.. versionadded:: 3.20
+%End
+
+    void setUnplacedVisibility( Qgis::UnplacedLabelVisibility visibility );
+%Docstring
+Sets the layer's unplaced label ``visibility``.
+
+.. seealso:: :py:func:`unplacedVisibility`
+
+.. versionadded:: 3.20
+%End
+
     const QgsFeature *mCurFeat;
     QgsFields mCurFields;
     int fieldIndex;
@@ -719,10 +701,14 @@ Returns a pixmap preview for label ``settings``.
     int mFeaturesToLabel;
     int mFeatsSendingToPal;
     int mFeatsRegPal;
+
 };
 
 class QgsLabelCandidate
 {
+%Docstring(signature="appended")
+Represents a label candidate.
+%End
 
 %TypeHeaderCode
 #include "qgspallabeling.h"
@@ -734,47 +720,11 @@ class QgsLabelCandidate
     double cost;
 };
 
-
-
-
-class QgsLabelingResults
-{
-%Docstring
-Class that stores computed placement from labeling engine.
-
-.. versionadded:: 2.4
-%End
-
-%TypeHeaderCode
-#include "qgspallabeling.h"
-%End
-  public:
-    QgsLabelingResults();
-    ~QgsLabelingResults();
-
-
-    QList<QgsLabelPosition> labelsAtPosition( const QgsPointXY &p ) const;
-%Docstring
-Returns infos about labels at a given (map) position
-%End
-    QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle &r ) const;
-%Docstring
-Returns infos about labels within a given (map) rectangle
-%End
-
-    void setMapSettings( const QgsMapSettings &settings );
-%Docstring
-Sets the map ``settings`` associated with the labeling run.
-
-.. versionadded:: 3.4.8
-%End
-
-  private:
-    QgsLabelingResults( const QgsLabelingResults & );
-};
-
 class QgsPalLabeling
 {
+%Docstring(signature="appended")
+PAL labeling utilities.
+%End
 
 %TypeHeaderCode
 #include "qgspallabeling.h"

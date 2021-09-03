@@ -25,7 +25,7 @@ class QgsLayoutMultiFrame;
 
 /**
  * \ingroup core
- * Base class for frame items, which form a layout multiframe item.
+ * \brief Base class for frame items, which form a layout multiframe item.
  * \since QGIS 3.0
 */
 class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem

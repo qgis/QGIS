@@ -29,10 +29,14 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsgui.h"
 #include "qgscolordialog.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
 
 #include <QMenu>
 #include <QClipboard>
 #include <QDrag>
+#include <QBuffer>
 
 QgsSymbolButton::QgsSymbolButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )
@@ -50,10 +54,12 @@ QgsSymbolButton::QgsSymbolButton( QWidget *parent, const QString &dialogTitle )
   setPopupMode( QToolButton::MenuButtonPopup );
 
   //make sure height of button looks good under different platforms
-  QSize size = QToolButton::minimumSizeHint();
-  int fontHeight = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.4 );
+  const QSize size = QToolButton::minimumSizeHint();
+  const int fontHeight = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.4 );
   mSizeHint = QSize( size.width(), std::max( size.height(), fontHeight ) );
 }
+
+QgsSymbolButton::~QgsSymbolButton() = default;
 
 QSize QgsSymbolButton::minimumSizeHint() const
 {
@@ -66,25 +72,25 @@ QSize QgsSymbolButton::sizeHint() const
   return mSizeHint;
 }
 
-void QgsSymbolButton::setSymbolType( QgsSymbol::SymbolType type )
+void QgsSymbolButton::setSymbolType( Qgis::SymbolType type )
 {
   if ( type != mType )
   {
     switch ( type )
     {
-      case QgsSymbol::Marker:
+      case Qgis::SymbolType::Marker:
         mSymbol.reset( QgsMarkerSymbol::createSimple( QVariantMap() ) );
         break;
 
-      case QgsSymbol::Line:
+      case Qgis::SymbolType::Line:
         mSymbol.reset( QgsLineSymbol::createSimple( QVariantMap() ) );
         break;
 
-      case QgsSymbol::Fill:
+      case Qgis::SymbolType::Fill:
         mSymbol.reset( QgsFillSymbol::createSimple( QVariantMap() ) );
         break;
 
-      case QgsSymbol::Hybrid:
+      case Qgis::SymbolType::Hybrid:
         break;
     }
   }
@@ -405,7 +411,7 @@ void QgsSymbolButton::prepareMenu()
   alphaAction->setDismissOnColorSelection( false );
   connect( alphaAction, &QgsColorWidgetAction::colorChanged, this, [ = ]( const QColor & color )
   {
-    double opacity = color.alphaF();
+    const double opacity = color.alphaF();
     mSymbol->setOpacity( opacity );
     updatePreview();
     emit changed();
@@ -517,8 +523,8 @@ void QgsSymbolButton::updatePreview( const QColor &color, QgsSymbol *tempSymbol 
       //calculate size of push button part of widget (ie, without the menu dropdown button part)
       QStyleOptionToolButton opt;
       initStyleOption( &opt );
-      QRect buttonSize = QApplication::style()->subControlRect( QStyle::CC_ToolButton, &opt, QStyle::SC_ToolButton,
-                         this );
+      const QRect buttonSize = QApplication::style()->subControlRect( QStyle::CC_ToolButton, &opt, QStyle::SC_ToolButton,
+                               this );
       //make sure height of icon looks good under different platforms
 #ifdef Q_OS_WIN
       mIconSize = QSize( buttonSize.width() - 10, height() - 6 );
@@ -544,21 +550,17 @@ void QgsSymbolButton::updatePreview( const QColor &color, QgsSymbol *tempSymbol 
   }
 
   //create an icon pixmap
-  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( previewSymbol.get(), currentIconSize );
+  const QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( previewSymbol.get(), currentIconSize );
   setIconSize( currentIconSize );
   setIcon( icon );
 
   // set tooltip
   // create very large preview image
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 23 );
-#else
-  int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 23 );
-#endif
-  int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
+  const int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 23 );
+  const int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
 
-  QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( previewSymbol.get(), QSize( width, height ), height / 20 );
+  const QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( previewSymbol.get(), QSize( width, height ), height / 20 );
   QByteArray data;
   QBuffer buffer( &data );
   pm.save( &buffer, "PNG", 100 );
@@ -568,7 +570,7 @@ void QgsSymbolButton::updatePreview( const QColor &color, QgsSymbol *tempSymbol 
 bool QgsSymbolButton::colorFromMimeData( const QMimeData *mimeData, QColor &resultColor, bool &hasAlpha )
 {
   hasAlpha = false;
-  QColor mimeColor = QgsSymbolLayerUtils::colorFromMimeData( mimeData, hasAlpha );
+  const QColor mimeColor = QgsSymbolLayerUtils::colorFromMimeData( mimeData, hasAlpha );
 
   if ( mimeColor.isValid() )
   {
@@ -626,7 +628,7 @@ void QgsSymbolButton::showColorDialog()
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
   {
-    QColor currentColor = mSymbol->color();
+    const QColor currentColor = mSymbol->color();
     QgsCompoundColorWidget *colorWidget = new QgsCompoundColorWidget( panel, currentColor, QgsCompoundColorWidget::LayoutVertical );
     colorWidget->setPanelTitle( tr( "Symbol Color" ) );
     colorWidget->setAllowOpacity( true );

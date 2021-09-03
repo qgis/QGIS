@@ -12,7 +12,7 @@
 
 class QgsStyleSaveDialog: QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 a dialog for setting properties of a newly saved style.
 
 .. versionadded:: 3.0

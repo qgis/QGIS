@@ -24,7 +24,7 @@
 
 /**
  * \ingroup gui
- * A graphics effect which can be applied to a widget to simulate various printing and
+ * \brief A graphics effect which can be applied to a widget to simulate various printing and
  * color blindness modes.
  */
 

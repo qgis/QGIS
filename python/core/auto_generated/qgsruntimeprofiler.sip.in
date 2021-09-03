@@ -10,7 +10,7 @@
 
 class QgsRuntimeProfiler : QAbstractItemModel
 {
-%Docstring
+%Docstring(signature="appended")
 
 Provides a method of recording run time profiles of operations, allowing
 easy recording of their overall run time.
@@ -138,7 +138,7 @@ Emitted when a new group has started being profiled.
 
 class QgsScopedRuntimeProfile
 {
-%Docstring
+%Docstring(signature="appended")
 
 Scoped object for logging of the runtime for a single operation or group of operations.
 
@@ -146,6 +146,7 @@ This class automatically takes care of registering an operation in the :py:func:
 registry upon construction, and recording of the elapsed runtime upon destruction.
 
 Python scripts should not use :py:class:`QgsScopedRuntimeProfile` directly. Instead, use :py:func:`QgsRuntimeProfiler.profile()`
+
 .. code-block:: python
 
        with QgsRuntimeProfiler.profile('My operation'):

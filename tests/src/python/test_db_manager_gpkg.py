@@ -284,10 +284,6 @@ class TestPyQgsDBManagerGpkg(unittest.TestCase):
         connection.remove()
 
     def testRaster(self):
-
-        if int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 0, 2):
-            return
-
         connection_name = 'testRaster'
         plugin = createDbPlugin('gpkg')
         uri = QgsDataSourceUri()
@@ -329,10 +325,6 @@ class TestPyQgsDBManagerGpkg(unittest.TestCase):
         connection.remove()
 
     def testTwoRaster(self):
-
-        if int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 0, 2):
-            return
-
         connection_name = 'testTwoRaster'
         plugin = createDbPlugin('gpkg')
         uri = QgsDataSourceUri()

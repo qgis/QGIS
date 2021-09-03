@@ -21,10 +21,8 @@
 #include "qgis.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
-#include "qgssymbol.h"
 #include "qgsfields.h"
 #include "qgsfeaturerequest.h"
-#include "qgssymbollayerreference.h"
 
 #include <QList>
 #include <QString>
@@ -127,6 +125,8 @@ class CORE_EXPORT QgsFeatureRenderer
       sipType = sipType_Qgs25DRenderer;
     else if ( type == QLatin1String( "nullSymbol" ) )
       sipType = sipType_QgsNullSymbolRenderer;
+    else if ( type == QLatin1String( "embeddedSymbol" ) )
+      sipType = sipType_QgsEmbeddedSymbolRenderer;
     else
       sipType = 0;
     SIP_END
@@ -213,6 +213,14 @@ class CORE_EXPORT QgsFeatureRenderer
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const = 0;
 
     /**
+     * Returns TRUE if the renderer uses embedded symbols for features.
+     * The default implementation returns FALSE.
+     *
+     * \since QGIS 3.20
+     */
+    virtual bool usesEmbeddedSymbols() const;
+
+    /**
      * Returns TRUE if this renderer requires the geometry to apply the filter.
      */
     virtual bool filterNeedsGeometry() const;
@@ -234,7 +242,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * Returns TRUE if the feature has been returned (this is used for example
      * to determine whether the feature may be labelled).
      *
-     * If layer is not -1, the renderer should draw only a particula layer from symbols
+     * If layer is not -1, the renderer should draw only a particular layer from symbols
      * (in order to support symbol level rendering).
      *
      * \see startRender()
@@ -286,7 +294,12 @@ class CORE_EXPORT QgsFeatureRenderer
     //! create a renderer from XML element
     static QgsFeatureRenderer *load( QDomElement &symbologyElem, const QgsReadWriteContext &context ) SIP_FACTORY;
 
-    //! store renderer info to XML element
+    /**
+     * Stores renderer properties to an XML element.
+     *
+     * Subclasses which override this method should call saveRendererData() as part of their
+     * implementation in order to store all common base class properties in the returned DOM element.
+     */
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
 
     /**
@@ -354,7 +367,7 @@ class CORE_EXPORT QgsFeatureRenderer
     virtual QString legendClassificationAttribute() const { return QString(); }
 
     //! Sets type and size of editing vertex markers for subsequent rendering
-    void setVertexMarkerAppearance( int type, double size );
+    void setVertexMarkerAppearance( Qgis::VertexMarkerType type, double size );
 
     /**
      * Returns whether the renderer will render a feature or not.
@@ -422,6 +435,38 @@ class CORE_EXPORT QgsFeatureRenderer
     void setForceRasterRender( bool forceRaster ) { mForceRaster = forceRaster; }
 
     /**
+     * Returns the symbology reference scale.
+     *
+     * This represents the desired scale denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
+     * A value of -1 indicates that symbology scaling by reference scale is disabled.
+     *
+     * The symbology reference scale is an optional property which specifies the reference
+     * scale at which symbology in paper units (such a millimeters or points) is fixed
+     * to. For instance, if the scale is 1000 then a 2mm thick line will be rendered at
+     * exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm thick at 1:500.
+     *
+     * \see setReferenceScale()
+     * \since QGIS 3.22
+     */
+    double referenceScale() const { return mReferenceScale; }
+
+    /**
+     * Sets the symbology reference \a scale.
+     *
+     * This should match the desired scale denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
+     * Set to -1 to disable symbology scaling by reference scale.
+     *
+     * The symbology reference scale is an optional property which specifies the reference
+     * scale at which symbology in paper units (such a millimeters or points) is fixed
+     * to. For instance, if \a scale is set to 1000 then a 2mm thick line will be rendered at
+     * exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm thick at 1:500.
+     *
+     * \see referenceScale()
+     * \since QGIS 3.22
+     */
+    void setReferenceScale( double scale ) { mReferenceScale = scale; }
+
+    /**
      * Gets the order in which features shall be processed by this renderer.
      * \note this property has no effect if orderByEnabled() is FALSE
      * \see orderByEnabled()
@@ -482,6 +527,22 @@ class CORE_EXPORT QgsFeatureRenderer
      */
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
+    /**
+     * Clones generic renderer data to another renderer.
+     *
+     * Currently clones
+     *
+     * - Order by
+     * - Paint effect
+     * - Reference scale
+     * - Symbol levels enabled/disabled
+     * - Force raster render enabled/disabled
+     *
+     * \param destRenderer destination renderer for copied effect
+     * \since QGIS 3.22
+     */
+    void copyRendererData( QgsFeatureRenderer *destRenderer ) const;
+
   protected:
     QgsFeatureRenderer( const QString &type );
 
@@ -507,34 +568,36 @@ class CORE_EXPORT QgsFeatureRenderer
     static QPointF _getPoint( QgsRenderContext &context, const QgsPoint &point );
 
     /**
-     * Clones generic renderer data to another renderer.
-     * Currently clones
+     * Saves generic renderer data into the specified \a element.
      *
-     * - Order By
-     * - Paint Effect
+     * This method should be called in a subclass' save() implementation in order
+     * to store all common base class properties in the DOM \a element.
      *
-     * \param destRenderer destination renderer for copied effect
+     * \since QGIS 3.22
      */
-    void copyRendererData( QgsFeatureRenderer *destRenderer ) const;
+    void saveRendererData( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context );
 
     QString mType;
 
-    bool mUsingSymbolLevels;
+    bool mUsingSymbolLevels = false;
 
     //! The current type of editing marker
-    int mCurrentVertexMarkerType;
+    Qgis::VertexMarkerType mCurrentVertexMarkerType = Qgis::VertexMarkerType::Cross;
+
     //! The current size of editing marker
-    double mCurrentVertexMarkerSize;
+    double mCurrentVertexMarkerSize = 2;
 
     QgsPaintEffect *mPaintEffect = nullptr;
 
-    bool mForceRaster;
+    bool mForceRaster = false;
+
+    double mReferenceScale = -1.0;
 
     /**
      * \note this function is used to convert old sizeScale expressions to symbol
      * level DataDefined size
      */
-    static void convertSymbolSizeScale( QgsSymbol *symbol, QgsSymbol::ScaleMethod method, const QString &field );
+    static void convertSymbolSizeScale( QgsSymbol *symbol, Qgis::ScaleMethod method, const QString &field );
 
     /**
      * \note this function is used to convert old rotations expressions to symbol
@@ -544,7 +607,7 @@ class CORE_EXPORT QgsFeatureRenderer
 
     QgsFeatureRequest::OrderBy mOrderBy;
 
-    bool mOrderByEnabled;
+    bool mOrderByEnabled = false;
 
   private:
 #ifdef SIP_RUN

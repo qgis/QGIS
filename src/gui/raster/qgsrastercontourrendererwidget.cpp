@@ -17,15 +17,15 @@
 
 #include "qgsrastercontourrenderer.h"
 #include "qgsrasterlayer.h"
-
+#include "qgslinesymbol.h"
 
 QgsRasterContourRendererWidget::QgsRasterContourRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
   : QgsRasterRendererWidget( layer, extent )
 {
   setupUi( this );
 
-  mContourSymbolButton->setSymbolType( QgsSymbol::Line );
-  mIndexContourSymbolButton->setSymbolType( QgsSymbol::Line );
+  mContourSymbolButton->setSymbolType( Qgis::SymbolType::Line );
+  mIndexContourSymbolButton->setSymbolType( Qgis::SymbolType::Line );
 
   mInputBandComboBox->setLayer( mRasterLayer );
 

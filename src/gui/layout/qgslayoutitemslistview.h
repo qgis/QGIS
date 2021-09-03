@@ -31,7 +31,7 @@ class QgsLayoutItem;
 
 /**
  * \ingroup gui
- * Model for the layout items list view.
+ * \brief Model for the layout items list view.
  * \see QgsLayoutItemsListView
  *
  * \note This class is not a part of public API
@@ -62,7 +62,7 @@ class GUI_EXPORT QgsLayoutItemsListViewModel : public QSortFilterProxyModel
 
 /**
  * \ingroup gui
- * A list view for showing items in a layout
+ * \brief A list view for showing items in a layout
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12

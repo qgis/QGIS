@@ -20,7 +20,7 @@
 
 /**
  * \ingroup core
- * Abstract interface for generating an expression context scope.
+ * \brief Abstract interface for generating an expression context scope.
  *
  * \since QGIS 3.0
  */

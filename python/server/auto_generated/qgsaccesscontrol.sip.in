@@ -14,7 +14,7 @@
 
 class QgsAccessControl : QgsFeatureFilterProvider
 {
-%Docstring
+%Docstring(signature="appended")
 A helper class that centralizes restrictions given by all the access control filter plugins.
 
 .. versionadded:: 2.14
@@ -108,7 +108,8 @@ Returns the layer delete right
 :return: ``True`` if we can do a delete
 %End
 
-    QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const;
+    virtual QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const;
+
 %Docstring
 Returns the authorized layer attributes
 
@@ -133,8 +134,6 @@ Are we authorized to modify the following geometry
 Fill the capabilities caching key
 
 :param cacheKey: the list to fill with a cache variant
-
-:return: ``False`` if we can't create a cache
 %End
 
     void registerAccessControl( QgsAccessControlFilter *accessControl, int priority = 0 );

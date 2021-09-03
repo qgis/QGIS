@@ -1,9 +1,20 @@
 #!/bin/bash
 
+set -e
+
 mkdir /usr/src/qgis/build
-cd /usr/src/qgis/build || exit -1
+cd /usr/src/qgis/build || exit 1
+
+export CCACHE_TEMPDIR=/tmp
+# Github workflow cache max size is 2.0, but ccache data get compressed (roughly 1/5?)
+ccache -M 2.0G
+
+# Temporarily uncomment to debug ccache issues
+# export CCACHE_LOGFILE=/tmp/cache.debug
+ccache -z
 
 cmake -GNinja \
+ -DUSE_CCACHE=ON \
  -DWITH_QUICK=OFF \
  -DWITH_3D=OFF \
  -DWITH_STAGED_PLUGINS=OFF \
@@ -18,7 +29,10 @@ cmake -GNinja \
  -DWITH_QWTPOLAR=OFF \
  -DWITH_APIDOC=OFF \
  -DWITH_ASTYLE=OFF \
+ -DWITH_ANALYSIS=ON \
+ -DWITH_GSL=OFF \
  -DWITH_DESKTOP=OFF \
+ -DWITH_GUI=OFF \
  -DWITH_BINDINGS=ON \
  -DWITH_SERVER=ON \
  -DWITH_SERVER_PLUGINS=ON \
@@ -31,3 +45,6 @@ cmake -GNinja \
  ..
 
 ninja
+
+echo "ccache statistics"
+ccache -s

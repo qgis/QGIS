@@ -333,9 +333,8 @@ bool MDAL::DriverBinaryDat::readVertexTimestep(
     {
       if ( readIStat( in, sflg, reinterpret_cast< char * >( &active ) ) )
         return true; //error
-
+      dataset->setActive( i, active );
     }
-    dataset->setActive( i, active );
   }
 
   for ( size_t i = 0; i < vertexCount; ++i )

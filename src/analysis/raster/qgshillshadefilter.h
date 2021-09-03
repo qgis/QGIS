@@ -24,6 +24,7 @@
 /**
  * \ingroup analysis
  * \class QgsHillshadeFilter
+ * \brief A hillshade filter.
  */
 class ANALYSIS_EXPORT QgsHillshadeFilter: public QgsDerivativeFilter
 {

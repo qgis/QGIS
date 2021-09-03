@@ -11,7 +11,7 @@
 
 class QgsAnnotationManager : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 
 Manages storage of a set of :py:class:`QgsAnnotation` annotation objects.
 

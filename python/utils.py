@@ -264,7 +264,7 @@ def findPlugins(path):
         yield (pluginName, cp)
 
 
-def metadataParser():
+def metadataParser() -> dict:
     """Used by other modules to access the local parser object"""
     return plugins_metadata_parser
 
@@ -288,7 +288,7 @@ def updateAvailablePlugins():
     plugins_metadata_parser = metadata_parser
 
 
-def pluginMetadata(packageName, fct):
+def pluginMetadata(packageName: str, fct: str) -> str:
     """ fetch metadata from a plugin - use values from metadata.txt """
     try:
         return plugins_metadata_parser[packageName].get('general', fct)
@@ -296,7 +296,7 @@ def pluginMetadata(packageName, fct):
         return "__error__"
 
 
-def loadPlugin(packageName):
+def loadPlugin(packageName: str) -> bool:
     """ load plugin's package """
 
     try:
@@ -318,7 +318,7 @@ def loadPlugin(packageName):
         return False
 
 
-def _startPlugin(packageName):
+def _startPlugin(packageName: str) -> bool:
     """ initializes a plugin, but does not load GUI """
     global plugins, active_plugins, iface, plugin_times
 
@@ -342,13 +342,13 @@ def _startPlugin(packageName):
     return True
 
 
-def _addToActivePlugins(packageName, duration):
+def _addToActivePlugins(packageName: str, duration: int):
     """ Adds a plugin to the list of active plugins """
     active_plugins.append(packageName)
     plugin_times[packageName] = "{0:02f}s".format(duration)
 
 
-def startPlugin(packageName):
+def startPlugin(packageName: str) -> bool:
     """ initialize the plugin """
     global plugins, active_plugins, iface, plugin_times
     start = time.process_time()
@@ -371,7 +371,7 @@ def startPlugin(packageName):
     return True
 
 
-def startProcessingPlugin(packageName):
+def startProcessingPlugin(packageName: str) -> bool:
     """ initialize only the Processing components of a plugin """
     global plugins, active_plugins, iface, plugin_times
     start = time.process_time()
@@ -402,7 +402,7 @@ def startProcessingPlugin(packageName):
     return True
 
 
-def canUninstallPlugin(packageName):
+def canUninstallPlugin(packageName: str) -> bool:
     """ confirm that the plugin can be uninstalled """
     global plugins, active_plugins
 
@@ -422,7 +422,7 @@ def canUninstallPlugin(packageName):
         return True
 
 
-def unloadPlugin(packageName):
+def unloadPlugin(packageName: str) -> bool:
     """ unload and delete plugin! """
     global plugins, active_plugins
 
@@ -443,7 +443,7 @@ def unloadPlugin(packageName):
         return False
 
 
-def _unloadPluginModules(packageName):
+def _unloadPluginModules(packageName: str):
     """ unload plugin package with all its modules (files) """
     global _plugin_modules
     mods = _plugin_modules[packageName]
@@ -480,7 +480,7 @@ def _unloadPluginModules(packageName):
     del _plugin_modules[packageName]
 
 
-def isPluginLoaded(packageName):
+def isPluginLoaded(packageName: str) -> bool:
     """ find out whether a plugin is active (i.e. has been started) """
     global plugins, active_plugins
 
@@ -489,7 +489,7 @@ def isPluginLoaded(packageName):
     return (packageName in active_plugins)
 
 
-def reloadPlugin(packageName):
+def reloadPlugin(packageName: str):
     """ unload and start again a plugin """
     global active_plugins
     if packageName not in active_plugins:
@@ -535,7 +535,7 @@ def showPluginHelp(packageName: str = None, filename: str = "index", section: st
         QDesktopServices.openUrl(QUrl(url))
 
 
-def pluginDirectory(packageName):
+def pluginDirectory(packageName: str) -> str:
     """ return directory where the plugin resides. Plugin must be loaded already """
     return os.path.dirname(sys.modules[packageName].__file__)
 
@@ -622,7 +622,7 @@ def initServerInterface(pointer):
     serverIface = wrapinstance(pointer, QgsServerInterface)
 
 
-def startServerPlugin(packageName):
+def startServerPlugin(packageName: str):
     """ initialize the plugin """
     global server_plugins, server_active_plugins, serverIface
 
@@ -716,6 +716,7 @@ class OverrideCursor():
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         QApplication.restoreOverrideCursor()
+        return exc_type is None
 
 
 #######################
@@ -822,7 +823,7 @@ if not os.environ.get('QGIS_NO_OVERRIDE_IMPORT'):
         __builtin__.__import__ = _import
 
 
-def run_script_from_file(filepath):
+def run_script_from_file(filepath: str):
     """
     Runs a Python script from a given file. Supports loading processing scripts.
     :param filepath: The .py file to load.

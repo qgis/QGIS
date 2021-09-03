@@ -12,7 +12,7 @@
 
 class QgsGeocoderResult
 {
-%Docstring
+%Docstring(signature="appended")
 Represents a matching result from a geocoder search.
 
 :py:class:`QgsGeocoderResult` objects may represent valid matches, or an invalid

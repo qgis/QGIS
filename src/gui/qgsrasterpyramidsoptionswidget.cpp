@@ -27,6 +27,8 @@
 #include <QMouseEvent>
 #include <QMenu>
 #include <QCheckBox>
+#include <QRegularExpressionValidator>
+#include <QRegularExpression>
 
 QgsRasterPyramidsOptionsWidget::QgsRasterPyramidsOptionsWidget( QWidget *parent, const QString &provider )
   : QWidget( parent )
@@ -45,8 +47,8 @@ QgsRasterPyramidsOptionsWidget::QgsRasterPyramidsOptionsWidget( QWidget *parent,
 
 void QgsRasterPyramidsOptionsWidget::updateUi()
 {
-  QgsSettings mySettings;
-  QString prefix = mProvider + "/driverOptions/_pyramids/";
+  const QgsSettings mySettings;
+  const QString prefix = mProvider + "/driverOptions/_pyramids/";
   QString tmpStr;
 
   // keep it in sync with qgsrasterlayerproperties.cpp
@@ -65,13 +67,13 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
   {
     cboResamplingMethod->addItem( method.second, method.first );
   }
-  QString defaultMethod = mySettings.value( prefix + "resampling", "AVERAGE" ).toString();
-  int idx = cboResamplingMethod->findData( defaultMethod );
+  const QString defaultMethod = mySettings.value( prefix + "resampling", "AVERAGE" ).toString();
+  const int idx = cboResamplingMethod->findData( defaultMethod );
   cboResamplingMethod->setCurrentIndex( idx );
 
   // validate string, only space-separated positive integers are allowed
   lePyramidsLevels->setEnabled( cbxPyramidsLevelsCustom->isChecked() );
-  lePyramidsLevels->setValidator( new QRegExpValidator( QRegExp( "(\\d*)(\\s\\d*)*" ), lePyramidsLevels ) );
+  lePyramidsLevels->setValidator( new QRegularExpressionValidator( QRegularExpression( "(\\d*)(\\s\\d*)*" ), lePyramidsLevels ) );
   connect( lePyramidsLevels, &QLineEdit::textEdited,
            this, &QgsRasterPyramidsOptionsWidget::setOverviewList );
 
@@ -82,7 +84,7 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
     overviewList << 2 << 4 << 8 << 16 << 32 << 64;
     mOverviewCheckBoxes.clear();
     const auto constOverviewList = overviewList;
-    for ( int i : constOverviewList )
+    for ( const int i : constOverviewList )
     {
       mOverviewCheckBoxes[ i ] = new QCheckBox( QString::number( i ), this );
       connect( mOverviewCheckBoxes[ i ], &QCheckBox::toggled,
@@ -96,7 +98,11 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
       it.value()->setChecked( false );
   }
   tmpStr = mySettings.value( prefix + "overviewList", "" ).toString();
-  const auto constSplit = tmpStr.split( ' ', QString::SkipEmptyParts );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+  const QStringList constSplit = tmpStr.split( ' ', QString::SkipEmptyParts );
+#else
+  const QStringList constSplit = tmpStr.split( ' ', Qt::SkipEmptyParts );
+#endif
   for ( const QString &lev : constSplit )
   {
     if ( mOverviewCheckBoxes.contains( lev.toInt() ) )
@@ -122,7 +128,7 @@ QString QgsRasterPyramidsOptionsWidget::resamplingMethod() const
 void QgsRasterPyramidsOptionsWidget::apply()
 {
   QgsSettings mySettings;
-  QString prefix = mProvider + "/driverOptions/_pyramids/";
+  const QString prefix = mProvider + "/driverOptions/_pyramids/";
   QString tmpStr;
 
   // mySettings.setValue( prefix + "internal", cbxPyramidsInternal->isChecked() );
@@ -195,11 +201,15 @@ void QgsRasterPyramidsOptionsWidget::setOverviewList()
   if ( cbxPyramidsLevelsCustom->isChecked() )
   {
     // should we also validate that numbers are increasing?
-    const auto constSplit = lePyramidsLevels->text().trimmed().split( ' ', QString::SkipEmptyParts );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+    const QStringList constSplit = lePyramidsLevels->text().trimmed().split( ' ', QString::SkipEmptyParts );
+#else
+    const QStringList constSplit = lePyramidsLevels->text().trimmed().split( ' ', Qt::SkipEmptyParts );
+#endif
     for ( const QString &lev : constSplit )
     {
       QgsDebugMsg( "lev= " + lev );
-      int tmpInt = lev.toInt();
+      const int tmpInt = lev.toInt();
       if ( tmpInt > 0 )
       {
         QgsDebugMsg( "tmpInt= " + QString::number( tmpInt ) );

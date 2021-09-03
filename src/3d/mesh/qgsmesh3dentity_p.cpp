@@ -66,7 +66,7 @@ void QgsMeshDataset3dEntity::applyMaterial()
   if ( mSymbol->renderingStyle() == QgsMesh3DSymbol::ColorRamp2DRendering && layer() )
   {
     const QgsMeshRendererSettings rendererSettings = layer()->rendererSettings();
-    int datasetGroupIndex = rendererSettings.activeScalarDatasetGroup();
+    const int datasetGroupIndex = rendererSettings.activeScalarDatasetGroup();
     if ( datasetGroupIndex >= 0 )
       mSymbol->setColorRampShader( rendererSettings.scalarSettings( datasetGroupIndex ).colorRampShader() );
   }
@@ -92,7 +92,7 @@ QgsMesh3dTerrainTileEntity::QgsMesh3dTerrainTileEntity(
 void QgsMesh3dTerrainTileEntity::buildGeometry()
 {
   Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
-  mesh->setGeometry( new QgsMeshTerrain3dGeometry( mTriangularMesh, mMapSettings.origin(), mSymbol.get(), mesh ) );
+  mesh->setGeometry( new QgsMeshTerrain3dGeometry( mTriangularMesh, mMapSettings.origin(), mSymbol.get()->verticalScale(), mesh ) );
   addComponent( mesh );
 }
 

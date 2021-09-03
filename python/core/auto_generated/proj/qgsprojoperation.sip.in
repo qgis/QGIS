@@ -1,0 +1,67 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/proj/qgsprojoperation.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsProjOperation
+{
+%Docstring(signature="appended")
+Contains information about a PROJ operation.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgsprojoperation.h"
+%End
+  public:
+
+    bool isValid() const;
+%Docstring
+Returns ``True`` if the body is a valid object, or ``False`` if it is a null/invalid
+object.
+%End
+
+    QString id() const;
+%Docstring
+ID of operation.
+%End
+
+    QString description() const;
+%Docstring
+Description.
+%End
+
+    QString details() const;
+%Docstring
+Additional details.
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str;
+    if ( !sipCpp->isValid() )
+    {
+      str = QStringLiteral( "<QgsProjOperation: invalid>" );
+    }
+    else
+    {
+      str = QStringLiteral( "<QgsProjOperation: %1>" ).arg( sipCpp->id() );
+    }
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/proj/qgsprojoperation.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

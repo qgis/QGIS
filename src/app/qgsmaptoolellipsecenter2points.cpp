@@ -31,7 +31,7 @@ QgsMapToolEllipseCenter2Points::QgsMapToolEllipseCenter2Points( QgsMapToolCaptur
 
 void QgsMapToolEllipseCenter2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint point = mapPoint( *e );
+  const QgsPoint point = mapPoint( *e );
 
   if ( !currentVectorLayer() )
   {
@@ -62,7 +62,7 @@ void QgsMapToolEllipseCenter2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
 
 void QgsMapToolEllipseCenter2Points::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint point = mapPoint( *e );
+  const QgsPoint point = mapPoint( *e );
 
   mSnapIndicator->setMatch( e->mapPointMatch() );
 

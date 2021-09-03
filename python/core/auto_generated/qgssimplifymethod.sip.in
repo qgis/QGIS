@@ -11,7 +11,7 @@
 
 class QgsSimplifyMethod
 {
-%Docstring
+%Docstring(signature="appended")
 This class contains information about how to simplify geometries fetched from a :py:class:`QgsFeatureIterator`
 
 .. versionadded:: 2.2

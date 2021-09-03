@@ -13,7 +13,7 @@
 template <T>
 class QgsRange
 {
-%Docstring
+%Docstring(signature="appended")
 A template based class for storing ranges (lower to upper values).
 
 :py:class:`QgsRange` classes represent a range of values of some element type. For instance,
@@ -132,7 +132,7 @@ typedef QgsRange<double> QgsRangedoubleBase;
 
 class QgsDoubleRange : QgsRangedoubleBase
 {
-%Docstring
+%Docstring(signature="appended")
 QgsRange which stores a range of double values.
 
 .. seealso:: :py:class:`QgsIntRange`
@@ -194,7 +194,7 @@ typedef QgsRange<int> QgsRangeintBase;
 
 class QgsIntRange : QgsRangeintBase
 {
-%Docstring
+%Docstring(signature="appended")
 :py:class:`QgsRange` which stores a range of integer values.
 
 .. seealso:: :py:class:`QgsDoubleRange`
@@ -250,7 +250,7 @@ Returns ``True`` if the range consists of all possible values.
 template <T>
 class QgsTemporalRange
 {
-%Docstring
+%Docstring(signature="appended")
 A template based class for storing temporal ranges (beginning to end values).
 
 :py:class:`QgsTemporalRange` classes represent a range of values of some temporal type. For instance,
@@ -375,6 +375,7 @@ If the range is empty and ``other`` is not, the range is changed and set to ``ot
 .. versionadded:: 3.12
 %End
 
+
     bool operator==( const QgsTemporalRange<T> &other ) const;
 
     bool operator!=( const QgsTemporalRange<T> &other ) const;
@@ -396,6 +397,7 @@ typedef QgsTemporalRange< QDate > QgsDateRange;
 @DOCSTRINGSTEMPLATE@.. versionadded:: 3.0
 @DOCSTRINGSTEMPLATE@%End
 
+
 typedef QgsTemporalRange< QDateTime > QgsDateTimeRange;
 @DOCSTRINGSTEMPLATE@%Docstring
 @DOCSTRINGSTEMPLATE@:py:class:`QgsRange` which stores a range of date times.
@@ -409,6 +411,7 @@ typedef QgsTemporalRange< QDateTime > QgsDateTimeRange;
 @DOCSTRINGSTEMPLATE@
 @DOCSTRINGSTEMPLATE@.. versionadded:: 3.0
 @DOCSTRINGSTEMPLATE@%End
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

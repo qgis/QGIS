@@ -96,6 +96,127 @@ ResultSetRef DatabaseMetaData::getPrimaryKeys(const char* catalogName,
     return ret;
 }
 //------------------------------------------------------------------------------
+ResultSetRef DatabaseMetaData::getSpecialColumns(
+    RowIdentifierType identifierType,
+    const char* catalogName, const char* schemaName, const char* tableName,
+    RowIdentifierScope scope, ColumnNullableValue nullable)
+{
+    SQLUSMALLINT fColType;
+    switch (identifierType)
+    {
+    case RowIdentifierType::BEST_ROWID:
+        fColType = SQL_BEST_ROWID;
+        break;
+    case RowIdentifierType::ROWVER:
+        fColType = SQL_ROWVER;
+        break;
+    default:
+        throw Exception("Unknown rowid type");
+    }
+
+    size_t catalogLen = catalogName ? strlen(catalogName) : 0;
+    size_t schemaLen = schemaName ? strlen(schemaName) : 0;
+    size_t tableLen = tableName ? strlen(tableName) : 0;
+
+    size_t maxLen = (1 << 8 * sizeof(SQLSMALLINT)) - 1;
+    if (catalogLen > maxLen)
+        throw Exception("The catalog name is too long");
+    if (schemaLen > maxLen)
+        throw Exception("The schema name is too long");
+    if (tableLen > maxLen)
+        throw Exception("The table name is too long");
+
+    SQLUSMALLINT fScope;
+    switch (scope)
+    {
+    case RowIdentifierScope::CURRENT_ROW:
+        fScope = SQL_SCOPE_CURROW;
+        break;
+    case RowIdentifierScope::TRANSACTION:
+        fScope = SQL_SCOPE_TRANSACTION;
+        break;
+    case RowIdentifierScope::SESSION:
+        fScope = SQL_SCOPE_SESSION;
+        break;
+    default:
+        throw Exception("Unknown rowid scope");
+    }
+
+    SQLUSMALLINT fNullable;
+    switch (nullable)
+    {
+    case ColumnNullableValue::NO_NULLS:
+        fNullable = SQL_NO_NULLS;
+        break;
+    case ColumnNullableValue::NULLABLE:
+        fNullable = SQL_NULLABLE;
+        break;
+    default:
+        throw Exception("Unknown nullable value");
+    }
+
+    StatementRef stmt = createStatement();
+    ResultSetRef ret(new ResultSet(stmt.get()));
+    EXEC_STMT(SQLSpecialColumnsA, stmt->hstmt_, fColType,
+        (SQLCHAR*)catalogName, (SQLSMALLINT)catalogLen,
+        (SQLCHAR*)schemaName, (SQLSMALLINT)schemaLen,
+        (SQLCHAR*)tableName, (SQLSMALLINT)tableLen,
+        fScope, fNullable);
+    return ret;
+}
+//------------------------------------------------------------------------------
+ResultSetRef DatabaseMetaData::getStatistics(
+    const char* catalogName, const char* schemaName, const char* tableName,
+    IndexType indexType, StatisticsAccuracy accuracy)
+{
+    size_t catalogLen = catalogName ? strlen(catalogName) : 0;
+    size_t schemaLen = schemaName ? strlen(schemaName) : 0;
+    size_t tableLen = tableName ? strlen(tableName) : 0;
+
+    size_t maxLen = (1 << 8 * sizeof(SQLSMALLINT)) - 1;
+    if (catalogLen > maxLen)
+        throw Exception("The catalog name is too long");
+    if (schemaLen > maxLen)
+        throw Exception("The schema name is too long");
+    if (tableLen > maxLen)
+        throw Exception("The table name is too long");
+
+    SQLUSMALLINT fUnique;
+    switch (indexType)
+    {
+    case IndexType::ALL:
+        fUnique = SQL_INDEX_ALL;
+        break;
+    case IndexType::UNIQUE:
+        fUnique = SQL_INDEX_UNIQUE;
+        break;
+    default:
+        throw Exception("Unknown index type");
+    }
+
+    SQLUSMALLINT fAccuracy;
+    switch (accuracy)
+    {
+    case StatisticsAccuracy::ENSURE:
+        fAccuracy = SQL_ENSURE;
+        break;
+    case StatisticsAccuracy::QUICK:
+        fAccuracy = SQL_QUICK;
+        break;
+    default:
+        throw Exception("Unknown statistics accuracy");
+    }
+
+    StatementRef stmt = createStatement();
+    ResultSetRef ret(new ResultSet(stmt.get()));
+    EXEC_STMT(SQLStatisticsA, stmt->hstmt_,
+        (SQLCHAR*)catalogName, (SQLSMALLINT)catalogLen,
+        (SQLCHAR*)schemaName, (SQLSMALLINT)schemaLen,
+        (SQLCHAR*)tableName, (SQLSMALLINT)tableLen,
+        fUnique, fAccuracy);
+    return ret;
+}
+//------------------------------------------------------------------------------
 ResultSetRef DatabaseMetaData::getTables(const char* catalogName,
     const char* schemaName, const char* tableName, const char* tableType)
 {

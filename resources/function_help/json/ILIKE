@@ -1,6 +1,7 @@
 {
   "name": "ILIKE",
   "type": "operator",
+  "groups": ["Operators"],
   "description": "Returns 1 if the first parameter matches case-insensitive the supplied pattern. LIKE can be used instead of ILIKE to make the match case-sensitive. Works with numbers also.",
   "arguments": [
     {"arg":"string/number","description":"string to search"},

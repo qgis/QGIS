@@ -12,7 +12,7 @@
 
 class QgsProviderSourceWidgetProviderRegistry
 {
-%Docstring
+%Docstring(signature="appended")
 This class keeps a list of provider source widget providers.
 
 :py:class:`QgsProviderSourceWidgetProviderRegistry` is not usually directly created, but rather accessed through

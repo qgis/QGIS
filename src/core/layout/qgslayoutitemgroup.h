@@ -22,7 +22,7 @@
 
 /**
  * \ingroup core
- * A container for grouping several QgsLayoutItems.
+ * \brief A container for grouping several QgsLayoutItems.
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemGroup: public QgsLayoutItem

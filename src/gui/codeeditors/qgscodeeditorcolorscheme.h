@@ -24,7 +24,7 @@
 
 /**
  * \ingroup gui
- * Defines a color scheme for use in QgsCodeEditor widgets.
+ * \brief Defines a color scheme for use in QgsCodeEditor widgets.
  * \since QGIS 3.16
  */
 class GUI_EXPORT QgsCodeEditorColorScheme

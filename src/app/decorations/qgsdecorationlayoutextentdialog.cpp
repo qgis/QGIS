@@ -29,6 +29,7 @@
 #include "qgssettings.h"
 #include "qgstextformatwidget.h"
 #include "qgsgui.h"
+#include "qgsfillsymbol.h"
 
 QgsDecorationLayoutExtentDialog::QgsDecorationLayoutExtentDialog( QgsDecorationLayoutExtent &deco, QWidget *parent )
   : QDialog( parent )
@@ -41,7 +42,7 @@ QgsDecorationLayoutExtentDialog::QgsDecorationLayoutExtentDialog( QgsDecorationL
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDecorationLayoutExtentDialog::buttonBox_accepted );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsDecorationLayoutExtentDialog::buttonBox_rejected );
 
-  mSymbolButton->setSymbolType( QgsSymbol::Fill );
+  mSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
 
   updateGuiElements();
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsDecorationLayoutExtentDialog::apply );

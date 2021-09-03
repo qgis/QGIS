@@ -14,8 +14,9 @@
 
 class QgsRenderContext : QgsTemporalRangeObject
 {
-%Docstring
+%Docstring(signature="appended")
 Contains information about the context of a rendering operation.
+
 The context of a rendering operation defines properties such as
 the conversion ratio between screen and map units, the extents
 to be rendered etc.
@@ -279,6 +280,15 @@ per millimeter.
 .. seealso:: :py:func:`setScaleFactor`
 %End
 
+    double dpiTarget() const;
+%Docstring
+Returns the targeted DPI for rendering.
+
+.. seealso:: :py:func:`setDpiTarget`
+
+.. versionadded:: 3.20
+%End
+
     bool renderingStopped() const;
 %Docstring
 Returns ``True`` if the rendering operation has been stopped and any ongoing
@@ -322,6 +332,26 @@ Returns the renderer map scale. This will match the desired scale denominator
 for the rendered map, eg 1000.0 for a 1:1000 map render.
 
 .. seealso:: :py:func:`setRendererScale`
+%End
+
+
+    double symbologyReferenceScale() const;
+%Docstring
+Returns the symbology reference scale.
+
+This represents the desired scale denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
+A value of -1 indicates that symbology scaling by reference scale is disabled.
+
+The symbology reference scale is an optional property which specifies the reference
+scale at which symbology in paper units (such a millimeters or points) is fixed
+to. For instance, if the scale is 1000 then a 2mm thick line will be rendered at
+exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm thick at 1:500.
+
+.. seealso:: :py:func:`setSymbologyReferenceScale`
+
+.. seealso:: :py:func:`rendererScale`
+
+.. versionadded:: 3.22
 %End
 
 
@@ -426,12 +456,40 @@ per millimeter.
 .. seealso:: :py:func:`scaleFactor`
 %End
 
+    void setDpiTarget( double dpi );
+%Docstring
+Sets the targeted ``dpi`` for rendering.
+
+.. seealso:: :py:func:`dpiTarget`
+
+.. versionadded:: 3.20
+%End
+
     void setRendererScale( double scale );
 %Docstring
 Sets the renderer map scale. This should match the desired scale denominator
 for the rendered map, eg 1000.0 for a 1:1000 map render.
 
 .. seealso:: :py:func:`rendererScale`
+%End
+
+    void setSymbologyReferenceScale( double scale );
+%Docstring
+Sets the symbology reference ``scale``.
+
+This should match the desired scale denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
+Set to -1 to disable symbology scaling by reference scale.
+
+The symbology reference scale is an optional property which specifies the reference
+scale at which symbology in paper units (such a millimeters or points) is fixed
+to. For instance, if ``scale`` is set to 1000 then a 2mm thick line will be rendered at
+exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm thick at 1:500.
+
+.. seealso:: :py:func:`symbologyReferenceScale`
+
+.. seealso:: :py:func:`rendererScale`
+
+.. versionadded:: 3.22
 %End
 
     void setPainter( QPainter *p );

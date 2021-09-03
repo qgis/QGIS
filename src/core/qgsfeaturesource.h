@@ -30,7 +30,7 @@ class QgsFeedback;
 /**
  * \class QgsFeatureSource
  * \ingroup core
- * An interface for objects which provide features via a getFeatures method.
+ * \brief An interface for objects which provide features via a getFeatures method.
  *
  * \since QGIS 3.0
  */
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsFeatureSource
      * Returns the number of features contained in the source, or -1
      * if the feature count is unknown.
      */
-    virtual long featureCount() const = 0;
+    virtual long long featureCount() const = 0;
 
     /**
      * Determines if there are any features available in the source.

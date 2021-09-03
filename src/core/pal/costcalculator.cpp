@@ -34,7 +34,7 @@ void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obs
 {
   int n = 0;
   double dist;
-  double distlabel = lp->feature->getLabelDistance();
+  const double distlabel = lp->feature->getLabelDistance();
 
   switch ( obstacle->getGeosType() )
   {
@@ -79,7 +79,7 @@ void CostCalculator::addObstacleCostPenalty( LabelPosition *lp, FeaturePart *obs
   }
 
   //scale cost by obstacle's factor
-  double obstacleCost = obstacle->obstacleSettings().factor() * double( n );
+  const double obstacleCost = obstacle->obstacleSettings().factor() * double( n );
   if ( n > 0 )
     lp->setConflictsWithObstacle( true );
 
@@ -114,7 +114,7 @@ void CostCalculator::calculateCandidatePolygonRingDistanceCosts( std::vector< st
   QHash< LabelPosition *, double > polygonRingDistances;
   double minCandidateRingDistance = std::numeric_limits< double >::max();
   double maxCandidateRingDistance = std::numeric_limits< double >::lowest();
-  for ( std::unique_ptr< LabelPosition > &pos : lPos )
+  for ( const std::unique_ptr< LabelPosition > &pos : lPos )
   {
     const double candidatePolygonRingDistance = calculatePolygonRingDistance( pos.get(), bbx, bby );
 
@@ -195,7 +195,7 @@ double CostCalculator::calculatePolygonRingDistance( LabelPosition *candidate, d
 
   // prefer candidates further from the outside of map rather then those close to the outside of the map
   // TODO 3: should be using the actual map boundary here, not the bounding box
-  PointSet extent( 4, bbx, bby );
+  const PointSet extent( 4, bbx, bby );
   ringDistanceCalculator.addRing( &extent );
 
   // prefer candidates which further from interior rings (holes) of the polygon
@@ -245,7 +245,7 @@ void CostCalculator::finalizeCandidatesCosts( Feats *feat, double bbx[4], double
 
   if ( feat->feature->getGeosType() == GEOS_POLYGON )
   {
-    int arrangement = feat->feature->layer()->arrangement();
+    const int arrangement = feat->feature->layer()->arrangement();
     if ( arrangement == QgsPalLayerSettings::Free || arrangement == QgsPalLayerSettings::Horizontal )
     {
       // prefer positions closer to the pole of inaccessibilities
@@ -267,7 +267,7 @@ CandidatePolygonRingDistanceCalculator::CandidatePolygonRingDistanceCalculator( 
 
 void CandidatePolygonRingDistanceCalculator::addRing( const pal::PointSet *ring )
 {
-  double d = ring->minDistanceToPoint( mPx, mPy );
+  const double d = ring->minDistanceToPoint( mPx, mPy );
   if ( d < mMinDistance )
   {
     mMinDistance = d;

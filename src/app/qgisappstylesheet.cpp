@@ -43,8 +43,8 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   QgsSettings settings;
   // handle move from old QgsSettings group (/) to new (/qgis/stylesheet)
   // NOTE: don't delete old QgsSettings keys, in case user is also running older QGIS
-  QVariant oldFontPointSize = settings.value( QStringLiteral( "fontPointSize" ) );
-  QVariant oldFontFamily = settings.value( QStringLiteral( "fontFamily" ) );
+  const QVariant oldFontPointSize = settings.value( QStringLiteral( "fontPointSize" ) );
+  const QVariant oldFontFamily = settings.value( QStringLiteral( "fontFamily" ) );
 
   settings.beginGroup( QStringLiteral( "qgis/stylesheet" ) );
 
@@ -70,7 +70,7 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   // make sure family exists on system
   if ( fontFamily != mDefaultFont.family() )
   {
-    QFont tempFont( fontFamily );
+    const QFont tempFont( fontFamily );
     if ( tempFont.family() != fontFamily )
     {
       // missing from system, drop back to default
@@ -91,15 +91,15 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
 
 void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
   QString ss;
 
   // QgisApp-wide font
-  QString fontSize = opts.value( QStringLiteral( "fontPointSize" ) ).toString();
+  const QString fontSize = opts.value( QStringLiteral( "fontPointSize" ) ).toString();
   QgsDebugMsgLevel( QStringLiteral( "fontPointSize: %1" ).arg( fontSize ), 2 );
   if ( fontSize.isEmpty() ) { return; }
 
-  QString fontFamily = opts.value( QStringLiteral( "fontFamily" ) ).toString();
+  const QString fontFamily = opts.value( QStringLiteral( "fontFamily" ) ).toString();
   QgsDebugMsgLevel( QStringLiteral( "fontFamily: %1" ).arg( fontFamily ), 2 );
   if ( fontFamily.isEmpty() ) { return; }
 
@@ -129,7 +129,7 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
 
   ss += QLatin1String( "QGroupBox{ font-weight: 600; }" );
 
-  QString themeName = settings.value( QStringLiteral( "UI/UITheme" ), "default" ).toString();
+  const QString themeName = settings.value( QStringLiteral( "UI/UITheme" ), "default" ).toString();
   if ( themeName == QLatin1String( "default" ) || !QgsApplication::uiThemes().contains( themeName ) )
   {
     //sidebar style
@@ -152,11 +152,28 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
                                     "    padding-right: 0px;"
                                     "}" ).arg( frameMargin );
 
-    QString toolbarSpacing = opts.value( QStringLiteral( "toolbarSpacing" ), QString() ).toString();
+    style += QStringLiteral( "QTreeView#mOptionsTreeView {"
+                             "    background-color: rgba(69, 69, 69, 0);"
+                             "    outline: 0;"
+                             "}"
+                             "QFrame#mOptionsListFrame {"
+                             "    background-color: rgba(69, 69, 69, 220);"
+                             "}"
+                             "QTreeView#mOptionsTreeView::item {"
+                             "    color: white;"
+                             "    padding: %1px;"
+                             "}"
+                             "QTreeView#mOptionsTreeView::item::selected, QTreeView#mOptionsTreeView::branch::selected {"
+                             "    color: black;"
+                             "    background-color:palette(Window);"
+                             "    padding-right: 0px;"
+                             "}" ).arg( frameMargin );
+
+    const QString toolbarSpacing = opts.value( QStringLiteral( "toolbarSpacing" ), QString() ).toString();
     if ( !toolbarSpacing.isEmpty() )
     {
       bool ok = false;
-      int toolbarSpacingInt = toolbarSpacing.toInt( &ok );
+      const int toolbarSpacingInt = toolbarSpacing.toInt( &ok );
       if ( ok )
       {
         style += QStringLiteral( "QToolBar > QToolButton { padding: %1px; } " ).arg( toolbarSpacingInt );

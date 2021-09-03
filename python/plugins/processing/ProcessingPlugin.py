@@ -85,6 +85,9 @@ class ProcessingDropHandler(QgsCustomDropHandler):
         alg.setProvider(QgsApplication.processingRegistry().providerById('model'))
         dlg = AlgorithmDialog(alg, parent=iface.mainWindow())
         dlg.show()
+        # do NOT remove!!!! if you do then sip forgets the python subclass of AlgorithmDialog and you get a broken
+        # dialog
+        dlg.exec_()
         return True
 
     def customUriProviderKey(self):

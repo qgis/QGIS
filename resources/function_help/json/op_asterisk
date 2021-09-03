@@ -1,6 +1,7 @@
 {
   "name": "*",
   "type": "operator",
+  "groups": ["Operators"],
   "description": "Multiplication of two values",
   "arguments": [
         { "arg": "a", "description": "value" },

@@ -28,10 +28,12 @@ def preconfiguredAlgorithmsFolder():
 
 
 def algAsDict(alg):
-    params = {}
-    for param in alg.parameters:
-        params[param.name] = param.value
-    outputs = {}
-    for out in alg.outputs:
-        outputs[out.name] = out.value
+    params = {
+        param.name: param.value
+        for param in alg.parameters
+    }
+    outputs = {
+        out.name: out.value
+        for out in alg.outputs
+    }
     return {"parameters": params, "outputs": outputs, "algname": alg.id()}

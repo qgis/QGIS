@@ -16,7 +16,8 @@
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
 #include "qgsabstractdatabaseproviderconnection.h"
-#include "qgsdataitem.h"
+#include "qgsiconutils.h"
+#include <QIcon>
 
 QgsDatabaseTableModel::QgsDatabaseTableModel( const QString &provider, const QString &connection, const QString &schema, QObject *parent )
   : QAbstractItemModel( parent )
@@ -108,7 +109,7 @@ QVariant QgsDatabaseTableModel::data( const QModelIndex &index, int role ) const
       if ( table.geometryColumnTypes().empty() )
       {
         if ( role == Qt::DecorationRole )
-          return QgsLayerItem::iconTable();
+          return QgsIconUtils::iconTable();
         else
           return QVariant();
       }
@@ -120,21 +121,25 @@ QVariant QgsDatabaseTableModel::data( const QModelIndex &index, int role ) const
         {
           case QgsWkbTypes::PointGeometry:
           {
-            return QgsLayerItem::iconPoint();
+            return QgsIconUtils::iconPoint();
           }
           case QgsWkbTypes::PolygonGeometry:
           {
-            return QgsLayerItem::iconPolygon();
+            return QgsIconUtils::iconPolygon();
           }
           case QgsWkbTypes::LineGeometry:
           {
-            return QgsLayerItem::iconLine();
+            return QgsIconUtils::iconLine();
           }
-          default:
-            break;
+          case QgsWkbTypes::UnknownGeometry:
+          {
+            return QgsIconUtils::iconGeometryCollection();
+          }
+          case QgsWkbTypes::NullGeometry:
+            return QgsIconUtils::iconTable();
         }
 
-        return QgsLayerItem::iconTable();
+        return QgsIconUtils::iconTable();
       }
       else if ( role == RoleWkbType )
         return table.geometryColumnTypes().at( 0 ).wkbType;
@@ -199,7 +204,7 @@ void QgsDatabaseTableModel::refresh()
   {
     if ( !newTables.contains( oldTable ) )
     {
-      int r = mTables.indexOf( oldTable );
+      const int r = mTables.indexOf( oldTable );
       beginRemoveRows( QModelIndex(), r + ( mAllowEmpty ? 1 : 0 ), r + ( mAllowEmpty ? 1 : 0 ) );
       mTables.removeAt( r );
       endRemoveRows();

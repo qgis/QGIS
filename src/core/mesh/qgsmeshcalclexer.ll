@@ -19,6 +19,7 @@
 %option nounput
 %option case-insensitive
 %option never-interactive
+%option prefix="mesh_"
 
  // ensure that lexer will be 8-bit (and not just 7-bit)
 %option 8bit
@@ -55,14 +56,14 @@ dataset_ref_quoted  \"(\\.|[^"])*\"
 
 %%
 
-"sum_aggr"      { meshlval.op = QgsMeshCalcNode::opSUM_AGGR; return FUNCTION; }
-"max_aggr"      { meshlval.op = QgsMeshCalcNode::opMAX_AGGR; return FUNCTION; }
-"min_aggr"      { meshlval.op = QgsMeshCalcNode::opMIN_AGGR; return FUNCTION; }
-"average_aggr"  { meshlval.op = QgsMeshCalcNode::opAVG_AGGR; return FUNCTION; }
-"abs"           { meshlval.op = QgsMeshCalcNode::opABS; return FUNCTION; }
+"sum_aggr"      { mesh_lval.op = QgsMeshCalcNode::opSUM_AGGR; return FUNCTION; }
+"max_aggr"      { mesh_lval.op = QgsMeshCalcNode::opMAX_AGGR; return FUNCTION; }
+"min_aggr"      { mesh_lval.op = QgsMeshCalcNode::opMIN_AGGR; return FUNCTION; }
+"average_aggr"  { mesh_lval.op = QgsMeshCalcNode::opAVG_AGGR; return FUNCTION; }
+"abs"           { mesh_lval.op = QgsMeshCalcNode::opABS; return FUNCTION; }
 
-"max"           { meshlval.op = QgsMeshCalcNode::opMAX; return FUNCTION2; }
-"min"           { meshlval.op = QgsMeshCalcNode::opMIN; return FUNCTION2; }
+"max"           { mesh_lval.op = QgsMeshCalcNode::opMAX; return FUNCTION2; }
+"min"           { mesh_lval.op = QgsMeshCalcNode::opMIN; return FUNCTION2; }
 
 "IF"     { return IF; }
 "AND"    { return AND; }
@@ -77,7 +78,7 @@ dataset_ref_quoted  \"(\\.|[^"])*\"
 
 [()] { return yytext[0]; }
 
-{number} { meshlval.number  = atof(meshtext); return NUMBER; }
+{number} { mesh_lval.number  = atof(mesh_text); return NUMBER; }
 
 {dataset_ref} { return DATASET_REF; }
 
@@ -88,5 +89,5 @@ dataset_ref_quoted  \"(\\.|[^"])*\"
 
 void set_mesh_input_buffer(const char* buffer)
 {
-  mesh_scan_string(buffer);
+  mesh__scan_string(buffer);
 }

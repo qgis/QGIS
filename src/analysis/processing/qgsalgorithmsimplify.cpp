@@ -78,7 +78,7 @@ void QgsSimplifyAlgorithm::initParameters( const QVariantMap & )
                   QStringLiteral( "METHOD" ),
                   QObject::tr( "Simplification method" ),
                   methods, false, 0 ) );
-  std::unique_ptr< QgsProcessingParameterDistance > tolerance = qgis::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "TOLERANCE" ),
+  std::unique_ptr< QgsProcessingParameterDistance > tolerance = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "TOLERANCE" ),
       QObject::tr( "Tolerance" ), 1.0, QStringLiteral( "INPUT" ), false, 0, 10000000.0 );
   tolerance->setIsDynamic( true );
   tolerance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Tolerance" ), QObject::tr( "Tolerance distance" ), QgsPropertyDefinition::DoublePositive ) );
@@ -105,7 +105,7 @@ QgsFeatureList QgsSimplifyAlgorithm::processFeature( const QgsFeature &feature, 
   QgsFeature f = feature;
   if ( f.hasGeometry() )
   {
-    QgsGeometry inputGeometry = f.geometry();
+    const QgsGeometry inputGeometry = f.geometry();
     QgsGeometry outputGeometry;
     if ( mMethod == QgsMapToPixelSimplifier::Distance )
     {
@@ -122,8 +122,8 @@ QgsFeatureList QgsSimplifyAlgorithm::processFeature( const QgsFeature &feature, 
       }
       else
       {
-        double tolerance = mToleranceProperty.valueAsDouble( context.expressionContext(), mTolerance );
-        QgsMapToPixelSimplifier simplifier( QgsMapToPixelSimplifier::SimplifyGeometry, tolerance, mMethod );
+        const double tolerance = mToleranceProperty.valueAsDouble( context.expressionContext(), mTolerance );
+        const QgsMapToPixelSimplifier simplifier( QgsMapToPixelSimplifier::SimplifyGeometry, tolerance, mMethod );
         outputGeometry = simplifier.simplify( inputGeometry );
       }
     }

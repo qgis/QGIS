@@ -116,6 +116,7 @@ class CORE_EXPORT QgsBookmark
     % End
 #endif
 
+    // TODO c++20 - replace with = default
     bool operator==( const QgsBookmark &other );
     bool operator!=( const QgsBookmark &other );
 

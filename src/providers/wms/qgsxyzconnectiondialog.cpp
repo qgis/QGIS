@@ -16,6 +16,7 @@
 #include "qgsxyzconnectiondialog.h"
 #include "qgsxyzconnection.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgsxyzsourcewidget.h"
 
 #include <QMessageBox>
@@ -32,6 +33,10 @@ QgsXyzConnectionDialog::QgsXyzConnectionDialog( QWidget *parent )
   mConnectionGroupBox->setLayout( hlayout );
 
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this,  [ = ]
+  {
+    QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#using-xyz-tile-services" ) );
+  } );
   connect( mEditName, &QLineEdit::textChanged, this, &QgsXyzConnectionDialog::updateOkButtonState );
   connect( mSourceWidget, &QgsXyzSourceWidget::validChanged, this, &QgsXyzConnectionDialog::updateOkButtonState );
 }
@@ -66,7 +71,7 @@ QgsXyzConnection QgsXyzConnectionDialog::connection() const
 
 void QgsXyzConnectionDialog::updateOkButtonState()
 {
-  bool enabled = !mEditName->text().isEmpty() && !mSourceWidget->url().isEmpty();
+  const bool enabled = !mEditName->text().isEmpty() && !mSourceWidget->url().isEmpty();
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
 }
 

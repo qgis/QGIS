@@ -21,6 +21,9 @@
 #include "qgscolorramplegendnode.h"
 #include "qgscolorramplegendnodesettings.h"
 #include "qgsreadwritecontext.h"
+#include "qgscolorramp.h"
+#include "qgssymbol.h"
+
 #include <QDomDocument>
 #include <QDomElement>
 #include <QImage>
@@ -32,7 +35,7 @@ QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterInterface *input,
   , mGrayBand( grayBand )
   , mGradient( BlackToWhite )
   , mContrastEnhancement( nullptr )
-  , mLegendSettings( qgis::make_unique< QgsColorRampLegendNodeSettings >() )
+  , mLegendSettings( std::make_unique< QgsColorRampLegendNodeSettings >() )
 {
 }
 
@@ -57,7 +60,7 @@ QgsRasterRenderer *QgsSingleBandGrayRenderer::create( const QDomElement &elem, Q
     return nullptr;
   }
 
-  int grayBand = elem.attribute( QStringLiteral( "grayBand" ), QStringLiteral( "-1" ) ).toInt();
+  const int grayBand = elem.attribute( QStringLiteral( "grayBand" ), QStringLiteral( "-1" ) ).toInt();
   QgsSingleBandGrayRenderer *r = new QgsSingleBandGrayRenderer( input, grayBand );
   r->readXml( elem );
 
@@ -66,7 +69,7 @@ QgsRasterRenderer *QgsSingleBandGrayRenderer::create( const QDomElement &elem, Q
     r->setGradient( WhiteToBlack );  // BlackToWhite is default
   }
 
-  QDomElement contrastEnhancementElem = elem.firstChildElement( QStringLiteral( "contrastEnhancement" ) );
+  const QDomElement contrastEnhancementElem = elem.firstChildElement( QStringLiteral( "contrastEnhancement" ) );
   if ( !contrastEnhancementElem.isNull() )
   {
     QgsContrastEnhancement *ce = new QgsContrastEnhancement( ( Qgis::DataType )(
@@ -75,7 +78,7 @@ QgsRasterRenderer *QgsSingleBandGrayRenderer::create( const QDomElement &elem, Q
     r->setContrastEnhancement( ce );
   }
 
-  std::unique_ptr< QgsColorRampLegendNodeSettings > legendSettings = qgis::make_unique< QgsColorRampLegendNodeSettings >();
+  std::unique_ptr< QgsColorRampLegendNodeSettings > legendSettings = std::make_unique< QgsColorRampLegendNodeSettings >();
   legendSettings->readXml( elem, QgsReadWriteContext() );
   r->setLegendSettings( legendSettings.release() );
 
@@ -98,7 +101,7 @@ QgsRasterBlock *QgsSingleBandGrayRenderer::block( int bandNo, const QgsRectangle
     return outputBlock.release();
   }
 
-  std::shared_ptr< QgsRasterBlock > inputBlock( mInput->block( mGrayBand, extent, width, height, feedback ) );
+  const std::shared_ptr< QgsRasterBlock > inputBlock( mInput->block( mGrayBand, extent, width, height, feedback ) );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugMsg( QStringLiteral( "No raster data!" ) );
@@ -121,7 +124,7 @@ QgsRasterBlock *QgsSingleBandGrayRenderer::block( int bandNo, const QgsRectangle
     alphaBlock = inputBlock;
   }
 
-  if ( !outputBlock->reset( Qgis::ARGB32_Premultiplied, width, height ) )
+  if ( !outputBlock->reset( Qgis::DataType::ARGB32_Premultiplied, width, height ) )
   {
     return outputBlock.release();
   }
@@ -217,8 +220,8 @@ QList<QPair<QString, QColor> > QgsSingleBandGrayRenderer::legendSymbologyItems()
   QList<QPair<QString, QColor> >  symbolItems;
   if ( mContrastEnhancement && mContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement )
   {
-    QColor minColor = ( mGradient == BlackToWhite ) ? Qt::black : Qt::white;
-    QColor maxColor = ( mGradient == BlackToWhite ) ? Qt::white : Qt::black;
+    const QColor minColor = ( mGradient == BlackToWhite ) ? Qt::black : Qt::white;
+    const QColor maxColor = ( mGradient == BlackToWhite ) ? Qt::white : Qt::black;
     symbolItems.push_back( qMakePair( QString::number( mContrastEnhancement->minimumValue() ), minColor ) );
     symbolItems.push_back( qMakePair( QString::number( mContrastEnhancement->maximumValue() ), maxColor ) );
   }
@@ -316,7 +319,7 @@ void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
       case QgsContrastEnhancement::ClipToMinimumMaximum:
       {
         // with this renderer export have to be check against real min/max values of the raster
-        QgsRasterBandStats myRasterBandStats = mInput->bandStatistics( grayBand(), QgsRasterBandStats::Min | QgsRasterBandStats::Max );
+        const QgsRasterBandStats myRasterBandStats = mInput->bandStatistics( grayBand(), QgsRasterBandStats::Min | QgsRasterBandStats::Max );
 
         // if minimum range differ from the real minimum => set is in exported SLD vendor option
         if ( !qgsDoubleNear( lContrastEnhancement->minimumValue(), myRasterBandStats.minimumValue ) )
@@ -368,10 +371,10 @@ void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
     case ( QgsContrastEnhancement::StretchAndClipToMinimumMaximum ):
     case ( QgsContrastEnhancement::ClipToMinimumMaximum ):
     {
-      QString lowValue = classes[0].first;
+      const QString lowValue = classes[0].first;
       QColor lowColor = classes[0].second;
       lowColor.setAlpha( 0 );
-      QString highValue = classes[1].first;
+      const QString highValue = classes[1].first;
       QColor highColor = classes[1].second;
       highColor.setAlpha( 0 );
 

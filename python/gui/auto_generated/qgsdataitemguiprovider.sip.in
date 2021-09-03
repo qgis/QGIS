@@ -11,7 +11,7 @@
 
 class QgsDataItemGuiContext
 {
-%Docstring
+%Docstring(signature="appended")
 
 Encapsulates the context in which a :py:class:`QgsDataItem` is shown within the application GUI.
 
@@ -51,7 +51,7 @@ This bar can be used to provide non-blocking feedback to users.
 
 class QgsDataItemGuiProvider
 {
-%Docstring
+%Docstring(signature="appended")
 
 Abstract base class for providers which affect how :py:class:`QgsDataItem` items behave
 within the application GUI.
@@ -98,6 +98,19 @@ The ``context`` argument gives the wider context under which the context menu is
 and contains accessors for useful objects like the application message bar.
 
 The base class method has no effect.
+%End
+
+    virtual int precedenceWhenPopulatingMenus() const;
+%Docstring
+Returns the provider's precedence to use when populating context menus via calls to :py:func:`~QgsDataItemGuiProvider.populateContextMenu`.
+
+Providers which return larger values will be called AFTER other providers when the menu is being populated.
+This allows them to nicely insert their corresponding menu items in the desired location with respect to
+existing items added by other providers.
+
+The default implementation returns 0.
+
+.. versionadded:: 3.22
 %End
 
     virtual bool rename( QgsDataItem *item, const QString &name, QgsDataItemGuiContext context );
@@ -158,7 +171,7 @@ The function is replacement of :py:func:`QgsDataItem.paramWidget()`
 .. versionadded:: 3.10
 %End
 
-    static void notify( const QString &title, const QString &message, QgsDataItemGuiContext context, Qgis::MessageLevel level = Qgis::Info, int duration = -1, QWidget *parent = 0 );
+    static void notify( const QString &title, const QString &message, QgsDataItemGuiContext context, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = -1, QWidget *parent = 0 );
 %Docstring
 Notify the user showing a ``message`` with ``title`` and ``level``
 If the context has a message bar the message will be shown in the message bar

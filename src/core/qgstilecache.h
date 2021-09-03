@@ -51,9 +51,9 @@ class CORE_EXPORT QgsTileCache
     static bool tile( const QUrl &url, QImage &image );
 
     //! how many tiles are stored in the in-memory cache
-    static int totalCost() { QMutexLocker locker( &sTileCacheMutex ); return sTileCache.totalCost(); }
+    static int totalCost();
     //! how many tiles can be stored in the in-memory cache
-    static int maxCost() { QMutexLocker locker( &sTileCacheMutex ); return sTileCache.maxCost(); }
+    static int maxCost();
 
   private:
     //! in-memory cache

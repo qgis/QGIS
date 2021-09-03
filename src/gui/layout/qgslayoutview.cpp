@@ -38,9 +38,11 @@
 #include "qgslayoutreportsectionlabel.h"
 #include "qgsreadwritecontext.h"
 #include <memory>
-#include <QDesktopWidget>
 #include <QMenu>
 #include <QClipboard>
+#include <QMimeData>
+#include <QWindow>
+#include <QScreen>
 
 #define MIN_VIEW_SCALE 0.05
 #define MAX_VIEW_SCALE 1000.0
@@ -189,7 +191,7 @@ void QgsLayoutView::scaleSafe( double scale )
 {
   double currentScale = transform().m11();
   scale *= currentScale;
-  scale = qBound( MIN_VIEW_SCALE, scale, MAX_VIEW_SCALE );
+  scale = std::clamp( scale, MIN_VIEW_SCALE, MAX_VIEW_SCALE );
   setTransform( QTransform::fromScale( scale, scale ) );
   emit zoomLevelChanged();
   viewChanged();
@@ -206,13 +208,13 @@ void QgsLayoutView::setZoomLevel( double level )
   }
   else
   {
-    double dpi = QgsApplication::desktop()->logicalDpiX();
+    double dpi = mScreenDpi;
     //monitor dpi is not always correct - so make sure the value is sane
     if ( ( dpi < 60 ) || ( dpi > 1200 ) )
       dpi = 72;
 
     //desired pixel width for 1mm on screen
-    level = qBound( MIN_VIEW_SCALE, level, MAX_VIEW_SCALE );
+    level = std::clamp( level, MIN_VIEW_SCALE, MAX_VIEW_SCALE );
     double mmLevel = currentLayout()->convertFromLayoutUnits( level, QgsUnitTypes::LayoutMillimeters ).length() * dpi / 25.4;
     setTransform( QTransform::fromScale( mmLevel, mmLevel ) );
   }
@@ -917,7 +919,7 @@ void QgsLayoutView::ungroupSelectedItems()
 
   if ( !ungroupedItems.empty() )
   {
-    for ( QgsLayoutItem *item : qgis::as_const( ungroupedItems ) )
+    for ( QgsLayoutItem *item : std::as_const( ungroupedItems ) )
     {
       item->setSelected( true );
     }
@@ -942,7 +944,7 @@ void QgsLayoutView::mousePressEvent( QMouseEvent *event )
 
   if ( !mTool || !event->isAccepted() )
   {
-    if ( event->button() == Qt::MidButton )
+    if ( event->button() == Qt::MiddleButton )
     {
       // Pan layout with middle mouse button
       setTool( mMidMouseButtonPanTool );
@@ -1153,6 +1155,25 @@ void QgsLayoutView::paintEvent( QPaintEvent *event )
   }
 }
 
+void QgsLayoutView::showEvent( QShowEvent *event )
+{
+  QGraphicsView::showEvent( event );
+
+  updateDevicePixelFromScreen();
+  // keep device pixel ratio up to date on screen or resolution change
+  if ( window()->windowHandle() )
+  {
+    connect( window()->windowHandle(), &QWindow::screenChanged, this, [ = ]( QScreen * )
+    {
+      disconnect( mScreenDpiChangedConnection );
+      mScreenDpiChangedConnection = connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsLayoutView::updateDevicePixelFromScreen );
+      updateDevicePixelFromScreen();
+    } );
+
+    mScreenDpiChangedConnection = connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsLayoutView::updateDevicePixelFromScreen );
+  }
+}
+
 void QgsLayoutView::invalidateCachedRenders()
 {
   if ( !currentLayout() )
@@ -1162,10 +1183,16 @@ void QgsLayoutView::invalidateCachedRenders()
   QList< QgsLayoutItem *> items;
   currentLayout()->layoutItems( items );
 
-  for ( QgsLayoutItem *item : qgis::as_const( items ) )
+  for ( QgsLayoutItem *item : std::as_const( items ) )
   {
     item->invalidateCache();
   }
+}
+
+void QgsLayoutView::updateDevicePixelFromScreen()
+{
+  if ( window()->windowHandle() )
+    mScreenDpi = window()->windowHandle()->screen()->physicalDotsPerInch();
 }
 
 void QgsLayoutView::viewChanged()
@@ -1224,7 +1251,11 @@ void QgsLayoutView::wheelZoom( QWheelEvent *event )
   QgsRectangle visibleRect = QgsRectangle( mapToScene( viewportRect ).boundingRect() );
 
   //transform the mouse pos to scene coordinates
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   QPointF scenePoint = mapToScene( event->pos() );
+#else
+  QPointF scenePoint = mapToScene( event->position().x(), event->position().y() );
+#endif
 
   //adjust view center
   QgsPointXY oldCenter( visibleRect.center() );
@@ -1264,11 +1295,7 @@ QgsLayoutViewSnapMarker::QgsLayoutViewSnapMarker()
 {
   QFont f;
   QFontMetrics fm( f );
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  mSize = fm.width( QStringLiteral( "X" ) );
-#else
   mSize = fm.horizontalAdvance( 'X' );
-#endif
   setPen( QPen( Qt::transparent, mSize ) );
 
   setFlags( flags() | QGraphicsItem::ItemIgnoresTransformations );

@@ -35,7 +35,7 @@ class QgsLayoutItem;
 
 /**
  * \ingroup gui
- * Handles drawing of selection outlines and mouse handles in a QgsModelGraphicsView
+ * \brief Handles drawing of selection outlines and mouse handles in a QgsModelGraphicsView
  *
  * Also is responsible for mouse interactions such as resizing and moving selected items.
  *

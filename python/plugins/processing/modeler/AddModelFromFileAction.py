@@ -60,6 +60,24 @@ class AddModelFromFileAction(ToolboxAction):
                     self.tr('Open Model', 'AddModelFromFileAction'),
                     self.tr('The selected file does not contain a valid model', 'AddModelFromFileAction'))
                 return
+
+            if QgsApplication.instance().processingRegistry().algorithmById('model:{}'.format(alg.id())):
+                QMessageBox.warning(
+                    self.toolbox,
+                    self.tr('Open Model', 'AddModelFromFileAction'),
+                    self.tr('Model with the same name already exists', 'AddModelFromFileAction'))
+                return
+
             destFilename = os.path.join(ModelerUtils.modelsFolders()[0], os.path.basename(filename))
-            shutil.copyfile(filename, destFilename)
+            if os.path.exists(destFilename):
+                reply = QMessageBox.question(
+                    self.toolbox,
+                    self.tr('Open Model', 'AddModelFromFileAction'),
+                    self.tr('There is already a model file with the same name. Overwrite?', 'AddModelFromFileAction'),
+                    QMessageBox.Yes | QMessageBox.No,
+                    QMessageBox.No)
+
+                if reply == QMessageBox.Yes:
+                    shutil.copyfile(filename, destFilename)
+
             QgsApplication.processingRegistry().providerById('model').refreshAlgorithms()

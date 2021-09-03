@@ -44,7 +44,7 @@ QgsError QgsUserProfile::validate() const
 
 const QString QgsUserProfile::name() const
 {
-  QDir dir( mProfileFolder );
+  const QDir dir( mProfileFolder );
   return dir.dirName();
 }
 
@@ -81,7 +81,7 @@ const QString QgsUserProfile::alias() const
   {
     if ( preparedStatement.step() == SQLITE_ROW )
     {
-      QString alias = preparedStatement.columnAsText( 0 );
+      const QString alias = preparedStatement.columnAsText( 0 );
       if ( !alias.isEmpty() )
         profileAlias = alias;
     }
@@ -126,7 +126,7 @@ QgsError QgsUserProfile::setAlias( const QString &alias )
 
 const QIcon QgsUserProfile::icon() const
 {
-  QString path = mProfileFolder + QDir::separator() + "icon.svg";
+  const QString path = mProfileFolder + QDir::separator() + "icon.svg";
   if ( !QDir( path ).exists() )
   {
     return QgsApplication::getThemeIcon( "user.svg" );

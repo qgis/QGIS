@@ -61,7 +61,7 @@ void QgsModelInputReorderWidget::setModel( QgsProcessingModelAlgorithm *model )
   mParameters = mModel->orderedParameters();
   QStringList res;
   mItemModel->clear();
-  for ( const QgsProcessingModelParameter &param : qgis::as_const( mParameters ) )
+  for ( const QgsProcessingModelParameter &param : std::as_const( mParameters ) )
   {
     QStandardItem *item = new QStandardItem( mModel->parameterDefinition( param.parameterName() )->description() );
     item->setData( param.parameterName() );

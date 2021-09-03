@@ -18,11 +18,13 @@
 #include "qgsannotationlineitem.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
+#include "qgslinesymbol.h"
+#include "qgsannotationitemnode.h"
 
 QgsAnnotationLineItem::QgsAnnotationLineItem( QgsCurve *curve )
   : QgsAnnotationItem()
   , mCurve( curve )
-  , mSymbol( qgis::make_unique< QgsLineSymbol >() )
+  , mSymbol( std::make_unique< QgsLineSymbol >() )
 {
 
 }
@@ -79,6 +81,16 @@ bool QgsAnnotationLineItem::writeXml( QDomElement &element, QDomDocument &docume
   return true;
 }
 
+QList<QgsAnnotationItemNode> QgsAnnotationLineItem::nodes() const
+{
+  QList< QgsAnnotationItemNode > res;
+  for ( auto it = mCurve->vertices_begin(); it != mCurve->vertices_end(); ++it )
+  {
+    res.append( QgsAnnotationItemNode( QgsPointXY( ( *it ).x(), ( *it ).y() ), Qgis::AnnotationItemNodeType::VertexHandle ) );
+  }
+  return res;
+}
+
 QgsAnnotationLineItem *QgsAnnotationLineItem::create()
 {
   return new QgsAnnotationLineItem( new QgsLineString() );
@@ -107,7 +119,7 @@ QgsRectangle QgsAnnotationLineItem::boundingBox() const
 
 QgsAnnotationLineItem *QgsAnnotationLineItem::clone()
 {
-  std::unique_ptr< QgsAnnotationLineItem > item = qgis::make_unique< QgsAnnotationLineItem >( mCurve->clone() );
+  std::unique_ptr< QgsAnnotationLineItem > item = std::make_unique< QgsAnnotationLineItem >( mCurve->clone() );
   item->setSymbol( mSymbol->clone() );
   item->setZIndex( zIndex() );
   return item.release();

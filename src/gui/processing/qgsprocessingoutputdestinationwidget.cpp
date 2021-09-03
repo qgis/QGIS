@@ -31,6 +31,7 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QCheckBox>
+#include <QUrl>
 
 ///@cond NOT_STABLE
 
@@ -282,7 +283,7 @@ void QgsProcessingLayerOutputDestinationWidget::menuAboutToShow()
     connect( actionSaveToDatabase, &QAction::triggered, this, &QgsProcessingLayerOutputDestinationWidget::saveToDatabase );
     mMenu->addAction( actionSaveToDatabase );
 
-    if ( mParameter->algorithm() && dynamic_cast< const QgsProcessingParameterFeatureSink * >( mParameter )->supportsAppend() )
+    if ( mParameter->algorithm() && qgis::down_cast< const QgsProcessingParameterFeatureSink * >( mParameter )->supportsAppend() )
     {
       mMenu->addSeparator();
       QAction *actionAppendToLayer = new QAction( tr( "Append to Layer…" ), this );
@@ -542,7 +543,7 @@ void QgsProcessingLayerOutputDestinationWidget::appendToLayer()
       else
       {
         // get fields for destination
-        std::unique_ptr< QgsVectorLayer > dest = qgis::make_unique< QgsVectorLayer >( widget->uri().uri, QString(), widget->uri().providerKey );
+        std::unique_ptr< QgsVectorLayer > dest = std::make_unique< QgsVectorLayer >( widget->uri().uri, QString(), widget->uri().providerKey );
         if ( widget->uri().providerKey == QLatin1String( "ogr" ) )
           setAppendDestination( widget->uri().uri, dest->fields() );
         else
@@ -656,7 +657,7 @@ QString QgsProcessingLayerOutputDestinationWidget::mimeDataToPath( const QMimeDa
   if ( !data->text().isEmpty() && !rawPaths.contains( data->text() ) )
     rawPaths.append( data->text() );
 
-  for ( const QString &path : qgis::as_const( rawPaths ) )
+  for ( const QString &path : std::as_const( rawPaths ) )
   {
     QFileInfo file( path );
     if ( file.isFile() && ( mParameter->type() == QgsProcessingParameterFeatureSink::typeName()

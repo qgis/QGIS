@@ -23,6 +23,7 @@
 
 /**
  * \ingroup analysis
+ * \brief A self intersection check error.
  */
 class ANALYSIS_EXPORT QgsGeometrySelfIntersectionCheckError : public QgsSingleGeometryCheckError
 {
@@ -47,6 +48,7 @@ class ANALYSIS_EXPORT QgsGeometrySelfIntersectionCheckError : public QgsSingleGe
 
 /**
  * \ingroup analysis
+ * \brief A self intersection check.
  */
 class ANALYSIS_EXPORT QgsGeometrySelfIntersectionCheck : public QgsSingleGeometryCheck
 {

@@ -20,11 +20,11 @@ Content-Type: application/json
       "owsServiceOnlineResource": "Service Capabilities Oline Resource",
       "owsServiceTitle": "Service Capabilities Title",
       "wcsLayerIds": [],
-      "wcsServiceUrl": "",
+      "wcsServiceUrl": "http://server.qgis.org/map/FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
       "wfsLayerIds": [
         "points_842425df_7f45_4091_a6c9_086e1dc1edd1"
       ],
-      "wfsServiceUrl": "",
+      "wfsServiceUrl": "http://server.qgis.org/map/FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
       "wfstDeleteLayerIds": [],
       "wfstInsertLayerIds": [],
       "wfstUpdateLayerIds": [
@@ -56,10 +56,10 @@ Content-Type: application/json
       "wmsRestrictedComposers": [],
       "wmsRestrictedLayers": [],
       "wmsRootName": "ShortNameForRootLayer",
-      "wmsServiceUrl": "",
+      "wmsServiceUrl": "http://server.qgis.org/map/FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
       "wmsTileBuffer": 0,
       "wmsUseLayerIds": false,
-      "wmtsServiceUrl": ""
+      "wmtsServiceUrl": "http://server.qgis.org/map/FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
     },
     "crs": "EPSG:4326",
     "description": "Metadata abstract lorem ipsum...",

@@ -27,7 +27,6 @@ class QgsPdalProviderGuiMetadata: public QgsProviderGuiMetadata
     QgsPdalProviderGuiMetadata();
 
     QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
-    QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override;
     QList<QgsProjectStorageGuiProvider *> projectStorageGuiProviders() override;
     void registerGui( QMainWindow *mainWindow ) override;
 };

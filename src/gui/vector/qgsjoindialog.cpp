@@ -23,6 +23,7 @@
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsmaplayercombobox.h"
 #include "qgsfieldcombobox.h"
+#include "qgshelp.h"
 
 #include <QStandardItemModel>
 #include <QPushButton>
@@ -32,6 +33,10 @@ QgsJoinDialog::QgsJoinDialog( QgsVectorLayer *layer, QList<QgsMapLayer *> alread
   , mLayer( layer )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this,  [ = ]
+  {
+    QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#joins-properties" ) );
+  } );
 
   if ( !mLayer )
   {
@@ -102,7 +107,7 @@ void QgsJoinDialog::setJoinInfo( const QgsVectorLayerJoinInfo &joinInfo )
   {
     for ( int i = 0; i < model->rowCount(); ++i )
     {
-      QModelIndex index = model->index( i, 0 );
+      const QModelIndex index = model->index( i, 0 );
       if ( lst && lst->contains( model->data( index, Qt::DisplayRole ).toString() ) )
       {
         model->setData( index, Qt::Checked, Qt::CheckStateRole );
@@ -146,7 +151,7 @@ QgsVectorLayerJoinInfo QgsJoinDialog::joinInfo() const
     {
       for ( int i = 0; i < model->rowCount(); ++i )
       {
-        QModelIndex index = model->index( i, 0 );
+        const QModelIndex index = model->index( i, 0 );
         if ( model->data( index, Qt::CheckStateRole ).toInt() == Qt::Checked )
           lst << model->data( index ).toString();
       }
@@ -185,7 +190,7 @@ void QgsJoinDialog::joinedLayerChanged( QgsMapLayer *layer )
   mJoinFieldsSubsetView->setModel( subsetModel );
 
   QgsVectorDataProvider *dp = vLayer->dataProvider();
-  bool canCreateAttrIndex = dp && ( dp->capabilities() & QgsVectorDataProvider::CreateAttributeIndex );
+  const bool canCreateAttrIndex = dp && ( dp->capabilities() & QgsVectorDataProvider::CreateAttributeIndex );
   if ( canCreateAttrIndex )
   {
     mCreateIndexCheckBox->setEnabled( true );

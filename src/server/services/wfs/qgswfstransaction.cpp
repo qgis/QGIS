@@ -776,7 +776,7 @@ namespace QgsWfs
 
       // Get the Feature Ids of the inserted feature
       QgsAttributeList pkAttributes = provider->pkAttributeIndexes();
-      for ( const QgsFeature &feat : qgis::as_const( featureList ) )
+      for ( const QgsFeature &feat : std::as_const( featureList ) )
       {
         action.insertFeatureIds << QStringLiteral( "%1.%2" ).arg( typeName, QgsServerFeatureId::getServerFid( feat, pkAttributes ) );
       }
@@ -1176,7 +1176,7 @@ namespace QgsWfs
 
   transactionUpdate parseUpdateActionElement( QDomElement &actionElem, const QgsProject *project )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "parseUpdateActionElement" ), QStringLiteral( "Server" ), Qgis::Info );
+    QgsMessageLog::logMessage( QStringLiteral( "parseUpdateActionElement" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
     QString typeName = actionElem.attribute( QStringLiteral( "typeName" ) );
     if ( typeName.contains( ':' ) )
       typeName = typeName.section( ':', 1, 1 );
@@ -1216,7 +1216,7 @@ namespace QgsWfs
       QDomElement filterElem = filterNodeList.at( 0 ).toElement();
       featureRequest = parseFilterElement( typeName, filterElem, serverFids, project );
     }
-    QgsMessageLog::logMessage( QStringLiteral( "parseUpdateActionElement: serverFids length %1" ).arg( serverFids.count() ), QStringLiteral( "Server" ), Qgis::Info );
+    QgsMessageLog::logMessage( QStringLiteral( "parseUpdateActionElement: serverFids length %1" ).arg( serverFids.count() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
 
     transactionUpdate action;
     action.typeName = typeName;

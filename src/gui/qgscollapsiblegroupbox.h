@@ -60,7 +60,7 @@ class GUI_EXPORT QgsGroupBoxCollapseButton : public QToolButton
 /**
  * \ingroup gui
  * \class QgsCollapsibleGroupBoxBasic
- * A groupbox that collapses/expands when toggled.
+ * \brief A groupbox that collapses/expands when toggled.
  * Basic class QgsCollapsibleGroupBoxBasic does not auto-save collapsed or checked state
  * Holding Alt modifier key when toggling collapsed state will synchronize the toggling across other collapsible group boxes with the same syncGroup QString value
  * Holding Shift modifier key when attempting to toggle collapsed state will expand current group box, then collapse any others with the same syncGroup QString value
@@ -173,7 +173,7 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
 /**
  * \ingroup gui
  * \class QgsCollapsibleGroupBox
- * A groupbox that collapses/expands when toggled and can save its collapsed and checked states.
+ * \brief A groupbox that collapses/expands when toggled and can save its collapsed and checked states.
  * By default, it auto-saves only its collapsed state to the global settings based on the widget and it's parent names.
  * Holding Alt modifier key when toggling collapsed state will synchronize the toggling across other collapsible group boxes with the same syncGroup QString value
  * Holding Shift modifier key when attempting to toggle collapsed state will expand current group box, then collapse any others with the same syncGroup QString value

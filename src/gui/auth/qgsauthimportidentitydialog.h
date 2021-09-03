@@ -29,7 +29,7 @@
 
 /**
  * \ingroup gui
- * Widget for importing an identity certificate/key bundle into the authentication database
+ * \brief Widget for importing an identity certificate/key bundle into the authentication database
  */
 class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAuthImportIdentityDialog
 {

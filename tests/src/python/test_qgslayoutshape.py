@@ -19,9 +19,12 @@ from qgis.core import (
     QgsLayout,
     QgsLayoutItem,
     QgsLayoutMeasurement,
-    QgsUnitTypes
+    QgsUnitTypes,
+    QgsFillSymbol,
+    QgsReadWriteContext
 )
 from qgis.PyQt.QtCore import QRectF
+from qgis.PyQt.QtXml import QDomDocument, QDomElement
 from qgis.PyQt.QtTest import QSignalSpy
 
 from test_qgslayoutitem import LayoutItemTestCase
@@ -63,6 +66,41 @@ class TestQgsLayoutShape(unittest.TestCase, LayoutItemTestCase):
         shape.attemptSetSceneRect(QRectF(50, 20, 80, 120))
         self.assertEqual(len(spy), 4)
         self.assertEqual(shape.clipPath().asWkt(), 'Polygon ((50 140, 130 140, 90 20, 50 140))')
+
+    def testBoundingRectForStrokeSizeOnRestore(self):
+        """
+        Test that item bounding rect correctly accounts for stroke size on item restore
+        """
+        pr = QgsProject()
+        l = QgsLayout(pr)
+        shape = QgsLayoutItemShape(l)
+
+        shape.setShapeType(QgsLayoutItemShape.Rectangle)
+        shape.attemptSetSceneRect(QRectF(30, 10, 100, 200))
+        self.assertEqual(shape.boundingRect(), QRectF(-0.15, -0.15, 100.3, 200.3))
+
+        # set a symbol with very wide stroke
+        s = QgsFillSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '40', 'color': '#ff5588'})
+        shape.setSymbol(s)
+        # bounding rect for item should include stroke
+        self.assertEqual(shape.boundingRect(), QRectF(-20.0, -20.0, 140.0, 240.0))
+
+        # save the shape and restore
+        doc = QDomDocument("testdoc")
+        parent_elem = doc.createElement("test")
+        doc.appendChild(parent_elem)
+        self.assertTrue(shape.writeXml(parent_elem, doc, QgsReadWriteContext()))
+
+        item_elem = parent_elem.firstChildElement("LayoutItem")
+        self.assertFalse(item_elem.isNull())
+
+        # restore
+        shape2 = QgsLayoutItemShape(l)
+
+        self.assertTrue(shape2.readXml(item_elem, doc, QgsReadWriteContext()))
+
+        # bounding rect for item should include stroke
+        self.assertEqual(shape2.boundingRect(), QRectF(-20.0, -20.0, 140.0, 240.0))
 
 
 if __name__ == '__main__':

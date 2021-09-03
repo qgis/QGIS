@@ -32,6 +32,7 @@
 #include "callouts/qgscalloutwidget.h"
 #include "qgslabelobstaclesettingswidget.h"
 #include "qgslabellineanchorwidget.h"
+
 #include <mutex>
 
 #include <QButtonGroup>
@@ -84,6 +85,8 @@ void QgsLabelingGui::initCalloutWidgets()
 {
   _initCalloutWidgetFunction( QStringLiteral( "simple" ), QgsSimpleLineCalloutWidget::create );
   _initCalloutWidgetFunction( QStringLiteral( "manhattan" ), QgsManhattanLineCalloutWidget::create );
+  _initCalloutWidgetFunction( QStringLiteral( "curved" ), QgsCurvedLineCalloutWidget::create );
+  _initCalloutWidgetFunction( QStringLiteral( "balloon" ), QgsBalloonCalloutWidget::create );
 }
 
 void QgsLabelingGui::updateCalloutWidget( QgsCallout *callout )
@@ -196,6 +199,7 @@ void QgsLabelingGui::showLineAnchorSettings()
     const QgsLabelLineSettings widgetSettings = widget->settings();
     mLineSettings.setLineAnchorPercent( widgetSettings.lineAnchorPercent() );
     mLineSettings.setAnchorType( widgetSettings.anchorType() );
+    mLineSettings.setAnchorClipping( widgetSettings.anchorClipping() );
     const QgsPropertyCollection obstacleDataDefinedProperties = widget->dataDefinedProperties();
     widget->updateDataDefinedProperties( mDataDefinedProperties );
     emit widgetChanged();
@@ -242,6 +246,7 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
 
   // connections for groupboxes with separate activation checkboxes (that need to honor data defined setting)
   connect( mBufferDrawChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
+  connect( mBufferDrawDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsLabelingGui::updateUi );
   connect( mEnableMaskChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
   connect( mShapeDrawChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
   connect( mCalloutsDrawCheckBox, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
@@ -251,11 +256,11 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
   connect( mScaleBasedVisibilityChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
   connect( mFontLimitPixelChkBox, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
   connect( mGeometryGeneratorGroupBox, &QGroupBox::toggled, this, &QgsLabelingGui::updateGeometryTypeBasedWidgets );
-  connect( mGeometryGeneratorType, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsLabelingGui::updateGeometryTypeBasedWidgets );
+  connect( mGeometryGeneratorType, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsLabelingGui::updateGeometryTypeBasedWidgets );
   connect( mGeometryGeneratorExpressionButton, &QToolButton::clicked, this, &QgsLabelingGui::showGeometryGeneratorExpressionBuilder );
   connect( mGeometryGeneratorGroupBox, &QGroupBox::toggled, this, &QgsLabelingGui::validateGeometryGeneratorExpression );
   connect( mGeometryGenerator, &QgsCodeEditorExpression::textChanged, this, &QgsLabelingGui::validateGeometryGeneratorExpression );
-  connect( mGeometryGeneratorType, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsLabelingGui::validateGeometryGeneratorExpression );
+  connect( mGeometryGeneratorType, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsLabelingGui::validateGeometryGeneratorExpression );
   connect( mObstacleSettingsButton, &QAbstractButton::clicked, this, &QgsLabelingGui::showObstacleSettings );
   connect( mLineAnchorSettingsButton, &QAbstractButton::clicked, this, &QgsLabelingGui::showLineAnchorSettings );
 
@@ -304,7 +309,8 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mLayer = layer;
 
   mTextFormatsListWidget->setLayerType( mLayer ? mLayer->geometryType() : mGeomType );
-  mBackgroundSymbolButton->setLayer( mLayer );
+  mBackgroundMarkerSymbolButton->setLayer( mLayer );
+  mBackgroundFillSymbolButton->setLayer( mLayer );
 
   // load labeling settings from layer
   updateGeometryTypeBasedWidgets();
@@ -327,7 +333,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
     mGeometryGeneratorGroupBox->setCollapsed( true );
   mGeometryGeneratorType->setCurrentIndex( mGeometryGeneratorType->findData( mSettings.geometryGeneratorType ) );
 
-  updateWidgetForFormat( mSettings.format() );
+  updateWidgetForFormat( mSettings.format().isValid() ? mSettings.format() : QgsStyle::defaultStyle()->defaultTextFormat( QgsStyle::TextFormatContext::Labeling ) );
 
   mFieldExpressionWidget->setRow( -1 );
   mFieldExpressionWidget->setField( mSettings.fieldName );
@@ -491,6 +497,9 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 {
   QgsPalLayerSettings lyr;
 
+  // restore properties which aren't exposed in GUI
+  lyr.setUnplacedVisibility( mSettings.unplacedVisibility() );
+
   lyr.drawLabels = ( mMode == Labels ) || !mLayer;
 
   bool isExpression;
@@ -513,7 +522,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.offsetType = static_cast< QgsPalLayerSettings::OffsetType >( mOffsetTypeComboBox->currentData().toInt() );
   if ( mQuadrantBtnGrp )
   {
-    lyr.quadOffset = ( QgsPalLayerSettings::QuadrantPosition )mQuadrantBtnGrp->checkedId();
+    lyr.quadOffset = static_cast< QgsPalLayerSettings::QuadrantPosition >( mQuadrantBtnGrp->checkedId() );
   }
   lyr.xOffset = mPointOffsetXSpinBox->value();
   lyr.yOffset = mPointOffsetYSpinBox->value();
@@ -549,6 +558,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 
   lyr.lineSettings().setLineAnchorPercent( mLineSettings.lineAnchorPercent() );
   lyr.lineSettings().setAnchorType( mLineSettings.anchorType() );
+  lyr.lineSettings().setAnchorClipping( mLineSettings.anchorClipping() );
 
   lyr.labelPerPart = chkLabelPerFeaturePart->isChecked();
   lyr.displayAll = mPalShowAllLabelsForLayerChkBx->isChecked();
@@ -578,7 +588,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   }
   if ( mUpsidedownBtnGrp )
   {
-    lyr.upsidedownLabels = ( QgsPalLayerSettings::UpsideDownLabels )mUpsidedownBtnGrp->checkedId();
+    lyr.upsidedownLabels = static_cast< QgsPalLayerSettings::UpsideDownLabels >( mUpsidedownBtnGrp->checkedId() );
   }
 
   lyr.maxCurvedCharAngleIn = mMaxCharAngleInDSpinBox->value();
@@ -625,18 +635,14 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 
 void QgsLabelingGui::syncDefinedCheckboxFrame( QgsPropertyOverrideButton *ddBtn, QCheckBox *chkBx, QFrame *f )
 {
-  if ( ddBtn->isActive() && !chkBx->isChecked() )
-  {
-    chkBx->setChecked( true );
-  }
-  f->setEnabled( chkBx->isChecked() );
+  f->setEnabled( chkBx->isChecked() || ddBtn->isActive() );
 }
 
 bool QgsLabelingGui::eventFilter( QObject *object, QEvent *event )
 {
   if ( object == mLblNoObstacle1 )
   {
-    if ( event->type() == QEvent::MouseButtonPress && dynamic_cast< QMouseEvent * >( event )->button() == Qt::LeftButton )
+    if ( event->type() == QEvent::MouseButtonPress && qgis::down_cast< QMouseEvent * >( event )->button() == Qt::LeftButton )
     {
       // clicking the obstacle label toggles the checkbox, just like a "normal" checkbox label...
       mChkNoObstacle->setChecked( !mChkNoObstacle->isChecked() );
@@ -738,19 +744,19 @@ void QgsLabelingGui::saveFormat()
       // check if there is no format with same name
       if ( style->textFormatNames().contains( saveDlg.name() ) )
       {
-        int res = QMessageBox::warning( this, tr( "Save Text Format" ),
-                                        tr( "Format with name '%1' already exists. Overwrite?" )
-                                        .arg( saveDlg.name() ),
-                                        QMessageBox::Yes | QMessageBox::No );
+        const int res = QMessageBox::warning( this, tr( "Save Text Format" ),
+                                              tr( "Format with name '%1' already exists. Overwrite?" )
+                                              .arg( saveDlg.name() ),
+                                              QMessageBox::Yes | QMessageBox::No );
         if ( res != QMessageBox::Yes )
         {
           return;
         }
         style->removeTextFormat( saveDlg.name() );
       }
-      QStringList symbolTags = saveDlg.tags().split( ',' );
+      const QStringList symbolTags = saveDlg.tags().split( ',' );
 
-      QgsTextFormat newFormat = format();
+      const QgsTextFormat newFormat = format();
       style->addTextFormat( saveDlg.name(), newFormat );
       style->saveTextFormat( saveDlg.name(), newFormat, saveDlg.isFavorite(), symbolTags );
       break;
@@ -761,19 +767,19 @@ void QgsLabelingGui::saveFormat()
       // check if there is no settings with same name
       if ( style->labelSettingsNames().contains( saveDlg.name() ) )
       {
-        int res = QMessageBox::warning( this, tr( "Save Label Settings" ),
-                                        tr( "Label settings with the name '%1' already exist. Overwrite?" )
-                                        .arg( saveDlg.name() ),
-                                        QMessageBox::Yes | QMessageBox::No );
+        const int res = QMessageBox::warning( this, tr( "Save Label Settings" ),
+                                              tr( "Label settings with the name '%1' already exist. Overwrite?" )
+                                              .arg( saveDlg.name() ),
+                                              QMessageBox::Yes | QMessageBox::No );
         if ( res != QMessageBox::Yes )
         {
           return;
         }
         style->removeLabelSettings( saveDlg.name() );
       }
-      QStringList symbolTags = saveDlg.tags().split( ',' );
+      const QStringList symbolTags = saveDlg.tags().split( ',' );
 
-      QgsPalLayerSettings newSettings = layerSettings();
+      const QgsPalLayerSettings newSettings = layerSettings();
       style->addLabelSettings( saveDlg.name(), newSettings );
       style->saveLabelSettings( saveDlg.name(), newSettings, saveDlg.isFavorite(), symbolTags );
       break;
@@ -851,7 +857,7 @@ void QgsLabelingGui::updateGeometryTypeBasedWidgets()
   }
   else
   {
-    int idx = mFontMultiLineAlignComboBox->findData( QgsPalLayerSettings::MultiFollowPlacement );
+    const int idx = mFontMultiLineAlignComboBox->findData( QgsPalLayerSettings::MultiFollowPlacement );
     if ( idx >= 0 )
       mFontMultiLineAlignComboBox->removeItem( idx );
   }
@@ -897,7 +903,7 @@ void QgsLabelingGui::validateGeometryGeneratorExpression()
     {
       const QVariant result = expression.evaluate( &context );
       const QgsGeometry geometry = result.value<QgsGeometry>();
-      QgsWkbTypes::GeometryType configuredGeometryType = mGeometryGeneratorType->currentData().value<QgsWkbTypes::GeometryType>();
+      const QgsWkbTypes::GeometryType configuredGeometryType = mGeometryGeneratorType->currentData().value<QgsWkbTypes::GeometryType>();
       if ( geometry.isNull() )
       {
         mGeometryGeneratorWarningLabel->setText( tr( "Result of the expression is not a geometry" ) );
@@ -941,7 +947,7 @@ void QgsLabelingGui::determineGeometryGeneratorType()
 
 void QgsLabelingGui::calloutTypeChanged()
 {
-  QString newCalloutType = mCalloutStyleComboBox->currentData().toString();
+  const QString newCalloutType = mCalloutStyleComboBox->currentData().toString();
   QgsCalloutWidget *pew = qobject_cast< QgsCalloutWidget * >( mCalloutStackedWidget->currentWidget() );
   if ( pew )
   {
@@ -957,7 +963,7 @@ void QgsLabelingGui::calloutTypeChanged()
 
   // change callout to a new one (with different type)
   // base new callout on existing callout's properties
-  std::unique_ptr< QgsCallout > newCallout( am->createCallout( pew && pew->callout() ? pew->callout()->properties( QgsReadWriteContext() ) : QVariantMap(), QgsReadWriteContext() ) );
+  const std::unique_ptr< QgsCallout > newCallout( am->createCallout( pew && pew->callout() ? pew->callout()->properties( QgsReadWriteContext() ) : QVariantMap(), QgsReadWriteContext() ) );
   if ( !newCallout )
     return;
 

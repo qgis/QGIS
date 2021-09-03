@@ -44,8 +44,8 @@ QgsPointToLayerAlgorithm *QgsPointToLayerAlgorithm::createInstance() const
 
 QVariantMap QgsPointToLayerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QgsCoordinateReferenceSystem crs = parameterAsPointCrs( parameters, QStringLiteral( "INPUT" ), context );
-  QgsGeometry geom = QgsGeometry::fromPointXY( parameterAsPoint( parameters, QStringLiteral( "INPUT" ), context ) );
+  const QgsCoordinateReferenceSystem crs = parameterAsPointCrs( parameters, QStringLiteral( "INPUT" ), context );
+  const QgsGeometry geom = QgsGeometry::fromPointXY( parameterAsPoint( parameters, QStringLiteral( "INPUT" ), context ) );
 
   QgsFields fields;
   fields.append( QgsField( QStringLiteral( "id" ), QVariant::Int ) );
@@ -58,7 +58,8 @@ QVariantMap QgsPointToLayerAlgorithm::processAlgorithm( const QVariantMap &param
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
   f.setGeometry( geom );
-  sink->addFeature( f, QgsFeatureSink::FastInsert );
+  if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+    throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
   feedback->setProgress( 100 );
 

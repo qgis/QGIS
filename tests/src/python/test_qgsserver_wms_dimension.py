@@ -66,7 +66,7 @@ class TestQgsServerWMSDimension(TestQgsServerWMSTestBase):
             "SERVICE": "WMS",
             "VERSION": "1.3.0",
             "REQUEST": "GetMap",
-            "LAYERS": "dem,Slopes,Contours",
+            "LAYERS": "dem,Slopes,Contours,Datetime_dim",
             "STYLES": "",
             "FORMAT": "image/png",
             "BBOX": "-1219081,4281848,172260,5673189",
@@ -115,6 +115,42 @@ class TestQgsServerWMSDimension(TestQgsServerWMSTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Dimension_RangeElevation_Value")
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "LAYERS": "dem,Datetime_dim",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-1219081,4281848,172260,5673189",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "TIME": "2021-05-31T17:00:00"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Dimension_Time_Value")
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "LAYERS": "dem,Datetime_dim",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-1219081,4281848,172260,5673189",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "DIM_DATE": "2021-05-31"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Dimension_Date_Value")
 
         # multi dimension with value
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -174,6 +210,42 @@ class TestQgsServerWMSDimension(TestQgsServerWMSTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Dimension_RangeElevation_RangeValue")
 
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "LAYERS": "dem,Datetime_dim",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-1219081,4281848,172260,5673189",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "TIME": "2021-05-31T09:00:00/2021-06-30T09:00:00"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Dimension_Time_RangeValue")
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "LAYERS": "dem,Datetime_dim",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-1219081,4281848,172260,5673189",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "DIM_DATE": "2021-05-31/2021-06-30"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Dimension_Date_RangeValue")
+
     def test_wms_getmap_multi_values(self):
         # dimension with multi values
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -211,6 +283,42 @@ class TestQgsServerWMSDimension(TestQgsServerWMSTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Dimension_RangeElevation_MultiValues")
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "LAYERS": "dem,Datetime_dim",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-1219081,4281848,172260,5673189",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "TIME": "2021-05-31T10:00:00,2021-05-31T17:00:00"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Dimension_Time_MultiValues")
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "LAYERS": "dem,Datetime_dim",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-1219081,4281848,172260,5673189",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "DIM_DATE": "2021-05-31,2021-06-30"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Dimension_Date_MultiValues")
 
     def test_wms_getmap_mix_values(self):
         # dimension with mix values

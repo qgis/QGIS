@@ -24,7 +24,7 @@
 /**
  * \class QgsSteppedLineScaleBarRenderer
  * \ingroup core
- * Scalebar style that draws a stepped line representation of a scalebar.
+ * \brief Scalebar style that draws a stepped line representation of a scalebar.
  * \since QGIS 3.14
  */
 class CORE_EXPORT QgsSteppedLineScaleBarRenderer: public QgsScaleBarRenderer

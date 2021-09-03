@@ -59,7 +59,7 @@
 
 class QgsSearchWidgetWrapper : QgsWidgetWrapper
 {
-%Docstring
+%Docstring(signature="appended")
 
 Shows a search widget on a filter form.
 %End

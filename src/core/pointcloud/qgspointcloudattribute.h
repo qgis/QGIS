@@ -31,7 +31,7 @@ class QgsPointCloudAttributeCollection;
 /**
  * \ingroup core
  *
- * Attribute for point cloud data
+ * \brief Attribute for point cloud data
  * pair of name and size in bytes
  *
  * \since QGIS 3.18
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsPointCloudAttribute
 /**
  * \ingroup core
  *
- * Collection of point cloud attributes
+ * \brief Collection of point cloud attributes
  *
  * \since QGIS 3.18
  */

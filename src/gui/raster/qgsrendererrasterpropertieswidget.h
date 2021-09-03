@@ -67,11 +67,20 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
     //! Apply the changes from the dialog to the layer.
     void apply() override;
 
+
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#endif
+
     /**
      * \brief Sync the widget to the given layer.
      * \param layer The layer to use for the widget
      */
     void syncToLayer( QgsRasterLayer *layer );
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 
   private slots:
     //! Slot to reset all color rendering options to default

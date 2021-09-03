@@ -14,7 +14,7 @@
 
 class QgsVectorLayerUndoPassthroughCommand : QgsVectorLayerUndoCommand
 {
-%Docstring
+%Docstring(signature="appended")
 Undo command for vector layer in transaction group mode.
 
 .. versionadded:: 3.0
@@ -80,7 +80,7 @@ Returns the error message or an empty string if there's none.
 
 class QgsVectorLayerUndoPassthroughCommandAddFeatures : QgsVectorLayerUndoPassthroughCommand
 {
-%Docstring
+%Docstring(signature="appended")
 Undo command for adding a feature to a vector layer in transaction group mode.
 
 .. versionadded:: 3.0
@@ -115,7 +115,7 @@ List of features (added feaures can be modified by default values from database)
 
 class QgsVectorLayerUndoPassthroughCommandDeleteFeatures : QgsVectorLayerUndoPassthroughCommand
 {
-%Docstring
+%Docstring(signature="appended")
 Undo command for deleting features from a vector layer in transaction group.
 
 .. versionadded:: 3.0
@@ -144,7 +144,7 @@ Constructor for QgsVectorLayerUndoPassthroughCommandDeleteFeatures
 
 class QgsVectorLayerUndoPassthroughCommandChangeGeometry : QgsVectorLayerUndoPassthroughCommand
 {
-%Docstring
+%Docstring(signature="appended")
 Undo command for changing feature geometry from a vector layer in transaction group.
 
 .. versionadded:: 3.0
@@ -169,12 +169,16 @@ Constructor for QgsVectorLayerUndoPassthroughCommandChangeGeometry
     virtual void redo();
 
 
+    virtual int id() const;
+    virtual bool mergeWith( const QUndoCommand  *other );
+
+
 };
 
 
 class QgsVectorLayerUndoPassthroughCommandChangeAttribute: QgsVectorLayerUndoPassthroughCommand
 {
-%Docstring
+%Docstring(signature="appended")
 Undo command for changing attr value from a vector layer in transaction group.
 
 .. versionadded:: 3.0
@@ -205,7 +209,7 @@ Constructor for QgsVectorLayerUndoPassthroughCommandChangeAttribute
 
 class QgsVectorLayerUndoPassthroughCommandChangeAttributes: QgsVectorLayerUndoPassthroughCommand
 {
-%Docstring
+%Docstring(signature="appended")
 Undo command for changing attributes' values from a vector layer in transaction group.
 
 .. versionadded:: 3.0
@@ -236,7 +240,7 @@ Constructor for QgsVectorLayerUndoPassthroughCommandChangeAttributes
 
 class QgsVectorLayerUndoPassthroughCommandAddAttribute : QgsVectorLayerUndoPassthroughCommand
 {
-%Docstring
+%Docstring(signature="appended")
 Undo command for adding attri to a vector layer in transaction group.
 
 .. versionadded:: 3.0
@@ -265,7 +269,7 @@ Constructor for QgsVectorLayerUndoPassthroughCommandAddAttribute
 
 class QgsVectorLayerUndoPassthroughCommandDeleteAttribute : QgsVectorLayerUndoPassthroughCommand
 {
-%Docstring
+%Docstring(signature="appended")
 Undo command for deleting attri of a vector layer in transaction group.
 
 .. versionadded:: 3.0
@@ -294,7 +298,7 @@ Constructor for :py:class:`QgsVectorLayerUndoCommandDeleteAttribute`
 
 class QgsVectorLayerUndoPassthroughCommandRenameAttribute : QgsVectorLayerUndoPassthroughCommand
 {
-%Docstring
+%Docstring(signature="appended")
 Undo command for deleting attri of a vector layer in transaction group.
 
 .. versionadded:: 3.0
@@ -324,7 +328,7 @@ Constructor for :py:class:`QgsVectorLayerUndoCommandRenameAttribute`
 
 class QgsVectorLayerUndoPassthroughCommandUpdate : QgsVectorLayerUndoPassthroughCommand
 {
-%Docstring
+%Docstring(signature="appended")
 Undo command for running a specific sql query in transaction group.
 
 .. versionadded:: 3.0

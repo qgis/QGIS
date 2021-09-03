@@ -41,9 +41,6 @@ except ImportError:
 
     cfg = sipconfig.Configuration()
     sip_dir = cfg.default_sip_dir
-    if sys.platform.startswith('freebsd'):
-        py_version = str(sys.version_info.major) + str(sys.version_info.minor)
-        sip_dir = sip_dir.replace(py_version, '')
     for p in (os.path.join(sip_dir, "PyQt5"),
               os.path.join(sip_dir, "PyQt5-3"),
               sip_dir,
@@ -51,8 +48,6 @@ except ImportError:
         if os.path.exists(os.path.join(p, "QtCore", "QtCoremod.sip")):
             sip_dir = p
             break
-    else:
-        sys.exit(1)
     cfg = {
         'pyqt_mod_dir': os.path.join(cfg.default_mod_dir, "PyQt5"),
         'pyqt_sip_dir': sip_dir,

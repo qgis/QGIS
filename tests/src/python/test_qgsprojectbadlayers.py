@@ -219,8 +219,9 @@ class TestQgsProjectBadLayers(unittest.TestCase):
             _check_relations()
 
         # Changing data source, relations should be restored:
-        point_a.setDataSource(point_a_source, 'point_a', 'ogr')
-        point_b.setDataSource(point_b_source, 'point_b', 'ogr')
+        options = QgsDataProvider.ProviderOptions()
+        point_a.setDataSource(point_a_source, 'point_a', 'ogr', options)
+        point_b.setDataSource(point_b_source, 'point_b', 'ogr', options)
         self.assertTrue(point_a.isValid())
         self.assertTrue(point_b.isValid())
 

@@ -15,7 +15,7 @@
 
 class QgsProcessingAlgorithmConfigurationWidget : QWidget, QgsExpressionContextGenerator
 {
-%Docstring
+%Docstring(signature="appended")
 A configuration widget for processing algorithms allows providing additional
 configuration options directly on algorithm level, in addition to parameters.
 
@@ -101,7 +101,7 @@ a Processing context for the widget when required.
 
 class QgsProcessingAlgorithmConfigurationWidgetFactory
 {
-%Docstring
+%Docstring(signature="appended")
 Interface base class for factories for algorithm configuration widgets.
 
 .. versionadded:: 3.2

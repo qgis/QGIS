@@ -12,8 +12,6 @@ __author__ = 'Stephane Brunner'
 __date__ = '28/08/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-print('CTEST_FULL_OUTPUT')
-
 import os
 import json
 from qgis.testing import unittest

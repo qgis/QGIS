@@ -26,7 +26,7 @@
 #include "qgspainteffect.h"
 
 class QgsMarkerSymbol;
-
+class QgsLineSymbol;
 
 /**
  * \ingroup app
@@ -38,6 +38,7 @@ class APP_EXPORT QgsMapCanvasSymbolItem: public QgsMapCanvasItem
   public:
 
     QgsMapCanvasSymbolItem( QgsMapCanvas *canvas = nullptr );
+    ~QgsMapCanvasSymbolItem() override;
 
     void paint( QPainter *painter ) override;
 

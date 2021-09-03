@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>470</width>
-    <height>502</height>
+    <height>540</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -82,11 +82,11 @@
    </item>
    <item row="0" column="0">
     <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Display expression Ⓘ</string>
-     </property>
      <property name="toolTip">
       <string>This setting is not saved in the style. It is changing the display name on the referenced layer.</string>
+     </property>
+     <property name="text">
+      <string>Display expression Ⓘ</string>
      </property>
     </widget>
    </item>
@@ -246,6 +246,8 @@
   <tabstop>mRemoveFilterButton</tabstop>
   <tabstop>mFilterFieldsList</tabstop>
   <tabstop>mCbxChainFilters</tabstop>
+  <tabstop>mEditExpression</tabstop>
+  <tabstop>mFilterExpression</tabstop>
  </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>

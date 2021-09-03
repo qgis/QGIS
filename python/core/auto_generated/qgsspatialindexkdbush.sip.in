@@ -12,7 +12,7 @@
 
 class QgsSpatialIndexKDBush
 {
-%Docstring
+%Docstring(signature="appended")
 
 A very fast static spatial index for 2D points based on a flat KD-tree.
 
@@ -57,6 +57,7 @@ that of the spatial index construction.
 
 Any non-single point features encountered during iteration will be ignored and not included in the index.
 %End
+
 
     QgsSpatialIndexKDBush( const QgsSpatialIndexKDBush &other );
 %Docstring

@@ -10,7 +10,7 @@
 
 class QgsLayoutRuler: QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A custom ruler widget for use with :py:class:`QgsLayoutView`, displaying the
 current zoom and position of the visible layout and for interacting
 with guides in a layout.

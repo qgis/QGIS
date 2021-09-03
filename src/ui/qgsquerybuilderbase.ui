@@ -347,15 +347,15 @@ p, li { white-space: pre-wrap; }
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCodeEditorSQL</class>
@@ -366,11 +366,11 @@ p, li { white-space: pre-wrap; }
  </customwidgets>
  <tabstops>
   <tabstop>lstFields</tabstop>
+  <tabstop>mFilterLineEdit</tabstop>
   <tabstop>lstValues</tabstop>
   <tabstop>btnSampleValues</tabstop>
   <tabstop>btnGetAllValues</tabstop>
   <tabstop>mUseUnfilteredLayer</tabstop>
-  <tabstop>groupBox4</tabstop>
   <tabstop>btnEqual</tabstop>
   <tabstop>btnLessThan</tabstop>
   <tabstop>btnGreaterThan</tabstop>

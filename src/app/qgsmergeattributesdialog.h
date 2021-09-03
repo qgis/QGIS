@@ -29,6 +29,7 @@ class QgsMapCanvas;
 class QgsRubberBand;
 class QgsVectorLayer;
 class QComboBox;
+class QgsAttributeTableConfig;
 
 
 //! A dialog to insert the merge behavior for attributes (e.g. for the union features editing tool)
@@ -65,12 +66,15 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     void comboValueChanged( const QString &text );
     void selectedRowChanged();
     void mFromSelectedPushButton_clicked();
+    void mFromLargestPushButton_clicked();
     void mRemoveFeatureFromSelectionButton_clicked();
     void tableWidgetCellChanged( int row, int column );
 
   private:
     QgsMergeAttributesDialog(); //default constructor forbidden
     void createTableWidgetContents();
+    void setAttributeTableConfig( const QgsAttributeTableConfig &config );
+
     //! Create new combo box with the options for featureXX / mean / min / max
     QComboBox *createMergeComboBox( QVariant::Type columnType ) const;
 
@@ -83,6 +87,8 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     void refreshMergedValue( int col );
     //! Inserts the attribute value of a specific feature into the row of merged attributes
     QVariant featureAttribute( QgsFeatureId featureId, int fieldIdx );
+    //! Inserts all attribute values of a specific feature into the row of merged attributes
+    void setAllAttributesFromFeature( QgsFeatureId featureId );
     //! Appends the values of the features for the final value
     QVariant concatenationAttribute( int col );
 
@@ -103,6 +109,7 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
 
     QgsFields mFields;
     QSet<int> mHiddenAttributes;
+    QMap< QString, int > mFieldToColumnMap;
     bool mUpdating = false;
 
     static const QList< QgsStatisticalSummary::Statistic > DISPLAY_STATS;

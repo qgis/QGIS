@@ -30,7 +30,7 @@
 
 /**
  * \ingroup core
- * Contains detailed styling information relating to how a layout legend should be rendered.
+ * \brief Contains detailed styling information relating to how a layout legend should be rendered.
  */
 class CORE_EXPORT QgsLegendStyle
 {
@@ -122,6 +122,22 @@ class CORE_EXPORT QgsLegendStyle
     void setAlignment( Qt::Alignment alignment ) { mAlignment = alignment; }
 
     /**
+    * Returns the indent (in mm) of a group or subgroup.
+    *
+    * \see indent()
+    * \since QGIS 3.22
+    */
+    double indent() { return mIndent; }
+
+    /**
+     * Sets the indent (in mm) of a group or subgroup.
+     *
+     * \see indent()
+     * \since QGIS 3.22
+     */
+    void setIndent( double indent ) { mIndent = indent; }
+
+    /**
      * Writes the component's style definition to an XML element.
      * \see readXml()
      */
@@ -159,6 +175,7 @@ class CORE_EXPORT QgsLegendStyle
     QFont mFont;
     QMap<Side, double> mMarginMap;
     Qt::Alignment mAlignment = Qt::AlignLeft;
+    double mIndent = 0;
 };
 
 #endif

@@ -328,7 +328,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   // (guidependency missing in GRASS 6)
   // Add default inter param relations
   QList<QgsGrassModuleInput *>vectorInputs;
-  Q_FOREACH ( QgsGrassModuleParam *param, mParams )
+  for ( QgsGrassModuleParam *param : mParams )
   {
     QgsGrassModuleInput *vectorInput = dynamic_cast<QgsGrassModuleInput *>( param );
     if ( vectorInput )
@@ -340,7 +340,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   {
     QgsDebugMsg( "One input found, try to connect with column options" );
     QgsGrassModuleInput *vectorInput = vectorInputs[0];
-    Q_FOREACH ( QgsGrassModuleParam *param, mParams )
+    for ( QgsGrassModuleParam *param : mParams )
     {
       QgsGrassModuleField *moduleField = dynamic_cast<QgsGrassModuleField *>( param );
       if ( moduleField )
@@ -365,7 +365,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
     layout->addStretch();
   }
 
-  Q_FOREACH ( QgsGrassModuleParam *item, mParams )
+  for ( QgsGrassModuleParam *item : mParams )
   {
     mErrors << item->errors();
   }
@@ -465,7 +465,7 @@ QStringList QgsGrassModuleStandardOptions::checkOutput()
 QList<QgsGrassProvider *> QgsGrassModuleStandardOptions::grassProviders()
 {
   QList<QgsGrassProvider *> providers;
-  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
+  for ( QgsMapLayer *layer : QgsProject::instance()->mapLayers().values() )
   {
     if ( layer->type() == QgsMapLayerType::VectorLayer )
     {
@@ -486,7 +486,7 @@ QList<QgsGrassProvider *> QgsGrassModuleStandardOptions::grassProviders()
 QList<QgsGrassRasterProvider *> QgsGrassModuleStandardOptions::grassRasterProviders()
 {
   QList<QgsGrassRasterProvider *> providers;
-  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
+  for ( QgsMapLayer *layer : QgsProject::instance()->mapLayers().values() )
   {
     if ( layer->type() == QgsMapLayerType::RasterLayer )
     {
@@ -528,7 +528,7 @@ void QgsGrassModuleStandardOptions::freezeOutput( bool freeze )
       outputObject.setType( QgsGrassObject::Vector );
       QgsDebugMsg( "outputObject = " + outputObject.toString() );
 
-      Q_FOREACH ( QgsGrassProvider *provider, grassProviders() )
+      for ( QgsGrassProvider *provider : grassProviders() )
       {
         QgsGrassObject layerObject;
         layerObject.setFromUri( provider->dataSourceUri() );
@@ -556,7 +556,7 @@ void QgsGrassModuleStandardOptions::freezeOutput( bool freeze )
       outputObject.setType( QgsGrassObject::Raster );
       QgsDebugMsg( "outputObject = " + outputObject.toString() );
 
-      Q_FOREACH ( QgsGrassRasterProvider *provider, grassRasterProviders() )
+      for ( QgsGrassRasterProvider *provider : grassRasterProviders() )
       {
         QgsGrassObject layerObject;
         layerObject.setFromUri( provider->dataSourceUri() );

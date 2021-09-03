@@ -14,8 +14,6 @@
  ***************************************************************************/
 
 #include "qgsmaptooladdregularpolygon.h"
-#include "qgscompoundcurve.h"
-#include "qgscurvepolygon.h"
 #include "qgsgeometryrubberband.h"
 #include "qgsgeometryutils.h"
 #include "qgsmapcanvas.h"
@@ -25,26 +23,15 @@
 #include "qgssnapindicator.h"
 
 QgsMapToolAddRegularPolygon::QgsMapToolAddRegularPolygon( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode )
-  : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
-  , mParentTool( parentTool )
-  , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
+  : QgsMapToolAddAbstract( parentTool, canvas, mode )
 {
   mToolName = tr( "Add regular polygon" );
-
-  clean();
-  connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddRegularPolygon::stopCapturing );
-  connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddRegularPolygon::stopCapturing );
-}
-
-QgsMapToolAddRegularPolygon::~QgsMapToolAddRegularPolygon()
-{
-  clean();
 }
 
 void QgsMapToolAddRegularPolygon::createNumberSidesSpinBox()
 {
   deleteNumberSidesSpinBox();
-  mNumberSidesSpinBox = qgis::make_unique<QgsSpinBox>();
+  mNumberSidesSpinBox = std::make_unique<QgsSpinBox>();
   mNumberSidesSpinBox->setMaximum( 99999999 );
   mNumberSidesSpinBox->setMinimum( 3 );
   mNumberSidesSpinBox->setPrefix( tr( "Number of sides: " ) );
@@ -60,51 +47,6 @@ void QgsMapToolAddRegularPolygon::deleteNumberSidesSpinBox()
   }
 }
 
-void QgsMapToolAddRegularPolygon::keyPressEvent( QKeyEvent *e )
-{
-  if ( e && e->isAutoRepeat() )
-  {
-    return;
-  }
-
-  if ( e && e->key() == Qt::Key_Escape )
-  {
-    clean();
-    if ( mParentTool )
-      mParentTool->keyPressEvent( e );
-  }
-
-  if ( e && e->key() == Qt::Key_Backspace )
-  {
-    if ( mPoints.size() == 1 )
-    {
-
-      if ( mTempRubberBand )
-      {
-        delete mTempRubberBand;
-        mTempRubberBand = nullptr;
-      }
-
-      mPoints.clear();
-    }
-    else if ( mPoints.size() > 1 )
-    {
-      mPoints.removeLast();
-
-    }
-    if ( mParentTool )
-      mParentTool->keyPressEvent( e );
-  }
-}
-
-void QgsMapToolAddRegularPolygon::keyReleaseEvent( QKeyEvent *e )
-{
-  if ( e && e->isAutoRepeat() )
-  {
-    return;
-  }
-}
-
 void QgsMapToolAddRegularPolygon::deactivate()
 {
   if ( !mParentTool || mRegularPolygon.isEmpty() )
@@ -115,7 +57,7 @@ void QgsMapToolAddRegularPolygon::deactivate()
 
   // keep z value from the first snapped point
   std::unique_ptr<QgsLineString> ls( mRegularPolygon.toLineString() );
-  for ( const QgsPoint &point : qgis::as_const( mPoints ) )
+  for ( const QgsPoint &point : std::as_const( mPoints ) )
   {
     if ( QgsWkbTypes::hasZ( point.wkbType() ) &&
          point.z() != defaultZValue() )
@@ -132,26 +74,9 @@ void QgsMapToolAddRegularPolygon::deactivate()
   QgsMapToolCapture::deactivate();
 }
 
-void QgsMapToolAddRegularPolygon::activate()
-{
-  clean();
-  QgsMapToolCapture::activate();
-}
-
 void QgsMapToolAddRegularPolygon::clean()
 {
-  if ( mTempRubberBand )
-  {
-    delete mTempRubberBand;
-    mTempRubberBand = nullptr;
-  }
-
-  mPoints.clear();
-
-  if ( mParentTool )
-  {
-    mParentTool->deleteTempRubberBand();
-  }
+  QgsMapToolAddAbstract::clean();
 
   if ( mNumberSidesSpinBox )
   {
@@ -159,19 +84,4 @@ void QgsMapToolAddRegularPolygon::clean()
   }
 
   mRegularPolygon = QgsRegularPolygon();
-
-
-  QgsVectorLayer *vLayer = static_cast<QgsVectorLayer *>( QgisApp::instance()->activeLayer() );
-  if ( vLayer )
-    mLayerType = vLayer->geometryType();
-}
-
-void QgsMapToolAddRegularPolygon::release( QgsMapMouseEvent *e )
-{
-  deactivate();
-  if ( mParentTool )
-  {
-    mParentTool->canvasReleaseEvent( e );
-  }
-  activate();
 }

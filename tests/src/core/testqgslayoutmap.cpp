@@ -37,6 +37,7 @@
 #include "qgsfontutils.h"
 #include "qgsannotationlayer.h"
 #include "qgsannotationmarkeritem.h"
+#include "qgslabelingresults.h"
 
 #include <QObject>
 #include "qgstest.h"
@@ -75,6 +76,7 @@ class TestQgsLayoutMap : public QObject
     void testLayeredExport();
     void testLayeredExportLabelsByLayer();
     void testTemporal();
+    void testLabelResults();
 
   private:
     QgsRasterLayer *mRasterLayer = nullptr;
@@ -92,21 +94,21 @@ void TestQgsLayoutMap::initTestCase()
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) );
 
   //create maplayers from testdata and add to layer registry
-  QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
+  const QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                      rasterFileInfo.completeBaseName() );
   QgsMultiBandColorRenderer *rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
   mRasterLayer->setRenderer( rasterRenderer );
 
-  QFileInfo pointFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
+  const QFileInfo pointFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
   mPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(),
                                      pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
-  QFileInfo polyFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/polys.shp" );
+  const QFileInfo polyFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/polys.shp" );
   mPolysLayer = new QgsVectorLayer( polyFileInfo.filePath(),
                                     polyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
-  QFileInfo lineFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/lines.shp" );
+  const QFileInfo lineFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/lines.shp" );
   mLinesLayer = new QgsVectorLayer( lineFileInfo.filePath(),
                                     lineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
@@ -119,7 +121,7 @@ void TestQgsLayoutMap::initTestCase()
 
 void TestQgsLayoutMap::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -215,8 +217,8 @@ void TestQgsLayoutMap::uniqueId()
 
   QVERIFY( newMap );
 
-  QString oldId = map->displayName();
-  QString newId = newMap->displayName();
+  const QString oldId = map->displayName();
+  const QString newId = newMap->displayName();
 
   QVERIFY( oldId != newId );
 }
@@ -240,7 +242,7 @@ void TestQgsLayoutMap::worldFileGeneration()
 
   l.setReferenceMap( map );
 
-  QgsLayoutExporter exporter( &l );
+  const QgsLayoutExporter exporter( &l );
 
   double a, b, c, d, e, f;
   exporter.computeWorldFileParameters( a, b, c, d, e, f );
@@ -406,7 +408,7 @@ void TestQgsLayoutMap::dataDefinedLayers()
 
 void TestQgsLayoutMap::dataDefinedStyles()
 {
-  QList<QgsMapLayer *> layers = QList<QgsMapLayer *>() << mRasterLayer << mPolysLayer << mPointsLayer << mLinesLayer;
+  const QList<QgsMapLayer *> layers = QList<QgsMapLayer *>() << mRasterLayer << mPolysLayer << mPointsLayer << mLinesLayer;
 
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -470,7 +472,7 @@ void TestQgsLayoutMap::dataDefinedStyles()
 
 void TestQgsLayoutMap::dataDefinedCrs()
 {
-  QList<QgsMapLayer *> layers = QList<QgsMapLayer *>() << mRasterLayer << mPolysLayer << mPointsLayer << mLinesLayer;
+  const QList<QgsMapLayer *> layers = QList<QgsMapLayer *>() << mRasterLayer << mPolysLayer << mPointsLayer << mLinesLayer;
 
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -490,16 +492,12 @@ void TestQgsLayoutMap::dataDefinedCrs()
   //test proj string variable
   map->dataDefinedProperties().setProperty( QgsLayoutObject::MapCrs, QgsProperty::fromValue( QStringLiteral( "PROJ4: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs" ) ) );
   map->refreshDataDefinedProperty( QgsLayoutObject::MapCrs );
-#if PROJ_VERSION_MAJOR>=6
   QCOMPARE( map->crs().toProj(), QStringLiteral( "+proj=merc +a=6378137 +b=6378137 +lat_ts=0 +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null +wktext +no_defs" ) );
-#else
-  QCOMPARE( map->crs().toProj(), QStringLiteral( "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs" ) );
-#endif
 }
 
 void TestQgsLayoutMap::dataDefinedTemporalRange()
 {
-  QList<QgsMapLayer *> layers = QList<QgsMapLayer *>() << mRasterLayer << mPolysLayer << mPointsLayer << mLinesLayer;
+  const QList<QgsMapLayer *> layers = QList<QgsMapLayer *>() << mRasterLayer << mPolysLayer << mPointsLayer << mLinesLayer;
 
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -511,16 +509,16 @@ void TestQgsLayoutMap::dataDefinedTemporalRange()
   map->setLayers( layers );
   l.addLayoutItem( map );
 
-  QDateTime dt1 = QDateTime( QDate( 2010, 1, 1 ), QTime( 0, 0, 0 ) );
-  QDateTime dt2 = QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) );
+  const QDateTime dt1 = QDateTime( QDate( 2010, 1, 1 ), QTime( 0, 0, 0 ) );
+  const QDateTime dt2 = QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) );
   map->setIsTemporal( true );
   map->dataDefinedProperties().setProperty( QgsLayoutObject::StartDateTime, QgsProperty::fromValue( dt1 ) );
   map->dataDefinedProperties().setProperty( QgsLayoutObject::EndDateTime, QgsProperty::fromValue( dt2 ) );
   map->refreshDataDefinedProperty( QgsLayoutObject::StartDateTime );
   map->refreshDataDefinedProperty( QgsLayoutObject::EndDateTime );
-  QCOMPARE( map->temporalRange(), QgsDateTimeRange( dt1, dt2 ) );
-  QgsMapSettings ms = map->mapSettings( map->extent(), map->rect().size(), 300, false );
-  QCOMPARE( ms.temporalRange(), QgsDateTimeRange( dt1, dt2 ) );
+  QCOMPARE( map->temporalRange(), QgsDateTimeRange( dt1, dt2, true, false ) );
+  const QgsMapSettings ms = map->mapSettings( map->extent(), map->rect().size(), 300, false );
+  QCOMPARE( ms.temporalRange(), QgsDateTimeRange( dt1, dt2, true, false ) );
 }
 
 void TestQgsLayoutMap::rasterized()
@@ -534,7 +532,7 @@ void TestQgsLayoutMap::rasterized()
   map->attemptResize( QgsLayoutSize( 200, 100 ) );
   map->setFrameEnabled( true );
   map->setExtent( QgsRectangle( -110.0, 25.0, -90, 40.0 ) );
-  QList<QgsMapLayer *> layers = QList<QgsMapLayer *>() << mLinesLayer;
+  const QList<QgsMapLayer *> layers = QList<QgsMapLayer *>() << mLinesLayer;
   map->setLayers( layers );
   map->setBackgroundColor( Qt::yellow );
   l.addLayoutItem( map );
@@ -587,8 +585,8 @@ void TestQgsLayoutMap::rasterized()
 
 void TestQgsLayoutMap::layersToRender()
 {
-  QList<QgsMapLayer *> layers = QList<QgsMapLayer *>() << mRasterLayer << mPolysLayer << mPointsLayer << mLinesLayer;
-  QList<QgsMapLayer *> layers2 = QList<QgsMapLayer *>() << mRasterLayer << mPolysLayer << mLinesLayer;
+  const QList<QgsMapLayer *> layers = QList<QgsMapLayer *>() << mRasterLayer << mPolysLayer << mPointsLayer << mLinesLayer;
+  const QList<QgsMapLayer *> layers2 = QList<QgsMapLayer *>() << mRasterLayer << mPolysLayer << mLinesLayer;
 
   QgsLayout l( QgsProject::instance() );
 
@@ -610,7 +608,7 @@ void TestQgsLayoutMap::layersToRender()
 void TestQgsLayoutMap::mapRotation()
 {
   QgsProject p;
-  QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/rgb256x256.png" );
+  const QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/rgb256x256.png" );
   QgsRasterLayer *layer = new QgsRasterLayer( rasterFileInfo.filePath(),
       rasterFileInfo.completeBaseName() );
   QgsMultiBandColorRenderer *rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 1, 2, 3 );
@@ -646,7 +644,7 @@ void TestQgsLayoutMap::mapRotation()
 void TestQgsLayoutMap::mapItemRotation()
 {
   QgsProject p;
-  QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/rgb256x256.png" );
+  const QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/rgb256x256.png" );
   QgsRasterLayer *layer = new QgsRasterLayer( rasterFileInfo.filePath(),
       rasterFileInfo.completeBaseName() );
   QgsMultiBandColorRenderer *rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 1, 2, 3 );
@@ -672,7 +670,7 @@ void TestQgsLayoutMap::mapItemRotation()
 
 void TestQgsLayoutMap::expressionContext()
 {
-  QgsRectangle extent( 2000, 2800, 2500, 2900 );
+  const QgsRectangle extent( 2000, 2800, 2500, 2900 );
   QgsLayout l( QgsProject::instance() );
 
   QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
@@ -708,6 +706,10 @@ void TestQgsLayoutMap::expressionContext()
   r = e6.evaluate( &c );
   QCOMPARE( r.toString(), QString( "longlat" ) );
 
+  QgsExpression e6a( QStringLiteral( "@map_crs_projection" ) );
+  r = e6a.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "Lat/long (Geodetic alias)" ) );
+
   QgsExpression e7( QStringLiteral( "@map_crs_proj4" ) );
   r = e7.evaluate( &c );
   QCOMPARE( r.toString(), QString( "+proj=longlat +datum=WGS84 +no_defs" ) );
@@ -718,11 +720,7 @@ void TestQgsLayoutMap::expressionContext()
 
   QgsExpression e9( QStringLiteral( "@map_crs_ellipsoid" ) );
   r = e9.evaluate( &c );
-#if PROJ_VERSION_MAJOR>=6
   QCOMPARE( r.toString(), QString( "EPSG:7030" ) );
-#else
-  QCOMPARE( r.toString(), QString( "WGS84" ) );
-#endif
 
   QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
   QgsVectorLayer *layer2 = new QgsVectorLayer( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "B" ), QStringLiteral( "memory" ) );
@@ -747,7 +745,7 @@ void TestQgsLayoutMap::expressionContext()
 
 void TestQgsLayoutMap::layoutToMapCoordsTransform()
 {
-  QgsRectangle extent( 2000, 2800, 2500, 2900 );
+  const QgsRectangle extent( 2000, 2800, 2500, 2900 );
   QgsLayout l( QgsProject::instance() );
 
   QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
@@ -793,7 +791,7 @@ void TestQgsLayoutMap::layoutToMapCoordsTransform()
 
 void TestQgsLayoutMap::labelBlockingRegions()
 {
-  QgsRectangle extent( 2000, 2800, 2500, 2900 );
+  const QgsRectangle extent( 2000, 2800, 2500, 2900 );
   QgsLayout l( QgsProject::instance() );
 
   QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
@@ -861,7 +859,7 @@ void TestQgsLayoutMap::labelBlockingRegions()
 
 void TestQgsLayoutMap::testSimplificationMethod()
 {
-  QgsRectangle extent( 2000, 2800, 2500, 2900 );
+  const QgsRectangle extent( 2000, 2800, 2500, 2900 );
   QgsLayout l( QgsProject::instance() );
 
   QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
@@ -943,7 +941,7 @@ void TestQgsLayoutMap::testRenderedFeatureHandler()
   map->addRenderedFeatureHandler( &handler1 );
 
   // trigger render
-  QgsLayoutExporter exporter( &l );
+  const QgsLayoutExporter exporter( &l );
   exporter.renderPageToImage( 0 );
 
   QCOMPARE( features1.count(), 6 );
@@ -954,7 +952,7 @@ void TestQgsLayoutMap::testRenderedFeatureHandler()
   features1.clear();
 
   // shouldn't be used anymore
-  QgsLayoutExporter exporter2( &l );
+  const QgsLayoutExporter exporter2( &l );
   exporter2.renderPageToImage( 0 );
 
   QVERIFY( features1.isEmpty() );
@@ -1931,8 +1929,8 @@ void TestQgsLayoutMap::testTemporal()
 {
   QgsLayout l( QgsProject::instance( ) );
   QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
-  QDateTime begin( QDate( 2020, 01, 01 ), QTime( 10, 0, 0 ), Qt::UTC );
-  QDateTime end = begin.addSecs( 3600 );
+  const QDateTime begin( QDate( 2020, 01, 01 ), QTime( 10, 0, 0 ), Qt::UTC );
+  const QDateTime end = begin.addSecs( 3600 );
 
   QgsMapSettings settings = map->mapSettings( map->extent(), QSize( 512, 512 ), 72, false );
   QgsRenderContext renderContext = QgsRenderContext::fromMapSettings( settings );
@@ -1945,7 +1943,108 @@ void TestQgsLayoutMap::testTemporal()
   settings = map->mapSettings( map->extent(), QSize( 512, 512 ), 72, false );
   renderContext = QgsRenderContext::fromMapSettings( settings );
   QVERIFY( renderContext.isTemporal() );
-  QCOMPARE( renderContext.temporalRange(), QgsDateTimeRange( begin, end ) );
+  QCOMPARE( renderContext.temporalRange(), QgsDateTimeRange( begin, end, true, false ) );
+}
+
+void TestQgsLayoutMap::testLabelResults()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+
+  // test retrieval of labeling results
+  QgsPalLayerSettings settings;
+
+  settings.fieldName = QStringLiteral( "\"id\"" );
+  settings.isExpression = true;
+  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.priority = 10;
+  settings.displayAll = true;
+
+  QgsVectorLayer *vl2 = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 );
+  f.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( -6.250851540391068, 53.335006994584944 ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+  f.setAttributes( QgsAttributes() << 8888 );
+  f.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( -21.950014487179544, 64.150023619739216 ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+  f.setAttributes( QgsAttributes() << 33333 );
+  f.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( -0.118667702475932, 51.5019405883275 ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+  vl2->updateExtents();
+
+  p.addMapLayer( vl2 );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  vl2->setLabelsEnabled( true );
+
+  map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
+  map->setFrameEnabled( false );
+  map->setBackgroundEnabled( false );
+  map->setCrs( vl2->crs() );
+  map->zoomToExtent( vl2->extent() );
+  map->setLayers( QList<QgsMapLayer *>() << vl2 );
+  l.addLayoutItem( map );
+
+  l.renderContext().mIsPreviewRender = false;
+  QImage im( 600, 600, QImage::Format_ARGB32_Premultiplied );
+  QPainter painter( &im );
+  map->paint( &painter, nullptr, nullptr );
+  painter.end();
+
+  // retrieve label results
+  std::unique_ptr< QgsLabelingResults > results = std::move( map->mExportLabelingResults );
+  QVERIFY( results );
+  QList<QgsLabelPosition> labels = results->allLabels();
+  QCOMPARE( labels.count(), 3 );
+  std::sort( labels.begin(), labels.end(), []( const QgsLabelPosition & a, const QgsLabelPosition & b )
+  {
+    return a.labelText.compare( b.labelText ) < 0;
+  } );
+  QCOMPARE( labels.at( 0 ).labelText, QStringLiteral( "1" ) );
+  QVERIFY( !labels.at( 0 ).isUnplaced );
+  QCOMPARE( labels.at( 1 ).labelText, QStringLiteral( "33333" ) );
+  QVERIFY( !labels.at( 1 ).isUnplaced );
+  QCOMPARE( labels.at( 2 ).labelText, QStringLiteral( "8888" ) );
+  QVERIFY( !labels.at( 2 ).isUnplaced );
+
+  // with unplaced labels
+  QgsVectorLayer *vl3( vl2->clone() );
+  p.addMapLayer( vl3 );
+  // with unplaced labels -- all vl3 labels will be unplaced, because they are conflicting with those in vl2
+  settings.priority = 1;
+  settings.displayAll = false;
+  vl3->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  vl3->setLabelsEnabled( true );
+  map->setLayers( { vl2, vl3 } );
+
+  painter.begin( &im );
+  map->paint( &painter, nullptr, nullptr );
+  painter.end();
+
+  results = std::move( map->mExportLabelingResults );
+  QVERIFY( results );
+  labels = results->allLabels();
+  QCOMPARE( labels.count(), 6 );
+  std::sort( labels.begin(), labels.end(), []( const QgsLabelPosition & a, const QgsLabelPosition & b )
+  {
+    return a.isUnplaced == b.isUnplaced ? a.labelText.compare( b.labelText ) < 0 : a.isUnplaced < b.isUnplaced;
+  } );
+  QCOMPARE( labels.at( 0 ).labelText, QStringLiteral( "1" ) );
+  QVERIFY( !labels.at( 0 ).isUnplaced );
+  QCOMPARE( labels.at( 1 ).labelText, QStringLiteral( "33333" ) );
+  QVERIFY( !labels.at( 1 ).isUnplaced );
+  QCOMPARE( labels.at( 2 ).labelText, QStringLiteral( "8888" ) );
+  QVERIFY( !labels.at( 2 ).isUnplaced );
+  QCOMPARE( labels.at( 3 ).labelText, QStringLiteral( "1" ) );
+  QVERIFY( labels.at( 3 ).isUnplaced );
+  QCOMPARE( labels.at( 4 ).labelText, QStringLiteral( "33333" ) );
+  QVERIFY( labels.at( 4 ).isUnplaced );
+  QCOMPARE( labels.at( 5 ).labelText, QStringLiteral( "8888" ) );
+  QVERIFY( labels.at( 5 ).isUnplaced );
+
 }
 
 QGSTEST_MAIN( TestQgsLayoutMap )

@@ -49,7 +49,7 @@ int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
   if ( QgsOpenClUtils::enabled() && QgsOpenClUtils::available() && ! openClProgramBaseName( ).isEmpty() )
   {
     // Load the program sources
-    QString source( QgsOpenClUtils::sourceFromBaseName( openClProgramBaseName( ) ) );
+    const QString source( QgsOpenClUtils::sourceFromBaseName( openClProgramBaseName( ) ) );
     if ( ! source.isEmpty() )
     {
       try
@@ -59,16 +59,16 @@ int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
       }
       catch ( cl::Error &e )
       {
-        QString err = QObject::tr( "Error running OpenCL program: %1 - %2" ).arg( e.what( ), QgsOpenClUtils::errorText( e.err( ) ) );
-        QgsMessageLog::logMessage( err, QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::Critical );
+        const QString err = QObject::tr( "Error running OpenCL program: %1 - %2" ).arg( e.what( ), QgsOpenClUtils::errorText( e.err( ) ) );
+        QgsMessageLog::logMessage( err, QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::MessageLevel::Critical );
         throw QgsProcessingException( err );
       }
     }
     else
     {
-      QString err = QObject::tr( "Error loading OpenCL program sources" );
+      const QString err = QObject::tr( "Error loading OpenCL program sources" );
       QgsMessageLog::logMessage( err,
-                                 QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::Critical );
+                                 QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::MessageLevel::Critical );
       throw QgsProcessingException( err );
     }
   }
@@ -127,8 +127,8 @@ gdal::dataset_unique_ptr QgsNineCellFilter::openOutputFile( GDALDatasetH inputDa
     return nullptr;
   }
 
-  int xSize = GDALGetRasterXSize( inputDataset );
-  int ySize = GDALGetRasterYSize( inputDataset );
+  const int xSize = GDALGetRasterXSize( inputDataset );
+  const int ySize = GDALGetRasterYSize( inputDataset );
 
   //open output file
   char **papszOptions = nullptr;
@@ -174,7 +174,7 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
 
   //open input file
   int xSize, ySize;
-  gdal::dataset_unique_ptr inputDataset( openInputFile( xSize, ySize ) );
+  const gdal::dataset_unique_ptr inputDataset( openInputFile( xSize, ySize ) );
   if ( !inputDataset )
   {
     return 1; //opening of input file failed
@@ -216,7 +216,7 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
   }
 
   // Prepare context and queue
-  cl::Context ctx = QgsOpenClUtils::context();
+  const cl::Context ctx = QgsOpenClUtils::context();
   cl::CommandQueue queue = QgsOpenClUtils::commandQueue();
 
   //keep only three scanlines in memory at a time, make room for initial and final nodata
@@ -236,8 +236,8 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
   // used to pass additional args to opencl program
   addExtraRasterParams( rasterParams );
 
-  std::size_t bufferSize( sizeof( float ) * ( xSize + 2 ) );
-  std::size_t inputSize( sizeof( float ) * ( xSize ) );
+  const std::size_t bufferSize( sizeof( float ) * ( xSize + 2 ) );
+  const std::size_t inputSize( sizeof( float ) * ( xSize ) );
 
   cl::Buffer rasterParamsBuffer( queue, rasterParams.begin(), rasterParams.end(), true, false, nullptr );
   cl::Buffer scanLine1Buffer( ctx, CL_MEM_READ_ONLY, bufferSize, nullptr, nullptr );
@@ -247,7 +247,7 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
   cl::Buffer resultLineBuffer( ctx, CL_MEM_WRITE_ONLY, inputSize, nullptr, nullptr );
 
   // Create a program from the kernel source
-  cl::Program program( QgsOpenClUtils::buildProgram( source, QgsOpenClUtils::ExceptionBehavior::Throw ) );
+  const cl::Program program( QgsOpenClUtils::buildProgram( source, QgsOpenClUtils::ExceptionBehavior::Throw ) );
 
   // Create the OpenCL kernel
   auto kernel = cl::KernelFunctor <
@@ -360,7 +360,7 @@ int QgsNineCellFilter::processRasterCPU( QgsFeedback *feedback )
 
   //open input file
   int xSize, ySize;
-  gdal::dataset_unique_ptr inputDataset( openInputFile( xSize, ySize ) );
+  const gdal::dataset_unique_ptr inputDataset( openInputFile( xSize, ySize ) );
   if ( !inputDataset )
   {
     return 1; //opening of input file failed
@@ -402,7 +402,7 @@ int QgsNineCellFilter::processRasterCPU( QgsFeedback *feedback )
   }
 
   //keep only three scanlines in memory at a time, make room for initial and final nodata
-  std::size_t bufferSize( sizeof( float ) * ( xSize + 2 ) );
+  const std::size_t bufferSize( sizeof( float ) * ( xSize + 2 ) );
   float *scanLine1 = ( float * ) CPLMalloc( bufferSize );
   float *scanLine2 = ( float * ) CPLMalloc( bufferSize );
   float *scanLine3 = ( float * ) CPLMalloc( bufferSize );

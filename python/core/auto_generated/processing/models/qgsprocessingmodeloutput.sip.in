@@ -12,7 +12,7 @@
 
 class QgsProcessingModelOutput : QgsProcessingModelComponent
 {
-%Docstring
+%Docstring(signature="appended")
 Represents a final output created by the model.
 
 .. versionadded:: 3.0

@@ -19,6 +19,7 @@
 #include <QElapsedTimer>
 #include <QVariant>
 #include <QColor>
+#include <QUrl>
 #include <memory>
 #include <deque>
 

@@ -10,7 +10,7 @@
 
 class QgsPixmapLabel : QLabel
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsPixmapLabel` class shows a pixmap and adjusts its size to the space given
 to the widget by the layout and keeping its aspect ratio.
 %End
@@ -45,8 +45,15 @@ determined from the width with the given aspect ratio.
 %End
 
   public slots:
+
     void setPixmap( const QPixmap & );
     virtual void resizeEvent( QResizeEvent * );
+
+
+    void clear();
+%Docstring
+Clears any label contents.
+%End
 
 };
 

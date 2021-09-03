@@ -180,7 +180,7 @@ That's it. Tweets using the O2 library!
 
 ### Storing OAuth Tokens
 
-O2 provides simple storage classes for writing OAuth tokens in a peristent location. Currently, a QSettings based backing store **O2SettingsStore** is provided in O2. O2SettingsStore keeps all token values in an encrypted form. You have to specify the encryption key to use while constructing the object:
+O2 provides simple storage classes for writing OAuth tokens in a persistent location. Currently, a QSettings based backing store **O2SettingsStore** is provided in O2. O2SettingsStore keeps all token values in an encrypted form. You have to specify the encryption key to use while constructing the object:
 
     O0SettingsStore settings = new O0SettingsStore("myencryptionkey");
     // Set the store before starting OAuth, i.e before calling link()

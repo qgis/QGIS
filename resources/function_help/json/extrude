@@ -4,7 +4,7 @@
   "groups": ["GeometryGroup"],
   "description": "Returns an extruded version of the input (Multi-)Curve or (Multi-)Linestring geometry with an extension specified by x and y.",
   "arguments": [
-    {"arg":"geometry","description":"a polygon geometry"},
+    {"arg":"geometry","description":"a curve or linestring geometry"},
     {"arg":"x","description":"x extension, numeric value"},
     {"arg":"y","description":"y extension, numeric value"}
   ],

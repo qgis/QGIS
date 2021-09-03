@@ -22,6 +22,7 @@
 
 /**
  * \ingroup analysis
+ * \brief A dangle check.
  */
 class ANALYSIS_EXPORT QgsGeometryDangleCheck : public QgsGeometryCheck
 {

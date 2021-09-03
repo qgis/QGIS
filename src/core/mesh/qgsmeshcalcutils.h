@@ -39,7 +39,8 @@
 /**
  * \ingroup core
  * \class QgsMeshCalcUtils
- * Mathematical operations on QgsMeshMemoryDatasetGroup
+ * \brief Mathematical operations on QgsMeshMemoryDatasetGroup
+ *
  * QgsMeshMemoryDatasetGroups must be compatible (same mesh structure, same number of datasets, ...)
  * Any operation with NODATA is NODATA (e.g. NODATA + 1 = NODATA)
  *

@@ -47,7 +47,8 @@ from qgis.core import (
     QgsVectorTileLayer,
     QgsVectorTileBasicLabelingStyle,
     QgsWkbTypes,
-    QgsVectorTileBasicLabeling
+    QgsVectorTileBasicLabeling,
+    QgsTextFormat
 )
 
 from qgis.testing import start_app, unittest
@@ -243,8 +244,9 @@ class TestQgsPalLabeling(unittest.TestCase):
         lyr.fieldName = 'text'  # default in test data sources
         font = self.getTestFont()
         font.setPointSize(32)
-        format = lyr.format()
+        format = QgsTextFormat()
         format.setFont(font)
+        format.setColor(QColor(0, 0, 0))
         format.setNamedStyle('Roman')
         format.setSize(32)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)

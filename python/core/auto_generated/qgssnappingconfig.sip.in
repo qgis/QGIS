@@ -11,7 +11,7 @@
 
 class QgsSnappingConfig
 {
-%Docstring
+%Docstring(signature="appended")
 This is a container for configuration of the snapping of the project
 
 .. versionadded:: 3.0
@@ -47,6 +47,7 @@ This is a container for configuration of the snapping of the project
       AreaFlag,
       CentroidFlag,
       MiddleOfSegmentFlag,
+      LineEndpointFlag,
     };
     typedef QFlags<QgsSnappingConfig::SnappingTypes> SnappingTypeFlag;
 
@@ -58,18 +59,25 @@ This is a container for configuration of the snapping of the project
       PerLayer
     };
 
-    static const QString snappingTypeFlagToString( SnappingTypeFlag type );
+    static QString snappingTypeFlagToString( SnappingTypeFlag type );
 %Docstring
 Convenient method to returns the translated name of the enum type
-QgsSnappingConfig.SnappingTypeFlag
+QgsSnappingConfig.SnappingTypeFlag.
 
 .. versionadded:: 3.12
 %End
 
+    static QIcon snappingTypeFlagToIcon( SnappingTypeFlag type );
+%Docstring
+Convenient method to return an icon corresponding to the enum type
+QgsSnappingConfig.SnappingTypeFlag.
+
+.. versionadded:: 3.20
+%End
 
     class IndividualLayerSettings
 {
-%Docstring
+%Docstring(signature="appended")
 This is a container of advanced configuration (per layer) of the snapping of the project
 
 .. versionadded:: 3.0

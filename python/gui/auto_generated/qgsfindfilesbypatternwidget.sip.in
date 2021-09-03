@@ -12,7 +12,7 @@
 
 class QgsFindFilesByPatternWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A reusable widget for finding files (recursively) by file pattern.
 
 .. versionadded:: 3.8
@@ -52,7 +52,7 @@ no matching files were found.
 
 class QgsFindFilesByPatternDialog : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 A dialog for finding files (recursively) by file pattern.
 
 .. versionadded:: 3.8

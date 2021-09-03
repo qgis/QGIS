@@ -140,7 +140,7 @@ QVariantMap QgsExplodeHstoreAlgorithm::processAlgorithm( const QVariantMap &para
   QgsFeature outFeature;
   step = !features.empty() ? 50.0 / features.count() : 1;
   i = 0;
-  for ( const QgsFeature &feat : qgis::as_const( features ) )
+  for ( const QgsFeature &feat : std::as_const( features ) )
   {
     i++;
     if ( feedback->isCanceled() )
@@ -173,7 +173,8 @@ QVariantMap QgsExplodeHstoreAlgorithm::processAlgorithm( const QVariantMap &para
 
     outFeature.setGeometry( QgsGeometry( feat.geometry() ) );
     outFeature.setAttributes( outAttributes );
-    sink->addFeature( outFeature, QgsFeatureSink::FastInsert );
+    if ( !sink->addFeature( outFeature, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
   }
 
   QVariantMap outputs;

@@ -25,7 +25,7 @@
 
 /**
  * \ingroup core
- * A layout table subclass that displays manually entered (and formatted) content.
+ * \brief A layout table subclass that displays manually entered (and formatted) content.
  * \since QGIS 3.12
 */
 class CORE_EXPORT QgsLayoutItemManualTable: public QgsLayoutTable

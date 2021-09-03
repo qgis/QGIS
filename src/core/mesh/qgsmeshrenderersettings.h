@@ -32,7 +32,7 @@
 /**
  * \ingroup core
  *
- * Represents a mesh renderer settings for mesh object
+ * \brief Represents a mesh renderer settings for mesh object
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsMeshRendererMeshSettings
 /**
  * \ingroup core
  *
- * Represents a mesh renderer settings for scalar datasets
+ * \brief Represents a mesh renderer settings for scalar datasets
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -196,7 +196,7 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
 /**
  * \ingroup core
  *
- * Represents a mesh renderer settings for vector datasets displayed with arrows
+ * \brief Represents a mesh renderer settings for vector datasets displayed with arrows
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -315,7 +315,7 @@ class CORE_EXPORT QgsMeshRendererVectorArrowSettings
 /**
  * \ingroup core
  *
- * Represents a streamline renderer settings for vector datasets displayed by streamlines
+ * \brief Represents a streamline renderer settings for vector datasets displayed by streamlines
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -361,7 +361,7 @@ class CORE_EXPORT QgsMeshRendererVectorStreamlineSettings
 /**
  * \ingroup core
  *
- * Represents a trace renderer settings for vector datasets displayed by particle traces
+ * \brief Represents a trace renderer settings for vector datasets displayed by particle traces
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -401,7 +401,7 @@ class CORE_EXPORT QgsMeshRendererVectorTracesSettings
 /**
  * \ingroup core
  *
- * Represents a renderer settings for vector datasets
+ * \brief Represents a renderer settings for vector datasets
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -581,7 +581,7 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
 /**
  * \ingroup core
  *
- * Represents all mesh renderer settings
+ * \brief Represents all mesh renderer settings
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *

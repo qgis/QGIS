@@ -14,7 +14,7 @@
 
 class QgsAbstractDataSourceWidget : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base Data Source Widget to create connections and add layers
 This class provides common functionality and the interface for all
 source select dialogs used by data providers to configure data sources
@@ -85,6 +85,15 @@ Emitted when a DB layer has been selected for addition
     void addRasterLayer( const QString &rasterLayerPath, const QString &baseName, const QString &providerKey );
 %Docstring
 Emitted when a raster layer has been selected for addition
+%End
+
+    void addRasterLayers( const QStringList &layersList );
+%Docstring
+Emitted when one or more GDAL supported layers are selected for addition
+
+:param layersList: list of layers protocol URIs
+
+.. versionadded:: 3.20
 %End
 
     void addVectorLayer( const QString &uri, const QString &layerName, const QString &providerKey = QString() );

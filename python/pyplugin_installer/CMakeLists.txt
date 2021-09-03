@@ -1,5 +1,4 @@
 set (QGIS_PLUGININSTALLER_DIR ${QGIS_DATA_DIR}/python/pyplugin_installer)
-set (PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
 
 set(PY_PLUGININSTALLER_FILES
     __init__.py

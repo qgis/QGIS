@@ -165,7 +165,7 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
         QgsVectorTileMVTEncoder encoder( tileID );
         encoder.setTransformContext( mTransformContext );
 
-        for ( const Layer &layer : qgis::as_const( mLayers ) )
+        for ( const Layer &layer : std::as_const( mLayers ) )
         {
           if ( ( layer.minZoom() >= 0 && zoomLevel < layer.minZoom() ) ||
                ( layer.maxZoom() >= 0 && zoomLevel > layer.maxZoom() ) )
@@ -267,7 +267,7 @@ bool QgsVectorTileWriter::writeTileFileXYZ( const QString &sourcePath, QgsTileXY
 QString QgsVectorTileWriter::mbtilesJsonSchema()
 {
   QVariantList arrayLayers;
-  for ( const Layer &layer : qgis::as_const( mLayers ) )
+  for ( const Layer &layer : std::as_const( mLayers ) )
   {
     QgsVectorLayer *vl = layer.layer();
     const QgsFields fields = vl->fields();

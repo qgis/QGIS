@@ -10,7 +10,7 @@
 
 class QgsLayoutGridSettings : QgsLayoutSerializableObject
 {
-%Docstring
+%Docstring(signature="appended")
 Contains settings relating to the appearance, spacing and offset for layout grids.
 
 .. versionadded:: 3.0

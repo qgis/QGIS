@@ -1,0 +1,51 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology/qgsinterpolatedlinesymbollayerwidget.h             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsInterpolatedLineSymbolLayerWidget: QgsSymbolLayerWidget
+{
+%Docstring(signature="appended")
+:py:class:`QgsInterpolatedLineSymbolLayerWidget`
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgsinterpolatedlinesymbollayerwidget.h"
+%End
+  public:
+
+    QgsInterpolatedLineSymbolLayerWidget( QgsVectorLayer *layer, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor
+
+:param layer: the layer where this symbol layer is applied
+:param parent: the parent widget
+%End
+
+    static QgsSymbolLayerWidget *create( QgsVectorLayer *layer ) /Factory/;
+%Docstring
+Static creation method
+
+:param layer: the layer where this symbol layer is applied
+%End
+
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
+    virtual QgsSymbolLayer *symbolLayer();
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology/qgsinterpolatedlinesymbollayerwidget.h             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

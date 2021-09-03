@@ -73,7 +73,7 @@ void QgsStatisticalSummary::calculate( const QList<double> &values )
 {
   reset();
 
-  for ( double value : values )
+  for ( const double value : values )
   {
     addValue( value );
   }
@@ -105,7 +105,7 @@ void QgsStatisticalSummary::addVariant( const QVariant &value )
     mMissing++;
   else
   {
-    double val = value.toDouble( &convertOk );
+    const double val = value.toDouble( &convertOk );
     if ( convertOk )
       addValue( val );
     else
@@ -138,9 +138,9 @@ void QgsStatisticalSummary::finalize()
   {
     double sumSquared = 0;
     const auto constMValues = mValues;
-    for ( double value : constMValues )
+    for ( const double value : constMValues )
     {
-      double diff = value - mMean;
+      const double diff = value - mMean;
       sumSquared += diff * diff;
     }
     mStdev = std::pow( sumSquared / mValues.count(), 0.5 );
@@ -153,7 +153,7 @@ void QgsStatisticalSummary::finalize()
        || mStatistics & QgsStatisticalSummary::InterQuartileRange )
   {
     std::sort( mValues.begin(), mValues.end() );
-    bool even = ( mCount % 2 ) < 1;
+    const bool even = ( mCount % 2 ) < 1;
     if ( even )
     {
       mMedian = ( mValues[mCount / 2 - 1] + mValues[mCount / 2] ) / 2.0;
@@ -169,8 +169,8 @@ void QgsStatisticalSummary::finalize()
   {
     if ( ( mCount % 2 ) < 1 )
     {
-      int halfCount = mCount / 2;
-      bool even = ( halfCount % 2 ) < 1;
+      const int halfCount = mCount / 2;
+      const bool even = ( halfCount % 2 ) < 1;
       if ( even )
       {
         mFirstQuartile = ( mValues[halfCount / 2 - 1] + mValues[halfCount / 2] ) / 2.0;
@@ -182,8 +182,8 @@ void QgsStatisticalSummary::finalize()
     }
     else
     {
-      int halfCount = mCount / 2 + 1;
-      bool even = ( halfCount % 2 ) < 1;
+      const int halfCount = mCount / 2 + 1;
+      const bool even = ( halfCount % 2 ) < 1;
       if ( even )
       {
         mFirstQuartile = ( mValues[halfCount / 2 - 1] + mValues[halfCount / 2] ) / 2.0;
@@ -200,8 +200,8 @@ void QgsStatisticalSummary::finalize()
   {
     if ( ( mCount % 2 ) < 1 )
     {
-      int halfCount = mCount / 2;
-      bool even = ( halfCount % 2 ) < 1;
+      const int halfCount = mCount / 2;
+      const bool even = ( halfCount % 2 ) < 1;
       if ( even )
       {
         mThirdQuartile = ( mValues[ halfCount + halfCount / 2 - 1] + mValues[ halfCount + halfCount / 2] ) / 2.0;
@@ -213,8 +213,8 @@ void QgsStatisticalSummary::finalize()
     }
     else
     {
-      int halfCount = mCount / 2 + 1;
-      bool even = ( halfCount % 2 ) < 1;
+      const int halfCount = mCount / 2 + 1;
+      const bool even = ( halfCount % 2 ) < 1;
       if ( even )
       {
         mThirdQuartile = ( mValues[ halfCount + halfCount / 2 - 2 ] + mValues[ halfCount + halfCount / 2 - 1 ] ) / 2.0;

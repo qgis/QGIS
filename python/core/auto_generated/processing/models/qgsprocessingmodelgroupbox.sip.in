@@ -12,7 +12,7 @@
 
 class QgsProcessingModelGroupBox : QgsProcessingModelComponent
 {
-%Docstring
+%Docstring(signature="appended")
 Represents a group box in a model.
 
 .. versionadded:: 3.14

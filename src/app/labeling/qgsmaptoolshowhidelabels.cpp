@@ -26,7 +26,7 @@
 #include "qgsmaptoolselectutils.h"
 #include "qgsrubberband.h"
 #include "qgslogger.h"
-
+#include "qgslabelingresults.h"
 
 QgsMapToolShowHideLabels::QgsMapToolShowHideLabels( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolLabel( canvas, cadDock )
@@ -47,6 +47,8 @@ QgsMapToolShowHideLabels::~QgsMapToolShowHideLabels()
 void QgsMapToolShowHideLabels::canvasPressEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e )
+
+  clearHoveredLabel();
 
   QgsMapLayer *layer = mCanvas->currentLayer();
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
@@ -74,8 +76,13 @@ void QgsMapToolShowHideLabels::canvasPressEvent( QgsMapMouseEvent *e )
 void QgsMapToolShowHideLabels::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( e->buttons() != Qt::LeftButton )
+  {
+    if ( !mDragging )
+      updateHoveredLabel( e );
     return;
+  }
 
+  clearHoveredLabel();
   if ( !mDragging )
   {
     mDragging = true;
@@ -173,7 +180,7 @@ void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent *e )
     QList<QgsLabelPosition> positions;
     if ( selectedLabelFeatures( vlayer, positions ) )
     {
-      for ( const QgsLabelPosition &pos : qgis::as_const( positions ) )
+      for ( const QgsLabelPosition &pos : std::as_const( positions ) )
       {
         if ( showHide( pos, false ) )
           labelChanged = true;
@@ -185,7 +192,7 @@ void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent *e )
     QgsFeatureIds fids;
     if ( selectedFeatures( vlayer, fids ) )
     {
-      for ( const QgsFeatureId &fid : qgis::as_const( fids ) )
+      for ( const QgsFeatureId &fid : std::as_const( fids ) )
       {
         QgsLabelPosition pos;
         pos.featureId = fid;
@@ -246,7 +253,7 @@ bool QgsMapToolShowHideLabels::selectedFeatures( QgsVectorLayer *vlayer,
     Q_UNUSED( cse )
     // catch exception for 'invalid' point and leave existing selection unchanged
     QgsLogger::warning( "Caught CRS exception " + QStringLiteral( __FILE__ ) + ": " + QString::number( __LINE__ ) );
-    emit messageEmitted( tr( "CRS Exception: selection extends beyond layer's coordinate system." ), Qgis::Warning );
+    emit messageEmitted( tr( "CRS Exception: selection extends beyond layer's coordinate system." ), Qgis::MessageLevel::Warning );
     return false;
   }
 
@@ -277,10 +284,9 @@ bool QgsMapToolShowHideLabels::selectedLabelFeatures( QgsVectorLayer *vlayer,
   listPos.clear();
 
   // get list of all drawn labels from current layer that intersect rubberband
-  const QgsLabelingResults *labelingResults = mCanvas->labelingResults();
+  const QgsLabelingResults *labelingResults = mCanvas->labelingResults( false );
   if ( !labelingResults )
   {
-    QgsDebugMsg( QStringLiteral( "No labeling engine" ) );
     return false;
   }
 

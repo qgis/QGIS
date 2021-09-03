@@ -25,7 +25,7 @@
 /**
  * \class QgsFieldConstraints
  * \ingroup core
- * Stores information about constraints which may be present on a field.
+ * \brief Stores information about constraints which may be present on a field.
  * \since QGIS 3.0
  */
 
@@ -141,6 +141,7 @@ class CORE_EXPORT QgsFieldConstraints
      */
     void setConstraintExpression( const QString &expression, const QString &description = QString() );
 
+    // TODO c++20 - replace with = default
     bool operator==( const QgsFieldConstraints &other ) const;
 
   private:

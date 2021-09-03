@@ -28,7 +28,7 @@ class QSize;
 
 /**
  * \ingroup core
-  * Interface for resampling rasters (e.g. to have a smoother appearance)
+  * \brief Interface for resampling rasters (e.g. to have a smoother appearance)
   */
 class CORE_EXPORT QgsRasterResampler
 {
@@ -88,7 +88,7 @@ class CORE_EXPORT QgsRasterResampler
 
 /**
  * \ingroup core
-  * Interface for resampling rasters (V2) (e.g. to have a smoother appearance),
+  * \brief Interface for resampling rasters (V2) (e.g. to have a smoother appearance),
   * which provides a more efficient interface vs QgsRasterResampler.
   *
   * \since QGIS 3.10.1

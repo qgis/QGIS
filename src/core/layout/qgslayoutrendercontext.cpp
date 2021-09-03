@@ -133,3 +133,13 @@ void QgsLayoutRenderContext::setPredefinedScales( const QVector<qreal> &scales )
   std::sort( mPredefinedScales.begin(), mPredefinedScales.end() ); // clazy:exclude=detaching-member
   emit predefinedScalesChanged();
 }
+
+QgsFeatureFilterProvider *QgsLayoutRenderContext::featureFilterProvider() const
+{
+  return mFeatureFilterProvider;
+}
+
+void QgsLayoutRenderContext::setFeatureFilterProvider( QgsFeatureFilterProvider *featureFilterProvider )
+{
+  mFeatureFilterProvider = featureFilterProvider;
+}

@@ -64,7 +64,11 @@ void QgsWinNative::initializeMainWindow( QWindow *window,
   mTaskProgress = mTaskButton->progress();
   mTaskProgress->setVisible( false );
 
-  WinToastLib::WinToast::instance()->setAppName( applicationName.toStdWString() );
+  QString appName = qgetenv( "QGIS_WIN_APP_NAME" );
+  if ( appName.isEmpty() )
+    appName = applicationName;
+
+  WinToastLib::WinToast::instance()->setAppName( appName.toStdWString() );
   WinToastLib::WinToast::instance()->setAppUserModelId(
     WinToastLib::WinToast::configureAUMI( organizationName.toStdWString(),
                                           applicationName.toStdWString(),

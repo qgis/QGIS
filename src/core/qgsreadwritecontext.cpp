@@ -54,12 +54,12 @@ void QgsReadWriteContext::setPathResolver( const QgsPathResolver &resolver )
   mPathResolver = resolver;
 }
 
-void QgsReadWriteContext::pushMessage( const QString &message, Qgis::MessageLevel level )
+void QgsReadWriteContext::pushMessage( const QString &message, Qgis::MessageLevel level ) const
 {
   mMessages.append( ReadWriteMessage( message, level, mCategories ) );
 }
 
-QgsReadWriteContextCategoryPopper QgsReadWriteContext::enterCategory( const QString &category, const QString &details )
+QgsReadWriteContextCategoryPopper QgsReadWriteContext::enterCategory( const QString &category, const QString &details ) const
 {
   QString message = category;
   if ( !details.isEmpty() )
@@ -68,7 +68,7 @@ QgsReadWriteContextCategoryPopper QgsReadWriteContext::enterCategory( const QStr
   return QgsReadWriteContextCategoryPopper( *this );
 }
 
-void QgsReadWriteContext::leaveCategory()
+void QgsReadWriteContext::leaveCategory() const
 {
   if ( !mCategories.isEmpty() )
     mCategories.pop_back();

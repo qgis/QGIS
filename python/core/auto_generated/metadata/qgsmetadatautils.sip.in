@@ -1,0 +1,39 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/metadata/qgsmetadatautils.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsMetadataUtils
+{
+%Docstring(signature="appended")
+Contains utility functions for working with metadata.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgsmetadatautils.h"
+%End
+  public:
+
+    static QgsLayerMetadata convertFromEsri( const QDomDocument &document );
+%Docstring
+Converts ESRI layer metadata to :py:class:`QgsLayerMetadata`.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/metadata/qgsmetadatautils.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

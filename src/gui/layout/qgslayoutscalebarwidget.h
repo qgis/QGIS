@@ -30,7 +30,7 @@ class QgsLayoutItemScaleBar;
 
 /**
  * \ingroup gui
- * A widget to define the properties of a QgsLayoutItemScaleBar.
+ * \brief A widget to define the properties of a QgsLayoutItemScaleBar.
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12

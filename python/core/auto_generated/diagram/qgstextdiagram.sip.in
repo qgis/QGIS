@@ -11,6 +11,9 @@
 
 class QgsTextDiagram: QgsDiagram /NoDefaultCtors/
 {
+%Docstring(signature="appended")
+A text based diagram.
+%End
 
 %TypeHeaderCode
 #include "qgstextdiagram.h"

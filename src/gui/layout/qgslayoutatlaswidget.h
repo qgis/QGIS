@@ -29,7 +29,7 @@ class QgsMessageBar;
 
 /**
  * \ingroup gui
- * Widget for configuring the properties of a layout atlas.
+ * \brief Widget for configuring the properties of a layout atlas.
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12

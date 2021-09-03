@@ -12,7 +12,7 @@
 
 class QgsVectorLayer3DTilingSettings
 {
-%Docstring
+%Docstring(signature="appended")
 This class defines configuration of how a vector layer gets tiled for 3D rendering.
 
 Zoom levels count tells how deep will be the quadtree and thus how many tiles will
@@ -64,7 +64,7 @@ Reads content of the object from XML
 
 class QgsAbstractVectorLayer3DRenderer : QgsAbstract3DRenderer /Abstract/
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for 3D renderers that are based on vector layers.
 
 .. versionadded:: 3.12

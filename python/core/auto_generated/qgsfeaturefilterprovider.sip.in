@@ -15,10 +15,11 @@
 
 class QgsFeatureFilterProvider
 {
-%Docstring
-Abstract interface for use by classes that filter the features of a layer.
+%Docstring(signature="appended")
+Abstract interface for use by classes that filter the features or attributes of a layer.
+
 A :py:class:`QgsFeatureFilterProvider` provides a method for modifying a :py:class:`QgsFeatureRequest` in place to apply
-additional filters to the request.
+additional filters to the request, since QGIS 3.18 a method to filter allowed attributes is also available.
 
 .. versionadded:: 2.14
 %End
@@ -36,6 +37,13 @@ Derived classes must implement this method.
 
 :param layer: the layer to filter
 :param featureRequest: the feature request to update
+%End
+
+    virtual QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const = 0;
+%Docstring
+Returns the list of visible attribute names from a list of ``attributes`` names for the given ``layer``
+
+.. versionadded:: 3.18
 %End
 
     virtual QgsFeatureFilterProvider *clone() const = 0 /Factory/;

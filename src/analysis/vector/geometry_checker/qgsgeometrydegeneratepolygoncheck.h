@@ -22,6 +22,7 @@
 
 /**
  * \ingroup analysis
+ * \brief A degenerate polygon check.
  */
 class ANALYSIS_EXPORT QgsGeometryDegeneratePolygonCheck : public QgsGeometryCheck
 {

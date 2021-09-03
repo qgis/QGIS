@@ -25,9 +25,11 @@
 #include <QSslError>
 #endif
 
-QgsFileDownloader::QgsFileDownloader( const QUrl &url, const QString &outputFileName, const QString &authcfg, bool delayStart )
+QgsFileDownloader::QgsFileDownloader( const QUrl &url, const QString &outputFileName, const QString &authcfg, bool delayStart, Qgis::HttpMethod httpMethod, const QByteArray &data )
   : mUrl( url )
   , mDownloadCanceled( false )
+  , mHttpMethod( httpMethod )
+  , mData( data )
 {
   mFile.setFileName( outputFileName );
   mAuthCfg = authcfg;
@@ -65,7 +67,20 @@ void QgsFileDownloader::startDownload()
     mReply->deleteLater();
   }
 
-  mReply = nam->get( request );
+  switch ( mHttpMethod )
+  {
+    case Qgis::HttpMethod::Get:
+    {
+      mReply = nam->get( request );
+      break;
+    }
+    case Qgis::HttpMethod::Post:
+    {
+      mReply = nam->post( request, mData );
+      break;
+    }
+  }
+
   if ( !mAuthCfg.isEmpty() )
   {
     QgsApplication::authManager()->updateNetworkReply( mReply, mAuthCfg );
@@ -74,7 +89,7 @@ void QgsFileDownloader::startDownload()
   connect( mReply, &QNetworkReply::readyRead, this, &QgsFileDownloader::onReadyRead );
   connect( mReply, &QNetworkReply::finished, this, &QgsFileDownloader::onFinished );
   connect( mReply, &QNetworkReply::downloadProgress, this, &QgsFileDownloader::onDownloadProgress );
-  connect( nam, qgis::overload< QNetworkReply *>::of( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsFileDownloader::onRequestTimedOut, Qt::UniqueConnection );
+  connect( nam, qOverload< QNetworkReply *>( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsFileDownloader::onRequestTimedOut, Qt::UniqueConnection );
 #ifndef QT_NO_SSL
   connect( nam, &QgsNetworkAccessManager::sslErrors, this, &QgsFileDownloader::onSslErrors, Qt::UniqueConnection );
 #endif
@@ -101,10 +116,10 @@ void QgsFileDownloader::onSslErrors( QNetworkReply *reply, const QList<QSslError
     QStringList errorMessages;
     errorMessages.reserve( errors.size() + 1 );
     errorMessages <<  QStringLiteral( "SSL Errors: " );
-    for ( auto end = errors.size(), i = 0; i != end; ++i )
-    {
-      errorMessages << errors[i].errorString();
-    }
+
+    for ( const QSslError &error : errors )
+      errorMessages << error.errorString();
+
     error( errorMessages );
   }
 }
@@ -113,10 +128,9 @@ void QgsFileDownloader::onSslErrors( QNetworkReply *reply, const QList<QSslError
 
 void QgsFileDownloader::error( const QStringList &errorMessages )
 {
-  for ( auto end = errorMessages.size(), i = 0; i != end; ++i )
-  {
-    mErrors << errorMessages[i];
-  }
+  for ( const QString &error : errorMessages )
+    mErrors << error;
+
   if ( mReply )
     mReply->abort();
   emit downloadError( mErrors );
@@ -142,7 +156,7 @@ void QgsFileDownloader::onReadyRead()
   }
   else
   {
-    QByteArray data = mReply->readAll();
+    const QByteArray data = mReply->readAll();
     mFile.write( data );
   }
 }
@@ -167,7 +181,7 @@ void QgsFileDownloader::onFinished()
     }
 
     // get redirection url
-    QVariant redirectionTarget = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
+    const QVariant redirectionTarget = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
     if ( mReply->error() )
     {
       mFile.remove();
@@ -175,7 +189,7 @@ void QgsFileDownloader::onFinished()
     }
     else if ( !redirectionTarget.isNull() )
     {
-      QUrl newUrl = mUrl.resolved( redirectionTarget.toUrl() );
+      const QUrl newUrl = mUrl.resolved( redirectionTarget.toUrl() );
       mUrl = newUrl;
       mReply->deleteLater();
       if ( !mFile.open( QIODevice::WriteOnly ) )

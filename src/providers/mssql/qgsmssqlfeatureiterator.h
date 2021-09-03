@@ -125,6 +125,8 @@ class QgsMssqlFeatureIterator final: public QgsAbstractFeatureIteratorFromSource
 
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;
+    QgsGeometry mDistanceWithinGeom;
+    std::unique_ptr< QgsGeometryEngine > mDistanceWithinEngine;
 };
 
 #endif // QGSMSSQLFEATUREITERATOR_H

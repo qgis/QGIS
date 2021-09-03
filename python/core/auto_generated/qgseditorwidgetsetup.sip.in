@@ -10,7 +10,7 @@
 
 class QgsEditorWidgetSetup
 {
-%Docstring
+%Docstring(signature="appended")
 Holder for the widget type and its configuration for a field.
 
 .. versionadded:: 3.0

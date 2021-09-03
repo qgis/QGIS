@@ -31,7 +31,7 @@ namespace Qt3DCore { class QEntity; } SIP_SKIP
 
 /**
  * \ingroup 3d
- * Abstract base class for 3D symbols that are used by VectorLayer3DRenderer objects.
+ * \brief Abstract base class for 3D symbols that are used by VectorLayer3DRenderer objects.
  *
  * 3D symbol objects define appearance of GIS data.
  *

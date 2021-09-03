@@ -1,0 +1,12 @@
+{
+  "name": "exif_geotag",
+  "type": "function",
+  "groups": ["GeometryGroup"],
+  "description": "Creates a point geometry from the exif geotags of an image file.",
+  "arguments": [
+    {"arg":"path","description":"An image file path."}
+  ],
+  "examples": [
+    { "expression":"geom_to_wkt(exif_geotag('/my/photo.jpg'))", "returns":"'Point (2 4)'"}
+  ]
+}

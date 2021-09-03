@@ -11,7 +11,7 @@
 
 class QgsRendererCategory
 {
-%Docstring
+%Docstring(signature="appended")
 Represents an individual category (class) from a :py:class:`QgsCategorizedSymbolRenderer`.
 %End
 
@@ -42,6 +42,7 @@ The ``render`` argument indicates whether the category should initially be rende
 %Docstring
 Copy constructor.
 %End
+    ~QgsRendererCategory();
 
     QVariant value() const;
 %Docstring
@@ -390,9 +391,11 @@ Update the color ramp used and all symbols colors.
 
     virtual QString legendClassificationAttribute() const;
 
-    static QgsCategorizedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
+    static QgsCategorizedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer, QgsVectorLayer *layer = 0 ) /Factory/;
 %Docstring
-creates a QgsCategorizedSymbolRenderer from an existing renderer.
+Creates a new QgsCategorizedSymbolRenderer from an existing ``renderer``.
+
+Since QGIS 3.20, the optional ``layer`` parameter is required for conversions of some renderer types.
 
 :return: a new renderer if the conversion was possible, otherwise ``None``.
 
@@ -420,7 +423,7 @@ Will return ``None`` if the functionality is disabled.
 .. versionadded:: 3.0
 %End
 
-    int matchToSymbols( QgsStyle *style, QgsSymbol::SymbolType type,
+    int matchToSymbols( QgsStyle *style, Qgis::SymbolType type,
                         QVariantList &unmatchedCategories /Out/, QStringList &unmatchedSymbols /Out/, bool caseSensitive = true, bool useTolerantMatch = false );
 %Docstring
 Replaces category symbols with the symbols from a ``style`` that have a matching

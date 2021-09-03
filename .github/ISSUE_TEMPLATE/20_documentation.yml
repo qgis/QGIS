@@ -1,0 +1,19 @@
+name: API documentation (C++ or PyQGIS)
+description: An issue about the C++ or PyQGIS documentation
+labels:
+  - 'Documentation'
+  - 'API'
+  - 'PyQGIS'
+body:
+
+  - type: markdown
+    attributes:
+      value: |
+        Report only an issue related to the C++ or PyQGIS documentation
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What is the issue about the documentation?
+    validations:
+      required: true

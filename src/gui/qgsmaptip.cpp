@@ -164,10 +164,10 @@ void QgsMapTip::resizeContent()
 {
 #if WITH_QTWEBKIT
   // Get the content size
-  QWebElement container = mWebView->page()->mainFrame()->findFirstElement(
-                            QStringLiteral( "#QgsWebViewContainer" ) );
-  int width = container.geometry().width() + MARGIN_VALUE * 2;
-  int height = container.geometry().height() + MARGIN_VALUE * 2;
+  const QWebElement container = mWebView->page()->mainFrame()->findFirstElement(
+                                  QStringLiteral( "#QgsWebViewContainer" ) );
+  const int width = container.geometry().width() + MARGIN_VALUE * 2;
+  const int height = container.geometry().height() + MARGIN_VALUE * 2;
   mWidget->resize( width, height );
 #else
   mWebView->adjustSize();
@@ -197,7 +197,7 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
     return QString();
   }
 
-  double searchRadius = QgsMapTool::searchRadiusMU( mapCanvas );
+  const double searchRadius = QgsMapTool::searchRadiusMU( mapCanvas );
 
   QgsRectangle r;
   r.setXMinimum( mapPosition.x() - searchRadius );
@@ -221,7 +221,7 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
     temporalFilter = qobject_cast< const QgsVectorLayerTemporalProperties * >( layer->temporalProperties() )->createFilterString( temporalContext, mapCanvas->temporalRange() );
   }
 
-  QString mapTip = vlayer->mapTipTemplate();
+  const QString mapTip = vlayer->mapTipTemplate();
   QString tipString;
   QgsExpression exp( vlayer->displayExpression() );
   QgsFeature feature;
@@ -239,6 +239,7 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
   }
 
   QgsRenderContext renderCtx = QgsRenderContext::fromMapSettings( mapCanvas->mapSettings() );
+  renderCtx.setExpressionContext( mapCanvas->createExpressionContext() );
   renderCtx.expressionContext() << QgsExpressionContextUtils::layerScope( vlayer );
 
   bool filter = false;
@@ -255,6 +256,7 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
       request.combineFilterExpression( filterExpression );
     }
   }
+  request.setExpressionContext( renderCtx.expressionContext() );
 
   QgsFeatureIterator it = vlayer->getFeatures( request );
   QElapsedTimer timer;
@@ -292,8 +294,8 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
 
 void QgsMapTip::applyFontSettings()
 {
-  QgsSettings settings;
-  QFont defaultFont = qApp->font();
+  const QgsSettings settings;
+  const QFont defaultFont = qApp->font();
   mFontSize = settings.value( QStringLiteral( "/qgis/stylesheet/fontPointSize" ), defaultFont.pointSize() ).toInt();
   mFontFamily = settings.value( QStringLiteral( "/qgis/stylesheet/fontFamily" ), defaultFont.family() ).toString();
 }

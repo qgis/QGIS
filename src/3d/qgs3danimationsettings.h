@@ -30,7 +30,7 @@ class QgsReadWriteContext;
 
 /**
  * \ingroup 3d
- * Class that holds information about animation in 3D view. The animation is defined
+ * \brief Class that holds information about animation in 3D view. The animation is defined
  * as a series of keyframes
  * \note Not available in Python bindings
  * \since QGIS 3.8

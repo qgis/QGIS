@@ -34,6 +34,7 @@ class QgsOptionsPageWidget;
 class QgsLocatorOptionsWidget;
 class QgsAuthConfigSelect;
 class QgsBearingNumericFormat;
+class QStandardItemModel;
 
 /**
  * \class QgsOptions
@@ -312,6 +313,8 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     QgsLocatorOptionsWidget *mLocatorOptionsWidget = nullptr;
 
     std::unique_ptr< QgsBearingNumericFormat > mBearingFormat;
+
+    QStandardItemModel *mTreeModel = nullptr;
 
     void updateActionsForCurrentColorScheme( QgsColorScheme *scheme );
 

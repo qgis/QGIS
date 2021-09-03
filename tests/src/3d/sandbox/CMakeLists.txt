@@ -27,13 +27,16 @@ add_executable(qgis_3d_sandbox
   ${CMAKE_SOURCE_DIR}/src/app/3d/qgs3dmapcanvas.cpp
   ${CMAKE_SOURCE_DIR}/src/app/3d/qgs3dnavigationwidget.cpp
 )
+# require c++17
+target_compile_features(qgis_3d_sandbox PRIVATE cxx_std_17)
+
 set_target_properties(qgis_3d_sandbox PROPERTIES AUTORCC TRUE)
 target_link_libraries(qgis_3d_sandbox
-  ${Qt5Xml_LIBRARIES}
-  ${Qt5Core_LIBRARIES}
-  ${Qt5Svg_LIBRARIES}
-  ${Qt5Network_LIBRARIES}
-  ${Qt5Test_LIBRARIES}
+  ${QT_VERSION_BASE}::Xml
+  ${QT_VERSION_BASE}::Core
+  ${QT_VERSION_BASE}::Svg
+  ${QT_VERSION_BASE}::Network
+  ${QT_VERSION_BASE}::Test
   ${PROJ_LIBRARY}
   ${GEOS_LIBRARY}
   ${GDAL_LIBRARY}

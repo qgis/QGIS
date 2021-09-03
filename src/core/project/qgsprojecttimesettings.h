@@ -27,7 +27,7 @@ class QgsReadWriteContext;
 class QDomDocument;
 
 /**
- * Contains temporal settings and properties for the project,
+ * \brief Contains temporal settings and properties for the project,
  * this may be used when animating maps or showing temporal layers.
  *
  * \ingroup core

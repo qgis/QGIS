@@ -36,6 +36,7 @@ class QgsEditFormConfigPrivate : public QSharedData
       , mConfiguredRootContainer( o.mConfiguredRootContainer )
       , mFieldEditables( o.mFieldEditables )
       , mLabelOnTop( o.mLabelOnTop )
+      , mReuseLastValue( o.mReuseLastValue )
       , mDataDefinedFieldProperties( o.mDataDefinedFieldProperties )
       , mWidgetConfigs( o.mWidgetConfigs )
       , mEditorLayout( o.mEditorLayout )
@@ -75,6 +76,7 @@ class QgsEditFormConfigPrivate : public QSharedData
 
     QMap< QString, bool> mFieldEditables;
     QMap< QString, bool> mLabelOnTop;
+    QMap< QString, bool> mReuseLastValue;
     QMap< QString, QgsPropertyCollection> mDataDefinedFieldProperties;
 
     QMap<QString, QVariantMap > mWidgetConfigs;

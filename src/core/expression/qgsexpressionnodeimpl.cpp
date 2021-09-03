@@ -19,6 +19,9 @@
 
 #include "qgsgeometry.h"
 #include "qgsfeaturerequest.h"
+#include "qgsstringutils.h"
+
+#include <QRegularExpression>
 
 const char *QgsExpressionNodeBinaryOperator::BINARY_OPERATOR_TEXT[] =
 {
@@ -529,39 +532,39 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         ENSURE_NO_EVAL_ERROR
         QString regexp = QgsExpressionUtils::getStringValue( vR, parent );
         ENSURE_NO_EVAL_ERROR
-        // TODO: cache QRegExp in case that regexp is a literal string (i.e. it will stay constant)
+        // TODO: cache QRegularExpression in case that regexp is a literal string (i.e. it will stay constant)
         bool matches;
         if ( mOp == boLike || mOp == boILike || mOp == boNotLike || mOp == boNotILike ) // change from LIKE syntax to regexp
         {
-          QString esc_regexp = QRegExp::escape( regexp );
+          QString esc_regexp = QgsStringUtils::qRegExpEscape( regexp );
           // manage escape % and _
           if ( esc_regexp.startsWith( '%' ) )
           {
             esc_regexp.replace( 0, 1, QStringLiteral( ".*" ) );
           }
-          thread_local QRegExp rx1( QStringLiteral( "[^\\\\](%)" ) );
+          const thread_local QRegularExpression rx1( QStringLiteral( "[^\\\\](%)" ) );
           int pos = 0;
-          while ( ( pos = rx1.indexIn( esc_regexp, pos ) ) != -1 )
+          while ( ( pos = esc_regexp.indexOf( rx1, pos ) ) != -1 )
           {
             esc_regexp.replace( pos + 1, 1, QStringLiteral( ".*" ) );
             pos += 1;
           }
-          thread_local QRegExp rx2( QStringLiteral( "\\\\%" ) );
+          const thread_local QRegularExpression rx2( QStringLiteral( "\\\\%" ) );
           esc_regexp.replace( rx2, QStringLiteral( "%" ) );
           if ( esc_regexp.startsWith( '_' ) )
           {
             esc_regexp.replace( 0, 1, QStringLiteral( "." ) );
           }
-          thread_local QRegExp rx3( QStringLiteral( "[^\\\\](_)" ) );
+          const thread_local QRegularExpression rx3( QStringLiteral( "[^\\\\](_)" ) );
           pos = 0;
-          while ( ( pos = rx3.indexIn( esc_regexp, pos ) ) != -1 )
+          while ( ( pos = esc_regexp.indexOf( rx3, pos ) ) != -1 )
           {
             esc_regexp.replace( pos + 1, 1, '.' );
             pos += 1;
           }
           esc_regexp.replace( QLatin1String( "\\\\_" ), QLatin1String( "_" ) );
 
-          matches = QRegExp( esc_regexp, mOp == boLike || mOp == boNotLike ? Qt::CaseSensitive : Qt::CaseInsensitive ).exactMatch( str );
+          matches = QRegularExpression( QRegularExpression::anchoredPattern( esc_regexp ), mOp == boLike || mOp == boNotLike ? QRegularExpression::NoPatternOption : QRegularExpression::CaseInsensitiveOption ).match( str ).hasMatch();
         }
         else
         {
@@ -833,7 +836,112 @@ QgsExpressionNode *QgsExpressionNodeBinaryOperator::clone() const
 
 bool QgsExpressionNodeBinaryOperator::isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const
 {
-  return mOpLeft->isStatic( parent, context ) && mOpRight->isStatic( parent, context );
+  const bool leftStatic = mOpLeft->isStatic( parent, context );
+  const bool rightStatic = mOpRight->isStatic( parent, context );
+
+  if ( leftStatic && rightStatic )
+    return true;
+
+  // special logic for certain ops...
+  switch ( mOp )
+  {
+    case QgsExpressionNodeBinaryOperator::boOr:
+    {
+      // if either node is static AND evaluates to TRUE, then the result will ALWAYS be true regardless
+      // of the value of the other node!
+      if ( leftStatic )
+      {
+        mOpLeft->prepare( parent, context );
+        if ( mOpLeft->hasCachedStaticValue() )
+        {
+          QgsExpressionUtils::TVL tvl = QgsExpressionUtils::getTVLValue( mOpLeft->cachedStaticValue(), parent );
+          if ( !parent->hasEvalError() && tvl == QgsExpressionUtils::True )
+          {
+            mCachedStaticValue = true;
+            mHasCachedValue = true;
+            return true;
+          }
+        }
+      }
+      else if ( rightStatic )
+      {
+        mOpRight->prepare( parent, context );
+        if ( mOpRight->hasCachedStaticValue() )
+        {
+          QgsExpressionUtils::TVL tvl = QgsExpressionUtils::getTVLValue( mOpRight->cachedStaticValue(), parent );
+          if ( !parent->hasEvalError() && tvl == QgsExpressionUtils::True )
+          {
+            mCachedStaticValue = true;
+            mHasCachedValue = true;
+            return true;
+          }
+        }
+      }
+
+      break;
+    }
+    case QgsExpressionNodeBinaryOperator::boAnd:
+    {
+      // if either node is static AND evaluates to FALSE, then the result will ALWAYS be false regardless
+      // of the value of the other node!
+
+      if ( leftStatic )
+      {
+        mOpLeft->prepare( parent, context );
+        if ( mOpLeft->hasCachedStaticValue() )
+        {
+          QgsExpressionUtils::TVL tvl = QgsExpressionUtils::getTVLValue( mOpLeft->cachedStaticValue(), parent );
+          if ( !parent->hasEvalError() && tvl == QgsExpressionUtils::False )
+          {
+            mCachedStaticValue = false;
+            mHasCachedValue = true;
+            return true;
+          }
+        }
+      }
+      else if ( rightStatic )
+      {
+        mOpRight->prepare( parent, context );
+        if ( mOpRight->hasCachedStaticValue() )
+        {
+          QgsExpressionUtils::TVL tvl = QgsExpressionUtils::getTVLValue( mOpRight->cachedStaticValue(), parent );
+          if ( !parent->hasEvalError() && tvl == QgsExpressionUtils::False )
+          {
+            mCachedStaticValue = false;
+            mHasCachedValue = true;
+            return true;
+          }
+        }
+      }
+
+      break;
+    }
+
+    case QgsExpressionNodeBinaryOperator::boEQ:
+    case QgsExpressionNodeBinaryOperator::boNE:
+    case QgsExpressionNodeBinaryOperator::boLE:
+    case QgsExpressionNodeBinaryOperator::boGE:
+    case QgsExpressionNodeBinaryOperator::boLT:
+    case QgsExpressionNodeBinaryOperator::boGT:
+    case QgsExpressionNodeBinaryOperator::boRegexp:
+    case QgsExpressionNodeBinaryOperator::boLike:
+    case QgsExpressionNodeBinaryOperator::boNotLike:
+    case QgsExpressionNodeBinaryOperator::boILike:
+    case QgsExpressionNodeBinaryOperator::boNotILike:
+    case QgsExpressionNodeBinaryOperator::boIs:
+    case QgsExpressionNodeBinaryOperator::boIsNot:
+    case QgsExpressionNodeBinaryOperator::boPlus:
+    case QgsExpressionNodeBinaryOperator::boMinus:
+    case QgsExpressionNodeBinaryOperator::boMul:
+    case QgsExpressionNodeBinaryOperator::boDiv:
+    case QgsExpressionNodeBinaryOperator::boIntDiv:
+    case QgsExpressionNodeBinaryOperator::boMod:
+    case QgsExpressionNodeBinaryOperator::boPow:
+    case QgsExpressionNodeBinaryOperator::boConcat:
+      break;
+  }
+
+  return false;
 }
 
 //
@@ -1238,7 +1346,7 @@ bool QgsExpressionNodeLiteral::prepareNode( QgsExpression *parent, const QgsExpr
 }
 
 
-QString QgsExpressionNodeLiteral::dump() const
+QString QgsExpressionNodeLiteral::valueAsString() const
 {
   if ( mValue.isNull() )
     return QStringLiteral( "NULL" );
@@ -1258,6 +1366,11 @@ QString QgsExpressionNodeLiteral::dump() const
     default:
       return tr( "[unsupported type: %1; value: %2]" ).arg( mValue.typeName(), mValue.toString() );
   }
+}
+
+QString QgsExpressionNodeLiteral::dump() const
+{
+  return valueAsString();
 }
 
 QSet<QString> QgsExpressionNodeLiteral::referencedColumns() const
@@ -1367,8 +1480,9 @@ bool QgsExpressionNodeColumnRef::prepareNode( QgsExpression *parent, const QgsEx
 
 QString QgsExpressionNodeColumnRef::dump() const
 {
-  const thread_local QRegExp re( QStringLiteral( "^[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*$" ) );
-  return re.exactMatch( mName ) ? mName : QgsExpression::quotedColumnRef( mName );
+  const thread_local QRegularExpression re( QStringLiteral( "^[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*$" ) );
+  const QRegularExpressionMatch match = re.match( mName );
+  return match.hasMatch() ? mName : QgsExpression::quotedColumnRef( mName );
 }
 
 QSet<QString> QgsExpressionNodeColumnRef::referencedColumns() const
@@ -1434,7 +1548,7 @@ QgsExpressionNode::NodeType QgsExpressionNodeCondition::nodeType() const
 
 QVariant QgsExpressionNodeCondition::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
-  for ( WhenThen *cond : qgis::as_const( mConditions ) )
+  for ( WhenThen *cond : std::as_const( mConditions ) )
   {
     QVariant vWhen = cond->mWhenExp->eval( parent, context );
     QgsExpressionUtils::TVL tvl = QgsExpressionUtils::getTVLValue( vWhen, parent );
@@ -1460,17 +1574,60 @@ QVariant QgsExpressionNodeCondition::evalNode( QgsExpression *parent, const QgsE
 
 bool QgsExpressionNodeCondition::prepareNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
-  bool res;
-  for ( WhenThen *cond : qgis::as_const( mConditions ) )
+  bool foundAnyNonStaticConditions = false;
+  for ( WhenThen *cond : std::as_const( mConditions ) )
   {
-    res = cond->mWhenExp->prepare( parent, context )
-          & cond->mThenExp->prepare( parent, context );
+    const bool res = cond->mWhenExp->prepare( parent, context )
+                     && cond->mThenExp->prepare( parent, context );
     if ( !res )
       return false;
+
+    foundAnyNonStaticConditions |= !cond->mWhenExp->hasCachedStaticValue();
+    if ( !foundAnyNonStaticConditions && QgsExpressionUtils::getTVLValue( cond->mWhenExp->cachedStaticValue(), parent ) == QgsExpressionUtils::True )
+    {
+      // ok, we now that we'll ALWAYS be picking the same condition, as the "WHEN" clause for this condition (and all previous conditions) is a static
+      // value, and the static value for this WHEN clause is True.
+      if ( cond->mThenExp->hasCachedStaticValue() )
+      {
+        // then "THEN" clause ALSO has a static value, so we can replace the whole node with a static value
+        mCachedStaticValue = cond->mThenExp->cachedStaticValue();
+        mHasCachedValue = true;
+        return true;
+      }
+      else
+      {
+        // we know at least that we'll ALWAYS be picking the same condition, so even though the THEN node is non-static we can effectively replace
+        // this whole QgsExpressionNodeCondition node with just the THEN node for this condition.
+        mCompiledSimplifiedNode.reset( cond->mThenExp->effectiveNode()->clone() );
+        return true;
+      }
+    }
   }
 
   if ( mElseExp )
-    return mElseExp->prepare( parent, context );
+  {
+    const bool res = mElseExp->prepare( parent, context );
+    if ( !res )
+      return false;
+
+    if ( !foundAnyNonStaticConditions )
+    {
+      // all condition nodes are static conditions and not TRUE, so we know we'll ALWAYS be picking the ELSE node
+      if ( mElseExp->hasCachedStaticValue() )
+      {
+        mCachedStaticValue = mElseExp->cachedStaticValue();
+        mHasCachedValue = true;
+        return true;
+      }
+      else
+      {
+        // so even though the ELSE node is non-static we can effectively replace
+        // this whole QgsExpressionNodeCondition node with just the ELSE node for this condition.
+        mCompiledSimplifiedNode.reset( mElseExp->effectiveNode()->clone() );
+        return true;
+      }
+    }
+  }
 
   return true;
 }
@@ -1681,7 +1838,8 @@ QVariant QgsExpressionNodeIndexOperator::evalNode( QgsExpression *parent, const 
     }
 
     default:
-      parent->setEvalErrorString( tr( "[] can only be used with map or array values, not %1" ).arg( QMetaType::typeName( container.type() ) ) );
+      if ( !container.isNull() )
+        parent->setEvalErrorString( tr( "[] can only be used with map or array values, not %1" ).arg( QMetaType::typeName( container.type() ) ) );
       return QVariant();
   }
 }

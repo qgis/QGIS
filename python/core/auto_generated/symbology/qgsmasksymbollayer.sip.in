@@ -12,7 +12,7 @@
 
 class QgsMaskMarkerSymbolLayer : QgsMarkerSymbolLayer
 {
-%Docstring
+%Docstring(signature="appended")
 Special symbol layer that uses its sub symbol as a selective mask
 
 .. versionadded:: 3.12
@@ -27,6 +27,8 @@ Special symbol layer that uses its sub symbol as a selective mask
 Simple constructor
 %End
 
+    ~QgsMaskMarkerSymbolLayer();
+
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Create a new QgsMaskMarkerSymbolLayer
@@ -39,6 +41,7 @@ Create a new QgsMaskMarkerSymbolLayer
     virtual QgsMaskMarkerSymbolLayer *clone() const /Factory/;
 
     virtual QgsSymbol *subSymbol();
+
     virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
@@ -69,7 +72,8 @@ Create a new QgsMaskMarkerSymbolLayer
 Whether some masked symbol layers are defined
 %End
 
-    virtual QgsSymbolLayerReferenceList masks() const;
+    virtual QList<QgsSymbolLayerReference> masks() const;
+
 %Docstring
 Returns a list of references to symbol layers that are masked by the sub symbol's shape.
 
@@ -78,7 +82,7 @@ Returns a list of references to symbol layers that are masked by the sub symbol'
 .. seealso:: :py:func:`setMasks`
 %End
 
-    void setMasks( QgsSymbolLayerReferenceList maskedLayers );
+    void setMasks( const QList<QgsSymbolLayerReference> &maskedLayers );
 %Docstring
 Sets the symbol layers that will be masked by the sub symbol's shape.
 

@@ -83,9 +83,9 @@ void TestQgsPointCloudRendererRegistry::metadata()
   QCOMPARE( metadata.visibleName(), QString( "display name" ) );
 
   //test creating renderer from metadata
-  QVariantMap map;
+  const QVariantMap map;
   QDomElement elem;
-  std::unique_ptr< QgsPointCloudRenderer > renderer( metadata.createRenderer( elem, QgsReadWriteContext() ) );
+  const std::unique_ptr< QgsPointCloudRenderer > renderer( metadata.createRenderer( elem, QgsReadWriteContext() ) );
   QVERIFY( renderer );
   DummyRenderer *dummyRenderer = dynamic_cast<DummyRenderer *>( renderer.get() );
   QVERIFY( dummyRenderer );
@@ -108,7 +108,7 @@ void TestQgsPointCloudRendererRegistry::instanceHasDefaultRenderers()
 void TestQgsPointCloudRendererRegistry::addRenderer()
 {
   QgsPointCloudRendererRegistry *registry = QgsApplication::pointCloudRendererRegistry();
-  int previousCount = registry->renderersList().length();
+  const int previousCount = registry->renderersList().length();
 
   registry->addRenderer( new QgsPointCloudRendererMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy renderer" ), DummyRenderer::create, QIcon() ) );
   QCOMPARE( registry->renderersList().length(), previousCount + 1 );
@@ -126,7 +126,7 @@ void TestQgsPointCloudRendererRegistry::addRenderer()
 void TestQgsPointCloudRendererRegistry::fetchTypes()
 {
   QgsPointCloudRendererRegistry *registry = QgsApplication::pointCloudRendererRegistry();
-  QStringList types = registry->renderersList();
+  const QStringList types = registry->renderersList();
 
   QVERIFY( types.contains( "Dummy" ) );
 

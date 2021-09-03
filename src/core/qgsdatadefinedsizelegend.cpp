@@ -22,11 +22,13 @@
 #include "qgslinesymbollayer.h"
 #include "qgstextformat.h"
 #include "qgstextrenderer.h"
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
 
 QgsDataDefinedSizeLegend::QgsDataDefinedSizeLegend()
 {
-  std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = qgis::make_unique< QgsSimpleLineSymbolLayer >( QColor( 0, 0, 0 ), 0.2 );
-  mLineSymbol = qgis::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << lineSymbolLayer.release() );
+  std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = std::make_unique< QgsSimpleLineSymbolLayer >( QColor( 0, 0, 0 ), 0.2 );
+  mLineSymbol = std::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << lineSymbolLayer.release() );
 }
 
 QgsDataDefinedSizeLegend::~QgsDataDefinedSizeLegend() = default;
@@ -209,7 +211,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
 
   // find out how wide the text will be
   double maxTextWidth = 0;
-  for ( const SizeClass &c : qgis::as_const( classes ) )
+  for ( const SizeClass &c : std::as_const( classes ) )
   {
     maxTextWidth = std::max( maxTextWidth, fm.boundingRect( c.label ).width() );
   }
@@ -222,7 +224,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
 
   // find out top Y coordinate for individual symbol sizes
   QList<double> symbolTopY;
-  for ( const SizeClass &c : qgis::as_const( classes ) )
+  for ( const SizeClass &c : std::as_const( classes ) )
   {
     double outputSymbolSize = context.convertToPainterUnits( c.size, s->sizeUnit(), s->sizeMapUnitScale() );
     switch ( mVAlign )
@@ -275,7 +277,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
   p->translate( 0, -textTopY );
 
   // draw symbols first so that they do not cover
-  for ( const SizeClass &c : qgis::as_const( classes ) )
+  for ( const SizeClass &c : std::as_const( classes ) )
   {
     s->setSize( c.size );
 
@@ -304,7 +306,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
   }
 
   int i = 0;
-  for ( const SizeClass &c : qgis::as_const( classes ) )
+  for ( const SizeClass &c : std::as_const( classes ) )
   {
     // line from symbol to the text
     if ( mLineSymbol )
@@ -461,7 +463,7 @@ void QgsDataDefinedSizeLegend::writeXml( QDomElement &elem, const QgsReadWriteCo
   if ( !mSizeClasses.isEmpty() )
   {
     QDomElement elemClasses = doc.createElement( QStringLiteral( "classes" ) );
-    for ( const SizeClass &sc : qgis::as_const( mSizeClasses ) )
+    for ( const SizeClass &sc : std::as_const( mSizeClasses ) )
     {
       QDomElement elemClass = doc.createElement( QStringLiteral( "class" ) );
       elemClass.setAttribute( QStringLiteral( "size" ), sc.size );

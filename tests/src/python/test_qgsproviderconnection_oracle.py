@@ -19,7 +19,9 @@ from qgis.core import (
     QgsVectorLayer,
     QgsProviderRegistry,
     QgsDataSourceUri,
-    QgsAbstractDatabaseProviderConnection
+    QgsAbstractDatabaseProviderConnection,
+    QgsProviderConnectionException,
+
 )
 from qgis.testing import unittest
 from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
@@ -44,6 +46,18 @@ class TestPyQgsProviderConnectionOracle(unittest.TestCase, TestPyQgsProviderConn
     myUtf8Table = 'MYUTF8\U0001F604TABLE'
     geometryColumnName = 'GEOM'
 
+    # Provider test cases can define a schema and table name for SQL query layers test
+    sqlVectorLayerSchema = 'QGIS'
+    sqlVectorLayerTable = 'SOME_DATA'
+
+    def execSQLCommand(self, sql, ignore_errors=False):
+        self.assertTrue(self.conn)
+        query = QSqlQuery(self.conn)
+        res = query.exec_(sql)
+        if not ignore_errors:
+            self.assertTrue(res, sql + ': ' + query.lastError().text())
+        query.finish()
+
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -63,15 +77,24 @@ class TestPyQgsProviderConnectionOracle(unittest.TestCase, TestPyQgsProviderConn
             cls.conn.setDatabaseName(os.environ['QGIS_ORACLETEST_DBNAME'])
         cls.conn.setUserName('QGIS')
         cls.conn.setPassword('qgis')
-        assert cls.conn.open()
 
-    def execSQLCommand(self, sql, ignore_errors=False):
-        self.assertTrue(self.conn)
-        query = QSqlQuery(self.conn)
-        res = query.exec_(sql)
-        if not ignore_errors:
-            self.assertTrue(res, sql + ': ' + query.lastError().text())
-        query.finish()
+        # Start clean
+        md = QgsProviderRegistry.instance().providerMetadata('oracle')
+        conn = md.createConnection(cls.dbconn, {})
+
+        for table_name in (cls.myNewTable, cls.myVeryNewTable):
+
+            try:
+                conn.dropVectorTable('QGIS', table_name)
+            except QgsProviderConnectionException:
+                pass
+
+            try:
+                conn.executeSql(f"DELETE FROM user_sdo_geom_metadata WHERE TABLE_NAME = '{table_name}'")
+            except QgsProviderConnectionException:
+                pass
+
+        assert cls.conn.open()
 
     def test_tables_with_options(self):
 

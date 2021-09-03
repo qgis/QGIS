@@ -159,7 +159,7 @@ CPLHTTPResult *QgsCPLHTTPFetchOverrider::callback( const char *pszURL,
     return psResult;
   }
 
-  QgsNetworkReplyContent reply( blockingRequest.reply() );
+  const QgsNetworkReplyContent reply( blockingRequest.reply() );
 
   // Store response headers
   for ( const auto &pair : reply.rawHeaderPairs() )

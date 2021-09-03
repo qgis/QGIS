@@ -31,7 +31,7 @@
 /**
  * \class QgsSaveToStyleVisitor
  * \ingroup analysis
- * Style entity visitor which saves encountered style entities to a QgsStyle database.
+ * \brief Style entity visitor which saves encountered style entities to a QgsStyle database.
  * \since QGIS 3.10
  */
 class ANALYSIS_EXPORT QgsSaveToStyleVisitor : public QgsStyleEntityVisitorInterface

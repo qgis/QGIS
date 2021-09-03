@@ -26,15 +26,12 @@ class QgsSingleSymbolRendererWidget : QgsRendererWidget
 
     virtual void setContext( const QgsSymbolWidgetContext &context );
 
-
     virtual void setDockMode( bool dockMode );
 
-%Docstring
-Set the widget in dock mode which tells the widget to emit panel
-widgets and not open dialogs
 
-:param dockMode: ``True`` to enable dock mode.
-%End
+  protected:
+    virtual void setSymbolLevels( const QList< QgsLegendSymbolItem > &levels, bool enabled );
+
 
 };
 

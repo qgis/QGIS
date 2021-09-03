@@ -27,7 +27,7 @@
 
 /**
  * \ingroup core
- * The QgsHstoreUtils namespace provides functions to handle hstore-formatted strings.
+ * \brief The QgsHstoreUtils namespace provides functions to handle hstore-formatted strings.
  * \since QGIS 3.4
  */
 namespace QgsHstoreUtils

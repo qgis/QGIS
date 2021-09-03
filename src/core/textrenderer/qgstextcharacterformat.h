@@ -27,7 +27,7 @@ class QTextCharFormat;
 /**
  * \class QgsTextCharacterFormat
   * \ingroup core
-  * Stores information relating to individual character formatting.
+  * \brief Stores information relating to individual character formatting.
   *
   * These options encapsulate formatting options which override the default
   * settings from a QgsTextFormat for individual characters (or sets of characters).

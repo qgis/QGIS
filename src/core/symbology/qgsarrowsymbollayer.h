@@ -20,6 +20,8 @@
 #include "qgis.h"
 #include "qgssymbollayer.h"
 
+class QgsFillSymbol;
+
 
 /**
  * \ingroup core
@@ -33,6 +35,7 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
   public:
     //! Simple constructor
     QgsArrowSymbolLayer();
+    ~QgsArrowSymbolLayer() override;
 
     /**
      * Create a new QgsArrowSymbolLayer
@@ -44,7 +47,7 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
 
     QgsArrowSymbolLayer *clone() const override SIP_FACTORY;
-    QgsSymbol *subSymbol() override { return mSymbol.get(); }
+    QgsSymbol *subSymbol() override;
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     bool hasDataDefinedProperties() const override;

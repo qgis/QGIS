@@ -12,7 +12,7 @@
 
 class QgsNumericFormatSelectorWidget : QgsPanelWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget which allows choice of numeric formats and the properties of them.
 
 .. versionadded:: 3.12

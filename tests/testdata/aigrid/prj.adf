@@ -1,0 +1,8 @@
+Projection    UTM
+Zone          55
+Datum         GDA94
+Spheroid      GRS80
+Units         METERS
+Zunits        NO
+Yshift        10000000.0
+Parameters    

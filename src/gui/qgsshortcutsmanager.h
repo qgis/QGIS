@@ -27,7 +27,7 @@ class QShortcut;
 /**
  * \ingroup gui
  * \class QgsShortcutsManager
- * Shortcuts manager is a class that contains a list of QActions and QShortcuts
+ * \brief Shortcuts manager is a class that contains a list of QActions and QShortcuts
  * that have been registered and their shortcuts can be changed.
  *
  * QgsShortcutsManager is not usually directly created, but rather accessed through

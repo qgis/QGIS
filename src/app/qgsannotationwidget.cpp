@@ -23,6 +23,9 @@
 #include "qgssymbol.h"
 #include "qgssymbolselectordialog.h"
 #include "qgisapp.h"
+#include "qgsfillsymbol.h"
+#include "qgsmarkersymbol.h"
+
 #include <QColorDialog>
 
 
@@ -33,8 +36,8 @@ QgsAnnotationWidget::QgsAnnotationWidget( QgsMapCanvasAnnotationItem *item, QWid
   setupUi( this );
   mLayerComboBox->setAllowEmptyLayer( true );
 
-  mMapMarkerButton->setSymbolType( QgsSymbol::Marker );
-  mFrameStyleButton->setSymbolType( QgsSymbol::Fill );
+  mMapMarkerButton->setSymbolType( Qgis::SymbolType::Marker );
+  mFrameStyleButton->setSymbolType( Qgis::SymbolType::Fill );
 
   if ( mItem && mItem->annotation() )
   {

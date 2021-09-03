@@ -28,7 +28,7 @@ QgsTemporalMapSettingsWidget::QgsTemporalMapSettingsWidget( QWidget *parent )
 
   mFrameSpinBox->setClearValue( 1 );
 
-  connect( mFrameSpinBox,  qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsTemporalMapSettingsWidget::frameRateChanged );
+  connect( mFrameSpinBox,  qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsTemporalMapSettingsWidget::frameRateChanged );
   connect( mCumulativeTemporalRange, &QCheckBox::toggled, this, &QgsTemporalMapSettingsWidget::temporalRangeCumulativeChanged );
 }
 

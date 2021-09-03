@@ -46,7 +46,7 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   : QgsRasterRendererWidget( layer, extent )
   , mMinMaxOrigin( 0 )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
 
   setupUi( this );
 
@@ -118,7 +118,7 @@ QgsRasterRenderer *QgsSingleBandPseudoColorRendererWidget::renderer()
   QgsColorRampShader *fcn = new QgsColorRampShader( mColorRampShaderWidget->shader() );
   rasterShader->setRasterShaderFunction( fcn );
 
-  int bandNumber = mBandComboBox->currentBand();
+  const int bandNumber = mBandComboBox->currentBand();
   QgsSingleBandPseudoColorRenderer *renderer = new QgsSingleBandPseudoColorRenderer( mRasterLayer->dataProvider(), bandNumber, rasterShader );
   renderer->setClassificationMin( lineEditValue( mMinLineEdit ) );
   renderer->setClassificationMax( lineEditValue( mMaxLineEdit ) );
@@ -190,6 +190,9 @@ void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int bandNo, double min,
 {
   QgsDebugMsg( QStringLiteral( "theBandNo = %1 min = %2 max = %3" ).arg( bandNo ).arg( min ).arg( max ) );
 
+  const QString oldMinTextvalue = mMinLineEdit->text();
+  const QString oldMaxTextvalue = mMaxLineEdit->text();
+
   if ( std::isnan( min ) )
   {
     whileBlocking( mMinLineEdit )->clear();
@@ -211,7 +214,7 @@ void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int bandNo, double min,
   // We compare old min and new min as text because QString::number keeps a fixed number of significant
   // digits (default 6) and so loaded min/max will always differ from current one, which triggers a
   // classification, and wipe out every user modification (see https://github.com/qgis/QGIS/issues/36172)
-  if ( mMinLineEdit->text() != displayValueWithMaxPrecision( min ) || mMaxLineEdit->text() != displayValueWithMaxPrecision( max ) )
+  if ( mMinLineEdit->text() != oldMinTextvalue || mMaxLineEdit->text() != oldMaxTextvalue )
   {
     whileBlocking( mColorRampShaderWidget )->setRasterBand( bandNo );
     whileBlocking( mColorRampShaderWidget )->setMinimumMaximumAndClassify( min, max );

@@ -75,7 +75,7 @@ void QgsLayoutItemGroupUndoCommand::switchState()
       mLayout->addLayoutItemPrivate( group );
     }
 
-    for ( const QString &childUuid : qgis::as_const( mItemUuids ) )
+    for ( const QString &childUuid : std::as_const( mItemUuids ) )
     {
       QgsLayoutItem *childItem = mLayout->itemByUuid( childUuid );
       group->addItem( childItem );

@@ -25,7 +25,7 @@ class QgsQuickMapSettings;
 
 /**
  * \ingroup quick
- * The QgsQuickMapTransform is transformation that can be attached to any QQuickItem.
+ * \brief The QgsQuickMapTransform is transformation that can be attached to any QQuickItem.
  *
  * If the item is based on the map coordinates, QgsQuickMapTransform will
  * transform it to the device coordinates based on the attached map settings.

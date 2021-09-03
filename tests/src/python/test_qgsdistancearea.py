@@ -63,6 +63,20 @@ class TestQgsDistanceArea(unittest.TestCase):
                      (4, length))
         assert length == 4, myMessage
 
+    def testBearing(self):
+        """
+        Test bearing calculation
+        """
+        da = QgsDistanceArea()
+        self.assertAlmostEqual(da.bearing(QgsPointXY(145.047, -37.578), QgsPointXY(168.38, -16.95)), 0.84685, 5)
+        self.assertAlmostEqual(da.bearing(QgsPointXY(-19.57, 65.12), QgsPointXY(-2.63, 54.97)), 2.11060792, 5)
+
+        da.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:3857'), QgsProject.instance().transformContext())
+        da.setEllipsoid(da.sourceCrs().ellipsoidAcronym())
+        self.assertTrue(da.willUseEllipsoid())
+        self.assertAlmostEqual(da.bearing(QgsPointXY(16198544, -4534850), QgsPointXY(18736872, -1877769)), 0.8723168079, 5)
+        self.assertAlmostEqual(da.bearing(QgsPointXY(-2074453, 9559553), QgsPointXY(-55665, 6828252)), 2.35691008, 5)
+
     def testMeasureLineProjected(self):
         #   +-+
         #   | |
@@ -712,12 +726,12 @@ class TestQgsDistanceArea(unittest.TestCase):
 
         print(("measured {} in {}".format(area, QgsUnitTypes.toString(units))))
         # should always be in Meters Squared
-        self.assertAlmostEqual(area, 36918093794.121284, delta=0.1)
+        self.assertAlmostEqual(area, 36922805935.96157, delta=0.1)
         self.assertEqual(units, QgsUnitTypes.AreaSquareMeters)
 
         # test converting the resultant area
         area = da.convertAreaMeasurement(area, QgsUnitTypes.AreaSquareMiles)
-        self.assertAlmostEqual(area, 14254.155703182701, delta=0.001)
+        self.assertAlmostEqual(area, 14255.975071318593, delta=0.001)
 
         # now try with a source CRS which is in feet
         polygon = QgsGeometry.fromPolygonXY(
@@ -745,12 +759,12 @@ class TestQgsDistanceArea(unittest.TestCase):
         area = da.measureArea(polygon)
         units = da.areaUnits()
         print(("measured {} in {}".format(area, QgsUnitTypes.toString(units))))
-        self.assertAlmostEqual(area, 185818.59096575077, delta=1.0)
+        self.assertAlmostEqual(area, 185825.2069028169, delta=1.0)
         self.assertEqual(units, QgsUnitTypes.AreaSquareMeters)
 
         # test converting the resultant area
         area = da.convertAreaMeasurement(area, QgsUnitTypes.AreaSquareYards)
-        self.assertAlmostEqual(area, 222237.18521272976, delta=1.0)
+        self.assertAlmostEqual(area, 222245.0978076078, delta=1.0)
 
     def testFormatDistance(self):
         """Test formatting distances"""

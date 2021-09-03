@@ -44,7 +44,7 @@ MACRO(PYTHON_INSTALL SOURCE_FILE DESTINATION_DIR)
     ADD_CUSTOM_COMMAND(
       TARGET compile_python_files
       COMMAND ${CMAKE_COMMAND} -E echo ${message}
-      COMMAND ${PYTHON_EXECUTABLE} ${_python_compile_py} ${_bin_py}
+      COMMAND ${Python_EXECUTABLE} ${_python_compile_py} ${_bin_py}
       DEPENDS ${_absfilename}
     )
   ELSE(_abs_bin_py STREQUAL ${_absfilename})
@@ -52,7 +52,7 @@ MACRO(PYTHON_INSTALL SOURCE_FILE DESTINATION_DIR)
       TARGET compile_python_files
       COMMAND ${CMAKE_COMMAND} -E echo ${message} 
       COMMAND ${CMAKE_COMMAND} -E copy ${_absfilename} ${_bin_py}
-      COMMAND ${PYTHON_EXECUTABLE} ${_python_compile_py} ${_bin_py}
+      COMMAND ${Python_EXECUTABLE} ${_python_compile_py} ${_bin_py}
       DEPENDS ${_absfilename}
     )
   ENDIF(_abs_bin_py STREQUAL ${_absfilename})

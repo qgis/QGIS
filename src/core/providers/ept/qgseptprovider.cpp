@@ -16,11 +16,17 @@
  ***************************************************************************/
 
 #include "qgis.h"
+#include "qgslogger.h"
+#include "qgsproviderregistry.h"
 #include "qgseptprovider.h"
 #include "qgseptpointcloudindex.h"
-#include "qgseptdataitems.h"
+#include "qgsremoteeptpointcloudindex.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
+#include "qgsprovidersublayerdetails.h"
+#include "qgsproviderutils.h"
+
+#include <QFileInfo>
 
 ///@cond PRIVATE
 
@@ -32,11 +38,15 @@ QgsEptProvider::QgsEptProvider(
   const QgsDataProvider::ProviderOptions &options,
   QgsDataProvider::ReadFlags flags )
   : QgsPointCloudDataProvider( uri, options, flags )
-  , mIndex( new QgsEptPointCloudIndex )
 {
+  if ( uri.startsWith( QStringLiteral( "http" ), Qt::CaseSensitivity::CaseInsensitive ) )
+    mIndex.reset( new QgsRemoteEptPointCloudIndex );
+  else
+    mIndex.reset( new QgsEptPointCloudIndex );
+
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-    profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
+    profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
 
   loadIndex( );
 }
@@ -78,7 +88,7 @@ QgsPointCloudIndex *QgsEptProvider::index() const
   return mIndex.get();
 }
 
-int QgsEptProvider::pointCount() const
+qint64 QgsEptProvider::pointCount() const
 {
   return mIndex->pointCount();
 }
@@ -126,17 +136,29 @@ QgsEptProvider *QgsEptProviderMetadata::createProvider( const QString &uri, cons
   return new QgsEptProvider( uri, options, flags );
 }
 
-QList<QgsDataItemProvider *> QgsEptProviderMetadata::dataItemProviders() const
+QList<QgsProviderSublayerDetails> QgsEptProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags, QgsFeedback * ) const
 {
-  QList< QgsDataItemProvider * > providers;
-  providers << new QgsEptDataItemProvider;
-  return providers;
+  const QVariantMap parts = decodeUri( uri );
+  const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
+  if ( fi.fileName().compare( QLatin1String( "ept.json" ), Qt::CaseInsensitive ) == 0 )
+  {
+    QgsProviderSublayerDetails details;
+    details.setUri( uri );
+    details.setProviderKey( QStringLiteral( "ept" ) );
+    details.setType( QgsMapLayerType::PointCloudLayer );
+    details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( uri ) );
+    return {details};
+  }
+  else
+  {
+    return {};
+  }
 }
 
 int QgsEptProviderMetadata::priorityForUri( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
-  QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
+  const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
   if ( fi.fileName().compare( QLatin1String( "ept.json" ), Qt::CaseInsensitive ) == 0 )
     return 100;
 
@@ -146,7 +168,7 @@ int QgsEptProviderMetadata::priorityForUri( const QString &uri ) const
 QList<QgsMapLayerType> QgsEptProviderMetadata::validLayerTypesForUri( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
-  QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
+  const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
   if ( fi.fileName().compare( QLatin1String( "ept.json" ), Qt::CaseInsensitive ) == 0 )
     return QList< QgsMapLayerType>() << QgsMapLayerType::PointCloudLayer;
 
@@ -159,7 +181,7 @@ bool QgsEptProviderMetadata::uriIsBlocklisted( const QString &uri ) const
   if ( !parts.contains( QStringLiteral( "path" ) ) )
     return false;
 
-  QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
+  const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
 
   // internal details only
   if ( fi.fileName().compare( QLatin1String( "ept-build.json" ), Qt::CaseInsensitive ) == 0 )
@@ -192,6 +214,11 @@ QString QgsEptProviderMetadata::filters( QgsProviderMetadata::FilterType type )
   return QString();
 }
 
+QgsProviderMetadata::ProviderCapabilities QgsEptProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
+}
+
 QString QgsEptProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   const QString path = parts.value( QStringLiteral( "path" ) ).toString();
@@ -201,7 +228,8 @@ QString QgsEptProviderMetadata::encodeUri( const QVariantMap &parts ) const
 QgsProviderMetadata::ProviderMetadataCapabilities QgsEptProviderMetadata::capabilities() const
 {
   return ProviderMetadataCapability::LayerTypesForUri
-         | ProviderMetadataCapability::PriorityForUri;
+         | ProviderMetadataCapability::PriorityForUri
+         | ProviderMetadataCapability::QuerySublayers;
 }
 ///@endcond
 

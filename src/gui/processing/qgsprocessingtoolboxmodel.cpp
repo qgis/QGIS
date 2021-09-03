@@ -20,6 +20,7 @@
 #include "qgsprocessingrecentalgorithmlog.h"
 #include <functional>
 #include <QPalette>
+#include <QMimeData>
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -43,7 +44,7 @@ QgsProcessingToolboxModelNode *QgsProcessingToolboxModelNode::takeChild( QgsProc
 
 QgsProcessingToolboxModelGroupNode *QgsProcessingToolboxModelNode::getChildGroupNode( const QString &groupId )
 {
-  for ( QgsProcessingToolboxModelNode *node : qgis::as_const( mChildren ) )
+  for ( QgsProcessingToolboxModelNode *node : std::as_const( mChildren ) )
   {
     if ( node->nodeType() == NodeGroup )
     {
@@ -118,7 +119,7 @@ QgsProcessingToolboxModel::QgsProcessingToolboxModel( QObject *parent, QgsProces
   : QAbstractItemModel( parent )
   , mRegistry( registry ? registry : QgsApplication::processingRegistry() )
   , mRecentLog( recentLog )
-  , mRootNode( qgis::make_unique< QgsProcessingToolboxModelGroupNode >( QString(), QString() ) )
+  , mRootNode( std::make_unique< QgsProcessingToolboxModelGroupNode >( QString(), QString() ) )
 {
   rebuild();
 
@@ -138,7 +139,7 @@ void QgsProcessingToolboxModel::rebuild()
 
   if ( mRecentLog )
   {
-    std::unique_ptr< QgsProcessingToolboxModelRecentNode > recentNode = qgis::make_unique< QgsProcessingToolboxModelRecentNode >();
+    std::unique_ptr< QgsProcessingToolboxModelRecentNode > recentNode = std::make_unique< QgsProcessingToolboxModelRecentNode >();
     mRecentNode = recentNode.get();
     mRootNode->addChildNode( recentNode.release() );
     repopulateRecentAlgorithms( true );
@@ -198,9 +199,9 @@ void QgsProcessingToolboxModel::repopulateRecentAlgorithms( bool resetting )
     beginInsertRows( recentIndex, 0, recentAlgorithms.count() - 1 );
   }
 
-  for ( const QgsProcessingAlgorithm *algorithm : qgis::as_const( recentAlgorithms ) )
+  for ( const QgsProcessingAlgorithm *algorithm : std::as_const( recentAlgorithms ) )
   {
-    std::unique_ptr< QgsProcessingToolboxModelAlgorithmNode > algorithmNode = qgis::make_unique< QgsProcessingToolboxModelAlgorithmNode >( algorithm );
+    std::unique_ptr< QgsProcessingToolboxModelAlgorithmNode > algorithmNode = std::make_unique< QgsProcessingToolboxModelAlgorithmNode >( algorithm );
     mRecentNode->addChildNode( algorithmNode.release() );
   }
 
@@ -275,7 +276,7 @@ void QgsProcessingToolboxModel::addProvider( QgsProcessingProvider *provider )
   QgsProcessingToolboxModelNode *parentNode = nullptr;
   if ( !isTopLevelProvider( provider->id() ) )
   {
-    std::unique_ptr< QgsProcessingToolboxModelProviderNode > node = qgis::make_unique< QgsProcessingToolboxModelProviderNode >( provider );
+    std::unique_ptr< QgsProcessingToolboxModelProviderNode > node = std::make_unique< QgsProcessingToolboxModelProviderNode >( provider );
     parentNode = node.get();
     mRootNode->addChildNode( node.release() );
   }
@@ -287,7 +288,7 @@ void QgsProcessingToolboxModel::addProvider( QgsProcessingProvider *provider )
   const QList< const QgsProcessingAlgorithm * > algorithms = provider->algorithms();
   for ( const QgsProcessingAlgorithm *algorithm : algorithms )
   {
-    std::unique_ptr< QgsProcessingToolboxModelAlgorithmNode > algorithmNode = qgis::make_unique< QgsProcessingToolboxModelAlgorithmNode >( algorithm );
+    std::unique_ptr< QgsProcessingToolboxModelAlgorithmNode > algorithmNode = std::make_unique< QgsProcessingToolboxModelAlgorithmNode >( algorithm );
 
     const QString groupId = algorithm->groupId();
     if ( !groupId.isEmpty() )
@@ -584,7 +585,7 @@ QMimeData *QgsProcessingToolboxModel::mimeData( const QModelIndexList &indexes )
     QByteArray encodedData;
     QDataStream stream( &encodedData, QIODevice::WriteOnly | QIODevice::Truncate );
 
-    std::unique_ptr< QMimeData > mimeData = qgis::make_unique< QMimeData >();
+    std::unique_ptr< QMimeData > mimeData = std::make_unique< QMimeData >();
     const QgsProcessingAlgorithm *algorithm = algorithmForIndex( indexes.at( 0 ) );
     if ( algorithm )
     {
@@ -749,7 +750,7 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
       for ( const QString &part : partsToMatch )
       {
         bool found = false;
-        for ( const QString &partToSearch : qgis::as_const( partsToSearch ) )
+        for ( const QString &partToSearch : std::as_const( partsToSearch ) )
         {
           if ( partToSearch.contains( part, Qt::CaseInsensitive ) )
           {

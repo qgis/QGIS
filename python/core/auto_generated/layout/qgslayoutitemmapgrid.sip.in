@@ -12,7 +12,7 @@
 
 class QgsLayoutItemMapGridStack : QgsLayoutItemMapItemStack
 {
-%Docstring
+%Docstring(signature="appended")
 A collection of grids which is drawn above the map content in a
 :py:class:`QgsLayoutItemMap`. The grid stack controls which grids are drawn and the
 order they are drawn in.
@@ -123,7 +123,7 @@ map item separately.
 
 class QgsLayoutItemMapGrid : QgsLayoutItemMapItem
 {
-%Docstring
+%Docstring(signature="appended")
 An individual grid which is drawn above the map content in a
 :py:class:`QgsLayoutItemMap`.
 
@@ -240,6 +240,7 @@ Constructor for QgsLayoutItemMapGrid.
 :param name: friendly display name for grid
 :param map: :py:class:`QgsLayoutItemMap` the grid is attached to
 %End
+    ~QgsLayoutItemMapGrid();
 
     virtual void draw( QPainter *painter );
 

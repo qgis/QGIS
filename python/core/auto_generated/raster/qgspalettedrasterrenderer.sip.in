@@ -13,7 +13,7 @@
 
 class QgsPalettedRasterRenderer: QgsRasterRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 Renderer for paletted raster images.
 %End
 

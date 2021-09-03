@@ -503,20 +503,30 @@ Negative rounds to powers of 10</string>
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsUnitSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsunitselectionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsFieldExpressionWidget</class>
    <extends>QWidget</extends>
    <header>qgsfieldexpressionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSymbolButton</class>
+   <extends>QToolButton</extends>
+   <header>qgssymbolbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -526,26 +536,16 @@ Negative rounds to powers of 10</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsSymbolButton</class>
-   <extends>QToolButton</extends>
-   <header>qgssymbolbutton.h</header>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsGraduatedHistogramWidget</class>
    <extends>QWidget</extends>
    <header>qgsgraduatedhistogramwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -563,6 +563,9 @@ Negative rounds to powers of 10</string>
   <tabstop>viewGraduated</tabstop>
   <tabstop>cboGraduatedMode</tabstop>
   <tabstop>spinGraduatedClasses</tabstop>
+  <tabstop>mGroupBoxSymmetric</tabstop>
+  <tabstop>cboSymmetryPoint</tabstop>
+  <tabstop>cbxAstride</tabstop>
   <tabstop>btnGraduatedClassify</tabstop>
   <tabstop>btnGraduatedAdd</tabstop>
   <tabstop>btnGraduatedDelete</tabstop>

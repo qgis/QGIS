@@ -21,7 +21,7 @@
 
 /**
  * \ingroup core
- * A numeric formatter which returns a scientific notation representation of a value.
+ * \brief A numeric formatter which returns a scientific notation representation of a value.
  *
  * \since QGIS 3.12
  */

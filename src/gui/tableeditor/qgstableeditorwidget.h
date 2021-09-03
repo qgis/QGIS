@@ -101,7 +101,7 @@ class QgsTableEditorDelegate : public QStyledItemDelegate
  * \ingroup gui
  * \class QgsTableEditorWidget
  *
- * A reusable widget for editing simple spreadsheet-style tables.
+ * \brief A reusable widget for editing simple spreadsheet-style tables.
  *
  * Table content is retrieved and set using the QgsTableContents class. The editor
  * has support for table foreground and background colors, and numeric formats.

@@ -29,6 +29,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="toolTip">
+      <string>If left empty the relation name is used.</string>
+     </property>
     </widget>
    </item>
    <item row="1" column="0">

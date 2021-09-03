@@ -32,7 +32,9 @@ class QDomElement;
 
 /**
  * \ingroup 3d
- * Class that encapsulates camera pose in a 3D scene. The pose is defined with the following parameters:
+ * \brief Class that encapsulates camera pose in a 3D scene.
+ *
+ * The pose is defined with the following parameters:
  *
  * - center point - towards which point the camera is looking
  * - distance from the center point - how far is the camera from the point towards which it is looking
@@ -73,6 +75,7 @@ class _3D_EXPORT QgsCameraPose
     //! Reads configuration from a DOM element previously written using writeXml()
     void readXml( const QDomElement &elem );
 
+    // TODO c++20 - replace with = default
     bool operator==( const QgsCameraPose &other ) const
     {
       return mCenterPoint == other.mCenterPoint &&

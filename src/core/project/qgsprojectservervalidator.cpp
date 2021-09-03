@@ -21,6 +21,7 @@
 #include "qgsprojectservervalidator.h"
 #include "qgsvectorlayer.h"
 
+#include <QRegularExpression>
 
 QString QgsProjectServerValidator::displayValidationError( QgsProjectServerValidator::ValidationError error )
 {
@@ -42,14 +43,14 @@ QString QgsProjectServerValidator::displayValidationError( QgsProjectServerValid
 
 void QgsProjectServerValidator::browseLayerTree( QgsLayerTreeGroup *treeGroup, QStringList &owsNames, QStringList &encodingMessages )
 {
-  QList< QgsLayerTreeNode * > treeGroupChildren = treeGroup->children();
+  const QList< QgsLayerTreeNode * > treeGroupChildren = treeGroup->children();
   for ( int i = 0; i < treeGroupChildren.size(); ++i )
   {
     QgsLayerTreeNode *treeNode = treeGroupChildren.at( i );
     if ( treeNode->nodeType() == QgsLayerTreeNode::NodeGroup )
     {
       QgsLayerTreeGroup *treeGroupChild = static_cast<QgsLayerTreeGroup *>( treeNode );
-      QString shortName = treeGroupChild->customProperty( QStringLiteral( "wmsShortName" ) ).toString();
+      const QString shortName = treeGroupChild->customProperty( QStringLiteral( "wmsShortName" ) ).toString();
       if ( shortName.isEmpty() )
         owsNames << treeGroupChild->name();
       else
@@ -62,7 +63,7 @@ void QgsProjectServerValidator::browseLayerTree( QgsLayerTreeGroup *treeGroup, Q
       QgsMapLayer *layer = treeLayer->layer();
       if ( layer )
       {
-        QString shortName = layer->shortName();
+        const QString shortName = layer->shortName();
         if ( shortName.isEmpty() )
           owsNames << layer->name();
         else
@@ -94,11 +95,11 @@ bool QgsProjectServerValidator::validate( QgsProject *project, QList<QgsProjectS
   browseLayerTree( project->layerTreeRoot(), owsNames, encodingMessages );
 
   QStringList duplicateNames, regExpMessages;
-  QRegExp snRegExp = QgsApplication::shortNameRegExp();
+  const QRegularExpression snRegExp = QgsApplication::shortNameRegularExpression();
   const auto constOwsNames = owsNames;
   for ( const QString &name : constOwsNames )
   {
-    if ( !snRegExp.exactMatch( name ) )
+    if ( !snRegExp.match( name ).hasMatch() )
     {
       regExpMessages << name;
     }
@@ -146,7 +147,7 @@ bool QgsProjectServerValidator::validate( QgsProject *project, QList<QgsProjectS
       results << ValidationResult( QgsProjectServerValidator::ProjectRootNameConflict, rootLayerName );
     }
 
-    if ( !snRegExp.exactMatch( rootLayerName ) )
+    if ( !snRegExp.match( rootLayerName ).hasMatch() )
     {
       result = false;
       results << ValidationResult( QgsProjectServerValidator::ProjectShortName, rootLayerName );

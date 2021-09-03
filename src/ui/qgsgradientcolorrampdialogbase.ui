@@ -96,7 +96,7 @@
         <string notr="true"/>
        </property>
        <property name="sizeAdjustPolicy">
-        <enum>QComboBox::AdjustToMinimumContentsLength</enum>
+        <enum>QComboBox::AdjustToContents</enum>
        </property>
       </widget>
      </item>
@@ -148,7 +148,7 @@
         <x>0</x>
         <y>0</y>
         <width>850</width>
-        <height>494</height>
+        <height>498</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -331,10 +331,21 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QwtPlot</class>
+   <extends>QFrame</extends>
+   <header>qwt_plot.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsScrollArea</class>
@@ -346,17 +357,6 @@
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QwtPlot</class>
-   <extends>QFrame</extends>
-   <header>qwt_plot.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -377,17 +377,15 @@
   <tabstop>btnColor2</tabstop>
   <tabstop>cboType</tabstop>
   <tabstop>mStopEditor</tabstop>
-  <tabstop>groupBox_2</tabstop>
+  <tabstop>scrollArea</tabstop>
   <tabstop>mPositionSpinBox</tabstop>
   <tabstop>mDeleteStopButton</tabstop>
   <tabstop>mColorWidget</tabstop>
-  <tabstop>mPlotGroupBox</tabstop>
   <tabstop>mPlotHueCheckbox</tabstop>
   <tabstop>mPlotSaturationCheckbox</tabstop>
   <tabstop>mPlotLightnessCheckbox</tabstop>
   <tabstop>mPlotAlphaCheckbox</tabstop>
   <tabstop>btnInformation</tabstop>
-  <tabstop>scrollArea</tabstop>
  </tabstops>
  <resources/>
  <connections>

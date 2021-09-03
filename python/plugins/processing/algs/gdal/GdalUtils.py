@@ -150,6 +150,8 @@ class GdalUtils:
             raise QgsProcessingException(GdalUtils.tr('Process was unexpectedly terminated'))
         elif res == 0:
             feedback.pushInfo(GdalUtils.tr('Process completed successfully'))
+        elif proc.processError() == QProcess.FailedToStart:
+            raise QgsProcessingException(GdalUtils.tr('Process {} failed to start. Either {} is missing, or you may have insufficient permissions to run the program.').format(command, command))
         else:
             feedback.reportError(GdalUtils.tr('Process returned error code {}').format(res))
 
@@ -168,8 +170,8 @@ class GdalUtils:
 
         GdalUtils.supportedRasters = {}
         GdalUtils.supportedOutputRasters = {}
-        GdalUtils.supportedRasters['GTiff'] = ['tif']
-        GdalUtils.supportedOutputRasters['GTiff'] = ['tif']
+        GdalUtils.supportedRasters['GTiff'] = ['tif', 'tiff']
+        GdalUtils.supportedOutputRasters['GTiff'] = ['tif', 'tiff']
 
         for i in range(gdal.GetDriverCount()):
             driver = gdal.GetDriver(i)
@@ -181,8 +183,8 @@ class GdalUtils:
                     or metadata[gdal.DCAP_RASTER] != 'YES':
                 continue
 
-            if gdal.DMD_EXTENSION in metadata:
-                extensions = metadata[gdal.DMD_EXTENSION].split('/')
+            if gdal.DMD_EXTENSIONS in metadata:
+                extensions = metadata[gdal.DMD_EXTENSIONS].split(' ')
                 if extensions:
                     GdalUtils.supportedRasters[shortName] = extensions
                     # Only creatable rasters can be referenced in output rasters
@@ -208,20 +210,24 @@ class GdalUtils:
 
     @staticmethod
     def getSupportedRasterExtensions():
-        allexts = ['tif']
+        allexts = []
         for exts in list(GdalUtils.getSupportedRasters().values()):
             for ext in exts:
-                if ext not in allexts and ext != '':
+                if ext not in allexts and ext not in ['', 'tif', 'tiff']:
                     allexts.append(ext)
+        allexts.sort()
+        allexts[0:0] = ['tif', 'tiff']
         return allexts
 
     @staticmethod
     def getSupportedOutputRasterExtensions():
-        allexts = ['tif']
+        allexts = []
         for exts in list(GdalUtils.getSupportedOutputRasters().values()):
             for ext in exts:
-                if ext not in allexts and ext != '':
+                if ext not in allexts and ext not in ['', 'tif', 'tiff']:
                     allexts.append(ext)
+        allexts.sort()
+        allexts[0:0] = ['tif', 'tiff']
         return allexts
 
     @staticmethod
@@ -248,12 +254,13 @@ class GdalUtils:
 
     @staticmethod
     def escapeAndJoin(strList):
-        escChars = [' ', '&', '(', ')', '"']
+        escChars = [' ', '&', '(', ')', '"', ';']
         joined = ''
         for s in strList:
             if not isinstance(s, str):
                 s = str(s)
-            if s and s[0] != '-' and any(c in s for c in escChars):
+            # don't escape if command starts with - and isn't a negative number, e.g. -9999
+            if s and re.match(r'^([^-]|-\d)', s) and any(c in s for c in escChars):
                 escaped = '"' + s.replace('\\', '\\\\').replace('"', '"""') \
                           + '"'
             else:
@@ -358,7 +365,7 @@ class GdalUtils:
             if dsUri.host() != "":
                 ogrstr += delim + dsUri.host()
                 delim = ""
-                if dsUri.port() != "" and dsUri.port() != '1521':
+                if dsUri.port() not in ["", '1521']:
                     ogrstr += ":" + dsUri.port()
                 ogrstr += "/"
                 if dsUri.database() != "":
@@ -469,12 +476,7 @@ class GdalUtils:
         if crs.authid().upper().startswith('EPSG:') or crs.authid().upper().startswith('IGNF:') or crs.authid().upper().startswith('ESRI:'):
             return crs.authid()
 
-        if QgsProjUtils.projVersionMajor() >= 6:
-            # use WKT
-            return crs.toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED_GDAL)
-
-        # fallback to proj4 string, stripping out newline characters
-        return crs.toProj().replace('\n', ' ').replace('\r', ' ')
+        return crs.toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED_GDAL)
 
     @classmethod
     def tr(cls, string, context=''):

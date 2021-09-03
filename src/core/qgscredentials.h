@@ -28,7 +28,8 @@
 
 /**
  * \ingroup core
- * Interface for requesting credentials in QGIS in GUI independent way.
+ * \brief Interface for requesting credentials in QGIS in GUI independent way.
+ *
  * This class provides abstraction of a dialog for requesting credentials to the user.
  * By default QgsCredentials will be used if not overridden with other
  * credential creator function.
@@ -142,9 +143,9 @@ class CORE_EXPORT QgsCredentials
 
 /**
  * \ingroup core
-\brief Default implementation of credentials interface
-
-This class doesn't prompt or return credentials
+ * \brief Default implementation of credentials interface
+ *
+ * This class doesn't prompt or return credentials
 */
 class CORE_EXPORT QgsCredentialsNone : public QObject, public QgsCredentials
 {
@@ -165,11 +166,11 @@ class CORE_EXPORT QgsCredentialsNone : public QObject, public QgsCredentials
 
 /**
  * \ingroup core
-\brief Implementation of credentials interface for the console
-
-This class outputs message to the standard output and retrieves input from
-standard input. Therefore it won't be the right choice for apps without
-GUI.
+ * \brief Implementation of credentials interface for the console
+ *
+ * This class outputs message to the standard output and retrieves input from
+ * standard input. Therefore it won't be the right choice for apps without
+ * GUI.
 */
 class CORE_EXPORT QgsCredentialsConsole : public QObject, public QgsCredentials
 {

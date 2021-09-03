@@ -234,7 +234,7 @@ class CORE_EXPORT QgsOgcUtils
 
     /**
      * \ingroup core
-     * Layer properties. Used by SQLStatementToOgcFilter().
+     * \brief Layer properties. Used by SQLStatementToOgcFilter().
      * \note not available in Python bindings
      * \since QGIS 2.16
      */
@@ -355,7 +355,7 @@ class CORE_EXPORT QgsOgcUtils
 
 /**
  * \ingroup core
- * Internal use by QgsOgcUtils
+ * \brief Internal use by QgsOgcUtils
  * \note not available in Python bindings
  */
 class QgsOgcUtilsExprToFilter
@@ -489,7 +489,7 @@ class QgsOgcUtilsExpressionFromFilter
 
 /**
  * \ingroup core
- * Internal use by QgsOgcUtils
+ * \brief Internal use by QgsOgcUtils
  * \note not available in Python bindings
  */
 class QgsOgcUtilsSQLStatementToFilter

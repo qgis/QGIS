@@ -47,7 +47,7 @@ double QgsCurrencyNumericFormat::suggestSampleValue() const
 
 QString QgsCurrencyNumericFormat::formatDouble( double value, const QgsNumericFormatContext &context ) const
 {
-  QString res = QgsBasicNumericFormat::formatDouble( value, context );
+  const QString res = QgsBasicNumericFormat::formatDouble( value, context );
   if ( value < 0 || ( value > 0 && showPlusSign() ) )
     return res.at( 0 ) + mPrefix + res.mid( 1 ) + mSuffix;
   else
@@ -61,7 +61,7 @@ QgsNumericFormat *QgsCurrencyNumericFormat::clone() const
 
 QgsNumericFormat *QgsCurrencyNumericFormat::create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const
 {
-  std::unique_ptr< QgsCurrencyNumericFormat > res = qgis::make_unique< QgsCurrencyNumericFormat >();
+  std::unique_ptr< QgsCurrencyNumericFormat > res = std::make_unique< QgsCurrencyNumericFormat >();
   res->setConfiguration( configuration, context );
   res->mPrefix = configuration.value( QStringLiteral( "prefix" ), QStringLiteral( "$" ) ).toString();
   res->mSuffix = configuration.value( QStringLiteral( "suffix" ), QString() ).toString();

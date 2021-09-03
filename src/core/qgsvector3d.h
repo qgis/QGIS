@@ -23,7 +23,7 @@
 
 /**
  * \ingroup 3d
- * Class for storage of 3D vectors similar to QVector3D, with the difference that it uses double precision
+ * \brief Class for storage of 3D vectors similar to QVector3D, with the difference that it uses double precision
  * instead of single precision floating point numbers.
  *
  * \since QGIS 3.0
@@ -60,6 +60,7 @@ class CORE_EXPORT QgsVector3D
       mZ = z;
     }
 
+    // TODO c++20 - replace with = default
     bool operator==( const QgsVector3D &other ) const
     {
       return mX == other.mX && mY == other.mY && mZ == other.mZ;
@@ -117,7 +118,7 @@ class CORE_EXPORT QgsVector3D
     //! Normalizes the current vector in place.
     void normalize()
     {
-      double len = length();
+      const double len = length();
       if ( !qgsDoubleNear( len, 0.0 ) )
       {
         mX /= len;
@@ -137,9 +138,9 @@ class CORE_EXPORT QgsVector3D
     //! Returns the perpendicular point of vector \a vp from [\a v1 - \a v2]
     static QgsVector3D perpendicularPoint( const QgsVector3D &v1, const QgsVector3D &v2, const QgsVector3D &vp )
     {
-      QgsVector3D d = ( v2 - v1 ) / v2.distance( v1 );
-      QgsVector3D v = vp - v2;
-      double t = dotProduct( v, d );
+      const QgsVector3D d = ( v2 - v1 ) / v2.distance( v1 );
+      const QgsVector3D v = vp - v2;
+      const double t = dotProduct( v, d );
       QgsVector3D P = v2 + ( d * t );
       return P;
     }

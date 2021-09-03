@@ -11,7 +11,7 @@
 
 class QgsAttributeFormWidget : QWidget /Abstract/
 {
-%Docstring
+%Docstring(signature="appended")
 
 Base class for all widgets shown on a :py:class:`QgsAttributeForm`.
 Consists of the widget which is visible in edit mode as well as the widget visible in search mode.

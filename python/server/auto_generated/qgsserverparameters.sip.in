@@ -11,7 +11,7 @@
 
 class QgsServerParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 Definition of a parameter with basic conversion methods
 
 .. versionadded:: 3.4
@@ -170,7 +170,7 @@ Raises an exception in case of an invalid parameters.
 
 :param msg: The message describing the exception
 
-:raises :: py:class:`QgsBadRequestException` Invalid parameter exception
+:raises QgsBadRequestException: Invalid parameter exception
 %End
 
     QVariant::Type mType;
@@ -180,7 +180,7 @@ Raises an exception in case of an invalid parameters.
 
 class QgsServerParameter : QgsServerParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 Parameter common to all services (WMS, WFS, ...)
 
 .. versionadded:: 3.4
@@ -218,7 +218,7 @@ Constructor for QgsServerParameter.
 %Docstring
 Raises an error in case of an invalid conversion.
 
-:raises :: py:class:`QgsBadRequestException` Invalid parameter exception
+:raises QgsBadRequestException: Invalid parameter exception
 %End
 
     static QString name( const QgsServerParameter::Name name );
@@ -237,7 +237,7 @@ invalid string).
 
 class QgsServerParameters
 {
-%Docstring
+%Docstring(signature="appended")
 :py:class:`QgsServerParameters` provides an interface to retrieve and manipulate global parameters received from the client.
 
 .. versionadded:: 3.4
@@ -324,7 +324,7 @@ defined.
 :return: service
 %End
 
-    QString request() const;
+    virtual QString request() const;
 %Docstring
 Returns REQUEST parameter as a string or an empty string if not
 defined.
@@ -348,7 +348,7 @@ defined.
 :return: filename
 %End
 
-    QString version() const;
+    virtual QString version() const;
 %Docstring
 Returns VERSION parameter as a string or an empty string if not
 defined.

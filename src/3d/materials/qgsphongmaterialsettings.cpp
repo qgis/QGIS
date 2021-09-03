@@ -149,9 +149,9 @@ void QgsPhongMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *effec
 
 QByteArray QgsPhongMaterialSettings::dataDefinedVertexColorsAsByte( const QgsExpressionContext &expressionContext ) const
 {
-  QColor ambient = dataDefinedProperties().valueAsColor( Ambient, expressionContext, mAmbient );
-  QColor diffuse = dataDefinedProperties().valueAsColor( Diffuse, expressionContext, mDiffuse );
-  QColor specular = dataDefinedProperties().valueAsColor( Specular, expressionContext, mSpecular );
+  const QColor ambient = dataDefinedProperties().valueAsColor( Ambient, expressionContext, mAmbient );
+  const QColor diffuse = dataDefinedProperties().valueAsColor( Diffuse, expressionContext, mDiffuse );
+  const QColor specular = dataDefinedProperties().valueAsColor( Specular, expressionContext, mSpecular );
 
   QByteArray array;
   array.resize( sizeof( unsigned char ) * 9 );
@@ -176,11 +176,7 @@ int QgsPhongMaterialSettings::dataDefinedByteStride() const {return 9 * sizeof( 
 
 void QgsPhongMaterialSettings::applyDataDefinedToGeometry( Qt3DRender::QGeometry *geometry, int vertexCount, const QByteArray &data ) const
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-  Qt3DRender::QBuffer *dataBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, geometry );
-#else
   Qt3DRender::QBuffer *dataBuffer = new Qt3DRender::QBuffer( geometry );
-#endif
 
   Qt3DRender::QAttribute *diffuseAttribute = new Qt3DRender::QAttribute( geometry );
   diffuseAttribute->setName( QStringLiteral( "dataDefinedDiffuseColor" ) );
@@ -238,9 +234,9 @@ Qt3DRender::QMaterial *QgsPhongMaterialSettings::dataDefinedMaterial() const
   Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram();
 
   //Load shader programs
-  QUrl urlVert( QStringLiteral( "qrc:/shaders/phongDataDefined.vert" ) );
+  const QUrl urlVert( QStringLiteral( "qrc:/shaders/phongDataDefined.vert" ) );
   shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, shaderProgram->loadSource( urlVert ) );
-  QUrl urlFrag( QStringLiteral( "qrc:/shaders/phongDataDefined.frag" ) );
+  const QUrl urlFrag( QStringLiteral( "qrc:/shaders/phongDataDefined.frag" ) );
   shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Fragment, shaderProgram->loadSource( urlFrag ) );
 
   renderPass->setShaderProgram( shaderProgram );

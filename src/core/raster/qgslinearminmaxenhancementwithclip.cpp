@@ -29,7 +29,7 @@ int QgsLinearMinMaxEnhancementWithClip::enhance( double value )
     return -1;
   }
 
-  int myStretchedValue = static_cast<int>( ( ( value - mMinimumValue ) / ( mMinimumMaximumRange ) ) * 255.0 );
+  const int myStretchedValue = static_cast<int>( ( ( value - mMinimumValue ) / ( mMinimumMaximumRange ) ) * 255.0 );
   if ( myStretchedValue < 0 )
   {
     return 0;

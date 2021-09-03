@@ -44,6 +44,18 @@
 				<string>QGIS</string>
 			</array>
 		</dict>
+    <dict>
+			<key>CFBundleTypeName</key>
+			<string>QGIS Project zipped container</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>qgz.icns</string>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>qgz</string>
+			</array>
+		</dict>
 		<dict>
 			<key>CFBundleTypeName</key>
 			<string>ESRI Shape document</string>

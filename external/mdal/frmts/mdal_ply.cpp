@@ -82,7 +82,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverPly::load( const std::string &meshFile, 
   }
 
   /*
-  * The header is a format defintion and a series of element definitions and/or comment lines
+  * The header is a format definition and a series of element definitions and/or comment lines
   * cycle through these until end-header
   */
   do

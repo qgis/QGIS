@@ -26,15 +26,16 @@ QgsRendererWidget *QgsNullSymbolRendererWidget::create( QgsVectorLayer *layer, Q
 
 QgsNullSymbolRendererWidget::QgsNullSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
   : QgsRendererWidget( layer, style )
-
 {
   if ( renderer )
   {
-    mRenderer = QgsNullSymbolRenderer::convertFromRenderer( renderer );
+    mRenderer.reset( QgsNullSymbolRenderer::convertFromRenderer( renderer ) );
   }
   if ( !mRenderer )
   {
-    mRenderer = new QgsNullSymbolRenderer();
+    mRenderer = std::make_unique< QgsNullSymbolRenderer >();
+    if ( renderer )
+      renderer->copyRendererData( mRenderer.get() );
   }
 
   QGridLayout *layout = new QGridLayout( this );
@@ -42,12 +43,9 @@ QgsNullSymbolRendererWidget::QgsNullSymbolRendererWidget( QgsVectorLayer *layer,
   layout->addWidget( label );
 }
 
-QgsNullSymbolRendererWidget::~QgsNullSymbolRendererWidget()
-{
-  delete mRenderer;
-}
+QgsNullSymbolRendererWidget::~QgsNullSymbolRendererWidget() = default;
 
 QgsFeatureRenderer *QgsNullSymbolRendererWidget::renderer()
 {
-  return mRenderer;
+  return mRenderer.get();
 }

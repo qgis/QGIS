@@ -90,6 +90,8 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
     checkSelection();
 
     // set up utility actions menu
+    mActionImportAuthenticationConfigs = new QAction( tr( "Import authentication configurations from file" ), this );
+    mActionExportSelectedAuthenticationConfigs = new QAction( tr( "Export selected authentication configurations to file" ), this );
     mActionSetMasterPassword = new QAction( QStringLiteral( "Input master password" ), this );
     mActionClearCachedMasterPassword = new QAction( QStringLiteral( "Clear cached master password" ), this );
     mActionResetMasterPassword = new QAction( QStringLiteral( "Reset master password" ), this );
@@ -97,6 +99,8 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
     mActionRemoveAuthConfigs = new QAction( QStringLiteral( "Remove all authentication configurations" ), this );
     mActionEraseAuthDatabase = new QAction( QStringLiteral( "Erase authentication database" ), this );
 
+    connect( mActionImportAuthenticationConfigs, &QAction::triggered, this, &QgsAuthConfigEditor::importAuthenticationConfigs );
+    connect( mActionExportSelectedAuthenticationConfigs, &QAction::triggered, this, &QgsAuthConfigEditor::exportSelectedAuthenticationConfigs );
     connect( mActionSetMasterPassword, &QAction::triggered, this, &QgsAuthConfigEditor::setMasterPassword );
     connect( mActionClearCachedMasterPassword, &QAction::triggered, this, &QgsAuthConfigEditor::clearCachedMasterPassword );
     connect( mActionResetMasterPassword, &QAction::triggered, this, &QgsAuthConfigEditor::resetMasterPassword );
@@ -112,11 +116,24 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
     mAuthUtilitiesMenu->addAction( mActionClearCachedAuthConfigs );
     mAuthUtilitiesMenu->addAction( mActionRemoveAuthConfigs );
     mAuthUtilitiesMenu->addSeparator();
+    mAuthUtilitiesMenu->addAction( mActionImportAuthenticationConfigs );
+    mAuthUtilitiesMenu->addAction( mActionExportSelectedAuthenticationConfigs );
+    mAuthUtilitiesMenu->addSeparator();
     mAuthUtilitiesMenu->addAction( mActionEraseAuthDatabase );
 
     btnAuthUtilities->setMenu( mAuthUtilitiesMenu );
     lblAuthConfigDb->setVisible( false );
   }
+}
+
+void QgsAuthConfigEditor::importAuthenticationConfigs()
+{
+  QgsAuthGuiUtils::importAuthenticationConfigs( messageBar() );
+}
+
+void QgsAuthConfigEditor::exportSelectedAuthenticationConfigs()
+{
+  QgsAuthGuiUtils::exportSelectedAuthenticationConfigs( selectedAuthenticationConfigIds(), messageBar() );
 }
 
 void QgsAuthConfigEditor::setMasterPassword()
@@ -151,7 +168,7 @@ void QgsAuthConfigEditor::eraseAuthenticationDatabase()
 
 void QgsAuthConfigEditor::authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level )
 {
-  int levelint = static_cast<int>( level );
+  const int levelint = static_cast<int>( level );
   messageBar()->pushMessage( authtag, message, ( Qgis::MessageLevel )levelint );
 }
 
@@ -161,6 +178,17 @@ void QgsAuthConfigEditor::toggleTitleVisibility( bool visible )
   {
     lblAuthConfigDb->setVisible( visible );
   }
+}
+
+QStringList QgsAuthConfigEditor::selectedAuthenticationConfigIds() const
+{
+  QStringList ids;
+  const QModelIndexList selection = tableViewConfigs->selectionModel()->selectedRows( 0 );
+  for ( const QModelIndex index : selection )
+  {
+    ids << index.sibling( index.row(), 0 ).data().toString();
+  }
+  return ids;
 }
 
 void QgsAuthConfigEditor::setShowUtilitiesButton( bool show )
@@ -210,7 +238,7 @@ void QgsAuthConfigEditor::selectionChanged( const QItemSelection &selected, cons
 
 void QgsAuthConfigEditor::checkSelection()
 {
-  bool hasselection = tableViewConfigs->selectionModel()->selection().length() > 0;
+  const bool hasselection = tableViewConfigs->selectionModel()->selection().length() > 0;
   btnEditConfig->setEnabled( hasselection );
   btnRemoveConfig->setEnabled( hasselection );
 }
@@ -231,7 +259,7 @@ void QgsAuthConfigEditor::btnAddConfig_clicked()
 
 void QgsAuthConfigEditor::btnEditConfig_clicked()
 {
-  QString authcfg = selectedConfigId();
+  const QString authcfg = selectedConfigId();
 
   if ( authcfg.isEmpty() )
     return;
@@ -250,21 +278,23 @@ void QgsAuthConfigEditor::btnEditConfig_clicked()
 
 void QgsAuthConfigEditor::btnRemoveConfig_clicked()
 {
-  QModelIndexList selection = tableViewConfigs->selectionModel()->selectedRows( 0 );
+  const QModelIndexList selection = tableViewConfigs->selectionModel()->selectedRows( 0 );
 
   if ( selection.empty() )
     return;
 
-  QModelIndex indx = selection.at( 0 );
-  QString name = indx.sibling( indx.row(), 1 ).data().toString();
-
-  if ( QMessageBox::warning( this, tr( "Remove Configuration" ),
-                             tr( "Are you sure you want to remove '%1'?\n\n"
-                                 "Operation can NOT be undone!" ).arg( name ),
-                             QMessageBox::Ok | QMessageBox::Cancel,
-                             QMessageBox::Cancel ) == QMessageBox::Ok )
+  for ( const QModelIndex index : selection )
   {
-    mConfigModel->removeRow( indx.row() );
+    const QString name = index.sibling( index.row(), 1 ).data().toString();
+
+    if ( QMessageBox::warning( this, tr( "Remove Configuration" ),
+                               tr( "Are you sure you want to remove '%1'?\n\n"
+                                   "Operation can NOT be undone!" ).arg( name ),
+                               QMessageBox::Ok | QMessageBox::Cancel,
+                               QMessageBox::Cancel ) == QMessageBox::Ok )
+    {
+      mConfigModel->removeRow( index.row() );
+    }
   }
 }
 
@@ -275,11 +305,11 @@ QgsMessageBar *QgsAuthConfigEditor::messageBar()
 
 QString QgsAuthConfigEditor::selectedConfigId()
 {
-  QModelIndexList selection = tableViewConfigs->selectionModel()->selectedRows( 0 );
+  const QModelIndexList selection = tableViewConfigs->selectionModel()->selectedRows( 0 );
 
   if ( selection.empty() )
     return QString();
 
-  QModelIndex indx = selection.at( 0 );
+  const QModelIndex indx = selection.at( 0 );
   return indx.sibling( indx.row(), 0 ).data().toString();
 }

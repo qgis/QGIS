@@ -26,7 +26,7 @@ QString QgsMargins::toString() const
 
 QgsMargins QgsMargins::fromString( const QString &string )
 {
-  QStringList margins = string.split( ',' );
+  const QStringList margins = string.split( ',' );
   if ( margins.count() != 4 )
     return QgsMargins();
 

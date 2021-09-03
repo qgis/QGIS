@@ -52,7 +52,7 @@ QSizeF QgsPieDiagram::diagramSize( const QgsFeature &feature, const QgsRenderCon
   }
 
   bool ok = false;
-  double value = attrVal.toDouble( &ok );
+  const double value = attrVal.toDouble( &ok );
   if ( !ok )
   {
     return QSizeF(); //zero size if attribute is missing
@@ -63,7 +63,7 @@ QSizeF QgsPieDiagram::diagramSize( const QgsFeature &feature, const QgsRenderCon
 
 double QgsPieDiagram::legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const
 {
-  QSizeF size = sizeForValue( value, s, is );
+  const QSizeF size = sizeForValue( value, s, is );
   return std::max( size.width(), size.height() );
 }
 
@@ -113,12 +113,12 @@ void QgsPieDiagram::renderDiagram( const QgsFeature &feature, QgsRenderContext &
   double currentAngle;
 
   //convert from mm / map units to painter units
-  QSizeF spu = sizePainterUnits( s.size, s, c );
-  double w = spu.width();
-  double h = spu.height();
+  const QSizeF spu = sizePainterUnits( s.size, s, c );
+  const double w = spu.width();
+  const double h = spu.height();
 
-  double baseX = position.x();
-  double baseY = position.y() - h;
+  const double baseX = position.x();
+  const double baseY = position.y() - h;
 
   mPen.setColor( s.penColor );
   setPenWidth( mPen, s, c );

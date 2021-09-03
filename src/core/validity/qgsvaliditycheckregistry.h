@@ -25,7 +25,7 @@
 /**
  * \class QgsValidityCheckRegistry
  * \ingroup gui
- * This class keeps a list of QgsAbstractValidityCheck checks which can be used when
+ * \brief This class keeps a list of QgsAbstractValidityCheck checks which can be used when
  * performing validity checks.
  *
  * QgsValidityCheckRegistry is not usually directly created, but rather accessed through

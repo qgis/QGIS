@@ -57,10 +57,10 @@ bool QgsLayoutTableColumn::readXml( const QDomElement &columnElem )
   mSortOrder = static_cast< Qt::SortOrder >( columnElem.attribute( QStringLiteral( "sortOrder" ), QString::number( Qt::AscendingOrder ) ).toInt() );
   mWidth = columnElem.attribute( QStringLiteral( "width" ), QStringLiteral( "0.0" ) ).toDouble();
 
-  QDomNodeList bgColorList = columnElem.elementsByTagName( QStringLiteral( "backgroundColor" ) );
+  const QDomNodeList bgColorList = columnElem.elementsByTagName( QStringLiteral( "backgroundColor" ) );
   if ( !bgColorList.isEmpty() )
   {
-    QDomElement bgColorElem = bgColorList.at( 0 ).toElement();
+    const QDomElement bgColorElem = bgColorList.at( 0 ).toElement();
     bool redOk, greenOk, blueOk, alphaOk;
     int bgRed, bgGreen, bgBlue, bgAlpha;
     bgRed = bgColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );

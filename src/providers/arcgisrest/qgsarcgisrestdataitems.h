@@ -15,10 +15,13 @@
 #ifndef QGSARCGISRESTDATAITEMS_H
 #define QGSARCGISRESTDATAITEMS_H
 
-#include "qgsdataitem.h"
+#include "qgsconnectionsitem.h"
+#include "qgsdatacollectionitem.h"
 #include "qgsdatasourceuri.h"
 #include "qgswkbtypes.h"
 #include "qgsdataitemprovider.h"
+#include "qgslayeritem.h"
+#include "qgsconfig.h"
 
 
 class QgsArcGisRestRootItem : public QgsConnectionsRootItem
@@ -230,7 +233,7 @@ class QgsArcGisFeatureServiceLayerItem : public QgsLayerItem
   public:
 
     QgsArcGisFeatureServiceLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &title, const QString &authid, const QString &authcfg, const QgsStringMap &headers,
-                                      QgsLayerItem::LayerType geometryType );
+                                      Qgis::BrowserLayerType geometryType );
 
 };
 

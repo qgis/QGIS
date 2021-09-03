@@ -21,7 +21,7 @@
 
 /**
  * \ingroup core
- * QgsClassificationEqualInterval is an implementation of QgsClassificationMethod
+ * \brief QgsClassificationEqualInterval is an implementation of QgsClassificationMethod
  * for equal intervals
  * \since QGIS 3.10
  */

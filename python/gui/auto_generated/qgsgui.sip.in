@@ -12,7 +12,7 @@
 
 class QgsGui : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 :py:class:`QgsGui` is a singleton class containing various registry and other global members
 related to GUI classes.
 
@@ -37,6 +37,13 @@ related to GUI classes.
 Returns a pointer to the singleton instance.
 %End
 
+
+    static QgsSettingsRegistryGui *settingsRegistryGui() /KeepReference/;
+%Docstring
+Returns the gui's settings registry, used for managing gui settings.
+
+.. versionadded:: 3.22
+%End
 
     static QgsEditorWidgetRegistry *editorWidgetRegistry() /KeepReference/;
 %Docstring

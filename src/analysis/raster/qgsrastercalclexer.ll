@@ -20,6 +20,7 @@
 %option nounput
 %option case-insensitive
 %option never-interactive
+%option prefix="raster_"
 
  // ensure that lexer will be 8-bit (and not just 7-bit)
 %option 8bit
@@ -53,18 +54,18 @@ raster_band_ref_quoted  \"(\\.|[^"])*\"
 
 %%
 
-"sqrt" { rasterlval.op = QgsRasterCalcNode::opSQRT; return FUNCTION;}
-"sin"  { rasterlval.op = QgsRasterCalcNode::opSIN; return FUNCTION;}
-"cos"  { rasterlval.op = QgsRasterCalcNode::opCOS; return FUNCTION;}
-"tan"  { rasterlval.op = QgsRasterCalcNode::opTAN; return FUNCTION;}
-"asin" { rasterlval.op = QgsRasterCalcNode::opASIN; return FUNCTION;}
-"acos" { rasterlval.op = QgsRasterCalcNode::opACOS; return FUNCTION;}
-"atan" { rasterlval.op = QgsRasterCalcNode::opATAN; return FUNCTION;}
-"ln" { rasterlval.op = QgsRasterCalcNode::opLOG; return FUNCTION;}
-"log10" { rasterlval.op = QgsRasterCalcNode::opLOG10; return FUNCTION;}
-"abs" { rasterlval.op = QgsRasterCalcNode::opABS; return FUNCTION;}
-"min" { rasterlval.op = QgsRasterCalcNode::opMIN; return FUNCTION_2_ARGS;}
-"max" { rasterlval.op = QgsRasterCalcNode::opMAX; return FUNCTION_2_ARGS;}
+"sqrt" { raster_lval.op = QgsRasterCalcNode::opSQRT; return FUNCTION;}
+"sin"  { raster_lval.op = QgsRasterCalcNode::opSIN; return FUNCTION;}
+"cos"  { raster_lval.op = QgsRasterCalcNode::opCOS; return FUNCTION;}
+"tan"  { raster_lval.op = QgsRasterCalcNode::opTAN; return FUNCTION;}
+"asin" { raster_lval.op = QgsRasterCalcNode::opASIN; return FUNCTION;}
+"acos" { raster_lval.op = QgsRasterCalcNode::opACOS; return FUNCTION;}
+"atan" { raster_lval.op = QgsRasterCalcNode::opATAN; return FUNCTION;}
+"ln" { raster_lval.op = QgsRasterCalcNode::opLOG; return FUNCTION;}
+"log10" { raster_lval.op = QgsRasterCalcNode::opLOG10; return FUNCTION;}
+"abs" { raster_lval.op = QgsRasterCalcNode::opABS; return FUNCTION;}
+"min" { raster_lval.op = QgsRasterCalcNode::opMIN; return FUNCTION_2_ARGS;}
+"max" { raster_lval.op = QgsRasterCalcNode::opMAX; return FUNCTION_2_ARGS;}
 
 "AND" { return AND; }
 "OR" { return OR; }
@@ -77,7 +78,7 @@ raster_band_ref_quoted  \"(\\.|[^"])*\"
 
 [()] { return yytext[0]; }
 
-{number} { rasterlval.number  = atof(rastertext); return NUMBER; }
+{number} { raster_lval.number  = atof(raster_text); return NUMBER; }
 
 {raster_band_ref} { return RASTER_BAND_REF; }
 
@@ -92,5 +93,5 @@ raster_band_ref_quoted  \"(\\.|[^"])*\"
 
 void set_raster_input_buffer(const char* buffer)
 {
-  raster_scan_string(buffer);
+  raster__scan_string(buffer);
 }

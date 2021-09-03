@@ -54,18 +54,18 @@ void QgsModelViewToolPan::modelMoveEvent( QgsModelViewMouseEvent *event )
 
 void QgsModelViewToolPan::modelReleaseEvent( QgsModelViewMouseEvent *event )
 {
-  bool clickOnly = !isClickAndDrag( mMousePressStartPos, event->pos() );
+  const bool clickOnly = !isClickAndDrag( mMousePressStartPos, event->pos() );
 
   if ( event->button() == Qt::MiddleButton && clickOnly )
   {
     //middle mouse button click = recenter on point
 
     //get current visible part of scene
-    QRect viewportRect( 0, 0, view()->viewport()->width(), view()->viewport()->height() );
+    const QRect viewportRect( 0, 0, view()->viewport()->width(), view()->viewport()->height() );
     QgsRectangle visibleRect = QgsRectangle( view()->mapToScene( viewportRect ).boundingRect() );
-    QPointF scenePoint = event->modelPoint();
+    const QPointF scenePoint = event->modelPoint();
     visibleRect.scale( 1, scenePoint.x(), scenePoint.y() );
-    QRectF boundsRect = visibleRect.toRectF();
+    const QRectF boundsRect = visibleRect.toRectF();
 
     //zoom view to fit desired bounds
     view()->fitInView( boundsRect, Qt::KeepAspectRatio );

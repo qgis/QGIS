@@ -10,7 +10,7 @@
 
 class QgsNewsFeedParser : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Parser for published QGIS news feeds.
 
 This class is designed to work with the specialized QGIS news feed API. See
@@ -26,7 +26,7 @@ https://github.com/elpaso/qgis-feed.
 
     class Entry
 {
-%Docstring
+%Docstring(signature="appended")
 Represents a single entry from a news feed.
 
 .. versionadded:: 3.10
@@ -92,6 +92,7 @@ Returns the authentication configuration for the parser.
 %Docstring
 Returns the settings key used for a feed with the given ``baseUrl``.
 %End
+
 
   public slots:
 

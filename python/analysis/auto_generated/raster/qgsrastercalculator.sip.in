@@ -12,7 +12,7 @@
 
 class QgsRasterCalculatorEntry
 {
-%Docstring
+%Docstring(signature="appended")
 Represents an individual raster layer/band number entry within a raster calculation.
 
 .. versionadded:: 2.18
@@ -45,7 +45,7 @@ also handled by appending an _n integer to the base name.
 
 class QgsRasterCalculator
 {
-%Docstring
+%Docstring(signature="appended")
 Performs raster layer calculations.
 %End
 

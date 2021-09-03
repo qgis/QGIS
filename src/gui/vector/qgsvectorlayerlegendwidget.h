@@ -24,9 +24,13 @@
 #include "qgstextformat.h"
 #include "qgis_gui.h"
 
+class QCheckBox;
+class QgsImageSourceLineEdit;
 class QLabel;
 class QPushButton;
 class QTreeView;
+class QTreeWidget;
+class QTreeWidgetItem;
 
 class QgsFontButton;
 class QgsCollapsibleGroupBox;
@@ -56,9 +60,13 @@ class GUI_EXPORT QgsVectorLayerLegendWidget : public QWidget
 
   private slots:
     void labelsFromExpression();
+    void enableLabelLegendGroupBox( bool enable );
+    void labelLegendTreeWidgetItemDoubleClicked( QTreeWidgetItem *item, int column );
 
   private:
     void populateLegendTreeView( const QHash<QString, QString> &content );
+    void populateLabelLegendTreeWidget();
+    void applyLabelLegend();
 
   private:
     QTreeView *mLegendTreeView = nullptr;
@@ -66,6 +74,11 @@ class GUI_EXPORT QgsVectorLayerLegendWidget : public QWidget
     QPushButton *mTextOnSymbolFromExpressionButton = nullptr;
     QgsCollapsibleGroupBox *mTextOnSymbolGroupBox = nullptr;
     QLabel *mTextOnSymbolLabel = nullptr;
+    QCheckBox *mShowLabelLegendCheckBox = nullptr;
+    QgsCollapsibleGroupBox *mLabelLegendGroupBox = nullptr;
+    QTreeWidget *mLabelLegendTreeWidget = nullptr;
+    QLabel *mPlaceholderImageLabel = nullptr;
+    QgsImageSourceLineEdit *mImageSourceLineEdit = nullptr;
 
     QgsMapCanvas *mCanvas = nullptr;
     QgsVectorLayer *mLayer = nullptr;

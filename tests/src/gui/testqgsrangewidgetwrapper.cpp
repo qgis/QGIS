@@ -55,6 +55,7 @@ class TestQgsRangeWidgetWrapper : public QObject
     void test_nulls();
     void test_negativeIntegers(); // see GH issue #32149
     void test_focus();
+    void testLongLong();
 
   private:
     std::unique_ptr<QgsRangeWidgetWrapper> widget0; // For field 0
@@ -82,9 +83,9 @@ void TestQgsRangeWidgetWrapper::cleanupTestCase()
 
 void TestQgsRangeWidgetWrapper::init()
 {
-  vl = qgis::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326" ),
-                                          QStringLiteral( "myvl" ),
-                                          QLatin1String( "memory" ) );
+  vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326" ),
+                                         QStringLiteral( "myvl" ),
+                                         QLatin1String( "memory" ) );
 
   // add fields
   QList<QgsField> fields;
@@ -94,10 +95,11 @@ void TestQgsRangeWidgetWrapper::init()
   dfield.setPrecision( 9 );
   fields.append( dfield );
   // default precision = 0
-  QgsField dfield2( "number_def",  QVariant::Double );
+  const QgsField dfield2( "number_def",  QVariant::Double );
   fields.append( dfield2 );
   // simple int
   fields.append( QgsField( "simplenumber", QVariant::Int ) );
+  fields.append( QgsField( "longlong", QVariant::LongLong ) );
   vl->dataProvider()->addAttributes( fields );
   vl->updateFields();
   QVERIFY( vl.get() );
@@ -123,12 +125,12 @@ void TestQgsRangeWidgetWrapper::init()
   vl->dataProvider()->addFeature( feat3 );
   // Verify feat 1 was added
   QCOMPARE( vl->featureCount( ), ( long )3 );
-  QgsFeature _feat1( vl->getFeature( 1 ) );
+  const QgsFeature _feat1( vl->getFeature( 1 ) );
   QCOMPARE( _feat1, feat1 );
-  widget0 = qgis::make_unique<QgsRangeWidgetWrapper>( vl.get(), 0, nullptr, nullptr );
-  widget1 = qgis::make_unique<QgsRangeWidgetWrapper>( vl.get(), 1, nullptr, nullptr );
-  widget2 = qgis::make_unique<QgsRangeWidgetWrapper>( vl.get(), 2, nullptr, nullptr );
-  widget3 = qgis::make_unique<QgsRangeWidgetWrapper>( vl.get(), 3, nullptr, nullptr );
+  widget0 = std::make_unique<QgsRangeWidgetWrapper>( vl.get(), 0, nullptr, nullptr );
+  widget1 = std::make_unique<QgsRangeWidgetWrapper>( vl.get(), 1, nullptr, nullptr );
+  widget2 = std::make_unique<QgsRangeWidgetWrapper>( vl.get(), 2, nullptr, nullptr );
+  widget3 = std::make_unique<QgsRangeWidgetWrapper>( vl.get(), 3, nullptr, nullptr );
   QVERIFY( widget1.get() );
 }
 
@@ -149,7 +151,7 @@ void TestQgsRangeWidgetWrapper::test_setDoubleRange()
   QVERIFY( editor2 );
   widget2->initWidget( editor2 );
 
-  QgsFeature feat( vl->getFeature( 1 ) );
+  const QgsFeature feat( vl->getFeature( 1 ) );
   QVERIFY( feat.isValid() );
   QCOMPARE( feat.attribute( 1 ).toDouble(), 123.123456789 );
   widget1->setFeature( vl->getFeature( 1 ) );
@@ -198,7 +200,7 @@ void TestQgsRangeWidgetWrapper::test_setDoubleSmallerRange()
   QVERIFY( editor2 );
   widget2->initWidget( editor2 );
 
-  QgsFeature feat( vl->getFeature( 1 ) );
+  const QgsFeature feat( vl->getFeature( 1 ) );
   QVERIFY( feat.isValid() );
   QCOMPARE( feat.attribute( 1 ).toDouble(), 123.123456789 );
   widget1->setFeature( vl->getFeature( 1 ) );
@@ -257,7 +259,7 @@ void TestQgsRangeWidgetWrapper::test_setDoubleLimits()
   QCOMPARE( editor->maximum( ), std::numeric_limits<double>::max() );
   QCOMPARE( editor2->maximum( ), std::numeric_limits<double>::max() );
 
-  QgsFeature feat( vl->getFeature( 1 ) );
+  const QgsFeature feat( vl->getFeature( 1 ) );
   QVERIFY( feat.isValid() );
   QCOMPARE( feat.attribute( 1 ).toDouble(), 123.123456789 );
   widget1->setFeature( vl->getFeature( 1 ) );
@@ -465,6 +467,29 @@ void TestQgsRangeWidgetWrapper::test_focus()
   QCOMPARE( editor2->mLineEdit->text(), QString() );
   QCOMPARE( editor3->mLineEdit->text(), QStringLiteral( "nope" ) );
 
+}
+
+void TestQgsRangeWidgetWrapper::testLongLong()
+{
+  // test range widget with a long long field type
+  std::unique_ptr< QgsRangeWidgetWrapper >wrapper = std::make_unique<QgsRangeWidgetWrapper>( vl.get(), 4, nullptr, nullptr );
+
+  // should use a double spin box, as a integer spin box does not have sufficient range
+  QgsDoubleSpinBox *editor = qobject_cast<QgsDoubleSpinBox *>( wrapper->createWidget( nullptr ) );
+  QVERIFY( editor );
+  wrapper->initWidget( editor );
+  // no decimals, it's for long long value editing!
+  QCOMPARE( editor->decimals(), 0 );
+  QCOMPARE( editor->minimum( ), std::numeric_limits<double>::lowest() );
+  QCOMPARE( editor->maximum( ), std::numeric_limits<double>::max() );
+
+  wrapper->setValue( 1234567890123LL );
+
+  // double spin box value should be lossless
+  QCOMPARE( editor->value(), 1234567890123.0 );
+
+  // wrapper value must be a long long type, not double
+  QCOMPARE( wrapper->value(), 1234567890123LL );
 }
 
 QGSTEST_MAIN( TestQgsRangeWidgetWrapper )

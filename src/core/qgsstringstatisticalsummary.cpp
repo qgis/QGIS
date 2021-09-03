@@ -144,8 +144,8 @@ void QgsStringStatisticalSummary::testString( const QString &string )
   }
   if ( mStatistics & MeanLength )
     mSumLengths += string.length();
-  mMinLength = std::min( mMinLength, string.length() );
-  mMaxLength = std::max( mMaxLength, string.length() );
+  mMinLength = std::min( mMinLength, static_cast<int>( string.length() ) );
+  mMaxLength = std::max( mMaxLength, static_cast<int>( string.length() ) );
 }
 
 QVariant QgsStringStatisticalSummary::statistic( QgsStringStatisticalSummary::Statistic stat ) const

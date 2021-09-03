@@ -33,7 +33,7 @@ class QgsFeedback;
 
 /**
  * \ingroup analysis
- * Produces colored relief rasters from DEM.
+ * \brief Produces colored relief rasters from DEM.
 */
 class ANALYSIS_EXPORT QgsRelief
 {

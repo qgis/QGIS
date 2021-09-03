@@ -19,7 +19,6 @@
 #include "ui_widget_symbolslist.h"
 
 #include "qgssymbolwidgetcontext.h"
-#include "qgssymbollayer.h"
 #include "qgsstylemodel.h"
 #include <QWidget>
 #include "qgis_gui.h"

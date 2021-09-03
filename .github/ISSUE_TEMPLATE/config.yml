@@ -1,0 +1,21 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: Documentation (desktop and server)
+    url: https://github.com/qgis/QGIS-Documentation/issues
+    about: Suggest improvements or report errors regarding https://docs.qgis.org
+
+  - name: Question
+    url: https://gis.stackexchange.com/
+    about: >
+      Questions should go to the qgis-user mailing list at https://lists.osgeo.org/mailman/listinfo/qgis-user
+      or other support forums such as https://gis.stackexchange.com/.
+      GitHub issues are for bug reports and suggestions for new features.
+
+  - name: QGIS plugin issue
+    # There must be a link to make this option valid for GitHub
+    url: https://plugins.qgis.org
+    about: >
+      If the issue concerns a third party plugin (downloaded with the plugin manager) then it can't be fixed
+      by the QGIS core team. Please raise your issue in the dedicated bug tracker for that specific plugin
+      (as listed in the plugin's description)

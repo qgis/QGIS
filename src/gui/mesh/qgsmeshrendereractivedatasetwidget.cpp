@@ -147,9 +147,9 @@ QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datase
   msg += QLatin1String( "<table>" );
 
   QString definedOnMesh;
-  if ( mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Face ) )
+  if ( mMeshLayer->contains( QgsMesh::ElementType::Face ) )
   {
-    if ( mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) )
+    if ( mMeshLayer->contains( QgsMesh::ElementType::Edge ) )
     {
       definedOnMesh = tr( "faces and edges" );
     }
@@ -158,7 +158,7 @@ QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datase
       definedOnMesh = tr( "faces" );
     }
   }
-  else if ( mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) )
+  else if ( mMeshLayer->contains( QgsMesh::ElementType::Edge ) )
   {
     definedOnMesh = tr( "edges" );
   }

@@ -53,7 +53,7 @@ void QgsMultiPolygon::clear()
 
 QgsMultiPolygon *QgsMultiPolygon::createEmptyWithSameType() const
 {
-  auto result = qgis::make_unique< QgsMultiPolygon >();
+  auto result = std::make_unique< QgsMultiPolygon >();
   result->mWkbType = mWkbType;
   return result.release();
 }
@@ -112,7 +112,7 @@ QDomElement QgsMultiPolygon::asGml3( QDomDocument &doc, int precision, const QSt
 json QgsMultiPolygon::asJsonObject( int precision ) const
 {
   json polygons( json::array( ) );
-  for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
+  for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
     if ( qgsgeometry_cast<const QgsPolygon *>( geom ) )
     {

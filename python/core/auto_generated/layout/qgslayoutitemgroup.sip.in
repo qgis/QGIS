@@ -10,7 +10,7 @@
 
 class QgsLayoutItemGroup: QgsLayoutItem
 {
-%Docstring
+%Docstring(signature="appended")
 A container for grouping several :py:class:`QgsLayoutItems`.
 
 .. versionadded:: 3.0

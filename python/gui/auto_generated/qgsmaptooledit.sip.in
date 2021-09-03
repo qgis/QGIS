@@ -11,7 +11,7 @@
 
 class QgsMapToolEdit: QgsMapTool
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for map tools that edit vector geometry
 %End
 
@@ -25,8 +25,16 @@ Base class for map tools that edit vector geometry
 
     double defaultZValue() const;
 %Docstring
-Returns default Z value
-Use for set Z coordinate to new vertex for 2.5d geometries
+Returns default Z value.
+Used for setting Z coordinate to new vertex.
+%End
+
+    double defaultMValue() const;
+%Docstring
+Returns default M value.
+Used for setting M coordinate to new vertex.
+
+.. versionadded:: 3.20
 %End
 
   protected:

@@ -12,7 +12,7 @@
 
 class QgsProjectionSelectionDialog : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 A generic dialog to prompt the user for a Coordinate Reference System.
 
 Typically you will use this when you want to prompt the user for

@@ -20,6 +20,7 @@
 #include "qgshananewconnection.h"
 #include "qgshanaprovider.h"
 #include "qgshanaproviderconnection.h"
+#include "qgshanasourceselect.h"
 #include "qgshanautils.h"
 #include "qgsnewnamedialog.h"
 
@@ -111,7 +112,7 @@ bool QgsHanaDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGui
     QString errorMsg;
     try
     {
-      QgsHanaProviderConnection providerConn( layerItem->uri(), {} );
+      const QgsHanaProviderConnection providerConn( layerItem->uri(), {} );
       providerConn.dropVectorTable( layerInfo.schemaName, layerInfo.tableName );
     }
     catch ( const QgsProviderConnectionException &ex )
@@ -164,6 +165,16 @@ bool QgsHanaDataItemGuiProvider::handleDrop(
   return false;
 }
 
+QWidget *QgsHanaDataItemGuiProvider::createParamWidget( QgsDataItem *root, QgsDataItemGuiContext )
+{
+  QgsHanaRootItem *rootItem = qobject_cast<QgsHanaRootItem *>( root );
+  if ( rootItem == nullptr )
+    return nullptr;
+  QgsHanaSourceSelect *select = new QgsHanaSourceSelect( nullptr, QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode::Manager );
+  connect( select, &QgsHanaSourceSelect::connectionsChanged, rootItem, &QgsHanaRootItem::onConnectionsChanged );
+  return select;
+}
+
 void QgsHanaDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
   QgsHanaNewConnection nc( nullptr );
@@ -214,7 +225,7 @@ void QgsHanaDataItemGuiProvider::createSchema( QgsDataItem *item, QgsDataItemGui
   QString errorMsg;
   try
   {
-    QgsHanaProviderConnection providerConn( item->name() );
+    const QgsHanaProviderConnection providerConn( item->name() );
     providerConn.createSchema( schemaName );
   }
   catch ( const QgsProviderConnectionException &ex )
@@ -246,7 +257,7 @@ void QgsHanaDataItemGuiProvider::deleteSchema( QgsHanaSchemaItem *schemaItem, Qg
   QString errorMsg;
   try
   {
-    QgsHanaProviderConnection providerConn( schemaItem->connectionName() );
+    const QgsHanaProviderConnection providerConn( schemaItem->connectionName() );
     const auto tables = providerConn.tables( schemaName );
     if ( tables.empty() )
     {
@@ -311,7 +322,7 @@ void QgsHanaDataItemGuiProvider::renameSchema( QgsHanaSchemaItem *schemaItem, Qg
   QString errorMsg;
   try
   {
-    QgsHanaProviderConnection providerConn( schemaItem->connectionName() );
+    const QgsHanaProviderConnection providerConn( schemaItem->connectionName() );
     providerConn.renameSchema( schemaName, newSchemaName );
   }
   catch ( const QgsProviderConnectionException &ex )
@@ -346,7 +357,7 @@ void QgsHanaDataItemGuiProvider::renameLayer( QgsHanaLayerItem *layerItem, QgsDa
   QString errorMsg;
   try
   {
-    QgsHanaProviderConnection providerConn( layerItem->uri(), {} );
+    const QgsHanaProviderConnection providerConn( layerItem->uri(), {} );
     providerConn.renameVectorTable( layerInfo.schemaName, layerInfo.tableName, newLayerName );
   }
   catch ( const QgsProviderConnectionException &ex )

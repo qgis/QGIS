@@ -59,12 +59,12 @@ QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem *item
 void QgsSvgAnnotationDialog::mBrowseToolButton_clicked()
 {
   QString directory;
-  QFileInfo fi( mFileLineEdit->text() );
+  const QFileInfo fi( mFileLineEdit->text() );
   if ( fi.exists() )
   {
     directory = fi.absolutePath();
   }
-  QString filename = QFileDialog::getOpenFileName( nullptr, tr( "Select SVG file" ), directory, tr( "SVG files" ) + " (*.svg)" );
+  const QString filename = QFileDialog::getOpenFileName( nullptr, tr( "Select SVG file" ), directory, tr( "SVG files" ) + " (*.svg)" );
   mFileLineEdit->setText( filename );
 }
 

@@ -112,6 +112,18 @@ MDAL_EXPORT const char *MDAL_Version();
 MDAL_EXPORT MDAL_Status MDAL_LastStatus();
 
 /**
+ * Resets the last status message
+ * \since MDAL 0.9.0
+ */
+MDAL_EXPORT void MDAL_ResetStatus();
+
+/**
+ * Sets the last status message
+ * \since MDAL 0.9.0
+ */
+MDAL_EXPORT void MDAL_SetStatus( MDAL_LogLevel Level, MDAL_Status status, const char *message );
+
+/**
  * Sets custom callback for logging output
  *
  * By default standard stdout is used as output.
@@ -172,6 +184,14 @@ MDAL_EXPORT bool MDAL_DR_writeDatasetsCapability( MDAL_DriverH driver, MDAL_Data
 MDAL_EXPORT const char *MDAL_DR_writeDatasetsSuffix( MDAL_DriverH driver );
 
 /**
+ * Returns the file suffix used to save mesh frame on file
+ * not thread-safe and valid only till next call
+ *
+ * \since MDAL 0.9.0
+ */
+MDAL_EXPORT const char *MDAL_DR_saveMeshSuffix( MDAL_DriverH driver );
+
+/**
  * Returns whether driver has capability to save mesh
  */
 MDAL_EXPORT bool MDAL_DR_saveMeshCapability( MDAL_DriverH driver );
@@ -194,6 +214,13 @@ MDAL_EXPORT const char *MDAL_DR_longName( MDAL_DriverH driver );
  * not thread-safe and valid only till next call
  */
 MDAL_EXPORT const char *MDAL_DR_filters( MDAL_DriverH driver );
+
+/**
+ * Returns the maximum number of vertices per face supported by the driver
+ *
+ * \since MDAL 0.9.0
+ */
+MDAL_EXPORT int MDAL_DR_faceVerticesMaximumCount( MDAL_DriverH driver );
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /// MESH
@@ -245,6 +272,16 @@ MDAL_EXPORT MDAL_MeshH MDAL_CreateMesh( MDAL_DriverH driver );
  * Saves mesh (only mesh structure) on a file with the specified driver. On error see MDAL_LastStatus for error type.
  */
 MDAL_EXPORT void MDAL_SaveMesh( MDAL_MeshH mesh, const char *meshFile, const char *driver );
+
+/**
+ * Saves mesh (only mesh structure) on a file with an uri. On error see MDAL_LastStatus for error type.
+ *
+ * uri has form <DriverName>:"<MeshFilePath>"[:<SpecificMeshName>]
+ * examples: Ugrid:"mesh.nc":0, Ugrid:"mesh.nc":mesh2d, Ugrid:"mesh.nc"
+ *
+ * since MDAL 0.9
+ */
+MDAL_EXPORT void MDAL_SaveMeshWithUri( MDAL_MeshH mesh, const char *uri );
 
 /**
  * Returns mesh projection
@@ -311,7 +348,7 @@ MDAL_EXPORT int MDAL_M_edgeCount( MDAL_MeshH mesh );
 MDAL_EXPORT int MDAL_M_faceCount( MDAL_MeshH mesh );
 
 /**
- * Returns maximum number of vertices face can consist of, e.g. 4 for regular quad mesh
+ * Returns maximum number of vertices per face for this mesh, can consist of, e.g. 4 for regular quad mesh.
  */
 MDAL_EXPORT int MDAL_M_faceVerticesMaximumCount( MDAL_MeshH mesh );
 
@@ -322,6 +359,36 @@ MDAL_EXPORT int MDAL_M_faceVerticesMaximumCount( MDAL_MeshH mesh );
  * can be freed manually with MDAL_CloseDataset if needed
  */
 MDAL_EXPORT void MDAL_M_LoadDatasets( MDAL_MeshH mesh, const char *datasetFile );
+
+/**
+ * Returns number of metadata values
+ *
+ * \since MDAL 0.9.0
+ */
+MDAL_EXPORT int MDAL_M_metadataCount( MDAL_MeshH mesh );
+
+/**
+ * Returns dataset metadata key
+ * not thread-safe and valid only till next call
+ *
+ * \since MDAL 0.9.0
+ */
+MDAL_EXPORT const char *MDAL_M_metadataKey( MDAL_MeshH mesh, int index );
+
+/**
+ * Returns dataset metadata value
+ * not thread-safe and valid only till next call
+ *
+ * \since MDAL 0.9.0
+ */
+MDAL_EXPORT const char *MDAL_M_metadataValue( MDAL_MeshH mesh, int index );
+
+/**
+ * Adds new metadata to the mesh
+ *
+ * \since MDAL 0.9.0
+ */
+MDAL_EXPORT void MDAL_M_setMetadata( MDAL_MeshH mesh, const char *key, const char *val );
 
 /**
  * Returns dataset groups count
@@ -558,6 +625,36 @@ MDAL_EXPORT MDAL_DatasetH MDAL_G_addDataset(
   double time,
   const double *values,
   const int *active
+);
+
+/**
+ * Adds empty (new) 3D dataset to the group
+ * This increases dataset group count MDAL_G_datasetCount() by 1
+ *
+ * The dataset is opened in edit mode.
+ * To persist dataset, call MDAL_G_closeEditMode() on parent group
+ *
+ * Minimum and maximum dataset values are automatically calculated
+ *
+ * Only for 3D datasets
+ *
+ * \param group parent group handle
+ * \param time time for dataset (hours)
+ * \param values For scalar data, the size must be volume count
+ *               For vector data , the size must be volume count * 2 (x1, y1, x2, y2, ..., xN, yN)
+ * \param verticalLevelCount Int Array holding the number of vertical levels for each face.
+ *               Size must be the face count
+ * \param verticalExtrusion Double Array holding the vertical level values for the voxels
+ *               Size must be Face count + Volume count
+ * \returns empty pointer if not possible to create dataset (e.g. group opened in read mode), otherwise handle to new dataset
+ */
+
+MDAL_EXPORT MDAL_DatasetH MDAL_G_addDataset3D(
+  MDAL_DatasetGroupH group,
+  double time,
+  const double *values,
+  const int *verticalLevelCount,
+  const double *verticalExtrusions
 );
 
 /**

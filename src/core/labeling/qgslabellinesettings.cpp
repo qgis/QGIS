@@ -43,4 +43,17 @@ void QgsLabelLineSettings::updateDataDefinedProperties( const QgsPropertyCollect
     context.setOriginalValueVariable( mLineAnchorPercent );
     mLineAnchorPercent = properties.valueAsDouble( QgsPalLayerSettings::LineAnchorPercent, context, mLineAnchorPercent );
   }
+
+  if ( properties.isActive( QgsPalLayerSettings::LineAnchorClipping ) )
+  {
+    bool ok = false;
+    const QString value = properties.valueAsString( QgsPalLayerSettings::LineAnchorClipping, context, QString(), &ok ).trimmed();
+    if ( ok )
+    {
+      if ( value.compare( QLatin1String( "visible" ), Qt::CaseInsensitive ) == 0 )
+        mAnchorClipping = AnchorClipping::UseVisiblePartsOfLine;
+      else if ( value.compare( QLatin1String( "entire" ), Qt::CaseInsensitive ) == 0 )
+        mAnchorClipping = AnchorClipping::UseEntireLine;
+    }
+  }
 }

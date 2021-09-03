@@ -17,16 +17,18 @@
 #include "qgsauthconfigselect.h"
 #include "ui_qgsauthconfigselect.h"
 
-#include <QHash>
-#include <QMessageBox>
-#include <QTimer>
-
 #include "qgsauthconfig.h"
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
 #include "qgsauthconfigedit.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
+#include "qgsauthmethodmetadata.h"
+
+#include <QHash>
+#include <QMessageBox>
+#include <QTimer>
+#include <QRegularExpression>
 
 
 QgsAuthConfigSelect::QgsAuthConfigSelect( QWidget *parent, const QString &dataprovider )
@@ -108,12 +110,13 @@ void QgsAuthConfigSelect::loadConfig()
   clearConfig();
   if ( !mAuthCfg.isEmpty() && mConfigs.contains( mAuthCfg ) )
   {
-    QgsAuthMethodConfig config = mConfigs.value( mAuthCfg );
-    QgsAuthMethod *authmethod = QgsApplication::authManager()->configAuthMethod( mAuthCfg );
+    const QgsAuthMethodConfig config = mConfigs.value( mAuthCfg );
+    const QString authMethodKey = QgsApplication::authManager()->configAuthMethodKey( mAuthCfg );
     QString methoddesc = tr( "Missing authentication method description" );
-    if ( authmethod )
+    const QgsAuthMethodMetadata *meta = QgsApplication::authManager()->authMethodMetadata( authMethodKey );
+    if ( meta )
     {
-      methoddesc = authmethod->description();
+      methoddesc = meta->description();
     }
     cmbConfigSelect->setToolTip( tr( "<ul><li><b>Method type:</b> %1</li>"
                                      "<li><b>Configuration ID:</b> %2</li></ul>" ).arg( methoddesc, config.id( ) ) );
@@ -152,7 +155,7 @@ void QgsAuthConfigSelect::populateConfigSelector()
   QgsAuthMethodConfigsMap::const_iterator cit = mConfigs.constBegin();
   for ( cit = mConfigs.constBegin(); cit != mConfigs.constEnd(); ++cit )
   {
-    QgsAuthMethodConfig config = cit.value();
+    const QgsAuthMethodConfig config = cit.value();
     sortmap.insert( QStringLiteral( "%1 (%2)" ).arg( config.name(), config.method() ), cit.key() );
   }
 
@@ -199,7 +202,7 @@ void QgsAuthConfigSelect::loadAvailableConfigs()
 
 void QgsAuthConfigSelect::cmbConfigSelect_currentIndexChanged( int index )
 {
-  QString authcfg = cmbConfigSelect->itemData( index ).toString();
+  const QString authcfg = cmbConfigSelect->itemData( index ).toString();
   mAuthCfg = ( !authcfg.isEmpty() && authcfg != QLatin1String( "0" ) ) ? authcfg : QString();
   if ( !mTemporarilyBlockLoad )
     loadConfig();
@@ -380,13 +383,12 @@ void QgsAuthConfigUriEdit::authCfgRemoved( const QString &authcfg )
 
 int QgsAuthConfigUriEdit::authCfgIndex()
 {
-  QRegExp rx( QgsApplication::authManager()->configIdRegex() );
-  return rx.indexIn( mDataUri );
+  return mDataUri.indexOf( QRegularExpression( QgsApplication::authManager()->configIdRegex() ) );
 }
 
 QString QgsAuthConfigUriEdit::authCfgFromUri()
 {
-  int startindex = authCfgIndex();
+  const int startindex = authCfgIndex();
   if ( startindex == -1 )
     return QString();
 
@@ -395,7 +397,7 @@ QString QgsAuthConfigUriEdit::authCfgFromUri()
 
 void QgsAuthConfigUriEdit::selectAuthCfgInUri()
 {
-  int startindex = authCfgIndex();
+  const int startindex = authCfgIndex();
   if ( startindex == -1 )
     return;
 
@@ -409,7 +411,7 @@ void QgsAuthConfigUriEdit::selectAuthCfgInUri()
 
 void QgsAuthConfigUriEdit::updateUriWithAuthCfg()
 {
-  int startindex = authCfgIndex();
+  const int startindex = authCfgIndex();
   if ( startindex == -1 )
   {
     if ( mAuthCfg.size() == 7 )

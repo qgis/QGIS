@@ -13,7 +13,7 @@
 
 class QgsRegularPolygon
 {
-%Docstring
+%Docstring(signature="appended")
 Regular Polygon geometry type.
 
 A regular polygon is a polygon that is equiangular (all angles are equal in measure) and equilateral (all sides have the same length).

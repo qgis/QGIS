@@ -25,6 +25,8 @@ QgsNullSymbolRenderer::QgsNullSymbolRenderer()
 {
 }
 
+QgsNullSymbolRenderer::~QgsNullSymbolRenderer() = default;
+
 QgsSymbol *QgsNullSymbolRenderer::symbolForFeature( const QgsFeature &, QgsRenderContext & ) const
 {
   return nullptr;
@@ -89,6 +91,7 @@ QString QgsNullSymbolRenderer::dump() const
 QgsFeatureRenderer *QgsNullSymbolRenderer::clone() const
 {
   QgsNullSymbolRenderer *r = new QgsNullSymbolRenderer();
+  copyRendererData( r );
   return r;
 }
 
@@ -110,11 +113,15 @@ QDomElement QgsNullSymbolRenderer::save( QDomDocument &doc, const QgsReadWriteCo
   Q_UNUSED( context )
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "nullSymbol" ) );
+
+  saveRendererData( doc, rendererElem, context );
+
   return rendererElem;
 }
 
 QgsNullSymbolRenderer *QgsNullSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {
-  Q_UNUSED( renderer )
-  return new QgsNullSymbolRenderer();
+  std::unique_ptr< QgsNullSymbolRenderer > res = std::make_unique< QgsNullSymbolRenderer >();
+  renderer->copyRendererData( res.get() );
+  return res.release();
 }

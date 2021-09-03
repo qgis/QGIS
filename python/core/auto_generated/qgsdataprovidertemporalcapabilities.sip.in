@@ -12,7 +12,7 @@
 
 class QgsDataProviderTemporalCapabilities
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for handling properties relating to a data provider's temporal capabilities.
 
 .. versionadded:: 3.14

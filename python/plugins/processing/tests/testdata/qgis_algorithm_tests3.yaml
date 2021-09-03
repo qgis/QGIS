@@ -118,6 +118,34 @@ tests:
           geometry:
             precision: 5
 
+  - algorithm: native:zonalstatisticsfb
+    name: Zonal stats (feature based, with transform)
+    params:
+      COLUMN_PREFIX: _
+      INPUT:
+        name: custom/dem_zones.geojson
+        type: vector
+      INPUT_RASTER:
+        name: custom/dem_crs.tif
+        type: raster
+      RASTER_BAND: 1
+      STATISTICS:
+      - 0
+      - 1
+      - 2
+    results:
+      OUTPUT:
+        name: expected/zonal_stats_crs.geojson
+        type: vector
+        compare:
+          fields:
+            _count:
+              precision: 3
+            _sum:
+              precision: 3
+            _mean:
+              precision: 3
+
   - algorithm: qgis:zonalhistogram
     name: Zonal histogram
     params:

@@ -36,7 +36,7 @@ class QgsMessageBar;
 
 /**
  * \ingroup gui
- * Master widget for configuration of labeling of a vector layer
+ * \brief Master widget for configuration of labeling of a vector layer
  *
  * \note This class is not a part of public API
  * \since QGIS 3.14

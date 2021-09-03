@@ -30,7 +30,7 @@ class QgsProperty;
  * \ingroup gui
  * \class QgsTableEditorFormattingWidget
  *
- * A reusable widget for formatting the contents of a QgsTableCell.
+ * \brief A reusable widget for formatting the contents of a QgsTableCell.
  *
  * The editor has support for table foreground and background colors, and numeric formats.
  *

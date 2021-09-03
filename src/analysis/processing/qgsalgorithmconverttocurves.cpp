@@ -67,7 +67,7 @@ QList<int> QgsConvertToCurvesAlgorithm::inputLayerTypes() const
 
 void QgsConvertToCurvesAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr< QgsProcessingParameterNumber > tolerance = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "DISTANCE" ),
+  std::unique_ptr< QgsProcessingParameterNumber > tolerance = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "DISTANCE" ),
       QObject::tr( "Maximum distance tolerance" ), QgsProcessingParameterNumber::Double,
       0.000001, false, 0, 10000000.0 );
   tolerance->setIsDynamic( true );
@@ -75,7 +75,7 @@ void QgsConvertToCurvesAlgorithm::initParameters( const QVariantMap & )
   tolerance->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( tolerance.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber > angleTolerance = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "ANGLE" ),
+  std::unique_ptr< QgsProcessingParameterNumber > angleTolerance = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "ANGLE" ),
       QObject::tr( "Maximum angle tolerance" ), QgsProcessingParameterNumber::Double,
       0.000001, false, 0, 45.0 );
   angleTolerance->setIsDynamic( true );
@@ -104,7 +104,7 @@ QgsFeatureList QgsConvertToCurvesAlgorithm::processFeature( const QgsFeature &fe
   QgsFeature f = feature;
   if ( f.hasGeometry() )
   {
-    QgsGeometry geometry = f.geometry();
+    const QgsGeometry geometry = f.geometry();
     double tolerance = mTolerance;
     if ( mDynamicTolerance )
       tolerance = mToleranceProperty.valueAsDouble( context.expressionContext(), tolerance );

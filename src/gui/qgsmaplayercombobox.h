@@ -75,10 +75,13 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
 
     /**
      * Sets whether an optional empty layer ("not set") option is shown in the combo box.
+     *
+     * Since QGIS 3.20, the optional \a text and \a icon arguments allows the text and icon for the empty layer item to be set.
+     *
      * \see allowEmptyLayer()
      * \since QGIS 3.0
      */
-    void setAllowEmptyLayer( bool allowEmpty );
+    void setAllowEmptyLayer( bool allowEmpty, const QString &text = QString(), const QIcon &icon = QIcon() );
 
     /**
      * Returns TRUE if the combo box allows the empty layer ("not set") choice.

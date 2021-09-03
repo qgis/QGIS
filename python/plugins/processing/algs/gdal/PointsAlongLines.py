@@ -100,31 +100,26 @@ class PointsAlongLines(GdalAlgorithm):
 
         output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 
-        other_fields = []
-        for f in fields:
-            if f.name() == geometry:
-                continue
-            other_fields.append('"{}"'.format(f.name()))
+        other_fields_exist = any(
+            f for f in fields
+            if f.name() != geometry
+        )
 
-        if other_fields:
-            other_fields = ',*'
-        else:
-            other_fields = ''
+        other_fields = ',*' if other_fields_exist else ''
 
-        arguments = []
-        arguments.append(output)
-        arguments.append(ogrLayer)
-        arguments.append('-dialect')
-        arguments.append('sqlite')
-        arguments.append('-sql')
-
-        sql = 'SELECT ST_Line_Interpolate_Point({}, {}) AS {}{} FROM "{}"'.format(geometry, distance, geometry, other_fields, layerName)
-        arguments.append(sql)
+        arguments = [
+            output,
+            ogrLayer,
+            '-dialect',
+            'sqlite',
+            '-sql',
+            f'SELECT ST_Line_Interpolate_Point({geometry}, {distance}) AS {geometry}{other_fields} FROM "{layerName}"'
+        ]
 
         if options:
             arguments.append(options)
 
         if outputFormat:
-            arguments.append('-f {}'.format(outputFormat))
+            arguments.append(f'-f {outputFormat}')
 
         return ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]

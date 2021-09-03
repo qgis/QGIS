@@ -1,0 +1,111 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/proj/qgsprojutils.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsProjUtils
+{
+%Docstring(signature="appended")
+Utility functions for working with the proj library.
+
+.. versionadded:: 3.8
+%End
+
+%TypeHeaderCode
+#include "qgsprojutils.h"
+%End
+  public:
+
+    static int projVersionMajor();
+%Docstring
+Returns the proj library major version number.
+%End
+
+    static int projVersionMinor();
+%Docstring
+Returns the proj library minor version number.
+
+.. versionadded:: 3.20
+%End
+
+    static QString epsgRegistryVersion();
+%Docstring
+Returns the EPSG registry database version used by the proj library (e.g. "v9.8.6").
+
+.. seealso:: :py:func:`epsgRegistryDate`
+
+.. versionadded:: 3.20
+%End
+
+    static QDate epsgRegistryDate();
+%Docstring
+Returns the EPSG registry database release date used by the proj library.
+
+.. seealso:: :py:func:`epsgRegistryVersion`
+
+.. versionadded:: 3.20
+%End
+
+    static QString esriDatabaseVersion();
+%Docstring
+Returns the ESRI projection engine database version used by the proj library (e.g. "ArcMap 10.8.0").
+
+.. seealso:: :py:func:`esriDatabaseDate`
+
+.. versionadded:: 3.20
+%End
+
+    static QDate esriDatabaseDate();
+%Docstring
+Returns the ESRI projection engine database release date used by the proj library.
+
+.. seealso:: :py:func:`esriDatabaseVersion`
+
+.. versionadded:: 3.20
+%End
+
+    static QString ignfDatabaseVersion();
+%Docstring
+Returns the IGNF database version used by the proj library (e.g. "3.1.0").
+
+.. seealso:: :py:func:`ignfDatabaseDate`
+
+.. versionadded:: 3.20
+%End
+
+    static QDate ignfDatabaseDate();
+%Docstring
+Returns the IGNF database release date used by the proj library.
+
+.. seealso:: :py:func:`ignfDatabaseVersion`
+
+.. versionadded:: 3.20
+%End
+
+    static QStringList searchPaths();
+%Docstring
+Returns the current list of Proj file search paths.
+
+.. note::
+
+   Only available on builds based on Proj >= 6.0. Builds based on
+   earlier Proj versions will always return an empty list.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/proj/qgsprojutils.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

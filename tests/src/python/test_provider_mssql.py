@@ -20,6 +20,7 @@ from qgis.core import (QgsSettings,
                        QgsFeature,
                        QgsField,
                        QgsFields,
+                       QgsFieldConstraints,
                        QgsDataSourceUri,
                        QgsWkbTypes,
                        QgsGeometry,
@@ -670,6 +671,78 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
             got_feature = False
 
         self.assertFalse(got_feature)
+
+    def testNotNullConstraint(self):
+        vl = QgsVectorLayer('%s table="qgis_test"."constraints" sql=' %
+                            (self.dbconn), "testdatetimes", "mssql")
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.fields()), 4)
+
+        # test some bad field indexes
+        self.assertEqual(vl.dataProvider().fieldConstraints(-1),
+                         QgsFieldConstraints.Constraints())
+        self.assertEqual(vl.dataProvider().fieldConstraints(
+            1001), QgsFieldConstraints.Constraints())
+
+        self.assertTrue(vl.dataProvider().fieldConstraints(0) &
+                        QgsFieldConstraints.ConstraintNotNull)
+        self.assertFalse(vl.dataProvider().fieldConstraints(1)
+                         & QgsFieldConstraints.ConstraintNotNull)
+        self.assertTrue(vl.dataProvider().fieldConstraints(2) &
+                        QgsFieldConstraints.ConstraintNotNull)
+        self.assertFalse(vl.dataProvider().fieldConstraints(3)
+                         & QgsFieldConstraints.ConstraintNotNull)
+
+        # test that constraints have been saved to fields correctly
+        fields = vl.fields()
+        self.assertTrue(fields.at(0).constraints().constraints()
+                        & QgsFieldConstraints.ConstraintNotNull)
+        self.assertEqual(fields.at(0).constraints().constraintOrigin(QgsFieldConstraints.ConstraintNotNull),
+                         QgsFieldConstraints.ConstraintOriginProvider)
+        self.assertFalse(fields.at(1).constraints().constraints()
+                         & QgsFieldConstraints.ConstraintNotNull)
+        self.assertTrue(fields.at(2).constraints().constraints()
+                        & QgsFieldConstraints.ConstraintNotNull)
+        self.assertEqual(fields.at(2).constraints().constraintOrigin(QgsFieldConstraints.ConstraintNotNull),
+                         QgsFieldConstraints.ConstraintOriginProvider)
+        self.assertFalse(fields.at(3).constraints().constraints()
+                         & QgsFieldConstraints.ConstraintNotNull)
+
+    def testUniqueConstraint(self):
+        vl = QgsVectorLayer('%s table="qgis_test"."constraints" sql=' %
+                            (self.dbconn), "testdatetimes", "mssql")
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.fields()), 4)
+
+        # test some bad field indexes
+        self.assertEqual(vl.dataProvider().fieldConstraints(-1),
+                         QgsFieldConstraints.Constraints())
+        self.assertEqual(vl.dataProvider().fieldConstraints(
+            1001), QgsFieldConstraints.Constraints())
+
+        self.assertTrue(vl.dataProvider().fieldConstraints(0)
+                        & QgsFieldConstraints.ConstraintUnique)
+        self.assertTrue(vl.dataProvider().fieldConstraints(1)
+                        & QgsFieldConstraints.ConstraintUnique)
+        self.assertFalse(vl.dataProvider().fieldConstraints(2)
+                         & QgsFieldConstraints.ConstraintUnique)
+        self.assertFalse(vl.dataProvider().fieldConstraints(3)
+                         & QgsFieldConstraints.ConstraintUnique)
+
+        # test that constraints have been saved to fields correctly
+        fields = vl.fields()
+        self.assertTrue(fields.at(0).constraints().constraints()
+                        & QgsFieldConstraints.ConstraintUnique)
+        self.assertEqual(fields.at(0).constraints().constraintOrigin(QgsFieldConstraints.ConstraintUnique),
+                         QgsFieldConstraints.ConstraintOriginProvider)
+        self.assertTrue(fields.at(1).constraints().constraints()
+                        & QgsFieldConstraints.ConstraintUnique)
+        self.assertEqual(fields.at(1).constraints().constraintOrigin(QgsFieldConstraints.ConstraintUnique),
+                         QgsFieldConstraints.ConstraintOriginProvider)
+        self.assertFalse(fields.at(2).constraints().constraints()
+                         & QgsFieldConstraints.ConstraintUnique)
+        self.assertFalse(fields.at(3).constraints().constraints()
+                         & QgsFieldConstraints.ConstraintUnique)
 
     def getSubsetString(self):
         return '[cnt] > 100 and [cnt] < 410'

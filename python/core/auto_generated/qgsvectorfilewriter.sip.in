@@ -12,11 +12,13 @@
 
 class QgsVectorFileWriter : QgsFeatureSink
 {
-%Docstring
-A convenience class for writing vector files to disk.
+%Docstring(signature="appended")
+A convenience class for writing vector layers to disk based formats (e.g. Shapefiles, GeoPackage).
+
 There are two possibilities how to use this class:
-1. static call to :py:class:`QgsVectorFileWriter`.writeAsVectorFormat(...) which saves the whole vector layer
-2. create an instance of the class and issue calls to addFeature(...)
+
+1. A static call to :py:class:`QgsVectorFileWriter`.writeAsVectorFormat(...) which saves the whole vector layer.
+2. Create an instance of the class and issue calls to addFeature(...).
 %End
 
 %TypeHeaderCode
@@ -133,6 +135,7 @@ Constructor for MetaData
       ErrProjection,
       ErrFeatureWriteFailed,
       ErrInvalidLayer,
+      ErrSavingMetadata,
       Canceled,
     };
 
@@ -159,7 +162,7 @@ Constructor for MetaData
 
     class FieldValueConverter
 {
-%Docstring
+%Docstring(signature="appended")
 Interface to convert raw field values to their user-friendly value.
 
 .. versionadded:: 2.16
@@ -337,7 +340,7 @@ Writes a layer out to a vector file.
 
     class SaveVectorOptions
 {
-%Docstring
+%Docstring(signature="appended")
 Options to pass to :py:func:`~QgsVectorFileWriter.writeAsVectorFormat`
 
 .. versionadded:: 3.0
@@ -391,6 +394,10 @@ Constructor
         QgsFeedback *feedback;
 
         FieldNameSource fieldNameSource;
+
+        bool saveMetadata;
+
+        QgsLayerMetadata layerMetadata;
     };
 
 
@@ -455,13 +462,13 @@ Create a new vector file writer.
 .. versionadded:: 3.10.3
 %End
 
-    static QgsVectorFileWriter::WriterError writeAsVectorFormatV2( QgsVectorLayer *layer,
+ static QgsVectorFileWriter::WriterError writeAsVectorFormatV2( QgsVectorLayer *layer,
         const QString &fileName,
         const QgsCoordinateTransformContext &transformContext,
         const QgsVectorFileWriter::SaveVectorOptions &options,
         QString *newFilename = 0,
         QString *newLayer = 0,
-        QString *errorMessage /Out/ = 0 );
+        QString *errorMessage /Out/ = 0 ) /Deprecated/;
 %Docstring
 Writes a layer out to a vector file.
 
@@ -475,7 +482,31 @@ Writes a layer out to a vector file.
 :return: - Error message code, or QgsVectorFileWriter.NoError if the write operation was successful
          - errorMessage: will be set to the error message text, if an error occurs while writing the layer
 
-.. versionadded:: 3.10.3
+.. deprecated:: QGIS 3.20
+  use writeAsVectorFormatV3 instead
+%End
+
+    static QgsVectorFileWriter::WriterError writeAsVectorFormatV3( QgsVectorLayer *layer,
+        const QString &fileName,
+        const QgsCoordinateTransformContext &transformContext,
+        const QgsVectorFileWriter::SaveVectorOptions &options,
+        QString *errorMessage /Out/ = 0,
+        QString *newFilename /Out/ = 0,
+        QString *newLayer /Out/ = 0 );
+%Docstring
+Writes a layer out to a vector file.
+
+:param layer: source layer to write
+:param fileName: file name to write to
+:param transformContext: coordinate transform context
+:param options: save options
+:param newFilename: potentially modified file name (output parameter)
+:param errorMessage: will be set to the error message text, if an error occurs while writing the layer
+
+:return: - Error message code, or QgsVectorFileWriter.NoError if the write operation was successful
+         - newLayer: potentially modified layer name (output parameter)
+
+.. versionadded:: 3.20
 %End
 
     struct FilterFormatDetails

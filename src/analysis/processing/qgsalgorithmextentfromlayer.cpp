@@ -73,7 +73,7 @@ void QgsExtentFromLayerAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
 
-  auto roundParam = qgis::make_unique < QgsProcessingParameterDistance >( QStringLiteral( "ROUND_TO" ), QObject::tr( "Round values to" ), 0, QStringLiteral( "INPUT" ), 0 );
+  auto roundParam = std::make_unique < QgsProcessingParameterDistance >( QStringLiteral( "ROUND_TO" ), QObject::tr( "Round values to" ), 0, QStringLiteral( "INPUT" ), 0 );
   roundParam->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( roundParam.release() );
 
@@ -87,7 +87,7 @@ QVariantMap QgsExtentFromLayerAlgorithm::processAlgorithm( const QVariantMap &pa
   if ( !layer )
     throw QgsProcessingException( QObject::tr( "Invalid input layer" ) );
 
-  double roundTo = parameterAsDouble( parameters, QStringLiteral( "ROUND_TO" ), context );
+  const double roundTo = parameterAsDouble( parameters, QStringLiteral( "ROUND_TO" ), context );
 
   QgsFields fields;
   fields.append( QgsField( QStringLiteral( "MINX" ), QVariant::Double ) );
@@ -121,23 +121,24 @@ QVariantMap QgsExtentFromLayerAlgorithm::processAlgorithm( const QVariantMap &pa
     rect.setYMaximum( std::ceil( rect.yMaximum() / roundTo ) * roundTo );
   }
 
-  QgsGeometry geom = QgsGeometry::fromRect( rect );
+  const QgsGeometry geom = QgsGeometry::fromRect( rect );
 
-  double minX = rect.xMinimum();
-  double maxX = rect.xMaximum();
-  double minY = rect.yMinimum();
-  double maxY = rect.yMaximum();
-  double height = rect.height();
-  double width = rect.width();
-  double cntX = minX + width / 2.0;
-  double cntY = minY + height / 2.0;
-  double area = width * height;
-  double perim = 2 * width + 2 * height;
+  const double minX = rect.xMinimum();
+  const double maxX = rect.xMaximum();
+  const double minY = rect.yMinimum();
+  const double maxY = rect.yMaximum();
+  const double height = rect.height();
+  const double width = rect.width();
+  const double cntX = minX + width / 2.0;
+  const double cntY = minY + height / 2.0;
+  const double area = width * height;
+  const double perim = 2 * width + 2 * height;
 
   QgsFeature feat;
   feat.setGeometry( geom );
   feat.setAttributes( QgsAttributes() << minX << minY << maxX << maxY << cntX << cntY << area << perim << height << width );
-  sink->addFeature( feat, QgsFeatureSink::FastInsert );
+  if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+    throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );

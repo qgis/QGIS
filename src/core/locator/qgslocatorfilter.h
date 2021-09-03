@@ -18,7 +18,6 @@
 #ifndef QGSLOCATORFILTER_H
 #define QGSLOCATORFILTER_H
 
-#include <QAction>
 #include <QIcon>
 #include <QString>
 #include <QVariant>
@@ -33,7 +32,7 @@ class QgsLocatorFilter;
 /**
  * \class QgsLocatorResult
  * \ingroup core
- * Encapsulates properties of an individual matching result found by a QgsLocatorFilter.
+ * \brief Encapsulates properties of an individual matching result found by a QgsLocatorFilter.
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLocatorResult
@@ -144,7 +143,7 @@ Q_DECLARE_METATYPE( QgsLocatorResult::ResultAction )
 /**
  * \class QgsLocatorFilter
  * \ingroup core
- * Abstract base class for filters which collect locator results.
+ * \brief Abstract base class for filters which collect locator results.
  *
  * \note If the configuration of the filter is changed outside of the main application settings,
  * one needs to invalidate current results of the locator widget: \see QgisInterface::invalidateLocatorResults
@@ -197,6 +196,12 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * \see name()
      */
     virtual QString displayName() const = 0;
+
+    /**
+     * Returns a translated, description for the filter.
+     * \since QGIS 3.20
+     */
+    virtual QString description() const { return QString(); }
 
     /**
      * Returns flags which specify the filter's behavior.
@@ -353,7 +358,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      *          since fetching results does not happen in the main thread.
      * \since QGIS 3.2
      */
-    void logMessage( const QString &message, Qgis::MessageLevel level = Qgis::Info );
+    void logMessage( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
 
     /**
      * Returns the delay (in milliseconds) for the filter to wait prior to fetching results.

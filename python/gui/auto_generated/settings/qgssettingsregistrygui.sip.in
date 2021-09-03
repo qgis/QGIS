@@ -1,0 +1,42 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/settings/qgssettingsregistrygui.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsSettingsRegistryGui : QgsSettingsRegistry
+{
+%Docstring(signature="appended")
+:py:class:`QgsSettingsRegistryGui` is used for settings introspection and collects all
+:py:class:`QgsSettingsEntry` instances of gui.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgssettingsregistrygui.h"
+%End
+  public:
+
+    QgsSettingsRegistryGui();
+%Docstring
+Constructor for QgsSettingsRegistryGui.
+%End
+
+    virtual ~QgsSettingsRegistryGui();
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/settings/qgssettingsregistrygui.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

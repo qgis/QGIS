@@ -69,7 +69,7 @@ bool QgsVectorTileLayerRenderer::render()
   if ( ctx.renderingStopped() )
     return false;
 
-  QgsScopedQPainterState painterState( ctx.painter() );
+  const QgsScopedQPainterState painterState( ctx.painter() );
 
   if ( !mClippingRegions.empty() )
   {
@@ -96,7 +96,7 @@ bool QgsVectorTileLayerRenderer::render()
                     .arg( mTileRange.startRow() ).arg( mTileRange.endRow() ), 2 );
 
   // view center is used to sort the order of tiles for fetching and rendering
-  QPointF viewCenter = mTileMatrix.mapToTileCoordinates( ctx.extent().center() );
+  const QPointF viewCenter = mTileMatrix.mapToTileCoordinates( ctx.extent().center() );
 
   if ( !mTileRange.isValid() )
   {
@@ -104,7 +104,7 @@ bool QgsVectorTileLayerRenderer::render()
     return true;   // nothing to do
   }
 
-  bool isAsync = ( mSourceType == QLatin1String( "xyz" ) );
+  const bool isAsync = ( mSourceType == QLatin1String( "xyz" ) );
 
   std::unique_ptr<QgsVectorTileLoader> asyncLoader;
   QList<QgsVectorTileRawData> rawTiles;
@@ -134,7 +134,7 @@ bool QgsVectorTileLayerRenderer::render()
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Tiles" ) ); // will be deleted by popper
   scope->setVariable( QStringLiteral( "zoom_level" ), mTileZoom, true );
   scope->setVariable( QStringLiteral( "vector_tile_zoom" ), QgsVectorTileUtils::scaleToZoom( ctx.rendererScale() ), true );
-  QgsExpressionContextScopePopper popper( ctx.expressionContext(), scope );
+  const QgsExpressionContextScopePopper popper( ctx.expressionContext(), scope );
 
   mRenderer->startRender( *renderContext(), mTileZoom, mTileRange );
 
@@ -169,7 +169,7 @@ bool QgsVectorTileLayerRenderer::render()
 
   if ( !isAsync )
   {
-    for ( QgsVectorTileRawData &rawTile : rawTiles )
+    for ( const QgsVectorTileRawData &rawTile : rawTiles )
     {
       if ( ctx.renderingStopped() )
         break;
@@ -218,7 +218,7 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
   if ( ctx.renderingStopped() )
     return;
 
-  QgsCoordinateTransform ct = ctx.coordinateTransform();
+  const QgsCoordinateTransform ct = ctx.coordinateTransform();
 
   QgsVectorTileRendererData tile( rawTile.id );
   tile.setFields( mPerLayerFields );
@@ -242,7 +242,7 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
     return;
 
   // set up clipping so that rendering does not go behind tile's extent
-  QgsScopedQPainterState savePainterState( ctx.painter() );
+  const QgsScopedQPainterState savePainterState( ctx.painter() );
   // we have to intersect with any existing painter clip regions, or we risk overwriting valid clip
   // regions setup outside of the vector tile renderer (e.g. layout map clip region)
   ctx.painter()->setClipRegion( QRegion( tile.tilePolygon() ), Qt::IntersectClip );
@@ -258,7 +258,7 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
 
   if ( mDrawTileBoundaries )
   {
-    QgsScopedQPainterState savePainterState( ctx.painter() );
+    const QgsScopedQPainterState savePainterState( ctx.painter() );
     ctx.painter()->setClipping( false );
 
     QPen pen( Qt::red );

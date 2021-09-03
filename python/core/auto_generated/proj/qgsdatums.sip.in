@@ -1,0 +1,152 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/proj/qgsdatums.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsDatumEnsembleMember
+{
+%Docstring(signature="appended")
+Contains information about a member of a datum ensemble.
+
+.. note::
+
+   Only used in builds based on on PROJ 7.2 or later
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgsdatums.h"
+%End
+  public:
+
+    QString name() const;
+%Docstring
+Returns the name of the member.
+%End
+
+    QString scope() const;
+%Docstring
+Returns the scope of operation, from EPSG registry database.
+%End
+
+    QString remarks() const;
+%Docstring
+Remarks for operation, from EPSG registry database.
+%End
+
+    QString authority() const;
+%Docstring
+Authority name, e.g. EPSG.
+%End
+
+    QString code() const;
+%Docstring
+Authority code, e.g. "8447" (for EPSG:8447).
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString id;
+    if ( !sipCpp->code().isEmpty() )
+      id = QStringLiteral( "%1 (%2:%3)" ).arg( sipCpp->name(), sipCpp->authority(), sipCpp->code() );
+    else
+      id = sipCpp->name();
+    QString str = QStringLiteral( "<QgsDatumEnsembleMember: %1>" ).arg( id );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+};
+
+class QgsDatumEnsemble
+{
+%Docstring(signature="appended")
+Contains information about a datum ensemble.
+
+.. note::
+
+   Only used in builds based on on PROJ 7.2 or later
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgsdatums.h"
+%End
+  public:
+
+    bool isValid() const;
+%Docstring
+Returns ``True`` if the datum ensemble is a valid object, or ``False`` if it is a null/invalid
+object.
+%End
+
+    QString name() const;
+%Docstring
+Display name of datum ensemble.
+%End
+
+    double accuracy() const;
+%Docstring
+Positional accuracy (in meters).
+%End
+
+    QString authority() const;
+%Docstring
+Authority name, e.g. EPSG.
+%End
+
+    QString code() const;
+%Docstring
+Identification code, e.g. "8447" (For EPSG:8447).
+%End
+
+    QString scope() const;
+%Docstring
+Scope of ensemble, from EPSG registry database.
+%End
+
+    QString remarks() const;
+%Docstring
+Remarks for ensemble, from EPSG registry database.
+%End
+
+    QList< QgsDatumEnsembleMember > members() const;
+%Docstring
+Contains a list of members of the ensemble.
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str;
+    if ( !sipCpp->isValid() )
+    {
+      str = QStringLiteral( "<QgsDatumEnsemble: invalid>" );
+    }
+    else
+    {
+      QString id;
+      if ( !sipCpp->code().isEmpty() )
+        id = QStringLiteral( "%1 (%2:%3)" ).arg( sipCpp->name(), sipCpp->authority(), sipCpp->code() );
+      else
+        id = sipCpp->name();
+      str = QStringLiteral( "<QgsDatumEnsemble: %1>" ).arg( id );
+    }
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/proj/qgsdatums.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

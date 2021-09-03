@@ -12,7 +12,7 @@
 
 class QgsAuthServersEditor : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Widget for viewing and editing servers in authentication database
 %End
 

@@ -16,9 +16,11 @@
  ***************************************************************************/
 #include "qgsdb2geometrycolumns.h"
 #include "qgsdb2tablemodel.h" // needed for QgsDB2LayerProperty
-#include <QtSql>
 #include "qgslogger.h"
 
+#include <QSqlError>
+#include <QSqlIndex>
+#include <QSqlField>
 
 QgsDb2GeometryColumns::QgsDb2GeometryColumns( const QSqlDatabase &db )
   : mDatabase( db )
@@ -51,8 +53,8 @@ QString QgsDb2GeometryColumns::open( const QString &schemaName, const QString &t
 
   if ( !schemaName.isEmpty() && !tableName.isEmpty() )
   {
-    QString whereClause = QStringLiteral( " WHERE TABLE_SCHEMA = '%1' AND TABLE_NAME = '%2'" )
-                          .arg( schemaName, tableName );
+    const QString whereClause = QStringLiteral( " WHERE TABLE_SCHEMA = '%1' AND TABLE_NAME = '%2'" )
+                                .arg( schemaName, tableName );
     queryExtents += whereClause;
     queryNoExtents += whereClause;
   }
@@ -141,15 +143,15 @@ bool QgsDb2GeometryColumns::populateLayerProperty( QgsDb2LayerProperty &layer )
   // to set the FID column.
   // We can only use the primary key if it only has one column and
   // the type is Integer or BigInt.
-  QString table = QStringLiteral( "%1.%2" ).arg( layer.schemaName, layer.tableName );
-  QSqlIndex pk = mDatabase.primaryIndex( table );
+  const QString table = QStringLiteral( "%1.%2" ).arg( layer.schemaName, layer.tableName );
+  const QSqlIndex pk = mDatabase.primaryIndex( table );
   if ( pk.count() == 1 )
   {
-    QSqlField pkFld = pk.field( 0 );
-    QVariant::Type pkType = pkFld.type();
+    const QSqlField pkFld = pk.field( 0 );
+    const QVariant::Type pkType = pkFld.type();
     if ( ( pkType == QVariant::Int ||  pkType == QVariant::LongLong ) )
     {
-      QString fidColName = pk.fieldName( 0 );
+      const QString fidColName = pk.fieldName( 0 );
       layer.pkCols.append( fidColName );
       QgsDebugMsg( "pk is: " + fidColName );
     }

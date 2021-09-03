@@ -26,7 +26,7 @@ class QTextFragment;
 /**
  * \class QgsTextFragment
   * \ingroup core
-  * Stores a fragment of text along with formatting overrides to be used when rendering the fragment.
+  * \brief Stores a fragment of text along with formatting overrides to be used when rendering the fragment.
   *
   * \warning This API is not considered stable and may change in future QGIS versions.
   *

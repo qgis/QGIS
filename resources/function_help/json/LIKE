@@ -1,6 +1,7 @@
 {
   "name": "LIKE",
   "type": "operator",
+  "groups": ["Operators"],
   "description": "Returns 1 if the first parameter matches the supplied pattern. Works with numbers also.",
   "arguments": [
     {"arg":"string/number","description":"value"},

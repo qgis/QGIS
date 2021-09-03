@@ -293,7 +293,7 @@ void TestQgsFeatureListComboBox::testNotExistingYetFeature()
 
 void TestQgsFeatureListComboBox::testFeatureFurtherThanFetchLimit()
 {
-  int fetchLimit = 20;
+  const int fetchLimit = 20;
   QVERIFY( fetchLimit < mLayer->featureCount() );
   std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
   QgsFeatureFilterModel *model = qobject_cast<QgsFeatureFilterModel *>( cb->model() );

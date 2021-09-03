@@ -11,7 +11,7 @@
 #
 # CPACK_PACKAGE_VERSION_MAJOR, CPACK_PACKAGE_VERSION_MINOR
 # CMAKE_INSTALL_PREFIX, CMAKE_VERBOSE_MAKEFILE, CMAKE_BUILD_TYPE
-# CMAKE_OSX_ARCHITECTURES, OSX_HAVE_LOADERPATH
+# CMAKE_OSX_ARCHITECTURES
 # QGIS_APP_NAME
 # QGIS_MACAPP_PREFIX
 # QGIS_*_SUBDIR, QGIS_*_SUBDIR_REV
@@ -121,67 +121,49 @@ FUNCTION (UPDATEQGISPATHS LIBFROM LIBTO)
         ENDFOREACH (QA)
         # qgis-mapserver
         IF (${WITH_SERVER})
-            IF (${OSX_HAVE_LOADERPATH})
-                SET (LIB_CHG_TO "${ATEXECUTABLE}/${QGIS_CGIBIN_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
-            ENDIF ()
+            SET (LIB_CHG_TO "${ATEXECUTABLE}/${QGIS_CGIBIN_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
             INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QCGIDIR}/qgis_mapserv.fcgi")
         ENDIF ()
         # libs
-        IF (${OSX_HAVE_LOADERPATH})
-            # bundled frameworks can use short relative path
-            IF (ISLIB)
-                SET (LIB_CHG_TO "${ATLOADER}/../../../${QGIS_FW_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
-            ElSE ()
-                SET (LIB_CHG_TO "${ATLOADER}/../../../${LIBPOST}")
-            ENDIF ()
+        # bundled frameworks can use short relative path
+        IF (ISLIB)
+            SET (LIB_CHG_TO "${ATLOADER}/../../../${QGIS_FW_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
+        ElSE ()
+            SET (LIB_CHG_TO "${ATLOADER}/../../../${LIBPOST}")
         ENDIF ()
         FOREACH (QL ${QGFWLIST})
             INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QFWDIR}/${QL}.framework/${QL}")
         ENDFOREACH (QL)
         # non-framework qgis libs
-        IF (${OSX_HAVE_LOADERPATH})
-            SET (LIB_CHG_TO "${ATLOADER}/${QGIS_LIB_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
-        ENDIF ()
+        SET (LIB_CHG_TO "${ATLOADER}/${QGIS_LIB_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
         FOREACH (QL ${QGLIBLIST})
             INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QLIBDIR}/${QL}")
         ENDFOREACH (QL)
         # crssync
-        IF (${OSX_HAVE_LOADERPATH})
-            SET (LIB_CHG_TO "${ATEXECUTABLE}/${QGIS_LIBEXEC_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
-        ENDIF ()
+        SET (LIB_CHG_TO "${ATEXECUTABLE}/${QGIS_LIBEXEC_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
         INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QLIBXDIR}/crssync")
         # GRASS libexec stuff
         FOREACH (QG ${QGRASSEXECLIST})
            IF (EXISTS "${QLIBXDIR}/grass/${QG}")
-              IF (${OSX_HAVE_LOADERPATH})
-                  SET (LIB_CHG_TO "${ATLOADER}/../../${QGIS_LIBEXEC_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
-              ENDIF ()
+              SET (LIB_CHG_TO "${ATLOADER}/../../${QGIS_LIBEXEC_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
               INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QLIBXDIR}/grass/${QG}")
            ENDIF ()
         ENDFOREACH (QG)
         # plugins
-        IF (${OSX_HAVE_LOADERPATH})
-            SET (LIB_CHG_TO "${ATLOADER}/${QGIS_PLUGIN_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
-        ENDIF ()
+        SET (LIB_CHG_TO "${ATLOADER}/${QGIS_PLUGIN_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
         FOREACH (QP ${QGPLUGLIST})
             INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QP}")
         ENDFOREACH (QP)
         # quick plugin
-        IF (${OSX_HAVE_LOADERPATH})
-            SET (LIB_CHG_TO "${ATLOADER}/../../${LIBMID}/${LIBPOST}")
-        ENDIF ()
+        SET (LIB_CHG_TO "${ATLOADER}/../../${LIBMID}/${LIBPOST}")
         INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QAPPDIR}/qml/QgsQuick/libqgis_quick_plugin.dylib")
         # qgis python
-        IF (${OSX_HAVE_LOADERPATH})
-            SET (LIB_CHG_TO "${ATLOADER}/../../${QGIS_DATA_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
-        ENDIF ()
+        SET (LIB_CHG_TO "${ATLOADER}/../../${QGIS_DATA_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
         FOREACH (PG ${QGPYLIST})
             INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${PG}")
         ENDFOREACH (PG)
         # bin - nothing yet
-        #IF (${OSX_HAVE_LOADERPATH})
-        #    SET (LIB_CHG_TO "${ATLOADER}/${QGIS_BIN_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
-        #ENDIF ()
+        # SET (LIB_CHG_TO "${ATLOADER}/${QGIS_BIN_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
         #FOREACH (PB ...)
         #    INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QBINDIR}/${PB}")
         #ENDFOREACH (PB)

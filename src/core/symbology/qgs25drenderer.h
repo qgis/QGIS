@@ -20,6 +20,7 @@
 #include "qgsrenderer.h"
 
 class QgsOuterGlowEffect;
+class QgsFillSymbolLayer;
 
 /**
  * \ingroup core

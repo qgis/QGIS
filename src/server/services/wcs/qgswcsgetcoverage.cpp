@@ -48,7 +48,7 @@ namespace QgsWcs
 
   QByteArray getCoverageData( QgsServerInterface *serverIface, const QgsProject *project, const QgsServerRequest &request )
   {
-    QgsServerRequest::Parameters parameters = request.parameters();
+    const QgsServerRequest::Parameters parameters = request.parameters();
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
@@ -58,14 +58,14 @@ namespace QgsWcs
     //defining coverage name
     QString coveName;
     //read COVERAGE
-    QMap<QString, QString>::const_iterator cove_name_it = parameters.constFind( QStringLiteral( "COVERAGE" ) );
+    const QMap<QString, QString>::const_iterator cove_name_it = parameters.constFind( QStringLiteral( "COVERAGE" ) );
     if ( cove_name_it != parameters.constEnd() )
     {
       coveName = cove_name_it.value();
     }
     if ( coveName.isEmpty() )
     {
-      QMap<QString, QString>::const_iterator cove_name_it = parameters.constFind( QStringLiteral( "IDENTIFIER" ) );
+      const QMap<QString, QString>::const_iterator cove_name_it = parameters.constFind( QStringLiteral( "IDENTIFIER" ) );
       if ( cove_name_it != parameters.constEnd() )
       {
         coveName = cove_name_it.value();
@@ -78,7 +78,7 @@ namespace QgsWcs
     }
 
     //get the raster layer
-    QStringList wcsLayersId = QgsServerProjectUtils::wcsLayerIds( *project );
+    const QStringList wcsLayersId = QgsServerProjectUtils::wcsLayerIds( *project );
 
     QgsRasterLayer *rLayer = nullptr;
     for ( int i = 0; i < wcsLayersId.size(); ++i )
@@ -121,7 +121,7 @@ namespace QgsWcs
     QString crs;
 
     // read BBOX
-    QgsRectangle bbox = parseBbox( parameters.value( QStringLiteral( "BBOX" ) ) );
+    const QgsRectangle bbox = parseBbox( parameters.value( QStringLiteral( "BBOX" ) ) );
     if ( !bbox.isEmpty() )
     {
       minx = bbox.xMinimum();
@@ -159,7 +159,7 @@ namespace QgsWcs
       throw QgsRequestNotWellFormedException( QStringLiteral( "The CRS is mandatory" ) );
     }
 
-    QgsCoordinateReferenceSystem requestCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
+    const QgsCoordinateReferenceSystem requestCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
     if ( !requestCRS.isValid() )
     {
       throw QgsRequestNotWellFormedException( QStringLiteral( "Invalid CRS" ) );
@@ -170,7 +170,7 @@ namespace QgsWcs
     // transform rect
     if ( requestCRS != rLayer->crs() )
     {
-      QgsCoordinateTransform t( requestCRS, rLayer->crs(), project );
+      const QgsCoordinateTransform t( requestCRS, rLayer->crs(), project );
       rect = t.transformBoundingBox( rect );
     }
 
@@ -208,7 +208,7 @@ namespace QgsWcs
       }
     }
 
-    QgsRasterFileWriter::WriterError err = fileWriter.writeRaster( &pipe, width, height, rect, responseCRS, rLayer->transformContext() );
+    const QgsRasterFileWriter::WriterError err = fileWriter.writeRaster( &pipe, width, height, rect, responseCRS, rLayer->transformContext() );
     if ( err != QgsRasterFileWriter::NoError )
     {
       throw QgsRequestNotWellFormedException( QStringLiteral( "Cannot write raster error code: %1" ).arg( err ) );

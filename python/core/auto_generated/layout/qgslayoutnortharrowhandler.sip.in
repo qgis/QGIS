@@ -11,7 +11,7 @@
 
 class QgsLayoutNorthArrowHandler: QObject
 {
-%Docstring
+%Docstring(signature="appended")
 An object which handles north-arrow type behavior for layout items.
 
 .. versionadded:: 3.14

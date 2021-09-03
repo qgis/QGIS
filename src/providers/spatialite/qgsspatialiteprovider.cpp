@@ -131,8 +131,7 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
 }
 
 
-QgsVectorLayerExporter::ExportError
-QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
+Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
     const QgsFields &fields,
     QgsWkbTypes::Type wkbType,
     const QgsCoordinateReferenceSystem &srs,
@@ -171,7 +170,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
       QgsDebugMsg( QStringLiteral( "Connection to database failed. Import of layer aborted." ) );
       if ( errorMessage )
         *errorMessage = QObject::tr( "Connection to database failed" );
-      return QgsVectorLayerExporter::ErrConnectionFailed;
+      return Qgis::VectorExportResult::ErrorConnectionFailed;
     }
 
     sqlite3 *sqliteHandle = handle->handle();
@@ -369,7 +368,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
       }
 
       QgsSqliteHandle::closeDb( handle );
-      return QgsVectorLayerExporter::ErrCreateLayer;
+      return Qgis::VectorExportResult::ErrorCreatingLayer;
     }
 
     QgsSqliteHandle::closeDb( handle );
@@ -389,7 +388,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
                       .arg( tableName );
 
     delete provider;
-    return QgsVectorLayerExporter::ErrInvalidLayer;
+    return Qgis::VectorExportResult::ErrorInvalidLayer;
   }
 
   QgsDebugMsg( QStringLiteral( "layer loaded" ) );
@@ -424,7 +423,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
                           .arg( fld.name() );
 
         delete provider;
-        return QgsVectorLayerExporter::ErrAttributeTypeUnsupported;
+        return Qgis::VectorExportResult::ErrorAttributeTypeUnsupported;
       }
 
       QgsDebugMsg( "creating field #" + QString::number( fldIdx ) +
@@ -449,12 +448,12 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
         *errorMessage = QObject::tr( "creation of fields failed" );
 
       delete provider;
-      return QgsVectorLayerExporter::ErrAttributeCreationFailed;
+      return Qgis::VectorExportResult::ErrorAttributeCreationFailed;
     }
 
     QgsDebugMsg( QStringLiteral( "Done creating fields" ) );
   }
-  return QgsVectorLayerExporter::NoError;
+  return Qgis::VectorExportResult::Success;
 }
 
 
@@ -845,10 +844,18 @@ QString QgsSpatiaLiteProvider::spatialiteVersion()
 
   QgsDebugMsg( "SpatiaLite version info: " + mSpatialiteVersionInfo );
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList spatialiteParts = mSpatialiteVersionInfo.split( ' ', QString::SkipEmptyParts );
+#else
+  QStringList spatialiteParts = mSpatialiteVersionInfo.split( ' ', Qt::SkipEmptyParts );
+#endif
 
   // Get major and minor version
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList spatialiteVersionParts = spatialiteParts[0].split( '.', QString::SkipEmptyParts );
+#else
+  QStringList spatialiteVersionParts = spatialiteParts[0].split( '.', Qt::SkipEmptyParts );
+#endif
   if ( spatialiteVersionParts.size() < 2 )
   {
     QgsMessageLog::logMessage( tr( "Could not parse spatialite version string '%1'" ).arg( mSpatialiteVersionInfo ), tr( "SpatiaLite" ) );
@@ -874,10 +881,18 @@ bool QgsSpatiaLiteProvider::versionIsAbove( sqlite3 *sqlite_handle, int major, i
     if ( rows == 1 && columns == 1 )
     {
       QString version = QString::fromUtf8( results[1] );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
       QStringList parts = version.split( ' ', QString::SkipEmptyParts );
+#else
+      QStringList parts = version.split( ' ', Qt::SkipEmptyParts );
+#endif
       if ( !parts.empty() )
       {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
         QStringList verparts = parts.at( 0 ).split( '.', QString::SkipEmptyParts );
+#else
+        QStringList verparts = parts.at( 0 ).split( '.', Qt::SkipEmptyParts );
+#endif
         above = verparts.size() >= 2 && ( verparts.at( 0 ).toInt() > major || ( verparts.at( 0 ).toInt() == major && verparts.at( 1 ).toInt() >= minor ) );
       }
     }
@@ -946,8 +961,8 @@ void QgsSpatiaLiteProvider::fetchConstraints()
         const QChar delimiter { field.at( 0 ) };
         if ( delimiter == '"' || delimiter == '`' )
         {
-          const int start {  field.indexOf( delimiter ) + 1};
-          const int end { field.indexOf( delimiter, start ) };
+          const int start = field.indexOf( delimiter ) + 1;
+          const int end = field.indexOf( delimiter, start );
           fieldName = field.mid( start, end - start );
           definition = field.mid( end + 1 );
         }
@@ -972,7 +987,7 @@ void QgsSpatiaLiteProvider::fetchConstraints()
   }
   sqlite3_free_table( results );
 
-  for ( const auto fieldIdx : qgis::as_const( mPrimaryKeyAttrs ) )
+  for ( const auto fieldIdx : std::as_const( mPrimaryKeyAttrs ) )
   {
     QgsFieldConstraints constraints = mAttributeFields.at( fieldIdx ).constraints();
     constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
@@ -1080,7 +1095,7 @@ QVariant QgsSpatiaLiteProvider::defaultValue( int fieldId ) const
        providerProperty( EvaluateDefaultValues, false ).toBool() )
   {
     QString errorMessage;
-    QVariant nextVal { QgsSqliteUtils::nextSequenceValue( sqliteHandle(), mTableName, errorMessage ) };
+    QVariant nextVal = QgsSqliteUtils::nextSequenceValue( sqliteHandle(), mTableName, errorMessage );
     if ( errorMessage.isEmpty() && nextVal != -1 )
     {
       resultVar = nextVal;
@@ -3747,7 +3762,7 @@ QgsWkbTypes::Type QgsSpatiaLiteProvider::wkbType() const
 /**
  * Returns the feature type
  */
-long QgsSpatiaLiteProvider::featureCount() const
+long long QgsSpatiaLiteProvider::featureCount() const
 {
   return mNumberFeatures;
 }
@@ -4974,13 +4989,13 @@ bool QgsSpatiaLiteProvider::checkLayerType()
     // get a new alias for the subquery
     int index = 0;
     QString alias;
-    QRegExp regex;
+    QRegularExpression regex;
     do
     {
       alias = QStringLiteral( "subQuery_%1" ).arg( QString::number( index++ ) );
-      QString pattern = QStringLiteral( "(\\\"?)%1\\1" ).arg( QRegExp::escape( alias ) );
+      QString pattern = QStringLiteral( "(\\\"?)%1\\1" ).arg( QRegularExpression::escape( alias ) );
       regex.setPattern( pattern );
-      regex.setCaseSensitivity( Qt::CaseInsensitive );
+      regex.setPatternOptions( QRegularExpression::CaseInsensitiveOption );
     }
     while ( mQuery.contains( regex ) );
 
@@ -5029,7 +5044,7 @@ bool QgsSpatiaLiteProvider::checkLayerType()
         // Check if the whole sql is aliased i.e. '(SELECT * FROM \\"somedata\\" as my_alias\n)'
         if ( tableAlias.isEmpty() )
         {
-          regex.setPattern( QStringLiteral( R"re(\s+AS\s+(\w+)\n?\)?$)re" ) );
+          re.setPattern( QStringLiteral( R"re(\s+AS\s+(\w+)\n?\)?$)re" ) );
           match = re.match( mTableName );
           if ( match.hasMatch() )
           {
@@ -5816,7 +5831,7 @@ bool QgsSpatiaLiteProvider::getTableSummary()
     for ( i = 1; i <= rows; i++ )
     {
       QString count = results[( i * columns ) + 0];
-      mNumberFeatures = count.toLong();
+      mNumberFeatures = count.toLongLong();
 
       if ( mGeometryColumn.isEmpty() )
       {
@@ -5888,8 +5903,13 @@ QString QgsSpatiaLiteProviderMetadata::encodeUri( const QVariantMap &parts ) con
   return dsUri.uri();
 }
 
+QgsProviderMetadata::ProviderCapabilities QgsSpatiaLiteProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
+}
 
-QgsVectorLayerExporter::ExportError QgsSpatiaLiteProviderMetadata::createEmptyLayer(
+
+Qgis::VectorExportResult QgsSpatiaLiteProviderMetadata::createEmptyLayer(
   const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type wkbType,
@@ -6424,7 +6444,7 @@ QgsTransaction *QgsSpatiaLiteProviderMetadata::createTransaction( const QString 
   if ( !ds )
   {
     QgsMessageLog::logMessage( QObject::tr( "Cannot open transaction on %1, since it is is not currently opened" ).arg( connString ),
-                               QObject::tr( "spatialite" ), Qgis::Critical );
+                               QObject::tr( "spatialite" ), Qgis::MessageLevel::Critical );
     return nullptr;
   }
   return new QgsSpatiaLiteTransaction( connString, ds );

@@ -30,7 +30,7 @@ class QgsGpsInformation;
 
 /**
  * \ingroup core
- * Class to detect the GPS port
+ * \brief Class to detect the GPS port
  */
 class CORE_EXPORT QgsGpsDetector : public QObject
 {

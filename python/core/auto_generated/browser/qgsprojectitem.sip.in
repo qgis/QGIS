@@ -1,0 +1,53 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/browser/qgsprojectitem.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsProjectItem : QgsDataItem
+{
+%Docstring(signature="appended")
+Data item that can be used to represent QGIS projects.
+%End
+
+%TypeHeaderCode
+#include "qgsprojectitem.h"
+%End
+  public:
+
+    QgsProjectItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &providerKey = QString() );
+%Docstring
+A data item holding a reference to a QGIS project file.
+
+:param parent: The parent data item.
+:param name: The name of the of the project. Displayed to the user.
+:param path: The full path to the project.
+:param providerKey: key of the provider that created this item
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsProjectItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    virtual bool hasDragEnabled() const;
+
+    virtual QgsMimeDataUtils::UriList mimeUris() const;
+
+
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/browser/qgsprojectitem.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

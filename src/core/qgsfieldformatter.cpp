@@ -54,7 +54,7 @@ Qt::AlignmentFlag QgsFieldFormatter::alignmentFlag( QgsVectorLayer *layer, int f
 {
   Q_UNUSED( config )
 
-  QgsField field = layer->fields().at( fieldIndex );
+  const QgsField field = layer->fields().at( fieldIndex );
   if ( field.isNumeric() || field.isDateOrTime() )
     return Qt::AlignRight;
   else

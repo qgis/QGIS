@@ -29,7 +29,7 @@
 
 /**
  * \ingroup analysis
- * A feature pool is based on a vector layer and caches features.
+ * \brief A feature pool is based on a vector layer and caches features.
  *
  * \note This class is a technology preview and unstable API.
  * \since QGIS 3.4

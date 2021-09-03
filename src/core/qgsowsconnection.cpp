@@ -27,8 +27,6 @@
 #include "qgsowsconnection.h"
 #include "qgssettings.h"
 
-#include <QInputDialog>
-#include <QMessageBox>
 #include <QPicture>
 #include <QUrl>
 #include <QNetworkRequest>
@@ -40,17 +38,17 @@ QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connN
 {
   QgsDebugMsgLevel( "theConnName = " + connName, 4 );
 
-  QgsSettings settings;
+  const QgsSettings settings;
 
-  QString key = "qgis/connections-" + mService.toLower() + '/' + mConnName;
-  QString credentialsKey = "qgis/" + mService + '/' + mConnName;
+  const QString key = "qgis/connections-" + mService.toLower() + '/' + mConnName;
+  const QString credentialsKey = "qgis/" + mService + '/' + mConnName;
 
   mConnectionInfo = settings.value( key + "/url" ).toString();
   mUri.setParam( QStringLiteral( "url" ), settings.value( key + "/url" ).toString() );
 
   // Check for credentials and prepend to the connection info
-  QString username = settings.value( credentialsKey + "/username" ).toString();
-  QString password = settings.value( credentialsKey + "/password" ).toString();
+  const QString username = settings.value( credentialsKey + "/username" ).toString();
+  const QString password = settings.value( credentialsKey + "/password" ).toString();
   if ( !username.isEmpty() )
   {
     // check for a password, if none prompt to get it
@@ -58,7 +56,7 @@ QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connN
     mUri.setPassword( password );
   }
 
-  QString authcfg = settings.value( credentialsKey + "/authcfg" ).toString();
+  const QString authcfg = settings.value( credentialsKey + "/authcfg" ).toString();
   if ( !authcfg.isEmpty() )
   {
     mUri.setAuthConfigId( authcfg );
@@ -109,8 +107,8 @@ QgsDataSourceUri &QgsOwsConnection::addWmsWcsConnectionSettings( QgsDataSourceUr
 {
   addCommonConnectionSettings( uri, settingsKey );
 
-  QgsSettings settings;
-  QString referer = settings.value( settingsKey + "/referer" ).toString();
+  const QgsSettings settings;
+  const QString referer = settings.value( settingsKey + "/referer" ).toString();
   if ( !referer.isEmpty() )
   {
     uri.setParam( QStringLiteral( "referer" ), referer );
@@ -131,7 +129,7 @@ QgsDataSourceUri &QgsOwsConnection::addWmsWcsConnectionSettings( QgsDataSourceUr
   {
     uri.setParam( QStringLiteral( "IgnoreReportedLayerExtents" ), QStringLiteral( "1" ) );
   }
-  QString dpiMode = settings.value( settingsKey + QStringLiteral( "/dpiMode" ), QStringLiteral( "all" ) ).toString();
+  const QString dpiMode = settings.value( settingsKey + QStringLiteral( "/dpiMode" ), QStringLiteral( "all" ) ).toString();
   if ( !dpiMode.isEmpty() )
   {
     uri.setParam( QStringLiteral( "dpiMode" ), dpiMode );
@@ -144,14 +142,14 @@ QgsDataSourceUri &QgsOwsConnection::addWfsConnectionSettings( QgsDataSourceUri &
 {
   addCommonConnectionSettings( uri, settingsKey );
 
-  QgsSettings settings;
-  QString version = settings.value( settingsKey + "/version" ).toString();
+  const QgsSettings settings;
+  const QString version = settings.value( settingsKey + "/version" ).toString();
   if ( !version.isEmpty() )
   {
     uri.setParam( QStringLiteral( "version" ), version );
   }
 
-  QString maxnumfeatures = settings.value( settingsKey + QStringLiteral( "/maxnumfeatures" ) ).toString();
+  const QString maxnumfeatures = settings.value( settingsKey + QStringLiteral( "/maxnumfeatures" ) ).toString();
   if ( !maxnumfeatures.isEmpty() )
   {
     uri.setParam( QStringLiteral( "maxNumFeatures" ), maxnumfeatures );
@@ -169,7 +167,7 @@ QStringList QgsOwsConnection::connectionList( const QString &service )
 
 QString QgsOwsConnection::selectedConnection( const QString &service )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
   return settings.value( "qgis/connections-" + service.toLower() + "/selected" ).toString();
 }
 
@@ -181,7 +179,7 @@ void QgsOwsConnection::setSelectedConnection( const QString &service, const QStr
 
 void QgsOwsConnection::addCommonConnectionSettings( QgsDataSourceUri &uri, const QString &key )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
 
   if ( settings.value( key + QStringLiteral( "/ignoreAxisOrientation" ), false ).toBool() )
   {

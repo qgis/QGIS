@@ -13,7 +13,7 @@
 
 class QgsAlignRaster
 {
-%Docstring
+%Docstring(signature="appended")
 :py:class:`QgsAlignRaster` takes one or more raster layers and warps (resamples) them
 so they have the same:
 

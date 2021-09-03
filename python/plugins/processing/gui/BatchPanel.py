@@ -270,9 +270,10 @@ class BatchPanelFillWidget(QToolButton):
 
             p = pp.as_posix()
 
-            if isinstance(self.parameterDefinition, QgsProcessingParameterRasterLayer) or \
-                (isinstance(self.parameterDefinition,
-                            QgsProcessingParameterMultipleLayers) and self.param.layerType() == QgsProcessing.TypeRaster):
+            if isinstance(self.parameterDefinition, QgsProcessingParameterRasterLayer) or (
+                isinstance(self.parameterDefinition, QgsProcessingParameterMultipleLayers)
+                and self.parameterDefinition.layerType() == QgsProcessing.TypeRaster
+            ):
                 if not QgsRasterLayer.isValidRasterFileName(p):
                     continue
 

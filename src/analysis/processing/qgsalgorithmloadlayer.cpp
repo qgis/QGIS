@@ -69,7 +69,7 @@ void QgsLoadLayerAlgorithm::initAlgorithm( const QVariantMap & )
 QVariantMap QgsLoadLayerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   QgsMapLayer *layer = parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context );
-  QString name = parameterAsString( parameters, QStringLiteral( "NAME" ), context );
+  const QString name = parameterAsString( parameters, QStringLiteral( "NAME" ), context );
 
   if ( !layer )
     throw QgsProcessingException( QObject::tr( "Invalid input layer" ) );

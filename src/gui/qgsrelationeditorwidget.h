@@ -27,7 +27,6 @@
 #include "qgsabstractrelationeditorwidget.h"
 #include "qobjectuniqueptr.h"
 #include "qgsattributeeditorcontext.h"
-#include "qgscollapsiblegroupbox.h"
 #include "qgsdualview.h"
 #include "qgsrelation.h"
 #include "qgsvectorlayerselectionmanager.h"
@@ -96,9 +95,11 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
 
     /**
      * Possible buttons shown in the relation editor
+     * \since QGIS 3.18
      */
     enum Button
     {
+      NoButton = 0, //!< No button (since QGIS 3.20)
       Link = 1 << 1, //!< Link button
       Unlink = 1 << 2, //!< Unlink button
       SaveChildEdits = 1 << 3, //!< Save child edits button
@@ -185,11 +186,6 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
      */
     void setConfig( const QVariantMap &config ) override;
 
-    /**
-      * Sets the title of the root groupbox
-      */
-    void setTitle( const QString &title ) override;
-
   public slots:
     void parentFormValueChanged( const QString &attribute, const QVariant &newValue ) override;
 
@@ -206,7 +202,6 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
 
     void addFeatureGeometry();
     void toggleEditing( bool state );
-    void onCollapsedStateChanged( bool collapsed );
     void showContextMenu( QgsActionMenu *menu, QgsFeatureId fid );
     void mapToolDeactivated();
     void onKeyPressed( QKeyEvent *e );
@@ -217,7 +212,6 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     void setMapTool( QgsMapTool *mapTool );
     void unsetMapTool();
 
-    QgsCollapsibleGroupBox *mRootCollapsibleGroupBox = nullptr;
     QgsDualView *mDualView = nullptr;
     QPointer<QgsMessageBarItem> mMessageBarItem;
     QgsDualView::ViewMode mViewMode = QgsDualView::AttributeEditor;
@@ -233,20 +227,18 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     QToolButton *mFormViewButton = nullptr;
     QToolButton *mTableViewButton = nullptr;
     QToolButton *mAddFeatureGeometryButton = nullptr;
-    QGridLayout *mRelationLayout = nullptr;
     QObjectUniquePtr<QgsMapToolDigitizeFeature> mMapToolDigitize;
     QButtonGroup *mViewModeButtonGroup = nullptr;
     QgsVectorLayerSelectionManager *mFeatureSelectionMgr = nullptr;
 
     Buttons mButtonsVisibility = Button::AllButtons;
-    bool mVisible = true;
 };
 
 
 /**
  * \ingroup gui
  * \class QgsRelationEditorConfigWidget
- * Creates a new configuration widget for the relation editor widget
+ * \brief Creates a new configuration widget for the relation editor widget
  * \since QGIS 3.18
  */
 class GUI_EXPORT QgsRelationEditorConfigWidget : public QgsAbstractRelationEditorConfigWidget, private Ui::QgsRelationEditorConfigWidgetBase

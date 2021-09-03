@@ -12,7 +12,7 @@
 
 class QgsGeometryCheck
 {
-%Docstring
+%Docstring(signature="appended")
 This class implements a geometry check.
 
 Geometry checks run over a set of features and can detect errors like topological
@@ -132,7 +132,10 @@ Create a new Change
       QgsGeometryCheck::ChangeType type;
 
       QgsVertexId vidx;
-      bool operator==( const QgsGeometryCheck::Change &other );
+
+      bool operator==( const QgsGeometryCheck::Change &other ) const;
+
+      bool operator!=( const QgsGeometryCheck::Change &other ) const;
     };
 
     typedef QMap<QString, QMap<QgsFeatureId, QList<QgsGeometryCheck::Change> > > Changes;

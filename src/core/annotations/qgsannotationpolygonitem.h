@@ -25,7 +25,7 @@
 
 /**
  * \ingroup core
- * An annotation item which renders a fill symbol for a polygon geometry.
+ * \brief An annotation item which renders a fill symbol for a polygon geometry.
  *
  * \since QGIS 3.16
  */
@@ -42,6 +42,7 @@ class CORE_EXPORT QgsAnnotationPolygonItem : public QgsAnnotationItem
     QString type() const override;
     void render( QgsRenderContext &context, QgsFeedback *feedback ) override;
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    QList< QgsAnnotationItemNode > nodes() const override;
 
     /**
      * Creates a new polygon annotation item.

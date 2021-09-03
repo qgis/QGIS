@@ -22,7 +22,7 @@
 
 /**
  * \ingroup core
- * Wherever an object of this class is available, the derived translate function can be called from.
+ * \brief Wherever an object of this class is available, the derived translate function can be called from.
  *
  * \since QGIS 3.4
  */

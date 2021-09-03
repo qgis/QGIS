@@ -12,7 +12,7 @@
 
 class QgsProcessingParameterType
 {
-%Docstring
+%Docstring(signature="appended")
 Makes metadata of processing parameters available.
 
 .. versionadded:: 3.2

@@ -29,7 +29,9 @@
 #include <QPrinter>
 #endif
 
-QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator *iterator ): mIterator( iterator )
+QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator *iterator, double dpiTarget )
+  : mIterator( iterator )
+  , mDpiTarget( dpiTarget )
 {
 }
 
@@ -42,7 +44,7 @@ void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsM
   }
 
   // last pipe filter has only 1 band
-  int bandNumber = 1;
+  const int bandNumber = 1;
   mIterator->startRasterRead( bandNumber, viewPort->mWidth, viewPort->mHeight, viewPort->mDrawnExtent, feedback );
 
   //number of cols/rows in output pixels
@@ -77,8 +79,8 @@ void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsM
       QgsDebugMsgLevel( QStringLiteral( "PdfFormat" ), 4 );
 
       img = img.convertToFormat( QImage::Format_ARGB32 );
-      QRgb transparentBlack = qRgba( 0, 0, 0, 0 );
-      QRgb transparentWhite = qRgba( 255, 255, 255, 0 );
+      const QRgb transparentBlack = qRgba( 0, 0, 0, 0 );
+      const QRgb transparentWhite = qRgba( 255, 255, 255, 0 );
       for ( int x = 0; x < img.width(); x++ )
       {
         for ( int y = 0; y < img.height(); y++ )
@@ -122,34 +124,34 @@ void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const
     return;
   }
 
+  const double dpiScaleFactor = mDpiTarget >= 0.0 ? mDpiTarget / p->device()->logicalDpiX() : 1.0;
   //top left position in device coords
-  QPoint tlPoint = QPoint( viewPort->mTopLeftPoint.x() + topLeftCol, viewPort->mTopLeftPoint.y() + topLeftRow );
-  QgsScopedQPainterState painterState( p );
+  const QPoint tlPoint = QPoint( viewPort->mTopLeftPoint.x() + std::floor( topLeftCol / dpiScaleFactor ), viewPort->mTopLeftPoint.y() + std::floor( topLeftRow / dpiScaleFactor ) );
+
+  const QgsScopedQPainterState painterState( p );
   p->setRenderHint( QPainter::Antialiasing, false );
 
   // Blending problem was reported with PDF output if background color has alpha < 255
   // in #7766, it seems to be a bug in Qt, setting a brush with alpha 255 is a workaround
   // which should not harm anything
   p->setBrush( QBrush( QColor( Qt::white ), Qt::NoBrush ) );
-
   if ( qgsMapToPixel )
   {
-    int w = qgsMapToPixel->mapWidth();
-    int h = qgsMapToPixel->mapHeight();
-
-    double rotation = qgsMapToPixel->mapRotation();
+    const int w = qgsMapToPixel->mapWidth();
+    const int h = qgsMapToPixel->mapHeight();
+    const double rotation = qgsMapToPixel->mapRotation();
     if ( rotation )
     {
       // both viewPort and image sizes are dependent on scale
-      double cx = w / 2.0;
-      double cy = h / 2.0;
+      const double cx = w / 2.0;
+      const double cy = h / 2.0;
       p->translate( cx, cy );
       p->rotate( rotation );
       p->translate( -cx, -cy );
     }
   }
 
-  p->drawImage( tlPoint, img );
+  p->drawImage( tlPoint, dpiScaleFactor != 1.0 ? img.scaledToHeight( std::ceil( img.height() / dpiScaleFactor ) ) : img );
 
 #if 0
   // For debugging:

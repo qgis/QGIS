@@ -11,7 +11,7 @@
 
 class QgsAbstractFileContentSourceLineEdit : QWidget /Abstract/
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for a widgets which allows users to select content from a file, embedding a file, etc.
 
 This class is designed to be used by content which is managed by a :py:class:`QgsAbstractContentCache`,
@@ -95,9 +95,53 @@ Emitted whenever the file source is changed in the widget.
 
 };
 
-class QgsSvgSourceLineEdit : QgsAbstractFileContentSourceLineEdit
+
+
+class QgsPictureSourceLineEditBase : QgsAbstractFileContentSourceLineEdit
 {
+%Docstring(signature="appended")
+A line edit widget with toolbutton for setting a raster image path.
+
+.. seealso:: :py:class:`QgsSvgSourceLineEdit`
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgsfilecontentsourcelineedit.h"
+%End
+  public:
+
+    enum Format
+    {
+      Svg,
+      Image,
+    };
+
+    QgsPictureSourceLineEditBase( QWidget *parent /TransferThis/ = 0 );
 %Docstring
+Constructor for :py:class:`QgsImageSourceLineEdit`, with the specified ``parent`` widget.
+The default format is SVG.
+%End
+
+    void setMode( Format format );
+%Docstring
+Defines the mode of the source line edit
+%End
+
+  protected:
+
+    QgsPictureSourceLineEditBase( Format format, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for :py:class:`QgsImageSourceLineEdit`, with the specified ``parent`` widget.
+%End
+
+};
+
+
+class QgsSvgSourceLineEdit : QgsPictureSourceLineEditBase
+{
+%Docstring(signature="appended")
 A line edit widget with toolbutton for setting an SVG image path.
 
 Designed for use with :py:class:`QgsSvgCache`.
@@ -116,13 +160,11 @@ Designed for use with :py:class:`QgsSvgCache`.
 %Docstring
 Constructor for QgsSvgSourceLineEdit, with the specified ``parent`` widget.
 %End
-
 };
 
-
-class QgsImageSourceLineEdit : QgsAbstractFileContentSourceLineEdit
+class QgsImageSourceLineEdit : QgsPictureSourceLineEditBase
 {
-%Docstring
+%Docstring(signature="appended")
 A line edit widget with toolbutton for setting a raster image path.
 
 Designed for use with :py:class:`QgsImageCache`.
@@ -141,7 +183,6 @@ Designed for use with :py:class:`QgsImageCache`.
 %Docstring
 Constructor for QgsImageSourceLineEdit, with the specified ``parent`` widget.
 %End
-
 };
 
 /************************************************************************

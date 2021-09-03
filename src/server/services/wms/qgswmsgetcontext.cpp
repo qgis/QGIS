@@ -19,6 +19,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgswmsutils.h"
+#include "qgswmsrequest.h"
 #include "qgswmsgetcontext.h"
 #include "qgsserverprojectutils.h"
 
@@ -40,18 +41,18 @@ namespace QgsWms
                                        QDomElement &parentLayer,
                                        QgsServerInterface *serverIface,
                                        const QgsProject *project,
-                                       const QgsServerRequest &request,
+                                       const QgsWmsRequest &request,
                                        const QgsLayerTreeGroup *layerTreeGroup,
                                        QgsRectangle &combinedBBox,
                                        const QString &strGroup );
 
     void appendOwsGeneralAndResourceList( QDomDocument &doc, QDomElement &parentElement,
                                           QgsServerInterface *serverIface, const QgsProject *project,
-                                          const QgsServerRequest &request );
+                                          const QgsWmsRequest &request );
   }
 
   void writeGetContext( QgsServerInterface *serverIface, const QgsProject *project,
-                        const QString &version, const QgsServerRequest &request,
+                        const QgsWmsRequest &request,
                         QgsServerResponse &response )
   {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -69,7 +70,7 @@ namespace QgsWms
     }
     else //context xml not in cache. Create a new one
     {
-      doc = getContext( serverIface, project, version, request );
+      doc = getContext( serverIface, project, request );
 
       if ( cacheManager )
       {
@@ -78,7 +79,7 @@ namespace QgsWms
       contextDocument = &doc;
     }
 #else
-    doc = getContext( serverIface, project, version, request );
+    doc = getContext( serverIface, project, request );
     contextDocument = &doc;
 #endif
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
@@ -86,13 +87,12 @@ namespace QgsWms
   }
 
 
-  QDomDocument getContext( QgsServerInterface *serverIface, const QgsProject *project,
-                           const QString &version, const QgsServerRequest &request )
+  QDomDocument getContext( QgsServerInterface *serverIface,
+                           const QgsProject *project,
+                           const QgsWmsRequest &request )
   {
-    Q_UNUSED( version )
-
     QDomDocument doc;
-    QDomProcessingInstruction xmlDeclaration = doc.createProcessingInstruction( QStringLiteral( "xml" ),
+    const QDomProcessingInstruction xmlDeclaration = doc.createProcessingInstruction( QStringLiteral( "xml" ),
         QStringLiteral( "version=\"1.0\" encoding=\"utf-8\"" ) );
 
     doc.appendChild( xmlDeclaration );
@@ -121,7 +121,7 @@ namespace QgsWms
   {
     void appendOwsGeneralAndResourceList( QDomDocument &doc, QDomElement &parentElement,
                                           QgsServerInterface *serverIface, const QgsProject *project,
-                                          const QgsServerRequest &request )
+                                          const QgsWmsRequest &request )
     {
       parentElement.setAttribute( QStringLiteral( "id" ), "ows-context-" + project->baseName() );
 
@@ -136,40 +136,40 @@ namespace QgsWms
 
       //OWS title
       //why not use project title ?
-      QString title = QgsServerProjectUtils::owsServiceTitle( *project );
+      const QString title = QgsServerProjectUtils::owsServiceTitle( *project );
       if ( !title.isEmpty() )
       {
         QDomElement titleElem = doc.createElement( QStringLiteral( "ows:Title" ) );
-        QDomText titleText = doc.createTextNode( title );
+        const QDomText titleText = doc.createTextNode( title );
         titleElem.appendChild( titleText );
         generalElem.appendChild( titleElem );
       }
 
       //OWS abstract
-      QString abstract = QgsServerProjectUtils::owsServiceAbstract( *project );
+      const QString abstract = QgsServerProjectUtils::owsServiceAbstract( *project );
       if ( !abstract.isEmpty() )
       {
         QDomElement abstractElem = doc.createElement( QStringLiteral( "ows:Abstract" ) );
-        QDomText abstractText = doc.createCDATASection( abstract );
+        const QDomText abstractText = doc.createCDATASection( abstract );
         abstractElem.appendChild( abstractText );
         generalElem.appendChild( abstractElem );
       }
 
       //OWS Keywords
-      QStringList keywords = QgsServerProjectUtils::owsServiceKeywords( *project );
+      const QStringList keywords = QgsServerProjectUtils::owsServiceKeywords( *project );
       if ( !keywords.isEmpty() )
       {
-        bool sia2045 = QgsServerProjectUtils::wmsInfoFormatSia2045( *project );
+        const bool sia2045 = QgsServerProjectUtils::wmsInfoFormatSia2045( *project );
 
         QDomElement keywordsElem = doc.createElement( QStringLiteral( "ows:Keywords" ) );
 
         for ( int i = 0; i < keywords.size(); ++i )
         {
-          QString keyword = keywords.at( i );
+          const QString keyword = keywords.at( i );
           if ( !keyword.isEmpty() )
           {
             QDomElement keywordElem = doc.createElement( QStringLiteral( "ows:Keyword" ) );
-            QDomText keywordText = doc.createTextNode( keyword );
+            const QDomText keywordText = doc.createTextNode( keyword );
             keywordElem.appendChild( keywordText );
             if ( sia2045 )
             {
@@ -192,7 +192,7 @@ namespace QgsWms
       parentElement.appendChild( resourceListElem );
 
       // OWSContext BoundingBox
-      QgsCoordinateReferenceSystem projectCrs = project->crs();
+      const QgsCoordinateReferenceSystem projectCrs = project->crs();
       QgsRectangle mapRect = QgsServerProjectUtils::wmsExtent( *project );
       if ( mapRect.isEmpty() )
       {
@@ -205,11 +205,11 @@ namespace QgsWms
         mapRect.invert();
       }
       QDomElement lowerCornerElem = doc.createElement( QStringLiteral( "ows:LowerCorner" ) );
-      QDomText lowerCornerText = doc.createTextNode( QString::number( mapRect.xMinimum() ) + " " +  QString::number( mapRect.yMinimum() ) );
+      const QDomText lowerCornerText = doc.createTextNode( QString::number( mapRect.xMinimum() ) + " " +  QString::number( mapRect.yMinimum() ) );
       lowerCornerElem.appendChild( lowerCornerText );
       bboxElem.appendChild( lowerCornerElem );
       QDomElement upperCornerElem = doc.createElement( QStringLiteral( "ows:UpperCorner" ) );
-      QDomText upperCornerText = doc.createTextNode( QString::number( mapRect.xMaximum() ) + " " +  QString::number( mapRect.yMaximum() ) );
+      const QDomText upperCornerText = doc.createTextNode( QString::number( mapRect.xMaximum() ) + " " +  QString::number( mapRect.yMaximum() ) );
       upperCornerElem.appendChild( upperCornerText );
       bboxElem.appendChild( upperCornerElem );
       generalElem.appendChild( bboxElem );
@@ -219,14 +219,14 @@ namespace QgsWms
                                        QDomElement &parentLayer,
                                        QgsServerInterface *serverIface,
                                        const QgsProject *project,
-                                       const QgsServerRequest &request,
+                                       const QgsWmsRequest &request,
                                        const QgsLayerTreeGroup *layerTreeGroup,
                                        QgsRectangle &combinedBBox,
                                        const QString &strGroup )
     {
-      QStringList restrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *project );
+      const QStringList restrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *project );
 
-      QList< QgsLayerTreeNode * > layerTreeGroupChildren = layerTreeGroup->children();
+      const QList< QgsLayerTreeNode * > layerTreeGroupChildren = layerTreeGroup->children();
       for ( int i = 0; i < layerTreeGroupChildren.size(); ++i )
       {
         QgsLayerTreeNode *treeNode = layerTreeGroupChildren.at( i );
@@ -235,7 +235,7 @@ namespace QgsWms
         {
           QgsLayerTreeGroup *treeGroupChild = static_cast<QgsLayerTreeGroup *>( treeNode );
 
-          QString name = treeGroupChild->name();
+          const QString name = treeGroupChild->name();
           if ( restrictedLayers.contains( name ) ) //unpublished group
           {
             continue;
@@ -321,18 +321,18 @@ namespace QgsWms
           {
             title = l->name();
           }
-          QDomText titleText = doc.createTextNode( title );
+          const QDomText titleText = doc.createTextNode( title );
           titleElem.appendChild( titleText );
           layerElem.appendChild( titleElem );
 
           // WMS GetMap output format
           QDomElement formatElem = doc.createElement( QStringLiteral( "ows:OutputFormat" ) );
-          QDomText formatText = doc.createTextNode( QStringLiteral( "image/png" ) );
+          const QDomText formatText = doc.createTextNode( QStringLiteral( "image/png" ) );
           formatElem.appendChild( formatText );
           layerElem.appendChild( formatElem );
 
           // Get WMS service URL for Server Element
-          QUrl href = serviceUrl( request, project );
+          const QUrl href = serviceUrl( request, project, *serverIface->serverSettings() );
 
           //href needs to be a prefix
           QString hrefString = href.toString();
@@ -348,11 +348,11 @@ namespace QgsWms
           serverElem.appendChild( orServerElem );
           layerElem.appendChild( serverElem );
 
-          QString abstract = l->abstract();
+          const QString abstract = l->abstract();
           if ( !abstract.isEmpty() )
           {
             QDomElement abstractElem = doc.createElement( QStringLiteral( "ows:Abstract" ) );
-            QDomText abstractText = doc.createTextNode( abstract );
+            const QDomText abstractText = doc.createTextNode( abstract );
             abstractElem.appendChild( abstractText );
             layerElem.appendChild( abstractElem );
           }
@@ -360,14 +360,14 @@ namespace QgsWms
           //min/max scale denominatorScaleBasedVisibility
           if ( l->hasScaleBasedVisibility() )
           {
-            QString minScaleString = QString::number( l->maximumScale() );
-            QString maxScaleString = QString::number( l->minimumScale() );
+            const QString minScaleString = QString::number( l->maximumScale() );
+            const QString maxScaleString = QString::number( l->minimumScale() );
             QDomElement minScaleElem = doc.createElement( QStringLiteral( "sld:MinScaleDenominator" ) );
-            QDomText minScaleText = doc.createTextNode( minScaleString );
+            const QDomText minScaleText = doc.createTextNode( minScaleString );
             minScaleElem.appendChild( minScaleText );
             layerElem.appendChild( minScaleElem );
             QDomElement maxScaleElem = doc.createElement( QStringLiteral( "sld:MaxScaleDenominator" ) );
-            QDomText maxScaleText = doc.createTextNode( maxScaleString );
+            const QDomText maxScaleText = doc.createTextNode( maxScaleString );
             maxScaleElem.appendChild( maxScaleText );
             layerElem.appendChild( maxScaleElem );
           }
@@ -378,14 +378,14 @@ namespace QgsWms
           //keyword list
           if ( !l->keywordList().isEmpty() )
           {
-            QStringList keywordStringList = l->keywordList().split( ',' );
-            bool sia2045 = QgsServerProjectUtils::wmsInfoFormatSia2045( *project );
+            const QStringList keywordStringList = l->keywordList().split( ',' );
+            const bool sia2045 = QgsServerProjectUtils::wmsInfoFormatSia2045( *project );
 
             QDomElement keywordsElem = doc.createElement( QStringLiteral( "ows:Keywords" ) );
             for ( int i = 0; i < keywordStringList.size(); ++i )
             {
               QDomElement keywordElem = doc.createElement( QStringLiteral( "ows:Keyword" ) );
-              QDomText keywordText = doc.createTextNode( keywordStringList.at( i ).trimmed() );
+              const QDomText keywordText = doc.createTextNode( keywordStringList.at( i ).trimmed() );
               keywordElem.appendChild( keywordText );
               if ( sia2045 )
               {
@@ -397,11 +397,11 @@ namespace QgsWms
           }
 
           // layer data URL
-          QString dataUrl = l->dataUrl();
+          const QString dataUrl = l->dataUrl();
           if ( !dataUrl.isEmpty() )
           {
             QDomElement dataUrlElem = doc.createElement( QStringLiteral( "DataURL" ) );
-            QString dataUrlFormat = l->dataUrlFormat();
+            const QString dataUrlFormat = l->dataUrlFormat();
             dataUrlElem.setAttribute( QStringLiteral( "format" ), dataUrlFormat );
             QDomElement dataORElem = doc.createElement( QStringLiteral( "OnlineResource" ) );
             dataORElem.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
@@ -412,11 +412,11 @@ namespace QgsWms
           }
 
           // layer metadata URL
-          QString metadataUrl = l->metadataUrl();
+          const QString metadataUrl = l->metadataUrl();
           if ( !metadataUrl.isEmpty() )
           {
             QDomElement metaUrlElem = doc.createElement( QStringLiteral( "MetadataURL" ) );
-            QString metadataUrlFormat = l->metadataUrlFormat();
+            const QString metadataUrlFormat = l->metadataUrlFormat();
             metaUrlElem.setAttribute( QStringLiteral( "format" ), metadataUrlFormat );
             QDomElement metaUrlORElem = doc.createElement( QStringLiteral( "OnlineResource" ) );
             metaUrlORElem.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
@@ -429,8 +429,8 @@ namespace QgsWms
           // update combineBBox
           try
           {
-            QgsCoordinateTransform t( l->crs(), project->crs(), project );
-            QgsRectangle BBox = t.transformBoundingBox( l->extent() );
+            const QgsCoordinateTransform t( l->crs(), project->crs(), project );
+            const QgsRectangle BBox = t.transformBoundingBox( l->extent() );
             if ( combinedBBox.isEmpty() )
             {
               combinedBBox = BBox;
@@ -466,10 +466,10 @@ namespace QgsWms
         QDomElement styleElem = doc.createElement( QStringLiteral( "Style" ) );
         styleElem.setAttribute( QStringLiteral( "current" ), QStringLiteral( "true" ) );
         QDomElement styleNameElem = doc.createElement( QStringLiteral( "Name" ) );
-        QDomText styleNameText = doc.createTextNode( styleName );
+        const QDomText styleNameText = doc.createTextNode( styleName );
         styleNameElem.appendChild( styleNameText );
         QDomElement styleTitleElem = doc.createElement( QStringLiteral( "Title" ) );
-        QDomText styleTitleText = doc.createTextNode( styleName );
+        const QDomText styleTitleText = doc.createTextNode( styleName );
         styleTitleElem.appendChild( styleTitleText );
         styleElem.appendChild( styleNameElem );
         styleElem.appendChild( styleTitleElem );

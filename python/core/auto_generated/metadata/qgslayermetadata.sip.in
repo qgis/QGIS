@@ -12,7 +12,7 @@
 
 class QgsLayerMetadata : QgsAbstractMetadataBase
 {
-%Docstring
+%Docstring(signature="appended")
 A structured metadata store for a map layer.
 
 :py:class:`QgsLayerMetadata` handles storage and management of the metadata
@@ -274,6 +274,8 @@ Reads the metadata state from a ``layer``'s custom properties (see :py:func:`Qgs
     virtual bool readMetadataXml( const QDomElement &metadataElement );
 
     virtual bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const;
+
+    virtual void combine( const QgsAbstractMetadataBase *other );
 
 
     bool operator==( const QgsLayerMetadata &metadataOther ) const;

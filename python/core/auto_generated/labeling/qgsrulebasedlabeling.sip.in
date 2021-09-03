@@ -12,7 +12,8 @@
 
 class QgsRuleBasedLabeling : QgsAbstractVectorLayerLabeling
 {
-%Docstring
+%Docstring(signature="appended")
+Rule based labeling for a vector layer.
 
 .. versionadded:: 3.0
 %End
@@ -26,7 +27,8 @@ class QgsRuleBasedLabeling : QgsAbstractVectorLayerLabeling
 
     class Rule
 {
-%Docstring
+%Docstring(signature="appended")
+A child rule for QgsRuleBasedLabeling.
 
 .. versionadded:: 3.0
 %End

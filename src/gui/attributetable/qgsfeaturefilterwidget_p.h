@@ -34,6 +34,7 @@
 #include "qgsattributeform.h"
 
 #include "qgis_gui.h"
+#include <QTimer>
 
 class QgsVectorLayer;
 class QgsAttributeEditorContext;
@@ -69,6 +70,7 @@ class GUI_EXPORT QgsFeatureFilterWidget : public QWidget, private Ui::QgsFeature
     void filterShowAll();
     void filterSelected();
     void filterVisible();
+    void filterEdited();
 
 
   private slots:
@@ -82,7 +84,6 @@ class GUI_EXPORT QgsFeatureFilterWidget : public QWidget, private Ui::QgsFeature
     void storeExpressionButtonInit();
 
     void filterExpressionBuilder();
-    void filterEdited();
     void filterQueryChanged( const QString &query );
     void filterQueryAccepted();
 

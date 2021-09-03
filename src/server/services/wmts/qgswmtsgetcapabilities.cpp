@@ -96,7 +96,7 @@ namespace QgsWmts
     wmtsCapabilitiesElement.appendChild( getServiceProviderElement( doc, project ) );
 
     //INSERT OperationsMetadata
-    wmtsCapabilitiesElement.appendChild( getOperationsMetadataElement( doc, project, request ) );
+    wmtsCapabilitiesElement.appendChild( getOperationsMetadataElement( doc, project, request, serverIface->serverSettings() ) );
 
     //INSERT Contents
     wmtsCapabilitiesElement.appendChild( getContentsElement( doc, serverIface, project ) );
@@ -112,42 +112,42 @@ namespace QgsWmts
 
     //Service type
     QDomElement typeElem = doc.createElement( QStringLiteral( "ows:ServiceType" ) );
-    QDomText typeText = doc.createTextNode( QStringLiteral( "OGC WMTS" ) );
+    const QDomText typeText = doc.createTextNode( QStringLiteral( "OGC WMTS" ) );
     typeElem.appendChild( typeText );
     serviceElem.appendChild( typeElem );
 
     //Service type version
     QDomElement typeVersionElem = doc.createElement( QStringLiteral( "ows:ServiceTypeVersion" ) );
-    QDomText typeVersionText = doc.createTextNode( implementationVersion() );
+    const QDomText typeVersionText = doc.createTextNode( implementationVersion() );
     typeVersionElem.appendChild( typeVersionText );
     serviceElem.appendChild( typeVersionElem );
 
-    QString title = QgsServerProjectUtils::owsServiceTitle( *project );
+    const QString title = QgsServerProjectUtils::owsServiceTitle( *project );
     if ( !title.isEmpty() )
     {
       QDomElement titleElem = doc.createElement( QStringLiteral( "ows:Title" ) );
-      QDomText titleText = doc.createTextNode( title );
+      const QDomText titleText = doc.createTextNode( title );
       titleElem.appendChild( titleText );
       serviceElem.appendChild( titleElem );
     }
 
-    QString abstract = QgsServerProjectUtils::owsServiceAbstract( *project );
+    const QString abstract = QgsServerProjectUtils::owsServiceAbstract( *project );
     if ( !abstract.isEmpty() )
     {
       QDomElement abstractElem = doc.createElement( QStringLiteral( "ows:Abstract" ) );
-      QDomText abstractText = doc.createCDATASection( abstract );
+      const QDomText abstractText = doc.createCDATASection( abstract );
       abstractElem.appendChild( abstractText );
       serviceElem.appendChild( abstractElem );
     }
 
-    QStringList keywords = QgsServerProjectUtils::owsServiceKeywords( *project );
+    const QStringList keywords = QgsServerProjectUtils::owsServiceKeywords( *project );
     if ( !keywords.isEmpty() )
     {
       QDomElement keywordsElem = doc.createElement( QStringLiteral( "ows:Keywords" ) );
       for ( const QString &k : keywords )
       {
         QDomElement keywordElem = doc.createElement( QStringLiteral( "ows:Keyword" ) );
-        QDomText keywordText = doc.createTextNode( k );
+        const QDomText keywordText = doc.createTextNode( k );
         keywordElem.appendChild( keywordText );
         keywordsElem.appendChild( keywordElem );
       }
@@ -156,7 +156,7 @@ namespace QgsWmts
 
     QDomElement feesElem = doc.createElement( QStringLiteral( "ows:Fees" ) );
     QDomText feesText = doc.createTextNode( QStringLiteral( "None" ) ); // default value if fees are unknown
-    QString fees = QgsServerProjectUtils::owsServiceFees( *project );
+    const QString fees = QgsServerProjectUtils::owsServiceFees( *project );
     if ( !fees.isEmpty() )
     {
       feesText = doc.createTextNode( fees );
@@ -166,7 +166,7 @@ namespace QgsWmts
 
     QDomElement accessConstraintsElem = doc.createElement( QStringLiteral( "ows:AccessConstraints" ) );
     QDomText accessConstraintsText = doc.createTextNode( QStringLiteral( "None" ) ); // default value if access constraints are unknown
-    QString accessConstraints = QgsServerProjectUtils::owsServiceAccessConstraints( *project );
+    const QString accessConstraints = QgsServerProjectUtils::owsServiceAccessConstraints( *project );
     if ( !accessConstraints.isEmpty() )
     {
       accessConstraintsText = doc.createTextNode( accessConstraints );
@@ -183,16 +183,16 @@ namespace QgsWmts
     //Service provider
     QDomElement serviceElem = doc.createElement( QStringLiteral( "ows:ServiceProvider" ) );
 
-    QString contactOrganization = QgsServerProjectUtils::owsServiceContactOrganization( *project );
+    const QString contactOrganization = QgsServerProjectUtils::owsServiceContactOrganization( *project );
     if ( !contactOrganization.isEmpty() )
     {
       QDomElement contactOrganizationElem = doc.createElement( QStringLiteral( "ows:ProviderName" ) );
-      QDomText contactOrganizationText = doc.createTextNode( contactOrganization );
+      const QDomText contactOrganizationText = doc.createTextNode( contactOrganization );
       contactOrganizationElem.appendChild( contactOrganizationText );
       serviceElem.appendChild( contactOrganizationElem );
     }
 
-    QString onlineResource = QgsServerProjectUtils::owsServiceOnlineResource( *project );
+    const QString onlineResource = QgsServerProjectUtils::owsServiceOnlineResource( *project );
     if ( !onlineResource.isEmpty() )
     {
       QDomElement onlineResourceElem = doc.createElement( QStringLiteral( "ows:ProviderSite" ) );
@@ -201,10 +201,10 @@ namespace QgsWmts
     }
 
     //Contact information
-    QString contactPerson = QgsServerProjectUtils::owsServiceContactPerson( *project );
-    QString contactPosition = QgsServerProjectUtils::owsServiceContactPosition( *project );
-    QString contactMail = QgsServerProjectUtils::owsServiceContactMail( *project );
-    QString contactPhone = QgsServerProjectUtils::owsServiceContactPhone( *project );
+    const QString contactPerson = QgsServerProjectUtils::owsServiceContactPerson( *project );
+    const QString contactPosition = QgsServerProjectUtils::owsServiceContactPosition( *project );
+    const QString contactMail = QgsServerProjectUtils::owsServiceContactMail( *project );
+    const QString contactPhone = QgsServerProjectUtils::owsServiceContactPhone( *project );
     if ( !contactPerson.isEmpty() ||
          !contactPosition.isEmpty() ||
          !contactMail.isEmpty() ||
@@ -214,14 +214,14 @@ namespace QgsWmts
       if ( !contactPerson.isEmpty() )
       {
         QDomElement contactPersonElem = doc.createElement( QStringLiteral( "ows:IndividualName" ) );
-        QDomText contactPersonText = doc.createTextNode( contactPerson );
+        const QDomText contactPersonText = doc.createTextNode( contactPerson );
         contactPersonElem.appendChild( contactPersonText );
         serviceContactElem.appendChild( contactPersonElem );
       }
       if ( !contactPosition.isEmpty() )
       {
         QDomElement contactPositionElem = doc.createElement( QStringLiteral( "ows:PositionName" ) );
-        QDomText contactPositionText = doc.createTextNode( contactPosition );
+        const QDomText contactPositionText = doc.createTextNode( contactPosition );
         contactPositionElem.appendChild( contactPositionText );
         serviceContactElem.appendChild( contactPositionElem );
       }
@@ -233,7 +233,7 @@ namespace QgsWmts
         {
           QDomElement contactAddressElem = doc.createElement( QStringLiteral( "ows:Address" ) );
           QDomElement contactAddressMailElem = doc.createElement( QStringLiteral( "ows:ElectronicMailAddress" ) );
-          QDomText contactAddressMailText = doc.createTextNode( contactMail );
+          const QDomText contactAddressMailText = doc.createTextNode( contactMail );
           contactAddressMailElem.appendChild( contactAddressMailText );
           contactAddressElem.appendChild( contactAddressMailElem );
           contactInfoElem.appendChild( contactAddressElem );
@@ -242,7 +242,7 @@ namespace QgsWmts
         {
           QDomElement contactPhoneElem = doc.createElement( QStringLiteral( "ows:Phone" ) );
           QDomElement contactVoiceElem = doc.createElement( QStringLiteral( "ows:Voice" ) );
-          QDomText contactVoiceText = doc.createTextNode( contactPhone );
+          const QDomText contactVoiceText = doc.createTextNode( contactPhone );
           contactVoiceElem.appendChild( contactVoiceText );
           contactPhoneElem.appendChild( contactVoiceElem );
           contactInfoElem.appendChild( contactPhoneElem );
@@ -256,7 +256,7 @@ namespace QgsWmts
     return serviceElem;
   }
 
-  QDomElement getOperationsMetadataElement( QDomDocument &doc, const QgsProject *project, const QgsServerRequest &request )
+  QDomElement getOperationsMetadataElement( QDomDocument &doc, const QgsProject *project, const QgsServerRequest &request, const QgsServerSettings *settings )
   {
     //ows:OperationsMetadata element
     QDomElement operationsMetadataElement = doc.createElement( QStringLiteral( "ows:OperationsMetadata" )/*ows:OperationsMetadata*/ );
@@ -273,7 +273,7 @@ namespace QgsWmts
     dcpElement.appendChild( httpElement );
 
     // Get service URL
-    const QUrl href = serviceUrl( request, project );
+    const QUrl href = serviceUrl( request, project, *settings );
 
     //href needs to be a prefix
     QString hrefString = href.toString();
@@ -286,7 +286,7 @@ namespace QgsWmts
     constraintElement.setAttribute( QStringLiteral( "name" ), QStringLiteral( "GetEncoding" ) );
     QDomElement allowedValuesElement = doc.createElement( QStringLiteral( "ows:AllowedValues" )/*ows:AllowedValues*/ );
     QDomElement valueElement = doc.createElement( QStringLiteral( "ows:Value" )/*ows:Value*/ );
-    QDomText valueText = doc.createTextNode( QStringLiteral( "KVP" ) );
+    const QDomText valueText = doc.createTextNode( QStringLiteral( "KVP" ) );
     valueElement.appendChild( valueText );
     allowedValuesElement.appendChild( valueElement );
     constraintElement.appendChild( allowedValuesElement );
@@ -314,11 +314,11 @@ namespace QgsWmts
      */
     QDomElement contentsElement = doc.createElement( QStringLiteral( "Contents" )/*wmts:Contents*/ );
 
-    QList< tileMatrixSetDef > tmsList = getTileMatrixSetList( project );
+    const QList< tileMatrixSetDef > tmsList = getTileMatrixSetList( project );
     if ( !tmsList.isEmpty() )
     {
       // get layer list
-      QList< layerDef > wmtsLayers = getWmtsLayerList( serverIface, project );
+      const QList< layerDef > wmtsLayers = getWmtsLayerList( serverIface, project );
       if ( !wmtsLayers.isEmpty() )
       {
         appendLayerElements( doc, contentsElement, wmtsLayers, tmsList, project );
@@ -336,9 +336,9 @@ namespace QgsWmts
                               QList< layerDef > wmtsLayers, QList< tileMatrixSetDef > tmsList,
                               const QgsProject *project )
     {
-      QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() );
+      const QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() );
       // Define InfoFormat helper
-      std::function < void ( QDomElement &, const QString & ) > appendInfoFormat = [&doc]( QDomElement & elem, const QString & format )
+      const std::function < void ( QDomElement &, const QString & ) > appendInfoFormat = [&doc]( QDomElement & elem, const QString & format )
       {
         QDomElement formatElem = doc.createElement( QStringLiteral( "InfoFormat" )/*wmts:InfoFormat*/ );
         formatElem.appendChild( doc.createTextNode( format ) );
@@ -353,7 +353,7 @@ namespace QgsWmts
         QDomElement layerElem = doc.createElement( QStringLiteral( "Layer" ) );
 
         QDomElement layerIdElem = doc.createElement( QStringLiteral( "ows:Identifier" ) );
-        QDomText layerIdText = doc.createTextNode( wmtsLayer.id );
+        const QDomText layerIdText = doc.createTextNode( wmtsLayer.id );
         layerIdElem.appendChild( layerIdText );
         layerElem.appendChild( layerIdElem );
 
@@ -361,7 +361,7 @@ namespace QgsWmts
         {
           // Layer title
           QDomElement layerTitleElem = doc.createElement( QStringLiteral( "ows:Title" ) );
-          QDomText layerTitleText = doc.createTextNode( wmtsLayer.title );
+          const QDomText layerTitleText = doc.createTextNode( wmtsLayer.title );
           layerTitleElem.appendChild( layerTitleText );
           layerElem.appendChild( layerTitleElem );
         }
@@ -370,20 +370,20 @@ namespace QgsWmts
         {
           // Layer abstract
           QDomElement layerAbstElem = doc.createElement( QStringLiteral( "ows:Abstract" ) );
-          QDomText layerAbstText = doc.createTextNode( project->title() );
+          const QDomText layerAbstText = doc.createTextNode( project->title() );
           layerAbstElem.appendChild( layerAbstText );
           layerElem.appendChild( layerAbstElem );
         }
 
         // WGS84 bounding box
-        int wgs84precision = 6;
+        const int wgs84precision = 6;
         QDomElement wgs84BBoxElement = doc.createElement( QStringLiteral( "ows:WGS84BoundingBox" ) );
         QDomElement wgs84LowerCornerElement = doc.createElement( QStringLiteral( "ows:LowerCorner" ) );
-        QDomText wgs84LowerCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( wmtsLayer.wgs84BoundingRect.xMinimum(), wgs84precision ), wgs84precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( wmtsLayer.wgs84BoundingRect.yMinimum(), wgs84precision ), wgs84precision ) );
+        const QDomText wgs84LowerCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( wmtsLayer.wgs84BoundingRect.xMinimum(), wgs84precision ), wgs84precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( wmtsLayer.wgs84BoundingRect.yMinimum(), wgs84precision ), wgs84precision ) );
         wgs84LowerCornerElement.appendChild( wgs84LowerCornerText );
         wgs84BBoxElement.appendChild( wgs84LowerCornerElement );
         QDomElement wgs84UpperCornerElement = doc.createElement( QStringLiteral( "ows:UpperCorner" ) );
-        QDomText wgs84UpperCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( wmtsLayer.wgs84BoundingRect.xMaximum(), wgs84precision ), wgs84precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( wmtsLayer.wgs84BoundingRect.yMaximum(), wgs84precision ), wgs84precision ) );
+        const QDomText wgs84UpperCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( wmtsLayer.wgs84BoundingRect.xMaximum(), wgs84precision ), wgs84precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( wmtsLayer.wgs84BoundingRect.yMaximum(), wgs84precision ), wgs84precision ) );
         wgs84UpperCornerElement.appendChild( wgs84UpperCornerText );
         wgs84BBoxElement.appendChild( wgs84UpperCornerElement );
         layerElem.appendChild( wgs84BBoxElement );
@@ -395,8 +395,8 @@ namespace QgsWmts
             continue;
 
           QgsRectangle rect;
-          QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( tms.ref );
-          QgsCoordinateTransform exGeoTransform( wgs84, crs, project );
+          const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( tms.ref );
+          const QgsCoordinateTransform exGeoTransform( wgs84, crs, project );
           try
           {
             rect = exGeoTransform.transformBoundingBox( wmtsLayer.wgs84BoundingRect );
@@ -414,14 +414,42 @@ namespace QgsWmts
 
           QDomElement bboxElement = doc.createElement( QStringLiteral( "ows:BoundingBox" ) );
           bboxElement.setAttribute( QStringLiteral( "crs" ), tms.ref );
+
+          // lower corner
+          double firstCoord = rect.xMinimum();
+          double secondCoord = rect.yMinimum();
+
+          if ( crs.hasAxisInverted() )
+          {
+            std::swap( firstCoord, secondCoord );
+          }
+
+          QString firstCoordStr = qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( firstCoord, precision ), precision );
+          QString secondCoordStr = qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( secondCoord, precision ), precision );
+          const QDomText lowerCornerText = doc.createTextNode( QString( "%1 %2" ).arg( firstCoordStr, secondCoordStr ) );
+
           QDomElement lowerCornerElement = doc.createElement( QStringLiteral( "ows:LowerCorner" ) );
-          QDomText lowerCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( rect.xMinimum(), precision ), precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( rect.yMinimum(), precision ), precision ) );
           lowerCornerElement.appendChild( lowerCornerText );
           bboxElement.appendChild( lowerCornerElement );
+
+          // upper corner
+          firstCoord = rect.xMaximum();
+          secondCoord = rect.yMaximum();
+
+          if ( crs.hasAxisInverted() )
+          {
+            std::swap( firstCoord, secondCoord );
+          }
+
+          firstCoordStr = qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( firstCoord, precision ), precision );
+          secondCoordStr = qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( secondCoord, precision ), precision );
+          const QDomText upperCornerText = doc.createTextNode( QString( "%1 %2" ).arg( firstCoordStr, secondCoordStr ) );
+
           QDomElement upperCornerElement = doc.createElement( QStringLiteral( "ows:UpperCorner" ) );
-          QDomText upperCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( rect.xMaximum(), precision ), precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( rect.yMaximum(), precision ), precision ) );
           upperCornerElement.appendChild( upperCornerText );
           bboxElement.appendChild( upperCornerElement );
+
+          // update layer element
           layerElem.appendChild( bboxElement );
         }
 
@@ -429,11 +457,11 @@ namespace QgsWmts
         QDomElement layerStyleElem = doc.createElement( QStringLiteral( "Style" ) );
         layerStyleElem.setAttribute( QStringLiteral( "isDefault" ), QStringLiteral( "true" ) );
         QDomElement layerStyleIdElem = doc.createElement( QStringLiteral( "ows:Identifier" ) );
-        QDomText layerStyleIdText = doc.createTextNode( QStringLiteral( "default" ) );
+        const QDomText layerStyleIdText = doc.createTextNode( QStringLiteral( "default" ) );
         layerStyleIdElem.appendChild( layerStyleIdText );
         layerStyleElem.appendChild( layerStyleIdElem );
         QDomElement layerStyleTitleElem = doc.createElement( QStringLiteral( "ows:Title" ) );
-        QDomText layerStyleTitleText = doc.createTextNode( QStringLiteral( "default" ) );
+        const QDomText layerStyleTitleText = doc.createTextNode( QStringLiteral( "default" ) );
         layerStyleTitleElem.appendChild( layerStyleTitleText );
         layerStyleElem.appendChild( layerStyleTitleElem );
         layerElem.appendChild( layerStyleElem );
@@ -441,7 +469,7 @@ namespace QgsWmts
         for ( const QString &format : wmtsLayer.formats )
         {
           QDomElement layerFormatElem = doc.createElement( QStringLiteral( "Format" ) );
-          QDomText layerFormatText = doc.createTextNode( format );
+          const QDomText layerFormatText = doc.createTextNode( format );
           layerFormatElem.appendChild( layerFormatText );
           layerElem.appendChild( layerFormatElem );
         }
@@ -467,40 +495,40 @@ namespace QgsWmts
           QDomElement tmslElement = doc.createElement( QStringLiteral( "TileMatrixSetLink" )/*wmts:TileMatrixSetLink*/ );
 
           QDomElement identifierElem = doc.createElement( QStringLiteral( "TileMatrixSet" ) );
-          QDomText identifierText = doc.createTextNode( tms.ref );
+          const QDomText identifierText = doc.createTextNode( tms.ref );
           identifierElem.appendChild( identifierText );
           tmslElement.appendChild( identifierElem );
 
           //wmts:TileMatrixSetLimits
           QDomElement tmsLimitsElement = doc.createElement( QStringLiteral( "TileMatrixSetLimits" )/*wmts:TileMatrixSetLimits*/ );
-          for ( int tmIdx : tmsl.tileMatrixLimits.keys() )
+          for ( const int tmIdx : tmsl.tileMatrixLimits.keys() )
           {
             QDomElement tmLimitsElement = doc.createElement( QStringLiteral( "TileMatrixLimits" )/*wmts:TileMatrixLimits*/ );
 
             QDomElement tmIdentifierElem = doc.createElement( QStringLiteral( "TileMatrix" ) );
-            QDomText tmIdentifierText = doc.createTextNode( QString::number( tmIdx ) );
+            const QDomText tmIdentifierText = doc.createTextNode( QString::number( tmIdx ) );
             tmIdentifierElem.appendChild( tmIdentifierText );
             tmLimitsElement.appendChild( tmIdentifierElem );
 
-            tileMatrixLimitDef tml = tmsl.tileMatrixLimits[tmIdx];
+            const tileMatrixLimitDef tml = tmsl.tileMatrixLimits[tmIdx];
 
             QDomElement minTileColElem = doc.createElement( QStringLiteral( "MinTileCol" ) );
-            QDomText minTileColText = doc.createTextNode( QString::number( tml.minCol ) );
+            const QDomText minTileColText = doc.createTextNode( QString::number( tml.minCol ) );
             minTileColElem.appendChild( minTileColText );
             tmLimitsElement.appendChild( minTileColElem );
 
             QDomElement maxTileColElem = doc.createElement( QStringLiteral( "MaxTileCol" ) );
-            QDomText maxTileColText = doc.createTextNode( QString::number( tml.maxCol ) );
+            const QDomText maxTileColText = doc.createTextNode( QString::number( tml.maxCol ) );
             maxTileColElem.appendChild( maxTileColText );
             tmLimitsElement.appendChild( maxTileColElem );
 
             QDomElement minTileRowElem = doc.createElement( QStringLiteral( "MinTileRow" ) );
-            QDomText minTileRowText = doc.createTextNode( QString::number( tml.minRow ) );
+            const QDomText minTileRowText = doc.createTextNode( QString::number( tml.minRow ) );
             minTileRowElem.appendChild( minTileRowText );
             tmLimitsElement.appendChild( minTileRowElem );
 
             QDomElement maxTileRowElem = doc.createElement( QStringLiteral( "MaxTileRow" ) );
-            QDomText maxTileRowText = doc.createTextNode( QString::number( tml.maxRow ) );
+            const QDomText maxTileRowText = doc.createTextNode( QString::number( tml.maxRow ) );
             maxTileRowElem.appendChild( maxTileRowText );
             tmLimitsElement.appendChild( maxTileRowElem );
 
@@ -524,16 +552,16 @@ namespace QgsWmts
         QDomElement tmsElement = doc.createElement( QStringLiteral( "TileMatrixSet" )/*wmts:TileMatrixSet*/ );
 
         QDomElement identifierElem = doc.createElement( QStringLiteral( "ows:Identifier" ) );
-        QDomText identifierText = doc.createTextNode( tms.ref );
+        const QDomText identifierText = doc.createTextNode( tms.ref );
         identifierElem.appendChild( identifierText );
         tmsElement.appendChild( identifierElem );
 
         QDomElement crsElem = doc.createElement( QStringLiteral( "ows:SupportedCRS" ) );
-        QDomText crsText = doc.createTextNode( tms.ref );
+        const QDomText crsText = doc.createTextNode( tms.ref );
         crsElem.appendChild( crsText );
         tmsElement.appendChild( crsElem );
 
-        QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( tms.ref );
+        const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( tms.ref );
         int precision = 3;
         if ( crs.isGeographic() )
         {
@@ -547,45 +575,45 @@ namespace QgsWmts
           QDomElement tmElement = doc.createElement( QStringLiteral( "TileMatrix" )/*wmts:TileMatrix*/ );
 
           QDomElement tmIdentifierElem = doc.createElement( QStringLiteral( "ows:Identifier" ) );
-          QDomText tmIdentifierText = doc.createTextNode( QString::number( tmIdx ) );
+          const QDomText tmIdentifierText = doc.createTextNode( QString::number( tmIdx ) );
           tmIdentifierElem.appendChild( tmIdentifierText );
           tmElement.appendChild( tmIdentifierElem );
 
           QDomElement tmScaleDenomElem = doc.createElement( QStringLiteral( "ScaleDenominator" ) );
-          QDomText tmScaleDenomText = doc.createTextNode( qgsDoubleToString( tm.scaleDenominator, 6 ) );
+          const QDomText tmScaleDenomText = doc.createTextNode( qgsDoubleToString( tm.scaleDenominator, 6 ) );
           tmScaleDenomElem.appendChild( tmScaleDenomText );
           tmElement.appendChild( tmScaleDenomElem );
 
           QDomElement tmTopLeftCornerElem = doc.createElement( QStringLiteral( "TopLeftCorner" ) );
           if ( tms.hasAxisInverted )
           {
-            QDomText tmTopLeftCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( tm.top, precision ), precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( tm.left, precision ), precision ) );
+            const QDomText tmTopLeftCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( tm.top, precision ), precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( tm.left, precision ), precision ) );
             tmTopLeftCornerElem.appendChild( tmTopLeftCornerText );
           }
           else
           {
-            QDomText tmTopLeftCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( tm.left, precision ), precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( tm.top, precision ), precision ) );
+            const QDomText tmTopLeftCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( tm.left, precision ), precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( tm.top, precision ), precision ) );
             tmTopLeftCornerElem.appendChild( tmTopLeftCornerText );
           }
           tmElement.appendChild( tmTopLeftCornerElem );
 
           QDomElement tmTileWidthElem = doc.createElement( QStringLiteral( "TileWidth" ) );
-          QDomText tmTileWidthText = doc.createTextNode( QString::number( 256 ) );
+          const QDomText tmTileWidthText = doc.createTextNode( QString::number( 256 ) );
           tmTileWidthElem.appendChild( tmTileWidthText );
           tmElement.appendChild( tmTileWidthElem );
 
           QDomElement tmTileHeightElem = doc.createElement( QStringLiteral( "TileHeight" ) );
-          QDomText tmTileHeightText = doc.createTextNode( QString::number( 256 ) );
+          const QDomText tmTileHeightText = doc.createTextNode( QString::number( 256 ) );
           tmTileHeightElem.appendChild( tmTileHeightText );
           tmElement.appendChild( tmTileHeightElem );
 
           QDomElement tmColElem = doc.createElement( QStringLiteral( "MatrixWidth" ) );
-          QDomText tmColText = doc.createTextNode( QString::number( tm.col ) );
+          const QDomText tmColText = doc.createTextNode( QString::number( tm.col ) );
           tmColElem.appendChild( tmColText );
           tmElement.appendChild( tmColElem );
 
           QDomElement tmRowElem = doc.createElement( QStringLiteral( "MatrixHeight" ) );
-          QDomText tmRowText = doc.createTextNode( QString::number( tm.row ) );
+          const QDomText tmRowText = doc.createTextNode( QString::number( tm.row ) );
           tmRowElem.appendChild( tmRowText );
           tmElement.appendChild( tmRowElem );
 

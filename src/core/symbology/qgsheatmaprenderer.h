@@ -18,7 +18,6 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsrenderer.h"
-#include "qgssymbol.h"
 #include "qgsexpression.h"
 #include "qgsgeometry.h"
 

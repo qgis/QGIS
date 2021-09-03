@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>306</width>
+    <width>323</width>
     <height>623</height>
    </rect>
   </property>
@@ -54,6 +54,13 @@
        <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
         <property name="focusPolicy">
          <enum>Qt::StrongFocus</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QgsPropertyOverrideButton" name="mOpacityDDBtn">
+        <property name="text">
+         <string>…</string>
         </property>
        </widget>
       </item>
@@ -185,33 +192,41 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QTableWidget" name="tableTransparency">
-        <property name="verticalScrollBarPolicy">
-         <enum>Qt::ScrollBarAsNeeded</enum>
-        </property>
-        <property name="alternatingRowColors">
-         <bool>true</bool>
-        </property>
-        <property name="selectionMode">
-         <enum>QAbstractItemView::SingleSelection</enum>
-        </property>
-        <property name="selectionBehavior">
-         <enum>QAbstractItemView::SelectRows</enum>
-        </property>
-        <property name="showGrid">
-         <bool>false</bool>
-        </property>
-        <property name="rowCount">
-         <number>0</number>
-        </property>
-        <property name="columnCount">
-         <number>0</number>
-        </property>
-        <attribute name="horizontalHeaderStretchLastSection">
-         <bool>true</bool>
-        </attribute>
-       </widget>
+      <item row="0" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <item>
+         <widget class="QLabel" name="lblTransparent">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Transparency band</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsRasterBandComboBox" name="cboxTransparencyBand" native="true">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>150</width>
+            <height>0</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item row="2" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout">
@@ -329,41 +344,33 @@
         </item>
        </layout>
       </item>
-      <item row="0" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout_7">
-        <item>
-         <widget class="QLabel" name="lblTransparent">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Transparency band</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QgsRasterBandComboBox" name="cboxTransparencyBand">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>150</width>
-            <height>0</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-       </layout>
+      <item row="3" column="0">
+       <widget class="QTableWidget" name="tableTransparency">
+        <property name="verticalScrollBarPolicy">
+         <enum>Qt::ScrollBarAsNeeded</enum>
+        </property>
+        <property name="alternatingRowColors">
+         <bool>true</bool>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::SingleSelection</enum>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <property name="showGrid">
+         <bool>false</bool>
+        </property>
+        <property name="rowCount">
+         <number>0</number>
+        </property>
+        <property name="columnCount">
+         <number>0</number>
+        </property>
+        <attribute name="horizontalHeaderStretchLastSection">
+         <bool>true</bool>
+        </attribute>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -389,13 +396,23 @@
    <header>qgsopacitywidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsRasterBandComboBox</class>
+   <extends>QWidget</extends>
+   <header>qgsrasterbandcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mOpacityWidget</tabstop>
+  <tabstop>mOpacityDDBtn</tabstop>
   <tabstop>mSrcNoDataValueCheckBox</tabstop>
   <tabstop>leNoDataValue</tabstop>
   <tabstop>mNodataColorButton</tabstop>
-  <tabstop>cboxTransparencyBand</tabstop>
   <tabstop>pbnExportTransparentPixelValues</tabstop>
   <tabstop>pbnImportTransparentPixelValues</tabstop>
   <tabstop>pbnDefaultValues</tabstop>
@@ -405,6 +422,7 @@
   <tabstop>tableTransparency</tabstop>
  </tabstops>
  <resources>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>

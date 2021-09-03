@@ -34,13 +34,13 @@ QgsProjectListItemDelegate::QgsProjectListItemDelegate( QObject *parent )
 
 void QgsProjectListItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  QgsScopedQPainterState painterState( painter );
+  const QgsScopedQPainterState painterState( painter );
 
   QTextDocument doc;
-  QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
+  const QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
 
   QAbstractTextDocumentLayout::PaintContext ctx;
-  QStyleOptionViewItem optionV4 = option;
+  const QStyleOptionViewItem optionV4 = option;
 
   QColor color = optionV4.palette.color( QPalette::Active, QPalette::Window );
   if ( option.state & QStyle::State_Selected && option.state & QStyle::State_HasFocus )
@@ -73,8 +73,8 @@ void QgsProjectListItemDelegate::paint( QPainter *painter, const QStyleOptionVie
   painter->drawRoundedRect( option.rect.left() + 0.625 * mRoundedRectSizePixels, option.rect.top() + 0.625 * mRoundedRectSizePixels,
                             option.rect.width() - 2 * 0.625 * mRoundedRectSizePixels, option.rect.height() - 2 * 0.625 * mRoundedRectSizePixels, mRoundedRectSizePixels, mRoundedRectSizePixels );
 
-  int titleSize = static_cast<int>( QApplication::fontMetrics().height() * 1.1 );
-  int textSize = static_cast<int>( titleSize * 0.85 );
+  const int titleSize = static_cast<int>( QApplication::fontMetrics().height() * 1.1 );
+  const int textSize = static_cast<int>( titleSize * 0.85 );
 
   doc.setHtml( QStringLiteral( "<div style='font-size:%1px'><span style='font-size:%2px;font-weight:bold;'>%3%4</span><br>%5<br>%6</div>" ).arg( textSize ).arg( QString::number( titleSize ),
                index.data( QgsProjectListItemDelegate::TitleRole ).toString(),
@@ -96,7 +96,7 @@ void QgsProjectListItemDelegate::paint( QPainter *painter, const QStyleOptionVie
 QSize QgsProjectListItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   QTextDocument doc;
-  QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
+  const QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
 
   int width;
   if ( option.rect.width() < 450 )
@@ -108,8 +108,8 @@ QSize QgsProjectListItemDelegate::sizeHint( const QStyleOptionViewItem &option, 
     width = option.rect.width();
   }
 
-  int titleSize = QApplication::fontMetrics().height() * 1.1;
-  int textSize = titleSize * 0.85;
+  const int titleSize = QApplication::fontMetrics().height() * 1.1;
+  const int textSize = titleSize * 0.85;
 
   doc.setHtml( QStringLiteral( "<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3%4</span><br>%5<br>%6</div>" ).arg( textSize ).arg( titleSize )
                .arg( index.data( QgsProjectListItemDelegate::TitleRole ).toString(),
@@ -188,13 +188,13 @@ QgsNewsItemListItemDelegate::QgsNewsItemListItemDelegate( QObject *parent )
 
 void QgsNewsItemListItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  QgsScopedQPainterState painterState( painter );
+  const QgsScopedQPainterState painterState( painter );
 
   QTextDocument doc;
-  QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
+  const QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
 
   QAbstractTextDocumentLayout::PaintContext ctx;
-  QStyleOptionViewItem optionV4 = option;
+  const QStyleOptionViewItem optionV4 = option;
 
   QColor color = optionV4.palette.color( QPalette::Active, QPalette::Window );
   if ( option.state & QStyle::State_Selected && option.state & QStyle::State_HasFocus )
@@ -227,8 +227,8 @@ void QgsNewsItemListItemDelegate::paint( QPainter *painter, const QStyleOptionVi
   painter->drawRoundedRect( option.rect.left() + 0.625 * mRoundedRectSizePixels, option.rect.top() + 0.625 * mRoundedRectSizePixels,
                             option.rect.width() - 2 * 0.625 * mRoundedRectSizePixels, option.rect.height() - 2 * 0.625 * mRoundedRectSizePixels, mRoundedRectSizePixels, mRoundedRectSizePixels );
 
-  int titleSize = static_cast<int>( QApplication::fontMetrics().height() * 1.1 );
-  int textSize = static_cast<int>( titleSize * 0.85 );
+  const int titleSize = static_cast<int>( QApplication::fontMetrics().height() * 1.1 );
+  const int textSize = static_cast<int>( titleSize * 0.85 );
 
   doc.setHtml( QStringLiteral( "<div style='font-size:%1px'><span style='font-size:%2px;font-weight:bold;'>%3%4</span>%5</div>" ).arg( textSize ).arg( QString::number( titleSize ),
                index.data( QgsNewsFeedModel::Title ).toString(),
@@ -245,7 +245,7 @@ void QgsNewsItemListItemDelegate::paint( QPainter *painter, const QStyleOptionVi
 
   // Gross, but not well supported in Qt
   mDismissRect = QRect( option.rect.width() - 32, option.rect.top() + 10, mDismissRectSize.width(), mDismissRectSize.height() );
-  QPixmap pixmap = QgsApplication::getThemeIcon( QStringLiteral( "/mIconClearItem.svg" ) ).pixmap( mDismissRectSize, QIcon::Normal );
+  const QPixmap pixmap = QgsApplication::getThemeIcon( QStringLiteral( "/mIconClearItem.svg" ) ).pixmap( mDismissRectSize, QIcon::Normal );
   painter->drawPixmap( mDismissRect.topLeft(), pixmap );
   mDismissRect.setTop( 10 );
 
@@ -257,7 +257,7 @@ void QgsNewsItemListItemDelegate::paint( QPainter *painter, const QStyleOptionVi
 QSize QgsNewsItemListItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   QTextDocument doc;
-  QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
+  const QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
 
   int width;
   if ( option.rect.width() < 450 )
@@ -269,8 +269,8 @@ QSize QgsNewsItemListItemDelegate::sizeHint( const QStyleOptionViewItem &option,
     width = option.rect.width();
   }
 
-  int titleSize = QApplication::fontMetrics().height() * 1.1;
-  int textSize = titleSize * 0.85;
+  const int titleSize = QApplication::fontMetrics().height() * 1.1;
+  const int textSize = titleSize * 0.85;
   doc.setHtml( QStringLiteral( "<div style='font-size:%1px'><span style='font-size:%2px;font-weight:bold;'>%3%4</span>%5</div>" ).arg( textSize ).arg( QString::number( titleSize ),
                index.data( QgsNewsFeedModel::Title ).toString(),
                index.data( QgsNewsFeedModel::Sticky ).toBool() ? QStringLiteral( "<img src=\"qrc:/images/themes/default/pin.svg\">" ) : QString(),

@@ -22,7 +22,9 @@
 #include "qgis_sip.h"
 #include <QDialog>
 #include "qgspanelwidget.h"
-#include "qgssymbol.h"
+#include "qgsmapunitscale.h"
+#include "qgsunittypes.h"
+
 #include "ui_qgsunitselectionwidget.h"
 #include "ui_qgsmapunitscalewidgetbase.h"
 #include "qgis_gui.h"
@@ -32,7 +34,7 @@ class QgsMapCanvas;
 /**
  * \class QgsMapUnitScaleWidget
  * \ingroup gui
- * A widget which allows the user to choose the minimum and maximum scale of an object in map units
+ * \brief A widget which allows the user to choose the minimum and maximum scale of an object in map units
  * and millimeters. This widget is designed to allow users to edit the properties of a
  * QgsMapUnitScale object.
  * \see QgsMapUnitScaleDialog
@@ -98,7 +100,7 @@ class GUI_EXPORT QgsMapUnitScaleWidget : public QgsPanelWidget, private Ui::QgsM
 /**
  * \class QgsMapUnitScaleDialog
  * \ingroup gui
- * A dialog which allows the user to choose the minimum and maximum scale of an object in map units
+ * \brief A dialog which allows the user to choose the minimum and maximum scale of an object in map units
  * and millimeters. This dialog is designed to allow users to edit the properties of a
  * QgsMapUnitScale object.
  * \see QgsMapUnitScaleWidget
@@ -154,7 +156,7 @@ class GUI_EXPORT QgsMapUnitScaleDialog : public QDialog
 /**
  * \class QgsUnitSelectionWidget
  * \ingroup gui
- * A widget displaying a combobox allowing the user to choose between various display units,
+ * \brief A widget displaying a combobox allowing the user to choose between various display units,
  * such as millimeters or map unit. If the user chooses map units, a button appears allowing
  * adjustment of minimum and maximum scaling.
  * \see QgsMapUnitScaleWidget

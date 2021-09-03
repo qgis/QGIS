@@ -46,7 +46,7 @@
 
 /**
  * \ingroup 3d
- * This loader factory is responsible for creation of loaders for individual tiles
+ * \brief This loader factory is responsible for creation of loaders for individual tiles
  * of QgsQgsPointCloudLayerChunkedEntity whenever a new tile is requested by the entity.
  *
  * \since QGIS 3.18
@@ -59,7 +59,7 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
      * Constructs the factory
      * The factory takes ownership over the passed \a symbol
      */
-    QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsPointCloudIndex *pc, QgsPointCloud3DSymbol *symbol,
+    QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, QgsPointCloudIndex *pc, QgsPointCloud3DSymbol *symbol,
                                           double zValueScale, double zValueOffset, int pointBudget );
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
@@ -68,6 +68,7 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
     virtual QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
     virtual int primitivesCount( QgsChunkNode *node ) const override;
     const Qgs3DMapSettings &mMap;
+    QgsCoordinateTransform mCoordinateTransform;
     QgsPointCloudIndex *mPointCloudIndex;
     std::unique_ptr< QgsPointCloud3DSymbol > mSymbol;
     double mZValueScale = 1.0;
@@ -78,7 +79,7 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
 
 /**
  * \ingroup 3d
- * This loader class is responsible for async loading of data for a single tile
+ * \brief This loader class is responsible for async loading of data for a single tile
  * of QgsPointCloudLayerChunkedEntity and creation of final 3D entity from the data
  * previously prepared in a worker thread.
  *
@@ -92,7 +93,8 @@ class QgsPointCloudLayerChunkLoader : public QgsChunkLoader
      * Constructs the loader
      * QgsPointCloudLayerChunkLoader takes ownership over symbol
      */
-    QgsPointCloudLayerChunkLoader( const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node, std::unique_ptr< QgsPointCloud3DSymbol > symbol, double zValueScale, double zValueOffset );
+    QgsPointCloudLayerChunkLoader( const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node, std::unique_ptr< QgsPointCloud3DSymbol > symbol,
+                                   const QgsCoordinateTransform &coordinateTransform, double zValueScale, double zValueOffset );
     ~QgsPointCloudLayerChunkLoader() override;
 
     virtual void cancel() override;
@@ -102,14 +104,13 @@ class QgsPointCloudLayerChunkLoader : public QgsChunkLoader
     const QgsPointCloudLayerChunkLoaderFactory *mFactory;
     std::unique_ptr<QgsPointCloud3DSymbolHandler> mHandler;
     QgsPointCloud3DRenderContext mContext;
-    bool mCanceled = false;
     QFutureWatcher<void> *mFutureWatcher = nullptr;
 };
 
 
 /**
  * \ingroup 3d
- * 3D entity used for rendering of point cloud layers with a single 3D symbol for all points.
+ * \brief 3D entity used for rendering of point cloud layers with a single 3D symbol for all points.
  *
  * It is implemented using tiling approach with QgsChunkedEntity. Internally it uses
  * QgsPointCloudLayerChunkLoaderFactory and QgsPointCloudLayerChunkLoader to do the actual work
@@ -121,7 +122,7 @@ class QgsPointCloudLayerChunkedEntity : public QgsChunkedEntity
 {
     Q_OBJECT
   public:
-    explicit QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, QgsPointCloud3DSymbol *symbol, double maximumScreenSpaceError, bool showBoundingBoxes,
+    explicit QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol, float maxScreenError, bool showBoundingBoxes,
         double zValueScale, double zValueOffset, int pointBudget );
 
     ~QgsPointCloudLayerChunkedEntity();

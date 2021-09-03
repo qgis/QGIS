@@ -30,7 +30,7 @@ class QgsProviderSourceWidget;
  * \ingroup gui
  * \class QgsProviderSourceWidgetProvider
  *
- * An interface for providers of widgets designed to configure a data provider's source.
+ * \brief An interface for providers of widgets designed to configure a data provider's source.
  *
  * \since QGIS 3.18
  */

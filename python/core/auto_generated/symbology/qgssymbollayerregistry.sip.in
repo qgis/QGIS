@@ -12,7 +12,7 @@ class QgsSymbolLayerWidget /External/;
 
 class QgsSymbolLayerAbstractMetadata
 {
-%Docstring
+%Docstring(signature="appended")
 Stores metadata about one symbol layer class.
 
 .. note::
@@ -25,13 +25,21 @@ Stores metadata about one symbol layer class.
 #include "qgssymbollayerregistry.h"
 %End
   public:
-    QgsSymbolLayerAbstractMetadata( const QString &name, const QString &visibleName, QgsSymbol::SymbolType type );
+
+    QgsSymbolLayerAbstractMetadata( const QString &name, const QString &visibleName, Qgis::SymbolType type );
+%Docstring
+Constructor for QgsSymbolLayerAbstractMetadata.
+
+:param name: internal symbol layer name (unique identifier)
+:param visibleName: user visible, translated name for symbol layer
+:param type: associated symbol type
+%End
 
     virtual ~QgsSymbolLayerAbstractMetadata();
 
     QString name() const;
     QString visibleName() const;
-    QgsSymbol::SymbolType type() const;
+    Qgis::SymbolType type() const;
 
     virtual QgsSymbolLayer *createSymbolLayer( const QVariantMap &map ) = 0 /Factory/;
 %Docstring
@@ -57,13 +65,23 @@ instances the paths are always absolute
 .. versionadded:: 3.0
 %End
 
+    virtual void resolveFonts( const QVariantMap &properties, const QgsReadWriteContext &context );
+%Docstring
+Resolve fonts from the  symbol layer's ``properties``.
+
+This tests whether the required fonts from the encoded ``properties`` are available on the system, and records
+warnings in the ``context`` if not.
+
+.. versionadded:: 3.20
+%End
+
   protected:
 };
 
 
 class QgsSymbolLayerMetadata : QgsSymbolLayerAbstractMetadata
 {
-%Docstring
+%Docstring(signature="appended")
 Convenience metadata class that uses static functions to create symbol layer and its widget.
 %End
 
@@ -79,7 +97,10 @@ Convenience metadata class that uses static functions to create symbol layer and
     virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement &elem ) /Factory/;
     virtual void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 
+    virtual void resolveFonts( const QVariantMap &properties, const QgsReadWriteContext &context );
+
   protected:
+
 
   private:
     QgsSymbolLayerMetadata();
@@ -88,7 +109,7 @@ Convenience metadata class that uses static functions to create symbol layer and
 
 class QgsSymbolLayerRegistry
 {
-%Docstring
+%Docstring(signature="appended")
 Registry of available symbol layer classes.
 
 :py:class:`QgsSymbolLayerRegistry` is not usually directly created, but rather accessed through
@@ -133,12 +154,22 @@ and converting absolute paths to relative paths when saving.
 .. versionadded:: 3.0
 %End
 
-    QStringList symbolLayersForType( QgsSymbol::SymbolType type );
+    void resolveFonts( const QString &name, QVariantMap &properties, const QgsReadWriteContext &context ) const;
+%Docstring
+Resolve fonts from the ``properties`` of a particular symbol layer.
+
+This tests whether the required fonts from the encoded ``properties`` are available on the system, and records
+warnings in the ``context`` if not.
+
+.. versionadded:: 3.20
+%End
+
+    QStringList symbolLayersForType( Qgis::SymbolType type );
 %Docstring
 Returns a list of available symbol layers for a specified symbol type
 %End
 
-    static QgsSymbolLayer *defaultSymbolLayer( QgsSymbol::SymbolType type ) /Factory/;
+    static QgsSymbolLayer *defaultSymbolLayer( Qgis::SymbolType type ) /Factory/;
 %Docstring
 create a new instance of symbol layer for specified symbol type with default settings
 %End

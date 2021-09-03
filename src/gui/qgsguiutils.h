@@ -15,7 +15,6 @@
 #ifndef QGSGUIUTILS_H
 #define QGSGUIUTILS_H
 
-#include <Qt>
 #include <QPair>
 #include <QWidget>
 #include <QStringList>
@@ -29,7 +28,7 @@ class QFont;
 /**
  * \ingroup gui
  * \namespace QgsGuiUtils
- * The QgsGuiUtils namespace contains constants and helper functions used throughout the QGIS GUI.
+ * \brief The QgsGuiUtils namespace contains constants and helper functions used throughout the QGIS GUI.
  * \note not available in Python bindings
  */
 namespace QgsGuiUtils
@@ -91,7 +90,6 @@ namespace QgsGuiUtils
    *
    * This method returns TRUE if cancel all was clicked, otherwise FALSE
   */
-
   bool GUI_EXPORT openFilesRememberingFilter( QString const &filterName,
       QString const &filters, QStringList &selectedFiles, QString &enc, QString &title,
       bool cancelAll = false );
@@ -108,12 +106,12 @@ namespace QgsGuiUtils
   QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget *parent, const QString &message, const QString &defaultFilename = QString() );
 
   /**
-    Convenience function for readily creating file filters.
-
-    Given a long name for a file filter and a regular expression, return
-    a file filter string suitable for use in a QFileDialog::OpenFiles()
-    call.  The regular express, glob, will have both all lower and upper
-    case versions added.
+   * Convenience function for readily creating file filters.
+   *
+   * Given a long name for a file filter and a regular expression, return
+   * a file filter string suitable for use in a QFileDialog::OpenFiles()
+   * call.  The regular express, glob, will have both all lower and upper
+   * case versions added.
   */
   QString GUI_EXPORT createFileFilter_( QString const &longName, QString const &glob );
 

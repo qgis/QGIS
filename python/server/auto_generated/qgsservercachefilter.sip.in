@@ -15,7 +15,7 @@
 
 class QgsServerCacheFilter
 {
-%Docstring
+%Docstring(signature="appended")
 Class defining cache interface for QGIS Server plugins.
 
 .. versionadded:: 3.4

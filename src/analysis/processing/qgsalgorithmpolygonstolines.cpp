@@ -117,12 +117,12 @@ QgsGeometry QgsPolygonsToLinesAlgorithm::convertToLines( const QgsGeometry &geom
   std::unique_ptr<QgsMultiCurve> lineGeometry;
 
   if ( QgsWkbTypes::flatType( resultType ) == QgsWkbTypes::MultiLineString )
-    lineGeometry = qgis::make_unique<QgsMultiLineString>();
+    lineGeometry = std::make_unique<QgsMultiLineString>();
   else
-    lineGeometry = qgis::make_unique<QgsMultiCurve>();
+    lineGeometry = std::make_unique<QgsMultiCurve>();
 
   lineGeometry->reserve( rings.size() );
-  for ( auto ring : qgis::as_const( rings ) )
+  for ( auto ring : std::as_const( rings ) )
     lineGeometry->addGeometry( ring );
 
   return QgsGeometry( lineGeometry.release() );

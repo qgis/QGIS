@@ -22,11 +22,12 @@
 #include "qgis_gui.h"
 
 class QgsRasterLayer;
+class QgsMapLayerConfigWidget;
 
 /**
  * \ingroup gui
  * \class QgsRasterLayerTemporalPropertiesWidget
- * A widget for configuring the temporal properties for a raster layer.
+ * \brief A widget for configuring the temporal properties for a raster layer.
  *
  * \since QGIS 3.14
  */
@@ -51,12 +52,25 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
      */
     void syncToLayer();
 
+    /**
+     * Adds a child \a widget to the properties widget.
+     *
+     * \since QGIS 3.20
+     */
+    void addWidget( QgsMapLayerConfigWidget *widget SIP_TRANSFER );
+
+  private slots:
+    void temporalGroupBoxChecked( bool checked );
+
   private:
 
     /**
      * The corresponding map layer with temporal attributes
      */
     QgsRasterLayer *mLayer = nullptr;
+    QVBoxLayout *mExtraWidgetLayout = nullptr;
+
+    QList< QgsMapLayerConfigWidget * > mExtraWidgets;
 
 };
 #endif // QGSRASTERLAYERTEMPORALPROPERTIESWIDGET_H

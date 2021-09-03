@@ -207,7 +207,7 @@ PointCount Epf::createFileInfo(const StringList& input, StringList dimNames,
     {
         for (std::string& d : dimNames)
             d = Utils::toupper(d);
-        for (const std::string& xyz : { "X", "Y", "Z" })
+        for (const std::string xyz : { "X", "Y", "Z" })
             if (!Utils::contains(dimNames, xyz))
                 dimNames.push_back(xyz);
     }

@@ -22,23 +22,25 @@
 #include "qgssettings.h"
 #include "qgshighlightablecombobox.h"
 #include "qgscoordinatereferencesystemregistry.h"
+#include "qgsdatums.h"
 
 QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
   : QWidget( parent )
 {
-  QHBoxLayout *layout = new QHBoxLayout();
-  layout->setContentsMargins( 0, 0, 0, 0 );
-  layout->setSpacing( 6 );
-  setLayout( layout );
-
   mCrsComboBox = new QgsHighlightableComboBox( this );
   mCrsComboBox->addItem( tr( "invalid projection" ), QgsProjectionSelectionWidget::CurrentCrs );
   mCrsComboBox->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Preferred );
 
+  const int labelMargin = static_cast< int >( std::round( mCrsComboBox->fontMetrics().horizontalAdvance( 'X' ) ) );
+  QHBoxLayout *layout = new QHBoxLayout();
+  layout->setContentsMargins( 0, 0, 0, 0 );
+  layout->setSpacing( 0 );
+  setLayout( layout );
+
   mProjectCrs = QgsProject::instance()->crs();
   addProjectCrsOption();
 
-  QgsSettings settings;
+  const QgsSettings settings;
   mDefaultCrs = QgsCoordinateReferenceSystem( settings.value( QStringLiteral( "/projections/defaultProjectCrs" ), geoEpsgCrsAuthId(), QgsSettings::App ).toString() );
   if ( mDefaultCrs.authid() != mProjectCrs.authid() )
   {
@@ -49,7 +51,25 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
 
   addRecentCrs();
 
-  layout->addWidget( mCrsComboBox );
+  layout->addWidget( mCrsComboBox, 1 );
+
+  // bit of fiddlyness here -- we want the initial spacing to only be visible
+  // when the warning label is shown, so it's embedded inside mWarningLabel
+  // instead of outside it
+  mWarningLabelContainer = new QWidget();
+  QHBoxLayout *warningLayout = new QHBoxLayout();
+  warningLayout->setContentsMargins( 0, 0, 0, 0 );
+  mWarningLabel = new QLabel();
+  const QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "mIconWarning.svg" ) );
+  const int size = static_cast< int >( std::max( 24.0, mCrsComboBox->minimumSize().height() * 0.5 ) );
+  mWarningLabel->setPixmap( icon.pixmap( icon.actualSize( QSize( size, size ) ) ) );
+  warningLayout->insertSpacing( 0, labelMargin / 2 );
+  warningLayout->insertWidget( 1, mWarningLabel );
+  mWarningLabelContainer->setLayout( warningLayout );
+  layout->addWidget( mWarningLabelContainer );
+  mWarningLabelContainer->hide();
+
+  layout->addSpacing( labelMargin / 2 );
 
   mButton = new QToolButton( this );
   mButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionSetProjection.svg" ) ) );
@@ -86,8 +106,8 @@ QgsCoordinateReferenceSystem QgsProjectionSelectionWidget::crs() const
       return mCrs;
     case QgsProjectionSelectionWidget::RecentCrs:
     {
-      long srsid = mCrsComboBox->currentData( Qt::UserRole + 1 ).toLongLong();
-      QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromSrsId( srsid );
+      const long srsid = mCrsComboBox->currentData( Qt::UserRole + 1 ).toLongLong();
+      const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromSrsId( srsid );
       return crs;
     }
     case QgsProjectionSelectionWidget::CrsNotSet:
@@ -98,7 +118,7 @@ QgsCoordinateReferenceSystem QgsProjectionSelectionWidget::crs() const
 
 void QgsProjectionSelectionWidget::setOptionVisible( const QgsProjectionSelectionWidget::CrsOption option, const bool visible )
 {
-  int optionIndex = mCrsComboBox->findData( option );
+  const int optionIndex = mCrsComboBox->findData( option );
 
   if ( visible && optionIndex < 0 )
   {
@@ -157,7 +177,7 @@ void QgsProjectionSelectionWidget::setOptionVisible( const QgsProjectionSelectio
 void QgsProjectionSelectionWidget::setNotSetText( const QString &text )
 {
   mNotSetText = text;
-  int optionIndex = mCrsComboBox->findData( CrsNotSet );
+  const int optionIndex = mCrsComboBox->findData( CrsNotSet );
   if ( optionIndex >= 0 )
   {
     mCrsComboBox->setItemText( optionIndex, mNotSetText );
@@ -171,7 +191,7 @@ void QgsProjectionSelectionWidget::setMessage( const QString &text )
 
 bool QgsProjectionSelectionWidget::optionVisible( QgsProjectionSelectionWidget::CrsOption option ) const
 {
-  int optionIndex = mCrsComboBox->findData( option );
+  const int optionIndex = mCrsComboBox->findData( option );
   return optionIndex >= 0;
 }
 
@@ -197,7 +217,7 @@ void QgsProjectionSelectionWidget::selectCrs()
     mCrsComboBox->blockSignals( true );
     mCrsComboBox->setCurrentIndex( mCrsComboBox->findData( QgsProjectionSelectionWidget::CurrentCrs ) );
     mCrsComboBox->blockSignals( false );
-    QgsCoordinateReferenceSystem crs = dlg.crs();
+    const QgsCoordinateReferenceSystem crs = dlg.crs();
     setCrs( crs );
     emit crsChanged( crs );
   }
@@ -269,6 +289,34 @@ void QgsProjectionSelectionWidget::dropEvent( QDropEvent *event )
   update();
 }
 
+QString QgsProjectionSelectionWidget::sourceEnsemble() const
+{
+  return mSourceEnsemble;
+}
+
+void QgsProjectionSelectionWidget::setSourceEnsemble( const QString &ensemble )
+{
+  if ( mSourceEnsemble == ensemble )
+    return;
+
+  mSourceEnsemble = ensemble;
+  updateWarning();
+}
+
+bool QgsProjectionSelectionWidget::showAccuracyWarnings() const
+{
+  return mShowAccuracyWarnings;
+}
+
+void QgsProjectionSelectionWidget::setShowAccuracyWarnings( bool show )
+{
+  mShowAccuracyWarnings = show;
+  if ( !mShowAccuracyWarnings )
+    mWarningLabelContainer->hide();
+  else
+    updateWarning();
+}
+
 void QgsProjectionSelectionWidget::addNotSetOption()
 {
   mCrsComboBox->insertItem( 0, mNotSetText, QgsProjectionSelectionWidget::CrsNotSet );
@@ -294,8 +342,8 @@ void QgsProjectionSelectionWidget::comboIndexChanged( int idx )
       break;
     case QgsProjectionSelectionWidget::RecentCrs:
     {
-      long srsid = mCrsComboBox->itemData( idx, Qt::UserRole + 1 ).toLongLong();
-      QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromSrsId( srsid );
+      const long srsid = mCrsComboBox->itemData( idx, Qt::UserRole + 1 ).toLongLong();
+      const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromSrsId( srsid );
       emit crsChanged( crs );
       break;
     }
@@ -305,6 +353,72 @@ void QgsProjectionSelectionWidget::comboIndexChanged( int idx )
       break;
   }
   updateTooltip();
+}
+
+void QgsProjectionSelectionWidget::updateWarning()
+{
+  if ( !mShowAccuracyWarnings )
+  {
+    if ( mWarningLabelContainer->isVisible() )
+      mWarningLabelContainer->hide();
+    return;
+  }
+
+  try
+  {
+    const double crsAccuracyWarningThreshold = QgsSettings().value( QStringLiteral( "/projections/crsAccuracyWarningThreshold" ), 0.0, QgsSettings::App ).toDouble();
+
+    const QgsDatumEnsemble ensemble = crs().datumEnsemble();
+    if ( !ensemble.isValid() || ensemble.name() == mSourceEnsemble || ( ensemble.accuracy() > 0 && ensemble.accuracy() < crsAccuracyWarningThreshold ) )
+    {
+      mWarningLabelContainer->hide();
+    }
+    else
+    {
+      mWarningLabelContainer->show();
+
+      QString warning = QStringLiteral( "<p>" );
+
+      QString id;
+      if ( !ensemble.code().isEmpty() )
+        id = QStringLiteral( "<i>%1</i> (%2:%3)" ).arg( ensemble.name(), ensemble.authority(), ensemble.code() );
+      else
+        id = QStringLiteral( "<i>%</i>”" ).arg( ensemble.name() );
+
+      if ( ensemble.accuracy() > 0 )
+      {
+        warning = tr( "The selected CRS is based on %1, which has a limited accuracy of <b>at best %2 meters</b>." ).arg( id ).arg( ensemble.accuracy() );
+      }
+      else
+      {
+        warning = tr( "The selected CRS is based on %1, which has a limited accuracy." ).arg( id );
+      }
+      warning += QStringLiteral( "</p><p>" ) + tr( "Use an alternative CRS if accurate positioning is required." ) + QStringLiteral( "</p>" );
+
+      const QList< QgsDatumEnsembleMember > members = ensemble.members();
+      if ( !members.isEmpty() )
+      {
+        warning += QStringLiteral( "<p>" ) + tr( "%1 consists of the datums:" ).arg( ensemble.name() ) + QStringLiteral( "</p><ul>" );
+
+        for ( const QgsDatumEnsembleMember &member : members )
+        {
+          if ( !member.code().isEmpty() )
+            id = QStringLiteral( "%1 (%2:%3)" ).arg( member.name(), member.authority(), member.code() );
+          else
+            id = member.name();
+          warning += QStringLiteral( "<li>%1</li>" ).arg( id );
+        }
+
+        warning += QLatin1String( "</ul>" );
+      }
+
+      mWarningLabel->setToolTip( warning );
+    }
+  }
+  catch ( QgsNotSupportedException & )
+  {
+    mWarningLabelContainer->hide();
+  }
 }
 
 void QgsProjectionSelectionWidget::setCrs( const QgsCoordinateReferenceSystem &crs )
@@ -321,7 +435,7 @@ void QgsProjectionSelectionWidget::setCrs( const QgsCoordinateReferenceSystem &c
   }
   else
   {
-    int crsNotSetIndex = mCrsComboBox->findData( QgsProjectionSelectionWidget::CrsNotSet );
+    const int crsNotSetIndex = mCrsComboBox->findData( QgsProjectionSelectionWidget::CrsNotSet );
     if ( crsNotSetIndex >= 0 )
     {
       mCrsComboBox->blockSignals( true );
@@ -344,7 +458,7 @@ void QgsProjectionSelectionWidget::setCrs( const QgsCoordinateReferenceSystem &c
 
 void QgsProjectionSelectionWidget::setLayerCrs( const QgsCoordinateReferenceSystem &crs )
 {
-  int layerItemIndex = mCrsComboBox->findData( QgsProjectionSelectionWidget::LayerCrs );
+  const int layerItemIndex = mCrsComboBox->findData( QgsProjectionSelectionWidget::LayerCrs );
   if ( crs.isValid() )
   {
     if ( layerItemIndex > -1 )
@@ -381,7 +495,7 @@ void QgsProjectionSelectionWidget::addDefaultCrsOption()
 
 void QgsProjectionSelectionWidget::addCurrentCrsOption()
 {
-  int index = optionVisible( CrsNotSet ) ? 1 : 0;
+  const int index = optionVisible( CrsNotSet ) ? 1 : 0;
   mCrsComboBox->insertItem( index, crsOptionText( mCrs ), QgsProjectionSelectionWidget::CurrentCrs );
 
 }
@@ -399,7 +513,7 @@ void QgsProjectionSelectionWidget::addRecentCrs()
   const QList< QgsCoordinateReferenceSystem> recentProjections = QgsCoordinateReferenceSystem::recentCoordinateReferenceSystems();
   for ( const QgsCoordinateReferenceSystem &crs : recentProjections )
   {
-    long srsid = crs.srsid();
+    const long srsid = crs.srsid();
 
     //check if already shown
     if ( crsIsShown( srsid ) )
@@ -434,11 +548,12 @@ int QgsProjectionSelectionWidget::firstRecentCrsIndex() const
 
 void QgsProjectionSelectionWidget::updateTooltip()
 {
-  QgsCoordinateReferenceSystem c = crs();
+  const QgsCoordinateReferenceSystem c = crs();
   if ( c.isValid() )
     setToolTip( c.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, true ) );
   else
     setToolTip( QString() );
+  updateWarning();
 }
 
 QgsMapLayer *QgsProjectionSelectionWidget::mapLayerFromMimeData( const QMimeData *data ) const

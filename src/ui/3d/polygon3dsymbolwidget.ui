@@ -278,9 +278,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsMaterialWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsmaterialwidget.h</header>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -289,20 +289,20 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <class>QgsMaterialWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsmaterialwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -314,8 +314,12 @@
   <tabstop>cboAltClamping</tabstop>
   <tabstop>cboAltBinding</tabstop>
   <tabstop>cboCullingMode</tabstop>
+  <tabstop>cboRenderedFacade</tabstop>
   <tabstop>chkAddBackFaces</tabstop>
   <tabstop>chkInvertNormals</tabstop>
+  <tabstop>groupEdges</tabstop>
+  <tabstop>spinEdgeWidth</tabstop>
+  <tabstop>btnEdgeColor</tabstop>
  </tabstops>
  <resources/>
  <connections/>

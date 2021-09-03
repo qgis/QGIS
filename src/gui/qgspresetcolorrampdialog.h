@@ -28,7 +28,7 @@ class QDialogButtonBox;
 /**
  * \ingroup gui
  * \class QgsPresetColorRampWidget
- * A widget which allows users to modify the properties of a QgsPresetSchemeColorRamp.
+ * \brief A widget which allows users to modify the properties of a QgsPresetSchemeColorRamp.
  * \since QGIS 3.0
  */
 class GUI_EXPORT QgsPresetColorRampWidget : public QgsPanelWidget, private Ui::QgsPresetColorRampWidgetBase
@@ -80,7 +80,7 @@ class GUI_EXPORT QgsPresetColorRampWidget : public QgsPanelWidget, private Ui::Q
 /**
  * \ingroup gui
  * \class QgsPresetColorRampDialog
- * A dialog which allows users to modify the properties of a QgsPresetSchemeColorRamp.
+ * \brief A dialog which allows users to modify the properties of a QgsPresetSchemeColorRamp.
  * \since QGIS 3.0
  */
 class GUI_EXPORT QgsPresetColorRampDialog : public QDialog

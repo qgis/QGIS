@@ -10,6 +10,11 @@
 
 class QgsSublayersDialog : QDialog
 {
+%Docstring(signature="appended")
+
+.. deprecated::
+   Will be removed in QGIS 4.0
+%End
 
 %TypeHeaderCode
 #include "qgssublayersdialog.h"
@@ -39,20 +44,24 @@ class QgsSublayersDialog : QDialog
     struct LayerDefinition
     {
       int layerId;
-      QString layerName;  //!< Name of the layer (not necessarily unique)
+
+      QString layerName;
+
       int count;
-      QString type;       //!< Extra type depending on the use (e.g. geometry type for vector sublayers)
-      QString description;  //!< Description. Added in QGIS 3.10
+
+      QString type;
+
+      QString description;
     };
 
     typedef QList<QgsSublayersDialog::LayerDefinition> LayerDefinitionList;
 
 
-    QgsSublayersDialog( ProviderType providerType,
-                        const QString &name,
-                        QWidget *parent /TransferThis/ = 0,
-                        Qt::WindowFlags fl = Qt::WindowFlags(),
-                        const QString &dataSourceUri = QString() );
+ QgsSublayersDialog( ProviderType providerType,
+                                          const QString &name,
+                                          QWidget *parent /TransferThis/ = 0,
+                                          Qt::WindowFlags fl = Qt::WindowFlags(),
+                                          const QString &dataSourceUri = QString() ) /Deprecated/;
 %Docstring
 Construct a new QgsSublayersDialog object - a dialog to select which sub layers to be imported from a data source (e.g. from geopackage or zipfile)
 
@@ -61,6 +70,9 @@ Construct a new QgsSublayersDialog object - a dialog to select which sub layers 
 :param parent: parent widget of the dialog
 :param fl: window flags
 :param dataSourceUri: data source URI
+
+.. deprecated::
+   Will be removed in QGIS 4.0
 %End
 
     ~QgsSublayersDialog();
@@ -112,6 +124,7 @@ Returns column with count or -1
 
 
   protected:
+
 
 
 };

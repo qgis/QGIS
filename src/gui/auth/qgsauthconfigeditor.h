@@ -29,7 +29,7 @@ class QgsMessageBar;
 
 /**
  * \ingroup gui
- * Widget for editing authentication configuration database
+ * \brief Widget for editing authentication configuration database
  */
 class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfigEditor
 {
@@ -48,6 +48,12 @@ class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfig
     //! Hide the widget's title, e.g. when embedding
     void toggleTitleVisibility( bool visible );
 
+    /**
+     * Returns the list of selected authentication configuration IDs
+     * \since QGIS 3.20
+     */
+    QStringList selectedAuthenticationConfigIds() const;
+
   public slots:
     //! Sets whether to show the widget's utilities button, e.g. when embedding
     void setShowUtilitiesButton( bool show = true );
@@ -58,6 +64,12 @@ class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfig
   private slots:
     //! Repopulate the view with table contents
     void refreshTableView();
+
+    //! Import authentication configurations from a XML file
+    void importAuthenticationConfigs();
+
+    //! Exports selected authentication configurations to a XML file
+    void exportSelectedAuthenticationConfigs();
 
     //! Sets the cached master password (and verifies it if its hash is in authentication database)
     void setMasterPassword();
@@ -100,6 +112,8 @@ class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfig
     QSqlTableModel *mConfigModel = nullptr;
 
     QMenu *mAuthUtilitiesMenu = nullptr;
+    QAction *mActionImportAuthenticationConfigs = nullptr;
+    QAction *mActionExportSelectedAuthenticationConfigs = nullptr;
     QAction *mActionSetMasterPassword = nullptr;
     QAction *mActionClearCachedMasterPassword = nullptr;
     QAction *mActionResetMasterPassword = nullptr;

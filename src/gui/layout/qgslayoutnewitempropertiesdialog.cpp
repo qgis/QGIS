@@ -43,9 +43,9 @@ QgsLayoutItemPropertiesDialog::QgsLayoutItemPropertiesDialog( QWidget *parent, Q
   buttonGroup->setExclusive( true );
 
   QgsSettings settings;
-  double lastWidth = settings.value( QStringLiteral( "LayoutDesigner/lastItemWidth" ), QStringLiteral( "50" ) ).toDouble();
-  double lastHeight = settings.value( QStringLiteral( "LayoutDesigner/lastItemHeight" ), QStringLiteral( "50" ) ).toDouble();
-  QgsUnitTypes::LayoutUnit lastSizeUnit = settings.enumValue( QStringLiteral( "LayoutDesigner/lastSizeUnit" ), QgsUnitTypes::LayoutMillimeters );
+  const double lastWidth = settings.value( QStringLiteral( "LayoutDesigner/lastItemWidth" ), QStringLiteral( "50" ) ).toDouble();
+  const double lastHeight = settings.value( QStringLiteral( "LayoutDesigner/lastItemHeight" ), QStringLiteral( "50" ) ).toDouble();
+  const QgsUnitTypes::LayoutUnit lastSizeUnit = settings.enumValue( QStringLiteral( "LayoutDesigner/lastSizeUnit" ), QgsUnitTypes::LayoutMillimeters );
   setItemSize( QgsLayoutSize( lastWidth, lastHeight, lastSizeUnit ) );
 
   mPosUnitsComboBox->linkToWidget( mXPosSpin );
@@ -62,8 +62,8 @@ QgsLayoutItemPropertiesDialog::QgsLayoutItemPropertiesDialog( QWidget *parent, Q
 void QgsLayoutItemPropertiesDialog::setItemPosition( QgsLayoutPoint position )
 {
   // page number
-  QPointF layoutPoint = mLayout->convertToLayoutUnits( position );
-  int page = mLayout->pageCollection()->pageNumberForPoint( layoutPoint );
+  const QPointF layoutPoint = mLayout->convertToLayoutUnits( position );
+  const int page = mLayout->pageCollection()->pageNumberForPoint( layoutPoint );
 
   // convert position to relative for current page
   position = mLayout->convertFromLayoutUnits( mLayout->pageCollection()->positionOnPage( layoutPoint ), position.units() );

@@ -10,7 +10,7 @@
 
 class QgsMenuHeader : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Custom widget for displaying subheaders within a QMenu in a standard style.
 
 .. seealso:: :py:class:`QgsMenuHeaderWidgetAction`
@@ -42,7 +42,7 @@ Constructor for QgsMenuHeader, showing the specified ``text``.
 
 class QgsMenuHeaderWidgetAction: QWidgetAction
 {
-%Docstring
+%Docstring(signature="appended")
 Custom QWidgetAction for displaying subheaders within a QMenu in a standard style.
 
 .. seealso:: :py:class:`QgsMenuHeader`

@@ -10,7 +10,7 @@
 
 class QgsAuthMethodPlugins : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 Dialog for viewing available authentication method plugins
 %End
 
@@ -31,7 +31,7 @@ Construct a dialog for viewing available authentication method plugins
 
 class QgsAuthEditorWidgets : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Wrapper widget for available authentication editors
 %End
 

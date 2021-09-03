@@ -2011,7 +2011,11 @@ QgsGrassMapcalcFunction::QgsGrassMapcalcFunction( int type, QString name,
 
   if ( !labels.isEmpty() )
   {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     mInputLabels = labels.split( QStringLiteral( "," ), QString::SkipEmptyParts );
+#else
+    mInputLabels = labels.split( QStringLiteral( "," ), Qt::SkipEmptyParts );
+#endif
   }
 }
 

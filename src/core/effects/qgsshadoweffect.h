@@ -20,7 +20,9 @@
 #include "qgis_core.h"
 #include "qgspainteffect.h"
 #include "qgis_sip.h"
-#include "qgssymbol.h"
+#include "qgsunittypes.h"
+#include "qgsmapunitscale.h"
+
 #include <QPainter>
 
 /**

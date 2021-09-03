@@ -1,0 +1,66 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsfillsymbol.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsFillSymbol : QgsSymbol
+{
+%Docstring(signature="appended")
+
+A fill symbol type, for rendering Polygon and MultiPolygon geometries.
+%End
+
+%TypeHeaderCode
+#include "qgsfillsymbol.h"
+%End
+  public:
+
+    static QgsFillSymbol *createSimple( const QVariantMap &properties ) /Factory/;
+%Docstring
+Create a fill symbol with one symbol layer: SimpleFill with specified properties.
+This is a convenience method for easier creation of fill symbols.
+%End
+
+    QgsFillSymbol( const QgsSymbolLayerList &layers /Transfer/ = QgsSymbolLayerList() );
+%Docstring
+Constructor for QgsFillSymbol, with the specified list of initial symbol ``layers``.
+
+Ownership of the ``layers`` are transferred to the symbol.
+%End
+    void setAngle( double angle );
+
+    void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
+%Docstring
+Renders the symbol using the given render ``context``.
+
+The ``points`` list dictates the exterior ring for the polygon to render, and
+interior rings are optionally specified via the ``rings`` argument.
+
+The ``f`` argument is used to pass the feature currently being rendered (when available).
+
+If only a single symbol layer from the symbol should be rendered, it should be specified
+in the ``layer`` argument. A ``layer`` of -1 indicates that all symbol layers should be
+rendered.
+
+If ``selected`` is ``True`` then the symbol will be drawn using the "selected feature"
+style and colors instead of the symbol's normal style.
+%End
+
+    virtual QgsFillSymbol *clone() const /Factory/;
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsfillsymbol.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

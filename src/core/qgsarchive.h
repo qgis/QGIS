@@ -98,6 +98,12 @@ class CORE_EXPORT QgsArchive
      */
     QString dir() const;
 
+    /**
+     * Returns TRUE if the archive exists on the filesystem, FALSE otherwise.
+     * \since QGIS 3.20
+     */
+    bool exists() const;
+
   private:
     // content of the archive
     QStringList mFiles;

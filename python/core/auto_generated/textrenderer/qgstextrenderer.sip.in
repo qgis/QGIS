@@ -12,7 +12,7 @@
 
 class QgsTextRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 Handles rendering text using rich formatting options, including drop shadows, buffers
 and background shapes.
 
@@ -223,7 +223,6 @@ Returns the height of a character when rendered with the specified text ``format
     static const double FONT_WORKAROUND_SCALE;
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

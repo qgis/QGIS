@@ -13,7 +13,7 @@
 
 class QgsGridFileWriter
 {
-%Docstring
+%Docstring(signature="appended")
 A class that does interpolation to a grid and writes the results to an ascii grid.
 %End
 

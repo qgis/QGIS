@@ -70,19 +70,19 @@ void QgsResamplingUtils::refreshWidgetsFromLayer()
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
   mCbEarlyResampling->setVisible(
     provider && ( provider->providerCapabilities() & QgsRasterDataProvider::ProviderHintCanPerformProviderResampling ) );
-  mCbEarlyResampling->setChecked( mRasterLayer->resamplingStage() == QgsRasterPipe::ResamplingStage::Provider );
+  mCbEarlyResampling->setChecked( mRasterLayer->resamplingStage() == Qgis::RasterResamplingStage::Provider );
 
   switch ( mRasterLayer->resamplingStage() )
   {
-    case QgsRasterPipe::ResamplingStage::ResampleFilter:
+    case Qgis::RasterResamplingStage::ResampleFilter:
       removeExtraEarlyResamplingMethodsFromCombos();
       break;
-    case QgsRasterPipe::ResamplingStage::Provider:
+    case Qgis::RasterResamplingStage::Provider:
       addExtraEarlyResamplingMethodsToCombos();
       break;
   }
 
-  if ( provider && mRasterLayer->resamplingStage() == QgsRasterPipe::ResamplingStage::Provider )
+  if ( provider && mRasterLayer->resamplingStage() == Qgis::RasterResamplingStage::Provider )
   {
     mZoomedInResamplingComboBox->setCurrentIndex( mZoomedInResamplingComboBox->findData( static_cast<int>( provider->zoomedInResamplingMethod() ) ) );
     mZoomedOutResamplingComboBox->setCurrentIndex( mZoomedOutResamplingComboBox->findData( static_cast<int>( provider->zoomedOutResamplingMethod() ) ) );
@@ -136,14 +136,14 @@ void QgsResamplingUtils::refreshWidgetsFromLayer()
 
 void QgsResamplingUtils::refreshLayerFromWidgets()
 {
-  QgsRasterDataProvider::ResamplingMethod zoomedInMethod =
+  const QgsRasterDataProvider::ResamplingMethod zoomedInMethod =
     static_cast< QgsRasterDataProvider::ResamplingMethod >(
       mZoomedInResamplingComboBox->itemData( mZoomedInResamplingComboBox->currentIndex() ).toInt() );
-  QgsRasterDataProvider::ResamplingMethod zoomedOutMethod =
+  const QgsRasterDataProvider::ResamplingMethod zoomedOutMethod =
     static_cast< QgsRasterDataProvider::ResamplingMethod >(
       mZoomedOutResamplingComboBox->itemData( mZoomedOutResamplingComboBox->currentIndex() ).toInt() );
 
-  mRasterLayer->setResamplingStage( mCbEarlyResampling->isChecked() ? QgsRasterPipe::ResamplingStage::Provider : QgsRasterPipe::ResamplingStage::ResampleFilter );
+  mRasterLayer->setResamplingStage( mCbEarlyResampling->isChecked() ? Qgis::RasterResamplingStage::Provider : Qgis::RasterResamplingStage::ResampleFilter );
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
   if ( provider )
   {
@@ -164,11 +164,11 @@ void QgsResamplingUtils::refreshLayerFromWidgets()
         break;
 
       case QgsRasterDataProvider::ResamplingMethod::Bilinear:
-        zoomedInResampler = qgis::make_unique< QgsBilinearRasterResampler >();
+        zoomedInResampler = std::make_unique< QgsBilinearRasterResampler >();
         break;
 
       case QgsRasterDataProvider::ResamplingMethod::Cubic:
-        zoomedInResampler = qgis::make_unique< QgsCubicRasterResampler >();
+        zoomedInResampler = std::make_unique< QgsCubicRasterResampler >();
         break;
 
       case QgsRasterDataProvider::ResamplingMethod::CubicSpline:
@@ -192,11 +192,11 @@ void QgsResamplingUtils::refreshLayerFromWidgets()
         break;
 
       case QgsRasterDataProvider::ResamplingMethod::Bilinear:
-        zoomedOutResampler = qgis::make_unique< QgsBilinearRasterResampler >();
+        zoomedOutResampler = std::make_unique< QgsBilinearRasterResampler >();
         break;
 
       case QgsRasterDataProvider::ResamplingMethod::Cubic:
-        zoomedOutResampler = qgis::make_unique< QgsCubicRasterResampler >();
+        zoomedOutResampler = std::make_unique< QgsCubicRasterResampler >();
         break;
 
 
@@ -237,7 +237,7 @@ void QgsResamplingUtils::removeExtraEarlyResamplingMethodsFromCombos()
 
   for ( QComboBox *combo : {mZoomedInResamplingComboBox, mZoomedOutResamplingComboBox } )
   {
-    for ( QgsRasterDataProvider::ResamplingMethod method :
+    for ( const QgsRasterDataProvider::ResamplingMethod method :
           {
             QgsRasterDataProvider::ResamplingMethod::CubicSpline,
             QgsRasterDataProvider::ResamplingMethod::Lanczos,

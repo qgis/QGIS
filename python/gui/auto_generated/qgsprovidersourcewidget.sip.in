@@ -10,7 +10,7 @@
 
 class QgsProviderSourceWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for widgets which allow customization of a provider's source URI.
 
 .. versionadded:: 3.18

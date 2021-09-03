@@ -43,6 +43,7 @@ from qgis.server import QgsServer, QgsServerRequest, QgsBufferServerRequest, Qgs
 from qgis.core import QgsRenderChecker, QgsApplication, QgsFontUtils, QgsMultiRenderChecker
 from qgis.testing import unittest, start_app
 from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtGui import QColor
 from utilities import unitTestDataPath
 
 import osgeo.gdal  # NOQA
@@ -256,8 +257,8 @@ class QgsServerTestBase(unittest.TestCase):
 
         self.assertTrue(test, message)
 
-    def _execute_request(self, qs, requestMethod=QgsServerRequest.GetMethod, data=None):
-        request = QgsBufferServerRequest(qs, requestMethod, {}, data)
+    def _execute_request(self, qs, requestMethod=QgsServerRequest.GetMethod, data=None, request_headers=None):
+        request = QgsBufferServerRequest(qs, requestMethod, request_headers or {}, data)
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response)
         headers = []
@@ -283,6 +284,31 @@ class QgsServerTestBase(unittest.TestCase):
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, project)
         assert response.statusCode() == status_code, "%s != %s" % (response.statusCode(), status_code)
+
+    def _assertRed(self, color: QColor):
+        self.assertEqual(color.red(), 255)
+        self.assertEqual(color.green(), 0)
+        self.assertEqual(color.blue(), 0)
+
+    def _assertGreen(self, color: QColor):
+        self.assertEqual(color.red(), 0)
+        self.assertEqual(color.green(), 255)
+        self.assertEqual(color.blue(), 0)
+
+    def _assertBlue(self, color: QColor):
+        self.assertEqual(color.red(), 0)
+        self.assertEqual(color.green(), 0)
+        self.assertEqual(color.blue(), 255)
+
+    def _assertBlack(self, color: QColor):
+        self.assertEqual(color.red(), 0)
+        self.assertEqual(color.green(), 0)
+        self.assertEqual(color.blue(), 255)
+
+    def _assertWhite(self, color: QColor):
+        self.assertEqual(color.red(), 255)
+        self.assertEqual(color.green(), 255)
+        self.assertEqual(color.blue(), 255)
 
 
 class TestQgsServerTestBase(unittest.TestCase):
@@ -452,6 +478,56 @@ class TestQgsServer(QgsServerTestBase):
                 self.assertEqual("\"my_wcs_advertised_url" in item, True)
                 item_found = True
         self.assertTrue(item_found)
+
+        # Service URL in header
+        for header_name, header_value in (("X-Qgis-Service-Url", "http://test1"), ("X-Qgis-Wcs-Service-Url", "http://test2")):
+            # empty url in project
+            project = os.path.join(self.testdata_path, "test_project_without_urls.qgs")
+            qs = "?" + "&".join(["%s=%s" % i for i in list({
+                "MAP": urllib.parse.quote(project),
+                "SERVICE": "WCS",
+                "VERSION": "1.0.0",
+                "REQUEST": "GetCapabilities",
+                "STYLES": ""
+            }.items())])
+
+            r, h = self._result(self._execute_request(qs, request_headers={header_name: header_value}))
+
+            item_found = False
+            for item in str(r).split("\\n"):
+                if "OnlineResource" in item:
+                    print(item)
+                    print(header_name)
+                    print(header_value)
+                    self.assertEqual(header_value in item, True)
+                    item_found = True
+            self.assertTrue(item_found)
+
+        # Other headers combinaison
+        for headers, online_resource in (
+            ({"Forwarded": "host=test3;proto=https"}, "https://test3"),
+            ({"Forwarded": "host=test4;proto=https, host=test5;proto=https"}, "https://test4"),
+            ({"X-Forwarded-Host": "test6", "X-Forwarded-Proto": "https"}, "https://test6"),
+            ({"Host": "test7"}, "test7"),
+        ):
+            # empty url in project
+            project = os.path.join(self.testdata_path, "test_project_without_urls.qgs")
+            qs = "?" + "&".join(["%s=%s" % i for i in list({
+                "MAP": urllib.parse.quote(project),
+                "SERVICE": "WCS",
+                "VERSION": "1.0.0",
+                "REQUEST": "GetCapabilities",
+                "STYLES": ""
+            }.items())])
+
+            r, h = self._result(self._execute_request(qs, request_headers=headers))
+
+            item_found = False
+            for item in str(r).split("\\n"):
+                if "OnlineResource" in item:
+                    self.assertEqual(online_resource in item, True)
+                    item_found = True
+            self.assertTrue(item_found)
 
 
 if __name__ == '__main__':

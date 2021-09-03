@@ -15,6 +15,11 @@
 
 #include "qgsprojectstorage.h"
 
+bool QgsProjectStorage::isSupportedUri( const QString & ) const
+{
+  return false;
+}
+
 QString QgsProjectStorage::filePath( const QString &uri )
 {
   Q_UNUSED( uri );

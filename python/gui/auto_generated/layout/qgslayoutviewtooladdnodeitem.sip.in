@@ -10,7 +10,7 @@
 
 class QgsLayoutViewToolAddNodeItem : QgsLayoutViewTool
 {
-%Docstring
+%Docstring(signature="appended")
 Layout view tool for adding node based items to a layout.
 
 .. versionadded:: 3.0

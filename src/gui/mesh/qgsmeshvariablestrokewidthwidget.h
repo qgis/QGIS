@@ -81,7 +81,7 @@ class QgsMeshVariableStrokeWidthWidget: public QgsPanelWidget, public Ui::QgsMes
     double mDefaultMinimumValue = 0;
     double mDefaultMaximumValue = 0;
 
-    double lineEditValue( const QLineEdit *lineEdit ) const;
+    double lineEditValue( const QgsDoubleSpinBox *lineEdit ) const;
 };
 
 #endif // QGSMESHVARIABLESTROKEWIDTHWIDGET_H

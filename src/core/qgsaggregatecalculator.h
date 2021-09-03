@@ -52,9 +52,12 @@ class CORE_EXPORT QgsAggregateCalculator
      */
     struct AggregateInfo
     {
-      QString function; //!< The expression function
-      QString name; //!< A translated, human readable name
-      QSet<QVariant::Type> supportedTypes; //!< This aggregate function can only be used with these datatypes
+      //! The expression function
+      QString function;
+      //! A translated, human readable name
+      QString name;
+      //! This aggregate function can only be used with these datatypes
+      QSet<QVariant::Type> supportedTypes;
     };
 
     /**
@@ -120,6 +123,13 @@ class CORE_EXPORT QgsAggregateCalculator
     QgsAggregateCalculator( const QgsVectorLayer *layer );
 
     /**
+     * Returns the last error encountered during the aggregate calculation.
+     *
+     * \since QGIS 3.22
+     */
+    QString lastError() const { return mLastError; }
+
+    /**
      * Returns the associated vector layer.
      */
     const QgsVectorLayer *layer() const;
@@ -170,11 +180,13 @@ class CORE_EXPORT QgsAggregateCalculator
      * \param fieldOrExpression source field or expression to use as basis for aggregated values.
      * If an expression is used, then the context parameter must be set.
      * \param context expression context for evaluating expressions
-     * \param ok if specified, will be set to TRUE if aggregate calculation was successful
+     * \param ok if specified, will be set to TRUE if aggregate calculation was successful. If \a ok is FALSE then lastError() can be used to retrieve a descriptive error message.
+     * \param feedback optional feedback argument for early cancellation (since QGIS 3.22). If set, this will take precedence over any feedback object
+     * set on the expression \a context.
      * \returns calculated aggregate value
      */
     QVariant calculate( Aggregate aggregate, const QString &fieldOrExpression,
-                        QgsExpressionContext *context = nullptr, bool *ok = nullptr ) const;
+                        QgsExpressionContext *context = nullptr, bool *ok = nullptr, QgsFeedback *feedback = nullptr ) const;
 
     /**
      * Converts a string to a aggregate type.
@@ -183,6 +195,12 @@ class CORE_EXPORT QgsAggregateCalculator
      * \returns aggregate type
      */
     static Aggregate stringToAggregate( const QString &string, bool *ok = nullptr );
+
+    /**
+     * Returns the friendly display name for a \a aggregate.
+     * \since QGIS 3.22
+     */
+    static QString displayName( Aggregate aggregate );
 
     /**
      * Structured information for available aggregates.
@@ -211,6 +229,8 @@ class CORE_EXPORT QgsAggregateCalculator
     //trigger variable
     bool mFidsSet = false;
 
+    mutable QString mLastError;
+
     static QgsStatisticalSummary::Statistic numericStatFromAggregate( Aggregate aggregate, bool *ok = nullptr );
     static QgsStringStatisticalSummary::Statistic stringStatFromAggregate( Aggregate aggregate, bool *ok = nullptr );
     static QgsDateTimeStatisticalSummary::Statistic dateTimeStatFromAggregate( Aggregate aggregate, bool *ok = nullptr );
@@ -228,10 +248,10 @@ class CORE_EXPORT QgsAggregateCalculator
     static QVariant calculateArrayAggregate( QgsFeatureIterator &fit, int attr, QgsExpression *expression,
         QgsExpressionContext *context );
 
-    static QVariant calculate( Aggregate aggregate, QgsFeatureIterator &fit, QVariant::Type resultType,
+    static QVariant calculate( Aggregate aggregate, QgsFeatureIterator &fit, QVariant::Type resultType, int userType,
                                int attr, QgsExpression *expression,
                                const QString &delimiter,
-                               QgsExpressionContext *context, bool *ok = nullptr );
+                               QgsExpressionContext *context, bool *ok = nullptr, QString *error = nullptr );
     static QVariant concatenateStrings( QgsFeatureIterator &fit, int attr, QgsExpression *expression,
                                         QgsExpressionContext *context, const QString &delimiter, bool unique = false );
 

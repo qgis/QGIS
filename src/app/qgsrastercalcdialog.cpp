@@ -80,6 +80,7 @@ QgsRasterCalcDialog::QgsRasterCalcDialog( QgsRasterLayer *rasterLayer, QWidget *
     setExtentSize( rasterLayer->width(), rasterLayer->height(), rasterLayer->extent() );
     mCrsSelector->setCrs( rasterLayer->crs() );
   }
+  mCrsSelector->setShowAccuracyWarnings( true );
 
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 
@@ -94,6 +95,14 @@ QgsRasterCalcDialog::QgsRasterCalcDialog( QgsRasterLayer *rasterLayer, QWidget *
   mOutputLayer->setDialogTitle( tr( "Enter result file" ) );
   mOutputLayer->setDefaultRoot( settings.value( QStringLiteral( "/RasterCalculator/lastOutputDir" ), QDir::homePath() ).toString() );
   connect( mOutputLayer, &QgsFileWidget::fileChanged, this, [ = ]() { setAcceptButtonState(); } );
+
+  connect( mUseVirtualProviderCheckBox, &QCheckBox::clicked, this, &QgsRasterCalcDialog::setOutputToVirtual );
+
+  if ( ! useVirtualProvider() )
+  {
+    setOutputToVirtual();
+  }
+
 }
 
 QString QgsRasterCalcDialog::formulaString() const
@@ -148,6 +157,16 @@ bool QgsRasterCalcDialog::addLayerToProject() const
   return mAddResultToProjectCheckBox->isChecked();
 }
 
+bool QgsRasterCalcDialog::useVirtualProvider() const
+{
+  return mUseVirtualProviderCheckBox->isChecked();
+}
+
+QString QgsRasterCalcDialog::virtualLayerName() const
+{
+  return mVirtualLayerName->text();
+}
+
 QVector<QgsRasterCalculatorEntry> QgsRasterCalcDialog::rasterEntries() const
 {
   QVector<QgsRasterCalculatorEntry> entries;
@@ -182,20 +201,17 @@ void QgsRasterCalcDialog::insertAvailableRasterBands()
 {
   mAvailableRasterBands = QgsRasterCalculatorEntry::rasterEntries().toList();
   mRasterBandsListWidget->clear();
-  for ( const auto &entry : qgis::as_const( mAvailableRasterBands ) )
+  for ( const auto &entry : std::as_const( mAvailableRasterBands ) )
   {
     QgsRasterLayer *rlayer = entry.raster;
-    if ( rlayer && rlayer->dataProvider() && rlayer->providerType() == QLatin1String( "gdal" ) )
+    if ( !mExtentSizeSet ) //set bounding box / resolution of output to the values of the first possible input layer
     {
-      if ( !mExtentSizeSet ) //set bounding box / resolution of output to the values of the first possible input layer
-      {
-        setExtentSize( rlayer->width(), rlayer->height(), rlayer->extent() );
-        mCrsSelector->setCrs( rlayer->crs() );
-      }
-      QListWidgetItem *item = new QListWidgetItem( entry.ref, mRasterBandsListWidget );
-      item->setData( Qt::ToolTipRole, rlayer->publicSource() );
-      mRasterBandsListWidget->addItem( item );
+      setExtentSize( rlayer->width(), rlayer->height(), rlayer->extent() );
+      mCrsSelector->setCrs( rlayer->crs() );
     }
+    QListWidgetItem *item = new QListWidgetItem( entry.ref, mRasterBandsListWidget );
+    item->setData( Qt::ToolTipRole, rlayer->publicSource() );
+    mRasterBandsListWidget->addItem( item );
   }
 }
 
@@ -307,7 +323,7 @@ void QgsRasterCalcDialog::mExpressionTextEdit_textChanged()
   if ( expressionValid() )
   {
     mExpressionValidLabel->setText( tr( "Expression valid" ) );
-    if ( filePathValid() )
+    if ( filePathValid() || useVirtualProvider() )
     {
       mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
       return;
@@ -322,13 +338,40 @@ void QgsRasterCalcDialog::mExpressionTextEdit_textChanged()
 
 void QgsRasterCalcDialog::setAcceptButtonState()
 {
-  if ( expressionValid() && filePathValid() )
+  if ( ( expressionValid() && filePathValid() ) || ( expressionValid() && useVirtualProvider() ) )
   {
     mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
   }
   else
   {
     mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
+  }
+}
+
+void QgsRasterCalcDialog::setOutputToVirtual()
+{
+  if ( useVirtualProvider() )
+  {
+    mOutputFormatComboBox->hide();
+    mOutputLayer->hide();
+    mOutputLayerLabel->hide();
+    mOutputFormatLabel->hide();
+    mAddResultToProjectCheckBox->isChecked();
+    mAddResultToProjectCheckBox->setEnabled( false );
+    mVirtualLayerLabel->show();
+    mVirtualLayerName->show();
+    setAcceptButtonState();
+  }
+  else
+  {
+    mOutputFormatComboBox->show();
+    mOutputLayer->show();
+    mOutputLayerLabel->show();
+    mOutputFormatLabel->show();
+    mAddResultToProjectCheckBox->setEnabled( true );
+    mVirtualLayerLabel->hide();
+    mVirtualLayerName->hide();
+    setAcceptButtonState();
   }
 }
 
@@ -357,6 +400,8 @@ bool QgsRasterCalcDialog::filePathValid() const
 void QgsRasterCalcDialog::mRasterBandsListWidget_itemDoubleClicked( QListWidgetItem *item )
 {
   mExpressionTextEdit->insertPlainText( quoteBandEntry( item->text() ) );
+  //to enable the "ok" button if someone checks the virtual provider checkbox before adding a valid expression,
+  if ( expressionValid() && useVirtualProvider() ) setAcceptButtonState();
 }
 
 void QgsRasterCalcDialog::mPlusPushButton_clicked()

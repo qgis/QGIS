@@ -21,6 +21,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsrenderer.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgsmarkersymbol.h"
 
 ///@cond PRIVATE
 
@@ -32,7 +33,7 @@ class SetMarkerRotationVisitor : public QgsStyleEntityVisitorInterface
       : mRotationField( rotationField )
     {}
 
-    bool visit( const QgsStyleEntityVisitorInterface::StyleLeaf &entity )
+    bool visit( const QgsStyleEntityVisitorInterface::StyleLeaf &entity ) override
     {
       if ( const QgsStyleSymbolEntity *symbolEntity = dynamic_cast< const QgsStyleSymbolEntity * >( entity.entity ) )
       {
@@ -205,10 +206,10 @@ QVariantMap QgsAngleToNearestAlgorithm::processAlgorithm( const QVariantMap &par
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   // make spatial index
-  QgsFeatureIterator f2 = referenceSource->getFeatures( QgsFeatureRequest().setDestinationCrs( input->sourceCrs(), context.transformContext() ).setNoAttributes() );
+  const QgsFeatureIterator f2 = referenceSource->getFeatures( QgsFeatureRequest().setDestinationCrs( input->sourceCrs(), context.transformContext() ).setNoAttributes() );
   double step = referenceSource->featureCount() > 0 ? 50.0 / referenceSource->featureCount() : 1;
   int i = 0;
-  QgsSpatialIndex index( f2, [&]( const QgsFeature & )->bool
+  const QgsSpatialIndex index( f2, [&]( const QgsFeature & )->bool
   {
     i++;
     if ( feedback->isCanceled() )
@@ -244,7 +245,8 @@ QVariantMap QgsAngleToNearestAlgorithm::processAlgorithm( const QVariantMap &par
       else
         attributes[ fieldIndex ] = QVariant();
       f.setAttributes( attributes );
-      sink->addFeature( f, QgsFeatureSink::FastInsert );
+      if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
     }
     else
     {
@@ -257,7 +259,8 @@ QVariantMap QgsAngleToNearestAlgorithm::processAlgorithm( const QVariantMap &par
         else
           attributes[ fieldIndex ] = QVariant();
         f.setAttributes( attributes );
-        sink->addFeature( f, QgsFeatureSink::FastInsert );
+        if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
       }
       else
       {
@@ -282,7 +285,8 @@ QVariantMap QgsAngleToNearestAlgorithm::processAlgorithm( const QVariantMap &par
             attributes[ fieldIndex ] = QVariant();
         }
         f.setAttributes( attributes );
-        sink->addFeature( f, QgsFeatureSink::FastInsert );
+        if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
       }
     }
   }

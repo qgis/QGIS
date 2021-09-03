@@ -54,14 +54,18 @@ class ANALYSIS_EXPORT QgsDbscanClusteringAlgorithm : public QgsProcessingAlgorit
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
   private:
-    static void dbscan( std::size_t minSize,
-                        double eps,
-                        bool borderPointsAreNoise,
-                        long featureCount,
-                        QgsFeatureIterator features,
-                        QgsSpatialIndexKDBush &index,
-                        std::unordered_map< QgsFeatureId, int> &idToCluster,
-                        QgsProcessingFeedback *feedback );
+
+    static void stdbscan( std::size_t minSize,
+                          const double eps1,
+                          const double eps2,
+                          bool borderPointsAreNoise,
+                          long featureCount,
+                          QgsFeatureIterator features,
+                          QgsSpatialIndexKDBush &index,
+                          std::unordered_map< QgsFeatureId, int> &idToCluster,
+                          std::unordered_map< QgsFeatureId, QDateTime> &idToDateTime,
+                          QgsProcessingFeedback *feedback );
+
 };
 
 ///@endcond PRIVATE

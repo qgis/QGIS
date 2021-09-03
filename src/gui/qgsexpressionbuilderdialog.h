@@ -24,7 +24,7 @@
 
 /**
  * \ingroup gui
- * A generic dialog for building expression strings
+ * \brief A generic dialog for building expression strings
   * @remarks This class also shows an example on how to use QgsExpressionBuilderWidget
   */
 class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExpressionBuilderDialogBase

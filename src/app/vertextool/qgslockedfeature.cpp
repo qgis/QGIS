@@ -18,7 +18,7 @@
 
 #include "qgsfeatureiterator.h"
 #include "qgspoint.h"
-#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgslogger.h"
 #include "qgsvertexmarker.h"
 #include "qgsgeometryvalidator.h"
@@ -123,8 +123,7 @@ void QgsLockedFeature::geometryChanged( QgsFeatureId fid, const QgsGeometry &geo
 
 void QgsLockedFeature::validateGeometry( QgsGeometry *g )
 {
-  QgsSettings settings;
-  if ( settings.value( QStringLiteral( "qgis/digitizing/validate_geometries" ), 1 ).toInt() == 0 )
+  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.value() == 0 )
     return;
 
   if ( !g )
@@ -148,9 +147,9 @@ void QgsLockedFeature::validateGeometry( QgsGeometry *g )
     delete vm;
   }
 
-  QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal;
-  if ( settings.value( QStringLiteral( "qgis/digitizing/validate_geometries" ), 1 ).toInt() == 2 )
-    method = QgsGeometry::ValidatorGeos;
+  Qgis::GeometryValidationEngine method = Qgis::GeometryValidationEngine::QgisInternal;
+  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.value() == 2 )
+    method = Qgis::GeometryValidationEngine::Geos;
   mValidator = new QgsGeometryValidator( *g, nullptr, method );
   connect( mValidator, &QgsGeometryValidator::errorFound, this, &QgsLockedFeature::addError );
   connect( mValidator, &QThread::finished, this, &QgsLockedFeature::validationFinished );
@@ -293,7 +292,7 @@ void QgsLockedFeature::invertVertexSelection( int vertexNr )
 
   QgsVertexEntry *entry = mVertexMap.at( vertexNr );
 
-  bool selected = !entry->isSelected();
+  const bool selected = !entry->isSelected();
 
   entry->setSelected( selected );
   emit selectionChanged();
@@ -302,7 +301,7 @@ void QgsLockedFeature::invertVertexSelection( int vertexNr )
 void QgsLockedFeature::invertVertexSelection( const QVector<int> &vertexIndices )
 {
   const auto constVertexIndices = vertexIndices;
-  for ( int index : constVertexIndices )
+  for ( const int index : constVertexIndices )
   {
     if ( index < 0 || index >= mVertexMap.size() )
       continue;

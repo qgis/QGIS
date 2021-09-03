@@ -60,8 +60,8 @@ QString QgsPointXY::toString( int precision ) const
   }
   else
   {
-    QString x = std::isfinite( mX ) ? QString::number( mX, 'f', precision ) : QObject::tr( "infinite" );
-    QString y = std::isfinite( mY ) ? QString::number( mY, 'f', precision ) : QObject::tr( "infinite" );
+    const QString x = std::isfinite( mX ) ? QString::number( mX, 'f', precision ) : QObject::tr( "infinite" );
+    const QString y = std::isfinite( mY ) ? QString::number( mY, 'f', precision ) : QObject::tr( "infinite" );
     return QStringLiteral( "%1,%2" ).arg( x, y );
   }
 }
@@ -79,16 +79,16 @@ QString QgsPointXY::asWkt() const
 
 double QgsPointXY::azimuth( const QgsPointXY &other ) const
 {
-  double dx = other.x() - mX;
-  double dy = other.y() - mY;
+  const double dx = other.x() - mX;
+  const double dy = other.y() - mY;
   return ( std::atan2( dx, dy ) * 180.0 / M_PI );
 }
 
 QgsPointXY QgsPointXY::project( double distance, double bearing ) const
 {
-  double rads = bearing * M_PI / 180.0;
-  double dx = distance * std::sin( rads );
-  double dy = distance * std::cos( rads );
+  const double rads = bearing * M_PI / 180.0;
+  const double dx = distance * std::sin( rads );
+  const double dy = distance * std::cos( rads );
   return QgsPointXY( mX + dx, mY + dy );
 }
 
@@ -118,7 +118,7 @@ double QgsPointXY::sqrDistToSegment( double x1, double y1, double x2, double y2,
     minDistPoint.setY( y1 + t * ( y2 - y1 ) );
   }
 
-  double dist = sqrDist( minDistPoint );
+  const double dist = sqrDist( minDistPoint );
   //prevent rounding errors if the point is directly on the segment
   if ( qgsDoubleNear( dist, 0.0, epsilon ) )
   {

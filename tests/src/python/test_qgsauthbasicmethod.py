@@ -89,6 +89,8 @@ class TestAuthManager(unittest.TestCase):
         for creds in (
             ('username', 'password'),
             ('username', r'pa%%word'),
+            ('username', r'èé'),
+            ('username', r'😁😂😍'),
         ):
             self.assertEqual(self._get_decoded_credentials(*creds), creds)
 

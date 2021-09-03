@@ -262,7 +262,7 @@ void TestQgsProcessingModel::testModel()
   DummyAlgorithm *a4 = new DummyAlgorithm( "a4", "group1" );
   DummyProvider *p4 = new DummyProvider( "p4", "provider4", QList< QgsProcessingAlgorithm * >() << a3 << a4 );
   registry.addProvider( p4 );
-  QModelIndex p4ProviderIndex = model.indexForProvider( p4->id() );
+  const QModelIndex p4ProviderIndex = model.indexForProvider( p4->id() );
   QModelIndex groupIndex = model.index( 0, 0, p4ProviderIndex );
   QCOMPARE( model.rowCount( groupIndex ), 2 );
   QCOMPARE( model.algorithmForIndex( model.index( 0, 0, groupIndex ) )->id(), QStringLiteral( "p4:a3" ) );
@@ -362,7 +362,7 @@ void TestQgsProcessingModel::testModel()
 
   // qgis native algorithms put groups at top level
   QgsProcessingRegistry registry2;
-  QgsProcessingToolboxModel model2( nullptr, &registry2 );
+  const QgsProcessingToolboxModel model2( nullptr, &registry2 );
   DummyAlgorithm *qgisA1 = new DummyAlgorithm( "a1", "group1" );
   DummyAlgorithm *qgisA2 = new DummyAlgorithm( "a2", "group2" );
   DummyAlgorithm *qgisA3 = new DummyAlgorithm( "a3", "group1" );
@@ -373,7 +373,7 @@ void TestQgsProcessingModel::testModel()
   QCOMPARE( model2.rowCount(), 3 );
   group1Index = model2.index( 0, 0 );
   group2Index = model2.index( 1, 0 );
-  QModelIndex group3Index = model2.index( 2, 0 );
+  const QModelIndex group3Index = model2.index( 2, 0 );
   QCOMPARE( model2.data( group1Index, Qt::DisplayRole ).toString(), QStringLiteral( "group1" ) );
   QCOMPARE( model2.data( group2Index, Qt::DisplayRole ).toString(), QStringLiteral( "group2" ) );
   QCOMPARE( model2.data( group3Index, Qt::DisplayRole ).toString(), QStringLiteral( "group3" ) );
@@ -427,7 +427,7 @@ void TestQgsProcessingModel::testProxyModel()
 
   QModelIndex alg1Index = model.index( 0, 0, group2Index );
   QCOMPARE( model.data( alg1Index, Qt::DisplayRole ).toString(), QStringLiteral( "a1" ) );
-  QModelIndex alg2Index = model.index( 0, 0, group1Index );
+  const QModelIndex alg2Index = model.index( 0, 0, group1Index );
   QCOMPARE( model.data( alg2Index, Qt::DisplayRole ).toString(), QStringLiteral( "a2" ) );
 
   // empty providers/groups should not be shown
@@ -529,7 +529,7 @@ void TestQgsProcessingModel::testProxyModel()
   // check sort order of recent algorithms
   recentLog.push( QStringLiteral( "p2:a1" ) );
   QCOMPARE( model.rowCount(), 5 );
-  QModelIndex recentIndex = model.index( 0, 0, QModelIndex() );
+  const QModelIndex recentIndex = model.index( 0, 0, QModelIndex() );
   QCOMPARE( model.data( recentIndex, Qt::DisplayRole ).toString(), QStringLiteral( "Recently used" ) );
   QCOMPARE( model.rowCount( recentIndex ), 1 );
   QCOMPARE( model.data( model.index( 0, 0, recentIndex ), QgsProcessingToolboxModel::RoleAlgorithmId ).toString(), QStringLiteral( "p2:a1" ) );
@@ -593,7 +593,7 @@ void TestQgsProcessingModel::testView()
   QCOMPARE( view.model()->data( provider2Index, Qt::DisplayRole ).toString(), QStringLiteral( "provider2" ) );
   group2Index = view.model()->index( 0, 0, provider2Index );
   QCOMPARE( view.model()->data( group2Index, Qt::DisplayRole ).toString(), QStringLiteral( "group2" ) );
-  QModelIndex alg1Index = view.model()->index( 0, 0, group2Index );
+  const QModelIndex alg1Index = view.model()->index( 0, 0, group2Index );
   QCOMPARE( view.algorithmForIndex( alg1Index )->id(), QStringLiteral( "p2:a1" ) );
 
   // empty providers/groups should not be shown
@@ -660,7 +660,7 @@ void TestQgsProcessingModel::testKnownIssues()
 {
   QgsProcessingRegistry registry;
   QgsProcessingRecentAlgorithmLog recentLog;
-  QgsProcessingToolboxModel model( nullptr, &registry, &recentLog );
+  const QgsProcessingToolboxModel model( nullptr, &registry, &recentLog );
   DummyAlgorithm *a1 = new DummyAlgorithm( "a1", "group1", QgsProcessingAlgorithm::FlagKnownIssues, QStringLiteral( "tag1,tag2" ), QStringLiteral( "short desc a" ) );
   DummyAlgorithm *a2 = new DummyAlgorithm( "b1", "group1", QgsProcessingAlgorithm::Flags(), QStringLiteral( "tag1,tag2" ), QStringLiteral( "short desc b" ) );
   DummyProvider *p = new DummyProvider( "p3", "provider3", QList< QgsProcessingAlgorithm * >() << a1 << a2 );

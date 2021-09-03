@@ -66,7 +66,7 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
     QgsVectorLayer *vl = layerFeature.layer().data();
     if ( vl )
     {
-      QgsCoordinateTransform ct( vl->crs(), check->context()->mapCrs, check->context()->transformContext );
+      const QgsCoordinateTransform ct( vl->crs(), check->context()->mapCrs, check->context()->transformContext );
       try
       {
         mGeometry.transform( ct );

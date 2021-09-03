@@ -25,7 +25,7 @@
  * \class QgsProcessingGui
  * \ingroup gui
  *
- * Contains general functions and values related to Processing GUI components.
+ * \brief Contains general functions and values related to Processing GUI components.
  *
  * \since QGIS 3.4
  */

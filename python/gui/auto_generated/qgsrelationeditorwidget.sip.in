@@ -23,7 +23,7 @@
 
 class QgsRelationEditorWidget : QgsAbstractRelationEditorWidget
 {
-%Docstring
+%Docstring(signature="appended")
 The default relation widget in QGIS.
 
 .. versionadded:: 3.18
@@ -36,6 +36,7 @@ The default relation widget in QGIS.
 
     enum Button
     {
+      NoButton,
       Link,
       Unlink,
       SaveChildEdits,
@@ -135,12 +136,6 @@ Returns the current configuration
 Defines the current configuration
 %End
 
-    virtual void setTitle( const QString &title );
-
-%Docstring
-Sets the title of the root groupbox
-%End
-
   public slots:
     virtual void parentFormValueChanged( const QString &attribute, const QVariant &newValue );
 
@@ -161,7 +156,7 @@ Sets the title of the root groupbox
 
 class QgsRelationEditorConfigWidget : QgsAbstractRelationEditorConfigWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Creates a new configuration widget for the relation editor widget
 
 .. versionadded:: 3.18

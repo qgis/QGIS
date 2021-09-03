@@ -1,0 +1,175 @@
+<!-- template for the WFS3 API getFeatures page -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+            integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+            crossorigin=""/>
+    <link rel="stylesheet" href="/wfs3/static/style.css" />
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/wfs3/static/jsonFormatter/jsonFormatter.min.css" crossorigin="anonymous">
+    <script src="/wfs3/static/jsonFormatter/jsonFormatter.min.js" crossorigin="anonymous"></script>
+
+    <!-- template for the WFS3 API links list, to be included in HEAD -->
+
+    <link rel="alternate" href="http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson" title="Retrieve the features of the collection as GEOJSON" type="application/geo+json">
+
+    <link rel="self" href="http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.html" title="Retrieve the features of the collection as HTML" type="text/html">
+
+
+
+    <title>Features in layer A test vector layer èé</title>
+  </head>
+  <body>
+  <nav class="navbar navbar-light bg-light navbar-expand-sm">
+      <div class="container">
+          <div id="navbar" class="navbar-collapse collapse d-flex justify-content-between align-items-center">
+              <ol class="breadcrumb bg-light my-0 pl-0">
+              
+                  <li class="breadcrumb-item"><a href="http://server.qgis.org/wfs3/" >Landing page</a></li>
+              
+                  <li class="breadcrumb-item"><a href="http://server.qgis.org/wfs3/collections/" >Collections</a></li>
+              
+                  <li class="breadcrumb-item"><a href="http://server.qgis.org/wfs3/collections/testlayer èé/" >A test vector layer èé</a></li>
+              
+                  <li class="breadcrumb-item active">
+                     Features in layer A test vector layer èé
+                  </li>
+              </ol>
+              <ul class="list-unstyled list-separated m-0 p-0 text-muted">
+              
+                  <li><a rel="alternate" href="http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson" target="_blank">GEOJSON</a></li>
+              
+              </ul>
+          </div>
+
+
+      </div>
+  </nav>
+  <div class="container pt-4">
+  <!-- END HEADER TEMPLATE header.html -->
+
+
+    <div class="row">
+        <nav aria-label="Page navigation example">
+          <ul class="pagination">
+            
+            <!-- TODO: full pagination: li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li-->
+            
+          </ul>
+        </nav>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h1>Features in layer A test vector layer èé</h1>
+
+            
+                <h2><a href="http://server.qgis.org/wfs3/collections/testlayer èé/items/0.html">A test vector layer èé 0</a></h2>
+                <dl class="row">
+                
+                    <dt class="col-sm-12">id</dt>
+                    <dd class="col-sm-12">1</dd>
+                
+                    <dt class="col-sm-12">name</dt>
+                    <dd class="col-sm-12">one</dd>
+                
+                    <dt class="col-sm-12">utf8nameè</dt>
+                    <dd class="col-sm-12">one èé</dd>
+                
+                </dl>
+            
+                <h2><a href="http://server.qgis.org/wfs3/collections/testlayer èé/items/1.html">A test vector layer èé 1</a></h2>
+                <dl class="row">
+                
+                    <dt class="col-sm-12">id</dt>
+                    <dd class="col-sm-12">2</dd>
+                
+                    <dt class="col-sm-12">name</dt>
+                    <dd class="col-sm-12">two</dd>
+                
+                    <dt class="col-sm-12">utf8nameè</dt>
+                    <dd class="col-sm-12">two àò</dd>
+                
+                </dl>
+            
+                <h2><a href="http://server.qgis.org/wfs3/collections/testlayer èé/items/2.html">A test vector layer èé 2</a></h2>
+                <dl class="row">
+                
+                    <dt class="col-sm-12">id</dt>
+                    <dd class="col-sm-12">3</dd>
+                
+                    <dt class="col-sm-12">name</dt>
+                    <dd class="col-sm-12">three</dd>
+                
+                    <dt class="col-sm-12">utf8nameè</dt>
+                    <dd class="col-sm-12">three èé↓</dd>
+                
+                </dl>
+            
+        </div>
+
+        <!-- template for the WFS3 API leaflet map -->
+<div class="col-md-6">
+    <div id="mapid" class="small"></div>
+
+    <script type="text/javascript">
+    jQuery( document ).ready(function( $ ) {
+        var map = L.map('mapid').setView([0, 0], 13);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map)
+        $.get( "http://server.qgis.org/wfs3/collections/testlayer%20%C3%A8%C3%A9/items.geojson", function( data ) {
+          var jl = L.geoJSON( data, {
+              onEachFeature: function (feature, layer) {
+                    layer.bindPopup('<h1>'+feature.id +'</h1>');
+              }
+          }).addTo(map);
+          map.setView(jl.getBounds().getCenter());
+          if ( jl.getBounds().getEast() != jl.getBounds().getWest() && jl.getBounds().getNorth() != jl.getBounds().getSouth() )
+          {
+            map.fitBounds(jl.getBounds());
+          }
+          jl.on('featureOver', featureOver);
+        });
+    });
+
+    </script>
+</div>
+
+
+    </div>
+
+    <!-- FOOTER TEMPLATE footer.html -->
+    </div> <!-- //container -->
+
+    <footer class="footer bg-light py-4 d-flex flex-column justify-content-around align-items-center">
+        <div class="container d-flex flex-row justify-content-between align-items-center w-100">
+                <span><span class="text-muted small mr-2">powered by</span><a class="navbar-brand" href="https://www.qgis.org/" target="_blank">QGIS Server</a></span>
+        </div>
+    </footer>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+     <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+       integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+       crossorigin=""></script>
+    <script>
+      jQuery('.jref').jsonFormatter();
+    </script>
+  </body>
+</html>
+

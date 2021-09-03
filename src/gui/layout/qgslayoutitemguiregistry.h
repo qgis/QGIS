@@ -176,7 +176,7 @@ typedef std::function<void ( QgsLayoutItem *, const QVariantMap & )> QgsLayoutIt
 
 /**
  * \ingroup gui
- * Convenience metadata class that uses static functions to handle layout item GUI behavior.
+ * \brief Convenience metadata class that uses static functions to handle layout item GUI behavior.
  * \note not available in Python bindings
  * \since QGIS 3.0
  */

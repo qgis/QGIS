@@ -57,15 +57,6 @@ class DBManagerPlugin(object):
         else:
             self.iface.addPluginToMenu(QApplication.translate("DBManagerPlugin", "DB Manager"), self.action)
 
-        self.layerAction = QAction(QgsApplication.getThemeIcon('dbmanager.svg'), QApplication.translate("DBManagerPlugin", "Update SQL Layer…"),
-                                   self.iface.mainWindow())
-        self.layerAction.setObjectName("dbManagerUpdateSqlLayer")
-        self.layerAction.triggered.connect(self.onUpdateSqlLayer)
-        self.iface.addCustomActionForLayerType(self.layerAction, "", QgsMapLayerType.VectorLayer, False)
-        for l in list(QgsProject.instance().mapLayers().values()):
-            self.onLayerWasAdded(l)
-        QgsProject.instance().layerWasAdded.connect(self.onLayerWasAdded)
-
     def unload(self):
         # Remove the plugin menu item and icon
         if hasattr(self.iface, 'databaseMenu'):
@@ -77,21 +68,8 @@ class DBManagerPlugin(object):
         else:
             self.iface.removeToolBarIcon(self.action)
 
-        self.iface.removeCustomActionForLayerType(self.layerAction)
-        QgsProject.instance().layerWasAdded.disconnect(self.onLayerWasAdded)
-
         if self.dlg is not None:
             self.dlg.close()
-
-    def onLayerWasAdded(self, aMapLayer):
-        # Be able to update every Db layer from Postgres, Spatialite and Oracle
-        if hasattr(aMapLayer, 'dataProvider') and aMapLayer.dataProvider() and aMapLayer.dataProvider().name() in ['postgres', 'spatialite', 'oracle']:
-            self.iface.addCustomActionForLayer(self.layerAction, aMapLayer)
-        # virtual has QUrl source
-        # url = QUrl(QUrl.fromPercentEncoding(l.source()))
-        # url.queryItemValue('query')
-        # url.queryItemValue('uid')
-        # url.queryItemValue('geometry')
 
     def onUpdateSqlLayer(self):
         # Be able to update every Db layer from Postgres, Spatialite and Oracle

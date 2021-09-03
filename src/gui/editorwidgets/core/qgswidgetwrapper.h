@@ -39,7 +39,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup gui
- * Manages an editor widget
+ * \brief Manages an editor widget
  * Widget and wrapper share the same parent
  *
  * A wrapper controls one attribute editor widget and is able to create a default
@@ -76,7 +76,8 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     enum Property
     {
       RootPath = 0, //!< Root path for external resource
-      DocumentViewerContent //!< Document type for external resource
+      DocumentViewerContent, //!< Document type for external resource
+      StorageUrl //!< Storage URL for external resource
     };
 
     /**

@@ -1,0 +1,84 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsbrowserwidget.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsBrowserWidget : QgsPanelWidget
+{
+%Docstring(signature="appended")
+A widget showing a browser tree view along with toolbar and toggleable properties pane.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsbrowserwidget.h"
+%End
+  public:
+
+    explicit QgsBrowserWidget( QgsBrowserGuiModel *browserModel, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsBrowserWidget
+
+:param browserModel: instance of the (shared) browser model
+:param parent: parent widget
+%End
+    ~QgsBrowserWidget();
+
+    void setMessageBar( QgsMessageBar *bar );
+%Docstring
+Sets a message ``bar`` to use alongside the widget. Setting this allows items
+to utilize the message bar to provide non-blocking feedback to users, e.g.
+success or failure of actions.
+
+.. seealso:: :py:func:`messageBar`
+%End
+
+    QgsMessageBar *messageBar();
+%Docstring
+Returns the message bar associated with the widget.
+
+.. seealso:: :py:func:`setMessageBar`
+%End
+
+    void setDisabledDataItemsKeys( const QStringList &filter );
+%Docstring
+Sets the customization for data items based on item's data provider key
+
+By default browser model shows all items from all available data items provider and few special
+items (e.g. Favorites). To customize the behavior, set the filter to not load certain data items.
+The items that are not based on data item providers (e.g. Favorites, Home) have
+prefix "special:"
+
+Used in the proxy browser model to hide items
+%End
+
+  public slots:
+
+
+
+    void refresh();
+%Docstring
+Refreshes the browser model and view.
+%End
+
+
+  protected:
+    virtual void showEvent( QShowEvent *event );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsbrowserwidget.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

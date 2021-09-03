@@ -122,16 +122,16 @@ bool QgsRescaleRasterAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
 QVariantMap QgsRescaleRasterAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   feedback->pushInfo( QObject::tr( "Calculating raster minimum and maximum values…" ) );
-  QgsRasterBandStats stats = mInterface->bandStatistics( mBand, QgsRasterBandStats::Min | QgsRasterBandStats::Max, QgsRectangle(), 0 );
+  const QgsRasterBandStats stats = mInterface->bandStatistics( mBand, QgsRasterBandStats::Min | QgsRasterBandStats::Max, QgsRectangle(), 0 );
 
   feedback->pushInfo( QObject::tr( "Rescaling values…" ) );
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  QFileInfo fi( outputFile );
+  const QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
-  std::unique_ptr< QgsRasterFileWriter > writer = qgis::make_unique< QgsRasterFileWriter >( outputFile );
+  std::unique_ptr< QgsRasterFileWriter > writer = std::make_unique< QgsRasterFileWriter >( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
   writer->setOutputFormat( outputFormat );
-  std::unique_ptr<QgsRasterDataProvider > provider( writer->createOneBandRaster( Qgis::Float32, mXSize, mYSize, mExtent, mCrs ) );
+  std::unique_ptr<QgsRasterDataProvider > provider( writer->createOneBandRaster( Qgis::DataType::Float32, mXSize, mYSize, mExtent, mCrs ) );
   if ( !provider )
     throw QgsProcessingException( QObject::tr( "Could not create raster output: %1" ).arg( outputFile ) );
   if ( !provider->isValid() )
@@ -141,11 +141,11 @@ QVariantMap QgsRescaleRasterAlgorithm::processAlgorithm( const QVariantMap &para
   destProvider->setEditable( true );
   destProvider->setNoDataValue( 1, mNoData );
 
-  int blockWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  int blockHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-  int numBlocksX = static_cast< int >( std::ceil( 1.0 * mLayerWidth / blockWidth ) );
-  int numBlocksY = static_cast< int >( std::ceil( 1.0 * mLayerHeight / blockHeight ) );
-  int numBlocks = numBlocksX * numBlocksY;
+  const int blockWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
+  const int blockHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
+  const int numBlocksX = static_cast< int >( std::ceil( 1.0 * mLayerWidth / blockWidth ) );
+  const int numBlocksY = static_cast< int >( std::ceil( 1.0 * mLayerHeight / blockHeight ) );
+  const int numBlocks = numBlocksX * numBlocksY;
 
   QgsRasterIterator iter( mInterface.get() );
   iter.startRasterRead( mBand, mLayerWidth, mLayerHeight, mExtent );
@@ -167,14 +167,14 @@ QVariantMap QgsRescaleRasterAlgorithm::processAlgorithm( const QVariantMap &para
       for ( int col = 0; col < iterCols; col++ )
       {
         bool isNoData = false;
-        double val = inputBlock->valueAndNoData( row, col, isNoData );
+        const double val = inputBlock->valueAndNoData( row, col, isNoData );
         if ( isNoData )
         {
           outputBlock->setValue( row, col, mNoData );
         }
         else
         {
-          double newValue = ( ( val - stats.minimumValue ) * ( mMaximum - mMinimum ) / ( stats.maximumValue - stats.minimumValue ) ) + mMinimum;
+          const double newValue = ( ( val - stats.minimumValue ) * ( mMaximum - mMinimum ) / ( stats.maximumValue - stats.minimumValue ) ) + mMinimum;
           outputBlock->setValue( row, col, newValue );
         }
       }

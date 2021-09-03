@@ -166,9 +166,10 @@ class GridInverseDistance(GdalAlgorithm):
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
 
-        arguments = ['-l']
-        arguments.append(layerName)
-
+        arguments = [
+            '-l',
+            layerName
+        ]
         fieldName = self.parameterAsString(parameters, self.Z_FIELD, context)
         if fieldName:
             arguments.append('-zfield')

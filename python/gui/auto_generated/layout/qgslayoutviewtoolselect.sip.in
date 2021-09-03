@@ -11,7 +11,7 @@
 
 class QgsLayoutViewToolSelect : QgsLayoutViewTool
 {
-%Docstring
+%Docstring(signature="appended")
 Layout view tool for selecting items in the layout.
 
 .. versionadded:: 3.0

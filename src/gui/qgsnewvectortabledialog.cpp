@@ -14,13 +14,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnewvectortabledialog.h"
-#include "qgsdataitem.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include "qgsgui.h"
 #include "qgsapplication.h"
+#include "qgsiconutils.h"
 #include <QSpinBox>
 #include <QMessageBox>
+#include <QTimer>
 
 QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderConnection *conn, QWidget *parent )
   : QDialog( parent )
@@ -121,7 +122,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   } );
 
   // Enable/disable geometry options and call validate
-  connect( mGeomTypeCbo, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int index )
+  connect( mGeomTypeCbo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int index )
   {
     const bool hasGeom { index != 0 };
     mGeomColumn->setEnabled( hasGeom );
@@ -136,12 +137,14 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
     validate();
   } );
 
+  mCrs->setShowAccuracyWarnings( true );
+
   // geometry types
   const bool hasSinglePart { conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::SinglePart ) };
 
   const auto addGeomItem = [this]( QgsWkbTypes::Type type )
   {
-    mGeomTypeCbo->addItem( QgsLayerItem::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), type );
+    mGeomTypeCbo->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), type );
   };
 
   mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconTableLayer.svg" ) ), tr( "No Geometry" ), QgsWkbTypes::Type::NoGeometry );
@@ -426,8 +429,8 @@ QWidget *QgsNewVectorTableDialogFieldsDelegate::createEditor( QWidget *parent, c
       QComboBox *cbo = new QComboBox { parent };
       cbo->setEditable( false );
       cbo->setFrame( false );
-      connect( cbo, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsNewVectorTableDialogFieldsDelegate::onFieldTypeChanged );
-      for ( const auto &f : qgis::as_const( mTypeList ) )
+      connect( cbo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsNewVectorTableDialogFieldsDelegate::onFieldTypeChanged );
+      for ( const auto &f : std::as_const( mTypeList ) )
       {
         cbo->addItem( f.mTypeDesc, f.mTypeName );
       }
@@ -718,7 +721,7 @@ QList<QgsVectorDataProvider::NativeType> QgsNewVectorTableFieldModel::nativeType
 
 QString QgsNewVectorTableFieldModel::typeDesc( const QString &typeName ) const
 {
-  for ( const auto &t : qgis::as_const( mNativeTypes ) )
+  for ( const auto &t : std::as_const( mNativeTypes ) )
   {
     if ( t.mTypeName.compare( typeName, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
     {
@@ -735,7 +738,7 @@ QVariant::Type QgsNewVectorTableFieldModel::type( const QString &typeName ) cons
 
 QgsVectorDataProvider::NativeType QgsNewVectorTableFieldModel::nativeType( const QString &typeName ) const
 {
-  for ( const auto &t : qgis::as_const( mNativeTypes ) )
+  for ( const auto &t : std::as_const( mNativeTypes ) )
   {
     if ( t.mTypeName.compare( typeName, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
     {

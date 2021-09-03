@@ -15,32 +15,20 @@
 #ifndef QGSBROWSERDOCKWIDGET_H
 #define QGSBROWSERDOCKWIDGET_H
 
-#include "ui_qgsbrowserdockwidgetbase.h"
-#include "ui_qgsbrowserlayerpropertiesbase.h"
-#include "ui_qgsbrowserdirectorypropertiesbase.h"
-#include "ui_qgsbrowserpropertiesdialogbase.h"
-
-#include "qgsdataitem.h"
 #include "qgsbrowsertreeview.h"
 #include "qgsdockwidget.h"
+#include "qgsmimedatautils.h"
 #include "qgis_gui.h"
-#include <QSortFilterProxyModel>
 
-class QgsBrowserGuiModel;
-class QModelIndex;
-class QgsDockBrowserTreeView;
-class QgsLayerItem;
-class QgsDataItem;
-class QgsBrowserProxyModel;
 class QgsMessageBar;
-class QgsDataItemGuiContext;
+class QgsBrowserWidget;
 
 /**
  * \ingroup gui
- * The QgsBrowserDockWidget class
+ * \brief A dock widget containing a QgsBrowserWidget for navigating and managing data sources.
  * \since QGIS 3.0
  */
-class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBrowserDockWidgetBase
+class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget
 {
     Q_OBJECT
   public:
@@ -53,6 +41,13 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
       */
     explicit QgsBrowserDockWidget( const QString &name, QgsBrowserGuiModel *browserModel, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsBrowserDockWidget() override;
+
+    /**
+     * Returns a pointer to the QgsBrowserWidget used by the dock widget.
+     *
+     * \since QGIS 3.22
+     */
+    QgsBrowserWidget *browserWidget();
 
     /**
      * Add directory to favorites.
@@ -106,8 +101,12 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
      */
     Q_DECL_DEPRECATED bool addLayerAtIndex( const QModelIndex &index ) SIP_DEPRECATED;
 
-    //! Show context menu
-    void showContextMenu( QPoint );
+    /**
+     * Show context menu.
+     *
+     * \deprecated will be removed in QGIS 4.0 -- this method is not intended for public use
+     */
+    Q_DECL_DEPRECATED void showContextMenu( QPoint ) SIP_DEPRECATED;
 
     /**
      * Add current item to favorite.
@@ -127,30 +126,80 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
      */
     Q_DECL_DEPRECATED void removeFavorite() SIP_DEPRECATED;
 
-    //! Refresh browser view model (and view)
+    /**
+     * Refresh the browser model and view.
+    */
     void refresh();
 
-    //! Show/hide filter widget
-    void showFilterWidget( bool visible );
-    //! Enable/disable properties widget
-    void enablePropertiesWidget( bool enable );
-    //! Sets filter syntax
-    void setFilterSyntax( QAction * );
-    //! Sets filter case sensitivity
-    void setCaseSensitive( bool caseSensitive );
-    //! Apply filter to the model
-    void setFilter();
-    //! Sets the selection to \a index and expand it
-    void setActiveIndex( const QModelIndex &index );
-    //! Update project home directory
-    void updateProjectHome();
+    /**
+     * Show/hide filter widget.
+     *
+     * \deprecated will be removed in QGIS 4.0 -- this method is not intended for public use
+     */
+    Q_DECL_DEPRECATED void showFilterWidget( bool visible ) SIP_DEPRECATED;
 
-    //! Add selected layers to the project
-    void addSelectedLayers();
-    //! Show the layer properties
-    void showProperties();
-    //! Hide current item
-    void hideItem();
+    /**
+     * Enable/disable properties widget.
+     *
+     * \deprecated will be removed in QGIS 4.0 -- this method is not intended for public use
+     */
+    Q_DECL_DEPRECATED void enablePropertiesWidget( bool enable ) SIP_DEPRECATED;
+
+    /**
+     * Sets filter syntax.
+     *
+     * \deprecated will be removed in QGIS 4.0 -- this method is not intended for public use
+     */
+    Q_DECL_DEPRECATED void setFilterSyntax( QAction * ) SIP_DEPRECATED;
+
+    /**
+     * Sets filter case sensitivity.
+     *
+     * \deprecated will be removed in QGIS 4.0 -- this method is not intended for public use
+     */
+    Q_DECL_DEPRECATED void setCaseSensitive( bool caseSensitive ) SIP_DEPRECATED;
+
+    /**
+     * Apply filter to the model.
+     *
+     * \deprecated will be removed in QGIS 4.0 -- this method is not intended for public use
+     */
+    Q_DECL_DEPRECATED void setFilter() SIP_DEPRECATED;
+
+    /**
+     * Sets the selection to \a index and expand it.
+     *
+     * \deprecated will be removed in QGIS 4.0 -- this method is not intended for public use
+     */
+    Q_DECL_DEPRECATED void setActiveIndex( const QModelIndex &index ) SIP_DEPRECATED;
+
+    /**
+     * Update project home directory.
+     *
+     * \deprecated will be removed in QGIS 4.0 -- this method is not intended for public use
+     */
+    Q_DECL_DEPRECATED void updateProjectHome() SIP_DEPRECATED;
+
+    /**
+     * Add selected layers to the project
+     *
+     * \deprecated will be removed in QGIS 4.0 -- this method is not intended for public use
+    */
+    Q_DECL_DEPRECATED void addSelectedLayers() SIP_DEPRECATED;
+
+    /**
+     * Show the layer properties.
+     *
+     * \deprecated will be removed in QGIS 4.0 -- this method is not intended for public use
+    */
+    Q_DECL_DEPRECATED void showProperties() SIP_DEPRECATED;
+
+    /**
+     * Hide current item.
+     *
+     * \deprecated will be removed in QGIS 4.0 -- this method is not intended for public use
+    */
+    Q_DECL_DEPRECATED void hideItem() SIP_DEPRECATED;
 
     /**
      * Toggle fast scan
@@ -158,12 +207,19 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
      */
     Q_DECL_DEPRECATED void toggleFastScan() SIP_DEPRECATED;
 
-    // TODO QGIS 4.0: make these private
+    /**
+     * Selection has changed.
+     *
+     * \deprecated will be removed in QGIS 4.0 -- this method is not intended for public use
+     */
+    Q_DECL_DEPRECATED void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected ) SIP_DEPRECATED;
 
-    //! Selection has changed
-    void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
-    //! Splitter has been moved
-    void splitterMoved();
+    /**
+     * Splitter has been moved.
+     *
+     * \deprecated no longer used.
+     */
+    Q_DECL_DEPRECATED void splitterMoved() SIP_DEPRECATED;
 
   signals:
     //! Emitted when a file needs to be opened
@@ -173,40 +229,9 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     //! Connections changed in the browser
     void connectionsChanged();
 
-  protected:
-    //! Show event override
-    void showEvent( QShowEvent *event ) override;
-
-  private slots:
-    void itemDoubleClicked( const QModelIndex &index );
-
   private:
-    //! Refresh the model
-    void refreshModel( const QModelIndex &index );
-    //! Add a layer
-    void addLayer( QgsLayerItem *layerItem );
-    //! Clear the properties widget
-    void clearPropertiesWidget();
-    //! Sets the properties widget
-    void setPropertiesWidget();
 
-    //! Count selected items
-    int selectedItemsCount();
-    //! Settings prefix (the object name)
-    QString settingsSection() { return objectName().toLower(); }
-
-    QgsDataItemGuiContext createContext();
-
-    QgsDockBrowserTreeView *mBrowserView = nullptr;
-    QgsBrowserGuiModel *mModel = nullptr;
-    QgsBrowserProxyModel *mProxyModel = nullptr;
-    QString mInitPath;
-    bool mPropertiesWidgetEnabled;
-    // height fraction
-    float mPropertiesWidgetHeight;
-
-    QgsMessageBar *mMessageBar = nullptr;
-    QStringList mDisabledDataItemsKeys;
+    QgsBrowserWidget *mWidget = nullptr;
 };
 
 #endif // QGSBROWSERDOCKWIDGET_H

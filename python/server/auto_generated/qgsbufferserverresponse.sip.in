@@ -11,7 +11,7 @@
 
 class QgsBufferServerResponse: QgsServerResponse
 {
-%Docstring
+%Docstring(signature="appended")
 Class defining buffered response
 
 .. versionadded:: 3.0

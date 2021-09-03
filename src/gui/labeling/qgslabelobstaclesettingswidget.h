@@ -25,7 +25,7 @@
 /**
  * \ingroup gui
  * \class QgsLabelObstacleSettingsWidget
- * A widget for customising label obstacle settings.
+ * \brief A widget for customising label obstacle settings.
  * \since QGIS 3.12
  */
 class GUI_EXPORT QgsLabelObstacleSettingsWidget : public QgsLabelSettingsWidgetBase, private Ui::QgsLabelObstacleSettingsWidgetBase

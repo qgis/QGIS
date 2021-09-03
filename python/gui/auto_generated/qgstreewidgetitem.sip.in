@@ -12,7 +12,7 @@
 
 class QgsTreeWidgetItem : QTreeWidgetItem
 {
-%Docstring
+%Docstring(signature="appended")
 QTreeWidgetItem subclass with custom handling for item sorting.
 
 :py:class:`QgsTreeWidgetItem` allows for items to be sorted using a specified user role, and
@@ -144,7 +144,7 @@ be placed above items with a higher priority.
 
 class QgsTreeWidgetItemObject: QObject, QgsTreeWidgetItem
 {
-%Docstring
+%Docstring(signature="appended")
 Custom QgsTreeWidgetItem with extra signals when item is edited.
 
 .. versionadded:: 3.0

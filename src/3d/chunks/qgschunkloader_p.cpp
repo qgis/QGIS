@@ -42,24 +42,24 @@ QVector<QgsChunkNode *> QgsQuadtreeChunkLoaderFactory::createChildren( QgsChunkN
   if ( node->level() >= mMaxLevel )
     return children;
 
-  QgsChunkNodeId nodeId = node->tileId();
-  float childError = node->error() / 2;
-  QgsAABB bbox = node->bbox();
+  const QgsChunkNodeId nodeId = node->tileId();
+  const float childError = node->error() / 2;
+  const QgsAABB bbox = node->bbox();
   float xc = bbox.xCenter(), zc = bbox.zCenter();
 
   for ( int i = 0; i < 4; ++i )
   {
     int dx = i & 1, dy = !!( i & 2 );
-    QgsChunkNodeId childId( nodeId.d + 1, nodeId.x * 2 + dx, nodeId.y * 2 + ( dy ? 0 : 1 ) );  // TODO: inverse dy?
+    const QgsChunkNodeId childId( nodeId.d + 1, nodeId.x * 2 + dx, nodeId.y * 2 + ( dy ? 0 : 1 ) );  // TODO: inverse dy?
     // the Y and Z coordinates below are intentionally flipped, because
     // in chunk node IDs the X,Y axes define horizontal plane,
     // while in our 3D scene the X,Z axes define the horizontal plane
-    float chXMin = dx ? xc : bbox.xMin;
-    float chXMax = dx ? bbox.xMax : xc;
-    float chZMin = dy ? zc : bbox.zMin;
-    float chZMax = dy ? bbox.zMax : zc;
-    float chYMin = bbox.yMin;
-    float chYMax = bbox.yMax;
+    const float chXMin = dx ? xc : bbox.xMin;
+    const float chXMax = dx ? bbox.xMax : xc;
+    const float chZMin = dy ? zc : bbox.zMin;
+    const float chZMax = dy ? bbox.zMax : zc;
+    const float chYMin = bbox.yMin;
+    const float chYMax = bbox.yMax;
     children << new QgsChunkNode( childId, QgsAABB( chXMin, chYMin, chZMin, chXMax, chYMax, chZMax ), childError, node );
   }
   return children;

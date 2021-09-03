@@ -53,7 +53,7 @@ void QgsEmbeddedLayerSelectDialog::updateLayersList()
 {
   // populate list
   mLayers->clear();
-  QList<QgsLayerTreeLayer *> layers = mTreeView->layerTreeModel()->rootGroup()->findLayers();
+  const QList<QgsLayerTreeLayer *> layers = mTreeView->layerTreeModel()->rootGroup()->findLayers();
   const auto constLayers = layers;
   for ( const QgsLayerTreeLayer *l : constLayers )
   {

@@ -29,7 +29,7 @@ QList<QgsSingleGeometryCheckError *> QgsGeometryTypeCheck::processGeometry( cons
 {
   QList<QgsSingleGeometryCheckError *> errors;
   const QgsAbstractGeometry *geom = geometry.constGet();
-  QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom->wkbType() );
+  const QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom->wkbType() );
   if ( ( mAllowedTypes & ( 1 << type ) ) == 0 )
   {
     errors.append( new QgsGeometryTypeCheckError( this, geometry, geometry, type ) );
@@ -46,11 +46,11 @@ void QgsGeometryTypeCheck::fixError( const QMap<QString, QgsFeaturePool *> &feat
     error->setObsolete();
     return;
   }
-  QgsGeometry featureGeom = feature.geometry();
+  const QgsGeometry featureGeom = feature.geometry();
   const QgsAbstractGeometry *geom = featureGeom.constGet();
 
   // Check if error still applies
-  QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom->wkbType() );
+  const QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom->wkbType() );
   if ( ( mAllowedTypes & ( 1 << type ) ) != 0 )
   {
     error->setObsolete();
@@ -150,10 +150,10 @@ void QgsGeometryTypeCheck::fixError( const QMap<QString, QgsFeaturePool *> &feat
 
 QStringList QgsGeometryTypeCheck::resolutionMethods() const
 {
-  static QStringList methods = QStringList()
-                               << tr( "Convert to corresponding multi or single type if possible, otherwise delete feature" )
-                               << tr( "Delete feature" )
-                               << tr( "No action" );
+  static const QStringList methods = QStringList()
+                                     << tr( "Convert to corresponding multi or single type if possible, otherwise delete feature" )
+                                     << tr( "Delete feature" )
+                                     << tr( "No action" );
   return methods;
 }
 

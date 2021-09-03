@@ -388,14 +388,10 @@ class Site(object):
         return (self.x == other.x) and (self.y == other.y)
 
     def __lt__(self, other):
-        if self.y < other.y:
-            return True
-        elif self.y > other.y:
-            return False
-        elif self.x < other.x:
-            return True
-        else:
-            return False
+        return (
+            self.y < other.y
+            or self.y <= other.y and self.x < other.x
+        )
 
     def distance(self, other):
         dx = self.x - other.x
@@ -430,9 +426,7 @@ class Edge(object):
 
     def setEndpoint(self, lrFlag, site):
         self.ep[lrFlag] = site
-        if self.ep[Edge.RE - lrFlag] is None:
-            return False
-        return True
+        return self.ep[Edge.RE - lrFlag] is not None
 
     @staticmethod
     def bisect(s1, s2):
@@ -450,7 +444,7 @@ class Edge(object):
         ady = abs(dy)
 
         # get the slope of the line
-        newedge.c = float(s1.x * dx + s1.y * dy + (dx * dx + dy * dy) * 0.5)
+        newedge.c = float(s1.x * dx + s1.y * dy + (dx**2 + dy**2) * 0.5)
         if adx > ady:
             # set formula of line, with x fixed to 1
             newedge.a = 1.0
@@ -504,14 +498,11 @@ class Halfedge(object):
         return (self.vertex.x == other.vertex.x) and (self.ystar == other.ystar)
 
     def __lt__(self, other):
-        if self.ystar < other.ystar:
-            return True
-        elif self.ystar > other.ystar:
-            return False
-        elif self.vertex.x < other.vertex.x:
-            return True
-        else:
-            return False
+        return (
+            self.ystar < other.ystar
+            or self.ystar <= other.ystar
+            and self.vertex.x < other.vertex.x
+        )
 
     def leftreg(self, default):
         if not self.edge:
@@ -652,8 +643,7 @@ class EdgeList(object):
         # Use hash table to get close to desired halfedge
         bucket = int(((pt.x - self.xmin) / self.deltax * self.hashsize))
 
-        if (bucket < 0):
-            bucket = 0
+        bucket = max(bucket, 0)
 
         if (bucket >= self.hashsize):
             bucket = self.hashsize - 1
@@ -696,9 +686,10 @@ class PriorityQueue(object):
         self.hashsize = int(4 * math.sqrt(nsites))
         self.count = 0
         self.minidx = 0
-        self.hash = []
-        for i in range(self.hashsize):
-            self.hash.append(Halfedge())
+
+        self.hash = [
+            Halfedge() for _ in range(self.hashsize)
+        ]
 
     def __len__(self):
         return self.count
@@ -729,8 +720,7 @@ class PriorityQueue(object):
 
     def getBucket(self, he):
         bucket = int(((he.ystar - self.ymin) / self.deltay) * self.hashsize)
-        if bucket < 0:
-            bucket = 0
+        bucket = max(bucket, 0)
         if bucket >= self.hashsize:
             bucket = self.hashsize - 1
         if bucket < self.minidx:
@@ -782,7 +772,7 @@ class SiteList(object):
     class Iterator(object):
 
         def __init__(this, lst):
-            this.generator = (s for s in lst)
+            this.generator = iter(lst)
 
         def __iter__(this):
             return this

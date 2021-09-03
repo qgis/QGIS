@@ -12,7 +12,7 @@
 
 class QgsBrightnessContrastFilter : QgsRasterInterface
 {
-%Docstring
+%Docstring(signature="appended")
 Brightness/contrast and gamma correction filter pipe for rasters.
 %End
 

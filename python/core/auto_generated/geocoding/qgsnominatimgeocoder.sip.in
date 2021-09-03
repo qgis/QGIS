@@ -11,7 +11,7 @@
 
 class QgsNominatimGeocoder : QgsGeocoderInterface
 {
-%Docstring
+%Docstring(signature="appended")
 A geocoder which uses the Nominatim geocoding API to retrieve results.
 
 This geocoder utilizes the Nominatim geocoding API in order to geocode
@@ -56,7 +56,7 @@ Returns the URL generated for geocoding the specified ``address``.
 
     QgsGeocoderResult jsonToResult( const QVariantMap &json ) const;
 %Docstring
-Converts a JSON result returned from the Google Maps service to a geocoder result object.
+Converts a JSON result returned from the Nominatim service to a geocoder result object.
 %End
 
     QString endpoint() const;

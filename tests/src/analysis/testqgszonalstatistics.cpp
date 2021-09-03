@@ -56,13 +56,13 @@ void TestQgsZonalStatistics::initTestCase()
   QgsApplication::initQgis();
   QgsApplication::showSettings();
 
-  QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QString myTestDataPath = myDataPath + "/zonalstatistics/";
+  const QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString myTestDataPath = myDataPath + "/zonalstatistics/";
   mTempPath = QDir::tempPath() + '/';
 
   // copy test data to temp directory
-  QDir testDir( myTestDataPath );
-  QStringList files = testDir.entryList( QDir::Files | QDir::NoDotAndDotDot );
+  const QDir testDir( myTestDataPath );
+  const QStringList files = testDir.entryList( QDir::Files | QDir::NoDotAndDotDot );
   for ( int i = 0; i < files.size(); ++i )
   {
     QFile::remove( mTempPath + files.at( i ) );
@@ -190,8 +190,8 @@ void TestQgsZonalStatistics::testStatistics()
 
 void TestQgsZonalStatistics::testReprojection()
 {
-  QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QString myTestDataPath = myDataPath + "/zonalstatistics/";
+  const QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString myTestDataPath = myDataPath + "/zonalstatistics/";
 
   // create a reprojected version of the layer
   std::unique_ptr< QgsVectorLayer > vectorLayer( new QgsVectorLayer( myTestDataPath + "polys.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) ) );
@@ -202,7 +202,7 @@ void TestQgsZonalStatistics::testReprojection()
   zs.calculateStatistics( nullptr );
 
   QgsFeature f;
-  QgsFeatureRequest request;
+  const QgsFeatureRequest request;
   QgsFeatureIterator it = reprojected->getFeatures( request );
   bool fetched = it.nextFeature( f );
   QVERIFY( fetched );
@@ -252,18 +252,18 @@ void TestQgsZonalStatistics::testReprojection()
 
 void TestQgsZonalStatistics::testNoData()
 {
-  QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QString myTestDataPath = myDataPath + "/zonalstatistics/";
+  const QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString myTestDataPath = myDataPath + "/zonalstatistics/";
 
   // test that zonal stats respects no data and user set no data values
-  std::unique_ptr< QgsRasterLayer > rasterLayer = qgis::make_unique< QgsRasterLayer >( myTestDataPath + "raster.tif", QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
-  std::unique_ptr< QgsVectorLayer > vectorLayer = qgis::make_unique< QgsVectorLayer >( mTempPath + "polys2.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
+  std::unique_ptr< QgsRasterLayer > rasterLayer = std::make_unique< QgsRasterLayer >( myTestDataPath + "raster.tif", QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
+  std::unique_ptr< QgsVectorLayer > vectorLayer = std::make_unique< QgsVectorLayer >( mTempPath + "polys2.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
 
   QgsZonalStatistics zs( vectorLayer.get(), rasterLayer.get(), QStringLiteral( "n" ), 1, QgsZonalStatistics::All );
   zs.calculateStatistics( nullptr );
 
   QgsFeature f;
-  QgsFeatureRequest request;
+  const QgsFeatureRequest request;
   QgsFeatureIterator it = vectorLayer->getFeatures( request );
   bool fetched = it.nextFeature( f );
   QVERIFY( fetched );
@@ -306,18 +306,18 @@ void TestQgsZonalStatistics::testNoData()
 
 void TestQgsZonalStatistics::testSmallPolygons()
 {
-  QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QString myTestDataPath = myDataPath + "/zonalstatistics/";
+  const QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString myTestDataPath = myDataPath + "/zonalstatistics/";
 
   // test that zonal stats works ok with polygons much smaller than pixel size
-  std::unique_ptr< QgsRasterLayer > rasterLayer = qgis::make_unique< QgsRasterLayer >( myTestDataPath + "raster.tif", QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
-  std::unique_ptr< QgsVectorLayer > vectorLayer = qgis::make_unique< QgsVectorLayer >( mTempPath + "small_polys.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
+  const std::unique_ptr< QgsRasterLayer > rasterLayer = std::make_unique< QgsRasterLayer >( myTestDataPath + "raster.tif", QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
+  std::unique_ptr< QgsVectorLayer > vectorLayer = std::make_unique< QgsVectorLayer >( mTempPath + "small_polys.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
 
   QgsZonalStatistics zs( vectorLayer.get(), rasterLayer.get(), QStringLiteral( "n" ), 1, QgsZonalStatistics::All );
   zs.calculateStatistics( nullptr );
 
   QgsFeature f;
-  QgsFeatureRequest request;
+  const QgsFeatureRequest request;
   QgsFeatureIterator it = vectorLayer->getFeatures( request );
   bool fetched = it.nextFeature( f );
   QVERIFY( fetched );

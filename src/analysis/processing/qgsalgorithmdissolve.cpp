@@ -36,14 +36,14 @@ QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &paramet
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  QStringList fields = parameterAsFields( parameters, QStringLiteral( "FIELD" ), context );
+  const QStringList fields = parameterAsFields( parameters, QStringLiteral( "FIELD" ), context );
 
-  long count = source->featureCount();
+  const long count = source->featureCount();
 
   QgsFeature f;
   QgsFeatureIterator it = source->getFeatures( QgsFeatureRequest(), sourceFlags );
 
-  double step = count > 0 ? 100.0 / count : 1;
+  const double step = count > 0 ? 100.0 / count : 1;
   int current = 0;
 
   if ( fields.isEmpty() )
@@ -73,7 +73,7 @@ QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &paramet
         if ( maxQueueLength > 0 && geomQueue.length() > maxQueueLength )
         {
           // queue too long, combine it
-          QgsGeometry tempOutputGeometry = collector( geomQueue );
+          const QgsGeometry tempOutputGeometry = collector( geomQueue );
           geomQueue.clear();
           geomQueue << tempOutputGeometry;
         }
@@ -84,7 +84,8 @@ QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &paramet
     }
 
     outputFeature.setGeometry( collector( geomQueue ) );
-    sink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
+    if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
   }
   else
   {
@@ -92,7 +93,7 @@ QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &paramet
     const auto constFields = fields;
     for ( const QString &field : constFields )
     {
-      int index = source->fields().lookupField( field );
+      const int index = source->fields().lookupField( field );
       if ( index >= 0 )
         fieldIndexes << index;
     }
@@ -109,7 +110,7 @@ QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &paramet
 
       QVariantList indexAttributes;
       const auto constFieldIndexes = fieldIndexes;
-      for ( int index : constFieldIndexes )
+      for ( const int index : constFieldIndexes )
       {
         indexAttributes << f.attribute( index );
       }
@@ -126,7 +127,7 @@ QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &paramet
       }
     }
 
-    int numberFeatures = attributeHash.count();
+    const int numberFeatures = attributeHash.count();
     QHash< QVariant, QgsAttributes >::const_iterator attrIt = attributeHash.constBegin();
     for ( ; attrIt != attributeHash.constEnd(); ++attrIt )
     {
@@ -146,7 +147,8 @@ QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &paramet
         outputFeature.setGeometry( geom );
       }
       outputFeature.setAttributes( attrIt.value() );
-      sink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
+      if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
       feedback->setProgress( current * 100.0 / numberFeatures );
       current++;

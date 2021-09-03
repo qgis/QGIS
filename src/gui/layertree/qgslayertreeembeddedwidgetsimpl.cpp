@@ -31,11 +31,7 @@ QgsLayerTreeOpacityWidget::QgsLayerTreeOpacityWidget( QgsMapLayer *layer )
   QLabel *l = new QLabel( tr( "Opacity" ), this );
   mSlider = new QSlider( Qt::Horizontal, this );
   mSlider->setRange( 0, 1000 );
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  int sliderW = static_cast< int >( QFontMetricsF( font() ).width( 'X' ) * 16 * Qgis::UI_SCALE_FACTOR );
-#else
-  int sliderW = static_cast< int >( QFontMetricsF( font() ).horizontalAdvance( 'X' ) * 16 * Qgis::UI_SCALE_FACTOR );
-#endif
+  const int sliderW = static_cast< int >( QFontMetricsF( font() ).horizontalAdvance( 'X' ) * 16 * Qgis::UI_SCALE_FACTOR );
   mSlider->setMinimumWidth( sliderW / 2 );
   mSlider->setMaximumWidth( sliderW );
   QHBoxLayout *lay = new QHBoxLayout();
@@ -75,13 +71,17 @@ void QgsLayerTreeOpacityWidget::sliderValueChanged( int value )
 
 void QgsLayerTreeOpacityWidget::updateOpacityFromSlider()
 {
-  int value = mSlider->value();
+  if ( !mLayer )
+    return;
+  const int value = mSlider->value();
   mLayer->setOpacity( value / 1000.0 );
   mLayer->triggerRepaint();
 }
 
 void QgsLayerTreeOpacityWidget::layerTrChanged()
 {
+  if ( !mLayer )
+    return;
   mSlider->blockSignals( true );
   mSlider->setValue( mLayer->opacity() * 1000.0 );
   mSlider->blockSignals( false );

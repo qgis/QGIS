@@ -1,0 +1,279 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsmarkersymbol.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsMarkerSymbol : QgsSymbol
+{
+%Docstring(signature="appended")
+
+A marker symbol type, for rendering Point and MultiPoint geometries.
+%End
+
+%TypeHeaderCode
+#include "qgsmarkersymbol.h"
+%End
+  public:
+
+    static QgsMarkerSymbol *createSimple( const QVariantMap &properties ) /Factory/;
+%Docstring
+Create a marker symbol with one symbol layer: SimpleMarker with specified properties.
+This is a convenience method for easier creation of marker symbols.
+%End
+
+    QgsMarkerSymbol( const QgsSymbolLayerList &layers /Transfer/ = QgsSymbolLayerList() );
+%Docstring
+Constructor for QgsMarkerSymbol, with the specified list of initial symbol ``layers``.
+
+Ownership of the ``layers`` are transferred to the symbol.
+%End
+
+    void setAngle( double symbolAngle );
+%Docstring
+Sets the angle for the whole symbol. Individual symbol layer sizes
+will be rotated to maintain their current relative angle to the whole symbol angle.
+
+:param symbolAngle: new symbol angle
+
+.. seealso:: :py:func:`angle`
+%End
+
+    double angle() const;
+%Docstring
+Returns the marker angle for the whole symbol. Note that for symbols with
+multiple symbol layers, this will correspond just to the angle of
+the first symbol layer.
+
+.. seealso:: :py:func:`setAngle`
+
+.. versionadded:: 2.16
+%End
+
+    void setDataDefinedAngle( const QgsProperty &property );
+%Docstring
+Set data defined angle for whole symbol (including all symbol layers).
+
+.. seealso:: :py:func:`dataDefinedAngle`
+
+.. versionadded:: 3.0
+%End
+
+    QgsProperty dataDefinedAngle() const;
+%Docstring
+Returns data defined angle for whole symbol (including all symbol layers).
+
+:return: data defined angle, or invalid property if angle is not set
+         at the marker level.
+
+.. seealso:: :py:func:`setDataDefinedAngle`
+
+.. versionadded:: 3.0
+%End
+
+    void setLineAngle( double lineAngle );
+%Docstring
+Sets the line angle modification for the symbol's angle. This angle is added to
+the marker's rotation and data defined rotation before rendering the symbol, and
+is usually used for orienting symbols to match a line's angle.
+
+:param lineAngle: Angle in degrees, valid values are between 0 and 360
+
+.. versionadded:: 2.9
+%End
+
+    void setSize( double size );
+%Docstring
+Sets the size for the whole symbol. Individual symbol layer sizes
+will be scaled to maintain their current relative size to the whole symbol size.
+
+:param size: new symbol size
+
+.. seealso:: :py:func:`size`
+
+.. seealso:: :py:func:`setSizeUnit`
+
+.. seealso:: :py:func:`setSizeMapUnitScale`
+%End
+
+    double size() const;
+%Docstring
+Returns the estimated size for the whole symbol, which is the maximum size of
+all marker symbol layers in the symbol.
+
+.. warning::
+
+   This returned value is inaccurate if the symbol consists of multiple
+   symbol layers with different size units. Use the overload accepting a :py:class:`QgsRenderContext`
+   argument instead for accurate sizes in this case.
+
+.. seealso:: :py:func:`setSize`
+
+.. seealso:: :py:func:`sizeUnit`
+
+.. seealso:: :py:func:`sizeMapUnitScale`
+%End
+
+    double size( const QgsRenderContext &context ) const;
+%Docstring
+Returns the symbol size, in painter units. This is the maximum size of
+all marker symbol layers in the symbol.
+
+This method returns an accurate size by calculating the actual rendered
+size of each symbol layer using the provided render ``context``.
+
+.. seealso:: :py:func:`setSize`
+
+.. seealso:: :py:func:`sizeUnit`
+
+.. seealso:: :py:func:`sizeMapUnitScale`
+
+.. versionadded:: 3.4.5
+%End
+
+    void setSizeUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the size units for the whole symbol (including all symbol layers).
+
+:param unit: size units
+
+.. seealso:: :py:func:`sizeUnit`
+
+.. seealso:: :py:func:`setSizeMapUnitScale`
+
+.. seealso:: :py:func:`setSize`
+
+.. versionadded:: 2.16
+%End
+
+    QgsUnitTypes::RenderUnit sizeUnit() const;
+%Docstring
+Returns the size units for the whole symbol (including all symbol layers).
+
+:return: size units, or mixed units if symbol layers have different units
+
+.. seealso:: :py:func:`setSizeUnit`
+
+.. seealso:: :py:func:`sizeMapUnitScale`
+
+.. seealso:: :py:func:`size`
+
+.. versionadded:: 2.16
+%End
+
+    void setSizeMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the size map unit scale for the whole symbol (including all symbol layers).
+
+:param scale: map unit scale
+
+.. seealso:: :py:func:`sizeMapUnitScale`
+
+.. seealso:: :py:func:`setSizeUnit`
+
+.. seealso:: :py:func:`setSize`
+
+.. versionadded:: 2.16
+%End
+
+    QgsMapUnitScale sizeMapUnitScale() const;
+%Docstring
+Returns the size map unit scale for the whole symbol. Note that for symbols with
+multiple symbol layers, this will correspond just to the map unit scale
+for the first symbol layer.
+
+.. seealso:: :py:func:`setSizeMapUnitScale`
+
+.. seealso:: :py:func:`sizeUnit`
+
+.. seealso:: :py:func:`size`
+
+.. versionadded:: 2.16
+%End
+
+    void setDataDefinedSize( const QgsProperty &property );
+%Docstring
+Set data defined size for whole symbol (including all symbol layers).
+
+.. seealso:: :py:func:`dataDefinedSize`
+
+.. versionadded:: 3.0
+%End
+
+    QgsProperty dataDefinedSize() const;
+%Docstring
+Returns data defined size for whole symbol (including all symbol layers).
+
+:return: data defined size, or invalid property if size is not set
+         at the marker level.
+
+.. seealso:: :py:func:`setDataDefinedSize`
+
+.. versionadded:: 3.0
+%End
+
+    void setScaleMethod( Qgis::ScaleMethod scaleMethod );
+%Docstring
+Sets the method to use for scaling the marker's size.
+
+:param scaleMethod: scale method
+
+.. seealso:: :py:func:`scaleMethod`
+%End
+
+    Qgis::ScaleMethod scaleMethod();
+%Docstring
+Returns the method to use for scaling the marker's size.
+
+.. seealso:: :py:func:`setScaleMethod`
+%End
+
+    void renderPoint( QPointF point, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
+%Docstring
+Renders the symbol at the specified ``point``, using the given render ``context``.
+
+The ``f`` argument is used to pass the feature currently being rendered (when available).
+
+If only a single symbol layer from the symbol should be rendered, it should be specified
+in the ``layer`` argument. A ``layer`` of -1 indicates that all symbol layers should be
+rendered.
+
+If ``selected`` is ``True`` then the symbol will be drawn using the "selected feature"
+style and colors instead of the symbol's normal style.
+%End
+
+    QRectF bounds( QPointF point, QgsRenderContext &context, const QgsFeature &feature = QgsFeature() ) const;
+%Docstring
+Returns the approximate bounding box of the marker symbol, which includes the bounding box
+of all symbol layers for the symbol. It is recommended to use this method only between :py:func:`~QgsMarkerSymbol.startRender`
+and :py:func:`~QgsMarkerSymbol.stopRender` calls, or data defined rotation and offset will not be correctly calculated.
+
+:param point: location of rendered point in painter units
+:param context: render context
+:param feature: feature being rendered at point (optional). If not specified, the bounds calculation will not
+                include data defined parameters such as offset and rotation
+
+:return: approximate symbol bounds, in painter units
+
+.. versionadded:: 2.14
+%End
+
+    virtual QgsMarkerSymbol *clone() const /Factory/;
+
+
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsmarkersymbol.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

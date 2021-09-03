@@ -11,9 +11,11 @@
 
 
 
+
+
 class QgsProcessingContext
 {
-%Docstring
+%Docstring(signature="appended")
 Contains information about the context in which a processing algorithm is executed.
 
 Contextual information includes settings such as the associated project, and
@@ -33,6 +35,12 @@ expression context.
     };
     typedef QFlags<QgsProcessingContext::Flag> Flags;
 
+
+    enum LogLevel
+    {
+      DefaultLevel,
+      Verbose,
+    };
 
     QgsProcessingContext();
 %Docstring
@@ -201,7 +209,7 @@ algorithm execution.
 
     class LayerDetails
 {
-%Docstring
+%Docstring(signature="appended")
 Details for layers to load into projects.
 
 .. versionadded:: 3.0
@@ -560,6 +568,24 @@ function will be used when creating these outputs.
 .. versionadded:: 3.10
 %End
 
+    LogLevel logLevel() const;
+%Docstring
+Returns the logging level for algorithms to use when pushing feedback messages to users.
+
+.. seealso:: :py:func:`setLogLevel`
+
+.. versionadded:: 3.20
+%End
+
+    void setLogLevel( LogLevel level );
+%Docstring
+Sets the logging ``level`` for algorithms to use when pushing feedback messages to users.
+
+.. seealso:: :py:func:`logLevel`
+
+.. versionadded:: 3.20
+%End
+
   private:
     QgsProcessingContext( const QgsProcessingContext &other );
 };
@@ -570,7 +596,7 @@ QFlags<QgsProcessingContext::Flag> operator|(QgsProcessingContext::Flag f1, QFla
 
 class QgsProcessingLayerPostProcessorInterface
 {
-%Docstring
+%Docstring(signature="appended")
 An interface for layer post-processing handlers for execution following a processing algorithm operation.
 
 Note that post-processing of a layer will ONLY occur if that layer is set to be loaded into a QGIS project

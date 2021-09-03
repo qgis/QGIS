@@ -15,14 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <algorithm>
-#include <cmath>
-#include <limits>
-#include <QString>
-#include <QTextStream>
-#include <QTransform>
-#include <QRegExp>
-
 #include "qgsgeometry.h"
 #include "qgspointxy.h"
 #include "qgsrectangle.h"
@@ -31,18 +23,26 @@
 #include "qgspolygon.h"
 #include "qgslinestring.h"
 
+#include <QString>
+#include <QTextStream>
+#include <QTransform>
+
+#include <algorithm>
+#include <cmath>
+#include <limits>
+
 QgsRectangle QgsRectangle::fromWkt( const QString &wkt )
 {
-  QgsGeometry geom = QgsGeometry::fromWkt( wkt );
+  const QgsGeometry geom = QgsGeometry::fromWkt( wkt );
   if ( geom.isMultipart() )
     return QgsRectangle();
 
-  QgsPolygonXY poly = geom.asPolygon();
+  const QgsPolygonXY poly = geom.asPolygon();
 
   if ( poly.size() != 1 )
     return QgsRectangle();
 
-  QgsPolylineXY polyline = geom.asPolygon().at( 0 );
+  const QgsPolylineXY polyline = geom.asPolygon().at( 0 );
   if ( polyline.size() == 5 && polyline.at( 0 ) == polyline.at( 4 ) && geom.isGeosValid() )
     return QgsRectangle( polyline.at( 0 ).x(), polyline.at( 0 ).y(), polyline.at( 2 ).x(), polyline.at( 2 ).y() );
   else
@@ -51,10 +51,10 @@ QgsRectangle QgsRectangle::fromWkt( const QString &wkt )
 
 QgsRectangle QgsRectangle::fromCenterAndSize( QgsPointXY center, double width, double height )
 {
-  double xMin = center.x() - width / 2.0;
-  double xMax = xMin + width;
-  double yMin = center.y() - height / 2.0;
-  double yMax = yMin + height;
+  const double xMin = center.x() - width / 2.0;
+  const double xMax = xMin + width;
+  const double yMin = center.y() - height / 2.0;
+  const double yMax = yMin + height;
   return QgsRectangle( xMin, yMin, xMax, yMax );
 }
 
@@ -67,19 +67,19 @@ QgsRectangle QgsRectangle::scaled( double scaleFactor, const QgsPointXY *center 
 
 QgsRectangle QgsRectangle::operator-( const QgsVector v ) const
 {
-  double xmin = mXmin - v.x();
-  double xmax = mXmax - v.x();
-  double ymin = mYmin - v.y();
-  double ymax = mYmax - v.y();
+  const double xmin = mXmin - v.x();
+  const double xmax = mXmax - v.x();
+  const double ymin = mYmin - v.y();
+  const double ymax = mYmax - v.y();
   return QgsRectangle( xmin, ymin, xmax, ymax );
 }
 
 QgsRectangle QgsRectangle::operator+( const QgsVector v ) const
 {
-  double xmin = mXmin + v.x();
-  double xmax = mXmax + v.x();
-  double ymin = mYmin + v.y();
-  double ymax = mYmax + v.y();
+  const double xmin = mXmin + v.x();
+  const double xmax = mXmax + v.x();
+  const double ymin = mYmin + v.y();
+  const double ymax = mYmax + v.y();
   return QgsRectangle( xmin, ymin, xmax, ymax );
 }
 

@@ -156,7 +156,7 @@ namespace QgsWms
       QPainter *layersRendering( const QgsMapSettings &mapSettings, QImage &image ) const;
 
       // Rendering step for annotations
-      void annotationsRendering( QPainter *painter ) const;
+      void annotationsRendering( QPainter *painter, const QgsMapSettings &mapSettings ) const;
 
       // Set layer opacity
       void setLayerOpacity( QgsMapLayer *layer, int opacity ) const;

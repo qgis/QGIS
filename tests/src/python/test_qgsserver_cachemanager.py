@@ -12,8 +12,6 @@ __author__ = 'René-Luc DHONT'
 __date__ = '19/07/2018'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
-print('CTEST_FULL_OUTPUT')
-
 import qgis  # NOQA
 
 import os

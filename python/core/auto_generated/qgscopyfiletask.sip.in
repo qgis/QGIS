@@ -1,0 +1,51 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgscopyfiletask.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsCopyFileTask : QgsTask
+{
+%Docstring(signature="appended")
+Task to copy a file on disk
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgscopyfiletask.h"
+%End
+  public:
+
+    QgsCopyFileTask( const QString &source, const QString &destination );
+%Docstring
+Creates a task that copy ``source`` file to ``destination``
+%End
+
+    virtual bool run();
+
+
+    const QString &errorString() const;
+%Docstring
+Returns errorString if an error occurred, else returns null QString
+%End
+
+    const QString &destination() const;
+%Docstring
+It could be different from the original one. If original destination was a directory
+the returned destination is now the absolute file path of the copied file
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgscopyfiletask.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -23,7 +23,7 @@
 
 /**
  * \ingroup core
- * Stores coordinates of a tile in a tile matrix set. Tile matrix is identified
+ * \brief Stores coordinates of a tile in a tile matrix set. Tile matrix is identified
  * by the zoomLevel(), and the position within tile matrix is given by column()
  * and row().
  *
@@ -57,7 +57,7 @@ class CORE_EXPORT QgsTileXYZ
 
 /**
  * \ingroup core
- * Range of tiles in a tile matrix to be rendered. The selection is rectangular,
+ * \brief Range of tiles in a tile matrix to be rendered. The selection is rectangular,
  * given by start/end row and column numbers.
  *
  * \since QGIS 3.14
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsTileRange
 
 /**
  * \ingroup core
- * Defines a matrix of tiles for a single zoom level: it is defined by its size (width * height)
+ * \brief Defines a matrix of tiles for a single zoom level: it is defined by its size (width * \brief height)
  * and map extent that it covers.
  *
  * Please note that we follow the XYZ convention of X/Y axes, i.e. top-left tile has [0,0] coordinate

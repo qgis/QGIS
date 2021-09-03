@@ -30,7 +30,7 @@ class QDomElement;
 
 /**
  * \ingroup core
- * Settings for a color ramp legend node.
+ * \brief Settings for a color ramp legend node.
  *
  * \since QGIS 3.18
  */
@@ -202,7 +202,27 @@ class CORE_EXPORT QgsColorRampLegendNodeSettings
      */
     void setOrientation( Qt::Orientation orientation );
 
+    /**
+     * Returns TRUE if a continuous gradient legend will be used.
+     *
+     * \see setUseContinuousLegend()
+     */
+    bool useContinuousLegend() const;
+
+    /**
+     * Sets the flag to use a continuos gradient legend to \a useContinuousLegend.
+     *
+     * When this flag is set the legend will be rendered using a continuous color ramp with
+     * min and max values, when it is not set the legend will be rendered using separate
+     * items for each entry.
+     *
+     * \see setOrientation()
+     * \see direction()
+     */
+    void setUseContinuousLegend( bool useContinuousLegend );
+
   private:
+    bool mUseContinuousLegend = true;
     QString mMinimumLabel;
     QString mMaximumLabel;
     QString mPrefix;

@@ -38,7 +38,7 @@ bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer *layer, const QgsAttribu
   f->setGeometry( defaultGeometry );
   QgsFeatureAction a( tr( "Add feature" ), *f, layer );
   a.setForceSuppressFormPopup( forceSuppressFormPopup() );
-  bool added = a.addFeature( defaultValues );
+  const bool added = a.addFeature( defaultValues );
   if ( !feat )
     delete f;
 
@@ -52,7 +52,7 @@ bool QgsGuiVectorLayerTools::startEditing( QgsVectorLayer *layer ) const
     return false;
   }
 
-  bool res = true;
+  const bool res = true;
 
   if ( !layer->isEditable() && !layer->readOnly() )
   {
@@ -60,7 +60,7 @@ bool QgsGuiVectorLayerTools::startEditing( QgsVectorLayer *layer ) const
     {
       QgisApp::instance()->messageBar()->pushMessage( tr( "Start editing failed" ),
           tr( "Provider cannot be opened for editing" ),
-          Qgis::Info );
+          Qgis::MessageLevel::Info );
       return false;
     }
 
@@ -131,7 +131,7 @@ bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer *layer, bool allowCance
         {
           QgisApp::instance()->messageBar()->pushMessage( tr( "Error" ),
               tr( "Problems during roll back" ),
-              Qgis::Critical );
+              Qgis::MessageLevel::Critical );
           res = false;
         }
         QgisApp::instance()->freezeCanvases( false );
@@ -182,7 +182,7 @@ void QgsGuiVectorLayerTools::commitError( QgsVectorLayer *vlayer ) const
     tr( "Commit errors" ),
     tr( "Could not commit changes to layer %1" ).arg( vlayer->name() ),
     showMore,
-    Qgis::Warning,
+    Qgis::MessageLevel::Warning,
     0,
     QgisApp::instance()->messageBar() );
   QgisApp::instance()->messageBar()->pushItem( errorMsg );

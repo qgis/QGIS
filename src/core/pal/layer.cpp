@@ -66,7 +66,6 @@ Layer::~Layer()
 {
   mMutex.lock();
 
-  qDeleteAll( mFeatureParts );
   qDeleteAll( mObstacleParts );
 
   mMutex.unlock();
@@ -104,7 +103,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
   bool addedFeature = false;
 
   double geom_size = -1, biggest_size = -1;
-  std::unique_ptr<FeaturePart> biggest_part;
+  std::unique_ptr<FeaturePart> biggestPart;
 
   // break the (possibly multi-part) geometry into simple geometries
   std::unique_ptr<QLinkedList<const GEOSGeometry *>> simpleGeometries( Util::unmulti( lf->geometry() ) );
@@ -115,7 +114,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
 
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
 
-  bool featureGeomIsObstacleGeom = lf->obstacleSettings().obstacleGeometry().isNull();
+  const bool featureGeomIsObstacleGeom = lf->obstacleSettings().obstacleGeometry().isNull();
 
   while ( !simpleGeometries->isEmpty() )
   {
@@ -127,14 +126,14 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
       continue;
     }
 
-    int type = GEOSGeomTypeId_r( geosctxt, geom );
+    const int type = GEOSGeomTypeId_r( geosctxt, geom );
 
     if ( type != GEOS_POINT && type != GEOS_LINESTRING && type != GEOS_POLYGON )
     {
       throw InternalException::UnknownGeometry();
     }
 
-    std::unique_ptr<FeaturePart> fpart = qgis::make_unique<FeaturePart>( lf, geom );
+    std::unique_ptr<FeaturePart> fpart = std::make_unique<FeaturePart>( lf, geom );
 
     // ignore invalid geometries
     if ( ( type == GEOS_LINESTRING && fpart->nbPoints < 2 ) ||
@@ -144,13 +143,13 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
     }
 
     // polygons: reorder coordinates
-    if ( type == GEOS_POLYGON && GeomFunction::reorderPolygon( fpart->nbPoints, fpart->x, fpart->y ) != 0 )
+    if ( type == GEOS_POLYGON && !GeomFunction::reorderPolygon( fpart->x, fpart->y ) )
     {
       continue;
     }
 
     // is the feature well defined?  TODO Check epsilon
-    bool labelWellDefined = ( lf->size().width() > 0.0000001 && lf->size().height() > 0.0000001 );
+    const bool labelWellDefined = ( lf->size().width() > 0.0000001 && lf->size().height() > 0.0000001 );
 
     if ( lf->obstacleSettings().isObstacle() && featureGeomIsObstacleGeom )
     {
@@ -183,14 +182,14 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
       if ( geom_size > biggest_size )
       {
         biggest_size = geom_size;
-        biggest_part.reset( fpart.release() );
+        biggestPart = std::move( fpart );
       }
       // don't add the feature part now, do it later
     }
     else
     {
       // feature part is ready!
-      addFeaturePart( fpart.release(), lf->labelText() );
+      addFeaturePart( std::move( fpart ), lf->labelText() );
       addedFeature = true;
     }
   }
@@ -217,14 +216,14 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
         continue;
       }
 
-      int type = GEOSGeomTypeId_r( geosctxt, geom.get() );
+      const int type = GEOSGeomTypeId_r( geosctxt, geom.get() );
 
       if ( type != GEOS_POINT && type != GEOS_LINESTRING && type != GEOS_POLYGON )
       {
         throw InternalException::UnknownGeometry();
       }
 
-      std::unique_ptr<FeaturePart> fpart = qgis::make_unique<FeaturePart>( lf, geom.get() );
+      std::unique_ptr<FeaturePart> fpart = std::make_unique<FeaturePart>( lf, geom.get() );
 
       // ignore invalid geometries
       if ( ( type == GEOS_LINESTRING && fpart->nbPoints < 2 ) ||
@@ -234,7 +233,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
       }
 
       // polygons: reorder coordinates
-      if ( type == GEOS_POLYGON && GeomFunction::reorderPolygon( fpart->nbPoints, fpart->x, fpart->y ) != 0 )
+      if ( type == GEOS_POLYGON && !GeomFunction::reorderPolygon( fpart->x, fpart->y ) )
       {
         continue;
       }
@@ -249,9 +248,9 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
   locker.unlock();
 
   // if using only biggest parts...
-  if ( ( !lf->labelAllParts() || lf->hasFixedPosition() ) && biggest_part )
+  if ( ( !lf->labelAllParts() || lf->hasFixedPosition() ) && biggestPart )
   {
-    addFeaturePart( biggest_part.release(), lf->labelText() );
+    addFeaturePart( std::move( biggestPart ), lf->labelText() );
     addedFeature = true;
   }
 
@@ -265,16 +264,16 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
 }
 
 
-void Layer::addFeaturePart( FeaturePart *fpart, const QString &labelText )
+void Layer::addFeaturePart( std::unique_ptr<FeaturePart> fpart, const QString &labelText )
 {
-  // add to list of layer's feature parts
-  mFeatureParts << fpart;
-
   // add to hashtable with equally named feature parts
   if ( mMergeLines && !labelText.isEmpty() )
   {
-    mConnectedHashtable[ labelText ].append( fpart );
+    mConnectedHashtable[ labelText ].append( fpart.get() );
   }
+
+  // add to list of layer's feature parts
+  mFeatureParts.emplace_back( std::move( fpart ) );
 }
 
 void Layer::addObstaclePart( FeaturePart *fpart )
@@ -306,38 +305,61 @@ void Layer::joinConnectedFeatures()
   int connectedFeaturesId = 0;
   for ( auto it = mConnectedHashtable.constBegin(); it != mConnectedHashtable.constEnd(); ++it )
   {
-    QVector<FeaturePart *> parts = it.value();
-    connectedFeaturesId++;
+    QVector<FeaturePart *> partsToMerge = it.value();
 
     // need to start with biggest parts first, to avoid merging in side branches before we've
     // merged the whole of the longest parts of the joined network
-    std::sort( parts.begin(), parts.end(), []( FeaturePart * a, FeaturePart * b )
+    std::sort( partsToMerge.begin(), partsToMerge.end(), []( FeaturePart * a, FeaturePart * b )
     {
       return a->length() > b->length();
     } );
 
     // go one-by-one part, try to merge
-    while ( parts.count() > 1 )
+    while ( partsToMerge.count() > 1 )
     {
+      connectedFeaturesId++;
+
       // part we'll be checking against other in this round
-      FeaturePart *partCheck = parts.takeFirst();
+      FeaturePart *partToJoinTo = partsToMerge.takeFirst();
+      mConnectedFeaturesIds.insert( partToJoinTo->featureId(), connectedFeaturesId );
 
-      FeaturePart *otherPart = _findConnectedPart( partCheck, parts );
-      if ( otherPart )
+      // loop through all other parts
+      QVector< FeaturePart *> partsLeftToTryThisRound = partsToMerge;
+      while ( !partsLeftToTryThisRound.empty() )
       {
-        // merge points from partCheck to p->item
-        if ( otherPart->mergeWithFeaturePart( partCheck ) )
+        if ( FeaturePart *otherPart = _findConnectedPart( partToJoinTo, partsLeftToTryThisRound ) )
         {
-          mConnectedFeaturesIds.insert( partCheck->featureId(), connectedFeaturesId );
-          mConnectedFeaturesIds.insert( otherPart->featureId(), connectedFeaturesId );
+          partsLeftToTryThisRound.removeOne( otherPart );
+          if ( partToJoinTo->mergeWithFeaturePart( otherPart ) )
+          {
+            mConnectedFeaturesIds.insert( otherPart->featureId(), connectedFeaturesId );
 
-          mFeatureParts.removeOne( partCheck );
-          delete partCheck;
+            // otherPart was merged into partToJoinTo, so now we completely delete the redundant feature part which was merged in
+            partsToMerge.removeAll( otherPart );
+            const auto matchingPartIt = std::find_if( mFeatureParts.begin(), mFeatureParts.end(), [otherPart]( const std::unique_ptr< FeaturePart> &part ) { return part.get() == otherPart; } );
+            Q_ASSERT( matchingPartIt != mFeatureParts.end() );
+            mFeatureParts.erase( matchingPartIt );
+          }
+        }
+        else
+        {
+          // no candidate parts remain which we could possibly merge in
+          break;
         }
       }
     }
   }
   mConnectedHashtable.clear();
+
+  // Expunge feature parts that are smaller than the minimum size required
+  mFeatureParts.erase( std::remove_if( mFeatureParts.begin(), mFeatureParts.end(), []( const std::unique_ptr< FeaturePart > &part )
+  {
+    if ( part->feature()->minimumSize() != 0.0 && part->length() < part->feature()->minimumSize() )
+    {
+      return true;
+    }
+    return false;
+  } ), mFeatureParts.end() );
 }
 
 int Layer::connectedFeatureId( QgsFeatureId featureId ) const
@@ -348,10 +370,12 @@ int Layer::connectedFeatureId( QgsFeatureId featureId ) const
 void Layer::chopFeaturesAtRepeatDistance()
 {
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
-  QLinkedList<FeaturePart *> newFeatureParts;
-  while ( !mFeatureParts.isEmpty() )
+  std::deque< std::unique_ptr< FeaturePart > > newFeatureParts;
+  while ( !mFeatureParts.empty() )
   {
-    std::unique_ptr< FeaturePart > fpart( mFeatureParts.takeFirst() );
+    std::unique_ptr< FeaturePart > fpart = std::move( mFeatureParts.front() );
+    mFeatureParts.pop_front();
+
     const GEOSGeometry *geom = fpart->geos();
     double chopInterval = fpart->repeatDistance();
 
@@ -415,8 +439,8 @@ void Layer::chopFeaturesAtRepeatDistance()
       std::vector<double> len( n, 0 );
       for ( unsigned int i = 1; i < n; ++i )
       {
-        double dx = points[i].x - points[i - 1].x;
-        double dy = points[i].y - points[i - 1].y;
+        const double dx = points[i].x - points[i - 1].x;
+        const double dy = points[i].y - points[i - 1].y;
         len[i] = len[i - 1] + std::sqrt( dx * dx + dy * dy );
       }
 
@@ -449,13 +473,12 @@ void Layer::chopFeaturesAtRepeatDistance()
 #endif
           }
           GEOSGeometry *newgeom = GEOSGeom_createLineString_r( geosctxt, cooSeq );
-          FeaturePart *newfpart = new FeaturePart( fpart->feature(), newgeom );
-          newFeatureParts.append( newfpart );
-          repeatParts.push_back( newfpart );
-
+          std::unique_ptr< FeaturePart > newfpart = std::make_unique< FeaturePart >( fpart->feature(), newgeom );
+          repeatParts.push_back( newfpart.get() );
+          newFeatureParts.emplace_back( std::move( newfpart ) );
           break;
         }
-        double c = ( lambda - len[cur - 1] ) / ( len[cur] - len[cur - 1] );
+        const double c = ( lambda - len[cur - 1] ) / ( len[cur] - len[cur - 1] );
         Point p;
         p.x = points[cur - 1].x + c * ( points[cur].x - points[cur - 1].x );
         p.y = points[cur - 1].y + c * ( points[cur].y - points[cur - 1].y );
@@ -472,11 +495,11 @@ void Layer::chopFeaturesAtRepeatDistance()
         }
 
         GEOSGeometry *newgeom = GEOSGeom_createLineString_r( geosctxt, cooSeq );
-        FeaturePart *newfpart = new FeaturePart( fpart->feature(), newgeom );
-        newFeatureParts.append( newfpart );
+        std::unique_ptr< FeaturePart > newfpart = std::make_unique< FeaturePart >( fpart->feature(), newgeom );
+        repeatParts.push_back( newfpart.get() );
+        newFeatureParts.emplace_back( std::move( newfpart ) );
         part.clear();
         part.push_back( p );
-        repeatParts.push_back( newfpart );
       }
 
       for ( FeaturePart *partPtr : repeatParts )
@@ -484,11 +507,11 @@ void Layer::chopFeaturesAtRepeatDistance()
     }
     else
     {
-      newFeatureParts.append( fpart.release() );
+      newFeatureParts.emplace_back( std::move( fpart ) );
     }
   }
 
-  mFeatureParts = newFeatureParts;
+  mFeatureParts = std::move( newFeatureParts );
 }
 
 

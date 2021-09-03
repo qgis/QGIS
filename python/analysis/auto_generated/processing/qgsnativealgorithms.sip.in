@@ -11,7 +11,7 @@
 
 class QgsNativeAlgorithms: QgsProcessingProvider
 {
-%Docstring
+%Docstring(signature="appended")
 Native c++ processing algorithm provider.
 
 .. versionadded:: 3.0

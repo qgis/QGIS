@@ -131,7 +131,7 @@ class FindProjection(QgisAlgorithm):
             transform_candidate.disableFallbackOperationHandler(True)
             transformed_bounds = QgsGeometry(layer_bounds)
             try:
-                if not transformed_bounds.transform(transform_candidate) == 0:
+                if transformed_bounds.transform(transform_candidate) != 0:
                     continue
             except:
                 continue

@@ -88,11 +88,11 @@ class RasterLayerHistogram(QgisAlgorithm):
         # ALERT: this is potentially blocking if the layer is too big
         values = raster.scanraster(layer, feedback, band)
 
-        valueslist = []
-        for v in values:
-            if v is not None:
-                valueslist.append(v)
-
+        valueslist = [
+            v
+            for v in values
+            if v is not None
+        ]
         data = [go.Histogram(x=valueslist,
                              nbinsx=nbins)]
         plt.offline.plot(data, filename=output, auto_open=False)

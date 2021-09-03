@@ -22,6 +22,7 @@
 #include "qgsproject.h"
 #include "qgsexpressioncontextutils.h"
 #include <QIcon>
+#include <QBuffer>
 
 const double ICON_PADDING_FACTOR = 0.16;
 
@@ -132,11 +133,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
                 std::unique_ptr< QgsSymbol > symbol( mStyle->symbol( name ) );
                 if ( symbol )
                 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-                  int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * QFontMetrics( data( index, Qt::FontRole ).value< QFont >() ).width( 'X' ) * 23 );
-#else
                   int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * QFontMetrics( data( index, Qt::FontRole ).value< QFont >() ).horizontalAdvance( 'X' ) * 23 );
-#endif
                   int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
                   QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), QSize( width, height ), height / 20, nullptr, false, mExpressionContext.get() );
                   QByteArray data;
@@ -149,11 +146,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
 
               case QgsStyle::TextFormatEntity:
               {
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-                int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * QFontMetrics( data( index, Qt::FontRole ).value< QFont >() ).width( 'X' ) * 23 );
-#else
                 int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * QFontMetrics( data( index, Qt::FontRole ).value< QFont >() ).horizontalAdvance( 'X' ) * 23 );
-#endif
                 int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
                 const QgsTextFormat format = mStyle->textFormat( name );
                 QPixmap pm = QgsTextFormat::textFormatPreviewPixmap( format, QSize( width, height ), QString(), height / 20 );
@@ -166,11 +159,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
 
               case QgsStyle::LabelSettingsEntity:
               {
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-                int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * QFontMetrics( data( index, Qt::FontRole ).value< QFont >() ).width( 'X' ) * 23 );
-#else
                 int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * QFontMetrics( data( index, Qt::FontRole ).value< QFont >() ).horizontalAdvance( 'X' ) * 23 );
-#endif
                 int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
                 const QgsPalLayerSettings settings = mStyle->labelSettings( name );
                 QPixmap pm = QgsPalLayerSettings::labelSettingsPreviewPixmap( settings, QSize( width, height ), QString(), height / 20 );
@@ -183,11 +172,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
 
               case QgsStyle::LegendPatchShapeEntity:
               {
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-                int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * QFontMetrics( data( index, Qt::FontRole ).value< QFont >() ).width( 'X' ) * 23 );
-#else
                 int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * QFontMetrics( data( index, Qt::FontRole ).value< QFont >() ).horizontalAdvance( 'X' ) * 23 );
-#endif
                 int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
 
                 const QgsLegendPatchShape shape = mStyle->legendPatchShape( name );
@@ -232,7 +217,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
         // case we want to avoid creating potentially thousands of contexts one-by-one (usually one context
         // is created for a batch of multiple evalutions like this), and we only use a very minimal context
         // anyway...
-        mExpressionContext = qgis::make_unique< QgsExpressionContext >();
+        mExpressionContext = std::make_unique< QgsExpressionContext >();
         mExpressionContext->appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( nullptr ) );
       }
 
@@ -401,11 +386,11 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
         case QgsStyle::SymbolEntity:
         {
           const QgsSymbol *symbol = mStyle->symbolRef( name );
-          return symbol ? symbol->type() : QVariant();
+          return symbol ? static_cast< int >( symbol->type() ) : QVariant();
         }
 
         case QgsStyle::LegendPatchShapeEntity:
-          return mStyle->legendPatchShapeSymbolType( name );
+          return static_cast< int >( mStyle->legendPatchShapeSymbolType( name ) );
 
         case QgsStyle::TagEntity:
         case QgsStyle::ColorrampEntity:
@@ -823,7 +808,7 @@ bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
   if ( mEntityFilterEnabled && ( mEntityFilters.empty() || !mEntityFilters.contains( styleEntityType ) ) )
     return false;
 
-  QgsSymbol::SymbolType symbolType = static_cast< QgsSymbol::SymbolType >( sourceModel()->data( index, QgsStyleModel::SymbolTypeRole ).toInt() );
+  Qgis::SymbolType symbolType = static_cast< Qgis::SymbolType >( sourceModel()->data( index, QgsStyleModel::SymbolTypeRole ).toInt() );
   if ( mSymbolTypeFilterEnabled && symbolType != mSymbolType )
     return false;
 
@@ -880,7 +865,7 @@ bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
     for ( const QString &part : partsToMatch )
     {
       bool found = false;
-      for ( const QString &partToSearch : qgis::as_const( partsToSearch ) )
+      for ( const QString &partToSearch : std::as_const( partsToSearch ) )
       {
         if ( partToSearch.contains( part, Qt::CaseInsensitive ) )
         {
@@ -924,9 +909,9 @@ bool QgsStyleProxyModel::symbolTypeFilterEnabled() const
   return mSymbolTypeFilterEnabled;
 }
 
-void QgsStyleProxyModel::setSymbolTypeFilterEnabled( bool symbolTypeFilterEnabled )
+void QgsStyleProxyModel::setSymbolTypeFilterEnabled( bool enabled )
 {
-  mSymbolTypeFilterEnabled = symbolTypeFilterEnabled;
+  mSymbolTypeFilterEnabled = enabled;
   invalidateFilter();
 }
 
@@ -978,12 +963,12 @@ int QgsStyleProxyModel::smartGroupId() const
   return mSmartGroupId;
 }
 
-QgsSymbol::SymbolType QgsStyleProxyModel::symbolType() const
+Qgis::SymbolType QgsStyleProxyModel::symbolType() const
 {
   return mSymbolType;
 }
 
-void QgsStyleProxyModel::setSymbolType( const QgsSymbol::SymbolType symbolType )
+void QgsStyleProxyModel::setSymbolType( const Qgis::SymbolType symbolType )
 {
   mSymbolType = symbolType;
   invalidateFilter();

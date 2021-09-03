@@ -27,7 +27,7 @@
 /**
  * \class QgsReferencedGeometryBase
  * \ingroup core
- * A base class for geometry primitives which are stored with an associated reference system.
+ * \brief A base class for geometry primitives which are stored with an associated reference system.
  *
  * QgsReferencedGeometryBase classes represent some form of geometry primitive
  * (such as rectangles) which have an optional coordinate reference system
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsReferencedGeometryBase
 
 /**
  * \ingroup core
- * A QgsRectangle with associated coordinate reference system.
+ * \brief A QgsRectangle with associated coordinate reference system.
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsReferencedRectangle : public QgsRectangle, public QgsReferencedGeometryBase
@@ -108,7 +108,7 @@ Q_DECLARE_METATYPE( QgsReferencedRectangle )
 
 /**
  * \ingroup core
- * A QgsPointXY with associated coordinate reference system.
+ * \brief A QgsPointXY with associated coordinate reference system.
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsReferencedPointXY : public QgsPointXY, public QgsReferencedGeometryBase
@@ -149,7 +149,7 @@ Q_DECLARE_METATYPE( QgsReferencedPointXY )
 
 /**
  * \ingroup core
- * A QgsGeometry with associated coordinate reference system.
+ * \brief A QgsGeometry with associated coordinate reference system.
  * \since QGIS 3.16
  */
 class CORE_EXPORT QgsReferencedGeometry : public QgsGeometry, public QgsReferencedGeometryBase

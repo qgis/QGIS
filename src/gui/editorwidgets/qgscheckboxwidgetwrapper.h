@@ -26,7 +26,7 @@ SIP_NO_FILE
 
 /**
  * \ingroup gui
- * Wraps a checkbox widget. This will offer a checkbox to represent boolean values.
+ * \brief Wraps a checkbox widget. This will offer a checkbox to represent boolean values.
  *
  * Options:
  * <ul>

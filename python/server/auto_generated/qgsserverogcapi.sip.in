@@ -11,7 +11,7 @@
 
 class QgsServerOgcApi : QgsServerApi
 {
-%Docstring
+%Docstring(signature="appended")
 QGIS Server OGC API endpoint. :py:class:`QgsServerOgcApi` provides the foundation for
 the new generation of REST-API based OGC services (e.g. WFS3).
 
@@ -28,6 +28,9 @@ as instances of :py:class:`QgsServerOgcApiHandler`.
      api = QgsServerOgcApi(serverInterface(), "/api1", "apione", "A firs API", "1.0")
      api.registerHandler(h)
      server.serverInterface().serviceRegistry().registerApi(api)
+
+
+
 
 .. versionadded:: 3.10
 %End

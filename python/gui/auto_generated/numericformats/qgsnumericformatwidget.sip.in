@@ -10,7 +10,7 @@
 
 class QgsNumericFormatWidget : QgsPanelWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for widgets which allow control over the properties of :py:class:`QgsNumericFormat` subclasses
 
 .. versionadded:: 3.12
@@ -56,7 +56,7 @@ Emitted whenever the configuration of the numeric format is changed.
 
 class QgsBasicNumericFormatWidget : QgsNumericFormatWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget which allow control over the properties of a :py:class:`QgsBasicNumericFormat`.
 
 .. versionadded:: 3.12
@@ -85,7 +85,7 @@ Constructor for QgsBasicNumericFormatWidget, initially showing the specified ``f
 
 class QgsBearingNumericFormatWidget : QgsNumericFormatWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget which allow control over the properties of a :py:class:`QgsBearingNumericFormat`.
 
 .. versionadded:: 3.12
@@ -113,7 +113,7 @@ Constructor for QgsBearingNumericFormatWidget, initially showing the specified `
 
 class QgsBearingNumericFormatDialog : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 A dialog which allow control over the properties of a :py:class:`QgsBearingNumericFormat`.
 
 .. versionadded:: 3.12
@@ -145,7 +145,7 @@ Ownership of the returned object is transferred to the caller
 
 class QgsCurrencyNumericFormatWidget : QgsNumericFormatWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget which allow control over the properties of a :py:class:`QgsCurrencyNumericFormat`.
 
 .. versionadded:: 3.12
@@ -175,7 +175,7 @@ Constructor for QgsCurrencyNumericFormatWidget, initially showing the specified 
 
 class QgsPercentageNumericFormatWidget : QgsNumericFormatWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget which allow control over the properties of a :py:class:`QgsPercentageNumericFormat`.
 
 .. versionadded:: 3.12
@@ -206,7 +206,7 @@ Constructor for QgsPercentageNumericFormatWidget, initially showing the specifie
 
 class QgsScientificNumericFormatWidget : QgsNumericFormatWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget which allow control over the properties of a :py:class:`QgsScientificNumericFormat`.
 
 .. versionadded:: 3.12
@@ -235,7 +235,7 @@ Constructor for QgsScientificNumericFormatWidget, initially showing the specifie
 
 class QgsFractionNumericFormatWidget : QgsNumericFormatWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget which allow control over the properties of a :py:class:`QgsFractionNumericFormat`.
 
 .. versionadded:: 3.14

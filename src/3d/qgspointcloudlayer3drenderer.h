@@ -22,7 +22,7 @@
 #include "qgs3drendererregistry.h"
 #include "qgsabstract3drenderer.h"
 #include "qgsmaplayerref.h"
-
+#include "qgsfeedback.h"
 #include <QObject>
 
 class QgsPointCloudLayer;
@@ -35,7 +35,7 @@ class QgsPointCloudLayer;
  * \ingroup core
  * \class QgsPointCloud3DRenderContext
  *
- * Encapsulates the render context for a 3D point cloud rendering operation.
+ * \brief Encapsulates the render context for a 3D point cloud rendering operation.
  *
  * \since QGIS 3.18
  */
@@ -52,7 +52,7 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
      * The \a zValueFixedOffset argument specifies any constant offset value which must be added to z values
      * taken from the point cloud index.
      */
-    QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, std::unique_ptr< QgsPointCloud3DSymbol > symbol,
+    QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, std::unique_ptr< QgsPointCloud3DSymbol > symbol,
                                   double zValueScale, double zValueFixedOffset );
 
     //! QgsPointCloudRenderContext cannot be copied.
@@ -151,15 +151,30 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
     double zValueFixedOffset() const { return mZValueFixedOffset; }
 
     /**
-     * Sets the function to call to test if the rendering is canceled.
-     */
-    void setIsCanceledCallback( const std::function< bool() > &callback ) { mIsCanceledCallback = callback; }
-
-    /**
      * Returns TRUE if the rendering is canceled.
      */
-    bool isCanceled() const { return mIsCanceledCallback(); }
+    bool isCanceled() const;
 
+    /**
+     * Cancels rendering.
+     * \see isCanceled()
+     */
+    void cancelRendering() const;
+
+    /**
+     * Sets the coordinate transform used to transform points from layer CRS to the map CRS
+     */
+    void setCoordinateTransform( const QgsCoordinateTransform &coordinateTransform );
+
+    /**
+     * Returns the coordinate transform used to transform points from layer CRS to the map CRS
+     */
+    QgsCoordinateTransform coordinateTransform() const { return mCoordinateTransform; }
+
+    /**
+     * Returns the feedback object used to cancel rendering and check if rendering was canceled.
+     */
+    QgsFeedback *feedback() const { return mFeedback.get(); }
   private:
 #ifdef SIP_RUN
     QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh );
@@ -169,15 +184,14 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
     QgsPointCloudCategoryList mFilteredOutCategories;
     double mZValueScale = 1.0;
     double mZValueFixedOffset = 0;
-
-    std::function< bool() > mIsCanceledCallback;
-
+    QgsCoordinateTransform mCoordinateTransform;
+    std::unique_ptr<QgsFeedback> mFeedback;
 };
 
 
 /**
  * \ingroup core
- * Metadata for point cloud layer 3D renderer to allow creation of its instances from XML
+ * \brief Metadata for point cloud layer 3D renderer to allow creation of its instances from XML
  *
  * \note Not available in Python bindings
  *
@@ -196,7 +210,7 @@ class _3D_EXPORT QgsPointCloudLayer3DRendererMetadata : public Qgs3DRendererAbst
 
 /**
  * \ingroup core
- * 3D renderer that renders all points from a point cloud layer
+ * \brief 3D renderer that renders all points from a point cloud layer
  *
  * \since QGIS 3.18
  */

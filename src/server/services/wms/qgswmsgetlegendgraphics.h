@@ -29,7 +29,7 @@ namespace QgsWms
    * Output GetLegendGRaphics response
    */
   void writeGetLegendGraphics( QgsServerInterface *serverIface, const QgsProject *project,
-                               const QString &version, const QgsServerRequest &request,
+                               const QgsWmsRequest &request,
                                QgsServerResponse &response );
 
   /**

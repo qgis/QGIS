@@ -21,7 +21,7 @@
 
 /**
  * \ingroup core
- * QgsClassificationCustom is an implementation of QgsClassificationMethod
+ * \brief QgsClassificationCustom is an implementation of QgsClassificationMethod
  * based on standard deviation
  * \since QGIS 3.10
  */

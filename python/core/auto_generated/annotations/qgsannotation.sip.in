@@ -11,9 +11,10 @@
 
 
 
+
 class QgsAnnotation : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 
 Abstract base class for annotation items which are drawn over a map.
 
@@ -48,6 +49,8 @@ a :py:func:`~renderAnnotation` override.
 %Docstring
 Constructor for QgsAnnotation.
 %End
+
+    ~QgsAnnotation();
 
     virtual QgsAnnotation *clone() const = 0 /Factory/;
 %Docstring

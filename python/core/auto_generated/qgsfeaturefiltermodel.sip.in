@@ -10,7 +10,7 @@
 
 class QgsFeatureFilterModel : QgsFeaturePickerModelBase
 {
-%Docstring
+%Docstring(signature="appended")
 Provides a list of features based on filter conditions.
 Features are fetched asynchronously.
 
@@ -96,6 +96,9 @@ It is normally set to the primary key of the layer.
 Allows specifying one value that does not need to match the filter criteria but will
 still be available in the model.
 %End
+
+  private:
+    virtual void requestToReloadCurrentFeature( QgsFeatureRequest &request );
 
 };
 

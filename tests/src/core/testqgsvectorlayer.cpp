@@ -21,6 +21,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QDesktopServices>
+#include <QSignalSpy>
 
 //qgis includes...
 #include <qgsgeometry.h>
@@ -73,6 +74,7 @@ class TestQgsVectorLayer : public QObject
     void uniqueValues();
     void minimumValue();
     void maximumValue();
+    void minimumAndMaximumValue();
     void isSpatial();
     void testAddTopologicalPoints();
     void testCopyPasteFieldConfiguration();
@@ -91,10 +93,10 @@ void TestQgsVectorLayer::initTestCase()
   //
   //create a non spatial layer that will be used in all tests...
   //
-  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + '/';
-  QString myDbfFileName = mTestDataDir + "nonspatial.dbf";
-  QFileInfo myDbfFileInfo( myDbfFileName );
+  const QString myDbfFileName = mTestDataDir + "nonspatial.dbf";
+  const QFileInfo myDbfFileInfo( myDbfFileName );
   mpNonSpatialLayer = new QgsVectorLayer( myDbfFileInfo.filePath(),
                                           myDbfFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
@@ -103,8 +105,8 @@ void TestQgsVectorLayer::initTestCase()
   //
   //create a point layer that will be used in all tests...
   //
-  QString myPointsFileName = mTestDataDir + "points.shp";
-  QFileInfo myPointFileInfo( myPointsFileName );
+  const QString myPointsFileName = mTestDataDir + "points.shp";
+  const QFileInfo myPointFileInfo( myPointsFileName );
   mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
                                       myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
@@ -114,8 +116,8 @@ void TestQgsVectorLayer::initTestCase()
   //
   //create a poly layer that will be used in all tests...
   //
-  QString myPolysFileName = mTestDataDir + "polys.shp";
-  QFileInfo myPolyFileInfo( myPolysFileName );
+  const QString myPolysFileName = mTestDataDir + "polys.shp";
+  const QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
                                      myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
@@ -126,8 +128,8 @@ void TestQgsVectorLayer::initTestCase()
   //
   // Create a line layer that will be used in all tests...
   //
-  QString myLinesFileName = mTestDataDir + "lines.shp";
-  QFileInfo myLineFileInfo( myLinesFileName );
+  const QString myLinesFileName = mTestDataDir + "lines.shp";
+  const QFileInfo myLineFileInfo( myLinesFileName );
   mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(),
                                      myLineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
@@ -139,7 +141,7 @@ void TestQgsVectorLayer::initTestCase()
 
 void TestQgsVectorLayer::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -245,7 +247,7 @@ void TestQgsVectorLayer::getValues()
 
 void TestQgsVectorLayer::setRenderer()
 {
-  QSignalSpy spy( mpPointsLayer, &QgsVectorLayer::rendererChanged );
+  const QSignalSpy spy( mpPointsLayer, &QgsVectorLayer::rendererChanged );
 
   QgsSingleSymbolRenderer *symbolRenderer = new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
 
@@ -256,7 +258,7 @@ void TestQgsVectorLayer::setRenderer()
 
 void TestQgsVectorLayer::setFeatureBlendMode()
 {
-  QSignalSpy spy( mpPointsLayer, &QgsVectorLayer::featureBlendModeChanged );
+  const QSignalSpy spy( mpPointsLayer, &QgsVectorLayer::featureBlendModeChanged );
 
   mpPointsLayer->setFeatureBlendMode( QPainter::CompositionMode_Screen );
   QCOMPARE( spy.count(), 1 );
@@ -273,7 +275,7 @@ void TestQgsVectorLayer::setFeatureBlendMode()
 
 void TestQgsVectorLayer::setLayerTransparency()
 {
-  QSignalSpy spy( mpPointsLayer, &QgsMapLayer::opacityChanged );
+  const QSignalSpy spy( mpPointsLayer, &QgsMapLayer::opacityChanged );
 
   mpPointsLayer->setOpacity( 0.5 );
   QCOMPARE( spy.count(), 1 );
@@ -290,7 +292,7 @@ void TestQgsVectorLayer::setLayerTransparency()
 void TestQgsVectorLayer::uniqueValues()
 {
   //test with invalid field
-  QSet<QVariant> values = mpPointsLayer->uniqueValues( 1000 );
+  const QSet<QVariant> values = mpPointsLayer->uniqueValues( 1000 );
   QCOMPARE( values.count(), 0 );
 }
 
@@ -304,6 +306,16 @@ void TestQgsVectorLayer::maximumValue()
 {
   //test with invalid field
   QCOMPARE( mpPointsLayer->maximumValue( 1000 ), QVariant() );
+}
+
+void TestQgsVectorLayer::minimumAndMaximumValue()
+{
+  //test with invalid field
+  QVariant min;
+  QVariant max;
+  mpPointsLayer->minimumAndMaximumValue( 1000, min, max );
+  QCOMPARE( min, QVariant() );
+  QCOMPARE( max, QVariant() );
 }
 
 void TestQgsVectorLayer::isSpatial()
@@ -322,36 +334,83 @@ void TestQgsVectorLayer::testAddTopologicalPoints()
   QVERIFY( layerLine->isValid() );
 
   QgsPolylineXY line1;
-  line1 << QgsPointXY( 2, 1 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 1, 3 );
+  line1 << QgsPointXY( 2, 1 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 1, 5 );
   QgsFeature lineF1;
   lineF1.setGeometry( QgsGeometry::fromPolylineXY( line1 ) );
 
   layerLine->startEditing();
   layerLine->addFeature( lineF1 );
-  QgsFeatureId fidLineF1 = lineF1.id();
+  const QgsFeatureId fidLineF1 = lineF1.id();
   QCOMPARE( layerLine->featureCount(), ( long )1 );
 
   QCOMPARE( layerLine->undoStack()->index(), 1 );
 
   // outside of the linestring - nothing should happen
-  layerLine->addTopologicalPoints( QgsPoint( 2, 2 ) );
+  int result = layerLine->addTopologicalPoints( QgsPoint( 2, 2 ) );
+  QCOMPARE( result, 2 );
 
   QCOMPARE( layerLine->undoStack()->index(), 1 );
-  QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry().asWkt(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ).asWkt() );
+  QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry().asWkt(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 5)" ).asWkt() );
 
   // add point at an existing vertex
-  layerLine->addTopologicalPoints( QgsPoint( 1, 1 ) );
+  result = layerLine->addTopologicalPoints( QgsPoint( 1, 1 ) );
+  QCOMPARE( result, 2 );
 
   QCOMPARE( layerLine->undoStack()->index(), 1 );
-  QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry().asWkt(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ).asWkt() );
+  QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry().asWkt(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 5)" ).asWkt() );
 
   // add point on segment of linestring
-  layerLine->addTopologicalPoints( QgsPoint( 1, 2 ) );
+  result = layerLine->addTopologicalPoints( QgsPoint( 1, 2 ) );
+  QCOMPARE( result, 0 );
 
   QCOMPARE( layerLine->undoStack()->index(), 2 );
-  QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry().asWkt(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 2, 1 3)" ).asWkt() );
+  QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry().asWkt(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 2, 1 5)" ).asWkt() );
+
+  // add points from disjoint geometry - nothing should happen
+  result = layerLine->addTopologicalPoints( QgsGeometry::fromWkt( "LINESTRING(2 0, 2 1, 2 2)" ) );
+  QCOMPARE( result, 2 );
+
+  QCOMPARE( layerLine->undoStack()->index(), 2 );
+  QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry().asWkt(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 2, 1 5)" ).asWkt() );
+
+  // add 2 out of 3 points from intersecting geometry
+  result = layerLine->addTopologicalPoints( QgsGeometry::fromWkt( "LINESTRING(2 0, 2 1, 2 3, 1 3, 0 3, 0 4, 1 4)" ) );
+  QCOMPARE( result, 0 );
+
+  QCOMPARE( layerLine->undoStack()->index(), 2 );
+  QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry().asWkt(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 2, 1 3, 1 4, 1 5)" ).asWkt() );
 
   delete layerLine;
+
+  // Test error results -1: layer error, 1: geometry error
+  QgsVectorLayer *nonSpatialLayer = new QgsVectorLayer( QStringLiteral( "None" ), QStringLiteral( "non spatial layer" ), QStringLiteral( "memory" ) );
+  QVERIFY( nonSpatialLayer->isValid() );
+
+  result = nonSpatialLayer->addTopologicalPoints( QgsPoint( 2, 2 ) );
+  QCOMPARE( result, -1 );  // Non editable
+
+  nonSpatialLayer->startEditing();
+  result = nonSpatialLayer->addTopologicalPoints( QgsPoint( 2, 2 ) );
+  QCOMPARE( result, 1 );  // Non spatial
+
+  delete nonSpatialLayer;
+
+  QgsVectorLayer *layerPoint = new QgsVectorLayer( QStringLiteral( "Point?crs=EPSG:27700" ), QStringLiteral( "layer point" ), QStringLiteral( "memory" ) );
+  QVERIFY( layerPoint->isValid() );
+
+  layerPoint->startEditing();
+  result = layerPoint->addTopologicalPoints( QgsGeometry() );
+  QCOMPARE( result, 1 );  // Null geometry
+
+  delete layerPoint;
+
+  QgsVectorLayer *layerInvalid = new QgsVectorLayer( QStringLiteral(), QStringLiteral( "layer invalid" ), QStringLiteral( "none" ) );
+  QVERIFY( !layerInvalid->isValid() );
+
+  result = layerInvalid->addTopologicalPoints( QgsPoint( 2, 2 ) );
+  QCOMPARE( result, -1 );  // Invalid layer
+
+  delete layerInvalid;
 }
 
 void TestQgsVectorLayer::testCopyPasteFieldConfiguration_data()
@@ -383,7 +442,7 @@ void TestQgsVectorLayer::testCopyPasteFieldConfiguration()
   // export given categories, import all
   QString errorMsg;
   QDomDocument doc( QStringLiteral( "qgis" ) );
-  QgsReadWriteContext context;
+  const QgsReadWriteContext context;
   layer1.exportNamedStyle( doc, errorMsg, context, categories );
   QVERIFY( errorMsg.isEmpty() );
 

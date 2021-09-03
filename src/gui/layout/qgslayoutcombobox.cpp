@@ -67,10 +67,10 @@ void QgsLayoutComboBox::setCurrentLayout( QgsMasterLayoutInterface *layout )
   if ( !mModel )
     return;
 
-  QModelIndex idx = mModel->indexFromLayout( layout );
+  const QModelIndex idx = mModel->indexFromLayout( layout );
   if ( idx.isValid() )
   {
-    QModelIndex proxyIdx = mProxyModel->mapFromSource( idx );
+    const QModelIndex proxyIdx = mProxyModel->mapFromSource( idx );
     if ( proxyIdx.isValid() )
     {
       setCurrentIndex( proxyIdx.row() );
@@ -112,7 +112,7 @@ QgsMasterLayoutInterface *QgsLayoutComboBox::layout( int index ) const
     return nullptr;
   }
 
-  QModelIndex sourceIndex = mProxyModel->mapToSource( proxyIndex );
+  const QModelIndex sourceIndex = mProxyModel->mapToSource( proxyIndex );
   if ( !sourceIndex.isValid() )
   {
     return nullptr;

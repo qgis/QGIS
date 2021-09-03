@@ -73,14 +73,14 @@ void QgsSelectByFormDialog::zoomToFeatures( const QString &filter )
     {
       mMessageBar->pushMessage( QString(),
                                 tr( "Zoomed to %n matching feature(s)", "number of matching features", featureCount ),
-                                Qgis::Info );
+                                Qgis::MessageLevel::Info );
     }
   }
   else if ( mMessageBar )
   {
     mMessageBar->pushMessage( QString(),
                               tr( "No matching features found" ),
-                              Qgis::Info );
+                              Qgis::MessageLevel::Info );
   }
 }
 
@@ -91,6 +91,6 @@ void QgsSelectByFormDialog::flashFeatures( const QString &filter )
   {
     mMessageBar->pushMessage( QString(),
                               tr( "No matching features found" ),
-                              Qgis::Info );
+                              Qgis::MessageLevel::Info );
   }
 }

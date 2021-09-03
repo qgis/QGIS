@@ -63,6 +63,7 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
   QgsGui::enableAutoGeometryRestore( this );
 
   connect( mFromSelectedPushButton, &QPushButton::clicked, this, &QgsMergeAttributesDialog::mFromSelectedPushButton_clicked );
+  connect( mFromLargestPushButton, &QPushButton::clicked, this, &QgsMergeAttributesDialog::mFromLargestPushButton_clicked );
   connect( mRemoveFeatureFromSelectionButton, &QPushButton::clicked, this, &QgsMergeAttributesDialog::mRemoveFeatureFromSelectionButton_clicked );
   createTableWidgetContents();
 
@@ -75,10 +76,42 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
   mTableWidget->setSelectionMode( QAbstractItemView::SingleSelection );
 
   mFromSelectedPushButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionFromSelectedFeature.svg" ) ) );
+  mFromLargestPushButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionFromLargestFeature.svg" ) ) );
   mRemoveFeatureFromSelectionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionRemoveSelectedFeature.svg" ) ) );
+
+  switch ( mVectorLayer->geometryType() )
+  {
+    case QgsWkbTypes::PointGeometry:
+      mTakeLargestAttributesLabel->setText( tr( "Take attributes from feature with the most points" ) );
+      mFromLargestPushButton->setToolTip( tr( "Take all attributes from the MultiPoint feature with the most parts" ) );
+      if ( !QgsWkbTypes::isMultiType( mVectorLayer->wkbType() ) )
+      {
+        mTakeLargestAttributesLabel->setEnabled( false );
+        mFromLargestPushButton->setEnabled( false );
+      }
+      break;
+
+    case QgsWkbTypes::LineGeometry:
+      mTakeLargestAttributesLabel->setText( tr( "Take attributes from feature with the longest length" ) );
+      mFromLargestPushButton->setToolTip( tr( "Take all attributes from the Line feature with the longest length" ) );
+      break;
+
+    case QgsWkbTypes::PolygonGeometry:
+      mTakeLargestAttributesLabel->setText( tr( "Take attributes from feature with the largest area" ) );
+      mFromLargestPushButton->setToolTip( tr( "Take all attributes from the Polygon feature with the largest area" ) );
+      break;
+
+    case QgsWkbTypes::UnknownGeometry:
+    case QgsWkbTypes::NullGeometry:
+      mTakeLargestAttributesLabel->setEnabled( false );
+      mFromLargestPushButton->setEnabled( false );
+      break;
+  }
 
   connect( mSkipAllButton, &QAbstractButton::clicked, this, &QgsMergeAttributesDialog::setAllToSkip );
   connect( mTableWidget, &QTableWidget::cellChanged, this, &QgsMergeAttributesDialog::tableWidgetCellChanged );
+
+  setAttributeTableConfig( mVectorLayer->attributeTableConfig() );
 }
 
 QgsMergeAttributesDialog::QgsMergeAttributesDialog()
@@ -93,6 +126,29 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog()
 QgsMergeAttributesDialog::~QgsMergeAttributesDialog()
 {
   delete mSelectionRubberBand;
+}
+
+void QgsMergeAttributesDialog::setAttributeTableConfig( const QgsAttributeTableConfig &config )
+{
+  const QVector< QgsAttributeTableConfig::ColumnConfig > columns = config.columns();
+  for ( const QgsAttributeTableConfig::ColumnConfig &columnConfig : columns )
+  {
+    if ( columnConfig.hidden )
+      continue;
+
+    const int col = mFieldToColumnMap.value( columnConfig.name, -1 );
+    if ( col < 0 )
+      continue;
+
+    if ( columnConfig.width >= 0 )
+    {
+      mTableWidget->setColumnWidth( col, columnConfig.width );
+    }
+    else
+    {
+      mTableWidget->setColumnWidth( col, mTableWidget->horizontalHeader()->defaultSectionSize() );
+    }
+  }
 }
 
 void QgsMergeAttributesDialog::createTableWidgetContents()
@@ -121,6 +177,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
     }
 
     mTableWidget->setColumnCount( col + 1 );
+    mFieldToColumnMap[ mFields.at( idx ).name() ] = col;
 
     QComboBox *cb = createMergeComboBox( mFields.at( idx ).type() );
     if ( mFields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
@@ -226,7 +283,7 @@ QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
     case QVariant::Int:
     case QVariant::LongLong:
     {
-      for ( QgsStatisticalSummary::Statistic stat : qgis::as_const( DISPLAY_STATS ) )
+      for ( QgsStatisticalSummary::Statistic stat : std::as_const( DISPLAY_STATS ) )
       {
         newComboBox->addItem( QgsStatisticalSummary::displayName( stat ), stat );
       }
@@ -389,6 +446,24 @@ QVariant QgsMergeAttributesDialog::featureAttribute( QgsFeatureId featureId, int
   return QVariant( mVectorLayer->fields().at( fieldIdx ).type() );
 }
 
+void QgsMergeAttributesDialog::setAllAttributesFromFeature( QgsFeatureId featureId )
+{
+  for ( int i = 0; i < mTableWidget->columnCount(); ++i )
+  {
+    QComboBox *currentComboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, i ) );
+    if ( !currentComboBox )
+      continue;
+
+    if ( mVectorLayer->fields().at( i ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
+    {
+      currentComboBox->setCurrentIndex( currentComboBox->findData( QStringLiteral( "skip" ) ) );
+    }
+    else
+    {
+      currentComboBox->setCurrentIndex( currentComboBox->findData( QStringLiteral( "f%1" ).arg( FID_TO_STRING( featureId ) ) ) );
+    }
+  }
+}
 
 QVariant QgsMergeAttributesDialog::calcStatistic( int col, QgsStatisticalSummary::Statistic stat )
 {
@@ -460,19 +535,74 @@ void QgsMergeAttributesDialog::mFromSelectedPushButton_clicked()
     return;
   }
 
-  for ( int i = 0; i < mTableWidget->columnCount(); ++i )
-  {
-    QComboBox *currentComboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, i ) );
-    if ( !currentComboBox )
-      continue;
+  setAllAttributesFromFeature( featureId );
+}
 
-    if ( mVectorLayer->fields().at( i ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
+void QgsMergeAttributesDialog::mFromLargestPushButton_clicked()
+{
+  QgsFeatureId featureId = FID_NULL;
+  double maxValue = 0;
+
+  switch ( mVectorLayer->geometryType() )
+  {
+    case QgsWkbTypes::PointGeometry:
     {
-      currentComboBox->setCurrentIndex( currentComboBox->findData( QStringLiteral( "skip" ) ) );
+      QgsFeatureList::const_iterator f_it = mFeatureList.constBegin();
+      for ( ; f_it != mFeatureList.constEnd(); ++f_it )
+      {
+        const QgsAbstractGeometry *geom = f_it->geometry().constGet();
+        int partCount = geom ? geom->partCount() : 0;
+        if ( partCount > maxValue )
+        {
+          featureId = f_it->id();
+          maxValue = partCount;
+        }
+      }
+      break;
     }
-    else
+    case QgsWkbTypes::LineGeometry:
     {
-      currentComboBox->setCurrentIndex( currentComboBox->findData( QStringLiteral( "f%1" ).arg( FID_TO_STRING( featureId ) ) ) );
+      QgsFeatureList::const_iterator f_it = mFeatureList.constBegin();
+      for ( ; f_it != mFeatureList.constEnd(); ++f_it )
+      {
+        double featureLength = f_it->geometry().length();
+        if ( featureLength > maxValue )
+        {
+          featureId = f_it->id();
+          maxValue = featureLength;
+        }
+      }
+      break;
+    }
+    case QgsWkbTypes::PolygonGeometry:
+    {
+      QgsFeatureList::const_iterator f_it = mFeatureList.constBegin();
+      for ( ; f_it != mFeatureList.constEnd(); ++f_it )
+      {
+        double featureArea = f_it->geometry().area();
+        if ( featureArea > maxValue )
+        {
+          featureId = f_it->id();
+          maxValue = featureArea;
+        }
+      }
+      break;
+    }
+    default:
+      return;
+  }
+  // Only proceed if we do have a largest geometry
+  if ( maxValue > 0 )
+  {
+    setAllAttributesFromFeature( featureId );
+    // Also select the appropriate row so the feature gets highlighted
+    for ( int row = mTableWidget->rowCount() - 1; row >= 0; --row )
+    {
+      if ( mTableWidget->verticalHeaderItem( row )->text() == FID_TO_STRING( featureId ) )
+      {
+        mTableWidget->selectRow( row );
+        return;
+      }
     }
   }
 }

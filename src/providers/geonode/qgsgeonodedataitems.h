@@ -16,11 +16,12 @@
 #ifndef QGSGEONODEDATAITEMS_H
 #define QGSGEONODEDATAITEMS_H
 
-#include "qgsdataitem.h"
+#include "qgsdatacollectionitem.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdataprovider.h"
 #include "qgsdatasourceuri.h"
 #include "qgsgeonodeconnection.h"
+#include "qgsconnectionsitem.h"
 
 class QgsGeoNodeConnectionItem : public QgsDataCollectionItem
 {

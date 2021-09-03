@@ -9,7 +9,7 @@
 
 class QgsAttributeEditorQmlElement : QgsAttributeEditorElement
 {
-%Docstring
+%Docstring(signature="appended")
 An attribute editor widget that will represent arbitrary QML code.
 
 .. versionadded:: 3.4

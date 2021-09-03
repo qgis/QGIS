@@ -123,7 +123,7 @@ void QgsRelation::writeXml( QDomNode &node, QDomDocument &doc ) const
   elem.setAttribute( QStringLiteral( "referencedLayer" ), d->mReferencedLayerId );
   elem.setAttribute( QStringLiteral( "strength" ), qgsEnumValueToKey<RelationStrength>( d->mRelationStrength ) );
 
-  for ( const FieldPair &pair : qgis::as_const( d->mFieldPairs ) )
+  for ( const FieldPair &pair : std::as_const( d->mFieldPairs ) )
   {
     QDomElement referenceElem = doc.createElement( QStringLiteral( "fieldRef" ) );
     referenceElem.setAttribute( QStringLiteral( "referencingField" ), pair.first );
@@ -218,7 +218,7 @@ QString QgsRelation::getRelatedFeaturesFilter( const QgsFeature &feature ) const
     }
   }
 
-  for ( const FieldPair &pair : qgis::as_const( d->mFieldPairs ) )
+  for ( const FieldPair &pair : std::as_const( d->mFieldPairs ) )
   {
     QVariant val( feature.attribute( pair.referencedField() ) );
     conditions << QgsExpression::createFieldEqualityExpression( pair.referencingField(), val );
@@ -231,7 +231,7 @@ QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsAttributes 
 {
   QStringList conditions;
 
-  for ( const FieldPair &pair : qgis::as_const( d->mFieldPairs ) )
+  for ( const FieldPair &pair : std::as_const( d->mFieldPairs ) )
   {
     int referencingIdx = referencingLayer()->fields().lookupField( pair.referencingField() );
     conditions << QgsExpression::createFieldEqualityExpression( pair.referencedField(), attributes.at( referencingIdx ) );
@@ -318,7 +318,7 @@ QgsAttributeList QgsRelation::referencedFields() const
 {
   QgsAttributeList attrs;
   attrs.reserve( d->mFieldPairs.size() );
-  for ( const FieldPair &pair : qgis::as_const( d->mFieldPairs ) )
+  for ( const FieldPair &pair : std::as_const( d->mFieldPairs ) )
   {
     attrs << d->mReferencedLayer->fields().lookupField( pair.second );
   }
@@ -329,7 +329,7 @@ QgsAttributeList QgsRelation::referencingFields() const
 {
   QgsAttributeList attrs;
 
-  for ( const FieldPair &pair : qgis::as_const( d->mFieldPairs ) )
+  for ( const FieldPair &pair : std::as_const( d->mFieldPairs ) )
   {
     attrs << d->mReferencingLayer->fields().lookupField( pair.first );
   }
@@ -349,7 +349,7 @@ bool QgsRelation::hasEqualDefinition( const QgsRelation &other ) const
 
 QString QgsRelation::resolveReferencedField( const QString &referencingField ) const
 {
-  for ( const FieldPair &pair : qgis::as_const( d->mFieldPairs ) )
+  for ( const FieldPair &pair : std::as_const( d->mFieldPairs ) )
   {
     if ( pair.first == referencingField )
       return pair.second;
@@ -359,7 +359,7 @@ QString QgsRelation::resolveReferencedField( const QString &referencingField ) c
 
 QString QgsRelation::resolveReferencingField( const QString &referencedField ) const
 {
-  for ( const FieldPair &pair : qgis::as_const( d->mFieldPairs ) )
+  for ( const FieldPair &pair : std::as_const( d->mFieldPairs ) )
   {
     if ( pair.second == referencedField )
       return pair.first;
@@ -401,7 +401,7 @@ void QgsRelation::updateRelationStatus()
         d->mValid = false;
       }
 
-      for ( const FieldPair &pair : qgis::as_const( d->mFieldPairs ) )
+      for ( const FieldPair &pair : std::as_const( d->mFieldPairs ) )
       {
         if ( -1 == d->mReferencingLayer->fields().lookupField( pair.first ) )
         {

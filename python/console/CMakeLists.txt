@@ -1,5 +1,4 @@
 set (QGIS_CONSOLE_DIR ${QGIS_DATA_DIR}/python/console)
-set (PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
 
 set(PY_CONSOLE_FILES
   console.py

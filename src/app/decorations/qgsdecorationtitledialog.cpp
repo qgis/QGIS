@@ -52,7 +52,7 @@ QgsDecorationTitleDialog::QgsDecorationTitleDialog( QgsDecorationTitle &deco, QW
   txtTitleText->setAcceptRichText( false );
   if ( !mDeco.enabled() && mDeco.mLabelText.isEmpty() )
   {
-    QString defaultString = QgsProject::instance()->metadata().title();
+    const QString defaultString = QgsProject::instance()->metadata().title();
     txtTitleText->setPlainText( defaultString );
   }
   else
@@ -73,7 +73,7 @@ QgsDecorationTitleDialog::QgsDecorationTitleDialog( QgsDecorationTitle &deco, QW
   cboPlacement->addItem( tr( "Bottom Left" ), QgsDecorationItem::BottomLeft );
   cboPlacement->addItem( tr( "Bottom Center" ), QgsDecorationItem::BottomCenter );
   cboPlacement->addItem( tr( "Bottom Right" ), QgsDecorationItem::BottomRight );
-  connect( cboPlacement, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  connect( cboPlacement, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
   {
     spnHorizontal->setMinimum( cboPlacement->currentData() == QgsDecorationItem::TopCenter || cboPlacement->currentData() == QgsDecorationItem::BottomCenter ? -100 : 0 );
   } );
@@ -117,7 +117,7 @@ void QgsDecorationTitleDialog::mInsertExpressionButton_clicked()
   exprDlg.setWindowTitle( QObject::tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
-    QString expression = exprDlg.expressionText();
+    const QString expression = exprDlg.expressionText();
     if ( !expression.isEmpty() )
     {
       txtTitleText->insertPlainText( "[%" + expression + "%]" );

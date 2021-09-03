@@ -19,12 +19,14 @@
 ///@cond PRIVATE
 
 #include "qgsogrdbconnection.h"
-#include "qgsogrdataitems.h"
 #include "qgsvectorlayer.h"
 #include "qgsquerybuilder.h"
 #include "qgssettings.h"
 #include "qgsproject.h"
 #include "qgsgui.h"
+#include "qgsogrproviderutils.h"
+#include "qgsprovidermetadata.h"
+#include "qgsprovidersublayerdetails.h"
 
 #include <QMessageBox>
 
@@ -214,7 +216,7 @@ void QgsOgrDbSourceSelect::populateConnectionList()
 
 void QgsOgrDbSourceSelect::btnNew_clicked()
 {
-  if ( QgsOgrDataCollectionItem::createConnection( name(), extension(), ogrDriverName() ) )
+  if ( QgsOgrProviderUtils::createConnection( name(), extension(), ogrDriverName() ) )
   {
     emit connectionsChanged();
   }
@@ -247,7 +249,7 @@ void QgsOgrDbSourceSelect::btnDelete_clicked()
   if ( result != QMessageBox::Yes )
     return;
 
-  QgsOgrDbConnection::deleteConnection( subKey, ogrDriverName() );
+  QgsOgrDbConnection::deleteConnection( subKey );
   populateConnectionList();
   emit connectionsChanged();
 }
@@ -305,11 +307,11 @@ void QgsOgrDbSourceSelect::addButtonClicked()
   else
   {
     // Use OGR
-    for ( const LayerInfo &info : qgis::as_const( selectedVectors ) )
+    for ( const LayerInfo &info : std::as_const( selectedVectors ) )
     {
       emit addVectorLayer( info.first, info.second );
     }
-    for ( const LayerInfo &info : qgis::as_const( selectedRasters ) )
+    for ( const LayerInfo &info : std::as_const( selectedRasters ) )
     {
       emit addRasterLayer( info.first, info.second, QStringLiteral( "gdal" ) );
     }
@@ -333,48 +335,65 @@ void QgsOgrDbSourceSelect::btnConnect_clicked()
 
   mPath = conn.path();
 
-  try
+  const QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->querySublayers( mPath );
+
+  QModelIndex rootItemIndex = mTableModel.indexFromItem( mTableModel.invisibleRootItem() );
+  mTableModel.removeRows( 0, mTableModel.rowCount( rootItemIndex ), rootItemIndex );
+
+  // populate the table list
+  // get the list of suitable tables and columns and populate the UI
+
+  mTableModel.setPath( mPath );
+
+
+  for ( const QgsProviderSublayerDetails &layer : sublayers )
   {
-    const QList<QgsOgrDbLayerInfo *> layers = QgsOgrLayerItem::subLayers( mPath, ogrDriverName() );
-
-    QModelIndex rootItemIndex = mTableModel.indexFromItem( mTableModel.invisibleRootItem() );
-    mTableModel.removeRows( 0, mTableModel.rowCount( rootItemIndex ), rootItemIndex );
-
-    // populate the table list
-    // get the list of suitable tables and columns and populate the UI
-
-    mTableModel.setPath( mPath );
-
-
-    for ( const QgsOgrDbLayerInfo *table : layers )
+    if ( cbxAllowGeometrylessTables->isChecked() || layer.wkbType() != QgsWkbTypes::NoGeometry )
     {
-      if ( cbxAllowGeometrylessTables->isChecked() || table->geometryType() != QLatin1String( "None" ) )
+      Qgis::BrowserLayerType layerType = Qgis::BrowserLayerType::Vector;
+
+      switch ( QgsWkbTypes::geometryType( layer.wkbType() ) )
       {
-        mTableModel.addTableEntry( table->layerType(), table->name(), table->uri(), table->geometryColumn(), table->geometryType(), QString() );
+        case QgsWkbTypes::PointGeometry:
+          layerType = Qgis::BrowserLayerType::Point;
+          break;
+
+        case QgsWkbTypes::LineGeometry:
+          layerType = Qgis::BrowserLayerType::Line;
+          break;
+
+        case QgsWkbTypes::PolygonGeometry:
+          layerType = Qgis::BrowserLayerType::Polygon;
+          break;
+
+        case QgsWkbTypes::NullGeometry:
+          layerType = Qgis::BrowserLayerType::TableLayer;
+          break;
+
+        case QgsWkbTypes::UnknownGeometry:
+          layerType = Qgis::BrowserLayerType::Vector;
+          break;
       }
+
+      mTableModel.addTableEntry( layerType, layer.name(), layer.uri(), layer.geometryColumnName(), QgsWkbTypes::displayString( layer.wkbType() ), QString() );
     }
-
-    mTablesTreeView->sortByColumn( 0, Qt::AscendingOrder );
-
-    //expand all the toplevel items
-    int numTopLevelItems = mTableModel.invisibleRootItem()->rowCount();
-    for ( int i = 0; i < numTopLevelItems; ++i )
-    {
-      mTablesTreeView->expand( mProxyModel.mapFromSource( mTableModel.indexFromItem( mTableModel.invisibleRootItem()->child( i ) ) ) );
-    }
-    mTablesTreeView->resizeColumnToContents( 0 );
-    mTablesTreeView->resizeColumnToContents( 1 );
-
-    cbxAllowGeometrylessTables->setEnabled( true );
-
-    // Store selected connection
-    QgsOgrDbConnection::setSelectedConnection( subKey, ogrDriverName() );
-    qDeleteAll( layers );
   }
-  catch ( QgsOgrLayerNotValidException &ex )
+
+  mTablesTreeView->sortByColumn( 0, Qt::AscendingOrder );
+
+  //expand all the toplevel items
+  int numTopLevelItems = mTableModel.invisibleRootItem()->rowCount();
+  for ( int i = 0; i < numTopLevelItems; ++i )
   {
-    pushMessage( tr( "Error opening layer" ), ex.what(), Qgis::MessageLevel::Critical );
+    mTablesTreeView->expand( mProxyModel.mapFromSource( mTableModel.indexFromItem( mTableModel.invisibleRootItem()->child( i ) ) ) );
   }
+  mTablesTreeView->resizeColumnToContents( 0 );
+  mTablesTreeView->resizeColumnToContents( 1 );
+
+  cbxAllowGeometrylessTables->setEnabled( true );
+
+  // Store selected connection
+  QgsOgrDbConnection::setSelectedConnection( subKey, ogrDriverName() );
 }
 
 
@@ -384,7 +403,7 @@ void QgsOgrDbSourceSelect::setSql( const QModelIndex &index )
   QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), 0 ) )->text();
 
   QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  std::unique_ptr<QgsVectorLayer> vlayer = qgis::make_unique<QgsVectorLayer>( layerURI( idx ), tableName, QStringLiteral( "ogr" ), options );
+  std::unique_ptr<QgsVectorLayer> vlayer = std::make_unique<QgsVectorLayer>( layerURI( idx ), tableName, QStringLiteral( "ogr" ), options );
 
   if ( !vlayer->isValid() )
   {

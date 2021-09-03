@@ -24,7 +24,7 @@
 /**
  * \ingroup gui
  * \class QgsOptionsPageWidget
- * Base class for widgets for pages included in the options dialog.
+ * \brief Base class for widgets for pages included in the options dialog.
  * \since QGIS 3.0
  */
 class GUI_EXPORT QgsOptionsPageWidget : public QWidget
@@ -89,7 +89,7 @@ class GUI_EXPORT QgsOptionsPageWidget : public QWidget
 /**
  * \ingroup gui
  * \class QgsOptionsWidgetFactory
- * A factory class for creating custom options pages.
+ * \brief A factory class for creating custom options pages.
  * \since QGIS 3.0
  */
 // NOTE - this is a QObject so we can detect its destruction and avoid
@@ -147,6 +147,17 @@ class GUI_EXPORT QgsOptionsWidgetFactory : public QObject
      * \since QGIS 3.18
      */
     virtual QString pagePositionHint() const { return QString(); }
+
+    /**
+     * Returns the path to place the widget page at, for options dialogs
+     * which are structured using a tree view.
+     *
+     * A factory which returns "Code", "Javascript" would have its widget placed
+     * in a group named "Javascript", contained in a parent group named "Code".
+     *
+     * \since QGIS 3.22
+     */
+    virtual QStringList path() const { return QStringList(); }
 
     /**
      * \brief Factory function to create the widget on demand as needed by the options dialog.

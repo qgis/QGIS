@@ -32,7 +32,7 @@ class QgsPropertyOverrideButton;
 /**
  * \ingroup gui
  * \class QgsLabelSettingsWidgetBase
- * Base class for widgets which allow customization of label engine properties, such as label placement settings.
+ * \brief Base class for widgets which allow customization of label engine properties, such as label placement settings.
  * \since QGIS 3.12
  */
 class GUI_EXPORT QgsLabelSettingsWidgetBase : public QgsPanelWidget, protected QgsExpressionContextGenerator
@@ -136,7 +136,7 @@ class GUI_EXPORT QgsLabelSettingsWidgetBase : public QgsPanelWidget, protected Q
 /**
  * \ingroup gui
  * \class QgsLabelSettingsWidgetDialog
- * A blocking dialog containing a QgsLabelSettingsWidgetBase.
+ * \brief A blocking dialog containing a QgsLabelSettingsWidgetBase.
  * \since QGIS 3.12
  */
 class GUI_EXPORT QgsLabelSettingsWidgetDialog : public QDialog

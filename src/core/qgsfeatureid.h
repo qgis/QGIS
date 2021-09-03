@@ -24,7 +24,7 @@ email                : matthias@opengis.ch
 /**
  * 64 bit feature ids
  * negative numbers are used for uncommitted/newly added features
- **/
+ */
 typedef qint64 QgsFeatureId SIP_SKIP;
 #define FID_NULL            std::numeric_limits<QgsFeatureId>::min()
 #define FID_IS_NULL(fid)    ( fid == std::numeric_limits<QgsFeatureId>::min() )

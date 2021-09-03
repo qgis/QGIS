@@ -9,9 +9,10 @@
 
 
 
+
 class QgsProxyProgressTask : QgsTask
 {
-%Docstring
+%Docstring(signature="appended")
 
 A :py:class:`QgsTask` shell which proxies progress reports.
 
@@ -54,7 +55,7 @@ This method is safe to call from the main thread.
 
 class QgsScopedProxyProgressTask
 {
-%Docstring
+%Docstring(signature="appended")
 
 Scoped :py:class:`QgsScopedProxyProgressTask`, which automatically adds the proxy task
 to the application task manager on construction and finalizes the task

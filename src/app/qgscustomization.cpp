@@ -153,7 +153,7 @@ bool QgsCustomizationDialog::filterItems( const QString &text )
   success = !items.empty();
   mTreeInitialExpand.clear();
 
-  for ( QTreeWidgetItem *item : qgis::as_const( items ) )
+  for ( QTreeWidgetItem *item : std::as_const( items ) )
   {
     setChildrenVisible( item, true );
 

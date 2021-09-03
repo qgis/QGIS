@@ -12,7 +12,7 @@
 
 class QgsAttributeTableDelegate : QItemDelegate
 {
-%Docstring
+%Docstring(signature="appended")
 A delegate item class for :py:class:`QgsAttributeTable` (see Qt documentation for
 QItemDelegate).
 %End

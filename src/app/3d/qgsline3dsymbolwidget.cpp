@@ -67,7 +67,7 @@ void QgsLine3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVec
 
 QgsAbstract3DSymbol *QgsLine3DSymbolWidget::symbol()
 {
-  std::unique_ptr< QgsLine3DSymbol > sym = qgis::make_unique< QgsLine3DSymbol >();
+  std::unique_ptr< QgsLine3DSymbol > sym = std::make_unique< QgsLine3DSymbol >();
   sym->setWidth( spinWidth->value() );
   sym->setHeight( spinHeight->value() );
   sym->setExtrusionHeight( spinExtrusion->value() );
@@ -85,7 +85,7 @@ QString QgsLine3DSymbolWidget::symbolType() const
 
 void QgsLine3DSymbolWidget::updateGuiState()
 {
-  bool simple = chkSimpleLines->isChecked();
+  const bool simple = chkSimpleLines->isChecked();
   spinExtrusion->setEnabled( !simple );
   widgetMaterial->setTechnique( chkSimpleLines->isChecked() ? QgsMaterialSettingsRenderingTechnique::Lines
                                 : QgsMaterialSettingsRenderingTechnique::Triangles );

@@ -12,8 +12,11 @@
 
 class QgsMapLayerAction : QAction
 {
-%Docstring
+%Docstring(signature="appended")
 An action which can run on map layers
+The class can be used in two manners:
+* by instantiating it and connecting to its signals to perform an action
+* by subclassing and reimplementing its method (only since QGIS 3.18.2)
 %End
 
 %TypeHeaderCode
@@ -66,22 +69,22 @@ Layer behavior flags.
 .. versionadded:: 3.0
 %End
 
-    bool canRunUsingLayer( QgsMapLayer *layer ) const;
+    virtual bool canRunUsingLayer( QgsMapLayer *layer ) const;
 %Docstring
 True if action can run using the specified layer
 %End
 
-    void triggerForFeatures( QgsMapLayer *layer, const QList<QgsFeature> &featureList );
+    virtual void triggerForFeatures( QgsMapLayer *layer, const QList<QgsFeature> &featureList );
 %Docstring
 Triggers the action with the specified layer and list of feature.
 %End
 
-    void triggerForFeature( QgsMapLayer *layer, const QgsFeature &feature );
+    virtual void triggerForFeature( QgsMapLayer *layer, const QgsFeature &feature );
 %Docstring
 Triggers the action with the specified layer and feature.
 %End
 
-    void triggerForLayer( QgsMapLayer *layer );
+    virtual void triggerForLayer( QgsMapLayer *layer );
 %Docstring
 Triggers the action with the specified layer.
 %End
@@ -125,7 +128,7 @@ QFlags<QgsMapLayerAction::Target> operator|(QgsMapLayerAction::Target f1, QFlags
 
 class QgsMapLayerActionRegistry : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 This class tracks map layer actions.
 
 :py:class:`QgsMapLayerActionRegistry` is not usually directly created, but rather accessed through

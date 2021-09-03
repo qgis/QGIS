@@ -51,7 +51,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
 
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-    profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Retrieve service definition" ), QStringLiteral( "projectload" ) );
+    profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Retrieve service definition" ), QStringLiteral( "projectload" ) );
 
   const QVariantMap layerData = QgsArcGisRestQueryUtils::getLayerInfo( mSharedData->mDataSource.param( QStringLiteral( "url" ) ),
                                 authcfg, errorTitle, errorMessage, mRequestHeaders );
@@ -95,7 +95,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
     appendError( QgsErrorMessage( tr( "Could not retrieve layer extent" ), QStringLiteral( "AFSProvider" ) ) );
     return;
   }
-  QgsCoordinateReferenceSystem extentCrs = QgsArcGisRestUtils::convertSpatialReference( layerExtentMap[QStringLiteral( "spatialReference" )].toMap() );
+  const QgsCoordinateReferenceSystem extentCrs = QgsArcGisRestUtils::convertSpatialReference( layerExtentMap[QStringLiteral( "spatialReference" )].toMap() );
   if ( mSharedData->mExtent.isEmpty() && !extentCrs.isValid() )
   {
     appendError( QgsErrorMessage( tr( "Could not parse spatial reference" ), QStringLiteral( "AFSProvider" ) ) );
@@ -119,7 +119,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   if ( mSharedData->mExtent.isEmpty() )
   {
     mSharedData->mExtent = originalExtent;
-    QgsCoordinateTransform ct( extentCrs, mSharedData->mSourceCRS, options.transformContext );
+    const QgsCoordinateTransform ct( extentCrs, mSharedData->mSourceCRS, options.transformContext );
     try
     {
       mSharedData->mExtent = ct.transformBoundingBox( mSharedData->mExtent );
@@ -140,7 +140,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
     const QString fieldName = fieldDataMap[QStringLiteral( "name" )].toString();
     const QString fieldAlias = fieldDataMap[QStringLiteral( "alias" )].toString();
     const QString fieldTypeString = fieldDataMap[QStringLiteral( "type" )].toString();
-    QVariant::Type type = QgsArcGisRestUtils::convertFieldType( fieldTypeString );
+    const QVariant::Type type = QgsArcGisRestUtils::convertFieldType( fieldTypeString );
     if ( fieldName == QLatin1String( "geometry" ) || fieldTypeString == QLatin1String( "esriFieldTypeGeometry" ) )
     {
       // skip geometry field
@@ -182,8 +182,8 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
     objectIdFieldName = QStringLiteral( "objectid" );
 
   // Determine geometry type
-  bool hasM = layerData[QStringLiteral( "hasM" )].toBool();
-  bool hasZ = layerData[QStringLiteral( "hasZ" )].toBool();
+  const bool hasM = layerData[QStringLiteral( "hasM" )].toBool();
+  const bool hasZ = layerData[QStringLiteral( "hasZ" )].toBool();
   mSharedData->mGeometryType = QgsArcGisRestUtils::convertGeometryType( layerData[QStringLiteral( "geometryType" )].toString() );
   if ( mSharedData->mGeometryType == QgsWkbTypes::Unknown )
   {
@@ -276,7 +276,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   mLayerMetadata.setType( QStringLiteral( "dataset" ) );
   mLayerMetadata.setAbstract( mLayerDescription );
   mLayerMetadata.setTitle( mLayerName );
-  QString copyright = layerData[QStringLiteral( "copyrightText" )].toString();
+  const QString copyright = layerData[QStringLiteral( "copyrightText" )].toString();
   if ( !copyright.isEmpty() )
     mLayerMetadata.setRights( QStringList() << copyright );
   mLayerMetadata.addLink( QgsAbstractMetadataBase::Link( tr( "Source" ), QStringLiteral( "WWW:LINK" ), mSharedData->mDataSource.param( QStringLiteral( "url" ) ) ) );
@@ -303,7 +303,7 @@ QgsWkbTypes::Type QgsAfsProvider::wkbType() const
   return mSharedData->mGeometryType;
 }
 
-long QgsAfsProvider::featureCount() const
+long long QgsAfsProvider::featureCount() const
 {
   return mSharedData->mObjectIds.size();
 }
@@ -403,7 +403,7 @@ QList<QgsDataItemProvider *> QgsAfsProviderMetadata::dataItemProviders() const
 
 QVariantMap QgsAfsProviderMetadata::decodeUri( const QString &uri ) const
 {
-  QgsDataSourceUri dsUri = QgsDataSourceUri( uri );
+  const QgsDataSourceUri dsUri = QgsDataSourceUri( uri );
 
   QVariantMap components;
   components.insert( QStringLiteral( "url" ), dsUri.param( QStringLiteral( "url" ) ) );

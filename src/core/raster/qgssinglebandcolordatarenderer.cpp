@@ -43,7 +43,7 @@ QgsRasterRenderer *QgsSingleBandColorDataRenderer::create( const QDomElement &el
     return nullptr;
   }
 
-  int band = elem.attribute( QStringLiteral( "band" ), QStringLiteral( "-1" ) ).toInt();
+  const int band = elem.attribute( QStringLiteral( "band" ), QStringLiteral( "-1" ) ).toInt();
   QgsRasterRenderer *r = new QgsSingleBandColorDataRenderer( input, band );
   r->readXml( elem );
   return r;
@@ -66,27 +66,27 @@ QgsRasterBlock *QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle 
     return outputBlock.release();
   }
 
-  bool hasTransparency = usesTransparency();
+  const bool hasTransparency = usesTransparency();
   if ( !hasTransparency )
   {
     // Nothing to do, just retype if necessary
-    inputBlock->convert( Qgis::ARGB32_Premultiplied );
+    inputBlock->convert( Qgis::DataType::ARGB32_Premultiplied );
     return inputBlock.release();
   }
 
-  if ( !outputBlock->reset( Qgis::ARGB32_Premultiplied, width, height ) )
+  if ( !outputBlock->reset( Qgis::DataType::ARGB32_Premultiplied, width, height ) )
   {
     return outputBlock.release();
   }
 
   // make sure input is also premultiplied!
-  inputBlock->convert( Qgis::ARGB32_Premultiplied );
+  inputBlock->convert( Qgis::DataType::ARGB32_Premultiplied );
 
   QRgb *inputBits = ( QRgb * )inputBlock->bits();
   QRgb *outputBits = ( QRgb * )outputBlock->bits();
   for ( qgssize i = 0; i < ( qgssize )width * height; i++ )
   {
-    QRgb c = inputBits[i];
+    const QRgb c = inputBits[i];
     outputBits[i] = qRgba( mOpacity * qRed( c ), mOpacity * qGreen( c ), mOpacity * qBlue( c ), mOpacity * qAlpha( c ) );
   }
 
@@ -126,8 +126,8 @@ bool QgsSingleBandColorDataRenderer::setInput( QgsRasterInterface *input )
     return true;
   }
 
-  if ( input->dataType( 1 ) == Qgis::ARGB32 ||
-       input->dataType( 1 ) == Qgis::ARGB32_Premultiplied )
+  if ( input->dataType( 1 ) == Qgis::DataType::ARGB32 ||
+       input->dataType( 1 ) == Qgis::DataType::ARGB32_Premultiplied )
   {
     mInput = input;
     return true;

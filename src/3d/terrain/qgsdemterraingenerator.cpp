@@ -109,7 +109,7 @@ void QgsDemTerrainGenerator::updateGenerator()
   if ( dem )
   {
     QgsRectangle te = dem->extent();
-    QgsCoordinateTransform terrainToMapTransform( dem->crs(), mCrs, mTransformContext );
+    const QgsCoordinateTransform terrainToMapTransform( dem->crs(), mCrs, mTransformContext );
     te = terrainToMapTransform.transformBoundingBox( te );
 
     mTerrainTilingScheme = QgsTilingScheme( te, mCrs );

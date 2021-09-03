@@ -56,23 +56,23 @@ void QgsServiceAreaFromLayerAlgorithm::initAlgorithm( const QVariantMap & )
   addCommonParams();
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "START_POINTS" ), QObject::tr( "Vector layer with start points" ), QList< int >() << QgsProcessing::TypeVectorPoint ) );
 
-  std::unique_ptr< QgsProcessingParameterNumber > travelCost = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "TRAVEL_COST" ), QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ), QgsProcessingParameterNumber::Double, 0, true, 0 );
+  std::unique_ptr< QgsProcessingParameterNumber > travelCost = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "TRAVEL_COST" ), QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ), QgsProcessingParameterNumber::Double, 0, true, 0 );
   travelCost->setFlags( travelCost->flags() | QgsProcessingParameterDefinition::FlagHidden );
   addParameter( travelCost.release() );
 
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TRAVEL_COST2" ), QObject::tr( "Travel cost (distance for 'Shortest', time for 'Fastest')" ),
                 QgsProcessingParameterNumber::Double, 0, false, 0 ) );
 
-  std::unique_ptr< QgsProcessingParameterBoolean > includeBounds = qgis::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "INCLUDE_BOUNDS" ), QObject::tr( "Include upper/lower bound points" ), false, true );
+  std::unique_ptr< QgsProcessingParameterBoolean > includeBounds = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "INCLUDE_BOUNDS" ), QObject::tr( "Include upper/lower bound points" ), false, true );
   includeBounds->setFlags( includeBounds->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( includeBounds.release() );
 
-  std::unique_ptr< QgsProcessingParameterFeatureSink > outputLines = qgis::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "OUTPUT_LINES" ),  QObject::tr( "Service area (lines)" ),
+  std::unique_ptr< QgsProcessingParameterFeatureSink > outputLines = std::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "OUTPUT_LINES" ),  QObject::tr( "Service area (lines)" ),
       QgsProcessing::TypeVectorLine, QVariant(), true );
   outputLines->setCreateByDefault( true );
   addParameter( outputLines.release() );
 
-  std::unique_ptr< QgsProcessingParameterFeatureSink > outputPoints = qgis::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "OUTPUT" ),  QObject::tr( "Service area (boundary nodes)" ),
+  std::unique_ptr< QgsProcessingParameterFeatureSink > outputPoints = std::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "OUTPUT" ),  QObject::tr( "Service area (boundary nodes)" ),
       QgsProcessing::TypeVectorPoint, QVariant(), true );
   outputPoints->setCreateByDefault( false );
   addParameter( outputPoints.release() );
@@ -109,7 +109,7 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
   mDirector->makeGraph( mBuilder.get(), points, snappedPoints, feedback );
 
   feedback->pushInfo( QObject::tr( "Calculating service areas…" ) );
-  QgsGraph *graph = mBuilder->graph();
+  std::unique_ptr< QgsGraph > graph( mBuilder->takeGraph() );
 
   QgsFields fields = startPoints->fields();
   fields.append( QgsField( QStringLiteral( "type" ), QVariant::String ) );
@@ -136,7 +136,7 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
   QgsFeature feat;
   QgsAttributes attributes;
 
-  int step =  snappedPoints.size() > 0 ? 100.0 / snappedPoints.size() : 1;
+  const double step = snappedPoints.size() > 0 ? 100.0 / snappedPoints.size() : 1;
   for ( int i = 0; i < snappedPoints.size(); i++ )
   {
     if ( feedback->isCanceled() )
@@ -147,7 +147,7 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
     idxStart = graph->findVertex( snappedPoints.at( i ) );
     origPoint = points.at( i ).toString();
 
-    QgsGraphAnalyzer::dijkstra( graph, idxStart, 0, &tree, &costs );
+    QgsGraphAnalyzer::dijkstra( graph.get(), idxStart, 0, &tree, &costs );
 
     QgsMultiPointXY areaPoints;
     QgsMultiPolylineXY lines;
@@ -214,7 +214,8 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
       attributes = sourceAttributes.value( i + 1 );
       attributes << QStringLiteral( "within" ) << origPoint;
       feat.setAttributes( attributes );
-      pointsSink->addFeature( feat, QgsFeatureSink::FastInsert );
+      if ( !pointsSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
       if ( includeBounds )
       {
@@ -235,7 +236,9 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
           }
         } // costs
 
-        for ( int n : qgis::as_const( nodes ) )
+        upperBoundary.reserve( nodes.size() );
+        lowerBoundary.reserve( nodes.size() );
+        for ( int n : std::as_const( nodes ) )
         {
           upperBoundary.push_back( graph->vertex( graph->edge( tree.at( n ) ).toVertex() ).point() );
           lowerBoundary.push_back( graph->vertex( graph->edge( tree.at( n ) ).fromVertex() ).point() );
@@ -248,13 +251,15 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
         attributes = sourceAttributes.value( i + 1 );
         attributes << QStringLiteral( "upper" ) << origPoint;
         feat.setAttributes( attributes );
-        pointsSink->addFeature( feat, QgsFeatureSink::FastInsert );
+        if ( !pointsSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
         feat.setGeometry( geomLower );
         attributes = sourceAttributes.value( i + 1 );
         attributes << QStringLiteral( "lower" ) << origPoint;
         feat.setAttributes( attributes );
-        pointsSink->addFeature( feat, QgsFeatureSink::FastInsert );
+        if ( !pointsSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( pointsSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
       } // includeBounds
     }
 
@@ -265,7 +270,8 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
       attributes = sourceAttributes.value( i + 1 );
       attributes << QStringLiteral( "lines" ) << origPoint;
       feat.setAttributes( attributes );
-      linesSink->addFeature( feat, QgsFeatureSink::FastInsert );
+      if ( !linesSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( linesSink.get(), parameters, QStringLiteral( "OUTPUT_LINES" ) ) );
     }
 
     feedback->setProgress( i * step );

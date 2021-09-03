@@ -22,6 +22,8 @@
 #include <QTreeView>
 #include <QTreeWidget>
 #include <QAbstractItemModel>
+#include <QTableView>
+#include <QTextDocumentFragment>
 
 #include "qgsoptionsdialoghighlightwidget.h"
 #include "qgsmessagebaritem.h"
@@ -56,7 +58,8 @@ bool QgsOptionsDialogHighlightLabel::searchText( const QString &text )
   if ( !mLabel )
     return false;
 
-  return mLabel->text().contains( text, Qt::CaseInsensitive );
+  const QString labelText = QTextDocumentFragment::fromHtml( mLabel->text() ).toPlainText();
+  return labelText.contains( text, Qt::CaseInsensitive );
 }
 
 bool QgsOptionsDialogHighlightLabel::highlightText( const QString &text )
@@ -212,7 +215,16 @@ bool QgsOptionsDialogHighlightTree::searchText( const QString &text )
 {
   if ( !mTreeView || !mTreeView->model() )
     return false;
-  QModelIndexList hits = mTreeView->model()->match( mTreeView->model()->index( 0, 0 ), Qt::DisplayRole, text, 1, Qt::MatchContains | Qt::MatchRecursive );
+
+  // search headers too!
+  for ( int col = 0; col < mTreeView->model()->columnCount(); ++col )
+  {
+    const QString headerText = mTreeView->model()->headerData( col, Qt::Horizontal ).toString();
+    if ( headerText.contains( text, Qt::CaseInsensitive ) )
+      return true;
+  }
+
+  const QModelIndexList hits = mTreeView->model()->match( mTreeView->model()->index( 0, 0 ), Qt::DisplayRole, text, 1, Qt::MatchContains | Qt::MatchRecursive );
   return !hits.isEmpty();
 }
 
@@ -234,7 +246,7 @@ bool QgsOptionsDialogHighlightTree::highlightText( const QString &text )
     };
     setChildrenVisible( treeWidget->invisibleRootItem(), false );
 
-    QList<QTreeWidgetItem *> items = treeWidget->findItems( text, Qt::MatchContains | Qt::MatchRecursive, 0 );
+    const QList<QTreeWidgetItem *> items = treeWidget->findItems( text, Qt::MatchContains | Qt::MatchRecursive, 0 );
     success = !items.empty();
     mTreeInitialExpand.clear();
     for ( QTreeWidgetItem *item : items )
@@ -283,4 +295,39 @@ void QgsOptionsDialogHighlightTree::reset()
     }
     mTreeInitialExpand.clear();
   }
+}
+
+
+// ****************
+// QTableView
+QgsOptionsDialogHighlightTable::QgsOptionsDialogHighlightTable( QTableView *tableView )
+  : QgsOptionsDialogHighlightWidget( tableView )
+  , mTableView( tableView )
+{
+}
+
+bool QgsOptionsDialogHighlightTable::searchText( const QString &text )
+{
+  if ( !mTableView || !mTableView->model() )
+    return false;
+
+  // search headers too!
+  for ( int col = 0; col < mTableView->model()->columnCount(); ++col )
+  {
+    const QString headerText = mTableView->model()->headerData( col, Qt::Horizontal ).toString();
+    if ( headerText.contains( text, Qt::CaseInsensitive ) )
+      return true;
+  }
+
+  const QModelIndexList hits = mTableView->model()->match( mTableView->model()->index( 0, 0 ), Qt::DisplayRole, text, 1, Qt::MatchContains | Qt::MatchRecursive );
+  return !hits.isEmpty();
+}
+
+bool QgsOptionsDialogHighlightTable::highlightText( const QString & )
+{
+  return false;
+}
+
+void QgsOptionsDialogHighlightTable::reset()
+{
 }

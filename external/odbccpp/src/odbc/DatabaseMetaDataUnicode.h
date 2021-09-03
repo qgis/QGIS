@@ -127,6 +127,80 @@ public:
         const char16_t* tableName);
 
     /**
+     * Retrieves information about the unique row identifier of a table.
+     *
+     * The list of columns is returned as a ResultSet object, in which each
+     * returned row has the following columns:
+     *     1. Actual scope of the rowid
+     *     2. Column name
+     *     3. SQL data type
+     *     4. Data source-dependent data type name
+     *     5. The size of the column on the data source
+     *     6. The length in bytes of data transferred
+     *     7. The decimal digits of the column on the data source
+     *     8. Indicates whether the column is a pseudo-column
+     *
+     * This function uses the ODBC function SQLSpecialColumns. Refer to its
+     * documentation for further details on the data in the ResultSet object.
+     *
+     * @param identifierType  Type of unique row identifier to return.
+     * @param catalogName     A string indicating the catalog name.
+     * @param schemaName      A string indicating the schema name.
+     * @param tableName       A string indicating the table name.
+     * @param scope           Minimum required scope of the rowid.
+     * @param nullable        Determines whether to return special columns that
+     *                        can have a NULL value.
+     * @return                Returns a ResultSet object containing the
+     *                        unique row identifier information.
+     */
+    ResultSetRef getSpecialColumns(
+        RowIdentifierType identifierType,
+        const char16_t* catalogName,
+        const char16_t* schemaName,
+        const char16_t* tableName,
+        RowIdentifierScope scope,
+        ColumnNullableValue nullable);
+
+    /**
+      * Retrieves the statistics about the specified table and its indexes.
+      *
+      * The list of columns is returned as a ResultSet object, in which each
+      * returned row has the following columns:
+      *     1. Catalog name of the table
+      *     2. Schema name of the table
+      *     3. Table name of the table
+      *     4. Indicates whether the index does not allow duplicate values
+      *     5. The identifier that is used to qualify the index name doing a
+      *        DROP INDEX
+      *     6. Index name
+      *     7. Type of information being returned
+      *     8. Column sequence number in index (starting with 1)
+      *     9. Column name
+      *     10. Sort sequence for the column: "A" for ascending; "D" for
+      *         descending
+      *     11. Cardinality of table or index
+      *     12. Number of pages used to store the index or table
+      *     13. If the index is a filtered index
+      *
+      * This function uses the ODBC function SQLStatistics. Refer to its
+      * documentation for further details on the data in the ResultSet object.
+      *
+      * @param catalogName  A string indicating the catalog name.
+      * @param schemaName   A string indicating the schema name.
+      * @param tableName    A string indicating the table name.
+      * @param indexType    Type of index.
+      * @param accuracy     Indicates the type of the returned statistics.
+      * @return             Returns a ResultSet object containing the statistics
+      *                     about the specified table and its indexes.
+      */
+    ResultSetRef getStatistics(
+        const char16_t* catalogName,
+        const char16_t* schemaName,
+        const char16_t* tableName,
+        IndexType indexType,
+        StatisticsAccuracy accuracy);
+
+    /**
      * Retrieves a description of the tables that are available in the connected
      * database.
      *

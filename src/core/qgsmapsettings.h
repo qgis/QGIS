@@ -46,7 +46,7 @@ class QgsRenderedFeatureHandlerInterface;
  * \class QgsLabelBlockingRegion
  * \ingroup core
  *
- * Label blocking region (in map coordinates and CRS).
+ * \brief Label blocking region (in map coordinates and CRS).
  *
  * \since QGIS 3.6
 */
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsLabelBlockingRegion
 
 /**
  * \ingroup core
- * The QgsMapSettings class contains configuration for rendering of the map.
+ * \brief The QgsMapSettings class contains configuration for rendering of the map.
  * The rendering itself is done by QgsMapRendererJob subclasses.
  *
  * In order to set up QgsMapSettings instance, it is necessary to set at least
@@ -203,6 +203,24 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * \see outputDpi()
      */
     void setOutputDpi( double dpi );
+
+    /**
+     * Returns the target DPI (dots per inch) to be taken into consideration when rendering.
+     *
+     * The default value is -1, which states no DPI target is provided.
+     *
+     * \see setDpiTarget()
+     * \since QGIS 3.20
+     */
+    double dpiTarget() const;
+
+    /**
+     * Sets the target \a dpi (dots per inch) to be taken into consideration when rendering.
+     *
+     * \see dpiTarget()
+     * \since QGIS 3.20
+     */
+    void setDpiTarget( double dpi );
 
     /**
      * Set the magnification factor.
@@ -441,7 +459,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
 
     //! Check whether the map settings are valid and can be used for rendering
     bool hasValidSettings() const;
-    //! Returns the actual extent derived from requested extent that takes takes output image size into account
+    //! Returns the actual extent derived from requested extent that takes output image size into account
     QgsRectangle visibleExtent() const;
 
     /**
@@ -581,6 +599,28 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * \returns transform - may be invalid if the transform is not needed
      */
     QgsCoordinateTransform layerTransform( const QgsMapLayer *layer ) const;
+
+    /**
+     * \brief Compute the extent such that its \a center is at the specified
+     * position (mapped to the destinatonCrs) and the zoom factor corresponds
+     * to the specified \a scale
+     * \param center the center, in map coordinates
+     * \param scale the desired zoom factor (the x part of 1:x)
+     * \returns an extent which can be passed to QgsMapCanvas::setExtent
+     * \see computeScaleForExtent()
+     * \since QGIS 3.22
+     */
+    QgsRectangle computeExtentForScale( const QgsPointXY &center, double scale ) const;
+
+    /**
+     * \brief Compute the scale that corresponds to the specified \a extent
+     * \param extent the extent, as passed to \see QgsMapCanvas::setExtent
+     * \returns the scale denominator
+     * \see computeExtentForScale()
+     * \note This function does not consider any map rotation
+     * \since QGIS 3.22
+     */
+    double computeScaleForExtent( const QgsRectangle &extent ) const;
 
     //! returns current extent of layer set
     QgsRectangle fullExtent() const;
@@ -773,7 +813,8 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
 
   protected:
 
-    double mDpi;
+    double mDpi = 96.0;
+    double mDpiTarget = -1;
 
     QSize mSize;
     float mDevicePixelRatio = 1.0;
@@ -808,8 +849,10 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     QgsLabelingEngineSettings mLabelingEngineSettings;
 
     // derived properties
-    bool mValid = false; //!< Whether the actual settings are valid (set in updateDerived())
-    QgsRectangle mVisibleExtent; //!< Extent with some additional white space that matches the output aspect ratio
+    //! Whether the actual settings are valid (set in updateDerived())
+    bool mValid = false;
+    //! Extent with some additional white space that matches the output aspect ratio
+    QgsRectangle mVisibleExtent;
     double mMapUnitsPerPixel = 1;
     double mScale = 1;
 

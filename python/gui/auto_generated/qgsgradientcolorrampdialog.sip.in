@@ -12,7 +12,7 @@
 
 class QgsGradientColorRampDialog : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 A dialog which allows users to modify the properties of a :py:class:`QgsGradientColorRamp`.
 
 .. versionadded:: 3.0

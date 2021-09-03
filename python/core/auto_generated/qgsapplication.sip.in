@@ -9,10 +9,9 @@
 
 
 
-
 class QgsApplication : QApplication
 {
-%Docstring
+%Docstring(signature="appended")
 Extends QApplication to provide access to QGIS specific resources such
 as theme paths, database paths etc.
 
@@ -338,10 +337,13 @@ Returns path to the desired icon file.
 First it tries to use the active theme path, then default theme path
 %End
 
-    static QIcon getThemeIcon( const QString &name );
+    static QIcon getThemeIcon( const QString &name, const QColor &fillColor = QColor(), const QColor &strokeColor = QColor() );
 %Docstring
 Helper to get a theme icon. It will fall back to the
 default theme if the active theme does not have the required icon.
+
+Since QGIS 3.20, the optional ``fillColor`` and ``strokeColor`` arguments can be used to
+control the color of parameter based SVG icons.
 %End
 
     enum Cursor
@@ -378,9 +380,15 @@ colors are specified then the ``size`` argument also must be set.
 Returns the path to user's style.
 %End
 
-    static QRegExp shortNameRegExp();
+    static QRegularExpression shortNameRegularExpression();
 %Docstring
 Returns the short name regular expression for line edit validator
+
+.. note::
+
+   This functionality was previously available as `shortNameRegExp` for QGIS <= 3.20
+
+.. versionadded:: 3.22
 %End
 
     static QString userLoginName();
@@ -659,6 +667,13 @@ wide background task handling.
 .. versionadded:: 3.0
 %End
 
+    static QgsSettingsRegistryCore *settingsRegistryCore() /KeepReference/;
+%Docstring
+Returns the application's settings registry, used for managing application settings.
+
+.. versionadded:: 3.20
+%End
+
     static QgsColorSchemeRegistry *colorSchemeRegistry() /KeepReference/;
 %Docstring
 Returns the application's color scheme registry, used for managing color schemes.
@@ -777,6 +792,13 @@ Returns the application's annotation item registry, used for annotation item typ
 Returns the application's GPS connection registry, used for managing GPS connections.
 
 .. versionadded:: 3.0
+%End
+
+    static QgsBabelFormatRegistry *gpsBabelFormatRegistry() /KeepReference/;
+%Docstring
+Returns the application's GPSBabel format registry, used for managing GPSBabel formats.
+
+.. versionadded:: 3.22
 %End
 
     static QgsPluginLayerRegistry *pluginLayerRegistry() /KeepReference/;
@@ -907,6 +929,13 @@ Returns registry of available project storage implementations.
 .. versionadded:: 3.2
 %End
 
+    static QgsExternalStorageRegistry *externalStorageRegistry() /KeepReference/;
+%Docstring
+Returns registry of available external storage implementations.
+
+.. versionadded:: 3.20
+%End
+
     static QgsLocalizedDataPathRegistry *localizedDataPathRegistry() /KeepReference/;
 %Docstring
 Returns the registry of data repositories
@@ -985,9 +1014,18 @@ The maximum number of concurrent connections per connections pool.
 
     static void setTranslation( const QString &translation );
 %Docstring
-Set translation
+Set translation locale code
 
 .. versionadded:: 3.4
+%End
+
+    QString translation() const;
+%Docstring
+Returns the current application translation locale code
+
+.. seealso:: :py:func:`setTranslation`
+
+.. versionadded:: 3.22
 %End
 
     void collectTranslatableObjects( QgsTranslationContext *translationContext );
@@ -996,6 +1034,7 @@ Emits the signal to collect all the strings of .qgs to be included in ts file
 
 .. versionadded:: 3.4
 %End
+
 
 %If (ANDROID)
     //dummy method to workaround sip generation issue

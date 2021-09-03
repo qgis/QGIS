@@ -216,7 +216,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
     else if ( QgsWkbTypes::flatType( feature.geometry().wkbType() ) == QgsWkbTypes::LineString )
       mpl.push_back( feature.geometry().asPolyline() );
 
-    for ( const QgsPolylineXY &line : qgis::as_const( mpl ) )
+    for ( const QgsPolylineXY &line : std::as_const( mpl ) )
     {
       QgsPointXY pt1, pt2;
       bool isFirstPoint = true;
@@ -339,7 +339,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
     else if ( QgsWkbTypes::flatType( feature.geometry().wkbType() ) == QgsWkbTypes::LineString )
       mpl.push_back( feature.geometry().asPolyline() );
 
-    for ( const QgsPolylineXY &line : qgis::as_const( mpl ) )
+    for ( const QgsPolylineXY &line : std::as_const( mpl ) )
     {
       QgsPointXY pt1, pt2;
 

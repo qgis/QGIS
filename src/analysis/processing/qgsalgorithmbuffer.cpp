@@ -50,12 +50,12 @@ void QgsBufferAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
 
-  auto bufferParam = qgis::make_unique < QgsProcessingParameterDistance >( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), 10, QStringLiteral( "INPUT" ) );
+  auto bufferParam = std::make_unique < QgsProcessingParameterDistance >( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), 10, QStringLiteral( "INPUT" ) );
   bufferParam->setIsDynamic( true );
   bufferParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Distance" ), QObject::tr( "Buffer distance" ), QgsPropertyDefinition::Double ) );
   bufferParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( bufferParam.release() );
-  auto segmentParam = qgis::make_unique < QgsProcessingParameterNumber >( QStringLiteral( "SEGMENTS" ), QObject::tr( "Segments" ), QgsProcessingParameterNumber::Integer, 5, false, 1 );
+  auto segmentParam = std::make_unique < QgsProcessingParameterNumber >( QStringLiteral( "SEGMENTS" ), QObject::tr( "Segments" ), QgsProcessingParameterNumber::Integer, 5, false, 1 );
   segmentParam->setHelp( QObject::tr( "The segments parameter controls the number of line segments to use to approximate a quarter circle when creating rounded offsets." ) );
   addParameter( segmentParam.release() );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "END_CAP_STYLE" ), QObject::tr( "End cap style" ), QStringList() << QObject::tr( "Round" ) << QObject::tr( "Flat" ) << QObject::tr( "Square" ), false, 0 ) );
@@ -92,13 +92,13 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   // fixed parameters
-  bool dissolve = parameterAsBoolean( parameters, QStringLiteral( "DISSOLVE" ), context );
-  int segments = parameterAsInt( parameters, QStringLiteral( "SEGMENTS" ), context );
-  QgsGeometry::EndCapStyle endCapStyle = static_cast< QgsGeometry::EndCapStyle >( 1 + parameterAsInt( parameters, QStringLiteral( "END_CAP_STYLE" ), context ) );
-  QgsGeometry::JoinStyle joinStyle = static_cast< QgsGeometry::JoinStyle>( 1 + parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );
-  double miterLimit = parameterAsDouble( parameters, QStringLiteral( "MITER_LIMIT" ), context );
-  double bufferDistance = parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context );
-  bool dynamicBuffer = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DISTANCE" ) );
+  const bool dissolve = parameterAsBoolean( parameters, QStringLiteral( "DISSOLVE" ), context );
+  const int segments = parameterAsInt( parameters, QStringLiteral( "SEGMENTS" ), context );
+  const Qgis::EndCapStyle endCapStyle = static_cast< Qgis::EndCapStyle >( 1 + parameterAsInt( parameters, QStringLiteral( "END_CAP_STYLE" ), context ) );
+  const Qgis::JoinStyle joinStyle = static_cast< Qgis::JoinStyle>( 1 + parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );
+  const double miterLimit = parameterAsDouble( parameters, QStringLiteral( "MITER_LIMIT" ), context );
+  const double bufferDistance = parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context );
+  const bool dynamicBuffer = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DISTANCE" ) );
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context, source.get() );
   QgsProperty bufferProperty;
   if ( dynamicBuffer )
@@ -106,13 +106,13 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
     bufferProperty = parameters.value( QStringLiteral( "DISTANCE" ) ).value< QgsProperty >();
   }
 
-  long count = source->featureCount();
+  const long count = source->featureCount();
 
   QgsFeature f;
   // buffer doesn't care about invalid features, and buffering can be used to repair geometries
   QgsFeatureIterator it = source->getFeatures( QgsFeatureRequest(), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
 
-  double step = count > 0 ? 100.0 / count : 1;
+  const double step = count > 0 ? 100.0 / count : 1;
   int current = 0;
 
   QVector< QgsGeometry > bufferedGeometriesForDissolve;
@@ -140,7 +140,7 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
       QgsGeometry outputGeometry = f.geometry().buffer( distance, segments, endCapStyle, joinStyle, miterLimit );
       if ( outputGeometry.isNull() )
       {
-        QgsMessageLog::logMessage( QObject::tr( "Error calculating buffer for feature %1" ).arg( f.id() ), QObject::tr( "Processing" ), Qgis::Warning );
+        QgsMessageLog::logMessage( QObject::tr( "Error calculating buffer for feature %1" ).arg( f.id() ), QObject::tr( "Processing" ), Qgis::MessageLevel::Warning );
       }
       if ( dissolve )
         bufferedGeometriesForDissolve << outputGeometry;
@@ -152,7 +152,10 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
     }
 
     if ( !dissolve )
-      sink->addFeature( out, QgsFeatureSink::FastInsert );
+    {
+      if ( !sink->addFeature( out, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+    }
 
     feedback->setProgress( current * step );
     current++;
@@ -165,7 +168,8 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
     QgsFeature f;
     f.setGeometry( finalGeometry );
     f.setAttributes( dissolveAttrs );
-    sink->addFeature( f, QgsFeatureSink::FastInsert );
+    if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
   }
 
   QVariantMap outputs;

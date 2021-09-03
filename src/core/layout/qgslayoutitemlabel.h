@@ -21,6 +21,7 @@
 #include "qgslayoutitem.h"
 #include "qgswebpage.h"
 #include <QFont>
+#include <QUrl>
 
 class QgsVectorLayer;
 class QgsFeature;
@@ -28,7 +29,7 @@ class QgsDistanceArea;
 
 /**
  * \ingroup core
- * A layout item subclass for text labels.
+ * \brief A layout item subclass for text labels.
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
@@ -216,6 +217,14 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
   public slots:
 
     void refresh() override;
+
+    /**
+     * Converts the label's text() to a static string, by evaluating any expressions included in the text
+     * and replacing them with their current values.
+     *
+     * \since QGIS 3.20
+     */
+    void convertToStaticText();
 
   protected:
     void draw( QgsLayoutItemRenderContext &context ) override;

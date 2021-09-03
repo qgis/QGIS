@@ -25,7 +25,7 @@ class ScrollAreaFilter;
 /**
  * \class QgsScrollArea
  * \ingroup gui
- * A QScrollArea subclass with improved scrolling behavior.
+ * \brief A QScrollArea subclass with improved scrolling behavior.
  *
  * QgsScrollArea should be used instead of QScrollArea widgets.
  * In most cases the use is identical, however QgsScrollArea

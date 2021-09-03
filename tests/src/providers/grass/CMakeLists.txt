@@ -1,9 +1,11 @@
 include_directories(
   ${CMAKE_SOURCE_DIR}/src/providers/grass
 )
-include_directories(SYSTEM
-  ${GDAL_INCLUDE_DIR}
+include_directories(BEFORE SYSTEM
   ${PROJ_INCLUDE_DIR}
+  ${GDAL_INCLUDE_DIR}
+)
+include_directories(SYSTEM
   ${POSTGRES_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
 )
@@ -13,6 +15,7 @@ macro (ADD_QGIS_GRASS_TEST grass_build_version testname testsrc)
   set(qgis_${testname}${grass_build_version}_SRCS ${testsrc} ${util_SRCS})
   add_custom_target(qgis_${testname}${grass_build_version}moc ALL DEPENDS ${qgis_${testname}${grass_build_version}_MOC_SRCS})
   add_executable(qgis_${testname}${grass_build_version} ${qgis_${testname}${grass_build_version}_SRCS})
+  target_compile_features(qgis_${testname}${grass_build_version} PRIVATE cxx_std_17)
 
   include_directories(
     ${CMAKE_BINARY_DIR}/src/providers/grass/${grass_build_version}
@@ -22,10 +25,10 @@ macro (ADD_QGIS_GRASS_TEST grass_build_version testname testsrc)
     COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX${grass_build_version}}\\\" \"-DGRASS_BUILD_VERSION=${grass_build_version}\""
   )
   target_link_libraries(qgis_${testname}${grass_build_version}
-    ${Qt5Xml_LIBRARIES}
-    ${Qt5Core_LIBRARIES}
-    ${Qt5Svg_LIBRARIES}
-    ${Qt5Test_LIBRARIES}
+    ${QT_VERSION_BASE}::Xml
+    ${QT_VERSION_BASE}::Core
+    ${QT_VERSION_BASE}::Svg
+    ${QT_VERSION_BASE}::Test
     ${PROJ_LIBRARY}
     ${GEOS_LIBRARY}
     ${GDAL_LIBRARY}

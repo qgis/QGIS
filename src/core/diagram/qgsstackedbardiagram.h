@@ -36,7 +36,7 @@ class QgsRenderContext;
  * \ingroup core
  * \class QgsStackedBarDiagram
  *
- * A stacked bar chart diagram.
+ * \brief A stacked bar chart diagram.
  *
  * \since QGIS 3.12
  */

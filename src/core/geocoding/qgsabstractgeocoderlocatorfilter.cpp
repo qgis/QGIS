@@ -17,11 +17,12 @@
 #include "qgsgeocoder.h"
 #include "qgsgeocodercontext.h"
 
-QgsAbstractGeocoderLocatorFilter::QgsAbstractGeocoderLocatorFilter( const QString &name, const QString &displayName, const QString &prefix, QgsGeocoderInterface *geocoder )
+QgsAbstractGeocoderLocatorFilter::QgsAbstractGeocoderLocatorFilter( const QString &name, const QString &displayName, const QString &prefix, QgsGeocoderInterface *geocoder, const QgsRectangle &boundingBox )
   : mName( name )
   , mDisplayName( displayName )
   , mPrefix( prefix )
   , mGeocoder( geocoder )
+  , mBoundingBox( boundingBox )
 {
 
 }

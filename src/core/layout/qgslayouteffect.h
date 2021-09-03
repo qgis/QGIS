@@ -27,7 +27,7 @@
  * \ingroup core
  * \class QgsLayoutEffect
  *
- * A QGraphicsEffect subclass used for rendering layout items
+ * \brief A QGraphicsEffect subclass used for rendering layout items
  * onto a scene with custom composition modes.
  *
  * \since QGIS 3.0

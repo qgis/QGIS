@@ -11,7 +11,7 @@
 
 class Qgs3DAlgorithms: QgsProcessingProvider
 {
-%Docstring
+%Docstring(signature="appended")
 QGIS 3D processing algorithm provider.
 
 .. versionadded:: 3.0

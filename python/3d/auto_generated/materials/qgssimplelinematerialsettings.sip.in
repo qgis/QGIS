@@ -13,7 +13,7 @@
 
 class QgsSimpleLineMaterialSettings : QgsAbstractMaterialSettings
 {
-%Docstring
+%Docstring(signature="appended")
 Basic shading material used for rendering simple lines as solid line components.
 
 .. warning::

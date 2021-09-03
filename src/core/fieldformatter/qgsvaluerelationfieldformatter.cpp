@@ -79,7 +79,7 @@ QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer *layer, i
 
     QStringList valueList;
 
-    for ( const QgsValueRelationFieldFormatter::ValueRelationItem &item : qgis::as_const( vrCache ) )
+    for ( const QgsValueRelationFieldFormatter::ValueRelationItem &item : std::as_const( vrCache ) )
     {
       if ( keyList.contains( item.key.toString() ) )
       {
@@ -96,7 +96,7 @@ QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer *layer, i
       return QgsApplication::nullRepresentation();
     }
 
-    for ( const QgsValueRelationFieldFormatter::ValueRelationItem &item : qgis::as_const( vrCache ) )
+    for ( const QgsValueRelationFieldFormatter::ValueRelationItem &item : std::as_const( vrCache ) )
     {
       if ( item.key == value )
       {
@@ -277,7 +277,7 @@ QStringList QgsValueRelationFieldFormatter::valueToStringList( const QVariant &v
     }
 
     checkList.reserve( valuesList.size() );
-    for ( const QVariant &listItem : qgis::as_const( valuesList ) )
+    for ( const QVariant &listItem : std::as_const( valuesList ) )
     {
       QString v( listItem.toString( ) );
       if ( ! v.isEmpty() )

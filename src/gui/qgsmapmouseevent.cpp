@@ -78,7 +78,7 @@ void QgsMapMouseEvent::snapToGrid( double precision, const QgsCoordinateReferenc
 
   try
   {
-    QgsCoordinateTransform ct( mMapCanvas->mapSettings().destinationCrs(), crs, mMapCanvas->mapSettings().transformContext() );
+    const QgsCoordinateTransform ct( mMapCanvas->mapSettings().destinationCrs(), crs, mMapCanvas->mapSettings().transformContext() );
 
     QgsPointXY pt = ct.transform( mMapPoint );
 

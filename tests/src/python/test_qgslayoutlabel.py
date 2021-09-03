@@ -22,6 +22,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsLayoutItemPage,
                        QgsLayoutPoint)
 from utilities import unitTestDataPath
+from qgis.PyQt.QtTest import QSignalSpy
 
 from test_qgslayoutitem import LayoutItemTestCase
 
@@ -94,6 +95,33 @@ class TestQgsLayoutItemLabel(unittest.TestCase, LayoutItemTestCase):
         # move the the second page and re-evaluate
         label.attemptMove(QgsLayoutPoint(0, 320))
         self.assertEqual(label.currentText(), "2/2")
+
+    def test_convert_to_static(self):
+        layout = QgsPrintLayout(QgsProject.instance())
+        layout.initializeDefaults()
+
+        label = QgsLayoutItemLabel(layout)
+        layout.addLayoutItem(label)
+        layout.setName('my layout')
+
+        # no text yet
+        label.convertToStaticText()
+        self.assertFalse(label.text())
+
+        spy = QSignalSpy(label.changed)
+        label.setText('already static text')
+        self.assertEqual(len(spy), 1)
+        label.convertToStaticText()
+        self.assertEqual(label.text(), 'already static text')
+        self.assertEqual(len(spy), 1)
+
+        label.setText('with [% 1+2+3 %] some [% @layout_name %] dynamic bits')
+        self.assertEqual(len(spy), 2)
+        self.assertEqual(label.text(), 'with [% 1+2+3 %] some [% @layout_name %] dynamic bits')
+
+        label.convertToStaticText()
+        self.assertEqual(label.text(), 'with 6 some my layout dynamic bits')
+        self.assertEqual(len(spy), 3)
 
 
 if __name__ == '__main__':

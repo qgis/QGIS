@@ -33,6 +33,7 @@
 #include <qgscolorramp.h>
 //qgis test includes
 #include "qgsrenderchecker.h"
+#include "qgsfillsymbol.h"
 
 /**
  * \ingroup UnitTests
@@ -89,14 +90,14 @@ void TestQgsGradients::initTestCase()
   QgsApplication::showSettings();
 
   //create some objects that will be used in all tests...
-  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + '/';
 
   //
   //create a poly layer that will be used in all tests...
   //
-  QString myPolysFileName = mTestDataDir + "polys.shp";
-  QFileInfo myPolyFileInfo( myPolysFileName );
+  const QString myPolysFileName = mTestDataDir + "polys.shp";
+  const QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
                                      myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
@@ -121,7 +122,7 @@ void TestQgsGradients::initTestCase()
 }
 void TestQgsGradients::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -253,7 +254,7 @@ void TestQgsGradients::opacityWithDataDefinedColor()
   mGradientFill->setDataDefinedProperty( QgsSymbolLayer::PropertySecondaryColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'blue', 'magenta')" ) ) );
   mFillSymbol->setOpacity( 0.5 );
 
-  bool result = imageCheck( QStringLiteral( "gradient_opacityddcolor" ) );
+  const bool result = imageCheck( QStringLiteral( "gradient_opacityddcolor" ) );
   QVERIFY( result );
 }
 
@@ -264,7 +265,7 @@ void TestQgsGradients::dataDefinedOpacity()
   mFillSymbol->setOpacity( 1.0 );
   mFillSymbol->setDataDefinedProperty( QgsSymbol::PropertyOpacity, QgsProperty::fromExpression( QStringLiteral( "if(\"Value\" >10, 25, 50)" ) ) );
 
-  bool result = imageCheck( QStringLiteral( "gradient_ddopacity" ) );
+  const bool result = imageCheck( QStringLiteral( "gradient_ddopacity" ) );
   QVERIFY( result );
 }
 
@@ -287,9 +288,9 @@ bool TestQgsGradients::setQml( const QString &type )
   //load a qml style and apply to our layer
   //the style will correspond to the renderer
   //type we are testing
-  QString myFileName = mTestDataDir + "polys_" + type + "_symbol.qml";
+  const QString myFileName = mTestDataDir + "polys_" + type + "_symbol.qml";
   bool myStyleFlag = false;
-  QString error = mpPolysLayer->loadNamedStyle( myFileName, myStyleFlag );
+  const QString error = mpPolysLayer->loadNamedStyle( myFileName, myStyleFlag );
   if ( !myStyleFlag )
   {
     qDebug( "%s", error.toLocal8Bit().constData() );
@@ -306,7 +307,7 @@ bool TestQgsGradients::imageCheck( const QString &testType )
   myChecker.setControlPathPrefix( QStringLiteral( "symbol_gradient" ) );
   myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( mMapSettings );
-  bool myResultFlag = myChecker.runTest( testType );
+  const bool myResultFlag = myChecker.runTest( testType );
   mReport += myChecker.report();
   return myResultFlag;
 }

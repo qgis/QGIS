@@ -69,7 +69,7 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
       }
       else
       {
-        int idx = vl->fields().lookupField( columnConfig.name );
+        const int idx = vl->fields().lookupField( columnConfig.name );
         item = new QListWidgetItem( vl->attributeDisplayName( idx ), mFieldsList );
 
         switch ( vl->fields().fieldOrigin( idx ) )

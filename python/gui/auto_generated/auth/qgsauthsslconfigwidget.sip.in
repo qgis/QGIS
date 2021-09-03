@@ -13,7 +13,7 @@
 
 class QgsAuthSslConfigWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Widget for editing an SSL server configuration
 %End
 
@@ -195,7 +195,7 @@ Emitted when the configuration can be saved changes
 
 class QgsAuthSslConfigDialog : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 Dialog wrapper of widget for editing an SSL server configuration
 %End
 

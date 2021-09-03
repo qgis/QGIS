@@ -25,7 +25,7 @@
 
 /**
  * \ingroup gui
- * Layout scalebar validity check
+ * \brief Layout scalebar validity check
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12
@@ -47,7 +47,7 @@ class GUI_EXPORT QgsLayoutScaleBarValidityCheck : public QgsAbstractValidityChec
 
 /**
  * \ingroup gui
- * Layout north arrow validity check
+ * \brief Layout north arrow validity check
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12
@@ -69,7 +69,7 @@ class GUI_EXPORT QgsLayoutNorthArrowValidityCheck : public QgsAbstractValidityCh
 
 /**
  * \ingroup gui
- * Layout overview validity check
+ * \brief Layout overview validity check
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12
@@ -91,7 +91,7 @@ class GUI_EXPORT QgsLayoutOverviewValidityCheck : public QgsAbstractValidityChec
 
 /**
  * \ingroup gui
- * Layout picture source validity check
+ * \brief Layout picture source validity check
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12

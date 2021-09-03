@@ -104,7 +104,7 @@ void QgsGeometryCheckerFixDialog::setupNextError()
   mResolutionsBox->setLayout( new QVBoxLayout() );
   mResolutionsBox->layout()->setContentsMargins( 0, 0, 0, 4 );
 
-  int checkedid = QgsSettings().value( QgsGeometryCheckerResultTab::sSettingsGroup + error->check()->id(), QVariant::fromValue<int>( 0 ) ).toInt();
+  const int checkedid = QgsSettings().value( QgsGeometryCheckerResultTab::sSettingsGroup + error->check()->id(), QVariant::fromValue<int>( 0 ) ).toInt();
   const QList<QgsGeometryCheckResolutionMethod> resolutionMethods = error->check()->availableResolutionMethods();
   for ( const QgsGeometryCheckResolutionMethod &method : resolutionMethods )
   {

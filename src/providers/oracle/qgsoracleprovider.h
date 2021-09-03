@@ -20,7 +20,6 @@
 
 #include "qgsvectordataprovider.h"
 #include "qgsrectangle.h"
-#include "qgsvectorlayerexporter.h"
 #include "qgsoracletablemodel.h"
 #include "qgsdatasourceuri.h"
 #include "qgsfields.h"
@@ -67,7 +66,7 @@ class QgsOracleProvider final: public QgsVectorDataProvider
   public:
 
     //! Import a vector layer into the database
-    static QgsVectorLayerExporter::ExportError createEmptyLayer(
+    static Qgis::VectorExportResult createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,
       QgsWkbTypes::Type wkbType,
@@ -103,7 +102,7 @@ class QgsOracleProvider final: public QgsVectorDataProvider
      */
     size_t layerCount() const;
 
-    long featureCount() const override;
+    long long featureCount() const override;
 
     /**
      * Gets the number of fields in the layer
@@ -283,7 +282,7 @@ class QgsOracleProvider final: public QgsVectorDataProvider
 
     QString mGeometryColumn;           //!< Name of the geometry column
     mutable QgsRectangle mLayerExtent; //!< Rectangle that contains the extent (bounding box) of the layer
-    mutable long mFeaturesCounted;     //!< Number of features in the layer
+    mutable long long mFeaturesCounted;     //!< Number of features in the layer
     int mSrid;                         //!< Srid of column
     QgsVectorDataProvider::Capabilities mEnabledCapabilities;          //!< Capabilities of layer
 
@@ -421,7 +420,7 @@ class QgsOracleProviderMetadata final: public QgsProviderMetadata
     bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName,
                     const QString &styleDescription, const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
     void cleanupProvider() override;
-    QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &uri,
+    Qgis::VectorExportResult createEmptyLayer( const QString &uri,
         const QgsFields &fields, QgsWkbTypes::Type wkbType,
         const QgsCoordinateReferenceSystem &srs, bool overwrite,
         QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage,

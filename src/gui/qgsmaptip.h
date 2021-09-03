@@ -30,7 +30,7 @@ class QgsWebView;
 
 /**
  * \ingroup gui
- * A maptip is a class to display a tip on a map canvas
+ * \brief A maptip is a class to display a tip on a map canvas
  * when a mouse is hovered over a feature.
  *
  * Since QGIS 2.16 a maptip can show full html.

@@ -26,6 +26,7 @@
 QgsPointCloudAttributeByRampRenderer::QgsPointCloudAttributeByRampRenderer()
 {
   mColorRampShader.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Viridis" ) ) );
+  mColorRampShader.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
 }
 
 QString QgsPointCloudAttributeByRampRenderer::type() const
@@ -35,7 +36,7 @@ QString QgsPointCloudAttributeByRampRenderer::type() const
 
 QgsPointCloudRenderer *QgsPointCloudAttributeByRampRenderer::clone() const
 {
-  std::unique_ptr< QgsPointCloudAttributeByRampRenderer > res = qgis::make_unique< QgsPointCloudAttributeByRampRenderer >();
+  std::unique_ptr< QgsPointCloudAttributeByRampRenderer > res = std::make_unique< QgsPointCloudAttributeByRampRenderer >();
   res->mAttribute = mAttribute;
   res->mColorRampShader = mColorRampShader;
   res->mMin = mMin;
@@ -95,7 +96,7 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
     }
 
     pointXY( context, ptr, i, x, y );
-    if ( visibleExtent.contains( QgsPointXY( x, y ) ) )
+    if ( visibleExtent.contains( x, y ) )
     {
       if ( reproject )
       {
@@ -131,7 +132,7 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
 
 QgsPointCloudRenderer *QgsPointCloudAttributeByRampRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
-  std::unique_ptr< QgsPointCloudAttributeByRampRenderer > r = qgis::make_unique< QgsPointCloudAttributeByRampRenderer >();
+  std::unique_ptr< QgsPointCloudAttributeByRampRenderer > r = std::make_unique< QgsPointCloudAttributeByRampRenderer >();
 
   r->setAttribute( element.attribute( QStringLiteral( "attribute" ), QStringLiteral( "Intensity" ) ) );
 
@@ -179,13 +180,17 @@ QList<QgsLayerTreeModelLegendNode *> QgsPointCloudAttributeByRampRenderer::creat
   switch ( mColorRampShader.colorRampType() )
   {
     case QgsColorRampShader::Interpolated:
-      // for interpolated shaders we use a ramp legend node
-      res << new QgsColorRampLegendNode( nodeLayer, mColorRampShader.sourceColorRamp()->clone(),
-                                         mColorRampShader.legendSettings() ? *mColorRampShader.legendSettings() : QgsColorRampLegendNodeSettings(),
-                                         mColorRampShader.minimumValue(),
-                                         mColorRampShader.maximumValue() );
-      break;
-
+      // for interpolated shaders we use a ramp legend node unless the settings flag
+      // to use the continuous legend is not set, in that case we fall through
+      if ( mColorRampShader.sourceColorRamp() && ( ! mColorRampShader.legendSettings() || mColorRampShader.legendSettings()->useContinuousLegend() ) )
+      {
+        res << new QgsColorRampLegendNode( nodeLayer, mColorRampShader.sourceColorRamp()->clone(),
+                                           mColorRampShader.legendSettings() ? *mColorRampShader.legendSettings() : QgsColorRampLegendNodeSettings(),
+                                           mColorRampShader.minimumValue(),
+                                           mColorRampShader.maximumValue() );
+        break;
+      }
+      Q_FALLTHROUGH();
     case QgsColorRampShader::Discrete:
     case QgsColorRampShader::Exact:
     {
@@ -193,7 +198,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsPointCloudAttributeByRampRenderer::creat
       QList< QPair< QString, QColor > > items;
       mColorRampShader.legendSymbologyItems( items );
       res.reserve( items.size() );
-      for ( const QPair< QString, QColor > &item : qgis::as_const( items ) )
+      for ( const QPair< QString, QColor > &item : std::as_const( items ) )
       {
         res << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first );
       }

@@ -281,7 +281,7 @@ void QgsGrassPlugin::onGisbaseChanged()
   {
     // TODO: save init error and get it here more reliably
     QString error = tr( "GRASS init error" );
-    qGisInterface->messageBar()->pushMessage( error, QgsGrass::initError(), Qgis::Warning );
+    qGisInterface->messageBar()->pushMessage( error, QgsGrass::initError(), Qgis::MessageLevel::Warning );
 
     mOpenToolsAction->setDisabled( false ); // allow opening to see that tools are disabled
     mRegionAction->setDisabled( true );
@@ -428,7 +428,7 @@ void QgsGrassPlugin::onFieldsChanged()
   QString uri = grassProvider->dataSourceUri();
   uri.remove( QRegExp( "[^_]*$" ) );
   QgsDebugMsg( "uri = " + uri );
-  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
+  for ( QgsMapLayer *layer : QgsProject::instance()->mapLayers().values() )
   {
     if ( !layer || layer->type() != QgsMapLayerType::VectorLayer )
     {
@@ -792,7 +792,7 @@ void QgsGrassPlugin::unload()
   disconnect( qGisInterface->layerTreeView(), &QgsLayerTreeView::currentLayerChanged,
               this, &QgsGrassPlugin::onCurrentLayerChanged );
 
-  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
+  for ( QgsMapLayer *layer : QgsProject::instance()->mapLayers().values() )
   {
     if ( !layer || layer->type() != QgsMapLayerType::VectorLayer )
     {
@@ -907,21 +907,21 @@ QGISEXTERN QgisPlugin *classFactory( QgisInterface *qgisInterfacePointer )
 
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.
-QGISEXTERN QString name()
+QGISEXTERN const QString *name()
 {
-  return pluginName;
+  return &pluginName;
 }
 
 // Return the description
-QGISEXTERN QString description()
+QGISEXTERN const QString *description()
 {
-  return pluginDescription;
+  return &pluginDescription;
 }
 
 // Return the category
-QGISEXTERN QString category()
+QGISEXTERN const QString *category()
 {
-  return pluginCategory;
+  return &pluginCategory;
 }
 
 // Return the type (either UI or MapLayer plugin)
@@ -931,14 +931,14 @@ QGISEXTERN int type()
 }
 
 // Return the version number for the plugin
-QGISEXTERN QString version()
+QGISEXTERN const QString *version()
 {
-  return pluginVersion;
+  return &pluginVersion;
 }
 
-QGISEXTERN QString icon()
+QGISEXTERN const QString *icon()
 {
-  return pluginIcon;
+  return &pluginIcon;
 }
 
 // Delete ourself

@@ -10,8 +10,9 @@
 
 class QgsProcessingParameterMeshDatasetGroups : QgsProcessingParameterDefinition
 {
-%Docstring
-A parameter for processing algorithms that need a list of mesh dataset groups
+%Docstring(signature="appended")
+A parameter for processing algorithms that need a list of mesh dataset groups.
+
 A valid value for this parameter is a list (QVariantList) of dataset groups index in the mesh layer scope
 Dataset group index can be evaluated with the method :py:func:`~valueAsDatasetGroup`
 
@@ -80,8 +81,9 @@ Returns the ``value`` as a list if dataset group indexes
 
 class QgsProcessingParameterMeshDatasetTime : QgsProcessingParameterDefinition
 {
-%Docstring
-A parameter for processing algorithms that need a list of mesh dataset index from time parameter
+%Docstring(signature="appended")
+A parameter for processing algorithms that need a list of mesh dataset index from time parameter.
+
 A valid value for this parameter is a map (QVariantMap) with in this form:
 
 - "type" : the type of time settings "current-context-time", "defined-date-time", "dataset-time-step" or "none" if all the dataset groups are static

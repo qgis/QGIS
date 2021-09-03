@@ -363,7 +363,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>12</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -473,29 +473,6 @@
                     </item>
                     <item>
                      <widget class="QLineEdit" name="mLayerOrigNameLineEdit"/>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_2">
-                      <property name="text">
-                       <string>displayed as</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLineEdit" name="txtDisplayName">
-                      <property name="enabled">
-                       <bool>true</bool>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">color: #505050;
-background-color: #F0F0F0;
-border: 1px solid #B0B0B0;
-border-radius: 2px;</string>
-                      </property>
-                      <property name="readOnly">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
                     </item>
                    </layout>
                   </item>
@@ -756,8 +733,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>653</width>
+                <height>679</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -973,8 +950,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>104</width>
-                <height>102</height>
+                <width>653</width>
+                <height>679</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -1368,8 +1345,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>653</width>
+                <height>679</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -1571,7 +1548,7 @@ border-radius: 2px;</string>
                 <x>0</x>
                 <y>0</y>
                 <width>689</width>
-                <height>356</height>
+                <height>665</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -1717,6 +1694,58 @@ border-radius: 2px;</string>
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QgsCollapsibleGroupBox" name="mUseReferenceScaleGroupBox">
+                 <property name="focusPolicy">
+                  <enum>Qt::StrongFocus</enum>
+                 </property>
+                 <property name="title">
+                  <string>Fixed Reference Scale</string>
+                 </property>
+                 <property name="checkable">
+                  <bool>true</bool>
+                 </property>
+                 <property name="syncGroup" stdset="0">
+                  <string notr="true">vectorgeneral</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout">
+                  <item row="3" column="0">
+                   <widget class="Line" name="line_4">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label">
+                    <property name="text">
+                     <string>Reference scale</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QgsScaleWidget" name="mReferenceScaleWidget" native="true">
+                    <property name="focusPolicy">
+                     <enum>Qt::StrongFocus</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0" colspan="2">
+                   <widget class="QLabel" name="label_8">
+                    <property name="text">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If set, the reference scale indicates the map scale at which symbology and labeling sizes which uses paper-based units (such as millimeters or points) relate to. The sizes will be scaled accordingly whenever the map is viewed at a different scale.&lt;/p&gt;&lt;p&gt;For instance, a line layer using a 2mm wide line with a 1:2000 reference scale set will be rendered using 4mm wide lines when the map is viewed at 1:1000.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
+                    <property name="textFormat">
+                     <enum>Qt::RichText</enum>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
                     </property>
                    </widget>
                   </item>
@@ -1987,6 +2016,9 @@ border-radius: 2px;</string>
                 <property name="enabled">
                  <bool>true</bool>
                 </property>
+                <attribute name="headerVisible">
+                 <bool>false</bool>
+                </attribute>
                </widget>
               </item>
               <item>
@@ -2063,7 +2095,7 @@ border-radius: 2px;</string>
                 <x>0</x>
                 <y>0</y>
                 <width>343</width>
-                <height>797</height>
+                <height>800</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2567,14 +2599,26 @@ border-radius: 2px;</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectionwidget.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsScrollArea</class>
@@ -2583,21 +2627,15 @@ border-radius: 2px;</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldexpressionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsVariableEditorWidget</class>
    <extends>QWidget</extends>
-   <header location="global">qgsvariableeditorwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsProjectionSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsprojectionselectionwidget.h</header>
+   <header>qgsvariableeditorwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2623,12 +2661,6 @@ border-radius: 2px;</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsFieldExpressionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsfieldexpressionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsCodeEditorHTML</class>
    <extends>QWidget</extends>
    <header>qgscodeeditorhtml.h</header>
@@ -2639,6 +2671,12 @@ border-radius: 2px;</string>
    <header>qgsvectorlayerlegendwidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsScaleWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalewidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mSearchLineEdit</tabstop>
@@ -2646,12 +2684,12 @@ border-radius: 2px;</string>
   <tabstop>teMetadataViewer</tabstop>
   <tabstop>scrollArea_4</tabstop>
   <tabstop>mLayerOrigNameLineEdit</tabstop>
-  <tabstop>txtDisplayName</tabstop>
   <tabstop>cboProviderEncoding</tabstop>
+  <tabstop>mCrsGroupBox</tabstop>
   <tabstop>mCrsSelector</tabstop>
+  <tabstop>mGeomGroupBox</tabstop>
   <tabstop>pbnIndex</tabstop>
   <tabstop>pbnUpdateExtents</tabstop>
-  <tabstop>txtSubsetSQL</tabstop>
   <tabstop>pbnQueryBuilder</tabstop>
   <tabstop>scrollArea_3</tabstop>
   <tabstop>mJoinTreeWidget</tabstop>
@@ -2678,6 +2716,8 @@ border-radius: 2px;</string>
   <tabstop>mSimplifyAlgorithmComboBox</tabstop>
   <tabstop>mSimplifyDrawingAtProvider</tabstop>
   <tabstop>mSimplifyMaximumScaleComboBox</tabstop>
+  <tabstop>mUseReferenceScaleGroupBox</tabstop>
+  <tabstop>mReferenceScaleWidget</tabstop>
   <tabstop>mForceRasterCheckBox</tabstop>
   <tabstop>mRefreshLayerCheckBox</tabstop>
   <tabstop>mRefreshLayerIntervalSpinBox</tabstop>
@@ -2699,8 +2739,13 @@ border-radius: 2px;</string>
   <tabstop>mLayerMetadataUrlFormatComboBox</tabstop>
   <tabstop>mLayerLegendUrlLineEdit</tabstop>
   <tabstop>mLayerLegendUrlFormatComboBox</tabstop>
+  <tabstop>mWmsDimensionsTreeWidget</tabstop>
+  <tabstop>mButtonAddWmsDimension</tabstop>
+  <tabstop>mButtonEditWmsDimension</tabstop>
+  <tabstop>mButtonRemoveWmsDimension</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

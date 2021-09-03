@@ -13,7 +13,7 @@
 
 class QgsBilinearRasterResampler: QgsRasterResamplerV2
 {
-%Docstring
+%Docstring(signature="appended")
 Bilinear Raster Resampler
 %End
 

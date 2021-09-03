@@ -10,7 +10,7 @@
 
 class QgsColorSwatchDelegate : QAbstractItemDelegate
 {
-%Docstring
+%Docstring(signature="appended")
 A delegate for showing a color swatch in a list
 
 .. seealso:: :py:class:`QgsColorSchemeList`
@@ -35,7 +35,7 @@ A delegate for showing a color swatch in a list
 
 class QgsColorSchemeModel: QAbstractItemModel
 {
-%Docstring
+%Docstring(signature="appended")
 A model for colors in a color scheme
 
 .. seealso:: :py:class:`QgsColorSchemeList`
@@ -141,7 +141,7 @@ Returns whether the color scheme model has been modified
 
 class QgsColorSchemeList: QTreeView
 {
-%Docstring
+%Docstring(signature="appended")
 An editable list of color swatches, taken from an associated :py:class:`QgsColorScheme`.
 
 .. seealso:: :py:class:`QgsColorSchemeList`

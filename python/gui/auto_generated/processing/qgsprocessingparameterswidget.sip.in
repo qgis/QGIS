@@ -12,7 +12,7 @@
 
 class QgsProcessingParametersWidget : QgsPanelWidget, QgsProcessingParametersGenerator
 {
-%Docstring
+%Docstring(signature="appended")
 A widget which allows users to select the value for the parameters for an algorithm.
 
 .. note::

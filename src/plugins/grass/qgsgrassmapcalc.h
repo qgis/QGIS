@@ -41,7 +41,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     QgsGrassMapcalc(
       QgsGrassTools *tools, QgsGrassModule *module,
       QgisInterface *iface,
-      QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+      QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
 
     // Current tool
     enum Tool
@@ -521,7 +521,7 @@ class QgsGrassMapcalcView: public QGraphicsView
     Q_OBJECT
 
   public:
-    QgsGrassMapcalcView( QgsGrassMapcalc *mapcalc, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+    QgsGrassMapcalcView( QgsGrassMapcalc *mapcalc, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
 
   protected:
     void mousePressEvent( QMouseEvent *e ) override;

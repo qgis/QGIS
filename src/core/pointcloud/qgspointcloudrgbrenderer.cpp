@@ -31,7 +31,7 @@ QString QgsPointCloudRgbRenderer::type() const
 
 QgsPointCloudRenderer *QgsPointCloudRgbRenderer::clone() const
 {
-  std::unique_ptr< QgsPointCloudRgbRenderer > res = qgis::make_unique< QgsPointCloudRgbRenderer >();
+  std::unique_ptr< QgsPointCloudRgbRenderer > res = std::make_unique< QgsPointCloudRgbRenderer >();
   res->mRedAttribute = mRedAttribute;
   res->mGreenAttribute = mGreenAttribute;
   res->mBlueAttribute = mBlueAttribute;
@@ -59,7 +59,7 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
   const QgsRectangle visibleExtent = context.renderContext().extent();
 
   const char *ptr = block->data();
-  int count = block->pointCount();
+  const int count = block->pointCount();
   const QgsPointCloudAttributeCollection request = block->attributes();
 
   const std::size_t recordSize = request.pointRecordSize();
@@ -110,7 +110,7 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
     }
 
     pointXY( context, ptr, i, x, y );
-    if ( visibleExtent.contains( QgsPointXY( x, y ) ) )
+    if ( visibleExtent.contains( x, y ) )
     {
       if ( reproject )
       {
@@ -167,7 +167,7 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
 
 QgsPointCloudRenderer *QgsPointCloudRgbRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
-  std::unique_ptr< QgsPointCloudRgbRenderer > r = qgis::make_unique< QgsPointCloudRgbRenderer >();
+  std::unique_ptr< QgsPointCloudRgbRenderer > r = std::make_unique< QgsPointCloudRgbRenderer >();
 
   r->setRedAttribute( element.attribute( QStringLiteral( "red" ), QStringLiteral( "Red" ) ) );
   r->setGreenAttribute( element.attribute( QStringLiteral( "green" ), QStringLiteral( "Green" ) ) );
@@ -177,28 +177,28 @@ QgsPointCloudRenderer *QgsPointCloudRgbRenderer::create( QDomElement &element, c
 
   //contrast enhancements
   QgsContrastEnhancement *redContrastEnhancement = nullptr;
-  QDomElement redContrastElem = element.firstChildElement( QStringLiteral( "redContrastEnhancement" ) );
+  const QDomElement redContrastElem = element.firstChildElement( QStringLiteral( "redContrastEnhancement" ) );
   if ( !redContrastElem.isNull() )
   {
-    redContrastEnhancement = new QgsContrastEnhancement( Qgis::UnknownDataType );
+    redContrastEnhancement = new QgsContrastEnhancement( Qgis::DataType::UnknownDataType );
     redContrastEnhancement->readXml( redContrastElem );
     r->setRedContrastEnhancement( redContrastEnhancement );
   }
 
   QgsContrastEnhancement *greenContrastEnhancement = nullptr;
-  QDomElement greenContrastElem = element.firstChildElement( QStringLiteral( "greenContrastEnhancement" ) );
+  const QDomElement greenContrastElem = element.firstChildElement( QStringLiteral( "greenContrastEnhancement" ) );
   if ( !greenContrastElem.isNull() )
   {
-    greenContrastEnhancement = new QgsContrastEnhancement( Qgis::UnknownDataType );
+    greenContrastEnhancement = new QgsContrastEnhancement( Qgis::DataType::UnknownDataType );
     greenContrastEnhancement->readXml( greenContrastElem );
     r->setGreenContrastEnhancement( greenContrastEnhancement );
   }
 
   QgsContrastEnhancement *blueContrastEnhancement = nullptr;
-  QDomElement blueContrastElem = element.firstChildElement( QStringLiteral( "blueContrastEnhancement" ) );
+  const QDomElement blueContrastElem = element.firstChildElement( QStringLiteral( "blueContrastEnhancement" ) );
   if ( !blueContrastElem.isNull() )
   {
-    blueContrastEnhancement = new QgsContrastEnhancement( Qgis::UnknownDataType );
+    blueContrastEnhancement = new QgsContrastEnhancement( Qgis::DataType::UnknownDataType );
     blueContrastEnhancement->readXml( blueContrastElem );
     r->setBlueContrastEnhancement( blueContrastEnhancement );
   }

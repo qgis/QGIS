@@ -433,6 +433,35 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         self.assertTrue(ok)
         self.assertEqual(val, 0.0)
 
+    def testExpressionNullValuesAtStart(self):
+        """ test aggregate calculation using an expression which returns null values at first """
+
+        # numeric
+        layer = QgsVectorLayer("Point?field=fldstr:string", "layer", "memory")
+        pr = layer.dataProvider()
+
+        values = [None, None, None, None, None, None, None, None, None, None, '2', '3', '5']
+
+        features = []
+        for v in values:
+            f = QgsFeature()
+            f.setFields(layer.fields())
+            f.setAttributes([v])
+            features.append(f)
+        assert pr.addFeatures(features)
+
+        # number aggregation
+        agg = QgsAggregateCalculator(layer)
+        val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'to_int(fldstr)')
+        self.assertTrue(ok)
+        self.assertEqual(val, 10)
+
+        # string aggregation
+        agg.setDelimiter(',')
+        val, ok = agg.calculate(QgsAggregateCalculator.StringConcatenate, 'fldstr || \'suffix\'')
+        self.assertTrue(ok)
+        self.assertEqual(val, ',,,,,,,,,,2suffix,3suffix,5suffix')
+
     def testExpressionNoMatch(self):
         """ test aggregate calculation using an expression with no features """
 

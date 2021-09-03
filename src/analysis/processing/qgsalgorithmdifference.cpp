@@ -92,11 +92,11 @@ QVariantMap QgsDifferenceAlgorithm::processAlgorithm( const QVariantMap &paramet
   if ( !sourceA )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  std::unique_ptr< QgsFeatureSource > sourceB( parameterAsSource( parameters, QStringLiteral( "OVERLAY" ), context ) );
+  const std::unique_ptr< QgsFeatureSource > sourceB( parameterAsSource( parameters, QStringLiteral( "OVERLAY" ), context ) );
   if ( !sourceB )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "OVERLAY" ) ) );
 
-  QgsWkbTypes::Type geomType = QgsWkbTypes::multiType( sourceA->wkbType() );
+  const QgsWkbTypes::Type geomType = QgsWkbTypes::multiType( sourceA->wkbType() );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, sourceA->fields(), geomType, sourceA->sourceCrs() ) );
@@ -106,8 +106,8 @@ QVariantMap QgsDifferenceAlgorithm::processAlgorithm( const QVariantMap &paramet
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
 
-  int count = 0;
-  int total = sourceA->featureCount();
+  long count = 0;
+  const long total = sourceA->featureCount();
   QgsOverlayUtils::difference( *sourceA, *sourceB, *sink, context, feedback, count, total, QgsOverlayUtils::OutputA );
 
   return outputs;

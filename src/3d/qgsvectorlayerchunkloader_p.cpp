@@ -77,16 +77,16 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkL
   req.setSubsetOfAttributes( attributeNames, layer->fields() );
 
   // only a subset of data to be queried
-  QgsRectangle rect = Qgs3DUtils::worldToMapExtent( node->bbox(), map.origin() );
+  const QgsRectangle rect = Qgs3DUtils::worldToMapExtent( node->bbox(), map.origin() );
   req.setFilterRect( rect );
 
   //
   // this will be run in a background thread
   //
 
-  QFuture<void> future = QtConcurrent::run( [req, this]
+  const QFuture<void> future = QtConcurrent::run( [req, this]
   {
-    QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "VL chunk load" ) );
+    const QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "VL chunk load" ) );
 
     QgsFeature f;
     QgsFeatureIterator fi = mSource->getFeatures( req );

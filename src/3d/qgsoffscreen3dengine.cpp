@@ -36,7 +36,6 @@
 #include <Qt3DRender/QViewport>
 #include <QtGui/QOpenGLContext>
 
-
 QgsOffscreen3DEngine::QgsOffscreen3DEngine()
 {
   // Set up the default OpenGL surface format.
@@ -80,7 +79,7 @@ QgsOffscreen3DEngine::QgsOffscreen3DEngine()
   // component must be held by the root of the QEntity tree,
   // so it is added to this one. The 3D scene is added as a subtree later,
   // in setRootEntity().
-  mRoot = new Qt3DCore::QEntity();
+  mRoot = new Qt3DCore::QEntity;
   mRenderSettings = new Qt3DRender::QRenderSettings( mRoot );
   mRoot->addComponent( mRenderSettings );
 
@@ -88,11 +87,16 @@ QgsOffscreen3DEngine::QgsOffscreen3DEngine()
 
   // Create the offscreen frame graph, which will manage all of the resources required
   // for rendering without a QWindow.
-  createFrameGraph();
+  mOffscreenSurface = new QOffscreenSurface();
+  mOffscreenSurface->setFormat( QSurfaceFormat::defaultFormat() );
+  mOffscreenSurface->create();
 
+  mFrameGraph = new QgsShadowRenderingFrameGraph( mOffscreenSurface, mSize, mCamera, mRoot );
+  mFrameGraph->setRenderCaptureEnabled( true );
+  mFrameGraph->setShadowRenderingEnabled( false );
   // Set this frame graph to be in use.
   // the render settings also sets itself as the parent of mSurfaceSelector
-  mRenderSettings->setActiveFrameGraph( mSurfaceSelector );
+  mRenderSettings->setActiveFrameGraph( mFrameGraph->frameGraphRoot() );
 
   // Set the root entity of the engine. This causes the engine to begin running.
   mAspectEngine->setRootEntity( Qt3DCore::QEntityPtr( mRoot ) );
@@ -109,98 +113,18 @@ void QgsOffscreen3DEngine::setSize( QSize s )
 {
   mSize = s;
 
-  mTexture->setSize( mSize.width(), mSize.height() );
-  mDepthTexture->setSize( mSize.width(), mSize.height() );
-  mSurfaceSelector->setExternalRenderTargetSize( mSize );
-
+  mFrameGraph->setSize( mSize );
   mCamera->setAspectRatio( float( mSize.width() ) / float( mSize.height() ) );
 }
 
 void QgsOffscreen3DEngine::setClearColor( const QColor &color )
 {
-  mClearBuffers->setClearColor( color );
+  mFrameGraph->setClearColor( color );
 }
 
 void QgsOffscreen3DEngine::setFrustumCullingEnabled( bool enabled )
 {
-  // TODO
-  Q_UNUSED( enabled )
-}
-
-void QgsOffscreen3DEngine::createRenderTarget()
-{
-  mTextureTarget = new Qt3DRender::QRenderTarget;
-
-  // The lifetime of the objects created here is managed
-  // automatically, as they become children of this object.
-
-  // Create a render target output for rendering color.
-  mTextureOutput = new Qt3DRender::QRenderTargetOutput( mTextureTarget );
-  mTextureOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Color0 );
-
-  // Create a texture to render into.
-  mTexture = new Qt3DRender::QTexture2D( mTextureOutput );
-  mTexture->setSize( mSize.width(), mSize.height() );
-  mTexture->setFormat( Qt3DRender::QAbstractTexture::RGB8_UNorm );
-  mTexture->setMinificationFilter( Qt3DRender::QAbstractTexture::Linear );
-  mTexture->setMagnificationFilter( Qt3DRender::QAbstractTexture::Linear );
-
-  // Hook the texture up to our output, and the output up to this object.
-  mTextureOutput->setTexture( mTexture );
-  mTextureTarget->addOutput( mTextureOutput );
-
-  mDepthTextureOutput = new Qt3DRender::QRenderTargetOutput( mTextureTarget );
-  mDepthTextureOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Depth );
-  mDepthTexture = new Qt3DRender::QTexture2D( mDepthTextureOutput );
-  mDepthTexture->setSize( mSize.width(), mSize.height() );
-  mDepthTexture->setFormat( Qt3DRender::QAbstractTexture::DepthFormat );
-  mDepthTexture->setMinificationFilter( Qt3DRender::QAbstractTexture::Linear );
-  mDepthTexture->setMagnificationFilter( Qt3DRender::QAbstractTexture::Linear );
-  mDepthTexture->setComparisonFunction( Qt3DRender::QAbstractTexture::CompareLessEqual );
-  mDepthTexture->setComparisonMode( Qt3DRender::QAbstractTexture::CompareRefToTexture );
-  // Hook up the depth texture
-  mDepthTextureOutput->setTexture( mDepthTexture );
-  mTextureTarget->addOutput( mDepthTextureOutput );
-}
-
-void QgsOffscreen3DEngine::createFrameGraph()
-{
-  // Firstly, create the offscreen surface. This will take the place
-  // of a QWindow, allowing us to render our scene without one.
-  mOffscreenSurface = new QOffscreenSurface();
-  mOffscreenSurface->setFormat( QSurfaceFormat::defaultFormat() );
-  mOffscreenSurface->create();
-
-  // Hook it up to the frame graph.
-  mSurfaceSelector = new Qt3DRender::QRenderSurfaceSelector( mRenderSettings );
-  mSurfaceSelector->setSurface( mOffscreenSurface );
-  mSurfaceSelector->setExternalRenderTargetSize( mSize );
-
-  // Create a texture to render into. This acts as the buffer that
-  // holds the rendered image.
-  mRenderTargetSelector = new Qt3DRender::QRenderTargetSelector( mSurfaceSelector );
-  createRenderTarget();
-  // the target selector also sets itself as the parent of mTextureTarget
-  mRenderTargetSelector->setTarget( mTextureTarget );
-
-  // Create a node used for clearing the required buffers.
-  mClearBuffers = new Qt3DRender::QClearBuffers( mRenderTargetSelector );
-  mClearBuffers->setClearColor( QColor( 100, 100, 100, 255 ) );
-  mClearBuffers->setBuffers( Qt3DRender::QClearBuffers::ColorDepthBuffer );
-
-  // Create a viewport node. The viewport here just covers the entire render area.
-  mViewport = new Qt3DRender::QViewport( mRenderTargetSelector );
-  mViewport->setNormalizedRect( QRectF( 0.0, 0.0, 1.0, 1.0 ) );
-
-  // Create a camera selector node, and tell it to use the camera we've ben given.
-  mCameraSelector = new Qt3DRender::QCameraSelector( mViewport );
-  mCameraSelector->setCamera( mCamera );
-
-  // Add a render capture node to the frame graph.
-  // This is set as the next child of the render target selector node,
-  // so that the capture will be taken from the specified render target
-  // once all other rendering operations have taken place.
-  mRenderCapture = new Qt3DRender::QRenderCapture( mRenderTargetSelector );
+  mFrameGraph->setFrustumCullingEnabled( enabled );
 }
 
 void QgsOffscreen3DEngine::setRootEntity( Qt3DCore::QEntity *root )
@@ -213,7 +137,9 @@ void QgsOffscreen3DEngine::setRootEntity( Qt3DCore::QEntity *root )
 
   // Parent the incoming scene root to our current root entity.
   mSceneRoot = root;
-  mSceneRoot->setParent( mAspectEngine->rootEntity().data() );
+  mSceneRoot->setParent( mRoot );
+  root->addComponent( mFrameGraph->forwardRenderLayer() );
+  root->addComponent( mFrameGraph->castShadowsLayer() );
 }
 
 Qt3DRender::QRenderSettings *QgsOffscreen3DEngine::renderSettings()
@@ -234,21 +160,4 @@ QSize QgsOffscreen3DEngine::size() const
 QSurface *QgsOffscreen3DEngine::surface() const
 {
   return mOffscreenSurface;
-}
-
-void QgsOffscreen3DEngine::requestCaptureImage()
-{
-  if ( mReply )
-  {
-    QgsDebugMsgLevel( QStringLiteral( "already having a pending capture, skipping" ), 2 );
-    return;
-  }
-  mReply = mRenderCapture->requestCapture();
-  connect( mReply, &Qt3DRender::QRenderCaptureReply::completed, this, [ = ]
-  {
-    QImage image = mReply->image();
-    mReply->deleteLater();
-    mReply = nullptr;
-    emit imageCaptured( image );
-  } );
 }

@@ -24,7 +24,7 @@
 #include "qgs3dsceneexporter.h"
 
 QgsPolygon3DSymbol::QgsPolygon3DSymbol()
-  : mMaterial( qgis::make_unique< QgsPhongMaterialSettings >() )
+  : mMaterial( std::make_unique< QgsPhongMaterialSettings >() )
 {
 
 }
@@ -33,7 +33,7 @@ QgsPolygon3DSymbol::~QgsPolygon3DSymbol() = default;
 
 QgsAbstract3DSymbol *QgsPolygon3DSymbol::clone() const
 {
-  std::unique_ptr< QgsPolygon3DSymbol > result = qgis::make_unique< QgsPolygon3DSymbol >();
+  std::unique_ptr< QgsPolygon3DSymbol > result = std::make_unique< QgsPolygon3DSymbol >();
   result->mAltClamping = mAltClamping;
   result->mAltBinding = mAltBinding;
   result->mHeight = mHeight;
@@ -87,7 +87,7 @@ void QgsPolygon3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteCon
 {
   Q_UNUSED( context )
 
-  QDomElement elemDataProperties = elem.firstChildElement( QStringLiteral( "data" ) );
+  const QDomElement elemDataProperties = elem.firstChildElement( QStringLiteral( "data" ) );
   mAltClamping = Qgs3DUtils::altClampingFromString( elemDataProperties.attribute( QStringLiteral( "alt-clamping" ) ) );
   mAltBinding = Qgs3DUtils::altBindingFromString( elemDataProperties.attribute( QStringLiteral( "alt-binding" ) ) );
   mHeight = elemDataProperties.attribute( QStringLiteral( "height" ) ).toFloat();
@@ -104,11 +104,11 @@ void QgsPolygon3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteCon
     mMaterial.reset( Qgs3D::materialRegistry()->createMaterialSettings( QStringLiteral( "phong" ) ) );
   mMaterial->readXml( elemMaterial, context );
 
-  QDomElement elemDDP = elem.firstChildElement( QStringLiteral( "data-defined-properties" ) );
+  const QDomElement elemDDP = elem.firstChildElement( QStringLiteral( "data-defined-properties" ) );
   if ( !elemDDP.isNull() )
     mDataDefinedProperties.readXml( elemDDP, propertyDefinitions() );
 
-  QDomElement elemEdges = elem.firstChildElement( QStringLiteral( "edges" ) );
+  const QDomElement elemEdges = elem.firstChildElement( QStringLiteral( "edges" ) );
   if ( !elemEdges.isNull() )
   {
     mEdgesEnabled = elemEdges.attribute( QStringLiteral( "enabled" ) ).toInt();
@@ -142,7 +142,7 @@ void QgsPolygon3DSymbol::setMaterial( QgsAbstractMaterialSettings *material )
 
 bool QgsPolygon3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::QEntity *entity, const QString &objectNamePrefix ) const
 {
-  QList<Qt3DRender::QGeometryRenderer *> renderers = entity->findChildren<Qt3DRender::QGeometryRenderer *>();
+  const QList<Qt3DRender::QGeometryRenderer *> renderers = entity->findChildren<Qt3DRender::QGeometryRenderer *>();
   for ( Qt3DRender::QGeometryRenderer *r : renderers )
   {
     Qgs3DExportObject *object = exporter->processGeometryRenderer( r, objectNamePrefix );

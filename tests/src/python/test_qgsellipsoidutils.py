@@ -34,49 +34,42 @@ class TestQgsEllipsoidUtils(unittest.TestCase):
             self.assertAlmostEqual(params.semiMinor, 6356752.314245179, 5)
             self.assertAlmostEqual(params.inverseFlattening, 298.257223563, 5)
             self.assertFalse(params.useCustomParameters)
-            if QgsProjUtils.projVersionMajor() < 6:
-                self.assertEqual(params.crs.authid(), 'EPSG:4030')
-            else:
-                self.assertEqual(params.crs.toProj(), '+proj=longlat +a=6378137 +rf=298.25722356300003 +no_defs')
+            self.assertEqual(params.crs.toProj(), '+proj=longlat +a=6378137 +rf=298.25722356300003 +no_defs')
 
         for i in range(2):
             params = QgsEllipsoidUtils.ellipsoidParameters("Ganymede2000")
             self.assertTrue(params.valid)
-            self.assertEqual(params.semiMajor, 2632400.0 if QgsProjUtils.projVersionMajor() < 6 else 2632345.0)
-            self.assertEqual(params.semiMinor, 2632350.0 if QgsProjUtils.projVersionMajor() < 6 else 2632345.0)
-            self.assertEqual(params.inverseFlattening, 52648.0 if QgsProjUtils.projVersionMajor() < 6 else 0)
+            self.assertEqual(params.semiMajor, 2632345.0)
+            self.assertEqual(params.semiMinor, 2632345.0)
+            self.assertEqual(params.inverseFlattening, 0)
             self.assertFalse(params.useCustomParameters)
-            if QgsProjUtils.projVersionMajor() < 6:
-                self.assertEqual(params.crs.authid(), '')
-            else:
-                self.assertEqual(params.crs.toProj(), '+proj=longlat +a=2632345 +no_defs')
+            self.assertEqual(params.crs.toProj(), '+proj=longlat +a=2632345 +no_defs')
 
-            if QgsProjUtils.projVersionMajor() >= 6:
-                params = QgsEllipsoidUtils.ellipsoidParameters("ESRI:107916")
-                self.assertTrue(params.valid)
-                self.assertEqual(params.semiMajor, 2632345.0)
-                self.assertEqual(params.semiMinor, 2632345.0)
-                self.assertEqual(params.inverseFlattening, 0)
-                self.assertFalse(params.useCustomParameters)
-                self.assertEqual(params.crs.toProj(), '+proj=longlat +a=2632345 +no_defs')
+            params = QgsEllipsoidUtils.ellipsoidParameters("ESRI:107916")
+            self.assertTrue(params.valid)
+            self.assertEqual(params.semiMajor, 2632345.0)
+            self.assertEqual(params.semiMinor, 2632345.0)
+            self.assertEqual(params.inverseFlattening, 0)
+            self.assertFalse(params.useCustomParameters)
+            self.assertEqual(params.crs.toProj(), '+proj=longlat +a=2632345 +no_defs')
 
-                params = QgsEllipsoidUtils.ellipsoidParameters("EPSG:7001")
-                self.assertTrue(params.valid)
-                self.assertEqual(params.semiMajor, 6377563.396)
-                self.assertEqual(params.semiMinor, 6356256.909237285)
-                self.assertEqual(params.inverseFlattening, 299.3249646)
-                self.assertFalse(params.useCustomParameters)
-                self.assertEqual(params.crs.toProj(),
-                                 '+proj=longlat +a=6377563.3959999997 +rf=299.32496459999999 +no_defs')
+            params = QgsEllipsoidUtils.ellipsoidParameters("EPSG:7001")
+            self.assertTrue(params.valid)
+            self.assertEqual(params.semiMajor, 6377563.396)
+            self.assertEqual(params.semiMinor, 6356256.909237285)
+            self.assertEqual(params.inverseFlattening, 299.3249646)
+            self.assertFalse(params.useCustomParameters)
+            self.assertEqual(params.crs.toProj(),
+                             '+proj=longlat +a=6377563.3959999997 +rf=299.32496459999999 +no_defs')
 
-                params = QgsEllipsoidUtils.ellipsoidParameters("EPSG:7008")
-                self.assertTrue(params.valid)
-                self.assertEqual(params.semiMajor, 6378206.4)
-                self.assertEqual(params.semiMinor, 6356583.8)
-                self.assertEqual(params.inverseFlattening, 294.9786982138982)
-                self.assertFalse(params.useCustomParameters)
-                self.assertEqual(params.crs.toProj(),
-                                 '+proj=longlat +a=6378206.4000000004 +b=6356583.7999999998 +no_defs')
+            params = QgsEllipsoidUtils.ellipsoidParameters("EPSG:7008")
+            self.assertTrue(params.valid)
+            self.assertEqual(params.semiMajor, 6378206.4)
+            self.assertEqual(params.semiMinor, 6356583.8)
+            self.assertEqual(params.inverseFlattening, 294.9786982138982)
+            self.assertFalse(params.useCustomParameters)
+            self.assertEqual(params.crs.toProj(),
+                             '+proj=longlat +a=6378206.4000000004 +b=6356583.7999999998 +no_defs')
 
         # using parameters
         for i in range(2):
@@ -94,29 +87,40 @@ class TestQgsEllipsoidUtils(unittest.TestCase):
             self.assertFalse(params.valid)
 
     def testAcronyms(self):
-        self.assertTrue('WGS84' if QgsProjUtils.projVersionMajor() < 6 else 'EPSG:7030' in QgsEllipsoidUtils.acronyms())
-        self.assertTrue(
-            'Ganymede2000' if QgsProjUtils.projVersionMajor() < 6 else 'ESRI:107916' in QgsEllipsoidUtils.acronyms())
+        self.assertTrue('EPSG:7030' in QgsEllipsoidUtils.acronyms())
+        self.assertTrue('ESRI:107916' in QgsEllipsoidUtils.acronyms())
 
     def testDefinitions(self):
         defs = QgsEllipsoidUtils.definitions()
 
-        gany_id = 'Ganymede2000' if QgsProjUtils.projVersionMajor() < 6 else 'ESRI:107916'
+        gany_id = 'ESRI:107916'
         gany_defs = [d for d in defs if d.acronym == gany_id][0]
         self.assertEqual(gany_defs.acronym, gany_id)
         self.assertEqual(gany_defs.description,
-                         'Ganymede2000' if QgsProjUtils.projVersionMajor() < 6 else 'Ganymede 2000 IAU IAG (ESRI:107916)')
+                         'Ganymede 2000 IAU IAG (ESRI:107916)')
+
+        if QgsProjUtils.projVersionMajor() > 8 or (QgsProjUtils.projVersionMajor() == 8 and QgsProjUtils.projVersionMinor() >= 1):
+            self.assertEqual(gany_defs.celestialBodyName, 'Ganymede')
+
         self.assertTrue(gany_defs.parameters.valid)
         self.assertEqual(gany_defs.parameters.semiMajor,
-                         2632400.0 if QgsProjUtils.projVersionMajor() < 6 else 2632345.0)
+                         2632345.0)
         self.assertEqual(gany_defs.parameters.semiMinor,
-                         2632350.0 if QgsProjUtils.projVersionMajor() < 6 else 2632345.0)
+                         2632345.0)
         self.assertEqual(gany_defs.parameters.inverseFlattening,
-                         52648.0 if QgsProjUtils.projVersionMajor() < 6 else 0.0)
+                         0.0)
         self.assertFalse(gany_defs.parameters.useCustomParameters)
         self.assertEqual(gany_defs.parameters.crs.authid(), '')
 
-    @unittest.skipIf(QgsProjUtils.projVersionMajor() < 6, 'Not a proj6 build')
+    @unittest.skipIf(QgsProjUtils.projVersionMajor() < 8 or (QgsProjUtils.projVersionMajor() == 8 and QgsProjUtils.projVersionMinor() < 1), 'Not a proj >= 8.1 build')
+    def testCelestialBodies(self):
+        bodies = QgsEllipsoidUtils.celestialBodies()
+
+        self.assertTrue(bodies)
+
+        ganymede = [body for body in bodies if body.name() == 'Ganymede' and body.authority() == 'ESRI'][0]
+        self.assertTrue(ganymede.isValid())
+
     def testMappingEllipsoidsToProj6(self):
         old_qgis_ellipsoids = {'Adrastea2000': 'Adrastea2000', 'airy': 'Airy 1830', 'Amalthea2000': 'Amalthea2000',
                                'Ananke2000': 'Ananke2000',

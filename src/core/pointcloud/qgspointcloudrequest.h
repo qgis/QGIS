@@ -32,7 +32,7 @@
 /**
  * \ingroup core
  *
- * Point cloud data request
+ * \brief Point cloud data request
  *
  * \since QGIS 3.18
  */

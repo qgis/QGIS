@@ -12,7 +12,7 @@
 
 class QgsPointCloudExtentRenderer : QgsPointCloudRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 A renderer for 2d visualisation of point clouds which shows the dataset's extents using a fill symbol.
 
 .. versionadded:: 3.18
@@ -30,6 +30,7 @@ Constructor for QgsPointCloudExtentRenderer.
 Optionally the ``symbol`` to use for showing the extent can be specified. If specified, ownership is
 transferred to the renderer. If no ``symbol`` is specified a default one will be created instead.
 %End
+    ~QgsPointCloudExtentRenderer();
 
     virtual QString type() const;
 

@@ -12,7 +12,7 @@
 
 class QgsMeshLayerProperties : QgsOptionsDialogBase
 {
-%Docstring
+%Docstring(signature="appended")
 Property sheet for a mesh map layer.
 Contains information, source and style tabs
 
@@ -31,7 +31,7 @@ Constructor
 :param lyr: Mesh map layer for which properties will be displayed
 %End
 
-    void addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory );
+    void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
 %Docstring
 Adds properties page from a factory
 

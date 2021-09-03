@@ -21,7 +21,7 @@
 #include "qgsdxfexport.h"
 
 /**
- * A parameter for Processing algorithms that need a list of input vector
+ * \brief A parameter for Processing algorithms that need a list of input vector
  * layers to export as DXF file - this parameter provides Processing
  * framework's adapter for QList<QgsDxfExport::DxfLayer>.
  *
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsProcessingParameterDxfLayers : public QgsProcessingParamete
 ///@cond PRIVATE
 
 /**
- * Parameter type definition for QgsProcessingParameterDxfLayers.
+ * \brief Parameter type definition for QgsProcessingParameterDxfLayers.
  *
  * \ingroup core
  * \note This class is not a part of public API.

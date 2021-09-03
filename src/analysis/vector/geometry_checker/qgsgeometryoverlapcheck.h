@@ -23,7 +23,7 @@
 
 /**
  * \ingroup analysis
- * An error of a QgsGeometryOverlapCheck.
+ * \brief An error of a QgsGeometryOverlapCheck.
  *
  * \since QGIS 3.4
  */
@@ -86,7 +86,7 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheckError : public QgsGeometryCheckErro
 
 /**
  * \ingroup analysis
- * Checks if geometries overlap.
+ * \brief Checks if geometries overlap.
  *
  * \since QGIS 3.4
  */

@@ -49,16 +49,16 @@ void QgsLayoutReportSectionLabel::paint( QPainter *painter, const QStyleOptionGr
 
   QFont f;
   f.setPointSizeF( 8 );
-  QFontMetrics fm( f );
-  QSize s = fm.size( 0, mLabel );
-  double margin = fm.height() / 5.0;
+  const QFontMetrics fm( f );
+  const QSize s = fm.size( 0, mLabel );
+  const double margin = fm.height() / 5.0;
 
-  double scaleValue = scale() / painter->transform().m11();
-  QgsScopedQPainterState painterState( painter );
+  const double scaleValue = scale() / painter->transform().m11();
+  const QgsScopedQPainterState painterState( painter );
   painter->setRenderHint( QPainter::Antialiasing, true );
   painter->scale( scaleValue, scaleValue );
-  QRectF r = rect();
-  QRectF scaledRect( r.left() / scaleValue, r.top() / scaleValue, r.width() / scaleValue, r.height() / scaleValue );
+  const QRectF r = rect();
+  const QRectF scaledRect( r.left() / scaleValue, r.top() / scaleValue, r.width() / scaleValue, r.height() / scaleValue );
 
   if ( scaledRect.width() < s.width() + 2 * margin || scaledRect.height() < s.height() + 2 * margin )
   {
@@ -66,8 +66,8 @@ void QgsLayoutReportSectionLabel::paint( QPainter *painter, const QStyleOptionGr
     return;
   }
 
-  QRectF textRect = QRectF( scaledRect.left() + margin, scaledRect.top() + margin, scaledRect.width() - 2 * margin, scaledRect.height() - 2 * margin );
-  QRectF boxRect = QRectF( scaledRect.left(), scaledRect.bottom() - ( s.height() + 2 * margin ), s.width() + 2 * margin, s.height() + 2 * margin );
+  const QRectF textRect = QRectF( scaledRect.left() + margin, scaledRect.top() + margin, scaledRect.width() - 2 * margin, scaledRect.height() - 2 * margin );
+  const QRectF boxRect = QRectF( scaledRect.left(), scaledRect.bottom() - ( s.height() + 2 * margin ), s.width() + 2 * margin, s.height() + 2 * margin );
 
   QPainterPath p;
   p.moveTo( boxRect.bottomRight() );

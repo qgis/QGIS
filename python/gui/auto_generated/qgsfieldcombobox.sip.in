@@ -13,7 +13,7 @@
 
 class QgsFieldComboBox : QComboBox
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsFieldComboBox` is a combo box which displays the list of fields of a given layer.
 It might be combined with a :py:class:`QgsMapLayerComboBox` to automatically update fields according to a chosen layer.
 If expression must be used, :py:class:`QgsFieldExpressionWidget` shall be used instead.

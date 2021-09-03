@@ -13,7 +13,7 @@
 
 class QgsMapLayerStyle
 {
-%Docstring
+%Docstring(signature="appended")
 Stores style information (renderer, opacity, labeling, diagrams etc.) applicable to a map layer.
 
 Stored data are considered as opaque:
@@ -76,7 +76,7 @@ Write style configuration (for project file writing)
 
 class QgsMapLayerStyleOverride
 {
-%Docstring
+%Docstring(signature="appended")
 Restore overridden layer style on destruction.
 
 .. versionadded:: 3.2

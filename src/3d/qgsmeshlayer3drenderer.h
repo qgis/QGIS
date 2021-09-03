@@ -34,7 +34,7 @@ class QgsMeshLayer;
 
 /**
  * \ingroup core
- * Metadata for mesh layer 3D renderer to allow creation of its instances from XML
+ * \brief Metadata for mesh layer 3D renderer to allow creation of its instances from XML
  *
  * \warning This is not considered stable API, and may change in future QGIS releases
  *
@@ -53,7 +53,7 @@ class _3D_EXPORT QgsMeshLayer3DRendererMetadata : public Qgs3DRendererAbstractMe
 
 /**
  * \ingroup core
- * 3D renderer that renders all mesh triangles of a mesh layer.
+ * \brief 3D renderer that renders all mesh triangles of a mesh layer.
  * \since QGIS 3.6
  */
 class _3D_EXPORT QgsMeshLayer3DRenderer : public QgsAbstract3DRenderer

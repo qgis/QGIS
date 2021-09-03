@@ -24,7 +24,7 @@
 
 /**
  * \ingroup gui
- * A slider control with two interactive endpoints, for interactive selection of a range of values.
+ * \brief A slider control with two interactive endpoints, for interactive selection of a range of values.
  *
  * \since QGIS 3.18
  */

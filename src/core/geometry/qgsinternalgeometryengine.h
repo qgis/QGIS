@@ -30,7 +30,7 @@ class QgsFeedback;
 
 /**
  * \ingroup core
- * This class offers geometry processing methods.
+ * \brief This class offers geometry processing methods.
  *
  * The methods are available via QgsGeometry::[geometryfunction]
  * and therefore this does not need to be accessed directly.
@@ -55,6 +55,21 @@ class QgsInternalGeometryEngine
      * \since QGIS 3.16
      */
     QString lastError() const;
+
+    /**
+     * Returns TRUE if the geometry is a polygon that is almost an axis-parallel rectangle.
+     *
+     * The \a maximumDeviation argument specifes the maximum angle (in degrees) that the polygon edges
+     * are allowed to deviate from axis parallel lines.
+     *
+     * By default the check will permit polygons with more than 4 edges, so long as the overall shape of
+     * the polygon is an axis-parallel rectangle (i.e. it is tolerant to rectangles with additional vertices
+     * added along the rectangle sides). If \a simpleRectanglesOnly is set to TRUE then the method will
+     * only return TRUE if the geometry is a simple rectangle consisting of 4 edges.
+     *
+     * \since QGIS 3.20
+     */
+    bool isAxisParallelRectangle( double maximumDeviation, bool simpleRectanglesOnly = false ) const;
 
     /**
      * Will extrude a line or (segmentized) curve by a given offset and return a polygon
@@ -215,7 +230,7 @@ class QgsInternalGeometryEngine
 };
 
 /**
- * A 2D ray which extends from an origin point to an infinite distance in a given direction.
+ * \brief A 2D ray which extends from an origin point to an infinite distance in a given direction.
  * \ingroup core
  * \note not available in Python bindings
  * \since QGIS 3.2
@@ -253,7 +268,8 @@ class CORE_EXPORT QgsRay2D
 // adapted for QGIS geometry classes from original work at https://github.com/trylock/visibility by trylock
 
 /**
- * Compares two line segments based on their distance from a given point
+ * \brief Compares two line segments based on their distance from a given point.
+ *
  * Assumes: (1) the line segments are intersected by some ray from the origin
  *          (2) the line segments do not intersect except at their endpoints
  *          (3) no line segment is collinear with the origin
@@ -291,7 +307,8 @@ class CORE_EXPORT QgsLineSegmentDistanceComparer
 // adapted for QGIS geometry classes from original work at https://github.com/trylock/visibility by trylock
 
 /**
- * Compares angles from an origin to points clockwise, starting at the positive y-axis.
+ * \brief Compares angles from an origin to points clockwise, starting at the positive y-axis.
+ *
  * \ingroup core
  * \since QGIS 3.2
  */

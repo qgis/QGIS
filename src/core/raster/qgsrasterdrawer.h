@@ -32,12 +32,18 @@ class QgsRasterIterator;
 
 /**
  * \ingroup core
- * The drawing pipe for raster layers.
+ * \brief The drawing pipe for raster layers.
  */
 class CORE_EXPORT QgsRasterDrawer
 {
   public:
-    QgsRasterDrawer( QgsRasterIterator *iterator );
+
+    /**
+     * The QgsRasterDrawer constructor.
+     * \param iterator the raster iterator to fetch data from
+     * \param dpiTarget the target \a dpi (dots per inch) to be taken into consideration when rendering
+     */
+    QgsRasterDrawer( QgsRasterIterator *iterator, double dpiTarget = -1.0 );
 
     /**
      * Draws raster data.
@@ -64,6 +70,7 @@ class CORE_EXPORT QgsRasterDrawer
 
   private:
     QgsRasterIterator *mIterator = nullptr;
+    double mDpiTarget = -1.0;
 };
 
 #endif // QGSRASTERDRAWER_H

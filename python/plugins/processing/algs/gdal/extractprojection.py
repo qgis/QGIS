@@ -88,7 +88,7 @@ class ExtractProjection(GdalAlgorithm):
                                             context)
         raster = self.parameterAsRasterLayer(parameters, self.INPUT,
                                              context)
-        if not raster.dataProvider().name() == 'gdal':
+        if raster.dataProvider().name() != 'gdal':
             raise QgsProcessingException(self.tr('This algorithm can '
                                                  'only be used with '
                                                  'GDAL raster layers'))

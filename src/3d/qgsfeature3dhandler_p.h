@@ -41,7 +41,7 @@ class Qgs3DMapSettings;
 
 /**
  * \ingroup 3d
- * Rendering context for preparation of 3D entities.
+ * \brief Rendering context for preparation of 3D entities.
  *
  * \note Not available in Python bindings
  */
@@ -84,7 +84,7 @@ class Qgs3DRenderContext
 
 /**
  * \ingroup 3d
- * Interface to be implemented by 3D symbol implementations in order to generate 3D entities.
+ * \brief Interface to be implemented by 3D symbol implementations in order to generate 3D entities.
  */
 class QgsFeature3DHandler
 {

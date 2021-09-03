@@ -302,10 +302,6 @@ class TestPyQgsDBManagerSpatialite(unittest.TestCase):
         connection.remove()
 
     # def testRaster(self):
-
-    #     if int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 0, 2):
-    #         return
-
     #     connection_name = 'testRaster'
     #     plugin = createDbPlugin('spatialite')
     #     uri = QgsDataSourceUri()
@@ -346,10 +342,6 @@ class TestPyQgsDBManagerSpatialite(unittest.TestCase):
     #     connection.remove()
 
     # def testTwoRaster(self):
-
-    #     if int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 0, 2):
-    #         return
-
     #     connection_name = 'testTwoRaster'
     #     plugin = createDbPlugin('spatialite')
     #     uri = QgsDataSourceUri()

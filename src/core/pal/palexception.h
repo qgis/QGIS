@@ -30,6 +30,8 @@
 #ifndef PAL_EXCEPTION_H
 #define PAL_EXCEPTION_H
 
+#define SIP_NO_FILE
+
 #include <exception>
 
 

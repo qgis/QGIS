@@ -19,7 +19,7 @@ if (OPENCL_HPP_INCLUDE_DIR)
     SET(OPENCL_HPP_FOUND TRUE)
 else ()
     find_path(OPENCL_HPP_INCLUDE_DIR
-        NAMES CL/cl2.hpp
+        NAMES CL/opencl.hpp CL/cl2.hpp
         PATHS
         ${LIB_DIR}/include
         "$ENV{LIB_DIR}/include"
@@ -36,6 +36,19 @@ endif ()
 
 
 if (OPENCL_HPP_FOUND)
+    # see if newer opencl.hpp file exists in include dir -- if so we should use this
+    # instead of the deprecated cl2.hpp header
+    find_path(OPENCL_HPP_RENAMED_PATH
+        NAMES CL/opencl.hpp
+        PATHS
+        ${OPENCL_HPP_INCLUDE_DIR}
+    )
+    if (OPENCL_HPP_RENAMED_PATH)
+        SET(OPENCL_USE_NEW_HEADER TRUE)
+    else ()
+        SET(OPENCL_USE_NEW_HEADER FALSE)
+    endif ()
+
     if (NOT OPENCLHPP_FIND_QUIETLY)
         message(STATUS "Found OpenCL C++ headers: ${OPENCL_HPP_INCLUDE_DIR}")
     endif ()

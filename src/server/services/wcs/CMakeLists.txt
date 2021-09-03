@@ -15,6 +15,8 @@ set (wcs_SRCS
 
 add_library (wcs MODULE ${wcs_SRCS})
 
+# require c++17
+target_compile_features(wcs PRIVATE cxx_std_17)
 
 include_directories(SYSTEM
   ${GDAL_INCLUDE_DIR}

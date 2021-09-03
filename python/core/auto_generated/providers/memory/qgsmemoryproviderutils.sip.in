@@ -12,7 +12,7 @@
 
 class QgsMemoryProviderUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Utility functions for use with the memory vector data provider.
 
 .. versionadded:: 3.0

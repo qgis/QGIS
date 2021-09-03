@@ -94,7 +94,7 @@ QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer *layer, Q
   {
     // copy simple label settings to first rule
     mRootRule = new QgsRuleBasedLabeling::Rule( nullptr );
-    std::unique_ptr< QgsPalLayerSettings > newSettings = qgis::make_unique< QgsPalLayerSettings >( mLayer->labeling()->settings() );
+    std::unique_ptr< QgsPalLayerSettings > newSettings = std::make_unique< QgsPalLayerSettings >( mLayer->labeling()->settings() );
     newSettings->drawLabels = true; // otherwise we may be trying to copy a "blocking" setting to a rule - which is confusing for users!
     mRootRule->appendChild( new QgsRuleBasedLabeling::Rule( newSettings.release() ) );
   }
@@ -133,24 +133,23 @@ void QgsRuleBasedLabelingWidget::setDockMode( bool dockMode )
 
 void QgsRuleBasedLabelingWidget::addRule()
 {
-
-  QgsRuleBasedLabeling::Rule *newrule = new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings );
+  QgsRuleBasedLabeling::Rule *newrule = new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings( QgsAbstractVectorLayerLabeling::defaultSettingsForLayer( mLayer ) ) );
 
   QgsRuleBasedLabeling::Rule *current = currentRule();
   if ( current )
   {
     // add after this rule
-    QModelIndex currentIndex = viewRules->selectionModel()->currentIndex();
+    const QModelIndex currentIndex = viewRules->selectionModel()->currentIndex();
     mModel->insertRule( currentIndex.parent(), currentIndex.row() + 1, newrule );
-    QModelIndex newindex = mModel->index( currentIndex.row() + 1, 0, currentIndex.parent() );
+    const QModelIndex newindex = mModel->index( currentIndex.row() + 1, 0, currentIndex.parent() );
     viewRules->selectionModel()->setCurrentIndex( newindex, QItemSelectionModel::ClearAndSelect );
   }
   else
   {
     // append to root rule
-    int rows = mModel->rowCount();
+    const int rows = mModel->rowCount();
     mModel->insertRule( QModelIndex(), rows, newrule );
-    QModelIndex newindex = mModel->index( rows, 0 );
+    const QModelIndex newindex = mModel->index( rows, 0 );
     viewRules->selectionModel()->setCurrentIndex( newindex, QItemSelectionModel::ClearAndSelect );
   }
   editRule();
@@ -161,7 +160,7 @@ void QgsRuleBasedLabelingWidget::ruleWidgetPanelAccepted( QgsPanelWidget *panel 
   QgsLabelingRulePropsWidget *widget = qobject_cast<QgsLabelingRulePropsWidget *>( panel );
   widget->apply();
 
-  QModelIndex index = viewRules->selectionModel()->currentIndex();
+  const QModelIndex index = viewRules->selectionModel()->currentIndex();
   mModel->updateRule( index.parent(), index.row() );
 }
 
@@ -192,7 +191,7 @@ void QgsRuleBasedLabelingWidget::editRule( const QModelIndex &index )
 
 void QgsRuleBasedLabelingWidget::removeRule()
 {
-  QItemSelection sel = viewRules->selectionModel()->selection();
+  const QItemSelection sel = viewRules->selectionModel()->selection();
   const auto constSel = sel;
   for ( const QItemSelectionRange &range : constSel )
   {
@@ -205,7 +204,7 @@ void QgsRuleBasedLabelingWidget::removeRule()
 
 void QgsRuleBasedLabelingWidget::copy()
 {
-  QModelIndexList indexlist = viewRules->selectionModel()->selectedRows();
+  const QModelIndexList indexlist = viewRules->selectionModel()->selectedRows();
 
   if ( indexlist.isEmpty() )
     return;
@@ -229,7 +228,7 @@ void QgsRuleBasedLabelingWidget::paste()
 QgsRuleBasedLabeling::Rule *QgsRuleBasedLabelingWidget::currentRule()
 {
   QItemSelectionModel *sel = viewRules->selectionModel();
-  QModelIndex idx = sel->currentIndex();
+  const QModelIndex idx = sel->currentIndex();
   if ( !idx.isValid() )
     return nullptr;
   return mModel->ruleForIndex( idx );
@@ -249,9 +248,9 @@ Qt::ItemFlags QgsRuleBasedLabelingModel::flags( const QModelIndex &index ) const
     return Qt::ItemIsDropEnabled;
 
   // allow drop only at first column
-  Qt::ItemFlag drop = ( index.column() == 0 ? Qt::ItemIsDropEnabled : Qt::NoItemFlags );
+  const Qt::ItemFlag drop = ( index.column() == 0 ? Qt::ItemIsDropEnabled : Qt::NoItemFlags );
 
-  Qt::ItemFlag checkable = ( index.column() == 0 ? Qt::ItemIsUserCheckable : Qt::NoItemFlags );
+  const Qt::ItemFlag checkable = ( index.column() == 0 ? Qt::ItemIsUserCheckable : Qt::NoItemFlags );
 
   return Qt::ItemIsEnabled | Qt::ItemIsSelectable |
          Qt::ItemIsEditable | checkable |
@@ -387,7 +386,7 @@ QModelIndex QgsRuleBasedLabelingModel::parent( const QModelIndex &index ) const
     return QModelIndex();
 
   // this is right: we need to know row number of our parent (in our grandparent)
-  int row = parentRule->parent()->children().indexOf( parentRule );
+  const int row = parentRule->parent()->children().indexOf( parentRule );
 
   return createIndex( row, 0, parentRule );
 }
@@ -485,7 +484,7 @@ QMimeData *QgsRuleBasedLabelingModel::mimeData( const QModelIndexList &indexes )
 
     QDomElement rootElem = doc.createElement( QStringLiteral( "rule_mime" ) );
     rootElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "labeling" ) ); // for determining whether rules are from renderer or labeling
-    QDomElement rulesElem = rule->save( doc, QgsReadWriteContext() );
+    const QDomElement rulesElem = rule->save( doc, QgsReadWriteContext() );
     rootElem.appendChild( rulesElem );
     doc.appendChild( rootElem );
 
@@ -529,7 +528,7 @@ bool QgsRuleBasedLabelingModel::dropMimeData( const QMimeData *data, Qt::DropAct
     QDomDocument doc;
     if ( !doc.setContent( text ) )
       continue;
-    QDomElement rootElem = doc.documentElement();
+    const QDomElement rootElem = doc.documentElement();
     if ( rootElem.tagName() != QLatin1String( "rule_mime" ) )
       continue;
     QDomElement ruleElem = rootElem.firstChildElement( QStringLiteral( "rule" ) );
@@ -603,6 +602,10 @@ QgsLabelingRulePropsWidget::QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Ru
   , mMapCanvas( mapCanvas )
 {
   setupUi( this );
+
+  QButtonGroup *radioGroup = new QButtonGroup( this );
+  radioGroup->addButton( mFilterRadio );
+  radioGroup->addButton( mElseRadio );
 
   mElseRadio->setChecked( mRule->isElse() );
   mFilterRadio->setChecked( !mRule->isElse() );
@@ -693,7 +696,7 @@ void QgsLabelingRulePropsWidget::testFilter()
   {
     context.setFeature( f );
 
-    QVariant value = filter.evaluate( &context );
+    const QVariant value = filter.evaluate( &context );
     if ( value.toInt() != 0 )
       count++;
     if ( filter.hasEvalError() )
@@ -708,7 +711,7 @@ void QgsLabelingRulePropsWidget::testFilter()
 
 void QgsLabelingRulePropsWidget::buildExpression()
 {
-  QgsExpressionContext context( _globalProjectAtlasMapLayerScopes( mMapCanvas, mLayer ) );
+  const QgsExpressionContext context( _globalProjectAtlasMapLayerScopes( mMapCanvas, mLayer ) );
 
   QgsExpressionBuilderDialog dlg( mLayer, editFilter->text(), this, QStringLiteral( "generic" ), context );
 
@@ -718,7 +721,7 @@ void QgsLabelingRulePropsWidget::buildExpression()
 
 void QgsLabelingRulePropsWidget::apply()
 {
-  QString filter = mElseRadio->isChecked() ? QStringLiteral( "ELSE" ) : editFilter->text();
+  const QString filter = mElseRadio->isChecked() ? QStringLiteral( "ELSE" ) : editFilter->text();
   mRule->setFilterExpression( filter );
   mRule->setDescription( editDescription->text() );
   mRule->setMinimumScale( groupScale->isChecked() ? mScaleRangeWidget->minimumScale() : 0 );

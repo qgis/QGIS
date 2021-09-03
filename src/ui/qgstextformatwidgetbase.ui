@@ -14,82 +14,7 @@
    <string>Layer Labeling Settings</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_8">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
-    <number>0</number>
-   </property>
-   <property name="verticalSpacing">
-    <number>6</number>
-   </property>
-   <item row="0" column="0">
-    <widget class="QFrame" name="frameLabelWith">
-     <layout class="QHBoxLayout" name="horizontalLayout_19">
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QLabel" name="label_12">
-        <property name="text">
-         <string>Value</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QgsFieldExpressionWidget" name="mFieldExpressionWidget" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="focusPolicy">
-         <enum>Qt::StrongFocus</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_7">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Fixed</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>0</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="3" column="0">
+   <item row="1" column="0">
     <widget class="QFrame" name="mLabelingFrame">
      <property name="minimumSize">
       <size>
@@ -172,7 +97,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>499</width>
+               <width>480</width>
                <height>300</height>
               </rect>
              </property>
@@ -717,8 +642,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>485</width>
-                       <height>429</height>
+                       <width>455</width>
+                       <height>414</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -1280,8 +1205,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>374</width>
-                       <height>708</height>
+                       <width>427</width>
+                       <height>931</height>
                       </rect>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_42">
@@ -2164,8 +2089,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>299</width>
-                       <height>308</height>
+                       <width>338</width>
+                       <height>401</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2510,8 +2435,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>296</width>
-                       <height>291</height>
+                       <width>338</width>
+                       <height>351</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_121">
@@ -2788,8 +2713,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>444</width>
-                       <height>786</height>
+                       <width>513</width>
+                       <height>1053</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -3098,19 +3023,6 @@ font-style: italic;</string>
                              </item>
                             </layout>
                            </item>
-                           <item row="21" column="0">
-                            <widget class="QLabel" name="mShapePenStyleLabel">
-                             <property name="sizePolicy">
-                              <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                               <horstretch>0</horstretch>
-                               <verstretch>0</verstretch>
-                              </sizepolicy>
-                             </property>
-                             <property name="text">
-                              <string>Pen join style</string>
-                             </property>
-                            </widget>
-                           </item>
                            <item row="20" column="3">
                             <widget class="QgsPropertyOverrideButton" name="mShapeStrokeUnitsDDBtn">
                              <property name="text">
@@ -3131,9 +3043,6 @@ font-style: italic;</string>
                               <string>Size type</string>
                              </property>
                             </widget>
-                           </item>
-                           <item row="21" column="1">
-                            <widget class="QgsPenJoinStyleComboBox" name="mShapePenStyleCmbBx"/>
                            </item>
                            <item row="19" column="3">
                             <widget class="QgsPropertyOverrideButton" name="mShapeStrokeWidthDDBtn">
@@ -3471,15 +3380,21 @@ font-style: italic;</string>
                              </property>
                             </widget>
                            </item>
-                           <item row="21" column="3">
-                            <widget class="QgsPropertyOverrideButton" name="mShapePenStyleDDBtn">
+                           <item row="2" column="1">
+                            <widget class="QgsSymbolButton" name="mBackgroundMarkerSymbolButton">
+                             <property name="sizePolicy">
+                              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                               <horstretch>0</horstretch>
+                               <verstretch>0</verstretch>
+                              </sizepolicy>
+                             </property>
                              <property name="text">
-                              <string>…</string>
+                              <string>Background Symbol…</string>
                              </property>
                             </widget>
                            </item>
-                           <item row="2" column="1" colspan="2">
-                            <widget class="QgsSymbolButton" name="mBackgroundSymbolButton">
+                           <item row="2" column="1">
+                            <widget class="QgsSymbolButton" name="mBackgroundFillSymbolButton">
                              <property name="sizePolicy">
                               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                                <horstretch>0</horstretch>
@@ -3549,8 +3464,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>324</width>
-                       <height>457</height>
+                       <width>356</width>
+                       <height>592</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -3977,8 +3892,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>159</width>
-                       <height>211</height>
+                       <width>181</width>
+                       <height>227</height>
                       </rect>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_46">
@@ -4127,8 +4042,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>472</width>
-                       <height>1686</height>
+                       <width>510</width>
+                       <height>2074</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -5826,9 +5741,9 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>-304</y>
-                       <width>471</width>
-                       <height>708</height>
+                       <y>0</y>
+                       <width>461</width>
+                       <height>858</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -6573,25 +6488,80 @@ font-style: italic;</string>
      </layout>
     </widget>
    </item>
+   <item row="0" column="0">
+    <widget class="QFrame" name="frameLabelWith">
+     <layout class="QHBoxLayout" name="horizontalLayout_19">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="label_12">
+        <property name="text">
+         <string>Value</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QgsFieldExpressionWidget" name="mFieldExpressionWidget" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_7">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>0</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -6605,32 +6575,37 @@ font-style: italic;</string>
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsSymbolButton</class>
-   <extends>QToolButton</extends>
-   <header>qgssymbolbutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsFieldExpressionWidget</class>
    <extends>QWidget</extends>
    <header>qgsfieldexpressionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsScaleWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSymbolButton</class>
+   <extends>QToolButton</extends>
+   <header>qgssymbolbutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsUnitSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsScaleWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsscalewidget.h</header>
   </customwidget>
   <customwidget>
    <class>QgsEffectStackCompactWidget</class>
@@ -6674,6 +6649,7 @@ font-style: italic;</string>
  </customwidgets>
  <tabstops>
   <tabstop>mFieldExpressionWidget</tabstop>
+  <tabstop>scrollArea_mPreview</tabstop>
   <tabstop>mPreviewTextEdit</tabstop>
   <tabstop>mPreviewTextBtn</tabstop>
   <tabstop>mPreviewScaleComboBox</tabstop>
@@ -6703,6 +6679,19 @@ font-style: italic;</string>
   <tabstop>mFontOpacityDDBtn</tabstop>
   <tabstop>mHtmlFormattingCheckBox</tabstop>
   <tabstop>scrollArea_5</tabstop>
+  <tabstop>mFontCapitalsComboBox</tabstop>
+  <tabstop>mFontCaseDDBtn</tabstop>
+  <tabstop>mFontLetterSpacingSpinBox</tabstop>
+  <tabstop>mFontLetterSpacingDDBtn</tabstop>
+  <tabstop>mFontWordSpacingSpinBox</tabstop>
+  <tabstop>mFontWordSpacingDDBtn</tabstop>
+  <tabstop>mKerningCheckBox</tabstop>
+  <tabstop>mTextOrientationComboBox</tabstop>
+  <tabstop>mTextOrientationDDBtn</tabstop>
+  <tabstop>comboBlendMode</tabstop>
+  <tabstop>mFontBlendModeDDBtn</tabstop>
+  <tabstop>mCheckBoxSubstituteText</tabstop>
+  <tabstop>mToolButtonConfigureSubstitutes</tabstop>
   <tabstop>wrapCharacterEdit</tabstop>
   <tabstop>mWrapCharDDBtn</tabstop>
   <tabstop>mAutoWrapLengthSpinBox</tabstop>
@@ -6733,8 +6722,8 @@ font-style: italic;</string>
   <tabstop>mFormatNumPlusSignChkBx</tabstop>
   <tabstop>mFormatNumPlusSignDDBtn</tabstop>
   <tabstop>scrollArea_7</tabstop>
-  <tabstop>mEnableMaskChkBx</tabstop>
-  <tabstop>mEnableMaskDDBtn</tabstop>
+  <tabstop>mBufferDrawChkBx</tabstop>
+  <tabstop>mBufferDrawDDBtn</tabstop>
   <tabstop>spinBufferSize</tabstop>
   <tabstop>mBufferSizeDDBtn</tabstop>
   <tabstop>mBufferUnitWidget</tabstop>
@@ -6748,6 +6737,17 @@ font-style: italic;</string>
   <tabstop>mBufferJoinStyleDDBtn</tabstop>
   <tabstop>comboBufferBlendMode</tabstop>
   <tabstop>mBufferBlendModeDDBtn</tabstop>
+  <tabstop>scrollArea_71</tabstop>
+  <tabstop>mEnableMaskChkBx</tabstop>
+  <tabstop>mEnableMaskDDBtn</tabstop>
+  <tabstop>mMaskBufferSizeSpinBox</tabstop>
+  <tabstop>mMaskBufferSizeDDBtn</tabstop>
+  <tabstop>mMaskBufferUnitWidget</tabstop>
+  <tabstop>mMaskBufferUnitsDDBtn</tabstop>
+  <tabstop>mMaskOpacityWidget</tabstop>
+  <tabstop>mMaskOpacityDDBtn</tabstop>
+  <tabstop>mMaskJoinStyleComboBox</tabstop>
+  <tabstop>mMaskJoinStyleDDBtn</tabstop>
   <tabstop>scrollArea_2</tabstop>
   <tabstop>mShapeDrawChkBx</tabstop>
   <tabstop>mShapeDrawDDBtn</tabstop>
@@ -6756,7 +6756,8 @@ font-style: italic;</string>
   <tabstop>mShapeSVGPathLineEdit</tabstop>
   <tabstop>mShapeSVGSelectorBtn</tabstop>
   <tabstop>mShapeSVGPathDDBtn</tabstop>
-  <tabstop>mBackgroundSymbolButton</tabstop>
+  <tabstop>mBackgroundMarkerSymbolButton</tabstop>
+  <tabstop>mBackgroundFillSymbolButton</tabstop>
   <tabstop>mShapeSizeCmbBx</tabstop>
   <tabstop>mShapeSizeTypeDDBtn</tabstop>
   <tabstop>mShapeSizeXSpnBx</tabstop>
@@ -6792,8 +6793,6 @@ font-style: italic;</string>
   <tabstop>mShapeStrokeWidthDDBtn</tabstop>
   <tabstop>mShapeStrokeWidthUnitWidget</tabstop>
   <tabstop>mShapeStrokeUnitsDDBtn</tabstop>
-  <tabstop>mShapePenStyleCmbBx</tabstop>
-  <tabstop>mShapePenStyleDDBtn</tabstop>
   <tabstop>scrollArea_8</tabstop>
   <tabstop>mShadowDrawChkBx</tabstop>
   <tabstop>mShadowDrawDDBtn</tabstop>
@@ -6820,15 +6819,19 @@ font-style: italic;</string>
   <tabstop>mShadowColorDDBtn</tabstop>
   <tabstop>mShadowBlendCmbBx</tabstop>
   <tabstop>mShadowBlendDDBtn</tabstop>
+  <tabstop>scrollArea_6</tabstop>
+  <tabstop>mCalloutsDrawCheckBox</tabstop>
+  <tabstop>mCalloutDrawDDBtn</tabstop>
+  <tabstop>mCalloutStyleComboBox</tabstop>
   <tabstop>scrollArea_3</tabstop>
   <tabstop>mPlacementModeComboBox</tabstop>
   <tabstop>chkLineAbove</tabstop>
   <tabstop>chkLineOn</tabstop>
   <tabstop>chkLineBelow</tabstop>
+  <tabstop>mLinePlacementFlagsDDBtn</tabstop>
   <tabstop>chkLineOrientationDependent</tabstop>
   <tabstop>mCheckAllowLabelsOutsidePolygons</tabstop>
   <tabstop>mAllowOutsidePolygonsDDBtn</tabstop>
-  <tabstop>mLinePlacementFlagsDDBtn</tabstop>
   <tabstop>mCentroidRadioVisible</tabstop>
   <tabstop>mCentroidRadioWhole</tabstop>
   <tabstop>mCentroidDDBtn</tabstop>
@@ -6855,9 +6858,20 @@ font-style: italic;</string>
   <tabstop>mPointOffsetUnitWidget</tabstop>
   <tabstop>mPointOffsetUnitsDDBtn</tabstop>
   <tabstop>mPointAngleSpinBox</tabstop>
+  <tabstop>mRepeatDistanceSpinBox</tabstop>
+  <tabstop>mRepeatDistanceDDBtn</tabstop>
+  <tabstop>mRepeatDistanceUnitWidget</tabstop>
+  <tabstop>mRepeatDistanceUnitDDBtn</tabstop>
+  <tabstop>mOverrunDistanceUnitWidget</tabstop>
+  <tabstop>mOverrunDistanceSpinBox</tabstop>
+  <tabstop>mOverrunDistanceDDBtn</tabstop>
+  <tabstop>mLineAnchorSettingsButton</tabstop>
   <tabstop>mMaxCharAngleInDSpinBox</tabstop>
   <tabstop>mMaxCharAngleOutDSpinBox</tabstop>
   <tabstop>mMaxCharAngleDDBtn</tabstop>
+  <tabstop>mGeometryGeneratorGroupBox</tabstop>
+  <tabstop>mGeometryGeneratorExpressionButton</tabstop>
+  <tabstop>mGeometryGeneratorType</tabstop>
   <tabstop>mCoordXDDBtn</tabstop>
   <tabstop>mCoordYDDBtn</tabstop>
   <tabstop>mCoordAlignmentHDDBtn</tabstop>
@@ -6866,6 +6880,9 @@ font-style: italic;</string>
   <tabstop>chkPreserveRotation</tabstop>
   <tabstop>mPrioritySlider</tabstop>
   <tabstop>mPriorityDDBtn</tabstop>
+  <tabstop>mChkNoObstacle</tabstop>
+  <tabstop>mIsObstacleDDBtn</tabstop>
+  <tabstop>mObstacleSettingsButton</tabstop>
   <tabstop>scrollArea_4</tabstop>
   <tabstop>mScaleBasedVisibilityChkBx</tabstop>
   <tabstop>mScaleBasedVisibilityDDBtn</tabstop>
@@ -6894,42 +6911,6 @@ font-style: italic;</string>
   <tabstop>mLimitLabelSpinBox</tabstop>
   <tabstop>mMinSizeSpinBox</tabstop>
   <tabstop>mFitInsidePolygonCheckBox</tabstop>
-  <tabstop>scrollArea_mPreview</tabstop>
-  <tabstop>mGeometryGeneratorGroupBox</tabstop>
-  <tabstop>mGeometryGeneratorExpressionButton</tabstop>
-  <tabstop>mGeometryGeneratorType</tabstop>
-  <tabstop>mFontWordSpacingSpinBox</tabstop>
-  <tabstop>mFontCaseDDBtn</tabstop>
-  <tabstop>mFontLetterSpacingSpinBox</tabstop>
-  <tabstop>comboBlendMode</tabstop>
-  <tabstop>mToolButtonConfigureSubstitutes</tabstop>
-  <tabstop>mFontBlendModeDDBtn</tabstop>
-  <tabstop>mFontCapitalsComboBox</tabstop>
-  <tabstop>mFontLetterSpacingDDBtn</tabstop>
-  <tabstop>mCheckBoxSubstituteText</tabstop>
-  <tabstop>mFontWordSpacingDDBtn</tabstop>
-  <tabstop>mTextOrientationComboBox</tabstop>
-  <tabstop>mTextOrientationDDBtn</tabstop>
-  <tabstop>mKerningCheckBox</tabstop>
-  <tabstop>mBufferDrawDDBtn</tabstop>
-  <tabstop>mBufferDrawChkBx</tabstop>
-  <tabstop>scrollArea_71</tabstop>
-  <tabstop>mMaskJoinStyleComboBox</tabstop>
-  <tabstop>mMaskOpacityDDBtn</tabstop>
-  <tabstop>mMaskBufferUnitWidget</tabstop>
-  <tabstop>mMaskJoinStyleDDBtn</tabstop>
-  <tabstop>mMaskBufferUnitsDDBtn</tabstop>
-  <tabstop>mMaskBufferSizeSpinBox</tabstop>
-  <tabstop>mMaskBufferSizeDDBtn</tabstop>
-  <tabstop>mMaskOpacityWidget</tabstop>
-  <tabstop>scrollArea_6</tabstop>
-  <tabstop>mCalloutsDrawCheckBox</tabstop>
-  <tabstop>mCalloutDrawDDBtn</tabstop>
-  <tabstop>mCalloutStyleComboBox</tabstop>
-  <tabstop>mChkNoObstacle</tabstop>
-  <tabstop>mIsObstacleDDBtn</tabstop>
-  <tabstop>mObstacleSettingsButton</tabstop>
-  <tabstop>mLineAnchorSettingsButton</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

@@ -22,7 +22,7 @@
 
 /**
  * \ingroup core
- * Namespace with helper functions for layer tree operations.
+ * \brief Namespace with helper functions for layer tree operations.
  *
  * Only generally useful routines should be here. Miscellaneous utility functions for work
  * with the layer tree are in QgsLayerTreeUtils class.
@@ -92,6 +92,15 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * Create a new empty layer tree
      */
     QgsLayerTree();
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    // override parent QgsLayerTreeGroup __repr__ and resort back to default repr for QgsLayerTree -- there's no extra useful context we can show
+    QString str = QStringLiteral( "<qgis._core.QgsLayerTree object at 0x%1>" ).arg( reinterpret_cast<quintptr>( sipCpp ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
     /**
      * The order in which layers will be rendered on the canvas.

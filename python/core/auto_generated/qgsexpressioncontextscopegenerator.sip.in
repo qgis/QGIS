@@ -10,7 +10,7 @@
 
 class QgsExpressionContextScopeGenerator
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract interface for generating an expression context scope.
 
 .. versionadded:: 3.0

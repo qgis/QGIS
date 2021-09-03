@@ -19,7 +19,7 @@ QgsPropertiesDefinition QgsAbstractMaterialSettings::sPropertyDefinitions;
 
 void QgsAbstractMaterialSettings::readXml( const QDomElement &element, const QgsReadWriteContext & )
 {
-  QDomElement elemDataDefinedProperties = element.firstChildElement( QStringLiteral( "data-defined-properties" ) );
+  const QDomElement elemDataDefinedProperties = element.firstChildElement( QStringLiteral( "data-defined-properties" ) );
   if ( !elemDataDefinedProperties.isNull() )
     mDataDefinedProperties.readXml( elemDataDefinedProperties, propertyDefinitions() );
 }
@@ -63,7 +63,7 @@ void QgsAbstractMaterialSettings::initPropertyDefinitions() const
   if ( !sPropertyDefinitions.isEmpty() )
     return;
 
-  QString origin = QStringLiteral( "material3d" );
+  const QString origin = QStringLiteral( "material3d" );
 
   sPropertyDefinitions = QgsPropertiesDefinition
   {

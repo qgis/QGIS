@@ -25,7 +25,7 @@ class QgsLayerTreeLayer;
 
 /**
  * \ingroup core
- * Layer tree group node serves as a container for layers and further groups.
+ * \brief Layer tree group node serves as a container for layers and further groups.
  *
  * Group names do not need to be unique within one tree nor within one parent.
  *
@@ -43,6 +43,14 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 
 #ifndef SIP_RUN
     QgsLayerTreeGroup( const QgsLayerTreeGroup &other );
+#endif
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsLayerTreeGroup: %1>" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
 #endif
 
     /**
@@ -142,9 +150,9 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     QgsLayerTreeGroup *findGroup( const QString &name );
 
     /**
-     * Find all group layer nodes
+     * Find group layer nodes. Searches recursively the whole sub-tree, if recursive is set.
     */
-    QList<QgsLayerTreeGroup *> findGroups() const;
+    QList<QgsLayerTreeGroup *> findGroups( bool recursive = false ) const;
 
     /**
      * Read group (tree) from XML element <layer-tree-group> and return the newly created group (or NULLPTR on error).

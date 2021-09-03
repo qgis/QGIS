@@ -13,7 +13,7 @@
 
 class QgsGeometryCheckRegistry
 {
-%Docstring
+%Docstring(signature="appended")
 This class manages all known geometry check factories.
 
 :py:class:`QgsGeometryCheckRegistry` is not usually directly created, but rather accessed through

@@ -31,7 +31,7 @@ class QgsFields;
 
 /**
  * \ingroup analysis
- *  Interpolation in a triangular irregular network
+ * \brief Interpolation in a triangular irregular network
  * \since QGIS 3.0
 */
 class ANALYSIS_EXPORT QgsTinInterpolator: public QgsInterpolator

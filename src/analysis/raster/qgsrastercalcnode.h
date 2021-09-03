@@ -31,6 +31,7 @@ class QgsRasterMatrix;
 /**
  * \ingroup analysis
  * \class QgsRasterCalcNode
+ * \brief Represents a node in a raster calculator.
  */
 class ANALYSIS_EXPORT QgsRasterCalcNode
 {
@@ -123,6 +124,19 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     QList<const QgsRasterCalcNode *> findNodes( const QgsRasterCalcNode::Type type ) const;
 
     static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) SIP_FACTORY;
+
+    /**
+     * Returns a list of raster layer names that are referenced in the formula without the quotation marks.
+     * It uses QgsRasterCalcNode::cleanRasterReferences
+     * \note since QGIS 3.22
+     */
+    QStringList referencedLayerNames( );
+
+    /**
+     * Returns a list of raster layer references that are addressed in the formula, without quotation marks.
+     * \note since QGIS 3.22
+     */
+    QStringList cleanRasterReferences();
 
   private:
 #ifdef SIP_RUN

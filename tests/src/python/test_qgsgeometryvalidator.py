@@ -239,7 +239,7 @@ class TestQgsGeometryValidator(unittest.TestCase):
         validator.run()
         self.assertEqual(len(spy), 1)
 
-        self.assertEqual(spy[0][0].where(), QgsPointXY())
+        self.assertEqual(spy[0][0].where(), QgsPointXY(0, 0))
         self.assertEqual(spy[0][0].what(), 'ring 0 not closed')
 
         g = QgsGeometry.fromWkt("Polygon ((0 0, 10 0, 10 10, 0 0),(1 1, 2 1, 2 2, 1.1 1))")
@@ -249,7 +249,7 @@ class TestQgsGeometryValidator(unittest.TestCase):
         validator.run()
         self.assertEqual(len(spy), 1)
 
-        self.assertEqual(spy[0][0].where(), QgsPointXY())
+        self.assertEqual(spy[0][0].where(), QgsPointXY(1, 1))
         self.assertEqual(spy[0][0].what(), 'ring 1 not closed')
 
         g = QgsGeometry.fromWkt("Polygon ((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 2 1, 2 2, 1 1),(3 3, 3 4, 4 4, 3.1 3))")
@@ -259,8 +259,19 @@ class TestQgsGeometryValidator(unittest.TestCase):
         validator.run()
         self.assertEqual(len(spy), 1)
 
-        self.assertEqual(spy[0][0].where(), QgsPointXY())
+        self.assertEqual(spy[0][0].where(), QgsPointXY(3, 3))
         self.assertEqual(spy[0][0].what(), 'ring 2 not closed')
+
+        # not closed but 2d closed
+        g = QgsGeometry.fromWkt("POLYGONZ((1 1 0, 1 2 1, 2 2 2, 2 1 3, 1 1 4))")
+
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+        self.assertEqual(len(spy), 1)
+
+        self.assertEqual(spy[0][0].where(), QgsPointXY(1, 1))
+        self.assertEqual(spy[0][0].what(), 'ring 0 not closed, Z mismatch: 0 vs 4')
 
 
 if __name__ == '__main__':

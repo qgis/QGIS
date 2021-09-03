@@ -23,13 +23,12 @@
 #include <QString>
 
 class QIODevice;
-class QStringList;
 
 class QgsReadWriteContext;
 
 /**
  * \ingroup core
- * Abstract interface for project storage - to be implemented by various backends
+ * \brief Abstract interface for project storage - to be implemented by various backends
  * and registered in QgsProjectStorageRegistry.
  *
  * \since QGIS 3.2
@@ -40,7 +39,7 @@ class CORE_EXPORT QgsProjectStorage
 
     /**
      * \ingroup core
-     * Metadata associated with a project
+     * \brief Metadata associated with a project
      * \since QGIS 3.2
      */
     class Metadata
@@ -59,6 +58,17 @@ class CORE_EXPORT QgsProjectStorage
      * starting with "memory:" will have read/write redirected through that storage implementation.
      */
     virtual QString type() = 0;
+
+    /**
+     * Returns TRUE if the specified \a uri is supported by the storage provider.
+     *
+     * \note This method does not actually test whether the \a uri contains projects, but
+     * rather it is a quick test to determine if it is possible that the uri may
+     * contain projects.
+     *
+     * \since QGIS 3.22
+     */
+    virtual bool isSupportedUri( const QString &uri ) const;
 
     //! Returns list of all projects for given URI (specific to each storage backend)
     virtual QStringList listProjects( const QString &uri ) = 0;

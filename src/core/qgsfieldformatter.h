@@ -26,7 +26,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup core
- * A context for field formatter containing information like the project
+ * \brief A context for field formatter containing information like the project
  *
  * \since QGIS 3.12
  */
@@ -57,7 +57,7 @@ class CORE_EXPORT QgsFieldFormatterContext
 
 /**
  * \ingroup core
- * A field formatter helps to handle and display values for a field.
+ * \brief A field formatter helps to handle and display values for a field.
  *
  * It allows for using a shared configuration with the editor widgets
  * for representation of attribute values.

@@ -24,6 +24,7 @@
 #include "qgsrendererwidget.h"
 #include "qgsproxystyle.h"
 #include "qgsprocessingwidgetwrapper.h"
+#include "qgsdoublevalidator.h"
 
 #include "ui_qgsgraduatedsymbolrendererwidget.h"
 
@@ -100,6 +101,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
 
     QgsFeatureRenderer *renderer() override;
     void setContext( const QgsSymbolWidgetContext &context ) override;
+    void disableSymbolLevels() override SIP_SKIP;
 
   public slots:
     void graduatedColumnChanged( const QString &field );
@@ -132,6 +134,9 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
      * The \a reset argument is deprecated and has no effect.
      */
     void refreshRanges( bool reset );
+
+  protected:
+    void setSymbolLevels( const QgsLegendSymbolList &levels, bool enabled ) override;
 
   private slots:
     void mSizeUnitWidget_changed();
@@ -193,8 +198,8 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
 
     QgsRangeList mCopyBuffer;
 
-    QDoubleValidator *mSymmetryPointValidator;
-
+    QgsDoubleValidator *mSymmetryPointValidator = nullptr;
+    QAction *mActionLevels = nullptr;
     std::vector< std::unique_ptr< QgsAbstractProcessingParameterWidgetWrapper >> mParameterWidgetWrappers;
 };
 

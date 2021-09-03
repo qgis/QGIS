@@ -23,7 +23,7 @@
 
 /**
  * \ingroup core
- * Abstract interface for project storage GUI - to be implemented by various backends
+ * \brief Abstract interface for project storage GUI - to be implemented by various backends
  * and registered in QgsProjectStorageGuiRegistry.
  *
  * \since QGIS 3.10

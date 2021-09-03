@@ -34,7 +34,7 @@
 
 QgsMapToolMoveFeature::QgsMapToolMoveFeature( QgsMapCanvas *canvas, MoveMode mode )
   : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )
-  , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
+  , mSnapIndicator( std::make_unique< QgsSnapIndicator>( canvas ) )
   , mMode( mode )
 {
   mToolName = tr( "Move feature" );
@@ -49,9 +49,9 @@ void QgsMapToolMoveFeature::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( mRubberBand )
   {
-    QgsPointXY pointCanvasCoords = e->mapPoint();
-    double offsetX = pointCanvasCoords.x() - mStartPointMapCoords.x();
-    double offsetY = pointCanvasCoords.y() - mStartPointMapCoords.y();
+    const QgsPointXY pointCanvasCoords = e->mapPoint();
+    const double offsetX = pointCanvasCoords.x() - mStartPointMapCoords.x();
+    const double offsetY = pointCanvasCoords.y() - mStartPointMapCoords.y();
     mRubberBand->setTranslationOffset( offsetX, offsetY );
     mRubberBand->updatePosition();
     mRubberBand->update();
@@ -79,17 +79,17 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   if ( !mRubberBand )
   {
     //find first geometry under mouse cursor and store iterator to it
-    QgsPointXY layerCoords = toLayerCoordinates( vlayer, e->mapPoint() );
-    double searchRadius = QgsTolerance::vertexSearchRadius( mCanvas->currentLayer(), mCanvas->mapSettings() );
-    QgsRectangle selectRect( layerCoords.x() - searchRadius, layerCoords.y() - searchRadius,
-                             layerCoords.x() + searchRadius, layerCoords.y() + searchRadius );
+    const QgsPointXY layerCoords = toLayerCoordinates( vlayer, e->mapPoint() );
+    const double searchRadius = QgsTolerance::vertexSearchRadius( mCanvas->currentLayer(), mCanvas->mapSettings() );
+    const QgsRectangle selectRect( layerCoords.x() - searchRadius, layerCoords.y() - searchRadius,
+                                   layerCoords.x() + searchRadius, layerCoords.y() + searchRadius );
 
     if ( vlayer->selectedFeatureCount() == 0 )
     {
       QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ).setNoAttributes() );
 
       //find the closest feature
-      QgsGeometry pointGeometry = QgsGeometry::fromPointXY( layerCoords );
+      const QgsGeometry pointGeometry = QgsGeometry::fromPointXY( layerCoords );
       if ( pointGeometry.isNull() )
       {
         cadDockWidget()->clear();
@@ -104,7 +104,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       {
         if ( f.hasGeometry() )
         {
-          double currentDistance = pointGeometry.distance( f.geometry() );
+          const double currentDistance = pointGeometry.distance( f.geometry() );
           if ( currentDistance < minDistance )
           {
             minDistance = currentDistance;
@@ -134,23 +134,25 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       QgsFeatureIterator it = vlayer->getSelectedFeatures( QgsFeatureRequest().setNoAttributes() );
 
       bool allFeaturesInView = true;
-      QgsRectangle viewRect = mCanvas->mapSettings().mapToLayerCoordinates( vlayer, mCanvas->extent() );
+      const QgsRectangle viewRect = mCanvas->mapSettings().mapToLayerCoordinates( vlayer, mCanvas->extent() );
 
       while ( it.nextFeature( feat ) )
       {
-        mRubberBand->addGeometry( feat.geometry(), vlayer );
+        mRubberBand->addGeometry( feat.geometry(), vlayer, false );
 
         if ( allFeaturesInView && !viewRect.intersects( feat.geometry().boundingBox() ) )
           allFeaturesInView = false;
       }
+      mRubberBand->updatePosition();
+      mRubberBand->update();
 
       if ( !allFeaturesInView )
       {
         // for extra safety to make sure we are not modifying geometries by accident
 
-        int res = QMessageBox::warning( mCanvas, tr( "Move features" ),
-                                        tr( "Some of the selected features are outside of the current map view. Would you still like to continue?" ),
-                                        QMessageBox::Yes | QMessageBox::No );
+        const int res = QMessageBox::warning( mCanvas, tr( "Move features" ),
+                                              tr( "Some of the selected features are outside of the current map view. Would you still like to continue?" ),
+                                              QMessageBox::Yes | QMessageBox::No );
         if ( res != QMessageBox::Yes )
         {
           mMovedFeatures.clear();
@@ -177,20 +179,33 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       return;
     }
 
-    QgsPointXY startPointLayerCoords = toLayerCoordinates( ( QgsMapLayer * )vlayer, mStartPointMapCoords );
-    QgsPointXY stopPointLayerCoords = toLayerCoordinates( ( QgsMapLayer * )vlayer, e->mapPoint() );
+    const QgsPointXY startPointLayerCoords = toLayerCoordinates( ( QgsMapLayer * )vlayer, mStartPointMapCoords );
+    const QgsPointXY stopPointLayerCoords = toLayerCoordinates( ( QgsMapLayer * )vlayer, e->mapPoint() );
 
-    double dx = stopPointLayerCoords.x() - startPointLayerCoords.x();
-    double dy = stopPointLayerCoords.y() - startPointLayerCoords.y();
+    const double dx = stopPointLayerCoords.x() - startPointLayerCoords.x();
+    const double dy = stopPointLayerCoords.y() - startPointLayerCoords.y();
 
     vlayer->beginEditCommand( mMode == Move ? tr( "Feature moved" ) : tr( "Feature copied and moved" ) );
 
     switch ( mMode )
     {
       case Move:
-        for ( QgsFeatureId id : qgis::as_const( mMovedFeatures ) )
+      {
+        QgsFeatureRequest request;
+        request.setFilterFids( mMovedFeatures ).setNoAttributes();
+        QgsFeatureIterator fi = vlayer->getFeatures( request );
+        QgsFeature f;
+        while ( fi.nextFeature( f ) )
         {
-          vlayer->translateFeature( id, dx, dy );
+          if ( !f.hasGeometry() )
+            continue;
+
+          QgsGeometry geom = f.geometry();
+          if ( geom.translate( dx, dy ) != Qgis::GeometryOperationResult::Success )
+            continue;
+
+          const QgsFeatureId id = f.id();
+          vlayer->changeGeometry( id, geom );
 
           if ( QgsProject::instance()->topologicalEditing() )
           {
@@ -206,14 +221,14 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         mSnapIndicator->setMatch( QgsPointLocator::Match() );
         cadDockWidget()->clear();
         break;
-
+      }
       case CopyMove:
         QgsFeatureRequest request;
         request.setFilterFids( mMovedFeatures );
         QString *errorMsg = new QString();
         if ( !QgisApp::instance()->vectorLayerTools()->copyMoveFeatures( vlayer, request, dx, dy, errorMsg, QgsProject::instance()->topologicalEditing(), mSnapIndicator->match().layer() ) )
         {
-          emit messageEmitted( *errorMsg, Qgis::Critical );
+          emit messageEmitted( *errorMsg, Qgis::MessageLevel::Critical );
           delete mRubberBand;
           mRubberBand = nullptr;
           mSnapIndicator->setMatch( QgsPointLocator::Match() );
@@ -233,7 +248,7 @@ void QgsMapToolMoveFeature::deactivate()
   mRubberBand = nullptr;
   mSnapIndicator->setMatch( QgsPointLocator::Match() );
 
-  QgsMapTool::deactivate();
+  QgsMapToolAdvancedDigitizing::deactivate();
 }
 
 void QgsMapToolMoveFeature::keyReleaseEvent( QKeyEvent *e )

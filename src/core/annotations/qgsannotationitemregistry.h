@@ -91,7 +91,7 @@ typedef std::function<QgsAnnotationItem *()> QgsAnnotationItemCreateFunc SIP_SKI
 
 /**
  * \ingroup core
- * Convenience metadata class that uses static functions to create annotation items and their configuration widgets.
+ * \brief Convenience metadata class that uses static functions to create annotation items and their configuration widgets.
  * \note not available in Python bindings
  * \since QGIS 3.16
  */

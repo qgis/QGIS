@@ -12,7 +12,7 @@
 
 class QgsMapUnitScale
 {
-%Docstring
+%Docstring(signature="appended")
 Struct for storing maximum and minimum scales for measurements in map units
 
 For measurements in map units, a minimum and a maximum scale can be defined.

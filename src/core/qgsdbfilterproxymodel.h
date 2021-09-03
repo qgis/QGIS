@@ -26,7 +26,7 @@
 /**
  * \class QgsDatabaseFilterProxyModel
  * \ingroup core
- * A class that implements a custom filter and can be used
+ * \brief A class that implements a custom filter and can be used
  * as a proxy for QgsDbTableModel
  * \since QGIS 3.0
 */

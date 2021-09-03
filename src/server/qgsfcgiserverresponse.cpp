@@ -128,7 +128,7 @@ void QgsFcgiServerResponse::flush()
   else if ( mBuffer.bytesAvailable() > 0 )
   {
     QByteArray &ba = mBuffer.buffer();
-    size_t count   = fwrite( ( void * )ba.data(), ba.size(), 1, FCGI_stdout );
+    const size_t count   = fwrite( ( void * )ba.data(), ba.size(), 1, FCGI_stdout );
 #ifdef QGISDEBUG
     qDebug() << QStringLiteral( "Sent %1 blocks of %2 bytes" ).arg( count ).arg( ba.size() );
 #else

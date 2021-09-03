@@ -67,7 +67,7 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
   dtProps.ramp = ramp;
   QgsImageOperation::distanceTransform( im, dtProps );
 
-  int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
+  const int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
   if ( blurLevel <= 16 )
   {
     QgsImageOperation::stackBlur( im, blurLevel );
@@ -92,7 +92,7 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
   }
 
   QPainter *painter = context.painter();
-  QgsScopedQPainterState painterState( painter );
+  const QgsScopedQPainterState painterState( painter );
   painter->setCompositionMode( mBlendMode );
   painter->drawImage( imageOffset( context ), im );
 }
@@ -128,14 +128,14 @@ QVariantMap QgsGlowEffect::properties() const
 void QgsGlowEffect::readProperties( const QVariantMap &props )
 {
   bool ok;
-  QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( QStringLiteral( "blend_mode" ) ).toInt( &ok ) );
+  const QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( QStringLiteral( "blend_mode" ) ).toInt( &ok ) );
   if ( ok )
   {
     mBlendMode = mode;
   }
   if ( props.contains( QStringLiteral( "transparency" ) ) )
   {
-    double transparency = props.value( QStringLiteral( "transparency" ) ).toDouble( &ok );
+    const double transparency = props.value( QStringLiteral( "transparency" ) ).toDouble( &ok );
     if ( ok )
     {
       mOpacity = 1.0 - transparency;
@@ -143,7 +143,7 @@ void QgsGlowEffect::readProperties( const QVariantMap &props )
   }
   else
   {
-    double opacity = props.value( QStringLiteral( "opacity" ) ).toDouble( &ok );
+    const double opacity = props.value( QStringLiteral( "opacity" ) ).toDouble( &ok );
     if ( ok )
     {
       mOpacity = opacity;
@@ -151,7 +151,7 @@ void QgsGlowEffect::readProperties( const QVariantMap &props )
   }
   mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt();
   mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
-  double level = props.value( QStringLiteral( "blur_level" ) ).toDouble( &ok );
+  const double level = props.value( QStringLiteral( "blur_level" ) ).toDouble( &ok );
   if ( ok )
   {
     mBlurLevel = level;
@@ -163,14 +163,14 @@ void QgsGlowEffect::readProperties( const QVariantMap &props )
   }
   mBlurUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "blur_unit" ) ).toString() );
   mBlurMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "blur_unit_scale" ) ).toString() );
-  double spread = props.value( QStringLiteral( "spread" ) ).toDouble( &ok );
+  const double spread = props.value( QStringLiteral( "spread" ) ).toDouble( &ok );
   if ( ok )
   {
     mSpread = spread;
   }
   mSpreadUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "spread_unit" ) ).toString() );
   mSpreadMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "spread_unit_scale" ) ).toString() );
-  QgsGlowEffect::GlowColorType type = static_cast< QgsGlowEffect::GlowColorType >( props.value( QStringLiteral( "color_type" ) ).toInt( &ok ) );
+  const QgsGlowEffect::GlowColorType type = static_cast< QgsGlowEffect::GlowColorType >( props.value( QStringLiteral( "color_type" ) ).toInt( &ok ) );
   if ( ok )
   {
     mColorType = type;
@@ -223,7 +223,7 @@ QgsGlowEffect &QgsGlowEffect::operator=( const QgsGlowEffect &rhs )
 QRectF QgsGlowEffect::boundingRect( const QRectF &rect, const QgsRenderContext &context ) const
 {
   //blur radius and spread size
-  int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
+  const int blurLevel = std::round( context.convertToPainterUnits( mBlurLevel, mBlurUnit, mBlurMapUnitScale ) );
   double spread = context.convertToPainterUnits( mSpread, mSpreadUnit, mSpreadMapUnitScale );
   //plus possible extension due to blur, with a couple of extra pixels thrown in for safety
   spread += blurLevel * 2 + 10;

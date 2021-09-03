@@ -29,7 +29,7 @@ class QPushButton;
 
 /**
  * \ingroup gui
- * Widget for reporting SSL errors and offering an option to store an SSL server exception into the authentication database
+ * \brief Widget for reporting SSL errors and offering an option to store an SSL server exception into the authentication database
  */
 class GUI_EXPORT QgsAuthSslErrorsDialog : public QDialog, private Ui::QgsAuthSslErrorsDialog
 {

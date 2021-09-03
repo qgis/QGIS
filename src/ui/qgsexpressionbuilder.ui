@@ -905,8 +905,39 @@ Saved scripts are auto loaded on QGIS startup.</string>
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>btnClearEditor</tabstop>
+  <tabstop>btnSaveExpression</tabstop>
+  <tabstop>btnEditExpression</tabstop>
+  <tabstop>btnRemoveExpression</tabstop>
+  <tabstop>btnImportExpressions</tabstop>
+  <tabstop>btnExportExpressions</tabstop>
+  <tabstop>btnEqualPushButton</tabstop>
+  <tabstop>btnPlusPushButton</tabstop>
+  <tabstop>btnMinusPushButton</tabstop>
+  <tabstop>btnDividePushButton</tabstop>
+  <tabstop>btnMultiplyPushButton</tabstop>
+  <tabstop>btnExpButton</tabstop>
+  <tabstop>btnConcatButton</tabstop>
+  <tabstop>btnOpenBracketPushButton</tabstop>
+  <tabstop>btnCloseBracketPushButton</tabstop>
+  <tabstop>btnNewLinePushButton</tabstop>
+  <tabstop>txtSearchEdit</tabstop>
+  <tabstop>mShowHelpButton</tabstop>
+  <tabstop>mExpressionTreeView</tabstop>
+  <tabstop>txtHelpText</tabstop>
+  <tabstop>txtSearchEditValues</tabstop>
+  <tabstop>btnLoadAll</tabstop>
+  <tabstop>btnLoadSample</tabstop>
+  <tabstop>cbxValuesInUse</tabstop>
+  <tabstop>mValuesListView</tabstop>
+  <tabstop>cmbFileNames</tabstop>
+  <tabstop>btnNewFile</tabstop>
+  <tabstop>btnRemoveFile</tabstop>
+  <tabstop>btnRun</tabstop>
+ </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

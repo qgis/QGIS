@@ -51,7 +51,7 @@ QgsPostgresProjectStorageDialog::QgsPostgresProjectStorageDialog( bool saving, Q
     setWindowTitle( tr( "Load project from PostgreSQL" ) );
   }
 
-  connect( mCboConnection, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), this, &QgsPostgresProjectStorageDialog::populateSchemas );
+  connect( mCboConnection, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsPostgresProjectStorageDialog::populateSchemas );
 
   mLblProjectsNotAllowed->setVisible( false );
 
@@ -63,8 +63,8 @@ QgsPostgresProjectStorageDialog::QgsPostgresProjectStorageDialog( bool saving, Q
   mCboConnection->setCurrentIndex( mCboConnection->findText( toSelect ) );
   populateProjects();
 
-  connect( mCboSchema, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), this, &QgsPostgresProjectStorageDialog::populateProjects );
-  connect( mCboProject, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), this, &QgsPostgresProjectStorageDialog::projectChanged );
+  connect( mCboSchema, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsPostgresProjectStorageDialog::populateProjects );
+  connect( mCboProject, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsPostgresProjectStorageDialog::projectChanged );
 
   projectChanged();
 }
@@ -119,7 +119,7 @@ void QgsPostgresProjectStorageDialog::populateSchemas()
     return;
   }
 
-  for ( const QgsPostgresSchemaProperty &schema : qgis::as_const( schemas ) )
+  for ( const QgsPostgresSchemaProperty &schema : std::as_const( schemas ) )
   {
     mCboSchema->addItem( schema.name );
   }

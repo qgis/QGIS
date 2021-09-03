@@ -76,8 +76,8 @@ QgsFeatureList QgsBoundingBoxAlgorithm::processFeature( const QgsFeature &featur
   QgsFeature f = feature;
   if ( f.hasGeometry() )
   {
-    QgsRectangle bounds = f.geometry().boundingBox();
-    QgsGeometry outputGeometry = QgsGeometry::fromRect( bounds );
+    const QgsRectangle bounds = f.geometry().boundingBox();
+    const QgsGeometry outputGeometry = QgsGeometry::fromRect( bounds );
     f.setGeometry( outputGeometry );
     QgsAttributes attrs = f.attributes();
     attrs << bounds.width()

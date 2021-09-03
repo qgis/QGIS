@@ -12,7 +12,7 @@
 
 class QgsAnnotationLineItem : QgsAnnotationItem
 {
-%Docstring
+%Docstring(signature="appended")
 An annotation item which renders a line symbol along a line geometry.
 
 .. versionadded:: 3.16
@@ -34,6 +34,8 @@ Constructor for QgsAnnotationLineItem, with the specified ``linestring``.
     virtual void render( QgsRenderContext &context, QgsFeedback *feedback );
 
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual QList< QgsAnnotationItemNode > nodes() const;
 
 
     static QgsAnnotationLineItem *create() /Factory/;

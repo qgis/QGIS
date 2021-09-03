@@ -67,10 +67,10 @@ QgsFields QgsFieldComboBox::fields() const
 void QgsFieldComboBox::setField( const QString &fieldName )
 {
   const QString prevField = currentField();
-  QModelIndex idx = mFieldProxyModel->sourceFieldModel()->indexFromName( fieldName );
+  const QModelIndex idx = mFieldProxyModel->sourceFieldModel()->indexFromName( fieldName );
   if ( idx.isValid() )
   {
-    QModelIndex proxyIdx = mFieldProxyModel->mapFromSource( idx );
+    const QModelIndex proxyIdx = mFieldProxyModel->mapFromSource( idx );
     if ( proxyIdx.isValid() )
     {
       setCurrentIndex( proxyIdx.row() );
@@ -91,7 +91,7 @@ void QgsFieldComboBox::setField( const QString &fieldName )
 
 QString QgsFieldComboBox::currentField() const
 {
-  int i = currentIndex();
+  const int i = currentIndex();
 
   const QModelIndex proxyIndex = mFieldProxyModel->index( i, 0 );
   if ( !proxyIndex.isValid() )
@@ -106,6 +106,6 @@ QString QgsFieldComboBox::currentField() const
 void QgsFieldComboBox::indexChanged( int i )
 {
   Q_UNUSED( i )
-  QString name = currentField();
+  const QString name = currentField();
   emit fieldChanged( name );
 }

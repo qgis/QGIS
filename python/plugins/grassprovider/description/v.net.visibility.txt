@@ -1,0 +1,7 @@
+v.net.visibility
+Performs visibility graph construction.
+Vector (v.*)
+QgsProcessingParameterFeatureSource|input|Input vector line layer (arcs)|-1|None|False
+QgsProcessingParameterString|coordinates|Coordinates|None|False|True
+QgsProcessingParameterFeatureSource|visibility|Input vector line layer containing visible points|1|None|True
+QgsProcessingParameterVectorDestination|output|Network Visibility

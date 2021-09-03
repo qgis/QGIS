@@ -13,7 +13,7 @@
 
 class QgsImageOperation
 {
-%Docstring
+%Docstring(signature="appended")
 Contains operations and filters which apply to QImages
 
 A set of optimised pixel manipulation operations and filters which can be applied

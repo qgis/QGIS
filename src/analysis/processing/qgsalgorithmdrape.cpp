@@ -44,7 +44,7 @@ void QgsDrapeAlgorithmBase::initParameters( const QVariantMap & )
                 QObject::tr( "Band number" ), 1, QStringLiteral( "RASTER" ) ) );
 
   // nodata value
-  std::unique_ptr< QgsProcessingParameterNumber > nodata = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "NODATA" ),
+  std::unique_ptr< QgsProcessingParameterNumber > nodata = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "NODATA" ),
       QObject::tr( "Value for nodata or non-intersecting vertices" ), QgsProcessingParameterNumber::Double,
       0.0 );
   nodata->setIsDynamic( true );
@@ -52,7 +52,7 @@ void QgsDrapeAlgorithmBase::initParameters( const QVariantMap & )
   nodata->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( nodata.release() );
 
-  auto scaleParam = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "SCALE" ), QObject::tr( "Scale factor" ), QgsProcessingParameterNumber::Double, 1.0, false, 0.0 );
+  auto scaleParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "SCALE" ), QObject::tr( "Scale factor" ), QgsProcessingParameterNumber::Double, 1.0, false, 0.0 );
   scaleParam->setIsDynamic( true );
   scaleParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "SCALE" ), QObject::tr( "Scale factor" ), QgsPropertyDefinition::Double ) );
   scaleParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
@@ -209,7 +209,7 @@ bool QgsDrapeToZAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 
 QgsWkbTypes::Type QgsDrapeToZAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
 {
-  QgsWkbTypes::Type wkb = inputWkbType;
+  const QgsWkbTypes::Type wkb = inputWkbType;
   return QgsWkbTypes::addZ( wkb );
 }
 
@@ -272,7 +272,7 @@ bool QgsDrapeToMAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 
 QgsWkbTypes::Type QgsDrapeToMAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
 {
-  QgsWkbTypes::Type wkb = inputWkbType;
+  const QgsWkbTypes::Type wkb = inputWkbType;
   return QgsWkbTypes::addM( wkb );
 }
 

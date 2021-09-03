@@ -30,7 +30,7 @@
 /**
  * \class QgsMapLayerElevationProperties
  * \ingroup core
- * Base class for storage of map layer elevation properties.
+ * \brief Base class for storage of map layer elevation properties.
  *
  * QgsMapLayerElevationProperties exposes user-configurable settings for controlling
  * how an individual QgsMapLayer behaves with relation to z values or elevations.

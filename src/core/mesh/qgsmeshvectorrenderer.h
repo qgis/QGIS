@@ -65,7 +65,7 @@ class QgsMeshVectorRenderer
 /**
  * \ingroup core
  *
- * Helper private class for rendering vector datasets (e.g. velocity)
+ * \brief Helper private class for rendering vector datasets (e.g. velocity)
  *
  * \note not available in Python bindings
  * \since QGIS 3.2

@@ -20,6 +20,7 @@
 #include <QApplication>
 #include <QMainWindow>
 #include <QAction>
+#include <QSignalSpy>
 
 class TestQgsDockWidget: public QObject
 {
@@ -63,9 +64,9 @@ void TestQgsDockWidget::testSignals()
   QgsDockWidget *d = new QgsDockWidget( w );
 
   QSignalSpy spyClosedStateChanged( d, SIGNAL( closedStateChanged( bool ) ) );
-  QSignalSpy spyClosed( d, SIGNAL( closed() ) );
+  const QSignalSpy spyClosed( d, SIGNAL( closed() ) );
   QSignalSpy spyOpenedStateChanged( d, SIGNAL( openedStateChanged( bool ) ) );
-  QSignalSpy spyOpened( d, SIGNAL( opened() ) );
+  const QSignalSpy spyOpened( d, SIGNAL( opened() ) );
 
   w->show();
 

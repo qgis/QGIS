@@ -90,7 +90,7 @@ bool NormVecDecorator::calcNormal( double x, double y, QgsPoint &result )
 
   if ( mInterpolator )
   {
-    bool b = mInterpolator->calcNormVec( x, y, result );
+    const bool b = mInterpolator->calcNormVec( x, y, result );
     return b;
   }
   else
@@ -115,7 +115,7 @@ bool NormVecDecorator::calcNormalForPoint( double x, double y, int pointIndex, V
     int lfirstbp = -1000;
     bool pointfound = false;//is set to true, if the triangle with the point in is found
     int numberofruns = 0;//number of runs of the loop. This integer can be used to prevent endless loops
-    int limit = 100000;//ater this number of iterations, the method is terminated
+    const int limit = 100000;//ater this number of iterations, the method is terminated
 
     result->setX( 0 );
     result->setY( 0 );
@@ -236,7 +236,7 @@ bool NormVecDecorator::calcPoint( double x, double y, QgsPoint &result )
 
   if ( mInterpolator )
   {
-    bool b = mInterpolator->calcPoint( x, y, result );
+    const bool b = mInterpolator->calcPoint( x, y, result );
     return b;
   }
   else
@@ -419,8 +419,8 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
     if ( p1 != -1 && p2 != -1 && p3 != -1 )//don't calculate normal, if a point is a virtual point
     {
       MathUtils::normalFromPoints( point( p1 ), point( p2 ), point( p3 ), &part );
-      double dist1 = point( p3 )->distance3D( *point( p1 ) );
-      double dist2 = point( p3 )->distance3D( *point( p2 ) );
+      const double dist1 = point( p3 )->distance3D( *point( p1 ) );
+      const double dist2 = point( p3 )->distance3D( *point( p2 ) );
       //don't add the normal if the triangle is horizontal
       if ( ( point( p1 )->z() != point( p2 )->z() ) || ( point( p1 )->z() != point( p3 )->z() ) )
       {
@@ -493,7 +493,7 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
 //weighted method of little
 bool NormVecDecorator::estimateFirstDerivatives( QgsFeedback *feedback )
 {
-  int numberPoints = pointsCount();
+  const int numberPoints = pointsCount();
   for ( int i = 0; i < numberPoints; i++ )
   {
     if ( feedback )
@@ -549,7 +549,7 @@ bool NormVecDecorator::swapEdge( double x, double y )
       if ( !list.empty() )
       {
         b = mTIN->swapEdge( x, y );
-        for ( int i : list )
+        for ( const int i : list )
         {
           estimateFirstDerivative( i );
         }

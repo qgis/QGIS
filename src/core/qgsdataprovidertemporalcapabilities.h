@@ -26,7 +26,7 @@
 /**
  * \class QgsDataProviderTemporalCapabilities
  * \ingroup core
- * Base class for handling properties relating to a data provider's temporal capabilities.
+ * \brief Base class for handling properties relating to a data provider's temporal capabilities.
  *
  * \since QGIS 3.14
  */

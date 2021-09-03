@@ -10,9 +10,10 @@
 
 
 
+
 class QgsSourceCache : QgsAbstractContentCacheBase
 {
-%Docstring
+%Docstring(signature="appended")
 A cache for source strings that returns a local file path containing the source content.
 
 :py:class:`QgsSourceCache` is not usually directly created, but rather accessed through

@@ -34,7 +34,7 @@ void QgsLayoutViewToolTemporaryMousePan::layoutMoveEvent( QgsLayoutViewMouseEven
 
 void QgsLayoutViewToolTemporaryMousePan::layoutReleaseEvent( QgsLayoutViewMouseEvent *event )
 {
-  if ( event->button() == Qt::MidButton )
+  if ( event->button() == Qt::MiddleButton )
   {
     view()->setTool( mPreviousViewTool );
   }

@@ -26,7 +26,7 @@ class QgsProject;
 
 /**
  * \ingroup server
- * The QgsServerApiContext class encapsulates the resources for a particular client
+ * \brief The QgsServerApiContext class encapsulates the resources for a particular client
  * request: the request and response objects, the project (might be NULL) and
  * the server interface, the API root path that matched the request is also added.
  *

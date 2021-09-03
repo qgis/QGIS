@@ -17,9 +17,13 @@
 
 #include <QMessageBox>
 #include <QInputDialog>
-#include <QRegExpValidator>
+#include <QRegularExpressionValidator>
+#include <QRegularExpression>
 
 #include "qgspgnewconnection.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgspostgresproviderconnection.h"
 #include "qgsauthmanager.h"
 #include "qgsdatasourceuri.h"
 #include "qgspostgresconn.h"
@@ -112,7 +116,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
 
     txtName->setText( connName );
   }
-  txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]*" ), txtName ) );
+  txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( "[^\\/]*" ), txtName ) );
 }
 
 //! Autoconnected SLOTS
@@ -173,6 +177,23 @@ void QgsPgNewConnection::accept()
   // remove old save setting
   settings.remove( baseKey + "/save" );
 
+  QVariantMap configuration;
+  configuration.insert( "publicOnly", cb_publicSchemaOnly->isChecked() );
+  configuration.insert( "geometryColumnsOnly", cb_geometryColumnsOnly->isChecked() );
+  configuration.insert( "dontResolveType", cb_dontResolveType->isChecked() );
+  configuration.insert( "allowGeometrylessTables", cb_allowGeometrylessTables->isChecked() );
+  configuration.insert( "sslmode", cbxSSLmode->currentData().toInt() );
+  configuration.insert( "saveUsername", mAuthSettings->storeUsernameIsChecked( ) ? "true" : "false" );
+  configuration.insert( "savePassword", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? "true" : "false" );
+  configuration.insert( "estimatedMetadata", cb_useEstimatedMetadata->isChecked() );
+  configuration.insert( "projectsInDatabase", cb_projectsInDatabase->isChecked() );
+
+  QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) );
+  QgsPostgresProviderConnection *providerConnection =  static_cast<QgsPostgresProviderConnection *>( providerMetadata->createConnection( txtName->text() ) );
+  providerConnection->setUri( QgsPostgresConn::connUri( txtName->text() ).uri( false ) );
+  providerConnection->setConfiguration( configuration );
+  providerMetadata->saveConnection( providerConnection, txtName->text() );
+
   QDialog::accept();
 }
 
@@ -229,7 +250,7 @@ void QgsPgNewConnection::testConnection()
 
     // Database successfully opened; we can now issue SQL commands.
     bar->pushMessage( tr( "Connection to %1 was successful." ).arg( txtName->text() ),
-                      Qgis::Info );
+                      Qgis::MessageLevel::Info );
 
     // free pg connection resources
     conn->unref();
@@ -237,7 +258,7 @@ void QgsPgNewConnection::testConnection()
   else
   {
     bar->pushMessage( tr( "Connection failed - consult message log for details." ),
-                      Qgis::Warning );
+                      Qgis::MessageLevel::Warning );
   }
 }
 

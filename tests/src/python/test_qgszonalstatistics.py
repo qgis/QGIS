@@ -11,15 +11,18 @@ __date__ = '15/07/2013'
 __copyright__ = 'Copyright 2013, The QGIS Project'
 
 import qgis  # NOQA
-
-from qgis.PyQt.QtCore import QDir, QFile
-from qgis.core import QgsVectorLayer, QgsRasterLayer, QgsFeature, QgsFeatureRequest
+import os
+import shutil
+from qgis.PyQt.QtCore import QDir, QFile, QTemporaryDir
+from qgis.core import QgsVectorLayer, QgsRasterLayer, QgsFeature, QgsFeatureRequest, QgsGeometry
 from qgis.analysis import QgsZonalStatistics
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 
 start_app()
+
+TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsZonalStatistics(unittest.TestCase):
@@ -116,6 +119,29 @@ class TestQgsZonalStatistics(unittest.TestCase):
         assert feat[10] == 1.0, myMessage
         myMessage = ('Expected: %f\nGot: %f\n' % (2.0, feat[11]))
         assert feat[11] == 2.0, myMessage
+
+    def test_enum_conversion(self):
+        """Test regression GH #43245"""
+
+        tmp = QTemporaryDir()
+        origin = os.path.join(TEST_DATA_DIR, 'raster', 'band1_byte_ct_epsg4326.tif')
+        dest = os.path.join(tmp.path(), 'band1_byte_ct_epsg4326.tif')
+        shutil.copyfile(origin, dest)
+
+        layer = QgsRasterLayer(dest, 'rast', 'gdal')
+
+        stats = QgsZonalStatistics.calculateStatistics(
+            layer.dataProvider(),
+            QgsGeometry.fromWkt(layer.extent().asWktPolygon()),
+            layer.rasterUnitsPerPixelX(),
+            layer.rasterUnitsPerPixelY(),
+            1,
+            QgsZonalStatistics.Statistic.Max | QgsZonalStatistics.Statistic.Median
+        )
+
+        self.assertEqual(sorted(list(stats.keys())), [QgsZonalStatistics.Statistic.Median, QgsZonalStatistics.Statistic.Max])
+        self.assertEqual(stats[QgsZonalStatistics.Statistic.Median], 142.0)
+        self.assertEqual(stats[QgsZonalStatistics.Statistic.Max], 254.0)
 
 
 if __name__ == '__main__':

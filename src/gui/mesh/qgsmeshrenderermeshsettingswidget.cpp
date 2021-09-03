@@ -40,7 +40,7 @@ QgsMeshRendererMeshSettingsWidget::QgsMeshRendererMeshSettingsWidget( QWidget *p
 
 
   connect( mColorWidget, &QgsColorButton::colorChanged, this, &QgsMeshRendererMeshSettingsWidget::widgetChanged );
-  connect( mLineWidthSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+  connect( mLineWidthSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRendererMeshSettingsWidget::widgetChanged );
   connect( mLineUnitsComboBox, &QgsUnitSelectionWidget::changed,
            this, &QgsMeshRendererMeshSettingsWidget::widgetChanged );

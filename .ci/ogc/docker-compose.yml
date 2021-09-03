@@ -15,7 +15,7 @@ services:
       - qgis-server
 
   qgis-server:
-    image: qgis_server_deps
+    image: ${DOCKER_IMAGE}
     container_name: qgis_server_deps
     volumes:
       - ./../../:/usr/src/qgis/

@@ -40,12 +40,12 @@ QStringList QgsCreateDirectoryAlgorithm::tags() const
 
 QString QgsCreateDirectoryAlgorithm::group() const
 {
-  return QObject::tr( "File tools" );
+  return QObject::tr( "Modeler tools" );
 }
 
 QString QgsCreateDirectoryAlgorithm::groupId() const
 {
-  return QStringLiteral( "filetools" );
+  return QStringLiteral( "modelertools" );
 }
 
 QString QgsCreateDirectoryAlgorithm::shortHelpString() const

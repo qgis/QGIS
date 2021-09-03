@@ -17,7 +17,7 @@
 
 #include "qgslayermetadataformatter.h"
 #include "qgslayermetadata.h"
-
+#include "qgsstringutils.h"
 
 QgsLayerMetadataFormatter::QgsLayerMetadataFormatter( const QgsLayerMetadata &metadata )
   : mMetadata( metadata )
@@ -27,9 +27,9 @@ QgsLayerMetadataFormatter::QgsLayerMetadataFormatter( const QgsLayerMetadata &me
 QString QgsLayerMetadataFormatter::accessSectionHtml() const
 {
   QString myMetadata = QStringLiteral( "<table class=\"list-view\">\n" );
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Fees" ) + QStringLiteral( "</td><td>" ) + mMetadata.fees() + QStringLiteral( "</td></tr>\n" );
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Licenses" ) + QStringLiteral( "</td><td>" ) + mMetadata.licenses().join( QLatin1String( "<br />" ) ) + QStringLiteral( "</td></tr>\n" );
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Rights" ) + QStringLiteral( "</td><td>" ) + mMetadata.rights().join( QLatin1String( "<br />" ) ) + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Fees" ) + QStringLiteral( "</td><td>" ) + QgsStringUtils::insertLinks( mMetadata.fees() ) + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Licenses" ) + QStringLiteral( "</td><td>" ) + QgsStringUtils::insertLinks( mMetadata.licenses().join( QLatin1String( "<br />" ) ) ) + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Rights" ) + QStringLiteral( "</td><td>" ) + QgsStringUtils::insertLinks( mMetadata.rights().join( QLatin1String( "<br />" ) ) ) + QStringLiteral( "</td></tr>\n" );
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Constraints" ) + QStringLiteral( "</td><td>" );
   const QList<QgsLayerMetadata::Constraint> &constraints = mMetadata.constraints();
   bool notFirstRow = false;
@@ -39,10 +39,9 @@ QString QgsLayerMetadataFormatter::accessSectionHtml() const
     {
       myMetadata += QLatin1String( "<br />" );
     }
-    myMetadata += QStringLiteral( "<strong>" ) + constraint.type + QStringLiteral( ": </strong>" ) + constraint.constraint;
+    myMetadata += QStringLiteral( "<strong>" ) + constraint.type + QStringLiteral( ": </strong>" ) + QgsStringUtils::insertLinks( constraint.constraint );
     notFirstRow = true;
   }
-  mMetadata.rights().join( QLatin1String( "<br />" ) );
   myMetadata += QLatin1String( "</td></tr>\n" );
   myMetadata += QLatin1String( "</table>\n" );
   return myMetadata;
@@ -66,7 +65,7 @@ QString QgsLayerMetadataFormatter::contactsSectionHtml() const
       QString rowClass;
       if ( i % 2 )
         rowClass = QStringLiteral( "class=\"odd-row\"" );
-      myMetadata += QLatin1String( "<tr " ) + rowClass + QLatin1String( "><td>" ) + QString::number( i ) + QLatin1String( "</td><td>" ) + contact.name + QLatin1String( "</td><td>" ) + contact.position + QLatin1String( "</td><td>" ) + contact.organization + QLatin1String( "</td><td>" ) + contact.role + QLatin1String( "</td><td>" ) + contact.email + QLatin1String( "</td><td>" ) + contact.voice + QLatin1String( "</td><td>" ) + contact.fax + QLatin1String( "</td><td>" );
+      myMetadata += QLatin1String( "<tr " ) + rowClass + QLatin1String( "><td>" ) + QString::number( i ) + QLatin1String( "</td><td>" ) + contact.name + QLatin1String( "</td><td>" ) + contact.position + QLatin1String( "</td><td>" ) + contact.organization + QLatin1String( "</td><td>" ) + contact.role + QStringLiteral( "</td><td><a href=\"mailto:%1\">%1</a></td><td>" ).arg( contact.email ) + contact.voice + QLatin1String( "</td><td>" ) + contact.fax + QLatin1String( "</td><td>" );
       bool notFirstRow = false;
       for ( const QgsAbstractMetadataBase::Address &oneAddress : contact.addresses )
       {
@@ -198,7 +197,7 @@ QString QgsLayerMetadataFormatter::identificationSectionHtml() const
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Language" ) + QStringLiteral( "</td><td>" ) + mMetadata.language() + QStringLiteral( "</td></tr>\n" );
 
   // Abstract
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Abstract" ) + QStringLiteral( "</td><td>" ) + mMetadata.abstract() + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Abstract" ) + QStringLiteral( "</td><td>" ) + QgsStringUtils::insertLinks( mMetadata.abstract() ).replace( '\n', QLatin1String( "<br>" ) ) + QStringLiteral( "</td></tr>\n" );
 
   // Categories
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Categories" ) + QStringLiteral( "</td><td>" ) + mMetadata.categories().join( QLatin1String( ", " ) ) + QStringLiteral( "</td></tr>\n" );
@@ -245,7 +244,7 @@ QString QgsLayerMetadataFormatter::historySectionHtml() const
       QString rowClass;
       if ( i % 2 )
         rowClass = QStringLiteral( "class=\"odd-row\"" );
-      myMetadata += QLatin1String( "<tr " ) + rowClass + QLatin1String( "><td width=\"5%\">" ) + QString::number( i ) + QLatin1String( "</td><td>" ) + history + QLatin1String( "</td></tr>\n" );
+      myMetadata += QLatin1String( "<tr " ) + rowClass + QLatin1String( "><td width=\"5%\">" ) + QString::number( i ) + QLatin1String( "</td><td>" ) + QgsStringUtils::insertLinks( history ) + QLatin1String( "</td></tr>\n" );
       i++;
     }
     myMetadata += QLatin1String( "</table>\n" );
@@ -271,7 +270,7 @@ QString QgsLayerMetadataFormatter::linksSectionHtml() const
       QString rowClass;
       if ( i % 2 )
         rowClass = QStringLiteral( "class=\"odd-row\"" );
-      myMetadata += QLatin1String( "<tr " ) + rowClass + QLatin1String( "><td>" ) + QString::number( i ) + QLatin1String( "</td><td>" ) + link.name + QLatin1String( "</td><td>" ) + link.type + QLatin1String( "</td><td>" ) + link.url + QLatin1String( "</td><td>" ) + link.description + QLatin1String( "</td><td>" ) + link.format + QLatin1String( "</td><td>" ) + link.mimeType + QLatin1String( "</td><td>" ) + link.size + QLatin1String( "</td></tr>\n" );
+      myMetadata += QLatin1String( "<tr " ) + rowClass + QLatin1String( "><td>" ) + QString::number( i ) + QLatin1String( "</td><td>" ) + link.name + QLatin1String( "</td><td>" ) + link.type + QStringLiteral( "</td><td><a href=\"%1\">%1</a></td><td>" ).arg( link.url ) + link.description + QLatin1String( "</td><td>" ) + link.format + QLatin1String( "</td><td>" ) + link.mimeType + QLatin1String( "</td><td>" ) + link.size + QLatin1String( "</td></tr>\n" );
       i++;
     }
     myMetadata += QLatin1String( "</table>\n" );

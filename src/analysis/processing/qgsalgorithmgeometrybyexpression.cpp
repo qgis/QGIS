@@ -32,7 +32,7 @@ QString QgsGeometryByExpressionAlgorithm::displayName() const
 
 QStringList QgsGeometryByExpressionAlgorithm::tags() const
 {
-  return QObject::tr( "geometry,expression,create,modify" ).split( ',' );
+  return QObject::tr( "geometry,expression,create,modify,update" ).split( ',' );
 }
 
 QString QgsGeometryByExpressionAlgorithm::group() const
@@ -92,7 +92,7 @@ void QgsGeometryByExpressionAlgorithm::initParameters( const QVariantMap & )
 
 bool QgsGeometryByExpressionAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  int geometryType = parameterAsInt( parameters, QStringLiteral( "OUTPUT_GEOMETRY" ), context );
+  const int geometryType = parameterAsInt( parameters, QStringLiteral( "OUTPUT_GEOMETRY" ), context );
   switch ( geometryType )
   {
     case 0:
@@ -132,7 +132,7 @@ QgsFeatureList QgsGeometryByExpressionAlgorithm::processFeature( const QgsFeatur
 {
   QgsFeature feature = f;
   mExpressionContext.setFeature( feature );
-  QVariant value = mExpression.evaluate( &mExpressionContext );
+  const QVariant value = mExpression.evaluate( &mExpressionContext );
 
   if ( mExpression.hasEvalError() )
   {
@@ -147,7 +147,7 @@ QgsFeatureList QgsGeometryByExpressionAlgorithm::processFeature( const QgsFeatur
   {
     if ( value.canConvert< QgsGeometry >() )
     {
-      QgsGeometry geom = value.value<QgsGeometry>();
+      const QgsGeometry geom = value.value<QgsGeometry>();
       feature.setGeometry( geom );
     }
     else

@@ -32,7 +32,7 @@ void QgsProjectBadLayerHandler::handleBadLayers( const QList<QDomNode> &layers )
 
 QgsProjectBadLayerHandler::DataType QgsProjectBadLayerHandler::dataType( const QDomNode &layerNode )
 {
-  QString type = layerNode.toElement().attribute( QStringLiteral( "type" ) );
+  const QString type = layerNode.toElement().attribute( QStringLiteral( "type" ) );
 
   if ( type.isNull() )
   {
@@ -61,7 +61,7 @@ QgsProjectBadLayerHandler::DataType QgsProjectBadLayerHandler::dataType( const Q
 
 QString QgsProjectBadLayerHandler::dataSource( const QDomNode &layerNode )
 {
-  QDomNode dataSourceNode = layerNode.namedItem( QStringLiteral( "datasource" ) );
+  const QDomNode dataSourceNode = layerNode.namedItem( QStringLiteral( "datasource" ) );
 
   if ( dataSourceNode.isNull() )
   {
@@ -81,7 +81,7 @@ QgsProjectBadLayerHandler::ProviderType QgsProjectBadLayerHandler::providerType(
   {
     case IS_VECTOR:
     {
-      QString ds = dataSource( layerNode );
+      const QString ds = dataSource( layerNode );
 
       QgsDebugMsg( "datasource is " + ds );
 
@@ -112,8 +112,8 @@ QgsProjectBadLayerHandler::ProviderType QgsProjectBadLayerHandler::providerType(
 
 void QgsProjectBadLayerHandler::setDataSource( QDomNode &layerNode, const QString &dataSource )
 {
-  QDomNode dataSourceNode = layerNode.namedItem( QStringLiteral( "datasource" ) );
-  QDomElement dataSourceElement = dataSourceNode.toElement();
+  const QDomNode dataSourceNode = layerNode.namedItem( QStringLiteral( "datasource" ) );
+  const QDomElement dataSourceElement = dataSourceNode.toElement();
   QDomText dataSourceText = dataSourceElement.firstChild().toText();
 
   QgsDebugMsg( "datasource changed from " + dataSourceText.data() );

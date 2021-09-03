@@ -19,6 +19,8 @@
 #include "qgsimagewarper.h"
 #include "qgscoordinatereferencesystem.h"
 
+#include <memory>
+
 #include <QPointer>
 
 class QAction;
@@ -42,6 +44,7 @@ class QgsGeorefToolAddPoint;
 class QgsGeorefToolDeletePoint;
 class QgsGeorefToolMovePoint;
 class QgsGeorefToolMovePoint;
+class QgsGCPCanvasItem;
 
 class QgsGeorefDockWidget : public QgsDockWidget
 {
@@ -118,11 +121,6 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     void localHistogramStretch();
     void fullHistogramStretch();
 
-
-    // when one Layer is removed
-    void layerWillBeRemoved( const QString &layerId );
-    void extentsChanged(); // Use for need add again Raster (case above)
-
     bool updateGeorefTransform();
     void invalidateCanvasCoords();
 
@@ -181,9 +179,8 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     bool checkReadyGeoref();
     QgsRectangle transformViewportBoundingBox( const QgsRectangle &canvasExtent, QgsGeorefTransform &t,
         bool rasterToWorld = true, uint numSamples = 4 );
-    QString convertTransformEnumToString( QgsGeorefTransform::TransformParametrisation transform );
     QString convertResamplingEnumToString( QgsImageWarper::ResamplingMethod resampling );
-    int polynomialOrder( QgsGeorefTransform::TransformParametrisation transform );
+    int polynomialOrder( QgsGeorefTransform::TransformMethod transform );
     QString guessWorldFileName( const QString &rasterFileName );
     bool checkFileExisting( const QString &fileName, const QString &title, const QString &question );
     bool equalGCPlists( const QgsGCPList &list1, const QgsGCPList &list2 );
@@ -218,7 +215,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QLabel *mEPSG = nullptr;
     QLabel *mRotationLabel = nullptr;
     QgsDoubleSpinBox *mRotationEdit = nullptr;
-    unsigned int mMousePrecisionDecimalPlaces;
+    unsigned int mMousePrecisionDecimalPlaces = 0;
 
     QString mRasterFileName;
     QString mModifiedRasterFileName;
@@ -232,7 +229,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QString mSaveGcp;
     double  mUserResX, mUserResY;  // User specified target scale
 
-    QgsGeorefTransform::TransformParametrisation mTransformParam;
+    QgsGcpTransformerInterface::TransformMethod mTransformParam = QgsGcpTransformerInterface::TransformMethod::InvalidTransform;
     QgsImageWarper::ResamplingMethod mResamplingMethod;
     QgsGeorefTransform mGeorefTransform;
     QString mCompressionMethod;
@@ -240,8 +237,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QgsGCPList mPoints;
     QgsGCPList mInitialPoints;
     QgsMapCanvas *mCanvas = nullptr;
-    QgsRasterLayer *mLayer = nullptr;
-    bool mAgainAddRaster;
+    std::unique_ptr< QgsRasterLayer > mLayer;
 
     QgsMapTool *mToolZoomIn = nullptr;
     QgsMapTool *mToolZoomOut = nullptr;
@@ -252,14 +248,16 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QgsGeorefToolMovePoint *mToolMovePoint = nullptr;
     QgsGeorefToolMovePoint *mToolMovePointQgis = nullptr;
 
+    QgsGCPCanvasItem *mNewlyAddedPointItem = nullptr;
+
     QgsGeorefDataPoint *mMovingPoint = nullptr;
     QgsGeorefDataPoint *mMovingPointQgis = nullptr;
     QPointer<QgsMapCoordsDialog> mMapCoordsDialog;
 
-    bool mUseZeroForTrans;
+    bool mUseZeroForTrans = false;
     bool mExtentsChangedRecursionGuard;
     bool mGCPsDirty;
-    bool mLoadInQgis;
+    bool mLoadInQgis = false;
 
 
     QgsDockWidget *mDock = nullptr;

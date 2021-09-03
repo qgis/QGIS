@@ -34,13 +34,10 @@ namespace QgsWfs
     return QStringLiteral( "1.1.0" );
   }
 
-  QString serviceUrl( const QgsServerRequest &request, const QgsProject *project )
+  QString serviceUrl( const QgsServerRequest &request, const QgsProject *project, const QgsServerSettings &settings )
   {
     QUrl href;
-    if ( project )
-    {
-      href.setUrl( QgsServerProjectUtils::wfsServiceUrl( *project ) );
-    }
+    href.setUrl( QgsServerProjectUtils::wfsServiceUrl( project ? *project : *QgsProject::instance(), request, settings ) );
 
     // Build default url
     if ( href.isEmpty() )
@@ -81,7 +78,7 @@ namespace QgsWfs
   QgsVectorLayer *layerByTypeName( const QgsProject *project, const QString &typeName )
   {
     QStringList layerIds = QgsServerProjectUtils::wfsLayerIds( *project );
-    for ( const QString &layerId : qgis::as_const( layerIds ) )
+    for ( const QString &layerId : std::as_const( layerIds ) )
     {
       QgsMapLayer *layer = project->mapLayer( layerId );
       if ( !layer )

@@ -11,7 +11,7 @@
 
 class QgsGeocoderContext
 {
-%Docstring
+%Docstring(signature="appended")
 Encapsulates the context of a geocoding operation.
 
 .. versionadded:: 3.18

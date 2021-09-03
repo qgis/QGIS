@@ -11,10 +11,11 @@ __date__ = '3/09/2019'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import qgis  # NOQA
+import random
 
 from qgis.PyQt.QtCore import QLocale
 from qgis.testing import unittest, start_app
-from qgis.core import QgsClassificationMethod, QgsClassificationLogarithmic, QgsFeature, QgsVectorLayer, QgsPointXY, \
+from qgis.core import QgsClassificationMethod, QgsClassificationLogarithmic, QgsClassificationJenks, QgsFeature, QgsVectorLayer, QgsPointXY, \
     QgsGeometry
 
 start_app()
@@ -84,6 +85,33 @@ class TestQgsClassificationMethods(unittest.TestCase):
         r = m.classes(vl, 'value', 4)
         self.assertEqual(r[0].label(), '-2 - 10^0')
         self.assertEqual(QgsClassificationMethod.rangesToBreaks(r), [1.0, 10.0, 100.0, 1000.0, 10000.0])
+
+    def testQgsClassificationJenksSimple(self):
+        # This is a simple Natural Breaks Jenks test checking if simple calculation can be done
+        # when number of values is below 3000 (value hardcoded in qgsclassificationjenks.h)
+        # And if returned values are consistent (the same as at the time of creation of this test)
+        values = [-33, -41, -43, 16, 29, 9, -35, 57, 26, -30]
+        vl = createMemoryLayer(values)
+        m = QgsClassificationJenks()
+
+        r = m.classes(vl, 'value', 4)
+        self.assertEqual(len(r), 4)
+        self.assertEqual(QgsClassificationMethod.rangesToBreaks(r),
+                         [-30.0, 16.0, 29.0, 57.0])
+
+    def testQgsClassificationJenksHighNumber(self):
+        # This test checks if Jenkis classification does not crash when number of
+        # values in a set is higher than 3000 (value hardcoded in qgsclassificationjenks.h)
+        # And if returned values are consistent (the same as at the time of creation of this test)
+        random.seed(42 * 42)
+        values = [random.randint(-1000, 1000) for _ in range(5000)]
+        vl = createMemoryLayer(values)
+        m = QgsClassificationJenks()
+
+        r = m.classes(vl, 'value', 4)
+        self.assertEqual(len(r), 4)
+        self.assertEqual(QgsClassificationMethod.rangesToBreaks(r),
+                         [-506.0, -4.0, 499.0, 1000.0])
 
 
 if __name__ == "__main__":

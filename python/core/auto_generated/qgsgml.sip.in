@@ -13,8 +13,10 @@
 
 class QgsGml : QObject
 {
-%Docstring
-This class reads data from a WFS server or alternatively from a GML file. It
+%Docstring(signature="appended")
+This class reads data from a WFS server or alternatively from a GML file.
+
+It
 uses the expat XML parser and an event based model to keep performance high.
 The parsing starts when the first data arrives, it does not wait until the
 request is finished
@@ -37,7 +39,6 @@ request is finished
                      const QString &authcfg = QString() ) /PyName=getFeaturesUri/;
 %Docstring
 Does the Http GET request to the wfs server
-Supports only UTF-8, UTF-16, ISO-8859-1, ISO-8859-1 XML encodings.
 
 :param uri: GML URL
 :param wkbType: wkbType to retrieve
@@ -56,7 +57,6 @@ Supports only UTF-8, UTF-16, ISO-8859-1, ISO-8859-1 XML encodings.
     int getFeatures( const QByteArray &data, QgsWkbTypes::Type *wkbType, QgsRectangle *extent = 0 );
 %Docstring
 Read from GML data. Constructor uri param is ignored
-Supports only UTF-8, UTF-16, ISO-8859-1, ISO-8859-1 XML encodings.
 %End
 
     QMap<QgsFeatureId, QgsFeature * > featuresMap() const;

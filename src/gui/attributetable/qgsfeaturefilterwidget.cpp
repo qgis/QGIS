@@ -52,12 +52,11 @@ QgsFeatureFilterWidget::QgsFeatureFilterWidget( QWidget *parent )
   mActionStoredFilterExpressions->setMenu( mStoredFilterExpressionMenu );
 
   // Set filter icon in a couple of places
-  QIcon filterIcon = QgsApplication::getThemeIcon( "/mActionFilter2.svg" );
-  mActionShowAllFilter->setIcon( filterIcon );
-  mActionAdvancedFilter->setIcon( filterIcon );
-  mActionSelectedFilter->setIcon( filterIcon );
-  mActionVisibleFilter->setIcon( filterIcon );
-  mActionEditedFilter->setIcon( filterIcon );
+  mActionShowAllFilter->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTable.svg" ) );
+  mActionAdvancedFilter->setIcon( QgsApplication::getThemeIcon( "/mActionFilter2.svg" ) );
+  mActionSelectedFilter->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTableSelected.svg" ) );
+  mActionVisibleFilter->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTableVisible.svg" ) );
+  mActionEditedFilter->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTableEdited.svg" ) );
 
 
   // Set button to store or delete stored filter expressions
@@ -203,14 +202,14 @@ void QgsFeatureFilterWidget::columnBoxInit()
   const auto constFields = fields;
   for ( const QgsField &field : constFields )
   {
-    int idx = mLayer->fields().lookupField( field.name() );
+    const int idx = mLayer->fields().lookupField( field.name() );
     if ( idx < 0 )
       continue;
 
     if ( QgsGui::editorWidgetRegistry()->findBest( mLayer, field.name() ).type() != QLatin1String( "Hidden" ) )
     {
-      QIcon icon = mLayer->fields().iconForField( idx );
-      QString alias = mLayer->attributeDisplayName( idx );
+      const QIcon icon = mLayer->fields().iconForField( idx );
+      const QString alias = mLayer->attributeDisplayName( idx );
 
       // Generate action for the filter popup button
       QAction *filterAction = new QAction( icon, alias, mFilterButton );
@@ -290,9 +289,9 @@ void QgsFeatureFilterWidget::filterColumnChanged( QAction *filterAction )
     mCurrentSearchWidgetWrapper->widget()->setVisible( false );
     delete mCurrentSearchWidgetWrapper;
   }
-  QString fieldName = mFilterButton->defaultAction()->data().toString();
+  const QString fieldName = mFilterButton->defaultAction()->data().toString();
   // get the search widget
-  int fldIdx = mLayer->fields().lookupField( fieldName );
+  const int fldIdx = mLayer->fields().lookupField( fieldName );
   if ( fldIdx < 0 )
     return;
   const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( mLayer, fieldName );
@@ -317,7 +316,7 @@ void QgsFeatureFilterWidget::filterColumnChanged( QAction *filterAction )
 void QgsFeatureFilterWidget::filterExpressionBuilder()
 {
   // Show expression builder
-  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+  const QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
 
   QgsExpressionBuilderDialog dlg( mLayer, mFilterQuery->text(), this, QStringLiteral( "generic" ), context );
   dlg.setWindowTitle( tr( "Expression Based Filter" ) );
@@ -388,7 +387,7 @@ void QgsFeatureFilterWidget::editStoredFilterExpression()
 
 void QgsFeatureFilterWidget::updateCurrentStoredFilterExpression()
 {
-  QgsStoredExpression currentStoredExpression = mLayer->storedExpressionManager()->findStoredExpressionByExpression( mFilterQuery->value() );
+  const QgsStoredExpression currentStoredExpression = mLayer->storedExpressionManager()->findStoredExpressionByExpression( mFilterQuery->value() );
 
   //set checked when it's an existing stored expression
   mActionHandleStoreFilterExpression->setChecked( !currentStoredExpression.id.isNull() );
@@ -451,15 +450,15 @@ void QgsFeatureFilterWidget::setFilterExpression( const QString &filterString, Q
   QgsExpression filterExpression( filter );
   if ( filterExpression.hasParserError() )
   {
-    mMessageBar->pushMessage( tr( "Parsing error" ), filterExpression.parserErrorString(), Qgis::Warning );
+    mMessageBar->pushMessage( tr( "Parsing error" ), filterExpression.parserErrorString(), Qgis::MessageLevel::Warning );
     return;
   }
 
-  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+  const QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
 
   if ( !filterExpression.prepare( &context ) )
   {
-    mMessageBar->pushMessage( tr( "Evaluation error" ), filterExpression.evalErrorString(), Qgis::Warning );
+    mMessageBar->pushMessage( tr( "Evaluation error" ), filterExpression.evalErrorString(), Qgis::MessageLevel::Warning );
   }
 
   mMainView->filterFeatures( filterExpression, context );

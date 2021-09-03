@@ -15,7 +15,7 @@
 
 class QgsMasterLayoutInterface
 {
-%Docstring
+%Docstring(signature="appended")
 Interface for master layout type objects, such as print layouts and reports.
 
 .. versionadded:: 3.0

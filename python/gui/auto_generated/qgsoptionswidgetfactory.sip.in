@@ -10,7 +10,7 @@
 
 class QgsOptionsPageWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for widgets for pages included in the options dialog.
 
 .. versionadded:: 3.0
@@ -120,6 +120,17 @@ The default implementation returns an empty string, which causes the widget
 to be placed at the end of the dialog page list.
 
 .. versionadded:: 3.18
+%End
+
+    virtual QStringList path() const;
+%Docstring
+Returns the path to place the widget page at, for options dialogs
+which are structured using a tree view.
+
+A factory which returns "Code", "Javascript" would have its widget placed
+in a group named "Javascript", contained in a parent group named "Code".
+
+.. versionadded:: 3.22
 %End
 
     virtual QgsOptionsPageWidget *createWidget( QWidget *parent = 0 ) const = 0 /Factory/;

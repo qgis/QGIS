@@ -38,7 +38,7 @@ namespace Qt3DRender
 
 /**
  * \ingroup 3d
- * Implementation of material that renders 3D linestrings.
+ * \brief Implementation of material that renders 3D linestrings.
  *
  * Supports:
  *

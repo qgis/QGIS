@@ -277,7 +277,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
     QgsGeometryCheckError *error = ui.tableWidgetErrors->item( row, 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError *>();
     QString layerName = QString();
     const QString layerId = error->layerId();
-    if ( mChecker->featurePools().keys().contains( layerId ) )
+    if ( mChecker->featurePools().contains( layerId ) )
     {
       QgsVectorLayer *srcLayer = mChecker->featurePools()[layerId]->layer();
       layerName = srcLayer->name();
@@ -339,7 +339,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
   {
     items.append( ui.tableWidgetErrors->selectedItems() );
   }
-  for ( QTableWidgetItem *item : qgis::as_const( items ) )
+  for ( QTableWidgetItem *item : std::as_const( items ) )
   {
     QgsGeometryCheckError *error = ui.tableWidgetErrors->item( item->row(), 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError *>();
 
@@ -382,7 +382,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
   {
     double cx = 0., cy = 0.;
     QgsRectangle pointExtent( errorPositions.first(), errorPositions.first() );
-    Q_FOREACH ( const QgsPointXY &p, errorPositions )
+    for ( const QgsPointXY &p : std::as_const( errorPositions ) )
     {
       cx += p.x();
       cy += p.y();
@@ -470,7 +470,7 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
     rows = ui.tableWidgetErrors->selectionModel()->selectedRows();
   }
   QList<QgsGeometryCheckError *> errors;
-  for ( const QModelIndex &index : qgis::as_const( rows ) )
+  for ( const QModelIndex &index : std::as_const( rows ) )
   {
     QgsGeometryCheckError *error = ui.tableWidgetErrors->item( index.row(), 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError *>();
     if ( error->status() < QgsGeometryCheckError::StatusFixed )
@@ -516,7 +516,7 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
     ui.progressBarFixErrors->setVisible( true );
     ui.progressBarFixErrors->setRange( 0, errors.size() );
 
-    for ( QgsGeometryCheckError *error : qgis::as_const( errors ) )
+    for ( QgsGeometryCheckError *error : std::as_const( errors ) )
     {
       int fixMethod = QgsSettings().value( sSettingsGroup + error->check()->id(), QVariant::fromValue<int>( 0 ) ).toInt();
       mChecker->fixError( error, fixMethod );
@@ -586,12 +586,13 @@ void QgsGeometryCheckerResultTab::setDefaultResolutionMethods()
     radioGroup->setProperty( "errorType", check->id() );
     int checkedId = QgsSettings().value( sSettingsGroup + check->id(), QVariant::fromValue<int>( 0 ) ).toInt();
     const QList<QgsGeometryCheckResolutionMethod> resolutionMethods = check->availableResolutionMethods();
+    int id = 0;
     for ( const QgsGeometryCheckResolutionMethod &method : resolutionMethods )
     {
       QRadioButton *radio = new QRadioButton( method.name(), groupBox );
-      radio->setChecked( method.id() == checkedId );
+      radio->setChecked( id == checkedId );
       groupBoxLayout->addWidget( radio );
-      radioGroup->addButton( radio, method.id() );
+      radioGroup->addButton( radio, id++ );
     }
     connect( radioGroup, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsGeometryCheckerResultTab::storeDefaultResolutionMethod );
 

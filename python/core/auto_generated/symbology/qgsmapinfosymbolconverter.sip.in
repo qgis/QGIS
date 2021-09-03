@@ -1,0 +1,90 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsmapinfosymbolconverter.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsMapInfoSymbolConversionContext
+{
+%Docstring(signature="appended")
+Context for a MapInfo symbol conversion operation.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgsmapinfosymbolconverter.h"
+%End
+  public:
+
+    void pushWarning( const QString &warning );
+%Docstring
+Pushes a ``warning`` message generated during the conversion.
+%End
+
+    QStringList warnings() const;
+%Docstring
+Returns a list of warning messages generated during the conversion.
+%End
+
+    void clearWarnings();
+%Docstring
+Clears the list of warning messages.
+%End
+
+};
+
+class QgsMapInfoSymbolConverter
+{
+%Docstring(signature="appended")
+Handles conversion of MapInfo symbols to QGIS symbology.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgsmapinfosymbolconverter.h"
+%End
+  public:
+
+    static QgsLineSymbol *convertLineSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, double size, QgsUnitTypes::RenderUnit sizeUnit, bool interleaved = false ) /Factory/;
+%Docstring
+Converts the MapInfo line symbol with the specified ``identifier`` to a :py:class:`QgsLineSymbol`.
+
+The caller takes ownership of the returned symbol.
+%End
+
+    static QgsFillSymbol *convertFillSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, const QColor &backColor = QColor() ) /Factory/;
+%Docstring
+Converts the MapInfo fill symbol with the specified ``identifier`` to a :py:class:`QgsFillSymbol`.
+
+The caller takes ownership of the returned symbol.
+%End
+
+    static QgsMarkerSymbol *convertMarkerSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &color, double size, QgsUnitTypes::RenderUnit sizeUnit ) /Factory/;
+%Docstring
+Converts the MapInfo marker symbol with the specified ``identifier`` to a :py:class:`QgsMarkerSymbol`.
+
+This method will convert a MapInfo "MapInfo 3.0 Compatible" symbol with a specific ``identifier`` to a :py:class:`QgsMarkerSymbol`.
+
+The caller takes ownership of the returned symbol.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsmapinfosymbolconverter.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

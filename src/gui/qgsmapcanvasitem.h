@@ -27,7 +27,7 @@ class QPainter;
 
 /**
  * \ingroup gui
- * An abstract class for items that can be placed on the
+ * \brief An abstract class for items that can be placed on the
  * map canvas.
  */
 class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem

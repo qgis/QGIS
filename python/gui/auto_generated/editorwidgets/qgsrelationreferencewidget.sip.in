@@ -94,7 +94,7 @@ determines if the form of the related feature will be shown
 
     bool readOnlySelector();
 %Docstring
-determines if the foreign key is shown in a combox box or a read-only line edit
+determines if the drop-down is enabled
 %End
     void setReadOnlySelector( bool readOnly );
 

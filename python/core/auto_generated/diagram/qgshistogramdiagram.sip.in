@@ -13,6 +13,9 @@
 
 class QgsHistogramDiagram: QgsDiagram /NoDefaultCtors/
 {
+%Docstring(signature="appended")
+A histogram style diagram.
+%End
 
 %TypeHeaderCode
 #include "qgshistogramdiagram.h"

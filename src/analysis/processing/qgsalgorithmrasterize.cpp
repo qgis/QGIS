@@ -29,6 +29,7 @@
 #include "qgsmaprenderercustompainterjob.h"
 #include "gdal.h"
 #include "qgsgdalutils.h"
+#include "qgslayertree.h"
 
 #include <QtConcurrent>
 
@@ -325,7 +326,7 @@ bool QgsRasterizeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
   }
   else if ( ! mapLayers.isEmpty() )
   {
-    for ( const QgsMapLayer *ml : qgis::as_const( mapLayers ) )
+    for ( const QgsMapLayer *ml : std::as_const( mapLayers ) )
     {
       mMapLayers.push_back( std::unique_ptr<QgsMapLayer>( ml->clone( ) ) );
     }
@@ -333,8 +334,16 @@ bool QgsRasterizeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
   // Still no layers? Get them all from the project
   if ( mMapLayers.size() == 0 )
   {
-    const auto constLayers { context.project()->mapLayers().values() };
-    for ( const QgsMapLayer *ml : constLayers )
+    QList<QgsMapLayer *> layers;
+    QgsLayerTree *root = context.project()->layerTreeRoot();
+    for ( QgsLayerTreeLayer *nodeLayer : root->findLayers() )
+    {
+      QgsMapLayer *layer = nodeLayer->layer();
+      if ( nodeLayer->isVisible() && root->layerOrder().contains( layer ) )
+        layers << layer;
+    }
+
+    for ( const QgsMapLayer *ml : std::as_const( layers ) )
     {
       mMapLayers.push_back( std::unique_ptr<QgsMapLayer>( ml->clone( ) ) );
     }

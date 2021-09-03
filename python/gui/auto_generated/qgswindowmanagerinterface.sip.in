@@ -12,7 +12,7 @@
 
 class QgsWindowManagerInterface
 {
-%Docstring
+%Docstring(signature="appended")
 Interface for window manager.
 
 An implementation of the window manager interface is usually retrieved from

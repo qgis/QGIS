@@ -1,11 +1,12 @@
 ########################################################
 # Files
 
-SET (HANA_SRCS
+set (HANA_SRCS
   qgshanacolumntypethread.cpp
   qgshanaconnection.cpp
   qgshanaconnectionpool.cpp
   qgshanaconnectionstringbuilder.cpp
+  qgshanadataitems.cpp
   qgshanadriver.cpp
   qgshanaexpressioncompiler.cpp
   qgshanafeatureiterator.cpp
@@ -19,17 +20,16 @@ SET (HANA_SRCS
   qgshanautils.cpp
 )
 
-IF (WITH_GUI)
-  SET(HANA_SRCS ${HANA_SRCS}
-    qgshanadataitems.cpp
+if (WITH_GUI)
+  set(HANA_SRCS ${HANA_SRCS}
     qgshanadataitemguiprovider.cpp
     qgshananewconnection.cpp
     qgshanaprovidergui.cpp
     qgshanasourceselect.cpp
   )
-ENDIF ()
+endif()
 
-SET(HANA_HDRS
+set(HANA_HDRS
   qgshanacolumntypethread.h
   qgshanaconnection.h
   qgshanaconnectionpool.h
@@ -48,25 +48,25 @@ SET(HANA_HDRS
   qgshanautils.h
 )
 
-IF (WITH_GUI)
-  SET(HANA_HDRS ${HANA_HDRS}
+if (WITH_GUI)
+  set(HANA_HDRS ${HANA_HDRS}
     qgshanadataitems.h
     qgshanadataitemguiprovider.h
     qgshananewconnection.h
     qgshanasourceselect.h
   )
-ENDIF ()
+endif()
 
 ########################################################
 # Build
 
-INCLUDE_DIRECTORIES(
+include_directories(
   ${CMAKE_SOURCE_DIR}/external/odbccpp/src
 
   ${CMAKE_BINARY_DIR}/src/ui
 )
 
-INCLUDE_DIRECTORIES (SYSTEM
+include_directories (SYSTEM
   ${PROJ_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${ODBC_INCLUDE_DIRS}
@@ -74,45 +74,49 @@ INCLUDE_DIRECTORIES (SYSTEM
   ${QTKEYCHAIN_INCLUDE_DIR}
 )
 
-ADD_LIBRARY(hanaprovider MODULE ${HANA_SRCS} ${HANA_HDRS})
-ADD_LIBRARY(hanaprovider_a STATIC ${HANA_SRCS} ${HANA_HDRS})
+add_library(provider_hana MODULE ${HANA_SRCS} ${HANA_HDRS})
+add_library(provider_hana_a STATIC ${HANA_SRCS} ${HANA_HDRS})
 
-TARGET_COMPILE_DEFINITIONS(hanaprovider PUBLIC ODBC_STATIC)
-TARGET_COMPILE_DEFINITIONS(hanaprovider_a PUBLIC ODBC_STATIC)
+# require c++17
+target_compile_features(provider_hana PRIVATE cxx_std_17)
+target_compile_features(provider_hana_a PRIVATE cxx_std_17)
 
-TARGET_LINK_LIBRARIES(hanaprovider
+target_compile_definitions(provider_hana PUBLIC ODBC_STATIC)
+target_compile_definitions(provider_hana_a PUBLIC ODBC_STATIC)
+
+target_link_libraries(provider_hana
   qgis_core
   odbccpp_static
   ${ODBC_LIBRARIES}
 )
 
-TARGET_LINK_LIBRARIES(hanaprovider_a
+target_link_libraries(provider_hana_a
   qgis_core
   odbccpp_static
   ${ODBC_LIBRARIES}
 )
 
-IF (WITH_GUI)
-  TARGET_LINK_LIBRARIES (hanaprovider_a
+if (WITH_GUI)
+  target_link_libraries (provider_hana_a
     qgis_gui
   )
 
-  TARGET_LINK_LIBRARIES (hanaprovider
+  target_link_libraries (provider_hana
     qgis_gui
   )
-ENDIF ()
+endif()
 
 # clang-tidy
-IF(CLANG_TIDY_EXE)
-  SET_TARGET_PROPERTIES(
-    hanaprovider PROPERTIES
+if(CLANG_TIDY_EXE)
+  set_target_properties(
+    provider_hana PROPERTIES
     CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
   )
-ENDIF(CLANG_TIDY_EXE)
+endif()
 
 ########################################################
 # Install
 
-INSTALL (TARGETS hanaprovider
+install (TARGETS provider_hana
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})

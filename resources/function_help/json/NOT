@@ -1,6 +1,7 @@
 {
   "name": "NOT",
   "type": "operator",
+  "groups": ["Operators"],
   "description": "Negates a condition.",
   "arguments": [
 	{"arg":"a","description":"condition"}

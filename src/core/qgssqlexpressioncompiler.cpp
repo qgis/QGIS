@@ -19,8 +19,7 @@
 #include "qgsexpression.h"
 
 QgsSqlExpressionCompiler::QgsSqlExpressionCompiler( const QgsFields &fields, Flags flags, bool ignoreStaticNodes )
-  : mResult( None )
-  , mFields( fields )
+  : mFields( fields )
   , mFlags( flags )
   , mIgnoreStaticNodes( ignoreStaticNodes )
 {
@@ -89,7 +88,7 @@ QString QgsSqlExpressionCompiler::quotedValue( const QVariant &value, bool &ok )
 
 QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
 {
-  QgsSqlExpressionCompiler::Result staticRes = replaceNodeByStaticCachedValueIfPossible( node, result );
+  const QgsSqlExpressionCompiler::Result staticRes = replaceNodeByStaticCachedValueIfPossible( node, result );
   if ( staticRes != Fail )
     return staticRes;
 
@@ -268,13 +267,13 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
         return Fail;
 
       QString left;
-      Result lr( compileNode( n->opLeft(), left ) );
+      const Result lr( compileNode( n->opLeft(), left ) );
 
       if ( opIsStringComparison( n ->op() ) )
         left = castToText( left );
 
       QString right;
-      Result rr( compileNode( n->opRight(), right ) );
+      const Result rr( compileNode( n->opRight(), right ) );
 
       if ( failOnPartialNode && ( lr == Partial || rr == Partial ) )
         return Fail;
@@ -352,7 +351,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
       for ( const QgsExpressionNode *ln : constList )
       {
         QString s;
-        Result r = compileNode( ln, s );
+        const Result r = compileNode( ln, s );
         if ( r == Complete || r == Partial )
         {
           list << s;
@@ -364,7 +363,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
       }
 
       QString nd;
-      Result rn = compileNode( n->node(), nd );
+      const Result rn = compileNode( n->node(), nd );
       if ( rn != Complete && rn != Partial )
         return rn;
 
@@ -378,7 +377,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
       QgsExpressionFunction *fd = QgsExpression::Functions()[n->fnIndex()];
 
       // get sql function to compile node expression
-      QString nd = sqlFunctionFromFunctionName( fd->name() );
+      const QString nd = sqlFunctionFromFunctionName( fd->name() );
       // if no sql function the node can't be compiled
       if ( nd.isNull() )
         return Fail;
@@ -390,7 +389,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
       for ( const QgsExpressionNode *ln : constList )
       {
         QString s;
-        Result r = compileNode( ln, s );
+        const Result r = compileNode( ln, s );
         if ( r == Complete || r == Partial )
         {
           args << s;

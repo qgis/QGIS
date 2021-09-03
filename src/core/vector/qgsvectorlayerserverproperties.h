@@ -32,7 +32,7 @@ class QDomDocument;
 
 /**
  * \ingroup core
- * Manages QGIS Server properties for a vector layer
+ * \brief Manages QGIS Server properties for a vector layer
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsVectorLayerServerProperties

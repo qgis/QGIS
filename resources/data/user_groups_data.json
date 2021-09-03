@@ -254,6 +254,50 @@
         "year": 2015
       },
       "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "SK",
+        "name": "QGIS Slovensko (Slovakia)",
+        "logo_url": "https:\/\/raw.githubusercontent.com\/qgis-sk\/qgis-sk.github.io\/master\/images\/qgis_logo.png",
+        "website": "https:\/\/qgis.sk",
+        "year": 2020
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "EC",
+        "name": "Grupo de usuarios QGIS Ecuador",
+        "logo_url": "https:\/\/avatars.githubusercontent.com\/u\/77024709?v=4",
+        "website": "http:\/\/qgis.ec",
+        "year": 2020
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "AT",
+        "name": "QGIS Anwendergruppe Österreich (Austria)",
+        "logo_url": "https:\/\/pbs.twimg.com\/profile_images\/1006428230033838080\/MlKWhfp__400x400.jpg",
+        "website": "https:\/\/qgis.at",
+        "year": 2021
+      },
+      "geometry": null
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "country": "GH",
+        "name": "QGIS Ghana",
+        "logo_url": "https:\/\/pbs.twimg.com\/profile_images\/1380616469969567750\/lG7Q4Qzn_400x400.jpg",
+        "website": "https:\/\/qgisghana.org",
+        "year": 2021
+      },
+      "geometry": null
     }
   ]
 }

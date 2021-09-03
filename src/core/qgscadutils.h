@@ -25,7 +25,7 @@ class QgsSnappingUtils;
 
 /**
  * \ingroup core
- * The QgsCadUtils class provides routines for CAD editing.
+ * \brief The QgsCadUtils class provides routines for CAD editing.
  *
  * \since QGIS 3.0
  */

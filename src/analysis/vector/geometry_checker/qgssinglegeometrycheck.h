@@ -31,7 +31,7 @@ class QgsSingleGeometryCheck;
 /**
  * \ingroup analysis
  *
- * An error from a QgsSingleGeometryCheck.
+ * \brief An error from a QgsSingleGeometryCheck.
  *
  * \note This class is a technology preview and unstable API.
  * \since QGIS 3.4
@@ -106,7 +106,7 @@ class ANALYSIS_EXPORT QgsSingleGeometryCheckError
 /**
  * \ingroup analysis
  *
- * Wraps a QgsSingleGeometryError into a standard QgsGeometryCheckError.
+ * \brief Wraps a QgsSingleGeometryError into a standard QgsGeometryCheckError.
  * The single error can be obtained via singleError.
  *
  * \note This class is a technology preview and unstable API.
@@ -139,7 +139,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckErrorSingle : public QgsGeometryCheckError
 /**
  * \ingroup analysis
  *
- * Base class for geometry checks for a single geometry without any context of the layer or other layers in the project.
+ * \brief Base class for geometry checks for a single geometry without any context of the layer or other layers in the project.
  * Classic examples are validity checks like self-intersection.
  *
  * Subclasses need to implement the processGeometry method.

@@ -117,7 +117,7 @@ void TestQgsTextEditWrapper::testWithJsonInPostgres()
   QVERIFY( w_json.value().userType() == QMetaType::QVariantMap );
   json complexJson =  QgsJsonUtils::jsonFromVariant( w_json.value() );
   QVERIFY( complexJson.is_object() );
-  json jsonArr = complexJson.at( "baz" );
+  const json jsonArr = complexJson.at( "baz" );
   QCOMPARE( QString::fromStdString( jsonArr.dump() ), QStringLiteral( "[1,2,3]" ) );
 
   //test empty
@@ -142,7 +142,7 @@ void TestQgsTextEditWrapper::testWithJsonInPostgres()
   QCOMPARE( w_json.value(), QVariant( 2 ) );
   QVERIFY( w_json.value().userType() == QMetaType::Int );
   QVERIFY( QgsJsonUtils::jsonFromVariant( w_json.value() ).is_number_integer() );
-  int n = QgsJsonUtils::jsonFromVariant( w_json.value() ).front();
+  const int n = QgsJsonUtils::jsonFromVariant( w_json.value() ).front();
   QCOMPARE( QVariant( n ), QVariant( 2 ) );
 
   // test with primitive boolean
@@ -151,7 +151,7 @@ void TestQgsTextEditWrapper::testWithJsonInPostgres()
   QCOMPARE( w_json.value(), QVariant( true ) );
   QVERIFY( w_json.value().userType() == QMetaType::Bool );
   QVERIFY( QgsJsonUtils::jsonFromVariant( w_json.value() ).is_boolean() );
-  bool x = QgsJsonUtils::jsonFromVariant( w_json.value() ).front();
+  const bool x = QgsJsonUtils::jsonFromVariant( w_json.value() ).front();
   QCOMPARE( QVariant( x ), QVariant( true ) );
 
   // test with primitive null
@@ -220,7 +220,7 @@ void TestQgsTextEditWrapper::testWithJsonBInPostgres()
   QVERIFY( w_json.value().userType() == QMetaType::QVariantMap );
   json complexJson =  QgsJsonUtils::jsonFromVariant( w_json.value() );
   QVERIFY( complexJson.is_object() );
-  json jsonArr = complexJson.at( "baz" );
+  const json jsonArr = complexJson.at( "baz" );
   QCOMPARE( QString::fromStdString( jsonArr.dump() ), QStringLiteral( "[1,2,3]" ) );
 
 
@@ -247,7 +247,7 @@ void TestQgsTextEditWrapper::testWithJsonBInPostgres()
   QCOMPARE( w_json.value(), QVariant( 2 ) );
   QVERIFY( w_json.value().userType() == QMetaType::Int );
   QVERIFY( QgsJsonUtils::jsonFromVariant( w_json.value() ).is_number_integer() );
-  int n = QgsJsonUtils::jsonFromVariant( w_json.value() ).front();
+  const int n = QgsJsonUtils::jsonFromVariant( w_json.value() ).front();
   QCOMPARE( QVariant( n ), QVariant( 2 ) );
 
   // test with primitive boolean
@@ -256,7 +256,7 @@ void TestQgsTextEditWrapper::testWithJsonBInPostgres()
   QCOMPARE( w_json.value(), QVariant( true ) );
   QVERIFY( w_json.value().userType() == QMetaType::Bool );
   QVERIFY( QgsJsonUtils::jsonFromVariant( w_json.value() ).is_boolean() );
-  bool x = QgsJsonUtils::jsonFromVariant( w_json.value() ).front();
+  const bool x = QgsJsonUtils::jsonFromVariant( w_json.value() ).front();
   QCOMPARE( QVariant( x ), QVariant( true ) );
 
   // test with primitive null

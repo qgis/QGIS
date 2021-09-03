@@ -197,22 +197,26 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>btnDiffuse</tabstop>
+  <tabstop>mDiffuseDataDefinedButton</tabstop>
   <tabstop>btnWarm</tabstop>
+  <tabstop>mWarmDataDefinedButton</tabstop>
   <tabstop>btnCool</tabstop>
+  <tabstop>mCoolDataDefinedButton</tabstop>
   <tabstop>btnSpecular</tabstop>
+  <tabstop>mSpecularDataDefinedButton</tabstop>
   <tabstop>spinShininess</tabstop>
   <tabstop>spinAlpha</tabstop>
   <tabstop>spinBeta</tabstop>

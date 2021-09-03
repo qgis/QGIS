@@ -32,9 +32,11 @@
 #include "qgsmessagelog.h"
 #include "qgsgui.h"
 #include "qgsdoublevalidator.h"
+#include "qgsdatums.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QRegularExpression>
 
 QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLayer,
     QgsRasterDataProvider *sourceProvider, const QgsRectangle &currentExtent,
@@ -138,6 +140,19 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   //mTilesGroupBox->setSaveCheckedState( true );
   // don't restore nodata, it needs user input
   // pyramids are not necessarily built every time
+
+  try
+  {
+    const QgsDatumEnsemble ensemble = mLayerCrs.datumEnsemble();
+    if ( ensemble.isValid() )
+    {
+      mCrsSelector->setSourceEnsemble( ensemble.name() );
+    }
+  }
+  catch ( QgsNotSupportedException & )
+  {
+  }
+  mCrsSelector->setShowAccuracyWarnings( true );
 
   mCrsSelector->setLayerCrs( mLayerCrs );
   //default to layer CRS - see https://github.com/qgis/QGIS/issues/22211 for discussion
@@ -701,8 +716,8 @@ void QgsRasterLayerSaveAsDialog::addNoDataRow( double min, double max )
     QString valueString;
     switch ( mRasterLayer->dataProvider()->sourceDataType( 1 ) )
     {
-      case Qgis::Float32:
-      case Qgis::Float64:
+      case Qgis::DataType::Float32:
+      case Qgis::DataType::Float64:
         lineEdit->setValidator( new QgsDoubleValidator( nullptr ) );
         if ( !std::isnan( value ) )
         {
@@ -823,15 +838,12 @@ void QgsRasterLayerSaveAsDialog::populatePyramidsLevels()
       if ( ! mPyramidsOptionsWidget->overviewList().isEmpty() )
         myPyramidList = mDataProvider->buildPyramidList( mPyramidsOptionsWidget->overviewList() );
     }
-    QList<QgsRasterPyramid>::iterator myRasterPyramidIterator;
-    for ( myRasterPyramidIterator = myPyramidList.begin();
-          myRasterPyramidIterator != myPyramidList.end();
-          ++myRasterPyramidIterator )
+    for ( const QgsRasterPyramid &pyramid : std::as_const( myPyramidList ) )
     {
-      if ( ! mPyramidsUseExistingCheckBox->isChecked() ||  myRasterPyramidIterator->exists )
+      if ( ! mPyramidsUseExistingCheckBox->isChecked() || pyramid.getExists() )
       {
-        text += QString::number( myRasterPyramidIterator->xDim ) + QStringLiteral( "x" ) +
-                QString::number( myRasterPyramidIterator->yDim ) + ' ';
+        text += QString::number( pyramid.getXDim() ) + QStringLiteral( "x" ) +
+                QString::number( pyramid.getYDim() ) + ' ';
       }
     }
   }
@@ -965,5 +977,5 @@ void QgsRasterLayerSaveAsDialog::accept()
 
 void QgsRasterLayerSaveAsDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#save-layer-from-an-existing-file" ) );
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-new-layers-from-an-existing-layer" ) );
 }

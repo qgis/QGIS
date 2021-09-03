@@ -33,7 +33,7 @@ void QgsModelViewToolTemporaryMousePan::modelMoveEvent( QgsModelViewMouseEvent *
 
 void QgsModelViewToolTemporaryMousePan::modelReleaseEvent( QgsModelViewMouseEvent *event )
 {
-  if ( event->button() == Qt::MidButton )
+  if ( event->button() == Qt::MiddleButton )
   {
     view()->setTool( mPreviousViewTool );
   }

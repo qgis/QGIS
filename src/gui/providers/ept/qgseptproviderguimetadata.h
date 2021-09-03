@@ -30,8 +30,6 @@ class QgsEptProviderGuiMetadata: public QgsProviderGuiMetadata
 {
   public:
     QgsEptProviderGuiMetadata();
-
-    QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override;
 };
 
 ///@endcond

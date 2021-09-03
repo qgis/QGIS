@@ -13,7 +13,7 @@
 
 class QgsDatabaseTableComboBox : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsDatabaseTableComboBox` class is a combo box which displays the list of tables for a specific database connection.
 
 .. warning::

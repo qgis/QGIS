@@ -12,7 +12,7 @@
 
 class QgsCharacterSelectorDialog : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 A dialog for selecting a single character from a single font
 %End
 

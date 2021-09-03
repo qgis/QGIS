@@ -10,7 +10,7 @@
 
 class QgsAlignmentComboBox : QComboBox
 {
-%Docstring
+%Docstring(signature="appended")
 A combo box which allows choice of alignment settings (e.g. left, right, ...).
 
 Currently only horizontal alignments are supported. Available alignment choices

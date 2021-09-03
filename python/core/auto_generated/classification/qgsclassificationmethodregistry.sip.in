@@ -14,7 +14,7 @@
 
 class QgsClassificationMethodRegistry
 {
-%Docstring
+%Docstring(signature="appended")
 This class manages all known classification methods
 
 :py:class:`QgsClassificationMethodRegistry` is not usually directly created, but rather accessed through

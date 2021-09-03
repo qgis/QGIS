@@ -34,7 +34,7 @@ class QgsServerInterface;
 
 /**
  * \ingroup server
- * Server generic API endpoint abstract base class.
+ * \brief Server generic API endpoint abstract base class.
  *
  * \see QgsServerOgcApi for an OGC API (aka WFS3) implementation.
  *

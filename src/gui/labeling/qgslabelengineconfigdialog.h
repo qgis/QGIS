@@ -29,7 +29,7 @@ class QgsMessageBar;
 
 /**
  * \ingroup gui
- * Widget for configuring the labeling engine
+ * \brief Widget for configuring the labeling engine
  *
  * \note This class is not a part of public API
  * \since QGIS 3.14
@@ -62,7 +62,7 @@ class GUI_EXPORT QgsLabelEngineConfigWidget : public QgsPanelWidget, private Ui:
 
 /**
  * \ingroup gui
- * Dialog for configuring the labeling engine
+ * \brief Dialog for configuring the labeling engine
  *
  * \note This class is not a part of public API
  * \since QGIS 3.14

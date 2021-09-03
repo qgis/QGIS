@@ -134,7 +134,7 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
      * \param attributes the list of attribute
      * \returns the list of visible attributes
      */
-    QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const;
+    QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const override;
 
     /**
      * Are we authorized to modify the following geometry
@@ -147,7 +147,6 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
     /**
      * Fill the capabilities caching key
      * \param cacheKey the list to fill with a cache variant
-     * \returns FALSE if we can't create a cache
      */
     bool fillCacheKey( QStringList &cacheKey ) const;
 
@@ -166,6 +165,7 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
 
     QMap<QString, QString> mFilterFeaturesExpressions;
     bool mResolved;
+
 };
 
 #endif

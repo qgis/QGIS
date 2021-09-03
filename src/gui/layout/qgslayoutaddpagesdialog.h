@@ -30,7 +30,7 @@
 
 /**
  * \ingroup gui
- * A dialog for configuring properties of new pages to be added to a layout
+ * \brief A dialog for configuring properties of new pages to be added to a layout
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12

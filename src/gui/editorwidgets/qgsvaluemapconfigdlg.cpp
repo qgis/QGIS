@@ -25,6 +25,8 @@
 #include <QTextStream>
 #include <QClipboard>
 #include <QKeyEvent>
+#include <QMimeData>
+#include <QRegularExpression>
 
 QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )
@@ -99,7 +101,7 @@ void QgsValueMapConfigDlg::setConfig( const QVariantMap &config )
   else
   {
     int row = 0;
-    QVariantMap values = config.value( QStringLiteral( "map" ) ).toMap();
+    const QVariantMap values = config.value( QStringLiteral( "map" ) ).toMap();
     for ( QVariantMap::ConstIterator mit = values.constBegin(); mit != values.constEnd(); mit++, row++ )
     {
       if ( mit.value().isNull() )
@@ -131,7 +133,7 @@ void QgsValueMapConfigDlg::removeSelectedButtonPushed()
   {
     if ( list[i]->column() == 0 )
     {
-      int row = list[i]->row();
+      const int row = list[i]->row();
       if ( !rowsToRemove.contains( row ) )
       {
         rowsToRemove.insert( row );
@@ -149,7 +151,7 @@ void QgsValueMapConfigDlg::removeSelectedButtonPushed()
 void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant> &map, bool insertNull )
 {
   QList<QPair<QString, QVariant>> orderedMap;
-  auto end = map.constEnd();
+  const auto end = map.constEnd();
   for ( auto it = map.constBegin(); it != end; ++it )
   {
     orderedMap.append( qMakePair( it.key(), it.value() ) );
@@ -230,7 +232,7 @@ bool QgsValueMapConfigDlg::eventFilter( QObject *watched, QEvent *event )
 
 void QgsValueMapConfigDlg::setRow( int row, const QString &value, const QString &description )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
   QTableWidgetItem *valueCell = nullptr;
   QTableWidgetItem *descriptionCell = new QTableWidgetItem( description );
   tableWidget->insertRow( row );
@@ -259,7 +261,7 @@ void QgsValueMapConfigDlg::copySelectionToClipboard()
 
   QString clipboardText;
   QModelIndex previous = indexes.first();
-  std::unique_ptr<QMimeData> mimeData = qgis::make_unique<QMimeData>();
+  std::unique_ptr<QMimeData> mimeData = std::make_unique<QMimeData>();
   for ( const QModelIndex &current : indexes )
   {
     const QString text = model->data( current ).toString();
@@ -294,9 +296,9 @@ void QgsValueMapConfigDlg::loadFromLayerButtonPushed()
 
 void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
 {
-  QgsSettings settings;
+  const QgsSettings settings;
 
-  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Value Map from File" ), QDir::homePath() );
+  const QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Value Map from File" ), QDir::homePath() );
   if ( fileName.isNull() )
     return;
 
@@ -314,32 +316,37 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
   QTextStream s( &f );
   s.setAutoDetectUnicode( true );
 
-  QRegExp re0( "^([^;]*);(.*)$" );
-  re0.setMinimal( true );
-  QRegExp re1( "^([^,]*),(.*)$" );
-  re1.setMinimal( true );
+  const thread_local QRegularExpression re0( "^([^;]*?);(.*?)$" );
+  const thread_local QRegularExpression re1( "^([^,]*?),(.*?)$" );
 
   QList<QPair<QString, QVariant>> map;
 
   while ( !s.atEnd() )
   {
-    QString l = s.readLine().trimmed();
+    const QString l = s.readLine().trimmed();
 
     QString key;
     QString val;
 
-    if ( re0.indexIn( l ) >= 0 && re0.captureCount() == 2 )
+    const QRegularExpressionMatch re0match = re0.match( l );
+    if ( re0match.hasMatch() )
     {
-      key = re0.cap( 1 ).trimmed();
-      val = re0.cap( 2 ).trimmed();
-    }
-    else if ( re1.indexIn( l ) >= 0 && re1.captureCount() == 2 )
-    {
-      key = re1.cap( 1 ).trimmed();
-      val = re1.cap( 2 ).trimmed();
+      key = re0match.captured( 1 ).trimmed();
+      val = re0match.captured( 2 ).trimmed();
     }
     else
-      continue;
+    {
+      const QRegularExpressionMatch re1match = re1.match( l );
+      if ( re1match.hasMatch() )
+      {
+        key = re1match.captured( 1 ).trimmed();
+        val = re1match.captured( 2 ).trimmed();
+      }
+      else
+      {
+        continue;
+      }
+    }
 
     if ( ( key.startsWith( '\"' ) && key.endsWith( '\"' ) ) ||
          ( key.startsWith( '\'' ) && key.endsWith( '\'' ) ) )

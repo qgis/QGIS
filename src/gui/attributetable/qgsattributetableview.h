@@ -54,7 +54,14 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     //! Constructor for QgsAttributeTableView
     QgsAttributeTableView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#endif
     virtual void setModel( QgsAttributeTableFilterModel *filterModel );
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 
     /**
      * \brief setFeatureSelectionManager
@@ -88,16 +95,14 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      */
     QList<QgsFeatureId> selectedFeaturesIds() const;
 
-
     /**
      * Scroll to a feature with a given \a fid.
-
-      Optionally a \a column can be specified, which will also bring that column into view.
-
+     *
+     * Optionally a \a column can be specified, which will also bring that column into view.
+     *
      * \since QGIS 3.16
      */
     void scrollToFeature( const QgsFeatureId &fid, int column = -1 );
-
 
   protected:
 

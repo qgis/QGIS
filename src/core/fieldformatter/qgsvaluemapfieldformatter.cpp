@@ -58,7 +58,7 @@ QString QgsValueMapFieldFormatter::representValue( QgsVectorLayer *layer, int fi
   else
   {
     // old style config
-    QVariantMap map = v.toMap();
+    const QVariantMap map = v.toMap();
     return map.key( valueInternalText, QVariant( QStringLiteral( "(%1)" ).arg( layer->fields().at( fieldIndex ).displayString( value ) ) ).toString() );
   }
 }

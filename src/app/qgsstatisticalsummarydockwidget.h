@@ -132,6 +132,8 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private
     QString mExpression;
 
     QgsStatisticsValueGatherer *mGatherer = nullptr;
+
+    bool mPendingCalculate = false;
 };
 
 #endif // QGSSTATISTICALSUMMARYDOCKWIDGET_H

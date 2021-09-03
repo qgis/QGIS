@@ -23,7 +23,7 @@ class QgsMapCanvas;
 
 /**
  * \ingroup gui
- * An adapter class which implements a locator filter populated from a QgsGeocoderInterface.
+ * \brief An adapter class which implements a locator filter populated from a QgsGeocoderInterface.
  *
  * This class implements the required logic to bridge a class which implements the
  * QgsGeocoderInterface interface to a QgsLocatorFilter. It allows easy creation of a locator
@@ -53,11 +53,15 @@ class GUI_EXPORT QgsGeocoderLocatorFilter : public QgsAbstractGeocoderLocatorFil
      * The \a geocoder must specify an instance of a class which implements the QgsGeocoderInterface
      * interface. Ownership of \a geocoder is not transferred, and the caller must ensure that \a geocoder
      * exists for the lifetime of this filter.
+     *
+     * The \a boundingBox argument specifies the geographic bounding box, in WGS84, covered by the
+     * filter.
      */
     QgsGeocoderLocatorFilter( const QString &name, const QString &displayName,
                               const QString &prefix,
                               QgsGeocoderInterface *geocoder,
-                              QgsMapCanvas *canvas );
+                              QgsMapCanvas *canvas,
+                              const QgsRectangle &boundingBox = QgsRectangle() );
 
     QgsLocatorFilter *clone() const override SIP_FACTORY;
 

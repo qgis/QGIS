@@ -25,7 +25,7 @@ class QString;
 /**
  * \ingroup gui
  * \class QgsMapCanvasUtils
- * Utility functions for working with QgsMapCanvas widgets.
+ * \brief Utility functions for working with QgsMapCanvas widgets.
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsMapCanvasUtils

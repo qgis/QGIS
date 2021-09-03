@@ -29,7 +29,13 @@ if (WITH_GUI)
   )
 endif()
 
-QT5_WRAP_UI(vlayer_provider_UI_H qgsvirtuallayersourceselectbase.ui qgsembeddedlayerselect.ui)
+if (WITH_GUI)
+  if (WITH_QT6)
+    QT6_WRAP_UI(vlayer_provider_UI_H qgsvirtuallayersourceselectbase.ui qgsembeddedlayerselect.ui)
+  else()
+    QT5_WRAP_UI(vlayer_provider_UI_H qgsvirtuallayersourceselectbase.ui qgsembeddedlayerselect.ui)
+  endif()
+endif()
 
 include_directories(
 
@@ -38,39 +44,37 @@ include_directories(
   ${CMAKE_CURRENT_BINARY_DIR} # ui_xxx_dlg.h
 )
 
-if (WITH_GUI)
-endif()
-
 include_directories(SYSTEM
   ${POSTGRES_INCLUDE_DIR}
 )
 
-
-
-add_library(virtuallayerprovider MODULE
+add_library(provider_virtuallayer MODULE
   ${QGIS_VLAYER_PROVIDER_SRCS}
   ${QGIS_VLAYER_PROVIDER_HDRS}
   ${vlayer_provider_UI_H}
   ${QGIS_VLAYER_SQL_FUNCTIONS_RCCS}
 )
 
-target_link_libraries( virtuallayerprovider
+# require c++17
+target_compile_features(provider_virtuallayer PRIVATE cxx_std_17)
+
+target_link_libraries(provider_virtuallayer
   qgis_core
-  ${Qt5Core_LIBRARIES}
-  ${Qt5Gui_LIBRARIES}
-  ${Qt5Widgets_LIBRARIES}
+  ${QT_VERSION_BASE}::Core
+  ${QT_VERSION_BASE}::Gui
+  ${QT_VERSION_BASE}::Widgets
   ${SQLITE3_LIBRARY}
   ${SPATIALITE_LIBRARY}
 )
 
 if (WITH_GUI)
-  target_link_libraries (virtuallayerprovider
+  target_link_libraries (provider_virtuallayer
     qgis_gui
   )
-  add_dependencies(virtuallayerprovider ui)
+  add_dependencies(provider_virtuallayer ui)
 endif()
 
-install(TARGETS virtuallayerprovider
+install(TARGETS provider_virtuallayer
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR}
   )

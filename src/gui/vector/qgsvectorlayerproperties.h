@@ -70,7 +70,7 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QgsVectorLayerProperties( QgsMapCanvas *canvas, QgsMessageBar *messageBar, QgsVectorLayer *lyr = nullptr, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     //! Adds a properties page factory to the vector layer properties dialog.
-    void addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory );
+    void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
 
   protected slots:
     void optionsStackedWidget_CurrentChanged( int index ) override SIP_SKIP;
@@ -84,9 +84,6 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     //! Gets metadata about the layer in nice formatted html
     QString htmlMetadata();
-
-    //! Slot to update layer display name as original is edited
-    void mLayerOrigNameLineEdit_textEdited( const QString &text );
 
     //! Called when apply button is pressed or dialog is accepted
     void apply();

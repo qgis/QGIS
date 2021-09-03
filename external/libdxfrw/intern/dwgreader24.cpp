@@ -21,26 +21,23 @@
 #include "../libdwgr.h"
 
 
-bool dwgReader24::readFileHeader()
-{
-  DRW_DBG( "dwgReader24::readFileHeader\n" );
-  bool ret = dwgReader18::readFileHeader();
-  DRW_DBG( "dwgReader24::readFileHeader END\n" );
-  return ret;
+bool dwgReader24::readFileHeader() {
+    DRW_DBG("dwgReader24::readFileHeader\n");
+    bool ret = dwgReader18::readFileHeader();
+    DRW_DBG("dwgReader24::readFileHeader END\n");
+    return ret;
 }
 
-bool dwgReader24::readDwgHeader( DRW_Header &hdr )
-{
-  DRW_DBG( "dwgReader24::readDwgHeader\n" );
-  bool ret = dwgReader18::readDwgHeader( hdr );
-  DRW_DBG( "dwgReader24::readDwgHeader END\n" );
-  return ret;
+bool dwgReader24::readDwgHeader(DRW_Header& hdr){
+    DRW_DBG("dwgReader24::readDwgHeader\n");
+    bool ret = dwgReader18::readDwgHeader(hdr);
+    DRW_DBG("dwgReader24::readDwgHeader END\n");
+    return ret;
 }
 
-bool dwgReader24::readDwgClasses()
-{
-  DRW_DBG( "\ndwgReader24::readDwgClasses" );
-  bool ret = dwgReader18::readDwgClasses();
-  DRW_DBG( "\ndwgReader24::readDwgClasses END\n" );
-  return ret;
+bool dwgReader24::readDwgClasses(){
+    DRW_DBG("\ndwgReader24::readDwgClasses");
+    bool ret = dwgReader18::readDwgClasses();
+    DRW_DBG("\ndwgReader24::readDwgClasses END\n");
+    return ret;
 }

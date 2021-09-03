@@ -10,7 +10,7 @@
 
 class QgsScopedExpressionFunction : QgsExpressionFunction
 {
-%Docstring
+%Docstring(signature="appended")
 Expression function for use within a :py:class:`QgsExpressionContextScope`. This differs from a
 standard :py:class:`QgsExpression`.Function in that it requires an implemented
 :py:func:`~clone` method.
@@ -76,7 +76,7 @@ Returns a clone of the function.
 
 class QgsExpressionContextScope
 {
-%Docstring
+%Docstring(signature="appended")
 Single scope for storing variables and functions for use within a :py:class:`QgsExpressionContext`.
 Examples include a project's scope, which could contain information about the current project such as
 the project file's location. :py:class:`QgsExpressionContextScope` can encapsulate both variables (static values)
@@ -364,7 +364,7 @@ Writes scope variables to an XML ``element``.
 
 class QgsExpressionContext
 {
-%Docstring
+%Docstring(signature="appended")
 Expression contexts are used to encapsulate the parameters around which a :py:class:`QgsExpression` should
 be evaluated. :py:class:`QgsExpressions` can then utilize the information stored within a context to contextualise
 their evaluated result. A :py:class:`QgsExpressionContext` consists of a stack of :py:class:`QgsExpressionContextScope` objects,
@@ -785,12 +785,37 @@ Clears all cached values from the context.
 .. versionadded:: 2.16
 %End
 
+    void setFeedback( QgsFeedback *feedback );
+%Docstring
+Attach a ``feedback`` object that can be queried regularly by the expression engine to check
+if expression evaluation should be canceled.
+
+Ownership of ``feedback`` is NOT transferred, and the caller must take care that it exists
+for the lifetime of the expression context.
+
+.. seealso:: :py:func:`feedback`
+
+.. versionadded:: 3.20
+%End
+
+    QgsFeedback *feedback() const;
+%Docstring
+Returns the feedback object that can be queried regularly by the expression to check
+if evaluation should be canceled, if set.
+
+.. seealso:: :py:func:`setFeedback`
+
+.. versionadded:: 3.20
+%End
+
     static const QString EXPR_FIELDS;
     static const QString EXPR_ORIGINAL_VALUE;
     static const QString EXPR_SYMBOL_COLOR;
     static const QString EXPR_SYMBOL_ANGLE;
     static const QString EXPR_GEOMETRY_PART_COUNT;
     static const QString EXPR_GEOMETRY_PART_NUM;
+
+    static const QString EXPR_GEOMETRY_RING_NUM;
     static const QString EXPR_GEOMETRY_POINT_COUNT;
     static const QString EXPR_GEOMETRY_POINT_NUM;
     static const QString EXPR_CLUSTER_SIZE;

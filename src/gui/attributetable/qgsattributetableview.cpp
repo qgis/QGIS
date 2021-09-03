@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QDesktopServices>
 #include <QKeyEvent>
 #include <QHeaderView>
 #include <QMenu>
@@ -34,12 +35,13 @@
 #include "qgsfeatureselectionmodel.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgsfeatureiterator.h"
+#include "qgsstringutils.h"
 #include "qgsgui.h"
 
 QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
   : QTableView( parent )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "BetterAttributeTable/geometry" ) ).toByteArray() );
 
   //verticalHeader()->setDefaultSectionSize( 20 );
@@ -121,7 +123,7 @@ QList<QgsFeatureId> QgsAttributeTableView::selectedFeaturesIds() const
   QModelIndexList indexList;
   for ( const QgsFeatureId &id : featureIds )
   {
-    QModelIndex index = mFilterModel->fidToIndex( id );
+    const QModelIndex index = mFilterModel->fidToIndex( id );
     indexList << index;
   }
 
@@ -129,7 +131,7 @@ QList<QgsFeatureId> QgsAttributeTableView::selectedFeaturesIds() const
   QList<QgsFeatureId> ids;
   for ( const QModelIndex &index : indexList )
   {
-    QgsFeatureId id = mFilterModel->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong();
+    const QgsFeatureId id = mFilterModel->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong();
     ids.append( id );
   }
   return ids;
@@ -188,7 +190,7 @@ void QgsAttributeTableView::setFeatureSelectionManager( QgsIFeatureSelectionMana
 
 QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
 {
-  QgsAttributeTableConfig attributeTableConfig = mConfig;
+  const QgsAttributeTableConfig attributeTableConfig = mConfig;
 
   QToolButton *toolButton = nullptr;
   QWidget *container = nullptr;
@@ -211,14 +213,14 @@ QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
   QAction *defaultAction = nullptr;
 
   // first add user created layer actions
-  QList<QgsAction> actions = mFilterModel->layer()->actions()->actions( QStringLiteral( "Feature" ) );
+  const QList<QgsAction> actions = mFilterModel->layer()->actions()->actions( QStringLiteral( "Feature" ) );
   const auto constActions = actions;
   for ( const QgsAction &action : constActions )
   {
     if ( !mFilterModel->layer()->isEditable() && action.isEnabledOnlyWhenEditable() )
       continue;
 
-    QString actionTitle = !action.shortTitle().isEmpty() ? action.shortTitle() : action.icon().isNull() ? action.name() : QString();
+    const QString actionTitle = !action.shortTitle().isEmpty() ? action.shortTitle() : action.icon().isNull() ? action.name() : QString();
     QAction *act = new QAction( action.icon(), actionTitle, container );
     act->setToolTip( action.name() );
     act->setData( "user_action" );
@@ -304,6 +306,19 @@ void QgsAttributeTableView::mouseReleaseEvent( QMouseEvent *event )
   setSelectionMode( QAbstractItemView::NoSelection );
   QTableView::mouseReleaseEvent( event );
   setSelectionMode( QAbstractItemView::ExtendedSelection );
+  if ( event->modifiers() == Qt::ControlModifier )
+  {
+    const QModelIndex index = indexAt( event->pos() );
+    const QVariant data = model()->data( index, Qt::DisplayRole );
+    if ( data.type() == QVariant::String )
+    {
+      const QString textVal = data.toString();
+      if ( QgsStringUtils::isUrl( textVal ) )
+      {
+        QDesktopServices::openUrl( QUrl( textVal ) );
+      }
+    }
+  }
 }
 
 void QgsAttributeTableView::mouseMoveEvent( QMouseEvent *event )
@@ -412,8 +427,8 @@ void QgsAttributeTableView::selectRow( int row, bool anchor )
 
   if ( row >= 0 && row < model()->rowCount() )
   {
-    int column = horizontalHeader()->logicalIndexAt( isRightToLeft() ? viewport()->width() : 0 );
-    QModelIndex index = model()->index( row, column );
+    const int column = horizontalHeader()->logicalIndexAt( isRightToLeft() ? viewport()->width() : 0 );
+    const QModelIndex index = model()->index( row, column );
     QItemSelectionModel::SelectionFlags command = selectionCommand( index );
     selectionModel()->setCurrentIndex( index, QItemSelectionModel::NoUpdate );
     if ( ( anchor && !( command & QItemSelectionModel::Current ) )
@@ -432,8 +447,8 @@ void QgsAttributeTableView::selectRow( int row, bool anchor )
         command |= QItemSelectionModel::Current;
     }
 
-    QModelIndex tl = model()->index( std::min( mRowSectionAnchor, row ), 0 );
-    QModelIndex br = model()->index( std::max( mRowSectionAnchor, row ), model()->columnCount() - 1 );
+    const QModelIndex tl = model()->index( std::min( mRowSectionAnchor, row ), 0 );
+    const QModelIndex br = model()->index( std::max( mRowSectionAnchor, row ), model()->columnCount() - 1 );
     if ( verticalHeader()->sectionsMoved() && tl.row() != br.row() )
       setSelection( visualRect( tl ) | visualRect( br ), command );
     else
@@ -449,14 +464,14 @@ void QgsAttributeTableView::showHorizontalSortIndicator()
 void QgsAttributeTableView::actionTriggered()
 {
   QAction *action = qobject_cast<QAction *>( sender() );
-  QgsFeatureId fid = action->property( "fid" ).toLongLong();
+  const QgsFeatureId fid = action->property( "fid" ).toLongLong();
 
   QgsFeature f;
   mFilterModel->layerCache()->getFeatures( QgsFeatureRequest( fid ) ).nextFeature( f );
 
   if ( action->data().toString() == QLatin1String( "user_action" ) )
   {
-    mFilterModel->layer()->actions()->doAction( action->property( "action_id" ).toString(), f );
+    mFilterModel->layer()->actions()->doAction( action->property( "action_id" ).toUuid(), f );
   }
   else if ( action->data().toString() == QLatin1String( "map_layer_action" ) )
   {
@@ -500,14 +515,14 @@ void QgsAttributeTableView::recreateActionWidgets()
 
 void QgsAttributeTableView::scrollToFeature( const QgsFeatureId &fid, int col )
 {
-  QModelIndex index = mFilterModel->fidToIndex( fid );
+  const QModelIndex index = mFilterModel->fidToIndex( fid );
 
   if ( !index.isValid() )
     return;
 
   scrollTo( index );
 
-  QModelIndex selectionIndex = index.sibling( index.row(), col );
+  const QModelIndex selectionIndex = index.sibling( index.row(), col );
 
   if ( !selectionIndex.isValid() )
     return;

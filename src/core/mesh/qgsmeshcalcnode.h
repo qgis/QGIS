@@ -35,7 +35,7 @@
 /**
  * \ingroup core
  * \class QgsMeshCalcNode
- * Represents a single calculation node
+ * \brief Represents a single calculation node
  *
  * \since QGIS 3.6
  */

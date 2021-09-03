@@ -254,9 +254,10 @@ class OgrToPostGis(GdalAlgorithm):
         precision = self.parameterAsBoolean(parameters, self.PRECISION, context)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
 
-        arguments = []
-        arguments.append('-progress')
-        arguments.append('--config PG_USE_COPY YES')
+        arguments = [
+            '-progress',
+            '--config PG_USE_COPY YES'
+        ]
         if len(shapeEncoding) > 0:
             arguments.append('--config')
             arguments.append('SHAPE_ENCODING')
@@ -331,14 +332,11 @@ class OgrToPostGis(GdalAlgorithm):
         if len(options) > 0:
             arguments.append(options)
 
-        commands = []
         if isWindows():
-            commands = ['cmd.exe', '/C ', 'ogr2ogr.exe',
-                        GdalUtils.escapeAndJoin(arguments)]
+            return ['cmd.exe', '/C ', 'ogr2ogr.exe',
+                    GdalUtils.escapeAndJoin(arguments)]
         else:
-            commands = ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
-
-        return commands
+            return ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
 
     def commandName(self):
         return 'ogr2ogr'

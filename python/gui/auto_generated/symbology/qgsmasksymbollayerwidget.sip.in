@@ -10,7 +10,7 @@
 
 class QgsMaskMarkerSymbolLayerWidget: QgsSymbolLayerWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Symbol layer widget for the handling of :py:class:`QgsMaskMarkerSymbolLayer`.
 
 .. versionadded:: 3.12

@@ -512,6 +512,117 @@ class TestQgsMetadataBase(unittest.TestCase):
         self.assertEqual(list[0].section, 'links')
         self.assertEqual(list[0].identifier, 0)
 
+    def testCombine(self):
+        m1 = TestMetadata()
+        m2 = TestMetadata()
+
+        # should be retained
+        m1.setIdentifier('i1')
+        m1.combine(m2)
+        self.assertEqual(m1.identifier(), 'i1')
+
+        # should be overwritten
+        m1.setIdentifier(None)
+        m2.setIdentifier('i2')
+        m1.combine(m2)
+        self.assertEqual(m1.identifier(), 'i2')
+
+        # should be overwritten
+        m1.setIdentifier('i1')
+        m2.setIdentifier('i2')
+        m1.combine(m2)
+        self.assertEqual(m1.identifier(), 'i2')
+
+        m1.setParentIdentifier('pi1')
+        m2.setParentIdentifier(None)
+        m1.combine(m2)
+        self.assertEqual(m1.parentIdentifier(), 'pi1')
+
+        m1.setParentIdentifier(None)
+        m2.setParentIdentifier('pi2')
+        m1.combine(m2)
+        self.assertEqual(m1.parentIdentifier(), 'pi2')
+
+        m1.setLanguage('l1')
+        m2.setLanguage(None)
+        m1.combine(m2)
+        self.assertEqual(m1.language(), 'l1')
+
+        m1.setLanguage(None)
+        m2.setLanguage('l2')
+        m1.combine(m2)
+        self.assertEqual(m1.language(), 'l2')
+
+        m1.setType('ty1')
+        m2.setType(None)
+        m1.combine(m2)
+        self.assertEqual(m1.type(), 'ty1')
+
+        m1.setType(None)
+        m2.setType('ty2')
+        m1.combine(m2)
+        self.assertEqual(m1.type(), 'ty2')
+
+        m1.setTitle('t1')
+        m2.setTitle(None)
+        m1.combine(m2)
+        self.assertEqual(m1.title(), 't1')
+
+        m1.setTitle(None)
+        m2.setTitle('t2')
+        m1.combine(m2)
+        self.assertEqual(m1.title(), 't2')
+
+        m1.setAbstract('a1')
+        m2.setAbstract(None)
+        m1.combine(m2)
+        self.assertEqual(m1.abstract(), 'a1')
+
+        m1.setAbstract(None)
+        m2.setAbstract('a2')
+        m1.combine(m2)
+        self.assertEqual(m1.abstract(), 'a2')
+
+        m1.setHistory(['h1', 'hh1'])
+        m2.setHistory([])
+        m1.combine(m2)
+        self.assertEqual(m1.history(), ['h1', 'hh1'])
+
+        m1.setHistory([])
+        m2.setHistory(['h2', 'hh2'])
+        m1.combine(m2)
+        self.assertEqual(m1.history(), ['h2', 'hh2'])
+
+        m1.setKeywords({'words': ['k1', 'kk1']})
+        m2.setKeywords({})
+        m1.combine(m2)
+        self.assertEqual(m1.keywords(), {'words': ['k1', 'kk1']})
+
+        m1.setKeywords({})
+        m2.setKeywords({'words': ['k2', 'kk2']})
+        m1.combine(m2)
+        self.assertEqual(m1.keywords(), {'words': ['k2', 'kk2']})
+
+        m1.setContacts([QgsAbstractMetadataBase.Contact('c1'), QgsAbstractMetadataBase.Contact('cc1')])
+        m2.setContacts([])
+        m1.combine(m2)
+        self.assertEqual(m1.contacts(), [QgsAbstractMetadataBase.Contact('c1'), QgsAbstractMetadataBase.Contact('cc1')])
+
+        m1.setContacts([])
+        m2.setContacts([QgsAbstractMetadataBase.Contact('c2'), QgsAbstractMetadataBase.Contact('cc2')])
+        m1.combine(m2)
+        self.assertEqual(m1.contacts(), [QgsAbstractMetadataBase.Contact('c2'), QgsAbstractMetadataBase.Contact('cc2')])
+
+        m1.setLinks([QgsAbstractMetadataBase.Link('l1'), QgsAbstractMetadataBase.Link('ll1')])
+        m2.setLinks([])
+        m1.combine(m2)
+        self.assertEqual(m1.links(), [QgsAbstractMetadataBase.Link('l1'), QgsAbstractMetadataBase.Link('ll1')])
+
+        m1.setLinks([])
+        m2.setLinks([QgsAbstractMetadataBase.Link('l2'), QgsAbstractMetadataBase.Link('ll2')])
+        m1.combine(m2)
+        self.assertEqual(m1.links(), [QgsAbstractMetadataBase.Link('l2'), QgsAbstractMetadataBase.Link('ll2')])
+
 
 if __name__ == '__main__':
     unittest.main()

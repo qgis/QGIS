@@ -33,7 +33,7 @@ QString QgsStoredExpressionManager::addStoredExpression( const QString &name, co
 void QgsStoredExpressionManager::removeStoredExpression( const QString &id )
 {
   int i = 0;
-  for ( const QgsStoredExpression &storedExpression : qgis::as_const( mStoredExpressions ) )
+  for ( const QgsStoredExpression &storedExpression : std::as_const( mStoredExpressions ) )
   {
     if ( storedExpression.id == id )
     {
@@ -48,7 +48,7 @@ void QgsStoredExpressionManager::removeStoredExpression( const QString &id )
 void QgsStoredExpressionManager::updateStoredExpression( const QString &id, const QString &name, const QString &expression, const QgsStoredExpression::Category &tag )
 {
   int i = 0;
-  for ( const QgsStoredExpression &storedExpression : qgis::as_const( mStoredExpressions ) )
+  for ( const QgsStoredExpression &storedExpression : std::as_const( mStoredExpressions ) )
   {
     if ( storedExpression.id == id )
     {
@@ -73,7 +73,7 @@ QList< QgsStoredExpression > QgsStoredExpressionManager::storedExpressions( cons
 {
   QList< QgsStoredExpression > storedExpressions;
 
-  for ( const QgsStoredExpression &storedExpression : qgis::as_const( mStoredExpressions ) )
+  for ( const QgsStoredExpression &storedExpression : std::as_const( mStoredExpressions ) )
   {
     if ( storedExpression.tag & tag )
     {
@@ -85,7 +85,7 @@ QList< QgsStoredExpression > QgsStoredExpressionManager::storedExpressions( cons
 
 QgsStoredExpression QgsStoredExpressionManager::storedExpression( const QString &id ) const
 {
-  for ( const QgsStoredExpression &storedExpression : qgis::as_const( mStoredExpressions ) )
+  for ( const QgsStoredExpression &storedExpression : std::as_const( mStoredExpressions ) )
   {
     if ( storedExpression.id == id )
     {
@@ -97,7 +97,7 @@ QgsStoredExpression QgsStoredExpressionManager::storedExpression( const QString 
 
 QgsStoredExpression QgsStoredExpressionManager::findStoredExpressionByExpression( const QString &expression, const QgsStoredExpression::Category &tag ) const
 {
-  for ( const QgsStoredExpression &storedExpression : qgis::as_const( mStoredExpressions ) )
+  for ( const QgsStoredExpression &storedExpression : std::as_const( mStoredExpressions ) )
   {
     if ( storedExpression.expression == expression && storedExpression.tag & tag )
     {
@@ -116,7 +116,7 @@ bool QgsStoredExpressionManager::writeXml( QDomNode &layerNode ) const
 {
   QDomElement aStoredExpressions = layerNode.ownerDocument().createElement( QStringLiteral( "storedexpressions" ) );
 
-  for ( const QgsStoredExpression &storedExpression : qgis::as_const( mStoredExpressions ) )
+  for ( const QgsStoredExpression &storedExpression : std::as_const( mStoredExpressions ) )
   {
     QDomElement aStoredExpression = layerNode.ownerDocument().createElement( QStringLiteral( "storedexpression" ) );
     aStoredExpression.setAttribute( QStringLiteral( "name" ), storedExpression.name );

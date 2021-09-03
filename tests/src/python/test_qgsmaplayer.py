@@ -20,7 +20,9 @@ import sip
 from qgis.core import (QgsReadWriteContext,
                        QgsVectorLayer,
                        QgsRasterLayer,
-                       QgsProject)
+                       QgsProject,
+                       QgsLayerMetadata,
+                       QgsLayerNotesUtils)
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtCore import QTemporaryDir
@@ -75,6 +77,25 @@ class TestQgsMapLayer(unittest.TestCase):
         layer.setAutoRefreshInterval(0)  # should disable auto refresh
         self.assertFalse(layer.hasAutoRefreshEnabled())
         self.assertEqual(layer.autoRefreshInterval(), 0)
+
+    def testLayerNotes(self):
+        """
+        Test layer notes
+        """
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer", "memory")
+        self.assertFalse(QgsLayerNotesUtils.layerHasNotes(layer))
+        self.assertFalse(QgsLayerNotesUtils.layerNotes(layer))
+
+        QgsLayerNotesUtils.setLayerNotes(layer, 'my notes')
+        self.assertTrue(QgsLayerNotesUtils.layerHasNotes(layer))
+        self.assertEqual(QgsLayerNotesUtils.layerNotes(layer), 'my notes')
+        QgsLayerNotesUtils.setLayerNotes(layer, 'my notes 2')
+        self.assertEqual(QgsLayerNotesUtils.layerNotes(layer), 'my notes 2')
+
+        QgsLayerNotesUtils.removeNotes(layer)
+        self.assertFalse(QgsLayerNotesUtils.layerHasNotes(layer))
+        self.assertFalse(QgsLayerNotesUtils.layerNotes(layer))
 
     def testSaveRestoreAutoRefresh(self):
         """ test saving/restoring auto refresh to xml """
@@ -199,6 +220,39 @@ class TestQgsMapLayer(unittest.TestCase):
         self.assertFalse(sip.isdeleted(layer))
         project2.removeMapLayer(layer)
         self.assertTrue(sip.isdeleted(layer))
+
+    def testRetainLayerMetadataWhenChangingDataSource(self):
+        """
+        Test that we retain existing layer metadata when a layer's source is changed
+        """
+        vl = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'points.shp'), "layer", "ogr")
+
+        metadata = QgsLayerMetadata()
+        metadata.setRights(['original right 1', 'original right 2'])
+        metadata.setAbstract('original abstract')
+        vl.setMetadata(metadata)
+
+        # now change layer datasource to one which has embedded provider medata
+        datasource = os.path.join(unitTestDataPath(), 'gdb_metadata.gdb')
+        vl.setDataSource(datasource, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+
+        # these settings weren't present in the original layer metadata, so should have been taken from the GDB file
+        self.assertEqual(vl.metadata().identifier(), 'Test')
+        self.assertEqual(vl.metadata().title(), 'Title')
+        self.assertEqual(vl.metadata().type(), 'dataset')
+        self.assertEqual(vl.metadata().language(), 'ENG')
+        self.assertEqual(vl.metadata().keywords(), {'Search keys': ['Tags']})
+        self.assertEqual(vl.metadata().constraints()[0].type, 'Limitations of use')
+        self.assertEqual(vl.metadata().constraints()[0].constraint, 'This is the use limitation')
+        self.assertEqual(vl.metadata().extent().spatialExtents()[0].bounds.xMinimum(), 1)
+        self.assertEqual(vl.metadata().extent().spatialExtents()[0].bounds.xMaximum(), 2)
+        self.assertEqual(vl.metadata().extent().spatialExtents()[0].bounds.yMinimum(), 3)
+        self.assertEqual(vl.metadata().extent().spatialExtents()[0].bounds.yMaximum(), 4)
+
+        # these setting WERE present, so must be retained
+        self.assertIn('original abstract', vl.metadata().abstract())
+        self.assertEqual(vl.metadata().rights(), ['original right 1', 'original right 2'])
 
 
 if __name__ == '__main__':

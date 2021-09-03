@@ -29,6 +29,7 @@
 #include "qgsheatmaprendererwidget.h"
 #include "qgs25drendererwidget.h"
 #include "qgsnullsymbolrendererwidget.h"
+#include "qgsembeddedsymbolrendererwidget.h"
 #include "qgspanelwidget.h"
 #include "qgspainteffect.h"
 
@@ -74,10 +75,11 @@ static void _initRendererWidgetFunctions()
   _initRenderer( QStringLiteral( "pointDisplacement" ), QgsPointDisplacementRendererWidget::create, QStringLiteral( "rendererPointDisplacementSymbol.svg" ) );
   _initRenderer( QStringLiteral( "pointCluster" ), QgsPointClusterRendererWidget::create, QStringLiteral( "rendererPointClusterSymbol.svg" ) );
   _initRenderer( QStringLiteral( "invertedPolygonRenderer" ), QgsInvertedPolygonRendererWidget::create, QStringLiteral( "rendererInvertedSymbol.svg" ) );
-  _initRenderer( QStringLiteral( "mergedFeatureRenderer" ), QgsMergedFeatureRendererWidget::create, QStringLiteral( "rendererInvertedSymbol.svg" ) );
+  _initRenderer( QStringLiteral( "mergedFeatureRenderer" ), QgsMergedFeatureRendererWidget::create, QStringLiteral( "rendererMergedFeatures.svg" ) );
   _initRenderer( QStringLiteral( "heatmapRenderer" ), QgsHeatmapRendererWidget::create, QStringLiteral( "rendererHeatmapSymbol.svg" ) );
   _initRenderer( QStringLiteral( "25dRenderer" ), Qgs25DRendererWidget::create, QStringLiteral( "renderer25dSymbol.svg" ) );
   _initRenderer( QStringLiteral( "nullSymbol" ), QgsNullSymbolRendererWidget::create, QStringLiteral( "rendererNullSymbol.svg" ) );
+  _initRenderer( QStringLiteral( "embeddedSymbol" ), QgsEmbeddedSymbolRendererWidget::create );
   sInitialized = true;
 }
 
@@ -102,7 +104,7 @@ QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer *layer,
   _initRendererWidgetFunctions();
 
   QgsRendererRegistry *reg = QgsApplication::rendererRegistry();
-  QStringList renderers = reg->renderersList( mLayer );
+  const QStringList renderers = reg->renderersList( mLayer );
   const auto constRenderers = renderers;
   for ( const QString &name : constRenderers )
   {
@@ -224,7 +226,7 @@ void QgsRendererPropertiesDialog::rendererChanged()
     return;
   }
 
-  QString rendererName = cboRenderers->currentData().toString();
+  const QString rendererName = cboRenderers->currentData().toString();
 
   //Retrieve the previous renderer: from the old active widget if possible, otherwise from the layer
   QgsFeatureRenderer *oldRenderer = nullptr;
@@ -325,7 +327,7 @@ void QgsRendererPropertiesDialog::openPanel( QgsPanelWidget *panel )
   {
     // Show the dialog version if no one is connected
     QDialog *dlg = new QDialog();
-    QString key = QStringLiteral( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );
+    const QString key = QStringLiteral( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );
     QgsSettings settings;
     dlg->restoreGeometry( settings.value( key ).toByteArray() );
     dlg->setWindowTitle( panel->panelTitle() );
@@ -379,9 +381,9 @@ void QgsRendererPropertiesDialog::syncToLayer()
   if ( mLayer->renderer() )
   {
     // set current renderer from layer
-    QString rendererName = mLayer->renderer()->type();
+    const QString rendererName = mLayer->renderer()->type();
 
-    int rendererIdx = cboRenderers->findData( rendererName );
+    const int rendererIdx = cboRenderers->findData( rendererName );
     cboRenderers->setCurrentIndex( rendererIdx );
 
     // no renderer found... this mustn't happen

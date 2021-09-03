@@ -24,6 +24,8 @@
 #include "qgswmsdataitems.h"
 #include "qgsprovidersourcewidgetprovider.h"
 #include "qgsxyzsourcewidget.h"
+#include "qgswmstsettingswidget.h"
+#include "qgsmaplayer.h"
 
 //! Provider for WMS layers source select
 class QgsWmsSourceSelectProvider : public QgsSourceSelectProvider
@@ -90,6 +92,7 @@ class QgsXyzSourceWidgetProvider : public QgsProviderSourceWidgetProvider
 QgsWmsProviderGuiMetadata::QgsWmsProviderGuiMetadata()
   : QgsProviderGuiMetadata( QgsWmsProvider::WMS_KEY )
 {
+  mWmstConfigWidgetFactory = std::make_unique< QgsWmstSettingsConfigWidgetFactory > () ;
 }
 
 QList<QgsSourceSelectProvider *> QgsWmsProviderGuiMetadata::sourceSelectProviders()
@@ -116,6 +119,11 @@ QList<QgsProviderSourceWidgetProvider *> QgsWmsProviderGuiMetadata::sourceWidget
 void QgsWmsProviderGuiMetadata::registerGui( QMainWindow *widget )
 {
   QgsTileScaleWidget::showTileScale( widget );
+}
+
+QList<const QgsMapLayerConfigWidgetFactory *> QgsWmsProviderGuiMetadata::mapLayerConfigWidgetFactories()
+{
+  return { mWmstConfigWidgetFactory.get() };
 }
 
 #ifndef HAVE_STATIC_PROVIDERS

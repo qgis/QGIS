@@ -24,7 +24,7 @@
 /**
  * \class QgsAbstractGeometryTransformer
  * \ingroup core
- * An abstract base class for classes which transform geometries by transforming
+ * \brief An abstract base class for classes which transform geometries by transforming
  * input points to output points.
  *
  * \since QGIS 3.18

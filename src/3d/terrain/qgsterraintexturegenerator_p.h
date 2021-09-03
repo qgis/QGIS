@@ -44,7 +44,7 @@ class Qgs3DMapSettings;
 
 /**
  * \ingroup 3d
- * Class responsible for rendering map images in background for the purposes of their use
+ * \brief Class responsible for rendering map images in background for the purposes of their use
  * as textures for terrain's tiles.
  *
  * Tiles are asynchronously requested with render() call, when rendering is done the tileReady()

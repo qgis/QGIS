@@ -34,15 +34,11 @@ QgsPreviewQuad::QgsPreviewQuad( Qt3DRender::QAbstractTexture *texture,
   setObjectName( "Preview Quad" );
   Qt3DRender::QGeometry *geom = new Qt3DRender::QGeometry;
   Qt3DRender::QAttribute *positionAttribute = new Qt3DRender::QAttribute;
-  QVector<float> vert = { -1.0f, -1.0f, 1.0f, /**/ 1.0f, -1.0f, 1.0f, /**/ -1.0f,  1.0f, 1.0f, /**/ -1.0f,  1.0f, 1.0f, /**/ 1.0f, -1.0f, 1.0f, /**/ 1.0f,  1.0f, 1.0f };
+  const QVector<float> vert = { -1.0f, -1.0f, 1.0f, /**/ 1.0f, -1.0f, 1.0f, /**/ -1.0f,  1.0f, 1.0f, /**/ -1.0f,  1.0f, 1.0f, /**/ 1.0f, -1.0f, 1.0f, /**/ 1.0f,  1.0f, 1.0f };
 
-  QByteArray vertexArr( ( const char * ) vert.constData(), vert.size() * sizeof( float ) );
+  const QByteArray vertexArr( ( const char * ) vert.constData(), vert.size() * sizeof( float ) );
   Qt3DRender::QBuffer *vertexBuffer = nullptr;
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-  vertexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, this );
-#else
   vertexBuffer = new Qt3DRender::QBuffer( this );
-#endif
   vertexBuffer->setData( vertexArr );
 
   positionAttribute->setName( Qt3DRender::QAttribute::defaultPositionAttributeName() );

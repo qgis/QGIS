@@ -29,7 +29,7 @@ class QStatusBar;
 /**
  * \class QgsStatusBar
  * \ingroup gui
- * A proxy widget for QStatusBar.
+ * \brief A proxy widget for QStatusBar.
  *
  * Unlike QStatusBar, QgsStatusBar allows finer control of widget placement, including
  * the option to locate permanent widgets on the left side of the bar.

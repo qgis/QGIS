@@ -55,7 +55,6 @@ class QgsFileDownloaderAlgorithm : public QObject, public QgsProcessingAlgorithm
     QString mReceived;
     QgsProcessingFeedback *mFeedback = nullptr;
     QString mLastReport;
-    void reportErrors( const QStringList &errors );
     void receiveProgressFromDownloader( qint64 bytesReceived, qint64 bytesTotal );
     void sendProgressFeedback();
 };

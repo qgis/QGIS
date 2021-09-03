@@ -26,7 +26,7 @@
 /**
  * \class QgsVectorDataProviderTemporalCapabilities
  * \ingroup core
- * Implementation of data provider temporal properties for QgsVectorDataProviders.
+ * \brief Implementation of data provider temporal properties for QgsVectorDataProviders.
  *
  * Data provider temporal capabilities reflect the temporal capabilities of a QgsDataProvider.
  * Unlike QgsMapLayerTemporalProperties, these settings are not user-configurable,
@@ -40,7 +40,7 @@ class CORE_EXPORT QgsVectorDataProviderTemporalCapabilities : public QgsDataProv
 
     /**
      * Provider temporal handling mode
-     **/
+     */
     enum TemporalMode
     {
       ProviderHasFixedTemporalRange = 0, //!< Entire dataset from provider has a fixed start and end datetime.
@@ -59,14 +59,14 @@ class CORE_EXPORT QgsVectorDataProviderTemporalCapabilities : public QgsDataProv
      * Returns the temporal properties mode.
      *
      *\see setMode()
-    **/
+    */
     TemporalMode mode() const;
 
     /**
      * Sets the temporal properties \a mode.
      *
      *\see mode()
-    **/
+    */
     void setMode( TemporalMode mode );
 
     /**

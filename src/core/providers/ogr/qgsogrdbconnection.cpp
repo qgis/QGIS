@@ -21,19 +21,17 @@
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
 #include "qgssettings.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
 
 #include "qgslogger.h"
-#include <QInputDialog>
-#include <QMessageBox>
-
-
 
 QgsOgrDbConnection::QgsOgrDbConnection( const QString &connName, const QString &settingsKey )
   : mConnName( connName )
 {
   mSettingsKey = settingsKey;
-  QgsSettings settings;
-  QString key = QStringLiteral( "%1/%2/path" ).arg( connectionsPath( settingsKey ), mConnName );
+  const QgsSettings settings;
+  const QString key = QStringLiteral( "%1/%2/path" ).arg( connectionsPath( settingsKey ), mConnName );
   mPath = settings.value( key ).toString();
 }
 
@@ -79,7 +77,7 @@ const QStringList QgsOgrDbConnection::connectionList( const QString &driverName 
 
 QString QgsOgrDbConnection::selectedConnection( const QString &settingsKey )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
   return settings.value( QStringLiteral( "%1/selected" ).arg( connectionsPath( settingsKey ) ) ).toString();
 }
 
@@ -89,10 +87,10 @@ void QgsOgrDbConnection::setSelectedConnection( const QString &connName, const Q
   settings.setValue( QStringLiteral( "%1/selected" ).arg( connectionsPath( settingsKey ) ), connName );
 }
 
-void QgsOgrDbConnection::deleteConnection( const QString &connName, const QString &settingsKey )
+void QgsOgrDbConnection::deleteConnection( const QString &connName )
 {
-  QgsSettings settings;
-  settings.remove( QStringLiteral( "%1/%2" ).arg( connectionsPath( settingsKey ), connName ) );
+  QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
+  providerMetadata->deleteConnection( connName );
 }
 
 ///@endcond

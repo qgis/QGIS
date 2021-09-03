@@ -28,7 +28,7 @@
 
 /**
  * \ingroup gui
- * A dialog for customizing the properties of an exported image file.
+ * \brief A dialog for customizing the properties of an exported image file.
  *
  * \note This class is not a part of public API
  * \since QGIS 3.0

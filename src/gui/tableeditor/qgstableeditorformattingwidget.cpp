@@ -18,6 +18,7 @@
 #include "qgsnumericformat.h"
 #include "qgis.h"
 #include "qgsproperty.h"
+#include <QPointer>
 
 QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent )
   : QgsPanelWidget( parent )
@@ -81,7 +82,7 @@ QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent 
     openPanel( widget );
   } );
 
-  connect( mRowHeightSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, [ = ]( double height )
+  connect( mRowHeightSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [ = ]( double height )
   {
     if ( !mBlockSignals )
     {
@@ -92,7 +93,7 @@ QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent 
       mBlockSignals--;
     }
   } );
-  connect( mColumnWidthSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, [ = ]( double width )
+  connect( mColumnWidthSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [ = ]( double width )
   {
     if ( !mBlockSignals )
     {
@@ -120,7 +121,7 @@ QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent 
     }
   } );
 
-  connect( mExpressionEdit, qgis::overload<const QString &>::of( &QgsFieldExpressionWidget::fieldChanged ), this, [ = ]( const QString & expression )
+  connect( mExpressionEdit, qOverload<const QString &>( &QgsFieldExpressionWidget::fieldChanged ), this, [ = ]( const QString & expression )
   {
     if ( !mBlockSignals )
     {

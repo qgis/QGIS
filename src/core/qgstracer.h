@@ -34,7 +34,7 @@ class QgsRenderContext;
 
 /**
  * \ingroup core
- * Utility class that construct a planar graph from the input vector
+ * \brief Utility class that construct a planar graph from the input vector
  * layers and provides shortest path search for tracing of existing
  * features.
  *
@@ -93,11 +93,15 @@ class CORE_EXPORT QgsTracer : public QObject
      */
     void setOffset( double offset );
 
+    // TODO QGIS 4.0 -- use Qgis::JoinStyle instead of int!
+
     /**
      * Gets extra parameters for offset curve algorithm (used when offset is non-zero)
      * \since QGIS 3.0
      */
     void offsetParameters( int &quadSegments SIP_OUT, int &joinStyle SIP_OUT, double &miterLimit SIP_OUT );
+
+    // TODO QGIS 4.0 -- use Qgis::JoinStyle instead of int!
 
     /**
      * Set extra parameters for offset curve algorithm (used when offset is non-zero)
@@ -192,7 +196,7 @@ class CORE_EXPORT QgsTracer : public QObject
     //! Offset parameter: Number of segments (approximation of circle quarter) when using round join style
     int mOffsetSegments = 8;
     //! Offset parameter: Join style (1 = round, 2 = miter, 3 = bevel)
-    int mOffsetJoinStyle = 2;
+    Qgis::JoinStyle mOffsetJoinStyle = Qgis::JoinStyle::Miter;
     //! Offset parameter: Limit for miter join style
     double mOffsetMiterLimit = 5.;
 

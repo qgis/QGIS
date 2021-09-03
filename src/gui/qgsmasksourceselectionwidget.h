@@ -29,7 +29,7 @@ class QgsSymbolLayer;
 
 /**
  * \ingroup gui
- * A widget that allows the selection of a list of sources for selective masking.
+ * \brief A widget that allows the selection of a list of sources for selective masking.
  * A masking source can be either a label mask or a mask symbol layer.
  *
  * \note This class is not a part of public API

@@ -41,6 +41,8 @@
 #include "qgspallabeling.h"
 #include "qgsproject.h"
 #include "qgsshadoweffect.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
 
 /**
  * \ingroup UnitTests
@@ -78,14 +80,14 @@ class TestQgsDiagram : public QObject
       //
       //create a non spatial layer that will be used in all tests...
       //
-      QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+      const QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
       mTestDataDir = myDataDir + '/';
 
       //
       //create a point layer that will be used in all tests...
       //
-      QString myPointsFileName = mTestDataDir + "points.shp";
-      QFileInfo myPointFileInfo( myPointsFileName );
+      const QString myPointsFileName = mTestDataDir + "points.shp";
+      const QFileInfo myPointFileInfo( myPointsFileName );
       mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
                                          myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
@@ -110,7 +112,7 @@ class TestQgsDiagram : public QObject
       delete mMapSettings;
       delete mPointsLayer;
 
-      QString myReportFile = QDir::tempPath() + "/qgistest.html";
+      const QString myReportFile = QDir::tempPath() + "/qgistest.html";
       QFile myFile( myReportFile );
       if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
       {
@@ -126,7 +128,7 @@ class TestQgsDiagram : public QObject
     void init()
     {
       mPointsLayer->setDiagramRenderer( nullptr );
-      QgsDiagramLayerSettings dls;
+      const QgsDiagramLayerSettings dls;
       mPointsLayer->setDiagramLayerSettings( dls );
     }
 
@@ -898,8 +900,8 @@ class TestQgsDiagram : public QObject
     void testDataDefinedZIndex()
     {
       QgsDiagramSettings ds;
-      QColor col1 = Qt::red;
-      QColor col2 = Qt::yellow;
+      const QColor col1 = Qt::red;
+      const QColor col2 = Qt::yellow;
       ds.categoryColors = QList<QColor>() << col1 << col2;
       ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"Pilots\"" ) << QStringLiteral( "\"Cabin Crew\"" );
       ds.minimumScale = -1;
@@ -1070,7 +1072,7 @@ bool TestQgsDiagram::imageCheck( const QString &testType )
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
 
-  QgsRectangle extent( -126, 23, -70, 47 );
+  const QgsRectangle extent( -126, 23, -70, 47 );
   mMapSettings->setExtent( extent );
   mMapSettings->setFlag( QgsMapSettings::ForceVectorOutput );
   mMapSettings->setOutputDpi( 96 );
@@ -1079,7 +1081,7 @@ bool TestQgsDiagram::imageCheck( const QString &testType )
   checker.setControlName( "expected_" + testType );
   checker.setMapSettings( *mMapSettings );
   checker.setColorTolerance( 15 );
-  bool resultFlag = checker.runTest( testType, 200 );
+  const bool resultFlag = checker.runTest( testType, 200 );
   mReport += checker.report();
   return resultFlag;
 }

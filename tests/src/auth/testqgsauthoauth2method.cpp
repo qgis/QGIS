@@ -16,7 +16,7 @@
 
 #include "qgstest.h"
 
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 #include <QApplication>
 #include <QDateTime>
 #include <QDebug>
@@ -24,12 +24,14 @@
 #include <QString>
 #include <QStringList>
 #include <QTemporaryFile>
+#include <QSignalSpy>
 
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgsauthoauth2config.h"
+#ifdef WITH_GUI
 #include "qgsauthoauth2edit.h"
-
+#endif
 
 /**
  * \ingroup UnitTests
@@ -260,7 +262,7 @@ void TestQgsAuthOAuth2Method::testOAuth2Config()
   QVERIFY( config3->isValid() );
 
   qDebug() << "Verify base object internal signals";
-  QSignalSpy spy_config( config3, SIGNAL( configChanged() ) );
+  const QSignalSpy spy_config( config3, SIGNAL( configChanged() ) );
   QSignalSpy spy_valid( config3, SIGNAL( validityChanged( bool ) ) );
 
   config3->setRedirectPort( 0 );
@@ -268,7 +270,7 @@ void TestQgsAuthOAuth2Method::testOAuth2Config()
 
   QCOMPARE( spy_config.count(), 1 );
   QCOMPARE( spy_valid.count(), 1 );
-  QList<QVariant> valid_args = spy_valid.takeAt( 0 );
+  const QList<QVariant> valid_args = spy_valid.takeAt( 0 );
   QVERIFY( valid_args.at( 0 ).toBool() == false );
   QVERIFY( !config3->isValid() );
 
@@ -277,7 +279,7 @@ void TestQgsAuthOAuth2Method::testOAuth2Config()
 
   QCOMPARE( spy_config.count(), 2 );
   QCOMPARE( spy_valid.count(), 1 );
-  QList<QVariant> valid_args2 = spy_valid.takeAt( 0 );
+  const QList<QVariant> valid_args2 = spy_valid.takeAt( 0 );
   QVERIFY( valid_args2.at( 0 ).toBool() == true );
   QVERIFY( config3->isValid() );
 
@@ -346,9 +348,9 @@ void TestQgsAuthOAuth2Method::testOAuth2ConfigIO()
   QCOMPARE( baseConfigTxt( true ), cfgtxt );
 
   qDebug() << "Verify writing config to file";
-  QString rndsuffix = QgsApplication::authManager()->uniqueConfigId();
-  QString dirname = QString( "oauth2_configs_%1" ).arg( rndsuffix );
-  QDir tmpdir = QDir::temp();
+  const QString rndsuffix = QgsApplication::authManager()->uniqueConfigId();
+  const QString dirname = QString( "oauth2_configs_%1" ).arg( rndsuffix );
+  const QDir tmpdir = QDir::temp();
   tmpdir.mkdir( dirname );
 
   QgsAuthOAuth2Config *config4 = baseConfig( true );
@@ -358,8 +360,8 @@ void TestQgsAuthOAuth2Method::testOAuth2ConfigIO()
 
   qDebug() << QDir::tempPath() + "/" + dirname;
 
-  QString config4path( QDir::tempPath() + "/" + dirname + "/config4.json" );
-  QString config5path( QDir::tempPath() + "/" + dirname + "/config5.json" );
+  const QString config4path( QDir::tempPath() + "/" + dirname + "/config4.json" );
+  const QString config5path( QDir::tempPath() + "/" + dirname + "/config5.json" );
 
   QVERIFY( QgsAuthOAuth2Config::writeOAuth2Config( config4path, config4,
            QgsAuthOAuth2Config::JSON, true ) );
@@ -393,20 +395,20 @@ void TestQgsAuthOAuth2Method::testOAuth2ConfigIO()
 
 void TestQgsAuthOAuth2Method::testOAuth2ConfigUtils()
 {
-  QVariantMap basevmap = baseVariantMap();
+  const QVariantMap basevmap = baseVariantMap();
   bool ok = false;
 
   qDebug() << "Verify serializeFromVariant";
-  QByteArray vtxt = QgsAuthOAuth2Config::serializeFromVariant(
-                      basevmap, QgsAuthOAuth2Config::JSON, true, &ok );
+  const QByteArray vtxt = QgsAuthOAuth2Config::serializeFromVariant(
+                            basevmap, QgsAuthOAuth2Config::JSON, true, &ok );
   QVERIFY( ok );
   //qDebug() << vtxt;
   //qDebug() << baseConfigTxt( true );
   QCOMPARE( vtxt, baseConfigTxt( true ) );
 
   qDebug() << "Verify variantFromSerialized";
-  QVariantMap vmap = QgsAuthOAuth2Config::variantFromSerialized(
-                       baseConfigTxt( true ), QgsAuthOAuth2Config::JSON, &ok );
+  const QVariantMap vmap = QgsAuthOAuth2Config::variantFromSerialized(
+                             baseConfigTxt( true ), QgsAuthOAuth2Config::JSON, &ok );
   QVERIFY( ok );
   QCOMPARE( vmap.value( "name" ).toString(), QString( "MyConfig" ) );
   QCOMPARE( vmap, basevmap );
@@ -415,6 +417,7 @@ void TestQgsAuthOAuth2Method::testOAuth2ConfigUtils()
 
 void TestQgsAuthOAuth2Method::testDynamicRegistrationNoEndpoint()
 {
+#ifdef WITH_GUI
   QgsAuthOAuth2Config *config = baseConfig();
   config->setClientId( QString( ) );
   config->setClientSecret( QString( ) );
@@ -435,10 +438,12 @@ void TestQgsAuthOAuth2Method::testDynamicRegistrationNoEndpoint()
   dlg.leSoftwareStatementJwtPath->setText( QStringLiteral( "%1/auth_code_grant_display_code.jwt" ).arg( sTestDataDir ) );
   QVERIFY( ! dlg.btnRegister->isEnabled() );
   QCOMPARE( dlg.leSoftwareStatementConfigUrl->text(), QString() );
+#endif
 }
 
 void TestQgsAuthOAuth2Method::testDynamicRegistration()
 {
+#ifdef WITH_GUI
   QgsAuthOAuth2Config *config = baseConfig();
   config->setClientId( QString( ) );
   config->setClientSecret( QString( ) );
@@ -471,11 +476,13 @@ void TestQgsAuthOAuth2Method::testDynamicRegistration()
   }
   QCOMPARE( dlg.leClientId->text(), QLatin1String( "___QGIS_ROCKS___@www.qgis.org" ) );
   QCOMPARE( dlg.leClientSecret->text(), QLatin1String( "___QGIS_ROCKS______QGIS_ROCKS______QGIS_ROCKS___" ) );
+#endif
 }
 
 
 void TestQgsAuthOAuth2Method::testDynamicRegistrationJwt()
 {
+#ifdef WITH_GUI
   QgsAuthOAuth2Config *config = baseConfig();
   config->setClientId( QString( ) );
   config->setClientSecret( QString( ) );
@@ -505,6 +512,7 @@ void TestQgsAuthOAuth2Method::testDynamicRegistrationJwt()
   }
   QCOMPARE( dlg.leClientId->text(), QLatin1String( "___QGIS_ROCKS___@www.qgis.org" ) );
   QCOMPARE( dlg.leClientSecret->text(), QLatin1String( "___QGIS_ROCKS______QGIS_ROCKS______QGIS_ROCKS___" ) );
+#endif
 }
 
 

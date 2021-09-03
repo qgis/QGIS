@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 #include "qgstest.h"
+#include <QSignalSpy>
+#include <QtMath>
 
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
@@ -40,6 +42,20 @@ class QgsMapToolTest : public QgsMapTool // clazy:exclude=missing-qobject-macro
   public:
     QgsMapToolTest( QgsMapCanvas *canvas ) : QgsMapTool( canvas ) {}
 
+    bool canvasToolTipEvent( QHelpEvent *e ) override
+    {
+      Q_UNUSED( e );
+      mGotTooltipEvent = true;
+      return true;
+    }
+    bool gotTooltipEvent() const
+    {
+      return mGotTooltipEvent;
+    }
+
+  private:
+    bool mGotTooltipEvent = false;
+
 };
 
 class TestQgsMapCanvas : public QObject
@@ -62,6 +78,7 @@ class TestQgsMapCanvas : public QObject
     void testShiftZoom();
     void testDragDrop();
     void testZoomResolutions();
+    void testTooltipEvent();
 
   private:
     QgsMapCanvas *mCanvas = nullptr;
@@ -86,24 +103,24 @@ void TestQgsMapCanvas::cleanupTestCase()
 void TestQgsMapCanvas::testPanByKeyboard()
 {
   // The keys to simulate
-  QList<Qt::Key> keys = QList<Qt::Key>() << Qt::Key_Left << Qt::Key_Down << Qt::Key_Right << Qt::Key_Up;
+  const QList<Qt::Key> keys = QList<Qt::Key>() << Qt::Key_Left << Qt::Key_Down << Qt::Key_Right << Qt::Key_Up;
 
   // The canvas rotations to test
-  QList<double> rotations = QList<double>() << 0.0 << 30.0;
+  const QList<double> rotations = QList<double>() << 0.0 << 30.0;
 
-  QgsRectangle initialExtent( 100, 100, 110, 110 );
+  const QgsRectangle initialExtent( 100, 100, 110, 110 );
 
-  Q_FOREACH ( double rotation, rotations )
+  for ( const double rotation : rotations )
   {
     // Set rotation and initial extent
     mCanvas->setRotation( rotation );
     mCanvas->setExtent( initialExtent );
 
     // Save actual extent, simulate panning by keyboard and verify the extent is unchanged
-    QgsRectangle originalExtent = mCanvas->extent();
-    Q_FOREACH ( Qt::Key key, keys )
+    const QgsRectangle originalExtent = mCanvas->extent();
+    for ( const Qt::Key key : keys )
     {
-      QgsRectangle tempExtent = mCanvas->extent();
+      const QgsRectangle tempExtent = mCanvas->extent();
       QKeyEvent keyEvent( QEvent::KeyPress, key, Qt::NoModifier );
       QApplication::sendEvent( mCanvas, &keyEvent );
       QVERIFY( mCanvas->extent() != tempExtent );
@@ -125,7 +142,7 @@ void TestQgsMapCanvas::testSetExtent()
 void TestQgsMapCanvas::testMagnification()
 {
   // test directory
-  QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
+  const QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
   QString controlImageDir = testDataDir + "control_images/expected_map_magnification/";
 
   // prepare spy and unit testing stuff
@@ -144,12 +161,12 @@ void TestQgsMapCanvas::testMagnification()
   QTemporaryFile tmpFile;
   tmpFile.setAutoRemove( false );
   tmpFile.open(); // fileName is not available until open
-  QString tmpName = tmpFile.fileName();
+  const QString tmpName = tmpFile.fileName();
   tmpFile.close();
 
   // build vector layer
-  QString myPointsFileName = testDataDir + "points.shp";
-  QFileInfo myPointFileInfo( myPointsFileName );
+  const QString myPointsFileName = testDataDir + "points.shp";
+  const QFileInfo myPointFileInfo( myPointsFileName );
   QgsVectorLayer *layer = new QgsVectorLayer( myPointFileInfo.filePath(),
       myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
@@ -224,9 +241,9 @@ void compareExtent( const QgsRectangle &initialExtent,
 void TestQgsMapCanvas::testMagnificationExtent()
 {
   // build vector layer
-  QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
-  QString myPointsFileName = testDataDir + "points.shp";
-  QFileInfo myPointFileInfo( myPointsFileName );
+  const QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
+  const QString myPointsFileName = testDataDir + "points.shp";
+  const QFileInfo myPointFileInfo( myPointsFileName );
   QgsVectorLayer *layer = new QgsVectorLayer( myPointFileInfo.filePath(),
       myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
@@ -253,8 +270,8 @@ void TestQgsMapCanvas::testMagnificationExtent()
   compareExtent( mCanvas->extent(), initialExtent );
 
   // zoomToSelected
-  QgsFeature f1( layer->dataProvider()->fields(), 1 );
-  QgsFeature f2( layer->dataProvider()->fields(), 2 );
+  const QgsFeature f1( layer->dataProvider()->fields(), 1 );
+  const QgsFeature f2( layer->dataProvider()->fields(), 2 );
   QgsFeatureIds ids;
   ids << f1.id() << f2.id();
   layer->selectByIds( ids );
@@ -291,7 +308,7 @@ void TestQgsMapCanvas::testMagnificationExtent()
 
   // zoomScale
   initialExtent = mCanvas->extent();
-  double scale = mCanvas->scale();
+  const double scale = mCanvas->scale();
   mCanvas->zoomScale( 6.052017 * 10e7 );
 
   mCanvas->setMagnificationFactor( 4.0 );
@@ -304,7 +321,7 @@ void TestQgsMapCanvas::testMagnificationExtent()
 void TestQgsMapCanvas::testMagnificationScale()
 {
   mCanvas->setMagnificationFactor( 1.0 );
-  double initialScale = mCanvas->scale();
+  const double initialScale = mCanvas->scale();
 
   mCanvas->setMagnificationFactor( 4.0 );
   QCOMPARE( initialScale, mCanvas->scale() );
@@ -318,7 +335,7 @@ void TestQgsMapCanvas::testMagnificationScale()
 
 void TestQgsMapCanvas::testScaleLockCanvasResize()
 {
-  QSize prevSize = mCanvas->size();
+  const QSize prevSize = mCanvas->size();
 
   mCanvas->resize( 600, 400 );
   QgsApplication::sendPostedEvents( mCanvas );
@@ -327,7 +344,7 @@ void TestQgsMapCanvas::testScaleLockCanvasResize()
   QCOMPARE( mCanvas->height(), 400 );
 
   mCanvas->setMagnificationFactor( 2.0 );
-  double initialScale = mCanvas->scale();
+  const double initialScale = mCanvas->scale();
   mCanvas->setScaleLocked( true );
 
   mCanvas->resize( 300, 200 );
@@ -349,9 +366,9 @@ void TestQgsMapCanvas::testScaleLockCanvasResize()
 void TestQgsMapCanvas::testZoomByWheel()
 {
   mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
-  QgsRectangle initialExtent = mCanvas->extent();
-  double originalWidth = initialExtent.width();
-  double originalHeight = initialExtent.height();
+  const QgsRectangle initialExtent = mCanvas->extent();
+  const double originalWidth = initialExtent.width();
+  const double originalHeight = initialExtent.height();
 
   mCanvas->setWheelFactor( 2 );
 
@@ -383,12 +400,12 @@ void TestQgsMapCanvas::testZoomByWheel()
 void TestQgsMapCanvas::testShiftZoom()
 {
   mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
-  QgsRectangle initialExtent = mCanvas->extent();
-  double originalWidth = initialExtent.width();
-  double originalHeight = initialExtent.height();
+  const QgsRectangle initialExtent = mCanvas->extent();
+  const double originalWidth = initialExtent.width();
+  const double originalHeight = initialExtent.height();
 
-  QPoint startPos = QPoint( mCanvas->width() / 4, mCanvas->height() / 4 );
-  QPoint endPos = QPoint( mCanvas->width() * 3 / 4.0, mCanvas->height() * 3 / 4.0 );
+  const QPoint startPos = QPoint( mCanvas->width() / 4, mCanvas->height() / 4 );
+  const QPoint endPos = QPoint( mCanvas->width() * 3 / 4.0, mCanvas->height() * 3 / 4.0 );
 
   QgsMapToolPan panTool( mCanvas );
 
@@ -471,8 +488,8 @@ class TestYesDropHandler : public QgsCustomDropHandler
 void TestQgsMapCanvas::testDragDrop()
 {
   // default drag, should not be accepted
-  std::unique_ptr< QMimeData > data = qgis::make_unique< QMimeData >();
-  std::unique_ptr< QDragEnterEvent > event = qgis::make_unique< QDragEnterEvent >( QPoint( 10, 10 ), Qt::CopyAction, data.get(), Qt::LeftButton, Qt::NoModifier );
+  std::unique_ptr< QMimeData > data = std::make_unique< QMimeData >();
+  std::unique_ptr< QDragEnterEvent > event = std::make_unique< QDragEnterEvent >( QPoint( 10, 10 ), Qt::CopyAction, data.get(), Qt::LeftButton, Qt::NoModifier );
   mCanvas->dragEnterEvent( event.get() );
   QVERIFY( !event->isAccepted() );
 
@@ -483,7 +500,7 @@ void TestQgsMapCanvas::testDragDrop()
   uri.providerKey = QStringLiteral( "test" );
   list << uri;
   data.reset( QgsMimeDataUtils::encodeUriList( list ) );
-  event = qgis::make_unique< QDragEnterEvent >( QPoint( 10, 10 ), Qt::CopyAction, data.get(), Qt::LeftButton, Qt::NoModifier );
+  event = std::make_unique< QDragEnterEvent >( QPoint( 10, 10 ), Qt::CopyAction, data.get(), Qt::LeftButton, Qt::NoModifier );
   mCanvas->dragEnterEvent( event.get() );
   // still not accepted by default
   QVERIFY( !event->isAccepted() );
@@ -503,7 +520,7 @@ void TestQgsMapCanvas::testDragDrop()
 
   // check drop event logic
   mCanvas->setCustomDropHandlers( QVector< QPointer< QgsCustomDropHandler > >() );
-  std::unique_ptr< QDropEvent > dropEvent = qgis::make_unique< QDropEvent >( QPoint( 10, 10 ), Qt::CopyAction, data.get(), Qt::LeftButton, Qt::NoModifier );
+  std::unique_ptr< QDropEvent > dropEvent = std::make_unique< QDropEvent >( QPoint( 10, 10 ), Qt::CopyAction, data.get(), Qt::LeftButton, Qt::NoModifier );
   mCanvas->dropEvent( dropEvent.get() );
   QVERIFY( !dropEvent->isAccepted() );
   mCanvas->setCustomDropHandlers( QVector< QPointer< QgsCustomDropHandler > >() << &handler );
@@ -518,9 +535,9 @@ void TestQgsMapCanvas::testDragDrop()
 void TestQgsMapCanvas::testZoomResolutions()
 {
   mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
-  double resolution = mCanvas->mapSettings().mapUnitsPerPixel();
+  const double resolution = mCanvas->mapSettings().mapUnitsPerPixel();
 
-  double nextResolution = qCeil( resolution ) + 1;
+  const double nextResolution = qCeil( resolution ) + 1;
   QList<double> resolutions = QList<double>() << nextResolution << ( 2.5 * nextResolution ) << ( 3.6 * nextResolution ) << ( 4.7 * nextResolution );
   mCanvas->setZoomResolutions( resolutions );
 
@@ -534,6 +551,18 @@ void TestQgsMapCanvas::testZoomResolutions()
   QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), resolutions[0], 0.0001 );
 
   QCOMPARE( mCanvas->zoomResolutions(), resolutions );
+}
+
+void TestQgsMapCanvas::testTooltipEvent()
+{
+  QgsMapToolTest mapTool( mCanvas );
+  mCanvas->setMapTool( &mapTool );
+
+  QHelpEvent helpEvent( QEvent::ToolTip, QPoint( 10, 10 ), QPoint( 10, 10 ) );
+
+  QApplication::sendEvent( mCanvas->viewport(), &helpEvent );
+
+  QVERIFY( mapTool.gotTooltipEvent() );
 }
 
 QGSTEST_MAIN( TestQgsMapCanvas )

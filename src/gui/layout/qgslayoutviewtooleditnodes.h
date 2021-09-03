@@ -24,7 +24,7 @@ class QgsLayoutNodesItem;
 
 /**
  * \ingroup gui
- * Layout view tool for edit node based items in the layout.
+ * \brief Layout view tool for edit node based items in the layout.
  * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLayoutViewToolEditNodes : public QgsLayoutViewTool

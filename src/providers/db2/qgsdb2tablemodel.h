@@ -21,7 +21,6 @@
 #include <QStandardItemModel>
 #include <QString>
 #include <QObject>
-#include "qgsdataitem.h"
 #include "qgswkbtypes.h"
 
 //! Layer Property structure
@@ -44,8 +43,10 @@ class QIcon;
 
 /**
  * A model that holds the tables of a database in a hierarchy where the
-schemas are the root elements that contain the individual tables as children.
-The tables have the following columns: Type, Schema, Tablename, Geometry Column, Sql*/
+ * schemas are the root elements that contain the individual tables as children.
+ *
+ * The tables have the following columns: Type, Schema, Tablename, Geometry Column, Sql
+*/
 class QgsDb2TableModel : public QStandardItemModel
 {
     Q_OBJECT

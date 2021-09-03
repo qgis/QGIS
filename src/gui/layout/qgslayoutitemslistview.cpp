@@ -100,13 +100,8 @@ void QgsLayoutItemsListView::setCurrentLayout( QgsLayout *layout )
 
   header()->setSectionResizeMode( 0, QHeaderView::Fixed );
   header()->setSectionResizeMode( 1, QHeaderView::Fixed );
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  setColumnWidth( 0, Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "xxxx" ) ) );
-  setColumnWidth( 1, Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "xxxx" ) ) );
-#else
   setColumnWidth( 0, Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'x' ) * 4 );
   setColumnWidth( 1, Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'x' ) * 4 );
-#endif
   header()->setSectionsMovable( false );
 
   connect( selectionModel(), &QItemSelectionModel::currentChanged, mModel, &QgsLayoutItemsListViewModel::setSelected );
@@ -116,7 +111,7 @@ void QgsLayoutItemsListView::showContextMenu( QPoint point )
 {
   if ( !mModel )
     return;
-  QModelIndex index = indexAt( point );
+  const QModelIndex index = indexAt( point );
   QgsLayoutItem *item = mModel->itemFromIndex( index );
   if ( !item )
     return;

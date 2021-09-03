@@ -132,17 +132,25 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsFieldComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsfieldcombobox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsmaplayercombobox.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsFieldComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsfieldcombobox.h</header>
-  </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mComboLayers</tabstop>
+  <tabstop>mComboFields</tabstop>
+  <tabstop>mCheckBoxUseZCoordinate</tabstop>
+  <tabstop>mButtonAdd</tabstop>
+  <tabstop>mButtonRemove</tabstop>
+  <tabstop>mTableView</tabstop>
+ </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>
  </resources>

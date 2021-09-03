@@ -9,7 +9,7 @@
 
 class QgsTabWidget : QTabWidget
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsTabWidget` class is the same as the QTabWidget but with additional methods to
 temporarily hide/show tabs.
 

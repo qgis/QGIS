@@ -11,7 +11,7 @@
 
 class QgsTransformEffect : QgsPaintEffect /NoDefaultCtors/
 {
-%Docstring
+%Docstring(signature="appended")
 A paint effect which applies transformations (such as move,
 scale and rotate) to a picture.
 

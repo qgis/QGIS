@@ -12,7 +12,7 @@
 
 class QgsMeshRendererMeshSettings
 {
-%Docstring
+%Docstring(signature="appended")
 
 Represents a mesh renderer settings for mesh object
 
@@ -81,7 +81,7 @@ Reads configuration from the given DOM element
 
 class QgsMeshRendererScalarSettings
 {
-%Docstring
+%Docstring(signature="appended")
 
 Represents a mesh renderer settings for scalar datasets
 
@@ -193,7 +193,7 @@ Reads configuration from the given DOM element
 
 class QgsMeshRendererVectorArrowSettings
 {
-%Docstring
+%Docstring(signature="appended")
 
 Represents a mesh renderer settings for vector datasets displayed with arrows
 
@@ -315,7 +315,7 @@ Reads configuration from the given DOM element
 
 class QgsMeshRendererVectorStreamlineSettings
 {
-%Docstring
+%Docstring(signature="appended")
 
 Represents a streamline renderer settings for vector datasets displayed by streamlines
 
@@ -367,7 +367,7 @@ Writes configuration to a new DOM element
 
 class QgsMeshRendererVectorTracesSettings
 {
-%Docstring
+%Docstring(signature="appended")
 
 Represents a trace renderer settings for vector datasets displayed by particle traces
 
@@ -423,7 +423,7 @@ Writes configuration to a new DOM element
 
 class QgsMeshRendererVectorSettings
 {
-%Docstring
+%Docstring(signature="appended")
 
 Represents a renderer settings for vector datasets
 
@@ -626,7 +626,7 @@ Reads configuration from the given DOM element
 
 class QgsMeshRendererSettings
 {
-%Docstring
+%Docstring(signature="appended")
 
 Represents all mesh renderer settings
 

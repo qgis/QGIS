@@ -151,6 +151,15 @@
    <header>qgsfieldcombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mNameComboBox</tabstop>
+  <tabstop>mFieldComboBox</tabstop>
+  <tabstop>mEndFieldComboBox</tabstop>
+  <tabstop>mUnitsLineEdit</tabstop>
+  <tabstop>mUnitSymbolLineEdit</tabstop>
+  <tabstop>mDefaultDisplayComboBox</tabstop>
+  <tabstop>mReferenceValueComboBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

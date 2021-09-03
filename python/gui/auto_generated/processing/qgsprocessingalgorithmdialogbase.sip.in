@@ -13,7 +13,7 @@
 
 class QgsProcessingAlgorithmDialogBase : QDialog, QgsProcessingParametersGenerator
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for processing algorithm dialogs.
 
 .. note::
@@ -107,6 +107,24 @@ the given ``format``.
 .. seealso:: :py:func:`saveLog`
 
 .. versionadded:: 3.2
+%End
+
+    QgsProcessingContext::LogLevel logLevel() const;
+%Docstring
+Returns the logging level to use when running algorithms from the dialog.
+
+.. seealso:: :py:func:`setLogLevel`
+
+.. versionadded:: 3.20
+%End
+
+    void setLogLevel( QgsProcessingContext::LogLevel level );
+%Docstring
+Sets the logging ``level`` to use when running algorithms from the dialog.
+
+.. seealso:: :py:func:`logLevel`
+
+.. versionadded:: 3.20
 %End
 
   public slots:

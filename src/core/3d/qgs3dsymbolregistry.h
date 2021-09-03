@@ -31,7 +31,7 @@ class QgsFeature3DHandler;
 
 /**
  * \ingroup core
- * Stores metadata about one 3D symbol class.
+ * \brief Stores metadata about one 3D symbol class.
  *
  * \note It's necessary to implement createSymbol() function.
  * In C++ you can use Qgs3DSymbolMetadata convenience class.
@@ -108,7 +108,7 @@ typedef Qgs3DSymbolWidget *( *Qgs3DSymbolWidgetFunc )( QgsVectorLayer * ) SIP_SK
 
 /**
  * \ingroup core
- * Convenience metadata class that uses static functions to create a 3D symbol and its widget.
+ * \brief Convenience metadata class that uses static functions to create a 3D symbol and its widget.
  *
  * \note Not available in Python bindings.
  *
@@ -173,7 +173,7 @@ class CORE_EXPORT Qgs3DSymbolMetadata : public Qgs3DSymbolAbstractMetadata
 
 /**
  * \ingroup core
- * Registry of available 3D symbol classes.
+ * \brief Registry of available 3D symbol classes.
  *
  * Qgs3DSymbolRegistry is not usually directly created, but rather accessed through
  * QgsApplication::symbol3DRegistry().

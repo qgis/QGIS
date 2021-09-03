@@ -12,7 +12,7 @@
 
 class QgsTemporalRangeObject
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for objects with an associated (optional) temporal range.
 
 .. versionadded:: 3.14

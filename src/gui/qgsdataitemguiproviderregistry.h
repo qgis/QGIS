@@ -26,7 +26,7 @@ class QgsProviderGuiRegistry;
 /**
  * \class QgsDataItemGuiProviderRegistry
  * \ingroup gui
- * This class keeps a list of data item GUI providers that may affect how QgsDataItems
+ * \brief This class keeps a list of data item GUI providers that may affect how QgsDataItems
  * behave within the application GUI.
  *
  * QgsDataItemGuiProviderRegistry is not usually directly created, but rather accessed through

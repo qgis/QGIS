@@ -9,8 +9,9 @@
 
 class QgsFallbackFieldFormatter : QgsFieldFormatter
 {
-%Docstring
+%Docstring(signature="appended")
 A default fallback field formatter in case no specialized field formatter is defined.
+
 The values will be returned unmodified.
 
 .. versionadded:: 3.0

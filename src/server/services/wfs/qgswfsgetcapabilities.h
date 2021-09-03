@@ -40,7 +40,7 @@ namespace QgsWfs
   /**
    * Create OperationsMetadata element for get capabilities document
    */
-  QDomElement getOperationsMetadataElement( QDomDocument &doc, const QgsProject *project, const QgsServerRequest &request );
+  QDomElement getOperationsMetadataElement( QDomDocument &doc, const QgsProject *project, const QgsServerRequest &request, const QgsServerSettings *settings );
 
   /**
    * Create Service Provider element for get capabilities document

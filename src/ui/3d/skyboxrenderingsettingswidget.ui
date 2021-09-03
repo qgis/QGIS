@@ -26,7 +26,7 @@
    <item row="0" column="1">
     <widget class="QLabel" name="skyboxTypeLabel">
      <property name="text">
-      <string>Skybox Type</string>
+      <string>Skybox type</string>
      </property>
     </widget>
    </item>
@@ -38,7 +38,7 @@
      <item row="0" column="0">
       <widget class="QLabel" name="panoramicTextureLabel">
        <property name="text">
-        <string>Panoramic Texture File</string>
+        <string>Panoramic texture file</string>
        </property>
       </widget>
      </item>

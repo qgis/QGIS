@@ -152,7 +152,7 @@ namespace MDAL
 
       std::string getMetadata( const std::string &key );
       void setMetadata( const std::string &key, const std::string &val );
-      void setMetadata( const Metadata &metadata );
+      void setMetadata( const Metadata &new_metadata );
 
       std::string name();
       void setName( const std::string &name );
@@ -196,7 +196,7 @@ namespace MDAL
       Mesh *mParent = nullptr;
       bool mIsScalar = true;
       bool mIsPolar = false;
-      std::pair<double, double> mReferenceAngles = {-360, 0}; //default full rotation is negative to be consistent with usual geographical clockwise
+      std::pair<double, double> mReferenceAngles = { -360, 0}; //default full rotation is negative to be consistent with usual geographical clockwise
       MDAL_DataLocation mDataLocation = MDAL_DataLocation::DataOnVertices;
       std::string mUri; // file/uri from where it came
       Statistics mStatistics;
@@ -266,6 +266,12 @@ namespace MDAL
       std::string uri() const;
       std::string crs() const;
       size_t faceVerticesMaximumCount() const;
+
+      std::string getMetadata( const std::string &key );
+      void setMetadata( const std::string &key, const std::string &val );
+      void setMetadata( const Metadata &new_metadata );
+
+      Metadata metadata;
 
       virtual void closeSource() {};
 

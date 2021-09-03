@@ -20,15 +20,15 @@
 
 #include "qgsabstract3dsymbol.h"
 #include "qgs3dtypes.h"
-#include "qgssymbol.h"
 
 #include <QMatrix4x4>
 
 class QgsAbstractMaterialSettings;
+class QgsMarkerSymbol;
 
 /**
  * \ingroup 3d
- * 3D symbol that draws point geometries as 3D objects using one of the predefined shapes.
+ * \brief 3D symbol that draws point geometries as 3D objects using one of the predefined shapes.
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is
  * exposed to the Python bindings as a tech preview only.
@@ -43,6 +43,8 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTOR
 
     //! Copy Constructor for QgsPoint3DSymbol
     QgsPoint3DSymbol( const QgsPoint3DSymbol &other );
+
+    ~QgsPoint3DSymbol() override;
 
     /**
      * Creates a new QgsPoint3DSymbol.
@@ -103,9 +105,9 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTOR
     void setShapeProperties( const QVariantMap &properties ) { mShapeProperties = properties; }
 
     //! Returns a symbol for billboard
-    QgsMarkerSymbol *billboardSymbol() const { return mBillboardSymbol.get(); }
+    QgsMarkerSymbol *billboardSymbol() const;
     //! Set symbol for billboard and the ownership is transferred
-    void setBillboardSymbol( QgsMarkerSymbol *symbol ) { mBillboardSymbol.reset( symbol ); }
+    void setBillboardSymbol( QgsMarkerSymbol *symbol );
 
     //! Returns transform for individual objects represented by the symbol
     QMatrix4x4 transform() const { return mTransform; }

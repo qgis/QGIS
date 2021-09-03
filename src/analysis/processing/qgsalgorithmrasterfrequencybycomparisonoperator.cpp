@@ -47,7 +47,7 @@ void QgsRasterFrequencyByComparisonOperatorBase::initAlgorithm( const QVariantMa
 
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "IGNORE_NODATA" ), QObject::tr( "Ignore NoData values" ), false ) );
 
-  std::unique_ptr< QgsProcessingParameterNumber > output_nodata_parameter = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "OUTPUT_NODATA_VALUE" ), QObject::tr( "Output NoData value" ), QgsProcessingParameterNumber::Double, -9999, true );
+  std::unique_ptr< QgsProcessingParameterNumber > output_nodata_parameter = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "OUTPUT_NODATA_VALUE" ), QObject::tr( "Output NoData value" ), QgsProcessingParameterNumber::Double, -9999, true );
   output_nodata_parameter->setFlags( output_nodata_parameter->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( output_nodata_parameter.release() );
 
@@ -100,7 +100,7 @@ bool QgsRasterFrequencyByComparisonOperatorBase::prepareAlgorithm( const QVarian
       // add projector if necessary
       if ( layer->crs() != mCrs )
       {
-        input.projector = qgis::make_unique< QgsRasterProjector >();
+        input.projector = std::make_unique< QgsRasterProjector >();
         input.projector->setInput( input.sourceDataProvider.get() );
         input.projector->setCrs( layer->crs(), mCrs, context.transformContext() );
         input.interface = input.projector.get();
@@ -115,26 +115,26 @@ bool QgsRasterFrequencyByComparisonOperatorBase::prepareAlgorithm( const QVarian
 QVariantMap QgsRasterFrequencyByComparisonOperatorBase::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  QFileInfo fi( outputFile );
+  const QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
 
-  std::unique_ptr< QgsRasterFileWriter > writer = qgis::make_unique< QgsRasterFileWriter >( outputFile );
+  std::unique_ptr< QgsRasterFileWriter > writer = std::make_unique< QgsRasterFileWriter >( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
   writer->setOutputFormat( outputFormat );
-  std::unique_ptr<QgsRasterDataProvider > provider( writer->createOneBandRaster( Qgis::Int32, mLayerWidth, mLayerHeight, mExtent, mCrs ) );
+  std::unique_ptr<QgsRasterDataProvider > provider( writer->createOneBandRaster( Qgis::DataType::Int32, mLayerWidth, mLayerHeight, mExtent, mCrs ) );
   if ( !provider )
     throw QgsProcessingException( QObject::tr( "Could not create raster output: %1" ).arg( outputFile ) );
   if ( !provider->isValid() )
     throw QgsProcessingException( QObject::tr( "Could not create raster output %1: %2" ).arg( outputFile, provider->error().message( QgsErrorMessage::Text ) ) );
 
   provider->setNoDataValue( 1, mNoDataValue );
-  qgssize layerSize = static_cast< qgssize >( mLayerWidth ) * static_cast< qgssize >( mLayerHeight );
+  const qgssize layerSize = static_cast< qgssize >( mLayerWidth ) * static_cast< qgssize >( mLayerHeight );
 
-  int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-  int nbBlocksWidth = static_cast< int>( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
-  int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
-  int nbBlocks = nbBlocksWidth * nbBlocksHeight;
+  const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
+  const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
+  const int nbBlocksWidth = static_cast< int>( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
+  const int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
+  const int nbBlocks = nbBlocksWidth * nbBlocksHeight;
   provider->setEditable( true );
 
   QgsRasterIterator iter( mInputValueRasterInterface.get() );
@@ -155,7 +155,7 @@ QVariantMap QgsRasterFrequencyByComparisonOperatorBase::processAlgorithm( const 
     {
       if ( feedback->isCanceled() )
         break; //in case some slow data sources are loaded
-      for ( int band : i.bands )
+      for ( const int band : i.bands )
       {
         if ( feedback->isCanceled() )
           break; //in case some slow data sources are loaded
@@ -164,7 +164,7 @@ QVariantMap QgsRasterFrequencyByComparisonOperatorBase::processAlgorithm( const 
       }
     }
 
-    std::unique_ptr< QgsRasterBlock > outputBlock = qgis::make_unique<QgsRasterBlock>( Qgis::Int32, iterCols, iterRows );
+    std::unique_ptr< QgsRasterBlock > outputBlock = std::make_unique<QgsRasterBlock>( Qgis::DataType::Int32, iterCols, iterRows );
     feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
     for ( int row = 0; row < iterRows; row++ )
     {
@@ -174,7 +174,7 @@ QVariantMap QgsRasterFrequencyByComparisonOperatorBase::processAlgorithm( const 
       for ( int col = 0; col < iterCols; col++ )
       {
         bool valueRasterCellIsNoData = false;
-        double value = inputBlock->valueAndNoData( row, col, valueRasterCellIsNoData );
+        const double value = inputBlock->valueAndNoData( row, col, valueRasterCellIsNoData );
 
         if ( valueRasterCellIsNoData && !mIgnoreNoData )
         {
@@ -186,7 +186,7 @@ QVariantMap QgsRasterFrequencyByComparisonOperatorBase::processAlgorithm( const 
         else
         {
           bool noDataInStack = false;
-          std::vector<double> cellValues = QgsRasterAnalysisUtils::getCellValuesFromBlockStack( inputBlocks, row, col, noDataInStack );
+          const std::vector<double> cellValues = QgsRasterAnalysisUtils::getCellValuesFromBlockStack( inputBlocks, row, col, noDataInStack );
 
           if ( noDataInStack && !mIgnoreNoData )
           {
@@ -195,7 +195,7 @@ QVariantMap QgsRasterFrequencyByComparisonOperatorBase::processAlgorithm( const 
           }
           else
           {
-            int frequency = applyComparisonOperator( value, cellValues );
+            const int frequency = applyComparisonOperator( value, cellValues );
             outputBlock->setValue( row, col, frequency );
             occurrenceCount += frequency;
           }
@@ -206,8 +206,8 @@ QVariantMap QgsRasterFrequencyByComparisonOperatorBase::processAlgorithm( const 
   }
   provider->setEditable( false );
 
-  unsigned long long foundLocationsCount = layerSize - noDataLocationsCount;
-  double meanEqualCountPerValidLocation = static_cast<double>( occurrenceCount ) / static_cast<double>( foundLocationsCount * mInputs.size() );
+  const unsigned long long foundLocationsCount = layerSize - noDataLocationsCount;
+  const double meanEqualCountPerValidLocation = static_cast<double>( occurrenceCount ) / static_cast<double>( foundLocationsCount * mInputs.size() );
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OCCURRENCE_COUNT" ), occurrenceCount );
@@ -234,7 +234,7 @@ QString QgsRasterFrequencyByEqualOperatorAlgorithm::displayName() const
 
 QString QgsRasterFrequencyByEqualOperatorAlgorithm::name() const
 {
-  return QObject::tr( "equaltofrequency" );
+  return QStringLiteral( "equaltofrequency" );
 }
 
 QStringList QgsRasterFrequencyByEqualOperatorAlgorithm::tags() const
@@ -277,7 +277,7 @@ QString QgsRasterFrequencyByGreaterThanOperatorAlgorithm::displayName() const
 
 QString QgsRasterFrequencyByGreaterThanOperatorAlgorithm::name() const
 {
-  return QObject::tr( "greaterthanfrequency" );
+  return QStringLiteral( "greaterthanfrequency" );
 }
 
 QStringList QgsRasterFrequencyByGreaterThanOperatorAlgorithm::tags() const
@@ -320,7 +320,7 @@ QString QgsRasterFrequencyByLessThanOperatorAlgorithm::displayName() const
 
 QString QgsRasterFrequencyByLessThanOperatorAlgorithm::name() const
 {
-  return QObject::tr( "lessthanfrequency" );
+  return QStringLiteral( "lessthanfrequency" );
 }
 
 QStringList QgsRasterFrequencyByLessThanOperatorAlgorithm::tags() const

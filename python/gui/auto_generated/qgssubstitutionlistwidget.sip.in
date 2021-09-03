@@ -10,7 +10,7 @@
 
 class QgsSubstitutionListWidget : QgsPanelWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget which allows users to specify a list of substitutions to apply to a string, with
 options for exporting and importing substitution lists.
 
@@ -58,7 +58,7 @@ Emitted when the substitution definitions change.
 
 class QgsSubstitutionListDialog : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 A dialog which allows users to specify a list of substitutions to apply to a string, with
 options for exporting and importing substitution lists.
 

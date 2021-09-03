@@ -1,0 +1,256 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgssymbolrendercontext.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsSymbolRenderContext
+{
+
+%TypeHeaderCode
+#include "qgssymbolrendercontext.h"
+%End
+  public:
+
+
+    QgsSymbolRenderContext( QgsRenderContext &c, QgsUnitTypes::RenderUnit u, qreal opacity = 1.0, bool selected = false, Qgis::SymbolRenderHints renderHints = Qgis::SymbolRenderHints(), const QgsFeature *f = 0, const QgsFields &fields = QgsFields(), const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
+%Docstring
+Constructor for QgsSymbolRenderContext
+
+:param c:
+:param u:
+:param opacity: value between 0 (fully transparent) and 1 (fully opaque)
+:param selected: set to ``True`` if symbol should be drawn in a "selected" state
+:param renderHints: flags controlling rendering behavior
+:param f:
+:param fields:
+:param mapUnitScale:
+%End
+
+    ~QgsSymbolRenderContext();
+
+
+    QgsRenderContext &renderContext();
+%Docstring
+Returns a reference to the context's render context.
+%End
+
+
+    void setOriginalValueVariable( const QVariant &value );
+%Docstring
+Sets the original value variable value for data defined symbology
+
+:param value: value for original value variable. This usually represents the symbol property value
+              before any data defined overrides have been applied.
+
+.. versionadded:: 2.12
+%End
+
+ QgsUnitTypes::RenderUnit outputUnit() const /Deprecated/;
+%Docstring
+Returns the output unit for the context.
+
+.. deprecated::
+   No longer used and will be removed in QGIS 4.0
+%End
+
+ void setOutputUnit( QgsUnitTypes::RenderUnit u ) /Deprecated/;
+%Docstring
+Sets the output unit for the context.
+
+.. deprecated::
+   No longer used and will be removed in QGIS 4.0
+%End
+
+ QgsMapUnitScale mapUnitScale() const /Deprecated/;
+%Docstring
+
+.. deprecated::
+   Will be removed in QGIS 4.0
+%End
+
+ void setMapUnitScale( const QgsMapUnitScale &scale ) /Deprecated/;
+%Docstring
+
+.. deprecated::
+   Will be removed in QGIS 4.0
+%End
+
+    qreal opacity() const;
+%Docstring
+Returns the opacity for the symbol.
+
+:return: opacity value between 0 (fully transparent) and 1 (fully opaque)
+
+.. seealso:: :py:func:`setOpacity`
+%End
+
+    void setOpacity( qreal opacity );
+%Docstring
+Sets the ``opacity`` for the symbol.
+
+:param opacity: opacity value between 0 (fully transparent) and 1 (fully opaque)
+
+.. seealso:: :py:func:`opacity`
+%End
+
+    bool selected() const;
+%Docstring
+Returns ``True`` if symbols should be rendered using the selected symbol coloring and style.
+
+.. seealso:: :py:func:`setSelected`
+%End
+
+    void setSelected( bool selected );
+%Docstring
+Sets whether symbols should be rendered using the selected symbol coloring and style.
+
+.. seealso:: :py:func:`selected`
+%End
+
+    Qgis::SymbolRenderHints renderHints() const;
+%Docstring
+Returns the rendering hint flags for the symbol.
+
+.. seealso:: :py:func:`setRenderHints`
+%End
+
+    void setRenderHints( Qgis::SymbolRenderHints hints );
+%Docstring
+Sets rendering hint flags for the symbol.
+
+.. seealso:: :py:func:`renderHints`
+%End
+
+    void setFeature( const QgsFeature *f );
+
+    const QgsFeature *feature() const;
+%Docstring
+Returns the current feature being rendered. This may be ``None``.
+%End
+
+    void setOriginalGeometryType( QgsWkbTypes::GeometryType type );
+%Docstring
+Sets the geometry type for the original feature geometry being rendered.
+
+.. seealso:: :py:func:`originalGeometryType`
+
+.. versionadded:: 3.0
+%End
+
+    QgsWkbTypes::GeometryType originalGeometryType() const;
+%Docstring
+Returns the geometry type for the original feature geometry being rendered. This can be
+useful if symbol layers alter their appearance based on geometry type - eg offsetting a
+simple line style will look different if the simple line is rendering a polygon feature
+(a closed buffer) vs a line feature (an unclosed offset line).
+
+.. seealso:: :py:func:`originalGeometryType`
+
+.. versionadded:: 3.0
+%End
+
+    QgsFields fields() const;
+%Docstring
+Fields of the layer. Currently only available in :py:func:`~QgsSymbolRenderContext.startRender` calls
+to allow symbols with data-defined properties prepare the expressions
+(other times :py:func:`~QgsSymbolRenderContext.fields` returns an empty :py:class:`QgsFields` object).
+
+.. versionadded:: 2.4
+%End
+
+    int geometryPartCount() const;
+%Docstring
+Part count of current geometry
+
+.. versionadded:: 2.16
+%End
+
+    void setGeometryPartCount( int count );
+%Docstring
+Sets the part count of current geometry
+
+.. versionadded:: 2.16
+%End
+
+    int geometryPartNum() const;
+%Docstring
+Part number of current geometry
+
+.. versionadded:: 2.16
+%End
+
+    void setGeometryPartNum( int num );
+%Docstring
+Sets the part number of current geometry
+
+.. versionadded:: 2.16
+%End
+
+ double outputLineWidth( double width ) const /Deprecated/;
+%Docstring
+
+.. deprecated::
+   Use the size conversion methods in :py:class:`QgsRenderContext` instead.
+%End
+
+ double outputPixelSize( double size ) const /Deprecated/;
+%Docstring
+
+.. deprecated::
+   Use the size conversion methods in :py:class:`QgsRenderContext` instead.
+%End
+
+
+    QgsExpressionContextScope *expressionContextScope();
+%Docstring
+This scope is always available when a symbol of this type is being rendered.
+
+:return: An expression scope for details about this symbol
+%End
+
+    void setExpressionContextScope( QgsExpressionContextScope *contextScope /Transfer/ );
+%Docstring
+Set an expression scope for this symbol.
+
+Will take ownership.
+
+:param contextScope: An expression scope for details about this symbol
+%End
+
+    const QgsLegendPatchShape *patchShape() const;
+%Docstring
+Returns the symbol patch shape, to use if rendering symbol preview icons.
+
+.. seealso:: :py:func:`setPatchShape`
+
+.. versionadded:: 3.14
+%End
+
+    void setPatchShape( const QgsLegendPatchShape &shape );
+%Docstring
+Sets the symbol patch ``shape``, to use if rendering symbol preview icons.
+
+.. seealso:: :py:func:`patchShape`
+
+.. versionadded:: 3.14
+%End
+
+  private:
+    QgsSymbolRenderContext( const QgsSymbolRenderContext &rh );
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgssymbolrendercontext.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

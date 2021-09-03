@@ -11,7 +11,7 @@
 
 class QgsClassificationQuantile : QgsClassificationMethod
 {
-%Docstring
+%Docstring(signature="appended")
 :py:class:`QgsClassificationQuantile` is an implementation of :py:class:`QgsClassificationMethod`
 based on quantiles
 

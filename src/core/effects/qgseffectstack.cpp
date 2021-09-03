@@ -136,7 +136,7 @@ void QgsEffectStack::draw( QgsRenderContext &context )
     QPicture *pic = results.takeLast();
     if ( mEffectList.at( i )->drawMode() != QgsPaintEffect::Modifier )
     {
-      QgsScopedQPainterState painterState( context.painter() );
+      const QgsScopedQPainterState painterState( context.painter() );
       fixQPictureDpi( context.painter() );
       context.painter()->drawPicture( 0, 0, *pic );
     }
@@ -184,10 +184,10 @@ bool QgsEffectStack::readProperties( const QDomElement &element )
   clearStack();
 
   //restore all child effects
-  QDomNodeList childNodes = element.childNodes();
+  const QDomNodeList childNodes = element.childNodes();
   for ( int i = 0; i < childNodes.size(); ++i )
   {
-    QDomElement childElement = childNodes.at( i ).toElement();
+    const QDomElement childElement = childNodes.at( i ).toElement();
     QgsPaintEffect *effect = QgsApplication::paintEffectRegistry()->createEffect( childElement );
     if ( effect )
       mEffectList << effect;

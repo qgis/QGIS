@@ -29,13 +29,13 @@ class QgsAnimatedIcon;
 /**
  * \class QgsFilterLineEdit
  * \ingroup gui
- * QLineEdit subclass with built in support for clearing the widget's value and
+ * \brief QLineEdit subclass with built in support for clearing the widget's value and
  * handling custom null value representations.
  *
  * When using QgsFilterLineEdit the value(), setValue() and clearValue() methods should be used
  * instead of QLineEdit's text(), setText() and clear() methods, and the valueChanged()
  * signal should be used instead of textChanged().
- **/
+ */
 class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 {
 

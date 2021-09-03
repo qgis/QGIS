@@ -12,7 +12,7 @@
 
 class QgsPointCloudLayerElevationProperties : QgsMapLayerElevationProperties
 {
-%Docstring
+%Docstring(signature="appended")
 Point cloud layer specific subclass of :py:class:`QgsMapLayerElevationProperties`.
 
 .. versionadded:: 3.18

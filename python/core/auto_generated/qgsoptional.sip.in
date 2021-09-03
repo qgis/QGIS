@@ -11,7 +11,7 @@
 template<T>
 class QgsOptional
 {
-%Docstring
+%Docstring(signature="appended")
 
 :py:class:`QgsOptional` is a container for other classes and adds an additional enabled/disabled flag.
 

@@ -17,28 +17,41 @@
 #include "qgsannotationlayerrenderer.h"
 #include "qgsannotationlayer.h"
 #include "qgsfeedback.h"
+#include "qgsrenderedannotationitemdetails.h"
 
 QgsAnnotationLayerRenderer::QgsAnnotationLayerRenderer( QgsAnnotationLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
-  , mFeedback( qgis::make_unique< QgsFeedback >() )
+  , mFeedback( std::make_unique< QgsFeedback >() )
   , mLayerOpacity( layer->opacity() )
 {
-  // clone items from layer
-  const QMap< QString, QgsAnnotationItem * > items = layer->items();
+  // Clone items from layer which fall inside the rendered extent
+  // Because some items have scale dependent bounds, we have to accept some limitations here.
+  // first, we can use the layer's spatial index to very quickly retrieve items we know will fall within the visible
+  // extent. This will ONLY apply to items which have a non-scale-dependent bounding box though.
+
+  QSet< QString > items = qgis::listToSet( layer->queryIndex( context.extent() ) );
+
+  // we also have NO choice but to clone ALL non-indexed items (i.e. those with a scale-dependent bounding box)
+  // since these won't be in the layer's spatial index, and it's too expensive to determine their actual bounding box
+  // upfront (we are blocking the main thread right now!)
+
+  // TODO -- come up with some brilliant way to avoid this and also index scale-dependent items ;)
+  items.unite( layer->mNonIndexedItems );
+
   mItems.reserve( items.size() );
-  for ( auto it = items.constBegin(); it != items.constEnd(); ++it )
+  std::transform( items.begin(), items.end(), std::back_inserter( mItems ),
+                  [layer]( const QString & id ) ->std::pair< QString, std::unique_ptr< QgsAnnotationItem > >
   {
-    if ( it.value() )
-      mItems << ( *it )->clone();
-  }
+    return std::make_pair( id, std::unique_ptr< QgsAnnotationItem >( layer->item( id )->clone() ) );
+  } );
 
-  std::sort( mItems.begin(), mItems.end(), []( QgsAnnotationItem * a, QgsAnnotationItem * b ) { return a->zIndex() < b->zIndex(); } );  //clazy:exclude=detaching-member
+  std::sort( mItems.begin(), mItems.end(), [](
+               const std::pair< QString, std::unique_ptr< QgsAnnotationItem > > &a,
+               const std::pair< QString, std::unique_ptr< QgsAnnotationItem > > &b )
+  { return a.second->zIndex() < b.second->zIndex(); } );
 }
 
-QgsAnnotationLayerRenderer::~QgsAnnotationLayerRenderer()
-{
-  qDeleteAll( mItems );
-}
+QgsAnnotationLayerRenderer::~QgsAnnotationLayerRenderer() = default;
 
 QgsFeedback *QgsAnnotationLayerRenderer::feedback() const
 {
@@ -50,7 +63,7 @@ bool QgsAnnotationLayerRenderer::render()
   QgsRenderContext &context = *renderContext();
 
   bool canceled = false;
-  for ( QgsAnnotationItem *item : qgis::as_const( mItems ) )
+  for ( const std::pair< QString, std::unique_ptr< QgsAnnotationItem > > &item : std::as_const( mItems ) )
   {
     if ( mFeedback->isCanceled() )
     {
@@ -58,7 +71,14 @@ bool QgsAnnotationLayerRenderer::render()
       break;
     }
 
-    item->render( context, mFeedback.get() );
+    const QgsRectangle bounds = item.second->boundingBox( context );
+    if ( bounds.intersects( context.extent() ) )
+    {
+      item.second->render( context, mFeedback.get() );
+      std::unique_ptr< QgsRenderedAnnotationItemDetails > details = std::make_unique< QgsRenderedAnnotationItemDetails >( mLayerID, item.first );
+      details->setBoundingBox( bounds );
+      appendRenderedItemDetails( details.release() );
+    }
   }
   return !canceled;
 }

@@ -11,7 +11,7 @@
 
 class QgsDatabaseTableModel : QAbstractItemModel
 {
-%Docstring
+%Docstring(signature="appended")
 A model containing tables from a database connection.
 
 This class does not automatically subscribe to database updates. Tables are queried

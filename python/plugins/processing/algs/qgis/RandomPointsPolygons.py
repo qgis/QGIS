@@ -201,7 +201,7 @@ class RandomPointsPolygons(QgisAlgorithm):
             index = None
             if minDistance:
                 index = QgsSpatialIndex()
-            points = dict()
+            points = {}
 
             nPoints = 0
             nIterations = 0

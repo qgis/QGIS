@@ -12,7 +12,7 @@
 
 class QgsVectorLayerUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Contains utility methods for working with :py:class:`QgsVectorLayers`.
 
 .. versionadded:: 3.0
@@ -25,7 +25,7 @@ Contains utility methods for working with :py:class:`QgsVectorLayers`.
 
     class QgsDuplicateFeatureContext
 {
-%Docstring
+%Docstring(signature="appended")
 Contains mainly the QMap with :py:class:`QgsVectorLayer` and :py:class:`QgsFeatureIds` do list all the duplicated features
 
 .. versionadded:: 3.0
@@ -60,7 +60,7 @@ Returns the duplicated features in the given layer
 
     class QgsFeatureData
 {
-%Docstring
+%Docstring(signature="appended")
 Encapsulate geometry and attributes for new features, to be passed to createFeatures
 
 .. seealso:: :py:func:`createFeatures`

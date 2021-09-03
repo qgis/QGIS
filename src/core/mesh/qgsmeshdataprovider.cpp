@@ -38,20 +38,22 @@ const QgsMeshDataProviderTemporalCapabilities *QgsMeshDataProvider::temporalCapa
 
 void QgsMeshDataProvider::setTemporalUnit( QgsUnitTypes::TemporalUnit unit )
 {
-  QgsUnitTypes::TemporalUnit oldUnit = mTemporalCapabilities->temporalUnit();
+  const QgsUnitTypes::TemporalUnit oldUnit = mTemporalCapabilities->temporalUnit();
   mTemporalCapabilities->setTemporalUnit( unit );
   if ( oldUnit != unit )
     reloadData();
 }
+
+QgsMeshDriverMetadata QgsMeshDataProvider::driverMetadata() const { return QgsMeshDriverMetadata();}
 
 QgsMeshDatasetIndex QgsMeshDatasetSourceInterface::datasetIndexAtTime(
   const QDateTime &referenceTime,
   int groupIndex, quint64 time,
   QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod method ) const
 {
-  QDateTime requestDateTime = referenceTime.addMSecs( time );
+  const QDateTime requestDateTime = referenceTime.addMSecs( time );
   quint64 providerTime;
-  QDateTime providerReferenceTime = mTemporalCapabilities->referenceTime();
+  const QDateTime providerReferenceTime = mTemporalCapabilities->referenceTime();
   if ( mTemporalCapabilities->referenceTime().isValid() )
     providerTime = referenceTime.msecsTo( requestDateTime );
   else
@@ -71,7 +73,7 @@ QgsMeshDatasetIndex QgsMeshDatasetSourceInterface::datasetIndexAtTime(
 }
 
 QgsMeshDatasetSourceInterface::QgsMeshDatasetSourceInterface():
-  mTemporalCapabilities( qgis::make_unique<QgsMeshDataProviderTemporalCapabilities>() ) {}
+  mTemporalCapabilities( std::make_unique<QgsMeshDataProviderTemporalCapabilities>() ) {}
 
 int QgsMeshDatasetSourceInterface::datasetCount( QgsMeshDatasetIndex index ) const
 {

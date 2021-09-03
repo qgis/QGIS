@@ -10,9 +10,10 @@
 
 
 
+
 class QgsVectorLayerExporter : QgsFeatureSink
 {
-%Docstring
+%Docstring(signature="appended")
 A convenience class for exporting vector layers to a destination data provider.
 
 :py:class:`QgsVectorLayerExporter` can be used in two ways:
@@ -29,31 +30,15 @@ A convenience class for exporting vector layers to a destination data provider.
 %End
   public:
 
-    enum ExportError
-    {
-      NoError,
-      ErrCreateDataSource,
-      ErrCreateLayer,
-      ErrAttributeTypeUnsupported,
-      ErrAttributeCreationFailed,
-      ErrProjection,
-      ErrFeatureWriteFailed,
-      ErrInvalidLayer,
-      ErrInvalidProvider,
-      ErrProviderUnsupportedFeature,
-      ErrConnectionFailed,
-      ErrUserCanceled,
-    };
 
-    static ExportError exportLayer( QgsVectorLayer *layer,
-                                    const QString &uri,
-                                    const QString &providerKey,
-                                    const QgsCoordinateReferenceSystem &destCRS,
-                                    bool onlySelected = false,
-                                    QString *errorMessage /Out/ = 0,
-                                    const QMap<QString, QVariant> &options = QMap<QString, QVariant>(),
-                                    QgsFeedback *feedback = 0
-                                  );
+    static Qgis::VectorExportResult exportLayer( QgsVectorLayer *layer,
+        const QString &uri,
+        const QString &providerKey,
+        const QgsCoordinateReferenceSystem &destCRS,
+        bool onlySelected = false,
+        QString *errorMessage /Out/ = 0,
+        const QMap<QString, QVariant> &options = QMap<QString, QVariant>(),
+        QgsFeedback *feedback = 0 );
 %Docstring
 Writes the contents of vector layer to a different datasource.
 
@@ -93,7 +78,7 @@ Constructor for QgsVectorLayerExporter.
 %End
 
 
-    ExportError errorCode() const;
+    Qgis::VectorExportResult errorCode() const;
 %Docstring
 Returns any encountered error code, or ``False`` if no error was encountered.
 
@@ -139,7 +124,7 @@ Returns the number of error messages encountered during the export.
 
 class QgsVectorLayerExporterTask : QgsTask
 {
-%Docstring
+%Docstring(signature="appended")
 :py:class:`QgsTask` task which performs a :py:class:`QgsVectorLayerExporter` layer export operation as a background
 task. This can be used to export a vector layer out to a provider without blocking the
 QGIS interface.
@@ -191,7 +176,7 @@ and export ``options`` must be specified.
 Emitted when exporting the layer is successfully completed.
 %End
 
-    void errorOccurred( int error, const QString &errorMessage );
+    void errorOccurred( Qgis::VectorExportResult error, const QString &errorMessage );
 %Docstring
 Emitted when an error occurs which prevented the layer being exported (or if
 the task is canceled). The export ``error`` and ``errorMessage`` will be reported.

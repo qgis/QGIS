@@ -29,7 +29,7 @@ class QgsPointCloudLayer;
 /**
  * \ingroup core
  *
- * A model for display of available attributes from a point cloud.
+ * \brief A model for display of available attributes from a point cloud.
  *
  * \since QGIS 3.18
  */
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsPointCloudAttributeModel : public QAbstractItemModel
 /**
  * \ingroup core
  *
- * A proxy model for filtering available attributes from a point cloud attribute model.
+ * \brief A proxy model for filtering available attributes from a point cloud attribute model.
  *
  * \since QGIS 3.18
  */

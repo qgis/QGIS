@@ -40,7 +40,7 @@ void QgsSubsetStringEditorProviderRegistry::addProvider( QgsSubsetStringEditorPr
 
 bool QgsSubsetStringEditorProviderRegistry::removeProvider( QgsSubsetStringEditorProvider *provider )
 {
-  int index = mProviders.indexOf( provider );
+  const int index = mProviders.indexOf( provider );
   if ( index >= 0 )
   {
     delete mProviders.takeAt( index );

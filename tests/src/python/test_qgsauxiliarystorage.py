@@ -21,11 +21,16 @@ from qgis.core import (QgsAuxiliaryStorage,
                        QgsFeature,
                        QgsGeometry,
                        QgsPropertyDefinition,
+                       QgsProperty,
                        QgsProject,
+                       QgsProjectArchive,
                        QgsFeatureRequest,
                        QgsPalLayerSettings,
                        QgsSymbolLayer,
                        QgsVectorLayerSimpleLabeling,
+                       QgsField,
+                       QgsCallout,
+                       QgsSimpleLineCallout,
                        NULL)
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath, writeShape
@@ -405,6 +410,60 @@ class TestQgsAuxiliaryStorage(unittest.TestCase):
         afIndex = vl.fields().indexOf(afName)
         self.assertEqual(index, afIndex)
 
+    def testCreateCalloutProperty(self):
+        s = QgsAuxiliaryStorage()
+        self.assertTrue(s.isValid())
+
+        # Create a new auxiliary layer with 'pk' as key
+        vl = createLayer()
+        pkf = vl.fields().field(vl.fields().indexOf('pk'))
+        al = s.createAuxiliaryLayer(pkf, vl)
+        self.assertTrue(al.isValid())
+        vl.setAuxiliaryLayer(al)
+
+        # Create a new callout property on layer without labels
+        key = QgsCallout.DestinationX
+        index = QgsAuxiliaryLayer.createProperty(key, vl)
+        self.assertEqual(index, -1)
+
+        # Labeling, but no callouts
+        settings = QgsPalLayerSettings()
+        settings.setCallout(None)
+        vl.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+        index = QgsAuxiliaryLayer.createProperty(key, vl)
+        self.assertEqual(index, -1)
+
+        # callouts
+        settings = QgsPalLayerSettings()
+        callout = QgsSimpleLineCallout()
+        callout.setEnabled(True)
+        settings.setCallout(callout)
+        vl.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+
+        index = QgsAuxiliaryLayer.createProperty(key, vl)
+
+        p = QgsCallout.propertyDefinitions()[key]
+        afName = QgsAuxiliaryLayer.nameFromProperty(p, True)
+        afIndex = vl.fields().indexOf(afName)
+        self.assertEqual(index, afIndex)
+
+        settings = vl.labeling().settings()
+        self.assertEqual(settings.callout().dataDefinedProperties().property(key), QgsProperty.fromField('auxiliary_storage_callouts_destinationx'))
+
+        key2 = QgsCallout.DestinationY
+        index = QgsAuxiliaryLayer.createProperty(key2, vl)
+
+        p = QgsCallout.propertyDefinitions()[key2]
+        afName = QgsAuxiliaryLayer.nameFromProperty(p, True)
+        afIndex = vl.fields().indexOf(afName)
+        self.assertEqual(index, afIndex)
+
+        settings = vl.labeling().settings()
+        self.assertEqual(settings.callout().dataDefinedProperties().property(key),
+                         QgsProperty.fromField('auxiliary_storage_callouts_destinationx'))
+        self.assertEqual(settings.callout().dataDefinedProperties().property(key2),
+                         QgsProperty.fromField('auxiliary_storage_callouts_destinationy'))
+
     def testCreateField(self):
         s = QgsAuxiliaryStorage()
         self.assertTrue(s.isValid())
@@ -476,6 +535,70 @@ class TestQgsAuxiliaryStorage(unittest.TestCase):
         # Auxiliary storage is NOT empty so .qgd file should be saved now
         qgd = newpath + '.qgd'
         self.assertTrue(os.path.exists(qgd))
+
+    def testInvalidPrimaryKey(self):
+        # create layer
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=pk:integer&key=pk',
+            'test', 'memory')
+        assert (vl.isValid())
+
+        # add a field with an invalid typename
+        field = QgsField(name="invalid_pk", type=QVariant.Int, typeName="xsd:int")
+        vl.startEditing()
+        vl.addAttribute(field)
+        vl.commitChanges()
+
+        # create auxiliary storage based on the invalid field
+        s = QgsAuxiliaryStorage()
+        pkf = field
+        al = s.createAuxiliaryLayer(pkf, vl)
+
+        self.assertEqual(al, None)
+        self.assertTrue("CREATE TABLE IF NOT EXISTS" in s.errorString())
+
+    def testQgdCreationInQgz(self):
+        # New project
+        p = QgsProject()
+        self.assertTrue(p.auxiliaryStorage().isValid())
+
+        # Save the project
+        path = tmpPath()
+        qgz = path + '.qgz'
+        self.assertTrue(p.write(qgz))
+        self.assertTrue(os.path.exists(qgz))
+
+        # Check the content of the archive: auxiliary database doesn't exist
+        # because it's empty
+        archive = QgsProjectArchive()
+        archive.unzip(qgz)
+        self.assertEqual(archive.auxiliaryStorageFile(), "")
+
+        # Add a vector layer and an auxiliary layer in the project
+        vl = createLayer()
+        self.assertTrue(vl.isValid())
+        p.addMapLayers([vl])
+
+        pkf = vl.fields().field(vl.fields().indexOf('pk'))
+        al = p.auxiliaryStorage().createAuxiliaryLayer(pkf, vl)
+        self.assertTrue(al.isValid())
+        vl.setAuxiliaryLayer(al)
+
+        # Add an auxiliary field to have a non empty auxiliary storage
+        pdef = QgsPropertyDefinition('propname', QgsPropertyDefinition.DataTypeNumeric, '', '', 'ut')
+        self.assertTrue(al.addAuxiliaryField(pdef))
+
+        # Save the project
+        path = tmpPath()
+        qgz = path + '.qgz'
+        self.assertTrue(p.write(qgz))
+        self.assertTrue(os.path.exists(qgz))
+
+        # Check the content of the archive: auxiliary database exist
+        # because it's not empty
+        archive = QgsProjectArchive()
+        archive.unzip(qgz)
+        self.assertNotEqual(archive.auxiliaryStorageFile(), '')
 
 
 if __name__ == '__main__':

@@ -1,6 +1,7 @@
 {
   "name": "IS",
   "type": "operator",
+  "groups": ["Operators"],
   "description": "Returns 1 if a is the same as b.",
   "arguments": [
 	{"arg":"a","description":"any value"},

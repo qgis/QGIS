@@ -13,7 +13,7 @@
 
 class QgsRasterLayerTemporalPropertiesWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget for configuring the temporal properties for a raster layer.
 
 .. versionadded:: 3.14
@@ -37,6 +37,13 @@ Save widget temporal properties inputs.
     void syncToLayer();
 %Docstring
 Updates the widget state to match the current layer state.
+%End
+
+    void addWidget( QgsMapLayerConfigWidget *widget /Transfer/ );
+%Docstring
+Adds a child ``widget`` to the properties widget.
+
+.. versionadded:: 3.20
 %End
 
 };

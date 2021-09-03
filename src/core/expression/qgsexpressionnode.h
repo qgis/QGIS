@@ -29,7 +29,7 @@ class QgsExpressionContext;
 /**
  * \ingroup core
  *
- * Abstract base class for all nodes that can appear in an expression.
+ * \brief Abstract base class for all nodes that can appear in an expression.
  */
 class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
 {
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
 
 
     /**
-     * Named node
+     * \brief Named node
      * \ingroup core
      * \since QGIS 2.16
      */
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
     };
 
     /**
-     * A list of expression nodes.
+     * \brief A list of expression nodes.
      * \ingroup core
      */
     class CORE_EXPORT NodeList
@@ -329,7 +329,31 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
      */
     QVariant cachedStaticValue() const { return mCachedStaticValue; }
 
+    /**
+     * Returns a reference to the simplest node which represents this node,
+     * after any compilation optimizations have been applied.
+     *
+     * Eg. a node like "CASE WHEN true THEN "some_field" WHEN other condition THEN ... END" can effectively
+     * be replaced entirely by a QgsExpressionNodeColumnRef referencing the "some_field" field, as the
+     * CASE WHEN ... will ALWAYS evaluate to "some_field".
+     *
+     * Returns a reference to the current object if no optimizations were applied.
+     *
+     * \since QGIS 3.20
+     */
+    const QgsExpressionNode *effectiveNode() const { return mCompiledSimplifiedNode ? mCompiledSimplifiedNode.get() : this; }
+
   protected:
+
+    /**
+     * Constructor.
+     */
+    QgsExpressionNode() = default;
+
+    //! Copy constructor
+    QgsExpressionNode( const QgsExpressionNode &other );
+    //! Assignment operator
+    QgsExpressionNode &operator=( const QgsExpressionNode &other );
 
     /**
      * Copies the members of this node to the node provided in \a target.
@@ -341,6 +365,35 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
      * \since QGIS 3.0
      */
     void cloneTo( QgsExpressionNode *target ) const SIP_SKIP;
+
+#ifndef SIP_RUN
+
+    /**
+     * TRUE if the node has a static, precalculated value.
+     *
+     * \since QGIS 3.20
+     */
+    mutable bool mHasCachedValue = false;
+
+    /**
+     * Contains the static, precalculated value for the node if mHasCachedValue is TRUE.
+     *
+     * \since QGIS 3.20
+     */
+    mutable QVariant mCachedStaticValue;
+
+    /**
+     * Contains a compiled node which represents a simplified version of this node
+     * as a result of compilation optimizations.
+     *
+     * Eg. a node like "CASE WHEN true THEN "some_field" WHEN other condition THEN ... END" can effectively
+     * be replaced entirely by a QgsExpressionNodeColumnRef referencing the "some_field" field, as the
+     * CASE WHEN ... will ALWAYS evaluate to "some_field".
+     *
+     * \since QGIS 3.20
+     */
+    mutable std::unique_ptr< QgsExpressionNode > mCompiledSimplifiedNode;
+#endif
 
   private:
 
@@ -358,8 +411,6 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
      */
     virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context ) = 0;
 
-    bool mHasCachedValue = false;
-    QVariant mCachedStaticValue;
 };
 
 Q_DECLARE_METATYPE( QgsExpressionNode * )

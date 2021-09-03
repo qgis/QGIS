@@ -89,6 +89,17 @@ QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
   setAcceptDrops( true );
 }
 
+QgsExtentWidget::~QgsExtentWidget()
+{
+  if ( mMapToolExtent )
+  {
+    // disconnect from deactivated signal -- this will be called when the map tool is being destroyed,
+    // and we don't want to act on that anymore (the mapToolDeactivated slot tries to show the widget again, but
+    // that's being destroyed!)
+    disconnect( mMapToolExtent.get(), &QgsMapToolExtent::deactivated, this, &QgsExtentWidget::mapToolDeactivated );
+  }
+}
+
 void QgsExtentWidget::setOriginalExtent( const QgsRectangle &originalExtent, const QgsCoordinateReferenceSystem &originalCrs )
 {
   mOriginalExtent = originalExtent;
@@ -112,7 +123,7 @@ void QgsExtentWidget::setOutputCrs( const QgsCoordinateReferenceSystem &outputCr
   mHasFixedOutputCrs = true;
   if ( mOutputCrs != outputCrs )
   {
-    bool prevExtentEnabled = mIsValid;
+    const bool prevExtentEnabled = mIsValid;
     switch ( mExtentState )
     {
       case CurrentExtent:
@@ -138,8 +149,8 @@ void QgsExtentWidget::setOutputCrs( const QgsCoordinateReferenceSystem &outputCr
       case UserExtent:
         try
         {
-          QgsCoordinateTransform ct( mOutputCrs, outputCrs, QgsProject::instance() );
-          QgsRectangle extent = ct.transformBoundingBox( outputExtent() );
+          const QgsCoordinateTransform ct( mOutputCrs, outputCrs, QgsProject::instance() );
+          const QgsRectangle extent = ct.transformBoundingBox( outputExtent() );
           mOutputCrs = outputCrs;
           setOutputExtentFromUser( extent, outputCrs );
         }
@@ -174,7 +185,7 @@ void QgsExtentWidget::setOutputExtent( const QgsRectangle &r, const QgsCoordinat
     {
       try
       {
-        QgsCoordinateTransform ct( srcCrs, mOutputCrs, QgsProject::instance() );
+        const QgsCoordinateTransform ct( srcCrs, mOutputCrs, QgsProject::instance() );
         extent = ct.transformBoundingBox( r );
       }
       catch ( QgsCsException & )
@@ -208,10 +219,10 @@ void QgsExtentWidget::setOutputExtent( const QgsRectangle &r, const QgsCoordinat
   mYMinLineEdit->setText( QLocale().toString( extent.yMinimum(), 'f', decimals ) );
   mYMaxLineEdit->setText( QLocale().toString( extent.yMaximum(), 'f', decimals ) );
 
-  QString condensed = QStringLiteral( "%1,%2,%3,%4" ).arg( mXMinLineEdit->text(),
-                      mXMaxLineEdit->text(),
-                      mYMinLineEdit->text(),
-                      mYMaxLineEdit->text() );
+  QString condensed = QStringLiteral( "%1,%2,%3,%4" ).arg( QString::number( extent.xMinimum(), 'f', decimals ),
+                      QString::number( extent.xMaximum(), 'f', decimals ),
+                      QString::number( extent.yMinimum(), 'f', decimals ),
+                      QString::number( extent.yMaximum(), 'f', decimals ) );
   condensed += QStringLiteral( " [%1]" ).arg( mOutputCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) );
   mCondensedLineEdit->setText( condensed );
 
@@ -241,10 +252,11 @@ void QgsExtentWidget::setOutputExtentFromCondensedLineEdit()
     const QRegularExpressionMatch match = mCondensedRe.match( text );
     if ( match.hasMatch() )
     {
-      whileBlocking( mXMinLineEdit )->setText( match.captured( 1 ) );
-      whileBlocking( mXMaxLineEdit )->setText( match.captured( 2 ) );
-      whileBlocking( mYMinLineEdit )->setText( match.captured( 3 ) );
-      whileBlocking( mYMaxLineEdit )->setText( match.captured( 4 ) );
+      // Localization
+      whileBlocking( mXMinLineEdit )->setText( QLocale().toString( match.captured( 1 ).toDouble() ) );
+      whileBlocking( mXMaxLineEdit )->setText( QLocale().toString( match.captured( 2 ).toDouble() ) );
+      whileBlocking( mYMinLineEdit )->setText( QLocale().toString( match.captured( 3 ).toDouble() ) );
+      whileBlocking( mYMaxLineEdit )->setText( QLocale().toString( match.captured( 4 ).toDouble() ) );
       if ( !match.captured( 5 ).isEmpty() )
       {
         mOutputCrs = QgsCoordinateReferenceSystem( match.captured( 5 ) );
@@ -259,7 +271,7 @@ void QgsExtentWidget::setOutputExtentFromCondensedLineEdit()
 
 void QgsExtentWidget::clear()
 {
-  bool prevWasNull = mIsValid;
+  const bool prevWasNull = mIsValid;
 
   whileBlocking( mXMinLineEdit )->clear();
   whileBlocking( mXMaxLineEdit )->clear();
@@ -304,12 +316,12 @@ void QgsExtentWidget::layerMenuAboutToShow()
   mLayerMenu->clear();
   for ( int i = 0; i < mMapLayerModel->rowCount(); ++i )
   {
-    QModelIndex index = mMapLayerModel->index( i, 0 );
-    QIcon icon = qvariant_cast<QIcon>( mMapLayerModel->data( index, Qt::DecorationRole ) );
-    QString text = mMapLayerModel->data( index, Qt::DisplayRole ).toString();
+    const QModelIndex index = mMapLayerModel->index( i, 0 );
+    const QIcon icon = qvariant_cast<QIcon>( mMapLayerModel->data( index, Qt::DecorationRole ) );
+    const QString text = mMapLayerModel->data( index, Qt::DisplayRole ).toString();
     QAction *act = new QAction( icon, text, mLayerMenu );
     act->setToolTip( mMapLayerModel->data( index, Qt::ToolTipRole ).toString() );
-    QString layerId = mMapLayerModel->data( index, QgsMapLayerModel::LayerIdRole ).toString();
+    const QString layerId = mMapLayerModel->data( index, QgsMapLayerModel::LayerIdRole ).toString();
     if ( mExtentState == ProjectLayerExtent && mExtentLayer && mExtentLayer->id() == layerId )
     {
       act->setCheckable( true );
@@ -393,11 +405,7 @@ void QgsExtentWidget::setOutputExtentFromDrawOnCanvas()
     {
       mMapToolExtent.reset( new QgsMapToolExtent( mCanvas ) );
       connect( mMapToolExtent.get(), &QgsMapToolExtent::extentChanged, this, &QgsExtentWidget::extentDrawn );
-      connect( mMapToolExtent.get(), &QgsMapTool::deactivated, this, [ = ]
-      {
-        emit toggleDialogVisibility( true );
-        mMapToolPrevious = nullptr;
-      } );
+      connect( mMapToolExtent.get(), &QgsMapTool::deactivated, this, &QgsExtentWidget::mapToolDeactivated );
     }
     mMapToolExtent->setRatio( mRatio );
     mCanvas->setMapTool( mMapToolExtent.get() );
@@ -410,6 +418,12 @@ void QgsExtentWidget::extentDrawn( const QgsRectangle &extent )
 {
   setOutputExtent( extent, mCanvas->mapSettings().destinationCrs(), DrawOnCanvas );
   mCanvas->setMapTool( mMapToolPrevious );
+  emit toggleDialogVisibility( true );
+  mMapToolPrevious = nullptr;
+}
+
+void QgsExtentWidget::mapToolDeactivated()
+{
   emit toggleDialogVisibility( true );
   mMapToolPrevious = nullptr;
 }

@@ -44,17 +44,38 @@ class QgsLandingPageApi: public QgsServerOgcApi
 
     bool accept( const QUrl &url ) const override
     {
+      QString baseUrlPrefix{ serverIface()->serverSettings()->landingPageBaseUrlPrefix() };
+
+      // Make sure non empty prefix always starts with /
+      if ( ! baseUrlPrefix.isEmpty() && ! baseUrlPrefix.startsWith( '/' ) )
+      {
+        baseUrlPrefix.prepend( '/' );
+      }
+
+      // Make sure path always starts with '/'
+      QString path { url.path().startsWith( '/' ) ? url.path() : url.path().prepend( '/' ) };
+
       // Mainly for CI testing of legacy OGC XML responses, we offer a way to disable landingpage API.
       // The plugin installation is optional so this won't be an issue in production.
-      return ! qgetenv( "QGIS_SERVER_DISABLED_APIS" ).contains( name().toUtf8() ) && ( url.path().isEmpty()
-             || url.path() == '/'
-             || url.path().startsWith( QLatin1String( "/map/" ) )
-             || url.path().startsWith( QLatin1String( "/index" ) )
+      if ( qgetenv( "QGIS_SERVER_DISABLED_APIS" ).contains( name().toUtf8() ) ||
+           ( ! path.startsWith( baseUrlPrefix ) ) )
+      {
+        return false;
+      }
+
+      path = path.mid( baseUrlPrefix.length() );
+
+      // Valid paths
+      return path.isEmpty()
+             || path == '/'
+             || path.startsWith( QLatin1String( "/map/" ) )
+             || path.startsWith( QLatin1String( "/index." ) )
              // Static
-             || url.path().startsWith( QLatin1String( "/css/" ) )
-             || url.path().startsWith( QLatin1String( "/js/" ) )
-             || url.path() == QLatin1String( "/favicon.ico" ) );
+             || path.startsWith( QLatin1String( "/css/" ) )
+             || path.startsWith( QLatin1String( "/js/" ) )
+             || path == QLatin1String( "favicon.ico" );
     }
+
 };
 
 /**
@@ -79,7 +100,7 @@ class QgsProjectLoaderFilter: public QgsServerFilter
     {
       mEnvWasChanged = false;
       const auto handler { serverInterface()->requestHandler() };
-      if ( handler->path().startsWith( QLatin1String( "/project/" ) ) )
+      if ( handler->path().startsWith( QStringLiteral( "%1/project/" ).arg( QgsLandingPageHandler::prefix( serverInterface()->serverSettings() ) ) ) )
       {
         const QString projectPath { QgsLandingPageUtils::projectUriFromUrl( handler->url(), *serverInterface()->serverSettings() ) };
         if ( ! projectPath.isEmpty() )
@@ -131,7 +152,9 @@ class QgsLandingPageModule: public QgsServiceModule
                                                                  QStringLiteral( "1.0.0" )
                                                                };
       // Register handlers
-      landingPageApi->registerHandler<QgsServerStaticHandler>( QStringLiteral( "/(?<staticFilePath>((css|js)/.*)|favicon.ico)$" ), QStringLiteral( "landingpage" ) );
+      landingPageApi->registerHandler<QgsServerStaticHandler>(
+        QStringLiteral( "%1/(?<staticFilePath>((css|js)/.*)|favicon.ico)$" )
+        .arg( QgsLandingPageHandler::prefix( serverIface->serverSettings() ) ), QStringLiteral( "landingpage" ) );
       landingPageApi->registerHandler<QgsLandingPageHandler>( serverIface->serverSettings() );
       landingPageApi->registerHandler<QgsLandingPageMapHandler>( serverIface->serverSettings() );
 

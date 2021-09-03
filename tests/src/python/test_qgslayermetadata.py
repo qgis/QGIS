@@ -481,6 +481,202 @@ class TestQgsLayerMetadata(unittest.TestCase):
         self.assertEqual(list[0].section, 'links')
         self.assertEqual(list[0].identifier, 0)
 
+    def testCombine(self):
+        m1 = QgsLayerMetadata()
+        m2 = QgsLayerMetadata()
+
+        # should be retained
+        m1.setIdentifier('i1')
+        m1.combine(m2)
+        self.assertEqual(m1.identifier(), 'i1')
+
+        # should be overwritten
+        m1.setIdentifier(None)
+        m2.setIdentifier('i2')
+        m1.combine(m2)
+        self.assertEqual(m1.identifier(), 'i2')
+
+        # should be overwritten
+        m1.setIdentifier('i1')
+        m2.setIdentifier('i2')
+        m1.combine(m2)
+        self.assertEqual(m1.identifier(), 'i2')
+
+        m1.setParentIdentifier('pi1')
+        m2.setParentIdentifier(None)
+        m1.combine(m2)
+        self.assertEqual(m1.parentIdentifier(), 'pi1')
+
+        m1.setParentIdentifier(None)
+        m2.setParentIdentifier('pi2')
+        m1.combine(m2)
+        self.assertEqual(m1.parentIdentifier(), 'pi2')
+
+        m1.setLanguage('l1')
+        m2.setLanguage(None)
+        m1.combine(m2)
+        self.assertEqual(m1.language(), 'l1')
+
+        m1.setLanguage(None)
+        m2.setLanguage('l2')
+        m1.combine(m2)
+        self.assertEqual(m1.language(), 'l2')
+
+        m1.setType('ty1')
+        m2.setType(None)
+        m1.combine(m2)
+        self.assertEqual(m1.type(), 'ty1')
+
+        m1.setType(None)
+        m2.setType('ty2')
+        m1.combine(m2)
+        self.assertEqual(m1.type(), 'ty2')
+
+        m1.setTitle('t1')
+        m2.setTitle(None)
+        m1.combine(m2)
+        self.assertEqual(m1.title(), 't1')
+
+        m1.setTitle(None)
+        m2.setTitle('t2')
+        m1.combine(m2)
+        self.assertEqual(m1.title(), 't2')
+
+        m1.setAbstract('a1')
+        m2.setAbstract(None)
+        m1.combine(m2)
+        self.assertEqual(m1.abstract(), 'a1')
+
+        m1.setAbstract(None)
+        m2.setAbstract('a2')
+        m1.combine(m2)
+        self.assertEqual(m1.abstract(), 'a2')
+
+        m1.setHistory(['h1', 'hh1'])
+        m2.setHistory([])
+        m1.combine(m2)
+        self.assertEqual(m1.history(), ['h1', 'hh1'])
+
+        m1.setHistory([])
+        m2.setHistory(['h2', 'hh2'])
+        m1.combine(m2)
+        self.assertEqual(m1.history(), ['h2', 'hh2'])
+
+        m1.setKeywords({'words': ['k1', 'kk1']})
+        m2.setKeywords({})
+        m1.combine(m2)
+        self.assertEqual(m1.keywords(), {'words': ['k1', 'kk1']})
+
+        m1.setKeywords({})
+        m2.setKeywords({'words': ['k2', 'kk2']})
+        m1.combine(m2)
+        self.assertEqual(m1.keywords(), {'words': ['k2', 'kk2']})
+
+        m1.setContacts([QgsLayerMetadata.Contact('c1'), QgsLayerMetadata.Contact('cc1')])
+        m2.setContacts([])
+        m1.combine(m2)
+        self.assertEqual(m1.contacts(), [QgsLayerMetadata.Contact('c1'), QgsLayerMetadata.Contact('cc1')])
+
+        m1.setContacts([])
+        m2.setContacts([QgsLayerMetadata.Contact('c2'), QgsLayerMetadata.Contact('cc2')])
+        m1.combine(m2)
+        self.assertEqual(m1.contacts(), [QgsLayerMetadata.Contact('c2'), QgsLayerMetadata.Contact('cc2')])
+
+        m1.setLinks([QgsLayerMetadata.Link('l1'), QgsLayerMetadata.Link('ll1')])
+        m2.setLinks([])
+        m1.combine(m2)
+        self.assertEqual(m1.links(), [QgsLayerMetadata.Link('l1'), QgsLayerMetadata.Link('ll1')])
+
+        m1.setLinks([])
+        m2.setLinks([QgsLayerMetadata.Link('l2'), QgsLayerMetadata.Link('ll2')])
+        m1.combine(m2)
+        self.assertEqual(m1.links(), [QgsLayerMetadata.Link('l2'), QgsLayerMetadata.Link('ll2')])
+
+        m1.setFees('f1')
+        m2.setFees(None)
+        m1.combine(m2)
+        self.assertEqual(m1.fees(), 'f1')
+
+        m1.setFees(None)
+        m2.setFees('f2')
+        m1.combine(m2)
+        self.assertEqual(m1.fees(), 'f2')
+
+        m1.setConstraints([QgsLayerMetadata.Constraint('c1'), QgsLayerMetadata.Constraint('cc1')])
+        m2.setConstraints([])
+        m1.combine(m2)
+        self.assertEqual(m1.constraints(), [QgsLayerMetadata.Constraint('c1'), QgsLayerMetadata.Constraint('cc1')])
+
+        m1.setConstraints([])
+        m2.setConstraints([QgsLayerMetadata.Constraint('c2'), QgsLayerMetadata.Constraint('cc2')])
+        m1.combine(m2)
+        self.assertEqual(m1.constraints(), [QgsLayerMetadata.Constraint('c2'), QgsLayerMetadata.Constraint('cc2')])
+
+        m1.setRights(['r1', 'rr1'])
+        m2.setRights([])
+        m1.combine(m2)
+        self.assertEqual(m1.rights(), ['r1', 'rr1'])
+
+        m1.setRights([])
+        m2.setRights(['r2', 'rr2'])
+        m1.combine(m2)
+        self.assertEqual(m1.rights(), ['r2', 'rr2'])
+
+        m1.setLicenses(['li1', 'lli1'])
+        m2.setLicenses([])
+        m1.combine(m2)
+        self.assertEqual(m1.licenses(), ['li1', 'lli1'])
+
+        m1.setLicenses([])
+        m2.setLicenses(['li2', 'lli2'])
+        m1.combine(m2)
+        self.assertEqual(m1.licenses(), ['li2', 'lli2'])
+
+        m1.setEncoding('e1')
+        m2.setEncoding(None)
+        m1.combine(m2)
+        self.assertEqual(m1.encoding(), 'e1')
+
+        m1.setEncoding(None)
+        m2.setEncoding('e2')
+        m1.combine(m2)
+        self.assertEqual(m1.encoding(), 'e2')
+
+        m1.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        m2.setCrs(QgsCoordinateReferenceSystem())
+        m1.combine(m2)
+        self.assertEqual(m1.crs().authid(), 'EPSG:3111')
+
+        m1.setCrs(QgsCoordinateReferenceSystem())
+        m2.setCrs(QgsCoordinateReferenceSystem('EPSG:3113'))
+        m1.combine(m2)
+        self.assertEqual(m1.crs().authid(), 'EPSG:3113')
+
+        s = QgsLayerMetadata.SpatialExtent()
+        s.bounds = QgsBox3d(1, 2, 3, 4, 5, 6)
+        m1.extent().setSpatialExtents([s])
+        m2.extent().setSpatialExtents([])
+        m1.combine(m2)
+        self.assertEqual(m1.extent().spatialExtents()[0].bounds, QgsBox3d(1, 2, 3, 4, 5, 6))
+
+        s.bounds = QgsBox3d(11, 12, 13, 14, 15, 16)
+        m1.extent().setSpatialExtents([])
+        m2.extent().setSpatialExtents([s])
+        m1.combine(m2)
+        self.assertEqual(m1.extent().spatialExtents()[0].bounds, QgsBox3d(11, 12, 13, 14, 15, 16))
+
+        s = QgsDateTimeRange(QDateTime(2020, 1, 1, 0, 0, 0), QDateTime(2020, 2, 1, 0, 0, 0))
+        m1.extent().setTemporalExtents([s])
+        m2.extent().setTemporalExtents([])
+        m1.combine(m2)
+        self.assertEqual(m1.extent().temporalExtents()[0], s)
+
+        s = QgsDateTimeRange(QDateTime(2021, 1, 1, 0, 0, 0), QDateTime(2021, 2, 1, 0, 0, 0))
+        m1.extent().setTemporalExtents([])
+        m2.extent().setTemporalExtents([s])
+        m1.combine(m2)
+        self.assertEqual(m1.extent().temporalExtents()[0], s)
+
 
 if __name__ == '__main__':
     unittest.main()

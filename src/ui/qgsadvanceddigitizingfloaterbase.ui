@@ -187,6 +187,12 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mDistanceLineEdit</tabstop>
+  <tabstop>mAngleLineEdit</tabstop>
+  <tabstop>mXLineEdit</tabstop>
+  <tabstop>mYLineEdit</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

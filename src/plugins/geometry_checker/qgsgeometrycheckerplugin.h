@@ -46,6 +46,6 @@ static const QString sDescription = QApplication::translate( "QgsGeometryChecker
 static const QString sCategory = QApplication::translate( "QgsGeometryCheckerPlugin", "Vector" );
 static const QString sPluginVersion = QApplication::translate( "QgsGeometryCheckerPlugin", "Version 0.1" );
 static const QgisPlugin::PluginType sPluginType = QgisPlugin::UI;
-static const QString sPluginIcon = QStringLiteral( ":/geometrychecker/icons/geometrychecker.png" );
+static const QString sPluginIcon = QStringLiteral( ":/geometrychecker/icons/geometrychecker.svg" );
 
 #endif // QGS_GEOMETRY_CHECKER_PLUGIN_H

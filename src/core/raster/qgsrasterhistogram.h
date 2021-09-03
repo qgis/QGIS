@@ -27,7 +27,7 @@
 
 /**
  * \ingroup core
- * The QgsRasterHistogram is a container for histogram of a single raster band.
+ * \brief The QgsRasterHistogram is a container for histogram of a single raster band.
  * It is used to cache computed histograms in raster providers.
  */
 class CORE_EXPORT QgsRasterHistogram

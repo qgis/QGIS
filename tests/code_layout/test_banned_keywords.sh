@@ -105,7 +105,7 @@ KEYWORDS[27]="QSharedPointer"
 HINTS[27]="Use std::shared_ptr instead"
 
 KEYWORDS[28]="QOverload"
-HINTS[28]="Use qgis::overload instead"
+HINTS[28]="Use qOverload instead"
 
 KEYWORDS[29]="qFloor"
 HINTS[29]="Use std::floor instead"
@@ -130,6 +130,15 @@ HINTS[35]="Use \see instead (works correct with Python docstrings)"
 
 KEYWORDS[36]="@brief"
 HINTS[36]="Use \brief instead (works correct with Python docstrings)"
+
+KEYWORDS[37]="Q_FOREACH"
+HINTS[37]="Use range based for loops instead"
+
+KEYWORDS[38]="foreach"
+HINTS[38]="Use range based for loops instead"
+
+KEYWORDS[39]="\bqBound("
+HINTS[39]="Use std::clamp instead (but be careful of the different argument order!!)"
 
 RES=
 DIR=$(git rev-parse --show-toplevel)

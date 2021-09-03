@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>378</width>
+    <width>381</width>
     <height>206</height>
    </rect>
   </property>
@@ -108,7 +108,7 @@
        </widget>
       </item>
       <item row="0" column="4" rowspan="3">
-       <widget class="QgsUnitSelectionWidget" name="mScalarEdgeStrokeWidthUnitSelectionWidget"/>
+       <widget class="QgsUnitSelectionWidget" name="mScalarEdgeStrokeWidthUnitSelectionWidget" native="true"/>
       </item>
       <item row="0" column="1" rowspan="3">
        <spacer name="horizontalSpacer">
@@ -136,9 +136,12 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="mScalarMinLineEdit">
-       <property name="text">
-        <string>0</string>
+      <widget class="QgsDoubleSpinBox" name="mScalarMinSpinBox">
+       <property name="minimum">
+        <double>-10000000000000.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>10000000000000.000000000000000</double>
        </property>
       </widget>
      </item>
@@ -150,16 +153,23 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="mScalarMaxLineEdit">
-       <property name="text">
-        <string>1</string>
+      <widget class="QgsDoubleSpinBox" name="mScalarMaxSpinBox">
+       <property name="minimum">
+        <double>-10000000000000.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>10000000000000.000000000000000</double>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="mScalarRecalculateMinMaxButton">
-       <property name="text">
+       <property name="toolTip">
         <string>Load</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
        </property>
       </widget>
      </item>
@@ -207,8 +217,13 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsUnitSelectionWidget</class>
-   <extends>QComboBox</extends>
+   <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
   </customwidget>
@@ -225,16 +240,25 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsMeshVariableStrokeWidthButton</class>
    <extends>QPushButton</extends>
    <header>qgsmeshvariablestrokewidthwidget.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <tabstops>
+  <tabstop>mOpacityWidget</tabstop>
+  <tabstop>mScalarEdgeStrokeWidthFixedRadioButton</tabstop>
+  <tabstop>mScalarEdgeStrokeWidthVariableRadioButton</tabstop>
+  <tabstop>mScalarEdgeStrokeWidthSpinBox</tabstop>
+  <tabstop>mScalarEdgeStrokeWidthVariablePushButton</tabstop>
+  <tabstop>mScalarEdgeStrokeWidthUnitSelectionWidget</tabstop>
+  <tabstop>mScalarMinSpinBox</tabstop>
+  <tabstop>mScalarMaxSpinBox</tabstop>
+  <tabstop>mScalarRecalculateMinMaxButton</tabstop>
+  <tabstop>mScalarInterpolationTypeComboBox</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>

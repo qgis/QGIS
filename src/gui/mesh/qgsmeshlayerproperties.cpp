@@ -69,7 +69,6 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   mTemporalProviderTimeUnitComboBox->addItem( tr( "Hours" ), QgsUnitTypes::TemporalHours );
   mTemporalProviderTimeUnitComboBox->addItem( tr( "Days" ), QgsUnitTypes::TemporalDays );
 
-  connect( mLayerOrigNameLineEd, &QLineEdit::textEdited, this, &QgsMeshLayerProperties::updateLayerName );
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsMeshLayerProperties::changeCrs );
   connect( mDatasetGroupTreeWidget, &QgsMeshDatasetGroupTreeWidget::datasetGroupAdded, this, &QgsMeshLayerProperties::syncToLayer );
 
@@ -155,7 +154,7 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   restoreOptionsBaseUi( title );
 }
 
-void QgsMeshLayerProperties::addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory )
+void QgsMeshLayerProperties::addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory )
 {
   if ( !factory->supportsLayer( mMeshLayer ) || !factory->supportLayerPropertiesDialog() )
   {
@@ -207,14 +206,13 @@ void QgsMeshLayerProperties::syncToLayer()
    * Source Tab
    */
   mLayerOrigNameLineEd->setText( mMeshLayer->name() );
-  leDisplayName->setText( mMeshLayer->name() );
   whileBlocking( mCrsSelector )->setCrs( mMeshLayer->crs() );
 
   if ( mMeshLayer )
     mDatasetGroupTreeWidget->syncToLayer( mMeshLayer );
 
   QgsDebugMsgLevel( QStringLiteral( "populate config tab" ), 4 );
-  for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
+  for ( QgsMapLayerConfigWidget *w : std::as_const( mConfigWidgets ) )
     w->syncToLayer( mMeshLayer );
 
   QgsDebugMsgLevel( QStringLiteral( "populate rendering tab" ), 4 );
@@ -362,7 +360,7 @@ void QgsMeshLayerProperties::apply()
 
   QgsDebugMsgLevel( QStringLiteral( "processing config tabs" ), 4 );
 
-  for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
+  for ( QgsMapLayerConfigWidget *w : std::as_const( mConfigWidgets ) )
     w->apply();
 
   QgsDebugMsgLevel( QStringLiteral( "processing rendering tab" ), 4 );
@@ -410,18 +408,14 @@ void QgsMeshLayerProperties::apply()
 
   // Resync what have to be resync (widget that can be changed by other properties part)
   mStaticDatasetWidget->syncToLayer();
-  mRendererMeshPropertiesWidget->syncToLayer();
+  for ( QgsMapLayerConfigWidget *w : std::as_const( mConfigWidgets ) )
+    w->syncToLayer( mMeshLayer );
 }
 
 void QgsMeshLayerProperties::changeCrs( const QgsCoordinateReferenceSystem &crs )
 {
   QgsDatumTransformDialog::run( crs, QgsProject::instance()->crs(), this, mCanvas, tr( "Select Transformation" ) );
   mMeshLayer->setCrs( crs );
-}
-
-void QgsMeshLayerProperties::updateLayerName( const QString &text )
-{
-  leDisplayName->setText( mMeshLayer->formatLayerName( text ) );
 }
 
 void QgsMeshLayerProperties::syncAndRepaint()

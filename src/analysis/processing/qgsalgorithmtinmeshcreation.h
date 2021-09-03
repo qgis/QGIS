@@ -51,7 +51,7 @@ class QgsTinMeshCreationAlgorithm: public QgsProcessingAlgorithm
       QgsFeatureIterator fit;
       QgsCoordinateTransform transform;
       int attributeIndex;
-      int featureCount;
+      long long featureCount;
     };
 
     QList<Layer> mVerticesLayer;

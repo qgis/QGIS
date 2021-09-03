@@ -24,7 +24,7 @@
 
 /**
  * \ingroup core
- * This is an abstract base class for any elements of a drag and drop form.
+ * \brief This is an abstract base class for any elements of a drag and drop form.
  *
  * This can either be a container which will be represented on the screen
  * as a tab widget or a collapsible group box. Or it can be a field which will
@@ -49,6 +49,9 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
       case QgsAttributeEditorElement::AeTypeRelation:
         sipType = sipType_QgsAttributeEditorRelation;
         break;
+      case QgsAttributeEditorElement::AeTypeAction:
+        sipType = sipType_QgsAttributeEditorAction;
+        break;
       default:
         sipType = nullptr;
         break;
@@ -63,7 +66,8 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
       AeTypeRelation,  //!< A relation
       AeTypeInvalid,   //!< Invalid
       AeTypeQmlElement, //!< A QML element
-      AeTypeHtmlElement //!< A HTML element
+      AeTypeHtmlElement, //!< A HTML element
+      AeTypeAction //!< A layer action element
     };
 
     /**

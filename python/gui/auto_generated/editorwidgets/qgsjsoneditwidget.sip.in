@@ -1,0 +1,82 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/editorwidgets/qgsjsoneditwidget.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsJsonEditWidget : QWidget
+{
+%Docstring(signature="appended")
+The :py:class:`QgsJsonEditWidget` is a widget to display JSON data in a code highlighted text or tree form.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgsjsoneditwidget.h"
+%End
+  public:
+
+    enum class View
+    {
+      Text,
+      Tree
+    };
+
+    enum class FormatJson
+    {
+      Indented,
+      Compact,
+      Disabled
+    };
+
+    explicit QgsJsonEditWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsJsonEditWidget.
+
+:param parent: parent widget
+%End
+
+    void setJsonText( const QString &jsonText );
+%Docstring
+Set the JSON text in the widget to ``jsonText``.
+%End
+
+    QString jsonText() const;
+%Docstring
+Returns the JSON text.
+%End
+
+    void setView( View view ) const;
+%Docstring
+Set the ``view`` mode.
+
+.. seealso:: View
+%End
+
+    void setFormatJsonMode( FormatJson formatJson );
+%Docstring
+Set the ``formatJson`` mode.
+
+.. seealso:: FormatJson
+%End
+
+    void setControlsVisible( bool visible );
+%Docstring
+Set the visibility of controls to ``visible``.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/editorwidgets/qgsjsoneditwidget.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

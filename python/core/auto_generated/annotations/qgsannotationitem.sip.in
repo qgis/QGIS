@@ -12,7 +12,7 @@
 
 class QgsAnnotationItem
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for annotation items which are drawn with :py:class:`QgsAnnotationLayers`.
 
 .. versionadded:: 3.16
@@ -53,6 +53,13 @@ Constructor for an annotation item.
 
     virtual ~QgsAnnotationItem();
 
+    virtual Qgis::AnnotationItemFlags flags() const;
+%Docstring
+Returns item flags.
+
+.. versionadded:: 3.22
+%End
+
     virtual QgsAnnotationItem *clone() = 0 /Factory/;
 %Docstring
 Returns a clone of the item. Ownership is transferred to the caller.
@@ -64,6 +71,11 @@ Returns a unique (untranslated) string identifying the type of item.
 %End
 
     virtual QgsRectangle boundingBox() const = 0;
+%Docstring
+Returns the bounding box of the item's geographic location, in the parent layer's coordinate reference system.
+%End
+
+    virtual QgsRectangle boundingBox( QgsRenderContext &context ) const;
 %Docstring
 Returns the bounding box of the item's geographic location, in the parent layer's coordinate reference system.
 %End
@@ -100,6 +112,13 @@ Sets the item's z ``index``, which controls the order in which annotation items
 are rendered in the layer.
 
 .. seealso:: :py:func:`zIndex`
+%End
+
+    virtual QList< QgsAnnotationItemNode > nodes() const;
+%Docstring
+Returns the nodes for the item, used for editing the item.
+
+.. versionadded:: 3.22
 %End
 
   private:

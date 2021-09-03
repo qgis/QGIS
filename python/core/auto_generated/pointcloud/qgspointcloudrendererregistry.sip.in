@@ -11,7 +11,7 @@
 
 class QgsPointCloudRendererAbstractMetadata
 {
-%Docstring
+%Docstring(signature="appended")
 Stores metadata about one point cloud renderer class.
 
 .. note::
@@ -78,7 +78,7 @@ Pure virtual function: must be implemented in derived classes.
 
 class QgsPointCloudRendererMetadata : QgsPointCloudRendererAbstractMetadata
 {
-%Docstring
+%Docstring(signature="appended")
 Convenience metadata class that uses static functions to create point cloud renderer and its widget.
 
 .. versionadded:: 3.18
@@ -104,7 +104,7 @@ Convenience metadata class that uses static functions to create point cloud rend
 
 class QgsPointCloudRendererRegistry
 {
-%Docstring
+%Docstring(signature="appended")
 Registry of 2D renderers for point clouds.
 
 :py:class:`QgsPointCloudRendererRegistry` is not usually directly created, but rather accessed through

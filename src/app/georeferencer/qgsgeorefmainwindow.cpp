@@ -29,6 +29,7 @@
 #include <QPen>
 #include <QStringList>
 #include <QList>
+#include <QUrl>
 
 #include "qgssettings.h"
 #include "qgisinterface.h"
@@ -57,8 +58,8 @@
 #include "qgsgeoreftooladdpoint.h"
 #include "qgsgeoreftooldeletepoint.h"
 #include "qgsgeoreftoolmovepoint.h"
+#include "qgsgcpcanvasitem.h"
 
-#include "qgsleastsquares.h"
 #include "qgsgcplistwidget.h"
 
 #include "qgsgeorefconfigdialog.h"
@@ -76,12 +77,6 @@ QgsGeorefDockWidget::QgsGeorefDockWidget( const QString &title, QWidget *parent,
 
 QgsGeoreferencerMainWindow::QgsGeoreferencerMainWindow( QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )
-  , mMousePrecisionDecimalPlaces( 0 )
-  , mTransformParam( QgsGeorefTransform::InvalidTransform )
-  , mAgainAddRaster( false )
-  , mMapCoordsDialog( nullptr )
-  , mUseZeroForTrans( false )
-  , mLoadInQgis( false )
 {
   setupUi( this );
   QgsGui::instance()->enableAutoGeometryRestore( this );
@@ -258,7 +253,7 @@ void QgsGeoreferencerMainWindow::openRaster( const QString &fileName )
   if ( !QgsRasterLayer::isValidRasterFileName( mRasterFileName, errMsg ) )
   {
     mMessageBar->pushMessage( tr( "Open Raster" ), tr( "%1 is not a supported raster data source.%2" ).arg( mRasterFileName,
-                              !errMsg.isEmpty() ? QStringLiteral( " (%1)" ).arg( errMsg ) : QString() ), Qgis::Critical );
+                              !errMsg.isEmpty() ? QStringLiteral( " (%1)" ).arg( errMsg ) : QString() ), Qgis::MessageLevel::Critical );
     return;
   }
 
@@ -285,7 +280,9 @@ void QgsGeoreferencerMainWindow::openRaster( const QString &fileName )
   mGCPpointsFileName = mRasterFileName + ".points";
   ( void )loadGCPs();
 
-  mCanvas->setExtent( mLayer->extent() );
+  if ( mLayer )
+    mCanvas->setExtent( mLayer->extent() );
+
   mCanvas->refresh();
   QgisApp::instance()->mapCanvas()->refresh();
 
@@ -345,16 +342,16 @@ void QgsGeoreferencerMainWindow::doGeoreference()
 {
   if ( georeference() )
   {
-    mMessageBar->pushMessage( tr( "Georeference Successful" ), tr( "Raster was successfully georeferenced." ), Qgis::Success );
+    mMessageBar->pushMessage( tr( "Georeference Successful" ), tr( "Raster was successfully georeferenced." ), Qgis::MessageLevel::Success );
     if ( mLoadInQgis )
     {
       if ( mModifiedRasterFileName.isEmpty() )
       {
-        QgisApp::instance()->addRasterLayer( mRasterFileName, QFileInfo( mRasterFileName ).completeBaseName() );
+        QgisApp::instance()->addRasterLayer( mRasterFileName, QFileInfo( mRasterFileName ).completeBaseName(), QString() );
       }
       else
       {
-        QgisApp::instance()->addRasterLayer( mModifiedRasterFileName, QFileInfo( mModifiedRasterFileName ).completeBaseName() );
+        QgisApp::instance()->addRasterLayer( mModifiedRasterFileName, QFileInfo( mModifiedRasterFileName ).completeBaseName(), QString() );
       }
 
       //      showMessageInLog(tr("Modified raster saved in"), mModifiedRasterFileName);
@@ -381,7 +378,7 @@ bool QgsGeoreferencerMainWindow::getTransformSettings()
 
   d.getTransformSettings( mTransformParam, mResamplingMethod, mCompressionMethod,
                           mModifiedRasterFileName, mProjection, mPdfOutputMapFile, mPdfOutputFile, mSaveGcp, mUseZeroForTrans, mLoadInQgis, mUserResX, mUserResY );
-  mTransformParamLabel->setText( tr( "Transform: " ) + convertTransformEnumToString( mTransformParam ) );
+  mTransformParamLabel->setText( tr( "Transform: " ) + QgsGcpTransformerInterface::methodToString( mTransformParam ) );
   mGeorefTransform.selectTransformParametrisation( mTransformParam );
   mGCPListWidget->setGeorefTransform( &mGeorefTransform );
   mWorldFileName = guessWorldFileName( mRasterFileName );
@@ -391,7 +388,7 @@ bool QgsGeoreferencerMainWindow::getTransformSettings()
   //  logTransformOptions();
   //  logRequaredGCPs();
 
-  if ( QgsGeorefTransform::InvalidTransform != mTransformParam )
+  if ( QgsGcpTransformerInterface::TransformMethod::InvalidTransform != mTransformParam )
   {
     mActionLinkGeorefToQgis->setEnabled( true );
     mActionLinkQGisToGeoref->setEnabled( true );
@@ -413,10 +410,10 @@ void QgsGeoreferencerMainWindow::generateGDALScript()
 
   switch ( mTransformParam )
   {
-    case QgsGeorefTransform::PolynomialOrder1:
-    case QgsGeorefTransform::PolynomialOrder2:
-    case QgsGeorefTransform::PolynomialOrder3:
-    case QgsGeorefTransform::ThinPlateSpline:
+    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder1:
+    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder2:
+    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder3:
+    case QgsGcpTransformerInterface::TransformMethod::ThinPlateSpline:
     {
       // CAVEAT: generateGDALwarpCommand() relies on some member variables being set
       // by generateGDALtranslateCommand(), so this method must be called before
@@ -437,8 +434,8 @@ void QgsGeoreferencerMainWindow::generateGDALScript()
     FALLTHROUGH
     default:
       mMessageBar->pushMessage( tr( "Invalid Transform" ), tr( "GDAL scripting is not supported for %1 transformation." )
-                                .arg( convertTransformEnumToString( mTransformParam ) )
-                                , Qgis::Critical );
+                                .arg( QgsGcpTransformerInterface::methodToString( mTransformParam ) )
+                                , Qgis::MessageLevel::Critical );
   }
 }
 
@@ -508,7 +505,7 @@ void QgsGeoreferencerMainWindow::linkQGisToGeoref( bool link )
 {
   if ( link )
   {
-    if ( QgsGeorefTransform::InvalidTransform != mTransformParam )
+    if ( QgsGcpTransformerInterface::TransformMethod::InvalidTransform != mTransformParam )
     {
       // Indicate that georeferencer canvas extent has changed
       extentsChangedGeorefCanvas();
@@ -524,7 +521,7 @@ void QgsGeoreferencerMainWindow::linkGeorefToQgis( bool link )
 {
   if ( link )
   {
-    if ( QgsGeorefTransform::InvalidTransform != mTransformParam )
+    if ( QgsGcpTransformerInterface::TransformMethod::InvalidTransform != mTransformParam )
     {
       // Indicate that qgis main canvas extent has changed
       extentsChangedQGisCanvas();
@@ -631,6 +628,13 @@ void QgsGeoreferencerMainWindow::releasePoint( QPoint p )
 
 void QgsGeoreferencerMainWindow::showCoordDialog( const QgsPointXY &pixelCoords )
 {
+  delete mNewlyAddedPointItem;
+  mNewlyAddedPointItem = nullptr;
+
+  // show a temporary marker at the clicked source point on the raster while we show the coordinate dialog.
+  mNewlyAddedPointItem = new QgsGCPCanvasItem( mCanvas, nullptr, true );
+  mNewlyAddedPointItem->setPointColor( QColor( 0, 200, 0 ) );
+  mNewlyAddedPointItem->setPos( mNewlyAddedPointItem->toCanvasCoordinates( pixelCoords ) );
 
   QgsCoordinateReferenceSystem lastProjection = mLastGCPProjection.isValid() ? mLastGCPProjection : mProjection;
   if ( mLayer && !mMapCoordsDialog )
@@ -639,6 +643,11 @@ void QgsGeoreferencerMainWindow::showCoordDialog( const QgsPointXY &pixelCoords 
     connect( mMapCoordsDialog, &QgsMapCoordsDialog::pointAdded, this, [ = ]( const QgsPointXY & a, const QgsPointXY & b, const QgsCoordinateReferenceSystem & crs )
     {
       addPoint( a, b, crs );
+    } );
+    connect( mMapCoordsDialog, &QObject::destroyed, this, [ = ]
+    {
+      delete mNewlyAddedPointItem;
+      mNewlyAddedPointItem = nullptr;
     } );
     mMapCoordsDialog->show();
   }
@@ -654,11 +663,11 @@ void QgsGeoreferencerMainWindow::loadGCPsDialog()
 
   if ( !loadGCPs() )
   {
-    mMessageBar->pushMessage( tr( "Load GCP Points" ), tr( "Invalid GCP file. File could not be read." ), Qgis::Critical );
+    mMessageBar->pushMessage( tr( "Load GCP Points" ), tr( "Invalid GCP file. File could not be read." ), Qgis::MessageLevel::Critical );
   }
   else
   {
-    mMessageBar->pushMessage( tr( "Load GCP Points" ), tr( "GCP file successfully loaded." ), Qgis::Success );
+    mMessageBar->pushMessage( tr( "Load GCP Points" ), tr( "GCP file successfully loaded." ), Qgis::MessageLevel::Success );
   }
 }
 
@@ -666,7 +675,7 @@ void QgsGeoreferencerMainWindow::saveGCPsDialog()
 {
   if ( mPoints.isEmpty() )
   {
-    mMessageBar->pushMessage( tr( "Save GCP Points" ), tr( "No GCP points are available to save." ), Qgis::Warning );
+    mMessageBar->pushMessage( tr( "Save GCP Points" ), tr( "No GCP points are available to save." ), Qgis::MessageLevel::Warning );
     return;
   }
 
@@ -689,11 +698,11 @@ void QgsGeoreferencerMainWindow::showRasterPropertiesDialog()
 {
   if ( mLayer )
   {
-    QgisApp::instance()->showLayerProperties( mLayer );
+    QgisApp::instance()->showLayerProperties( mLayer.get() );
   }
   else
   {
-    mMessageBar->pushMessage( tr( "Raster Properties" ), tr( "Please load raster to be georeferenced." ), Qgis::Warning );
+    mMessageBar->pushMessage( tr( "Raster Properties" ), tr( "Please load raster to be georeferenced." ), Qgis::MessageLevel::Warning );
   }
 }
 
@@ -734,7 +743,7 @@ void QgsGeoreferencerMainWindow::fullHistogramStretch()
 
 void QgsGeoreferencerMainWindow::localHistogramStretch()
 {
-  QgsRectangle rectangle = QgisApp::instance()->mapCanvas()->mapSettings().outputExtentToLayerExtent( mLayer, QgisApp::instance()->mapCanvas()->extent() );
+  QgsRectangle rectangle = QgisApp::instance()->mapCanvas()->mapSettings().outputExtentToLayerExtent( mLayer.get(), QgisApp::instance()->mapCanvas()->extent() );
 
   mLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRasterMinMaxOrigin::MinMax, rectangle );
   mCanvas->refresh();
@@ -865,28 +874,6 @@ void QgsGeoreferencerMainWindow::updateMouseCoordinatePrecision()
     dp = 0;
 
   mMousePrecisionDecimalPlaces = dp;
-}
-
-void QgsGeoreferencerMainWindow::extentsChanged()
-{
-  if ( mAgainAddRaster )
-  {
-    if ( QFile::exists( mRasterFileName ) )
-    {
-      addRaster( mRasterFileName );
-    }
-    else
-    {
-      mLayer = nullptr;
-      mAgainAddRaster = false;
-    }
-  }
-}
-
-// Registry layer QGis
-void QgsGeoreferencerMainWindow::layerWillBeRemoved( const QString &layerId )
-{
-  mAgainAddRaster = mLayer && mLayer->id().compare( layerId ) == 0;
 }
 
 // ------------------------------ private ---------------------------------- //
@@ -1047,7 +1034,7 @@ void QgsGeoreferencerMainWindow::createMapCanvas()
 
   mExtentsChangedRecursionGuard = false;
 
-  mGeorefTransform.selectTransformParametrisation( QgsGeorefTransform::Linear );
+  mGeorefTransform.selectTransformParametrisation( QgsGcpTransformerInterface::TransformMethod::Linear );
   mGCPsDirty = true;
 
   // Connect main canvas and georef canvas signals so we are aware if any of the viewports change
@@ -1150,7 +1137,7 @@ void QgsGeoreferencerMainWindow::createStatusBar()
   statusBar()->addPermanentWidget( mRotationEdit, 0 );
 
   mTransformParamLabel = createBaseLabelStatus();
-  mTransformParamLabel->setText( tr( "Transform: " ) + convertTransformEnumToString( mTransformParam ) );
+  mTransformParamLabel->setText( tr( "Transform: " ) + QgsGcpTransformerInterface::methodToString( mTransformParam ) );
   mTransformParamLabel->setToolTip( tr( "Current transform parametrisation" ) );
   statusBar()->addPermanentWidget( mTransformParamLabel, 0 );
 
@@ -1173,11 +1160,6 @@ void QgsGeoreferencerMainWindow::setupConnections()
   // Connect status from ZoomLast/ZoomNext to corresponding action
   connect( mCanvas, &QgsMapCanvas::zoomLastStatusChanged, mActionZoomLast, &QAction::setEnabled );
   connect( mCanvas, &QgsMapCanvas::zoomNextStatusChanged, mActionZoomNext, &QAction::setEnabled );
-  // Connect when one Layer is removed - Case where change the Projetct in QGIS
-  connect( QgsProject::instance(), static_cast<void ( QgsProject::* )( const QString & )>( &QgsProject::layerWillBeRemoved ), this, &QgsGeoreferencerMainWindow::layerWillBeRemoved );
-
-  // Connect extents changed - Use for need add again Raster
-  connect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsGeoreferencerMainWindow::extentsChanged );
 
   // Connect mapCanvas rotation widget
   connect( mRotationEdit, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsGeoreferencerMainWindow::updateCanvasRotation );
@@ -1186,13 +1168,8 @@ void QgsGeoreferencerMainWindow::setupConnections()
 
 void QgsGeoreferencerMainWindow::removeOldLayer()
 {
-  // delete layer (and don't signal it as it's our private layer)
-  if ( mLayer )
-  {
-    QgsProject::instance()->removeMapLayers(
-      ( QStringList() << mLayer->id() ) );
-    mLayer = nullptr;
-  }
+  mLayer.reset();
+
   mCanvas->setLayers( QList<QgsMapLayer *>() );
   mCanvas->clearCache();
   mRotationEdit->clear();
@@ -1202,16 +1179,13 @@ void QgsGeoreferencerMainWindow::removeOldLayer()
 // Mapcanvas Plugin
 void QgsGeoreferencerMainWindow::addRaster( const QString &file )
 {
-  mLayer = new QgsRasterLayer( file, QStringLiteral( "Raster" ) );
-
-  // so layer is not added to legend
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mLayer, false, false );
+  QgsRasterLayer::LayerOptions options;
+  // never prompt for a crs selection for the input raster!
+  options.skipCrsValidation = true;
+  mLayer = std::make_unique< QgsRasterLayer >( file, QStringLiteral( "Raster" ), QStringLiteral( "gdal" ), options );
 
   // add layer to map canvas
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayer );
-
-  mAgainAddRaster = false;
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayer.get() );
 
   mActionLocalHistogramStretch->setEnabled( true );
   mActionFullHistogramStretch->setEnabled( true );
@@ -1255,7 +1229,7 @@ void QgsGeoreferencerMainWindow::writeSettings()
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/uistate" ), saveState() );
 
   // warp options
-  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/transformparam" ), mTransformParam );
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/transformparam" ), static_cast< int >( mTransformParam ) );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/resamplingmethod" ), mResamplingMethod );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/compressionmethod" ), mCompressionMethod );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/usezerofortrans" ), mUseZeroForTrans );
@@ -1331,7 +1305,7 @@ void QgsGeoreferencerMainWindow::saveGCPs()
     QTextStream points( &pointFile );
     points << QStringLiteral( "#CRS: %1" ).arg( mProjection.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) ) << endl;
     points << "mapX,mapY,pixelX,pixelY,enable,dX,dY,residual" << endl;
-    for ( QgsGeorefDataPoint *pt : qgis::as_const( mPoints ) )
+    for ( QgsGeorefDataPoint *pt : std::as_const( mPoints ) )
     {
       points << QStringLiteral( "%1,%2,%3,%4,%5,%6,%7,%8" )
              .arg( qgsDoubleToString( pt->transCoords().x() ),
@@ -1349,7 +1323,7 @@ void QgsGeoreferencerMainWindow::saveGCPs()
   }
   else
   {
-    mMessageBar->pushMessage( tr( "Write Error" ), tr( "Could not write to GCP points file %1." ).arg( mGCPpointsFileName ), Qgis::Critical );
+    mMessageBar->pushMessage( tr( "Write Error" ), tr( "Could not write to GCP points file %1." ).arg( mGCPpointsFileName ), Qgis::MessageLevel::Critical );
     return;
   }
 
@@ -1390,14 +1364,14 @@ bool QgsGeoreferencerMainWindow::georeference()
   if ( !checkReadyGeoref() )
     return false;
 
-  if ( mModifiedRasterFileName.isEmpty() && ( QgsGeorefTransform::Linear == mGeorefTransform.transformParametrisation() ||
-       QgsGeorefTransform::Helmert == mGeorefTransform.transformParametrisation() ) )
+  if ( mModifiedRasterFileName.isEmpty() && ( QgsGcpTransformerInterface::TransformMethod::Linear == mGeorefTransform.transformParametrisation() ||
+       QgsGcpTransformerInterface::TransformMethod::Helmert == mGeorefTransform.transformParametrisation() ) )
   {
     QgsPointXY origin;
     double pixelXSize, pixelYSize, rotation;
     if ( !mGeorefTransform.getOriginScaleRotation( origin, pixelXSize, pixelYSize, rotation ) )
     {
-      mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Failed to calculate linear transform parameters." ), Qgis::Critical );
+      mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Failed to calculate linear transform parameters." ), Qgis::MessageLevel::Critical );
       return false;
     }
 
@@ -1445,7 +1419,7 @@ bool QgsGeoreferencerMainWindow::georeference()
     if ( res == 0 ) // fault to compute GCP transform
     {
       //TODO: be more specific in the error message
-      mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Failed to compute GCP transform: Transform is not solvable." ), Qgis::Critical );
+      mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Failed to compute GCP transform: Transform is not solvable." ), Qgis::MessageLevel::Critical );
       return false;
     }
     else if ( res == -1 ) // operation canceled
@@ -1480,7 +1454,7 @@ bool QgsGeoreferencerMainWindow::writeWorldFile( const QgsPointXY &origin, doubl
   QFile file( mWorldFileName );
   if ( !file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
-    mMessageBar->pushMessage( tr( "Save World File" ), tr( "Could not write to %1." ).arg( mWorldFileName ), Qgis::Critical );
+    mMessageBar->pushMessage( tr( "Save World File" ), tr( "Could not write to %1." ).arg( mWorldFileName ), Qgis::MessageLevel::Critical );
     return false;
   }
 
@@ -1507,7 +1481,7 @@ bool QgsGeoreferencerMainWindow::writeWorldFile( const QgsPointXY &origin, doubl
 
 bool QgsGeoreferencerMainWindow::calculateMeanError( double &error ) const
 {
-  if ( mGeorefTransform.transformParametrisation() == QgsGeorefTransform::InvalidTransform )
+  if ( mGeorefTransform.transformParametrisation() == QgsGcpTransformerInterface::TransformMethod::InvalidTransform )
   {
     return false;
   }
@@ -1522,12 +1496,12 @@ bool QgsGeoreferencerMainWindow::calculateMeanError( double &error ) const
     }
   }
 
-  if ( nPointsEnabled == mGeorefTransform.getMinimumGCPCount() )
+  if ( nPointsEnabled == mGeorefTransform.minimumGcpCount() )
   {
     error = 0;
     return true;
   }
-  else if ( nPointsEnabled < mGeorefTransform.getMinimumGCPCount() )
+  else if ( nPointsEnabled < mGeorefTransform.minimumGcpCount() )
   {
     return false;
   }
@@ -1547,7 +1521,7 @@ bool QgsGeoreferencerMainWindow::calculateMeanError( double &error ) const
 
   // Calculate the root mean square error, adjusted for degrees of freedom of the transform
   // Caveat: The number of DoFs is assumed to be even (as each control point fixes two degrees of freedom).
-  error = std::sqrt( ( sumVxSquare + sumVySquare ) / ( nPointsEnabled - mGeorefTransform.getMinimumGCPCount() ) );
+  error = std::sqrt( ( sumVxSquare + sumVySquare ) / ( nPointsEnabled - mGeorefTransform.minimumGcpCount() ) );
   return true;
 }
 
@@ -1572,7 +1546,7 @@ bool QgsGeoreferencerMainWindow::writePDFMapFile( const QString &fileName, const
 
   //create layout
   QgsLayout layout( QgsProject::instance() );
-  std::unique_ptr< QgsLayoutItemPage > page = qgis::make_unique< QgsLayoutItemPage >( &layout );
+  std::unique_ptr< QgsLayoutItemPage > page = std::make_unique< QgsLayoutItemPage >( &layout );
 
   double leftMargin = 8;
   double topMargin = 8;
@@ -1639,10 +1613,10 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
   //create layout A4 with 300 dpi
   QgsLayout layout( QgsProject::instance() );
 
-  std::unique_ptr< QgsLayoutItemPage > page = qgis::make_unique< QgsLayoutItemPage >( &layout );
+  std::unique_ptr< QgsLayoutItemPage > page = std::make_unique< QgsLayoutItemPage >( &layout );
   page->setPageSize( QgsLayoutSize( 210, 297 ) ); //A4
   layout.pageCollection()->addPage( page.release() );
-  std::unique_ptr< QgsLayoutItemPage > page2 = qgis::make_unique< QgsLayoutItemPage >( &layout );
+  std::unique_ptr< QgsLayoutItemPage > page2 = std::make_unique< QgsLayoutItemPage >( &layout );
   page2->setPageSize( QgsLayoutSize( 210, 297 ) ); //A4
   layout.pageCollection()->addPage( page2.release() );
 
@@ -1722,7 +1696,7 @@ bool QgsGeoreferencerMainWindow::writePDFReportFile( const QString &fileName, co
   QGraphicsRectItem *previousItem = layoutMap;
   if ( wldTransform )
   {
-    QString parameterTitle = tr( "Transformation parameters" ) + QStringLiteral( " (" ) + convertTransformEnumToString( transform.transformParametrisation() ) + QStringLiteral( ")" );
+    QString parameterTitle = tr( "Transformation parameters" ) + QStringLiteral( " (" ) + QgsGcpTransformerInterface::methodToString( transform.transformParametrisation() ) + QStringLiteral( ")" );
     parameterLabel = new QgsLayoutItemLabel( &layout );
     parameterLabel->setFont( titleFont );
     parameterLabel->setText( parameterTitle );
@@ -1849,7 +1823,7 @@ void QgsGeoreferencerMainWindow::updateTransformParamLabel()
     return;
   }
 
-  QString transformName = convertTransformEnumToString( mGeorefTransform.transformParametrisation() );
+  QString transformName = QgsGcpTransformerInterface::methodToString( mGeorefTransform.transformParametrisation() );
   QString labelString = tr( "Transform: " ) + transformName;
 
   QgsPointXY origin;
@@ -1916,7 +1890,7 @@ QString QgsGeoreferencerMainWindow::generateGDALtranslateCommand( bool generateT
     gdalCommand << QStringLiteral( "-co TFW=YES" );
   }
 
-  for ( QgsGeorefDataPoint *pt : qgis::as_const( mPoints ) )
+  for ( QgsGeorefDataPoint *pt : std::as_const( mPoints ) )
   {
     gdalCommand << QStringLiteral( "-gcp %1 %2 %3 %4" ).arg( pt->pixelCoords().x() ).arg( -pt->pixelCoords().y() )
                 .arg( pt->transCoords().x() ).arg( pt->transCoords().y() );
@@ -1984,11 +1958,11 @@ bool QgsGeoreferencerMainWindow::checkReadyGeoref()
 {
   if ( mRasterFileName.isEmpty() )
   {
-    mMessageBar->pushMessage( tr( "No Raster Loaded" ), tr( "Please load raster to be georeferenced." ), Qgis::Warning );
+    mMessageBar->pushMessage( tr( "No Raster Loaded" ), tr( "Please load raster to be georeferenced." ), Qgis::MessageLevel::Warning );
     return false;
   }
 
-  if ( QgsGeorefTransform::InvalidTransform == mTransformParam )
+  if ( QgsGcpTransformerInterface::TransformMethod::InvalidTransform == mTransformParam )
   {
     QMessageBox::information( this, tr( "Georeferencer" ), tr( "Please set transformation type." ) );
     getTransformSettings();
@@ -1996,25 +1970,25 @@ bool QgsGeoreferencerMainWindow::checkReadyGeoref()
   }
 
   //MH: helmert transformation without warping disabled until qgis is able to read rotated rasters efficiently
-  if ( mModifiedRasterFileName.isEmpty() && QgsGeorefTransform::Linear != mTransformParam /*&& QgsGeorefTransform::Helmert != mTransformParam*/ )
+  if ( mModifiedRasterFileName.isEmpty() && QgsGcpTransformerInterface::TransformMethod::Linear != mTransformParam /*&& QgsGeorefTransform::Helmert != mTransformParam*/ )
   {
     QMessageBox::information( this, tr( "Georeferencer" ), tr( "Please set output raster name." ) );
     getTransformSettings();
     return false;
   }
 
-  if ( mPoints.count() < static_cast<int>( mGeorefTransform.getMinimumGCPCount() ) )
+  if ( mPoints.count() < static_cast<int>( mGeorefTransform.minimumGcpCount() ) )
   {
     mMessageBar->pushMessage( tr( "Not Enough GCPs" ), tr( "%1 transformation requires at least %2 GCPs. Please define more." )
-                              .arg( convertTransformEnumToString( mTransformParam ) ).arg( mGeorefTransform.getMinimumGCPCount() )
-                              , Qgis::Critical );
+                              .arg( QgsGcpTransformerInterface::methodToString( mTransformParam ) ).arg( mGeorefTransform.minimumGcpCount() )
+                              , Qgis::MessageLevel::Critical );
     return false;
   }
 
   // Update the transform if necessary
   if ( !updateGeorefTransform() )
   {
-    mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Failed to compute GCP transform: Transform is not solvable." ), Qgis::Critical );
+    mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Failed to compute GCP transform: Transform is not solvable." ), Qgis::MessageLevel::Critical );
     //    logRequaredGCPs();
     return false;
   }
@@ -2031,7 +2005,7 @@ bool QgsGeoreferencerMainWindow::updateGeorefTransform()
     return false;
 
   // Parametrize the transform with GCPs
-  if ( !mGeorefTransform.updateParametersFromGCPs( mapCoords, pixelCoords ) )
+  if ( !mGeorefTransform.updateParametersFromGcps( pixelCoords, mapCoords, true ) )
   {
     return false;
   }
@@ -2088,29 +2062,6 @@ QgsRectangle QgsGeoreferencerMainWindow::transformViewportBoundingBox( const Qgs
   return QgsRectangle( minX, minY, maxX, maxY );
 }
 
-QString QgsGeoreferencerMainWindow::convertTransformEnumToString( QgsGeorefTransform::TransformParametrisation transform )
-{
-  switch ( transform )
-  {
-    case QgsGeorefTransform::Linear:
-      return tr( "Linear" );
-    case QgsGeorefTransform::Helmert:
-      return tr( "Helmert" );
-    case QgsGeorefTransform::PolynomialOrder1:
-      return tr( "Polynomial 1" );
-    case QgsGeorefTransform::PolynomialOrder2:
-      return tr( "Polynomial 2" );
-    case QgsGeorefTransform::PolynomialOrder3:
-      return tr( "Polynomial 3" );
-    case QgsGeorefTransform::ThinPlateSpline:
-      return tr( "Thin plate spline (TPS)" );
-    case QgsGeorefTransform::Projective:
-      return tr( "Projective" );
-    default:
-      return tr( "Not set" );
-  }
-}
-
 QString QgsGeoreferencerMainWindow::convertResamplingEnumToString( QgsImageWarper::ResamplingMethod resampling )
 {
   switch ( resampling )
@@ -2129,17 +2080,17 @@ QString QgsGeoreferencerMainWindow::convertResamplingEnumToString( QgsImageWarpe
   return QString();
 }
 
-int QgsGeoreferencerMainWindow::polynomialOrder( QgsGeorefTransform::TransformParametrisation transform )
+int QgsGeoreferencerMainWindow::polynomialOrder( QgsGeorefTransform::TransformMethod transform )
 {
   switch ( transform )
   {
-    case QgsGeorefTransform::PolynomialOrder1:
+    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder1:
       return 1;
-    case QgsGeorefTransform::PolynomialOrder2:
+    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder2:
       return 2;
-    case QgsGeorefTransform::PolynomialOrder3:
+    case QgsGcpTransformerInterface::TransformMethod::PolynomialOrder3:
       return 3;
-    case QgsGeorefTransform::ThinPlateSpline:
+    case QgsGcpTransformerInterface::TransformMethod::ThinPlateSpline:
       return -1;
 
     default:
@@ -2206,14 +2157,14 @@ bool QgsGeoreferencerMainWindow::equalGCPlists( const QgsGCPList &list1, const Q
 //
 //void QgsGeorefPluginGui::logRequaredGCPs()
 //{
-//  if (mGeorefTransform.getMinimumGCPCount() != 0)
+//  if (mGeorefTransform.minimumGcpCount() != 0)
 //  {
-//    if ((uint)mPoints.size() >= mGeorefTransform.getMinimumGCPCount())
+//    if ((uint)mPoints.size() >= mGeorefTransform.minimumGcpCount())
 //      showMessageInLog(tr("Info"), tr("For georeferencing requared at least %1 GCP points")
-//                       .arg(mGeorefTransform.getMinimumGCPCount()));
+//                       .arg(mGeorefTransform.minimumGcpCount()));
 //    else
 //      showMessageInLog(tr("Critical"), tr("For georeferencing requared at least %1 GCP points")
-//                       .arg(mGeorefTransform.getMinimumGCPCount()));
+//                       .arg(mGeorefTransform.minimumGcpCount()));
 //  }
 //}
 
@@ -2226,6 +2177,9 @@ void QgsGeoreferencerMainWindow::clearGCPData()
   qDeleteAll( mPoints );
   mPoints.clear();
   mGCPListWidget->updateGCPList();
+
+  delete mNewlyAddedPointItem;
+  mNewlyAddedPointItem = nullptr;
 
   QgisApp::instance()->mapCanvas()->refresh();
 }

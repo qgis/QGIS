@@ -16,6 +16,9 @@
 
 class QgsDxfExport
 {
+%Docstring(signature="appended")
+Exports QGIS layers to the DXF format.
+%End
 
 %TypeHeaderCode
 #include "qgsdxfexport.h"
@@ -302,6 +305,18 @@ Write a tuple of group code and integer value
 .. note::
 
    available in Python bindings as writeGroupInt
+%End
+
+    void writeGroup( int code, long long i ) /PyName=writeGroupLong/;
+%Docstring
+Write a tuple of group code and long value
+
+:param code: group code
+:param i: integer value
+
+.. note::
+
+   available in Python bindings as writeGroupLong
 %End
 
     void writeGroup( int code, double d ) /PyName=writeGroupDouble/;

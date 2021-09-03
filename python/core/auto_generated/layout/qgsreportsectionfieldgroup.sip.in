@@ -12,7 +12,7 @@
 
 class QgsReportSectionFieldGroup : QgsAbstractReportSection
 {
-%Docstring
+%Docstring(signature="appended")
 A report section consisting of a features
 
 .. warning::

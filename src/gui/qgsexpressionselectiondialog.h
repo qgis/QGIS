@@ -28,7 +28,7 @@ class QgsMessageBar;
 
 /**
  * \ingroup gui
- * This class offers a dialog to change feature selections.
+ * \brief This class offers a dialog to change feature selections.
  * To do so, a QgsExpressionBuilderWidget is shown in a dialog.
  * It offers the possibilities to create a new selection, add to the current selection
  * remove from the current selection or select within the current selection.

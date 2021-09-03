@@ -52,7 +52,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
     /**
      * \ingroup core
-     * Individual record of a visible layer in a map theme record.
+     * \brief Individual record of a visible layer in a map theme record.
      * \since QGIS 3.0
      */
     class CORE_EXPORT MapThemeLayerRecord
@@ -61,6 +61,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         //! Initialize layer record with a map layer - it will be stored as a weak pointer
         MapThemeLayerRecord( QgsMapLayer *l = nullptr ): mLayer( l ) {}
 
+        // TODO c++20 - replace with = default
         bool operator==( const QgsMapThemeCollection::MapThemeLayerRecord &other ) const
         {
           return mLayer == other.mLayer && isVisible == other.isVisible &&
@@ -113,7 +114,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
     /**
      * \ingroup core
-     * Individual map theme record of visible layers and styles.
+     * \brief Individual map theme record of visible layers and styles.
      *
      * \since QGIS 3.0, Previously called PresetRecord
      */

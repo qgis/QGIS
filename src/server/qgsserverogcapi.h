@@ -24,7 +24,7 @@ class QgsServerOgcApiHandler;
 
 /**
  * \ingroup server
- * QGIS Server OGC API endpoint. QgsServerOgcApi provides the foundation for
+ * \brief QGIS Server OGC API endpoint. QgsServerOgcApi provides the foundation for
  * the new generation of REST-API based OGC services (e.g. WFS3).
  *
  * This class can be used directly and configured by registering handlers

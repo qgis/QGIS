@@ -48,7 +48,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     QString storageType() const override { return QStringLiteral( "ArcGIS Feature Service" ); }
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
     QgsWkbTypes::Type wkbType() const override;
-    long featureCount() const override;
+    long long featureCount() const override;
     QgsFields fields() const override;
     QgsLayerMetadata layerMetadata() const override;
     /* Read only for the moment

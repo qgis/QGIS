@@ -28,7 +28,7 @@ class QgsProject;
 
 /**
  * \ingroup server
- * QgsService
+ * \brief QgsService
  * Class defining interfaces for QGIS server services
  *
  * This class provides methods for executing server requests

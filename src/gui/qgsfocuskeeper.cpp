@@ -21,12 +21,14 @@
 
 QgsFocusKeeper::QgsFocusKeeper(): mWidgetToKeepFocused( QApplication::focusWidget() )
 {
-  mWidgetToKeepFocused->installEventFilter( this );
+  if ( mWidgetToKeepFocused )
+    mWidgetToKeepFocused->installEventFilter( this );
 }
 
 QgsFocusKeeper::~QgsFocusKeeper()
 {
-  mWidgetToKeepFocused->removeEventFilter( this );
+  if ( mWidgetToKeepFocused )
+    mWidgetToKeepFocused->removeEventFilter( this );
 }
 
 bool QgsFocusKeeper::eventFilter( QObject *obj, QEvent *event )

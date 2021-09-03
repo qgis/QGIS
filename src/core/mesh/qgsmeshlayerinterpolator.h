@@ -46,7 +46,7 @@ class QgsRenderContext;
 
 /**
  * \ingroup core
- * Interpolate mesh scalar dataset to raster block
+ * \brief Interpolate mesh scalar dataset to raster block
  *
  * \note not available in Python bindings
  * \since QGIS 3.2

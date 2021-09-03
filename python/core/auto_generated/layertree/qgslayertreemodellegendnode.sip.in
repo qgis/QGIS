@@ -13,7 +13,7 @@
 
 class QgsLayerTreeModelLegendNode : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsLegendRendererItem` class is abstract interface for legend items
 returned from :py:class:`QgsMapLayerLegend` implementation.
 
@@ -294,7 +294,7 @@ Returns a temporary context or ``None`` if legendMapViewData are not valid
 
 class QgsSymbolLegendNode : QgsLayerTreeModelLegendNode
 {
-%Docstring
+%Docstring(signature="appended")
 Implementation of legend node interface for displaying preview of vector symbols and their labels
 and allowing interaction with the symbol / renderer.
 
@@ -487,7 +487,7 @@ Evaluates  and returns the text label of the current node
 
 class QgsSimpleLegendNode : QgsLayerTreeModelLegendNode
 {
-%Docstring
+%Docstring(signature="appended")
 Implementation of legend node interface for displaying arbitrary label with icon.
 
 .. versionadded:: 2.6
@@ -517,7 +517,7 @@ Constructor for QgsSimpleLegendNode.
 
 class QgsImageLegendNode : QgsLayerTreeModelLegendNode
 {
-%Docstring
+%Docstring(signature="appended")
 Implementation of legend node interface for displaying arbitrary raster image
 
 .. versionadded:: 2.6
@@ -550,7 +550,7 @@ Constructor for QgsImageLegendNode.
 
 class QgsRasterSymbolLegendNode : QgsLayerTreeModelLegendNode
 {
-%Docstring
+%Docstring(signature="appended")
 Implementation of legend node interface for displaying raster legend entries
 
 .. versionadded:: 2.6
@@ -603,7 +603,7 @@ Returns whether the item is user-checkable - whether renderer supports enabling/
 
 class QgsWmsLegendNode : QgsLayerTreeModelLegendNode
 {
-%Docstring
+%Docstring(signature="appended")
 Implementation of legend node interface for displaying WMS legend entries
 
 .. versionadded:: 2.8
@@ -641,7 +641,7 @@ Constructor for QgsWmsLegendNode.
 
 class QgsDataDefinedSizeLegendNode : QgsLayerTreeModelLegendNode
 {
-%Docstring
+%Docstring(signature="appended")
 Produces legend node with a marker symbol
 
 .. versionadded:: 3.0
@@ -664,6 +664,65 @@ Construct the node using :py:class:`QgsDataDefinedSizeLegend` as definition of t
 
 
 };
+
+class QgsVectorLabelLegendNode : QgsLayerTreeModelLegendNode
+{
+%Docstring(signature="appended")
+Produces legend node for a labeling text symbol
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgslayertreemodellegendnode.h"
+%End
+  public:
+
+    QgsVectorLabelLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsPalLayerSettings &labelSettings, QObject *parent = 0 );
+%Docstring
+QgsVectorLabelLegendNode
+
+:param nodeLayer: the parent node
+:param labelSettings: setting of the label class
+:param parent: the parent object
+%End
+    ~QgsVectorLabelLegendNode();
+
+    virtual QVariant data( int role ) const;
+
+%Docstring
+data Returns data associated with the item
+
+:param role: the data role
+
+:return: variant containing the data for the role
+%End
+
+    virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
+
+%Docstring
+drawSymbol
+
+:param settings: the legend settings
+:param ctx: context for the item
+:param itemHeight: the height of the item
+
+:return: size of the item
+%End
+
+    virtual QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const;
+
+%Docstring
+exportSymbolToJson
+
+:param settings: the legend settings
+:param context: the item context
+
+:return: the json object
+%End
+
+};
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

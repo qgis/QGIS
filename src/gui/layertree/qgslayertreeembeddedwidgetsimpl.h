@@ -16,6 +16,7 @@
 #ifndef QGSLAYERTREEEMBEDDEDWIDGETSIMPL_H
 #define QGSLAYERTREEEMBEDDEDWIDGETSIMPL_H
 
+#include <QPointer>
 #include <QWidget>
 #include "qgslayertreeembeddedwidgetregistry.h"
 
@@ -56,7 +57,7 @@ class QgsLayerTreeOpacityWidget : public QWidget
     void layerTrChanged();
 
   private:
-    QgsMapLayer *mLayer = nullptr;
+    QPointer<QgsMapLayer> mLayer;
     QSlider *mSlider = nullptr;
     QTimer *mTimer = nullptr;
 };

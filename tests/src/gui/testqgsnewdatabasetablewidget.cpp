@@ -24,6 +24,7 @@
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 #include "qgsabstractproviderconnection.h"
+#include "qgsdataitem.h"
 
 class TestQgsNewDatabaseTableNameWidget: public QObject
 {
@@ -72,7 +73,7 @@ void TestQgsNewDatabaseTableNameWidget::initTestCase()
   QString errCause;
   QMap<int, int> m;
   mGpkgPath = mDir.filePath( QStringLiteral( "test.gpkg" ) );
-  QMap<QString, QVariant> options { { QStringLiteral( "layerName" ), QString( "test_layer" ) } };
+  const QMap<QString, QVariant> options { { QStringLiteral( "layerName" ), QString( "test_layer" ) } };
   QVERIFY( md->createEmptyLayer( mGpkgPath,
                                  QgsFields(),
                                  QgsWkbTypes::Type::Point,
@@ -80,7 +81,7 @@ void TestQgsNewDatabaseTableNameWidget::initTestCase()
                                  true,
                                  m,
                                  errCause,
-                                 &options ) == QgsVectorLayerExporter::ExportError::NoError );
+                                 &options ) == Qgis::VectorExportResult::Success );
   QVERIFY( errCause.isEmpty() );
   mGpkgConn.reset( md->createConnection( mDir.filePath( QStringLiteral( "test.gpkg" ) ), { } ) );
   md->saveConnection( mGpkgConn.get(), QStringLiteral( "GPKG_1" ) );
@@ -102,11 +103,11 @@ void TestQgsNewDatabaseTableNameWidget::cleanup()
 
 void TestQgsNewDatabaseTableNameWidget::testWidgetFilters()
 {
-  std::unique_ptr<QgsNewDatabaseTableNameWidget> w { qgis::make_unique<QgsNewDatabaseTableNameWidget>( nullptr, QStringList{ "NOT_EXISTS" } ) };
+  std::unique_ptr<QgsNewDatabaseTableNameWidget> w { std::make_unique<QgsNewDatabaseTableNameWidget>( nullptr, QStringList{ "NOT_EXISTS" } ) };
   QCOMPARE( w->mBrowserProxyModel.rowCount(), 0 );
-  std::unique_ptr<QgsNewDatabaseTableNameWidget> w2 { qgis::make_unique<QgsNewDatabaseTableNameWidget>( nullptr ) };
+  std::unique_ptr<QgsNewDatabaseTableNameWidget> w2 { std::make_unique<QgsNewDatabaseTableNameWidget>( nullptr ) };
   QVERIFY( w2->mBrowserProxyModel.rowCount() > 0 );
-  std::unique_ptr<QgsNewDatabaseTableNameWidget> w3 { qgis::make_unique<QgsNewDatabaseTableNameWidget>( nullptr, QStringList{ "postgres" } ) };
+  std::unique_ptr<QgsNewDatabaseTableNameWidget> w3 { std::make_unique<QgsNewDatabaseTableNameWidget>( nullptr, QStringList{ "postgres" } ) };
   QVERIFY( w3->mBrowserProxyModel.rowCount() > 0 );
 }
 
@@ -114,7 +115,7 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetFilters()
 void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsPostgres()
 {
 #ifdef ENABLE_PGTEST
-  std::unique_ptr<QgsNewDatabaseTableNameWidget> w { qgis::make_unique<QgsNewDatabaseTableNameWidget>( nullptr, QStringList{ "postgres" } ) };
+  std::unique_ptr<QgsNewDatabaseTableNameWidget> w { std::make_unique<QgsNewDatabaseTableNameWidget>( nullptr, QStringList{ "postgres" } ) };
 
   auto index = w->mBrowserModel->findPath( QStringLiteral( "pg:/PG_1" ) );
   QVERIFY( index.isValid() );
@@ -224,7 +225,7 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsPostgres()
 void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsGeopackage()
 {
 #ifdef ENABLE_PGTEST
-  std::unique_ptr<QgsNewDatabaseTableNameWidget> w { qgis::make_unique<QgsNewDatabaseTableNameWidget>( nullptr, QStringList{ "ogr" } ) };
+  std::unique_ptr<QgsNewDatabaseTableNameWidget> w { std::make_unique<QgsNewDatabaseTableNameWidget>( nullptr, QStringList{ "ogr" } ) };
 
   auto index = w->mBrowserModel->findPath( QStringLiteral( "pg:/PG_1" ) );
   QVERIFY( index.isValid() );
@@ -235,8 +236,8 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsGeopackage()
 
   QSignalSpy validationSpy( w.get(), SIGNAL( validationChanged( bool ) ) );
   QSignalSpy schemaSpy( w.get(), SIGNAL( schemaNameChanged( QString ) ) );
-  QSignalSpy tableSpy( w.get(), SIGNAL( tableNameChanged( QString ) ) );
-  QSignalSpy providerSpy( w.get(), SIGNAL( providerKeyChanged( QString ) ) );
+  const QSignalSpy tableSpy( w.get(), SIGNAL( tableNameChanged( QString ) ) );
+  const QSignalSpy providerSpy( w.get(), SIGNAL( providerKeyChanged( QString ) ) );
   QSignalSpy uriSpy( w.get(), SIGNAL( uriChanged( QString ) ) );
 
   /*
@@ -251,7 +252,7 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsGeopackage()
   index = w->mBrowserModel->findPath( QStringLiteral( "gpkg:/%1" ).arg( mGpkgPath ) );
   QVERIFY( index.isValid() );
   w->mBrowserTreeView->scrollTo( w->mBrowserProxyModel.mapFromSource( index ) );
-  auto rect = w->mBrowserTreeView->visualRect( w->mBrowserProxyModel.mapFromSource( index ) );
+  const auto rect = w->mBrowserTreeView->visualRect( w->mBrowserProxyModel.mapFromSource( index ) );
   QVERIFY( rect.isValid() );
   QTest::mouseClick( w->mBrowserTreeView->viewport(), Qt::LeftButton, Qt::KeyboardModifiers(), rect.center() );
 

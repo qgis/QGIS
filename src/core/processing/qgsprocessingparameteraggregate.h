@@ -21,7 +21,7 @@
 
 /**
  * \ingroup core
- * A parameter for "aggregate" configurations, which consist of a definition
+ * \brief A parameter for "aggregate" configurations, which consist of a definition
  * of desired output fields, types, and aggregate used to populate then.
  *
  * Designed for use with the "Aggregate" algorithm.
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsProcessingParameterAggregate : public QgsProcessingParamete
 ///@cond PRIVATE
 
 /**
- * Parameter type definition for QgsProcessingParameterAggregate.
+ * \brief Parameter type definition for QgsProcessingParameterAggregate.
  *
  * \ingroup core
  * \note This class is not a part of public API.

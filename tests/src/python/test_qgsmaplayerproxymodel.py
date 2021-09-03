@@ -12,7 +12,14 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import QgsVectorLayer, QgsMeshLayer, QgsProject, QgsMapLayerModel, QgsMapLayerProxyModel
+from qgis.core import (
+    QgsVectorLayer,
+    QgsMeshLayer,
+    QgsAnnotationLayer,
+    QgsProject,
+    QgsMapLayerModel,
+    QgsMapLayerProxyModel
+)
 from qgis.PyQt.QtCore import Qt, QModelIndex
 
 from qgis.testing import start_app, unittest
@@ -74,6 +81,43 @@ class TestQgsMapLayerProxyModel(unittest.TestCase):
 
         self.assertTrue(m.acceptsLayer(l1))
         self.assertFalse(m.acceptsLayer(l2))
+
+    def testAnnotationLayer(self):
+        """
+        Test filtering annotation layers
+        """
+        QgsProject.instance().clear()
+
+        m = QgsMapLayerProxyModel()
+        options = QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext())
+        l1 = QgsAnnotationLayer('annotation 1', options)
+        QgsProject.instance().addMapLayer(l1)
+        l2 = create_layer('l2')
+        QgsProject.instance().addMapLayer(l2)
+
+        m.setFilters(QgsMapLayerProxyModel.AnnotationLayer)
+        self.assertEqual(m.filters(), QgsMapLayerProxyModel.AnnotationLayer)
+
+        self.assertEqual(m.rowCount(), 1)
+        self.assertEqual(m.data(m.index(0, 0)), 'annotation 1')
+
+        self.assertTrue(m.acceptsLayer(l1))
+        self.assertFalse(m.acceptsLayer(l2))
+
+        m.setFilters(QgsMapLayerProxyModel.VectorLayer)
+        self.assertEqual(m.rowCount(), 1)
+        self.assertEqual(m.data(m.index(0, 0)), 'l2')
+
+        self.assertFalse(m.acceptsLayer(l1))
+        self.assertTrue(m.acceptsLayer(l2))
+
+        m.setFilters(QgsMapLayerProxyModel.All)
+        self.assertEqual(m.rowCount(), 2)
+        self.assertEqual(m.data(m.index(0, 0)), 'annotation 1')
+        self.assertEqual(m.data(m.index(1, 0)), 'l2')
+
+        self.assertTrue(m.acceptsLayer(l1))
+        self.assertTrue(m.acceptsLayer(l2))
 
     def testFilterGeometryType(self):
         """ test filtering by geometry type """

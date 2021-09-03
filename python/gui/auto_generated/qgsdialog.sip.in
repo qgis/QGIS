@@ -12,7 +12,7 @@
 
 class QgsDialog : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 A generic dialog with layout and button box
 %End
 

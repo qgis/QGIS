@@ -272,7 +272,11 @@ class QgsMssqlConnection
 
     static int sConnectionId;
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     static QMutex sMutex;
+#else
+    static QRecursiveMutex sMutex;
+#endif
 };
 
 #endif // QGSMSSQLCONNECTION_H

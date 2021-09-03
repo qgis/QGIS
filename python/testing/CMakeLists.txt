@@ -1,7 +1,6 @@
 # See ../CMakeLists.txt for info on staged-plugins* and clean-staged-plugins targets
 
-set(QGIS_PYTHON_DIR ${PYTHON_SITE_PACKAGES_DIR}/qgis)
-set (PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
+set(QGIS_PYTHON_DIR ${Python_SITEARCH}/qgis)
 
 set(PY_FILES
   __init__.py

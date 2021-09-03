@@ -105,11 +105,13 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer *layer, QgsSt
 
   if ( renderer )
   {
-    mRenderer = QgsHeatmapRenderer::convertFromRenderer( renderer );
+    mRenderer.reset( QgsHeatmapRenderer::convertFromRenderer( renderer ) );
   }
   if ( !mRenderer )
   {
-    mRenderer = new QgsHeatmapRenderer();
+    mRenderer = std::make_unique< QgsHeatmapRenderer >();
+    if ( renderer )
+      renderer->copyRendererData( mRenderer.get() );
   }
 
   btnColorRamp->setShowGradientOnly( true );
@@ -141,9 +143,11 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer *layer, QgsSt
   connect( mWeightExpressionWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsHeatmapRendererWidget::weightExpressionChanged );
 }
 
+QgsHeatmapRendererWidget::~QgsHeatmapRendererWidget() = default;
+
 QgsFeatureRenderer *QgsHeatmapRendererWidget::renderer()
 {
-  return mRenderer;
+  return mRenderer.get();
 }
 
 void QgsHeatmapRendererWidget::setContext( const QgsSymbolWidgetContext &context )

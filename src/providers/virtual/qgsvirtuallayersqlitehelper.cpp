@@ -40,7 +40,7 @@ QgsScopedSqlite::QgsScopedSqlite( const QString &path, bool withExtension )
 
   if ( r )
   {
-    QString err = QStringLiteral( "%1 [%2]" ).arg( sqlite3_errmsg( db_ ), path );
+    const QString err = QStringLiteral( "%1 [%2]" ).arg( sqlite3_errmsg( db_ ), path );
     QgsDebugMsg( err );
     throw std::runtime_error( err.toUtf8().constData() );
   }
@@ -103,11 +103,11 @@ namespace Sqlite
     : db_( db )
     , nBind_( 1 )
   {
-    QByteArray ba( q.toUtf8() );
-    int r = sqlite3_prepare_v2( db, ba.constData(), ba.size(), &stmt_, nullptr );
+    const QByteArray ba( q.toUtf8() );
+    const int r = sqlite3_prepare_v2( db, ba.constData(), ba.size(), &stmt_, nullptr );
     if ( r )
     {
-      QString err = QStringLiteral( "Query preparation error on %1: %2" ).arg( q, sqlite3_errmsg( db ) );
+      const QString err = QStringLiteral( "Query preparation error on %1: %2" ).arg( q, sqlite3_errmsg( db ) );
       throw std::runtime_error( err.toUtf8().constData() );
     }
   }
@@ -125,8 +125,8 @@ namespace Sqlite
     {
       case QVariant::String:
       {
-        QByteArray ba( value.toString().toUtf8() );
-        int r = sqlite3_bind_text( stmt_, idx, ba.constData(), ba.size(), SQLITE_TRANSIENT );
+        const QByteArray ba( value.toString().toUtf8() );
+        const int r = sqlite3_bind_text( stmt_, idx, ba.constData(), ba.size(), SQLITE_TRANSIENT );
         if ( r )
         {
           throw std::runtime_error( sqlite3_errmsg( db_ ) );
@@ -137,8 +137,8 @@ namespace Sqlite
       case QVariant::Double:
       {
         bool ok; // no reason to fail double conversion
-        double dbl = value.toDouble( &ok );
-        int r = sqlite3_bind_double( stmt_, idx, dbl );
+        const double dbl = value.toDouble( &ok );
+        const int r = sqlite3_bind_double( stmt_, idx, dbl );
         if ( r )
         {
           throw std::runtime_error( sqlite3_errmsg( db_ ) );
@@ -162,17 +162,17 @@ namespace Sqlite
   void Query::exec( sqlite3 *db, const QString &sql )
   {
     char *errMsg = nullptr;
-    int r = sqlite3_exec( db, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
+    const int r = sqlite3_exec( db, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
     if ( r )
     {
-      QString err = QStringLiteral( "Query execution error on %1: %2 - %3" ).arg( sql ).arg( r ).arg( errMsg );
+      const QString err = QStringLiteral( "Query execution error on %1: %2 - %3" ).arg( sql ).arg( r ).arg( errMsg );
       throw std::runtime_error( err.toUtf8().constData() );
     }
   }
 
   void Query::reset()
   {
-    int r = sqlite3_reset( stmt_ );
+    const int r = sqlite3_reset( stmt_ );
     if ( r )
     {
       throw std::runtime_error( sqlite3_errmsg( db_ ) );
@@ -212,14 +212,14 @@ namespace Sqlite
 
   QString Query::columnText( int i ) const
   {
-    int size = sqlite3_column_bytes( stmt_, i );
+    const int size = sqlite3_column_bytes( stmt_, i );
     const char *str = reinterpret_cast< const char * >( sqlite3_column_text( stmt_, i ) );
     return QString::fromUtf8( str, size );
   }
 
   QByteArray Query::columnBlob( int i ) const
   {
-    int size = sqlite3_column_bytes( stmt_, i );
+    const int size = sqlite3_column_bytes( stmt_, i );
     const char *data = reinterpret_cast< const char * >( sqlite3_column_blob( stmt_, i ) );
     // data is not copied. QByteArray is just here a augmented pointer
     return QByteArray::fromRawData( data, size );

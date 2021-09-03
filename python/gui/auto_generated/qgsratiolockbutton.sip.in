@@ -12,7 +12,7 @@
 
 class QgsRatioLockButton : QToolButton
 {
-%Docstring
+%Docstring(signature="appended")
 A cross platform button subclass used to represent a locked / unlocked ratio state.
 
 .. versionadded:: 3.0

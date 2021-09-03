@@ -132,7 +132,11 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
 
 #ifndef SIP_RUN
 ///@cond PRIVATE
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QgsDateTimeEdit( const QVariant &var, QVariant::Type parserType, QWidget *parent );
+#else
+    QgsDateTimeEdit( const QVariant &var, QMetaType::Type parserType, QWidget *parent );
+#endif
 ///@endcond
 #endif
 

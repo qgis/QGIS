@@ -169,9 +169,11 @@
  <tabstops>
   <tabstop>scrollArea</tabstop>
   <tabstop>editDescription</tabstop>
+  <tabstop>mFilterRadio</tabstop>
   <tabstop>editFilter</tabstop>
   <tabstop>btnExpressionBuilder</tabstop>
   <tabstop>btnTestFilter</tabstop>
+  <tabstop>mElseRadio</tabstop>
   <tabstop>groupSymbol</tabstop>
  </tabstops>
  <resources>

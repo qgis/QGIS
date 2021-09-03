@@ -11,7 +11,7 @@
 
 class QgsDataSourceSelectWidget: QgsPanelWidget
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsDataSourceSelectWidget` class embeds the browser view to
 select an existing data source.
 
@@ -116,7 +116,7 @@ Emitted when an item is triggered, e.g. via a double-click.
 
 class QgsDataSourceSelectDialog: QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsDataSourceSelectDialog` class embeds the browser view to
 select an existing data source.
 

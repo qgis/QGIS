@@ -32,7 +32,9 @@ class QgsMapLayer;
 
 /**
  * \ingroup core
- * Management of styles for use with one map layer. Stored styles are identified by their names. The manager
+ * \brief Management of styles for use with one map layer
+ *
+ * Stored styles are identified by their names. The manager
  * always keep track of which style of the stored ones is currently active. When the current style is changed,
  * the new style is applied to the associated layer.
  *

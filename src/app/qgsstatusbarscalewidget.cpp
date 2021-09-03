@@ -60,6 +60,7 @@ QgsStatusBarScaleWidget::QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget 
   setLayout( mLayout );
 
   connect( mScale, &QgsScaleComboBox::scaleChanged, this, &QgsStatusBarScaleWidget::userScale );
+  connect( mMapCanvas, &QgsMapCanvas::scaleLockChanged, this, &QgsStatusBarScaleWidget::setLocked );
 }
 
 void QgsStatusBarScaleWidget::setScale( double scale )
@@ -97,7 +98,7 @@ void QgsStatusBarScaleWidget::updateScales()
     const QVector< double > scales = QgsProject::instance()->viewSettings()->mapScales();
     QStringList textScales;
     textScales.reserve( scales.size() );
-    for ( double scale : scales )
+    for ( const double scale : scales )
       textScales << QStringLiteral( "1:%1" ).arg( QLocale().toString( scale, 'f', 0 ) );
     mScale->updateScales( textScales );
   }

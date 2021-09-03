@@ -22,6 +22,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsauxiliarystorage.h"
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
+#include "qgsfillsymbol.h"
+
 #include <QMessageBox>
 
 QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent, QgsVectorLayer *layer )
@@ -52,7 +56,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   QgsPropertyOverrideButton *opacityDDBtn = nullptr;
   switch ( symbol->type() )
   {
-    case QgsSymbol::Marker:
+    case Qgis::SymbolType::Marker:
     {
       stackedWidget->removeWidget( stackedWidget->widget( 2 ) );
       stackedWidget->removeWidget( stackedWidget->widget( 1 ) );
@@ -69,7 +73,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
       break;
     }
 
-    case QgsSymbol::Line:
+    case Qgis::SymbolType::Line:
     {
       stackedWidget->removeWidget( stackedWidget->widget( 2 ) );
       stackedWidget->removeWidget( stackedWidget->widget( 0 ) );
@@ -83,7 +87,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
       break;
     }
 
-    case QgsSymbol::Fill:
+    case Qgis::SymbolType::Fill:
     {
       stackedWidget->removeWidget( stackedWidget->widget( 1 ) );
       stackedWidget->removeWidget( stackedWidget->widget( 0 ) );
@@ -94,11 +98,14 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
       break;
     }
 
-    case QgsSymbol::Hybrid:
+    case Qgis::SymbolType::Hybrid:
       break;
   }
 
   stackedWidget->setCurrentIndex( 0 );
+
+  mSymbolUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   if ( mSymbol )
   {
@@ -106,9 +113,6 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   }
 
   connect( mSymbolUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSymbolsListWidget::mSymbolUnitWidget_changed );
-  mSymbolUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-
   connect( mSymbolColorButton, &QgsColorButton::colorChanged, this, &QgsSymbolsListWidget::setSymbolColor );
 
   registerSymbolDataDefinedButton( opacityDDBtn, QgsSymbol::PropertyOpacity );
@@ -156,7 +160,7 @@ void QgsSymbolsListWidget::createAuxiliaryField()
     return;
 
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  QgsSymbolLayer::Property key = static_cast<  QgsSymbolLayer::Property >( button->propertyKey() );
+  const QgsSymbolLayer::Property key = static_cast<  QgsSymbolLayer::Property >( button->propertyKey() );
   const QgsPropertyDefinition def = QgsSymbolLayer::propertyDefinitions()[key];
 
   // create property in auxiliary storage if necessary
@@ -183,7 +187,7 @@ void QgsSymbolsListWidget::createAuxiliaryField()
       if ( markerSymbol )
       {
         markerSymbol->setDataDefinedSize( button->toProperty() );
-        markerSymbol->setScaleMethod( QgsSymbol::ScaleDiameter );
+        markerSymbol->setScaleMethod( Qgis::ScaleMethod::ScaleDiameter );
       }
       break;
 
@@ -213,7 +217,7 @@ void QgsSymbolsListWidget::createSymbolAuxiliaryField()
     return;
 
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  QgsSymbol::Property key = static_cast<  QgsSymbol::Property >( button->propertyKey() );
+  const QgsSymbol::Property key = static_cast<  QgsSymbol::Property >( button->propertyKey() );
   const QgsPropertyDefinition def = QgsSymbol::propertyDefinitions()[key];
 
   // create property in auxiliary storage if necessary
@@ -240,13 +244,6 @@ void QgsSymbolsListWidget::setContext( const QgsSymbolWidgetContext &context )
   {
     unitWidget->setMapCanvas( mContext.mapCanvas() );
   }
-#if 0
-  Q_FOREACH ( QgsPropertyOverrideButton *ddButton, findChildren<QgsPropertyOverrideButton *>() )
-  {
-    if ( ddButton->assistant() )
-      ddButton->assistant()->setMapCanvas( mContext.mapCanvas() );
-  }
-#endif
 }
 
 QgsSymbolWidgetContext QgsSymbolsListWidget::context() const
@@ -279,10 +276,10 @@ void QgsSymbolsListWidget::saveSymbol()
   // check if there is no symbol with same name
   if ( mStyle->symbolNames().contains( saveDlg.name() ) )
   {
-    int res = QMessageBox::warning( this, tr( "Save Symbol" ),
-                                    tr( "Symbol with name '%1' already exists. Overwrite?" )
-                                    .arg( saveDlg.name() ),
-                                    QMessageBox::Yes | QMessageBox::No );
+    const int res = QMessageBox::warning( this, tr( "Save Symbol" ),
+                                          tr( "Symbol with name '%1' already exists. Overwrite?" )
+                                          .arg( saveDlg.name() ),
+                                          QMessageBox::Yes | QMessageBox::No );
     if ( res != QMessageBox::Yes )
     {
       return;
@@ -290,7 +287,7 @@ void QgsSymbolsListWidget::saveSymbol()
     mStyle->removeSymbol( saveDlg.name() );
   }
 
-  QStringList symbolTags = saveDlg.tags().split( ',' );
+  const QStringList symbolTags = saveDlg.tags().split( ',' );
 
   // add new symbol to style and re-populate the list
   QgsSymbol *newSymbol = mSymbol->clone();
@@ -306,7 +303,7 @@ void QgsSymbolsListWidget::updateSymbolDataDefinedProperty()
     return;
 
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  QgsSymbol::Property key = static_cast<  QgsSymbol::Property >( button->propertyKey() );
+  const QgsSymbol::Property key = static_cast<  QgsSymbol::Property >( button->propertyKey() );
   mSymbol->setDataDefinedProperty( key, button->toProperty() );
   emit changed();
 }
@@ -347,11 +344,11 @@ void QgsSymbolsListWidget::setMarkerAngle( double angle )
 void QgsSymbolsListWidget::updateDataDefinedMarkerAngle()
 {
   QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( mSymbol );
-  QgsProperty dd( mRotationDDBtn->toProperty() );
+  const QgsProperty dd( mRotationDDBtn->toProperty() );
 
   spinAngle->setEnabled( !mRotationDDBtn->isActive() );
 
-  QgsProperty symbolDD( markerSymbol->dataDefinedAngle() );
+  const QgsProperty symbolDD( markerSymbol->dataDefinedAngle() );
 
   if ( // shall we remove datadefined expressions for layers ?
     ( !symbolDD && !dd )
@@ -375,11 +372,11 @@ void QgsSymbolsListWidget::setMarkerSize( double size )
 void QgsSymbolsListWidget::updateDataDefinedMarkerSize()
 {
   QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( mSymbol );
-  QgsProperty dd( mSizeDDBtn->toProperty() );
+  const QgsProperty dd( mSizeDDBtn->toProperty() );
 
   spinSize->setEnabled( !mSizeDDBtn->isActive() );
 
-  QgsProperty symbolDD( markerSymbol->dataDefinedSize() );
+  const QgsProperty symbolDD( markerSymbol->dataDefinedSize() );
 
   if ( // shall we remove datadefined expressions for layers ?
     ( !symbolDD && !dd )
@@ -387,7 +384,7 @@ void QgsSymbolsListWidget::updateDataDefinedMarkerSize()
     || dd )
   {
     markerSymbol->setDataDefinedSize( dd );
-    markerSymbol->setScaleMethod( QgsSymbol::ScaleDiameter );
+    markerSymbol->setScaleMethod( Qgis::ScaleMethod::ScaleDiameter );
     emit changed();
   }
 }
@@ -404,11 +401,11 @@ void QgsSymbolsListWidget::setLineWidth( double width )
 void QgsSymbolsListWidget::updateDataDefinedLineWidth()
 {
   QgsLineSymbol *lineSymbol = static_cast<QgsLineSymbol *>( mSymbol );
-  QgsProperty dd( mWidthDDBtn->toProperty() );
+  const QgsProperty dd( mWidthDDBtn->toProperty() );
 
   spinWidth->setEnabled( !mWidthDDBtn->isActive() );
 
-  QgsProperty symbolDD( lineSymbol->dataDefinedWidth() );
+  const QgsProperty symbolDD( lineSymbol->dataDefinedWidth() );
 
   if ( // shall we remove datadefined expressions for layers ?
     ( !symbolDD && !dd )
@@ -423,9 +420,9 @@ void QgsSymbolsListWidget::updateDataDefinedLineWidth()
 void QgsSymbolsListWidget::updateAssistantSymbol()
 {
   mAssistantSymbol.reset( mSymbol->clone() );
-  if ( mSymbol->type() == QgsSymbol::Marker )
+  if ( mSymbol->type() == Qgis::SymbolType::Marker )
     mSizeDDBtn->setSymbol( mAssistantSymbol );
-  else if ( mSymbol->type() == QgsSymbol::Line && mLayer )
+  else if ( mSymbol->type() == Qgis::SymbolType::Line && mLayer )
     mWidthDDBtn->setSymbol( mAssistantSymbol );
 }
 
@@ -474,6 +471,7 @@ QgsExpressionContext QgsSymbolsListWidget::createExpressionContext() const
 
   expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE << QgsExpressionContext::EXPR_SYMBOL_COLOR
                                       << QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT << QgsExpressionContext::EXPR_GEOMETRY_PART_NUM
+                                      << QgsExpressionContext::EXPR_GEOMETRY_RING_NUM
                                       << QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT << QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM
                                       << QgsExpressionContext::EXPR_CLUSTER_COLOR << QgsExpressionContext::EXPR_CLUSTER_SIZE
                                       << QStringLiteral( "symbol_layer_count" ) << QStringLiteral( "symbol_layer_index" ) );
@@ -491,7 +489,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
     button->registerExpressionContextGenerator( this );
   }
 
-  if ( mSymbol->type() == QgsSymbol::Marker )
+  if ( mSymbol->type() == Qgis::SymbolType::Marker )
   {
     QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( mSymbol );
     spinSize->setValue( markerSymbol->size() );
@@ -499,10 +497,10 @@ void QgsSymbolsListWidget::updateSymbolInfo()
 
     if ( mLayer )
     {
-      QgsProperty ddSize( markerSymbol->dataDefinedSize() );
+      const QgsProperty ddSize( markerSymbol->dataDefinedSize() );
       mSizeDDBtn->init( QgsSymbolLayer::PropertySize, ddSize, QgsSymbolLayer::propertyDefinitions(), mLayer, true );
       spinSize->setEnabled( !mSizeDDBtn->isActive() );
-      QgsProperty ddAngle( markerSymbol->dataDefinedAngle() );
+      const QgsProperty ddAngle( markerSymbol->dataDefinedAngle() );
       mRotationDDBtn->init( QgsSymbolLayer::PropertyAngle, ddAngle, QgsSymbolLayer::propertyDefinitions(), mLayer, true );
       spinAngle->setEnabled( !mRotationDDBtn->isActive() );
     }
@@ -512,14 +510,14 @@ void QgsSymbolsListWidget::updateSymbolInfo()
       mRotationDDBtn->setEnabled( false );
     }
   }
-  else if ( mSymbol->type() == QgsSymbol::Line )
+  else if ( mSymbol->type() == Qgis::SymbolType::Line )
   {
     QgsLineSymbol *lineSymbol = static_cast<QgsLineSymbol *>( mSymbol );
     spinWidth->setValue( lineSymbol->width() );
 
     if ( mLayer )
     {
-      QgsProperty dd( lineSymbol->dataDefinedWidth() );
+      const QgsProperty dd( lineSymbol->dataDefinedWidth() );
       mWidthDDBtn->init( QgsSymbolLayer::PropertyStrokeWidth, dd, QgsSymbolLayer::propertyDefinitions(), mLayer, true );
       spinWidth->setEnabled( !mWidthDDBtn->isActive() );
     }
@@ -550,12 +548,12 @@ void QgsSymbolsListWidget::updateSymbolInfo()
     }
   }
 
-  if ( mSymbol->type() == QgsSymbol::Line || mSymbol->type() == QgsSymbol::Fill )
+  if ( mSymbol->type() == Qgis::SymbolType::Line || mSymbol->type() == Qgis::SymbolType::Fill )
   {
     //add clip features option for line or fill symbols
     mStyleItemsListWidget->advancedMenu()->addAction( mClipFeaturesAction );
   }
-  if ( mSymbol->type() == QgsSymbol::Fill )
+  if ( mSymbol->type() == Qgis::SymbolType::Fill )
   {
     mStyleItemsListWidget->advancedMenu()->addAction( mStandardizeRingsAction );
   }
@@ -583,6 +581,7 @@ void QgsSymbolsListWidget::setSymbolFromStyle( const QString &name, QgsStyle::St
     mSymbol->appendSymbolLayer( sl );
   }
   mSymbol->setOpacity( s->opacity() );
+  mSymbol->setFlags( s->flags() );
 
   updateSymbolInfo();
   emit changed();

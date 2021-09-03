@@ -23,7 +23,7 @@ const int MAX_LOG_LENGTH = 5;
 QgsProcessingRecentAlgorithmLog::QgsProcessingRecentAlgorithmLog( QObject *parent )
   : QObject( parent )
 {
-  QgsSettings settings;
+  const QgsSettings settings;
   mRecentAlgorithmIds = settings.value( QStringLiteral( "processing/recentAlgorithms" ), QVariant(), QgsSettings::Gui ).toStringList();
 }
 

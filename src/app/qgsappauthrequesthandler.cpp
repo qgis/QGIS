@@ -22,6 +22,7 @@
 #include "qgscredentials.h"
 
 #include <QAuthenticator>
+#include <QDesktopServices>
 
 void QgsAppAuthRequestHandler::handleAuthRequest( QNetworkReply *reply, QAuthenticator *auth )
 {
@@ -32,11 +33,11 @@ void QgsAppAuthRequestHandler::handleAuthRequest( QNetworkReply *reply, QAuthent
 
   if ( username.isEmpty() && password.isEmpty() && reply->request().hasRawHeader( "Authorization" ) )
   {
-    QByteArray header( reply->request().rawHeader( "Authorization" ) );
+    const QByteArray header( reply->request().rawHeader( "Authorization" ) );
     if ( header.startsWith( "Basic " ) )
     {
-      QByteArray auth( QByteArray::fromBase64( header.mid( 6 ) ) );
-      int pos = auth.indexOf( ':' );
+      const QByteArray auth( QByteArray::fromBase64( header.mid( 6 ) ) );
+      const int pos = auth.indexOf( ':' );
       if ( pos >= 0 )
       {
         username = auth.left( pos );
@@ -47,10 +48,10 @@ void QgsAppAuthRequestHandler::handleAuthRequest( QNetworkReply *reply, QAuthent
 
   for ( ;; )
   {
-    bool ok = QgsCredentials::instance()->get(
-                QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
-                username, password,
-                QObject::tr( "Authentication required" ) );
+    const bool ok = QgsCredentials::instance()->get(
+                      QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
+                      username, password,
+                      QObject::tr( "Authentication required" ) );
     if ( !ok )
       return;
 
@@ -74,4 +75,28 @@ void QgsAppAuthRequestHandler::handleAuthRequest( QNetworkReply *reply, QAuthent
 
   auth->setUser( username );
   auth->setPassword( password );
+}
+
+void QgsAppAuthRequestHandler::handleAuthRequestOpenBrowser( const QUrl &url )
+{
+  QDesktopServices::openUrl( url );
+}
+
+void QgsAppAuthRequestHandler::handleAuthRequestCloseBrowser()
+{
+  // Bring focus back to QGIS app
+  if ( qApp )
+  {
+    const QList<QWidget *> topWidgets = QgsApplication::topLevelWidgets();
+    for ( QWidget *topWidget : topWidgets )
+    {
+      if ( topWidget->objectName() == QLatin1String( "MainWindow" ) )
+      {
+        topWidget->raise();
+        topWidget->activateWindow();
+        topWidget->show();
+        break;
+      }
+    }
+  }
 }

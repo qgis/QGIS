@@ -27,7 +27,7 @@ class QgsScaleWidget;
 /**
  * \ingroup gui
  * \class QgsScaleRangeWidget
- * A widget allowing entry of a range of map scales, e.g. minimum scale and maximum scale.
+ * \brief A widget allowing entry of a range of map scales, e.g. minimum scale and maximum scale.
  */
 class GUI_EXPORT QgsScaleRangeWidget : public QWidget
 {

@@ -30,6 +30,8 @@
 #include "qgsprojectviewsettings.h"
 #include "qgstextformatwidget.h"
 #include "qgsguiutils.h"
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
 
 QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, QgsLayoutItemMap *map )
   : QgsLayoutItemBaseWidget( nullptr, mapGrid )
@@ -166,8 +168,8 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   mGridFrameFill2ColorButton->setNoColorString( tr( "Transparent Fill" ) );
   mGridFrameFill2ColorButton->setShowNoColor( true );
 
-  mGridLineStyleButton->setSymbolType( QgsSymbol::Line );
-  mGridMarkerStyleButton->setSymbolType( QgsSymbol::Marker );
+  mGridLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
+  mGridMarkerStyleButton->setSymbolType( Qgis::SymbolType::Marker );
 
   //set initial state of frame style controls
   toggleFrameControls( false, false, false, false );
@@ -465,12 +467,12 @@ bool QgsLayoutMapGridWidget::hasPredefinedScales() const
 {
   // first look at project's scales
   const QVector< double > scales = QgsProject::instance()->viewSettings()->mapScales();
-  bool hasProjectScales( QgsProject::instance()->viewSettings()->useProjectScales() );
+  const bool hasProjectScales( QgsProject::instance()->viewSettings()->useProjectScales() );
   if ( !hasProjectScales || scales.isEmpty() )
   {
     // default to global map tool scales
-    QgsSettings settings;
-    QString scalesStr( settings.value( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() ).toString() );
+    const QgsSettings settings;
+    const QString scalesStr( settings.value( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() ).toString() );
     QStringList myScalesList = scalesStr.split( ',' );
     return !myScalesList.isEmpty() && !myScalesList[0].isEmpty();
   }
@@ -554,7 +556,7 @@ void QgsLayoutMapGridWidget::setGridItems()
   //grid frame
   mFrameWidthSpinBox->setValue( mMapGrid->frameWidth() );
   mGridFrameMarginSpinBox->setValue( mMapGrid->frameMargin() );
-  QgsLayoutItemMapGrid::FrameStyle gridFrameStyle = mMapGrid->frameStyle();
+  const QgsLayoutItemMapGrid::FrameStyle gridFrameStyle = mMapGrid->frameStyle();
   mFrameStyleComboBox->setCurrentIndex( mFrameStyleComboBox->findData( gridFrameStyle ) );
   switch ( gridFrameStyle )
   {
@@ -881,7 +883,7 @@ void QgsLayoutMapGridWidget::mFrameStyleComboBox_currentIndexChanged( int )
     return;
   }
 
-  QgsLayoutItemMapGrid::FrameStyle style = static_cast< QgsLayoutItemMapGrid::FrameStyle >( mFrameStyleComboBox->currentData().toInt() );
+  const QgsLayoutItemMapGrid::FrameStyle style = static_cast< QgsLayoutItemMapGrid::FrameStyle >( mFrameStyleComboBox->currentData().toInt() );
   mMap->beginCommand( tr( "Change Frame Style" ) );
   mMapGrid->setFrameStyle( style );
   switch ( style )
@@ -928,7 +930,7 @@ void QgsLayoutMapGridWidget::mRotatedTicksLengthModeComboBox_currentIndexChanged
     return;
   }
 
-  QgsLayoutItemMapGrid::TickLengthMode mode = static_cast< QgsLayoutItemMapGrid::TickLengthMode >( mRotatedTicksLengthModeComboBox->currentData().toInt() );
+  const QgsLayoutItemMapGrid::TickLengthMode mode = static_cast< QgsLayoutItemMapGrid::TickLengthMode >( mRotatedTicksLengthModeComboBox->currentData().toInt() );
   mMap->beginCommand( tr( "Change Tick Length Mode" ) );
   mMapGrid->setRotatedTicksLengthMode( mode );
   mMap->update();
@@ -981,7 +983,7 @@ void QgsLayoutMapGridWidget::mRotatedAnnotationsLengthModeComboBox_currentIndexC
     return;
   }
 
-  QgsLayoutItemMapGrid::TickLengthMode mode = static_cast< QgsLayoutItemMapGrid::TickLengthMode >( mRotatedAnnotationsLengthModeComboBox->currentData().toInt() );
+  const QgsLayoutItemMapGrid::TickLengthMode mode = static_cast< QgsLayoutItemMapGrid::TickLengthMode >( mRotatedAnnotationsLengthModeComboBox->currentData().toInt() );
   mMap->beginCommand( tr( "Change Annotation Length Mode" ) );
   mMapGrid->setRotatedAnnotationsLengthMode( mode );
   mMap->update();
@@ -1250,7 +1252,7 @@ void QgsLayoutMapGridWidget::mAnnotationFormatButton_clicked()
 
   if ( exprDlg.exec() == QDialog::Accepted )
   {
-    QString expression = exprDlg.expressionText();
+    const QString expression = exprDlg.expressionText();
     mMap->beginCommand( tr( "Change Annotation Format" ) );
     mMapGrid->setAnnotationExpression( expression );
     mMap->updateBoundingRect();

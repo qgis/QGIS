@@ -12,7 +12,7 @@
 
 class QgsSingleBandPseudoColorRenderer: QgsRasterRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 Raster renderer pipe for single band pseudocolor.
 %End
 

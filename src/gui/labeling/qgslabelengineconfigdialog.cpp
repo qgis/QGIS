@@ -39,7 +39,7 @@ QgsLabelEngineConfigWidget::QgsLabelEngineConfigWidget( QgsMapCanvas *canvas, QW
   mMessageBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
   verticalLayout->insertWidget( 0,  mMessageBar );
 
-  QgsLabelingEngineSettings engineSettings = QgsProject::instance()->labelingEngineSettings();
+  const QgsLabelingEngineSettings engineSettings = QgsProject::instance()->labelingEngineSettings();
 
   mTextRenderFormatComboBox->addItem( tr( "Always Render Labels as Paths (Recommended)" ), QgsRenderContext::TextFormatAlwaysOutlines );
   mTextRenderFormatComboBox->addItem( tr( "Always Render Labels as Text" ), QgsRenderContext::TextFormatAlwaysText );
@@ -53,7 +53,7 @@ QgsLabelEngineConfigWidget::QgsLabelEngineConfigWidget( QgsMapCanvas *canvas, QW
   {
     if ( static_cast< QgsLabelingEngineSettings::PlacementEngineVersion >( mPlacementVersionComboBox->currentData().toInt() ) != mPreviousEngineVersion )
     {
-      mMessageBar->pushMessage( QString(), tr( "Version changes will alter label placement in the project." ), Qgis::Warning );
+      mMessageBar->pushMessage( QString(), tr( "Version changes will alter label placement in the project." ), Qgis::MessageLevel::Warning );
     }
   } );
 
@@ -76,15 +76,15 @@ QgsLabelEngineConfigWidget::QgsLabelEngineConfigWidget( QgsMapCanvas *canvas, QW
 
   mTextRenderFormatComboBox->setCurrentIndex( mTextRenderFormatComboBox->findData( engineSettings.defaultTextRenderFormat() ) );
 
-  connect( spinCandLine, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ), this, &QgsLabelEngineConfigWidget::widgetChanged );
-  connect( spinCandPolygon, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ), this, &QgsLabelEngineConfigWidget::widgetChanged );
+  connect( spinCandLine, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsLabelEngineConfigWidget::widgetChanged );
+  connect( spinCandPolygon, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsLabelEngineConfigWidget::widgetChanged );
   connect( chkShowCandidates, &QCheckBox::toggled, this, &QgsLabelEngineConfigWidget::widgetChanged );
   connect( chkShowAllLabels, &QCheckBox::toggled, this, &QgsLabelEngineConfigWidget::widgetChanged );
   connect( chkShowUnplaced, &QCheckBox::toggled, this, &QgsLabelEngineConfigWidget::widgetChanged );
   connect( chkShowPartialsLabels, &QCheckBox::toggled, this, &QgsLabelEngineConfigWidget::widgetChanged );
-  connect( mTextRenderFormatComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsLabelEngineConfigWidget::widgetChanged );
+  connect( mTextRenderFormatComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsLabelEngineConfigWidget::widgetChanged );
   connect( mUnplacedColorButton, &QgsColorButton::colorChanged, this, &QgsLabelEngineConfigWidget::widgetChanged );
-  connect( mPlacementVersionComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsLabelEngineConfigWidget::widgetChanged );
+  connect( mPlacementVersionComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsLabelEngineConfigWidget::widgetChanged );
 
   mWidgetMenu = new QMenu( this );
   QAction *resetAction = new QAction( tr( "Restore Defaults" ), this );
@@ -130,7 +130,7 @@ void QgsLabelEngineConfigWidget::apply()
 
 void QgsLabelEngineConfigWidget::setDefaults()
 {
-  pal::Pal p;
+  const pal::Pal p;
   spinCandLine->setValue( 5 );
   spinCandPolygon->setValue( 10 );
   chkShowCandidates->setChecked( false );

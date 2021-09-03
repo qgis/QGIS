@@ -11,7 +11,7 @@
 
 class QgsVectorDataProviderTemporalCapabilities : QgsDataProviderTemporalCapabilities
 {
-%Docstring
+%Docstring(signature="appended")
 Implementation of data provider temporal properties for :py:class:`QgsVectorDataProviders`.
 
 Data provider temporal capabilities reflect the temporal capabilities of a :py:class:`QgsDataProvider`.

@@ -57,16 +57,18 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
      * Only has an effect after widget() has been called at least once.
      *
      * \since QGIS 2.18
+     * \deprecated since QGIS 3.20 label is handled directly in QgsAttributeForm.
      */
-    bool showLabel() const;
+    Q_DECL_DEPRECATED bool showLabel() const SIP_DEPRECATED;
 
     /**
      * Defines if a title label should be shown for this widget.
      * Only has an effect after widget() has been called at least once.
      *
      * \since QGIS 2.18
+     * \deprecated since QGIS 3.20 label is handled directly in QgsAttributeForm.
      */
-    void setShowLabel( bool showLabel );
+    Q_DECL_DEPRECATED void setShowLabel( bool showLabel ) SIP_DEPRECATED;
 
     /**
      * Determines if the "link feature" button should be shown
@@ -170,15 +172,17 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
     /**
      * Determines the label of this element
      * \since QGIS 3.16
+     * \deprecated since QGIS 3.20 label is handled directly in QgsAttributeForm.
      */
-    QString label() const;
+    Q_DECL_DEPRECATED QString label() const SIP_DEPRECATED;
 
     /**
      * Sets \a label for this element
      * If it's empty it takes the relation id as label
      * \since QGIS 3.16
+     * \deprecated since QGIS 3.20 label is handled directly in QgsAttributeForm.
      */
-    void setLabel( const QString &label = QString() );
+    Q_DECL_DEPRECATED void setLabel( const QString &label = QString() ) SIP_DEPRECATED;
 
     /**
      * The relation for which this wrapper is created.

@@ -60,7 +60,11 @@ class TestPyQgsNewVectorTableDialog(unittest.TestCase):
         md = QgsProviderRegistry.instance().providerMetadata('ogr')
         conn = md.createConnection(self.uri, {})
         dialog = QgsNewVectorTableDialog(conn)
-        dialog.setFields(conn.fields('', 'cdb_lines'))
+        fields = QgsFields()
+        for f in conn.fields('', 'cdb_lines'):
+            if f.name() != 'geom':
+                fields.append(f)
+        dialog.setFields(fields)
         dialog.setTableName('no_lock_me_down_again')
 
         # dialog.exec_()

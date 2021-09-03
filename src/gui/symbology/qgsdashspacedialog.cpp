@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsdashspacedialog.h"
+#include "qgsdoublevalidator.h"
 #include "qgsapplication.h"
 
 #include <QDialogButtonBox>
@@ -35,8 +36,8 @@ QgsDashSpaceWidget::QgsDashSpaceWidget( const QVector<qreal> &vectorPattern, QWi
     space = vectorPattern.at( i );
     QTreeWidgetItem *entry = new QTreeWidgetItem();
     entry->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled );
-    entry->setText( 0, QString::number( dash ) );
-    entry->setText( 1, QString::number( space ) );
+    entry->setText( 0, QLocale().toString( dash ) );
+    entry->setText( 1, QLocale().toString( space ) );
     mDashSpaceTreeWidget->addTopLevelItem( entry );
   }
 
@@ -70,13 +71,13 @@ void QgsDashSpaceWidget::mRemoveButton_clicked()
 QVector<qreal> QgsDashSpaceWidget::dashDotVector() const
 {
   QVector<qreal> dashVector;
-  int nTopLevelItems = mDashSpaceTreeWidget->topLevelItemCount();
+  const int nTopLevelItems = mDashSpaceTreeWidget->topLevelItemCount();
   for ( int i = 0; i < nTopLevelItems; ++i )
   {
     QTreeWidgetItem *currentItem = mDashSpaceTreeWidget->topLevelItem( i );
     if ( currentItem )
     {
-      dashVector << currentItem->text( 0 ).toDouble() << currentItem->text( 1 ).toDouble();
+      dashVector << QgsDoubleValidator::toDouble( currentItem->text( 0 ) ) << QgsDoubleValidator::toDouble( currentItem->text( 1 ) );
     }
   }
   return dashVector;

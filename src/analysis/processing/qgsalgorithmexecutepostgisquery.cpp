@@ -67,7 +67,7 @@ QVariantMap QgsExecutePostgisQueryAlgorithm::processAlgorithm( const QVariantMap
 {
   Q_UNUSED( feedback );
 
-  QString connName = parameterAsConnectionName( parameters, QStringLiteral( "DATABASE" ), context );
+  const QString connName = parameterAsConnectionName( parameters, QStringLiteral( "DATABASE" ), context );
 
   std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn;
   try
@@ -80,7 +80,7 @@ QVariantMap QgsExecutePostgisQueryAlgorithm::processAlgorithm( const QVariantMap
     throw QgsProcessingException( QObject::tr( "Could not retrieve connection details for %1" ).arg( connName ) );
   }
 
-  QString sql = parameterAsString( parameters, QStringLiteral( "SQL" ), context ).replace( '\n', ' ' );
+  const QString sql = parameterAsString( parameters, QStringLiteral( "SQL" ), context ).replace( '\n', ' ' );
   try
   {
     conn->executeSql( sql );

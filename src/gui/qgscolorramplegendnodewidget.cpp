@@ -38,12 +38,19 @@ QgsColorRampLegendNodeWidget::QgsColorRampLegendNodeWidget( QWidget *parent )
   mFontButton->setShowNullFormat( true );
   mFontButton->setNoFormatString( tr( "Default" ) );
 
+  connect( mUseContinuousLegendCheckBox, &QCheckBox::stateChanged, this, [ = ]( bool checked )
+  {
+    mLayoutGroup->setEnabled( checked );
+    mLabelsGroup->setEnabled( checked );
+    onChanged();
+  } );
+
   connect( mMinLabelLineEdit, &QLineEdit::textChanged, this, &QgsColorRampLegendNodeWidget::onChanged );
   connect( mMaxLabelLineEdit, &QLineEdit::textChanged, this, &QgsColorRampLegendNodeWidget::onChanged );
   connect( mPrefixLineEdit, &QLineEdit::textChanged, this, &QgsColorRampLegendNodeWidget::onChanged );
   connect( mSuffixLineEdit, &QLineEdit::textChanged, this, &QgsColorRampLegendNodeWidget::onChanged );
-  connect( mDirectionComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsColorRampLegendNodeWidget::onChanged );
-  connect( mOrientationComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsColorRampLegendNodeWidget::onOrientationChanged );
+  connect( mDirectionComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsColorRampLegendNodeWidget::onChanged );
+  connect( mOrientationComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsColorRampLegendNodeWidget::onOrientationChanged );
   connect( mNumberFormatPushButton, &QPushButton::clicked, this, &QgsColorRampLegendNodeWidget::changeNumberFormat );
   connect( mFontButton, &QgsFontButton::changed, this, &QgsColorRampLegendNodeWidget::onChanged );
 }
@@ -51,6 +58,7 @@ QgsColorRampLegendNodeWidget::QgsColorRampLegendNodeWidget( QWidget *parent )
 QgsColorRampLegendNodeSettings QgsColorRampLegendNodeWidget::settings() const
 {
   QgsColorRampLegendNodeSettings settings;
+  settings.setUseContinuousLegend( mUseContinuousLegendCheckBox->isChecked() );
   settings.setDirection( static_cast< QgsColorRampLegendNodeSettings::Direction >( mDirectionComboBox->currentData().toInt() ) );
   settings.setOrientation( static_cast< Qt::Orientation >( mOrientationComboBox->currentData().toInt() ) );
   settings.setMinimumLabel( mMinLabelLineEdit->text() );
@@ -67,6 +75,7 @@ void QgsColorRampLegendNodeWidget::setSettings( const QgsColorRampLegendNodeSett
   mBlockSignals = true;
 
   mSettings = settings;
+  mUseContinuousLegendCheckBox->setChecked( settings.useContinuousLegend() );
   mMinLabelLineEdit->setText( settings.minimumLabel() );
   mMaxLabelLineEdit->setText( settings.maximumLabel() );
   mPrefixLineEdit->setText( settings.prefix() );
@@ -76,6 +85,11 @@ void QgsColorRampLegendNodeWidget::setSettings( const QgsColorRampLegendNodeSett
   mFontButton->setTextFormat( settings.textFormat() );
   onOrientationChanged();
   mBlockSignals = false;
+}
+
+void QgsColorRampLegendNodeWidget::setUseContinuousRampCheckBoxVisibility( bool visible )
+{
+  mUseContinuousLegendCheckBox->setVisible( visible );
 }
 
 void QgsColorRampLegendNodeWidget::changeNumberFormat()
@@ -147,4 +161,9 @@ QgsColorRampLegendNodeSettings QgsColorRampLegendNodeDialog::settings() const
 QDialogButtonBox *QgsColorRampLegendNodeDialog::buttonBox() const
 {
   return mButtonBox;
+}
+
+void QgsColorRampLegendNodeDialog::setUseContinuousRampCheckBoxVisibility( bool visible )
+{
+  mWidget->setUseContinuousRampCheckBoxVisibility( visible );
 }

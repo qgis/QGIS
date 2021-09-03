@@ -856,10 +856,17 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         try:
             with OverrideCursor(Qt.WaitCursor):
-                cat = CatalogueServiceWeb(self.catalog_url, timeout=self.timeout,  # spellok
-                                          username=self.catalog_username,
-                                          password=self.catalog_password,
-                                          auth=auth)
+                if auth is not None:
+                    cat = CatalogueServiceWeb(self.catalog_url, timeout=self.timeout,  # spellok
+                                              username=self.catalog_username,
+                                              password=self.catalog_password,
+                                              auth=auth)
+                else:
+                    # older owslib version without the auth keyword
+                    cat = CatalogueServiceWeb(self.catalog_url, timeout=self.timeout,  # spellok
+                                              username=self.catalog_username,
+                                              password=self.catalog_password)
+
                 cat.getrecordbyid(
                     [self.catalog.records[identifier].identifier])
         except ExceptionReport as err:
@@ -946,11 +953,18 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         # connect to the server
         with OverrideCursor(Qt.WaitCursor):
             try:
-                self.catalog = CatalogueServiceWeb(self.catalog_url,  # spellok
-                                                   timeout=self.timeout,
-                                                   username=self.catalog_username,
-                                                   password=self.catalog_password,
-                                                   auth=auth)
+                if auth is not None:
+                    self.catalog = CatalogueServiceWeb(self.catalog_url,  # spellok
+                                                       timeout=self.timeout,
+                                                       username=self.catalog_username,
+                                                       password=self.catalog_password,
+                                                       auth=auth)
+                else:
+                    # older owslib version without the auth keyword
+                    self.catalog = CatalogueServiceWeb(self.catalog_url,  # spellok
+                                                       timeout=self.timeout,
+                                                       username=self.catalog_username,
+                                                       password=self.catalog_password)
                 return True
             except ExceptionReport as err:
                 msg = self.tr('Error connecting to service: {0}').format(err)

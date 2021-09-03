@@ -14,7 +14,7 @@
 
 class QgsRasterHistogramWidget : QgsMapLayerConfigWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Histogram widget
 %End
 

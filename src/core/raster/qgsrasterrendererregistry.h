@@ -39,7 +39,7 @@ typedef QgsRasterRendererWidget *( *QgsRasterRendererWidgetCreateFunc )( QgsRast
 
 /**
  * \ingroup core
-  * Registry for raster renderer entries.
+  * \brief Registry for raster renderer entries.
   */
 struct CORE_EXPORT QgsRasterRendererRegistryEntry
 {
@@ -59,7 +59,7 @@ struct CORE_EXPORT QgsRasterRendererRegistryEntry
 
 /**
  * \ingroup core
-  * Registry for raster renderers.
+  * \brief Registry for raster renderers.
   *
   * QgsRasterRendererRegistry is not usually directly created, but rather accessed through
   * QgsApplication::rasterRendererRegistry().

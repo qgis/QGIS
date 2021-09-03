@@ -85,8 +85,8 @@ void TestQgs3DSymbolRegistry::metadata()
   QCOMPARE( metadata.visibleName(), QString( "display name" ) );
 
   //test creating symbol from metadata
-  QVariantMap map;
-  std::unique_ptr< QgsAbstract3DSymbol > symbol( metadata.create() );
+  const QVariantMap map;
+  const std::unique_ptr< QgsAbstract3DSymbol > symbol( metadata.create() );
   QVERIFY( symbol );
   Dummy3DSymbol *dummySymbol = dynamic_cast<Dummy3DSymbol *>( symbol.get() );
   QVERIFY( dummySymbol );
@@ -113,7 +113,7 @@ void TestQgs3DSymbolRegistry::instanceHasDefaultSymbols()
 void TestQgs3DSymbolRegistry::addSymbol()
 {
   Qgs3DSymbolRegistry *registry = QgsApplication::symbol3DRegistry();
-  int previousCount = registry->symbolTypes().length();
+  const int previousCount = registry->symbolTypes().length();
 
   registry->addSymbolType( new Qgs3DSymbolMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy symbol" ), Dummy3DSymbol::create ) );
   QCOMPARE( registry->symbolTypes().length(), previousCount + 1 );
@@ -131,7 +131,7 @@ void TestQgs3DSymbolRegistry::addSymbol()
 void TestQgs3DSymbolRegistry::fetchTypes()
 {
   Qgs3DSymbolRegistry *registry = QgsApplication::symbol3DRegistry();
-  QStringList types = registry->symbolTypes();
+  const QStringList types = registry->symbolTypes();
 
   QVERIFY( types.contains( "Dummy" ) );
 

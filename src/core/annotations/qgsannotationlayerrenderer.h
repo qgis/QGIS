@@ -23,12 +23,15 @@
 #include "qgis_sip.h"
 #include "qgsmaplayerrenderer.h"
 #include "qgsannotationitem.h"
+#include <tuple>
+#include <vector>
+#include <memory>
 
 class QgsAnnotationLayer;
 
 /**
  * \ingroup core
- * Implementation of threaded rendering for annotation layers.
+ * \brief Implementation of threaded rendering for annotation layers.
  *
  * \note not available in Python bindings
  * \since QGIS 3.16
@@ -47,7 +50,7 @@ class CORE_EXPORT QgsAnnotationLayerRenderer : public QgsMapLayerRenderer
     bool forceRasterRender() const override;
 
   private:
-    QVector< QgsAnnotationItem *> mItems;
+    std::vector < std::pair< QString, std::unique_ptr< QgsAnnotationItem > > > mItems;
     std::unique_ptr< QgsFeedback > mFeedback;
     double mLayerOpacity = 1.0;
 

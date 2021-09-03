@@ -5,6 +5,6 @@
   "description": "Merge map elements into a hstore-formatted string.",
   "arguments": [
     {"arg":"map", "description":"the input map"}],
-  "examples": [ { "expression":"map_to_hstore(map('qgis','rocks'))", "returns":"\"qgis\"=>\"rocks\"}"}
+  "examples": [ { "expression":"map_to_hstore(map('qgis','rocks'))", "returns":"'\"qgis\"=>\"rocks\"'"}
   ]
 }

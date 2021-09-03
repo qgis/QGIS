@@ -31,7 +31,7 @@ class QgsAbstractMaterialSettings;
 
 /**
  * \ingroup 3d
- * 3D symbol that draws mesh geometry as planar triangles.
+ * \brief 3D symbol that draws mesh geometry as planar triangles.
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is
  * exposed to the Python bindings as a tech preview only.

@@ -175,14 +175,13 @@ class Climb(QgisAlgorithm):
             maxelev = float('-Infinity')
             # In case of multigeometries we need to do the parts
             parts = feature.geometry().constParts()
-            partnumber = 0
             if not feature.hasGeometry():
                 no_geometry.append(self.tr(
                     'Feature: {feature_id}'.format(
                         feature_id=feature.id())
                 )
                 )
-            for part in parts:
+            for partnumber, part in enumerate(parts):
                 # Calculate the climb
                 first = True
                 zval = 0
@@ -205,34 +204,29 @@ class Climb(QgisAlgorithm):
                     else:
                         diff = zval - prevz
                         if diff > 0:
-                            climb = climb + diff
+                            climb += diff
                         else:
-                            descent = descent - diff
-                        if minelev > zval:
-                            minelev = zval
-                        if maxelev < zval:
-                            maxelev = zval
+                            descent -= diff
+                        minelev = min(minelev, zval)
+                        maxelev = max(maxelev, zval)
                     prevz = zval
-                totalclimb = totalclimb + climb
-                totaldescent = totaldescent + descent
-                partnumber += 1
+                totalclimb += climb
+                totaldescent += descent
             # Set the attribute values
-            attrs = []
             # Append the attributes to the end of the existing ones
-            attrs.append(climb)
-            attrs.append(descent)
-            attrs.append(minelev)
-            attrs.append(maxelev)
-            attrs.extend(feature.attributes())
-
+            attrs = [
+                climb,
+                descent,
+                minelev,
+                maxelev,
+                *feature.attributes()
+            ]
             # Set the final attribute list
             feature.setAttributes(attrs)
             # Add a feature to the sink
             sink.addFeature(feature, QgsFeatureSink.FastInsert)
-            if minelevation > minelev:
-                minelevation = minelev
-            if maxelevation < maxelev:
-                maxelevation = maxelev
+            minelevation = min(minelevation, minelev)
+            maxelevation = max(maxelevation, maxelev)
             # Update the progress bar
             if fcount > 0:
                 feedback.setProgress(int(100 * current / fcount))

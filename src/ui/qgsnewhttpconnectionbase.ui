@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>448</width>
-    <height>815</height>
+    <width>567</width>
+    <height>821</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -119,7 +119,7 @@
          <item row="1" column="0" colspan="2">
           <widget class="QCheckBox" name="cbxIgnoreGetMapURI">
            <property name="text">
-            <string>Ignore GetMap/GetTile URI reported in capabilities</string>
+            <string>Ignore GetMap/GetTile/GetLegendGraphic URI reported in capabilities</string>
            </property>
           </widget>
          </item>
@@ -333,15 +333,15 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsAuthSettingsWidget</class>
    <extends>QWidget</extends>
    <header>auth/qgsauthsettingswidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -355,10 +355,12 @@
   <tabstop>txtPageSize</tabstop>
   <tabstop>cbxWfsIgnoreAxisOrientation</tabstop>
   <tabstop>cbxWfsInvertAxisOrientation</tabstop>
+  <tabstop>cbxWfsUseGml2EncodingForTransactions</tabstop>
   <tabstop>cmbDpiMode</tabstop>
   <tabstop>cbxIgnoreGetMapURI</tabstop>
   <tabstop>cbxIgnoreGetFeatureInfoURI</tabstop>
   <tabstop>cbxWmsIgnoreAxisOrientation</tabstop>
+  <tabstop>cbxWmsIgnoreReportedLayerExtents</tabstop>
   <tabstop>cbxWmsInvertAxisOrientation</tabstop>
   <tabstop>cbxSmoothPixmapTransform</tabstop>
   <tabstop>mTestConnectionButton</tabstop>

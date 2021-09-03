@@ -27,7 +27,7 @@
 
 /**
  * \ingroup 3d
- * Material of the billboard rendering for points in 3D map view.
+ * \brief Material of the billboard rendering for points in 3D map view.
  *
  * \note Not available in Python bindings
  *

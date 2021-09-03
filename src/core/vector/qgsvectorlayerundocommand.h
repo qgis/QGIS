@@ -131,8 +131,8 @@ class CORE_EXPORT QgsVectorLayerUndoCommandChangeGeometry : public QgsVectorLaye
 
     void undo() override;
     void redo() override;
-    int id() const override;
-    bool mergeWith( const QUndoCommand * ) override;
+    int id() const override { return 1; }
+    bool mergeWith( const QUndoCommand *other ) override;
 
   private:
     QgsFeatureId mFid;

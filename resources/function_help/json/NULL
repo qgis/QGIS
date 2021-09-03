@@ -1,9 +1,10 @@
 {
   "name": "NULL",
   "type": "value",
+  "groups": ["Fields and Values"],
   "description": "Equates to a NULL value.",
   "examples": [
        { "expression":"NULL", "returns":"a NULL value" }
   ],
-  "notes": "To test for NULL use an <pre>IS NULL</pre> or <pre>IS NOT NULL</pre> expression."
+  "notes": "To test for NULL use an <i>IS NULL</i> or <i>IS NOT NULL</i> expression."
 }

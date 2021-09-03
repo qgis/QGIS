@@ -24,7 +24,7 @@
 /**
  * \class QgsNumericScaleBarRenderer
  * \ingroup core
- * A scale bar style that draws text in the form of '1:XXXXX'.
+ * \brief A scale bar style that draws text in the form of '1:XXXXX'.
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsNumericScaleBarRenderer: public QgsScaleBarRenderer

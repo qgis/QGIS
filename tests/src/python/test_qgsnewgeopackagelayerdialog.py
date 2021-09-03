@@ -54,10 +54,6 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
         except:
             return
 
-        version_num = int(gdal.VersionInfo('VERSION_NUM'))
-        if version_num < GDAL_COMPUTE_VERSION(1, 11, 0):
-            return
-
         dialog = QgsNewGeoPackageLayerDialog()
         dialog.setProperty("hideDialogs", True)
 
@@ -120,11 +116,10 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
         self.assertFalse(mFieldLengthEdit.isEnabled())
         QTest.mouseClick(mAddAttributeButton, Qt.LeftButton)
 
-        if version_num >= GDAL_COMPUTE_VERSION(2, 0, 0):
-            mFieldNameEdit.setText('int64field')
-            mFieldTypeBox.setCurrentIndex(mFieldTypeBox.findData('integer64'))
-            self.assertFalse(mFieldLengthEdit.isEnabled())
-            QTest.mouseClick(mAddAttributeButton, Qt.LeftButton)
+        mFieldNameEdit.setText('int64field')
+        mFieldTypeBox.setCurrentIndex(mFieldTypeBox.findData('integer64'))
+        self.assertFalse(mFieldLengthEdit.isEnabled())
+        QTest.mouseClick(mAddAttributeButton, Qt.LeftButton)
 
         # Add and remove field
         mFieldNameEdit.setText('dummy')
@@ -152,15 +147,10 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
         self.assertEqual(lyr.GetFIDColumn(), 'my_fid')
         self.assertEqual(lyr.GetGeometryColumn(), 'my_geom')
         self.assertEqual(lyr.GetGeomType(), ogr.wkbPoint)
-        if version_num >= GDAL_COMPUTE_VERSION(2, 0, 0):
-            self.assertEqual(lyr.GetLayerDefn().GetFieldCount(), 6)
-        else:
-            self.assertEqual(lyr.GetLayerDefn().GetFieldCount(), 5)
+        self.assertEqual(lyr.GetLayerDefn().GetFieldCount(), 6)
         self.assertEqual(lyr.GetLayerDefn().GetFieldDefn(0).GetNameRef(), 'strfield')
         self.assertEqual(lyr.GetLayerDefn().GetFieldDefn(0).GetType(), ogr.OFTString)
-        # Only GDAL 2.0 recognizes string field width
-        if version_num >= GDAL_COMPUTE_VERSION(2, 0, 0):
-            self.assertEqual(lyr.GetLayerDefn().GetFieldDefn(0).GetWidth(), 10)
+        self.assertEqual(lyr.GetLayerDefn().GetFieldDefn(0).GetWidth(), 10)
         self.assertEqual(lyr.GetLayerDefn().GetFieldDefn(1).GetNameRef(), 'intfield')
         self.assertEqual(lyr.GetLayerDefn().GetFieldDefn(1).GetType(), ogr.OFTInteger)
         self.assertEqual(lyr.GetLayerDefn().GetFieldDefn(1).GetWidth(), 0)
@@ -171,17 +161,11 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
         self.assertEqual(lyr.GetLayerDefn().GetFieldDefn(3).GetType(), ogr.OFTDate)
         self.assertEqual(lyr.GetLayerDefn().GetFieldDefn(3).GetWidth(), 0)
         self.assertEqual(lyr.GetLayerDefn().GetFieldDefn(4).GetNameRef(), 'datetimefield')
-        if version_num >= GDAL_COMPUTE_VERSION(2, 0, 0):
-            self.assertEqual(lyr.GetLayerDefn().GetFieldDefn(4).GetType(), ogr.OFTDateTime)
-        else:
-            # There's a bug in OGR 1.11. The field is probably declared as DATETIME in SQL
-            # but OGR detects it as OFTDate
-            self.assertEqual(lyr.GetLayerDefn().GetFieldDefn(4).GetType(), ogr.OFTDate)
+        self.assertEqual(lyr.GetLayerDefn().GetFieldDefn(4).GetType(), ogr.OFTDateTime)
         self.assertEqual(lyr.GetLayerDefn().GetFieldDefn(4).GetWidth(), 0)
-        if version_num >= GDAL_COMPUTE_VERSION(2, 0, 0):
-            self.assertEqual(lyr.GetLayerDefn().GetFieldDefn(5).GetNameRef(), 'int64field')
-            self.assertEqual(lyr.GetLayerDefn().GetFieldDefn(5).GetType(), ogr.OFTInteger64)
-            self.assertEqual(lyr.GetLayerDefn().GetFieldDefn(5).GetWidth(), 0)
+        self.assertEqual(lyr.GetLayerDefn().GetFieldDefn(5).GetNameRef(), 'int64field')
+        self.assertEqual(lyr.GetLayerDefn().GetFieldDefn(5).GetType(), ogr.OFTInteger64)
+        self.assertEqual(lyr.GetLayerDefn().GetFieldDefn(5).GetWidth(), 0)
         ds = None
 
         # Try re-adding with different table. It should ask if we want to
@@ -237,26 +221,23 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
         self.assertTrue(self.accepted)
 
         # Only check with OGR 2.0 since the IDENTIFIER and DESCRIPTION creation options don't exist in OGR 1.11
-        if version_num >= GDAL_COMPUTE_VERSION(2, 0, 0):
-            layers = QgsProject.instance().mapLayers()
-            self.assertEqual(len(layers), 1)
-            layer = layers[list(layers.keys())[0]]
-            self.assertEqual(layer.name(), 'my_identifier')
-            QgsProject.instance().removeAllMapLayers()
+        layers = QgsProject.instance().mapLayers()
+        self.assertEqual(len(layers), 1)
+        layer = layers[list(layers.keys())[0]]
+        self.assertEqual(layer.name(), 'my_identifier')
+        QgsProject.instance().removeAllMapLayers()
 
-            ds = ogr.Open(dbname)
-            sql_lyr = ds.ExecuteSQL('SELECT * FROM gpkg_contents')
-            self.assertEqual(sql_lyr.GetFeatureCount(), 1)
-            f = sql_lyr.GetNextFeature()
-            identifier = f.GetField('identifier')
-            description = f.GetField('description')
-            f = None
-            ds.ReleaseResultSet(sql_lyr)
-            ds = None
-            self.assertEqual(identifier, 'my_identifier')
-            self.assertEqual(description, 'my_description')
-        else:
-            QgsProject.instance().removeAllMapLayers()
+        ds = ogr.Open(dbname)
+        sql_lyr = ds.ExecuteSQL('SELECT * FROM gpkg_contents')
+        self.assertEqual(sql_lyr.GetFeatureCount(), 1)
+        f = sql_lyr.GetNextFeature()
+        identifier = f.GetField('identifier')
+        description = f.GetField('description')
+        f = None
+        ds.ReleaseResultSet(sql_lyr)
+        ds = None
+        self.assertEqual(identifier, 'my_identifier')
+        self.assertEqual(description, 'my_description')
 
         # Try invalid path
         mDatabase.setFilePath('/this/is/invalid/test.gpkg')

@@ -29,7 +29,7 @@ class QgsPluginLayer;
 
 /**
  * \ingroup core
-    class for creating plugin specific layers
+ * \brief Class for creating plugin specific layers
 */
 class CORE_EXPORT QgsPluginLayerType
 {
@@ -60,7 +60,7 @@ class CORE_EXPORT QgsPluginLayerType
 
 /**
  * \ingroup core
- * A registry of plugin layers types.
+ * \brief A registry of plugin layers types.
  *
  * QgsPluginLayerRegistry is not usually directly created, but rather accessed through
  * QgsApplication::pluginLayerRegistry().

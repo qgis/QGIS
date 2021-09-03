@@ -480,7 +480,7 @@ void QgsLayerTreeViewDefaultActions::moveToTop()
   {
     return a->depth() > b->depth();
   } );
-  for ( QgsLayerTreeNode *n : qgis::as_const( selectedNodes ) )
+  for ( QgsLayerTreeNode *n : std::as_const( selectedNodes ) )
   {
     QgsLayerTreeGroup *parentGroup = qobject_cast<QgsLayerTreeGroup *>( n->parent() );
     QgsLayerTreeNode *clonedNode = n->clone();
@@ -498,7 +498,7 @@ void QgsLayerTreeViewDefaultActions::moveToBottom()
   {
     return a->depth() > b->depth();
   } );
-  for ( QgsLayerTreeNode *n : qgis::as_const( selectedNodes ) )
+  for ( QgsLayerTreeNode *n : std::as_const( selectedNodes ) )
   {
     QgsLayerTreeGroup *parentGroup = qobject_cast<QgsLayerTreeGroup *>( n->parent() );
     QgsLayerTreeNode *clonedNode = n->clone();

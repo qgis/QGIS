@@ -171,9 +171,6 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <property name="accessibleName">
-       <string/>
-      </property>
       <property name="openLinks">
        <bool>false</bool>
       </property>

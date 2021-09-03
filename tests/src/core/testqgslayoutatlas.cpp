@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QtTest/QSignalSpy>
 #include "qgstest.h"
+#include "qgsfillsymbol.h"
 
 class TestQgsLayoutAtlas : public QObject
 {
@@ -87,7 +88,7 @@ void TestQgsLayoutAtlas::initTestCase()
   QgsApplication::initQgis();
 
   //create maplayers from testdata and add to layer registry
-  QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/france_parts.shp" );
+  const QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/france_parts.shp" );
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                      vectorFileInfo.completeBaseName(),
                                      QStringLiteral( "ogr" ) );
@@ -108,7 +109,7 @@ void TestQgsLayoutAtlas::cleanupTestCase()
   delete mVectorLayer;
   QgsApplication::exitQgis();
 
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -122,7 +123,7 @@ void TestQgsLayoutAtlas::init()
 {
   //create composition with composer map
 
-  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:2154" ) );
+  const QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:2154" ) );
   QgsProject::instance()->setCrs( crs );
   mLayout = new QgsPrintLayout( QgsProject::instance() );
   mLayout->initializeDefaults();
@@ -201,7 +202,7 @@ void TestQgsLayoutAtlas::filename()
   for ( int fi = 0; fi < mAtlas->count(); ++fi )
   {
     mAtlas->seekTo( fi );
-    QString expected = QStringLiteral( "output_%1" ).arg( ( int )( fi + 1 ) );
+    const QString expected = QStringLiteral( "output_%1" ).arg( ( int )( fi + 1 ) );
     QCOMPARE( mAtlas->currentFilename(), expected );
   }
   mAtlas->endRender();
@@ -391,10 +392,10 @@ void TestQgsLayoutAtlas::test_signals()
   mAtlas->setSortFeatures( false );
   mAtlas->setFilterFeatures( false );
 
-  QSignalSpy spyRenderBegun( mAtlas, &QgsLayoutAtlas::renderBegun );
-  QSignalSpy spyRenderEnded( mAtlas, &QgsLayoutAtlas::renderEnded );
-  QSignalSpy spyFeatureChanged( mAtlas, &QgsLayoutAtlas::featureChanged );
-  QSignalSpy spyPreparedForAtlas( mAtlasMap, &QgsLayoutItemMap::preparedForAtlas );
+  const QSignalSpy spyRenderBegun( mAtlas, &QgsLayoutAtlas::renderBegun );
+  const QSignalSpy spyRenderEnded( mAtlas, &QgsLayoutAtlas::renderEnded );
+  const QSignalSpy spyFeatureChanged( mAtlas, &QgsLayoutAtlas::featureChanged );
+  const QSignalSpy spyPreparedForAtlas( mAtlasMap, &QgsLayoutItemMap::preparedForAtlas );
   mAtlas->beginRender();
 
   QCOMPARE( spyRenderBegun.count(), 1 );
@@ -416,7 +417,7 @@ void TestQgsLayoutAtlas::test_remove_layer()
   mAtlas->setCoverageLayer( mVectorLayer2 );
   mAtlas->setEnabled( true );
 
-  QSignalSpy spyToggled( mAtlas, SIGNAL( toggled( bool ) ) );
+  const QSignalSpy spyToggled( mAtlas, SIGNAL( toggled( bool ) ) );
 
   //remove coverage layer while atlas is enabled
   QgsProject::instance()->removeMapLayer( mVectorLayer2->id() );
@@ -437,7 +438,7 @@ void TestQgsLayoutAtlas::context()
   mAtlas->setCoverageLayer( vl2.get() );
   mAtlas->setEnabled( true );
 
-  QgsExpressionContext context = mAtlas->createExpressionContext();
+  const QgsExpressionContext context = mAtlas->createExpressionContext();
   QVERIFY( context.hasVariable( QStringLiteral( "project_title" ) ) );
   QVERIFY( context.hasVariable( QStringLiteral( "layout_name" ) ) );
   QVERIFY( context.hasVariable( QStringLiteral( "atlas_totalfeatures" ) ) );

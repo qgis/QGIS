@@ -35,7 +35,7 @@ class QgsGroupBoxCollapseButton : QToolButton
 
 class QgsCollapsibleGroupBoxBasic : QGroupBox
 {
-%Docstring
+%Docstring(signature="appended")
 A groupbox that collapses/expands when toggled.
 Basic class :py:class:`QgsCollapsibleGroupBoxBasic` does not auto-save collapsed or checked state
 Holding Alt modifier key when toggling collapsed state will synchronize the toggling across other collapsible group boxes with the same syncGroup QString value
@@ -131,7 +131,7 @@ Visual fixes for when group box is collapsed/expanded
 
 class QgsCollapsibleGroupBox : QgsCollapsibleGroupBoxBasic
 {
-%Docstring
+%Docstring(signature="appended")
 A groupbox that collapses/expands when toggled and can save its collapsed and checked states.
 By default, it auto-saves only its collapsed state to the global settings based on the widget and it's parent names.
 Holding Alt modifier key when toggling collapsed state will synchronize the toggling across other collapsible group boxes with the same syncGroup QString value

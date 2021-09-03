@@ -25,7 +25,7 @@ class QgsLineString;
 
 /**
  * \ingroup core
- * Represents a single 2D line segment, consisting of a 2D start and end vertex only.
+ * \brief Represents a single 2D line segment, consisting of a 2D start and end vertex only.
  * \since QGIS 3.2
  */
 class CORE_EXPORT QgsLineSegment2D
@@ -217,6 +217,8 @@ class CORE_EXPORT QgsLineSegment2D
     {
       std::swap( mStart, mEnd );
     }
+
+    // TODO c++20 - replace with = default
 
     //! Equality operator
     bool operator==( const QgsLineSegment2D &other ) const SIP_HOLDGIL

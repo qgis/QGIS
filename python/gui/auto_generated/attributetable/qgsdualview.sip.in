@@ -11,9 +11,10 @@
 
 
 
+
 class QgsDualView : QStackedWidget
 {
-%Docstring
+%Docstring(signature="appended")
 This widget is used to show the attributes of a set of features of a :py:class:`QgsVectorLayer`.
 The attributes can be edited.
 It supports two different layouts: the table layout, in which the attributes for the features

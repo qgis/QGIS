@@ -87,7 +87,7 @@ void QgsLocatorModelBridge::searchFinished()
   if ( mHasQueuedRequest )
   {
     // a queued request was waiting for this - run the queued search now
-    QString nextSearch = mNextRequestedString;
+    const QString nextSearch = mNextRequestedString;
     mNextRequestedString.clear();
     mHasQueuedRequest = false;
     performSearch( nextSearch );

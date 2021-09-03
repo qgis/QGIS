@@ -24,7 +24,7 @@
 /**
  * \class QgsTextPreview
  * \ingroup gui
- * A widget for previewing text formatting settings.
+ * \brief A widget for previewing text formatting settings.
  *
  * QgsTextPreview provides a widget for previewing the appearance of text rendered
  * using QgsTextRenderer. The preview includes all settings contained within

@@ -10,7 +10,7 @@
 
 class QgsLayoutAtlas : QObject, QgsAbstractLayoutIterator, QgsLayoutSerializableObject, QgsExpressionContextGenerator
 {
-%Docstring
+%Docstring(signature="appended")
 Class used to render :py:class:`QgsLayout` as an atlas, by iterating over the features from an associated vector layer.
 
 :py:class:`QgsLayoutAtlas` implement the :py:class:`QgsAbstractLayoutIterator` interface, allowing them to be used

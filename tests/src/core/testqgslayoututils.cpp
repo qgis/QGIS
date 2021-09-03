@@ -55,7 +55,6 @@ class TestQgsLayoutUtils: public QObject
     void drawTextRect(); //test drawing text in a rect
     void largestRotatedRect(); //test largest rotated rect helper function
     void decodePaperOrientation();
-    void scaleFactorFromItemStyle();
     void mapLayerFromString();
 
   private:
@@ -77,7 +76,7 @@ void TestQgsLayoutUtils::initTestCase()
 
 void TestQgsLayoutUtils::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  const QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -140,7 +139,7 @@ void TestQgsLayoutUtils::normalizedAngle()
   for ( ; it != testVals.constEnd(); ++it )
 
   {
-    double result = QgsLayoutUtils::normalizedAngle( ( *it ).first );
+    const double result = QgsLayoutUtils::normalizedAngle( ( *it ).first );
     qDebug() << QStringLiteral( "actual: %1 expected: %2" ).arg( result ).arg( ( *it ).second );
     QGSCOMPARENEAR( result, ( *it ).second, 4 * std::numeric_limits<double>::epsilon() );
 
@@ -161,7 +160,7 @@ void TestQgsLayoutUtils::normalizedAngle()
   for ( ; it != negativeTestVals.constEnd(); ++it )
 
   {
-    double result = QgsLayoutUtils::normalizedAngle( ( *it ).first, true );
+    const double result = QgsLayoutUtils::normalizedAngle( ( *it ).first, true );
     qDebug() << QStringLiteral( "actual: %1 expected: %2" ).arg( result ).arg( ( *it ).second );
     QGSCOMPARENEAR( result, ( *it ).second, 4 * std::numeric_limits<double>::epsilon() );
 
@@ -236,7 +235,7 @@ void TestQgsLayoutUtils::createRenderContextFromLayout()
   QVERIFY( !rc.painter() );
 
   //create layout with no reference map
-  QgsRectangle extent( 2000, 2800, 2500, 2900 );
+  const QgsRectangle extent( 2000, 2800, 2500, 2900 );
   QgsProject project;
   QgsLayout l( &project );
   rc = QgsLayoutUtils::createRenderContextForLayout( &l, &p );
@@ -314,7 +313,7 @@ void TestQgsLayoutUtils::createRenderContextFromMap()
   QVERIFY( !rc.painter() );
 
   //create composition with no reference map
-  QgsRectangle extent( 2000, 2800, 2500, 2900 );
+  const QgsRectangle extent( 2000, 2800, 2500, 2900 );
   QgsProject project;
   QgsLayout l( &project );
 
@@ -448,7 +447,7 @@ void TestQgsLayoutUtils::scaledFontPixelSize()
   mTestFont.setPointSize( 12 );
 
   //test scaling of font for painting
-  QFont scaledFont = QgsLayoutUtils::scaledFontPixelSize( mTestFont );
+  const QFont scaledFont = QgsLayoutUtils::scaledFontPixelSize( mTestFont );
   QCOMPARE( scaledFont.pixelSize(), 42 );
   QCOMPARE( scaledFont.family(), mTestFont.family() );
 }
@@ -568,9 +567,9 @@ void TestQgsLayoutUtils::drawTextRect()
 
 void TestQgsLayoutUtils::largestRotatedRect()
 {
-  QRectF wideRect = QRectF( 0, 0, 2, 1 );
-  QRectF highRect = QRectF( 0, 0, 1, 2 );
-  QRectF bounds = QRectF( 0, 0, 4, 2 );
+  const QRectF wideRect = QRectF( 0, 0, 2, 1 );
+  const QRectF highRect = QRectF( 0, 0, 1, 2 );
+  const QRectF bounds = QRectF( 0, 0, 4, 2 );
 
   //simple cases
   //0 rotation
@@ -605,7 +604,7 @@ void TestQgsLayoutUtils::largestRotatedRect()
     result = QgsLayoutUtils::largestRotatedRectWithinBounds( wideRect, bounds, rotation );
     QTransform t;
     t.rotate( rotation );
-    QRectF rotatedRectBounds = t.mapRect( result );
+    const QRectF rotatedRectBounds = t.mapRect( result );
     //one of the rotated rects dimensions must equal the bounding rectangles dimensions (ie, it has been constrained by one dimension)
     //and the other dimension must be less than or equal to bounds dimension
     QVERIFY( ( qgsDoubleNear( rotatedRectBounds.width(), bounds.width(), 0.001 ) && ( rotatedRectBounds.height() <= bounds.height() ) )
@@ -620,7 +619,7 @@ void TestQgsLayoutUtils::largestRotatedRect()
     result = QgsLayoutUtils::largestRotatedRectWithinBounds( highRect, bounds, rotation );
     QTransform t;
     t.rotate( rotation );
-    QRectF rotatedRectBounds = t.mapRect( result );
+    const QRectF rotatedRectBounds = t.mapRect( result );
     //one of the rotated rects dimensions must equal the bounding rectangles dimensions (ie, it has been constrained by one dimension)
     //and the other dimension must be less than or equal to bounds dimension
     QVERIFY( ( qgsDoubleNear( rotatedRectBounds.width(), bounds.width(), 0.001 ) && ( rotatedRectBounds.height() <= bounds.height() ) )
@@ -648,15 +647,6 @@ void TestQgsLayoutUtils::decodePaperOrientation()
   QCOMPARE( orientation, QgsLayoutItemPage::Landscape );
 }
 
-void TestQgsLayoutUtils::scaleFactorFromItemStyle()
-{
-  QStyleOptionGraphicsItem style;
-  style.matrix = QMatrix( 2, 0, 0, 0, 0, 0 );
-  QCOMPARE( QgsLayoutUtils::scaleFactorFromItemStyle( &style ), 2.0 );
-  style.matrix = QMatrix( 0, 2, 0, 0, 0, 0 );
-  QCOMPARE( QgsLayoutUtils::scaleFactorFromItemStyle( &style ), 2.0 );
-}
-
 void TestQgsLayoutUtils::mapLayerFromString()
 {
   // add some layers to a project
@@ -682,14 +672,14 @@ void TestQgsLayoutUtils::mapLayerFromString()
 bool TestQgsLayoutUtils::renderCheck( const QString &testName, QImage &image, int mismatchCount )
 {
   mReport += "<h2>" + testName + "</h2>\n";
-  QString myTmpDir = QDir::tempPath() + '/';
-  QString myFileName = myTmpDir + testName + ".png";
+  const QString myTmpDir = QDir::tempPath() + '/';
+  const QString myFileName = myTmpDir + testName + ".png";
   image.save( myFileName, "PNG" );
   QgsRenderChecker myChecker;
   myChecker.setControlPathPrefix( QStringLiteral( "composer_utils" ) );
   myChecker.setControlName( "expected_" + testName );
   myChecker.setRenderedImage( myFileName );
-  bool myResultFlag = myChecker.compareImages( testName, mismatchCount );
+  const bool myResultFlag = myChecker.compareImages( testName, mismatchCount );
   mReport += myChecker.report();
   return myResultFlag;
 }

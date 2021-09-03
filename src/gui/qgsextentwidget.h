@@ -36,7 +36,7 @@ class QgsMapLayer;
 
 /**
  * \ingroup gui
- * A widget for configuration of a map extent.
+ * \brief A widget for configuration of a map extent.
  *
  * Besides allowing the user to enter the extent manually, it comes with options to use
  * original extent or extent defined by the current view in map canvas.
@@ -74,6 +74,8 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
      * Constructor for QgsExtentWidget.
      */
     explicit QgsExtentWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, WidgetStyle style = CondensedStyle );
+
+    ~QgsExtentWidget() override;
 
     /**
      * Sets the original extent and coordinate reference system for the widget. This should be called as part of initialization.
@@ -244,6 +246,7 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
     void layerMenuAboutToShow();
 
     void extentDrawn( const QgsRectangle &extent );
+    void mapToolDeactivated();
 
   private:
     void setOutputExtent( const QgsRectangle &r, const QgsCoordinateReferenceSystem &srcCrs, QgsExtentWidget::ExtentState state );

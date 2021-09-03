@@ -65,7 +65,7 @@ QVariant QgsRecentProjectItemsModel::data( const QModelIndex &index, int role ) 
     case QgsProjectListItemDelegate::CrsRole:
       if ( !mRecentProjects.at( index.row() ).crs.isEmpty() )
       {
-        QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mRecentProjects.at( index.row() ).crs );
+        const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mRecentProjects.at( index.row() ).crs );
         return  QStringLiteral( "%1 (%2)" ).arg( mRecentProjects.at( index.row() ).crs, crs.userFriendlyIdentifier() );
       }
       else
@@ -76,11 +76,11 @@ QVariant QgsRecentProjectItemsModel::data( const QModelIndex &index, int role ) 
       return mRecentProjects.at( index.row() ).pin;
     case Qt::DecorationRole:
     {
-      QString filename( mRecentProjects.at( index.row() ).previewImagePath );
+      const QString filename( mRecentProjects.at( index.row() ).previewImagePath );
       if ( filename.isEmpty() )
         return QVariant();
 
-      QgsProjectPreviewImage thumbnail( filename );
+      const QgsProjectPreviewImage thumbnail( filename );
       if ( thumbnail.isNull() )
         return QVariant();
 

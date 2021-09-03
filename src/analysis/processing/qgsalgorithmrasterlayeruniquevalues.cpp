@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmrasterlayeruniquevalues.h"
 #include "qgsstringutils.h"
+#include <QTextStream>
 
 ///@cond PRIVATE
 
@@ -77,7 +78,7 @@ QgsRasterLayerUniqueValuesReportAlgorithm *QgsRasterLayerUniqueValuesReportAlgor
 bool QgsRasterLayerUniqueValuesReportAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   QgsRasterLayer *layer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT" ), context );
-  int band = parameterAsInt( parameters, QStringLiteral( "BAND" ), context );
+  const int band = parameterAsInt( parameters, QStringLiteral( "BAND" ), context );
 
   if ( !layer )
     throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT" ) ) );
@@ -102,7 +103,7 @@ bool QgsRasterLayerUniqueValuesReportAlgorithm::prepareAlgorithm( const QVariant
 
 QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT_HTML_FILE" ), context );
+  const QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT_HTML_FILE" ), context );
 
   QString areaUnit = QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::distanceToAreaUnit( mCrs.mapUnits() ) );
 
@@ -122,12 +123,12 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
   QHash< double, qgssize > uniqueValues;
   qgssize noDataCount = 0;
 
-  qgssize layerSize = static_cast< qgssize >( mLayerWidth ) * static_cast< qgssize >( mLayerHeight );
-  int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-  int nbBlocksWidth = std::ceil( 1.0 * mLayerWidth / maxWidth );
-  int nbBlocksHeight = std::ceil( 1.0 * mLayerHeight / maxHeight );
-  int nbBlocks = nbBlocksWidth * nbBlocksHeight;
+  const qgssize layerSize = static_cast< qgssize >( mLayerWidth ) * static_cast< qgssize >( mLayerHeight );
+  const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
+  const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
+  const int nbBlocksWidth = std::ceil( 1.0 * mLayerWidth / maxWidth );
+  const int nbBlocksHeight = std::ceil( 1.0 * mLayerHeight / maxHeight );
+  const int nbBlocks = nbBlocksWidth * nbBlocksHeight;
 
   QgsRasterIterator iter( mInterface.get() );
   iter.startRasterRead( mBand, mLayerWidth, mLayerHeight, mExtent );
@@ -147,7 +148,7 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
         break;
       for ( int column = 0; column < iterCols; column++ )
       {
-        double value = rasterBlock->valueAndNoData( row, column, isNoData );
+        const double value = rasterBlock->valueAndNoData( row, column, isNoData );
         if ( mHasNoDataValue && isNoData )
         {
           noDataCount++;
@@ -174,16 +175,19 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
   outputs.insert( QStringLiteral( "TOTAL_PIXEL_COUNT" ), layerSize );
   outputs.insert( QStringLiteral( "NODATA_PIXEL_COUNT" ), noDataCount );
 
-  double pixelArea = mRasterUnitsPerPixelX * mRasterUnitsPerPixelY;
+  const double pixelArea = mRasterUnitsPerPixelX * mRasterUnitsPerPixelY;
 
   if ( !outputFile.isEmpty() )
   {
     QFile file( outputFile );
-    if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
+    if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
       const QString encodedAreaUnit = QgsStringUtils::ampersandEncode( areaUnit );
 
       QTextStream out( &file );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+      out.setCodec( "UTF-8" );
+#endif
       out << QStringLiteral( "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/></head><body>\n" );
       out << QStringLiteral( "<p>%1: %2 (%3 %4)</p>\n" ).arg( QObject::tr( "Analyzed file" ), mSource, QObject::tr( "band" ) ).arg( mBand );
       out << QObject::tr( "<p>%1: %2</p>\n" ).arg( QObject::tr( "Extent" ), mExtent.toString() );
@@ -197,7 +201,7 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
 
       for ( auto it = sortedUniqueValues.constBegin(); it != sortedUniqueValues.constEnd(); ++it )
       {
-        double area = it.value() * pixelArea;
+        const double area = it.value() * pixelArea;
         out << QStringLiteral( "<tr><td>%1</td><td>%2</td><td>%3</td></tr>\n" ).arg( it.key() ).arg( it.value() ).arg( QString::number( area, 'g', 16 ) );
       }
       out << QStringLiteral( "</table>\n</body></html>" );
@@ -210,9 +214,10 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
     for ( auto it = sortedUniqueValues.constBegin(); it != sortedUniqueValues.constEnd(); ++it )
     {
       QgsFeature f;
-      double area = it.value() * pixelArea;
+      const double area = it.value() * pixelArea;
       f.setAttributes( QgsAttributes() << it.key() << it.value() << area );
-      sink->addFeature( f, QgsFeatureSink::FastInsert );
+      if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT_TABLE" ) ) );
     }
     outputs.insert( QStringLiteral( "OUTPUT_TABLE" ), tableDest );
   }

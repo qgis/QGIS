@@ -25,7 +25,7 @@ QgsProxyProgressTask::QgsProxyProgressTask( const QString &description )
 
 void QgsProxyProgressTask::finalize( bool result )
 {
-  QMutexLocker lock( &mNotFinishedMutex );
+  const QMutexLocker lock( &mNotFinishedMutex );
   mAlreadyFinished = true;
 
   mResult = result;

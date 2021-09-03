@@ -21,6 +21,7 @@
 #include <QTimer>
 #include <QTreeView>
 #include <QTreeWidget>
+#include <QTableView>
 
 #include "qgsoptionsdialoghighlightwidget.h"
 #include "qgsmessagebaritem.h"
@@ -70,6 +71,10 @@ QgsOptionsDialogHighlightWidget *QgsOptionsDialogHighlightWidget::createWidget( 
   else if ( qobject_cast<QTreeView *>( widget ) )
   {
     return new QgsOptionsDialogHighlightTree( qobject_cast<QTreeView *>( widget ) );
+  }
+  else if ( qobject_cast<QTableView *>( widget ) )
+  {
+    return new QgsOptionsDialogHighlightTable( qobject_cast<QTableView *>( widget ) );
   }
   else
   {

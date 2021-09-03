@@ -33,7 +33,7 @@ class QgsTileDownloadManager;
 
 /**
  * \ingroup core
- * Reply object for tile download manager requests returned from calls to QgsTileDownloadManager::get().
+ * \brief Reply object for tile download manager requests returned from calls to QgsTileDownloadManager::get().
  *
  * When the underlying network request has finished (with success or failure), the finished() signal
  * gets emitted.
@@ -88,7 +88,7 @@ class CORE_EXPORT QgsTileDownloadManagerReply : public QObject
 
 /**
  * \ingroup core
- * Reply object that is used in the worker thread of the tile download manager.
+ * \brief Reply object that is used in the worker thread of the tile download manager.
  * \note This class is not a part of public API
  */
 class QgsTileDownloadManagerReplyWorkerObject : public QObject
@@ -113,7 +113,7 @@ class QgsTileDownloadManagerReplyWorkerObject : public QObject
 
 /**
  * \ingroup core
- * Worker object that is used in the worker thread of the tile download manager.
+ * \brief Worker object that is used in the worker thread of the tile download manager.
  * \note This class is not a part of public API
  */
 class QgsTileDownloadManagerWorker : public QObject
@@ -150,7 +150,7 @@ class QgsTileDownloadManagerWorker : public QObject
 /**
  * \ingroup core
  *
- * Tile download manager handles downloads of map tiles for the purpose of map rendering.
+ * \brief Tile download manager handles downloads of map tiles for the purpose of map rendering.
  * The purpose of this class is to handle a couple of situations that may happen:
  *
  * - a map rendering job starts which requests tiles from a remote server, then in a short
@@ -203,7 +203,7 @@ class CORE_EXPORT QgsTileDownloadManager
 
     /**
      * \ingroup core
-     * Encapsulates any statistics we would like to keep about requests
+     * \brief Encapsulates any statistics we would like to keep about requests
      * \since QGIS 3.18
      */
     class Stats
@@ -281,7 +281,11 @@ class CORE_EXPORT QgsTileDownloadManager
 
     QList<QueueEntry> mQueue;
     bool mShuttingDown = false;
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     mutable QMutex mMutex;
+#else
+    mutable QRecursiveMutex mMutex;
+#endif
     QThread *mWorkerThread = nullptr;
     QgsTileDownloadManagerWorker *mWorker = nullptr;
     Stats mStats;

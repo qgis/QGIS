@@ -36,7 +36,7 @@ namespace Qt3DRender
 #endif //SIP_RUN
 
 /**
- * Material rendering techniques
+ * \brief Material rendering techniques
  * \ingroup 3d
  * \since QGIS 3.16
  */
@@ -54,7 +54,7 @@ enum class QgsMaterialSettingsRenderingTechnique SIP_MONKEYPATCH_SCOPEENUM_UNNES
 
 /**
  * \ingroup 3d
- * Context settings for a material.
+ * \brief Context settings for a material.
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is
  * exposed to the Python bindings as a tech preview only.
@@ -104,7 +104,7 @@ class _3D_EXPORT QgsMaterialContext
 
 /**
  * \ingroup 3d
- * Abstract base class for material settings.
+ * \brief Abstract base class for material settings.
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is
  * exposed to the Python bindings as a tech preview only.

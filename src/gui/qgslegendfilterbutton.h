@@ -23,7 +23,7 @@ class QgsVectorLayer;
 /**
  * \ingroup gui
  * \class QgsLegendFilterButton
- * A tool button that allows enabling or disabling legend filter by contents of the map.
+ * \brief A tool button that allows enabling or disabling legend filter by contents of the map.
  * An additional pop down menu allows defining a boolean expression to refine the filtering.
  * \since QGIS 2.14
  */

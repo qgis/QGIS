@@ -30,7 +30,7 @@ int QgsClipToMinMaxEnhancement::enhance( double value )
     return -1;
   }
 
-  if ( mQgsRasterDataType == Qgis::Byte )
+  if ( mQgsRasterDataType == Qgis::DataType::Byte )
   {
     return static_cast<int>( value );
   }

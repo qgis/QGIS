@@ -78,7 +78,7 @@ QgsSplitLinesByLengthAlgorithm *QgsSplitLinesByLengthAlgorithm::createInstance()
 
 void QgsSplitLinesByLengthAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr< QgsProcessingParameterDistance > length = qgis::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "LENGTH" ),
+  std::unique_ptr< QgsProcessingParameterDistance > length = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "LENGTH" ),
       QObject::tr( "Maximum line length" ), 10, QStringLiteral( "INPUT" ), false, 0 );
   length->setIsDynamic( true );
   length->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "LENGTH" ), QObject::tr( "Maximum length" ), QgsPropertyDefinition::DoublePositive ) );

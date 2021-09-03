@@ -10,25 +10,25 @@
 
 
 
-
 class QgsExpression
 {
-%Docstring
+%Docstring(signature="appended")
 Class for parsing and evaluation of expressions (formerly called "search strings").
 The expressions try to follow both syntax and semantics of SQL expressions.
 
 Usage:
+
 .. code-block:: python
 
-    exp = QgsExpression("gid*2 > 10 and type not in ('D','F')")
-    if exp.hasParserError():
-    # show error message with parserErrorString() and exit
+       exp = QgsExpression("gid*2 > 10 and type not in ('D','F')")
+       if exp.hasParserError():
+           # show error message with parserErrorString() and exit
 
-    result = exp.evaluate(feature, fields)
-    if exp.hasEvalError():
-    # show error message with evalErrorString()
-    else:
-    # examine the result
+       result = exp.evaluate(feature, fields)
+       if exp.hasEvalError():
+           # show error message with evalErrorString()
+       else:
+           # examine the result
 
 Three Value Logic
 -----------------
@@ -286,7 +286,24 @@ Sets evaluation error (used internally by evaluation functions)
 %Docstring
 Checks whether an expression consists only of a single field reference
 
+.. seealso:: :py:func:`expressionToLayerFieldIndex`
+
 .. versionadded:: 2.9
+%End
+
+    static int expressionToLayerFieldIndex( const QString &expression, const QgsVectorLayer *layer );
+%Docstring
+Attempts to resolve an expression to a field index from the given ``layer``.
+
+Given a string which may either directly match a field name from a layer, OR may
+be an expression which consists only of a single field reference for that layer, this
+method will return the corresponding field index.
+
+:return: field index if found, or -1 if ``expression`` does not represent a field from the layer.
+
+.. seealso:: :py:func:`isField`
+
+.. versionadded:: 3.22
 %End
 
     static bool checkExpression( const QString &text, const QgsExpressionContext *context, QString &errorMessage /Out/ );

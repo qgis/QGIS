@@ -14,7 +14,7 @@
 
 class QgsXmlUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Assorted helper methods for reading and writing chunks of XML
 %End
 
@@ -50,7 +50,16 @@ Encodes a distance unit to a DOM element.
 .. seealso:: :py:func:`readMapUnits`
 %End
 
-    static QDomElement writeRectangle( const QgsRectangle &rect, QDomDocument &doc );
+    static QDomElement writeRectangle( const QgsRectangle &rect, QDomDocument &doc, const QString &elementName = QStringLiteral( "extent" ) );
+%Docstring
+Encodes a rectangle to a DOM element.
+
+:param rect: rectangle to encode
+:param doc: DOM document
+:param elementName: name of the DOM element
+
+:return: element containing encoded rectangle
+%End
 
     static QDomElement writeVariant( const QVariant &value, QDomDocument &doc );
 %Docstring

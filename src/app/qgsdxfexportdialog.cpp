@@ -45,11 +45,7 @@ QWidget *FieldSelectorDelegate::createEditor( QWidget *parent, const QStyleOptio
 {
   Q_UNUSED( option )
 
-  const QgsVectorLayerAndAttributeModel *m = qobject_cast< const QgsVectorLayerAndAttributeModel *>( index.model() );
-  if ( !m )
-    return nullptr;
-
-  QgsVectorLayer *vl = m->vectorLayer( index );
+  QgsVectorLayer *vl = indexToLayer( index.model(), index );
   if ( !vl )
     return nullptr;
 
@@ -61,11 +57,7 @@ QWidget *FieldSelectorDelegate::createEditor( QWidget *parent, const QStyleOptio
 
 void FieldSelectorDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
-  const QgsVectorLayerAndAttributeModel *m = qobject_cast< const QgsVectorLayerAndAttributeModel *>( index.model() );
-  if ( !m )
-    return;
-
-  QgsVectorLayer *vl = m->vectorLayer( index );
+  QgsVectorLayer *vl = indexToLayer( index.model(), index );
   if ( !vl )
     return;
 
@@ -73,18 +65,14 @@ void FieldSelectorDelegate::setEditorData( QWidget *editor, const QModelIndex &i
   if ( !fcb )
     return;
 
-  int idx = m->attributeIndex( vl );
+  int idx = attributeIndex( index.model(), vl );
   if ( vl->fields().exists( idx ) )
     fcb->setField( vl->fields().at( idx ).name() );
 }
 
 void FieldSelectorDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  QgsVectorLayerAndAttributeModel *m = qobject_cast< QgsVectorLayerAndAttributeModel *>( model );
-  if ( !m )
-    return;
-
-  QgsVectorLayer *vl = m->vectorLayer( index );
+  QgsVectorLayer *vl = indexToLayer( index.model(), index );
   if ( !vl )
     return;
 
@@ -93,6 +81,28 @@ void FieldSelectorDelegate::setModelData( QWidget *editor, QAbstractItemModel *m
     return;
 
   model->setData( index, vl->fields().lookupField( fcb->currentField() ) );
+}
+
+QgsVectorLayer *FieldSelectorDelegate::indexToLayer( const QAbstractItemModel *model, const QModelIndex &index ) const
+{
+  const QgsLayerTreeProxyModel *proxy = qobject_cast< const QgsLayerTreeProxyModel *>( model );
+  Q_ASSERT( proxy );
+
+  const QgsVectorLayerAndAttributeModel *m = qobject_cast< const QgsVectorLayerAndAttributeModel *>( proxy->sourceModel() );
+  Q_ASSERT( m );
+
+  return m->vectorLayer( proxy->mapToSource( index ) );
+}
+
+int FieldSelectorDelegate::attributeIndex( const QAbstractItemModel *model, const QgsVectorLayer *vl ) const
+{
+  const QgsLayerTreeProxyModel *proxy = qobject_cast< const QgsLayerTreeProxyModel *>( model );
+  Q_ASSERT( proxy );
+
+  const QgsVectorLayerAndAttributeModel *m = qobject_cast< const QgsVectorLayerAndAttributeModel *>( proxy->sourceModel() );
+  Q_ASSERT( m );
+
+  return m->attributeIndex( vl );
 }
 
 QgsVectorLayerAndAttributeModel::QgsVectorLayerAndAttributeModel( QgsLayerTree *rootNode, QObject *parent )
@@ -281,7 +291,7 @@ QList< QgsDxfExport::DxfLayer > QgsVectorLayerAndAttributeModel::layers() const
   QList< QgsDxfExport::DxfLayer > layers;
   QHash< QString, int > layerIdx;
 
-  for ( const QModelIndex &idx : qgis::as_const( mCheckedLeafs ) )
+  for ( const QModelIndex &idx : std::as_const( mCheckedLeafs ) )
   {
     QgsLayerTreeNode *node = index2node( idx );
     if ( QgsLayerTree::isGroup( node ) )
@@ -410,7 +420,7 @@ void QgsVectorLayerAndAttributeModel::selectAll()
   retrieveAllLayers( rootGroup(), allLayers );
   applyVisibility( allLayers, rootGroup() );
 
-  emit dataChanged( QModelIndex(), QModelIndex() );
+  emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
 }
 
 void QgsVectorLayerAndAttributeModel::deSelectAll()
@@ -420,7 +430,7 @@ void QgsVectorLayerAndAttributeModel::deSelectAll()
   QSet<QString> noLayers;
   applyVisibility( noLayers, rootGroup() );
 
-  emit dataChanged( QModelIndex(), QModelIndex() );
+  emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
 }
 
 QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
@@ -441,9 +451,9 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   mTreeView->setEditTriggers( QAbstractItemView::AllEditTriggers );
   mTreeView->setItemDelegate( mFieldSelectorDelegate );
 
-  QgsLayerTreeModel *model = new QgsVectorLayerAndAttributeModel( mLayerTreeGroup, this );
-  model->setFlags( QgsLayerTreeModel::Flags() );
-  mTreeView->setModel( model );
+  mModel = new QgsVectorLayerAndAttributeModel( mLayerTreeGroup, this );
+  mModel->setFlags( QgsLayerTreeModel::Flags() );
+  mTreeView->setModel( mModel );
   mTreeView->resizeColumnToContents( 0 );
   mTreeView->header()->show();
 
@@ -491,6 +501,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   mCRS = QgsCoordinateReferenceSystem::fromSrsId( crsid );
   mCrsSelector->setCrs( mCRS );
   mCrsSelector->setLayerCrs( mCRS );
+  mCrsSelector->setShowAccuracyWarnings( true );
   mCrsSelector->setMessage( tr( "Select the coordinate reference system for the dxf file. "
                                 "The data points will be transformed from the layer coordinate reference system." ) );
 
@@ -507,9 +518,7 @@ QgsDxfExportDialog::~QgsDxfExportDialog()
 void QgsDxfExportDialog::mVisibilityPresets_currentIndexChanged( int index )
 {
   Q_UNUSED( index )
-  QgsVectorLayerAndAttributeModel *model = qobject_cast< QgsVectorLayerAndAttributeModel * >( mTreeView->model() );
-  Q_ASSERT( model );
-  model->applyVisibilityPreset( mVisibilityPresets->currentText() );
+  mModel->applyVisibilityPreset( mVisibilityPresets->currentText() );
 }
 
 void QgsDxfExportDialog::cleanGroup( QgsLayerTreeNode *node )
@@ -522,7 +531,9 @@ void QgsDxfExportDialog::cleanGroup( QgsLayerTreeNode *node )
   const auto constChildren = node->children();
   for ( QgsLayerTreeNode *child : constChildren )
   {
-    if ( QgsLayerTree::isLayer( child ) && QgsLayerTree::toLayer( child )->layer()->type() != QgsMapLayerType::VectorLayer )
+    if ( QgsLayerTree::isLayer( child ) &&
+         ( QgsLayerTree::toLayer( child )->layer()->type() != QgsMapLayerType::VectorLayer ||
+           ! QgsLayerTree::toLayer( child )->layer()->isSpatial() ) )
     {
       toRemove << child;
       continue;
@@ -542,24 +553,18 @@ void QgsDxfExportDialog::cleanGroup( QgsLayerTreeNode *node )
 
 void QgsDxfExportDialog::selectAll()
 {
-  QgsVectorLayerAndAttributeModel *model = qobject_cast< QgsVectorLayerAndAttributeModel *>( mTreeView->model() );
-  Q_ASSERT( model );
-  model->selectAll();
+  mModel->selectAll();
 }
 
 void QgsDxfExportDialog::deSelectAll()
 {
-  QgsVectorLayerAndAttributeModel *model = qobject_cast< QgsVectorLayerAndAttributeModel *>( mTreeView->model() );
-  Q_ASSERT( model );
-  model->deSelectAll();
+  mModel->deSelectAll();
 }
 
 
 QList< QgsDxfExport::DxfLayer > QgsDxfExportDialog::layers() const
 {
-  const QgsVectorLayerAndAttributeModel *model = qobject_cast< const QgsVectorLayerAndAttributeModel *>( mTreeView->model() );
-  Q_ASSERT( model );
-  return model->layers();
+  return mModel->layers();
 }
 
 

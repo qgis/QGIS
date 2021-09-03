@@ -26,6 +26,8 @@
 #include <QTime>
 #include <QVariant>
 #include <QVector>
+#include <QElapsedTimer>
+
 
 #include "qgsmapsettings.h"
 

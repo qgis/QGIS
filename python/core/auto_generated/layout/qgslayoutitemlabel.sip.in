@@ -11,7 +11,7 @@
 
 class QgsLayoutItemLabel: QgsLayoutItem
 {
-%Docstring
+%Docstring(signature="appended")
 A layout item subclass for text labels.
 
 .. versionadded:: 3.0
@@ -231,6 +231,14 @@ Returns the label font color.
 
     virtual void refresh();
 
+
+    void convertToStaticText();
+%Docstring
+Converts the label's :py:func:`~QgsLayoutItemLabel.text` to a static string, by evaluating any expressions included in the text
+and replacing them with their current values.
+
+.. versionadded:: 3.20
+%End
 
   protected:
     virtual void draw( QgsLayoutItemRenderContext &context );

@@ -51,7 +51,7 @@ class QgsMasterLayoutInterface;
  * \class QgsLayoutConfigObject
  * \ingroup gui
  *
- * An object for property widgets for layout items. All layout config type widgets should contain
+ * \brief An object for property widgets for layout items. All layout config type widgets should contain
  * this object.
  *
  * If you are creating a new QgsLayoutItem configuration widget, you should instead
@@ -113,7 +113,7 @@ class GUI_EXPORT QgsLayoutConfigObject: public QObject
  * \class QgsLayoutItemBaseWidget
  * \ingroup gui
  *
- * A base class for property widgets for layout items. All layout item widgets should inherit from
+ * \brief A base class for property widgets for layout items. All layout item widgets should inherit from
  * this base class.
  *
  *
@@ -201,7 +201,6 @@ class GUI_EXPORT QgsLayoutItemBaseWidget: public QgsPanelWidget
     QgsLayoutAtlas *layoutAtlas() const;
 
   private:
-
     QgsLayoutConfigObject *mConfigObject = nullptr;
 
     QgsLayoutObject *mObject = nullptr;
@@ -211,7 +210,7 @@ class GUI_EXPORT QgsLayoutItemBaseWidget: public QgsPanelWidget
 /**
  * \class QgsLayoutItemPropertiesWidget
  * \ingroup gui
- * A widget for controlling the common properties of layout items (e.g. position and size, background, stroke, frame).
+ * \brief A widget for controlling the common properties of layout items (e.g. position and size, background, stroke, frame).
  * This widget can be embedded into other layout item widgets.
  * \since QGIS 3.0
 */

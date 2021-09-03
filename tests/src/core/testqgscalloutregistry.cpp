@@ -31,7 +31,7 @@ class DummyCallout : public QgsCallout
     QgsCallout *clone() const override { return new DummyCallout(); }
     static QgsCallout *create( const QVariantMap &, const QgsReadWriteContext & ) { return new DummyCallout(); }
   protected:
-    void draw( QgsRenderContext &, QRectF, const double, const QgsGeometry &, QgsCallout::QgsCalloutContext & ) override {}
+    void draw( QgsRenderContext &, const QRectF &, const double, const QgsGeometry &, QgsCallout::QgsCalloutContext & ) override {}
 
 };
 
@@ -84,8 +84,8 @@ void TestQgsCalloutRegistry::metadata()
   QCOMPARE( metadata.visibleName(), QString( "display name" ) );
 
   //test creating callout from metadata
-  QVariantMap map;
-  std::unique_ptr< QgsCallout > callout( metadata.createCallout( map, QgsReadWriteContext() ) );
+  const QVariantMap map;
+  const std::unique_ptr< QgsCallout > callout( metadata.createCallout( map, QgsReadWriteContext() ) );
   QVERIFY( callout );
   DummyCallout *dummyCallout = dynamic_cast<DummyCallout *>( callout.get() );
   QVERIFY( dummyCallout );
@@ -109,7 +109,7 @@ void TestQgsCalloutRegistry::addCallout()
 {
   //create an empty registry
   QgsCalloutRegistry *registry = QgsApplication::calloutRegistry();
-  int previousCount = registry->calloutTypes().length();
+  const int previousCount = registry->calloutTypes().length();
 
   registry->addCalloutType( new QgsCalloutMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy callout" ), QIcon(), DummyCallout::create ) );
   QCOMPARE( registry->calloutTypes().length(), previousCount + 1 );
@@ -127,7 +127,7 @@ void TestQgsCalloutRegistry::addCallout()
 void TestQgsCalloutRegistry::fetchTypes()
 {
   QgsCalloutRegistry *registry = QgsApplication::calloutRegistry();
-  QStringList types = registry->calloutTypes();
+  const QStringList types = registry->calloutTypes();
 
   QVERIFY( types.contains( "Dummy" ) );
 
@@ -156,7 +156,7 @@ void TestQgsCalloutRegistry::createCallout()
 void TestQgsCalloutRegistry::defaultCallout()
 {
   QgsCalloutRegistry *registry = QgsApplication::calloutRegistry();
-  std::unique_ptr< QgsCallout > callout( registry->defaultCallout() );
+  const std::unique_ptr< QgsCallout > callout( registry->defaultCallout() );
   QVERIFY( callout.get() );
 }
 

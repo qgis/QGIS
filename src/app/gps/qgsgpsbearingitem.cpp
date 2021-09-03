@@ -44,14 +44,14 @@ void QgsGpsBearingItem::setGpsPosition( const QgsPointXY &point )
   //transform to map crs
   if ( mMapCanvas )
   {
-    QgsCoordinateTransform t( mWgs84CRS, mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+    const QgsCoordinateTransform t( mWgs84CRS, mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
     try
     {
       mCenter = t.transform( mCenterWGS84 );
     }
     catch ( QgsCsException &e ) //silently ignore transformation exceptions
     {
-      QgsMessageLog::logMessage( QObject::tr( "Error transforming the map center point: %1" ).arg( e.what() ), QStringLiteral( "GPS" ), Qgis::Warning );
+      QgsMessageLog::logMessage( QObject::tr( "Error transforming the map center point: %1" ).arg( e.what() ), QStringLiteral( "GPS" ), Qgis::MessageLevel::Warning );
       return;
     }
   }
@@ -77,7 +77,7 @@ void QgsGpsBearingItem::updateLine()
 {
   QPolygonF bearingLine;
 
-  QgsCoordinateTransform wgs84ToCanvas( mWgs84CRS, mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
+  const QgsCoordinateTransform wgs84ToCanvas( mWgs84CRS, mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
 
   try
   {

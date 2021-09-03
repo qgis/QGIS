@@ -232,10 +232,11 @@ class ColoringAlgorithm:
                 break
 
             # first work out which already assigned colors are adjacent to this feature
-            adjacent_colors = set()
-            for neighbour in graph.node_edge[feature_id]:
-                if neighbour in feature_colors:
-                    adjacent_colors.add(feature_colors[neighbour])
+            adjacent_colors = {
+                feature_colors[neighbour]
+                for neighbour in graph.node_edge[feature_id]
+                if neighbour in feature_colors
+            }
 
             # from the existing colors, work out which are available (ie non-adjacent)
             available_colors = color_pool.difference(adjacent_colors)

@@ -142,7 +142,7 @@ void QgsClassificationMethod::setSymmetricMode( bool enabled, double symmetryPoi
 void QgsClassificationMethod::setLabelPrecision( int precision )
 {
   // Limit the range of decimal places to a reasonable range
-  precision = qBound( MIN_PRECISION, precision, MAX_PRECISION );
+  precision = std::clamp( precision, MIN_PRECISION, MAX_PRECISION );
   mLabelPrecision = precision;
   mLabelNumberScale = 1.0;
   mLabelNumberSuffix.clear();
@@ -234,8 +234,11 @@ QList<QgsClassificationRange> QgsClassificationMethod::classes( const QgsVectorL
   }
   else
   {
-    minimum = layer->minimumValue( fieldIndex ).toDouble();
-    maximum = layer->maximumValue( fieldIndex ).toDouble();
+    QVariant minVal;
+    QVariant maxVal;
+    layer->minimumAndMaximumValue( fieldIndex, minVal, maxVal );
+    minimum = minVal.toDouble();
+    maximum = maxVal.toDouble();
   }
 
   // get the breaks, minimum and maximum might be updated by implementation
@@ -322,9 +325,9 @@ void QgsClassificationMethod::makeBreaksSymmetric( QList<double> &breaks, double
     }
   }
   // remove symmetry point
-  if ( astride ) // && breaks.indexOf( symmetryPoint ) != -1) // if symmetryPoint is found
+  if ( astride )
   {
-    breaks.removeAt( breaks.indexOf( symmetryPoint ) );
+    breaks.removeAll( symmetryPoint );
   }
 }
 

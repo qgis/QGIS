@@ -1,5 +1,5 @@
 # Public Header Files
-SET(public_headers
+set(public_headers
     Config.h
     Connection.h
     DatabaseMetaData.h
@@ -22,7 +22,7 @@ SET(public_headers
 )
 
 # Sources
-SET(odbccpp_sources
+set(odbccpp_sources
     Connection.cpp
     DatabaseMetaData.cpp
     DatabaseMetaDataBase.cpp
@@ -46,14 +46,14 @@ SET(odbccpp_sources
 )
 
 # Static library
-ADD_LIBRARY(odbccpp_static
+add_library(odbccpp_static
     STATIC
         ${odbccpp_sources}
 )
-TARGET_COMPILE_DEFINITIONS(odbccpp_static
+target_compile_definitions(odbccpp_static
     PUBLIC
         ODBC_STATIC
 )
 
-TARGET_INCLUDE_DIRECTORIES(odbccpp_static PUBLIC ${ODBC_INCLUDE_DIRS})
-SET_PROPERTY(TARGET odbccpp_static PROPERTY POSITION_INDEPENDENT_CODE ON)
+target_include_directories(odbccpp_static PUBLIC ${ODBC_INCLUDE_DIRS})
+set_property(TARGET odbccpp_static PROPERTY POSITION_INDEPENDENT_CODE ON)

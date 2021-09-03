@@ -10,7 +10,7 @@
                  {"arg":"miter_limit","optional":true,"default":"2.0","description":"limit on the miter ratio used for very sharp corners (when using miter joins only)"}],
   "examples": [ { "expression":"offset_curve($geometry, 10.5)", "returns":"line offset to the left by 10.5 units"},
   { "expression":"offset_curve($geometry, -10.5)", "returns":"line offset to the right by 10.5 units"},
-  { "expression":"offset_curve($geometry, 10.5, segments=16, join=1)", "returns":"line offset to the left by 10.5 units, using more segments to result in a smoother curve"},
-  { "expression":"offset_curve($geometry, 10.5, join=3)", "returns":"line offset to the left by 10.5 units, using a beveled join"}]
+  { "expression":"offset_curve($geometry, 10.5, segments:=16, join:=1)", "returns":"line offset to the left by 10.5 units, using more segments to result in a smoother curve"},
+  { "expression":"offset_curve($geometry, 10.5, join:=3)", "returns":"line offset to the left by 10.5 units, using a beveled join"}]
 }
 

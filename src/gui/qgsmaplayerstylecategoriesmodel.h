@@ -21,12 +21,13 @@
 
 #include <QAbstractListModel>
 
+#include "qgis.h"
 #include "qgsmaplayer.h"
 #include "qgis_gui.h"
 
 /**
  * \ingroup gui
- * Model for layer style categories
+ * \brief Model for layer style categories
  *
  * \note This class is not a part of public API
  * \since QGIS 3.14

@@ -23,7 +23,7 @@
 
 /**
  * \ingroup gui
- * Configuration widget for QgsRasterContourRenderer
+ * \brief Configuration widget for QgsRasterContourRenderer
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsRasterContourRendererWidget : public QgsRasterRendererWidget, private Ui::QgsRasterContourRendererWidget

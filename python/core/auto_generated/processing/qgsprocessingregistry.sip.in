@@ -12,7 +12,7 @@
 
 class QgsProcessingRegistry : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Registry for various processing components, including providers, algorithms
 and various parameters and outputs.
 

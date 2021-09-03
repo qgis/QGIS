@@ -11,7 +11,7 @@
 
 class QgsLayoutItemManualTable: QgsLayoutTable
 {
-%Docstring
+%Docstring(signature="appended")
 A layout table subclass that displays manually entered (and formatted) content.
 
 .. versionadded:: 3.12

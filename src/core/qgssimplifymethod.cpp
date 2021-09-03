@@ -36,12 +36,12 @@ void QgsSimplifyMethod::setForceLocalOptimization( bool localOptimization )
 
 QgsAbstractGeometrySimplifier *QgsSimplifyMethod::createGeometrySimplifier( const QgsSimplifyMethod &simplifyMethod )
 {
-  QgsSimplifyMethod::MethodType methodType = simplifyMethod.methodType();
+  const QgsSimplifyMethod::MethodType methodType = simplifyMethod.methodType();
 
   // returns a geometry simplifier according to specified method
   if ( methodType == QgsSimplifyMethod::OptimizeForRendering )
   {
-    int simplifyFlags = QgsMapToPixelSimplifier::SimplifyGeometry | QgsMapToPixelSimplifier::SimplifyEnvelope;
+    const int simplifyFlags = QgsMapToPixelSimplifier::SimplifyGeometry | QgsMapToPixelSimplifier::SimplifyEnvelope;
     return new QgsMapToPixelSimplifier( simplifyFlags, simplifyMethod.tolerance(), QgsMapToPixelSimplifier::Distance );
   }
   else if ( methodType == QgsSimplifyMethod::PreserveTopology )

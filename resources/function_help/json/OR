@@ -1,6 +1,7 @@
 {
   "name": "OR",
   "type": "operator",
+  "groups": ["Operators"],
   "description": "Returns 1 when condition a or b is true.",
   "arguments": [
 	{"arg":"a","description":"condition"},

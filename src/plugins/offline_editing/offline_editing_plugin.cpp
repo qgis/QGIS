@@ -97,7 +97,7 @@ void QgsOfflineEditingPlugin::convertProject()
   {
     // convert current project for offline editing
 
-    QStringList selectedLayerIds = myPluginGui->selectedLayerIds();
+    const QStringList selectedLayerIds = myPluginGui->selectedLayerIds();
     if ( selectedLayerIds.isEmpty() )
     {
       return;
@@ -144,8 +144,8 @@ void QgsOfflineEditingPlugin::help()
 
 void QgsOfflineEditingPlugin::updateActions()
 {
-  bool hasLayers = QgsProject::instance()->count() > 0;
-  bool isOfflineProject = mOfflineEditing->isOfflineProject();
+  const bool hasLayers = QgsProject::instance()->count() > 0;
+  const bool isOfflineProject = mOfflineEditing->isOfflineProject();
   mActionConvertProject->setEnabled( hasLayers && !isOfflineProject );
   mActionSynchronize->setEnabled( hasLayers && isOfflineProject );
 }
@@ -217,21 +217,21 @@ QGISEXTERN QgisPlugin *classFactory( QgisInterface *qgisInterfacePointer )
 
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.
-QGISEXTERN QString name()
+QGISEXTERN const QString *name()
 {
-  return sName;
+  return &sName;
 }
 
 // Return the description
-QGISEXTERN QString description()
+QGISEXTERN const QString *description()
 {
-  return sDescription;
+  return &sDescription;
 }
 
 // Return the category
-QGISEXTERN QString category()
+QGISEXTERN const QString *category()
 {
-  return sCategory;
+  return &sCategory;
 }
 
 // Return the type (either UI or MapLayer plugin)
@@ -241,14 +241,14 @@ QGISEXTERN int type()
 }
 
 // Return the version number for the plugin
-QGISEXTERN QString version()
+QGISEXTERN const QString *version()
 {
-  return sPluginVersion;
+  return &sPluginVersion;
 }
 
-QGISEXTERN QString icon()
+QGISEXTERN const QString *icon()
 {
-  return sPluginIcon;
+  return &sPluginIcon;
 }
 
 // Delete ourself

@@ -98,7 +98,7 @@ bool QgsTinMeshCreationAlgorithm::prepareAlgorithm( const QVariantMap &parameter
     const QString layerSource = layerMap.value( QStringLiteral( "source" ) ).toString();
     const QgsProcessingParameterTinInputLayers::Type type =
       static_cast<QgsProcessingParameterTinInputLayers::Type>( layerMap.value( QStringLiteral( "type" ) ).toInt() );
-    int attributeIndex = layerMap.value( QStringLiteral( "attributeIndex" ) ).toInt();
+    const int attributeIndex = layerMap.value( QStringLiteral( "attributeIndex" ) ).toInt();
 
     std::unique_ptr<QgsProcessingFeatureSource> featureSource( QgsProcessingUtils::variantToSource( layerSource, context ) );
 
@@ -106,7 +106,7 @@ bool QgsTinMeshCreationAlgorithm::prepareAlgorithm( const QVariantMap &parameter
       continue;
 
     const QgsCoordinateTransform transform( featureSource->sourceCrs(), destinationCrs, context.transformContext() );
-    int featureCount = featureSource->featureCount();
+    const long long featureCount = featureSource->featureCount();
     switch ( type )
     {
       case QgsProcessingParameterTinInputLayers::Vertices:
@@ -156,7 +156,7 @@ QVariantMap QgsTinMeshCreationAlgorithm::processAlgorithm( const QVariantMap &pa
     return QVariantMap();
 
   const QString fileName = parameterAsFile( parameters, QStringLiteral( "OUTPUT_MESH" ), context );
-  int driverIndex = parameterAsEnum( parameters, QStringLiteral( "MESH_FORMAT" ), context );
+  const int driverIndex = parameterAsEnum( parameters, QStringLiteral( "MESH_FORMAT" ), context );
   const QString driver = mAvailableFormat.at( driverIndex );
   if ( feedback )
     feedback->setProgressText( QObject::tr( "Creating mesh from triangulation" ) );
@@ -191,10 +191,10 @@ QVariantMap QgsTinMeshCreationAlgorithm::processAlgorithm( const QVariantMap &pa
 
 void QgsTinMeshCreationAlgorithm::addZValueDataset( const QString &fileName, const QgsMesh &mesh, const QString &driver )
 {
-  std::unique_ptr<QgsMeshLayer> tempLayer = qgis::make_unique<QgsMeshLayer>( fileName, "temp", "mdal" );
+  std::unique_ptr<QgsMeshLayer> tempLayer = std::make_unique<QgsMeshLayer>( fileName, "temp", "mdal" );
   QgsMeshZValueDatasetGroup *zValueDatasetGroup = new QgsMeshZValueDatasetGroup( QObject::tr( "Terrain Elevation" ), mesh );
   tempLayer->addDatasets( zValueDatasetGroup );
-  int datasetGroupIndex = tempLayer->datasetGroupCount() - 1;
+  const int datasetGroupIndex = tempLayer->datasetGroupCount() - 1;
   tempLayer->saveDataset( fileName, datasetGroupIndex, driver );
 }
 

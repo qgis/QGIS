@@ -1,0 +1,13 @@
+r.neighbors
+Makes each cell category value a function of the category values assigned to the cells around it
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Input raster layer|None|False
+QgsProcessingParameterRasterLayer|selection|Raster layer to select the cells which should be processed|None|True
+QgsProcessingParameterEnum|method|Neighborhood operation|average;median;mode;minimum;maximum;range;stddev;sum;count;variance;diversity;interspersion;quart1;quart3;perc90;quantile|False|0|True
+QgsProcessingParameterNumber|size|Neighborhood size (must be odd)|QgsProcessingParameterNumber.Integer|3|True|1|None
+QgsProcessingParameterNumber|gauss|Sigma (in cells) for Gaussian filter|QgsProcessingParameterNumber.Integer|None|True|0|None
+QgsProcessingParameterString|quantile|Quantile to calculate for method=quantile|None|False|True
+QgsProcessingParameterBoolean|-c|Use circular neighborhood|False
+*QgsProcessingParameterBoolean|-a|Do not align output with the input|False
+*QgsProcessingParameterFile|weight|File containing weights|QgsProcessingParameterFile.File|txt|None|True
+QgsProcessingParameterRasterDestination|output|Neighbors

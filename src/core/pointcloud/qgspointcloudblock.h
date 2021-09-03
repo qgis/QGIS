@@ -29,7 +29,7 @@
 
 /**
  * \ingroup core
- * Base class for storing raw data from point cloud nodes
+ * \brief Base class for storing raw data from point cloud nodes
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -41,9 +41,9 @@ class CORE_EXPORT QgsPointCloudBlock
     //! Ctor
     QgsPointCloudBlock( int count,
                         const QgsPointCloudAttributeCollection &attributes,
-                        const QByteArray &data );
+                        const QByteArray &data, const QgsVector3D &scale, const QgsVector3D &offset );
     //! Dtor
-    ~QgsPointCloudBlock();
+    virtual ~QgsPointCloudBlock() = default;
 
     //! Returns raw pointer to data
     const char *data() const;
@@ -54,10 +54,17 @@ class CORE_EXPORT QgsPointCloudBlock
     //! Returns the attributes that are stored in the data block, along with their size
     QgsPointCloudAttributeCollection attributes() const;
 
+    //! Returns the custom scale of the block.
+    QgsVector3D scale() const;
+
+    //! Returns the custom offset of the block.
+    QgsVector3D offset() const;
   private:
     int mPointCount;
     QgsPointCloudAttributeCollection mAttributes;
     QByteArray mStorage;
+    QgsVector3D mScale, mOffset;
 };
+
 
 #endif // QGSPOINTCLOUDBLOCK_H

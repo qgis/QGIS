@@ -19,15 +19,24 @@
 #include "qgsvectorlayer.h"
 #include "qgspainteffect.h"
 #include "qgspainterswapper.h"
+#include "qgsmarkersymbol.h"
+#include "qgssymbollayerreference.h"
 
 QgsMaskMarkerSymbolLayer::QgsMaskMarkerSymbolLayer()
 {
   mSymbol.reset( static_cast<QgsMarkerSymbol *>( QgsMarkerSymbol::createSimple( QVariantMap() ) ) );
 }
 
+QgsMaskMarkerSymbolLayer::~QgsMaskMarkerSymbolLayer() = default;
+
+bool QgsMaskMarkerSymbolLayer::enabled() const
+{
+  return !mMaskedSymbolLayers.isEmpty();
+}
+
 bool QgsMaskMarkerSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
-  if ( symbol && symbol->type() == QgsSymbol::Marker )
+  if ( symbol && symbol->type() == Qgis::SymbolType::Marker )
   {
     mSymbol.reset( static_cast<QgsMarkerSymbol *>( symbol ) );
     return true;
@@ -57,6 +66,11 @@ QgsMaskMarkerSymbolLayer *QgsMaskMarkerSymbolLayer::clone() const
   copyDataDefinedProperties( l );
   copyPaintEffect( l );
   return l;
+}
+
+QgsSymbol *QgsMaskMarkerSymbolLayer::subSymbol()
+{
+  return mSymbol.get();
 }
 
 QString QgsMaskMarkerSymbolLayer::layerType() const
@@ -115,6 +129,16 @@ void QgsMaskMarkerSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context,
   QgsMarkerSymbolLayer::drawPreviewIcon( context, size );
 }
 
+QList<QgsSymbolLayerReference> QgsMaskMarkerSymbolLayer::masks() const
+{
+  return mMaskedSymbolLayers;
+}
+
+void QgsMaskMarkerSymbolLayer::setMasks( const QList<QgsSymbolLayerReference> &maskedLayers )
+{
+  mMaskedSymbolLayers = maskedLayers;
+}
+
 QRectF QgsMaskMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &context )
 {
   return mSymbol->bounds( point, context.renderContext() );
@@ -145,7 +169,7 @@ void QgsMaskMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
 
   {
     // Otherwise switch to the mask painter before rendering
-    QgsPainterSwapper swapper( context.renderContext(), context.renderContext().maskPainter() );
+    const QgsPainterSwapper swapper( context.renderContext(), context.renderContext().maskPainter() );
 
     // Special case when an effect is defined on this mask symbol layer
     // (effects defined on sub symbol's layers do not need special handling)

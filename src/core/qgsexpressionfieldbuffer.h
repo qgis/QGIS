@@ -28,7 +28,7 @@
 
 /**
  * \ingroup core
- * Buffers information about expression fields for a vector layer.
+ * \brief Buffers information about expression fields for a vector layer.
  *
  * \since QGIS 2.6
  */

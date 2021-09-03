@@ -11,10 +11,9 @@
 
 
 
-
 class QgsVectorLayerCache : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 This class caches features of a given :py:class:`QgsVectorLayer`.
 
 The cached features can be indexed by :py:class:`QgsAbstractCacheIndex`.
@@ -227,7 +226,7 @@ if the feature count is unknown.
     sipRes = true;
 %End
 
-    long featureCount() const;
+    long long featureCount() const;
 %Docstring
 Returns the number of features contained in the source, or -1
 if the feature count is unknown.

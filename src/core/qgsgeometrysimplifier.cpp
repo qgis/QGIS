@@ -55,7 +55,7 @@ QgsAbstractGeometry *QgsTopologyPreservingSimplifier::simplify( const QgsAbstrac
     return nullptr;
   }
 
-  QgsGeos geos( geometry );
+  const QgsGeos geos( geometry );
   std::unique_ptr< QgsAbstractGeometry > simplifiedGeom( geos.simplify( mTolerance ) );
   return simplifiedGeom.release();
 }

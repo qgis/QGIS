@@ -14,7 +14,7 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
 
 class QgsRasterLayer : QgsMapLayer
 {
-%Docstring
+%Docstring(signature="appended")
 
 Represents a raster layer.
 
@@ -158,24 +158,6 @@ Set the data provider.
 .. versionadded:: 3.2
 %End
 
-    virtual void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false );
-
-%Docstring
-Updates the data source of the layer. The layer's renderer and legend will be preserved only
-if the geometry type of the new data source matches the current geometry type of the layer.
-
-:param dataSource: new layer data source
-:param baseName: base name of the layer
-:param provider: provider string
-:param options: provider options
-:param loadDefaultStyleFlag: set to ``True`` to reset the layer's style to the default for the
-                             data source
-
-.. seealso:: :py:func:`dataSourceChanged`
-
-.. versionadded:: 3.6
-%End
-
     LayerType rasterType();
 %Docstring
 Returns the raster layer type (which is a read only property).
@@ -222,7 +204,7 @@ Returns the raster's hue/saturation filter.
 .. seealso:: :py:func:`brightnessFilter`
 %End
 
-    void setResamplingStage( QgsRasterPipe::ResamplingStage stage );
+    void setResamplingStage( Qgis::RasterResamplingStage stage );
 %Docstring
 Select which stage of the pipe should apply resampling.
 
@@ -231,7 +213,7 @@ Select which stage of the pipe should apply resampling.
 .. versionadded:: 3.16
 %End
 
-    QgsRasterPipe::ResamplingStage resamplingStage() const;
+    Qgis::RasterResamplingStage resamplingStage() const;
 %Docstring
 Returns which stage of the pipe should apply resampling.
 

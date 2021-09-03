@@ -55,7 +55,7 @@ namespace QgsWcs
       {
         Q_UNUSED( project )
 
-        QgsServerRequest::Parameters params = request.parameters();
+        const QgsServerRequest::Parameters params = request.parameters();
         QString versionString = params.value( "VERSION" );
 
         // Set the default version
@@ -65,7 +65,7 @@ namespace QgsWcs
         }
 
         // Get the request
-        QString req = params.value( QStringLiteral( "REQUEST" ) );
+        const QString req = params.value( QStringLiteral( "REQUEST" ) );
         if ( req.isEmpty() )
         {
           throw QgsServiceException( QStringLiteral( "OperationNotSupported" ),

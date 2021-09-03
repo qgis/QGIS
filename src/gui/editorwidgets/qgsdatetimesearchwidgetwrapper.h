@@ -30,7 +30,7 @@ class QgsDateTimeEdit;
 /**
  * \ingroup gui
  * \class QgsDateTimeSearchWidgetWrapper
- * Wraps a date/time edit widget for searching.
+ * \brief Wraps a date/time edit widget for searching.
  * \since QGIS 2.16
  */
 

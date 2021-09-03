@@ -274,7 +274,7 @@ int main( int argc, char *argv[] )
     while ( optind < argc )
     {
 #ifdef QGISDEBUG
-      int idx = optind;
+      const int idx = optind;
       QgsDebugMsg( QStringLiteral( "%1: %2" ).arg( idx ).arg( argv[idx] ) );
 #endif
       sFileList.append( QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[optind++] ) ).absoluteFilePath() ) );
@@ -418,7 +418,7 @@ int main( int argc, char *argv[] )
     gdalShares << QCoreApplication::applicationDirPath().append( "/share/gdal" )
                << appResources.append( "/share/gdal" )
                << appResources.append( "/gdal" );
-    Q_FOREACH ( const QString &gdalShare, gdalShares )
+    for ( const QString &gdalShare : std::as_const( gdalShares ) )
     {
       if ( QFile::exists( gdalShare ) )
       {
@@ -429,7 +429,7 @@ int main( int argc, char *argv[] )
   }
 #endif
 
-  QSettings mySettings;
+  const QSettings mySettings;
 
   // For non static builds on mac and win (static builds are not supported)
   // we need to be sure we can find the qt image
@@ -477,7 +477,7 @@ int main( int argc, char *argv[] )
     // check for a .qgs or .qgz
     for ( int i = 0; i < argc; i++ )
     {
-      QString arg = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() );
+      const QString arg = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() );
       if ( arg.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) || arg.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) )
       {
         myProjectFileName = arg;
@@ -501,8 +501,8 @@ int main( int argc, char *argv[] )
   if ( ! myQuality.isEmpty() )
   {
     QPainter::RenderHints hints;
-    QStringList list = myQuality.split( ',' );
-    Q_FOREACH ( const QString &q, list )
+    const QStringList list = myQuality.split( ',' );
+    for ( const QString &q : list )
     {
       if ( q == QLatin1String( "Antialiasing" ) ) hints |= QPainter::Antialiasing;
       else if ( q == QLatin1String( "TextAntialiasing" ) ) hints |= QPainter::TextAntialiasing;
@@ -529,7 +529,7 @@ int main( int argc, char *argv[] )
   for ( QStringList::Iterator myIterator = sFileList.begin(); myIterator != sFileList.end(); ++myIterator )
   {
     QgsDebugMsg( QStringLiteral( "Trying to load file : %1" ).arg( ( *myIterator ) ) );
-    QString myLayerName = *myIterator;
+    const QString myLayerName = *myIterator;
     // don't load anything with a .qgs or .qgz extension - these are project files
     if ( !myLayerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) &&
          !myLayerName.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) )
@@ -562,8 +562,11 @@ int main( int argc, char *argv[] )
         ok = false;
         break;
       }
-
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
       coords[i] = myInitialExtent.midRef( posOld, pos - posOld ).toDouble( &ok );
+#else
+      coords[i] = QStringView {myInitialExtent}.mid( posOld, pos - posOld ).toDouble( &ok );
+#endif
       if ( !ok )
         break;
 
@@ -571,8 +574,13 @@ int main( int argc, char *argv[] )
     }
 
     // parse last coordinate
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
     if ( ok )
       coords[3] = myInitialExtent.midRef( posOld ).toDouble( &ok );
+#else
+    if ( ok )
+      coords[3] = QStringView {myInitialExtent}.mid( posOld ).toDouble( &ok );
+#endif
 
     if ( !ok )
     {
@@ -581,7 +589,7 @@ int main( int argc, char *argv[] )
     else
     {
       // set extent from parsed values
-      QgsRectangle rect( coords[0], coords[1], coords[2], coords[3] );
+      const QgsRectangle rect( coords[0], coords[1], coords[2], coords[3] );
       qbench->setExtent( rect );
     }
   }

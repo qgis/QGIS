@@ -26,7 +26,7 @@ class QDomElement;
 
 /**
  * \ingroup core
- * Defines the list of pixel values to be considered as transparent or semi
+ * \brief Defines the list of pixel values to be considered as transparent or semi
  * transparent when rendering rasters.
  */
 class CORE_EXPORT QgsRasterTransparency

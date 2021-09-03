@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>480</width>
-    <height>735</height>
+    <width>521</width>
+    <height>775</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -358,20 +358,20 @@
         <string>Options</string>
        </property>
        <layout class="QVBoxLayout" name="openOptionsVBoxLayout">
-         <item>
-           <widget class="QLabel" name="mOpenOptionsLabel">
-            <property name="text">
-             <string></string>
-            </property>
-           </widget>
-         </item>
-         <item>
-            <layout class="QFormLayout" name="mOpenOptionsLayout">
-                <property name="fieldGrowthPolicy">
-                <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-                </property>
-            </layout>
-         </item>
+        <item>
+         <widget class="QLabel" name="mOpenOptionsLabel">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QFormLayout" name="mOpenOptionsLayout">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+         </layout>
+        </item>
        </layout>
       </widget>
      </item>
@@ -402,6 +402,12 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsFileWidget</class>
    <extends>QWidget</extends>
    <header>qgsfilewidget.h</header>
@@ -422,11 +428,11 @@
   <tabstop>cmbEncodings</tabstop>
   <tabstop>cmbProtocolTypes</tabstop>
   <tabstop>protocolURI</tabstop>
+  <tabstop>mBucket</tabstop>
+  <tabstop>mKey</tabstop>
   <tabstop>cmbDirectoryTypes</tabstop>
-  <tabstop>mFileWidget</tabstop>
   <tabstop>cmbDatabaseTypes</tabstop>
   <tabstop>cmbConnections</tabstop>
-  <tabstop>mOpenOptionsGroupBox</tabstop>
   <tabstop>btnNew</tabstop>
   <tabstop>btnEdit</tabstop>
   <tabstop>btnDelete</tabstop>

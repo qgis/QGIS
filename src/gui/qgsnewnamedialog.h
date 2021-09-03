@@ -22,10 +22,11 @@ class QLineEdit;
 
 #include "qgsdialog.h"
 #include "qgis_gui.h"
+#include <QRegularExpression>
 
 /**
  * \ingroup gui
- * New name, for example new layer name dialog. If existing names are provided,
+ * \brief New name, for example new layer name dialog. If existing names are provided,
  * the dialog warns users if an entered name already exists.
  * \since QGIS 2.10
  */
@@ -40,14 +41,15 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
      * \param initial initial name
      * \param extensions base name extensions, e.g. raster base name band extensions or vector layer type extensions
      * \param existing existing names
-     * \param regexp regular expression to be used as validator, for example db tables should have "[A-Za-z_][A-Za-z0-9_]+"
      * \param cs case sensitivity for new name to existing names comparison
-     * \param parent
-     * \param flags
+     * \param parent parent widget
+     * \param flags window flags
+     * \note Earlier versions had a similar constructor but with extra arguments for \a regexp which were removed in QGIS 3.22 as they relied on the deprecated QRegExp class. Use setRegularExpression() instead.
+     * \since QGIS 3.22.
      */
     QgsNewNameDialog( const QString &source = QString(), const QString &initial = QString(),
                       const QStringList &extensions = QStringList(), const QStringList &existing = QStringList(),
-                      const QRegExp &regexp = QRegExp(), Qt::CaseSensitivity cs = Qt::CaseSensitive,
+                      Qt::CaseSensitivity cs = Qt::CaseSensitive,
                       QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = QgsGuiUtils::ModalDialogFlags );
 
     /**
@@ -114,6 +116,13 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     QString conflictingNameWarning() const { return mConflictingNameWarning; }
 
     /**
+     * Sets a regular \a expression to use for validating user-entered names in the dialog.
+     *
+     * \since QGIS 3.22
+     */
+    void setRegularExpression( const QString &expression );
+
+    /**
      * Name entered by user.
      * \returns new name
      * \see newNameChanged()
@@ -147,14 +156,14 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
   protected:
     QStringList mExiting;
     QStringList mExtensions;
-    Qt::CaseSensitivity mCaseSensitivity;
+    Qt::CaseSensitivity mCaseSensitivity = Qt::CaseSensitive;
     QLabel *mHintLabel = nullptr;
     QLineEdit *mLineEdit = nullptr;
     //! List of names with extensions
     QLabel *mNamesLabel = nullptr;
     QLabel *mErrorLabel = nullptr;
     QString mOkString;
-    QRegExp mRegexp;
+    QRegularExpression mRegularExpression;
     bool mOverwriteEnabled = true;
     bool mAllowEmptyName = false;
     QString mConflictingNameWarning;

@@ -24,7 +24,7 @@
 
 /**
  * \ingroup gui
- * Abstract base class for the edit widget of authentication method plugins
+ * \brief Abstract base class for the edit widget of authentication method plugins
  */
 class GUI_EXPORT QgsAuthMethodEdit : public QWidget
 {

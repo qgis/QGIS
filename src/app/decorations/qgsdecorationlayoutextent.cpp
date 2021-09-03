@@ -34,6 +34,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsreadwritecontext.h"
 #include "qgstextrenderer.h"
+#include "qgsfillsymbol.h"
 
 #include <QPainter>
 
@@ -48,6 +49,8 @@ QgsDecorationLayoutExtent::QgsDecorationLayoutExtent( QObject *parent )
 
   projectRead();
 }
+
+QgsDecorationLayoutExtent::~QgsDecorationLayoutExtent() = default;
 
 void QgsDecorationLayoutExtent::projectRead()
 {
@@ -136,7 +139,7 @@ void QgsDecorationLayoutExtent::render( const QgsMapSettings &mapSettings, QgsRe
     QgsLayout *layout = designer->currentLayout();
     QList< QgsLayoutItemMap * > maps;
     layout->layoutItems( maps );
-    for ( const QgsLayoutItemMap *map : qgis::as_const( maps ) )
+    for ( const QgsLayoutItemMap *map : std::as_const( maps ) )
     {
       QPolygonF extent = map->visibleExtentPolygon();
       QPointF labelPoint = extent.at( 1 );
@@ -193,4 +196,3 @@ void QgsDecorationLayoutExtent::setSymbol( QgsFillSymbol *symbol )
 {
   mSymbol.reset( symbol );
 }
-

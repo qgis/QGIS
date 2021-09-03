@@ -25,7 +25,7 @@ class QDomElement;
 
 /**
  * \ingroup 3d
- * A phong shading model with diffuse texture map.
+ * \brief A phong shading model with diffuse texture map.
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is
  * exposed to the Python bindings as a tech preview only.
@@ -120,6 +120,7 @@ class _3D_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialSe
     void addParametersToEffect( Qt3DRender::QEffect *effect ) const override;
 #endif
 
+    // TODO c++20 - replace with = default
     bool operator==( const QgsPhongTexturedMaterialSettings &other ) const
     {
       return mAmbient == other.mAmbient &&

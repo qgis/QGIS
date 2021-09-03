@@ -28,7 +28,7 @@ class QgsRectangle;
 
 /**
  * \ingroup core
- * Utility class for reading and writing MBTiles files (which are SQLite3 databases).
+ * \brief Utility class for reading and writing MBTiles files (which are SQLite3 databases).
  *
  * See the specification for more details:
  * https://github.com/mapbox/mbtiles-spec/blob/master/1.3/spec.md

@@ -487,7 +487,7 @@ def start_app(cleanup=True):
 
         try:
             sys.argv
-        except:
+        except AttributeError:
             sys.argv = ['']
 
         # In python3 we need to convert to a bytes object (or should

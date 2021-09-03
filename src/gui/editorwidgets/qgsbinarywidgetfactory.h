@@ -26,7 +26,7 @@ SIP_NO_FILE
 /**
  * \ingroup gui
  * \class QgsBinaryWidgetFactory
- * Editor widget factory for binary (BLOB) widgets.
+ * \brief Editor widget factory for binary (BLOB) widgets.
  * \note not available in Python bindings
  * \since QGIS 3.6
  */

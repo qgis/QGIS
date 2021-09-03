@@ -13,7 +13,7 @@
 
 class QgsPropertyAssistantWidget : QgsPanelWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Shows a user-friendly assistant guiding users through the creation of :py:class:`QgsProperty` overrides.
 
 .. versionadded:: 3.0

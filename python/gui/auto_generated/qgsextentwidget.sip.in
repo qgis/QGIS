@@ -14,7 +14,7 @@
 
 class QgsExtentWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget for configuration of a map extent.
 
 Besides allowing the user to enter the extent manually, it comes with options to use
@@ -51,6 +51,8 @@ When using the widget, make sure to call :py:func:`~setOriginalExtent`, :py:func
 %Docstring
 Constructor for QgsExtentWidget.
 %End
+
+    ~QgsExtentWidget();
 
     void setOriginalExtent( const QgsRectangle &originalExtent, const QgsCoordinateReferenceSystem &originalCrs );
 %Docstring

@@ -24,7 +24,7 @@
 
 /**
  * \ingroup gui
- * Indicator that can be used in a layer tree view to display icons next to items of the layer tree.
+ * \brief Indicator that can be used in a layer tree view to display icons next to items of the layer tree.
  * They add extra context to the item and interactivity (using clicked() signal).
  *
  * Indicators can be added/removed to individual layer tree items using QgsLayerTreeView::addIndicator()

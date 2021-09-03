@@ -9,9 +9,10 @@
 
 
 
+
 class QgsRasterFileWriterTask : QgsTask
 {
-%Docstring
+%Docstring(signature="appended")
 :py:class:`QgsTask` task which performs a :py:class:`QgsRasterFileWriter` layer saving operation as a background
 task. This can be used to save a raster layer out to a file without blocking the
 QGIS interface.
@@ -56,6 +57,8 @@ coordinate ``transformContext`` .
 Ownership of the ``pipe`` is transferred to the writer task, and will
 be deleted when the task completes.
 %End
+
+    ~QgsRasterFileWriterTask();
 
     virtual void cancel();
 

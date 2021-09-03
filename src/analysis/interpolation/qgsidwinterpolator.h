@@ -24,7 +24,7 @@
 /**
  * \ingroup analysis
  * \class QgsIDWInterpolator
- * Inverse distance weight interpolator.
+ * \brief Inverse distance weight interpolator.
  */
 class ANALYSIS_EXPORT QgsIDWInterpolator: public QgsInterpolator
 {

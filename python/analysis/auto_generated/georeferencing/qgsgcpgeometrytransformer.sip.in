@@ -1,0 +1,88 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/georeferencing/qgsgcpgeometrytransformer.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsGcpGeometryTransformer : QgsAbstractGeometryTransformer
+{
+%Docstring(signature="appended")
+A geometry transformer which uses an underlying Ground Control Points (GCP) based transformation to modify geometries.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsgcpgeometrytransformer.h"
+%End
+  public:
+
+    QgsGcpGeometryTransformer( QgsGcpTransformerInterface *gcpTransformer /Transfer/ );
+%Docstring
+Constructor for QgsGcpGeometryTransformer, which uses the specified ``gcpTransformer`` to
+modify geometries.
+
+Ownership of ``gcpTransformer`` is transferred to the geometry transformer.
+%End
+
+    QgsGcpGeometryTransformer( QgsGcpTransformerInterface::TransformMethod method, const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates );
+%Docstring
+Constructor for QgsGcpGeometryTransformer, which uses the specified transform ``method`` and
+list of source and destination coordinates to transform geometries.
+%End
+
+    ~QgsGcpGeometryTransformer();
+
+
+
+    virtual bool transformPoint( double &x /In,Out/, double &y /In,Out/, double &z /In,Out/, double &m /In,Out/ );
+
+%Docstring
+QgsGcpGeometryTransformer cannot be copied
+%End
+
+    QgsGeometry transform( const QgsGeometry &geometry, bool &ok /Out/, QgsFeedback *feedback = 0 );
+%Docstring
+Transforms the specified input ``geometry`` using the GCP based transform.
+
+:param geometry: Input geometry to transform
+:param feedback: This optional argument can be used to cancel the transformation before it completes.
+                 If this is done, the geometry will be left in a semi-transformed state.
+
+:return: - transformed geometry
+         - ok: will be set to ``True`` if geometry was successfully transformed, or ``False`` if an error occurred
+%End
+
+    QgsGcpTransformerInterface *gcpTransformer() const;
+%Docstring
+Returns the underlying GCP transformer used to transform geometries.
+
+.. seealso:: :py:func:`setGcpTransformer`
+%End
+
+    void setGcpTransformer( QgsGcpTransformerInterface *transformer /Transfer/ );
+%Docstring
+Sets the underlying GCP ``transformer`` used to transform geometries.
+
+Ownership is transferred to this object.
+
+.. seealso:: :py:func:`gcpTransformer`
+%End
+
+  private:
+    QgsGcpGeometryTransformer( const QgsGcpGeometryTransformer &other );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/georeferencing/qgsgcpgeometrytransformer.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

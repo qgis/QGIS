@@ -11,7 +11,7 @@
 
 class QgsTextFragment
 {
-%Docstring
+%Docstring(signature="appended")
 Stores a fragment of text along with formatting overrides to be used when rendering the fragment.
 
 .. warning::

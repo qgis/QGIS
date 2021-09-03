@@ -25,7 +25,7 @@
 /**
  * \ingroup gui
  * \class QgsMenuHeader
- * Custom widget for displaying subheaders within a QMenu in a standard style.
+ * \brief Custom widget for displaying subheaders within a QMenu in a standard style.
  * \see QgsMenuHeaderWidgetAction()
  * \since QGIS 3.0
  */
@@ -58,7 +58,7 @@ class GUI_EXPORT QgsMenuHeader : public QWidget
 /**
  * \ingroup gui
  * \class QgsMenuHeaderWidgetAction
- * Custom QWidgetAction for displaying subheaders within a QMenu in a standard style.
+ * \brief Custom QWidgetAction for displaying subheaders within a QMenu in a standard style.
  * \see QgsMenuHeader()
  * \since QGIS 3.0
  */

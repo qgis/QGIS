@@ -1,5 +1,4 @@
-set (QGIS_PYQT_DIR ${PYTHON_SITE_PACKAGES_DIR}/qgis/PyQt)
-set (PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python/qgis/PyQt)
+set (QGIS_PYQT_DIR ${Python_SITEARCH}/qgis/PyQt)
 
 set(PYQT_COMPAT_FILES
   __init__.py
@@ -32,8 +31,8 @@ foreach(pyfile ${PYQT_COMPAT_FILES})
   set(pyfile ${PYQT_PREFIX}/${pyfile})
   add_custom_command(TARGET pyqtcompat
     POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${PYTHON_OUTPUT_DIRECTORY}/${_dir}
-    COMMAND ${CMAKE_COMMAND} -E copy ${pyfile} ${PYTHON_OUTPUT_DIRECTORY}/${_dir}
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${QGIS_PYTHON_OUTPUT_DIRECTORY}/PyQt/${_dir}
+    COMMAND ${CMAKE_COMMAND} -E copy ${pyfile} ${QGIS_PYTHON_OUTPUT_DIRECTORY}/PyQt/${_dir}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     DEPENDS ${pyfile}
   )

@@ -61,7 +61,7 @@ void QgsUniqueValuesWidgetWrapper::initWidget( QWidget *editor )
 
   QStringList sValues;
 
-  QSet< QVariant> values = layer()->uniqueValues( fieldIdx() );
+  const QSet< QVariant> values = layer()->uniqueValues( fieldIdx() );
 
   const auto constValues = values;
   for ( const QVariant &v : constValues )

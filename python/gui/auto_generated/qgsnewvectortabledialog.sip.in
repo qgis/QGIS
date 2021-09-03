@@ -12,7 +12,7 @@
 
 class QgsNewVectorTableDialog : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsNewVectorTableDialog` class is a provider-agnostic database vector
 and aspatial table designer dialog based on the connections API.
 

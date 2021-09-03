@@ -29,7 +29,7 @@ void QgsGeometryCheckerPlugin::initGui()
 {
   mDialog = new QgsGeometryCheckerDialog( mIface, mIface->mainWindow() );
   mDialog->setWindowModality( Qt::NonModal );
-  mMenuAction = new QAction( QIcon( ":/geometrychecker/icons/geometrychecker.png" ), QApplication::translate( "QgsGeometryCheckerPlugin", "Check Geometries…" ), this );
+  mMenuAction = new QAction( QIcon( sPluginIcon ), QApplication::translate( "QgsGeometryCheckerPlugin", "Check Geometries…" ), this );
   connect( mMenuAction, &QAction::triggered, mDialog, &QWidget::show );
   connect( mMenuAction, &QAction::triggered, mDialog, &QWidget::raise );
   mIface->addPluginToVectorMenu( QString(), mMenuAction );
@@ -68,21 +68,21 @@ QGISEXTERN QgisPlugin *classFactory( QgisInterface *qgisInterfacePointer )
 }
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.
-QGISEXTERN QString name()
+QGISEXTERN const QString *name()
 {
-  return sName;
+  return &sName;
 }
 
 // Return the description
-QGISEXTERN QString description()
+QGISEXTERN const QString *description()
 {
-  return sDescription;
+  return &sDescription;
 }
 
 // Return the category
-QGISEXTERN QString category()
+QGISEXTERN const QString *category()
 {
-  return sCategory;
+  return &sCategory;
 }
 
 // Return the type (either UI or MapLayer plugin)
@@ -92,14 +92,14 @@ QGISEXTERN int type()
 }
 
 // Return the version number for the plugin
-QGISEXTERN QString version()
+QGISEXTERN const QString *version()
 {
-  return sPluginVersion;
+  return &sPluginVersion;
 }
 
-QGISEXTERN QString icon()
+QGISEXTERN const QString *icon()
 {
-  return sPluginIcon;
+  return &sPluginIcon;
 }
 
 // Delete ourself

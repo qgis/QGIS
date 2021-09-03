@@ -90,7 +90,7 @@
         <x>0</x>
         <y>0</y>
         <width>548</width>
-        <height>1284</height>
+        <height>1336</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -445,11 +445,8 @@
          <layout class="QGridLayout" name="gridLayout_5">
           <item row="0" column="0">
            <widget class="QLabel" name="mStartDateTimeLabel">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
             <property name="text">
-             <string>Start</string>
+             <string>Start (inclusive)</string>
             </property>
             <property name="wordWrap">
              <bool>false</bool>
@@ -470,6 +467,9 @@
             <property name="displayFormat">
              <string>M/d/yyyy h:mm AP</string>
             </property>
+            <property name="calendarPopup">
+             <bool>true</bool>
+            </property>
             <property name="timeSpec">
              <enum>Qt::UTC</enum>
             </property>
@@ -484,11 +484,8 @@
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="mEndDateTimeLabel">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
             <property name="text">
-             <string>End</string>
+             <string>End (exclusive)</string>
             </property>
             <property name="wordWrap">
              <bool>false</bool>
@@ -508,6 +505,9 @@
             </property>
             <property name="displayFormat">
              <string>M/d/yyyy h:mm AP</string>
+            </property>
+            <property name="calendarPopup">
+             <bool>true</bool>
             </property>
             <property name="timeSpec">
              <enum>Qt::UTC</enum>
@@ -1011,20 +1011,46 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectionwidget.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSymbolButton</class>
+   <extends>QToolButton</extends>
+   <header>qgssymbolbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsBlendModeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsblendmodecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsmaplayercombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
@@ -1037,32 +1063,6 @@
    <extends>QComboBox</extends>
    <header>qgslayoutitemcombobox.h</header>
   </customwidget>
-  <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsMapLayerComboBox</class>
-   <extends>QComboBox</extends>
-   <header location="global">qgsmaplayercombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsBlendModeComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsblendmodecombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsProjectionSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsprojectionselectionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsSymbolButton</class>
-   <extends>QToolButton</extends>
-   <header>qgssymbolbutton.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
@@ -1072,6 +1072,7 @@
   <tabstop>mMapRotationSpinBox</tabstop>
   <tabstop>mMapRotationDDBtn</tabstop>
   <tabstop>mCrsSelector</tabstop>
+  <tabstop>mCRSDDBtn</tabstop>
   <tabstop>mDrawCanvasItemsCheckBox</tabstop>
   <tabstop>mFollowVisibilityPresetCheckBox</tabstop>
   <tabstop>mFollowVisibilityPresetCombo</tabstop>
@@ -1089,6 +1090,11 @@
   <tabstop>mXMaxDDBtn</tabstop>
   <tabstop>mYMaxLineEdit</tabstop>
   <tabstop>mYMaxDDBtn</tabstop>
+  <tabstop>mTemporalCheckBox</tabstop>
+  <tabstop>mStartDateTime</tabstop>
+  <tabstop>mStartDateTimeDDBtn</tabstop>
+  <tabstop>mEndDateTime</tabstop>
+  <tabstop>mEndDateTimeDDBtn</tabstop>
   <tabstop>mAtlasCheckBox</tabstop>
   <tabstop>mAtlasMarginRadio</tabstop>
   <tabstop>mAtlasMarginSpinBox</tabstop>
@@ -1119,8 +1125,6 @@
   <tabstop>mOverviewStackingLayerComboBox</tabstop>
  </tabstops>
  <resources>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>

@@ -31,7 +31,9 @@
 #include "qgsfillsymbollayer.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsmarkersymbollayer.h"
-
+#include "qgslinesymbol.h"
+#include "qgsfillsymbol.h"
+#include "qgsmarkersymbol.h"
 #include "qgsstyle.h"
 
 /**
@@ -102,10 +104,10 @@ void TestQgsSymbol::initTestCase()
   //
   //create a point layer that will be used in all tests...
   //
-  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + '/';
-  QString myPointsFileName = mTestDataDir + "points.shp";
-  QFileInfo myPointFileInfo( myPointsFileName );
+  const QString myPointsFileName = mTestDataDir + "points.shp";
+  const QFileInfo myPointFileInfo( myPointsFileName );
   mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
                                       myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
@@ -115,8 +117,8 @@ void TestQgsSymbol::initTestCase()
   //
   //create a poly layer that will be used in all tests...
   //
-  QString myPolysFileName = mTestDataDir + "polys.shp";
-  QFileInfo myPolyFileInfo( myPolysFileName );
+  const QString myPolysFileName = mTestDataDir + "polys.shp";
+  const QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
                                      myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
@@ -127,8 +129,8 @@ void TestQgsSymbol::initTestCase()
   //
   // Create a line layer that will be used in all tests...
   //
-  QString myLinesFileName = mTestDataDir + "lines.shp";
-  QFileInfo myLineFileInfo( myLinesFileName );
+  const QString myLinesFileName = mTestDataDir + "lines.shp";
+  const QFileInfo myLineFileInfo( myLinesFileName );
   mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(),
                                      myLineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
@@ -142,7 +144,7 @@ void TestQgsSymbol::cleanupTestCase()
 {
   QgsApplication::exitQgis();
 
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -159,7 +161,7 @@ bool TestQgsSymbol::imageCheck( QgsMapSettings &ms, const QString &testName )
   ms.setOutputDpi( 96 );
   checker.setControlName( "expected_" + testName );
   checker.setMapSettings( ms );
-  bool result = checker.runTest( testName, 0 );
+  const bool result = checker.runTest( testName, 0 );
   mReport += checker.report();
   return result;
 }
@@ -298,7 +300,7 @@ void TestQgsSymbol::testParseColor()
   {
     QgsDebugMsg( "color string: " +  i.key() );
     bool hasAlpha = false;
-    QColor result = QgsSymbolLayerUtils::parseColorWithAlpha( i.key(), hasAlpha );
+    const QColor result = QgsSymbolLayerUtils::parseColorWithAlpha( i.key(), hasAlpha );
     QVERIFY( result == i.value().first );
     QVERIFY( hasAlpha == i.value().second );
     ++i;
@@ -378,7 +380,7 @@ void TestQgsSymbol::testParseColorList()
   while ( i != colorTests.constEnd() )
   {
     QgsDebugMsg( "color list string: " +  i.key() );
-    QList< QColor > result = QgsSymbolLayerUtils::parseColorList( i.key() );
+    const QList< QColor > result = QgsSymbolLayerUtils::parseColorList( i.key() );
     if ( i.value().isValid() )
     {
       QCOMPARE( result.length(), 1 );
@@ -416,7 +418,7 @@ void TestQgsSymbol::testParseColorList()
   while ( it != colorListTests.constEnd() )
   {
     QgsDebugMsg( "color list string: " + ( *it ).first );
-    QList< QColor > result = QgsSymbolLayerUtils::parseColorList( ( *it ).first );
+    const QList< QColor > result = QgsSymbolLayerUtils::parseColorList( ( *it ).first );
     if ( ( *it ).second.length() > 0 )
     {
       QCOMPARE( result.length(), ( *it ).second.length() );

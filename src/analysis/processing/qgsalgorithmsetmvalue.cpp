@@ -85,7 +85,7 @@ QgsWkbTypes::Type QgsSetMValueAlgorithm::outputWkbType( QgsWkbTypes::Type type )
 
 void QgsSetMValueAlgorithm::initParameters( const QVariantMap & )
 {
-  auto mValueParam = qgis::make_unique < QgsProcessingParameterNumber >( QStringLiteral( "M_VALUE" ), QObject::tr( "M Value" ), QgsProcessingParameterNumber::Double, 0.0 );
+  auto mValueParam = std::make_unique < QgsProcessingParameterNumber >( QStringLiteral( "M_VALUE" ), QObject::tr( "M Value" ), QgsProcessingParameterNumber::Double, 0.0 );
   mValueParam->setIsDynamic( true );
   mValueParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "M_VALUE" ), QObject::tr( "M Value" ), QgsPropertyDefinition::Double ) );
   mValueParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );

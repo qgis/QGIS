@@ -44,9 +44,9 @@ QStringList QgsMapLayerComboBox::excludedProviders() const
   return mProxyModel->excludedProviders();
 }
 
-void QgsMapLayerComboBox::setAllowEmptyLayer( bool allowEmpty )
+void QgsMapLayerComboBox::setAllowEmptyLayer( bool allowEmpty, const QString &text, const QIcon &icon )
 {
-  mProxyModel->sourceLayerModel()->setAllowEmptyLayer( allowEmpty );
+  mProxyModel->sourceLayerModel()->setAllowEmptyLayer( allowEmpty, text, icon );
 }
 
 bool QgsMapLayerComboBox::allowEmptyLayer() const
@@ -86,10 +86,10 @@ void QgsMapLayerComboBox::setLayer( QgsMapLayer *layer )
     return;
   }
 
-  QModelIndex idx = mProxyModel->sourceLayerModel()->indexFromLayer( layer );
+  const QModelIndex idx = mProxyModel->sourceLayerModel()->indexFromLayer( layer );
   if ( idx.isValid() )
   {
-    QModelIndex proxyIdx = mProxyModel->mapFromSource( idx );
+    const QModelIndex proxyIdx = mProxyModel->mapFromSource( idx );
     if ( proxyIdx.isValid() )
     {
       setCurrentIndex( proxyIdx.row() );
@@ -230,9 +230,9 @@ void QgsMapLayerComboBox::paintEvent( QPaintEvent *e )
   if ( mDragActive || mHighlight )
   {
     QPainter p( this );
-    int width = 2;  // width of highlight rectangle inside frame
+    const int width = 2;  // width of highlight rectangle inside frame
     p.setPen( QPen( palette().highlight(), width ) );
-    QRect r = rect().adjusted( width, width, -width, -width );
+    const QRect r = rect().adjusted( width, width, -width, -width );
     p.drawRect( r );
   }
 }

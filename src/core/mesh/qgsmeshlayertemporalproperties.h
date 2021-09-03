@@ -25,7 +25,7 @@
 /**
  * \class QgsMeshLayerTemporalProperties
  * \ingroup core
- * Implementation of map layer temporal properties for mesh layers.
+ * \brief Implementation of map layer temporal properties for mesh layers.
  *
  *
  * The time in a mesh layer is defined by :

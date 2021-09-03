@@ -22,5 +22,6 @@ class APP_EXPORT QgsMapToolAddRing: public QgsMapToolCapture
     Q_OBJECT
   public:
     QgsMapToolAddRing( QgsMapCanvas *canvas );
+    bool supportsTechnique( CaptureTechnique technique ) const override;
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 };

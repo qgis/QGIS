@@ -18,7 +18,8 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsrenderer.h"
-#include "qgssymbol.h"
+
+class QgsSymbol;
 
 /**
  * \ingroup core
@@ -27,12 +28,12 @@
  * and diagrams for the layer. Selected features will also be drawn with a default symbol.
  * \since QGIS 2.16
  */
-
 class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
 {
   public:
 
     QgsNullSymbolRenderer();
+    ~QgsNullSymbolRenderer();
 
     QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;

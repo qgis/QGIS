@@ -40,7 +40,6 @@ extern "C"
 #include <QString>
 #include <QMap>
 #include <QHash>
-#include <QRegExp>
 #include <QTemporaryFile>
 #include "qgis_grass_lib.h"
 class QgsCoordinateReferenceSystem;
@@ -113,7 +112,7 @@ class GRASS_LIB_EXPORT QgsGrassObject
     // returns true if gisdbase, location and mapset are the same
     bool mapsetIdentical( const QgsGrassObject &other ) const;
     // get regexp patter for new names, e.g. vectors should not start with number
-    static QRegExp newNameRegExp( Type type );
+    static QString newNameRegExp( Type type );
 
     bool operator==( const QgsGrassObject &other ) const;
   private:
@@ -126,7 +125,7 @@ class GRASS_LIB_EXPORT QgsGrassObject
 
 /**
  * QString gisdbase()
-   Methods for C library initialization and error handling.
+ * Methods for C library initialization and error handling.
 */
 class GRASS_LIB_EXPORT QgsGrass : public QObject
 {

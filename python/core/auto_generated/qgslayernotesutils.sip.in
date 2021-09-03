@@ -1,0 +1,57 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgslayernotesutils.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsLayerNotesUtils
+{
+%Docstring(signature="appended")
+
+Contains utility functions for working with layer notes.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgslayernotesutils.h"
+%End
+  public:
+
+    static QString layerNotes( const QgsMapLayer *layer );
+%Docstring
+Returns the notes for the specified ``layer``.
+
+The returned string is a HTML formatted set of user notations for the layer.
+%End
+
+    static void setLayerNotes( QgsMapLayer *layer, const QString &notes );
+%Docstring
+Sets the ``notes`` for the specified ``layer``, where ``notes`` is a HTML formatted string.
+%End
+
+    static bool layerHasNotes( const QgsMapLayer *layer );
+%Docstring
+Returns ``True`` if the specified ``layer`` has notes available.
+%End
+
+    static void removeNotes( QgsMapLayer *layer );
+%Docstring
+Removes any notes for the specified ``layer``.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgslayernotesutils.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

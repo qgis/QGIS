@@ -13,7 +13,7 @@
 
 class QgsLocatorResult
 {
-%Docstring
+%Docstring(signature="appended")
 Encapsulates properties of an individual matching result found by a :py:class:`QgsLocatorFilter`.
 
 .. versionadded:: 3.0
@@ -83,7 +83,7 @@ normally.
 
 class QgsLocatorFilter : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for filters which collect locator results.
 
 .. note::
@@ -138,6 +138,13 @@ Returns the unique name for the filter. This should be an untranslated string id
 Returns a translated, user-friendly name for the filter.
 
 .. seealso:: :py:func:`name`
+%End
+
+    virtual QString description() const;
+%Docstring
+Returns a translated, description for the filter.
+
+.. versionadded:: 3.20
 %End
 
     virtual QgsLocatorFilter::Flags flags() const;
@@ -303,7 +310,7 @@ custom configuration widget.
    :py:func:`~QgsLocatorFilter.hasConfigWidget` must return ``True`` to indicate that the filter supports configuration.
 %End
 
-    void logMessage( const QString &message, Qgis::MessageLevel level = Qgis::Info );
+    void logMessage( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
 %Docstring
 Logs a ``message`` to the log panel
 

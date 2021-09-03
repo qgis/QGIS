@@ -21,7 +21,7 @@
 
 /**
  * \ingroup core
- * Field formatter for a range (double) field with precision and locale
+ * \brief Field formatter for a range (double) field with precision and locale.
  *
  * \since QGIS 3.0
  */

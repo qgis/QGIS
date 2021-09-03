@@ -68,7 +68,7 @@
             <x>0</x>
             <y>0</y>
             <width>786</width>
-            <height>721</height>
+            <height>670</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_15">
@@ -1492,15 +1492,15 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsExtentGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgsextentgroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsExtentGroupBox</class>
+   <extends>QgsCollapsibleGroupBox</extends>
+   <header>qgsextentgroupbox.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsDateTimeEdit</class>
@@ -1512,7 +1512,6 @@
   <tabstop>tabWidget</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>lineEditParentId</tabstop>
-  <tabstop>comboEncoding</tabstop>
   <tabstop>lineEditIdentifier</tabstop>
   <tabstop>btnAutoSource</tabstop>
   <tabstop>lineEditTitle</tabstop>
@@ -1521,6 +1520,7 @@
   <tabstop>mCreationDateTimeEdit</tabstop>
   <tabstop>comboLanguage</tabstop>
   <tabstop>textEditAbstract</tabstop>
+  <tabstop>comboEncoding</tabstop>
   <tabstop>btnAutoEncoding</tabstop>
   <tabstop>listDefaultCategories</tabstop>
   <tabstop>btnAddDefaultCategory</tabstop>

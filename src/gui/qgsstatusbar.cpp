@@ -76,6 +76,7 @@ void QgsStatusBar::showMessage( const QString &text, int timeout )
     {
       mTempMessageTimer = new QTimer( this );
       connect( mTempMessageTimer, &QTimer::timeout, this, &QgsStatusBar::clearMessage );
+      mTempMessageTimer->setSingleShot( true );
     }
     mTempMessageTimer->start( timeout );
   }

@@ -34,6 +34,7 @@ class QgsDxfPaintDevice;
  * \ingroup core
  * \class QgsDxfPaintEngine
  * \note not available in Python bindings
+ * \brief Custom paint engine for rendering to DXF drawings.
 */
 
 class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine

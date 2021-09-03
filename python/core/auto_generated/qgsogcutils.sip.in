@@ -12,7 +12,7 @@
 
 class QgsOgcUtils
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsOgcUtils` class provides various utility functions for conversion between
 OGC (Open Geospatial Consortium) standards and QGIS internal representations.
 

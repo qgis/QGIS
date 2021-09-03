@@ -12,7 +12,7 @@
 
 class QgsFeatureListView : QListView
 {
-%Docstring
+%Docstring(signature="appended")
 Shows a list of features and renders a edit button next to each feature.
 
 Accepts a display expression to define the way, features are rendered.
@@ -37,6 +37,7 @@ Returns the layer cache
 
 :return: the layer cache used as backend
 %End
+
 
     virtual void setModel( QgsFeatureListModel *featureListModel );
 %Docstring

@@ -32,7 +32,7 @@ class QgsGradientPlotEventFilter;
 /**
  * \ingroup gui
  * \class QgsGradientColorRampDialog
- * A dialog which allows users to modify the properties of a QgsGradientColorRamp.
+ * \brief A dialog which allows users to modify the properties of a QgsGradientColorRamp.
  * \since QGIS 3.0
  */
 class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGradientColorRampDialogBase

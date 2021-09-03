@@ -44,8 +44,8 @@ class DynamicTreeModel : public QAbstractItemModel
   protected slots:
 
     /**
-    Finds the parent id of the string with id @p searchId.
-    Returns -1 if not found.
+     * Finds the parent id of the string with id @p searchId.
+     * Returns -1 if not found.
     */
     qint64 findParentId( qint64 searchId ) const;
   private:
@@ -127,7 +127,7 @@ class ModelMoveCommand : public ModelChangeCommand
 };
 
 /**
-  A command which does a move and emits a reset signal.
+ * A command which does a move and emits a reset signal.
 */
 class ModelResetCommand : public ModelMoveCommand
 {
@@ -140,7 +140,7 @@ class ModelResetCommand : public ModelMoveCommand
 };
 
 /**
-  A command which does a move and emits a beginResetModel and endResetModel signals.
+ * A command which does a move and emits a beginResetModel and endResetModel signals.
 */
 class ModelResetCommandFixed : public ModelMoveCommand
 {

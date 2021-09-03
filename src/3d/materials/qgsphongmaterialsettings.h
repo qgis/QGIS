@@ -33,7 +33,7 @@ class QDomElement;
 
 /**
  * \ingroup 3d
- * Basic shading material used for rendering based on the Phong shading model
+ * \brief Basic shading material used for rendering based on the Phong shading model
  * with three color components: ambient, diffuse and specular.
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is
@@ -96,6 +96,7 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     void applyDataDefinedToGeometry( Qt3DRender::QGeometry *geometry, int vertexCount, const QByteArray &data ) const override;
 #endif
 
+    // TODO c++20 - replace with = default
     bool operator==( const QgsPhongMaterialSettings &other ) const
     {
       return mAmbient == other.mAmbient &&

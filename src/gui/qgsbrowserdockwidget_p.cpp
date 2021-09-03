@@ -51,6 +51,8 @@
 #include "qgsdataitemguiproviderregistry.h"
 #include "qgsdataitemguiprovider.h"
 #include "qgspointcloudlayer.h"
+#include "qgslayeritem.h"
+#include "qgsdirectoryitem.h"
 
 /// @cond PRIVATE
 
@@ -73,7 +75,7 @@ QgsBrowserPropertiesWrapLabel::QgsBrowserPropertiesWrapLabel( const QString &tex
 
 void QgsBrowserPropertiesWrapLabel::adjustHeight( QSizeF size )
 {
-  int height = static_cast<int>( size.height() ) + 2 * frameWidth();
+  const int height = static_cast<int>( size.height() ) + 2 * frameWidth();
   setMinimumHeight( height );
   setMaximumHeight( height );
 }
@@ -96,12 +98,12 @@ QgsBrowserPropertiesWidget *QgsBrowserPropertiesWidget::createWidget( QgsDataIte
   QgsBrowserPropertiesWidget *propertiesWidget = nullptr;
   // In general, we would like to show all items' paramWidget, but top level items like
   // WMS etc. have currently too large widgets which do not fit well to browser properties widget
-  if ( item->type() == QgsDataItem::Directory )
+  if ( item->type() == Qgis::BrowserItemType::Directory )
   {
     propertiesWidget = new QgsBrowserDirectoryProperties( parent );
     propertiesWidget->setItem( item );
   }
-  else if ( item->type() == QgsDataItem::Layer || item->type() == QgsDataItem::Custom )
+  else if ( item->type() == Qgis::BrowserItemType::Layer || item->type() == Qgis::BrowserItemType::Custom )
   {
     // try new infrastructure of creation of layer widgets
     QWidget *paramWidget = nullptr;
@@ -126,7 +128,7 @@ QgsBrowserPropertiesWidget *QgsBrowserPropertiesWidget::createWidget( QgsDataIte
       propertiesWidget = new QgsBrowserPropertiesWidget( parent );
       propertiesWidget->setWidget( paramWidget );
     }
-    else if ( item->type() == QgsDataItem::Layer )
+    else if ( item->type() == Qgis::BrowserItemType::Layer )
     {
       propertiesWidget = new QgsBrowserLayerProperties( parent );
       propertiesWidget->setItem( item );
@@ -172,7 +174,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
 
   mNoticeLabel->clear();
 
-  QgsMapLayerType type = layerItem->mapLayerType();
+  const QgsMapLayerType type = layerItem->mapLayerType();
   QString layerMetadata = tr( "Error" );
 
   mLayer.reset();
@@ -189,7 +191,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
       // should copy code from addLayer() to split uri ?
       QgsRasterLayer::LayerOptions options;
       options.skipCrsValidation = true;
-      mLayer = qgis::make_unique< QgsRasterLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
+      mLayer = std::make_unique< QgsRasterLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
       break;
     }
 
@@ -198,7 +200,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
       QgsDebugMsg( QStringLiteral( "creating mesh layer" ) );
       QgsMeshLayer::LayerOptions options { QgsProject::instance()->transformContext() };
       options.skipCrsValidation = true;
-      mLayer = qgis::make_unique < QgsMeshLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
+      mLayer = std::make_unique < QgsMeshLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
       break;
     }
 
@@ -207,14 +209,14 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
       QgsDebugMsg( QStringLiteral( "creating vector layer" ) );
       QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
       options.skipCrsValidation = true;
-      mLayer = qgis::make_unique < QgsVectorLayer>( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
+      mLayer = std::make_unique < QgsVectorLayer>( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
       break;
     }
 
     case QgsMapLayerType::VectorTileLayer:
     {
       QgsDebugMsgLevel( QStringLiteral( "creating vector tile layer" ), 2 );
-      mLayer = qgis::make_unique< QgsVectorTileLayer >( layerItem->uri(), layerItem->name() );
+      mLayer = std::make_unique< QgsVectorTileLayer >( layerItem->uri(), layerItem->name() );
       break;
     }
 
@@ -223,7 +225,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
       QgsDebugMsgLevel( QStringLiteral( "creating point cloud layer" ), 2 );
       QgsPointCloudLayer::LayerOptions options { QgsProject::instance()->transformContext() };
       options.skipCrsValidation = true;
-      mLayer = qgis::make_unique< QgsPointCloudLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
+      mLayer = std::make_unique< QgsPointCloudLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
       break;
     }
 
@@ -259,7 +261,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
     }
   }
 
-  QString myStyle = QgsApplication::reportStyleSheet();
+  const QString myStyle = QgsApplication::reportStyleSheet();
   mMetadataTextBrowser->document()->setDefaultStyleSheet( myStyle );
   mMetadataTextBrowser->setHtml( layerMetadata );
 
@@ -276,7 +278,7 @@ void QgsBrowserLayerProperties::setCondensedMode( bool )
 
 void QgsBrowserLayerProperties::urlClicked( const QUrl &url )
 {
-  QFileInfo file( url.toLocalFile() );
+  const QFileInfo file( url.toLocalFile() );
   if ( file.exists() && !file.isDir() )
     QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
   else
@@ -352,7 +354,7 @@ void QgsBrowserPropertiesDialog::setItem( QgsDataItem *item, const QgsDataItemGu
 
   mPropertiesWidget = QgsBrowserPropertiesWidget::createWidget( item, context, this );
   mLayout->addWidget( mPropertiesWidget );
-  setWindowTitle( item->type() == QgsDataItem::Layer ? tr( "Layer Properties" ) : tr( "Directory Properties" ) );
+  setWindowTitle( item->type() == Qgis::BrowserItemType::Layer ? tr( "Layer Properties" ) : tr( "Directory Properties" ) );
 }
 
 

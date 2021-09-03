@@ -298,6 +298,19 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mTemplateLineEdit</tabstop>
+  <tabstop>mExtentGroupBox</tabstop>
+  <tabstop>mOutputWidthSpinBox</tabstop>
+  <tabstop>mOutputHeightSpinBox</tabstop>
+  <tabstop>mLockAspectRatio</tabstop>
+  <tabstop>mDrawDecorations</tabstop>
+  <tabstop>mStartDateTime</tabstop>
+  <tabstop>mEndDateTime</tabstop>
+  <tabstop>mSetToProjectTimeButton</tabstop>
+  <tabstop>mFrameDurationSpinBox</tabstop>
+  <tabstop>mTimeStepsComboBox</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

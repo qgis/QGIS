@@ -23,6 +23,8 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgsproperty.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgsmarkersymbol.h"
+
 #include <cmath>
 
 QgsPointClusterRenderer::QgsPointClusterRenderer()
@@ -109,7 +111,7 @@ QgsFeatureRenderer *QgsPointClusterRenderer::create( QDomElement &symbologyElem,
   }
 
   //center symbol
-  QDomElement centerSymbolElem = symbologyElem.firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement centerSymbolElem = symbologyElem.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !centerSymbolElem.isNull() )
   {
     r->setClusterSymbol( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( centerSymbolElem, context ) );
@@ -125,7 +127,6 @@ QgsMarkerSymbol *QgsPointClusterRenderer::clusterSymbol()
 QDomElement QgsPointClusterRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
 {
   QDomElement rendererElement = doc.createElement( RENDERER_TAG_NAME );
-  rendererElement.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
   rendererElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "pointCluster" ) );
   rendererElement.setAttribute( QStringLiteral( "tolerance" ), QString::number( mTolerance ) );
   rendererElement.setAttribute( QStringLiteral( "toleranceUnit" ), QgsUnitTypes::encodeUnit( mToleranceUnit ) );
@@ -133,25 +134,16 @@ QDomElement QgsPointClusterRenderer::save( QDomDocument &doc, const QgsReadWrite
 
   if ( mRenderer )
   {
-    QDomElement embeddedRendererElem = mRenderer->save( doc, context );
+    const QDomElement embeddedRendererElem = mRenderer->save( doc, context );
     rendererElement.appendChild( embeddedRendererElem );
   }
   if ( mClusterSymbol )
   {
-    QDomElement centerSymbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "centerSymbol" ), mClusterSymbol.get(), doc, context );
+    const QDomElement centerSymbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "centerSymbol" ), mClusterSymbol.get(), doc, context );
     rendererElement.appendChild( centerSymbolElem );
   }
 
-  if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
-    mPaintEffect->saveProperties( doc, rendererElement );
-
-  if ( !mOrderBy.isEmpty() )
-  {
-    QDomElement orderBy = doc.createElement( QStringLiteral( "orderby" ) );
-    mOrderBy.save( orderBy );
-    rendererElement.appendChild( orderBy );
-  }
-  rendererElement.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
+  saveRendererData( doc, rendererElement, context );
 
   return rendererElement;
 }
@@ -197,6 +189,7 @@ QgsPointClusterRenderer *QgsPointClusterRenderer::convertFromRenderer( const Qgs
   {
     QgsPointClusterRenderer *pointRenderer = new QgsPointClusterRenderer();
     pointRenderer->setEmbeddedRenderer( renderer->clone() );
+    renderer->copyRendererData( pointRenderer );
     return pointRenderer;
   }
   else if ( renderer->type() == QLatin1String( "pointDisplacement" ) )
@@ -210,6 +203,7 @@ QgsPointClusterRenderer *QgsPointClusterRenderer::convertFromRenderer( const Qgs
     pointRenderer->setToleranceMapUnitScale( displacementRenderer->toleranceMapUnitScale() );
     if ( const_cast< QgsPointDisplacementRenderer * >( displacementRenderer )->centerSymbol() )
       pointRenderer->setClusterSymbol( const_cast< QgsPointDisplacementRenderer * >( displacementRenderer )->centerSymbol()->clone() );
+    renderer->copyRendererData( pointRenderer );
     return pointRenderer;
   }
   else

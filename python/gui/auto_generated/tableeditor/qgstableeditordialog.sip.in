@@ -10,7 +10,7 @@
 
 class QgsTableEditorDialog : QMainWindow
 {
-%Docstring
+%Docstring(signature="appended")
 
 A reusable window for editing simple spreadsheet-style tables.
 

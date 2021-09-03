@@ -1,6 +1,7 @@
 {
   "name": "~",
   "type": "operator",
+  "groups": ["Operators"],
   "description": "Performs a regular expression match on a string value. Backslash characters must be double escaped (e.g., \"\\\\\\\\s\" to match a white space character).",
   "arguments": [
         { "arg": "string", "description": "A string value" },

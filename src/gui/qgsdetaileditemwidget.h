@@ -24,7 +24,7 @@
 
 /**
  * \ingroup gui
- * A widget renderer for detailed item views.
+ * \brief A widget renderer for detailed item views.
  * \see also QgsDetailedItem and QgsDetailedItemData.
  */
 class GUI_EXPORT QgsDetailedItemWidget : public QWidget, private Ui::QgsDetailedItemWidgetBase

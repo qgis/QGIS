@@ -41,7 +41,7 @@
 #include "qgsstyleentityvisitor.h"
 #include "qgsstyle.h"
 #include "qgsauxiliarystorage.h"
-
+#include "qgssymbollayerreference.h"
 
 QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly )
 {
@@ -306,7 +306,7 @@ QVariant QgsVectorLayerUtils::createUniqueValueFromCache( const QgsVectorLayer *
 
   if ( field.isNumeric() )
   {
-    QVariant maxVal = existingValues.isEmpty() ? 0 : *std::max_element( existingValues.begin(), existingValues.end() );
+    QVariant maxVal = existingValues.isEmpty() ? 0 : *std::max_element( existingValues.begin(), existingValues.end(), []( const QVariant & a, const QVariant & b ) { return a.toLongLong() < b.toLongLong(); } );
     QVariant newVar( maxVal.toLongLong() + 1 );
     if ( field.convertCompatible( newVar ) )
       return newVar;
@@ -342,7 +342,7 @@ QVariant QgsVectorLayerUtils::createUniqueValueFromCache( const QgsVectorLayer *
 
         // try variants like base_1, base_2, etc until a new value found
         QStringList vals;
-        for ( const auto &v : qgis::as_const( existingValues ) )
+        for ( const auto &v : std::as_const( existingValues ) )
         {
           if ( v.toString().startsWith( base ) )
             vals.push_back( v.toString() );
@@ -522,7 +522,7 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
     return uniqueValueCache[ fieldIdx ].contains( value );
   };
 
-  for ( const auto &fd : qgis::as_const( featuresData ) )
+  for ( const auto &fd : std::as_const( featuresData ) )
   {
 
     QgsFeature newFeature( fields );
@@ -683,11 +683,7 @@ std::unique_ptr<QgsVectorLayerFeatureSource> QgsVectorLayerUtils::getFeatureSour
 
   auto getFeatureSource = [ layer, &featureSource, feedback ]
   {
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 10, 0 )
     Q_ASSERT( QThread::currentThread() == qApp->thread() || feedback );
-#else
-    Q_UNUSED( feedback )
-#endif
     QgsVectorLayer *lyr = layer.data();
 
     if ( lyr )

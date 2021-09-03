@@ -43,7 +43,7 @@ QgsKernelDensityEstimation::QgsKernelDensityEstimation( const QgsKernelDensityEs
 
 QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::run()
 {
-  Result result = prepare();
+  const Result result = prepare();
   if ( result != Success )
     return result;
 
@@ -83,8 +83,8 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::prepare()
   if ( mBounds.isNull() )
     return InvalidParameters;
 
-  int rows = std::max( std::ceil( mBounds.height() / mPixelSize ) + 1, 1.0 );
-  int cols = std::max( std::ceil( mBounds.width() / mPixelSize ) + 1, 1.0 );
+  const int rows = std::max( std::ceil( mBounds.height() / mPixelSize ) + 1, 1.0 );
+  const int cols = std::max( std::ceil( mBounds.width() / mPixelSize ) + 1, 1.0 );
 
   if ( !createEmptyLayer( driver, mBounds, rows, cols ) )
     return FileCreationError;
@@ -106,7 +106,7 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::prepare()
 
 QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const QgsFeature &feature )
 {
-  QgsGeometry featureGeometry = feature.geometry();
+  const QgsGeometry featureGeometry = feature.geometry();
   if ( featureGeometry.isNull() )
   {
     return Success;
@@ -116,7 +116,7 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
   QgsMultiPointXY multiPoints;
   if ( !featureGeometry.isMultipart() )
   {
-    QgsPointXY p = featureGeometry.asPoint();
+    const QgsPointXY p = featureGeometry.asPoint();
     // avoiding any empty points or out of extent points
     if ( !mBounds.contains( p ) )
       return Success;
@@ -136,7 +136,7 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
     radius = feature.attribute( mRadiusField ).toDouble();
     buffer = radiusSizeInPixels( radius );
   }
-  int blockSize = 2 * buffer + 1; //Block SIDE would be more appropriate
+  const int blockSize = 2 * buffer + 1; //Block SIDE would be more appropriate
 
   // calculate weight
   double weight = 1.0;
@@ -157,9 +157,9 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
     }
 
     // calculate the pixel position
-    unsigned int xPosition = ( ( ( *pointIt ).x() - mBounds.xMinimum() ) / mPixelSize ) - buffer;
-    unsigned int yPosition = ( ( ( *pointIt ).y() - mBounds.yMinimum() ) / mPixelSize ) - buffer;
-    unsigned int yPositionIO = ( ( mBounds.yMaximum() - ( *pointIt ).y() ) / mPixelSize ) - buffer;
+    const unsigned int xPosition = ( ( ( *pointIt ).x() - mBounds.xMinimum() ) / mPixelSize ) - buffer;
+    const unsigned int yPosition = ( ( ( *pointIt ).y() - mBounds.yMinimum() ) / mPixelSize ) - buffer;
+    const unsigned int yPositionIO = ( ( mBounds.yMaximum() - ( *pointIt ).y() ) / mPixelSize ) - buffer;
 
 
     // get the data
@@ -174,10 +174,10 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
     {
       for ( int yp = 0; yp < blockSize; yp++ )
       {
-        double pixelCentroidX = ( xPosition + xp + 0.5 ) * mPixelSize + mBounds.xMinimum();
-        double pixelCentroidY = ( yPosition + yp + 0.5 ) * mPixelSize + mBounds.yMinimum();
+        const double pixelCentroidX = ( xPosition + xp + 0.5 ) * mPixelSize + mBounds.xMinimum();
+        const double pixelCentroidY = ( yPosition + yp + 0.5 ) * mPixelSize + mBounds.yMinimum();
 
-        double distance = std::sqrt( std::pow( pixelCentroidX - ( *pointIt ).x(), 2.0 ) + std::pow( pixelCentroidY - ( *pointIt ).y(), 2.0 ) );
+        const double distance = std::sqrt( std::pow( pixelCentroidX - ( *pointIt ).x(), 2.0 ) + std::pow( pixelCentroidY - ( *pointIt ).y(), 2.0 ) );
 
         // is pixel outside search bandwidth of feature?
         if ( distance > radius )
@@ -185,8 +185,8 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
           continue;
         }
 
-        double pixelValue = weight * calculateKernelValue( distance, radius, mShape, mOutputValues );
-        int pos = xp + blockSize * yp;
+        const double pixelValue = weight * calculateKernelValue( distance, radius, mShape, mOutputValues );
+        const int pos = xp + blockSize * yp;
         if ( dataBuffer[ pos ] == NO_DATA )
         {
           dataBuffer[ pos ] = 0;
@@ -225,7 +225,7 @@ int QgsKernelDensityEstimation::radiusSizeInPixels( double radius ) const
 bool QgsKernelDensityEstimation::createEmptyLayer( GDALDriverH driver, const QgsRectangle &bounds, int rows, int columns ) const
 {
   double geoTransform[6] = { bounds.xMinimum(), mPixelSize, 0, bounds.yMaximum(), 0, -mPixelSize };
-  gdal::dataset_unique_ptr emptyDataset( GDALCreate( driver, mOutputFile.toUtf8(), columns, rows, 1, GDT_Float32, nullptr ) );
+  const gdal::dataset_unique_ptr emptyDataset( GDALCreate( driver, mOutputFile.toUtf8(), columns, rows, 1, GDT_Float32, nullptr ) );
   if ( !emptyDataset )
     return false;
 
@@ -299,7 +299,7 @@ double QgsKernelDensityEstimation::uniformKernel( const double distance, const d
     case OutputScaled:
     {
       // Normalizing constant
-      double k = 2. / ( M_PI * bandwidth );
+      const double k = 2. / ( M_PI * bandwidth );
 
       // Derived from Wand and Jones (1995), p. 175
       return k * ( 0.5 / bandwidth );
@@ -317,7 +317,7 @@ double QgsKernelDensityEstimation::quarticKernel( const double distance, const d
     case OutputScaled:
     {
       // Normalizing constant
-      double k = 116. / ( 5. * M_PI * std::pow( bandwidth, 2 ) );
+      const double k = 116. / ( 5. * M_PI * std::pow( bandwidth, 2 ) );
 
       // Derived from Wand and Jones (1995), p. 175
       return k * ( 15. / 16. ) * std::pow( 1. - std::pow( distance / bandwidth, 2 ), 2 );
@@ -335,7 +335,7 @@ double QgsKernelDensityEstimation::triweightKernel( const double distance, const
     case OutputScaled:
     {
       // Normalizing constant
-      double k = 128. / ( 35. * M_PI * std::pow( bandwidth, 2 ) );
+      const double k = 128. / ( 35. * M_PI * std::pow( bandwidth, 2 ) );
 
       // Derived from Wand and Jones (1995), p. 175
       return k * ( 35. / 32. ) * std::pow( 1. - std::pow( distance / bandwidth, 2 ), 3 );
@@ -353,7 +353,7 @@ double QgsKernelDensityEstimation::epanechnikovKernel( const double distance, co
     case OutputScaled:
     {
       // Normalizing constant
-      double k = 8. / ( 3. * M_PI * std::pow( bandwidth, 2 ) );
+      const double k = 8. / ( 3. * M_PI * std::pow( bandwidth, 2 ) );
 
       // Derived from Wand and Jones (1995), p. 175
       return k * ( 3. / 4. ) * ( 1. - std::pow( distance / bandwidth, 2 ) );
@@ -376,7 +376,7 @@ double QgsKernelDensityEstimation::triangularKernel( const double distance, cons
 
       if ( mDecay >= 0 )
       {
-        double k = 3. / ( ( 1. + 2. * mDecay ) * M_PI * std::pow( bandwidth, 2 ) );
+        const double k = 3. / ( ( 1. + 2. * mDecay ) * M_PI * std::pow( bandwidth, 2 ) );
 
         // Derived from Wand and Jones (1995), p. 175 (with addition of decay parameter)
         return k * ( 1. - ( 1. - mDecay ) * ( distance / bandwidth ) );

@@ -156,12 +156,13 @@ class proximity(GdalAlgorithm):
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, out)
 
-        arguments = []
-        arguments.append('-srcband')
-        arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
+        arguments = [
+            '-srcband',
+            str(self.parameterAsInt(parameters, self.BAND, context)),
+            '-distunits',
 
-        arguments.append('-distunits')
-        arguments.append(self.distanceUnits[self.parameterAsEnum(parameters, self.UNITS, context)][1])
+            self.distanceUnits[self.parameterAsEnum(parameters, self.UNITS, context)][1]
+        ]
 
         values = self.parameterAsString(parameters, self.VALUES, context)
         if values:
@@ -196,11 +197,4 @@ class proximity(GdalAlgorithm):
         arguments.append(inLayer.source())
         arguments.append(out)
 
-        if isWindows():
-            commands = ["python3", "-m", self.commandName()]
-        else:
-            commands = [self.commandName() + '.py']
-
-        commands.append(GdalUtils.escapeAndJoin(arguments))
-
-        return commands
+        return [self.commandName() + ('.bat' if isWindows() else '.py'), GdalUtils.escapeAndJoin(arguments)]

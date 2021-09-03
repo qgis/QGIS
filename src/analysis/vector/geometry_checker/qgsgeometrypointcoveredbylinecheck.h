@@ -22,6 +22,7 @@
 
 /**
  * \ingroup analysis
+ * \brief A point covered by line check.
  */
 class ANALYSIS_EXPORT QgsGeometryPointCoveredByLineCheck : public QgsGeometryCheck
 {

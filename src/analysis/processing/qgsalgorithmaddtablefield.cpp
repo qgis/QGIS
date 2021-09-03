@@ -91,10 +91,10 @@ QgsFields QgsAddTableFieldAlgorithm::outputFields( const QgsFields &inputFields 
 
 bool QgsAddTableFieldAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QString name = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
-  int type = parameterAsInt( parameters, QStringLiteral( "FIELD_TYPE" ), context );
-  int length = parameterAsInt( parameters, QStringLiteral( "FIELD_LENGTH" ), context );
-  int precision = parameterAsInt( parameters, QStringLiteral( "FIELD_PRECISION" ), context );
+  const QString name = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
+  const int type = parameterAsInt( parameters, QStringLiteral( "FIELD_TYPE" ), context );
+  const int length = parameterAsInt( parameters, QStringLiteral( "FIELD_LENGTH" ), context );
+  const int precision = parameterAsInt( parameters, QStringLiteral( "FIELD_PRECISION" ), context );
 
   mField.setName( name );
   mField.setLength( length );

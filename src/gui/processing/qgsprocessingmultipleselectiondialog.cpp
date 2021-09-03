@@ -20,6 +20,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsmeshlayer.h"
 #include "qgsrasterlayer.h"
+#include "qgspluginlayer.h"
+#include "qgspointcloudlayer.h"
 #include "qgsproject.h"
 #include "processing/models/qgsprocessingmodelchildparametersource.h"
 #include <QStandardItemModel>
@@ -28,6 +30,7 @@
 #include <QLineEdit>
 #include <QToolButton>
 #include <QFileDialog>
+#include <QDirIterator>
 
 ///@cond NOT_STABLE
 
@@ -174,7 +177,7 @@ void QgsProcessingMultipleSelectionPanelWidget::populateList( const QVariantList
     remainingOptions.removeAll( option );
   }
 
-  for ( const QVariant &option : qgis::as_const( remainingOptions ) )
+  for ( const QVariant &option : std::as_const( remainingOptions ) )
   {
     addOption( option, mValueFormatter( option ), false );
   }
@@ -201,7 +204,7 @@ void QgsProcessingMultipleSelectionPanelWidget::addOption( const QVariant &value
     }
   }
 
-  std::unique_ptr< QStandardItem > item = qgis::make_unique< QStandardItem >( title );
+  std::unique_ptr< QStandardItem > item = std::make_unique< QStandardItem >( title );
   item->setData( value, Qt::UserRole );
   item->setCheckState( selected ? Qt::Checked : Qt::Unchecked );
   item->setCheckable( true );
@@ -403,6 +406,28 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
       break;
     }
 
+    case QgsProcessing::TypePlugin:
+    {
+      const QList<QgsPluginLayer *> options = QgsProcessingUtils::compatiblePluginLayers( project, false );
+      for ( const QgsPluginLayer *layer : options )
+      {
+        addLayer( layer );
+      }
+
+      break;
+    }
+
+    case QgsProcessing::TypePointCloud:
+    {
+      const QList<QgsPointCloudLayer *> options = QgsProcessingUtils::compatiblePointCloudLayers( project, false );
+      for ( const QgsPointCloudLayer *layer : options )
+      {
+        addLayer( layer );
+      }
+
+      break;
+    }
+
     case QgsProcessing::TypeVector:
     case QgsProcessing::TypeVectorAnyGeometry:
     {
@@ -429,6 +454,16 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
       }
       const QList<QgsMeshLayer *> meshes = QgsProcessingUtils::compatibleMeshLayers( project );
       for ( const QgsMeshLayer *layer : meshes )
+      {
+        addLayer( layer );
+      }
+      const QList<QgsPluginLayer *> plugins = QgsProcessingUtils::compatiblePluginLayers( project );
+      for ( const QgsPluginLayer *layer : plugins )
+      {
+        addLayer( layer );
+      }
+      const QList<QgsPointCloudLayer *> pointClouds = QgsProcessingUtils::compatiblePointCloudLayers( project );
+      for ( const QgsPointCloudLayer *layer : pointClouds )
       {
         addLayer( layer );
       }

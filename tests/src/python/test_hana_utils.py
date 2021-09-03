@@ -64,6 +64,14 @@ class QgsHanaProviderUtils:
         QgsHanaProviderUtils.executeSQLMany(conn, insert_statement, insert_args)
 
     @staticmethod
+    def dropTableIfExists(conn, schema_name, table_name):
+        res = QgsHanaProviderUtils.executeSQLFetchOne(conn,
+                                                      f"SELECT COUNT(*) FROM SYS.TABLES WHERE "
+                                                      f"SCHEMA_NAME='{schema_name}' AND TABLE_NAME='{table_name}'")
+        if res != 0:
+            QgsHanaProviderUtils.executeSQL(conn, f'DROP TABLE "{schema_name}"."{table_name}" CASCADE')
+
+    @staticmethod
     def dropSchemaIfExists(conn, schema_name):
         res = QgsHanaProviderUtils.executeSQLFetchOne(conn,
                                                       f"SELECT COUNT(*) FROM SYS.SCHEMAS WHERE SCHEMA_NAME='{schema_name}'")

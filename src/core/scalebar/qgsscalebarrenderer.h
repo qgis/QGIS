@@ -28,7 +28,7 @@ class QgsScaleBarSettings;
 /**
  * \ingroup core
  * \class QgsScaleBarRenderer
- * Abstract base class for scale bar renderers.
+ * \brief Abstract base class for scale bar renderers.
  *
  * Scalebar renderer subclasses implement custom drawing logic, with the possibility to implement
  * custom labeling.

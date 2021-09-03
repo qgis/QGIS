@@ -32,7 +32,7 @@ class QEvent;
 /**
  * \class QgsCheckableItemModel
  * \ingroup gui
- * QStandardItemModel subclass which makes all items checkable
+ * \brief QStandardItemModel subclass which makes all items checkable
  * by default.
  * \note not available in Python bindings
  * \since QGIS 3.0
@@ -87,7 +87,7 @@ class QgsCheckableItemModel : public QStandardItemModel
 /**
  * \class QgsCheckBoxDelegate
  * \ingroup gui
- * QStyledItemDelegate subclass for QgsCheckableComboBox. Needed for
+ * \brief QStyledItemDelegate subclass for QgsCheckableComboBox. Needed for
  * correct drawing of the checkable items on Mac and GTK.
  * \note not available in Python bindings
  * \since QGIS 3.0
@@ -118,7 +118,7 @@ class QgsCheckBoxDelegate : public QStyledItemDelegate
 /**
  * \class QgsCheckableComboBox
  * \ingroup gui
- * QComboBox subclass which allows selecting multiple items.
+ * \brief QComboBox subclass which allows selecting multiple items.
  * \since QGIS 3.0
  */
 class GUI_EXPORT QgsCheckableComboBox : public QComboBox

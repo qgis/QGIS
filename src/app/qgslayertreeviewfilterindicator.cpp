@@ -23,7 +23,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgisapp.h"
-
+#include "qgsstringutils.h"
 
 QgsLayerTreeViewFilterIndicatorProvider::QgsLayerTreeViewFilterIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )
@@ -49,15 +49,24 @@ QString QgsLayerTreeViewFilterIndicatorProvider::iconName( QgsMapLayer *layer )
 QString QgsLayerTreeViewFilterIndicatorProvider::tooltipText( QgsMapLayer *layer )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  QString filter;
   if ( vlayer )
-    return QStringLiteral( "<b>%1:</b><br>%2" ).arg( tr( "Filter" ), vlayer->subsetString().toHtmlEscaped() );
+    filter = vlayer->subsetString();
 
   // PG raster
   QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
   if ( rlayer && rlayer->dataProvider() && rlayer->dataProvider()->supportsSubsetString() )
-    return QStringLiteral( "<b>%1:</b><br>%2" ).arg( tr( "Filter" ), rlayer->subsetString().toHtmlEscaped() );
+    filter = rlayer->subsetString();
 
-  return QString();
+  if ( filter.isEmpty() )
+    return QString();
+
+  if ( filter.size() > 1024 )
+  {
+    filter = QgsStringUtils::truncateMiddleOfString( filter, 1024 );
+  }
+
+  return QStringLiteral( "<b>%1:</b><br>%2" ).arg( tr( "Filter" ), filter.toHtmlEscaped() );
 }
 
 void QgsLayerTreeViewFilterIndicatorProvider::connectSignals( QgsMapLayer *layer )

@@ -145,19 +145,16 @@ class BasicStatisticsForField(QgisAlgorithm):
         features = source.getFeatures(request, QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
         count = source.featureCount()
 
-        data = []
-        data.append(self.tr('Analyzed field: {}').format(field_name))
+        data = [self.tr('Analyzed field: {}').format(field_name)]
         results = {}
 
         if field.isNumeric():
             d, results = self.calcNumericStats(features, feedback, field, count)
-            data.extend(d)
         elif field.type() in (QVariant.Date, QVariant.Time, QVariant.DateTime):
             d, results = self.calcDateTimeStats(features, feedback, field, count)
-            data.extend(d)
         else:
             d, results = self.calcStringStats(features, feedback, field, count)
-            data.extend(d)
+        data.extend(d)
 
         if output_file:
             self.createHTML(output_file, data)
@@ -195,23 +192,24 @@ class BasicStatisticsForField(QgisAlgorithm):
                    self.THIRDQUARTILE: stat.thirdQuartile(),
                    self.IQR: stat.interQuartileRange()}
 
-        data = []
-        data.append(self.tr('Count: {}').format(stat.count()))
-        data.append(self.tr('Unique values: {}').format(stat.variety()))
-        data.append(self.tr('NULL (missing) values: {}').format(stat.countMissing()))
-        data.append(self.tr('Minimum value: {}').format(stat.min()))
-        data.append(self.tr('Maximum value: {}').format(stat.max()))
-        data.append(self.tr('Range: {}').format(stat.range()))
-        data.append(self.tr('Sum: {}').format(stat.sum()))
-        data.append(self.tr('Mean value: {}').format(stat.mean()))
-        data.append(self.tr('Median value: {}').format(stat.median()))
-        data.append(self.tr('Standard deviation: {}').format(stat.stDev()))
-        data.append(self.tr('Coefficient of Variation: {}').format(cv))
-        data.append(self.tr('Minority (rarest occurring value): {}').format(stat.minority()))
-        data.append(self.tr('Majority (most frequently occurring value): {}').format(stat.majority()))
-        data.append(self.tr('First quartile: {}').format(stat.firstQuartile()))
-        data.append(self.tr('Third quartile: {}').format(stat.thirdQuartile()))
-        data.append(self.tr('Interquartile Range (IQR): {}').format(stat.interQuartileRange()))
+        data = [
+            self.tr('Count: {}').format(stat.count()),
+            self.tr('Unique values: {}').format(stat.variety()),
+            self.tr('NULL (missing) values: {}').format(stat.countMissing()),
+            self.tr('Minimum value: {}').format(stat.min()),
+            self.tr('Maximum value: {}').format(stat.max()),
+            self.tr('Range: {}').format(stat.range()),
+            self.tr('Sum: {}').format(stat.sum()),
+            self.tr('Mean value: {}').format(stat.mean()),
+            self.tr('Median value: {}').format(stat.median()),
+            self.tr('Standard deviation: {}').format(stat.stDev()),
+            self.tr('Coefficient of Variation: {}').format(cv),
+            self.tr('Minority (rarest occurring value): {}').format(stat.minority()),
+            self.tr('Majority (most frequently occurring value): {}').format(stat.majority()),
+            self.tr('First quartile: {}').format(stat.firstQuartile()),
+            self.tr('Third quartile: {}').format(stat.thirdQuartile()),
+            self.tr('Interquartile Range (IQR): {}').format(stat.interQuartileRange())
+        ]
         return data, results
 
     def calcStringStats(self, features, feedback, field, count):
@@ -234,15 +232,16 @@ class BasicStatisticsForField(QgisAlgorithm):
                    self.MAX_LENGTH: stat.maxLength(),
                    self.MEAN_LENGTH: stat.meanLength()}
 
-        data = []
-        data.append(self.tr('Count: {}').format(count))
-        data.append(self.tr('Unique values: {}').format(stat.countDistinct()))
-        data.append(self.tr('NULL (missing) values: {}').format(stat.countMissing()))
-        data.append(self.tr('Minimum value: {}').format(stat.min()))
-        data.append(self.tr('Maximum value: {}').format(stat.max()))
-        data.append(self.tr('Minimum length: {}').format(stat.minLength()))
-        data.append(self.tr('Maximum length: {}').format(stat.maxLength()))
-        data.append(self.tr('Mean length: {}').format(stat.meanLength()))
+        data = [
+            self.tr('Count: {}').format(count),
+            self.tr('Unique values: {}').format(stat.countDistinct()),
+            self.tr('NULL (missing) values: {}').format(stat.countMissing()),
+            self.tr('Minimum value: {}').format(stat.min()),
+            self.tr('Maximum value: {}').format(stat.max()),
+            self.tr('Minimum length: {}').format(stat.minLength()),
+            self.tr('Maximum length: {}').format(stat.maxLength()),
+            self.tr('Mean length: {}').format(stat.meanLength())
+        ]
 
         return data, results
 
@@ -263,14 +262,13 @@ class BasicStatisticsForField(QgisAlgorithm):
                    self.MIN: stat.statistic(QgsDateTimeStatisticalSummary.Min),
                    self.MAX: stat.statistic(QgsDateTimeStatisticalSummary.Max)}
 
-        data = []
-        data.append(self.tr('Count: {}').format(count))
-        data.append(self.tr('Unique values: {}').format(stat.countDistinct()))
-        data.append(self.tr('NULL (missing) values: {}').format(stat.countMissing()))
-        data.append(
-            self.tr('Minimum value: {}').format(field.displayString(stat.statistic(QgsDateTimeStatisticalSummary.Min))))
-        data.append(
-            self.tr('Maximum value: {}').format(field.displayString(stat.statistic(QgsDateTimeStatisticalSummary.Max))))
+        data = [
+            self.tr('Count: {}').format(count),
+            self.tr('Unique values: {}').format(stat.countDistinct()),
+            self.tr('NULL (missing) values: {}').format(stat.countMissing()),
+            self.tr('Minimum value: {}').format(field.displayString(stat.statistic(QgsDateTimeStatisticalSummary.Min))),
+            self.tr('Maximum value: {}').format(field.displayString(stat.statistic(QgsDateTimeStatisticalSummary.Max)))
+        ]
 
         return data, results
 

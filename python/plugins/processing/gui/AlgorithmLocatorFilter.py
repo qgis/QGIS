@@ -227,3 +227,4 @@ class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
                 feedback = MessageBarProgress(algname=alg.displayName())
                 parameters = {}
                 execute_in_place(alg, parameters, feedback=feedback)
+                feedback.close()

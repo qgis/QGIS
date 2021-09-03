@@ -14,7 +14,7 @@
 
 class QgsStyleItemsListWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A reusable widget for showing a filtered list of entities from a :py:class:`QgsStyle` database.
 
 .. versionadded:: 3.10
@@ -46,7 +46,7 @@ Sets the ``type`` of style entity to show in the widget.
 %End
 
 
-    void setSymbolType( QgsSymbol::SymbolType type );
+    void setSymbolType( Qgis::SymbolType type );
 %Docstring
 Sets the ``type`` of symbols to show in the widget.
 

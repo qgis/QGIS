@@ -58,6 +58,7 @@ from qgis.core import (
     QgsProcessingParameterBand,
     QgsProcessingParameterMatrix,
     QgsProcessingParameterDistance,
+    QgsProcessingParameterDuration,
     QgsProcessingFeatureSourceDefinition,
     QgsProcessingOutputRasterLayer,
     QgsProcessingOutputVectorLayer,

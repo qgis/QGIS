@@ -12,7 +12,7 @@
 
 class QgsRaster
 {
-%Docstring
+%Docstring(signature="appended")
 Raster namespace.
 %End
 

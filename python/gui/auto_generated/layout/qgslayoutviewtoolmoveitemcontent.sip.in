@@ -10,7 +10,7 @@
 
 class QgsLayoutViewToolMoveItemContent : QgsLayoutViewTool
 {
-%Docstring
+%Docstring(signature="appended")
 Layout view tool for moving and zooming item content.
 
 .. versionadded:: 3.0

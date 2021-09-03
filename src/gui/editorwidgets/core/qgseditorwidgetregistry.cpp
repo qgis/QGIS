@@ -33,6 +33,7 @@
 #include "qgsexternalresourcewidgetfactory.h"
 #include "qgshiddenwidgetfactory.h"
 #include "qgskeyvaluewidgetfactory.h"
+#include "qgsjsoneditwidgetfactory.h"
 #include "qgslistwidgetfactory.h"
 #include "qgsrangewidgetfactory.h"
 #include "qgsrelationreferencefactory.h"
@@ -62,10 +63,11 @@ void QgsEditorWidgetRegistry::initEditors( QgsMapCanvas *mapCanvas, QgsMessageBa
   registerWidget( QStringLiteral( "Color" ), new QgsColorWidgetFactory( tr( "Color" ) ) );
   registerWidget( QStringLiteral( "RelationReference" ), new QgsRelationReferenceFactory( tr( "Relation Reference" ), mapCanvas, messageBar ) );
   registerWidget( QStringLiteral( "DateTime" ), new QgsDateTimeEditFactory( tr( "Date/Time" ) ) );
-  registerWidget( QStringLiteral( "ExternalResource" ), new QgsExternalResourceWidgetFactory( tr( "Attachment" ) ) );
+  registerWidget( QStringLiteral( "ExternalResource" ), new QgsExternalResourceWidgetFactory( tr( "Attachment" ), messageBar ) );
   registerWidget( QStringLiteral( "KeyValue" ), new QgsKeyValueWidgetFactory( tr( "Key/Value" ) ) );
   registerWidget( QStringLiteral( "List" ), new QgsListWidgetFactory( tr( "List" ) ) );
   registerWidget( QStringLiteral( "Binary" ), new QgsBinaryWidgetFactory( tr( "Binary (BLOB)" ), messageBar ) );
+  registerWidget( QStringLiteral( "JsonEdit" ), new QgsJsonEditWidgetFactory( tr( "Json View" ) ) );
 }
 
 QgsEditorWidgetRegistry::~QgsEditorWidgetRegistry()
@@ -75,8 +77,8 @@ QgsEditorWidgetRegistry::~QgsEditorWidgetRegistry()
 
 QgsEditorWidgetSetup QgsEditorWidgetRegistry::findBest( const QgsVectorLayer *vl, const QString &fieldName ) const
 {
-  QgsFields fields = vl->fields();
-  int index = fields.indexOf( fieldName );
+  const QgsFields fields = vl->fields();
+  const int index = fields.indexOf( fieldName );
 
   if ( index > -1 )
   {
@@ -112,7 +114,7 @@ QgsEditorWidgetWrapper *QgsEditorWidgetRegistry::create( const QString &widgetId
       if ( !ww->valid() )
       {
         delete ww;
-        QString wid = findSuitableWrapper( editor, QStringLiteral( "TextEdit" ) );
+        const QString wid = findSuitableWrapper( editor, QStringLiteral( "TextEdit" ) );
         ww = mWidgetFactories[wid]->create( vl, fieldIdx, editor, parent );
         ww->setConfig( config );
         ww->setContext( context );
@@ -191,7 +193,7 @@ bool QgsEditorWidgetRegistry::registerWidget( const QString &widgetId, QgsEditor
     mWidgetFactories.insert( widgetId, widgetFactory );
 
     // Use this factory as default where it provides the highest priority
-    QHash<const char *, int> types = widgetFactory->supportedWidgetTypes();
+    const QHash<const char *, int> types = widgetFactory->supportedWidgetTypes();
     QHash<const char *, int>::ConstIterator it;
     it = types.constBegin();
 

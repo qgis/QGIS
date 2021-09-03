@@ -57,7 +57,7 @@ void QgsTextAnnotation::renderAnnotation( QgsRenderContext &context, QSizeF size
   }
 
   // scale painter back to 96 dpi, so layout prints match screen rendering
-  QgsScopedQPainterState painterState( context.painter() );
+  const QgsScopedQPainterState painterState( context.painter() );
   const double scaleFactor = context.painter()->device()->logicalDpiX() / 96.0;
   context.painter()->scale( scaleFactor, scaleFactor );
   size /= scaleFactor;
@@ -91,7 +91,7 @@ void QgsTextAnnotation::readXml( const QDomElement &itemElem, const QgsReadWrite
 {
   mDocument.reset( new QTextDocument );
   mDocument->setHtml( itemElem.attribute( QStringLiteral( "document" ), QString() ) );
-  QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
+  const QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
   if ( !annotationElem.isNull() )
   {
     _readXml( annotationElem, context );

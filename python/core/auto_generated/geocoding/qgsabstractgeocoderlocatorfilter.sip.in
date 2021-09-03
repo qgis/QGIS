@@ -11,7 +11,7 @@
 
 class QgsAbstractGeocoderLocatorFilter : QgsLocatorFilter /Abstract/
 {
-%Docstring
+%Docstring(signature="appended")
 An abstract base class which implements a locator filter populated from a :py:class:`QgsGeocoderInterface`.
 
 This base class implements the required logic to bridge a class which implements the
@@ -34,7 +34,8 @@ filter from a geocoder.
 
     QgsAbstractGeocoderLocatorFilter( const QString &name, const QString &displayName,
                                       const QString &prefix,
-                                      QgsGeocoderInterface *geocoder );
+                                      QgsGeocoderInterface *geocoder,
+                                      const QgsRectangle &boundingBox = QgsRectangle() );
 %Docstring
 Constructor for QgsAbstractGeocoderLocatorFilter.
 
@@ -50,6 +51,9 @@ The ``prefix`` must consist of at least three characters.
 The ``geocoder`` must specify an instance of a class which implements the :py:class:`QgsGeocoderInterface`
 interface. Ownership of ``geocoder`` is not transferred, and the caller must ensure that ``geocoder``
 exists for the lifetime of this filter.
+
+The ``boundingBox`` argument specifies the geographic bounding box, in WGS84, covered by the
+filter.
 %End
 
     virtual QString name() const;
@@ -66,6 +70,11 @@ exists for the lifetime of this filter.
     QgsGeocoderInterface *geocoder() const;
 %Docstring
 Returns the geocoder attached to the filter.
+%End
+
+    const QgsRectangle boundingBox();
+%Docstring
+Returns the WGS84 bounding box attached to the filter.
 %End
 
     QgsGeocoderResult locatorResultToGeocoderResult( const QgsLocatorResult &result ) const;

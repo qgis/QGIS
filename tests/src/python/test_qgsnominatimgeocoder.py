@@ -68,7 +68,7 @@ class TestQgsNominatimGeocoder(unittest.TestCase):
         self.assertFalse(geocoder.countryCodes())
         geocoder.setCountryCodes('ca,km')
         self.assertEqual(geocoder.countryCodes(), 'ca,km')
-        self.assertEqual(geocoder.requestUrl('20 green st, twaddlingham').toString(), 'https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&countrycodes=ca,km&q=20 green st, twaddlingham')
+        self.assertEqual(geocoder.requestUrl('20 green st, twaddlingham').toString(), 'https://nominatim.qgis.org/search?format=json&addressdetails=1&countrycodes=ca,km&q=20 green st, twaddlingham')
 
         geocoder.setEndpoint('https://my.server/search')
         self.assertEqual(geocoder.requestUrl('20 green st, twaddlingham').toString(), 'https://my.server/search?format=json&addressdetails=1&countrycodes=ca,km&q=20 green st, twaddlingham')
@@ -76,7 +76,7 @@ class TestQgsNominatimGeocoder(unittest.TestCase):
     def test_url(self):
         geocoder = QgsNominatimGeocoder('')
         self.assertEqual(geocoder.requestUrl('20 green st, twaddlingham', QgsRectangle(3, 5, 6, 8)).toString(),
-                         'https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&viewbox=3,5,6,8&q=20 green st, twaddlingham')
+                         'https://nominatim.qgis.org/search?format=json&addressdetails=1&viewbox=3,5,6,8&q=20 green st, twaddlingham')
 
         geocoder = QgsNominatimGeocoder(countryCodes='ca,km', endpoint='https://my.server/search')
         self.assertEqual(geocoder.requestUrl('20 green st, twaddlingham', QgsRectangle(3, 5, 6, 8)).toString(),
@@ -102,7 +102,7 @@ class TestQgsNominatimGeocoder(unittest.TestCase):
             "class": "amenity",
             "type": "school",
             "importance": 0.201,
-            "icon": "https://nominatim.openstreetmap.org/ui/mapicons//education_school.p.20.png",
+            "icon": "https://nominatim.qgis.org/ui/mapicons//education_school.p.20.png",
             "address": {
                 "amenity": "École Primaire La Ribambelle",
                 "house_number": "500",

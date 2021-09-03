@@ -11,6 +11,7 @@
 
 
 
+
 class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
 {
 
@@ -25,6 +26,8 @@ class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
                               double strokeWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH,
                               Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEFILL_JOINSTYLE
                             );
+
+    ~QgsSimpleFillSymbolLayer();
 
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
@@ -753,7 +756,7 @@ Returns the units used for the offset of the shapeburst fill.
 
 class QgsImageFillSymbolLayer: QgsFillSymbolLayer
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for polygon renderers generating texture images
 %End
 
@@ -763,10 +766,13 @@ Base class for polygon renderers generating texture images
   public:
 
     QgsImageFillSymbolLayer();
+    ~QgsImageFillSymbolLayer();
+
     virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
 
     virtual QgsSymbol *subSymbol();
+
     virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
 
 
@@ -851,7 +857,7 @@ Returns ``True`` if the image brush should be transformed using the render conte
 
 class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
 {
-%Docstring
+%Docstring(signature="appended")
 A class for filling symbols with a repeated raster image.
 
 .. versionadded:: 2.7
@@ -873,6 +879,8 @@ A class for filling symbols with a repeated raster image.
 Constructor for QgsRasterFillSymbolLayer, using a raster fill from the
 specified ``imageFilePath``.
 %End
+
+    ~QgsRasterFillSymbolLayer();
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
@@ -1133,7 +1141,7 @@ Returns the map unit scale for the image's width.
 
 class QgsSVGFillSymbolLayer: QgsImageFillSymbolLayer
 {
-%Docstring
+%Docstring(signature="appended")
 A class for filling symbols with a repeated SVG file.
 %End
 
@@ -1151,6 +1159,8 @@ Constructor for QgsSVGFillSymbolLayer, using the SVG picture at the specified ab
 %Docstring
 Constructor for QgsSVGFillSymbolLayer, using the specified SVG picture data.
 %End
+
+    ~QgsSVGFillSymbolLayer();
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
@@ -1429,7 +1439,7 @@ Sets the dynamic SVG parameters
 
 class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
 {
-%Docstring
+%Docstring(signature="appended")
 A symbol fill consisting of repeated parallel lines.
 %End
 
@@ -1802,6 +1812,7 @@ Returns the vertical offset values for points in the pattern.
 
     virtual QgsSymbol *subSymbol();
 
+
     void setDistanceXUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
 Sets the units for the horizontal distance between points in the pattern.
@@ -2022,7 +2033,7 @@ Returns the unit scale for the vertical offset between rows in the pattern.
 
 class QgsRandomMarkerFillSymbolLayer : QgsFillSymbolLayer
 {
-%Docstring
+%Docstring(signature="appended")
 
 A fill symbol layer which places markers at random locations within polygons.
 
@@ -2047,6 +2058,8 @@ Constructor for QgsRandomMarkerFillSymbolLayer, with the specified ``pointCount`
 Optionally a specific random number ``seed`` can be used when generating points. A ``seed`` of 0 indicates that
 a truly random sequence will be used on every rendering, causing points to appear in different locations with every map refresh.
 %End
+
+    ~QgsRandomMarkerFillSymbolLayer();
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
@@ -2232,6 +2245,7 @@ class QgsCentroidFillSymbolLayer : QgsFillSymbolLayer
 %End
   public:
     QgsCentroidFillSymbolLayer();
+    ~QgsCentroidFillSymbolLayer();
 
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;

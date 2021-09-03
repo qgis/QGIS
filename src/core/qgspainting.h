@@ -21,7 +21,7 @@
 
 /**
  * \ingroup core
- * Misc painting enums and functions.
+ * \brief Misc painting enums and functions.
  *
  * \since QGIS 3.0
  */

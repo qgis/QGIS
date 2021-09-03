@@ -11,7 +11,7 @@
 
 class QgsLayoutItemMapItem : QgsLayoutObject
 {
-%Docstring
+%Docstring(signature="appended")
 An item which is drawn inside a :py:class:`QgsLayoutItemMap`, e.g., a grid or map overview.
 
 .. versionadded:: 3.0
@@ -209,7 +209,7 @@ Returns the internal map layer used by this item, if available.
 
 class QgsLayoutItemMapItemStack
 {
-%Docstring
+%Docstring(signature="appended")
 A collection of map items which are drawn above the map content in a
 :py:class:`QgsLayoutItemMap`. The item stack controls which items are drawn and the
 order they are drawn in.

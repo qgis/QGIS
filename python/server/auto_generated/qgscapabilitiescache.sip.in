@@ -12,7 +12,7 @@
 
 class QgsCapabilitiesCache : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 A cache for capabilities xml documents (by configuration file path)
 %End
 

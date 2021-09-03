@@ -23,7 +23,12 @@
 #include "qgstextrendererutils.h"
 #include "qgspallabeling.h"
 #include <QFontDatabase>
+#include <QMimeData>
+#include <QWidget>
+#include <QScreen>
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #include <QDesktopWidget>
+#endif
 
 QgsTextFormat::QgsTextFormat()
 {
@@ -79,6 +84,7 @@ bool QgsTextFormat::operator==( const QgsTextFormat &other ) const
        || mBackgroundSettings != other.mBackgroundSettings
        || mShadowSettings != other.mShadowSettings
        || mMaskSettings != other.mMaskSettings
+       || d->families != other.families()
        || d->mDataDefinedProperties != other.dataDefinedProperties() )
     return false;
 
@@ -153,19 +159,36 @@ QFont QgsTextFormat::font() const
   return d->textFont;
 }
 
-QFont QgsTextFormat::scaledFont( const QgsRenderContext &context, double scaleFactor ) const
+QFont QgsTextFormat::scaledFont( const QgsRenderContext &context, double scaleFactor, bool *isZeroSize ) const
 {
+  if ( isZeroSize )
+    *isZeroSize = false;
+
   QFont font = d->textFont;
   if ( scaleFactor == 1 )
   {
     int fontPixelSize = QgsTextRenderer::sizeToPixel( d->fontSize, context, d->fontSizeUnits,
                         d->fontSizeMapUnitScale );
+    if ( fontPixelSize == 0 )
+    {
+      if ( isZeroSize )
+        *isZeroSize = true;
+      return QFont();
+    }
+
     font.setPixelSize( fontPixelSize );
   }
   else
   {
     double fontPixelSize = context.convertToPainterUnits( d->fontSize, d->fontSizeUnits, d->fontSizeMapUnitScale );
-    font.setPixelSize( std::round( scaleFactor * fontPixelSize + 0.5 ) );
+    if ( qgsDoubleNear( fontPixelSize, 0 ) )
+    {
+      if ( isZeroSize )
+        *isZeroSize = true;
+      return QFont();
+    }
+    const int roundedPixelSize = static_cast< int >( std::round( scaleFactor * fontPixelSize + 0.5 ) );
+    font.setPixelSize( roundedPixelSize );
   }
 
   font.setLetterSpacing( QFont::AbsoluteSpacing, context.convertToPainterUnits( d->textFont.letterSpacing(), d->fontSizeUnits, d->fontSizeMapUnitScale ) * scaleFactor );
@@ -194,6 +217,17 @@ void QgsTextFormat::setNamedStyle( const QString &style )
   d->isValid = true;
   QgsFontUtils::updateFontViaStyle( d->textFont, style );
   d->textNamedStyle = style;
+}
+
+QStringList QgsTextFormat::families() const
+{
+  return d->families;
+}
+
+void QgsTextFormat::setFamilies( const QStringList &families )
+{
+  d->isValid = true;
+  d->families = families;
 }
 
 QgsUnitTypes::RenderUnit QgsTextFormat::sizeUnit() const
@@ -414,20 +448,45 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   QFont appFont = QApplication::font();
   mTextFontFamily = textStyleElem.attribute( QStringLiteral( "fontFamily" ), appFont.family() );
   QString fontFamily = mTextFontFamily;
+
+  const QDomElement familiesElem = textStyleElem.firstChildElement( QStringLiteral( "families" ) );
+  const QDomNodeList familyNodes = familiesElem.childNodes();
+  QStringList families;
+  families.reserve( familyNodes.size() );
+  for ( int i = 0; i < familyNodes.count(); ++i )
+  {
+    const QDomElement familyElem = familyNodes.at( i ).toElement();
+    families << familyElem.attribute( QStringLiteral( "name" ) );
+  }
+  d->families = families;
+
+  mTextFontFound = false;
   if ( mTextFontFamily != appFont.family() && !QgsFontUtils::fontFamilyMatchOnSystem( mTextFontFamily ) )
   {
-    // trigger to notify user about font family substitution (signal emitted in QgsVectorLayer::prepareLabelingAndDiagrams)
-    mTextFontFound = false;
+    for ( const QString &family : std::as_const( families ) )
+    {
+      if ( QgsFontUtils::fontFamilyMatchOnSystem( family ) )
+      {
+        mTextFontFound = true;
+        fontFamily = family;
+        break;
+      }
+    }
 
-    // TODO: update when pref for how to resolve missing family (use matching algorithm or just default font) is implemented
-    // currently only defaults to matching algorithm for resolving [foundry], if a font of similar family is found (default for QFont)
-
-    // for now, do not use matching algorithm for substitution if family not found, substitute default instead
-    fontFamily = appFont.family();
+    if ( !mTextFontFound )
+    {
+      // couldn't even find a matching font in the backup list -- substitute default instead
+      fontFamily = appFont.family();
+    }
   }
   else
   {
     mTextFontFound = true;
+  }
+
+  if ( !mTextFontFound )
+  {
+    context.pushMessage( QObject::tr( "Font “%1” not available on system" ).arg( mTextFontFamily ) );
   }
 
   if ( textStyleElem.hasAttribute( QStringLiteral( "fontSize" ) ) )
@@ -545,6 +604,7 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   if ( !ddElem.isNull() )
   {
     d->mDataDefinedProperties.readXml( ddElem, QgsPalLayerSettings::propertyDefinitions() );
+    mBackgroundSettings.upgradeDataDefinedProperties( d->mDataDefinedProperties );
   }
   else
   {
@@ -557,6 +617,16 @@ QDomElement QgsTextFormat::writeXml( QDomDocument &doc, const QgsReadWriteContex
   // text style
   QDomElement textStyleElem = doc.createElement( QStringLiteral( "text-style" ) );
   textStyleElem.setAttribute( QStringLiteral( "fontFamily" ), d->textFont.family() );
+
+  QDomElement familiesElem = doc.createElement( QStringLiteral( "families" ) );
+  for ( const QString &family : std::as_const( d->families ) )
+  {
+    QDomElement familyElem = doc.createElement( QStringLiteral( "family" ) );
+    familyElem.setAttribute( QStringLiteral( "name" ), family );
+    familiesElem.appendChild( familyElem );
+  }
+  textStyleElem.appendChild( familiesElem );
+
   textStyleElem.setAttribute( QStringLiteral( "namedStyle" ), QgsFontUtils::untranslateNamedStyle( d->textNamedStyle ) );
   textStyleElem.setAttribute( QStringLiteral( "fontSize" ), d->fontSize );
   textStyleElem.setAttribute( QStringLiteral( "fontSizeUnit" ), QgsUnitTypes::encodeUnit( d->fontSizeUnits ) );
@@ -592,6 +662,7 @@ QDomElement QgsTextFormat::writeXml( QDomDocument &doc, const QgsReadWriteContex
 QMimeData *QgsTextFormat::toMimeData() const
 {
   //set both the mime color data, and the text (format settings).
+
   QMimeData *mimeData = new QMimeData;
   mimeData->setColorData( QVariant( color() ) );
 
@@ -734,7 +805,7 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
   QString ddFontFamily;
   context.expressionContext().setOriginalValueVariable( d->textFont.family() );
   QVariant exprVal = d->mDataDefinedProperties.value( QgsPalLayerSettings::Family, context.expressionContext() );
-  if ( exprVal.isValid() )
+  if ( !exprVal.isNull() )
   {
     QString family = exprVal.toString().trimmed();
     if ( d->textFont.family() != family )
@@ -752,7 +823,7 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
   QString ddFontStyle;
   context.expressionContext().setOriginalValueVariable( d->textNamedStyle );
   exprVal = d->mDataDefinedProperties.value( QgsPalLayerSettings::FontStyle, context.expressionContext() );
-  if ( exprVal.isValid() )
+  if ( !exprVal.isNull() )
   {
     QString fontstyle = exprVal.toString().trimmed();
     ddFontStyle = fontstyle;
@@ -857,7 +928,7 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
   }
 
   exprVal = d->mDataDefinedProperties.value( QgsPalLayerSettings::FontSizeUnit, context.expressionContext() );
-  if ( exprVal.isValid() )
+  if ( !exprVal.isNull() )
   {
     QString units = exprVal.toString();
     if ( !units.isEmpty() )
@@ -872,7 +943,11 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
   if ( d->mDataDefinedProperties.isActive( QgsPalLayerSettings::FontOpacity ) )
   {
     context.expressionContext().setOriginalValueVariable( d->opacity * 100 );
-    d->opacity = d->mDataDefinedProperties.value( QgsPalLayerSettings::FontOpacity, context.expressionContext(), d->opacity * 100 ).toDouble() / 100.0;
+    const QVariant val = d->mDataDefinedProperties.value( QgsPalLayerSettings::FontOpacity, context.expressionContext(), d->opacity * 100 );
+    if ( !val.isNull() )
+    {
+      d->opacity = val.toDouble() / 100.0;
+    }
   }
 
   if ( d->mDataDefinedProperties.isActive( QgsPalLayerSettings::TextOrientation ) )
@@ -885,13 +960,21 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
   if ( d->mDataDefinedProperties.isActive( QgsPalLayerSettings::FontLetterSpacing ) )
   {
     context.expressionContext().setOriginalValueVariable( d->textFont.letterSpacing() );
-    d->textFont.setLetterSpacing( QFont::AbsoluteSpacing, d->mDataDefinedProperties.value( QgsPalLayerSettings::FontLetterSpacing, context.expressionContext(), d->textFont.letterSpacing() ).toDouble() );
+    const QVariant val = d->mDataDefinedProperties.value( QgsPalLayerSettings::FontLetterSpacing, context.expressionContext(), d->textFont.letterSpacing() );
+    if ( !val.isNull() )
+    {
+      d->textFont.setLetterSpacing( QFont::AbsoluteSpacing, val.toDouble() );
+    }
   }
 
   if ( d->mDataDefinedProperties.isActive( QgsPalLayerSettings::FontWordSpacing ) )
   {
     context.expressionContext().setOriginalValueVariable( d->textFont.wordSpacing() );
-    d->textFont.setWordSpacing( d->mDataDefinedProperties.value( QgsPalLayerSettings::FontWordSpacing, context.expressionContext(), d->textFont.wordSpacing() ).toDouble() );
+    const QVariant val = d->mDataDefinedProperties.value( QgsPalLayerSettings::FontWordSpacing, context.expressionContext(), d->textFont.wordSpacing() );
+    if ( !val.isNull() )
+    {
+      d->textFont.setWordSpacing( val.toDouble() );
+    }
   }
 
   if ( d->mDataDefinedProperties.isActive( QgsPalLayerSettings::FontBlendMode ) )
@@ -954,7 +1037,14 @@ QPixmap QgsTextFormat::textFormatPreviewPixmap( const QgsTextFormat &format, QSi
   newCoordXForm.setParameters( 1, 0, 0, 0, 0, 0 );
   context.setMapToPixel( newCoordXForm );
 
-  context.setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+  const double logicalDpiX = QgsApplication::desktop()->logicalDpiX();
+#else
+  QWidget *activeWindow = QApplication::activeWindow();
+  const double logicalDpiX = activeWindow && activeWindow->screen() ? activeWindow->screen()->logicalDotsPerInchX() : 96.0;
+#endif
+  context.setScaleFactor( logicalDpiX / 25.4 );
+
   context.setUseAdvancedEffects( true );
   context.setFlag( QgsRenderContext::Antialiasing, true );
   context.setPainter( &painter );

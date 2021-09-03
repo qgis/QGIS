@@ -38,6 +38,7 @@ QVector<QgsDataItem *> QgsGeoNodeConnectionItem::createChildren()
 
   QStringList wmsUrl = geonodeRequest.fetchServiceUrlsBlocking( QStringLiteral( "WMS" ) );
   QStringList wfsUrl = geonodeRequest.fetchServiceUrlsBlocking( QStringLiteral( "WFS" ) );
+  QStringList wcsUrl = geonodeRequest.fetchServiceUrlsBlocking( QStringLiteral( "WCS" ) );
   QStringList xyzUrl = geonodeRequest.fetchServiceUrlsBlocking( QStringLiteral( "XYZ" ) );
 
   if ( !wmsUrl.isEmpty() )
@@ -51,6 +52,13 @@ QVector<QgsDataItem *> QgsGeoNodeConnectionItem::createChildren()
   {
     QString path = mPath + QStringLiteral( "/wfs" );
     QgsDataItem *service = new QgsGeoNodeServiceItem( this, mConnection.get(), QStringLiteral( "WFS" ), path );
+    services.append( service );
+  }
+
+  if ( !wcsUrl.isEmpty() )
+  {
+    QString path = mPath + QStringLiteral( "/wcs" );
+    QgsDataItem *service = new QgsGeoNodeServiceItem( this, mConnection.get(), QStringLiteral( "WCS" ), path );
     services.append( service );
   }
 
@@ -75,6 +83,10 @@ QgsGeoNodeServiceItem::QgsGeoNodeServiceItem( QgsDataItem *parent, QgsGeoNodeCon
   {
     mIconName = QStringLiteral( "mIconWms.svg" );
   }
+  else if ( serviceName == QLatin1String( "WCS" ) )
+  {
+    mIconName = QStringLiteral( "mIconWcs.svg" );
+  }
   else
   {
     mIconName = QStringLiteral( "mIconWfs.svg" );
@@ -95,7 +107,7 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
 
   while ( !skipProvider )
   {
-    const QString &key = mServiceName != QLatin1String( "WFS" ) ? QStringLiteral( "wms" ) : mServiceName;
+    const QString &key = mServiceName != QLatin1String( "WFS" ) ? mServiceName == QLatin1String( "WCS" ) ? QStringLiteral( "wcs" ) : QStringLiteral( "wms" ) : mServiceName;
 
     const QList<QgsDataItemProvider *> providerList = QgsProviderRegistry::instance()->dataItemProviders( key );
     if ( providerList.isEmpty() )
@@ -130,7 +142,7 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
       return items;
     }
 
-    for ( QgsDataItem *item : qgis::as_const( items ) )
+    for ( QgsDataItem *item : std::as_const( items ) )
     {
       item->populate( true ); // populate in foreground - this is already run in a thread
 
@@ -188,7 +200,7 @@ void QgsGeoNodeServiceItem::replacePath( QgsDataItem *item, const QString &befor
 QgsGeoNodeRootItem::QgsGeoNodeRootItem( QgsDataItem *parent, QString name, QString path )
   : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "GeoNode" ) )
 {
-  mCapabilities |= Fast;
+  mCapabilities |= Qgis::BrowserItemCapability::Fast;
   {
     mIconName = QStringLiteral( "mIconGeonode.svg" );
   }

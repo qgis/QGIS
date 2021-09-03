@@ -27,7 +27,7 @@
 
 /**
  * \ingroup core
-  * Raster pipe that deals with null values.
+  * \brief Raster pipe that deals with null values.
 */
 class CORE_EXPORT QgsRasterNuller : public QgsRasterInterface
 {

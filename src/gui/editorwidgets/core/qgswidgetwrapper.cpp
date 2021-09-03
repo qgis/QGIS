@@ -28,7 +28,8 @@ const QgsPropertiesDefinition &QgsWidgetWrapper::propertyDefinitions()
     properties =
     {
       { RootPath, QgsPropertyDefinition( "propertyRootPath", QgsPropertyDefinition::DataTypeString, QObject::tr( "Root path" ), QObject::tr( "string of variable length representing root path to attachment" ) ) },
-      { DocumentViewerContent, QgsPropertyDefinition( "documentViewerContent", QgsPropertyDefinition::DataTypeString, QObject::tr( "Document viewer content" ), QObject::tr( "string" ) + "<b>NoContent</b>|<b>Image</b>|<b>Web</b>" ) }
+      { DocumentViewerContent, QgsPropertyDefinition( "documentViewerContent", QgsPropertyDefinition::DataTypeString, QObject::tr( "Document viewer content" ), QObject::tr( "string" ) + "<b>NoContent</b>|<b>Image</b>|<b>Web</b>" ) },
+      { StorageUrl, QgsPropertyDefinition( "storageUrl", QgsPropertyDefinition::DataTypeString, QObject::tr( "Storage Url" ), QObject::tr( "String of variable length representing the URL used to store document with an external storage" ) ) }
     };
   }
   return properties;

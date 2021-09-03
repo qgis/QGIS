@@ -13,9 +13,8 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 import qgis  # NOQA switch sip api
 import os
 import shutil
-from qgis.PyQt.QtCore import QTemporaryFile
-from qgis.core import QgsPointXY
-from qgis.analysis import (QgsExifTools)
+from qgis.PyQt.QtCore import QTemporaryFile, QDateTime
+from qgis.core import QgsPointXY, QgsExifTools
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 
@@ -25,6 +24,17 @@ start_app()
 
 
 class TestQgsExifUtils(unittest.TestCase):
+
+    def testReadTags(self):
+        photos_folder = os.path.join(TEST_DATA_DIR, 'photos')
+
+        # test a convnerted rational value
+        elevation = QgsExifTools.readTag(os.path.join(photos_folder, '0997.JPG'), 'Exif.GPSInfo.GPSAltitude')
+        self.assertEqual(elevation, 422.19101123595505)
+
+        # test a converted datetime value
+        dt = QgsExifTools.readTag(os.path.join(photos_folder, '0997.JPG'), 'Exif.Image.DateTime')
+        self.assertEqual(dt, QDateTime(2018, 3, 16, 12, 19, 19))
 
     def testGeoTags(self):
         photos_folder = os.path.join(TEST_DATA_DIR, 'photos')

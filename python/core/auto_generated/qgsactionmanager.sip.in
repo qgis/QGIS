@@ -14,7 +14,7 @@
 
 class QgsActionManager: QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Storage and management of actions associated with a layer.
 
 Actions can trigger custom code or applications to be executed
@@ -112,7 +112,7 @@ Writes the actions out in XML format
 Reads the actions in in XML format
 %End
 
-    QgsAction action( QUuid id );
+    QgsAction action( QUuid id ) const;
 %Docstring
 Gets an action by its id.
 

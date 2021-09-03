@@ -62,7 +62,7 @@ void QgsAlignmentComboBox::customizeAlignmentDisplay( Qt::Alignment alignment, c
 
 void QgsAlignmentComboBox::populate()
 {
-  Qt::Alignment prevAlign = currentAlignment();
+  const Qt::Alignment prevAlign = currentAlignment();
 
   mBlockChanged = true;
   clear();

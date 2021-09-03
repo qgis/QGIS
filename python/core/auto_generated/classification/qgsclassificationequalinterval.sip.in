@@ -10,7 +10,7 @@
 
 class QgsClassificationEqualInterval : QgsClassificationMethod
 {
-%Docstring
+%Docstring(signature="appended")
 :py:class:`QgsClassificationEqualInterval` is an implementation of :py:class:`QgsClassificationMethod`
 for equal intervals
 

@@ -75,11 +75,10 @@ class QgsNetworkLogger : public QAbstractItemModel
      */
     QList< QAction * > actions( const QModelIndex &index, QObject *parent );
 
-
     /**
      * Removes a list of request \a rows from the log.
     */
-    void removeRows( const QList< int > &rows );
+    void removeRequestRows( const QList< int > &rows );
 
     /**
      * Returns the root node of the log.

@@ -26,7 +26,7 @@
 
 /**
  * \ingroup core
- * An annotation item which renders a text string at a point location.
+ * \brief An annotation item which renders a text string at a point location.
  *
  * \since QGIS 3.16
  */
@@ -40,6 +40,7 @@ class CORE_EXPORT QgsAnnotationPointTextItem : public QgsAnnotationItem
     QgsAnnotationPointTextItem( const QString &text, QgsPointXY point );
     ~QgsAnnotationPointTextItem() override;
 
+    Qgis::AnnotationItemFlags flags() const override;
     QString type() const override;
     void render( QgsRenderContext &context, QgsFeedback *feedback ) override;
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
@@ -52,6 +53,8 @@ class CORE_EXPORT QgsAnnotationPointTextItem : public QgsAnnotationItem
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     QgsAnnotationPointTextItem *clone() override SIP_FACTORY;
     QgsRectangle boundingBox() const override;
+    QgsRectangle boundingBox( QgsRenderContext &context ) const override;
+    QList< QgsAnnotationItemNode > nodes() const override;
 
     /**
      * Returns the point location of the text.

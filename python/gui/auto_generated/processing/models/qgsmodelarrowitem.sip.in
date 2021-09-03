@@ -13,7 +13,7 @@
 
 class QgsModelArrowItem : QObject, QGraphicsPathItem
 {
-%Docstring
+%Docstring(signature="appended")
 A link arrow item for use in the model designer.
 
 .. warning::

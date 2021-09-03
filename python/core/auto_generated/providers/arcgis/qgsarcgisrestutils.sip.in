@@ -12,7 +12,7 @@
 
 class QgsArcGisRestUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Utility functions for working with ArcGIS REST services.
 
 .. seealso:: :py:class:`QgsArcGisPortalUtils`

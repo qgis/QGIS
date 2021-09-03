@@ -13,11 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
+#include <QTimeZone>
+
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
+#include "qgssettingsregistrycore.h"
 #include "gps/qgsgpsinformationwidget.h"
 #include "nmeatime.h"
 
@@ -84,9 +87,9 @@ void TestQgsGpsInformationWidget::initTestCase()
       QStringLiteral( "vl4" ),
       QStringLiteral( "memory" ) );
 
-  QgsSettings().setValue( QStringLiteral( "qgis/digitizing/disable_enter_attribute_values_dialog" ), true );
+  QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog.setValue( true );
 
-  QString tempPath = QDir::tempPath() + QStringLiteral( "/gps_timestamp.gpkg" );
+  const QString tempPath = QDir::tempPath() + QStringLiteral( "/gps_timestamp.gpkg" );
   QFile::copy( TEST_DATA_DIR + QStringLiteral( "/gps_timestamp.gpkg" ), tempPath );
   tempGpkgLayerPointString = new QgsVectorLayer( QStringLiteral( "%1|layername=points" ).arg( tempPath ),
       QStringLiteral( "vl4" ) );
@@ -108,7 +111,7 @@ void TestQgsGpsInformationWidget::cleanupTestCase()
 std::unique_ptr<QgsGpsInformationWidget> TestQgsGpsInformationWidget::prepareWidget()
 {
   QgsMapCanvas *canvas = mQgisApp->mapCanvas();
-  std::unique_ptr<QgsGpsInformationWidget> widget = qgis::make_unique<QgsGpsInformationWidget>( canvas );
+  std::unique_ptr<QgsGpsInformationWidget> widget = std::make_unique<QgsGpsInformationWidget>( canvas );
   // Widget config and input values
   // 2019/06/19 12:27:34.543[UTC]
   widget->mLastNmeaTime = { 119, 5, 19, 12, 27, 34, 543 };
@@ -136,7 +139,7 @@ QDateTime TestQgsGpsInformationWidget::_testWrite( QgsVectorLayer *vlayer, QgsGp
   widget->mBtnCloseFeature_clicked();
   const auto fids { vlayer->allFeatureIds() };
   const auto fid { std::min_element( fids.begin(), fids.end() ) };
-  QgsFeature f { vlayer->getFeature( *fid ) };
+  const QgsFeature f { vlayer->getFeature( *fid ) };
   if ( commit )
     vlayer->commitChanges();
   else
@@ -201,8 +204,8 @@ void TestQgsGpsInformationWidget::testTimestamp()
 
   QDateTime dateTime( QDate( 2019, 6, 19 ), QTime( 12, 27, 34, 543 ) );
   dateTime.setTimeSpec( Qt::TimeSpec::UTC );
-  QDateTime tzTime( dateTime.toTimeZone( QTimeZone( QStringLiteral( "Asia/Colombo" ).toUtf8() ) ) );
-  QDateTime localTime( dateTime.toLocalTime() );
+  const QDateTime tzTime( dateTime.toTimeZone( QTimeZone( QStringLiteral( "Asia/Colombo" ).toUtf8() ) ) );
+  const QDateTime localTime( dateTime.toLocalTime() );
 
   ///////////////////////////////////////////
   // Test datetime layer
@@ -213,7 +216,7 @@ void TestQgsGpsInformationWidget::testTimestamp()
   QVERIFY( fieldIdx != -1 );
   // UTC
   widget->mCboTimestampFormat->setCurrentIndex( widget->mCboTimestampFormat->findData( Qt::TimeSpec::UTC ) );
-  QVariant dt { widget->timestamp( tempLayerDateTime, fieldIdx ) };
+  QVariant dt = widget->timestamp( tempLayerDateTime, fieldIdx );
   QCOMPARE( dt.toDateTime(), dateTime );
 
   // Local time
@@ -256,8 +259,8 @@ void TestQgsGpsInformationWidget::testTimestampWrite()
   std::unique_ptr<QgsGpsInformationWidget> widget = prepareWidget();
   QDateTime dateTime( QDate( 2019, 6, 19 ), QTime( 12, 27, 34, 543 ) );
   dateTime.setTimeSpec( Qt::TimeSpec::UTC );
-  QDateTime tzTime( dateTime.toTimeZone( QTimeZone( QStringLiteral( "Asia/Colombo" ).toUtf8() ) ) );
-  QDateTime localTime( dateTime.toLocalTime() );
+  const QDateTime tzTime( dateTime.toTimeZone( QTimeZone( QStringLiteral( "Asia/Colombo" ).toUtf8() ) ) );
+  const QDateTime localTime( dateTime.toLocalTime() );
 
   // Test write on datetime field
   QCOMPARE( _testWrite( tempLayerDateTime, widget.get(), QStringLiteral( "datetimef" ),  Qt::TimeSpec::UTC ), dateTime );
@@ -299,12 +302,12 @@ void TestQgsGpsInformationWidget::testTimestampWrite()
 
 void TestQgsGpsInformationWidget::testMultiPartLayers()
 {
-  std::unique_ptr< QgsVectorLayer >multiLineString = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "MultiLinestring?crs=epsg:4326&field=intf:int&field=stringf:string" ),
+  std::unique_ptr< QgsVectorLayer >multiLineString = std::make_unique< QgsVectorLayer >( QStringLiteral( "MultiLinestring?crs=epsg:4326&field=intf:int&field=stringf:string" ),
       QStringLiteral( "vl4" ),
       QStringLiteral( "memory" ) );
 
   QgsMapCanvas *canvas = mQgisApp->mapCanvas();
-  std::unique_ptr<QgsGpsInformationWidget> widget = qgis::make_unique<QgsGpsInformationWidget>( canvas );
+  std::unique_ptr<QgsGpsInformationWidget> widget = std::make_unique<QgsGpsInformationWidget>( canvas );
   widget->mMapCanvas->setCurrentLayer( multiLineString.get() );
   multiLineString->startEditing();
 
@@ -325,11 +328,11 @@ void TestQgsGpsInformationWidget::testMultiPartLayers()
   multiLineString->rollBack();
 
   // multipolygon
-  std::unique_ptr< QgsVectorLayer >multiPolygon = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "MultiPolygon?crs=epsg:4326&field=intf:int&field=stringf:string" ),
+  std::unique_ptr< QgsVectorLayer >multiPolygon = std::make_unique< QgsVectorLayer >( QStringLiteral( "MultiPolygon?crs=epsg:4326&field=intf:int&field=stringf:string" ),
       QStringLiteral( "vl4" ),
       QStringLiteral( "memory" ) );
 
-  widget = qgis::make_unique<QgsGpsInformationWidget>( canvas );
+  widget = std::make_unique<QgsGpsInformationWidget>( canvas );
   widget->mMapCanvas->setCurrentLayer( multiPolygon.get() );
   multiPolygon->startEditing();
 

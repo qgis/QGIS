@@ -27,12 +27,12 @@ void QgsAppSslErrorHandler::handleSslErrors( QNetworkReply *reply, const QList<Q
 
   QgsDebugMsg( QStringLiteral( "SSL errors occurred accessing URL:\n%1" ).arg( reply->request().url().toString() ) );
 
-  QString hostport( QStringLiteral( "%1:%2" )
-                    .arg( reply->url().host() )
-                    .arg( reply->url().port() != -1 ? reply->url().port() : 443 )
-                    .trimmed() );
-  QString digest( QgsAuthCertUtils::shaHexForCert( reply->sslConfiguration().peerCertificate() ) );
-  QString dgsthostport( QStringLiteral( "%1:%2" ).arg( digest, hostport ) );
+  const QString hostport( QStringLiteral( "%1:%2" )
+                          .arg( reply->url().host() )
+                          .arg( reply->url().port() != -1 ? reply->url().port() : 443 )
+                          .trimmed() );
+  const QString digest( QgsAuthCertUtils::shaHexForCert( reply->sslConfiguration().peerCertificate() ) );
+  const QString dgsthostport( QStringLiteral( "%1:%2" ).arg( digest, hostport ) );
 
   const QHash<QString, QSet<QSslError::SslError> > &errscache( QgsApplication::authManager()->ignoredSslErrorCache() );
 
@@ -41,7 +41,6 @@ void QgsAppSslErrorHandler::handleSslErrors( QNetworkReply *reply, const QList<Q
     QgsDebugMsg( QStringLiteral( "Ignored SSL errors cached item found, ignoring errors if they match for %1" ).arg( hostport ) );
     const QSet<QSslError::SslError> &errenums( errscache.value( dgsthostport ) );
     bool ignore = !errenums.isEmpty();
-    int errmatched = 0;
     if ( ignore )
     {
       for ( const QSslError &error : errors )
@@ -49,13 +48,12 @@ void QgsAppSslErrorHandler::handleSslErrors( QNetworkReply *reply, const QList<Q
         if ( error.error() == QSslError::NoError )
           continue;
 
-        bool errmatch = errenums.contains( error.error() );
+        const bool errmatch = errenums.contains( error.error() );
         ignore = ignore && errmatch;
-        errmatched += errmatch ? 1 : 0;
       }
     }
 
-    if ( ignore && errenums.size() == errmatched )
+    if ( ignore )
     {
       QgsDebugMsg( QStringLiteral( "Errors matched cached item's, ignoring all for %1" ).arg( hostport ) );
       reply->ignoreSslErrors();

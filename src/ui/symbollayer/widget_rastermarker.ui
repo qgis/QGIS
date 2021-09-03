@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>338</width>
-    <height>439</height>
+    <width>372</width>
+    <height>485</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -177,7 +177,7 @@
         <number>2</number>
        </property>
        <item>
-        <widget class="QgsRatioLockButton" name="mLockAspectRatio" native="true">
+        <widget class="QgsRatioLockButton" name="mLockAspectRatio">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -451,6 +451,12 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsRatioLockButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsratiolockbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
@@ -465,11 +471,6 @@
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsRatioLockButton</class>
-   <extends>QWidget</extends>
-   <header>qgsratiolockbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsOpacityWidget</class>
@@ -488,8 +489,9 @@
   <tabstop>mImageSourceLineEdit</tabstop>
   <tabstop>mFilenameDDBtn</tabstop>
   <tabstop>mWidthSpinBox</tabstop>
-  <tabstop>mWidthDDBtn</tabstop>
   <tabstop>mHeightSpinBox</tabstop>
+  <tabstop>mLockAspectRatio</tabstop>
+  <tabstop>mWidthDDBtn</tabstop>
   <tabstop>mHeightDDBtn</tabstop>
   <tabstop>mSizeUnitWidget</tabstop>
   <tabstop>mOpacityWidget</tabstop>

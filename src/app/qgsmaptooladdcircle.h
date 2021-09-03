@@ -16,55 +16,30 @@
 #ifndef QGSMAPTOOLADDCIRCLE_H
 #define QGSMAPTOOLADDCIRCLE_H
 
-#include "qgsmaptoolcapture.h"
+#include "qgsmaptooladdabstract.h"
 #include "qgscircle.h"
 #include "qgis_app.h"
-
-class QgsGeometryRubberBand;
-class QgsSnapIndicator;
 
 struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter
 {
   bool acceptMatch( const QgsPointLocator::Match &m ) override { return m.hasEdge(); }
 };
 
-class APP_EXPORT QgsMapToolAddCircle: public QgsMapToolCapture
+class APP_EXPORT QgsMapToolAddCircle: public QgsMapToolAddAbstract
 {
     Q_OBJECT
 
   public:
     QgsMapToolAddCircle( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
-    ~QgsMapToolAddCircle() override;
-
-    void keyPressEvent( QKeyEvent *e ) override;
-    void keyReleaseEvent( QKeyEvent *e ) override;
 
     void deactivate() override;
-    void activate() override;
     void clean() override;
 
   protected:
     explicit QgsMapToolAddCircle( QgsMapCanvas *canvas ) = delete; //forbidden
 
-    //! Convenient method to release (activate/deactivate) tools
-    void release( QgsMapMouseEvent *e );
-
-    /**
-     * The parent map tool, e.g. the add feature tool.
-     *  Completed circle will be added to this tool by calling its addCurve() method.
-     **/
-    QgsMapToolCapture *mParentTool = nullptr;
-    //! Circle points (in map coordinates)
-    QgsPointSequence mPoints;
-    //! The rubberband to show the circular string currently working on
-    QgsGeometryRubberBand *mTempRubberBand = nullptr;
     //! Circle
     QgsCircle mCircle;
-    //! Layer type which will be used for rubberband
-    QgsWkbTypes::GeometryType mLayerType = QgsWkbTypes::LineGeometry;
-
-    //! Snapping indicators
-    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
 };
 

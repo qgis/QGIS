@@ -19,6 +19,7 @@
 #include "qgsmapclippingregion.h"
 #include "qgslogger.h"
 #include <algorithm>
+#include <QPointer>
 
 QList<QgsMapClippingRegion> QgsMapClippingUtils::collectClippingRegionsForLayer( const QgsRenderContext &context, const QgsMapLayer *layer )
 {

@@ -25,7 +25,7 @@
 
 /**
  * \ingroup gui
- * Widget for entering authentication credentials both in the form username/password
+ * \brief Widget for entering authentication credentials both in the form username/password
  * and by using QGIS Authentication Database and its authentication configurations.
  *
  * The widget also offers the functionality to convert username/password credentials

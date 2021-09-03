@@ -47,6 +47,8 @@ class QgsHanaResultSet
     bool next();
 
     double getDouble( unsigned short columnIndex );
+    int getInt( unsigned short columnIndex );
+    short getShort( unsigned short columnIndex );
     QString getString( unsigned short columnIndex );
     QVariant getValue( unsigned short columnIndex );
     QgsGeometry getGeometry( unsigned short columnIndex );

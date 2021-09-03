@@ -31,7 +31,7 @@ class QgsVectorLayer;
 /**
  * \ingroup gui
  * \class QgsMaterialSettingsWidget
- * Base class for 3D material settings widgets.
+ * \brief Base class for 3D material settings widgets.
  * \note Not available in Python bindings
  * \since QGIS 3.16
  */

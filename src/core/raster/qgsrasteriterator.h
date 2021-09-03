@@ -29,7 +29,7 @@ struct QgsRasterViewPort;
 
 /**
  * \ingroup core
- * Iterator for sequentially processing raster cells.
+ * \brief Iterator for sequentially processing raster cells.
  */
 class CORE_EXPORT QgsRasterIterator
 {

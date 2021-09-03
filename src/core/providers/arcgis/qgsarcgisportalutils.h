@@ -25,7 +25,7 @@ class QgsFeedback;
 
 /**
  * \ingroup core
- * Utility functions for working with ArcGIS REST services.
+ * \brief Utility functions for working with ArcGIS REST services.
  *
  * \see QgsArcGisRestUtils
  *

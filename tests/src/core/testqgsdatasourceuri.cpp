@@ -210,7 +210,7 @@ void TestQgsDataSourceUri::checkparser()
   QFETCH( QString, myparam );
   QFETCH( QString, schema );
 
-  QgsDataSourceUri ds( uri );
+  const QgsDataSourceUri ds( uri );
   QCOMPARE( ds.table(), table );
   QCOMPARE( ds.geometryColumn(), geometrycolumn );
   QCOMPARE( ds.keyColumn(), key );
@@ -249,7 +249,7 @@ void TestQgsDataSourceUri::checkAuthParams()
   QCOMPARE( uri.param( QStringLiteral( "authcfg" ) ), QStringLiteral( "syl" ) );
 
   // round trip through encodedUri should not lose username/password/authcfg
-  QByteArray encoded = uri.encodedUri();
+  const QByteArray encoded = uri.encodedUri();
   QgsDataSourceUri uri2;
   uri2.setEncodedUri( encoded );
 
@@ -298,6 +298,19 @@ void TestQgsDataSourceUri::checkAuthParams()
   QCOMPARE( uri4.username(), QStringLiteral( "username" ) );
   QCOMPARE( uri4.param( QStringLiteral( "password" ) ), QStringLiteral( "pa%%word" ) );
   QCOMPARE( uri4.password(), QStringLiteral( "pa%%word" ) );
+
+  // issue GH #42405
+  uri4.setEncodedUri( QStringLiteral( "dpiMode=7&url=http://localhost:8000/ows/?MAP%3D/home/bug.qgs&username=username&password=qgis%C3%A8%C3%A9" ) );
+  QCOMPARE( uri4.param( QStringLiteral( "username" ) ), QStringLiteral( "username" ) );
+  QCOMPARE( uri4.username(), QStringLiteral( "username" ) );
+  QCOMPARE( uri4.param( QStringLiteral( "password" ) ), QStringLiteral( "qgisèé" ) );
+  QCOMPARE( uri4.password(), QStringLiteral( "qgisèé" ) );
+
+  uri4.setEncodedUri( QStringLiteral( "dpiMode=7&url=http://localhost:8000/&username=username&password=%1" ).arg( QString( QUrl::toPercentEncoding( QStringLiteral( "😁😂😍" ) ) ) ) );
+  QCOMPARE( uri4.param( QStringLiteral( "username" ) ), QStringLiteral( "username" ) );
+  QCOMPARE( uri4.username(), QStringLiteral( "username" ) );
+  QCOMPARE( uri4.param( QStringLiteral( "password" ) ), QStringLiteral( "😁😂😍" ) );
+  QCOMPARE( uri4.password(), QStringLiteral( "😁😂😍" ) );
 
 }
 

@@ -32,7 +32,7 @@ static QString detectDriverPath( EnvironmentRef &env, const QString &libName, co
   if ( QFileInfo::exists( path ) )
     return path;
 
-  std::vector<DriverInformation> drivers = env->getDrivers();
+  const std::vector<DriverInformation> drivers = env->getDrivers();
   for ( const DriverInformation &drv : drivers )
   {
     for ( const DriverInformation::Attribute &attr : drv.attributes )
@@ -100,7 +100,7 @@ bool QgsHanaDriver::isValidPath( const QString &path )
   QLibrary lib( path );
   if ( !lib.load() )
     return false;
-  bool ret = lib.resolve( "SQLConnect" ) != nullptr;
+  const bool ret = lib.resolve( "SQLConnect" ) != nullptr;
   lib.unload();
   return ret;
 }

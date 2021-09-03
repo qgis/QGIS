@@ -29,6 +29,7 @@
 #include <QSharedDataPointer>
 
 class QgsMarkerSymbol;
+class QgsFillSymbol;
 class QgsPaintEffect;
 class QgsVectorLayer;
 class QgsReadWriteContext;
@@ -38,7 +39,7 @@ class QgsTextBackgroundSettingsPrivate;
 /**
  * \class QgsTextBackgroundSettings
   * \ingroup core
-  * Container for settings relating to a text background object.
+  * \brief Container for settings relating to a text background object.
   * \note QgsTextBackgroundSettings objects are implicitly shared.
   * \since QGIS 3.0
  */
@@ -151,6 +152,28 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \since QGIS 3.10
      */
     void setMarkerSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the fill symbol to be rendered in the background. Ownership remains with
+     * the background settings.
+     * \note This is only used when the type() is QgsTextBackgroundSettings::ShapeRectangle,
+     * QgsTextBackgroundSettings::ShapeSquare, QgsTextBackgroundSettings::ShapeCircle or
+     * QgsTextBackgroundSettings::ShapeEllipse
+     * \see setFillSymbol()
+     * \since QGIS 3.20
+     */
+    QgsFillSymbol *fillSymbol() const;
+
+    /**
+     * Sets the current fill \a symbol for the background shape. Ownership is transferred
+     * to the background settings.
+     * \note This is only used when the type() is QgsTextBackgroundSettings::ShapeRectangle,
+     * QgsTextBackgroundSettings::ShapeSquare, QgsTextBackgroundSettings::ShapeCircle or
+     * QgsTextBackgroundSettings::ShapeEllipse
+     * \see fillSymbol()
+     * \since QGIS 3.20
+     */
+    void setFillSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
 
     /**
      * Returns the method used to determine the size of the background shape (e.g., fixed size or buffer
@@ -386,6 +409,8 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * Returns the color used for filing the background shape.
      * \see setFillColor()
      * \see strokeColor()
+     * \note As of QGIS 3.20, using this function is only recommended for SVG backgrounds, while
+     * other background types should be configured through their symbols.
      */
     QColor fillColor() const;
 
@@ -394,6 +419,8 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \param color background color
      * \see fillColor()
      * \see setStrokeColor()
+     * \note As of QGIS 3.20, using this function is only recommended for SVG backgrounds, while
+     * other background types should be configured through their symbols.
      */
     void setFillColor( const QColor &color );
 
@@ -401,6 +428,8 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * Returns the color used for outlining the background shape.
      * \see setStrokeColor()
      * \see fillColor()
+     * \note As of QGIS 3.20, using this function is only recommended for SVG backgrounds, while
+     * other background types should be configured through their symbols.
      */
     QColor strokeColor() const;
 
@@ -425,6 +454,8 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * setStrokeWidthUnit().
      * \see strokeWidth()
      * \see setStrokeWidthUnit()
+     * \note As of QGIS 3.20, using this function is only recommended for SVG backgrounds, while
+     * other background types should be configured through their symbols.
      */
     void setStrokeWidth( double width );
 
@@ -440,6 +471,8 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \param units stroke width units
      * \see strokeWidthUnit()
      * \see setStrokeWidth()
+     * \note As of QGIS 3.20, using this function is only recommended for SVG backgrounds, while
+     * other background types should be configured through their symbols.
      */
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit units );
 
@@ -457,6 +490,8 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \param scale scale for shape stroke width
      * \see strokeWidthMapUnitScale()
      * \see setStrokeWidthUnit()
+     * \note As of QGIS 3.20, using this function is only recommended for SVG backgrounds, while
+     * other background types should be configured through their symbols.
      */
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale );
 
@@ -470,6 +505,8 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * Sets the join style used for drawing the background shape.
      * \param style join style
      * \see joinStyle()
+     * \note As of QGIS 3.20, using this function is only recommended for SVG backgrounds, while
+     * other background types should be configured through their symbols.
      */
     void setJoinStyle( Qt::PenJoinStyle style );
 
@@ -507,9 +544,18 @@ class CORE_EXPORT QgsTextBackgroundSettings
 
     /**
      * Updates the format by evaluating current values of data defined properties.
+     * \note Since QGIS 3.20, data defined fill color, stroke color, stroke width, and
+     * pen join style will only modify SVG backgrounds. For other background types, the
+     * data defined properties within symbols are to be used.
      * \since QGIS 3.10
      */
     void updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties );
+
+    /**
+     * Upgrade data defined properties when reading a project file saved in QGIS prior to version 3.20.
+     * \since QGIS 3.20
+     */
+    void upgradeDataDefinedProperties( QgsPropertyCollection &properties ) SIP_SKIP;
 
     /**
      * Returns all field names referenced by the configuration (e.g. from data defined properties).

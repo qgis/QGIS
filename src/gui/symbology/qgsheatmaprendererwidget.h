@@ -48,12 +48,13 @@ class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererWidget, private Ui
      * \param renderer the mask renderer (will not take ownership)
      */
     QgsHeatmapRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
+    ~QgsHeatmapRendererWidget() override;
 
     QgsFeatureRenderer *renderer() override;
     void setContext( const QgsSymbolWidgetContext &context ) override;
 
   private:
-    QgsHeatmapRenderer *mRenderer = nullptr;
+    std::unique_ptr< QgsHeatmapRenderer > mRenderer;
 
     QgsExpressionContext createExpressionContext() const override;
 

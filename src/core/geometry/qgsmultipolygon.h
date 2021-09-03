@@ -51,7 +51,7 @@ class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
     /**
      * Returns the polygon with the specified \a index.
      *
-     * An IndexError will be raised if no polygon with the specified index exists.
+     * \throws IndexError if no polygon with the specified index exists.
      *
      * \since QGIS 3.16
      */

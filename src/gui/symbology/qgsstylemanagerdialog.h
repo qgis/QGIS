@@ -62,7 +62,7 @@ class QgsCheckableStyleModel: public QgsStyleProxyModel
  * \ingroup gui
  * \class QgsStyleManagerDialog
  *
- * A dialog allowing users to customize and populate a QgsStyle.
+ * \brief A dialog allowing users to customize and populate a QgsStyle.
  */
 class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleManagerDialogBase
 {
@@ -358,7 +358,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     struct ItemDetails
     {
       QgsStyle::StyleEntity entityType;
-      QgsSymbol::SymbolType symbolType;
+      Qgis::SymbolType symbolType;
       QString name;
     };
 
@@ -429,7 +429,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     bool addLabelSettings( QgsWkbTypes::GeometryType type );
     bool editLabelSettings();
 
-    bool addLegendPatchShape( QgsSymbol::SymbolType type );
+    bool addLegendPatchShape( Qgis::SymbolType type );
     bool editLegendPatchShape();
 
     bool addSymbol3D( const QString &type );

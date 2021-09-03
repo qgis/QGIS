@@ -115,12 +115,12 @@ QList<QgsExpressionContextScope *> QgsSymbolWidgetContext::globalProjectAtlasMap
   return scopes;
 }
 
-QgsSymbol::SymbolType QgsSymbolWidgetContext::symbolType() const
+Qgis::SymbolType QgsSymbolWidgetContext::symbolType() const
 {
   return mSymbolType;
 }
 
-void QgsSymbolWidgetContext::setSymbolType( QgsSymbol::SymbolType type )
+void QgsSymbolWidgetContext::setSymbolType( Qgis::SymbolType type )
 {
   mSymbolType = type;
 }

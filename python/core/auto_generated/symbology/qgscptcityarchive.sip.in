@@ -52,7 +52,7 @@ class QgsCptCityArchive
 
 class QgsCptCityDataItem : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for all items in the model
 %End
 
@@ -95,8 +95,6 @@ Base class for all items in the model
 
     virtual QWidget *paramWidget() /Factory/;
 
-    virtual QList<QAction *> actions();
-
     virtual bool acceptDrop();
 
     virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ );
@@ -135,7 +133,7 @@ Base class for all items in the model
 
 class QgsCptCityColorRampItem : QgsCptCityDataItem
 {
-%Docstring
+%Docstring(signature="appended")
 Item that represents a layer that can be opened with one of the providers
 %End
 
@@ -171,7 +169,7 @@ Item that represents a layer that can be opened with one of the providers
 
 class QgsCptCityCollectionItem : QgsCptCityDataItem
 {
-%Docstring
+%Docstring(signature="appended")
 A Collection: logical collection of subcollections and color ramps
 %End
 
@@ -192,7 +190,7 @@ A Collection: logical collection of subcollections and color ramps
 
 class QgsCptCityDirectoryItem : QgsCptCityCollectionItem
 {
-%Docstring
+%Docstring(signature="appended")
 A directory: contains subdirectories and color ramps
 %End
 
@@ -219,7 +217,7 @@ A directory: contains subdirectories and color ramps
 
 class QgsCptCitySelectionItem : QgsCptCityCollectionItem
 {
-%Docstring
+%Docstring(signature="appended")
 A selection: contains subdirectories and color ramps
 %End
 
@@ -243,7 +241,7 @@ A selection: contains subdirectories and color ramps
 
 class QgsCptCityAllRampsItem : QgsCptCityCollectionItem
 {
-%Docstring
+%Docstring(signature="appended")
 An "All ramps item", which contains all items in a flat hierarchy
 %End
 

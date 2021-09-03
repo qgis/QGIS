@@ -29,7 +29,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup gui
- * This is a dialog to build and manage a list of order by clauses.
+ * \brief This is a dialog to build and manage a list of order by clauses.
  *
  * \since QGIS 2.14
  */

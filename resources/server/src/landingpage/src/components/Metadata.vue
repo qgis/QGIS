@@ -38,7 +38,7 @@
       </v-card>
     </v-tab-item>
 
-    <template v-if="project.metadata.contacts.legth > 0">
+    <template v-if="project.metadata.contacts.length > 0">
       <v-tab :href="`#contacts-${project.id}`">Contacts</v-tab>
 
       <v-tab-item :value="`contacts-${project.id}`" v-if="project.metadata.contacts">
@@ -70,7 +70,7 @@
       </v-tab-item>
     </template>
 
-    <template v-if="project.metadata.links.legth > 0">
+    <template v-if="project.metadata.links.length > 0">
       <v-tab :href="`#links-${project.id}`">Links</v-tab>
 
       <v-tab-item :value="`links-${project.id}`" v-if="project.metadata.links">
@@ -94,14 +94,14 @@
           <v-list>
             <v-list-item-group>
               <template v-if="project.capabilities.wfsLayerIds.length">
-                <v-list-item :href="'/project/' + project.id + '/wfs3'">
+                <v-list-item :href="'./project/' + project.id + '/wfs3'">
                   <v-list-item-content>
                     <v-list-item-title>OAPIF/WFS3</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
 
                 <v-list-item
-                  :href="'/project/' + project.id + '/?SERVICE=WFS&amp;REQUEST=GetCapabilities'"
+                  :href="'./project/' + project.id + '/?SERVICE=WFS&amp;REQUEST=GetCapabilities'"
                 >
                   <v-list-item-content>
                     <v-list-item-title>WFS GetCapabilities</v-list-item-title>
@@ -110,7 +110,7 @@
               </template>
 
               <v-list-item
-                :href="'/project/' + project.id + '/?SERVICE=WMS&amp;REQUEST=GetCapabilities'"
+                :href="'./project/' + project.id + '/?SERVICE=WMS&amp;REQUEST=GetCapabilities'"
               >
                 <v-list-item-content>
                   <v-list-item-title>WMS GetCapabilities</v-list-item-title>

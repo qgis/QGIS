@@ -123,8 +123,7 @@ class ExecuteSQLWidget(BASE, WIDGET):
         src = QgsProcessingModelChildParameterSource.fromExpressionText(text)
 
         # add parameters currently used by the expression
-        expression_values = []
-        expression_values.append(src)
+        expression_values = [src]
 
         for k, v in model_params:
             if k in variables:

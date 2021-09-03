@@ -23,6 +23,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsnumericformatselectorwidget.h"
 #include "qgslayoutundostack.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
@@ -97,19 +99,19 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   mUnitsComboBox->addItem( tr( "Centimeters" ), QgsUnitTypes::DistanceCentimeters );
   mUnitsComboBox->addItem( tr( "Millimeters" ), QgsUnitTypes::DistanceMillimeters );
 
-  mLineStyleButton->setSymbolType( QgsSymbol::Line );
+  mLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
   connect( mLineStyleButton, &QgsSymbolButton::changed, this, &QgsLayoutScaleBarWidget::lineSymbolChanged );
 
-  mDivisionStyleButton->setSymbolType( QgsSymbol::Line );
+  mDivisionStyleButton->setSymbolType( Qgis::SymbolType::Line );
   connect( mDivisionStyleButton, &QgsSymbolButton::changed, this, &QgsLayoutScaleBarWidget::divisionSymbolChanged );
 
-  mSubdivisionStyleButton->setSymbolType( QgsSymbol::Line );
+  mSubdivisionStyleButton->setSymbolType( Qgis::SymbolType::Line );
   connect( mSubdivisionStyleButton, &QgsSymbolButton::changed, this, &QgsLayoutScaleBarWidget::subdivisionSymbolChanged );
 
-  mFillSymbol1Button->setSymbolType( QgsSymbol::Fill );
+  mFillSymbol1Button->setSymbolType( Qgis::SymbolType::Fill );
   connect( mFillSymbol1Button, &QgsSymbolButton::changed, this, &QgsLayoutScaleBarWidget::fillSymbol1Changed );
 
-  mFillSymbol2Button->setSymbolType( QgsSymbol::Fill );
+  mFillSymbol2Button->setSymbolType( Qgis::SymbolType::Fill );
   connect( mFillSymbol2Button, &QgsSymbolButton::changed, this, &QgsLayoutScaleBarWidget::fillSymbol2Changed );
 
   mFontButton->setDialogTitle( tr( "Scalebar Font" ) );
@@ -500,7 +502,7 @@ void QgsLayoutScaleBarWidget::mStyleComboBox_currentIndexChanged( const QString 
   disconnectUpdateSignal();
 
   bool defaultsApplied = false;
-  std::unique_ptr< QgsScaleBarRenderer > renderer( QgsApplication::scaleBarRendererRegistry()->renderer( rendererId ) );
+  const std::unique_ptr< QgsScaleBarRenderer > renderer( QgsApplication::scaleBarRendererRegistry()->renderer( rendererId ) );
   if ( renderer )
     defaultsApplied = mScalebar->applyDefaultRendererSettings( renderer.get() );
 
@@ -639,7 +641,7 @@ void QgsLayoutScaleBarWidget::mUnitsComboBox_currentIndexChanged( int index )
     return;
   }
 
-  QVariant unitData = mUnitsComboBox->itemData( index );
+  const QVariant unitData = mUnitsComboBox->itemData( index );
   if ( unitData.type() == QVariant::Invalid )
   {
     return;
@@ -650,6 +652,8 @@ void QgsLayoutScaleBarWidget::mUnitsComboBox_currentIndexChanged( int index )
   mScalebar->applyDefaultSize( static_cast<  QgsUnitTypes::DistanceUnit >( unitData.toInt() ) );
   mScalebar->update();
 
+  mNumberOfSegmentsSpinBox->setValue( mScalebar->numberOfSegments() );
+  mSegmentsLeftSpinBox->setValue( mScalebar->numberOfSegmentsLeft() );
   mUnitLabelLineEdit->setText( mScalebar->unitLabel() );
   mSegmentSizeSpinBox->setValue( mScalebar->unitsPerSegment() );
   mMapUnitsPerBarUnitSpinBox->setValue( mScalebar->mapUnitsPerScaleBarUnit() );
@@ -705,7 +709,7 @@ void QgsLayoutScaleBarWidget::disconnectUpdateSignal()
 
 void QgsLayoutScaleBarWidget::segmentSizeRadioChanged( QAbstractButton *radio )
 {
-  bool fixedSizeMode = radio == mFixedSizeRadio;
+  const bool fixedSizeMode = radio == mFixedSizeRadio;
   mMinWidthSpinBox->setEnabled( !fixedSizeMode );
   mMaxWidthSpinBox->setEnabled( !fixedSizeMode );
   mSegmentSizeSpinBox->setEnabled( fixedSizeMode );

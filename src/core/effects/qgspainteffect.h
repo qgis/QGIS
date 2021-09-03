@@ -19,7 +19,6 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgssymbollayer.h"
 #include <QPainter>
 #include <QDomDocument>
 #include <QDomElement>

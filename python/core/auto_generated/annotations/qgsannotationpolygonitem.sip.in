@@ -12,7 +12,7 @@
 
 class QgsAnnotationPolygonItem : QgsAnnotationItem
 {
-%Docstring
+%Docstring(signature="appended")
 An annotation item which renders a fill symbol for a polygon geometry.
 
 .. versionadded:: 3.16
@@ -34,6 +34,8 @@ Constructor for QgsAnnotationPolygonItem, with the specified ``polygon`` geometr
     virtual void render( QgsRenderContext &context, QgsFeedback *feedback );
 
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual QList< QgsAnnotationItemNode > nodes() const;
 
 
     static QgsAnnotationPolygonItem *create() /Factory/;

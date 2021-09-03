@@ -176,7 +176,7 @@ bool QgsProcessingProvider::isSupportedOutputValue( const QVariant &outputValue,
   }
   else if ( parameter->type() == QgsProcessingParameterRasterDestination::typeName() )
   {
-    QFileInfo fi( outputPath );
+    const QFileInfo fi( outputPath );
     const QString extension = fi.completeSuffix();
     if ( !supportedOutputRasterLayerExtensions().contains( extension, Qt::CaseInsensitive ) )
     {
@@ -193,7 +193,6 @@ bool QgsProcessingProvider::isSupportedOutputValue( const QVariant &outputValue,
 
 QString QgsProcessingProvider::defaultVectorFileExtension( bool hasGeometry ) const
 {
-  QgsSettings settings;
   const QString userDefault = QgsProcessingUtils::defaultVectorExtension();
 
   const QStringList supportedExtensions = supportedOutputVectorLayerExtensions();
@@ -216,7 +215,6 @@ QString QgsProcessingProvider::defaultVectorFileExtension( bool hasGeometry ) co
 
 QString QgsProcessingProvider::defaultRasterFileExtension() const
 {
-  QgsSettings settings;
   const QString userDefault = QgsProcessingUtils::defaultRasterExtension();
 
   const QStringList supportedExtensions = supportedOutputRasterLayerExtensions();

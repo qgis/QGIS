@@ -315,6 +315,7 @@ Negative rounds to powers of 10</string>
   <tabstop>mColorInterpolationComboBox</tabstop>
   <tabstop>btnColorRamp</tabstop>
   <tabstop>mUnitLineEdit</tabstop>
+  <tabstop>mLabelPrecisionSpinBox</tabstop>
   <tabstop>mColormapTreeWidget</tabstop>
   <tabstop>mClassificationModeComboBox</tabstop>
   <tabstop>mNumberOfEntriesSpinBox</tabstop>
@@ -324,6 +325,7 @@ Negative rounds to powers of 10</string>
   <tabstop>mLoadFromBandButton</tabstop>
   <tabstop>mLoadFromFileButton</tabstop>
   <tabstop>mExportToFileButton</tabstop>
+  <tabstop>mLegendSettingsButton</tabstop>
   <tabstop>mClipCheckBox</tabstop>
  </tabstops>
  <resources>

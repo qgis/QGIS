@@ -9,9 +9,10 @@
 
 
 
+
 class QgsLayoutItemPolygon: QgsLayoutNodesItem
 {
-%Docstring
+%Docstring(signature="appended")
 Layout item for node based polygon shapes.
 
 .. versionadded:: 3.0
@@ -32,6 +33,8 @@ Constructor for QgsLayoutItemPolygon for the specified ``layout``.
 Constructor for QgsLayoutItemPolygon for the specified ``polygon``
 and ``layout``.
 %End
+
+    ~QgsLayoutItemPolygon();
 
     static QgsLayoutItemPolygon *create( QgsLayout *layout ) /Factory/;
 %Docstring

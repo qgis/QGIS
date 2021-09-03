@@ -25,7 +25,7 @@ QgsAuthCertEditors::QgsAuthCertEditors( QWidget *parent )
   : QWidget( parent )
 {
   setupUi( this );
-  QgsSettings settings;
+  const QgsSettings settings;
   tabWidget->setCurrentIndex( settings.value( QStringLiteral( "AuthCertEditorsSelectedTab" ), 0, QgsSettings::Section::Auth ).toInt() );
 }
 

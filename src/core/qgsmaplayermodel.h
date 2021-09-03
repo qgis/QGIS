@@ -19,6 +19,7 @@
 #include <QAbstractItemModel>
 #include <QSortFilterProxyModel>
 #include <QStringList>
+#include <QIcon>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
@@ -98,10 +99,13 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
 
     /**
      * Sets whether an optional empty layer ("not set") option is present in the model.
+     *
+     * Since QGIS 3.20, the optional \a text and \a icon arguments allows the text and icon for the empty layer item to be set.
+     *
      * \see allowEmptyLayer()
      * \since QGIS 3.0
      */
-    void setAllowEmptyLayer( bool allowEmpty );
+    void setAllowEmptyLayer( bool allowEmpty, const QString &text = QString(), const QIcon &icon = QIcon() );
 
     /**
      * Returns TRUE if the model allows the empty layer ("not set") choice.
@@ -210,6 +214,8 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
   private:
 
     bool mAllowEmpty = false;
+    QString mEmptyText;
+    QIcon mEmptyIcon;
     bool mShowCrs = false;
     QStringList mAdditionalItems;
 };

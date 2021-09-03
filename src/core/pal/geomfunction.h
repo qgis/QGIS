@@ -42,6 +42,7 @@ namespace pal
 
   /**
    * \ingroup core
+   * \brief Pal labeling engine geometry functions.
    * \class pal::GeomFunction
    * \note not available in Python bindings
    */
@@ -82,11 +83,9 @@ namespace pal
        * \param id set of point (i.e. point no 0 is (x,y) = x[id[0]],y[id[0]])
        * \param x x coordinates
        * \param y y coordinates
-       * \param n Size of subset (vector id)
-       * \param cHull returns the point id (id of id's vector...) whom are parts of the convex hull
-       * \returns convexHull's size
+       * \returns convexHull vertex ids
        */
-      static int convexHullId( int *id, const std::vector< double > &x, const std::vector< double > &y, int n, int *&cHull );
+      static std::vector< int > convexHullId( std::vector<int> &id, const std::vector< double > &x, const std::vector< double > &y );
 
       /**
        * Returns TRUE if the two segments intersect.
@@ -103,7 +102,7 @@ namespace pal
                                            double *x, double *y );
 
       //! Reorder points to have cross prod ((x,y)[i], (x,y)[i+1), point) > 0 when point is outside
-      static int reorderPolygon( int nbPoints, std::vector< double > &x, std::vector< double> &y );
+      static bool reorderPolygon( std::vector< double > &x, std::vector< double> &y );
 
       /**
        * Returns TRUE if a GEOS prepared geometry totally contains a label candidate.

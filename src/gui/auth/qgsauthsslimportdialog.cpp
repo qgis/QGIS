@@ -149,7 +149,7 @@ void QgsAuthSslImportDialog::updateEnabledState()
 {
   leServer->setStyleSheet( QString() );
 
-  bool unconnected = !mSocket || mSocket->state() == QAbstractSocket::UnconnectedState;
+  const bool unconnected = !mSocket || mSocket->state() == QAbstractSocket::UnconnectedState;
 
   leServer->setReadOnly( !unconnected );
   spinbxPort->setReadOnly( !unconnected );
@@ -158,7 +158,7 @@ void QgsAuthSslImportDialog::updateEnabledState()
   leServer->setFocusPolicy( unconnected ? Qt::StrongFocus : Qt::NoFocus );
   btnConnect->setEnabled( unconnected && !leServer->text().isEmpty() );
 
-  bool connected = mSocket && mSocket->state() == QAbstractSocket::ConnectedState;
+  const bool connected = mSocket && mSocket->state() == QAbstractSocket::ConnectedState;
   if ( connected && !mSocket->peerName().isEmpty() )
   {
     appendString( tr( "Connected to %1: %2" ).arg( mSocket->peerName() ).arg( mSocket->peerPort() ) );
@@ -186,8 +186,12 @@ void QgsAuthSslImportDialog::secureConnect()
              this, &QgsAuthSslImportDialog::socketDisconnected );
     connect( mSocket, &QSslSocket::encrypted,
              this, &QgsAuthSslImportDialog::socketEncrypted );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     connect( mSocket, static_cast<void ( QAbstractSocket::* )( QAbstractSocket::SocketError )>( &QAbstractSocket::error ),
              this, &QgsAuthSslImportDialog::socketError );
+#else
+    connect( mSocket, &QAbstractSocket::errorOccurred, this, &QgsAuthSslImportDialog::socketError );
+#endif
     connect( mSocket, static_cast<void ( QSslSocket::* )( const QList<QSslError> & )>( &QSslSocket::sslErrors ),
              this, &QgsAuthSslImportDialog::sslErrors );
     connect( mSocket, &QIODevice::readyRead,
@@ -246,16 +250,16 @@ void QgsAuthSslImportDialog::socketEncrypted()
   appendString( QStringLiteral( "%1: %2" ).arg( tr( "Protocol" ),
                 QgsAuthCertUtils::getSslProtocolName( mSocket->protocol() ) ) );
 
-  QSslCipher ciph = mSocket->sessionCipher();
-  QString cipher = QStringLiteral( "%1: %2, %3 (%4/%5)" )
-                   .arg( tr( "Session cipher" ), ciph.authenticationMethod(), ciph.name() )
-                   .arg( ciph.usedBits() ).arg( ciph.supportedBits() );
+  const QSslCipher ciph = mSocket->sessionCipher();
+  const QString cipher = QStringLiteral( "%1: %2, %3 (%4/%5)" )
+                         .arg( tr( "Session cipher" ), ciph.authenticationMethod(), ciph.name() )
+                         .arg( ciph.usedBits() ).arg( ciph.supportedBits() );
   appendString( cipher );
 
 
 
   wdgtSslConfig->setEnabled( true );
-  QString hostport( QStringLiteral( "%1:%2" ).arg( mSocket->peerName() ).arg( mSocket->peerPort() ) );
+  const QString hostport( QStringLiteral( "%1:%2" ).arg( mSocket->peerName() ).arg( mSocket->peerPort() ) );
   wdgtSslConfig->setSslCertificate( mSocket->peerCertificate(), hostport.trimmed() );
   if ( !mSslErrors.isEmpty() )
   {
@@ -338,7 +342,7 @@ void QgsAuthSslImportDialog::showCertificateInfo()
 
   if ( !peerchain.isEmpty() )
   {
-    QSslCertificate cert = peerchain.takeFirst();
+    const QSslCertificate cert = peerchain.takeFirst();
     if ( !cert.isNull() )
     {
       QgsAuthCertInfoDialog *info = new QgsAuthCertInfoDialog( cert, false, this, peerchain );
@@ -407,7 +411,7 @@ void QgsAuthSslImportDialog::loadCertFromFile()
     return;
   }
 
-  QSslCertificate cert( certs.first() );
+  const QSslCertificate cert( certs.first() );
   if ( cert.isNull() )
   {
     appendString( tr( "Could not load server cert from file" ) );
@@ -452,7 +456,7 @@ QPushButton *QgsAuthSslImportDialog::closeButton()
 QString QgsAuthSslImportDialog::getOpenFileName( const QString &title, const QString &extfilter )
 {
   QgsSettings settings;
-  QString recentdir = settings.value( QStringLiteral( "UI/lastAuthImportSslOpenFileDir" ), QDir::homePath() ).toString();
+  const QString recentdir = settings.value( QStringLiteral( "UI/lastAuthImportSslOpenFileDir" ), QDir::homePath() ).toString();
   QString f = QFileDialog::getOpenFileName( this, title, recentdir, extfilter );
 
   // return dialog focus on Mac

@@ -1,0 +1,43 @@
+<Composer title="2x_template_group">
+ <Composition snapTolerancePixels="5" smartGuides="1" snapping="0" printAsRaster="0" snapGridOffsetX="0" paperWidth="297" guidesVisible="1" gridVisible="0" snapGridResolution="10" alignmentSnap="1" paperHeight="210" snapGridOffsetY="0" numPages="1" printResolution="300" generateWorldFile="0">
+  <symbol type="fill" name="" alpha="1">
+   <layer class="SimpleFill" pass="0" locked="0">
+    <prop v="0,0" k="border_width_map_unit_scale"/>
+    <prop v="255,255,255,255" k="color"/>
+    <prop v="miter" k="joinstyle"/>
+    <prop v="0,0" k="offset"/>
+    <prop v="0,0" k="offset_map_unit_scale"/>
+    <prop v="MM" k="offset_unit"/>
+    <prop v="0,0,0,255" k="outline_color"/>
+    <prop v="no" k="outline_style"/>
+    <prop v="0.26" k="outline_width"/>
+    <prop v="MM" k="outline_width_unit"/>
+    <prop v="solid" k="style"/>
+   </layer>
+  </symbol>
+  <ComposerItemGroup>
+   <ComposerItemGroupElement uuid="{c680ba6d-ad46-44e3-9e74-acfc63374e67}"/>
+   <ComposerItemGroupElement uuid="{5c38ecb5-5ab7-4dbc-8b41-a293a789c7a2}"/>
+   <ComposerItem itemRotation="0" y="59.6752" background="true" uuid="{b78c8da5-1f7e-4702-b46e-1f3f5d810875}" lastValidViewScaleFactor="-1" id="" blendMode="0" frameJoinStyle="miter" x="66.6373" frame="false" width="33.9755" page="1" zValue="90" pagey="59.6752" height="17.6377" pagex="66.6373" visibility="1" transparency="0" excludeFromExports="0" outlineWidth="0.3" positionLock="false" positionMode="0">
+    <FrameColor green="0" alpha="255" blue="0" red="0"/>
+    <BackgroundColor green="255" alpha="255" blue="255" red="255"/>
+   </ComposerItem>
+  </ComposerItemGroup>
+  <ComposerLabel valign="32" marginY="1" marginX="1" halign="1" maxLength="-1" htmlState="0" labelText="Label">
+   <LabelFont description="MS Shell Dlg 2,10,-1,5,50,0,0,0,0,0"/>
+   <FontColor green="0" blue="0" red="0"/>
+   <ComposerItem itemRotation="0" y="71.1129" background="false" uuid="{5c38ecb5-5ab7-4dbc-8b41-a293a789c7a2}" lastValidViewScaleFactor="-1" id="" blendMode="0" frameJoinStyle="miter" x="89.5128" frame="false" width="11.1" page="1" zValue="2" pagey="71.1129" height="6.2" pagex="89.5128" visibility="1" transparency="0" excludeFromExports="0" outlineWidth="0.3" positionLock="false" positionMode="0">
+    <FrameColor green="0" alpha="255" blue="0" red="0"/>
+    <BackgroundColor green="255" alpha="255" blue="255" red="255"/>
+   </ComposerItem>
+  </ComposerLabel>
+  <ComposerLabel valign="32" marginY="1" marginX="1" halign="1" maxLength="-1" htmlState="0" labelText="Hello world">
+   <LabelFont description="MS Shell Dlg 2,10,-1,5,50,0,0,0,0,0"/>
+   <FontColor green="0" blue="0" red="0"/>
+   <ComposerItem itemRotation="0" y="59.6752" background="false" uuid="{c680ba6d-ad46-44e3-9e74-acfc63374e67}" lastValidViewScaleFactor="-1" id="" blendMode="0" frameJoinStyle="miter" x="66.6373" frame="false" width="11.1" page="1" zValue="1" pagey="59.6752" height="6.2" pagex="66.6373" visibility="1" transparency="0" excludeFromExports="0" outlineWidth="0.3" positionLock="false" positionMode="0">
+    <FrameColor green="0" alpha="255" blue="0" red="0"/>
+    <BackgroundColor green="255" alpha="255" blue="255" red="255"/>
+   </ComposerItem>
+  </ComposerLabel>
+ </Composition>
+</Composer>

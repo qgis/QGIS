@@ -29,7 +29,7 @@ typedef QList<QgsRasterRange> QgsRasterRangeList;
 
 /**
  * \ingroup core
- * Raster values range container. Represents range of values between min and max
+ * \brief Raster values range container. Represents range of values between min and max
  * including min and max value.
  */
 class CORE_EXPORT QgsRasterRange
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsRasterRange
      */
     static bool contains( double value, const QgsRasterRangeList &rangeList )
     {
-      for ( QgsRasterRange range : rangeList )
+      for ( const QgsRasterRange &range : rangeList )
       {
         if ( range.contains( value ) )
         {

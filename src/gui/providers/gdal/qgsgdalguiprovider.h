@@ -47,7 +47,7 @@ class QgsGdalItemGuiProvider : public QObject, public QgsDataItemGuiProvider
                               const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 
   protected slots:
-    void onDeleteLayer( QgsDataItemGuiContext context );
+    void onDeletePostgresRasterLayer( QgsDataItemGuiContext context );
 };
 
 class QgsGdalSourceWidgetProvider : public QgsProviderSourceWidgetProvider

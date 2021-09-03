@@ -26,13 +26,10 @@
 QgsGraphBuilder::QgsGraphBuilder( const QgsCoordinateReferenceSystem &crs, bool otfEnabled, double topologyTolerance, const QString &ellipsoidID )
   : QgsGraphBuilderInterface( crs, otfEnabled, topologyTolerance, ellipsoidID )
 {
-  mGraph = new QgsGraph();
+  mGraph = std::make_unique< QgsGraph >();
 }
 
-QgsGraphBuilder::~QgsGraphBuilder()
-{
-  delete mGraph;
-}
+QgsGraphBuilder::~QgsGraphBuilder() = default;
 
 void QgsGraphBuilder::addVertex( int, const QgsPointXY &pt )
 {
@@ -44,9 +41,17 @@ void QgsGraphBuilder::addEdge( int pt1id, const QgsPointXY &, int pt2id, const Q
   mGraph->addEdge( pt1id, pt2id, prop );
 }
 
-QgsGraph *QgsGraphBuilder::graph()
+QgsGraph QgsGraphBuilder::graph() const
 {
-  QgsGraph *res = mGraph;
-  mGraph = nullptr;
+  return *mGraph;
+}
+
+QgsGraph *QgsGraphBuilder::takeGraph()
+{
+  QgsGraph *res = mGraph.release();
+
+  // create a new graph in case this builder is used for additional work
+  mGraph = std::make_unique< QgsGraph >();
+
   return res;
 }

@@ -30,7 +30,7 @@ class QgsRasterShader;
 
 /**
  * \ingroup core
-  * Raster renderer pipe for single band pseudocolor.
+  * \brief Raster renderer pipe for single band pseudocolor.
   */
 class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
 {

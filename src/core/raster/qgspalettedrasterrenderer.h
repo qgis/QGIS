@@ -30,7 +30,7 @@ class QDomElement;
 
 /**
  * \ingroup core
-  * Renderer for paletted raster images.
+  * \brief Renderer for paletted raster images.
 */
 class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 {

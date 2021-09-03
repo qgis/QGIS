@@ -46,61 +46,59 @@ class QgsExpressionFunction;
 
 /**
  * \ingroup core
-Class for parsing and evaluation of expressions (formerly called "search strings").
-The expressions try to follow both syntax and semantics of SQL expressions.
-
-Usage:
-\code{.py}
-  exp = QgsExpression("gid*2 > 10 and type not in ('D','F')")
-  if exp.hasParserError():
-      # show error message with parserErrorString() and exit
-
-  result = exp.evaluate(feature, fields)
-  if exp.hasEvalError():
-      # show error message with evalErrorString()
-  else:
-      # examine the result
-\endcode
-
-\section value_logic Three Value Logic
-
-Similarly to SQL, this class supports three-value logic: true/false/unknown.
-Unknown value may be a result of operations with missing data (NULL). Please note
-that NULL is different value than zero or an empty string. For example
-3 > NULL returns unknown.
-
-There is no special (three-value) 'boolean' type: true/false is represented as
-1/0 integer, unknown value is represented the same way as NULL values: NULL QVariant.
-
-\section performance Performance
-
-For better performance with many evaluations you may first call prepare(fields) function
-to find out indices of columns and then repeatedly call evaluate(feature).
-
-\section type_conversion Type conversion
-
-Operators and functions that expect arguments to be of a particular
-type automatically convert the arguments to that type, e.g. sin('2.1') will convert
-the argument to a double, length(123) will first convert the number to a string.
-Explicit conversion can be achieved with to_int, to_real, to_string functions.
-If implicit or explicit conversion is invalid, the evaluation returns an error.
-Comparison operators do numeric comparison in case both operators are numeric (int/double)
-or they can be converted to numeric types.
-
-\section implicit_sharing Implicit sharing
-
-This class is implicitly shared, copying has a very low overhead.
-It is normally preferable to call `QgsExpression( otherExpression )` instead of
-`QgsExpression( otherExpression.expression() )`. A deep copy will only be made
-when prepare() is called. For usage this means mainly, that you should
-normally keep an unprepared master copy of a QgsExpression and whenever using it
-with a particular QgsFeatureIterator copy it just before and prepare it using the
-same context as the iterator.
-
-Implicit sharing was added in 2.14
-
+ * \brief Class for parsing and evaluation of expressions (formerly called "search strings").
+ * The expressions try to follow both syntax and semantics of SQL expressions.
+ *
+ * Usage:
+ * \code{.py}
+ *   exp = QgsExpression("gid*2 > 10 and type not in ('D','F')")
+ *   if exp.hasParserError():
+ *       # show error message with parserErrorString() and exit
+ *
+ *   result = exp.evaluate(feature, fields)
+ *   if exp.hasEvalError():
+ *       # show error message with evalErrorString()
+ *   else:
+ *       # examine the result
+ * \endcode
+ *
+ * \section value_logic Three Value Logic
+ *
+ * Similarly to SQL, this class supports three-value logic: true/false/unknown.
+ * Unknown value may be a result of operations with missing data (NULL). Please note
+ * that NULL is different value than zero or an empty string. For example
+ * 3 > NULL returns unknown.
+ *
+ * There is no special (three-value) 'boolean' type: true/false is represented as
+ * 1/0 integer, unknown value is represented the same way as NULL values: NULL QVariant.
+ *
+ * \section performance Performance
+ *
+ * For better performance with many evaluations you may first call prepare(fields) function
+ * to find out indices of columns and then repeatedly call evaluate(feature).
+ *
+ * \section type_conversion Type conversion
+ *
+ * Operators and functions that expect arguments to be of a particular
+ * type automatically convert the arguments to that type, e.g. sin('2.1') will convert
+ * the argument to a double, length(123) will first convert the number to a string.
+ * Explicit conversion can be achieved with to_int, to_real, to_string functions.
+ * If implicit or explicit conversion is invalid, the evaluation returns an error.
+ * Comparison operators do numeric comparison in case both operators are numeric (int/double)
+ * or they can be converted to numeric types.
+ *
+ * \section implicit_sharing Implicit sharing
+ *
+ * This class is implicitly shared, copying has a very low overhead.
+ * It is normally preferable to call `QgsExpression( otherExpression )` instead of
+ * `QgsExpression( otherExpression.expression() )`. A deep copy will only be made
+ * when prepare() is called. For usage this means mainly, that you should
+ * normally keep an unprepared master copy of a QgsExpression and whenever using it
+ * with a particular QgsFeatureIterator copy it just before and prepare it using the
+ * same context as the iterator.
+ *
+ * Implicit sharing was added in 2.14
 */
-
 class CORE_EXPORT QgsExpression
 {
     Q_DECLARE_TR_FUNCTIONS( QgsExpression )
@@ -351,9 +349,25 @@ class CORE_EXPORT QgsExpression
 
     /**
      * Checks whether an expression consists only of a single field reference
+     *
+     * \see expressionToLayerFieldIndex()
      * \since QGIS 2.9
      */
     bool isField() const;
+
+    /**
+     * Attempts to resolve an expression to a field index from the given \a layer.
+     *
+     * Given a string which may either directly match a field name from a layer, OR may
+     * be an expression which consists only of a single field reference for that layer, this
+     * method will return the corresponding field index.
+     *
+     * \returns field index if found, or -1 if \a expression does not represent a field from the layer.
+     *
+     * \see isField()
+     * \since QGIS 3.22
+     */
+    static int expressionToLayerFieldIndex( const QString &expression, const QgsVectorLayer *layer );
 
     /**
      * Tests whether a string is a valid expression.

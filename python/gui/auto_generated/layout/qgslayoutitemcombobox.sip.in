@@ -11,7 +11,7 @@
 
 class QgsLayoutItemComboBox : QComboBox
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsLayoutItemComboBox` class is a combo box which displays items of
 a matching type from a layout.
 

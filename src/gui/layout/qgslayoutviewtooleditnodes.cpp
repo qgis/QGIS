@@ -243,7 +243,7 @@ void QgsLayoutViewToolEditNodes::displayNodes( bool display )
   QList<QgsLayoutNodesItem *> nodesShapes;
   layout()->layoutItems( nodesShapes );
 
-  for ( QgsLayoutNodesItem *item : qgis::as_const( nodesShapes ) )
+  for ( QgsLayoutNodesItem *item : std::as_const( nodesShapes ) )
   {
     item->setDisplayNodes( display );
     item->update();
@@ -255,7 +255,7 @@ void QgsLayoutViewToolEditNodes::deselectNodes()
   QList<QgsLayoutNodesItem *> nodesShapes;
   layout()->layoutItems( nodesShapes );
 
-  for ( QgsLayoutNodesItem *item : qgis::as_const( nodesShapes ) )
+  for ( QgsLayoutNodesItem *item : std::as_const( nodesShapes ) )
   {
     item->deselectNode();
     item->update();
@@ -267,7 +267,7 @@ void QgsLayoutViewToolEditNodes::setSelectedNode( QgsLayoutNodesItem *shape, int
   QList<QgsLayoutNodesItem *> nodesShapes;
   layout()->layoutItems( nodesShapes );
 
-  for ( QgsLayoutNodesItem *item : qgis::as_const( nodesShapes ) )
+  for ( QgsLayoutNodesItem *item : std::as_const( nodesShapes ) )
   {
     if ( item == shape )
     {

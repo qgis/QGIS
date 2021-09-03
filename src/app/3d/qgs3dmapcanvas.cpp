@@ -18,6 +18,7 @@
 #include <QBoxLayout>
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DRender/QRenderCapture>
+#include <Qt3DLogic/QFrameAction>
 #include <QMouseEvent>
 
 
@@ -35,26 +36,32 @@
 #include "qgsonlineterraingenerator.h"
 #include "qgsray3d.h"
 #include "qgs3dutils.h"
+#include "qgsoffscreen3dengine.h"
 
 Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   : QWidget( parent )
 {
-  QgsSettings setting;
+  const QgsSettings setting;
   mEngine = new QgsWindow3DEngine( this );
 
-  connect( mEngine, &QgsAbstract3DEngine::imageCaptured, this, [ = ]( const QImage & image )
+  connect( mEngine, &QgsAbstract3DEngine::imageCaptured, [ = ]( const QImage & image )
   {
     image.save( mCaptureFileName, mCaptureFileFormat.toLocal8Bit().data() );
+    mEngine->setRenderCaptureEnabled( false );
     emit savedAsImage( mCaptureFileName );
   } );
+
+  mSplitter = new QSplitter( this );
 
   mContainer = QWidget::createWindowContainer( mEngine->window() );
   mNavigationWidget = new Qgs3DNavigationWidget( this );
 
+  mSplitter->addWidget( mContainer );
+  mSplitter->addWidget( mNavigationWidget );
+
   QHBoxLayout *hLayout = new QHBoxLayout( this );
   hLayout->setContentsMargins( 0, 0, 0, 0 );
-  hLayout->addWidget( mContainer, 1 );
-  hLayout->addWidget( mNavigationWidget );
+  hLayout->addWidget( mSplitter );
   this->setOnScreenNavigationVisibility(
     setting.value( QStringLiteral( "/3D/navigationWidget/visibility" ), true, QgsSettings::Gui ).toBool()
   );
@@ -83,7 +90,7 @@ void Qgs3DMapCanvas::resizeEvent( QResizeEvent *ev )
   if ( !mScene )
     return;
 
-  QRect viewportRect( QPoint( 0, 0 ), size() );
+  const QRect viewportRect( QPoint( 0, 0 ), size() );
   mScene->cameraController()->setViewport( viewportRect );
 
   mEngine->setSize( viewportRect.size() );
@@ -95,7 +102,7 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
   Q_ASSERT( !mMap );
   Q_ASSERT( !mScene );
 
-  QRect viewportRect( QPoint( 0, 0 ), size() );
+  const QRect viewportRect( QPoint( 0, 0 ), size() );
   Qgs3DMapScene *newScene = new Qgs3DMapScene( *map, mEngine );
 
   mEngine->setSize( viewportRect.size() );
@@ -136,8 +143,8 @@ void Qgs3DMapCanvas::resetView( bool resetExtent )
 {
   if ( resetExtent )
   {
-    if ( map()->terrainGenerator()->type() == QgsTerrainGenerator::Flat ||
-         map()->terrainGenerator()->type() == QgsTerrainGenerator::Online )
+    if ( map()->terrainGenerator() && ( map()->terrainGenerator()->type() == QgsTerrainGenerator::Flat ||
+                                        map()->terrainGenerator()->type() == QgsTerrainGenerator::Online ) )
     {
       const QgsReferencedRectangle extent = QgsProject::instance()->viewSettings()->fullExtent();
       QgsCoordinateTransform ct( extent.crs(), map()->crs(), QgsProject::instance()->transformContext() );
@@ -151,14 +158,29 @@ void Qgs3DMapCanvas::resetView( bool resetExtent )
       {
         rect = extent;
       }
-      map()->terrainGenerator()->setExtent( rect );
+      if ( map()->terrainGenerator() )
+        map()->terrainGenerator()->setExtent( rect );
 
-      // reproject terrain's extent to map CRS
-      QgsRectangle te = map()->terrainGenerator()->extent();
-      QgsCoordinateTransform terrainToMapTransform( map()->terrainGenerator()->crs(), map()->crs(), QgsProject::instance() );
-      te = terrainToMapTransform.transformBoundingBox( te );
+      const QgsRectangle te = mScene->sceneExtent();
+      const QgsPointXY center = te.center();
+      map()->setOrigin( QgsVector3D( center.x(), center.y(), 0 ) );
+    }
+    if ( !map()->terrainGenerator() )
+    {
+      const QgsReferencedRectangle extent = QgsProject::instance()->viewSettings()->fullExtent();
+      QgsCoordinateTransform ct( extent.crs(), map()->crs(), QgsProject::instance()->transformContext() );
+      ct.setBallparkTransformsAreAppropriate( true );
+      QgsRectangle rect;
+      try
+      {
+        rect = ct.transformBoundingBox( extent );
+      }
+      catch ( QgsCsException & )
+      {
+        rect = extent;
+      }
 
-      QgsPointXY center = te.center();
+      const QgsPointXY center = rect.center();
       map()->setOrigin( QgsVector3D( center.x(), center.y(), 0 ) );
     }
   }
@@ -168,8 +190,8 @@ void Qgs3DMapCanvas::resetView( bool resetExtent )
 
 void Qgs3DMapCanvas::setViewFromTop( const QgsPointXY &center, float distance, float rotation )
 {
-  float worldX = center.x() - mMap->origin().x();
-  float worldY = center.y() - mMap->origin().y();
+  const float worldX = center.x() - mMap->origin().x();
+  const float worldY = center.y() - mMap->origin().y();
   mScene->cameraController()->setViewFromTop( worldX, -worldY, distance, rotation );
 }
 
@@ -179,7 +201,17 @@ void Qgs3DMapCanvas::saveAsImage( const QString fileName, const QString fileForm
   {
     mCaptureFileName = fileName;
     mCaptureFileFormat = fileFormat;
-    mEngine->requestCaptureImage();
+    mEngine->setRenderCaptureEnabled( true );
+    // Setup a frame action that is used to wait until next frame
+    Qt3DLogic::QFrameAction *screenCaptureFrameAction = new Qt3DLogic::QFrameAction;
+    mScene->addComponent( screenCaptureFrameAction );
+    // Wait to have the render capture enabled in the next frame
+    connect( screenCaptureFrameAction, &Qt3DLogic::QFrameAction::triggered, [ = ]( float )
+    {
+      mEngine->requestCaptureImage();
+      mScene->removeComponent( screenCaptureFrameAction );
+      screenCaptureFrameAction->deleteLater();
+    } );
   }
 }
 

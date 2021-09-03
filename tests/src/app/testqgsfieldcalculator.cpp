@@ -77,12 +77,12 @@ void TestQgsFieldCalculator::testLengthCalculations()
   f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
   QgsPolylineXY line3111;
   line3111 << QgsPointXY( 2484588, 2425722 ) << QgsPointXY( 2482767, 2398853 );
-  QgsGeometry line3111G = QgsGeometry::fromPolylineXY( line3111 ) ;
+  const QgsGeometry line3111G = QgsGeometry::fromPolylineXY( line3111 ) ;
   f1.setGeometry( line3111G );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
   // set project CRS and ellipsoid
-  QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
+  const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceMeters );
@@ -138,12 +138,12 @@ void TestQgsFieldCalculator::testAreaCalculations()
   polygonRing3111 << QgsPointXY( 2484588, 2425722 ) << QgsPointXY( 2482767, 2398853 ) << QgsPointXY( 2520109, 2397715 ) << QgsPointXY( 2520792, 2425494 ) << QgsPointXY( 2484588, 2425722 );
   QgsPolygonXY polygon3111;
   polygon3111 << polygonRing3111;
-  QgsGeometry polygon3111G = QgsGeometry::fromPolygonXY( polygon3111 ) ;
+  const QgsGeometry polygon3111G = QgsGeometry::fromPolygonXY( polygon3111 ) ;
   f1.setGeometry( polygon3111G );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
   // set project CRS and ellipsoid
-  QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
+  const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3111" ) );
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
   QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMeters );
@@ -164,7 +164,7 @@ void TestQgsFieldCalculator::testAreaCalculations()
   QgsFeatureIterator fit = tempLayer->dataProvider()->getFeatures();
   QgsFeature f;
   QVERIFY( fit.nextFeature( f ) );
-  double expected = 1005721496.780080;
+  double expected = 1005755617.819130;
   QGSCOMPARENEAR( f.attribute( "col1" ).toDouble(), expected, 1.0 );
 
   // change project area unit, check calculation respects unit
@@ -179,7 +179,7 @@ void TestQgsFieldCalculator::testAreaCalculations()
   // check result
   fit = tempLayer->dataProvider()->getFeatures();
   QVERIFY( fit.nextFeature( f ) );
-  expected = 388.311240;
+  expected = 388.324420;
   QGSCOMPARENEAR( f.attribute( "col1" ).toDouble(), expected, 0.001 );
 }
 

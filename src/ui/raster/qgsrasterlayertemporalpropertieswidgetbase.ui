@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>611</width>
+    <width>577</width>
     <height>413</height>
    </rect>
   </property>
@@ -48,11 +48,11 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>611</width>
-        <height>413</height>
+        <width>577</width>
+        <height>663</height>
        </rect>
       </property>
-      <layout class="QGridLayout" name="gridLayout">
+      <layout class="QGridLayout" name="gridLayout" rowstretch="0,0">
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -70,24 +70,37 @@
          <property name="enabled">
           <bool>true</bool>
          </property>
+         <property name="toolTip">
+          <string>If checked, the layer will be dynamically filtered and visualised using the map's temporal range</string>
+         </property>
          <property name="styleSheet">
           <string notr="true">QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}
 background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}</string>
          </property>
          <property name="title">
-          <string>Temporal</string>
+          <string>Dynamic Temporal Control</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="2" column="0" colspan="2">
-           <widget class="QRadioButton" name="mModeFixedRangeRadio">
+          <item row="4" column="0" colspan="2">
+           <widget class="QRadioButton" name="mModeRedrawLayer">
             <property name="text">
-             <string>Fixed time range (only show this layer if animation time is within this range)</string>
+             <string>Redraw layer only</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QRadioButton" name="mModeAutomaticRadio">
+            <property name="toolTip">
+             <string>Delegates temporal handling to the data provider</string>
+            </property>
+            <property name="text">
+             <string>Automatic</string>
             </property>
             <property name="checked">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -105,7 +118,10 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
             <property name="lineWidth">
              <number>0</number>
             </property>
-            <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,2,0,2">
+            <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,2,0,3">
+             <property name="leftMargin">
+              <number>20</number>
+             </property>
              <property name="topMargin">
               <number>0</number>
              </property>
@@ -129,6 +145,19 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
                </property>
               </widget>
              </item>
+             <item row="1" column="3">
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
              <item row="0" column="1" colspan="2">
               <widget class="QgsDateTimeEdit" name="mStartTemporalDateTimeEdit">
                <property name="displayFormat">
@@ -146,50 +175,55 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
                </property>
               </widget>
              </item>
-             <item row="1" column="3">
-              <spacer name="horizontalSpacer">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+            </layout>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QRadioButton" name="mModeFixedRangeRadio">
+            <property name="text">
+             <string>Fixed time range (only show this layer if animation time is within this range)</string>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0" colspan="2">
+           <widget class="QFrame" name="frame">
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout">
+             <property name="leftMargin">
+              <number>20</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="mLabelRedrawLayer">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;The layer will automatically be redrawn whenever the temporal range is changed, but no time based filtering will be applied to the layer.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;This configuration is useful when the layer has renderer settings which vary based on the temporal range. For instance, when it is using time-dependent data-defined renderer expressions.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
+               <property name="wordWrap">
+                <bool>true</bool>
                </property>
-              </spacer>
+              </widget>
              </item>
             </layout>
            </widget>
           </item>
-          <item row="0" column="0" colspan="2">
-           <widget class="QRadioButton" name="mModeAutomaticRadio">
-            <property name="toolTip">
-             <string>Delegates temporal handling to the data provider</string>
-            </property>
-            <property name="text">
-             <string>Automatic</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
-           <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
          </layout>
         </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QWidget" name="mExtraWidgetContainer" native="true"/>
        </item>
       </layout>
      </widget>
@@ -212,10 +246,11 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
+  <tabstop>mTemporalGroupBox</tabstop>
+  <tabstop>mModeAutomaticRadio</tabstop>
   <tabstop>mModeFixedRangeRadio</tabstop>
   <tabstop>mStartTemporalDateTimeEdit</tabstop>
   <tabstop>mEndTemporalDateTimeEdit</tabstop>
-  <tabstop>mTemporalGroupBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>

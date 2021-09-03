@@ -1,4 +1,4 @@
-name: flake8
+name: ❄ Flake8
 
 on:
   push:
@@ -14,14 +14,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup Python
-        uses: actions/setup-python@v2.2.1
+        uses: actions/setup-python@v2.2.2
         with:
           python-version: 3.7
           architecture: x64
       - name: Checkout
         uses: actions/checkout@v2
       - name: Run flake8
-        uses: julianwachholz/flake8-action@v1.1.0
+        uses: julianwachholz/flake8-action@v2.0.0
         with:
           checkName: 'Python Lint'
         env:

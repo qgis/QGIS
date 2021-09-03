@@ -75,17 +75,17 @@ class APP_EXPORT QgsHandleBadLayers
     enum class CustomRoles : int
     {
       Index = Qt::UserRole,
+      LayerType,
+      Provider,
       ProviderIsFileBased,
-      DataSourceIsChanged,
+      DataSourceWasAutoRepaired,
+      LayerId,
     };
 
     QPushButton *mBrowseButton = nullptr;
     QPushButton *mApplyButton = nullptr;
     QPushButton *mAutoFindButton = nullptr;
     const QList<QDomNode> &mLayers;
-    QList<int> mRows;
-    QString mVectorFileFilter;
-    QString mRasterFileFilter;
     // Registry of the original paths associated with a file as a backup
     QHash <QString, QString > mOriginalFileBase;
     // Keeps a registry of valid alternatives for a basepath
@@ -99,9 +99,14 @@ class APP_EXPORT QgsHandleBadLayers
      * Otherwise all other know viable alternative for the original basepath will be tested.
      * \since QGIS 3.12
      */
-    QString checkBasepath( const QString &layerId, const QString &newPath, const QString &fileName );
+    QString checkBasepath( const QString &layerId, const QString &newPath, const QString &fileName, bool &foundPath );
 
-
+    /**
+     * Returns a list of all rows associated with file-based providers.
+     *
+     * If \a selectedOnly is true then only currently selected rows will be considered.
+     */
+    QList<int> fileBasedRows( bool selectedOnly );
 };
 
 #endif

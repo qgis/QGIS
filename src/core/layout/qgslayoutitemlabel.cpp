@@ -41,6 +41,7 @@
 #include <QPainter>
 #include <QTimer>
 #include <QEventLoop>
+#include <QThread>
 
 QgsLayoutItemLabel::QgsLayoutItemLabel( QgsLayout *layout )
   : QgsLayoutItem( layout )
@@ -49,8 +50,8 @@ QgsLayoutItemLabel::QgsLayoutItemLabel( QgsLayout *layout )
   mHtmlUnitsToLayoutUnits = htmlUnitsToLayoutUnits();
 
   //get default layout font from settings
-  QgsSettings settings;
-  QString defaultFontString = settings.value( QStringLiteral( "LayoutDesigner/defaultFont" ), QVariant(), QgsSettings::Gui ).toString();
+  const QgsSettings settings;
+  const QString defaultFontString = settings.value( QStringLiteral( "LayoutDesigner/defaultFont" ), QVariant(), QgsSettings::Gui ).toString();
   if ( !defaultFontString.isEmpty() )
   {
     mFont.setFamily( defaultFontString );
@@ -111,15 +112,15 @@ QIcon QgsLayoutItemLabel::icon() const
 void QgsLayoutItemLabel::draw( QgsLayoutItemRenderContext &context )
 {
   QPainter *painter = context.renderContext().painter();
-  QgsScopedQPainterState painterState( painter );
+  const QgsScopedQPainterState painterState( painter );
 
   // painter is scaled to dots, so scale back to layout units
   painter->scale( context.renderContext().scaleFactor(), context.renderContext().scaleFactor() );
 
-  double penWidth = frameEnabled() ? ( pen().widthF() / 2.0 ) : 0;
-  double xPenAdjust = mMarginX < 0 ? -penWidth : penWidth;
-  double yPenAdjust = mMarginY < 0 ? -penWidth : penWidth;
-  QRectF painterRect( xPenAdjust + mMarginX, yPenAdjust + mMarginY, rect().width() - 2 * xPenAdjust - 2 * mMarginX, rect().height() - 2 * yPenAdjust - 2 * mMarginY );
+  const double penWidth = frameEnabled() ? ( pen().widthF() / 2.0 ) : 0;
+  const double xPenAdjust = mMarginX < 0 ? -penWidth : penWidth;
+  const double yPenAdjust = mMarginY < 0 ? -penWidth : penWidth;
+  const QRectF painterRect( xPenAdjust + mMarginX, yPenAdjust + mMarginY, rect().width() - 2 * xPenAdjust - 2 * mMarginX, rect().height() - 2 * yPenAdjust - 2 * mMarginY );
 
   switch ( mMode )
   {
@@ -282,21 +283,21 @@ QString QgsLayoutItemLabel::currentText() const
   QString displayText = mText;
   replaceDateText( displayText );
 
-  QgsExpressionContext context = createExpressionContext();
+  const QgsExpressionContext context = createExpressionContext();
 
   return QgsExpression::replaceExpressionText( displayText, &context, mDistanceArea.get() );
 }
 
 void QgsLayoutItemLabel::replaceDateText( QString &text ) const
 {
-  QString constant = QStringLiteral( "$CURRENT_DATE" );
-  int currentDatePos = text.indexOf( constant );
+  const QString constant = QStringLiteral( "$CURRENT_DATE" );
+  const int currentDatePos = text.indexOf( constant );
   if ( currentDatePos != -1 )
   {
     //check if there is a bracket just after $CURRENT_DATE
     QString formatText;
-    int openingBracketPos = text.indexOf( '(', currentDatePos );
-    int closingBracketPos = text.indexOf( ')', openingBracketPos + 1 );
+    const int openingBracketPos = text.indexOf( '(', currentDatePos );
+    const int closingBracketPos = text.indexOf( ')', openingBracketPos + 1 );
     if ( openingBracketPos != -1 &&
          closingBracketPos != -1 &&
          ( closingBracketPos - openingBracketPos ) > 1 &&
@@ -338,7 +339,7 @@ void QgsLayoutItemLabel::setMarginY( const double margin )
 
 void QgsLayoutItemLabel::adjustSizeToText()
 {
-  QSizeF newSize = sizeForText();
+  const QSizeF newSize = sizeForText();
 
   //keep alignment point constant
   double xShift = 0;
@@ -352,13 +353,13 @@ void QgsLayoutItemLabel::adjustSizeToText()
 
 QSizeF QgsLayoutItemLabel::sizeForText() const
 {
-  double textWidth = QgsLayoutUtils::textWidthMM( mFont, currentText() );
-  double fontHeight = QgsLayoutUtils::fontHeightMM( mFont );
+  const double textWidth = QgsLayoutUtils::textWidthMM( mFont, currentText() );
+  const double fontHeight = QgsLayoutUtils::fontHeightMM( mFont );
 
-  double penWidth = frameEnabled() ? ( pen().widthF() / 2.0 ) : 0;
+  const double penWidth = frameEnabled() ? ( pen().widthF() / 2.0 ) : 0;
 
-  double width = textWidth + 2 * mMarginX + 2 * penWidth;
-  double height = fontHeight + 2 * mMarginY + 2 * penWidth;
+  const double width = textWidth + 2 * mMarginX + 2 * penWidth;
+  const double height = fontHeight + 2 * mMarginY + 2 * penWidth;
 
   return mLayout->convertToLayoutUnits( QgsLayoutSize( width, height, QgsUnitTypes::LayoutMillimeters ) );
 }
@@ -379,7 +380,7 @@ bool QgsLayoutItemLabel::writePropertiesToElement( QDomElement &layoutLabelElem,
   layoutLabelElem.setAttribute( QStringLiteral( "valign" ), mVAlignment );
 
   //font
-  QDomElement labelFontElem = QgsFontUtils::toXmlElement( mFont, doc, QStringLiteral( "LabelFont" ) );
+  const QDomElement labelFontElem = QgsFontUtils::toXmlElement( mFont, doc, QStringLiteral( "LabelFont" ) );
   layoutLabelElem.appendChild( labelFontElem );
 
   //font color
@@ -411,7 +412,7 @@ bool QgsLayoutItemLabel::readPropertiesFromElement( const QDomElement &itemElem,
   if ( !marginXOk || !marginYOk )
   {
     //upgrade old projects where margins where stored in a single attribute
-    double margin = itemElem.attribute( QStringLiteral( "margin" ), QStringLiteral( "1.0" ) ).toDouble();
+    const double margin = itemElem.attribute( QStringLiteral( "margin" ), QStringLiteral( "1.0" ) ).toDouble();
     mMarginX = margin;
     mMarginY = margin;
   }
@@ -426,14 +427,14 @@ bool QgsLayoutItemLabel::readPropertiesFromElement( const QDomElement &itemElem,
   QgsFontUtils::setFromXmlChildNode( mFont, itemElem, QStringLiteral( "LabelFont" ) );
 
   //font color
-  QDomNodeList fontColorList = itemElem.elementsByTagName( QStringLiteral( "FontColor" ) );
+  const QDomNodeList fontColorList = itemElem.elementsByTagName( QStringLiteral( "FontColor" ) );
   if ( !fontColorList.isEmpty() )
   {
-    QDomElement fontColorElem = fontColorList.at( 0 ).toElement();
-    int red = fontColorElem.attribute( QStringLiteral( "red" ), QStringLiteral( "0" ) ).toInt();
-    int green = fontColorElem.attribute( QStringLiteral( "green" ), QStringLiteral( "0" ) ).toInt();
-    int blue = fontColorElem.attribute( QStringLiteral( "blue" ), QStringLiteral( "0" ) ).toInt();
-    int alpha = fontColorElem.attribute( QStringLiteral( "alpha" ), QStringLiteral( "255" ) ).toInt();
+    const QDomElement fontColorElem = fontColorList.at( 0 ).toElement();
+    const int red = fontColorElem.attribute( QStringLiteral( "red" ), QStringLiteral( "0" ) ).toInt();
+    const int green = fontColorElem.attribute( QStringLiteral( "green" ), QStringLiteral( "0" ) ).toInt();
+    const int blue = fontColorElem.attribute( QStringLiteral( "blue" ), QStringLiteral( "0" ) ).toInt();
+    const int alpha = fontColorElem.attribute( QStringLiteral( "alpha" ), QStringLiteral( "255" ) ).toInt();
     mFontColor = QColor( red, green, blue, alpha );
   }
   else
@@ -460,7 +461,7 @@ QString QgsLayoutItemLabel::displayName() const
     {
 
       //if no id, default to portion of label text
-      QString text = mText;
+      const QString text = mText;
       if ( text.isEmpty() )
       {
         return tr( "<Label>" );
@@ -481,7 +482,7 @@ QString QgsLayoutItemLabel::displayName() const
 QRectF QgsLayoutItemLabel::boundingRect() const
 {
   QRectF rectangle = rect();
-  double penWidth = frameEnabled() ? ( pen().widthF() / 2.0 ) : 0;
+  const double penWidth = frameEnabled() ? ( pen().widthF() / 2.0 ) : 0;
   rectangle.adjust( -penWidth, -penWidth, penWidth, penWidth );
 
   if ( mMarginX < 0 )
@@ -515,15 +516,24 @@ void QgsLayoutItemLabel::refresh()
   refreshExpressionContext();
 }
 
+void QgsLayoutItemLabel::convertToStaticText()
+{
+  const QString evaluated = currentText();
+  if ( evaluated == mText )
+    return; // no changes
+
+  setText( evaluated );
+}
+
 void QgsLayoutItemLabel::itemShiftAdjustSize( double newWidth, double newHeight, double &xShift, double &yShift ) const
 {
   //keep alignment point constant
-  double currentWidth = rect().width();
-  double currentHeight = rect().height();
+  const double currentWidth = rect().width();
+  const double currentHeight = rect().height();
   xShift = 0;
   yShift = 0;
 
-  double r = rotation();
+  const double r = rotation();
   if ( r >= 0 && r < 90 )
   {
     if ( mHAlignment == Qt::AlignHCenter )

@@ -26,6 +26,7 @@
 #include <QDomDocument>
 #include "qgis_server.h"
 #include "qgis_sip.h"
+#include "qgsserversettings.h"
 
 class QgsProject;
 
@@ -39,13 +40,13 @@ SIP_IF_MODULE( HAVE_SERVER_PYTHON_PLUGINS )
  */
 class SERVER_EXPORT QgsServerCacheManager
 {
-#ifdef SIP_RUN
+#ifdef   SIP_RUN
 #include "qgsservercachefilter.h"
 #endif
 
   public:
     //! Constructor
-    QgsServerCacheManager();
+    QgsServerCacheManager( const QgsServerSettings &settings = QgsServerSettings() );
 
     //! Copy constructor
     QgsServerCacheManager( const QgsServerCacheManager &copy );
@@ -135,9 +136,10 @@ class SERVER_EXPORT QgsServerCacheManager
     void registerServerCache( QgsServerCacheFilter *serverCache, int priority = 0 );
 
   private:
-    QString getCacheKey( bool &cache, QgsAccessControl *accessControl ) const;
+    QString getCacheKey( bool &cache, QgsAccessControl *accessControl, const QgsServerRequest &request ) const;
     //! The ServerCache plugins registry
     std::unique_ptr<QgsServerCacheFilterMap> mPluginsServerCaches = nullptr;
+    const QgsServerSettings &mSettings;
 };
 
 #endif

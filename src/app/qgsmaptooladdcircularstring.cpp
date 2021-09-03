@@ -29,7 +29,7 @@ QgsMapToolAddCircularString::QgsMapToolAddCircularString( QgsMapToolCapture *par
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
   , mParentTool( parentTool )
   , mShowCenterPointRubberBand( false )
-  , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
+  , mSnapIndicator( std::make_unique< QgsSnapIndicator>( canvas ) )
 {
   mToolName = tr( "Add circular string" );
   connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddCircularString::stopCapturing );
@@ -78,7 +78,7 @@ void QgsMapToolAddCircularString::keyPressEvent( QKeyEvent *e )
       mRubberBand->setGeometry( geomRubberBand.release() );
     }
 
-    QgsVertexId idx( 0, 0, ( mPoints.size() + 1 ) % 2 );
+    const QgsVertexId idx( 0, 0, ( mPoints.size() + 1 ) % 2 );
     if ( mTempRubberBand )
     {
       mTempRubberBand->moveVertex( idx, mPoints.last() );
@@ -143,9 +143,9 @@ void QgsMapToolAddCircularString::activate()
         if ( curve )
         {
           //mParentTool->captureCurve() is in layer coordinates, but we need map coordinates
-          QgsPoint endPointLayerCoord = curve->endPoint();
-          QgsPointXY mapPoint = toMapCoordinates( mCanvas->currentLayer(), QgsPointXY( endPointLayerCoord.x(), endPointLayerCoord.y() ) );
-          mPoints.append( QgsPoint( mapPoint ) );
+          const QgsPoint endPointLayerCoord = curve->endPoint();
+          const QgsPoint mapPoint = toMapCoordinates( mCanvas->currentLayer(),  endPointLayerCoord );
+          mPoints.append( mapPoint );
           if ( !mTempRubberBand )
           {
             mTempRubberBand = createGeometryRubberBand( mLayerType, true );
@@ -178,8 +178,8 @@ void QgsMapToolAddCircularString::createCenterPointRubberBand()
     const QgsAbstractGeometry *rubberBandGeom = mTempRubberBand->geometry();
     if ( rubberBandGeom )
     {
-      QgsVertexId idx( 0, 0, 2 );
-      QgsPoint pt = rubberBandGeom->vertexAt( idx );
+      const QgsVertexId idx( 0, 0, 2 );
+      const QgsPoint pt = rubberBandGeom->vertexAt( idx );
       updateCenterPointRubberBand( pt );
     }
   }

@@ -22,6 +22,7 @@
 
 #include "nlohmann/json_fwd.hpp"
 #include "qgsserversettings.h"
+#include "qgsserverrequest.h"
 
 #ifndef SIP_RUN
 using namespace nlohmann;
@@ -49,9 +50,9 @@ struct QgsLandingPageUtils
   static QMap<QString, QString> projects( const QgsServerSettings &settings );
 
   /**
-   * Returns project information for a given \a projectPath and optional \a serverSettings
+   * Returns project information for a given \a projectPath, optional \a serverSettings and \a request
    */
-  static json projectInfo( const QString &projectPath, const QgsServerSettings *serverSettings = nullptr );
+  static json projectInfo( const QString &projectPath, const QgsServerSettings *serverSettings = nullptr, const QgsServerRequest &request = QgsServerRequest() );
 
   /**
    * Returns the layer tree information for the given \a project

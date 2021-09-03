@@ -322,7 +322,7 @@ namespace pal
       QString mName;
 
       //! List of feature parts
-      QLinkedList<FeaturePart *> mFeatureParts;
+      std::deque< std::unique_ptr< FeaturePart > > mFeatureParts;
 
       //! List of obstacle parts
       QList<FeaturePart *> mObstacleParts;
@@ -355,7 +355,7 @@ namespace pal
       QMutex mMutex;
 
       //! Add newly created feature part into r tree and to the list
-      void addFeaturePart( FeaturePart *fpart, const QString &labelText = QString() );
+      void addFeaturePart( std::unique_ptr< FeaturePart > fpart, const QString &labelText = QString() );
 
       //! Add newly created obstacle part into r tree and to the list
       void addObstaclePart( FeaturePart *fpart );

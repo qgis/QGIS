@@ -75,6 +75,7 @@ namespace QgsRayCastingUtils
       Ray3D &transform( const QMatrix4x4 &matrix );
       Ray3D transformed( const QMatrix4x4 &matrix ) const;
 
+      // TODO c++20 - replace with = default
       bool operator==( const Ray3D &other ) const;
       bool operator!=( const Ray3D &other ) const;
 

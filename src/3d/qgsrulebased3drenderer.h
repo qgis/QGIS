@@ -21,8 +21,8 @@
 #include "qgs3drendererregistry.h"
 #include "qgsabstractvectorlayer3drenderer.h"
 #include "qgsabstract3dsymbol.h"
-
 #include "qgsmaplayerref.h"
+#include <QUuid>
 
 class Qgs3DRenderContext;
 class QgsFeature3DHandler;
@@ -30,7 +30,7 @@ class QgsFeature3DHandler;
 
 /**
  * \ingroup 3d
- * Metadata for rule-based 3D renderer to allow creation of its instances from XML
+ * \brief Metadata for rule-based 3D renderer to allow creation of its instances from XML
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is
  * exposed to the Python bindings as a tech preview only.
@@ -49,7 +49,7 @@ class _3D_EXPORT QgsRuleBased3DRendererMetadata : public Qgs3DRendererAbstractMe
 
 /**
  * \ingroup 3d
- * Rule-based 3D renderer.
+ * \brief Rule-based 3D renderer.
  *
  * Similar to rule-based 2D renderer and rule-based labeling, it allows specification of rules for 3D symbols.
  *
@@ -68,7 +68,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRendere
 
     /**
      * \ingroup 3d
-     * \class QgsRuleBased3DRenderer::Rule
+     * \brief A child rule for a QgsRuleBased3DRenderer
      * \since QGIS 3.6
      */
     class _3D_EXPORT Rule

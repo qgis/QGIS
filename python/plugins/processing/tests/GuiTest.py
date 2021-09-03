@@ -64,6 +64,7 @@ from processing.gui.wrappers import (
     QgsProcessingParameterBoolean,
     QgsProcessingParameterCrs,
     QgsProcessingParameterDistance,
+    QgsProcessingParameterDuration,
     QgsProcessingParameterEnum,
     QgsProcessingParameterExpression,
     QgsProcessingParameterExtent,

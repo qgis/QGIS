@@ -48,6 +48,7 @@ Make sure, the master model is already loaded, so the selection will get synchro
 :param canvas: The mapCanvas. Used to identify the currently visible features.
 %End
 
+
     void setSourceModel( QgsAttributeTableModel *sourceModel );
 %Docstring
 Set the attribute table model that backs this model
@@ -56,6 +57,7 @@ Set the attribute table model that backs this model
 
 .. versionadded:: 2.0
 %End
+
 
     void setSelectedOnTop( bool selectedOnTop );
 %Docstring

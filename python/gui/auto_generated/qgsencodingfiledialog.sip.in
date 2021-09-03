@@ -11,7 +11,7 @@
 
 class QgsEncodingFileDialog: QFileDialog
 {
-%Docstring
+%Docstring(signature="appended")
 A file dialog which lets the user select the preferred encoding type for a data provider.
 %End
 
@@ -48,7 +48,7 @@ Returns ``True`` if the user clicked 'Cancel All'
 
 class QgsEncodingSelectionDialog: QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 A dialog which presents the user with a choice of file encodings.
 
 .. versionadded:: 3.0

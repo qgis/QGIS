@@ -23,7 +23,7 @@ class QgsScaleBarRenderer;
 
 /**
  * \ingroup core
- * The QgsScaleBarRendererRegistry manages registered scalebar renderers.
+ * \brief The QgsScaleBarRendererRegistry manages registered scalebar renderers.
  *
  * A reference to the QgsScaleBarRendererRegistry can be obtained from
  * QgsApplication::scalebarRendererRegistry().

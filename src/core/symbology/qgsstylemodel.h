@@ -19,7 +19,6 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsstyle.h"
-#include "qgssymbol.h"
 #include <QAbstractItemModel>
 #include <QSortFilterProxyModel>
 #include <QIcon>
@@ -33,7 +32,7 @@ class QgsSymbol;
  * \ingroup core
  * \class QgsAbstractStyleEntityIconGenerator
  *
- * An abstract base class for icon generators for a QgsStyleModel.
+ * \brief An abstract base class for icon generators for a QgsStyleModel.
  *
  * This base class allows for creation of specialized icon generators for
  * entities in a style database, and allows for deferred icon generation.
@@ -93,7 +92,7 @@ class CORE_EXPORT QgsAbstractStyleEntityIconGenerator : public QObject
  * \ingroup core
  * \class QgsStyleModel
  *
- * A QAbstractItemModel subclass for showing symbol and color ramp entities contained
+ * \brief A QAbstractItemModel subclass for showing symbol and color ramp entities contained
  * within a QgsStyle database.
  *
  * If you are creating a style model for the default application style (see QgsStyle::defaultStyle()),
@@ -205,7 +204,7 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
  * \ingroup core
  * \class QgsStyleProxyModel
  *
- * A QSortFilterProxyModel subclass for showing filtered symbol and color ramps entries from a QgsStyle database.
+ * \brief A QSortFilterProxyModel subclass for showing filtered symbol and color ramps entries from a QgsStyle database.
  *
  * \see QgsStyleModel
  *
@@ -288,38 +287,38 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     /**
      * Returns the symbol type filter.
      *
-     * \note This filter is only active if symbolTypeFilterEnabled() is TRUE, and has
+     * \note This filter is only active if Qgis::SymbolTypeFilterEnabled() is TRUE, and has
      * no effect on non-symbol entities (i.e. color ramps).
      *
      * \see setSymbolType()
      */
-    QgsSymbol::SymbolType symbolType() const;
+    Qgis::SymbolType symbolType() const;
 
     /**
      * Sets the symbol \a type filter.
      *
-     * \note This filter is only active if symbolTypeFilterEnabled() is TRUE.
+     * \note This filter is only active if Qgis::SymbolTypeFilterEnabled() is TRUE.
      *
-     * \see symbolType()
+     * \see Qgis::SymbolType()
      */
-    void setSymbolType( QgsSymbol::SymbolType type );
+    void setSymbolType( Qgis::SymbolType type );
 
     /**
      * Returns TRUE if filtering by symbol type is enabled.
      *
      * \see setSymbolTypeFilterEnabled()
-     * \see symbolType()
+     * \see Qgis::SymbolType()
      */
     bool symbolTypeFilterEnabled() const;
 
     /**
      * Sets whether filtering by symbol type is \a enabled.
      *
-     * If \a enabled is FALSE, then the value of symbolType() will have no
+     * If \a enabled is FALSE, then the value of Qgis::SymbolType() will have no
      * effect on the model filtering. This has
      * no effect on non-symbol entities (i.e. color ramps).
      *
-     * \see symbolTypeFilterEnabled()
+     * \see Qgis::SymbolTypeFilterEnabled()
      * \see setSymbolType()
      */
     void setSymbolTypeFilterEnabled( bool enabled );
@@ -435,7 +434,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     QList< QgsStyle::StyleEntity > mEntityFilters = QList< QgsStyle::StyleEntity >() << QgsStyle::SymbolEntity;
 
     bool mSymbolTypeFilterEnabled = false;
-    QgsSymbol::SymbolType mSymbolType = QgsSymbol::Marker;
+    Qgis::SymbolType mSymbolType = Qgis::SymbolType::Marker;
 
     QgsWkbTypes::GeometryType mLayerType = QgsWkbTypes::UnknownGeometry;
 

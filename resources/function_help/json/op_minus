@@ -1,6 +1,7 @@
 {
   "name": "-",
   "type": "operator",
+  "groups": ["Operators"],
   "description": "Subtraction of two values. If one of the values is NULL the result will be NULL.",
   "arguments": [
         { "arg": "a", "description": "value" },

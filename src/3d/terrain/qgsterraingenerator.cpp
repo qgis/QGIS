@@ -22,7 +22,7 @@
 QgsAABB QgsTerrainGenerator::rootChunkBbox( const Qgs3DMapSettings &map ) const
 {
   QgsRectangle te = extent();
-  QgsCoordinateTransform terrainToMapTransform( crs(), map.crs(), map.transformContext() );
+  const QgsCoordinateTransform terrainToMapTransform( crs(), map.crs(), map.transformContext() );
   te = terrainToMapTransform.transformBoundingBox( te );
 
   float hMin, hMax;
@@ -34,7 +34,7 @@ QgsAABB QgsTerrainGenerator::rootChunkBbox( const Qgs3DMapSettings &map ) const
 float QgsTerrainGenerator::rootChunkError( const Qgs3DMapSettings &map ) const
 {
   QgsRectangle te = extent();
-  QgsCoordinateTransform terrainToMapTransform( crs(), map.crs(), map.transformContext() );
+  const QgsCoordinateTransform terrainToMapTransform( crs(), map.crs(), map.transformContext() );
   te = terrainToMapTransform.transformBoundingBox( te );
 
   // use texel size as the error

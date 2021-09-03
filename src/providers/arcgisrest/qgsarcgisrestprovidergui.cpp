@@ -22,6 +22,7 @@
 #include "qgsarcgisrestsourceselect.h"
 #include "qgsarcgisrestsourcewidget.h"
 #include "qgsprovidersourcewidgetprovider.h"
+#include "qgsmaplayer.h"
 
 //! Provider for AFS layers source select
 class QgsArcGisRestSourceSelectProvider : public QgsSourceSelectProvider

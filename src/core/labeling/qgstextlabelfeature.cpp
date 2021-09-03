@@ -29,71 +29,50 @@ QgsTextLabelFeature::QgsTextLabelFeature( QgsFeatureId id, geos::unique_ptr geom
   mDefinedFont = QFont();
 }
 
-
-QgsTextLabelFeature::~QgsTextLabelFeature()
-{
-  delete mFontMetrics;
-}
-
+QgsTextLabelFeature::~QgsTextLabelFeature() = default;
 
 QString QgsTextLabelFeature::text( int partId ) const
 {
   if ( partId == -1 )
     return mLabelText;
   else
-    return mClusters.at( partId );
+    return mTextMetrics->grapheme( partId );
 }
 
 QgsTextCharacterFormat QgsTextLabelFeature::characterFormat( int partId ) const
 {
-  return mCharacterFormats.value( partId );
+  return mTextMetrics.has_value() ? mTextMetrics->graphemeFormat( partId ) : QgsTextCharacterFormat();
 }
 
 bool QgsTextLabelFeature::hasCharacterFormat( int partId ) const
 {
-  return partId < mCharacterFormats.size();
+  return mTextMetrics.has_value() && partId < mTextMetrics->graphemeFormatCount();
 }
 
-void QgsTextLabelFeature::calculateInfo( bool curvedLabeling, QFontMetricsF *fm, const QgsMapToPixel *xform, double maxinangle, double maxoutangle, QgsTextDocument *document )
+void QgsTextLabelFeature::setFontMetrics( const QFontMetricsF &metrics )
 {
-  if ( mInfo )
-    return;
+  mFontMetrics = metrics; // duplicate metrics for when drawing label
+}
 
-  mFontMetrics = new QFontMetricsF( *fm ); // duplicate metrics for when drawing label
-
-  qreal letterSpacing = mDefinedFont.letterSpacing();
-  qreal wordSpacing = mDefinedFont.wordSpacing();
-
-  // max angle between curved label characters (20.0/-20.0 was default in QGIS <= 1.8)
-  if ( maxinangle < 20.0 )
-    maxinangle = 20.0;
-  if ( 60.0 < maxinangle )
-    maxinangle = 60.0;
-  if ( maxoutangle > -20.0 )
-    maxoutangle = -20.0;
-  if ( -95.0 > maxoutangle )
-    maxoutangle = -95.0;
-
+QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const QgsMapToPixel *xform, const QFontMetricsF &fontMetrics, double letterSpacing, double wordSpacing, const QString &text, QgsTextDocument *document )
+{
   // create label info!
-  double mapScale = xform->mapUnitsPerPixel();
-  double labelHeight = mapScale * fm->height();
+  const double mapScale = xform->mapUnitsPerPixel();
+  const double characterHeight = mapScale * fontMetrics.height();
+  QStringList graphemes;
+  QVector< QgsTextCharacterFormat > graphemeFormats;
 
-  // mLetterSpacing/mWordSpacing = 0.0 is default for non-curved labels
-  // (non-curved spacings handled by Qt in QgsPalLayerSettings/QgsPalLabeling)
-  qreal charWidth;
-  qreal wordSpaceFix;
-
-  if ( document && curvedLabeling )
+  if ( document )
   {
-    for ( const QgsTextBlock &block : qgis::as_const( *document ) )
+    for ( const QgsTextBlock &block : std::as_const( *document ) )
     {
       for ( const QgsTextFragment &fragment : block )
       {
-        const QStringList graphemes = QgsPalLabeling::splitToGraphemes( fragment.text() );
-        for ( const QString &grapheme : graphemes )
+        const QStringList fragmentGraphemes = QgsPalLabeling::splitToGraphemes( fragment.text() );
+        for ( const QString &grapheme : fragmentGraphemes )
         {
-          mClusters.append( grapheme );
-          mCharacterFormats.append( fragment.characterFormat() );
+          graphemes.append( grapheme );
+          graphemeFormats.append( fragment.characterFormat() );
         }
       }
     }
@@ -101,52 +80,38 @@ void QgsTextLabelFeature::calculateInfo( bool curvedLabeling, QFontMetricsF *fm,
   else
   {
     //split string by valid grapheme boundaries - required for certain scripts (see #6883)
-    mClusters = QgsPalLabeling::splitToGraphemes( mLabelText );
+    graphemes = QgsPalLabeling::splitToGraphemes( text );
   }
 
-  mInfo = new pal::LabelInfo( mClusters.count(), labelHeight, maxinangle, maxoutangle );
-  for ( int i = 0; i < mClusters.count(); i++ )
+  QVector< double > characterWidths( graphemes.count() );
+  for ( int i = 0; i < graphemes.count(); i++ )
   {
     // reconstruct how Qt creates word spacing, then adjust per individual stored character
     // this will allow PAL to create each candidate width = character width + correct spacing
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-    charWidth = fm->width( mClusters[i] );
-#else
-    charWidth = fm->horizontalAdvance( mClusters[i] );
-#endif
-    if ( curvedLabeling )
-    {
-      wordSpaceFix = qreal( 0.0 );
-      if ( mClusters[i] == QLatin1String( " " ) )
-      {
-        // word spacing only gets added once at end of consecutive run of spaces, see QTextEngine::shapeText()
-        int nxt = i + 1;
-        wordSpaceFix = ( nxt < mClusters.count() && mClusters[nxt] != QLatin1String( " " ) ) ? wordSpacing : qreal( 0.0 );
-      }
-      // this workaround only works for clusters with a single character. Not sure how it should be handled
-      // with multi-character clusters.
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-      if ( mClusters[i].length() == 1 &&
-           !qgsDoubleNear( fm->width( QString( mClusters[i].at( 0 ) ) ), fm->width( mClusters[i].at( 0 ) ) + letterSpacing ) )
-#else
-      if ( mClusters[i].length() == 1 &&
-           !qgsDoubleNear( fm->horizontalAdvance( QString( mClusters[i].at( 0 ) ) ), fm->horizontalAdvance( mClusters[i].at( 0 ) ) + letterSpacing ) )
-#endif
-      {
-        // word spacing applied when it shouldn't be
-        wordSpaceFix -= wordSpacing;
-      }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-      charWidth = fm->width( QString( mClusters[i] ) ) + wordSpaceFix;
-#else
-      charWidth = fm->horizontalAdvance( QString( mClusters[i] ) ) + wordSpaceFix;
-#endif
+    qreal wordSpaceFix = qreal( 0.0 );
+    if ( graphemes[i] == QLatin1String( " " ) )
+    {
+      // word spacing only gets added once at end of consecutive run of spaces, see QTextEngine::shapeText()
+      int nxt = i + 1;
+      wordSpaceFix = ( nxt < graphemes.count() && graphemes[nxt] != QLatin1String( " " ) ) ? wordSpacing : qreal( 0.0 );
+    }
+    // this workaround only works for clusters with a single character. Not sure how it should be handled
+    // with multi-character clusters.
+    if ( graphemes[i].length() == 1 &&
+         !qgsDoubleNear( fontMetrics.horizontalAdvance( QString( graphemes[i].at( 0 ) ) ), fontMetrics.horizontalAdvance( graphemes[i].at( 0 ) ) + letterSpacing ) )
+    {
+      // word spacing applied when it shouldn't be
+      wordSpaceFix -= wordSpacing;
     }
 
-    double labelWidth = mapScale * charWidth;
-    mInfo->char_info[i].width = labelWidth;
+    const double charWidth = fontMetrics.horizontalAdvance( QString( graphemes[i] ) ) + wordSpaceFix;
+    characterWidths[i] = mapScale * charWidth;
   }
+
+  QgsPrecalculatedTextMetrics res( graphemes, characterHeight, std::move( characterWidths ) );
+  res.setGraphemeFormats( graphemeFormats );
+  return res;
 }
 
 QgsTextDocument QgsTextLabelFeature::document() const

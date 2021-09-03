@@ -194,7 +194,7 @@ QgsUnitTypes::RenderUnit QgsUnitSelectionWidget::unit() const
   if ( mUnitCombo->count() == 0 )
     return QgsUnitTypes::RenderUnknownUnit;
 
-  QVariant currentData = mUnitCombo->currentData();
+  const QVariant currentData = mUnitCombo->currentData();
   if ( currentData.isValid() )
   {
     return static_cast< QgsUnitTypes::RenderUnit >( currentData.toInt() );
@@ -212,7 +212,7 @@ void QgsUnitSelectionWidget::setUnit( int unitIndex )
 
 void QgsUnitSelectionWidget::setUnit( QgsUnitTypes::RenderUnit unit )
 {
-  int idx = mUnitCombo->findData( QVariant( static_cast< int >( unit ) ) );
+  const int idx = mUnitCombo->findData( QVariant( static_cast< int >( unit ) ) );
   mUnitCombo->setCurrentIndex( idx == -1 ? 0 : idx );
 }
 

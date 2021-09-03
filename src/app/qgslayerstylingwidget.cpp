@@ -60,7 +60,7 @@
 #endif
 
 
-QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBar *messageBar, const QList<QgsMapLayerConfigWidgetFactory *> &pages, QWidget *parent )
+QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBar *messageBar, const QList<const QgsMapLayerConfigWidgetFactory *> &pages, QWidget *parent )
   : QWidget( parent )
   , mNotSupportedPage( 0 )
   , mLayerPage( 1 )
@@ -107,7 +107,8 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBa
                            | QgsMapLayerProxyModel::Filter::PluginLayer
                            | QgsMapLayerProxyModel::Filter::MeshLayer
                            | QgsMapLayerProxyModel::Filter::VectorTileLayer
-                           | QgsMapLayerProxyModel::Filter::PointCloudLayer );
+                           | QgsMapLayerProxyModel::Filter::PointCloudLayer
+                           | QgsMapLayerProxyModel::Filter::AnnotationLayer );
 
   mStackedWidget->setCurrentIndex( 0 );
 }
@@ -117,7 +118,7 @@ QgsLayerStylingWidget::~QgsLayerStylingWidget()
   delete mStyleManagerFactory;
 }
 
-void QgsLayerStylingWidget::setPageFactories( const QList<QgsMapLayerConfigWidgetFactory *> &factories )
+void QgsLayerStylingWidget::setPageFactories( const QList<const QgsMapLayerConfigWidgetFactory *> &factories )
 {
   mPageFactories = factories;
   // Always append the style manager factory at the bottom of the list
@@ -259,7 +260,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       break;
   }
 
-  for ( QgsMapLayerConfigWidgetFactory *factory : qgis::as_const( mPageFactories ) )
+  for ( const QgsMapLayerConfigWidgetFactory *factory : std::as_const( mPageFactories ) )
   {
     if ( factory->supportsStyleDock() && factory->supportsLayer( layer ) )
     {
@@ -566,6 +567,12 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
           {
             QgsRasterTransparencyWidget *transwidget = new QgsRasterTransparencyWidget( rlayer, mMapCanvas, mWidgetStack );
             transwidget->setDockMode( true );
+
+            QgsSymbolWidgetContext context;
+            context.setMapCanvas( mMapCanvas );
+            context.setMessageBar( mMessageBar );
+            transwidget->setContext( context );
+
             connect( transwidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
             mWidgetStack->setMainPanel( transwidget );
             break;

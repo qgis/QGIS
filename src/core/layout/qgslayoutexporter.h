@@ -34,6 +34,7 @@ class QPainter;
 class QgsLayoutItemMap;
 class QgsAbstractLayoutIterator;
 class QgsFeedback;
+class QgsLabelingResults;
 
 /**
  * \ingroup core
@@ -67,7 +68,7 @@ class CORE_EXPORT QgsLayoutExporter
      */
     QgsLayoutExporter( QgsLayout *layout );
 
-    virtual ~QgsLayoutExporter() = default;
+    virtual ~QgsLayoutExporter();
 
     /**
      * Returns the layout linked to this exporter.
@@ -593,6 +594,29 @@ class CORE_EXPORT QgsLayoutExporter
     QString errorFile() const { return mErrorFileName; }
 
     /**
+     * Returns the labeling results for all map items included in the export. Map keys are the item UUIDs (see QgsLayoutItem::uuid()).
+     *
+     * Ownership of the results remains with the layout exporter.
+     *
+     * \since QGIS 3.20
+     */
+    QMap< QString, QgsLabelingResults * > labelingResults();
+
+#ifndef SIP_RUN
+
+    /**
+     * Takes the labeling results for all map items included in the export. Map keys are the item UUIDs (see QgsLayoutItem::uuid()).
+     *
+     * Ownership of the results is transferred to the caller.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 3.20
+     */
+    QMap< QString, QgsLabelingResults * > takeLabelingResults();
+#endif
+
+    /**
      * Georeferences a \a file (image of PDF) exported from the layout.
      *
      * The \a referenceMap argument specifies a map item to use for georeferencing. If left as NULLPTR, the
@@ -625,6 +649,25 @@ class CORE_EXPORT QgsLayoutExporter
      */
     void computeWorldFileParameters( const QRectF &region, double &a, double &b, double &c, double &d, double &e, double &f, double dpi = -1 ) const;
 
+    /**
+     * Returns TRUE if the specified \a layout contains visible items which have settings
+     * that require rasterization of the entire export layout in order to reproduce the desired
+     * appearance.
+     *
+     * \see containsAdvancedEffects()
+     * \since QGIS 3.20
+     */
+    static bool requiresRasterization( const QgsLayout *layout );
+
+    /**
+     * Returns TRUE if the specified \a layout contains visible items which have settings
+     * such as opacity which will prevent these individual items from being exported as vector artwork.
+     *
+     * \see requiresRasterization()
+     * \since QGIS 3.20
+     */
+    static bool containsAdvancedEffects( const QgsLayout *layout );
+
   protected:
 
     /**
@@ -637,6 +680,9 @@ class CORE_EXPORT QgsLayoutExporter
   private:
 
     QPointer< QgsLayout > mLayout;
+
+    void captureLabelingResults();
+    QMap< QString, QgsLabelingResults * > mLabelingResults;
 
     mutable QString mErrorFileName;
 

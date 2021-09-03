@@ -18,7 +18,7 @@
 
 #include <QWidget>
 
-#include "qgsmaptooledit.h"
+#include "qgsmaptooladvanceddigitizing.h"
 #include "qgsvertexmarker.h"
 #include "qgis_app.h"
 #include "qgsgeometry.h"
@@ -27,6 +27,7 @@
 class QgsDoubleSpinBox;
 class QHBoxLayout;
 class QgsSpinBox;
+class QgsSnapIndicator;
 
 class APP_EXPORT QgsAngleMagnetWidget : public QWidget
 {
@@ -65,16 +66,16 @@ class APP_EXPORT QgsAngleMagnetWidget : public QWidget
 
 
 //! Map tool to rotate features
-class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolEdit
+class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolAdvancedDigitizing
 {
     Q_OBJECT
   public:
     QgsMapToolRotateFeature( QgsMapCanvas *canvas );
     ~QgsMapToolRotateFeature() override;
 
-    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
 
-    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
     //! called when map tool is being deactivated
     void deactivate() override;
@@ -98,14 +99,17 @@ class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolEdit
     void createRotationWidget();
     void deleteRotationWidget();
 
-    //! Start point of the move in map coordinates
+    //! Start point of the rotation in map coordinates
     QgsPointXY mStartPointMapCoords;
-    QPointF mInitialPos;
+    QgsPointXY mInitialPos;
 
-    //! Rubberband that shows the feature being moved
+    //! Rubberband that shows the feature being rotated
     QgsRubberBand *mRubberBand = nullptr;
 
-    //! Id of moved feature
+    //! Snapping indicators
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
+
+    //! Id of rotated feature
     QgsFeatureIds mRotatedFeatures;
     double mRotation = 0;
     double mRotationOffset = 0;

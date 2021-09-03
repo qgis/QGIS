@@ -48,7 +48,7 @@ QString QgsMultiCurve::geometryType() const
 
 QgsMultiCurve *QgsMultiCurve::createEmptyWithSameType() const
 {
-  auto result = qgis::make_unique< QgsMultiCurve >();
+  auto result = std::make_unique< QgsMultiCurve >();
   result->mWkbType = mWkbType;
   return result.release();
 }
@@ -124,7 +124,7 @@ QDomElement QgsMultiCurve::asGml3( QDomDocument &doc, int precision, const QStri
 json QgsMultiCurve::asJsonObject( int precision ) const
 {
   json coordinates( json::array( ) );
-  for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
+  for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
     if ( qgsgeometry_cast<const QgsCurve *>( geom ) )
     {

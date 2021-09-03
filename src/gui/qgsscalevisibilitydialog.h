@@ -27,7 +27,7 @@ class QgsScaleRangeWidget;
 /**
  * \ingroup gui
  * \class QgsScaleVisibilityDialog
- * A dialog allowing users to enter a scale visibility range.
+ * \brief A dialog allowing users to enter a scale visibility range.
  */
 class GUI_EXPORT QgsScaleVisibilityDialog : public QDialog
 {

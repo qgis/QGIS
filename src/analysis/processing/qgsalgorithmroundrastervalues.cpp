@@ -52,7 +52,7 @@ void QgsRoundRasterValuesAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "ROUNDING_DIRECTION" ), QObject::tr( "Rounding direction" ), QStringList() << QObject::tr( "Round up" ) << QObject::tr( "Round to nearest" ) << QObject::tr( "Round down" ), false, 1 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "DECIMAL_PLACES" ), QObject::tr( "Number of decimals places" ), QgsProcessingParameterNumber::Integer, 2 ) );
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output raster" ) ) );
-  std::unique_ptr< QgsProcessingParameterDefinition > baseParameter = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "BASE_N" ), QObject::tr( "Base n for rounding to multiples of n" ), QgsProcessingParameterNumber::Integer, 10, true, 1 );
+  std::unique_ptr< QgsProcessingParameterDefinition > baseParameter = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "BASE_N" ), QObject::tr( "Base n for rounding to multiples of n" ), QgsProcessingParameterNumber::Integer, 10, true, 1 );
   baseParameter->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( baseParameter.release() );
 }
@@ -97,11 +97,11 @@ bool QgsRoundRasterValuesAlgorithm::prepareAlgorithm( const QVariantMap &paramet
 
   switch ( mDataType )
   {
-    case Qgis::Byte:
-    case Qgis::Int16:
-    case Qgis::UInt16:
-    case Qgis::Int32:
-    case Qgis::UInt32:
+    case Qgis::DataType::Byte:
+    case Qgis::DataType::Int16:
+    case Qgis::DataType::UInt16:
+    case Qgis::DataType::Int32:
+    case Qgis::DataType::UInt32:
       mIsInteger = true;
       if ( mDecimalPrecision > -1 )
         feedback->reportError( QObject::tr( "Input raster is of byte or integer type. The cell values cannot be rounded and will be output using the same data type." ), false );
@@ -125,9 +125,9 @@ QVariantMap QgsRoundRasterValuesAlgorithm::processAlgorithm( const QVariantMap &
 {
   //prepare output dataset
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  QFileInfo fi( outputFile );
+  const QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
-  std::unique_ptr< QgsRasterFileWriter > writer = qgis::make_unique< QgsRasterFileWriter >( outputFile );
+  std::unique_ptr< QgsRasterFileWriter > writer = std::make_unique< QgsRasterFileWriter >( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
   writer->setOutputFormat( outputFormat );
   std::unique_ptr<QgsRasterDataProvider > provider( writer->createOneBandRaster( mInterface->dataType( mBand ), mNbCellsXProvider, mNbCellsYProvider, mExtent, mCrs ) );
@@ -142,11 +142,11 @@ QVariantMap QgsRoundRasterValuesAlgorithm::processAlgorithm( const QVariantMap &
   destinationRasterProvider->setEditable( true );
   destinationRasterProvider->setNoDataValue( 1, mInputNoDataValue );
 
-  int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-  int nbBlocksWidth = static_cast< int >( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
-  int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
-  int nbBlocks = nbBlocksWidth * nbBlocksHeight;
+  const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
+  const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
+  const int nbBlocksWidth = static_cast< int >( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
+  const int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
+  const int nbBlocks = nbBlocksWidth * nbBlocksHeight;
 
   QgsRasterIterator iter( mInterface.get() );
   iter.startRasterRead( mBand, mLayerWidth, mLayerHeight, mExtent );
@@ -174,7 +174,7 @@ QVariantMap QgsRoundRasterValuesAlgorithm::processAlgorithm( const QVariantMap &
         for ( int column = 0; column < iterCols; column++ )
         {
           bool isNoData = false;
-          double val = analysisRasterBlock->valueAndNoData( row, column, isNoData );
+          const double val = analysisRasterBlock->valueAndNoData( row, column, isNoData );
           if ( isNoData )
           {
             analysisRasterBlock->setValue( row, column, mInputNoDataValue );
@@ -188,7 +188,7 @@ QVariantMap QgsRoundRasterValuesAlgorithm::processAlgorithm( const QVariantMap &
             }
             else if ( mRoundingDirection == 0 && mDecimalPrecision > -1 )
             {
-              double m = ( val < 0.0 ) ? -1.0 : 1.0;
+              const double m = ( val < 0.0 ) ? -1.0 : 1.0;
               roundedVal = roundUp( val, m );
             }
             else if ( mRoundingDirection == 1 && mDecimalPrecision < 0 )
@@ -197,7 +197,7 @@ QVariantMap QgsRoundRasterValuesAlgorithm::processAlgorithm( const QVariantMap &
             }
             else if ( mRoundingDirection == 1 && mDecimalPrecision > -1 )
             {
-              double m = ( val < 0.0 ) ? -1.0 : 1.0;
+              const double m = ( val < 0.0 ) ? -1.0 : 1.0;
               roundedVal = roundNearest( val, m );
             }
             else if ( mRoundingDirection == 2 && mDecimalPrecision < 0 )
@@ -206,7 +206,7 @@ QVariantMap QgsRoundRasterValuesAlgorithm::processAlgorithm( const QVariantMap &
             }
             else
             {
-              double m = ( val < 0.0 ) ? -1.0 : 1.0;
+              const double m = ( val < 0.0 ) ? -1.0 : 1.0;
               roundedVal = roundDown( val,  m );
             }
             //integer values get automatically cast to double when reading and back to int when writing

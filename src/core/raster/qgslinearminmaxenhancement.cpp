@@ -24,7 +24,7 @@ QgsLinearMinMaxEnhancement::QgsLinearMinMaxEnhancement( Qgis::DataType qgsRaster
 
 int QgsLinearMinMaxEnhancement::enhance( double value )
 {
-  int myStretchedValue = static_cast<int>( ( ( value - mMinimumValue ) / ( mMinimumMaximumRange ) ) * 255.0 );
+  const int myStretchedValue = static_cast<int>( ( ( value - mMinimumValue ) / ( mMinimumMaximumRange ) ) * 255.0 );
   if ( myStretchedValue < 0 )
   {
     return 0;

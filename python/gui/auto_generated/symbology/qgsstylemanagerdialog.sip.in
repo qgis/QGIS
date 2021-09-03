@@ -13,7 +13,7 @@
 
 class QgsStyleManagerDialog : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 
 A dialog allowing users to customize and populate a :py:class:`QgsStyle`.
 %End

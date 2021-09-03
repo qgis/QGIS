@@ -191,10 +191,10 @@ void QgsRasterTransparency::readXml( const QDomElement &elem )
   mTransparentThreeValuePixelList.clear();
   QDomElement currentEntryElem;
 
-  QDomElement singlePixelListElem = elem.firstChildElement( QStringLiteral( "singleValuePixelList" ) );
+  const QDomElement singlePixelListElem = elem.firstChildElement( QStringLiteral( "singleValuePixelList" ) );
   if ( !singlePixelListElem.isNull() )
   {
-    QDomNodeList entryList = singlePixelListElem.elementsByTagName( QStringLiteral( "pixelListEntry" ) );
+    const QDomNodeList entryList = singlePixelListElem.elementsByTagName( QStringLiteral( "pixelListEntry" ) );
     TransparentSingleValuePixel sp;
     for ( int i = 0; i < entryList.size(); ++i )
     {
@@ -213,10 +213,10 @@ void QgsRasterTransparency::readXml( const QDomElement &elem )
       mTransparentSingleValuePixelList.append( sp );
     }
   }
-  QDomElement threeValuePixelListElem = elem.firstChildElement( QStringLiteral( "threeValuePixelList" ) );
+  const QDomElement threeValuePixelListElem = elem.firstChildElement( QStringLiteral( "threeValuePixelList" ) );
   if ( !threeValuePixelListElem.isNull() )
   {
-    QDomNodeList entryList = threeValuePixelListElem.elementsByTagName( QStringLiteral( "pixelListEntry" ) );
+    const QDomNodeList entryList = threeValuePixelListElem.elementsByTagName( QStringLiteral( "pixelListEntry" ) );
     TransparentThreeValuePixel tp;
     for ( int i = 0; i < entryList.size(); ++i )
     {

@@ -204,7 +204,7 @@ bool QgsMapLayerStyleManager::setOverrideStyle( const QString &styleDef )
     mOverriddenOriginalStyle->readFromLayer( mLayer );
 
     // apply style XML
-    QgsMapLayerStyle overrideStyle( styleDef );
+    const QgsMapLayerStyle overrideStyle( styleDef );
     overrideStyle.writeToLayer( mLayer );
   }
   mLayer->blockSignals( false );

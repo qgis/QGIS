@@ -11,7 +11,7 @@
 
 class QgsPropertyDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 Definition for a property.
 
 :py:class:`QgsPropertyDefinition` defines the type of values allowed for a property, and
@@ -170,7 +170,7 @@ override assistants.
 
 class QgsProperty
 {
-%Docstring
+%Docstring(signature="appended")
 A store for object properties.
 
 :py:class:`QgsProperty` objects are used for storing properties for objects, which can then be transformed to
@@ -194,6 +194,23 @@ can be grouped using a :py:class:`QgsPropertyCollection` for easier bulk storage
       FieldBasedProperty,
       ExpressionBasedProperty,
     };
+
+    static QVariantMap propertyMapToVariantMap( const QMap<QString, QgsProperty> &propertyMap );
+%Docstring
+Convert a map of QgsProperty to a map of QVariant
+This is useful to save a map of properties
+
+.. versionadded:: 3.20
+%End
+
+    static QMap<QString, QgsProperty> variantMapToPropertyMap( const QVariantMap &variantMap );
+%Docstring
+Convert a map of QVariant to a map of QgsProperty
+This is useful to restore a map of properties.
+The properties are created using QgsProperty.loadVariant
+
+.. versionadded:: 3.20
+%End
 
     QgsProperty();
 %Docstring

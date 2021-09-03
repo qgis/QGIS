@@ -11,7 +11,7 @@
 
 class QgsScaleVisibilityDialog : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 A dialog allowing users to enter a scale visibility range.
 %End
 

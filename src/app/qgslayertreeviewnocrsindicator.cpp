@@ -42,7 +42,7 @@ void QgsLayerTreeViewNoCrsIndicatorProvider::onIndicatorClicked( const QModelInd
   selector.showNoCrsForLayerMessage();
   if ( selector.exec() )
   {
-    QgsCoordinateReferenceSystem crs = selector.crs();
+    const QgsCoordinateReferenceSystem crs = selector.crs();
     layer->setCrs( selector.crs() );
     layer->triggerRepaint();
     updateLayerIndicator( layer );

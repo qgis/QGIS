@@ -20,6 +20,9 @@
 #include "ui_qgsrastertransparencywidget.h"
 
 #include "qgsmaplayerconfigwidget.h"
+#include "qgsrasterpipe.h"
+#include "qgssymbolwidgetcontext.h"
+
 #include "qgis_gui.h"
 
 class QgsRasterLayer;
@@ -28,12 +31,11 @@ class QgsMapCanvas;
 class QgsMapToolEmitPoint;
 class QgsPointXY;
 
-
 /**
  * \ingroup gui
  * \brief Widget to control a layers transparency and related options
  */
-class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, private Ui::QgsRasterTransparencyWidget
+class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, private QgsExpressionContextGenerator, private Ui::QgsRasterTransparencyWidget
 {
     Q_OBJECT
   public:
@@ -43,19 +45,71 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
      */
     QgsRasterTransparencyWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
+    /**
+     * Sets the \a context in which the dialog is shown, e.g., the associated map canvas and expression contexts.
+     * \since QGIS 3.22
+     */
+    void setContext( const QgsSymbolWidgetContext &context );
+
+    QgsExpressionContext createExpressionContext() const override;
+
   public slots:
+
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#endif
 
     /**
      * Sync the widget state to the layer set for the widget.
      */
     void syncToLayer();
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 
     /**
      * Apply any changes on the widget to the set layer.
      */
     void apply() override;
 
+  protected:
+
+#ifndef SIP_RUN
+
+    // TODO -- consider moving these to a common raster widget base class
+
+    /**
+     * Registers a property override button, setting up its initial value, connections and description.
+     * \param button button to register
+     * \param key corresponding data defined property key
+     * \note Not available in Python bindings
+     * \since QGIS 3.22
+     */
+    void initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsRasterPipe::Property key );
+
+    /**
+     * Updates all property override buttons to reflect the widgets's current properties.
+     * \note Not available in Python bindings
+     * \since QGIS 3.22
+     */
+    void updateDataDefinedButtons();
+
+    /**
+     * Updates a specific property override \a button to reflect the widgets's current properties.
+     * \note Not available in Python bindings
+     * \since QGIS 3.22
+     */
+    void updateDataDefinedButton( QgsPropertyOverrideButton *button );
+
+    //! Temporary property collection
+    QgsPropertyCollection mPropertyCollection;
+
+#endif
+
   private slots:
+
+    void updateProperty();
 
     void pixelSelected( const QgsPointXY &canvasPoint );
 
@@ -105,5 +159,8 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
     QgsMapToolEmitPoint *mPixelSelectorTool = nullptr;
 
     QVector<bool> mTransparencyToEdited;
+
+    //! Context in which widget is shown
+    QgsSymbolWidgetContext mContext;
 };
 #endif // QGSRASTERTRANSPARENCYWIDGET_H

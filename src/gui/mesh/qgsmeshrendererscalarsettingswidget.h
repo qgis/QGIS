@@ -62,12 +62,11 @@ class QgsMeshRendererScalarSettingsWidget : public QWidget, private Ui::QgsMeshR
 
   private slots:
     void minMaxChanged();
-    void minMaxEdited();
     void recalculateMinMaxButtonClicked();
     void onEdgeStrokeWidthMethodChanged();
 
   private:
-    double lineEditValue( const QLineEdit *lineEdit ) const;
+    double spinBoxValue( const QgsDoubleSpinBox *spinBox ) const;
     QgsMeshRendererScalarSettings::DataResamplingMethod dataIntepolationMethod() const;
 
     bool dataIsDefinedOnFaces() const;

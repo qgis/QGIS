@@ -47,7 +47,7 @@ QString QgsMultiLineString::geometryType() const
 
 QgsMultiLineString *QgsMultiLineString::createEmptyWithSameType() const
 {
-  auto result = qgis::make_unique< QgsMultiLineString >();
+  auto result = std::make_unique< QgsMultiLineString >();
   result->mWkbType = mWkbType;
   return result.release();
 }

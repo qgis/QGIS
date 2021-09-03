@@ -31,7 +31,9 @@ from qgis.core import (QgsMapSettings,
                        QgsRenderContext,
                        QgsAnnotationPointTextItem,
                        QgsRectangle,
-                       QgsTextFormat
+                       QgsTextFormat,
+                       QgsAnnotationItemNode,
+                       Qgis
                        )
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -78,6 +80,13 @@ class TestQgsAnnotationPointTextItem(unittest.TestCase):
         self.assertEqual(item.alignment(), Qt.AlignRight)
         self.assertEqual(item.zIndex(), 11)
         self.assertEqual(item.format().size(), 37)
+
+    def test_nodes(self):
+        """
+        Test nodes for item
+        """
+        item = QgsAnnotationPointTextItem('my text', QgsPointXY(12, 13))
+        self.assertEqual(item.nodes(), [QgsAnnotationItemNode(QgsPointXY(12, 13), Qgis.AnnotationItemNodeType.VertexHandle)])
 
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")

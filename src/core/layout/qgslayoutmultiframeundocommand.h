@@ -30,7 +30,7 @@ SIP_NO_FILE
 
 /**
  * \ingroup core
- * An undo command subclass for layout multiframe undo commands.
+ * \brief An undo command subclass for layout multiframe undo commands.
  *
  * QgsLayoutMultiFrameUndoCommand is a specific layout undo command which is
  * designed for use with QgsLayoutMultiFrames. It automatically handles
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsLayoutMultiFrameUndoCommand: public QgsAbstractLayoutUndoCo
 
 /**
  * \ingroup core
- * An undo command subclass for layout multiframe deletion undo commands.
+ * \brief An undo command subclass for layout multiframe deletion undo commands.
  *
  * QgsLayoutMultiFrameDeleteUndoCommand is a specific layout undo command which handles
  * layout multiframe deletion. When applied (e.g. as a result of a 'redo' action),
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsLayoutMultiFrameDeleteUndoCommand: public QgsLayoutMultiFra
 
 /**
  * \ingroup core
- * An undo command subclass for layout item addition undo commands.
+ * \brief An undo command subclass for layout item addition undo commands.
  *
  * QgsLayoutMultiFrameAddItemCommand is a specific layout undo command which handles
  * layout multiframe creation. When applied (e.g. as a result of a 'redo' action),

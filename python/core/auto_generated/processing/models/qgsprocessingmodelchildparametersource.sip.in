@@ -12,7 +12,7 @@
 
 class QgsProcessingModelChildParameterSource
 {
-%Docstring
+%Docstring(signature="appended")
 Source for the value of a parameter for a child algorithm within a model.
 
 .. versionadded:: 3.0
@@ -248,11 +248,18 @@ Loads this source from a QVariantMap.
 .. seealso:: :py:func:`toVariant`
 %End
 
-    QString asPythonCode( QgsProcessing::PythonOutputType outputType, const QgsProcessingParameterDefinition *definition, const QMap< QString, QString > &friendlydChildNames ) const;
+    QString asPythonCode( QgsProcessing::PythonOutputType outputType, const QgsProcessingParameterDefinition *definition, const QMap< QString, QString > &friendlyChildNames ) const;
 %Docstring
 Attempts to convert the source to executable Python code.
 
 The ``friendlyChildNames`` argument gives a map of child id to a friendly algorithm name, to be used in the code to identify that algorithm instead of the raw child id.
+%End
+
+    QString asPythonComment( const QgsProcessingParameterDefinition *definition ) const;
+%Docstring
+Returns an explanatory Python comment for the source, or an empty string if no comment is available.
+
+.. versionadded:: 3.20
 %End
 
     QString friendlyIdentifier( QgsProcessingModelAlgorithm *model ) const;

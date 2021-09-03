@@ -18,6 +18,7 @@
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingutils.h"
 #include "qgsproviderregistry.h"
+#include "qgsmaplayerlistutils.h"
 #include "qgssettings.h"
 
 QgsProcessingContext::QgsProcessingContext()
@@ -128,6 +129,16 @@ QgsMapLayer *QgsProcessingContext::takeResultLayer( const QString &id )
   return tempLayerStore.takeMapLayer( tempLayerStore.mapLayer( id ) );
 }
 
+QgsProcessingContext::LogLevel QgsProcessingContext::logLevel() const
+{
+  return mLogLevel;
+}
+
+void QgsProcessingContext::setLogLevel( LogLevel level )
+{
+  mLogLevel = level;
+}
+
 QgsDateTimeRange QgsProcessingContext::currentTimeRange() const
 {
   return mCurrentTimeRange;
@@ -186,7 +197,7 @@ void QgsProcessingContext::LayerDetails::setOutputLayerName( QgsMapLayer *layer 
   if ( !layer )
     return;
 
-  const bool preferFilenameAsLayerName = QgsSettings().value( QStringLiteral( "Processing/Configuration/PREFER_FILENAME_AS_LAYER_NAME" ), true ).toBool();
+  const bool preferFilenameAsLayerName = QgsProcessing::settingsPreferFilenameAsLayerName.value();
 
   // note - for temporary layers, we don't use the filename, regardless of user setting (it will be meaningless!)
   if ( ( !forceName && preferFilenameAsLayerName && !layer->isTemporary() ) || name.isEmpty() )

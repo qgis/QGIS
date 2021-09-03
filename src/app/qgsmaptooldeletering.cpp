@@ -78,9 +78,9 @@ void QgsMapToolDeleteRing::canvasPressEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  QgsPointXY p = toLayerCoordinates( vlayer, e->pos() );
+  const QgsPointXY p = toLayerCoordinates( vlayer, e->pos() );
 
-  QgsGeometry ringGeom = ringUnderPoint( p, mPressedFid, mPressedPartNum, mPressedRingNum );
+  const QgsGeometry ringGeom = ringUnderPoint( p, mPressedFid, mPressedPartNum, mPressedRingNum );
 
   if ( mPressedFid != -1 )
   {
@@ -177,7 +177,7 @@ void QgsMapToolDeleteRing::deleteRing( QgsFeatureId fId, int beforeVertexNr, Qgs
   vlayer->getFeatures( QgsFeatureRequest().setFilterFid( fId ) ).nextFeature( f );
 
   const QgsGeometry g = f.geometry();
-  QgsWkbTypes::Type wkbtype = g.wkbType();
+  const QgsWkbTypes::Type wkbtype = g.wkbType();
   int ringNum, partNum = 0;
 
   if ( QgsWkbTypes::geometryType( wkbtype ) != QgsWkbTypes::PolygonGeometry )

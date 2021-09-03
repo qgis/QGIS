@@ -127,7 +127,7 @@ BuildRequires:  qt5-qt3d-devel
 
 # In F30+ qt5-qtbase-devel has been split
 # in qt5-qtbase-devel and qt5-qtbase-private-devel
-# qt5-qtbase-private-devel is needed by 
+# qt5-qtbase-private-devel is needed by
 # external/qspatialite/qsql_spatialite.cpp:49:10
 %if 0%{?fedora} >= 30
 BuildRequires:  qt5-qtbase-private-devel
@@ -311,9 +311,9 @@ rm -f %{buildroot}%{_datadir}/%{name}/doc/INSTALL*
 %{_datadir}/%{name}/resources/
 %{_datadir}/%{name}/svg/
 %exclude %{_libdir}/libqgisgrass*.so.*
-%exclude %{_libdir}/%{name}/plugins/libgrassprovider*.so
-%exclude %{_libdir}/%{name}/plugins/libgrassrasterprovider*.so
 %exclude %{_libdir}/%{name}/plugins/libgrassplugin*.so
+%exclude %{_libdir}/%{name}/plugins/libprovider_grassraster*.so
+%exclude %{_libdir}/%{name}/plugins/libprovider_grass*.so
 %exclude %{_libdir}/%{name}/server/
 %exclude %{_libdir}/%{name}/grass/
 
@@ -325,9 +325,9 @@ rm -f %{buildroot}%{_datadir}/%{name}/doc/INSTALL*
 
 %files grass
 %{_libdir}/lib%{name}grass*.so.*
-%{_libdir}/%{name}/plugins/libgrassprovider*.so
-%{_libdir}/%{name}/plugins/libgrassrasterprovider*.so
 %{_libdir}/%{name}/plugins/libgrassplugin*.so
+%{_libdir}/%{name}/plugins/libprovider_grassraster*.so
+%{_libdir}/%{name}/plugins/libprovider_grass*.so
 %{_libdir}/%{name}/grass/
 %{_datadir}/%{name}/grass/
 

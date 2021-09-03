@@ -19,6 +19,7 @@ email                : jef at norbit dot de
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include <QThread>
+
 #include "qgsgeometry.h"
 
 /**
@@ -34,7 +35,7 @@ class CORE_EXPORT QgsGeometryValidator : public QThread
     /**
      * Constructor for QgsGeometryValidator.
      */
-    QgsGeometryValidator( const QgsGeometry &geometry, QVector<QgsGeometry::Error> *errors = nullptr, QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal );
+    QgsGeometryValidator( const QgsGeometry &geometry, QVector<QgsGeometry::Error> *errors = nullptr, Qgis::GeometryValidationEngine method = Qgis::GeometryValidationEngine::QgisInternal );
     ~QgsGeometryValidator() override;
 
     void run() override;
@@ -44,7 +45,7 @@ class CORE_EXPORT QgsGeometryValidator : public QThread
      * Validate geometry and produce a list of geometry errors.
      * This method blocks the thread until the validation is finished.
      */
-    static void validateGeometry( const QgsGeometry &geometry, QVector<QgsGeometry::Error> &errors SIP_OUT, QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal );
+    static void validateGeometry( const QgsGeometry &geometry, QVector<QgsGeometry::Error> &errors SIP_OUT, Qgis::GeometryValidationEngine method = Qgis::GeometryValidationEngine::QgisInternal );
 
   signals:
 
@@ -82,7 +83,7 @@ class CORE_EXPORT QgsGeometryValidator : public QThread
     QVector<QgsGeometry::Error> *mErrors;
     bool mStop;
     int mErrorCount;
-    QgsGeometry::ValidationMethod mMethod = QgsGeometry::ValidatorQgisInternal;
+    Qgis::GeometryValidationEngine mMethod = Qgis::GeometryValidationEngine::QgisInternal;
 };
 
 #endif

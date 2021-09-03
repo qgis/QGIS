@@ -22,6 +22,8 @@
 #include "qgis_sip.h"
 #include "qgis_core.h"
 
+class QTemporaryDir;
+
 #ifndef SIP_RUN
 
 ///@cond PRIVATE
@@ -29,7 +31,7 @@
 /**
  * \ingroup core
  * \class QgsSourceCacheEntry
- * An entry for a QgsSourceCache, representing a given source's file path
+ * \brief An entry for a QgsSourceCache, representing a given source's file path
  * \since QGIS 3.16
  */
 class CORE_EXPORT QgsSourceCacheEntry : public QgsAbstractContentCacheEntry
@@ -56,7 +58,7 @@ class CORE_EXPORT QgsSourceCacheEntry : public QgsAbstractContentCacheEntry
 /**
  * \class QgsSourceCache
  * \ingroup core
- * A cache for source strings that returns a local file path containing the source content.
+ * \brief A cache for source strings that returns a local file path containing the source content.
  *
  * QgsSourceCache is not usually directly created, but rather accessed through
  * QgsApplication::sourceCache().

@@ -85,7 +85,7 @@ QgsFeatureList QgsSwapXYAlgorithm::processFeature( const QgsFeature &f, QgsProce
   QgsFeature feature = f;
   if ( feature.hasGeometry() )
   {
-    QgsGeometry geom = feature.geometry();
+    const QgsGeometry geom = feature.geometry();
     std::unique_ptr< QgsAbstractGeometry > swappedGeom( geom.constGet()->clone() );
     swappedGeom->swapXy();
     feature.setGeometry( QgsGeometry( std::move( swappedGeom ) ) );

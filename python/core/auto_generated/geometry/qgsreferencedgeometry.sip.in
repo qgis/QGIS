@@ -11,7 +11,7 @@
 
 class QgsReferencedGeometryBase
 {
-%Docstring
+%Docstring(signature="appended")
 A base class for geometry primitives which are stored with an associated reference system.
 
 :py:class:`QgsReferencedGeometryBase` classes represent some form of geometry primitive
@@ -53,7 +53,7 @@ no reference system is required.
 
 class QgsReferencedRectangle : QgsRectangle, QgsReferencedGeometryBase
 {
-%Docstring
+%Docstring(signature="appended")
 A :py:class:`QgsRectangle` with associated coordinate reference system.
 
 .. versionadded:: 3.0
@@ -91,7 +91,7 @@ Constructor for QgsReferencedRectangle.
 
 class QgsReferencedPointXY : QgsPointXY, QgsReferencedGeometryBase
 {
-%Docstring
+%Docstring(signature="appended")
 A :py:class:`QgsPointXY` with associated coordinate reference system.
 
 .. versionadded:: 3.0
@@ -129,7 +129,7 @@ Constructor for QgsReferencedPointXY.
 
 class QgsReferencedGeometry : QgsGeometry, QgsReferencedGeometryBase
 {
-%Docstring
+%Docstring(signature="appended")
 A :py:class:`QgsGeometry` with associated coordinate reference system.
 
 .. versionadded:: 3.16

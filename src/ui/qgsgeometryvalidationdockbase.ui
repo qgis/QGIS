@@ -153,6 +153,13 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mPreviousButton</tabstop>
+  <tabstop>mZoomToFeatureButton</tabstop>
+  <tabstop>mZoomToProblemButton</tabstop>
+  <tabstop>mNextButton</tabstop>
+  <tabstop>mErrorListView</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

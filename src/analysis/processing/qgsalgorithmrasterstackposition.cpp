@@ -45,7 +45,7 @@ void QgsRasterStackPositionAlgorithmBase::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "IGNORE_NODATA" ), QObject::tr( "Ignore NoData values" ), false ) );
 
-  std::unique_ptr< QgsProcessingParameterNumber > output_nodata_parameter = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "OUTPUT_NODATA_VALUE" ), QObject::tr( "Output NoData value" ), QgsProcessingParameterNumber::Double, -9999, true );
+  std::unique_ptr< QgsProcessingParameterNumber > output_nodata_parameter = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "OUTPUT_NODATA_VALUE" ), QObject::tr( "Output NoData value" ), QgsProcessingParameterNumber::Double, -9999, true );
   output_nodata_parameter->setFlags( output_nodata_parameter->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( output_nodata_parameter.release() );
 
@@ -93,7 +93,7 @@ bool QgsRasterStackPositionAlgorithmBase::prepareAlgorithm( const QVariantMap &p
       // add projector if necessary
       if ( layer->crs() != mCrs )
       {
-        input.projector = qgis::make_unique< QgsRasterProjector >();
+        input.projector = std::make_unique< QgsRasterProjector >();
         input.projector->setInput( input.sourceDataProvider.get() );
         input.projector->setCrs( layer->crs(), mCrs, context.transformContext() );
         input.interface = input.projector.get();
@@ -108,26 +108,26 @@ bool QgsRasterStackPositionAlgorithmBase::prepareAlgorithm( const QVariantMap &p
 QVariantMap QgsRasterStackPositionAlgorithmBase::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  QFileInfo fi( outputFile );
+  const QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
 
-  std::unique_ptr< QgsRasterFileWriter > writer = qgis::make_unique< QgsRasterFileWriter >( outputFile );
+  std::unique_ptr< QgsRasterFileWriter > writer = std::make_unique< QgsRasterFileWriter >( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
   writer->setOutputFormat( outputFormat );
-  std::unique_ptr<QgsRasterDataProvider > provider( writer->createOneBandRaster( Qgis::Int32, mLayerWidth, mLayerHeight, mExtent, mCrs ) );
+  std::unique_ptr<QgsRasterDataProvider > provider( writer->createOneBandRaster( Qgis::DataType::Int32, mLayerWidth, mLayerHeight, mExtent, mCrs ) );
   if ( !provider )
     throw QgsProcessingException( QObject::tr( "Could not create raster output: %1" ).arg( outputFile ) );
   if ( !provider->isValid() )
     throw QgsProcessingException( QObject::tr( "Could not create raster output %1: %2" ).arg( outputFile, provider->error().message( QgsErrorMessage::Text ) ) );
 
   provider->setNoDataValue( 1, mNoDataValue );
-  qgssize layerSize = static_cast< qgssize >( mLayerWidth ) * static_cast< qgssize >( mLayerHeight );
+  const qgssize layerSize = static_cast< qgssize >( mLayerWidth ) * static_cast< qgssize >( mLayerHeight );
 
-  int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-  int nbBlocksWidth = static_cast< int>( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
-  int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
-  int nbBlocks = nbBlocksWidth * nbBlocksHeight;
+  const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
+  const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
+  const int nbBlocksWidth = static_cast< int>( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
+  const int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
+  const int nbBlocks = nbBlocksWidth * nbBlocksHeight;
   provider->setEditable( true );
 
   QgsRasterIterator iter( provider.get() );
@@ -146,7 +146,7 @@ QVariantMap QgsRasterStackPositionAlgorithmBase::processAlgorithm( const QVarian
     {
       if ( feedback->isCanceled() )
         break; //in case some slow data sources are loaded
-      for ( int band : i.bands )
+      for ( const int band : i.bands )
       {
         if ( feedback->isCanceled() )
           break; //in case some slow data sources are loaded
@@ -167,7 +167,7 @@ QVariantMap QgsRasterStackPositionAlgorithmBase::processAlgorithm( const QVarian
 
         if ( !inputBlocks.empty() )
         {
-          int position = findPosition( inputBlocks, row, col, noDataInStack );
+          const int position = findPosition( inputBlocks, row, col, noDataInStack );
 
           if ( position == -1 || ( noDataInStack && !mIgnoreNoData ) )
           {
@@ -212,7 +212,7 @@ QString QgsRasterStackLowestPositionAlgorithm::displayName() const
 
 QString QgsRasterStackLowestPositionAlgorithm::name() const
 {
-  return QObject::tr( "lowestpositioninrasterstack" );
+  return QStringLiteral( "lowestpositioninrasterstack" );
 }
 
 QStringList QgsRasterStackLowestPositionAlgorithm::tags() const
@@ -245,7 +245,7 @@ int QgsRasterStackLowestPositionAlgorithm::findPosition( std::vector< std::uniqu
   int lowestPosition = 0;
 
   //auxiliary variables
-  int inputBlocksCount = inputBlocks.size();
+  const int inputBlocksCount = inputBlocks.size();
   int currentPosition = 0;
   int noDataCount = 0;
   double firstValue = mNoDataValue;
@@ -282,7 +282,7 @@ int QgsRasterStackLowestPositionAlgorithm::findPosition( std::vector< std::uniqu
       std::unique_ptr< QgsRasterBlock > &currentBlock = inputBlocks.at( currentPosition );
 
       bool currentValueIsNoData = false;
-      double currentValue = currentBlock->valueAndNoData( row, col, currentValueIsNoData );
+      const double currentValue = currentBlock->valueAndNoData( row, col, currentValueIsNoData );
 
       if ( !currentBlock->isValid() || currentValueIsNoData )
       {
@@ -315,7 +315,7 @@ QString QgsRasterStackHighestPositionAlgorithm::displayName() const
 
 QString QgsRasterStackHighestPositionAlgorithm::name() const
 {
-  return QObject::tr( "highestpositioninrasterstack" );
+  return QStringLiteral( "highestpositioninrasterstack" );
 }
 
 QStringList QgsRasterStackHighestPositionAlgorithm::tags() const
@@ -348,7 +348,7 @@ int QgsRasterStackHighestPositionAlgorithm::findPosition( std::vector< std::uniq
   int highestPosition = 0;
 
   //auxiliary variables
-  int inputBlocksCount = inputBlocks.size();
+  const int inputBlocksCount = inputBlocks.size();
   int currentPosition = 0;
   int noDataCount = 0;
   double firstValue = mNoDataValue;
@@ -386,7 +386,7 @@ int QgsRasterStackHighestPositionAlgorithm::findPosition( std::vector< std::uniq
       std::unique_ptr< QgsRasterBlock > &currentBlock = inputBlocks.at( currentPosition );
 
       bool currentValueIsNoData = false;
-      double currentValue = currentBlock->valueAndNoData( row, col, currentValueIsNoData );
+      const double currentValue = currentBlock->valueAndNoData( row, col, currentValueIsNoData );
 
       if ( !currentBlock->isValid() || currentValueIsNoData )
       {

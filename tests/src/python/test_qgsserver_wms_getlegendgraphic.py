@@ -1045,6 +1045,19 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         self.assertEqual(node['scaleMaxDenom'], 1000)
         self.assertEqual(node['scaleMinDenom'], 10000)
 
+    def testLegendPlaceholderIcon(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": self.testdata_path + 'test_project_legend_placeholder_image.qgs',
+            "SERVICE": "WMS",
+            "VERSION": "1.3",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "landsat",
+            "FORMAT": "image/png",
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Legend_Placeholder_Icon")
+
 
 if __name__ == '__main__':
     unittest.main()

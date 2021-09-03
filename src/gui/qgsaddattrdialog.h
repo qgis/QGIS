@@ -30,7 +30,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup gui
- * Dialog to add a source field attribute
+ * \brief Dialog to add a source field attribute
  *
  * \note This class is not a part of public API
  * \since QGIS 3.14

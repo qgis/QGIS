@@ -13,7 +13,7 @@
 
 class QgsProjectionSelectionWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget for selecting a projection.
 
 .. versionadded:: 2.7
@@ -82,6 +82,50 @@ passed, the message will be a generic
 .. versionadded:: 3.0
 %End
 
+
+    bool showAccuracyWarnings() const;
+%Docstring
+Returns ``True`` if the widget will show a warning to users when they select a CRS which has
+low accuracy.
+
+.. seealso:: :py:func:`setShowAccuracyWarnings`
+
+.. versionadded:: 3.20
+%End
+
+    void setShowAccuracyWarnings( bool show );
+%Docstring
+Sets whether the widget will ``show`` warnings to users when they select a CRS which has
+low accuracy.
+
+.. seealso:: :py:func:`showAccuracyWarnings`
+
+.. versionadded:: 3.20
+%End
+
+    void setSourceEnsemble( const QString &ensemble );
+%Docstring
+Sets the original source ``ensemble`` datum name.
+
+If set, CRS accuracy warnings will not be shown when the selected CRS in the widget has a matching
+ensemble datum, regardless of the ensemble's accuracy.
+
+.. seealso:: :py:func:`sourceEnsemble`
+
+.. versionadded:: 3.20
+%End
+
+    QString sourceEnsemble() const;
+%Docstring
+Returns the original source ensemble datum name.
+
+If set, CRS accuracy warnings will not be shown when the selected CRS in the widget has a matching
+ensemble datum, regardless of the ensemble's accuracy.
+
+.. seealso:: :py:func:`setSourceEnsemble`
+
+.. versionadded:: 3.20
+%End
 
   signals:
 

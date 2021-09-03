@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>211</width>
+    <width>318</width>
     <height>408</height>
    </rect>
   </property>
@@ -147,19 +147,19 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -168,6 +168,14 @@
    <header>qgslayoutunitscombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mLabelBoundarySpinBox</tabstop>
+  <tabstop>mLabelBoundaryUnitsCombo</tabstop>
+  <tabstop>mLabelMarginDDBtn</tabstop>
+  <tabstop>mShowPartialLabelsCheckBox</tabstop>
+  <tabstop>mBlockingItemsListView</tabstop>
+  <tabstop>mShowUnplacedCheckBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

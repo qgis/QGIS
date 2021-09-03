@@ -1,6 +1,7 @@
 {
   "name": "AND",
   "type": "operator",
+  "groups": ["Operators"],
   "description": "Returns 1 when condition a and b are true.",
   "arguments": [
         { "arg": "a", "description": "condition" },

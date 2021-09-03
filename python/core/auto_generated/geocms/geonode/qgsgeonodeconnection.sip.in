@@ -10,7 +10,7 @@
 
 class QgsGeoNodeConnection
 {
-%Docstring
+%Docstring(signature="appended")
 Encapsulates settings related to a single GeoNode connection.
 
 .. versionadded:: 3.0
@@ -68,11 +68,21 @@ Adds uri parameters relating to the settings for a WFS layer on the connection t
 .. seealso:: :py:func:`addWmsConnectionSettings`
 %End
 
+    QgsDataSourceUri &addWcsConnectionSettings( QgsDataSourceUri &uri ) const;
+%Docstring
+Adds uri parameters relating to the settings for a WCS layer on the connection to a :py:class:`QgsDataSourceUri` ``uri``.
+
+.. seealso:: :py:func:`addWmsConnectionSettings`
+
+.. versionadded:: 3.20
+%End
+
+
 };
 
 class QgsGeoNodeConnectionUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Contains various utilities for managing the known collection of
 GeoNode servers associated with a QGIS install.
 

@@ -57,7 +57,7 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
      *
      * \since QGIS 3.16
      */
-    void addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory );
+    void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
 
   protected slots:
     void optionsStackedWidget_CurrentChanged( int index ) override SIP_SKIP ;
@@ -68,8 +68,6 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
 
     //!Applies the settings made in the dialog without closing the box
     void apply();
-    //! \brief Slot to update layer display name as original is edited.
-    void updateLayerName( const QString &text );
     //! Synchronizes GUI state with associated mesh layer and trigger repaint
     void syncAndRepaint();
     //! Changes layer coordinate reference system

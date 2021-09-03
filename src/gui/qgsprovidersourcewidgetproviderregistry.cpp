@@ -39,7 +39,7 @@ void QgsProviderSourceWidgetProviderRegistry::addProvider( QgsProviderSourceWidg
 
 bool QgsProviderSourceWidgetProviderRegistry::removeProvider( QgsProviderSourceWidgetProvider *provider )
 {
-  int index = mProviders.indexOf( provider );
+  const int index = mProviders.indexOf( provider );
   if ( index >= 0 )
   {
     delete mProviders.takeAt( index );

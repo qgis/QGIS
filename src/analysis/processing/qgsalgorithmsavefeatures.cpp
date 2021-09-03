@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmsavefeatures.h"
 #include "qgsvectorfilewriter.h"
+#include <QRegularExpression>
 
 ///@cond PRIVATE
 
@@ -63,13 +64,13 @@ void QgsSaveFeaturesAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Vector features" ) ) );
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Saved features" ), QgsVectorFileWriter::fileFilterString(), QVariant(), false ) );
 
-  std::unique_ptr< QgsProcessingParameterString > param = qgis::make_unique< QgsProcessingParameterString >( QStringLiteral( "LAYER_NAME" ), QObject::tr( "Layer name" ), QVariant(), false, true );
+  std::unique_ptr< QgsProcessingParameterString > param = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "LAYER_NAME" ), QObject::tr( "Layer name" ), QVariant(), false, true );
   param->setFlags( param->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( param.release() );
-  param = qgis::make_unique< QgsProcessingParameterString >( QStringLiteral( "DATASOURCE_OPTIONS" ), QObject::tr( "GDAL dataset options (separate individual options with semicolons)" ), QVariant(), false, true );
+  param = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "DATASOURCE_OPTIONS" ), QObject::tr( "GDAL dataset options (separate individual options with semicolons)" ), QVariant(), false, true );
   param->setFlags( param->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( param.release() );
-  param = qgis::make_unique< QgsProcessingParameterString >( QStringLiteral( "LAYER_OPTIONS" ), QObject::tr( "GDAL layer options (separate individual options with semicolons)" ), QVariant(), false, true );
+  param = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "LAYER_OPTIONS" ), QObject::tr( "GDAL layer options (separate individual options with semicolons)" ), QVariant(), false, true );
   param->setFlags( param->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( param.release() );
 
@@ -88,9 +89,13 @@ QVariantMap QgsSaveFeaturesAlgorithm::processAlgorithm( const QVariantMap &param
     createOptions[QStringLiteral( "layerName" )] = layerName;
   }
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList datasourceOptions = parameterAsString( parameters, QStringLiteral( "DATASOURCE_OPTIONS" ), context ).trimmed().split( ';', QString::SkipEmptyParts );
   QStringList layerOptions = parameterAsString( parameters, QStringLiteral( "LAYER_OPTIONS" ), context ).trimmed().split( ';', QString::SkipEmptyParts );
-
+#else
+  const QStringList datasourceOptions = parameterAsString( parameters, QStringLiteral( "DATASOURCE_OPTIONS" ), context ).trimmed().split( ';', Qt::SkipEmptyParts );
+  const QStringList layerOptions = parameterAsString( parameters, QStringLiteral( "LAYER_OPTIONS" ), context ).trimmed().split( ';', Qt::SkipEmptyParts );
+#endif
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(),
@@ -98,7 +103,7 @@ QVariantMap QgsSaveFeaturesAlgorithm::processAlgorithm( const QVariantMap &param
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  double step = source->featureCount() > 0 ? 100.0 / source->featureCount() : 1;
+  const double step = source->featureCount() > 0 ? 100.0 / source->featureCount() : 1;
   long long i = 0;
 
   QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest(), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
@@ -113,16 +118,17 @@ QVariantMap QgsSaveFeaturesAlgorithm::processAlgorithm( const QVariantMap &param
 
     feedback->setProgress( i * step );
 
-    sink->addFeature( feat, QgsFeatureSink::FastInsert );
+    if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
   }
 
   QString filePath = dest;
   layerName.clear(); // value of final layer name will be extracted from the destination string
-  int separatorIndex = dest.indexOf( '|' );
+  const int separatorIndex = dest.indexOf( '|' );
   if ( separatorIndex > -1 )
   {
-    QRegularExpression layerNameRx( QStringLiteral( "\\|layername=([^\\|]*)" ) );
-    QRegularExpressionMatch match = layerNameRx.match( dest );
+    const QRegularExpression layerNameRx( QStringLiteral( "\\|layername=([^\\|]*)" ) );
+    const QRegularExpressionMatch match = layerNameRx.match( dest );
     if ( match.hasMatch() )
     {
       layerName = match.captured( 1 );

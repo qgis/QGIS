@@ -19,6 +19,9 @@
 #include "qgsvectorlayer.h"
 #include "qgsmultipoint.h"
 
+#include <QCollator>
+#include <QTextStream>
+
 ///@cond PRIVATE
 
 QString QgsPointsToPathsAlgorithm::name() const
@@ -43,7 +46,7 @@ QString QgsPointsToPathsAlgorithm::shortHelpString() const
 
 QStringList QgsPointsToPathsAlgorithm::tags() const
 {
-  return QObject::tr( "create,lines,points,connect,convert,join" ).split( ',' );
+  return QObject::tr( "create,lines,points,connect,convert,join,path" ).split( ',' );
 }
 
 QString QgsPointsToPathsAlgorithm::group() const
@@ -217,7 +220,7 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
   // Store the points in a hash with the group identifier as the key
   QHash< QVariant, QVector< QPair< QVariant, QgsPoint > > > allPoints;
 
-  QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( requiredFields, source->fields() );
+  const QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( requiredFields, source->fields() );
   QgsFeatureIterator fit = source->getFeatures( request, QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
   QgsFeature f;
   const double totalPoints = source->featureCount() > 0 ? 100.0 / source->featureCount() : 0;
@@ -242,16 +245,16 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
       const QgsAbstractGeometry *geom = f.geometry().constGet();
       if ( QgsWkbTypes::isMultiType( geom->wkbType() ) )
       {
-        QgsMultiPoint mp( *qgsgeometry_cast< const QgsMultiPoint * >( geom ) );
+        const QgsMultiPoint mp( *qgsgeometry_cast< const QgsMultiPoint * >( geom ) );
         for ( auto pit = mp.const_parts_begin(); pit != mp.const_parts_end(); ++pit )
         {
-          QgsPoint point( *qgsgeometry_cast< const QgsPoint * >( *pit ) );
+          const QgsPoint point( *qgsgeometry_cast< const QgsPoint * >( *pit ) );
           allPoints[ groupValue ] << qMakePair( orderValue, point );
         }
       }
       else
       {
-        QgsPoint point( *qgsgeometry_cast< const QgsPoint * >( geom ) );
+        const QgsPoint point( *qgsgeometry_cast< const QgsPoint * >( geom ) );
         allPoints[ groupValue ] << qMakePair( orderValue, point );
       }
     }
@@ -320,16 +323,20 @@ QVariantMap QgsPointsToPathsAlgorithm::processAlgorithm( const QVariantMap &para
     attrs.append( hit.value().last().first );
     outputFeature.setGeometry( QgsGeometry::fromPolyline( pathPoints ) );
     outputFeature.setAttributes( attrs );
-    sink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
+    if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
     if ( ! textDir.isEmpty() )
     {
       const QString filename = QDir( textDir ).filePath( hit.key().toString() + QString( ".txt" ) );
       QFile textFile( filename );
-      if ( !textFile.open( QIODevice::WriteOnly | QIODevice::Text ) )
+      if ( !textFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
         throw QgsProcessingException( QObject::tr( "Cannot open file for writing " ) + filename );
 
       QTextStream out( &textFile );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+      out.setCodec( "UTF-8" );
+#endif
       out << QString( "angle=Azimuth\n"
                       "heading=Coordinate_System\n"
                       "dist_units=Default\n"

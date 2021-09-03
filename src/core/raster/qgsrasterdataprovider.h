@@ -83,7 +83,7 @@ class CORE_EXPORT QgsImageFetcher : public QObject
 
 /**
  * \ingroup core
- * Base class for raster data providers.
+ * \brief Base class for raster data providers.
  */
 class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRasterInterface
 {
@@ -102,7 +102,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       WriteLayerMetadata = 1 << 2, //!< Provider can write layer metadata to the data store. Since QGIS 3.0. See QgsDataProvider::writeLayerMetadata()
       ProviderHintBenefitsFromResampling = 1 << 3, //!< Provider benefits from resampling and should apply user default resampling settings (since QGIS 3.10)
       ProviderHintCanPerformProviderResampling = 1 << 4, //!< Provider can perform resampling (to be opposed to post rendering resampling) (since QGIS 3.16)
-      ReloadData = 1 << 5 //!< Is able to force reload data / clear local caches. Since QGIS 3.18, see QgsDataProvider::reloadProviderData()
+      ReloadData = 1 << 5, //!< Is able to force reload data / clear local caches. Since QGIS 3.18, see QgsDataProvider::reloadProviderData()
+      DpiDependentData = 1 << 6, //! Provider's rendering is dependent on requested pixel size of the viewport (since QGIS 3.20)
     };
 
     //! Provider capabilities
@@ -309,7 +310,22 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       return nullptr;
     }
 
-    //! \brief Create pyramid overviews
+    /**
+     * Creates pyramid overviews.
+     *
+     * \param pyramidList a list of QgsRasterPyramids to create overviews for. The QgsRasterPyramid::setBuild() flag
+     * should be set to TRUE for every layer where pyramids are desired.
+     * \param resamplingMethod resampling method to use when creating the pyramids. The pyramidResamplingMethods() method
+     * can be used to retrieve a list of valid resampling methods available for specific raster data providers.
+     * \param format raster pyramid format.
+     * \param configOptions optional configuration options which are passed to the specific data provider
+     * for use during pyramid creation.
+     * \param feedback optional feedback argument for progress reports and cancellation support.
+     *
+     * \see buildPyramidList()
+     * \see hasPyramids()
+     * \see pyramidResamplingMethods()
+     */
     virtual QString buildPyramids( const QList<QgsRasterPyramid> &pyramidList,
                                    const QString &resamplingMethod = "NEAREST",
                                    QgsRaster::RasterPyramidsFormat format = QgsRaster::PyramidsGTiff,
@@ -326,16 +342,34 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /**
      * Returns the raster layers pyramid list.
-     * \param overviewList used to construct the pyramid list (optional), when empty the list is defined by the provider.
-     * A pyramid list defines the
-     * POTENTIAL pyramids that can be in a raster. To know which of the pyramid layers
-     * ACTUALLY exists you need to look at the existsFlag member in each struct stored in the
+     *
+     * This method returns a list of pyramid layers which are valid for the data provider. The returned list
+     * is a complete list of all possible layers, and includes both pyramids layers which currently exist and
+     * layers which have not yet been constructed. To know which of the pyramid layers
+     * ACTUALLY exists you need to look at the QgsRasterPyramid::getExists() member for each value in the
      * list.
+     *
+     * The returned list is suitable for passing to the buildPyramids() method. First, modify the returned list
+     * by calling `QgsRasterPyramid::setBuild( TRUE )` for every layer you want to create pyramids for, and then
+     * pass the modified list to buildPyramids().
+     *
+     * \param overviewList used to construct the pyramid list (optional), when empty the list is defined by the provider.
+     *
+     * \see buildPyramids()
+     * \see hasPyramids()
      */
-    virtual QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() ) // clazy:exclude=function-args-by-ref
+    virtual QList<QgsRasterPyramid> buildPyramidList( const QList<int> &overviewList = QList<int>() )
     { Q_UNUSED( overviewList ) return QList<QgsRasterPyramid>(); }
 
-    //! \brief Returns TRUE if raster has at least one populated histogram.
+    /**
+     * Returns TRUE if raster has at least one existing pyramid.
+     *
+     * The buildPyramidList() method can be used to retrieve additional details about potential and existing
+     * pyramid layers.
+     *
+     * \see buildPyramidList()
+     * \see buildPyramids()
+     */
     bool hasPyramids();
 
     /**
@@ -500,6 +534,48 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * for given provider
      */
     static QList<QPair<QString, QString> > pyramidResamplingMethods( const QString &providerKey );
+
+    /**
+     * Struct that stores information of the raster used in QgsVirtualRasterProvider for the calculations,
+     * this struct is  stored in the DecodedUriParameters
+     * \note used by QgsVirtualRasterProvider only
+     */
+    struct VirtualRasterInputLayers
+    {
+      QString name;
+      QString uri;
+      QString provider;
+    };
+
+    /**
+     * Struct that stores the information about the parameters that should be given to the
+     * QgsVirtualRasterProvider through the QgsRasterDataProvider::DecodedUriParameters
+     * \note used by QgsVirtualRasterProvider only
+     */
+    struct VirtualRasterParameters
+    {
+      QgsCoordinateReferenceSystem crs;
+      QgsRectangle extent;
+      int width;
+      int height;
+      QString formula;
+      QList <QgsRasterDataProvider::VirtualRasterInputLayers> rInputLayers;
+
+    };
+
+    /**
+     * Decodes the URI returning a struct with all the parameters for QgsVirtualRasterProvider class
+     * \note used by Virtual Raster Provider only
+     * \note since QGIS 3.22
+     */
+    static QgsRasterDataProvider::VirtualRasterParameters decodeVirtualRasterProviderUri( const QString &uri, bool *ok = nullptr );
+
+    /**
+     * Encodes the URI starting from the struct .
+     * \note used by Virtual Raster Provider only
+     * \note since QGIS 3.22
+     */
+    static QString encodeVirtualRasterProviderUri( const VirtualRasterParameters &parts );
 
     /**
      * Validates creation options for a specific dataset and destination format.
@@ -697,7 +773,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /**
      * Dots per inch. Extended WMS (e.g. QGIS mapserver) support DPI dependent output and therefore
-    are suited for printing. A value of -1 means it has not been set
+     * are suited for printing. A value of -1 means it has not been set
     */
     int mDpi = -1;
 

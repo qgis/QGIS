@@ -26,7 +26,7 @@ class QgsCurve;
 
 /**
  * \ingroup core
- * An annotation item which renders a line symbol along a line geometry.
+ * \brief An annotation item which renders a line symbol along a line geometry.
  *
  * \since QGIS 3.16
  */
@@ -43,6 +43,7 @@ class CORE_EXPORT QgsAnnotationLineItem : public QgsAnnotationItem
     QString type() const override;
     void render( QgsRenderContext &context, QgsFeedback *feedback ) override;
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    QList< QgsAnnotationItemNode > nodes() const override;
 
     /**
      * Creates a new linestring annotation item.

@@ -137,13 +137,13 @@ void QgsAttributeEditorContainer::loadConfiguration( const QDomElement &element,
     cc = 0;
   setColumnCount( cc );
 
-  bool isGroupBox = element.attribute( QStringLiteral( "groupBox" ) ).toInt( &ok );
+  const bool isGroupBox = element.attribute( QStringLiteral( "groupBox" ) ).toInt( &ok );
   if ( ok )
     setIsGroupBox( isGroupBox );
   else
     setIsGroupBox( mParent );
 
-  bool visibilityExpressionEnabled = element.attribute( QStringLiteral( "visibilityExpressionEnabled" ) ).toInt( &ok );
+  const bool visibilityExpressionEnabled = element.attribute( QStringLiteral( "visibilityExpressionEnabled" ) ).toInt( &ok );
   QgsOptionalExpression visibilityExpression;
   if ( ok )
   {
@@ -152,11 +152,11 @@ void QgsAttributeEditorContainer::loadConfiguration( const QDomElement &element,
   }
   setVisibilityExpression( visibilityExpression );
 
-  QDomNodeList childNodeList = element.childNodes();
+  const QDomNodeList childNodeList = element.childNodes();
 
   for ( int i = 0; i < childNodeList.size(); i++ )
   {
-    QDomElement childElem = childNodeList.at( i ).toElement();
+    const QDomElement childElem = childNodeList.at( i ).toElement();
 
     QgsAttributeEditorElement *myElem = create( childElem, layerId, fields, context, this );
     if ( myElem )

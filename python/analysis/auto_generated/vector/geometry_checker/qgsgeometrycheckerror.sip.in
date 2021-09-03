@@ -13,7 +13,7 @@
 
 class QgsGeometryCheckError
 {
-%Docstring
+%Docstring(signature="appended")
 This represents an error reported by a geometry check.
 
 .. note::

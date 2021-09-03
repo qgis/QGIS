@@ -10,7 +10,7 @@
 
 class QgsGeometryCheckContext
 {
-%Docstring
+%Docstring(signature="appended")
 Base configuration for geometry checks.
 
 .. note::

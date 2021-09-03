@@ -28,7 +28,7 @@ class QgsBasicNumericFormat;
 /**
  * \ingroup gui
  * \class QgsNumericFormatSelectorWidget
- * A widget which allows choice of numeric formats and the properties of them.
+ * \brief A widget which allows choice of numeric formats and the properties of them.
  * \since QGIS 3.12
  */
 class GUI_EXPORT QgsNumericFormatSelectorWidget : public QgsPanelWidget, private Ui::QgsNumericFormatSelectorBase

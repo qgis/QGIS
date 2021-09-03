@@ -41,7 +41,7 @@
 
 /**
  * \ingroup analysis
- * DualEdgeTriangulation is an implementation of a triangulation class based on the dual edge data structure.
+ * \brief DualEdgeTriangulation is an implementation of a triangulation class based on the dual edge data structure.
  * \note Not available in Python bindings.
  *
  * \since QGIS 3.16

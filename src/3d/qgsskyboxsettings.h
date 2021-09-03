@@ -28,7 +28,8 @@ class QDomElement;
 #define SIP_NO_FILE
 
 /**
- * \brief class containing the configuration of a skybox entity
+ * \brief Contains the configuration of a skybox entity.
+ *
  * \ingroup 3d
  * \since QGIS 3.16
  */

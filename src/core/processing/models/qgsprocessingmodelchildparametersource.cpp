@@ -161,7 +161,7 @@ bool QgsProcessingModelChildParameterSource::loadVariant( const QVariantMap &map
   return true;
 }
 
-QString QgsProcessingModelChildParameterSource::asPythonCode( const QgsProcessing::PythonOutputType, const QgsProcessingParameterDefinition *definition, const QMap< QString, QString > &friendlydChildNames ) const
+QString QgsProcessingModelChildParameterSource::asPythonCode( const QgsProcessing::PythonOutputType, const QgsProcessingParameterDefinition *definition, const QMap< QString, QString > &friendlyChildNames ) const
 {
   switch ( mSource )
   {
@@ -169,7 +169,7 @@ QString QgsProcessingModelChildParameterSource::asPythonCode( const QgsProcessin
       return QStringLiteral( "parameters['%1']" ).arg( mParameterName );
 
     case ChildOutput:
-      return QStringLiteral( "outputs['%1']['%2']" ).arg( friendlydChildNames.value( mChildId, mChildId ), mOutputName );
+      return QStringLiteral( "outputs['%1']['%2']" ).arg( friendlyChildNames.value( mChildId, mChildId ), mOutputName );
 
     case StaticValue:
       if ( definition )
@@ -190,6 +190,31 @@ QString QgsProcessingModelChildParameterSource::asPythonCode( const QgsProcessin
 
     case ModelOutput:
       return QString();
+  }
+  return QString();
+}
+
+QString QgsProcessingModelChildParameterSource::asPythonComment( const QgsProcessingParameterDefinition *definition ) const
+{
+  switch ( mSource )
+  {
+    case ModelParameter:
+    case ChildOutput:
+    case Expression:
+    case ExpressionText:
+    case ModelOutput:
+      return QString();
+
+    case StaticValue:
+      if ( definition )
+      {
+        QgsProcessingContext c;
+        return definition->valueAsPythonComment( mStaticValue, c );
+      }
+      else
+      {
+        return QString();
+      }
   }
   return QString();
 }

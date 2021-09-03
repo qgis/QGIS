@@ -17,7 +17,7 @@ typedef QgsOptional<QgsExpression> QgsOptionalQgsExpressionBase;
 
 class QgsOptionalExpression : QgsOptionalQgsExpressionBase
 {
-%Docstring
+%Docstring(signature="appended")
 
 An expression with an additional enabled flag.
 

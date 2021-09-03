@@ -12,7 +12,7 @@
 
 class QgsLocatorModel : QAbstractTableModel
 {
-%Docstring
+%Docstring(signature="appended")
 An abstract list model for displaying the results of locator searches.
 
 Note that this class should generally be used with a :py:class:`QgsLocatorProxyModel`
@@ -82,7 +82,7 @@ Adds a new ``result`` to the model.
 
 class QgsLocatorAutomaticModel : QgsLocatorModel
 {
-%Docstring
+%Docstring(signature="appended")
 A QgsLocatorModel which has is associated directly with a
 :py:class:`QgsLocator`, and is automatically populated with results
 from locator searches.
@@ -138,7 +138,7 @@ this method to implement custom context creation logic.
 
 class QgsLocatorProxyModel : QSortFilterProxyModel
 {
-%Docstring
+%Docstring(signature="appended")
 A sort proxy model for :py:class:`QgsLocatorModel`, which automatically sorts
 results by precedence.
 

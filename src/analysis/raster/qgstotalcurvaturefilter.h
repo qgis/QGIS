@@ -23,7 +23,7 @@
 
 /**
  * \ingroup analysis
- * Calculates total curvature as described by Wilson, Gallant (2000): terrain analysis.
+ * \brief Calculates total curvature as described by Wilson, Gallant (2000): terrain analysis.
 */
 class ANALYSIS_EXPORT QgsTotalCurvatureFilter: public QgsNineCellFilter
 {

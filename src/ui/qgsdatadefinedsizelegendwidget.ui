@@ -213,6 +213,7 @@
   <tabstop>btnRemoveClass</tabstop>
   <tabstop>viewSizeClasses</tabstop>
   <tabstop>cboAlignSymbols</tabstop>
+  <tabstop>mLineSymbolButton</tabstop>
   <tabstop>viewLayerTree</tabstop>
  </tabstops>
  <resources>

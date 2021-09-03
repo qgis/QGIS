@@ -24,6 +24,8 @@
 #include <QVector>
 
 class QgsExpression;
+class QgsMarkerSymbol;
+class QgsLineSymbol;
 
 #define DEFAULT_SIMPLELINE_COLOR     QColor(35,35,35)
 #define DEFAULT_SIMPLELINE_WIDTH     DEFAULT_LINE_WIDTH
@@ -34,7 +36,7 @@ class QgsExpression;
 /**
  * \ingroup core
  * \class QgsSimpleLineSymbolLayer
- * A simple line symbol layer, which renders lines using a line in a variety of styles (e.g. solid, dotted, dashed).
+ * \brief A simple line symbol layer, which renders lines using a line in a variety of styles (e.g. solid, dotted, dashed).
  */
 class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
 {
@@ -48,6 +50,8 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
     QgsSimpleLineSymbolLayer( const QColor &color = DEFAULT_SIMPLELINE_COLOR,
                               double width = DEFAULT_SIMPLELINE_WIDTH,
                               Qt::PenStyle penStyle = DEFAULT_SIMPLELINE_PENSTYLE );
+
+    ~QgsSimpleLineSymbolLayer() override;
 
     // static stuff
 
@@ -247,7 +251,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
     QgsUnitTypes::RenderUnit dashPatternOffsetUnit() const { return mDashPatternOffsetUnit; }
 
     /**
-     * Returns the map unit scale the dash pattern offset value.
+     * Returns the map unit scale for the dash pattern offset value.
      *
      * \see setDashPatternOffsetMapUnitScale()
      * \see dashPatternOffsetUnit()
@@ -267,6 +271,162 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
      * \since QGIS 3.16
     */
     void setDashPatternOffsetMapUnitScale( const QgsMapUnitScale &scale ) { mDashPatternOffsetMapUnitScale = scale; }
+
+    /**
+     * Returns the trim distance for the start of the line, which dictates a length
+     * from the start of the line at which the actual rendering should start.
+     *
+     * Trim units can be retrieved by calling trimDistanceStartUnit().
+     *
+     * \see setTrimDistanceStart()
+     * \see trimDistanceEnd()
+     * \see trimDistanceStartUnit()
+     * \see trimDistanceStartMapUnitScale()
+     *
+     * \since QGIS 3.20
+     */
+    double trimDistanceStart() const { return mTrimDistanceStart; }
+
+    /**
+     * Sets the trim \a distance for the start of the line, which dictates a length
+     * from the start of the line at which the actual rendering should start.
+     *
+     * Trim units can be set by calling setTrimDistanceStartUnit().
+     *
+     * \see trimDistanceStart()
+     * \see setTrimDistanceEnd()
+     * \see setTrimDistanceStartUnit()
+     * \see setTrimDistanceStartMapUnitScale()
+     *
+     * \since QGIS 3.20
+     */
+    void setTrimDistanceStart( double distance ) { mTrimDistanceStart = distance; }
+
+    /**
+     * Sets the \a unit for the trim distance for the start of the line.
+     *
+     * \see trimDistanceStartUnit()
+     * \see setTrimDistanceEndUnit()
+     * \see setTrimDistanceStart()
+     * \see setTrimDistanceStartMapUnitScale()
+     *
+     * \since QGIS 3.20
+    */
+    void setTrimDistanceStartUnit( QgsUnitTypes::RenderUnit unit ) { mTrimDistanceStartUnit = unit; }
+
+    /**
+     * Returns the unit for the trim distance for the start of the line.
+     *
+     * \see setTrimDistanceStartUnit()
+     * \see trimDistanceEndUnit()
+     * \see trimDistanceStart()
+     * \see trimDistanceStartMapUnitScale()
+     *
+     * \since QGIS 3.20
+    */
+    QgsUnitTypes::RenderUnit trimDistanceStartUnit() const { return mTrimDistanceStartUnit; }
+
+    /**
+     * Returns the map unit scale for the trim distance for the start of the line.
+     *
+     * \see setTrimDistanceStartMapUnitScale()
+     * \see trimDistanceEndMapUnitScale()
+     * \see trimDistanceStart()
+     * \see trimDistanceStartUnit()
+     *
+     * \since QGIS 3.20
+    */
+    const QgsMapUnitScale &trimDistanceStartMapUnitScale() const { return mTrimDistanceStartMapUnitScale; }
+
+    /**
+     * Sets the map unit \a scale for the trim distance for the start of the line.
+     *
+     * \see trimDistanceStartMapUnitScale()
+     * \see setTrimDistanceEndMapUnitScale()
+     * \see setTrimDistanceStart()
+     * \see setTrimDistanceStartUnit()
+     *
+     * \since QGIS 3.20
+    */
+    void setTrimDistanceStartMapUnitScale( const QgsMapUnitScale &scale ) { mTrimDistanceStartMapUnitScale = scale; }
+
+    /**
+     * Returns the trim distance for the end of the line, which dictates a length
+     * from the end of the line at which the actual rendering should end.
+     *
+     * Trim units can be retrieved by calling trimDistanceEndUnit().
+     *
+     * \see setTrimDistanceEnd()
+     * \see trimDistanceStart()
+     * \see trimDistanceEndUnit()
+     * \see trimDistanceEndMapUnitScale()
+     *
+     * \since QGIS 3.20
+     */
+    double trimDistanceEnd() const { return mTrimDistanceEnd; }
+
+    /**
+     * Sets the trim \a distance for the end of the line, which dictates a length
+     * from the end of the line at which the actual rendering should end.
+     *
+     * Trim units can be set by calling setTrimDistanceEndUnit().
+     *
+     * \see trimDistanceEnd()
+     * \see setTrimDistanceStart()
+     * \see setTrimDistanceEndUnit()
+     * \see setTrimDistanceEndMapUnitScale()
+     *
+     * \since QGIS 3.20
+     */
+    void setTrimDistanceEnd( double distance ) { mTrimDistanceEnd = distance; }
+
+    /**
+     * Sets the \a unit for the trim distance for the end of the line.
+     *
+     * \see trimDistanceEndUnit()
+     * \see setTrimDistanceStartUnit()
+     * \see setTrimDistanceEnd()
+     * \see setTrimDistanceEndMapUnitScale()
+     *
+     * \since QGIS 3.20
+    */
+    void setTrimDistanceEndUnit( QgsUnitTypes::RenderUnit unit ) { mTrimDistanceEndUnit = unit; }
+
+    /**
+     * Returns the unit for the trim distance for the end of the line.
+     *
+     * \see setTrimDistanceEndUnit()
+     * \see trimDistanceStartUnit()
+     * \see trimDistanceEnd()
+     * \see trimDistanceEndMapUnitScale()
+     *
+     * \since QGIS 3.20
+    */
+    QgsUnitTypes::RenderUnit trimDistanceEndUnit() const { return mTrimDistanceEndUnit; }
+
+    /**
+     * Returns the map unit scale for the trim distance for the end of the line.
+     *
+     * \see setTrimDistanceEndMapUnitScale()
+     * \see trimDistanceStartMapUnitScale()
+     * \see trimDistanceEnd()
+     * \see trimDistanceEndUnit()
+     *
+     * \since QGIS 3.20
+    */
+    const QgsMapUnitScale &trimDistanceEndMapUnitScale() const { return mTrimDistanceEndMapUnitScale; }
+
+    /**
+     * Sets the map unit \a scale for the trim distance for the end of the line.
+     *
+     * \see trimDistanceEndMapUnitScale()
+     * \see setTrimDistanceStartMapUnitScale()
+     * \see setTrimDistanceEnd()
+     * \see setTrimDistanceEndUnit()
+     *
+     * \since QGIS 3.20
+    */
+    void setTrimDistanceEndMapUnitScale( const QgsMapUnitScale &scale ) { mTrimDistanceEndMapUnitScale = scale; }
 
     /**
      * Returns TRUE if the line should only be drawn inside polygons, and any portion
@@ -352,6 +512,14 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
     QgsUnitTypes::RenderUnit mDashPatternOffsetUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mDashPatternOffsetMapUnitScale;
 
+    double mTrimDistanceStart = 0;
+    QgsUnitTypes::RenderUnit mTrimDistanceStartUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale mTrimDistanceStartMapUnitScale;
+
+    double mTrimDistanceEnd = 0;
+    QgsUnitTypes::RenderUnit mTrimDistanceEndUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale mTrimDistanceEndMapUnitScale;
+
     //! Vector with an even number of entries for the
     QVector<qreal> mCustomDashVector;
 
@@ -374,7 +542,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
  * \ingroup core
  * \class QgsTemplatedLineSymbolLayerBase
  *
- * Base class for templated line symbols, e.g. line symbols which draw markers or hash
+ * \brief Base class for templated line symbols, e.g. line symbols which draw markers or hash
  * lines at intervals along the line feature.
  *
  * \since QGIS 3.8
@@ -406,6 +574,8 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      */
     QgsTemplatedLineSymbolLayerBase( bool rotateSymbol = true,
                                      double interval = 3 );
+
+    ~QgsTemplatedLineSymbolLayerBase() override;
 
     /**
      * Returns TRUE if the repeating symbols be rotated to match their line segment orientation.
@@ -691,7 +861,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
 /**
  * \ingroup core
  * \class QgsMarkerLineSymbolLayer
- * Line symbol layer type which draws repeating marker symbols along a line feature.
+ * \brief Line symbol layer type which draws repeating marker symbols along a line feature.
  */
 class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsTemplatedLineSymbolLayerBase
 {
@@ -706,6 +876,8 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
      */
     QgsMarkerLineSymbolLayer( bool rotateMarker = DEFAULT_MARKERLINE_ROTATE,
                               double interval = DEFAULT_MARKERLINE_INTERVAL );
+
+    ~QgsMarkerLineSymbolLayer() override;
 
     // static stuff
 
@@ -781,7 +953,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
  * \ingroup core
  * \class QgsHashedLineSymbolLayer
  *
- * Line symbol layer type which draws repeating line sections along a line feature.
+ * \brief Line symbol layer type which draws repeating line sections along a line feature.
  *
  * \since QGIS 3.8
  */
@@ -798,6 +970,8 @@ class CORE_EXPORT QgsHashedLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
      */
     QgsHashedLineSymbolLayer( bool rotateSymbol = true,
                               double interval = 3 );
+
+    ~QgsHashedLineSymbolLayer() override;
 
     /**
      * Creates a new QgsHashedLineSymbolLayer, using the settings
