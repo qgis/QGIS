@@ -335,7 +335,6 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
   {
     QgsPointXY pt = geom.asPoint();
     addPoint( pt, false, idx );
-    removeLastPoint( idx, false );
   }
   else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::PointGeometry && QgsWkbTypes::isMultiType( geomType ) )
   {
@@ -343,7 +342,6 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
     for ( const QgsPointXY &pt : mpt )
     {
       addPoint( pt, false, idx );
-      removeLastPoint( idx, false );
       idx++;
     }
   }
