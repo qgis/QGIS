@@ -114,7 +114,7 @@ QVariantMap QgsDbscanClusteringAlgorithm::processAlgorithm( const QVariantMap &p
 
   const std::size_t minSize = static_cast< std::size_t>( parameterAsInt( parameters, QStringLiteral( "MIN_SIZE" ), context ) );
   const double eps1 = parameterAsDouble( parameters, QStringLiteral( "EPS" ), context );
-  const double eps2 = parameterAsDouble( parameters, QStringLiteral( "EPS2" ), context ) * 24 * 60 * 60;
+  const double eps2 = parameterAsDouble( parameters, QStringLiteral( "EPS2" ), context );
   const bool borderPointsAreNoise = parameterAsBoolean( parameters, QStringLiteral( "DBSCAN*" ), context );
 
   QgsFields outputFields = source->fields();
