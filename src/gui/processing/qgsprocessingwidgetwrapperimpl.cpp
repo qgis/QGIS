@@ -1324,7 +1324,6 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingDurationWidgetWrapper:
 QWidget *QgsProcessingDurationWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterDuration *durationDef = static_cast< const QgsProcessingParameterDuration * >( parameterDefinition() );
-  mBaseUnit = durationDef->defaultUnit();
 
   QWidget *spin = QgsProcessingNumericWidgetWrapper::createWidget();
   switch ( type() )
@@ -1348,7 +1347,7 @@ QWidget *QgsProcessingDurationWidgetWrapper::createWidget()
       layout->setContentsMargins( 0, 0, 0, 0 );
       w->setLayout( layout );
 
-      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( mBaseUnit ) );
+      mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( durationDef->defaultUnit() ) );
       mUnitsCombo->show();
 
       return w;
@@ -1368,8 +1367,7 @@ QLabel *QgsProcessingDurationWidgetWrapper::createLabel()
 
   if ( type() == QgsProcessingGui::Modeler )
   {
-    const QgsProcessingParameterDuration *durationDef = static_cast< const QgsProcessingParameterDuration * >( parameterDefinition() );
-    label->setText( QStringLiteral( "%1 [%2]" ).arg( label->text(), QgsUnitTypes::toString( durationDef->defaultUnit() ) ) );
+    label->setText( QStringLiteral( "%1 [%2]" ).arg( label->text(), QgsUnitTypes::toString( mBaseUnit ) ) );
   }
 
   return label;
@@ -1386,6 +1384,20 @@ QVariant QgsProcessingDurationWidgetWrapper::widgetValue() const
   else
   {
     return val;
+  }
+}
+
+void QgsProcessingDurationWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( mUnitsCombo )
+  {
+    QgsUnitTypes::TemporalUnit displayUnit = static_cast<QgsUnitTypes::TemporalUnit >( mUnitsCombo->currentData().toInt() );
+    const QVariant val = value.toDouble() * QgsUnitTypes::fromUnitToUnitFactor( mBaseUnit, displayUnit );
+    QgsProcessingNumericWidgetWrapper::setWidgetValue( val, context );
+  }
+  else
+  {
+    QgsProcessingNumericWidgetWrapper::setWidgetValue( value, context );
   }
 }
 

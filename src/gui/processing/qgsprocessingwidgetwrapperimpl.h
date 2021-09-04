@@ -444,6 +444,7 @@ class GUI_EXPORT QgsProcessingDurationWidgetWrapper : public QgsProcessingNumeri
   protected:
 
     QVariant widgetValue() const override;
+    void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
 
   private:
 
