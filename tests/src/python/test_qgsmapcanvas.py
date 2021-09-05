@@ -64,7 +64,7 @@ class TestQgsMapCanvas(unittest.TestCase):
     def testDeferredUpdate(self):
         """ test that map canvas doesn't auto refresh on deferred layer update """
         canvas = QgsMapCanvas()
-        canvas.setDestinationCrs(QgsCoordinateReferenceSystem(4326))
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         canvas.setFrameStyle(0)
         canvas.resize(600, 400)
         self.assertEqual(canvas.width(), 600)
@@ -106,7 +106,7 @@ class TestQgsMapCanvas(unittest.TestCase):
     def testRefreshOnTimer(self):
         """ test that map canvas refreshes with auto refreshing layers """
         canvas = QgsMapCanvas()
-        canvas.setDestinationCrs(QgsCoordinateReferenceSystem(4326))
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         canvas.setFrameStyle(0)
         canvas.resize(600, 400)
         self.assertEqual(canvas.width(), 600)
@@ -168,7 +168,7 @@ class TestQgsMapCanvas(unittest.TestCase):
     def testCancelAndDestroy(self):
         """ test that nothing goes wrong if we destroy a canvas while a job is canceling """
         canvas = QgsMapCanvas()
-        canvas.setDestinationCrs(QgsCoordinateReferenceSystem(4326))
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         canvas.setFrameStyle(0)
         canvas.resize(600, 400)
 
@@ -195,7 +195,7 @@ class TestQgsMapCanvas(unittest.TestCase):
 
     def testMapTheme(self):
         canvas = QgsMapCanvas()
-        canvas.setDestinationCrs(QgsCoordinateReferenceSystem(4326))
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         canvas.setFrameStyle(0)
         canvas.resize(600, 400)
         self.assertEqual(canvas.width(), 600)
@@ -360,7 +360,7 @@ class TestQgsMapCanvas(unittest.TestCase):
     def testMainAnnotationLayerRendered(self):
         """ test that main annotation layer is rendered above all other layers """
         canvas = QgsMapCanvas()
-        canvas.setDestinationCrs(QgsCoordinateReferenceSystem(4326))
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         canvas.setFrameStyle(0)
         canvas.resize(600, 400)
         self.assertEqual(canvas.width(), 600)
@@ -393,7 +393,7 @@ class TestQgsMapCanvas(unittest.TestCase):
         self.assertFalse(self.canvasImageCheck('main_annotation_layer', 'main_annotation_layer', canvas))
 
         annotation_layer = QgsProject.instance().mainAnnotationLayer()
-        annotation_layer.setCrs(QgsCoordinateReferenceSystem(4326))
+        annotation_layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         annotation_geom = QgsGeometry.fromRect(QgsRectangle(12, 30, 18, 33))
         annotation = QgsAnnotationPolygonItem(annotation_geom.constGet().clone())
         sym3 = QgsFillSymbol.createSimple({'color': '#ff0000', 'outline_style': 'no'})
@@ -571,7 +571,7 @@ class TestQgsMapCanvas(unittest.TestCase):
 
     def test_rendered_items(self):
         canvas = QgsMapCanvas()
-        canvas.setDestinationCrs(QgsCoordinateReferenceSystem(4326))
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         canvas.setFrameStyle(0)
         canvas.resize(600, 400)
         canvas.setCachingEnabled(True)
@@ -634,7 +634,6 @@ class TestQgsMapCanvas(unittest.TestCase):
         # both layer1 and layer2 items should be present in results -- even though NEITHER of these layers were re-rendered,
         # and instead we used precached renders of both layers
         self.assertCountEqual([i.itemId() for i in results.renderedItems()], [i1_id, i2_id, i3_id])
-
 
 
 if __name__ == '__main__':
