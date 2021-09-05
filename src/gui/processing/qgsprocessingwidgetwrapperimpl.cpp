@@ -1267,6 +1267,9 @@ QgsProcessingDurationParameterDefinitionWidget::QgsProcessingDurationParameterDe
   mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalHours ), QgsUnitTypes::TemporalHours );
   mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalDays ), QgsUnitTypes::TemporalDays );
   mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalWeeks ), QgsUnitTypes::TemporalWeeks );
+  mUnitsCombo->addItem( tr( "years (365.25 days)" ), QgsUnitTypes::TemporalYears );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalDecades ), QgsUnitTypes::TemporalDecades );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalCenturies ), QgsUnitTypes::TemporalCenturies );
   vlayout->addWidget( mUnitsCombo );
 
   if ( const QgsProcessingParameterDuration *durationParam = dynamic_cast<const QgsProcessingParameterDuration *>( definition ) )
@@ -1338,6 +1341,9 @@ QWidget *QgsProcessingDurationWidgetWrapper::createWidget()
       mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalHours ), QgsUnitTypes::TemporalHours );
       mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalDays ), QgsUnitTypes::TemporalDays );
       mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalWeeks ), QgsUnitTypes::TemporalWeeks );
+      mUnitsCombo->addItem( tr( "years (365.25 days)" ), QgsUnitTypes::TemporalYears );
+      mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalDecades ), QgsUnitTypes::TemporalDecades );
+      mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::TemporalCenturies ), QgsUnitTypes::TemporalCenturies );
 
       QHBoxLayout *layout = new QHBoxLayout();
       layout->addWidget( spin, 1 );
