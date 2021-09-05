@@ -50,7 +50,7 @@ QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget *parent, QgsSh
   mSaveMenu->addAction( mSaveUserShortcuts );
   connect( mSaveUserShortcuts, &QAction::triggered, this, [this] { saveShortcuts( false ); } );
 
-  mSaveAllShortcuts = new QAction( tr( "Save All Shportcuts…" ), this );
+  mSaveAllShortcuts = new QAction( tr( "Save All Shortcuts…" ), this );
   mSaveMenu->addAction( mSaveAllShortcuts );
   connect( mSaveAllShortcuts, &QAction::triggered, this, [this] { saveShortcuts(); } );
 
@@ -554,9 +554,9 @@ void QgsConfigureShortcutsDialog::saveShortcutsPdf()
   tableFormat.setHeaderRowCount( 1 );
 
   QVector<QTextLength> constraints;
-  constraints << QTextLength( QTextLength::PercentageLength, 2 );
+  constraints << QTextLength( QTextLength::PercentageLength, 5 );
   constraints << QTextLength( QTextLength::PercentageLength, 80 );
-  constraints << QTextLength( QTextLength::PercentageLength, 18 );
+  constraints << QTextLength( QTextLength::PercentageLength, 15 );
   tableFormat.setColumnWidthConstraints( constraints );
 
   QTextTableCellFormat headerFormat;
@@ -635,9 +635,12 @@ void QgsConfigureShortcutsDialog::saveShortcutsPdf()
     table->cellAt( row, 2 ).firstCursorPosition().insertText( sequence );
   }
 
-  QPrinter printer( QPrinter::PrinterResolution );
+  QPrinter printer( QPrinter::ScreenResolution );
   printer.setOutputFormat( QPrinter::PdfFormat );
   printer.setPaperSize( QPrinter::A4 );
+  printer.setPageOrientation( QPageLayout::Portrait );
+  printer.setPageMargins( QMarginsF( 20, 10, 10, 10 ), QPageLayout::Millimeter );
   printer.setOutputFileName( fileName );
+  document->setPageSize( QSizeF( printer.pageRect().size() ) );
   document->print( &printer );
 }
