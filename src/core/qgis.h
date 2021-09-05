@@ -313,7 +313,7 @@ class CORE_EXPORT Qgis
      * Different methods of HTTP requests
      * \since 3.22
      */
-    enum HttpMethod
+    enum class HttpMethod : int
     {
       Get = 0, //!< GET method
       Post = 1 //!< POST method
