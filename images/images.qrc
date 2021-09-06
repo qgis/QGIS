@@ -930,6 +930,7 @@
         <file>themes/default/mIconGps.svg</file>
         <file>themes/default/mActionNewGpx.svg</file>
         <file>themes/default/mActionAddGpsLayer.svg</file>
+        <file>themes/default/mIconAnnotationLayer.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
