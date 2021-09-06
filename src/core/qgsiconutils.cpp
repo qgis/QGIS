@@ -160,8 +160,10 @@ QIcon QgsIconUtils::iconForLayerType( QgsMapLayerType type )
     case QgsMapLayerType::VectorLayer:
       return QgsIconUtils::iconGeometryCollection();
 
-    case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::AnnotationLayer:
+      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconAnnotationLayer.svg" ) );
+
+    case QgsMapLayerType::PluginLayer:
       break;
   }
   return QIcon();
