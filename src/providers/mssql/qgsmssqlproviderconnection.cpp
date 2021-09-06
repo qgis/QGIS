@@ -19,6 +19,7 @@
 
 #include "qgsmssqlproviderconnection.h"
 #include "qgsmssqlconnection.h"
+#include "qgsmssqldatabase.h"
 #include "qgssettings.h"
 #include "qgsmssqlprovider.h"
 #include "qgsexception.h"
@@ -243,12 +244,12 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
   const QgsDataSourceUri dsUri { uri() };
 
   // connect to database
-  QSqlDatabase db = QgsMssqlConnection::getDatabase( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
 
-  if ( !QgsMssqlConnection::openDatabase( db ) )
+  if ( !db->isValid() )
   {
     throw QgsProviderConnectionException( QObject::tr( "Connection to %1 failed: %2" )
-                                          .arg( uri(), db.lastError().text() ) );
+                                          .arg( uri(), db->errorText() ) );
   }
   else
   {
@@ -259,7 +260,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
     }
 
     //qDebug() << "MSSQL QUERY:" << sql;
-    QSqlQuery q = QSqlQuery( db );
+    QSqlQuery q = QSqlQuery( db->db() );
     q.setForwardOnly( true );
 
     const std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();

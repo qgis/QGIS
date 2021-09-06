@@ -18,10 +18,11 @@
 #include "qgsmssqlfeatureiterator.h"
 #include "qgsmssqlexpressioncompiler.h"
 #include "qgsmssqlprovider.h"
+#include "qgsmssqltransaction.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsexception.h"
-#include "qgsmssqlconnection.h"
+#include "qgsmssqldatabase.h"
 #include "qgsgeometryengine.h"
 
 #include <QObject>
@@ -433,26 +434,34 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
 #endif
 }
 
-
 bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
 {
   feature.setValid( false );
 
-  if ( !mDatabase.isValid() )
+  if ( !mDatabase )
   {
-    // No existing connection, so set it up now. It's safe to do here as we're now in
-    // the thread were iteration is actually occurring.
-    mDatabase = QgsMssqlConnection::getDatabase( mSource->mService, mSource->mHost, mSource->mDatabaseName, mSource->mUserName, mSource->mPassword );
+    if ( mSource->mTransactionConn )
+    {
+      // Using shared connection for the transaction, but that's fine because we use
+      // a mutex to prevent concurrent access to it from multiple threads.
+      mDatabase = mSource->mTransactionConn;
+    }
+    else
+    {
+      // No existing connection, so set it up now. It's safe to do here as we're now in
+      // the thread were iteration is actually occurring.
+      mDatabase = QgsMssqlDatabase::connectDb( mSource->mService, mSource->mHost, mSource->mDatabaseName, mSource->mUserName, mSource->mPassword );
+    }
 
-    if ( !mDatabase.open() )
+    if ( !mDatabase->isValid() )
     {
       QgsDebugMsg( QStringLiteral( "Failed to open database" ) );
-      QgsDebugMsg( mDatabase.lastError().text() );
+      QgsDebugMsg( mDatabase->errorText() );
       return false;
     }
 
     // create sql query
-    mQuery.reset( new QSqlQuery( mDatabase ) );
+    mQuery.reset( new QgsMssqlQuery( mDatabase ) );
 
     // start selection
     if ( !rewind() )
@@ -652,9 +661,6 @@ bool QgsMssqlFeatureIterator::close()
 
   mQuery.reset();
 
-  if ( mDatabase.isOpen() )
-    mDatabase.close();
-
   iteratorClosed();
 
   mClosed = true;
@@ -682,6 +688,7 @@ QgsMssqlFeatureSource::QgsMssqlFeatureSource( const QgsMssqlProvider *p )
   , mSqlWhereClause( p->mSqlWhereClause )
   , mDisableInvalidGeometryHandling( p->mDisableInvalidGeometryHandling )
   , mCrs( p->crs() )
+  , mTransactionConn( p->transaction() ? static_cast<QgsMssqlTransaction *>( p->transaction() )->conn() : std::shared_ptr<QgsMssqlDatabase>() )
 {}
 
 QgsFeatureIterator QgsMssqlFeatureSource::getFeatures( const QgsFeatureRequest &request )

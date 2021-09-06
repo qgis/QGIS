@@ -223,16 +223,7 @@ QString QgsTransaction::createSavepoint( QString &error SIP_OUT )
   }
 
   const QString name( QStringLiteral( "qgis" ) + ( QUuid::createUuid().toString().mid( 1, 24 ).replace( '-', QString() ) ) );
-
-  if ( !executeSql( QStringLiteral( "SAVEPOINT %1" ).arg( QgsExpression::quotedColumnRef( name ) ), error ) )
-  {
-    QgsMessageLog::logMessage( tr( "Could not create savepoint (%1)" ).arg( error ) );
-    return QString();
-  }
-
-  mSavepoints.push( name );
-  mLastSavePointIsDirty = false;
-  return name;
+  return createSavepoint( name, error );
 }
 
 QString QgsTransaction::createSavepoint( const QString &savePointId, QString &error SIP_OUT )
