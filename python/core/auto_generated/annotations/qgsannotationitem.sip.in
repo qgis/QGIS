@@ -200,6 +200,16 @@ exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered a
 .. seealso:: :py:func:`setUseSymbologyReferenceScale`
 %End
 
+    virtual QgsGeometry rubberBandGeometry() const;
+%Docstring
+Returns the geometry to use as a rubber band for map tools which manipulate the item.
+
+The default implementation returns a null geometry, which indicates that the item bounds should
+be used as the rubber band.
+
+.. versionadded:: 3.22
+%End
+
   protected:
 
     void copyCommonProperties( const QgsAnnotationItem *other );

@@ -90,6 +90,11 @@ QList<QgsAnnotationItemNode> QgsAnnotationLineItem::nodes() const
   return res;
 }
 
+QgsGeometry QgsAnnotationLineItem::rubberBandGeometry() const
+{
+  return QgsGeometry( mCurve->clone() );
+}
+
 bool QgsAnnotationLineItem::transform( const QTransform &transform )
 {
   mCurve->transform( transform );

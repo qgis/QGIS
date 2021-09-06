@@ -83,6 +83,14 @@ class TestQgsAnnotationPolygonItem(unittest.TestCase):
                                         QgsAnnotationItemNode(QgsPointXY(14, 13), Qgis.AnnotationItemNodeType.VertexHandle),
                                         QgsAnnotationItemNode(QgsPointXY(14, 15), Qgis.AnnotationItemNodeType.VertexHandle)])
 
+    def test_rubberbandgeometry(self):
+        """
+        Test creating rubber band geometry
+        """
+        item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
+        band = item.rubberBandGeometry()
+        self.assertEqual(band.asWkt(), 'Polygon ((12 13, 14 13, 14 15, 12 13))')
+
     def test_transform(self):
         item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
         self.assertEqual(item.geometry().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 12 13))')
