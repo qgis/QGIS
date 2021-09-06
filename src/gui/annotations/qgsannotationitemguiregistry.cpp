@@ -153,6 +153,16 @@ void QgsAnnotationItemGuiRegistry::addDefaultItems()
     widget->setItem( item );
     return widget;
   } ) );
+
+  addAnnotationItemGuiMetadata( new QgsAnnotationItemGuiMetadata( QStringLiteral( "pointtext" ),
+                                QObject::tr( "Text at Point" ),
+                                QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddImage.svg" ) ),
+                                [ = ]( QgsAnnotationItem * item )->QgsAnnotationItemBaseWidget *
+  {
+    QgsAnnotationPointTextItemWidget *widget = new QgsAnnotationPointTextItemWidget( nullptr );
+    widget->setItem( item );
+    return widget;
+  } ) );
 }
 
 QgsAnnotationItem *QgsAnnotationItemGuiMetadata::createItem()
