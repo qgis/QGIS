@@ -56,15 +56,22 @@ class CORE_EXPORT QgsMeshAdvancedEditing : protected QgsTopologicalMesh::Changes
     //! Removes all data provided to the editing or created by the editing
     void clear();
 
+    /**
+     *  Returns whether the advanced edit is finished,
+     *  if not, tis edit has to be applied again with QgsMeshEditor::advancedEdit() until is finished returns TRUE
+     */
+    virtual bool isFinished() const;
+
   protected:
     QList<int> mInputVertices;
     QList<int> mInputFaces;
     QString mMessage;
+    bool mIsFinished = false;
 
     /**
      * Apply a change to \a mesh Editor. This method is called by the QgsMeshEditor to apply the editing on the topological mesh
      *
-     * The method has to be implemented in the derived class to provide the changes of the advancd editing
+     * The method has to be implemented in the derived class to provide the changes of the advanced editing
      */
     virtual QgsTopologicalMesh::Changes apply( QgsMeshEditor *meshEditor ) = 0; SIP_SKIP
 

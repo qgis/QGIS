@@ -23,6 +23,7 @@
 #include "qgsexpression.h"
 #include "qgsexpressioncontextutils.h"
 
+
 QgsMeshAdvancedEditing::QgsMeshAdvancedEditing() = default;
 
 QgsMeshAdvancedEditing::~QgsMeshAdvancedEditing() = default;
@@ -47,8 +48,13 @@ void QgsMeshAdvancedEditing::clear()
   mInputVertices.clear();
   mInputFaces.clear();
   mMessage.clear();
-
+  mIsFinished = false;
   clearChanges();
+}
+
+bool QgsMeshAdvancedEditing::isFinished() const
+{
+  return mIsFinished;
 }
 
 static int vertexPositionInFace( int vertexIndex, const QgsMeshFace &face )
@@ -92,6 +98,8 @@ QgsTopologicalMesh::Changes QgsMeshEditRefineFaces::apply( QgsMeshEditor *meshEd
   }
 
   meshEditor->topologicalMesh().applyChanges( *this );
+
+  mIsFinished = true;
 
   return *this;
 }
@@ -746,6 +754,7 @@ void QgsMeshTransformVerticesByExpression::setExpressions( const QString &expres
 QgsTopologicalMesh::Changes QgsMeshTransformVerticesByExpression::apply( QgsMeshEditor *meshEditor )
 {
   meshEditor->topologicalMesh().applyChanges( *this );
+  mIsFinished = true;
   return *this;
 }
 
@@ -772,4 +781,6 @@ QgsMeshVertex QgsMeshTransformVerticesByExpression::transformedVertex( QgsMeshLa
   else
     return layer->nativeMesh()->vertex( vertexIndex );
 }
+
+
 

@@ -36,6 +36,14 @@
 #include "qgsguiutils.h"
 #include "qgsmeshtriangulation.h"
 #include "qgsmeshtransformcoordinatesdockwidget.h"
+#include "qgsmeshforcebypolylines.h"
+#include "qgsvectorlayer.h"
+#include "qgsunitselectionwidget.h"
+
+
+//
+// QgsZValueWidget
+//
 
 #include "qgsexpressionbuilderwidget.h"
 #include "qgsmeshselectbyexpressiondialog.h"
@@ -93,6 +101,105 @@ QWidget *QgsZValueWidget::keyboardEntryWidget() const
   return mZValueSpinBox;
 }
 
+QgsMeshEditForceByLineAction::QgsMeshEditForceByLineAction( QObject *parent )
+  : QWidgetAction( parent )
+{
+  QGridLayout *gLayout = new QGridLayout();
+  gLayout->setContentsMargins( 3, 2, 3, 2 );
+
+  QgsSettings settings;
+
+  mCheckBoxNewVertex = new QCheckBox( tr( "Add new vertex on intersecting edges" ) );
+
+  bool newVertex = settings.value( QStringLiteral( "UI/Mesh/ForceByLineNewVertex" ) ).toBool();
+  mCheckBoxNewVertex->setChecked( newVertex );
+
+  QLabel *labelInterpolation = new QLabel( tr( "Interpolate Z value from" ) );
+  mComboInterpolateFrom = new QComboBox();
+  mComboInterpolateFrom->addItem( tr( "Mesh" ), Mesh );
+  mComboInterpolateFrom->addItem( tr( "Forcing line" ), Lines );
+
+  int interpolateFromValue = settings.enumValue( QStringLiteral( "UI/Mesh/ForceByLineInterpolateFrom" ), Mesh );
+  mComboInterpolateFrom->setCurrentIndex( interpolateFromValue );
+
+  QLabel *labelTolerance = new QLabel( tr( "Tolerance" ) );
+  mToleranceSpinBox = new QgsDoubleSpinBox();
+
+  bool ok;
+  double toleranceValue = settings.value( QStringLiteral( "UI/Mesh/ForceByLineToleranceValue" ), QgsUnitTypes::RenderMapUnits ).toDouble( &ok );
+  if ( !ok )
+    toleranceValue = 1.0;
+  mToleranceSpinBox->setValue( toleranceValue );
+  mToleranceSpinBox->setKeyboardTracking( false );
+  mToleranceSpinBox->setWrapping( false );
+  mToleranceSpinBox->setSingleStep( 0.1 );
+  mToleranceSpinBox->setClearValue( 1.0 );
+
+  mUnitSelecionWidget = new QgsUnitSelectionWidget();
+  mUnitSelecionWidget->setUnits( QgsUnitTypes::RenderUnitList() <<
+                                 QgsUnitTypes::RenderMetersInMapUnits <<
+                                 QgsUnitTypes::RenderMapUnits );
+
+  QgsUnitTypes::RenderUnit toleranceUnit = settings.enumValue( QStringLiteral( "UI/Mesh/ForceByLineToleranceValue" ), QgsUnitTypes::RenderMapUnits );
+  mUnitSelecionWidget->setUnit( toleranceUnit );
+
+  gLayout->addWidget( mCheckBoxNewVertex, 1, 0, 1, 4 );
+  gLayout->addWidget( labelInterpolation, 2, 0, 1, 3 );
+  gLayout->addWidget( mComboInterpolateFrom, 2, 3, 1, 1 );
+  gLayout->addWidget( labelTolerance, 3, 0, 1, 2 );
+  gLayout->addWidget( mToleranceSpinBox, 3, 2, 1, 1 );
+  gLayout->addWidget( mUnitSelecionWidget, 3, 3, 1, 1 );
+
+  QWidget *w = new QWidget();
+  w->setLayout( gLayout );
+  setDefaultWidget( w );
+
+  connect( mCheckBoxNewVertex, &QCheckBox::toggled, this, &QgsMeshEditForceByLineAction::updateSettings );
+  connect( mComboInterpolateFrom, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsMeshEditForceByLineAction::updateSettings );
+  connect( mToleranceSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsMeshEditForceByLineAction::updateSettings );
+  connect( mUnitSelecionWidget, &QgsUnitSelectionWidget::changed, this, &QgsMeshEditForceByLineAction::updateSettings );
+}
+
+void QgsMeshEditForceByLineAction::setMapCanvas( QgsMapCanvas *canvas )
+{
+  mUnitSelecionWidget->setMapCanvas( canvas );
+}
+
+QgsMeshEditForceByLineAction::IntepolationMode QgsMeshEditForceByLineAction::interpolationMode() const
+{
+  return static_cast<IntepolationMode>( mComboInterpolateFrom->currentData().toInt() );
+}
+
+bool QgsMeshEditForceByLineAction::newVertexOnIntersectingEdge() const
+{
+  return mCheckBoxNewVertex->isChecked();
+}
+
+double QgsMeshEditForceByLineAction::toleranceValue() const
+{
+  return mToleranceSpinBox->value();
+}
+
+QgsUnitTypes::RenderUnit QgsMeshEditForceByLineAction::toleranceUnit() const
+{
+  return mUnitSelecionWidget->unit();
+}
+
+void QgsMeshEditForceByLineAction::updateSettings()
+{
+  QgsSettings settings;
+
+  settings.setValue( QStringLiteral( "UI/Mesh/ForceByLineNewVertex" ), mCheckBoxNewVertex->isChecked() );
+  settings.setEnumValue( QStringLiteral( "UI/Mesh/ForceByLineInterpolateFrom" ),
+                         static_cast<IntepolationMode>( mComboInterpolateFrom->currentData().toInt() ) );
+  settings.setValue( QStringLiteral( "UI/Mesh/ForceByLineToleranceValue" ), mToleranceSpinBox->value() );
+  settings.setEnumValue( QStringLiteral( "UI/Mesh/ForceByLineToleranceValue" ), mUnitSelecionWidget->unit() );
+}
+
+//
+// QgsMapToolEditMeshFrame
+//
+
 QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )
   , mSnapIndicator( new QgsSnapIndicator( canvas ) )
@@ -106,6 +213,12 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
 
   mActionTransformCoordinates = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshTransformByExpression.svg" ) ), tr( "Transform vertices coordinates" ), this );
   mActionTransformCoordinates->setCheckable( true );
+
+  mActionForceByVectorLayerGeometries = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshEditForceByVectorLines.svg" ) ), tr( "Force by selected geometries" ), this );
+  mActionForceByVectorLayerGeometries->setEnabled( areGeometriesSelectedInVectorLayer() );
+
+  mWidgetActionForceByLine = new QgsMeshEditForceByLineAction( this );
+  mWidgetActionForceByLine->setMapCanvas( canvas );
 
   mActionRemoveVerticesFillingHole = new QAction( this );
   mActionDelaunayTriangulation = new QAction( tr( "Delaunay triangulation with selected vertices" ), this );
@@ -164,6 +277,13 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   connect( mActionTransformCoordinates, &QAction::triggered, this, &QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget );
   connect( mActionSelectByExpression, &QAction::triggered, this, &QgsMapToolEditMeshFrame::showSelectByExpressionDialog );
 
+  connect( canvas, &QgsMapCanvas::selectionChanged, this, [this]
+  {
+    mActionForceByVectorLayerGeometries->setEnabled( areGeometriesSelectedInVectorLayer() &&( mCurrentEditor != nullptr ) );
+  } );
+
+  connect( mActionForceByVectorLayerGeometries, &QAction::triggered, this, &QgsMapToolEditMeshFrame::forceBySelectedLayerPolyline );
+
   setAutoSnapEnabled( true );
 }
 
@@ -189,20 +309,65 @@ QgsMapToolEditMeshFrame::~QgsMapToolEditMeshFrame()
   deleteZValueWidget();
 }
 
-QList<QAction *> QgsMapToolEditMeshFrame::actions() const
+void QgsMapToolEditMeshFrame::setActionsEnable( bool enable )
 {
-  return  QList<QAction *>()
-          << mActionDigitizing
-          << mActionSelectByPolygon
-          << mActionSelectByExpression
-          << mActionTransformCoordinates;
+  QList<QAction *> actions;
+  actions
+      << mActionDigitizing
+      << mActionSelectByPolygon
+      << mActionSelectByExpression
+      << mActionTransformCoordinates
+      << mActionForceByVectorLayerGeometries;
+
+  for ( QAction *action : std::as_const( actions ) )
+    action->setEnabled( enable );
+
+  mActionForceByVectorLayerGeometries->setEnabled( enable && areGeometriesSelectedInVectorLayer() );
 }
+
 
 QList<QAction *> QgsMapToolEditMeshFrame::mapToolActions()
 {
   return  QList<QAction *>()
           << mActionDigitizing
           << mActionSelectByPolygon;
+}
+
+QAction *QgsMapToolEditMeshFrame::digitizeAction() const
+{
+  return  mActionDigitizing;
+}
+
+QList<QAction *> QgsMapToolEditMeshFrame::selectActions() const
+{
+  return  QList<QAction *>()
+          << mActionSelectByPolygon;
+}
+
+QAction *QgsMapToolEditMeshFrame::defaultSelectActions() const
+{
+  return mActionSelectByPolygon;
+}
+
+QAction *QgsMapToolEditMeshFrame::transformAction() const
+{
+  return mActionTransformCoordinates;
+}
+
+QList<QAction *> QgsMapToolEditMeshFrame::forceByLinesActions() const
+{
+  return  QList<QAction *>()
+          << mActionForceByVectorLayerGeometries;
+}
+
+QAction *QgsMapToolEditMeshFrame::defaultForceAction() const
+{
+  return mActionForceByVectorLayerGeometries;
+}
+
+QWidgetAction *QgsMapToolEditMeshFrame::forceByLineWidgetActionSettings() const
+{
+  return mWidgetActionForceByLine;
 }
 
 void QgsMapToolEditMeshFrame::initialize()
@@ -1430,6 +1595,34 @@ void QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget( bool checke
 
 }
 
+void QgsMapToolEditMeshFrame::forceBySelectedLayerPolyline()
+{
+  const QList<QgsGeometry> geoms = selectedGeometriesInVectorLayers();
+  if ( geoms.isEmpty() )
+    return;
+
+  onEditingStarted();
+
+  QgsMeshEditForceByPolylines forceByPolylinesEdit;
+
+  double tolerance = QgsTolerance::toleranceInMapUnits( mWidgetActionForceByLine->toleranceValue(),
+                     nullptr,
+                     canvas()->mapSettings(),
+                     QgsTolerance::ProjectUnits );
+
+  forceByPolylinesEdit.setTolerance( tolerance );
+  forceByPolylinesEdit.setAddVertexOnIntersection( mWidgetActionForceByLine->newVertexOnIntersectingEdge() );
+  forceByPolylinesEdit.setDefaultZvalue( mZValueWidget->zValue() );
+  forceByPolylinesEdit.setInterpolateZValueOnMesh(
+    mWidgetActionForceByLine->interpolationMode() == QgsMeshEditForceByLineAction::Mesh );
+
+  for ( const QgsGeometry &geom : geoms )
+    forceByPolylinesEdit.addLineFromGeometry( geom );
+
+  mCurrentEditor->advancedEdit( &forceByPolylinesEdit );
+}
+
+
 void QgsMapToolEditMeshFrame::selectInGeometry( const QgsGeometry &geometry, Qt::KeyboardModifiers modifiers )
 {
   if ( mCurrentLayer.isNull() || !mCurrentLayer->triangularMesh() || mCurrentEditor.isNull() )
@@ -1705,6 +1898,62 @@ void QgsMapToolEditMeshFrame::setMovingRubberBandValidity( bool valid )
     mMovingFacesRubberband->setStrokeColor( QColor( 200, 0, 0 ) );
     mMovingEdgesRubberband->setColor( QColor( 200, 0, 0 ) );
   }
+}
+
+QList<QgsGeometry> QgsMapToolEditMeshFrame::selectedGeometriesInVectorLayers() const
+{
+  const QList<QgsMapLayer *> layers = canvas()->layers();
+
+  QList<QgsGeometry> geomList;
+
+  for ( QgsMapLayer *layer : layers )
+  {
+    QgsVectorLayer *vectoLayer = qobject_cast<QgsVectorLayer *>( layer );
+
+    if ( vectoLayer )
+    {
+      const QgsFeatureList &features = vectoLayer->selectedFeatures();
+
+      QgsCoordinateTransform transform = canvas()->mapSettings().layerTransform( vectoLayer );
+      for ( const QgsFeature &feat : features )
+      {
+        QgsGeometry geom = feat.geometry();
+
+        try
+        {
+          geom.transform( transform );
+        }
+        catch ( QgsCsException &e )
+        {
+          Q_UNUSED( e );
+          continue;
+        }
+        geomList.append( geom );
+      }
+    }
+  }
+
+  return geomList;
+}
+
+bool QgsMapToolEditMeshFrame::areGeometriesSelectedInVectorLayer() const
+{
+  const QList<QgsMapLayer *> layers = canvas()->layers();
+
+  QList<QgsGeometry> geomList;
+
+  for ( QgsMapLayer *layer : layers )
+  {
+    QgsVectorLayer *vectoLayer = qobject_cast<QgsVectorLayer *>( layer );
+
+    if ( vectoLayer )
+    {
+      if ( vectoLayer->selectedFeatureCount() > 0 )
+        return true;
+    }
+  }
+
+  return false;
 }
 
 void QgsMapToolEditMeshFrame::highlightCurrentHoveredFace( const QgsPointXY &mapPoint )

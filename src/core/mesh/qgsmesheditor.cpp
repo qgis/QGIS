@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
   qgsmesheditor.cpp - QgsMeshEditor
 
  ---------------------
@@ -23,6 +23,7 @@
 #include "qgslogger.h"
 #include "qgsgeometryengine.h"
 #include "qgsmeshadvancedediting.h"
+#include "qgsgeometryutils.h"
 
 #include <poly2tri.h>
 
@@ -187,15 +188,29 @@ void QgsMeshEditor::reverseEdit( QgsMeshEditor::Edit &edit )
   mTriangularMesh->reverseChanges( edit.triangularMeshChanges, *mMesh );
 }
 
-void QgsMeshEditor::applyAddVertex( QgsMeshEditor::Edit &edit, const QgsMeshVertex &vertex )
+void QgsMeshEditor::applyAddVertex( QgsMeshEditor::Edit &edit, const QgsMeshVertex &vertex, double tolerance )
 {
-  int includingFaceIndex = mTriangularMesh->nativeFaceIndexForPoint( mTriangularMesh->nativeToTriangularCoordinates( vertex ) );
+  QgsMeshVertex vertexInTriangularCoordinate =  mTriangularMesh->nativeToTriangularCoordinates( vertex );
+
+  //check if edges is closest than the tolerance from the vertex
+  int faceEdgeIntersect = -1;
+  int edgePosition = -1;
+
   QgsTopologicalMesh::Changes topologicChanges;
 
-  if ( includingFaceIndex != -1 )
-    topologicChanges = mTopologicalMesh.addVertexInface( includingFaceIndex, vertex );
+  if ( edgeIsClose( vertexInTriangularCoordinate, tolerance, faceEdgeIntersect, edgePosition ) )
+  {
+    topologicChanges = mTopologicalMesh.insertVertexInFacesEdge( faceEdgeIntersect, edgePosition, vertex );
+  }
   else
-    topologicChanges = mTopologicalMesh.addFreeVertex( vertex );
+  {
+    int includingFaceIndex = mTriangularMesh->nativeFaceIndexForPoint( vertexInTriangularCoordinate );
+
+    if ( includingFaceIndex != -1 )
+      topologicChanges = mTopologicalMesh.addVertexInFace( includingFaceIndex, vertex );
+    else
+      topologicChanges = mTopologicalMesh.addFreeVertex( vertex );
+  }
 
   applyEditOnTriangularMesh( edit, topologicChanges );
 }
@@ -281,6 +296,53 @@ bool QgsMeshEditor::checkConsistency() const
     return false;
 
   return true;
+}
+
+bool QgsMeshEditor::edgeIsClose( QgsPointXY point, double tolerance, int &faceIndex, int &edgePosition )
+{
+  QgsRectangle toleranceZone( point.x() - tolerance,
+                              point.y() - tolerance,
+                              point.x() + tolerance,
+                              point.y() + tolerance );
+
+  edgePosition = -1;
+  double minDist = std::numeric_limits<double>::max();
+  const QList<int> &nativeFaces = mTriangularMesh->nativeFaceIndexForRectangle( toleranceZone );
+  double epsilon = std::numeric_limits<double>::epsilon() * tolerance;
+  for ( const int nativeFaceIndex : nativeFaces )
+  {
+    const QgsMeshFace &face = mMesh->face( nativeFaceIndex );
+    const int faceSize = face.size();
+    for ( int i = 0; i < faceSize; ++i )
+    {
+      const QgsMeshVertex &v1 = mTriangularMesh->vertices().at( face.at( i ) );
+      const QgsMeshVertex &v2 = mTriangularMesh->vertices().at( face.at( ( i + 1 ) % faceSize ) );
+
+      double mx, my;
+      double dist = sqrt( QgsGeometryUtils::sqrDistToLine( point.x(),
+                          point.y(),
+                          v1.x(),
+                          v1.y(),
+                          v2.x(),
+                          v2.y(),
+                          mx,
+                          my,
+                          epsilon ) );
+
+      if ( dist < tolerance && dist < minDist )
+      {
+        faceIndex = nativeFaceIndex;
+        edgePosition = i;
+        minDist = dist;
+      }
+    }
+  }
+
+  if ( edgePosition != -1 )
+    return true;
+
+  return false;
+
 }
 
 QgsMeshEditingError QgsMeshEditor::removeFaces( const QList<int> &facesToRemove )
@@ -424,7 +486,7 @@ int QgsMeshEditor::addVertices( const QVector<QgsMeshVertex> &vertices, double t
 
   if ( ignoredVertex < vertices.count() )
   {
-    mUndoStack->push( new QgsMeshLayerUndoCommandAddVertices( this, verticesInLayerCoordinate ) );
+    mUndoStack->push( new QgsMeshLayerUndoCommandAddVertices( this, verticesInLayerCoordinate, tolerance ) );
   }
 
   return vertices.count() - ignoredVertex;
@@ -592,9 +654,10 @@ void QgsMeshLayerUndoCommandMeshEdit::redo()
     mMeshEditor->applyEdit( edit );
 }
 
-QgsMeshLayerUndoCommandAddVertices::QgsMeshLayerUndoCommandAddVertices( QgsMeshEditor *meshEditor, const QVector<QgsMeshVertex> &vertices )
+QgsMeshLayerUndoCommandAddVertices::QgsMeshLayerUndoCommandAddVertices( QgsMeshEditor *meshEditor, const QVector<QgsMeshVertex> &vertices, double tolerance )
   : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
   , mVertices( vertices )
+  , mTolerance( tolerance )
 {}
 
 void QgsMeshLayerUndoCommandAddVertices::redo()
@@ -607,7 +670,7 @@ void QgsMeshLayerUndoCommandAddVertices::redo()
       if ( vertex.isEmpty() )
         continue;
       QgsMeshEditor::Edit edit;
-      mMeshEditor->applyAddVertex( edit, vertex );
+      mMeshEditor->applyAddVertex( edit, vertex, mTolerance );
       mEdits.append( edit );
     }
     mVertices.clear(); //not needed anymore, changes are store in mEdits
@@ -739,6 +802,11 @@ QgsTopologicalMesh &QgsMeshEditor::topologicalMesh()
   return mTopologicalMesh;
 }
 
+QgsTriangularMesh *QgsMeshEditor::triangularMesh()
+{
+  return mTriangularMesh;
+}
+
 QgsMeshLayerUndoCommandChangeZValue::QgsMeshLayerUndoCommandChangeZValue( QgsMeshEditor *meshEditor, const QList<int> &verticesIndexes, const QList<double> &newValues )
   : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
   , mVerticesIndexes( verticesIndexes )
@@ -841,7 +909,7 @@ void QgsMeshLayerUndoCommandSplitFaces::redo()
 {
   if ( !mFaceIndexes.isEmpty() )
   {
-    for ( int faceIndex : mFaceIndexes )
+    for ( int faceIndex : std::as_const( mFaceIndexes ) )
     {
       QgsMeshEditor::Edit edit;
       mMeshEditor->applySplit( edit, faceIndex );
@@ -866,8 +934,12 @@ void QgsMeshLayerUndoCommandAdvancedEditing::redo()
   if ( mAdvancedEditing )
   {
     QgsMeshEditor::Edit edit;
-    mMeshEditor->applyAdvancedEdit( edit, mAdvancedEditing );
-    mEdits.append( edit );
+    while ( !mAdvancedEditing->isFinished() )
+    {
+      mMeshEditor->applyAdvancedEdit( edit, mAdvancedEditing );
+      mEdits.append( edit );
+    }
+
     mAdvancedEditing = nullptr;
   }
   else

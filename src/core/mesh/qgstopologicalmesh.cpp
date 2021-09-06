@@ -345,8 +345,8 @@ void QgsTopologicalMesh::applyChanges( const QgsTopologicalMesh::Changes &change
 
   for ( int i = 0; i < changes.mFacesToRemove.count(); ++i )
   {
-    mMesh->faces[changes.removedFaceIndexInmesh( i )] = QgsMeshFace();
-    mFacesNeighborhood[changes.removedFaceIndexInmesh( i )] = FaceNeighbors();//changes.facesNeighborhoodToRemove[i];
+    mMesh->faces[changes.removedFaceIndexInMesh( i )] = QgsMeshFace();
+    mFacesNeighborhood[changes.removedFaceIndexInMesh( i )] = FaceNeighbors();//changes.facesNeighborhoodToRemove[i];
   }
 
   for ( int i = 0; i < changes.mVerticesToRemoveIndexes.count(); ++i )
@@ -420,8 +420,8 @@ void QgsTopologicalMesh::reverseChanges( const QgsTopologicalMesh::Changes &chan
 
   for ( int i = 0; i < changes.mFacesToRemove.count(); ++i )
   {
-    mMesh->faces[changes.removedFaceIndexInmesh( i )] = changes.mFacesToRemove.at( i );
-    mFacesNeighborhood[changes.removedFaceIndexInmesh( i )] = changes.mFacesNeighborhoodToRemove.at( i );
+    mMesh->faces[changes.removedFaceIndexInMesh( i )] = changes.mFacesToRemove.at( i );
+    mFacesNeighborhood[changes.removedFaceIndexInMesh( i )] = changes.mFacesNeighborhoodToRemove.at( i );
   }
 
   for ( int i = 0; i < changes.mVerticesToRemoveIndexes.count(); ++i )
@@ -530,6 +530,8 @@ QgsMeshEditingError QgsTopologicalMesh::checkConsistency() const
       if ( neighborIndex != -1 )
       {
         const QgsMeshFace &neighborFace = mMesh->faces.at( neighborIndex );
+        if ( neighborFace.isEmpty() )
+          return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidFace, faceIndex );
         int neighborSize = neighborFace.size();
         const FaceNeighbors &neighborhoodOfNeighbor = mFacesNeighborhood.at( neighborIndex );
         int posInNeighbor = vertexPositionInFace( *mMesh, vertexIndex, neighborIndex );
@@ -538,6 +540,15 @@ QgsMeshEditingError QgsTopologicalMesh::checkConsistency() const
       }
     }
 
+  }
+
+  for ( int vertexIndex = 0; vertexIndex < mMesh->vertexCount(); ++vertexIndex )
+  {
+    if ( mVertexToFace.at( vertexIndex ) != -1 )
+    {
+      if ( !mMesh->face( mVertexToFace.at( vertexIndex ) ).contains( vertexIndex ) )
+        return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, vertexIndex );
+    }
   }
 
   return QgsMeshEditingError();
@@ -752,7 +763,7 @@ int QgsTopologicalMesh::Changes::addedFaceIndexInMesh( int internalIndex ) const
   return internalIndex + mAddedFacesFirstIndex;
 }
 
-int QgsTopologicalMesh::Changes::removedFaceIndexInmesh( int internalIndex ) const
+int QgsTopologicalMesh::Changes::removedFaceIndexInMesh( int internalIndex ) const
 {
   if ( internalIndex == -1 )
     return -1;
@@ -1209,6 +1220,14 @@ void QgsTopologicalMesh::TopologicalFaces::clear()
 QVector<QgsTopologicalMesh::FaceNeighbors> QgsTopologicalMesh::TopologicalFaces::facesNeighborhood() const
 {
   return mFacesNeighborhood;
+}
+
+int QgsTopologicalMesh::TopologicalFaces::vertexToFace( int vertexIndex ) const
+{
+  if ( mVerticesToFace.contains( vertexIndex ) )
+    return mVerticesToFace.values( vertexIndex ).at( 0 );
+
+  return -1;
 }
 
 QgsTopologicalMesh QgsTopologicalMesh::createTopologicalMesh( QgsMesh *mesh, int maxVerticesPerFace, QgsMeshEditingError &error )
@@ -1834,7 +1853,7 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::splitFace( int faceIndex )
 }
 
 
-QgsTopologicalMesh::Changes QgsTopologicalMesh::addVertexInface( int includingFaceIndex, const QgsMeshVertex &vertex )
+QgsTopologicalMesh::Changes QgsTopologicalMesh::addVertexInFace( int includingFaceIndex, const QgsMeshVertex &vertex )
 {
   Changes changes;
   changes.mVerticesToAdd.append( vertex );
@@ -1894,6 +1913,195 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::addVertexInface( int includingFa
   mVertexToFace[mVertexToFace.count() - 1] = mMesh->faceCount() - 1;
   changes.mVertexToFaceToAdd[changes.mVertexToFaceToAdd.count() - 1] = mMesh->faceCount() - 1 ;
 
+  return changes;
+}
+
+QgsTopologicalMesh::Changes QgsTopologicalMesh::insertVertexInFacesEdge( int faceIndex, int position, const QgsMeshVertex &vertexToInsert )
+{
+  const QgsMeshFace face1 = mMesh->face( faceIndex );
+
+//  const int addedVertexIndex = mMesh->vertexCount();
+//  int newFaceIndexStartIndex = mMesh->faceCount();
+
+  Changes changes;
+  changes.mVerticesToAdd.append( vertexToInsert );
+  changes.mAddedFacesFirstIndex = mMesh->faceCount();
+  // triangulate the first face
+
+  int newVertexPositionInFace1 = position + 1;
+
+  auto triangulate = [this, &changes]( int removedFaceIndex, const QgsMeshVertex & newVertex, int newVertexPosition, QVector<int> &edgeFacesIndexes )->bool
+  {
+    const QgsMeshFace &initialFace = mMesh->face( removedFaceIndex );
+    changes.mFacesToRemove.append( initialFace );
+    changes.mFaceIndexesToRemove.append( removedFaceIndex );
+    changes.mFacesNeighborhoodToRemove.append( mFacesNeighborhood.at( removedFaceIndex ) );
+    const int addedVertexIndex = mMesh->vertexCount();
+
+    int faceStartGlobalIndex = mMesh->faceCount() + changes.mFacesToAdd.count();
+    int localStartIndex = changes.mFacesToAdd.count();
+
+    QVector<int> newBoudary = initialFace;
+    newBoudary.insert( newVertexPosition, addedVertexIndex );
+
+    try
+    {
+      QHash<p2t::Point *, int> mapPoly2TriPointToVertex;
+      std::vector<p2t::Point *> faceToFill( newBoudary.count() );
+      for ( int i = 0; i < newBoudary.count(); ++i )
+      {
+        QgsMeshVertex vert;
+
+        if ( newBoudary.at( i ) == addedVertexIndex )
+          vert = newVertex;
+        else
+          vert = mMesh->vertex( newBoudary.at( i ) );
+
+        faceToFill[i] = new p2t::Point( vert.x(), vert.y() );
+        mapPoly2TriPointToVertex.insert( faceToFill[i], newBoudary.at( i ) );
+      }
+
+      std::unique_ptr<p2t::CDT> cdt( new p2t::CDT( faceToFill ) );
+      cdt->Triangulate();
+      std::vector<p2t::Triangle *> triangles = cdt->GetTriangles();
+      QVector<QgsMeshFace> newFaces( triangles.size() );
+      for ( size_t i = 0; i < triangles.size(); ++i )
+      {
+        QgsMeshFace &face = newFaces[i];
+        face.resize( 3 );
+        for ( int j = 0; j < 3; j++ )
+        {
+          int vertInd = mapPoly2TriPointToVertex.value( triangles.at( i )->GetPoint( j ), -1 );
+          if ( vertInd == -1 )
+            throw std::exception();
+          face[j] = vertInd;
+        }
+      }
+
+      QgsMeshEditingError error;
+      QgsTopologicalMesh::TopologicalFaces topologicalFaces = createNewTopologicalFaces( newFaces, false, error );
+      if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
+        throw std::exception();
+
+      changes.mFacesToAdd.append( topologicalFaces.meshFaces() );
+      changes.mFacesNeighborhoodToAdd.append( topologicalFaces.mFacesNeighborhood );
+
+      // vertices to face changes
+      const QList<int> &verticesToFaceToChange = topologicalFaces.mVerticesToFace.keys();
+      for ( const int vtc : verticesToFaceToChange )
+        if ( vtc != addedVertexIndex && mVertexToFace.at( vtc ) == removedFaceIndex )
+          changes.mVerticesToFaceChanges.append(
+        {
+          vtc,
+          removedFaceIndex,
+          topologicalFaces.vertexToFace( vtc ) + faceStartGlobalIndex
+        } );
+
+      // reindex neighborhood for new faces
+      for ( int i = 0; i < topologicalFaces.mFaces.count(); ++i )
+      {
+        FaceNeighbors &faceNeighbors = changes.mFacesNeighborhoodToAdd[i + localStartIndex];
+        for ( int n = 0; n < faceNeighbors.count(); ++n )
+        {
+          if ( faceNeighbors.at( n ) != -1 )
+            faceNeighbors[n] += faceStartGlobalIndex; //reindex internal neighborhood
+        }
+      }
+
+      edgeFacesIndexes.resize( 2 );
+      // link neighborhood for boundaries of each side
+      for ( int i = 0 ; i < newBoudary.count(); ++i )
+      {
+        int vertexIndex = newBoudary.at( i );
+        QgsMeshVertexCirculator circulator = QgsMeshVertexCirculator( topologicalFaces, vertexIndex );
+        circulator.goBoundaryClockwise();
+        int newFaceBoundaryLocalIndex = localStartIndex + circulator.currentFaceIndex();
+
+        int newFaceBoundaryIndexInMesh = faceStartGlobalIndex;
+
+        int meshFaceBoundaryIndex;
+        if ( i == newVertexPosition )
+        {
+          meshFaceBoundaryIndex = -1; //face that are on the opposite side of the edge, filled later
+          edgeFacesIndexes[0] =  newFaceBoundaryLocalIndex;
+        }
+        else if ( i == ( newVertexPosition + newBoudary.count() - 1 ) % newBoudary.count() )
+        {
+          meshFaceBoundaryIndex = -1; //face that are on the opposite side of the edge, filled later
+          edgeFacesIndexes[1] =  newFaceBoundaryLocalIndex;
+        }
+        else
+          meshFaceBoundaryIndex = mFacesNeighborhood.at( removedFaceIndex ).at( vertexPositionInFace( vertexIndex, initialFace ) );
+
+        const QgsMeshFace &newFace = circulator.currentFace();
+        int positionInNewFaces = vertexPositionInFace( vertexIndex, newFace );
+
+        if ( meshFaceBoundaryIndex != -1 )
+        {
+          const QgsMeshFace meshFace = mMesh->face( meshFaceBoundaryIndex );
+          int positionInMeshFaceBoundary = vertexPositionInFace( *mMesh, vertexIndex, meshFaceBoundaryIndex );
+          positionInMeshFaceBoundary = ( positionInMeshFaceBoundary - 1 + meshFace.count() ) % meshFace.count(); //take the position just before
+
+          changes.mNeighborhoodChanges.append( {meshFaceBoundaryIndex,
+                                                positionInMeshFaceBoundary,
+                                                removedFaceIndex,
+                                                newFaceBoundaryIndexInMesh +
+                                                circulator.currentFaceIndex()} );
+        }
+
+        changes.mFacesNeighborhoodToAdd[newFaceBoundaryLocalIndex][positionInNewFaces] = meshFaceBoundaryIndex;
+      }
+
+      qDeleteAll( faceToFill );
+    }
+    catch ( ... )
+    {
+      return false;
+    }
+
+    return true;
+  };
+
+  QVector<int> edgeFacesIndexes;
+  if ( !triangulate( faceIndex, vertexToInsert, newVertexPositionInFace1, edgeFacesIndexes ) )
+    return Changes();
+
+  changes.mVertexToFaceToAdd.append( edgeFacesIndexes.at( 0 ) + changes.mAddedFacesFirstIndex );
+
+  int addedVertexIndex = mMesh->vertexCount();
+
+  //if exist, triangulate the second face if exists
+  int face2Index = mFacesNeighborhood.at( faceIndex ).at( position );
+  if ( face2Index != -1 )
+  {
+    const QgsMeshFace &face2 = mMesh->face( face2Index );
+    int vertexPositionInFace2 = vertexPositionInFace( face1.at( position ), face2 );
+    QVector<int> edgeFacesIndexesFace2;
+    if ( !triangulate( face2Index, vertexToInsert, vertexPositionInFace2, edgeFacesIndexesFace2 ) )
+      return Changes();
+
+    //link neighborhood with other side
+    const QgsMeshFace &firstFaceSide1 = changes.mFacesToAdd.at( edgeFacesIndexes.at( 0 ) );
+    int pos1InFaceSide1 = vertexPositionInFace( addedVertexIndex, firstFaceSide1 );
+
+    const QgsMeshFace &secondFaceSide1 = changes.mFacesToAdd.at( edgeFacesIndexes.at( 1 ) );
+    int pos2InFaceSide1 = vertexPositionInFace( addedVertexIndex, secondFaceSide1 );
+    pos2InFaceSide1 = ( pos2InFaceSide1 + secondFaceSide1.size() - 1 ) % secondFaceSide1.size();
+
+    const QgsMeshFace &firstFaceSide2 = changes.mFacesToAdd.at( edgeFacesIndexesFace2.at( 0 ) );
+    int pos1InFaceSide2 = vertexPositionInFace( addedVertexIndex, firstFaceSide2 );
+
+    const QgsMeshFace &secondFaceSide2 = changes.mFacesToAdd.at( edgeFacesIndexesFace2.at( 1 ) );
+    int pos2InFaceSide2 = vertexPositionInFace( addedVertexIndex, secondFaceSide2 );
+    pos2InFaceSide2 = ( pos2InFaceSide2 + secondFaceSide1.size() - 1 ) % secondFaceSide1.size();
+
+    changes.mFacesNeighborhoodToAdd[edgeFacesIndexes.at( 0 )][pos1InFaceSide1] = edgeFacesIndexesFace2.at( 1 ) + changes.mAddedFacesFirstIndex;
+    changes.mFacesNeighborhoodToAdd[edgeFacesIndexes.at( 1 )][pos2InFaceSide1] = edgeFacesIndexesFace2.at( 0 ) + changes.mAddedFacesFirstIndex;
+    changes.mFacesNeighborhoodToAdd[edgeFacesIndexesFace2.at( 0 )][pos1InFaceSide2] = edgeFacesIndexes.at( 1 ) + changes.mAddedFacesFirstIndex;
+    changes.mFacesNeighborhoodToAdd[edgeFacesIndexesFace2.at( 1 )][pos2InFaceSide2] = edgeFacesIndexes.at( 0 ) + changes.mAddedFacesFirstIndex;
+  }
+
+  applyChanges( changes );
   return changes;
 }
 

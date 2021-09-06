@@ -3862,7 +3862,31 @@ void QgisApp::createToolBars()
   QgsMapToolEditMeshFrame *editMeshMapTool = qobject_cast<QgsMapToolEditMeshFrame *>( mMapTools->mapTool( QgsAppMapTools::EditMeshFrame ) );
   if ( editMeshMapTool )
   {
-    mMeshToolBar->addActions( editMeshMapTool->actions() );
+    mMeshToolBar->addAction( editMeshMapTool->digitizeAction() );
+
+    QToolButton *meshSelectToolButton = new QToolButton();
+    meshSelectToolButton->setPopupMode( QToolButton::MenuButtonPopup );
+    meshSelectToolButton->addActions( editMeshMapTool->selectActions() );
+    meshSelectToolButton->setDefaultAction( editMeshMapTool->defaultSelectActions() );
+    mMeshToolBar->addWidget( meshSelectToolButton );
+
+    mMeshToolBar->addAction( ( editMeshMapTool->transformAction() ) );
+
+    QToolButton *meshForceByLinesToolButton = new QToolButton();
+    meshForceByLinesToolButton->setPopupMode( QToolButton::MenuButtonPopup );
+    QMenu *meshForceByLineMenu = new QMenu();
+
+    //meshForceByLineMenu->addActions( editMeshMapTool->forceByLinesActions() );
+    meshForceByLinesToolButton->setDefaultAction( editMeshMapTool->defaultForceAction() );
+    meshForceByLineMenu->addSeparator();
+    meshForceByLineMenu->addAction( editMeshMapTool->forceByLineWidgetActionSettings() );
+    meshForceByLinesToolButton->setMenu( meshForceByLineMenu );
+    mMeshToolBar->addWidget( meshForceByLinesToolButton );
+
+    digitizeMenu->addAction( mActionStreamDigitize );
+    digitizeMenu->addSeparator();
+    digitizeMenu->addAction( mMapTools->streamDigitizingSettingsAction() );
+    mDigitizeModeToolButton->setMenu( digitizeMenu );
     for ( QAction *mapToolAction : editMeshMapTool->mapToolActions() )
       mMapToolGroup->addAction( mapToolAction );
   }
@@ -11562,11 +11586,8 @@ void QgisApp::enableMeshEditingTools( bool enable )
   if ( !mMapTools )
     return;
   QgsMapToolEditMeshFrame *editMeshMapTool = qobject_cast<QgsMapToolEditMeshFrame *>( mMapTools->mapTool( QgsAppMapTools::EditMeshFrame ) );
-  if ( editMeshMapTool )
-  {
-    for ( QAction *action : editMeshMapTool->actions() )
-      action->setEnabled( enable );
-  }
+
+  editMeshMapTool->setActionsEnable( enable );
 }
 
 QList<QgsMapToolCapture *> QgisApp::captureTools()
