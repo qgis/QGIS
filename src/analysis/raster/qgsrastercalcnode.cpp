@@ -388,7 +388,8 @@ QString QgsRasterCalcNode::toString( bool cStyle ) const
         QString argOne = mFunctionArgs.at( 0 )->toString( cStyle );
         QString argTwo = mFunctionArgs.at( 1 )->toString( cStyle );
         QString argThree = mFunctionArgs.at( 2 )->toString( cStyle );
-        result = QStringLiteral( "if( %1 , %2 , %3 )" ).arg( argOne ).arg( argTwo ).arg( argThree );
+        //if ( cStyle )
+        result =  QStringLiteral( " %1 ? %2 : %3 " ).arg( argOne ).arg( argTwo ).arg( argThree );
       }
       break;
   }

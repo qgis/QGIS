@@ -750,8 +750,8 @@ void TestQgsRasterCalculator::toString()
   QCOMPARE( _test( QStringLiteral( R"raw(("r@1"<100.09)*0.1)raw" ), true ),
             QString( R"raw(( float ) ( ( float ) "r@1" < ( float ) 100.09 ) * ( float ) 0.1)raw" ) );
   //test the conditional statement
-  QCOMPARE( _test( QStringLiteral( "if( \"raster@1\" > 5 , 100 , 5)" ), false ), QString( "if( \"raster@1\" > 5 , 100 , 5 )" ) );
-  QCOMPARE( _test( QStringLiteral( "if( \"raster@1\" > 5 , 100 , 5)" ), true ), QString( "if( ( float ) ( ( float ) \"raster@1\" > ( float ) 5 ) , ( float ) 100 , ( float ) 5 )" ) );
+  QCOMPARE( _test( QStringLiteral( "if( \"raster@1\" > 5 , 100 , 5)" ), false ), QString( " \"raster@1\" > 5 ? 100 : 5 " ) );
+  QCOMPARE( _test( QStringLiteral( "if( \"raster@1\" > 5 , 100 , 5)" ), true ), QString( " ( float ) ( ( float ) \"raster@1\" > ( float ) 5 ) ? ( float ) 100 : ( float ) 5 " ) );
 
   QString error;
   std::unique_ptr< QgsRasterCalcNode > calcNode( QgsRasterCalcNode::parseRasterCalcString( QStringLiteral( "min( \"raster@1\" )" ), error ) );
