@@ -731,6 +731,10 @@ void QgsMapCanvas::rendererJobFinished()
       // from the cache
       mPreviousRenderedItemResults->transferResults( mRenderedItemResults.get() );
     }
+    if ( mPreviousRenderedItemResults )
+    {
+      mPreviousRenderedItemResults->eraseResultsFromLayers( mJob->mapSettings().layerIds() );
+    }
 
     mRenderedItemResults = std::move( renderedItemResults );
     mRenderedItemResultsOutdated = false;
