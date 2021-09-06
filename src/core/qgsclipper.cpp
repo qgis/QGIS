@@ -43,7 +43,7 @@ QgsLineString QgsClipper::clipped3dLine( const QgsCurve &curve, const QgsBox3d &
 
   double p0x, p0y, p0z, p1x = 0.0, p1y = 0.0, p1z = 0.0; //original coordinates
   double p1x_c, p1y_c, p1z_c; //clipped end coordinates
-  double lastClipX = 0.0, lastClipY = 0., lastClipZ = 0.0; //last successfully clipped coords
+  double lastClipX = 0.0, lastClipY = 0.0, lastClipZ = 0.0; // last successfully clipped coordinates
 
   QgsLineString line;
 
