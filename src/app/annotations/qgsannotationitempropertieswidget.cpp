@@ -95,10 +95,16 @@ void QgsAnnotationItemPropertiesWidget::onChanged()
   if ( !mLayer )
     return;
 
-  // set the annotation layer's item's properties to match the widget
-  std::unique_ptr< QgsAnnotationItem > newItem( mItemWidget->createItem() );
+  // we refetch the item from the layer and update it, as the item's geometry (or some other property)
+  // may have changed and we always want to use the current properties
 
-  mLayer->replaceItem( mMapLayerConfigWidgetContext.annotationId(), newItem.release() );
+  if ( QgsAnnotationItem *existingItem = mLayer->item( mMapLayerConfigWidgetContext.annotationId() ) )
+  {
+    std::unique_ptr< QgsAnnotationItem > newItem( existingItem->clone() );
+    mItemWidget->updateItem( newItem.get() );
+
+    mLayer->replaceItem( mMapLayerConfigWidgetContext.annotationId(), newItem.release() );
+  }
 }
 
 void QgsAnnotationItemPropertiesWidget::setItemId( const QString &itemId )

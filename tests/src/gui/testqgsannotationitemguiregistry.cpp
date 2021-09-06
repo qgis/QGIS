@@ -80,6 +80,7 @@ class TestItemWidget: public QgsAnnotationItemBaseWidget
     {}
 
     QgsAnnotationItem *createItem() override { return nullptr; }
+    void updateItem( QgsAnnotationItem * ) override {}
 
 };
 
