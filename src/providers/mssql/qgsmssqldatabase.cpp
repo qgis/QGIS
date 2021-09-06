@@ -20,6 +20,7 @@
 
 #include <QCoreApplication>
 #include <QtDebug>
+#include <QFile>
 #include <QThread>
 
 
