@@ -26,6 +26,15 @@ class QgsRenderedItemResultsSpatialIndex : public RTree<const QgsRenderedItemDet
 {
   public:
 
+    explicit QgsRenderedItemResultsSpatialIndex( const QgsRectangle &maxBounds )
+      : mXMin( maxBounds.xMinimum() )
+      , mYMin( maxBounds.yMinimum() )
+      , mXRes( ( std::numeric_limits< float >::max() - 1 ) / ( maxBounds.xMaximum() - maxBounds.xMinimum() ) )
+      , mYRes( ( std::numeric_limits< float >::max() - 1 ) / ( maxBounds.yMaximum() - maxBounds.yMinimum() ) )
+      , mMaxBounds( maxBounds )
+      , mUseScale( !maxBounds.isNull() )
+    {}
+
     void insert( const QgsRenderedItemDetails *details, const QgsRectangle &bounds )
     {
       std::array< float, 4 > scaledBounds = scaleBounds( bounds );
@@ -59,9 +68,25 @@ class QgsRenderedItemResultsSpatialIndex : public RTree<const QgsRenderedItemDet
     }
 
   private:
+    double mXMin = 0;
+    double mYMin = 0;
+    double mXRes = 1;
+    double mYRes = 1;
+    QgsRectangle mMaxBounds;
+    bool mUseScale = false;
+
     std::array<float, 4> scaleBounds( const QgsRectangle &bounds ) const
     {
-      return
+      if ( mUseScale )
+        return
+      {
+        static_cast< float >( ( std::max( bounds.xMinimum(), mMaxBounds.xMinimum() ) - mXMin ) / mXRes ),
+        static_cast< float >( ( std::max( bounds.yMinimum(), mMaxBounds.yMinimum() ) - mYMin ) / mYRes ),
+        static_cast< float >( ( std::min( bounds.xMaximum(), mMaxBounds.xMaximum() ) - mXMin ) / mXRes ),
+        static_cast< float >( ( std::min( bounds.yMaximum(), mMaxBounds.yMaximum() ) - mYMin ) / mYRes )
+      };
+      else
+        return
       {
         static_cast< float >( bounds.xMinimum() ),
         static_cast< float >( bounds.yMinimum() ),
@@ -72,8 +97,9 @@ class QgsRenderedItemResultsSpatialIndex : public RTree<const QgsRenderedItemDet
 };
 ///@endcond
 
-QgsRenderedItemResults::QgsRenderedItemResults()
-  : mAnnotationItemsIndex( std::make_unique< QgsRenderedItemResultsSpatialIndex >() )
+QgsRenderedItemResults::QgsRenderedItemResults( const QgsRectangle &extent )
+  : mExtent( extent )
+  , mAnnotationItemsIndex( std::make_unique< QgsRenderedItemResultsSpatialIndex >( mExtent ) )
 {
 
 }

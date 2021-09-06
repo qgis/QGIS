@@ -23,7 +23,14 @@ Stores collated details of rendered items during a map rendering operation.
 #include "qgsrendereditemresults.h"
 %End
   public:
-    QgsRenderedItemResults();
+
+    QgsRenderedItemResults( const QgsRectangle &extent = QgsRectangle() );
+%Docstring
+Constructor for QgsRenderedItemResults.
+
+The ``extent`` argument can be used to specify an expected maximal extent for items which
+will be stored in the results. This helps to optimise the spatial indices used by the object.
+%End
     ~QgsRenderedItemResults();
 
 
