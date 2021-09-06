@@ -70,8 +70,20 @@ an open shape (linestring).
 %End
 
     static void trimPolygon( QPolygonF &pts, const QgsRectangle &clipRect );
+%Docstring
+Trims the given polygon to a rectangular box. Modify the given polygon.
+
+:param pts: polygon as 2D coordinates
+:param clipRect: clipping rectangle
+%End
 
     static void trimPolygon( QgsLineString &pts, const QgsBox3d &clipRect );
+%Docstring
+Trims the given polygon to a pseudo 3D box. Modify the given polygon.
+
+:param pts: polygon as 2D or 3D coordinates
+:param clipRect: clipping 3D box
+%End
 
     static QgsLineString clipped3dLine( const QgsCurve &curve, const QgsBox3d &clipExtent );
 %Docstring
