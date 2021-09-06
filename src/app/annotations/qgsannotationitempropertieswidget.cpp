@@ -76,6 +76,9 @@ void QgsAnnotationItemPropertiesWidget::apply()
 
 void QgsAnnotationItemPropertiesWidget::onChanged()
 {
+  if ( !mLayer )
+    return;
+
   // set the annotation layer's item's properties to match the widget
   std::unique_ptr< QgsAnnotationItem > newItem( mItemWidget->createItem() );
 
@@ -84,6 +87,9 @@ void QgsAnnotationItemPropertiesWidget::onChanged()
 
 void QgsAnnotationItemPropertiesWidget::setItemId( const QString &itemId )
 {
+  if ( !mLayer )
+    return;
+
   // try to retrieve matching item
   bool setItem = false;
   if ( QgsAnnotationItem *item = mLayer->item( itemId ) )
