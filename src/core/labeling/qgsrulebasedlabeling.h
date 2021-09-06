@@ -41,6 +41,8 @@ class QgsRuleBasedLabelProvider;
  */
 class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 {
+    Q_OBJECT
+
   public:
     class Rule;
     typedef QList<QgsRuleBasedLabeling::Rule *> RuleList;

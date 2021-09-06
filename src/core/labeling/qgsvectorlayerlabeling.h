@@ -42,17 +42,6 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling : public QObject
 {
     Q_OBJECT
 
-#ifdef SIP_RUN
-    SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( sipCpp->type() == "simple" )
-      sipType = sipType_QgsVectorLayerSimpleLabeling;
-    else if ( sipCpp->type() == "rule-based" )
-      sipType = sipType_QgsRuleBasedLabeling;
-    else
-      sipType = 0;
-    SIP_END
-#endif
-
   public:
     //! Default constructor
     QgsAbstractVectorLayerLabeling() = default;
@@ -167,6 +156,8 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling : public QObject
  */
 class CORE_EXPORT QgsVectorLayerSimpleLabeling : public QgsAbstractVectorLayerLabeling
 {
+    Q_OBJECT
+
   public:
     //! Constructs simple labeling configuration with given initial settings
     explicit QgsVectorLayerSimpleLabeling( const QgsPalLayerSettings &settings );
