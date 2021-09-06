@@ -703,7 +703,8 @@ void QgsLayerStylingWidget::setCurrentPage( QgsLayerStylingWidget::Page page )
 void QgsLayerStylingWidget::setAnnotationItem( QgsAnnotationLayer *layer, const QString &itemId )
 {
   mContext.setAnnotationId( itemId );
-  setLayer( layer );
+  if ( layer )
+    setLayer( layer );
 
   if ( QgsMapLayerConfigWidget *configWidget = qobject_cast< QgsMapLayerConfigWidget * >( mWidgetStack->mainPanel() ) )
   {

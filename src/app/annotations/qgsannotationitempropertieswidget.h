@@ -47,7 +47,8 @@ class QgsAnnotationItemPropertiesWidget : public QgsMapLayerConfigWidget
 
     QStackedWidget *mStack = nullptr;
     QPointer< QgsAnnotationLayer > mLayer;
-    QgsAnnotationItemBaseWidget *mItemWidget = nullptr;
+    QPointer< QgsAnnotationItemBaseWidget > mItemWidget;
+    QWidget *mPageNoItem = nullptr;
 
 };
 

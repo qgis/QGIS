@@ -24,11 +24,27 @@
 #include "qgsannotationitemguiregistry.h"
 #include <QStackedWidget>
 #include <QHBoxLayout>
+#include <QLabel>
 
 QgsAnnotationItemPropertiesWidget::QgsAnnotationItemPropertiesWidget( QgsAnnotationLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
 {
   mStack = new QStackedWidget();
+
+  mPageNoItem = new QWidget();
+  QSizePolicy sizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+  sizePolicy.setHorizontalStretch( 0 );
+  sizePolicy.setVerticalStretch( 0 );
+  sizePolicy.setHeightForWidth( mPageNoItem->sizePolicy().hasHeightForWidth() );
+  mPageNoItem->setSizePolicy( sizePolicy );
+  QVBoxLayout *verticalLayout = new QVBoxLayout();
+  verticalLayout->setContentsMargins( 0, 0, 0, 0 );
+  QLabel *label = new QLabel();
+  label->setText( tr( "No item selected." ) );
+  verticalLayout->addWidget( label );
+  mPageNoItem->setLayout( verticalLayout );
+  mStack->addWidget( mPageNoItem );
+  mStack->setCurrentWidget( mPageNoItem );
 
   setDockMode( true );
 
@@ -92,7 +108,8 @@ void QgsAnnotationItemPropertiesWidget::setItemId( const QString &itemId )
 
   // try to retrieve matching item
   bool setItem = false;
-  if ( QgsAnnotationItem *item = mLayer->item( itemId ) )
+  QgsAnnotationItem *item = !itemId.isEmpty() ? mLayer->item( itemId ) : nullptr;
+  if ( item )
   {
     if ( mItemWidget )
     {
@@ -109,10 +126,14 @@ void QgsAnnotationItemPropertiesWidget::setItemId( const QString &itemId )
         setItem = true;
 
         QWidget *prevWidget = mStack->currentWidget();
-        mStack->removeWidget( prevWidget );
-        delete prevWidget;
+        if ( prevWidget != mPageNoItem )
+        {
+          mStack->removeWidget( prevWidget );
+          delete prevWidget;
+        }
 
         mStack->addWidget( mItemWidget );
+        mStack->setCurrentWidget( mItemWidget );
         connect( mItemWidget, &QgsAnnotationItemBaseWidget::itemChanged, this, &QgsAnnotationItemPropertiesWidget::onChanged );
         mItemWidget->setDockMode( dockMode() );
         connect( mItemWidget, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
@@ -122,7 +143,14 @@ void QgsAnnotationItemPropertiesWidget::setItemId( const QString &itemId )
 
   if ( !setItem )
   {
-    // show a "no item" widget
+    // show the "no item" widget
+    QWidget *prevWidget = mStack->currentWidget();
+    if ( prevWidget != mPageNoItem )
+    {
+      mStack->removeWidget( prevWidget );
+      delete prevWidget;
+    }
+    mStack->setCurrentWidget( mPageNoItem );
   }
 }
 
