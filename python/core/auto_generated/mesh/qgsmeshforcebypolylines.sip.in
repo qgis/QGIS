@@ -46,7 +46,7 @@ Sets the tolerance in redering coordinate system unit
 Sets whether vertices will be added when the lines will intersect internal edges of faces, default is ``False``
 %End
 
-    void setDefaultZvalue( double defaultZvalue );
+    void setDefaultZValue( double defaultZValue );
 %Docstring
 Sets the default value of Z coordinate to use for new vertices, this value will be used if the Z value
 %End
