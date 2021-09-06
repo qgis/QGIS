@@ -132,13 +132,13 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
      * returns empty string on error
      * \since QGIS 3.0
      */
-    QString createSavepoint( const QString &savePointId, QString &error SIP_OUT );
+    virtual QString createSavepoint( const QString &savePointId, QString &error SIP_OUT );
 
     /**
      * rollback to save point, the save point is maintained and is "undertied"
      * \since QGIS 3.0
      */
-    bool rollbackToSavepoint( const QString &name, QString &error SIP_OUT );
+    virtual bool rollbackToSavepoint( const QString &name, QString &error SIP_OUT );
 
     /**
      * dirty save point such that next call to createSavepoint will create a new one
@@ -179,17 +179,16 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
     QgsTransaction( const QString &connString ) SIP_SKIP;
 
     QString mConnString;
+    bool mTransactionActive;
+    QStack< QString > mSavepoints;
+    bool mLastSavePointIsDirty;
 
   private slots:
     void onLayerDeleted();
 
   private:
 
-    bool mTransactionActive;
     QSet<QgsVectorLayer *> mLayers;
-
-    QStack< QString > mSavepoints;
-    bool mLastSavePointIsDirty;
 
     void setLayerTransactionIds( QgsTransaction *transaction );
 

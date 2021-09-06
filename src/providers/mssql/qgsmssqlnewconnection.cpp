@@ -27,6 +27,7 @@
 #include "qgsmssqlprovider.h"
 #include "qgssettings.h"
 #include "qgsmssqlconnection.h"
+#include "qgsmssqldatabase.h"
 #include "qgsgui.h"
 
 QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
@@ -305,11 +306,11 @@ QSqlDatabase QgsMssqlNewConnection::getDatabase( const QString &name ) const
     database = item->text();
   }
 
-  return QgsMssqlConnection::getDatabase( txtService->text().trimmed(),
-                                          txtHost->text().trimmed(),
-                                          database,
-                                          txtUsername->text().trimmed(),
-                                          txtPassword->text().trimmed() );
+  return QgsMssqlDatabase::getDatabase( txtService->text().trimmed(),
+                                        txtHost->text().trimmed(),
+                                        database,
+                                        txtUsername->text().trimmed(),
+                                        txtPassword->text().trimmed() );
 }
 
 
@@ -378,7 +379,7 @@ bool QgsMssqlNewConnection::testExtentInGeometryColumns() const
 {
   QSqlDatabase db = getDatabase();
 
-  if ( !QgsMssqlConnection::openDatabase( db ) )
+  if ( !QgsMssqlDatabase::openDatabase( db ) )
     return false;
 
   const QString queryStr = QStringLiteral( "SELECT qgis_xmin,qgis_xmax,qgis_ymin,qgis_ymax FROM geometry_columns" );
@@ -394,7 +395,7 @@ bool QgsMssqlNewConnection::testPrimaryKeyInGeometryColumns() const
 {
   QSqlDatabase db = getDatabase();
 
-  if ( !QgsMssqlConnection::openDatabase( db ) )
+  if ( !QgsMssqlDatabase::openDatabase( db ) )
     return false;
 
   const QString queryStr = QStringLiteral( "SELECT qgis_pkey FROM geometry_columns" );
