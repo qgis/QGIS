@@ -221,6 +221,16 @@ class CORE_EXPORT QgsAnnotationItem
      */
     void setSymbologyReferenceScale( double scale ) { mReferenceScale = scale; }
 
+    /**
+     * Returns the geometry to use as a rubber band for map tools which manipulate the item.
+     *
+     * The default implementation returns a null geometry, which indicates that the item bounds should
+     * be used as the rubber band.
+     *
+     * \since QGIS 3.22
+     */
+    virtual QgsGeometry rubberBandGeometry() const;
+
   protected:
 
     /**

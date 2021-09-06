@@ -88,6 +88,14 @@ class TestQgsAnnotationLineItem(unittest.TestCase):
         item.transform(transform)
         self.assertEqual(item.geometry().asWkt(), 'LineString (112 213, 114 213, 114 215)')
 
+    def test_rubberbandgeometry(self):
+        """
+        Test creating rubber band geometry
+        """
+        item = QgsAnnotationLineItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]))
+        band = item.rubberBandGeometry()
+        self.assertEqual(band.asWkt(), 'LineString (12 13, 14 13, 14 15)')
+
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")
         elem = doc.createElement('test')

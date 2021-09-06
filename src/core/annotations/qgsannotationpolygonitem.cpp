@@ -121,6 +121,11 @@ QList<QgsAnnotationItemNode> QgsAnnotationPolygonItem::nodes() const
   return res;
 }
 
+QgsGeometry QgsAnnotationPolygonItem::rubberBandGeometry() const
+{
+  return QgsGeometry( mPolygon->clone() );
+}
+
 bool QgsAnnotationPolygonItem::transform( const QTransform &transform )
 {
   mPolygon->transform( transform );
