@@ -83,14 +83,6 @@ Q_NOWARN_DEPRECATED_POP
 
 QPolygonF QgsSymbol::_getLineString( QgsRenderContext &context, const QgsCurve &curve, bool clipToExtent )
 {
-  printf( "_getLineString(in): %d\n", curve.numPoints() );
-  for ( int i = 0 ; i < 10 && i < curve.numPoints(); i++ )
-  {
-    QgsPoint p;
-    QgsVertexId::VertexType t;
-    curve.pointAt( i, p, t );
-    printf( "_getLineString(in):   %f, %f\n", p.x(), p.y() );
-  }
   const unsigned int nPoints = curve.numPoints();
 
   QgsCoordinateTransform ct = context.coordinateTransform();
@@ -157,25 +149,11 @@ QPolygonF QgsSymbol::_getLineString( QgsRenderContext &context, const QgsCurve &
     mtp.transformInPlace( ptr->rx(), ptr->ry() );
   }
 
-  printf( "_getLineString(out): %d\n", out.size() );
-  for ( int i = 0 ; i < 10 && i < out.size(); i++ )
-  {
-    printf( "_getLineString(out):   %f, %f\n", out.at( i ).x(), out.at( i ).y() );
-  }
-
   return out;
 }
 
 QPolygonF QgsSymbol::_getPolygonRing( QgsRenderContext &context, const QgsCurve &curve, const bool clipToExtent, const bool isExteriorRing, const bool correctRingOrientation )
 {
-  printf( "_getPolygonRing(in): %d\n", curve.numPoints() );
-  for ( int i = 0 ; i < 10 && i < curve.numPoints(); i++ )
-  {
-    QgsPoint p;
-    QgsVertexId::VertexType t;
-    curve.pointAt( i, p, t );
-    printf( "_getPolygonRing(in):   %f, %f\n", p.x(), p.y() );
-  }
   const QgsCoordinateTransform ct = context.coordinateTransform();
   const QgsMapToPixel &mtp = context.mapToPixel();
 
@@ -254,11 +232,6 @@ QPolygonF QgsSymbol::_getPolygonRing( QgsRenderContext &context, const QgsCurve 
   if ( !out.empty() && !poly.isClosed() )
     out << out.at( 0 );
 
-  printf( "_getPolygonRing(out): %d\n", out.size() );
-  for ( int i = 0 ; i < 10 && i < out.size(); i++ )
-  {
-    printf( "_getPolygonRing(out):   %f, %f\n", out.at( i ).x(), out.at( i ).y() );
-  }
   return out;
 }
 
