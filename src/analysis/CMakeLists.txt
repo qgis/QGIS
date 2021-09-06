@@ -56,6 +56,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcentroid.cpp
   processing/qgsalgorithmclip.cpp
   processing/qgsalgorithmconditionalbranch.cpp
+  processing/qgsalgorithmconditionalmerge.cpp
   processing/qgsalgorithmconstantraster.cpp
   processing/qgsalgorithmconverttocurves.cpp
   processing/qgsalgorithmconvexhull.cpp

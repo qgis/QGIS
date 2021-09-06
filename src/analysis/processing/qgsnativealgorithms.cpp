@@ -39,6 +39,7 @@
 #include "qgsalgorithmcentroid.h"
 #include "qgsalgorithmclip.h"
 #include "qgsalgorithmconditionalbranch.h"
+#include "qgsalgorithmconditionalmerge.h"
 #include "qgsalgorithmconstantraster.h"
 #include "qgsalgorithmconverttocurves.h"
 #include "qgsalgorithmconvexhull.h"
@@ -287,6 +288,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsCollectAlgorithm() );
   addAlgorithm( new QgsCombineStylesAlgorithm() );
   addAlgorithm( new QgsConditionalBranchAlgorithm() );
+  addAlgorithm( new QgsConditionalMergeAlgorithm() );
   addAlgorithm( new QgsConstantRasterAlgorithm() );
   addAlgorithm( new QgsConvertToCurvesAlgorithm() );
   addAlgorithm( new QgsConvexHullAlgorithm() );

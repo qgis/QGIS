@@ -1,9 +1,9 @@
 /***************************************************************************
-                         qgsalgorithmconditionalbranch.cpp
+                         qgsalgorithmconditionalmerge.cpp
                          ---------------------
-    begin                : March 2020
-    copyright            : (C) 2020 by Nyall Dawson
-    email                : nyall dot dawson at gmail dot com
+    begin                : September 2021
+    copyright            : (C) 2021 by Antoine Facchini
+    email                : antoine dot facchini @oslandia dot com
  ***************************************************************************/
 
 /***************************************************************************

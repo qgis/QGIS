@@ -1,9 +1,9 @@
 /***************************************************************************
-                         qgsalgorithmconditionalbranch.h
+                         qgsalgorithmconditionalmerge.h
                          ---------------------
     begin                : September 2021
     copyright            : (C) 2021 by Antoine Facchini
-    email                : zntoine dot facchini at oslandia dot com
+    email                : antoine dot facchini @oslandia dot com
  ***************************************************************************/
 
 /***************************************************************************
