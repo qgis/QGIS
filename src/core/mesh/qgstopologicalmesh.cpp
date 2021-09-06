@@ -1941,24 +1941,24 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::insertVertexInFacesEdge( int fac
     int faceStartGlobalIndex = mMesh->faceCount() + changes.mFacesToAdd.count();
     int localStartIndex = changes.mFacesToAdd.count();
 
-    QVector<int> newBoudary = initialFace;
-    newBoudary.insert( newVertexPosition, addedVertexIndex );
+    QVector<int> newBoundary = initialFace;
+    newBoundary.insert( newVertexPosition, addedVertexIndex );
 
     try
     {
       QHash<p2t::Point *, int> mapPoly2TriPointToVertex;
-      std::vector<p2t::Point *> faceToFill( newBoudary.count() );
-      for ( int i = 0; i < newBoudary.count(); ++i )
+      std::vector<p2t::Point *> faceToFill( newBoundary.count() );
+      for ( int i = 0; i < newBoundary.count(); ++i )
       {
         QgsMeshVertex vert;
 
-        if ( newBoudary.at( i ) == addedVertexIndex )
+        if ( newBoundary.at( i ) == addedVertexIndex )
           vert = newVertex;
         else
-          vert = mMesh->vertex( newBoudary.at( i ) );
+          vert = mMesh->vertex( newBoundary.at( i ) );
 
         faceToFill[i] = new p2t::Point( vert.x(), vert.y() );
-        mapPoly2TriPointToVertex.insert( faceToFill[i], newBoudary.at( i ) );
+        mapPoly2TriPointToVertex.insert( faceToFill[i], newBoundary.at( i ) );
       }
 
       std::unique_ptr<p2t::CDT> cdt( new p2t::CDT( faceToFill ) );
@@ -2010,9 +2010,9 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::insertVertexInFacesEdge( int fac
 
       edgeFacesIndexes.resize( 2 );
       // link neighborhood for boundaries of each side
-      for ( int i = 0 ; i < newBoudary.count(); ++i )
+      for ( int i = 0 ; i < newBoundary.count(); ++i )
       {
-        int vertexIndex = newBoudary.at( i );
+        int vertexIndex = newBoundary.at( i );
         QgsMeshVertexCirculator circulator = QgsMeshVertexCirculator( topologicalFaces, vertexIndex );
         circulator.goBoundaryClockwise();
         int newFaceBoundaryLocalIndex = localStartIndex + circulator.currentFaceIndex();
@@ -2025,7 +2025,7 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::insertVertexInFacesEdge( int fac
           meshFaceBoundaryIndex = -1; //face that are on the opposite side of the edge, filled later
           edgeFacesIndexes[0] =  newFaceBoundaryLocalIndex;
         }
-        else if ( i == ( newVertexPosition + newBoudary.count() - 1 ) % newBoudary.count() )
+        else if ( i == ( newVertexPosition + newBoundary.count() - 1 ) % newBoundary.count() )
         {
           meshFaceBoundaryIndex = -1; //face that are on the opposite side of the edge, filled later
           edgeFacesIndexes[1] =  newFaceBoundaryLocalIndex;

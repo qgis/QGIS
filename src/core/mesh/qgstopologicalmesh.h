@@ -359,6 +359,8 @@ class CORE_EXPORT QgsTopologicalMesh
 class CORE_EXPORT QgsMeshVertexCirculator
 {
   public:
+
+    //! Default constructor
     QgsMeshVertexCirculator() = default;
 
     //! Constructor with \a topologicalMesh and \a vertexIndex

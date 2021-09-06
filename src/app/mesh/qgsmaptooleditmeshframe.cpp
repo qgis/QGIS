@@ -1612,7 +1612,7 @@ void QgsMapToolEditMeshFrame::forceBySelectedLayerPolyline()
 
   forceByPolylinesEdit.setTolerance( tolerance );
   forceByPolylinesEdit.setAddVertexOnIntersection( mWidgetActionForceByLine->newVertexOnIntersectingEdge() );
-  forceByPolylinesEdit.setDefaultZvalue( mZValueWidget->zValue() );
+  forceByPolylinesEdit.setDefaultZValue( mZValueWidget->zValue() );
   forceByPolylinesEdit.setInterpolateZValueOnMesh(
     mWidgetActionForceByLine->interpolationMode() == QgsMeshEditForceByLineAction::Mesh );
 

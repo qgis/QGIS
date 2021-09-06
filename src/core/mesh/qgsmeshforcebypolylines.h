@@ -51,7 +51,7 @@ class CORE_EXPORT QgsMeshEditForceByLine : public QgsMeshAdvancedEditing
     void setAddVertexOnIntersection( bool addVertex );
 
     //! Sets the default value of Z coordinate to use for new vertices, this value will be used if the Z value
-    void setDefaultZvalue( double defaultZvalue );
+    void setDefaultZValue( double defaultZValue );
 
     /**
      * Sets whether the new created vertices will have their value interpolated from the existing mesh.

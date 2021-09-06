@@ -368,14 +368,14 @@ bool QgsMeshEditForceByLine::buildForcedElements()
       int previousSnappedVertex = -1;
       int intersectionFaceIndex = -1;
       QgsPoint intersectionPoint( 0, 0, 0 );
-      int edgePositon = -1;
+      int edgePosition = -1;
 
       bool result = searchIntersectionEdgeFromSnappedVertex_v2(
                       intersectionFaceIndex,
                       previousSnappedVertex,
                       mCurrentSnappedVertex,
                       intersectionPoint,
-                      edgePositon,
+                      edgePosition,
                       treatedFaces );
 
       if ( !result )
@@ -423,7 +423,7 @@ bool QgsMeshEditForceByLine::buildForcedElements()
           nextCutFace = cutEdgeFromSnappedVertex( mEditor,
                                                   intersectionFaceIndex,
                                                   previousSnappedVertex,
-                                                  edgePositon,
+                                                  edgePosition,
                                                   mHoleOnLeft,
                                                   mNeighborOnLeft,
                                                   mHoleOnRight,
@@ -642,7 +642,7 @@ bool QgsMeshEditForceByLine::buildForcedElements()
         if ( candidateFaceIndex == leftFace )
           continue; //we have just left this face
 
-        if ( treatedFaces.contains( candidateFaceIndex ) ) //we have already pass throught this face
+        if ( treatedFaces.contains( candidateFaceIndex ) ) //we have already pass through this face
           continue;
 
         const QgsMeshFace &candidateFace = mesh->face( candidateFaceIndex );
@@ -982,11 +982,11 @@ bool QgsMeshEditForceByLine::triangulateHoles(
         nextVertex = circulatorOnLine.oppositeVertexCounterClockwise();
       }
       const QgsMeshFace &faceOnLine = circulatorOnLine.currentFace();
-      int positonOnFaceOnLine = vertexPositionInFace( vertexOnLine, faceOnLine );
+      int positionOnFaceOnTheLine = vertexPositionInFace( vertexOnLine, faceOnLine );
       if ( !isLeftHole )
-        positonOnFaceOnLine = ( positonOnFaceOnLine - 1 + faceOnLine.size() ) % faceOnLine.size();
+        positionOnFaceOnTheLine = ( positionOnFaceOnTheLine - 1 + faceOnLine.size() ) % faceOnLine.size();
 
-      newFacesOnLine.append( {circulatorOnLine.currentFaceIndex() + startingFaceLocalIndex, positonOnFaceOnLine} );
+      newFacesOnLine.append( {circulatorOnLine.currentFaceIndex() + startingFaceLocalIndex, positionOnFaceOnTheLine} );
       vertexOnLine = nextVertex;
     }
 
@@ -1197,9 +1197,9 @@ void QgsMeshEditForceByLine::setAddVertexOnIntersection( bool addVertex )
   mNewVertexOnIntersection = addVertex;
 }
 
-void QgsMeshEditForceByLine::setDefaultZvalue( double defaultZvalue )
+void QgsMeshEditForceByLine::setDefaultZValue( double defaultZValue )
 {
-  mDefaultZValue = defaultZvalue;
+  mDefaultZValue = defaultZValue;
 }
 
 void QgsMeshEditForceByLine::setInterpolateZValueOnMesh( bool interpolateZValueOnMesh )
