@@ -142,6 +142,38 @@ class TestQgsRenderedItemResults(unittest.TestCase):
                                ('layer_id2', 'item_id_2'),
                                ('layer_id3', 'item_id_3')])
 
+    def test_erase_results(self):
+        results = QgsRenderedItemResults()
+
+        rc = QgsRenderContext()
+        details1 = QgsRenderedAnnotationItemDetails('layer_id', 'item_id_1')
+        details1.setBoundingBox(QgsRectangle(1, 1, 10, 10))
+
+        details2 = QgsRenderedAnnotationItemDetails('layer_id2', 'item_id_2')
+        details2.setBoundingBox(QgsRectangle(1, 1, 5, 5))
+
+        details3 = QgsRenderedAnnotationItemDetails('layer_id3', 'item_id_3')
+        details3.setBoundingBox(QgsRectangle(4, 4, 7, 7))
+
+        results.appendResults([details1, details2, details3], rc)
+
+        self.assertCountEqual([(i.layerId(), i.itemId()) for i in results.renderedItems()],
+                              [('layer_id', 'item_id_1'),
+                               ('layer_id2', 'item_id_2'),
+                               ('layer_id3', 'item_id_3')])
+
+        results.eraseResultsFromLayers([])
+        self.assertCountEqual([(i.layerId(), i.itemId()) for i in results.renderedItems()],
+                              [('layer_id', 'item_id_1'),
+                               ('layer_id2', 'item_id_2'),
+                               ('layer_id3', 'item_id_3')])
+
+        results.eraseResultsFromLayers(['layer_id2', 'layer_id3'])
+        self.assertCountEqual([(i.layerId(), i.itemId()) for i in results.renderedItems()],
+                              [('layer_id', 'item_id_1')])
+        results.eraseResultsFromLayers(['layer_id2', 'layer_id'])
+        self.assertFalse(results.renderedItems())
+
 
 if __name__ == '__main__':
     unittest.main()

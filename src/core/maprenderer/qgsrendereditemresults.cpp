@@ -157,4 +157,19 @@ void QgsRenderedItemResults::transferResults( QgsRenderedItemResults *other )
   other->mDetails.clear();
 }
 
+void QgsRenderedItemResults::eraseResultsFromLayers( const QStringList &layerIds )
+{
+  for ( auto it = mDetails.begin(); it != mDetails.end(); )
+  {
+    if ( layerIds.contains( ( *it )->layerId() ) )
+    {
+      mDetails.erase( it );
+    }
+    else
+    {
+      it++;
+    }
+  }
+}
+
 

@@ -72,6 +72,11 @@ Items are removed from ``other`` and transferred to this object.
    After calling this method the ``other`` results will be left in an undefined state.
 %End
 
+    void eraseResultsFromLayers( const QStringList &layerIds );
+%Docstring
+Erases results from layers matching those in the specified list of layers IDs.
+%End
+
   private:
     QgsRenderedItemResults( const QgsRenderedItemResults & );
 };
