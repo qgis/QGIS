@@ -18,7 +18,8 @@ from qgis.PyQt.QtCore import (QSize,
                               QDir)
 from qgis.PyQt.QtGui import (QImage,
                              QPainter,
-                             QColor)
+                             QColor,
+                             QTransform)
 from qgis.core import (QgsMapSettings,
                        QgsCoordinateTransform,
                        QgsProject,
@@ -76,6 +77,14 @@ class TestQgsAnnotationMarkerItem(unittest.TestCase):
         """
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
         self.assertEqual(item.nodes(), [QgsAnnotationItemNode(QgsPointXY(12, 13), Qgis.AnnotationItemNodeType.VertexHandle)])
+
+    def test_transform(self):
+        item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
+        self.assertEqual(item.geometry().asWkt(), 'POINT(12 13)')
+
+        transform = QTransform.fromTranslate(100, 200)
+        item.transform(transform)
+        self.assertEqual(item.geometry().asWkt(), 'POINT(112 213)')
 
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")

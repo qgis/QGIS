@@ -90,6 +90,12 @@ QList<QgsAnnotationItemNode> QgsAnnotationLineItem::nodes() const
   return res;
 }
 
+bool QgsAnnotationLineItem::transform( const QTransform &transform )
+{
+  mCurve->transform( transform );
+  return true;
+}
+
 QgsAnnotationLineItem *QgsAnnotationLineItem::create()
 {
   return new QgsAnnotationLineItem( new QgsLineString() );

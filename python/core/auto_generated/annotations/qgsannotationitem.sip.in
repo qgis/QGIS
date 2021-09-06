@@ -84,6 +84,15 @@ Returns the bounding box of the item's geographic location, in the parent layer'
 Returns the bounding box of the item's geographic location, in the parent layer's coordinate reference system.
 %End
 
+    virtual bool transform( const QTransform &transform ) = 0;
+%Docstring
+Transforms the item's geometry using the specified ``transform``.
+
+Returns ``True`` if the transformation was successful.
+
+.. versionadded:: 3.22
+%End
+
     virtual void render( QgsRenderContext &context, QgsFeedback *feedback ) = 0;
 %Docstring
 Renders the item to the specified render ``context``.

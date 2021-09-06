@@ -18,7 +18,8 @@ from qgis.PyQt.QtCore import (QSize,
                               QDir)
 from qgis.PyQt.QtGui import (QImage,
                              QPainter,
-                             QColor)
+                             QColor,
+                             QTransform)
 from qgis.core import (QgsMapSettings,
                        QgsCoordinateTransform,
                        QgsProject,
@@ -78,6 +79,14 @@ class TestQgsAnnotationLineItem(unittest.TestCase):
         self.assertEqual(item.nodes(), [QgsAnnotationItemNode(QgsPointXY(12, 13), Qgis.AnnotationItemNodeType.VertexHandle),
                                         QgsAnnotationItemNode(QgsPointXY(14, 13), Qgis.AnnotationItemNodeType.VertexHandle),
                                         QgsAnnotationItemNode(QgsPointXY(14, 15), Qgis.AnnotationItemNodeType.VertexHandle)])
+
+    def test_transform(self):
+        item = QgsAnnotationLineItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]))
+        self.assertEqual(item.geometry().asWkt(), 'LineString (12 13, 14 13, 14 15)')
+
+        transform = QTransform.fromTranslate(100, 200)
+        item.transform(transform)
+        self.assertEqual(item.geometry().asWkt(), 'LineString (112 213, 114 213, 114 215)')
 
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")
