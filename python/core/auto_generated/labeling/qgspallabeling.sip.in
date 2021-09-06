@@ -217,6 +217,7 @@ Contains settings for how a map layer will be labeled.
       // (data defined only)
       PositionX,
       PositionY,
+      PositionPoint,
       Hali,
       Vali,
       Rotation,
@@ -417,6 +418,24 @@ Set unit for rotation of labels.
     double maxCurvedCharAngleOut;
 
     int priority;
+
+    QgsLabeling::CoordinateType placementCoordinateType() const;
+%Docstring
+Coordinates type for data defined placement.
+
+.. seealso:: :py:func:`setPlacementCoordinateType`
+
+.. versionadded:: 3.22
+%End
+
+    void setPlacementCoordinateType( QgsLabeling::CoordinateType placementCoordinateType );
+%Docstring
+Set coordinates type for data defined placement.
+
+.. seealso:: :py:func:`placementCoordinateType`
+
+.. versionadded:: 3.22
+%End
 
 
     bool scaleVisibility;

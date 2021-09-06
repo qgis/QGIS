@@ -145,11 +145,9 @@ Sets the background color for the text preview widget.
 :param color: background color
 %End
 
-    void enableDataDefinedAlignment( bool enable );
+    void updateDataDefinedAlignment();
 %Docstring
-Controls whether data defined alignment buttons are enabled.
-
-:param enable: set to ``True`` to enable alignment controls
+Update the enabled state of the data defined alignment buttons.
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;

@@ -355,6 +355,14 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
           }
         }
 
+        if ( !isCalloutMove
+             && vlayer->labeling()->settings().placementCoordinateType() != QgsLabeling::CoordinateType::XY )
+        {
+          QgsPalLayerSettings *settings = new QgsPalLayerSettings( mCurrentLabel.settings );
+          settings->setPlacementCoordinateType( QgsLabeling::CoordinateType::XY );
+          vlayer->labeling()->setSettings( settings );
+        }
+
         bool success = vlayer->changeAttributeValue( featureId, xCol, xNewPos );
         success = vlayer->changeAttributeValue( featureId, yCol, yNewPos ) && success;
 

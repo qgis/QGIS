@@ -319,6 +319,7 @@ class CORE_EXPORT QgsPalLayerSettings
       // (data defined only)
       PositionX = 9, //!< X-coordinate data defined label position
       PositionY = 10, //!< Y-coordinate data defined label position
+      PositionPoint = 79, //!< Point-coordinate data defined label position
       Hali = 11, //!< Horizontal alignment for data defined label position (Left, Center, Right)
       Vali = 12, //!< Vertical alignment for data defined label position (Bottom, Base, Half, Cap, Top)
       Rotation = 14, //!< Label rotation (deprecated, for old project compatibility only)
@@ -664,6 +665,20 @@ class CORE_EXPORT QgsPalLayerSettings
      * and 10 = highest priority.
      */
     int priority = 5;
+
+    /**
+     * Coordinates type for data defined placement.
+     * \see setPlacementCoordinateType()
+     * \since QGIS 3.22
+     */
+    QgsLabeling::CoordinateType placementCoordinateType() const;
+
+    /**
+     * Set coordinates type for data defined placement.
+     * \see placementCoordinateType()
+     * \since QGIS 3.22
+     */
+    void setPlacementCoordinateType( QgsLabeling::CoordinateType placementCoordinateType );
 
     //-- rendering
 
@@ -1147,6 +1162,8 @@ class CORE_EXPORT QgsPalLayerSettings
 
     //! Unit for rotation of labels.
     QgsUnitTypes::AngleUnit mRotationUnit = QgsUnitTypes::AngleDegrees;
+
+    QgsLabeling::CoordinateType mPlacementCoordinateType = QgsLabeling::CoordinateType::XY;
 
     static void initPropertyDefinitions();
 };

@@ -90,6 +90,8 @@ void QgsLabelingWidget::setLayer( QgsMapLayer *mapLayer )
   mOldLabelsEnabled = mLayer->labelsEnabled();
 
   adaptToLayer();
+
+  connect( mLayer->labeling(), &QgsAbstractVectorLayerLabeling::labelingChanged, this, &QgsLabelingWidget::layerLabelingChanged );
 }
 
 void QgsLabelingWidget::adaptToLayer()
@@ -299,4 +301,9 @@ void QgsLabelingWidget::showEngineConfigDialog()
     // reactivate button's window
     activateWindow();
   }
+}
+
+void QgsLabelingWidget::layerLabelingChanged()
+{
+  adaptToLayer();
 }

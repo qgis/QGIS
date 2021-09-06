@@ -154,10 +154,9 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void setPreviewBackground( const QColor &color );
 
     /**
-     * Controls whether data defined alignment buttons are enabled.
-     * \param enable set to TRUE to enable alignment controls
+     * Update the enabled state of the data defined alignment buttons.
      */
-    void enableDataDefinedAlignment( bool enable );
+    void updateDataDefinedAlignment();
 
     QgsExpressionContext createExpressionContext() const override;
 
@@ -283,8 +282,10 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void mFontMaxPixelSpinBox_valueChanged( int px );
     void mBufferUnitWidget_changed();
     void mMaskBufferUnitWidget_changed();
-    void mCoordXDDBtn_changed( );
-    void mCoordYDDBtn_changed( );
+    void mCoordXDDBtn_changed();
+    void mCoordYDDBtn_changed();
+    void mCoordPointDDBtn_changed();
+    void mCoordTypeComboBox_currentIndexChanged( int index );
     void mShapeTypeCmbBx_currentIndexChanged( int index );
     void mShapeRotationCmbBx_currentIndexChanged( int index );
     void mShapeSVGParamsBtn_clicked();
