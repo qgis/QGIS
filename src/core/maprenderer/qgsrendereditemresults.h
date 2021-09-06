@@ -90,6 +90,11 @@ class CORE_EXPORT QgsRenderedItemResults
      */
     void transferResults( QgsRenderedItemResults *other );
 
+    /**
+     * Erases results from layers matching those in the specified list of layers IDs.
+     */
+    void eraseResultsFromLayers( const QStringList &layerIds );
+
   private:
 #ifdef SIP_RUN
     QgsRenderedItemResults( const QgsRenderedItemResults & );
