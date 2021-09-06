@@ -131,7 +131,7 @@ bool LayerRenderJob::imageCanBeComposed() const
 
 QgsMapRendererJob::QgsMapRendererJob( const QgsMapSettings &settings )
   : mSettings( settings )
-  , mRenderedItemResults( std::make_unique< QgsRenderedItemResults >() )
+  , mRenderedItemResults( std::make_unique< QgsRenderedItemResults >( settings.extent() ) )
 {}
 
 QgsMapRendererJob::~QgsMapRendererJob() = default;

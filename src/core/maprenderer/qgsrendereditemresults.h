@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsrectangle.h"
 #include <memory>
 #include <QList>
 #include <vector>
@@ -27,7 +28,6 @@
 class QgsRenderedItemDetails;
 class QgsRenderContext;
 class QgsRenderedAnnotationItemDetails;
-class QgsRectangle;
 
 ///@cond PRIVATE
 class QgsRenderedItemResultsSpatialIndex;
@@ -41,7 +41,14 @@ class QgsRenderedItemResultsSpatialIndex;
 class CORE_EXPORT QgsRenderedItemResults
 {
   public:
-    QgsRenderedItemResults();
+
+    /**
+     * Constructor for QgsRenderedItemResults.
+     *
+     * The \a extent argument can be used to specify an expected maximal extent for items which
+     * will be stored in the results. This helps to optimise the spatial indices used by the object.
+     */
+    QgsRenderedItemResults( const QgsRectangle &extent = QgsRectangle() );
     ~QgsRenderedItemResults();
 
     //! QgsRenderedItemResults cannot be copied.
@@ -99,6 +106,8 @@ class CORE_EXPORT QgsRenderedItemResults
 #ifdef SIP_RUN
     QgsRenderedItemResults( const QgsRenderedItemResults & );
 #endif
+
+    QgsRectangle mExtent;
 
     std::vector< std::unique_ptr< QgsRenderedItemDetails > > mDetails;
     std::unique_ptr< QgsRenderedItemResultsSpatialIndex > mAnnotationItemsIndex;

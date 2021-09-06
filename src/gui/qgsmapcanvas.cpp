@@ -496,14 +496,13 @@ void QgsMapCanvas::setCachingEnabled( bool enabled )
   if ( enabled )
   {
     mCache = new QgsMapRendererCache;
-    mPreviousRenderedItemResults = std::make_unique< QgsRenderedItemResults >();
   }
   else
   {
     delete mCache;
     mCache = nullptr;
-    mPreviousRenderedItemResults.reset();
   }
+  mPreviousRenderedItemResults.reset();
 }
 
 bool QgsMapCanvas::isCachingEnabled() const
@@ -517,7 +516,9 @@ void QgsMapCanvas::clearCache()
     mCache->clear();
 
   if ( mPreviousRenderedItemResults )
-    mPreviousRenderedItemResults = std::make_unique< QgsRenderedItemResults >();
+    mPreviousRenderedItemResults.reset();
+  if ( mRenderedItemResults )
+    mRenderedItemResults.reset();
 }
 
 void QgsMapCanvas::setParallelRenderingEnabled( bool enabled )
@@ -724,6 +725,10 @@ void QgsMapCanvas::rendererJobFinished()
       // also transfer any results from previous renders which happened before this
       renderedItemResults->transferResults( mPreviousRenderedItemResults.get(), mJob->layersRedrawnFromCache() );
     }
+
+    if ( mCache && !mPreviousRenderedItemResults )
+      mPreviousRenderedItemResults = std::make_unique< QgsRenderedItemResults >( mJob->mapSettings().extent() );
+
     if ( mRenderedItemResults && mPreviousRenderedItemResults )
     {
       // for other layers which ARE present in the most recent rendered item results BUT were not part of this render, we
