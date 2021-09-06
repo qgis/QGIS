@@ -3,7 +3,9 @@
      --------------------------------------
     Date                 : August 2021
     Copyright            : (C) 2021 by Loïc Bartoletti
+                           (C) 2021 by Antoine Facchini
     Email                : loic dot bartoletti at oslandia dot com
+                           antoine dot facchini at oslandia dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -32,7 +34,6 @@ class TestQgsCurvePolygon: public QObject
 
   private slots:
     void testConstructor();
-    void testAreaPerimeterWithInteriorRing(); //
     void testCopyConstructor();
     void testClear();
     void testClone();
@@ -42,6 +43,7 @@ class TestQgsCurvePolygon: public QObject
     void testRemoveInteriorRing();
     void testMixedRingTypes();
     void test3dRings();
+    void testAreaPerimeterWithInteriorRing();
     void testInsertVertex();
     void testMoveVertex();
     void testDeleteVertex();
@@ -133,23 +135,6 @@ void TestQgsCurvePolygon::testConstructor()
 
   // retrieve exterior ring and check
   QCOMPARE( *( static_cast< const QgsCircularString * >( poly.exteriorRing() ) ), *ext );
-}
-
-void TestQgsCurvePolygon::testAreaPerimeterWithInteriorRing()
-{
-  QgsCurvePolygon poly;
-  QgsCircularString *ext = new QgsCircularString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 )
-                  << QgsPoint( 10, 0 ) << QgsPoint( 0, 0 ) );
-  poly.setExteriorRing( ext );
-
-  QgsCircularString *ring = new QgsCircularString();
-  ring->setPoints( QgsPointSequence() << QgsPoint( 1, 1 ) << QgsPoint( 1, 6 ) << QgsPoint( 6, 6 )
-                   << QgsPoint( 6, 1 ) << QgsPoint( 1, 1 ) );
-  poly.addInteriorRing( ring );
-
-  QGSCOMPARENEAR( poly.area(), 117.8104, 0.01 );
-  QGSCOMPARENEAR( poly.perimeter(), 66.6432, 0.01 );
 }
 
 void TestQgsCurvePolygon::testCopyConstructor()
@@ -467,7 +452,6 @@ void TestQgsCurvePolygon::testAddInteriorRing()
   QVERIFY( poly2.interiorRing( 1 )->isMeasure() );
   QCOMPARE( poly2.interiorRing( 1 )->wkbType(), QgsWkbTypes::CircularStringZM );
   QCOMPARE( poly2.interiorRing( 1 )->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 0.1, 0.1, 1, 0 ) );
-
 }
 
 void TestQgsCurvePolygon::testRemoveInteriorRing()
@@ -647,6 +631,23 @@ void TestQgsCurvePolygon::test3dRings()
   QVERIFY( poly.interiorRing( 1 )->isMeasure() );
 }
 
+void TestQgsCurvePolygon::testAreaPerimeterWithInteriorRing()
+{
+  QgsCurvePolygon poly;
+  QgsCircularString *ext = new QgsCircularString();
+  ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 )
+                  << QgsPoint( 10, 0 ) << QgsPoint( 0, 0 ) );
+  poly.setExteriorRing( ext );
+
+  QgsCircularString *ring = new QgsCircularString();
+  ring->setPoints( QgsPointSequence() << QgsPoint( 1, 1 ) << QgsPoint( 1, 6 ) << QgsPoint( 6, 6 )
+                   << QgsPoint( 6, 1 ) << QgsPoint( 1, 1 ) );
+  poly.addInteriorRing( ring );
+
+  QGSCOMPARENEAR( poly.area(), 117.8104, 0.01 );
+  QGSCOMPARENEAR( poly.perimeter(), 66.6432, 0.01 );
+}
+
 void TestQgsCurvePolygon::testInsertVertex()
 {
   QgsCurvePolygon poly;
@@ -663,7 +664,6 @@ void TestQgsCurvePolygon::testInsertVertex()
                   << QgsPoint( 2, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 0, 2 ) << QgsPoint( 0, 0 ) );
   poly.setExteriorRing( ring.clone() );
 
-  // ??????
   QVERIFY( poly.insertVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( 0.3, 0 ) ) );
   QCOMPARE( poly.nCoordinates(), 8 );
   QCOMPARE( static_cast< const QgsLineString * >( poly.exteriorRing() )->pointN( 0 ), QgsPoint( 0, 0 ) );
@@ -725,7 +725,6 @@ void TestQgsCurvePolygon::testInsertVertex()
   QCOMPARE( static_cast< const QgsLineString * >( poly.interiorRing( 0 ) )->pointN( 3 ), QgsPoint( 0.5, 0 ) );
   QCOMPARE( static_cast< const QgsLineString * >( poly.interiorRing( 0 ) )->pointN( 8 ), QgsPoint( 0, 0.1 ) );
   QCOMPARE( static_cast< const QgsLineString * >( poly.interiorRing( 0 ) )->pointN( 9 ), QgsPoint( 0.1, 0.1 ) );
-
 }
 
 void TestQgsCurvePolygon::testMoveVertex()
@@ -777,7 +776,6 @@ void TestQgsCurvePolygon::testMoveVertex()
   QVERIFY( !poly.moveVertex( QgsVertexId( 0, 1, -1 ), QgsPoint( 3.0, 4.0 ) ) );
   QVERIFY( !poly.moveVertex( QgsVertexId( 0, 1, 10 ), QgsPoint( 3.0, 4.0 ) ) );
   QVERIFY( !poly.moveVertex( QgsVertexId( 0, 2, 0 ), QgsPoint( 3.0, 4.0 ) ) );
-
 }
 
 void TestQgsCurvePolygon::testDeleteVertex()
@@ -790,8 +788,9 @@ void TestQgsCurvePolygon::testDeleteVertex()
 
   // valid polygon
   QgsLineString ring;
-  ring.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 5, 2 ) << QgsPoint( 6, 2 ) << QgsPoint( 7, 2 )
-                  << QgsPoint( 11, 12 ) << QgsPoint( 21, 22 ) << QgsPoint( 1, 2 ) );
+  ring.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 5, 2 )
+                  << QgsPoint( 6, 2 ) << QgsPoint( 7, 2 ) << QgsPoint( 11, 12 )
+                  << QgsPoint( 21, 22 ) << QgsPoint( 1, 2 ) );
   poly.setExteriorRing( ring.clone() );
 
   // out of range vertices
@@ -1042,7 +1041,8 @@ void TestQgsCurvePolygon::testClosestSegment()
 
   QgsCurvePolygon poly;
   QgsLineString ring;
-  ring.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) << QgsPoint( 7, 12 ) << QgsPoint( 5, 15 ) << QgsPoint( 5, 10 ) );
+  ring.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) << QgsPoint( 7, 12 )
+                  << QgsPoint( 5, 15 ) << QgsPoint( 5, 10 ) );
   poly.setExteriorRing( ring.clone() );
 
   QGSCOMPARENEAR( poly.closestSegment( QgsPoint( 4, 11 ), pt, v, &leftOf ), 1.0, 0.0001 );
@@ -1122,16 +1122,16 @@ void TestQgsCurvePolygon::testClosestSegment()
   QCOMPARE( leftOf, 0 );
 }
 
-void TestQgsCurvePolygon::testBoundary() // ?????
+void TestQgsCurvePolygon::testBoundary()
 {
-  QgsCircularString boundary1;
-  boundary1.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 1 ) << QgsPoint( 1, 0, 2 )
-                       << QgsPoint( 2, 0, 3 ) << QgsPoint( 1, 0.5, 4 ) << QgsPoint( 0, 0, 1 ) );
-  QgsCurvePolygon boundaryPolygon;
-  QVERIFY( !boundaryPolygon.boundary() );
+  QgsCircularString extBoundary;
+  extBoundary.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 1 ) << QgsPoint( 1, 0, 2 )
+                         << QgsPoint( 2, 0, 3 ) << QgsPoint( 1, 0.5, 4 ) << QgsPoint( 0, 0, 1 ) );
+  QgsCurvePolygon poly;
+  QVERIFY( !poly.boundary() );
 
-  boundaryPolygon.setExteriorRing( boundary1.clone() );
-  QgsAbstractGeometry *boundary = boundaryPolygon.boundary();
+  poly.setExteriorRing( extBoundary.clone() );
+  QgsAbstractGeometry *boundary = poly.boundary();
   QgsCircularString *lineBoundary = dynamic_cast< QgsCircularString * >( boundary );
   QVERIFY( lineBoundary );
   QCOMPARE( lineBoundary->numPoints(), 5 );
@@ -1155,8 +1155,8 @@ void TestQgsCurvePolygon::testBoundary() // ?????
   boundaryRing2.setPoints( QgsPointSequence() << QgsPoint( 0.8, 0.8 )
                            << QgsPoint( 0.9, 0.8 ) << QgsPoint( 0.9, 0.9 ) );
 
-  boundaryPolygon.setInteriorRings( QVector< QgsCurve * >() << boundaryRing1.clone() << boundaryRing2.clone() );
-  boundary = boundaryPolygon.boundary();
+  poly.setInteriorRings( QVector< QgsCurve * >() << boundaryRing1.clone() << boundaryRing2.clone() );
+  boundary = poly.boundary();
 
   QgsMultiCurve *multiLineBoundary = dynamic_cast< QgsMultiCurve * >( boundary );
   QVERIFY( multiLineBoundary );
@@ -1186,15 +1186,15 @@ void TestQgsCurvePolygon::testBoundary() // ?????
   QCOMPARE( qgis::down_cast< QgsCircularString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 0 ), 0.8 );
   QCOMPARE( qgis::down_cast< QgsCircularString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 1 ), 0.8 );
   QCOMPARE( qgis::down_cast< QgsCircularString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 2 ), 0.9 );
-  boundaryPolygon.setInteriorRings( QVector< QgsCurve * >() );
+  poly.setInteriorRings( QVector< QgsCurve * >() );
 
   // test boundary with z
-  boundary1.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 )
-                       << QgsPoint( QgsWkbTypes::PointZ, 1, 0, 15 )
-                       << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 20 ) );
-  boundaryPolygon.setExteriorRing( boundary1.clone() );
+  extBoundary.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 )
+                         << QgsPoint( QgsWkbTypes::PointZ, 1, 0, 15 )
+                         << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 20 ) );
+  poly.setExteriorRing( extBoundary.clone() );
 
-  boundary = boundaryPolygon.boundary();
+  boundary = poly.boundary();
   lineBoundary = dynamic_cast< QgsCircularString * >( boundary );
   QVERIFY( lineBoundary );
   QCOMPARE( lineBoundary->numPoints(), 3 );
@@ -1211,7 +1211,7 @@ void TestQgsCurvePolygon::testBoundary() // ?????
   QgsCurvePolygon removeRings1;
   removeRings1.removeInteriorRings();
 
-  removeRings1.setExteriorRing( boundary1.clone() );
+  removeRings1.setExteriorRing( extBoundary.clone() );
   removeRings1.removeInteriorRings();
   QCOMPARE( removeRings1.numInteriorRings(), 0 );
 
@@ -1416,7 +1416,7 @@ void TestQgsCurvePolygon::testToPolygon()
   QGSCOMPARENEAR( r1.yMinimum(), r2.yMinimum(), 0.0001 );
   QGSCOMPARENEAR( r1.yMaximum(), r2.yMaximum(), 0.0001 );
 
-  // toCurveType - should be identical since it's already a curve
+  // should be identical since it's already a curve
   std::unique_ptr< QgsCurvePolygon > curveType( poly.toCurveType() );
   QCOMPARE( *curveType, poly );
 }
@@ -1469,8 +1469,6 @@ void TestQgsCurvePolygon::testSurfaceToPolygon()
   QGSCOMPARENEAR( r1.xMaximum(), r2.xMaximum(), 0.0001 );
   QGSCOMPARENEAR( r1.yMinimum(), r2.yMinimum(), 0.0001 );
   QGSCOMPARENEAR( r1.yMaximum(), r2.yMaximum(), 0.0001 );
-
-
 }
 
 void TestQgsCurvePolygon::testWKB()
@@ -1548,8 +1546,8 @@ void TestQgsCurvePolygon::testWKB()
   poly1.addInteriorRing( ring );
 
   wkb16 = poly1.asWkb();
-  QgsConstWkbPtr wkb16ptr8( wkb16 );
-  poly2.fromWkb( wkb16ptr8 );
+  QgsConstWkbPtr wkb16ptr4( wkb16 );
+  poly2.fromWkb( wkb16ptr4 );
   QCOMPARE( poly1, poly2 );
 
   poly1.clear();
@@ -1571,8 +1569,8 @@ void TestQgsCurvePolygon::testWKB()
   poly1.addInteriorRing( ring );
 
   wkb16 = poly1.asWkb();
-  QgsConstWkbPtr wkb16ptr4( wkb16 );
-  poly2.fromWkb( wkb16ptr4 );
+  QgsConstWkbPtr wkb16ptr5( wkb16 );
+  poly2.fromWkb( wkb16ptr5 );
   QCOMPARE( poly1, poly2 );
 
   poly1.clear();
@@ -1592,8 +1590,8 @@ void TestQgsCurvePolygon::testWKB()
   wkb16 = poly1.asWkb();
   QCOMPARE( wkb16.size(), poly1.wkbSize() );
 
-  QgsConstWkbPtr wkb16ptr5( wkb16 );
-  poly2.fromWkb( wkb16ptr5 );
+  QgsConstWkbPtr wkb16ptr6( wkb16 );
+  poly2.fromWkb( wkb16ptr6 );
   QCOMPARE( poly1, poly2 );
 
   poly1.clear();
@@ -1749,35 +1747,6 @@ void TestQgsCurvePolygon::testCast()
   QVERIFY( !pCast2.fromWkt( QStringLiteral( "CurvePolygonZ((111111))" ) ) );
 }
 
-//void TestQgsCurvePolygon::testSwapXY() {
-//  QgsCurvePolygon poly1;
-//  QgsCurvePolygon poly2;
-//  QgsCircularString *ext;
-//  QgsCircularString *ring;
-
-//  ext = new QgsCircularString();
-//  ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 )
-//                  << QgsPoint( 2, 0 ) << QgsPoint( 1, 0.5 ) << QgsPoint( 0, 0 ) );
-//  poly1.setExteriorRing( ext );
-
-//  ring = new QgsCircularString();
-//  ring->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0.1, 0 )
-//                   << QgsPoint( 0.2, 0 ) << QgsPoint( 0.1, 0.05 ) << QgsPoint( 0, 0 ) );
-//  poly1.addInteriorRing( ring );
-
-//  ext = new QgsCircularString();
-//  ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 1 )
-//                  << QgsPoint( 0, 2 ) << QgsPoint( 0.5, 1 ) << QgsPoint( 0, 0 ) );
-//  poly2.setExteriorRing( ext );
-
-//  ring = new QgsCircularString();
-//  ring->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 0.1 )
-//                   << QgsPoint( 0, 0.2 ) << QgsPoint( 0.05, 0.1 ) << QgsPoint( 0, 0 ) );
-//  poly2.addInteriorRing( ring );
-
-//  poly1.swapXy();
-//  QCOMPARE( poly1, poly2 );
-//}
 
 QGSTEST_MAIN( TestQgsCurvePolygon )
 #include "testqgscurvepolygon.moc"
