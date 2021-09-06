@@ -18,6 +18,7 @@
 
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
+#include <QPointer>
 
 class QgsAnnotationLayer;
 class QgsAnnotationItemBaseWidget;
@@ -45,7 +46,7 @@ class QgsAnnotationItemPropertiesWidget : public QgsMapLayerConfigWidget
     void setItemId( const QString &itemId );
 
     QStackedWidget *mStack = nullptr;
-    QgsAnnotationLayer *mLayer = nullptr;
+    QPointer< QgsAnnotationLayer > mLayer;
     QgsAnnotationItemBaseWidget *mItemWidget = nullptr;
 
 };
