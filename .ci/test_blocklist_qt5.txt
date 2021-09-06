@@ -22,3 +22,7 @@ test_core_layerdefinition
 
 # MSSQL requires the MSSQL docker
 PyQgsProviderConnectionMssql
+
+# Too fragile at the moment
+test_core_networkaccessmanager
+
