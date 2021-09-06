@@ -151,8 +151,8 @@ Returns the map layer corresponding to the specified ``index``.
     void setAdditionalItems( const QStringList &items );
 %Docstring
 Sets a list of additional (non map layer) items to include at the end of the model.
-These may represent additional layers such as layers which are not included in the map
-layer registry, or paths to layers which have not yet been loaded into QGIS.
+These may represent additional layers such as layers which are not included in the active project,
+or paths to layers which have not yet been loaded into QGIS.
 
 .. seealso:: :py:func:`additionalItems`
 
@@ -166,6 +166,27 @@ Returns the list of additional (non map layer) items included at the end of the 
 .. seealso:: :py:func:`setAdditionalItems`
 
 .. versionadded:: 3.0
+%End
+
+    void setAdditionalLayers( const QList<QgsMapLayer *> &layers );
+%Docstring
+Sets a list of additional ``layers`` to include in the model.
+
+This method allows adding additional layers, which are not part of a project's
+layers, into the model.
+
+.. seealso:: :py:func:`additionalLayers`
+
+.. versionadded:: 3.22
+%End
+
+    QList< QgsMapLayer * > additionalLayers() const;
+%Docstring
+Returns the list of additional layers added to the model.
+
+.. seealso:: :py:func:`setAdditionalLayers`
+
+.. versionadded:: 3.22
 %End
 
     virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;

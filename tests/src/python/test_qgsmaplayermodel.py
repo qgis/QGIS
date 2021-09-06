@@ -13,7 +13,12 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 import qgis  # NOQA
 
 from qgis.core import QgsVectorLayer, QgsProject, QgsMapLayerModel, QgsApplication
-from qgis.PyQt.QtCore import Qt, QModelIndex
+from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    Qt,
+    QModelIndex,
+    QEvent
+)
 
 from qgis.testing import start_app, unittest
 
@@ -161,6 +166,78 @@ class TestQgsMapLayerModel(unittest.TestCase):
         self.assertFalse(m.data(m.index(0, 0), Qt.DisplayRole))
         self.assertEqual(m.data(m.index(1, 0), Qt.DisplayRole), 'a')
         self.assertEqual(m.data(m.index(2, 0), Qt.DisplayRole), 'b')
+
+    def testAdditionalLayers(self):
+        l1 = create_layer('l1')
+        l2 = create_layer('l2')
+        QgsProject.instance().addMapLayers([l1, l2])
+        m = QgsMapLayerModel()
+        self.assertEqual(m.rowCount(QModelIndex()), 2)
+        l3 = create_layer('l3')
+        l4 = create_layer('l4')
+        m.setAdditionalLayers([l3, l4])
+        self.assertEqual(m.rowCount(QModelIndex()), 4)
+
+        m.setAdditionalItems(['a', 'b'])
+        self.assertEqual(m.rowCount(QModelIndex()), 6)
+        self.assertEqual(m.data(m.index(0, 0), Qt.DisplayRole), 'l1')
+        self.assertEqual(m.data(m.index(1, 0), Qt.DisplayRole), 'l2')
+        self.assertEqual(m.data(m.index(2, 0), Qt.DisplayRole), 'l3')
+        self.assertEqual(m.data(m.index(3, 0), Qt.DisplayRole), 'l4')
+        self.assertEqual(m.data(m.index(4, 0), Qt.DisplayRole), 'a')
+        self.assertEqual(m.data(m.index(5, 0), Qt.DisplayRole), 'b')
+
+        m.setAllowEmptyLayer(True)
+        self.assertEqual(m.rowCount(QModelIndex()), 7)
+        self.assertFalse(m.data(m.index(0, 0), Qt.DisplayRole))
+        self.assertEqual(m.data(m.index(1, 0), Qt.DisplayRole), 'l1')
+        self.assertEqual(m.data(m.index(2, 0), Qt.DisplayRole), 'l2')
+        self.assertEqual(m.data(m.index(3, 0), Qt.DisplayRole), 'l3')
+        self.assertEqual(m.data(m.index(4, 0), Qt.DisplayRole), 'l4')
+        self.assertEqual(m.data(m.index(5, 0), Qt.DisplayRole), 'a')
+        self.assertEqual(m.data(m.index(6, 0), Qt.DisplayRole), 'b')
+
+        l3.deleteLater()
+        QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+        self.assertEqual(m.rowCount(QModelIndex()), 6)
+        self.assertFalse(m.data(m.index(0, 0), Qt.DisplayRole))
+        self.assertEqual(m.data(m.index(1, 0), Qt.DisplayRole), 'l1')
+        self.assertEqual(m.data(m.index(2, 0), Qt.DisplayRole), 'l2')
+        self.assertEqual(m.data(m.index(3, 0), Qt.DisplayRole), 'l4')
+        self.assertEqual(m.data(m.index(4, 0), Qt.DisplayRole), 'a')
+        self.assertEqual(m.data(m.index(5, 0), Qt.DisplayRole), 'b')
+
+        l5 = create_layer('l5')
+        l6 = create_layer('l6')
+        m.setAdditionalLayers([l5, l6, l4])
+        self.assertEqual(m.rowCount(QModelIndex()), 8)
+        self.assertFalse(m.data(m.index(0, 0), Qt.DisplayRole))
+        self.assertEqual(m.data(m.index(1, 0), Qt.DisplayRole), 'l1')
+        self.assertEqual(m.data(m.index(2, 0), Qt.DisplayRole), 'l2')
+        self.assertEqual(m.data(m.index(3, 0), Qt.DisplayRole), 'l5')
+        self.assertEqual(m.data(m.index(4, 0), Qt.DisplayRole), 'l6')
+        self.assertEqual(m.data(m.index(5, 0), Qt.DisplayRole), 'l4')
+        self.assertEqual(m.data(m.index(6, 0), Qt.DisplayRole), 'a')
+        self.assertEqual(m.data(m.index(7, 0), Qt.DisplayRole), 'b')
+
+        m.setAdditionalLayers([l5, l4])
+        self.assertEqual(m.rowCount(QModelIndex()), 7)
+        self.assertFalse(m.data(m.index(0, 0), Qt.DisplayRole))
+        self.assertEqual(m.data(m.index(1, 0), Qt.DisplayRole), 'l1')
+        self.assertEqual(m.data(m.index(2, 0), Qt.DisplayRole), 'l2')
+        self.assertEqual(m.data(m.index(3, 0), Qt.DisplayRole), 'l5')
+        self.assertEqual(m.data(m.index(4, 0), Qt.DisplayRole), 'l4')
+        self.assertEqual(m.data(m.index(5, 0), Qt.DisplayRole), 'a')
+        self.assertEqual(m.data(m.index(6, 0), Qt.DisplayRole), 'b')
+
+        QgsProject.instance().removeMapLayers([l1.id(), l2.id()])
+
+        self.assertEqual(m.rowCount(QModelIndex()), 5)
+        self.assertFalse(m.data(m.index(0, 0), Qt.DisplayRole))
+        self.assertEqual(m.data(m.index(1, 0), Qt.DisplayRole), 'l5')
+        self.assertEqual(m.data(m.index(2, 0), Qt.DisplayRole), 'l4')
+        self.assertEqual(m.data(m.index(3, 0), Qt.DisplayRole), 'a')
+        self.assertEqual(m.data(m.index(4, 0), Qt.DisplayRole), 'b')
 
     def testIndexFromLayer(self):
         l1 = create_layer('l1')

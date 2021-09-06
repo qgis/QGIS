@@ -156,8 +156,8 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
 
     /**
      * Sets a list of additional (non map layer) items to include at the end of the model.
-     * These may represent additional layers such as layers which are not included in the map
-     * layer registry, or paths to layers which have not yet been loaded into QGIS.
+     * These may represent additional layers such as layers which are not included in the active project,
+     * or paths to layers which have not yet been loaded into QGIS.
      * \see additionalItems()
      * \since QGIS 3.0
      */
@@ -169,6 +169,25 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      * \since QGIS 3.0
      */
     QStringList additionalItems() const { return mAdditionalItems; }
+
+    /**
+     * Sets a list of additional \a layers to include in the model.
+     *
+     * This method allows adding additional layers, which are not part of a project's
+     * layers, into the model.
+     *
+     * \see additionalLayers()
+     * \since QGIS 3.22
+     */
+    void setAdditionalLayers( const QList<QgsMapLayer *> &layers );
+
+    /**
+     * Returns the list of additional layers added to the model.
+     *
+     * \see setAdditionalLayers()
+     * \since QGIS 3.22
+     */
+    QList< QgsMapLayer * > additionalLayers() const;
 
     // QAbstractItemModel interface
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
@@ -205,6 +224,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
 
   protected:
     QList<QgsMapLayer *> mLayers;
+    QList< QPointer<QgsMapLayer> > mAdditionalLayers;
     QMap<QString, Qt::CheckState> mLayersChecked;
     bool mItemCheckable = false;
     bool mCanReorder = false;
