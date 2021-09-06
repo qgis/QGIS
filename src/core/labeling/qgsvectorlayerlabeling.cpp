@@ -621,4 +621,6 @@ void QgsVectorLayerSimpleLabeling::setSettings( QgsPalLayerSettings *settings, c
     return;
 
   mSettings.reset( settings );
+
+  emit labelingChanged();
 }

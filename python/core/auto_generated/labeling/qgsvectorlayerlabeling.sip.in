@@ -11,7 +11,7 @@
 
 
 
-class QgsAbstractVectorLayerLabeling
+class QgsAbstractVectorLayerLabeling : QObject
 {
 %Docstring(signature="appended")
 Abstract base class - its implementations define different approaches to the labeling of a vector layer.
@@ -111,6 +111,10 @@ Returns the default layer settings to use for the specified vector ``layer``.
 
 .. versionadded:: 3.20
 %End
+
+  signals:
+
+    void labelingChanged();
 
   protected:
 

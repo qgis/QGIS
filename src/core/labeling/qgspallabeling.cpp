@@ -244,6 +244,7 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { QgsPalLayerSettings::PolygonLabelOutside, QgsPropertyDefinition( "PolygonLabelOutside", QgsPropertyDefinition::DataTypeString, QObject::tr( "Label outside polygons" ),  QObject::tr( "string " ) + "[<b>yes</b> (allow placing outside)|<b>no</b> (never place outside)|<b>force</b> (always place outside)]", origin ) },
     { QgsPalLayerSettings::PositionX, QgsPropertyDefinition( "PositionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double, origin ) },
     { QgsPalLayerSettings::PositionY, QgsPropertyDefinition( "PositionY", QObject::tr( "Position (Y)" ), QgsPropertyDefinition::Double, origin ) },
+    { QgsPalLayerSettings::PositionPoint, QgsPropertyDefinition( "PositionPoint", QObject::tr( "Position (point)" ), QgsPropertyDefinition::Point, origin ) },
     { QgsPalLayerSettings::Hali, QgsPropertyDefinition( "Hali", QgsPropertyDefinition::DataTypeString, QObject::tr( "Horizontal alignment" ), QObject::tr( "string " ) + "[<b>Left</b>|<b>Center</b>|<b>Right</b>]", origin ) },
     {
       QgsPalLayerSettings::Vali, QgsPropertyDefinition( "Vali", QgsPropertyDefinition::DataTypeString, QObject::tr( "Vertical alignment" ), QObject::tr( "string " ) + QStringLiteral( "[<b>Bottom</b>|<b>Base</b>|<br>"
@@ -340,6 +341,7 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   repeatDistance = s.repeatDistance;
   repeatDistanceUnit = s.repeatDistanceUnit;
   repeatDistanceMapUnitScale = s.repeatDistanceMapUnitScale;
+  mPlacementCoordinateType = s.mPlacementCoordinateType;
 
   // rendering
   scaleVisibility = s.scaleVisibility;
@@ -618,6 +620,16 @@ void QgsPalLayerSettings::setRotationUnit( QgsUnitTypes::AngleUnit angleUnit )
   mRotationUnit = angleUnit;
 }
 
+QgsLabeling::CoordinateType QgsPalLayerSettings::placementCoordinateType() const
+{
+  return mPlacementCoordinateType;
+}
+
+void QgsPalLayerSettings::setPlacementCoordinateType( QgsLabeling::CoordinateType placementCoordinateType )
+{
+  mPlacementCoordinateType = placementCoordinateType;
+}
+
 QString updateDataDefinedString( const QString &value )
 {
   // TODO: update or remove this when project settings for labeling are migrated to better XML layout
@@ -841,6 +853,7 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   {
     repeatDistanceMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( QStringLiteral( "labeling/repeatDistanceMapUnitScale" ) ).toString() );
   }
+  mPlacementCoordinateType = layer->customEnumProperty( QStringLiteral( "labeling/placementCoordinateType" ), QgsLabeling::CoordinateType::XY );
 
   // rendering
   double scalemn = layer->customProperty( QStringLiteral( "labeling/scaleMin" ), QVariant( 0 ) ).toDouble();
@@ -1091,6 +1104,8 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
 
   layerType = qgsEnumKeyToValue( placementElem.attribute( QStringLiteral( "layerType" ) ), QgsWkbTypes::UnknownGeometry );
 
+  mPlacementCoordinateType = qgsEnumKeyToValue( placementElem.attribute( QStringLiteral( "coordinateType" ), qgsEnumValueToKey( QgsLabeling::CoordinateType::XY ) ), QgsLabeling::CoordinateType::XY );
+
   // rendering
   QDomElement renderingElem = elem.firstChildElement( QStringLiteral( "rendering" ) );
 
@@ -1247,6 +1262,8 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   placementElem.setAttribute( QStringLiteral( "geometryGeneratorType" ), metaEnum.valueToKey( geometryGeneratorType ) );
 
   placementElem.setAttribute( QStringLiteral( "layerType" ), metaEnum.valueToKey( layerType ) );
+
+  placementElem.setAttribute( QStringLiteral( "coordinateType" ), qgsEnumValueToKey( mPlacementCoordinateType ) );
 
   // rendering
   QDomElement renderingElem = doc.createElement( QStringLiteral( "rendering" ) );
@@ -2229,11 +2246,9 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   }
 
   //data defined position / alignment / rotation?
-  bool hasDataDefinedPosition = false;
   bool layerDefinedRotation = false;
   bool dataDefinedRotation = false;
   double xPos = 0.0, yPos = 0.0, angle = 0.0;
-  bool ddXPos = false, ddYPos = false;
   double quadOffsetX = 0.0, quadOffsetY = 0.0;
   double offsetX = 0.0, offsetY = 0.0;
   QgsPointXY anchorPosition;
@@ -2378,118 +2393,157 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     }
   }
 
-  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::PositionX ) )
+  bool hasDataDefinedPosition = false;
   {
-    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::PositionX, context.expressionContext() );
-    if ( !exprVal.isNull() )
+    bool ddPosition = false;
+    switch ( mPlacementCoordinateType )
     {
-      if ( !exprVal.isNull() )
-        xPos = exprVal.toDouble( &ddXPos );
-
-      if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::PositionY ) )
+      case QgsLabeling::CoordinateType::XY:
       {
-        exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::PositionY, context.expressionContext() );
-        if ( !exprVal.isNull() )
+        if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::PositionX )
+             && mDataDefinedProperties.isActive( QgsPalLayerSettings::PositionY )
+             && !mDataDefinedProperties.value( QgsPalLayerSettings::PositionX, context.expressionContext() ).isNull()
+             && !mDataDefinedProperties.value( QgsPalLayerSettings::PositionY, context.expressionContext() ).isNull() )
         {
-          //data defined position. But field values could be NULL -> positions will be generated by PAL
-          if ( !exprVal.isNull() )
-            yPos = exprVal.toDouble( &ddYPos );
+          ddPosition = true;
 
+          bool ddXPos = false, ddYPos = false;
+          xPos = mDataDefinedProperties.value( QgsPalLayerSettings::PositionX, context.expressionContext() ).toDouble( &ddXPos );
+          yPos = mDataDefinedProperties.value( QgsPalLayerSettings::PositionY, context.expressionContext() ).toDouble( &ddYPos );
           if ( ddXPos && ddYPos )
+            hasDataDefinedPosition = true;
+        }
+      }
+      break;
+      case QgsLabeling::CoordinateType::Point:
+      {
+        if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::PositionPoint )
+             && !mDataDefinedProperties.value( QgsPalLayerSettings::PositionPoint, context.expressionContext() ).isNull() )
+        {
+          ddPosition = true;
+
+          QVariant pointAsVariant = mDataDefinedProperties.value( QgsPalLayerSettings::PositionPoint, context.expressionContext() );
+          if ( pointAsVariant.canConvert<QgsGeometry>() )
           {
             hasDataDefinedPosition = true;
-            // layer rotation set, but don't rotate pinned labels unless data defined
-            if ( layerDefinedRotation && !dataDefinedRotation )
-            {
-              angle = 0.0;
-            }
 
-            //horizontal alignment
-            if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Hali ) )
+            QgsGeometry geometryPoint = pointAsVariant.value<QgsGeometry>();
+            const QgsPoint *point  = qgsgeometry_cast<QgsPoint *>( geometryPoint.constGet() );
+//          QgsPoint point = geometryPoint.constGet()->vertexAt( vId );
+
+            xPos = point->x();
+            yPos = point->y();
+          }
+        }
+      }
+      break;
+    }
+
+    if ( ddPosition )
+    {
+      //data defined position. But field values could be NULL -> positions will be generated by PAL
+      if ( hasDataDefinedPosition )
+      {
+        // layer rotation set, but don't rotate pinned labels unless data defined
+        if ( layerDefinedRotation && !dataDefinedRotation )
+        {
+          angle = 0.0;
+        }
+
+        //horizontal alignment
+        if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Hali ) )
+        {
+          exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Hali, context.expressionContext() );
+          if ( !exprVal.isNull() )
+          {
+            QString haliString = exprVal.toString();
+            if ( haliString.compare( QLatin1String( "Center" ), Qt::CaseInsensitive ) == 0 )
             {
-              exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Hali, context.expressionContext() );
-              if ( !exprVal.isNull() )
+              xdiff -= labelX / 2.0;
+            }
+            else if ( haliString.compare( QLatin1String( "Right" ), Qt::CaseInsensitive ) == 0 )
+            {
+              xdiff -= labelX;
+            }
+          }
+        }
+
+        //vertical alignment
+        if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Vali ) )
+        {
+          exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Vali, context.expressionContext() );
+          if ( !exprVal.isNull() )
+          {
+            QString valiString = exprVal.toString();
+            if ( valiString.compare( QLatin1String( "Bottom" ), Qt::CaseInsensitive ) != 0 )
+            {
+              if ( valiString.compare( QLatin1String( "Top" ), Qt::CaseInsensitive ) == 0 )
               {
-                QString haliString = exprVal.toString();
-                if ( haliString.compare( QLatin1String( "Center" ), Qt::CaseInsensitive ) == 0 )
-                {
-                  xdiff -= labelX / 2.0;
-                }
-                else if ( haliString.compare( QLatin1String( "Right" ), Qt::CaseInsensitive ) == 0 )
-                {
-                  xdiff -= labelX;
-                }
-              }
-            }
-
-            //vertical alignment
-            if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Vali ) )
-            {
-              exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Vali, context.expressionContext() );
-              if ( !exprVal.isNull() )
-              {
-                QString valiString = exprVal.toString();
-                if ( valiString.compare( QLatin1String( "Bottom" ), Qt::CaseInsensitive ) != 0 )
-                {
-                  if ( valiString.compare( QLatin1String( "Top" ), Qt::CaseInsensitive ) == 0 )
-                  {
-                    ydiff -= labelY;
-                  }
-                  else
-                  {
-                    double descentRatio = labelFontMetrics->descent() / labelFontMetrics->height();
-                    if ( valiString.compare( QLatin1String( "Base" ), Qt::CaseInsensitive ) == 0 )
-                    {
-                      ydiff -= labelY * descentRatio;
-                    }
-                    else //'Cap' or 'Half'
-                    {
-                      double capHeightRatio = ( labelFontMetrics->boundingRect( 'H' ).height() + 1 + labelFontMetrics->descent() ) / labelFontMetrics->height();
-                      ydiff -= labelY * capHeightRatio;
-                      if ( valiString.compare( QLatin1String( "Half" ), Qt::CaseInsensitive ) == 0 )
-                      {
-                        ydiff += labelY * ( capHeightRatio - descentRatio ) / 2.0;
-                      }
-                    }
-                  }
-                }
-              }
-            }
-
-            if ( dataDefinedRotation )
-            {
-              //adjust xdiff and ydiff because the hali/vali point needs to be the rotation center
-              double xd = xdiff * std::cos( angle ) - ydiff * std::sin( angle );
-              double yd = xdiff * std::sin( angle ) + ydiff * std::cos( angle );
-              xdiff = xd;
-              ydiff = yd;
-            }
-
-            //project xPos and yPos from layer to map CRS, handle rotation
-            QgsGeometry ddPoint( new QgsPoint( xPos, yPos ) );
-            if ( QgsPalLabeling::geometryRequiresPreparation( ddPoint, context, ct ) )
-            {
-              ddPoint = QgsPalLabeling::prepareGeometry( ddPoint, context, ct );
-              if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( ddPoint.constGet() ) )
-              {
-                xPos = point->x();
-                yPos = point->y();
-                anchorPosition = QgsPointXY( xPos, yPos );
+                ydiff -= labelY;
               }
               else
               {
-                QgsMessageLog::logMessage( QObject::tr( "Invalid data defined label position (%1, %2)" ).arg( xPos ).arg( yPos ), QObject::tr( "Labeling" ) );
-                hasDataDefinedPosition = false;
+                double descentRatio = labelFontMetrics->descent() / labelFontMetrics->height();
+                if ( valiString.compare( QLatin1String( "Base" ), Qt::CaseInsensitive ) == 0 )
+                {
+                  ydiff -= labelY * descentRatio;
+                }
+                else //'Cap' or 'Half'
+                {
+                  double capHeightRatio = ( labelFontMetrics->boundingRect( 'H' ).height() + 1 + labelFontMetrics->descent() ) / labelFontMetrics->height();
+                  ydiff -= labelY * capHeightRatio;
+                  if ( valiString.compare( QLatin1String( "Half" ), Qt::CaseInsensitive ) == 0 )
+                  {
+                    ydiff += labelY * ( capHeightRatio - descentRatio ) / 2.0;
+                  }
+                }
               }
             }
-            else
-            {
-              anchorPosition = QgsPointXY( xPos, yPos );
-            }
-
-            xPos += xdiff;
-            yPos += ydiff;
           }
+        }
+
+        if ( dataDefinedRotation )
+        {
+          //adjust xdiff and ydiff because the hali/vali point needs to be the rotation center
+          double xd = xdiff * std::cos( angle ) - ydiff * std::sin( angle );
+          double yd = xdiff * std::sin( angle ) + ydiff * std::cos( angle );
+          xdiff = xd;
+          ydiff = yd;
+        }
+
+        //project xPos and yPos from layer to map CRS, handle rotation
+        QgsGeometry ddPoint( new QgsPoint( xPos, yPos ) );
+        if ( QgsPalLabeling::geometryRequiresPreparation( ddPoint, context, ct ) )
+        {
+          ddPoint = QgsPalLabeling::prepareGeometry( ddPoint, context, ct );
+          if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( ddPoint.constGet() ) )
+          {
+            xPos = point->x();
+            yPos = point->y();
+            anchorPosition = QgsPointXY( xPos, yPos );
+          }
+          else
+          {
+            QgsMessageLog::logMessage( QObject::tr( "Invalid data defined label position (%1, %2)" ).arg( xPos ).arg( yPos ), QObject::tr( "Labeling" ) );
+            hasDataDefinedPosition = false;
+          }
+        }
+        else
+        {
+          anchorPosition = QgsPointXY( xPos, yPos );
+        }
+
+        xPos += xdiff;
+        yPos += ydiff;
+      }
+      else
+      {
+        anchorPosition = QgsPointXY( xPos, yPos );
+
+        // only rotate non-pinned OverPoint placements until other placements are supported in pal::Feature
+        if ( dataDefinedRotation && placement != QgsPalLayerSettings::OverPoint )
+        {
+          angle = 0.0;
         }
       }
     }

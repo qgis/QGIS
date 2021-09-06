@@ -38,8 +38,9 @@ class QgsStyleEntityVisitorInterface;
  *
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsAbstractVectorLayerLabeling
+class CORE_EXPORT QgsAbstractVectorLayerLabeling : public QObject
 {
+    Q_OBJECT
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -132,6 +133,10 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
      * \since QGIS 3.20
      */
     static QgsPalLayerSettings defaultSettingsForLayer( const QgsVectorLayer *layer );
+
+  signals:
+
+    void labelingChanged();
 
   protected:
 
