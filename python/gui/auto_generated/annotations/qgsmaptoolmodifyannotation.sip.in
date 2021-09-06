@@ -36,6 +36,8 @@ Constructor for QgsMapToolModifyAnnotation
 
     virtual void cadCanvasPressEvent( QgsMapMouseEvent *event );
 
+    virtual void keyPressEvent( QKeyEvent *event );
+
 
   signals:
 

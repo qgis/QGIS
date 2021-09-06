@@ -204,6 +204,21 @@ void QgsMapToolModifyAnnotation::cadCanvasPressEvent( QgsMapMouseEvent *event )
   }
 }
 
+void QgsMapToolModifyAnnotation::keyPressEvent( QKeyEvent *event )
+{
+  if ( event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Delete )
+  {
+    QgsAnnotationLayer *layer = annotationLayerFromId( mSelectedItemLayerId );
+    if ( !layer || mSelectedItemId.isEmpty() )
+      return;
+
+    layer->removeItem( mSelectedItemId );
+    clearSelectedItem();
+    clearHoveredItem();
+    event->ignore(); // disable default shortcut handling
+  }
+}
+
 void QgsMapToolModifyAnnotation::setHoveredItem( const QgsRenderedAnnotationItemDetails *item, const QgsRectangle &itemMapBounds )
 {
   mHoveredItemNodeRubberBands.clear();
