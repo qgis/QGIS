@@ -105,11 +105,11 @@ class HelpEditionDialog(BASE, WIDGET):
             s += '<h2>' + self.tr('Outputs') + '</h2>\n' + outputs
         s += '<br>'
         if self.getDescription(self.ALG_CREATOR):
-            s += '<p align=\"right\">' + self.tr('Algorithm author') + ': ' + self.getDescription(self.ALG_CREATOR) + '</p>'
+            s += '<p align=\"right\">' + self.tr('Algorithm author:') + ' ' + self.getDescription(self.ALG_CREATOR) + '</p>'
         if self.getDescription(self.ALG_HELP_CREATOR):
-            s += '<p align=\"right\">' + self.tr('Help author') + ': ' + self.getDescription(self.ALG_HELP_CREATOR) + '</p>'
+            s += '<p align=\"right\">' + self.tr('Help author:') + ' ' + self.getDescription(self.ALG_HELP_CREATOR) + '</p>'
         if self.getDescription(self.ALG_VERSION):
-            s += '<p align=\"right\">' + self.tr('Algorithm version') + ': ' + self.getDescription(self.ALG_VERSION) + '</p>'
+            s += '<p align=\"right\">' + self.tr('Algorithm version:') + ' ' + self.getDescription(self.ALG_VERSION) + '</p>'
         return s
 
     def fillTree(self):
