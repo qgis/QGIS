@@ -1072,11 +1072,11 @@ QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const Q
 
   s += QLatin1String( "<br>" );
   if ( !map.value( QStringLiteral( "ALG_CREATOR" ) ).toString().isEmpty() )
-    s += QStringLiteral( "<p align=\"right\">" ) + QObject::tr( "Algorithm author" ) + QStringLiteral( ": " ) + getText( QStringLiteral( "ALG_CREATOR" ) ) + QStringLiteral( "</p>" );
+    s += QStringLiteral( "<p align=\"right\">" ) + QObject::tr( "Algorithm author:" ) + QStringLiteral( " " ) + getText( QStringLiteral( "ALG_CREATOR" ) ) + QStringLiteral( "</p>" );
   if ( !map.value( QStringLiteral( "ALG_HELP_CREATOR" ) ).toString().isEmpty() )
-    s += QStringLiteral( "<p align=\"right\">" ) + QObject::tr( "Help author" ) + QStringLiteral( ": " ) + getText( QStringLiteral( "ALG_HELP_CREATOR" ) ) + QStringLiteral( "</p>" );
+    s += QStringLiteral( "<p align=\"right\">" ) + QObject::tr( "Help author:" ) + QStringLiteral( " " ) + getText( QStringLiteral( "ALG_HELP_CREATOR" ) ) + QStringLiteral( "</p>" );
   if ( !map.value( QStringLiteral( "ALG_VERSION" ) ).toString().isEmpty() )
-    s += QStringLiteral( "<p align=\"right\">" ) + QObject::tr( "Algorithm version" ) + QStringLiteral( ": " ) + getText( QStringLiteral( "ALG_VERSION" ) ) + QStringLiteral( "</p>" );
+    s += QStringLiteral( "<p align=\"right\">" ) + QObject::tr( "Algorithm version:" ) + QStringLiteral( " " ) + getText( QStringLiteral( "ALG_VERSION" ) ) + QStringLiteral( "</p>" );
 
   s += QLatin1String( "</body></html>" );
   return s;
