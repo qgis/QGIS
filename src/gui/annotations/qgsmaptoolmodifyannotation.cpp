@@ -187,10 +187,7 @@ void QgsMapToolModifyAnnotation::cadCanvasPressEvent( QgsMapMouseEvent *event )
 
   if ( mHoveredItemId.isEmpty() || !mHoverRubberBand )
   {
-    if ( mSelectedRubberBand )
-      mSelectedRubberBand->hide();
-    mSelectedItemId.clear();
-    mSelectedItemLayerId.clear();
+    clearSelectedItem();
   }
   else if ( mHoveredItemId != mSelectedItemId || mHoveredItemLayerId != mSelectedItemLayerId )
   {
@@ -328,6 +325,18 @@ void QgsMapToolModifyAnnotation::clearHoveredItem()
   mHoveredItemLayerId.clear();
   mHoveredItemNodeRubberBands.clear();
   mHoveredItemNodesSpatialIndex.reset();
+}
+
+void QgsMapToolModifyAnnotation::clearSelectedItem()
+{
+  if ( mSelectedRubberBand )
+    mSelectedRubberBand->hide();
+
+  const bool hadSelection = !mSelectedItemId.isEmpty();
+  mSelectedItemId.clear();
+  mSelectedItemLayerId.clear();
+  if ( hadSelection )
+    emit selectionCleared();
 }
 
 void QgsMapToolModifyAnnotation::createHoverBand()

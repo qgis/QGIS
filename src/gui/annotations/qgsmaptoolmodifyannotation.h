@@ -58,8 +58,14 @@ class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsMapToolAdvancedDigitizin
      */
     void itemSelected( QgsAnnotationLayer *layer, const QString &itemId );
 
+    /**
+     * Emitted when the selected item is cleared;
+     */
+    void selectionCleared();
+
   private:
     void clearHoveredItem();
+    void clearSelectedItem();
     void createHoverBand();
     void createHoveredNodeBand();
     void createSelectedItemBand();
