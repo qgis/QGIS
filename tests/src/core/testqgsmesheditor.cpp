@@ -1840,7 +1840,7 @@ void TestQgsMeshEditor::transformByExpression()
 
 void TestQgsMeshEditor::forceByLine()
 {
-  QString uri( mDataDir + "/refined_quad_flower.nc" );
+  QString uri( mDataDir + "/refined_quad_flower.2dm" );
   std::unique_ptr<QgsMeshLayer> meshLayer = std::make_unique<QgsMeshLayer>( uri, "mesh layer", "mdal" );
 
   QVERIFY( meshLayer->isValid() );
