@@ -139,6 +139,13 @@ void TestQgsMapToolEditAnnotation::testSelectItem()
   utils.mouseClick( 7.5, 1.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   QCOMPARE( spy.count(), 3 );
   QCOMPARE( spy.at( 2 ).at( 1 ).toString(), i3id );
+
+  // click on no item - should clear selection
+  QSignalSpy selectionClearedSpy( &tool, &QgsMapToolModifyAnnotation::selectionCleared );
+  utils.mouseMove( 9.5, 9.5 );
+  utils.mouseClick( 9.5, 9.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  QCOMPARE( spy.count(), 3 );
+  QCOMPARE( selectionClearedSpy.count(), 1 );
 }
 
 
