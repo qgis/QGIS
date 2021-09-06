@@ -635,6 +635,78 @@ class TestQgsMapCanvas(unittest.TestCase):
         # and instead we used precached renders of both layers
         self.assertCountEqual([i.itemId() for i in results.renderedItems()], [i1_id, i2_id, i3_id])
 
+    def test_rendered_item_results_remove_outdated(self):
+        """
+        Test that outdated results are removed from rendered item result caches
+        """
+        canvas = QgsMapCanvas()
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        canvas.setFrameStyle(0)
+        canvas.resize(600, 400)
+        canvas.setCachingEnabled(True)
+        self.assertEqual(canvas.width(), 600)
+        self.assertEqual(canvas.height(), 400)
+
+        layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        self.assertTrue(layer.isValid())
+        layer2 = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        self.assertTrue(layer2.isValid())
+
+        item = QgsAnnotationPolygonItem(
+            QgsPolygon(QgsLineString([QgsPoint(11.5, 13), QgsPoint(12, 13), QgsPoint(12, 13.5), QgsPoint(11.5, 13)])))
+        item.setSymbol(
+            QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black', 'outline_width': '2'}))
+        item.setZIndex(1)
+        i1_id = layer.addItem(item)
+
+        item = QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]))
+        item.setZIndex(2)
+        i2_id = layer.addItem(item)
+
+        item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
+        item.setZIndex(3)
+        i3_id = layer2.addItem(item)
+
+        layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        layer2.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+
+        canvas.setLayers([layer, layer2])
+        canvas.setExtent(QgsRectangle(10, 10, 18, 18))
+        canvas.show()
+
+        # need to wait until first redraw can occur (note that we first need to wait till drawing starts!)
+        while not canvas.isDrawing():
+            app.processEvents()
+        canvas.waitWhileRendering()
+
+        results = canvas.renderedItemResults()
+        self.assertCountEqual([i.itemId() for i in results.renderedItems()], [i1_id, i2_id, i3_id])
+
+        # now try modifying an annotation in the layer -- it will redraw, and we don't want to reuse any previously
+        # cached rendered item results for this layer!
+
+        item = QgsAnnotationPolygonItem(
+            QgsPolygon(QgsLineString([QgsPoint(11.5, 13), QgsPoint(12.5, 13), QgsPoint(12.5, 13.5), QgsPoint(11.5, 13)])))
+        item.setZIndex(1)
+        layer.replaceItem(i1_id, item)
+        while not canvas.isDrawing():
+            app.processEvents()
+        canvas.waitWhileRendering()
+
+        item = QgsAnnotationMarkerItem(QgsPoint(17, 18))
+        item.setZIndex(3)
+        layer2.replaceItem(i3_id, item)
+        while not canvas.isDrawing():
+            app.processEvents()
+        canvas.waitWhileRendering()
+
+        results = canvas.renderedItemResults()
+        items_in_bounds = results.renderedAnnotationItemsInBounds(QgsRectangle(10, 10, 15, 15))
+        self.assertCountEqual([i.itemId() for i in items_in_bounds], [i1_id,i2_id])
+
+        items_in_bounds = results.renderedAnnotationItemsInBounds(QgsRectangle(15, 15, 20, 20))
+        self.assertCountEqual([i.itemId() for i in items_in_bounds], [i3_id])
+
 
 if __name__ == '__main__':
     unittest.main()
