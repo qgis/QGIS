@@ -392,10 +392,10 @@ QPolygonF QgsMapSettings::visiblePolygon() const
   const QSize &sz = outputSize();
   const QgsMapToPixel &m2p = mapToPixel();
 
-  poly << m2p.toMapCoordinates( 0.0,                             0.0 ).toQPointF();
+  poly << m2p.toMapCoordinates( 0.0, 0.0 ).toQPointF();
   poly << m2p.toMapCoordinates( static_cast<double>( sz.width() ), 0.0 ).toQPointF();
   poly << m2p.toMapCoordinates( static_cast<double>( sz.width() ), static_cast<double>( sz.height() ) ).toQPointF();
-  poly << m2p.toMapCoordinates( 0.0,                             static_cast<double>( sz.height() ) ).toQPointF();
+  poly << m2p.toMapCoordinates( 0.0, static_cast<double>( sz.height() ) ).toQPointF();
 
   return poly;
 }
@@ -414,10 +414,10 @@ QPolygonF QgsMapSettings::visiblePolygonWithBuffer() const
   const double mapUnitsPerPixel = mExtent.width() / sz.width();
   const double buffer = mExtentBuffer / mapUnitsPerPixel;
 
-  poly << m2p.toMapCoordinates( -buffer,                              -buffer ).toQPointF();
+  poly << m2p.toMapCoordinates( -buffer, -buffer ).toQPointF();
   poly << m2p.toMapCoordinates( static_cast<double>( sz.width() + buffer ), -buffer ).toQPointF();
   poly << m2p.toMapCoordinates( static_cast<double>( sz.width() + buffer ), static_cast<double>( sz.height() + buffer ) ).toQPointF();
-  poly << m2p.toMapCoordinates( -buffer,                                  static_cast<double>( sz.height() + buffer ) ).toQPointF();
+  poly << m2p.toMapCoordinates( -buffer, static_cast<double>( sz.height() + buffer ) ).toQPointF();
 
   return poly;
 }
