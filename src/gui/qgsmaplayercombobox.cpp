@@ -74,6 +74,16 @@ QStringList QgsMapLayerComboBox::additionalItems() const
   return mProxyModel->sourceLayerModel()->additionalItems();
 }
 
+void QgsMapLayerComboBox::setAdditionalLayers( const QList<QgsMapLayer *> &layers )
+{
+  mProxyModel->sourceLayerModel()->setAdditionalLayers( layers );
+}
+
+QList<QgsMapLayer *> QgsMapLayerComboBox::additionalLayers() const
+{
+  return mProxyModel->sourceLayerModel()->additionalLayers();
+}
+
 void QgsMapLayerComboBox::setLayer( QgsMapLayer *layer )
 {
   if ( layer == currentLayer() && ( layer || !isEditable() || currentText().isEmpty() ) )
