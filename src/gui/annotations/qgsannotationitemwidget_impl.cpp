@@ -22,6 +22,8 @@
 #include "qgsannotationpolygonitem.h"
 #include "qgsannotationlineitem.h"
 #include "qgsannotationmarkeritem.h"
+#include "qgsannotationpointtextitem.h"
+#include "qgstextformatwidget.h"
 
 ///@cond PRIVATE
 
@@ -201,6 +203,72 @@ bool QgsAnnotationMarkerItemWidget::setNewItem( QgsAnnotationItem *item )
   mBlockChangedSignal = true;
   mSelector->loadSymbol( mSymbol.get() );
   mSelector->updatePreview();
+  mBlockChangedSignal = false;
+
+  return true;
+}
+
+
+
+//
+// QgsAnnotationPointTextItemWidget
+//
+
+QgsAnnotationPointTextItemWidget::QgsAnnotationPointTextItemWidget( QWidget *parent )
+  : QgsAnnotationItemBaseWidget( parent )
+{
+  setupUi( this );
+
+  mTextFormatWidget = new QgsTextFormatWidget();
+  QVBoxLayout *vLayout = new QVBoxLayout();
+  vLayout->setContentsMargins( 0, 0, 0, 0 );
+  vLayout->addWidget( mTextFormatWidget );
+  mTextFormatWidgetContainer->setLayout( vLayout );
+
+  mTextEdit->setMaximumHeight( mTextEdit->fontMetrics().height() * 10 );
+
+  mTextFormatWidget->setDockMode( dockMode() );
+  connect( mTextFormatWidget, &QgsTextFormatWidget::widgetChanged, this, [ = ]
+  {
+    if ( !mBlockChangedSignal )
+      emit itemChanged();
+  } );
+  connect( mTextEdit, &QPlainTextEdit::textChanged, this, [ = ]
+  {
+    if ( !mBlockChangedSignal )
+      emit itemChanged();
+  } );
+
+}
+
+QgsAnnotationItem *QgsAnnotationPointTextItemWidget::createItem()
+{
+  QgsAnnotationPointTextItem *newItem = mItem->clone();
+  newItem->setFormat( mTextFormatWidget->format() );
+  newItem->setText( mTextEdit->toPlainText() );
+  return newItem;
+}
+
+void QgsAnnotationPointTextItemWidget::setDockMode( bool dockMode )
+{
+  QgsAnnotationItemBaseWidget::setDockMode( dockMode );
+  if ( mTextFormatWidget )
+    mTextFormatWidget->setDockMode( dockMode );
+}
+
+QgsAnnotationPointTextItemWidget::~QgsAnnotationPointTextItemWidget() = default;
+
+bool QgsAnnotationPointTextItemWidget::setNewItem( QgsAnnotationItem *item )
+{
+  QgsAnnotationPointTextItem *textItem = dynamic_cast< QgsAnnotationPointTextItem * >( item );
+  if ( !textItem )
+    return false;
+
+  mItem.reset( textItem->clone() );
+
+  mBlockChangedSignal = true;
+  mTextFormatWidget->setFormat( mItem->format() );
+  mTextEdit->setPlainText( mItem->text() );
   mBlockChangedSignal = false;
 
   return true;

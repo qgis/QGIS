@@ -18,7 +18,10 @@
 #include "qgsannotationitemwidget.h"
 #include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgstextformat.h"
 #include <memory>
+
+#include "ui_qgsannotationpointtextwidgetbase.h"
 
 class QgsSymbolSelectorWidget;
 class QgsFillSymbol;
@@ -27,6 +30,8 @@ class QgsMarkerSymbol;
 class QgsAnnotationPolygonItem;
 class QgsAnnotationLineItem;
 class QgsAnnotationMarkerItem;
+class QgsAnnotationPointTextItem;
+class QgsTextFormatWidget;
 
 #define SIP_NO_FILE
 
@@ -93,6 +98,27 @@ class QgsAnnotationMarkerItemWidget : public QgsAnnotationItemBaseWidget
     std::unique_ptr< QgsMarkerSymbol > mSymbol;
     bool mBlockChangedSignal = false;
     std::unique_ptr< QgsAnnotationMarkerItem> mItem;
+};
+
+
+class QgsAnnotationPointTextItemWidget : public QgsAnnotationItemBaseWidget, private Ui_QgsAnnotationPointTextWidgetBase
+{
+    Q_OBJECT
+
+  public:
+    QgsAnnotationPointTextItemWidget( QWidget *parent );
+    ~QgsAnnotationPointTextItemWidget() override;
+    QgsAnnotationItem *createItem() override;
+    void setDockMode( bool dockMode ) override;
+
+  protected:
+    bool setNewItem( QgsAnnotationItem *item ) override;
+
+  private:
+
+    QgsTextFormatWidget *mTextFormatWidget = nullptr;
+    bool mBlockChangedSignal = false;
+    std::unique_ptr< QgsAnnotationPointTextItem> mItem;
 };
 
 ///@endcond
