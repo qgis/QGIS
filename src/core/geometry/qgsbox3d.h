@@ -218,14 +218,14 @@ class CORE_EXPORT QgsBox3d
     /**
      * Scale the rectangle around a center QgsPoint.
      *
-     * \since QGIS 3.21
+     * \since QGIS 3.22
      */
     void scale( double scaleFactor, const QgsPoint *c = nullptr );
 
     /**
      * Scale the rectangle around a center coordinates.
      *
-     * \since QGIS 3.21
+     * \since QGIS 3.22
      */
     void scale( double scaleFactor, double centerX, double centerY, double centerZ );
 
