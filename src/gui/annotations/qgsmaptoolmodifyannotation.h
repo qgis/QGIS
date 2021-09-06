@@ -21,6 +21,7 @@
 #include "qgis_sip.h"
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qobjectuniqueptr.h"
+#include "qgspointxy.h"
 
 class QgsRubberBand;
 class QgsRenderedAnnotationItemDetails;
@@ -64,7 +65,16 @@ class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsMapToolAdvancedDigitizin
      */
     void selectionCleared();
 
+  private slots:
+    void onCanvasRefreshed();
+
   private:
+    enum class Action
+    {
+      NoAction,
+      MoveItem
+    };
+
     void clearHoveredItem();
     void clearSelectedItem();
     void createHoverBand();
@@ -76,6 +86,8 @@ class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsMapToolAdvancedDigitizin
 
     void setHoveredItem( const QgsRenderedAnnotationItemDetails *item, const QgsRectangle &itemMapBounds );
 
+    Action mCurrentAction = Action::NoAction;
+
     QObjectUniquePtr<QgsRubberBand> mHoverRubberBand;
     std::vector< QObjectUniquePtr<QgsRubberBand> > mHoveredItemNodeRubberBands;
 
@@ -85,6 +97,7 @@ class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsMapToolAdvancedDigitizin
     QObjectUniquePtr<QgsRubberBand> mHoveredNodeRubberBand;
 
     QObjectUniquePtr<QgsRubberBand> mSelectedRubberBand;
+    QObjectUniquePtr<QgsRubberBand> mTemporaryRubberBand;
 
     QString mHoveredItemId;
     QString mHoveredItemLayerId;
@@ -93,6 +106,11 @@ class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsMapToolAdvancedDigitizin
     QString mSelectedItemLayerId;
 
     std::unique_ptr< QgsAnnotationItemNodesSpatialIndex > mHoveredItemNodesSpatialIndex;
+
+    QgsPointXY mMoveStartPointCanvasCrs;
+    QgsPointXY mMoveStartPointLayerCrs;
+
+    bool mRefreshSelectedItemAfterRedraw = false;
 
 };
 
