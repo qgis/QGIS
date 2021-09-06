@@ -169,9 +169,10 @@ QPolygonF QgsSymbol::_getPolygonRing( QgsRenderContext &context, const QgsCurve 
   if ( correctRingOrientation )
   {
     // ensure consistent polygon ring orientation
-    if ( (isExteriorRing && curve.orientation() != Qgis::AngularDirection::Clockwise) || ( !isExteriorRing && curve.orientation() != Qgis::AngularDirection::CounterClockwise )) {
+    if ( (isExteriorRing && curve.orientation() != Qgis::AngularDirection::Clockwise) || ( !isExteriorRing && curve.orientation() != Qgis::AngularDirection::CounterClockwise ) )
+    {
       poly.reversed()->points( seq );
-      poly.setPoints(seq);
+      poly.setPoints( seq );
     }
   }
 
