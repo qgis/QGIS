@@ -5541,6 +5541,9 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item>
+                            <widget class="QComboBox" name="mCoordRotationUnitComboBox"/>
+                           </item>
+                           <item>
                             <widget class="QCheckBox" name="chkPreserveRotation">
                              <property name="toolTip">
                               <string>Uncheck to write labeling engine derived rotation on pin and NULL on unpin</string>
