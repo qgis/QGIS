@@ -557,7 +557,7 @@ class CORE_EXPORT QgsUnitTypes
     /**
      * Returns an angle formatted as a friendly string.
      * \param angle angle to format
-     * \param decimals number of decimal places to show. By -1 it show an appropriate number of decimal places
+     * \param decimals number of decimal places to show. A value of -1 indicates that an appropriate number of decimal places should automatically be selected.
      * \param unit unit of angle
      * \returns formatted angle string
      */
