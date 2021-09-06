@@ -112,6 +112,15 @@ class CORE_EXPORT QgsAnnotationItem
     virtual QgsRectangle boundingBox( QgsRenderContext &context ) const { Q_UNUSED( context ) return boundingBox();}
 
     /**
+     * Transforms the item's geometry using the specified \a transform.
+     *
+     * Returns TRUE if the transformation was successful.
+     *
+     * \since QGIS 3.22
+     */
+    virtual bool transform( const QTransform &transform ) = 0;
+
+    /**
      * Renders the item to the specified render \a context.
      *
      * The \a feedback argument can be used to detect render cancellations during expensive

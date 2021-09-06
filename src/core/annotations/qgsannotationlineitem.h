@@ -44,6 +44,7 @@ class CORE_EXPORT QgsAnnotationLineItem : public QgsAnnotationItem
     void render( QgsRenderContext &context, QgsFeedback *feedback ) override;
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     QList< QgsAnnotationItemNode > nodes() const override;
+    bool transform( const QTransform &transform ) override;
 
     /**
      * Creates a new linestring annotation item.

@@ -121,6 +121,12 @@ QList<QgsAnnotationItemNode> QgsAnnotationPolygonItem::nodes() const
   return res;
 }
 
+bool QgsAnnotationPolygonItem::transform( const QTransform &transform )
+{
+  mPolygon->transform( transform );
+  return true;
+}
+
 QgsAnnotationPolygonItem *QgsAnnotationPolygonItem::create()
 {
   return new QgsAnnotationPolygonItem( new QgsPolygon() );

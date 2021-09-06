@@ -137,6 +137,15 @@ QList<QgsAnnotationItemNode> QgsAnnotationPointTextItem::nodes() const
   return { QgsAnnotationItemNode( mPoint, Qgis::AnnotationItemNodeType::VertexHandle )};
 }
 
+bool QgsAnnotationPointTextItem::transform( const QTransform &transform )
+{
+  double x = mPoint.x();
+  double y = mPoint.y();
+  transform.map( mPoint.x(), mPoint.y(), &x, &y );
+  mPoint.set( x, y );
+  return true;
+}
+
 QgsTextFormat QgsAnnotationPointTextItem::format() const
 {
   return mTextFormat;

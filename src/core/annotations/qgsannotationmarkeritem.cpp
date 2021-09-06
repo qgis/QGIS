@@ -140,6 +140,12 @@ QgsRectangle QgsAnnotationMarkerItem::boundingBox( QgsRenderContext &context ) c
   return context.coordinateTransform().transformBoundingBox( boundsMapUnits, QgsCoordinateTransform::ReverseTransform );
 }
 
+bool QgsAnnotationMarkerItem::transform( const QTransform &transform )
+{
+  mPoint.transform( transform );
+  return true;
+}
+
 const QgsMarkerSymbol *QgsAnnotationMarkerItem::symbol() const
 {
   return mSymbol.get();

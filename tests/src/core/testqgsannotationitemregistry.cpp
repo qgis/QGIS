@@ -52,6 +52,11 @@ class TestItem : public QgsAnnotationItem
       return new TestItem();
     }
 
+    bool transform( const QTransform & ) override
+    {
+      return true;
+    }
+
     bool writeXml( QDomElement &, QDomDocument &, const QgsReadWriteContext & ) const override
     {
       return true;
