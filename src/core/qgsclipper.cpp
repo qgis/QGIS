@@ -39,20 +39,16 @@ const double QgsClipper::SMALL_NUM = 1e-12;
 
 QgsLineString QgsClipper::clipped3dLine( const QgsCurve &curve, const QgsBox3d &clipExtent )
 {
-  const int nPoints = curve.numPoints();
-
   double p0x, p0y, p0z, p1x = 0.0, p1y = 0.0, p1z = 0.0; //original coordinates
   double p1x_c, p1y_c, p1z_c; //clipped end coordinates
   double lastClipX = 0.0, lastClipY = 0.0, lastClipZ = 0.0; // last successfully clipped coordinates
 
   QgsLineString line;
 
-  QgsPoint curPoint;
-  QgsVertexId::VertexType type;
-  for ( int i = 0; i < nPoints; ++i )
+  for ( QgsAbstractGeometry::vertex_iterator ite = curve.vertices_begin() ; ite != curve.vertices_end(); ++ite )
   {
-    curve.pointAt( i, curPoint, type );
-    if ( i == 0 )
+    QgsPoint curPoint = *ite;
+    if ( ite == curve.vertices_begin() )
     {
       p1x = curPoint.x();
       p1y = curPoint.y();
