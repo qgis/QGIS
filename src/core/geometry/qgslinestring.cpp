@@ -601,8 +601,7 @@ QgsBox3d QgsLineString::calculateBoundingBox3d() const
   }
   else
   {
-    // TODO Nan or Inf?
-    return QgsBox3d( xmin, ymin, -HUGE_VAL, xmax, ymax, HUGE_VAL );
+    return QgsBox3d( xmin, ymin, NAN, xmax, ymax, NAN );
   }
 }
 
