@@ -52,6 +52,12 @@ QgsAnnotationItem *QgsAnnotationPolygonItemWidget::createItem()
   return newItem;
 }
 
+void QgsAnnotationPolygonItemWidget::updateItem( QgsAnnotationItem *item )
+{
+  if ( QgsAnnotationPolygonItem *polygonItem = dynamic_cast< QgsAnnotationPolygonItem * >( item ) )
+    polygonItem->setSymbol( mSymbol->clone() );
+}
+
 void QgsAnnotationPolygonItemWidget::setDockMode( bool dockMode )
 {
   QgsAnnotationItemBaseWidget::setDockMode( dockMode );
@@ -114,6 +120,12 @@ QgsAnnotationItem *QgsAnnotationLineItemWidget::createItem()
   return newItem;
 }
 
+void QgsAnnotationLineItemWidget::updateItem( QgsAnnotationItem *item )
+{
+  if ( QgsAnnotationLineItem *lineItem = dynamic_cast< QgsAnnotationLineItem * >( item ) )
+    lineItem->setSymbol( mSymbol->clone() );
+}
+
 void QgsAnnotationLineItemWidget::setDockMode( bool dockMode )
 {
   QgsAnnotationItemBaseWidget::setDockMode( dockMode );
@@ -174,6 +186,12 @@ QgsAnnotationItem *QgsAnnotationMarkerItemWidget::createItem()
   QgsAnnotationMarkerItem *newItem = mItem->clone();
   newItem->setSymbol( mSymbol->clone() );
   return newItem;
+}
+
+void QgsAnnotationMarkerItemWidget::updateItem( QgsAnnotationItem *item )
+{
+  if ( QgsAnnotationMarkerItem *markerItem = dynamic_cast< QgsAnnotationMarkerItem * >( item ) )
+    markerItem->setSymbol( mSymbol->clone() );
 }
 
 void QgsAnnotationMarkerItemWidget::setDockMode( bool dockMode )
@@ -247,6 +265,15 @@ QgsAnnotationItem *QgsAnnotationPointTextItemWidget::createItem()
   newItem->setFormat( mTextFormatWidget->format() );
   newItem->setText( mTextEdit->toPlainText() );
   return newItem;
+}
+
+void QgsAnnotationPointTextItemWidget::updateItem( QgsAnnotationItem *item )
+{
+  if ( QgsAnnotationPointTextItem *pointTextItem = dynamic_cast< QgsAnnotationPointTextItem * >( item ) )
+  {
+    pointTextItem->setFormat( mTextFormatWidget->format() );
+    pointTextItem->setText( mTextEdit->toPlainText() );
+  }
 }
 
 void QgsAnnotationPointTextItemWidget::setDockMode( bool dockMode )

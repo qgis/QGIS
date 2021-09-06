@@ -48,6 +48,11 @@ class GUI_EXPORT QgsAnnotationItemBaseWidget: public QgsPanelWidget
     virtual QgsAnnotationItem *createItem() = 0 SIP_FACTORY;
 
     /**
+     * Updates an existing item to match the settings defined in the widget.
+     */
+    virtual void updateItem( QgsAnnotationItem *item ) = 0;
+
+    /**
      * Sets the current \a item to show in the widget. If TRUE is returned, \a item
      * was an acceptable type for display in this widget and the widget has been
      * updated to match \a item's properties.

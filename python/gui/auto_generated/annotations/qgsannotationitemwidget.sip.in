@@ -34,6 +34,11 @@ Constructor for QgsAnnotationItemBaseWidget, linked with the specified annotatio
 Creates a new item matching the settings defined in the widget.
 %End
 
+    virtual void updateItem( QgsAnnotationItem *item ) = 0;
+%Docstring
+Updates an existing item to match the settings defined in the widget.
+%End
+
     bool setItem( QgsAnnotationItem *item );
 %Docstring
 Sets the current ``item`` to show in the widget. If ``True`` is returned, ``item``
