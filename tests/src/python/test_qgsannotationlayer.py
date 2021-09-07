@@ -438,7 +438,7 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         self.assertEqual([i.boundingBox() for i in item_details if i.itemId() == i2_id][0],
                          QgsRectangle(11, 13, 12, 15))
         self.assertEqual([i.boundingBox().toString(1) for i in item_details if i.itemId() == i3_id][0],
-                         '11.7,12.7 : 12.3,13.3')
+                         '11.4,12.4 : 12.6,13.6')
 
     def test_render_via_job(self):
         """
