@@ -1813,7 +1813,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             "SERVICE": "WMS",
             "VERSION": "1.3.0",
             "REQUEST": "GetMap",
-            "BBOX": "317654,6163276,327603,6173244",
+            "BBOX": "317914,6163276,327923,6173244",
             "CRS": "EPSG:3857",
             "WIDTH": "512",
             "HEIGHT": "512",
