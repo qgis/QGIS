@@ -25,6 +25,8 @@
 #include <QString>
 #include "qgis_analysis.h"
 
+#include <QVector>
+
 class QgsRasterBlock;
 class QgsRasterMatrix;
 
@@ -42,7 +44,8 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
       tOperator = 1,
       tNumber,
       tRasterRef,
-      tMatrix
+      tMatrix,
+      tFunction
     };
 
     //! possible operators
@@ -85,6 +88,8 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     QgsRasterCalcNode( double number );
     QgsRasterCalcNode( QgsRasterMatrix *matrix );
     QgsRasterCalcNode( Operator op, QgsRasterCalcNode *left, QgsRasterCalcNode *right );
+    //!Constructor for the tFunction type
+    QgsRasterCalcNode( QString functionName, QVector <QgsRasterCalcNode *> functionArgs );
     QgsRasterCalcNode( const QString &rasterName );
     ~QgsRasterCalcNode();
 
@@ -143,6 +148,12 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     QgsRasterCalcNode( const QgsRasterCalcNode &rh );
 #endif
 
+    /**
+     * Calculates result of raster calculation when tFunct type is used
+     * \since QGIS 3.22
+     */
+    QgsRasterMatrix evaluateFunction( const QVector<QgsRasterMatrix *> &matrixVector, QgsRasterMatrix &result ) const;
+
     Type mType = tNumber;
     QgsRasterCalcNode *mLeft = nullptr;
     QgsRasterCalcNode *mRight = nullptr;
@@ -150,7 +161,9 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     QString mRasterName;
     QgsRasterMatrix *mMatrix = nullptr;
     Operator mOperator = opNONE;
-
+    //added for the conditional statement
+    QString mFunctionName;
+    QVector <QgsRasterCalcNode *> mFunctionArgs;
 };
 
 
