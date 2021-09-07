@@ -193,6 +193,7 @@ set(TESTS
  testqgsvectorlayerutils.cpp
  testqgsvectortilelayer.cpp
  testqgsvectortilewriter.cpp
+ testqgstiles.cpp
  testqgsweakrelation.cpp
  testqgsziputils.cpp
  testqobjectuniqueptr.cpp
