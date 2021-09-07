@@ -123,6 +123,9 @@ QgsRectangle QgsAnnotationPointTextItem::boundingBox( QgsRenderContext &context 
   const double widthInPixels = QgsTextRenderer::textWidth( context, mTextFormat, mText.split( '\n' ) );
   const double heightInPixels = QgsTextRenderer::textHeight( context, mTextFormat, mText.split( '\n' ) );
 
+  // text size has already been calculated using any symbology reference scale factor above -- we need
+  // to temporarily remove the reference scale here or we'll be undoing the scaling
+  QgsScopedRenderContextReferenceScaleOverride resetScaleFactor( context, -1.0 );
   const double widthInMapUnits = context.convertToMapUnits( widthInPixels, QgsUnitTypes::RenderPixels );
   const double heightInMapUnits = context.convertToMapUnits( heightInPixels, QgsUnitTypes::RenderPixels );
 

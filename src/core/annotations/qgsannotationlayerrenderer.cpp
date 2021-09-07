@@ -72,15 +72,15 @@ bool QgsAnnotationLayerRenderer::render()
       break;
     }
 
+    std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
+    if ( item.second->useSymbologyReferenceScale() )
+    {
+      referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, item.second->symbologyReferenceScale() ) );
+    }
+
     const QgsRectangle bounds = item.second->boundingBox( context );
     if ( bounds.intersects( context.extent() ) )
     {
-      std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
-      if ( item.second->useSymbologyReferenceScale() )
-      {
-        referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, item.second->symbologyReferenceScale() ) );
-      }
-
       item.second->render( context, mFeedback.get() );
       std::unique_ptr< QgsRenderedAnnotationItemDetails > details = std::make_unique< QgsRenderedAnnotationItemDetails >( mLayerID, item.first );
       details->setBoundingBox( bounds );
