@@ -53,6 +53,7 @@ class TestQgsMapSettings: public QObject
     void mapUnitsPerPixel();
     void testDevicePixelRatio();
     void visiblePolygon();
+    void visiblePolygonWithBuffer();
     void testIsLayerVisible();
     void testMapLayerListUtils();
     void testXmlReadWrite();
@@ -252,6 +253,31 @@ void TestQgsMapSettings::visiblePolygon()
   ms.setRotation( -45 );
   QCOMPARE( toString( ms.visiblePolygon() ),
             QString( "32.32 28.03,103.03 -42.67,67.67 -78.03,-3.03 -7.32" ) );
+}
+
+void TestQgsMapSettings::visiblePolygonWithBuffer()
+{
+  QgsMapSettings ms;
+
+  ms.setExtent( QgsRectangle( 0, 0, 100, 100 ) );
+  ms.setOutputSize( QSize( 100, 50 ) );
+  QCOMPARE( toString( ms.visiblePolygonWithBuffer() ),
+            QString( "-50 100,150 100,150 0,-50 0" ) );
+
+  ms.setExtentBuffer( 10 );
+  QCOMPARE( toString( ms.visiblePolygonWithBuffer() ),
+            QString( "-70 120,170 120,170 -20,-70 -20" ) );
+
+  ms.setExtent( QgsRectangle( 0, -50, 100, 0 ) );
+  ms.setOutputSize( QSize( 100, 50 ) );
+  ms.setRotation( 90 );
+  ms.setExtentBuffer( 0 );
+  QCOMPARE( toString( ms.visiblePolygonWithBuffer() ),
+            QString( "25 -75,25 25,75 25,75 -75" ) );
+
+  ms.setExtentBuffer( 10 );
+  QCOMPARE( toString( ms.visiblePolygonWithBuffer() ),
+            QString( "15 -85,15 35,85 35,85 -85" ) );
 }
 
 void TestQgsMapSettings::testIsLayerVisible()
