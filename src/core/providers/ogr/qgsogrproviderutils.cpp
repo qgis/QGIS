@@ -2531,6 +2531,10 @@ bool QgsOgrProviderUtils::saveConnection( const QString &path, const QString &og
     }
     if ( ok && ! connName.isEmpty() )
     {
+      QgsOgrDbConnection connection( connName, ogrDriverName );
+      connection.setPath( path );
+      connection.save();
+
       QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
       QgsGeoPackageProviderConnection *providerConnection =  static_cast<QgsGeoPackageProviderConnection *>( providerMetadata->createConnection( connName ) );
       providerMetadata->saveConnection( providerConnection, connName );
