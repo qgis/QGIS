@@ -117,6 +117,7 @@ class CORE_EXPORT QgsClipper
      *
      * \param pts polygon as 2D or 3D coordinates
      * \param clipRect clipping 3D box
+     * \since QGIS 3.22
      */
     static void trimPolygon( QgsLineString &pts, const QgsBox3d &clipRect );
 
