@@ -126,9 +126,17 @@ class CORE_EXPORT QgsClipper
      * \param curve the linestring
      * \param clipExtent clipping bounds
      * \returns clipped line coordinates
-     * \since QGIS 3.21
+     * \since QGIS 3.22
      */
     static QgsLineString clipped3dLine( const QgsCurve &curve, const QgsBox3d &clipExtent );
+
+    /**
+     * Takes a linestring and clips it to clipExtent
+     * \param curve the linestring
+     * \param clipExtent clipping bounds
+     * \returns clipped line coordinates
+     */
+    static QPolygonF clippedLine( const QgsCurve &curve, const QgsRectangle &clipExtent );
 
     /**
      * Takes a 2D \a curve and clips it to clipExtent.
