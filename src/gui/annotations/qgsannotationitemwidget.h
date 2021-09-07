@@ -18,6 +18,7 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgspanelwidget.h"
+#include "qgssymbolwidgetcontext.h"
 
 class QgsAnnotationItem;
 
@@ -62,6 +63,17 @@ class GUI_EXPORT QgsAnnotationItemBaseWidget: public QgsPanelWidget
      */
     bool setItem( QgsAnnotationItem *item );
 
+    /**
+     * Sets the \a context in which the widget is shown, e.g., the associated map canvas and expression contexts.
+     * \see context()
+     */
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+
+    /**
+     * Returns the context in which the widget is shown, e.g., the associated map canvas and expression contexts.
+     * \see setContext()
+     */
+    QgsSymbolWidgetContext context() const;
 
   signals:
 
@@ -83,6 +95,8 @@ class GUI_EXPORT QgsAnnotationItemBaseWidget: public QgsPanelWidget
      */
     virtual bool setNewItem( QgsAnnotationItem *item );
 
+    //! Context in which widget is shown
+    QgsSymbolWidgetContext mContext;
 };
 
 #endif // QGSANNOTATIONITEMWIDGET_H

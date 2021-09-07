@@ -26,6 +26,16 @@ bool QgsAnnotationItemBaseWidget::setItem( QgsAnnotationItem *item )
   return setNewItem( item );
 }
 
+void QgsAnnotationItemBaseWidget::setContext( const QgsSymbolWidgetContext &context )
+{
+  mContext = context;
+}
+
+QgsSymbolWidgetContext QgsAnnotationItemBaseWidget::context() const
+{
+  return mContext;
+}
+
 bool QgsAnnotationItemBaseWidget::setNewItem( QgsAnnotationItem * )
 {
   return false;

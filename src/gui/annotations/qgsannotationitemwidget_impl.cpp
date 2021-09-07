@@ -77,6 +77,14 @@ void QgsAnnotationPolygonItemWidget::setDockMode( bool dockMode )
     mSelector->setDockMode( dockMode );
 }
 
+void QgsAnnotationPolygonItemWidget::setContext( const QgsSymbolWidgetContext &context )
+{
+  QgsAnnotationItemBaseWidget::setContext( context );
+  if ( mSelector )
+    mSelector->setContext( context );
+  mPropertiesWidget->setContext( context );
+}
+
 QgsAnnotationPolygonItemWidget::~QgsAnnotationPolygonItemWidget() = default;
 
 bool QgsAnnotationPolygonItemWidget::setNewItem( QgsAnnotationItem *item )
@@ -158,6 +166,14 @@ void QgsAnnotationLineItemWidget::setDockMode( bool dockMode )
     mSelector->setDockMode( dockMode );
 }
 
+void QgsAnnotationLineItemWidget::setContext( const QgsSymbolWidgetContext &context )
+{
+  QgsAnnotationItemBaseWidget::setContext( context );
+  if ( mSelector )
+    mSelector->setContext( context );
+  mPropertiesWidget->setContext( context );
+}
+
 QgsAnnotationLineItemWidget::~QgsAnnotationLineItemWidget() = default;
 
 bool QgsAnnotationLineItemWidget::setNewItem( QgsAnnotationItem *item )
@@ -237,6 +253,14 @@ void QgsAnnotationMarkerItemWidget::setDockMode( bool dockMode )
   QgsAnnotationItemBaseWidget::setDockMode( dockMode );
   if ( mSelector )
     mSelector->setDockMode( dockMode );
+}
+
+void QgsAnnotationMarkerItemWidget::setContext( const QgsSymbolWidgetContext &context )
+{
+  QgsAnnotationItemBaseWidget::setContext( context );
+  if ( mSelector )
+    mSelector->setContext( context );
+  mPropertiesWidget->setContext( context );
 }
 
 QgsAnnotationMarkerItemWidget::~QgsAnnotationMarkerItemWidget() = default;
@@ -326,6 +350,14 @@ void QgsAnnotationPointTextItemWidget::setDockMode( bool dockMode )
   QgsAnnotationItemBaseWidget::setDockMode( dockMode );
   if ( mTextFormatWidget )
     mTextFormatWidget->setDockMode( dockMode );
+}
+
+void QgsAnnotationPointTextItemWidget::setContext( const QgsSymbolWidgetContext &context )
+{
+  QgsAnnotationItemBaseWidget::setContext( context );
+  if ( mTextFormatWidget )
+    mTextFormatWidget->setContext( context );
+  mPropertiesWidget->setContext( context );
 }
 
 QgsAnnotationPointTextItemWidget::~QgsAnnotationPointTextItemWidget() = default;
