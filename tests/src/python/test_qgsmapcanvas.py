@@ -702,7 +702,7 @@ class TestQgsMapCanvas(unittest.TestCase):
 
         results = canvas.renderedItemResults()
         items_in_bounds = results.renderedAnnotationItemsInBounds(QgsRectangle(10, 10, 15, 15))
-        self.assertCountEqual([i.itemId() for i in items_in_bounds], [i1_id,i2_id])
+        self.assertCountEqual([i.itemId() for i in items_in_bounds], [i1_id, i2_id])
 
         items_in_bounds = results.renderedAnnotationItemsInBounds(QgsRectangle(15, 15, 20, 20))
         self.assertCountEqual([i.itemId() for i in items_in_bounds], [i3_id])
