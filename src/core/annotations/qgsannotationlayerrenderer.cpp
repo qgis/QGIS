@@ -18,6 +18,7 @@
 #include "qgsannotationlayer.h"
 #include "qgsfeedback.h"
 #include "qgsrenderedannotationitemdetails.h"
+#include <optional>
 
 QgsAnnotationLayerRenderer::QgsAnnotationLayerRenderer( QgsAnnotationLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
@@ -74,6 +75,12 @@ bool QgsAnnotationLayerRenderer::render()
     const QgsRectangle bounds = item.second->boundingBox( context );
     if ( bounds.intersects( context.extent() ) )
     {
+      std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
+      if ( item.second->useSymbologyReferenceScale() )
+      {
+        referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, item.second->symbologyReferenceScale() ) );
+      }
+
       item.second->render( context, mFeedback.get() );
       std::unique_ptr< QgsRenderedAnnotationItemDetails > details = std::make_unique< QgsRenderedAnnotationItemDetails >( mLayerID, item.first );
       details->setBoundingBox( bounds );

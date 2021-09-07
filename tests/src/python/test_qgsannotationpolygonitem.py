@@ -89,6 +89,8 @@ class TestQgsAnnotationPolygonItem(unittest.TestCase):
         item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
         item.setSymbol(QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black'}))
         item.setZIndex(11)
+        item.setUseSymbologyReferenceScale(True)
+        item.setSymbologyReferenceScale(5000)
 
         self.assertTrue(item.writeXml(elem, doc, QgsReadWriteContext()))
 
@@ -98,16 +100,22 @@ class TestQgsAnnotationPolygonItem(unittest.TestCase):
         self.assertEqual(s2.geometry().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 12 13))')
         self.assertEqual(s2.symbol()[0].color(), QColor(200, 100, 100))
         self.assertEqual(s2.zIndex(), 11)
+        self.assertTrue(s2.useSymbologyReferenceScale())
+        self.assertEqual(s2.symbologyReferenceScale(), 5000)
 
     def testClone(self):
         item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
         item.setSymbol(QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black'}))
         item.setZIndex(11)
+        item.setUseSymbologyReferenceScale(True)
+        item.setSymbologyReferenceScale(5000)
 
         item2 = item.clone()
         self.assertEqual(item2.geometry().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 12 13))')
         self.assertEqual(item2.symbol()[0].color(), QColor(200, 100, 100))
         self.assertEqual(item2.zIndex(), 11)
+        self.assertTrue(item2.useSymbologyReferenceScale())
+        self.assertEqual(item2.symbologyReferenceScale(), 5000)
 
     def testRenderPolygon(self):
         item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
