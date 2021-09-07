@@ -69,12 +69,15 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     //! Constructor with a specified layer \a meshLayer
     QgsMeshEditor( QgsMeshLayer *meshLayer );
 
-    //! Constructoe with a specific mesh \a nativeMesh and an associatd triangular mesh \a triangularMesh
+    //! Constructor with a specific mesh \a nativeMesh and an associatd triangular mesh \a triangularMesh
     QgsMeshEditor( QgsMesh *nativeMesh, QgsTriangularMesh *triangularMesh, QObject *parent = nullptr ); SIP_SKIP
     ~QgsMeshEditor();
 
     //! Initialize the mesh editor and return errors if the internal native mesh have topologic errors
     QgsMeshEditingError initialize();
+
+    //! Resets the triangular mesh
+    void resetTriangularMesh( QgsTriangularMesh *triangularMesh ); SIP_SKIP
 
     //! Returns TRUE if a \a face can be added to the mesh
     bool faceCanBeAdded( const QgsMeshFace &face );
@@ -180,6 +183,15 @@ class CORE_EXPORT QgsMeshEditor : public QObject
 
     //! Returns whether the mesh has been modified
     bool isModified() const;
+
+    /**
+     * Reindexes the mesh, that is remove unusued index of face and vertices, this operation void the undo/redo stack.
+     *
+     * If \a renumbering is true, a renumbering is operated to optimize the vertices indexes.
+     *
+     * Returns FALSE if the operation fail.
+     */
+    bool reindex( bool renumbering );
 
     //----------- access element methods
 

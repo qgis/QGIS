@@ -170,6 +170,15 @@ Returns the extent of the edited mesh
 Returns whether the mesh has been modified
 %End
 
+    bool reindex( bool renumbering );
+%Docstring
+Reindexes the mesh, that is remove unusued index of face and vertices, this operation void the undo/redo stack.
+
+If ``renumbering`` is true, a renumbering is operated to optimize the vertices indexes.
+
+Returns ``False`` if the operation fail.
+%End
+
 
     QList<int> freeVerticesIndexes() const;
 %Docstring

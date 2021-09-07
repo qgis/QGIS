@@ -771,6 +771,17 @@ clean the undostack
 .. versionadded:: 3.22
 %End
 
+    bool reindex( const QgsCoordinateTransform &transform, bool renumber );
+%Docstring
+Re-indexes the faces and vertices, and renumber the indexes if ``renumber`` is ``True``.
+rebuilds the triangular mesh and its spatial index with ``transform``,
+clean the undostack
+
+Returns ``False`` if the operation fails
+
+.. versionadded:: 3.22
+%End
+
     QgsMeshEditor *meshEditor();
 %Docstring
 Returns a pointer to the mesh editor own by the mesh layer

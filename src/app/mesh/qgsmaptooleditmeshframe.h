@@ -166,6 +166,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void selectByExpression( const QString &textExpression, Qgis::SelectBehavior behavior, QgsMesh::ElementType elementType );
     void onZoomToSelected();
     void forceBySelectedLayerPolyline();
+    void reindexMesh();
 
   private:
 
@@ -333,6 +334,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QAction *mActionSelectByExpression = nullptr;
     QAction *mActionForceByVectorLayerGeometries = nullptr;
     QgsMeshEditForceByLineAction *mWidgetActionForceByLine = nullptr;
+    QAction *mActionReindexMesh = nullptr;
 
     friend class TestQgsMapToolEditMesh;
 };

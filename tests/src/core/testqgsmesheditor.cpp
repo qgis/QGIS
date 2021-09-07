@@ -1527,9 +1527,7 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadFlower()
   QVERIFY( editor->removeVertices( {4}, true ) == QgsMeshEditingError() );
   QVERIFY( editor->checkConsistency() );
 
-  meshLayerQuadFlower->commitFrameEditing( transform, false );
-
-  QVERIFY( meshLayerQuadFlower->meshEditor() == nullptr );
+  meshLayerQuadFlower->commitFrameEditing( transform, true );
 
   QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 4 );
   QCOMPARE( meshLayerQuadFlower->meshVertexCount(), 10 );
@@ -1549,6 +1547,11 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadFlower()
   QCOMPARE( streamAltered.readAll(), streamExpected.readAll() );
 
   alteredFile.close();
+
+  QVERIFY( meshLayerQuadFlower->reindex( transform, true ) );
+  meshLayerQuadFlower->commitFrameEditing( transform, false );
+  QVERIFY( meshLayerQuadFlower->meshEditor() == nullptr );
+
   alteredFile.open( QIODevice::WriteOnly );
   streamAltered << streamOriginal.readAll();
 }

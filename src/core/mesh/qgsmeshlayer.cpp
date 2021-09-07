@@ -1004,6 +1004,23 @@ void QgsMeshLayer::stopFrameEditing( const QgsCoordinateTransform &transform )
   mRendererCache.reset( new QgsMeshLayerRendererCache() );
 }
 
+bool QgsMeshLayer::reindex( const QgsCoordinateTransform &transform, bool renumber )
+{
+  if ( !mMeshEditor )
+    return false;
+
+  if ( !mMeshEditor->reindex( renumber ) )
+    return false;
+
+  mTriangularMeshes.clear();
+  mTriangularMeshes.emplace_back( new QgsTriangularMesh );
+  mTriangularMeshes.at( 0 )->update( mNativeMesh.get(), transform );
+  mRendererCache.reset( new QgsMeshLayerRendererCache() );
+  mMeshEditor->resetTriangularMesh( mTriangularMeshes.at( 0 ).get() );
+
+  return true;
+}
+
 QgsMeshEditor *QgsMeshLayer::meshEditor()
 {
   return mMeshEditor;
