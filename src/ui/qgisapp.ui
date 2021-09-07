@@ -802,6 +802,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="mActionCreateAnnotationLayer"/>
+   <addaction name="mActionModifyAnnotation"/>
   </widget>
   <action name="mActionNewProject">
    <property name="icon">
@@ -3592,6 +3593,21 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="text">
     <string>New Annotation Layer</string>
+   </property>
+  </action>
+  <action name="mActionModifyAnnotation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelect.svg</normaloff>:/images/themes/default/mActionSelect.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Modify Annotations</string>
+   </property>
+   <property name="toolTip">
+    <string>Modify Annotations</string>
    </property>
   </action>
  </widget>
