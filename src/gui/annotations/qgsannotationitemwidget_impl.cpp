@@ -256,7 +256,11 @@ QgsAnnotationPointTextItemWidget::QgsAnnotationPointTextItemWidget( QWidget *par
     if ( !mBlockChangedSignal )
       emit itemChanged();
   } );
-
+  connect( mPropertiesWidget, &QgsAnnotationItemCommonPropertiesWidget::itemChanged, this, [ = ]
+  {
+    if ( !mBlockChangedSignal )
+      emit itemChanged();
+  } );
 }
 
 QgsAnnotationItem *QgsAnnotationPointTextItemWidget::createItem()
@@ -264,6 +268,7 @@ QgsAnnotationItem *QgsAnnotationPointTextItemWidget::createItem()
   QgsAnnotationPointTextItem *newItem = mItem->clone();
   newItem->setFormat( mTextFormatWidget->format() );
   newItem->setText( mTextEdit->toPlainText() );
+  mPropertiesWidget->updateItem( newItem );
   return newItem;
 }
 
@@ -273,6 +278,7 @@ void QgsAnnotationPointTextItemWidget::updateItem( QgsAnnotationItem *item )
   {
     pointTextItem->setFormat( mTextFormatWidget->format() );
     pointTextItem->setText( mTextEdit->toPlainText() );
+    mPropertiesWidget->updateItem( pointTextItem );
   }
 }
 
@@ -296,6 +302,7 @@ bool QgsAnnotationPointTextItemWidget::setNewItem( QgsAnnotationItem *item )
   mBlockChangedSignal = true;
   mTextFormatWidget->setFormat( mItem->format() );
   mTextEdit->setPlainText( mItem->text() );
+  mPropertiesWidget->setItem( mItem.get() );
   mBlockChangedSignal = false;
 
   return true;

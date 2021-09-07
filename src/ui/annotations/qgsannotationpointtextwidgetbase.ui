@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>321</width>
-    <height>278</height>
+    <height>325</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -36,11 +36,22 @@
      </property>
     </widget>
    </item>
+   <item row="2" column="0">
+    <widget class="QgsAnnotationItemCommonPropertiesWidget" name="mPropertiesWidget" native="true"/>
+   </item>
    <item row="1" column="0">
     <widget class="QWidget" name="mTextFormatWidgetContainer" native="true"/>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsAnnotationItemCommonPropertiesWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsannotationitemcommonpropertieswidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

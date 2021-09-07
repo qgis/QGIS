@@ -38,7 +38,7 @@ class GUI_EXPORT QgsAnnotationItemBaseWidget: public QgsPanelWidget
   public:
 
     /**
-     * Constructor for QgsAnnotationItemBaseWidget, linked with the specified annotation \a item.
+     * Constructor for QgsAnnotationItemBaseWidget.
      */
     QgsAnnotationItemBaseWidget( QWidget *parent SIP_TRANSFERTHIS );
 
