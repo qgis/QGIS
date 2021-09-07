@@ -574,10 +574,19 @@ bool QgsLineString::fromWkb( QgsConstWkbPtr &wkbPtr )
   return true;
 }
 
+// duplicated code from calculateBoundingBox3d to avoid useless z computation
 QgsRectangle QgsLineString::calculateBoundingBox() const
 {
-  QgsBox3d b = calculateBoundingBox3d();
-  return QgsRectangle( b.xMinimum(), b.yMinimum(), b.xMaximum(), b.yMaximum(), false );
+  if ( mX.empty() )
+    return QgsRectangle();
+
+  auto result = std::minmax_element( mX.begin(), mX.end() );
+  const double xmin = *result.first;
+  const double xmax = *result.second;
+  result = std::minmax_element( mY.begin(), mY.end() );
+  const double ymin = *result.first;
+  const double ymax = *result.second;
+  return QgsRectangle( xmin, ymin, xmax, ymax, false );
 }
 
 QgsBox3d QgsLineString::calculateBoundingBox3d() const
