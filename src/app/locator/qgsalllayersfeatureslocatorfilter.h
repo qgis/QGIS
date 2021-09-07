@@ -62,12 +62,33 @@ class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
         QString layerName;
         QString layerId;
         QIcon layerIcon;
-        bool layerIsSpatial;
+        bool layerIsSpatial = true;
+    };
+
+    class ResultData
+    {
+      public:
+        ResultData &operator=( const ResultData & ) = default;
+        ResultData( QgsFeatureId id, const QString &layerId, bool layerIsSpatial )
+          : mId( id ), mLayerId( layerId ), mLayerIsSpatial( layerIsSpatial ) {}
+
+        QgsFeatureId id() const {return mId;}
+        QString layerId() const {return mLayerId;}
+        bool layerIsSpatial() const {return mLayerIsSpatial;}
+
+        QVariant toVariant() const {return QVariantList() << mId << mLayerId << mLayerIsSpatial;}
+        static ResultData fromVariant( QVariant const &value ) {QList dataList = value.toList(); return ResultData( dataList.at( 0 ).toLongLong(), dataList.at( 1 ).toString(), dataList.at( 2 ).toBool() );}
+
+      private:
+        QgsFeatureId mId;
+        QString mLayerId;
+        bool mLayerIsSpatial = true;
     };
 
     int mMaxResultsPerLayer = 8;
     int mMaxTotalResults = 15;
     QList<std::shared_ptr<PreparedLayer>> mPreparedLayers;
 };
+
 
 #endif // QGSALLLAYERSFEATURESLOCATORFILTERS_H
