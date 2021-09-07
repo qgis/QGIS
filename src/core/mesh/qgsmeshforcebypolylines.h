@@ -28,9 +28,11 @@
  *
  * \brief Class derived from QgsMeshAdvancedEditing that forces mesh based on a line
  *
+ * Forcing lines consist of line that the faces are forced to follow, that is edges of encountered faces have to be on theses lines.
+ *
  * Caller of this class has to set the line with setInputLine() before applying the edition with QgsMeshEditor::advancedEdit()
  *
- * Other option has also to be et before calling QgsMeshEditor::advancedEdit()
+ * Other option has also to be set before calling QgsMeshEditor::advancedEdit()
  *
  * \since QGIS 3.22
  */
@@ -130,6 +132,8 @@ class CORE_EXPORT QgsMeshEditForceByLine : public QgsMeshAdvancedEditing
  * \ingroup core
  *
  * \brief Class derived from QgsMeshEditForceByLine that forces mesh based on polyline.
+ *
+ * Forcing lines consist of line that the faces are forced to follow, that is edges of encountered faces have to be on theses lines.
  *
  * Caller of this class has to add the lines from QgsGeometry instances with addLineFromGeometry() or addLinesFromGeometries()
  * before applying the edition with QgsMeshEditor::advancedEdit()

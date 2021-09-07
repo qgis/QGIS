@@ -85,7 +85,7 @@ class QgsMeshEditForceByLineAction : public QWidgetAction
     //! Constructor
     QgsMeshEditForceByLineAction( QObject *parent = nullptr );
 
-    //! Set the associated map canvas, used notably for map unit
+    //! Sets the associated map canvas, used notably for map unit
     void setMapCanvas( QgsMapCanvas *canvas );
 
     //! Returns the interpolation mode

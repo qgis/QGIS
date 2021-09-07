@@ -1920,14 +1920,11 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::insertVertexInFacesEdge( int fac
 {
   const QgsMeshFace face1 = mMesh->face( faceIndex );
 
-//  const int addedVertexIndex = mMesh->vertexCount();
-//  int newFaceIndexStartIndex = mMesh->faceCount();
-
   Changes changes;
   changes.mVerticesToAdd.append( vertexToInsert );
   changes.mAddedFacesFirstIndex = mMesh->faceCount();
-  // triangulate the first face
 
+  // triangulate the first face
   int newVertexPositionInFace1 = position + 1;
 
   auto triangulate = [this, &changes]( int removedFaceIndex, const QgsMeshVertex & newVertex, int newVertexPosition, QVector<int> &edgeFacesIndexes )->bool

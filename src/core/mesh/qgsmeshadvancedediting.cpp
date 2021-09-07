@@ -781,6 +781,3 @@ QgsMeshVertex QgsMeshTransformVerticesByExpression::transformedVertex( QgsMeshLa
   else
     return layer->nativeMesh()->vertex( vertexIndex );
 }
-
-
-
