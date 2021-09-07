@@ -113,7 +113,7 @@ class CORE_EXPORT QgsClipper
     static void trimPolygon( QPolygonF &pts, const QgsRectangle &clipRect );
 
     /**
-     * Trims the given polygon to a pseudo 3D box. Modify the given polygon.
+     * Trims the given polygon to a pseudo 3D box, by modifying the given polygon in place.
      *
      * \param pts polygon as 2D or 3D coordinates
      * \param clipRect clipping 3D box
