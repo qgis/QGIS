@@ -19,6 +19,7 @@
 #include "qgis_sip.h"
 
 #include "ui_qgsannotationcommonpropertieswidgetbase.h"
+#include "qgssymbolwidgetcontext.h"
 
 class QgsAnnotationItem;
 
@@ -51,6 +52,18 @@ class GUI_EXPORT QgsAnnotationItemCommonPropertiesWidget: public QWidget, privat
      */
     void updateItem( QgsAnnotationItem *item );
 
+    /**
+     * Sets the \a context in which the widget is shown, e.g., the associated map canvas and expression contexts.
+     * \see context()
+     */
+    void setContext( const QgsSymbolWidgetContext &context );
+
+    /**
+     * Returns the context in which the widget is shown, e.g., the associated map canvas and expression contexts.
+     * \see setContext()
+     */
+    QgsSymbolWidgetContext context() const;
+
   signals:
 
     /**
@@ -62,6 +75,8 @@ class GUI_EXPORT QgsAnnotationItemCommonPropertiesWidget: public QWidget, privat
 
     bool mBlockChangedSignal = false;
 
+    //! Context in which widget is shown
+    QgsSymbolWidgetContext mContext;
 };
 
 #endif // QGSANNOTATIONITEMCOMMONPROPERTIESWIDGET_H

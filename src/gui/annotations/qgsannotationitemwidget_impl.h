@@ -48,6 +48,7 @@ class QgsAnnotationPolygonItemWidget : public QgsAnnotationItemBaseWidget, priva
     QgsAnnotationItem *createItem() override;
     void updateItem( QgsAnnotationItem *item ) override;
     void setDockMode( bool dockMode ) override;
+    void setContext( const QgsSymbolWidgetContext &context ) override;
 
   protected:
     bool setNewItem( QgsAnnotationItem *item ) override;
@@ -70,6 +71,7 @@ class QgsAnnotationLineItemWidget : public QgsAnnotationItemBaseWidget, private 
     QgsAnnotationItem *createItem() override;
     void updateItem( QgsAnnotationItem *item ) override;
     void setDockMode( bool dockMode ) override;
+    void setContext( const QgsSymbolWidgetContext &context ) override;
 
   protected:
     bool setNewItem( QgsAnnotationItem *item ) override;
@@ -92,6 +94,7 @@ class QgsAnnotationMarkerItemWidget : public QgsAnnotationItemBaseWidget, privat
     QgsAnnotationItem *createItem() override;
     void updateItem( QgsAnnotationItem *item ) override;
     void setDockMode( bool dockMode ) override;
+    void setContext( const QgsSymbolWidgetContext &context ) override;
 
   protected:
     bool setNewItem( QgsAnnotationItem *item ) override;
@@ -115,6 +118,7 @@ class QgsAnnotationPointTextItemWidget : public QgsAnnotationItemBaseWidget, pri
     QgsAnnotationItem *createItem() override;
     void updateItem( QgsAnnotationItem *item ) override;
     void setDockMode( bool dockMode ) override;
+    void setContext( const QgsSymbolWidgetContext &context ) override;
 
   protected:
     bool setNewItem( QgsAnnotationItem *item ) override;

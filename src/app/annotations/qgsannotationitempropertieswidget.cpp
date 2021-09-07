@@ -73,6 +73,14 @@ void QgsAnnotationItemPropertiesWidget::setMapLayerConfigWidgetContext( const Qg
 {
   QgsMapLayerConfigWidget::setMapLayerConfigWidgetContext( context );
   setItemId( context.annotationId() );
+
+  if ( mItemWidget )
+  {
+    QgsSymbolWidgetContext symbolWidgetContext;
+    symbolWidgetContext.setMapCanvas( context.mapCanvas() );
+    symbolWidgetContext.setMessageBar( context.messageBar() );
+    mItemWidget->setContext( symbolWidgetContext );
+  }
 }
 
 void QgsAnnotationItemPropertiesWidget::setDockMode( bool dockMode )
@@ -143,6 +151,11 @@ void QgsAnnotationItemPropertiesWidget::setItemId( const QString &itemId )
         connect( mItemWidget, &QgsAnnotationItemBaseWidget::itemChanged, this, &QgsAnnotationItemPropertiesWidget::onChanged );
         mItemWidget->setDockMode( dockMode() );
         connect( mItemWidget, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
+
+        QgsSymbolWidgetContext symbolWidgetContext;
+        symbolWidgetContext.setMapCanvas( mMapLayerConfigWidgetContext.mapCanvas() );
+        symbolWidgetContext.setMessageBar( mMapLayerConfigWidgetContext.messageBar() );
+        mItemWidget->setContext( symbolWidgetContext );
       }
     }
   }

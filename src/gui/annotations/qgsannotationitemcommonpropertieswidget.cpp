@@ -53,3 +53,16 @@ void QgsAnnotationItemCommonPropertiesWidget::updateItem( QgsAnnotationItem *ite
   item->setUseSymbologyReferenceScale( mReferenceScaleGroup->isChecked() );
   item->setSymbologyReferenceScale( mReferenceScaleWidget->scale() );
 }
+
+void QgsAnnotationItemCommonPropertiesWidget::setContext( const QgsSymbolWidgetContext &context )
+{
+  mContext = context;
+  mReferenceScaleWidget->setMapCanvas( context.mapCanvas() );
+  if ( context.mapCanvas() )
+    mReferenceScaleWidget->setShowCurrentScaleButton( true );
+}
+
+QgsSymbolWidgetContext QgsAnnotationItemCommonPropertiesWidget::context() const
+{
+  return mContext;
+}

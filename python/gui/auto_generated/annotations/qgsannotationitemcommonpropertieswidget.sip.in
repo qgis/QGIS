@@ -38,6 +38,20 @@ Sets the ``item`` whose properties should be shown in the widget.
 Updates an ``item``, setting the properties defined in the widget.
 %End
 
+    void setContext( const QgsSymbolWidgetContext &context );
+%Docstring
+Sets the ``context`` in which the widget is shown, e.g., the associated map canvas and expression contexts.
+
+.. seealso:: :py:func:`context`
+%End
+
+    QgsSymbolWidgetContext context() const;
+%Docstring
+Returns the context in which the widget is shown, e.g., the associated map canvas and expression contexts.
+
+.. seealso:: :py:func:`setContext`
+%End
+
   signals:
 
     void itemChanged();
