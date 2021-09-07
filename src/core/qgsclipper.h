@@ -84,8 +84,8 @@ class CORE_EXPORT QgsClipper
       XMin,
       YMax,
       YMin,
-      ZMax,
-      ZMin
+      ZMax, //!< Maximum Z (since QGIS 3.22)
+      ZMin, //!< Minimum Z (since QGIS 3.22)
     };
 
     SIP_IF_FEATURE( !ARM ) // Not available on ARM sip bindings because of qreal issues
