@@ -97,6 +97,11 @@ QgsLineString QgsClipper::clipped3dLine( const QgsCurve &curve, const QgsBox3d &
   return line;
 }
 
+QPolygonF QgsClipper::clippedLine( const QgsCurve &curve, const QgsRectangle &clipExtent )
+{
+  return clippedLine( curve.asQPolygonF(), clipExtent );
+}
+
 QPolygonF QgsClipper::clippedLine( const QPolygonF &curve, const QgsRectangle &clipExtent )
 {
   const int nPoints = curve.size();
