@@ -119,7 +119,7 @@ class CORE_EXPORT QgsClipper
      * \param clipRect clipping 3D box
      * \since QGIS 3.22
      */
-    static void trimPolygon( QgsLineString &pts, const QgsBox3d &clipRect );
+    static void trimPolygon( QgsLineString &polygon, const QgsBox3d &clipRect );
 
     /**
      * Takes a \a curve with 3D coordinates and clips it to clipExtent
