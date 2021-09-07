@@ -1134,6 +1134,35 @@ class CurrentVertexExpressionFunction: public QgsScopedExpressionFunction
     }
 };
 
+class CurrentVertexIndexExpressionFunction: public QgsScopedExpressionFunction
+{
+  public:
+    CurrentVertexIndexExpressionFunction():
+      QgsScopedExpressionFunction( "$vertex_index",
+                                   0,
+                                   QStringLiteral( "Meshes" ) )
+    {}
+
+    QgsScopedExpressionFunction *clone() const override {return new CurrentVertexIndexExpressionFunction();}
+
+    QVariant func( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * ) override
+    {
+      if ( !context )
+        return QVariant();
+
+      if ( !context->hasVariable( QStringLiteral( "_mesh_vertex_index" ) ) || !context->hasVariable( QStringLiteral( "_mesh_layer" ) ) )
+        return QVariant();
+
+      return context->variable( QStringLiteral( "_mesh_vertex_index" ) );
+    }
+
+
+    bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override
+    {
+      return false;
+    }
+};
+
 class CurrentFaceAreaExpressionFunction: public QgsScopedExpressionFunction
 {
   public:
@@ -1185,6 +1214,36 @@ class CurrentFaceAreaExpressionFunction: public QgsScopedExpressionFunction
     }
 };
 
+class CurrentFaceIndexExpressionFunction: public QgsScopedExpressionFunction
+{
+  public:
+    CurrentFaceIndexExpressionFunction():
+      QgsScopedExpressionFunction( "$face_index",
+                                   0,
+                                   QStringLiteral( "Meshes" ) )
+    {}
+
+    QgsScopedExpressionFunction *clone() const override {return new CurrentFaceIndexExpressionFunction();}
+
+    QVariant func( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * ) override
+    {
+      if ( !context )
+        return QVariant();
+
+      if ( !context->hasVariable( QStringLiteral( "_mesh_face_index" ) ) || !context->hasVariable( QStringLiteral( "_mesh_layer" ) ) )
+        return QVariant();
+
+      return context->variable( QStringLiteral( "_mesh_face_index" ) ).toInt();
+
+    }
+
+    bool isStatic( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) const override
+    {
+      return false;
+    }
+};
+
+
 
 QgsExpressionContextScope *QgsExpressionContextUtils::meshExpressionScope( QgsMesh::ElementType elementType )
 {
@@ -1198,17 +1257,20 @@ QgsExpressionContextScope *QgsExpressionContextUtils::meshExpressionScope( QgsMe
       QgsExpression::registerFunction( new CurrentVertexXValueExpressionFunction, true );
       QgsExpression::registerFunction( new CurrentVertexYValueExpressionFunction, true );
       QgsExpression::registerFunction( new CurrentVertexZValueExpressionFunction, true );
+      QgsExpression::registerFunction( new CurrentVertexIndexExpressionFunction, true );
       scope->addFunction( "$vertex_as_point", new CurrentVertexExpressionFunction );
-      scope->addFunction( "$vertex_z", new CurrentVertexZValueExpressionFunction );
+      scope->addFunction( "$vertex_x", new CurrentVertexXValueExpressionFunction );
       scope->addFunction( "$vertex_y", new CurrentVertexYValueExpressionFunction );
       scope->addFunction( "$vertex_z", new CurrentVertexZValueExpressionFunction );
-
+      scope->addFunction( "$vertex_index", new CurrentVertexIndexExpressionFunction );
     }
     break;
     case QgsMesh::Face:
     {
       QgsExpression::registerFunction( new CurrentFaceAreaExpressionFunction, true );
+      QgsExpression::registerFunction( new CurrentFaceIndexExpressionFunction, true );
       scope->addFunction( "$face_area", new CurrentFaceAreaExpressionFunction );
+      scope->addFunction( "$face_index", new CurrentFaceIndexExpressionFunction );
     }
     break;
     case QgsMesh::Edge:

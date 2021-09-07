@@ -270,8 +270,17 @@ class TestQgsExpression: public QObject
       context.lastScope()->setVariable( QStringLiteral( "_mesh_vertex_index" ), 2 );
       context.lastScope()->setVariable( QStringLiteral( "_mesh_layer" ), QVariant::fromValue( mMeshLayer ) );
 
-      QgsExpression expression( QStringLiteral( "$vertex_z" ) );
+      QgsExpression expression( QStringLiteral( "$vertex_x" ) );
+      QCOMPARE( expression.evaluate( &context ).toDouble(), 2500.0 );
+
+      expression = QgsExpression( QStringLiteral( "$vertex_y" ) );
+      QCOMPARE( expression.evaluate( &context ).toDouble(), 2500.0 );
+
+      expression = QgsExpression( QStringLiteral( "$vertex_z" ) );
       QCOMPARE( expression.evaluate( &context ).toDouble(), 800.0 );
+
+      expression = QgsExpression( QStringLiteral( "$vertex_index" ) );
+      QCOMPARE( expression.evaluate( &context ).toInt(), 2 );
 
       expression = QgsExpression( QStringLiteral( "$vertex_as_point" ) );
       QVariant out = expression.evaluate( &context );
@@ -282,8 +291,10 @@ class TestQgsExpression: public QObject
       context.appendScope( QgsExpressionContextUtils::meshExpressionScope( QgsMesh::Face ) );
       context.lastScope()->setVariable( QStringLiteral( "_mesh_face_index" ), 2 );
       expression = QgsExpression( QStringLiteral( "$face_area" ) );
-      double area = expression.evaluate( &context ).toDouble();
-      QCOMPARE( area, 250000 );
+      QCOMPARE( expression.evaluate( &context ).toDouble(), 250000 );
+
+      expression = QgsExpression( QStringLiteral( "$face_index" ) );
+      QCOMPARE( expression.evaluate( &context ).toInt(), 2 );
     }
 
     void cleanupTestCase()
