@@ -1819,6 +1819,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! diagrams properties
     void diagramProperties();
 
+    //! Creates a new annotation layer
+    void createAnnotationLayer();
+
     //! Sets the CAD dock widget visible
     void setCadDockVisible( bool visible );
 

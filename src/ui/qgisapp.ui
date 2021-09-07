@@ -791,6 +791,18 @@
     <bool>false</bool>
    </attribute>
   </widget>
+  <widget class="QToolBar" name="mAnnotationsToolBar">
+   <property name="windowTitle">
+    <string>Annotations</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mActionCreateAnnotationLayer"/>
+  </widget>
   <action name="mActionNewProject">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -3573,7 +3585,18 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
     <string>New GPX Layer</string>
    </property>
   </action>
+  <action name="mActionCreateAnnotationLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionCreateAnnotationLayer.svg</normaloff>:/images/themes/default/mActionCreateAnnotationLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>New Annotation Layer</string>
+   </property>
+  </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>

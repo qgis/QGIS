@@ -2885,6 +2885,8 @@ void QgisApp::createActions()
 
   connect( mActionDiagramProperties, &QAction::triggered, this, &QgisApp::diagramProperties );
 
+  connect( mActionCreateAnnotationLayer, &QAction::triggered, this, &QgisApp::createAnnotationLayer );
+
   // we can't set the shortcut these actions, because we need to restrict their context to the canvas and it's children..
   for ( QWidget *widget :
         {
@@ -8616,6 +8618,16 @@ void QgisApp::diagramProperties()
     gui->apply();
 
   activateDeactivateLayerRelatedActions( vlayer );
+}
+
+void QgisApp::createAnnotationLayer()
+{
+  QgsAnnotationLayer::LayerOptions options( QgsProject::instance()->transformContext() );
+  QgsAnnotationLayer *layer = new QgsAnnotationLayer( tr( "Annotations" ), options );
+
+  // layer should be created at top of layer tree
+  QgsProject::instance()->addMapLayer( layer, false );
+  QgsProject::instance()->layerTreeRoot()->insertLayer( 0, layer );
 }
 
 void QgisApp::setCadDockVisible( bool visible )
