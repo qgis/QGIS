@@ -99,6 +99,8 @@ class TestQgsAnnotationPointTextItem(unittest.TestCase):
         format = QgsTextFormat()
         format.setSize(37)
         item.setFormat(format)
+        item.setUseSymbologyReferenceScale(True)
+        item.setSymbologyReferenceScale(5000)
 
         self.assertTrue(item.writeXml(elem, doc, QgsReadWriteContext()))
 
@@ -111,6 +113,8 @@ class TestQgsAnnotationPointTextItem(unittest.TestCase):
         self.assertEqual(s2.alignment(), Qt.AlignRight)
         self.assertEqual(s2.zIndex(), 11)
         self.assertEqual(s2.format().size(), 37)
+        self.assertTrue(s2.useSymbologyReferenceScale())
+        self.assertEqual(s2.symbologyReferenceScale(), 5000)
 
     def testClone(self):
         item = QgsAnnotationPointTextItem('my text', QgsPointXY(12, 13))
@@ -120,6 +124,8 @@ class TestQgsAnnotationPointTextItem(unittest.TestCase):
         format = QgsTextFormat()
         format.setSize(37)
         item.setFormat(format)
+        item.setUseSymbologyReferenceScale(True)
+        item.setSymbologyReferenceScale(5000)
 
         item2 = item.clone()
         self.assertEqual(item2.text(), 'my text')
@@ -129,6 +135,8 @@ class TestQgsAnnotationPointTextItem(unittest.TestCase):
         self.assertEqual(item2.alignment(), Qt.AlignRight)
         self.assertEqual(item2.zIndex(), 11)
         self.assertEqual(item2.format().size(), 37)
+        self.assertTrue(item2.useSymbologyReferenceScale())
+        self.assertEqual(item2.symbologyReferenceScale(), 5000)
 
     def testRenderMarker(self):
         item = QgsAnnotationPointTextItem('my text', QgsPointXY(12.3, 13.2))

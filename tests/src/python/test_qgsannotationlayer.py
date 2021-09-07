@@ -375,6 +375,71 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         self.assertEqual([i.boundingBox().toString(2) for i in item_details if i.itemId() == i3_id][0],
                          '11.94,12.94 : 12.06,13.06')
 
+    def testRenderLayerWithReferenceScale(self):
+        layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        self.assertTrue(layer.isValid())
+
+        item = QgsAnnotationPolygonItem(
+            QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
+        item.setSymbol(
+            QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black', 'outline_width': '2'}))
+        item.setZIndex(3)
+        i1_id = layer.addItem(item)
+
+        item = QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]))
+        item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
+        item.setZIndex(2)
+        i2_id = layer.addItem(item)
+
+        item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
+        item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '6', 'outline_color': 'black'}))
+        item.setZIndex(1)
+        i3_id = layer.addItem(item)
+
+        settings = QgsMapSettings()
+        settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        settings.setExtent(QgsRectangle(10, 10, 18, 18))
+        settings.setOutputSize(QSize(300, 300))
+
+        settings.setFlag(QgsMapSettings.Antialiasing, False)
+
+        rc = QgsRenderContext.fromMapSettings(settings)
+
+        layer.item(i1_id).setUseSymbologyReferenceScale(True)
+        layer.item(i1_id).setSymbologyReferenceScale(rc.rendererScale() * 2)
+        # note item 3 has use symbology reference scale set to false, so should be ignored
+        layer.item(i2_id).setUseSymbologyReferenceScale(False)
+        layer.item(i2_id).setSymbologyReferenceScale(rc.rendererScale() * 2)
+        layer.item(i3_id).setUseSymbologyReferenceScale(True)
+        layer.item(i3_id).setSymbologyReferenceScale(rc.rendererScale() * 2)
+
+        image = QImage(200, 200, QImage.Format_ARGB32)
+        image.setDotsPerMeterX(96 / 25.4 * 1000)
+        image.setDotsPerMeterY(96 / 25.4 * 1000)
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+        rc.setPainter(painter)
+
+        try:
+            renderer = layer.createMapRenderer(rc)
+            renderer.render()
+        finally:
+            painter.end()
+
+        self.assertTrue(self.imageCheck('layer_render_reference_scale', 'layer_render_reference_scale', image))
+
+        # also check details of rendered items
+        item_details = renderer.takeRenderedItemDetails()
+        self.assertEqual([i.layerId() for i in item_details], [layer.id()] * 3)
+        self.assertCountEqual([i.itemId() for i in item_details], [i1_id, i2_id, i3_id])
+        self.assertEqual([i.boundingBox() for i in item_details if i.itemId() == i1_id][0],
+                         QgsRectangle(12, 13, 14, 15))
+        self.assertEqual([i.boundingBox() for i in item_details if i.itemId() == i2_id][0],
+                         QgsRectangle(11, 13, 12, 15))
+        self.assertEqual([i.boundingBox().toString(1) for i in item_details if i.itemId() == i3_id][0],
+                         '11.7,12.7 : 12.3,13.3')
+
     def test_render_via_job(self):
         """
         Test rendering an annotation layer via a map render job

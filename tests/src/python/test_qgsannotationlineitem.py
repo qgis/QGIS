@@ -86,6 +86,8 @@ class TestQgsAnnotationLineItem(unittest.TestCase):
         item = QgsAnnotationLineItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]))
         item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
         item.setZIndex(11)
+        item.setUseSymbologyReferenceScale(True)
+        item.setSymbologyReferenceScale(5000)
 
         self.assertTrue(item.writeXml(elem, doc, QgsReadWriteContext()))
 
@@ -95,16 +97,22 @@ class TestQgsAnnotationLineItem(unittest.TestCase):
         self.assertEqual(s2.geometry().asWkt(), 'LineString (12 13, 14 13, 14 15)')
         self.assertEqual(s2.symbol()[0].color(), QColor(255, 255, 0))
         self.assertEqual(s2.zIndex(), 11)
+        self.assertTrue(s2.useSymbologyReferenceScale())
+        self.assertEqual(s2.symbologyReferenceScale(), 5000)
 
     def testClone(self):
         item = QgsAnnotationLineItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]))
         item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
         item.setZIndex(11)
+        item.setUseSymbologyReferenceScale(True)
+        item.setSymbologyReferenceScale(5000)
 
         item2 = item.clone()
         self.assertEqual(item2.geometry().asWkt(), 'LineString (12 13, 14 13, 14 15)')
         self.assertEqual(item2.symbol()[0].color(), QColor(255, 255, 0))
         self.assertEqual(item2.zIndex(), 11)
+        self.assertTrue(item2.useSymbologyReferenceScale())
+        self.assertEqual(item2.symbologyReferenceScale(), 5000)
 
     def testRenderLineString(self):
         item = QgsAnnotationLineItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]))

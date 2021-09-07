@@ -162,6 +162,56 @@ class CORE_EXPORT QgsAnnotationItem
      */
     virtual QList< QgsAnnotationItemNode > nodes() const;
 
+    /**
+     * Returns TRUE if the annotation item uses a symbology reference scale.
+     *
+     * \see setUseSymbologyReferenceScale()
+     * \see symbologyReferenceScale()
+     */
+    bool useSymbologyReferenceScale() const { return mUseReferenceScale; }
+
+    /**
+     * Sets whether the annotation item uses a symbology reference scale.
+     *
+     * \see useSymbologyReferenceScale()
+     * \see setSymbologyReferenceScale()
+     */
+    void setUseSymbologyReferenceScale( bool enabled ) { mUseReferenceScale = enabled; }
+
+    /**
+     * Returns the annotation's symbology reference scale.
+     *
+     * The reference scale will only be used if useSymbologyReferenceScale() returns TRUE.
+     *
+     * This represents the desired scale denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
+     *
+     * The symbology reference scale is an optional property which specifies the reference
+     * scale at which symbology in paper units (such a millimeters or points) is fixed
+     * to. For instance, if the scale is 1000 then a 2mm thick line will be rendered at
+     * exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm thick at 1:500.
+     *
+     * \see setSymbologyReferenceScale()
+     * \see useSymbologyReferenceScale()
+     */
+    double symbologyReferenceScale() const { return mReferenceScale; }
+
+    /**
+     * Sets the annotation's symbology reference \a scale.
+     *
+     * The reference scale will only be used if useSymbologyReferenceScale() returns TRUE.
+     *
+     * This represents the desired scale denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
+     *
+     * The symbology reference scale is an optional property which specifies the reference
+     * scale at which symbology in paper units (such a millimeters or points) is fixed
+     * to. For instance, if the scale is 1000 then a 2mm thick line will be rendered at
+     * exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm thick at 1:500.
+     *
+     * \see symbologyReferenceScale()
+     * \see setUseSymbologyReferenceScale()
+     */
+    void setSymbologyReferenceScale( double scale ) { mReferenceScale = scale; }
+
   protected:
 
     /**
@@ -190,6 +240,9 @@ class CORE_EXPORT QgsAnnotationItem
   private:
 
     int mZIndex = 0;
+
+    bool mUseReferenceScale = false;
+    double mReferenceScale = 0;
 
 #ifdef SIP_RUN
     QgsAnnotationItem( const QgsAnnotationItem &other );

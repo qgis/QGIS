@@ -137,6 +137,60 @@ Returns the nodes for the item, used for editing the item.
 .. versionadded:: 3.22
 %End
 
+    bool useSymbologyReferenceScale() const;
+%Docstring
+Returns ``True`` if the annotation item uses a symbology reference scale.
+
+.. seealso:: :py:func:`setUseSymbologyReferenceScale`
+
+.. seealso:: :py:func:`symbologyReferenceScale`
+%End
+
+    void setUseSymbologyReferenceScale( bool enabled );
+%Docstring
+Sets whether the annotation item uses a symbology reference scale.
+
+.. seealso:: :py:func:`useSymbologyReferenceScale`
+
+.. seealso:: :py:func:`setSymbologyReferenceScale`
+%End
+
+    double symbologyReferenceScale() const;
+%Docstring
+Returns the annotation's symbology reference scale.
+
+The reference scale will only be used if :py:func:`~QgsAnnotationItem.useSymbologyReferenceScale` returns ``True``.
+
+This represents the desired scale denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
+
+The symbology reference scale is an optional property which specifies the reference
+scale at which symbology in paper units (such a millimeters or points) is fixed
+to. For instance, if the scale is 1000 then a 2mm thick line will be rendered at
+exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm thick at 1:500.
+
+.. seealso:: :py:func:`setSymbologyReferenceScale`
+
+.. seealso:: :py:func:`useSymbologyReferenceScale`
+%End
+
+    void setSymbologyReferenceScale( double scale );
+%Docstring
+Sets the annotation's symbology reference ``scale``.
+
+The reference scale will only be used if :py:func:`~QgsAnnotationItem.useSymbologyReferenceScale` returns ``True``.
+
+This represents the desired scale denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
+
+The symbology reference scale is an optional property which specifies the reference
+scale at which symbology in paper units (such a millimeters or points) is fixed
+to. For instance, if the scale is 1000 then a 2mm thick line will be rendered at
+exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm thick at 1:500.
+
+.. seealso:: :py:func:`symbologyReferenceScale`
+
+.. seealso:: :py:func:`setUseSymbologyReferenceScale`
+%End
+
   protected:
 
     void copyCommonProperties( const QgsAnnotationItem *other );
