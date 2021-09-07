@@ -22,6 +22,7 @@
 #include <memory>
 
 #include "ui_qgsannotationpointtextwidgetbase.h"
+#include "ui_qgsannotationsymbolwidgetbase.h"
 
 class QgsSymbolSelectorWidget;
 class QgsFillSymbol;
@@ -37,7 +38,7 @@ class QgsTextFormatWidget;
 
 ///@cond PRIVATE
 
-class QgsAnnotationPolygonItemWidget : public QgsAnnotationItemBaseWidget
+class QgsAnnotationPolygonItemWidget : public QgsAnnotationItemBaseWidget, private Ui_QgsAnnotationSymbolWidgetBase
 {
     Q_OBJECT
 
@@ -59,7 +60,7 @@ class QgsAnnotationPolygonItemWidget : public QgsAnnotationItemBaseWidget
     std::unique_ptr< QgsAnnotationPolygonItem> mItem;
 };
 
-class QgsAnnotationLineItemWidget : public QgsAnnotationItemBaseWidget
+class QgsAnnotationLineItemWidget : public QgsAnnotationItemBaseWidget, private Ui_QgsAnnotationSymbolWidgetBase
 {
     Q_OBJECT
 
@@ -81,7 +82,7 @@ class QgsAnnotationLineItemWidget : public QgsAnnotationItemBaseWidget
     std::unique_ptr< QgsAnnotationLineItem> mItem;
 };
 
-class QgsAnnotationMarkerItemWidget : public QgsAnnotationItemBaseWidget
+class QgsAnnotationMarkerItemWidget : public QgsAnnotationItemBaseWidget, private Ui_QgsAnnotationSymbolWidgetBase
 {
     Q_OBJECT
 

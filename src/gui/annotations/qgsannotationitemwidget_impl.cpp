@@ -30,7 +30,8 @@
 QgsAnnotationPolygonItemWidget::QgsAnnotationPolygonItemWidget( QWidget *parent )
   : QgsAnnotationItemBaseWidget( parent )
 {
-  // setup ui
+  setupUi( this );
+
   mSelector = new QgsSymbolSelectorWidget( mSymbol.get(), QgsStyle::defaultStyle(), nullptr, nullptr );
   mSelector->setDockMode( dockMode() );
   connect( mSelector, &QgsSymbolSelectorWidget::symbolModified, this, [ = ]
@@ -40,22 +41,33 @@ QgsAnnotationPolygonItemWidget::QgsAnnotationPolygonItemWidget( QWidget *parent 
   } );
   connect( mSelector, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
 
-  QVBoxLayout *layout = new QVBoxLayout( this );
+  QVBoxLayout *layout = new QVBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->addWidget( mSelector );
+  mSymbolSelectorFrame->setLayout( layout );
+
+  connect( mPropertiesWidget, &QgsAnnotationItemCommonPropertiesWidget::itemChanged, this, [ = ]
+  {
+    if ( !mBlockChangedSignal )
+      emit itemChanged();
+  } );
 }
 
 QgsAnnotationItem *QgsAnnotationPolygonItemWidget::createItem()
 {
   QgsAnnotationPolygonItem *newItem = mItem->clone();
   newItem->setSymbol( mSymbol->clone() );
+  mPropertiesWidget->updateItem( newItem );
   return newItem;
 }
 
 void QgsAnnotationPolygonItemWidget::updateItem( QgsAnnotationItem *item )
 {
   if ( QgsAnnotationPolygonItem *polygonItem = dynamic_cast< QgsAnnotationPolygonItem * >( item ) )
+  {
     polygonItem->setSymbol( mSymbol->clone() );
+    mPropertiesWidget->updateItem( polygonItem );
+  }
 }
 
 void QgsAnnotationPolygonItemWidget::setDockMode( bool dockMode )
@@ -85,6 +97,7 @@ bool QgsAnnotationPolygonItemWidget::setNewItem( QgsAnnotationItem *item )
   mBlockChangedSignal = true;
   mSelector->loadSymbol( mSymbol.get() );
   mSelector->updatePreview();
+  mPropertiesWidget->setItem( mItem.get() );
   mBlockChangedSignal = false;
 
   return true;
@@ -98,7 +111,8 @@ bool QgsAnnotationPolygonItemWidget::setNewItem( QgsAnnotationItem *item )
 QgsAnnotationLineItemWidget::QgsAnnotationLineItemWidget( QWidget *parent )
   : QgsAnnotationItemBaseWidget( parent )
 {
-  // setup ui
+  setupUi( this );
+
   mSelector = new QgsSymbolSelectorWidget( mSymbol.get(), QgsStyle::defaultStyle(), nullptr, nullptr );
   mSelector->setDockMode( dockMode() );
   connect( mSelector, &QgsSymbolSelectorWidget::symbolModified, this, [ = ]
@@ -108,22 +122,33 @@ QgsAnnotationLineItemWidget::QgsAnnotationLineItemWidget( QWidget *parent )
   } );
   connect( mSelector, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
 
-  QVBoxLayout *layout = new QVBoxLayout( this );
+  QVBoxLayout *layout = new QVBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->addWidget( mSelector );
+  mSymbolSelectorFrame->setLayout( layout );
+
+  connect( mPropertiesWidget, &QgsAnnotationItemCommonPropertiesWidget::itemChanged, this, [ = ]
+  {
+    if ( !mBlockChangedSignal )
+      emit itemChanged();
+  } );
 }
 
 QgsAnnotationItem *QgsAnnotationLineItemWidget::createItem()
 {
   QgsAnnotationLineItem *newItem = mItem->clone();
   newItem->setSymbol( mSymbol->clone() );
+  mPropertiesWidget->updateItem( newItem );
   return newItem;
 }
 
 void QgsAnnotationLineItemWidget::updateItem( QgsAnnotationItem *item )
 {
   if ( QgsAnnotationLineItem *lineItem = dynamic_cast< QgsAnnotationLineItem * >( item ) )
+  {
     lineItem->setSymbol( mSymbol->clone() );
+    mPropertiesWidget->updateItem( lineItem );
+  }
 }
 
 void QgsAnnotationLineItemWidget::setDockMode( bool dockMode )
@@ -153,6 +178,7 @@ bool QgsAnnotationLineItemWidget::setNewItem( QgsAnnotationItem *item )
   mBlockChangedSignal = true;
   mSelector->loadSymbol( mSymbol.get() );
   mSelector->updatePreview();
+  mPropertiesWidget->setItem( mItem.get() );
   mBlockChangedSignal = false;
 
   return true;
@@ -166,7 +192,8 @@ bool QgsAnnotationLineItemWidget::setNewItem( QgsAnnotationItem *item )
 QgsAnnotationMarkerItemWidget::QgsAnnotationMarkerItemWidget( QWidget *parent )
   : QgsAnnotationItemBaseWidget( parent )
 {
-  // setup ui
+  setupUi( this );
+
   mSelector = new QgsSymbolSelectorWidget( mSymbol.get(), QgsStyle::defaultStyle(), nullptr, nullptr );
   mSelector->setDockMode( dockMode() );
   connect( mSelector, &QgsSymbolSelectorWidget::symbolModified, this, [ = ]
@@ -176,22 +203,33 @@ QgsAnnotationMarkerItemWidget::QgsAnnotationMarkerItemWidget( QWidget *parent )
   } );
   connect( mSelector, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
 
-  QVBoxLayout *layout = new QVBoxLayout( this );
+  QVBoxLayout *layout = new QVBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->addWidget( mSelector );
+  mSymbolSelectorFrame->setLayout( layout );
+
+  connect( mPropertiesWidget, &QgsAnnotationItemCommonPropertiesWidget::itemChanged, this, [ = ]
+  {
+    if ( !mBlockChangedSignal )
+      emit itemChanged();
+  } );
 }
 
 QgsAnnotationItem *QgsAnnotationMarkerItemWidget::createItem()
 {
   QgsAnnotationMarkerItem *newItem = mItem->clone();
   newItem->setSymbol( mSymbol->clone() );
+  mPropertiesWidget->updateItem( newItem );
   return newItem;
 }
 
 void QgsAnnotationMarkerItemWidget::updateItem( QgsAnnotationItem *item )
 {
   if ( QgsAnnotationMarkerItem *markerItem = dynamic_cast< QgsAnnotationMarkerItem * >( item ) )
+  {
     markerItem->setSymbol( mSymbol->clone() );
+    mPropertiesWidget->updateItem( markerItem );
+  }
 }
 
 void QgsAnnotationMarkerItemWidget::setDockMode( bool dockMode )
@@ -221,6 +259,7 @@ bool QgsAnnotationMarkerItemWidget::setNewItem( QgsAnnotationItem *item )
   mBlockChangedSignal = true;
   mSelector->loadSymbol( mSymbol.get() );
   mSelector->updatePreview();
+  mPropertiesWidget->setItem( mItem.get() );
   mBlockChangedSignal = false;
 
   return true;
