@@ -87,6 +87,7 @@ class TestQgsLineString: public QObject
     void closestSegment();
     void sumUpArea();
     void boundingBox();
+    void boundingBox3D();
     void angle();
     void removingVertexRemoveLine();
     void boundary();
@@ -2296,6 +2297,17 @@ void TestQgsLineString::boundingBox()
 
   ls.deleteVertex( QgsVertexId( 0, 0, 1 ) );
   QCOMPARE( ls.boundingBox(), QgsRectangle( 1, 3, 6, 5 ) );
+}
+
+void TestQgsLineString::boundingBox3D()
+{
+  // boudingBox - test 3D boundingbox
+  QgsLineString bb3d;
+  bb3d.setPoints( QgsPointSequence() << QgsPoint( -1.0, -1.0, -1.0 )
+                  << QgsPoint( -2.0, -1.0, -1.0 )
+                  << QgsPoint( 1.0, 2.0, -1.0 )
+                  << QgsPoint( 1.0, 2.0, 2.0 ) );
+  QCOMPARE( bb3d.calculateBoundingBox3d(), QgsBox3d( QgsPoint( -2.0, -1.0, -1.0 ), QgsPoint( 1.0, 2.0, 2.0 ) ) );
 }
 
 void TestQgsLineString::angle()
