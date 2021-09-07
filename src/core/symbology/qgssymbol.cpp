@@ -120,7 +120,7 @@ QPolygonF QgsSymbol::_getLineString( QgsRenderContext &context, const QgsCurve &
   }
 
   // remove non-finite points, e.g. infinite or NaN points caused by reprojecting errors
-  pts.filterVertices( []( const QgsPoint point )
+  pts.filterVertices( []( const QgsPoint& point )
   {
     if ( point.is3D() )
     {
