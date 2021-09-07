@@ -28,6 +28,7 @@
 #include <QPolygonF>
 
 #include "qgsbox3d.h"
+#include "qgsabstractgeometry.h"
 
 class QgsCurve;
 class QgsLineString;
@@ -182,7 +183,7 @@ class CORE_EXPORT QgsClipper
 
     static inline void trimPolygonToBoundary( const QPolygonF &inPts, QPolygonF &outPts, const QgsRectangle &rect, Boundary b, double boundaryValue );
 
-    static inline void trimPolygonToBoundary( const QgsLineString &inPts, QgsLineString &outPts, const QgsBox3d &rect, Boundary b, double boundaryValue );
+    static inline void trimPolygonToBoundary( const QgsPointSequence &inPts, QgsPointSequence &outPts, const QgsBox3d &rect, Boundary b, double boundaryValue );
 
     // Determines if a point is inside or outside the given boundary
     static inline bool inside( double x, double y, Boundary b );
@@ -234,7 +235,7 @@ class CORE_EXPORT QgsClipper
      * \param pts: in/out array of clipped points
       */
     static void connectSeparatedLines( double x0, double y0, double z0, double x1, double y1, double z1,
-                                       const QgsBox3d &clipRect, QgsLineString &pts );
+                                       const QgsBox3d &clipRect, QgsPointSequence &pts );
 
     //low level clip methods for fast clip algorithm
     static void clipStartTop( double &x0, double &y0, double x1, double y1, double yMax );
@@ -300,22 +301,25 @@ inline void QgsClipper::trimPolygon( QPolygonF &pts, const QgsRectangle &clipRec
 
 inline void QgsClipper::trimPolygon( QgsLineString &pts, const QgsBox3d &clipRect )
 {
-  QgsLineString tmpPts;
+  QgsPointSequence seqPts, seqTmpPts;
+  pts.points( seqPts );
 
-  trimPolygonToBoundary( pts, tmpPts, clipRect, XMax, clipRect.xMaximum() );
-  pts.clear();
-  trimPolygonToBoundary( tmpPts, pts, clipRect, YMax, clipRect.yMaximum() );
-  tmpPts.clear();
-  trimPolygonToBoundary( pts, tmpPts, clipRect, XMin, clipRect.xMinimum() );
-  pts.clear();
-  trimPolygonToBoundary( tmpPts, pts, clipRect, YMin, clipRect.yMinimum() );
+  trimPolygonToBoundary( seqPts, seqTmpPts, clipRect, XMax, clipRect.xMaximum() );
+  seqPts.clear();
+  trimPolygonToBoundary( seqTmpPts, seqPts, clipRect, YMax, clipRect.yMaximum() );
+  seqTmpPts.clear();
+  trimPolygonToBoundary( seqPts, seqTmpPts, clipRect, XMin, clipRect.xMinimum() );
+  seqPts.clear();
+  trimPolygonToBoundary( seqTmpPts, seqPts, clipRect, YMin, clipRect.yMinimum() );
   if ( !clipRect.is2d() )
   {
-    tmpPts.clear();
-    trimPolygonToBoundary( pts, tmpPts, clipRect, ZMax, clipRect.zMaximum() );
-    pts.clear();
-    trimPolygonToBoundary( tmpPts, pts, clipRect, ZMin, clipRect.zMinimum() );
+    seqTmpPts.clear();
+    trimPolygonToBoundary( seqPts, seqTmpPts, clipRect, ZMax, clipRect.zMaximum() );
+    seqPts.clear();
+    trimPolygonToBoundary( seqTmpPts, seqPts, clipRect, ZMin, clipRect.zMinimum() );
   }
+
+  pts.setPoints( seqPts );
 }
 
 // An auxiliary function that is part of the polygon trimming
@@ -423,30 +427,29 @@ inline void QgsClipper::trimPolygonToBoundary( const QPolygonF &inPts, QPolygonF
   }
 }
 
-inline void QgsClipper::trimPolygonToBoundary( const QgsLineString &inPts, QgsLineString &outPts, const QgsBox3d &rect, Boundary b, double boundaryValue )
+inline void QgsClipper::trimPolygonToBoundary( const QgsPointSequence &inPts, QgsPointSequence &outPts, const QgsBox3d &rect, Boundary b, double boundaryValue )
 {
-  QgsVertexId::VertexType type;
   QgsPoint inI1, inI2;
 
-  inPts.pointAt( inPts.numPoints() - 1, inI1, type ); // start with last point
+  inI1 = inPts.at( inPts.length() - 1 ); // start with last point
 
   // and compare to the first point initially.
-  for ( int i2 = 0; i2 < inPts.numPoints() ; ++i2 )
+  for ( int i2 = 0; i2 < inPts.length() ; ++i2 )
   {
-    inPts.pointAt( i2, inI2, type );
+    inI2 = inPts.at( i2 );
     // look at each edge of the polygon in turn
     if ( inside( inI2, b, boundaryValue ) ) // end point of edge is inside boundary
     {
       if ( inside( inI1, b, boundaryValue ) )
       {
-        outPts.addVertex( inI2 );
+        outPts << inI2 ;
       }
       else
       {
         // edge crosses into the boundary, so trim back to the boundary, and
         // store both ends of the new edge
-        outPts.addVertex( intersectRect( inI1, inI2, b, rect ) );
-        outPts.addVertex( inI2 );
+        outPts << intersectRect( inI1, inI2, b, rect ) ;
+        outPts <<  inI2 ;
       }
     }
     else // end point of edge is outside boundary
@@ -454,10 +457,10 @@ inline void QgsClipper::trimPolygonToBoundary( const QgsLineString &inPts, QgsLi
       // start point is in boundary, so need to trim back
       if ( inside( inI1, b, boundaryValue ) )
       {
-        outPts.addVertex( intersectRect( inI1, inI2, b, rect ) );
+        outPts << intersectRect( inI1, inI2, b, rect ) ;
       }
     }
-    inPts.pointAt( i2, inI1, type );
+    inI1  = inPts.at( i2 );
   }
 }
 
@@ -484,7 +487,8 @@ inline bool QgsClipper::inside( const double x, const double y, Boundary b )
       if ( y > MIN_Y )
         return true;
       break;
-    default:
+    case ZMax: // z < MAX_Z is inside
+    case ZMin: // z > MIN_Z is inside
       return false;
   }
   return false;
@@ -502,7 +506,8 @@ inline bool QgsClipper::inside( QPointF pt, Boundary b, double val )
       return ( pt.y() < val );
     case YMin: // y > MIN_Y is inside
       return ( pt.y() > val );
-    default:
+    case ZMax: // z < MAX_Z is inside
+    case ZMin: // z > MIN_Z is inside
       return false;
   }
   return false;
@@ -561,7 +566,8 @@ inline QgsPointXY QgsClipper::intersect( const double x1, const double y1,
       r_n = ( y1 - MIN_Y ) * ( MAX_X - MIN_X );
       r_d = -( y2 - y1 )   * ( MAX_X - MIN_X );
       break;
-    default:
+    case ZMax: // z < MAX_Z is inside
+    case ZMin: // z > MIN_Z is inside
       break;
   }
 
@@ -613,7 +619,8 @@ inline QPointF QgsClipper::intersectRect( QPointF pt1,
       r_n = ( y1 - rect.yMinimum() ) * ( rect.xMaximum() - rect.xMinimum() );
       r_d = -( y2 - y1 )   * ( rect.xMaximum() - rect.xMinimum() );
       break;
-    default:
+    case ZMax: // z < MAX_Z is inside
+    case ZMin: // z > MIN_Z is inside
       break;
   }
 
