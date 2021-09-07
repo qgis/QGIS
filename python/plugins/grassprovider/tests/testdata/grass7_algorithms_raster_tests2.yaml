@@ -846,3 +846,71 @@ tests:
       output:
         hash: 7e78e8b556c9a39e07b2bf8edbd45c17fbd1897de974c52bc97009a8
         type: rasterhash
+
+  - algorithm: grass7:r.path
+    name: GRASS7 r.path
+    params:
+      -a: false
+      -c: false
+      -n: false
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_RASTER_FORMAT_META: ''
+      GRASS_RASTER_FORMAT_OPT: ''
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_EXPORT_NOCAT: false
+      GRASS_VECTOR_LCO: ''
+      format: 0
+      input:
+        name: directions.tif
+        type: raster
+      start_points:
+        name: start_point.gml|layername=start_point
+        type: vector
+    results:
+      raster_path:
+        hash: 6c7bd077cb4dd98eb4c7c7d27d8ac396bbb496af9f3e27c769046f0b
+        type: rasterhash
+      vector_path:
+        name: expected/r_path.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+          geometry:
+            precision: 7
+          ignore_crs_check: true
+
+  - algorithm: grass7:r.path.coordinate.txt
+    name: GRASS7 r.path (using point input)
+    params:
+      -a: false
+      -c: false
+      -n: false
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_RASTER_FORMAT_META: ''
+      GRASS_RASTER_FORMAT_OPT: ''
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_EXPORT_NOCAT: false
+      GRASS_VECTOR_LCO: ''
+      format: 0
+      input:
+        name: directions.tif
+        type: raster
+      start_coordinates: 18.6836176953515,45.7772484991114 [EPSG:4326]
+    results:
+      raster_path:
+        hash: 6c7bd077cb4dd98eb4c7c7d27d8ac396bbb496af9f3e27c769046f0b
+        type: rasterhash
+      vector_path:
+        name: expected/r_path.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+          geometry:
+            precision: 7
+          ignore_crs_check: true
