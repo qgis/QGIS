@@ -89,6 +89,10 @@ class CORE_EXPORT QgsAnnotationItem
 
     /**
      * Returns a clone of the item. Ownership is transferred to the caller.
+     *
+     * Implementations should include a call to copyCommonProperties() to copy the base class properties.
+     *
+     * \see copyCommonProperties()
      */
     virtual QgsAnnotationItem *clone() = 0 SIP_FACTORY;
 
@@ -117,11 +121,21 @@ class CORE_EXPORT QgsAnnotationItem
 
     /**
      * Writes the item's state into an XML \a element.
+     *
+     * Implementations should include a call to writeCommonProperties() to store the base class properties.
+     *
+     * \see readXml()
+     * \see writeCommonProperties()
      */
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const = 0;
 
     /**
      * Reads the item's state from the given DOM \a element.
+     *
+     * Implementations should include a call to readCommonProperties() to read the base class properties.
+     *
+     * \see writeXml()
+     * \see readCommonProperties()
      */
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;
 
@@ -147,6 +161,31 @@ class CORE_EXPORT QgsAnnotationItem
      * \since QGIS 3.22
      */
     virtual QList< QgsAnnotationItemNode > nodes() const;
+
+  protected:
+
+    /**
+     * Copies common properties from the base class from an \a other item.
+     *
+     * \since QGIS 3.22
+     */
+    void copyCommonProperties( const QgsAnnotationItem *other );
+
+    /**
+     * Writes common properties from the base class into an XML \a element.
+     *
+     * \see writeXml()
+     * \since QGIS 3.22
+     */
+    bool writeCommonProperties( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Reads common properties from the base class from the given DOM \a element.
+     *
+     * \see readXml()
+     * \since QGIS 3.22
+     */
+    bool readCommonProperties( const QDomElement &element, const QgsReadWriteContext &context );
 
   private:
 

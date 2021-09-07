@@ -61,9 +61,9 @@ bool QgsAnnotationMarkerItem::writeXml( QDomElement &element, QDomDocument &docu
 {
   element.setAttribute( QStringLiteral( "x" ), qgsDoubleToString( mPoint.x() ) );
   element.setAttribute( QStringLiteral( "y" ), qgsDoubleToString( mPoint.y() ) );
-  element.setAttribute( QStringLiteral( "zIndex" ), zIndex() );
-
   element.appendChild( QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "markerSymbol" ), mSymbol.get(), document, context ) );
+
+  writeCommonProperties( element, document, context );
 
   return true;
 }
@@ -90,12 +90,11 @@ bool QgsAnnotationMarkerItem::readXml( const QDomElement &element, const QgsRead
   const double y = element.attribute( QStringLiteral( "y" ) ).toDouble();
   mPoint = QgsPoint( x, y );
 
-  setZIndex( element.attribute( QStringLiteral( "zIndex" ) ).toInt() );
-
   const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !symbolElem.isNull() )
     setSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElem, context ) );
 
+  readCommonProperties( element, context );
   return true;
 }
 
@@ -103,7 +102,7 @@ QgsAnnotationMarkerItem *QgsAnnotationMarkerItem::clone()
 {
   std::unique_ptr< QgsAnnotationMarkerItem > item = std::make_unique< QgsAnnotationMarkerItem >( mPoint );
   item->setSymbol( mSymbol->clone() );
-  item->setZIndex( zIndex() );
+  item->copyCommonProperties( this );
   return item.release();
 }
 

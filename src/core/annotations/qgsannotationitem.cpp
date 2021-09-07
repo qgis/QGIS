@@ -27,3 +27,20 @@ QList<QgsAnnotationItemNode> QgsAnnotationItem::nodes() const
 {
   return {};
 }
+
+void QgsAnnotationItem::copyCommonProperties( const QgsAnnotationItem *other )
+{
+  setZIndex( other->zIndex() );
+}
+
+bool QgsAnnotationItem::writeCommonProperties( QDomElement &element, QDomDocument &, const QgsReadWriteContext & ) const
+{
+  element.setAttribute( QStringLiteral( "zIndex" ), zIndex() );
+  return true;
+}
+
+bool QgsAnnotationItem::readCommonProperties( const QDomElement &element, const QgsReadWriteContext & )
+{
+  setZIndex( element.attribute( QStringLiteral( "zIndex" ) ).toInt() );
+  return true;
+}
