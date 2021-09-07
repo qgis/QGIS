@@ -14,9 +14,11 @@ class QgsMeshEditForceByLine : QgsMeshAdvancedEditing
 
 Class derived from :py:class:`QgsMeshAdvancedEditing` that forces mesh based on a line
 
+Forcing lines consist of line that the faces are forced to follow, that is edges of encountered faces have to be on theses lines.
+
 Caller of this class has to set the line with :py:func:`~setInputLine` before applying the edition with :py:func:`QgsMeshEditor.advancedEdit()`
 
-Other option has also to be et before calling :py:func:`QgsMeshEditor.advancedEdit()`
+Other option has also to be set before calling :py:func:`QgsMeshEditor.advancedEdit()`
 
 .. versionadded:: 3.22
 %End
@@ -67,6 +69,8 @@ class QgsMeshEditForceByPolylines : QgsMeshEditForceByLine
 %Docstring(signature="appended")
 
 Class derived from QgsMeshEditForceByLine that forces mesh based on polyline.
+
+Forcing lines consist of line that the faces are forced to follow, that is edges of encountered faces have to be on theses lines.
 
 Caller of this class has to add the lines from :py:class:`QgsGeometry` instances with :py:func:`~QgsMeshEditForceByLine.addLineFromGeometry` or :py:func:`~QgsMeshEditForceByLine.addLinesFromGeometries`
 before applying the edition with :py:func:`QgsMeshEditor.advancedEdit()`
