@@ -361,7 +361,7 @@ void QgsDecorationGrid::drawCoordinateAnnotation( QgsRenderContext &context, QPo
       else //Vertical
       {
         xpos -= textDescent;
-        ypos -= textWidth - mAnnotationFrameDistance;
+        ypos -= textWidth + mAnnotationFrameDistance;
         rotation = 4.71239;
       }
       break;
