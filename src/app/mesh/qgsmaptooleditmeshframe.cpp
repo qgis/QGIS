@@ -1639,8 +1639,9 @@ void QgsMapToolEditMeshFrame::reindexMesh()
   onEditingStarted();
 
   if ( QMessageBox::question( canvas(), tr( "Reindex the Mesh" ),
-                              tr( "This action will reindex the faces and vertices of the mesh layer %1.\n"
-                                  "This opration will consist to:\n"
+                              tr( "This action will reindex the faces and vertices of the mesh layer %1."
+                                  "This opration will consist to:\n\n"
+                                  "- purge memory of remaining traces of old vertices and faces\n"
                                   "- empty the undo/redo stack of this layer\n"
                                   "- optimize the indexes of vertices and faces using the CutHill-McKee Algorithm.\n\n"
                                   "Do you want to proceed?" ).arg( mCurrentLayer->name() ),
