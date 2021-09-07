@@ -453,7 +453,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     /**
      * Returns the visible area as a polygon (may be rotated) with extent buffer included
      * \see extentBuffer()
-     * \since QGIS 3.20
+     * \since QGIS 3.22
      */
     QPolygonF visiblePolygonWithBuffer() const;
 
