@@ -63,6 +63,10 @@ Returns item flags.
     virtual QgsAnnotationItem *clone() = 0 /Factory/;
 %Docstring
 Returns a clone of the item. Ownership is transferred to the caller.
+
+Implementations should include a call to :py:func:`~QgsAnnotationItem.copyCommonProperties` to copy the base class properties.
+
+.. seealso:: :py:func:`copyCommonProperties`
 %End
 
     virtual QString type() const = 0;
@@ -91,11 +95,23 @@ render operations.
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const = 0;
 %Docstring
 Writes the item's state into an XML ``element``.
+
+Implementations should include a call to :py:func:`~QgsAnnotationItem.writeCommonProperties` to store the base class properties.
+
+.. seealso:: :py:func:`readXml`
+
+.. seealso:: :py:func:`writeCommonProperties`
 %End
 
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;
 %Docstring
 Reads the item's state from the given DOM ``element``.
+
+Implementations should include a call to :py:func:`~QgsAnnotationItem.readCommonProperties` to read the base class properties.
+
+.. seealso:: :py:func:`writeXml`
+
+.. seealso:: :py:func:`readCommonProperties`
 %End
 
     int zIndex() const;
@@ -117,6 +133,33 @@ are rendered in the layer.
     virtual QList< QgsAnnotationItemNode > nodes() const;
 %Docstring
 Returns the nodes for the item, used for editing the item.
+
+.. versionadded:: 3.22
+%End
+
+  protected:
+
+    void copyCommonProperties( const QgsAnnotationItem *other );
+%Docstring
+Copies common properties from the base class from an ``other`` item.
+
+.. versionadded:: 3.22
+%End
+
+    bool writeCommonProperties( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes common properties from the base class into an XML ``element``.
+
+.. seealso:: :py:func:`writeXml`
+
+.. versionadded:: 3.22
+%End
+
+    bool readCommonProperties( const QDomElement &element, const QgsReadWriteContext &context );
+%Docstring
+Reads common properties from the base class from the given DOM ``element``.
+
+.. seealso:: :py:func:`readXml`
 
 .. versionadded:: 3.22
 %End

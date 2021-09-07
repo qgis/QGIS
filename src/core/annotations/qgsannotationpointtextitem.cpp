@@ -66,7 +66,6 @@ bool QgsAnnotationPointTextItem::writeXml( QDomElement &element, QDomDocument &d
   element.setAttribute( QStringLiteral( "x" ), qgsDoubleToString( mPoint.x() ) );
   element.setAttribute( QStringLiteral( "y" ), qgsDoubleToString( mPoint.y() ) );
   element.setAttribute( QStringLiteral( "text" ), mText );
-  element.setAttribute( QStringLiteral( "zIndex" ), zIndex() );
   element.setAttribute( QStringLiteral( "angle" ), qgsDoubleToString( mAngle ) );
   element.setAttribute( QStringLiteral( "alignment" ), QString::number( mAlignment ) );
 
@@ -74,6 +73,7 @@ bool QgsAnnotationPointTextItem::writeXml( QDomElement &element, QDomDocument &d
   textFormatElem.appendChild( mTextFormat.writeXml( document, context ) );
   element.appendChild( textFormatElem );
 
+  writeCommonProperties( element, document, context );
   return true;
 }
 
@@ -90,7 +90,6 @@ bool QgsAnnotationPointTextItem::readXml( const QDomElement &element, const QgsR
   mText = element.attribute( QStringLiteral( "text" ) );
   mAngle = element.attribute( QStringLiteral( "angle" ) ).toDouble();
   mAlignment = static_cast< Qt::Alignment >( element.attribute( QStringLiteral( "alignment" ) ).toInt() );
-  setZIndex( element.attribute( QStringLiteral( "zIndex" ) ).toInt() );
 
   const QDomElement textFormatElem = element.firstChildElement( QStringLiteral( "pointTextFormat" ) );
   if ( !textFormatElem.isNull() )
@@ -100,6 +99,7 @@ bool QgsAnnotationPointTextItem::readXml( const QDomElement &element, const QgsR
     mTextFormat.readXml( textFormatElem, context );
   }
 
+  readCommonProperties( element, context );
   return true;
 }
 
@@ -109,7 +109,7 @@ QgsAnnotationPointTextItem *QgsAnnotationPointTextItem::clone()
   item->setFormat( mTextFormat );
   item->setAngle( mAngle );
   item->setAlignment( mAlignment );
-  item->setZIndex( zIndex() );
+  item->copyCommonProperties( this );
   return item.release();
 }
 
