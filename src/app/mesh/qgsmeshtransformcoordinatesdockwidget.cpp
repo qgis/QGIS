@@ -24,6 +24,8 @@
 #include "qgsproject.h"
 #include "qgsguiutils.h"
 #include "qgshelp.h"
+#include "qgscoordinateutils.h"
+#include "qgsapplication.h"
 
 QgsMeshTransformCoordinatesDockWidget::QgsMeshTransformCoordinatesDockWidget( QWidget *parent ):
   QgsDockWidget( parent )
@@ -33,7 +35,6 @@ QgsMeshTransformCoordinatesDockWidget::QgsMeshTransformCoordinatesDockWidget( QW
   QgsGui::enableAutoGeometryRestore( this );
 
   setWindowTitle( tr( "Transform Mesh Vertices by Expression" ) );
-
   mExpressionLineEdits << mExpressionEditX << mExpressionEditY << mExpressionEditZ;
   mCheckBoxes << mCheckBoxX << mCheckBoxY << mCheckBoxZ;
 
@@ -51,6 +52,7 @@ QgsMeshTransformCoordinatesDockWidget::QgsMeshTransformCoordinatesDockWidget( QW
 
   connect( mButtonPreview, &QToolButton::clicked, this, &QgsMeshTransformCoordinatesDockWidget::calculate );
   connect( mButtonApply, &QPushButton::clicked, this, &QgsMeshTransformCoordinatesDockWidget::apply );
+  connect( mButtonImport, &QToolButton::toggled, this, &QgsMeshTransformCoordinatesDockWidget::onImportVertexClicked );
 }
 
 QgsExpressionContext QgsMeshTransformCoordinatesDockWidget::createExpressionContext() const
@@ -99,6 +101,7 @@ void QgsMeshTransformCoordinatesDockWidget::setInput( QgsMeshLayer *layer, const
                                     arg( QString::number( mInputVertices.count() ), mInputLayer->name() ) );
     }
   }
+  importVertexCoordinates();
   updateButton();
   emit calculationUpdated();
 }
@@ -155,5 +158,42 @@ void QgsMeshTransformCoordinatesDockWidget::apply()
   if ( mIsResultValid && mInputLayer && mInputLayer->meshEditor() )
     mInputLayer->meshEditor()->advancedEdit( & mTransformVertices );
   emit applied();
+}
+
+void QgsMeshTransformCoordinatesDockWidget::onImportVertexClicked( bool checked )
+{
+  if ( checked )
+    importVertexCoordinates();
+  else
+  {
+    mExpressionEditX->setExpression( QString() );
+    mExpressionEditY->setExpression( QString() );
+    mExpressionEditZ->setExpression( QString() );
+  }
+}
+
+
+QString QgsMeshTransformCoordinatesDockWidget::displayCoordinateText( const QgsCoordinateReferenceSystem &crs, double value )
+{
+  return QString::number( value, 'f', QgsCoordinateUtils::calculateCoordinatePrecisionForCrs( crs, QgsProject::instance() ) );
+}
+
+void QgsMeshTransformCoordinatesDockWidget::importVertexCoordinates()
+{
+  if ( mButtonImport->isChecked() && mInputLayer )
+  {
+    if ( mInputVertices.count() == 1 )
+    {
+      mExpressionEditX->setExpression( displayCoordinateText( mInputLayer->crs(), mInputLayer->nativeMesh()->vertex( mInputVertices.first() ).x() ) );
+      mExpressionEditY->setExpression( displayCoordinateText( mInputLayer->crs(), mInputLayer->nativeMesh()->vertex( mInputVertices.first() ).y() ) );
+      mExpressionEditZ->setExpression( displayCoordinateText( mInputLayer->crs(), mInputLayer->nativeMesh()->vertex( mInputVertices.first() ).z() ) );
+    }
+    else
+    {
+      mExpressionEditX->setExpression( QString() );
+      mExpressionEditY->setExpression( QString() );
+      mExpressionEditZ->setExpression( QString() );
+    }
+  }
 }
 

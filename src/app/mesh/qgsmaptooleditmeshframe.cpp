@@ -1222,21 +1222,19 @@ void QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget( bool checke
 {
   if ( !checked && mTransformDockWidget )
   {
-    mTransformDockWidget->deleteLater();
-    mTransformDockWidget = nullptr;
+    mTransformDockWidget->close();
     return;
   }
   else if ( mTransformDockWidget )
   {
+    mTransformDockWidget->show();
     return;
   }
 
   onEditingStarted();
-
   mTransformDockWidget = new QgsMeshTransformCoordinatesDockWidget( QgisApp::instance() );
   mTransformDockWidget->setWindowTitle( tr( "Transform Mesh Vertices" ) );
   mTransformDockWidget->setObjectName( QStringLiteral( "TransformMeshVerticesDockWidget" ) );
-  mTransformDockWidget->setAttribute( Qt::WA_DeleteOnClose );
   mTransformDockWidget->setInput( mCurrentLayer, mSelectedVertices.keys() );
 
   if ( !QgisApp::instance()->restoreDockWidget( mTransformDockWidget ) )
@@ -1345,9 +1343,8 @@ void QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget( bool checke
     prepareSelection();
   } );
 
-  connect( mTransformDockWidget, &QgsMeshTransformCoordinatesDockWidget::destroyed, this, [this]
+  connect( mTransformDockWidget, &QgsDockWidget::closed, this, [this]
   {
-    mTransformDockWidget = nullptr;
     mActionTransformCoordinates->setChecked( false );
     if ( !mIsInitialized )
       return;
@@ -1435,7 +1432,6 @@ void QgsMapToolEditMeshFrame::prepareSelection()
 
     if ( !circulator.isValid() )
       continue;
-
 
     circulator.goBoundaryClockwise();
     int firstface = circulator.currentFaceIndex();
