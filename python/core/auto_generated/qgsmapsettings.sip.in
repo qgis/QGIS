@@ -513,7 +513,7 @@ Returns the visible area as a polygon (may be rotated) with extent buffer includ
 
 .. seealso:: :py:func:`extentBuffer`
 
-.. versionadded:: 3.20
+.. versionadded:: 3.22
 %End
 
     double mapUnitsPerPixel() const;
