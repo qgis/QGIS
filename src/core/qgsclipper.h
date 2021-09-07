@@ -105,7 +105,7 @@ class CORE_EXPORT QgsClipper
     SIP_END
 
     /**
-     * Trims the given polygon to a rectangular box. Modify the given polygon.
+     * Trims the given polygon to a rectangular box, by modifying the given polygon in place.
      *
      * \param pts polygon as 2D coordinates
      * \param clipRect clipping rectangle
