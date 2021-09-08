@@ -446,7 +446,7 @@ void QgsNetworkAccessManager::onReplySslErrors( const QList<QSslError> &errors )
     // lock thread and wait till error is handled. If we return from this slot now, then the reply will resume
     // without actually giving the main thread the chance to act on the ssl error and possibly ignore it.
     mSslErrorHandlerMutex.lock();
-    mSslErrorWaitCondition.wait( &mSslErrorHandlerMutex );
+    mSslErrorWaitCondition.wait( &mSslErrorHandlerMutex, 10000 );
     mSslErrorHandlerMutex.unlock();
     afterSslErrorHandled( reply );
   }
@@ -543,7 +543,7 @@ void QgsNetworkAccessManager::onAuthRequired( QNetworkReply *reply, QAuthenticat
     // lock thread and wait till error is handled. If we return from this slot now, then the reply will resume
     // without actually giving the main thread the chance to act on the ssl error and possibly ignore it.
     mAuthRequestHandlerMutex.lock();
-    mAuthRequestWaitCondition.wait( &mAuthRequestHandlerMutex );
+    mAuthRequestWaitCondition.wait( &mAuthRequestHandlerMutex, 10000 );
     mAuthRequestHandlerMutex.unlock();
     afterAuthRequestHandled( reply );
   }
