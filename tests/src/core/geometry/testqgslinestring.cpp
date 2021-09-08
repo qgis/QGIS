@@ -2301,7 +2301,7 @@ void TestQgsLineString::boundingBox()
 
 void TestQgsLineString::boundingBox3D()
 {
-  // boudingBox - test 3D boundingbox
+  // boundingBox - test 3D boundingbox
   QgsLineString bb3d;
   bb3d.setPoints( QgsPointSequence() << QgsPoint( -1.0, -1.0, -1.0 )
                   << QgsPoint( -2.0, -1.0, -1.0 )
