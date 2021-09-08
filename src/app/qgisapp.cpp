@@ -820,6 +820,8 @@ void QgisApp::annotationItemTypeAdded( int id )
       mMapStylingDock->setUserVisible( true );
       mMapStyleWidget->focusDefaultWidget();
 
+      QgsProject::instance()->setDirty( true );
+
       // TODO -- possibly automatically deactive the tool now?
     } );
   } );
