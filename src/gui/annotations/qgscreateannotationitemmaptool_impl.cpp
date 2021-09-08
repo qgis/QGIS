@@ -17,6 +17,7 @@
 #include "qgsmapmouseevent.h"
 #include "qgsannotationpointtextitem.h"
 #include "qgsannotationlayer.h"
+#include "qgsstyle.h"
 
 ///@cond PRIVATE
 
@@ -37,6 +38,7 @@ void QgsCreatePointTextItemMapTool::cadCanvasPressEvent( QgsMapMouseEvent *event
 
   mCreatedItem = std::make_unique< QgsAnnotationPointTextItem >( tr( "Text" ), layerPoint );
   mCreatedItem->setAlignment( Qt::AlignLeft );
+  mCreatedItem->setFormat( QgsStyle::defaultStyle()->defaultTextFormat( QgsStyle::TextFormatContext::Labeling ) );
   emit itemCreated();
 }
 
