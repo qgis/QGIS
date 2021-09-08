@@ -293,7 +293,7 @@ If additional geometries are to be added then set ``doUpdate`` to ``False`` to d
 After adding the final geometry :py:func:`~QgsRubberBand.updatePosition` should be called.
 
 :param geometry: the geometry object. Will be treated as a collection of vertices.
-:param layer: the layer associated with the geometry. This is used for transforming the geometry from the layer's CRS to themap crs. If ``layer`` is ``None`` no coordinate transformation will occur.
+:param layer: the layer associated with the geometry. This is used for transforming the geometry from the layer's CRS to the map crs. If ``layer`` is ``None`` no coordinate transformation will occur.
 :param doUpdate: set to ``False`` to defer updates of the rubber band.
 %End
 

@@ -71,7 +71,7 @@ void TestQgsMapToolCapture::addVertexNonVectorLayer()
 
   QgsAnnotationLayer *layer = new QgsAnnotationLayer( QStringLiteral( "test" ), QgsAnnotationLayer::LayerOptions( QgsProject::instance()->transformContext() ) );
   QVERIFY( layer->isValid() );
-  QgsProject::instance()->addMapLayers( { layer} );
+  QgsProject::instance()->addMapLayers( { layer } );
 
   canvas.setLayers( { layer } );
   canvas.setCurrentLayer( layer );
