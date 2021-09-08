@@ -177,8 +177,7 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
       temporalCapabilities()->setAllAvailableTemporalRanges( mSettings.mAllRanges );
       temporalCapabilities()->setDefaultInterval( mSettings.mDefaultInterval );
 
-      temporalCapabilities()->setIntervalHandlingMethod(
-        QgsRasterDataProviderTemporalCapabilities::MatchExactUsingStartOfRange );
+      temporalCapabilities()->setIntervalHandlingMethod( Qgis::TemporalIntervalMatchMethod::MatchExactUsingStartOfRange );
 
       if ( mSettings.mIsBiTemporal )
       {
@@ -1154,22 +1153,22 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
   {
     switch ( temporalCapabilities()->intervalHandlingMethod() )
     {
-      case QgsRasterDataProviderTemporalCapabilities::MatchUsingWholeRange:
+      case Qgis::TemporalIntervalMatchMethod::MatchUsingWholeRange:
         break;
-      case QgsRasterDataProviderTemporalCapabilities::MatchExactUsingStartOfRange:
+      case Qgis::TemporalIntervalMatchMethod::MatchExactUsingStartOfRange:
         range = QgsDateTimeRange( range.begin(), range.begin() );
         break;
-      case QgsRasterDataProviderTemporalCapabilities::MatchExactUsingEndOfRange:
+      case Qgis::TemporalIntervalMatchMethod::MatchExactUsingEndOfRange:
         range = QgsDateTimeRange( range.end(), range.end() );
         break;
-      case QgsRasterDataProviderTemporalCapabilities::FindClosestMatchToStartOfRange:
+      case Qgis::TemporalIntervalMatchMethod::FindClosestMatchToStartOfRange:
       {
         QDateTime dateTimeStart = mSettings.findLeastClosestDateTime( range.begin(), dateOnly );
         range = QgsDateTimeRange( dateTimeStart, dateTimeStart );
         break;
       }
 
-      case QgsRasterDataProviderTemporalCapabilities::FindClosestMatchToEndOfRange:
+      case Qgis::TemporalIntervalMatchMethod::FindClosestMatchToEndOfRange:
       {
         QDateTime dateTimeEnd = mSettings.findLeastClosestDateTime( range.end(), dateOnly );
         range = QgsDateTimeRange( dateTimeEnd, dateTimeEnd );

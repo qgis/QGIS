@@ -1025,16 +1025,16 @@ void TestQgsRasterLayer::testTemporalProperties()
   QDomElement elementRoot = document.createElement( "maplayer" );
   document.appendChild( elementRoot );
 
-  QCOMPARE( temporalProperties->mode(), QgsRasterLayerTemporalProperties::TemporalMode::ModeFixedTemporalRange );
+  QCOMPARE( temporalProperties->mode(), Qgis::RasterTemporalMode::FixedTemporalRange );
 
-  temporalProperties->setMode( QgsRasterLayerTemporalProperties::TemporalMode::ModeTemporalRangeFromDataProvider );
+  temporalProperties->setMode( Qgis::RasterTemporalMode::TemporalRangeFromDataProvider );
 
   // Change temporal properties, save the xml
   const QDomElement element = temporalProperties->writeXml( elementRoot, document, QgsReadWriteContext() );
 
   // Restore
   QVERIFY( temporalProperties->readXml( element, QgsReadWriteContext() ) );
-  QCOMPARE( temporalProperties->mode(), QgsRasterLayerTemporalProperties::TemporalMode::ModeTemporalRangeFromDataProvider );
+  QCOMPARE( temporalProperties->mode(), Qgis::RasterTemporalMode::TemporalRangeFromDataProvider );
 
   QCOMPARE( temporalProperties->fixedTemporalRange().begin(), dateTimeRange.begin() );
   QCOMPARE( temporalProperties->fixedTemporalRange().end(), dateTimeRange.end() );

@@ -492,6 +492,45 @@ The development version
       VertexHandle,
     };
 
+    enum class VectorTemporalMode
+      {
+      FixedTemporalRange,
+      FeatureDateTimeInstantFromField,
+      FeatureDateTimeStartAndEndFromFields,
+      FeatureDateTimeStartAndDurationFromFields,
+      FeatureDateTimeStartAndEndFromExpressions,
+      RedrawLayerOnly,
+    };
+
+    enum class VectorTemporalLimitMode
+    {
+      IncludeBeginExcludeEnd,
+      IncludeBeginIncludeEnd,
+    };
+
+    enum class VectorDataProviderTemporalMode
+      {
+      HasFixedTemporalRange,
+      StoresFeatureDateTimeInstantInField,
+      StoresFeatureDateTimeStartAndEndInSeparateFields,
+    };
+
+    enum class RasterTemporalMode
+      {
+      FixedTemporalRange,
+      TemporalRangeFromDataProvider,
+      RedrawLayerOnly,
+    };
+
+    enum class TemporalIntervalMatchMethod
+      {
+      MatchUsingWholeRange,
+      MatchExactUsingStartOfRange,
+      MatchExactUsingEndOfRange,
+      FindClosestMatchToStartOfRange,
+      FindClosestMatchToEndOfRange
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

@@ -261,11 +261,11 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   {
     switch ( temporalProperties->mode() )
     {
-      case QgsRasterLayerTemporalProperties::ModeFixedTemporalRange:
-      case QgsRasterLayerTemporalProperties::ModeRedrawLayerOnly:
+      case Qgis::RasterTemporalMode::FixedTemporalRange:
+      case Qgis::RasterTemporalMode::RedrawLayerOnly:
         break;
 
-      case QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider:
+      case Qgis::RasterTemporalMode::TemporalRangeFromDataProvider:
         // in this mode we need to pass on the desired render temporal range to the data provider
         if ( mPipe->provider()->temporalCapabilities() )
         {

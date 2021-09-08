@@ -64,11 +64,11 @@ void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
                                  mEndTemporalDateTimeEdit->dateTime() );
 
   if ( mModeAutomaticRadio->isChecked() )
-    temporalProperties->setMode( QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider );
+    temporalProperties->setMode( Qgis::RasterTemporalMode::TemporalRangeFromDataProvider );
   else if ( mModeFixedRangeRadio->isChecked() )
-    temporalProperties->setMode( QgsRasterLayerTemporalProperties::ModeFixedTemporalRange );
+    temporalProperties->setMode( Qgis::RasterTemporalMode::FixedTemporalRange );
   else if ( mModeRedrawLayer->isChecked() )
-    temporalProperties->setMode( QgsRasterLayerTemporalProperties::ModeRedrawLayerOnly );
+    temporalProperties->setMode( Qgis::RasterTemporalMode::RedrawLayerOnly );
   temporalProperties->setFixedTemporalRange( normalRange );
 
   for ( QgsMapLayerConfigWidget *widget : std::as_const( mExtraWidgets ) )
@@ -82,13 +82,13 @@ void QgsRasterLayerTemporalPropertiesWidget::syncToLayer()
   const QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast< const QgsRasterLayerTemporalProperties * >( mLayer->temporalProperties() );
   switch ( temporalProperties->mode() )
   {
-    case QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider:
+    case Qgis::RasterTemporalMode::TemporalRangeFromDataProvider:
       mModeAutomaticRadio->setChecked( true );
       break;
-    case QgsRasterLayerTemporalProperties::ModeFixedTemporalRange:
+    case Qgis::RasterTemporalMode::FixedTemporalRange:
       mModeFixedRangeRadio->setChecked( true );
       break;
-    case QgsRasterLayerTemporalProperties::ModeRedrawLayerOnly:
+    case Qgis::RasterTemporalMode::RedrawLayerOnly:
       mModeRedrawLayer->setChecked( true );
       break;
   }

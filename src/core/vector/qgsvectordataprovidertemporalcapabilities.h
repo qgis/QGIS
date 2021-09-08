@@ -39,16 +39,6 @@ class CORE_EXPORT QgsVectorDataProviderTemporalCapabilities : public QgsDataProv
   public:
 
     /**
-     * Provider temporal handling mode
-     */
-    enum TemporalMode
-    {
-      ProviderHasFixedTemporalRange = 0, //!< Entire dataset from provider has a fixed start and end datetime.
-      ProviderStoresFeatureDateTimeInstantInField, //!< Dataset has feature datetime instants stored in a single field
-      ProviderStoresFeatureDateTimeStartAndEndInSeparateFields, //!< Dataset stores feature start and end datetimes in separate fields
-    };
-
-    /**
      * Constructor for QgsVectorDataProviderTemporalCapabilities.
      *
      * The \a enabled argument specifies whether the data provider has temporal capabilities.
@@ -60,14 +50,14 @@ class CORE_EXPORT QgsVectorDataProviderTemporalCapabilities : public QgsDataProv
      *
      *\see setMode()
     */
-    TemporalMode mode() const;
+    Qgis::VectorDataProviderTemporalMode mode() const;
 
     /**
      * Sets the temporal properties \a mode.
      *
      *\see mode()
     */
-    void setMode( TemporalMode mode );
+    void setMode( Qgis::VectorDataProviderTemporalMode mode );
 
     /**
      * Sets the datetime \a range extent from which temporal data is available from the provider.
@@ -131,7 +121,7 @@ class CORE_EXPORT QgsVectorDataProviderTemporalCapabilities : public QgsDataProv
      */
     QgsDateTimeRange mAvailableTemporalRange;
 
-    TemporalMode mMode = ProviderHasFixedTemporalRange;
+    Qgis::VectorDataProviderTemporalMode mMode = Qgis::VectorDataProviderTemporalMode::HasFixedTemporalRange;
 
     QString mStartField;
     QString mEndField;

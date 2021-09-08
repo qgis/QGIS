@@ -22,12 +22,12 @@ QgsVectorDataProviderTemporalCapabilities::QgsVectorDataProviderTemporalCapabili
 {
 }
 
-QgsVectorDataProviderTemporalCapabilities::TemporalMode QgsVectorDataProviderTemporalCapabilities::mode() const
+Qgis::VectorDataProviderTemporalMode QgsVectorDataProviderTemporalCapabilities::mode() const
 {
   return mMode;
 }
 
-void QgsVectorDataProviderTemporalCapabilities::setMode( QgsVectorDataProviderTemporalCapabilities::TemporalMode mode )
+void QgsVectorDataProviderTemporalCapabilities::setMode( Qgis::VectorDataProviderTemporalMode mode )
 {
   mMode = mode;
 }

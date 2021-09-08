@@ -32,17 +32,17 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
   Q_ASSERT( mLayer );
   setupUi( this );
 
-  mModeComboBox->addItem( tr( "Fixed Time Range" ), QgsVectorLayerTemporalProperties::ModeFixedTemporalRange );
-  mModeComboBox->addItem( tr( "Single Field with Date/Time" ), QgsVectorLayerTemporalProperties::ModeFeatureDateTimeInstantFromField );
-  mModeComboBox->addItem( tr( "Separate Fields for Start and End Date/Time" ), QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndEndFromFields );
-  mModeComboBox->addItem( tr( "Separate Fields for Start and Event Duration" ), QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndDurationFromFields );
-  mModeComboBox->addItem( tr( "Start and End Date/Time from Expressions" ), QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndEndFromExpressions );
-  mModeComboBox->addItem( tr( "Redraw Layer Only" ), QgsVectorLayerTemporalProperties::ModeRedrawLayerOnly );
+  mModeComboBox->addItem( tr( "Fixed Time Range" ), static_cast< int >( Qgis::VectorTemporalMode::FixedTemporalRange ) );
+  mModeComboBox->addItem( tr( "Single Field with Date/Time" ), static_cast< int >( Qgis::VectorTemporalMode::FeatureDateTimeInstantFromField ) );
+  mModeComboBox->addItem( tr( "Separate Fields for Start and End Date/Time" ), static_cast< int >( Qgis::VectorTemporalMode::FeatureDateTimeStartAndEndFromFields ) );
+  mModeComboBox->addItem( tr( "Separate Fields for Start and Event Duration" ), static_cast< int >( Qgis::VectorTemporalMode::FeatureDateTimeStartAndDurationFromFields ) );
+  mModeComboBox->addItem( tr( "Start and End Date/Time from Expressions" ), static_cast< int >( Qgis::VectorTemporalMode::FeatureDateTimeStartAndEndFromExpressions ) );
+  mModeComboBox->addItem( tr( "Redraw Layer Only" ), static_cast< int >( Qgis::VectorTemporalMode::RedrawLayerOnly ) );
 
   connect( mModeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), mStackedWidget, &QStackedWidget::setCurrentIndex );
 
-  mLimitsComboBox->addItem( tr( "Include Start, Exclude End (default)" ), QgsVectorLayerTemporalProperties::ModeIncludeBeginExcludeEnd );
-  mLimitsComboBox->addItem( tr( "Include Start, Include End" ), QgsVectorLayerTemporalProperties::ModeIncludeBeginIncludeEnd );
+  mLimitsComboBox->addItem( tr( "Include Start, Exclude End (default)" ), static_cast< int >( Qgis::VectorTemporalLimitMode::IncludeBeginExcludeEnd ) );
+  mLimitsComboBox->addItem( tr( "Include Start, Include End" ), static_cast< int >( Qgis::VectorTemporalLimitMode::IncludeBeginIncludeEnd ) );
 
   mStartTemporalDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
   mEndTemporalDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
@@ -106,8 +106,8 @@ void QgsVectorLayerTemporalPropertiesWidget::saveTemporalProperties()
   QgsVectorLayerTemporalProperties *properties = qobject_cast< QgsVectorLayerTemporalProperties * >( mLayer->temporalProperties() );
 
   properties->setIsActive( mTemporalGroupBox->isChecked() );
-  properties->setMode( static_cast< QgsVectorLayerTemporalProperties::TemporalMode >( mModeComboBox->currentData().toInt() ) );
-  properties->setLimitMode( static_cast< QgsVectorLayerTemporalProperties::LimitMode >( mLimitsComboBox->currentData().toInt() ) );
+  properties->setMode( static_cast< Qgis::VectorTemporalMode >( mModeComboBox->currentData().toInt() ) );
+  properties->setLimitMode( static_cast< Qgis::VectorTemporalLimitMode >( mLimitsComboBox->currentData().toInt() ) );
 
   const QgsDateTimeRange normalRange = QgsDateTimeRange( mStartTemporalDateTimeEdit->dateTime(),
                                        mEndTemporalDateTimeEdit->dateTime() );
@@ -116,20 +116,20 @@ void QgsVectorLayerTemporalPropertiesWidget::saveTemporalProperties()
 
   switch ( properties->mode() )
   {
-    case QgsVectorLayerTemporalProperties::ModeFeatureDateTimeInstantFromField:
-    case QgsVectorLayerTemporalProperties::ModeFixedTemporalRange:
-    case QgsVectorLayerTemporalProperties::ModeRedrawLayerOnly:
-    case QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndEndFromExpressions:
+    case Qgis::VectorTemporalMode::FeatureDateTimeInstantFromField:
+    case Qgis::VectorTemporalMode::FixedTemporalRange:
+    case Qgis::VectorTemporalMode::RedrawLayerOnly:
+    case Qgis::VectorTemporalMode::FeatureDateTimeStartAndEndFromExpressions:
       properties->setStartField( mSingleFieldComboBox->currentField() );
       properties->setDurationUnits( static_cast< QgsUnitTypes::TemporalUnit >( mFixedDurationUnitsComboBox->currentData().toInt() ) );
       break;
 
-    case QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndEndFromFields:
+    case Qgis::VectorTemporalMode::FeatureDateTimeStartAndEndFromFields:
       properties->setStartField( mStartFieldComboBox->currentField() );
       properties->setDurationUnits( static_cast< QgsUnitTypes::TemporalUnit >( mFixedDurationUnitsComboBox->currentData().toInt() ) );
       break;
 
-    case QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndDurationFromFields:
+    case Qgis::VectorTemporalMode::FeatureDateTimeStartAndDurationFromFields:
       properties->setStartField( mDurationStartFieldComboBox->currentField() );
       properties->setDurationUnits( static_cast< QgsUnitTypes::TemporalUnit >( mDurationUnitsComboBox->currentData().toInt() ) );
       break;
@@ -155,10 +155,10 @@ void QgsVectorLayerTemporalPropertiesWidget::syncToLayer()
   const QgsVectorLayerTemporalProperties *properties = qobject_cast< QgsVectorLayerTemporalProperties * >( mLayer->temporalProperties() );
   mTemporalGroupBox->setChecked( properties->isActive() );
 
-  mModeComboBox->setCurrentIndex( mModeComboBox->findData( properties->mode() ) );
+  mModeComboBox->setCurrentIndex( mModeComboBox->findData( static_cast< int >( properties->mode() ) ) );
   mStackedWidget->setCurrentIndex( static_cast< int >( properties->mode() ) );
 
-  mLimitsComboBox->setCurrentIndex( mLimitsComboBox->findData( properties->limitMode() ) );
+  mLimitsComboBox->setCurrentIndex( mLimitsComboBox->findData( static_cast< int >( properties->limitMode() ) ) );
 
   mStartTemporalDateTimeEdit->setDateTime( properties->fixedTemporalRange().begin() );
   mEndTemporalDateTimeEdit->setDateTime( properties->fixedTemporalRange().end() );
