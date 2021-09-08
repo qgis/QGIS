@@ -69,7 +69,7 @@ class QgsMapToolCaptureAnnotationItem : public QgsMapToolCapture
     QgsMapToolCaptureAnnotationItem( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode );
 
     QgsMapToolCapture::Capabilities capabilities() const override;
-
+    bool supportsTechnique( CaptureTechnique technique ) const override;
 
 };
 
