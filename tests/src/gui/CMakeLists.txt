@@ -40,6 +40,7 @@ set(TESTS
   testqgsfocuswatcher.cpp
   testqgshtmlwidgetwrapper.cpp
   testqgsmapcanvas.cpp
+  testqgsmaptoolcapture.cpp
   testqgsmessagebar.cpp
   testprojectionissues.cpp
   testqgsgui.cpp
