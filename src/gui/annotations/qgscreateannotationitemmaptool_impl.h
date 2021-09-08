@@ -19,9 +19,31 @@
 #include "qgis_sip.h"
 #include "qgscreateannotationitemmaptool.h"
 
+class QgsAnnotationPointTextItem;
+
 #define SIP_NO_FILE
 
 ///@cond PRIVATE
+
+class QgsCreatePointTextItemMapTool: public QgsCreateAnnotationItemMapTool
+{
+    Q_OBJECT
+
+  public:
+
+    QgsCreatePointTextItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
+    ~QgsCreatePointTextItemMapTool() override;
+
+    void cadCanvasPressEvent( QgsMapMouseEvent *event ) override;
+
+    QgsAnnotationItem *takeCreatedItem() override;
+
+
+  private:
+
+    std::unique_ptr< QgsAnnotationPointTextItem > mCreatedItem;
+
+};
 
 ///@endcond PRIVATE
 
