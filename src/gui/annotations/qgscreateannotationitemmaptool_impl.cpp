@@ -16,9 +16,11 @@
 #include "qgscreateannotationitemmaptool_impl.h"
 #include "qgsmapmouseevent.h"
 #include "qgsannotationpointtextitem.h"
+#include "qgsannotationmarkeritem.h"
 #include "qgsannotationlayer.h"
 #include "qgsstyle.h"
 #include "qgsmapcanvas.h"
+#include "qgsmarkersymbol.h"
 
 ///@cond PRIVATE
 
@@ -57,6 +59,46 @@ QgsCreateAnnotationItemMapToolHandler *QgsCreatePointTextItemMapTool::handler()
 }
 
 QgsMapTool *QgsCreatePointTextItemMapTool::mapTool()
+{
+  return this;
+}
+
+
+
+//
+// QgsCreateMarkerMapTool
+//
+
+QgsCreateMarkerItemMapTool::QgsCreateMarkerItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
+  : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
+  , mHandler( new QgsCreateAnnotationItemMapToolHandler( canvas, cadDockWidget ) )
+{
+
+}
+
+QgsCreateMarkerItemMapTool::~QgsCreateMarkerItemMapTool() = default;
+
+void QgsCreateMarkerItemMapTool::cadCanvasPressEvent( QgsMapMouseEvent *event )
+{
+  if ( event->button() != Qt::LeftButton )
+    return;
+
+  const QgsPointXY layerPoint = toLayerCoordinates( mHandler->targetLayer(), event->mapPoint() );
+
+  std::unique_ptr< QgsAnnotationMarkerItem > createdItem = std::make_unique< QgsAnnotationMarkerItem >( QgsPoint( layerPoint ) );
+  createdItem->setSymbol( qgis::down_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
+  // set reference scale to match canvas scale, but don't enable it by default for marker items
+  createdItem->setSymbologyReferenceScale( canvas()->scale() );
+
+  mHandler->pushCreatedItem( createdItem.release() );
+}
+
+QgsCreateAnnotationItemMapToolHandler *QgsCreateMarkerItemMapTool::handler()
+{
+  return mHandler;
+}
+
+QgsMapTool *QgsCreateMarkerItemMapTool::mapTool()
 {
   return this;
 }
