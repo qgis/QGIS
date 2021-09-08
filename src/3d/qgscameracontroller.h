@@ -216,7 +216,7 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 
   private:
     void rotateCamera( float diffPitch, float diffYaw );
-    void updateCameraFromPose( bool centerPointChanged = false );
+    void updateCameraFromPose();
     void moveCameraPositionBy( const QVector3D &posDiff );
 
   signals:
