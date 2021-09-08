@@ -83,7 +83,11 @@ void TestQgsMapToolCapture::addVertexNonVectorLayer()
   // even though we don't have a vector layer selected, adding vertices should still be allowed
   QCOMPARE( tool.addVertex( QgsPoint( 5, 5 ), QgsPointLocator::Match() ), 0 );
 
-
+  // the nextPoint method must also accept non vector layers
+  QgsPoint layerPoint;
+  QCOMPARE( tool.nextPoint( QgsPoint( 5, 6 ), layerPoint ), 0 );
+  QCOMPARE( layerPoint.x(), 5.0 );
+  QCOMPARE( layerPoint.y(), 6.0 );
 }
 
 QGSTEST_MAIN( TestQgsMapToolCapture )

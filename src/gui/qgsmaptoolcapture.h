@@ -256,7 +256,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      *  \param[in,out] layerPoint the point in layer coordinates
      *  \returns
      *   0 in case of success
-     *   1 if the current layer is NULLPTR or not a vector layer
+     *   1 if the current layer is NULLPTR
      *   2 if the transformation failed
      */
     int nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint );
