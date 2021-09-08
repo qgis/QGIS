@@ -149,6 +149,8 @@ class QgsDevToolsPanelWidget;
 class QgsDevToolWidgetFactory;
 class QgsNetworkLogger;
 class QgsNetworkLoggerWidgetFactory;
+class QgsMapToolCapture;
+
 #include <QMainWindow>
 #include <QToolBar>
 #include <QAbstractSocket>
@@ -2379,6 +2381,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void enableMeshEditingTools( bool enable );
 
+    /**
+     * Returns a list of all capture map tools.
+     */
+    QList< QgsMapToolCapture * > captureTools();
 
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
 

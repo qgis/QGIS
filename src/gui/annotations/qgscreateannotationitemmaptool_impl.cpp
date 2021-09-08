@@ -123,6 +123,11 @@ QgsMapToolCapture::Capabilities QgsMapToolCaptureAnnotationItem::capabilities() 
   return SupportsCurves;
 }
 
+bool QgsMapToolCaptureAnnotationItem::supportsTechnique( CaptureTechnique ) const
+{
+  return true;
+}
+
 
 //
 // QgsCreateLineMapTool

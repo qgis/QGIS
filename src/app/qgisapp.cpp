@@ -802,10 +802,19 @@ void QgisApp::annotationItemTypeAdded( int id )
     mAnnotationsToolBar->addAction( action );
   }
 
-  connect( action, &QAction::triggered, this, [this, id]()
+  connect( action, &QAction::toggled, this, [this, action, id]( bool checked )
   {
+    if ( !checked )
+      return;
+
     QgsCreateAnnotationItemMapToolInterface *tool = QgsGui::annotationItemGuiRegistry()->itemMetadata( id )->createMapTool( mMapCanvas, mAdvancedDigitizingDockWidget );
+    tool->mapTool()->setAction( action );
     mMapCanvas->setMapTool( tool->mapTool() );
+    if ( qobject_cast< QgsMapToolCapture * >( tool->mapTool() ) )
+    {
+      enableDigitizeTechniqueActions( checked, action );
+    }
+
     connect( tool->mapTool(), &QgsMapTool::deactivated, tool->mapTool(), &QObject::deleteLater );
     connect( tool->handler(), &QgsCreateAnnotationItemMapToolHandler::itemCreated, this, [ = ]
     {
@@ -3122,6 +3131,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionChangeLabelProperties );
   mMapToolGroup->addAction( mActionReverseLine );
   mMapToolGroup->addAction( mActionTrimExtendFeature );
+  mMapToolGroup->addAction( mActionModifyAnnotation );
 
   //
   // Preview Modes Group
@@ -10290,8 +10300,8 @@ void QgisApp::enableDigitizeWithCurve( bool enable )
     QgsSettings().setValue( QStringLiteral( "UI/digitizeTechnique" ), 0 );
   }
 
-  const QList< QgsMapToolCapture * > captureTools = mMapTools->captureTools();
-  for ( QgsMapToolCapture *tool : captureTools )
+  const QList< QgsMapToolCapture * > tools = captureTools();
+  for ( QgsMapToolCapture *tool : tools )
   {
     if ( tool->supportsTechnique( QgsMapToolCapture::CircularString ) )
       tool->setCircularDigitizingEnabled( enable );
@@ -10314,8 +10324,8 @@ void QgisApp::enableStreamDigitizing( bool enable )
     QgsSettings().setValue( QStringLiteral( "UI/digitizeTechnique" ), 1 );
   }
 
-  const QList< QgsMapToolCapture * > captureTools = mMapTools->captureTools();
-  for ( QgsMapToolCapture *tool : captureTools )
+  const QList< QgsMapToolCapture * > tools = captureTools();
+  for ( QgsMapToolCapture *tool : tools )
   {
     if ( tool->supportsTechnique( QgsMapToolCapture::Streaming ) )
       tool->setStreamDigitizingEnabled( enable );
@@ -10331,10 +10341,10 @@ void QgisApp::enableDigitizeTechniqueActions( bool enable, QAction *triggeredFro
 
   QgsSettings settings;
 
-  const QList< QgsMapToolCapture * > captureTools = mMapTools->captureTools();
+  const QList< QgsMapToolCapture * > tools = captureTools();
 
   QSet< QgsMapToolCapture::CaptureTechnique > supportedTechniques;
-  for ( QgsMapToolCapture *tool : captureTools )
+  for ( QgsMapToolCapture *tool : tools )
   {
     if ( triggeredFromToolAction == tool->action() || ( !triggeredFromToolAction && mMapCanvas->mapTool() == tool ) )
     {
@@ -10355,7 +10365,7 @@ void QgisApp::enableDigitizeTechniqueActions( bool enable, QAction *triggeredFro
   const bool streamIsChecked = settings.value( QStringLiteral( "UI/digitizeWithStream" ) ).toInt();
   mActionStreamDigitize->setChecked( streamIsChecked && mActionStreamDigitize->isEnabled() );
 
-  for ( QgsMapToolCapture *tool : captureTools )
+  for ( QgsMapToolCapture *tool : tools )
   {
     if ( tool->supportsTechnique( QgsMapToolCapture::CircularString ) )
       tool->setCircularDigitizingEnabled( mActionDigitizeWithCurve->isChecked() );
@@ -11557,6 +11567,18 @@ void QgisApp::enableMeshEditingTools( bool enable )
     for ( QAction *action : editMeshMapTool->actions() )
       action->setEnabled( enable );
   }
+}
+
+QList<QgsMapToolCapture *> QgisApp::captureTools()
+{
+  QList< QgsMapToolCapture * > res = mMapTools->captureTools();
+  // also check current tool, in case it's a custom tool
+  if ( QgsMapToolCapture *currentTool = qobject_cast< QgsMapToolCapture * >( mMapCanvas->mapTool() ) )
+  {
+    if ( !res.contains( currentTool ) )
+      res.append( currentTool );
+  }
+  return res;
 }
 
 void QgisApp::saveEdits()
@@ -15825,7 +15847,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionLabeling->setEnabled( false );
       mActionDiagramProperties->setEnabled( false );
       mActionIdentify->setEnabled( true );
-      enableDigitizeTechniqueActions( false );
+      enableDigitizeTechniqueActions( true );
       mActionToggleEditing->setEnabled( false );
       mActionToggleEditing->setChecked( true ); // always editable
       mActionUndo->setEnabled( false );
