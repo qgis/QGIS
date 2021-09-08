@@ -43,7 +43,7 @@ class QgsCreatePointTextItemMapTool: public QgsMapToolAdvancedDigitizing, public
 
 };
 
-class QgsCreateMarkerItemMapTool: public QgsMapToolAdvancedDigitizing, public QgsCreateAnnotationItemMapToolInterface
+class QgsCreateMarkerItemMapTool: public QgsMapToolCapture, public QgsCreateAnnotationItemMapToolInterface
 {
     Q_OBJECT
 
@@ -52,9 +52,10 @@ class QgsCreateMarkerItemMapTool: public QgsMapToolAdvancedDigitizing, public Qg
     QgsCreateMarkerItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
     ~QgsCreateMarkerItemMapTool() override;
 
-    void cadCanvasPressEvent( QgsMapMouseEvent *event ) override;
+    void cadCanvasReleaseEvent( QgsMapMouseEvent *event ) override;
     QgsCreateAnnotationItemMapToolHandler *handler() override;
     QgsMapTool *mapTool() override;
+    QgsMapLayer *layer() const override;
 
   private:
 
