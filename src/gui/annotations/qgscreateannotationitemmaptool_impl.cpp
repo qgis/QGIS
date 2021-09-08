@@ -18,6 +18,7 @@
 #include "qgsannotationpointtextitem.h"
 #include "qgsannotationlayer.h"
 #include "qgsstyle.h"
+#include "qgsmapcanvas.h"
 
 ///@cond PRIVATE
 
@@ -39,6 +40,9 @@ void QgsCreatePointTextItemMapTool::cadCanvasPressEvent( QgsMapMouseEvent *event
   mCreatedItem = std::make_unique< QgsAnnotationPointTextItem >( tr( "Text" ), layerPoint );
   mCreatedItem->setAlignment( Qt::AlignLeft );
   mCreatedItem->setFormat( QgsStyle::defaultStyle()->defaultTextFormat( QgsStyle::TextFormatContext::Labeling ) );
+  // newly created point text items default to using symbology reference scale at the current map scale
+  mCreatedItem->setUseSymbologyReferenceScale( true );
+  mCreatedItem->setSymbologyReferenceScale( canvas()->scale() );
   emit itemCreated();
 }
 
