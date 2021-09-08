@@ -28,7 +28,7 @@
 class QgsAnnotationLayer;
 class QgsAnnotationItem;
 class QgsAnnotationItemBaseWidget;
-class QgsCreateAnnotationItemMapTool;
+class QgsCreateAnnotationItemMapToolInterface;
 class QgsMapCanvas;
 class QgsAdvancedDigitizingDockWidget;
 
@@ -112,7 +112,7 @@ class GUI_EXPORT QgsAnnotationItemAbstractGuiMetadata
      *
      * May return NULLPTR if no map tool is available for creating the item.
      */
-    virtual QgsCreateAnnotationItemMapTool *createMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget ) SIP_TRANSFERBACK;
+    virtual QgsCreateAnnotationItemMapToolInterface *createMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget ) SIP_TRANSFERBACK;
 
     /**
      * Creates an instance of the corresponding item type.
@@ -140,7 +140,7 @@ class GUI_EXPORT QgsAnnotationItemAbstractGuiMetadata
 typedef std::function<QgsAnnotationItemBaseWidget *( QgsAnnotationItem * )> QgsAnnotationItemWidgetFunc SIP_SKIP;
 
 //! Create annotation map tool creation function
-typedef std::function<QgsCreateAnnotationItemMapTool *( QgsMapCanvas *, QgsAdvancedDigitizingDockWidget * )> QgsCreateAnnotationItemMapToolFunc SIP_SKIP;
+typedef std::function<QgsCreateAnnotationItemMapToolInterface *( QgsMapCanvas *, QgsAdvancedDigitizingDockWidget * )> QgsCreateAnnotationItemMapToolFunc SIP_SKIP;
 
 //! Annotation item added to layer callback
 typedef std::function<void ( QgsAnnotationItem *, QgsAnnotationLayer *layer )> QgsAnnotationItemAddedToLayerFunc SIP_SKIP;
@@ -232,7 +232,7 @@ class GUI_EXPORT QgsAnnotationItemGuiMetadata : public QgsAnnotationItemAbstract
 
     QgsAnnotationItem *createItem() override;
     void newItemAddedToLayer( QgsAnnotationItem *item, QgsAnnotationLayer *layer ) override;
-    QgsCreateAnnotationItemMapTool *createMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget ) override;
+    QgsCreateAnnotationItemMapToolInterface *createMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget ) override;
 
   protected:
     QIcon mIcon;

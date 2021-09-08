@@ -8,13 +8,16 @@
 
 
 
-class QgsCreateAnnotationItemMapTool: QgsMapToolAdvancedDigitizing
+class QgsCreateAnnotationItemMapToolHandler : QObject
 {
 %Docstring(signature="appended")
 
-A base class for map tools which create annotation items.
+A handler object for map tools which create annotation items.
 
-Clients should connect to the map tool's :py:func:`~itemCreated` signal, and call the
+This object is designed to be used by map tools which implement the
+:py:class:`QgsCreateAnnotationItemMapToolInterface`, following the composition pattern.
+
+Clients should connect to the handler's :py:func:`~itemCreated` signal, and call the
 :py:func:`~takeCreatedItem` implementation to take ownership of the newly created item
 whenever this signal is emitted.
 
@@ -26,17 +29,31 @@ whenever this signal is emitted.
 %End
   public:
 
-    QgsCreateAnnotationItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
+    QgsCreateAnnotationItemMapToolHandler( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, QObject *parent = 0 );
 %Docstring
-Constructor for QgsCreateAnnotationItemMapTool.
+Constructor for QgsCreateAnnotationItemMapToolHandler, with the specified ``parent`` object.
 %End
 
-    virtual QgsAnnotationItem *takeCreatedItem() = 0 /TransferBack/;
+    ~QgsCreateAnnotationItemMapToolHandler();
+
+    QgsAnnotationItem *takeCreatedItem() /TransferBack/;
 %Docstring
 Takes the newly created item from the tool, transferring ownership to the caller.
+%End
 
-Subclasses must implement this method, and ensure that they emit the :py:func:`~QgsCreateAnnotationItemMapTool.itemCreated` signal whenever
-they have a created item ready for clients to take.
+    QgsAnnotationLayer *targetLayer();
+%Docstring
+Returns the target layer for newly created items.
+%End
+
+    void pushCreatedItem( QgsAnnotationItem *item /Transfer/ );
+%Docstring
+Pushes a created ``item`` to the handler.
+
+Ownership of ``item`` is transferred to the handler.
+
+Calling this method causes the object to emit the :py:func:`~QgsCreateAnnotationItemMapToolHandler.itemCreated` signal, and queue the item
+ready for collection via a call to :py:func:`~QgsCreateAnnotationItemMapToolHandler.takeCreatedItem`.
 %End
 
   signals:
@@ -45,16 +62,40 @@ they have a created item ready for clients to take.
 %Docstring
 Emitted by the tool when a new annotation item has been created.
 
-Clients should connect to this signal and call :py:func:`~QgsCreateAnnotationItemMapTool.takeCreatedItem` to take the newly created item from the map tool.
+Clients should connect to this signal and call :py:func:`~QgsCreateAnnotationItemMapToolHandler.takeCreatedItem` to take the newly created item from the map tool.
 %End
 
-  protected:
+};
 
-    QgsAnnotationLayer *targetLayer();
+class QgsCreateAnnotationItemMapToolInterface
+{
+%Docstring(signature="appended")
+
+An interface for map tools which create annotation items.
+
+Clients should connect to the map tool's :py:func:`~QgsCreateAnnotationItemMapToolHandler.itemCreated` signal, and call the
+:py:func:`~QgsCreateAnnotationItemMapToolHandler.takeCreatedItem` implementation to take ownership of the newly created item
+whenever this signal is emitted.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgscreateannotationitemmaptool.h"
+%End
+  public:
+
+    virtual ~QgsCreateAnnotationItemMapToolInterface();
+
+    virtual QgsCreateAnnotationItemMapToolHandler *handler() = 0;
 %Docstring
-Returns the target layer for newly created items.
+Returns the handler object for the map tool.
 %End
 
+    virtual QgsMapTool *mapTool() = 0;
+%Docstring
+Returns a reference to the associated map tool.
+%End
 };
 
 /************************************************************************

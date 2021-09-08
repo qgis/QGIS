@@ -25,7 +25,7 @@ class QgsAnnotationPointTextItem;
 
 ///@cond PRIVATE
 
-class QgsCreatePointTextItemMapTool: public QgsCreateAnnotationItemMapTool
+class QgsCreatePointTextItemMapTool: public QgsMapToolAdvancedDigitizing, public QgsCreateAnnotationItemMapToolInterface
 {
     Q_OBJECT
 
@@ -35,15 +35,17 @@ class QgsCreatePointTextItemMapTool: public QgsCreateAnnotationItemMapTool
     ~QgsCreatePointTextItemMapTool() override;
 
     void cadCanvasPressEvent( QgsMapMouseEvent *event ) override;
+    QgsCreateAnnotationItemMapToolHandler *handler() override;
+    QgsMapTool *mapTool() override;
 
     QgsAnnotationItem *takeCreatedItem() override;
 
-
   private:
 
-    std::unique_ptr< QgsAnnotationPointTextItem > mCreatedItem;
+    QgsCreateAnnotationItemMapToolHandler *mHandler = nullptr;
 
 };
+
 
 ///@endcond PRIVATE
 

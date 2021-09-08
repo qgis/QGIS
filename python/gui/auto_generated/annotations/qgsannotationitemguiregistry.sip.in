@@ -70,7 +70,7 @@ Returns an icon representing creation of the annotation item type.
 Creates a configuration widget for an ``item`` of this type. Can return ``None`` if no configuration GUI is required.
 %End
 
-    virtual QgsCreateAnnotationItemMapTool *createMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget ) /TransferBack/;
+    virtual QgsCreateAnnotationItemMapToolInterface *createMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget ) /TransferBack/;
 %Docstring
 Creates a map tool for a creating a new item of this type.
 
