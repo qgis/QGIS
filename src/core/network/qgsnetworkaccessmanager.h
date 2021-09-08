@@ -800,7 +800,6 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     void afterSslErrorHandled( QNetworkReply *reply );
 #endif
 
-    void unlockAfterAuthRequestHandled();
     void afterAuthRequestHandled( QNetworkReply *reply );
 
     void pauseTimeout( QNetworkReply *reply );

@@ -127,6 +127,8 @@ class TestAuthRequestHandler : public QgsNetworkAuthenticationHandler
 
     void handleAuthRequest( QNetworkReply *, QAuthenticator *auth ) override
     {
+      qDebug() << "authHandler";
+
       Q_ASSERT( QThread::currentThread() == QApplication::instance()->thread() );
       if ( !mUser.isEmpty() )
         auth->setUser( mUser );
@@ -816,13 +818,17 @@ void TestQgsNetworkAccessManager::testAuthRequestHandler()
   // blocking request
   hash = QUuid::createUuid().toString().mid( 1, 10 );
   u =  QUrl( QStringLiteral( "http://" ) + mHttpBinHost + QStringLiteral( "/basic-auth/me/" ) + hash );
+
+  qDebug() << "u=" << u;
   loaded = false;
   gotAuthRequest = false;
   gotRequestAboutToBeCreatedSignal = false;
   gotAuthDetailsAdded = false;
 
   QNetworkRequest req{ u };
+  qDebug() << "hello";
   QgsNetworkReplyContent rep = QgsNetworkAccessManager::blockingGet( req );
+  qDebug() << "coucou";
   QVERIFY( rep.content().isEmpty() );
   while ( !loaded )
   {

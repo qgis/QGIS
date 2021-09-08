@@ -52,6 +52,13 @@
 #include "qgsnetworkdiskcache.h"
 #include "qgsauthmanager.h"
 
+#include <QRandomGenerator>
+void randomSleep( const QString &text )
+{
+  qDebug() << text;
+  QThread::currentThread()->msleep( QRandomGenerator::global()->bounded( 200, 1000 ) );
+}
+
 QgsNetworkAccessManager *QgsNetworkAccessManager::sMainNAM = nullptr;
 
 static std::vector< std::pair< QString, std::function< void( QNetworkRequest * ) > > > sCustomPreprocessors;
@@ -203,8 +210,12 @@ QgsNetworkAccessManager *QgsNetworkAccessManager::instance( Qt::ConnectionType c
   static QThreadStorage<QgsNetworkAccessManager> sInstances;
   QgsNetworkAccessManager *nam = &sInstances.localData();
 
+
   if ( nam->thread() == qApp->thread() )
     sMainNAM = nam;
+
+  qDebug() << "instance() qApp->thread()=" << qApp->thread() << "nam->thread()=" << nam->thread()
+           << "sMainNAM=" << sMainNAM;
 
   if ( !nam->mInitialized )
   {
@@ -466,12 +477,6 @@ void QgsNetworkAccessManager::afterSslErrorHandled( QNetworkReply *reply )
   }
 }
 
-void QgsNetworkAccessManager::unlockAfterAuthRequestHandled()
-{
-  Q_ASSERT( QThread::currentThread() == QApplication::instance()->thread() );
-  mAuthRequestWaitCondition.wakeOne();
-}
-
 void QgsNetworkAccessManager::afterAuthRequestHandled( QNetworkReply *reply )
 {
   if ( reply->manager() == this )
@@ -481,8 +486,9 @@ void QgsNetworkAccessManager::afterAuthRequestHandled( QNetworkReply *reply )
   }
   else if ( this == sMainNAM )
   {
-    // notify other threads to allow them to handle the reply
-    qobject_cast< QgsNetworkAccessManager *>( reply->manager() )->unlockAfterAuthRequestHandled(); // safe to call directly - the other thread will be stuck waiting for us
+    emit authRequestHandled( reply );
+    // // notify other threads to allow them to handle the reply
+    // qobject_cast< QgsNetworkAccessManager *>( reply->manager() )->unlockAfterAuthRequestHandled(); // safe to call directly - the other thread will be stuck waiting for us
   }
 }
 
@@ -532,20 +538,44 @@ void QgsNetworkAccessManager::onAuthRequired( QNetworkReply *reply, QAuthenticat
   QgsDebugMsg( QStringLiteral( "Stopping network reply timeout whilst auth request is handled" ) );
   pauseTimeout( reply );
 
+
+  randomSleep( "after pauseTimeout" );
+
   emit requestRequiresAuth( getRequestId( reply ), auth->realm() );
+
+  randomSleep( "after requestRequiresAuth" );
 
   // in main thread this will trigger auth handler immediately and return once the request is satisfied,
   // while in worker thread the signal will be queued (and return immediately) -- hence the need to lock the thread in the next block
+
+  qDebug() << "thread=" << QThread::currentThread() << " mainThread" << QApplication::instance()->thread();
+
+  QEventLoop loop;
+  connect( sMainNAM, &QgsNetworkAccessManager::authRequestHandled, &loop, &QEventLoop::quit );
+
   emit authRequestOccurred( reply, auth );
+
+  randomSleep( "after authRequestOccurred" );
 
   if ( this != sMainNAM )
   {
-    // lock thread and wait till error is handled. If we return from this slot now, then the reply will resume
-    // without actually giving the main thread the chance to act on the ssl error and possibly ignore it.
-    mAuthRequestHandlerMutex.lock();
-    mAuthRequestWaitCondition.wait( &mAuthRequestHandlerMutex );
-    mAuthRequestHandlerMutex.unlock();
-    afterAuthRequestHandled( reply );
+    randomSleep( "START loop Thread exec" );
+
+    loop.exec();
+    randomSleep( "END loop Thread exec" );
+
+
+    // // lock thread and wait till error is handled. If we return from this slot now, then the reply will resume
+    // // without actually giving the main thread the chance to act on the ssl error and possibly ignore it.
+    // qDebug() << "test1";
+
+    // mAuthRequestHandlerMutex.lock();
+    // qDebug() << "test2";
+    // mAuthRequestWaitCondition.wait( &mAuthRequestHandlerMutex );
+    // qDebug() << "test3";
+    // mAuthRequestHandlerMutex.unlock();
+    // qDebug() << "test4";
+    // afterAuthRequestHandled( reply );
   }
 }
 
@@ -582,11 +612,16 @@ void QgsNetworkAccessManager::abortAuthBrowser()
 
 void QgsNetworkAccessManager::handleAuthRequest( QNetworkReply *reply, QAuthenticator *auth )
 {
+  randomSleep( "handleAuthRequest!" );
+
+
   mAuthHandler->handleAuthRequest( reply, auth );
 
   emit requestAuthDetailsAdded( getRequestId( reply ), auth->realm(), auth->user(), auth->password() );
 
   afterAuthRequestHandled( reply );
+
+  randomSleep( "fin handleAuthRequest" );
 }
 
 QString QgsNetworkAccessManager::cacheLoadControlName( QNetworkRequest::CacheLoadControl control )
@@ -675,6 +710,13 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
 #ifndef QT_NO_SSL
   connect( this, &QgsNetworkAccessManager::sslErrorsOccurred, sMainNAM, &QgsNetworkAccessManager::handleSslErrors );
 #endif
+
+  qDebug() << "this=" << this;
+  qDebug() << "sMainNAM=" << sMainNAM;
+
+  qDebug() << "this thread=" << this->thread();
+  qDebug() << "sMainNAM thread=" << sMainNAM->thread();
+
   connect( this, &QNetworkAccessManager::authenticationRequired, this, &QgsNetworkAccessManager::onAuthRequired );
   connect( this, &QgsNetworkAccessManager::authRequestOccurred, sMainNAM, &QgsNetworkAccessManager::handleAuthRequest );
 
