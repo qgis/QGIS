@@ -76,12 +76,7 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     }
 
     const int error = addVertex( e->mapPoint(), e->mapPointMatch() );
-    if ( error == 1 )
-    {
-      //current layer is not a vector layer
-      return;
-    }
-    else if ( error == 2 )
+    if ( error == 2 )
     {
       //problem with coordinate transformation
       QgisApp::instance()->messageBar()->pushMessage(
