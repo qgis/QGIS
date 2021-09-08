@@ -224,15 +224,12 @@ bool QgsMssqlNewConnection::testConnection( const QString &testDatabase )
     return false;
   }
 
-  QSqlDatabase db = getDatabase( testDatabase );
+  std::shared_ptr<QgsMssqlDatabase> db = getDatabase( testDatabase );
 
-  if ( db.isOpen() )
-    db.close();
-
-  if ( !db.open() )
+  if ( !db->isValid() )
   {
     bar->clearWidgets();
-    bar->pushWarning( tr( "Error opening connection" ), db.lastError().text() );
+    bar->pushWarning( tr( "Error opening connection" ), db->errorText() );
     return false;
   }
   else
@@ -252,11 +249,11 @@ void QgsMssqlNewConnection::listDatabases()
   listDatabase->clear();
   const QString queryStr = QStringLiteral( "SELECT name FROM master..sysdatabases WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb')" );
 
-  QSqlDatabase db = getDatabase( QStringLiteral( "master" ) );
+  std::shared_ptr<QgsMssqlDatabase> db = getDatabase( QStringLiteral( "master" ) );
 
-  if ( db.open() )
+  if ( db->isValid() )
   {
-    QSqlQuery query = QSqlQuery( db );
+    QSqlQuery query = QSqlQuery( db->db() );
     query.setForwardOnly( true );
     ( void )query.exec( queryStr );
 
@@ -274,7 +271,6 @@ void QgsMssqlNewConnection::listDatabases()
       }
       listDatabase->setCurrentRow( 0 );
     }
-    db.close();
   }
 
   for ( int i = 0; i < listDatabase->count(); ++i )
@@ -293,7 +289,7 @@ void QgsMssqlNewConnection::showHelp()
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#connecting-to-mssql-spatial" ) );
 }
 
-QSqlDatabase QgsMssqlNewConnection::getDatabase( const QString &name ) const
+std::shared_ptr<QgsMssqlDatabase> QgsMssqlNewConnection::getDatabase( const QString &name ) const
 {
   QString database;
   QListWidgetItem *item = listDatabase->currentItem();
@@ -306,11 +302,11 @@ QSqlDatabase QgsMssqlNewConnection::getDatabase( const QString &name ) const
     database = item->text();
   }
 
-  return QgsMssqlDatabase::getDatabase( txtService->text().trimmed(),
-                                        txtHost->text().trimmed(),
-                                        database,
-                                        txtUsername->text().trimmed(),
-                                        txtPassword->text().trimmed() );
+  return QgsMssqlDatabase::connectDb( txtService->text().trimmed(),
+                                      txtHost->text().trimmed(),
+                                      database,
+                                      txtUsername->text().trimmed(),
+                                      txtPassword->text().trimmed() );
 }
 
 
@@ -331,7 +327,7 @@ void QgsMssqlNewConnection::onCurrentDataBaseChange()
   if ( listDatabase->currentItem() )
     databaseName = listDatabase->currentItem()->text();
 
-  QSqlDatabase db = getDatabase();
+  std::shared_ptr<QgsMssqlDatabase> db = getDatabase();
 
   QStringList schemasList = QgsMssqlConnection::schemas( db, nullptr );
   int i = 0;
@@ -377,32 +373,26 @@ void QgsMssqlNewConnection::onPrimaryKeyFromGeometryToggled( bool checked )
 
 bool QgsMssqlNewConnection::testExtentInGeometryColumns() const
 {
-  QSqlDatabase db = getDatabase();
-
-  if ( !QgsMssqlDatabase::openDatabase( db ) )
+  std::shared_ptr<QgsMssqlDatabase> db = getDatabase();
+  if ( !db->isValid() )
     return false;
 
   const QString queryStr = QStringLiteral( "SELECT qgis_xmin,qgis_xmax,qgis_ymin,qgis_ymax FROM geometry_columns" );
-  QSqlQuery query = QSqlQuery( db );
+  QSqlQuery query = QSqlQuery( db->db() );
   const bool test = query.exec( queryStr );
-
-  db.close();
 
   return test;
 }
 
 bool QgsMssqlNewConnection::testPrimaryKeyInGeometryColumns() const
 {
-  QSqlDatabase db = getDatabase();
-
-  if ( !QgsMssqlDatabase::openDatabase( db ) )
+  std::shared_ptr<QgsMssqlDatabase> db = getDatabase();
+  if ( !db->isValid() )
     return false;
 
   const QString queryStr = QStringLiteral( "SELECT qgis_pkey FROM geometry_columns" );
-  QSqlQuery query = QSqlQuery( db );
+  QSqlQuery query = QSqlQuery( db->db() );
   const bool test = query.exec( queryStr );
-
-  db.close();
 
   return test;
 }

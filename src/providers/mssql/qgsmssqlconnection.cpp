@@ -219,24 +219,24 @@ QStringList QgsMssqlConnection::schemas( const QString &uri, QString *errorMessa
 {
   const QgsDataSourceUri dsUri( uri );
 
-// connect to database
+  // connect to database
   std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
 
-  return schemas( db->db(), errorMessage );
+  return schemas( db, errorMessage );
 }
 
-QStringList QgsMssqlConnection::schemas( QSqlDatabase &dataBase, QString *errorMessage )
+QStringList QgsMssqlConnection::schemas( std::shared_ptr<QgsMssqlDatabase> db, QString *errorMessage )
 {
-  if ( !QgsMssqlDatabase::openDatabase( dataBase ) )
+  if ( !db->isValid() )
   {
     if ( errorMessage )
-      *errorMessage = dataBase.lastError().text();
+      *errorMessage = db->errorText();
     return QStringList();
   }
 
   const QString sql = QStringLiteral( "select s.name as schema_name from sys.schemas s" );
 
-  QSqlQuery q = QSqlQuery( dataBase );
+  QSqlQuery q = QSqlQuery( db->db() );
   q.setForwardOnly( true );
   if ( !q.exec( sql ) )
   {

@@ -56,16 +56,6 @@ class QgsMssqlDatabase
     static std::shared_ptr<QgsMssqlDatabase> connectDb( const QString &uri, bool transaction = false );
     static std::shared_ptr<QgsMssqlDatabase> connectDb( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool transaction = false );
 
-    /**
-     * Returns a QSqlDatabase object for queries to SQL Server.
-     *
-     * The database may not be open -- openDatabase() should be called to
-     * ensure that it is ready for use.
-     */
-    static QSqlDatabase getDatabase( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool transaction = false );
-
-    static bool openDatabase( QSqlDatabase &db );
-
     /////
 
     ~QgsMssqlDatabase();
@@ -92,6 +82,16 @@ class QgsMssqlDatabase
 #endif
 
     friend class QgsMssqlQuery;
+
+    static QString connectionName( const QString &service, const QString &host, const QString &database, bool transaction );
+
+    /**
+     * Returns a QSqlDatabase object for queries to SQL Server.
+     *
+     * The database may not be open -- openDatabase() should be called to
+     * ensure that it is ready for use.
+     */
+    static QSqlDatabase getDatabase( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool transaction = false );
 
     static QMap<QString, std::weak_ptr<QgsMssqlDatabase> > sConnections;
 
