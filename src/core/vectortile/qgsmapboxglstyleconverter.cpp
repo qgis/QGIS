@@ -2477,7 +2477,7 @@ void QgsMapBoxGlStyleConverter::colorAsHslaComponents( const QColor &color, int 
 QString QgsMapBoxGlStyleConverter::interpolateExpression( double zoomMin, double zoomMax, QVariant valueMin, QVariant valueMax, double base, QgsMapBoxGlStyleConversionContext &context, double multiplier )
 {
   // special case!
-  if ( ( QMetaType::Type )valueMin.type() == QMetaType::Double && ( QMetaType::Type )valueMax.type() == QMetaType::Double )
+  if ( valueMin.canConvert( QMetaType::Double ) && valueMax.canConvert( QMetaType::Double ) )
   {
     double min = valueMin.toDouble();
     double max = valueMax.toDouble();
@@ -2929,11 +2929,12 @@ QString QgsMapBoxGlStyleConverter::parseValue( const QVariant &value, QgsMapBoxG
     case QVariant::StringList:
       return parseExpression( value.toList(), context );
 
+    case QVariant::Bool:
     case QVariant::String:
       c = parseColor( value, context );
       if ( !c.isValid() )
       {
-        return QgsExpression::quotedValue( value.toString() );
+        return QgsExpression::quotedValue( value );
       }
       return QString( "color_rgba(%1,%2,%3,%4)" ).arg( c.red() ).arg( c.green() ).arg( c.blue() ).arg( c.alpha() );
 
