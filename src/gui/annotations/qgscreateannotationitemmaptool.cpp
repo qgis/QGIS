@@ -16,17 +16,33 @@
 #include "qgscreateannotationitemmaptool.h"
 #include "qgsmapcanvas.h"
 #include "qgsannotationlayer.h"
+#include "qgsannotationitem.h"
 
-QgsCreateAnnotationItemMapTool::QgsCreateAnnotationItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
-  : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
+QgsCreateAnnotationItemMapToolHandler::QgsCreateAnnotationItemMapToolHandler( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, QObject *parent )
+  : QObject( parent )
+  , mMapCanvas( canvas )
+  , mCadDockWidget( cadDockWidget )
 {
 
 }
 
-QgsAnnotationLayer *QgsCreateAnnotationItemMapTool::targetLayer()
+QgsAnnotationItem *QgsCreateAnnotationItemMapToolHandler::takeCreatedItem()
 {
-  if ( QgsAnnotationLayer *res = qobject_cast< QgsAnnotationLayer * >( canvas()->currentLayer() ) )
+  return mCreatedItem.release();
+}
+
+QgsCreateAnnotationItemMapToolHandler::~QgsCreateAnnotationItemMapToolHandler() = default;
+
+QgsAnnotationLayer *QgsCreateAnnotationItemMapToolHandler::targetLayer()
+{
+  if ( QgsAnnotationLayer *res = qobject_cast< QgsAnnotationLayer * >( mMapCanvas->currentLayer() ) )
     return res;
   else
     return QgsProject::instance()->mainAnnotationLayer();
+}
+
+void QgsCreateAnnotationItemMapToolHandler::pushCreatedItem( QgsAnnotationItem *item )
+{
+  mCreatedItem.reset( item );
+  emit itemCreated();
 }

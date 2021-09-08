@@ -22,8 +22,13 @@
 
 ///@cond PRIVATE
 
+//
+// QgsCreatePointTextItemMapTool
+//
+
 QgsCreatePointTextItemMapTool::QgsCreatePointTextItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
-  : QgsCreateAnnotationItemMapTool( canvas, cadDockWidget )
+  : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
+  , mHandler( new QgsCreateAnnotationItemMapToolHandler( canvas, cadDockWidget ) )
 {
 
 }
@@ -35,21 +40,25 @@ void QgsCreatePointTextItemMapTool::cadCanvasPressEvent( QgsMapMouseEvent *event
   if ( event->button() != Qt::LeftButton )
     return;
 
-  const QgsPointXY layerPoint = toLayerCoordinates( targetLayer(), event->mapPoint() );
+  const QgsPointXY layerPoint = toLayerCoordinates( mHandler->targetLayer(), event->mapPoint() );
 
-  mCreatedItem = std::make_unique< QgsAnnotationPointTextItem >( tr( "Text" ), layerPoint );
-  mCreatedItem->setAlignment( Qt::AlignLeft );
-  mCreatedItem->setFormat( QgsStyle::defaultStyle()->defaultTextFormat( QgsStyle::TextFormatContext::Labeling ) );
+  std::unique_ptr< QgsAnnotationPointTextItem > createdItem = std::make_unique< QgsAnnotationPointTextItem >( tr( "Text" ), layerPoint );
+  createdItem->setAlignment( Qt::AlignLeft );
+  createdItem->setFormat( QgsStyle::defaultStyle()->defaultTextFormat( QgsStyle::TextFormatContext::Labeling ) );
   // newly created point text items default to using symbology reference scale at the current map scale
-  mCreatedItem->setUseSymbologyReferenceScale( true );
-  mCreatedItem->setSymbologyReferenceScale( canvas()->scale() );
-  emit itemCreated();
+  createdItem->setUseSymbologyReferenceScale( true );
+  createdItem->setSymbologyReferenceScale( canvas()->scale() );
+  mHandler->pushCreatedItem( createdItem.release() );
 }
 
-QgsAnnotationItem *QgsCreatePointTextItemMapTool::takeCreatedItem()
+QgsCreateAnnotationItemMapToolHandler *QgsCreatePointTextItemMapTool::handler()
 {
-  return mCreatedItem.release();
+  return mHandler;
 }
 
+QgsMapTool *QgsCreatePointTextItemMapTool::mapTool()
+{
+  return this;
+}
 
 ///@endcond PRIVATE

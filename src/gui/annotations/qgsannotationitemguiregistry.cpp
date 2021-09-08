@@ -34,7 +34,7 @@ QgsAnnotationItemBaseWidget *QgsAnnotationItemAbstractGuiMetadata::createItemWid
   return nullptr;
 }
 
-QgsCreateAnnotationItemMapTool *QgsAnnotationItemAbstractGuiMetadata::createMapTool( QgsMapCanvas *, QgsAdvancedDigitizingDockWidget * )
+QgsCreateAnnotationItemMapToolInterface *QgsAnnotationItemAbstractGuiMetadata::createMapTool( QgsMapCanvas *, QgsAdvancedDigitizingDockWidget * )
 {
   return nullptr;
 }
@@ -74,7 +74,7 @@ void QgsAnnotationItemGuiMetadata::newItemAddedToLayer( QgsAnnotationItem *item,
     mAddedToLayerFunc( item, layer );
 }
 
-QgsCreateAnnotationItemMapTool *QgsAnnotationItemGuiMetadata::createMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
+QgsCreateAnnotationItemMapToolInterface *QgsAnnotationItemGuiMetadata::createMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
 {
   return mCreateMapToolFunc ? mCreateMapToolFunc( canvas, cadDockWidget ) : nullptr;
 }
@@ -180,7 +180,7 @@ void QgsAnnotationItemGuiRegistry::addDefaultItems()
 {
   addAnnotationItemGuiMetadata( new QgsAnnotationItemGuiMetadata( QStringLiteral( "polygon" ),
                                 QObject::tr( "Polygon" ),
-                                QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddImage.svg" ) ),
+                                QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPolygon.svg" ) ),
                                 [ = ]( QgsAnnotationItem * item )->QgsAnnotationItemBaseWidget *
   {
     QgsAnnotationPolygonItemWidget *widget = new QgsAnnotationPolygonItemWidget( nullptr );
@@ -190,7 +190,7 @@ void QgsAnnotationItemGuiRegistry::addDefaultItems()
 
   addAnnotationItemGuiMetadata( new QgsAnnotationItemGuiMetadata( QStringLiteral( "linestring" ),
                                 QObject::tr( "Line" ),
-                                QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddImage.svg" ) ),
+                                QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPolyline.svg" ) ),
                                 [ = ]( QgsAnnotationItem * item )->QgsAnnotationItemBaseWidget *
   {
     QgsAnnotationLineItemWidget *widget = new QgsAnnotationLineItemWidget( nullptr );
@@ -217,7 +217,7 @@ void QgsAnnotationItemGuiRegistry::addDefaultItems()
     widget->setItem( item );
     return widget;
   }, QString(), Qgis::AnnotationItemGuiFlags(), nullptr,
-  [ = ]( QgsMapCanvas * canvas, QgsAdvancedDigitizingDockWidget * cadDockWidget )->QgsCreateAnnotationItemMapTool *
+  [ = ]( QgsMapCanvas * canvas, QgsAdvancedDigitizingDockWidget * cadDockWidget )->QgsCreateAnnotationItemMapToolInterface *
   {
     return new QgsCreatePointTextItemMapTool( canvas, cadDockWidget );
   } ) );

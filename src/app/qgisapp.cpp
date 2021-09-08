@@ -804,12 +804,12 @@ void QgisApp::annotationItemTypeAdded( int id )
 
   connect( action, &QAction::triggered, this, [this, id]()
   {
-    QgsCreateAnnotationItemMapTool *tool = QgsGui::annotationItemGuiRegistry()->itemMetadata( id )->createMapTool( mMapCanvas, mAdvancedDigitizingDockWidget );
-    mMapCanvas->setMapTool( tool );
-    connect( tool, &QgsMapTool::deactivated, tool, &QObject::deleteLater );
-    connect( tool, &QgsCreateAnnotationItemMapTool::itemCreated, this, [ = ]
+    QgsCreateAnnotationItemMapToolInterface *tool = QgsGui::annotationItemGuiRegistry()->itemMetadata( id )->createMapTool( mMapCanvas, mAdvancedDigitizingDockWidget );
+    mMapCanvas->setMapTool( tool->mapTool() );
+    connect( tool->mapTool(), &QgsMapTool::deactivated, tool->mapTool(), &QObject::deleteLater );
+    connect( tool->handler(), &QgsCreateAnnotationItemMapToolHandler::itemCreated, this, [ = ]
     {
-      QgsAnnotationItem *item = tool->takeCreatedItem();
+      QgsAnnotationItem *item = tool->handler()->takeCreatedItem();
       QgsAnnotationLayer *targetLayer = qobject_cast< QgsAnnotationLayer * >( activeLayer() );
       if ( !targetLayer )
         targetLayer = QgsProject::instance()->mainAnnotationLayer();
