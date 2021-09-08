@@ -129,6 +129,13 @@ Called when changes to the layer need to be made.
 Will be called when live update is enabled.
 %End
 
+    virtual void focusDefaultWidget();
+%Docstring
+Focuses the default widget for the page.
+
+.. versionadded:: 3.22
+%End
+
   signals:
 
 

@@ -120,6 +120,10 @@ class QgsAnnotationPointTextItemWidget : public QgsAnnotationItemBaseWidget, pri
     void setDockMode( bool dockMode ) override;
     void setContext( const QgsSymbolWidgetContext &context ) override;
 
+  public slots:
+
+    void focusDefaultWidget() override;
+
   protected:
     bool setNewItem( QgsAnnotationItem *item ) override;
 

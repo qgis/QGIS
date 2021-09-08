@@ -98,6 +98,12 @@ void QgsAnnotationItemPropertiesWidget::apply()
   mLayer->triggerRepaint();
 }
 
+void QgsAnnotationItemPropertiesWidget::focusDefaultWidget()
+{
+  if ( mItemWidget )
+    mItemWidget->focusDefaultWidget();
+}
+
 void QgsAnnotationItemPropertiesWidget::onChanged()
 {
   if ( !mLayer )

@@ -137,6 +137,13 @@ class GUI_EXPORT QgsMapLayerConfigWidget : public QgsPanelWidget
      */
     virtual void apply() = 0;
 
+    /**
+     * Focuses the default widget for the page.
+     *
+     * \since QGIS 3.22
+     */
+    virtual void focusDefaultWidget();
+
   signals:
 
 #ifndef SIP_RUN

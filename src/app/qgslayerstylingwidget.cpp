@@ -712,6 +712,14 @@ void QgsLayerStylingWidget::setAnnotationItem( QgsAnnotationLayer *layer, const 
   }
 }
 
+void QgsLayerStylingWidget::focusDefaultWidget()
+{
+  if ( QgsMapLayerConfigWidget *configWidget = qobject_cast< QgsMapLayerConfigWidget * >( mWidgetStack->mainPanel() ) )
+  {
+    configWidget->focusDefaultWidget();
+  }
+}
+
 void QgsLayerStylingWidget::layerAboutToBeRemoved( QgsMapLayer *layer )
 {
   if ( layer == mCurrentLayer )
