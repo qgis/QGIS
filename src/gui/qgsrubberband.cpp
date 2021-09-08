@@ -284,7 +284,7 @@ void QgsRubberBand::setToGeometry( const QgsGeometry &geom, const QgsCoordinateR
   addGeometry( geom, crs );
 }
 
-void QgsRubberBand::addGeometry( const QgsGeometry &geometry, QgsVectorLayer *layer, bool doUpdate )
+void QgsRubberBand::addGeometry( const QgsGeometry &geometry, QgsMapLayer *layer, bool doUpdate )
 {
   QgsGeometry geom = geometry;
   if ( layer )
