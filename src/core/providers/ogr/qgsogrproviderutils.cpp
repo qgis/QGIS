@@ -1477,7 +1477,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
   GDALDatasetH hDS = OpenHelper( dsName, updateMode, options );
   if ( !hDS )
   {
-    errCause = QObject::tr( "Cannot open %1." ).arg( dsName );
+    errCause = QObject::tr( "Cannot open %1 (%2)." ).arg( dsName, QString::fromUtf8( CPLGetLastErrorMsg() ) );
     return nullptr;
   }
 
