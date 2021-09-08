@@ -40,6 +40,7 @@ class QgsMapToolCapture : QgsMapToolAdvancedDigitizing
     {
       NoCapabilities,
       SupportsCurves,
+      ValidateGeometries,
     };
 
     typedef QFlags<QgsMapToolCapture::Capability> Capabilities;

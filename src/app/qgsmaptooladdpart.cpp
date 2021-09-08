@@ -37,7 +37,7 @@ QgsMapToolAddPart::QgsMapToolAddPart( QgsMapCanvas *canvas )
 
 QgsMapToolCapture::Capabilities QgsMapToolAddPart::capabilities() const
 {
-  return QgsMapToolCapture::SupportsCurves;
+  return QgsMapToolCapture::SupportsCurves | QgsMapToolCapture::ValidateGeometries;
 }
 
 bool QgsMapToolAddPart::supportsTechnique( QgsMapToolCapture::CaptureTechnique technique ) const

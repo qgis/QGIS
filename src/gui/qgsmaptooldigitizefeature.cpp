@@ -45,7 +45,7 @@ QgsMapToolDigitizeFeature::QgsMapToolDigitizeFeature( QgsMapCanvas *canvas, QgsA
 
 QgsMapToolCapture::Capabilities QgsMapToolDigitizeFeature::capabilities() const
 {
-  return QgsMapToolCapture::SupportsCurves;
+  return QgsMapToolCapture::SupportsCurves | QgsMapToolCapture::ValidateGeometries;
 }
 
 bool QgsMapToolDigitizeFeature::supportsTechnique( QgsMapToolCapture::CaptureTechnique technique ) const

@@ -90,7 +90,7 @@ QgsMapToolCapture::~QgsMapToolCapture()
 
 QgsMapToolCapture::Capabilities QgsMapToolCapture::capabilities() const
 {
-  return QgsMapToolCapture::NoCapabilities;
+  return QgsMapToolCapture::ValidateGeometries;
 }
 
 bool QgsMapToolCapture::supportsTechnique( QgsMapToolCapture::CaptureTechnique technique ) const
@@ -872,7 +872,9 @@ QgsMapLayer *QgsMapToolCapture::layer() const
 
 void QgsMapToolCapture::validateGeometry()
 {
-  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.value() == 0 )
+  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.value() == 0
+       || !( capabilities() & ValidateGeometries )
+     )
     return;
 
   if ( mValidator )
