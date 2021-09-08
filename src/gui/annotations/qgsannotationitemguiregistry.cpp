@@ -200,13 +200,17 @@ void QgsAnnotationItemGuiRegistry::addDefaultItems()
 
   addAnnotationItemGuiMetadata( new QgsAnnotationItemGuiMetadata( QStringLiteral( "marker" ),
                                 QObject::tr( "Marker" ),
-                                QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddImage.svg" ) ),
+                                QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMarker.svg" ) ),
                                 [ = ]( QgsAnnotationItem * item )->QgsAnnotationItemBaseWidget *
   {
     QgsAnnotationMarkerItemWidget *widget = new QgsAnnotationMarkerItemWidget( nullptr );
     widget->setItem( item );
     return widget;
-  }, QString(), Qgis::AnnotationItemGuiFlag::FlagNoCreationTools ) );
+  }, QString(), Qgis::AnnotationItemGuiFlags(), nullptr,
+  [ = ]( QgsMapCanvas * canvas, QgsAdvancedDigitizingDockWidget * cadDockWidget )->QgsCreateAnnotationItemMapToolInterface *
+  {
+    return new QgsCreateMarkerItemMapTool( canvas, cadDockWidget );
+  } ) );
 
   addAnnotationItemGuiMetadata( new QgsAnnotationItemGuiMetadata( QStringLiteral( "pointtext" ),
                                 QObject::tr( "Text at Point" ),

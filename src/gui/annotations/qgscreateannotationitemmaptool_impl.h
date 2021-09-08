@@ -20,6 +20,7 @@
 #include "qgscreateannotationitemmaptool.h"
 
 class QgsAnnotationPointTextItem;
+class QgsAnnotationMarkerItem;
 
 #define SIP_NO_FILE
 
@@ -38,7 +39,24 @@ class QgsCreatePointTextItemMapTool: public QgsMapToolAdvancedDigitizing, public
     QgsCreateAnnotationItemMapToolHandler *handler() override;
     QgsMapTool *mapTool() override;
 
-    QgsAnnotationItem *takeCreatedItem() override;
+  private:
+
+    QgsCreateAnnotationItemMapToolHandler *mHandler = nullptr;
+
+};
+
+class QgsCreateMarkerItemMapTool: public QgsMapToolAdvancedDigitizing, public QgsCreateAnnotationItemMapToolInterface
+{
+    Q_OBJECT
+
+  public:
+
+    QgsCreateMarkerItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
+    ~QgsCreateMarkerItemMapTool() override;
+
+    void cadCanvasPressEvent( QgsMapMouseEvent *event ) override;
+    QgsCreateAnnotationItemMapToolHandler *handler() override;
+    QgsMapTool *mapTool() override;
 
   private:
 
