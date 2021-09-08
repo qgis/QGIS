@@ -98,6 +98,8 @@ set(QGIS_GUI_SRCS
   annotations/qgsannotationitemguiregistry.cpp
   annotations/qgsannotationitemwidget.cpp
   annotations/qgsannotationitemwidget_impl.cpp
+  annotations/qgscreateannotationitemmaptool.cpp
+  annotations/qgscreateannotationitemmaptool_impl.cpp
   annotations/qgsmaptoolmodifyannotation.cpp
 
   auth/qgsauthauthoritieseditor.cpp
@@ -887,6 +889,7 @@ set(QGIS_GUI_HDRS
   annotations/qgsannotationitemcommonpropertieswidget.h
   annotations/qgsannotationitemguiregistry.h
   annotations/qgsannotationitemwidget.h
+  annotations/qgscreateannotationitemmaptool.h
   annotations/qgsmaptoolmodifyannotation.h
 
   attributeformconfig/qgsattributeformcontaineredit.h

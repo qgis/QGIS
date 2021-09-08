@@ -20,6 +20,25 @@
 
 #include "qgsannotationitemwidget_impl.h"
 
+//
+// QgsAnnotationItemAbstractGuiMetadata
+//
+
+QIcon QgsAnnotationItemAbstractGuiMetadata::creationIcon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) );
+}
+
+QgsAnnotationItemBaseWidget *QgsAnnotationItemAbstractGuiMetadata::createItemWidget( QgsAnnotationItem * )
+{
+  return nullptr;
+}
+
+QgsCreateAnnotationItemMapTool *QgsAnnotationItemAbstractGuiMetadata::createMapTool( QgsMapCanvas *, QgsAdvancedDigitizingDockWidget * )
+{
+  return nullptr;
+}
+
 QgsAnnotationItem *QgsAnnotationItemAbstractGuiMetadata::createItem()
 {
   return nullptr;
@@ -29,6 +48,41 @@ void QgsAnnotationItemAbstractGuiMetadata::newItemAddedToLayer( QgsAnnotationIte
 {
 
 }
+
+//
+// QgsAnnotationItemGuiMetadata
+//
+
+QIcon QgsAnnotationItemGuiMetadata::creationIcon() const
+{
+  return mIcon.isNull() ? QgsAnnotationItemAbstractGuiMetadata::creationIcon() : mIcon;
+}
+
+QgsAnnotationItemBaseWidget *QgsAnnotationItemGuiMetadata::createItemWidget( QgsAnnotationItem *item )
+{
+  return mWidgetFunc ? mWidgetFunc( item ) : nullptr;
+}
+
+QgsAnnotationItem *QgsAnnotationItemGuiMetadata::createItem()
+{
+  return mCreateFunc ? mCreateFunc() : QgsAnnotationItemAbstractGuiMetadata::createItem();
+}
+
+void QgsAnnotationItemGuiMetadata::newItemAddedToLayer( QgsAnnotationItem *item, QgsAnnotationLayer *layer )
+{
+  if ( mAddedToLayerFunc )
+    mAddedToLayerFunc( item, layer );
+}
+
+QgsCreateAnnotationItemMapTool *QgsAnnotationItemGuiMetadata::createMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
+{
+  return mCreateMapToolFunc ? mCreateMapToolFunc( canvas, cadDockWidget ) : nullptr;
+}
+
+
+//
+// QgsAnnotationItemGuiRegistry
+//
 
 QgsAnnotationItemGuiRegistry::QgsAnnotationItemGuiRegistry( QObject *parent )
   : QObject( parent )
@@ -163,15 +217,4 @@ void QgsAnnotationItemGuiRegistry::addDefaultItems()
     widget->setItem( item );
     return widget;
   } ) );
-}
-
-QgsAnnotationItem *QgsAnnotationItemGuiMetadata::createItem()
-{
-  return mCreateFunc ? mCreateFunc() : QgsAnnotationItemAbstractGuiMetadata::createItem();
-}
-
-void QgsAnnotationItemGuiMetadata::newItemAddedToLayer( QgsAnnotationItem *item, QgsAnnotationLayer *layer )
-{
-  if ( mAddedToLayerFunc )
-    mAddedToLayerFunc( item, layer );
 }
