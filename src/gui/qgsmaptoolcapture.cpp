@@ -287,7 +287,7 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
   if ( QgsSettingsRegistryCore::settingsDigitizingConvertToCurve.value() )
   {
     // If the tool and the layer support curves
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() );
     if ( vlayer && capabilities().testFlag( QgsMapToolCapture::Capability::SupportsCurves ) && vlayer->dataProvider()->capabilities().testFlag( QgsVectorDataProvider::Capability::CircularGeometries ) )
     {
       const QgsGeometry linear = QgsGeometry( mCaptureCurve.segmentize() );
@@ -308,7 +308,7 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
 
   // adjust last captured point
   const QgsPoint lastPt = mCaptureCurve.endPoint();
-  mCaptureLastPoint = toMapCoordinates( mCanvas->currentLayer(), lastPt );
+  mCaptureLastPoint = toMapCoordinates( layer(), lastPt );
 
   return true;
 }
@@ -346,7 +346,7 @@ void QgsMapToolCapture::resetRubberBand()
     return;
   QgsLineString *lineString = mCaptureCurve.curveToLine();
   mRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
-  mRubberBand->addGeometry( QgsGeometry( lineString ), mCanvas->currentLayer() );
+  mRubberBand->addGeometry( QgsGeometry( lineString ), layer() );
 }
 
 QgsRubberBand *QgsMapToolCapture::takeRubberBand()
@@ -389,7 +389,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       if ( !mCaptureCurve.isEmpty() )
       {
         const QgsPoint prevPoint = mCaptureCurve.curveAt( mCaptureCurve.nCurves() - 1 )->endPoint();
-        if ( QgsPointXY( toCanvasCoordinates( toMapCoordinates( mCanvas->currentLayer(), prevPoint ) ) ).distance( toCanvasCoordinates( point ) ) < mStreamingToleranceInPixels )
+        if ( QgsPointXY( toCanvasCoordinates( toMapCoordinates( layer(), prevPoint ) ) ).distance( toCanvasCoordinates( point ) ) < mStreamingToleranceInPixels )
           return;
       }
 
@@ -450,7 +450,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 
 int QgsMapToolCapture::nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint )
 {
-  if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() ) )
+  if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() ) )
   {
     try
     {
@@ -469,7 +469,7 @@ int QgsMapToolCapture::nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint
   }
   else
   {
-    layerPoint = QgsPoint( toLayerCoordinates( mCanvas->currentLayer(), mapPoint ) );
+    layerPoint = QgsPoint( toLayerCoordinates( layer(), mapPoint ) );
   }
 
   return 0;
@@ -483,7 +483,7 @@ int QgsMapToolCapture::nextPoint( QPoint p, QgsPoint &layerPoint, QgsPoint &mapP
 
 int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, QgsPoint &layerPoint )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() );
   QgsVectorLayer *sourceLayer = match.layer();
   if ( match.isValid() && ( match.hasVertex() || match.hasLineEndpoint() || ( QgsProject::instance()->topologicalEditing() && ( match.hasEdge() || match.hasMiddleSegment() ) ) ) && sourceLayer &&
        ( sourceLayer->crs() == vlayer->crs() ) )
@@ -559,7 +559,7 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
 
   int res = 0;
   QgsPoint layerPoint;
-  if ( mCanvas->currentLayer() && mCanvas->currentLayer()->type() == QgsMapLayerType::VectorLayer )
+  if ( layer() && layer()->type() == QgsMapLayerType::VectorLayer )
   {
     res = fetchLayerPoint( match, layerPoint );
     if ( res != 0 )
@@ -575,7 +575,7 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
   {
     layerPoint = QgsPoint( point );
   }
-  const QgsPoint mapPoint = toMapCoordinates( canvas()->currentLayer(), layerPoint );
+  const QgsPoint mapPoint = toMapCoordinates( layer(), layerPoint );
 
   if ( mCaptureMode == CapturePoint )
   {
@@ -685,7 +685,7 @@ int QgsMapToolCapture::addCurve( QgsCurve *c )
   }
 
   //transform back to layer CRS in case map CRS and layer CRS are different
-  const QgsCoordinateTransform ct = mCanvas->mapSettings().layerTransform( mCanvas->currentLayer() );
+  const QgsCoordinateTransform ct = mCanvas->mapSettings().layerTransform( layer() );
   if ( ct.isValid() )
   {
     c->transform( ct, QgsCoordinateTransform::ReverseTransform );
@@ -787,7 +787,7 @@ void QgsMapToolCapture::undo( bool isAutoRepeat )
     if ( mCaptureCurve.numPoints() > 0 )
     {
       const QgsPoint lastPt = mCaptureCurve.endPoint();
-      mCaptureLastPoint = toMapCoordinates( mCanvas->currentLayer(), lastPt );
+      mCaptureLastPoint = toMapCoordinates( layer(), lastPt );
       mTempRubberBand->addPoint( lastCapturedMapPoint() );
       mTempRubberBand->movePoint( lastPoint );
     }
@@ -865,6 +865,11 @@ void QgsMapToolCapture::closePolygon()
   updateExtraSnapLayer();
 }
 
+QgsMapLayer *QgsMapToolCapture::layer() const
+{
+  return canvas()->currentLayer();
+}
+
 void QgsMapToolCapture::validateGeometry()
 {
   if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.value() == 0 )
@@ -920,7 +925,7 @@ void QgsMapToolCapture::validateGeometry()
 void QgsMapToolCapture::addError( const QgsGeometry::Error &e )
 {
   mGeomErrors << e;
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() );
   if ( !vlayer )
     return;
 
@@ -986,7 +991,7 @@ QgsPoint QgsMapToolCapture::mapPoint( const QgsPointXY &point ) const
   QgsPoint newPoint( QgsWkbTypes::Point, point.x(), point.y() );
 
   // get current layer
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() );
   if ( !vlayer )
   {
     return newPoint;
@@ -1057,10 +1062,10 @@ void QgsMapToolCapture::updateExtraSnapLayer()
   if ( !mExtraSnapLayer )
     return;
 
-  if ( canvas()->snappingUtils()->config().selfSnapping() && mCanvas->currentLayer() && mCaptureCurve.numPoints() >= 2 )
+  if ( canvas()->snappingUtils()->config().selfSnapping() && layer() && mCaptureCurve.numPoints() >= 2 )
   {
     // the current layer may have changed
-    mExtraSnapLayer->setCrs( mCanvas->currentLayer()->crs() );
+    mExtraSnapLayer->setCrs( layer()->crs() );
     QgsGeometry geom = QgsGeometry( mCaptureCurve.clone() );
     // we close the curve to allow snapping on last segment
     if ( mCaptureMode == CapturePolygon && mCaptureCurve.numPoints() >= 3 )

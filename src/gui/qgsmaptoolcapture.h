@@ -390,6 +390,16 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     void closePolygon();
 
+    /**
+     * Returns the map layer associated with the geometry being captured.
+     *
+     * The base class implementation always returns the current map canvas layer, but
+     * subclasses can override this if they need to be associated with a specific layer.
+     *
+     * \since QGIS 3.22
+     */
+    virtual QgsMapLayer *layer() const;
+
   protected slots:
 
     /**
