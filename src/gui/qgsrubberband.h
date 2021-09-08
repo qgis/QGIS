@@ -337,11 +337,10 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      * After adding the final geometry updatePosition() should be called.
      *
      *  \param geometry the geometry object. Will be treated as a collection of vertices.
-     *  \param layer the layer containing the feature, used for coord transformation to map
-     *               crs. If \a layer is NULLPTR, the coordinates are not going to be transformed.
+     *  \param layer the layer associated with the geometry. This is used for transforming the geometry from the layer's CRS to themap crs. If \a layer is NULLPTR no coordinate transformation will occur.
      *  \param doUpdate set to FALSE to defer updates of the rubber band.
      */
-    void addGeometry( const QgsGeometry &geometry, QgsVectorLayer *layer, bool doUpdate = true );
+    void addGeometry( const QgsGeometry &geometry, QgsMapLayer *layer, bool doUpdate = true );
 
     /**
      * Adds a \a geometry to the rubberband.
