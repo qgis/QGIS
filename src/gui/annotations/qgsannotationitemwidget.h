@@ -75,6 +75,13 @@ class GUI_EXPORT QgsAnnotationItemBaseWidget: public QgsPanelWidget
      */
     QgsSymbolWidgetContext context() const;
 
+  public slots:
+
+    /**
+     * Focuses the default widget for the page.
+     */
+    virtual void focusDefaultWidget();
+
   signals:
 
     /**

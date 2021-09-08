@@ -810,14 +810,16 @@ void QgisApp::annotationItemTypeAdded( int id )
     connect( tool, &QgsCreateAnnotationItemMapTool::itemCreated, this, [ = ]
     {
       QgsAnnotationItem *item = tool->takeCreatedItem();
-      if ( QgsAnnotationLayer *layer = qobject_cast< QgsAnnotationLayer * >( activeLayer() ) )
-      {
-        layer->addItem( item );
-      }
-      else
-      {
-        QgsProject::instance()->mainAnnotationLayer()->addItem( item );
-      }
+      QgsAnnotationLayer *targetLayer = qobject_cast< QgsAnnotationLayer * >( activeLayer() );
+      if ( !targetLayer )
+        targetLayer = QgsProject::instance()->mainAnnotationLayer();
+
+      const QString itemId = targetLayer->addItem( item );
+      // automatically select item in layer styling panel
+      mMapStyleWidget->setAnnotationItem( targetLayer, itemId );
+      mMapStylingDock->setUserVisible( true );
+      mMapStyleWidget->focusDefaultWidget();
+
       // TODO -- possibly automatically deactive the tool now?
     } );
   } );

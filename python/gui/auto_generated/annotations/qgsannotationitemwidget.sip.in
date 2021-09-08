@@ -63,6 +63,13 @@ Returns the context in which the widget is shown, e.g., the associated map canva
 .. seealso:: :py:func:`setContext`
 %End
 
+  public slots:
+
+    virtual void focusDefaultWidget();
+%Docstring
+Focuses the default widget for the page.
+%End
+
   signals:
 
     void itemChanged();

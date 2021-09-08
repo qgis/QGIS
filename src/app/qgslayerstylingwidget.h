@@ -135,6 +135,11 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
      */
     void setAnnotationItem( QgsAnnotationLayer *layer, const QString &itemId );
 
+    /**
+     * Focuses the default widget for the current page.
+     */
+    void focusDefaultWidget();
+
   private slots:
 
     void layerAboutToBeRemoved( QgsMapLayer *layer );

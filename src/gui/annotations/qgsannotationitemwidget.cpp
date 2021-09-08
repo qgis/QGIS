@@ -36,6 +36,10 @@ QgsSymbolWidgetContext QgsAnnotationItemBaseWidget::context() const
   return mContext;
 }
 
+void QgsAnnotationItemBaseWidget::focusDefaultWidget()
+{
+}
+
 bool QgsAnnotationItemBaseWidget::setNewItem( QgsAnnotationItem * )
 {
   return false;

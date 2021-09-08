@@ -37,6 +37,7 @@ class QgsAnnotationItemPropertiesWidget : public QgsMapLayerConfigWidget
 
   public slots:
     void apply() override;
+    void focusDefaultWidget() override;
 
   private slots:
 

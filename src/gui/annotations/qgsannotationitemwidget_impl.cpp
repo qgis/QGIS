@@ -360,6 +360,12 @@ void QgsAnnotationPointTextItemWidget::setContext( const QgsSymbolWidgetContext 
   mPropertiesWidget->setContext( context );
 }
 
+void QgsAnnotationPointTextItemWidget::focusDefaultWidget()
+{
+  mTextEdit->selectAll();
+  mTextEdit->setFocus();
+}
+
 QgsAnnotationPointTextItemWidget::~QgsAnnotationPointTextItemWidget() = default;
 
 bool QgsAnnotationPointTextItemWidget::setNewItem( QgsAnnotationItem *item )

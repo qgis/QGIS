@@ -27,3 +27,7 @@ void QgsMapLayerConfigWidget::setMapLayerConfigWidgetContext( const QgsMapLayerC
 {
   mMapLayerConfigWidgetContext = context;
 }
+
+void QgsMapLayerConfigWidget::focusDefaultWidget()
+{
+}
