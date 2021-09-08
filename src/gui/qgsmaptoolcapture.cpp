@@ -450,26 +450,26 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 
 int QgsMapToolCapture::nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
-  if ( !vlayer )
+  if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() ) )
   {
-    QgsDebugMsg( QStringLiteral( "no vector layer" ) );
-    return 1;
+    try
+    {
+      const QgsPointXY mapP( mapPoint.x(), mapPoint.y() );  //#spellok
+      layerPoint = QgsPoint( toLayerCoordinates( vlayer, mapP ) ); //transform snapped point back to layer crs  //#spellok
+      if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) )
+        layerPoint.addZValue( defaultZValue() );
+      if ( QgsWkbTypes::hasM( vlayer->wkbType() ) )
+        layerPoint.addMValue( defaultMValue() );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugMsg( QStringLiteral( "transformation to layer coordinate failed" ) );
+      return 2;
+    }
   }
-  try
+  else
   {
-    const QgsPointXY mapP( mapPoint.x(), mapPoint.y() );  //#spellok
-    layerPoint = QgsPoint( toLayerCoordinates( vlayer, mapP ) ); //transform snapped point back to layer crs  //#spellok
-    if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) )
-      layerPoint.addZValue( defaultZValue() );
-    if ( QgsWkbTypes::hasM( vlayer->wkbType() ) )
-      layerPoint.addMValue( defaultMValue() );
-  }
-  catch ( QgsCsException &cse )
-  {
-    Q_UNUSED( cse )
-    QgsDebugMsg( QStringLiteral( "transformation to layer coordinate failed" ) );
-    return 2;
+    layerPoint = QgsPoint( toLayerCoordinates( mCanvas->currentLayer(), mapPoint ) );
   }
 
   return 0;
