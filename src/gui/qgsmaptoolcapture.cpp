@@ -308,7 +308,7 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
 
   // adjust last captured point
   const QgsPoint lastPt = mCaptureCurve.endPoint();
-  mCaptureLastPoint = toMapCoordinates( qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() ), lastPt );
+  mCaptureLastPoint = toMapCoordinates( mCanvas->currentLayer(), lastPt );
 
   return true;
 }
@@ -346,8 +346,7 @@ void QgsMapToolCapture::resetRubberBand()
     return;
   QgsLineString *lineString = mCaptureCurve.curveToLine();
   mRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
-  mRubberBand->addGeometry( QgsGeometry( lineString ), vlayer );
+  mRubberBand->addGeometry( QgsGeometry( lineString ), mCanvas->currentLayer() );
 }
 
 QgsRubberBand *QgsMapToolCapture::takeRubberBand()
@@ -679,8 +678,7 @@ int QgsMapToolCapture::addCurve( QgsCurve *c )
   }
 
   //transform back to layer CRS in case map CRS and layer CRS are different
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
-  const QgsCoordinateTransform ct = mCanvas->mapSettings().layerTransform( vlayer );
+  const QgsCoordinateTransform ct = mCanvas->mapSettings().layerTransform( mCanvas->currentLayer() );
   if ( ct.isValid() )
   {
     c->transform( ct, QgsCoordinateTransform::ReverseTransform );
@@ -782,7 +780,7 @@ void QgsMapToolCapture::undo( bool isAutoRepeat )
     if ( mCaptureCurve.numPoints() > 0 )
     {
       const QgsPoint lastPt = mCaptureCurve.endPoint();
-      mCaptureLastPoint = toMapCoordinates( qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() ), lastPt );
+      mCaptureLastPoint = toMapCoordinates( mCanvas->currentLayer(), lastPt );
       mTempRubberBand->addPoint( lastCapturedMapPoint() );
       mTempRubberBand->movePoint( lastPoint );
     }
