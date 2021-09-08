@@ -162,7 +162,6 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
   QWaitCondition authRequestBufferNotEmpty;
   QMutex waitConditionMutex;
 
-  bool threadFinished = false;
   bool success = false;
 
   const bool requestMadeFromMainThread = QThread::currentThread() == QApplication::instance()->thread();
@@ -170,7 +169,7 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
   if ( mFeedback )
     connect( mFeedback, &QgsFeedback::canceled, this, &QgsBlockingNetworkRequest::abort );
 
-  const std::function<void()> downloaderFunction = [ this, request, &waitConditionMutex, &authRequestBufferNotEmpty, &threadFinished, &success, requestMadeFromMainThread ]()
+  const std::function<void()> downloaderFunction = [ this, request, &success ]()
   {
     // this function will always be run in worker threads -- either the blocking call is being made in a worker thread,
     // or the blocking call has been made from the main thread and we've fired up a new thread for this function
@@ -190,8 +189,6 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
       mErrorCode = NetworkError;
       mErrorMessage = errorMessageFailedAuth();
       QgsMessageLog::logMessage( mErrorMessage, tr( "Network" ) );
-      if ( requestMadeFromMainThread )
-        authRequestBufferNotEmpty.wakeAll();
       success = false;
     }
     else
