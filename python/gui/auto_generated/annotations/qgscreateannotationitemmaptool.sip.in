@@ -1,0 +1,60 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/annotations/qgscreateannotationitemmaptool.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsCreateAnnotationItemMapTool: QgsMapToolAdvancedDigitizing
+{
+%Docstring(signature="appended")
+
+A base class for map tools which create annotation items.
+
+Clients should connect to the map tool's :py:func:`~itemCreated` signal, and call the
+:py:func:`~takeCreatedItem` implementation to take ownership of the newly created item
+whenever this signal is emitted.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgscreateannotationitemmaptool.h"
+%End
+  public:
+
+    QgsCreateAnnotationItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
+%Docstring
+Constructor for QgsCreateAnnotationItemMapTool.
+%End
+
+    virtual QgsAnnotationItem *takeCreatedItem() = 0 /TransferBack/;
+%Docstring
+Takes the newly created item from the tool, transferring ownership to the caller.
+
+Subclasses must implement this method, and ensure that they emit the :py:func:`~QgsCreateAnnotationItemMapTool.itemCreated` signal whenever
+they have a created item ready for clients to take.
+%End
+
+  signals:
+
+    void itemCreated();
+%Docstring
+Emitted by the tool when a new annotation item has been created.
+
+Clients should connect to this signal and call :py:func:`~QgsCreateAnnotationItemMapTool.takeCreatedItem` to take the newly created item from the map tool.
+%End
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/annotations/qgscreateannotationitemmaptool.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

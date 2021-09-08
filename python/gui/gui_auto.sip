@@ -227,6 +227,7 @@
 %Include auto_generated/annotations/qgsannotationitemcommonpropertieswidget.sip
 %Include auto_generated/annotations/qgsannotationitemguiregistry.sip
 %Include auto_generated/annotations/qgsannotationitemwidget.sip
+%Include auto_generated/annotations/qgscreateannotationitemmaptool.sip
 %Include auto_generated/annotations/qgsmaptoolmodifyannotation.sip
 %Include auto_generated/attributetable/qgsattributetabledelegate.sip
 %Include auto_generated/attributetable/qgsattributetablefiltermodel.sip

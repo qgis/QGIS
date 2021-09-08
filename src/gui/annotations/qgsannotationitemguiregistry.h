@@ -28,6 +28,9 @@
 class QgsAnnotationLayer;
 class QgsAnnotationItem;
 class QgsAnnotationItemBaseWidget;
+class QgsCreateAnnotationItemMapTool;
+class QgsMapCanvas;
+class QgsAdvancedDigitizingDockWidget;
 
 /**
  * \ingroup gui
@@ -82,7 +85,7 @@ class GUI_EXPORT QgsAnnotationItemAbstractGuiMetadata
     /**
      * Returns an icon representing creation of the annotation item type.
      */
-    virtual QIcon creationIcon() const { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ); }
+    virtual QIcon creationIcon() const;
 
     /*
      * IMPORTANT: While it seems like /Factory/ would be the correct annotations here, that's not
@@ -102,7 +105,14 @@ class GUI_EXPORT QgsAnnotationItemAbstractGuiMetadata
     /**
      * Creates a configuration widget for an \a item of this type. Can return NULLPTR if no configuration GUI is required.
      */
-    virtual QgsAnnotationItemBaseWidget *createItemWidget( QgsAnnotationItem *item ) SIP_TRANSFERBACK { Q_UNUSED( item ) return nullptr; }
+    virtual QgsAnnotationItemBaseWidget *createItemWidget( QgsAnnotationItem *item ) SIP_TRANSFERBACK;
+
+    /**
+     * Creates a map tool for a creating a new item of this type.
+     *
+     * May return NULLPTR if no map tool is available for creating the item.
+     */
+    virtual QgsCreateAnnotationItemMapTool *createMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget ) SIP_TRANSFERBACK;
 
     /**
      * Creates an instance of the corresponding item type.
@@ -128,6 +138,9 @@ class GUI_EXPORT QgsAnnotationItemAbstractGuiMetadata
 
 //! Annotation item configuration widget creation function
 typedef std::function<QgsAnnotationItemBaseWidget *( QgsAnnotationItem * )> QgsAnnotationItemWidgetFunc SIP_SKIP;
+
+//! Create annotation map tool creation function
+typedef std::function<QgsCreateAnnotationItemMapTool *( QgsMapCanvas *, QgsAdvancedDigitizingDockWidget * )> QgsCreateAnnotationItemMapToolFunc SIP_SKIP;
 
 //! Annotation item added to layer callback
 typedef std::function<void ( QgsAnnotationItem *, QgsAnnotationLayer *layer )> QgsAnnotationItemAddedToLayerFunc SIP_SKIP;
@@ -157,11 +170,13 @@ class GUI_EXPORT QgsAnnotationItemGuiMetadata : public QgsAnnotationItemAbstract
                                   const QgsAnnotationItemWidgetFunc &pfWidget = nullptr,
                                   const QString &groupId = QString(),
                                   Qgis::AnnotationItemGuiFlags flags = Qgis::AnnotationItemGuiFlags(),
-                                  const QgsAnnotationItemCreateFunc &pfCreateFunc = nullptr )
+                                  const QgsAnnotationItemCreateFunc &pfCreateFunc = nullptr,
+                                  const QgsCreateAnnotationItemMapToolFunc &pfCreateMapToolFunc = nullptr )
       : QgsAnnotationItemAbstractGuiMetadata( type, visibleName, groupId, flags )
       , mIcon( creationIcon )
       , mWidgetFunc( pfWidget )
       , mCreateFunc( pfCreateFunc )
+      , mCreateMapToolFunc( pfCreateMapToolFunc )
     {}
 
     /**
@@ -175,6 +190,18 @@ class GUI_EXPORT QgsAnnotationItemGuiMetadata : public QgsAnnotationItemAbstract
      * \see widgetFunction()
      */
     void setWidgetFunction( const QgsAnnotationItemWidgetFunc &function ) { mWidgetFunc = function; }
+
+    /**
+     * Returns the classes' create new item map tool creation function.
+     * \see setCreateMapToolFunction()
+     */
+    QgsCreateAnnotationItemMapToolFunc createMapToolFunction() const { return mCreateMapToolFunc; }
+
+    /**
+     * Sets the classes' create new item map tool creation \a function.
+     * \see createMapToolFunction()
+     */
+    void setCreateMapToolFunction( const QgsCreateAnnotationItemMapToolFunc &function ) { mCreateMapToolFunc = function; }
 
     /**
      * Returns the classes' item creation function.
@@ -200,16 +227,18 @@ class GUI_EXPORT QgsAnnotationItemGuiMetadata : public QgsAnnotationItemAbstract
      */
     void setItemAddedToLayerFunction( const QgsAnnotationItemAddedToLayerFunc &function ) { mAddedToLayerFunc = function; }
 
-    QIcon creationIcon() const override { return mIcon.isNull() ? QgsAnnotationItemAbstractGuiMetadata::creationIcon() : mIcon; }
-    QgsAnnotationItemBaseWidget *createItemWidget( QgsAnnotationItem *item ) override { return mWidgetFunc ? mWidgetFunc( item ) : nullptr; }
+    QIcon creationIcon() const override;
+    QgsAnnotationItemBaseWidget *createItemWidget( QgsAnnotationItem *item ) override;
 
     QgsAnnotationItem *createItem() override;
     void newItemAddedToLayer( QgsAnnotationItem *item, QgsAnnotationLayer *layer ) override;
+    QgsCreateAnnotationItemMapTool *createMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget ) override;
 
   protected:
     QIcon mIcon;
     QgsAnnotationItemWidgetFunc mWidgetFunc = nullptr;
     QgsAnnotationItemCreateFunc mCreateFunc = nullptr;
+    QgsCreateAnnotationItemMapToolFunc mCreateMapToolFunc = nullptr;
     QgsAnnotationItemAddedToLayerFunc mAddedToLayerFunc = nullptr;
 
 };
