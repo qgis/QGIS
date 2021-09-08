@@ -1378,6 +1378,9 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     }
   }
 
+  if ( mTransaction )
+    mTransaction->dirtyLastSavePoint();
+
   return true;
 }
 
@@ -1422,6 +1425,10 @@ bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
   }
 
   loadFields();
+
+  if ( mTransaction )
+    mTransaction->dirtyLastSavePoint();
+
   return true;
 }
 
@@ -1452,6 +1459,10 @@ bool QgsMssqlProvider::deleteAttributes( const QgsAttributeIds &attributes )
 
   query.finish();
   loadFields();
+
+  if ( mTransaction )
+    mTransaction->dirtyLastSavePoint();
+
   return true;
 }
 
@@ -1607,6 +1618,9 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
     }
   }
 
+  if ( mTransaction )
+    mTransaction->dirtyLastSavePoint();
+
   return true;
 }
 
@@ -1677,6 +1691,9 @@ bool QgsMssqlProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
     }
   }
 
+  if ( mTransaction )
+    mTransaction->dirtyLastSavePoint();
+
   return true;
 }
 
@@ -1704,7 +1721,11 @@ bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds &ids )
     if ( query.exec( statement ) )
     {
       if ( query.numRowsAffected() == ids.size() )
+      {
+        if ( mTransaction )
+          mTransaction->dirtyLastSavePoint();
         return true;
+      }
 
       pushError( tr( "Only %1 of %2 features deleted" ).arg( query.numRowsAffected() ).arg( ids.size() ) );
     }
@@ -1735,7 +1756,11 @@ bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds &ids )
     }
 
     if ( i == ids.size() )
+    {
+      if ( mTransaction )
+        mTransaction->dirtyLastSavePoint();
       return true;
+    }
 
     if ( i > 0 )
       pushError( tr( "Only %1 of %2 features deleted" ).arg( i ).arg( ids.size() ) );

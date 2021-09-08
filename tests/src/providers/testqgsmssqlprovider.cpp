@@ -47,6 +47,9 @@ class TestQgsMssqlProvider : public QObject
 
     void projectTransaction();
 
+    void transactionTwoLayers();
+    void transactionUndoRedo();
+
   private:
 
     QString mDbConn;
@@ -187,6 +190,101 @@ void TestQgsMssqlProvider::projectTransaction()
   vectorLayerPoint->rollBack();
 
   QCOMPARE( vectorLayerPoint->featureCount(), 5 );
+}
+
+void TestQgsMssqlProvider::transactionTwoLayers()
+{
+  QString uriPoint( mDbConn + QStringLiteral( " key = \"pk\" srid=4326 type=POINT schema=\"qgis_test\" table=\"someData\" (geom) sql=" ) );
+  QgsVectorLayer *vectorLayerPoint1 = new QgsVectorLayer( uriPoint, QStringLiteral( "point_layer_1" ), QStringLiteral( "mssql" ) );
+  QgsVectorLayer *vectorLayerPoint2 = new QgsVectorLayer( uriPoint, QStringLiteral( "point_layer_2" ), QStringLiteral( "mssql" ) );
+
+  QgsProject project;
+  project.addMapLayer( vectorLayerPoint1 );
+  project.addMapLayer( vectorLayerPoint2 );
+
+  // point to be added to the point layer
+  QgsFeature feat;
+  feat.setFields( vectorLayerPoint1->fields(), true );
+  feat.setAttribute( 0, 123 );
+  feat.setGeometry( QgsGeometry( new QgsPoint( -123, 123 ) ) );
+
+  // 1. without transaction, try to add a feature to the first layer -> the other layer is not affected
+
+  QVERIFY( vectorLayerPoint1->startEditing() );
+
+  vectorLayerPoint1->addFeature( feat );
+
+  QCOMPARE( vectorLayerPoint1->featureCount(), 6 );
+  QCOMPARE( vectorLayerPoint2->featureCount(), 5 );
+
+  vectorLayerPoint1->rollBack();
+
+  // 2. with transaction, try to add a feature to the first layer -> both layers are affected
+
+  project.setAutoTransaction( true );
+
+  QVERIFY( vectorLayerPoint1->startEditing() );
+
+  vectorLayerPoint1->addFeature( feat );
+
+  QCOMPARE( vectorLayerPoint1->featureCount(), 6 );
+  QCOMPARE( vectorLayerPoint2->featureCount(), 6 );
+
+  vectorLayerPoint1->rollBack();
+
+  QCOMPARE( vectorLayerPoint1->featureCount(), 5 );
+  QCOMPARE( vectorLayerPoint2->featureCount(), 5 );
+}
+
+void TestQgsMssqlProvider::transactionUndoRedo()
+{
+  QString uriPoint( mDbConn + QStringLiteral( " key = \"pk\" srid=4326 type=POINT schema=\"qgis_test\" table=\"someData\" (geom) sql=" ) );
+  QgsVectorLayer *vectorLayerPoint1 = new QgsVectorLayer( uriPoint, QStringLiteral( "point_layer_1" ), QStringLiteral( "mssql" ) );
+  //QgsVectorLayer *vectorLayerPoint2 = new QgsVectorLayer( uriPoint, QStringLiteral( "point_layer_2" ), QStringLiteral( "mssql" ) );
+
+  QgsProject project;
+  project.addMapLayer( vectorLayerPoint1 );
+  //project.addMapLayer( vectorLayerPoint2 );
+
+  // point to be added to the point layer
+  QgsFeature feat1;
+  feat1.setFields( vectorLayerPoint1->fields(), true );
+  feat1.setAttribute( 0, 111 );
+  feat1.setGeometry( QgsGeometry( new QgsPoint( -111, 111 ) ) );
+
+  QgsFeature feat2;
+  feat2.setFields( vectorLayerPoint1->fields(), true );
+  feat2.setAttribute( 0, 222 );
+  feat2.setGeometry( QgsGeometry( new QgsPoint( -222, 222 ) ) );
+
+  // 1. without transaction
+
+  project.setAutoTransaction( true );
+
+  QVERIFY( vectorLayerPoint1->startEditing() );
+
+  QCOMPARE( vectorLayerPoint1->undoStack()->count(), 0 );
+
+  vectorLayerPoint1->addFeature( feat1 );
+
+  vectorLayerPoint1->addFeature( feat2 );
+
+  QCOMPARE( vectorLayerPoint1->undoStack()->count(), 2 );
+
+  QCOMPARE( vectorLayerPoint1->featureCount(), 7 );
+  vectorLayerPoint1->undoStack()->undo();
+  QCOMPARE( vectorLayerPoint1->featureCount(), 6 );
+  vectorLayerPoint1->undoStack()->undo();
+  QCOMPARE( vectorLayerPoint1->featureCount(), 5 );
+  vectorLayerPoint1->undoStack()->redo();
+  QCOMPARE( vectorLayerPoint1->featureCount(), 6 );
+  vectorLayerPoint1->undoStack()->redo();
+  QCOMPARE( vectorLayerPoint1->featureCount(), 7 );
+
+  vectorLayerPoint1->rollBack();
+
+  // 2. with transaction, try to add a feature to the first layer -> both layers are affected
+
 }
 
 QGSTEST_MAIN( TestQgsMssqlProvider )
