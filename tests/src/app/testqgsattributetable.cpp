@@ -240,7 +240,7 @@ void TestQgsAttributeTable::testVisibleTemporal()
 
   QgsVectorLayerTemporalProperties *temporalProperties = qobject_cast< QgsVectorLayerTemporalProperties *>( tempLayer->temporalProperties() );
   temporalProperties->setIsActive( true );
-  temporalProperties->setMode( QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndEndFromFields );
+  temporalProperties->setMode( Qgis::VectorTemporalMode::FeatureDateTimeStartAndEndFromFields );
   temporalProperties->setStartField( QStringLiteral( "col1" ) );
 
   mQgisApp->mapCanvas()->setDestinationCrs( QgsCoordinateReferenceSystem( "EPSG:4326" ) );
