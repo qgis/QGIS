@@ -20,6 +20,7 @@
 #include "qgsmaptooladvanceddigitizing.h"
 
 class QgsAnnotationItem;
+class QgsAnnotationLayer;
 
 /**
  * \class QgsCreateAnnotationItemMapTool
@@ -61,6 +62,12 @@ class GUI_EXPORT QgsCreateAnnotationItemMapTool: public QgsMapToolAdvancedDigiti
      */
     void itemCreated();
 
+  protected:
+
+    /**
+     * Returns the target layer for newly created items.
+     */
+    QgsAnnotationLayer *targetLayer();
 
 };
 

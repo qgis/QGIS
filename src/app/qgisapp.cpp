@@ -432,6 +432,8 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 #include "qgssublayersdialog.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
+#include "qgsannotationitemguiregistry.h"
+#include "qgscreateannotationitemmaptool.h"
 
 #include "pointcloud/qgspointcloudelevationpropertieswidget.h"
 #include "pointcloud/qgspointcloudlayerstylewidget.h"
@@ -750,6 +752,76 @@ void QgisApp::showGeoreferencer()
   mGeoreferencer->setFocus();
 }
 #endif
+
+void QgisApp::annotationItemTypeAdded( int id )
+{
+  if ( QgsGui::annotationItemGuiRegistry()->itemMetadata( id )->flags() & Qgis::AnnotationItemGuiFlag::FlagNoCreationTools )
+    return;
+
+  QString name = QgsGui::annotationItemGuiRegistry()->itemMetadata( id )->visibleName();
+  QString groupId = QgsGui::annotationItemGuiRegistry()->itemMetadata( id )->groupId();
+  QToolButton *groupButton = nullptr;
+  if ( !groupId.isEmpty() )
+  {
+    // find existing group toolbutton and submenu, or create new ones if this is the first time the group has been encountered
+    const QgsAnnotationItemGuiGroup &group = QgsGui::annotationItemGuiRegistry()->itemGroup( groupId );
+    QIcon groupIcon = group.icon.isNull() ? QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicShape.svg" ) ) : group.icon;
+    QString groupText = tr( "Create %1" ).arg( group.name );
+    if ( mAnnotationItemGroupToolButtons.contains( groupId ) )
+    {
+      groupButton = mAnnotationItemGroupToolButtons.value( groupId );
+    }
+    else
+    {
+      QToolButton *groupToolButton = new QToolButton( mAnnotationsToolBar );
+      groupToolButton->setIcon( groupIcon );
+      groupToolButton->setCheckable( true );
+      groupToolButton->setPopupMode( QToolButton::InstantPopup );
+      groupToolButton->setAutoRaise( true );
+      groupToolButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
+      groupToolButton->setToolTip( groupText );
+      mAnnotationsToolBar->addWidget( groupToolButton );
+      mAnnotationItemGroupToolButtons.insert( groupId, groupToolButton );
+      groupButton = groupToolButton;
+    }
+  }
+
+  // update UI for new item type
+  QAction *action = new QAction( tr( "Create %1" ).arg( name ), this );
+  action->setToolTip( tr( "Create %1" ).arg( name ) );
+  action->setCheckable( true );
+  action->setData( id );
+  action->setIcon( QgsGui::annotationItemGuiRegistry()->itemMetadata( id )->creationIcon() );
+
+  mMapToolGroup->addAction( action );
+
+  if ( groupButton )
+    groupButton->addAction( action );
+  else
+  {
+    mAnnotationsToolBar->addAction( action );
+  }
+
+  connect( action, &QAction::triggered, this, [this, id]()
+  {
+    QgsCreateAnnotationItemMapTool *tool = QgsGui::annotationItemGuiRegistry()->itemMetadata( id )->createMapTool( mMapCanvas, mAdvancedDigitizingDockWidget );
+    mMapCanvas->setMapTool( tool );
+    connect( tool, &QgsMapTool::deactivated, tool, &QObject::deleteLater );
+    connect( tool, &QgsCreateAnnotationItemMapTool::itemCreated, this, [ = ]
+    {
+      QgsAnnotationItem *item = tool->takeCreatedItem();
+      if ( QgsAnnotationLayer *layer = qobject_cast< QgsAnnotationLayer * >( activeLayer() ) )
+      {
+        layer->addItem( item );
+      }
+      else
+      {
+        QgsProject::instance()->mainAnnotationLayer()->addItem( item );
+      }
+      // TODO -- possibly automatically deactive the tool now?
+    } );
+  } );
+}
 
 /*
  * This function contains forced validation of CRS used in QGIS.
@@ -1413,6 +1485,17 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   // now when all data item providers are registered, customize both browsers
   QgsCustomization::instance()->updateBrowserWidget( mBrowserWidget );
   QgsCustomization::instance()->updateBrowserWidget( mBrowserWidget2 );
+
+
+  // populate annotation toolbar with initial items...
+  const QList< int > itemMetadataIds = QgsGui::annotationItemGuiRegistry()->itemMetadataIds();
+  for ( int id : itemMetadataIds )
+  {
+    annotationItemTypeAdded( id );
+  }
+  //..and listen out for new item types
+  connect( QgsGui::annotationItemGuiRegistry(), &QgsAnnotationItemGuiRegistry::typeAdded, this, &QgisApp::annotationItemTypeAdded );
+
 
   // Create the plugin registry and load plugins
   // load any plugins that were running in the last session

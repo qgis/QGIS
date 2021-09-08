@@ -1988,6 +1988,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void showGeoreferencer();
 #endif
 
+    void annotationItemTypeAdded( int id );
+
   signals:
 
     /**
@@ -2678,6 +2680,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsScopedOptionsWidgetFactory mCodeEditorWidgetFactory;
     QgsScopedOptionsWidgetFactory mBabelGpsDevicesWidgetFactory;
     QgsScopedOptionsWidgetFactory m3DOptionsWidgetFactory;
+
+    QMap< QString, QToolButton * > mAnnotationItemGroupToolButtons;
 
     class QgsCanvasRefreshBlocker
     {

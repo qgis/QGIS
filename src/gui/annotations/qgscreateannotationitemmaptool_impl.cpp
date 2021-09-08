@@ -14,8 +14,36 @@
  ***************************************************************************/
 
 #include "qgscreateannotationitemmaptool_impl.h"
+#include "qgsmapmouseevent.h"
+#include "qgsannotationpointtextitem.h"
+#include "qgsannotationlayer.h"
 
 ///@cond PRIVATE
+
+QgsCreatePointTextItemMapTool::QgsCreatePointTextItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
+  : QgsCreateAnnotationItemMapTool( canvas, cadDockWidget )
+{
+
+}
+
+QgsCreatePointTextItemMapTool::~QgsCreatePointTextItemMapTool() = default;
+
+void QgsCreatePointTextItemMapTool::cadCanvasPressEvent( QgsMapMouseEvent *event )
+{
+  if ( event->button() != Qt::LeftButton )
+    return;
+
+  const QgsPointXY layerPoint = toLayerCoordinates( targetLayer(), event->mapPoint() );
+
+  mCreatedItem = std::make_unique< QgsAnnotationPointTextItem >( tr( "Text" ), layerPoint );
+  mCreatedItem->setAlignment( Qt::AlignLeft );
+  emit itemCreated();
+}
+
+QgsAnnotationItem *QgsCreatePointTextItemMapTool::takeCreatedItem()
+{
+  return mCreatedItem.release();
+}
 
 
 ///@endcond PRIVATE

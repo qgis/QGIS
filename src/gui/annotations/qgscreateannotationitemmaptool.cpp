@@ -14,9 +14,19 @@
  ***************************************************************************/
 
 #include "qgscreateannotationitemmaptool.h"
+#include "qgsmapcanvas.h"
+#include "qgsannotationlayer.h"
 
 QgsCreateAnnotationItemMapTool::QgsCreateAnnotationItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
 {
 
+}
+
+QgsAnnotationLayer *QgsCreateAnnotationItemMapTool::targetLayer()
+{
+  if ( QgsAnnotationLayer *res = qobject_cast< QgsAnnotationLayer * >( canvas()->currentLayer() ) )
+    return res;
+  else
+    return QgsProject::instance()->mainAnnotationLayer();
 }

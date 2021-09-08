@@ -19,7 +19,7 @@
 #include "qgsannotationitem.h"
 
 #include "qgsannotationitemwidget_impl.h"
-
+#include "qgscreateannotationitemmaptool_impl.h"
 //
 // QgsAnnotationItemAbstractGuiMetadata
 //
@@ -186,7 +186,7 @@ void QgsAnnotationItemGuiRegistry::addDefaultItems()
     QgsAnnotationPolygonItemWidget *widget = new QgsAnnotationPolygonItemWidget( nullptr );
     widget->setItem( item );
     return widget;
-  } ) );
+  }, QString(), Qgis::AnnotationItemGuiFlag::FlagNoCreationTools ) );
 
   addAnnotationItemGuiMetadata( new QgsAnnotationItemGuiMetadata( QStringLiteral( "linestring" ),
                                 QObject::tr( "Line" ),
@@ -196,7 +196,7 @@ void QgsAnnotationItemGuiRegistry::addDefaultItems()
     QgsAnnotationLineItemWidget *widget = new QgsAnnotationLineItemWidget( nullptr );
     widget->setItem( item );
     return widget;
-  } ) );
+  }, QString(), Qgis::AnnotationItemGuiFlag::FlagNoCreationTools ) );
 
   addAnnotationItemGuiMetadata( new QgsAnnotationItemGuiMetadata( QStringLiteral( "marker" ),
                                 QObject::tr( "Marker" ),
@@ -206,15 +206,19 @@ void QgsAnnotationItemGuiRegistry::addDefaultItems()
     QgsAnnotationMarkerItemWidget *widget = new QgsAnnotationMarkerItemWidget( nullptr );
     widget->setItem( item );
     return widget;
-  } ) );
+  }, QString(), Qgis::AnnotationItemGuiFlag::FlagNoCreationTools ) );
 
   addAnnotationItemGuiMetadata( new QgsAnnotationItemGuiMetadata( QStringLiteral( "pointtext" ),
                                 QObject::tr( "Text at Point" ),
-                                QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddImage.svg" ) ),
+                                QgsApplication::getThemeIcon( QStringLiteral( "/mActionLabel.svg" ) ),
                                 [ = ]( QgsAnnotationItem * item )->QgsAnnotationItemBaseWidget *
   {
     QgsAnnotationPointTextItemWidget *widget = new QgsAnnotationPointTextItemWidget( nullptr );
     widget->setItem( item );
     return widget;
+  }, QString(), Qgis::AnnotationItemGuiFlags(), nullptr,
+  [ = ]( QgsMapCanvas * canvas, QgsAdvancedDigitizingDockWidget * cadDockWidget )->QgsCreateAnnotationItemMapTool *
+  {
+    return new QgsCreatePointTextItemMapTool( canvas, cadDockWidget );
   } ) );
 }

@@ -48,6 +48,12 @@ Emitted by the tool when a new annotation item has been created.
 Clients should connect to this signal and call :py:func:`~QgsCreateAnnotationItemMapTool.takeCreatedItem` to take the newly created item from the map tool.
 %End
 
+  protected:
+
+    QgsAnnotationLayer *targetLayer();
+%Docstring
+Returns the target layer for newly created items.
+%End
 
 };
 
