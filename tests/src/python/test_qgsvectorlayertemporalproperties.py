@@ -694,7 +694,7 @@ class TestQgsVectorLayerTemporalProperties(unittest.TestCase):
                          '("start_field" < make_datetime(2020,5,6,8,9,10) OR "start_field" IS NULL) AND (("start_field" + make_interval(0,0,0,0,0,0,"duration"/1000) > make_datetime(2019,3,4,11,12,13)) OR "duration" IS NULL)')
         # map range              [-------------------------)
         # feature ranges         .                         . [-------]  (false)
-        #                        .                         [-------]    (true)
+        #                        .                         [-------]    (false)
         #                        .                     [---.---]        (true)
         #                        .            [-------]    .            (true)
         #                        [-------]                 .            (true)
