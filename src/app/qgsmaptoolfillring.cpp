@@ -73,12 +73,7 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     // add point to list and to rubber band
 
     const int error = addVertex( e->mapPoint() );
-    if ( error == 1 )
-    {
-      // current layer is not a vector layer
-      return;
-    }
-    else if ( error == 2 )
+    if ( error == 2 )
     {
       // problem with coordinate transformation
       emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system" ), Qgis::MessageLevel::Warning );
