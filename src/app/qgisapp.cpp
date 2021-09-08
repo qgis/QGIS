@@ -822,7 +822,7 @@ void QgisApp::annotationItemTypeAdded( int id )
 
       QgsProject::instance()->setDirty( true );
 
-      // TODO -- possibly automatically deactive the tool now?
+      // TODO -- possibly automatically deactivate the tool now?
     } );
   } );
 }
