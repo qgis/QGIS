@@ -557,16 +557,23 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
   if ( mCapturing && mStreamingEnabled && !mAllowAddingStreamingPoints )
     return 0;
 
-  int res;
+  int res = 0;
   QgsPoint layerPoint;
-  res = fetchLayerPoint( match, layerPoint );
-  if ( res != 0 )
+  if ( mCanvas->currentLayer() && mCanvas->currentLayer()->type() == QgsMapLayerType::VectorLayer )
   {
-    res = nextPoint( QgsPoint( point ), layerPoint );
+    res = fetchLayerPoint( match, layerPoint );
     if ( res != 0 )
     {
-      return res;
+      res = nextPoint( QgsPoint( point ), layerPoint );
+      if ( res != 0 )
+      {
+        return res;
+      }
     }
+  }
+  else
+  {
+    layerPoint = QgsPoint( point );
   }
   const QgsPoint mapPoint = toMapCoordinates( canvas()->currentLayer(), layerPoint );
 
