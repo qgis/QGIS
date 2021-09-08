@@ -2531,12 +2531,9 @@ bool QgsOgrProviderUtils::saveConnection( const QString &path, const QString &og
     }
     if ( ok && ! connName.isEmpty() )
     {
-      const QString connection = QStringLiteral( "providers/ogr/%1/connections" ).arg( ogrDriverName );
-      QgsSettings settings;
-      settings.setValue( QStringLiteral( "%1/%2/path" ).arg( connection, connName ), path );
-
       QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
       QgsGeoPackageProviderConnection *providerConnection =  static_cast<QgsGeoPackageProviderConnection *>( providerMetadata->createConnection( connName ) );
+      providerConnection->setUri( path );
       providerMetadata->saveConnection( providerConnection, connName );
       return true;
     }
