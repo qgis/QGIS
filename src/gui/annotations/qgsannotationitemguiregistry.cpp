@@ -186,7 +186,11 @@ void QgsAnnotationItemGuiRegistry::addDefaultItems()
     QgsAnnotationPolygonItemWidget *widget = new QgsAnnotationPolygonItemWidget( nullptr );
     widget->setItem( item );
     return widget;
-  }, QString(), Qgis::AnnotationItemGuiFlag::FlagNoCreationTools ) );
+  }, QString(), Qgis::AnnotationItemGuiFlags(), nullptr,
+  [ = ]( QgsMapCanvas * canvas, QgsAdvancedDigitizingDockWidget * cadDockWidget )->QgsCreateAnnotationItemMapToolInterface *
+  {
+    return new QgsCreatePolygonItemMapTool( canvas, cadDockWidget );
+  } ) );
 
   addAnnotationItemGuiMetadata( new QgsAnnotationItemGuiMetadata( QStringLiteral( "linestring" ),
                                 QObject::tr( "Line" ),
@@ -196,7 +200,11 @@ void QgsAnnotationItemGuiRegistry::addDefaultItems()
     QgsAnnotationLineItemWidget *widget = new QgsAnnotationLineItemWidget( nullptr );
     widget->setItem( item );
     return widget;
-  }, QString(), Qgis::AnnotationItemGuiFlag::FlagNoCreationTools ) );
+  }, QString(), Qgis::AnnotationItemGuiFlags(), nullptr,
+  [ = ]( QgsMapCanvas * canvas, QgsAdvancedDigitizingDockWidget * cadDockWidget )->QgsCreateAnnotationItemMapToolInterface *
+  {
+    return new QgsCreateLineItemMapTool( canvas, cadDockWidget );
+  } ) );
 
   addAnnotationItemGuiMetadata( new QgsAnnotationItemGuiMetadata( QStringLiteral( "marker" ),
                                 QObject::tr( "Marker" ),

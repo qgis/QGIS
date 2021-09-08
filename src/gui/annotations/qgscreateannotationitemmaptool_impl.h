@@ -18,9 +18,7 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgscreateannotationitemmaptool.h"
-
-class QgsAnnotationPointTextItem;
-class QgsAnnotationMarkerItem;
+#include "qgsmaptoolcapture.h"
 
 #define SIP_NO_FILE
 
@@ -64,6 +62,56 @@ class QgsCreateMarkerItemMapTool: public QgsMapToolAdvancedDigitizing, public Qg
 
 };
 
+class QgsMapToolCaptureAnnotationItem : public QgsMapToolCapture
+{
+    Q_OBJECT
+  public:
+    QgsMapToolCaptureAnnotationItem( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode );
+
+    QgsMapToolCapture::Capabilities capabilities() const override;
+
+
+};
+
+class QgsCreateLineItemMapTool: public QgsMapToolCaptureAnnotationItem, public QgsCreateAnnotationItemMapToolInterface
+{
+    Q_OBJECT
+
+  public:
+
+    QgsCreateLineItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
+    ~QgsCreateLineItemMapTool() override;
+
+    void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    QgsCreateAnnotationItemMapToolHandler *handler() override;
+    QgsMapTool *mapTool() override;
+    QgsMapLayer *layer() const override;
+
+  private:
+
+    QgsCreateAnnotationItemMapToolHandler *mHandler = nullptr;
+
+};
+
+class QgsCreatePolygonItemMapTool: public QgsMapToolCaptureAnnotationItem, public QgsCreateAnnotationItemMapToolInterface
+{
+    Q_OBJECT
+
+  public:
+
+    QgsCreatePolygonItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
+    ~QgsCreatePolygonItemMapTool() override;
+
+    void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    QgsCreateAnnotationItemMapToolHandler *handler() override;
+    QgsMapTool *mapTool() override;
+    QgsMapLayer *layer() const override;
+
+  private:
+
+    QgsCreateAnnotationItemMapToolHandler *mHandler = nullptr;
+
+};
 
 ///@endcond PRIVATE
 
