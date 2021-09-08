@@ -26,6 +26,8 @@
 class QString;
 class QSqlDatabase;
 
+class QgsMssqlDatabase;
+
 /**
  * \class QgsMssqlConnection
  * Connection handler for SQL Server provider
@@ -186,7 +188,7 @@ class QgsMssqlConnection
      * Returns a list of all schemas on the \a dataBase.
      * \since QGIS 3.18
      */
-    static QStringList schemas( QSqlDatabase &dataBase, QString *errorMessage );
+    static QStringList schemas( std::shared_ptr<QgsMssqlDatabase> db, QString *errorMessage );
 
     /**
      * Returns true if the given \a schema is a system schema.

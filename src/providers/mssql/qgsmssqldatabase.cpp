@@ -33,13 +33,13 @@ QRecursiveMutex QgsMssqlDatabase::sMutex;
 QMap<QString, std::weak_ptr<QgsMssqlDatabase> > QgsMssqlDatabase::sConnections;
 
 
-QString _connName( const QString &service, const QString &host, const QString &database, bool transaction )
+QString QgsMssqlDatabase::connectionName( const QString &service, const QString &host, const QString &database, bool transaction )
 {
-  QString connectionName;
+  QString connName;
   if ( service.isEmpty() )
   {
     if ( !host.isEmpty() )
-      connectionName = host + '.';
+      connName = host + '.';
 
     if ( database.isEmpty() )
     {
@@ -47,16 +47,16 @@ QString _connName( const QString &service, const QString &host, const QString &d
       return QString();
     }
 
-    connectionName += database;
+    connName += database;
   }
   else
-    connectionName = service;
+    connName = service;
 
   if ( !transaction )
-    connectionName += QStringLiteral( ":0x%1" ).arg( reinterpret_cast<quintptr>( QThread::currentThread() ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) );
+    connName += QStringLiteral( ":0x%1" ).arg( reinterpret_cast<quintptr>( QThread::currentThread() ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) );
   else
-    connectionName += ":transaction";
-  return connectionName;
+    connName += ":transaction";
+  return connName;
 }
 
 
@@ -72,12 +72,12 @@ std::shared_ptr<QgsMssqlDatabase> QgsMssqlDatabase::connectDb( const QString &se
 
   QMutexLocker locker( &sMutex );
 
-  QString connName = _connName( service, host, database, transaction );
+  QString connName = connectionName( service, host, database, transaction );
 
   if ( sConnections.contains( connName ) && !sConnections[connName].expired() )
     return sConnections[connName].lock();
 
-  QSqlDatabase db = QgsMssqlDatabase::getDatabase( service, host, database, username, password, transaction );
+  QSqlDatabase db = getDatabase( service, host, database, username, password, transaction );
 
   std::shared_ptr<QgsMssqlDatabase> c( new QgsMssqlDatabase( db, transaction ) );
 
@@ -104,9 +104,12 @@ QgsMssqlDatabase::QgsMssqlDatabase( const QSqlDatabase &db, bool transaction )
 #endif
   }
 
-  if ( !QgsMssqlDatabase::openDatabase( mDB ) )
+  if ( !mDB.isOpen() )
   {
-    QgsDebugMsg( "Failed to open MSSQL database: " + mDB.lastError().text() );
+    if ( !mDB.open() )
+    {
+      QgsDebugMsg( "Failed to open MSSQL database: " + mDB.lastError().text() );
+    }
   }
 }
 
@@ -116,8 +119,6 @@ QgsMssqlDatabase::~QgsMssqlDatabase()
   if ( mDB.isOpen() )
   {
     mDB.close();
-
-    // TODO: also remove DB?
   }
 }
 
@@ -133,7 +134,7 @@ QSqlDatabase QgsMssqlDatabase::getDatabase( const QString &service, const QStrin
   // that the connection cleanup on thread finalization happens in a predictable order
   QMutexLocker locker( &sMutex );
 
-  const QString threadSafeConnectionName = _connName( service, host, database, transaction ); //dbConnectionName( connectionName );
+  const QString threadSafeConnectionName = connectionName( service, host, database, transaction );
 
   if ( !QSqlDatabase::contains( threadSafeConnectionName ) )
   {
@@ -217,16 +218,4 @@ QSqlDatabase QgsMssqlDatabase::getDatabase( const QString &service, const QStrin
   // only uncomment temporarily -- it can show connection password otherwise!
   // QgsDebugMsg( connectionString );
   return db;
-}
-
-bool QgsMssqlDatabase::openDatabase( QSqlDatabase &db )
-{
-  if ( !db.isOpen() )
-  {
-    if ( !db.open() )
-    {
-      return false;
-    }
-  }
-  return true;
 }
