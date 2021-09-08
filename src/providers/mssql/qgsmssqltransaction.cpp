@@ -142,7 +142,6 @@ bool QgsMssqlTransaction::commitTransaction( QString &error )
   }
 
   error = mConn->db().lastError().text();
-  // TODO? mConn.reset(); // should delete conn if we're the last ones
   return false;
 }
 
@@ -155,6 +154,5 @@ bool QgsMssqlTransaction::rollbackTransaction( QString &error )
   }
 
   error = mConn->db().lastError().text();
-  // TODO? mConn.reset(); // should delete conn if we're the last ones
   return false;
 }
