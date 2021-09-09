@@ -23,6 +23,7 @@
 #include "qgspainting.h"
 #include "qgsmaplayerfactory.h"
 #include "qgsfeedback.h"
+#include "qgsannotationitemeditoperation.h"
 #include <QUuid>
 #include "RTree.h"
 
@@ -227,6 +228,30 @@ QStringList QgsAnnotationLayer::itemsInBounds( const QgsRectangle &bounds, QgsRe
     if ( mItems.value( uuid )->boundingBox( context ).intersects( bounds ) )
       res << uuid;
   }
+
+  return res;
+}
+
+bool QgsAnnotationLayer::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
+{
+  bool res = false;
+  if ( QgsAnnotationItem *targetItem = item( operation->itemId() ) )
+  {
+    // remove item from index if present
+    auto it = mNonIndexedItems.find( operation->itemId() );
+    if ( it == mNonIndexedItems.end() )
+    {
+      mSpatialIndex->remove( operation->itemId(), targetItem->boundingBox() );
+    }
+    res = targetItem->applyEdit( operation );
+
+    // and re-add to index if possible
+    if ( !( targetItem->flags() & Qgis::AnnotationItemFlag::ScaleDependentBoundingBox ) )
+      mSpatialIndex->insert( operation->itemId(), targetItem->boundingBox() );
+  }
+
+  if ( res )
+    triggerRepaint();
 
   return res;
 }
