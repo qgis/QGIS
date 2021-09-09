@@ -697,6 +697,7 @@ set(QGIS_CORE_SRCS
   mesh/qgsmeshvirtualdatasetgroup.cpp
   mesh/qgstopologicalmesh.cpp
   mesh/qgsmeshadvancedediting.cpp
+  mesh/qgsmeshforcebypolylines.cpp
 
   pointcloud/qgspointcloudattribute.cpp
   pointcloud/qgspointcloudattributebyramprenderer.cpp
@@ -1437,6 +1438,7 @@ set(QGIS_CORE_HDRS
   mesh/qgsmeshvirtualdatasetgroup.h
   mesh/qgstopologicalmesh.h
   mesh/qgsmeshadvancedediting.h
+  mesh/qgsmeshforcebypolylines.h
 
   pal/costcalculator.h
   pal/feature.h

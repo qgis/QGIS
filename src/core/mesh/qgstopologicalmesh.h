@@ -66,6 +66,9 @@ class CORE_EXPORT QgsTopologicalMesh
         //! Returns the face neighborhood of the faces, indexing is local
         QVector<FaceNeighbors> facesNeighborhood() const;
 
+        //! Returns a face linked to the vertices with index \a vertexIndex
+        int vertexToFace( int vertexIndex ) const;
+
       private:
         QVector<QgsMeshFace> mFaces; // the faces containing the vertices indexes in the mesh
         QVector<FaceNeighbors> mFacesNeighborhood; // neighborhood of the faces, face indexes are local
@@ -146,7 +149,7 @@ class CORE_EXPORT QgsTopologicalMesh
 
       private:
         int addedFaceIndexInMesh( int internalIndex ) const;
-        int removedFaceIndexInmesh( int internalIndex ) const;
+        int removedFaceIndexInMesh( int internalIndex ) const;
 
         friend class QgsTopologicalMesh;
     };
@@ -246,7 +249,13 @@ class CORE_EXPORT QgsTopologicalMesh
      * Adds a \a vertex in the face with index \a faceIndex. The including face is removed and new faces surrounding the added vertex are added.
      * The method returns a instance of the class QgsTopologicalMesh::Change that can be used to reverse or reapply the operation.
      */
-    Changes addVertexInface( int faceIndex, const QgsMeshVertex &vertex );
+    Changes addVertexInFace( int faceIndex, const QgsMeshVertex &vertex );
+
+    /**
+     * Inserts a \a vertex in the edge of face with index \a faceIndex at \a position . The faces that are on each side of the edge are removed and replaced
+     * by new faces constructed by a triangulation.
+     */
+    Changes insertVertexInFacesEdge( int faceIndex, int position, const QgsMeshVertex &vertex );
 
     /**
      * Adds a free \a vertex in the face, that is a vertex tha tis not included or linked with any faces.

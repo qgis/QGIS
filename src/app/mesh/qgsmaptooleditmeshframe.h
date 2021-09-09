@@ -19,6 +19,7 @@
 #include <QWidget>
 #include <QPointer>
 #include <QDialog>
+#include <QWidgetAction>
 
 #include "qgis_app.h"
 #include "qgsmaptooladvanceddigitizing.h"
@@ -33,6 +34,10 @@ class QgsVertexMarker;
 class QgsDoubleSpinBox;
 class QgsSnapIndicator;
 class QgsMeshTransformCoordinatesDockWidget;
+class QComboBox;
+class QCheckBox;
+class QgsUnitSelectionWidget;
+
 
 
 class QgsExpressionBuilderWidget;
@@ -65,6 +70,49 @@ class APP_EXPORT QgsZValueWidget : public QWidget
     QgsDoubleSpinBox *mZValueSpinBox = nullptr;
 };
 
+class QgsMeshEditForceByLineAction : public QWidgetAction
+{
+    Q_OBJECT
+  public:
+
+    enum IntepolationMode
+    {
+      Mesh,
+      Lines
+    };
+    Q_ENUM( IntepolationMode )
+
+    //! Constructor
+    QgsMeshEditForceByLineAction( QObject *parent = nullptr );
+
+    //! Sets the associated map canvas, used notably for map unit
+    void setMapCanvas( QgsMapCanvas *canvas );
+
+    //! Returns the interpolation mode
+    IntepolationMode interpolationMode() const;
+
+    //! Returns whether vertices will be added on edge intersection
+    bool newVertexOnIntersectingEdge() const;
+
+    //! Returns the tolerance value
+    double toleranceValue() const;
+
+    //! Returns the tolerance unit
+    QgsUnitTypes::RenderUnit toleranceUnit() const;
+
+  private slots:
+    void updateSettings();
+
+  private:
+
+    QComboBox *mComboInterpolateFrom = nullptr;
+    QCheckBox *mCheckBoxNewVertex = nullptr;
+    QgsUnitSelectionWidget *mUnitSelecionWidget = nullptr;
+    QgsDoubleSpinBox *mToleranceSpinBox = nullptr;
+
+
+};
+
 class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 {
     Q_OBJECT
@@ -74,8 +122,16 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QgsMapToolEditMeshFrame( QgsMapCanvas *canvas );
     ~QgsMapToolEditMeshFrame();
 
-    QList<QAction *> actions() const;
     QList<QAction *> mapToolActions();
+    QAction *digitizeAction() const;
+    QList<QAction *> selectActions() const;
+    QAction *defaultSelectActions() const;
+    QAction *transformAction() const;
+    QList<QAction *> forceByLinesActions() const;
+    QAction *defaultForceAction() const;
+    QWidgetAction *forceByLineWidgetActionSettings() const;
+
+    void setActionsEnable( bool enable );
 
     void deactivate() override;
     void activate() override;
@@ -109,6 +165,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void showSelectByExpressionDialog();
     void selectByExpression( const QString &textExpression, Qgis::SelectBehavior behavior, QgsMesh::ElementType elementType );
     void onZoomToSelected();
+    void forceBySelectedLayerPolyline();
 
   private:
 
@@ -175,6 +232,9 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void clearSelection();
 
     void setMovingRubberBandValidity( bool valid );
+
+    QList<QgsGeometry> selectedGeometriesInVectorLayers() const;
+    bool areGeometriesSelectedInVectorLayer() const;
 
     // members
     struct SelectedVertexData
@@ -271,6 +331,8 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QAction *mActionTransformCoordinates = nullptr;
 
     QAction *mActionSelectByExpression = nullptr;
+    QAction *mActionForceByVectorLayerGeometries = nullptr;
+    QgsMeshEditForceByLineAction *mWidgetActionForceByLine = nullptr;
 
     friend class TestQgsMapToolEditMesh;
 };

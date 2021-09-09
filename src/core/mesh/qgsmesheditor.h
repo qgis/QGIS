@@ -204,8 +204,17 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     //! Returns a reference to the topological mesh
     QgsTopologicalMesh &topologicalMesh(); SIP_SKIP
 
+    //! Returns a pointer to the triangular mesh
+    QgsTriangularMesh *triangularMesh(); SIP_SKIP
+
     //! Return TRUE if the edited mesh is consistent
     bool checkConsistency() const;
+
+    /**
+     * Returns TRUE if an edge of face is closest than the tolerance from the \a point in triangular mesh coordinate
+     * Returns also the face index and the edge position in \a faceIndex and \a edgePosition
+     */
+    bool edgeIsClose( QgsPointXY point, double tolerance, int &faceIndex, int &edgePosition );
 
   signals:
     //! Emitted when the mesh is edited
@@ -230,7 +239,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     void applyEdit( Edit &edit );
     void reverseEdit( Edit &edit );
 
-    void applyAddVertex( Edit &edit, const QgsMeshVertex &vertex );
+    void applyAddVertex( Edit &edit, const QgsMeshVertex &vertex, double tolerance );
     void applyRemoveVertexFillHole( Edit &edit, int vertexIndex );
     void applyRemoveVerticesWithoutFillHole( QgsMeshEditor::Edit &edit, const QList<int> &verticesIndexes );
     void applyAddFaces( Edit &edit, const QgsTopologicalMesh::TopologicalFaces &faces );
@@ -296,11 +305,12 @@ class QgsMeshLayerUndoCommandAddVertices : public QgsMeshLayerUndoCommandMeshEdi
   public:
 
     //! Constructor with the associated \a meshEditor and \a vertices that will be added
-    QgsMeshLayerUndoCommandAddVertices( QgsMeshEditor *meshEditor, const QVector<QgsMeshVertex> &vertices );
+    QgsMeshLayerUndoCommandAddVertices( QgsMeshEditor *meshEditor, const QVector<QgsMeshVertex> &vertices, double tolerance );
     void redo() override;
 
   private:
     QVector<QgsMeshVertex> mVertices;
+    double mTolerance = 0;
 };
 
 /**
