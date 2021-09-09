@@ -40,7 +40,7 @@ add_qgis_test(testqgspostgresexpressioncompiler.cpp MODULE provider LINKEDLIBRAR
 add_qgis_test(testqgspostgresprovider.cpp MODULE provider LINKEDLIBRARIES provider_postgres_a qgis_core)
 add_qgis_test(testqgspostgresconn.cpp MODULE provider LINKEDLIBRARIES provider_postgres_a qgis_core LABELS "POSTGRES")
 
-set(ENABLE_MSSQLTEST_CPP FALSE CACHE BOOL "Enable MsSQL provider C++ tests")
+set(ENABLE_MSSQLTEST_CPP FALSE CACHE BOOL "Enable MSSQL provider C++ tests")
 if (ENABLE_MSSQLTEST_CPP)
   add_qgis_test(testqgsmssqlprovider.cpp MODULE provider LINKEDLIBRARIES provider_mssql_a qgis_core LABELS "MSSQL")
   # also depend on dynamic lib, so that building this test will also build the dynamic lib

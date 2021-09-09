@@ -1,5 +1,5 @@
 /***************************************************************************
-  testqgsmssqlprovider.cpp - %{Cpp:License:ClassName}
+  testqgsmssqlprovider.cpp
  ---------------------
  begin                : 16.3.2021
  copyright            : (C) 2021 by Vincent Cloarec
