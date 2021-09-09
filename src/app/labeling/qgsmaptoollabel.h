@@ -53,7 +53,6 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     */
     bool labelMoveable( QgsVectorLayer *vlayer, int &xCol, int &yCol ) const;
     bool labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &xCol, int &yCol ) const;
-    bool labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &xCol, int &yCol, int &pointCol ) const;
 
     /**
      * Returns true if diagram move can be applied to a layer
@@ -248,6 +247,8 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     bool createAuxiliaryFields( LabelDetails &details, QgsDiagramIndexes &diagIndexes );
     bool createAuxiliaryFields( QgsCalloutIndexes &calloutIndexes );
     bool createAuxiliaryFields( QgsCalloutPosition &details, QgsCalloutIndexes &calloutIndexes );
+
+    bool labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &xCol, int &yCol, int &pointCol ) const;
 
     void updateHoveredLabel( QgsMapMouseEvent *e );
     void clearHoveredLabel();
