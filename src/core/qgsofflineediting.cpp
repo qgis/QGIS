@@ -963,12 +963,15 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer *offlineLayer, QgsVec
   {
     // NOTE: SpatiaLite provider ignores position of geometry column
     // restore gap in QgsAttributeMap if geometry column is not last (WORKAROUND)
-    QMap<int, int> attrLookup = attributeLookup( offlineLayer, remoteLayer );
+    const QMap<int, int> attrLookup = attributeLookup( offlineLayer, remoteLayer );
     QgsAttributes newAttrs( newAttrsCount );
     QgsAttributes attrs = it->attributes();
     for ( int it = 0; it < attrs.count(); ++it )
     {
-      int remoteAttributeIndex = attrLookup[ it ];
+      const int remoteAttributeIndex = attrLookup.value( it, -1 );
+      // if virtual or non existing field
+      if ( remoteAttributeIndex == -1 )
+        continue;
       QVariant attr = attrs.at( it );
       if ( remoteLayer->fields().at( remoteAttributeIndex ).type() == QVariant::StringList )
       {
@@ -1614,4 +1617,3 @@ void QgsOfflineEditing::setupLayer( QgsMapLayer *layer )
     }
   }
 }
-
