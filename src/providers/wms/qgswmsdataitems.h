@@ -34,6 +34,7 @@ class QgsWMSConnectionItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
+    void refresh() override;
 
   public slots:
     void deleteLater() override;

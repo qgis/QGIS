@@ -2294,6 +2294,16 @@ QgsWmsCapabilitiesDownload::~QgsWmsCapabilitiesDownload()
   abort();
 }
 
+bool QgsWmsCapabilitiesDownload::forceRefresh()
+{
+  return mForceRefresh;
+}
+
+void QgsWmsCapabilitiesDownload::setForceRefresh( bool forceRefresh )
+{
+  mForceRefresh = forceRefresh;
+}
+
 bool QgsWmsCapabilitiesDownload::downloadCapabilities( const QString &baseUrl, const QgsWmsAuthorization &auth )
 {
   mBaseUrl = baseUrl;
