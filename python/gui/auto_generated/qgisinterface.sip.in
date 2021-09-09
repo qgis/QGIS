@@ -1571,13 +1571,6 @@ is automatically registered within the :py:func:`QgsApplication.gpsConnectionReg
 .. versionadded:: 3.16
 %End
 
-    virtual QgsMapToolModifyAnnotation *modifyAnnotationTool() = 0;
-%Docstring
-Returns the map tool used for modifying annotation layers.
-
-.. versionadded:: 3.22
-%End
-
   signals:
 
     void currentLayerChanged( QgsMapLayer *layer );

@@ -30,9 +30,12 @@ class QgsAnnotationItem;
 class QgsAnnotationLayer;
 class QgsAnnotationItemNodesSpatialIndex;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup gui
  * \brief A map tool for modifying annotations in a QgsAnnotationLayer
+ * \note Not available in Python bindings
  * \since QGIS 3.22
  */
 class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsMapToolAdvancedDigitizing

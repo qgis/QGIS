@@ -322,7 +322,6 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgsLayerTreeRegistryBridge::InsertionPoint layerTreeInsertionPoint() override;
     void setGpsPanelConnection( QgsGpsConnection *connection ) override;
     QList<QgsMapDecoration *> activeDecorations() override;
-    virtual QgsMapToolModifyAnnotation *modifyAnnotationTool() override;
 
   private slots:
 
