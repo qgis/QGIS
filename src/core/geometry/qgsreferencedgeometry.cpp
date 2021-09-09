@@ -17,6 +17,8 @@
 
 #include "qgsreferencedgeometry.h"
 
+#include <QRegularExpression>
+
 QgsReferencedGeometryBase::QgsReferencedGeometryBase( const QgsCoordinateReferenceSystem &crs )
   : mCrs( crs )
 {}
