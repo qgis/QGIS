@@ -98,24 +98,24 @@ QList<QgsAnnotationItemNode> QgsAnnotationPolygonItem::nodes() const
 {
   QList< QgsAnnotationItemNode > res;
 
-  auto processRing  = [&res]( const QgsCurve * ring )
+  auto processRing  = [&res]( const QgsCurve * ring, int ringId )
   {
     // we don't want a duplicate node for the closed ring vertex
     const int count = ring->isClosed() ? ring->numPoints() - 1 : ring->numPoints();
     res.reserve( res.size() + count );
     for ( int i = 0; i < count; ++i )
     {
-      res << QgsAnnotationItemNode( QgsPointXY( ring->xAt( i ), ring->yAt( i ) ), Qgis::AnnotationItemNodeType::VertexHandle );
+      res << QgsAnnotationItemNode( QgsVertexId( 0, ringId, i ), QgsPointXY( ring->xAt( i ), ring->yAt( i ) ), Qgis::AnnotationItemNodeType::VertexHandle );
     }
   };
 
   if ( const QgsCurve *ring = mPolygon->exteriorRing() )
   {
-    processRing( ring );
+    processRing( ring, 0 );
   }
   for ( int i = 0; i < mPolygon->numInteriorRings(); ++i )
   {
-    processRing( mPolygon->interiorRing( i ) );
+    processRing( mPolygon->interiorRing( i ), i + 1 );
   }
 
   return res;

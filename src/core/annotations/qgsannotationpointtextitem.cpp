@@ -134,7 +134,7 @@ QgsRectangle QgsAnnotationPointTextItem::boundingBox( QgsRenderContext &context 
 
 QList<QgsAnnotationItemNode> QgsAnnotationPointTextItem::nodes() const
 {
-  return { QgsAnnotationItemNode( mPoint, Qgis::AnnotationItemNodeType::VertexHandle )};
+  return { QgsAnnotationItemNode( QgsVertexId( 0, 0, 0 ), mPoint, Qgis::AnnotationItemNodeType::VertexHandle )};
 }
 
 bool QgsAnnotationPointTextItem::transform( const QTransform &transform )

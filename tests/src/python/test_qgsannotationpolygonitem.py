@@ -37,7 +37,8 @@ from qgis.core import (QgsMapSettings,
                        QgsCircularString,
                        QgsAnnotationItemNode,
                        Qgis,
-                       QgsPointXY
+                       QgsPointXY,
+                       QgsVertexId
                        )
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -79,9 +80,9 @@ class TestQgsAnnotationPolygonItem(unittest.TestCase):
         """
         item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
         # nodes shouldn't form a closed ring
-        self.assertEqual(item.nodes(), [QgsAnnotationItemNode(QgsPointXY(12, 13), Qgis.AnnotationItemNodeType.VertexHandle),
-                                        QgsAnnotationItemNode(QgsPointXY(14, 13), Qgis.AnnotationItemNodeType.VertexHandle),
-                                        QgsAnnotationItemNode(QgsPointXY(14, 15), Qgis.AnnotationItemNodeType.VertexHandle)])
+        self.assertEqual(item.nodes(), [QgsAnnotationItemNode(QgsVertexId(0, 0, 0), QgsPointXY(12, 13), Qgis.AnnotationItemNodeType.VertexHandle),
+                                        QgsAnnotationItemNode(QgsVertexId(0, 0, 1), QgsPointXY(14, 13), Qgis.AnnotationItemNodeType.VertexHandle),
+                                        QgsAnnotationItemNode(QgsVertexId(0, 0, 2), QgsPointXY(14, 15), Qgis.AnnotationItemNodeType.VertexHandle)])
 
     def test_rubberbandgeometry(self):
         """

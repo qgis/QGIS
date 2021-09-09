@@ -83,9 +83,10 @@ bool QgsAnnotationLineItem::writeXml( QDomElement &element, QDomDocument &docume
 QList<QgsAnnotationItemNode> QgsAnnotationLineItem::nodes() const
 {
   QList< QgsAnnotationItemNode > res;
-  for ( auto it = mCurve->vertices_begin(); it != mCurve->vertices_end(); ++it )
+  int i = 0;
+  for ( auto it = mCurve->vertices_begin(); it != mCurve->vertices_end(); ++it, ++i )
   {
-    res.append( QgsAnnotationItemNode( QgsPointXY( ( *it ).x(), ( *it ).y() ), Qgis::AnnotationItemNodeType::VertexHandle ) );
+    res.append( QgsAnnotationItemNode( it.vertexId(), QgsPointXY( ( *it ).x(), ( *it ).y() ), Qgis::AnnotationItemNodeType::VertexHandle ) );
   }
   return res;
 }

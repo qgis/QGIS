@@ -33,7 +33,8 @@ from qgis.core import (QgsMapSettings,
                        QgsRectangle,
                        QgsAnnotationItemNode,
                        Qgis,
-                       QgsPointXY
+                       QgsPointXY,
+                       QgsVertexId
                        )
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -76,7 +77,7 @@ class TestQgsAnnotationMarkerItem(unittest.TestCase):
         Test nodes for item
         """
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
-        self.assertEqual(item.nodes(), [QgsAnnotationItemNode(QgsPointXY(12, 13), Qgis.AnnotationItemNodeType.VertexHandle)])
+        self.assertEqual(item.nodes(), [QgsAnnotationItemNode(QgsVertexId(0, 0, 0), QgsPointXY(12, 13), Qgis.AnnotationItemNodeType.VertexHandle)])
 
     def test_transform(self):
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
