@@ -98,7 +98,7 @@ class QgsRenderedItemResultsSpatialIndex : public RTree<const QgsRenderedItemDet
 ///@endcond
 
 QgsRenderedItemResults::QgsRenderedItemResults( const QgsRectangle &extent )
-  : mExtent( extent )
+  : mExtent( extent.buffered( std::max( extent.width(), extent.height() ) * 1000 ) )
   , mAnnotationItemsIndex( std::make_unique< QgsRenderedItemResultsSpatialIndex >( mExtent ) )
 {
 
