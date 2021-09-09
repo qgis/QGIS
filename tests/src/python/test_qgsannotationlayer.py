@@ -40,7 +40,11 @@ from qgis.core import (QgsMapSettings,
                        QgsMarkerSymbol,
                        QgsMapRendererSequentialJob,
                        QgsMapRendererParallelJob,
-                       QgsGeometry
+                       QgsGeometry,
+                       QgsAbstractAnnotationItemEditOperation,
+                       QgsAnnotationItemEditOperationMoveNode,
+                       QgsVertexId,
+                       QgsPointXY
                        )
 from qgis.testing import start_app, unittest
 
@@ -258,6 +262,37 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         self.assertIsInstance(p2.mainAnnotationLayer().items()[polygon_item_id], QgsAnnotationPolygonItem)
         self.assertIsInstance(p2.mainAnnotationLayer().items()[linestring_item_id], QgsAnnotationLineItem)
         self.assertIsInstance(p2.mainAnnotationLayer().items()[marker_item_id], QgsAnnotationMarkerItem)
+
+    def test_apply_edit(self):
+        """
+        Test applying edits to a layer
+        """
+        layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        self.assertTrue(layer.isValid())
+
+        polygon_item_id = layer.addItem(QgsAnnotationPolygonItem(
+            QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)]))))
+        linestring_item_id = layer.addItem(
+            QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)])))
+        marker_item_id = layer.addItem(QgsAnnotationMarkerItem(QgsPoint(12, 13)))
+
+        rc = QgsRenderContext()
+        self.assertCountEqual(layer.itemsInBounds(QgsRectangle(1, 1, 20, 20), rc), [polygon_item_id, linestring_item_id, marker_item_id])
+
+        # can't apply the abstract operation to a layer
+        self.assertFalse(layer.applyEdit(QgsAbstractAnnotationItemEditOperation(polygon_item_id)))
+
+        # can't apply a move to an item which doesn't exist in the layer
+        self.assertFalse(layer.applyEdit(QgsAnnotationItemEditOperationMoveNode('xxx', QgsVertexId(0, 0, 2), QgsPointXY(14, 15), QgsPointXY(19, 15))))
+
+        # apply move to polygon
+        self.assertTrue(layer.applyEdit(
+            QgsAnnotationItemEditOperationMoveNode(polygon_item_id, QgsVertexId(0, 0, 2), QgsPointXY(14, 15),
+                                                   QgsPointXY(19, 15))))
+
+        self.assertEqual(layer.item(polygon_item_id).geometry().asWkt(), 'Polygon ((12 13, 14 13, 19 15, 12 13))')
+        # ensure that spatial index was updated
+        self.assertCountEqual(layer.itemsInBounds(QgsRectangle(18, 1, 20, 16), rc), [polygon_item_id])
 
     def testRenderLayer(self):
         layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))

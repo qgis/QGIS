@@ -24,6 +24,8 @@
 
 
 class QgsAnnotationItem;
+class QgsAbstractAnnotationItemEditOperation;
+
 ///@cond PRIVATE
 class QgsAnnotationLayerSpatialIndex;
 ///@endcond
@@ -145,6 +147,15 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
      * \since QGIS 3.22
      */
     QStringList itemsInBounds( const QgsRectangle &bounds, QgsRenderContext &context, QgsFeedback *feedback = nullptr ) const;
+
+    /**
+     * Applies an edit \a operation to the layer.
+     *
+     * Returns TRUE if the operation was successfully applied.
+     *
+     * \since QGIS 3.22
+     */
+    bool applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
 
     Qgis::MapLayerProperties properties() const override;
     QgsAnnotationLayer *clone() const override SIP_FACTORY;
