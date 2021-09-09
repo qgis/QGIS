@@ -67,6 +67,7 @@ class APP_EXPORT QgsMeshTransformCoordinatesDockWidget: public QgsDockWidget, pu
     void calculate();
     void updateButton();
     void apply();
+    void onImportVertexClicked( bool checked );
 
   private:
     QgsMeshTransformVerticesByExpression mTransformVertices;
@@ -76,6 +77,9 @@ class APP_EXPORT QgsMeshTransformCoordinatesDockWidget: public QgsDockWidget, pu
     bool mIsResultValid = false;
     QList<QgsExpressionLineEdit *> mExpressionLineEdits;
     QList<QCheckBox *> mCheckBoxes;
+
+    QString displayCoordinateText( const QgsCoordinateReferenceSystem &crs, double value );
+    void importVertexCoordinates();
 
 };
 
