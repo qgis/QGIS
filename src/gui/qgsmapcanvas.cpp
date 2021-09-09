@@ -1791,7 +1791,7 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent *e )
   {
     // this is backwards, but we can't change now without breaking api because
     // forever QgsMapTools have had to explicitly mark events as ignored in order to
-    // indicate that they've consumed the event and that the default behaviour should not
+    // indicate that they've consumed the event and that the default behavior should not
     // be applied..!
     e->accept();
     if ( mMapTool )
