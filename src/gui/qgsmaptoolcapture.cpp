@@ -457,10 +457,10 @@ int QgsMapToolCapture::nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint
     {
       const QgsPointXY mapP( mapPoint.x(), mapPoint.y() );  //#spellok
       layerPoint = QgsPoint( toLayerCoordinates( vlayer, mapP ) ); //transform snapped point back to layer crs  //#spellok
-      if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) )
-        layerPoint.addZValue( defaultZValue() );
-      if ( QgsWkbTypes::hasM( vlayer->wkbType() ) )
-        layerPoint.addMValue( defaultMValue() );
+      if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) && !layerPoint.is3D() )
+        layerPoint.addZValue( mCadDockWidget && mCadDockWidget->cadEnabled() ? mCadDockWidget->currentPoint().z() : defaultZValue() );
+      if ( QgsWkbTypes::hasM( vlayer->wkbType() ) && !layerPoint.isMeasure() )
+        layerPoint.addMValue( mCadDockWidget && mCadDockWidget->cadEnabled() ? mCadDockWidget->currentPoint().m() : defaultMValue() );
     }
     catch ( QgsCsException & )
     {
