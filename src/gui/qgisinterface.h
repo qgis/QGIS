@@ -70,7 +70,6 @@ class QgsDevToolWidgetFactory;
 class QgsGpsConnection;
 class QgsApplicationExitBlockerInterface;
 class QgsAbstractMapToolHandler;
-class QgsMapToolModifyAnnotation;
 
 /**
  * \ingroup gui
@@ -1311,13 +1310,6 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.16
      */
     virtual void setGpsPanelConnection( QgsGpsConnection *connection ) = 0;
-
-    /**
-     * Returns the map tool used for modifying annotation layers.
-     *
-     * \since QGIS 3.22
-     */
-    virtual QgsMapToolModifyAnnotation *modifyAnnotationTool() = 0;
 
   signals:
 
