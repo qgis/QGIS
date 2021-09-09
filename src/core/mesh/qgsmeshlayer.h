@@ -780,6 +780,17 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     void stopFrameEditing( const QgsCoordinateTransform &transform );
 
     /**
+    * Re-indexes the faces and vertices, and renumber the indexes if \a renumber is TRUE.
+    * rebuilds the triangular mesh and its spatial index with \a transform,
+    * clean the undostack
+    *
+    * Returns FALSE if the operation fails
+    *
+    * \since QGIS 3.22
+    */
+    bool reindex( const QgsCoordinateTransform &transform, bool renumber );
+
+    /**
     * Returns a pointer to the mesh editor own by the mesh layer
     *
     * \since QGIS 3.22

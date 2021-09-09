@@ -303,6 +303,11 @@ class CORE_EXPORT QgsTopologicalMesh
      */
     void reindex();
 
+    /**
+     * Renumbers the  indexes of vertices and faces using the Reverse CutHill McKee Algorithm
+     */
+    bool renumber();
+
     //! Checks the consistency of the topological mesh and return FALSE if there is a consistency issue
     QgsMeshEditingError checkConsistency() const;
 
@@ -335,6 +340,9 @@ class CORE_EXPORT QgsTopologicalMesh
                                      int &neighborVertex1InFace2,
                                      int &neighborVertex2inFace1,
                                      int &neighborVertex2inFace2 ) const;
+
+    bool renumberVertices( QVector<int> &oldToNewIndex ) const;
+    bool renumberFaces( QVector<int> &oldToNewIndex ) const;
 
     //Attributes
     QgsMesh *mMesh = nullptr;
@@ -407,6 +415,9 @@ class CORE_EXPORT QgsMeshVertexCirculator
     //! Returns all the faces indexes around the vertex
     QList<int> facesAround() const;
 
+    //! Returns the degree of the vertex, that is the count of other vertices linked
+    int degree() const;
+
   private:
     const QVector<QgsMeshFace> mFaces;
     const QVector<QgsTopologicalMesh::FaceNeighbors> mFacesNeighborhood;
@@ -414,6 +425,7 @@ class CORE_EXPORT QgsMeshVertexCirculator
     mutable int mCurrentFace = -1;
     mutable int mLastValidFace = -1;
     bool mIsValid = false;
+    mutable int mDegree = -1;
 
     int positionInCurrentFace() const;
 };

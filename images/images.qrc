@@ -929,6 +929,7 @@
         <file>themes/default/mActionMeshTransformByExpression.svg</file>
         <file>themes/default/mIconVertexCoordinates.svg</file>
         <file>themes/default/mActionMeshEditForceByVectorLines.svg</file>
+        <file>themes/default/mActionMeshReindex.svg</file>
         <file>themes/default/mIconGeometryCollectionLayer.svg</file>
         <file>themes/default/mIconGps.svg</file>
         <file>themes/default/mActionNewGpx.svg</file>

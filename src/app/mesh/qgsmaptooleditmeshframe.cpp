@@ -15,6 +15,8 @@
  ***************************************************************************/
 #include "qgsmaptooleditmeshframe.h"
 
+#include <QMessageBox>
+
 #include "qgis.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
@@ -220,6 +222,8 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   mWidgetActionForceByLine = new QgsMeshEditForceByLineAction( this );
   mWidgetActionForceByLine->setMapCanvas( canvas );
 
+  mActionReindexMesh = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshReindex.svg" ) ), tr( "Reindex faces and vertices" ), this );
+
   mActionRemoveVerticesFillingHole = new QAction( this );
   mActionDelaunayTriangulation = new QAction( tr( "Delaunay triangulation with selected vertices" ), this );
   mActionFacesRefinement = new QAction( tr( "Refine current face" ), this );
@@ -275,6 +279,7 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   } );
 
   connect( mActionTransformCoordinates, &QAction::triggered, this, &QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget );
+
   connect( mActionSelectByExpression, &QAction::triggered, this, &QgsMapToolEditMeshFrame::showSelectByExpressionDialog );
 
   connect( canvas, &QgsMapCanvas::selectionChanged, this, [this]
@@ -283,6 +288,8 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   } );
 
   connect( mActionForceByVectorLayerGeometries, &QAction::triggered, this, &QgsMapToolEditMeshFrame::forceBySelectedLayerPolyline );
+
+  connect( mActionReindexMesh, &QAction::triggered, this, &QgsMapToolEditMeshFrame::reindexMesh );
 
   setAutoSnapEnabled( true );
 }
@@ -317,7 +324,8 @@ void QgsMapToolEditMeshFrame::setActionsEnable( bool enable )
       << mActionSelectByPolygon
       << mActionSelectByExpression
       << mActionTransformCoordinates
-      << mActionForceByVectorLayerGeometries;
+      << mActionForceByVectorLayerGeometries
+      << mActionReindexMesh;
 
   for ( QAction *action : std::as_const( actions ) )
     action->setEnabled( enable );
@@ -1622,6 +1630,26 @@ void QgsMapToolEditMeshFrame::forceBySelectedLayerPolyline()
   mCurrentEditor->advancedEdit( &forceByPolylinesEdit );
 }
 
+
+void QgsMapToolEditMeshFrame::reindexMesh()
+{
+  if ( !mCurrentLayer || !mCurrentLayer->isEditable() )
+    return;
+
+  onEditingStarted();
+
+  if ( QMessageBox::question( canvas(), tr( "Reindex the Mesh" ),
+                              tr( "Do you want to reindex the faces and vertices of the mesh layer %1?" ).arg( mCurrentLayer->name() ),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+       == QMessageBox::No )
+    return;
+
+
+  QgsCoordinateTransform transform( mCurrentLayer->crs(), canvas()->mapSettings().destinationCrs(), QgsProject::instance() );
+
+  QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
+  mCurrentLayer->reindex( transform, true );
+}
 
 void QgsMapToolEditMeshFrame::selectInGeometry( const QgsGeometry &geometry, Qt::KeyboardModifiers modifiers )
 {

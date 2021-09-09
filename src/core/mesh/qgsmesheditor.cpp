@@ -61,6 +61,10 @@ QgsMeshEditingError QgsMeshEditor::initialize()
   return error;
 }
 
+void QgsMeshEditor::resetTriangularMesh( QgsTriangularMesh *triangularMesh )
+{
+  mTriangularMesh = triangularMesh;
+}
 
 bool QgsMeshEditor::isFaceGeometricallyCompatible( const QgsMeshFace &face )
 {
@@ -775,6 +779,28 @@ bool QgsMeshEditor::isModified() const
     return !mUndoStack->isClean();
 
   return false;
+}
+
+bool QgsMeshEditor::reindex( bool renumbering )
+{
+  mTopologicalMesh.reindex();
+  mUndoStack->clear();
+  QgsMeshEditingError error = initialize();
+
+  if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
+    return false;
+
+  if ( renumbering )
+  {
+    if ( !mTopologicalMesh.renumber() )
+      return false;
+
+    QgsMeshEditingError error = initialize();
+    return error.errorType == Qgis::MeshEditingErrorType::NoError;
+  }
+
+  else
+    return true;
 }
 
 QList<int> QgsMeshEditor::freeVerticesIndexes() const
