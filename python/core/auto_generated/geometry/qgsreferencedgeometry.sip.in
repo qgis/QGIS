@@ -163,13 +163,37 @@ Construct a new QgsReferencedGeometry from referenced ``point``
 Construct a new QgsReferencedGeometry from referenced ``rectangle``
 %End
 
+    static QgsReferencedGeometry fromEwkt( const QString &ewkt );
+%Docstring
+Creates a new geometry from a EWKT string
+
+.. note::
+
+   Assumes a string in the format SRID={EPSG Id};WKT
+
+.. seealso:: :py:func:`asEwkt`
+
+.. versionadded:: 3.22
+%End
+
+    QString asEwkt( int precision = 17 ) const;
+%Docstring
+Exports the geometry to EWKT
+
+:param precision: number of decimal places for coordinates
+
+:return: the EWKT string in format SRID={EPSG Id};WKT
+
+.. seealso:: :py:func:`fromEwkt`
+
+.. versionadded:: 3.22
+%End
 
     SIP_PYOBJECT __repr__();
 %MethodCode
     QString str = QStringLiteral( "<QgsReferencedGeometry: %1 (%2)>" ).arg( sipCpp->asWkt(), sipCpp->crs().authid() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
-
 };
 
 

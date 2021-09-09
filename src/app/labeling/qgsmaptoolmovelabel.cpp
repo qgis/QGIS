@@ -182,30 +182,58 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         return;
       }
 
-      int xCol = -1, yCol = -1;
+      int xCol = -1, yCol = -1, pointCol = -1;
 
-      if ( !mCurrentLabel.pos.isDiagram && !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol ) )
+      if ( !mCurrentLabel.pos.isDiagram && !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol, pointCol ) )
       {
-        QgsPalIndexes indexes;
-
-        if ( createAuxiliaryFields( indexes ) )
-          return;
-
-        if ( !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol ) )
+        switch ( mCurrentLabel.settings.placementCoordinateType() )
         {
-          QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, mCurrentLabel.settings, vlayer );
-          QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, mCurrentLabel.settings, vlayer );
-          if ( xCol < 0 && yCol < 0 )
-            QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "The label X/Y columns “%1” and “%2” do not exist in the layer" ).arg( xColName, yColName ) );
-          else if ( xCol < 0 )
-            QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "The label X column “%1” does not exist in the layer" ).arg( xColName ) );
-          else if ( yCol < 0 )
-            QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "The label Y column “%1” does not exist in the layer" ).arg( yColName ) );
-          return;
-        }
+          case QgsLabeling::CoordinateType::XY:
+          {
+            mPalProperties.clear();
+            mPalProperties << QgsPalLayerSettings::PositionX;
+            mPalProperties << QgsPalLayerSettings::PositionY;
+            QgsPalIndexes indexes;
+            if ( createAuxiliaryFields( indexes ) )
+              return;
 
-        xCol = indexes[ QgsPalLayerSettings::PositionX ];
-        yCol = indexes[ QgsPalLayerSettings::PositionY ];
+            if ( !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol ) )
+            {
+              QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, mCurrentLabel.settings, vlayer );
+              QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, mCurrentLabel.settings, vlayer );
+              if ( xCol < 0 && yCol < 0 )
+                QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "The label X/Y columns “%1” and “%2” do not exist in the layer" ).arg( xColName, yColName ) );
+              else if ( xCol < 0 )
+                QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "The label X column “%1” does not exist in the layer" ).arg( xColName ) );
+              else if ( yCol < 0 )
+                QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "The label Y column “%1” does not exist in the layer" ).arg( yColName ) );
+              return;
+            }
+
+            xCol = indexes[ QgsPalLayerSettings::PositionX ];
+            yCol = indexes[ QgsPalLayerSettings::PositionY ];
+          }
+          break;
+          case QgsLabeling::CoordinateType::Point:
+          {
+            mPalProperties.clear();
+            mPalProperties << QgsPalLayerSettings::PositionPoint;
+            QgsPalIndexes indexes;
+            if ( createAuxiliaryFields( indexes ) )
+              return;
+
+            if ( !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol, pointCol ) )
+            {
+              QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::PositionPoint, mCurrentLabel.settings, vlayer );
+              if ( pointCol < 0 )
+                QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "The label Point column “%1” does not exist in the layer" ).arg( pointColName ) );
+              return;
+            }
+
+            pointCol = indexes[ QgsPalLayerSettings::PositionPoint ];
+          }
+          break;
+        }
       }
       else if ( mCurrentLabel.pos.isDiagram && !diagramMoveable( vlayer, xCol, yCol ) )
       {
@@ -221,34 +249,35 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         yCol = indexes[ QgsDiagramLayerSettings::PositionY ];
       }
 
-      if ( xCol >= 0 && yCol >= 0 )
-      {
-        const bool usesAuxFields = vlayer->fields().fieldOrigin( xCol ) == QgsFields::OriginJoin
-                                   && vlayer->fields().fieldOrigin( yCol ) == QgsFields::OriginJoin;
-        if ( !usesAuxFields && !vlayer->isEditable() )
-        {
-          if ( vlayer->startEditing() )
-          {
-            QgisApp::instance()->messageBar()->pushInfo( tr( "Move Label" ), tr( "Layer “%1” was made editable" ).arg( vlayer->name() ) );
-          }
-          else
-          {
-            QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "Cannot move “%1” — the layer “%2” could not be made editable" ).arg( mCurrentLabel.pos.labelText, vlayer->name() ) );
-            return;
-          }
-        }
+      bool usesAuxFields = vlayer->fields().fieldOrigin( xCol ) == QgsFields::OriginJoin
+                           && vlayer->fields().fieldOrigin( yCol ) == QgsFields::OriginJoin;
+      if ( mCurrentLabel.settings.placementCoordinateType() == QgsLabeling::CoordinateType::Point
+           && !mCurrentLabel.pos.isDiagram )
+        usesAuxFields = vlayer->fields().fieldOrigin( pointCol ) == QgsFields::OriginJoin;
 
-        mStartPointMapCoords = e->mapPoint();
-        QgsPointXY referencePoint;
-        if ( !currentLabelRotationPoint( referencePoint, !currentLabelPreserveRotation() ) )
+      if ( !usesAuxFields && !vlayer->isEditable() )
+      {
+        if ( vlayer->startEditing() )
         {
-          referencePoint.setX( mCurrentLabel.pos.labelRect.xMinimum() );
-          referencePoint.setY( mCurrentLabel.pos.labelRect.yMinimum() );
+          QgisApp::instance()->messageBar()->pushInfo( tr( "Move Label" ), tr( "Layer “%1” was made editable" ).arg( vlayer->name() ) );
         }
-        mClickOffsetX = mStartPointMapCoords.x() - referencePoint.x();
-        mClickOffsetY = mStartPointMapCoords.y() - referencePoint.y();
-        createRubberBands();
+        else
+        {
+          QgisApp::instance()->messageBar()->pushWarning( tr( "Move Label" ), tr( "Cannot move “%1” — the layer “%2” could not be made editable" ).arg( mCurrentLabel.pos.labelText, vlayer->name() ) );
+          return;
+        }
       }
+
+      mStartPointMapCoords = e->mapPoint();
+      QgsPointXY referencePoint;
+      if ( !currentLabelRotationPoint( referencePoint, !currentLabelPreserveRotation() ) )
+      {
+        referencePoint.setX( mCurrentLabel.pos.labelRect.xMinimum() );
+        referencePoint.setY( mCurrentLabel.pos.labelRect.yMinimum() );
+      }
+      mClickOffsetX = mStartPointMapCoords.x() - referencePoint.x();
+      mClickOffsetY = mStartPointMapCoords.y() - referencePoint.y();
+      createRubberBands();
     }
   }
   else
@@ -286,13 +315,14 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         const double ydiff = releaseCoords.y() - mStartPointMapCoords.y();
 
         int xCol = -1;
-        int  yCol = -1;
+        int yCol = -1;
+        int pointCol = -1;
         double xPosOrig = 0;
         double yPosOrig = 0;
         bool xSuccess = false;
         bool ySuccess = false;
 
-        if ( !isCalloutMove && !currentLabelDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol ) )
+        if ( !isCalloutMove && !currentLabelDataDefinedPosition( xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol, pointCol ) )
         {
           return;
         }
@@ -334,36 +364,35 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
         else
           vlayer->beginEditCommand( tr( "Moved callout" ) );
 
-        // Try to convert to the destination field type
-        QVariant xNewPos( xPosNew );
-        QVariant yNewPos( yPosNew );
-
-        if ( xCol < vlayer->fields().count() )
-        {
-          if ( ! vlayer->fields().at( xCol ).convertCompatible( xNewPos ) )
-          {
-            xNewPos = xPosNew; // revert and hope for the best
-          }
-        }
-
-        if ( yCol < vlayer->fields().count() )
-        {
-          if ( ! vlayer->fields().at( yCol ).convertCompatible( yNewPos ) )
-          {
-            yNewPos = yPosNew; // revert and hope for the best
-          }
-        }
-
+        bool success = false;
         if ( !isCalloutMove
              && vlayer->labeling()->settings().placementCoordinateType() != QgsLabeling::CoordinateType::XY )
         {
-          QgsPalLayerSettings *settings = new QgsPalLayerSettings( mCurrentLabel.settings );
-          settings->setPlacementCoordinateType( QgsLabeling::CoordinateType::XY );
-          vlayer->labeling()->setSettings( settings );
+          success = changeCurrentLabelDataDefinedPosition( xPosNew, yPosNew );
         }
+        else
+        {
+          // Try to convert to the destination field type
+          QVariant xNewPos( xPosNew );
+          QVariant yNewPos( yPosNew );
+          if ( xCol < vlayer->fields().count() )
+          {
+            if ( ! vlayer->fields().at( xCol ).convertCompatible( xNewPos ) )
+            {
+              xNewPos = xPosNew; // revert and hope for the best
+            }
+          }
 
-        bool success = vlayer->changeAttributeValue( featureId, xCol, xNewPos );
-        success = vlayer->changeAttributeValue( featureId, yCol, yNewPos ) && success;
+          if ( yCol < vlayer->fields().count() )
+          {
+            if ( ! vlayer->fields().at( yCol ).convertCompatible( yNewPos ) )
+            {
+              yNewPos = yPosNew; // revert and hope for the best
+            }
+          }
+          success = vlayer->changeAttributeValue( featureId, xCol, xNewPos );
+          success = vlayer->changeAttributeValue( featureId, yCol, yNewPos ) && success;
+        }
 
         if ( !success )
         {

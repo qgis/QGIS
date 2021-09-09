@@ -77,7 +77,6 @@ class GUI_EXPORT QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui:
   private slots:
     void labelModeChanged( int index );
     void showEngineConfigDialog();
-    void layerLabelingChanged();
 
   private:
 

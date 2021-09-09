@@ -183,6 +183,35 @@ class CORE_EXPORT QgsReferencedGeometry : public QgsGeometry, public QgsReferenc
      */
     static QgsReferencedGeometry fromReferencedRect( const QgsReferencedRectangle &rectangle );
 
+    /**
+     * Creates a new geometry from a EWKT string
+     *
+     * \note Assumes a string in the format SRID={EPSG Id};WKT
+     *
+     * \see asEwkt()
+     * \since QGIS 3.22
+     */
+    static QgsReferencedGeometry fromEwkt( const QString &ewkt );
+
+    /**
+     * Exports the geometry to EWKT
+     *
+     * \param precision number of decimal places for coordinates
+     * \returns the EWKT string in format SRID={EPSG Id};WKT
+     *
+     * \see fromEwkt()
+     * \since QGIS 3.22
+     */
+    QString asEwkt( int precision = 17 ) const;
+
+  private:
+
+    struct Ewkt
+    {
+      QString wkt;
+      int srid = -1;
+    };
+    static Ewkt parseEwkt( const QString &ewkt );
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
