@@ -20,6 +20,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsmarkersymbol.h"
 #include "qgsannotationitemnode.h"
+#include "qgsannotationitemeditoperation.h"
 
 QgsAnnotationMarkerItem::QgsAnnotationMarkerItem( const QgsPoint &point )
   : QgsAnnotationItem()
@@ -77,6 +78,19 @@ Qgis::AnnotationItemFlags QgsAnnotationMarkerItem::flags() const
 QList<QgsAnnotationItemNode> QgsAnnotationMarkerItem::nodes() const
 {
   return { QgsAnnotationItemNode( QgsVertexId( 0, 0, 0 ), mPoint, Qgis::AnnotationItemNodeType::VertexHandle )};
+}
+
+bool QgsAnnotationMarkerItem::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
+{
+  if ( QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation ) )
+  {
+    mPoint = QgsPoint( moveOperation->after() );
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 QgsAnnotationMarkerItem *QgsAnnotationMarkerItem::create()

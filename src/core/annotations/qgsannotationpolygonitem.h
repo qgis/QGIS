@@ -45,6 +45,7 @@ class CORE_EXPORT QgsAnnotationPolygonItem : public QgsAnnotationItem
     QList< QgsAnnotationItemNode > nodes() const override;
     QgsGeometry rubberBandGeometry() const override;
     bool transform( const QTransform &transform ) override;
+    bool applyEdit( QgsAbstractAnnotationItemEditOperation *operation ) override;
 
     /**
      * Creates a new polygon annotation item.

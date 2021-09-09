@@ -20,6 +20,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgslinesymbol.h"
 #include "qgsannotationitemnode.h"
+#include "qgsannotationitemeditoperation.h"
 
 QgsAnnotationLineItem::QgsAnnotationLineItem( QgsCurve *curve )
   : QgsAnnotationItem()
@@ -100,6 +101,18 @@ bool QgsAnnotationLineItem::transform( const QTransform &transform )
 {
   mCurve->transform( transform );
   return true;
+}
+
+bool QgsAnnotationLineItem::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
+{
+  if ( QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation ) )
+  {
+    return mCurve->moveVertex( moveOperation->nodeId(), QgsPoint( moveOperation->after() ) );
+  }
+  else
+  {
+    return false;
+  }
 }
 
 QgsAnnotationLineItem *QgsAnnotationLineItem::create()

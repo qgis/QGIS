@@ -38,7 +38,8 @@ from qgis.core import (QgsMapSettings,
                        QgsAnnotationItemNode,
                        Qgis,
                        QgsPointXY,
-                       QgsVertexId
+                       QgsVertexId,
+                       QgsAnnotationItemEditOperationMoveNode
                        )
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -99,6 +100,18 @@ class TestQgsAnnotationPolygonItem(unittest.TestCase):
         transform = QTransform.fromTranslate(100, 200)
         item.transform(transform)
         self.assertEqual(item.geometry().asWkt(), 'Polygon ((112 213, 114 213, 114 215, 112 213))')
+
+    def test_apply_move_node_edit(self):
+        item = QgsAnnotationPolygonItem(
+            QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)])))
+        self.assertEqual(item.geometry().asWkt(), 'Polygon ((12 13, 14 13, 14 15, 12 13))')
+
+        self.assertTrue(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPointXY(14, 13), QgsPointXY(17, 18))))
+        self.assertEqual(item.geometry().asWkt(), 'Polygon ((12 13, 17 18, 14 15, 12 13))')
+        self.assertTrue(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 3), QgsPointXY(12, 13), QgsPointXY(19, 20))))
+        self.assertEqual(item.geometry().asWkt(), 'Polygon ((19 20, 17 18, 14 15, 19 20))')
+        self.assertFalse(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 4), QgsPointXY(14, 15), QgsPointXY(19, 20))))
+        self.assertEqual(item.geometry().asWkt(), 'Polygon ((19 20, 17 18, 14 15, 19 20))')
 
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")

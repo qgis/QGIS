@@ -123,6 +123,15 @@ Implementations should include a call to :py:func:`~QgsAnnotationItem.readCommon
 .. seealso:: :py:func:`readCommonProperties`
 %End
 
+    virtual bool applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
+%Docstring
+Applies an edit ``operation`` to the item.
+
+Returns ``True`` if the operation was successfully applied.
+
+.. versionadded:: 3.22
+%End
+
     int zIndex() const;
 %Docstring
 Returns the item's z index, which controls the order in which annotation items

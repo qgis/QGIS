@@ -44,6 +44,7 @@ class CORE_EXPORT QgsAnnotationMarkerItem : public QgsAnnotationItem
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     Qgis::AnnotationItemFlags flags() const override;
     QList< QgsAnnotationItemNode > nodes() const override;
+    bool applyEdit( QgsAbstractAnnotationItemEditOperation *operation ) override;
 
     /**
      * Creates a new marker annotation item.

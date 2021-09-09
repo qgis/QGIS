@@ -21,6 +21,7 @@
 #include "qgssurface.h"
 #include "qgsfillsymbol.h"
 #include "qgsannotationitemnode.h"
+#include "qgsannotationitemeditoperation.h"
 
 QgsAnnotationPolygonItem::QgsAnnotationPolygonItem( QgsCurvePolygon *polygon )
   : QgsAnnotationItem()
@@ -130,6 +131,18 @@ bool QgsAnnotationPolygonItem::transform( const QTransform &transform )
 {
   mPolygon->transform( transform );
   return true;
+}
+
+bool QgsAnnotationPolygonItem::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
+{
+  if ( QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation ) )
+  {
+    return mPolygon->moveVertex( moveOperation->nodeId(), QgsPoint( moveOperation->after() ) );
+  }
+  else
+  {
+    return false;
+  }
 }
 
 QgsAnnotationPolygonItem *QgsAnnotationPolygonItem::create()

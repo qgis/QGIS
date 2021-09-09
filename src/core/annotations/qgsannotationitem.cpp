@@ -23,6 +23,11 @@ Qgis::AnnotationItemFlags QgsAnnotationItem::flags() const
   return Qgis::AnnotationItemFlags();
 }
 
+bool QgsAnnotationItem::applyEdit( QgsAbstractAnnotationItemEditOperation * )
+{
+  return false;
+}
+
 QList<QgsAnnotationItemNode> QgsAnnotationItem::nodes() const
 {
   return {};
