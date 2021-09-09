@@ -93,6 +93,15 @@ bool QgsAnnotationMarkerItem::applyEdit( QgsAbstractAnnotationItemEditOperation 
   }
 }
 
+QgsAnnotationItemEditOperationTransientResults *QgsAnnotationMarkerItem::transientEditResults( QgsAbstractAnnotationItemEditOperation *operation )
+{
+  if ( QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation ) )
+  {
+    return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromPointXY( moveOperation->after() ) );
+  }
+  return nullptr;
+}
+
 QgsAnnotationMarkerItem *QgsAnnotationMarkerItem::create()
 {
   return new QgsAnnotationMarkerItem( QgsPoint() );

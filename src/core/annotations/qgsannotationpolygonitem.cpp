@@ -145,6 +145,19 @@ bool QgsAnnotationPolygonItem::applyEdit( QgsAbstractAnnotationItemEditOperation
   }
 }
 
+QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPolygonItem::transientEditResults( QgsAbstractAnnotationItemEditOperation *operation )
+{
+  if ( QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation ) )
+  {
+    std::unique_ptr< QgsCurvePolygon > modifiedPolygon( mPolygon->clone() );
+    if ( modifiedPolygon->moveVertex( moveOperation->nodeId(), QgsPoint( moveOperation->after() ) ) )
+    {
+      return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( std::move( modifiedPolygon ) ) );
+    }
+  }
+  return nullptr;
+}
+
 QgsAnnotationPolygonItem *QgsAnnotationPolygonItem::create()
 {
   return new QgsAnnotationPolygonItem( new QgsPolygon() );

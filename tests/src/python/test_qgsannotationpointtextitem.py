@@ -103,8 +103,15 @@ class TestQgsAnnotationPointTextItem(unittest.TestCase):
         item = QgsAnnotationPointTextItem('my text', QgsPointXY(12, 13))
         self.assertEqual(item.point().asWkt(), 'POINT(12 13)')
 
-        self.assertTrue(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPointXY(14, 13), QgsPointXY(17, 18))))
+        self.assertTrue(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 0), QgsPointXY(14, 13), QgsPointXY(17, 18))))
         self.assertEqual(item.point().asWkt(), 'POINT(17 18)')
+
+    def test_transient_move_operation(self):
+        item = QgsAnnotationPointTextItem('my text', QgsPointXY(12, 13))
+        self.assertEqual(item.point().asWkt(), 'POINT(12 13)')
+
+        res = item.transientEditResults(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 0), QgsPointXY(12, 13), QgsPointXY(17, 18)))
+        self.assertEqual(res.representativeGeometry().asWkt(), 'Point (17 18)')
 
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")

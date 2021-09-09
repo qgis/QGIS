@@ -95,6 +95,13 @@ class TestQgsAnnotationMarkerItem(unittest.TestCase):
         self.assertTrue(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPointXY(14, 13), QgsPointXY(17, 18))))
         self.assertEqual(item.geometry().asWkt(), 'POINT(17 18)')
 
+    def test_transient_move_operation(self):
+        item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
+        self.assertEqual(item.geometry().asWkt(), 'POINT(12 13)')
+
+        res = item.transientEditResults(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 0), QgsPointXY(12, 13), QgsPointXY(17, 18)))
+        self.assertEqual(res.representativeGeometry().asWkt(), 'Point (17 18)')
+
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")
         elem = doc.createElement('test')

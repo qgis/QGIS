@@ -115,6 +115,19 @@ bool QgsAnnotationLineItem::applyEdit( QgsAbstractAnnotationItemEditOperation *o
   }
 }
 
+QgsAnnotationItemEditOperationTransientResults *QgsAnnotationLineItem::transientEditResults( QgsAbstractAnnotationItemEditOperation *operation )
+{
+  if ( QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation ) )
+  {
+    std::unique_ptr< QgsCurve > modifiedCurve( mCurve->clone() );
+    if ( modifiedCurve->moveVertex( moveOperation->nodeId(), QgsPoint( moveOperation->after() ) ) )
+    {
+      return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( std::move( modifiedCurve ) ) );
+    }
+  }
+  return nullptr;
+}
+
 QgsAnnotationLineItem *QgsAnnotationLineItem::create()
 {
   return new QgsAnnotationLineItem( new QgsLineString() );

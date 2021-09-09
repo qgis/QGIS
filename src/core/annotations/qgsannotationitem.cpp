@@ -28,6 +28,11 @@ bool QgsAnnotationItem::applyEdit( QgsAbstractAnnotationItemEditOperation * )
   return false;
 }
 
+QgsAnnotationItemEditOperationTransientResults *QgsAnnotationItem::transientEditResults( QgsAbstractAnnotationItemEditOperation * )
+{
+  return nullptr;
+}
+
 QList<QgsAnnotationItemNode> QgsAnnotationItem::nodes() const
 {
   return {};

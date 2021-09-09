@@ -25,6 +25,7 @@
 #include "qgsrenderedannotationitemdetails.h"
 #include "qgsannotationitem.h"
 #include "qgsannotationitemnode.h"
+#include "qgsannotationitemeditoperation.h"
 #include "RTree.h"
 #include <QTransform>
 #include <QWindow>

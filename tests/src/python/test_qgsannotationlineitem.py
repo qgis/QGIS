@@ -101,6 +101,13 @@ class TestQgsAnnotationLineItem(unittest.TestCase):
         self.assertFalse(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 3), QgsPointXY(14, 15), QgsPointXY(19, 20))))
         self.assertEqual(item.geometry().asWkt(), 'LineString (12 13, 17 18, 19 20)')
 
+    def test_transient_move_operation(self):
+        item = QgsAnnotationLineItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]))
+        self.assertEqual(item.geometry().asWkt(), 'LineString (12 13, 14 13, 14 15)')
+
+        res = item.transientEditResults(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPointXY(14, 13), QgsPointXY(17, 18)))
+        self.assertEqual(res.representativeGeometry().asWkt(), 'LineString (12 13, 17 18, 14 15)')
+
     def test_rubberbandgeometry(self):
         """
         Test creating rubber band geometry
