@@ -796,10 +796,7 @@ bool QgsMeshEditor::reindex( bool renumbering )
       return false;
 
     QgsMeshEditingError error = initialize();
-    if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
-      return false;
-
-    return true;
+    return error.errorType == Qgis::MeshEditingErrorType::NoError;
   }
 
   else

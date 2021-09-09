@@ -1634,17 +1634,12 @@ void QgsMapToolEditMeshFrame::forceBySelectedLayerPolyline()
 void QgsMapToolEditMeshFrame::reindexMesh()
 {
   if ( !mCurrentLayer || !mCurrentLayer->isEditable() )
-      return;
+    return;
 
   onEditingStarted();
 
   if ( QMessageBox::question( canvas(), tr( "Reindex the Mesh" ),
-                              tr( "This action will reindex the faces and vertices of the mesh layer %1."
-                                  "This opration will consist to:\n\n"
-                                  "- purge memory of remaining traces of old vertices and faces\n"
-                                  "- empty the undo/redo stack of this layer\n"
-                                  "- optimize the indexes of vertices and faces using the CutHill-McKee Algorithm.\n\n"
-                                  "Do you want to proceed?" ).arg( mCurrentLayer->name() ),
+                              tr( "Do you want to reindex the faces and vertices of the mesh layer %1?" ).arg( mCurrentLayer->name() ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
        == QMessageBox::No )
     return;
