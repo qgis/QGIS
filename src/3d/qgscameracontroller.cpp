@@ -297,37 +297,6 @@ void QgsCameraController::updateCameraFromPose()
   emit cameraChanged();
 }
 
-double QgsCameraController::cameraCenterElevation( bool centerPointChanged )
-{
-  if ( std::isnan( mCameraPose.centerPoint().x() ) || std::isnan( mCameraPose.centerPoint().y() ) || std::isnan( mCameraPose.centerPoint().z() ) )
-  {
-    // something went horribly wrong but we need to at least try to fix it somehow
-    qWarning() << "camera position got NaN!";
-    return 0;
-  }
-
-  double res = 0.0;
-
-  if ( mCamera && mTerrainEntity && centerPointChanged )
-  {
-    // figure out our distance from terrain and update the camera's view center
-    // so that camera tilting and rotation is around a point on terrain, not an point at fixed elevation
-    QVector3D intersectionPoint;
-    const QgsRayCastingUtils::Ray3D ray = QgsRayCastingUtils::rayForCameraCenter( mCamera );
-    if ( mTerrainEntity->rayIntersection( ray, intersectionPoint ) )
-      res = intersectionPoint.y();
-    else
-      res = mTerrainEntity->terrainElevationOffset();
-  }
-
-  if ( mCamera && !mTerrainEntity && centerPointChanged )
-  {
-    res = 0.0;
-  }
-
-  return res;
-}
-
 void QgsCameraController::moveCameraPositionBy( const QVector3D &posDiff )
 {
   mCameraPose.setCenterPoint( mCameraPose.centerPoint() + posDiff );
@@ -385,21 +354,8 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     float yaw = mCameraPose.headingAngle();
     pitch += 0.2f * dy;
     yaw -= 0.2f * dx;
-
-    QVector2D texCoords( double( mMousePos.x() ) / mViewport.width() * 2.0 - 1.0, double( mMousePos.y() ) / mViewport.height() * -2.0 + 1 );
-
-    QVector3D lookAtPos = Qgs3DUtils::mouseToWorldLookAtPoint( mMousePos.x(), mMousePos.y(), mCameraPose.distanceFromCenterPoint(), mViewport, mCamera );
-    mCameraPose.setCenterPoint( lookAtPos );
     mCameraPose.setPitchAngle( pitch );
     mCameraPose.setHeadingAngle( yaw );
-    updateCameraFromPose();
-
-    lookAtPos = Qgs3DUtils::mouseToWorldLookAtPoint(
-                  ( -texCoords.x() + 1.0 ) / 2.0 * mViewport.width(),
-                  ( texCoords.y() + 1.0 ) / 2.0 * mViewport.height(),
-                  mCameraPose.distanceFromCenterPoint(), mViewport, mCamera );
-
-    mCameraPose.setCenterPoint( lookAtPos );
     updateCameraFromPose();
   }
   else if ( hasLeftButton && hasCtrl && !hasShift )

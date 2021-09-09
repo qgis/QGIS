@@ -286,8 +286,6 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     bool mCaptureFpsMouseMovements = false;
     bool mIgnoreNextMouseMove = false;
     QTimer *mFpsNavTimer = nullptr;
-
-    double cameraCenterElevation( bool centerPointChanged );
 };
 
 #endif // QGSCAMERACONTROLLER_H

@@ -59,7 +59,7 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   mSplitter->addWidget( mContainer );
   mSplitter->addWidget( mNavigationWidget );
 
-  connect( mSplitter, &QSplitter::splitterMoved, [&]( int pos, int index )
+  connect( mSplitter, &QSplitter::splitterMoved, [&]( int, int )
   {
     QRect viewportRect( QPoint( 0, 0 ), mContainer->size() );
     mScene->cameraController()->setViewport( viewportRect );
