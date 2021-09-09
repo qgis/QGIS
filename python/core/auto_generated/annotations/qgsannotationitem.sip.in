@@ -132,6 +132,13 @@ Returns ``True`` if the operation was successfully applied.
 .. versionadded:: 3.22
 %End
 
+    virtual QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) /Factory/;
+%Docstring
+Retrieves the results of a transient (in progress) edit ``operation`` on the item.
+
+.. versionadded:: 3.22
+%End
+
     int zIndex() const;
 %Docstring
 Returns the item's z index, which controls the order in which annotation items

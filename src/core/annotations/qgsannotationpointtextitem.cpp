@@ -160,6 +160,15 @@ bool QgsAnnotationPointTextItem::applyEdit( QgsAbstractAnnotationItemEditOperati
   }
 }
 
+QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPointTextItem::transientEditResults( QgsAbstractAnnotationItemEditOperation *operation )
+{
+  if ( QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation ) )
+  {
+    return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry::fromPointXY( moveOperation->after() ) );
+  }
+  return nullptr;
+}
+
 QgsTextFormat QgsAnnotationPointTextItem::format() const
 {
   return mTextFormat;

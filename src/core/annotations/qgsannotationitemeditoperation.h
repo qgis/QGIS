@@ -93,4 +93,37 @@ class CORE_EXPORT QgsAnnotationItemEditOperationMoveNode : public QgsAbstractAnn
 
 };
 
+/**
+ * \ingroup core
+ * \brief Encapsulates the transient results of an in-progress annotation edit operation.
+ * \since QGIS 3.22
+ */
+class CORE_EXPORT QgsAnnotationItemEditOperationTransientResults
+{
+  public:
+
+    /**
+     * Constructor for QgsAnnotationItemEditOperationTransientResults.
+     *
+     * The \a representativeGeometry parameter specifies a geometry (in layer CRS) which represents
+     * the shape of the item if the operation were to be applied. It is used for creating a graphical
+     * representation of the operation during interactive edits.
+     */
+    QgsAnnotationItemEditOperationTransientResults( const QgsGeometry &representativeGeometry )
+      : mRepresentativeGeometry( representativeGeometry )
+    {}
+
+    /**
+     * Returns the geometry (in layer CRS) which represents the shape of the item if the operation were to be applied.
+     *
+     * This is used for creating a graphical representation of the operation during interactive edits.
+     */
+    QgsGeometry representativeGeometry() const { return mRepresentativeGeometry; }
+
+  private:
+
+    QgsGeometry mRepresentativeGeometry;
+
+};
+
 #endif // QGSANNOTATIONITEMEDITOPERATION_H

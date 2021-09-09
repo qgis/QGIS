@@ -45,6 +45,7 @@ class CORE_EXPORT QgsAnnotationMarkerItem : public QgsAnnotationItem
     Qgis::AnnotationItemFlags flags() const override;
     QList< QgsAnnotationItemNode > nodes() const override;
     bool applyEdit( QgsAbstractAnnotationItemEditOperation *operation ) override;
+    QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) override SIP_FACTORY;
 
     /**
      * Creates a new marker annotation item.

@@ -30,6 +30,7 @@ class QgsLineSymbol;
 class QgsFillSymbol;
 class QgsAnnotationItemNode;
 class QgsAbstractAnnotationItemEditOperation;
+class QgsAnnotationItemEditOperationTransientResults;
 
 /**
  * \ingroup core
@@ -157,6 +158,13 @@ class CORE_EXPORT QgsAnnotationItem
      * \since QGIS 3.22
      */
     virtual bool applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
+
+    /**
+     * Retrieves the results of a transient (in progress) edit \a operation on the item.
+     *
+     * \since QGIS 3.22
+     */
+    virtual QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) SIP_FACTORY;
 
     /**
      * Returns the item's z index, which controls the order in which annotation items

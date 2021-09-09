@@ -41,6 +41,8 @@ Constructor for QgsAnnotationMarkerItem, at the specified ``point``.
 
     virtual bool applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
 
+    virtual QgsAnnotationItemEditOperationTransientResults *transientEditResults( QgsAbstractAnnotationItemEditOperation *operation ) /Factory/;
+
 
     static QgsAnnotationMarkerItem *create() /Factory/;
 %Docstring
