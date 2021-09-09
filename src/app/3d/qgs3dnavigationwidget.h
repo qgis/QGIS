@@ -41,6 +41,13 @@ class Qgs3DNavigationWidget : public QWidget
      */
     void updateFromCamera();
 
+  signals:
+    void sizeChanged( const QSize &newSize );
+
+  protected:
+    void resizeEvent( QResizeEvent *event ) override;
+    void hideEvent( QHideEvent *event ) override;
+
   private:
     Qgs3DMapCanvas *mParent3DMapCanvas = nullptr;
     QToolButton *mZoomInButton = nullptr;

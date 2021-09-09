@@ -59,13 +59,6 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   mSplitter->addWidget( mContainer );
   mSplitter->addWidget( mNavigationWidget );
 
-  connect( mSplitter, &QSplitter::splitterMoved, [&]( int, int )
-  {
-    QRect viewportRect( QPoint( 0, 0 ), mContainer->size() );
-    mScene->cameraController()->setViewport( viewportRect );
-    mEngine->setSize( viewportRect.size() );
-  } );
-
   QHBoxLayout *hLayout = new QHBoxLayout( this );
   hLayout->setContentsMargins( 0, 0, 0, 0 );
   hLayout->addWidget( mSplitter );
@@ -75,6 +68,22 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
 
   mEngine->window()->setCursor( Qt::OpenHandCursor );
   mEngine->window()->installEventFilter( this );
+
+  connect( mSplitter, &QSplitter::splitterMoved, [&]( int, int )
+  {
+    QRect viewportRect( QPoint( 0, 0 ), mContainer->size() );
+    mScene->cameraController()->setViewport( viewportRect );
+    mEngine->setSize( viewportRect.size() );
+  } );
+
+  connect( mNavigationWidget, &Qgs3DNavigationWidget::sizeChanged, [&]( const QSize & newSize )
+  {
+    QSize widgetSize = size();
+    QRect viewportRect( QPoint( 0, 0 ), QSize( widgetSize.width() - newSize.width(), widgetSize.height() ) );
+    if ( mScene && mScene->cameraController() )
+      mScene->cameraController()->setViewport( viewportRect );
+    mEngine->setSize( viewportRect.size() );
+  } );
 
   QRect viewportRect( QPoint( 0, 0 ), mContainer->size() );
   mEngine->setSize( viewportRect.size() );
