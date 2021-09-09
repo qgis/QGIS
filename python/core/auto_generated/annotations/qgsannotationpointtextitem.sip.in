@@ -55,6 +55,8 @@ Creates a new text at point annotation item.
 
     virtual bool transform( const QTransform &transform );
 
+    virtual bool applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
+
 
     QgsPointXY point() const;
 %Docstring

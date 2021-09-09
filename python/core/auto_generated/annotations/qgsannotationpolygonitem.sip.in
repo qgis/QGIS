@@ -41,6 +41,8 @@ Constructor for QgsAnnotationPolygonItem, with the specified ``polygon`` geometr
 
     virtual bool transform( const QTransform &transform );
 
+    virtual bool applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
+
 
     static QgsAnnotationPolygonItem *create() /Factory/;
 %Docstring

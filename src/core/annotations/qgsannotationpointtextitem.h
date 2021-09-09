@@ -56,6 +56,7 @@ class CORE_EXPORT QgsAnnotationPointTextItem : public QgsAnnotationItem
     QgsRectangle boundingBox( QgsRenderContext &context ) const override;
     QList< QgsAnnotationItemNode > nodes() const override;
     bool transform( const QTransform &transform ) override;
+    bool applyEdit( QgsAbstractAnnotationItemEditOperation *operation ) override;
 
     /**
      * Returns the point location of the text.

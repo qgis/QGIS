@@ -39,6 +39,8 @@ Constructor for QgsAnnotationMarkerItem, at the specified ``point``.
 
     virtual QList< QgsAnnotationItemNode > nodes() const;
 
+    virtual bool applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
+
 
     static QgsAnnotationMarkerItem *create() /Factory/;
 %Docstring

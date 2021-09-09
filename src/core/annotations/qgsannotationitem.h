@@ -29,6 +29,7 @@ class QgsMarkerSymbol;
 class QgsLineSymbol;
 class QgsFillSymbol;
 class QgsAnnotationItemNode;
+class QgsAbstractAnnotationItemEditOperation;
 
 /**
  * \ingroup core
@@ -147,6 +148,15 @@ class CORE_EXPORT QgsAnnotationItem
      * \see readCommonProperties()
      */
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;
+
+    /**
+     * Applies an edit \a operation to the item.
+     *
+     * Returns TRUE if the operation was successfully applied.
+     *
+     * \since QGIS 3.22
+     */
+    virtual bool applyEdit( QgsAbstractAnnotationItemEditOperation *operation );
 
     /**
      * Returns the item's z index, which controls the order in which annotation items

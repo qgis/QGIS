@@ -18,6 +18,7 @@
 #include "qgsannotationpointtextitem.h"
 #include "qgstextrenderer.h"
 #include "qgsannotationitemnode.h"
+#include "qgsannotationitemeditoperation.h"
 
 QgsAnnotationPointTextItem::QgsAnnotationPointTextItem( const QString &text, QgsPointXY point )
   : QgsAnnotationItem()
@@ -144,6 +145,19 @@ bool QgsAnnotationPointTextItem::transform( const QTransform &transform )
   transform.map( mPoint.x(), mPoint.y(), &x, &y );
   mPoint.set( x, y );
   return true;
+}
+
+bool QgsAnnotationPointTextItem::applyEdit( QgsAbstractAnnotationItemEditOperation *operation )
+{
+  if ( QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation ) )
+  {
+    mPoint = moveOperation->after();
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 QgsTextFormat QgsAnnotationPointTextItem::format() const

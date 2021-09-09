@@ -35,7 +35,8 @@ from qgis.core import (QgsMapSettings,
                        QgsTextFormat,
                        QgsAnnotationItemNode,
                        Qgis,
-                       QgsVertexId
+                       QgsVertexId,
+                       QgsAnnotationItemEditOperationMoveNode
                        )
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -97,6 +98,13 @@ class TestQgsAnnotationPointTextItem(unittest.TestCase):
         transform = QTransform.fromTranslate(100, 200)
         item.transform(transform)
         self.assertEqual(item.point().asWkt(), 'POINT(112 213)')
+
+    def test_apply_move_node_edit(self):
+        item = QgsAnnotationPointTextItem('my text', QgsPointXY(12, 13))
+        self.assertEqual(item.point().asWkt(), 'POINT(12 13)')
+
+        self.assertTrue(item.applyEdit(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPointXY(14, 13), QgsPointXY(17, 18))))
+        self.assertEqual(item.point().asWkt(), 'POINT(17 18)')
 
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")
