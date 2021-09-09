@@ -1974,7 +1974,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             cmd[1] = t[:t.find('--optfile') + 10] + t[t.find('mergeInputFiles.txt'):]
             self.assertEqual(cmd,
                              ['gdal_merge.py',
-                              '-a_nodata -9999 -ot Float32 -of GTiff ' +
+                              '-a_nodata -9999.0 -ot Float32 -of GTiff ' +
                               '-o ' + outdir + '/check.tif ' +
                               '--optfile mergeInputFiles.txt'])
 
