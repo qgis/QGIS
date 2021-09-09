@@ -267,7 +267,7 @@ QString QgsLayoutAtlasToMultiplePdfAlgorithm::shortDescription() const
 
 QString QgsLayoutAtlasToMultiplePdfAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm outputs an atlas layout to mutliple PDF files.\n\n"
+  return QObject::tr( "This algorithm outputs an atlas layout to multiple PDF files.\n\n"
                       "If a coverage layer is set, the selected layout's atlas settings exposed in this algorithm "
                       "will be overwritten. In this case, an empty filter or sort by expression will turn those "
                       "settings off.\n"
