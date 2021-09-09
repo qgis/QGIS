@@ -712,7 +712,6 @@ bool QgsMapToolLabel::labelIsRotatable( QgsVectorLayer *layer, const QgsPalLayer
   return rotationCol != -1;
 }
 
-
 bool QgsMapToolLabel::currentLabelDataDefinedRotation( double &rotation, bool &rotationSuccess, int &rCol, bool ignoreXY ) const
 {
   QgsVectorLayer *vlayer = mCurrentLabel.layer;
@@ -867,37 +866,6 @@ bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSe
   return ( xCol != -1 && yCol != -1 );
 }
 
-bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &xCol, int &yCol, int &pointCol ) const
-{
-  xCol = -1;
-  yCol = -1;
-  pointCol = -1;
-
-  switch ( mCurrentLabel.settings.placementCoordinateType() )
-  {
-    case QgsLabeling::CoordinateType::XY:
-    {
-      QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, settings, vlayer );
-      QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, settings, vlayer );
-      xCol = vlayer->fields().lookupField( xColName );
-      yCol = vlayer->fields().lookupField( yColName );
-      if ( xCol <= 0 && yCol <= 0 )
-        return false;
-    }
-    break;
-    case QgsLabeling::CoordinateType::Point:
-    {
-      QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::PositionPoint, settings, vlayer );
-      pointCol = vlayer->fields().lookupField( pointColName );
-      if ( pointCol <= 0 )
-        return false;
-    }
-    break;
-  }
-
-  return true;
-}
-
 bool QgsMapToolLabel::layerCanPin( QgsVectorLayer *vlayer, int &xCol, int &yCol ) const
 {
   // currently same as QgsMapToolLabel::labelMoveable, but may change
@@ -946,6 +914,37 @@ bool QgsMapToolLabel::isPinned()
   }
 
   return rc;
+}
+
+bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &xCol, int &yCol, int &pointCol ) const
+{
+  xCol = -1;
+  yCol = -1;
+  pointCol = -1;
+
+  switch ( mCurrentLabel.settings.placementCoordinateType() )
+  {
+    case QgsLabeling::CoordinateType::XY:
+    {
+      QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, settings, vlayer );
+      QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, settings, vlayer );
+      xCol = vlayer->fields().lookupField( xColName );
+      yCol = vlayer->fields().lookupField( yColName );
+      if ( xCol <= 0 && yCol <= 0 )
+        return false;
+    }
+    break;
+    case QgsLabeling::CoordinateType::Point:
+    {
+      QString pointColName = dataDefinedColumnName( QgsPalLayerSettings::PositionPoint, settings, vlayer );
+      pointCol = vlayer->fields().lookupField( pointColName );
+      if ( pointCol <= 0 )
+        return false;
+    }
+    break;
+  }
+
+  return true;
 }
 
 bool QgsMapToolLabel::diagramCanShowHide( QgsVectorLayer *vlayer, int &showCol ) const

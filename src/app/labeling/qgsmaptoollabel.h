@@ -53,7 +53,6 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     */
     bool labelMoveable( QgsVectorLayer *vlayer, int &xCol, int &yCol ) const;
     bool labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &xCol, int &yCol ) const;
-    bool labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &xCol, int &yCol, int &pointCol ) const;
 
     /**
      * Returns true if diagram move can be applied to a layer
@@ -242,6 +241,8 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
      * \since QGIS 2.16
     */
     bool isPinned();
+
+    bool labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &xCol, int &yCol, int &pointCol ) const;
 
     bool createAuxiliaryFields( QgsPalIndexes &palIndexes, bool overwriteExpression = true );
     bool createAuxiliaryFields( LabelDetails &details, QgsPalIndexes &palIndexes, bool overwriteExpression = true ) const;
