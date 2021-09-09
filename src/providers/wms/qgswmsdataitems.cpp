@@ -41,6 +41,12 @@ QgsWMSConnectionItem::~QgsWMSConnectionItem()
   delete mCapabilitiesDownload;
 }
 
+void QgsWMSConnectionItem::refresh()
+{
+  mCapabilitiesDownload->setForceRefresh( true );
+  QgsDataItem::refresh();
+}
+
 void QgsWMSConnectionItem::deleteLater()
 {
   if ( mCapabilitiesDownload )
