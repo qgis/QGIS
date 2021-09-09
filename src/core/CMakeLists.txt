@@ -175,6 +175,7 @@ set(QGIS_CORE_SRCS
 
   annotations/qgsannotation.cpp
   annotations/qgsannotationitem.cpp
+  annotations/qgsannotationitemeditoperation.cpp
   annotations/qgsannotationitemregistry.cpp
   annotations/qgsannotationlayer.cpp
   annotations/qgsannotationlayerrenderer.cpp
@@ -1154,6 +1155,7 @@ set(QGIS_CORE_HDRS
 
   annotations/qgsannotation.h
   annotations/qgsannotationitem.h
+  annotations/qgsannotationitemeditoperation.h
   annotations/qgsannotationitemnode.h
   annotations/qgsannotationitemregistry.h
   annotations/qgsannotationlayer.h
