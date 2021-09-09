@@ -2533,6 +2533,7 @@ bool QgsOgrProviderUtils::saveConnection( const QString &path, const QString &og
     {
       QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
       QgsGeoPackageProviderConnection *providerConnection =  static_cast<QgsGeoPackageProviderConnection *>( providerMetadata->createConnection( connName ) );
+      providerConnection->setUri( path );
       providerMetadata->saveConnection( providerConnection, connName );
       return true;
     }
