@@ -211,7 +211,9 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   mActionSelectByPolygon = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshSelectPolygon.svg" ) ), tr( "Select mesh element by polygon" ), this );
   mActionSelectByPolygon = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshSelectPolygon.svg" ) ), tr( "Select mesh elements by polygon" ), this );
   mActionSelectByPolygon->setCheckable( true );
+  mActionSelectByPolygon->setObjectName( QStringLiteral( "ActionMeshSelectByPolygon" ) );
   mActionSelectByExpression = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshSelectExpression.svg" ) ), tr( "Select mesh elements by expression" ), this );
+  mActionSelectByExpression->setObjectName( QStringLiteral( "ActionMeshSelectByExpression" ) );
 
   mActionTransformCoordinates = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshTransformByExpression.svg" ) ), tr( "Transform vertices coordinates" ), this );
   mActionTransformCoordinates->setCheckable( true );
@@ -242,12 +244,24 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
       activateWithState( Digitizing );
   } );
 
-  connect( mActionSelectByPolygon, &QAction::toggled, this, [this]( bool checked )
+  connect( mActionSelectByPolygon, &QAction::triggered, this, [this]
   {
-    if ( checked )
+    if ( mActionSelectByPolygon->isChecked() )
+    {
+      QgsSettings settings;
+      settings.setValue( QStringLiteral( "UI/Mesh/defaultSelection" ), 0 );
       activateWithState( SelectingByPolygon );
+
+    }
     else
       mSelectionBand->reset( QgsWkbTypes::PolygonGeometry );
+  } );
+
+  connect( mActionSelectByExpression, &QAction::triggered, this, [this]
+  {
+    QgsSettings settings;
+    settings.setValue( QStringLiteral( "UI/Mesh/defaultSelection" ), 1 );
+    showSelectByExpressionDialog();
   } );
 
   connect( mActionDelaunayTriangulation, &QAction::triggered, this, [this]
@@ -279,8 +293,6 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   } );
 
   connect( mActionTransformCoordinates, &QAction::triggered, this, &QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget );
-
-  connect( mActionSelectByExpression, &QAction::triggered, this, &QgsMapToolEditMeshFrame::showSelectByExpressionDialog );
 
   connect( canvas, &QgsMapCanvas::selectionChanged, this, [this]
   {
@@ -349,11 +361,27 @@ QAction *QgsMapToolEditMeshFrame::digitizeAction() const
 QList<QAction *> QgsMapToolEditMeshFrame::selectActions() const
 {
   return  QList<QAction *>()
-          << mActionSelectByPolygon;
+          << mActionSelectByPolygon
+          << mActionSelectByExpression;
 }
 
 QAction *QgsMapToolEditMeshFrame::defaultSelectActions() const
 {
+  QgsSettings settings;
+  bool ok = false;
+  int defaultIndex = settings.value( QStringLiteral( "UI/Mesh/defaultSelection" ) ).toInt( &ok );
+
+  if ( ok )
+    switch ( defaultIndex )
+    {
+      case 0:
+        return mActionSelectByPolygon;
+        break;
+      case 1:
+        return mActionSelectByExpression;
+        break;
+    }
+
   return mActionSelectByPolygon;
 }
 

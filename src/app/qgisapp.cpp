@@ -3866,7 +3866,16 @@ void QgisApp::createToolBars()
 
     QToolButton *meshSelectToolButton = new QToolButton();
     meshSelectToolButton->setPopupMode( QToolButton::MenuButtonPopup );
-    meshSelectToolButton->addActions( editMeshMapTool->selectActions() );
+    QList<QAction *> selectActions = editMeshMapTool->selectActions();
+    for ( QAction *selectAction : selectActions )
+    {
+      meshSelectToolButton->addAction( selectAction );
+      connect( selectAction, &QAction::triggered, meshSelectToolButton, [selectAction, meshSelectToolButton]
+      {
+        meshSelectToolButton->setDefaultAction( selectAction );
+      } );
+    }
+
     meshSelectToolButton->setDefaultAction( editMeshMapTool->defaultSelectActions() );
     mMeshToolBar->addWidget( meshSelectToolButton );
 
