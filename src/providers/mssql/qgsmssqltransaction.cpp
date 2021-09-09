@@ -30,9 +30,7 @@ QgsMssqlTransaction::QgsMssqlTransaction( const QString &connString )
 {
 }
 
-QgsMssqlTransaction::~QgsMssqlTransaction()
-{
-}
+QgsMssqlTransaction::~QgsMssqlTransaction() = default;
 
 
 bool QgsMssqlTransaction::executeSql( const QString &sql, QString &error, bool isDirty, const QString &name )
