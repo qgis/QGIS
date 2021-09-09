@@ -859,11 +859,12 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
     e->snapPoint();
     point = mSnapMatch.interpolatedPoint();
   }
-  else
-  {
-    point.setZ( QgsMapToolEdit( mMapCanvas ).defaultZValue() );
-    point.setM( QgsMapToolEdit( mMapCanvas ).defaultMValue() );
-  }
+  /*
+   * Ensure that Z and M are passed
+   * It will be dropped as needed later.
+   */
+  point.addZValue( QgsMapToolEdit( mMapCanvas ).defaultZValue() );
+  point.addMValue( QgsMapToolEdit( mMapCanvas ).defaultMValue() );
 
   /*
    * And if M or Z lock button is activated get the value of the input.
@@ -874,7 +875,6 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   }
   if ( mLockMButton->isChecked() )
   {
-
     point.setM( mMLineEdit->text().toFloat() );
   }
 
